@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form rules"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  1.0 August 1995
+;;;  Version:  0.3 August 1994
 
 ;; initiated 10/12/92 v2.3
 ;; 0.1 (6/4/93) allowed a default if the rule doesn't specify the form
@@ -11,7 +11,6 @@
 ;; 0.2 (6/16) added variation for explicitly specified lhs.
 ;;     (3/30/94) fixed missing arg in break stmt.
 ;; 0.3 (8/5) for the '..explicit-lhs' case made a subr for the passive calculation
-;; 1.0 (8/30/95) moved the used-in after complete
 
 (in-package :sparser)
 
@@ -44,6 +43,11 @@
                               edge rule))
     (setf (edge-rule edge) rule)
 
+    (set-used-by left-edge edge)
+    (set-used-by right-edge edge)
+    (setf (edge-left-daughter edge) left-edge)
+    (setf (edge-right-daughter edge) right-edge)
+
     (complete edge)
 
     (when *trace-edge-creation*
@@ -53,13 +57,7 @@
               (edge-position-in-resource-array edge)
               rule))
 
-    (set-used-by left-edge edge)
-    (set-used-by right-edge edge)
-    (setf (edge-left-daughter edge) left-edge)
-    (setf (edge-right-daughter edge) right-edge)
-
     (assess-edge-label promulgated-label edge)
-
     edge ))
 
 
@@ -116,6 +114,11 @@
 
     (setf (edge-rule edge) rule)
 
+    (set-used-by left-edge edge)
+    (set-used-by right-edge edge)
+    (setf (edge-left-daughter edge) left-edge)
+    (setf (edge-right-daughter edge) right-edge)
+
     (complete edge)
 
     (when *trace-edge-creation*
@@ -125,13 +128,7 @@
               (edge-position-in-resource-array edge)
               rule))
 
-    (set-used-by left-edge edge)
-    (set-used-by right-edge edge)
-    (setf (edge-left-daughter edge) left-edge)
-    (setf (edge-right-daughter edge) right-edge)
-
     (assess-edge-label promulgated-label edge)
-
     edge ))
 
                               
