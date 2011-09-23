@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:sparser -*-
-;;; copyright (c) 1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990  Content Technologies Inc.
+;;; copyright (c) 1993 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "CA"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  1.0 August 1995
-
-;; 1.0 (8/30/95) moved the used-in after complete
+;;;  Version:  May 1990         v1.8.4
+;;;
 
 (in-package :sparser)
 
@@ -39,6 +39,10 @@
     (setf (edge-left-daughter  edge) left-edge)
     (setf (edge-right-daughter edge) right-edge)
 
+    (ecase direction
+      (:left  (set-used-by right-edge edge))
+      (:right (set-used-by left-edge  edge)))
+
     (setf (edge-form edge) (if rule (cfr-form rule) form))
 
     (setf (edge-referent edge)
@@ -61,10 +65,6 @@
                     (edge-position-in-resource-array left-edge)
                     (edge-position-in-resource-array right-edge)
                     rule))
-
-    (ecase direction
-      (:left  (set-used-by right-edge edge))
-      (:right (set-used-by left-edge  edge)))
 
     (assess-edge-label category edge)
 
