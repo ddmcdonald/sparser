@@ -59,7 +59,7 @@
     (setq brackets '( ].adverb )))
   (unless super-category
     (setq super-category 'adverbial))
-  (let* ((category-name (name-ot-use-for-category string))
+  (let* ((category-name (name-to-use-for-category string))
          (word (define-function-word string 
                  :brackets brackets ;; this does bracket assignment
                  :form 'adverb))
@@ -72,12 +72,8 @@
                      :rule-label ,super-category
                      :bindings ((name ,word))
                      :binds ((value)) |#
-    )
-
-  (let ((word (define-function-word string
-                :brackets brackets
-                :form (category-named 'adverb))))
-    (define-cfr (category-named 'anonymous-adverb)  (list word)
+    
+    (define-cfr (category-named 'adverbial)  (list word)
       :form (category-named 'adverb)
       :referent word)))
 
