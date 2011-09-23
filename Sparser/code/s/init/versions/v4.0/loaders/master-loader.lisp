@@ -79,7 +79,8 @@
 ;; workbench because Allegro doesn't recognize MCL's character macro for points.
 ;; 2/9/07 Added *SDM&P* 4/8/09 Added alternative load in drivers;DA when the
 ;; *da* module isn't included.  8/27 Added objects/import/. 9/23/11 Removed it
-;; since it no longer does any work.
+;; since it no longer does any work. Also removed load of basic-tests workspace
+;; because it's too confusing.
 
 (in-package :sparser)
 
@@ -343,7 +344,6 @@
 (lload "version;workspace:abbreviations")
 (lload "version;workspace:traces")
 (lload "version;workspace:switch settings")
-(lload "version;workspace:basic tests")
 
 (when *external-workspace-files*
   (load *external-workspace-files*))
