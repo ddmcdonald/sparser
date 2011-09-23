@@ -29,18 +29,19 @@
 ;;;------------------------------------------------------------------------
 
 (define-category adverbial
-  :specializes modifer
+  :specializes modifier
   ;; Never expected to be instantiated, just instantiations
   ;; of specific adverbs as setup by define-adverb. 
   ;; This category provides the default in the 
-  :binds ((name :primitive word))
-  :realization ((:tree-family pre-verb-adverb
+  :binds ((name :primitive word)))
+#|  :realization ((:tree-family pre-verb-adverb
                  :mapping ((
 )
 (:tree-family 
                  :mapping )
 (:tree-family 
-                 :mapping )
+                 :mapping ) |#
+
   
 ;;  This is one of the few places where I'd be comfortable with
 ;;  form+form rules, but the odd label seems a better way to go at least
@@ -64,14 +65,14 @@
                  :form 'adverb))
          (category (category-named category-name))
          (new? (null category)))
-    (when new?
+ #|   (when new?
       (let ((expr `(define-category ,category-name
                      :specializes ,super-category
                      :instantiates :self
                      :rule-label ,super-category
                      :bindings ((name ,word))
-                     :binds ((value))
-
+                     :binds ((value)) |#
+    )
 
   (let ((word (define-function-word string
                 :brackets brackets
