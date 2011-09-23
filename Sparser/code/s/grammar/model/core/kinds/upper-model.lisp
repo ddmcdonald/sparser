@@ -1,4 +1,4 @@
-);;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
+;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
 ;;; Copyright (c) 2010,2011 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
