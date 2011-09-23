@@ -1,11 +1,11 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP)
-;;; copyright (c) 1991-2003, 2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2003,2010-2011 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;versions:v2.7:loaders:"
-;;;  Version:   March 2011
+;;;  Version:   September 2011
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -78,7 +78,8 @@
 ;; 1/6-7/07 Moved the scope of *nothing-Mac-specific* up to cover most of the
 ;; workbench because Allegro doesn't recognize MCL's character macro for points.
 ;; 2/9/07 Added *SDM&P* 4/8/09 Added alternative load in drivers;DA when the
-;; *da* module isn't included.  8/27 Added objects/import/.
+;; *da* module isn't included.  8/27 Added objects/import/. 9/23/11 Removed it
+;; since it no longer does any work.
 
 (in-package :sparser)
 
@@ -131,7 +132,9 @@
   (lload "objects;rules:DA:loader"))
 
 (lload "objects;export:loader")
-(lload "objects;import:loader")
+
+;; No usable content so flushed the directory 9/22/11
+;;(lload "objects;import:loader")
 
 (when *external-object-files*
   (load *external-object-files*))
@@ -165,11 +168,11 @@
   (lload "check;loader1")
   (lload "check;loader"))
 (lload "analyzers;psp:threading:loader2")
-(lload "march;loader")
+;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
 (lload "kinds of edges;loader2")
 (lload "complete;loader1")
 (if *lattice-points*
-  (then (lload "annotation;loader")
+  (then ;;(lload "annotation;loader") empty file flushed 9/22/11
         (lload "referent;loader3"))
   (lload "referent;loader2"))
 (lload "analyzers;psp:terminate")

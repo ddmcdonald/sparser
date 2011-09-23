@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   July 2011
+;;;   Version:   September 2011
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -74,7 +74,7 @@
 ;; to util. 6/12/11 Making mods so we could load this directly w/o a script, which
 ;; means bringing in the content of the most-recent, best used scripts. 7/7/11 Added
 ;; initial check for whether we're running in an mlisp. 7/11 Added global for including
-;; the generic lexicon. 
+;; the generic lexicon. 9/23/11 Bumped the version to v4.0
 
 (in-package :cl-user)
 
@@ -224,7 +224,7 @@ what files have changed, preparing ftp scripts, etc.
 ;;---  *current-version*
 
 (unless (boundp 'cl-user::*current-version*)
-  (defparameter cl-user::*current-version*  "v3.1"
+  (defparameter cl-user::*current-version*  "v4.0"
     "This string has to be the name of the directory where the 
      specifics for the current version are stored under init/versions/."))
 
