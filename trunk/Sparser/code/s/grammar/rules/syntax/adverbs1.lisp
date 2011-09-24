@@ -13,14 +13,18 @@
 ;; 0.2 (4/24/08) moved the category and def form out to words/adverbs.
 ;; 1.0 (9/19/11) Flushed the explicit form rule in favor of generated set
 ;;      by using the tree-family. See words;adverbs1. Put in the generic
-;;      method. 
+;;      method and abstract one using revived modified category
 
 (in-package :sparser)
 
-;;--- not used 10/95
-;; (define-mixin-category  modified
-;;   :instantiates nil
-;;   :binds ((modifier)))
+
+(define-category  modified
+  ;; analogous to quantified -- both should have same parent
+  :specializes nil
+  :instantiates :self
+  :binds ((modifier . modifier)
+          (body)))
+
 
 (defgeneric modified (modifier modified)
   (:documentation "Motivated by adverbs like 'just' and 'almost',
@@ -29,5 +33,10 @@
  event. Specific cases (by the category of the specific adverb)
  could be more ambitious."))
 
-
+(defmethod modified ((adv sh::adverbial) (body t))
+  (let ((real-adv (dereference-shadow-individual adv))
+        (real-body (dereference-shadow-individual body)))
+    (define-individual 'modified
+      :modifier real-adv
+      :body real-body)))
 
