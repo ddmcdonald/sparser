@@ -33,14 +33,13 @@
   ;; Never expected to be instantiated, just instantiations
   ;; of specific adverbs as setup by define-adverb. 
   ;; This category provides the default in the 
-  :binds ((name :primitive word)))
-#|  :realization ((:tree-family pre-verb-adverb
-                 :mapping ((
-)
-(:tree-family 
-                 :mapping )
-(:tree-family 
-                 :mapping ) |#
+  :binds ((name :primitive word))
+  :realization ((:tree-family pre-verb-adverb
+                 :mapping ((adverb . :self)))
+                (:tree-family post-verb-adverb
+                 :mapping ((adverb . :self)))
+                (:tree-family sentence-adverb
+                 :mapping ((adverb . :self)))))
 
   
 ;;  This is one of the few places where I'd be comfortable with
@@ -65,17 +64,18 @@
                  :form 'adverb))
          (category (category-named category-name))
          (new? (null category)))
- #|   (when new?
+    (when new?
       (let ((expr `(define-category ,category-name
                      :specializes ,super-category
                      :instantiates :self
                      :rule-label ,super-category
                      :bindings ((name ,word))
-                     :binds ((value)) |#
+                     :binds ((value)))))
+        (setq category (eval expr))
     
-    (define-cfr (category-named 'adverbial)  (list word)
-      :form (category-named 'adverb)
-      :referent word)))
+        (define-cfr (category-named 'adverbial)  (list word)
+          :form (category-named 'adverb)
+          :referent category)))))
 
 ;;;---------- adverb adverbs
 
@@ -94,8 +94,10 @@
 ;;  These bind to their left,
 ;;  and they terminate whatever is ongoing
 
+;; Definitions moved to dossiers/approximations 9/23/11
 (define-function-word "about"   :brackets '( ].adverb ))
 (define-function-word "around"  :brackets '( ].adverb ))
+
 
 (define-function-word "fairly"  :brackets '( ].adverb ))
 
