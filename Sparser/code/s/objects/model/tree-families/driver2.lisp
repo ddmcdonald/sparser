@@ -59,7 +59,7 @@
 ;;     (10/8/09) Fixed bug in decode-binding. (4/6/11) cleaned up indents.
 ;; 2.1 (4/8/11) Put in switch to control formation of form rules when the
 ;;      rhs involves a form category. 9/9 put :method in, fixed but in 
-;;      construct-referent for function case. 
+;;      construct-referent for function case. 9/23 put method further in.
 
 (in-package :sparser)
 
@@ -499,6 +499,7 @@
                                 subtype
                                 binds
                                 function
+                                method
                                 daughter
                                 single-return-value
                            &aux referent-form
@@ -555,6 +556,9 @@
     ;; passes through dispatch-on-rule-field-keys and ultimately
     ;; handled by ref/function
     (push `(:funcall  ,@function)
+          other-forms))
+  (when method
+    (push `(:method ,@function)
           other-forms))
 
   (when binds
