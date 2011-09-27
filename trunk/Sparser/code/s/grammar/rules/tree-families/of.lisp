@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "of"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  August 2011
+;;;  version:  September 2011
 
 ;; formed 10/26/94 from [of genitive] and [group of type]. Added def-rule data 3/8/95
 ;; 7/13/98 added item-of-value. 7/8/00 added member-of.
@@ -11,7 +11,9 @@
 ;;  instruction in it -- otherwise "sales of $98.3 billion" won't work as an
 ;;  instance of an ern since that's based on psi.
 ;;  4/7/11 Addded of-complement. 8/18 added dependent-of. 8/26 fixed referent in
-;; simple-of-complement. 
+;; simple-of-complement. 9/26 reordered cases to make postprocessing happy, also
+;; modified dependent-of so that the head and daughter would both pickout
+;; the same edge, even if it doesn't make all that much sense.
 
 (in-package :sparser)
 
@@ -34,15 +36,15 @@
   :binding-parameters ( np-item  of-item )
   :labels ( np  complement  base-np  result-type )
   :cases
-    ((of-complement (of-/complement ("of"  complement)
-                         :daughter right-edge
-                         :head right-edge))
-
-     (np+of-complement (np (base-np of-/complement)
+    ((np+of-complement (np (base-np of-/complement)
                         :head left-edge
                         :instantiate-individual result-type
                         :binds (np-item right-edge
-                                of-item left-edge)))))
+                                of-item left-edge)))
+
+     (of-complement (of-/complement ("of"  complement)
+                         :daughter right-edge
+                         :head right-edge))))
 
 
 ;;;---------------------
@@ -194,10 +196,10 @@
   :description ""
   :binding-parameters ( dependent substrate )
   :labels ( np prep complement )
-  :cases ((:pp (prep/complement (prep complement)
-                    :daughter right-edge
-                    :head left-edge))
-          (:complement (np (np prep/complement)
+  :cases ((:complement (np (np prep/complement)
                          :head left-edge
                          :binds (dependent left-edge
-                                 substrate right-edge)))))
+                                 substrate right-edge)))
+          (:pp (prep/complement (prep complement)
+                    :daughter right-edge
+                    :head right-edge))))
