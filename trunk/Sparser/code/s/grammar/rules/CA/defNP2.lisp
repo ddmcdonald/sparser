@@ -9,7 +9,7 @@
 ;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category 
 ;;      since none of the routines that would use it exist yet and it makes
 ;;      the printing odd sometimes: "the Army". 9/13/11 fixed out of date
-;;      function call.
+;;      function call. Two more instances 9/26.
 
 (in-package :sparser)
 
@@ -90,17 +90,16 @@
       (else ;; make an individual from the category
             ;; /// ignore the material between the head
             ;; and the determiner
-
         (case (cat-symbol category-of-head)
           (kind-of-company
            (let ((individual
-                  (make-unindexed-temporary-individual category::company)))
+                  (make-unindexed-individual category::company)))
              (bind-variable 'kind category-of-head individual)
              individual ))
 
           (otherwise
            (let ((individual
-                  (make-unindexed-temporary-individual category-of-head)))
+                  (make-unindexed-individual category-of-head)))
              ;(add-category-to-individual
              ; individual category::known-in-discourse)
              individual )))))))
