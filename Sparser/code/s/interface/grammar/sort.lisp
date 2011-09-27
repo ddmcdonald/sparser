@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "sort"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  0.5 January 1999
+;;;   version:  0.5 September 2011
 
 ;; initiated 3/10/92 v2.2, elaborated 3/19,21,26
 ;; 0.1 (6/7/93 v2.3) Added appreciation of form rules to the combined
@@ -16,7 +16,8 @@
 ;;     (1/5/96) added Sort-cfrs-by-order-of-definition
 ;; 0.5 (6/5) Redid the check of identical rules in the sort so that it wouldn't
 ;;      do a query.
-;;     (1/22/99) tweaked Labels-string to accomodate MCL 4.0
+;;     (1/22/99) tweaked Labels-string to accomodate MCL 4.0. 9/26/11 setting off
+;;      some more the complaint about identical rules
 
 (in-package :sparser)
 
@@ -217,7 +218,7 @@
             label2 (pop rhs2))
 
       (when (or (null label1) (null label2))
-        (format t "Identical rules found:~
+        (format t "~&~%Identical rules found:~
                    ~%~A~%~A~%" r1 r2)
         (return-from sort-rules-by-rhs/aux t))
 
