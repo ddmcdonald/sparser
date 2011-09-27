@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "np adjuncts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.1 April 2011
+;;;  version:  0.1 September 2011
 
 ;; initiated 6/14/95.  8/11 added pp-after-np.  11/15 added premodifier-adds-
 ;; property and filled in a missing description.  12/5 added determiner-adds-property
@@ -13,7 +13,7 @@
 ;; (10/29/00) Cataloged what's here and added N-per-unit. 12/11 fixed a bug where
 ;;   the parens were layered wrong. 12/22 fixed spelling of keyword. 2/17/05 added
 ;;   np-participle. 4/1 Modified pp-after-np to include the preposition in a simplistic
-;;   way. 4/4/11 Added np-and-postmodifier
+;;   way. 4/4/11 Added np-and-postmodifier 9/26 reordered cases to make postprocessing happy
 
 (in-package :sparser)
 
@@ -115,12 +115,12 @@
   :binding-parameters ( pp-head-field )
   :labels ( np  pp  prep  prep-head )
   :cases
-    ((:pp (pp (prep prep-head)
-                 :head right-edge))
-
-     (:pp-modifier (np (np pp)
+    ((:pp-modifier (np (np pp)
                      :head  left-edge
                      :binds (pp-head-field right-edge)))
+
+     (:pp (pp (prep prep-head)
+                 :head right-edge))
 
      ;; This case is more complicated than it needs to be.
      ;; To use it, Appears-as-lhs-of-some-case has to be extended
@@ -137,14 +137,14 @@
   :description ""
   :binding-parameters ( type  N  unit )
   :labels ( unit-head  unit-np  N-np  top-np )
-  :cases ((:pseudo-determiner (unit-np ("per" unit-head)
+  :cases ((:np (top-np (N-np unit-np)
+                         :head left-edge  ;; ??
+                         :instantiate-individual type
+                         :binds (N left-edge
+                                 unit right-edge)))
+          (:pseudo-determiner (unit-np ("per" unit-head)
                                 :head right-edge
                                 :binds (unit right-edge)))
           (:pseudo-determiner (unit-np ("a" unit-head)  ;; ???
                                 :head right-edge
-                                :daughter right-edge))
-          (:np (top-np (N-np unit-np)
-                         :head left-edge  ;; ??
-                         :instantiate-individual type
-                         :binds (N left-edge
-                                 unit right-edge)))))
+                                :daughter right-edge))))
