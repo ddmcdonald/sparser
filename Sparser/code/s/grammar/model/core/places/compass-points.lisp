@@ -5,13 +5,14 @@
 ;;;
 ;;;     File:  "compass points"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.3 August 2011
+;;;  version:  0.3 September 2011
 
 ;; initiated in 1/9/95, 2/24 added string printer. 
 ;; 0.1 (11/27/99) reworked them using realizations and implicit indexing. 
 ;;      Note that the adjective forms are still old style and won't work.
 ;; 0.2 (9/5/07) Making it over in the same style as directions.
-;; 0.3 (8/11/11) Adding the "of <location>" construction
+;; 0.3 (8/11/11) Adding the "of <location>" construction. 9/26 bunch
+;;     of tweaking on that.
 
 (in-package :sparser)
 
@@ -23,11 +24,13 @@
   :specializes   direction
   :binds ((name :primitive word)))
 
-
 ;;--- def form
 
 ;; These words compose with "the" and take complements that make the
 ;; direction more precise ("of the corn field").
+
+;;///// Should consider rationalizing this def-form since if you look at
+;; the category you expect a different labeling.
 
 (defun define-compass-point (string &optional ward)
   (let* ((brackets (if ward
@@ -75,7 +78,7 @@
              (of-item . place)
              (np . location)
              (complement . location)
-             (base-np . compass-point)
+             (base-np . direction) ;; compass-point
                 ;; some directions as well, but not all
              (result-type . relative-location))))
 
