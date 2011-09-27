@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.1 September 1999
+;;;  version:  1.1 September 2011
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
@@ -15,6 +15,8 @@
 ;;     (9/30/99) Somewhen in the interim I null-ified declare-all-existing-individuals-
 ;;      permanent by doing a return-from before it had done anything. No record available
 ;;      of why. Put it all back today and nothing untoward happened when I ran it.
+;;     (9/26/11) Fixed zero-category-index for the case of the category being
+;;      a lattice-point
 
 (in-package :sparser)
 
@@ -358,9 +360,18 @@
           nil))
 
   (unless 1st-permanent
-    (if (hash-table-p (cat-instances category))
-      (clrhash (cat-instances category))
-      (setf (cat-instances category) nil)))
+    (typecase category
+      (referential-category
+       (if (hash-table-p (cat-instances category))
+         (clrhash (cat-instances category))
+         (setf (cat-instances category) nil)))
+      (lattice-point
+       ;; appear to only use their plist
+       (change-plist-value category :instances nil))
+      (otherwise
+       (push-debug `(,category))
+       (error "Unexpected type of 'category': ~a~%  ~a"
+              (type-of category) category))))       
 
     category )
 
