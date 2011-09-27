@@ -7,6 +7,7 @@
 
 ;; initiated 4/12/95
 
+(in-package :sparser)
 
 ;; 4/12
 (define-adverb "potentially")
