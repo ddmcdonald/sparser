@@ -17,7 +17,8 @@
 ;; 2.1 (6/30) moved the annotator up out of here.
 ;; 2.2 (5/10/11) Redesign staging of annotation of the whole rule ('pair')
 ;;      for the :bindings case.
-;;     (9/1/11) Added dispatch for :method.
+;;     (9/1/11) Added dispatch for :method. 9/26/11 Fixed case where bindings
+;;      call to annotate presumed it had a psi and got an individual instead
 
 (in-package :sparser)
 
@@ -48,7 +49,7 @@
                                   right-referent right-edge)))
          ;;(break "head = ~a~%arg = ~a" *head-edge* *arg-edge*)
          (annotate-realization-pair
-          ref (psi-lp ref) *rule-being-interpreted*
+          ref (corresponding-lattice-point ref) *rule-being-interpreted*
           *head-edge* *arg-edge*)
          ref))
 
