@@ -10,7 +10,8 @@
 ;;      var referenced in the rule  
 ;; 0.2 (10/19) reconceptualized the whole notion.
 ;; 0.3 (12/6/10) Added the other cases in the mapping to the category v/r's
-;;     (3/15/11) Added treatment of 'this' & 'that' + time-unit
+;;     (3/15/11) Added treatment of 'this' & 'that' + time-unit.
+;;     (9/26/11) Added rule-label to noun and adverb definitions
 
 
 (in-package :sparser)
@@ -23,6 +24,7 @@
 ;; Those standalone, these form up into phrases or if they do appear by themselves
 ;; there is an implicit complement accessible from the context.  
 
+;; Dossier for bother the adverbs and nouns is deictic-times
 
 ;; These take complements
 ;; e.g. "immediately"
@@ -30,6 +32,7 @@
 (define-category  relative-time-adverb
   :instantiates time
   :specializes time
+  :rule-label time
   :binds ((name  :primitive word))
   :index (:permanent :key name)
   :realization (:standalone-word name))
@@ -43,6 +46,7 @@
 (define-category  relative-time-noun
   :instantiates time
   :specializes time
+  :rule-label time
   :binds ((name  :primitive word))
   :index (:permanent :key name)
   :realization (:standalone-word name))

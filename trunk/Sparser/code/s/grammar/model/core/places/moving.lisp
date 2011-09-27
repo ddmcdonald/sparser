@@ -9,7 +9,7 @@
 ;; Intended for modeling movement in direction or w.r.t. some
 ;; spatial feature.
 
-;; initated 8/4/11. 9/5/11 added path-type adjunct. 9/12 Added some more.
+;; initated 8/4/11. 9/5/11 added path-type adjunct. 9/12 Added some more. 9/26 "immediately"
 
 (in-package :sparser)
 
@@ -42,6 +42,7 @@
                            (via-path . path)
                            (for-distance . measurement) ;; refine to measurements of distance?
                            (in-direction . direction)
+                           (when-done . time)
                            )
                    :realization ((:tree-family vp+adjunct
                                   :mapping ((vg . :self)
@@ -73,6 +74,14 @@
                                             (vp . move)
                                             (adjunct . location)
                                             (slot . location)))
+                                 (:tree-family vp+adjunct ;; "immediately"
+                                  :mapping ((vg . :self)
+                                            (vp . move)
+                                            (adjunct . time)
+                                            (slot . when-done)))
+                                 ;;/// Need distance as source of 'when'
+                                 ;;  "{in/after} ten miles" "... (1.5 miles)"
+                                 ;; Though this might be understood better as distance
                                  (:main-verb ,string)))))
         (setq category (eval form))
         category)))
