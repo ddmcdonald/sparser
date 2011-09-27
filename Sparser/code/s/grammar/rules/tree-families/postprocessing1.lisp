@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "postprocessing"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.0 March 2005   
+;;;  version:  1.0 September 2011
 
 ;; initiated 1/17/95. Stubbed Postprocess-tree-families 2/22.
 ;; Finished 4/14.   4/27 tweeked it enough to allow it to be run
@@ -14,6 +14,8 @@
 ;;   new kind of modifier etfs.
 ;;   (7/19/11) Cleaned up on case that shouldn't be complained about.
 ;;   Killed off the older version of this in objects/model/tree-families
+;;   (9/26) Added a few more cases. Need to think through the old rationale
+;;   for why to complain.
 
 (in-package :sparser)
 
@@ -64,6 +66,8 @@
          first-case  lhs-symbol )
 
     (dolist (etf list-of-tree-families)
+
+
       (unless (eq (etf-type etf) :mixin)
         (unless (referential-category-p etf)  ;; ?? how do these get on the list ??
           (setq first-case (first (etf-cases etf))
@@ -73,7 +77,10 @@
             (unless (member etf s-etfs)
               (push etf s-etfs)))
            
-           ((eq lhs-symbol 'np)
+           ((or (eq lhs-symbol 'np)
+                (eq lhs-symbol 'result-np)
+                (eq lhs-symbol 'top-np)
+                (eq lhs-symbol 'np-head))
             (unless (member etf np-etfs)
               (push etf np-etfs)))
 
