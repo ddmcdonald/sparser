@@ -69,7 +69,7 @@
                      :specializes ,super-category
                      :instantiates :self
                      :rule-label ,super-category
-                     :bindings ((name ,word))
+                     :bindings (name ,word)
                      :binds ((value)))))
         (setq category (eval expr))
     
