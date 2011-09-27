@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2011 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "plist"
 ;;;    Module:   "objects;chart:generics:"
-;;;   Version:   0.1 December 1994
+;;;   Version:   0.1 September 2011
 
 ;; (2/10/92 v2.2) added cases for cfr's.
 ;; (9/2 v2.3) added cases for referential-categories
@@ -11,6 +11,8 @@
 ;; (11/14) added cases for 'individual'
 ;; 0.1 (11/16) for individual made the 'push' routine really push
 ;;     (12/1) in that routine changed indiv-plist to unit-plist
+;;     (9/26/11) Added change-plist-value and added lattice-points
+;;      to plist-for
 
 (in-package :sparser)
 
@@ -25,7 +27,8 @@
                (cat-plist obj))
     (cfr       (cfr-plist obj))
     (polyword  (pw-plist obj))
-    (individual (indiv-plist obj))))
+    (individual (indiv-plist obj))
+    (lattice-point (lp-plist obj))))
 
 
 (defun set-plist-of (obj plist)
@@ -35,7 +38,8 @@
                (setf (cat-plist obj) plist))
     (cfr       (setf (cfr-plist obj) plist))
     (polyword  (setf (pw-plist obj) plist))
-    (individual (setf (unit-plist obj) plist))))
+    (individual (setf (unit-plist obj) plist))
+    (lattice-point (lp-plist obj))))
 
 
 
@@ -76,6 +80,21 @@
                 next-cell (cddr next-cell)
                 next-tag (car next-cell)))))))
             
+
+;;;--------------
+;;; change entry
+;;;--------------
+
+(defun change-plist-value (obj property new-value)
+  (let ((plist (plist-for obj)))
+    ;; The value will always be interior to the list
+    (do ((tag (car plist) (car rest))
+         (value (cadr plist) (cadr rest))
+         (value-cell (cdr plist) (cdr rest))
+         (rest (cddr plist) (cddr rest)))
+        ((null tag))
+      (when (eq tag property)
+        (rplaca value-cell new-value)))))
 
 
 
