@@ -7,16 +7,16 @@
 ;;;   Module:  "grammar;rules:tree-families:"
 ;;;  version:  September 2011
 
-;; Started 4/3/09. Modeled on [model;core:kinds:object]
-;; Modified 7/16/09: added modifier to np-head
-;; Modified 7/21/09: replaced 'where' in sv-location with
-;;   'location' to avoid inconsistency in output
-;; Modified 7/23/09: added additional bootstrap rule to svo
-;;   to treat "it" as an individual, also added
-;;   spatial-orientation to sv-location, and interjection
-;; 9/21/09 Renaming ETF in np-head. Fanout from also loading more diverse set
-;;   of nps. 2/16/10 Added synonyms code. 8/8/11 Working out a macro
-;; to generate 'type' categories. 9/6 folded :rule-label into the macro.
+;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
+;; 7/16/09: added modifier to np-head Modified 7/21/09: replaced
+;; 'where' in sv-location with 'location' to avoid inconsistency in
+;; output Modified 7/23/09: added additional bootstrap rule to svo to
+;; treat "it" as an individual, also added spatial-orientation to
+;; sv-location, and interjection 9/21/09 Renaming ETF in
+;; np-head. Fanout from also loading more diverse set of nps. 2/16/10
+;; Added synonyms code. 8/8/11 Working out a macro to generate 'type'
+;; categories. 9/6 folded :rule-label into the macro. 9/23 adjusted
+;; adverbials to fit changes to the ETF.
 
 (in-package :sparser)
 
@@ -92,8 +92,7 @@
 	     :instantiates :self
 	     :realization
 	       (:tree-family pre-verb-adverb
-	         :mapping ((adverb . :self)
-                       (modifier . :self))
+	         :mapping ((adverb . :self))
              :adverb ,string-for-adverb))))
     (eval form)))
 
@@ -105,8 +104,7 @@
          :binds ((modifier))
 	     :realization
 	       (:tree-family sentence-adverb
-	        :mapping ((adverb . :self)
-                      (modifier . modifier))
+	        :mapping ((adverb . :self))
             :adverb ,string-for-adverb))))
     (eval form)))
 
