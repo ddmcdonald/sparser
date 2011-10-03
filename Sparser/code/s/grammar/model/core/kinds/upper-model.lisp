@@ -13,6 +13,7 @@
 ;; 0.1 (8/1/11) Moved in the 'top' categories from other parts of the
 ;;      core so they can be defined before they're referenced. 8/23 added
 ;;      the first relation. 9/16 added modifier (words;adverbs) tenatively.
+;;      9/29 added operator as in the meeaning from the old days.
 
 (in-package :sparser)
 
@@ -40,8 +41,19 @@
    :binds ((dependent)
            (substrate)))
 
+(define-category operator
+  :specializes nil
+  :binds ((name :primitive word)))
+
 (define-category modifier
-  :specializes nil)
+  :specializes operator)
+
+(define-category adverbial
+  ;; Never expected to be instantiated, just instantiations
+  ;; of specific adverbs as setup by define-adverb. 
+  ;; This category provides the default super-category and
+  ;; the broad realization.
+  :specializes modifier)
 
 
 #|  Need some axioms and tighter review before buying in completely.
