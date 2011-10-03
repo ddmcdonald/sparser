@@ -43,8 +43,8 @@
 ;; comlex. 7/19 added *generic-military*. 8/1 uncommented loading of (very minimal)
 ;; upper-model so general categories are available earlier. 8/25 Moved collections
 ;; up just after the upper-model because they had followed location which depended
-;; on them to formulate plurals. 9/16 Broader words loader into two parts: loader1
-;; and loader-part-2.
+;; on them to formulate plurals. 9/16 Broke words loader into two parts: loader1
+;; and loader-part-2. 9/29 moved 32d part later
 
 (in-package :sparser)
 
@@ -107,18 +107,17 @@
     (gload "names;loader2")
     (setq *try-character-type-fsas* t))
 
-  (gload "words;loader-part2")
+  (gate-grammar *standard-adjuncts*
+    (gload "adjuncts;loader"))
 
   (gate-grammar *syntax*
      ;; be & have (etc) reference tree-families
     (gload "syntax;loader3"))
 
+  (gload "words;loader-part2")
+
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
-
-  ;; core
-  (gate-grammar *standard-adjuncts*
-    (gload "adjuncts;loader"))
   
   (gate-grammar *location*
     (gload "places;loader1"))
