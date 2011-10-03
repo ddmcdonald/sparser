@@ -72,11 +72,16 @@
                           (preposition . "to")
                           (complement . location))))
 
-
 (define-marker-category onto-location
   :realization (:tree-family transparent-pp
                 :mapping ((pp . onto-location)
                           (preposition . "onto")
                           (complement . location))))
 
+
+(define-marker-category past-location
+  :realization (:tree-family computed-pp
+                :mapping ((pp . past-location)
+                          (preposition . "past")
+                          (complement . location))))
 
