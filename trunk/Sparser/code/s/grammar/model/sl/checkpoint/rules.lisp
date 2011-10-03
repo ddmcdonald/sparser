@@ -1,17 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; copyright (c) 2011 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/checkpoint/
-;;; version: June 2009
+;;; version: September 2011
 
-;; Initiated 4/28/09. Elaborated through 8/14/09
+;; Initiated 4/28/09. Elaborated through 8/14/09. 9/28/11 Commenting out the rules
+;; involving locations while waiting for a better, more general, treatment
 
 (in-package :sparser)
 
 ;;--- simple locations based on all np's being labeled 'individual'
-
+#|
 (def-cfr location (spatial-orientation ;; a preposition
 		   individual)
   :form pp
@@ -52,7 +54,7 @@
   :form vp
   :referent (:head left-edge
              :bind (location . right-edge)))
-
+  |#
 
 ;;--- throwing away anticipated subjects ("you")
 ;;--- no longer "throwing away" -- we keep 'em!
@@ -61,30 +63,30 @@
   :form s
   :new-category event
   :referent (:head right-edge
-	     :bind (participant . left-edge)))
+	         :bind (participant . left-edge)))
 
 (def-form-rule (pronoun/second verb+ing)
   :form s
   :new-category event
   :referent (:head right-edge
-	     :bind (participant . left-edge)))
+	         :bind (participant . left-edge)))
 
 (def-form-rule (pronoun/second verb+ed)
   :form s
   :new-category event
   :referent (:head right-edge
-	     :bind (participant . left-edge)))
+	         :bind (participant . left-edge)))
 
 (def-form-rule (pronoun/second vg)
   :form s
   :new-category event
   :referent (:daughter right-edge
-	     :bind (participant . left-edge)))
+	         :bind (participant . left-edge)))
 
 (def-cfr event (pronoun/second event)
   :form s
   :referent (:daughter right-edge
-	     :bind (participant . left-edge)))
+	         :bind (participant . left-edge)))
 
 
 ;;--- allows for "come with me" etc.
@@ -96,7 +98,7 @@
   :form pp
   :new-category with-np
   :referent (:instantiate-individual with-np
-	     :with (content right-edge)))
+	         :with (content right-edge)))
 
 (def-form-rule ("with" possessive/np) ;; with her
   :form pp
@@ -117,23 +119,23 @@
 (def-form-rule (verb with-np)
   :form verb
   :referent (:head left-edge
-	     :bind (modifier right-edge)))
+	        :bind (modifier right-edge)))
 |#
 
 (def-cfr event (verb+ed with-np)
   :form s
   :referent (:head left-edge
-	     :bind (modifier right-edge)))
+	         :bind (modifier right-edge)))
 
 (def-cfr event (verb+ing with-np)
   :form s
   :referent (:head left-edge
-	     :bind (modifier right-edge)))
+	         :bind (modifier right-edge)))
 
 (def-cfr event (verb with-np)
   :form s
   :referent (:head left-edge
-	     :bind (modifier right-edge)))
+	         :bind (modifier right-edge)))
 
 (def-cfr event (event with-np) 
   :form s
@@ -153,12 +155,12 @@
 (def-form-rule (verb+ing adverb)
   :form verb+ing
   :referent (:head left-edge
-	     :bind (modifier right-edge)))
+	         :bind (modifier right-edge)))
 
 (def-form-rule (verb adverb)
   :form verb
   :referent (:head left-edge
-	     :bind (modifier right-edge)))
+	         :bind (modifier right-edge)))
 |#
 ;; Needed because "where" doesn't seem to be
 ;; picked up by WH in all cases?
@@ -173,7 +175,7 @@
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    content right-edge)))
+		            content right-edge)))
 
 ;; dealing with acknowledgements at this level because
 ;; interjection rule doesn't carry semantic info
@@ -194,8 +196,8 @@
 
 (define-category inversion
   :binds ((functor) 
-	  (target)
-	  (content)))
+  	      (target)
+	      (content)))
 
 (def-form-rule (verb "me")  ;; pronoun/first/singular
   :form vp
@@ -217,11 +219,11 @@
 
 ;; Some more location rules
 
-(def-cfr location (spatial-orientation direction)
-  :form pp
-  :referent (:instantiate-individual relative-location
-	     :with (functor left-edge
-		    place right-edge)))
+;; (def-cfr location (spatial-orientation direction)
+;;   :form pp
+;;   :referent (:instantiate-individual relative-location
+;; 	         :with (functor left-edge
+;; 		            place right-edge)))
 
 
 ;; Starting to take a crack at questions of the form:
