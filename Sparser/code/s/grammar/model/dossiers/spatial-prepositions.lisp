@@ -18,33 +18,4 @@
 
 (in-package :sparser)
 
-(define-spatial-preposition "above")
-(define-spatial-preposition "over")
-(define-spatial-preposition "below" )
-(define-spatial-preposition "beneath")
-(define-spatial-preposition "under" )
 
-(define-spatial-preposition "along" )
-(define-spatial-preposition "beside")
-
-(define-spatial-preposition "ahead of" )
-(define-spatial-preposition "behind" )
-
-(define-spatial-preposition "in" )
-(define-spatial-preposition "inside" )
-(define-spatial-preposition "outside" )
-(define-spatial-preposition "within"  )
-
-(define-spatial-preposition "into" )
-(define-spatial-preposition "out of")
-
-(define-spatial-preposition "at" )
-(define-spatial-preposition "by" )
-(define-spatial-preposition "on" )
-
-(define-spatial-preposition "beyond" )
-(define-spatial-preposition "past" )
-
-(define-spatial-preposition "out" )
-
-(define-spatial-preposition "ahead" )
