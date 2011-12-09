@@ -155,7 +155,8 @@ thinking about the future when some kind of "semantic paging" is available.
 )
 
 (unless (boundp '*upcase*)
-  (defparameter *upcase* nil
+  (defparameter *upcase* #+:mlisp nil
+                         #-:mlisp t
     "The code in Mumble-86 is written in strictly lowercase. But depending 
      on whether or not  one is running a Lisp that is case sensitive this
      has an impact on the function names that def-type creates. When this
