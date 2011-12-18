@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.1 September 2011
+;;;  version:  0.1 December 2011
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -14,6 +14,7 @@
 ;;      core so they can be defined before they're referenced. 8/23 added
 ;;      the first relation. 9/16 added modifier (words;adverbs) tenatively.
 ;;      9/29 added operator as in the meeaning from the old days.
+;;      12/17 added perdurant, not clear how to fit it in correctly.
 
 (in-package :sparser)
 
@@ -34,6 +35,11 @@
           (purpose)
           (modifier)
           (participant)))
+
+(define-category  perdurant
+  :instantiates nil
+  :specializes  nil)
+
 
 (define-category dependent-substrate
    :specializes nil ;; it's a relation
