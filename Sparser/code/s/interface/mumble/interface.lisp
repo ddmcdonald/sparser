@@ -4,10 +4,11 @@
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  0.0 March 2011
+;;;  version:  0.0 November 2011
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
+;; 11/21/11 Added sanity check that we're annotating realizations.
 
 (in-package :sparser)
 
@@ -19,14 +20,20 @@
 ;;;-------------------------
 
 (defmethod mumble::has-realization? ((i individual))
+  (unless *annotate-realizations*
+    (error "You have to set *annotate-realizations* to t"))
   (or (indiv-rnodes i)
       (mumble::has-realization? (itype-of i))))
 
 (defmethod mumble::has-realization? ((i psi))
+  (unless *annotate-realizations*
+    (error "You have to set *annotate-realizations* to t"))
   (let ((lp (psi-lp i)))
     (lp-realizations lp)))
 
 (defmethod mumble::has-realization? ((c referential-category))
+  (unless *annotate-realizations*
+    (error "You have to set *annotate-realizations* to t"))
   (let ((lp (cat-lattice-position c)))
     (lp-realizations lp)))
 
