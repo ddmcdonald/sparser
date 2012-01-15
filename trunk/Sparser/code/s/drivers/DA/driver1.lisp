@@ -29,7 +29,7 @@
              *left-boundary/treetop-actions*)))
 
       (tr :beginning-da starting-point)
-      (look-for-DA-patterns starting-point))
+      (look-for-da-patterns starting-point))
 
     (else
       (tr :ignoring-debris-analysis)
@@ -40,7 +40,7 @@
 ;;; loop
 ;;;------
 
-(defun look-for-DA-patterns (start-pos)
+(defun look-for-da-patterns (start-pos)
   (setq *da-dispatch-position* start-pos)
   (let ((end-pos *rightmost-quiescent-position*)
         (position start-pos))
