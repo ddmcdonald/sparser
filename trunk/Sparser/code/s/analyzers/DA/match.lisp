@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "match"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  November 2011
 
-;; initiated 5/5/95.  Elaborated ..5/12
+;; initiated 5/5/95.  Elaborated ..5/12. 11/3/11 Fixing match against
+;; multiple words as tt. 
 
 (in-package :sparser)
 
@@ -54,7 +55,7 @@
   (tr :arc-matches-tt? arc tt)
   (setq *arc* arc
         *tt* tt)
-
+  (push-debug `(,arc ,tt))
   (let ((match?
          (etypecase arc
            
@@ -73,8 +74,24 @@
               (eq (word-morphology tt) (arc-morph-keyword arc))))
            
            (word-arc
-            (when *word-tt*
-              (eq tt (arc-word arc))))
+            (cond 
+              (*word-tt*
+               (eq tt (arc-word arc)))
+              (*multiple-edges-over-word*
+               (let ((target-word (arc-word arc)))
+                 ;; ought to be cleaner than this, or find comparable
+                 ;; code elsewhere in DA
+                 (dolist (obj tt)
+                   (typecase obj
+                     (word (when (eq obj target-word)
+                             (return-from arc-matches-tt? obj)))
+                     (edge (when (eq (edge-category obj) target-word)
+                             (return-from arc-matches-tt? obj)))
+                     (otherwise
+                      (push-debug `(,obj ,tt ,arg))
+                      (error "Unexpected type in multiple edge tt: ~a"
+                             (type-of obj)))))))
+              (t nil)))
            
            (polyword-arc
             (when *edge-tt*
