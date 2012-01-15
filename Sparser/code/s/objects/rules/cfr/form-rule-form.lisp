@@ -14,6 +14,10 @@
 ;;      the rule to Construct-form-cfr.
 ;; 0.4 (3/10/05) Adjusted treatment of new-category in Def-form-rule/resolved
 ;;      to accomodate a new pattern in etf.
+;; 0.5 (10/27/11) Added :head arg to form rules to allow unconventional
+;;      composition patterns when the semantic term is to be the head
+;;      rather than the form term. Motivated by generalizations to prepositions
+;;      for relative locations.
 
 (in-package :sparser)
 
@@ -23,6 +27,7 @@
 
 (defun def-form-rule/expr (rhs-expressions
                            &key ((:form form-expression))
+                                ((:head edge-for-the-head))
                                 ((:referent referent-expression))
                                 ((:new-category new-category-symbol)))
 
@@ -55,16 +60,23 @@
         (referent (when referent-expression
                    (resolve-referent-expression referent-expression))))
 
+    (when edge-for-the-head
+      (unless (memq edge-for-the-head '(:left-edge :right-edge))
+        (error "form rule: the :head argument must be one of the ~
+                keywords :left-edge or :right-edge~%The value passed ~
+                in was ~a" edge-for-the-head)))
+
     (when form-expression
       (unless form-category
         (error "form rule: There is no form category with ~
                 the name ~A" form-expression)))
 
-    (def-form-rule/resolved rhs form-category referent new-category)))
+    (def-form-rule/resolved rhs form-category edge-for-the-head
+                            referent new-category)))
 
 
 
-(defun def-form-rule/resolved (rhs form referent
+(defun def-form-rule/resolved (rhs form head-edge referent
                                &optional new-category)
 
   ;; called from Instantiate-rule-schema as well as being just a
@@ -101,16 +113,27 @@
 
       (if (and form-rs regular-rs)
         (let* ( form-id regular-id cfr )
-          (ecase edge
-            (:left-edge
-             ;; the left (first) label of the pair in the rhs is
-             ;; the form category
-             (setq form-id (cdr (rs-right-looking-ids form-rs))
-                   regular-id (cdr (rs-left-looking-ids regular-rs))))
-            (:right-edge
-             (setq form-id (cdr (rs-left-looking-ids form-rs))
-                   regular-id (cdr (rs-right-looking-ids regular-rs)))))
-
+          (if head-edge
+            ;; The usual situation is that we have a semantically labeled edge
+            ;; like "will" that we want to be swallowed by the head-line
+            ;; edge on the basis of the head-line's form label (e.g. vg).
+            ;; But sometimes, notably with prepositions these days (10/11),
+            ;; we're capturing the generality of the prepositions via a form
+            ;; label on their word edges, and composing them with semantic
+            ;; edges. In these situations the head line is the oposite of
+            ;; the usual. The :head keyword in def-form-rule lets you set up
+            ;; this override.
+            (setq edge head-edge) 
+            (ecase edge
+              (:left-edge
+               ;; the left (first) label of the pair in the rhs is
+               ;; the form category
+               (setq form-id (cdr (rs-right-looking-ids form-rs))
+                     regular-id (cdr (rs-left-looking-ids regular-rs))))
+              (:right-edge
+               (setq form-id (cdr (rs-left-looking-ids form-rs))
+                     regular-id (cdr (rs-right-looking-ids regular-rs))))))
+            
           (if (and form-id regular-id)
             (then
               (setq cfr
@@ -152,7 +175,7 @@
                               referent))))))
 
 
-(defvar *ref* nil) (defvar *cfr* nil) (defvar *v* nil)
+
 (defun define-rewriting-form-rule (rhs form referent)
   ;; Called from i/r/s-make-the-rule with resolved arguments when the
   ;; *new-dm&p* flag is set. This runs with -every- ETF-based rule
@@ -160,33 +183,30 @@
   ;; we create rewriting form rules for and about the interaction with
   ;; the creation of conventional form rules that are stipulated in
   ;; the realization mapping
-  (setq *ref* referent)
   (unless *schema-being-instantiated*
     (break "Expected *schema-being-instantiated* to have been set"))
   (when (and (memq/assq :head referent)
-	     (memq/assq :binding referent))
+             (memq/assq :binding referent))
     (let* ((head-side (cadr (memq/assq :head referent)))
-	   (revised-rhs (interpolate-form-category-in-rhs-of-schema
-			 rhs head-side *schema-being-instantiated*)))
+           (revised-rhs (interpolate-form-category-in-rhs-of-schema
+                         rhs head-side *schema-being-instantiated*)))
       ;;(break "revised rhs = ~a" revised-rhs)
       (when revised-rhs
-	(let* ((cfr (def-form-rule/resolved revised-rhs form referent))
-	       (variable-to-be-bound
-		(first (second (memq/assq :binding referent))))
-	       (v/r (var-value-restriction variable-to-be-bound)))
-	  ;; modify a conventional form rule by elaborating its completion
-	  ;; field using information we glean from the instantiated
-	  ;; referent.
-	  ;;(break "cfr = ~a" cfr)
-	  (setq *cfr* cfr)
-	  (setq *v* variable-to-be-bound)
-	  (when v/r
-	    (let ((completion-keyword (cfr-completion cfr)))
-	      (setf (cfr-completion cfr)
-		    `(,completion-keyword ,variable-to-be-bound))))
-	  ;;(break "cfr = ~a~%completion = ~a"
-	  ;;	 cfr (cfr-completion cfr))
-	  cfr)))))
+        (let* ((cfr (def-form-rule/resolved revised-rhs form referent))
+               (variable-to-be-bound
+                (first (second (memq/assq :binding referent))))
+               (v/r (var-value-restriction variable-to-be-bound)))
+          ;; modify a conventional form rule by elaborating its completion
+          ;; field using information we glean from the instantiated
+          ;; referent.
+          ;;(break "cfr = ~a" cfr)
+          (when v/r
+            (let ((completion-keyword (cfr-completion cfr)))
+              (setf (cfr-completion cfr)
+                    `(,completion-keyword ,variable-to-be-bound))))
+          ;;(break "cfr = ~a~%completion = ~a"
+          ;;	 cfr (cfr-completion cfr))
+          cfr)))))
 
 ;;;----------
 ;;; builders

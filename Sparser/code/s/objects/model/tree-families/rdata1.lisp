@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.4 September 2011
+;;;  version:  1.4 December 2011
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -37,7 +37,8 @@
 ;;      existing rules rather than replace them: define-additional-realization.
 ;;      8/16 fixed decode-rdata-mapping to accommodate references to variables
 ;;      that are in the category's parents. 9/6/11 propogated change to
-;;      override-label in decode-rdata-mapping.
+;;      override-label in decode-rdata-mapping. 12/10/11 added :verb to the
+;;      set of rdata keywords. 
 
 (in-package :sparser)
 
@@ -204,7 +205,7 @@
 
     (unless (member key
                     '(:tree-family :mapping
-                      :main-verb :common-noun :proper-noun
+                      :main-verb :verb :common-noun :proper-noun
                       :quantifier :adjective :interjection
                       :adverb :preposition :word :standalone-word
                       :special-case-head
@@ -236,6 +237,7 @@
                           &key ((:tree-family tf-name))
                                mapping
                                ((:main-verb    mvb-name))
+                               ((:verb         mvb-name))
                                ((:common-noun  cn-name))
                                ((:proper-noun  pn-name))
                                standalone-word

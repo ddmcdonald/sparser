@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1998-1999 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1998-1999,2011 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "find or make at runtime"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 July 2009
+;;;  version:  1.0 September 2011
 
 ;; This is the entry point at runtime for objects (psi) that are
 ;; seen in the course of an analysis.
@@ -13,7 +13,7 @@
 ;; initiated 9/12/98, out of largely already existing routines. Tweaked the
 ;; name of a call 2/14/99. 9/3 Renamed call in Find-or-make-self-node to accomodate
 ;; forced change elsewhere. 
-;; 1.0 (7/22/09) Simplified for new indexing regime.
+;; 1.0 (7/22/09) Simplified for new indexing regime. 9/30/11 Cleaning up.
 
 (in-package :sparser)
 
@@ -48,13 +48,13 @@
 (defun find-or-make-next-lp-down-for-variable (variable starting-lattice-point)
   (let ((down-pointers (lp-down-pointers starting-lattice-point))
         (variables-bound (lp-variables-bound starting-lattice-point))
-         target-lp )
+        target-lp  )
     (tr :get-lp-extending-parent-by-variable variable starting-lattice-point)
     (cond
      (down-pointers ;; we've been down from here before
       (setq target-lp (cdr (assoc variable down-pointers)))
       (push-debug `(,down-pointers))
-;      (break "find-or-make-next-lp-down-for-variable - down-pointers")
+      ;;(break "find-or-make-next-lp-down-for-variable - down-pointers")
       (if target-lp
         (then
           (tr :lp-with-var-already-there-via-downpointers target-lp)
@@ -75,8 +75,6 @@
                  (find-lattice-point-with-variables1
                   (cons variable variables-bound)
                   (lp-top-lp starting-lattice-point))))
-      (unless *cfg-flag*
-	(break "find-or-make-next-lp-down-for-variable - target-lp ?"))
       ;; We've found another way into this node, so we add another uplink.
 ;      (push starting-lattice-point
 ;            (lp-upward-pointers target-lp))
@@ -89,8 +87,7 @@
      (t ;; First instance of this combination of bound variables so
         ;; we make a node with just one uplink and we enter this combination
         ;; in the list maintained by the top-node.
-      (let ((new-node (new-lattice-point
-                       starting-lattice-point variable)))
+      (let ((new-node (new-lattice-point starting-lattice-point variable)))
         (setf (lp-down-pointers starting-lattice-point)
               `( (,variable . ,new-node) )) 
         (tr :added-new-downlink-from-lp-for-lp new-node starting-lattice-point)

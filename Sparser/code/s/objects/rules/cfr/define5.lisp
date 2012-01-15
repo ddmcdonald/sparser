@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992,1993 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990=1991  Content Technologies Inc.
+;;; copyright (c) 1992-1993,2011 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "define"
 ;;;    Module:   "objects;rules:cfr:"
@@ -31,6 +31,7 @@
 ;;       value
 ;;  5.3 (8/27) renamed the calls that handle possible duplication and
 ;;       made the threading more obvious
+;;  5.4 (11/22/11) adding a stipulated schema
 
 
 (in-package :sparser)
@@ -40,6 +41,7 @@
                    rhs
                    &key form
                         referent
+                        schema
                         source )
 
   ;; Takes only objects as its arguments.  Any decoding should be done
@@ -54,5 +56,5 @@
         (changes-to-known-rule cfr lhs form referent)
         (duplication-check cfr lhs rhs form referent source))
       (else
-        (construct-cfr lhs rhs form referent source)))))
+        (construct-cfr lhs rhs form referent source schema)))))
 

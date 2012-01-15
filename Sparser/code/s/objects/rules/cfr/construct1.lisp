@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "construct"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   1.4 August 2011
+;;;   Version:   1.4 November 2011
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 1.0 (10/23) promulgated the fact that the rules for polywords are
@@ -21,6 +21,7 @@
 ;;      rule derives to Changes-to-known-rule and Construct-cfr.
 ;; 1.4 (8/3/11) Added a :schema argument to permit overriding the default
 ;;      (which is set when working from an ETF).
+;; 1.5 (11/22/11) Letting a stipulated schema pass through the parameters
 
 (in-package :sparser)
 
@@ -48,7 +49,8 @@
 
 
 
-(defun changes-to-known-rule (cfr lhs form referent)
+(defun changes-to-known-rule (cfr lhs form referent
+                              &optional schema-to-use)
 
   ;; Called from def-cfr/expr and define-cfr when the righthand side
   ;; of this rule appears in other rules but it has passed the
@@ -77,6 +79,7 @@
 
   (setf (cfr-form cfr) form)
   (setf (cfr-referent cfr) referent)
-  (setf (cfr-schema cfr) *schema-being-instantiated*)
+  (setf (cfr-schema cfr) (or schema-to-use
+                             *schema-being-instantiated*))
   cfr )
 
