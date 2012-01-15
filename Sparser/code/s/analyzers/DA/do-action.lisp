@@ -1,11 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "do action"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  November 2011
 
-;; initiated 5/7/95. Debugging, refining ..5/12
+;; initiated 5/7/95. Debugging, refining ..5/12. 11/3/11 Extending
+;; cases for schematic actions to :function
+
 
 (in-package :sparser)
 
@@ -31,9 +33,15 @@
 
 (defun execute-schematic-da-action (rule)
   (let ((form (da-action-description rule)))
-    (ecase (first form)
+    (case (first form)
       (:make-edge-over-whole-span
-       (execute-edge-over-whole-span-exp (cdr form))))))
+       (execute-edge-over-whole-span-exp (cdr form)))
+      (:function
+       (bind-context-and-apply-da-function-action (cdr form)))
+      (otherwise
+       (push-debug `(,form ,rule))
+       (error "Unexpected key in schematic-da-action: ~a"
+              (car form))))))
 
 
 
@@ -79,4 +87,20 @@
          (cons
           ;; ( word  pos-before  pos-after )
           (first tt)))))))
+
+
+(defun bind-context-and-apply-da-function-action (form)
+  (let ((function (car form))
+        (args (cdr form)))
+    (when (symbolp function)
+      (unless (fboundp function)
+        (error "The function ~a is not defined" function)))
+    ;; The args are expected to be symbols for ordinals that
+    ;; were vetted when the rule was defined
+    (let ((dereferenced-args
+           (mapcar #'lookup-matched-tt args)))
+      (let ((result
+             (apply function dereferenced-args)))
+        result))))
+
 
