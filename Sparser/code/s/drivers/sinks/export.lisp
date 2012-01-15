@@ -1,10 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
+;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 
 ;;;     File:  "export"
 ;;;   Module:  drivers;sinks:
-;;;  version:  June 2009
+;;;  version:  September 2011
 
 ;; Initiated 2/26/07
 ;; 3/2 Added switch to make it accumulate and wait until called for.
@@ -16,7 +17,8 @@
 ;; 7/16/09 Fixed export-as-value-name-for so that category names are not
 ;;   exported inside quotes.
 ;; 8/13/09 Moving towards all output in key-value pair format, in progress,
-;;   lots to clean up... elaborated through 9/4/09
+;;   lots to clean up... elaborated through 9/4/09.  9/27/11 flagged the
+;;   fact that spatial-orientation  has gone away.
 
 (in-package :sparser)
 
@@ -256,7 +258,7 @@
 	    (content (event (type get)
 			    (location (type relative-location)
 				      (place (object (type car)))
-				      (functor (type spatial-orientation)
+				      (functor (type spatial-orientation) ;; 9/27/11 spatial-orientiation is defunct
 					       (realization in))))))
 |#
 
@@ -315,7 +317,7 @@
 	    (content ((type get)
 		      (location (type relative-location)
 				(place (type car))
-				(functor (type spatial-orientation)
+				(functor (type spatial-orientation) ;; 9/27/11 spatial-orientiation is defunct
 					 (realization in))))))
 |#  
   
@@ -441,7 +443,7 @@
 	    (content ((type get)
 		      (location ((type relative-location) 
 				 (place ((type car)))
-				 (functor ((type spatial-orientation) 
+				 (functor ((type spatial-orientation) ;; 9/27/11 spatial-orientiation is defunct
 					   in)))))))
 |#
 
