@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "binary/explicit all keys"
 ;;;    Module:   "objects;chart:psp:edges:"
-;;;   Version:   2.8 August 1995
+;;;   Version:   2.9 October 2011
 
 ;; 2.0 (11/10/92 v2.3) Simplified the name, added :form
 ;; 2.1 (5/5/93) Added an alternative spelling Make-chart-edge that's easier
@@ -16,6 +16,7 @@
 ;; 2.6 (7/13) added trace
 ;; 2.7 (7/21) defaulted some cases in  Make-chart-edge from the rule
 ;; 2.8 (8/28/95) added default 'used-by' for the case of two rules not being adjacent
+;; 2.9 (10/19/11) added do-not-knit key to make-edge/all-keys and make-chart-edge
 
 (in-package :sparser)
 
@@ -26,7 +27,8 @@
                              category
                              form
                              rule rule-name
-                             referent )
+                             referent
+                             do-not-knit )
   
   (make-edge/all-keys
    :left-edge           left-edge 
@@ -48,7 +50,8 @@
    :referent            (or referent
                             (when rule
                               (when (cfr-p rule)
-                                (cfr-referent rule))))
+                                (cfr-referent rule)))) 
+   :do-not-knit         do-not-knit
    ))
 
 
@@ -58,7 +61,8 @@
                                 category
                                 form
                                 rule rule-name
-                                referent )
+                                referent
+                                do-not-knit )
 
   (unless starting-position
     (unless left-edge
@@ -159,7 +163,9 @@
              left-edge right-edge edge rule)
             referent))
     
-    (knit-edge-into-positions edge start-vector end-vector)
+    (unless do-not-knit
+      (knit-edge-into-positions edge start-vector end-vector))
+
     (complete edge)
 
     (when *trace-edge-creation*
