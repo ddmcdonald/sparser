@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:psi:"
-;;;  version:  1.0 October 2009
+;;;  version:  1.1 September 2011
 
 ;; initiated 3/7/98.
 ;; Split off the find routines and changed the name from "psi" 7/29/98.
@@ -20,7 +20,7 @@
 ;;      extend-psi-by-binding. 10/9 added in the bindings case for make/psi
 ;; 1.1 (12/14/10) Changed make-psi-with-just-a-type to make a new object
 ;;      every time. Then fixed make-more-saturated-psi to put the value of
-;;      the type inside a list. (3/19/11) Cleaned up.
+;;      the type inside a list. (3/19/11) Cleaned up. And again 9/30
 
 (in-package :sparser)
 
@@ -41,19 +41,19 @@
     (make-psi-with-just-a-type category)
     (else
       (when (consp (first binding-instructions))
-	(setq binding-instructions
-	      (revamp-binding-instructions-as-variable-value-plist
-	       binding-instructions)))
+        (setq binding-instructions
+              (revamp-binding-instructions-as-variable-value-plist
+               binding-instructions)))
       (let ((base-psi (find-or-make-psi-for-base-category category))
-	    new-psi )
-	(do ((variable (car binding-instructions) (car rest))
-	     (value (cadr binding-instructions) (cadr rest))
-	     (rest (cddr binding-instructions) (cddr rest))
-	     (parent-psi base-psi new-psi))
-	    ((null variable))
-	  (setq new-psi 
-		(find-or-make-psi-with-binding variable value parent-psi)))
-	new-psi))))
+            new-psi )
+        (do ((variable (car binding-instructions) (car rest))
+             (value (cadr binding-instructions) (cadr rest))
+             (rest (cddr binding-instructions) (cddr rest))
+             (parent-psi base-psi new-psi))
+            ((null variable))
+          (setq new-psi 
+                (find-or-make-psi-with-binding variable value parent-psi)))
+        new-psi))))
 
 
 ;;;-------
@@ -94,7 +94,7 @@
   ;; At this point the v+v has been created and attached to
   ;; its variable but needs the psi we create here linked in.
   (let ((lp (find-or-make-next-lp-down-for-variable 
-	     variable (psi-lp parent-psi)))
+             variable (psi-lp parent-psi)))
         (psi (allocate-psi)))
     (push-debug `(,lp ,psi ,v+v))
     (setf (psi-type psi) `(,lp))
@@ -103,9 +103,9 @@
     (setf (psi-downlinks psi) nil)
     (when (psi-downlinks parent-psi)
       (push-debug `(,parent-psi)))
-;      (break "parent-psi has down-links to look at")
+    ;;      (break "parent-psi has down-links to look at")
     (setf (psi-downlinks parent-psi)
-	  (cons `(,v+v ,psi) (psi-downlinks parent-psi)))
+          (cons `(,v+v ,psi) (psi-downlinks parent-psi)))
     (setf (psi-source psi) parent-psi)
     (setf (psi-path psi) (cons parent-psi (psi-path parent-psi)))
     (tr :made-more-saturated-psi psi variable)

@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  2.1 September 2011
+;;;  version:  2.1 October 2011
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -59,7 +59,8 @@
 ;;     (10/8/09) Fixed bug in decode-binding. (4/6/11) cleaned up indents.
 ;; 2.1 (4/8/11) Put in switch to control formation of form rules when the
 ;;      rhs involves a form category. 9/9 put :method in, fixed but in 
-;;      construct-referent for function case. 9/23 put method further in.
+;;      construct-referent for function case. 9/23 put method further in. 10/3 fixed
+;;      bug in it (C&S).
 
 (in-package :sparser)
 
@@ -558,7 +559,7 @@
     (push `(:funcall  ,@function)
           other-forms))
   (when method
-    (push `(:method ,@function)
+    (push `(:method ,@method)
           other-forms))
 
   (when binds

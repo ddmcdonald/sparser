@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.5 February 2011
+;;;  version:  0.6 October 2011
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -26,6 +26,9 @@
 ;;     have any because it was made by DM&P and that detail forgotten.
 ;; 0.5 (2/8/11) 'name-of' is predefined in Clozure, so changing it to 
 ;;     name-of-individual. 
+;; 0.6 (10/3/11) Patched around case of odd-ly formed individual who is
+;;     almost certainly a bug. 11/6 fixed little chatter in string-for, adding
+;;     case for word.
 
 (in-package :sparser)
 
@@ -62,7 +65,9 @@
                 (else
                   (write-string "#<" stream)
                   (dolist (category (indiv-type indiv))
-                    (princ-category category stream)
+                    (if (category-p category)
+                      (princ-category category stream)
+                      (write-string "type-not-handled" stream))
                     (write-string " " stream))
                   (format stream "~A>" (indiv-id indiv))))))))
         (else
@@ -218,7 +223,7 @@
     (individual
      (let* ((fn-string (concatenate
                         'string 
-                        "STRING/"
+                        (symbol-name '#:string)
                         (symbol-name (cat-symbol (itype-of i)))))
             (fn-name (intern fn-string *sparser-source-package*)))
        
@@ -237,10 +242,13 @@
                  (super-categories-of i))
        (string/ordinal i)
        (string/category i)))
+
+    (word
+     (word-pname i))
     
     (otherwise
      (format t "~&String-for -- No string-for routine for objects ~
-                of type~%     ~A" (type-of i))
+                of type~%     ~A~%" (type-of i))
      (format nil "~A" i))))
 
 
@@ -307,7 +315,7 @@
 
 
 
-(defun pPrinc-unit (o  &optional (stream *standard-output*))
+(defun pprinc-unit (o  &optional (stream *standard-output*))
   (etypecase o
     (word (princ-word o stream))
     (individual

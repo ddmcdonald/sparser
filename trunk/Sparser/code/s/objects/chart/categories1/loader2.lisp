@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "objects;categories:"
-;;;  Version:  July 1992
+;;;  Version:  September 2011
 
 ;; 2.0 (7/16/92 v2.3) Bumped the number on the whole directory to 1 to freely
 ;;      change everything here for the new representation regime.

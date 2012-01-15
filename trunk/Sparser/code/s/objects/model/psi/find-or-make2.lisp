@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1998-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1998-2005,2011 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
@@ -23,6 +23,7 @@
 ;; 2.0 (6/19/09) Cleared out uncalled dead wood.
 ;; 2.1 (7/22) Revising the algorithms of the routines with nice names.
 ;;     (8/25) Added cases for multiple binding threads reaching the same psi
+;;     (9/30/11) Cleaning up. 
 
 (in-package :sparser)
 
@@ -44,13 +45,13 @@
     (if v+v
       (retrieve-psi-from-v+v v+v parent-psi)
       (else (tr :no-existing-psi-binding variable value)
-	    nil))))
+            nil))))
 
 (defun install-v+v (variable value parent-psi)
   ;; New variable or value. Make the v+v, associate it with a psi,
   ;; and tie the psi back to the v+v.
   (let* ((v+v (make-and-attach-v+v variable value parent-psi))
-	 (psi (make-more-saturated-psi parent-psi variable v+v)))
+         (psi (make-more-saturated-psi parent-psi variable v+v)))
     (setf (vv-psi v+v) psi)
     psi))
 
@@ -60,16 +61,16 @@
   ;; additional, consistent, psi and add it to the v+v as another thread
   ;; of bindings (v+v) that arrive at this spot in the lattice.
   (let* ((v+v-associated-psi (vv-psi v+v))
-	 (variable (vv-variable v+v))
-	 (psi (make-more-saturated-psi parent-psi variable v+v)))
+         (variable (vv-variable v+v))
+         (psi (make-more-saturated-psi parent-psi variable v+v)))
     (cond
       ((consp v+v-associated-psi)
        (push psi (vv-psi v+v)))
       ((psi-p v+v-associated-psi)
        (setf (vv-psi v+v) `(,psi ,v+v-associated-psi)))
       (t (push-debug `(:make-new-psi-for-v+v 
-			 ,v+v-associated-psi ,v+v ,parent-psi))
-	 (error "Ill-formed vv-psi field on ~a" v+v)))
+                       ,v+v-associated-psi ,v+v ,parent-psi))
+         (error "Ill-formed vv-psi field on ~a" v+v)))
     (tr :added-psi-to-v+v psi v+v)
     psi))
   
@@ -83,7 +84,7 @@
          (new? (null (lp-top-psi lattice-point)))
          (psi (if new?
                 (make-psi-with-just-a-type c lattice-point)
-		(lp-top-psi lattice-point))))
+                (lp-top-psi lattice-point))))
 ;    (unless new?
 ;      (push-debug `(,psi ,lattice-point ,c))
 ;      (break "Found psi for base category: ~a" psi))
@@ -102,7 +103,7 @@
 
 (defun find-or-make-psi (type &rest variable-value-plist-or-alist)
   ;; Called from find/individual as the default.
-  (break "find-or-make-psi")
+  (break "unvetted: find-or-make-psi")
   (let* ((variable-value-pairs
           (if (consp (first variable-value-plist-or-alist)) ;; alist case
             (revamp-binding-instructions-as-variable-value-plist
@@ -119,7 +120,7 @@
 ;;;----------
 
 (defun corresponding-unit-of-subtype (unit category-of-subtype)
-  (break "corresponding-unit-of-subtype")
+  (break "unvetted: corresponding-unit-of-subtype")
   (tr :looking-for-subtype-unit unit category-of-subtype)
   ;; called from ref/subtype and expected to supply the object
   ;; that will be the referent it assembles.
@@ -152,7 +153,7 @@
 
 
 (defun find-or-make-psi-for-subtype (subtype-lp source-psi)
-  (break  "find-or-make-psi-for-subtype")
+  (break  "unvetted: find-or-make-psi-for-subtype")
   (let ((instances (lp-subtype-instances subtype-lp)))
     (tr :find-psi-instances-of-type instances subtype-lp)
     (or (when instances

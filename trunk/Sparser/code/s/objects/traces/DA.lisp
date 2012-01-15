@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "DA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  May 1995
+;;;  Version:  November 2011
 
-;; initiated 5/5/95.  Elaborated ..5/19
+;; initiated 5/5/95.  Elaborated ..5/19. 11/3/11 added missing trace.
 
 (in-package :sparser)
 
@@ -17,9 +17,14 @@
 (defun untrace-da-hook ()
   (setq *trace-DA-check* nil))
 
+(deftrace :beginning-da (starting-point)
+  ;; called from consider-debris-analysis
+  (when *trace-DA-check*
+    (trace-msg "Beginning Debris analysis at p~a"
+               (pos-token-index starting-point))))
 
 (deftrace :ignoring-debris-analysis ()
-  ;; called from Consider-debris-analysis
+  ;; called from consider-debris-analysis
   (when *trace-DA-check*
     (trace-msg "-- skipping over debris analysis stage")))
 

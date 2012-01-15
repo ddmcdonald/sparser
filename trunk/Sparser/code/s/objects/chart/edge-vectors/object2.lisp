@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  2.5 September 1995
+;;;  Version:  2.5 October 2011
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -19,6 +19,7 @@
 ;; 2.5 (2/27) changed case of edge index being 1 in Starting-edge-just-under
 ;;      to fix bug in opening edges via wb/treetops-below-edge
 ;;     (9/6) added Edge-vector-contains-edge? (2/22/07) added longest-edge-starting-at
+;;     (10/18/11) added search-ev-for-edge
 
 (in-package :sparser)
 
@@ -42,11 +43,11 @@
 ;;; access functions
 ;;;------------------
 
-(defun eV/s (position#)
+(defun ev/s (position#)
   (let ((position (position# position#)))
     (pos-starts-here position)))
 
-(defun eV/e (position#)
+(defun ev/e (position#)
   (let ((position (position# position#)))
     (pos-ends-here position)))
 
@@ -64,6 +65,40 @@
 
 (defun edge-vector-contains-edge? (ev edge)
   (member edge (preterminal-edges (ev-position ev))))
+
+
+(defun search-ev-for-edge (ev label)
+  "Scan up from the bottom-most edge on the edge-vector for 
+   an edge that has the indicated label. Return that edge
+   if it exists. look-for-submerged-matching-conj-edge is
+   the motivating case."
+  (when (eq *edge-vector-type* :kcons-list)
+    (push-debug `(,ev ,label))
+    (break "Stub: search-ev-for-edge needs to be extended to ~
+            handle :kcons-list edge-vectors"))
+  (let ((vector (ev-edge-vector ev))
+        edge )
+    (dotimes (i (ev-number-of-edges ev))
+      (setq edge (aref vector i))
+      (when (eq (edge-category edge) label)
+        (return-from search-ev-for-edge edge)))
+    nil))
+
+(defun edges-on-ev-above (edge ev)
+  "Scan up to the edge, then return a list of the edges above
+   that, including the edge, ordered from bottom to top."
+  ;; 1st consumer is conjoin-and-rethread-edges
+  ;; Only works on vectors because I'm in a hurry and the odds
+  ;; are that they're all that will be used for something like this
+  (let ((vector (ev-edge-vector ev))
+        e  edges-above  accumulate? )
+    (dotimes (i (ev-number-of-edges ev))
+      (setq e (aref vector i))
+      (when (eq e edge)
+        (setq accumulate? t))
+      (when accumulate?
+        (push e edges-above)))
+    (nreverse edges-above)))
 
 
 
