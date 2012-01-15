@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "setup action"
 ;;;   Module:  "drivers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  October 2011
 
-;; initiated 5/5/95.  Elaborated ..5/11
+;; initiated 5/5/95. Elaborated ..5/11. Resumed elaborating 10/28/11.
 
 (in-package :sparser)
 
@@ -34,6 +34,12 @@
            (:make-edge-over-whole-span
             `( :make-edge-over-whole-span
                ,@(decode-edge-over-whole-span-exp (rest list))))
+
+           (:function
+            (let ((fn-name (cadr list))
+                  (args (cddr list)))
+              ;; What checks make sense?
+            `(:function ,fn-name ,@args)))
 
            (otherwise
             (break "The action expression on ~A doesn't begin~

@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,1995,2011 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "dispatch"
 ;;;   Module:  "drivers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  November 2011
 
 ;; initiated 10/27/94 v2.3.  Moved it and gave it some flesh 5/5/95
-;; 1.0 (5/19) redid them as tail recursion and removed an interveening layer
+;; 1.0 (5/19) redid them as tail recursion and removed an interveening layer.
+;;     (11/7/11) replaced the etypecase.
 
 (in-package :sparser)
 
@@ -28,7 +29,7 @@
              (check-for-extension-from-vertex 1st-vertex tt)))))
 
     (if result
-      (etypecase result
+      (typecase result
         (edge
          (setq *da-dispatch-position* *da-ending-position*)
          (tr :tt/resume-forest-parse-from-DA result)
@@ -49,7 +50,11 @@
             ;; a loop if we start back at the beginning of the chart,
             ;; so best to err on the safe side.
             (tr :resuming-DA-walk-at pos-after)
-            (look-for-da-patterns pos-after)))))
+            (look-for-da-patterns pos-after))))
+        
+        (otherwise
+         (push-debug `(,result))
+         (break "Unanticipated type of result: ~a" (type-of result))))
 
       (else
         (tr :da-pattern-not-matched)
