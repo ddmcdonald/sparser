@@ -23,7 +23,7 @@
 ;; 1.7 (1/30) bumped [prepositions] to 1
 ;; 1.8 (10/14/99) bumped it to 2 contingent on this being a load with the model
 ;; 1.9 (9/16/11) moved out adverbs to loader-part2 because they're creating
-;;      categories now. Others might follow.
+;;      categories now. Others might follow. 9/29/11 Moved prepositions over.
 
 (in-package :sparser)
 
@@ -49,10 +49,6 @@
 (gate-grammar *quantifiers*
   (gload "words;quantifiers1"))
 
-(gate-grammar *prepositions*
-  (if *include-model-facilities*
-    (gload "words;prepositions2")
-    (gload "words;prepositions1")))
 
 (gate-grammar *WH-words*
   (gload "words;WH words"))
