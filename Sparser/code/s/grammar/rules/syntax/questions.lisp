@@ -1,13 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; copyright (c) 2011 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  June 2009
+;;;  Version:  September 2011
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
-;; Elaborated through 7/23/09
+;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
+;; and cleaned up. 
 
 (in-package :sparser)
 
@@ -22,8 +24,8 @@
 (define-category question
   :specializes event
   :binds ((type) ;; which WH word
-	  (content)
-	  (participant)))
+          (content)
+          (participant)))
 
 ;;--- swallowing the inverted auxiliary into WH/be
 
@@ -42,7 +44,7 @@
 ;(def-cfr WH/be (WH/be pronoun/second)
 ;  :form question-marker ;; unless we want to strand the "you" ??
 ;  :referent (:daughter left-edge
-;	     :bind (participant . right-edge)))
+;	          :bind (participant . right-edge)))
 
 ;; "will"
 ; CATEGORY           #<mixin WILL>
@@ -59,19 +61,19 @@
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    content right-edge)))
+                    content right-edge)))
 
 (def-cfr event (WH/be individual)
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    content right-edge)))
+		            content right-edge)))
 
 (def-form-rule (WH/be verb+ing)
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    content right-edge)))
+		            content right-edge)))
 
 ;; I think these next two need to be scrapped (cfg 13 Jul 09)
 
@@ -79,13 +81,13 @@
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    content right-edge)))
+		            content right-edge)))
 
 (def-cfr event (WH/be with-np)
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    content right-edge)))
+		            content right-edge)))
 
 ;; This is a rather important one right here...
 
@@ -93,7 +95,7 @@
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    content right-edge)))
+		            content right-edge)))
 
 
 ;; Handles commonly used (but not necessarily grammatical)
@@ -103,7 +105,7 @@
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    content right-edge)))
+		            content right-edge)))
 
 ;(def-cfr WH/be (oblique-pronoun pronoun/second)
 ;  :form question-marker
@@ -118,28 +120,28 @@
   :form s
   :referent (:instantiate-individual question
              :with (type left-edge
-		    participant right-edge)))
+		            participant right-edge)))
 
-(def-cfr event (WH/be/you spatial-orientation)
-  :form s
-  :referent (:head left-edge
-	     :bind (location . right-edge)))
+;; (def-cfr event (WH/be/you spatial-orientation) ;; flushed spatial-orientation
+;;   :form s
+;;   :referent (:head left-edge
+;; 	     :bind (location . right-edge)))
 
 (def-cfr event (WH/be/you deictic-location)
   :form s
   :referent (:head left-edge
-	     :bind (location . right-edge)))
+	         :bind (location . right-edge)))
 
 (def-cfr event (WH/be/you prep-location)
   :form s
   :referent (:head left-edge
 	     :bind (location . right-edge)))
 
-(def-cfr event (WH/be spatial-orientation)
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-		    content right-edge)))
+;; (def-cfr event (WH/be spatial-orientation) ;; flushed spatial-orientation 
+;;   :form s
+;;   :referent (:instantiate-individual question
+;;              :with (type left-edge
+;; 		    content right-edge)))
 
 (def-cfr event (WH/be deictic-location)
   :form s
@@ -150,10 +152,10 @@
 
 ;; odds and ends...
 
-(def-cfr event (event spatial-orientation)
-  :form s
-  :referent (:head left-edge
-	     :bind (location . right-edge)))
+;; (def-cfr event (event spatial-orientation) ;; flushed spatial-orientation
+;;   :form s
+;;   :referent (:head left-edge
+;; 	     :bind (location . right-edge)))
 
 (def-cfr event (event deictic-location)
   :form s
