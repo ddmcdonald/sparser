@@ -3,13 +3,13 @@
 ;;; 
 ;;;     File:  "defNP"
 ;;;   Module:  "grammar;rules:CA:"
-;;;  Version:  0.1 September 2011
+;;;  Version:  0.1 October 2011
 
 ;; initiated 6/13/93 v2.3.  3/30/94 set the ignore flag to t as the default
 ;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category 
 ;;      since none of the routines that would use it exist yet and it makes
 ;;      the printing odd sometimes: "the Army". 9/13/11 fixed out of date
-;;      function call. Two more instances 9/26.
+;;      function call. Two more instances 9/26. Added PSI to typecase
 
 (in-package :sparser)
 
@@ -30,6 +30,7 @@
 
   (let* ((category-of-head
           (etypecase head
+            (psi (base-category-of-psi head))
             (individual (first (indiv-type head)))
             (referential-category head)))
          (category-to-look-for
@@ -46,7 +47,6 @@
             (break "More than one possible antecedant of type ~A~
                     ~%in this discourse already.~% -- extend the rules --"
                    category-to-look-for))
-
           (car (first discourse-entry)))
 
         (make-default-descriptive-individual category-of-head)))))
