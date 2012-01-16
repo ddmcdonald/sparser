@@ -16,7 +16,10 @@
 ;; np-head. Fanout from also loading more diverse set of nps. 2/16/10
 ;; Added synonyms code. 8/8/11 Working out a macro to generate 'type'
 ;; categories. 9/6 folded :rule-label into the macro. 9/23 adjusted
-;; adverbials to fit changes to the ETF.
+;; adverbials to fit changes to the ETF. 9/26 expunged spatial-orientation
+;; by removing sv-spatial-prep-marked-o (which had no applications) and
+;; making sv-location mostly meaningless by duplicating the problematic
+;; case. 
 
 (in-package :sparser)
 
@@ -199,6 +202,9 @@
          (category (eval form)))
     category))
 
+
+;;//// Illustrative case. Probably wouldn't do it this way.
+;; look at the ETF
 (defun sv-location (string-for-verb)
   (let* ((name (category-name-from-string-arg string-for-verb))
 	 (form
@@ -213,7 +219,8 @@
                                  (vg . :self)
                                  (loc1 . deictic-location)
                                  (loc2 . location)
-                                 (loc3 . spatial-orientation)
+                                 (loc3 . location) ;; duh, but
+                                 ;; spatial-orientation has gone away
                                  (np/subject . individual)
                                  (agent . subject)
                                  (location . location))  ;; location . where
@@ -256,33 +263,9 @@
           category)
         (error "v+p-rule is missing")))))
 
-(defun sv-spatial-prep-marked-o (verb)
-  (unless (stringp verb)
-    (error "Arguments must be string giving the base for of words"))
-  (let* ((name (category-name-from-string-arg 
-                (string-append verb "-spatial-prep" )))
-         (form
-          `(define-category ,name
-	         :instantiates :self ;; place for generalization
-             :specializes event
-             :binds ((subject . individual)
-                     (object . individual))
-             :realization (:tree-family transitive/pp
-	                       :mapping ((s . event)
-                                     (vp . event)
-                                     (vg . event) ;; vs. :self)
-                                     (np/subject . individual)
-                                     (prep . spatial-orientation)
-                                     (pp/np . individual)
-                                     (agent . subject)
-                                     (theme . object))
-                           :main-verb ,verb))))
-    (eval form)))
-
 
 ;;--- go'fers
 
-(defvar *sa* nil)
 (defun category-name-from-string-arg (string-arg)
   ;; Could actually be a cons to cover irregulars
   (typecase string-arg
