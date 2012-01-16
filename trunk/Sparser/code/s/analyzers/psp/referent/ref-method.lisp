@@ -4,9 +4,10 @@
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   September 2011
+;;;   Version:   October 2011
 
-;; created 9/1/11.
+;; created 9/1/11. 10/3 Adapting to getting categories as arguments, e.g.
+;; in the case of prepositions. 
 
 (in-package :sparser)
 
@@ -22,17 +23,26 @@
          ~%%This is different:~%   ~a" rule-field))
   (push-debug `(,rule-field ,left-referent ,right-referent))
   ;; (setq rule-field (car *) left-referent (cadr *) right-referent (caddr *))
-  (let* ((method (car rule-field))
-         (left-type (itype-of left-referent))
-         (right-type (itype-of right-referent))
-         (left-shadow (get-nominal-instance (get-sclass left-type)))
-         (right-shadow (get-nominal-instance (get-sclass right-type))))
-    (setq *shadows-to-individuals*
-          `((,left-shadow . ,left-referent)
-            (,right-shadow . ,right-referent)))
-    (let ((referent
-           (funcall method left-shadow right-shadow)))
-      referent)))
+  (flet ((dispatch-type-of (o)
+           (typecase o
+             (psi (base-category-of-psi o))
+             (individual (i-type-of o))
+             (category o)
+             (otherwise
+              (push-debug `(,o ,rule-field))
+              (error "Unexpected type of object passed to ref/method: ~
+                      ~a~%   ~a" (type-of o) o)))))
+    (let* ((method (car rule-field))
+           (left-type (dispatch-type-of left-referent))
+           (right-type (dispatch-type-of right-referent))
+           (left-shadow (get-nominal-instance (get-sclass left-type)))
+           (right-shadow (get-nominal-instance (get-sclass right-type))))
+      (setq *shadows-to-individuals*
+            `((,left-shadow . ,left-referent)
+              (,right-shadow . ,right-referent)))
+      (let ((referent
+             (funcall method left-shadow right-shadow)))
+        referent))))
   
 
 
