@@ -44,7 +44,7 @@
 
 (define-category highway  ;; "MA 102"
   :instantiates :self
-  :rule-label location
+  :rule-label path
   :specializes location
   :binds ((authority :or country state)
           (number . number))
@@ -55,7 +55,6 @@
                           (second . number)
                           (item1 . authority)
                            (item2 . number))))
-
 
 
 ;;; throughways and exits
@@ -79,4 +78,17 @@
                           (np . :self)
                           (prep . "of")
                           (complement . location))))
+
+
+;;;--------------------------
+;;; labeled transparent pp's
+;;;--------------------------
+
+(define-marker-category on-path
+  :realization (:tree-family transparent-pp
+                :mapping ((pp . on-path)
+                          (preposition . "on")
+                          (complement . path))))
+
+
   

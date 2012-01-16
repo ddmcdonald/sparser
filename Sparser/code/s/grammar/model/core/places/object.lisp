@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.3 September 2011
+;;;  version:  0.3 November 2011
 
 ;; initiated in 10/12/92 v2.3. Added 'kind of location' 1/17/94.  Added location-
 ;; phrase 11/16/95. Added relative-location 11/99. 11/25 Moved in spatial-
@@ -19,7 +19,8 @@
 ;;   away the "form" analysis as way too narrow and presumptuous. 
 ;; 0.3. 7/21/11 Moved spatial-orientation and relative-location out to [relational]
 ;;   and location-description to [descriptive]. 8/14 Added name variable.
-;;   and an index off of it. 9/12/11 added a bunch of named pp's.
+;;   and an index off of it. 9/12/11 added a bunch of named pp's. 11/1 added
+;;   at-location.
 
 (in-package :sparser)
 
@@ -82,6 +83,11 @@
 (define-marker-category past-location
   :realization (:tree-family computed-pp
                 :mapping ((pp . past-location)
-                          (preposition . "past")
+                          (preposition . past) ;; "past" -> past
                           (complement . location))))
 
+(define-marker-category at-location
+  :realization (:tree-family transparent-pp
+                :mapping ((pp . at-location)
+                          (preposition . "at")
+                          (complement . location))))

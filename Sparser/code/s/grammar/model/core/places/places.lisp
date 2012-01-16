@@ -4,11 +4,11 @@
 ;;;
 ;;;     File:  "places"
 ;;;   Module:  "model;core:places:"
-;;;  version:  August 2011
+;;;  version:  November 2011
 
 ;; places -- entities that denote locations
 
-;; initated 8/12/11
+;; initated 8/12/11. Added name->place-name 11/7.
 
 (in-package :sparser)
 
@@ -25,15 +25,33 @@
   ) ;; special index??
 
 (defun make-location-name (items location-head)
-  ;; Called from  categorize-and-form-name
+  ;; Called from categorize-and-form-name
   ;; Returns a name. The object with that name is created in 
   ;; establish-referent-of-pn, keying off the category of the name
-  (push-debug `(,items ,location-head))
   (let* ((sequence (define-sequence items category::location))
          (name (define-individual 'name-of-location
                  :sequence sequence
                  :type location-head)))
     name))
+
+(defun convert-name-to-place-name (name-edge)
+  ;; Called from move+to+name DA rule in moving.lisp
+  (let ((name (edge-referent name-edge)))
+    (unless (itypep name 'uncategorized-name)
+      (push-debug `(,name name-edge))
+      (error "Expected an uncategoried name, got a ~a"
+             (i-type-of name)))
+    (let* ((sequence (value-of 'name/s name))
+           (place-name (define-individual 'name-of-location
+                         :sequence sequence))
+           (place (define-individual 'named-location
+                    :name place-name)))
+      (setf (edge-referent name-edge) place)
+      (setf (edge-category name-edge) category::location)
+      ;; Passed back to execute-da-trie, which has to know
+      ;; where to continue from
+      name-edge)))
+
 
 
 

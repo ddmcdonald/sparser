@@ -4,12 +4,14 @@
 ;;;
 ;;;     File:  "moving"
 ;;;   Module:  "model;core:places:"
-;;;  version:  September 2011
+;;;  version:  November 2011
 
 ;; Intended for modeling movement in direction or w.r.t. some
 ;; spatial feature.
 
-;; initated 8/4/11. 9/5/11 added path-type adjunct. 9/12 Added some more. 9/26 "immediately"
+;; initated 8/4/11. 9/5/11 added path-type adjunct. 9/12 Added some more.
+;; 9/26 "immediately". More bits through 10/4/11. 11/3 added DA rule to
+;; convert a name.
 
 (in-package :sparser)
 
@@ -40,9 +42,10 @@
                    :instantiates move
                    :binds ((to-location . location)
                            (via-path . path)
-                           (for-distance . measurement) ;; refine to measurements of distance?
+                           (for-distance . measurement) ;; distance?
                            (in-direction . direction)
                            (when-done . time)
+                           (landmark . location)
                            )
                    :realization ((:tree-family vp+adjunct
                                   :mapping ((vg . :self)
@@ -58,6 +61,11 @@
                                   :mapping ((vg . :self)
                                             (vp . move)
                                             (adjunct . path-type) ;; "this road"
+                                            (slot . via-path)))
+                                 (:tree-family vp+adjunct  ;; "on MA 102"
+                                  :mapping ((vg . :self)
+                                            (vp . move)
+                                            (adjunct . on-path)
                                             (slot . via-path)))
                                  (:tree-family vp+adjunct
                                   :mapping ((vg . :self)
@@ -79,12 +87,23 @@
                                             (vp . move)
                                             (adjunct . time)
                                             (slot . when-done)))
+                                 (:tree-family vp+adjunct ;; "past the forest boundary"
+                                  :mapping ((vg . :self)
+                                            (vp . move)
+                                            (adjunct . past-location)
+                                            (slot . landmark)))
                                  ;;/// Need distance as source of 'when'
                                  ;;  "{in/after} ten miles" "... (1.5 miles)"
                                  ;; Though this might be understood better as distance
                                  (:main-verb ,string)))))
         (setq category (eval form))
         category)))
+
+;;--- Debris: convert a name because of its context
+
+(define-debris-analysis-rule move+to+name
+  :pattern ( move "to" name )
+  :action (:function convert-name-to-place-name third))
 
 
 ;;--- Cases (could go to a dossier)

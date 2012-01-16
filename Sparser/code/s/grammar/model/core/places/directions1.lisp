@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "directions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  1.0 September 2007
+;;;  version:  1.0 November 2007
 
 ;; initiated in 1/9/95. Added string printer 1/9/96.
 ;; 0.1 (11/25/99) Changed the realizations to use the new schema protocol
@@ -15,7 +15,7 @@
 ;; 1.0 (9/5/07) Dumped the schema-driven realizations since they were just
 ;;  for 'standalone-word' and the rules they created instantiated the specific
 ;;  categories rather than the more general 'direction' category which is the
-;;  better semantic discriptor. 
+;;  better semantic discriptor. 11/1 Added hack from-direction. 
 
 (in-package :sparser)
 
@@ -68,6 +68,11 @@
 (def-cfr direction ("the" direction)
   ;; This overgenerates (*"the westwards"), but since that phrase
   ;; won't be produced it's moot. 
+  :form np
+  :referent (:daughter right-edge))
+
+(def-cfr from-direction ("from" direction)
+  ;;///// replace with schema
   :form np
   :referent (:daughter right-edge))
 
