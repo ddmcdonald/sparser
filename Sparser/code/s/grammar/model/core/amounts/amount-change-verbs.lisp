@@ -21,19 +21,28 @@
   :index (:permanent :key name)
   :realization (:main-verb name))
 
-#| In a better world (one with vast amounts of time) these would be
-   neatly linked and fall out from a more complex model of words
-   and how to reference them in rspecs -- but this distinction lets
-   us have a shart distinction between verb and nominal forms that
-   will let form rules work cleanly.   --Note that the autodef for
-   the noun form isn't done (should wait on the cleaner word treatment. |#
-
 (define-category change-in-amount-noun
   :instantiates self
   :binds ((name  :primitive (:or word polyword))
           (direction . direction))
   :index (:permanent :key name)
   :realization (:common-noun name))
+
+;; (define-category change-in-amount
+;;   :instantiates self
+;;   :binds ((verb-form :primitive (:or word polyword))
+;;           (noun-form :primitive (:or word polyword))
+;;           (direction . direction))
+;;   :index (:permanent :key verb-form)
+;;   :realization (:verb verb-form 
+;;                 :nominalization noun-form)))
+
+#| In a better world (one with vast amounts of time) these would be
+   neatly linked and fall out from a more complex model of words
+   and how to reference them in rspecs -- but this distinction lets
+   us have a shart distinction between verb and nominal forms that
+   will let form rules work cleanly.   --Note that the autodef for
+   the noun form isn't done (should wait on the cleaner word treatment. |#
 
 
 ;;;---------
@@ -94,6 +103,17 @@
 ;;--- The forms called from the dossier files
 ;;    (the ones used in the write routine)
 
+
+;;--- New all-in-one form for cases that have both noun and verb forms
+
+;; (defun define-change-in-amount-term (&key verb noun direction)
+  
+
+
+
+
+;;--- older forms [2011/12/09:ddm]
+
 (defun define-change-in-amount-verb/up (string)
   (let ((direction (find-individual 'standalone-direction :name "up")))
     (unless direction
@@ -139,7 +159,6 @@
              :direction direction)))
 
       individual-for-the-verb )))
-
 
 
 
