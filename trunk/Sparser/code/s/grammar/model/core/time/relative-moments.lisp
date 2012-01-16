@@ -35,7 +35,7 @@
   :rule-label time
   :binds ((name  :primitive word))
   :index (:permanent :key name)
-  :realization (:standalone-word name))
+  :realization (:adverb name))
 
 
 ;; These do not take complements, but are still only meaningful when their
