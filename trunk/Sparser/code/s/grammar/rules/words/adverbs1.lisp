@@ -28,18 +28,13 @@
 ;;; an anonymous category to go with anonymous adverbs combined in by form
 ;;;------------------------------------------------------------------------
 
-(define-category adverbial
-  :specializes modifier
-  ;; Never expected to be instantiated, just instantiations
-  ;; of specific adverbs as setup by define-adverb. 
-  ;; This category provides the default in the 
-  :binds ((name :primitive word))
-  :realization ((:tree-family pre-verb-adverb
-                 :mapping ((adverb . :self)))
-                (:tree-family post-verb-adverb
-                 :mapping ((adverb . :self)))
-                (:tree-family sentence-adverb
-                 :mapping ((adverb . :self)))))
+(define-additional-realization adverbial
+  (:tree-family pre-verb-adverb
+   :mapping ((adverb . :self)))
+  (:tree-family post-verb-adverb
+   :mapping ((adverb . :self)))
+  (:tree-family sentence-adverb
+   :mapping ((adverb . :self))))
 
   
 ;;  This is one of the few places where I'd be comfortable with
