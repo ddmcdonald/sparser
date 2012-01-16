@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   2.3 April 2010
+;;;   Version:   2.4 Octomer 2011
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -29,52 +29,73 @@
 ;;      than the generic 'treetop' brackets. Motivated by verb+preposition facilities.
 ;;      Copied in missing cases from dossiers/spatial-prepositions
 ;;     4/17/10 Added "between"
+;; 2.4 (9/29/11) Positioned the load to after adjuncts and reworked as a class
+;;      creator with special form categories to drive general rules. 10/4 original
+;;      base rule was circular so made it have the prep category as its label.
 
 (in-package :sparser)
 
-(defun define-preposition (string &key brackets)
-  (unless brackets
-    (setq brackets (list  ].preposition preposition]. preposition.[ ))) ;; ].treetop  treetop.[ 
-  (let ((word (define-function-word string
-                :brackets brackets
-                :form category::preposition)))
-    word ))
+(defun define-preposition (string &key brackets form super-category)
+  (unless brackets  ;; v.s. ].treetop  treetop.[ 
+    (setq brackets (list  ].preposition preposition]. preposition.[ )))
+  (unless form
+    (setq form 'preposition))
+  (unless super-category
+    (setq super-category 'prepositional-operator))
+  (let* ((word (define-function-word string
+                 :brackets brackets
+                 :form form))
+         (category-name (name-to-use-for-category string)))
+    (let* ((expr `(define-category ,category-name
+                    :specializes ,super-category
+                    :instantiates :self
+                    :bindings (name ,word)))
+           (category (eval expr))
+           (word-rule
+            (define-cfr category `(,word)
+              :form (resolve-form-category form)
+              :referent category)))
+      (push-onto-plist category :rule word-rule)
+      (values category
+              word-rule
+              word ))))
 
 ;; "to" and "of" may warrant special treatment
 
-(define-preposition "above" )
-(define-preposition "ahead" )
-(define-preposition "ahead of" )
-(define-preposition "after" )
-(define-preposition "along" )
+(define-preposition "above" :form 'spatial-preposition)
+(define-preposition "ahead" :form 'spatial-preposition)
+(define-preposition "ahead of" :form 'spatial-preposition)
+(define-preposition "after" :form 'spatio-temporal-preposition)
+(define-preposition "along" :form 'spatial-preposition)
 (define-preposition "as" )
-(define-preposition "at" )
-(define-preposition "before" )
-(define-preposition "behind" )
-(define-preposition "below" )
-(define-preposition "beneath")
-(define-preposition "beside")
-(define-preposition "between")
-(define-preposition "beyond")
+(define-preposition "at" :form 'spatial-preposition)
+(define-preposition "before" :form 'spatio-temporal-preposition)
+(define-preposition "behind" :form 'spatial-preposition)
+(define-preposition "below" :form 'spatial-preposition)
+(define-preposition "beneath" :form 'spatial-preposition)
+(define-preposition "beside" :form 'spatial-preposition)
+(define-preposition "between" :form 'spatial-preposition)
+(define-preposition "beyond" :form 'spatial-preposition)
 (define-preposition "by" )
 (define-preposition "down"  )
 (define-preposition "for" )
 (define-preposition "from" )
 (define-preposition "in" )
-(define-preposition "into" )
-(define-preposition "inside" )
+(define-preposition "into" :form 'spatial-preposition)
+(define-preposition "inside" :form 'spatial-preposition)
 (define-preposition "on" )
 (define-preposition "of" )
 (define-preposition "off" )
 (define-preposition "out" )
 (define-preposition "out of" )
 (define-preposition "outside" )
-(define-preposition "past" )
+(define-preposition "over" )
+(define-preposition "past" :form 'spatial-preposition)
 (define-preposition "to" )
-(define-preposition "through" )
-(define-preposition "under" )
+(define-preposition "through" :form 'spatial-preposition)
+(define-preposition "under" :form 'spatial-preposition)
 (define-preposition "with" )
-(define-preposition "within"  )
+(define-preposition "within" :form 'spatial-preposition)
 (define-preposition "without" )
 (define-preposition "up" )
 
