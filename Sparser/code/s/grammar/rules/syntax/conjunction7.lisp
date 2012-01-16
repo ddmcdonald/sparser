@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  7.0 August 2011
+;;;  Version:  7.0 October 2011
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -21,6 +21,7 @@
 ;;      if it's already up and we're in speech mode. 
 ;;     (8/3/11) Added "or" as exact copy of the hook on "and". 8/4 Added
 ;;      a treetop hook for the case when we don't have adjacent segments.
+;; 7.1 (10/18/11) Writing the look-under scheme. 
 
 (in-package :sparser)
 
@@ -44,11 +45,11 @@
       ;; The result is that we hit two conjunctions in a row without
       ;; clearing the flag. 
       (if *speech*
-	(then ;; clear the flag, since this is most likely the "and then"
-	  ;; version of "and"
-	  (tr :conj-flag-still-up-in-speech)
-	  (setq *pending-conjunction* nil))
-	(break "stub -- two 'and's in a row but it's not speech")))
+    	(then ;; clear the flag, since this is most likely the "and then"
+          ;; version of "and"
+          (tr :conj-flag-still-up-in-speech)
+          (setq *pending-conjunction* nil))
+        (break "stub -- two 'and's in a row but it's not speech")))
     (else
       (tr :setting-conjunction-pos-before position-before)
       (setq *pending-conjunction* position-before))))
@@ -60,10 +61,13 @@
                             'conjoin-adjacent-like-treetops)
 
 (defun conjoin-adjacent-like-treetops (position-after)
+  ;; Called by invoking the treetop-action above during the
+  ;; forest scan. Timing of the segment scan prohibited running
+  ;; via the usual entry point
+
   (tr :calling-conj-treetop-hook position-after)
   ;; position-after is the one that immediately follows the
-  ;; conjunction. (And note that this only works if no one
-  ;; spans the conjunction with another sort of edge.
+  ;; conjunction.
   (let* ((position-before (chart-position-before position-after))
          (edge-before (span-ending-at position-before))
          (edge-after (span-starting-at position-after)))
@@ -72,13 +76,84 @@
     (when (and edge-before edge-after)
       (unless (and (edge-p edge-before) (edge-p edge-after))
         (push-debug `(,edge-before ,edge-after))
-        (break "Next conjunction case -- the edges aren't."))
+        (break "New conjunction case -- the 'edges' aren't edges."))
       (tr :conj-edges-to-each-side edge-before edge-after)
 
-     (dispatch-conj-by-multiplicities edge-before edge-after))))
+      ;; Short-circuit much of check-out-possible-conjunction
+      ;; because we know more from this vantage point. 
+      (let ((edge (dispatch-conj-by-multiplicities edge-before edge-after)))
+        (or edge
+            (look-for-submerged-matching-conj-edge
+             edge-before edge-after))))))
         
 
+(defun look-for-submerged-matching-conj-edge (edge-before edge-after)
+  ;; look leftward first
+ (format t "~&submergd check:~%~a~%~a~%" edge-before edge-after)
+ (let ( matching-edge )
+   ;; look leftward first
+   (let ((ev (edge-ends-at edge-before))
+         (label (edge-category edge-after)))
+     (setq matching-edge (search-ev-for-edge ev label))
+     (if matching-edge 
+       (conjoin-and-rethread-edges matching-edge edge-after :left)
+       (else
+         ;; debugging case. /// Replace with looking rightward
+         (push-debug `(,ev ,label))
+         ;;(error "no match")
+)))))
 
+(defun conjoin-and-rethread-edges (left-edge right-edge direction)
+  (let* ((heuristic (ecase direction
+                      (:left :lifted-left-edge-of-conjunction)
+                      (:right :lifted-right-edge-of-conjunction)))
+         (lifted-edge (ecase direction
+                        (:left left-edge)
+                        (:right right-edge)))
+         (parent-edge (edge-used-in lifted-edge))
+         (conjoined-edge (conjoin-two-edges left-edge right-edge
+                                            heuristic 
+                                            :do-not-knit t))
+         (new-ev (ecase direction
+                   (:left (edge-ends-at conjoined-edge))
+                   (:right (edge-starts-at conjoined-edge)))))
+    ;; Now all the edges above the parent (inclusive) need to get
+    ;; new end-positions (trashing the intermediate end edge-vectors
+    ;; but we won't be looking there again so it doesn't matter.
+    ;; Start with the new edge because we deliberatedly told the
+    ;; edge-maker not to do the knitting since it would have 
+    ;; messed up the 'top' edge information. 
+    (let* ((ev (ecase direction
+                 (:left (edge-ends-at lifted-edge))
+                 (:right (edge-starts-at lifted-edge))))
+           (edges-dominating-lifted
+            (edges-on-ev-above lifted-edge ev)))
+
+      (pop edges-dominating-lifted) ;; remove lifted edge
+
+      (dolist (e (cons conjoined-edge edges-dominating-lifted))
+        (knit-edge-into-position e new-ev)
+        (ecase direction
+          (:left (setf (edge-ends-at e) new-ev))
+          (:right (setf (edge-starts-at e) new-ev))))
+
+      ;; The parent gets the new edge as its right-daughter (assuming
+      ;; we lifted from the left)
+      (ecase direction
+        (:left (setf (edge-right-daughter parent-edge) conjoined-edge))
+        (:right (setf (edge-left-daughter parent-edge) conjoined-edge)))
+      (setf (edge-used-in conjoined-edge) parent-edge)
+
+      (push-debug `(,conjoined-edge ,new-ev ,ev ,parent-edge))
+
+      ;; Now move back to the forest-level in a reasonable way,
+      ;; though it's not obvious that we can improve on just returning
+      ;; back up through do-generic-actions-off-tree-top and the
+      ;; do-treetop-loop up to PPTT or move-to-forest-level
+      )))
+      
+                                           
+ 
 
 
 ;;;----------------------------------------------------------
@@ -86,6 +161,9 @@
 ;;;----------------------------------------------------------
 
 (defun check-out-possible-conjunction (start-of-after-segment)
+
+  ;; This is the ordinary entry point from segment-finishing code
+  ;; in drivers/chart/psp/pts5.lisp
 
   ;; We wouldn't be called if there wasn't a full span over
   ;; the segment after the conjunction, and the segment in front
@@ -127,10 +205,9 @@
 
     (let ((new-edge (dispatch-conj-by-multiplicities edge-before
                                                      edge-after)))
-
       (if new-edge
         ;; if the conjunction went through then we have to pick up
-        ;; again at the point where we left off in Segment-finished
+        ;; again at the point where we left off in segment-finished
         ;; before we called this conjunction routine.
         ;;   That code is reproduced here
         (if (label-combines-to-its-right (edge-category new-edge))
@@ -142,19 +219,19 @@
         
         ;; same thing, different edge -- and a hook for variations
         (if (label-combines-to-its-right
-             (etypecase edge-after
-               (edge (edge-category edge-after))
-               (word edge-after)))
-          (scan-next-segment *where-the-last-segment-ended*)
-          (let ((rightmost-pos 
-                 (etypecase edge-before
-                   (edge (pos-edge-ends-at edge-before))
-                   (word (chart-position-after end-of-before-segment)))))
-            (tr :moving-to-forest-level/conj/no-edge rightmost-pos)
-            (move-to-forest-level rightmost-pos           
-                                  ;; we know these two edges don't
-                                  ;; combine, so don't try again
-                                  :full-segment-scanned)))))))
+           (etypecase edge-after
+             (edge (edge-category edge-after))
+             (word edge-after)))
+            (scan-next-segment *where-the-last-segment-ended*)
+            (let ((rightmost-pos 
+                   (etypecase edge-before
+                     (edge (pos-edge-ends-at edge-before))
+                     (word (chart-position-after end-of-before-segment)))))
+              (tr :moving-to-forest-level/conj/no-edge rightmost-pos)
+              (move-to-forest-level rightmost-pos           
+                                    ;; we know these two edges don't
+                                    ;; combine, so don't try again
+                                    :full-segment-scanned)))))))
 
 
 ;;;-------------------------------
@@ -241,7 +318,7 @@
 ;;; making the new edge
 ;;;---------------------
 
-(defun conjoin-two-edges (left-edge right-edge heuristic)
+(defun conjoin-two-edges (left-edge right-edge heuristic &key do-not-knit)
   (let ((referent
          (referent-of-two-conjoined-edges
           (edge-referent left-edge) (edge-referent right-edge)))
@@ -256,7 +333,8 @@
                  :category category
                  :form form
                  :referent referent
-                 :rule-name heuristic)))
+                 :rule-name heuristic
+                 :do-not-knit do-not-knit )))
       (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (edge-interaction-with-quiescence-check edge)
       edge )))
