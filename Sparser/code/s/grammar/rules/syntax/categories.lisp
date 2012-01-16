@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.5 February 2010
+;;;  Version:  0.5 September 2011
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -40,6 +40,7 @@
 ;;     (5/10/09) Added wh-pronoun. 5/9/09 added question-marker. 7/23/09 added interjection
 ;;     (2/10/10) Added quantifier. 3/16/10 added paragraph.
 ;; 0.6 (8/8/11) Converted form-category? to a method so it can take symbols.
+;;     (9/29/11) Added two variants on preposition.
 
 (in-package :sparser)
 
@@ -153,7 +154,10 @@
 (def-form-category  word+ing)
 
 (def-form-category  interjection)
+
 (def-form-category  preposition)
+(def-form-category  spatial-preposition)
+(def-form-category  spatio-temporal-preposition)
 
 (def-form-category  verb)
 (def-form-category  verb+s)
