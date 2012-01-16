@@ -19,7 +19,7 @@
 ;;     (3/18/95) put in fine-grained logicals.
 ;;     (8/8/07) added semantics of wh words.
 ;; 3.7 (6/17/09) Added [questions]. (8/31/11) added semantics for [quantifiers]
-;;     (9/19/11) Bumped [adverbs]
+;;     (9/19/11) Bumped [adverbs]. (9/30/11) added [prepositions]
 
 (in-package :sparser)
 
@@ -42,7 +42,8 @@
 
 
 (gate-grammar *default-semantics-for-NP*
-  (gload "syntax-art;articles"))
+  (gload "syntax-art;articles")
+  (gload "syntax-art;prepositions"))
 
 (gate-grammar *conjunction*
   (gload "syntax-conj;conjunction7"))
