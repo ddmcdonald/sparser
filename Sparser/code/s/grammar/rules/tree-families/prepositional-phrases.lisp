@@ -6,7 +6,7 @@
 ;;;  version:  September 2011
 
 ;; initiated 6/14/95. Added content-pp 11/14/99. 9/12/11 added daughter rule
-;; to transparent-pp.
+;; to transparent-pp. 9/30 added computed-pp to provide a hook for a method.
 
 (in-package :sparser)
 
@@ -31,3 +31,11 @@
                     item right-edge)
             :head left-edge))))
 
+
+(define-exploded-tree-family   computed-pp
+  :description "A preposition and associated noun phrase complement where a method is triggered to determine the referent. The method dispatches over the class of the preposition and referent of the np."
+  :labels ( pp preposition complement )
+  :cases
+    ((:pp (pp (preposition complement)
+            :head left-edge
+            :method (analyze-pp left-edge right-edge)))))
