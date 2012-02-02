@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.17 September 2011
+;;;  version:  0.18 December 2011
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -54,7 +54,10 @@
 ;;       this so we could potentially split it up again given evidence for it.
 ;;       (2/14/11) "Business Factory" was causing a parser design-limit reached error, with an infinite loop in examine-capitalized-sequence, so I added a line to walk through multiple-treetops properly to fix it. - cfg
 ;; 0.17 (8/11 -- 9/5/11) Added internal evidence for names that refer to locations
-;;       e.g. "Benedict Pond". 
+;;       e.g. "Benedict Pond". 10/3 Needs a heuiristic for "South Lee". 
+;; 0.18 (11/6) removed the "The" check and removal from uncategorized names because
+;;       is was written too broadly and sweeping up things it shouldn't have.
+;;      (12/19/11) Adding "Hurricane" by analogy to how place names are done.
 
 (in-package :sparser)
 
@@ -110,7 +113,7 @@
         name-state  edge-labeled-by-word multiple-treetops
         &-sign  initials?  person-version  inc-term?  of  and  the  slash
         generic-co co-activity koc?  ordinal  flush-suffix 
-        location-head  location )
+        location-head  location  hurricane)
     
     (flet ((check-cases (tt label)
              (case label
@@ -279,6 +282,8 @@
                 
                (category::compass-point   ;; "Southeast Bank"
                 (kpush  `(,count . ,(edge-referent tt)) location))
+               (category::direction   ;; "Southeast Bank"
+                (kpush  `(,count . ,(edge-referent tt)) location))
 
                (category::path-type
                 (kpush  `(,count . ,(edge-referent tt)) location))
@@ -288,6 +293,9 @@
                 (kpush  `(,count . ,(edge-referent tt)) location))
                
                (category::country)  ;; "American National Standards Institute"
+
+               (category::hurricane  ;; "Hurricane Adrian"
+                (setq hurricane `(,count)))
                
                (category::ordinal   ;; e.g. in "Thomas E. Paisley III"
                 (setq ordinal `(,count . ,(edge-referent tt))))
@@ -403,7 +411,7 @@
                                            name-state
                                            &-sign initials? person-version
                                            inc-term? of and the generic-co co-activity
-                                           koc? ordinal location-head)))
+                                           koc? ordinal location-head hurricane)))
             (if flush-suffix
               (then
                 ;; Some item in the loop set this flag to the position where
@@ -422,7 +430,8 @@
 (defun categorize-and-form-name (items name-state
                                  &-sign initials? person-version
                                  inc-term? of and the generic-co co-activity
-                                 koc? ordinal location-head )
+                                 koc? ordinal location-head hurricane)
+
   ;; broken out as a subroutine just because it makes the forms shorter
   (declare (ignore name-state))
   (if of
@@ -448,6 +457,7 @@
                    ;; this is weak evidence --> limited partnerships
                    category::person-name )
                   (person-version category::person-name)
+                  (hurricane category::hurricane)
                   (t category::name))))
 
       (when ordinal  ;; e.g. "III", "Fourth"
@@ -479,9 +489,11 @@
       (setq name
             (ecase (cat-symbol category)
               (category::name
-               (when (and (word-p (first items))
-                          (rule-set-for (first items))) ;; e.g. "The"
-                 (pop items))
+;;                (when (and (word-p (first items))
+;;                           (rule-set-for (first items))) ;; e.g. "The"
+;;                  (pop items))
+;; This also takes out the "South" of "South Lee", which has a completely
+;; different basis than "The" or other function words
                (make-uncategorized-name-from-items items :and and))
               (category::person-name
                (make-person-name-from-items
@@ -493,7 +505,9 @@
                  :generic-co generic-co  :koc? koc?
                   ))
               (category::location
-               (make-location-name items location-head))))
+               (make-location-name items location-head))
+              (category::hurricane
+               (make-hurricane-name items hurricane))))
       name )))
 
 
