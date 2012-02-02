@@ -36,6 +36,9 @@
 (define-change-in-amount-noun/up "rise")
 
 
+(define-change-in-amount-term :verb "slump" :noun "slump" 
+                              :direction :down)
+
 #| ==  integrated versions -- waiting on clean treatment
        of words that let verbal and nominal variants get
        picked out in rspecs.
