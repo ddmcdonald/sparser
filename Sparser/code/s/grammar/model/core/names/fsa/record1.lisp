@@ -37,6 +37,9 @@
             (category::name-of-location
              (find/location-with-name name))
 
+            (category::hurricane
+             (find/hurricane-with-name name))
+
             (category::uncategorized-name nil) ;; done below
 
             (category::collection
@@ -61,6 +64,7 @@
           (category::company-name (make/company-with-name name))
           (category::person-name (make/person-with-name name))
           (category::name-of-location (make/location-with-name name))
+          (category::hurricane (make/hurricane-with-name name))
           (category::uncategorized-name
            (if (some-name-element-is-new? name)
              name
