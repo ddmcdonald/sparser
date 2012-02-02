@@ -1,11 +1,11 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2010-2010  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2010-2011  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:  "grammar modules"
-;;;    Module:  "init;versions:v2.7:loaders:"
-;;;   version:  August 2011
+;;;    Module:  "init;versions:v4.0:loaders:"
+;;;   version:  December 2011
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
 ;; 5/11/93 added refinements in words and syntax
@@ -34,6 +34,7 @@
 ;; 6/09 added *checkpoint-ops*. 8/27/09 added *poirot*. 11/12/10 removed it,
 ;; added *reversable*. 7/19/11 added *generic-military* since none of the
 ;; others looked right. 8/31/11 added *default-quantifier-semantics*
+;; 12/15/11 added *hurricanes*.
 
 (in-package :sparser)
 
@@ -446,8 +447,12 @@
 
 
 (define-grammar-module *disease*  ;; for bird flu
-                       :name "Disease and death"
-		       :parent *sublanguages*)
+    :name "Disease and death"
+    :parent *sublanguages*)
+
+(define-grammar-module *hurricanes*
+    :name "Hurricanes and the events they are part of"
+    :parent *sublanguages*)
 		       
 
 
