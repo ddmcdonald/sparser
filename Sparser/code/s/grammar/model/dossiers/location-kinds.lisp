@@ -5,11 +5,11 @@
 ;;;
 ;;;     File:  "location kinds"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  September 2011
+;;;  version:  December 2011
 
 ;; initiated 1/17/94 v2.3
 ;; Started populating it 6/18/08. 7/18/11 Made over as regions,
-;; added a bunch. 9/13/11 adding border types. 
+;; added a bunch. 9/13/11 adding border types. More 12/19/11.
 
 (in-package :sparser)
 
@@ -27,8 +27,9 @@
 (define-region-type "village")
 (define-region-type "ward")
 
-(define-border-type "edge")
 (define-border-type "border")
 (define-border-type "boundary")
+(define-border-type "coast")
+(define-border-type "edge")
 
 
