@@ -13,9 +13,11 @@
 
 (in-package :mumble)
 
+; [2011/12/14:ddm] Fixing up capitalization issues so this can run in,
+; e.g. Clozure as well as ACL's mlisp.
+
 ; ddm 8/13/99 Put a special case into Def-type to avoid a clash with a defstruct
 ;  off a symbol with the same pname. See note there.
-
 
 ; ddm 10/20/88   Added an "include" field to deftypes -- as an obligatory second 
 ; argument just after the "storage-type" and before the list of field names.   
@@ -113,6 +115,16 @@ thinking about the future when some kind of "semantic paging" is available.
 ;################################################################
 
 
+
+(unless (boundp '*upcase*)
+  (defparameter *upcase* (not (eq '|aBc| 'aBc))
+    ;; I've seen an :mlisp feature, but it doesn't appear to be consistent.
+    "The code in Mumble-86 is written in strictly lowercase. But depending 
+     on whether or not  one is running a Lisp that is case sensitive this
+     has an impact on the function names that def-type creates. When this
+     flag is true, they are created as all uppercase."))
+
+
 
 (eval-when (compile load eval)
 (defstruct  (mcatalog :named (:conc-name nil))
@@ -154,13 +166,6 @@ thinking about the future when some kind of "semantic paging" is available.
   )
 )
 
-(unless (boundp '*upcase*)
-  (defparameter *upcase* #+:mlisp nil
-                         #-:mlisp t
-    "The code in Mumble-86 is written in strictly lowercase. But depending 
-     on whether or not  one is running a Lisp that is case sensitive this
-     has an impact on the function names that def-type creates. When this
-     flag is true, they are created as all uppercase."))
 
 (defun define-catalog  (name type)
   (let ((the-catalog (make-mcatalog :postprocessed? t
@@ -187,26 +192,28 @@ thinking about the future when some kind of "semantic paging" is available.
     (setq included-type 'mposition))
 
   (let* ((type-check-name (intern (string-append type-name (if *upcase* "P" "p"))))
-	 (minimal-construction-fn-name
-	   (intern (string-append (if *upcase* "MAKE-AN-EMPTY-" "make-an-empty-")
-				  (symbol-name type-name))))
-	 (constructor-macro-name
-	   (intern (string-append (if *upcase* "MAKE-" "make-") (symbol-name type-name))))
-	 (catalog-name (intern (string-append (if *upcase* "THE-" "the-") 
-					      type-name (if *upcase* "S" "s"))))
-	 (the-catalog (define-catalog catalog-name type-name))
-	 (property-names (mapcar #'car properties-&-documentation))
-	 (setter-names  (mapcar #'(lambda (field-name)
-			       (intern (string-append (if *upcase* "SET-" "set-")
-						      (symbol-name field-name))))
-			   property-names))
-	 ;; was PAIRLIS, but that is not required to use the original order:
-	 (properties-&-setters (mapcar #'cons property-names setter-names))
-	 (included-setters  (if included-type (setters (mtype included-type))))
-	 (included-properties  (if included-type (properties (mtype included-type)))))
+         (minimal-construction-fn-name
+          (intern (string-append (if *upcase* "MAKE-AN-EMPTY-" "make-an-empty-")
+                                 (symbol-name type-name))))
+         (constructor-macro-name
+          (intern (string-append (if *upcase* "MAKE-" "make-")
+                                 (symbol-name type-name))))
+         (catalog-name (intern (string-append (if *upcase* "THE-" "the-") 
+                                              type-name (if *upcase* "S" "s"))))
+         (the-catalog (define-catalog catalog-name type-name))
+         (property-names (mapcar #'car properties-&-documentation))
+         (setter-names  (mapcar #'(lambda (field-name)
+                                    (intern (string-append
+                                             (if *upcase* "SET-" "set-")
+                                             (symbol-name field-name))))
+                                property-names))
+         ;; was PAIRLIS, but that is not required to use the original order:
+         (properties-&-setters (mapcar #'cons property-names setter-names))
+         (included-setters  (if included-type (setters (mtype included-type))))
+         (included-properties  (if included-type (properties (mtype included-type)))))
     `(progn
-	;; Create the type and set up all references to it.
-	(let ((the-type (make-mtype
+       ;; Create the type and set up all references to it.
+       (let ((the-type (make-mtype
 			  :postprocessed? t
 			  :name          ',type-name
 			  :storage-type  ',storage-type
@@ -217,86 +224,87 @@ thinking about the future when some kind of "semantic paging" is available.
 			  :setters ',(append included-setters properties-&-setters) 
 			  :mcatalog  ',the-catalog
 			  :properties ',(append included-properties 
-                                                properties-&-documentation)
+                                    properties-&-documentation)
 			  :postprocessing-fn  nil)))
 
-	  (do* ((rest   ',properties-&-setters (cdr rest))
-		(ps     (car rest) (car rest))
-		(prop   (car ps) (car ps))
-		(setter (cdr ps) (cdr ps))
-		(index  ,(length included-setters) (1+ index)))
+	  (do* ((rest ',properties-&-setters (cdr rest))
+            (ps     (car rest) (car rest))
+            (prop   (car ps) (car ps))
+            (setter (cdr ps) (cdr ps))
+            (index  ,(length included-setters) (1+ index)))
 	       ((null rest))
 	    (check-for-real-conflicts prop ',type-name index)
 	    (check-for-real-conflicts setter ',type-name index)
 	    (setf (get prop 'mumble-type-object-for-field) the-type)
 	    (setf (get setter 'mumble-type-object-for-field) the-type))
 
-          ;;should these be replaced with the standard mechanism, i.e. Create-and-catalog ??
-          (set ',type-name the-type)
+      ;;should these be replaced with the standard mechanism, i.e. Create-and-catalog ??
+      (set ',type-name the-type)
 	  (setf (get ',type-name 'mumble-type-object) the-type)
 	  ;; (link-name-to-object ',type-name the-type type)
 	  (let ((old-value (get ',type-name 'mumble-symbol)) ;; <=== 12/10/03 patch
-                new-value ) 
-            (if (consp old-value)
-              (setq new-value (cons the-type old-value))
-              (setq new-value (list the-type old-value)))
-            (setf (get ',type-name 'mumble-symbol) new-value)))
+            new-value ) 
+        (if (consp old-value)
+          (setq new-value (cons the-type old-value))
+          (setq new-value (list the-type old-value)))
+        (setf (get ',type-name 'mumble-symbol) new-value)))
 
-	(defun ,minimal-construction-fn-name ,(if (member 'name property-names)
-						  '(&optional (name 'anonymous))
-						  '())
-	  (let-with-dynamic-extent
-            ((minimal-definition t))
-            (,constructor-macro-name ,@(if (member 'name property-names)
-                                         '(:name name)
-                                         nil))))
-	(temporarily-inhibit-fdefine-warnings
-	  (defstruct (,type-name
-		      (:conc-name nil)
-		      (:print-function (lambda (struct stream level)
-                                         (declare (ignore level))
-                                         (let ((name-symbol (name struct)))
-                                           (if (symbolp name-symbol)
-                                             (format stream "#<~A ~A>"
-                                                     ',type-name name-symbol)
-                                             (format stream "#<~a ???>"
-                                                     ',type-name)))))
-                      ,@(if included-type
-                          `((:include ,included-type))
-                          nil))
-	    ;; This is where the `POSTPROCESSED?' field comes in.  If we have an
-	    ;; included type, it will be inherited, not defined locally.
-	    ,@(if included-type nil '((postprocessed? nil)))
-	    ,@property-names))
-	    ;;this defstruct defines the construction function, a "type" symbol to check 
-	    ;;against with TYPEP, and access MACROS.
+       (defun ,minimal-construction-fn-name ,(if (member 'name property-names)
+                                               '(&optional (name 'anonymous))
+                                               '())
+         (let-with-dynamic-extent
+             ((minimal-definition t))
+           (,constructor-macro-name ,@(if (member 'name property-names)
+                                       '(:name name)
+                                       nil))))
+       (temporarily-inhibit-fdefine-warnings
+        (defstruct (,type-name
+                     (:conc-name nil)
+                     (:print-function (lambda (struct stream level)
+                                        (declare (ignore level))
+                                        (let ((name-symbol (name struct)))
+                                          (if (symbolp name-symbol)
+                                            (format stream "#<~A ~A>"
+                                                    ',type-name name-symbol)
+                                            (format stream "#<~a ???>"
+                                                    ',type-name)))))
+                     ,@(if included-type
+                        `((:include ,included-type))
+                        nil))
+          ;; This is where the `POSTPROCESSED?' field comes in.  If we have an
+          ;; included type, it will be inherited, not defined locally.
+          ,@(if included-type nil '((postprocessed? nil)))
+          ,@property-names))
+       ;;this defstruct defines the construction function, a "type" symbol to check 
+       ;;against with TYPEP, and access MACROS.
 
-	;;idiosyncratically named Replace fns.
-	,@(mapcar #'(lambda (property-name set-name)
-		      `(temporarily-inhibit-fdefine-warnings
-			 (defsubst ,set-name (structure new-value)
-			   (setf (,property-name structure) new-value))))
-		  property-names
-		  setter-names)
+       ;;idiosyncratically named Replace fns.
+       ,@(mapcar #'(lambda (property-name set-name)
+                     `(temporarily-inhibit-fdefine-warnings
+                       (defsubst ,set-name (structure new-value)
+                         (setf (,property-name structure) new-value))))
+                 property-names
+                 setter-names)
 
-	;idiosyncratic <type>p predicate
-	(defun ,type-check-name (structure)   
-	  (typep structure ',type-name))
+       ;; idiosyncratic <type>p predicate
+       (defun ,type-check-name (structure)   
+         (typep structure ',type-name))
 
-	;fn. from a symbol (name) to an object of this type
-	(defun ,(intern (string-append (symbol-name type-name) (if *upcase* "-NAMED" "-named")))
-	    (symbol)
-	  (let ((obj   (mumble-value symbol ',type-name)))
-	    ;(or obj (mbug "Could not find value for symbol ~s of type ~s"
-	    ;		  symbol ',type-name))
-	    obj))
+       ;; fn. from a symbol (name) to an object of this type
+       (defun ,(intern (string-append (symbol-name type-name)
+                                      (if *upcase* "-NAMED" "-named")))
+           (symbol)
+         (let ((obj (mumble-value symbol ',type-name)))
+           ;;(or obj (mbug "Could not find value for symbol ~s of type ~s"
+           ;;		  symbol ',type-name))
+           obj))
  
-	;add the type to the catalog of types
-	(when (not (member ',type-name (members (mcatalog mtype))))
-          (setf (members (mcatalog mtype)) 
-                (cons ',type-name (members (mcatalog mtype)))))
-	      ;"setf" rather than "set-members" because of the bootstrapping
-        ',type-name)
+       ;; add the type to the catalog of types
+       (when (not (member ',type-name (members (mcatalog mtype))))
+         (setf (members (mcatalog mtype)) 
+               (cons ',type-name (members (mcatalog mtype)))))
+       ;; "setf" rather than "set-members" because of the bootstrapping
+       ',type-name)
     ))
 
 
@@ -310,33 +318,33 @@ thinking about the future when some kind of "semantic paging" is available.
   ;; redefinition is a problem when an object is already defined and
   ;; DEF-TYPE didn't do it, or when DEF-TYPE did, but the offset is wrong
   (when (and *check-for-type-conflicts*
-	     (fboundp name))   ;; is there a previous definition of any sort?
+             (fboundp name))   ;; is there a previous definition of any sort?
     (let ((old-type (get name 'mumble-type-object-for-field)))
       (if (null old-type)
-	  (mbug "DEF-TYPE is redefining ~a (as a field of ~a) ~
-                 ~%but it is already globally defined"
-		 name new-struct)
-	  (let ((offset (mumble-type-offset name old-type)))
-	    (when (and offset
-		       (not (eql offset new-offset))
-		       (not (eq (name old-type) new-struct)))
-	       (mbug "DEF-TYPE is redefining ~a with a new offset, as a field of ~a.~
-                      ~%It was already a field of ~a"
-		      name new-struct (name old-type))))))))
+	    (mbug "DEF-TYPE is redefining ~a (as a field of ~a) ~
+             ~%but it is already globally defined"
+              name new-struct)
+        (let ((offset (mumble-type-offset name old-type)))
+          (when (and offset
+                     (not (eql offset new-offset))
+                     (not (eq (name old-type) new-struct)))
+            (mbug "DEF-TYPE is redefining ~a with a new offset, as a field of ~a.~
+                 ~%It was already a field of ~a"
+                  name new-struct (name old-type))))))))
 
 
 (defun mumble-type-offset (name type-object)
   (do* ((rest (setters type-object) (cdr rest))
-	(ps   (car rest) (car rest))
-	(accessor-field-name (car ps) (car ps))
-	(setter-field-name (cdr ps) (cdr ps))
-	(index 0  (1+ index)))
+        (ps   (car rest) (car rest))
+        (accessor-field-name (car ps) (car ps))
+        (setter-field-name (cdr ps) (cdr ps))
+        (index 0  (1+ index)))
        ((or (null rest)
-	    (eq accessor-field-name name)
-	    (eq setter-field-name name))
-	(if rest
-	    index
-	    nil))))
+            (eq accessor-field-name name)
+            (eq setter-field-name name))
+        (if rest
+          index
+          nil))))
 
 
 
@@ -349,49 +357,52 @@ thinking about the future when some kind of "semantic paging" is available.
    "otherwise the set-of-all-sets paradox bites you"
    (declare (special type))
    (let* ((the-vector
-	    (make-mtype :postprocessed? t
-		       :name  'Mtype
-		       :storage-type  'system-overhead
-		       :minimal-construction-function  nil
-		       :construction-macro 'make-Mtype
-		       ;:printing-function  nil
-		       :type-predicate  'type-p
-		       :mcatalog  nil           ;fill in below
-		       :properties
-			 '((name "the symbol whose value is the type object")
-			   (storage-type "see file")
-			   (minimal-construction-function "see file")
-			   (construction-macro "see file")
-			   ;(printing-function "see file")
-			   (type-predicate "see file")
-			   (mcatalog "see file")
-			   (properties "see file")
-			   (postprocessing-fn "see file")
-			   (re-definition-fn "see file"))
-		       :postprocessing-fn  nil   ;//// ??really??
-		       :re-definition-fn  nil
-		       ))
-	  (types-catalog (define-catalog 'the-types the-vector)))
+           (make-mtype :postprocessed? t
+                       :name  'Mtype
+                       :storage-type  'system-overhead
+                       :minimal-construction-function  nil
+                       :construction-macro 'make-Mtype
+                       ;; :printing-function  nil
+                       :type-predicate  'type-p
+                       :mcatalog  nil           ;fill in below
+                       :properties
+                         '((name "the symbol whose value is the type object")
+                           (storage-type "see file")
+                           (minimal-construction-function "see file")
+                           (construction-macro "see file")
+                           ;; (printing-function "see file")
+                           (type-predicate "see file")
+                           (mcatalog "see file")
+                           (properties "see file")
+                           (postprocessing-fn "see file")
+                           (re-definition-fn "see file"))
+                       :postprocessing-fn  nil   ;//// ??really??
+                       :re-definition-fn  nil
+                       ))
+          (types-catalog (define-catalog 'the-types the-vector)))
      (setf (mcatalog the-vector) types-catalog)
 
-     ;now the alternate syntax for "setf"
-     (let ((ps (mapcar #'(lambda (field)
-			   (let* ((property-name (car field))
-				  (set-name
-				    (intern (string-append (if *upcase* "SET-" "set-") property-name)))
-				  (defun-exp
-				    `(temporarily-inhibit-fdefine-warnings
-				       (defun ,set-name (structure new-value)
-					 (setf (,property-name structure) new-value)))))
-			     (eval defun-exp)
-			     (setf (get property-name 'mumble-type-object-for-field) the-vector)
-			     (setf (get set-name 'mumble-type-object-for-field) the-vector)
-			     (cons property-name set-name)))
-		       (properties the-vector))))
+     ;; now the alternate syntax for "setf"
+     (let ((ps (mapcar 
+                #'(lambda (field)
+                    (let* ((property-name (car field))
+                           (set-name
+                            (intern (string-append 
+                                     (if *upcase* "SET-" "set-")
+                                     property-name)))
+                           (defun-exp
+                            `(temporarily-inhibit-fdefine-warnings
+                              (defun ,set-name (structure new-value)
+                                (setf (,property-name structure) new-value)))))
+                      (eval defun-exp)
+                      (setf (get property-name 'mumble-type-object-for-field) the-vector)
+                      (setf (get set-name 'mumble-type-object-for-field) the-vector)
+                      (cons property-name set-name)))
+                (properties the-vector))))
        (setf (setters the-vector) ps))
 
-     ;now the redundant attachment
-     ;///should be same stuff as Create-and-Catalog
+     ;; now the redundant attachment
+     ;; ///should be same stuff as Create-and-Catalog
      (setq mtype the-vector)
      (setf (get 'mtype 'mumble-type-object) the-vector)
 
@@ -451,19 +462,19 @@ other files concerned with object definitions is.  That way we don't
 have to keep around temporary repositories for all this stuff.
 |#
 
-(defmacro  define-postprocessing-function  (type-name
-					    parameter-list
-					    &rest body)
-  (let ((fn-name  (intern (string-append (if *upcase* "POSTPROCESS-" "postprocess-")
-					 type-name))))
+(defmacro define-postprocessing-function  (type-name
+                                           parameter-list
+                                           &rest body)
+  (let ((fn-name (intern (string-append (if *upcase* "POSTPROCESS-" "postprocess-")
+                                        type-name))))
     (if (= (length parameter-list) 1)
-	`(progn (defun ,fn-name ,parameter-list ,@body)
-		(set-postprocessing-fn (type-named ',type-name)
-				       (symbol-function ',fn-name))
-		',fn-name)
-	(error "Strange postprocessing parameter-list:  ~s.  ~
-                It should be one symbol long."
-	       parameter-list))))
+      `(progn (defun ,fn-name ,parameter-list ,@body)
+              (set-postprocessing-fn (type-named ',type-name)
+                                     (symbol-function ',fn-name))
+              ',fn-name)
+      (error "Strange postprocessing parameter-list:  ~s.  ~
+              It should be one symbol long."
+             parameter-list))))
  
 
 
@@ -475,11 +486,11 @@ have to keep around temporary repositories for all this stuff.
 
 (defun mtype (symbol)
   (if (not (symbolp symbol))
-      (mbug "not called with a symbol - ~A" symbol)
-      (let ((type-object (get symbol 'mumble-type-object)))
-        (if (not (typep type-object 'mtype))
-	(format nil "~A does not denote a type" symbol))
-        type-object)))
+    (mbug "not called with a symbol - ~A" symbol)
+    (let ((type-object (get symbol 'mumble-type-object)))
+      (when (not (typep type-object 'mtype))
+        (format nil "~A does not denote a type" symbol))
+      type-object)))
 
 ;;; Flag the fact that the type system is loaded.
 
