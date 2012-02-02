@@ -28,7 +28,8 @@
 ;; ambush. 8/8 added *semantics-of-WH-words*. 7/08 added *disease* and
 ;; *call-signs*. 6/09 added *checkpoint-ops*. 8/27/09 added *poirot*.
 ;; 11/15/10 removed it, added *reversable*. 6/14/11 removed *poirot*.
-;; 7/19/11 added *generic-military*. 8/31/11 added *default-quantifier-semantics*
+;; 7/19/11 added *generic-military*. 8/31/11 added *default-quantifier-semantics*.
+;; 12/15/11 added *hurricanes*.
 
 
 (in-package :sparser)
@@ -251,6 +252,7 @@
 (include-grammar-module  *call-signs*)
 (include-grammar-module  *checkpoint-ops*)
 (include-grammar-module  *disease*)
+(include-grammar-module  *hurricanes*)
 (include-grammar-module  *generic-military*)
 
 (include-grammar-module  *load-Tipster-grammar-into-image*)

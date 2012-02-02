@@ -44,7 +44,7 @@
 ;; upper-model so general categories are available earlier. 8/25 Moved collections
 ;; up just after the upper-model because they had followed location which depended
 ;; on them to formulate plurals. 9/16 Broke words loader into two parts: loader1
-;; and loader-part-2. 9/29 moved 32d part later
+;; and loader-part-2. 9/29 moved 32d part later. 12/16/11 added hurricanes.
 
 (in-package :sparser)
 
@@ -201,6 +201,9 @@
 
   (gate-grammar *disease*
     (gload "disease;loader"))
+
+  (gate-grammar *hurricanes*
+    (gload "hurricanes;loader"))
 
 
 #| irrelevant until GL comes back up

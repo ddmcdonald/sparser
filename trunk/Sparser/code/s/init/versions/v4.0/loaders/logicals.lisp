@@ -4,8 +4,8 @@
 ;;; $Id$
 ;;; 
 ;;;     File:  "logicals"
-;;;   Module:  "init:versions:v2.7:loaders:"
-;;;  version:  August 2011
+;;;   Module:  "init:versions:v4.0:loaders:"
+;;;  version:  December 2011
 
 ;; 4/21/92 added new,  5/10 broke apart CA/HA,  7/18 promoted all the
 ;; directories under "names;" up to "core;",  7/23 added tools;time
@@ -44,6 +44,7 @@
 ;; in the initial special cases. 6/09 added checkpoint. 8/27/09 added poirot.
 ;; 8/15/10 added one-offs under words. 11/12/10 removed poirot, added mumble-
 ;; interface. 7/19/11 added mil; for sl;military. 8/31/11 added syntax-quant;
+;; 12/15/11 added hurricanes.
 
 
 (in-package :sparser)
@@ -318,6 +319,7 @@
 (def-logical-pathname "ern;"          "sl;ERN:")
 (def-logical-pathname "nih;"          "sl;NIH:")
 (def-logical-pathname "disease;"      "sl;disease:")
+(def-logical-pathname "hurricanes;"    "sl;hurricanes:")
 
 (def-logical-pathname "Who's News;"   "sl;Who's News:")
 (def-logical-pathname "acts;"         "Who's News;acts:")
