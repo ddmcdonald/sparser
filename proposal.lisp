@@ -73,25 +73,45 @@ Medical device giant Medtronic (MDT), the leader in defibrillators and pacemaker
 
 (define-company "Medtronic")
 
+#|
 ;; stock ticker symbol
 
-(define-category stock-symbol
-  :binds ((ticker)))
+The parenthesis handler can do the work of this (ran without
+defining Medtronic or anything else):
 
-(def-cfr stock-symbol (name close-paren)
-  :form noun
-  :referent (:instantiate-individual stock-symbol
-	     :with (ticker left-edge)))
+sparser> (p " device giant Medtronic (MDT),")
+ device giant Medtronic (MDT),
 
-;; duplicated because of how rules are made for  names & name-words
-(def-cfr stock-symbol (name-word close-paren)
-  :form noun
-  :referent (:instantiate-individual stock-symbol
-	     :with (ticker left-edge)))
+                                 source-start
+                                 "device"
+                                 "giant"
+e0    capitalized-word        3 "medtronic" 4
+e2    single-capitalized-word-in-parentheses  4 "( mdt )" 7
+e3                               "comma"
+                                 end-of-source
 
-(def-cfr stock-symbol (open-paren stock-symbol)
-  :form noun
-  :referent (:head right-edge))
+So it's a matter of having a rule that recognizes that pattern
+and concludes that the 'single-capitalized-word' must be the
+company's ticker symbol. 
+
+;; (define-category stock-symbol
+;;   :binds ((ticker)))
+
+;; (def-cfr stock-symbol (name close-paren)
+;;   :form noun
+;;   :referent (:instantiate-individual stock-symbol
+;; 	     :with (ticker left-edge)))
+
+;; ;; duplicated because of how rules are made for  names & name-words
+;; (def-cfr stock-symbol (name-word close-paren)
+;;   :form noun
+;;   :referent (:instantiate-individual stock-symbol
+;; 	     :with (ticker left-edge)))
+
+;; (def-cfr stock-symbol (open-paren stock-symbol)
+;;   :form noun
+;;   :referent (:head right-edge))
+|#
 
 (define-category market-leader
   :binds ((market)))
@@ -139,19 +159,22 @@ Medical device giant Medtronic (MDT), the leader in defibrillators and pacemaker
 
 ;; "60 in January"  "49.19 on May 17."
 ;; Replaces datapoint
-(define-category amount-at-time
-;;  :specializes 
-  :instantiates amount
-  :binds ((amount . (:or amount number))
-          (time . time))
-  :realization ((:tree-family np-and-postmodifier
-                 :mapping ((np . :self) ;; not working with this corrected head
-                           (np-head . number)
-                           (phrase . time)
-                           (type . :self)
-                           (np-var . amount)
-                           (modifier-var . time)))))
-       
+;;; moved to core/amounts/rules1
+;; (define-category amount-at-time
+;; ;;  :specializes 
+;;   :instantiates amount
+;;   :binds ((amount . (:or amount number))
+;;           (time . time))
+;;   :realization ((:tree-family np-and-postmodifier
+;;                  :mapping ((np . :self) ;; not working with this corrected head
+;;                            (np-head . number)
+;;                            (phrase . (:or time
+;;                                           weekday ;; Tuesday
+;;                                           prep-time)) ;; on May 17
+;;                            (type . :self)
+;;                            (np-var . amount)
+;;                            (modifier-var . time)))))
+#|       
 (define-category datapoint
   :binds ((value)
 	  (time)))                    
@@ -175,24 +198,27 @@ Medical device giant Medtronic (MDT), the leader in defibrillators and pacemaker
   :referent (:instantiate-individual range
 	     :with (start left-edge
 		    end right-edge)))
+|#
+
 
 ;; stock price change events
+
+;; [2011/12/08:ddm] Need to get schemas into change-in-amount forms
+;;  see core/amounts/amount-change-verbs 
+;;    and especially dossiers/change-in-amount-verbs for nominalization forms
+
+;; Look at core/amounts/amount-change-verbs and amount-chg-relation
+;; since slumped is like the others in dossiers/change-in-amount-verbs
+
+;; Want an all-in-one form for both nouns & verbs in amount-change-verbs
+;; but the existing schemes for single-word realizations can't be given
+;; two (or more) cases. Need a new sort of mechanism for this -- one that
+;; can be quickly recognized and dispatch off to all the individual cases
 
 (define-category stock-price-change
   :specializes event
   :binds ((mode)
-	  (range)))
-
-(define-category slump
-  :specializes event)
-
-(def-cfr stock-symbol ("stock")
-  :form noun
-  :referent (:instantiate-individual stock-symbol))
-
-(def-cfr slump ("slumped")
-  :form verb+ed
-  :referent (:instantiate-individual slump))
+          (range)))
 
 (def-cfr stock-price-change (stock-symbol slump)
   :form s
@@ -202,43 +228,54 @@ Medical device giant Medtronic (MDT), the leader in defibrillators and pacemaker
 (def-cfr stock-price-change (stock-price-change range)
   :form s
   :referent (:head left-edge
-	     :bind (mode . right-edge)))
+             :bind (mode . right-edge)))
+
+(define-category slump
+  :specializes event)
+
+(def-cfr slump ("slumped")
+  :form verb+ed
+  :referent (:instantiate-individual slump))
+
+;; Replaced with simple schema version in /model/core/finance/stock.lisp
+;; (def-cfr stock-symbol ("stock")
+;;   :form noun
+;;   :referent (:instantiate-individual stock-symbol))
 
 
-;;-------- "12 month target of 62"
 
-(define-category target ;; the word by itself
-  :instantiates self
-  :realization ((:common-noun "target")))
-
-(define-category target-at-time
-  :specializes target
-  :instantiates target
-  :binds ((target . target)
-          (time . time))  ;; "12-month" means '12 months from now'
-       ;; and that needs to be here in the construstrual of the
-       ;; time interval to get the full generality on the NLG side
-  :realization ((:tree-family modifier-creates-individual
-                 :mapping ((n-bar . target)
-                           (subtyping-modifier . (:or time amount-of-time))
-                           (np-head . target)
-                           (result-category . :self)
-                           (modifier . time)
-                           (head . target)))))
-
-(define-category stock-price-target
-  :specializes target
-  :instantiates self
-  :binds ((value . number) ;; it's a reduction of a stock price
-          ;; but that's a metonomy that we don't need yet.
-          (target . target))
-  :realization ((:tree-family simple-of-complement
-                 :mapping ((np . target)
-                           (base-np . target)
-                           (complement . number)
-                           (result-type . :self)
-                           (np-item . target)
-                           (of-item . value)))))
+;;; Moved to /model/core/finance/target.lisp
+;; ;;-------- "12 month target of 62"
+;; (define-category target ;; the word by itself
+;;   :instantiates self
+;;   :realization ((:common-noun "target")))
+;; (define-category target-at-time
+;;   :specializes target
+;;   :instantiates target
+;;   :binds ((target . target)
+;;           (time . time))  ;; "12-month" means '12 months from now'
+;;        ;; and that needs to be here in the construstrual of the
+;;        ;; time interval to get the full generality on the NLG side
+;;   :realization ((:tree-family modifier-creates-individual
+;;                  :mapping ((n-bar . target)
+;;                            (subtyping-modifier . (:or time amount-of-time))
+;;                            (np-head . target)
+;;                            (result-category . :self)
+;;                            (modifier . time)
+;;                            (head . target)))))
+;; (define-category stock-price-target
+;;   :specializes target
+;;   :instantiates self
+;;   :binds ((value . number) ;; it's a reduction of a stock price
+;;           ;; but that's a metonomy that we don't need yet.
+;;           (target . target))
+;;   :realization ((:tree-family simple-of-complement
+;;                  :mapping ((np . target)
+;;                            (base-np . target)
+;;                            (complement . number)
+;;                            (result-type . :self)
+;;                            (np-item . target)
+;;                            (of-item . value)))))
 
 ;; "she expects a 12-month target of 60"
 (define-category expect-target
