@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  3.3 April 2009
+;;;  Version:  3.3 February 2012
 
 ;; 1.1 (1/18/91 v1.8)  Added a proper Display-polyword that didn't use
 ;;      bracketing double quotes -- Princ-polyword does that.
@@ -21,6 +21,9 @@
 ;;     (12/19) added multi-word check and string constructor
 ;; 3.3 (6/2/08) Fan-out for *force-case-shift* ("United States")
 ;;     (4/14/09) added hyphenated-string-for-pw
+;;     (2/10/12) Moved in pw-specific access code from object3 because (?)
+;;       Clozure didn't know about it when it compiled that file and so
+;;       couldn't access it. 
 
 (in-package :sparser)
 
@@ -200,6 +203,30 @@
     nil ))
     
     
+
+;;;-----------------
+;;; syntactic sugar
+;;;-----------------
+
+(defun put-property-on-pw (tag value word)
+  (unless (symbolp tag)
+    (error "The tag used to label a property on a word must ~
+            be a symbol:~%~A" tag))
+  (let ((established-cons (member tag (pw-plist word))))
+    (if established-cons
+      (unless (equal (cadr established-cons) value)
+        (rplacd established-cons
+                `(,value ,@(cddr established-cons))))
+      (setf (pw-plist word)
+            `(,tag ,value ,@(pw-plist word))))
+    (pw-plist word)))
+
+(defun property-of-polyword (tag pw)
+  (unless (symbolp tag)
+    (error "The tag used to access a property on a word must ~
+            be a symbol:~%~A" tag))
+  (cadr (member tag (pw-plist pw))))
+
 
 
 
