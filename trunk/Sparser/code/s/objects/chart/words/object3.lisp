@@ -85,19 +85,6 @@
                 `(,tag ,value ,@(label-plist word))))
         (label-plist word)))))
 
-(defun put-property-on-pw (tag value word)
-  (unless (symbolp tag)
-    (error "The tag used to label a property on a word must ~
-            be a symbol:~%~A" tag))
-  (let ((established-cons (member tag (pw-plist word))))
-    (if established-cons
-      (unless (equal (cadr established-cons) value)
-        (rplacd established-cons
-                `(,value ,@(cddr established-cons))))
-      (setf (pw-plist word)
-            `(,tag ,value ,@(pw-plist word))))
-    (pw-plist word)))
-
 
 
 (defun property-of-word (tag word)
@@ -108,13 +95,6 @@
         (error "The tag used to access a property on a word must ~
                 be a symbol:~%~A" tag))
       (cadr (member tag (label-plist word))))))
-
-(defun property-of-polyword (tag pw)
-  (unless (symbolp tag)
-    (error "The tag used to access a property on a word must ~
-            be a symbol:~%~A" tag))
-  (cadr (member tag (pw-plist pw))))
-
 
 
 ;;;-------------------
