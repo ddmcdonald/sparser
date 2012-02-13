@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "lisp-switch-settings"
 ;;;    Module:   "init:versions:v3.1:loaders:"
-;;;   version:   February 2007
+;;;   version:   February 2012
 
 ;; broken out from init;Lisp:kind-of-lisp 4/19/94. Moved it into the
 ;; cl-user package 5/12. 1/25/07 Added case for ACL. 2/1 Submitted
-;; to ACL stupidities about compilation. 
+;; to ACL stupidities about compilation. 2/12/12 Added clozure case,
+;; which is very similar to MCL (as one would expect).
 
 (in-package :cl-user)
 
@@ -28,6 +29,16 @@
    :load nil ;; loading is done explicitly in the caller since
              ;; this option isn't available in some other lisps
    ))
+
+#+:clozure
+(defun routine-to-compile-file (source-namestring fasl-namestring)
+  (compile-file
+   source-namestring
+   :output-file fasl-namestring
+   :verbose t
+   :save-local-symbols t 
+   :save-doc-strings t
+   :save-source-locations t))
 
 #+:lucid
 (defun routine-to-compile-file (source-namestring fasl-namestring)
