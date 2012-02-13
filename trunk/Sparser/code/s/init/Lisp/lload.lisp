@@ -1108,7 +1108,6 @@
 
 (defun good-unix-char? (c)
   (let ((n (char-code c)))
-    (declare (type n fixnum))
     (if (= n (char-code #\space))
       :space
       (if (and (>= n (char-code #\a))
