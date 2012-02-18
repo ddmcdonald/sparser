@@ -1,4 +1,4 @@
-;;; -* Mode: LISP;  Package: MUMBLE; Syntax: Common-lisp; Base: 10 -*-
+;;; -*- Mode: LISP;  Package: MUMBLE; Syntax: Common-lisp; Base: 10 -*-
 
 ;;; MUMBLE-05:  interpreters> realization> realize
 
@@ -40,7 +40,7 @@
      (realize-kernel-specification obj))
     (otherwise
      (if (has-realization? obj)
-       (let ((instantiation (realization-for obj) obj))
+       (let ((instantiation (realization-for obj)))
          (typecase instantiation
            (phrasal-root instantiation)
            (lexicalized-phrase ;; new 9/18/09

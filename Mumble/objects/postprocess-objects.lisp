@@ -480,7 +480,7 @@ the virtual machine cleaner."
   `(define-word/expr ,pname ',word-labels ,@(quote-odd-elements irregularities)))
 
 (defun define-word/expr ( pname word-labels &rest irregularities )
-  (let* ((name (intern (intern pname)))  ;;(string-upcase pname)
+  (let* ((name (intern pname))  ;;(string-upcase pname)
          (object (create-and-catalog
                     name 'word
                     'name name
