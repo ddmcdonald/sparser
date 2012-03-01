@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991,1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "catalog"
 ;;;   Module:  "objects;words:"
-;;;  Version:  1.1 July 1994
+;;;  Version:  1.1 March 2012
 
 ;; 1.1 (2/13 v2.2) Moved the the file and grammar module checking into
 ;;     the catalog routine.
 ;;     (7/19/94) added Alphabetize-word-list
+;;     (3/1/12) quieting the compiler
 
 (in-package :sparser)
 
@@ -49,8 +50,7 @@
 
 
 (defun expunge-unknown-words ()
-  (let ( word-symbol
-         deleted-pnames )
+  (let ( deleted-pnames )
     (dolist (word *words-defined*)
       (unless (word-rules word)
         (push (word-pname word)

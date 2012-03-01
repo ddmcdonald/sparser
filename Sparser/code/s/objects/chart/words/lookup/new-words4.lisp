@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  4.4 August 2011
+;;;  Version:  4.4 March 2012
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -12,6 +12,7 @@
 ;; 4.3 (1/9/95) added hook for introducing brackets
 ;; 4.4 (7/29/11) added new option that looks for primed knowledge
 ;;      about the word. 8/1 broke out make-word-from-lookup-buffer
+;;     (3/1/12) quiet compiler
 
 (in-package :sparser)
 
@@ -25,6 +26,8 @@
 ;;;-----------------------------------------
 
 (defun make-word/all-properties (character-type)
+  (declare (special *capitalization-of-current-token*
+                    *introduce-brackets-for-unknown-words-from-their-suffixes*))
 
   ;; Called from Find-word as one of the  possible values for the function
   ;; Establish-unknown-word
@@ -67,6 +70,7 @@
     word ))
 
 (defun look-for-primed-word-else-all-properties (character-type)
+  (declare (special *capitalization-of-current-token* *primed-words*))
   (ecase character-type
     (:number
      (let ((word (make-word-from-lookup-buffer)))
@@ -94,6 +98,7 @@
 (defun make-word/capitalization-&-digits (character-type)
   ;; just like the all-properties version except that it does not
   ;; consider morphology
+  (declare (special *capitalization-of-current-token*))
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (make-word :symbol symbol
                           :pname  (symbol-name symbol))))

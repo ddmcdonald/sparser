@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "switch new"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:   1.0 December 1994
+;;;  Version:   1.0 March 2012
 
 ;; 1.0 (2/6/92 v2.2) Pulled the original version of Make-new... and
 ;;      replaced it with two more specific cases
 ;;     (12/12/94 v2.3) added the :no-properties case
+;;     (3/1/12) quiet compiler
 
 (in-package :sparser)
 
@@ -19,6 +20,7 @@
 
 
 (defun what-to-do-with-unknown-words (keyword)
+  (declare (special *unknown-word-policy*))
   ;(unless *the-constant-unknown-word*
   ;  (create-the-unknown-word))
   (ecase keyword

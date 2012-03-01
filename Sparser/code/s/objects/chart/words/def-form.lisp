@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "def form"
 ;;;   Module:  "objects;words:"
-;;;  Version:  0.1 March 2005
+;;;  Version:  0.2 March 2012
 
 ;; broken out on its own 1/92
 ;; (5/24/93 v2.3) added a data-check
@@ -13,9 +13,25 @@
 ;;   check that avoids duplicates. Required when nominalized form of
 ;;   a verb had the same pname as another of its forms.
 ;; 0.2 (1/23/07) Added *force-case-shift* and the routine to do it.
+;;     (3/1/12) Reorg to quash compiler complaint.
 
 (in-package :sparser)
 
+;;;------------
+;;; parameters
+;;;------------
+
+(unless (boundp '*force-case-shift*)
+  (defparameter *force-case-shift* nil
+    "Possible values are :lowercase and :uppercase. If one of these
+     is set then any word that is being defined as a mixed case string
+     or a string in a different case than what is specified will be
+     have its case changed."))
+
+
+;;;----------------------
+;;; expr for define-word
+;;;----------------------
 
 (defun define-word/expr (string &optional override-duplicate-check?)
   (unless (stringp string)
@@ -51,13 +67,6 @@
 ;;;-------------------------------------------------
 ;;; Overriding the case of a word when it's defined
 ;;;-------------------------------------------------
-
-(unless (boundp '*force-case-shift*)
-  (defparameter *force-case-shift* nil
-    "Possible values are :lowercase and :uppercase. If one of these
-     is set then any word that is being defined as a mixed case string
-     or a string in a different case than what is specified will be
-     have its case changed."))
 
 (defun force-case-of-word-string (string)
   (if *force-case-shift*
