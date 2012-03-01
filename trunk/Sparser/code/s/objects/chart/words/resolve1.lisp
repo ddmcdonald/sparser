@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992.1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994.2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "resolve"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  1.3 July 1994
+;;;  Version:  1.3 March 2012
 
 ;; broken out as its own file 1/92
 ;; 1.0 (9/21 v2.3) Changed the test for polywords
@@ -16,6 +16,7 @@
 ;;     (6/16) fixed a bug in it  (7/15) and another
 ;; 1.4 (6/2/08) Fan-out for *force-case-shift* ("United States")
 ;;     (8/20/08) the 'if' in resolve-string-to-word was surely in the wrong order
+;;     (3/1/12) Compiler found c&s bug.
 
 (in-package :sparser)
 
@@ -36,8 +37,8 @@
 
 
 (defun resolve-string-to-polyword (multi-word-string)
-  (unless (stringp string)
-    (error "Expected a string, got ~A" string))
+  (unless (stringp multi-word-string)
+    (error "Expected a string, got ~A" multi-word-string))
   (unless (not-all-same-character-type multi-word-string)
     (error "Expected the input string to contain more than one word,~
             ~%  but it is just ~S" multi-word-string))

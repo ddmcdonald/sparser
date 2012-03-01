@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.3 January 1996
+;;;  Version:  0.3 March 2012
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -17,6 +17,7 @@
 ;;     (4/19/95) added Find-or-make/capitalized-word-to-fit-position
 ;;     (5/18) added Word-at-this-position-is-lowercase?.  ...caps? on 5/19
 ;;     (12/31) added a case to Subsuming-variant. And again 1/16/96
+;;     (3/1/12) quieting compiler
 
 (in-package :sparser)
 
@@ -136,6 +137,8 @@
 
 
 (defun get-word-string-from-position (lc-word position)
+  (declare (special *length-of-character-input-buffer* *index-of-next-character*
+                    *character-buffer-in-use*))
   (let ((length (length (word-pname lc-word)))
         (index (pos-character-index position)))
     (when (>= index *length-of-character-input-buffer*)

@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "polyword form"
 ;;;   Module:  "objects;words:"
-;;;  Version:  1.3 June 2008
+;;;  Version:  1.3 March 2012
 
 (in-package :sparser)
 
@@ -22,9 +22,11 @@
 ;;       Added a check for this in the case of redefinition.
 ;;      (12/16) added define-polyword/from-words
 ;;  1.3 (6/2/08) Fan-out for *force-case-shift* ("United States")
+;;      (3/1/12) quiet compiler
 
 
 (defun define-polyword/expr (multi-word-string)
+  (declare (special *break-on-pattern-outside-coverage?*))
   (unless (not-all-same-character-type multi-word-string)
     (error "The characters in the string \"~A\"~
             ~%are all of the same, type making it a word rather than ~

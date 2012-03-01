@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  3.3 February 2012
+;;;  Version:  3.3 March 2012
 
 ;; 1.1 (1/18/91 v1.8)  Added a proper Display-polyword that didn't use
 ;;      bracketing double quotes -- Princ-polyword does that.
@@ -23,7 +23,7 @@
 ;;     (4/14/09) added hyphenated-string-for-pw
 ;;     (2/10/12) Moved in pw-specific access code from object3 because (?)
 ;;       Clozure didn't know about it when it compiled that file and so
-;;       couldn't access it. 
+;;       couldn't access it. 3/1/12 Fixed caps bug and quieted compiler
 
 (in-package :sparser)
 
@@ -98,7 +98,7 @@
   symbol )
 
 
-(defun un-Catalog/polyword (polyword symbol)
+(defun un-catalog/polyword (polyword symbol)
   (setq *polywords-defined*
         (delete polyword *polywords-defined*))
   (makunbound symbol)
@@ -178,6 +178,7 @@
 ;;;--------------------------------------------
 
 (defun multi-word-string (string)
+  (declare (ignore string))
   (break "Multi-word-string called -- if this is interning a polyword,~
           ~%    use not-all-same-character-type instead"))
 
