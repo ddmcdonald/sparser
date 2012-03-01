@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(sparser LISP) -*-
-;;; copyright (c) 1990,1991,2011 David D. McDonald -- all rights reserved
+;;; copyright (c) 1990-1991,2011-2012 David D. McDonald -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
@@ -10,6 +10,7 @@
 ;; Original version 2/1991 for CTI.
 ;; 7/22/09 brought package out of the dark ages. 10/8 Added on-error setup.
 ;; (2/8/11) Added more conditionalization so will load in Clozure as well as ACL.
+;; (2/17/12) Marking special variables
 
 (in-package :sparser)
 
@@ -77,6 +78,7 @@
 ;    '(initialize-on-error-action *what-to-do-on-errors*))
 
 (defun initialize-on-error-action (keyword)
+  (declare (special *what-to-do-on-errors*))
   (case keyword
     (:error
      (unless (eq *what-to-do-on-errors* :error)
@@ -92,6 +94,7 @@
   keyword)
 
 (defun set-on-error-action (keyword)
+  (declare (special *what-to-do-on-errors*))
   (ecase keyword
     ;; n.b. we're never trapping ecase or etypecase
     (or :error :punt :skip-ahead))
@@ -108,8 +111,9 @@
   (throw :analysis-core :abort))
 
 (defun throw-skip-a-word-to-scan (error-message &rest args)
+  (push-debug `(,error-message ,args))
   (restore-original-break-error-&-cerror-definitions)
-  (brek ":stub"))
+  (braek ":stub"))
 
 
   
