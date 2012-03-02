@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2011-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "adverbs"
 ;;;   Module:  "grammar;rules:words:"
-;;;  Version:  1.0 September 2010
+;;;  Version:  1.0 March 2012
 
 ;; initiated 5/16/93 v2.3. Populated 1/11/94. Added to 1/12,1/13
 ;; 0.1 (5/26) redid the bracket label as 'adverb'
@@ -21,6 +21,7 @@
 ;;     (2/3/10) removed "few" since it should really be taken as a quantifier
 ;;     (2/10) Gave "too" and "very" ].adverb brackets: "a very small ..."
 ;; 1.0 (9/16/11) Very thorough make over now that methods are available.
+;;     (3/2/12) Accommodate to adverbs coming in from Comlex.
 
 (in-package :sparser)
 
@@ -54,9 +55,13 @@
   (unless super-category
     (setq super-category 'adverbial))
   (let* ((category-name (name-to-use-for-category string))
-         (word (define-function-word string 
-                 :brackets brackets ;; this does bracket assignment
-                 :form 'adverb))
+         (word (if (typep string 'word)
+                 (prog1
+                     string
+                   (assign-brackets-to-word string brackets))
+                 (define-function-word string 
+                   :brackets brackets ;; this does bracket assignment
+                   :form 'adverb)))
          (category (category-named category-name))
          (new? (null category)))
     (when new?
