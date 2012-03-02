@@ -121,6 +121,10 @@
 
   (tr :bracket-ends-the-segment? ] )
   (let* ((bracket-opening-segment (first *bracket-opening-segment*))
+         (segment-start-pos *left-segment-boundary*)
+         (word-count (- (pos-token-index position)
+                        (pos-token-index *left-segment-boundary*)))
+         (previous-word (word-before position))
          (ends-the-segment?
 	  (cond
 	    ((eq ]  phrase].)   t)
@@ -135,17 +139,17 @@
 	     (if (or (eq (first *bracket-opening-segment*) .[np )
 		     (eq (first *bracket-opening-segment*) .[article )
 		     (eq bracket-opening-segment .[adverb)) ;; "very few"
-		 nil
-		 t))
+		   nil
+           t))
 
 	    ((eq ] ].preposition) 
 	     (if (eq (car *bracket-opening-segment*) mvb.[)
-		 ;; We've just finished a segment because a verb said to do so.
-		 ;; In principle there could be interveening adverbs, so this may
-		 ;; need tuning if they aren't already folded into the VG that
-		 ;; we've just finished. 
-		 (check-for-verb-preposition-pair position)
-		 t))
+		   ;; We've just finished a segment because a verb said to do so.
+           ;; In principle there could be interveening adverbs, so this may
+           ;; need tuning if they aren't already folded into the VG that
+           ;; we've just finished. 
+           (check-for-verb-preposition-pair position)
+           t))
 
 	    ((eq ] preposition].) t)
 
@@ -186,21 +190,6 @@
 
 		   (t t)))
 
-        ((eq ] ].np-vp)
-         (cond 
-           ((or (eq *bracket-closing-segment* ].verb )
-                (eq (first *bracket-opening-segment*) .[verb )
-                (eq (first *bracket-opening-segment*) .[modal ))
-            nil )
-           ((eq bracket-opening-segment .[np) nil) ;; "some people"
-           ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
-           ((eq bracket-opening-segment phrase.[) t) ;; after a period
-           ((eq bracket-opening-segment preposition.[) t) ;; after preposition
-           (t (push-debug `(,*bracket-opening-segment* ,*bracket-closing-segment*))
-              (break "].np-vp next case"))))
-
-        ((eq ] np-vp].) t)
-
 	    ((eq ]  aux].)
 	     (cond ((eq (first *bracket-opening-segment*) .[modal )
                 nil)
@@ -221,12 +210,12 @@
 
 	    ((eq ]  ].adverb)
 	     (if (or (eq *bracket-closing-segment* ].verb )
-		     (eq *bracket-closing-segment* ].adverb )
-		     (eq (first *bracket-opening-segment*) .[verb )
-		     (eq (first *bracket-opening-segment*) .[np ) ;; "a very pleasant day"
-		     (eq (first *bracket-opening-segment*) .[article ))
-		 nil
-		 t))
+                 (eq *bracket-closing-segment* ].adverb )
+                 (eq (first *bracket-opening-segment*) .[verb )
+                 (eq (first *bracket-opening-segment*) .[np ) ;; "a very pleasant day"
+                 (eq (first *bracket-opening-segment*) .[article ))
+		   nil
+           t))
 
         ((eq ] ].adjective)
          (cond ((eq bracket-opening-segment mvb.[) t)
@@ -238,6 +227,27 @@
           
 	    ((eq ] ].conjunction)
 	     t)
+
+        ((eq ] ].np-vp)
+         (cond 
+           ((or (eq *bracket-closing-segment* ].verb )
+                (eq (first *bracket-opening-segment*) .[verb )
+                (eq (first *bracket-opening-segment*) .[modal ))
+            nil )
+           ((eq bracket-opening-segment .[np) nil) ;; "some people"
+           ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
+           ((eq bracket-opening-segment phrase.[) t) ;; after a period
+           ((eq bracket-opening-segment preposition.[) t) ;; after preposition
+           (t (push-debug `(,position ,*bracket-opening-segment*
+                            ,word-count ,previous-word ,segment-start-pos))
+              (break "].np-vp next case"))))
+
+        ((eq ] np-vp].) 
+         ;; (break " seeing a np-vp]., look at opening")
+         ;; bracket-opening-segment -- 
+         ;; .[np   .[np-vp  .[adjective  treetop.[  mvb.[  .[article
+         nil)  ;; t)
+
           
 	    (t (break "Unclassified closing bracket: ~A" ])
 	       :foo))))
