@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
@@ -32,6 +32,7 @@
 ;; 2.4 (9/29/11) Positioned the load to after adjuncts and reworked as a class
 ;;      creator with special form categories to drive general rules. 10/4 original
 ;;      base rule was circular so made it have the prep category as its label.
+;;     (2/20/12) Added schema to the constructed cfr.
 
 (in-package :sparser)
 
@@ -54,6 +55,7 @@
            (word-rule
             (define-cfr category `(,word)
               :form (resolve-form-category form)
+              :schema (get-schematic-word-rule :preposition)
               :referent category)))
       (push-onto-plist category :rule word-rule)
       (values category
