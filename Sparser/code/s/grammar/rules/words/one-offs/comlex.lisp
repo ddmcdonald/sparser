@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; $Id$
-;;; Copyright (c) 2010-2011 David D. McDonald
+;;; Copyright (c) 2010-2012 David D. McDonald
 ;;;
 ;;;     File: "comlex"
 ;;;   Module: "grammar;rules:words:one-offs:"
-;;;  Version:  July 2011
+;;;  Version:  March 2012
 
 ;; initiated 8/16/10. 11/3 cleaned up the loader. Added vivifying code.
 ;; 7/10/11 started finishing it. 7/28 Decided to use priming system
 ;; instead where we wait for the word to be seen before we expand it.
+;; 3/1/12 fixed C&S eror
 
 (in-package :sparser)
 
@@ -541,7 +542,7 @@ e.g. via DM&P or Fire.
       (verb
        (decode-and-instantiate-primed-verb lemma clause))
       (otherwise
-       (push-debug `(,word ,clause))
+       (push-debug `(,lemma ,clause))
        (error "Unexpected POS marker: '~a'" pos-marker)))
     (put-property-on-word :comlex properties lemma)))
 
