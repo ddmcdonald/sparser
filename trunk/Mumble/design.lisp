@@ -30,6 +30,8 @@
 
 (in-package :mumble)
 
+#+openmcl (import '(ccl:memq) (find-package :mumble))
+
 (export '(mumble demos build-mumble-frame)
 	(find-package :mumble))
 
