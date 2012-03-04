@@ -81,7 +81,7 @@
 (load (concatenate 'string *mumble-location* "grammar/punctuation-marks.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/morphology.lisp")) ;; ok up to here
 (load (concatenate 'string *mumble-location* "grammar/word-stream-actions.lisp"))
-(load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
+;; numbers loaded later
 
 (load (concatenate 'string *mumble-location* "interface/bundles/accessory-types.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/accessory-processing.lisp"))
@@ -89,16 +89,16 @@
 (load (concatenate 'string *mumble-location* "interface/bundles/bundle-drivers.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/constructing-bundles.lisp"))
 
-
-(load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
-(load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
-
+;;  References Sparser
+;;(load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
+;;(load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
 
 ;; These were thrown together for SELF and now feel like a short-cut that should
 ;; be removed in favor of derivation trees 
 (load (concatenate 'string *mumble-location* "interface/derivations/types.lisp"))
 ;(load (concatenate 'string *mumble-location* "interface/derivations/rspec-interpretation.lisp"))
 (load (concatenate 'string *mumble-location* "interface/derivations/discourse-reference.lisp"))
+
 
 (load (concatenate 'string *mumble-location* "interface/bundles/specification-operators.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/operators-over-specifications.lisp"))
