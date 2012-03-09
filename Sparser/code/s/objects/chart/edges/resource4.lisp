@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995,1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "resource"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  4.0 January 1996
+;;;  Version:  4.0 March 2012
 
 ;; 3.0 (9/7/92 v2.3) updated the references to edge fields
 ;; 3.1 (4/7/93) changed name to Make-the-edge-resource for ease of documentation
@@ -11,45 +11,9 @@
 ;; 4.0 (1/24/95) inserted a call to long-term-ify/individual.
 ;;     (1/1/96) getting problems with it. (1/14-16) working on the problems,
 ;;      Grossly remodularized the routine.  (5/30) debugging that.
+;;     (3/4/12) Pulled out globals to own file to quiet compiler.
 
 (in-package :sparser)
-
-
-;;;----------
-;;; globals
-;;;----------
-
-(defparameter *all-edges* nil
-  "A resource array, initialized by Initialize-edge-array.")
-
-(unless (boundp '*length-of-edge-resource*)
-  (defparameter *length-of-edge-resource* 500))
-
-
-;;;-------------------
-;;; resource pointers
-;;;-------------------
-
-(defvar *index-of-furthest-edge-ever-allocated* 0)
-
-(defvar *leftmost-edge-valid-position* nil)
-
-
-(defvar *position-of-next-available-edge-in-resource* 0)
-
-(defvar *first-active-edge-in-resource* nil)
-
-(defvar *next-active-edge-to-do* nil)
-
-(defvar *most-recently-activated-edge*  nil)
-
-
-(defvar *some-edges-released* nil)
-
-(defvar *edge-resource-is-fragmented* nil)
-
-(defvar *edge-resource-is-wrapped* nil)
-
 
 
 ;;;--------------
