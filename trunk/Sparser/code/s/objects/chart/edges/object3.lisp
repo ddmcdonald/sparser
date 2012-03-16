@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
@@ -26,7 +26,7 @@
 ;;      it sees as its value (but not the nodes or multiple-initial-edges,
 ;;      which may or may not end up being a problem).
 ;; 3.5 (3/31/06) added constituents field. 4/6 added spanned-words.
-;;     (2/22/07) added edge-length.
+;;     (2/22/07) added edge-length. (3/15/12) quieting compiler
 
 (in-package :sparser)
 
@@ -203,6 +203,7 @@
 (defun 1st-preterminal-at (p)
   ;; return the 1st edge to have spanned the word at position 'p'.
   ;; If there were multiple edges over that word we ignore that.
+  (declare (special *edge-vector-type*))
   (let ((ev (pos-starts-here p)))
     (ecase *edge-vector-type*
       (:kcons-list
@@ -213,6 +214,7 @@
 
 (defun highest-preterminal-at (p)
   ;; finds the one at the largest index in the vector
+  (declare (special *edge-vector-type*))
   (let* ((ev (pos-starts-here p))
          (next-position (chart-position-after p))
          (max (ev-number-of-edges ev))
@@ -249,6 +251,7 @@
 
 
 (defun find/edge-with-category (edge-vector category)
+  (declare (special *edge-vector-type*))
   (ecase *edge-vector-type*
     (:kcons-list
      (break "write the code for the kcons variation"))
@@ -373,7 +376,8 @@
 
 (defun edges-all-chain (position start/end)
   ;; are all the edges that start (or end) at the position
-  ;; contributing to a single tree?
+  ;; contributing to a single tree?  
+  (declare (special *edge-vector-type*))
   (let* ((ev (ecase start/end
                (:start (pos-starts-here position))
                (:end (pos-ends-here position))))

@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc. 
-;;; copyright (c) 1992  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "printers"
 ;;;   Module:  "objects;edges:"
-;;;  Version:  October 1992
+;;;  Version:  March 2012
 
 ;; initiated 8/90
 ;; (7/21/92 v2.3) patched printer for case of label being a word
 ;; (9/2) added reference-category cases
 ;; (10/5) added polyword case
-;; (10/18) added mixin
+;; (10/18) added mixin.  (3/15/12) quiet compiler
 
 (in-package :sparser)
 
@@ -42,6 +42,9 @@
 
 
 (defun the-Edges ( &optional (stream *standard-output*))
+  (declare (special *edge-resource-is-wrapped*
+                    *length-of-edge-resource*
+                    *position-of-next-available-edge-in-resource*))
   (if *edge-resource-is-wrapped*
     (then
       (dotimes (i *length-of-edge-resource* '*all-edges*)

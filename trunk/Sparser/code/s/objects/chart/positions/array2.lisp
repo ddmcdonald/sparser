@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "array"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  2.5 February 2005
+;;;  Version:  2.5 March 2012
 
 ;; initialized 1/91
 ;; 2.0 (8/13/91 v1.9) added Still-in-the-chart
@@ -15,6 +15,7 @@
 ;;      making a chart that does it and the set all in one operation.
 ;; 2.5 (5/3) added initialization of display-char-index field
 ;;     (8/30) added Edge-is-still-in-chart. (2/14/05) added initialize-used-portion-of-chart
+;;     (3/4/12) quiet compiler.
 
 (in-package :sparser)
 
@@ -31,6 +32,7 @@
 
 
 (defun make-the-chart ()
+  (declare (special *the-chart*))
   (setq *the-chart* (make-a-chart)))
 
 (defun make-a-chart ()
@@ -58,7 +60,8 @@
 ;;;  per-run initializations
 ;;;--------------------------
 
-(defun re-Initialize-position-array ()
+(defun re-initialize-position-array ()
+  (declare (special *the-chart*))
   (let ((chart *the-chart*)
         position )
     (dotimes (n *number-of-positions-in-the-chart*)
@@ -80,6 +83,8 @@
 
 
 (defun initialize-used-portion-of-chart ()
+  (declare (special *first-chart-position* *the-chart*
+                    *next-chart-position-to-scan*))
   (let ((start *first-chart-position*)
         (end *next-chart-position-to-scan*))
     (when (> start end)
@@ -96,6 +101,8 @@
 ;;;---------------------------------------------
 
 (defun chart-position (number)
+  (declare (special *number-of-next-position* *position-array-is-wrapped*
+                    *first-chart-position* *the-chart*))
   (when (> number *number-of-next-position*)
     (error "The position ~A is beyond the end of the chart" number))
   (if *position-array-is-wrapped*
@@ -121,6 +128,7 @@
 ;;;--------------------------------------
 
 (defun chart-array-cell (number)
+  (declare (special *the-chart*))
   ;; syntactic sugar
   (aref *the-chart* number))
 
@@ -130,6 +138,7 @@
 ;;;--------------------------------------
 
 (defun still-in-the-chart (token-index)
+  (declare (special *position-array-is-wrapped* *first-chart-position*))
   ;; called by TTs to see where it can start.  We take it on
   ;; faith that they don't pass in a number beyond the end
   ;; of the chart
@@ -140,6 +149,9 @@
     t))
 
 (defun edge-is-still-in-chart (edge)
+  (declare (special *position-array-is-wrapped* *first-chart-position*
+                    *first-token-index-still-in-chart*
+                    *edge-resource-is-wrapped*))
   (let ((start-pos (pos-edge-starts-at edge)))
     (if *position-array-is-wrapped*
       (>= (pos-token-index start-pos)
@@ -153,6 +165,7 @@
 
 
 (defun chart-position-after (p)
+  (declare (special *the-chart*))
   (let ((array-index (pos-array-index p)))
     (cond ((= array-index *number-of-positions-in-the-chart*)
            ;; it's wrapping with the next scan
@@ -165,6 +178,7 @@
            (aref *the-chart* (1+ array-index))))))
 
 (defun chart-position-before (p)
+  (declare (special *the-chart*))
   (let ((position-index (pos-array-index p)))
     (if (= position-index 0)  ;; it just wrapped
       (aref *the-chart* (1- *number-of-positions-in-the-chart*))

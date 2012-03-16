@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1991  Content Technologies Inc.
+;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "display"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  0.5 May 2009
+;;;  Version:  0.5 March 2012
 
 ;; 0.1 (1/29 v1.8)  Added the key :ends-rather-than-starts? to Display-
 ;;      chart-edges.
@@ -16,6 +16,7 @@
 ;; 0.5 (1/13/94) debugged Display-chart-terminals explicit From case for a
 ;;      large chart
 ;;     (5/18/09) Added mixin-category to display-edge-as-tree
+;;     (3/4/12) quiet compiler
 
 (in-package :sparser)
 
@@ -55,6 +56,8 @@
                                  to
                                  ends-rather-than-starts?
                             &aux pos)
+  (declare (special *position-array-is-wrapped* *number-of-next-position*
+                    *next-array-position-to-fill*))
   (if (null from)
     (if *position-array-is-wrapped*
       (then
@@ -98,6 +101,8 @@
 (defun display-chart-terminals (&key (stream *standard-output*)
                                      from to
                                      &aux pos )
+  (declare (special *position-array-is-wrapped* *number-of-next-position*
+                    *next-array-position-to-fill*))
   (if (null from)
     (if *position-array-is-wrapped*
       (then
