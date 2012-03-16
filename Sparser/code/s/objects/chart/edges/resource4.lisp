@@ -11,7 +11,7 @@
 ;; 4.0 (1/24/95) inserted a call to long-term-ify/individual.
 ;;     (1/1/96) getting problems with it. (1/14-16) working on the problems,
 ;;      Grossly remodularized the routine.  (5/30) debugging that.
-;;     (3/4/12) Pulled out globals to own file to quiet compiler.
+;;     (3/4/12) Pulled out globals to own file to quiet compiler. More 3/15.
 
 (in-package :sparser)
 
@@ -32,6 +32,7 @@
 
 
 (defun initialize-edge-resource (&optional reason)
+  (declare (special *edge-just-done* *edge-waiting-on-scan*
   (let ( edge )
     (dotimes (n (if *edge-resource-is-wrapped*
                   *length-of-edge-resource*
@@ -86,6 +87,7 @@
   ;; that the "active region" of the chart will have moved far beyond the
   ;; edges that are reused.
   ;;
+  (declare (special *trace-edge-resource*))
   (let ((edge (aref *all-edges*
                     *position-of-next-available-edge-in-resource*))
         (next-index (incf *position-of-next-available-edge-in-resource*)))
@@ -126,6 +128,7 @@
   ;; and then we update the status information of from where in the
   ;; chart edges are valid. (Most of that occurs in the subroutine.)
 
+  (declare (special *text-out*))
   (let ((next-edge (edge# *position-of-next-available-edge-in-resource*)))
 
     (unless (deactivated? next-edge)
@@ -159,6 +162,7 @@
   ;; by the chart recycling, from Long-term-ify/edge-referents/at, which
   ;; is itself called from Bump-&-store-word. In the case of those calls
   ;; we get the position passed in, otherwise we calculate it.
+  (declare (special *trace-edge-resource*))
 
   (when *trace-edge-resource*
     (format t "~&Deactivating ~A~%" edge))
@@ -300,6 +304,7 @@
 
 (defun release-edge-to-resource (edge &optional reason position)
   ;; called by Initialize-edge-resource
+  (declare (special *trace-edge-resource*))
   (when *trace-edge-resource*
     (if position
       (format t "~%Releasing edge #~A~

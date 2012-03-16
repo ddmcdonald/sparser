@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "positions"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  1.3 February 2011
+;;;  Version:  1.3 March 2012
 
 ;; 1.1 (2/11 v1.8.1)  Added Position-precedes
 ;;     (5/12/93 v2.3) commented out an unfinished fn. 
@@ -14,7 +14,7 @@
 ;;     5/24 added Number-of-terminals-between
 ;;     (1/4/95) gave Print-position/terminal an option when the terminal was nil
 ;;     (1/9/07) Added without-package-locks wrapper to quiet Allegro
-;;     (2/8/11) Guarded them to allow Clozure to work. 
+;;     (2/8/11) Guarded them to allow Clozure to work. 3/3/12 Quiet compiler.
 
 (in-package :sparser)
 
@@ -96,6 +96,7 @@
 ;;;-------------------
 
 (defun position# (number)
+  (declare (special *the-chart*))
   (aref *the-chart* number))
 
 

@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005, 2010 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2010-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  1.8 December 2010
+;;;  Version:  1.8 March 2012
 
 (in-package :sparser)
 
@@ -27,18 +27,7 @@
 ;;     (4/26/09) Added find-or-make-category to work from types other than just symbol.
 ;;      Motivated by "(come) out of" polyword.
 ;; 1.8 (12/3/10) Incorporated CLOS class backing
-
-;;;--------------
-;;; accumulators
-;;;--------------
-
-(defvar *categories-defined* nil)  ;; all of them
-(defvar *referential-categories* nil)
-(defvar *mixin-categories* nil)
-(defvar *grammatical-categories* nil)
-(defvar *dotted-categories* nil)
-(defvar *form-categories* nil)
-(defvar *derived-categories* nil)
+;;     (3/2/12) moved accumulators to object2 to quiet compiler
 
 ;;;------
 ;;; find
@@ -64,6 +53,7 @@
 (defun find-or-make-category-object (symbol source)
   ;; core routine used by all the various sources for categories to
   ;; make the minimal object and have it cataloged.
+  (declare (special *all-intra-category-relationships-noticed?*))
   (unless (if *include-model-facilities*
             (referential-category-p symbol) ;; can happen in generated code
             nil)
