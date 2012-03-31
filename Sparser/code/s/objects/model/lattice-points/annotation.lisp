@@ -428,7 +428,7 @@
               *categories-without-realization-schema*)
       rule)
      (t
-      (break "no schema. What do we use for a component?")))))
+      (break "no schema associated with rule:~%  ~a" rule)))))
 
 
 ;; This is way ad-hoc. In a better world (with more time) these

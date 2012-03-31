@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "construct"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   1.4 November 2011
+;;;   Version:   1.5 March 2012
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 1.0 (10/23) promulgated the fact that the rules for polywords are
@@ -21,13 +21,16 @@
 ;;      rule derives to Changes-to-known-rule and Construct-cfr.
 ;; 1.4 (8/3/11) Added a :schema argument to permit overriding the default
 ;;      (which is set when working from an ETF).
-;; 1.5 (11/22/11) Letting a stipulated schema pass through the parameters
+;; 1.5 (11/22/11) Letting a stipulated schema pass through the parameters.
+;;     (3/16/12) quiet the compiler
+
 
 (in-package :sparser)
 
 
 (defun construct-cfr (lhs rhs form referent source
                       &optional schema-to-use)
+  (declare (special *schema-being-instantiated*))
   (let* ((r-symbol (gen-cfr-symbol))
          (cfr (make-cfr
                :symbol   r-symbol
@@ -62,7 +65,7 @@
   ;; duplications.
   ;;    So when the cfr is a list we have to locate and work on
   ;; the rule with the appropriate lhs.
-
+  (declare (special *schema-being-instantiated*))
   (when (listp cfr)
     (let ((list-of-cfrs cfr))
       (setq cfr (car (member lhs list-of-cfrs

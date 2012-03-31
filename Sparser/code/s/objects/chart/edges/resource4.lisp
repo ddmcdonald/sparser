@@ -32,7 +32,7 @@
 
 
 (defun initialize-edge-resource (&optional reason)
-  (declare (special *edge-just-done* *edge-waiting-on-scan*
+  (declare (special *edge-just-done* *edge-waiting-on-scan*))
   (let ( edge )
     (dotimes (n (if *edge-resource-is-wrapped*
                   *length-of-edge-resource*
