@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   1.5 February 1998
+;;;   Version:   1.5 March 2012
 
 ;; 1.1 (5/2/92 v2.2) Added short-forms
 ;; 1.2 (9/3 v2.3) added cases for referential categories and (9/7) for
@@ -13,7 +13,7 @@
 ;; 1.4 (12/1/94) adjusted the menu version to new menu treatment
 ;; 1.5 (6/20/95) made the menu printer sensitive to the version in the grammar menu
 ;;     (2/14/98) added symbol case to Princ-rule-term so it could be used 
-;;      for the cases in tree families.
+;;      for the cases in tree families. (3/16/12) quiet the compiler
 
 (in-package :sparser)
 
@@ -170,9 +170,6 @@
 ;;;---------------------------------------
 
 (defun princ-rewrite-rule/multipliers (cfr stream)
-  (let* ((lhs (cfr-category cfr))
-         (rhs (cfr-rhs cfr)))
-
   (princ-category (cfr-category cfr) stream)
   (write-string " -> " stream)
   (dolist (item (cfr-rhs cfr))
@@ -180,7 +177,7 @@
       (category (princ-category item stream))
       (word     (display-word   item stream))
       (polyword (display-polyword item stream)))
-    (write-string " " stream))))
+    (write-string " " stream)))
 
 
 ;;;----------------------
@@ -188,6 +185,7 @@
 ;;;----------------------
 
 (defun display-all-cfrs (&optional (stream *standard-output*))
+  (declare (special *context-free-rules-defined*))
   (dolist (cfr *context-free-rules-defined*)
     (terpri stream)
     (format stream "~A  " (rule-number/cfr cfr))
@@ -234,6 +232,7 @@
 
 
 (defun print-for-menu/cfr (r  &optional (stream *standard-output*))
+  (declare (special *cfr-selection-dialog*))
   (let ((*max-length-of-rule-in-menu*
          (if *cfr-selection-dialog*
            75

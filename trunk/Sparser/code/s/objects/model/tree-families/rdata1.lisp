@@ -39,6 +39,10 @@
 ;;      that are in the category's parents. 9/6/11 propogated change to
 ;;      override-label in decode-rdata-mapping. 12/10/11 added :verb to the
 ;;      set of rdata keywords. 
+;;      (2/11/12) Took :verb out of the keywords because it interferes with
+;;      the binding of the parameters in dereference-rdata by blocking the
+;;      binding of :main-verb (created a preference for :verb), so no verbs
+;;      were getting realizations. 
 
 (in-package :sparser)
 
@@ -205,7 +209,7 @@
 
     (unless (member key
                     '(:tree-family :mapping
-                      :main-verb :verb :common-noun :proper-noun
+                      :main-verb :common-noun :proper-noun
                       :quantifier :adjective :interjection
                       :adverb :preposition :word :standalone-word
                       :special-case-head
@@ -237,7 +241,6 @@
                           &key ((:tree-family tf-name))
                                mapping
                                ((:main-verb    mvb-name))
-                               ((:verb         mvb-name))
                                ((:common-noun  cn-name))
                                ((:proper-noun  pn-name))
                                standalone-word
