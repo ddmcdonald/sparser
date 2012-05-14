@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "dates"
 ;;;   Module:  "model;core:time:"
-;;;  version:  2.0 March 2005
+;;;  version:  2.0 May 2012
 
 ;; 1.0 (12/15/92 v2.3) setting up for new semantics
 ;; 1.1 (9/18/93) actually doing it
@@ -12,6 +12,7 @@
 ;;     (1/2/96) added other weekday+date rule
 ;; 2.0 (9/27/99) Started completely reworking the design to take advantage
 ;;      of psi.  (3/11/05) Added CA check for stranded years.
+;;     (5/14/12) Added "date" to supply an empty head in, e.g. "today's date"
 
 (in-package :sparser)
 
@@ -36,7 +37,8 @@
                           (n3 . year)
                           (term3 . year)
                           (n4 . weekday)
-                          (term4 . weekday))))
+                          (term4 . weekday))
+                :common-noun "date"))
 
 
 ;;;---------------
