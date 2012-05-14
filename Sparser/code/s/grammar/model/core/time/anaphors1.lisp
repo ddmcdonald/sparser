@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-12 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
 ;;;     File:  "anaphors"
 ;;;   Module:  "model;core:time:"
-;;;  version:  1.2 March 2011
+;;;  version:  1.2 May 2012
 
 ;; 1.1 (10/19/94) completely reconceptualized.  10/30 fixed bad v/r
 ;;     (8/28/95) added simple phrases with sequencers
@@ -16,6 +16,8 @@
 ;;      with 'modifier' (or perhaps the ETF needs to be changed ??)
 ;; 1.3 (3/15/11) Changed the rule categories of the 'calculated' categories
 ;;      to be just 'time' by changing their :instantiates values
+;; 1.4 (5/14/12) Extended realization of calculated day to accommodate
+;;      "today's date", where the "date" is ignored.
 
 (in-package :sparser)
 
@@ -42,9 +44,18 @@
 (define-category  calculated-day 
   :specializes calculated-time
   :instantiates time
-  :binds ((name :primitive word))
+  :binds ((name :primitive word)
+          (actual-date calculated-day))  ;; should be time if we calculated it
   :index (:key name)
-  :realization (:standalone-word name))
+  :realization (:standalone-word name
+                :tree-family item+idiomatic-head
+                :mapping ((np . :self)
+                          (modifier . calculated-day)
+                          (np-head . date)
+                          (result-type . :self)
+                          (item . actual-date))))
+
+              
 
 
 ;;;---------
