@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "amount-change verbs"
 ;;;   module:  "model;core:amounts:"
 ;;;  Version:  December 1995
 
 ;; initiated 12/22/95. Finished 12/26
-;; (3/31/05) Added noun variants in ad-hoc but workable way.
+;; (3/31/05) Added noun variants in ad-hoc but workable way. 4/1/12 blocked
+;; out two routines that depend on the workbench.
 
 (in-package :sparser)
 
@@ -180,13 +181,16 @@
 
 
 
-;;--- The forms used within the autodef to setup the widget-state
-;;    that gets the morphology of the verb checked, etc.
 
-(defun define-change-in-amount-verb/up/autodef (string)
-  (let ((direction (find-individual 'direction :name "up")))
-    (unless direction
-      (break "Bug in the load order. Directions aren't defined yet"))
+(unless *nothing-Mac-specific*
+
+  ;;--- The forms used within the autodef to setup the widget-state
+  ;;    that gets the morphology of the verb checked, etc.
+
+  (defun define-change-in-amount-verb/up/autodef (string)
+    (let ((direction (find-individual 'direction :name "up")))
+      (unless direction
+        (break "Bug in the load order. Directions aren't defined yet"))
     (let ((individual-for-the-verb
            (define-individual 'change-in-amount-verb
              :name string
@@ -210,10 +214,10 @@
       :self-contained )))
 
 
-(defun define-change-in-amount-verb/down/autodef (string)
-  (let ((direction (find-individual 'direction :name "down")))
-    (unless direction
-      (break "Bug in the load order. Directions aren't defined yet"))
+  (defun define-change-in-amount-verb/down/autodef (string)
+    (let ((direction (find-individual 'direction :name "down")))
+      (unless direction
+        (break "Bug in the load order. Directions aren't defined yet"))
     (let ((individual-for-the-verb
            (define-individual 'change-in-amount-verb
              :name string
@@ -235,3 +239,5 @@
        "for an amount that is decreasing")  ;; purpose sting
                              
       :self-contained )))
+
+) ;; close unless 

@@ -26,6 +26,7 @@
 (define-category amount-at-time
   :specializes amount
   :instantiates amount
+  :rule-label amount
   :binds ((amount . (:or amount number))
           (time . time))
   :realization ((:tree-family np-and-postmodifier
