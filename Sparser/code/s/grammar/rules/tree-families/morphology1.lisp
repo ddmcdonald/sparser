@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.9 September 2011
+;;;  version:  1.9 April 2012
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -79,7 +79,7 @@
 ;;      lhs labeling with the function override-label, which originates in a new
 ;;      field, :rule-label, on categories. 
 ;; 1.10 (9/13/11) modified assign-brackets-as-a-common-noun to leave off the
-;;      np]. bracket.
+;;      np]. bracket.  4/2/12 #ignored noun/verb-ambiguous?
 
 (in-package :sparser)
 
@@ -202,7 +202,8 @@
           (eq (ba-ends-after brackets)
               (find-bracket :end :after 'mvb)))))))
 
-(defun noun/verb-ambiguous? (word)
+#+ignore
+(defun noun/verb-ambiguous? (word) ;; verb/noun-category-name undefined
   (let ((ambiguity
          (cadr (member :dis-multiple-pos
                        ;; this encoding comes from lingsoft data. ///make it generic
