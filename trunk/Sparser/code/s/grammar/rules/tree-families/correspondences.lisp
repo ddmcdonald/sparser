@@ -1,25 +1,69 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2010-2011 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2010-2012 David D. McDonald  All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "correspondences"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.2 March 2011
+;;;  version:  0.3 April 2012
 
 ;; initiated 10/5/09. Expanded 11/10. 
 ;; (12/9/10) Reworking most of this to bring it in sync what what rnodes
 ;;  encode.
 ;; 0.2 (1/25/11) Removed need to check against core-omar.
 ;;     (3/22/11) Starting to populate it. Continuing through 4/8/11.
+;; 0.3 (4/22/12) The defvar doesn't cleanly update in Clozure so switched
+;;      to hashtable on the etf.
 
 (in-package :sparser)
 
 ;;;----------------------
 ;;; table of ETF to Tree
 ;;;----------------------
+#|  Read by mumble::map-etf-to-dtn 
+  in /Mumble/derivation-trees/conversions.lisp
 
-(defvar *etf-name-to-phrase*
+Structure is an alist on the nuame of the etf accessed by has-mumble-mapping?
+
+For a simple case of a phrase, it's
+   (<etf name> <name of mumble phrase> <arg mapping>)
+When we need adjunction, it's
+   (<etf name> :adjoin <nome of AP>
+      <arg going to base> <arg to be adjoined>)
+
+
+|#
+
+(defvar *etf-to-mumble-mapping* (make-hash-table) 
+ "Ulimately has one entry for every ETF in Sparser's grammar.
+ The format is ETF name in the car. Mumble's data is in the
+ cdr, starting with the resource (notice the use of a symbol
+ in the :mumble package) and an alist of the binary arguments
+ from Sparser's side with their correspondences for the phrase
+ on Mumble's side.")
+
+
+(defun add-etf-mapping (mapping-data)
+  (let* ((etf-name (car mapping-data))
+         (data (cdr mapping-data))
+         (etf (exploded-tree-family-named etf-name)))
+    (unless etf
+      (error "Can't find an etf named ~a" etf-name))
+    (setf (gethash etf *etf-to-mumble-mapping*) data)
+    etf))
+
+(defmethod has-mumble-mapping? ((etf-name symbol))
+  (let ((etf (exploded-tree-family-named etf-name)))
+    (unless etf
+      (error "Can't find an etf named ~a" etf-name))
+    (has-mumble-mapping? etf)))
+
+(defmethod has-mumble-mapping? ((etf exploded-tree-family))
+  (gethash etf *etf-to-mumble-mapping*))
+
+
+;; probably needs a wrapper
+(mapcar #'add-etf-mapping
   '(
     ;; from pre-head-np-modifiers
     (quantity+kind  mumble::qualifier-head 
@@ -33,26 +77,18 @@
     (np-and-postmodifier  mumble::head-qualifier
      ((head . mumble::head) (arg . mumble::qualifier)))
 
+    ;; from of
+    (simple-of-complement :adjunct  mumble::of-complement
+      head arg)
+
     ;; from transitive
     (transitive  mumble::SVO
      ((head . ((head . mumble::v) (arg . mumble::o)))
       (arg . mumble::s)))
 
-    )
-  "Ulimately has one entry for every ETF in Sparser's grammar.
- The format is ETF name in the car. Mumble's data is in the
- cdr, starting with the resource (notice the use of a symbol
- in the :mumble package) and an alist of the binary arguments
- from Sparser's side with their correspondences for the phrase
- on Mumble's side.")
+    ))
 
-
-
-(defmethod has-mumble-mapping? ((etf exploded-tree-family))
-  (has-mumble-mapping? (etf-name etf)))
-
-(defmethod has-mumble-mapping? ((etf-name symbol))
-  (assoc etf-name *etf-name-to-phrase*))
+ 
 
 
 
