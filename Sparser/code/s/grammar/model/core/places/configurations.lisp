@@ -1,12 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2012  David D. McDonald  -- all rights reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "configurations"
 ;;;   Module:  "model;core:places:"
-;;;  version:  September 2011
+;;;  version:  March 2012
 
-;; initated 8/3/11. Tweaked fit into DH 9/12
+;; initated 8/3/11. Tweaked fit into DH 9/12. 3/31/12 fixed obscure rule
+;; creation by noticing that one of the label assignments was missing in
+;; the second realization of fork.
 
 (in-package :sparser)
 
@@ -40,6 +42,7 @@
                            (np-head . :self)))
                 (:tree-family np-common-noun/indefinite
                  :mapping ((np . location)
+                           (n-bar . :self)
                            (np-head . :self)))
                 (:common-noun "fork")))
 
