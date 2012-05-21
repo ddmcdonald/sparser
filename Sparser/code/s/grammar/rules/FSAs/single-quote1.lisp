@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991,1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2012 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  1.1 October 1994
+;;;  Version:  1.1 April 2012
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
 ;; 1.1 (7/25/94) added 're' and 'll'   8/16 added 've'  9/6 'm'.
-;;     typo 10/24
+;;     typo 10/24. (4/22/12) Compiler fix.
 
 (in-package :sparser)
 
@@ -34,12 +34,12 @@
     (if rs
       (setf (rs-fsa rs)
             (cons 'apostrophe-fsa (rs-fsa rs)))
-      (setf (label-rule-set word::single-quote)
+      (setf (word-rule-set word::single-quote)
             (make-rule-set :backpointer word::single-quote
                            :fsa '( apostrophe-fsa )))))
   (let* ((word
           (define-punctuation/expr 'single-quote #\'))
-         (rs (label-rule-set word)))
+         (rs (word-rule-set word)))
     (setf (rs-fsa rs) '( apostrophe-fsa ))))
 
 

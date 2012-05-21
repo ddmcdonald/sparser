@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994, 2010 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2010-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "grammar;rules:paragraphs:"
-;;;  Version:  2.2 December 2010
+;;;  Version:  2.2 April 2012
 
 ;; 1.1 (10/25/93 v2.0) [-> "1"]  New design for section markers
 ;; 1.2 (1/5/94 v2.3) fleshing out the object now that it's being used
@@ -16,6 +16,7 @@
 ;; 2.2 (12/5/10) Renamed the struct to avoid clash with the CLOS class backing the
 ;;      form category named paragraph. Calling it paragraph-structure, which
 ;;      isn't all that unnatural. Propagated changes through this file. 
+;;      4/1/12 Couple of incorrect accessors.
 
 (in-package :sparser)
 
@@ -69,10 +70,10 @@
   (princ (paragraph-structure-number obj) stream)
   (when (paragraph-structure-start obj)
     (format stream " p~A - "
-            (pos-token-index (paragraph-start obj))))
+            (pos-token-index (paragraph-structure-start obj))))
   (when (paragraph-structure-end obj)
     (format stream "p~A "
-            (pos-token-index (paragraph-end obj))))
+            (pos-token-index (paragrap-structureh-end obj))))
   (write-string ">" stream))
 
 

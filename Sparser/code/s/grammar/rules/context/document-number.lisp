@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "document number"
 ;;;   Module:  "analyzers;context:"
-;;;  Version:  December 1993
+;;;  Version:  December 1993 (4/12)
 
 ;; populated 6/25/92
 ;; (12/28 v2.3) stubbed another case
 ;; (12/27/93) Put in the case for regular DJNS articles (AN field)
+;; (4/1/12) stubbed find-year-from-last-two-digits to quiet compiler
 
 (in-package :sparser)
 
@@ -81,6 +82,9 @@
                        :day-of-the-month dom
                        :year year)))
           date )))))
+
+(defun find-year-from-last-two-digits (year-digits)
+  (break "this is a stub"))
 
 
 
