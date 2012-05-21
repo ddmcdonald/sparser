@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  1.0 February 2005
+;;;  version:  1.0 April 2012
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
 ;; 1.0 (3/21/00) Started make-over to lattice points. Flushed indexes.
 ;;     (4/29) Added realization for "three companies".
-;;     (2/2/05) Added commentary.
+;;     (2/2/05) Added commentary. (4/1/12) exposed collection-of-type/dh
+;;     to quiet compiler
 
 (in-package :sparser)
 
@@ -58,9 +59,10 @@
 ;;;-----------------------------
 ;;; predicates over collections
 ;;;-----------------------------
-
+|#
 (defun collection-of-type/dh (collections-dh-entry  &rest possible-types )
-  (let ( instances  instance   )
+  (break "stub"))
+#|  (let ( instances  instance   )
     (dolist (item collections-dh-entry)
       (setq instance (first item))
       ;(break)
