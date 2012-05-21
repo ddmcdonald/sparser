@@ -271,7 +271,7 @@ e.g. via DM&P or Fire.
     (unless known? ;; in which case we probably know a lot more than
       ;; we're going to provide here. 
       (let ((word (resolve-string-to-word/make pname)))
-        (etypecase word
+        (typecase word
           (word 
            (setf (label-plist word)
                  `(:function-word ,form-category ,@(label-plist word))))
@@ -600,7 +600,7 @@ e.g. via DM&P or Fire.
 
       ;; "firm" is four-ways ambiguous
 
-      (t (push-debug `(,word ,combinations ,clauses))
+      (t (push-debug `(,lemma ,combinations ,clauses))
          (error "Unanticipated POS combination: ~a" combinations)))))
 
 
