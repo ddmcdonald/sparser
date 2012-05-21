@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.5 August 2011
+;;;   Version:   1.5 May 2012
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -24,6 +24,8 @@
 ;;      for np-internal instances: "a few ...".
 ;; 1.5 (8/30/11) Adding more form cases to the quantifier rule. 8/31 Added a rule
 ;;      for the word itself to give it the quantifier object as a referent.
+;;     (5/17/12) Discovered a bunch of ordinary quantifiers were stranded in the
+;;      other version of this file. 
 
 (in-package :sparser) 
 
@@ -36,11 +38,28 @@
 
 
 (defun define-quantifier (string &key brackets rules)
+  "This creates an object for the quantifier, an individual created
+ from the quantiifer category just below. This is the hook that lets
+ us (eventually) create a real quantification machanism using a full
+ version of what's in /rules/syntax/quantifiers.lisp.
+   1. We define the word as a function word with form and brackets.
+   2. We create a rule for the word that just rewrites it as itself
+ but now with this specific quantifier individual as its referent.
+   3. We look at the rules field and build them as specified
+    A. 'det' -- the quantifier acts as a determiner. We write a form rule 
+ against noun and np that call the quantify method to convert the
+ referent into an instance of quantified (/// which isn't really right
+ since it's still an instance of what it is, but now it has this
+ extra type. Same technical problem of modality or hedging at the
+ clause level
+    B. 'of' -- the word is typically followed by 'of'. See note in
+ code. ///this loses the partitioning aspect of the quantification.
+"
   (let* ((word (define-function-word string
                  :brackets brackets
                  :form 'quantifier)))
 
-    (if *include-model-facilities*
+    (when *include-model-facilities*
       (let ((object (find-individual 'quantifier :word word))
             cfrs )
         (unless object
@@ -75,48 +94,63 @@
           ;; see the rule, which is an unnecessary source of complexity
           (let* ((string (string-append string " of"))
                  (pw (define-polyword/expr string))
-                 (cfr (def-cfr/expr 'quantifier-of `(,string)
+                 (cfr (def-cfr/expr 'quantifier-of `(,pw)
                         :form 'det
                         :referent object)))
             (push cfr cfrs)))
+
+        ;;///  'the'  Swallow the preceding 'the' and add a 'definite'
+        ;; type to the result. 
 			  
         (push-onto-plist object cfrs :rules)
         object )
 
-      (let ((cfr (def-form-rule/resolved 
-                       `(,word ,category::noun)      ;; rhs
-                       category::np
-                       nil )))
-        cfr))))
+      )))
 
-;(when cl-user::*psi-2009*
-;  (break "quantifiers"))
 
-;; Should move these to a dossier, but my poor memory suggests that
+
+
+(define-quantifier "all"     :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "any"     :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "both"    :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "each"    :brackets '( ].quantifier  .[np ))
+(define-quantifier "enough"    :brackets '( ].quantifier  .[np ))
+(define-quantifier "every"   :brackets '( ].quantifier  .[np ))
+(define-quantifier "few"     :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "much"    :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "many"    :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "more"    :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "most"    :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "several" :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "some"    :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "such"    :brackets '( ].quantifier  .[np ))
+
+
 (define-quantifier "another" :brackets '( ].quantifier  .[np ) :rules '(det of))
   
-;; //?? Make special note of the cases that can take a preceding "the" ??
   
-(define-quantifier "additional" :brackets '( ].quantifier  .[np ) :rules '(det))
-(define-quantifier "other"      :brackets '( ].quantifier  .[np ) :rules '(det))
-
+(define-quantifier "additional" :brackets '( ].quantifier  .[np ) :rules '(det the))
+(define-quantifier "other"      :brackets '( ].quantifier  .[np ) :rules '(det the))
+(define-quantifier "others"     :brackets '( ].quantifier  .[np ) :rules '(the)))
 
 ;;///////////////// don't belong here! want to be 'nominals' or some such
 (define-function-word "something" :brackets '( ].quantifier  .[np ))
-(define-function-word "nothing"   :brackets '( ].quantifier  .[np ))
-(define-function-word "anything"  :brackets '( ].quantifier  .[np ))
-  
-(define-function-word "others"  :brackets '( ].quantifier  .[np  np]. ))
-  
 (define-function-word "someone"  :brackets '( ].quantifier  .[np  np]. ))
-(define-function-word "everyone" :brackets '( ].quantifier  .[np  np]. ))
-(define-function-word "anyone"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "nothing"   :brackets '( ].quantifier  .[np ))
 (define-function-word "no one"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "anything"  :brackets '( ].quantifier  .[np ))
+(define-function-word "anyone"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "everything"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "everyone" :brackets '( ].quantifier  .[np  np]. ))
+
   
 
-(define-function-word "not"  :brackets '( ].quantifier ))  ;; ??
+(define-quantifier "no" :brackets '( ].quantifier )) 
+
+(define-quantifier "not"  :brackets '( ].quantifier ))  ;; ??
   ;; gets you out of a problem with "...be careful not to..."
   ;; where without this there's a break before "to"
 
+(define-quantifier "none" :brackets '( ].quantifier  phrase.[ ) :rules '(of))
 
 
