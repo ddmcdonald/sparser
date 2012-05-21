@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "category preferences"
 ;;;    Module:   "grammar:model:core:"
-;;;   Version:   June 1993
+;;;   Version:   April 2012
 
 ;; broken out of drivers;chart:psp:trigger4 6/4/93 v2.3
+;; Commented out stranded function 4/1/12
 
 (in-package :sparser)
 
@@ -50,9 +51,9 @@
              (setq comp-poss edge))
             ((eq category category::company-head/s)
              (setq co-head/s edge))
-            ((self-referential category)
-             (setq self-ref edge))
-            ((eq category category::ordinal)
+;;             ((self-referential category) Not defined. Stranded?
+;;              (setq self-ref edge))  See self-referential-word ??
+            ((eq category category::ordinal) 
              (setq ordinal edge))
             ((eq category category::sequencer)
              (setq sequencer edge))
