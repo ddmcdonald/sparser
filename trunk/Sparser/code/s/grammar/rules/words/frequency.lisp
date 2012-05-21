@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2010-2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2010-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  0.4 July 2011
+;;;  Version:  0.4 March 2012
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -17,7 +17,7 @@
 ;; 0.4 (6/19/10) Folding in Porter Stemmer. 6/30 tweaking that and the
 ;;     printers. 7/15/10 implementing tracking freq in different documents.
 ;;     7/23-25 folding in #<document> object. Refining ...8/16.
-;;     7/28/11 Abstracted out def-word to its own file.
+;;     7/28/11 Abstracted out def-word to its own file. 3/31/12 fixed fn call.
 
 (in-package :sparser)
 
@@ -400,10 +400,12 @@
     (corpus-length &optional (number-of-parts 12) (table *word-frequency-table*))
   (let* ((words (readout-wf-table table))
 	 (sorted (sort-word-frequency-table-most-frequent-first words)))	 
-    (word-frequency-corpus-distribution-by-fractions1 corpus-length sorted)))
+    (word-frequency-corpus-distribution-by-fractions1
+     corpus-length number-of-parts sorted)))
 
-(defun word-frequency-corpus-distribution-by-fractions1 (corpus-length number-of-parts
-							 sorted)
+(defun word-frequency-corpus-distribution-by-fractions1 (corpus-length
+                                                         number-of-parts
+                                                         sorted)
   (setq *word-frequency-corpus-distributions* nil)
   (let ((instances-per-fraction (round (/ corpus-length number-of-parts)))
 	(iteration 0)	 
