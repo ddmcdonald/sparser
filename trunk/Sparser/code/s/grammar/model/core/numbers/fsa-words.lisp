@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1999  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1999,2012  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "fsa words"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  0.3 July 2007
+;;;  Version:  0.3 April 2012
 
 ;; initiated (redesigned from scratch) 11/30/93 v2.3, finished the first
 ;; version with stubs for the multi-word case 12/6.  Fixed a bug 1/14/94.
@@ -17,7 +17,8 @@
 ;;     (9/20/99) Adjusted Apply-multiplier to also make an illions-distribution
 ;;      for the number.
 ;; 0.3 (7/16/07) Added alternative to just take them as a sequence rather
-;;      than multiplying them out as a number
+;;      than multiplying them out as a number.  4/1/12 blocked call to undefined
+;;      fn for after commas.
 
 (in-package :sparser)
 
@@ -125,8 +126,8 @@
   ;; check for comma
   (if (eq :punctuation (pos-capitalization starting-position))
     (case (pos-terminal starting-position)
-      (word::comma
-       (look-for-number-words-beyond-comma starting-position))
+;;       (word::comma  -- follow on here isn't defined
+;;        (look-for-number-words-beyond-comma starting-position))
       (otherwise
        ;; assume the punctuation terminates the number sequence
        starting-position ))
