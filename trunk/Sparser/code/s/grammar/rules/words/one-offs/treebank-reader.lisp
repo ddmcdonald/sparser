@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(S2) -*-
 ;;; Copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2011  David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2011-2012  David D. McDonald  -- all rights reserved
 ;;; $Id$
 ;;;
 ;;;     File: /grammar/rules/words/one-offs/treebank-reader.lisp
-;;;  version: February 2011
+;;;  version: March 2012
 
 ;; (2/9/11) Wrapped the mapcar for the top-level calls into a function that
 ;;  has to be called. The 'pp' function it creates conflicts with the 'pp'
 ;;  abbreviation for invoking the parser when loaded into a case-insensitive
-;;  lisp such as Clozure.
+;;  lisp such as Clozure Found another mispatch in accessor and changed the
+;;  struct's prefix to #: notation.
 
 (in-package :sparser)
 
@@ -138,7 +139,7 @@
 ;;;---------
 
 (defstruct (immediate-constituent-pattern
-	    (:conc-name "icp-")
+	    (:conc-name #:icp-)
 	    (:print-function
 	     (lambda (icp stream depth)
 	       (declare (ignore depth))
@@ -631,8 +632,9 @@
     (dolist (tag-symbol *pos-tags*)
       (let ((entry (gethash tag-symbol symbol-to-pos-tags)))
         (when entry
-          (write-pos-entry tag-symbol entry s))))))
-#|
+          ;;(write-pos-entry tag-symbol entry s)
+          )))))
+#|  /// This is where everything left off
 (defun write-pos-entry (tag-symbol list-of-words s)
   (let ((tag-name (string-downcase (symbol-name tag-symbol)))
 	(words (
@@ -654,7 +656,7 @@
        (let ((eof? nil)
              (sexp nil))
          (loop while (not eof?) do
-              (setq sexp (re.ad stream nil :eof))
+              (setq sexp (read stream nil :eof))
               (when (eq sexp :eof) (return))
               (readout-tb-terminals sexp))))))
 
