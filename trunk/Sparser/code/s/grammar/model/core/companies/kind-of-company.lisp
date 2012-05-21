@@ -75,7 +75,9 @@
 
 
 (defun define-kind-of-company-phrase (multi-word-string)
-  ;; Called from Autodefine-word.  
+  ;; Called from Autodefine-word.
+  (break "stub -- function has flit")
+  #+ignore
   (define-by-filling-out-an-etf
     :tree-family 'modifier-creates-individual
     :category 'kind-of-company/phrase
@@ -89,6 +91,8 @@
                                     mapping)
   (declare (ignore mapping))
   (let ((category-name (symbol-name (cat-symbol *rdt/result-category*))))
+    (break "stub -- function isnt' around anymore")
+    #+ignore
     (save-definition-of-a-category
      stream-to-standard-dossier
      category-name             ;; the one being defined
