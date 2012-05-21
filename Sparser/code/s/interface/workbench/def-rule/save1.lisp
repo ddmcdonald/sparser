@@ -26,7 +26,7 @@
 ;;; Writing the rule out to a file
 ;;;--------------------------------
 
-(defun rdt/Save-new-rule ( &key (mapping *rdt/mapping*)
+(defun rdt/save-new-rule ( &key (mapping *rdt/mapping*)
                                 (etf *rdt/selected-schema*) )
 
   ;; Called from rdt/Readout-rule-tableau, which is that the 'evaluate'
@@ -87,7 +87,7 @@
 
 
 
-
+#+ignore   ;; Lambda-variable design shifted
 (defun writeout-dereferenced-mapping-for-revival (mapping stream)
   (format stream "~&~9,3T(")
   (do* ((remaining-pairs mapping (cdr remaining-pairs))
