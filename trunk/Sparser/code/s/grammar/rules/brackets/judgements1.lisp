@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2003,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2003,2011-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.8 August 2011
+;;;  Version:  1.8 May 2012
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -40,7 +40,8 @@
 ;; 1.7 (2/10/10) Added a check for ].quantifier in the ends-the-segment? test.
 ;;      Covers situations like "a few ...". Extended adverbs the same way.
 ;;      (3/3/10) Elaborated the quantifier case to include checking for a leading adverb.
-;; 1.8 (8/3/11) Explicitly incorporating noun/verb ambiguous brackets.
+;; 1.8 (8/3/11) Explicitly incorporating noun/verb ambiguous brackets. 5/17/12 Another
+;;      adjective case. 
 
 (in-package :sparser)
 
@@ -219,6 +220,7 @@
 
         ((eq ] ].adjective)
          (cond ((eq bracket-opening-segment mvb.[) t)
+               ((eq bracket-opening-segment preposition.[) nil)
                (t (push-debug `(,*bracket-opening-segment* ,*bracket-closing-segment*))
                   (break "Next case: does ].adjective end the segment"))))
           
