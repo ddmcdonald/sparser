@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994,1995,1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "section rule"
 ;;;   Module:  "grammar;rules:paragraphs:"
-;;;  Version:   2.4 March 2010
+;;;  Version:   2.4 April 2012
 
 ;; initiated 8/90
 ;; 1.1 (10/26/91 v2.0) completely overhauled.
@@ -24,7 +24,7 @@
 ;;      not paired and so the pause-check has to be done here.
 ;;     (1/9) added If-there-never-were-any-sections-do-after-para-actions
 ;; 2.4 (3/16/10) Folded in extension for prior/after pointers, reverted to the
-;;      struct to avoid PSI propblems.
+;;      struct to avoid PSI propblems. 4/1/12 Wrong paragraph accessors fixed.
 
 (in-package :sparser)
 
@@ -80,8 +80,8 @@
          (word-arg-is-an-edge? (edge-p word)))
     (setq *next-paragraph* new-para)
 
-    (setf (paragraph-number new-para) number)
-    (setf (paragraph-start new-para)
+    (setf (paragraph-structure-number new-para) number)
+    (setf (paragraph-structure-start new-para)
           (if word  ;; its omitted in a call from Draw...
             (typecase word  ;; but not from Establish...
               (word position-before)
@@ -170,7 +170,7 @@
       (setq position-after (pos-edge-starts-at position-after)))
     
     (let* ((p *current-paragraph*)
-           (start-pos (paragraph-start p)))
+           (start-pos (paragraph-structure-start p)))
       (tr :paragraph-finish p start-pos position-after)
       
       (if (eq position-after
@@ -185,7 +185,7 @@
           (decf *number-of-paragraphs-so-far*))
         
         (else
-          (setf (paragraph-end p) position-after)
+          (setf (paragraph-structure-end p) position-after)
           
           (unless *nothing-Mac-specific*
 	    (update-workbench)
@@ -237,8 +237,8 @@
 
 (defun sort-paragraphs (i1 i2)
   ;; called from Sort-individuals-alphabetically
-  (let ((number1 (paragraph-number i1))
-        (number2 (paragraph-number i2)))
+  (let ((number1 (paragraph-structure-number i1))
+        (number2 (paragraph-structure-number i2)))
     (when (equal number1 number2)
       ;; if they're out of sync with the design the values could
       ;; be anything

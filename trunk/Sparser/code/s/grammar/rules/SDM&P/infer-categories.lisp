@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2012 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 
 ;;;      File: "infer categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: August 2011
+;;;   Version: April 2012
 
 ;; Initiated 9/4/07 on code from 8/16/07 that burns-in the assumption that
-;; the value is the head-line. Updated calls 8/7/11.
+;; the value is the head-line. Updated calls 8/7/11. Tweaked call name 4/1/12
 
 (in-package :sparser)
 
@@ -20,7 +20,7 @@
   ;; and embed it in this code
   (tr :top-of-bind-open-var open-relation value)
   (if (typep open-relation 'psi)
-    (let* ((lp (psi-lattice-point open-relation))
+    (let* ((lp (psi-lp open-relation))
            (open-in (lp-variables-free lp)))
       (tr :relation-open-in open-in)
       (if (= 1 (length open-in))

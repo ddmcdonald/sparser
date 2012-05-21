@@ -15,7 +15,7 @@
 
 #|(define-completion-action (punctuation-named #\:)
                           'header-check
-                          'check-for-capitalized-header-before-colon) |#
+                          'check-for-capitalized-header-before-colon) 
 
 (defun check-for-capitalized-header-before-colon (colon
                                                   pos-before pos-after)
@@ -52,4 +52,4 @@
        (t
         ;; some other purpose for the colon
         (return))))))
-
+|#
