@@ -1,15 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;versions:v2.3:loaders:"
-;;;  version:  February 2010
+;;;  version:  April 2010
 
 ;; 4/3/97 added a case for dm&p. 8/17/97 added lots of cases as part of preparing
 ;; a license with the segmenter but not the model.  2/22/10 added construct-
-;; temporary-number to support :just-bracketing mode
+;; temporary-number to support :just-bracketing mode. Added bunch more 4/1/12.
 
 (in-package :sparser)
 
@@ -23,6 +23,15 @@
 (when *nothing-Mac-specific*
   (defun launch-sparser-menus ())
   (defun increment-line-count ())
+  (defun synchronize/should-we-pause? (sm &optional start-edge end-edge ))
+  (defun update-workbench ())
+  (defun rtd/shutdown ())
+  (defun warp-announcement-widgets-off-screen ())
+  (defun rdt/gloss-rules-created ())
+  (defun announce-effect-of-rule-definition ())
+  (defun slvd/prepare-for-save-process ())
+  (defun write-to-text-window (*NL-as-string* position)
+    (declare (ignore (write-to-text-window *NL-as-string* position))))
   )
 
 (unless *include-model-facilities*
