@@ -41,7 +41,7 @@
 ;;      Covers situations like "a few ...". Extended adverbs the same way.
 ;;      (3/3/10) Elaborated the quantifier case to include checking for a leading adverb.
 ;; 1.8 (8/3/11) Explicitly incorporating noun/verb ambiguous brackets. 5/17/12 Another
-;;      adjective case. 
+;;      adjective case. And another 5/26, also fixed indentation.
 
 (in-package :sparser)
 
@@ -128,166 +128,168 @@
          (previous-word (word-before position))
          (ends-the-segment?
 	  (cond
-	    ((eq ]  phrase].)   t)
+           ((eq ]  phrase].)   t)
           
-	    ((eq ]  ].phrase)   t)
+           ((eq ]  ].phrase)   t)
           
-	    ((eq ]  np].)  t)
+           ((eq ]  np].)  t)
 	  
-	    ((eq ] ].proper-noun) t)
+           ((eq ] ].proper-noun) t)
 
-	    ((eq ] ].quantifier)
-	     (if (or (eq (first *bracket-opening-segment*) .[np )
-		     (eq (first *bracket-opening-segment*) .[article )
-		     (eq bracket-opening-segment .[adverb)) ;; "very few"
-		   nil
-           t))
+           ((eq ] ].quantifier)
+            (if (or (eq (first *bracket-opening-segment*) .[np )
+                    (eq (first *bracket-opening-segment*) .[article )
+                    (eq bracket-opening-segment .[adverb)) ;; "very few"
+              nil
+              t))
 
-	    ((eq ] ].preposition) 
-	     (if (eq (car *bracket-opening-segment*) mvb.[)
-		   ;; We've just finished a segment because a verb said to do so.
-           ;; In principle there could be interveening adverbs, so this may
-           ;; need tuning if they aren't already folded into the VG that
-           ;; we've just finished. 
-           (check-for-verb-preposition-pair position)
-           t))
+           ((eq ] ].preposition) 
+            (if (eq (car *bracket-opening-segment*) mvb.[)
+              ;; We've just finished a segment because a verb said to do so.
+              ;; In principle there could be interveening adverbs, so this may
+              ;; need tuning if they aren't already folded into the VG that
+              ;; we've just finished. 
+              (check-for-verb-preposition-pair position)
+              t))
 
-	    ((eq ] preposition].) t)
+           ((eq ] preposition].) t)
 
-	    ((eq ]  ].treetop)  t)
+           ((eq ]  ].treetop)  t)
 
-	    ((eq ] *close-before-newline*)  t)
+           ((eq ] *close-before-newline*)  t)
 
-	    ((eq ]  ].text-segment)  t)
+           ((eq ]  ].text-segment)  t)
 
 
-	    ((eq ]  ].verb)	   ;(break "at ].verb at ~a" position)
-	     (cond 
-           ((or (eq *bracket-closing-segment* ].verb )
-                (eq (first *bracket-opening-segment*) .[verb )
-                (eq (first *bracket-opening-segment*) .[modal ))
-            nil )
+           ((eq ]  ].verb)	   ;(break "at ].verb at ~a" position)
+            (cond 
+             ((or (eq *bracket-closing-segment* ].verb )
+                  (eq (first *bracket-opening-segment*) .[verb )
+                  (eq (first *bracket-opening-segment*) .[modal ))
+              nil )
 
-		   ((or (eq (first *bracket-opening-segment*) .[np )
-                (eq (first *bracket-opening-segment*) .[article ))
-		    ;; e.g. "the sounds" -- where "sounds" can be a verb.
-		    ;; A word that is noun/verb ambiguous will lay down
-		    ;; brackets for a verb -- this is a case where we can
-		    ;; know definitively that the noun sense is the right one.
-		    (if (np-segment-contains-more-than-article? position)
-              ;; but we include a heuristic for the case that the
-              ;; ambig. is more than one word away from the article,
-    		  ;; in which case we go with the verb interpretation.
-              t
-              (else
-                ;; we'll have to ignore more brackets associated
-                ;; with this word -- this flag provides the link
-                (setq *suppress-verb-reading*
-                      (pos-terminal position))
-                nil )))
+             ((or (eq (first *bracket-opening-segment*) .[np )
+                  (eq (first *bracket-opening-segment*) .[article ))
+              ;; e.g. "the sounds" -- where "sounds" can be a verb.
+              ;; A word that is noun/verb ambiguous will lay down
+              ;; brackets for a verb -- this is a case where we can
+              ;; know definitively that the noun sense is the right one.
+              (if (np-segment-contains-more-than-article? position)
+                ;; but we include a heuristic for the case that the
+                ;; ambig. is more than one word away from the article,
+                ;; in which case we go with the verb interpretation.
+                t
+                (else
+                 ;; we'll have to ignore more brackets associated
+                 ;; with this word -- this flag provides the link
+                 (setq *suppress-verb-reading*
+                       (pos-terminal position))
+                 nil )))
 
-		   ((eq (first *bracket-opening-segment*) .[adverb)
-		    nil )
+             ((eq (first *bracket-opening-segment*) .[adverb)
+              nil )
 
-		   (t t)))
+             (t t)))
 
-	    ((eq ]  aux].)
-	     (cond ((eq (first *bracket-opening-segment*) .[modal )
-                nil)
-               (t t)))
+           ((eq ]  aux].)
+            (cond ((eq (first *bracket-opening-segment*) .[modal )
+                   nil)
+                  (t t)))
        
-	    ((eq ]  mvb].)	       ;(break "mvb]. at ~a" position)
-	     (cond ((and *bracket-closing-segment*
-			 (eq *bracket-closing-segment* ].verb))
-		    nil )
-		   (*suppress-verb-reading*
-		    (if (eq *suppress-verb-reading*
-			    (pos-terminal (chart-position-before position)))
-			;; if the flag is still relevant, then we ignore this
-			;; instance of the bracket
-			nil
-			t ))
-		   (t t)))
+           ((eq ]  mvb].)	       ;(break "mvb]. at ~a" position)
+            (cond ((and *bracket-closing-segment*
+                        (eq *bracket-closing-segment* ].verb))
+                   nil )
+                  (*suppress-verb-reading*
+                   (if (eq *suppress-verb-reading*
+                           (pos-terminal (chart-position-before position)))
+                     ;; if the flag is still relevant, then we ignore this
+                     ;; instance of the bracket
+                     nil
+                     t ))
+                  (t t)))
 
-	    ((eq ]  ].adverb)
-	     (if (or (eq *bracket-closing-segment* ].verb )
-                 (eq *bracket-closing-segment* ].adverb )
-                 (eq (first *bracket-opening-segment*) .[verb )
-                 (eq (first *bracket-opening-segment*) .[np ) ;; "a very pleasant day"
-                 (eq (first *bracket-opening-segment*) .[article ))
-		   nil
-           t))
+           ((eq ]  ].adverb)
+            (if (or (eq *bracket-closing-segment* ].verb )
+                    (eq *bracket-closing-segment* ].adverb )
+                    (eq (first *bracket-opening-segment*) .[verb )
+                    (eq (first *bracket-opening-segment*) .[np ) ;; "a very pleasant day"
+                    (eq (first *bracket-opening-segment*) .[article ))
+              nil
+              t))
 
-        ((eq ] ].adjective)
-         (cond ((eq bracket-opening-segment mvb.[) t)
-               ((eq bracket-opening-segment preposition.[) nil)
-               (t (push-debug `(,*bracket-opening-segment* ,*bracket-closing-segment*))
-                  (break "Next case: does ].adjective end the segment"))))
+           ((eq ] ].adjective)
+            (cond ((eq bracket-opening-segment mvb.[) t)
+                  ((eq bracket-opening-segment preposition.[) nil)
+                  ((= 0 word-count) nil) ;; something should follow this adjective
+                  (t (push-debug `(,position ,*bracket-opening-segment*
+                                   ,word-count ,previous-word ,segment-start-pos))
+                     (break "Next case: does ].adjective end the segment"))))
           
-	    ((eq ]  ].punctuation)
-	     t)
+           ((eq ]  ].punctuation)
+            t)
           
-	    ((eq ] ].conjunction)
-	     t)
+           ((eq ] ].conjunction)
+            t)
 
-        ((eq ] ].np-vp)
-         (cond 
-           ((or (eq *bracket-closing-segment* ].verb )
-                (eq (first *bracket-opening-segment*) .[verb )
-                (eq (first *bracket-opening-segment*) .[modal ))
-            nil )
-           ((eq bracket-opening-segment .[np) nil) ;; "some people"
-           ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
-           ((eq bracket-opening-segment phrase.[) t) ;; after a period
-           ((eq bracket-opening-segment preposition.[) t) ;; after preposition
-           (t (push-debug `(,position ,*bracket-opening-segment*
-                            ,word-count ,previous-word ,segment-start-pos))
-              (break "].np-vp next case"))))
+           ((eq ] ].np-vp)
+            (cond 
+             ((or (eq *bracket-closing-segment* ].verb )
+                  (eq (first *bracket-opening-segment*) .[verb )
+                  (eq (first *bracket-opening-segment*) .[modal ))
+              nil )
+             ((eq bracket-opening-segment .[np) nil) ;; "some people"
+             ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
+             ((eq bracket-opening-segment phrase.[) t) ;; after a period
+             ((eq bracket-opening-segment preposition.[) t) ;; after preposition
+             (t (push-debug `(,position ,*bracket-opening-segment*
+                              ,word-count ,previous-word ,segment-start-pos))
+                (break "].np-vp next case"))))
 
-        ((eq ] np-vp].) 
-         ;; (break " seeing a np-vp]., look at opening")
-         ;; bracket-opening-segment -- 
-         ;; .[np   .[np-vp  .[adjective  treetop.[  mvb.[  .[article
-         nil)  ;; t)
+           ((eq ] np-vp].) 
+            ;; (break " seeing a np-vp]., look at opening")
+            ;; bracket-opening-segment -- 
+            ;; .[np   .[np-vp  .[adjective  treetop.[  mvb.[  .[article
+            nil)  ;; t)
 
           
-	    (t (break "Unclassified closing bracket: ~A" ])
-	       :foo))))
+           (t (break "Unclassified closing bracket: ~A" ])
+              :foo))))
 
     (if ends-the-segment?
       (then
-        (setq *right-segment-boundary* position)
-        (setq *bracket-closing-segment* ])
-            ;; zero'd by pts when all of the operations on the
-            ;; segment are finished
-        (setq *bracket-closing-previous-segment* ])
-            ;; checked (and then zero'd) in //
-            ;;   at the beginning of the following segment
-        (tr :segment-ends position ])
+       (setq *right-segment-boundary* position)
+       (setq *bracket-closing-segment* ])
+         ;; zero'd by pts when all of the operations on the
+         ;; segment are finished
+       (setq *bracket-closing-previous-segment* ])
+         ;; checked (and then zero'd) in //
+         ;;   at the beginning of the following segment
+       (tr :segment-ends position ])
 
-        (when *bracket-opening-segment*
-          (setq *bracket-opening-previous-segment*
-                (car *bracket-opening-segment*))
-          (deallocate-kons *bracket-opening-segment*)
-          (setq *bracket-opening-segment* nil))
+       (when *bracket-opening-segment*
+         (setq *bracket-opening-previous-segment*
+               (car *bracket-opening-segment*))
+         (deallocate-kons *bracket-opening-segment*)
+         (setq *bracket-opening-segment* nil))
 
-        (let ((current-status (pos-assessed? position)))
-          ;; sanity check that the status flag hasn't deviated from
-          ;; one of the values that it would be sensible for it
-          ;; to have at this point.  The flag is set in the
-          ;; Scan fsa.
-          (ecase current-status
-            (:]-from-word-after-checked)
-            (:]-from-prior-word-checked)
-            (:]-from-edge-before-checked)
-            (:]-from-edge-after-checked)
-            ))
+       (let ((current-status (pos-assessed? position)))
+         ;; sanity check that the status flag hasn't deviated from
+         ;; one of the values that it would be sensible for it
+         ;; to have at this point.  The flag is set in the
+         ;; Scan fsa.
+         (ecase current-status
+           (:]-from-word-after-checked)
+           (:]-from-prior-word-checked)
+           (:]-from-edge-before-checked)
+           (:]-from-edge-after-checked)
+           ))
 
-        ;; /// bracket-directed actions go here ///
-        )
+       ;; /// bracket-directed actions go here ///
+       )
 
       (else
-        (tr :segment-does-not-end ] position)))
+       (tr :segment-does-not-end ] position)))
 
     ends-the-segment? ))
 
