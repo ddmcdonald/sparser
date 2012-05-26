@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "cases"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:  1.7 February 2005
+;;;   Version:  1.8 May 2012
 
 ;; (2/27/92 v2.2) fixed a bug in Ref/composite where it was offset
 ;;   by one when extracting a literal from the rule's referent field
@@ -22,7 +22,9 @@
 ;;      calls from null variable values
 ;; 1.6 (8/24) broke out the cases for the new semantics.
 ;; 1.7 (2/14/05) Removed annotation call from Ref/function.
-;; 1.8 (5/17/11) Putting it back.
+;; 1.8 (5/17/11) Putting it back. 5/26/12 it needs an additional
+;;      lattice-point argument now, but blocked case of keywords that
+;;      indicate no value, so postposing looking it up.
 
 (in-package :sparser)
 
@@ -94,16 +96,20 @@
                  (if *right-edge-into-reference*
                    :binary-rule   ;; terms match options in
                    :unary-rule))) ;; annotate-individual
-            (cond ((individual-p value)
-                   (annotate-individual value arity))
-                  ((eq arity :binary-rule)
-                   (annotate-realization-pair
-                    value *rule-being-interpreted*
-                    *right-edge-into-reference*  ;; presumed head /////
-                    *left-edge-into-reference*)) ;; presumed adjunct
-                  ((eq arity :unary-rule)
-                   (annotate-unary-realization *rule-being-interpreted*))
-                  (t (break "Threading bug: shouldn't have gotten here")))
+            (unless (keywordp value) ;; e.g. :no-value-computed-yet
+              (cond 
+               ((individual-p value)
+                (annotate-individual value arity))
+               ((eq arity :binary-rule)
+                (annotate-realization-pair
+                 value 
+                 ;;/// Lattice-point argument goes here !!
+                 *rule-being-interpreted*
+                 *right-edge-into-reference*  ;; presumed head /////
+                 *left-edge-into-reference*)) ;; presumed adjunct
+               ((eq arity :unary-rule)
+                (annotate-unary-realization *rule-being-interpreted*))
+               (t (break "Threading bug: shouldn't have gotten here"))))
           
             value))))))
 
