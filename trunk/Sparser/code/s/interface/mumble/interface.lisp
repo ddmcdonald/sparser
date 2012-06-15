@@ -86,6 +86,16 @@
 		     (error "New type: ~a~%~a" 
 			    (type-of binding/s) binding/s)))))
     (binding-value binding)))
+
+
+
+;;--- move to psi somewhere
+
+(defun decompose-psi-by-rnode (psi head-rnode arg-rnode)
+  (push-debug `(,psi ,head-rnode ,arg-rnode))
+  (break "decompose-psi-by-rnode"))
+;  (values head-i
+;          adjunct-i))
     
 
     
