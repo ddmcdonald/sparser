@@ -28,9 +28,9 @@
    consumption by realize. Initializes the top DTN if this is the
    first call."
   (push-debug `(,rnode ,i))
-  ;;//// Should catch this earlier by looking at the CLOS class that
-  ;; backs the type -- should catch at realization-for methods.
   (case (sparser::cat-symbol (sparser::itype-of i))
+    ;;//// Should catch this distinction earlier by looking at the CLOS class that
+    ;; backs the type -- should catch at realization-for methods.
     (category::number
      ;; analogous to a word, but in general numbers, like people and other
      ;; interesting things should engage specialists or some such, and
@@ -42,12 +42,12 @@
 (defun read-rnode-into-dtn (rnode i)
   ;; Spread the rnode's information to find the right thing to dispatch
   ;; off of in order to get the correspondence
-  (let* ((dtn (make-derivation-tree-node :referent i))
-         (schr (sparser::rn-cfr rnode))
+  (let* ((schr (sparser::rn-cfr rnode))
          (relation (sparser::schr-relation schr))
          (descriptors (sparser::schr-descriptors schr))
          (etf (sparser::schr-tree-family schr)))
     (push-debug `(,etf ,rnode ,schr ,relation))
+    ;; Toplevel dispatch, basically words vs. the rest
     (cond
       ;; single-word cases
       ((sparser::defined-type-of-single-word relation)
@@ -55,12 +55,9 @@
               (m-word (find-or-make-word sp-word)))
          m-word))
       ((sparser::has-mumble-mapping? etf)
-       (map-etf-to-dtn dtn i rnode etf descriptors)
-       (unless *the-derivation-tree*
-         (initialize-derivation-tree-data :root dtn))
-       dtn)
+       (map-etf-to-dtn i rnode etf descriptors))
       (t       
-       (push-debug `(,rnode ,i ,schr))
+       (push-debug `(,etf ,rnode ,i ,schr))
        (break "New case in convert-to-derivation-tree.~
                ~%Maybe we need a Mumble phrase for ~a" etf)))))
 
@@ -68,9 +65,18 @@
 
 ;;--- Mapping to phrases
 
-(defun map-etf-to-dtn (dtn i rnode etf descriptors)
-  ;; returns populated DTN
-  (let* ((mapping (cdr (sparser::has-mumble-mapping? etf)))
+(defun map-etf-to-dtn (i rnode etf descriptors)
+  ;; Decodes the mapping and returns a populated DTN
+  (let ((mapping (sparser::has-mumble-mapping? etf)))
+    (if (eq :adjunct (car mapping))
+      (map-adjunction-to-dtn
+       etf (cdr mapping) rnode descriptors i)
+      (map-matrix-to-dtn
+       etf mapping rnode descriptors i))))
+
+
+(defun map-matrix-to-dtn (etf mapping rnode descriptors i)
+  (let* ((dtn (make-derivation-tree-node :referent i))
          (name-of-phrase (car mapping))
          (arg-mapping (cadr mapping))
          (phrase (phrase-named name-of-phrase)))
@@ -82,6 +88,9 @@
     dtn))
 
 (defun map-rnode-args-to-complements (rnode arg-mapping descriptors dtn i)
+  ;; Populate the rest of an elementary tree mapping.
+  ;; Extract the arguments from the edges that the rnode points to
+  ;; and package them up as complement nodes.
   (push-debug `(,rnode ,arg-mapping ,dtn))
   (let* ((head-rnode (sparser::rn-head rnode))
          (arg-rnode (sparser::rn-arg rnode))
@@ -89,7 +98,9 @@
          (arg-edge (ecase head-edge
                      (sparser::right-edge 'sparser::left-edge)
                      (sparser::left-edge 'sparser::right-edge)))
-         (binding-spec (cadr (memq :binding-spec descriptors))))
+         ;;(binding-spec (cadr (memq :binding-spec descriptors)))
+         ;; what does this do? It's unused.
+         )
     (push-debug`(,head-rnode ,arg-rnode ,head-edge ,arg-edge))
     (flet ((make-comp-node (c+v key)
              (unless c+v
@@ -97,7 +108,7 @@
                       (if (eq key 'sparser::head) 'head 'arg)))
              (let* ((variable (sparser::cv-variable c+v))
                     (category (sparser::cv-type c+v))
-                    (phrase-arg (cdr (assq key arg-mapping)))
+                    (phrase-arg (cdr (assoc key arg-mapping)))
                     (value (sparser::value-of variable i category)))
                (unless value
                  (push-debug `(,c+v ,key))
@@ -112,7 +123,48 @@
         (make-comp-node (car (sparser::rn-variable arg-rnode))
                         'sparser::arg))
       dtn)))
+
+
+;;--- Adjunctions
+
+(defun map-adjunction-to-dtn (etf mapping rnode descriptors i)
+  "We've got a matrix and an adjunction. So we have to set up
+   a phrase and complements for the matrix, and an AP and
+   its adjunct for the adjunction. The head is the matrix,
+   the arg is the adjunction."
+  (push-debug `(,rnode ,descriptors ,mapping ,i ,etf))    
+  (let ((ap (car mapping))
+        (body-arg (cadr mapping)) ;; need these?
+        (adjunct-arg (caddr mapping))) ;; would they switch ever?
+    (push-debug `(,ap ,body-arg ,adjunct-arg))
+    (let* ((head-rnode (sparser::rn-head rnode))
+           (arg-rnode (sparser::rn-arg rnode)))
+      (push-debug `(,head-rnode ,arg-rnode))
+      (break "Look at decoding")
+      (multiple-value-bind (head-i adjunct-i)
+                           (sparser::decompose-psi-by-rnode
+                            i head-rnode arg-rnode)
+        (push-debug `(,head-i ,adjunct-i))
+        (let ((dtn (convert-to-derivation-tree head-rnode head-i)))
+          (let ((ap-node (make-adjunction-node ap adjunct-i dtn)))
+            ;; self attaches
+            (push-debug `(,ap-node ,dtn))
+            (break "Look at nodes")
+            dtn))))))
                                  
+
+
+
+      ;; The call in to this takes an rnode and an individual
+      ;; We've got the rnodes, where do we get the references of
+      ;; their corresponding edges from ??  
+      ;;   All three variables (for "a 12-month target of 60")
+      ;; are bound in the psi that is 'i', so see if we can
+      ;; count on it just falling out without our having to
+      ;; partition the psi into those two parts. The parts are
+      ;; there as v+v, but it's a bunch of computation to split them
+      ;; on the basis of how they fit with the rnodes
+ 
 
 
 ;;--- Words
