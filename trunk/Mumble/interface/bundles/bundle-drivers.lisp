@@ -1,5 +1,5 @@
 ;;; -*-  Mode: LISP; Package: MUMBLE; Base: 10. ; Syntax: Common-lisp; Default-character-style: (:FIX :ROMAN :NORMAL); -*-
-;;; $Id: bundle-drivers.lisp 341 2009-12-29 17:09:23Z dmcdonal $
+
 
 ;;; MUMBLE-86:  message-level >  bundle-drivers
 
@@ -8,7 +8,7 @@
 ;;;   reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
-;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+
 
 (in-package :mumble)
 
@@ -72,14 +72,8 @@
 
 ;################################################################
 
-(defun clausal-bundle-driver (bundle)
-  (landmark 'realizing-the-head-of-the-bundle bundle)
-  (when (not (or (kernel-specificationp (head bundle))
-		 (typep (head bundle) 'unpacked-phrasal-root)))
-    (mbug "The head of the bundle ~A was expected to be a kernel ~
-           specification or an unpacked-phrasal-root~
-         ~%  But it is  ~A instead"
-	  bundle (head bundle)))
+(defun clausal-bundle-driver (dtn root-node)
+  (landmark 'realizing-the-head-of-the-bundle dtn)
   (let ((result (realize-kernel-specification (head bundle))))
     (set-backpointer-of-root result bundle)
     (entering-new-context result)
