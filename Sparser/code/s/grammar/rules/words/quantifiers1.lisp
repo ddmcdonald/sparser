@@ -131,7 +131,7 @@
   
 (define-quantifier "additional" :brackets '( ].quantifier  .[np ) :rules '(det the))
 (define-quantifier "other"      :brackets '( ].quantifier  .[np ) :rules '(det the))
-(define-quantifier "others"     :brackets '( ].quantifier  .[np ) :rules '(the)))
+(define-quantifier "others"     :brackets '( ].quantifier  .[np ) :rules '(the))
 
 ;;///////////////// don't belong here! want to be 'nominals' or some such
 (define-function-word "something" :brackets '( ].quantifier  .[np ))
