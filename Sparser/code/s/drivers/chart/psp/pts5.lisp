@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.13 February 2007
+;;;  Version:  5.13 May 2012
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -42,6 +42,7 @@
 ;; 5.12 (3/13/96) adjusted sf-action/all-contiguous-edges to try HA
 ;; 5.13 (2/9/07) incorporated hook to strong domain modeling. (2/23) fixed a
 ;;       massive bug in Loop-through-segment-for-some-edges.
+;;      (5/28/12) Added inline segment printer option.
 
 (in-package :sparser)
 
@@ -57,9 +58,15 @@
   (when boundary-from-edge?
     (setq *segment-ended-because-of-boundary-from-form-label* t))
   (let ((coverage (segment-coverage)))
-    (when (and *readout-segments*
-	       (not (eq coverage :null-span)))
-      (print-segment *left-segment-boundary* *right-segment-boundary*))
+    (unless (eq coverage :null-span)
+      (cond
+       (*readout-segments*
+        (print-segment *left-segment-boundary* *right-segment-boundary*))
+       ((and *readout-segments-inline-with-text*
+             (null *display-word-stream*))
+        (print-segment-and-pending-out-of-segment-words
+         *left-segment-boundary* *right-segment-boundary*))))
+       
     (tr :pts-coverage coverage)
     (if coverage
       (ecase coverage
