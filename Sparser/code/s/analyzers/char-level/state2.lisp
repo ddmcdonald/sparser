@@ -128,7 +128,7 @@
     (write-string ">" stream)))
 
 
-(defun dCB  ;; "Display-input-buffer"
+(defun dcb  ;; "Display-input-buffer"
        (&optional (s *standard-output*))
   (let ((b1 *first-character-input-buffer*)
         (b2 *second-character-input-buffer*))
