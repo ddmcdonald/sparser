@@ -28,13 +28,10 @@
 ;; e.g. from an init file. Adjust it if you do. 
 (setf asdf:*central-registry*
       '(*default-pathname-defaults*
-        #p"~/Sparser/util/"   ;; ddm-util
-        #p"~/Sparser/lisp/sfl/" 
-    	#p"~/Sparser/Mumble/derivation-trees/" ;; mumble after sparser
+        #p"~/sparser/util/"   ;; ddm-util
+    	#p"~/sparser/Mumble/derivation-trees/" ;; mumble after sparser
         ))
 
-;; Test for Clozure & more accomodating asdf2
-;(break "Got through 1st asdf region")
 
 ;;--- Directory structure
 
@@ -48,18 +45,17 @@
 ;; Utilities used everywhere (though not integrated into Sparser yet 12/22/10)
 (asdf:operate 'asdf:load-op :ddm-util)
 
-;; Mumble
-(load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp"))
-
-
-;;--- Move above Mumble ??????  Can it just wait for 1st Sparser file ????
 #+ignore
 (unless (find-package :sparser)
+  ;; Referenced in Mumble code
   (make-package :sparser
                 :use '(common-lisp
                        ddm-util
                        #+apple ccl
                        #+openmcl :ccl)))
+
+;; Mumble
+(load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp"))
   
 ;; Sparser 
 (let* ((init-location "Sparser/code/s/init/")
@@ -78,8 +74,6 @@
 
 ;; Mumble derivation tree using Sparser types
 (asdf:operate 'asdf:load-op :mumble-after-sparser)
-
-
-
-
+(load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
+(load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
 
