@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   0.5 August 1994
+;;;   Version:   0.7 May 2012
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -20,7 +20,10 @@
 ;; 0.5 (7/14) added segment printer. 7/18 added cases to it.  8/16 tweeked
 ;;      synchronization entry point.
 ;; 0.6 (8/22) parameterizing what's used as the segment printer and enabling tts
-;; 0/7 (8/25) tweeking simple segment printer as per Scott's wishes
+;; 0.7 (8/25/04) tweeking simple segment printer as per Scott's wishes.
+;;     (5/28/12) added *readout-segments-inline-with-text*  along with the
+;;      printer print-segment-and-pending-out-of-segment-words that it gates
+;;      and their state variables. 
 
 (in-package :sparser)
 
@@ -32,6 +35,12 @@
   "Read in dm/Analyze-segment. Controls whether it considers calling
    Print-segment (subject to the flag just below - the full conditions
    is defined in Readout-segments?).")
+
+(defparameter *readout-segments-inline-with-text* nil
+  "Read in pts as an alternative to *readout-segments*. Drives an input 
+   printer that indicates segment boundaries inline with the stream of
+   text. Keeps track of the words that fall between segments and prints
+   them when each next segment is introduced and printed. ")
 
 (defparameter *inline-treetop-readout* nil
   "Controls whether Synchronize-with-workbench-views makes a 
@@ -233,6 +242,147 @@ there were ever to be any.  ///hook into final actions ??  |#
   (write-string (string-of-words-between starts-at ends-at) stream)
   (write-string "\" ]" stream)
   (terpri stream))
+
+
+;;;------------------------------------------------------------
+;;; Integrating segment bracket printing with the print stream
+;;;------------------------------------------------------------
+
+(defvar *index-after-last-printed-close* nil)
+(define-per-run-init-form '(setq *index-after-last-printed-close* nil))
+
+(defvar *accumulated-buffer-for-print-segment* nil
+  "In a document of any interesting length, the character index
+ will have grown well beyond the length of the character buffer
+ the segment printer is reading from. This number is the accumulation
+ of buffer-lengths that has to be subtracted in order to get the
+ right per-buffer index.")
+(define-per-run-init-form
+    '(setq *accumulated-buffer-for-print-segment* nil))
+
+(defun print-segment-and-pending-out-of-segment-words
+       (start-pos end-pos &optional (stream *standard-output*))
+  ;; Called from pts as alternative to print-segment. Reads out from
+  ;; the character buffer like write-token does by cribing much of
+  ;; that code. Sort of like write-current-token-to-article-stream
+  ;; except that our 'token' could be quite long and isn't driven
+  ;; from the tokenizer's state variables.
+  ;; The end-pos holds the word just beyond this segment, as well
+  ;; as the whitespace that precedes that word. If we look at the
+  ;; character-index of the end-pos it points to (holds) the 1st
+  ;; character of that next, out-of-segment, word.
+  (push-debug `(,start-pos ,end-pos))
+  (flet ((bump-accumulator ()
+           (setq *accumulated-buffer-for-print-segment*
+                 (if (null *accumulated-buffer-for-print-segment*)
+                   (1+  *usable-amount-of-character-buffer*)
+                   (+ *accumulated-buffer-for-print-segment*
+                      (1+ *usable-amount-of-character-buffer*))))))
+
+  (let* ((index-of-segment-start (pos-character-index start-pos))
+         (penultimate-position (chart-position-before end-pos))
+         (char-index-penultimate-pos
+          (pos-character-index penultimate-position))
+         (last-word (pos-terminal penultimate-position))
+         (whitespace (pos-preceding-whitespace end-pos))
+         (index-of-segment-end 
+          (+ char-index-penultimate-pos
+             (length (word-pname last-word))
+             (if whitespace
+               (length (word-pname whitespace))
+               0))))
+    (when *accumulated-buffer-for-print-segment*
+      (setq index-of-segment-start
+            (- index-of-segment-start
+               *accumulated-buffer-for-print-segment*))
+      (setq index-of-segment-end
+            (- index-of-segment-end
+               *accumulated-buffer-for-print-segment*))
+      #+ignore(format t "~&Adjusted values:~
+                 ~%  index-of-segment-start = ~a~
+                 ~%  index-of-segment-end = ~a~%"
+              index-of-segment-start
+              index-of-segment-end))
+
+    (when *index-after-last-printed-close*
+      (push-debug `(,*index-after-last-printed-close*))
+      (unless (> *index-after-last-printed-close*
+                 index-of-segment-start)
+        ;; Sometimes PTS gets called twice on the same segment
+        ;; because it's extended it.
+        (when (> index-of-segment-start
+                 *usable-amount-of-character-buffer*)
+          (break "prefix wrong: from ~a to ~a given just ~a"
+                 *index-after-last-printed-close*
+                 index-of-segment-start
+                 *usable-amount-of-character-buffer*))
+        (let ((string
+               (subseq *character-buffer-in-use*
+                       *index-after-last-printed-close*
+                       index-of-segment-start)))
+          (write-string string stream))))
+
+    (write-string "[" stream)
+
+    (when (> index-of-segment-end
+             *usable-amount-of-character-buffer*)
+      ;; The segment crosses the character buffer boundary.
+      ;; The tokenizer has switched buffers, so we have to
+      ;; print from the 'other' buffer up to its end, then
+      ;; we adjust the amount and continue in the current
+      ;; buffer.
+      (bump-accumulator)
+            
+      #+ignore (format t "~&index-of-segment-end = ~a~
+                 ~%Usable amount = ~a~%"
+              index-of-segment-end
+              *usable-amount-of-character-buffer*)
+      (let* ((length-of-segment (- index-of-segment-end
+                                   index-of-segment-start))
+             (amount-in-prior-buffer
+              (- *usable-amount-of-character-buffer*
+                 index-of-segment-start))
+             (amount-in-other-buffer (- length-of-segment
+                                        amount-in-prior-buffer))
+             (string-end (+ index-of-segment-start
+                            amount-in-prior-buffer)))
+       #+ignore (format t "~&index-of-segment-end = ~a~
+                   ~%lenght-of-segment = ~a~
+                   ~%amount-in-other-buffer = ~a~
+                   ~%index-of-segment-start = ~a~
+                   ~%string-end = ~a~
+                   ~%next-buffer = \"~a\"~%"
+                index-of-segment-end
+                length-of-segment
+                amount-in-other-buffer 
+                index-of-segment-start
+                string-end *the-next-character-buffer*)
+
+        (let ((prior-string
+               (subseq *the-next-character-buffer*
+                       index-of-segment-start
+                       string-end)))
+          (write-string prior-string stream)
+          (setq index-of-segment-start 1 ;; leading control char
+                index-of-segment-end amount-in-other-buffer)
+          #+ignore (format t "~&After adjustment,~
+                     ~%  index-of-segment-start = ~a~
+                     ~%  index-of-segment-end = ~a~%"
+                  index-of-segment-start
+                  index-of-segment-end))))
+
+    (when (> index-of-segment-end
+             *usable-amount-of-character-buffer*)
+      (break "didn't fix it"))
+    (let ((seg-string
+           (subseq *character-buffer-in-use*
+                   index-of-segment-start
+                   index-of-segment-end)))
+      (write-string seg-string stream))
+    (write-string "]" stream)
+    (setq *index-after-last-printed-close*
+          index-of-segment-end))))
+  
 
 
 
