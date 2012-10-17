@@ -343,7 +343,7 @@
        (when (funcall ,default? ,v) (setf ,v (setf ,accessor ,init)))
        ,v)))
 
-|#
+|#  ;; end of Jake's utilities
 
 
 ;; Method for displaying the contents of a hashtable
@@ -354,7 +354,7 @@
 
 
 
-#|
+#|  ;; ltml specific
 (defun parse-ltml-date-time-to-mins (timestr)
   (multiple-value-bind (day pos1) (read-from-string timestr)
     (let* ((pos2 (position #\: timestr))
@@ -373,7 +373,7 @@
 
 (defun ltml-time-lessthan (str1 str2)
   (< (parse-ltml-date-time-to-mins str1) (parse-ltml-date-time-to-mins str2)))
-|#
+|#  ;; end ltml specific
 
 #|
 ;;;----------------------------
@@ -435,7 +435,7 @@
        (let ((,value ,@body))
          (setf (gethash ',category *trace-levels*) ,saved)
          ,value))))
-|#
+|#  ;; end Jake's trace facility
 
 
 ;;;------------------------------------------------
