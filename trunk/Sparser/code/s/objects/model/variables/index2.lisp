@@ -95,6 +95,7 @@
 
 (defmethod dereference-variable ((variable lambda-variable) 
 				 psi-or-individual)
+  (declare (ignore psi-or-individual))
   variable)
 
 (defmethod dereference-variable ((v anonymous-variable)
@@ -106,6 +107,7 @@
 				 (c referential-category))
   (let ((name (avar-name v))
 	(variables (cat-slots c)))
+    (declare (ignore variables))
     (let ((variable (find-variable-for-category name c)))
       (unless variable
 	(error "There is no variable named ~a~%in the category ~a"
