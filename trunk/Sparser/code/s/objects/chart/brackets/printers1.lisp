@@ -67,6 +67,11 @@
   ;; characters on the position indexes. It is hard to read in
   ;; a long text because there's no provision for wrapping.
 
+  (declare (special *position-array-is-wrapped*
+                    *next-array-position-to-fill*
+                    *number-of-positions-in-the-chart*
+                    *number-of-next-position*))
+
   (if *position-array-is-wrapped*
     (then
       (do ((cell-index (1+ *next-array-position-to-fill*)
@@ -112,6 +117,7 @@
     (format stream "~%~%")))
 
 (defun display-current-segment ()
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (display-bracketed-segments
    :from *left-segment-boundary*
    :to *right-segment-boundary*))
@@ -123,9 +129,10 @@
 (defun display-bracketed-segments (&key
                                    from to
                                    (stream *standard-output*))
-
   ;; this is analogous to TT. It prints the text with each segment
   ;; on its own line.
+  (declare (special *where-to-stop-bracket-segment-display* *the-chart*
+                    *first-chart-position* *position-array-is-wrapped*))
   (when to
     (setq *where-to-stop-bracket-segment-display* to))
 
@@ -146,6 +153,7 @@
   ;; before this position we're not inside a segment.
   ;; So if a segment starts here we print and shift accordingly,
   ;; otherwise we print the word on its own line and loop.
+  (declare (special *where-to-stop-bracket-segment-display* *end-of-source*))
   (let* ((starts-here (pos-starts-here position))
          (boundary (ev-boundary starts-here)))
     (when (eq (pos-terminal position) *end-of-source*)
@@ -168,6 +176,7 @@
 
 
 (defun dbs-segment-pending (position stream)
+  (declare (special *where-to-stop-bracket-segment-display* *end-of-source*))
   (let* ((ends-here (pos-ends-here position))
          (boundary (ev-boundary ends-here)))
     (when *where-to-stop-bracket-segment-display*
