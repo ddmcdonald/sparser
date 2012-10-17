@@ -4,12 +4,13 @@
 ;;;
 ;;;     File: "comlex"
 ;;;   Module: "grammar;rules:words:one-offs:"
-;;;  Version:  March 2012
+;;;  Version:  October 2012
 
 ;; initiated 8/16/10. 11/3 cleaned up the loader. Added vivifying code.
 ;; 7/10/11 started finishing it. 7/28 Decided to use priming system
 ;; instead where we wait for the word to be seen before we expand it.
-;; 3/1/12 fixed C&S eror
+;; 3/1/12 fixed C&S eror. 10/15/12 Hooked up prime-comlex to the local
+;; file.
 
 (in-package :sparser)
 
@@ -354,9 +355,13 @@ e.g. via DM&P or Fire.
 ;; we've already expanded the word (e.g. via /dossiers/irregular-verbs)
 ;; when we want to fold it into the realization of a category.
 (defun prime-comlex ()
-  ;; called from load-the-grammar
-  ) ;; (prime-all-comlex-words "~/sift/projects/nlp/Comlex/COMLEX-DEF-WORDS")
-;; Phrase as sparser-relative when ready to go. 
+  ;; called from load-the-grammar, gated by *incorporate-generic-lexicon*
+  (establish-version-of-def-word :comlex)
+  (let ((filename (string-append 
+                   cl-user::location-of-sparser-directory
+                   "code/s/grammar/rules/words/one-offs/"
+                   "comlex-def-forms.lisp")))
+    (prime-all-comlex-words filename)))
 
 (defun prime-all-comlex-words (full-filename)
   (with-open-file (stream full-filename
