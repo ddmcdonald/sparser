@@ -61,6 +61,7 @@
 (export 'tr)
 
 (defun tr/expr (keyword  &rest arguments)
+  (declare (special *trace-the-trace-calls*))
   (when *trace-the-trace-calls*
     (format t "~&tr: ~a~%" keyword))
   (let ((fn (gethash keyword *trace-keyword-to-function*)))
