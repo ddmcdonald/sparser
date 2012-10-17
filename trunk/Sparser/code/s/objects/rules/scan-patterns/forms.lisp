@@ -66,12 +66,13 @@
 
   (let ((original-transitions (sp-transitions pattern))
         (original-accept-state/s (sp-accept-states pattern)))
+    (declare (ignore original-transitions original-accept-state/s))
         
     (apply #'decode-scan-pattern-definition pattern arguments)
 
     (let ((new-transitions (sp-transitions pattern))
           (new-accept-state/s (sp-accept-states pattern)))
-
+      (declare (ignore new-transitions new-accept-state/s))                       
       ;; delete any of the original transitions that aren't also
       ;; present in the revision
       ;(dolist (tr original-transitions)

@@ -86,6 +86,8 @@
 
 
 (defun flush-sp-transition-from-multiplier-table (spt)
+  (declare (special *word-scan-transition-id* *digits-scan-transition-id*
+                    *punctuation-scan-transition-id* *edge-multiplication-table*))
   (let* ((from-id (state-id (sp-transition-state spt)))
          (item (sp-transition-pattern-item spt))
          (item-id
@@ -206,6 +208,8 @@
 ;;;---------------------------------------------------
                     
 (defun lookup-scan-transition/make-keys (from-state item)
+  (declare (special *word-scan-transition-id* *digits-scan-transition-id*
+                    *punctuation-scan-transition-id*))
   (let ((from-id (state-id from-state))
         (item-id
          (etypecase item
@@ -276,6 +280,8 @@
 
 
 (defun check-scan-transition-output (from-state item)
+  (declare (special *word-scan-transition-id* *digits-scan-transition-id*
+                    *punctuation-scan-transition-id*))
   (let ((from-id (state-id from-state))
         (item-id (etypecase item
                    (keyword (ecase item
@@ -292,6 +298,8 @@
 
 
 (defun scan-transition-data (from-state item &optional (stream *standard-output*))
+  (declare (special *word-scan-transition-id* *digits-scan-transition-id*
+                    *punctuation-scan-transition-id*))
   (let ((from-id (state-id from-state))
         (item-id (etypecase item
                    (keyword (ecase item
