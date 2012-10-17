@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form-rule form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.4 March 2005
+;;;   Version:   0.5 October 2012
 
 ;; initiated 9/3/92 v2.3, 
 ;; 0.1 (10/12) formulated better now that it's getting used
@@ -18,6 +18,8 @@
 ;;      composition patterns when the semantic term is to be the head
 ;;      rather than the form term. Motivated by generalizations to prepositions
 ;;      for relative locations.
+;; 0.6 (10/10/12) Patched call to def-form-rule/resolved from define-rewriting-form-rule
+;;      to provide a new third argument
 
 (in-package :sparser)
 
@@ -183,6 +185,7 @@
   ;; we create rewriting form rules for and about the interaction with
   ;; the creation of conventional form rules that are stipulated in
   ;; the realization mapping
+  (declare (special *schema-being-instantiated*))
   (unless *schema-being-instantiated*
     (break "Expected *schema-being-instantiated* to have been set"))
   (when (and (memq/assq :head referent)
@@ -192,7 +195,7 @@
                          rhs head-side *schema-being-instantiated*)))
       ;;(break "revised rhs = ~a" revised-rhs)
       (when revised-rhs
-        (let* ((cfr (def-form-rule/resolved revised-rhs form referent))
+        (let* ((cfr (def-form-rule/resolved revised-rhs form head-side referent))
                (variable-to-be-bound
                 (first (second (memq/assq :binding referent))))
                (v/r (var-value-restriction variable-to-be-bound)))
@@ -208,11 +211,13 @@
           ;;	 cfr (cfr-completion cfr))
           cfr)))))
 
+
 ;;;----------
 ;;; builders
 ;;;----------
 
 (defun construct-form-cfr (edge rhs form referent)
+  (declare (special *schema-being-instantiated*))
   (let ((cfr (make-cfr :category :syntactic-form
                        :rhs rhs
                        :form form

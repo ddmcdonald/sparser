@@ -284,6 +284,8 @@
                          terms-to-the-right
                          parent-rule )
 
+  (declare (special *dotted-rules-can-duplicate-regular-rules*))
+
   (let* ((category (category-of-dotted-rule daughters))
          (existing-rule/s (lookup/cfr nil daughters))
          existing-dotted-rule )
