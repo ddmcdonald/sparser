@@ -36,9 +36,9 @@
   (typecase item
     (psi (base-category-of-psi item))
     (individual (first (indiv-type item)))
+    (mixin-category item)
     (referential-category item)
     (category item)
-    (mixin-category item)
     (otherwise
      (break "New type passed to category-of: ~a~%~a"
 	    (type-of item) item))))

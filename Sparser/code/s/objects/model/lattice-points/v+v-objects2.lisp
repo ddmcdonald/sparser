@@ -153,6 +153,7 @@
   ;; This is the single way of making a v+v and a psi that extends
   ;; another psi. 
   ;; find/make the lattice-point for this psi at the same time.
+  (declare (special c+v *c+v-to-v-into-v+v-table*))
   (tr :making-v+v-and-psi variable value parent-psi c+v)
   (let ((v+v-table (gethash c+v *c+v-to-v-into-v+v-table*))
         (v+v (get-new-v+v)))
