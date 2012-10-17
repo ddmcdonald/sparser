@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.13 May 2012
+;;;  Version:  5.13 October 2012
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -42,7 +42,7 @@
 ;; 5.12 (3/13/96) adjusted sf-action/all-contiguous-edges to try HA
 ;; 5.13 (2/9/07) incorporated hook to strong domain modeling. (2/23) fixed a
 ;;       massive bug in Loop-through-segment-for-some-edges.
-;;      (5/28/12) Added inline segment printer option.
+;;      (5/28/12) Added inline segment printer option. 10/10 tweaked it.
 
 (in-package :sparser)
 
