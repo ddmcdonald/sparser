@@ -133,7 +133,7 @@
 
 
 
-(defvar *i* nil)
+
 (defun index/individual/key/hash (variable individual category bindings)
   (declare (ignore bindings))
   (let* ((table (cat-instances category)))
@@ -144,7 +144,6 @@
       (error "Initialization bug: instances field of ~A~
               ~%is not a hash table" category))
     (let ((value (value-of variable individual)))
-      (setq *i* individual *v* variable)
       (when (null value)
 	(error "value-of returned nil on~%~a of ~a~%The key is 'nil' -- *v* *i*"
 	       variable individual))
