@@ -36,6 +36,7 @@
 (defun initialize-mumble-state ()
   ;; *current-position is initialized in phrase-structure-execution,
   ;;   where it's set to the initial position that's passed to it.
+  (declare (special *objects-to-references*))
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
   (clrhash *objects-to-references*)

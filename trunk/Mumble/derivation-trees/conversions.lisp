@@ -1,13 +1,13 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
 ;;; $Id$
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2010-2011 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2010-2012 David D. McDonald  All Rights Reserved
 
 ;; /Mumble/derivation-trees/conversions.lisp
 
 ;; Initated 10/6/09. First real code 10/23. Real code that runs 11/9 (sigh)
 ;; Modified through 11/27. Completely redone 12/9/10. Picked up again 3/22/11.
-;; Refining through 3/28.
+;; Refining through 3/28. Picked up again 10/12/12
 
 (in-package :mumble)
 
@@ -140,7 +140,7 @@
     (let* ((head-rnode (sparser::rn-head rnode))
            (arg-rnode (sparser::rn-arg rnode)))
       (push-debug `(,head-rnode ,arg-rnode))
-      (break "Look at decoding")
+      ;;(break "Look at decoding")
       (multiple-value-bind (head-i adjunct-i)
                            (sparser::decompose-psi-by-rnode
                             i head-rnode arg-rnode)

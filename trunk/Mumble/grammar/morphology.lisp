@@ -19,7 +19,7 @@
 
 (defun morphologically-specialize-&-say-it (item labels)
   (unless (word-stream-itemp item)
-    (break "Something other than a word was passed through: ~a" word))
+    (break "Something other than a word was passed through: ~a" item))
   (etypecase item
     (word
      (cond  
@@ -115,9 +115,8 @@
      (let ((auxiliary-that-will-carry-the-tense
 	     (the word (select-auxiliary-to-induce)))
 	   (position-of-the-tense-marker
-	     (the position
-		  (cdr (assoc 'tense-marker
-			      (position-table *current-phrasal-root*))))))
+	     (cdr (assoc 'tense-marker
+                         (position-table *current-phrasal-root*)))))
        (set-contents position-of-the-tense-marker
 		     auxiliary-that-will-carry-the-tense)
        (ecase (aux-state)
@@ -315,7 +314,7 @@ by the *current-phrasal-root*.  Default is SINGULAR."
     (the (member singular plural)
 	 (or (etypecase  subj
 	       (specification
-                (let ((feature (get-accessory-value ':number subj)))
+                (let ((acc (get-accessory-value ':number subj)))
                   (when acc
                     (name acc))))
 	       (node

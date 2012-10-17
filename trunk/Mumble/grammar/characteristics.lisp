@@ -113,7 +113,7 @@
    (when (and *current-phrasal-root* 
               (original-rspec *current-phrasal-root*)
               (eq (bundle-type (original-rspec *current-phrasal-root*))
-                  general-clause))
+                  'general-clause))
      (let* ((matrix-spec  (original-rspec *current-phrasal-root*))
 	    (matrix-args (arguments (head matrix-spec)))
 	    arg-list)
