@@ -52,6 +52,8 @@
                              bindings
                              &optional permanent? )
 
+  (declare (special *index-under-permanent-instances*))
+
   (let* ((operations (cat-operations category))
 	 (fn-data (when operations (cat-ops-index operations))))
 
@@ -122,7 +124,7 @@
 (defun list-instances (symbol-for-category)
   (let ((category (category-named symbol-for-category)))
     (unless category
-      (error "There is no category named ~A"))
+      (error "There is no category named ~A" symbol-for-category))
     (let ((instances (all-instances category)))
       (pl instances)
       (length instances))))

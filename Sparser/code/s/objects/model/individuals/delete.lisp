@@ -99,6 +99,7 @@
 (defun delete/individual/seq-keys (var-sequence i alist category)
   ;; the instances field is organized as an alist of alists -- as deep
   ;; as needed to accomodate the sequence of variables
+  (declare (special *trace-reclaimation*))
   (when *trace-reclaimation*
     (format t "~%---- deleting from alist: ~A~%" i))
   (walk-alist/delete var-sequence alist i category))

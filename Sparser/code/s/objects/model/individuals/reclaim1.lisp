@@ -169,6 +169,7 @@
 (defun reap-individuals ()
   ;; called from Per-article-initializations -- it zeros
   ;; everything that was instantiated in the last run
+  (declare (special *objects-in-the-discourse*))
   (let ( type-list )
     (maphash #'(lambda (key value)
                  (declare (ignore value))

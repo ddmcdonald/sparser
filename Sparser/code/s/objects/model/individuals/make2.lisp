@@ -156,6 +156,7 @@
 ;;;-------------------------------------------------------------------------
 
 (defun def-individual (category &rest symbols-and-values)
+  (declare (ignore category symbols-and-values))
   (break "Calls to Def-individual get replaced w/ define-individual"))
 
 
