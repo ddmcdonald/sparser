@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
-;;; copyright (c) 1991-1996,2010-2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2010-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
 ;;;      File:   "compile-everything"
 ;;;    Module:   "init;scripts:"
-;;;   version:   0.4 August 2011
+;;;   version:   0.4 October 2012
 
 ;; This file sets up the parameter settings to drive the loading
 ;; of the system in it's "copy all the files to a new directory" mode.
@@ -20,6 +20,8 @@
 ;;      compiler directory.
 ;; 0.3 (11/10/10) Cleaned up dead wood, updated one'ies
 ;; 0.4 (8/27/11) Reworked to only be used after Sparser has been loaded.
+;;     (10/10/12) v3.1 => v4.0
+
 
 
 (eval-when (:load-toplevel :execute)
@@ -75,11 +77,11 @@
 
 (load #+:apple (concatenate 'string cl-user::location-of-sparser-directory
                    "code:s:init:versions:"
-                   "v3.1:"
+                   "v4.0:"
                    "loaders:lisp-switch-settings")
       #+:unix (concatenate 'string cl-user::location-of-sparser-directory
 			   "code/s/init/versions/"
-			   "v3.1/"
+			   "v4.0/"
 			   "loaders/lisp-switch-settings.lisp"))
 
 
