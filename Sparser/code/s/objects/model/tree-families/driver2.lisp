@@ -280,6 +280,8 @@
 (defun i/r/s-make-the-rule (lhs rhs form referent relation)
   ;; Used when there are no multiple terms in either the left
   ;; or righthand sides, or as the base case when there are.
+  (declare (special *convert-eft-form-categories-to-form-rules*
+                    *infer-rewriting-form-rules*))
   (let ((cfr
          (if (and *convert-eft-form-categories-to-form-rules*
                   (some #'(lambda (c)
