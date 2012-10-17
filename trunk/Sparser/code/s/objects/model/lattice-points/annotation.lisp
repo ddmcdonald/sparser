@@ -53,6 +53,12 @@
 ;;; annotation cases
 ;;;------------------
 
+(defparameter *rule-being-interpreted* nil)
+;; This is actually in analysers;psp:referent:driver1, but if we
+;; don't define it here the next two routines won't make it special.
+
+
+
 ;; Called from referent-from-unary-rule and find-or-make-psi-for-base-category
 ;;
 (defun annotate-realization/base-case (lattice-point category)
@@ -80,17 +86,14 @@
       entry )))
 
 
-(defparameter *rule-being-interpreted* nil)
-;; This is actually in analysers;psp:referent:driver1, but if we
-;; don't define it here the next two routines won't make it special.
-
-
 ;; Called from referent-from-unary-rule, and indirectly from 
 ;; span-digits-number. Called from referent-from-rule when
 ;; the rule points directly to its referent. Called from ref/function
 ;; when the result is an individual.
 ;;
 (defun annotate-individual (i source &optional already-cached?)
+  (declare (special *annotate-realizations* *head-edge* *arg-edge*
+                    *referent* *parent-edge-getting-reference*
   (when *annotate-realizations*
     (unless *rule-being-interpreted*
       (break "Unexpected situation: *rule-being-interpreted* is null"))
@@ -157,6 +160,7 @@
 
 ;; Called from span-digits-number and from make-edge-over-unknown-digit-sequence
 (defun annotate-number (n fsa-keyword already-cached?)
+  (declare (special *annotate-realizations* *rule-being-interpreted*))
   (when *annotate-realizations*
     (let ((*rule-being-interpreted* fsa-keyword))
       (annotate-individual n :number already-cached?))))
@@ -165,16 +169,18 @@
 ;; Called from Referent-from-unary-rule
 ;;   and from the unary case in ref/function
 (defun annotate-unary-realization (rule)
+  (declare (special *annotate-realizations*) (ignore rule))
   (when *annotate-realizations*
     (break "Annotate-unary-realization stub")))
 
 
 ;; called from ref/head with args analogous to call to
 ;; annotate-individual.
-(defun annotate-composite (c))
+(defun annotate-composite (c)
+  (declare (ignore c)))
 
 (defun annotate-daughter (i rule head-edge arg-edge)
-  (declare (ignore rule arg-edge)) 
+  (declare (special *annotate-realizations*))
   ;;/// for the moment -- crucial to get all details
   ;; Copy the rnode on the head edge up to the current edge.
   ;; This misses the form rule data (motivating case is "a" + NP),
@@ -201,6 +207,7 @@
 ;;
 (defun annotate-realization-pair (i lattice-point rule
                                   head-edge arg-edge)
+  (declare (special *annotate-realizations*))
   (when *annotate-realizations*
     ;; annotating the application of a canonical binary rule.
     ;; The rnodes of the two edge are linked to a new rnode
@@ -252,6 +259,7 @@
   ;; Annotates the inclusion of an individual (or psi) into
   ;; a larger relation. First find/make the appropriate c+v
   ;; object and then stash it on the i/psi.
+  (declare (special *annotate-realizations*))
   (when *annotate-realizations*
     (tr :site-bound-to i/psi variable type)
     (push-debug `(,i/psi ,variable ,type)) ;; (i/psi variable type)
@@ -287,6 +295,7 @@
 (defvar *edges-to-rnodes* nil)
 
 (defun cache-rnode-on-parent-edge (node)
+  (declare (special *parent-edge-getting-reference*))
   (unless (boundp '*parent-edge-getting-reference*)
     (break "Threading bug: Annotation not taking place within ~
             the scope~%of a referent calculation~%"))
@@ -382,6 +391,8 @@
 (defvar schr nil)
 
 (defun head-and-ather-edges-of-binary-rule (sr)
+  (declare (special *left-edge-into-reference*
+                    *right-edge-into-reference*))
   (setq schr sr)
   (unless (typep sr 'schematic-rule)
     (break "Bad threading or new case.~
@@ -412,6 +423,8 @@
   ;; different annotations (rnodes) that every come accompany
   ;; the individual or psi the interpretation of this
   ;; yielded. 
+  (declare (special *rules-that-are-fsas*
+                    *categories-without-realization-schema*))
   (unless *categories-without-realization-schema*
     (populate-categories-without-realization-schema))
   (unless *rules-that-are-fsas*
