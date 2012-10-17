@@ -73,7 +73,10 @@
 ;################################################################
 
 (defun clausal-bundle-driver (dtn root-node)
+  (declare (ignore root-node))
   (landmark 'realizing-the-head-of-the-bundle dtn)
+  (break "Needs conversion to dtn")
+  #+ignore
   (let ((result (realize-kernel-specification (head bundle))))
     (set-backpointer-of-root result bundle)
     (entering-new-context result)

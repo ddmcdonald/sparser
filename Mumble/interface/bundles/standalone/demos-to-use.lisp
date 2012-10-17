@@ -20,6 +20,7 @@
     purpose-of-life purpose-of-life-for-peter chasing))
 
 (defun test-all-demos ()
+  (declare (special *mumble-text-output*))
   (dolist (demo *current-demos*)
     (terpri *mumble-text-output*)
     (funcall demo)))

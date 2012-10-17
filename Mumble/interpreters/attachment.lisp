@@ -27,24 +27,24 @@ the realization-function of the rspec accordingly."
   (landmark 'attaching-via-attachment-fn rspec attachment-function)
   (unless (rspec? rspec)
     (setq rspec (realization-for rspec)))
-  (let-with-dynamic-extent
-    ((*bundle-being-attached* rspec))
+  (let-with-dynamic-extent ((*bundle-being-attached* rspec))
     (multiple-value-bind (ap usable-choices)
-      (etypecase attachment-function
-	(attachment-point
-	  (check-validity-of-attachment-point
-	    attachment-function rspec))
-	(single-attachment-choice
-	  (check-validity-of-attachment-choice
-	    attachment-function rspec))
-	(attachment-class
-	  (choose-from-attachment-class-choices
-	    attachment-function rspec)))
-    (let ((position (position-of-ap-in-present-context ap)))
-      ;;(specialize-realization-function rspec usable-choices)
-      ;; Doesn't apply if not using M-86 (M-80) style spelled out
-      ;; late choices
-      (attach-at-attachment-point ap rspec position)))))
+                         (etypecase attachment-function
+                           (attachment-point
+                            (check-validity-of-attachment-point
+                             attachment-function rspec))
+                           (single-attachment-choice
+                            (check-validity-of-attachment-choice
+                             attachment-function rspec))
+                           (attachment-class
+                            (choose-from-attachment-class-choices
+                             attachment-function rspec)))
+      (declare (ignore usable-choices))
+      (let ((position (position-of-ap-in-present-context ap)))
+        ;;(specialize-realization-function rspec usable-choices)
+        ;; Doesn't apply if not using M-86 (M-80) style spelled out
+        ;; late choices
+        (attach-at-attachment-point ap rspec position)))))
 
 (defmethod syntax-driven-sources ((w word)) nil)
 (defmethod syntax-driven-sources ((sdn satellite-dt-node))

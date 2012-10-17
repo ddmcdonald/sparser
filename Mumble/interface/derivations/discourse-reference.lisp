@@ -9,6 +9,7 @@
 (defparameter *objects-to-references* (make-hash-table))
 
 (defun record-reference (obj bundle)
+  (declare (ignore bundle))
   (let ((entry (mentions obj))
 	(record (record-discourse-context)))
     (setf (gethash obj *objects-to-references*)

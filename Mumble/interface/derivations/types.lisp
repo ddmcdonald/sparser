@@ -1,4 +1,4 @@
-;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
+;;; 120-*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
 ;;; $Id: types.lisp 301 2009-09-17 16:55:08Z dmcdonal $
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 
@@ -238,7 +238,7 @@
 				 :parameters args)))
     (setf (indexed-object-index bc) (index-object bc))
     (let* ((fn-name (concat name '#:-bundle-creator))
-	   (form `(defun ,name ,args ,@body))
+	   (form `(defun ,fn-name ,args ,@body))
 	   (fn (eval form)))
       (setf (bc-function bc) fn)
       (setf (gethash name *symbols-to-bundle-creators*) bc)
@@ -296,6 +296,7 @@
 	 (resource-name (car lr-exp))
 	 (additional-pairs (cdr lr-exp))
 	 (lr (linguistic-resource-named resource-name)))
+    (declare (ignore additional-pairs))
     (unless lr
       (break "There is  no linguistic resource named ~a" resource-name))
     (let* ((lexicalized-phrase 
@@ -338,10 +339,9 @@
 		   ,operator-expression
 		   b)))
 	     (template (eval form))) 
-	(setq *form* form) (setq *op-exp* operator-expression) (setq *tr* tr)
 	(setf (tr-template tr) template) (break "tr")
 	tr))))
-(defvar *form* nil) (defvar *op-exp* nil) (defvar *tr* nil)
+
 
 
 
