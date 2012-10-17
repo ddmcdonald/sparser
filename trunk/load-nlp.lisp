@@ -1,10 +1,10 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
 ;;; $Id$
-;;; Copyright (c) 2010-2011 David D. McDonald
+;;; Copyright (c) 2010-2012 David D. McDonald
 ;;;
 ;;;   File:   load-nlp-poirot
 ;;;  Module:  /nlp/
-;;; Version:  December 2010
+;;; Version:  October 2012
 
 ;; Intiated 10/26/10 to load shared utilities, Mumble, Sparser,
 ;; and some KB ripped out of the Poirot ontology
@@ -37,15 +37,14 @@
 
 (defparameter *nlp-home*
   (make-pathname :directory (pathname-directory *load-truename*)))
-;; (setq *nlp-home* "/Users/ddm/Sparser/")
 
 
 ;;--- Loading
 
-;; Utilities used everywhere (though not integrated into Sparser yet 12/22/10)
+;; Utilities used everywhere 
 (asdf:operate 'asdf:load-op :ddm-util)
 
-#+ignore
+
 (unless (find-package :sparser)
   ;; Referenced in Mumble code
   (make-package :sparser
@@ -53,6 +52,11 @@
                        ddm-util
                        #+apple ccl
                        #+openmcl :ccl)))
+
+;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, this invocatation of
+;; make-package does not include ddm-util in the result. Works just fine
+;; in ACL and before installing Lion (for what that's worth).  -- ddm
+#+openmcl (use-package (find-package :ddm-util) (find-package :sparser))
 
 ;; Mumble
 (load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp"))
