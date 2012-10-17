@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2010-2012 David D. McDonald  -- all rights reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  0.0 November 2011
+;;;  version:  0.0 October 2012
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
-;; 11/21/11 Added sanity check that we're annotating realizations.
+;; 11/21/11 Added sanity check that we're annotating realizations. 10/12/12
+;; added methods that start with edges. 
 
 (in-package :sparser)
 
@@ -37,10 +38,18 @@
   (let ((lp (cat-lattice-position c)))
     (lp-realizations lp)))
 
+(defmethod mumble::has-realization? ((e edge))
+  (let ((referent (edge-referent e)))
+    (unless referent
+      (error "No referent on the edge ~a" e))
+    (mumble::has-realization? referent)))
+
 
 ;;;-------------
 ;;; what is it?
 ;;;-------------
+
+;;--- realization-for 
 
 (defmethod mumble::realization-for ((o t))
   (let ((options (realization-history o)))
@@ -49,6 +58,14 @@
     (let ((dt (mumble::convert-to-derivation-tree options o)))
       (push-debug `(:dt ,dt))
       dt)))
+
+(defmethod mumble::realization-for ((e edge))
+  (let ((referent (edge-referent e)))
+    (mumble::realization-for referent)))
+    
+
+
+;;--- history
 
 (defgeneric realization-history (o)
   (:documentation "Soaks up the different possibilities for 
@@ -92,10 +109,31 @@
 ;;--- move to psi somewhere
 
 (defun decompose-psi-by-rnode (psi head-rnode arg-rnode)
-  (push-debug `(,psi ,head-rnode ,arg-rnode))
-  (break "decompose-psi-by-rnode"))
-;  (values head-i
-;          adjunct-i))
+  ;; Syntactically, the psi has been realized with a binary rule
+  ;; that factors into a head and an argument. Find (construct?) the
+  ;; corresponding factoring in the psi and return those two parts
+  ;; to provide referents for those parts of the generation process.
+  (push-debug `(,psi ,head-rnode ,arg-rnode :decompose-by-rnode))
+  (let ((head-lp (rn-lattice-point head-rnode))
+        (arg-lp (rn-lattice-point arg-rnode))
+        (downlinks (psi-path psi)))
+    (push-debug `(,head-lp ,arg-lp))
+    (unless (= (length downlinks) 2)
+      (error "Need a new way to decompose the psi: more than 2 downlinks"))
+    ;; Now determine which one's which. The downlink psi have rnodes
+    ;; when [??], so we look to see if the arg-rnode (1st) is in either
+    ;; of these psi
+    (let ((psi-1 (car downlinks)) (psi-2 (cadr downlinks))
+          head-psi  arg-psi )
+      #+ignore
+      (cond ((memq arg-rnode (psi-rnodes psi-1))
+             (setq head-psi psi-2 arg-psi psi-1))
+            ((memq arg-rnode (psi-rnodes psi-2))
+             (setq head-psi psi-1 arg-psi psi-2))
+            ;; Doesn't work with head either
+            (t (push-debug `(,psi-1 ,psi-2))
+               (break "Next case for decompose-psi")))
+      (values head-psi arg-psi))))
     
 
     
