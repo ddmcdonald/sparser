@@ -1,6 +1,6 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
-;;; $Id: auto-gen.lisp 105 2007-08-06 21:49:38Z dmcdonal $
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2012 David D. McDonald
 
 ;; initiated 3/25/07
 
