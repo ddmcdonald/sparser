@@ -257,6 +257,7 @@
   ;; add the binding to the index under this value of the variable
   (let ((field (var-instances variable))
         (*print-short* t))
+    (declare (special *print-short*))
     (if (null field)
       (setf (var-instances variable)
             `((,value . (,binding))) )
@@ -308,7 +309,7 @@
       
       (let ((instances-alist (var-instances variable))
             (*print-short* t))
-        
+        (declare (special *print-short*))
         (unless instances-alist
           (break "Expected ~A to have an index" variable)
           (return-from unindex-binding))
@@ -338,6 +339,7 @@
 
 (defun excise-value-entry (instances-alist value variable)
   (let ((*print-short* t))
+    (declare (special *print-short*))
     (if (eq value (caar instances-alist))
       (let ((cell instances-alist))
         (setf (var-instances variable) (cdr instances-alist))
