@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: loader.lisp 359 2010-08-13 20:13:38Z dmcdonal $
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.5 July 2010
+;;;  Version:  0.5 September 2012
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -17,9 +16,11 @@
 ;; 0.4 (1/9/95) bumped [section markers].  9/19 added [html]
 ;; 0.5 (7/27/10) Added [article1]. The file article has been in the system
 ;;      forever (1993), but grep doesn't find anything that lloads it. 
+;;    (9/2/12) added [doc-set] and [word-freq]
 
 (in-package :sparser)
 
+(lload "doc;word-freq")
 (lload "doc;article1")
 (lload "doc;sections")
 (lload "doc;section markers1")
@@ -31,6 +32,7 @@
 (lload "doc;annotation")
 (lload "doc;header label")
 (lload "doc;style")
+(lload "doc;doc-set")
 (lload "doc;doc stream")
 (lload "doc;context")
 
