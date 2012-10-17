@@ -106,7 +106,7 @@
 ;;;------
 
 (defun initialize-individuals-resource ()
-  ;; called from 
+  (declare (special *number-of-individuals-in-initial-allocation*))
   (setq *next-individual* nil)
   (allocate-a-rasher-of-individuals
    *number-of-individuals-in-initial-allocation*))

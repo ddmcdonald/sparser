@@ -106,6 +106,7 @@
   ;; have a name field, which we assume is bound to a word. 
   ;; This routine is put on the ops-printer field of the category
   ;; at the time the category is defined.
+  (declare (special *print-short*))
 
   (write-string "#<" stream)
 
@@ -301,6 +302,7 @@
   ;; but that's not possible until we've implemented the 'strings'
   ;; option on the special print routines. For now just going for
   ;; a kludge.
+  (declare (ignore cursor-pos pending-indentation))
   
   (let ((*return-print-string* t)
         ;; we'll get the string if that option is defined
