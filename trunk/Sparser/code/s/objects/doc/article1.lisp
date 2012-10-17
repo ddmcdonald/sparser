@@ -28,18 +28,18 @@
 ;;; object
 ;;;--------
 
-(defobject document () 
-  ((name symbol)
-   (words-to-count) ;; hash-table
-   (words)    ;; integer of inique lemmas
-   (token-count))) ;; integer of total word count
+(defobject document (word-frequency) 
+  ((name)
+   (location))) ;; absolute for now
+         
+
 
 ;;--- create/intern, clear, print
 
 (defvar *symbols-to-document-instances* (make-hash-table))
 
 (defmethod find-or-make-document-object ((filename string) clear?)
-  (let ((name (intern (pathname-name (parse-namestring filename)))))
+  (let ((name (intern (string-upcase (pathname-name (parse-namestring filename))))))
     (find-or-make-document-object name clear?)))
 
 (defmethod find-or-make-document-object ((name symbol) clear?)
@@ -49,41 +49,17 @@
 	(clear d))
       (else 
 	(setq d (make-instance 'document :name name))
-	(setf (words-to-count d) (make-hash-table))
-	(setf (token-count d) 0)
-	(setf (gethash name *symbols-to-document-instances*) d)))
+        (initialize d)
+        (setf (gethash name *symbols-to-document-instances*) d)))
     d))
 
 (defmethod get-document ((name symbol))
   (gethash name *symbols-to-document-instances*))
 
-(defmethod clear ((d document))
-  (setf (words d) nil)
-  (setf (token-count d) 0)
-  (clrhash (words-to-count d))
-  d)
 
 (defmethod print-object ((d document) stream)
   (format stream "#<document ~a>"
 	  (name d)))
-
-
-;;;---------------------------
-;;; tallying word-frequencies
-;;;---------------------------
-
-(defmethod incf-word-count ((w word) (d document))
-  (let* ((table (words-to-count d))
-	 (count (gethash w table)))
-    (unless count
-      (push w (words d))
-      (setf (gethash w table) 0))
-    (incf (token-count d))
-    (incf (gethash w table))))
-
-(defmethod count-in-document ((w word) (d document))
-  (let ((table (words-to-count d)))
-    (gethash w table)))
 
 
 
