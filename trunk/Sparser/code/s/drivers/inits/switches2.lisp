@@ -210,12 +210,19 @@
   (setq *do-conceptual-analysis* nil)
   (setq *count-input-lines* nil))
 
+(defun include-comlex ()
+  (setq *incorporate-generic-lexicon* t)
+  (what-to-do-with-unknown-words :check-for-primed)
+  (establish-version-of-def-word :comlex)
+  (unless *comlex-word-lists-loaded*
+    (load-comlex)))
+
 
 ;;---- Specific cases
 
 (defun answer-setting ()
   ;;(DM&P-setting)
-  ;; 2/7/07 This is creating a lot of small nit-picking bugs and muddying
+  ;; 2/7/07 DM&P-setting is creating a lot of small nit-picking bugs and muddying
   ;; the waters by burying the new vocabulary under generic 'terms' and
   ;; 'segments'. Need to find some middle ground, possibly based on the
   ;; newer notion of 'kind' in model/core.
@@ -270,6 +277,13 @@
   (setq *annotate-realizations* nil)
   (setq *do-conceptual-analysis* nil) ;; probably need finer resolution
   (setq *switch-setting* :fire))
+
+(defun grok-setting ()
+  "Similar to answer and fire, but with annotations and ..."
+  (fire-setting)
+  (setq *annotate-realizations* t)
+  
+)
 
 (defun ambush-setting ()
   (fire-setting)
@@ -393,6 +407,11 @@
   :ignore-capitalization 'wf-classification/ignore-caps)
   (setq *switch-setting* :word-frequency))
 
+(defun comlex-mode ()
+  "A mix-in to other modes"
+  (establish-version-of-def-word :comlex)
+  (unless *comlex-word-lists-loaded*
+    (load-comlex)))
 
 (defun just-bracketing-setting ()
   (word-frequency-setting) ;; to turn of fire setting et al.
@@ -410,6 +429,7 @@
   (use-return-newline-tokens-fsa) ;; it's returned as a regular whitespace char.
   (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
   (use-unknown-words)
+  (comlex-mode)
   (setq *switch-setting* :just-bracketing))
 
 
