@@ -62,6 +62,7 @@
 (defun clean-up-non-individual-value (obj b)
   ;; the object is typically the value or once in a while
   ;; the body of the binding and it is not an individual
+  (declare (special *trace-reclaimation*))
   (typecase obj
     (word )
     (polyword )
@@ -79,10 +80,12 @@
      ;(dolist (item obj)
      ; (clean-up-non-individual-value item b)))
 
-    (category );; then it doesn't have a binding field
+    (mixin-category )
 
     (referential-category )  ;;///ignoring them for now
-    (mixin-category )
+
+    (category );; then it doesn't have a binding field
+
     (subtype-lattice-point)
     
     (integer )

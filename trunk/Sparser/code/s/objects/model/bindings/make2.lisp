@@ -101,6 +101,7 @@
 
 
 (defun make/binding (variable value individual &optional no-index-on-body?)
+  (declare (special *index-under-permanent-instances*))
   (let ((b (if *index-under-permanent-instances*
              (make-binding)
              (allocate-binding))))
