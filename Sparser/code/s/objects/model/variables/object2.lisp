@@ -55,5 +55,6 @@
 (defun find-variable-in-category/named (symbol category
                                         &optional original-category
                                                   (depth 0))
+  (declare (ignore original-category depth))
   (find-variable-for-category symbol category))
 
