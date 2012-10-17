@@ -82,11 +82,11 @@
             (return))
           (setq prior-cell next-cell
                 next-cell (cdr next-cell)
-                next-individual (car next-cell)))))
+                *next-individual* (car next-cell)))))
     
     ;; don't zero its fields until it's allocated again
     (setf (unit-plist psi) `(:deallocated t ,@(unit-plist psi)))
-    indiv ))
+    psi ))
 
 
 ;;;-------------

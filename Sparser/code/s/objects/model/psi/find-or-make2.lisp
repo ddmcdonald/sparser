@@ -79,6 +79,7 @@
 
 ;; vetted 7/23
 (defun find-or-make-psi-for-base-category (c)
+  (declare (special *annotate-realizations*))
   ;; called from ref/instantiate-individual-with-binding (at least)
   (let* ((lattice-point (cat-lattice-position c))
          (new? (null (lp-top-psi lattice-point)))
