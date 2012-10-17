@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990-1996,2010-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  0.4 March 2012
+;;;  Version:  0.4 Septembe 2012
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -18,6 +17,8 @@
 ;;     printers. 7/15/10 implementing tracking freq in different documents.
 ;;     7/23-25 folding in #<document> object. Refining ...8/16.
 ;;     7/28/11 Abstracted out def-word to its own file. 3/31/12 fixed fn call.
+;;     Through August, September 2012 adding documentation, refining
+;;     the code overall. 
 
 (in-package :sparser)
 
@@ -26,9 +27,10 @@
 ;;;------------
 
 (unless (boundp '*stem-words-for-frequency-counts*)
-  (defparameter *stem-words-for-frequency-counts* nil
-    "If not nil, we apply the Porter Stemmer to each (non-function) word
-     and use the stem it returns as the word that we count."))
+  (defparameter *stem-words-for-frequency-counts* t
+    "If not nil, we apply the stemmer defined in /rules/tree-families/
+     morphology.lisp to the raw word to determine what we count.
+     Gives the best results if *comlex-word-list-loaded* is true."))
 
 (unless (boundp '*include-function-words-in-frequency-counts*)
   (defparameter *include-function-words-in-frequency-counts* nil
@@ -95,8 +97,11 @@
         *word-count-buckets-most-freq-highest* nil
 	*documents-analyized* nil
 	*function-words-seen-in-run* nil
-	*punctuation-seen-in-run* nil) 
-  (reset/over-all)) ;; (readout-frequency-table)
+	*punctuation-seen-in-run* nil))
+
+;; N.b. reset/over-all will zero the frequency table and lose
+;; all the information about word counts over all and in any
+;; document
 
 
 ;;;------------------------------------
@@ -106,19 +111,36 @@
 (defparameter *word-frequency-table*
               (make-hash-table :test #'eq
                                :size 1000
-                               :rehash-size 500))
+                               :rehash-size 500)
+  "Maps from words to s-expression 'entries' that record the counts
+ of the word overall (which accumulates across all runs) and in
+ particular documents.")
 
+#| An entry is a list whose car is the count, followed by
+ an alist of (<article> . <per-article-count>).  Word objects
+ are linked to their entries via the table *word-frequence-table*
+|#
 
 (defmethod frequency-table-entry ((word word))
   (gethash word *word-frequency-table*
-           :no-entry  ;; the value returned if the word isn't in the table
-           ))
+           :no-entry))  ;; the value returned if the word isn't in the table
+           
+(defmethod frequency-table-entry ((s symbol))
+  (let ((word (word-named (string-downcase (symbol-name s)))))
+    (frequency-table-entry word)))
+
 
 (defun reset/over-all ()
+  "Forget all of the recorded frequency data. This makes
+   sense if there's a big shift in corpus such that you don't
+   think the overall counts are meaningful any more, or 
+   if there's a big shift in what's being counted."
   (clrhash *word-frequency-table*))
 
-
 (defun frequency-table-to-list-of-symbols ()
+  "Walk through the frequency table to collect all the words,
+   pick out their symbols, and return them as an alphabetized
+   list."
   (let* ((words 
 	  (loop for key being the hash-key in *word-frequency-table*
 	     collect key))
@@ -128,21 +150,39 @@
     (sort symbols #'alphabetize)))
 
 
+(defmethod total-count ((w word))
+  "Returns the total number of times the word has been "
+  (let ((entry (frequency-table-entry w)))
+    (if (eq entry :no-entry)
+      0
+      (car entry))))
+
+(defmethod count-in-document ((w word) (o word-frequency))
+  "Look up the count for a particular document that inherits
+   the word-frequency mixin class. Note that this doesn't
+   use the entry structure of the word in the frequency
+   table but assume that's been recorded on the document."
+  (let ((table (words-to-count o)))
+    (gethash w table)))
+
 
 ;;;----------------------------
 ;;; driver - hook into Sparser
 ;;;----------------------------
 
+#| When we run Sparser with its word-frequency-settings
+ active, all it does is call record-word-frequency on
+ every terminal in the documents it scans. 
+   Note that per-document variables like *words-in-run*
+ need to be harvested and save off between documents if they
+ are going to be meaningful.
+|#
+
 (defun record-word-frequency (word position)
-  ;; called in the body of Look-at-terminal
-  (incf *words-in-run*)
+  ;; called in the body of look-at-terminal
+  (incf *words-in-run*) ;; running total of document length
   (let ((classification (classify-word-for-frequency word position)))
     (record-word-frequency/over-all word classification)))
-
-#| An 'entry' is a cons whose car is the count, followed by
- an alist of (<article> . <per-article-count>).  Word objects
- are linked to their entries via the table *word-frequence-table*
-|#
 
 (defun record-word-frequency/over-all (word classification)
   (let ((entry
@@ -218,34 +258,31 @@
           (sort-frequency-list words-counted))
     (length *sorted-word-entries*)))
 
+(defun redirect-to (filename form)
+  (with-open-file (stream filename
+                   :direction :output
+                   :if-exists :overwrite
+                   :if-does-not-exist :create)
+    (declare (special stream))
+    (eval form)))
 
-(defun readout-frequency-table ()
+
+(defun readout-frequency-table (&optional (stream *standard-output*))
   "Prime reporting routine if just looking all all the words
    and not comparing word frequencies across documents"
   (setup-word-frequency-data)
-  (display-sorted-results *standard-output*
+  (display-sorted-results stream
                           *sorted-word-entries*)
   '*sorted-word-entries*)
 
-;; Subroutine that lets us include a count when displaying
-;; sorted results
-(defvar *how-many-at-each-frequency-count* (make-hash-table))
-(defun how-many-at-frequency-count (n)
-  (gethash n *how-many-at-each-frequency-count*))
-(defun count-how-many-at-each-frequency-count 
-    (&optional (list-of-entries *sorted-word-entries*))
-  (let ((frequency 0)
-	(count 0))
-    (dolist (entry list-of-entries)
-      (when (not (= (cdr entry) frequency))
-	(setf (gethash frequency *how-many-at-each-frequency-count*) count)
-	(setq frequency (cdr entry)
-	      count 0))
-      (incf count))))
-
 (defun display-sorted-results (&optional
                                (stream *standard-output*)
+                               (just-summary nil)
                                (list-of-entries *sorted-word-entries*))
+  "Walk through the entire vocabulary of the run, which has been
+ sorted from least to most frequent. Write out the all the words,
+ five per line, on the specified stream, with breaks and labels
+ on each frequency increase."
   (format stream "~&~%~A words in a corpus of length ~A"
           (number-of-words-counted) *words-in-run*)
   (count-how-many-at-each-frequency-count)
@@ -259,14 +296,36 @@
         (format stream "~&~% ~a words with frequency ~A~%   "
 		(how-many-at-frequency-count frequency)
 		frequency))
-      (princ-word (car entry) stream)
-      (write-string "  " stream)
-      (incf words-on-the-line)
-      (when (= 5 words-on-the-line)
-        (format stream "~%   ")
-        (setq words-on-the-line 0)))
-    (terpri stream)
+      (unless just-summary
+        (princ-word (car entry) stream)
+        (write-string "  " stream)
+        (incf words-on-the-line)
+        (when (= 5 words-on-the-line)
+          (format stream "~%   ")
+          (setq words-on-the-line 0))
+        (terpri stream)))
     (terpri stream)))
+
+
+;; Subroutine that lets us include a count when displaying
+;; sorted results
+(defvar *how-many-at-each-frequency-count* (make-hash-table)
+  "From numeric frequency to the number of words that occured
+ that number of times (once, twice, 57 times, ...).")
+
+(defun how-many-at-frequency-count (n)
+  (gethash n *how-many-at-each-frequency-count*))
+
+(defun count-how-many-at-each-frequency-count 
+    (&optional (list-of-entries *sorted-word-entries*))
+  (let ((frequency 0)
+	(count 0))
+    (dolist (entry list-of-entries)
+      (when (not (= (cdr entry) frequency))
+	(setf (gethash frequency *how-many-at-each-frequency-count*) count)
+	(setq frequency (cdr entry)
+	      count 0))
+      (incf count))))
 
 
 ;;--- subroutines for reporting
@@ -483,6 +542,52 @@
 	 (format nil "~,8F" ratio)
 	 ratio)))))
 
+(defmethod term-frequency ((w word) (d document))
+  (let ((total-tokens (token-count d))
+	(count-for-word (count-in-document w d)))
+    (unless (or (= total-tokens 0)
+		(null count-for-word)) ;; #<source-start>
+      (/ count-for-word total-tokens))))
+
+(defun number-of-documents-containing-word (word)
+  (let ((entry (frequency-table-entry word)))
+    (if entry
+      (length (cdr entry))
+      0)))
+
+
+(defmethod inverse-document-frequency ((w word) list-of-documents)
+  (let* ((doc-count (length list-of-documents))
+         (incident-count (number-of-documents-containing-word w))
+         (ratio (/ doc-count (1+ incident-count))))
+    (log ratio)))
+
+(defmethod tf-idf ((w word) document list-of-documents)
+  (let ((tf (term-frequency w document)))
+    (when tf
+      (* tf
+         (inverse-document-frequency w list-of-documents)))))
+
+
+;;;------------------------------------
+;;; portions of the tracked vocabulary
+;;;------------------------------------
+
+(defgeneric filter-hapax (document)
+  (:documentation "Go through the sorted-word-entry list for this
+ document and cons a new list that doesn't include any words 
+ of frequency 1."))
+
+(defmethod  filter-hapax ((document-name symbol))
+  (let ((document (get-document document-name)))
+    (unless document
+      (error "There is no document with the name ~a" document-name))
+    (loop for (word . count) in *sorted-word-entries*
+      when (> count 1) collect word)))
+
+  
+
+
 
 ;;;-------------------------
 ;;; writing out the results
@@ -688,13 +793,30 @@
 ;; (readout-frequency-table)
 
 (defun f/wf (namestring)
-;  (initialize-word-frequency-data)
+  "Original driver. Works over a single file. Hold all the
+  computed information in globals that have to be manually
+  harvested and dealt with before the next run."
   (word-frequency-setting)
   (let ((*current-article*
 	 (find-or-make-document-object namestring :clear)))
     (declare (special *current-article*))
     (pushnew *current-article* *documents-analyized*)
     (analyze-text-from-file namestring)))
+
+(defgeneric count-word-frequencies (document)
+  (:documentation "Gets the text to be analyzed and counted
+   from the document (doc-set, etc.) and stores the results 
+   on the object. "))
+
+(defmethod count-word-frequencies ((doc document))
+  (word-frequency-setting)
+  (initialize-word-frequency-data)
+  (let ((*current-article* doc)
+        (filename (location doc)))
+    (declare (special *current-article*))
+    (analyze-text-from-file filename)
+    (setf (token-count doc) *words-in-run*)
+    doc))
 
 
 
