@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1989-1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1989-1995,2011-2012  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "time"
 ;;;   Module:  /Sparser/util/
-;;;  Version:  March 2011
+;;;  Version:  August 2012
 
 ;; initiated 11/89, substantially hacked 10/91
 ;; 9/8/93 v2.3 added Month-day.  3/29/95 included check against
 ;; Time-as.. having been loaded already.  5/1 added month-day-year
-;; (3/9/11) Reworked to fit in ddm-util.
+;; (3/9/11) Reworked to fit in ddm-util. 8/7/12 minor tweaks, updates. 
 
 (in-package :ddm-util)
 
@@ -41,9 +41,9 @@
                          (or hour 0)
                          (or day 1)
                          (or month 1)
-                         (or year 2010)
-                         ;; (or day-of-week 0) ;; Monday
-                         ;; (or daylight-savings-time-p t)
+                         (or year 2012)
+                         (or day-of-week 0) ;; Monday
+                         (or daylight-savings-time-p t)
                          (or time-zone 5))) ;; Boston
 
 ;;;-----------------------
