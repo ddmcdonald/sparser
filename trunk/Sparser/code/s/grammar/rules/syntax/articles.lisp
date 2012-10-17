@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  April 2009
+;;;  Version:  October 2012
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
-;; 4/1/05. Added common-noun 4/12/09
+;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
+;; because they preempt relative clause interpretation. 
 
 (in-package :sparser)
 
@@ -101,18 +102,18 @@
 
 ;;--- that
 
-(def-form-rule ("that" common-noun)
-  :form np
-  :referent (:daughter right-edge))
+;; (def-form-rule ("that" common-noun)
+;;   :form np
+;;   :referent (:daughter right-edge))
 
-(def-form-rule ("that" np-head)
-  :form np
-  :referent (:daughter right-edge))
+;; (def-form-rule ("that" np-head)
+;;   :form np
+;;   :referent (:daughter right-edge))
 
-(def-form-rule ("that" n-bar)
-  :form np
-  :referent (:daughter right-edge))
+;; (def-form-rule ("that" n-bar)
+;;   :form np
+;;   :referent (:daughter right-edge))
 
-(def-form-rule ("that" np)
-  :form np
-  :referent (:daughter right-edge))
+;; (def-form-rule ("that" np)
+;;   :form np
+;;   :referent (:daughter right-edge))
