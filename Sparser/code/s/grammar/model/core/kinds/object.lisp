@@ -113,19 +113,6 @@
   :binds ((list-of-words :primitive list)))
 
 
-;;;---------------------------
-;;; ancilary helper functions
-;;;---------------------------
-
-(defmethod name-to-use-for-category ((string string))
-  "Encapsulates the lisp-specific checks for what case to use."
-  (let* ((s #+mlisp string
-            #+(or :ccl :alisp)(string-upcase string))
-         (symbol (intern s (find-package :sparser))))
-    ;; n.b. not the category package. The pname will be interned there
-    ;; as part of creating the category
-    symbol))
-
 
 
 
