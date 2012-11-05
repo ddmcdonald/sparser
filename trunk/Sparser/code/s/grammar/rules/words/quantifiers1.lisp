@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.5 May 2012
+;;;   Version:   1.6 November 2012
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -26,26 +26,22 @@
 ;;      for the word itself to give it the quantifier object as a referent.
 ;;     (5/17/12) Discovered a bunch of ordinary quantifiers were stranded in the
 ;;      other version of this file. 
+;; 1.6 (11/2/12) Du'h the rules as written to rewrite a word as the saem word are circular.
+;;      redoing them on the pattern of prepositions. 
 
-(in-package :sparser) 
+(in-package :sparser)
 
-(define-category  quantifier
-    :specializes nil
-    :instantiates nil
-    :binds ((word  :primitive word)))
-;; This definition used to be conditioned on whether we included the model,
-;; but the ACL compiler choked on that in a bizare way
-
-
-(defun define-quantifier (string &key brackets rules)
-  "This creates an object for the quantifier, an individual created
+#|
+ This creates an object for the quantifier, an individual created
  from the quantiifer category just below. This is the hook that lets
  us (eventually) create a real quantification machanism using a full
  version of what's in /rules/syntax/quantifiers.lisp.
    1. We define the word as a function word with form and brackets.
-   2. We create a rule for the word that just rewrites it as itself
- but now with this specific quantifier individual as its referent.
-   3. We look at the rules field and build them as specified
+   2. Create a category based on the name of the word to be the rule label
+      that will largely operate by form rules
+   3. Write a rule that rewrite to the constructed category with
+      the quantifier individual as its referent. 
+   4. We look at the rules field and build them as specified
     A. 'det' -- the quantifier acts as a determiner. We write a form rule 
  against noun and np that call the quantify method to convert the
  referent into an instance of quantified (/// which isn't really right
@@ -54,58 +50,66 @@
  clause level
     B. 'of' -- the word is typically followed by 'of'. See note in
  code. ///this loses the partitioning aspect of the quantification.
-"
+
+|#
+
+(define-category  quantifier
+    :specializes nil
+    :instantiates nil
+    :binds ((word  :primitive word)))
+
+
+(defun define-quantifier (string &key brackets rules)
   (let* ((word (define-function-word string
-                 :brackets brackets
-                 :form 'quantifier)))
+                  :brackets brackets
+                  :form 'quantifier))
+         (category-name (name-to-use-for-category string))
+         (object (find-individual 'quantifier :word word))
+         cfrs )
+    (let* ((form `(define-category ,category-name
+                    :specializes ,category::quantifier
+                    :instantiates :self
+                    ;;  ??
+                    :bindings (word ,word)))
+           (category (eval form)))
 
-    (when *include-model-facilities*
-      (let ((object (find-individual 'quantifier :word word))
-            cfrs )
-        (unless object
-          ;; it's the first time the definition has been made.
-          ;; Subsequent evaluations of the form will still update
-          ;; the bracket information since that's done within the
-          ;; function word processing regardless of whether the word
-          ;; already exists
-          (setq object (define-individual 'quantifier
-                         :word word)))
+      (unless object
+        (setq object (define-individual 'quantifier
+                        :word word)))
 
-        (let ((cfr ;; the base rule for the word so it has a referent
-               (def-cfr/expr word ;; lhs
-                    `(,word) ;; rhs
-                 :form 'quantifier
-                 :referent object)))
-          (push cfr cfrs))
+      (let ((cfr ;; the base rule for the word
+             (def-cfr/expr category ;; lhs
+                    (list word) ;; rhs
+                :form 'quantifier
+               :referent object)))
+        (push cfr cfrs))
 
-        (when (memq 'det rules)
-          (let ((cfr1 (def-form-rule/expr `(,word ,category::noun)
-                        :form 'np 
-                        :referent '(:method quantify left-referent right-referent)))
-                (cfr2 (def-form-rule/expr `(,word ,category::np)
-                        :form 'np   
+      (when (memq 'det rules)
+        (let ((cfr1 (def-form-rule/expr `(,word ,category::noun)
+                       :form 'np 
+                       :referent '(:method quantify left-referent right-referent)))
+              (cfr2 (def-form-rule/expr `(,word ,category::np)
+                        :form 'np
                         :referent '(:method quantify left-referent right-referent))))
-            (push cfr1 cfrs)
-            (push cfr2 cfrs)))
+          (push cfr1 cfrs)
+          (push cfr2 cfrs)))
 
-        (when (memq 'of rules)
-          ;; if we make this a conventional cfr, the bracket in front
-          ;; of "of" will push us to the segment level before we can
-          ;; see the rule, which is an unnecessary source of complexity
-          (let* ((string (string-append string " of"))
-                 (pw (define-polyword/expr string))
-                 (cfr (def-cfr/expr 'quantifier-of `(,pw)
-                        :form 'det
-                        :referent object)))
-            (push cfr cfrs)))
+      (when (memq 'of rules)
+        ;; if we make this a conventional cfr, the bracket in front
+        ;; of "of" will push us to the segment level before we can
+        ;; see the rule, which is an unnecessary source of complexity
+        (let* ((string (string-append string " of"))
+               (pw (define-polyword/expr string))
+               (cfr (def-cfr/expr 'quantifier-of `(,pw)
+                       :form 'det
+                      :referent object)))
+          (push cfr cfrs)))
 
-        ;;///  'the'  Swallow the preceding 'the' and add a 'definite'
-        ;; type to the result. 
+      ;;///  'the'  Swallow the preceding 'the' and add a 'definite'
+      ;; type to the result. 
 			  
-        (push-onto-plist object cfrs :rules)
-        object )
-
-      )))
+      (push-onto-plist object cfrs :rules)
+      object )))
 
 
 
