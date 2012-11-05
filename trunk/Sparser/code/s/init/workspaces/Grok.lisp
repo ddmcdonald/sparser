@@ -6,7 +6,7 @@
 ;;;  version:  November 2012
 
 ;; Initiated 10/30/12 to take over from the Fire workspace. Tweeked through
-;; 11/2
+;; 11/5.
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -28,10 +28,11 @@
 ;; (p "Boeing Co. said the U.S. government has suspended the sale")
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
 
-
-
-
-
+#|
+-- For searching with grep. 
+cd sparser/Sparser/code/s/
+grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+|#
 
 ;;--- Traces
 ;; (trace-fsas)
