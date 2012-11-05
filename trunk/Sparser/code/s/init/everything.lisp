@@ -1,11 +1,11 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
-;;; copyright (c) 1989-2005,2010-2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1989-2005,2010-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   September 2011
+;;;   Version:   October 2012
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -74,7 +74,8 @@
 ;; to util. 6/12/11 Making mods so we could load this directly w/o a script, which
 ;; means bringing in the content of the most-recent, best used scripts. 7/7/11 Added
 ;; initial check for whether we're running in an mlisp. 7/11 Added global for including
-;; the generic lexicon. 9/23/11 Bumped the version to v4.0
+;; the generic lexicon. 9/23/11 Bumped the version to v4.0. 10/30/12 Small
+;; cleanups, added *grok*.
 
 (in-package :cl-user)
 
@@ -93,7 +94,7 @@
   #+allegro
   (if (eq (readtable-case *readtable*) :preserve)
     (push :mlisp *features*)
-    (push :alisp *features*)))
+    (push :alisp *features*))) ;; corresponds to :upcase
 
 ;;;--------------------------
 ;;; create Sparser's package
@@ -136,12 +137,10 @@ what files have changed, preparing ftp scripts, etc.
               (setq string "G4:Users:ddm:nlp:Sparser:"))  ;; note the final colon
              (defparameter sparser::*known-machine* :g4)
              string )
-
             ((probe-file  ;; location on ddm's G3 Powerbook
               (setq string "g3:mine:Sparser:"))
              (defparameter sparser::*known-machine* :br-700)
              string )
-
             (t
              (defparameter sparser::*known-machine* :no)
              (break "~%Can't find the Sparser directory in any ~
@@ -174,8 +173,8 @@ what files have changed, preparing ftp scripts, etc.
            :g4)
           ((string-equal cl-user::location-of-sparser-directory
                          "Book:David:Sparser:")
-           :book )
-          (t  :no ))))
+           :book)
+          (t :no))))
 
 
 (unless (boundp 'sparser::*description-of-where-the-code-is*)
@@ -210,7 +209,7 @@ what files have changed, preparing ftp scripts, etc.
        (defparameter sparser::*connect-to-the-corpus* nil)
        "Book:David:Sparser:corpus:")
       (:no
-       nil ))))
+       nil))))
 
 (when cl-user::location-of-text-corpora
   ;; Used in conjunction with the MCL-based workbench
@@ -340,7 +339,6 @@ or for loading the newer of the compiled or source files.
 (unless (boundp 'sparser::*loader-mode*)
   (defparameter sparser::*loader-mode* :everything
                                        ;; :just-the-all-edges-parser
-                                       ;; 
     "Within the engine part of sparser (vs. the grammar used with
      it), there are several gross variations on what parts of it
      are needed with a given application, which this flag controls.
@@ -377,8 +375,6 @@ or for loading the newer of the compiled or source files.
      being marked as an Application, since it signifies that the
      person using the application has their own liscence to MCL and
      so is entitled to the use of the compiler."))
-
-
 
 (unless (boundp 'sparser::*load-the-grammar*)
   (defparameter sparser::*load-the-grammar* t
@@ -754,11 +750,16 @@ or for loading the newer of the compiled or source files.
      almost purely lexical knowledge about a horde of words."))
 
 
-;;--- Mutually exclusive application settings
+;;--- Mutually exclusive application settings.
+;; These correspond to alternative system configurations, some of them
+;; now very old. They dictate choices of modules to load and values
+;; for initializations.
 
 (unless (boundp 'sparser::*just-bracketing*)
-  (defparameter sparser::*just-bracketing* nil
-    ""))
+  (defparameter sparser::*just-bracketing* nil))
+
+(unless (boundp 'sparser::*grok*)
+  (defparameter sparser::*grok* nil))
 
 (unless (boundp 'sparser::*checkpoint-operations*)
   (defparameter sparser::*checkpoint-operations* nil))
@@ -901,6 +902,9 @@ or for loading the newer of the compiled or source files.
       (sparser::*just-bracketing*
        (sparser::lload "grammar-configurations;just-bracketing"))
 
+      (sparser::*grok*
+       (sparser::lload "grammar-configurations;grok"))
+
       (sparser::*checkpoint-operations*
        (sparser::lload "grammar-configurations;checkpoint-ops"))
 
@@ -1006,7 +1010,6 @@ or for loading the newer of the compiled or source files.
 ;; is launched. 
 
 (let ((sparser::*do-not-create-an-image* t))
-
 
   ;; If the grammar hasn't already been loaded, the calls in the config
   ;; routines will do it, and in either case it will have the dossiers
