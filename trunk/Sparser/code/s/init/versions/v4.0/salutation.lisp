@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2010-2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "salutation"
 ;;;   Module:  "init;versions:v3.1:"
-;;;  version:  March 2011
+;;;  version:  October 2012
 
 ;; initiated 6/92, v2.3.  Tweeked 8/24/93, updated copyright 1/6/94,1/23/95,
 ;; 1/17/96. Added 2d image salutation 6/5/96. Bumped the copyright 8/16/97.
@@ -13,7 +13,7 @@
 ;; copyright info to 2008. 7/22/09 extended it again. 11/10/10 updated to
 ;; reflect current reality moving towards open-source. 3/14/11 added 2011 
 ;; and removed BBN as confusing since if you go back far enough there are
-;; still other copyright holding statements.
+;; still other copyright holding statements. 10/30/12 copyright.
 
 (in-package :sparser)
 
@@ -21,7 +21,7 @@
 (defparameter *salutation-string*
 
   (format nil "~&~%Welcome to the Sparser natural language analysis system~
-               ~%  copyright (c) David D. McDonald 1991-2005,2010-2011
+               ~%  copyright (c) David D. McDonald 1991-2005,2010-2012
                ~%~
                ~%Type (in-package :sparser) to use Sparser symbols directly.~
                ~%~%" )
