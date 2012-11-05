@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2012 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "hyphen"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  0.3 June 1996
+;;;  Version:  0.4 November 2012
 
 ;; initiated 1/11/94 v2.3.  Fleshed out for sequences of hyphens 5/18
 ;; Added hyphenated words 8/12
@@ -16,6 +16,8 @@
 ;;      isn't appreciated by Scan.
 ;;     (6/27) changed call to label-rule-set to word-.. to avoid the undefined function
 ;;      warning that's been a nuisance.
+;; 0.4 (11/5/12) Redirected the hyphen routine to new looping construct,
+;;      look-for-hyphenated-sequence that makes as long a sequence as it can.
 
 (in-package :sparser)
 
@@ -34,9 +36,9 @@
       (setf (rs-fsa rs) '( hyphen-routine )))))
 
 
-;;;---------------------------
-;;; 1st routine -- word-level 
-;;;---------------------------
+;;;---------------------
+;;; Word-level dispatch 
+;;;---------------------
 
 (defun hyphen-routine (hyphen-word start-pos)
 
@@ -56,17 +58,80 @@
     (unless (pos-terminal next-pos)
       (scan-next-position))
     (let ((next-word (pos-terminal next-pos)))
-
+      (push-debug `(,start-pos ,next-pos)) ;;(break "hyphen?")
       (cond ((eq next-word word::hyphen)
              (scan-for-sequence-of-hyphens
               2 (chart-position-after next-pos) start-pos))
 
-            ((null (pos-preceding-whitespace next-pos))
-             (look-for-hyphenated-words
-              start-pos next-pos next-word))
+            ((null (pos-preceding-whitespace next-pos)) ;; "www-"
+             ;;(look-for-hyphenated-words  ...)
+             (look-for-hyphenated-sequence start-pos next-pos next-word))
             ))))
 
 
+;;;----------------------------------------
+;;; Sequence of words connected by hyphens
+;;;----------------------------------------
+
+;;--- Loop to get a multi-word sequence
+
+(defun look-for-hyphenated-sequence (pos-before-hyphen next-pos next-word)
+  ;; "the no-questions-asked guarantee"
+  (push-debug `(,pos-before-hyphen ,next-pos ,next-word))
+  (when *do-unanalyzed-hyphenated-sequences*
+    ;; When this flag is up we don't care whether there's any analysis
+    ;; of the word before the hyphen. We're in a chunking DM&P mode and
+    ;; simply want to cover the whole sequence with an edge that we can
+    ;; heuristicsally treat as an unanlyzed NP.
+    (let* ((start-pos (chart-position-before pos-before-hyphen))
+           (words-in-sequence (list (pos-terminal start-pos)))
+           hyphen?   count )
+      (flet ((finish-hyphenated-sequence ()
+               (make-edge-over-hyphenated-sequence 
+                start-pos next-pos)))
+        (loop
+           (push next-word words-in-sequence) ;; word after the hyphen
+           (setq next-pos (chart-position-after next-pos))
+           (unless (pos-terminal next-pos)
+             (scan-next-position))
+           ;;(break "next-pos = ~a" next-pos)
+           ;; is the terminal a hyphen?
+           (setq hyphen? (eq (pos-terminal next-pos) word::hyphen))
+           ;;(break "hyphen? = ~a" hyphen?)
+           ;; is there any space in front of the hyphen?
+           (unless (and hyphen?
+                        (null (pos-preceding-whitespace next-pos)))
+             ;; we're done
+             (finish-hyphenated-sequence)
+             (return))
+           ;; move position over the hyphen and go around the loop
+           (setq next-pos (chart-position-after next-pos))
+           (unless (pos-terminal next-pos)
+             (scan-next-position))
+           (setq next-word (pos-terminal next-pos))
+           ;;(break "pos after hyphen = ~a" next-pos)
+           )
+
+        next-pos)))) ;; return the position we ended at
+
+
+(define-category hyphenated-sequence)
+
+(defun make-edge-over-hyphenated-sequence (start-pos end-pos)
+  (let ((edge (make-edge-over-long-span
+               start-pos  ;; starting-position
+               end-pos    ;; ending-position
+               category::hyphenated-sequence ;; category
+               :rule :hyphen-routine
+               :form category::np
+               :referent nil)))
+    ;;/// insert trace
+    edge ))
+
+
+
+
+;;--- Earlier version just looking for a single pair of words
 
 (defun look-for-hyphenated-words (pos-before-hyphen
                                   next-pos next-word)
@@ -80,13 +145,11 @@
   ;; complete over the whole sequence (otherwise those edges are
   ;; debris to be analyzed)
 
-  (when *do-domain-modeling-and-population*
+  (when *do-unanalyzed-hyphenated-sequences*
     ;; If there is no analysis of the items to the left then assume
     ;; that there will be none to the right and let the hyphenate-pair-
     ;; of-words hack go through, otherwise do nothing.
-
     (unless (ev-top-node (pos-ends-here pos-before-hyphen))
-      ;(break "got through")
       (construct-hyphenated-word-pair pos-before-hyphen
                                       next-pos next-word))))
 
@@ -121,7 +184,9 @@
 
 
 
-
+;;;---------------------------------------
+;;; Sequence of hyphens (e.g. an em-dash)
+;;;---------------------------------------
 
 (defun scan-for-sequence-of-hyphens (number-so-far
                                      next-pos
