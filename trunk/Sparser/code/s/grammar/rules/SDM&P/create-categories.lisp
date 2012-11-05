@@ -26,6 +26,7 @@
       (case symbol
 	((or category::np-head 
 	     category::number)) ;; "the one that"
+        (category::quantifier) ;; "[just no] pleasing"
 	((or category::common-noun
 	   category::common-noun/plural
 	   category::proper-noun) ;; over a name-word 
