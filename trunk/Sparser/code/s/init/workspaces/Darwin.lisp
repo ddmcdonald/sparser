@@ -61,7 +61,7 @@
 ;;; switch settings (variations from the default
 ;;;----------------------------------------------
 
-(setq *treat-single-Capitalized-words-as-names* t)
+;(setq *treat-single-Capitalized-words-as-names* t)
   ;; Defined in [semantic core:names:fsa:classify1]. If it's nil, then a one word
   ;; segment that is a capitalized word will just get the label 'capitalized-word'.
   ;; With this flag on, it gets labeled 'name'.
