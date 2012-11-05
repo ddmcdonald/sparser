@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:words:"
@@ -12,6 +12,7 @@
 ;;     (5/24) added Known-word?
 ;;     (6/7) added Put-property-on-word and Property-of-word
 ;;     (8/2) added null check to Princ-word
+;;     (10/31/12) Added more simple printers and clean-word
 
 (in-package :sparser)
 
@@ -42,6 +43,9 @@
 (defun word-plist (w)
   (label-plist w))
 
+(defun word-brackets (w)
+  (rs-phrase-boundary (word-rules w)))
+
 
 ;;;-------------------
 ;;; simple predicates
@@ -64,6 +68,14 @@
     (when rs
       (rs-phrase-boundary rs))))
 
+
+
+;;;------------------------------------
+;;; Cleaner (take-back infered rules)
+;;;------------------------------------
+
+(defun clean-word (w)
+  (setf (word-rule-set w) nil))
 
 ;;;-----------------
 ;;; syntactic sugar
