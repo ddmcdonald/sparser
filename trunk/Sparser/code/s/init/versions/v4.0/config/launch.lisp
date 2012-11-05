@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1997,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "launch"
 ;;;   Module:  "init;versions:v3.1:config:"
-;;;  version:  June 2011
+;;;  version:  October 2012
 
 ;; 10/7/94 commented out the call to make objects permanent and move it to the
 ;; save images file. 10/12 turning off the break-outside-coverage flag
@@ -33,7 +33,7 @@
 ;; it's missing some needed elements. 6/30/11 Commented out checkpoint-ops 
 ;; case in switch-settings because in and 'everything' load (the default
 ;; now) that option symbol is bound to a grammar module. Need a different
-;; scheme. 
+;; scheme. 10/30/12 added *grok*, minor cleanup. 
 
 (in-package :sparser)
  
@@ -130,17 +130,19 @@
                           cl-user::location-of-sparser-directory
                           (cond
                             (cl-user::*unix-file-system*
-                             "code/s/init/Workspaces:")
+                             "code/s/init/workspaces/")
                             (cl-user::*windows-file-system*
-                             "code\\s\\init\\Workspaces\\")
-                            (r
-                             "code:s:init:Workspaces:"))))))
+                             "code\\s\\init\\workspaces\\")
+                            (t
+                             "code:s:init:workspaces:"))))))
     (when (probe-file namestring)
       (let ((files (directory (concatenate 'string namestring "*"))))
-        (mapcar #'(lambda (x) 
-                    (when (not (search ".svn" (format nil "~s" x)))
-                      (load x)))
-                files)))))
+        (mapcar
+         #'(lambda (x) 
+             (unless (or (search ".svn" (format nil "~s" x))
+                         (search ".DS_Store" (format nil "~s" x)))
+               (load x)))
+         files)))))
 
 
 
@@ -151,7 +153,7 @@
 
 
 (defun final-session-setup ()
-  ;; Act on the settings make in Standard-configuration-operations
+  ;; Act on the settings makde in Sstandard-configuration-operations
   (setup-session-globals/parser)
 
   (when *load-the-grammar*
@@ -161,18 +163,14 @@
   ;;; set the protocol switches
   ;;;---------------------------
   (cond
-    (*bbn* 
-     (all-edges-setting))
-    (*fire*
-     (fire-setting))
-    (*just-bracketing*
-     (just-bracketing-setting))
+    (*grok* (grok-setting))
+    (*bbn*  (all-edges-setting))
+    (*fire* (fire-setting))
+    (*just-bracketing* (just-bracketing-setting))
 ;    (*checkpoint-ops* ;; oops -- points to a grammar module
 ;     (checkpoint-ops-setting))
-    (*poirot-interface*
-     (poirot-interface-setting))
-    (t
-     (top-edges-setting/ddm))))
+    (*poirot-interface* (poirot-interface-setting))
+    (t (top-edges-setting/ddm))))
 
 
 
@@ -274,7 +272,7 @@
 
 ;;--- Workspace files
 
-;(load-workspaces)
+(load-workspaces)
 
 
 ;;--- parameters
