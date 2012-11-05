@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.8 May 2012
+;;;  Version:  1.9 November 2012
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -42,6 +42,8 @@
 ;;      (3/3/10) Elaborated the quantifier case to include checking for a leading adverb.
 ;; 1.8 (8/3/11) Explicitly incorporating noun/verb ambiguous brackets. 5/17/12 Another
 ;;      adjective case. And another 5/26, also fixed indentation.
+;; 1.9 (11/2/12) Added sort-out-name-bracketing-state called from PNF to fix interesting
+;;      bug from false segment starting bracket where proper name ends in "ing"
 
 (in-package :sparser)
 
@@ -408,4 +410,21 @@
 (defun find-verb-at-mvb-end (position-to-the-right)
   ;; surely too simple
   (word-before position-to-the-right))
+
+
+
+;;;-------------------------------------------
+;;; Reconsidering existing brackets after PNF
+;;;-------------------------------------------
+
+(defun sort-out-name-bracketing-state (start end edge)
+  ;; Called from pnf/scan-classify-record after it's formed an edge
+  ;; So we know that a company or other sort of capitalized sequence
+  ;; has just finished. This lets us do an intervention based on
+  ;; the concrete fact of the proper name to over-rule the judgments
+  ;; that are in place because of heuristics that ran earlier.
+  (let ((bracket-kons *bracket-opening-segment*))
+    (when bracket-kons
+      (tr :PNF-resetting-open-bracket edge start end (car bracket-kons))
+      (rplaca bracket-kons .[np))))
 
