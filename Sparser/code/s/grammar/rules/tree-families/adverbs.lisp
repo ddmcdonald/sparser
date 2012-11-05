@@ -1,17 +1,18 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2005,2011-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "adverbs"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  September 2011
+;;;  version:  November 2012
 
 ;; initiated 3/9/05
 ;; 0.1 (5/20/09) Added verb+ing and verb cases to pre-verb-adverb
 ;; 0.2 (8/8/11) Finished the cases with the other form options for verbs
 ;;     and added post-verb-adverb
-;; 0.3 (9/23/11) Converting the referents to a method application.
+;; 0.3 (9/23/11) Converting the referents to a method application. 11/5/12
+;;     correcting it's spelling, since in syntax/adverbs1 the method is
+;;     "modified'
 
 (in-package :sparser)
 
@@ -58,16 +59,16 @@
   :cases
     ((:modifier (verb (verb adverb)
                   :head left-edge
-                  :method (modifier right-edge left-edge)))
+                  :method (modified right-edge left-edge)))
      (:modifier (verb+present (verb+present adverb)
                   :head left-edge
-                  :method (modifier right-edge left-edge)))
+                  :method (modified right-edge left-edge)))
      (:modifier (verb+ed (verb+ed adverb)
                   :head left-edge
-                  :method (modifier right-edge left-edge)))
+                  :method (modified right-edge left-edge)))
      (:modifier (verb+ing (verb+ing adverb)
                   :head left-edge
-                  :method (modifier right-edge left-edge)))))
+                  :method (modified right-edge left-edge)))))
 
 (define-exploded-tree-family sentence-adverb
   :description ""
@@ -76,16 +77,16 @@
   :cases
     ((:modifier (s (adverb s)
                   :head right-edge
-                  :method (modifier left-edge right-edge)))
+                  :method (modified left-edge right-edge)))
      (:modifier (vp (adverb vp)
                   :head right-edge
-                  :method (modifier left-edge right-edge)))
+                  :method (modified left-edge right-edge)))
      (:modifier (s (s adverb)
                   :head left-edge
-                  :method (modifier right-edge left-edge)))
+                  :method (modified right-edge left-edge)))
      (:modifier (vp (vp adverb)
                   :head left-edge
-                  :method (modifier right-edge left-edge)))))
+                  :method (modified right-edge left-edge)))))
 
 
 
