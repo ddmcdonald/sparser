@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  1.8 March 2012
+;;;  Version:  1.8 November 2012
 
 (in-package :sparser)
 
@@ -27,7 +27,8 @@
 ;;     (4/26/09) Added find-or-make-category to work from types other than just symbol.
 ;;      Motivated by "(come) out of" polyword.
 ;; 1.8 (12/3/10) Incorporated CLOS class backing
-;;     (3/2/12) moved accumulators to object2 to quiet compiler
+;;     (3/2/12) moved accumulators to object2 to quiet compiler. 11/4 moved in
+;;      function now needed pretty early.
 
 ;;;------
 ;;; find
@@ -196,3 +197,17 @@
         (delete category *categories-defined*))
   (unintern c-symbol *category-package*)
   category)
+
+
+;;;------------------
+;;; string -> symbol 
+;;;------------------
+
+(defmethod name-to-use-for-category ((string string))
+  "Encapsulates the lisp-specific checks for what case to use."
+  (let* ((s #+mlisp string
+            #+(or :ccl :alisp)(string-upcase string))
+         (symbol (intern s (find-package :sparser))))
+    ;; n.b. not the category package. The pname will be interned there
+    ;; as part of creating the category
+    symbol))
