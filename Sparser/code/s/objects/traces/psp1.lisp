@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005, 2010  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005, 2010-2012  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id: psp1.lisp 359 2010-08-13 20:13:38Z dmcdonal $
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 December 2010
+;;;  Version:  1.4 November 2012
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -24,7 +24,7 @@
 ;;     (2/13/07) added traces for conjunction/TT transition.
 ;;     (5/30/09) added traces for verb+prep combination
 ;;     (6/2/10) added traces for new conditions in scan.
-;;     (12/14/10) fixed capitalization bugs
+;;     (12/14/10) fixed capitalization bugs  (11/2/12) added PNF-resetting-open-bracket
 
 (in-package :sparser)
 
@@ -1133,6 +1133,14 @@
 (deftrace :verb-prep-pair/no-combination ()
   (when *trace-network-flow*
     (trace-msg "[scan]   No composition")))
+
+(deftrace :PNF-resetting-open-bracket (edge start end old-bracket)
+  (when *trace-network-flow*
+    (trace-msg "[scan] PNF knows it has a ~a from p~a to ~a~
+              ~%   resetting opening bracket to .[np from ~a"
+               (edge-category edge) (pos-token-index start)
+               (pos-token-index end) (b-symbol old-bracket))))
+  
 			      
 
 
