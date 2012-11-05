@@ -1,25 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2005,2012  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "ERN"
-;;;    Module:   "worksace;"
-;;;   version:   February 2005
+;;;    Module:   "workspace;"
+;;;   version:   October 2012
 
 #| Workspace for completing the ERN grammar and setting up to do style 
    work by collecting statistics.  |#
 
-;; Initiated 2/1/05 by cribbing from "workspace;Magi"
+;; Initiated 2/1/05 by cribbing from "workspace;Magi". Cleaned up for
+;; loading in ACL or CCL 10/30/12.
 
 (in-package :sparser)
-
-;;--- utility
-
-(unless (fboundp 'cl-user::def-string)
-  (break "No definition for cl-user::def-string.~
-          Back out of loading this file"))
-
-(defun ed-S (lp-namestring)
-  (ed (expand-namestring lp-namestring)))
 
 ;;;----------------
 ;;; examples to do
@@ -191,9 +183,4 @@ in the comparable quarter of the preceding year"))
 (defun h1 () (p "we met Peter Hoe here"))
 
 
-
-;;--- Always want this on top since it's got the collective memory
-;;    of where things are.
-
-(ed-s "init;changed files")
 
