@@ -211,3 +211,7 @@
     ;; n.b. not the category package. The pname will be interned there
     ;; as part of creating the category
     symbol))
+
+(defmethod name-to-use-for-category ((w word))
+  (name-to-use-for-category (word-pname w)))
+
