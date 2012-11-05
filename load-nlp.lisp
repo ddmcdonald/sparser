@@ -6,11 +6,11 @@
 ;;;  Module:  /nlp/
 ;;; Version:  October 2012
 
-;; Intiated 10/26/10 to load shared utilities, Mumble, Sparser,
-;; and some KB ripped out of the Poirot ontology
+;; Intiated 10/26/10 to load shared utilities, Mumble, Sparser.
 ;; Edited 11/16/10, added asdf items to simplify installation &
 ;; loading process -- charlieg
 ;; 12/9/10 ddm: some reorg to get the Sparser package defined earlier
+;; 10/30/12 ddm: further cleanup. Added grok option
 
 ;;--- Load asdf
 ;;--- NOTE: you should modify the paths in this section to match
@@ -37,7 +37,8 @@
 
 (defparameter *nlp-home*
   (make-pathname :directory (pathname-directory *load-truename*)))
-
+;; By hand for debugging (change to fit where you put Sparser
+;; (setq *nlp-home* "/Users/ddm/sparser/")
 
 ;;--- Loading
 
@@ -46,7 +47,7 @@
 
 
 (unless (find-package :sparser)
-  ;; Referenced in Mumble code
+  ;; Referenced in Mumble code so has to be available early
   (make-package :sparser
                 :use '(common-lisp
                        ddm-util
@@ -62,13 +63,14 @@
 (load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp"))
   
 ;; Sparser 
+;;   Could this be controlled from the command-line?
 (let* ((init-location "Sparser/code/s/init/")
        (sparser-load-script
         ;; extend, modify as appropriate
         (cond
           (nil "scripts/fire")
-          (nil "scripts/checkpoint-ops")
-          (t "everything") ;; i.e. no specializing script
+          (t "scripts/grok")
+          (nil "everything") ;; i.e. no specializing script
           )))
   (load (concatenate 'string 
                      (namestring *nlp-home*)
