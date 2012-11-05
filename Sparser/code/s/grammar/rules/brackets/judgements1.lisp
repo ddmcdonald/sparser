@@ -235,18 +235,28 @@
             t)
 
            ((eq ] ].np-vp)
-            (cond 
-             ((or (eq *bracket-closing-segment* ].verb )
-                  (eq (first *bracket-opening-segment*) .[verb )
-                  (eq (first *bracket-opening-segment*) .[modal ))
-              nil )
-             ((eq bracket-opening-segment .[np) nil) ;; "some people"
-             ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
-             ((eq bracket-opening-segment phrase.[) t) ;; after a period
-             ((eq bracket-opening-segment preposition.[) t) ;; after preposition
-             (t (push-debug `(,position ,*bracket-opening-segment*
+            (cond
+              ;; reasons to interpret it as a verb and continue
+              ;; a segment that's going to be a VG.
+              ((or (eq *bracket-closing-segment* ].verb )
+                   (eq (first *bracket-opening-segment*) .[verb )
+                   (eq (first *bracket-opening-segment*) .[modal ))
+               nil )
+
+              ;; Reasons to interpret it as a noun and continue
+              ;; a segment that's going to be an np
+              ((eq bracket-opening-segment .[np) nil) ;; "some people"
+              ((eq bracket-opening-segment .[article) nil) ;; "the quarentee"
+              ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
+              ((eq bracket-opening-segment phrase.[) t) ;; after a period
+              ((eq bracket-opening-segment preposition.[) t) ;; after preposition
+
+              (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
-                (break "].np-vp next case"))))
+                 (break "].np-vp next case.~
+                      ~%The bracket opening the segment is ~a.~
+                      ~%The word with the ambiguous bracketing is ~a"
+                       bracket-opening-segment (pos-terminal position)))))
 
            ((eq ] np-vp].) 
             ;; (break " seeing a np-vp]., look at opening")
