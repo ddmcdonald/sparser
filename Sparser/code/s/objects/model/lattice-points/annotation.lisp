@@ -93,7 +93,7 @@
 ;;
 (defun annotate-individual (i source &optional already-cached?)
   (declare (special *annotate-realizations* *head-edge* *arg-edge*
-                    *referent* *parent-edge-getting-reference*
+                    *referent* *parent-edge-getting-reference*))
   (when *annotate-realizations*
     (unless *rule-being-interpreted*
       (break "Unexpected situation: *rule-being-interpreted* is null"))
