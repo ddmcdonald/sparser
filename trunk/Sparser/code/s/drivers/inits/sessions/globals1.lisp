@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  April 2011
+;;;  Version:  November 2012
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -25,7 +25,8 @@
 ;; 7/2 added *new-dm&p*. 8/6 added *infer-rewriting-form-rules*  9/18/09 added
 ;; *use-subtypes*. 10/8 added *what-to-do-on-errors*.
 ;; 2/20/11 added *make-edges-over-new-digit-sequences*. 4/8/11 added
-;; *convert-eft-form-categories-to-form-rules*. 
+;; *convert-eft-form-categories-to-form-rules*. Added *do-unanalyzed-hyphenated-
+;; sequences* 11/5/12
 
 (in-package :sparser)
 
@@ -132,6 +133,10 @@
 (unless (boundp '*do-domain-modeling-and-population*)
   (defparameter *do-domain-modeling-and-population* nil
     "Set as part of the switch settings, read within Segment-finished."))
+
+(unless (boundp '*do-unanalyzed-hyphenated-sequences*)
+  (defparameter *do-unanalyzed-hyphenated-sequences* nil
+    "Read in the hyphen-routine to govern whether we do this."))
 
 (unless (boundp '*do-strong-domain-modeling*)
   (defparameter *do-strong-domain-modeling* nil
