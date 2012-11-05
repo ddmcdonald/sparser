@@ -116,7 +116,7 @@
 (defun scan-next-pos (position)
   (tr :scan-next-pos position)  ;; "[scan] scan-next-pos ~A"
   (unless (pos-terminal position)
-    (scan-next-position)) ;; This is were the word gets echoed
+    (scan-next-position)) ;; This is where the word gets echoed
   (let ((word (pos-terminal position)))
     (introduce-leading-brackets word position) ;; "[scan] introduce-leading-brackets \"~A\""
     (check-for-]-from-word-after word position)))
@@ -229,7 +229,9 @@
     (if where-caps-fsa-ended
       ;; since the embedded scan by PNF won't act on any ] on the
       ;; position where it happens to end, we have to.
-      (adjudicate-after-pnf where-caps-fsa-ended)
+      (if *sun* ;; specialized system from circa 1993
+        (adjudicate-after-pnf where-caps-fsa-ended)
+        (adjudicate-after-pnf1 where-caps-fsa-ended))
       (continuation-after-pnf-returned-nil word position-before))))
 
 
