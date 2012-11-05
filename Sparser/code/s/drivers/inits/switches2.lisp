@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.19 February 2011
+;;;  Version:  2.19 October 2012
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -56,6 +56,7 @@
 ;;      some spill over into word-frequency-setting where nothing heuristic should
 ;;      run. (2/20/11) Folded *make-edges-over-new-digit-sequences* into standard ddm
 ;;      settings. 
+;;      (10/30/12) Setting up for Grok.
 
 
 (in-package :sparser)
@@ -215,7 +216,9 @@
   (what-to-do-with-unknown-words :check-for-primed)
   (establish-version-of-def-word :comlex)
   (unless *comlex-word-lists-loaded*
-    (load-comlex)))
+    (load-comlex))
+  (unless *comlex-words-primed*
+    (prime-comlex)))
 
 
 ;;---- Specific cases
@@ -281,9 +284,12 @@
 (defun grok-setting ()
   "Similar to answer and fire, but with annotations and ..."
   (fire-setting)
-  (setq *annotate-realizations* t)
-  
-)
+  (progn ;; these are temporary overrides while we debug bracketing
+    (setq *annotate-realizations* nil)
+    (setq *new-dm&p* nil) ;; these two from fire-setting
+    (setq *do-strong-domain-modeling* nil))
+  (include-comlex)
+  (setq *switch-setting* :grok))
 
 (defun ambush-setting ()
   (fire-setting)
