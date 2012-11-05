@@ -1,23 +1,22 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2012  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "Mari"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  February 1995
+;;;  version:  October 2012
 
 ;; started 11/94. Broken out as workspace file 1/25/95.  Tweeked the
-;; settings and added M-all 2/14
+;; settings and added M-all 2/14. Cleaned up for loading in ACL or CCL 10/30/12.
 
 (in-package :sparser)
 
-
 ;*switch-setting*
-(dm&p-setting)
-(setq *introduce-brackets-for-unknown-words-from-their-suffixes* t)
-(establish-pnf-routine :scan-classify-record)
-(setq *dm&p-forest-protocol* 'parse-forest-and-do-treetops)
-(setq *independent-aux-subview-to-use*
-      (wb-subview-named :independent-contents))
+;; (dm&p-setting)
+;; (setq *introduce-brackets-for-unknown-words-from-their-suffixes* t)
+;; (establish-pnf-routine :scan-classify-record)
+;; (setq *dm&p-forest-protocol* 'parse-forest-and-do-treetops)
+;; (setq *independent-aux-subview-to-use*
+;;       (wb-subview-named :independent-contents))
 ;(launch-subview-as-independent-window)
 
 
