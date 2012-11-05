@@ -10,7 +10,7 @@
 ;; 7/10/11 started finishing it. 7/28 Decided to use priming system
 ;; instead where we wait for the word to be seen before we expand it.
 ;; 3/1/12 fixed C&S eror. 10/15/12 Hooked up prime-comlex to the local
-;; file.
+;; file. 10/30 added a flag to indicate that priming has been done
 
 (in-package :sparser)
 
@@ -342,6 +342,9 @@ e.g. via DM&P or Fire.
 ;;; Priming all of Comlex
 ;;;-----------------------
 
+(defvar *comlex-words-primed* nil
+  "Flag that indicates that the priming has been done")
+
 (defparameter *primed-words* (make-hash-table :size 56000 ;; 56k
                                               :rehash-size 5000
                                               :test #'equal)
@@ -361,7 +364,8 @@ e.g. via DM&P or Fire.
                    cl-user::location-of-sparser-directory
                    "code/s/grammar/rules/words/one-offs/"
                    "comlex-def-forms.lisp")))
-    (prime-all-comlex-words filename)))
+    (prime-all-comlex-words filename)
+    (setq *comlex-words-primed* t)))
 
 (defun prime-all-comlex-words (full-filename)
   (with-open-file (stream full-filename
@@ -508,6 +512,7 @@ e.g. via DM&P or Fire.
   ;; we've just seen, and the 'lemma' is the head word of
   ;; the entry.
   (let* ((instance-word (make-word-from-lookup-buffer))
+         (instance-string (word-pname instance-word))
          (lemma-string (cadr entry))
          (lemma-word (if (string= (word-pname instance-word)
                                   lemma-string)
@@ -515,9 +520,15 @@ e.g. via DM&P or Fire.
                        (resolve-string-to-word/make lemma-string)))
          (clauses (cddr entry)))
     (tr :unpacking instance-word)
-    (if (= (length clauses) 1)
-      (unambiguous-comlex-primed-decoder lemma-word (car clauses))
-      (ambiguous-comlex-primed-decoder lemma-word clauses))
+    (cond
+      ((= (length clauses) 1)
+       (unambiguous-comlex-primed-decoder lemma-word (car clauses)))
+      ((string-equal lemma-string instance-string)
+       (ambiguous-comlex-primed-decoder lemma-word clauses))
+      (t ;; maybe there's a quicker disambiguation based on
+       ;; this irregular form /// or maybe not
+       ;;(or (look-for-and-decode-comlex-irregular instance-string clauses)
+       (ambiguous-comlex-primed-decoder lemma-word clauses)))
     instance-word ))
 
 ;; N.b. Comlex has a 'gradable' feature on adjectives, with a flag for er-est
@@ -535,7 +546,7 @@ e.g. via DM&P or Fire.
        ;; from make-cn-rules
        (assign-brackets-as-a-common-noun lemma))
       (adjective ;; open-codes define-adjective
-       (assign-brackets-to-word lemma '( ].phrase .[np ))
+       (assign-brackets-as-an-adjective lemma)
        (make-minimal-word-form-rule lemma 'adjective))
       (adverb ;
        ;; The morphology rule for adverbs also assigns .[adverb
@@ -551,6 +562,70 @@ e.g. via DM&P or Fire.
        (error "Unexpected POS marker: '~a'" pos-marker)))
     (put-property-on-word :comlex properties lemma)))
 
+;; (defun look-for-and-decode-comlex-irregular (instance-string clauses)
+;;   (dolist (clause clauses)
+;;     (case (car clause) 
+;;       (verb
+;;        (unless (eq (caar clause) :subc) ;; subcategorization
+;;          (let ((cases (cadr clause)))
+;;            (when (member instance-string cases :test #'string-equal)
+             
+(defmethod assign-brackets-as-an-adjective ((lemma word))
+  (assign-brackets-to-word lemma '( ].phrase .[np )))
+           
+(defmethod assign-noun-verb-brackets ((lemma word) clauses)
+  ;; only a few of the forms are ambiguous
+  (let* ((noun-clause (assoc 'noun clauses))
+         (verb-clause (assoc 'verb clauses))
+         (plurals (plural-words-given-CL-clause lemma noun-clause))
+         (noun-forms (cons lemma plurals)))
+    (decode-and-instantiate-primed-verb lemma verb-clause)
+    ;; That runs for side-effects, and assigns main-verb brackets
+    (let* ((verb-inflections (verb-forms-of lemma))
+           (verb-forms (pushnew lemma verb-inflections)))
+      ;; We only put the special np-vp brackets on the words
+      ;; that are shared b/w noun and verb, e.g. "fire" and "fires"
+      ;; but not "fired" or "firing", which keep their original
+      ;; verb-only brackets
+      (let ((ambigous
+             (loop for verb in verb-forms
+                when (memq verb noun-forms)
+                collect verb)))
+        (dolist (w ambigous)
+          (assign-brackets-to-word
+           ;; completely parallels the set for verbs.
+           w '( .[np-vp  ].np-vp  np-vp]. np-vp.[  )))))))
+
+(defmethod ambiguous-comlex-primed-decoder ((lemma word) clauses)
+  (let ((combinations (sort (copy-list (mapcar #'car clauses))
+                            #'alphabetize)))
+    (tr ::unpacking-ambiguous combinations)
+    (cond
+      ((equal combinations '(adjective noun))
+       ;; This is the same as unambiguous adjectives
+       ;; except for the edge-creating form rule.
+       (assign-brackets-as-an-adjective lemma))
+
+      ((equal combinations '(adjective adverb))
+       (assign-brackets-to-word lemma '( ].adj-adv .[np-vp )))
+
+      ((equal combinations '(noun verb))
+       (assign-noun-verb-brackets lemma clauses))
+
+      ((equal combinations '(adjective noun verb))
+       ;;/// what else do we need? Will the NP cases soak up
+       ;; the adjective as well?
+       (assign-noun-verb-brackets lemma clauses))
+
+      ;; "firm" is four-ways ambiguous
+
+      (t (push-debug `(,lemma ,combinations ,clauses))
+         (error "Unanticipated POS combination for \"~a\:: ~a"
+                lemma combinations)))))
+
+
+;;--- aux
+
 (defmethod plural-words-given-CL-clause ((lemma word) clause)
   "If the Comlex clause stipulates one or more plurals then use them,
    otherwise construct the default plural. Give them brackets as
@@ -565,51 +640,6 @@ e.g. via DM&P or Fire.
           (record-lemma p-word lemma :noun))
         (record-inflections clause-plural/s lemma :noun)
         clause-plural/s))))
-
-
-(defmethod ambiguous-comlex-primed-decoder ((lemma word) clauses)
-  (let ((combinations (sort (copy-list (mapcar #'car clauses))
-                            #'alphabetize)))
-    (tr ::unpacking-ambiguous combinations)
-    (cond
-      ((equal combinations '(adjective noun))
-       ;; This is the same as we do for unambiguous adjectives
-       ;; except for the edge-creating form rule.
-       (assign-brackets-to-word lemma '( ].phrase .[np )))
-
-      ((equal combinations '(adjective adverb))
-       (assign-brackets-to-word lemma '( ].adj-adv .[np-vp )))
-
-      ((equal combinations '(noun verb))
-       ;; only a few of the forms are ambiguous
-       (let* ((noun-clause (assoc 'noun clauses))
-              (verb-clause (assoc 'verb clauses))
-              (plurals (plural-words-given-CL-clause lemma noun-clause))
-              (noun-forms (cons lemma plurals)))
-         (decode-and-instantiate-primed-verb lemma verb-clause)
-         ;; That runs for side-effects, and assigns main-verb brackets
-         (let* ((verb-inflections (verb-forms-of lemma))
-                (verb-forms (pushnew lemma verb-inflections)))
-           ;; We only put the special np-vp brackets on the words
-           ;; that are shared b/w noun and verb, e.g. "fire" and "fires"
-           ;; but not "fired" or "firing", which keep their original
-           ;; verb-only brackets
-           (let ((ambigous
-                  (loop for verb in verb-forms
-                       when (memq verb noun-forms)
-                       collect verb)))
-             (dolist (w ambigous)
-               (assign-brackets-to-word
-                ;; completely parallels the set for verbs.
-                w '( .[np-vp  ].np-vp np-vp]. np-vp.[ )))))))
-
-      ;; "firm" is four-ways ambiguous
-
-      (t (push-debug `(,lemma ,combinations ,clauses))
-         (error "Unanticipated POS combination: ~a" combinations)))))
-
-
-;;--- aux
 
 (defmethod decode-and-instantiate-primed-verb ((lemma word) clause)
   (let ((special-case-plist (lift-special-case-form-from-comlex-clause clause))
