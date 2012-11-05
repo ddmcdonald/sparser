@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-1997  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1997,2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  0.4 August 1997
+;;;  Version:  0.6 November 2012
 
 ;; initiated 5/15/93 v2.3, added traces 5/26
 ;; 0.1 (12/9) Added pre-emptive state variable
@@ -17,6 +17,9 @@
 ;;     (2/2/95) added a small variation on that scan-only routine
 ;; 0.5 (2/13) added checks for flags set during the scan for the dm&p cases
 ;;     (8/17/97) moved *ignore-capitalization* up to [drivers;inits:sessions:globals1]
+;; 0.6 (11/1/12) In pnf/scan-classify-record added call to sort out the bracketing
+;;     beause the initial company is swallowing any following under-modeled
+;;     verb in DM&P mode. 
 
 (in-package :sparser)
 
@@ -118,10 +121,14 @@
         (let ((edge
                (classify-and-record-name starting-position
                                          *pnf-end-of-span*)))
-
+          
           (if edge
             (tr :pnf/classification edge *pnf-end-of-span*)
             (tr :pnf/aborted-during-classification))
+
+          (when edge
+            (sort-out-name-bracketing-state
+             starting-position *pnf-end-of-span* edge))
 
           ;;(set-status :PNF-checked starting-position)
           ;; !! it belongs here, but have to adjust state
