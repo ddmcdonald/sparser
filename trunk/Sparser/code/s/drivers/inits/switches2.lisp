@@ -275,6 +275,7 @@
   (top-edges-setting/ddm)
   (setq *new-dm&p* t)
   (setq *do-strong-domain-modeling* t)
+  (setq *do-unanalyzed-hyphenated-sequences* t)
   (use-unknown-words)
   (setq *treat-single-Capitalized-words-as-names* t)
   (setq *annotate-realizations* nil)
