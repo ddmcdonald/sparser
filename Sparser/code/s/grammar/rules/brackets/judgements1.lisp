@@ -44,6 +44,8 @@
 ;;      adjective case. And another 5/26, also fixed indentation.
 ;; 1.9 (11/2/12) Added sort-out-name-bracketing-state called from PNF to fix interesting
 ;;      bug from false segment starting bracket where proper name ends in "ing"
+;;      (11/8/12) started folding in adj-verb brackets. (11/9/12) added debuggin
+;;      method brackets-on. 
 
 (in-package :sparser)
 
@@ -118,7 +120,7 @@
 ;;;---------------------------------
 
 (defun bracket-ends-the-segment? (] position)
-  ;; The words use to indicate the start of VGs or
+  ;; The words used to indicate the start of VGs or
   ;; NPs can occur several in a row (e.g. "the seven ...").  
   ;; Only the first of these legitimately ends a segment.
 
@@ -250,6 +252,16 @@
               ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
               ((eq bracket-opening-segment phrase.[) t) ;; after a period
               ((eq bracket-opening-segment preposition.[) t) ;; after preposition
+              ((word-is-np-modifier previous-word) nil)
+
+              ((eq bracket-opening-segment .[np-vp) nil)
+              ;; On the theory that if the first word was a verb then we'd
+              ;; have two main verbs in a row, which is implausible, 
+              ;; so we interpret the first word as a noun
+              ;; /// Change the lead bracket ??
+
+              ;; reason to end because we've probably got a noun
+              ((eq bracket-opening-segment mvb.[) t)
 
               (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
@@ -263,6 +275,9 @@
             ;; bracket-opening-segment -- 
             ;; .[np   .[np-vp  .[adjective  treetop.[  mvb.[  .[article
             nil)  ;; t)
+
+           ((eq ]  ].adj-verb)
+            t)
 
           
            (t (break "Unclassified closing bracket: ~A" ])
@@ -307,7 +322,9 @@
 
 
 
-
+;;;-------------
+;;; auxiliaries
+;;;-------------
 
 (defun np-segment-contains-more-than-article? (position)
   ;; We are within an np -- probably one started with an article
@@ -320,6 +337,14 @@
          (pos-token-index *left-segment-boundary*))
       2))
 
+(defun word-is-np-modifier (word)
+  (let ((brackets (bracket-assignment-to-list
+                   (get-bracket-assignment-for-word word))))
+    ;; others too?  Any complementary checks that are
+    ;; even more reliable?
+    (or (memq ].quantifier brackets)
+        (memq .[np brackets)
+        (memq .[adjective brackets))))
 
 
 ;;;-----------------------------------------------
@@ -437,4 +462,47 @@
     (when bracket-kons
       (tr :PNF-resetting-open-bracket edge start end (car bracket-kons))
       (rplaca bracket-kons .[np))))
+
+
+
+;;;----------------------------------------------------------
+;;; Useful operations for debugging / investigating brackets
+;;;----------------------------------------------------------
+
+(defgeneric brackets-on (item &optional stream)
+  (:documentation "Display the brackets on the item, in the manner
+ best suited to the type of item involved."))
+
+(defmethod brackets-on ((pname string) &optional (stream *standard-output*))
+  (let ((word (word-named pname)))
+    (unless word
+      (error "~a does not name a word" pname))
+    (brackets-on word stream)))
+
+(defmethod brackets-on ((w word) &optional (stream *standard-output*))
+  (let ((brackets (get-bracket-assignment-for-word w)))
+    (if brackets
+      (then 
+       (describe-bracket-assignment brackets stream)
+       (bracket-assignment-to-list brackets))
+      "no brackets")))
+
+(defmethod brackets-on ((n number) &optional (stream *standard-output*))
+  (let ((pos (position# n)))
+    (brackets-on pos stream)))
+
+(defmethod brackets-on ((p position) &optional (stream *standard-output*))
+  (let* ((before (pos-ends-here p))
+         (b-before (ev-boundary before))
+         (after (pos-starts-here p))
+         (b-after (ev-boundary after)))
+    (if b-after
+      (format stream "~& ~a  p~a  ~a~%"
+              (b-symbol b-before) (pos-token-index p) (b-symbol b-after))
+      (format stream "~& ~a  p~a~%"
+              (b-symbol b-before) (pos-token-index p)))
+    `(,b-before ,b-after)))
+    
+    
+
 
