@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id: conjunction.lisp 207 2009-06-18 20:59:16Z cgreenba $
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  February 2007
+;;;  Version:  November 2012
 
 ;; initiated 5/18/94.  Added cases and more intuitive flag function 9/12/96.
 ;; Added more cases 2/13/07, and 8/11. 8/4/11 Added trace for treetop case.
+;; 11/8/12 Started set for the submered check
 
 (in-package :sparser)
 
@@ -104,3 +105,13 @@
     (trace-msg "[conj] conjoined multiple comma-separated edges~
               ~%    to form ~a" edge)))
 
+
+;;;---------------------------------------------
+;;; "submerging" a right edge under a left edge
+;;;---------------------------------------------
+
+(deftrace :submerged-check (edge-before edge-after)
+  ;; called from look-for-submerged-matching-conj-edge
+  (when *trace-conjunction-algorithm*
+    (trace-msg "Submergd check:~%   ~a~%   ~a"
+               edge-before edge-after)))
