@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  7.0 October 2011
+;;;  Version:  7.0 November 2012
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -21,7 +21,10 @@
 ;;      if it's already up and we're in speech mode. 
 ;;     (8/3/11) Added "or" as exact copy of the hook on "and". 8/4 Added
 ;;      a treetop hook for the case when we don't have adjacent segments.
-;; 7.1 (10/18/11) Writing the look-under scheme. 
+;; 7.1 (10/18/11) Writing the look-under scheme.  11/8/12 Replaced format
+;;      call with trace. Trapped case where edge-after is a word in situation
+;;      in Boeing where two quotations are adjacent but the second  hasn't
+;;      finished. 
 
 (in-package :sparser)
 
@@ -75,6 +78,8 @@
     ;;/// edge-vector check
     (when (and edge-before edge-after)
       (unless (and (edge-p edge-before) (edge-p edge-after))
+        (when (or (word-p edge-before) (word-p edge-after))
+          (return-from conjoin-adjacent-like-treetops nil))
         (push-debug `(,edge-before ,edge-after))
         (break "New conjunction case -- the 'edges' aren't edges."))
       (tr :conj-edges-to-each-side edge-before edge-after)
@@ -89,7 +94,7 @@
 
 (defun look-for-submerged-matching-conj-edge (edge-before edge-after)
   ;; look leftward first
- (format t "~&submergd check:~%~a~%~a~%" edge-before edge-after)
+ (tr :submerged-check edge-before edge-after)
  (let ( matching-edge )
    ;; look leftward first
    (let ((ev (edge-ends-at edge-before))
