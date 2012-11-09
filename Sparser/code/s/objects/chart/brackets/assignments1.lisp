@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1996.2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2011-2012  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "assignments"
 ;;;   Module:  "objects;chart:brackets:"
-;;;  Version:  1.2 June 1996
+;;;  Version:  1.2 November 2012
 
 ;; 1.1 (4/25/91 v1.8.4)  Reworked to separate the indexing of the brackets
 ;;      from their assignment to particular words.
@@ -13,7 +13,7 @@
 ;; 1.2 (6/19/96) revised the macros so that the just returned a single expression,
 ;;      which now lets them compile. 6/25 fixed a bug in it.
 ;;     (7/31/11) add an assign fn for all the brackets on a word pulled from
-;;      define-function-word. 
+;;      define-function-word. (11/9/12) added describe-bracket-assignment
 
 (in-package :sparser)
 
@@ -73,7 +73,8 @@
 
 (defmacro assign-bracket (label-symbol bracket-symbol)
   `(assign-bracket/intermediary ',label-symbol ',bracket-symbol))
-
+(when (ba-ends-before ba)
+    (format stream " ~a" (b-symbol (ba-ends-before ba))))
 
 (defmacro assign-brackets (label-symbol list-of-bracket-symbols)
   `(assign-brackets/intermediary ',label-symbol
@@ -138,4 +139,37 @@
                 composite-descriptor)))
 
       assignment )))
+
+
+;;;-------------
+;;; Description
+;;;-------------
+
+(defun describe-bracket-assignment (ba &optional (stream *standard-output*))
+  (when (ba-ends-before ba)
+    (format stream " ~a" (b-symbol (ba-ends-before ba))))
+  (when (ba-begins-before ba)
+    (format stream " ~a" (b-symbol (ba-begins-before ba))))
+  (when (ba-ends-after ba)
+    (format stream " ~a" (b-symbol (ba-ends-after ba))))
+  (when (ba-begins-after ba)
+    (format stream " ~a" (b-symbol (ba-begins-after ba)))))
+
+
+;;;-------------------------------------------------
+;;; list of the brackets in a particular assignment
+;;;-------------------------------------------------
+
+(defun get-bracket-assignment-for-word (w)
+  (let ((rs (word-rule-set w)))
+    (when rs
+      (rs-phrase-boundary rs))))
+
+(defun bracket-assignment-to-list (ba)
+  (let ( list )
+    (when (ba-ends-before ba) (push (ba-ends-before ba) list))
+    (when (ba-begins-before ba) (push (ba-begins-before ba) list))
+    (when (ba-ends-after ba) (push (ba-ends-after ba) list))
+    (when (ba-begins-after ba) (push (ba-begins-after ba) list))
+    list))
 
