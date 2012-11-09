@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; $Id$
 ;;; Copyright (c) 2010-2012 David D. McDonald
 ;;;
 ;;;     File: "comlex"
 ;;;   Module: "grammar;rules:words:one-offs:"
-;;;  Version:  October 2012
+;;;  Version:  November 2012
 
 ;; initiated 8/16/10. 11/3 cleaned up the loader. Added vivifying code.
 ;; 7/10/11 started finishing it. 7/28 Decided to use priming system
 ;; instead where we wait for the word to be seen before we expand it.
 ;; 3/1/12 fixed C&S eror. 10/15/12 Hooked up prime-comlex to the local
-;; file. 10/30 added a flag to indicate that priming has been done
+;; file. 10/30/12 added a flag to indicate that priming has been done.
+;; Continued tweaks through 11/8. 
 
 (in-package :sparser)
 
@@ -557,6 +557,8 @@ e.g. via DM&P or Fire.
        (define-adverb lemma)) ;; assigns ].adverb
       (verb
        (decode-and-instantiate-primed-verb lemma clause))
+      (prep
+       (define-preposition (word-pname lemma)))
       (otherwise
        (push-debug `(,lemma ,clause))
        (error "Unexpected POS marker: '~a'" pos-marker)))
@@ -607,7 +609,10 @@ e.g. via DM&P or Fire.
        (assign-brackets-as-an-adjective lemma))
 
       ((equal combinations '(adjective adverb))
-       (assign-brackets-to-word lemma '( ].adj-adv .[np-vp )))
+       (assign-brackets-to-word lemma (list ].adj-adv .[np-vp )))
+
+      ((equal combinations '(adjective verb))
+       (assign-brackets-to-word lemma (list ].adj-verb .[adj-verb)))
 
       ((equal combinations '(noun verb))
        (assign-noun-verb-brackets lemma clauses))
@@ -617,10 +622,14 @@ e.g. via DM&P or Fire.
        ;; the adjective as well?
        (assign-noun-verb-brackets lemma clauses))
 
+      ((equal combinations '(adjective noun sconj prep verb)) ;; "like"
+       ;; strand it and let something else do the compositions
+       (assign-brackets-to-word lemma '( ].phrase phrase.[ )))
+
       ;; "firm" is four-ways ambiguous
 
       (t (push-debug `(,lemma ,combinations ,clauses))
-         (error "Unanticipated POS combination for \"~a\:: ~a"
+         (error "Comlex -- new POS combination for \"~a\:: ~a"
                 lemma combinations)))))
 
 
@@ -653,9 +662,10 @@ e.g. via DM&P or Fire.
     (error "Expected a verb clause and didn't get one"))
   (let ((2d-expr (cadr clause)))
     (case (car 2d-expr)
-      (:subc nil)
       ((or :infinitive :tensed/singular :past-tense :present-participle)
        2d-expr)
+      (:subc nil)
+      (:features nil)
       (otherwise
        (push-debug `(,2d-expr ,clause))
        (error "New case in what's 2d in a verb clause")))))
