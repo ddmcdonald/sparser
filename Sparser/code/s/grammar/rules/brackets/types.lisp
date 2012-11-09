@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;; 
 ;;;     File:  "types"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  0.2 August 2011
+;;;  Version:  0.2 November 2012
 
 ;; initiated 4/26/91, extended 4/30
 ;;   Required assignments to the source start/end pulled 11/24
@@ -20,7 +20,7 @@
 ;;     (4/26/09) Added a set for prepositions on the pattern used for conjunctions.
 ;;     (10/13/09) Added adjectives. (2/10/10) Added quantifier.
 ;; 0.2 (8/1/11) Added a whole flock of new cases for words known to have multiple
-;;      parts of speech. 
+;;      parts of speech. 11/8/12 added adj-verb
 
 (in-package :sparser)
 
@@ -102,6 +102,10 @@
 (define-bracket :]  :before  adj-adv 1)   ;; ].adj-adv
 ;; Adjectives and adverbs both start phrases, so they should signal
 ;; the close of any ongoing segment. 
+
+;; Adjective/verb treaked like a verb and like an adjective
+(define-bracket :]  :before adj-verb 1) ;; ].adj-verb
+(define-bracket :[  :before adj-verb 1) ;; .[adj-verb
 
 (define-bracket :[  :before  np-vp 1)    ;; .[np-vp
 ;; Either a noun-phrase or a verb-group could start at this position
