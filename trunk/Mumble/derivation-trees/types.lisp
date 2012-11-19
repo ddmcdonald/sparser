@@ -139,6 +139,10 @@
 ;;; printers
 ;;;----------
 
+(defmethod print-object ((dtn base-dt-node) stream)
+  (let ((r (referent dtn)))
+    (format stream "#<dtn for ~a>" r)))
+
 (defmethod print-object ((slp saturated-lexicalized-phrase) stream)
   (if (= 1 (length (bound slp)))
     (let ((pvp (car (bound slp))))
@@ -148,10 +152,8 @@
 
 (defmethod print-object ((cn complement-node) stream)
   (format stream "#<complement ~a = ~a>"
-	  (name (phrase-parameter cn))
-	  (value-short-form (value cn))))
+	  (name (phrase-parameter cn)) (value cn)))
 
 (defmethod print-object ((an adjunction-node) stream)
   (format stream "#<adjunct ~a = ~a>"
-	  (name (ap an))
-	  (value-short-form (value an))))
+	  (name (ap an)) (value an)))

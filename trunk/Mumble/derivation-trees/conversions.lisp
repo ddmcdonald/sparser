@@ -11,15 +11,15 @@
 
 (in-package :mumble)
 
+;;---- Dispatches
+
 (defgeneric convert-to-derivation-tree (class object)
   (:documentation "Takes an instance from the Sparser domain and converts it
  into an object in Mumble's domain suitable for passing to the 'say' method
  by using realization knowledge associated with the class."))
 
-
-;;---- RNodes
-
 (defmethod convert-to-derivation-tree ((rnodes cons) i)
+  ;; placeholder for making simple choices
   (convert-to-derivation-tree (car rnodes) i))
 
 (defmethod convert-to-derivation-tree ((rnode sparser::realization-node)
@@ -38,6 +38,19 @@
      (construct-lspec-for-number i))
     (otherwise
      (read-rnode-into-dtn rnode i))))
+
+(defmethod convert-to-derivation-tree ((rnode sparser::realization-node)
+                                       (c sparser::referential-category))
+  "Categories are realized as words. Need need to wrap the word in the
+   correct minimal phrase."
+  (push-debug `(,rnode ,c))
+  (let ((dtn (make-derivation-tree-node :referent c))
+        (resource-description (sparser::apply-rnode rnode c)))
+    (push-debug `(,dtn ,resource-description))
+    (sparser::wrap-in-resource resource-description dtn)
+    dtn))
+
+;;--- construction routines
 
 (defun read-rnode-into-dtn (rnode i)
   ;; Spread the rnode's information to find the right thing to dispatch
@@ -140,31 +153,17 @@
     (let* ((head-rnode (sparser::rn-head rnode))
            (arg-rnode (sparser::rn-arg rnode)))
       (push-debug `(,head-rnode ,arg-rnode))
-      ;;(break "Look at decoding")
       (multiple-value-bind (head-i adjunct-i)
-                           (sparser::decompose-psi-by-rnode
-                            i head-rnode arg-rnode)
+                           (sparser::decompose-psi-by-rnode i rnode)
         (push-debug `(,head-i ,adjunct-i))
         (let ((dtn (convert-to-derivation-tree head-rnode head-i)))
           (let ((ap-node (make-adjunction-node ap adjunct-i dtn)))
             ;; self attaches
             (push-debug `(,ap-node ,dtn))
-            (break "Look at nodes")
+            ;; N.b. the ap-node has an error when it prints
             dtn))))))
                                  
 
-
-
-      ;; The call in to this takes an rnode and an individual
-      ;; We've got the rnodes, where do we get the references of
-      ;; their corresponding edges from ??  
-      ;;   All three variables (for "a 12-month target of 60")
-      ;; are bound in the psi that is 'i', so see if we can
-      ;; count on it just falling out without our having to
-      ;; partition the psi into those two parts. The parts are
-      ;; there as v+v, but it's a bunch of computation to split them
-      ;; on the basis of how they fit with the rnodes
- 
 
 
 ;;--- Words
@@ -185,64 +184,6 @@
 
 
 
-
-;;------------ 12/8/10 unreconstructed below here
-;;   Goes with original, rather ad-hoc treatment of fall 2009 before
-;;   the annotation facility was rebuilt and we got real rnodes
-;;   rather than ertzatz ones built from edges. 
-
-#|    references ltml package !!
-(defmethod convert-to-derivation-tree ((rpath sparser::rpath) (i ltml::LTML-class))
-  (let ((ordered-rnodes (sparser::ordered-list-of-rnodes rpath))
-        (dtn (make-instance 'derivation-tree-node
-                            :referent i)))
-    (setf (root *the-derivation-tree*) dtn)
-    (setf (participants *the-derivation-tree*) `(,i))
-
-    (dolist (rnode ordered-rnodes)
-      ;; a path will be ordered from the head out to its complements and adjuncts
-      ;; so if we trust that, we can just put things where the conventionally go
-      ;; and not have to examine the path.
-      (read-out-rnode rnode i dtn))
-    dtn)) |#
-
-(defun read-out-rnode (rnode i dtn)
-  (push-debug `(,rnode ,i ,dtn))
-  (let* ((rule-descriptor (sparser::rule-used rnode))
-         (variable (sparser::variable-bound rnode))
-         (extracted-individual (sparser::extract-value-of-variable i variable)))
-    (push-debug `(,rule-descriptor))
-    (multiple-value-bind (resource argument/s features-source)
-        (sparser::rule-descriptor-to-nlg-resource rule-descriptor)
-      (push-debug `(,resource ,argument/s ,features-source))      
-      (push-debug `(,i ,variable))
-;      (break "resouce = ~a" resource) ;; look at whether we can do it before continuing
-      ;; at this point it will go bad on the 2d rnode for that adjunction
-
-      (typecase resource
-        (phrase 
-         (unless (null (resource dtn))
-           (error "The resource derived from ~a~%is a phrase but we've already ~
-                  fill that field in the dtn." rnode))
-         (setf (resource dtn) resource))
-        (sparser::bidir-mapping ;; may be an easy way to cover lots of cases
-         (let ((mumble-resource ;; feels like there's an opportunity for recursion
-                (sparser::mumble-resource resource)))
-           (typecase mumble-resource
-             (splicing-attachment-point
-              (make-adjunction-node mumble-resource extracted-individual dtn))
-             (otherwise
-              (error "New/unexpectd mumble-side resource in bidir-mapping")))))
-        (otherwise
-         (error "Unexpected type of resource for ~a: ~a~%  ~a"
-                rnode (type-of resource) resource)))
-
-      (when argument/s ;; single-argument case. 
-        (unless variable (break "There are arguments but no corresponding variable"))
-        (unless (= 1 (length argument/s))
-          (break "Stub not ready to do multi-parameter resources. Needs design"))
-        (make-complement-node (car argument/s) extracted-individual dtn)))
-    dtn))
 
 
 
