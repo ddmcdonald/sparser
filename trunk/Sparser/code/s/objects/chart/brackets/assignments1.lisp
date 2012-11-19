@@ -73,8 +73,6 @@
 
 (defmacro assign-bracket (label-symbol bracket-symbol)
   `(assign-bracket/intermediary ',label-symbol ',bracket-symbol))
-(when (ba-ends-before ba)
-    (format stream " ~a" (b-symbol (ba-ends-before ba))))
 
 (defmacro assign-brackets (label-symbol list-of-bracket-symbols)
   `(assign-brackets/intermediary ',label-symbol
