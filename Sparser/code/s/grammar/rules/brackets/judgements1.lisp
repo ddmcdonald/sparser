@@ -120,6 +120,14 @@
 ;;;---------------------------------
 
 (defun bracket-ends-the-segment? (] position)
+  "Called from check-for-]-from-word-after when the word that follows
+ this position has put a segment-closing bracket on it. If it does
+ close the segment (we return t), then the next move it to call pts
+ to 'parse the segment' we have just delimited. 
+   If we return nil, then the word we have just reached will be included
+ in the ongoing segment and we'll continue scanning for some other
+ rationale to close the segment further on. "
+
   ;; The words used to indicate the start of VGs or
   ;; NPs can occur several in a row (e.g. "the seven ...").  
   ;; Only the first of these legitimately ends a segment.
@@ -165,7 +173,7 @@
            ((eq ]  ].text-segment)  t)
 
 
-           ((eq ]  ].verb)	   ;(break "at ].verb at ~a" position)
+           ((eq ]  ].verb)   ;(break "at ].verb at ~a" position)
             (cond 
              ((or (eq *bracket-closing-segment* ].verb )
                   (eq (first *bracket-opening-segment*) .[verb )
@@ -189,11 +197,10 @@
                  (setq *suppress-verb-reading*
                        (pos-terminal position))
                  nil )))
-
              ((eq (first *bracket-opening-segment*) .[adverb)
               nil )
-
              (t t)))
+
 
            ((eq ]  aux].)
             (cond ((eq (first *bracket-opening-segment*) .[modal )
@@ -223,18 +230,30 @@
               t))
 
            ((eq ] ].adjective)
-            (cond ((eq bracket-opening-segment mvb.[) t)
-                  ((eq bracket-opening-segment preposition.[) nil)
-                  ((= 0 word-count) nil) ;; something should follow this adjective
-                  (t (push-debug `(,position ,*bracket-opening-segment*
-                                   ,word-count ,previous-word ,segment-start-pos))
-                     (break "Next case: does ].adjective end the segment"))))
+            (cond 
+             ((eq bracket-opening-segment mvb.[) t)
+             ((eq bracket-opening-segment preposition.[) nil)
+             ((eq bracket-opening-segment .[np-vp)  nil)
+             ((= 0 word-count) nil) ;; something should follow this adjective
+             (t (push-debug `(,position ,*bracket-opening-segment*
+                              ,word-count ,previous-word ,segment-start-pos))
+                 (break "].adjective  next case.~
+                      ~%The bracket opening the segment is ~a.~
+                      ~%The word with the ambiguous bracketing is ~a"
+                       bracket-opening-segment (pos-terminal position)))))
           
            ((eq ]  ].punctuation)
             t)
           
            ((eq ] ].conjunction)
             t)
+
+           ((and (eq bracket-opening-segment conjunction.[)
+                 (= word-count 0))
+            ;; we're at the word that immediately follows
+            ;; the conjunction. It has to lie in the following
+            ;; segment
+            nil)
 
            ((eq ] ].np-vp)
             (cond
@@ -252,6 +271,7 @@
               ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
               ((eq bracket-opening-segment phrase.[) t) ;; after a period
               ((eq bracket-opening-segment preposition.[) t) ;; after preposition
+              ((eq bracket-opening-segment conjunction.[) nil)
               ((word-is-np-modifier previous-word) nil)
 
               ((eq bracket-opening-segment .[np-vp) nil)
@@ -276,9 +296,23 @@
             ;; .[np   .[np-vp  .[adjective  treetop.[  mvb.[  .[article
             nil)  ;; t)
 
-           ((eq ]  ].adj-verb)
+           ((eq ]  ].adj-verb) ;; /// almost certainly too strong
             t)
 
+           ((eq ]  ].adj-adv) ;; e.g. "heavy"
+            (cond
+             ;; We're either finishing off before the start of a VG (t)
+             ;; or coninuing an NP (nil)
+             ((or (eq bracket-opening-segment .[np)
+                  (eq bracket-opening-segment .[article)
+                  (eq bracket-opening-segment .[adjective))
+              nil)
+             (t (push-debug `(,position ,*bracket-opening-segment*
+                              ,word-count ,previous-word ,segment-start-pos))
+                 (break "].adj-adv next case.~
+                      ~%The bracket opening the segment is ~a.~
+                      ~%The word with the ambiguous bracketing is ~a"
+                       bracket-opening-segment (pos-terminal position)))))
           
            (t (break "Unclassified closing bracket: ~A" ])
               :foo))))
