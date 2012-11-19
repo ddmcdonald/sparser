@@ -18,7 +18,7 @@
 ;;  that starts with a psi.  2/7 Fixed bug in parameter order in the subtype-
 ;;  creating call: Corresponding-unit-of-subtype. Set up machinery for to create
 ;;  the psi that goes with the subtyped individual. Tweeked through 2/9.
-;;  (7/6/07) Added package expersion because Allegro doesn't appear to be reading
+;;  (7/6/07) Added package expression because Allegro doesn't appear to be reading
 ;;  the mode line for meta-.
 ;; 2.0 (6/19/09) Cleared out uncalled dead wood.
 ;; 2.1 (7/22) Revising the algorithms of the routines with nice names.
@@ -104,7 +104,9 @@
 
 (defun find-or-make-psi (type &rest variable-value-plist-or-alist)
   ;; Called from find/individual as the default.
+  (declare (ignore type variable-value-plist-or-alist))
   (break "unvetted: find-or-make-psi")
+  #+ignore
   (let* ((variable-value-pairs
           (if (consp (first variable-value-plist-or-alist)) ;; alist case
             (revamp-binding-instructions-as-variable-value-plist
