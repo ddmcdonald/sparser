@@ -559,9 +559,13 @@ e.g. via DM&P or Fire.
        (decode-and-instantiate-primed-verb lemma clause))
       (prep
        (define-preposition (word-pname lemma)))
+      (sconj
+       ;;/// probably should flag subordinating conjunctions as such.
+       ;; See /rules/words/conjunctions.lisp for the explicit list
+       (break "Stop and put subordinate conjunction together"))
       (otherwise
        (push-debug `(,lemma ,clause))
-       (error "Unexpected POS marker: '~a'" pos-marker)))
+       (error "Unexpected POS marker: '~a' on ~a" pos-marker lemma)))
     (put-property-on-word :comlex properties lemma)))
 
 ;; (defun look-for-and-decode-comlex-irregular (instance-string clauses)
