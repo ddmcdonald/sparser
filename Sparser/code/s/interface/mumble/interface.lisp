@@ -85,9 +85,53 @@
 
 
 
+;;;---------------------------------
+;;; Using rnodes to extract content
+;;;---------------------------------
+
+(defgeneric apply-rnode (rnode item)
+  (:documentation "Use the information in the rnode to decode
+ the content of the item so as to return a resource suitable
+ for putting into a dtn."))
+
+(defmethod apply-rnode ((rnode realization-node) (c category))
+  (push-debug `(,rnode ,c))
+  (unless (memq rnode (cat-rnodes c))
+    (break "Does it matter that this rnode is listed on this category?"))
+  (apply-rnode (rn-cfr rnode) c))
+
+(defmethod apply-rnode ((schr schematic-rule) (c category))
+  (let* ((realization-field (cat-realization c))
+         (schema-part (third realization-field ))
+         (keyword (car (schr-original-expression schr))))
+    ;;(push-debug `(,schr ,keyword ,schema-part ,realization-field))
+    ;;/// look up the general form of the schema field
+    (let* ((entry (cadr schema-part))
+           (word-part (car entry)))
+      (if (eq (car word-part) keyword)
+        word-part ;; (:common-noun . #<word "target">)
+        (else
+         (push-debug `(,entry))
+         (break "Schema not structured as expected"))))))
+        
+         
+
+
 ;;;---------
 ;;; helpers
 ;;;---------
+
+(defmethod mumble-phrase ((s-name symbol))
+  "Given a symbol in the sparser package, return the phrase
+   from mumble that has that name."
+  (let* ((m-name (intern (symbol-name s-name)
+                         (find-package :mumble)))
+         (phrase (mumble::phrase-named m-name)))
+    (unless phrase
+      (push-debug `(,s-name ,m-name))
+      (error "There is no phrase in Mumble with the name ~a" m-name))
+    phrase))
+
 
 (defmethod binds-a-word? ((i individual))
   (or (binds i 'name)
@@ -108,33 +152,25 @@
 
 ;;--- move to psi somewhere
 
-(defun decompose-psi-by-rnode (psi head-rnode arg-rnode)
+(defun decompose-psi-by-rnode (psi rnode)
   ;; Syntactically, the psi has been realized with a binary rule
   ;; that factors into a head and an argument. Find (construct?) the
   ;; corresponding factoring in the psi and return those two parts
   ;; to provide referents for those parts of the generation process.
-  (push-debug `(,psi ,head-rnode ,arg-rnode :decompose-by-rnode))
-  (let ((head-lp (rn-lattice-point head-rnode))
-        (arg-lp (rn-lattice-point arg-rnode))
-        (downlinks (psi-path psi)))
-    (push-debug `(,head-lp ,arg-lp))
-    (unless (= (length downlinks) 2)
-      (error "Need a new way to decompose the psi: more than 2 downlinks"))
-    ;; Now determine which one's which. The downlink psi have rnodes
-    ;; when [??], so we look to see if the arg-rnode (1st) is in either
-    ;; of these psi
-    (let ((psi-1 (car downlinks)) (psi-2 (cadr downlinks))
-          head-psi  arg-psi )
-      #+ignore
-      (cond ((memq arg-rnode (psi-rnodes psi-1))
-             (setq head-psi psi-2 arg-psi psi-1))
-            ((memq arg-rnode (psi-rnodes psi-2))
-             (setq head-psi psi-1 arg-psi psi-2))
-            ;; Doesn't work with head either
-            (t (push-debug `(,psi-1 ,psi-2))
-               (break "Next case for decompose-psi")))
-      (values head-psi arg-psi))))
-    
+  (push-debug `(,psi ,rnode :decompose-by-rnode))
+  (let* ((head-c+v (rn-head-c+v rnode))
+         (head-var (when head-c+v (cv-variable head-c+v)))
+         (arg-c+v (rn-arg-c+v rnode))
+         (arg-var (when arg-c+v (cv-variable arg-c+v))))
+    (let ((head (when head-var (value/var/v+v head-var psi)))
+          (arg (when arg-var (value/var/v+v arg-var psi))))
+      (unless (or head arg)
+        (push-debug `(,head-c+v ,arg-c+v))
+        (break "One of the head or the argument can't be found"))
+      (values head arg))))
+      
+
+
 
     
 
