@@ -129,12 +129,14 @@
 ;;;---------------
 
 (defun find-psi-at-lattice-point (lp variable-value-pairs)
+  (declare (ignore lp variable-value-pairs))
   (break "find-psi-at-lattice-point")
   ;; is there, among the instances aready at this lp, one that
   ;; is an instance of these v+v's ?   
   ;; Called from Find-psi-with-bindings, Find-psi-of-type-with-bindings,
   ;; find-extending-psi
   (break "called Find-psi-at-lattice-point")
+  #+ignore
   (do ((variable (pop variable-value-pairs) (pop variable-value-pairs))
        (value (pop variable-value-pairs) (pop variable-value-pairs))
        (candidates (lp-instances lp) new-candidates)
@@ -163,7 +165,9 @@
 
 
 (defun find-psi-binding-var-to-value-in-list-of-lp (var value list)
+  (declare (ignore var value list))
   (break "find-psi-binding-var-to-value-in-list-of-lp")
+  #+ignore
   (dolist (lattice-point list)
     (find-psi-binding-var-to-value-in-list-of-psi 
      var value (lp-instances lattice-point))))
@@ -176,9 +180,12 @@
 ;;;-------------
 
 (defun variables-in-variable-value-plist (variable-value-plist)
+  (declare (ignore variable-value-plist))
   (break "variables-in-variable-value-plist")
+  #+ignore
   (when (consp (first variable-value-plist))
     (break "called with an alist"))
+  #+ignore
   (let ((variable-next? t)
         variables )
     (dolist (unit variable-value-plist)
