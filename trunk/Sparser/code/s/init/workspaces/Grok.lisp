@@ -28,6 +28,10 @@
 ;; (p "Boeing Co. said the U.S. government has suspended the sale")
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
 
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/helicopter-attack.txt")
+;;   N.b. hard pathname. Need soft one. Perhaps via asdf, certainly via a pointer
+;;    off load-truename
+
 #|
 -- For searching with grep. 
 cd sparser/Sparser/code/s/
