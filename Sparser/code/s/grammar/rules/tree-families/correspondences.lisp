@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "correspondences"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.3 April 2012
+;;;  version:  0.3 November 2012
 
 ;; initiated 10/5/09. Expanded 11/10. 
 ;; (12/9/10) Reworking most of this to bring it in sync what what rnodes
@@ -89,6 +89,42 @@ When we need adjunction, it's
     ))
 
  
+;;;------------------------
+;;; single words to phrase
+;;;------------------------
+
+(defgeneric wrap-in-resource (descriptor datum)
+  (:documentation "The first use case is for a common noun.
+ We use the descriptor to make sense of the datum, and we
+ return a phrase of some sort that serve as a resource from
+ the point of view of mumble::realize-dtn."))
+;; return a dtn
+
+(defmethod wrap-in-resource ((dotted-pair cons) ;; from apply-rnode
+                             (dtn mumble::derivation-tree-node))
+  (let ((keyword (car dotted-pair))
+        (word (cdr dotted-pair)))
+    (unless (word-p word)
+      (push-debug `(,dotted-pair ,keyword ,word))
+      (error "Threading probem. Initial resource is weird"))
+    (let* ((phrase (select-resource keyword))
+           (m-word (mumble::find-or-make-word word))
+           (parameter (car (mumble::parameters-to-phrase phrase))))
+      ;;(push-debug `(,dtn ,parameter ,m-word ,phrase)) (break "wrap")
+      (mumble::make-complement-node parameter m-word dtn)
+      dtn)))
+
+(defmethod select-resource ((keyword symbol))
+  (case keyword
+    (:common-noun
+     ;;/// whole big choice set goes here, Criteria are semantic
+     ;; and intentional, not to mention subsequence reference which
+     ;; demands a whole level to itself (Zo model maybe??)
+     (mumble-phrase 'common-noun))
+    (otherwise
+     (break "New case: ~a" keyword))))
+
+
 
 
 
