@@ -1,17 +1,18 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  August 2009
+;;;  version:  November 2012
 
 ;; initiated 11/29/97. First populated 2/24/98. Fixed order of args bug
 ;; 3/3. Debugged 3/11. Tweaked, elaborated through 5/5. Added index 6/21/0.
 ;; 1/2/01 added subtype printer.  2/7/05 Fixed redundancy in subtype printer
 ;; which wasn't looking for an already created string.  7/30/07 added index
-;; to self-node. 8/6/09 tweaked printer.
+;; to self-node. 8/6/09 tweaked printer. 11/12/12 Removed rnode printer to 
+;; its own file. 
 
 (in-package :sparser)
 
@@ -54,10 +55,5 @@
     (write-string (princ-variable/string var) stream)
     (write-string " " stream)))
 
- 
-(defun print-realization-node-structure (rn stream depth)
-  (declare (ignore depth))
-  (format stream "#<rnode ~A>"
-          (rn-cfr rn)))
 
 
