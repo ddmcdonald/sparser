@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.1 June 2009
+;;;  version:  1.1 November 2012
 
 ;; initiated 8/4/92. Added accumulator list and description field 2/22/95.
 ;; Added type field 3/7.  Tweeked def routine 4/27
@@ -13,6 +12,7 @@
 ;;     (2/14/98) debugged the find routine for them and did the printer.
 ;;     (5/5) added tree-family to schematic-rule.
 ;; 1.1 (6/17/09) added 'form' field to schematic-rule structure
+;;     (11/13/12) added pretty-schr-as-string
 
 (in-package :sparser)
 
@@ -83,6 +83,7 @@
   (write-string ">" stream))
 
 
+
 ;;;----------
 ;;; indexing
 ;;;----------
@@ -140,9 +141,16 @@
 
 
 (defun pretty-print-schr (schr stream)
-  (princ-rule-term (schr-lhs schr) stream)
-  (write-string " -> " stream)
-  (dolist (term (schr-rhs schr))
-    (princ-rule-term term stream)
-    (write-string " " stream)))
+  (if (keywordp schr) ;; :digit-based-number
+    (format stream "~s" schr)
+    (else
+     (princ-rule-term (schr-lhs schr) stream)
+     (write-string " -> " stream)
+     (dolist (term (schr-rhs schr))
+       (princ-rule-term term stream)
+       (write-string " " stream)))))
+
+(defun pretty-schr-as-string (schr)
+  (with-output-to-string (stream)
+    (pretty-print-schr schr stream)))
   
