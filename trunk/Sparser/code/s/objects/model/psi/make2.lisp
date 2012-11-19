@@ -114,8 +114,11 @@
 
 ;; not vetted yet
 (defun make-psi-for-subtype (subtype-lp source)
-  (break "No vetted yet: make-psi-for-subtype")
+  (declare (ignore subtype-lp source))
+  (break "Not vetted yet: make-psi-for-subtype")
+  #+ignore
   (tr :making-new-psi-for-subtype subtype-lp source)
+  #+ignore
   (let ((psi (get-psi)))
     (setf (psi-type psi) subtype-lp)
     (setf (psi-lattice-point psi) subtype-lp)
