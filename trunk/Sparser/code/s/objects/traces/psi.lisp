@@ -55,6 +55,20 @@
     (trace-msg "Annotating the individual ~a~
                 ~%   via ~A" i rule)))
 
+(deftrace :setting-head (rnode head-rnode)
+  ;; called from Annotate-individual
+  (when *trace-psi*
+    (trace-msg "   The head of ~a is ~a"
+               rnode head-rnode)))
+
+(deftrace :seting-arg (rnode arg-rnode)
+  ;; called from Annotate-individual
+  (when *trace-psi*
+    (trace-msg "   The arg of ~a is ~a"
+               rnode arg-rnode)))
+
+
+
 (deftrace :annotating-daughter (rule head-edge)
   ;; called from annotate-daughter
   (when *trace-psi*
@@ -71,10 +85,22 @@
   (when *trace-psi*
     (trace-msg "  Reusing ~a" entry)))
 
+
+(deftrace :annotating-pair (i head-edge arg-edge)
+  ;; Called from annotate-realization-pair
+  (when *trace-psi*
+    (trace-msg "Annotating the individual ~a~
+              ~%  based on the head edge ~a~
+              ~%  and argument edge ~a"
+               i head-edge arg-edge)))
+
+
+
+
 (deftrace :site-bound-to (i/psi variable type)
   ;; called from annotate-site-bound-to
   (when *trace-psi*
-    (trace-msg "  Annotating that the ~a of ~a~
+    (trace-msg "Annotating that the ~a of ~a~
               ~%     is being bound to a ~a"
                variable i/psi type)))
 
