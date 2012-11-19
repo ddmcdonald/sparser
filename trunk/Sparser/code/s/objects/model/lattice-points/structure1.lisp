@@ -133,6 +133,7 @@
   head
     ;; Up pointer to a rnode or :base-case
     ;; If there is just one term in the rule, this slot gets it.
+  head-c+v
 
   arg
     ;; also an up pointer to an rnode.
@@ -140,12 +141,13 @@
     ;; Syntactically it will either be a complement or
     ;; an adjunct, but it's not evident that we need to make a
     ;; distinction here. 
+  arg-c+v
 
   cfr  ;; and from there you can get to the schema from which it derived
 
   downward-links  ;; list of r-nodes
 
-  upward-links ;; --obsolete (?) given head/arg links --or use for strands?
+  upward-links ;; Lower rnode spoint up to their consumer rnodes
 
   variable ;; list (?) of c+v set by annotate-realization-pair
 
