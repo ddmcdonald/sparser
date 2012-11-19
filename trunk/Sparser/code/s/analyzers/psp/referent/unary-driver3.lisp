@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
@@ -33,7 +33,7 @@
 ;;       mixin-category.
 ;;     (2/6/07) Removed an ecase.
 ;; 3.0 (7/22/09) fanout from changes in psi design. (9/1) Added exception for
-;;      external referents into referent-from-unary-rule
+;;      external referents into referent-from-unary-rule. Added notes 11/12/12
 
 (in-package :sparser)
 
@@ -75,7 +75,7 @@
           (setq *referent* rule-field
                 direct-pointer? t)))
 
-      (tr :unary-realization *referent*)
+      (tr :unary-realization *referent*) ;; "Unary realization of ~a"
 
       (when direct-pointer?
         ;; In the other cases the annotation is done within the actions
@@ -83,7 +83,7 @@
         (typecase *referent*
           (referential-category
            (annotate-realization/base-case
-            (find-self-node *referent*)
+            (find-self-node *referent*) ;; right now the lp for the category
             *referent*))
           (individual
            (annotate-individual *referent* :unary-rule))
