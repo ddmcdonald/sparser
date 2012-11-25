@@ -13,7 +13,8 @@
 ;; 1.2 (6/19/96) revised the macros so that the just returned a single expression,
 ;;      which now lets them compile. 6/25 fixed a bug in it.
 ;;     (7/31/11) add an assign fn for all the brackets on a word pulled from
-;;      define-function-word. (11/9/12) added describe-bracket-assignment
+;;      define-function-word. (11/9/12) added describe-bracket-assignment,
+;;     (11/23/12) List of words passed in to assign-bracket/expr
 
 (in-package :sparser)
 
@@ -111,6 +112,12 @@
 ;;;--------------
 
 (defun assign-bracket/expr (label-object bracket)
+  (when (consp label-object)
+    (unless (every #'word-p label-object)
+      (push-debug `(,label-object ,bracket))
+      (error "Unexpected object in list argument"))
+    (dolist (w label-object)
+      (assign-bracket/expr w bracket)))
   (let ((rs (rule-set-for label-object))
         assignment )
 
