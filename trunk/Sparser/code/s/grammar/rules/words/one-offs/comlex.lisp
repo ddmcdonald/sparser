@@ -560,9 +560,8 @@ e.g. via DM&P or Fire.
       (prep
        (define-preposition (word-pname lemma)))
       (sconj
-       ;;/// probably should flag subordinating conjunctions as such.
        ;; See /rules/words/conjunctions.lisp for the explicit list
-       (break "Stop and put subordinate conjunction together"))
+       (define-isolated-function-word (word-pname lemma)))
       (otherwise
        (push-debug `(,lemma ,clause))
        (error "Unexpected POS marker: '~a' on ~a" pos-marker lemma)))
@@ -618,12 +617,20 @@ e.g. via DM&P or Fire.
       ((equal combinations '(adjective verb))
        (assign-brackets-to-word lemma (list ].adj-verb .[adj-verb)))
 
-      ((equal combinations '(noun verb))
-       (assign-noun-verb-brackets lemma clauses))
-
       ((equal combinations '(adjective noun verb))
        ;;/// what else do we need? Will the NP cases soak up
        ;; the adjective as well?
+       (assign-noun-verb-brackets lemma clauses))
+
+      ((equal combinations '(adjective adverb noun verb)) ;; "clear"
+       ;; Lets see how far we can go with this
+       (assign-brackets-to-word lemma (list ].adj-verb .[adj-verb)))
+
+      ((equal combinations '(adverb noun verb)) ;; "part"
+       ;;/// how often might the adverb part get us into trouble?
+       (break "adverb-noun-verb look at clauses"))
+
+      ((equal combinations '(noun verb))
        (assign-noun-verb-brackets lemma clauses))
 
       ((equal combinations '(adjective noun sconj prep verb)) ;; "like"
