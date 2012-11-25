@@ -151,9 +151,13 @@
     (call-next-method))) ;; how to print them??
 
 (defmethod print-object ((cn complement-node) stream)
-  (format stream "#<complement ~a = ~a>"
-	  (name (phrase-parameter cn)) (value cn)))
+  (let ((parameter (phrase-parameter cn))
+        (value (value cn)))
+    (format stream "#<complement ~a = ~a>"
+            (if parameter (name parameter) "<nil parameter>")
+            value)))
 
 (defmethod print-object ((an adjunction-node) stream)
-  (format stream "#<adjunct ~a = ~a>"
-	  (name (ap an)) (value an)))
+  (let ((ap (ap an)))
+    (format stream "#<adjunct ~a = ~a>"
+            (if ap (name ap) "<nill AP>") (value an))))
