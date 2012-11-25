@@ -75,6 +75,12 @@
     (trace-msg "Annotating-daughter using ~a~
               ~%   via ~a" head-edge rule)))
 
+(deftrace :annotating-form-rule (rule arg-edge)
+  ;; called from annotate-form-rule
+  (when *trace-psi*
+    (trace-msg "Annotating-form-rule using ~a~
+              ~%   via ~a" arg-edge rule)))
+
 (deftrace :new-rdata-entry (entry)
   ;; called from Annotate-realization/base-case and Annotate-individual
   (when *trace-psi*
