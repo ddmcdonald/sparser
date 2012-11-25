@@ -1,6 +1,6 @@
 ********************************
 * How to install & run Sparser *
-* Version 0.2 - 8/21/11        *
+* Version 0.3 - 11/24/12       *
 ********************************
 
 Thank you for downloading Sparser. This short guide
@@ -10,55 +10,41 @@ will help you get everything up & running in no time.
 Installation & Setup
 ====================
 
-Sparser is designed to run on *nix platforms & has
-been primarily tested on Intel-based Mac OS X.
-
-1. Install the root directory "Sparser" wherever you like.
+1. Install the root directory "sparser" wherever you like.
 We recommend (and the default configuration assumes)
-you keep it in your home directory.
+you keep it in your home directory, e.g as ~/sparser/.
 
-Note: if you download a distribution of Sparser from
-GitHub (rather than "checking-out" the repository with git
-clone), the root directory will be named something like
-"charlieg-Sparser-xxx." Once you unzip the .tar.gz or .zip
-archive, you should rename the root directory to "Sparser"
--- this root directory should contain immediate
-subdirectories named "corpus," "lisp," and "Sparser,"
-among others.
+When you checkout the trunk of the svn distribution to
+that root location, it should contain three immediate
+subdirectories: "Mumble", "Sparser", and "util", 
+as well as this README file and the file load-nlp.lisp.
 
-2. If you installed the "Sparser" directory somewhere
+2. If you installed the "sparser" directory somewhere
 other than your home directory, you'll need to modify
-the paths in the "Load asdf" section of the
-"Sparser/load-nlp.lisp" file to match your setup.
+the file paths in the "ASDF setup" section of the
+"load-nlp.lisp" file to match your configuration.
 
-You are now ready to try running Sparser.
+You are now ready to load Sparser.
 
 
 Testing Sparser
 ====================
 
 You need to have a modern implementation of Common Lisp
-already installed. To run the full system including the
-generation component Mumble, we currently only support
-Allegro Common Lisp -- specifically the "mlisp" binary
-because of the case-specific definitions.
+already installed. Sparser has been primarily tested on 
+Intel-based Mac OS X using Clozure (www.clozure.com) and
+Allegro (www.franz.com). 
 
-If you only want to run the analysis system (Sparser
-proper), then you can use either the alisp version of
-Allegro or Clozure. We recommend Clozure because it
-automatically compiles functions as it loads them. It
-shouldn't be too difficult to get Sparser running on a
-different implementation if someone is interested
+We recommend Clozure because it automatically compiles 
+functions as it loads them. If you use Allegro you will
+need to explicitly compile the core of Sparser to avoid
+blowing out the stack on text longer than about 30 words.
 
-1. Start Lisp (with the "mlisp" binary if running
-Allegro CL).
+1. Start Lisp.
 
-2. Load the "Sparser/load-nlp.lisp" file. If running
+2. Load the "sparser/load-nlp.lisp" file. If running
 Allegro CL with a default installation, you can do this
-with ":ld ~/Sparser/load-nlp.lisp".
-
-2a. If you only want the analizer, edit the file
-~/Sparser/clozure.lisp to fit your situation and load it.
+with ":ld ~/sparser/load-nlp.lisp".
 
 3. Switch over to the Sparser namespace by executing
 "(in-package :sparser)".
