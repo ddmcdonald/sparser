@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.5 August 2011
+;;;  version:  0.5 November 2012
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -39,7 +39,8 @@
 ;;     (8/26/08) added time-of-day & timezones to files to be loaded for *time*
 ;;     (10/9/09) Commented out proteins file because it isn't there.
 ;;     (2/21/11) Added title-abbreviations and noted that titles was OBE.
-;;     (8/8/11) Added path-types
+;;     (8/8/11) Added path-types. (11/24/12) Added rules-to-turn-off and military
+;;     vocabulary from Answer
 
 (in-package :sparser)
 
@@ -203,6 +204,11 @@
 ;(gate-grammar *nih*
 ;  (gload "dossiers;genes/proteins"))
 
+(gate-grammar *generic-military*
+  (gload "dossiers;military-units")
+  (gload "dossiers;military-ranks")
+  (gload "dossiers;military-authorities"))
+
 
 ;;--------- dossiers that have to follow all the others ---------
 
@@ -213,7 +219,7 @@
 (gate-grammar *verbs-with-weak-semantics*
   (gload "dossiers;semantics-weak verbs"))
 
-
+(gload "dossiers;rules-to-turn-off")
 
 
 ;;---------- the very last thing to do ----------
