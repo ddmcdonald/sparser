@@ -138,8 +138,18 @@
          (word-count (- (pos-token-index position)
                         (pos-token-index *left-segment-boundary*)))
          (previous-word (word-before position))
-         (ends-the-segment?
-	  (cond
+         ends-the-segment? )
+
+    (flet ((segment-started-as-np? ()
+             (or (eq bracket-opening-segment .[np)
+                 (eq bracket-opening-segment .[article)
+                 (eq bracket-opening-segment .[adjective)))
+           (segment-started-as-vg? ()
+             (or (eq (first *bracket-opening-segment*) .[verb )
+                 (eq (first *bracket-opening-segment*) .[modal))))
+      (setq
+       ends-the-segment?
+       (cond
            ((eq ]  phrase].)   t)
           
            ((eq ]  ].phrase)   t)
@@ -203,9 +213,10 @@
 
 
            ((eq ]  aux].)
-            (cond ((eq (first *bracket-opening-segment*) .[modal )
-                   nil)
-                  (t t)))
+            (if (or (eq (first *bracket-opening-segment*) .[modal )
+                    (eq (first *bracket-opening-segment*) .[verb ))
+              nil
+              t))
        
            ((eq ]  mvb].)	       ;(break "mvb]. at ~a" position)
             (cond ((and *bracket-closing-segment*
@@ -232,8 +243,9 @@
            ((eq ] ].adjective)
             (cond 
              ((eq bracket-opening-segment mvb.[) t)
-             ((eq bracket-opening-segment preposition.[) nil)
-             ((eq bracket-opening-segment .[np-vp)  nil)
+             ((or (eq bracket-opening-segment preposition.[)
+                  (eq bracket-opening-segment .[np-vp))
+              nil)
              ((= 0 word-count) nil) ;; something should follow this adjective
              (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
@@ -297,16 +309,24 @@
             nil)  ;; t)
 
            ((eq ]  ].adj-verb) ;; /// almost certainly too strong
-            t)
+            (cond
+             ((segment-started-as-np?) ;; adjective reading
+              nil)
+             ((segment-started-as-vg?) ;; verb reading
+              nil)
+             (t (push-debug `(,position ,*bracket-opening-segment*
+                              ,word-count ,previous-word ,segment-start-pos))
+                 (break "].adj-verb next case.~
+                      ~%The bracket opening the segment is ~a.~
+                      ~%The word with the ambiguous bracketing is ~a"
+                       bracket-opening-segment (pos-terminal position)))))
+             
 
            ((eq ]  ].adj-adv) ;; e.g. "heavy"
             (cond
              ;; We're either finishing off before the start of a VG (t)
              ;; or coninuing an NP (nil)
-             ((or (eq bracket-opening-segment .[np)
-                  (eq bracket-opening-segment .[article)
-                  (eq bracket-opening-segment .[adjective))
-              nil)
+             ((segment-started-as-np?) nil)
              (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
                  (break "].adj-adv next case.~
