@@ -111,6 +111,7 @@ When we need adjunction, it's
            (m-word (mumble::find-or-make-word word))
            (parameter (car (mumble::parameters-to-phrase phrase))))
       ;;(push-debug `(,dtn ,parameter ,m-word ,phrase)) (break "wrap")
+      (setf (mumble::resource dtn) phrase)
       (mumble::make-complement-node parameter m-word dtn)
       dtn)))
 
