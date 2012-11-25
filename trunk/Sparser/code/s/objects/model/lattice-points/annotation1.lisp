@@ -311,19 +311,32 @@
   ;; annotate-realization-pair with a stylized treatment of
   ;; the arg edge based on the rule.
   (when *annotate-realizations*
-    (tr :annotating-daughter rule head-edge)
-    ;; annotating-daughter using ~a~
-    ;;   via ~a"
-    (let* ((lp (corresponding-lattice-point i))
-           ;; For later when we look at the rule
-           ;;(existing-annotations (lp-realizations lattice-point))
-           ;;(rc (rule-component-to-use rule))
-           ;;(entry (find rc existing-annotations :key #'rn-cfr)))
-           (rnode (rnode-for-edge head-edge)))
-      (unless rnode
-        (push-debug `(,i ,rule ,head-edge ,arg-edge ,lp))
-        (error "No rnode cached on ~a" head-edge))
-      (cache-rnode-on-parent-edge rnode))))
+    (if (form-rule? rule)
+      (annotate-form-rule i rule head-edge arg-edge)
+      (else
+       (tr :annotating-daughter rule head-edge)
+       ;; annotating-daughter using ~a~
+       ;;   via ~a"
+       ;;(push-debug `(,i ,rule ,head-edge ,arg-edge)) (break "daughter")
+       (let* ((lp (corresponding-lattice-point i))
+              ;; For later when we look at the rule
+              ;;(existing-annotations (lp-realizations lattice-point))
+              ;;(rc (rule-component-to-use rule))
+              ;;(entry (find rc existing-annotations :key #'rn-cfr)))
+              (rnode (rnode-for-edge head-edge)))
+         (unless rnode
+           (push-debug `(,i ,rule ,head-edge ,arg-edge ,lp))
+           (error "No rnode cached on ~a" head-edge))
+         (cache-rnode-on-parent-edge rnode))))))
+
+(defun annotate-form-rule (i rule head-edge arg-edge)
+  ;; When called from annotate-daughter we can be reasonably certain
+  ;; that the arg-edge has the concrete parts that needs particular
+  ;; annotation. 
+  (when *annotate-realizations*
+    (push-debug `(,i ,rule ,head-edge ,arg-edge)) (break "form")
+    (tr :annotating-form-rule rule arg-edge)))
+
       
 
 
