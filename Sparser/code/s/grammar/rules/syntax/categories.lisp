@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.5 September 2011
+;;;  Version:  0.6 November 2012
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -40,7 +40,7 @@
 ;;     (5/10/09) Added wh-pronoun. 5/9/09 added question-marker. 7/23/09 added interjection
 ;;     (2/10/10) Added quantifier. 3/16/10 added paragraph.
 ;; 0.6 (8/8/11) Converted form-category? to a method so it can take symbols.
-;;     (9/29/11) Added two variants on preposition.
+;;     (9/29/11) Added two variants on preposition. (11/22/12) Added two conjunctions
 
 (in-package :sparser)
 
@@ -154,6 +154,9 @@
 (def-form-category  word+ing)
 
 (def-form-category  interjection)
+
+(def-form-category  conjunction)
+(def-form-category  subordinate-conjunction)
 
 (def-form-category  preposition)
 (def-form-category  spatial-preposition)
