@@ -28,6 +28,8 @@
 ;; (p "Boeing Co. said the U.S. government has suspended the sale")
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
 
+;; (p *iraqi-girl*)
+
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/helicopter-attack.txt")
 ;;   N.b. hard pathname. Need soft one. Perhaps via asdf, certainly via a pointer
 ;;    off load-truename
@@ -67,7 +69,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 
 ;; (no-Sparser-traces)
-(defun no-Sparser-traces ()
+(defun no-Sparser-traceses ()
   (untrace-fsas)
   (untrace-pnf)
   ;(untrace-jfp-sections)
