@@ -57,6 +57,7 @@
     ;; but surely wants more context
     (let ((dt (mumble::convert-to-derivation-tree options o)))
       (push-debug `(:dt ,dt))
+      ;;(break "back from realization-for ~a~%with ~a" o dt)
       dt)))
 
 (defmethod mumble::realization-for ((e edge))
