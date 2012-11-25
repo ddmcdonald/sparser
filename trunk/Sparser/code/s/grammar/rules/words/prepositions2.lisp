@@ -80,6 +80,7 @@
 (define-preposition "beyond" :form 'spatial-preposition)
 (define-preposition "by" )
 (define-preposition "down"  )
+(define-preposition "during"  )
 (define-preposition "for" )
 (define-preposition "from" )
 (define-preposition "in" )
