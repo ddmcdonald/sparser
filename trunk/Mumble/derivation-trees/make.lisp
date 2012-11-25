@@ -1,9 +1,11 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
 ;;; $Id$
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2010 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2010-2012 David D. McDonald  All Rights Reserved
 
 ;; /Mumble/derivation-trees/make.lisp
+
+;; 11/12 Picked it up again and making diverse little changes.
 
 (in-package :mumble)
 
@@ -77,13 +79,19 @@ but we don't want to count on that.
   ;; (the one we'll look to for the resource that we attach at that spot
   ;; -- the value we extracted in read-out-rnode) and the
   ;; derivation-tree-node that we add this ap node to. 
-  (let ((apn (make-instance 'adjunction-node 
-			    :ap ap
-			    :value i
-			    :referent i ;; is this right?
-			    :bkptrs dtn)))
-    (push apn (adjuncts dtn))
-    apn))
+  (let ((ap (typecase ap
+              (symbol (attachment-point-named ap))
+              (attachment-point ap)
+              (otherwise
+               (push-debug `(,ap ,i ,dtn))
+               (error "~a does not name an attachment point" ap)))))
+    (let ((apn (make-instance 'adjunction-node 
+                 :ap ap
+                 :value i
+                 :referent i ;; is this right?
+                 :bkptrs dtn)))
+      (push apn (adjuncts dtn))
+      apn)))
 
 (defun make-complement-node (parameter i dtn)
   (let ((cn (make-instance 'complement-node
