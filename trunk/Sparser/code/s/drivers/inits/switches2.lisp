@@ -290,6 +290,7 @@
     (setq *new-dm&p* nil) ;; these two from fire-setting
     (setq *do-strong-domain-modeling* nil))
   (include-comlex)
+  (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
 
 (defun ambush-setting ()
