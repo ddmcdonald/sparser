@@ -1,20 +1,27 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; $Id$
 ;;; Copyright (c) 2010-2012 David D. McDonald
 ;;;
-;;;   File:   load-nlp-poirot
-;;;  Module:  /nlp/
+;;;   File:   load-nlp
 ;;; Version:  October 2012
 
-;; Intiated 10/26/10 to load shared utilities, Mumble, Sparser.
-;; Edited 11/16/10, added asdf items to simplify installation &
-;; loading process -- charlieg
-;; 12/9/10 ddm: some reorg to get the Sparser package defined earlier
-;; 10/30/12 ddm: further cleanup. Added grok option
+;; This file will load the language understanding system Sparser, 
+;; the language generator Mumble, and a shared set of utilities.
 
-;;--- Load asdf
-;;--- NOTE: you should modify the paths in this section to match
-;;--- the location where you installed Sparser
+;; Part of the system is loaded using ASDF, most is loaded by
+;; explicit load files. The common reference point is the location
+;; of this file. This file is the only one with explicit pathnames
+;; that you need to customize to where you have installed the
+;; system. The values here assume you checked it out to the
+;; directory "sparser" in your home directory (~/sparser).
+
+;; What this file does:
+;; 1. Load ASDF
+;; 2. Records the location of this file as *nlp-home*
+;; 3. Load the utilities using asdf 
+;; 4. Create the sparser package
+;; 5. Load Mumble
+;; 6. Choose a specializing script and load Sparser
+;; 7. Load the files in Mumble that depend on Sparser.
 
 (in-package :cl-user)
 
@@ -25,7 +32,7 @@
   (load "~/Sparser/util/asdf.lisp")) ;; N.b. this one's pretty old
 
 ;; This assumes you have no other files on your registry already,
-;; e.g. from an init file. Adjust it if you do. 
+;; Adjust it if you do. 
 (setf asdf:*central-registry*
       '(*default-pathname-defaults*
         #p"~/sparser/util/"   ;; ddm-util
@@ -63,7 +70,6 @@
 (load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp"))
   
 ;; Sparser 
-;;   Could this be controlled from the command-line?
 (let* ((init-location "Sparser/code/s/init/")
        (sparser-load-script
         ;; extend, modify as appropriate
@@ -82,4 +88,3 @@
 (asdf:operate 'asdf:load-op :mumble-after-sparser)
 (load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
-
