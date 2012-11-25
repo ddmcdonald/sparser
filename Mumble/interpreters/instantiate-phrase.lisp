@@ -3,7 +3,7 @@
 
 ;;; MUMBLE-05:  interpreters> realization> instantiate-phrase
 
-;;; Copyright (C) 2005,2011 David D. McDonald
+;;; Copyright (C) 2005,2011-2012 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
@@ -17,7 +17,8 @@
 ;; 1/14/05 started change-over to use lemmas, etc. 3/25/07 Reworking things in earnest
 ;; so as to avoid the choice and tree-family intermediaries whenever that makes sense.
 ;; 9/18/09 ddm. Converted instantiate-lexicalized-phrase to a method.
-;; 3/28/11 ddm: Fixing glitches in mapping from DTN.
+;; 3/28/11 ddm: Fixing glitches in mapping from DTN. 11/21/12 accomodate directly
+;; pasing in a parameter object.
 
 (in-package :mumble)
 
@@ -35,7 +36,9 @@
   (format t "~&Creating parameter-arg-list-from ~a" dtn)
   (mapcar #'(lambda (cn)
               (let* ((symbol (phrase-parameter cn))
-                     (parameter (parameter-named symbol))
+                     (parameter (etypecase symbol
+                                  (parameter symbol)
+                                  (symbol (parameter-named symbol))))
                      (value (value cn)))
                 (format t "~&   p: ~a  v: ~a" parameter value)
                 (unless value 
