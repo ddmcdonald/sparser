@@ -1,5 +1,4 @@
 ;;; -*- Mode: Lisp; Package:MUMBLE; Syntax: COMMON-LISP; Base:10; -*-
-;;; $Id: word-stream-actions.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 ;;;
 ;;; MUMBLE-86:  grammar > word-stream-actions
 ;;;
@@ -8,9 +7,10 @@
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
 ;;;    non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2012 David D. McDonald  All Rights Reserved
 
 ;; 7/15/99 Added locale hook and dispatch for digit-separator in Print-punctuation.
-;; 8/13 debugged it.
+;; 8/13 debugged it. 11/21/12 Promulgated ttrace w/ the extra "t"
 
 (in-package :mumble)
 
@@ -149,7 +149,7 @@
 ;  word stream action conditions
 
 (defun lexical-contents ()
-  (not (tracep (contents *current-position*))))
+  (not (ttracep (contents *current-position*))))
 
 
 
