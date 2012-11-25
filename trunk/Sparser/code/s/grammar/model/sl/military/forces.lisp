@@ -61,23 +61,6 @@
 (define-type-of-force "close air support" "cas") ;; is this right for CAS?
 
 
-;;;-------
-;;; units
-;;;-------
-
-(define-category military-unit-type
-  :specializes kind
-  :binds ((type  :primitive word)) ;; e.g. "platoon"
-  :realization (:common-noun type))
-
-(define-individual 'military-unit-type :type "platoon")
-
-
-(define-category military-unit
-  :specializes kind
-  :instantiates self
-  :binds ((type . military-unit-type)
-          (force . military-force)))
 
 
 
