@@ -24,7 +24,7 @@
 ;; 7.1 (10/18/11) Writing the look-under scheme.  11/8/12 Replaced format
 ;;      call with trace. Trapped case where edge-after is a word in situation
 ;;      in Boeing where two quotations are adjacent but the second  hasn't
-;;      finished. 
+;;      finished. 11/25/12 fixed fanout when "and" is covered with an edge.
 
 (in-package :sparser)
 
@@ -67,6 +67,12 @@
   ;; Called by invoking the treetop-action above during the
   ;; forest scan. Timing of the segment scan prohibited running
   ;; via the usual entry point
+
+  (when (edge-p position-after)
+    ;; Can happen if we have an edge over "and", which we'll get
+    ;; sometimes depending on how it's being defined (which varies
+    ;; according to the overall style of modeling)
+    (setq position-after (pos-edge-ends-at position-after)))
 
   (tr :calling-conj-treetop-hook position-after)
   ;; position-after is the one that immediately follows the
