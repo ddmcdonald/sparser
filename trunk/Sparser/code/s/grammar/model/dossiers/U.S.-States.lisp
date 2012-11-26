@@ -117,7 +117,7 @@
 (define-us-state "North Dakota"
                  :aliases '("N.Dak." "ND"))
 
-(define-us-state "Ohio" :abbreviations ("OH"))
+(define-us-state "Ohio" :abbreviations '("OH"))
 
 (define-us-state "Oklahoma"
                  :abbreviations '("Okla" "OK"))
