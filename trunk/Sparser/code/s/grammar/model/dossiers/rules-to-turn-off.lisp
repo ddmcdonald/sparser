@@ -35,10 +35,11 @@
              (cfr (find-cfr lhs rhs)))
         (unless cfr
           (push-debug `(,lhs ,rhs ,descriptor))
-           (error "The rule components ~
-                 ~%   lhs: ~A~
-                 ~%   rhs: ~A~
-                 ~%  do not fit an already defined rule"
+           (cerror "Ignore this and keep going"
+                   "The rule components do not fit an ~
+                    already defined rule:~
+                  ~%   lhs: ~A~
+                  ~%   rhs: ~A~"
                   lhs rhs))
         (push (delete/cfr cfr)
               deleted-cfrs)))
