@@ -40,6 +40,8 @@
 (define-country "Bosnia and Herzegovina")
 (define-country "Botswana")
 (define-country "Brazil")
+(define-country "Britain" :aliases '("United Kingdom") :adjective "British")
+;; England  Scotland  Wales  Northern Irland
 (define-country "Brunei")
 (define-country "Bulgaria")
 (define-country "Burkina Faso"  )
@@ -203,8 +205,6 @@
 (define-country "Uganda")
 (define-country "Ukraine")
 (define-country "United Arab Emirates")
-(define-country "United Kingdom" :aliases ("Britian") :adjective "British")
-;; England  Scotland  Wales  Northern Irland
 (define-country "United States" :aliases '("US" "U.S." "U.S.A." "America" ))
 (define-country "Uruguay")
 (define-country "Uzbekistan")
