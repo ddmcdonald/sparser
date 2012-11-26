@@ -17,115 +17,116 @@
     as an initial, so we put it user ":aliases".  |#
 
 (define-us-state "Alabama"
-                 :abbreviations '("Ala"))
+                 :abbreviations '("Ala" "AL"))
 
-(define-us-state "Alaska")
+(define-us-state "Alaska"
+                 :abbreviations '("AK"))
 
 (define-us-state "Arizona"
-                 :abbreviations '("Ariz"))
+                 :abbreviations '("Ariz" "AZ"))
 
 (define-us-state "Arkanses"
-                 :abbreviations '("Ark"))
+                 :abbreviations '("Ark" "AR"))
 
 (define-us-state "California"
-                 :abbreviations '("Calif"))
+                 :abbreviations '("Calif" "CA"))
 
 (define-us-state "Colorado"
-                 :abbreviations '("Colo"))
+                 :abbreviations '("Colo" "CO"))
 
 (define-us-state "Connecticut"
-                 :abbreviations '("Conn"))
+                 :abbreviations '("Conn" "CT"))
 
 (define-us-state "Deleware"
-                 :abbreviations '("Del"))
+                 :abbreviations '("Del" "DE"))
 
 (define-us-state "Florida"
-                 :abbreviations '("Fla"))
+                 :abbreviations '("Fla" "FL"))
 
 (define-us-state "Georgia"
-                 :abbreviations '("Ga"))
+                 :abbreviations '("GA"))
 
-(define-us-state "Hawaii")
+(define-us-state "Hawaii" :abbreviations '("HI"))
 
 (define-us-state "Idaho"
-                 :abbreviations '("Ida"))
+                 :abbreviations '("Ida" "ID"))
 
 (define-us-state "Illinois"
-                 :abbreviations '("Ill"))
+                 :abbreviations '("Ill" "IL"))
 
 (define-us-state "Indiana"
-                 :abbreviations '("Ind"))
+                 :abbreviations '("Ind" "IN"))
 
 (define-us-state "Iowa"
-                 :abbreviations '("Ia"))
+                 :abbreviations '("IA"))
 
 (define-us-state "Kansas"
-                 :abbreviations '("Kans" "Kan"))
+                 :abbreviations '("Kans" "Kan" "KS"))
 
 (define-us-state "Kenntucky"
-                 :abbreviations '("Ky" "Ken"))
+                 :abbreviations '("Ky" "Ken" "KY"))
 
 (define-us-state "Louisiana"
-                 :abbreviations '("La"))
+                 :abbreviations '("LA"))
 
 (define-us-state "Maine"
-                 :abbreviations '("Me"))
+                 :abbreviations '("ME"))
 
 (define-us-state "Maryland"
-                 :abbreviations '("Md"))
+                 :abbreviations '("MD"))
 
 (define-us-state "Massachusetts"
                  :abbreviations '("Mass" "MA"))
 
 (define-us-state "Michigan"
-                 :abbreviations '("Mich"))
+                 :abbreviations '("Mich" "MI"))
 
 (define-us-state "Minnesota"
-                 :abbreviations '("Minn"))
+                 :abbreviations '("Minn" "MN"))
 
 (define-us-state "Mississippi"
-                 :abbreviations '("Miss"))
+                 :abbreviations '("Miss" "MS"))
 
 (define-us-state "Missouri"
-                 :abbreviations '("Mo"))
+                 :abbreviations '("MO"))
 
 (define-us-state "Montana"
-                 :abbreviations '("Mont"))
+                 :abbreviations '("Mont" "MT"))
 
 (define-us-state "Nebraska"
-                 :abbreviations '("Nebr" "Neb"))
+                 :abbreviations '("Nebr" "Neb" "NE"))
 
 (define-us-state "Nevada"
-                 :abbreviations '("Nev"))
+                 :abbreviations '("Nev" "NV"))
 
 (define-us-state "New Hampshire"
-                 :aliases '("N.H."))
+                 :aliases '("NH"))
 
 (define-us-state "New Jersey"
-                 :aliases '("N.J."))
+                 :aliases '("NJ"))
 
 (define-us-state "New Mexico"
-                 :aliases '("N.Mex." "N.M."))
+                 :aliases '("N.Mex." "NM"))
 
 (define-us-state "New York"
-                 :aliases '("N.Y."))
+                 :aliases '("NY"))
 
 (define-us-state "North Carolina"
-                 :aliases '("N.C."))
+                 :aliases '("NC"))
 
 (define-us-state "North Dakota"
-                 :aliases '("N.Dak." "N.D."))
+                 :aliases '("N.Dak." "ND"))
 
-(define-us-state "Ohio")
+(define-us-state "Ohio" :abbreviations ("OH"))
 
 (define-us-state "Oklahoma"
-                 :abbreviations '("Okla"))
+                 :abbreviations '("Okla" "OK"))
 
 (define-us-state "Oregon"
-                 :abbreviations '("Ore" "Oreg"))
+                 :abbreviations '("Ore" "Oreg" "OR"))
 
 (define-us-state "Pennsylvania"
-                 :abbreviations '("Penn" "Pa"))
+                 :abbreviations '("Penn" "PA"))
 
 (define-us-state "Rhode Island"
                  :aliases '("R.I."))
@@ -145,24 +146,24 @@
 (define-us-state "Utah")
 
 (define-us-state "Vermont"
-                 :abbreviations '("Vt"))
+                 :abbreviations '("VT"))
 
 (define-us-state "Virginia"
-                 :abbreviations '("Va"))
+                 :abbreviations '("VA"))
 
 (define-us-state "Washington"
-                 :abbreviations '("Wash"))
+                 :abbreviations '("Wash" "WA"))
 
 (define-us-state "Washington D.C."
                  :aliases '("District of Columbia" "D.C."))
 
 (define-us-state "West Virginia"
-                 :aliases '("W.Va"))
+                 :aliases '("W.Va" "WV"))
 
 (define-us-state "Wisconsin"
-                 :abbreviations '("Wis"))
+                 :abbreviations '("Wis" "WI"))
 
 (define-us-state "Wyoming"
-                 :abbreviations '("Wyo"))
+                 :abbreviations '("Wyo" "WY"))
 
 
