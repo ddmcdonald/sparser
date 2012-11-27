@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   2.4 Octomer 2011
+;;;   Version:   2.4 November 2012
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -32,7 +32,7 @@
 ;; 2.4 (9/29/11) Positioned the load to after adjuncts and reworked as a class
 ;;      creator with special form categories to drive general rules. 10/4 original
 ;;      base rule was circular so made it have the prep category as its label.
-;;     (2/20/12) Added schema to the constructed cfr.
+;;     (2/20/12) Added schema to the constructed cfr.  11/25/12 "near", "far"
 
 (in-package :sparser)
 
@@ -81,11 +81,13 @@
 (define-preposition "by" )
 (define-preposition "down"  )
 (define-preposition "during"  )
+(define-preposition "far" :form 'spatial-preposition)
 (define-preposition "for" )
 (define-preposition "from" )
 (define-preposition "in" )
 (define-preposition "into" :form 'spatial-preposition)
 (define-preposition "inside" :form 'spatial-preposition)
+(define-preposition "near" :form 'spatial-preposition)
 (define-preposition "on" )
 (define-preposition "of" )
 (define-preposition "off" )
