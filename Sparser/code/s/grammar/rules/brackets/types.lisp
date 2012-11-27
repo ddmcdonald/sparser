@@ -20,7 +20,7 @@
 ;;     (4/26/09) Added a set for prepositions on the pattern used for conjunctions.
 ;;     (10/13/09) Added adjectives. (2/10/10) Added quantifier.
 ;; 0.2 (8/1/11) Added a whole flock of new cases for words known to have multiple
-;;      parts of speech. 11/8/12 added adj-verb
+;;      parts of speech. 11/8/12 added adj-verb 11/25/12 .[adj-adv
 
 (in-package :sparser)
 
@@ -100,8 +100,9 @@
 ;;;---------------------
 
 (define-bracket :]  :before  adj-adv 1)   ;; ].adj-adv
+(define-bracket :[  :before  adj-adv 1)   ;; .[adj-adv
 ;; Adjectives and adverbs both start phrases, so they should signal
-;; the close of any ongoing segment. 
+;; the close of any ongoing segment and be part of the next one.
 
 ;; Adjective/verb treaked like a verb and like an adjective
 (define-bracket :]  :before adj-verb 1) ;; ].adj-verb
