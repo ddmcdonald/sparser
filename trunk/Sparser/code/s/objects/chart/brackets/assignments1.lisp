@@ -113,7 +113,8 @@
 
 (defun assign-bracket/expr (label-object bracket)
   (when (consp label-object)
-    (unless (every #'word-p label-object)
+    (unless (or (every #'word-p label-object)
+                (every #'stringp label-object))
       (push-debug `(,label-object ,bracket))
       (error "Unexpected object in list argument"))
     (dolist (w label-object)
