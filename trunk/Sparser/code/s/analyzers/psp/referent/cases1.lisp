@@ -103,7 +103,7 @@
                ((eq arity :binary-rule)
                 (annotate-realization-pair
                  value 
-                 ;;/// Lattice-point argument goes here !!
+                 nil  ;;/// Lattice-point argument goes here !!
                  *rule-being-interpreted*
                  *right-edge-into-reference*  ;; presumed head /////
                  *left-edge-into-reference*)) ;; presumed adjunct
