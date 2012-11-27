@@ -183,6 +183,11 @@
     ;; The rnodes of the two edge are linked to a new rnode
     ;; made for this rule and lattice-point.
 
+    (unless lattice-point
+      (push-debug `(,i ,rule ,head-edge ,arg-edge))
+      (error "Fix the caller. We need a lattice point or something that ~
+              will serve the same purpose"))
+
     (tr :annotating-pair i head-edge arg-edge)
     ;; Annotating the individual ~a~
     ;;   based on the head edge ~a~
