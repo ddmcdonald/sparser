@@ -24,7 +24,8 @@
 ;; 7.1 (10/18/11) Writing the look-under scheme.  11/8/12 Replaced format
 ;;      call with trace. Trapped case where edge-after is a word in situation
 ;;      in Boeing where two quotations are adjacent but the second  hasn't
-;;      finished. 11/25/12 fixed fanout when "and" is covered with an edge.
+;;      finished. 11/25/12 fixed fanout when "and" is covered with an edge
+;;      and patched over another "won't do that yet" case.
 
 (in-package :sparser)
 
@@ -84,7 +85,9 @@
     ;;/// edge-vector check
     (when (and edge-before edge-after)
       (unless (and (edge-p edge-before) (edge-p edge-after))
-        (when (or (word-p edge-before) (word-p edge-after))
+        (when (or (or (word-p edge-before) (word-p edge-after))
+                  (or (edge-vector-p edge-before) (edge-vector-p edge-after)))
+          ;; Known unknowns we can take up at some point in the future
           (return-from conjoin-adjacent-like-treetops nil))
         (push-debug `(,edge-before ,edge-after))
         (break "New conjunction case -- the 'edges' aren't edges."))
