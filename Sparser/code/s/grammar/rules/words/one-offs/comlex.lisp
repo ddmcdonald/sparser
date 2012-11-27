@@ -622,13 +622,18 @@ e.g. via DM&P or Fire.
        ;; the adjective as well?
        (assign-noun-verb-brackets lemma clauses))
 
+      ((equal combinations '(adjective adverb noun)) ;; "plain"
+       ;; It doesn't matter really, just a question of where
+       ;; in an NP the word appears. //// collect cases
+       (assign-brackets-to-word lemma (list ].adj-adv .[adj-adv)))       
+
       ((equal combinations '(adjective adverb noun verb)) ;; "clear"
        ;; Lets see how far we can go with this
        (assign-brackets-to-word lemma (list ].adj-verb .[adj-verb)))
 
       ((equal combinations '(adverb noun verb)) ;; "part"
        ;;/// how often might the adverb part get us into trouble?
-       (break "adverb-noun-verb look at clauses"))
+       (assign-noun-verb-brackets lemma clauses))
 
       ((equal combinations '(noun verb))
        (assign-noun-verb-brackets lemma clauses))
