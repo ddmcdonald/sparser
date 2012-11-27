@@ -322,11 +322,12 @@
                        bracket-opening-segment (pos-terminal position)))))
              
 
-           ((eq ]  ].adj-adv) ;; e.g. "heavy"
+           ((eq ]  ].adj-adv) ;; e.g. "heavy", "asleep"
             (cond
              ;; We're either finishing off before the start of a VG (t)
              ;; or coninuing an NP (nil)
              ((segment-started-as-np?) nil)
+             ((segment-started-as-vg?) t)   ;; "was asleep" - strand the verb
              (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
                  (break "].adj-adv next case.~
