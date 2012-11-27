@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:  "new cases"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  3.1 March 2011
+;;;   Version:  3.1 November 2012
 
 ;; broken out from cases 8/24/93 v2.3.  (3/10/94) fixed typo. Added error
 ;; msg to Ref/head 6/14.  (7/15) patched in mixin-category  (7/19) rearranged
@@ -31,7 +31,7 @@
 ;; 3.1 (3/23/11) Refactored dolist over values in ref/instantiate-individual-
 ;;      with-binding in order to be able to pass an edge to annotate-site-bound-to.
 ;;     (5/10/11) Fixed gratuitous zero'ing of globals for the edges, setting both
-;;      in ref/head
+;;      in ref/head.  11/25/12 Quiet the compiler on unused composits.
 
 (in-package :sparser)
 
@@ -327,9 +327,11 @@
 
 (defun opportunistic-binding-to-composite-head (variable value c
                                                 head-edge arg-edge)
+  (declare (ignore (value  head-edge arg-edge))
   (break "opportunistic-binding-to-composite-head:~
         ~%This function hasn't been run in a decade or so. Review it.")
   (tr :looking-for-opportunistic-binding variable c)
+  #+ignore
   (let ((head (cr-head c))
         (others (cr-others c))
         (doing-head? t) ;; index for the loop
