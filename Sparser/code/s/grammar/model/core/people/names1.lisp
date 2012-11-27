@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "names"
 ;;;   Module:  "model;core:people:"
-;;;  version:  1.4 December 1995
+;;;  version:  1.4 November 2012
 
 ;; initiated 6/8/93 v2.3, added indexes 6/15.
 ;; 1.1 (1/7/94) Beginning to simplify the indexing.  Tweeked that 10/3.
@@ -12,7 +12,9 @@
 ;;     (5/12) extended find/person-name a little but it isn't done yet
 ;; 1.2 (7/7) redid Make-person-name-from-items a bit to do versions right
 ;; 1.3 (10/30) put in a treatment for collections and tweeked versions
-;; 1.4 (12/5) fixed glitches in the treatment of versions
+;; 1.4 (12/5) fixed glitches in the treatment of versions.
+;;     (11/25/12) Blocked stub breaks for the interior of long names
+;;      or the presence of 'version' in make-person-name-from-items1.
 
 (in-package :sparser)
 
@@ -64,10 +66,11 @@
         (last-name (car (last items)))
         (first-name (when (> (length items) 1)
                       (first items))))
-    (when (> (length items) 2)
-      (break "stub: more than 2 items in name"))
-    (when version
-      (break "stub: version supplied"))
+    (unless *grok*
+      (when (> (length items) 2)
+        (break "stub: more than 2 items in name"))
+      (when version
+        (break "stub: version supplied")))
     (let ((name
            (cond ((null first-name) 
                   (define-individual 'person-name
