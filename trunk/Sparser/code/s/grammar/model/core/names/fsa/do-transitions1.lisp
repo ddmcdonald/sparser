@@ -251,7 +251,9 @@
        (category-for-edge-given-name-type (itype-of sample) sample)))
     (category::company  category::company)
     (category::generic-co-word category::company)
-    (category::person   category::person)
+    ((or category::person
+         category::person-name/first-last)
+     category::person)
     (otherwise
      (break "Unexpected value for category of edge: ~a"
 	    (cat-symbol category-of-name)))))
