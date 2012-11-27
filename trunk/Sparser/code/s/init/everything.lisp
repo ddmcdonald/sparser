@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   October 2012
+;;;   Version:   November 2012
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -75,7 +75,7 @@
 ;; means bringing in the content of the most-recent, best used scripts. 7/7/11 Added
 ;; initial check for whether we're running in an mlisp. 7/11 Added global for including
 ;; the generic lexicon. 9/23/11 Bumped the version to v4.0. 10/30/12 Small
-;; cleanups, added *grok*.
+;; cleanups, added *grok*.  11/24/12 Explicitly loading all the workspaces by name.
 
 (in-package :cl-user)
 
@@ -1044,9 +1044,16 @@ or for loading the newer of the compiled or source files.
 
 
   ;;--- load workspaces
-  (cond (t
-	 #+apple (sparser::lload "init;workspaces:ERN")
-	 ))
+  (cond ;; This format gives us a hook to load workspaces
+   ;; according to the system mode we're in. But for now
+   ;; load them al
+   (t
+    (sparser::lload "init;workspaces:Grok")
+    (sparser::lload "init;workspaces:ERN")
+    (sparser::lload "init;workspaces:Darwin")
+    (sparser::lload "init;workspaces:Mari")
+    (sparser::lload "init;workspaces:med")
+    (sparser::lload "init;workspaces:dm&p")))
 	
   
   
