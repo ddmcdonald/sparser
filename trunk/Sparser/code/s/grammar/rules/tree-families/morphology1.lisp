@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.9 April 2012
+;;;  version:  1.9 November 2012
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -79,7 +79,8 @@
 ;;      lhs labeling with the function override-label, which originates in a new
 ;;      field, :rule-label, on categories. 
 ;; 1.10 (9/13/11) modified assign-brackets-as-a-common-noun to leave off the
-;;      np]. bracket.  4/2/12 #ignored noun/verb-ambiguous?
+;;      np]. bracket.  4/2/12 #ignored noun/verb-ambiguous?  11/25/12 1st case of
+;;      lists of strings in the irregulars past in to define-main-verb.
 
 (in-package :sparser)
 
@@ -349,44 +350,36 @@
                                   present-participle
                                   third-singular third-plural
                                   nominalization )
+  (flet ((convert-if-needed (raw)
+           (typecase raw
+             (word `(,raw))
+             (string `(,(define-word/expr raw)))
+             (cons
+              (loop for r in raw
+                when (stringp r) (setq r (define-word/expr r))
+                collect r))
+             (otherwise
+              (break "Unexpected type: ~a~%  ~a" (type-of raw) raw)))))
+           
     (let ( inflections )
       (when s-form
-        (when (stringp s-form)
-          (setq s-form (define-word/expr s-form)))
-        (pushnew s-form inflections))
+        (setq inflections (append-new (convert-if-needed s-form) inflections)))
       (when ed-form
-        (when (stringp ed-form)
-          (setq ed-form (define-word/expr ed-form)))
-        (pushnew ed-form inflections))
+        (setq inflections (append-new (convert-if-needed ed-form) inflections)))
       (when ing-form
-        (when (stringp ing-form)
-          (setq ing-form (define-word/expr ing-form)))
-        (pushnew ing-form inflections))
+        (setq inflections (append-new (convert-if-needed ing-form) inflections)))
       (when past-tense
-        (when (stringp past-tense)
-          (setq past-tense (define-word/expr past-tense)))
-        (pushnew past-tense inflections))
+        (setq inflections (append-new (convert-if-needed past-tense) inflections)))
       (when past-participle
-        (when (stringp past-participle)
-          (setq past-participle (define-word/expr past-participle)))
-        (pushnew past-participle inflections))
+        (setq inflections (append-new (convert-if-needed past-participle) inflections)))
       (when present-participle
-        (when (stringp present-participle)
-          (setq present-participle (define-word/expr present-participle)))
-        (pushnew present-participle inflections))
+        (setq inflections (append-new (convert-if-needed present-participle) inflections)))
       (when third-singular
-        (when (stringp third-singular)
-          (setq third-singular (define-word/expr third-singular)))
-        (pushnew third-singular inflections))
+        (setq inflections (append-new (convert-if-needed third-singular) inflections)))
       (when third-plural
-        (when (stringp third-plural)
-          (setq third-plural (define-word/expr third-plural)))
-        (pushnew third-plural inflections))
+        (setq inflections (append-new (convert-if-needed third-plural) inflections)))
       (when nominalization
-        (when (stringp nominalization)
-          (setq nominalization 
-                (define-word/expr nominalization :override-duplicates)))
-        (pushnew nominalization inflections))
+        (setq inflections (append-new (convert-if-needed nominalization) inflections)))
 
       (assign-brackets-as-a-main-verb word)  ;; infinitive or 3d plural
       (record-inflections inflections word :verb)
