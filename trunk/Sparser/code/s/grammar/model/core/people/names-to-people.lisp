@@ -45,7 +45,7 @@
     *default-person*
     (interpret-name-as-person/aux name)))
 
-(defun interpret-name-as-person/aux (name) (break "interpret/aux")
+(defun interpret-name-as-person/aux (name)
   (etypecase name
     (individual
      (ecase (cat-symbol (itype-of name))
