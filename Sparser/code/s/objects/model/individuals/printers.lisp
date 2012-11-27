@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.6 October 2011
+;;;  version:  0.6 November 2012
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -28,7 +28,7 @@
 ;;     name-of-individual. 
 ;; 0.6 (10/3/11) Patched around case of odd-ly formed individual who is
 ;;     almost certainly a bug. 11/6 fixed little chatter in string-for, adding
-;;     case for word.
+;;     case for word.  11/25/12 Quieted warning when running in *grok* mode
 
 (in-package :sparser)
 
@@ -233,8 +233,9 @@
              ((value-of 'name i)
               (string-for/name i))
              (t
-              (format t "~&String-for -- The printer ~A isn't defined ~
-                         yet~%" fn-name)
+              (unless *grok* ;; can't have this in the outpt
+                (format t "~&String-for -- The printer ~A isn't defined ~
+                             yet~%" fn-name))
               ;(break)
               "" ))))
 
