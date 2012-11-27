@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSE/Users/ddm/sparser/Sparser/code/s/grammar/model/dossiers/loader.lispR -*-
 ;;; copyright (c) 1991-2005,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
