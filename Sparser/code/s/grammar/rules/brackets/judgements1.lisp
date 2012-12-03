@@ -78,7 +78,12 @@
            (setq *bracket-opening-segment* (kcons b p)
                  *left-segment-boundary* p))
           (t
-           (tr :[-ignored/left-boundary-already-in-place b p))))
+           ;; We're not going to move the boundary, but perhaps
+           ;; we should change to a more informative bracket.
+           (or (when (eq *left-segment-boundary* p) ;; at seg boundary
+                 (refine-bracket-at-segment-boundary
+                  (car *bracket-opening-segment*) b))
+               (tr :[-ignored/left-boundary-already-in-place b p)))))
 
         (*suppress-verb-reading*
          (cond ((eq b .[verb)
@@ -105,6 +110,7 @@
 
 
 (defun interpret-open-bracket-as-segment-start (b p)
+  ;; subroutine of adjudicate-new-open-bracket to refine the
   (tr :[-sets-left-boundary p b)
   (setq *bracket-opening-segment*
         (if *bracket-opening-segment*
@@ -112,6 +118,80 @@
           (kcons b p)))
   (setq *left-segment-boundary* p))
 
+
+(defun refine-bracket-at-segment-boundary (original-bracket new-bracket )
+  "Since we're still at the position where the segment starts,
+   is the bracket we've just gotten more informative than what's there
+   now. We want brackets that will make for more informed jugments
+   as we consider extending this segment."
+  (let ((p (cdr *bracket-opening-segment*)))
+    (flet ((replace-bracket ()
+             (deallocate-kons *bracket-opening-segment*)
+             (setq *bracket-opening-segment* (kcons new-bracket p))))
+      (cond
+       ((and (eq (b-placement original-bracket) :after) ;; preposition[
+             (eq (b-placement new-bracket) :before)) ;; .[np
+        ;; Prefer brackets that a placed in front of (:before) the word
+        ;; that introduces them rather than after
+        (replace-bracket))
+       (t 
+        (strongest-version-of-left-boundary-bracket new-bracket p))))))
+
+
+;;;-----------------------------------------------
+;;; Evaluating the relative strength of brackets
+;;;-----------------------------------------------
+
+(defun strongest-version-of-left-boundary-bracket (b p)
+  ;; Called from Interpret-open-bracket-as-segment-start when
+  ;; the decision has been made to start a new segment at p and
+  ;; there is already an open bracket there. Of the two, we want
+  ;; the most informative one to be what's put in the global
+  ;; that later routines will look at. 
+  ;;    This might not get called for NPs if the .[phrase started
+  ;; by the word before the determiner is canceled by the ].phrase
+  ;; of the determiner before the .[np is looked at, which should
+  ;; always be the case
+
+  (let ((existing-bracket *bracket-opening-segment*))
+    (if (or (eq b existing-bracket)
+            (and (consp existing-bracket)
+                 (eq b (car existing-bracket))))
+      existing-bracket
+
+      (let ((strength-new (rank-of-bracket b))
+            (strength-existing
+             (if (consp existing-bracket)
+               (rank-of-bracket (car existing-bracket))
+               (rank-of-bracket existing-bracket))))
+        (cond
+         ((< strength-new strength-existing)
+          (kcons b p))
+         ((>= strength-new strength-existing)
+          existing-bracket )
+         (t
+          (break "Stub: New case of open-bracket comparison.~
+                  ~%The bracket already at ~A,~
+                  ~%~A~
+                  ~%Is this new bracket stronger? -- ~A~%"
+                 p existing-bracket b)
+          existing-bracket ))))))
+
+
+(defun adjudicate-equal-rank-brackets (original new)
+  ;; Called from Stronger-bracket, which is used in the Place-boundary
+  ;; routines to judge whether to replace an already existing boundary
+  ;; when a new bracket is being placed on that same position.  We return
+  ;; the bracket that is (now heuristically) judged to be the stronger
+  ;; of the two, though the best move would typically be to refine
+  ;; the rankings so this doesn't have to be done. 
+  (if (eq original new)
+    original  ;; then no additional work will be needed
+    (break "A second bracket is being proposed for a position~
+            ~%that already has one of the same rank.~
+            ~%Extend the system to make a choice between them.~
+            ~%Original = ~A~
+            ~%new bracket = ~A" original new)))
 
 
 
@@ -244,7 +324,8 @@
             (cond 
              ((eq bracket-opening-segment mvb.[) t)
              ((or (eq bracket-opening-segment preposition.[)
-                  (eq bracket-opening-segment .[np-vp))
+                  (eq bracket-opening-segment .[np-vp)
+                  (segment-started-as-np?))
               nil)
              ((= 0 word-count) nil) ;; something should follow this adjective
              (t (push-debug `(,position ,*bracket-opening-segment*
@@ -268,6 +349,9 @@
             nil)
 
            ((eq ] ].np-vp)
+;;            (push-debug `(,position ,*bracket-opening-segment*
+;;                              ,word-count ,previous-word ,segment-start-pos))
+;;            (break "].np-vp")
             (cond
               ;; reasons to interpret it as a verb and continue
               ;; a segment that's going to be a VG.
@@ -276,13 +360,15 @@
                    (eq (first *bracket-opening-segment*) .[modal ))
                nil )
 
+              ((eq bracket-opening-segment mvb.[) 
+               ;; reason to end because we've probably got a noun
+               t)
+
               ;; Reasons to interpret it as a noun and continue
               ;; a segment that's going to be an np
               ((eq bracket-opening-segment .[np) nil) ;; "some people"
               ((eq bracket-opening-segment .[article) nil) ;; "the quarentee"
               ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
-              ((eq bracket-opening-segment phrase.[) t) ;; after a period
-              ((eq bracket-opening-segment preposition.[) t) ;; after preposition
               ((eq bracket-opening-segment conjunction.[) nil)
               ((word-is-np-modifier previous-word) nil)
 
@@ -292,15 +378,17 @@
               ;; so we interpret the first word as a noun
               ;; /// Change the lead bracket ??
 
-              ;; reason to end because we've probably got a noun
-              ((eq bracket-opening-segment mvb.[) t)
+              ((eq bracket-opening-segment phrase.[) t) ;; after a period
+              ((eq bracket-opening-segment preposition.[) t) ;; after preposition
 
               (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
                  (break "].np-vp next case.~
                       ~%The bracket opening the segment is ~a.~
-                      ~%The word with the ambiguous bracketing is ~a"
+                      ~%The word with the ambiguous bracketing is ~a" ; 
                        bracket-opening-segment (pos-terminal position)))))
+
+
 
            ((eq ] np-vp].) 
             ;; (break " seeing a np-vp]., look at opening")
@@ -400,62 +488,6 @@
     (or (memq ].quantifier brackets)
         (memq .[np brackets)
         (memq .[adjective brackets))))
-
-
-;;;-----------------------------------------------
-;;; Evaluating the relative strength of brackets
-;;;-----------------------------------------------
-
-(defun strongest-version-of-left-boundary-bracket (b p)
-  ;; Called from Interpret-open-bracket-as-segment-start when
-  ;; the decision has been made to start a new segment at p and
-  ;; there is already an open bracket there. Of the two, we want
-  ;; the most informative one to be what's put in the global
-  ;; that later routines will look at. 
-  ;;    This might not get called for NPs if the .[phrase started
-  ;; by the word before the determiner is canceled by the ].phrase
-  ;; of the determiner before the .[np is looked at, which should
-  ;; always be the case
-
-  (let ((existing-bracket *bracket-opening-segment*))
-    (if (or (eq b existing-bracket)
-            (and (consp existing-bracket)
-                 (eq b (car existing-bracket))))
-      existing-bracket
-
-      (let ((strength-new (rank-of-bracket b))
-            (strength-existing
-             (if (consp existing-bracket)
-               (rank-of-bracket (car existing-bracket))
-               (rank-of-bracket existing-bracket))))
-        (cond
-         ((< strength-new strength-existing)
-          (kcons b p))
-         ((>= strength-new strength-existing)
-          existing-bracket )
-         (t
-          (break "Stub: New case of open-bracket comparison.~
-                  ~%The bracket already at ~A,~
-                  ~%~A~
-                  ~%Is this new bracket stronger? -- ~A~%"
-                 p existing-bracket b)
-          existing-bracket ))))))
-
-
-(defun adjudicate-equal-rank-brackets (original new)
-  ;; Called from Stronger-bracket, which is used in the Place-boundary
-  ;; routines to judge whether to replace an already existing boundary
-  ;; when a new bracket is being placed on that same position.  We return
-  ;; the bracket that is (now heuristically) judged to be the stronger
-  ;; of the two, though the best move would typically be to refine
-  ;; the rankings so this doesn't have to be done. 
-  (if (eq original new)
-    original  ;; then no additional work will be needed
-    (break "A second bracket is being proposed for a position~
-            ~%that already has one of the same rank.~
-            ~%Extend the system to make a choice between them.~
-            ~%Original = ~A~
-            ~%new bracket = ~A" original new)))
 
 
 
