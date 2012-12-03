@@ -7,7 +7,7 @@
 ;;;  version:  November 2012
 
 ;; Initiated 3/8/07. Added rules to compose the rank 3/22. Moved in to 
-;; generic military and tweaked 11/24/12
+;; generic military and tweaked 11/24/12. Fixed abbreviations 11/30/12.
 
 (in-package :sparser)
 
@@ -36,15 +36,13 @@
 ;;      the object that we created for this particular rank.
 ;;
 (defun define-military-rank (name &key abbreviations)
-  (let ((label (category-named 'military-rank))
-	(obj (define-individual 'military-rank
+  (let ((obj (define-individual 'military-rank
 	        :name name)))
+    ;; N.b. earlier version marked the explicit rules that it created
+    ;; for the abbreviations as being determiners. Does that matter?
     (when abbreviations
       (dolist (string abbreviations)
-	(let ((word (resolve-string-to-word/make string)))
-	  (define-cfr label `(,word)
-	    :form category::det
-	    :referent obj))))
+        (define-abbreviation name string :name-prefix)))
     obj))
 
 
