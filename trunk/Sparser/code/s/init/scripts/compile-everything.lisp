@@ -5,12 +5,7 @@
 ;;;
 ;;;      File:   "compile-everything"
 ;;;    Module:   "init;scripts:"
-;;;   version:   0.4 October 2012
-
-;; This file sets up the parameter settings to drive the loading
-;; of the system in it's "copy all the files to a new directory" mode.
-;; It is intended to be launched from toplevel.
-;; Note the hard pathnames at the end
+;;;   version:   0.4 December 2012
 
 ;; 0.1 (4/6) added probef's to simplify use on multiple systems
 ;;     (5/11) added one for 900.  (11/28/95) brought it all up to date
@@ -18,14 +13,58 @@
 ;;      made it automatic. Removed explicit versioning in favor of the logical.
 ;;     (1/24/07) Incorporated current pathnames. (6/25) conditionalized the
 ;;      compiler directory.
-;; 0.3 (11/10/10) Cleaned up dead wood, updated one'ies
+;; 0.3 (11/10/10) Cleaned up dead wood, updated one-offs.
 ;; 0.4 (8/27/11) Reworked to only be used after Sparser has been loaded.
-;;     (10/10/12) v3.1 => v4.0
+;;     (10/10/12) v3.1 => v4.0.  12/3/12 Added more doc and blocked grammar
 
+#|
+  In a Lisp like Allegro that does not automatically compile forms 
+when they are loaded (which Clozure does), it is necessary to do it
+by hand since the accidents of history means that the loader does
+do it for us automatically like a modern ASDF-style loader would.
+  Instead we use Sparser's own machinery to do the compilation
+by "loading" the system with a switch setting that directs the 
+load functions to compile files as needed (i.e. whenever the source
+is newer than that fasl.
+  To do this, first load Sparser, then load this file. It will sweep
+through all of code that has already been loaded and generate the
+fasl files. 
 
+Why compile
+  In principle the only thing really gained by compiling the code is
+compactness and speed. However for some lisps, notably Allegro, the
+only way to have tail recursion is to use compiled code with particular
+switch settings. Sparser requires tail recursion to execute texts
+of any real length. Without it, it will blow out the stack after
+about 40 words. 
+
+Location of the fasl:
+  The intention has always been that the fasl is stored in a parallel
+directory tree to the one under Sparser/code/s/ -- Sparser/code/f/.
+That worked fine for MCL. I encountered a problem trying to do it
+with Allegro the first time (in 2007) because the output file was
+not accepted. It's worth trying again since the documentation says
+it should be. 
+  The call to compile file is wrapped inside routine-to-compile-file
+and specialized to the different Lisps. See init/versions/v4.0/loaders/
+lisp-switch-settings.lisp.
+  The location for the fasls is determined by *binaries-directory-name*,
+which is set just below.  NOTE -- if it works on f, this has to be
+correlated with the version of that global in init/everything.lisp
+which is presently (12/3/12) set to "s" for Allegro.
+
+Compiling the grammar
+  For reasons I have not sorted out, Allegro gets confused when it tries
+to compile many of the files in the grammar. None of these files have
+code that is part of the tail-recursive state machine that drives Sparser
+so they can be safely ignored. The code below does that by rebinding
+the grammar-gating switch to nil.
+
+|#
 
 (eval-when (:load-toplevel :execute)
-  (unless (find-package :sparser)
+  (unless (and (find-package :sparser)
+               (boundp 'location-of-sparser-directory))
     (error "The :sparser package must exist when this file loads.")))
 
 (in-package :sparser)
@@ -36,42 +75,15 @@
 
 (defparameter sparser::*compile*  t)
 
-(defparameter sparser::*binaries-directory-name* "s")
+(defparameter sparser::*binaries-directory-name* "f"
+  "This has not been recently checked. There are likely to be
+   some missing directories. [2012/12/03:ddm]")
 
 
 
 ;;;--------------------------------------------------
 ;;; do the compilation (and load the compiled files)
 ;;;--------------------------------------------------
-
-(in-package :sparser)
-
-(unless (boundp 'location-of-sparser-directory)
-  (defparameter cl-user::location-of-sparser-directory
-    (cond
-      ((probe-file "~/ws/nlp/Sparser") ;; ddm's Intel Mac
-       "~/ws/nlp/Sparser/")
-
-      #+allegro ;; what other lisps can do this?
-      ((member :allegro *features*)
-       (namestring
-	(merge-pathnames
-	 (make-pathname :directory 
-			;; Assumes we're loading this file directly
-			'(:relative :
-			  :up ;; scripts
-			  :up ;; init
-			  :up ;; s
-			  :up ;; code
-			  ))
-	 (make-pathname :directory (pathname-directory *load-truename*)))))
-   
-      (t (break "None of the anticipated values for~%    ~
-                cl-user::location-of-sparser-directory~
-                match the layout on ~A.~
-                ~%Set the symbol to the appropriate value ~
-                and continue." (user-homedir-pathname))))))
-         
 
 (setq *load-verbose* t)
 
@@ -84,18 +96,20 @@
 			   "v4.0/"
 			   "loaders/lisp-switch-settings.lisp"))
 
-
-(load #+:apple (concatenate 'string
-                   cl-user::location-of-sparser-directory
+(let ((*load-the-grammar* nil))
+  (declare (special *load-the-grammar*))
+  (load #+:apple (concatenate 'string
+                    cl-user::location-of-sparser-directory
                    "code:s:init:"
                    "everything" )
-      #+:unix (concatenate 'string
+        #+:unix (concatenate 'string
                    cl-user::location-of-sparser-directory
                    "code/s/init/"
-                   "everything.lisp" ))
+                   "everything.lisp" )))
 
-;; #+:unix "/usr/users/guest/sparser/s/init/everything"
  
+;; These files are either part of the preloader or only optionally
+;; executed. We have to call the compiler on them individually
 
 (just-compile "init;everything")
 
