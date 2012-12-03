@@ -501,7 +501,10 @@ e.g. via DM&P or Fire.
 ;; words/lookup/new-words4).
 
 (defun unpack-primed-word (symbol entry)
-  ;; Called from this version of establish-unknown-word.
+  ;; Called from look-for-primed-word-else-all-properties when
+  ;; what-to-do-with-unknown-words is set to :check-for-primed.
+  ;; The lookup is (gethash (symbol-name symbol) *primed-words*)
+  ;; where the symbol is pulled out of the lookup buffer.
   ;; Has to return a suitably annotated word.
   (unless (and (listp entry) (eq (car entry) :comlex))
     (push-debug `(,symbol ,entry))
@@ -511,6 +514,16 @@ e.g. via DM&P or Fire.
   ;; entire set (simpler that way). The 'instance' is what
   ;; we've just seen, and the 'lemma' is the head word of
   ;; the entry.
+
+#|   Referents !!
+   For verbs we get rules with categories and referents.
+ (a) We need to that for all the other cases
+ (b) When DM&P (or whatever we trigger it from) is turned
+     then we need to make real categories for these
+     and make nice realization patterns / groupings over
+     the ambiguous cases.
+|#
+
   (let* ((instance-word (make-word-from-lookup-buffer))
          (instance-string (word-pname instance-word))
          (lemma-string (cadr entry))
