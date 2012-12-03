@@ -24,6 +24,10 @@
 ;;     (4/20) added [name words].  5/29 added [lists]
 ;;     (7/11/96) added [parens after name]
 
+#| Dropped loading of abbreviations somewhere in late 1992.
+See rules/FSAs/abbreviations.lisp
+|#
+
 (in-package :sparser)
 
 (gload "names-model;object")
