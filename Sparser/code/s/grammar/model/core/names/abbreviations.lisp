@@ -9,6 +9,11 @@
 
 (in-package :sparser)
 
+#|
+This file hasn't been used for abbreviations since shortly after it was
+created. It appears that the correct system for abbreviations is in
+rules/FSAs/abbreviations2.lisp.  Probably should remove this file.
+|#
 
 ;;;--------------
 ;;; the category
