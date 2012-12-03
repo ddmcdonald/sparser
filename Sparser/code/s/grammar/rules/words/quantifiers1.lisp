@@ -27,7 +27,7 @@
 ;;     (5/17/12) Discovered a bunch of ordinary quantifiers were stranded in the
 ;;      other version of this file. 
 ;; 1.6 (11/2/12) Du'h the rules as written to rewrite a word as the saem word are circular.
-;;      redoing them on the pattern of prepositions. 
+;;      redoing them on the pattern of preposition. 11/30/12 fixed "no"
 
 (in-package :sparser)
 
@@ -139,17 +139,17 @@
 
 ;;///////////////// don't belong here! want to be 'nominals' or some such
 (define-function-word "something" :brackets '( ].quantifier  .[np ))
-(define-function-word "someone"  :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "someone"   :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "nothing"   :brackets '( ].quantifier  .[np ))
-(define-function-word "no one"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "no one"    :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "anything"  :brackets '( ].quantifier  .[np ))
-(define-function-word "anyone"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "anyone"    :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "everything"   :brackets '( ].quantifier  .[np  np]. ))
-(define-function-word "everyone" :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "everyone"  :brackets '( ].quantifier  .[np  np]. ))
 
   
 
-(define-quantifier "no" :brackets '( ].quantifier )) 
+(define-quantifier "no" :brackets '( ].quantifier  .[np )) 
 
 (define-quantifier "not"  :brackets '( ].quantifier ))  ;; ??
   ;; gets you out of a problem with "...be careful not to..."
