@@ -43,8 +43,8 @@
  serve to elevate the referent of one of the daughters to be the
  referent of the phrase were interpreting, or they could be newly
  introducing a referent where more structure is needed in the
- referent expression than just laying down a category or an 
- individual as the direct interpretation -- initial motivation 
+ referent expression than just laying down a category or an
+ individual as the direct interpretation -- initial motivation
  from "companies" 3/25/00.
 |#
 (defun ref/head (category-or-edge left-referent right-referent
@@ -66,7 +66,7 @@
                      category-or-edge)))
            ;; individuals, psi, categories
            category-or-edge)))
-    
+
     (unless head
       (break "Bug in the grammar?  Decoding the head expression:~
               ~%    ~A~
@@ -94,7 +94,7 @@
        (tr :ref/head-base-from-category head))
       (mixin-category
 ;       (unless *single-daughter-edge*
-;	 (break "Only expected to instantiate mix-ins on single edges"))
+;        (break "Only expected to instantiate mix-ins on single edges"))
 ;; Why was this? I've lost the history (8/07)
        ;; We need to leave something active here that will form the
        ;; derived category by folding in this mix-in with the real head
@@ -105,7 +105,7 @@
       (word) ;; from morphology-induced edges
       (otherwise
        (break "Unanticipated type as the head: ~a~%~a"
-	      (type-of head) head)))
+              (type-of head) head)))
     head ))
 
 
@@ -117,7 +117,7 @@
 (defun ref/instantiate-individual
        (rule-field left-referent right-referent right-edge)
   (declare (ignore right-edge))
-  
+
   (let* ((head
           (case (second rule-field)
             (left-referent left-referent)
@@ -128,7 +128,7 @@
       ;; Individual-hood (vs. denoting a category or a partially-
       ;; saturated category) is not always dictated by an explicit
       ;; reference action, but can happen implicitly through composition
-      ;; with certain kinds of specifiers.  
+      ;; with certain kinds of specifiers.
       ;;   This implies that there are cases when the referent action
       ;; may call for instantiating an individual for its head-line's
       ;; category but there'll already be one (which we just return).
@@ -140,14 +140,14 @@
           (error "Expected the referent for the head:~%     ~A~
                   ~%  to be a category." head))
         (let ((i (make/individual head nil)))
-	  (tr :instantiated-an-individual i)
-	  i)))))
+          (tr :instantiated-an-individual i)
+          i)))))
 
 
 
 (defun ref/instantiate-individual-with-binding
        (rule-field left-referent right-referent right-edge)
-  (declare (ignore right-edge)) 
+  (declare (ignore right-edge))
   (let* (  head-edge  arg-edge  type-of-head  edge
          (head (case (second rule-field)
                  (left-referent
@@ -158,7 +158,7 @@
                   (setq head-edge *right-edge-into-reference*
                         arg-edge *left-edge-into-reference*)
                   right-referent)
-                 (otherwise 
+                 (otherwise
                   ;; Neither edge is a head line, we're presumably
                   ;; creating a new type of individual here
                   (second rule-field))))
@@ -177,9 +177,9 @@
             (individual
              (break "Shouldn't have gotten a full individual at ~
                      this stage"))
-	    (otherwise
-	     (break "Unanticipated type as the head: ~a~%~a"
-	      (type-of head) head))))
+            (otherwise
+             (break "Unanticipated type as the head: ~a~%~a"
+              (type-of head) head))))
          variable value )
 
     (tr :instantiating-individual-with-binding psi binding-exp/s)
@@ -213,18 +213,18 @@
                  variable value psi))
       ;; annotate what c+v the value has been bound to.
       (annotate-site-bound-to value variable type-of-head edge))
-    
+
     (when *annotate-realizations*
       ;; annotate this combination
       (cond ((and head-edge arg-edge) ;; canonical case
-	     (annotate-realization-pair
-	      psi (psi-lp psi) *rule-being-interpreted*
-	      head-edge arg-edge))
-	    
-	    (*single-daughter-edge* ;; called from unary subtype
-	     (annotate-realization-pair
-	      psi (psi-lp psi) *rule-being-interpreted*
-	      *parent-edge-getting-reference* :unary-rule))))
+             (annotate-realization-pair
+              psi (psi-lp psi) *rule-being-interpreted*
+              head-edge arg-edge))
+
+            (*single-daughter-edge* ;; called from unary subtype
+             (annotate-realization-pair
+              psi (psi-lp psi) *rule-being-interpreted*
+              *parent-edge-getting-reference* :unary-rule))))
     psi ))
 
 
@@ -238,9 +238,9 @@
     (setq ref-exp (case ref-exp
                     (left-referent left-referent)
                     (right-referent right-referent)
-		    (otherwise
-		     (break "Unexpected value for symbol ref-exp: ~a"
-			    ref-exp)))))
+                    (otherwise
+                     (break "Unexpected value for symbol ref-exp: ~a"
+                            ref-exp)))))
   (unless *referent*
     (break "Subtype called without a head specified -- check rule:~
             ~%  ~A" *rule-being-interpreted*))
@@ -278,7 +278,7 @@
     (setq value (if value-datum
                   (symbol-value value-symbol)
                   (case value-symbol
-                    (right-referent 
+                    (right-referent
                      (setq head-edge *left-edge-into-reference*
                            arg-edge *right-edge-into-reference*)
                      right-referent)
@@ -301,15 +301,15 @@
         (break "Bug:The referent passed in via ~A~%to be bound to ~A is Nil,~
                 ~%but you aren't allowed to bind a variable to nil."
                value-symbol variable)))
-    
+
     (when value
       (if psi?
         (setq extended-psi (find-or-make-psi-with-binding variable value body))
         (bind-variable variable value body)))
-    
+
     ;; //// annotate the value re. what c+v it's been bound to
     (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
-    
+
     ;; annotate this combination
     #+ignore (when psi?
       ;; composite case has does the annotation within the
@@ -319,7 +319,7 @@
        extended-psi (psi-lp extended-psi) *rule-being-interpreted*
        head-edge arg-edge))
 
-    (tr :ref/binding-result variable (or extended-psi body))    
+    (tr :ref/binding-result variable (or extended-psi body))
     (or extended-psi
         body)))
 
@@ -339,7 +339,7 @@
     ;; Are any of these psi and are they open in the variable we're
     ;; about to bind: first-come, first-served. Otherwise bind it to
     ;; the head since we have to dispose of it at the point when it
-    ;; adjoins. 
+    ;; adjoins.
     (dolist (body (cons head others))
       (unless variable-bound?
         (typecase body
@@ -351,9 +351,9 @@
                                        variable value body)))
              (else
                (tr :not-binding-to-because-not-open-in body variable))))
-	  (otherwise
-	   (break "Unanticipated type of body: ~a~%~a"
-		  (type-of body) body)))
+          (otherwise
+           (break "Unanticipated type of body: ~a~%~a"
+                  (type-of body) body)))
         (if doing-head?
           (then (when extended-psi
                   (setf (cr-head c) extended-psi)))
@@ -362,7 +362,7 @@
                 new-others))
         ;; cleanup loop variable
         (setq doing-head? nil)))
-    
+
     (when (null variable-bound?)
       (tr :nothing-open-defaulting-to-head variable head)
       (setq extended-psi (extend-psi-by-binding variable value head))
@@ -371,7 +371,7 @@
     (annotate-realization-pair (psi-lattice-point extended-psi)
                                *rule-being-interpreted*
                                head-edge arg-edge)
-    
+
     (setf (cr-others c) (nreverse new-others))
     ;(break "look at composite 'c'")
-    c ))
+    c )))
