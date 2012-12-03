@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.9 November 2012
+;;;  version:  1.9 December 2012
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -80,7 +80,8 @@
 ;;      field, :rule-label, on categories. 
 ;; 1.10 (9/13/11) modified assign-brackets-as-a-common-noun to leave off the
 ;;      np]. bracket.  4/2/12 #ignored noun/verb-ambiguous?  11/25/12 1st case of
-;;      lists of strings in the irregulars past in to define-main-verb.
+;;      lists of strings in the irregulars past in to define-main-verb. 12/3/12
+;;      fixing bugs in the first treatment.
 
 (in-package :sparser)
 
@@ -279,8 +280,7 @@
                           present-participle ;; "they are giving"
                           nominalization)
   "Standalone entry point developed in the early 1990s. Can be very lightweight
- because the referent can be trivial. Provides overrides to make-verb-rules/aux
- and handles the packaging done by "
+ because the referent can be trivial. Provides overrides to make-verb-rules/aux."
   (unless infinitive
     (error "Must supply at least the infinitive word form"))
   (let ((word (define-word/expr infinitive))
@@ -341,7 +341,6 @@
                           :nominalization  nominalization)))
   
 
-             
 (defun make-verb-rules/aux2 (word category referent
                              &key s-form
                                   ed-form
@@ -350,105 +349,96 @@
                                   present-participle
                                   third-singular third-plural
                                   nominalization )
-  (flet ((convert-if-needed (raw)
-           (typecase raw
-             (word `(,raw))
-             (string `(,(define-word/expr raw)))
-             (cons
-              (loop for r in raw
-                when (stringp r) (setq r (define-word/expr r))
-                collect r))
-             (otherwise
-              (break "Unexpected type: ~a~%  ~a" (type-of raw) raw)))))
-           
-    (let ( inflections )
+  (let ( inflections )
+    (flet ((convert-if-needed (raw)
+             (typecase raw
+               (word raw)
+               (string (define-word/expr raw))
+               (cons
+                (loop for r in raw
+                  when (stringp r) do (setq r (define-word/expr r))
+                  collect r))
+               (otherwise
+                (break "Unexpected type: ~a~%  ~a" (type-of raw) raw))))
+           (update-inflections (result)
+             (typecase result
+               (word (push result inflections))
+               (cons (setq inflections (append-new result inflections)))
+               (otherwise (break "Unexpected result type: ~a~%  ~a"
+                                 (type-of result) result)))))
       (when s-form
-        (setq inflections (append-new (convert-if-needed s-form) inflections)))
+        (update-inflections (setq s-form (convert-if-needed s-form))))
       (when ed-form
-        (setq inflections (append-new (convert-if-needed ed-form) inflections)))
+        (update-inflections (setq ed-form (convert-if-needed ed-form))))
       (when ing-form
-        (setq inflections (append-new (convert-if-needed ing-form) inflections)))
+        (update-inflections (setq ing-form (convert-if-needed ing-form))))
       (when past-tense
-        (setq inflections (append-new (convert-if-needed past-tense) inflections)))
+        (update-inflections (setq past-tense (convert-if-needed past-tense))))
       (when past-participle
-        (setq inflections (append-new (convert-if-needed past-participle) inflections)))
+        (update-inflections (setq past-participle (convert-if-needed past-participle))))
       (when present-participle
-        (setq inflections (append-new (convert-if-needed present-participle) inflections)))
+        (update-inflections (setq present-participle (convert-if-needed present-participle))))
       (when third-singular
-        (setq inflections (append-new (convert-if-needed third-singular) inflections)))
+        (update-inflections (setq third-singular (convert-if-needed third-singular))))
       (when third-plural
-        (setq inflections (append-new (convert-if-needed third-plural) inflections)))
+        (update-inflections (setq third-plural (convert-if-needed third-plural))))
       (when nominalization
-        (setq inflections (append-new (convert-if-needed nominalization) inflections)))
+        (setq nominalization (convert-if-needed nominalization)))
 
-      (assign-brackets-as-a-main-verb word)  ;; infinitive or 3d plural
+      (assign-brackets-as-a-main-verb word) ;; infinitive or 3d plural
       (record-inflections inflections word :verb)
       (dolist (w inflections)
         (assign-brackets-as-a-main-verb w)
-        (record-lemma w word :verb)))
+        (record-lemma w word :verb))
+      (when nominalization
+        ;; Makes rules and a category as well.
+        (assign-brackets-as-a-common-noun nominalization))
 
     ;; make the rules
     (when (and category referent)
       (let* ((*schema-being-instantiated* word)
-             (rules
-              (list
-               ;; infinitive, 1st, 2d, 3d person plural
-               (define-cfr category (list word)
-                 :form  category::verb
-                 :referent  referent)
+             rules  )
+        (labels ((make-rule (word form)
+                   (let ((rule (define-cfr category (list word)
+                                 :form form
+                                 :referent  referent)))
+                     (push rule rules)))
+                 (rule-macro (word/s form)
+                   (if (consp word/s)
+                     (loop for word in word/s do
+                       (make-rule word form))
+                   (make-rule word/s form))))
+          
+          ;; infinitive, 1st, 2d, 3d person plural
+          (rule-macro word category::verb)
+
+          ;; 3rd person singular
+          (if third-singular
+            (rule-macro third-singular category::verb+present)
+            (when s-form
+              (rule-macro s-form category::verb+present)))
+          
+          ;; past tense, past participle          
+          (when past-tense
+            (rule-macro past-tense category::verb+ed))
+          (when past-participle
+            (rule-macro past-participle category::verb+ed))
+          (unless past-tense
+            (rule-macro ed-form category::verb+ed))
                
-               ;; 3rd person singular
-               (if third-singular
-                 (define-cfr category (list third-singular)
-                   :form  category::verb+present
-                   :referent  referent)
-                 (define-cfr category (list s-form)
-                   :form  category::verb+present
-                   :referent  referent))
-               
-               ;; past tense, past participle
-               (when past-tense
-                 (define-cfr category (list past-tense)
-                   :form  category::verb+ed
-                   :referent  referent))
-               (when past-participle
-                 (define-cfr category (list past-participle)
-                   :form  category::verb+ed
-                   :referent  referent))
-               (unless past-tense
-                 (define-cfr category (list ed-form)
-                   :form  category::verb+ed
-                   :referent  referent))
-               
-               ;; present participle
-               (if present-participle
-                 (define-cfr category (list present-participle)
-                   :form  category::verb+ing
-                   :referent  referent)
-                 (define-cfr category (list ing-form)
-                   :form  category::verb+ing
-                   :referent  referent))
-               
-               (when third-plural
-                 (define-cfr category (list third-plural)
-                   :form  category::verb+present
-                   :referent  referent))
-               
-               (when past-participle
-                 (define-cfr category (list past-participle)
-                   :form  category::verb+ed
-                   :referent  referent))
-               
-               (when nominalization
-                 (define-cfr category (list nominalization)
-                   :form  category::np-head
-                   :referent  referent)))))
-        
-        ;; flush the nils from the optional cases
-        (let ( real-rules )
-          (dolist (r rules)
-            (when r (push r real-rules)))
-          (nreverse real-rules)))))
+          ;; present participle
+          (if present-participle
+            (rule-macro present-participle category::verb+ing)
+            (when ing-form
+              (rule-macro ing-form category::verb+ing)))
+
+          (when third-plural
+            (rule-macro third-plural category::verb+present))
+
+          (when past-participle
+            (rule-macro past-participle category::verb+ed))
+
+          (nreverse rules)))))))
 
 
 ;;;--------------------
