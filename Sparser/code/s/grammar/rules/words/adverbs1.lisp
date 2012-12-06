@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "adverbs"
 ;;;   Module:  "grammar;rules:words:"
-;;;  Version:  1.0 March 2012
+;;;  Version:  1.0 December 2012
 
 ;; initiated 5/16/93 v2.3. Populated 1/11/94. Added to 1/12,1/13
 ;; 0.1 (5/26) redid the bracket label as 'adverb'
@@ -21,7 +21,9 @@
 ;;     (2/3/10) removed "few" since it should really be taken as a quantifier
 ;;     (2/10) Gave "too" and "very" ].adverb brackets: "a very small ..."
 ;; 1.0 (9/16/11) Very thorough make over now that methods are available.
-;;     (3/2/12) Accommodate to adverbs coming in from Comlex.
+;;     (3/2/12) Accommodate to adverbs coming in from Comlex. 
+;; 1.1 (12/4/12) added .[adverb to the default to match what was done in
+;;      morphology1 (now rules/brackets/assignments). 
 
 (in-package :sparser)
 
@@ -51,7 +53,9 @@
   ;; Sort of like the earlier 'anonymous-adverb' but with more
   ;; content.
   (unless brackets
-    (setq brackets '( ].adverb )))
+    ;; Match these with set in assign-brackets-to-adverb that runs when
+    ;; we get an adverb in a tree-family mapping. 
+    (setq brackets '( ].adverb .[adverb)))
   (unless super-category
     (setq super-category 'adverbial))
   (let* ((category-name (name-to-use-for-category string))

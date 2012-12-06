@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:   "conjunctions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.2 November 2012
+;;;   Version:   0.2 December 2012
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/11/94
 ;; added conjunction.] to "and" and "or" 3/17
@@ -14,7 +14,8 @@
 ;;     (4/17/10] Added "thus"
 ;; 0.2 (11/22/12) reorganized the list under a simpler scheme of passing
 ;;      it through one function and added in a bunch from Comlex (particulary
-;;      the multi-word ones). 
+;;      the multi-word ones). 12/4/12 Removed "only" in favor of its reading
+;;      as an approximator.
 
 (in-package :sparser)
 
@@ -26,6 +27,8 @@
   (unless form
     (setq form 'subordinate-conjunction))
   (define-function-word string
+    ;; Keep brackets here and in assign-brackets-to-standalone-word
+    ;; in sync.
     :brackets '( ].phrase  phrase.[ )
     :form form))
     
@@ -68,7 +71,6 @@
           "on grounds that"
           "on the grounds that"
           "once"
-          "only"
           "otherwise"
           "prior to"
           "since"  

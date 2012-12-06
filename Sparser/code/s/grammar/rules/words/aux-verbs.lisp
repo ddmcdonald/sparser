@@ -1,28 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2012 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "aux verbs"
 ;;;   Module:  "grammar;rules:words:"
-;;;  Version:  0.2 April 1994
+;;;  Version:  0.3 December 2012
 
 ;; redesigned from scratch & pulled out of [syntax] 5/7/93 v2.3
 ;; 0.1 (6/18/93) added  .[verb brackets.  Adding words 1/11/94, 1/12, 1/13
 ;;     (7/20) added contraction prefixes
 ;; 0.2 (4/19/95) sharpened bracket choices
 ;; 0.3 (4/24) added aux]. to all but modals
+;;     (12/4/12) Moved out bracket assigner to rules/brackets/assignments
+;;     12/5/12 added "didn"
 
 (in-package :sparser)
-
-
-;;--- The contrasting bracket assignments for non-aux main verbs
-
-(defun assign-brackets-as-a-main-verb (word)
-  (assign-bracket/expr word ].verb )
-  (assign-bracket/expr word .[verb )
-  (assign-bracket/expr word mvb]. )
-  (assign-bracket/expr word mvb.[ )
-  word )
-
 
 ;;;--------- oddities
 
@@ -86,7 +77,7 @@
 (define-function-word "haven"   :brackets '( ].verb .[verb ))
 (define-function-word "hasn"    :brackets '( ].verb .[verb ))
 (define-function-word "hadn"    :brackets '( ].verb .[verb ))
-(define-function-word "don"     :brackets '( ].verb .[verb ))
+(define-function-word "didn"    :brackets '( ].verb .[verb ))
 (define-function-word "doesn"   :brackets '( ].verb .[verb ))
 (define-function-word "aren"    :brackets '( ].verb .[verb ))
 (define-function-word "isn"     :brackets '( ].verb .[verb ))
