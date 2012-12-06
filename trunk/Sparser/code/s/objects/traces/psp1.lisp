@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005, 2010-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2012  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: psp1.lisp 359 2010-08-13 20:13:38Z dmcdonal $
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 November 2012
+;;;  Version:  1.4 December 2012
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -25,6 +24,7 @@
 ;;     (5/30/09) added traces for verb+prep combination
 ;;     (6/2/10) added traces for new conditions in scan.
 ;;     (12/14/10) fixed capitalization bugs  (11/2/12) added PNF-resetting-open-bracket
+;;      Continued adding and tweaking through 12/5/12. 
 
 (in-package :sparser)
 
@@ -105,12 +105,25 @@
 ;;;---------- laying brackets down
 
 (deftrace :brackets-introduced (word)
-  ;; called from Introduce-{trailing/leading/}brackets
+  ;; called from introduce-{trailing/leading/}brackets
   (when (or *trace-network* *trace-brackets*)
     ;; the specific cases are given by trace msgs in the placement
     ;; routines, with the traces given below
     (trace-msg "~A introduces brackets:" word)))
 
+(deftrace :leading-brackets-introduced (word)
+  ;; called from introduce-leading-brackets
+  (when (or *trace-network* *trace-brackets*)
+    ;; the specific cases are given by trace msgs in the placement
+    ;; routines, with the traces given below
+    (trace-msg "~A introduces leading brackets:" word)))
+
+(deftrace :trailing-brackets-introduced (word)
+  ;; called from Introduce-{trailing/leading/}brackets
+  (when (or *trace-network* *trace-brackets*)
+    ;; the specific cases are given by trace msgs in the placement
+    ;; routines, with the traces given below
+    (trace-msg "~A introduces trailing brackets:" word)))
 
 (deftrace :no-brackets-introduced (word)
   ;; called from Introduce-brackets
@@ -171,6 +184,20 @@
   (when (or *trace-network* *trace-brackets*)
     (trace-msg "Moving the left boundary to p~A~
                 ~%  because of the punctuation in front of it"
+               (pos-token-index p))))
+
+(deftrace :treetop.[-moves-boundary (p)
+  ;; called from Adjudicate-new-open-bracket
+  (when (or *trace-network* *trace-brackets*)
+    (trace-msg "Moving the left boundary to p~A~
+                ~%  because of the treetop.[ in front of it"
+               (pos-token-index p))))
+
+(deftrace :pronoun.[-moves-boundary (p)
+  ;; called from Adjudicate-new-open-bracket
+  (when (or *trace-network* *trace-brackets*)
+    (trace-msg "Moving the left boundary to p~A~
+                ~%  because of the pronoun.[ in front of it"
                (pos-token-index p))))
 
 
@@ -922,6 +949,12 @@
   (when *trace-network-flow*
     (trace-msg "[scan] scan-next-pos ~A" p)))
 
+(deftrace :status-set (keyword p)
+  ;; Called in set-status
+  (when *trace-network-flow*
+    (trace-msg "[scan] Setting status of p~a to :~a"
+               (pos-token-index p) keyword)))
+
 
 (deftrace :introduce-leading-brackets (word)
   (when *trace-network-flow*
@@ -1135,14 +1168,24 @@
     (trace-msg "[scan]   No composition")))
 
 (deftrace :PNF-resetting-open-bracket (edge start end old-bracket)
-  (when *trace-network-flow*
-    (trace-msg "[scan] PNF knows it has a ~a from p~a to ~a~
+  (when (or *trace-network-flow* *trace-brackets* *trace-pnf*)
+    (trace-msg "[scan] PNF knows it has a ~a~
+              ~%   from p~a to ~a~
               ~%   resetting opening bracket to .[np from ~a"
-               (edge-category edge) (pos-token-index start)
+               (display-edge-category edge)
+               (pos-token-index start)
                (pos-token-index end) (b-symbol old-bracket))))
-  
-			      
 
+(deftrace :PNF-adding-close-bracket (end bracket)
+  (when (or *trace-network-flow* *trace-brackets* *trace-pnf*)
+    (trace-msg "[scan] PNF adding ~a to p~a"
+               bracket (pos-token-index end))))
+  
+
+(defun display-edge-category (edge)
+  (if (consp edge)
+    (edge-category (car edge)) ;;//// iterating format statement
+    (edge-category edge)))
 
 
 (deftrace :adjudicate-new-open-bracket (b)
