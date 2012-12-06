@@ -243,11 +243,11 @@
     (cond (passive-aux
 	   (prog1 (contents passive-aux)
 		  (set-contents passive-aux
-				(trace-named 'aux-trace))))
+				(ttrace-named 'aux-trace))))
 	  ((eq (contents verb) word-be)
 	   (prog1 (contents verb)
 		  (set-contents verb
-				(trace-named 'aux-trace))))
+				(ttrace-named 'aux-trace))))
 	  (t (word-for-string "do")))))
 
 (defun aux-state  ()

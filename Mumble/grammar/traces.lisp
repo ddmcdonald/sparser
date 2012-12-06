@@ -30,12 +30,12 @@
 
 
 (defun build-trace (specification)
-  (make-trace 
+  (make-ttrace 
     :name 'trace
     :original-specification specification))
 
 (defun build-there-trace (specification)
-  (make-trace 
+  (make-ttrace 
     :name 'there-trace    
     :pname "there"
     :original-specification specification))
