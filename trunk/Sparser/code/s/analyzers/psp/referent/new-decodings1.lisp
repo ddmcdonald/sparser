@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2000 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2000,2012 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
@@ -14,7 +14,7 @@
 ;;     (3/23/00) Tweaked Decode-binding-exp-pair to appreciate the possibility
 ;;      of dereferenced individuals/categories in the value-exp field and gave
 ;;      a serious full-bore treatment to decode-subtype.
-;;     (1/7/07) #+ccl'd calls to ed-beep
+;;     (1/7/07) #+ccl'd calls to ed-beep (12/4/12) converted that to #+mcl
 
 (in-package :sparser)
 
@@ -34,7 +34,7 @@
       ;; it isn't one of the standard edge-designating symbols
       (if (null (cdr args))
         (cond ((symbolp (first args))
-               ;; There's only one symbol, so is it the name of a catgory?
+               ;; There's only one symbol, so is it the name of a category?
                (let ((category (category-named (first args))))
                  (unless category
                    (break "Expected this symbol, ~A, to name a category~
@@ -189,8 +189,8 @@
         (error "Undefined variable in referent: ~A" var-symbol)))
 
     (when (listp variable)
-      #+ccl(ed-beep)
-      #+ccl(ed-beep)
+      #+mcl(ed-beep)
+      #+mcl(ed-beep)
       (format t "~&~%!! the variable named ~A can't be uniquely ~
                  dereferenced ~%because it has several versions ~
                  with different restrictions~%and no category is ~
