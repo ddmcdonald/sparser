@@ -224,21 +224,19 @@
 
 (defun check-PNF-and-continue (word position-before)
   (tr :check-PNF-and-continue position-before)
-  ;; "[scan] Check-PNF-and-continue ~A"
+  ;;   "[scan] Check-PNF-and-continue ~A"
   (let ((where-caps-fsa-ended (pnf position-before)))
     (if where-caps-fsa-ended
       ;; since the embedded scan by PNF won't act on any ] on the
       ;; position where it happens to end, we have to.
-      (if *sun* ;; specialized system from circa 1993
-        (adjudicate-after-pnf where-caps-fsa-ended)
-        (adjudicate-after-pnf1 where-caps-fsa-ended))
+      (adjudicate-after-pnf position-before where-caps-fsa-ended)
       (continuation-after-pnf-returned-nil word position-before))))
 
 
 (defun continuation-after-pnf-returned-nil (word position-before)
   (let ((status (pos-assessed? position-before)))
     (tr :continue-after-pnf-returned-nil position-before status)
-    ;; "PNF returned nil. Pos-before: ~A, status: ~A"
+    ;;   "PNF returned nil. Pos-before: ~A, status: ~A"
     (case status
       ;; otherwise see where PNF has gotten on the original position
       ;; and continue accordingly
@@ -282,13 +280,10 @@
       ;; We need this because the routines called from these hooks presume that
       ;; there is a word at the position after. But since we initiate the entire
       ;; parse by starting in 'the middle', this is where many of the words
-      ;; are going to enter the chart rather than in scan-next-pos
-;      (push-debug `(,position-after ,word ,position-before)) (break "after ~a" position-before)
+      ;; are going to enter the chart rather than via scan-next-pos
       (tr :scan-from-word-level-actions position-after)
-      ;; "[scan] No word at p~a yet. Calling scan-next-position"
-      (scan-next-position)
-;      (push-debug `(,position-after)) (break "next")
-)
+      ;;   "[scan] No word at p~a yet. Calling scan-next-position"
+      (scan-next-position))
     (complete-word/hugin word position-before position-after)
     (word-traversal-hook word position-before position-after)
     (introduce-terminal-edges word position-before position-after)))
