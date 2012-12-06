@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990,1991,1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2012  David D. McDonald  -- all rights reserved
 
 ;;;     File:  "place brackets"
 ;;;   Module:  "analyzers;HA:"
-;;;  Version:  1.0 April 1995
+;;;  Version:  1.0 December 2012
 
 ;; originated October 1990, estensively elaborated November 1990
 ;; 0.1 (4/21/91 v1.8.4) actually made it usable
@@ -16,7 +16,8 @@
 ;;     (1/5/95) added Mark-position-as-generic-boundary
 ;; 1.0 (1/24) put a layer in between the call to place a bracket and actually
 ;;      doing it to allow a check to keep the strongest bracket
-;;     (4/30) added predicates that access brackets from labels
+;;     (4/30) added predicates that access brackets from labels. 12/5/12 added
+;;      better traces.
 
 (in-package :sparser)
 
@@ -90,7 +91,7 @@
 
 (defun introduce-trailing-brackets (label position-after
                                     &optional source-is-an-edge? )
-  (tr :introduce-trailing-brackets label)
+  (tr :introduce-trailing-brackets label) ;; "[scan] introduce-trailing-brackets \"~A\""
   (if source-is-an-edge?
     (set-status :brackets-from-prior-edge-introduced position-after)
     (set-status :brackets-from-prior-word-introduced position-after))
@@ -100,7 +101,7 @@
         (let ((ends-after    (ba-ends-after    assignment))
               (begins-after  (ba-begins-after  assignment)))
           (if (or ends-after begins-after)
-            (tr :brackets-introduced label) ;; "~A introduces brackets:"
+            (tr :trailing-brackets-introduced label) ;; "~A introduces trailing brackets:"
             (tr :no-brackets-introduced label)) ;; "~A does not introduce any brackets"
           (when ends-after
             (place-boundary/ends-after label position-after ends-after))
@@ -124,7 +125,7 @@
         (let ((ends-before   (ba-ends-before   assignment))
               (begins-before (ba-begins-before assignment)))
           (if (or ends-before begins-before)
-            (tr :brackets-introduced label) ;; "~A introduces brackets:"
+            (tr :leading-brackets-introduced label) ;; "~A introduces leading brackets:"
             (tr :no-brackets-introduced label)) ;; "~A does not introduce any brackets"
           (when ends-before
             (place-boundary/ends-before label position-before ends-before))
