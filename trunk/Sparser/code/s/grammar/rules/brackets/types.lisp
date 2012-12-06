@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "types"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  0.2 November 2012
+;;;  Version:  0.2 December 2012
 
 ;; initiated 4/26/91, extended 4/30
 ;;   Required assignments to the source start/end pulled 11/24
@@ -21,6 +21,7 @@
 ;;     (10/13/09) Added adjectives. (2/10/10) Added quantifier.
 ;; 0.2 (8/1/11) Added a whole flock of new cases for words known to have multiple
 ;;      parts of speech. 11/8/12 added adj-verb 11/25/12 .[adj-adv
+;;     (12/4/12) added ].np  12/5 added prounouns analogous to phrase
 
 (in-package :sparser)
 
@@ -63,6 +64,10 @@
 
 (define-bracket :[  :before  np 1)  ;; .[np
 (define-bracket :]  :after   np 1)  ;; np].
+(define-bracket :]  :before  np 1)  ;; ].np
+
+(define-bracket :] :before pronoun 1)  ;; ].pronoun
+(define-bracket :[ :after  pronoun 1)  ;; pronoun.[
 
 (define-bracket :]  :before  proper-noun 1)  ;;  ].proper-noun
 (define-bracket :[  :after   proper-noun 1)  ;;  proper-noun.[
