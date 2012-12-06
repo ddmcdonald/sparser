@@ -38,6 +38,7 @@
 
 (defun define-preposition (string &key brackets form super-category)
   (unless brackets  ;; v.s. ].treetop  treetop.[ 
+    ;; Keep set in assign-brackets-to-preposition in sync
     (setq brackets (list  ].preposition preposition]. preposition.[ )))
   (unless form
     (setq form 'preposition))

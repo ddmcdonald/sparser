@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2012  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.9 September 2011
+;;;   Version:   1.9 December 2012
 
 ;; initiated 2/1/91, added "other adverbs" & "vague" 2/12, added
 ;;    "conjunctions" 2/20, added scheme for function words and
@@ -24,6 +24,7 @@
 ;; 1.8 (10/14/99) bumped it to 2 contingent on this being a load with the model
 ;; 1.9 (9/16/11) moved out adverbs to loader-part2 because they're creating
 ;;      categories now. Others might follow. 9/29/11 Moved prepositions over.
+;;     (12/3/12) Moved in comlex priming
 
 (in-package :sparser)
 
@@ -32,7 +33,8 @@
 (gate-grammar *brackets*
   (gate-grammar *punctuation*
     (gload "words;punctuation bracketing")
-    (gload "words;punctuation rules")))
+    (gload "words;punctuation rules"))
+  (gload "words;comlex priming"))
 
 (gate-grammar *determiners*
   (gload "words;determiners"))
