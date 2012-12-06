@@ -172,10 +172,11 @@
       (rs-phrase-boundary rs))))
 
 (defun bracket-assignment-to-list (ba)
-  (let ( list )
-    (when (ba-ends-before ba) (push (ba-ends-before ba) list))
-    (when (ba-begins-before ba) (push (ba-begins-before ba) list))
-    (when (ba-ends-after ba) (push (ba-ends-after ba) list))
-    (when (ba-begins-after ba) (push (ba-begins-after ba) list))
-    list))
+  (when ba
+    (let ( list )
+      (when (ba-ends-before ba) (push (ba-ends-before ba) list))
+      (when (ba-begins-before ba) (push (ba-begins-before ba) list))
+      (when (ba-ends-after ba) (push (ba-ends-after ba) list))
+      (when (ba-begins-after ba) (push (ba-begins-after ba) list))
+      list)))
 
