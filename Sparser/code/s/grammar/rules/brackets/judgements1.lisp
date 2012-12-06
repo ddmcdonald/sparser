@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.9 November 2012
+;;;  Version:  1.9 December 2012
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -44,8 +44,8 @@
 ;;      adjective case. And another 5/26, also fixed indentation.
 ;; 1.9 (11/2/12) Added sort-out-name-bracketing-state called from PNF to fix interesting
 ;;      bug from false segment starting bracket where proper name ends in "ing"
-;;      (11/8/12) started folding in adj-verb brackets. (11/9/12) added debuggin
-;;      method brackets-on. 
+;;      (11/8/12) started folding in adj-verb brackets. (11/9/12) added debugging
+;;      method brackets-on. Diverse tweaking through 12/4512. 
 
 (in-package :sparser)
 
@@ -74,9 +74,15 @@
                  *left-segment-boundary* p))
 
           ((eq b treetop.[ )
-           ;;(tr :treetop.[-moves-boundary p)
+           (tr :treetop.[-moves-boundary p)
            (setq *bracket-opening-segment* (kcons b p)
                  *left-segment-boundary* p))
+
+          ((eq b pronoun.[ )
+           (tr :pronoun.[-moves-boundary p)
+           (setq *bracket-opening-segment* (kcons b p)
+                 *left-segment-boundary* p))
+
           (t
            ;; We're not going to move the boundary, but perhaps
            ;; we should change to a more informative bracket.
@@ -235,17 +241,23 @@
            ((eq ]  ].phrase)   t)
           
            ((eq ]  np].)  t)
-	  
-           ((eq ] ].proper-noun) t)
 
-           ((eq ] ].quantifier)
+           ((eq ]  ].np)
+            (unless (segment-started-as-np?)
+              t))
+
+           ((eq ]  ].pronoun) t)
+	  
+           ((eq ]  ].proper-noun) t)
+
+           ((eq ]  ].quantifier)
             (if (or (eq (first *bracket-opening-segment*) .[np )
                     (eq (first *bracket-opening-segment*) .[article )
                     (eq bracket-opening-segment .[adverb)) ;; "very few"
               nil
               t))
 
-           ((eq ] ].preposition) 
+           ((eq ]  ].preposition) 
             (if (eq (car *bracket-opening-segment*) mvb.[)
               ;; We've just finished a segment because a verb said to do so.
               ;; In principle there could be interveening adverbs, so this may
@@ -254,7 +266,7 @@
               (check-for-verb-preposition-pair position)
               t))
 
-           ((eq ] preposition].) t)
+           ((eq ]  preposition].) t)
 
            ((eq ]  ].treetop)  t)
 
@@ -263,33 +275,37 @@
            ((eq ]  ].text-segment)  t)
 
 
-           ((eq ]  ].verb)   ;(break "at ].verb at ~a" position)
+           ((eq ]  ].verb)  ; (break "at ].verb at ~a" position)
             (cond 
+             ((= word-count 0) t)
              ((or (eq *bracket-closing-segment* ].verb )
                   (eq (first *bracket-opening-segment*) .[verb )
                   (eq (first *bracket-opening-segment*) .[modal ))
               nil )
-
-             ((or (eq (first *bracket-opening-segment*) .[np )
-                  (eq (first *bracket-opening-segment*) .[article ))
+             ((eq bracket-opening-segment .[article ) t)
               ;; e.g. "the sounds" -- where "sounds" can be a verb.
               ;; A word that is noun/verb ambiguous will lay down
               ;; brackets for a verb -- this is a case where we can
               ;; know definitively that the noun sense is the right one.
-              (if (np-segment-contains-more-than-article? position)
-                ;; but we include a heuristic for the case that the
-                ;; ambig. is more than one word away from the article,
-                ;; in which case we go with the verb interpretation.
-                t
-                (else
-                 ;; we'll have to ignore more brackets associated
-                 ;; with this word -- this flag provides the link
-                 (setq *suppress-verb-reading*
-                       (pos-terminal position))
-                 nil )))
+             ((or (eq bracket-opening-segment .[np )
+                  (eq bracket-opening-segment .[np-vp )
+                  (eq bracket-opening-segment .[|that| ))                  
+              t)
              ((eq (first *bracket-opening-segment*) .[adverb)
               nil )
-             (t t)))
+             ((or (eq bracket-opening-segment pronoun.[)
+                  (eq bracket-opening-segment punctuation.[)
+                  (eq bracket-opening-segment preposition.[)
+                  (eq bracket-opening-segment mvb.[)) ;; not two in a row
+              t)
+             (t (push-debug `(,position ,*bracket-opening-segment*
+                              ,word-count ,previous-word ,segment-start-pos))
+                (break "].verb  next case.~
+                      ~%The bracket opening the segment is ~a.~
+                      ~%The word with the ambiguous bracketing is ~a~
+                      ~%The segment so far is \"~{~a ~}\" "
+                       bracket-opening-segment (pos-terminal position)
+                       (words-between segment-start-pos position)))))
 
 
            ((eq ]  aux].)
@@ -325,12 +341,15 @@
              ((eq bracket-opening-segment mvb.[) t)
              ((or (eq bracket-opening-segment preposition.[)
                   (eq bracket-opening-segment .[np-vp)
-                  (segment-started-as-np?))
+                  (segment-started-as-np?)
+                  (eq bracket-opening-segment .[adverb)) ;; adverbs modify adjectives
               nil)
+             ((segment-started-as-vg?)
+              t)
              ((= 0 word-count) nil) ;; something should follow this adjective
              (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
-                 (break "].adjective  next case.~
+                (break "].adjective  next case.~
                       ~%The bracket opening the segment is ~a.~
                       ~%The word with the ambiguous bracketing is ~a"
                        bracket-opening-segment (pos-terminal position)))))
@@ -348,6 +367,8 @@
             ;; segment
             nil)
 
+
+
            ((eq ] ].np-vp)
 ;;            (push-debug `(,position ,*bracket-opening-segment*
 ;;                              ,word-count ,previous-word ,segment-start-pos))
@@ -360,7 +381,10 @@
                    (eq (first *bracket-opening-segment*) .[modal ))
                nil )
 
-              ((eq bracket-opening-segment mvb.[) 
+              ;; reasons to interpret it as a verb and terminate an np segment
+              ((eq bracket-opening-segment .[|that|) t)
+
+              ((eq bracket-opening-segment mvb.[)
                ;; reason to end because we've probably got a noun
                t)
 
@@ -369,6 +393,7 @@
               ((eq bracket-opening-segment .[np) nil) ;; "some people"
               ((eq bracket-opening-segment .[article) nil) ;; "the quarentee"
               ((eq bracket-opening-segment .[adjective) nil) ;; "full fare"
+              ((eq bracket-opening-segment .[adj-verb) nil) ;; "select flights"
               ((eq bracket-opening-segment conjunction.[) nil)
               ((word-is-np-modifier previous-word) nil)
 
@@ -390,17 +415,37 @@
 
 
 
-           ((eq ] np-vp].) 
-            ;; (break " seeing a np-vp]., look at opening")
-            ;; bracket-opening-segment -- 
-            ;; .[np   .[np-vp  .[adjective  treetop.[  mvb.[  .[article
-            nil)  ;; t)
+           ((eq ]  np-vp].) 
+            (cond
+             ((eq bracket-opening-segment .[np)
+              ;; probably too strong, but ok going-in position. This says
+              ;; that it's time to shift to a verb interpretation
+              t)
+             ((eq bracket-opening-segment .[adverb)
+              ;; This is an odd case, "made too many flights tardy" looking
+              ;; at the ] from "flights".  Need more information.
+              nil)
+             (t (push-debug `(,position ,*bracket-opening-segment*
+                              ,word-count ,previous-word ,segment-start-pos))
+                 (break "np-vp.[ next case.~
+                      ~%The bracket opening the segment is ~a.~
+                      ~%The word with the ambiguous bracketing is ~a" ; 
+                       bracket-opening-segment (pos-terminal position)))))
+            
 
-           ((eq ]  ].adj-verb) ;; /// almost certainly too strong
+
+           ((eq ]  ].adj-verb)
             (cond
              ((segment-started-as-np?) ;; adjective reading
               nil)
              ((segment-started-as-vg?) ;; verb reading
+              nil)
+             ((eq bracket-opening-segment mvb.[)
+              ;; if we believe this, then we've closed off a verb
+              ;; so we should treat it a an adjective
+              nil)
+             ((eq bracket-opening-segment preposition.[)
+              ;; it's an adjective. Verbs don't follow prepositions
               nil)
              (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
@@ -409,6 +454,7 @@
                       ~%The word with the ambiguous bracketing is ~a"
                        bracket-opening-segment (pos-terminal position)))))
              
+
 
            ((eq ]  ].adj-adv) ;; e.g. "heavy", "asleep"
             (cond
@@ -420,9 +466,12 @@
                               ,word-count ,previous-word ,segment-start-pos))
                  (break "].adj-adv next case.~
                       ~%The bracket opening the segment is ~a.~
-                      ~%The word with the ambiguous bracketing is ~a"
-                       bracket-opening-segment (pos-terminal position)))))
+                      ~%The word with the ambiguous bracketing is ~a
+                      ~%The segment so far is \"~{~a ~}\" "
+                       bracket-opening-segment (pos-terminal position)
+                       (words-between segment-start-pos position)))))
           
+
            (t (break "Unclassified closing bracket: ~A" ])
               :foo))))
 
@@ -485,9 +534,10 @@
                    (get-bracket-assignment-for-word word))))
     ;; others too?  Any complementary checks that are
     ;; even more reliable?
-    (or (memq ].quantifier brackets)
-        (memq .[np brackets)
-        (memq .[adjective brackets))))
+    (when brackets
+      (or (memq ].quantifier brackets)
+          (memq .[np brackets)
+          (memq .[adjective brackets)))))
 
 
 
@@ -496,7 +546,7 @@
 ;;;--------------------------------------
 
 (defun check-for-verb-preposition-pair (position-of-leading-prep-bracket)
-  ;; called from Bracket-ends-the-segment? when the potential new segment was opened
+  ;; called from bracket-ends-the-segment? when the potential new segment was opened
   ;; by a mvb.[
   (let* ((preposition (word-after position-of-leading-prep-bracket))
 	 (verb (find-verb-at-mvb-end position-of-leading-prep-bracket))
@@ -548,7 +598,12 @@
   (let ((bracket-kons *bracket-opening-segment*))
     (when bracket-kons
       (tr :PNF-resetting-open-bracket edge start end (car bracket-kons))
-      (rplaca bracket-kons .[np))))
+      (rplaca bracket-kons .[np))
+    ;; Also we need to end the segment, and the final name-
+    ;; element word is quite unlikely to have associated brackets
+    (let ((bracket np].))
+      (tr :PNF-adding-close-bracket end bracket)
+      (do-boundary/ends-before 'PNF end bracket))))
 
 
 
@@ -569,9 +624,7 @@
 (defmethod brackets-on ((w word) &optional (stream *standard-output*))
   (let ((brackets (get-bracket-assignment-for-word w)))
     (if brackets
-      (then 
        (describe-bracket-assignment brackets stream)
-       (bracket-assignment-to-list brackets))
       "no brackets")))
 
 (defmethod brackets-on ((n number) &optional (stream *standard-output*))
@@ -583,12 +636,21 @@
          (b-before (ev-boundary before))
          (after (pos-starts-here p))
          (b-after (ev-boundary after)))
-    (if b-after
+    (cond
+     ((and b-before b-after)
       (format stream "~& ~a  p~a  ~a~%"
-              (b-symbol b-before) (pos-token-index p) (b-symbol b-after))
+              (b-symbol b-before) (pos-token-index p) (b-symbol b-after)))
+     (b-before
       (format stream "~& ~a  p~a~%"
               (b-symbol b-before) (pos-token-index p)))
-    `(,b-before ,b-after)))
+     (b-after
+      (format stream "~& p~a ~a%" 
+              (pos-token-index p) (b-symbol b-after)))
+     (t (format stream "~& no brackets on p~a~%"
+                (pos-token-index p))))
+    (when nil ;; does anything consume this for its value?
+      ;; thought there was, but grep doesn't show it.
+      `(,b-before ,b-after))))
     
     
 
