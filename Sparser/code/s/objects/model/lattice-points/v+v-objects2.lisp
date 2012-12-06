@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1998-2005,2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1998-2005,2010-2012 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "v+v objects"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  2.0 December 2010
+;;;  version:  2.0 December 2012
 
 ;; initiated 3/7/98. Populated 7/9. 1/31/99 aded Value/var/v+v. Added
 ;; Bind-v+v 2/14.  2/11/05 Added a global trap into value/var/v+v.
@@ -16,7 +16,8 @@
 ;;   into the structure file. 
 ;; 2.0 (7/22/09) Making it over again. Working on it through 8/30.
 ;;   (12/14/10) Rehabilited value/var/v+v & bind-v+v. Fixed C&S bug in
-;;   printer. (3/19/11) Cleaned up. Updated a call.
+;;   printer. (3/19/11) Cleaned up. Updated a call. 12/4/12 tested out
+;;   bind-v+v and seems to work.
 
 (in-package :sparser)
 
@@ -155,6 +156,8 @@
   ;; find/make the lattice-point for this psi at the same time.
   (declare (special c+v *c+v-to-v-into-v+v-table*))
   (tr :making-v+v-and-psi variable value parent-psi c+v)
+  (break "call to make-v+v-and-new-psi")
+  #+ignore
   (let ((v+v-table (gethash c+v *c+v-to-v-into-v+v-table*))
         (v+v (get-new-v+v)))
     (unless v+v-table
@@ -262,9 +265,8 @@
       (vv-value v+v))))
 
 
-#+ignore
+
 (defun psi-binds-variable-to-value (psi variable value)
-  (break "call to psi-binds-variable-to-value -- ckeck it out")
   (let ((vv (find variable (psi-v+v psi) :key #'vv-variable)))
     (when vv
       (eq (vv-value vv) value))))
@@ -283,8 +285,7 @@
 ;; decode the reference to the variable. 
 
 (defun bind-v+v (var/name value psi &optional category)
-  (push-debug `(:bind-v+v ,psi ,var/name ,value ,psi ,category))
- ;; (break "call to bind-v+v")
+  (push-debug `(,psi ,var/name ,value ,psi ,category))
   (let ((variable (decode-variable-name
                    var/name :individual psi :category category)))
     (unless variable
