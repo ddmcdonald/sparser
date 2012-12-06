@@ -327,7 +327,7 @@
 
 (defun opportunistic-binding-to-composite-head (variable value c
                                                 head-edge arg-edge)
-  (declare (ignore (value  head-edge arg-edge))
+  (declare (ignore (value  head-edge arg-edge)))
   (break "opportunistic-binding-to-composite-head:~
         ~%This function hasn't been run in a decade or so. Review it.")
   (tr :looking-for-opportunistic-binding variable c)
