@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "positions"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  1.3 March 2012
+;;;  Version:  1.3 December 2012
 
 ;; 1.1 (2/11 v1.8.1)  Added Position-precedes
 ;;     (5/12/93 v2.3) commented out an unfinished fn. 
@@ -15,6 +15,7 @@
 ;;     (1/4/95) gave Print-position/terminal an option when the terminal was nil
 ;;     (1/9/07) Added without-package-locks wrapper to quiet Allegro
 ;;     (2/8/11) Guarded them to allow Clozure to work. 3/3/12 Quiet compiler.
+;;     (12/4/12) Added a trace to set-status
 
 (in-package :sparser)
 
@@ -116,6 +117,7 @@
 ;;;--------------------------------
 
 (defun set-status (keyword p)
+  (tr :status-set keyword p) ;; "[scan] Setting status of p~a to :~a"
   (setf (pos-assessed? p) keyword))
   
 
