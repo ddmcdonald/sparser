@@ -3,10 +3,10 @@
 ;;;
 ;;;     File:  "Grok"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  November 2012
+;;;  version:  December 2012
 
 ;; Initiated 10/30/12 to take over from the Fire workspace. Tweeked through
-;; 11/5.
+;; 12/5.
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -21,9 +21,18 @@
 
 ;;-- For Comlex shakeout
 (trace-lexicon-unpacking)
-;; (just-bracketing-setting)
-;; (trace-brackets) (trace-segment-completion) (trace-segments)
-;; (untrace-brackets) (untrace-segment-completion) (untrace-segments)
+;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
+
+(defun trace-segmentation ()
+  (trace-brackets) 
+  (trace-segment-completion) 
+  (trace-segments)
+  (trace-network-flow))
+
+;; (trace-pnf)
+;; (untrace-brackets) (untrace-segment-completion) 
+;; (untrace-segments) (untrace-network-flow)
+;; (untrace-pnf)
 
 ;; (p "Boeing Co. said the U.S. government has suspended the sale")
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
@@ -69,7 +78,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 
 ;; (no-Sparser-traces)
-(defun no-Sparser-traceses ()
+(defun no-Sparser-traces ()
   (untrace-fsas)
   (untrace-pnf)
   ;(untrace-jfp-sections)
@@ -77,6 +86,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (untrace-network-flow)
   (untrace-brackets)
   (untrace-segments)
+  (untrace-segment-completion)
   (untrace-treetops)
   (untrace-edges)
   (untrace-edge-multiplication)
