@@ -1,16 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id: trace-function.lisp 270 2009-08-25 21:28:39Z dmcdonal $
 ;;; 
 ;;;     File:  "trace function"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  0.2 February 2009
+;;;  Version:  0.3 December 2012
 
 ;; initiated 9/13/92 v2.3
 ;; 0.1 (4/23/93) added Trace-msg/ad-lib
 ;; 0.2 (1/5/05) Added exports. 2/4/07 added tracing-keyword?
 ;; 0.3 (8/24/09) Lowercased the prefix on the generated function
+;;     (12/5/12) neutral case'd it so will work in CCL as well as ACL
 
 (in-package :sparser)
 
@@ -39,7 +40,8 @@
 (defun deftrace/expr (keyword arguments body)
   (let* ((fn-exp
           `(defun ,(intern (concatenate 'string
-                                        "trace-"
+                                        (symbol-name '#:trace)
+                                        "-"
                                         (symbol-name keyword))
                            (find-package :sparser))
                   ,arguments
