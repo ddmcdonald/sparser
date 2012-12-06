@@ -75,7 +75,7 @@
 
 
 (defun ]-on-position-because-of-word? (p word)
-  (tr :asking-]-on-pos p word)
+  (tr :asking-]-on-pos p word) ;; "Asking whether there is a ] on p~A because of '~A'"
   (let* ((ending-vector (pos-ends-here p))
          (bracket (ev-boundary ending-vector)))
     
