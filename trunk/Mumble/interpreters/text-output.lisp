@@ -122,7 +122,7 @@
       (blip              (dispatch-on-prior-blip item))
       (string            (dispatch-on-prior-word item))
       (punctuation-mark  (dispatch-on-prior-punctuation-mark item))
-      (trace             nil)
+      (ttrace             nil)
       (possessive-marker nil)
       (keyword nil)
       )))
@@ -142,7 +142,7 @@
               (mbug  "Determine-output-stream-object-given-word-stream-object"
                      "Unexpected symbol passed to the word stream: ~a"
                      item)))
-    (trace nil)
+    (ttrace nil)
     (possessive-marker item) ;;we already computed its form
     (otherwise
 	(mbug "Unexpected type of object passed to the word stream - ~a" item))
