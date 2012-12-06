@@ -48,7 +48,7 @@
 	   (cdr (assoc 'subject (position-table *current-phrasal-root*))))
 	 (contents (contents subject-position)))
     (etypecase contents
-      (trace nil)
+      (ttrace nil)
       (node t)
       (word-stream-item t)
       (specification t) ;; Is this a reasonable presumption?
