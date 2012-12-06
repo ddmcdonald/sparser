@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2000,2010-2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2000,2010-2012  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  September 2011
+;;;   version:  December 2012
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -45,6 +45,7 @@
 ;; up just after the upper-model because they had followed location which depended
 ;; on them to formulate plurals. 9/16 Broke words loader into two parts: loader1
 ;; and loader-part-2. 9/29 moved 32d part later. 12/16/11 added hurricanes.
+;; 12/3/12 Removed bracket files to their own loader.
 
 (in-package :sparser)
 
@@ -76,9 +77,8 @@
     (gload "the-categories;categories"))
 
   (gate-grammar *brackets*
-    (gload "brackets;types")
-    (gload "brackets;judgements1"))
     ;; the bracket definitions reference syntactic categories
+    (gload "brackets;loader"))
 
   (gload "words;loader1")
     ;; the function words make reference to bracket types
