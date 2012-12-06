@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.9 December 2012
+;;;  version:  1.11 December 2012
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -82,6 +82,7 @@
 ;;      np]. bracket.  4/2/12 #ignored noun/verb-ambiguous?  11/25/12 1st case of
 ;;      lists of strings in the irregulars past in to define-main-verb. 12/3/12
 ;;      fixing bugs in the first treatment.
+;; 1.11 (12/4/12) Moved out all the assignments to rules/brackets/assignments.
 
 (in-package :sparser)
 
@@ -832,14 +833,6 @@
                                  category referent
                                  (rest word)))))))
 
-
-(defun assign-brackets-as-a-common-noun (word)
-  ;;(assign-bracket/expr word np].)
-  ;;  a noun can be a classifier as well as a head, so we have
-  ;;  them indicate np starts, but they shouldn't force np ends.
-  (assign-bracket/expr word .[np)
-  word)
-
 (defun make-cn-rules/aux (word given-category referent
                           &optional special-cases)
 
@@ -1011,7 +1004,7 @@
                    :form category::adverb
                    :referent referent)))
         (setf (cfr-schema cfr) schematic-rule)
-        (assign-brackets/expr word (list ].adverb .[adverb ))
+        (assign-brackets-to-adverb word)
         (list cfr)))))
 
 
@@ -1033,7 +1026,7 @@
                    :form category::adjective
                    :referent referent)))
         (setf (cfr-schema cfr) schematic-rule)
-        (assign-brackets/expr word (list ].adjective .[adjective ))
+        (assign-brackets-to-adjective word)
         (list cfr)))))
 
 
@@ -1054,7 +1047,7 @@
             (cfr  (define-cfr category (list word)
               :form category::proper-noun
               :referent referent )))
-        (assign-brackets/expr word (list ].proper-noun proper-noun.[ ))
+        (assign-brackets-to-proper-noun word)
         (setf (cfr-schema cfr) pn-schematic-rule)
         (list cfr)))))
 
@@ -1076,7 +1069,7 @@
             (cfr (define-cfr category (list word)
                    :form category::interjection
                    :referent referent )))
-        (assign-brackets/expr word (list ].treetop  treetop.[ ))
+        (assign-brackets-to-interjection word)
         (setf (cfr-schema cfr) intj-schematic-rule)
         (list cfr)))))
 
@@ -1098,7 +1091,7 @@
             (cfr (define-cfr category (list word)
                    :form category::preposition
                    :referent referent )))
-        (assign-brackets/expr word (list ].treetop  treetop.[ ))
+        (assign-brackets-to-preposition word)
         (setf (cfr-schema cfr) prep-schematic-rule)
         (list cfr)))))
 
@@ -1122,5 +1115,5 @@
                    :form category::adjunct  ;; ??
                    :referent referent )))
         (setf (cfr-schema cfr) schematic-rule)
-        (assign-brackets/expr word (list ].phrase phrase.[ ))
+        (assign-brackets-to-standalone-word word)
         (list cfr)))))
