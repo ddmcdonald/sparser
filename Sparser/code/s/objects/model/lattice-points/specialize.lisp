@@ -33,8 +33,9 @@
 
 (defun find-subtype (lp category)
   (when (typep lp 'subtype-lattice-point)
+    (push-debug `(,lp ,category))
     (break "stub: first subtype of a subtype:~%~a" lp))
-
+  #+ignore
   (let* ((top-lp (climb-lattice-to-top lp))
          (subtypes (lp-subtypes top-lp))
          (entry (assoc category subtypes)))
@@ -44,8 +45,9 @@
 
 (defun index-subtype-lp-to-supertype-lp (super sub specializing-category)
   (when (typep super 'subtype-lattice-point)
+    (push-debug `(,super ,sub ,specializing-category))
     (break "stub: first subtype of a subtype:~%~a" super))
-
+  #+ignore
   (let* ((top-lp (climb-lattice-to-top super))
          (subtypes (lp-subtypes top-lp))
          (entry (assoc specializing-category subtypes)))
@@ -63,6 +65,9 @@
 
 (defun make-subtype (super-lp specializing-category)
   ;; -- the subtype gets added to the supertype by the indexing routine --
+  (push-debug `(,super-lp ,specializing-category))
+  (break "make-subtype")
+  #+ignore
   (let* ((lp (get-lp 'subtype-lattice-point))
          (super-category 
           (if (typep super-lp 'self-lattice-point)
