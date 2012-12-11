@@ -73,7 +73,7 @@
             (pos-token-index (paragraph-structure-start obj))))
   (when (paragraph-structure-end obj)
     (format stream "p~A "
-            (pos-token-index (paragrap-structureh-end obj))))
+            (pos-token-index (paragraph-structure-end obj))))
   (write-string ">" stream))
 
 
