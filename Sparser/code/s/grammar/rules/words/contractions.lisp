@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2012  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "contractions"
 ;;;    Module:   "grammar;rules:words:"
 ;;;   Version:   November 1994
 
 ;; redone from scratch 7/25/94.  Added "ve" 8/16.  'm' 9/6
-;; 11/21 added comment about timing
+;; 11/21 added comment about timing. 12/7/12 Commented out
+;; the ].phrase in front of apostrophe-s because it complicate
 
 (in-package :sparser)
 
@@ -51,8 +52,10 @@
 ;; edge-introduced labels since the rewriting happens during the formation
 ;; of the edge rather than as an explicit step in the scan.
 
-(assign-brackets/expr (category-named 'apostrophe-s)
-                      (list (symbol-value '].phrase)))
+
+;; 12/7/12 This is too strong when running Grok
+;;(assign-brackets/expr (category-named 'apostrophe-s)
+;;                      (list (symbol-value '].phrase)))
 
 (assign-brackets/expr (category-named 'apostrophe-re)
                       (list (symbol-value '].verb) (symbol-value '.[verb )))
