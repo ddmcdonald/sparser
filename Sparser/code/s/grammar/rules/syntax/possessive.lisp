@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
@@ -15,6 +15,7 @@
 ;;     (5/15/95) cleaned up the file
 ;; 0.2 (9/10/09) Added a generic method/category for generalized possession. 
 ;;      Might be worth gating.
+;; 0.3 (12/7/12) cleaned up effect on left segment boundary
 
 (in-package :sparser)
 
@@ -26,7 +27,7 @@
 
   (def-form-rule (np apostrophe-s)
     :form possessive
-    :referent (:daughter left-edge)))
+    :referent (:daughter left-edge))) ;;/// needs a subtype
 
 
 ;;;------------------
@@ -56,7 +57,7 @@
                    (chart-position-before starts-at))))
 
           (let ((rule (multiply-labels (edge-category prior-edge)
-                                     category::apostrophe-s)))
+                                       category::apostrophe-s)))
             (unless rule
               (setq rule *possessive-rule*))
 
@@ -64,9 +65,10 @@
                  (make-completed-binary-edge prior-edge poss-edge
                                              rule)))
 
-              ;; // does this always do the right thing ??
-              (setq *left-segment-boundary*
-                    (pos-edge-starts-at new-edge))
+              
+              ;; This fn is from adjudicators. It moves the boundary
+              ;; to the left if the edge crosses it. 
+              (cleanup-segment-boundaries-after-pattern-edge new-edge)
           
               ;; return value for this as an fsa, i.e. the position
               ;; after the apostrophe
