@@ -133,6 +133,8 @@
 ;################################################################
 
 (defun realize-kernel-specification (rspec)
+  (push-debug `(,rspec))
+  #+ignore ;; OBE in this form -- needs massive overhaul
   (if (typep rspec 'unpacked-phrasal-root)
     (let ((phrase (uppr-phrase rspec))
 	  (ordered-arguments (uppr-parameter-values rspec)))
