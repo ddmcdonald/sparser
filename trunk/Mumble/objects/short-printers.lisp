@@ -67,4 +67,4 @@ and hands it back for somebody else to print."
 (defun string-printer (string)
   (if (< (length string) 30)
       string
-      (string-append (substring string 0 26) " ...")))
+      (string-append (subseq string 0 26) " ...")))
