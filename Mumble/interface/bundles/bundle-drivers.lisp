@@ -75,9 +75,11 @@
 (defun clausal-bundle-driver (dtn root-node)
   (declare (ignore root-node))
   (landmark 'realizing-the-head-of-the-bundle dtn)
+  (push-debug `(,dtn ,root-node))
   (break "Needs conversion to dtn")
   #+ignore
-  (let ((result (realize-kernel-specification (head bundle))))
+  (let ((result (realize-kernel-specification (head bundle)))) ;; ignored
+    ;; see realize.lisp
     (set-backpointer-of-root result bundle)
     (entering-new-context result)
     (process-clausal-accessories bundle)
