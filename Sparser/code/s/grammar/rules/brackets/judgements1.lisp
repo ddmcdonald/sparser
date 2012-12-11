@@ -45,7 +45,7 @@
 ;; 1.9 (11/2/12) Added sort-out-name-bracketing-state called from PNF to fix interesting
 ;;      bug from false segment starting bracket where proper name ends in "ing"
 ;;      (11/8/12) started folding in adj-verb brackets. (11/9/12) added debugging
-;;      method brackets-on. Diverse tweaking through 12/4512. 
+;;      method brackets-on. Diverse tweaking through 12/10
 
 (in-package :sparser)
 
@@ -224,21 +224,18 @@
          (word-count (- (pos-token-index position)
                         (pos-token-index *left-segment-boundary*)))
          (previous-word (word-before position))
+         (next-word (pos-terminal position))
          ends-the-segment? )
 
-    (flet ((segment-started-as-np? ()
-             (or (eq bracket-opening-segment .[np)
-                 (eq bracket-opening-segment .[article)
-                 (eq bracket-opening-segment .[adjective)))
-           (segment-started-as-vg? ()
-             (or (eq (first *bracket-opening-segment*) .[verb )
-                 (eq (first *bracket-opening-segment*) .[modal))))
-      (setq
-       ends-the-segment?
-       (cond
-           ((eq ]  phrase].)   t)
-          
-           ((eq ]  ].phrase)   t)
+    ;; Set the flag. After this very long set of cases adjust
+    ;; global state variables as needed.
+    (setq
+     ends-the-segment? ;; mitigate right-margin creep
+     (cond
+      ((word-definitively-ends-segment next-word) t)
+
+        ((eq ]  phrase].)   t)
+        ((eq ]  ].phrase)   t)
           
            ((eq ]  np].)  t)
 
@@ -369,6 +366,8 @@
 
 
 
+           ;;--- the ambiguous cases ---
+
            ((eq ] ].np-vp)
 ;;            (push-debug `(,position ,*bracket-opening-segment*
 ;;                              ,word-count ,previous-word ,segment-start-pos))
@@ -397,7 +396,9 @@
               ((eq bracket-opening-segment conjunction.[) nil)
               ((word-is-np-modifier previous-word) nil)
 
-              ((eq bracket-opening-segment .[np-vp) nil)
+              ((or (eq bracket-opening-segment .[np-vp)
+                   (eq bracket-opening-segment np-vp.[)) ;; differentiate?
+               nil)
               ;; On the theory that if the first word was a verb then we'd
               ;; have two main verbs in a row, which is implausible, 
               ;; so we interpret the first word as a noun
@@ -421,16 +422,31 @@
               ;; probably too strong, but ok going-in position. This says
               ;; that it's time to shift to a verb interpretation
               t)
+             ((eq bracket-opening-segment .[article)
+              nil)
+             ((eq bracket-opening-segment .[np-vp)
+              ;; This is a tricky one since it's got the greatest possiblities
+              ;; for getting dead-wrong. Will want to find more features
+              ;; to use here
+              nil)
+
              ((eq bracket-opening-segment .[adverb)
               ;; This is an odd case, "made too many flights tardy" looking
               ;; at the ] from "flights".  Need more information.
               nil)
+             #+ignore
              (t (push-debug `(,position ,*bracket-opening-segment*
                               ,word-count ,previous-word ,segment-start-pos))
-                 (break "np-vp.[ next case.~
+                 (break "np-vp.] next case.~
                       ~%The bracket opening the segment is ~a.~
                       ~%The word with the ambiguous bracketing is ~a" ; 
-                       bracket-opening-segment (pos-terminal position)))))
+                       bracket-opening-segment (pos-terminal position)))
+             (t ;; Need more content to answer these cases correctly,
+              ;; e.g. for the 'verb' that starts the np "undiscounted tickets"
+              ;; and confuses the np-vp]. on tickets. Need to settle
+              ;; other things before putting that content in, so just
+              ;; punting the answer here
+              nil)))
             
 
 
@@ -473,7 +489,7 @@
           
 
            (t (break "Unclassified closing bracket: ~A" ])
-              :foo))))
+              :foo)))
 
     (if ends-the-segment?
       (then
@@ -511,33 +527,6 @@
        (tr :segment-does-not-end ] position)))
 
     ends-the-segment? ))
-
-
-
-;;;-------------
-;;; auxiliaries
-;;;-------------
-
-(defun np-segment-contains-more-than-article? (position)
-  ;; We are within an np -- probably one started with an article
-  ;; given that the caller is Bracket-ends-the-segment? -- and
-  ;; we want to know whether there is at least one word within
-  ;; the segment after the article. That comes down to this
-  ;; position being at least two greater than the position at
-  ;; which the segment starts.
-  (>= (- (pos-token-index position)
-         (pos-token-index *left-segment-boundary*))
-      2))
-
-(defun word-is-np-modifier (word)
-  (let ((brackets (bracket-assignment-to-list
-                   (get-bracket-assignment-for-word word))))
-    ;; others too?  Any complementary checks that are
-    ;; even more reliable?
-    (when brackets
-      (or (memq ].quantifier brackets)
-          (memq .[np brackets)
-          (memq .[adjective brackets)))))
 
 
 
@@ -606,52 +595,6 @@
       (do-boundary/ends-before 'PNF end bracket))))
 
 
-
-;;;----------------------------------------------------------
-;;; Useful operations for debugging / investigating brackets
-;;;----------------------------------------------------------
-
-(defgeneric brackets-on (item &optional stream)
-  (:documentation "Display the brackets on the item, in the manner
- best suited to the type of item involved."))
-
-(defmethod brackets-on ((pname string) &optional (stream *standard-output*))
-  (let ((word (word-named pname)))
-    (unless word
-      (error "~a does not name a word" pname))
-    (brackets-on word stream)))
-
-(defmethod brackets-on ((w word) &optional (stream *standard-output*))
-  (let ((brackets (get-bracket-assignment-for-word w)))
-    (if brackets
-       (describe-bracket-assignment brackets stream)
-      "no brackets")))
-
-(defmethod brackets-on ((n number) &optional (stream *standard-output*))
-  (let ((pos (position# n)))
-    (brackets-on pos stream)))
-
-(defmethod brackets-on ((p position) &optional (stream *standard-output*))
-  (let* ((before (pos-ends-here p))
-         (b-before (ev-boundary before))
-         (after (pos-starts-here p))
-         (b-after (ev-boundary after)))
-    (cond
-     ((and b-before b-after)
-      (format stream "~& ~a  p~a  ~a~%"
-              (b-symbol b-before) (pos-token-index p) (b-symbol b-after)))
-     (b-before
-      (format stream "~& ~a  p~a~%"
-              (b-symbol b-before) (pos-token-index p)))
-     (b-after
-      (format stream "~& p~a ~a%" 
-              (pos-token-index p) (b-symbol b-after)))
-     (t (format stream "~& no brackets on p~a~%"
-                (pos-token-index p))))
-    (when nil ;; does anything consume this for its value?
-      ;; thought there was, but grep doesn't show it.
-      `(,b-before ,b-after))))
-    
     
 
 

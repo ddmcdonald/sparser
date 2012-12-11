@@ -35,15 +35,6 @@
   ;; we've just seen, and the 'lemma' is the head word of
   ;; the entry.
 
-#|   Referents !!
-   For verbs we get rules with categories and referents.
- (a) We need to that for all the other cases
- (b) When DM&P (or whatever we trigger it from) is turned
-     then we need to make real categories for these
-     and make nice realization patterns / groupings over
-     the ambiguous cases.
-|#
-
   (let* ((instance-word (make-word-from-lookup-buffer))
          (instance-string (word-pname instance-word))
          (lemma-string (cadr entry))
@@ -64,7 +55,46 @@
        (ambiguous-comlex-primed-decoder lemma-word clauses)))
     instance-word ))
 
-;; N.b. Comlex has a 'gradable' feature on adjectives, with a flag for er-est
+
+
+#| Design (12/10/12)
+
+Every word gets a rule that will create an edge over it. Several rules
+if it has several parts of speech. We do NOT get brackets off these
+rules, the brackets always come from the words per se. Fine-grained
+form information goes on the rule/edge where its accessible to the
+segmentation judgements. This goes under a switch so that we can turn
+if off. 
+
+We create a category for each word to serve as the locus of its
+meaning, again based on its part of speech. Words with multiple parts
+of speech all get get the same referent in their rules, at least until
+we find a reason to do otherwise. Makes good sense for "attack".
+We don't take any short cuts here so that it's trivial to invert
+these rules. May have to refactor some of the tree family machinery
+to do this. 
+
+At the point when we need to deal with words that have truly ambigous
+meaning ("bank", "flight") then we'd have different referential categories
+for them, but my guess is that we don't need these for Grok -- uniformity
+of topic => uniformity of word senses. 
+
+As the going in assumption we use the category that we create for the
+word as the label on its edge. For multiple POS words we depend on the
+form label to do the work of differentiating their effects.
+
+When subtypes are reintstated, much of the form will be reflected in
+the specialized referents. Based forms come from the lemma forms of
+the words. 
+
+[[ N.b. we don't have this for all of the function words but we're tending
+in that direction, so there will be revisions required, and some thinking
+to get the distribution of information sorted out to the most useful
+places. ]]
+
+
+|#
+
 
 (defmethod unambiguous-comlex-primed-decoder ((lemma word) clause)
   "Identify any inflected forms and define words for them. Assign brackets
@@ -102,6 +132,8 @@
        (error "Unexpected POS marker: '~a' on ~a" pos-marker lemma)))
     (put-property-on-word :comlex properties lemma)))
 
+
+;; N.b. Comlex has a 'gradable' feature on adjectives, with a flag for er-est
 
 (defmethod ambiguous-comlex-primed-decoder ((lemma word) clauses)
   (let ((combinations (sort (copy-list (mapcar #'car clauses))
@@ -160,10 +192,13 @@
         clause-plural/s))))
 
 (defmethod decode-and-instantiate-primed-verb ((lemma word) clause)
-  (let ((special-case-plist (lift-special-case-form-from-comlex-clause clause))
-        (category (new-category-specializing-event lemma)))
+  ;; As originally written, this supplied a category and referent
+  ;; to define main-verb, which made it create rules for all the
+  ;; verb forms. This leads to impossible situations like "his ice (cream)"
+  ;; so stopping that. Leave the rule generation to a later dm&p
+  ;; process that can appreciate the context. 
+  (let ((special-case-plist (lift-special-case-form-from-comlex-clause clause)))
     (apply #'define-main-verb nil ;; symbol-for-category
-           :category category :referent category
            :infinitive (word-pname lemma) special-case-plist)))
 
 (defun lift-special-case-form-from-comlex-clause (clause)

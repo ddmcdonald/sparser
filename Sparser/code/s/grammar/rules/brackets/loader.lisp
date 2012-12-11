@@ -7,13 +7,13 @@
 
 ;; initiated 12/3/12 when it looked like more would go into this
 ;; directory. Removed load calls from grammar loader. 12/4/12 added
-;; assignments.
+;; assignments. 12/5 added predicates.
 
 (in-package :sparser)
 
-;; required is loaded by the master loader
-
+;; brackets;required is loaded by the master loader
 (gload "brackets;types")
+(gload "brackets;predicates")
 (gload "brackets;assignments")
 (gload "brackets;judgements1")
 (gload "brackets;comlex-unpacking")
