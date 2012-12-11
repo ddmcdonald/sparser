@@ -27,7 +27,9 @@
 ;; 2.0 (12/4/12) Removed the qualification for the *sun* system since
 ;;      it's been utterly superceded. 12/5/12 Substantially reworked
 ;;      pnf adjudicator to introduce the trailing brackets after
-;;      the last word (but just length 1 for now).
+;;      the last word (but just length 1 for now). 12/7 reworked
+;;      adjudicate-result-of-word-fsa because it wasn't getting any
+;;      fsa on the resulting edge, stranding the apostrophe-s edge.
 
 (in-package :sparser)
 
@@ -230,13 +232,33 @@
 (defun adjudicate-result-of-word-fsa (word ;; that triggered the fsa
                                       pos-before-word ;; before the trigger word
                                       pos-after-fsa-result)
-  (tr :adjudicate-result-of-word-fsa word)
+  (tr :adjudicate-result-of-word-fsa word) ;; "[scan] adjudicate-result-of-word-fsa ~A"
   (let ((edge (edge-between pos-before-word pos-after-fsa-result))
         (status (pos-assessed? pos-after-fsa-result)))
     (tr :adjudicating-fsa-result
         word status pos-before-word pos-after-fsa-result edge)
+    ;; "An FSA ended at p~A, whose status is ~A.~
+    ;;    it started at p~A with \"~A\"~
+    ;;    there is an edge over the span:~%    ~A"
     (if edge
-      (then 
+      ;; This is a fresh edge, we  have to see if it has its
+      ;; own brackets and/or fsa before looking further on. 
+      ;; Treating the edge like it was the result
+      ;; of introduce-terminal-edges -- which will look
+      ;; for a leading form edge and eventually will get
+      ;; to the edge-fsa trigger, which had been the problem
+      ;; with the earlier treatment applied to a possessive.
+      (check-preterminal-edges
+       (list edge) word
+       pos-before-word pos-after-fsa-result)      
+
+      (adjudicate-status-after-fsa-returned
+       status pos-after-fsa-result))))
+
+#+ignore ;; original of what results-of-word-fsa did if there
+ ;; was an edge. It asumes that all the action is to the right
+ ;; of the new edge. 
+(then 
 	(if (and (no-space-before-word? pos-after-fsa-result)
 		 *uniformly-scan-all-no-space-token-sequences*)
 	  (then
@@ -250,9 +272,6 @@
 		 pos-before-word edge pos-after-fsa-result))))
 	  (check-fsa-edge-for-brackets
 	   pos-before-word edge pos-after-fsa-result)))
-
-      (adjudicate-status-after-fsa-returned
-       status pos-after-fsa-result))))
 
 
 (defun adjudicate-status-after-fsa-returned (status pos-after-fsa-result)

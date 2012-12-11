@@ -337,7 +337,6 @@
 
 
 
-(defvar *preterminals-on-current-word* nil)
 
 (defun introduce-terminal-edges (word position-before position-after)
   (tr :introduce-terminal-edges word) ;; "[scan] introduce-terminal-edges ~A"
@@ -345,7 +344,6 @@
          (install-terminal-edges word position-before position-after)))
     (if edges
       (then
-        (setq *preterminals-on-current-word* edges)
         (check-preterminal-edges
          edges word position-before position-after))
       (introduce-right-side-brackets word position-after))))
@@ -353,7 +351,7 @@
 
 
 (defun check-preterminal-edges (edges word position-before position-after)
-  (tr :check-preterminal-edges position-before)
+  (tr :check-preterminal-edges position-before) ;; "[scan] Check-preterminal-edges ~A" 
   (let ((label (introduce-leading-brackets-from-edge-form-labels
                 edges position-before)))
     (if label
