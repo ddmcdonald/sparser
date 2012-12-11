@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(sparser LISP) -*-
 ;;; copyright (c) 1990-1991,2011-2012 David D. McDonald -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;      File:  "no breaks"
 ;;;    Module:   "tools:basics"
-;;;   Version:   February 2011
+;;;   Version:   December 2012
 
 ;; Original version 2/1991 for CTI.
 ;; 7/22/09 brought package out of the dark ages. 10/8 Added on-error setup.
 ;; (2/8/11) Added more conditionalization so will load in Clozure as well as ACL.
-;; (2/17/12) Marking special variables
+;; (2/17/12) Marking special variables. 12/8 Copied the functions for -allegro 
+;;  versions. 
 
 (in-package :sparser)
 
@@ -43,6 +43,14 @@
 	  *original-fvalue-of-error*)
     (setf (symbol-function 'lisp:cerror)
 	  *original-fvalue-of-cerror*)))
+#-allegro
+(defun restore-original-break-error-&-cerror-definitions ()
+  (setf (symbol-function 'break)
+        *original-fvalue-of-break*)
+  (setf (symbol-function 'error)
+        *original-fvalue-of-error*)
+  (setf (symbol-function ':cerror)
+        *original-fvalue-of-cerror*))
 
 #+allegro
 (defun preempt-all-fns-that-stop-execution (symbol-for-new-function)
@@ -50,6 +58,11 @@
     (preempt-break-function symbol-for-new-function)
     (preempt-error-function symbol-for-new-function)
     (preempt-cerror-function symbol-for-new-function)))
+#-allegro
+(defun preempt-all-fns-that-stop-execution (symbol-for-new-function)
+  (preempt-break-function symbol-for-new-function)
+  (preempt-error-function symbol-for-new-function)
+  (preempt-cerror-function symbol-for-new-function))
 
 
 (defun preempt-break-function (symbol-for-new-function)
