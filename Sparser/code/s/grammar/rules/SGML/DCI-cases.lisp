@@ -200,7 +200,7 @@
   (declare (ignore edge pos-before/edge))
   nil )
 
-
+#+ignore  ;; no definition (anymore) for calculate-labeled-segment-boundaries
 (defun end-Dateline-section (final-pos/edge
                                      &optional leading-edge)
 
