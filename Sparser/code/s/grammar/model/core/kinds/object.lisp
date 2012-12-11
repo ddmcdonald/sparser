@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1999,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1999,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.1 August 2011
+;;;  version:  0.1 December 2012
 
 ;; initiated on 12/13/99. Debugged 12/26. 2/11/07 Added rule definition.
 ;; 8/2 revised to instantiated the symbol, which means you get rules like
@@ -23,7 +23,8 @@
 ;;      via symbols.  7/7/11 Tweaked that to account for alisp. 7/31 moved
 ;;      in the event category from rules/syntax/tense and added a helper
 ;;      function to make subcategories of event for primed verbs. 8/1 moved
-;;      them all to upper-model so they will be loaded early.
+;;      them all to upper-model so they will be loaded early. 12/8/12 refined
+;;      function comment on new-category-specializing-event
 
 (in-package :sparser)
 
@@ -88,8 +89,8 @@
 ;;;-------------------------------
 
 (defmethod new-category-specializing-event ((w word))
-  ;; When used by the primed word decoder this works in conjunction
-  ;; with define-main-verb, so no need to write any rules here.
+  ;; Originally used with the primed word decoder but concluded
+  ;; that was premature. 
   (let ( category )
     (when (category-named (word-symbol w))
       (error "Weirdness. The category for ~a exists but ~
