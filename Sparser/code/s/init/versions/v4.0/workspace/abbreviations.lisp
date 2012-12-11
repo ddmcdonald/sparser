@@ -88,8 +88,8 @@
 ;; outputs parse as s-expression in speech act-inspired format
 (defun pp (string)
   (cond
-    (*checkpoint-operations*
-     (checkpoint-call-and-postprocessing string))
+;    (*checkpoint-operations*
+;     (checkpoint-call-and-postprocessing string))
     (t (analyze-text-from-string string))))
 
 (defun p (string)
