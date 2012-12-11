@@ -66,6 +66,9 @@
 ;;; checking extension
 ;;;--------------------
 
+
+#+ignore ;; Not called (anymore). The two extension queries in it
+         ;; don't have definitions. Code is commented out perhaps?
 (defun check-extension-possibilities (right-end-position
                                       topnode-field
                                       vector)
