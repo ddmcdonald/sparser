@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.18 December 2011
+;;;  version:  0.18 December 2012
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -58,6 +58,7 @@
 ;; 0.18 (11/6) removed the "The" check and removal from uncategorized names because
 ;;       is was written too broadly and sweeping up things it shouldn't have.
 ;;      (12/19/11) Adding "Hurricane" by analogy to how place names are done.
+;;       Tweaking little things in lieu of a big makeover through 12/10/12. 
 
 (in-package :sparser)
 
@@ -431,12 +432,15 @@
                                  &-sign initials? person-version
                                  inc-term? of and the generic-co co-activity
                                  koc? ordinal location-head hurricane)
+  (declare (ignore hurricane))
 
   ;; broken out as a subroutine just because it makes the forms shorter
   (declare (ignore name-state))
   (if of
     (analyze-structure-of-name-with-of items of
                                        &-sign initials? inc-term?)
+
+    ;;--- examine evidence for a way to categorize the name
     (let ( name
            (category
             (cond (inc-term? category::company-name)
@@ -457,8 +461,10 @@
                    ;; this is weak evidence --> limited partnerships
                    category::person-name )
                   (person-version category::person-name)
-                  (hurricane category::hurricane)
+                  ;;////(hurricane category::hurricane) ;; sl dependent
                   (t category::name))))
+
+      ;;--- Look for things that would restructure the elements of the name
 
       (when ordinal  ;; e.g. "III", "Fourth"
         ;; a cons of the count and an ordinal unit
@@ -475,6 +481,16 @@
               ;; "Grumman Hill Investments II L.P."
               (setq category category::name)))))
 
+      (when (title-elements-in-items items)
+        (multiple-value-bind (title-elements name-elements)
+                             (split-off-title-from-name items)
+          ;; FIXME -- droping these on the floor ////////////////////
+          ;; They really should have been picked up in the examination
+          ;; of the scan. 
+          (declare (ignore title-elements))
+          (setq items name-elements)
+          (setq name category::person-name)))          
+
     #|(when person-version  ;; e.g. "Jr."
         ;; substitute the object for the index that Examine... has passed in
         (setq person-version (nth (1- person-version) items))
@@ -485,6 +501,8 @@
             (break "New case: The person-version is not at the end of the ~
                     list of name items.~%It's probably a conjunction of ~
                     names.~%  ~A~%  ~A" person-version items))))|#
+
+      ;;--- Make the name
 
       (setq name
             (ecase (cat-symbol category)
@@ -506,8 +524,11 @@
                   ))
               (category::location
                (make-location-name items location-head))
-              (category::hurricane
-               (make-hurricane-name items hurricane))))
+;              (category::hurricane
+;               (make-hurricane-name items hurricane))
+;;     Hurricane SL development interrupted. Should design and build the
+;;   general pattern for this instead. Perhaps some code-generating macros
+              ))
       name )))
 
 
@@ -637,6 +658,31 @@
                      category::initial))
       (return-from some-non-initial-in-items t))))
 
+
+(defun title-elements-in-items (items)
+  (unless (every #'(lambda (o) (typep o 'individual)) items)
+    (push-debug `(,items))
+    (error "Unexpected: not every item in a name is an individual"))
+  (let ((categories (mapcar #'cat-symbol
+                            (mapcar #'i-type-of items))))
+    (push-debug `(,categories ,items))
+    (or (memq 'category::title-modifier categories)
+        (memq 'category::single-word-title categories)
+        (memq 'category::military-rank categories))))
+
+(defun split-off-title-from-name (items)
+  (flet ((title-element? (e)
+           (or (itypep e category::title-modifier)
+               (itypep e category::single-word-title)
+               (itypep e category::military-rank))))
+    (let ( title  name )
+      (dolist (item items)
+        (if (title-element? item)
+          (push item title)
+          (else
+           (setq name (memq item items))
+           (return))))
+      (values (nreverse title) name))))
 
 ;;;-------------
 ;;; subroutines
