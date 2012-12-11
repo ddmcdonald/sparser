@@ -23,16 +23,22 @@
 (trace-lexicon-unpacking)
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 
+
+;;--------- for debugging segmentation, bracket calculations
+
 (defun trace-segmentation ()
   (trace-brackets) 
   (trace-segment-completion) 
   (trace-segments)
+  (trace-network)
   (trace-network-flow))
 
-;; (trace-pnf)
-;; (untrace-brackets) (untrace-segment-completion) 
-;; (untrace-segments) (untrace-network-flow)
-;; (untrace-pnf)
+;; (trace-pnf)  ;; when proper names / capitalized sequences are implicated
+
+;; (no-Sparser-traces)  ;; turn the traces off
+
+;; (brackets-on <string for a word>)  ;; usually always lowercase
+;; (brackets-on <number of a position>)
 
 ;; (p "Boeing Co. said the U.S. government has suspended the sale")
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
