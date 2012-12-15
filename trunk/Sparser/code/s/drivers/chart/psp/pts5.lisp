@@ -2,7 +2,7 @@
 ;;; copyright (c) 1991-1996,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
-;;; 
+;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
 ;;;  Version:  5.13 October 2012
@@ -59,6 +59,12 @@
     (setq *segment-ended-because-of-boundary-from-form-label* t))
   (let ((coverage (segment-coverage)))
     (unless (eq coverage :null-span)
+      (when *record-bracketing-progress*
+        ;; [sfriedman:20121215.1242CST] N.B. this is recorded in
+        ;;   reverse order for efficiency.  Consume in reverse.
+        (push (cons (pos-array-index *left-segment-boundary*)
+                    (pos-array-index *right-segment-boundary*))
+              *bracketing-progress*))
       (cond
        (*readout-segments*
         (print-segment *left-segment-boundary* *right-segment-boundary*))
@@ -66,7 +72,7 @@
              (null *display-word-stream*))
         (print-segment-and-pending-out-of-segment-words
          *left-segment-boundary* *right-segment-boundary*))))
-       
+
     (tr :pts-coverage coverage)
     (if coverage
       (ecase coverage
@@ -75,10 +81,10 @@
 
         (:one-edge-over-entire-segment
          (segment-finished :one-edge-over-entire-segment))
-         
+
         (:no-edges
          (segment-finished :no-edges))
-         
+
         (:some-adjacent-edges
          (parse-at-the-segment-level *right-segment-boundary*))
 
@@ -137,32 +143,32 @@
 
     (else
       (cond
-	(*do-domain-modeling-and-population*
-	 (dm/analyze-segment coverage))
+        (*do-domain-modeling-and-population*
+         (dm/analyze-segment coverage))
 
-	(*do-strong-domain-modeling*
-	 (sdm/analyze-segment coverage))
-	
-	(t
-	 (case coverage
-	   (:one-edge-over-entire-segment
-	    (sf-action/spanned-segment))
-	   
-	   (:no-edges
-	    (sf-action/no-edges))
-	   
-	   (:discontinuous-edges
-	    (sf-action/discontinuous-edges))
-	   
-	   (:some-adjacent-edges
-	    (sf-action/some-adjacent-edges))
-	   
-	   (:all-contiguous-edges
-	    (sf-action/all-contiguous-edges))
-	   
-	   (otherwise
-	    (break "Unanticipated value for segment coverage: ~A"
-		   coverage))))))))
+        (*do-strong-domain-modeling*
+         (sdm/analyze-segment coverage))
+
+        (t
+         (case coverage
+           (:one-edge-over-entire-segment
+            (sf-action/spanned-segment))
+
+           (:no-edges
+            (sf-action/no-edges))
+
+           (:discontinuous-edges
+            (sf-action/discontinuous-edges))
+
+           (:some-adjacent-edges
+            (sf-action/some-adjacent-edges))
+
+           (:all-contiguous-edges
+            (sf-action/all-contiguous-edges))
+
+           (otherwise
+            (break "Unanticipated value for segment coverage: ~A"
+                   coverage))))))))
 
 
 
@@ -257,7 +263,7 @@
 
 (defun sf-action/some-adjacent-edges ()
   ;; the existing parsing rules weren't sufficient to supply an
-  ;; account of the adjacent edges in this segment. 
+  ;; account of the adjacent edges in this segment.
   ;;   It's also not inconceivable that we're missing some
   ;; bracket information, so we should be careful about how
   ;; we represent the result -- we'll span it with an edge
@@ -347,7 +353,7 @@
     (setq *pending-conjunction* nil))
 
   (trivially-span-current-segment)
-  
+
   (let ((right-boundary *right-segment-boundary*))
     (if (scan-another-segment? right-boundary)
       (then (no-further-action-on-segment)
@@ -418,7 +424,7 @@
               :no-edges )
              (t  :one-edge-over-entire-segment ))
             :no-edges )
-          
+
           ;; there's more than one word in the span
           (if edge-at-the-right-end
             (if (eq :multiple-initial-edges edge-at-the-right-end)
@@ -438,7 +444,7 @@
                    (pos-edge-starts-at edge-at-the-right-end)
                    left-end t))))
             (else
-              ;; there's no edge at the end of the segment, maybe 
+              ;; there's no edge at the end of the segment, maybe
               ;; there is somewhere earlier in the segment
               (loop-through-segment-for-some-edges
                prior-position left-end nil))))))))
@@ -446,65 +452,65 @@
 
 
 
-(defun loop-through-segment-for-some-edges (position left-end 
+(defun loop-through-segment-for-some-edges (position left-end
                                             edge-pending?)
-  
+
   ;; Walk through the segment from the right and adjust the description
   ;; of the state according to whether edges are seen and how they
   ;; line up with each other.
   ;;    The 'position' is where to start. It may be interior to the
   ;; segment already if the caller saw an edge that ended at the
   ;; right boundary of the segment and set 'edge-pending?'.
-  
+
   (let ((all-edges-so-far edge-pending?)
-	(left-index (pos-token-index left-end))
+        (left-index (pos-token-index left-end))
         some-edge/s   at-least-two-adjacent  there-is-some-gap )
 
     (loop
       ;(format t "~&position = ~a  top-node = ~a~%"
-      ;	      position (ev-top-node (pos-ends-here position)))
+      ;       position (ev-top-node (pos-ends-here position)))
       (let ((top-edge (ev-top-node (pos-ends-here position)))
-	    (position-just-to-the-left (chart-position-before position)))
+            (position-just-to-the-left (chart-position-before position)))
 
-	(if top-edge
-	  (if edge-pending? ;; two edges in a row
-	    (then
-	      (setq at-least-two-adjacent t))
-	    (else
-	      (setq edge-pending? t)))
-        
-	  (else 
-	    (unless (eq left-end position-just-to-the-left)
-	      (setq there-is-some-gap t))
-	    (when all-edges-so-far
-	      (setq all-edges-so-far nil))
-	    (when edge-pending?
-	      (setq some-edge/s t)
-	      (setq edge-pending? nil))))
-      
-	(setq position 
-	      (cond ((typep top-edge 'edge)
-		     (ev-position (edge-starts-at top-edge)))
-		    ((or (eq top-edge :multiple-initial-edges) ;; single word
-			 (null top-edge)) ;; a single word with no analysis
-		     (chart-position-before position))
-		    (t (break "Unexpected situation - top-edge = ~a"
-			      top-edge))))
-	(when (or (eq position left-end)
-		  ;; Since we're using edges to update position there's
-		  ;; the possibility of getting an edge that takes us
-		  ;; outside the bracket-based segment bounds.
-		  (< (pos-token-index position) left-index))
-	  (return nil))))
-    
-    ;(break "at-least-two-adjacent = ~a  there-is-some-gap = ~a" 
-    ;	   at-least-two-adjacent there-is-some-gap)
+        (if top-edge
+          (if edge-pending? ;; two edges in a row
+            (then
+              (setq at-least-two-adjacent t))
+            (else
+              (setq edge-pending? t)))
+
+          (else
+            (unless (eq left-end position-just-to-the-left)
+              (setq there-is-some-gap t))
+            (when all-edges-so-far
+              (setq all-edges-so-far nil))
+            (when edge-pending?
+              (setq some-edge/s t)
+              (setq edge-pending? nil))))
+
+        (setq position
+              (cond ((typep top-edge 'edge)
+                     (ev-position (edge-starts-at top-edge)))
+                    ((or (eq top-edge :multiple-initial-edges) ;; single word
+                         (null top-edge)) ;; a single word with no analysis
+                     (chart-position-before position))
+                    (t (break "Unexpected situation - top-edge = ~a"
+                              top-edge))))
+        (when (or (eq position left-end)
+                  ;; Since we're using edges to update position there's
+                  ;; the possibility of getting an edge that takes us
+                  ;; outside the bracket-based segment bounds.
+                  (< (pos-token-index position) left-index))
+          (return nil))))
+
+    ;(break "at-least-two-adjacent = ~a  there-is-some-gap = ~a"
+    ;      at-least-two-adjacent there-is-some-gap)
     (cond (all-edges-so-far
            :all-contiguous-edges )
           (at-least-two-adjacent
-	   (if there-is-some-gap
-	     :some-adjacent-edges
-	     :all-contiguous-edges))
+           (if there-is-some-gap
+             :some-adjacent-edges
+             :all-contiguous-edges))
           (edge-pending?
            :discontinuous-edges )
           (some-edge/s
@@ -515,7 +521,7 @@
 
 
 #|  original (prior to 5/28/95)
-(defun loop-through-segment-for-some-edges (position left-end 
+(defun loop-through-segment-for-some-edges (position left-end
                                             edge-pending?
                                             &aux some-edge/s )
 

@@ -15,9 +15,10 @@
 (setq *annotate-realizations* nil) ;; Will be t, but not ready yet
 
 ;;-- Default display setup. Interleave the segment markers with
-;; the running text. 
+;; the running text.
 (setq *display-word-stream* nil)
 (setq *readout-segments-inline-with-text* t)
+(setq *record-bracketing-progress* t)
 
 ;;-- For Comlex shakeout
 (trace-lexicon-unpacking)
@@ -27,8 +28,8 @@
 ;;--------- for debugging segmentation, bracket calculations
 
 (defun trace-segmentation ()
-  (trace-brackets) 
-  (trace-segment-completion) 
+  (trace-brackets)
+  (trace-segment-completion)
   (trace-segments)
   (trace-network)
   (trace-network-flow))
@@ -50,7 +51,7 @@
 ;;    off load-truename
 
 #|
--- For searching with grep. 
+-- For searching with grep.
 cd sparser/Sparser/code/s/
 grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
 |#

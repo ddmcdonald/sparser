@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "init chart"
 ;;;   Module:  "analyzers;psp:init:"
 ;;;  Version:  1.3 June 1994
@@ -31,6 +31,7 @@
     (error "The session has not yet been initialized."))
 
   (setq *chart-empty* t
+        *bracketing-progress* nil
         *position-array-is-wrapped* nil    ;; used by Add-terminal
         *next-array-position-to-fill*   0  ;; used by scan,Add-terminal
         *first-chart-position* 0           ;; used when wrapped
@@ -46,16 +47,16 @@
     ;; referenced by Bump-&-store. Incremented by a NL-fsa
 
   (initialize-edge-resource :initializing-run)
-  
+
   (initialize-new-flags)
   (initialize-all-edges-state-vars)
-  
+
   (let ((first-position
          (chart-position *next-array-position-to-fill*)))
-    
+
     ;;(setq *last-position-marched-back-to* first-position)
     ;; 11/26 wasn't declared, so probably out of date
-    
+
     ;;  (re-initialize-position-array)  11/26 replacing this with incremental cleanup
     (initialize-position first-position  ;; 0
                          *number-of-next-position*)

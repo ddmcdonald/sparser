@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1991,1992,1993,1994,1995  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "flags"
 ;;;   Module:  "drivers;chart:psp:"
 ;;;  Version:  0.1 September 1995
@@ -72,7 +72,19 @@
   "Set by pts when it is called with an optional argument.
    Checked by Segment-finished and Scan-next-segment.")
 
+;;;--------------------
+;;; bracketing flags
+;;;--------------------
 
+(defparameter *record-bracketing-progress* nil
+  "Controls whether each bracket is recorded {t,nil}.")
+
+;;;--------------------
+;;; bracketing variables
+;;;--------------------
+
+(defvar *bracketing-progress* nil
+  "A list of bracket intervals ((i . j) (k . l)).")
 
 ;;;--------------------
 ;;; forest-level flags
@@ -117,7 +129,7 @@
 
 
 (defvar *left-boundary/treetop-actions* nil
-  "Value is an position. Managed by Do-treetop-triggers. 
+  "Value is an position. Managed by Do-treetop-triggers.
    Records how far back the TT actions have to start once other
    forest-level activities (like parsing or DA) have finished.
    When the TT phase has finished this pointer will have the

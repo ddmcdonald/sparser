@@ -37,14 +37,14 @@
    is defined in Readout-segments?).")
 
 (defparameter *readout-segments-inline-with-text* nil
-  "Read in pts as an alternative to *readout-segments*. Drives an input 
+  "Read in pts as an alternative to *readout-segments*. Drives an input
    printer that indicates segment boundaries inline with the stream of
    text. Keeps track of the words that fall between segments and prints
    them when each next segment is introduced and printed. ")
 
 (defparameter *inline-treetop-readout* nil
-  "Controls whether Synchronize-with-workbench-views makes a 
-   call to 'Readout-segments' to have the segmentation of the 
+  "Controls whether Synchronize-with-workbench-views makes a
+   call to 'Readout-segments' to have the segmentation of the
    pending region of text written to the designated stream.")
 
 (defparameter *stream-to-readout-treetops-to* *standard-output*
@@ -112,18 +112,45 @@ there were ever to be any.  ///hook into final actions ??  |#
      end-edge)))
 
 
+;;;--------------------------------
+;;; simple display of bracketing progress
+;;;--------------------------------
+
+(defun bracketing-tree (&optional (start-pos 0) (bracket-list *bracketing-progress*))
+  (let ((text-list nil))
+    (do* ((index start-pos (1+ index))
+          (pos (chart-position index) (chart-position index))
+          (word (pos-terminal pos) (pos-terminal pos)))
+        ((equal word word::end-of-source))
+      (push (format nil "~a" (word-pname word)) text-list))
+    (setf text-list (reverse text-list))
+    (dolist (bracket bracket-list)
+      (let* ((start (car bracket))
+             (end (cdr bracket))
+             (contents (subseq text-list start end)))
+        (setf (nth start text-list) contents)
+        (do ((i (1+ start) (1+ i)))
+            ((= i end))
+          (setf text-list (remove (nth (1+ start) text-list) text-list
+                                  :start (1+ start) :count 1)))))
+    ;; [sfriedman:20121215.1356CST] We don't care about the start char.
+    (cdr text-list)))
+
+
+(defun readout-bracketing ()
+  (bracketing-tree))
 
 
 ;;;--------------------------------
 ;;; simple display of segmentation
 ;;;--------------------------------
 
-(defun readout-segments/sw (&optional 
+(defun readout-segments/sw (&optional
                             (stream *standard-output*)
                             (starts-at
                              (if *position-array-is-wrapped*
                                *first-chart-position*
-                               (chart-position 1)))                            
+                               (chart-position 1)))
                             (ends-at
                              *number-of-next-position*))
 
@@ -160,7 +187,7 @@ there were ever to be any.  ///hook into final actions ??  |#
                               (chart-position-after starting-position)
                               (pos-edge-ends-at tt)))
 
-        ((one-word-long? tt)         
+        ((one-word-long? tt)
          (etypecase label
            ((or category referential-category mixin-category)
             (print-one-word-segment/sw tt label stream))
@@ -312,7 +339,7 @@ there were ever to be any.  ///hook into final actions ??  |#
 
 (defun print-treetops (&optional  ;; sugar for official displays
                        (stream *standard-output*)
-                       start-pos 
+                       start-pos
                        stop-pos )
   (unless (eq start-pos stop-pos)    ;; 1st call from synchronizer
     (tts stream start-pos stop-pos))
@@ -356,7 +383,7 @@ there were ever to be any.  ///hook into final actions ??  |#
         :done-printing )
       (sucessive-tts/end-of-chart/print ending-position stop-pos stream))))
 
-    
+
 
 
 ;;;---------------------
@@ -484,7 +511,7 @@ there were ever to be any.  ///hook into final actions ??  |#
                 (pos-terminal p))
           (whitespace (pos-preceding-whitespace p)
                       (pos-preceding-whitespace p)))
-         
+
          ((eq p ending-position))
 
       (cond (first-time
@@ -521,7 +548,7 @@ there were ever to be any.  ///hook into final actions ??  |#
             (if multiple?
               (push (pos-terminal start) tts)
               (push tt tts))
-            
+
             (cond ((eq end ending-position)
                    (return))
                   ((> (pos-token-index end)
@@ -529,7 +556,7 @@ there were ever to be any.  ///hook into final actions ??  |#
                    (break/debug "Treetops-in-segment: the last edge ~
                                  overshoots the ending-position"))
                   (t (setq start end)))))
-        
+
         (nreverse tts)))))
-        
+
 
