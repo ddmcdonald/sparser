@@ -2,13 +2,13 @@
 ;;; copyright (c) 1990-1995,2011-2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
-;;; 
+;;;
 ;;;     File:  "positions"
 ;;;   Module:  "objects;chart:positions:"
 ;;;  Version:  1.3 December 2012
 
 ;; 1.1 (2/11 v1.8.1)  Added Position-precedes
-;;     (5/12/93 v2.3) commented out an unfinished fn. 
+;;     (5/12/93 v2.3) commented out an unfinished fn.
 ;; 1.2 (7/8) added Word-before{after}
 ;; 1.3 (5/3/94) added display-char-index field. 5/5 added Set-status
 ;;     5/24 added Number-of-terminals-between
@@ -23,12 +23,12 @@
 ;;;---------------------------
 ;;;  Positions in the chart
 ;;;---------------------------
-(#+allegro excl:without-package-locks 
+(#+allegro excl:without-package-locks
  #-allegro progn
   (defstruct (position
-	       (:conc-name #:pos-)
-	       (:print-function print-position-structure))
-    
+               (:conc-name #:pos-)
+               (:print-function print-position-structure))
+
     array-index
     character-index
     display-char-index
@@ -38,6 +38,7 @@
     terminal
     preceding-whitespace
     capitalization
+    status-lifo
     assessed? ))
 
 
@@ -118,8 +119,9 @@
 
 (defun set-status (keyword p)
   (tr :status-set keyword p) ;; "[scan] Setting status of p~a to :~a"
+  (kpush keyword (pos-status-lifo p))
   (setf (pos-assessed? p) keyword))
-  
+
 
 
 ;;;------------
@@ -138,6 +140,9 @@
   (- (pos-token-index p2)
      (pos-token-index p1)))
 
+(defun has-been-status? (keyword p)
+  ;; Return non-nil if this position has been the given status.
+  (member keyword (pos-status-lifo p)))
 
 ;;;------------------------
 ;;; construction functions
@@ -161,4 +166,4 @@
                                 (word-pname word)
                                 " ")))
     (subseq string 0 (1- (length string)))))
-    
+

@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1991-2005,2012  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "array"
 ;;;   Module:  "objects;chart:positions:"
 ;;;  Version:  2.5 March 2012
@@ -67,6 +67,7 @@
     (dotimes (n *number-of-positions-in-the-chart*)
       (setq position (aref chart n))
       (setf (pos-terminal position) nil)
+      (setf (pos-status-lifo position) nil)
       (setf (pos-assessed? position) nil))))
 
 
@@ -77,6 +78,7 @@
   (setf (pos-terminal             p) nil)
   (setf (pos-preceding-whitespace p) nil)
   (setf (pos-capitalization       p) nil)
+  (setf (pos-status-lifo          p) nil)
   (setf (pos-assessed?            p) nil)
   (initialize-edge-vector (pos-ends-here p))
   (initialize-edge-vector (pos-starts-here p)))
