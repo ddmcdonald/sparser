@@ -27,6 +27,13 @@
       (format stream " ~A)" (third exp)))
     (format stream ")~%")))
 
+(defun write-bracket-citation-from-last-run (&optional
+                                     (stream *citation-out-stream*))
+  (let ((string (get-last-run-from-buffer))
+        (bracketing (bracketing-tree)))
+    (format stream "~&(define-bracket-citation \"~A\"~%" string)
+    (format stream "~s" bracketing)
+    (format stream ")~%")))
 
 (defun write-cite/label-dispatch (label stream)
   (etypecase label
