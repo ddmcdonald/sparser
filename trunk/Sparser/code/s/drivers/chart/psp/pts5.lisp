@@ -62,9 +62,9 @@
       (when *record-bracketing-progress*
         ;; [sfriedman:20121215.1242CST] N.B. this is recorded in
         ;;   reverse order for efficiency.  Consume in reverse.
-        (push (cons (pos-array-index *left-segment-boundary*)
-                    (pos-array-index *right-segment-boundary*))
-              *bracketing-progress*))
+        (kpush (kcons (pos-array-index *left-segment-boundary*)
+                      (pos-array-index *right-segment-boundary*))
+               *bracketing-progress*))
       (cond
        (*readout-segments*
         (print-segment *left-segment-boundary* *right-segment-boundary*))
