@@ -33,7 +33,7 @@
 
 
 (defmacro kpush (item symbol-pointing-to-list)
-  `(setq ,symbol-pointing-to-list
+  `(setf ,symbol-pointing-to-list
          (kcons ,item ,symbol-pointing-to-list)))
 
 
