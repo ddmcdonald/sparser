@@ -19,6 +19,7 @@
             (:print-function print-citation-structure)
             (:conc-name #:cite-))
   string
+  bracketing
   edge-descriptors )
 
 
@@ -50,9 +51,12 @@
 ;;;----------
 
 (defmacro define-citation (string &rest descriptors)
-  `(define-citation/expr ,string ',descriptors))
+  `(define-citation/expr ,string ',descriptors nil))
 
-(defun define-citation/expr (string descriptors)
+(defmacro define-bracket-citation (string bracketing)
+  `(define-citation/expr ,string nil ',bracketing))
+
+(defun define-citation/expr (string descriptors bracketing)
   (let ((obj (citation-named string)))
     (unless obj
       (setq obj (make-citation :string string))
@@ -63,4 +67,5 @@
     ;; always assume that we should accept the descriptors
     ;; even if this is a re-execution of the same definition
     (setf (cite-edge-descriptors obj) descriptors)
+    (setf (cite-bracketing obj) bracketing)
     obj ))

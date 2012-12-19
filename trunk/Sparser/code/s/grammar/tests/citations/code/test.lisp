@@ -19,6 +19,7 @@
 (defun test-citation (c &optional (stream *standard-output*))
   (let ((string (cite-string c))
         (official-tts (cite-edge-descriptors c))
+        (official-bracketing (cite-bracketing c))
         (*citation-report-stream* stream))
 
     (format stream "~&~%Testing \"~A\"~
@@ -26,8 +27,17 @@
 
     ;; if we get a lisp error from this, tuffers.
     (pp string)
-    (match-chart-to-citation official-tts)))
+    (when official-tts
+      (match-chart-to-citation official-tts))
+    (when official-bracketing
+      (match-bracketing-to-citation official-bracketing))))
 
+(defun match-bracketing-to-citation (official-bracketing)
+  (let ((bracketing (bracketing-tree)))
+    (cond ((equal official-bracketing bracketing)
+           :match)
+          (t
+           (different-bracketing official-bracketing bracketing)))))
 
 (defun match-chart-to-citation (official-tts)
   (let ((tts-this-time
@@ -75,7 +85,7 @@
                                                 *category-package*)
                                    item))
                              (cdr off-item))))))
-                  
+
     (let ((test-item (match-edge/label-to-symbol test-label)))
 
       (cond ((and (= off-start test-start)
@@ -141,7 +151,11 @@
            ~%     cited: ~A~
            ~%     actual: ~A" reference-edge test-edge))
 
-
+(defun different-bracketing (reference-bracketing test-bracketing)
+  (format *citation-report-stream*
+          "~%   Mismatch -- different bracketing:~
+           ~%     cited: ~A~
+           ~%     actual: ~A" reference-bracketing test-bracketing))
 
 (defun test-is-longer-than-citation (edge-just-checked remaining-edges)
   (format *citation-report-stream*
