@@ -5,7 +5,8 @@
 ;;;   Module: "grammar;rules:brackets:"
 ;;;  Version:  December 2012
 
-;; Extracted from diverse files 12/4/12
+;; Extracted from diverse files 12/4/12. Added referent construction
+;; 12/11/12, 
 
 (in-package :sparser)
 
@@ -102,11 +103,8 @@
   ;; the adjective as well?
   ;; N.b only a few of the forms are actually ambiguous
   (let* ((noun-clause (assoc 'noun clauses))
-         (verb-clause (assoc 'verb clauses))
          (plurals (plural-words-given-CL-clause lemma noun-clause))
          (noun-forms (cons lemma plurals)))
-    (decode-and-instantiate-primed-verb lemma verb-clause)
-    ;; That runs for side-effects, and assigns main-verb brackets
     (let* ((verb-inflections (verb-forms-of lemma))
            (verb-forms (pushnew lemma verb-inflections)))
       ;; We only put the special np-vp brackets on the words
@@ -129,8 +127,124 @@
   (assign-brackets-to-word word '( ].phrase phrase.[ )))
 
 
+;;;-------------------------------------------
+;;; Deciding on category, referent, and rules
+;;;-------------------------------------------
+;; Much of this is from tree-families/shortcuts, but adapted
+;; so we can be free with the factoring. Final actions by
+;; the code in morphology just as its used by ETF.
+
+(defun setup-common-noun (word comlex-clause)
+  (let* ((marked-plural (explicit-plurals comlex-clause))
+         (category-name (name-to-use-for-category word))
+         (super-category (super-category-for-POS :noun))
+         (category (define-category/expr category-name
+                     `(:specializes ,super-category
+                        :instantiates :self))))
+    (let ((rules
+           (make-cn-rules/aux ;; we don't need to decipher the 'word'
+            word
+            category ;; lhs
+            category ;; referent
+            marked-plural))) 
+      (add-rules-to-category category rules)
+      category)))
 
 
+(defun setup-verb (word comlex-clause)
+  (let* ((special-cases
+          (lift-special-case-form-from-comlex-clause comlex-clause))
+         (category-name (name-to-use-for-category word))
+         (super-category (super-category-for-POS :verb))
+         (category (define-category/expr category-name
+                     `(:specializes ,super-category
+                       :instantiates :self))))
+    ;; Adds the rule to the category itself
+    (apply #'define-main-verb (cat-symbol category)
+           :infinitive (word-pname word)
+           :category category
+           :referent category
+           special-cases) 
+    category))
+    
+
+
+(defun setup-adjective (word clause)
+  (declare (ignore clause)) ;; /// pull stuff out of it
+  ;; Comlex has a 'gradable' feature on adjectives, with 
+  ;; a flag for er-est. See adjectives in sl/checkpoint/
+  (let* ((category-name (name-to-use-for-category word))
+         (super-category (super-category-for-POS :adjective))
+         (category (define-category/expr category-name
+                      `(:specializes ,super-category
+                        :instantiates :self))))
+    (let ((rules
+           (make-rules-for-adjectives
+            word
+            category
+            category)))
+      (add-rules-to-category category rules)
+      category)))
+
+
+(defun setup-adverb (word)
+  ;; Adverbs that serve functions that we understand,
+  ;; such as approximation, are explicitly defined using
+  ;; define-adverb. Ones that we import are by that
+  ;; token ones we wouldn't know what to do with, so
+  ;; we go through the morphology routine used with ETF.
+  (let* ((category-name (name-to-use-for-category word))
+         (super-category (super-category-for-POS :adverb))
+         (category (define-category/expr category-name
+                      `(:specializes ,super-category
+                        :instantiates :self))))
+    (let ((rules
+           (make-rules-for-adverbs
+            word
+            category
+            category)))
+      (add-rules-to-category category rules)
+      category)))
+
+
+;;--- gofers
+
+(defmethod super-category-for-POS ((pos symbol))
+  "Returns a category object to feed to a morphology
+   routine to feed to a setup routine."
+  (case pos
+    (:noun
+     ;; c.f. model/core/kinds/object.lisp
+     (category-named 'kind))
+    (:verb
+     (category-named 'event)) ;; see upper-model
+    (:adjective
+     ;; c.f. mode/core/kinds/upper-model.lisp
+     (category-named 'modifier))
+    (:adverb
+     (category-named 'adverbial))
+    (otherwise
+     (break "Unexpected pos: ~a" pos))))
+  
+
+(defmethod name-to-use-for-category ((string string))
+  "Encapsulates the lisp-specific checks for what case to use."
+  (let* ((s #+mlisp string
+            #+(or :ccl :alisp)(string-upcase string))
+         (symbol (intern s (find-package :sparser))))
+    ;; n.b. not the category package. The pname will be interned there
+    ;; as part of creating the category
+    symbol))
+
+(defmethod name-to-use-for-category ((w word))
+  (name-to-use-for-category (word-pname w)))
+
+
+(defun explicit-plurals (comlex-clause)
+  (when (some #'keywordp comlex-clause)
+    (let ((plural-entry (cadr (assoc :plural comlex-clause))))
+      (when plural-entry
+        `(:plural ,plural-entry)))))
 
 
 
