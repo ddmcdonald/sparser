@@ -271,7 +271,8 @@
 
 
 (defun define-main-verb  (symbol-for-category
-                          &key ((:category supplied-category))
+                          &key 
+                          ((:category supplied-category))
                           referent 
                           infinitive ;; "to give"
                           tensed/singular    ;; "he gives"
@@ -309,8 +310,7 @@
       (push nominalization special-cases)
       (push :nominalization special-cases))
     (let ((rules (make-verb-rules/aux word category ref special-cases)))
-      (setf (cat-plist category)
-            `(:rules ,rules ,@(cat-plist category)))
+      (add-rules-to-category category rules)
       rules)))
 
 
