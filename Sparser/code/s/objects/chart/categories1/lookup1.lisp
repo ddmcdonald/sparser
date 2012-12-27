@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  1.8 November 2012
+;;;  Version:  1.8 De 2012
 
 (in-package :sparser)
 
@@ -28,7 +28,8 @@
 ;;      Motivated by "(come) out of" polyword.
 ;; 1.8 (12/3/10) Incorporated CLOS class backing
 ;;     (3/2/12) moved accumulators to object2 to quiet compiler. 11/4 moved in
-;;      function now needed pretty early.
+;;      function now needed pretty early.  (12/11/12) moved name-to-use-for-category
+;;      to brackets/assignments. 
 
 ;;;------
 ;;; find
