@@ -38,7 +38,7 @@
     (prime-all-comlex-words filename)
     (setq *comlex-words-primed* t)))
 
-(defun prime-all-comlex-words (full-filename)
+(defun prime-all-comlex-words (full-filename) ;;(break "top of prime-all")
   (with-open-file (stream full-filename
                    :direction :input
                    :if-does-not-exist :error)
@@ -70,10 +70,10 @@
       (let ((entry (car entries)))
         (unless (eq (car entry) :comlex)
           (error "Entry doesn't begin with :comlex~%  ~a" entry))
-        (let* ((clauses (cddr entry))
+        (let* ((clauses (cdr entry))
                (variants (collect-strings-from-comlex-entry string clauses))
                (all-words (pushnew string variants :test #'string-equal)))
-
+ ;;(break "check for verb variants")
           (let* ((prior-entry ;;/// only ever one? Need to test for this !
                   (gethash string *primed-words*))
                  (entry-to-store
@@ -179,7 +179,6 @@
          (cons plural-entry)
          (string `(,plural-entry))
          (otherwise
-          (push-debug `(,plural-entry ,clause))
           (error "Unexpected plural clause: ~a" plural-entry))))
       (t ;; Nothing unusual, so use the built-in machinery
        (let ((plural (plural-version lemma)))
