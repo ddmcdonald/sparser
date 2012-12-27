@@ -6,7 +6,7 @@
 ;;;  version:  December 2012
 
 ;; Initiated 10/30/12 to take over from the Fire workspace. Tweeked through
-;; 12/5.
+;; 12/11.
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -23,9 +23,18 @@
 ;;-- For Comlex shakeout
 (trace-lexicon-unpacking)
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
-
+;; (grok-setting)  -- for meta-.
 
 ;;--------- for debugging segmentation, bracket calculations
+
+;; (p "Boeing Co. said the U.S. government has suspended the sale")
+;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
+
+;; (p *iraqi-girl*)
+
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/helicopter-attack.txt")
+;;   N.b. hard pathname. Need soft one. Perhaps via asdf, certainly via a pointer
+;;    off load-truename
 
 (defun trace-segmentation ()
   (trace-brackets)
@@ -41,14 +50,8 @@
 ;; (brackets-on <string for a word>)  ;; usually always lowercase
 ;; (brackets-on <number of a position>)
 
-;; (p "Boeing Co. said the U.S. government has suspended the sale")
-;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
 
-;; (p *iraqi-girl*)
 
-;; (f "/Users/ddm/sift/nlp/Grok/corpus/helicopter-attack.txt")
-;;   N.b. hard pathname. Need soft one. Perhaps via asdf, certainly via a pointer
-;;    off load-truename
 
 #|
 -- For searching with grep.
@@ -56,7 +59,8 @@ cd sparser/Sparser/code/s/
 grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
 |#
 
-;;--- Traces
+;;-----Traces ----------------
+
 ;; (trace-fsas)
 ;; (trace-jfp-sections)
 
