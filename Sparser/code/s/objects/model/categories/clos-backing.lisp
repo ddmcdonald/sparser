@@ -38,24 +38,6 @@
 (defun store-class-for-category (c class)
   (setf (gethash c *categories-to-classes*) class))
 
-
-(defvar *category-classes-to-nominal-instance* (make-hash-table))
-
-(defmethod get-nominal-instance ((c category))
-  (get-nominal-instance (get-sclass c)))
-
-(defmethod get-nominal-instance ((cl standard-class))
-  (gethash cl *category-classes-to-nominal-instance*))
-
-(defmethod make-and-store-nominal-instance ((c category))
-  (let ((cl (get-sclass c)))
-    (make-and-store-nominal-instance cl)))
-
-(defmethod make-and-store-nominal-instance ((cl standard-class))
-  (let ((i (make-instance cl)))
-    (setf (gethash cl *category-classes-to-nominal-instance*) i)))
-
-
 (defvar *classes-defined* nil)
 
 
@@ -80,16 +62,17 @@
              (when supercat (backing-superclass-for-category supercat)))
             (variables (cat-slots c))
             (slot-expressions 
-             (when variables (backing-class-slots-for-category variables)))
-            (form
-             `(defclass ,class-name ,(if superc-name `(,superc-name) nil)
-                ,slot-expressions)))
-       (push-debug `(,form))
-       (let ((class (eval form)))
-         (store-class-for-category c class)
-         (push c *classes-defined*)
-         (make-and-store-nominal-instance c)
-         c)))
+             (when variables (backing-class-slots-for-category variables))))
+       (setq class-name (check-for-circularities class-name superc-name))
+       (let ((form
+              `(defclass ,class-name ,(if superc-name `(,superc-name) nil)
+                 ,slot-expressions)))
+         (push-debug `(,form))
+         (let ((class (eval form)))
+           (store-class-for-category c class)
+           (push c *classes-defined*)
+           (make-and-store-nominal-instance c)
+           c))))
     (otherwise
      (push-debug `(,c ,source))
      (break "New backing-CLOS class source: ~a~%~a" source c))))
@@ -105,6 +88,19 @@
          (class-name (intern c-pname *shadow-package*)))
     class-name))
 
+(defun check-for-circularities (class-name superc-name)
+  "Because our categories correspond to ordinary words, we can get
+   a clash where the category we want to create, based on a word, will
+   have the same name."
+  ;; strictly speaking should look up the lattice for a match
+  ;; at any point (and argument should be the supercategory rather
+  ;; than its name), but this catches the presenting case with "kind"
+  (if superc-name
+    (if (eq superc-name class-name)
+      (intern (string-append '#:category- (symbol-name class-name))
+              *shadow-package*)            
+      class-name)
+    class-name))
 
 (defun backing-superclass-for-category (superc)
   ;; stub something if there's not already a class?
@@ -177,6 +173,42 @@
     (otherwise
      (push-debug `(,v/r))
      (break "New type for v/r: ~a~%  ~a" (type-of v/r) v/r))))
+
+
+;;;-------------------------------------------------------------
+;;; Dealing with individuals and the instances that shadow them
+;;;-------------------------------------------------------------
+
+(defun create-shadow (individual)
+  (let* ((type (indiv-type individual))
+         (category (etypecase type
+                     (cons (car type))
+                     (referential-category type)))
+         (sclass (get-sclass category))
+         (shadow (make-instance sclass))) ;; need a backpointer?
+    (setf (indiv-shadow individual) shadow)
+    shadow))
+
+
+
+
+(defvar *category-classes-to-nominal-instance* (make-hash-table))
+
+(defmethod get-nominal-instance ((c category))
+  (get-nominal-instance (get-sclass c)))
+
+(defmethod get-nominal-instance ((cl standard-class))
+  (gethash cl *category-classes-to-nominal-instance*))
+
+(defmethod make-and-store-nominal-instance ((c category))
+  (let ((cl (get-sclass c)))
+    (make-and-store-nominal-instance cl)))
+
+(defmethod make-and-store-nominal-instance ((cl standard-class))
+  (let ((i (make-instance cl)))
+    (setf (gethash cl *category-classes-to-nominal-instance*) i)))
+
+
  
 	     
 
