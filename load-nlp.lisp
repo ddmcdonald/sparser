@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2010-2012 David D. McDonald
 ;;;
 ;;;   File:   load-nlp
-;;; Version:  October 2012
+;;; Version:  December 2012
 
 ;; This file will load the language understanding system Sparser, 
 ;; the language generator Mumble, and a shared set of utilities.
@@ -29,7 +29,8 @@
 
 (require :asdf)
 (unless (find-package :asdf)
-  (load "~/Sparser/util/asdf.lisp")) ;; N.b. this one's pretty old
+  (error "Require did not find an ASDF module~
+        ~%You need to install one. See http://common-lisp.net/project/asdf/"))
 
 ;; This assumes you have no other files on your registry already,
 ;; Adjust it if you do. 
@@ -44,7 +45,7 @@
 
 (defparameter *nlp-home*
   (make-pathname :directory (pathname-directory *load-truename*)))
-;; By hand for debugging (change to fit where you put Sparser
+;; For by hand for debugging. Change to fit where you put Sparser
 ;; (setq *nlp-home* "/Users/ddm/sparser/")
 
 ;;--- Loading
