@@ -24,13 +24,18 @@
 ;;     (3/2/12) Accommodate to adverbs coming in from Comlex. 
 ;; 1.1 (12/4/12) added .[adverb to the default to match what was done in
 ;;      morphology1 (now rules/brackets/assignments). 
+;; 1.2 (12/15/12) Reworked it extensively so the category for the adverb
+;;      is used in the cfr rather than 'adverbial' and we make an instance 
+;;      of the category to serve as the referent, along with a shadow
+;;      instance to use in the methods. 
 
 (in-package :sparser)
 
 ;;;------------------------------------------------------------------------
-;;; an anonymous category to go with anonymous adverbs combined in by form
+;;; 
 ;;;------------------------------------------------------------------------
 
+#+ignore ;; Do we want this? How do we do it with individual adverb rules?
 (define-additional-realization adverbial
   (:tree-family pre-verb-adverb
    :mapping ((adverb . :self)))
@@ -41,10 +46,7 @@
 
   
 ;;  This is one of the few places where I'd be comfortable with
-;;  form+form rules, but the odd label seems a better way to go at least
-;;  for now (and it's a more honest labeling).  If it was to be done as
-;;  form+form, then the edge over the adverb would probably have the word
-;;  as its label and act as a literal with a form.
+;;  form+form rules.
 
 (defun define-adverb (string &key brackets super-category)
   ;; Create a category for the word that specialization of adverbial
@@ -76,10 +78,14 @@
                      :bindings (name ,word)
                      :binds ((value)))))
         (setq category (eval expr))
-    
-        (define-cfr (category-named 'adverbial)  (list word)
-          :form (category-named 'adverb)
-          :referent category)))))
+        (let* ((individual (make-category-indexed-individual category)))               
+          (create-shadow individual)
+          (let ((rule    
+                 (define-cfr category (list word)
+                   :form (category-named 'adverb)
+                   :referent individual)))
+            (push-onto-plist category rule :rule)))))
+    category))
 
 ;;;---------- adverb adverbs
 
