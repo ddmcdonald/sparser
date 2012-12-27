@@ -134,7 +134,7 @@
 (def-form-category  qp)
 (def-form-category  proper-name)
 
-(def-form-category  appositive-prefix)   ;; ", 47 years old"
+
 
 (def-form-category vg/passive)
 (def-form-category vp/passive)
