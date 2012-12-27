@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2012 David D. McDonald  -- all rights reserved
 ;;; extensions opyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.4 August 2011
+;;;  version:  2.0 December 2012
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -55,7 +55,7 @@
 ;; 1.4 (3/19/07) Added an optional 'force-new' parameter to make/individual to handle the 
 ;;      case where an identical description in fact denoted a different individual.
 ;; 2.0 (7/12/09) fan-out from psi changse. (2/18/10) Added synonyms to rdata dispatch.
-;;     (8/15/11) a bit of cleanup.
+;;     (8/15/11) a bit of cleanup. (12/15/12) added make-permanent-unindexed-individual.
 
 (in-package :sparser)
 
@@ -341,7 +341,6 @@
     (setf (indiv-id   individual) (next-id category))
     individual ))
 
-
 (defun subtype-individual (i subtype-category)
   ;; We are building a new individual that differs from its source
   ;; individual only in its category.  In particular we copy its
@@ -353,7 +352,18 @@
     si))
   
 
+(defun make-category-indexed-individual (category)
+  "Make a simple individual (no binding instructions, etc) that is
+   stored on the category's plist."
+  ;; One-off version of with-all-instances-permanent so we don't
+  ;; get it deallocated out from under us.
+  (let ((*index-under-permanent-instances* t))
+    (let ((i (make-unindexed-individual category)))
+      (push-onto-plist category i :individual)
+      i)))
 
+(defun get-category-individual (category)
+  (get-tag-for :individual category))
 
 ;;;--------------------------
 ;;; specializing individuals
