@@ -9,6 +9,48 @@
 
 (in-package :sparser)
 
+#| Design (12/10/12)
+
+Every word gets a rule that will create an edge over it. Several rules
+if it has several parts of speech. We do NOT get brackets off these
+rules, the brackets always come from the words per se. Fine-grained
+form information goes on the rule/edge where its accessible to the
+segmentation judgements. This goes under a switch so that we can turn
+if off. 
+
+We create a category for each word to serve as the locus of its
+meaning, again based on its part of speech. Words with multiple parts
+of speech all get get the same referent in their rules, at least until
+we find a reason to do otherwise. Makes good sense for "attack".
+We don't take any short cuts here so that it's trivial to invert
+these rules. May have to refactor some of the tree family machinery
+to do this. 
+
+At the point when we need to deal with words that have truly ambigous
+meaning ("bank", "flight") then we'd have different referential categories
+for them, but my guess is that we don't need these for Grok -- uniformity
+of topic => uniformity of word senses. 
+
+As the going in assumption we use the category that we create for the
+word as the label on its edge. For multiple POS words we depend on the
+form label to do the work of differentiating their effects.
+
+When subtypes are reintstated, much of the form will be reflected in
+the specialized referents. Based forms come from the lemma forms of
+the words. 
+
+[[ N.b. we don't have this for all of the function words but we're tending
+in that direction, so there will be revisions required, and some thinking
+to get the distribution of information sorted out to the most useful
+places. ]]
+
+
+|#
+
+(defparameter *edge-for-unknown-words* t
+  "This switch dictates whether or not we create a category,
+ referent, and single-term rule for a word when it is unpacked.")
+
 ;;;---------------------------------------------
 ;;; 'Activating' the primed words at parse-time
 ;;;---------------------------------------------
@@ -57,45 +99,6 @@
 
 
 
-#| Design (12/10/12)
-
-Every word gets a rule that will create an edge over it. Several rules
-if it has several parts of speech. We do NOT get brackets off these
-rules, the brackets always come from the words per se. Fine-grained
-form information goes on the rule/edge where its accessible to the
-segmentation judgements. This goes under a switch so that we can turn
-if off. 
-
-We create a category for each word to serve as the locus of its
-meaning, again based on its part of speech. Words with multiple parts
-of speech all get get the same referent in their rules, at least until
-we find a reason to do otherwise. Makes good sense for "attack".
-We don't take any short cuts here so that it's trivial to invert
-these rules. May have to refactor some of the tree family machinery
-to do this. 
-
-At the point when we need to deal with words that have truly ambigous
-meaning ("bank", "flight") then we'd have different referential categories
-for them, but my guess is that we don't need these for Grok -- uniformity
-of topic => uniformity of word senses. 
-
-As the going in assumption we use the category that we create for the
-word as the label on its edge. For multiple POS words we depend on the
-form label to do the work of differentiating their effects.
-
-When subtypes are reintstated, much of the form will be reflected in
-the specialized referents. Based forms come from the lemma forms of
-the words. 
-
-[[ N.b. we don't have this for all of the function words but we're tending
-in that direction, so there will be revisions required, and some thinking
-to get the distribution of information sorted out to the most useful
-places. ]]
-
-
-|#
-
-
 (defmethod unambiguous-comlex-primed-decoder ((lemma word) clause)
   "Identify any inflected forms and define words for them. Assign brackets
    to all the words. ////For the moement anyway, not creating any edges
@@ -105,35 +108,47 @@ places. ]]
         (properties (cdr clause)))
     (case pos-marker
       (noun 
-       (plural-words-given-CL-clause lemma clause)
-       ;; from make-cn-rules
-       (assign-brackets-as-a-common-noun lemma))
-      (adjective ;; open-codes define-adjective
-       (assign-brackets-to-adjective lemma)
-       ;;(make-minimal-word-form-rule lemma 'adjective) ;;/// huh????
-       )
-      (adverb ;
-       ;; The morphology rule for adverbs also assigns .[adverb
-       ;; but the adverb file is careful, so we'll be conservative
-       ;; and see what happens -- most of these will be ordinary
-       ;; "ly" adverbs
-       ;; Note that this write a rule spanning with adverbial
-       (define-adverb lemma)) ;; assigns ].adverb, .[adverb
+       (if *edge-for-unknown-words*
+         (setup-common-noun lemma clause)
+         (else
+          (assign-brackets-as-a-common-noun lemma)
+          (plural-words-given-CL-clause lemma clause))))
+
+      (adjective
+       (if *edge-for-unknown-words*
+         (setup-adjective lemma clause)
+         (assign-brackets-to-adjective lemma)))
+
+      (adverb
+       (if *edge-for-unknown-words*
+         (setup-adverb lemma)
+         (assign-brackets-to-adverb lemma)))
+   
       (verb
-       (decode-and-instantiate-primed-verb lemma clause))
+       (if *edge-for-unknown-words*
+         (setup-verb lemma clause)
+         (loop for w in (cons lemma (verb-forms-of lemma))
+           do (assign-brackets-as-a-main-verb w))))
+
+      ;; Prepositions and conjunctons don't have the instances
+      ;; and category structure of adverbs. Probably want to put it in
+      ;; but can wait until there are axioms (methods) for them. 
       (prep
        ;; Creates a category the way define-adverb does. 
        (define-preposition (word-pname lemma)))
+
       (sconj
        ;; See /rules/words/conjunctions.lisp for the explicit list
        (define-isolated-function-word (word-pname lemma)))
+
       (otherwise
        (push-debug `(,lemma ,clause))
        (error "Unexpected POS marker: '~a' on ~a" pos-marker lemma)))
+
     (put-property-on-word :comlex properties lemma)))
 
 
-;; N.b. Comlex has a 'gradable' feature on adjectives, with a flag for er-est
+
 
 (defmethod ambiguous-comlex-primed-decoder ((lemma word) clauses)
   (let ((combinations (sort (copy-list (mapcar #'car clauses))
@@ -141,30 +156,65 @@ places. ]]
     (tr ::unpacking-ambiguous combinations)
     (cond
       ((equal combinations '(adjective noun))
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-common-noun lemma clauses))
        (brackets-for-adjective-noun lemma))
 
       ((equal combinations '(adjective adverb))
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-adverb lemma))
        (brackets-for-adjective-adverb lemma))
 
       ((equal combinations '(adjective verb))
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-verb lemma clauses))
        (brackets-for-adjective-verb lemma))
 
       ((equal combinations '(adjective noun verb))
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-common-noun lemma clauses)
+         (setup-verb lemma clauses))
        (assign-noun-verb-brackets lemma clauses))
 
       ((equal combinations '(adjective adverb noun))
-       (brackets-for-adjective-adverb-noun lemma))     
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-adverb lemma)
+         (setup-common-noun lemma clauses))
+       (brackets-for-adjective-adverb-noun lemma))
 
-      ((equal combinations '(adjective adverb noun verb)) 
+      ((equal combinations '(adjective adverb noun verb))
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-adverb lemma)
+         (setup-common-noun lemma clauses)
+         (setup-verb lemma clauses))
        (brackets-for-adjective-adverb-noun-verb lemma))
 
       ((equal combinations '(adverb noun verb))
+       (when *edge-for-unknown-words*
+         (setup-adverb lemma)
+         (setup-common-noun lemma clauses)
+         (setup-verb lemma clauses))
        (brackets-for-adverb-noun-verb lemma clauses))
 
       ((equal combinations '(noun verb))
+       (when *edge-for-unknown-words*
+         (setup-common-noun lemma clauses)
+         (setup-verb lemma clauses))
        (assign-noun-verb-brackets lemma clauses))
 
       ((equal combinations '(adjective noun prep sconj verb)) 
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-adverb lemma)
+         (setup-common-noun lemma clauses)
+         ;; sconj
+         (setup-verb lemma clauses))
        (brackets-for-adjective-noun-sconj-prep-verb lemma))
 
       ;; "firm" is four-ways ambiguous
@@ -202,14 +252,22 @@ places. ]]
            :infinitive (word-pname lemma) special-case-plist)))
 
 (defun lift-special-case-form-from-comlex-clause (clause)
-  (unless (eq 'verb (car clause))
-    (error "Expected a verb clause and didn't get one"))
-  (let ((2d-expr (cadr clause)))
-    (case (car 2d-expr)
-      ((or :infinitive :tensed/singular :past-tense :present-participle)
-       2d-expr)
-      (:subc nil)
-      (:features nil)
-      (otherwise
-       (push-debug `(,2d-expr ,clause))
-       (error "New case in what's 2d in a verb clause")))))
+  ;; if the word is unambigously a verb then there is a single clause
+  ;; otherwise there's a list of clauses. one for eacu POS.
+  (push-debug `(,clause))
+  (let ((verb-clause
+         (if (consp (car clause)) ;; multiple clauses
+           (assq 'verb clause)
+           clause)))
+    (unless (eq 'verb (car verb-clause))
+      (push-debug `(,verb-clause))
+      (error "Expected a verb clause and didn't get one"))
+    (let ((2d-expr (cadr verb-clause)))
+      (case (car 2d-expr)
+        ((or :infinitive :tensed/singular :past-tense :present-participle)
+         2d-expr)
+        (:subc nil)
+        (:features nil)
+        (otherwise
+         (push-debug `(,2d-expr ,verb-clause))
+         (error "New case in what's 2d in a verb clause"))))))
