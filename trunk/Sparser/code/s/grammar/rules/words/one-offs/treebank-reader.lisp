@@ -64,11 +64,11 @@
   (declare (ignore char))
   (let ((c (peek-char nil stream)))
     (if (eql c #\`)
-	  (then 
+          (then
         (read-char stream)
         (let ((d (peek-char nil stream)))
           (if (eql d #\))
-	        'open-quote
+                'open-quote
             'open-quote-tag)))
       'open-quote)))
 
@@ -76,14 +76,14 @@
   (declare (ignore char))
   (let ((c (peek-char nil stream)))
     (if (eql c #\')
-	  (then (read-char stream) 'close-quote)
+          (then (read-char stream) 'close-quote)
       'single-quote))) ;; appostrophe ??
 
 (defun colon-reader (stream char)
   (declare (ignore char))
   (let ((c (peek-char nil stream)))
     (if (eql c #\space)
-	  'colon-tag
+          'colon-tag
       'colon)))
 
 (defun semicolon-reader (stream char)
@@ -139,13 +139,13 @@
 ;;;---------
 
 (defstruct (immediate-constituent-pattern
-	    (:conc-name #:icp-)
-	    (:print-function
-	     (lambda (icp stream depth)
-	       (declare (ignore depth))
-	       (format stream "#<icp ~a => ~a>"
-		       (icp-tag icp)
-		       (icp-constituents icp)))))
+            (:conc-name #:icp-)
+            (:print-function
+             (lambda (icp stream depth)
+               (declare (ignore depth))
+               (format stream "#<icp ~a => ~a>"
+                       (icp-tag icp)
+                       (icp-constituents icp)))))
   tag ;; symbol for now, rep. of the NT latter
   constituents
   freq
@@ -162,8 +162,8 @@
 (defun harness (full-filename)
   (time
    (with-open-file (stream full-filename
-		    :direction :input
-		    :if-does-not-exist :error)
+                    :direction :input
+                    :if-does-not-exist :error)
      (with-readtable-bound *my-readtable*
         (clear-treebank-tables)
         (let ((eof? nil)
@@ -173,7 +173,7 @@
           (loop while (not eof?) do
                (setq sexp (read stream nil :eof))
                (if (eq sexp :eof) (setq eof? t))
-             ;;(format t " ~a" (incf count))	     
+             ;;(format t " ~a" (incf count))
                (eval sexp)))))))
 
 
@@ -209,6 +209,7 @@
 ;;;---------------------------
 
 (defun constituent-reader (constituents toplevel-tag)
+  (declare (ignore toplevel-tag))
   (dolist (c constituents)
     ;(format t "reader: c = ~a" c)
     (analyze-constituent c)))
@@ -226,22 +227,22 @@
   (unless (symbolp (car c))
     (break "Constituent does not start with a symbol:~%~a" c))
   (let ((tag (car c))
-	(rest (cdr c)))
+        (rest (cdr c)))
     ;;(format t "~%walker: tag = ~a" tag)
     (notice-tag tag)
     ;;(format t "~%walker: rest = ~a" rest)
     (if (consp (car rest))
       (then
-	(notice-nonterminal-tag tag rest)
-	(notice-immediate-constituent-pattern tag rest)
-	(constituent-reader rest tag))
+        (notice-nonterminal-tag tag rest)
+        (notice-immediate-constituent-pattern tag rest)
+        (constituent-reader rest tag))
       (let ((token (second c)))
        (unless token
-	 (break "Expected a pname. c = ~a" c))
+         (break "Expected a pname. c = ~a" c))
        ;;(format t "~%walker: word = ~a" token)
        (when (and (numberp token)
-		  *merge-numbers*)
-	 (setq token 'number))
+                  *merge-numbers*)
+         (setq token 'number))
        (notice-pos-tag tag token)
        (notice-word token tag)))))
 
@@ -279,20 +280,20 @@
 
 (defun notice-immediate-constituent-pattern (tag constituents)
   (let ((constituent-tags (toplevel-tags constituents))
-	(tag-table (gethash tag *NT-tags-to-patterns*)))
+        (tag-table (gethash tag *NT-tags-to-patterns*)))
     (if tag-table
       (let ((icp (gethash constituent-tags tag-table)))
-	(if icp
-	  (incf (icp-freq icp))
-	  (else
-	    ;;(format t "~&~a added ~a" tag constituent-tags)
-	    (setf (gethash constituent-tags tag-table)
-		  (define-constituent-pattern tag constituent-tags)))))
+        (if icp
+          (incf (icp-freq icp))
+          (else
+            ;;(format t "~&~a added ~a" tag constituent-tags)
+            (setf (gethash constituent-tags tag-table)
+                  (define-constituent-pattern tag constituent-tags)))))
       (let ((tag-table (make-hash-table :test #'equal)))
-	(setf (gethash constituent-tags tag-table) 
-	      (define-constituent-pattern tag constituent-tags))
-	;;(format t "~&-- ~a added ~a" tag constituent-tags)
-	(setf (gethash tag *NT-tags-to-patterns*) tag-table)))
+        (setf (gethash constituent-tags tag-table)
+              (define-constituent-pattern tag constituent-tags))
+        ;;(format t "~&-- ~a added ~a" tag constituent-tags)
+        (setf (gethash tag *NT-tags-to-patterns*) tag-table)))
     constituent-tags))
 
 
@@ -301,70 +302,70 @@
 (defun order-icp-by-frequency ()
   (let ((icps '()))
     (maphash #'(lambda (tag table)
-		 (declare (ignore tag))
-		 (maphash #'(lambda (constituents icp-object)
-			      (declare (ignore constituents))
-			      (push icp-object icps))
-			  table))
-	     *NT-tags-to-patterns*)
+                 (declare (ignore tag))
+                 (maphash #'(lambda (constituents icp-object)
+                              (declare (ignore constituents))
+                              (push icp-object icps))
+                          table))
+             *NT-tags-to-patterns*)
     (length (setq *sorted-icp*
-	      (sort icps #'> :key #'icp-freq)))))
+              (sort icps #'> :key #'icp-freq)))))
 
 
 (defun incident-count ()
   (let ((count 0))
     (maphash #'(lambda (tag table)
-		 (declare (ignore tag))
-		 (maphash #'(lambda (constituents icp)
-			      (declare (ignore constituents))
-			      (setq count (+ count
-					     (icp-freq icp))))
-			  table))
-	     *NT-tags-to-patterns*)
+                 (declare (ignore tag))
+                 (maphash #'(lambda (constituents icp)
+                              (declare (ignore constituents))
+                              (setq count (+ count
+                                             (icp-freq icp))))
+                          table))
+             *NT-tags-to-patterns*)
 
     count))
 
 
 (defun icp-by-percentage (percent)
   (let* ((total (incident-count))
-	 (target (round (* total percent)))
-	 (accumulated 0)
-	 (icp-count 0))
+         (target (round (* total percent)))
+         (accumulated 0)
+         (icp-count 0))
     (loop
       until (>= accumulated target)
-	for icp in *sorted-icp*
-	do
-	  (incf icp-count)
-	  (setq accumulated
-	    (+ accumulated
-	       (icp-freq icp))))
+        for icp in *sorted-icp*
+        do
+          (incf icp-count)
+          (setq accumulated
+            (+ accumulated
+               (icp-freq icp))))
     icp-count))
-  
+
 
 
 
 (defun write-icp (full-filename)
   (order-icp-by-frequency)
   (with-open-file (s full-filename
-		   :direction :output
-		   :if-exists :supersede
-		   :if-does-not-exist :create)
+                   :direction :output
+                   :if-exists :supersede
+                   :if-does-not-exist :create)
     (let ((count 0))
       (dolist (icp *sorted-icp*)
-	(format s "~%~a/~a  ~a"
-		(incf count)
-		(icp-freq icp)
-		icp)))))
+        (format s "~%~a/~a  ~a"
+                (incf count)
+                (icp-freq icp)
+                icp)))))
 
 
 (defun clear-pattern-counts ()
   (maphash #'(lambda (non-terminal pattern-table)
-	       (declare (ignore non-terminal))
-	       (maphash #'(lambda (constituent-list icp)
-			    (declare (ignore constituent-list))
-			    (setf (icp-freq icp) 0))
-			pattern-table))
-	   *NT-tags-to-patterns*))
+               (declare (ignore non-terminal))
+               (maphash #'(lambda (constituent-list icp)
+                            (declare (ignore constituent-list))
+                            (setf (icp-freq icp) 0))
+                        pattern-table))
+           *NT-tags-to-patterns*))
 
 
 (defun get-icp (nt constituents)
@@ -379,9 +380,9 @@
 
 (defun define-constituent-pattern (tag immediate-constituents)
   (let ((icp (make-immediate-constituent-pattern
-	      :tag tag 
-	      :constituents immediate-constituents
-	      :freq 1))) ;; gets stored in the *NT-tags-to-patterns*
+              :tag tag
+              :constituents immediate-constituents
+              :freq 1))) ;; gets stored in the *NT-tags-to-patterns*
     ;; table, which is an index by non-terminal
     (incf *constituent-patterns*)
     icp))
@@ -392,10 +393,10 @@
   (unless (gethash tag *NT-tags-to-patterns*)
     (break "~a is not a know non-terminal with constituents" tag))
   (let ((icp-list '()))
-    (maphash #'(lambda (key icp) 
-		 (declare (ignore key))
-		 (push icp icp-list))
-	     (gethash tag *NT-tags-to-patterns*))
+    (maphash #'(lambda (key icp)
+                 (declare (ignore key))
+                 (push icp icp-list))
+             (gethash tag *NT-tags-to-patterns*))
     (sort icp-list #'> :key #'icp-freq)))
 
 ;;/// wip through the list and fill the 'count' field of the icp
@@ -404,11 +405,11 @@
 (defun write-icp (tag full-filename)
   (let ((sorted (sort-cp tag)))
     (with-open-file (stream full-filename
-		     :direction :output
-		     :if-exists :overwrite
-		     :if-does-not-exist :create)
+                     :direction :output
+                     :if-exists :overwrite
+                     :if-does-not-exist :create)
       (dolist (icp sorted)
-	(format stream "~&~a  ~a" (icp-freq icp) icp)))))
+        (format stream "~&~a  ~a" (icp-freq icp) icp)))))
 
 
 
@@ -429,10 +430,10 @@
     (if (null table)
       (format t "~a has no entries in the immediate-constituent table." tag)
       (let ((patterns '()))
-	(maphash #'(lambda (key value) (declare (ignore value))
-		     (push key patterns))
-		 table)
-	patterns))))
+        (maphash #'(lambda (key value) (declare (ignore value))
+                     (push key patterns))
+                 table)
+        patterns))))
 
 
 
@@ -448,23 +449,24 @@
 (defun non-terminal-tags ()
   (let ((list '()))
     (maphash #'(lambda (key value)
-		 (declare (ignore value))
-		 (push key list)) 
-	     symbol-to-nonterminal-tag)
+                 (declare (ignore value))
+                 (push key list))
+             symbol-to-nonterminal-tag)
     list))
 
 (defun read-terminal-tags-from-file (full-filename)
   (with-open-file (stream full-filename
-		    :direction :input
-		    :if-does-not-exist :error)
+                    :direction :input
+                    :if-does-not-exist :error)
     (let ((eof? nil))
+      (declare (ignore eof?))
       (break "stub"))))
 
-(defparameter *pos-tags* 
+(defparameter *pos-tags*
   '(CLOSE-QUOTE COLON-TAG COMMA
     DT CD EX FW IN JJ JJR JJS LS
     MD NN NNP NNPS NNS POS
-    OPEN-QUOTE-TAG PDT PERIOD 
+    OPEN-QUOTE-TAG PDT PERIOD
     PRP PRP$ RB RBR RBS RP
     SHARPSIGN-TAG SYM TO UH
     VB VBD VBG VBN VBP VBZ
@@ -480,10 +482,10 @@
    by the tag symbol. Doesn't do any lumping of tags, 'words' are
    still just lowercase symbols."
   (let ((entry (gethash tag-symbol symbol-to-pos-tags)))
-    (cond 
+    (cond
       (entry (unless (memq word-symbol entry)
-	       (rplacd entry (cons word-symbol (cdr entry)))))
-      (t 
+               (rplacd entry (cons word-symbol (cdr entry)))))
+      (t
        (setf (gethash tag-symbol symbol-to-pos-tags) `(,word-symbol))
        (incf *pos-tag-count*)))))
 
@@ -491,9 +493,9 @@
 (defun pos-tags ()
   (let ((list '()))
     (maphash #'(lambda (key value)
-		 (declare (ignore value))
-		 (push key list))
-	     symbol-to-pos-tags)
+                 (declare (ignore value))
+                 (push key list))
+             symbol-to-pos-tags)
     list))
 
 
@@ -519,13 +521,13 @@
   (let ((entry (gethash symbol symbols-to-words)))
     (if entry
       (let ((tag-entry (assoc tag entry :test #'eq)))
-	(if tag-entry
-	  (rplacd tag-entry (1+ (cdr tag-entry)))
-	  (setf (gethash symbol symbols-to-words) 
-	    (cons `(,tag . 1) entry))))
+        (if tag-entry
+          (rplacd tag-entry (1+ (cdr tag-entry)))
+          (setf (gethash symbol symbols-to-words)
+            (cons `(,tag . 1) entry))))
       (else
-       (setf (gethash symbol symbols-to-words) 
-	     `( (,tag . 1) ))
+       (setf (gethash symbol symbols-to-words)
+             `( (,tag . 1) ))
        (incf *word-count*)))))
 
 (defun pos-info (w)
@@ -533,7 +535,10 @@
 
 (defun word-table-to-list (&optional (table symbols-to-words))
   (let ( list )
-    (maphash #'(lambda (k v) (push k list)) table)
+    (maphash #'(lambda (k v)
+                 (declare (ignore v))
+                 (push k list))
+             table)
     list))
 
 (defun sort-word-pos-by-frequency (alist)
@@ -544,7 +549,7 @@
   (maphash
    #'(lambda (key value)
        (let ((sorted (sort-word-pos-by-frequency value)))
-	 (setf (gethash key symbols-to-words) sorted)))
+         (setf (gethash key symbols-to-words) sorted)))
    symbols-to-words))
 
 (defun word-total-token-count (w)
@@ -555,10 +560,10 @@
 
 (defun sort-words-by-token-count (&optional (table symbols-to-words))
   (let* ((words (word-table-to-list table))
-	 (entries (mapcar #'(lambda (w) 
-			      (cons (define-word/expr (symbol-name w))
-				    (word-total-token-count w)))
-			  words)))
+         (entries (mapcar #'(lambda (w)
+                              (cons (define-word/expr (symbol-name w))
+                                    (word-total-token-count w)))
+                          words)))
     ;; use routine from the standard frequency code
     (sort-frequency-list entries)))
 
@@ -569,56 +574,56 @@
 
 (defun proper-vs-common (&optional (word-table symbols-to-words))
   (let ((other '()) (always-proper '()))
-    (maphash 
+    (maphash
      #'(lambda (word pos-pairs)
-	 (let ((other? nil))
-	   (dolist (pair pos-pairs)
-	     ;;(when (not (proper-noun? pos-pairs) - better factoring?
-	     (when (not (or (eq (car pair) 'NNP)
-			    (eq (car pair) 'NNPS)))
-	       (setq other? (car pair))))
-	   (if other?
-	       (push word other)
-	     (push word always-proper))))
+         (let ((other? nil))
+           (dolist (pair pos-pairs)
+             ;;(when (not (proper-noun? pos-pairs) - better factoring?
+             (when (not (or (eq (car pair) 'NNP)
+                            (eq (car pair) 'NNPS)))
+               (setq other? (car pair))))
+           (if other?
+               (push word other)
+             (push word always-proper))))
      word-table)
     (setq *proper-nouns* always-proper
-	  *everything-else* other)
+          *everything-else* other)
     (values (length always-proper)
-	    (length other))))
+            (length other))))
 
 
 (defun study-word-pos ()
   (let ((singles '())(doubles '())(more '()))
     (maphash
      #'(lambda (key value)
-	 (cond
-	  ((= (length value) 1)
-	   (push key singles))
-	  ((= (length value) 2)
-	   (push key doubles))
-	  (t
-	   (push key more))))
+         (cond
+          ((= (length value) 1)
+           (push key singles))
+          ((= (length value) 2)
+           (push key doubles))
+          (t
+           (push key more))))
      symbols-to-words)
-    (format t "~a singles, ~a doubles, ~a rest" 
-	    (length singles) (length doubles) (length more))))
+    (format t "~a singles, ~a doubles, ~a rest"
+            (length singles) (length doubles) (length more))))
 
 
 (defvar *word-list* '())
 
 (defun words-to-list ()
-  (maphash #'(lambda (key value) 
-	       (declare (ignore value))
-	       (push key *word-list*))
-	   symbols-to-words))
+  (maphash #'(lambda (key value)
+               (declare (ignore value))
+               (push key *word-list*))
+           symbols-to-words))
 
 (defun write-words (list-of-words full-filename)
   (with-open-file (s full-filename
-		          :direction :output
+                          :direction :output
                   :if-exists :supersede
                   :if-does-not-exist :create)
     (let ((count 0))
       (dolist (word list-of-words)
-        (format s "~&(defword ~a/~a  \"~a\"  ~a)" 
+        (format s "~&(defword ~a/~a  \"~a\"  ~a)"
                 (incf count)
                 ( ) ;;//// frequency of word
                 (string-downcase (symbol-name word))
@@ -626,7 +631,7 @@
 
 (defun write-words-by-pos (full-filename)
   (with-open-file (s full-filename
-		          :direction :output
+                          :direction :output
                   :if-exists :supersede
                   :if-does-not-exist :create)
     (dolist (tag-symbol *pos-tags*)
@@ -637,42 +642,92 @@
 #|  /// This is where everything left off
 (defun write-pos-entry (tag-symbol list-of-words s)
   (let ((tag-name (string-downcase (symbol-name tag-symbol)))
-	(words (
+        (words (
 
 
 (defun write-word-data (word-symbol pos s)
 
-	(write-word-data word s)))))  |#
+        (write-word-data word s)))))  |#
 
 ;;;------------------------------------------
 ;;; Read out treebank s-exp as regular texts
 ;;;------------------------------------------
 
-(defun tb-to-text-file-reader (full-tb-filename)
+(defun tb-to-text-file-reader (full-tb-filename &optional (verbose nil))
   (with-open-file (stream full-tb-filename
-                  :direction :input
-                  :if-does-not-exist :error)
+                   :direction :input
+                   :if-does-not-exist :error)
     (with-readtable-bound *my-readtable*
-       (let ((eof? nil)
-             (sexp nil))
-         (loop while (not eof?) do
+      (let ((eof? nil)
+            (sexp nil))
+        (loop while (not eof?) do
               (setq sexp (read stream nil :eof))
+              (when verbose
+                (format t "~s~%" sexp))
               (when (eq sexp :eof) (return))
-              (readout-tb-terminals sexp))))))
+              (readout-tb-terminals sexp *standard-output* verbose))))))
 
 (defparameter *tb-no-space-before*
-  '(close-quote single-quote comma period -rrb-
-    colon semi-colon))
+  '(close-quote single-quote comma period ? ! -rrb- -rcb- -rsb-
+    colon semicolon))
 (defparameter *tb-no-space-after*
-  '(open-quote -LRB-))
+  '(open-quote -LRB- -LCB- -LSB-))
 
-(defun readout-tb-terminals (sexp &optional (out *standard-output*))
+(defun stringify-token (token)
+  (case token
+    (-LRB- "(")
+    (-rrb- ")")
+    ;; [sfriedman:20130108.1302CST]
+    ;; http://www.cis.upenn.edu/~treebank/tokenization.html
+    ;; This website says that -lcb-/-rcb- should actually be [ and ], but
+    ;; there are enough errors in the treebank that we need to change it here.
+    (-lcb- "[")
+    (-rcb- "]")
+    (-lsb- "[")
+    (-rsb- "]")
+    (comma ",")
+    (colon ":")
+    (semicolon ";")
+    (period ".")
+    (open-quote "\"")
+    (close-quote "\"")
+    (single-quote "'")
+    (i "I")
+    (otherwise
+     (if (symbolp token)
+         (symbol-name token)
+       (format nil "~s" token)))))
+
+(defun stringify-tokens (tokens &optional (cap nil) &aux strings ans)
+  (dolist (token tokens)
+    (let ((str (stringify-token token)))
+      (when (and (numberp token)
+                 (equal (car strings) ",")
+                 (< (length str) 3))
+        (setf str (format nil "~a~a" (make-string (- 3 (length str)) :initial-element #\0) str)))
+      (push str strings)))
+  (setf ans (apply #'string-append (reverse strings)))
+  (case cap
+    (:downcase (string-downcase ans))
+    (:capitalize (string-capitalize ans))
+    (otherwise ans)))
+
+(defun readout-tb-terminals (sexp &optional (out *standard-output*) (verbose nil))
   "Walk tb sentence sexp to its terminals and write them out."
   (let ((first? t)
-        tokens  prior-token )
-    (flet ((push-word (token tag)
-             (format t "~&~a ~a~%" token tag)
+       tokens  prior-token prior-tag)
+    (flet ((push-word (token all-tokens tag)
+             (when verbose
+               (format t "~&~a ~a~%" all-tokens tag))
              (unless (or first?
+                         (and (eql token 'N)
+                              (eql tag 'RB))
+                         (and (eql token 'NA)
+                              (eql tag 'TO))
+                         (and (eql token '%)
+                              (eql prior-tag 'CD))
+                         (and (eql tag 'CD)
+                              (eql prior-tag '$))
                          (memq token *tb-no-space-before*)
                          (memq prior-token *tb-no-space-after*))
                (push " " tokens))
@@ -680,22 +735,15 @@
                ((or first?
                     (eq tag 'NNP)
                     (eq tag 'NNPS)) ;; what else?
-                (push (string-capitalize (symbol-name token)) tokens))
+                (push (stringify-tokens all-tokens :capitalize) tokens))
                ((eq tag 'POS) (push "'s" tokens))
-               ((eq tag 'CD)
-                ;(push-debug `(,token))
-                ;(break "the CD token is of type ~a" (type-of token))
-                (push token tokens))
-               (t (push (case token
-                          (-LRB- "(")
-                          (-rrb- ")")
-                          (comma ",")
-                          (period ".")
-                          (open-quote "\"")
-                          (close-quote "\"")
-                          (otherwise token))
-                        tokens)))
-             (setq prior-token token)
+               ;;((eq tag 'CD)
+               ;;(push-debug `(,token))
+               ;;(break "the CD token is of type ~a" (type-of token))
+               ;;(push (stringify-tokens all-tokens :downcase) tokens))
+               (t (push (stringify-tokens all-tokens :downcase) tokens)))
+             (setq prior-token token
+                   prior-tag tag)
              (when first? (setq first? nil))))
       (labels
           ((walk (l)
@@ -705,29 +753,31 @@
                         (walk k)))
                      ((or (symbolp (cadr l))
                           (numberp (cadr l)))
-                      (push-word (cadr l) (car l)))
+                      (push-word (cadr l) (cdr l) (car l)))
                      (t (push-debug l)
                         (break "new case"))))))
         (dolist (s sexp)
           (walk s))
-        (write (apply #'string-append (nreverse tokens))
-               :stream out)))))
+        (let ((str (apply #'string-append (nreverse tokens))))
+          (format out "~s~%" str)
+          str)))))
 
 
 (defun tb-to-text-file-reader/char-level (full-tb-filename)
   (with-open-file (stream full-tb-filename
                   :direction :input
                   :if-does-not-exist :error)
-    (let ((paren-counter 0)
-          c  sexp  tokens  accumuator)
-      (loop 
+    (let (c
+          ;; (paren-counter 0)
+          ;; sexp  tokens  accumuator
+          )
+      (loop
            (setq c (read-char stream nil :eof))
          (when (eq c :eof) (return))
          (cond
 )))))
-  
-              
 
 
 
-  
+
+
