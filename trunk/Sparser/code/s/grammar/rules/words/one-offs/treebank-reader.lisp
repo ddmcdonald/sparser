@@ -667,6 +667,87 @@
               (when (eq sexp :eof) (return))
               (readout-tb-terminals sexp *standard-output* verbose))))))
 
+(defparameter *word-seg-errors* nil)
+(defparameter *sparser-errors* nil)
+(defparameter *tb-nps-total* 0)
+(defparameter *tb-nps-correct* 0)
+(defparameter *sexps-total* 0)
+(defparameter *sexps-correct* 0)
+
+
+(defun tb-segmentation-tester (full-tb-filename &optional (verbose nil))
+  (with-open-file (stream full-tb-filename
+                   :direction :input
+                   :if-does-not-exist :error)
+    (setf *word-seg-errors* nil
+          *sparser-errors* nil
+          *tb-nps-total* 0
+          *tb-nps-correct* 0
+          *sexps-total* 0
+          *sexps-correct* 0)
+    (with-readtable-bound *my-readtable*
+      (let ((eof? nil)
+            (sexp nil))
+        (loop while (not eof?) do
+              (setq sexp (read stream nil :eof))
+              (when verbose
+                (format t "~s~%" sexp))
+              (when (eq sexp :eof) (return))
+              (test-np-segmentation-for-sexp sexp))))
+    (format t "~%-----------------~%| TB NP Results |~%-----------------~%")
+    (format t "S-Exps tested: ~A~%S-Exps fully correct: ~A~%NPs tested: ~A~%NPs correct: ~A~%Word segmentation errors: ~A~%  ~S~%~%Sparser errors: ~A~%  ~S~%~%"
+            *sexps-total* *sexps-correct* *tb-nps-total* *tb-nps-correct* (length *word-seg-errors*)
+            *word-seg-errors* (length *sparser-errors*) *sparser-errors*)
+    ))
+
+(defun get-bracketing-from-string (str)
+  (format t "Sparser scan: ~s~%" str)
+  (handler-case
+      (progn
+        (analyze-text-from-string str)
+        (readout-bracketing))
+    (error (e)
+      (list :error
+            (apply #'format nil
+                   (simple-condition-format-control e)
+                   (simple-condition-format-arguments e))
+            str))))
+
+(defun get-segments (l &aux ans)
+  ;; Return a list of (<start-index> <end-index> <contents>) entries.
+  (let ((word-index 0))
+    (dolist (elt l ans)
+      (cond ((consp elt)
+             (push (list word-index (+ word-index (length elt)) elt) ans)
+             (incf word-index (1+ (length elt))))
+            (t
+             (incf word-index 1))))))
+
+
+(defun test-np-segmentation-for-sexp (sexp)
+  (let* ((tb-str (readout-tb-terminals sexp nil nil))
+         (tb-segmented (readout-tb-np-segmentation sexp nil nil))
+         (tb-segs (get-segments tb-segmented))
+         (tb-flat (flatten tb-segmented))
+         (sparser-segmented (get-bracketing-from-string tb-str))
+         (sparser-segs (get-segments sparser-segmented))
+         (sparser-flat (flatten sparser-segmented))
+         (missing-segs (set-difference tb-segs sparser-segs :test 'equal))
+         (n-nps-correct (- (length tb-segs) (length missing-segs))))
+    (incf *sexps-total*)
+    (cond ((equal (car sparser-segmented) :error)
+           (push sparser-segmented *sparser-errors*))
+          ((not (equal tb-flat sparser-flat))
+           (push (list tb-flat sparser-flat) *word-seg-errors*))
+          (t
+           (incf *tb-nps-total* (length tb-segs))
+           (incf *tb-nps-correct* n-nps-correct)
+           (unless missing-segs
+             (incf *sexps-correct*)
+             )))
+    (format t "Sentence: ~S~%TB-seg: ~S~%SP-Seg: ~S~%" tb-str tb-segmented sparser-segmented)
+    ))
+
 (defparameter *tb-no-space-before*
   '(close-quote single-quote comma period ? ! -rrb- -rcb- -rsb-
     colon semicolon))
@@ -698,7 +779,7 @@
          (symbol-name token)
        (format nil "~s" token)))))
 
-(defun stringify-tokens (tokens &optional (cap nil) &aux strings ans)
+(defun stringify-tokens (tokens &optional (cap nil) (append t) &aux strings ans)
   (dolist (token tokens)
     (let ((str (stringify-token token)))
       (when (and (numberp token)
@@ -706,11 +787,19 @@
                  (< (length str) 3))
         (setf str (format nil "~a~a" (make-string (- 3 (length str)) :initial-element #\0) str)))
       (push str strings)))
-  (setf ans (apply #'string-append (reverse strings)))
-  (case cap
-    (:downcase (string-downcase ans))
-    (:capitalize (string-capitalize ans))
-    (otherwise ans)))
+  (cond (append
+         (setf ans (apply #'string-append (reverse strings)))
+         (case cap
+           (:downcase (string-downcase ans))
+           (:capitalize (string-capitalize ans))
+           (otherwise ans)))
+        (t
+         (mapcar #'(lambda (x)
+                     (case cap
+                       (:downcase (string-downcase x))
+                       (:capitalize (string-capitalize x))
+                       (otherwise x)))
+                 (reverse strings)))))
 
 (defun readout-tb-terminals (sexp &optional (out *standard-output*) (verbose nil))
   "Walk tb sentence sexp to its terminals and write them out."
@@ -759,9 +848,101 @@
         (dolist (s sexp)
           (walk s))
         (let ((str (apply #'string-append (nreverse tokens))))
-          (format out "~s~%" str)
+          (when out
+            (format out "~s~%" str))
           str)))))
 
+(defun sparserize-string (str)
+  (let ((strs (split str '(#\Space #\') t)))
+    (remove-if #'(lambda (s)
+                   (member s '(" " "") :test 'equal))
+               strs)))
+
+(defun readout-tb-np-segmentation (sexp &optional (out *standard-output*) (verbose nil))
+  "Walk tb sentence sexp to its terminals and write them out."
+  (let ((first? t)
+        np-tokens in-np prior-token prior-tag top-tokens)
+    (flet ((push-word (token all-tokens tag)
+             (when verbose
+               (format t "~&~a ~a~%" all-tokens tag))
+             (let ((str (cond
+                         ;;((or first?
+                         ;;     (eq tag 'NNP)
+                         ;;     (eq tag 'NNPS)) ;; what else?
+                         ;; (when first? (setq first? nil))
+                         ;; (stringify-tokens all-tokens :downcase))
+                         ((and (eql token 'N)
+                               (eql tag 'RB))
+                          ;; Tack it to the previous.
+                          (list
+                           (if in-np
+                             (string-append (pop np-tokens) (stringify-tokens all-tokens :downcase))
+                             (string-append (pop top-tokens) (stringify-tokens all-tokens :downcase)))))
+                         ((eq tag 'POS)
+                          (list "'s"))
+                         (t
+                          (stringify-tokens all-tokens :downcase nil)))))
+               (dolist (substr1 str)
+                 (dolist (substr2 (split substr1 '(#\') t))
+                   (if in-np
+                       (push substr2 np-tokens)
+                     (push substr2 top-tokens)))))
+             (setq prior-token token
+                   prior-tag tag)))
+      (labels
+          ((walk (l)
+             (when (consp l)
+               (let ((local-np nil))
+                 (when (and (not in-np)
+                            (eql (car l) 'NP)
+                            (or (not (tree-member 'NP (cdr l)))
+                                (every #'(lambda (child)
+                                           (member (car child) '(NP NNP NNPS)))
+                                       (cdr l))))
+                   ;; this is a "leaf" NP that contains no other NP.
+                   (setf np-tokens nil
+                         in-np t
+                         local-np t))
+                 (cond ((consp (cadr l))
+                        (dolist (k (cdr l))
+                          (walk k)))
+                       ((or (symbolp (cadr l))
+                            (numberp (cadr l)))
+                        (push-word (cadr l) (cdr l) (car l)))
+                       (t (push-debug l)
+                          (break "new case")))
+                 (when local-np
+                   ;; we just finished walking inside of a NP.
+                   (push (remove "" (nreverse np-tokens) :test 'equal) top-tokens)
+                   (setf in-np nil)
+                   )))))
+        (dolist (s sexp)
+          (walk s))
+        (let ((segmentation (remove "" (nreverse top-tokens) :test 'equal)))
+          (when out
+            (format out "~s~%" segmentation))
+          segmentation)))))
+
+(defun split (string &optional (ws '(#\Space)) (preserve nil))
+  (flet ((is-ws (char) (member char ws)))
+    (nreverse
+     (let ((list nil) (start 0) (words 0) end)
+       (loop
+         (setf end (position-if #'is-ws string :start start))
+         (push (subseq string start end) list)
+         (incf words)
+         (unless end (return list))
+         (when preserve
+           (push (subseq string end (1+ end)) list))
+         (setf start (1+ end)))))))
+
+(defun tree-member (elt tree)
+  (let ((tree-elt (car tree)))
+    (or (equal elt tree-elt)
+        (when (consp tree-elt)
+          (tree-member elt tree-elt))
+        (when (cdr tree)
+          (tree-member elt (cdr tree))))))
 
 (defun tb-to-text-file-reader/char-level (full-tb-filename)
   (with-open-file (stream full-tb-filename
