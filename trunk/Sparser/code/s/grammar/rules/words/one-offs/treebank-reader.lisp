@@ -719,7 +719,7 @@
     (dolist (elt l ans)
       (cond ((consp elt)
              (push (list word-index (+ word-index (length elt)) elt) ans)
-             (incf word-index (1+ (length elt))))
+             (incf word-index (length elt)))
             (t
              (incf word-index 1))))))
 
@@ -735,18 +735,24 @@
          (missing-segs (set-difference tb-segs sparser-segs :test 'equal))
          (n-nps-correct (- (length tb-segs) (length missing-segs))))
     (incf *sexps-total*)
+    (format t "~%Sentence: ~S~%TB-seg: ~S~%SP-Seg: ~S~%" tb-str tb-segmented sparser-segmented)
     (cond ((equal (car sparser-segmented) :error)
+           (format t "Not comparing: Sparser error.~%")
            (push sparser-segmented *sparser-errors*))
           ((not (equal tb-flat sparser-flat))
+           (format t "Not comparing: word segmentation error.~%")
            (push (list tb-flat sparser-flat) *word-seg-errors*))
           (t
            (incf *tb-nps-total* (length tb-segs))
            (incf *tb-nps-correct* n-nps-correct)
-           (unless missing-segs
-             (incf *sexps-correct*)
-             )))
-    (format t "Sentence: ~S~%TB-seg: ~S~%SP-Seg: ~S~%" tb-str tb-segmented sparser-segmented)
-    ))
+           (cond
+            (missing-segs
+             (format t "Missing segments (~A):~%  ~S~%"
+                     (length missing-segs) missing-segs))
+            (t
+             (format t "No missing segments.~%")
+             (incf *sexps-correct*)))))
+    (format t "~%")))
 
 (defparameter *tb-no-space-before*
   '(close-quote single-quote comma period ? ! -rrb- -rcb- -rsb-
