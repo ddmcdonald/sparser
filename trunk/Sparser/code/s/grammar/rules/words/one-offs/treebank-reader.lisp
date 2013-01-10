@@ -695,8 +695,9 @@
               (when (eq sexp :eof) (return))
               (test-np-segmentation-for-sexp sexp))))
     (format t "~%-----------------~%| TB NP Results |~%-----------------~%")
-    (format t "S-Exps tested: ~A~%S-Exps fully correct: ~A~%NPs tested: ~A~%NPs correct: ~A~%Word segmentation errors: ~A~%  ~S~%~%Sparser errors: ~A~%  ~S~%~%"
-            *sexps-total* *sexps-correct* *tb-nps-total* *tb-nps-correct* (length *word-seg-errors*)
+    (format t "S-Exps attempted: ~A~%S-Exps tested: ~A~%S-Exps fully correct: ~A~%NPs tested: ~A~%NPs correct: ~A~%Word segmentation errors: ~A~%  ~S~%~%Sparser errors: ~A~%  ~S~%~%"
+            *sexps-total* (- *sexps-total* (length *word-seg-errors*) (length *sparser-errors*))
+            *sexps-correct* *tb-nps-total* *tb-nps-correct* (length *word-seg-errors*)
             *word-seg-errors* (length *sparser-errors*) *sparser-errors*)
     ))
 
@@ -889,7 +890,7 @@
                          (t
                           (stringify-tokens all-tokens :downcase nil)))))
                (dolist (substr1 str)
-                 (dolist (substr2 (split substr1 '(#\') t))
+                 (dolist (substr2 (split substr1 '(#\' #\-) t))
                    (if in-np
                        (push substr2 np-tokens)
                      (push substr2 top-tokens)))))
