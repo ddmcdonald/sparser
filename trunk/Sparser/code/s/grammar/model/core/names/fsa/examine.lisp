@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.18 December 2012
+;;;  version:  0.18 January 2013
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -58,7 +58,8 @@
 ;; 0.18 (11/6) removed the "The" check and removal from uncategorized names because
 ;;       is was written too broadly and sweeping up things it shouldn't have.
 ;;      (12/19/11) Adding "Hurricane" by analogy to how place names are done.
-;;       Tweaking little things in lieu of a big makeover through 12/10/12. 
+;;       Tweaking little things in lieu of a big makeover through 12/10/12. Fixed
+;;       typo in that and finished off stub 1/18/13.
 
 (in-package :sparser)
 
@@ -100,7 +101,7 @@
 (defun examine-capitalized-sequence (starting-position ending-position)
   
   ;; Called from Classify-&-record-span
-  ;; The span between the two positions has be parsed for polywords
+  ;; The span between the two positions has been parsed for polywords
   ;; and preterminals. Any know abbreviation or name-word in it will
   ;; thus have been identified.
   ;;    We make a pass over it and analyze it for any patterns or
@@ -116,66 +117,71 @@
         generic-co co-activity koc?  ordinal  flush-suffix 
         location-head  location  hurricane)
     
-    (flet ((check-cases (tt label)
-             (case label
-               (:word
+    (flet
+        ;; Check-cases is called after we've accumulated everything
+        ((check-cases (tt label)
+           (case label
+             (:word
 		(when (edge-p tt) 
 		  ;; The scope on the flet's and their treatment of mutually
 		  ;; referenced variables (or something like that) is such that
 		  ;; the setq of tt in label-for isn't having any effect here
 		  (setq tt (edge-category tt)))
 
-        (case (word-symbol tt)
-          (word::and-sign  (setq &-sign items))
+                (case (word-symbol tt)
+                  (word::and-sign  (setq &-sign items))
                   
-          (word::|of|
-                 (if items
-                   (if (valid-of-context? items)
-                     (setq of count)
-                     (else
-                       (tr :pnf/of-bad-prefix position)
-                       (setq flush-suffix position)
-                       ;; signal to the driver that the name ends here,
-                       ;; then return from the loop so we'll fall through
-                       ;; to the name constructor without looking at
-                       ;; the rest of the items.
-                       (return-from check-cases nil)))
-                   (else
-                     ;; If there are no 'items', then we're at the beginning
-                     ;; of the capitalized sequence. This can happen if we're
-                     ;; in a title or the like and the "of" is capitalized.
-                     ;; We want to get out of the loop (as above) but there's
-                     ;; no 'prefix' to be rendered into a name so we don't
-                     ;; set 'flush-suffix'.
-                     (return-from check-cases nil))))
+                  (word::|of|
+                     (if items
+                       (if (valid-of-context? items)
+                         (setq of count)
+                         (else
+                          (tr :pnf/of-bad-prefix position)
+                          (setq flush-suffix position)
+                          ;; signal to the driver that the name ends here,
+                          ;; then return from the loop so we'll fall through
+                          ;; to the name constructor without looking at
+                          ;; the rest of the items.
+                          (return-from check-cases nil)))
+                       (else
+                        ;; If there are no 'items', then we're at the beginning
+                        ;; of the capitalized sequence. This can happen if we're
+                        ;; in a title or the like and the "of" is capitalized.
+                        ;; We want to get out of the loop (as above) but there's
+                        ;; no 'prefix' to be rendered into a name so we don't
+                        ;; set 'flush-suffix'.
+                        (return-from check-cases nil))))
                   
                   
-          (word::|and|
-                 (if (reason-to-terminate-name-at-and? items)
-                   (then (setq flush-suffix position)
-                         (return-from check-cases nil))
-                   (setq and count)))
+                  (word::|and|
+                    (if (reason-to-terminate-name-at-and? items)
+                      ;; Don't want to inadvertently mis-interpret a conjunction
+                      ;; that happens to have capitalized words on either side of
+                      ;; it as though it were a name. 
+                      (then (setq flush-suffix position)
+                            (return-from check-cases nil))
+                      (setq and count)))
                   
-          (word::|the|
-                 (if items
-                   ;; Then it's not the first thing in the sequence
-                   ;; so we have to throw out the prefix in front of it
-                   (then 
-                     (tr :throwing-out-prefix tt)
-                     (throw :leave-out-prefix position))
-                   (setq the count)))
+                  (word::|the|
+                    (if items
+                      ;; Then it's not the first thing in the sequence
+                   ;; s`o we have to throw out the prefix in front of it
+                      (then
+                       (tr :throwing-out-prefix tt)
+                       (throw :leave-out-prefix position))
+                      (setq the count)))
 
-          ((or word::|a| word::|an|)
-           ;; For whatever oddity of chance, this case hadn't been
-           ;; encountered in the hayday of this code ('92-'95).
-           ;; The case in point is sentence initial. It's just
-           ;; going to punt, which is probably inadequate.
-           (if items
-              (break "Capitalized sequence internal 'a'/'an' - what ~
-                      do we do?")
-              (return-from examine-capitalized-sequence nil)))
+                  ((or word::|a| word::|an|)
+                   ;; For whatever oddity of chance, this case hadn't been
+                   ;; encountered in the hayday of this code ('92-'95).
+                   ;; The case in point is sentence initial. It's just
+                   ;; going to punt, which is probably inadequate.
+                   (if items
+                     (break "Capitalized sequence internal 'a'/'an' - what ~
+                             do we do?")
+                     (return-from examine-capitalized-sequence nil)))
                   
-          (otherwise
+                  (otherwise
            (if (word-mentioned-in-rules? tt)
              ;; Two cases are decoded above as giving us ":word"
              ;; This case is the one where the word appears as the
@@ -289,7 +295,6 @@
                (category::path-type
                 (kpush  `(,count . ,(edge-referent tt)) location))
               
-               (category::us-state) ;; much earlier -- MCL artifact?
                (category::US-state  ;; 8/11
                 (kpush  `(,count . ,(edge-referent tt)) location))
                
@@ -553,7 +558,6 @@
                (ecase (cat-symbol (itype-of previous-item))
                  (category::name-word
                   (value-of 'name previous-item)))))))
-      
       (cond
        ;; basically, we want to flag any known name head
 
@@ -561,6 +565,9 @@
         t )
 
        ((eq label-on-last-item category::inc-term) ;; "Inc."
+        t )
+
+       ((eq label-on-last-item category::country) ;; "Britain and Europe"
         t )
 
        (t  nil)))))
@@ -818,27 +825,35 @@
 
 (defun referents-of-list-of-edges (reversed-list-of-edges)
   ;; called by Examine-capitalized-sequence to make the item list
-  ;; for Categorize-and-form-name
+  ;; for Categorize-and-form-name. Returns a list of terms from
+  ;; the model to put into the name object
   (let ( value  referents )
     (dolist (item reversed-list-of-edges)
+      ;; Collect one item per pass through this loop and
+      ;; kpush it onto the referents. Note that the edges coming
+      ;; in are already reversed, so this push restores the
+      ;; proper order
       (setq value
             (typecase item
               (edge
                (let ((referent (edge-referent item)))
-                 (typecase referent
-                   (individual  referent)
+                 (if (null referent)
+                   (get-name-referent-of-odd-edge item :pnf)
+                   (typecase referent
+                     (individual  referent)
 
-                   ((or referential-category category mixin-category)
-                    (find/make-silent-nw-for-word-under-edge item))
+                     ((or referential-category category mixin-category)
+                      (find/make-silent-nw-for-word-under-edge item))
 
-                   ((or word section-marker)
-                    ;; This is here for "ORANGE-CO, INC.", where the
-                    ;; "CO" is interpreted as a header.
-                    referent)
+                     ((or word section-marker)
+                      ;; This is here for "ORANGE-CO, INC.", where the
+                      ;; "CO" is interpreted as a header.
+                      referent)
 
-		   (otherwise
-		    (break "Unexpected type of edge referent: ~a~%~a"
-			   (type-of referent) referent)))))
+                     (otherwise
+                      (push-debug `(,referent ,item ,reversed-list-of-edges))
+                      (break "Unexpected type of edge referent: ~a~%~a"
+                             (type-of referent) referent))))))
                    
               (individual ;; e.g. the name-word that is made for
                ;; an unknown capitalized word
@@ -855,16 +870,46 @@
                  nw ))
 
 	      (otherwise
-	       (break "Unexpected type of item: ~a~%~a"
+               (push-debug `(,item ,reversed-list-of-edges))
+	       (break "Unexpected type of item in list of 'edges' ~
+                       for a proper name: ~a~%~a"
 		      (type-of item) item))))
 
       (unless value
+        (push-debug `(,reversed-list-of-edges))
         (break "No referent for item in PNF treetop sequence:~
                 ~%  ~A" item))
       (kpush value referents))
 
     referents ))
 
+
+(defun get-name-referent-of-odd-edge (edge purpose)
+  "Some edges are built by processes that aren't model-directed, 
+   so we have to figure out what they should be given the purpose
+   this is being called (just :pnf right now)"
+  (unless (eq  purpose :pnf)
+    (error "Function hasn't been generalized beyond proper names"))
+  (let ((label (edge-category edge)))
+    (cond
+     ((eq label category::hyphenated-sequence) ;; "Rolls-Royce"
+      ;;/// It ought to be a hyphenated name, but extending the set of
+      ;; name categories is not a trivial project. Even making a name-
+      ;; word based on a polyword isn't trivial
+      (unless (eq (edge-rule edge) :hyphen-routine)
+        (push-debug `(,edge))
+        (error "Unexpected source of a hyphenated sequence"))
+      ;; Now we know what's in it. We'll make a sequence and return that.
+      ;; It looses the hyphen, but it's a start. 
+      (let* ((words (edge-spanned-words edge))
+             (name-words (mapcar #'(lambda (w)
+                                     (define-individual 'name-word :name w))
+                                 words))
+             (sequence (define-sequence name-words category::name-word)))
+        sequence))
+
+     (t (push-debug `(,edge ,purpose))
+        (error "New label on odd edge in pnf: ~a" edge)))))
 
 
 ;;;-------------------------------------------------
