@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   November 2012
+;;;   Version:   January 2012
 
 ;; created 9/1/11. 10/3 Adapting to getting categories as arguments, e.g.
 ;; in the case of prepositions. 11/8/12 Adjusted argument order to match
-;; order in the rule. 
+;; order in the rule. 1/18/13 Removed the block from *grok* so it would
+;; actually run. Cleaned up.
 
 (in-package :sparser)
 
@@ -18,16 +19,12 @@
 
 (defun ref/method (rule-field left-referent right-referent)
   (declare (special *shadows-to-individuals*))
+
   ;; Assuming two-argument binary rules for now
   (unless (= 3 (length rule-field))
     (error "Method calls restricted to two arguments.~
          ~%%This is different:~%   ~a" rule-field))
-  (push-debug `(,rule-field ,left-referent ,right-referent))
-  (when *grok*
-    ;; method appilcation isn't working (in CCL anyway) because the superc
-    ;; relationships aren't going through and the matches fail.
-    (return-from ref/method nil))
-  ;; (setq rule-field (car *) left-referent (cadr *) right-referent (caddr *))
+
   (flet ((dispatch-type-of (o)
            (typecase o
              (psi (base-category-of-psi o))
@@ -41,13 +38,14 @@
            (left-type (dispatch-type-of left-referent))
            (right-type (dispatch-type-of right-referent))
            (left-shadow (get-nominal-instance (get-sclass left-type)))
-           (right-shadow (get-nominal-instance (get-sclass right-type))))
-      (setq *shadows-to-individuals*
+           (right-shadow (get-nominal-instance (get-sclass right-type)))
+           (*shadows-to-individuals*
             `((,left-shadow . ,left-referent)
-              (,right-shadow . ,right-referent)))
+               (,right-shadow . ,right-referent))))
       (push-debug `(,left-shadow ,right-shadow))
+
       (let ((referent
-             ;; Have to get the order of argument correct
+             ;; Have to get the order of arguments correct
              (cond
               ((equal (cdr rule-field) '(left-referent right-referent))
                (funcall method left-shadow right-shadow))
