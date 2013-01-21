@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "Grok"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  December 2012
+;;;  version:  January 2012
 
 ;; Initiated 10/30/12 to take over from the Fire workspace. Tweeked through
-;; 12/11.
+;; 1/21/13
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -25,12 +25,22 @@
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 ;; (grok-setting)  -- for meta-.
 
+;; If nil, this flag turns off all the errors about new cases for bracketsing and
+;; has them return plausible defaults. Useful if looking for weirder errors.
+;;   (setq *break-on-new-bracket-situations* nil)
+
+
 ;;--------- for debugging segmentation, bracket calculations
 
 ;; (p "Boeing Co. said the U.S. government has suspended the sale")
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
 
 ;; (p *iraqi-girl*)
+
+;; These are in dm&p in the workspaces file under init. They're stray medium size
+;; articles lifted from the new
+;; (fire)
+;; (medtronic)
 
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/helicopter-attack.txt")
 ;;   N.b. hard pathname. Need soft one. Perhaps via asdf, certainly via a pointer
