@@ -10,11 +10,6 @@
 (in-package :sparser)
 
 
-(def-cfr comparative-prefix (comparative "than")
-  :form nil
-  :referent (:daughter left-edge))
+;;---------- moved all to modifiers 1/4/13 ---------------
 
-(def-cfr comparison (comparative-prefix number)
-  :form adjp
-  :referent (:daughter left-edge))  ;; obviously wrong
 
