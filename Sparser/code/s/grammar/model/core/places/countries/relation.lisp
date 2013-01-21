@@ -1,12 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
+;;; copyright (c) 2012 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relation"
-;;;   Module:  "model;core:names:places:countries:"
-;;;  version:  September 2007
+;;;   Module:  "model;core:places:countries:"
+;;;  version:  December 2012
 
-;; initiated 8/6/07. Moved out the generic routine 9/4.
+;; initiated 8/6/07. Moved out the generic routine 9/4. Changed one of
+;; the form rules from np-head to common-noun since that's what we
+;; actually get. 
 
 (in-package :sparser)
 	
@@ -38,7 +40,7 @@
         (values psi rule)))))
 
 
-(def-form-rule (country np-head)
+(def-form-rule (country common-noun)
   :form n-bar
   :referent (:head right-edge
              :function bind-open-var left-edge right-edge))
