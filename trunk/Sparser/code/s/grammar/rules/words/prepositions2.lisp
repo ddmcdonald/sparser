@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   2.4 November 2012
+;;;   Version:   2.4 January 2013
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -33,6 +33,7 @@
 ;;      creator with special form categories to drive general rules. 10/4 original
 ;;      base rule was circular so made it have the prep category as its label.
 ;;     (2/20/12) Added schema to the constructed cfr.  11/25/12 "near", "far"
+;;     (1/18/13) Corrected order-of-args in push-onto-plist
 
 (in-package :sparser)
 
@@ -58,7 +59,7 @@
               :form (resolve-form-category form)
               :schema (get-schematic-word-rule :preposition)
               :referent category)))
-      (push-onto-plist category :rule word-rule)
+      (push-onto-plist category word-rule :rule)
       (values category
               word-rule
               word ))))
