@@ -15,32 +15,10 @@
 
 (in-package :sparser)
 
-;;;---------------
-;;; minimal names
-;;;---------------
 
-(defun get-schematic-word-rule (word-type-keyword)
-  (let* ((cases (etf-cases *single-words*))
-         (schematic-rule (find word-type-keyword cases
-                               :key #'schr-relation :test #'eq)))
-    (unless schematic-rule
-      (break "Incomplete/bad setup: no schematic-rule named ~a ~
-              in~%   ~a" word-type-keyword *single-words*))
-    schematic-rule ))
-
-
-(defun defined-type-of-single-word (keyword)
-  (or (eq keyword :verb)
-      (eq keyword :common-noun)
-      (eq keyword :proper-noun)
-      (eq keyword :adjective)
-      (eq keyword :adverb)
-      (eq keyword :interjection)
-      (eq keyword :preposition)
-      (eq keyword :word)
-      (eq keyword :quantifier)
-      (eq keyword :number)))
-      
+;;;-----------------
+;;; the tree family
+;;;----------------
 
 (define-exploded-tree-family  single-words
   :description "This is just a stub to provide a schema to use in the generation direction. Use a proper noun keyword to actually get the name slot setup for a rule."
@@ -72,6 +50,33 @@
      ))
 
 (defvar *single-words* (exploded-tree-family-named 'single-words))
+
+
+;;;---------------
+;;; minimal names
+;;;---------------
+
+(defun get-schematic-word-rule (word-type-keyword)
+  (let* ((cases (etf-cases *single-words*))
+         (schematic-rule (find word-type-keyword cases
+                               :key #'schr-relation :test #'eq)))
+    (unless schematic-rule
+      (break "Incomplete/bad setup: no schematic-rule named ~a ~
+              in~%   ~a" word-type-keyword *single-words*))
+    schematic-rule ))
+
+
+(defun defined-type-of-single-word (keyword)
+  (or (eq keyword :verb)
+      (eq keyword :common-noun)
+      (eq keyword :proper-noun)
+      (eq keyword :adjective)
+      (eq keyword :adverb)
+      (eq keyword :interjection)
+      (eq keyword :preposition)
+      (eq keyword :word)
+      (eq keyword :quantifier)
+      (eq keyword :number)))
 
 
 
