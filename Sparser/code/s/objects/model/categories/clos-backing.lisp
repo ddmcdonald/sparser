@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2010-2013 David D. McDonald  -- all rights reserved
 ;;; $Id$
 ;;;
 ;;;     File:  "clos-backing"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  0.0 September 2011
+;;;  version:  0.0 January 2013
 
 ;; initated 11/9/10. Modified the storage scheme 11/11. Tweaking cases
 ;; through 12/6. 6/16/11 fixed case of clash with existing classes.
@@ -12,18 +12,13 @@
 ;; the class is defined but it triggered a MOP issue on the first instance
 ;; of a subclass. 9/3 simplified the names by using a different package
 ;; and flushed the check to see if the class already exists, which made
-;; the MOP problem go away. 
+;; the MOP problem go away. 1/4/13 Added get-shadow. 
 
 (in-package :sparser)
 
 ;;;---------------------------------
 ;;; stashing the classes on a table
 ;;;---------------------------------
-
-;; Tried adding a slot to the referential-category defstruct
-;; but something weird is happening with them (load shows lots
-;; of redefines that don't seem sensible) so went the easy
-;; route
 
 (defvar *categories-to-classes* (make-hash-table))
 
@@ -190,7 +185,28 @@
     shadow))
 
 
+(defgeneric get-shadow (obj)
+  (:documentation "Return the CLOS instances that we apply
+ in methods."))
 
+(defmethod get-shadow ((i individual))
+  (let ((s (indiv-shadow i)))
+    (unless s
+      (push-debug `(,i))
+      (error "No shadow associated with ~a" i))
+    s))
+
+(defmethod get-shadow ((c category))
+  (let ((s (get-nominal-instance c)))
+    (unless s
+      (push-debug `(,i))
+      (error "No shadow associated with ~a" i))
+    s))
+
+(defmethod get-shadow ((obj t))
+  (push-debug `(,obj))
+  (error "There are no shadows associated with object of ~
+          type ~a~%  ~a" (type-of obj) obj))
 
 (defvar *category-classes-to-nominal-instance* (make-hash-table))
 
