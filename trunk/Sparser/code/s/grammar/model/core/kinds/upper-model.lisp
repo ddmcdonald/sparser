@@ -47,20 +47,8 @@
    :binds ((dependent)
            (substrate)))
 
-(define-category operator
-  :specializes nil
-  :binds ((name :primitive word)))
 
-(define-category modifier
-  :specializes operator)
-
-(define-category adverbial
-  ;; Never expected to be instantiated, just instantiations
-  ;; of specific adverbs as setup by define-adverb. 
-  ;; This category provides the default super-category and
-  ;; the broad realization.
-  :specializes modifier)
-
+;; N.b. more exposed categories in the rest of the file
 
 #|  Need some axioms and tighter review before buying in completely.
     Also need a merger with Mark's adoption of Dolce.
@@ -203,7 +191,7 @@
 ;;;--------------------------------------------------------------
 ;;;------- the expressive categories and subcategories ----------
 ;;;--------------------------------------------------------------
-
+|#
 
 ; The intuitions for the notion of 'operator' come ultimately from
 ; logic. This is classification for properties (in this model these
@@ -225,9 +213,18 @@
 ; Virtually all of the adjunction-based resources refer to something 
 ; that derives from operator, which goes along with the fact that adjuncts 
 ; are always grammatically optional.
-;
+
 (define-category operator
-  super-category expressible-type)
+  :specializes nil
+  :binds ((name :primitive word)))
+
+; Atributes or predicates some propety of something.
+; Goes with the relation modified.
+(define-category modifier
+  :specializes operator)
+
+(define-category adverbial
+   :specializes modifier)
 
 
 ; Predication is a category that exists because operator does. It will
@@ -237,22 +234,31 @@
 ; something already available for it in the model.
 ;
 (define-category predication
-  super-category expressible-type
-  slots ((term . expressible-type)
-         (operator . operator)))
+  :specializes nil
+  :binds ((term)
+          (operator . operator)))
 
 
 
 ; We also need an unmarked, equally weighted 'relation' for what holds
 ; among things like the members of a collection or between categories
-; taken generically.
+; taken generically. Don't want to assume a standard arity 
+; or a directionality (for that we'd use operator and predication). 
 
 (define-category relation
-  super-category expressible-type)
+  :specializes nil) ;; might be top, or perhaps expressible-type
+
+(define-category modifies
+  :specializes relation
+  :instantiates :self
+  :binds ((modifier . modifier)
+          (modified)))
+
+  
 
 
 
-
+#|
 ;;;-----------------------------------------------------------------------------
 ;;; conventional categories -- the conventional upper model of expressive types
 ;;;-----------------------------------------------------------------------------
