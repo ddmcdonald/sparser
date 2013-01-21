@@ -5,12 +5,6 @@
 ;;;    Module:  "model;dossiers:"
 ;;;   version:  November 1995
 
-;; initiated 11/15/95
-
-(in-package :sparser)
 
 
-(def-form-rule (approximator np)
-  :form np
-  :referent (:daughter right-edge))
-
+;;---------- moved all to modifiers 1/4/13 ---------------
