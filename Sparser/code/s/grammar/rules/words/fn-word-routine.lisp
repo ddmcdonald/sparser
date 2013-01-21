@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.7 July 2011
+;;;   Version:   0.8 January 2013
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -17,6 +17,9 @@
 ;;     (5/12/95) fixed glitch in format stmt.
 ;;     (7/31/11) factored out backet operations as assign-brackets-to-word.
 ;;      and added make-minimal-word-form-rule
+;; 0.8 (1/4/13) Moved in a generalized version of the define-adverb function
+;;      that correctly build individuals and categories for meaning-bearing
+;;      function words.
 
 (in-package :sparser)
 
@@ -33,14 +36,12 @@
 (defun define-function-word (string
                              &key ((:brackets bracket-symbols))
                                   ((:form name-of-form-category)))
-
   (let ((word (or (when (word-p string) string)
                   (when (polyword-p string) string)
                   (resolve-string-to-word/make string)))
         (form (if name-of-form-category
                 (resolve-form-category name-of-form-category)
                 t )))
-
     (etypecase word
       (word (setf (label-plist word)
                   `( :function-word ,form ,@(label-plist word) )))
@@ -73,8 +74,7 @@
            ((or referential-category mixin-category category)
             form-label))))
     (unless category
-      (break "The category ~A isn't defined yet"
-             name-of-form-category))
+      (break "The category ~A isn't defined yet" form-label))
     (unless (form-category? category)
       (cerror "Just keep going"
               "You are proposing to use the category ~a~
@@ -82,3 +82,118 @@
              ~%a form rule. See /grammar/rules/syntax/categories.lisp"
               form-label))
     category))
+
+
+
+;;;-----------------------------------------------
+;;; Generalized object creator for function words
+;;;-----------------------------------------------
+
+;; This is a generalization and extension of the pattern made
+;; for adverbs circa December 2012 to better fit meaning-bearing 
+;; function words into the method-application machinery.
+
+(defun define-function-term (string form 
+                             &key  brackets super-category
+                                   tree-families)
+  (unless form
+    (setq form 'standalone)) ;; seems safest
+  (unless brackets
+    (setq brackets
+          (case form ;; match with values in rules/brackeets/assignments (!!)
+            (adverb (list  ].adverb .[adverb))
+            (det (list  ].phrase .[article ))
+            (standalone (list  ].phrase phrase.[ ))
+            (otherwise
+             (break "Need brackets for another form: ~a" form)))))
+  (unless super-category
+    (setq super-category 'adverbial))
+
+ 
+  (let* ((category-name (name-to-use-for-category string))
+         (word (if (typep string 'word)
+                 (prog1 string
+                   (assign-brackets-to-word string brackets))
+                 (define-function-word string 
+                   :brackets brackets ;; this does bracket assignment
+                   :form form))))
+    (when (category-named category-name)
+      (cerror "Ignore and keep going"
+              "We're about to redefine the category ~a" category-name))
+    (let* ((category ;; for the function word
+            (define-category/expr category-name  ;; e.g. 'only
+              `(:specializes ,super-category
+                :instantiates :self
+                :rule-label ,super-category
+                :bindings (name ,word))))
+           ;; In the adverb formulation, there's variable created
+           ;; by :binds ((value)) but no record of its function
+
+           (individual (make-category-indexed-individual category)))
+       
+      (create-shadow individual)
+      (let ((rule
+             ;; Create the single-term rule that rewrites the word
+             ;; as the category we've created for it
+             (define-cfr category (list word)
+               :form (category-named form)
+               :referent individual)))
+        (push-onto-plist category rule :rule)
+
+        (when tree-families
+          ;; Now knit the category into the right set of form rules
+          (apply-function-term-etf category tree-families))
+ 
+        category))))
+
+
+
+(defun apply-function-term-etf (category raw-tree-family-data)
+  "We recreate rdata expressions where the mapping is just the one
+   label, which we replace with category, then we apply a farily
+   deep entry point inside model/tree-tamilies/driver to create
+   the rule."
+  (push-debug `(,category ,raw-tree-family-data))
+ 
+    ;; Can consider using some suite of abbreviations, but do want
+    ;; to incorporate, here pesumably, the substitution label
+    ;; since it's going to be specific to the ETF.
+    ;; So if we get an atom, we check that there's an ETF with
+    ;; that name and replace it with a pair.
+
+  (let ( tree-family-pairs )
+    (dolist (raw raw-tree-family-data)
+      (cond
+       ((symbolp raw)
+        (let ((etf (exploded-tree-family-named raw)))
+          (unless etf
+            (error "There is no etf named ~a" raw))
+          (push `(,etf ,(etf-form-substitution-label etf))
+                tree-family-pairs)))
+       (t
+        (break "New case of raw tree-family-data: ~a" raw))))
+
+    (dolist (tr-pair tree-family-pairs)
+      (let* ((etf (car tr-pair))
+             (schemas (etf-cases etf))
+             (label (cadr tr-pair))
+             (mapping `((,label . ,category)) )
+              rules )
+        (let ((*convert-eft-form-categories-to-form-rules* t))
+          (declare (special *convert-eft-form-categories-to-form-rules*))
+          (dolist (schema schemas)
+            (let ((rule (instantiate-rule-schema
+                         schema mapping category)))
+              (push rule rules)))
+          ;; 1/5/13 16:40 There's something wrong with these
+          ;; rules. There's an unprintable element in their
+          ;; print form that hoses the inspector
+          (add-rules-to-category category rules))))))
+
+
+(defun etf-form-substitution-label (etf)
+  (unless (memq (etf-name etf)
+                '(generic-np-premodifier
+                  pre-verb-adverb post-verb-adverb sentence-adverb))
+    (error "Haven't yet vetted this ETF for form rules: ~a" etf))
+  (car (etf-labels etf)))
