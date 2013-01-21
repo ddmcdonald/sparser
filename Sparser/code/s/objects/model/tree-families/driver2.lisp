@@ -206,7 +206,7 @@
    below.  Used to keep the iteration code clear.")
 
 (defvar *schema-being-instantiated* nil
-  "Bound in Instantiate-rule-schema to fill the 'schema' field of the
+  "Bound in instantiate-rule-schema to fill the 'schema' field of the
    cfrs that are created.")
 
 
@@ -214,6 +214,10 @@
                                 mapping 
                                 category
                                 &key ((:local-cases? category-of-locals)))
+
+  "Decodes the schema and sets up cross-the-board things such as the rules'
+   form and referent. Decodes implicit multi-rules. Returns the list of
+   cfr that are created. Real work done by i/r/s-make-the-rule."
 
   (let* ((additional-rule (consp schema))
          (relation (if additional-rule
@@ -269,6 +273,7 @@
       (i/r/s-multiply-through/rhs lhs rhs form referent relation))
      (t (i/r/s-make-the-rule lhs rhs form referent relation)))
 
+    ;; Pass the realization schema through to each rule
     (if (consp *cfrs*)
       (dolist (cfr *cfrs*)
         (setf (cfr-schema cfr) schema))
@@ -289,7 +294,7 @@
                               (member :form-category
                                       (unit-plist c))))
                         rhs))
-           (def-form-rule/resolved rhs form referent lhs)
+           (def-form-rule/resolved rhs form nil referent)
            (define-cfr lhs rhs :form form :referent referent))))
 
     (when cfr
@@ -334,8 +339,6 @@
     (i/r/s-multiply-through/rhs
      category rhs form referent relation)))
 
-
-
 (defun i/r/s-multiply-through/rhs (lhs rhs form referent relation)
   (unless (= (length rhs) 2)
     (error "This routine only handles binary rules"))
@@ -359,37 +362,6 @@
       (i/r/s-make-the-rule 
        lhs (list left right) form referent relation)))))
 
-
-
-
-
-
-
-#|  original
-(defun i/r/s-multiply-through/rhs (lhs rhs form referent relation
-                                   pending-prefix )
-  (let ((term (first rhs))
-        (rhs-tail (rest rhs)))
-    (if (not (consp term))
-      (if rhs-tail
-        (i/r/s-multiply-through/rhs lhs rhs-tail
-                                    form referent relation
-                                    (append pending-prefix
-                                            (list term)))
-        (i/r/s-make-the-rule lhs (append pending-prefix
-                                         (list term))
-                             form referent relation))
-
-      ;; multiple labels in this term of the rhs
-      (dolist (label term)
-        (if rhs-tail
-          (i/r/s-multiply-through/rhs lhs rhs-tail
-                                      form referent relation
-                                      (append pending-prefix
-                                              (list label)))
-          (i/r/s-make-the-rule lhs (append pending-prefix
-                                           (list label))
-                               form referent relation)))))) |#
 
 
 
