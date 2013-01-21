@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pre-head np modifiers"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.8 August 2011
+;;;  version:  0.8 January 2013
 
 ;; initiated 4/28/94 v2.3
 ;; 0.1 (10/20) refined some of the distinctions amoung cases
@@ -26,6 +26,9 @@
 ;;     (3/29/06) fixed :function referent in number-of-quantity. For unknown reasons
 ;;      it wasn't a list and it blocked the load.
 ;; 0.8 (8/8/11) Added a form-based modifier.
+;;     (1/5/13) Removed common-noun/plural case from generic-np-premodifier because
+;;      decode-rdata-mapping was taking it to be a slashed category. ///Check whether
+;;      we'd ever get a form category of that name.
 
 (in-package :sparser)
 
@@ -372,9 +375,11 @@ These would be of/genitive except that
      ((:modifier (n-bar (premod common-noun)
                    :method (modifier+noun left-edge right-edge)
                    :head right-edge))
-      (:modifier (n-bar (premod common-noun/plural)
-                   :method (modifier+noun left-edge right-edge)
-                   :head right-edge))
+;; That category doesn't exist without subtyping, and might not even
+;; do so then
+;;      (:modifier (n-bar (premod common-noun/plural)
+;;                   :method (modifier+noun left-edge right-edge)
+;;                   :head right-edge))
       (:modifier (n-bar (premod n-bar)
                    :method (modifier+noun left-edge right-edge)
                    :head right-edge))
