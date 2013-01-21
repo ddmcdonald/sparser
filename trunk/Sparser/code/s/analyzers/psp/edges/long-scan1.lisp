@@ -1,13 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "long scan"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.2 March 1994
+;;;   Version:   1.2 January 2013
 
 ;; 1.0 (9/7/92 v2.3) flushed out of date field references
 ;; 1.1 (2/24/94) added daughter and used-in encoding
 ;; 1.2 (3/30) changed daughter-collecting call to 'all-treetops'
+;;     (8/30/95) moved the used-in after complete
+;;     (1/9/13) Added constituents and words keywords to let those
+;;      fields on the edge to be populated when the caller
+;;      has them in its hand. 
 
 (in-package :sparser)
 
@@ -17,7 +21,9 @@
                                  category
                                  &key  rule
                                        form
-                                       referent )
+                                       referent 
+                                       constituents
+                                       words )
 
   ;; Called by routines in the header and anywhere else that a segment
   ;; of text can be bounded and characterized without it having any
@@ -36,6 +42,8 @@
     (setf (edge-form edge) form)    
     (setf (edge-referent edge) referent)
 
+    (complete edge)
+
     (let ((daughters (all-treetops :from starting-position
                                    :to ending-position
                                    :below edge)))
@@ -43,14 +51,17 @@
                   (when (edge-p tt)
                     (set-used-by tt edge)))
               daughters)
-
       (setf (edge-left-daughter edge) (first daughters))
       (setf (edge-right-daughter edge) :long-span)
+      (setf (edge-constituents edge)
+            (or constituents ;; passed in
+                daughters))
 
-      (complete edge)
+      (when words
+        (setf (edge-spanned-words edge) words))
     
       (when *trace-edge-creation*
-        (format t "~&~%creating ~A for ~A" edge rule))
+        (format t "~&Ccreating ~A for ~A" edge rule))
     
       (assess-edge-label category edge) 
       edge )))
