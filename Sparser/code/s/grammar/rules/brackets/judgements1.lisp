@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2003,2011-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2003,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.9 December 2012
+;;;  Version:  1.9 January 2013
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -45,9 +45,19 @@
 ;; 1.9 (11/2/12) Added sort-out-name-bracketing-state called from PNF to fix interesting
 ;;      bug from false segment starting bracket where proper name ends in "ing"
 ;;      (11/8/12) started folding in adj-verb brackets. (11/9/12) added debugging
-;;      method brackets-on. Diverse tweaking through 12/10
+;;      method brackets-on. Diverse tweaking through 12/10. Added a flag to inhibit
+;;      breaking on new cases. 
 
 (in-package :sparser)
+
+;;;----------------
+;;; debugging flag
+;;;----------------
+
+(defparameter *break-on-new-bracket-situations* t
+  "If this flag is up, we break on new cases, otherwise we return
+   what seems like the least-harmful option.")
+
 
 ;;;-----------------
 ;;; state variables
@@ -295,14 +305,18 @@
                   (eq bracket-opening-segment preposition.[)
                   (eq bracket-opening-segment mvb.[)) ;; not two in a row
               t)
-             (t (push-debug `(,position ,*bracket-opening-segment*
-                              ,word-count ,previous-word ,segment-start-pos))
-                (break "].verb  next case.~
-                      ~%The bracket opening the segment is ~a.~
-                      ~%The word with the ambiguous bracketing is ~a~
-                      ~%The segment so far is \"~{~a ~}\" "
-                       bracket-opening-segment (pos-terminal position)
-                       (words-between segment-start-pos position)))))
+             (t (if *break-on-new-bracket-situations*
+                  (then
+                   (push-debug `(,position ,*bracket-opening-segment*
+                                 ,word-count ,previous-word ,segment-start-pos))
+                   (break "].verb  next case.~
+                         ~%The bracket opening the segment is ~a.~
+                         ~%The word with the ambiguous bracketing is ~a~
+                         ~%The segment so far is \"~{~a ~}\" "
+                          bracket-opening-segment (pos-terminal position)
+                          (words-between segment-start-pos position)))
+                  (else
+                   t)))))
 
 
            ((eq ]  aux].)
@@ -344,12 +358,19 @@
              ((segment-started-as-vg?)
               t)
              ((= 0 word-count) nil) ;; something should follow this adjective
-             (t (push-debug `(,position ,*bracket-opening-segment*
-                              ,word-count ,previous-word ,segment-start-pos))
-                (break "].adjective  next case.~
-                      ~%The bracket opening the segment is ~a.~
-                      ~%The word with the ambiguous bracketing is ~a"
-                       bracket-opening-segment (pos-terminal position)))))
+             (t (if *break-on-new-bracket-situations*
+                  (then
+                   (push-debug `(,position ,*bracket-opening-segment*
+                                 ,word-count ,previous-word ,segment-start-pos))
+                   (break "].adjective  next case.~
+                         ~%The bracket opening the segment is ~a.~
+                         ~%The word with the ambiguous bracketing is ~a~
+                         ~%The segment so far is \"~{~a ~}\" "
+                       bracket-opening-segment (pos-terminal position)
+                       (words-between segment-start-pos position)))
+                  (else
+                   nil)))))
+
           
            ((eq ]  ].punctuation)
             t)
@@ -407,12 +428,18 @@
               ((eq bracket-opening-segment phrase.[) t) ;; after a period
               ((eq bracket-opening-segment preposition.[) t) ;; after preposition
 
-              (t (push-debug `(,position ,*bracket-opening-segment*
-                              ,word-count ,previous-word ,segment-start-pos))
-                 (break "].np-vp next case.~
-                      ~%The bracket opening the segment is ~a.~
-                      ~%The word with the ambiguous bracketing is ~a" ; 
-                       bracket-opening-segment (pos-terminal position)))))
+              (t (if *break-on-new-bracket-situations*
+                   (then
+                    (push-debug `(,position ,*bracket-opening-segment*
+                                  ,word-count ,previous-word ,segment-start-pos))
+                    (break "].np-vp next case.~
+                         ~%The bracket opening the segment is ~a.~
+                         ~%The word with the ambiguous bracketing is ~a~
+                         ~%The segment so far is \"~{~a ~}\" "
+                           bracket-opening-segment (pos-terminal position)
+                           (words-between segment-start-pos position)))
+                   (else
+                    nil )))))
 
 
 
@@ -434,19 +461,23 @@
               ;; This is an odd case, "made too many flights tardy" looking
               ;; at the ] from "flights".  Need more information.
               nil)
-             #+ignore
-             (t (push-debug `(,position ,*bracket-opening-segment*
-                              ,word-count ,previous-word ,segment-start-pos))
-                 (break "np-vp.] next case.~
-                      ~%The bracket opening the segment is ~a.~
-                      ~%The word with the ambiguous bracketing is ~a" ; 
-                       bracket-opening-segment (pos-terminal position)))
-             (t ;; Need more content to answer these cases correctly,
-              ;; e.g. for the 'verb' that starts the np "undiscounted tickets"
-              ;; and confuses the np-vp]. on tickets. Need to settle
-              ;; other things before putting that content in, so just
-              ;; punting the answer here
-              nil)))
+             (t (if *break-on-new-bracket-situations*
+                  (then
+                   (push-debug `(,position ,*bracket-opening-segment*
+                                 ,word-count ,previous-word ,segment-start-pos))
+                   (break "np-vp.] next case.~
+                        ~%The bracket opening the segment is ~a.~
+                        ~%The word with the ambiguous bracketing is ~a~
+                        ~%The segment so far is \"~{~a ~}\""
+                          bracket-opening-segment (pos-terminal position)
+                          (words-between segment-start-pos position)))
+                  (else
+                   ;; Need more content to answer these cases correctly,
+                   ;; e.g. for the 'verb' that starts the np "undiscounted tickets"
+                   ;; and confuses the np-vp]. on tickets. Need to settle
+                   ;; other things before putting that content in, so just
+                   ;; punting the answer here
+                   nil)))))
             
 
 
@@ -463,12 +494,18 @@
              ((eq bracket-opening-segment preposition.[)
               ;; it's an adjective. Verbs don't follow prepositions
               nil)
-             (t (push-debug `(,position ,*bracket-opening-segment*
-                              ,word-count ,previous-word ,segment-start-pos))
-                 (break "].adj-verb next case.~
-                      ~%The bracket opening the segment is ~a.~
-                      ~%The word with the ambiguous bracketing is ~a"
-                       bracket-opening-segment (pos-terminal position)))))
+             (t (if *break-on-new-bracket-situations*
+                  (then
+                   (push-debug `(,position ,*bracket-opening-segment*
+                                 ,word-count ,previous-word ,segment-start-pos))
+                   (break "].adj-verb next case.~
+                         ~%The bracket opening the segment is ~a.~
+                         ~%The word with the ambiguous bracketing is ~a
+                         ~%The segment so far is \"~{~a ~}\""
+                          bracket-opening-segment (pos-terminal position)
+                          (words-between segment-start-pos position)))
+                  (else
+                   nil)))))
              
 
 
@@ -478,14 +515,18 @@
              ;; or coninuing an NP (nil)
              ((segment-started-as-np?) nil)
              ((segment-started-as-vg?) t)   ;; "was asleep" - strand the verb
-             (t (push-debug `(,position ,*bracket-opening-segment*
-                              ,word-count ,previous-word ,segment-start-pos))
-                 (break "].adj-adv next case.~
-                      ~%The bracket opening the segment is ~a.~
-                      ~%The word with the ambiguous bracketing is ~a
-                      ~%The segment so far is \"~{~a ~}\" "
+             (t (if *break-on-new-bracket-situations*
+                  (then
+                   (push-debug `(,position ,*bracket-opening-segment*
+                                 ,word-count ,previous-word ,segment-start-pos))
+                   (break "].adj-adv next case.~
+                         ~%The bracket opening the segment is ~a.~
+                         ~%The word with the ambiguous bracketing is ~a
+                         ~%The segment so far is \"~{~a ~}\" "
                        bracket-opening-segment (pos-terminal position)
-                       (words-between segment-start-pos position)))))
+                       (words-between segment-start-pos position)))
+                  (else
+                   nil)))))
           
 
            (t (break "Unclassified closing bracket: ~A" ])
