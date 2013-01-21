@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.4 December 2011
+;;;  version:  1.4 January 2013
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -42,7 +42,7 @@
 ;;      (2/11/12) Took :verb out of the keywords because it interferes with
 ;;      the binding of the parameters in dereference-rdata by blocking the
 ;;      binding of :main-verb (created a preference for :verb), so no verbs
-;;      were getting realizations. 
+;;      were getting realizations. (1/5/13) minor in-line doc.
 
 (in-package :sparser)
 
@@ -55,6 +55,10 @@
 ;; its argument signature with the earlier Define-realization that
 ;; is part of the mechanics of writing out contructed definitions.
 ;; See interface;workbench:def rule.
+
+;; N.b. As of 1/5/13 There are only two calls to define-realization1,
+;; One in kinds/np-rules and one in numbers/objects1, so we should
+;; be able to remove it
 
 (defmacro define-realization1 (category &body rdata)
   `(if (category-named ',category)
@@ -106,7 +110,7 @@
 
 (defmacro define-additional-realization (category &body rdata)
   `(if (category-named ',category)
-     (setup-rdata (category-named ',category) ',rdata nil)
+     (setup-rdata (category-named ',category) ',rdata nil) ;; nil overrides delete?
      (break "There is no category named ~a" ',category)))
 
 
@@ -171,7 +175,7 @@
     (dolist (rdata list-of-rdata)
       (vet-rdata-keywords category rdata)
       (multiple-value-setq (head-word etf mapping local-cases rules)
-        (dereference-and-store?-rdata-schema category rdata nil))
+        (dereference-and-store?-rdata-schema category rdata nil)) ;; nil overrides store
       (push `(:schema (,head-word ,etf ,mapping ,local-cases))
             all-schemas)
       (setq all-rules (append rules all-rules)))
@@ -182,10 +186,8 @@
 (defun dereference-and-store?-rdata-schema (category rdata store?)
   (multiple-value-bind (head-word etf mapping local-cases)
                        (apply #'dereference-rdata category rdata)
-
-    (let ((rules (make-rules-for-realization-data
+    (let ((rules (make-rules-for-realization-data ;; <<< does the work
                   category head-word etf mapping local-cases)))
-
       (if store?
         (setf (cat-realization category)
               `(:schema (,head-word
@@ -232,7 +234,7 @@
 ;;;------------------------------------------------
 
 (defvar *schematic?* nil
-  "A device to communicate between Deref-rdata-word, where the fact
+  "A device to communicate between deref-rdata-word, where the fact
    that a head-word has been given as the name of a variable rather
    than a string defines the rdata as being schematic, and the
    function below, where I want to pass that fact back to its caller.")
@@ -252,7 +254,10 @@
                                word
                                ((:special-case-head  no-head))
                                ((:additional-rules cases)))
-  
+
+  "Does the symbols to objects converstion for realization data. 
+   Returns the arguments to feed into make-rules-for-realization-data."
+
   ;; called from Setup-rdata using 'apply'
 
   (setq *schematic?* nil)  ;; initialize the flag
@@ -290,7 +295,8 @@
                (pn-name
                 (cons :proper-noun
                       (deref-rdata-word pn-name category)))
-               (no-head )
+               (no-head 
+                nil)
                (t ;(break "No head word included with the rdata for ~A~
                   ;        ~%Continue if that's ok" category)
                   nil )))
@@ -310,7 +316,7 @@
 
     (values (if (or no-head
                     (null head-word))
-              :no-head-word ;; previously nil (9/3/99
+              :no-head-word ;; previously nil (9/3/99)
               head-word)
             tf
             decoded-mapping
