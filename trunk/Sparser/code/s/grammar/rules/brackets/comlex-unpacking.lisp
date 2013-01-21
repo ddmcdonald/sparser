@@ -254,20 +254,28 @@ places. ]]
 (defun lift-special-case-form-from-comlex-clause (clause)
   ;; if the word is unambigously a verb then there is a single clause
   ;; otherwise there's a list of clauses. one for eacu POS.
-  (push-debug `(,clause))
-  (let ((verb-clause
-         (if (consp (car clause)) ;; multiple clauses
-           (assq 'verb clause)
-           clause)))
-    (unless (eq 'verb (car verb-clause))
-      (push-debug `(,verb-clause))
-      (error "Expected a verb clause and didn't get one"))
-    (let ((2d-expr (cadr verb-clause)))
-      (case (car 2d-expr)
-        ((or :infinitive :tensed/singular :past-tense :present-participle)
-         2d-expr)
-        (:subc nil)
-        (:features nil)
-        (otherwise
-         (push-debug `(,2d-expr ,verb-clause))
-         (error "New case in what's 2d in a verb clause"))))))
+  (flet ((launder-verb-keywords (plist)
+           ;; Make any needed changes so that the keywords supplied by
+           ;; Comlex are made to conform to those required by define-main-verb
+           ;; which is the consumer of this via setup-verb
+           (if (memq :pastpart plist)
+             (subst :past-participle :pastpart plist)
+             plist)))
+    (push-debug `(,clause))
+    (let ((verb-clause
+           (if (consp (car clause)) ;; multiple clauses
+             (assq 'verb clause)
+             clause)))
+      (unless (eq 'verb (car verb-clause))
+        (push-debug `(,verb-clause))
+        (error "Expected a verb clause and didn't get one"))
+      (let ((2d-expr (cadr verb-clause))) ;; this is what we return
+        (case (car 2d-expr)
+          ((or :infinitive :tensed/singular :past-tense :present-participle
+               :pastpart)
+           (launder-verb-keywords 2d-expr))
+          (:subc nil)
+          (:features nil)
+          (otherwise
+           (push-debug `(,2d-expr ,verb-clause))
+           (error "New case in what's 2d in a verb clause")))))))
