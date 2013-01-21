@@ -88,7 +88,8 @@
            hyphen?   count )
       (flet ((finish-hyphenated-sequence ()
                (make-edge-over-hyphenated-sequence 
-                start-pos next-pos)))
+                start-pos next-pos
+                (nreverse words-in-sequence))))
         (loop
            (push next-word words-in-sequence) ;; word after the hyphen
            (setq next-pos (chart-position-after next-pos))
@@ -117,14 +118,15 @@
 
 (define-category hyphenated-sequence)
 
-(defun make-edge-over-hyphenated-sequence (start-pos end-pos)
+(defun make-edge-over-hyphenated-sequence (start-pos end-pos words-in-sequence)
   (let ((edge (make-edge-over-long-span
                start-pos  ;; starting-position
                end-pos    ;; ending-position
                category::hyphenated-sequence ;; category
                :rule :hyphen-routine
                :form category::np
-               :referent nil)))
+               :referent nil
+               :words words-in-sequence)))
     ;;/// insert trace
     edge ))
 
