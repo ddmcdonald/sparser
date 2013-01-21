@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSE/Users/ddm/sparser/Sparser/code/s/grammar/model/dossiers/loader.lispR -*-
-;;; copyright (c) 1991-2005,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.5 November 2012
+;;;  version:  0.6 January 2013
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -41,6 +41,8 @@
 ;;     (2/21/11) Added title-abbreviations and noted that titles was OBE.
 ;;     (8/8/11) Added path-types. (11/24/12) Added rules-to-turn-off and military
 ;;     vocabulary from Answer
+;; 0.6 (1/4/13) Rearranged files for adverbs and other function words to go into
+;;      the singe flie [modifiers] so it's easier to keep track of them.
 
 (in-package :sparser)
 
@@ -84,7 +86,7 @@
   (gload "dossiers;new content words"))
 
 
-(gate-grammar *comparatives*
+#+ignore(gate-grammar *comparatives* ;; moved to modifiers
   (gload "dossiers;comparatives")
   (gload "dossiers;rules comparatives"))
 
@@ -103,13 +105,15 @@
 
 
 (gate-grammar *standard-adjuncts*
+  (gload "dossiers;modifiers"))
+#|
   (gate-grammar *approximators*
     (gload "dossiers;approximations")
     (gload "dossiers;approximator rules"))
   (gate-grammar *frequency*
     (gload "dossiers;frequency adverbs"))
-  (gate-grammar *sequencers*
-    (gload "dossiers;sequencers")))
+  (ate-grammar *sequencers*
+    (gload "dossiers;sequencers")))  |#
 
 
 (gate-grammar *kinds*
