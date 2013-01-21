@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  3.7 September 2011
+;;;  Version:  3.8 January 2013
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -20,6 +19,7 @@
 ;;     (8/8/07) added semantics of wh words.
 ;; 3.7 (6/17/09) Added [questions]. (8/31/11) added semantics for [quantifiers]
 ;;     (9/19/11) Bumped [adverbs]. (9/30/11) added [prepositions]
+;; 3.8 (1/18/13) Moved relatives after WH since it references them. 
 
 (in-package :sparser)
 
@@ -48,9 +48,6 @@
 (gate-grammar *conjunction*
   (gload "syntax-conj;conjunction7"))
 
-(gate-grammar *relative-clauses*
-  (gload "syntax-rel;subject relatives"))
-
 (gate-grammar *possessive*
   (gload "syntax-poss;possessive"))
 
@@ -63,3 +60,7 @@
 (gate-grammar *semantics-of-WH-words*
   (gload "syntax-comp;WH-word-semantics")
   (gload "syntax-comp;questions"))
+
+(gate-grammar *relative-clauses* ;; references WH categories
+  (gload "syntax-rel;subject relatives"))
+
