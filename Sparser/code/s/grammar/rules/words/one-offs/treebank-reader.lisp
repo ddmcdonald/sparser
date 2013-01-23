@@ -123,15 +123,21 @@
 
 (defvar *current-readtable* *readtable*)
 
+(defvar *readtable-stack* nil)
+
 (defun my-rt () (setq *readtable* *my-readtable*))
 
 (defun old-rt () (setq *readtable* *current-readtable*))
 
-(defmacro with-readtable-bound (&body body)
-  `(progn
-     (my-rt)
-     ,@body
-     (old-rt)))
+(defmacro with-readtable-bound (rt &body body)
+  `(let ((body-result nil))
+     (push *readtable* *readtable-stack*)
+     (setf *readtable* ,rt)
+     (unwind-protect
+         (setf body-result (progn ,@body))
+       (progn
+         (setf *readtable* (pop *readtable-stack*))
+         body-result))))
 
 
 ;;;---------
@@ -687,7 +693,8 @@
           *sexps-correct* 0)
     (with-readtable-bound *my-readtable*
       (let ((eof? nil)
-            (sexp nil))
+            (sexp nil)
+            (*break-on-new-bracket-situations* nil))
         (loop while (not eof?) do
               (setq sexp (read stream nil :eof))
               (when verbose
@@ -705,7 +712,8 @@
   (format t "Sparser scan: ~s~%" str)
   (handler-case
       (progn
-        (analyze-text-from-string str)
+        (with-readtable-bound *current-readtable*
+          (analyze-text-from-string str))
         (readout-bracketing))
     (error (e)
       (list :error
