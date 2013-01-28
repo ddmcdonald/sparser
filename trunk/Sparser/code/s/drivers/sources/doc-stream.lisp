@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993-1996  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "doc stream"
 ;;;   Module:  "drivers;sources:"
 ;;;  Version:  0.5 July 1995
@@ -10,7 +10,7 @@
 ;; 0.1 (12/27) no longer automatically binding the current style, leaving
 ;;      that to the style init routine
 ;; 0.2 (1/7/94) debugged ds/Do-files-in-directory. Added Again & Continue
-;; 0.3 (1/11) moved the binding points of the globals to handle impact 
+;; 0.3 (1/11) moved the binding points of the globals to handle impact
 ;;      of superstreams
 ;;     (3/8) added Do-next-file
 ;; 0.4 (8/10) switched final path to Do-article
@@ -85,7 +85,7 @@
     ;; add a "*" so that we can get every file in the directory
     (let* ((namestring (namestring dir-expanded-pn))
            (file-pattern (concatenate 'string
-                                      namestring "*")))           
+                                      namestring "*")))
 
       (let ((files (directory file-pattern)))
         (ds/do-explicit-file-list ds files)))))
@@ -155,7 +155,7 @@
 (defun repeat-last-file ()
   ;; called from *repeat-last-article* item on the Sparser menu, or
   ;; from ds/Do-explicit-file-list if the *pause-between-articles* flag
-  ;; is up and we're starting a doc-stream. 
+  ;; is up and we're starting a doc-stream.
   (unless *current-file*
     (error "There is no *current-file* to repeat"))
   (let ((*current-document-stream* *document-stream-to-use*))
@@ -182,7 +182,7 @@
                      (string (expand-namestring directory-pathname))))
                   (namestring (namestring dir-expanded-pn))
                   (file-pattern (concatenate 'string
-                                             namestring "*")))          
+                                             namestring "*")))
              (directory file-pattern)))
 
           ((ds-file-list ds-designator)
@@ -216,9 +216,17 @@
       (when *open-stream-of-source-characters*
         (close-character-source-file)))
 
+    ;; Scrub the chart so that there aren't any source-start or source-end characters.
+    (do* ((i 1 (1+ i))
+          (pos (chart-position i) (chart-position i)))
+        ((= i (1- *next-chart-position-to-scan*)))
+      (when (or (eql (pos-terminal pos) *source-start*)
+                (eql (pos-terminal pos) *end-of-source*))
+        (setf (pos-terminal pos) *newline*)))
+
     (after-analysis-actions)))
 
-    
+
 
 
 
