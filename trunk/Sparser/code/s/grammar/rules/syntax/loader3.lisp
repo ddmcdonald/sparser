@@ -20,6 +20,7 @@
 ;; 3.7 (6/17/09) Added [questions]. (8/31/11) added semantics for [quantifiers]
 ;;     (9/19/11) Bumped [adverbs]. (9/30/11) added [prepositions]
 ;; 3.8 (1/18/13) Moved relatives after WH since it references them. 
+;;     (1/22/13) Added [adjectives]
 
 (in-package :sparser)
 
@@ -43,6 +44,7 @@
 
 (gate-grammar *default-semantics-for-NP*
   (gload "syntax-art;articles")
+  (gload "syntax-art;adjectives")
   (gload "syntax-art;prepositions"))
 
 (gate-grammar *conjunction*
