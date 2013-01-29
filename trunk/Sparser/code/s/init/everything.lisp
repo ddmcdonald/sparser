@@ -1,11 +1,11 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
-;;; copyright (c) 1989-2005,2010-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1989-2005,2010-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   November 2012
+;;;   Version:   January 2013
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -76,6 +76,9 @@
 ;; initial check for whether we're running in an mlisp. 7/11 Added global for including
 ;; the generic lexicon. 9/23/11 Bumped the version to v4.0. 10/30/12 Small
 ;; cleanups, added *grok*.  11/24/12 Explicitly loading all the workspaces by name.
+;; 1/28/13 Chanve the binaries directory for Allegro to "f" (1/29/13) put #+allegro, 
+;; #+openmcl around value of *prefer-binaries* to keep CCL from trying to understand 
+;; ACL fasls.
 
 (in-package :cl-user)
 
@@ -437,7 +440,9 @@ or for loading the newer of the compiled or source files.
 
 
 (or (boundp 'sparser::*prefer-binaries*)
-    (defparameter sparser::*prefer-binaries* t
+    (defparameter sparser::*prefer-binaries* ;; see note on this in lload
+      #+allegro t
+      #+openmcl nil
       "If non-nil, lload looks for a .fasl version of a file (or whatever
        is appropriate for the Lisp being used) and loads it if there 
        is one and if it is newer than the source version, otherwise it 
@@ -528,10 +533,7 @@ or for loading the newer of the compiled or source files.
     (defparameter *binaries-directory-name*
       #+apple "f"
       #+openmcl "f"
-      #+allegro "s"
-;     "Some Lisps seem to be incapable of storing the compiled files in
-;       different directories than the source, which is the preferred
-;       design for Sparser."
+      #+allegro "f"
       ))
 
 ;; put the binaries in
@@ -624,6 +626,9 @@ or for loading the newer of the compiled or source files.
 
       (if sparser::*insist-on-binaries*
         (load fasl-namestring)
+        #+openmcl
+        (load namestring)
+        #-openmcl
         (if (probe-file fasl-namestring)
           (if (probe-file namestring)
             (let ((date-of-source (file-write-date namestring))
