@@ -35,7 +35,7 @@
 #|  ETFs in this file:
 
         modifier-creates-subtype --------------- "fiscal quarter"
-        modifier-creates-individual ------------
+        modifier-creates-individual ------------ "Dutch company", "publishing group"
         modifier-creates-definite-individual --- "last year"
         designated-instance-of-set ------------- "(the) third quarter"
         quantity+kind -------------- "7 tons"
