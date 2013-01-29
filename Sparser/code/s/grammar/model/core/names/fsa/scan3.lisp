@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  3.2 May 1995
+;;;  Version:  3.3 January 2013
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -36,6 +36,7 @@
 ;;      the scan while the actual variant didn't.
 ;;     (5/29) changed the capitalization-of-the-next-word check in the hyphen routine
 ;;      because reacted to the word rather than the position (never revised?)
+;; 3.3 (1/21/13) Blocking continuaton over "of" or "and" when doing DM&P
 
 (in-package :sparser)
 
@@ -149,7 +150,6 @@
   ;; close-bracket on the position before the next word and we're
   ;; supposed to respect it: *pnf-scan-respects-segment-boundaries*
   (tr :Boundary-continuation position-before)
-
   (if (eq cap-state :punctuation)
     (checkout-punctuation-for-capseq position-before)
     (if (actual-word-introduces-bracket position-before cap-state)
@@ -467,9 +467,10 @@
 
 
 (defun lc-word-that-may-extend-cap-seq? (word)
-  ;; Called from Boundary-continuation
-  (or (eq word (word-named "of"))
-      (eq word (word-named "and"))))
+  ;; Called from boundary-continuation
+  (unless *do-strong-domain-modeling*
+    (or (eq word (word-named "of"))
+        (eq word (word-named "and")))))
 
 
 (defun lc-non-boundary-word-that-may-extend-cap-seq? (word)
