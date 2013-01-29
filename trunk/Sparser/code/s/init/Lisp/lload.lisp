@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1997  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1997,2012-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: lload.lisp 207 2009-06-18 20:59:16Z cgreenba $
 ;;;
 ;;;      File:   "lload"
 ;;;    Module:   "init;Lisp:"
-;;;   Version:   2.9 January 2007
+;;;   Version:   2.10 January 2013
 
 ;; initiated July 1990
 ;; 1.1  (7/19 v1.8.6)  Added capability to load .fasl or source, preferring
@@ -61,6 +60,10 @@
 ;; 2.9 (1/23) Set of changes to get copy-file to work under Allegro. Goes through
 ;;      ACL's excl.shell:cp, but doesn't work. Didn't do further debugging.
 ;; 2.10 (8/29/07) Adding/modifying as needed to handle MSWindows file systems.
+;;      (1/28/13) Added a guard for the file write dates existing in just-compile.
+;;      (1/29/13) put #+allegro, #+openmcl around value of *prefer-binaries* to keep
+;;       CCL from trying to understand ACL fasls. 
+
 
 (in-package :sparser)
 
@@ -76,8 +79,17 @@
       "Controls whether the loading process is actually to be taken as an
        automatic way of getting the whole system compiled"))
 
+#|
+  If you're on a machine where you run Sparser in both Franz's Allegro and
+in Clozure, you probably have binaries that were compiled for ACL which
+make absolutely no sense for CCL (which in any event will compile on
+the fly). This feature setting sorts that out.  If we get another lisp
+in the mix (this will blow out) we should revisit the whole treatment. 
+|#
 (or (boundp '*prefer-binaries*)
-    (defparameter *prefer-binaries* t
+    (defparameter *prefer-binaries* 
+      #+allegro t
+      #+openmcl nil
       "If non nil, lload looks for a .fasl version of a file and loads
        it if there is one, otherwise it loads the source version."))
 
@@ -309,8 +321,11 @@
       (if (probe-file output-file)
         (let ((date-of-fasl   (file-write-date output-file))
               (date-of-source (file-write-date namestring)))
-          (if (> date-of-source
-                 date-of-fasl)
+          (if (and (and date-of-source date-of-fasl)
+                   ;; source date turned up nil during just-compile of
+                   ;; config;grammar-modules
+                   (> date-of-source
+                      date-of-fasl))
             (progn
               (cl-user::routine-to-compile-file namestring output-file))
             (progn
