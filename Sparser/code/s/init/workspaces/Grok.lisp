@@ -36,6 +36,7 @@
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
 
 ;; (p *iraqi-girl*)
+;; (setq *new-segment-coverage* t)   ;; to debug that, add cases
 
 ;; These are in dm&p in the workspaces file under init. They're stray medium size
 ;; articles lifted from the new
