@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1997,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "launch"
-;;;   Module:  "init;versions:v3.1:config:"
-;;;  version:  October 2012
+;;;   Module:  "init;versions:v4.0:config:"
+;;;  version:  January 2013
 
 ;; 10/7/94 commented out the call to make objects permanent and move it to the
 ;; save images file. 10/12 turning off the break-outside-coverage flag
@@ -33,7 +32,8 @@
 ;; it's missing some needed elements. 6/30/11 Commented out checkpoint-ops 
 ;; case in switch-settings because in and 'everything' load (the default
 ;; now) that option symbol is bound to a grammar module. Need a different
-;; scheme. 10/30/12 added *grok*, minor cleanup. 
+;; scheme. 10/30/12 added *grok*, minor cleanup. 1/28/13 Wrapped an eval-when
+;; around final forms to avoid running them when compiling.
 
 (in-package :sparser)
  
@@ -265,17 +265,19 @@
 
 ;;--- Corpus connection
 
-(when *load-the-grammar*
-  ;; No point in doing these systematic analyses unless the grammar is loaded
-  (check-for-delayed-connection-to-the-corpus))
+(eval-when (:load-topleve :execute)
 
+  (when *load-the-grammar*
+    ;; No point in doing these systematic analyses unless the grammar is loaded
+    (check-for-delayed-connection-to-the-corpus))
 
-;;--- Workspace files
+  ;;--- Workspace files
 
-(load-workspaces)
+  (load-workspaces)
 
+  ;;--- parameters
 
-;;--- parameters
+  (final-session-setup)
 
-(final-session-setup)
+) ;; eval-when
 
