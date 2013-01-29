@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2012-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.1 November 2012
+;;;  version:  1.2 January 2013
 
 ;; initiated 8/4/92. Added accumulator list and description field 2/22/95.
 ;; Added type field 3/7.  Tweeked def routine 4/27
@@ -12,7 +12,8 @@
 ;;     (2/14/98) debugged the find routine for them and did the printer.
 ;;     (5/5) added tree-family to schematic-rule.
 ;; 1.1 (6/17/09) added 'form' field to schematic-rule structure
-;;     (11/13/12) added pretty-schr-as-string
+;;     (11/13/12) added pretty-schr-as-string. 
+;; 1.2 (1/28/13) Added form-rule field to schematic rule
 
 (in-package :sparser)
 
@@ -47,21 +48,23 @@
             (:conc-name #:schr-)
             (:print-function print-schematic-rule-structures))
 
-  relation
+  relation ;; the characterization of the rule's function or form
 
-  lhs
+  lhs ;; as a symbol
 
-  rhs
+  rhs ;; as symbols
 
-  referent
+  referent ;; the full expression
 
-  descriptors
+  descriptors ;; abstracted from specifics
 
-  original-expression
+  original-expression ;; literal sexp
 
-  tree-family
+  tree-family ;; backpointer
 
-  form  
+  form   ;; of the resulting rule
+
+  form-rule ;; a real rule object. See find-form-rule
 
   )
 
