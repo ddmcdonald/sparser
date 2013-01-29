@@ -56,7 +56,7 @@
 ;;      some spill over into word-frequency-setting where nothing heuristic should
 ;;      run. (2/20/11) Folded *make-edges-over-new-digit-sequences* into standard ddm
 ;;      settings. 
-;;      (10/30/12) Setting up for Grok.
+;;      (10/30/12) Setting up for Grok. 1/21/13 Turned on *do-strong-domain-modeling* in it
 
 
 (in-package :sparser)
@@ -287,8 +287,7 @@
   (fire-setting)
   (progn ;; these are temporary overrides while we debug bracketing
     (setq *annotate-realizations* nil)
-    (setq *new-dm&p* nil) ;; these two from fire-setting
-    (setq *do-strong-domain-modeling* nil))
+    (setq *new-dm&p* nil)) ;; these two from fire-setting
   (include-comlex)
   (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
