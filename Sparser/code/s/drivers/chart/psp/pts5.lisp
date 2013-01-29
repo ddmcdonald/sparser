@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.13 October 2012
+;;;  Version:  5.13 January 2012
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -43,6 +43,8 @@
 ;; 5.13 (2/9/07) incorporated hook to strong domain modeling. (2/23) fixed a
 ;;       massive bug in Loop-through-segment-for-some-edges.
 ;;      (5/28/12) Added inline segment printer option. 10/10 tweaked it.
+;;      (1/21/13) Commented out the possibility of using old dm&p and broke out
+;;       the usual set of options out of segment finished. 
 
 (in-package :sparser)
 
@@ -143,32 +145,40 @@
 
     (else
       (cond
-        (*do-domain-modeling-and-population*
-         (dm/analyze-segment coverage))
+;        (*do-domain-modeling-and-population*
+;         (dm/analyze-segment coverage))
+;; This is 1995 code, which, while reasonably well documented,
+;; isn't the way of the future
 
         (*do-strong-domain-modeling*
          (sdm/analyze-segment coverage))
 
         (t
-         (case coverage
-           (:one-edge-over-entire-segment
-            (sf-action/spanned-segment))
+         (normal-segment-finished-options coverage))))))
 
-           (:no-edges
-            (sf-action/no-edges))
-
-           (:discontinuous-edges
-            (sf-action/discontinuous-edges))
-
-           (:some-adjacent-edges
-            (sf-action/some-adjacent-edges))
-
-           (:all-contiguous-edges
-            (sf-action/all-contiguous-edges))
-
-           (otherwise
-            (break "Unanticipated value for segment coverage: ~A"
-                   coverage))))))))
+;; This is "segment-finished" for the purposes of the inline doc below
+(defun normal-segment-finished-options (coverage)
+  ;; broken out of segment-finished to let us call it as a fall-back
+  ;; in the sdm routines.
+  (case coverage
+    (:one-edge-over-entire-segment
+     (sf-action/spanned-segment))
+    
+    (:no-edges
+     (sf-action/no-edges))
+    
+    (:discontinuous-edges
+     (sf-action/discontinuous-edges))
+    
+    (:some-adjacent-edges
+     (sf-action/some-adjacent-edges))
+    
+    (:all-contiguous-edges
+     (sf-action/all-contiguous-edges))
+    
+    (otherwise
+     (break "Unanticipated value for segment coverage: ~A"
+            coverage))))
 
 
 
@@ -191,7 +201,8 @@
 ;;;----------------------------------------
 
 (defun sf-action/spanned-segment ()
-  ;; called from Segment-finished
+  ;; called from segment-finished when there's one edge over the entire
+  ;; segment. 
   (tr :spanned-segment)
   (if *pending-conjunction*
     (if *do-heuristic-segment-analysis*
