@@ -99,3 +99,75 @@ David Sowerby, portfolio manager at investment firm Loomis Sayles,
 which owns shares, says the stock is \"compelling\" near 
 its 10-year low, especially as he expects Medtronic to 
 gain market share and show double-digit earnings growth in 2007."))
+
+
+;; Cases from TB that turned up as errors
+#|
+(p "Howard Mosher, president and chief executive officer, said he anticipates growth 
+for the luxury auto maker in Britain and Europe, and in far eastern markets.")
+
+[howard mosher], [ president] and [ chief executive officer], 
+[ said][ he][ anticipates][ growth] for [ the luxury auto maker] 
+in [ britain] and [ europe], and in far [ eastern markets][.]
+
+                                 source-start
+e2    NAME                    1 "howard mosher" 3
+e3                               "COMMA"
+e4    SINGLE-WORD-TITLE       4 "president" 5
+e5                               "and"
+e12   TITLE                   6 "chief executive officer" 9
+e13                              "COMMA"
+e14   REPORT-VERB             10 "said" 11
+e15   PRONOUN/MALE            11 "he" 12
+e16   ANTICIPATE              12 "anticipates" 13
+e17   GROWTH                  13 "growth" 14
+e18 e19                          "for" :: for, FOR
+e24   LUXURY                  15 "the luxury" 17
+e22   AUTO                    17 "auto" 18
+e23   CO-ACTIVITY-NOMINAL/ER  18 "maker" 19
+e25 e26                          "in" :: in, IN
+e27   COUNTRY                 20 "britain" 21
+e28                              "and"
+e29   NAME-WORD               22 "europe" 23
+e30                              "COMMA"
+e31                              "and"
+e32 e33                          "in" :: in, IN
+e34 e35                          "far" :: far, FAR
+e36   DIRECTION               27 "eastern" 28
+e37   MARKET                  28 "markets" 29
+e38                              "PERIOD"
+
+
+
+(p "Investors are appealing to the Securities and Exchange Commission not to limit 
+their access to information about stock purchases and sales by corporate insiders.")
+
+[investors][ are appealing] to [ the securities] and [ exchange commission not] 
+to [ limit][their access] to [ information][ about stock purchases] and [ sales] 
+by [ corporate insiders][.]
+
+                                 source-start
+e0    INVESTOR                1 "investors" 2
+e3    APPEAL                  2 "are appealing" 4
+e4 e5                            "to" :: to, TO
+e6                               "the"
+e7    SECURITY                6 "securities" 7
+e8                               "and"
+e11   COMPANY                 8 "exchange commission" 10
+e12 e13                          "not" :: not, NOT
+e14 e15                          "to" :: to, TO
+e16   LIMIT                   12 "limit" 13
+e17   PRONOUN/PLURAL          13 "their" 14
+e18   ACCESS                  14 "access" 15
+e19 e20                          "to" :: to, TO
+e21   INFORMATION             16 "information" 17
+e25   STOCK                   17 "about stock" 19
+e24   PURCHASE                19 "purchases" 20
+e26                              "and"
+e27   SALE                    21 "sales" 22
+e28 e29                          "by" :: by, BY
+e30   TITLE-MODIFIER          23 "corporate" 24
+e31   INSIDER                 24 "insiders" 25
+e32                              "PERIOD"
+
+|#
