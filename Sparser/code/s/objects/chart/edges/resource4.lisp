@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2012-2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "resource"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  4.0 March 2012
+;;;  Version:  4.0 January 2013
 
 ;; 3.0 (9/7/92 v2.3) updated the references to edge fields
 ;; 3.1 (4/7/93) changed name to Make-the-edge-resource for ease of documentation
@@ -12,6 +12,8 @@
 ;;     (1/1/96) getting problems with it. (1/14-16) working on the problems,
 ;;      Grossly remodularized the routine.  (5/30) debugging that.
 ;;     (3/4/12) Pulled out globals to own file to quiet compiler. More 3/15.
+;;     (1/23/13) Added constituents and spanned words to fields cleaned
+;;      by initialize-edge. 
 
 (in-package :sparser)
 
@@ -331,11 +333,16 @@
 
 
 (defun initialize-edge (edge)
+  ;; Called from next-edge-from-resource
+  ;; We zero out every field in the edge except its position in
+  ;; the resource array, which is always fixed. 
   (setf (edge-category edge)  nil)
   (setf (edge-form edge)      nil)
   (setf (edge-referent edge)  nil)
   (setf (edge-rule edge)      nil)
   (setf (edge-left-daughter edge)   nil)
   (setf (edge-right-daughter edge)  nil)
-  (setf (edge-used-in edge)         nil))
+  (setf (edge-used-in edge)         nil)
+  (setf (edge-constituents edge)    nil)
+  (setf (edge-spanned-words edge)   nil))
 
