@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;versions:v2.3:loaders:"
-;;;  version:  April 2010
+;;;  version:  January 2013
 
 ;; 4/3/97 added a case for dm&p. 8/17/97 added lots of cases as part of preparing
 ;; a license with the segmenter but not the model.  2/22/10 added construct-
 ;; temporary-number to support :just-bracketing mode. Added bunch more 4/1/12.
+;; Fixed ill-formed declare 1/28/13.
 
 (in-package :sparser)
 
@@ -31,7 +32,7 @@
   (defun announce-effect-of-rule-definition ())
   (defun slvd/prepare-for-save-process ())
   (defun write-to-text-window (*NL-as-string* position)
-    (declare (ignore (write-to-text-window *NL-as-string* position))))
+    (declare (ignore *NL-as-string* position)))
   )
 
 (unless *include-model-facilities*
