@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2012-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  3.5 April 2006
+;;;  Version:  3.5 January 2013
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -27,6 +27,7 @@
 ;;      which may or may not end up being a problem).
 ;; 3.5 (3/31/06) added constituents field. 4/6 added spanned-words.
 ;;     (2/22/07) added edge-length. (3/15/12) quieting compiler
+;;     (1/23/13) added continuous-edges-between
 
 (in-package :sparser)
 
@@ -191,6 +192,23 @@
       (when (eq (edge-ends-at topmost-at-p1)
                 ev2)
         topmost-at-p1))))
+
+
+(defun continuous-edges-between (p1 p2)
+  ;; The caller has looked at the coverage between these positions
+  ;; (e.g. segment boundaries) and knows they're contiguous
+  (let ((start-pos p1)
+        end-pos  edge   edges )
+    (loop
+      (setq edge (top-edge-starting-at start-pos))
+      (push edge edges)
+      (setq end-pos (pos-edge-ends-at edge))
+      (when (eq end-pos p2)
+        (return))
+      (setq start-pos end-pos))
+    (nreverse edges)))
+
+
 
 
 
