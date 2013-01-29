@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form-rule form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.5 October 2012
+;;;   Version:   0.5 January 2013
 
 ;; initiated 9/3/92 v2.3, 
 ;; 0.1 (10/12) formulated better now that it's getting used
@@ -19,7 +19,7 @@
 ;;      rather than the form term. Motivated by generalizations to prepositions
 ;;      for relative locations.
 ;; 0.6 (10/10/12) Patched call to def-form-rule/resolved from define-rewriting-form-rule
-;;      to provide a new third argument
+;;      to provide a new third argument. (1/29/13) Wrote define-form-rule-from-schema
 
 (in-package :sparser)
 
@@ -212,6 +212,24 @@
           cfr)))))
 
 
+(defun define-form-rule-from-schema (schr)
+  ;; Called from find-form-rule
+  (let ((form (schr-lhs schr))
+        (rhs (schr-rhs schr))
+        (head-edge (cadr (memq :head-edge (schr-descriptors schr))))
+        (referent-exp (referent-for-schema schr))
+        (*schema-being-instantiated* schr))
+    (declare (special *schema-being-instantiated*))
+    (let ((cfr (def-form-rule/expr rhs
+                                   :form form
+                 :head head-edge
+                 :referent referent-exp)))
+      (push-debug `(,schr ,cfr)) (break "look at cfr")
+      cfr)))
+                 
+
+
+
 ;;;----------
 ;;; builders
 ;;;----------
@@ -223,6 +241,9 @@
                        :form form
                        :referent referent
                        :schema *schema-being-instantiated*)))
+
+    (when *schema-being-instantiated*
+      (setf (schr-form-rule *schema-being-instantiated*) cfr))
 
     (setf (cfr-plist cfr) (list :form-rule ))
     (setf (cfr-completion cfr) edge)
@@ -237,9 +258,6 @@
 
     cfr ))
 
-(defvar *schema-being-instantiated* nil)
-
-
 
 (defun form-rule? (cfr)
   (when (cfr-p cfr)
@@ -252,7 +270,6 @@
   ;; called from Def-form-rule/expr when the cfr was already defined
   ;; and is being revised. The form and referent were resolved by
   ;; the caller
-  
   (setf (cfr-form cfr) form)
   (setf (cfr-referent cfr) referent)
   cfr )
@@ -267,7 +284,7 @@
           ~%~
           ~%A form rule with that rhs cannot be defined until that ~
           rule is deleted."
-         (first (cfr-rhs cfr))  (second (cfr-rhs cfr))
+         (first (cfr-rhs cfr)) (second (cfr-rhs cfr))
          (cfr-category cfr)))
 
 
