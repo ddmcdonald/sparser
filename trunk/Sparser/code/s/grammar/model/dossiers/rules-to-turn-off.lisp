@@ -30,21 +30,19 @@
 (defun turn-off-rule-set (list-of-descriptions-of-rules)
   (let ( deleted-cfrs )
     (dolist (descriptor list-of-descriptions-of-rules)
-      (let* ((lhs (car descriptor))             
+      (let* ((lhs (car descriptor))
              (rhs (cadr descriptor))
              (cfr (find-cfr lhs rhs)))
-        (unless cfr
-          (push-debug `(,lhs ,rhs ,descriptor))
-           (cerror "Ignore this and keep going"
-                   "The rule components do not fit an ~
-                    already defined rule:~
-                  ~%   lhs: ~A~
-                  ~%   rhs: ~A~"
-                  lhs rhs))
-        (push (delete/cfr cfr)
-              deleted-cfrs)))
+        (cond (cfr
+               (push (delete/cfr cfr)
+                     deleted-cfrs))
+              (t
+               (push-debug `(,lhs ,rhs ,descriptor))
+               (cerror "Ignore this and keep going"
+                       "The rule components do not fit an already defined rule:~%   lhs: ~A~%   rhs: ~A~%"
+                       lhs rhs)))))
     deleted-cfrs))
-    
+
 
 ;;;-------
 ;;; cases
