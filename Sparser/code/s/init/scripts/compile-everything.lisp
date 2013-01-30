@@ -19,18 +19,18 @@
 ;;     (1/28/13) Removed the explicit files that weren't there.
 
 #|
-  In a Lisp like Allegro that does not automatically compile forms 
+  In a Lisp like Allegro that does not automatically compile forms
 when they are loaded (which Clozure does), it is necessary to do it
 by hand since the accidents of history mean that the loader does
 do it for us automatically like a modern ASDF-style loader would.
   Instead we use Sparser's own machinery to do the compilation
-by "loading" the system with a switch setting that directs the 
+by "loading" the system with a switch setting that directs the
 load functions to compile files as needed (i.e. whenever the source
 is newer than that fasl).
 
   To do this, first load Sparser, then load this file. It will sweep
 through all of code that has already been loaded and generate the
-fasl files. 
+fasl files.
 
 Why compile
   In principle the only thing really gained by compiling the code is
@@ -38,7 +38,7 @@ compactness and speed. However for some lisps, notably Allegro, the
 only way to have tail recursion is to use compiled code with particular
 switch settings. Sparser requires tail recursion to execute texts
 of any real length. Without it, it will blow out the stack after
-about 40 words. 
+about 40 words.
 
 Location of the fasl:
   The intention has always been that the fasl is stored in a parallel
@@ -46,7 +46,7 @@ directory tree to the one under Sparser/code/s/ -- Sparser/code/f/.
 That worked fine for MCL. I encountered a problem trying to do it
 with Allegro the first time (in 2007) because the output file was
 not accepted. It's worth trying again since the documentation says
-it should be. 
+it should be.
   The call to compile file is wrapped inside routine-to-compile-file
 and specialized to the different Lisps. See init/versions/v4.0/loaders/
 lisp-switch-settings.lisp.
@@ -94,9 +94,9 @@ the grammar-gating switch to nil.
                    "v4.0:"
                    "loaders:lisp-switch-settings")
       #+:unix (concatenate 'string cl-user::location-of-sparser-directory
-			   "code/s/init/versions/"
-			   "v4.0/"
-			   "loaders/lisp-switch-settings.lisp"))
+                           "code/s/init/versions/"
+                           "v4.0/"
+                           "loaders/lisp-switch-settings.lisp"))
 
 (let ((*load-the-grammar* nil))
   (declare (special *load-the-grammar*))
@@ -109,7 +109,7 @@ the grammar-gating switch to nil.
                    "code/s/init/"
                    "everything.lisp" )))
 
- 
+
 ;; These files are either part of the preloader or only optionally
 ;; executed. We have to call the compiler on them individually
 
@@ -133,7 +133,8 @@ the grammar-gating switch to nil.
 (just-compile "version;loaders:logicals")
 (just-compile "version;loaders:master-loader")
 (just-compile "version;loaders:model")
-(just-compile "version;loaders:save-routine")
+(unless *nothing-mac-specific*
+  (just-compile "version;loaders:save-routine"))
 (just-compile "version;loaders:stubs")
 
 (just-compile "version;salutation")
