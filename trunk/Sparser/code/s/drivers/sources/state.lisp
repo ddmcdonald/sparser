@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "state"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  0.1 August 1994
+;;;  Version:  0.1 January 2013
 
 ;; initiated 6/90, added *current-file* & *current-style* 12/15/93 v2.3
 ;; 0.1 (12/27) changed the default values to nil. 1/7/94 added *files-remaining*
 ;;      1/11 added *current-superstream*. 1/26 added *document-stream-to-use*
 ;;      3/4 added *pause-between-articles*
 ;;      8/17 added *current-text-under-analysis*
+;;     (1/30/31) added *verbose-document-stream*
 
 (in-package :sparser)
 
@@ -54,3 +55,10 @@
 (defparameter *pause-between-articles* t
   "Set in the preferences menu.")
 
+
+;;;------------------
+;;; display variable
+;;;------------------
+
+(defparameter *verbose-document-stream* nil
+  "Set by hand. Puts some 'where are we' information into std-out")
