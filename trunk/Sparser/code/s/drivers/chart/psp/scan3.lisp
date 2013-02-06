@@ -201,7 +201,7 @@
            (check-word-level-fsa-trigger word position-before)))))
     (else
      ;; There's a space before the word
-     (check-word-level-fsa-trigger word position-before)))
+     (check-word-level-fsa-trigger word position-before))))
 
   
 
