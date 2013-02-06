@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  October 2012
+;;;  Version:  January 2013
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
-;; because they preempt relative clause interpretation. 
+;; because they preempt relative clause interpretation. 1/30/13 Added 
+;; the+proper-name. 
 
 (in-package :sparser)
 
@@ -78,6 +79,10 @@
 
 (def-form-rule ("the" np)
   :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule ("the" proper-name)
+  :form proper-name
   :referent (:daughter right-edge))
 
 
