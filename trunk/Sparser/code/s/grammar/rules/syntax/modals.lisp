@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "modals"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 1995
+;;;  Version:  January 2013
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3. Populated w/o semantics 1/11/94
 ;; Given a mix-in interpretation 7/11.  8/2 pulled the check for whether 'modal'
@@ -14,6 +14,7 @@
 ;; 12/30 form combination with infinitive (and verb+ed).  
 ;; 1/27/95 added modal + verb+passive rules
 ;; 5/27/96 Disabled subtyping until it's reimplemented. 7/6/07 missed one.
+;; 1/30/13 added "might"
 
 (in-package :sparser)
 
@@ -76,6 +77,12 @@
 (define-mixin-category  may
   :specializes modal )
 (def-cfr may ("may")
+  :form modal
+  :referent  be-able-to )
+
+(define-mixin-category  might
+  :specializes modal )
+(def-cfr might ("might")
   :form modal
   :referent  be-able-to )
 
@@ -201,6 +208,12 @@
              ;;:subtype may
                    ))
 
+(def-form-rule (might infinitive)
+  :form vg
+  :referent (:head right-edge
+             ;;:subtype might
+                   ))
+
 
 
 ;;--- modal + verb+ed
@@ -244,6 +257,11 @@
              ;;:subtype may
                    ))
 
+(def-form-rule (might verb+ed)
+  :form vg
+  :referent (:head right-edge
+             ;;:subtype might
+                   ))
 
 
 ;;--- modal + verb
@@ -282,6 +300,12 @@
   :form vg
   :referent (:head right-edge
              ;;:subtype may
+                   ))
+
+(def-form-rule (might verb)
+  :form vg
+  :referent (:head right-edge
+             ;;:subtype might
                    ))
 
 
@@ -323,6 +347,12 @@
              ;;:subtype may
                    ))
 
+(def-form-rule (might verb+object)
+  :form vg
+  :referent (:head right-edge
+             ;;:subtype might
+                   ))
+
 
 
 ;;--- modal + verb+passive
@@ -361,5 +391,11 @@
   :form vg
   :referent (:head right-edge
              ;;:subtype may
+                   ))
+
+(def-form-rule (might verb+passive)
+  :form vg
+  :referent (:head right-edge
+             ;;:subtype might
                    ))
 
