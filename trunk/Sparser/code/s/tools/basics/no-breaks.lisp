@@ -126,7 +126,7 @@
 (defun throw-skip-a-word-to-scan (error-message &rest args)
   (push-debug `(,error-message ,args))
   (restore-original-break-error-&-cerror-definitions)
-  (braek ":stub"))
+  (break ":stub"))
 
 
   
