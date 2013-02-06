@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "token FSA"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  3.2 May 1996
+;;;  Version:  3.2 January 2013
 
 ;;  initated ~6/90
 ;;  1.1  (12/90) Added a call to zero-lookup-buffer when the end-of-stream is
@@ -15,6 +15,8 @@
 ;;  3.2  (5/31/96) extended the character array to 256 but with only a few
 ;;        entries, so a check has been added for the entry having a value and
 ;;        if not it calls a break with an explanation of what to do.
+;;       (1/30/13) continue-token got an char entry of 0 on a bad character
+;;        so added check for that case to improve the error. 
  
 
 (in-package :sparser)
@@ -55,6 +57,13 @@
                          (char-code
                           (elt *character-buffer-in-use*
                                (incf *index-of-next-character*))))))
+
+    (when (and (numberp next-entry) (= next-entry 0))
+      ;; unclear why we don't get a null. In emacs in this case the 
+      ;; bad character prints as a capital o with an umlaut. 
+      (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))
+      (error "Unknown character in input at buffer position ~a" 
+             *index-of-next-character*))
 
     (if next-entry
       (if (eq (car next-entry) :punctuation)
