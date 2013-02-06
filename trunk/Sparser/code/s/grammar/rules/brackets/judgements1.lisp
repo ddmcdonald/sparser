@@ -305,13 +305,15 @@
                   (eq bracket-opening-segment preposition.[)
                   (eq bracket-opening-segment mvb.[)) ;; not two in a row
               t)
+             ((eq (first *bracket-opening-segment*) phrase.[) ;; refine the case?
+              t)  ;; example was "[Rainya is " PNF should be more definitive?
              (t (if *break-on-new-bracket-situations*
                   (then
                    (push-debug `(,position ,*bracket-opening-segment*
                                  ,word-count ,previous-word ,segment-start-pos))
                    (break "].verb  next case.~
                          ~%The bracket opening the segment is ~a.~
-                         ~%The word with the ambiguous bracketing is ~a~
+                         ~%The word is ~a~
                          ~%The segment so far is \"~{~a ~}\" "
                           bracket-opening-segment (pos-terminal position)
                           (words-between segment-start-pos position)))
@@ -456,10 +458,11 @@
               ;; for getting dead-wrong. Will want to find more features
               ;; to use here
               nil)
-
              ((eq bracket-opening-segment .[adverb)
               ;; This is an odd case, "made too many flights tardy" looking
               ;; at the ] from "flights".  Need more information.
+              nil)
+             ((eq bracket-opening-segment .[modal) ;; "will know"
               nil)
              (t (if *break-on-new-bracket-situations*
                   (then
