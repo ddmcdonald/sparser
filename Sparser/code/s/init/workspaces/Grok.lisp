@@ -38,6 +38,11 @@
 ;; (p *iraqi-girl*)
 ;; (setq *new-segment-coverage* t)   ;; to debug that, add cases
 
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/1 Aljazeera_Jan-18.txt")
+
+;; (setq *verbose-document-stream* t)
+;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu") 
+
 ;; These are in dm&p in the workspaces file under init. They're stray medium size
 ;; articles lifted from the new
 ;; (fire)
