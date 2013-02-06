@@ -7,7 +7,7 @@
 ;;;  Version:   January 2013
 
 ;; 1/30/13 Added .txt to the string passed to directory so it would work.
-;; Might be Clozure-specific requirement. 
+;; Might be Clozure-specific requirement.
 
 (in-package :sparser)
 
@@ -19,4 +19,4 @@
          (stream (define-document-stream (gensym "document-stream")
                      :style-name 'hand-typed/no-headers
                      :file-list file-list)))
-    (do-document-as-stream-of-files stream)))
+    (do-document-as-stream-of-files stream :article-per-file? t)))

@@ -170,7 +170,7 @@
 ;;; alternative toplevel call
 ;;;---------------------------
 
-(defun do-document-as-stream-of-files (ds-designator)
+(defun do-document-as-stream-of-files (ds-designator &key article-per-file?)
   ;; a toplevel call. In this case all of the files are to be
   ;; interpreted as parts of a single document, i.e. initialization
   ;; and the call to do-article only occur once.
@@ -200,8 +200,10 @@
     (declare (special *current-document-stream*))
 
     ;; Do the setup that would normally be done by Do-article
-    (set-the-current-article ds-designator)
-    (per-article-initializations)
+    ;; [sfriedman:20130206.1423CST] Only do this if we're parsing as a single article.
+    (unless article-per-file?
+      (set-the-current-article ds-designator)
+      (per-article-initializations))
     (initialize-chart-state)
 
     (dolist (file file-list)
@@ -216,6 +218,9 @@
 
       ;; parts of analysis-core (9/6/94) that initialize the
       ;; buffers but nothing else.
+      (when article-per-file?
+        (set-the-current-article file)
+        (per-article-initializations))
       (initialize-tokenizer-state)
       (chart-based-analysis)
 
