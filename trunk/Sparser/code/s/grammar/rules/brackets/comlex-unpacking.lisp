@@ -187,6 +187,13 @@ places. ]]
          (setup-common-noun lemma clauses))
        (brackets-for-adjective-adverb-noun lemma))
 
+      ((equal combinations '(adjective adverb verb))
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-adverb lemma)
+         (setup-verb lemma clauses))
+       (brackets-for-adjective-adverb-noun-verb lemma))
+
       ((equal combinations '(adjective adverb noun verb))
        (when *edge-for-unknown-words*
          (setup-adjective lemma clauses)
@@ -194,6 +201,12 @@ places. ]]
          (setup-common-noun lemma clauses)
          (setup-verb lemma clauses))
        (brackets-for-adjective-adverb-noun-verb lemma))
+
+      ((equal combinations '(adverb noun))
+       (when *edge-for-unknown-words*
+         (setup-adverb lemma)
+         (setup-common-noun lemma clauses))
+       (brackets-for-adverb-noun lemma))
 
       ((equal combinations '(adverb noun verb))
        (when *edge-for-unknown-words*
@@ -216,6 +229,8 @@ places. ]]
          ;; sconj
          (setup-verb lemma clauses))
        (brackets-for-adjective-noun-sconj-prep-verb lemma))
+
+      
 
       ;; "firm" is four-ways ambiguous
 
@@ -254,14 +269,15 @@ places. ]]
 (defun lift-special-case-form-from-comlex-clause (clause)
   ;; if the word is unambigously a verb then there is a single clause
   ;; otherwise there's a list of clauses. one for eacu POS.
+  ;; Called from setup-verb
   (flet ((launder-verb-keywords (plist)
            ;; Make any needed changes so that the keywords supplied by
            ;; Comlex are made to conform to those required by define-main-verb
            ;; which is the consumer of this via setup-verb
-           (if (memq :pastpart plist)
-             (subst :past-participle :pastpart plist)
-             plist)))
-    (push-debug `(,clause))
+           (when (memq :pastpart plist)
+             (setq plist (subst :past-participle :pastpart plist)))
+           plist))
+    (push-debug `(lift-special-case ,clause))
     (let ((verb-clause
            (if (consp (car clause)) ;; multiple clauses
              (assq 'verb clause)
@@ -269,13 +285,26 @@ places. ]]
       (unless (eq 'verb (car verb-clause))
         (push-debug `(,verb-clause))
         (error "Expected a verb clause and didn't get one"))
-      (let ((2d-expr (cadr verb-clause))) ;; this is what we return
-        (case (car 2d-expr)
-          ((or :infinitive :tensed/singular :past-tense :present-participle
-               :pastpart)
-           (launder-verb-keywords 2d-expr))
-          (:subc nil)
-          (:features nil)
-          (otherwise
-           (push-debug `(,2d-expr ,verb-clause))
-           (error "New case in what's 2d in a verb clause")))))))
+      (let* ((2d-expr (cadr verb-clause))
+             ;; Information about irregulars is invariably here, but if there
+             ;; aren't any, then one of the other properties such as :features
+             ;; or subcategorization will be there, so we block them. 
+             (result
+              (case (car 2d-expr)
+                ((or :infinitive :tensed/singular :past-tense
+                     :present-participle :pastpart)
+                 (launder-verb-keywords 2d-expr))
+                (:subc nil)
+                (:features nil)
+                (otherwise
+                 (push-debug `(,2d-expr ,verb-clause))
+                 (error "New case in what's 2d in a verb clause")))))
+        (when (memq :subc result)
+          ;; Seen this with "prove", which had two past participles:
+          ;; (verb (:pastpart ("proved" "proven") :subc ... )
+          (let ((clipped (cdr (memq :subc (reverse result)))))
+            (setq result (reverse clipped))
+            (break "look at result and clipped = ~a" clipped)))
+        result))))
+
+
