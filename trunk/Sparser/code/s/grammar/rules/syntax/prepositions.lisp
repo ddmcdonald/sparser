@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2013  David D. McDonald  -- all rights reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "prepositions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  October 2011
+;;;  Version:  January 2013
 
-;; initiated 9/30/11
+;; initiated 9/30/11.  Fixed the method 1/29/13
 
 (in-package :sparser)
 
@@ -23,5 +23,6 @@
  is equivalent to :daughter right-edge."))
 
 (defmethod analyze-pp ((prep sh::prepositional-operator) (complement t))
-  complement)
+  (declare (ignore prep))
+  (dereference-shadow-individual complement))
   
