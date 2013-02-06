@@ -55,13 +55,11 @@
 ;;;------------
 ;;; {attitude}
 ;;;------------
-;  Take nominalized clauses/participials
 
-(define-function-word "despite" :brackets '( ].adverb .[phrase ))
-;; If we had a "starts clause" bracket that might help
+(define-reflection-on "despite")
 
-(define-function-word "in spite of" :brackets '( ].adverb .[np ))
-(define-function-word "regardless of" :brackets '( ].adverb .[np ))
+(define-reflection-on "in spite of")
+(define-reflection-on "regardless of")
 
 
 
