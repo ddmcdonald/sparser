@@ -58,14 +58,17 @@
              category::proper-name
              category::proper-noun))
 
+        (category::subordinate-conjunction)
 	(category::adjunct)
+        (category::possessive)
 
         ;; cases where we want to generalize
 	((or category::n-bar
 	     category::number
 	     category::common-noun
 	     category::common-noun/plural
-	     category::np-head)
+	     category::np-head
+             category::det) ;; "that"
 	 (setf (edge-form edge) (category-named 'np)))
 
 	((or category::verb 
