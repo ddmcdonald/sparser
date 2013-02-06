@@ -270,13 +270,14 @@
       (scan-transition-data state item))))
 
 
-(defun scan-transition-output (tr)
+(defun scan-transition-output (state item)  ;; formerly tr
   ;; Does the multiplication that will be done at runtime and returns
   ;; the resulting entry -- equivalent of ML.  Convenient for checking
   ;; whether a new transition is clashing with an established one since
   ;; that would result in a list of states rather than a single state.
-  (check-scan-transition-output (sp-transition-state tr)
-                                (sp-transition-pattern-item tr)))
+  (check-scan-transition-output state item))
+   ;; formerly 
+   ;; (sp-transition-state tr) (sp-transition-pattern-item tr)
 
 
 (defun check-scan-transition-output (from-state item)
