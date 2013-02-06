@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994,1995,1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "index instances"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.1 January 1996
+;;;  version:  2.0 February 2013
 
 ;; initiated 8/9/94 v2.3 from pieces of other files. Tweeking ...8/19
 ;; (4/20/95) added subr and predicate for permanent objects.
@@ -13,6 +12,7 @@
 ;;      that get some of their bindings raised before they're indexed
 ;; 2.0 (10/9/09) There something weird going on with the key/hash case
 ;;      apparently related to the new treatment of variables for psi
+;;     (2/4/13) Improved error message for missing key in hash case
 
 (in-package :sparser)
 
@@ -135,7 +135,6 @@
 
 
 (defun index/individual/key/hash (variable individual category bindings)
-  (declare (ignore bindings))
   (let* ((table (cat-instances category)))
     (unless table
       (setq table
@@ -145,8 +144,11 @@
               ~%is not a hash table" category))
     (let ((value (value-of variable individual)))
       (when (null value)
-	(error "value-of returned nil on~%~a of ~a~%The key is 'nil' -- *v* *i*"
-	       variable individual))
+        (push-debug `(,variable ,individual ,category ,bindings))
+        (error "Cannot index the individual ~a~
+              ~%against the value of its ~a variable~
+              ~%because the value is nil"
+	       individual variable))
       (let ((earlier-value
              (probably-the-result-of-type-raising variable individual)))
         (let ((entry (gethash value table)))
