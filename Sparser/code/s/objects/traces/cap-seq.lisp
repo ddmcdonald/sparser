@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "cap seq"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  May 1995     
+;;;  Version:  February 2013   
 
 ;; initiated 5/26/93 v2.3. added two more moments 12/17. And more 1/7/94.
 ;; Added traces for "of" in the scan 5/3. Added start/end fns 6/13.
 ;; (7/22) added traces in Classify and beyond.  
-;; Extended yet again 4/29/95 ..5/21
+;; Extended yet again 4/29/95 ..5/21. 2/4/13 Added for new path through
+;; driver. 
 
 (in-package :sparser)
 
@@ -34,6 +35,11 @@
   (when *trace-pnf*
     (trace-msg "PNF: the 'capitalization is uniformative flag is up~
                 ~%   returning nil.")))
+
+(deftrace :pnf/fn-word-at-sentence-start (word)
+  (when *trace-pnf*
+    (trace-msg "PNF: Ignoring the word \"~a\" because its at a sentence start"
+               (word-pname word))))
 
 (deftrace :pnf/sequence-ended (pos)
   (when *trace-pnf*
