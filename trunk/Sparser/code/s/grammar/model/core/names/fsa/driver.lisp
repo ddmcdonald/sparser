@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-1997,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1997,2012-2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  0.6 November 2012
+;;;  Version:  0.7 February 2013
 
 ;; initiated 5/15/93 v2.3, added traces 5/26
 ;; 0.1 (12/9) Added pre-emptive state variable
@@ -20,6 +20,8 @@
 ;; 0.6 (11/1/12) In pnf/scan-classify-record added call to sort out the bracketing
 ;;     beause the initial company is swallowing any following under-modeled
 ;;     verb in DM&P mode. 
+;; 0.7 (2/3/13) Changed pnf/scan-classify-record to ignore function words
+;;     at sentence stsarts. 
 
 (in-package :sparser)
 
@@ -99,15 +101,24 @@
 ;;; standard driver
 ;;;-----------------
 
+; (establish-pnf-routine :scan-classify-record)
+
 (defun pnf/scan-classify-record (starting-position)
   (tr :initiating-PNF starting-position)
   (set-status :pnf-checked starting-position) ;; move below when coordinated
                                               ;; with the scan differently
-  (if *capitalization-is-uninformative*
-    (then (tr :pnf/preempted)
-          (setf (pos-assessed? starting-position) :pnf-preempted)
-          nil )
-
+  ;;(break "PNF starting with ~a" starting-position)
+  (cond
+   (*capitalization-is-uninformative*
+    (tr :pnf/preempted)
+    (setf (pos-assessed? starting-position) :pnf-preempted)
+    nil )
+   ((and (function-word? (pos-terminal starting-position))
+         (could-be-the-start-of-a-sentence starting-position))
+    (tr :pnf/fn-word-at-sentence-start (pos-terminal starting-position))
+    (setf (pos-assessed? starting-position) :pnf-preempted)
+    nil )
+   (t
     (let ((*pnf-has-control* t)
           (*pnf-scan-starts-here* starting-position)
           (*pnf-scan-respects-segment-boundaries* t))
@@ -135,7 +146,7 @@
           ;; cases accordingly when moving it here
           (if edge
             *pnf-end-of-span*
-            nil))))))
+            nil)))))))
 
 ;(establish-pnf-routine :scan-classify-record)
 
