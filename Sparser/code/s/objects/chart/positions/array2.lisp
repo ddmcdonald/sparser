@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "array"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  2.5 March 2012
+;;;  Version:  2.5 February 2013
 
 ;; initialized 1/91
 ;; 2.0 (8/13/91 v1.9) added Still-in-the-chart
@@ -15,7 +15,7 @@
 ;;      making a chart that does it and the set all in one operation.
 ;; 2.5 (5/3) added initialization of display-char-index field
 ;;     (8/30) added Edge-is-still-in-chart. (2/14/05) added initialize-used-portion-of-chart
-;;     (3/4/12) quiet compiler.
+;;     (3/4/12) quiet compiler. 2/3/13 reclaim kons's on the status-info field.
 
 (in-package :sparser)
 
@@ -78,6 +78,8 @@
   (setf (pos-terminal             p) nil)
   (setf (pos-preceding-whitespace p) nil)
   (setf (pos-capitalization       p) nil)
+  (when (consp (pos-status-lifo p))
+    (kreclaim (pos-status-lifo p)))
   (setf (pos-status-lifo          p) nil)
   (setf (pos-assessed?            p) nil)
   (initialize-edge-vector (pos-ends-here p))
