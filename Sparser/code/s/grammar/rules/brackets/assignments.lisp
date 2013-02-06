@@ -74,6 +74,10 @@
 (defun brackets-for-adjective-adverb (word)
   (assign-brackets-to-word word (list ].adj-adv .[np-vp )))
 
+(defun brackets-for-adverb-noun (word)
+  ;; this can't be right. Ex. was "home"
+  (assign-brackets-to-adjective word))
+
 
 (defun brackets-for-adjective-adverb-noun (word)
    ;; E.g. "plain"
