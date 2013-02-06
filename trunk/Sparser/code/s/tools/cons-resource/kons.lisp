@@ -1,13 +1,13 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP)
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "kons"
 ;;;   module:  "tools;cons-resource:"
-;;;  Version:  0.2 September 1992
+;;;  Version:  0.2 February 2013
 
 ;; started 7/13/92
 ;; 0.1 (9/15 v2.3) added Kpush
-;; 0.2 (9/28) added Kpop
+;; 0.2 (9/28) added Kpop. 2/3/13 added kreclaim
 
 (in-package :sparser)
 
@@ -48,4 +48,11 @@
      (setq ,symbol-pointing-to-list
            (cdr ,symbol-pointing-to-list))
      (deallocate-kons *kcell*)))
+
+(defun kreclaim (list)
+  (let ( next-cdr )
+    (dotimes (i (length list))
+      (setq next-cdr (cdr list))
+      (deallocate-kons list)
+      (setq list next-cdr))))
 
