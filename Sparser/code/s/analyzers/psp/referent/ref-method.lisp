@@ -42,6 +42,7 @@
            (*shadows-to-individuals*
             `((,left-shadow . ,left-referent)
                (,right-shadow . ,right-referent))))
+      (declare (special *shadows-to-individuals*))
       (push-debug `(,left-shadow ,right-shadow))
 
       (let ((referent
