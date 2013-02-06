@@ -33,7 +33,7 @@
 ;;      creator with special form categories to drive general rules. 10/4 original
 ;;      base rule was circular so made it have the prep category as its label.
 ;;     (2/20/12) Added schema to the constructed cfr.  11/25/12 "near", "far"
-;;     (1/18/13) Corrected order-of-args in push-onto-plist
+;;     (1/18/13) Corrected order-of-args in push-onto-plist. 1/30/13 "away"
 
 (in-package :sparser)
 
@@ -71,8 +71,10 @@
 (define-preposition "ahead of" :form 'spatial-preposition)
 (define-preposition "after" :form 'spatio-temporal-preposition)
 (define-preposition "along" :form 'spatial-preposition)
-(define-preposition "as" )
+(define-preposition "as")
 (define-preposition "at" :form 'spatial-preposition)
+(define-preposition "away")
+(define-preposition "away from")
 (define-preposition "before" :form 'spatio-temporal-preposition)
 (define-preposition "behind" :form 'spatial-preposition)
 (define-preposition "below" :form 'spatial-preposition)
