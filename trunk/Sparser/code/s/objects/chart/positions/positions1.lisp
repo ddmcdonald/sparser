@@ -15,7 +15,9 @@
 ;;     (1/4/95) gave Print-position/terminal an option when the terminal was nil
 ;;     (1/9/07) Added without-package-locks wrapper to quiet Allegro
 ;;     (2/8/11) Guarded them to allow Clozure to work. 3/3/12 Quiet compiler.
-;;     (12/4/12) Added a trace to set-status
+;;     (12/4/12) Added a trace to set-status.
+;; 1.4 (12/19/12) SF - augmented set-status to incorporate a LIFO list
+;;      of all the states that a position has been through. 
 
 (in-package :sparser)
 
