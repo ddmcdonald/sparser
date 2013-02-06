@@ -222,9 +222,9 @@
     (declare (special *schema-being-instantiated*))
     (let ((cfr (def-form-rule/expr rhs
                                    :form form
-                 :head head-edge
+                 :head (intern (symbol-name head-edge)
+                               (find-package :keyword))
                  :referent referent-exp)))
-      (push-debug `(,schr ,cfr)) (break "look at cfr")
       cfr)))
                  
 
