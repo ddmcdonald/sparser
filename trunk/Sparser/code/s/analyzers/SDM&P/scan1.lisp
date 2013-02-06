@@ -70,7 +70,6 @@ to make any semantic or form edges that the grammar dictates.
   (tr :sdm-all-contiguous-edges)
   (let ((edges (continuous-edges-between 
                 *left-segment-boundary* *right-segment-boundary*)))
-    (format t "~a" edges)
     (march-rightward-over-edges-by-form edges)
     ;; march both rightwards for qualifiers and leftwards
     ;; for spanning heuristics

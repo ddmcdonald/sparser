@@ -9,8 +9,17 @@
 
 (in-package :sparser)
 
+;;;--------
+;;; driver
+;;;--------
 
 (defun march-rightward-over-edges-by-form (edges)
+  "Walk to the right from the head, building up the phrase
+   by folding in the terms from the left using possibly new
+   form rules to fill in if there isn't aleady a rule that
+   fits the pair.  Runs for side-effects, ending up with
+   a single edge over the input list set of edges, which are
+   given in order from left to right."
   (let* ((leftmost-edge (car edges))
          (rightmost-edgep (car (last edges)))
          (head-edge rightmost-edgep)
@@ -18,15 +27,18 @@
          (next-to-left (pop edges-to-left))
          rule  edge  )
     (loop
-      ;; figure out what rule to use
-      (setq rule (rule-for-form-march next-to-left head-edge))
+      ;; Is there already a rule for this combination?
+      (setq rule (multiply-edges next-to-left head-edge))
+
+      ;; Or else figure out what rule to use
+      (unless rule
+        (setq rule (rule-for-form-march next-to-left head-edge)))
 
       ;; apply the rule, the resulting edge becomes
       ;; the new head. 
       (setq edge (make-completed-binary-edge next-to-left
                                              head-edge
                                              rule))
-      
       (when (eq next-to-left leftmost-edge)
         ;; we've exhausted all the edges 
         (return))
@@ -35,13 +47,21 @@
       (setq next-to-left (pop edges-to-left)))))
 
 
+;;;-------------------------
+;;; find form rule for pair
+;;;-------------------------
+
 (defun rule-for-form-march (left-edge head-edge)
+  "Dispatch on the form of the left edge to find a corresponding
+   form rule. Returns the rule."
   (let ((left-form (edge-form left-edge))
         (right-form (edge-form head-edge)))
     (case (cat-symbol left-form)
-      (category::proper-noun
-       (push-debug `(,left-form ,right-form ,left-edge ,head-edge))
-       (find-form-rule 'modifier-creates-subtype))
+      ((or category::proper-name
+           category::proper-noun)
+       (find-form-rule 'modifier-creates-subtype)) ;; not the best choice
+      (category::common-noun
+       (find-form-rule 'modifier-creates-subtype)) ;; better choice here
       (otherwise
        (push-debug `(,left-form ,right-form ,left-edge ,head-edge))
        (break "New form for left-edge: ~a" left-form)))))
@@ -96,5 +116,5 @@ form rule.
       (multiple-value-bind (method args)
                            (dispatch relation)
         `(:head ,head-edge
-          :method (,method ,@args)) ))))
+          :method ,method ,@args) ))))
 
