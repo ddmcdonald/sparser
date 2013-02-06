@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2012-2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "aux verbs"
 ;;;   Module:  "grammar;rules:words:"
-;;;  Version:  0.3 December 2012
+;;;  Version:  0.3 Jamuary 2013
 
 ;; redesigned from scratch & pulled out of [syntax] 5/7/93 v2.3
 ;; 0.1 (6/18/93) added  .[verb brackets.  Adding words 1/11/94, 1/12, 1/13
@@ -11,7 +11,7 @@
 ;; 0.2 (4/19/95) sharpened bracket choices
 ;; 0.3 (4/24) added aux]. to all but modals
 ;;     (12/4/12) Moved out bracket assigner to rules/brackets/assignments
-;;     12/5/12 added "didn"
+;;     12/5/12 added "didn"  1/30/13 "might"
 
 (in-package :sparser)
 
@@ -26,6 +26,7 @@
 (define-function-word  "would"  :brackets '( ].verb .[modal ))
 (define-function-word  "can"    :brackets '( ].verb .[modal ))
 (define-function-word  "may"    :brackets '( ].verb .[modal ))
+(define-function-word  "might"  :brackets '( ].verb .[modal ))
 (define-function-word  "must"   :brackets '( ].verb .[modal ))
 (define-function-word  "could"  :brackets '( ].verb .[modal ))
 (define-function-word  "should" :brackets '( ].verb .[modal ))
