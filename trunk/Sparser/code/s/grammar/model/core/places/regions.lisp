@@ -1,13 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "other"
 ;;;   Module:  "model;core:places:"
-;;;  version:  July 2011
+;;;  version:  Auguat 2013
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
-;;  (7/18/11) Starting makeover/rationalization from lots of ex.
+;; (7/18/11) Starting makeover/rationalization from lots of ex.
+;; (2/4/12) Changed tree family on region to defnp from definite because
+;;  that better fits what's in the data: "the country" blew up with
+;;  np-common-noun/definite because that makes a new individual and regions
+;;  are hashed on their names -- with the gensym'd individual didn't have.
 
 (in-package :sparser)
 
@@ -26,7 +30,7 @@
           (containing-region . location))
   :index (:permanent :key name)
   :realization ((:proper-noun name) ;; for the predefined ones
-                (:tree-family  np-common-noun/definite
+                (:tree-family  np-common-noun/defnp
                  :mapping ((np . :self)
                            (np-head . region-type)))))
 
