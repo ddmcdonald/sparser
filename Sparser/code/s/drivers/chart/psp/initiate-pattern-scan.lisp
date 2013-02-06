@@ -1,23 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-1996 2010 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1996,2010-2013 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "initiate pattern scan"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  0.2 March 2007
+;;;  Version:  0.3 February 2013
 
 ;; initiated 9/21/95.  Added temporary guard against edges ending at the
 ;; starting positin 10/18. 
 ;; 0.1 (7/11/96) fixed what looked like a bug and cleaned up the threading
 ;; 0.2 (3/1/07) Added a hack that preempts specific pattern rule checks
 ;;     in favor of one that operates across the board.
+;; 0.3 (2/5/13) took out the hack -- now the two schemes are complementary.
 
 (in-package :sparser)
-
-(defparameter *uniformly-scan-all-no-space-token-sequences* nil
-  "Overrides checks for specific patterns in favor of a generic
-   'super' tokenizer")
 
 (defun no-space-before-word? (position)
   ;; Predicate inserted into the scan fsa (check-for/initiate-scan-patterns)
@@ -28,15 +24,14 @@
 
 (defun scan-pattern-starting-pair (position word)
   ;; Called from check-for/initiate-scan-patterns.
-  (unless (<= (pos-token-index position) 1)
-    (or *uniformly-scan-all-no-space-token-sequences*
-	(scan-pattern-starting-pair-1 position word))))
+  (unless (<= (pos-token-index position) 1) ;;/// why ?
+    (scan-pattern-starting-pair-1 position word)))
 
 (defun scan-pattern-starting-pair-1 (position word)
   ;; Called from check-for/initiate-scan-patterns.
   ;; The hook that makes the quick check for the initiation of
   ;; a pattern.
-  ;;   Any pattern consists of at least two element not separated
+  ;;   Any pattern consists of at least two elements not separated
   ;; by whitespace. The potential second element has just been
   ;; scanned into the chart at this position and we've just checked
   ;; that it is adjacent to the previous terminal with no interveening

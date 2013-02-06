@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1997, 2010  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1997,2010-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;; 
 ;;;     File:  "scan"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  3.2 December 2010
+;;;  Version:  3.2 January 2013
 
 ;; initiated 4/23/93 v2.3
 ;; putting in fsas 5/7
@@ -52,7 +51,9 @@
 ;;      the call start to have arguments for both positions around the word, and
 ;;      the downstream code invoked by, e.g. the word-traversal-hook, expect
 ;;      that position-after to have a word in it already.
-;;     (12/15/10) Capitalization change on lots of trace calls.
+;;     (12/15/10) Capitalization change on lots of trace calls. 
+;;     (1/30/13) Look at whether there's an active document stream before complaining
+;;      that we're not a p0. 
 
 (in-package :sparser)
 
@@ -62,16 +63,18 @@
 
 (defun inititate-top-edges-protocol ()
   ;; called from Lookup-the-kind-of-chart-processing-to-do
+  (declare (special *current-document-stream*))
   (tr :inititate-top-edges-protocol)  ;; "[scan] Inititate-top-edges-protocol"
   (setq *left-segment-boundary* nil)
   (let* ((p0 (scan-next-position))
          (ss (pos-terminal p0)))
 
     (unless (= (pos-token-index p0) 0)
-      (break "~%~%!!!!!!!!!!!!!!!!~%~
-              Inititate-top-edges-protocol called at a position other ~
-              than zero~%There has probably been a gap in the state space~
-              ~%and we've fallen through to the Chart-driver."))
+      (unless *current-document-stream*
+        (break "~%~%!!!!!!!!!!!!!!!!~%~
+                Inititate-top-edges-protocol called at a position other ~
+                than zero~%There has probably been a gap in the state space~
+                ~%and we've fallen through to the Chart-driver.")))
 
     ;; source-start doesn't have leading brackets, so we can move
     ;; directly to the next point in the state-space
@@ -158,6 +161,7 @@
     (when [
       (adjudicate-new-open-bracket [ position-before))
     (leading-hidden-markup-check position-before)
+    ;;/// shouldn't we look for polywords before the scan patterns?
     (check-for/initiate-scan-patterns word position-before)))
 
 
@@ -167,20 +171,38 @@
   (if (no-space-before-word? position-before)
     (then
       (tr :no-space-at position-before)
-      (let ((state/s (scan-pattern-starting-pair position-before word)))
+      ;; Run the pre-check for defined patterns
+      (let ((state/s (scan-pattern-starting-pair position-before word))
+            (position-before-that (chart-position-before position-before)))
         ;; This routine returns nil if there is no no-space scan-pattern
         ;; that starts with the word before this position and this word.
         (if state/s
+          ;; Fire up the full defined pattern recognition machinery
+          ;; and see if it succeeds
           (let ((pos-reached
                  (initiate-scan-pattern-driver state/s position-before)))
             (if pos-reached
               (adjudicate-after-scan-pattern-has-succeeded
-               (chart-position-before position-before)
-	       word
-	       pos-reached)
-              (check-word-level-fsa-trigger word position-before)))
-          (check-word-level-fsa-trigger word position-before))))
-    (check-word-level-fsa-trigger word position-before)))
+               position-before-that word pos-reached)
+              (else ;; If permitted, try the takes-anything no-space routine
+               ;; which will always succeed
+               (when *uniformly-scan-all-no-space-token-sequences*
+                 (let ((uniform-pos-reached
+                        (collect-no-space-sequence-into-word position-before)))
+                   (if uniform-pos-reached
+                     (adjudicate-after-scan-pattern-has-succeeded
+                      position-before-that word uniform-pos-reached)
+                     (else
+                      ;; The uniform scan ran into a case like a bracket
+                      ;; where is couldn't apply.
+                      (check-word-level-fsa-trigger word position-before))))))))
+          (else 
+           ;; full pattern and uniform routines didn't succeed
+           (check-word-level-fsa-trigger word position-before)))))
+    (else
+     ;; There's a space before the word
+     (check-word-level-fsa-trigger word position-before)))
+
   
 
 
@@ -194,6 +216,8 @@
   ;; would have taken us to if PNF had returned the state 'pnf-preempted'.
   (tr :check-word-level-fsa-trigger position-before)
   ;;  "[scan] check-word-level-fsa-trigger ~A"
+  ;;/// shouldn't polywords get a shot before PNF does? Suppose we
+  ;; predefine "New York" or reify "bird flu" ?
 
   (if (ev-top-node (pos-starts-here position-before))
     (edge-already-on-position position-before)
@@ -203,7 +227,7 @@
       (:punctuation (cwlft-cont word position-before))
       (:digits      (cwlft-cont word position-before))
       (:spaces      (cwlft-cont word position-before))
-      (otherwise
+      (otherwise ;; i.e. we have a capitalized word
        (if *ignore-capitalization*
          (then (tr :pnf/preempted)
                (setf (pos-assessed? position-before) :pnf-preempted)
@@ -216,6 +240,8 @@
   ;; This is the path if we don't go through PNF
   (tr :cwlft-cont position-before)  ;; "[scan] cwlft-cont ~A"
   (let ((where-fsa-ended (do-word-level-fsas word position-before)))
+    ;; That call does the polywords and anything else we might have
+    ;; defined as an fsa on the word. 
     (if where-fsa-ended
       (adjudicate-result-of-word-fsa word position-before where-fsa-ended)
       (word-level-actions word position-before))))
