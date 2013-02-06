@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "doc stream"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  0.5 July 1995
+;;;  Version:  0.6 January 2013
 
 ;; initiated 12/13/93 v2.3, incorporates notions from original version
 ;; of 1990 but treats style seriously
@@ -18,7 +18,10 @@
 ;; 0.5 (7/25/95) put in bindings of *current-document-stream* in the routines
 ;;      that are driven from the corpus menu
 ;; 0.6 (5/27/96) Do-next-file wasn't expanding namestrings or converting them
-;;      to pathames so that *current-file* would be a pathname.
+;;      to pathames so that *current-file* would be a pathname. 1/30/13 made
+;;      the document stream in the drivers special so it could act as a flag
+;;      downstream indicating that we're continuing from one document to the 
+;;      next without reinitializing the chart and other resources.
 
 (in-package :sparser)
 
@@ -194,6 +197,7 @@
           (t (break "ill-formed document stream: ~A~
                      ~% no directory, substreams, or file-list"
                     ds-designator)))))
+    (declare (special *current-document-stream*))
 
     ;; Do the setup that would normally be done by Do-article
     (set-the-current-article ds-designator)
@@ -206,6 +210,8 @@
       (when *open-stream-of-source-characters*
         (close-character-source-file))
       (let ((pathname (decode-file-expression/pathname file)))
+        (when *verbose-document-stream*
+          (format t "~&~%~%Abut to read from~%  ~a~%~%" pathname))
         (establish-character-source/file pathname))
 
       ;; parts of analysis-core (9/6/94) that initialize the
