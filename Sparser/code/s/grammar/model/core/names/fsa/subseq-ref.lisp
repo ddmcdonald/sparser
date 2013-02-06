@@ -10,7 +10,7 @@
 ;; 0.1 (4/3) adding preference for individuals mentioned in the current discourse.
 ;; 0.2 (10/5) given that the indexing of names switched to just the sequences,
 ;;      developing an alternative lookup scheme.
-;;     (12/7) added another entry point for when the name is in hand
+;;     (12/7) added another entry point for when the c is in hand
 ;; 0.3 (12/22) fixed bug in 10/5 work
 ;;     (2/2/05) switched Subsequent-reference-off-name-word to look at ordinal bindings
 ;;      rather than position-in-a-sequence
