@@ -303,8 +303,7 @@ places. ]]
           ;; Seen this with "prove", which had two past participles:
           ;; (verb (:pastpart ("proved" "proven") :subc ... )
           (let ((clipped (cdr (memq :subc (reverse result)))))
-            (setq result (reverse clipped))
-            (break "look at result and clipped = ~a" clipped)))
+            (setq result (reverse clipped))))
         result))))
 
 
