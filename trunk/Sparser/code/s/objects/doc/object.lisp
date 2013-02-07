@@ -31,13 +31,15 @@
   name
   article
   starts-at-pos  ;; The position obj of the first word in the section, inclusive.
-  ends-at-pos    ;; The position obj of the last word in the section, inclusive.
+  ends-at-pos    ;; The position obj of the last word in the section, exclusive.
   paragraph      ;; A boolean variable.  Paragraphs are leaf sections.
 
   ;; These two are for iterating back and forth for resolving references.
   ;; They are only bound for paragraph sections.
   next-paragraph
   prev-paragraph
+
+  ;; TODO: track the character offsets to easily zoom to a location in the text.
 
   position-in-resource-array
   )
@@ -51,6 +53,7 @@
   (declare (ignore depth))
   (write-string "#<article" stream)
   (princ (article-position-in-resource-array obj) stream)
+  (write-string " " stream)
   (when (article-name obj)
     (princ (article-name obj) stream)
     (write-string " " stream))
@@ -108,20 +111,42 @@
 ;;; section & paragraph factory
 ;;;-------------
 
-(defun new-section-in-article (sec-name)
-  (let ((section (next-section-from-resource)))
-    (setf (section-article section) *current-article*)
-    (setf (section-name section) sec-name)
-    section))
+(defun new-section-in-article (sec-name start-pos)
+  (let ((obj (next-section-from-resource)))
+    (setf (section-article obj) *current-article*)
+    (setf (section-name obj) sec-name)
+    (setf (section-starts-at-pos obj) start-pos)
+    obj))
 
-(defun new-paragraph-in-article ()
+(defun begin-new-paragraph (start-pos)
   (let* ((sec-name (next-paragraph-name-in-article))
-         (section (new-section-in-article sec-name)))
-    (setf (section-paragraph section) t)
+         (obj (new-section-in-article sec-name start-pos)))
+    (setf (section-paragraph obj) t)
     (when *current-paragraph*
-      (setf (section-prev-paragraph section) *current-paragraph*)
-      (setf (section-next-paragraph *current-paragraph*) section))
-    (setf *current-paragraph* section)))
+      ;; We check here to ensure that the last paragraph has been terminated.
+      (terminate-section *current-paragraph* start-pos)
+      (setf (section-prev-paragraph obj) *current-paragraph*)
+      (setf (section-next-paragraph *current-paragraph*) obj))
+    (setf *current-paragraph* obj)
+    obj))
+
+(defun terminate-section (obj end-pos)
+  (setf (section-ends-at-pos obj) end-pos)
+  obj)
+
+;;;-------------
+;;; article factory
+;;;-------------
+
+(defun begin-new-article (&key name location date source)
+  (let ((obj (next-article-from-resource)))
+    (setf (article-name obj) name
+          (article-location obj) location
+          (article-date obj) date
+          (article-source obj) source)
+    (setf *current-article* obj)
+    (reset-paragraph-state-in-article)
+    obj))
 
 ;;;-------------
 ;;; resource management
