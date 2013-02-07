@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1992-1994,2013 David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "state"
 ;;;   Module:  "drivers;sources:"
 ;;;  Version:  0.1 January 2013
@@ -37,6 +37,10 @@
 (defparameter *current-article* nil
   "Bound by any of the drivers that analyze whole articles.  The
    value is an article object.")
+
+(defparameter *current-paragraph* nil
+  "The current leaf-level section being analyzed by the text. The
+   value is a section object.")
 
 (defparameter *current-style* nil
   "Bound by document-stream drivers. Access at various points.")
