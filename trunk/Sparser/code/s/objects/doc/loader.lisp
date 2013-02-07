@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1992-1995,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; 
+;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
 ;;;  Version:  0.5 September 2012
@@ -15,7 +15,7 @@
 ;; 0.3 (8/17) renamed [sections1] as [section markers], added [sections]
 ;; 0.4 (1/9/95) bumped [section markers].  9/19 added [html]
 ;; 0.5 (7/27/10) Added [article1]. The file article has been in the system
-;;      forever (1993), but grep doesn't find anything that lloads it. 
+;;      forever (1993), but grep doesn't find anything that lloads it.
 ;;    (9/2/12) added [doc-set] and [word-freq]
 
 (in-package :sparser)
@@ -35,4 +35,6 @@
 (lload "doc;doc-set")
 (lload "doc;doc stream")
 (lload "doc;context")
+(lload "doc;globals")
+(lload "doc;object")
 
