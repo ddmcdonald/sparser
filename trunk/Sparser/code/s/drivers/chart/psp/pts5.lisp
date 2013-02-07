@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.13 January 2012
+;;;  Version:  5.13 February 2013
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -44,7 +44,9 @@
 ;;       massive bug in Loop-through-segment-for-some-edges.
 ;;      (5/28/12) Added inline segment printer option. 10/10 tweaked it.
 ;;      (1/21/13) Commented out the possibility of using old dm&p and broke out
-;;       the usual set of options out of segment finished. 
+;;       the usual set of options out of segment finished.  2/6/13 put in trap
+;;       for the threading bug where the right segment boundary global is nil
+;;       so we get a more intelligible error message. 
 
 (in-package :sparser)
 
@@ -214,6 +216,9 @@
     (sf-action/spanned-segment1)))
 
 (defun sf-action/spanned-segment1 ()
+  (unless *right-segment-boundary*
+    (error "Threading bug somewhere upstream in the master control ~
+            FSA~%There is no value for *right-segment-boundary*"))
   (let ((right-boundary *right-segment-boundary*))
     (if (scan-another-segment? right-boundary)
       ;; call to No-further-action-on-segment has to be delayed

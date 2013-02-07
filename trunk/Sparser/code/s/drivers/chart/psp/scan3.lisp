@@ -186,7 +186,7 @@
                position-before-that word pos-reached)
               (else ;; If permitted, try the takes-anything no-space routine
                ;; which will always succeed
-               (when *uniformly-scan-all-no-space-token-sequences*
+               (if *uniformly-scan-all-no-space-token-sequences*
                  (let ((uniform-pos-reached
                         (collect-no-space-sequence-into-word position-before)))
                    (if uniform-pos-reached
@@ -195,7 +195,10 @@
                      (else
                       ;; The uniform scan ran into a case like a bracket
                       ;; where is couldn't apply.
-                      (check-word-level-fsa-trigger word position-before))))))))
+                      (check-word-level-fsa-trigger word position-before))))
+                 (else
+                  ;; not allowed to try the uniform scan
+                  (check-word-level-fsa-trigger word position-before))))))
           (else 
            ;; full pattern and uniform routines didn't succeed
            (check-word-level-fsa-trigger word position-before)))))
