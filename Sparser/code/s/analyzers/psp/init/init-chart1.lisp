@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "init chart"
 ;;;   Module:  "analyzers;psp:init:"
@@ -9,7 +9,8 @@
 ;; 1.1 (11/26) still more tweeking to be in sync with Bump-&-store-word
 ;; 1.2 (12/15) re-enabled the all-edges flags and counters
 ;; 1.3 (1/21/94) added *number-of-characters-to-subtract*.  6/15 added
-;;      *preterminals-on-current-word*
+;;      *preterminals-on-current-word*. 2/6/13 declared it special to make
+;;      Clozure happy, refined error message.
 
 (in-package :sparser)
 
@@ -27,8 +28,10 @@
   ;; The position array has probably been used before, so we
   ;; have to make it look like it's empty.
 
+  (declare (special *preterminals-on-current-word*))
+
   (when (null *the-chart*)
-    (error "The session has not yet been initialized."))
+    (error "There is no chart. The session has not yet been initialized."))
 
   (setq *chart-empty* t
         *bracketing-progress* nil
