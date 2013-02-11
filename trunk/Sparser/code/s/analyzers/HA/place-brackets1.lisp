@@ -61,8 +61,8 @@
                            position-before
                            position-after )
 
-  (set-status :boundaries-introduced position-before)
-
+  (set-status :boundaries-introduced
+              position-before)
   (when (rule-set-for label)
     (let ((assignment (rs-phrase-boundary (rule-set-for label))))
       
@@ -91,10 +91,15 @@
 
 (defun introduce-trailing-brackets (label position-after
                                     &optional source-is-an-edge? )
-  (tr :introduce-trailing-brackets label) ;; "[scan] introduce-trailing-brackets \"~A\""
+  ;; Called from introduce-right-side-brackets
+  ;; and from introduce-trailing-brackets-from-edge-form-labels
+  (tr :introduce-trailing-brackets label) 
+  ;; "[scan] introduce-trailing-brackets \"~A\""
   (if source-is-an-edge?
-    (set-status :brackets-from-prior-edge-introduced position-after)
-    (set-status :brackets-from-prior-word-introduced position-after))
+    (set-status :brackets-from-prior-edge-introduced
+                position-after)
+    (set-status :brackets-from-prior-word-introduced
+                position-after))
   (when (rule-set-for label)
     (let ((assignment (rs-phrase-boundary (rule-set-for label))))
       (if assignment
@@ -115,10 +120,15 @@
 
 (defun introduce-leading-brackets (label position-before
                                    &optional source-is-an-edge? )
-  (tr :introduce-leading-brackets label) ;; "[scan] introduce-leading-brackets \"~A\""
+  ;; Called from scan-next-pos
+  ;; and from introduce-leading-brackets-from-edge-form-labels
+  (tr :introduce-leading-brackets label)
+  ;; "[scan] introduce-leading-brackets \"~A\""
   (if source-is-an-edge?
-    (set-status :brackets-from-edge-introduced position-before)
-    (set-status :brackets-from-word-introduced position-before))
+    (set-status :brackets-from-edge-introduced
+                position-before)
+    (set-status :brackets-from-word-introduced
+                position-before))
   (when (rule-set-for label)
     (let ((assignment (rs-phrase-boundary (rule-set-for label))))
       (if assignment
