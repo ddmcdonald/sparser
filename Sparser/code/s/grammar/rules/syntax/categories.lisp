@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.6 November 2012
+;;;  Version:  0.6 February 2013
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -41,6 +41,7 @@
 ;;     (2/10/10) Added quantifier. 3/16/10 added paragraph.
 ;; 0.6 (8/8/11) Converted form-category? to a method so it can take symbols.
 ;;     (9/29/11) Added two variants on preposition. (11/22/12) Added two conjunctions
+;;     (2/8/13) added 'word'.
 
 (in-package :sparser)
 
@@ -149,6 +150,7 @@
 
 (def-form-category  capitalized)
 
+(def-form-category  word)
 (def-form-category  word+s)
 (def-form-category  word+ed)  ;; n.b. "bed"
 (def-form-category  word+ing)
