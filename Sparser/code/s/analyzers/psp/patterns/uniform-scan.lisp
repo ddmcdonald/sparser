@@ -6,7 +6,9 @@
 ;;;   Module:  "analysers;psp:patterns:"
 ;;;  version:  0.3 February 2013
 
-;; Broken out from driver 2/5/13.
+;; Broken out from driver 2/5/13. This code was developed with some
+;; difficulty and confusion for the JTC/TRS project. Throwing out most
+;; of it and reconstruing these results as names. 
 
 (in-package :sparser)
 
@@ -14,9 +16,10 @@
 ;;; gating global
 ;;;---------------
 
-(defparameter *uniformly-scan-all-no-space-token-sequences* nil
-  "Gates this simpler alternative / complement to the pattern-driven
-  scheme. Sort of a generic 'super' tokenizer")
+(unless (boundp '*uniformly-scan-all-no-space-token-sequences*)
+  (defparameter *uniformly-scan-all-no-space-token-sequences* nil
+    "Gates this simpler alternative / complement to the pattern-driven
+    scheme. Sort of a generic 'super' tokenizer"))
    
 
 ;;;---------------------------------------------------
@@ -26,8 +29,7 @@
 (defun collect-no-space-sequence-into-word (position)
   ;; called from check-for/initiate-scan-patterns when the gate is true
   ;; and no pattern-driven scan applied.
-  (declare (special *source-exhausted*))
-
+  (declare (special *source-exhausted* *source-start*))
   (tr :no-space-sequence-started-at (chart-position-before position))
   ;; There is no space recorded on this position, so the word just
   ;; before it and the word on it have no whitespace between them
@@ -103,6 +105,10 @@
               (return)))))
 
       (setq words (nreverse words))
+      (when (eq (car words) *source-start*)
+        (setq words (cdr words))
+        (unless (> (length words) 1) ;; false alarm
+          (return-from collect-no-space-sequence-into-word nil)))
 
       (tr :ns-parsing-between pos-before next-position)
       
@@ -130,29 +136,54 @@
       ;; corresponding egdge, reifying the identity of the name
       ;; in the model qua name, we would know what it names
       ;; if we understand the context.
-      (push-debug `(,words ,pos-before ,next-position))
-      (break "Make the name for the ns sequence")
-        
+
+      ;; This reifies the name and makes the edge
+      (reify-ns-name-and-make-edge words pos-before next-position)
+
       (tr :ns-returning-position next-position)
       next-position)))
 
 
-;; Old scheme
-#+ignore
-(defun package-ns-words-as-compound-word (words pos-before next-position)
-  (let ((compound-word (define-individual 'compound-word
-			 :list-of-words words)))
-    (let ((edge (make-edge-over-long-span
-		 pos-before
-		 next-position
-		 category::compound-word
-		 :rule :no-space-sequence
-		 :form (if (> (length words) 1)
-			 category::np
-			 category::common-noun)
-		 :referent compound-word)))
-      (tr :no-space-made-edge edge)
-      (ev-position (edge-ends-at edge)))))
+;; New scheme
+(defun reify-ns-name-and-make-edge (words pos-before next-position)
+  (push-debug `(,words ,pos-before ,next-position))
+  ;; We make an instance of a spelled name with the words as its sequence.
+  ;; We make a rule that treats the pnames of the words as a polyword,
+  ;; and we make a category for that rule with that same spelling,
+  ;; form is 'proper-name'.  Something makes me think this could
+  ;; be problem down the line, but we can deal with it when it emerges.
+
+  ;; This part is take from make/uncategorized-name
+  (let ((sequence (define-sequence words category::word))
+        (name (make-unindexed-individual category::spelled-name)))
+    (bind-variable :name/s sequence name category::spelled-name)
+
+    ;; This code is frightfully low-level in its choice of operations.
+    ;; //// We need to find other uses for this pattern. 
+    (let* ((words-string (apply #'string-append (mapcar #'word-pname words)))
+           (polyword (define-polyword words-string))
+           (concatenated-name
+            (intern words-string *category-package*))
+           (category (find-or-make-category-object
+                      concatenated-name :referential))
+           (rule (define-cfr category `(,polyword)
+                   :form category::proper-name
+                   :referent name
+                   ;; If we include a :source we can assign it
+                   ;; to a particular grammar module, but default
+                   ;; is ok.
+                   :schema (get-schematic-word-rule :proper-noun))))
+      (let ((edge
+             (make-edge-over-long-span
+              pos-before
+              next-position
+              category
+              :rule rule
+              :form category::proper-name
+              :referent name
+              :words words)))
+        edge))))
+
 
  
 ;;;-----------------------------------------
