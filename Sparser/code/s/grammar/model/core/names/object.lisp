@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.1 July 2007
+;;;  version:  0.1 FEbruary 2013
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -14,6 +14,7 @@
 ;;  (2/4/05) Swapping in the new, psi-oriented, sequence functions. (3/14/05) let
 ;;  the simple version of Make/uncategorized-name go through. (7/5/07) removed a 
 ;;  break statement.
+;;  (2/8/13) Added names built from no-space pattern.
 
 (in-package :sparser)
 
@@ -231,3 +232,40 @@
         (break "The sequence ~A~%is part of more than one ~
                 uncategorized name:~%~A"
                seq links-to-name-objects)))))
+
+
+
+;;;-----------------------------------------------------
+;;; Uncategorized names created from no-space sequences
+;;;-----------------------------------------------------
+#|
+   These are for names that are read-out letter (number) by letter
+when you say them. In other respects they are normal, sequence-based
+names. Protypical examples are H5N1 (virus) or M1A1 (Abrams tank).
+Those do not have corresponding spelled out forms, as compared with
+a reasonable subtype of this category -- Acronyms -- such as ACLU or
+WHO. 
+|#
+
+;; Use-case in analysers/psp/patterns/uniform-scan.lisp
+(define-category spelled-name
+  :instantiates name
+  :specializes uncategorized-name
+  :binds ((name/s sequence))
+  :index (:special-case))
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
