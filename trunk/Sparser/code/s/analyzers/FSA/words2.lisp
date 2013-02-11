@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id: words2.lisp 207 2009-06-18 20:59:16Z cgreenba $
 ;;; 
 ;;;     File:  "words"
 ;;;   Module:  "analyzers;FSA:"
-;;;  Version:  2.2 February 2007
+;;;  Version:  2.2 February 2013
 
 ;; 5/5/93 v2.3, typed in hard copy of 11/24/92 that had been lost in
 ;;  disk crash
@@ -23,7 +23,11 @@
 ;;     (5/5) moved subsuming-variant to [words;lookup:capitalization] and
 ;;      put in sugared call to set position status
 ;;     (8/9/95) put nil check on rs into Check-known-word-for-word-fsas
-;;     (2/4/07) added push-fsa-onto-word
+;;     (2/4/07) added push-fsa-onto-word. (2/8/13) Fixed non-standard status set.
+;; 2.3 (2/11/13) Added initiates-polyword so the polyword case can be done
+;;      directly from the scan fsa. Didn't change anything here, since if the
+;;      polyword is found we'll never look for it at that position with
+;;      this code.
 
 (in-package :sparser)
 
@@ -68,7 +72,7 @@
 (defun do-word-fsas/only-known (word position)
   ;; same set of dispatches, but only known words will be considered.
   ;; Called from PFWPNF
-  (setf (pos-assessed? position) :word-fsas-done)
+  (set-status :word-fsas-done position)
   (unless (eq word *the-unknown-word*)
     (let ((rs (word-rules word)))
       (if rs
@@ -214,6 +218,15 @@
              subsumer (word-rules subsumer) position)))))))
 
 
+;;--- Picking out the polyword cfr if there is one
+
+(defun initiates-polyword (word)
+  ;; Returns the rule that marks the polyword
+  (when (word-rules word)
+    (let ((fsa-field (rs-fsa (word-rules word))))
+      (loop for item in fsa-field
+        when (typep item 'cfr)
+        return item))))
 
 
 ;;;-------------------------
