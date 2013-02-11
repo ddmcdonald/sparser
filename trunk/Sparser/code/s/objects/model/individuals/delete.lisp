@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995, 2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "delete"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  April 1995
+;;;  version:  February 2013
 
 ;; initiated 8/9/94 v2.3.  Tweeking ...8/18.  9/28 Added capacity to look for op
 ;; off of superc.   4/19/95 wrapped gates around the breaks
 ;; 1/11/11 Patched unindex-individual to not assume that the category has
-;; and operations (DM&P issue)
+;; and operations (DM&P issue). 2/7/13 Found case of a category assigned to lists
+;; having a hash-table. Put in a throw so reclamation can continue.
 
 (in-package :sparser)
 
@@ -47,6 +48,13 @@
 (defun delete/simple-list (i list category)
   ;; the individuals are threaded onto this list by kcons's, so we
   ;; can reclaim the kcons
+  (unless (consp list)
+    (push-debug `(,i ,list ,category))
+    (cerror "Ignore the error and throw out of here"
+            "Something strange was done in the indexing of ~a~
+           ~%because it's specified to use a list,~%but instead ~
+             of list we got a ~a" i (type-of list))
+    (throw :reclaim-of-individual-failed nil))
   (if (eq i (first list))
     (then
       (setf (cat-instances category) (cdr list))
