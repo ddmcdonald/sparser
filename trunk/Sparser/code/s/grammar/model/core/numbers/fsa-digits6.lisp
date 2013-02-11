@@ -450,18 +450,23 @@ unknown---in any event, we're taking the first edge that is installed.
     ;; happens when we have a decimal (.83)
     number-so-far
     
-    (let ((multiplier
-           (ecase index
-             (0 1)
-             (1 1000)
-             (2 1000000)
-             (3 1000000000)
-             (4 1000000000000)))
-          (number
-           (if *include-model-facilities*
-             (value-of (variable/category 'value 'number)
-                       (edge-referent (aref array cell)))
-             (edge-referent (aref array cell)))))
+    (let* ((multiplier
+            (ecase index
+              (0 1)
+              (1 1000)
+              (2 1000000)
+              (3 1000000000)
+              (4 1000000000000)))
+           (edge (aref array cell))
+           (number
+            (if *include-model-facilities*
+              (value-of (variable/category 'value 'number)
+                        (edge-referent edge))
+              (edge-referent edge))))
+
+      (when (null number)
+        (push-debug `(,edge ,array ,cell ,index ,number-so-far))
+        (error "Got nil as the number value on ~a" edge))
       
       (setq number-so-far
             (+ (* number multiplier)
