@@ -20,7 +20,7 @@
 ;; 0.6 (5/27/96) Do-next-file wasn't expanding namestrings or converting them
 ;;      to pathames so that *current-file* would be a pathname. 1/30/13 made
 ;;      the document stream in the drivers special so it could act as a flag
-;;      downstream indicating that we're continuing from one document to the 
+;;      downstream indicating that we're continuing from one document to the
 ;;      next without reinitializing the chart and other resources.
 
 (in-package :sparser)
@@ -199,10 +199,16 @@
                     ds-designator)))))
     (declare (special *current-document-stream*))
 
+    (initialize-article-resource)
+    (initialize-section-resource)
+
     ;; Do the setup that would normally be done by Do-article
     ;; [sfriedman:20130206.1423CST] Only do this if we're parsing as a single article.
+
     (unless article-per-file?
-      (set-the-current-article ds-designator)
+      (begin-new-article :name (ds-name ds-designator)
+                         :location (or (ds-directory ds-designator)
+                                       (ds-file-list ds-designator)))
       (per-article-initializations))
     (initialize-chart-state)
 
@@ -214,26 +220,25 @@
       (let ((pathname (decode-file-expression/pathname file)))
         (when *verbose-document-stream*
           (format t "~&~%~%Abut to read from~%  ~a~%~%" pathname))
-        (establish-character-source/file pathname))
+        (establish-character-source/file pathname)
 
-      ;; parts of analysis-core (9/6/94) that initialize the
-      ;; buffers but nothing else.
-      (when article-per-file?
-        (set-the-current-article file)
-        (per-article-initializations))
-      (initialize-tokenizer-state)
-      (chart-based-analysis)
+        ;; parts of analysis-core (9/6/94) that initialize the
+        ;; buffers but nothing else.
+        (when article-per-file?
+          (begin-new-article :name pathname :location pathname)
+          (per-article-initializations))
+        (initialize-tokenizer-state)
+        (chart-based-analysis)
+        (let ((chart-end  *number-of-next-position*))
+          (dolist (pos (list (chart-position chart-end)
+                             (chart-position (1- chart-end))))
+            (when (or (eql (pos-terminal pos) *source-start*)
+                      (eql (pos-terminal pos) *end-of-source*))
+              (setf (pos-terminal pos) *newline*))
+            ))
 
-      (when *open-stream-of-source-characters*
-        (close-character-source-file)))
-
-    ;; Scrub the chart so that there aren't any source-start or source-end characters.
-    (do* ((i 1 (1+ i))
-          (pos (chart-position i) (chart-position i)))
-        ((= i (1- *next-chart-position-to-scan*)))
-      (when (or (eql (pos-terminal pos) *source-start*)
-                (eql (pos-terminal pos) *end-of-source*))
-        (setf (pos-terminal pos) *newline*)))
+        (when *open-stream-of-source-characters*
+          (close-character-source-file))))
 
     (after-analysis-actions)))
 
