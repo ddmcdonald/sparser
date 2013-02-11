@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: globals.lisp 207 2009-06-18 20:59:16Z cgreenba $
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  February 2008
+;;;  Version:  February 2013
 
 ;; initiated 8/18/93 v2.3, added found when loading 8/24.
 ;; 3/28/94 added *trace-DM&P*.  5/5 added *trace-network-flow.
@@ -13,6 +12,7 @@
 ;; 7/21 added *step-DM&P*  8/11 added *trace-term-introduction*
 ;; 9/26 moved in globals for treetops  2/13/95 added *trace-realization-patterns*
 ;; 10/6 added *trace-scan-patterns*  2/29/08 added *trace-the-trace-calls*
+;; 2/10/13 added *trace-status-history*
 
 (in-package :sparser)
 
@@ -52,10 +52,17 @@
    control the introduction of words, checking of brackets, and
    coordinating of word-level actions")
 
+(defparameter *trace-set-status* nil
+  "Part of the lowlevel trace that can be useful just by itself")
+
 (defparameter *trace-network* nil
   "Announces the start of every interesting routine in the control flow.")
 
 (defparameter *trace-scan-patterns* nil)
+
+(defparameter *trace-status-history* nil
+  "Placed in the adjudicator routines. Displays the sequence of status values
+   on the position up to that point")
 
 (defparameter *trace-brackets* nil
   "Checked when laying them down.")

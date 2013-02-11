@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2010-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 December 2012
+;;;  Version:  1.4 February 2013
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -25,6 +25,7 @@
 ;;     (6/2/10) added traces for new conditions in scan.
 ;;     (12/14/10) fixed capitalization bugs  (11/2/12) added PNF-resetting-open-bracket
 ;;      Continued adding and tweaking through 12/5/12. 
+;;     (2/10/13) added trace-status-history
 
 (in-package :sparser)
 
@@ -74,6 +75,13 @@
 
 (defun untrace-extension ()
   (setq *trace-extension-decision* nil))
+
+
+(defun trace-status-history ()
+  (setq *trace-status-history* t))
+
+(defun untrace-status-history ()
+  (setq *trace-status-history* nil))
 
 
 ;;;-------
@@ -951,7 +959,7 @@
 
 (deftrace :status-set (keyword p)
   ;; Called in set-status
-  (when *trace-network-flow*
+  (when (or *trace-network-flow* *trace-set-status*)
     (trace-msg "[scan] Setting status of p~a to :~a"
                (pos-token-index p) keyword)))
 
@@ -997,12 +1005,26 @@
     (trace-msg "[scan] word-fsas-done-by-pnf: p~A"
                (pos-token-index p))))
 
+(deftrace :adjudicate-after-successfur-pattern-scan (pos-before pos-after)
+  (when *trace-network-flow*
+    (trace-msg "[scan] Adjudicating after pattern-scan succeeded ~
+                between p~a and p~a"
+               (pos-token-index pos-before) (pos-token-index pos-after))))
 
+(deftrace :check-for-polywords (word position-before)
+  (when *trace-network-flow*
+    (trace-msg "[scan] check-for-polywords starting with \"~a\" ~
+                at p~a" word (pos-token-index position-before))))
 
 (deftrace :check-for/initiate-scan-patterns (p)
   (when *trace-network-flow*
-    (trace-msg "[scan] scan-patterns check: p~A"
+    (trace-msg "[scan] check-for/initiate-scan-patterns: p~A"
                (pos-token-index p))))
+
+(deftrace :check-for-uniform-no-space-sequence (pos-before)
+  (when *trace-network-flow*
+    (trace-msg "[scan] check-for-uniform-no-space-sequence ~a" 
+               pos-before)))
 
 (deftrace :check-word-level-fsa-trigger (p)
   (when *trace-network-flow*
