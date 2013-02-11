@@ -25,18 +25,23 @@
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 ;; (grok-setting)  -- for meta-.
 
+;;----- Flags that we want on if we're momentarily by-passing some hard cases
+
 ;; If nil, this flag turns off all the errors about new cases for bracketsing and
 ;; has them return plausible defaults. Useful if looking for weirder errors.
 ;;   (setq *break-on-new-bracket-situations* nil)
 
+;;--- experimental things to add to grok setting
+(setq *uniformly-scan-all-no-space-token-sequences* t)  ;; otherwise H1N1 hits a break
+;; (setq *new-segment-coverage* t)   ;; to debug that, add cases
 
-;;--------- for debugging segmentation, bracket calculations
+;;--------- Cases for debugging segmentation, bracket calculations
 
 ;; (p "Boeing Co. said the U.S. government has suspended the sale")
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
 
 ;; (p *iraqi-girl*)
-;; (setq *new-segment-coverage* t)   ;; to debug that, add cases
+;; (p "in Iraq. H5N1 has killed at least 91 people,")
 
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/1 Aljazeera_Jan-18.txt")
 
@@ -52,12 +57,15 @@
 ;;   N.b. hard pathname. Need soft one. Perhaps via asdf, certainly via a pointer
 ;;    off load-truename
 
+;; *trace-set-status*
+
 (defun trace-segmentation ()
   (trace-brackets)
   (trace-segment-completion)
   (trace-segments)
   (trace-network)
-  (trace-network-flow))
+  (trace-network-flow)
+  (trace-status-history))
 
 ;; (trace-pnf)  ;; when proper names / capitalized sequences are implicated
 
@@ -111,6 +119,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   ;(untrace-jfp-sections)
   (untrace-network)
   (untrace-network-flow)
+  (untrace-status-history)
   (untrace-brackets)
   (untrace-segments)
   (untrace-segment-completion)
