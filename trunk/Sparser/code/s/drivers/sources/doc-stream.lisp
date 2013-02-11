@@ -174,6 +174,7 @@
   ;; a toplevel call. In this case all of the files are to be
   ;; interpreted as parts of a single document, i.e. initialization
   ;; and the call to do-article only occur once.
+  (run-real-per-article-initializations) ;; may react differently within the loop
   (let ((*current-document-stream* ds-designator)
         (file-list
          (cond
@@ -199,14 +200,14 @@
                     ds-designator)))))
     (declare (special *current-document-stream*))
 
-    (initialize-article-resource)
-    (initialize-section-resource)
+    ;(initialize-article-resource)
+    ;(initialize-section-resource)
 
     ;; Do the setup that would normally be done by Do-article
     ;; [sfriedman:20130206.1423CST] Only do this if we're parsing as a single article.
 
     (unless article-per-file?
-      (begin-new-article :name (ds-name ds-designator)
+      #+ignore(begin-new-article :name (ds-name ds-designator)
                          :location (or (ds-directory ds-designator)
                                        (ds-file-list ds-designator)))
       (per-article-initializations))
@@ -219,13 +220,13 @@
         (close-character-source-file))
       (let ((pathname (decode-file-expression/pathname file)))
         (when *verbose-document-stream*
-          (format t "~&~%~%Abut to read from~%  ~a~%~%" pathname))
+          (format t "~&~%~%About to read from~%  ~a~%~%" pathname))
         (establish-character-source/file pathname)
 
         ;; parts of analysis-core (9/6/94) that initialize the
         ;; buffers but nothing else.
         (when article-per-file?
-          (begin-new-article :name pathname :location pathname)
+;          (begin-new-article :name pathname :location pathname)
           (per-article-initializations))
         (initialize-tokenizer-state)
         (chart-based-analysis)
