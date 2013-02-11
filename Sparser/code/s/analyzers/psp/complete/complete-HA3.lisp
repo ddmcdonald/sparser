@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1997  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1997,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "complete HA"
 ;;;    Module:   "analyzers;psp:complete:"
-;;;   Version:   3.5 July 2008
+;;;   Version:   3.5 February 2013
 
 ;; 3.1 (5/3/93) added status setting to word completion routine
 ;; 3.2 (6/11) passed positions through to next stage
@@ -17,6 +17,7 @@
 ;;     (2/5/07) converted e{type}case to use otherwise & break
 ;;     (7/14/08) Made "hugin" lowercase in anticipation of lower-casing
 ;;      all functions.
+;;     (2/8/13) Fixed incorrect status setter
 
 (in-package :sparser)
 
@@ -48,7 +49,7 @@
                                      position-before
                                      position-after)
   (when position-before
-    (setf (pos-assessed? position-before) :word-completed))
+    (set-status :word-completed position-before))
   :complete )
 
 
