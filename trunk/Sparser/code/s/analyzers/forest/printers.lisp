@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   0.7 October 2012
+;;;   Version:   0.7 February 2013
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -24,6 +24,8 @@
 ;;     (5/28/12) added *readout-segments-inline-with-text*  along with the
 ;;      printer print-segment-and-pending-out-of-segment-words that it gates
 ;;      and their state variables. 10/10/12 Completely rewrote it
+;;     (2/11/13) changed the init form for where print-segment left off
+;;      so that it doesn't re-initalize when we're doing a stream of documents.
 
 (in-package :sparser)
 
@@ -279,7 +281,11 @@ there were ever to be any.  ///hook into final actions ??  |#
 (define-per-run-init-form '(setq *index-after-last-printed-close* nil))
 
 (defvar *where-print-segment-left-off* 1)
-(define-per-run-init-form '(setq *where-print-segment-left-off* 1))
+(define-per-run-init-form 
+    '(progn
+       (declare (special *current-document-stream*))
+       (unless *current-document-stream*
+         (setq *where-print-segment-left-off* 1))))
 
 (defun print-segment-and-pending-out-of-segment-words ;; new word-based version
     (start-pos end-pos &optional (stream *standard-output*))
