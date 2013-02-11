@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1995,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "positions"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  1.3 December 2012
+;;;  Version:  1.3 February 2013
 
 ;; 1.1 (2/11 v1.8.1)  Added Position-precedes
 ;;     (5/12/93 v2.3) commented out an unfinished fn.
@@ -18,6 +17,7 @@
 ;;     (12/4/12) Added a trace to set-status.
 ;; 1.4 (12/19/12) SF - augmented set-status to incorporate a LIFO list
 ;;      of all the states that a position has been through. 
+;;     (2/8/12) added pretty-print-status-history
 
 (in-package :sparser)
 
@@ -123,6 +123,17 @@
   (tr :status-set keyword p) ;; "[scan] Setting status of p~a to :~a"
   (kpush keyword (pos-status-lifo p))
   (setf (pos-assessed? p) keyword))
+
+(defun pretty-print-status-history (p &optional (stream *standard-output*))
+  (let ((steps (nreverse (copy-list (pos-status-lifo p)))))
+    (format stream "~&Status history for ~a" p)
+    (dolist (step steps)
+      (format stream "~&  ~a" step))
+    p))
+
+
+(defun includes-state (p keyword)
+  (memq keyword (pos-status-lifo p)))
 
 
 
