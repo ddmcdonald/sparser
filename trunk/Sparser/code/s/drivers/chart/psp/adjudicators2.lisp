@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1997,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1997,2012-2012  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "adjudicators"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  2.0 December 2012
+;;;  Version:  2.0 February 2013
 
 ;; broken out from [scan] 5/13/94 v2.3.  5/16,17,18 working out details
 ;; 5/24 updated args.  6/14 added a case in fsa.
@@ -30,6 +29,8 @@
 ;;      the last word (but just length 1 for now). 12/7 reworked
 ;;      adjudicate-result-of-word-fsa because it wasn't getting any
 ;;      fsa on the resulting edge, stranding the apostrophe-s edge.
+;; 2.1 (2/8/13) Put in a lot of debugging info since the state space
+;;      is getting considerably larger.
 
 (in-package :sparser)
 
@@ -37,6 +38,8 @@
 (defun return-to-scan-level-from-null-span (where-seg-ended)
   ;; called from Segment-finished when the coverage is :null-span
   (tr :return-to-scan-level-from-null-span where-seg-ended)
+  (when *trace-status-history*
+    (pretty-print-status-history where-seg-ended))
   (let ((next-word (pos-terminal where-seg-ended))
         (status (pos-assessed? where-seg-ended)))
     (no-further-action-on-segment)
@@ -71,51 +74,55 @@
   ;; we need this because we've just returned from an excursion through
   ;; code outside of this scan network and we have to appreciate
   ;; where we left off.
+  ;; Standard caller is scan-next-segment
+
   (tr :figure-out-where-to-start-on-next-pos position)
+  ;;   "[scan] figure-out-where-to-start ~A"
   (let ((status (pos-assessed? position)))
     (tr :scan-dispatch position status)
     ;;   "Figuring out what to do at p~A~
     ;;            ~%   which has the status ~A"
+    (when *trace-status-history*
+      (pretty-print-status-history position))
 
     (if status
-      (case status
-        (:]-from-prior-word-checked
-         (check-for-[-from-prior-word
-          position (pos-terminal (chart-position-before position))))
+      (cond
+       ((eq status :]-from-prior-word-checked)
+        ;; Question is whether we may have skipped ahead on this
+        ;; position because of how we got there, e.g. via a 
+        ;; call to do-edge-level-fsas in check-edge-fsa-trigger
+        ;; and there wasn't one
+        (if (includes-state position :scanned-from-word-actions)
+          ;; then we missed the early parts of the scan and need
+          ;; to insert as though the scan was normal. 
+          (continue-scan-next-pos position)
+
+          ;; Otherwise lets assume we got here somehow
+          ;; by a regular path.
+          (check-for-[-from-prior-word
+           position (pos-terminal (chart-position-before position)))))
+
+       ((eq status :scanned)
+        (scan-next-pos position))
         
-        (:scanned
-         (scan-next-pos position))
-        
-        (:]-from-word-after-checked
+        ((eq status :]-from-word-after-checked)
          (check-for-[-from-word-after (pos-terminal position)
                                       position))
-        #|(:word-fsas-done
-         ;; when we went off, we'd already applied an fsa on a position
-         ;; just beyond what ended up being the end of the segment.
-         ;; (E.g. PNF was doing lookahead and hit a header-label.)  We
-         ;; have to establish whether the fsa succeeded -- in which case
-         ;; there'll be an edge starting at this position.  If it did,
-         ;; we resume where the edge ended, if not we pickup at the
-         ;; word-level actions.
-         (let ((edge (ev-top-node (pos-starts-here position))))
-           (if edge
-             (figure-out-where-to-start-on-next-pos
-              (pos-edge-ends-at edge))
-             (check-for-segment-start (pos-terminal position)
-                                      position))))|#
         
-        (:preterminals-installed
+        ((eq status :preterminals-installed)
          ;; "Mr. Servison" 4/23/94
          (check-edge-fsa-trigger (preterminal-edges position)
                                  position
                                  (pos-terminal position)
                                  (chart-position-after position)))
         
-        (:brackets-from-word-introduced
+        ((eq status :brackets-from-word-introduced)
          (check-for-]-from-prior-word
           position (pos-terminal (chart-position-before position))))
         
-        (otherwise
+        (t
+         (pretty-print-status-history position)
+         (push-debug `(,position))
          (break "New case for what to do with next position:~
                  ~%  ~A" status)))
       (else
@@ -134,6 +141,8 @@
   ;; which is right at the end of PNF's sequence of words.
   (tr :adjudicate-after-pnf pos-returned)
   ;;   [scan] adjudicate-after-pnf at p~A
+  (when *trace-status-history*
+    (pretty-print-status-history pos-returned))
   (let ((status (pos-assessed? pos-returned))
         (pnf-length (- (pos-token-index pos-returned)
                        (pos-token-index start-pos))))
@@ -157,6 +166,8 @@
                 (check-for-]-from-word-after
                  (pos-terminal pos-returned) pos-returned))
                (otherwise
+                (pretty-print-status-history pos-returned)
+                (push-debug `(,start-pos ,pos-returned))
                 (break "Unexpected status: ~a on p~a" 
                        status (pos-token-index pos-returned))))))             
     (cond
@@ -182,11 +193,51 @@
 
 
 
+(defun continuation-after-pnf-returned-nil (word position-before)
+  (let ((status (pos-assessed? position-before)))
+    (tr :continue-after-pnf-returned-nil position-before status)
+    ;;   "PNF returned nil. Pos-before: ~A, status: ~A"
+    (when *trace-status-history*
+      (pretty-print-status-history position-before))
+    (case status
+      ;; otherwise see where PNF has gotten on the original position
+      ;; and continue accordingly
+      (:word-fsas-done
+       ;; they could have been done as part of PNF's operations, and
+       ;; there may have been an edge formed, in which case we should
+       ;; start up again at the point where it ended.
+       (word-fsas-done-by-pnf position-before word))
+      
+      (:pnf-checked
+       ;; depending on whether we went once through PNF or twice 
+       ;; (because the first run was stopped in the middle), then
+       ;; this value carries a lot or a little information. We take
+       ;; the easy way out by making any error here on the side of
+       ;; doing too little rather than possibly redoing something
+       ;; that was already done.
+       (introduce-right-side-brackets
+        word (chart-position-after position-before)))
+      
+      (:preterminals-installed
+       ;; pretend that we hadn't had the pnf call in the first
+       ;; place and go where we would have gone in that case
+       (cwlft-cont word position-before))
+      
+      (:pnf-preempted
+       ;; we're in a section like headlines or quotations and PNF
+       ;; has been turned off  -- so it didn't do anything
+       (cwlft-cont word position-before))
+
+      (otherwise
+       (break "Unexpected status after PNF returned: ~a" status)))))
+
 
 (defun word-fsas-done-by-pnf (position-before word)
   ;; the word-fsas haven't been called, but pnf was, and it did
   ;; the fsas on this position.
   (tr :word-fsas-done-by-pnf position-before)
+  (when *trace-status-history*
+      (pretty-print-status-history position-before))
   (let ((status (pos-assessed? position-before)))
     (case status
       (:word-fsas-done
@@ -195,8 +246,9 @@
        (move-to-end-of-word-initated-edge-if-exists
         position-before word))
       (otherwise
+       (pretty-print-status-history position-before)
+       (push-debug `(,position-before ,word))
        (break "Unexpected status: ~a" status)))))
-
 
 (defun move-to-end-of-word-initated-edge-if-exists (start-pos word)
   (tr :pos-already-had-fsas-done start-pos)
@@ -213,16 +265,25 @@
 
 (defun adjudicate-after-edge-fsa (position-returned)
   (tr :adjudicate-after-edge-fsa position-returned)
+  (when *trace-status-history*
+      (pretty-print-status-history position-returned))
   (let ((status (pos-assessed? position-returned)))
     (if status
-      (case status
-	(:scanned
-	 (scan-next-pos position-returned))
-	(:brackets-from-word-introduced
-	 (check-for-]-from-word-after (pos-terminal position-returned)
-				      position-returned))
-	(otherwise
-	 (break "Adjudicate-after-edge-fsa -- unexpected status ~a at p~a"
+      (cond
+       ((eq status :scanned)
+        (scan-next-pos position-returned))
+
+       ((eq status :brackets-from-word-introduced)
+        (check-for-]-from-word-after (pos-terminal position-returned)
+                                     position-returned))
+
+       ((eq status :scanned-from-word-actions)
+        (continue-scan-next-pos position-returned))
+
+       (t
+         (pretty-print-status-history position-returned)
+         (push-debug `(,position-returned))
+	 (break "Adjudicate-after-edge-fsa:~%  unexpected status ~a at p~a"
 		  status position-returned)))
 
       (scan-next-pos (scan-next-position)))))
@@ -232,7 +293,8 @@
 (defun adjudicate-result-of-word-fsa (word ;; that triggered the fsa
                                       pos-before-word ;; before the trigger word
                                       pos-after-fsa-result)
-  (tr :adjudicate-result-of-word-fsa word) ;; "[scan] adjudicate-result-of-word-fsa ~A"
+  (tr :adjudicate-result-of-word-fsa word) 
+  ;; "[scan] adjudicate-result-of-word-fsa ~A"
   (let ((edge (edge-between pos-before-word pos-after-fsa-result))
         (status (pos-assessed? pos-after-fsa-result)))
     (tr :adjudicating-fsa-result
@@ -240,6 +302,8 @@
     ;; "An FSA ended at p~A, whose status is ~A.~
     ;;    it started at p~A with \"~A\"~
     ;;    there is an edge over the span:~%    ~A"
+    (when *trace-status-history*
+      (pretty-print-status-history pos-after-fsa-result))
     (if edge
       ;; This is a fresh edge, we  have to see if it has its
       ;; own brackets and/or fsa before looking further on. 
@@ -255,26 +319,8 @@
       (adjudicate-status-after-fsa-returned
        status pos-after-fsa-result))))
 
-#+ignore ;; original of what results-of-word-fsa did if there
- ;; was an edge. It asumes that all the action is to the right
- ;; of the new edge. 
-(then 
-	(if (and (no-space-before-word? pos-after-fsa-result)
-		 *uniformly-scan-all-no-space-token-sequences*)
-	  (then
-	    (tr :no-space-at pos-after-fsa-result)
-	    (let ((pos-reached
-		   (initiate-scan-pattern-driver t pos-after-fsa-result)))
-	      (if pos-reached
-		(adjudicate-result-of-scan-pattern-after-fsas-ran
-		 pos-before-word pos-after-fsa-result pos-reached)
-		(check-fsa-edge-for-brackets
-		 pos-before-word edge pos-after-fsa-result))))
-	  (check-fsa-edge-for-brackets
-	   pos-before-word edge pos-after-fsa-result)))
-
-
 (defun adjudicate-status-after-fsa-returned (status pos-after-fsa-result)
+  ;; Subroutine of adjudicate-result-of-word-fsa
   (tr :adjudicate-status-after-fsa-returned status)
   (if status
     ;; The fsa looked beyond the position it ultimately ended at.
@@ -303,6 +349,8 @@
                                     (pos-terminal pos-after-fsa-result)))
 
       (otherwise
+       (pretty-print-status-history pos-after-fsa-result)
+       (push-debug `(,pos-after-fsa-result))
        (break "Unexpected status: ~a" status)))
     
     ;; we get here with a polyword since it just checks the 
@@ -322,6 +370,7 @@
 
 
 
+
 (defun adjudicate-after-scan-pattern-has-succeeded (pos-before word pos-after)
   ;; When a no-space, word-level scan-pattern completes, it will usually 
   ;; but not necessarily have introduced an edge over the region that 
@@ -329,6 +378,7 @@
   ;; the edge via a polyword or other sort of word-triggered fsa.  If there's
   ;; no edge, then our re-entry point is different, since we want those other
   ;; sorts of fsa to have a crack at this region of the text.
+  (tr :adjudicate-after-successfur-pattern-scan pos-before pos-after)
   (let ((edge ;;(edge-between pos-before pos-after)
 	 (top-edge-at/ending pos-after)))
     (if edge
@@ -371,7 +421,9 @@
       ;; position the fsa had reached didn't have any space in front of it. If the
       ;; scan-pattern somehow succeeded without creating an edge then the situation
       ;; is quite odd, so we might consider punting.
-      (break "Shouldn't have happened"))))
+      (else 
+       (push-debug `(,pos-before-word ,pos-after-fsa-result ,pos-reached))
+       (break "Shouldn't have happened")))))
 
 
 
@@ -391,7 +443,7 @@
   (tr :handle-leading-brackets-off-fsa-edge pos-before pos-after)
   (let* ((label (edge-category edge))
          (] (]-on-position-because-of-word? pos-before label)))
-    (set-status :]-from-edge-after-checked pos-before)
+    (set-status :]-from-edge-after-checked pos-before)  ;; <<< status
     (if ]
       (then
         (tr :]-noted ] pos-before)
@@ -427,7 +479,7 @@
   (let* ((label (edge-category edge))
          (pos-after (pos-edge-ends-at edge))
          ([ ([-on-position-because-of-word? pos-before label)))
-    (set-status :[-from-edge-after-checked pos-before)
+    (set-status :[-from-edge-after-checked pos-before) ;; <<< status
     (when [
       (adjudicate-new-open-bracket [ pos-before))
 
@@ -462,7 +514,8 @@
   (tr :handle-trailing-brackets-off-fsa-edge pos-after)
   (let* ((label (edge-category edge))
          (] (]-on-position-because-of-word? pos-after label)))
-    (set-status :]-from-edge-before-checked pos-after)
+    (set-status :]-from-edge-before-checked
+                pos-after) ;; <<< status
     (if ]
       (then
         (tr :]-noted ] pos-after)
@@ -487,7 +540,8 @@
   (tr :check-fsa-edge-for-trailing-[-bracket pos-after)
   (let* ((label (edge-category edge))
          ([ ([-on-position-because-of-word? pos-after label)))
-    (set-status :[-from-edge-before-checked pos-after)
+    (set-status :[-from-edge-before-checked 
+                pos-after) ;; <<< status
     (when [
       (adjudicate-new-open-bracket [ pos-after))
 
@@ -504,6 +558,8 @@
 	(:brackets-from-edge-introduced ;; ns-pattern case 3/9/07
 	 (scan-next-pos pos-after))
         (otherwise
+         (pretty-print-status-history pos-after)
+         (push-debug `(,edge ,pos-after ,original-status))
          (break "New case of 'original-status: ~a'" original-status)))
       (scan-next-pos (scan-next-position)))))
 

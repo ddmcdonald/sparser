@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "scan"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  3.2 January 2013
+;;;  Version:  3.2 February 2013
 
 ;; initiated 4/23/93 v2.3
 ;; putting in fsas 5/7
@@ -54,6 +54,8 @@
 ;;     (12/15/10) Capitalization change on lots of trace calls. 
 ;;     (1/30/13) Look at whether there's an active document stream before complaining
 ;;      that we're not a p0. 
+;;     (2/8/13) Adding more status information now that we have the whole history
+;;      to use to make continuation decisions -- see set-status
 
 (in-package :sparser)
 
@@ -66,7 +68,7 @@
   (declare (special *current-document-stream*))
   (tr :inititate-top-edges-protocol)  ;; "[scan] Inititate-top-edges-protocol"
   (setq *left-segment-boundary* nil)
-  (let* ((p0 (scan-next-position))
+  (let* ((p0 (scan-next-position))  ;; status = :scanned
          (ss (pos-terminal p0)))
 
     (unless (= (pos-token-index p0) 0)
@@ -119,10 +121,18 @@
 (defun scan-next-pos (position)
   (tr :scan-next-pos position)  ;; "[scan] scan-next-pos ~A"
   (unless (pos-terminal position)
-    (scan-next-position)) ;; This is where the word gets echoed
+    (scan-next-position)) ;; This is where the word gets echoed, status = :scanned
+  (continue-scan-next-pos position))
+
+(defun continue-scan-next-pos (position)
+  ;; This should repair the problem where we're resuming the
+  ;; scan on this position and it has a word that's scanned
+  ;; from word-level-actions, having missed all the earlier steps
   (let ((word (pos-terminal position)))
-    (introduce-leading-brackets word position) ;; "[scan] introduce-leading-brackets \"~A\""
+    (introduce-leading-brackets word position)
+    ;;  has trace "[scan] introduce-leading-brackets \"~A\""
     (check-for-]-from-word-after word position)))
+
 
 
 (defun check-for-]-from-word-after (word position-before)
@@ -131,7 +141,8 @@
   (trailing-hidden-markup-check position-before)
   (trailing-hidden-annotation-check position-before)
   (let ((] (]-on-position-because-of-word? position-before word)))
-    (set-status :]-from-word-after-checked position-before)
+    (set-status :]-from-word-after-checked
+                position-before) ;; <<< status
     (if ]
       (then
         (tr :]-noted ] position-before) ;; "There is a ~A on p~A"
@@ -157,20 +168,44 @@
   ;;   "[scan] check-for-[-from-word-after p~A \"~A\""
   (end-of-source-check word position-before)
   (let (([ ([-on-position-because-of-word? position-before word)))
-    (set-status :[-from-word-after-checked position-before)
+    (set-status :[-from-word-after-checked
+                position-before) ;; <<< status
     (when [
       (adjudicate-new-open-bracket [ position-before))
     (leading-hidden-markup-check position-before)
-    ;;/// shouldn't we look for polywords before the scan patterns?
+    (check-for-polywords word position-before)))
+
+
+(defun check-for-polywords (word position-before)
+  (tr :check-for-polywords word position-before)
+  ;; "[scan] check-for-polywords starting with \"~a\" at p~a"
+  (set-status :polywords-check
+              position-before)
+  ;; Compare to set of variations looked for in do-word-level-fsas
+  ;; because this may well miss caitalized pw's
+  (if (word-rules word)
+    (let ((pw-cfr (initiates-polyword word)))
+      (if pw-cfr
+        (let ((position-reached
+               (do-polyword-fsa word pw-cfr position-before)))
+          (if position-reached
+            (adjudicate-result-of-word-fsa
+             word position-before position-reached)
+            (check-for/initiate-scan-patterns word position-before)))
+        (check-for/initiate-scan-patterns word position-before)))
     (check-for/initiate-scan-patterns word position-before)))
 
 
 (defun check-for/initiate-scan-patterns (word position-before)
   (tr :check-for/initiate-scan-patterns position-before)
-  ;;  "[scan] scan-patterns check: p~A"
+  ;;  "[scan] check-for/initiate-scan-patterns: p~A
+  (set-status :no-space-patterns
+              position-before) ;; <<< status
   (if (no-space-before-word? position-before)
     (then
       (tr :no-space-at position-before)
+      ;;  [scan] no whitespace at p~A. Initiating scan-pattern check."
+
       ;; Run the pre-check for defined patterns
       (let ((state/s (scan-pattern-starting-pair position-before word))
             (position-before-that (chart-position-before position-before)))
@@ -184,31 +219,33 @@
             (if pos-reached
               (adjudicate-after-scan-pattern-has-succeeded
                position-before-that word pos-reached)
-              (else ;; If permitted, try the takes-anything no-space routine
-               ;; which will always succeed
-               (if *uniformly-scan-all-no-space-token-sequences*
-                 (let ((uniform-pos-reached
-                        (collect-no-space-sequence-into-word position-before)))
-                   (if uniform-pos-reached
-                     (adjudicate-after-scan-pattern-has-succeeded
-                      position-before-that word uniform-pos-reached)
-                     (else
-                      ;; The uniform scan ran into a case like a bracket
-                      ;; where is couldn't apply.
-                      (check-word-level-fsa-trigger word position-before))))
-                 (else
-                  ;; not allowed to try the uniform scan
-                  (check-word-level-fsa-trigger word position-before))))))
+              (else 
+               (check-for-uniform-no-space-sequence position-before word))))
           (else 
-           ;; full pattern and uniform routines didn't succeed
-           (check-word-level-fsa-trigger word position-before)))))
+           ;; full pattern pre-check didn't succeed
+           (check-for-uniform-no-space-sequence position-before word)))))
     (else
      ;; There's a space before the word
      (check-word-level-fsa-trigger word position-before))))
 
+
+(defun check-for-uniform-no-space-sequence (position-before word)
+  (tr :check-for-uniform-no-space-sequence position-before)
+  (if *uniformly-scan-all-no-space-token-sequences*
+    (let ((uniform-pos-reached
+           (collect-no-space-sequence-into-word position-before)))
+      (if uniform-pos-reached
+        (adjudicate-after-scan-pattern-has-succeeded
+         position-before word uniform-pos-reached)
+        (else
+         ;; The uniform scan ran into a case like a bracket
+         ;; where is couldn't apply.
+         (check-word-level-fsa-trigger word position-before))))
+    (else
+     ;; not allowed to try the uniform scan
+     (check-word-level-fsa-trigger word position-before))))
+
   
-
-
 
 (defun check-word-level-fsa-trigger (word position-before)
   ;; every capitalized word has to be sent to PNF, and only if PNF
@@ -221,7 +258,8 @@
   ;;  "[scan] check-word-level-fsa-trigger ~A"
   ;;/// shouldn't polywords get a shot before PNF does? Suppose we
   ;; predefine "New York" or reify "bird flu" ?
-
+  (set-status :word-level-fsa-triggers
+              position-before) ;; <<< status
   (if (ev-top-node (pos-starts-here position-before))
     (edge-already-on-position position-before)
 
@@ -233,7 +271,8 @@
       (otherwise ;; i.e. we have a capitalized word
        (if *ignore-capitalization*
          (then (tr :pnf/preempted)
-               (setf (pos-assessed? position-before) :pnf-preempted)
+               (set-status :pnf-preempted
+                           position-before)
                (cwlft-cont word position-before))
          (check-PNF-and-continue word position-before))))))
 
@@ -242,7 +281,8 @@
   ;; "check-word-level-fsa-trigger" continued
   ;; This is the path if we don't go through PNF
   (tr :cwlft-cont position-before)  ;; "[scan] cwlft-cont ~A"
-  (let ((where-fsa-ended (do-word-level-fsas word position-before)))
+  (let ((where-fsa-ended (do-word-level-fsas word position-before))) ;; <<< status
+    ;;     that sets status to :word-fsas-done
     ;; That call does the polywords and anything else we might have
     ;; defined as an fsa on the word. 
     (if where-fsa-ended
@@ -254,7 +294,8 @@
 (defun check-PNF-and-continue (word position-before)
   (tr :check-PNF-and-continue position-before)
   ;;   "[scan] Check-PNF-and-continue ~A"
-  (let ((where-caps-fsa-ended (pnf position-before)))
+  (let ((where-caps-fsa-ended (pnf position-before))) ;; <<< status
+    ;;    That can set status to :PNF-checked or :pnf-preempted
     (if where-caps-fsa-ended
       ;; since the embedded scan by PNF won't act on any ] on the
       ;; position where it happens to end, we have to.
@@ -262,47 +303,11 @@
       (continuation-after-pnf-returned-nil word position-before))))
 
 
-(defun continuation-after-pnf-returned-nil (word position-before)
-  (let ((status (pos-assessed? position-before)))
-    (tr :continue-after-pnf-returned-nil position-before status)
-    ;;   "PNF returned nil. Pos-before: ~A, status: ~A"
-    (case status
-      ;; otherwise see where PNF has gotten on the original position
-      ;; and continue accordingly
-      (:word-fsas-done
-       ;; they could have been done as part of PNF's operations, and
-       ;; there may have been an edge formed, in which case we should
-       ;; start up again at the point where it ended.
-       (word-fsas-done-by-pnf position-before word))
-      
-      (:pnf-checked
-       ;; depending on whether we went once through PNF or twice 
-       ;; (because the first run was stopped in the middle), then
-       ;; this value carries a lot or a little information. We take
-       ;; the easy way out by making any error here on the side of
-       ;; doing too little rather than possibly redoing something
-       ;; that was already done.
-       (introduce-right-side-brackets
-        word (chart-position-after position-before)))
-      
-      (:preterminals-installed
-       ;; pretend that we hadn't had the pnf call in the first
-       ;; place and go where we would have gone in that case
-       (cwlft-cont word position-before))
-      
-      (:pnf-preempted
-       ;; we're in a section like headlines or quotations and PNF
-       ;; has been turned off  -- so it didn't do anything
-       (cwlft-cont word position-before))
-
-      (otherwise
-       (break "Unexpected status after PNF returned: ~a" status)))))
-
-
-
 
 (defun word-level-actions (word position-before)
   (tr :word-level-actions word) ;; "[scan] word-level-actions ~A"
+  (set-status :word-level-actions
+              position-before) ;; <<< status
   (tr :actions-on-word word position-before) ;; "Doing word-level actions on \"~A\" at p~A"
   (let ((position-after (chart-position-after position-before)))
     (unless (pos-terminal position-after)
@@ -312,15 +317,17 @@
       ;; are going to enter the chart rather than via scan-next-pos
       (tr :scan-from-word-level-actions position-after)
       ;;   "[scan] No word at p~a yet. Calling scan-next-position"
-      (scan-next-position))
-    (complete-word/hugin word position-before position-after)
+      (scan-next-position)
+      (set-status :scanned-from-word-actions
+                  position-after))
+    (complete-word/hugin word position-before position-after) ;; status => :word-completed
     (word-traversal-hook word position-before position-after)
     (introduce-terminal-edges word position-before position-after)))
 
 
 
 (defun edge-already-on-position (position-before)
-  ;; Called from Check-word-level-fsa-trigger when that top-node
+  ;; Called from check-word-level-fsa-trigger when that top-node
   ;; check comes up non-nil
   (let ((edge
          (ev-top-node (pos-starts-here position-before))))
@@ -352,6 +359,8 @@
 
 
 (defun word-level-actions-except-terminals (word position-before)
+  (set-status :word-level-actions-no-terminals
+              position-before) ;; <<< status
   (tr :word-level-actions-except-terminals position-before)
   (let ((position-after (chart-position-after position-before)))
     (complete-word/hugin word position-before position-after)
@@ -370,7 +379,8 @@
 (defun introduce-terminal-edges (word position-before position-after)
   (tr :introduce-terminal-edges word) ;; "[scan] introduce-terminal-edges ~A"
   (let ((edges
-         (install-terminal-edges word position-before position-after)))
+         ;;  sets status to :preterminals-installed
+         (install-terminal-edges word position-before position-after)))    
     (if edges
       (then
         (check-preterminal-edges
@@ -430,7 +440,8 @@
   ;; bracketing, so we get its label as an argument
   (tr :check-for-]-from-edge-after position-before)
   (let ((] (]-on-position-because-of-word? position-before label)))
-    (set-status :]-from-edge-after-checked position-before)
+    (set-status :]-from-edge-after-checked
+                position-before)
     (if ]   ;; this is copied from the same code for words
       (then (tr :]-noted ] position-before)
             (if *left-segment-boundary*
@@ -451,6 +462,8 @@
 
 (defun check-edge-fsa-trigger (edges position-before word position-after)
   (tr :check-edge-fsa-trigger position-before)
+  (set-status :edge-fsa-checked 
+              position-before) ;; <<< status
   (let ((position-after-edge-fsa
          (do-edge-level-fsas edges position-before)))
     (if position-after-edge-fsa
@@ -461,15 +474,18 @@
 
 (defun introduce-right-side-brackets (word position-after)
   (tr :introduce-right-side-brackets word)
+  ;;  "[scan] introduce-right-side-brackets: ~a"
   (introduce-trailing-brackets word position-after)
   (check-for-]-from-prior-word position-after word))
 
 
 (defun check-for-]-from-prior-word (position-after prior-word)
   (tr :check-for-]-from-prior-word position-after)
+  ;; "[scan] check-for-]-from-prior-word: p~A"
   (let ((] (]-on-position-because-of-word?
             position-after prior-word)))
-    (set-status :]-from-prior-word-checked position-after)
+    (set-status :]-from-prior-word-checked
+                position-after)
     (if ]
       (then
         (tr :]-noted ] position-after)
