@@ -111,14 +111,15 @@
   (cond
    (*capitalization-is-uninformative*
     (tr :pnf/preempted)
-    (setf (pos-assessed? starting-position) :pnf-preempted)
+    (set-status :pnf-preempted starting-position)
     nil )
    ((and (function-word? (pos-terminal starting-position))
          (could-be-the-start-of-a-sentence starting-position))
     (tr :pnf/fn-word-at-sentence-start (pos-terminal starting-position))
-    (setf (pos-assessed? starting-position) :pnf-preempted)
+     (set-status :pnf-preempted starting-position)
     nil )
    (t
+    (set-status :PNF-checked starting-position)
     (let ((*pnf-has-control* t)
           (*pnf-scan-starts-here* starting-position)
           (*pnf-scan-respects-segment-boundaries* t))
@@ -141,9 +142,6 @@
             (sort-out-name-bracketing-state
              starting-position *pnf-end-of-span* edge))
 
-          ;;(set-status :PNF-checked starting-position)
-          ;; !! it belongs here, but have to adjust state
-          ;; cases accordingly when moving it here
           (if edge
             *pnf-end-of-span*
             nil)))))))
