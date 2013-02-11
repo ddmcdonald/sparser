@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.1 September 2011
+;;;  version:  1.1 February 2013
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
@@ -16,7 +16,9 @@
 ;;      permanent by doing a return-from before it had done anything. No record available
 ;;      of why. Put it all back today and nothing untoward happened when I ran it.
 ;;     (9/26/11) Fixed zero-category-index for the case of the category being
-;;      a lattice-point
+;;      a lattice-point.
+;;     (2/7/13) Found case of a category assigned to lists having a hash-table. 
+;;      Put in a catch in the iterator so reclamation can continue.
 
 (in-package :sparser)
 
@@ -283,24 +285,27 @@
       (when (eq individual 1st-permanent-individual)
         (setq now-looking-at-permanent-indiv t))
 
-      (if now-looking-at-permanent-indiv
-        ;; permanent individuals keep their own bindings but may
-        ;; have had some of those that they're bound-in deallocated
-        ;; and so need to be cleaned up
-        (push individual all-bodies)
+      (catch :reclaim-of-individual-failed 
+        ;; indexing scheme mismatch happens with numbers somehow
 
-        (else ;; relaim the individual
-          (multiple-value-setq (values bodies)
-            ;; these locals point to the units referenced in the
-            ;; course of zeroing this individual
-            (zero-out-individual individual
-                                 category))
-          (dolist (i values)
-            (unless (member i all-values :test #'eq)
-              (push i all-values)))
-          (dolist (i bodies)
-            (unless (member i all-values :test #'eq)
-              (push i all-bodies))))))
+        (if now-looking-at-permanent-indiv
+          ;; permanent individuals keep their own bindings but may
+          ;; have had some of those that they're bound-in deallocated
+          ;; and so need to be cleaned up
+          (push individual all-bodies)
+          
+          (else ;; relaim the individual
+           (multiple-value-setq (values bodies)
+             ;; these locals point to the units referenced in the
+             ;; course of zeroing this individual
+             (zero-out-individual individual
+                                  category))
+           (dolist (i values)
+             (unless (member i all-values :test #'eq)
+               (push i all-values)))
+           (dolist (i bodies)
+             (unless (member i all-values :test #'eq)
+               (push i all-bodies)))))))
 
     (zero-category-index category 1st-permanent-individual)
     (nconc all-values all-bodies)))
