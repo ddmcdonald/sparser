@@ -175,6 +175,8 @@
 ;; Init resources.
 
 (defun initialize-article-resource ()
+  (unless *all-articles*
+    (make-the-article-resource))
   (let ( obj )
     (dotimes (n (if *article-resource-is-wrapped*
                   *length-of-article-resource*
@@ -190,6 +192,8 @@
         ))
 
 (defun initialize-section-resource ()
+  (unless *all-sections*
+    (make-the-section-resource))
   (let ( obj )
     (dotimes (n (if *section-resource-is-wrapped*
                   *length-of-section-resource*
