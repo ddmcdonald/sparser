@@ -32,6 +32,9 @@
   article
   starts-at-pos  ;; The position obj of the first word in the section, inclusive.
   ends-at-pos    ;; The position obj of the last word in the section, exclusive.
+  starts-at-char ;; The char index the first word in the section, inclusive.
+  ends-at-char   ;; The char index of the character that ends this section.
+
   paragraph      ;; A boolean variable.  Paragraphs are leaf sections.
 
   ;; These two are for iterating back and forth for resolving references.
@@ -214,19 +217,21 @@
   ;; Called from next-article-from-resource
   ;; We zero out every field in the article except its position in
   ;; the resource array, which is always fixed.
-  (setf (article-name obj)     nil)
-  (setf (article-source obj)   nil)
-  (setf (article-date obj)     nil)
-  (setf (article-location obj) nil))
+  (setf (article-name obj)     nil
+        (article-source obj)   nil
+        (article-date obj)     nil
+        (article-location obj) nil))
 
 (defun initialize-section (obj)
   ;; Called from next-section-from-resource
   ;; We zero out every field in the section except its position in
   ;; the resource array, which is always fixed.
-  (setf (section-name obj)          nil)
-  (setf (section-article obj)       nil)
-  (setf (section-starts-at-pos obj) nil)
-  (setf (section-ends-at-pos   obj) nil))
+  (setf (section-name obj)           nil
+        (section-article obj)        nil
+        (section-starts-at-pos obj)  nil
+        (section-ends-at-pos   obj)  nil
+        (section-starts-at-char obj) nil
+        (section-ends-at-char   obj) nil))
 
 ;; Release
 
