@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: articles2.lisp 249 2009-07-23 17:03:45Z dmcdonal $
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.15 July 2009
+;;;  Version:  2.16 February 2013
 
 ;; 1.1  (3/28/91 v1.8.1)  Added Clear-individuals, and improved the
 ;;      conditionalization according to the load-time switches
@@ -29,6 +28,8 @@
 ;;      (5/13/95) promulgated a fn renaming.
 ;;      (1/9/96) added check for an interrupted embedded scan.
 ;; 2.15 (7/23/09) Added clear-debug.
+;; 2.16 (2/11/13) Broke out the 'real' per article initializatin so it
+;;       can be called by itself.
 
 (in-package :sparser)
 
@@ -70,22 +71,26 @@
     ;; what to reap
     (initialize-discourse-history)
 
+    #+mcl 
+    (when *display-text-to-special-window*
+      (clear-special-text-display-window))
+
     (when *paragraph-detection*
       (initialize-paragraph-state))
     (when *recognize-sections-within-articles*
-      (initialize-section-state))
+      (initialize-section-state)))
 
-    (when *display-text-to-special-window*
-      (clear-special-text-display-window)))
-
-  (when *per-article-initializations*
-    (dolist (form *per-article-initializations*)
-      (eval form))))
+  (run-real-per-article-initializations))
 
 
 ;;;----------------------------------------
 ;;; managing *per-article-initializations*
 ;;;----------------------------------------
+
+(defun run-real-per-article-initializations ()
+  (when *per-article-initializations*
+    (dolist (form *per-article-initializations*)
+      (eval form))))
 
 (defun define-per-run-init-form (s-exp)
   (unless (listp s-exp)
