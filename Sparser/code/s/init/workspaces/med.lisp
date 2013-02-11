@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1996,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "Med"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  July 1996
+;;;  version:  February 2013
 
-;; started 7/11/96
+;; started 7/11/96. Resurected 2/13 for Grok, though commented out the
+;; no-space pattern as muddying the waters.
 
 (in-package :sparser)
 
@@ -24,14 +25,14 @@
 tyrosine phosphorylation of the GTPase activating protein (GAP) 
 in 3T3 cells"))
 
-
+#|
 (define-no-space-pattern  digits-alpha-digits
   :acceptance-function 'analyze-ns-token/digits-alpha-digits
   :transition-net (  (:initial + digits    -> :one-digits )
                      (:one-digits + word   -> :digits-word )
                      (:digits-word + digits  -> :digits-word-digits))
   :accept-states ( :digits-word-digits ))
-
+|#
 
 (defparameter *location-of-NIH-articles*
               "Corpora:NIH:")
