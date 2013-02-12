@@ -200,8 +200,8 @@
                     ds-designator)))))
     (declare (special *current-document-stream*))
 
-    ;(initialize-article-resource)
-    ;(initialize-section-resource)
+    (initialize-article-resource)
+    (initialize-section-resource)
 
     ;; Do the setup that would normally be done by Do-article
     ;; [sfriedman:20130206.1423CST] Only do this if we're parsing as a single article.
@@ -226,7 +226,7 @@
         ;; parts of analysis-core (9/6/94) that initialize the
         ;; buffers but nothing else.
         (when article-per-file?
-;          (begin-new-article :name pathname :location pathname)
+          (begin-new-article :name pathname :location pathname)
           (per-article-initializations))
         (initialize-tokenizer-state)
         (chart-based-analysis)

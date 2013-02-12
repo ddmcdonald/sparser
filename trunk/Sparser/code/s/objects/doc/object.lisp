@@ -75,9 +75,9 @@
   (write-string " " stream)
   (princ (section-name obj) stream)
   (write-string " " stream)
-  (princ (section-starts-at-pos obj) stream)
+  (princ (section-starts-at-char obj) stream)
   (write-string "-" stream)
-  (princ (section-ends-at-pos obj) stream)
+  (princ (section-ends-at-char obj) stream)
   (write-string ">" stream))
 
 
@@ -119,19 +119,25 @@
     (setf (section-article obj) *current-article*)
     (setf (section-name obj) sec-name)
     (setf (section-starts-at-pos obj) start-pos)
+    (setf (section-starts-at-char obj) (pos-character-index start-pos))
     obj))
 
 (defun begin-new-paragraph (start-pos)
-  (let* ((sec-name (next-paragraph-name-in-article))
-         (obj (new-section-in-article sec-name start-pos)))
-    (setf (section-paragraph obj) t)
-    (when *current-paragraph*
-      ;; We check here to ensure that the last paragraph has been terminated.
-      (terminate-section *current-paragraph* start-pos)
-      (setf (section-prev-paragraph obj) *current-paragraph*)
-      (setf (section-next-paragraph *current-paragraph*) obj))
-    (setf *current-paragraph* obj)
-    obj))
+  (unless (and *current-paragraph*
+               (eql start-pos (section-starts-at-pos *current-paragraph*)))
+    (let* ((sec-name (next-paragraph-name-in-article))
+           (obj (new-section-in-article sec-name start-pos)))
+      (setf (section-paragraph obj) t)
+      (when (and *current-paragraph*
+                 (section-paragraph *current-paragraph*))
+        ;; We check here to ensure that the last paragraph has been terminated.
+        (terminate-section *current-paragraph* start-pos)
+        (setf (section-prev-paragraph obj) *current-paragraph*)
+        (setf (section-next-paragraph *current-paragraph*) obj)
+        (setf (section-ends-at-char *current-paragraph*)
+          (1- (pos-character-index start-pos))))
+      (setf *current-paragraph* obj)
+      obj)))
 
 (defun terminate-section (obj end-pos)
   (setf (section-ends-at-pos obj) end-pos)
@@ -226,10 +232,12 @@
   ;; Called from next-section-from-resource
   ;; We zero out every field in the section except its position in
   ;; the resource array, which is always fixed.
-  (setf (section-name obj)           nil
-        (section-article obj)        nil
-        (section-starts-at-pos obj)  nil
-        (section-ends-at-pos   obj)  nil
+  (setf (section-name           obj) nil
+        (section-article        obj) nil
+        (section-starts-at-pos  obj) nil
+        (section-ends-at-pos    obj) nil
+        (section-next-paragraph obj) nil
+        (section-prev-paragraph obj) nil
         (section-starts-at-char obj) nil
         (section-ends-at-char   obj) nil))
 
