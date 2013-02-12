@@ -2,7 +2,7 @@
 ;;; copyright (c) 1992-1996, 2010  David D. McDonald
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC.
 ;;; $Id$
-;;; 
+;;;
 ;;;     File:  "newline"
 ;;;   Module:  "analyzers;psp:fill chart:"
 ;;;  Version:  0.8 February 2010
@@ -14,15 +14,15 @@
 ;; 0.2 (11/28 v2.3) added default binding for sm-paragraph-start
 ;; 0.3 (4/9/93) flushed references to word package - used constants instead
 ;;      Moved sm-paragraph-start to rules:words:required
-;; 0.4 (4/20/94) moved in all the basic setup from NL fsas that had been in 
+;; 0.4 (4/20/94) moved in all the basic setup from NL fsas that had been in
 ;;      in the version stored in the grammar
 ;; 0.5 (5/2) made the display of whitespace returned from the NL fsa be literally
 ;;      the word rather than what's in the buffer
 ;; 0.6 (12/13) Added a call to reset the line adjustment counter when a
-;;      newline is returned and it is treated as whitespace. 
+;;      newline is returned and it is treated as whitespace.
 ;; 0.7 (1/15/96) added another case specifically looking for the paragraph start
 ;;      word so that it could direct bump-&-store-word not to look into the buffer
-;;      for what to print. 
+;;      for what to print.
 ;; 0.8 (6/18) added a case for sentence boundaries.
 ;;     (8/17/97) moved in *count-input-lines*
 ;;     (2/22/10) Somewhere along the line the newline fsa got an argument but
@@ -39,8 +39,10 @@
          (if *newline-is-a-word*
            (bump-&-store-word position word)
            (else
-             (reset-display-line-chars-remaining-counter)
-             (fill-whitespace-and-loop position word :display-word t))))
+            (reset-display-line-chars-remaining-counter)
+            (fill-whitespace-and-loop position word :display-word t)
+            (when *newline-delimits-paragraphs*
+              (begin-new-paragraph position)))))
 
         ((eq word word::paragraph-start)
          (bump-&-store-word position word :display-word t))
@@ -64,6 +66,13 @@
   "A flag read in Sort-out-result-of-newline-analysis to determine
    whether the newline word should be put into the chart as a
    terminal or treated as whitespace")
+
+
+(defparameter *newline-delimits-paragraphs* t
+  "A flag read in Sort-out-result-of-newline-analysis to determine
+   whether the newline word delimits a paragraph (and does not get
+   added to the chart)")
+
 
 (defparameter *newline-fsa-in-use* nil
   "bound as a record after the switching routine has set the

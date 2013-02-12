@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993-1997,2010-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; 
+;;;
 ;;;     File:  "scan"
 ;;;   Module:  "drivers;chart:psp:"
 ;;;  Version:  3.2 February 2013
@@ -38,22 +38,22 @@
 ;; 2.7 (5/12) simple patch to Edge-already-on-position for :mult-inital case
 ;; 2.8 (7/12) added more network-flow traces, put a trap into initiate routine
 ;;      to catch dropouts.
-;; 3.0 (7/17/96) Patched the no-space fsa into the scan 
+;; 3.0 (7/17/96) Patched the no-space fsa into the scan
 ;; 3.1 (8/17/97) began modifications to create a switch settings and gating
 ;;      that would enable a run with just segmentation in place (no pnf, no
 ;;      markup, etc.)
 ;;     (2/6/07) Eliminated an ecase. (3/2) Fixed bug in return from no-space
 ;;      scan. (7/14/08) Made "hugin" lowercase in anticipation of lower-casing
-;;      all functions. 
+;;      all functions.
 ;;     (6/2/10) Annotating the trace calls so threading is easier to follow
 ;; 3.2 (6/2/10) Added a call to scan-next-position in word-level-actions when the
 ;;      following position hasn't already been scanned. This is the point where
 ;;      the call start to have arguments for both positions around the word, and
 ;;      the downstream code invoked by, e.g. the word-traversal-hook, expect
 ;;      that position-after to have a word in it already.
-;;     (12/15/10) Capitalization change on lots of trace calls. 
+;;     (12/15/10) Capitalization change on lots of trace calls.
 ;;     (1/30/13) Look at whether there's an active document stream before complaining
-;;      that we're not a p0. 
+;;      that we're not a p0.
 ;;     (2/8/13) Adding more status information now that we have the whole history
 ;;      to use to make continuation decisions -- see set-status
 
@@ -153,8 +153,8 @@
               (check-for-[-from-word-after word position-before)))
           (else
             (tr :]-ignored/no-left-boundary-yet ] word position-before)
-	    ;;   "Ignoring the ~A at p~A in front of ~A~
-	    ;; ~%   because the left-boundary of the next segment ~
+            ;;   "Ignoring the ~A at p~A in front of ~A~
+            ;; ~%   because the left-boundary of the next segment ~
             ;;      hasn't been established yet."
             (check-for-[-from-word-after word position-before))))
       (else
@@ -219,9 +219,9 @@
             (if pos-reached
               (adjudicate-after-scan-pattern-has-succeeded
                position-before-that word pos-reached)
-              (else 
+              (else
                (check-for-uniform-no-space-sequence position-before word))))
-          (else 
+          (else
            ;; full pattern pre-check didn't succeed
            (check-for-uniform-no-space-sequence position-before word)))))
     (else
@@ -245,7 +245,7 @@
      ;; not allowed to try the uniform scan
      (check-word-level-fsa-trigger word position-before))))
 
-  
+
 
 (defun check-word-level-fsa-trigger (word position-before)
   ;; every capitalized word has to be sent to PNF, and only if PNF
@@ -284,7 +284,7 @@
   (let ((where-fsa-ended (do-word-level-fsas word position-before))) ;; <<< status
     ;;     that sets status to :word-fsas-done
     ;; That call does the polywords and anything else we might have
-    ;; defined as an fsa on the word. 
+    ;; defined as an fsa on the word.
     (if where-fsa-ended
       (adjudicate-result-of-word-fsa word position-before where-fsa-ended)
       (word-level-actions word position-before))))
@@ -345,7 +345,7 @@
     (if (eq (pos-edge-ends-at edge)
             (chart-position-after position-before))
       ;; is it only one word long?  Then we don't want to go through
-      ;; 'introduce-terminals' again, but we probably don't want to 
+      ;; 'introduce-terminals' again, but we probably don't want to
       ;; to start as far back as checking (non-PNF) fsas.
       (word-level-actions-except-terminals (pos-terminal position-before)
                                            position-before)
@@ -369,7 +369,7 @@
     (if (preterminal-edge-at? position-before)
       ;; if there are any preterminal edges here, check them for
       ;; (non-pnf) brackets and fsas
-      (check-preterminal-edges (all-preterminals-at position-before) 
+      (check-preterminal-edges (all-preterminals-at position-before)
                                word position-before position-after)
       (introduce-right-side-brackets word position-after))))
 
@@ -380,7 +380,7 @@
   (tr :introduce-terminal-edges word) ;; "[scan] introduce-terminal-edges ~A"
   (let ((edges
          ;;  sets status to :preterminals-installed
-         (install-terminal-edges word position-before position-after)))    
+         (install-terminal-edges word position-before position-after)))
     (if edges
       (then
         (check-preterminal-edges
@@ -390,7 +390,7 @@
 
 
 (defun check-preterminal-edges (edges word position-before position-after)
-  (tr :check-preterminal-edges position-before) ;; "[scan] Check-preterminal-edges ~A" 
+  (tr :check-preterminal-edges position-before) ;; "[scan] Check-preterminal-edges ~A"
   (let ((label (introduce-leading-brackets-from-edge-form-labels
                 edges position-before)))
     (if label
@@ -462,7 +462,7 @@
 
 (defun check-edge-fsa-trigger (edges position-before word position-after)
   (tr :check-edge-fsa-trigger position-before)
-  (set-status :edge-fsa-checked 
+  (set-status :edge-fsa-checked
               position-before) ;; <<< status
   (let ((position-after-edge-fsa
          (do-edge-level-fsas edges position-before)))
@@ -555,7 +555,7 @@
   ;; apply to the word that we finished processing on the
   ;; last pass through the word-level -- we're called just before
   ;; the check on the vector of the 'position-before' the -next-
-  ;; word for the possibility of ending the segment. 
+  ;; word for the possibility of ending the segment.
   (tr :trailing-hidden-annotation-check position-before)
   (when (ev-plist
          (pos-ends-here position-before))
@@ -575,9 +575,11 @@
     (if (eq *rightmost-quiescent-position* position-before)
       ;; we have to make this check to ensure that all the forest level
       ;; parsing is also finished.  ///?? treetop level too ???
-      (then
-        (do-the-last-things-in-an-analysis position-before)
-        (terminate-chart-level-process))
+        (then
+         ;; [sfriedman:20130211.2000CST]
+         ;; Section representation has changed, so this is no longer valid.
+         ;; (do-the-last-things-in-an-analysis position-before)
+         (terminate-chart-level-process))
 
       (if *do-forest-level*
         (then
