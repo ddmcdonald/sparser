@@ -281,8 +281,8 @@ there were ever to be any.  ///hook into final actions ??  |#
 (define-per-run-init-form '(setq *index-after-last-printed-close* nil))
 
 (defvar *where-print-segment-left-off* 1)
-(define-per-run-init-form 
-    '(progn
+(define-per-run-init-form
+    '(prog
        (declare (special *current-document-stream*))
        (unless *current-document-stream*
          (setq *where-print-segment-left-off* 1))))
