@@ -18,7 +18,8 @@
 ;;  (12/14/10) Fixed capitalization problem (mlisp)
 ;;  (1/17/11) Debugging sequence-from-company-name and friends. 1/18 Fixing how
 ;;   an initially uncategorized name gets converted to a company name. 4/7 put
-;;   name-word in as case in define-company-given-name
+;;   name-word in as case in define-company-given-name.
+;;  (2/13/13) Made company specialize named-object (see core/names/object)
 
 (in-package :sparser)
 
@@ -29,7 +30,7 @@
 
 (define-category  company
   :instantiates self
-  :specializes nil
+  :specializes named-object
   :binds ((name . company-name)
           (description)
           (location))

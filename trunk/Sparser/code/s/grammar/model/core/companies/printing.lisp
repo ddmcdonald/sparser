@@ -1,14 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995,1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printing"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  January 1996
+;;;  version:  February 2013
 
 ;; broken out 11/23/94 v2.3.  Pulled in routines for co-names 4/12/95
 ;; 4/19 tweeked them, added string/company.  5/22 made adjustments for changes
 ;; in where the sequence may be depending on the type (actually the source) of
-;; the name. 1/13/96 fixed stupid omission in string routine
+;; the name. 1/13/96 fixed stupid omission in string routine.
+;; 2/13/13 Added guard in string/company for possibility that string-for
+;;  returned the empty string.
 
 (in-package :sparser)
 
@@ -52,8 +54,9 @@
           (setq name-item (elt item-list i))
 
           (setq string (string-for name-item))
-          (unless (capital-letter (elt string 0))
-            (setq string (string-capitalize string)))
+          (unless (string-equal string "") ;; generic-co-word 
+            (unless (capital-letter (elt string 0))
+              (setq string (string-capitalize string))))
 
           (setq full-string
                 (concatenate 'string  full-string " " string)))
