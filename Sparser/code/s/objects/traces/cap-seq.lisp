@@ -224,11 +224,46 @@
     (trace-msg "PNF:    which is covered by one edge -- we're done.~
                 ~%         ~A" edge)))
 
+
+;;--- one word span
+
 (deftrace :pnf/classifying-one-word-span (word)
   ;; called from C&R-single-word
   (when *trace-pnf*
     (trace-msg "PNF:    which is just the word \"~A\""
                (word-pname word))))
+
+(deftrace :pnf/no-edges-over-word (word)
+  (when *trace-pnf*
+    (trace-msg "PNF:    no edges over \"~A\""
+               (word-pname word))))
+
+(deftrace :pnf/items-for-unknown-word (word name name-word)
+  (when *trace-pnf*
+    (trace-msg "PNF:  Giving \"~A\" the name ~a based on ~a"
+               (word-pname word) name name-word)))
+
+(deftrace :pnf/edges-over-word (word ev)
+  (when *trace-pnf*
+    (trace-msg "PNF:    There are ~a edges over \"~A\""
+               (ev-number-of-edges ev)
+               (word-pname word))))
+
+(deftrace :pnf/single-edge-is (edge)
+  (when *trace-pnf*
+    (trace-msg "PNF:  The edge is ~a~
+              ~%        form = ~a" edge (edge-form edge))))
+
+
+
+(deftrace :found-subsequent-reference (edge referent
+                                       its-referent new-edge)
+  (when *trace-pnf*
+    (trace-msg "SubseqRef: The referent of e~a, ~a~
+              ~%   is a subsequent reference to ~a~
+              ~%   so we're respanning it with e~a" 
+               (edge-position-in-resource-array edge) referent
+               its-referent (edge-position-in-resource-array new-edge))))
 
 
 
