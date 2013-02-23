@@ -27,7 +27,8 @@
 ;; 2.3 (2/11/13) Added initiates-polyword so the polyword case can be done
 ;;      directly from the scan fsa. Didn't change anything here, since if the
 ;;      polyword is found we'll never look for it at that position with
-;;      this code.
+;;      this code. (2/15/13) Fixed the polyword lookup to appreciate the option
+;;      of the rule being on a capitalized variant of the word.
 
 (in-package :sparser)
 
@@ -220,13 +221,20 @@
 
 ;;--- Picking out the polyword cfr if there is one
 
-(defun initiates-polyword (word)
+(defun initiates-polyword (word position-before)
   ;; Returns the rule that marks the polyword
-  (when (word-rules word)
-    (let ((fsa-field (rs-fsa (word-rules word))))
-      (loop for item in fsa-field
-        when (typep item 'cfr)
-        return item))))
+  (flet ((polyword-rule (rules-field)
+           (when rules-field
+             (let ((fsa-field (rs-fsa rules-field)))
+               (loop for item in fsa-field
+                 when (typep item 'cfr)
+                 return item)))))
+    (let ((rules-field (word-rules word)))
+      (or (polyword-rule rules-field)
+          (let ((caps-word (capitalized-correspondent word position-before)))
+            (when caps-word
+              (let ((caps-rules-field (word-rules caps-word)))
+                (polyword-rule caps-rules-field))))))))
 
 
 ;;;-------------------------
