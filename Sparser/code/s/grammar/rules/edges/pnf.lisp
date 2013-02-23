@@ -51,7 +51,7 @@
     (setf (edge-right-daughter edge) :proper-name)
 
     (when *trace-edge-creation*
-      (format t "~&~%creating ~A for a proper name"
+      (format t "~&creating ~A for a proper name"
               edge))
 
     (complete edge)
