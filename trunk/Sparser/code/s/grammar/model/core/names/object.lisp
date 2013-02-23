@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.1 FEbruary 2013
+;;;  version:  0.1 February 2013
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -14,7 +14,9 @@
 ;;  (2/4/05) Swapping in the new, psi-oriented, sequence functions. (3/14/05) let
 ;;  the simple version of Make/uncategorized-name go through. (7/5/07) removed a 
 ;;  break statement.
-;;  (2/8/13) Added names built from no-space pattern.
+;;  (2/8/13) Added names built from no-space pattern. 2/13/13 Added a class
+;;   for named-object. Could have been in upper-model, but didn't want
+;;   a complication with the restriction of the name variable to name.
 
 (in-package :sparser)
 
@@ -29,8 +31,37 @@
                         ;; root for this part of the lattice
 
 
+;;;-----------------------------------------------
+;;; common super-class for things that have names
+;;;-----------------------------------------------
 
-;;--- sort routine
+;; In Praxis, the NamedObject inherits from Thing (equivalent of
+;; top here), and these have a Name (or several of them) which
+;; inherits from Designator, which inherits from Information
+;;   This is a mix-in class in my regular code
+(define-category  named-object
+  :instantiates :self
+  ;; for people and companies and uncategorized-names the
+  ;; name is based on a sequence. See core/names/object.lisp
+  :binds ((name . name))
+  :index (:key name)) ;; instances field is now a table
+
+
+(defun find/named-object-with-name (name)
+  (let* ((table (cat-instances (category-named 'named-object)))
+         (object (gethash name table)))
+    ;; place for tests
+    object))
+
+(defun make/named-object-with-name (name)
+  (define-individual 'named-object :name name))
+  
+
+
+
+;;;--------------
+;;; sort routine
+;;;--------------
 
 (defun sort-individuals-by-their-name (i1 i2)
   (let ((name1 (value-of 'name i1))
@@ -219,6 +250,7 @@
     (when seq
       (name-based-on-sequence/uncategorized seq))))
 
+
 (defun name-based-on-sequence/uncategorized (seq)
   (let ((links-to-name-objects
          (all-bindings-such-that
@@ -248,6 +280,7 @@ WHO.
 |#
 
 ;; Use-case in analysers/psp/patterns/uniform-scan.lisp
+;; for e.g. H5N1
 (define-category spelled-name
   :instantiates name
   :specializes uncategorized-name
@@ -255,8 +288,30 @@ WHO.
   :index (:special-case))
 
 
+(defun reify-spelled-name (words)
+  ;; This part is take from make/uncategorized-name
+  ;; Return value designed to feed edge creation in 
+  ;; reify-ns-name-and-make-edge
+  (let ((sequence (define-sequence words category::word))
+        (name (make-unindexed-individual category::spelled-name)))
+    (bind-variable :name/s sequence name category::spelled-name)
 
-
+    ;; This code is frightfully low-level in its choice of operations.
+    ;; //// We need to find other uses for this pattern. 
+    (let* ((words-string (apply #'string-append (mapcar #'word-pname words)))
+           (polyword (define-polyword words-string))
+           (concatenated-name
+            (intern words-string *category-package*))
+           (category (find-or-make-category-object
+                      concatenated-name :referential))
+           (rule (define-cfr category `(,polyword)
+                   :form category::proper-name
+                   :referent name
+                   ;; If we include a :source we can assign it
+                   ;; to a particular grammar module, but default
+                   ;; is ok.
+                   :schema (get-schematic-word-rule :proper-noun))))
+      (values category rule name))))
 
       
 

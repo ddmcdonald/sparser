@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "name words"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.6 March 2005
+;;;  version:  0.7 February 2013
 
 ;; [object] initiated 5/28/93 v2.3
 ;; 0.1 (12/30) allowed the case of the name-word maker being passes an already
@@ -27,6 +26,9 @@
 ;; 0.6 (3/15/05) Sorted out issue ther about ordinals vs. positions in sequences.
 ;;     (1/6/07) +apple'd call to define-sort-function 3/8 added define-name-word.
 ;;     (8/29/09) Fixed some odd capitalizations.
+;; 0.7 (2/13/13) Added a name-of variable to name word to allow acronyms to
+;;      link to what they name since they're not one of the words in the
+;;      original name, plus operations to manage that.
 
 (in-package :sparser)
 
@@ -37,7 +39,8 @@
 (define-category  name-word
   :instantiates name
   :specializes  name
-  :binds ((name :primitive word))
+  :binds ((name :primitive word)
+          (name-of collection)) ;; the named-objects it names
   :index (:permanent
           :special-case
           ;; needed because these are extensively cross-linked to the
@@ -46,6 +49,19 @@
           :index index/name-word
           :reclaim reclaim/name-word))
 
+
+;;--- Linking name words to named-objects (companies, people, etc.)
+
+(defun link-named-object-to-name-word (object nw)  
+  (let ((collection (value-of 'name-of nw category::name-word)))
+    (push-debug `(,object ,nw ,collection))
+    (break "~&~%Linking name-word ~a~%  to object ~a~%  the collection ~
+            is ~a" nw object collection)
+    (if collection
+      (then
+       (add-item-to-collection object collection))
+      (let ((c (define-collection `(,object) category::named-object)))
+        (bind-variable 'name-of c nw category::name-word)))))
 
 
 ;;--- sort routine
