@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: dispatch.lisp 359 2010-08-13 20:13:38Z dmcdonal $
 ;;; 
 ;;;     File:  "dispatch"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  September 2011
+;;;  Version:  0.2 February 2013
 
 ;; initiated 6/15/94 v2.3.  9/26 Fixed :multiple-initial-edges bug
 ;; 9/13/95 fleshed out stub for hook being a cfr. 9/15 fixed a bug.
@@ -17,6 +16,8 @@
 ;; category so that we can write form rules against these if we want.
 ;; 0.1 (8/28/11) Cleaned up. Requiring :single-span to allow hook.
 ;;     (9/12/11) Added function for creating the obvious edge.
+;; 0.2 (2/11/13) Adding check for an ordinary word needing to be
+;;      reanalyzed when it appears in all caps or capitalized
 
 (in-package :sparser)
 
@@ -44,12 +45,28 @@
 
     (case layout
       (:single-span
+       ;; This check probably dates from the original DM&P work
        (when (eq (edge-category first-edge)
                  (category-named 'segment))
          ;; then it's a dummy and we have to look underneath it
          (setq first-edge (leftmost-daughter-edge first-edge)
                layout (analyze-segment-layout
-                       pos-after-open pos-before-close t))))
+                       pos-after-open pos-before-close t)))
+
+       ;; Some stock tickers and such are ordinary words and could
+       ;; be captured as such. But they will be capitalized and
+       ;; we can overrule that with another edge
+       (push-debug `(,first-edge))
+       (when (one-word-long? first-edge)
+         (when (eq (pos-capitalization (pos-edge-starts-at first-edge))
+                   :all-caps)
+           ;; That's enough evidence to recast the edge and take it
+           ;; as an acronym or ticker symbol, but we'll leave that
+           ;; to context to determine which one
+           (unless (eq (edge-form first-edge) category::proper-name)
+             ;; if so, then there's probably a hook for it and
+             ;; we leave it alone.
+             (convert-ordinary-word-edge-to-proper-name first-edge)))))
 
       (:contiguous-edges
        ;; ?? isn't this redundant because the interior will
@@ -76,7 +93,8 @@
       (otherwise
        (push-debug `(,pos-before-open ,pos-after-open
                      ,pos-before-close ,pos-after-close))
-       (break "Unexpected layout: ~a" layout)))
+       (break "Unexpected layout between paired punctuation: ~a" layout)))
+
 
     (flet ((vanila-edge (pos-before-open pos-after-close type)
              (make-edge-over-long-span
@@ -99,8 +117,12 @@
                       (otherwise
                        (break "unexpected type: ~a" type)))
               :rule  :default-edge-over-paired-punctuation)))
+
       (if (and first-edge
                (eq layout :single-span))
+        ;; Look for an action that's been defined for the category
+        ;; on this edge for this type of punctuation.
+        ;; See define-interior-action in analyzers/traversal/form.lisp
         (let* ((label (edge-category first-edge))
                (hook
                 (cadr
@@ -113,23 +135,28 @@
                            (otherwise
                             (break "unexpected type: ~a" type)))
                          (plist-for label)))))
+
           (if hook
             (then
-              (tr :paired-punct-hook hook)
-              (if (cfr-p hook)
-                (do-paired-punct-cfr hook first-edge
-                                     pos-before-open pos-after-close)
-                (funcall hook
-                         first-edge
-                         pos-before-open pos-after-close
-                         pos-after-open pos-before-close 
-                         layout)))
+             (tr :paired-punct-hook hook)
+             (if (cfr-p hook)
+               (do-paired-punct-cfr hook first-edge
+                                    pos-before-open pos-after-close)
+               (funcall hook
+                        first-edge
+                        pos-before-open pos-after-close
+                        pos-after-open pos-before-close 
+                        layout)))
             (else
-              (tr :no-paired-punct-hook label)
-              (vanila-edge pos-before-open pos-after-close type))))
+             ;; There's no special action for this edge label
+             ;; so just make the default edge
+             (tr :no-paired-punct-hook label)
+             (vanila-edge pos-before-open pos-after-close type))))
         (else
-          (tr :pp-not-single-span layout)
-          (vanila-edge pos-before-open pos-after-close type))))))
+         ;; A more complex layout, which doesn't have a scheme for
+         ;; hooks yet.
+         (tr :pp-not-single-span layout)
+         (vanila-edge pos-before-open pos-after-close type))))))
 
 
 
