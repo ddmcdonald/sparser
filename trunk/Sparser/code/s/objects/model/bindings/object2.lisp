@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  2.0 July 2009
+;;;  version:  2.1 Feburary 2013
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -31,7 +31,8 @@
 ;; 2.0 (7/14/09) Fan-out from new way of indexing variables because they're now lexical
 ;; 2.1 (1/18/11) Changed value-of to have an optional category argument to overrule 
 ;;      the category inferred from the individual. If the variable doesn't exist
-;;      when the category is specified then we signal an error.
+;;      when the category is specified then we signal an error. 2/13/13 added an
+;;      argument test to value-of
 
 (in-package :sparser)
 
@@ -52,6 +53,8 @@
 (defun value-of (var-name individual &optional specified-category)
   ;; convenient version for using in code since the variable
   ;; is dereferenced from its name here inside the routine
+  (when (and specified-category (symbolp specified-category))
+    (error "The category argument to value-of should be a real category object"))
   (typecase individual
     ((or individual psi)
      (let* ((category (or specified-category
