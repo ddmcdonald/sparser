@@ -105,10 +105,16 @@
               (return)))))
 
       (setq words (nreverse words))
+
+      ;; remove things swept up that don't belong
       (when (eq (car words) *source-start*)
-        (setq words (cdr words))
-        (unless (> (length words) 1) ;; false alarm
-          (return-from collect-no-space-sequence-into-word nil)))
+        (setq words (cdr words)))
+      (loop for w in words
+        when (punctuation? w) ;; ,"
+        do (setq words (remove w words :test #'eq)))
+
+      (unless (> (length words) 1) ;; false alarm
+        (return-from collect-no-space-sequence-into-word nil))
 
       (tr :ns-parsing-between pos-before next-position)
       
@@ -146,33 +152,13 @@
 
 ;; New scheme
 (defun reify-ns-name-and-make-edge (words pos-before next-position)
-  (push-debug `(,words ,pos-before ,next-position))
   ;; We make an instance of a spelled name with the words as its sequence.
   ;; We make a rule that treats the pnames of the words as a polyword,
   ;; and we make a category for that rule with that same spelling,
   ;; form is 'proper-name'.  Something makes me think this could
   ;; be problem down the line, but we can deal with it when it emerges.
-
-  ;; This part is take from make/uncategorized-name
-  (let ((sequence (define-sequence words category::word))
-        (name (make-unindexed-individual category::spelled-name)))
-    (bind-variable :name/s sequence name category::spelled-name)
-
-    ;; This code is frightfully low-level in its choice of operations.
-    ;; //// We need to find other uses for this pattern. 
-    (let* ((words-string (apply #'string-append (mapcar #'word-pname words)))
-           (polyword (define-polyword words-string))
-           (concatenated-name
-            (intern words-string *category-package*))
-           (category (find-or-make-category-object
-                      concatenated-name :referential))
-           (rule (define-cfr category `(,polyword)
-                   :form category::proper-name
-                   :referent name
-                   ;; If we include a :source we can assign it
-                   ;; to a particular grammar module, but default
-                   ;; is ok.
-                   :schema (get-schematic-word-rule :proper-noun))))
+  (multiple-value-bind (category rule referent)
+                       (reify-spelled-name words)
       (let ((edge
              (make-edge-over-long-span
               pos-before
@@ -180,9 +166,10 @@
               category
               :rule rule
               :form category::proper-name
-              :referent name
+              :referent referent
               :words words)))
-        edge))))
+        edge)))
+
 
 
  
