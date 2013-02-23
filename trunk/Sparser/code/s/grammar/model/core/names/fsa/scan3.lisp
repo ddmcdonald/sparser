@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  3.3 January 2013
+;;;  Version:  3.3 February 2013
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -37,6 +37,7 @@
 ;;     (5/29) changed the capitalization-of-the-next-word check in the hyphen routine
 ;;      because reacted to the word rather than the position (never revised?)
 ;; 3.3 (1/21/13) Blocking continuaton over "of" or "and" when doing DM&P
+;;     (2/11/13) Trying to make it do Arabic names. 
 
 (in-package :sparser)
 
@@ -448,29 +449,40 @@
   ;; at this position. We look ahead to the word after that
   ;; to check whether it is uppercase, in which case we return t.
   (let* ((next-pos (chart-position-after pos-before)))
-    (unless (pos-terminal next-pos)
-      (let ((value-returned
-             (catch :position-scan-terminates-PNF
-               (scan-next-position))))
-        (when (eq value-returned :end-the-scan)
-          (break "Stub: Lookahead over the lowercase word ~
-                  that follows~%a capitalized sequence~
-                  has gotten ':end-the-scan' returned ~
-                  to it.~%Decide where to go next.~%"))))
+    (flet ((scan-ahead-with-check ()
+              (let ((value-returned
+                     (catch :position-scan-terminates-PNF
+                       (scan-next-position))))
+                (when (eq value-returned :end-the-scan)
+                  (break "Stub: Lookahead over the lowercase word ~
+                   that follows~%a capitalized sequence~
+                   has gotten ':end-the-scan' returned ~
+                   to it.~%Decide where to go next.~%")))))
 
-    (case (pos-capitalization next-pos)
-      (:lower-case nil)
-      (:digits nil)
-      (:punctuation nil)
-      (otherwise t ))))
+      (unless (pos-terminal next-pos)
+        (scan-ahead-with-check))
+
+      (when (eq (pos-terminal next-pos) (word-named "-"))
+        ;; skip over hyphens
+        ;; /// should presumably incorporate a no-space check
+        (setq next-pos (chart-position-after next-pos))
+        (unless (pos-terminal next-pos) ;; very lazy today
+          (scan-ahead-with-check)))        
+      
+      (case (pos-capitalization next-pos)
+        (:lower-case nil)
+        (:digits nil)
+        (:punctuation nil)
+        (otherwise t )))))
 
 
 
 (defun lc-word-that-may-extend-cap-seq? (word)
   ;; Called from boundary-continuation
-  (unless *do-strong-domain-modeling*
-    (or (eq word (word-named "of"))
-        (eq word (word-named "and")))))
+  (or (unless *do-strong-domain-modeling*
+        (or (eq word (word-named "of"))
+            (eq word (word-named "and"))))
+      (eq word (word-named "al"))))
 
 
 (defun lc-non-boundary-word-that-may-extend-cap-seq? (word)

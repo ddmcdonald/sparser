@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 1993-2005  David D. McDonald  -- all rights reserved
+;;; Copyright (c) 1993-2005.2013  David D. McDonald  -- all rights reserved
 ;;; extensions Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "classify"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.10 October 2009
+;;;  version:  1.10 February 2013
 
 ;; initiated 5/15/93 v2.3 to fit PNF paper
 ;; 0.1 (6/10) tweeked judgement over single words
@@ -47,6 +47,8 @@
 ;;      was a proper-name so that downstream tests would have a filled form field
 ;;      without worring about wanting a richer classification.
 ;;     (10/12/09) Gave could-be-the-start-of-a-sentence a real definition.
+;;     (2/13/13) Removed version of could-be-the-start-of-a-sentence in this file
+;;      in favor of the one in rules/CA/first-item
 
 (in-package :sparser)
 
@@ -161,46 +163,41 @@
 
     (tr :pnf/classifying-one-word-span word)
 
+    ;; Do we have to install the terminal edge(s)?
     (case status
       ;; has to have some status because we scanned it in order 
       ;; to reach this point
-      ((or :PNF-checked
-	   :pnf-checked)   ;; Toronto in "(Toronto)"
+      (:pnf-checked  ;; Toronto in "(Toronto)"
        (unless (ev-top-node ev)
          ;; check whether this is the second time around and
          ;; edges were installed then.  "Is Appletalk"
          (install-terminal-edges word position next-position)))
-      (:preterminals-installed  ;; Dalton in "Messrs. Dalton and ..."
-       )
+      (:preterminals-installed)  ;; Dalton in "Messrs. Dalton and ..."
       (otherwise
        (break "Unexpected value for status: ~a~%Expected :pnf-checked  ~
                or :preterminald-installed" status)))
 
     (if (ev-top-node ev)
       (then ;; there are some edges 
-        (sortout-edges-over-single-cap-word position next-position))
+       (tr :pnf/edges-over-word word ev)
+       (sortout-edges-over-single-cap-word position next-position))
       (else
-        ;; No edges.
-        ;; The word is capitalized, so the question is whether it's a
-        ;; function word (and then maybe we also check whether we're
-        ;; function beginning of the sentence).  If it is, we return
-        ;; function to the fsa driver that we're rejecting this one
-        ;; as a name and the regular processing should get a crack at it.
-        (if (function-word? word)
-          nil
-          (if (unknown-word? word)
-            (if *treat-single-Capitalized-words-as-names*
-              (do-single-word-name word position next-position)
+       ;; No edges.
+       ;; The word is capitalized, so the question is whether it's a
+       ;; function word (and then maybe we also check whether we're
+       ;; function beginning of the sentence).  If it is, we return
+       ;; function to the fsa driver that we're rejecting this one
+       ;; as a name and the regular processing should get a crack at it.
+       (tr :pnf/no-edges-over-word word)
+       (if (function-word? word)
+         nil
+         (when (unknown-word? word)
+           (if *treat-single-Capitalized-words-as-names*
+             (do-single-word-name word position next-position)
 
-              (if (could-be-the-start-of-a-sentence position)
-                nil
-                (span-as-capitalized-word word position next-position)))))))))
-
-(defun could-be-the-start-of-a-sentence (position)
-  (cond
-    ((eq (word-before position) word::period) t)
-    ((eq (word-before position) word::source-start) t)
-    (t nil)))
+             (if (could-be-the-start-of-a-sentence position)
+               nil
+               (span-as-capitalized-word word position next-position)))))))))
 
 
 ;;;---------------------
@@ -208,18 +205,20 @@
 ;;;---------------------
 
 (defun do-single-word-name (word position next-position)
-  ;; we know that there's no individual with this name yet
+  ;; Called from c&r-single-word
+  ;; We know that there's no individual with this name yet
   ;; because if there were we'd have a name-word edge instead
   ;; of this unknown word, so we go ahead and create the individual
   ;; (of type "uncategorized-name") that has this word as their name
 
   (let ((name (make-unindexed-individual category::uncategorized-name))
         (name-word (make-name-word-for-unknown-word-in-name word position)))
+    (tr :pnf/items-for-unknown-word word name name-word)
 
     (let ((sequence (define-sequence (list name-word) category::name-word)))
 
       (bind-variable 'name/s sequence name)
-      (index/uncategorized-name name (list name-word))
+      (index/uncategorized-name name sequence)
 
       (let ((edge (edge-over-proper-name
                    position next-position
@@ -261,7 +260,6 @@
   ;; If it is, then the fsa has succeeded and we return the edge.
   ;; If it isn't we return nil and some other fsa or rule gets
   ;; a crack at it.
-
   (let ((ev (pos-starts-here position)))
     (if (= 1 (ev-number-of-edges ev))
       (sortout-single-edge-over-capitalized-word ev position)
@@ -272,6 +270,32 @@
         (else
           (sortout-multiple-edges-over-single-capitalized-word position next-position))))))
 
+;;--- one edge over the word
+
+(defun sortout-single-edge-over-capitalized-word (ev position)
+  ;; subroutine of Sortout-edges-over-single-cap-word
+  (let ((edge (ev-top-node ev)))
+    (cond
+     ((or (eq (edge-form edge) category::proper-noun)
+          (eq (edge-form edge) category::proper-adjective))
+
+      (let ((new-edge (dereference-proper-noun edge)))
+        ;; Is this the name of someone/something?  If so,
+        ;; we should respan it with an edge with their
+        ;; category -- the "new-edge". If it isn't, then
+        ;; it's arguably not a "name" in the sense of being
+        ;; something that PNF was designed to look for
+        ;; (months fall into this category) and we should
+        ;; return nil.                      
+        (or new-edge
+            nil )))
+
+     ;; else the edge might be over a function word that's
+     ;; used as a literal in rules
+     ((function-word? (pos-terminal position))
+      nil )
+
+     (t (other-single-cap-words edge)))))
 
 ;;--- subroutine for the 2 edges case
 
@@ -279,7 +303,6 @@
   ;; subroutine of Sortout-edges-over-single-cap-word
   (let ((edges (edges-between position next-position))
         good-edge  literal  name-word )
-
     (cond
      ;; Check if one of them is a literal and if so take the other.
      ((or (and (eq :literal-in-a-rule (edge-right-daughter (first edges)))
@@ -329,7 +352,6 @@
   ;; subroutine of Sortout-edges-over-single-cap-word
   (let* ((edges-including-literals (edges-between position next-position))
          (edges (remove-literals-from-list-of-edges edges-including-literals)))
-
     (if (edges-all-chain position :start)
       ;; if one is a respan of the other, check for various anticipated cases
       (let ((top-edge (ev-top-node (pos-starts-here position))))
@@ -362,33 +384,6 @@
     (nreverse filtered-list)))
 
 
-
-;;--- one edge over the word
-
-(defun sortout-single-edge-over-capitalized-word (ev position)
-  ;; subroutine of Sortout-edges-over-single-cap-word
-  (let ((edge (ev-top-node ev)))
-    (cond
-     ((or (eq (edge-form edge) category::proper-noun)
-          (eq (edge-form edge) category::proper-adjective))
-
-      (let ((new-edge (dereference-proper-noun edge)))
-        ;; Is this the name of someone/something?  If so,
-        ;; we should respan it with an edge with their
-        ;; category -- the "new-edge". If it isn't, then
-        ;; it's arguably not a "name" in the sense of being
-        ;; something that PNF was designed to look for
-        ;; (months fall into this category) and we should
-        ;; return nil.                      
-        (or new-edge
-            nil )))
-
-     ;; else the edge might be over a function word that's
-     ;; used as a literal in rules
-     ((function-word? (pos-terminal position))
-      nil )
-
-     (t (other-single-cap-words edge)))))
 
 
 (defun other-single-cap-words (edge)

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-1995,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2011-2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "record"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  1.4 November 2012
+;;;  Version:  1.5 February 2013
 
 ;; initiated 5/15/93 v2.3, populated 6/7, added recording of single
 ;; word names 6/10. added *no-referent-calculations* option 1/6/94.
@@ -17,6 +17,7 @@
 ;; 1.3 (5/2) added 'collection' case
 ;; 1.4 (8/14/11) added locations.  Added person-name/first-last and
 ;;      commented out hurricane to quiet the compiler.
+;; 1.5 (2/14/13) Makng named-object's for unccategorized-names.
 
 (in-package :sparser)
 
@@ -42,7 +43,8 @@
 ;;            (category::hurricane
 ;;             (find/hurricane-with-name name))
 
-            (category::uncategorized-name nil) ;; done below
+            (category::uncategorized-name
+             (find/named-object-with-name name))
 
             (category::collection
              (establish-referents-of-collection-of-names name))
@@ -72,7 +74,14 @@
            (make/person-with-name name))
           (category::name-of-location (make/location-with-name name))
 ;;          (category::hurricane (make/hurricane-with-name name))
-          (otherwise ;; category::uncategorized-name
+          (category::uncategorized-name
+           (make/named-object-with-name name))
+          (otherwise
+           (push-debug `(,category ,name))
+           (error "New category: ~a" category)))))))
+
+         
+#| Old scheme for what to do with uncategorized names
            (if (some-name-element-is-new? name)
              name
              (let ( referent )
@@ -80,7 +89,7 @@
                  (dereference-shortened-name name))
                (if referent
                  (cons referent category)
-                 name )))))))))
+                 name )))  |#
         
    
 
