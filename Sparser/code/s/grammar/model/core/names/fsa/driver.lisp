@@ -119,7 +119,8 @@
      (set-status :pnf-preempted starting-position)
     nil )
    (t
-    (set-status :PNF-checked starting-position)
+    (set-status :PNF-checked
+                starting-position)
     (let ((*pnf-has-control* t)
           (*pnf-scan-starts-here* starting-position)
           (*pnf-scan-respects-segment-boundaries* t))

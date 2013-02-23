@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "do transitions"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.9 August 2011
+;;;  version:  1.10 February 2013
 
 ;; -.3 (12/17/93) added a catch to handle the fact that the capitalization of
 ;;      headers will catch them up in the initial scan.  (12/22) fixed a ramification
@@ -40,6 +39,8 @@
 ;;     return (nil instead of the edge) from :suffix-flushed case in classify-&-
 ;;     record. 8/15 Installed named-location cases. 8/28 Modified do-referent-and-edge
 ;;     to incorporate "the" preceding location names.
+;; 1.10 (2/13/13) Reworked classify-&-record-span to accept named objects and
+;;     not just names in what it gets from examine-capitalized-sequence.
 
 (in-package :sparser)
 
@@ -69,10 +70,10 @@
   (when *of-appears-within-pnf-scan*
     (setq *of-appears-within-pnf-scan* nil))
     
-    ;; run a version of the parser over the delimited span (respecting 
-    ;;its end-point) and then see if that got anything.  Called from
-    ;; Classify-and-record-name whenever the span involves more than
-    ;; one word and there isn't a single span over them. 
+  ;; run a version of the parser over the delimited span (respecting 
+  ;;its end-point) and then see if that got anything.  Called from
+  ;; Classify-and-record-name whenever the span involves more than
+  ;; one word and there isn't a single span over them. 
     
   (let ((premature-termination?
          ;; in the course of the parse we can encounter words like Header
@@ -123,22 +124,37 @@
 
 (defun classify-&-record-span (starting-position ending-position)
 
+  ;; Called from classify-and-record-name
   ;; the span has had its word actions run by the embedded parsing
-  ;; and consists of more than one span.  Now we run the transition
+  ;; and consists of more than one item.  Now we run the transition
   ;; net over that sequence of words and edges. If the net accepts
   ;; the sequence it will return a final state, and we use that
   ;; to establish a referent and construct the edge over the whole
   ;; capitalized sequence. 
 
   (let ((result
-         (catch :leave-out-prefix
-           (examine-capitalized-sequence starting-position
-                                         ending-position))))
+         (catch :found-the-named-entity
+           (catch :leave-out-prefix
+             (examine-capitalized-sequence starting-position
+                                           ending-position)))))
     (if result
       (typecase result
         (individual  ;; i.e. a name -- this is the standard return value
-         (do-referent-and-edge result
-                               starting-position ending-position))
+         (case (cat-symbol (itype-of result))
+           ((or category::name
+                category::uncategorized-name
+                category::company-name)
+            (do-referent-and-edge result
+                                  starting-position ending-position))
+           (category::named-object
+            ;; referent alreay established
+            (push-debug `(,result ,starting-position ,ending-position))
+            (break "success"))
+           (otherwise
+            (push-debug `(,result ,starting-position ,ending-position))
+            (error "examine-capitalized-sequence returned a new category ~
+                    of individual: ~a"  (itype-of result)))))
+
         (cons
          (if (eq (first result) :suffix-flushed)
            (let ((first-edge

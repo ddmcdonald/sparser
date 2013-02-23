@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "subseq ref"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.3 February 2005
+;;;  version:  0.3 February 2013
 
 ;; broken out from [names:fsa:record] 6/8/93 v2.3
 ;; (1/7/94) patched around earlier indexing bug in Item-in-a-known-name
@@ -14,6 +14,8 @@
 ;; 0.3 (12/22) fixed bug in 10/5 work
 ;;     (2/2/05) switched Subsequent-reference-off-name-word to look at ordinal bindings
 ;;      rather than position-in-a-sequence
+;;     (2/13/13) Added a routine to use machinery like this off a directly
+;;      linked name-word. Adapting dereference-proper-noun as well
 
 (in-package :sparser)
 
@@ -22,7 +24,7 @@
 ;;;--------------
 
 (defun dereference-proper-noun (edge)
-  ;; called from Sortout-edges-over-single-cap-word
+  ;; called by sortout-single-edge-over-capitalized-word
   ;; The form label on this edge is proper-noun. This means it's
   ;; probably a single word reference to an individual we already
   ;; know. If we confirm that, we construct a new edge with the
@@ -30,31 +32,31 @@
   ;; return nil.
   (let ((referent (edge-referent edge)))
     (when (individual-p referent)
-      (let ((bindings (indiv-bound-in referent)))
-
-        (multiple-value-bind (category its-referent rule)
-                             ;; checkout various subsequent reference
-                             ;; patterns
-                             (subseqent-reference-by-shortened-name
-                              referent ;;bindings
-                              )
-          (when category
-            (edge-over-proper-name
-             ;; this isn't the best fit for arguments, but
-             ;; it's tricky to argue that these variations should
-             ;; be endlessly promulgated
-             (pos-edge-starts-at edge)
-             (pos-edge-ends-at edge)
-             category
-             category::np
-             its-referent
-             rule
-             (list edge))))))))
+      (multiple-value-bind (category its-referent rule)
+                           ;; checkout various subsequent reference patterns
+                           (subseqent-reference-by-shortened-name
+                              referent)
+        (when category
+          (let ((new-edge
+                 (edge-over-proper-name
+                  ;; this isn't the best fit for arguments, but
+                  ;; it's tricky to argue that these variations should
+                  ;; be endlessly promulgated
+                  (pos-edge-starts-at edge)
+                  (pos-edge-ends-at edge)
+                  category
+                  category::np
+                  its-referent
+                  rule
+                  (list edge))))
+            (tr :found-subsequent-reference 
+                edge referent its-referent new-edge)
+            new-edge))))))
 
 
 
 (defun dereference-shortened-name (name)
-  ;; called from Establish-referent-of-PN
+  ;; called from Establish-referent-of-PN in the old scheme. OBE?
   (unless (itype name 'uncategorized-name)
     (break "An individual other than an uncategorized name ~
             passed in:~%~A~%" name))
@@ -78,51 +80,51 @@
 ;;; the workhorses
 ;;;----------------
 
-(defun subseqent-reference-by-shortened-name (i)  ;;bindings)
+(defun subseqent-reference-by-shortened-name (i)
   (case (cat-symbol (itype-of i))
     (category::name-word
      (subsequent-reference-off-name-word i))
     (otherwise nil)))
 
-
 (defun subsequent-reference-off-name-word (nw)
+  (push-debug `(:subseq-ref ,nw))
   (let ((pos-in-sequence-bindings
-         (bound-in nw :super-category 'ordinal
-                   :all t)))
-
-    (when pos-in-sequence-bindings
-      (let ( pos-in-sequence  sequence  person-name  co-name  name
-                              person  company )
+         (bound-in nw :super-category 'ordinal :all t))
+        (direct-reference
+         (when (has-binding nw :variable 'name-of)
+           (value-of 'name-of nw))))
+    (or direct-reference
+        (when pos-in-sequence-bindings
+          (let ( pos-in-sequence  sequence  person-name  co-name  name
+                 person  company )
         
-        (dolist (b pos-in-sequence-bindings)
-          (setq pos-in-sequence (binding-body b)
-                sequence (value-of 'sequence pos-in-sequence))
-          (when sequence ;; check all the cases
-            (setq person-name (bound-in sequence :body-type 'person-name)
-                  co-name (bound-in sequence :body-type 'company-name)
-                  name (bound-in sequence :body-type 'uncategorized-name))))
+            (dolist (b pos-in-sequence-bindings)
+              (setq pos-in-sequence (binding-body b)
+                    sequence (value-of 'sequence pos-in-sequence))
+              (when sequence ;; check all the cases
+                (setq person-name (bound-in sequence :body-type 'person-name)
+                      co-name (bound-in sequence :body-type 'company-name)
+                      name (bound-in sequence :body-type 'uncategorized-name))))
 
-        (cond ((and person-name co-name)
-               (break "Stub: name word is part of both a person and ~
-                       a company:~%~A~%" nw))
-              (person-name
-               (setq person (bound-in person-name :body-type 'person))
-               (when person
-                 (values category::person person
-                         :name-word-somewhere-in-person-name)))
-              (co-name
-               (setq company (bound-in co-name :body-type 'company))
-               (when company
-                 (values category::company company
-                         :name-word-somewhere-in-company-name)))
-              (name
-               (values category::uncategorized-name name
-                       :name-word-somewhere-in-name)))))))
+            (cond ((and person-name co-name)
+                   (break "Stub: name word is part of both a person and ~
+                           a company:~%~A~%" nw))
+                  (person-name
+                   (setq person (bound-in person-name :body-type 'person))
+                   (when person
+                     (values category::person person
+                             :name-word-somewhere-in-person-name)))
+                  (co-name
+                   (setq company (bound-in co-name :body-type 'company))
+                   (when company
+                     (values category::company company
+                             :name-word-somewhere-in-company-name)))
+                  (name
+                   (values category::uncategorized-name name
+                           :name-word-somewhere-in-name))))))))
             
 
     
-
-
 #|  (if (cdr pos-in-sequence)
       (break "more than one")
       (setq pos-in-sequence
@@ -151,8 +153,6 @@
                   :name-word-somewhere-in-name))))) |#
         
 
-
-
 #|  old version
 (defun subseqent-reference-by-shortened-name (bindings)
   (let ( category  its-referent  rule )
@@ -177,9 +177,7 @@
 
               (values nil nil nil)))))))) |#
 
-
-
-(defun item-in-a-known-name (bindings)
+(defun item-in-a-known-name (bindings) ;; n.b. older style
   (let ((sequence-binding
          (find/binding-of-variable 'item bindings
                                    category::sequence)))
@@ -201,8 +199,6 @@
             (values category::name
                     name
                     :item-anywhere-in-name )))))))
-
-
 
 (defun last-name-of-a-person (bindings)
   ;; given a description of a person's name in these bindings,
@@ -236,8 +232,6 @@
           ;; the list of bindings didn't include one for a last name
           (values nil nil nil))))))
 
-
-
 (defun first-word-of-a-company (bindings)
   (let ((company-entries (discourse-entry category::company)))
     (when company-entries
@@ -264,6 +258,7 @@
                           :first-word-of-a-company))))))))))
 
 
+
 (defun find-companies-with-name (name)
   (let ( indiv-bound-to companies )
     (dolist (b (indiv-bound-in name))
@@ -272,3 +267,34 @@
         (when (member category::company (indiv-type indiv-bound-to))
           (push indiv-bound-to companies))))
     companies ))
+
+
+
+
+;;;----------------------------
+;;; directly linked name-words
+;;;----------------------------
+
+(defun item-already-linked-to-entity (items)
+  ;; called from categorize-and-form-name to get the case where
+  ;; we have an acronym or other sort of abbreviated form that
+  ;; directly connects to the entity, short-circuiting the path
+  ;; via its (usually full) name.  
+  ;;   This will be indicated by a name-word that's been linked
+  ;; to the entity. 
+  ;;   If there is more than one name word then presumably that's
+  ;; not a case for us, though the question of partial names
+  ;; remains, and it isn't clear (2/15/13) that that's being handled
+  (push-debug `(,items))
+  (let ((name-words
+         (loop for item in items
+           when (and (individual-p item)
+                     (itypep item 'name-word)
+                     item)
+           collect it)))
+    nil ;; punt for just now
+    #+ignore(when (= 1 (length name-words))
+      (break "this one"))))
+
+                                      
+

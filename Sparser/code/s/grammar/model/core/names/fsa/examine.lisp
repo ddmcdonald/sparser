@@ -162,7 +162,8 @@
                             (return-from check-cases nil))
                       (setq and count)))
                   
-                  (word::|the|
+                  ((or word::|the|
+                       word::|The|)
                     (if items
                       ;; Then it's not the first thing in the sequence
                    ;; s`o we have to throw out the prefix in front of it
@@ -408,6 +409,10 @@
         
         (when items
 
+          (setq items (remove-duplicates items :test #'eq))
+          ;; Need to review the item accumulator to see why name-words
+          ;; are being accumulated twice
+
           (when location
             (when (= count (caar location))
               (setq location-head (cdar location))))
@@ -431,20 +436,23 @@
 
 
 
-
-
 (defun categorize-and-form-name (items name-state
                                  &-sign initials? person-version
                                  inc-term? of and the generic-co co-activity
                                  koc? ordinal location-head hurricane)
-  (declare (ignore hurricane))
+  (declare (ignore hurricane name-state))
 
-  ;; broken out as a subroutine just because it makes the forms shorter
-  (declare (ignore name-state))
-  (if of
+  ;; Analyze the evidence and determine what sort of name this is
+  ;; and make it [[ why not look for existing one? ]]. 
+  ;; The referent of the edge is determined by our caller up in
+  ;; classify-&-record-span using the fn do-referent-and-edge
+
+  (cond
+   ((item-already-linked-to-entity items)) ;; throws if it succeeds
+   (of
     (analyze-structure-of-name-with-of items of
-                                       &-sign initials? inc-term?)
-
+                                       &-sign initials? inc-term?))
+   (t
     ;;--- examine evidence for a way to categorize the name
     (let ( name
            (category
@@ -486,6 +494,15 @@
               ;; "Grumman Hill Investments II L.P."
               (setq category category::name)))))
 
+      (when the
+        (when (= the 1) ;; it was first. Drop it from the items
+          ;; and if it's really part of the name something can
+          ;; put it back.  This will make for an odd relationship
+          ;; with the start position of the edge that needs to be
+          ;; sorted out at some point. 
+          ;;//// look for the similar cases and rationalize
+          (setq items (cdr items))))
+
       (when (title-elements-in-items items)
         (multiple-value-bind (title-elements name-elements)
                              (split-off-title-from-name items)
@@ -511,13 +528,13 @@
 
       (setq name
             (ecase (cat-symbol category)
-              (category::name
-;;                (when (and (word-p (first items))
-;;                           (rule-set-for (first items))) ;; e.g. "The"
-;;                  (pop items))
-;; This also takes out the "South" of "South Lee", which has a completely
-;; different basis than "The" or other function words
-               (make-uncategorized-name-from-items items :and and))
+              (category::name 
+               ;; ignoring the :and for now, though that would go through
+               ;; (make-uncategorized-name-from-items items :and and)
+               (or (find/uncategorized-name items)
+                   (make/uncategorized-name items)))
+
+              ;; Why don't these do find's first?
               (category::person-name
                (make-person-name-from-items
                 items :version person-version :and and))
@@ -534,7 +551,7 @@
 ;;     Hurricane SL development interrupted. Should design and build the
 ;;   general pattern for this instead. Perhaps some code-generating macros
               ))
-      name )))
+      name ))))
 
 
 
