@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2012 David D. McDonald
+;;; Copyright (c) 2010-2013 David D. McDonald
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  December 2012
+;;;  Version:  February 2013
 
-;; Extracted from one-offs/comlex 12/3/12
+;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 
 (in-package :sparser)
 
@@ -202,6 +202,24 @@ places. ]]
          (setup-verb lemma clauses))
        (brackets-for-adjective-adverb-noun-verb lemma))
 
+      ((equal combinations '(adjective noun prep)) 
+       (when *edge-for-unknown-words*
+         ;; ignoring preposition -- first example is "plus" in the
+         ;; phrase "in Nigeria plus numerous European states"
+         ;; where it's effectively a conjunction
+         (setup-adjective lemma clauses)
+         (setup-common-noun lemma clauses))
+       (brackets-for-adjective-noun lemma))
+
+      ((equal combinations '(adjective noun prep sconj verb)) 
+       (when *edge-for-unknown-words*
+         (setup-adjective lemma clauses)
+         (setup-adverb lemma)
+         (setup-common-noun lemma clauses)
+         ;; sconj
+         (setup-verb lemma clauses))
+       (brackets-for-adjective-noun-sconj-prep-verb lemma))
+
       ((equal combinations '(adverb noun))
        (when *edge-for-unknown-words*
          (setup-adverb lemma)
@@ -220,15 +238,6 @@ places. ]]
          (setup-common-noun lemma clauses)
          (setup-verb lemma clauses))
        (assign-noun-verb-brackets lemma clauses))
-
-      ((equal combinations '(adjective noun prep sconj verb)) 
-       (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-adverb lemma)
-         (setup-common-noun lemma clauses)
-         ;; sconj
-         (setup-verb lemma clauses))
-       (brackets-for-adjective-noun-sconj-prep-verb lemma))
 
       
 
