@@ -29,7 +29,9 @@
 ;;      (1/9/96) added check for an interrupted embedded scan.
 ;; 2.15 (7/23/09) Added clear-debug.
 ;; 2.16 (2/11/13) Broke out the 'real' per article initializatin so it
-;;       can be called by itself.
+;;       can be called by itself. (2/18/13) broke out the individual and 
+;;       history cleaner for the same reason. Gating that on the global
+;;       bound in do-document-as-stream-of-files
 
 (in-package :sparser)
 
@@ -65,22 +67,32 @@
     ;(when *track-salient-objects*
     ; (initialize-salient-object-record))
 
-    (reclaim-temporary-individuals)
-    ;; the reap is ordered before the initialization
-    ;; because it uses the discourse history to tell it
-    ;; what to reap
-    (initialize-discourse-history)
+    (unless *accumulate-content-across-documents*
+      (clean-out-history-and-temp-objects))
 
     #+mcl 
     (when *display-text-to-special-window*
       (clear-special-text-display-window))
 
+    ;; These flags are grammar modules
     (when *paragraph-detection*
       (initialize-paragraph-state))
     (when *recognize-sections-within-articles*
       (initialize-section-state)))
 
   (run-real-per-article-initializations))
+
+
+;;;--------------------------------------
+;;; Clearing the memory of past analyses
+;;;--------------------------------------
+
+(defun clean-out-history-and-temp-objects ()
+  ;; the reap is ordered before the initialization
+  ;; because it uses the discourse history to tell it
+  ;; what to reap
+  (reclaim-temporary-individuals)
+  (initialize-discourse-history))
 
 
 ;;;----------------------------------------
