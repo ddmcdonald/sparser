@@ -22,6 +22,7 @@
 ;;      the document stream in the drivers special so it could act as a flag
 ;;      downstream indicating that we're continuing from one document to the
 ;;      next without reinitializing the chart and other resources.
+;;     (2/18/13) Added binding of *accumulate-content-across-documents*
 
 (in-package :sparser)
 
@@ -174,8 +175,11 @@
   ;; a toplevel call. In this case all of the files are to be
   ;; interpreted as parts of a single document, i.e. initialization
   ;; and the call to do-article only occur once.
+  (clean-out-history-and-temp-objects)
+    ;; normally done per-run, now we do it beween runs of whole doc streams
   (run-real-per-article-initializations) ;; may react differently within the loop
   (let ((*current-document-stream* ds-designator)
+        (*accumulate-content-across-documents* t)
         (file-list
          (cond
           ((ds-directory ds-designator)
@@ -198,7 +202,8 @@
           (t (break "ill-formed document stream: ~A~
                      ~% no directory, substreams, or file-list"
                     ds-designator)))))
-    (declare (special *current-document-stream*))
+    (declare (special *current-document-stream*
+                      *accumulate-content-across-documents*))
 
     (initialize-article-resource)
     (initialize-section-resource)
@@ -207,7 +212,7 @@
     ;; [sfriedman:20130206.1423CST] Only do this if we're parsing as a single article.
 
     (unless article-per-file?
-      #+ignore(begin-new-article :name (ds-name ds-designator)
+      (begin-new-article :name (ds-name ds-designator)
                          :location (or (ds-directory ds-designator)
                                        (ds-file-list ds-designator)))
       (per-article-initializations))
