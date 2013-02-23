@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "names to people"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.2.March 2005
+;;;  version:  0.2 February 2013
 
 ;; copied over material from [random and hacks] 4/12/95
 ;; 0.1 (4/25) redid Interpret-name-as-person as a dispatch on itype to handle
 ;;  collections.  Tweeked .. 5/3
 ;;  (12/18) started moving the individual cs rules here to centralize them
 ;; 0.2 (3/16/05) Elaborated Interpret-name-as-person/aux along the same lines
-;;  as done with companies.
+;;  as done with companies.  2/18/13 folded in named-object case.
 
 (in-package :sparser)
 
@@ -48,7 +48,7 @@
 (defun interpret-name-as-person/aux (name)
   (etypecase name
     (individual
-     (ecase (cat-symbol (itype-of name))
+     (case (cat-symbol (itype-of name))
        (category::uncategorized-name
         (let* ((sequence (value-of 'name/s name)))
           (unless sequence
@@ -77,7 +77,19 @@
                      :sequence (define-sequence (list name)
                                  category::name-word)))))
           (or (find/person-with-name person-name)
-              (make/person-with-name person-name))))))
+              (make/person-with-name person-name))))
+
+       (category::named-object
+        ;; We reified it earlier. Now lift out it's name part
+        ;; and try again
+        (let ((name-value (value-of 'name name)))
+          (unless name-value (error "Named-object without a name ???"))
+          (interpret-name-as-person name-value)))
+
+       (otherwise
+        (push-debug `(,name))
+        (error "New category of name: ~a~%~a"
+               (cat-symbol (itype-of name)) name))))
     (word
      (let* ((nw (define-individual 'name-word :name name))
             (person-name (define-individual 'person-name
