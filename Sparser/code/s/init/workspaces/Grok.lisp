@@ -27,12 +27,24 @@
 
 ;;----- Flags that we want on if we're momentarily by-passing some hard cases
 
+(defun ddm-setup () ;; 2/13/13 for finding odd bugs. New things turned off
+  (setq *annotate-realizations* nil)
+  (setq *break-on-new-bracket-situations* nil)
+  (setq *uniformly-scan-all-no-space-token-sequences* nil)
+  (setq *new-segment-coverage* nil))
+
 ;; If nil, this flag turns off all the errors about new cases for bracketsing and
 ;; has them return plausible defaults. Useful if looking for weirder errors.
 ;;   (setq *break-on-new-bracket-situations* nil)
 
 ;;--- experimental things to add to grok setting
-(setq *uniformly-scan-all-no-space-token-sequences* t)  ;; otherwise H1N1 hits a break
+
+;;   (setq *uniformly-scan-all-no-space-token-sequences* t)
+;; That is causing problems right now (2/11/13), so committing a horrible thing instead
+(reify-spelled-name 
+ (list (word-named "H") (word-named "5") (word-named "N") (word-named "1")))
+
+
 ;; (setq *new-segment-coverage* t)   ;; to debug that, add cases
 
 ;;--------- Cases for debugging segmentation, bracket calculations
@@ -45,7 +57,7 @@
 
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/1 Aljazeera_Jan-18.txt")
 
-;; (setq *verbose-document-stream* t)
+(setq *verbose-document-stream* t)
 ;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu") 
 
 ;; These are in dm&p in the workspaces file under init. They're stray medium size
@@ -57,6 +69,23 @@
 ;;   N.b. hard pathname. Need soft one. Perhaps via asdf, certainly via a pointer
 ;;    off load-truename
 
+;; (p "in the region and the World Health Organisation (WHO) will send a team of experts there on Wednesday")
+;;   will get to establish-referent-of-pn and we make a named-object
+;;
+;; (p "the World Health Organization (WHO)")
+;;  "WHO" is analyzed as the WH word, so need to take steps without
+;;  actually encoding the answer
+;;  This article has all the pieces:
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
+
+
+#|
+-- For searching with grep.
+cd sparser/Sparser/code/s/
+grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+|#
+
+;;-----Traces ----------------
 ;; *trace-set-status*
 
 (defun trace-segmentation ()
@@ -74,16 +103,6 @@
 ;; (brackets-on <string for a word>)  ;; usually always lowercase
 ;; (brackets-on <number of a position>)
 
-
-
-
-#|
--- For searching with grep.
-cd sparser/Sparser/code/s/
-grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
-|#
-
-;;-----Traces ----------------
 
 ;; (trace-fsas)
 ;; (trace-jfp-sections)
