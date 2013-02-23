@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.6 November 2012
+;;;  version:  0.6 February 2013
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -28,7 +28,9 @@
 ;;     name-of-individual. 
 ;; 0.6 (10/3/11) Patched around case of odd-ly formed individual who is
 ;;     almost certainly a bug. 11/6 fixed little chatter in string-for, adding
-;;     case for word.  11/25/12 Quieted warning when running in *grok* mode
+;;     case for word.  11/25/12 Quieted warning when running in *grok* mode.
+;;     (2/15/13) Fixed print-individual-with-name to handle case of it getting
+;;      a name object rather than a word value. 
 
 (in-package :sparser)
 
@@ -131,6 +133,8 @@
              (princ-word word stream))
             (polyword
              (princ-polyword word stream))
+            (individual
+             (princ-name-object word stream))
             (otherwise
              (push-debug `(,word ,i))
              (error "Unanticipated type of 'word': ~a~%~a"
@@ -143,7 +147,19 @@
       (format stream " ~A" (indiv-id i))
       (write-string ">" stream))))
 
+(defun princ-name-object (name stream)
+  ;; Look for a sequence, otherwise print that there isn't one
+  (let ((sequence (value-of 'name/s name)))
+    (if sequence
+      (write-string (string/sequence sequence) stream)
+      (write-string " -no sequence- " stream))))
 
+
+  ;; This 
+#|case (cat-symbol (itype-of word))
+               (category::uncategorized-name
+                (let ((s                  (unless sequence
+                    (error "Can't get the "|#
 
 
 ;;;--------------------------------------------------
