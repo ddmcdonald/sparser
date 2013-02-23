@@ -184,7 +184,7 @@
   ;; Compare to set of variations looked for in do-word-level-fsas
   ;; because this may well miss caitalized pw's
   (if (word-rules word)
-    (let ((pw-cfr (initiates-polyword word)))
+    (let ((pw-cfr (initiates-polyword word position-before)))
       (if pw-cfr
         (let ((position-reached
                (do-polyword-fsa word pw-cfr position-before)))
