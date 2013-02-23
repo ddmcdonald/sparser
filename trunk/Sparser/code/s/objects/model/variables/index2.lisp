@@ -47,7 +47,7 @@
   
 
 (defun find-variable-for-category (variable-name category)
-  "The prefered way to access variables fromtheir name."
+  "The prefered way to access variables from their name."
   (when (eq (symbol-package variable-name) (find-package :keyword))
     ;; Happens when coming in from find-individual
     (setq variable-name (intern (symbol-name variable-name)
