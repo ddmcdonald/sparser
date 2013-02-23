@@ -148,6 +148,11 @@
 ;;;-------------
 
 (defun begin-new-article (&key name location date source)
+  (unless *all-articles* 
+    ;; call is probably via analyze-text-from-file for a single
+    ;; file rather than from do-document-as-stream-of-files where
+    ;; we make this call on each individual flle. 
+    (make-the-article-resource))
   (let ((obj (next-article-from-resource)))
     (setf (article-name obj) name
           (article-location obj) location
@@ -272,6 +277,8 @@
     article))
 
 (defun next-section-from-resource ()
+  (unless *all-sections*
+    (error "section resource hasn't been initialized"))
   (let ((section (aref *all-sections* *position-of-next-available-section-in-resource*))
         (next-index (incf *position-of-next-available-section-in-resource*)))
     (when (= next-index *length-of-section-resource*)
