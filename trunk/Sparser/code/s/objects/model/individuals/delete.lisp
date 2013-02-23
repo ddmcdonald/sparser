@@ -9,7 +9,7 @@
 ;; off of superc.   4/19/95 wrapped gates around the breaks
 ;; 1/11/11 Patched unindex-individual to not assume that the category has
 ;; and operations (DM&P issue). 2/7/13 Found case of a category assigned to lists
-;; having a hash-table. Put in a throw so reclamation can continue.
+;; having a hash-table. Put in a throw so reclamation can continue. 
 
 (in-package :sparser)
 
@@ -22,14 +22,13 @@
   (let* ((operations (cat-operations c))
          (unindex-fn
           (when operations (cat-ops-reclaim operations))))
-    (cond
-      ((null unindex-fn)
+    (unless unindex-fn
       ;; maybe it's inherited?
-       (setq unindex-fn (inherited-operation/Reclaim c)))
-      (unindex-fn
-       (if (consp unindex-fn)
-  	     (funcall (car unindex-fn) (cadr unindex-fn) i (cat-instances c) c)
-         (funcall unindex-fn i (cat-instances c) c))))
+      (setq unindex-fn (inherited-operation/Reclaim c)))
+    (when unindex-fn
+      (if (consp unindex-fn)
+        (funcall (car unindex-fn) (cadr unindex-fn) i (cat-instances c) c)
+        (funcall unindex-fn i (cat-instances c) c)))
     i ))
 
 
@@ -49,11 +48,14 @@
   ;; the individuals are threaded onto this list by kcons's, so we
   ;; can reclaim the kcons
   (unless (consp list)
-    (push-debug `(,i ,list ,category))
-    (cerror "Ignore the error and throw out of here"
-            "Something strange was done in the indexing of ~a~
-           ~%because it's specified to use a list,~%but instead ~
-             of list we got a ~a" i (type-of list))
+    (format t "~&Reclaim: the individual ~a~
+               ~%   is indexed as a list but we've got a hashtable~
+               ~%   ignoring the problem.~%" i)
+;    (push-debug `(,i ,list ,category))
+;    (cerror "Ignore the error and throw out of here"
+;            "Something strange was done in the indexing of ~a~
+;           ~%because it's specified to use a list,~%but instead ~
+;             of list we got a ~a" i (type-of list))
     (throw :reclaim-of-individual-failed nil))
   (if (eq i (first list))
     (then
