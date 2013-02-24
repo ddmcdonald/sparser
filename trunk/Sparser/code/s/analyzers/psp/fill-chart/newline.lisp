@@ -42,7 +42,7 @@
             (reset-display-line-chars-remaining-counter)
             (fill-whitespace-and-loop position word :display-word t)
             (when *newline-delimits-paragraphs*
-              (begin-new-paragraph position)))))
+              (check-begin-new-paragraph position)))))
 
         ((eq word word::paragraph-start)
          (bump-&-store-word position word :display-word t))
