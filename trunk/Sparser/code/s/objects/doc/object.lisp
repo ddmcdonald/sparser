@@ -122,22 +122,25 @@
     (setf (section-starts-at-char obj) (pos-character-index start-pos))
     obj))
 
-(defun begin-new-paragraph (start-pos)
+(defun check-begin-new-paragraph (start-pos)
   (unless (and *current-paragraph*
                (eql start-pos (section-starts-at-pos *current-paragraph*)))
-    (let* ((sec-name (next-paragraph-name-in-article))
-           (obj (new-section-in-article sec-name start-pos)))
-      (setf (section-paragraph obj) t)
-      (when (and *current-paragraph*
-                 (section-paragraph *current-paragraph*))
-        ;; We check here to ensure that the last paragraph has been terminated.
-        (terminate-section *current-paragraph* start-pos)
-        (setf (section-prev-paragraph obj) *current-paragraph*)
-        (setf (section-next-paragraph *current-paragraph*) obj)
-        (setf (section-ends-at-char *current-paragraph*)
-          (1- (pos-character-index start-pos))))
-      (setf *current-paragraph* obj)
-      obj)))
+    (begin-new-paragraph start-pos)))
+
+(defun begin-new-paragraph (start-pos)
+  (let* ((sec-name (next-paragraph-name-in-article))
+         (obj (new-section-in-article sec-name start-pos)))
+    (setf (section-paragraph obj) t)
+    (when (and *current-paragraph*
+               (section-paragraph *current-paragraph*))
+      ;; We check here to ensure that the last paragraph has been terminated.
+      (terminate-section *current-paragraph* start-pos)
+      (setf (section-prev-paragraph obj) *current-paragraph*)
+      (setf (section-next-paragraph *current-paragraph*) obj)
+      (setf (section-ends-at-char *current-paragraph*)
+        (1- (pos-character-index start-pos))))
+    (setf *current-paragraph* obj)
+    obj))
 
 (defun terminate-section (obj end-pos)
   (setf (section-ends-at-pos obj) end-pos)
@@ -148,10 +151,10 @@
 ;;;-------------
 
 (defun begin-new-article (&key name location date source)
-  (unless *all-articles* 
+  (unless *all-articles*
     ;; call is probably via analyze-text-from-file for a single
     ;; file rather than from do-document-as-stream-of-files where
-    ;; we make this call on each individual flle. 
+    ;; we make this call on each individual flle.
     (make-the-article-resource))
   (let ((obj (next-article-from-resource)))
     (setf (article-name obj) name
