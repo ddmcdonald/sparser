@@ -10,6 +10,10 @@
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
+;; Too many duplicates. Open objects/rules/cfr/duplicates and set the
+;; break flag to t. Improve the trap to look up the file that holds the
+;; older version of the rule. 
+
 (in-package :sparser)
 
 (setq *annotate-realizations* nil) ;; Will be t, but not ready yet
@@ -37,6 +41,19 @@
 ;; has them return plausible defaults. Useful if looking for weirder errors.
 ;;   (setq *break-on-new-bracket-situations* nil)
 
+;;  (tb-segmentation-tester "/Users/ddm/ws/Sparser local/corpus/treebank/500s.txt")
+;;  or 50s, 20000s
+
+;; "die" comes in from Comlex as noun/verb ambiguous and that just confuses
+;; things too much right now (3/6/13), so I'm going to cheat
+(gload "disease;loader")
+
+;;--- Alternative segment handlers
+;  (do-normal-segment-finished-options)  ;; built-in default
+;  (do-strong-domain-modeling)
+;  (do-reify-implicit-individuals-in-segment)
+
+
 ;;--- experimental things to add to grok setting
 
 ;;   (setq *uniformly-scan-all-no-space-token-sequences* t)
@@ -61,7 +78,7 @@
 ;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu") 
 
 ;; These are in dm&p in the workspaces file under init. They're stray medium size
-;; articles lifted from the new
+;; articles lifted from the news
 ;; (fire)
 ;; (medtronic)
 
@@ -73,8 +90,6 @@
 ;;   will get to establish-referent-of-pn and we make a named-object
 ;;
 ;; (p "the World Health Organization (WHO)")
-;;  "WHO" is analyzed as the WH word, so need to take steps without
-;;  actually encoding the answer
 ;;  This article has all the pieces:
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
 
