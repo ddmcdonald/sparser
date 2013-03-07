@@ -809,7 +809,9 @@
                  (equal (car strings) ",")
                  (< (length str) 3))
         (setf str (format nil "~a~a" (make-string (- 3 (length str)) :initial-element #\0) str)))
-      (push str strings)))
+      (dolist (substr (sparserize-string str))
+        ;; (format t "Str: ~A - Substr: ~A~%" str substr)
+        (push substr strings))))
   (cond (append
          (setf ans (apply #'string-append (reverse strings)))
          (case cap
@@ -838,6 +840,8 @@
                               (eql tag 'TO))
                          (and (eql token '%)
                               (eql prior-tag 'CD))
+                         (and (eql token '%)
+                              (eql prior-tag 'QP))
                          (and (eql tag 'CD)
                               (eql prior-tag '$))
                          (memq token *tb-no-space-before*)
@@ -876,10 +880,23 @@
           str)))))
 
 (defun sparserize-string (str)
-  (let ((strs (split str '(#\Space #\') t)))
-    (remove-if #'(lambda (s)
-                   (member s '(" " "") :test 'equal))
-               strs)))
+  (let ((strs (split str '(#\Space #\' #\/ #\%) t)))
+    (apply #'append (mapcar #'split-alphanumeric
+                            (remove-if #'(lambda (s)
+                                           (member s '(" " "") :test 'equal))
+                                       strs)))))
+
+(defun split-alphanumeric (str &aux (last-string-start 0) strings)
+  (do ((i 0 (1+ i)))
+      ((= i (1- (length str))))
+    (unless (eql (alpha-char-p (elt str i))
+                 (alpha-char-p (elt str (1+ i))))
+      (push (subseq str last-string-start (1+ i)) strings)
+      (setf last-string-start (1+ i))))
+  (push (subseq str last-string-start (length str)) strings)
+  (reverse strings))
+
+
 
 (defun readout-tb-np-segmentation (sexp &optional (out *standard-output*) (verbose nil))
   "Walk tb sentence sexp to its terminals and write them out."
