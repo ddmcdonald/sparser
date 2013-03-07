@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.6 January 2013
+;;;  version:  0.6 February 2013
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -43,6 +43,7 @@
 ;;     vocabulary from Answer
 ;; 0.6 (1/4/13) Rearranged files for adverbs and other function words to go into
 ;;      the singe flie [modifiers] so it's easier to keep track of them.
+;;     (2/28/13) Removed the city's and their rules in favor of what's in region
 
 (in-package :sparser)
 
@@ -131,9 +132,12 @@
     
   (gate-grammar *countries*
     (gload "dossiers;countries"))
-  (gate-grammar *cities*
-    (gload "dossiers;cities")
-    (gload "dossiers;city rules"))
+;; These interfer with / are OBE by the treatment in regions
+;; and there wasn't that much there in the first place
+;; as opposed to these other two.
+;;  (gate-grammar *cities*
+;;    (gload "dossiers;cities")
+;;    (gload "dossiers;city rules"))
   (gate-grammar *US-States*
     (gload "dossiers;U.S. States")
     (gload "dossiers;U.S. State rules"))
