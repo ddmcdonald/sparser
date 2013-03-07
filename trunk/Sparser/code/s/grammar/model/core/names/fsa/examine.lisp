@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.18 January 2013
+;;;  version:  0.18 March 2013
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -59,7 +59,8 @@
 ;;       is was written too broadly and sweeping up things it shouldn't have.
 ;;      (12/19/11) Adding "Hurricane" by analogy to how place names are done.
 ;;       Tweaking little things in lieu of a big makeover through 12/10/12. Fixed
-;;       typo in that and finished off stub 1/18/13.
+;;       typo in that and finished off stub 1/18/13. Fixed probable tempest in a
+;;       tea pot in the tt-backoff code 3/5/13.
 
 (in-package :sparser)
 
@@ -371,6 +372,9 @@
                   (setq multiple-treetops (cdr tt))))))
         
         (loop
+          ;; Loop over all the treetop constituents between the start and
+          ;; end positions of this capitalized sequence that the scan phase
+          ;; delimited. 
           (if (eq position ending-position)
             (return)
             (incf count))
@@ -381,18 +385,21 @@
           
           (tr :examining label tt)
           
+          ;; Look at the tt and set flags (indicators of the type of name)
           (if multiple-treetops
             (dolist (mtt multiple-treetops)
               ;; collect evidence from each of the cases
               (check-cases mtt (label-for mtt)))
             (check-cases tt label))
           
+          ;; Add to the items list
           (if already-pushed?
             (if multiple-treetops
               (break "Interaction between already-pushed? and multiple-treetops")
               (setq already-pushed? nil))
             (if multiple-treetops
               (let ((backoff-tt (backoff-multiple-treetops-for-pnf multiple-treetops)))
+                ;; pick which one of the tt to use
                 (kpush backoff-tt items))
               (kpush tt items)))
           
@@ -408,7 +415,6 @@
         
         
         (when items
-
           (setq items (remove-duplicates items :test #'eq))
           ;; Need to review the item accumulator to see why name-words
           ;; are being accumulated twice
@@ -796,43 +802,55 @@
   (let* ((first-tt (first treetops))
          (start-vector (edge-starts-at first-tt))
          (end-vector (edge-ends-at first-tt))
+         (array (ev-edge-vector start-vector))
          name-word-individual )
     (unless (= 1 (- (pos-token-index (ev-position end-vector))
                     (pos-token-index (ev-position start-vector))))
+      (push-debug `(,treetops ,start-vector ,end-vector))
       (break "Multiple-tt backoff: seems to span more than one word"))
 
-    ;; Does this word project to a name-word? If so we'll use that, otherwise
-    ;; we have to make one for it.
-    (let ((word (edge-left-daughter first-tt)))
-      (unless (typep word 'word)
-        (break "Assumption violated: daughter of first-tt isn't a word"))
-      (let* ((rules (rs-single-term-rewrites (word-rule-set word)))
-             (name-word-rule (find category::name-word rules
-                                   :test #'eq :key #'cfr-category)))
-        (if name-word-rule
-          (break "Stub: Got a name-word-rule")
-          (setq name-word-individual
-                (make-name-word-for-unknown-word-in-name word (ev-position start-vector))))
+    ;; Do we already have a name-word edge on the list?
+    (let ((nw-edge (find category::name-word array
+                         :key #'edge-category :test #'eq)))
+      (or nw-edge
 
-        ;; Make an ad-hoc edge based just on the word -- sort of a way to back off from
-        ;; the specific, irreducable treetops we've got.
-        ;; Cribbed from Make-completed-unary-edge
-        (let ((edge (next-edge-from-resource)))
-          (knit-edge-into-positions edge start-vector end-vector)
-          (setf (edge-starts-at edge) start-vector)
-          (setf (edge-ends-at edge) end-vector)
+          ;; Does this word project to a name-word? If so we'll use that, otherwise
+          ;; we have to make one for it.
+          (let ((word (edge-left-daughter first-tt)))
+            (unless (typep word 'word)
+              (push-debug `(,first-tt ,treetops))
+              (error "Assumption violated: daughter of first-tt isn't a word"))
+            (let* ((rules (rs-single-term-rewrites (word-rule-set word)))
+                   (name-word-rule (find category::name-word rules
+                                         :test #'eq :key #'cfr-category)))
+              (if name-word-rule
+                (break "Stub: Got a name-word-rule")
+                (setq name-word-individual
+                      (make-name-word-for-unknown-word-in-name word (ev-position start-vector))))
+
+              ;; Make an ad-hoc edge based just on the word -- sort of a way to back off from
+              ;; the specific, irreducable treetops we've got.
+              ;; Cribbed from Make-completed-unary-edge
+              (let ((edge (next-edge-from-resource)))
+                (knit-edge-into-positions edge start-vector end-vector)
+                (setf (edge-starts-at edge) start-vector)
+                (setf (edge-ends-at edge) end-vector)
           
-          (if (= 2 (length treetops))
-            (then (setf (edge-left-daughter edge) (first treetops))
-                  (setf (edge-right-daughter edge) (second treetops)))
-            (break "More than two residual treetop edges to back off from.~
-                    Does it matter if we can't set the daughters of the backoff edge?"))
+                (case (length treetops)
+                  (1 (setf (edge-left-daughter edge) (first treetops))
+                     (setf (edge-right-daughter edge) :single-term))
+                  (2 (setf (edge-left-daughter edge) (first treetops))
+                     (setf (edge-right-daughter edge) (second treetops)))
+                  (otherwise ;; we might want to be concerned, but right now
+                   ;; (3/5/13) that's down in the noise level.
+                   (setf (edge-left-daughter edge) (first treetops))
+                   (setf (edge-right-daughter edge) (second treetops))))
           
-          (setf (edge-rule edge) :pnf-residue-backoff)
-          (setf (edge-form edge) category::proper-noun)
-          (setf (edge-referent edge) name-word-individual)
-          (setf (edge-category edge) category::name-word)
-          edge )))))
+                (setf (edge-rule edge) :pnf-residue-backoff)
+                (setf (edge-form edge) category::proper-noun)
+                (setf (edge-referent edge) name-word-individual)
+                (setf (edge-category edge) category::name-word)
+                edge )))))))
 
       
 
