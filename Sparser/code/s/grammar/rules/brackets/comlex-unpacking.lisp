@@ -6,6 +6,7 @@
 ;;;  Version:  February 2013
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
+;; and put in the ambiguous flag.
 
 (in-package :sparser)
 
@@ -101,8 +102,7 @@ places. ]]
 
 (defmethod unambiguous-comlex-primed-decoder ((lemma word) clause)
   "Identify any inflected forms and define words for them. Assign brackets
-   to all the words. ////For the moement anyway, not creating any edges
-   but just looking at the resulting segmentation of the text."
+   to all the words. Do much more if *edge-for-unknown-words* is up."
   (tr :unpacking-unambiguous (car clause))
   (let ((pos-marker (car clause))
         (properties (cdr clause)))
@@ -157,49 +157,49 @@ places. ]]
     (cond
       ((equal combinations '(adjective noun))
        (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-common-noun lemma clauses))
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-common-noun lemma clauses :ambiguous))
        (brackets-for-adjective-noun lemma))
 
       ((equal combinations '(adjective adverb))
        (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-adverb lemma))
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-adverb lemma :ambiguous))
        (brackets-for-adjective-adverb lemma))
 
       ((equal combinations '(adjective verb))
        (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-verb lemma clauses))
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-verb lemma clauses :ambiguous))
        (brackets-for-adjective-verb lemma))
 
       ((equal combinations '(adjective noun verb))
        (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-common-noun lemma clauses)
-         (setup-verb lemma clauses))
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-common-noun lemma clauses :ambiguous)
+         (setup-verb lemma clauses :ambiguous))
        (assign-noun-verb-brackets lemma clauses))
 
       ((equal combinations '(adjective adverb noun))
        (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-adverb lemma)
-         (setup-common-noun lemma clauses))
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-adverb lemma :ambiguous)
+         (setup-common-noun lemma clauses :ambiguous))
        (brackets-for-adjective-adverb-noun lemma))
 
       ((equal combinations '(adjective adverb verb))
        (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-adverb lemma)
-         (setup-verb lemma clauses))
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-adverb lemma :ambiguous)
+         (setup-verb lemma clauses :ambiguous))
        (brackets-for-adjective-adverb-noun-verb lemma))
 
       ((equal combinations '(adjective adverb noun verb))
        (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-adverb lemma)
-         (setup-common-noun lemma clauses)
-         (setup-verb lemma clauses))
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-adverb lemma :ambiguous)
+         (setup-common-noun lemma clauses :ambiguous)
+         (setup-verb lemma clauses :ambiguous))
        (brackets-for-adjective-adverb-noun-verb lemma))
 
       ((equal combinations '(adjective noun prep)) 
@@ -207,36 +207,36 @@ places. ]]
          ;; ignoring preposition -- first example is "plus" in the
          ;; phrase "in Nigeria plus numerous European states"
          ;; where it's effectively a conjunction
-         (setup-adjective lemma clauses)
-         (setup-common-noun lemma clauses))
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-common-noun lemma clauses :ambiguous))
        (brackets-for-adjective-noun lemma))
 
       ((equal combinations '(adjective noun prep sconj verb)) 
        (when *edge-for-unknown-words*
-         (setup-adjective lemma clauses)
-         (setup-adverb lemma)
-         (setup-common-noun lemma clauses)
+         (setup-adjective lemma clauses :ambiguous)
+         (setup-adverb lemma :ambiguous)
+         (setup-common-noun lemma clauses :ambiguous)
          ;; sconj
-         (setup-verb lemma clauses))
+         (setup-verb lemma clauses :ambiguous))
        (brackets-for-adjective-noun-sconj-prep-verb lemma))
 
       ((equal combinations '(adverb noun))
        (when *edge-for-unknown-words*
-         (setup-adverb lemma)
-         (setup-common-noun lemma clauses))
+         (setup-adverb lemma :ambiguous)
+         (setup-common-noun lemma clauses :ambiguous))
        (brackets-for-adverb-noun lemma))
 
       ((equal combinations '(adverb noun verb))
        (when *edge-for-unknown-words*
-         (setup-adverb lemma)
-         (setup-common-noun lemma clauses)
-         (setup-verb lemma clauses))
+         (setup-adverb lemma :ambiguous)
+         (setup-common-noun lemma clauses :ambiguous)
+         (setup-verb lemma clauses :ambiguous))
        (brackets-for-adverb-noun-verb lemma clauses))
 
       ((equal combinations '(noun verb))
        (when *edge-for-unknown-words*
-         (setup-common-noun lemma clauses)
-         (setup-verb lemma clauses))
+         (setup-common-noun lemma clauses :ambiguous)
+         (setup-verb lemma clauses :ambiguous))
        (assign-noun-verb-brackets lemma clauses))
 
       
