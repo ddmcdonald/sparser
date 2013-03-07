@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.13 February 2013
+;;;  Version:  5.14 February 2013
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -47,6 +47,7 @@
 ;;       the usual set of options out of segment finished.  2/6/13 put in trap
 ;;       for the threading bug where the right segment boundary global is nil
 ;;       so we get a more intelligible error message. 
+;; 5.14 (2/28/13) Abstracted the after-parsing protocol choice.
 
 (in-package :sparser)
 
@@ -106,10 +107,6 @@
       (scan-next-segment *right-segment-boundary*))))
 
 
-;;;------------------------
-;;; decide what to do next
-;;;------------------------
-
 (defun segment-parsed1 ()
   ;; called from within the march/segment parsing routines once
   ;; they have walked all the way back to the left end of the segment
@@ -117,24 +114,59 @@
   (segment-finished (segment-coverage)))
 
 
+;;;-------------------------------------
+;;; choice of segment-finished protocol
+;;;-------------------------------------
+
+#| These alternatives for what to do after parsing of the segment
+is finished sometimes take over all the operations. More often they
+do some special process and then join the main line again.
+  N.b. this is a central part of the control fsa so all returns
+have to be tail recursion to the next thing to do.
+|#
+
+(unless (boundp '*after-action-on-segments*)
+  (defparameter *after-action-on-segments* 
+    (cond 
+     (*do-domain-modeling-and-population* 
+      'dm/analyze-segment)
+     (*do-strong-domain-modeling*
+      'sdm/analyze-segment)
+     (t 
+      'normal-segment-finished-options))
+    "Name of the function to call after the interior of a segment
+     has been parsed. It may do further analyses of what's in the
+     segments, but eventually has to do the 'normal' options
+     and ultimately scan another segment or move to the forest level."))
+
+(defun after-action-on-segments (coverage)
+  (funcall *after-action-on-segments* coverage))
+
+
+;;--- cases for switching options
+
+;; (do-normal-segment-finished-options)
+(defun do-normal-segment-finished-options ()
+  (setq *after-action-on-segments* 'normal-segment-finished-options))
+
+;; (do-domain-modeling-and-population)
+(defun do-domain-modeling-and-population ()
+  ;; This is 1995 code, which, while reasonably well documented,
+  ;; isn't the way of the future
+  (setq *after-action-on-segments* 'dm/analyze-segment))
+
+;; (do-strong-domain-modeling)
+(defun do-strong-domain-modeling ()
+  (setq *after-action-on-segments* 'sdm/analyze-segment))
+
+
+;;;------------------------
+;;; decide what to do next
+;;;------------------------
+
 (defun segment-finished (coverage)
   (tr :segment-finished coverage)
-  (end-of-segment-measurements)
-  (unless coverage
-    (break "The coverage calculation between p~A and p~A didn't have ~
-            have a value." (when *left-segment-boundary*
-                             (pos-token-index *left-segment-boundary*))
-           (pos-token-index *right-segment-boundary*)))
-
-  ;; keep this so we have a definitive pointer of where the
-  ;; the next scan picks up again
-  (setq *where-the-last-segment-ended* *right-segment-boundary*)
-
-  ;; keep this one in case we see evidence that that boundary that
-  ;; closed this segment should be overridden and it should be
-  ;; opened up and extended.
-  (setq *where-the-last-segment-started* *left-segment-boundary*)
-
+  (tidy-up-segment-globals coverage)
   (if (eq coverage :null-span)
     ;; begins and ends on the same position so it's a spurious
     ;; interaction of brackets laid down by adjacent words
@@ -144,22 +176,11 @@
     (then
       (return-to-scan-level-from-null-span
        *where-the-last-segment-ended*))
-
     (else
-      (cond
-;        (*do-domain-modeling-and-population*
-;         (dm/analyze-segment coverage))
-;; This is 1995 code, which, while reasonably well documented,
-;; isn't the way of the future
+     (after-action-on-segments coverage))))
 
-        (*do-strong-domain-modeling*
-         (sdm/analyze-segment coverage))
-
-        (t
-         (normal-segment-finished-options coverage))))))
-
-;; This is "segment-finished" for the purposes of the inline doc below
 (defun normal-segment-finished-options (coverage)
+  ;; This is "segment-finished" for the purposes of the inline doc below
   ;; broken out of segment-finished to let us call it as a fall-back
   ;; in the sdm routines.
   (case coverage
@@ -195,6 +216,25 @@
         ;;  when the closing bracket is seen.
         *bracket-closing-segment* nil))
 
+
+
+(defun tidy-up-segment-globals (coverage)
+  ;; called by segment-finished before it does anything else
+  (end-of-segment-measurements)
+  (unless coverage
+    (break "The coverage calculation between p~A and p~A didn't have ~
+            have a value." (when *left-segment-boundary*
+                             (pos-token-index *left-segment-boundary*))
+           (pos-token-index *right-segment-boundary*)))
+
+  ;; keep this so we have a definitive pointer of where the
+  ;; the next scan picks up again
+  (setq *where-the-last-segment-ended* *right-segment-boundary*)
+
+  ;; keep this one in case we see evidence that that boundary that
+  ;; closed this segment should be overridden and it should be
+  ;; opened up and extended.
+  (setq *where-the-last-segment-started* *left-segment-boundary*))
 
 
 
