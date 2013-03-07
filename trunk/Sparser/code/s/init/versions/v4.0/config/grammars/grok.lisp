@@ -1,5 +1,5 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2012  David D. McDonald  -- all rights reserved
+;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 2012  David D. McDonald  -- all rights reserve
 ;;;
 ;;;      File:  "grok"
 ;;;    Module:  "init;versions:v4.0:config:grammars:"
