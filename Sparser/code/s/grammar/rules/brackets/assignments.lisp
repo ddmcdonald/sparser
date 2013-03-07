@@ -1,12 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2012 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2013 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  December 2012
+;;;  Version:  Fwbruary 2013
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
-;; 12/11/12, 
+;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
+;; the category names when words come in more than one part of speech,
+;; and to trap constructed categories that have the same name as
+;; one that already exists to cut down of weird definition changes.
+;; 2/28/13 included primitive way to tell the provinance of the
+;; categories we make here
 
 (in-package :sparser)
 
@@ -138,75 +143,112 @@
 ;; so we can be free with the factoring. Final actions by
 ;; the code in morphology just as its used by ETF.
 
-(defun setup-common-noun (word comlex-clause)
-  (let* ((marked-plural (explicit-plurals comlex-clause))
-         (category-name (name-to-use-for-category word))
-         (super-category (super-category-for-POS :noun))
-         (category (define-category/expr category-name
-                     `(:specializes ,super-category
-                        :instantiates :self))))
-    (let ((rules
-           (make-cn-rules/aux ;; we don't need to decipher the 'word'
-            word
-            category ;; lhs
-            category ;; referent
-            marked-plural))) 
+(defun setup-common-noun (word comlex-clause 
+                          &optional ambiguous?)
+  (let ((marked-plural (explicit-plurals comlex-clause))
+        (category-name (name-to-use-for-category word))
+        (super-category (super-category-for-POS :noun)))
+    (when ambiguous?
+      (setq category-name
+            (construct-disambiguating-category-name
+             category-name super-category)))
+    (when (category-named category-name)
+      (push-debug `(,category-name ,word ,comlex-clause))
+      (error "Setup: The category named ~a already exists."
+             category-name))
+    (let* ((category (define-category/expr category-name
+                        `(:specializes ,super-category
+                         :instantiates :self)))
+           (rules
+            (make-cn-rules/aux ;; we don't need to decipher the 'word'
+             word
+             category ;; lhs
+             category ;; referent
+             marked-plural)))
+      (mark-as-constructed-category-for-word category super-category)
       (add-rules-to-category category rules)
       category)))
 
 
-(defun setup-verb (word comlex-clause)
-  (let* ((special-cases
-          (lift-special-case-form-from-comlex-clause comlex-clause))
-         (category-name (name-to-use-for-category word))
-         (super-category (super-category-for-POS :verb))
-         (category (define-category/expr category-name
-                     `(:specializes ,super-category
-                       :instantiates :self))))
-    ;; Adds the rule to the category itself
-    (apply #'define-main-verb (cat-symbol category)
-           :infinitive (word-pname word)
-           :category category
-           :referent category
-           special-cases) 
-    category))
+(defun setup-verb (word comlex-clause &optional ambiguous?)
+  (let ((special-cases
+         (lift-special-case-form-from-comlex-clause comlex-clause))
+        (category-name (name-to-use-for-category word))
+        (super-category (super-category-for-POS :verb)))
+    (when ambiguous?
+      (setq category-name
+            (construct-disambiguating-category-name
+             category-name super-category)))
+    (when (category-named category-name)
+      (push-debug `(,category-name ,word ,comlex-clause))
+      (error "Setup: The category named ~a already exists."
+             category-name))
+    (let ((category (define-category/expr category-name
+                       `(:specializes ,super-category
+                        :instantiates :self))))
+      ;; Adds the rule to the category itself
+      (apply #'define-main-verb (cat-symbol category)
+             :infinitive (word-pname word)
+             :category category
+             :referent category
+             special-cases)
+      (mark-as-constructed-category-for-word category super-category)
+      category)))
     
 
 
-(defun setup-adjective (word clause)
+(defun setup-adjective (word clause &optional ambiguous?)
   (declare (ignore clause)) ;; /// pull stuff out of it
   ;; Comlex has a 'gradable' feature on adjectives, with 
   ;; a flag for er-est. See adjectives in sl/checkpoint/
-  (let* ((category-name (name-to-use-for-category word))
-         (super-category (super-category-for-POS :adjective))
-         (category (define-category/expr category-name
-                      `(:specializes ,super-category
-                        :instantiates :self))))
-    (let ((rules
-           (make-rules-for-adjectives
-            word
-            category
-            category)))
+  (let ((category-name (name-to-use-for-category word))
+        (super-category (super-category-for-POS :adjective)))
+    (when ambiguous?
+      (setq category-name
+            (construct-disambiguating-category-name
+             category-name super-category)))
+    (when (category-named category-name)
+      (push-debug `(,category-name ,word))
+      (error "Setup: The category named ~a already exists."
+             category-name))
+    (let* ((category (define-category/expr category-name
+                       `(:specializes ,super-category
+                        :instantiates :self)))
+           (rules
+            (make-rules-for-adjectives
+             word
+             category
+             category)))
+      (mark-as-constructed-category-for-word category super-category)
       (add-rules-to-category category rules)
       category)))
 
 
-(defun setup-adverb (word)
+(defun setup-adverb (word &optional ambiguous?)
   ;; Adverbs that serve functions that we understand,
   ;; such as approximation, are explicitly defined using
   ;; define-adverb. Ones that we import are by that
   ;; token ones we wouldn't know what to do with, so
   ;; we go through the morphology routine used with ETF.
-  (let* ((category-name (name-to-use-for-category word))
-         (super-category (super-category-for-POS :adverb))
-         (category (define-category/expr category-name
-                      `(:specializes ,super-category
-                        :instantiates :self))))
-    (let ((rules
-           (make-rules-for-adverbs
-            word
-            category
-            category)))
+  (let ((category-name (name-to-use-for-category word))
+        (super-category (super-category-for-POS :adverb)))
+    (when ambiguous?
+      (setq category-name
+            (construct-disambiguating-category-name
+             category-name super-category)))
+    (when (category-named category-name)
+      (push-debug `(,category-name ,word))
+      (error "Setup: The category named ~a already exists."
+             category-name))
+    (let* ((category (define-category/expr category-name
+                       `(:specializes ,super-category
+                        :instantiates :self)))
+           (rules
+            (make-rules-for-adverbs
+             word
+             category
+             category)))
+      (mark-as-constructed-category-for-word category super-category)
       (add-rules-to-category category rules)
       category)))
 
@@ -230,6 +272,23 @@
     (otherwise
      (break "Unexpected pos: ~a" pos))))
   
+(defun construct-disambiguating-category-name (category-name super-category)
+  "Something should constrain this to make sure that we only apply
+   it in this case where we're doing general word -> category setup's
+   out of a lexical store that discriminates on POS.
+      We construct a name to distinguish e.g. the noun version of
+   'die' (the stuff that changes the color of cloth) from the verb
+   version, by appending their type to their name."
+  (unless (and (symbolp category-name)
+               (referential-category-p super-category))
+    (push-debug `(,category-name ,super-category))
+    (error "Parameters are the wrong type - check in debugger"))
+  (let* ((super-name (cat-symbol super-category))
+         (super-pname (symbol-name super-name))
+         (disambiguated (string-append category-name "-"
+                                       super-pname)))
+    (name-to-use-for-category disambiguated)))
+
 
 (defmethod name-to-use-for-category ((string string))
   "Encapsulates the lisp-specific checks for what case to use."
@@ -249,6 +308,22 @@
     (let ((plural-entry (cadr (assoc :plural comlex-clause))))
       (when plural-entry
         `(:plural ,plural-entry)))))
+
+
+;;--- Probably simpler way to do this
+;; Want it for the reification code in analyzers/SDM&P/reify-individuals
+;; So that it generalizes correctly
+
+(defvar  *constructed-categories-to-supercategory* (make-hash-table)
+  "Takes a category that we created here in this file and maps
+   it to its supercategory")
+
+(defun mark-as-constructed-category-for-word (category super-category)
+  (setf (gethash category *constructed-categories-to-supercategory*)
+        super-category))
+
+(defun supercategory-of-constructed-category (category)
+  (gethash category *constructed-categories-to-supercategory*))
 
 
 
