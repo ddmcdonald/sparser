@@ -155,6 +155,10 @@
 (def-form-category  word+ed)  ;; n.b. "bed"
 (def-form-category  word+ing)
 
+(def-form-category  ends-in-s)
+(def-form-category  ends-in-ed)
+(def-form-category  ends-in-ing)
+
 (def-form-category  interjection)
 
 (def-form-category  conjunction)
@@ -207,9 +211,6 @@
 (def-form-category  adverb)
 (def-form-category  modal)
 
-(def-form-category  ends-in-s)
-(def-form-category  ends-in-ed)
-(def-form-category  ends-in-ing)
 
 (def-form-category  unknown-word)
 (def-form-category  unknown-verb)
