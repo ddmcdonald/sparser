@@ -717,12 +717,17 @@
         (readout-bracketing))
     (error (e)
       (list :error
+            (type-of e)
             (handler-case
-                (apply #'format nil
-                       (simple-condition-format-control e)
-                       (simple-condition-format-arguments e))
+                (cond ((typep e 'type-error)
+                       (format nil "Type error: ~A expected to be ~A."
+                              (type-error-datum e) (type-error-expected-type e)))
+                      (t
+                       (apply #'format nil
+                              (simple-condition-format-control e)
+                              (simple-condition-format-arguments e))))
               (error (e2)
-                "Unreportable error"))
+                e))
             str))))
 
 (defun get-segments (l &aux ans)
