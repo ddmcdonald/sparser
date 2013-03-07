@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005, 2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 January 2011
+;;;  version:  1.0 February 2013
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -24,6 +24,9 @@
 ;;      didn't have any because it was made by DM&P. Also patched inherited-
 ;;      operation/Reclaim to not complain if there was no parent with a
 ;;      reclaim operation. Whole scheme needs to be considered.
+;;     (2/23/13) Put a trap in category-inherits-type? for the case of a
+;;      category having itself as its super-type. Announces the problem and
+;;      returns nil. 
 
 (in-package :sparser)
 
@@ -79,9 +82,14 @@
 ;;;----------------------------------------------
 
 (defun super-categories-of (c)
-  (if (cat-lattice-position c)
-    (super-categories-of1 c)
-    (list c)))
+  (typecase c
+    (referential-category
+     (if (cat-lattice-position c)
+       (super-categories-of1 c)
+       (list c)))
+    (otherwise
+     (push-debug `(,c))
+     (error "Unexpected type ~a" (type-of c)))))
 
 (defun super-categories-of1 (c)
   (let* ((lp (cat-lattice-position c))
@@ -132,13 +140,27 @@
       t
       (category-inherits-type? base-category category))))
 
-(defun category-inherits-type? (lower-category higher-category)
-  (let ((specialization-of
-         (lp-super-category (cat-lattice-position lower-category))))
-    (when specialization-of
-      (if (eq specialization-of higher-category)
-        higher-category
-        (category-inherits-type? specialization-of higher-category)))))
+(defun category-inherits-type? (category reference-category)
+  "Is the category a subcategory of the reference-category? Walk up the
+  lattice from the catgory until we find the reference-category or
+  top-out with a super-category of nil since the network has multiple
+  roots, c.f. model/core/kinds/upper-model.lisp"
+  (let ((super-category
+         (lp-super-category (cat-lattice-position category))))
+    (when super-category
+      (when (eq category super-category)
+;; Keeping this in case we ever want to debug it case by case
+;        (push-debug `(,super-category ,reference-category))
+;        (error "The category ~a  has itself as a supercategory.~
+;              ~%Probably clobbered by an imported word with that spelling"
+;               category)
+        (format t "~%~%The category ~a  has itself as a supercategory.~
+              ~%Probably clobbered by an imported word with that spelling~%~%"
+               category)
+        (return-from category-inherits-type? nil))
+      (if (eq super-category reference-category)
+        t
+        (category-inherits-type? super-category reference-category)))))
 
 
 
