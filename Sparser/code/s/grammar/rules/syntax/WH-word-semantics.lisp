@@ -4,14 +4,14 @@
 ;;; 
 ;;;     File:  "WH-word-semantics"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 January 2013
+;;;  Version:  0.2 February 2013
 
 ;; initiated 8/8/07. Added relatives 1/1/08
 ;; 0.1 Changed the names of the categories to just be the name of the pronoun.
 ;;     Had been, e.g., WHERE-OBLIQUE-PRONOUN-PRONOUN. Changed the from from NP to
 ;;     wh-pronoun.
 ;; 0.2 (1/18/13) Complete make over on the style of prepositions
-
+;;     (2/28/13) Changed the form of the rule to wh-pronoun
 
 (in-package :sparser)
 
@@ -47,7 +47,7 @@ for the word and a rule that rewrite to it.
          (category (eval expr))
          (word-rule 
           (define-cfr category `(,word)
-            :form category::np
+            :form category::wh-pronoun
             :schema (get-schematic-word-rule :word) ;;/// make one for wh ??
             :referent category)))
     (push-onto-plist category word-rule :rule)
