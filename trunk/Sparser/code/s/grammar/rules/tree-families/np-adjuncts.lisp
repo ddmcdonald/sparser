@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005,1011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "np adjuncts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.1 September 2011
+;;;  version:  0.1 March 2013
 
 ;; initiated 6/14/95.  8/11 added pp-after-np.  11/15 added premodifier-adds-
 ;; property and filled in a missing description.  12/5 added determiner-adds-property
@@ -14,6 +14,7 @@
 ;;   the parens were layered wrong. 12/22 fixed spelling of keyword. 2/17/05 added
 ;;   np-participle. 4/1 Modified pp-after-np to include the preposition in a simplistic
 ;;   way. 4/4/11 Added np-and-postmodifier 9/26 reordered cases to make postprocessing happy
+;; (3/3/13) Added modifier-adds-head-dependent-property
 
 (in-package :sparser)
 
@@ -22,6 +23,7 @@
      premodifier-creates-subtype --- "net income" ?? look at binding pattern
      np-and-postmodifier ----------- "60 in February" Instantiates a new individual
      premodifier-adds-property ----- "red house"
+     modifier-adds-head-dependent-property --- "Kurdish girl" "Kurdish city"
      appositive -------------------- "Patrick Courtin, president and CEO of Gensym Corporation"
      np-participle ----------------- "third quarter ended June 26, 2004"
      pp-after-np ------------------- the pp adds a property. "of" is a special case
@@ -37,7 +39,9 @@
 
 
 (define-exploded-tree-family   premodifier-creates-subtype
-  :description "A combination of the head of a noun phrase (either noun or n-bar) and a preceeding noun that creates a more specific version of whatever the head is."
+  :description "A combination of the head of a noun phrase (either noun or n-bar) 
+                and a preceeding noun that creates a more specific version 
+                of whatever the head is."
   :binding-parameters ( subtype )
   :labels ( np-head noun )
   :cases
@@ -47,7 +51,9 @@
 
 
 (define-exploded-tree-family   np-and-postmodifier
-  :description "A combination of the head of a noun phrase (either noun or n-bar) and a followingg phrase instatiate a new kind of individual where both phrases contribut.e"
+  :description "A combination of the head of a noun phrase (either noun or n-bar) 
+                and a followingg phrase instatiate a new kind of individual 
+                where both phrases contribute."
   :binding-parameters ( type np-var modifier-var )
   :labels (np np-head phrase )
   :cases
@@ -61,7 +67,8 @@
 
 
 (define-exploded-tree-family   premodifier-adds-property
-  :description "A combination of a np head (either noun or n-bar) and a preceding word or phrase that adds a property to the object that the head refers to."
+  :description "A combination of a np head (either noun or n-bar) and a preceding 
+                word or phrase that adds a property to the object that the head refers to."
   :binding-parameters ( property )
   :labels ( np-head modifier )
   :cases
@@ -70,9 +77,23 @@
                   :binds (property left-edge)))))
 
 
+(define-exploded-tree-family  modifier-adds-head-dependent-property
+  :description "The modifer is related to the head in a way that depends
+        on the types of referents of the two edges, This is sorted out
+        by the method."
+  :binding-parameters ( property )
+  :labels ( np-head modifier combo-method)
+  :cases
+     ((:modifier (np-head (modifier np-head)
+                  :head right-edge
+                  :method (combo-method left-edge right-edge)))))
+
 
 (define-exploded-tree-family   determiner-adds-property
-  :description "A combination of a np head (either noun or n-bar) and a preceding word or phrase that adds a property to the object that the head refers to. The word/phrase is syntactically a 'determiner' in that it can initiate a complete noun phrase, e.g. a number, a country-adjective, some quantifiers."
+  :description "A combination of a np head (either noun or n-bar) and a preceding word
+                or phrase that adds a property to the object that the head refers to. 
+                The word/phrase is syntactically a 'determiner' in that it can initiate 
+                a complete noun phrase, e.g. a number, a country-adjective, some quantifiers."
   :binding-parameters ( property )
   :labels ( np np-head determiner )
   :cases
@@ -84,7 +105,8 @@
 
 
 (define-exploded-tree-family   appositive
-  :description "Any phrase that immediately follows the noun phrase, is set off by commas, and adds a property to the object that the np refers to."
+  :description "Any phrase that immediately follows the noun phrase, is set off 
+                by commas, and adds a property to the object that the np refers to."
   :binding-parameters ( appositive-field )
   :labels ( np appositive )
   :cases
