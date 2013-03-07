@@ -103,6 +103,27 @@ gain market share and show double-digit earnings growth in 2007."))
 
 ;; Cases from TB that turned up as errors
 #|
+
+(p "Rolls-Royce Motor Cars Inc. said it expects its U.S. sales to remain steady at about 1,200 cars in 1990")
+[rolls-royce motor cars inc.][ said][ it][ expects][ its u.s. sales] 
+to [ remain][ steady] at [ about 1,200 cars] in [ 1990]
+                                 source-start
+e7    COMPANY                 1 "rolls - royce motor cars inc ." 8
+e12   SOMEONE-REPORTS         8 "said it" 10
+e11   EXPECT                  10 "expects" 11
+e14   COMPANY-S               11 "its" 12
+e16   COUNTRY                 12 "u . s ." 16
+e17   SALE                    16 "sales" 17
+e18 e19                          "to" :: to, TO
+e20   REMAIN                  18 "remain" 19
+e21 e22 e23 e24                  "steady" :: STEADY-EVENT, STEADY-KIND, STEADY-ADVERBIAL, STEADY-MODIFIER
+e25 e26                          "at" :: at, AT
+e27   ABOUT                   21 "about" 22
+e31   NUMBER                  22 "1 , 200" 25
+e32   CAR                     25 "cars" 26
+e36   PREP-TIME               26 "in 1990" 28
+
+
 (p "Howard Mosher, president and chief executive officer, said he anticipates growth 
 for the luxury auto maker in Britain and Europe, and in far eastern markets.")
 
