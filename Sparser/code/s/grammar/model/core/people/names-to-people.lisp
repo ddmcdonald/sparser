@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "names to people"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.2 February 2013
+;;;  version:  0.2 March 2013
 
 ;; copied over material from [random and hacks] 4/12/95
 ;; 0.1 (4/25) redid Interpret-name-as-person as a dispatch on itype to handle
@@ -11,6 +11,7 @@
 ;;  (12/18) started moving the individual cs rules here to centralize them
 ;; 0.2 (3/16/05) Elaborated Interpret-name-as-person/aux along the same lines
 ;;  as done with companies.  2/18/13 folded in named-object case.
+;;  3/5/13 Moved in the country+person method
 
 (in-package :sparser)
 
@@ -108,6 +109,27 @@
     ))
 
 
+
+;;;-----------------------
+;;; relation to countries
+;;;-----------------------
+
+(define-category nationality
+  :specializes associated-with-country
+  :binds ((country . country)
+          (person . person))
+  :index (:sequential-keys country person))
+
+(defmethod relationship-to-country ((c sh::country) (p sh::person))
+  (declare (special *parent-edge-getting-reference*))
+  (let ((country (dereference-shadow-individual c))
+        (person (dereference-shadow-individual p)))
+    (setf (edge-category *parent-edge-getting-reference*)
+          category::person)
+    (setf (edge-form *parent-edge-getting-reference*)
+          category::np)
+    (define-or-find-individual category::nationality
+        :country country :person person)))
 
 
 
