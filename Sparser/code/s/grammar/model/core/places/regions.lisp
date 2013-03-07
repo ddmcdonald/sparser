@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "other"
 ;;;   Module:  "model;core:places:"
-;;;  version:  Auguat 2013
+;;;  version:  February 2013
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -12,6 +12,8 @@
 ;;  that better fits what's in the data: "the country" blew up with
 ;;  np-common-noun/definite because that makes a new individual and regions
 ;;  are hashed on their names -- with the gensym'd individual didn't have.
+;; (2/28/13) Putting in the ETF and function to supply a region's name
+;;  when we get it in an 'of' construction
 
 (in-package :sparser)
 
@@ -32,25 +34,55 @@
   :realization ((:proper-noun name) ;; for the predefined ones
                 (:tree-family  np-common-noun/defnp
                  :mapping ((np . :self)
-                           (np-head . region-type)))))
+                           (np-head . region-type)))
+                (:tree-family  kind-of-name ;; "strait of Hormous"
+                 :mapping ((np . region)
+                           (complement . name-word) ;; and what else?
+                           (result-np . :self)))))
 
 ;; Dossier of named regions is [regions]
 ;; Dossier of region types and edge types is [location kinds]
 
+(defun give-kind-its-name (region name) ;; left-referent and right-referent
+  ;; function called by kind-of-name ETF
+  ;; Definitely has more generality, but makes sense right here and
+  ;; 'kind' isn't as articulated as this
+  ;; Since what we get here are the referents, which I've renamed to
+  ;; reflect what they provide, we might well get more generality
+  ;; by making the ETF use a method rather than a function
+  ;; N.b. this returns the referent of the edge, which will be
+  ;; a region based on this name
+  (unless (and (itypep name 'name-word)
+               (itypep region 'city)) ;; temp until next load
+    (break "wrong types in give-kind-its-name. Fix one or the other")
+    (return-from give-kind-its-name region))
+  (let* ((word (value-of 'name name 'name-word))
+         (new-region (find-or-make/individual 'region `(:name ,word))))
+    (break "look at region")
+    ;; Is the region the right sort of thing to be it's type??
+    ;;  <what's the instruction for creating a binding ??>
+    ;; Now we make the word refer to this region
+    (remove-name-word-rule-from word)
+    (let ((rule (define-cfr category::region
+                   `(,word)
+                  :form category::proper-name
+                  ;; /// what's the schema ???
+                  :referent new-region)))
+      (push-debug `(,rule))
+      (break "look at rule set for the word")
+      new-region)))
 
-(define-autodef-data 'region
-  :display-string "region"
-  :form 'define-region
-  :module *other-locations*
-  :dossier "dossier;regions"
-  :description "A word or polyword that names a particular geographical entity that we don't have a more specific category for (e.g. it's not a city or country)"
-  :examples "\"New England\"" )
+;; What about subsequent runs of "city of S" after s has this rule?
+;;  pattern becomes <region> of <region>, which is odd.
+    
 
-(defun string/region (r)
-  (let ((name (value-of 'name r)))
-    (etypecase name
-      (word (word-pname name))
-      (polyword (pw-pname name)))))
+;; move to name words or wherever fits the eventual generalizaton
+(defun remove-name-word-rule-from (word)
+  (let* ((rs (word-rule-set word))
+         (rules (rs-single-term-rewrites rs)))
+    (unless rules (error "Presumption violated"))
+    (loop for rule in rules do
+      (delete/cfr rule))))
 
 
 (defun define-region (name-string &key part-of aliases)
@@ -136,18 +168,33 @@
       (values category
               rule))))
 
-(define-autodef-data 'region-type
-  :form 'define-region-type
-  :dossier "dossiers;location kinds"
-  :display-string "kinds of locations"
-  :module *location*
-  :description "A word that names a kind of place"
-  :examples "\"city\", \"lake\"" )
+
+(define-category located-in
+  :instantiates self
+  :specializes associated-with-country
+  :binds ((country . country) ;;/// probably too narrow
+          (region . region-type))) ;; defintely too narrow
+  
+
+(defmethod relationship-to-country ((c sh::country) (r sh::region-type))
+  (declare (special *parent-edge-getting-reference*))
+  (let ((country (dereference-shadow-individual c))
+        (region (dereference-shadow-individual r)))
+    (setf (edge-category *parent-edge-getting-reference*)
+          category::region-type)
+    (setf (edge-form *parent-edge-getting-reference*)
+          category::np)
+    (define-or-find-individual category::located-in
+        :country country region region)))
+
+
 
 
 ;;;--------------------------
 ;;; kinds of edges / borders
 ;;;--------------------------
+
+;; "the forest border", "the border of the forest"
 
 (define-category border-type
   :instantiates :self
@@ -157,12 +204,9 @@
   :realization (:common-noun name))
 
 (define-type-category-constructor border-type)
+;; N.b. this creates define-border-type
 
-;; dossier in [location kinds]
-
-
-
-;; "the forest border", "the border of the forest"
+;; dossier in [location-kinds]
 
 (define-category border
    :specializes location
@@ -182,5 +226,30 @@
                            (result-type . :self))))
 
 
+;;;---------
+;;; autodef 
+;;;---------
 
+(define-autodef-data 'region
+  :display-string "region"
+  :form 'define-region
+  :module *other-locations*
+  :dossier "dossier;regions"
+  :description "A word or polyword that names a particular geographical entity that we don't have a more specific category for (e.g. it's not a city or country)"
+  :examples "\"New England\"" )
+
+(defun string/region (r)
+  (let ((name (value-of 'name r)))
+    (etypecase name
+      (word (word-pname name))
+      (polyword (pw-pname name)))))
+
+
+(define-autodef-data 'region-type
+  :form 'define-region-type
+  :dossier "dossiers;location kinds"
+  :display-string "kinds of locations"
+  :module *location*
+  :description "A word that names a kind of place"
+  :examples "\"city\", \"lake\"" )
 
