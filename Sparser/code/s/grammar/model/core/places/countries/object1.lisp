@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:countries:"
-;;;  version:  1.2 July 2011
+;;;  version:  1.2 March 2013
 
 ;; 1.0 (10/12/92 v2.1) introducing new semantics
 ;; 1.1 (9/7/93 v2.3) adding a define routine and a realization
@@ -14,6 +14,9 @@
 ;;     (8/6/07) Changed treatment of adjectives to accommodate Fire's dm&p.
 ;; 1.2 (7/21/11) Added ethnicities since they pattern essentially the same
 ;;      way. Removed the new-dm&p constraint, which was for making
+;; 1.3 (3/4/13) Reworked define-country to not do anything fancy with
+;;      the adjective form because places/countries/relation.lisp will
+;;      handle that just from the adjective. Added brackets 3/6/13
 
 (in-package :sparser)
 
@@ -35,34 +38,39 @@
 ;;; def form
 ;;;----------
 
-;; we only need this because we're using a different syntactic category
-;; for the adjectival form than the noun, and because we're including
-;; a provision for aliases
-
 (defun define-country (name &key adjective aliases)
   (let ((country (category-named 'country))
+        (word (resolve-string-to-word/make name))
         (obj (define-individual 'country
                :name name))
-          word  rules )
-
-    (when adjective
-      (define-adjective-function/country adjective obj))
-
-    (when aliases
-      (dolist (string aliases)
-        (setq word (resolve-string-to-word/make string))
-        (push (define-cfr country `(,word)
-                :form (if (polyword-p word)
-                        category::n-bar
-                        category::np-head)
-                :referent obj)
-              rules)))
-
-    (let ((rules-cons (cadr (memq :rules (unit-plist obj)))))
-      (dolist (r rules)
-        (rplacd rules-cons (cons r (cdr rules-cons)))))
-
-    obj ))
+        rules )
+    ;; The name gets  ].proper-noun proper-noun.[  is that ok?
+    (when (or adjective aliases)
+      (flet ((adjective-rule (string)
+               (setq word (resolve-string-to-word/make string))
+               (assign-brackets-to-adjective word)
+               (define-cfr country `(,word)
+                :form category::adjective ;; or proper-adjective
+                 ;; it's a question of picking up form rules
+                :referent obj))
+             (alias-rule (string)
+               (setq word (resolve-string-to-word/make string))
+               (assign-brackets-as-a-common-noun word)
+               (define-cfr country `(,word)
+                 :form category::proper-noun
+                 :referent obj)))
+        (when adjective
+          (if (consp adjective)
+            (loop for adj in adjective
+              do (push (adjective-rule adj) rules))
+            (push (adjective-rule adjective) rules)))
+        (when aliases
+          (if (consp aliases)
+            (loop for alias in aliases
+              do (push (alias-rule alias) rules))))
+        (add-rules-to-category (category-named 'country) rules)))
+    (values obj
+            rules)))
 
 
 ;;;----------------
