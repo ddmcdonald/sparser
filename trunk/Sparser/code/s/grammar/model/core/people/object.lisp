@@ -3,13 +3,14 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:people:"
-;;;  version:  0.2 February 2013
+;;;  version:  0.2 March 2013
 
 ;; initiated 6/8/93 v2.3
 ;; 0.1 (1/7/94) redesigned not to pre-index
 ;; 0.2 (9/26) promulgating change to how instances are stored. 10/6 added properties
 ;;  (3/16/05) Adding realization rules.
 ;;  (2/13/13) Made person specialize named-object (see core/names/object)
+;;  (3/6/13) Added another pattern for age
 
 (in-package :sparser)
 
@@ -27,7 +28,11 @@
   :realization ((:tree-family  appositive
                  :mapping ((appositive-field . age)
                            (np . :self)
-                           (appositive . age)))))
+                           (appositive . age)))
+                (:tree-family premodifier-adds-property
+                 :mapping ((property . age)
+                           (np-head . :self)
+                           (modifier . age)))))
 
 
 ;;;------------
