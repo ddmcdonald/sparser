@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
+;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "death"
 ;;;    Module:   "sl;disease:"
-;;;   version:   December 2007
+;;;   version:   March 2013
 
-;; initiated 12/27/07.
+;; initiated 12/27/07 with just the category for "die". Revised slightly
+;; 3/6/13 to specialize to 'event'.
 
 (in-package :sparser)
 
@@ -31,8 +32,8 @@
 
 (define-category  die
   :instantiates self
-  ;; :specializes  process << eventuality
-  :binds ((who person)) ;; animate?
+  :specializes  event
+  :binds ((who person)) ;; animate? What about the birds -- need "animal" ??
   :realization ((:main-verb "die")
 		(:tree-family intransitive
 		 :mapping ((agent . who)
