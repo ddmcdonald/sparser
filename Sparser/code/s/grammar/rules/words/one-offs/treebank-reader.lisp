@@ -717,9 +717,12 @@
         (readout-bracketing))
     (error (e)
       (list :error
-            (apply #'format nil
-                   (simple-condition-format-control e)
-                   (simple-condition-format-arguments e))
+            (handler-case
+                (apply #'format nil
+                       (simple-condition-format-control e)
+                       (simple-condition-format-arguments e))
+              (error (e2)
+                "Unreportable error"))
             str))))
 
 (defun get-segments (l &aux ans)
