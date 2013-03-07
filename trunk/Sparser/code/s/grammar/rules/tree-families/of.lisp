@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2003,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2003,2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "of"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  September 2011
+;;;  version:  February 2013
 
 ;; formed 10/26/94 from [of genitive] and [group of type]. Added def-rule data 3/8/95
 ;; 7/13/98 added item-of-value. 7/8/00 added member-of.
@@ -14,6 +14,7 @@
 ;; simple-of-complement. 9/26 reordered cases to make postprocessing happy, also
 ;; modified dependent-of so that the head and daughter would both pickout
 ;; the same edge, even if it doesn't make all that much sense.
+;; 2/28/13 added kind-of-name
 
 (in-package :sparser)
 
@@ -24,6 +25,7 @@
        of/genitive ------- "John's cat"
        group-of-type ----- "board of directors"
        item-of-value ----- "net income of $42 million"
+       kind-of-name ------ "Straits of Hormus"
        member-of --------- "first half of 1998", "borough of New York"
  dependent-of
 |#
@@ -160,6 +162,23 @@
                          :instantiate-individual result-type
                          :binds (item left-edge
                                  value right-edge)))
+          (:of-phrase (of-/complement ("of" complement)
+                        :head right-edge))))
+
+
+
+;;;-------------------------------------------------
+;;; complement supplies name  "city of Sulaimaniya"
+;;;-------------------------------------------------
+
+(define-exploded-tree-family  kind-of-name
+  :description "the np contains a kind and the complement tells
+                us what it's name is"
+  :binding-parameters ()
+  :labels (result-np np complement)
+  :cases ((:complement (result-np (np of-/complement)
+                         :head right-edge
+                         :function (give-kind-its-name left-edge right-edge)))
           (:of-phrase (of-/complement ("of" complement)
                         :head right-edge))))
 
