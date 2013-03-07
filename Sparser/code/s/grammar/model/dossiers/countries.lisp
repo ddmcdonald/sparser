@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 199-1995,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 199-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "countries"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.1 November 2012
+;;;  version:  0.1 March 2013
 
 ;; 0.1 (10/12/92 v2.1) introducing new semantics
 ;;     (9/7 v2.3) revived the existing set of cases
@@ -13,6 +13,7 @@
 ;;     (7/16/07) "France". (5/22/10) "Hati". (12/19/11) "Mexico".
 ;; 0.1 (11/24/12) pulled in  Charlie G's dump for IL MDIS 
 ;;     work circa January 2010 from state.gov
+;;     (3/4/13) Added Kurdistan and its adjective, /// but it's not really a country
 
 (in-package :sparser)
 
@@ -215,4 +216,12 @@
 (define-country "Zambia")
 (define-country "Zimbabwe")
 
+
+;;---  pseudoo countries, named regions
+;; should have a different treatment, but this will do until we
+;;   need to fuse with "northern Iraq"
+(define-country "Kurdistan" :adjective "Kurdish") ;; Kurds
+;; merology with other countries might be easy to do
+;;  West Bank, Palestine, "Gaza (Strip)"
+;;  Siberia
 
