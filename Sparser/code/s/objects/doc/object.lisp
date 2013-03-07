@@ -21,6 +21,7 @@
   location
   date
   source
+  contents
 
   position-in-resource-array
   )
@@ -30,6 +31,8 @@
 
   name
   article
+  contents
+
   starts-at-pos  ;; The position obj of the first word in the section, inclusive.
   ends-at-pos    ;; The position obj of the last word in the section, exclusive.
   starts-at-char ;; The char index the first word in the section, inclusive.
@@ -123,6 +126,9 @@
     obj))
 
 (defun check-begin-new-paragraph (start-pos)
+  ;; We need this because the newline handler isn't soaking up all
+  ;; the newlines internally, and as a result makes one call to
+  ;; this per newline character encountered.
   (unless (and *current-paragraph*
                (eql start-pos (section-starts-at-pos *current-paragraph*)))
     (begin-new-paragraph start-pos)))
@@ -138,7 +144,7 @@
       (setf (section-prev-paragraph obj) *current-paragraph*)
       (setf (section-next-paragraph *current-paragraph*) obj)
       (setf (section-ends-at-char *current-paragraph*)
-        (1- (pos-character-index start-pos))))
+            (1- (pos-character-index start-pos))))
     (setf *current-paragraph* obj)
     obj))
 
