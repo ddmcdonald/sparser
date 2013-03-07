@@ -16,6 +16,8 @@
 ;;      rather than position-in-a-sequence
 ;;     (2/13/13) Added a routine to use machinery like this off a directly
 ;;      linked name-word. Adapting dereference-proper-noun as well
+;;      Rebuild it (item-already-linked-to-entity) while tracking down an infinite loop
+;;      on 2/22/13. Still returning nil.
 
 (in-package :sparser)
 
@@ -285,16 +287,21 @@
   ;;   If there is more than one name word then presumably that's
   ;; not a case for us, though the question of partial names
   ;; remains, and it isn't clear (2/15/13) that that's being handled
-  (push-debug `(,items))
-  (let ((name-words
-         (loop for item in items
-           when (and (individual-p item)
-                     (itypep item 'name-word)
-                     item)
-           collect it)))
-    nil ;; punt for just now
-    #+ignore(when (= 1 (length name-words))
-      (break "this one"))))
+  (let (  name-words  other  )
+    ;; Rebuilt this from a collecting loop when it failed to
+    ;; terminate. Problem was deep in the itypep call when an
+    ;; imported word clobbered the category for "kind"
+    (dolist (item items)
+      (if (and (individual-p item)
+               (itypep item 'name-word))
+        (push item name-words)
+        (push item other)))
+
+    `(,name-words ,other)
+    ;; Looking for "the WHO" or for any single name word
+    ;; that has a company associated with it
+    ;;  when (= 1 (length name-words))
+    nil))
 
                                       
 
