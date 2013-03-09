@@ -851,7 +851,11 @@
                ((or first?
                     (eq tag 'NNP)
                     (eq tag 'NNPS)) ;; what else?
-                (push (stringify-tokens all-tokens :capitalize) tokens))
+                (let ((capd (stringify-tokens all-tokens :capitalize)))
+                  (when (and (eq tag 'NNPS)
+                             (equal (elt capd (1- (length capd))) '#\S))
+                    (setf capd (format nil "~As" (subseq capd 0 (1- (length capd))))))
+                  (push capd tokens)))
                ((eq tag 'POS) (push "'s" tokens))
                ;;((eq tag 'CD)
                ;;(push-debug `(,token))
@@ -900,8 +904,8 @@
 
 (defun readout-tb-np-segmentation (sexp &optional (out *standard-output*) (verbose nil))
   "Walk tb sentence sexp to its terminals and write them out."
-  (let ((first? t)
-        np-tokens in-np prior-token prior-tag top-tokens)
+  (let (;; (first? t) prior-token prior-tag
+        np-tokens in-np top-tokens)
     (flet ((push-word (token all-tokens tag)
              (when verbose
                (format t "~&~a ~a~%" all-tokens tag))
@@ -927,8 +931,10 @@
                    (if in-np
                        (push substr2 np-tokens)
                      (push substr2 top-tokens)))))
-             (setq prior-token token
-                   prior-tag tag)))
+             ;;(setq prior-token token
+             ;;      prior-tag tag)
+             )
+           )
       (labels
           ((walk (l)
              (when (consp l)
