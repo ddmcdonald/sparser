@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  7.0 November 2012
+;;;  Version:  7.1 March 2013
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -26,6 +25,7 @@
 ;;      in Boeing where two quotations are adjacent but the second  hasn't
 ;;      finished. 11/25/12 fixed fanout when "and" is covered with an edge
 ;;      and patched over another "won't do that yet" case.
+;;     (3/6/13) Adapted multiple-initial-edge case in check-out-possible-conjunction
 
 (in-package :sparser)
 
@@ -209,9 +209,11 @@
     ;        (pos-token-index position-after))
 
     (when (edge-vector-p edge-before)
-      (setq edge-before (reduce-multiple-initial-edges edge-before)))
+      (let ((good-edges (reduce-multiple-initial-edges edge-before))) ;; no literals
+        (setq edge-before (car (last good-edges)))))
     (when (edge-vector-p edge-after)
-      (setq edge-after (reduce-multiple-initial-edges edge-after)))
+      (let ((good-edges (reduce-multiple-initial-edges edge-after)))
+        (setq edge-after (car (last good-edges)))))
 
     (setq *pending-conjunction* nil)
 
