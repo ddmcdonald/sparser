@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2012-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "names"
 ;;;   Module:  "model;core:people:"
-;;;  version:  1.4 November 2012
+;;;  version:  1.4 March 2013
 
 ;; initiated 6/8/93 v2.3, added indexes 6/15.
 ;; 1.1 (1/7/94) Beginning to simplify the indexing.  Tweeked that 10/3.
@@ -15,6 +15,7 @@
 ;; 1.4 (12/5) fixed glitches in the treatment of versions.
 ;;     (11/25/12) Blocked stub breaks for the interior of long names
 ;;      or the presence of 'version' in make-person-name-from-items1.
+;;     (3/6/13) Got an initial in first-name position. 3/7 revived version
 
 (in-package :sparser)
 
@@ -35,11 +36,11 @@
 (define-category  person-name/first-last
   :instantiates self
   :specializes person-name
-  :binds ((first-name . name-word)))
-
-
-      ;    (standard-prefix . person-prefix)
-      ;    (version . person-version)))
+  ;; "W. Ed Tyler"
+  ;; Flag the initial specifically ?
+  :binds ((first-name . (:or name-word initial))
+          (standard-prefix . person-prefix)
+          (version . person-version)))
 
 
 ;;;------------
@@ -59,18 +60,14 @@
     (make-person-name-from-items1 items :version version)))
 
 
-
 (defun make-person-name-from-items1 (items &key version sequence)
   (let ((sequence (or sequence
                       (define-sequence items category::name-word)))
-        (last-name (car (last items)))
+        (last-name (if version ;; "Jr." for now just pressume it's last
+                     (cadr (reverse items))
+                     (car (last items))))
         (first-name (when (> (length items) 1)
                       (first items))))
-    (unless *grok*
-      (when (> (length items) 2)
-        (break "stub: more than 2 items in name"))
-      (when version
-        (break "stub: version supplied")))
     (let ((name
            (cond ((null first-name) 
                   (define-individual 'person-name
@@ -80,9 +77,10 @@
                   (define-individual 'person-name/first-last
                     :sequence sequence
                     :last-name last-name
-                    :first-name first-name))
+                    :first-name first-name
+                    :version version))
                  (t
-                  (break "how did we get here?")))))
+                  (break "Fell through cases in person-name - new one?")))))
       name )))
 
 
