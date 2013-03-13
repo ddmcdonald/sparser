@@ -1,13 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2010-2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2010-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "list hacking"
 ;;;    Module:   "tools:basics:syntactic sugar:"
-;;;   Version:   July 2011
+;;;   Version:   March 2013
 
 ;; initiated 12/30/93 v2.3.  4/11/95 added nil-checkers. 
 ;; 8/24/10 moved in quote-every-second-one from forms/categories
 ;; (3/9/11) Reworked to fit in ddm-util. (7/31) Added lowercase-tree
+;; (3/8/13) Changed pl to not return the list as its value. Very messy
+;;  to deal with in case of list-per-run-init-forms. Added splice-out-nth-element
 
 (in-package :ddm-util)
 
@@ -17,6 +19,7 @@
             lowercase-tree
             some-item/s-in-list-is-nil
             remove-nils-from-list
+            splice-out-nth-element
             quote-every-second-one)))
 
 
@@ -31,20 +34,17 @@
         (format stream "~&~2t~A.  ~A~%" index l)
         (format stream "~&~A~%" l))
       (incf index)))
-  (terpri stream)
-  list)
+  (terpri stream))
 
 
 (defun add-to-the-end-of-the-list (item list)
   ;; distructive -- pushes the last cons.
   (let ((prior-cons list)
         cons )
-
     (when (null (cdr list)) ;; one item
       (rplacd list
               (cons item nil))
       (return-from add-to-the-end-of-the-list list))
-
     (loop
       (setq cons (cdr prior-cons))
       (when (null (cdr cons)) ;; we're at the end of the list
@@ -86,6 +86,31 @@
     list))
 
 
+(defun splice-out-nth-element (list n)
+  "Expected to be used in the Listner to fix things."
+  (when (= n 1)
+    (break "You are going to splice out the 1st element ~
+            of the list.~%Anything that points to this ~
+            list will be disconnected.~%Continue from ~
+            this break if that is ok."))
+  (unless (>= (length list) n)
+    (error "Directed to splice-out item number ~a from list~
+          ~%But it is only of length ~a" n (length list)))
+  (let ((count 0)  earlier  remainder)
+    (do ((item (car list) (car rest))
+         (rest (cdr list) (cdr rest)))
+        ((null item) (error "Should have exited earlier"))
+      (incf count)
+      (if (= count n)
+        (then (setq remainder rest)
+              (return))
+        (push item earlier)))
+    (append (nreverse earlier) remainder)))
+
+
+      
+
+
 ;;;--------------------
 ;;; for hacking macros
 ;;;--------------------
@@ -100,3 +125,4 @@
         (push item accumulator))
       (setq even (not even)))
     (nreverse accumulator)))
+
