@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "one-many"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  1.0 March 1993
+;;;  Version:  1.0=1 March 2013
 
 ;; 0.0 (9/4/92 v2.3) broken out from drivers;chart:psp
 ;; 1.0 (5/15/93) took out the constraint about not changing the category
@@ -11,6 +11,9 @@
 ;;      problem.  Since the edge-construction trace is with the edge code,
 ;;      that pretty much gutted the routine.
 ;;     (3/16/94) Added a version that just checked.
+;; 1.1 (3/8/13) Gating the trap for multiple single-term edges completing.
+;;      Happened will stress testing against the whole treebank, so this
+;;      isn't unreasonable
 
 (in-package :sparser)
 
@@ -19,7 +22,8 @@
   (let ((count (ev-number-of-edges right-ending-vector))
         (vector (ev-edge-vector right-ending-vector))
         right-edge rule single-edge already-have-a-rule )
-
+    ;; Check the left edge against each of the single-term
+    ;; edges adjacent to it on its right.
     (dotimes (index count)
       (setq right-edge (aref vector index))
       (setq rule (multiply-edges left-edge right-edge))
@@ -27,13 +31,19 @@
         (if already-have-a-rule
           (then
             (tr :multiple-completions already-have-a-rule rule)
+            ;; There is no provision in the design for more than one
+            ;; pair of edges composing unless for some reason we
+            ;; were running in all-edges mode. Blocking the break
+            ;; against a flag that's normally off. Taking the
+            ;; already given rule ad-hoc rather than thinking
+            ;; about it. 
             (unless (eq rule already-have-a-rule)
-              (break "multiple completions")))
+              (when *break-on-multiple-single-term-completions*
+                (break "multiple completions"))))
           (let ((edge (make-completed-binary-edge
                        left-edge right-edge rule)))
             (setq already-have-a-rule rule)
             (setq single-edge edge)))))
-
     single-edge ))
 
 
