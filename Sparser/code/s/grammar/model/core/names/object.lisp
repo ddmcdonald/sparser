@@ -57,6 +57,55 @@
   (define-individual 'named-object :name name))
   
 
+;;;-----------------------------------
+;;; making names from diverse sources
+;;;-----------------------------------
+
+(defparameter *break-on-new-name-converter-cases* nil
+  "Flag that makes convert-to-canonical-name-form always
+   return something even in new cases it doesn't understand.")
+
+(defun convert-to-canonical-name-form (raw-name)
+  "Because they have different sources, a referent of an edge
+ that denotes a name migh be a real type of name, or it might
+ be one of the constituents of a name such as a name word or more.
+ This code tracks those cases and takes them all to
+ an uncategorized-name object. ///Might want another argument
+ to be more specific about the name's type and organization."
+  ;; problem with ignoring the new cases is that it could blow
+  ;; updownstream when the slot is bound and the type is wrong.
+  (typecase raw-name
+    (referential-category
+     (when *break-on-new-name-converter-cases*
+       (push-debug `(,raw-name))
+       (break "Got a category rather than an individual"))
+     raw-name)
+    (individual
+     (let ((category (itype-of raw-name)))
+       (case (cat-symbol category)
+         (category::uncategorized-name 
+          raw-name) ;; already came in corrently
+         (category::name-word
+          (make-uncategorized-name-from-items `(,raw-name)))
+         (otherwise
+          (format t "~%~%New case for convert-to-canonical-~
+                     name-form: ~a" raw-name)
+          (when *break-on-new-name-converter-cases*
+            (push-debug `(,raw-name))
+            (break "new type of name"))
+          raw-name))))
+    (word
+     (push-debug `(,raw-name))
+     (break "raw-name is a word"))
+    (cons
+     (push-debug `(,raw-name))
+     (break "raw-name is a cons"))
+    (otherwise
+     (push-debug `(,raw-name))
+     (break "raw-name is of an unexpected type: ~a"
+            (type-of raw-name)))))
+     
+
 
 
 ;;;--------------

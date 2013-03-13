@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "classify"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.10 February 2013
+;;;  version:  1.10 March 2013
 
 ;; initiated 5/15/93 v2.3 to fit PNF paper
 ;; 0.1 (6/10) tweeked judgement over single words
@@ -49,6 +49,7 @@
 ;;     (10/12/09) Gave could-be-the-start-of-a-sentence a real definition.
 ;;     (2/13/13) Removed version of could-be-the-start-of-a-sentence in this file
 ;;      in favor of the one in rules/CA/first-item
+;;     (3/6/13) Generalized reduce-multiple-initial-edges to any length vector
 
 (in-package :sparser)
 
@@ -459,22 +460,16 @@
   ;; and the reason is :multiple-initial-edges.  We go through the
   ;; edges and remove any literals.
   (let ((count (ev-number-of-edges ev))
-        (vector (ev-edge-vector ev)))
+        (vector (ev-edge-vector ev))
+        edge  good-edges )
     (ecase *edge-vector-type*
       (:kcons-list (break "Write this routine for kcons list version"))
       (:vector
-       (if (= count 2)
-         (let ( edge  good-edge )
-           (dotimes  (i count)
-             (setq edge (aref vector i))
-             (unless (eq :literal-in-a-rule (edge-rule edge))
-               (setq good-edge edge)))
-           good-edge )
-         (else
-           (when *debug-pnf*
-             (break "More than two edges need to be reduced"))
-           (highest-edge ev)))))))
-
+       (dotimes  (i count)
+         (setq edge (aref vector i))
+         (unless (eq :literal-in-a-rule (edge-rule edge))
+           (push edge good-edges)))
+       (nreverse good-edges)))))
 
 
 
