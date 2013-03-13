@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "multiplier"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   3.4 October 1995
+;;;   Version:   3.4 March 2013
 
 ;; 3.0 (9/4/92 v2.3) Tweeked things to appreciate form rule ids
 ;;     (10/12) fixed typos
@@ -14,6 +14,7 @@
 ;;      duplication flags
 ;; 3.4 (4/24/95) the order of args in the call to Duplication-msg was wrong now.
 ;;     (10/25) changed the name of the duplicate dotted rules flag
+;;     (3/9/13) Added the break-on-duplicates flag.
 
 (in-package :sparser)
 
@@ -38,7 +39,11 @@
                 (cons cfr existing-rule/s)
                 (list cfr existing-rule/s)))
         (else
-          (duplication-msg existing-rule/s (cfr-category cfr)))))
+         (duplication-msg existing-rule/s (cfr-category cfr))
+         (when *break-on-illegal-duplicate-rules*
+           (push-debug `(,cfr ,existing-rule/s))
+           (break "Look at why there's a duplicate rule~
+                  ~%and sort it out.")))))
 
     (let ((target-site (+ left-id right-id)))
       (setf (gethash target-site
