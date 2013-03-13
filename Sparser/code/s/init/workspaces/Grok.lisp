@@ -3,18 +3,31 @@
 ;;;
 ;;;     File:  "Grok"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  January 2012
+;;;  version:  March 2012
 
 ;; Initiated 10/30/12 to take over from the Fire workspace. Tweeked through
-;; 1/21/13
+;; 3/9/13
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
-;; Too many duplicates. Open objects/rules/cfr/duplicates and set the
+;; Too many duplicated rules. Open objects/rules/cfr/duplicates and set the
 ;; break flag to t. Improve the trap to look up the file that holds the
-;; older version of the rule. 
+;; older version of the rule.  
+;;  Do it in the file to catch them during the load, or here while developing
+; (setq *break-on-illegal-duplicate-rules* t)
+
+#|
+-- For searching with grep.
+cd sparser/Sparser/code/s/
+grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+|#
+
 
 (in-package :sparser)
+
+;;;------------------------------------
+;;; setting control/display parameters
+;;;------------------------------------
 
 (setq *annotate-realizations* nil) ;; Will be t, but not ready yet
 
@@ -29,32 +42,39 @@
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 ;; (grok-setting)  -- for meta-.
 
+
+;;--- Alternative post-parsing segment handlers
+;  (do-normal-segment-finished-options)  ;; built-in default
+;  (do-strong-domain-modeling)
+;  (do-reify-implicit-individuals-in-segment)
+;  (do-note-text-relations-in-segment)
+
+; (setq *break-on-new-name-converter-cases* t) 
+
+;; (setq *new-segment-coverage* t)   ;; to debug strong-domain-modeling, add cases
+
 ;;----- Flags that we want on if we're momentarily by-passing some hard cases
 
 (defun ddm-setup () ;; 2/13/13 for finding odd bugs. New things turned off
   (setq *annotate-realizations* nil)
   (setq *break-on-new-bracket-situations* nil)
   (setq *uniformly-scan-all-no-space-token-sequences* nil)
-  (setq *new-segment-coverage* nil))
+  (setq *new-segment-coverage* nil)
+  (setq *note-text-relations* t))
 
 ;; If nil, this flag turns off all the errors about new cases for bracketsing and
 ;; has them return plausible defaults. Useful if looking for weirder errors.
 ;;   (setq *break-on-new-bracket-situations* nil)
 
-;;  (tb-segmentation-tester "/Users/ddm/ws/Sparser local/corpus/treebank/500s.txt")
-;;  or 50s, 20000s
+(setq *verbose-document-stream* t)
+
+;;;------------------------------------------------------------
+;;; Work arounds -- problems that ultimately need dealing with
+;;;------------------------------------------------------------
 
 ;; "die" comes in from Comlex as noun/verb ambiguous and that just confuses
 ;; things too much right now (3/6/13), so I'm going to cheat
 (gload "disease;loader")
-
-;;--- Alternative segment handlers
-;  (do-normal-segment-finished-options)  ;; built-in default
-;  (do-strong-domain-modeling)
-;  (do-reify-implicit-individuals-in-segment)
-
-
-;;--- experimental things to add to grok setting
 
 ;;   (setq *uniformly-scan-all-no-space-token-sequences* t)
 ;; That is causing problems right now (2/11/13), so committing a horrible thing instead
@@ -62,7 +82,13 @@
  (list (word-named "H") (word-named "5") (word-named "N") (word-named "1")))
 
 
-;; (setq *new-segment-coverage* t)   ;; to debug that, add cases
+;;;------------------
+;;; testing routines
+;;;------------------
+
+;;  (tb-segmentation-tester "/Users/ddm/sift/nlp/Grok/corpus/treebank/500s.txt")
+;;  or 50s, 20000s
+;;  (treebank-smoke-test "/Users/ddm/sift/nlp/Grok/corpus/treebank-sentence-strings.txt")
 
 ;;--------- Cases for debugging segmentation, bracket calculations
 
@@ -74,7 +100,6 @@
 
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/1 Aljazeera_Jan-18.txt")
 
-(setq *verbose-document-stream* t)
 ;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu") 
 
 ;; These are in dm&p in the workspaces file under init. They're stray medium size
@@ -94,13 +119,10 @@
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
 
 
-#|
--- For searching with grep.
-cd sparser/Sparser/code/s/
-grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
-|#
+;;;--------
+;;; Traces
+;;;--------
 
-;;-----Traces ----------------
 ;; *trace-set-status*
 
 (defun trace-segmentation ()
@@ -110,6 +132,8 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (trace-network)
   (trace-network-flow)
   (trace-status-history))
+
+;; (trace-forest-edges) ;; like trace-edges but over treetops
 
 ;; (trace-pnf)  ;; when proper names / capitalized sequences are implicated
 
@@ -161,6 +185,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (untrace-edges)
   (untrace-edge-multiplication)
   (untrace-treetops)
+  (unTrace-forest-edges)
   (untrace-scan-patterns)
   (untrace-sdm&p)
   (untrace-ns-sequences)
