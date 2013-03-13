@@ -60,7 +60,7 @@
 ;;      (12/19/11) Adding "Hurricane" by analogy to how place names are done.
 ;;       Tweaking little things in lieu of a big makeover through 12/10/12. Fixed
 ;;       typo in that and finished off stub 1/18/13. Fixed probable tempest in a
-;;       tea pot in the tt-backoff code 3/5/13.
+;;       tea pot in the tt-backoff code 3/5/13. And fixed the fix 3/6/13/
 
 (in-package :sparser)
 
@@ -802,7 +802,6 @@
   (let* ((first-tt (first treetops))
          (start-vector (edge-starts-at first-tt))
          (end-vector (edge-ends-at first-tt))
-         (array (ev-edge-vector start-vector))
          name-word-individual )
     (unless (= 1 (- (pos-token-index (ev-position end-vector))
                     (pos-token-index (ev-position start-vector))))
@@ -810,8 +809,7 @@
       (break "Multiple-tt backoff: seems to span more than one word"))
 
     ;; Do we already have a name-word edge on the list?
-    (let ((nw-edge (find category::name-word array
-                         :key #'edge-category :test #'eq)))
+    (let ((nw-edge (search-ev-for-edge start-vector category::name-word)))
       (or nw-edge
 
           ;; Does this word project to a name-word? If so we'll use that, otherwise

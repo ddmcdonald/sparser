@@ -143,13 +143,15 @@
          (case (cat-symbol (itype-of result))
            ((or category::name
                 category::uncategorized-name
-                category::company-name)
+                category::company-name
+                category::person-name
+                category::person-name/first-last)
             (do-referent-and-edge result
                                   starting-position ending-position))
            (category::named-object
             ;; referent alreay established
             (push-debug `(,result ,starting-position ,ending-position))
-            (break "success"))
+            (break "success")) ;; for "WHO" see as directly referring to the organization
            (otherwise
             (push-debug `(,result ,starting-position ,ending-position))
             (error "examine-capitalized-sequence returned a new category ~
