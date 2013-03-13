@@ -29,9 +29,12 @@
           (then
             (if (form-rule? rule)
               (tr :ignoring-multple-form-rule rule already-have-a-rule)
+              ;; "Ignoring form rule ~a~
+              ;; ~%   in favor of ~a"
               (else
                 (tr :multiple-completions already-have-a-rule rule)
-                ;; (break "flesh out this stub")
+                ;; "Already completed rule ~A~
+                ;; ~%   and also completing ~A"
                 (setq single-edge
                       (make-completed-binary-edge
                        left-edge right-edge rule)))))

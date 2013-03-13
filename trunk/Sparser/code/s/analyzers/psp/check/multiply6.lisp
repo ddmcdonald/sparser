@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "multiply"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  6.0 August 2008
+;;;  Version:  6.0 March 2013
 
 ;; 0.0 (9/4/92 v2.3) initiated.
 ;; 0.1 (10/12) pulled multiply-ids back to [chart;edges:multiplication],
@@ -27,6 +27,8 @@
 ;;     (8/28/08) When we do that, we get an interaction with n-ary rules
 ;;      where the form field holds a symbol (:dotted-intermediary). Those
 ;;      don't combine, so we just let category-ids return nil.
+;;     (3/8/13) Fixed the name of the multiplier for referents so it's
+;;      not a duplicate. Added trace for success and failure.
 
 (in-package :sparser)
 
@@ -87,10 +89,12 @@
   ;; and then whether there is a category combination or, barring
   ;; that, a form combination.
   (tr :multiply-edges left-edge right-edge)
+  ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
   
   (if (edge-of-dotted-intermediary right-edge)
     ;; dotted rules only combine to their right, never to their left
     (then (tr :right-edge-is-dotted right-edge)
+          ;; "   but the right edge, e~A, is dotted and can't possibly combine"
           nil)
     
     (let (;(left-rs (rule-set-for (edge-category left-edge)))
@@ -126,13 +130,14 @@
 
     (dolist (right-category right-categories)
       (dolist (left-category left-categories)
-        (let ((rule (multiply-categories left-edge left-category 
-                                         right-edge right-category)))
+        (let ((rule (multiply-referent-categories left-edge left-category 
+                                                  right-edge right-category)))
           (when rule
             (return-from multiply-referents rule)))))))
 
 
-(defun multiply-categories (left-edge left-category right-edge right-category)
+(defun multiply-referent-categories (left-edge left-category 
+                                     right-edge right-category)
   (let* ((left-rs (rule-set-for left-category))
          (left-ids (when left-rs
                      (rs-right-looking-ids left-rs)))
@@ -151,7 +156,7 @@
   (etypecase referent
     (psi
      (all-categories-in-psi referent))
-    (individual
+    (individual ;;/// No -- has to be all it's supercs
      (indiv-type referent))))
      
 
@@ -169,9 +174,11 @@
 (defun multiply-categories (left-category-ids right-category-ids
 			    left-edge right-edge)
   (tr :muliply-categories)
+  ;; "[Multiply threading] Called muliply-categories"
   (if (and left-category-ids right-category-ids)
     (then
       (tr :both-have-category-ids)
+      ;; [Multiply]    both labels have category ids"
       ;(mult/both-edges-with-ids left-category-ids right-category-ids
       ;				left-edge right-edge)
       (let ((left-label-id (category-multiplier left-category-ids))
@@ -179,14 +186,19 @@
 	(if (and left-label-id right-label-id)
 	  (then
 	    (tr :both-right-and-left-label-ids)
+            ;; "[Multiply]    both edges have category combinations"
 	    (let ((rule (multiply-ids left-label-id
 				      right-label-id)))
 	      (if rule
-		(then (tr :multiply-succeeded rule left-edge right-edge)
-		      rule)
-		(else 
-		  ;(mult/check-form-options left-edge right-edge)
-		  (mult/ids-on-form-label left-edge right-edge)))))
+		(then
+                 (tr :multiply-succeeded rule left-edge right-edge)
+                 ;; "[Multiply]    They succeeded ~A"
+                 rule)
+		(else
+                 (tr :multiply-failed left-edge right-edge)
+                 ;; "   which do not combine"
+                 ;(mult/check-form-options left-edge right-edge)
+                 (mult/ids-on-form-label left-edge right-edge)))))
 	  (else 
 	    ;(mult/check-form-options left-edge right-edge)
 	    (mult/ids-on-form-label left-edge right-edge)))))
