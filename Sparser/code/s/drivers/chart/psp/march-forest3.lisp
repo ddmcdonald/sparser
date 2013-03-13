@@ -22,25 +22,29 @@
 
 (defun march-back-from-the-right/forest ()
   (tr :march-back-from-the-right/forest)
+  ;; March-back-from-the-right/forest called at p~A"
   (let* ((rightmost *rightmost-active-position/forest*))
     (cond
      ((eq rightmost :no-edges)
       (tr :forest/no-edges)
+      ;; "There are no edges remaining in the forest"
       (move-on))
      (t
       (let ((edge (ev-top-node (pos-ends-here rightmost))))
         (cond
          ((eq rightmost *rightmost-quiescent-position*)
           (tr :forest/reached-quescence)
+          ;; "    but the quiescent position has been reached"
           (move-on))
 
          ((eq rightmost *first-chart-position-object*)
           (tr :forest/start-of-chart)
+          ;; "    but the quiescent position has been reached"
           (move-on))
 
          ((eq edge :multiple-initial-edges)
-          (try-parsing-tt/multiple-on-right
-           (pos-ends-here rightmost)))
+          ;; "try-parsing-tt/multiple-on-right: ~A"
+          (try-parsing-tt/multiple-on-right (pos-ends-here rightmost)))
 
          (edge
           (if (position-precedes (pos-edge-starts-at edge)
@@ -49,6 +53,7 @@
             (move-on)
             (else
               (tr :forest/found-edge edge rightmost)
+              ;; "Found e~A, ending at p~A"
               (if (edge-of-dotted-intermediary edge)
                 (march-back-one-position/forest rightmost)
                 (try-parsing-tt edge)))))
@@ -111,9 +116,11 @@
 
 (defun try-parsing-tt (right-edge)
   (tr :try-parsing-tt right-edge)
+  ;; "try-parsing-tt: ~A"
   (let ((adjacent-pos (pos-edge-starts-at right-edge)))
 
     (tr :forest/looking-leftwards-from right-edge adjacent-pos)
+    ;; "(F) Looking leftwards from ~A~%   for edges ending  at p~A"
 
     (let* ((adjacent-end-vector (pos-ends-here adjacent-pos))
            (left-edge (ev-top-node adjacent-end-vector))
@@ -123,6 +130,7 @@
         (if (eq left-edge :multiple-initial-edges)
           (then
             (tr :forest/single-adjacent-to-mult)
+            ;; "   it is adjacent to several edges"
             (unless (setq span (check-many-one adjacent-end-vector
                                                right-edge))
               (setq *rightmost-active-position/forest*
@@ -144,8 +152,8 @@
                 (t (setq *rightmost-active-position/forest*
                          adjacent-pos)))))
      (if span
-        (check-for-right-extensions/forest span)
-        (march-back-from-the-right/forest)))))
+       (check-for-right-extensions/forest span)
+       (march-back-from-the-right/forest)))))
 
 
 
@@ -188,34 +196,3 @@
                 (check-for-right-extensions/forest  spanning-edge))
           (else
             (march-back-from-the-right/forest)))))))
-
-
-;;;---------------------
-;;; network-flow traces
-;;;---------------------
-
-(defparameter *trace-forest-marching-flow* nil)
-
-(deftrace :march-back-from-the-right/forest ()
-  (when (or *trace-network-flow* *trace-forest-marching-flow*)
-    (trace-msg "March-back-from-the-right/forest called at p~A"
-               (pos-token-index *rightmost-active-position/forest*))))
-
-(deftrace :march-back-one-position/forest (rightmost)
-  (when (or *trace-network-flow* *trace-forest-marching-flow*)
-    (trace-msg "March-back-one-position/forest at p~A"
-               (pos-token-index rightmost))))
-
-(deftrace :try-parsing-tt/multiple-on-right (right-vector)
-  (when (or *trace-network-flow* *trace-forest-marching-flow*)
-    (trace-msg "try-parsing-tt/multiple-on-right: ~A"
-               right-vector)))
-
-(deftrace :try-parsing-tt (right-edge)
-  (when (or *trace-network-flow* *trace-forest-marching-flow*)
-    (trace-msg "try-parsing-tt: ~A" right-edge)))
-
-(deftrace :check-for-right-extensions/forest (left-edge)
-  (when (or *trace-network-flow* *trace-forest-marching-flow*)
-    (trace-msg "Check-for-right-extensions/forest ~A" left-edge)))
-
