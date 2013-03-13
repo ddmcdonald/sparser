@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "measure"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  June 1996
+;;;   version:  March 2013
 
 ;; initiated 7/28/94 v2.3. elaborated 8/7. 8/24 added some routines for verb-object
 ;; 9/7 still more. ditto 9/15. ditto 10/19, 11/21
@@ -12,6 +12,7 @@
 ;; references aren't good enough.  2/13 added per-run initializers
 ;; 2/16 added Term-has-classifiers?  6/25/96 moved the file to [grammar;rules:]
 ;; from [analysers;].
+;; 3/11/13 Commented out number-of-instances because of conflict with new generic fn
 
 (in-package :sparser)
 
@@ -795,12 +796,12 @@
 
 
 ;;--- scratch space 11/21
-
+#|  conflicts with the one in text-relation because it's not generic
 (defun number-of-instances (obj)
   (etypecase obj
     (binding (binding-count obj))
     (individual (length (instance-history obj)))))
-
+|#
 
 ;;--- 11/29
 
