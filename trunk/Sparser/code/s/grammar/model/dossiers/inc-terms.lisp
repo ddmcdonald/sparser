@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995,1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "kinds of companies"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  May 1993
+;;;  version:  March 2013
 
 ;; initiated 5/26/93 v2.3, copying most words from companies;inc:inc cases
-;; but with drastically different conceptualization.
+;; but with drastically different conceptualization. Added S.P.A. 3/8/13
 
 (in-package :sparser)
 
@@ -34,6 +34,8 @@
 (define-individual 'inc-term  :name "pt")
 
 (define-individual 'inc-term  :name "s.a.")
+
+(define-individual 'inc-term  :name "s.p.a.")
 
 
 ;; 1/5/96
