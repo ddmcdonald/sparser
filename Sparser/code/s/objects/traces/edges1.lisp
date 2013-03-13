@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1990-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-2005,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: edges1.lisp 110 2007-08-27 18:36:52Z dmcdonal $
 ;;; 
 ;;;     File:  "edges"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.2 August 2007
+;;;  Version:  1.2 March 2013
 
 ;; initiated 8/90
 ;; 10/30/91 added *trace-paired-punctuation*. 6/18/92 added *trace-terminal-edges*
@@ -20,17 +19,22 @@
 ;;     (2/9/05) Adding traces for multiplying referent categories. 4/1 added one
 ;;      for mulitiple completions.
 ;;     (8/21/07) Added cases for threading through multiply to debug its rebuild.
+;;     (3/8/13) Added *trace-do-edge* which is used outside of the tr machinery in
+;;      drivers/chart/psp/march-seg and presumably elsewhere. Moved out the forest
+;;      traces to traces/treetops
 
 (in-package :sparser)
 
 
 (defun trace-edges ()             ;; for meta-point
   (setq *trace-check-edges* t
+        *trace-do-edge* t 
         *trace-edge-creation* t
         *parse-edges* t))
 
 (defun untrace-edges ()
   (setq *trace-check-edges* nil
+         *trace-do-edge* nil
         *trace-edge-creation* nil
         *parse-edges* nil))
 
@@ -113,7 +117,7 @@
 (deftrace :both-have-category-ids ()
   ;; called from Multiply-categories
   (when *trace-check-edges*
-    (trace-msg "[Multiply]    both labels have some ids")))
+    (trace-msg "[Multiply]    both labels have category ids")))
 
 (deftrace :only-L/R-has-category-ids (left-category-ids right-category-ids)
   ;; called from Multiply-categories
@@ -212,17 +216,14 @@
   ;; called inside Multiply-edges on the succeed side
   (declare (ignore left-edge right-edge))
   (when *trace-check-edges*
-    (if (listp rule)
-      (then
-        (trace-msg "[Multiply]    more than one rule succeeded:")
-        (dolist (r rule)
-          (format t "~&[Multiply]       ~A~%" r)))
-      (else
-        (format *trace-stream*
-                "[Multiply]    it succeeded with ~A~
-              ~%      " (symbol-name (cfr-symbol rule)))
-        (princ-cfr rule *trace-stream*)
-        (terpri)))))
+    ;; Was code here that considered the possibility that multply
+    ;; returned a list, but it wrote to the trace stream directly
+    ;; and in CCL anyway that's not coming through
+    (when (listp rule) ;; so ignoring it
+      (setq rule (car rule)))
+    (trace-msg "[Multiply]    They succeeded ~A"
+               (symbol-name (cfr-symbol rule)))))
+        
 
 
 (deftrace :multiply-failed (left-edge right-edge)
