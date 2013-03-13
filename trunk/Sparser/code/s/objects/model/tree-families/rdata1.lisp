@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.4 January 2013
+;;;  version:  1.4 March 2013
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -43,6 +43,9 @@
 ;;      the binding of the parameters in dereference-rdata by blocking the
 ;;      binding of :main-verb (created a preference for :verb), so no verbs
 ;;      were getting realizations. (1/5/13) minor in-line doc.
+;;     (3/7/13) added :method to go with :function in ever-appears-in-function-referent
+;;      that lets us supply functions to the mappings as though they were
+;;      conventional binding-parameters. 
 
 (in-package :sparser)
 
@@ -118,11 +121,14 @@
 ;;; entry point from the definition of a referential category
 ;;;-----------------------------------------------------------
 
-;; Setup-rdata ia called from decode-category-parameter-list as part of defining
-;; a category This routine is responsible for decoding the rdata field,
-;; the routines in [driver] are the ones that actually create the rules
-
 (defun setup-rdata (category rdata &optional (delete? t))
+  ;; Setup-rdata ia called from decode-category-parameter-list as part of 
+  ;; defining a category This routine is responsible for decoding the rdata field,
+  ;; the routines in objects/model/tree-families/driver are the ones 
+  ;; that actually create the rules when individualsof this category are
+  ;; created. Runs for side-effects on the category object. The function
+  ;; that actually makes the rules is make-rules-for-realization-data
+ 
   (let ((old-rules
          (when (cat-realization category)
            (cadr (member :rules (cat-realization category))))))
@@ -140,7 +146,9 @@
 
       (when old-rules
         (if delete?
-          (then
+          (then 
+           ;(push-debug `((:new ,new-rules) (:old ,old-rules)))
+           ;(break "forstall stupidness")
             (dolist (cfr old-rules)
               (unless (member cfr new-rules :test #'eq)
                 (format t "~&~A ~A~%  no longer supported by rdata for ~A"
@@ -489,7 +497,8 @@
     (dolist (schr cases)
       (setq referent (schr-referent schr))
       (when referent
-        (setq fn-exp (cadr (memq :function referent)))
+        (setq fn-exp (or (cadr (memq :function referent))
+                         (cadr (memq :method referent))))
         (when fn-exp
           (when (memq term fn-exp)
             (setq does-appear? t)))))
