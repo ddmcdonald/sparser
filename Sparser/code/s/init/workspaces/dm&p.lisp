@@ -159,6 +159,31 @@ e37   MARKET                  28 "markets" 29
 e38                              "PERIOD"
 
 
+(p "W. Ed Tyler, 37 years old, a senior vice president at this printing concern, was elected president of its technology group, a new position.")
+
+[w. ed tyler], [ 37][ years old], [ a senior vice president] 
+at [ this][ printing] concern, 
+[ was elected][ president] of [ its technology group], [ a new position][.]
+                               source-start
+e19   PERSON                  1 "w . ed tyler , 37 years old" 9
+e11                              "COMMA"
+e17   SINGLE-WORD-TITLE       10 "a senior vice president" 14 ;;<<< "a ... title"
+e20 e21                          "at" :: at, AT
+e22                              "this"
+e23   PRINT-EVENT             16 "printing" 17
+e24   GENERIC-CO-WORD         17 "concern" 18
+e25                              "COMMA"
+e28   ELECT-EVENT             19 "was elected" 21
+e29   SINGLE-WORD-TITLE       21 "president" 22
+e30 e31                          "of" :: of, OF
+e32   PRONOUN/INANIMATE       23 "its" 24
+e33   TECHNOLOGY              24 "technology" 25
+e34 e35                          "group" :: KIND-OF-COMPANY, TITLE-MODIFIER
+e36                              "COMMA"
+e40   POSITION-KIND           27 "a new position" 30
+e41                              "PERIOD"
+
+
 
 (p "Investors are appealing to the Securities and Exchange Commission not to limit 
 their access to information about stock purchases and sales by corporate insiders.")
