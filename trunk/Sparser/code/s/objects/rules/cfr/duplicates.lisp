@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995, 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "duplicates"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.6 January 2011
+;;;   Version:   0.6 March 2013
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 0.1 (11/1) fixed polarity of dotted rules can be duplicated.
@@ -16,6 +16,9 @@
 ;;      when a dotted rule can be made when not in 'all-edges' mode, put in 
 ;;      more documentation 
 ;;     (1/19/11) Added flag to break when illegal duplicates have been found
+;; 0.7 (3/9/13) Discobered that the tests in duplication-check are duplicated
+;;      in establish-multiplier, which calls the duplication-msg itself.
+;;      Clarified the duplication message. 
 
 (in-package :sparser)
 
@@ -50,7 +53,7 @@
 ;;;-------------------
 
 (defun redefinition-of-rule (lhs existing-cfr/s)
-
+  ;; Caled from define-cfr
   ;; Called as part of defining a cfr. The 'existing cfr/s' was
   ;; found on the basis of the labels in its righthand side.
   ;; If this lhs (the lhs of the rule being defined) isn't
@@ -58,10 +61,8 @@
   ;; redefining some rule that we've already got) then we have
   ;; a duplication, which is ok only in certain limited 
   ;; curcumstances.
-  ;;
   ;;   Returns T if if the lhs is the same as one of those
   ;; in the existing-cfr/s
-
   (if (listp existing-cfr/s)
     (then
       ;; several rules already have the same rhs, check whether this
@@ -90,7 +91,7 @@
   ;; we announce the illegal duplication.  Since this routine is
   ;; the end of a tail-recursive change that will keep the rule
   ;; from going through
-
+  (break "Who calls this?")
   (cond (*permit-rules-with-duplicate-rhs*
          (construct-cfr lhs rhs form referent source))
 
@@ -101,52 +102,23 @@
 
          (t
           (duplication-msg existing-cfr lhs)
-	  (when (and *break-on-illegal-duplicate-rules*
-		     (y-or-n-p "Stop and look at the situation?"))
+	  (when *break-on-illegal-duplicate-rules*
 	    (push-debug `(,existing-cfr ,lhs ,rhs ,form ,referent ,source))
-	    (break "")))))
+	    (break "Look at why there's a duplicate rule~
+                  ~%and sort it out.")))))
 
 
 
-(defun duplication-msg (existing-cfr/s proposed-new-lhs)
-  ;; called from Duplication-check and Establish-multiplier
-
-  (if (listp existing-cfr/s)
-    ;; then there's more than one
-    (format
-     t "~%  You are trying to construct this rule:~
-        ~%     lhs: ~A~
-        ~%     rhs: ~A~
-        ~%~
-        ~%  But that combination is not permitted because there are already~
-        ~%  rules, ~A, where that same righthand side has the lhs~
-        ~%     ~A~
-        ~%  and neither is the proposed rule a dotted rule or alternatively~
-        ~%  is the one already defined dotted. ~
-        ~%
-        ~%  Since Sparser restricts righthand sides to have unique lefthand sides~
-        ~%  (parents), except is certain restricted situations, the proposed rule~
-        ~%  will not be created.  If you want to use it you must delete the~
-        ~%  existing rule first.~%"
-     
-     proposed-new-lhs (cfr-rhs (first existing-cfr/s))
-     existing-cfr/s (cfr-category (first existing-cfr/s)))
-
-    (format
-     t "~%  You are trying to construct this rule:~
-        ~%     lhs: ~A~
-        ~%     rhs: ~A~
-        ~%~
-        ~%  But that combination is not permitted now because there is already~
-        ~%  a rule, ~A, where that same righthand side has the lhs~
-        ~%     ~A~
-        ~%~
-        ~%  Since Sparser restricts righthand sides to have unique lefthand sides~
-        ~%  (parents), the proposed rule will not be created.  If you want to~
-        ~%  use it you must delete the existing rule first.~%"
-     
-     proposed-new-lhs (cfr-rhs existing-cfr/s)
-     (cfr-symbol existing-cfr/s) (cfr-category existing-cfr/s)))
-
-  :illegal-rule )
+(defun duplication-msg (existing-cfr proposed-new-lhs)
+  ;; Called from Duplication-check and by Establish-multiplier
+  ;; Taking it that there's just one existing rule.
+  (format t "~&~% Illegal rule duplication:~
+             ~%   You can't use the righthand side:~
+             ~%      ~A~
+             ~%   with the new lefthand side label ~a~
+             ~%   Because ~a already uses that rhs~
+             ~%   but with the lhs ~a"
+     (cfr-rhs existing-cfr) proposed-new-lhs 
+     (cfr-symbol existing-cfr)
+     (cfr-category existing-cfr)))
 
