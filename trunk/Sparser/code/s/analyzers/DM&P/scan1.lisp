@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id: scan1.lisp 207 2009-06-18 20:59:16Z cgreenba $
 ;;;
 ;;;      File:  "scan"
 ;;;    Module:  "analyzers;DM&P:"
-;;;   version:  1.1 February 2007
+;;;   version:  1.1 March 2013
 
 ;; initiated 3/28/94 v2.3. 5/23 fleshing out.  7/11,12,13,14 cont. fleshing out more cases
 ;; 1.0 (7/21) reconceptualized some of the operations and split out [mine]
@@ -17,6 +17,8 @@
 ;;     (1/17) added 'no-content-words-VG'
 ;;     (2/5/07) converted e{type}case to use otherwise & break. Added categories for
 ;;      "-section"
+;;     (3/6/13) Accommodated single-best-edge-over-word to the Comlex case
+;;      where instead of literals you get edges whose referent's are categories
 
 (in-package :sparser)
 
@@ -223,7 +225,8 @@
   (let ((result (only-nontrivial-edges
                  (all-preterminals-at pos-before))))
     (unless result
-      (break "Shouldn't happen:  nontriv. edge-check returned 'nil'"))
+      (push-debug `(,(all-preterminals-at pos-before) ,pos-before))
+      (break "Shouldn't happen: check for non-trivial edges returned 'nil'"))
 
     (typecase result
       (cons (highest-preterminal-at pos-before))
@@ -277,14 +280,20 @@
   ;; version threaded from Single-best-edge-over-word
   ;; handles problem of "first" taken as an ordinal vs. reified
   ;; as a term (e.g. "Disk First Aid")
-  (let ( term-edges )
+  (let ( term-edges class-edges )
     (dolist (edge list-of-edges)
-      (when (individual-p (edge-referent edge))
-        (push edge term-edges)))
+      (cond
+       ((individual-p (edge-referent edge))
+        (push edge term-edges))
+       ((category-p (edge-referent edge)) ;; e.g. from Comlex
+        (push edge class-edges))))
 
-    (if (cdr term-edges)
-      (take-top-edge-if-they-chain term-edges)
-      term-edges)))
+    (cond
+     ((and term-edges (cdr term-edges)) ;; check for null class-edges?
+      (take-top-edge-if-they-chain term-edges))
+     (t (or term-edges
+            class-edges)))))
+   
 
 
 (defun take-top-edge-if-they-chain (list-of-edges)
