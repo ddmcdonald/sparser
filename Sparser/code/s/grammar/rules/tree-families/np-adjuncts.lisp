@@ -81,8 +81,8 @@
   :description "The modifer is related to the head in a way that depends
         on the types of referents of the two edges, This is sorted out
         by the method."
-  :binding-parameters ( property )
-  :labels ( np-head modifier combo-method)
+  :binding-parameters (combo-method)
+  :labels ( np-head modifier)
   :cases
      ((:modifier (np-head (modifier np-head)
                   :head right-edge
