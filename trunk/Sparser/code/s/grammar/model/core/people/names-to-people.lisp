@@ -113,7 +113,8 @@
 ;;;-----------------------
 ;;; relation to countries
 ;;;-----------------------
-
+#|  Can't use until the Chomsky adjunction issue with multiple
+    categories in an ETF mapping is sorted out
 (define-category nationality
   :specializes associated-with-country
   :binds ((country . country)
@@ -130,7 +131,7 @@
           category::np)
     (define-or-find-individual category::nationality
         :country country :person person)))
-
+|#
 
 
 ;;;-----------------
