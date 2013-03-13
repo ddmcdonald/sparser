@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   0.7 February 2013
+;;;   Version:   0.7 March 2013
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -26,6 +26,8 @@
 ;;      and their state variables. 10/10/12 Completely rewrote it
 ;;     (2/11/13) changed the init form for where print-segment left off
 ;;      so that it doesn't re-initalize when we're doing a stream of documents.
+;;     (3/8/13) Fixed initialization problem with the init form for
+;;      *where-print-segment-left-off*
 
 (in-package :sparser)
 
@@ -282,10 +284,8 @@ there were ever to be any.  ///hook into final actions ??  |#
 
 (defvar *where-print-segment-left-off* 1)
 (define-per-run-init-form
-    '(prog
-       (declare (special *current-document-stream*))
-       (unless *current-document-stream*
-         (setq *where-print-segment-left-off* 1))))
+    '(unless *current-document-stream*
+       (setq *where-print-segment-left-off* 1)))
 
 (defun print-segment-and-pending-out-of-segment-words ;; new word-based version
     (start-pos end-pos &optional (stream *standard-output*))
