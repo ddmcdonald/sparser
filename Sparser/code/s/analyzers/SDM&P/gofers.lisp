@@ -73,6 +73,9 @@
       (break "referent-of-right-suffix -- expected there to be a suffix edge"))
     (edge-referent suffix)))
 
+(defun segment-length ()
+  (- (pos-token-index *right-segment-boundary*)
+     (pos-token-index *left-segment-boundary*)))
 
 (defun words-in-segment ()
   (words-between *left-segment-boundary* *right-segment-boundary*))
