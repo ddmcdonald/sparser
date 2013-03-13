@@ -9,7 +9,9 @@
 ;; initiated 8/6/07. Moved out the generic routine 9/4. Changed one of
 ;; the form rules from np-head to common-noun since that's what we
 ;; actually get. 
-;; 0.1 (3/4/13) Substantially reworking it. Using an ETF.
+;; 0.1 (3/4/13) Substantially reworking it. Using an ETF. Fixed the
+;;  method 3/8.  Blocking it 3/9  because the set of rules that
+;;  actually get created is bogus
 
 (in-package :sparser)
 	
@@ -24,6 +26,12 @@ type of the item (person, vs city, vs government official) then we
 should use a category and use methods for the composition
 |#
 
+#|
+The ETF doesn't do the right thing (it's beyond it's ken) because
+it's random which of the two options for the region-type become
+lhs and rhs randomly when they should be systematically the same
+       person -> country person
+ but   person -> country region-tpye
 
 (define-category associated-with-country
   :instantiates self
@@ -31,14 +39,11 @@ should use a category and use methods for the composition
   :binds ((country . country)
           (item))
   :index (:sequential-keys country item)
-)
-  ;; need to break out the combo-method as a  new field
-  ;; of ETF so it doesn't get automatically converted to a category
-;  :realization (:tree-family modifier-adds-head-dependent-property
-;                :mapping ((np-head . (person region-type))
-;                          (modifier . country)
-;                          (property . country)
-;                          (combo-method . relationship-to-country))))
+  :realization (:tree-family modifier-adds-head-dependent-property
+                :mapping ((np-head . (person region-type))
+                          (modifier . country)
+                          (combo-method . relationship-to-country))))
+|#
                            
 ;;//// See people/names-to-people and places/regions to fix it all up
 ;; and remove the hacks that are there
@@ -51,12 +56,15 @@ should use a category and use methods for the composition
 (defmethod relationship-to-country ((c sh::country) (thing t))
   (let ((country (dereference-shadow-individual c))
         (item (dereference-shadow-individual thing)))
-    (find-or-make/individual 'associated-with-country
-        `(:country ,country :item ,item))))
+    ;; Person and location versions of this method hack with
+    ;; the form and category of the edge being created.
+    ;; /// Should we do that here? What would it look like?
+    (define-or-find-individual 'associated-with-country
+        :country country :item item)))
 
 
 
-#|
+#|  Treatment in 2007  Model for a general compose
 (def-form-rule (country common-noun)
   :form n-bar
   :referent (:head right-edge
