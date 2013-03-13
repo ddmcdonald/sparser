@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  February 2013
+;;;  Version:  March 2013
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -26,6 +26,8 @@
 ;; 2/20/11 added *make-edges-over-new-digit-sequences*. 4/8/11 added
 ;; *convert-eft-form-categories-to-form-rules*. Added *do-unanalyzed-hyphenated-
 ;; sequences* 11/5/12. Added *accumulate-content-across-documents* 2/18/13
+;; 3/8/13 added *break-on-multiple-single-term-completions*.
+;; 3/9/13 added *note-text-relations*
 
 (in-package :sparser)
 
@@ -141,6 +143,11 @@
   (defparameter *do-strong-domain-modeling* nil
     "Set as part of the switch settings, read in Segment-finished"))
 
+(unless (boundp '*note-text-relations*)
+  (defparameter *note-text-relations* nil
+    "A switch read in segment-finished. Controls whether we collect
+     purely textual relationship such as head, subject-verb, etc."))
+
 (unless (boundp '*new-dm&p*)
   (defparameter *new-dm&p* nil
     "Set as part of the switch settings, read within Segment-finished.
@@ -205,6 +212,10 @@
 
 (defparameter *cfg-flag* nil
   "For debugging.")
+
+(defparameter *break-on-multiple-single-term-completions* nil
+  "Read in check routines to look at or ignore the cases when more
+   than on edge over a terminal has a rule that extends it.")
 
 
 ;;;-----------------------------------
