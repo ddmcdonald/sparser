@@ -1,16 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(S2) -*-
 ;;; Copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2011-2012  David D. McDonald  -- all rights reserved
-;;; $Id$
+;;; Copyright (c) 2011-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File: /grammar/rules/words/one-offs/treebank-reader.lisp
-;;;  version: March 2012
+;;;  version: March 2013
 
 ;; (2/9/11) Wrapped the mapcar for the top-level calls into a function that
 ;;  has to be called. The 'pp' function it creates conflicts with the 'pp'
 ;;  abbreviation for invoking the parser when loaded into a case-insensitive
 ;;  lisp such as Clozure Found another mispatch in accessor and changed the
-;;  struct's prefix to #: notation.
+;;  struct's prefix to #: notation. (3/7/13) added treebank-smoke-test just
+;;  to see what blows up.  (3/12/13) renamed incident-count when text-relations
+;; wanted it as a generic function.
 
 (in-package :sparser)
 
@@ -318,7 +319,7 @@
               (sort icps #'> :key #'icp-freq)))))
 
 
-(defun incident-count ()
+(defun icp-incident-count ()
   (let ((count 0))
     (maphash #'(lambda (tag table)
                  (declare (ignore tag))
@@ -333,7 +334,7 @@
 
 
 (defun icp-by-percentage (percent)
-  (let* ((total (incident-count))
+  (let* ((total (icp-incident-count))
          (target (round (* total percent)))
          (accumulated 0)
          (icp-count 0))
@@ -729,6 +730,47 @@
               (error (e2)
                 e))
             str))))
+
+
+;; (treebank-smoke-test "/Users/ddm/sift/nlp/Grok/corpus/treebank-sentence-strings.txt")
+(defun treebank-smoke-test (full-tb-filename)
+  (with-open-file (stream full-tb-filename
+                     :direction :input
+                     :if-does-not-exist :error)
+    (flet ((smoke-test (string)
+             (handler-case
+                 (with-readtable-bound *current-readtable*
+                   (analyze-text-from-string string))
+                (error (e)
+                  
+                  (list :error
+                        (type-of e)
+                        (handler-case
+                            (cond ((typep e 'type-error)
+                                   (format nil "Type error: ~A expected to be ~A."
+                                           (type-error-datum e) (type-error-expected-type e)))
+                                  (t
+                                   (apply #'format nil
+                                          (simple-condition-format-control e)
+                                          (simple-condition-format-arguments e))))
+                          (error (e2)
+                                 e2))
+                        string)))))
+      (with-readtable-bound *my-readtable*
+        (let ((eof? nil)
+              (sexp nil)
+              (*break-on-new-bracket-situations* nil)
+              (*display-word-stream* nil) ;; could make these sensitive to verbose
+              (*readout-segments-inline-with-text* nil)
+              (*record-bracketing-progress* nil))
+          (loop while (not eof?) do
+            (setq sexp (read stream nil :eof))
+            ;(when verbose
+            ;  (format t "~s~%" sexp))
+            (when (eq sexp :eof) (return))
+            (smoke-test sexp)))))))
+
+
 
 (defun get-segments (l &aux ans)
   ;; Return a list of (<start-index> <end-index> <contents>) entries.
