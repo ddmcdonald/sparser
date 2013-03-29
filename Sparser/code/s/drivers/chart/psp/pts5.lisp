@@ -130,6 +130,8 @@ have to be tail recursion to the next thing to do.
     (cond 
      (*do-domain-modeling-and-population* 
       'dm/analyze-segment)
+     (*note-text-relations*
+      'note-text-relations-in-segment)
      (*do-strong-domain-modeling*
       'sdm/analyze-segment)
      (t 
@@ -138,9 +140,6 @@ have to be tail recursion to the next thing to do.
      has been parsed. It may do further analyses of what's in the
      segments, but eventually has to do the 'normal' options
      and ultimately scan another segment or move to the forest level."))
-
-(defun after-action-on-segments (coverage)
-  (funcall *after-action-on-segments* coverage))
 
 
 ;;--- cases for switching options
@@ -158,6 +157,10 @@ have to be tail recursion to the next thing to do.
 ;; (do-strong-domain-modeling)
 (defun do-strong-domain-modeling ()
   (setq *after-action-on-segments* 'sdm/analyze-segment))
+
+;;  (do-note-text-relations-in-segment)
+(defun do-note-text-relations-in-segment ()
+  (setq *after-action-on-segments* 'note-text-relations-in-segment))
 
 
 ;;;------------------------
@@ -179,10 +182,13 @@ have to be tail recursion to the next thing to do.
     (else
      (after-action-on-segments coverage))))
 
+(defun after-action-on-segments (coverage)
+  (funcall *after-action-on-segments* coverage))
+
 (defun normal-segment-finished-options (coverage)
   ;; This is "segment-finished" for the purposes of the inline doc below
   ;; broken out of segment-finished to let us call it as a fall-back
-  ;; in the sdm routines.
+  ;; in the sdm routines or as a follow-on to what they do.
   (case coverage
     (:one-edge-over-entire-segment
      (sf-action/spanned-segment))
@@ -234,7 +240,10 @@ have to be tail recursion to the next thing to do.
   ;; keep this one in case we see evidence that that boundary that
   ;; closed this segment should be overridden and it should be
   ;; opened up and extended.
-  (setq *where-the-last-segment-started* *left-segment-boundary*))
+  (setq *where-the-last-segment-started* *left-segment-boundary*)
+
+  ;; state variables used in analyzers/sdm&p/gofers.lisp
+  (initialize-segment-state-variables))
 
 
 
