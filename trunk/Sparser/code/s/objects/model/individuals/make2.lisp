@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions opyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  2.0 December 2012
+;;;  version:  2.1 March 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -56,6 +56,8 @@
 ;;      case where an identical description in fact denoted a different individual.
 ;; 2.0 (7/12/09) fan-out from psi changse. (2/18/10) Added synonyms to rdata dispatch.
 ;;     (8/15/11) a bit of cleanup. (12/15/12) added make-permanent-unindexed-individual.
+;; 2.1 (3/22/13) Experimenting with *do-not-use-psi* that is or's into fits-criteria-for
+;;      -simple-individuals and makes it always return t. 
 
 (in-package :sparser)
 
@@ -217,17 +219,18 @@
     (make-simple-individual category binding-instructions)))
 
 (defun fits-criteria-for-simple-individuals (category binding-instructions-alist/plist)
-  (let ((binding-instructions
-         (if (consp (first binding-instructions-alist/plist))
-           binding-instructions-alist/plist
-           (plist-to-alist binding-instructions-alist/plist
-                           :not-dotted))))
-    (or (only-slot-is-word category)
-        (sets-a-name-slot category binding-instructions)
-        (saturated-form-on-primitives category binding-instructions)
-        (saturated-simple-index category binding-instructions)
-        (binds-all-slots category binding-instructions)
-        (the-missing-slots-are-primitive category binding-instructions))))
+  (or *do-not-use-psi*
+      (let ((binding-instructions
+             (if (consp (first binding-instructions-alist/plist))
+               binding-instructions-alist/plist
+               (plist-to-alist binding-instructions-alist/plist
+                               :not-dotted))))
+        (or (only-slot-is-word category)
+            (sets-a-name-slot category binding-instructions)
+            (saturated-form-on-primitives category binding-instructions)
+            (saturated-simple-index category binding-instructions)
+            (binds-all-slots category binding-instructions)
+            (the-missing-slots-are-primitive category binding-instructions)))))
 
 
 
