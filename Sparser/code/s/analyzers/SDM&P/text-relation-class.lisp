@@ -9,9 +9,9 @@
 
 (in-package :sparser)
 
-;;;--------
-;;; object
-;;;--------
+;;;------------------------------
+;;; class for the relation types
+;;;------------------------------
 #|
 There are a relatively small number of text relation types,
 so they are permanent like grammatical rules are. 
@@ -33,6 +33,9 @@ so they are permanent like grammatical rules are.
     :documentation "A flat kons list of the instances.")
    (resource
     :documentation "A reusable pool of instances of the class")
+   (print-form :type list :accessor tr-print-form
+    :documentation "a list of format string &rest args as input
+      that is wrapped in a lambda of (stream i).")
 
    (class :type symbol :accessor tr-class
     :documentation "the name of class we instantiate for instances of
@@ -49,10 +52,33 @@ so they are permanent like grammatical rules are.
     :documentation "A list of the arguments that this relation notes")
    (action :type symbol :accessor tr-action
     :documentation "the name of the function that should be executed
-      when an instances of this relationship is noted.")
+      when an instances of this relationship is noted."))
+  (:documentation 
+   "This is a meta class that collects and organizes the information
+    that goes into the runtime class and its instances. It's populated
+    by def-text-relation, which also makes that much lighter class 
+    that we instantiate (whose is stored here)."))
 
-)
-  (:documentation ""))
+
+;;--- top class of the particular relations
+
+(defclass common-tr-instance ()
+  ((instance-count :type integer :initform 0 :accessor incident-count)
+   (print-arg :type string :accessor tri-print-args-value)
+   (relation :type text-relation :accessor tr-relation))
+  (:documentation "This is a regular clas, not a text-relation, 
+    which is a simpler way to cap off the base. Have to ensure
+    that we don't treat it like a text-relation, e.g. don't try
+    to initialize it."))
+
+;; Probably could do in an eval-when, but doing in def-text-relation now
+(defun initialize-top-text-relations ()
+  (let ((tr (find-class 'common-tr-instance)))
+    (unless tr (error "something wrong"))
+    (setf (gethash (canonical-tr-name 'common)
+                   *tr-names-to-objects*)
+          tr)))
+
 
 ;;;----------
 ;;; printers
@@ -61,3 +87,13 @@ so they are permanent like grammatical rules are.
 (defmethod print-object ((tr text-relation) stream)
   (print-unreadable-object (tr stream :type t)
     (format stream "~a" (name tr))))
+
+(defmethod print-object ((i common-tr-instance) stream)
+  (let ((print-args (tri-print-args-value i)))
+    (if print-args
+      (print-unreadable-object (i stream)
+        (format stream "~a ~a ~a"
+                (type-of i) (incident-count i) print-args))
+      (call-next-method))))
+
+

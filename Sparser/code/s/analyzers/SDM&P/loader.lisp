@@ -11,7 +11,7 @@
 ;; [gofers] and [heuristics] for flexibility in salvaging more of the original
 ;; code developed for JTC/TRS.  3/9/13 added [note-text-relations] and [text-relations]
 ;; Distributed text-relations to relation-class, text-relation-form, and
-;; text-relation-indexing 3/12/13
+;; text-relation-indexing 3/12/13. [analyze..] 3/14.
 
 (in-package :sparser)
 
@@ -26,6 +26,7 @@
 (lload "do SDM&P;text-relation-form")
 (lload "do SDM&P;text-relation-indexing")
 (lload "do SDM&P;note-text-relations")
+(lload "do SDM&P;analyze-text-relations")
 
 (lload "do SDM&P;traces")
 
