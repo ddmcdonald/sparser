@@ -82,12 +82,12 @@
 ;;;------------------------------
 
 (defun multiply-edges (left-edge right-edge)
-
   ;; Called from the check routines, e.g. check-one-one
   ;; Looks for any possibility of composition for these edges first,
   ;; i.e. whether there are the right direction indexes for these,
   ;; and then whether there is a category combination or, barring
   ;; that, a form combination.
+  ;; Returns a rule or nil to indicate the edges don't combine.
   (tr :multiply-edges left-edge right-edge)
   ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
   
@@ -97,13 +97,7 @@
           ;; "   but the right edge, e~A, is dotted and can't possibly combine"
           nil)
     
-    (let (;(left-rs (rule-set-for (edge-category left-edge)))
-           ;(left-category-ids (when left-rs
-           ;                    (rs-right-looking-ids left-rs)))
-	   (left-category-ids (category-ids/rightward left-edge))
-           ;(right-rs (rule-set-for (edge-category right-edge)))
-           ;(right-category-ids (when right-rs
-           ;                      (rs-left-looking-ids right-rs)))
+    (let ((left-category-ids (category-ids/rightward left-edge))
 	   (right-category-ids (category-ids/leftward right-edge)))
       
       (or (multiply-categories left-category-ids right-category-ids
@@ -122,18 +116,55 @@
 
 (defun multiply-referents (left-edge right-edge)
   (tr :multiplying-referent-categories)
-  (let* ((left-referent (edge-referent left-edge))
-         (right-referent (edge-referent right-edge))
-         (left-categories (multiple-referent-categories left-referent))
-         (right-categories (multiple-referent-categories right-referent)))
-    (tr :referent-categories-to-check left-categories right-categories)
+  (let ((left-referent (edge-referent left-edge))
+        (right-referent (edge-referent right-edge)))
 
-    (dolist (right-category right-categories)
-      (dolist (left-category left-categories)
-        (let ((rule (multiply-referent-categories left-edge left-category 
-                                                  right-edge right-category)))
-          (when rule
-            (return-from multiply-referents rule)))))))
+    ;; rule out edges with no referent or referents that wouldn't apply
+    (if (and left-referent right-referent
+             (legal-type-for-multiplying-referents left-referent)
+             (legal-type-for-multiplying-referents right-referent))
+      (let ((left-categories (multiple-referent-categories left-referent))
+            (right-categories (multiple-referent-categories right-referent)))
+        (tr :referent-categories-to-check left-categories right-categories)
+
+        (dolist (right-category right-categories)
+          (dolist (left-category left-categories)
+            ;; Add traces for these cases, or do the regular trace-edges ones
+            ;; suffice?
+            (let ((rule (multiply-referent-categories left-edge left-category 
+                                                      right-edge right-category)))
+              (when rule
+                (return-from multiply-referents rule))))))
+
+      (else (tr :referents-unsuitable-for-multiplying
+                left-edge right-edge left-referent right-referent)
+            nil))))
+
+(defun legal-type-for-multiplying-referents (obj)
+  ;; Perhaps better as an flet on multiply-referents since it has 
+  ;; no other use. Tracks multiple-referent-categories
+  (typecase obj
+    ((or individual psi referential-category) t)
+    (otherwise nil)))
+
+(defun multiple-referent-categories (referent)
+  ;; Consult the supercategory links to return a list of the categories
+  ;; to which the referent belongs, from the most specific to the
+  ;; most general
+  (let ((base-category
+         (typecase referent
+           (psi (all-categories-in-psi referent))
+           (individual (indiv-type referent))
+           (referential-category referent)
+           (otherwise
+            (push-debug `(,referent))
+            (error "Unexpected type: ~a" (type-of referent))))))
+    (when (consp base-category)
+      (if (null (cdr base-category))
+        (setq base-category (car base-category))
+        (else (push-debug `(,base-category ,referent))
+              (break "stub - more than one category"))))
+    (super-categories-of base-category)))
 
 
 (defun multiply-referent-categories (left-edge left-category 
@@ -148,17 +179,12 @@
     (tr :multiply-edges-by-referent-category 
         left-category right-category left-edge right-edge)
         
-    (multiply-ids-dispatch left-ids right-ids 
-                           left-edge right-edge)))
+    ;; (multiply-ids-dispatch -- see multiply5
+    (multiply-categories ;; what it seemed to have morphed into
+     left-ids right-ids 
+     left-edge right-edge)))
+    
 
-
-(defun multiple-referent-categories (referent)
-  (etypecase referent
-    (psi
-     (all-categories-in-psi referent))
-    (individual ;;/// No -- has to be all it's supercs
-     (indiv-type referent))))
-     
 
 
 
@@ -179,8 +205,6 @@
     (then
       (tr :both-have-category-ids)
       ;; [Multiply]    both labels have category ids"
-      ;(mult/both-edges-with-ids left-category-ids right-category-ids
-      ;				left-edge right-edge)
       (let ((left-label-id (category-multiplier left-category-ids))
 	    (right-label-id (category-multiplier right-category-ids)))
 	(if (and left-label-id right-label-id)
@@ -197,14 +221,11 @@
 		(else
                  (tr :multiply-failed left-edge right-edge)
                  ;; "   which do not combine"
-                 ;(mult/check-form-options left-edge right-edge)
                  (mult/ids-on-form-label left-edge right-edge)))))
 	  (else 
-	    ;(mult/check-form-options left-edge right-edge)
 	    (mult/ids-on-form-label left-edge right-edge)))))
     (else
       (tr :only-L/R-has-category-ids left-category-ids right-category-ids)
-      ;(mult/check-form-options left-edge right-category)
       (mult/ids-on-form-label left-edge right-edge))))
 
 
