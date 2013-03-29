@@ -166,7 +166,8 @@
     (setf (article-name obj) name
           (article-location obj) location
           (article-date obj) date
-          (article-source obj) source)
+          (article-source obj) source
+          (article-contents obj) (fresh-contents))
     (setf *current-article* obj)
     (reset-paragraph-state-in-article)
     obj))
