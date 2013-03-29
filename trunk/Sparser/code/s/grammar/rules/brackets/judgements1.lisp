@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.9 January 2013
+;;;  Version:  1.9 March 2013
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -46,7 +46,7 @@
 ;;      bug from false segment starting bracket where proper name ends in "ing"
 ;;      (11/8/12) started folding in adj-verb brackets. (11/9/12) added debugging
 ;;      method brackets-on. Diverse tweaking through 12/10. Added a flag to inhibit
-;;      breaking on new cases. 
+;;      breaking on new cases. 3/13/13 Trying more interesting cases
 
 (in-package :sparser)
 
@@ -298,6 +298,8 @@
                   (eq bracket-opening-segment .[np-vp )
                   (eq bracket-opening-segment .[|that| ))                  
               t)
+             ((segment-started-as-np?) ;; and now we have an unambiguous verb
+              t)
              ((eq (first *bracket-opening-segment*) .[adverb)
               nil )
              ((or (eq bracket-opening-segment pronoun.[)
@@ -306,7 +308,7 @@
                   (eq bracket-opening-segment mvb.[)) ;; not two in a row
               t)
              ((eq (first *bracket-opening-segment*) phrase.[) ;; refine the case?
-              t)  ;; example was "[Rainya is " PNF should be more definitive?
+              t)  ;; example was "Rainya is " PNF should be more definitive?
              (t (if *break-on-new-bracket-situations*
                   (then
                    (push-debug `(,position ,*bracket-opening-segment*
@@ -359,6 +361,10 @@
               nil)
              ((segment-started-as-vg?)
               t)
+             ((eq bracket-opening-segment punctuation.[)
+              ;; that's weak, but for "xx-based . regional office" it's the
+              ;; only evidence that's explicit.
+              nil)
              ((= 0 word-count) nil) ;; something should follow this adjective
              (t (if *break-on-new-bracket-situations*
                   (then
@@ -406,6 +412,11 @@
               ;; reasons to interpret it as a verb and terminate an np segment
               ((eq bracket-opening-segment .[|that|) t)
 
+              ;; We're probably coming out of an apositive so it's a verb
+              ;; and we terminate anything that's ongoing
+              ((eq (word-symbol previous-word) 'word::comma)
+               t)
+
               ((eq bracket-opening-segment mvb.[)
                ;; reason to end because we've probably got a noun
                t)
@@ -426,6 +437,12 @@
               ;; have two main verbs in a row, which is implausible, 
               ;; so we interpret the first word as a noun
               ;; /// Change the lead bracket ??
+
+              ((eq bracket-opening-segment .[adverb)
+               ;; tricky one since so many can go either way. ///maybe differentiate
+               ;; between "ly" and other adverbs?  Or just do the problematic ones
+               ;; by hand
+               t)
 
               ((eq bracket-opening-segment phrase.[) t) ;; after a period
               ((eq bracket-opening-segment preposition.[) t) ;; after preposition
@@ -486,6 +503,9 @@
 
            ((eq ]  ].adj-verb)
             (cond
+             ((and previous-word
+                   (word-definitively-ends-segment previous-word))
+              t)
              ((segment-started-as-np?) ;; adjective reading
               nil)
              ((segment-started-as-vg?) ;; verb reading
@@ -518,6 +538,12 @@
              ;; or coninuing an NP (nil)
              ((segment-started-as-np?) nil)
              ((segment-started-as-vg?) t)   ;; "was asleep" - strand the verb
+             ((eq bracket-opening-segment preposition.[)
+              (refine-bracket-at-segment-boundary preposition.[ .[adjective)
+              nil)
+             ((eq bracket-opening-segment .[|that|)
+              (refine-bracket-at-segment-boundary preposition.[ .[adjective)
+              t)
              (t (if *break-on-new-bracket-situations*
                   (then
                    (push-debug `(,position ,*bracket-opening-segment*

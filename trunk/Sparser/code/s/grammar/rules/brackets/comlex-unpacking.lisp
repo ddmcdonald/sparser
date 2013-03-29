@@ -3,10 +3,10 @@
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  February 2013
+;;;  Version:  March 2013
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
-;; and put in the ambiguous flag.
+;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
 
 (in-package :sparser)
 
@@ -47,10 +47,6 @@ places. ]]
 
 
 |#
-
-(defparameter *edge-for-unknown-words* t
-  "This switch dictates whether or not we create a category,
- referent, and single-term rule for a word when it is unpacked.")
 
 ;;;---------------------------------------------
 ;;; 'Activating' the primed words at parse-time
@@ -219,6 +215,12 @@ places. ]]
          ;; sconj
          (setup-verb lemma clauses :ambiguous))
        (brackets-for-adjective-noun-sconj-prep-verb lemma))
+
+      ((equal combinations '(adverb advpart)) ;; "apart"
+       ;; ignoring the participle reading
+       (if *edge-for-unknown-words*
+         (setup-adverb lemma)
+         (assign-brackets-to-adverb lemma)))
 
       ((equal combinations '(adverb noun))
        (when *edge-for-unknown-words*
