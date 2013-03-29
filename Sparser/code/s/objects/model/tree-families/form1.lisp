@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "form"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.5 August 2011
+;;;  version:  1.5 March 2013
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10
 ;; 0.1 (10/24) Added processing of rule cases because of the words and
@@ -35,6 +34,7 @@
 ;;     put in a hack to identify the form of the result from the form category
 ;;     on the rhs. 
 ;; 1.5 (8/30/11) Modified default form calculation to look at lhs first. 
+;;     (3/19/13) Improved error message in decode-referent-term
 
 (in-package :sparser)
 
@@ -291,8 +291,11 @@
           (t
            (let ((category (resolve item)))
              (unless category
-               (break "No \"~A\" category has been ~
-                       defined, as used in:~%    ~A"
+               (push-debug `(,item ,substitution-terms))
+               (break "Trying to make sense of the item ~a~
+                     ~%in the referent expression~%  ~a~
+                     ~%But nothing has worked. Check whether ~
+                       it spelled correctly."
                       item exp))
              category))))
         ((listp item)
