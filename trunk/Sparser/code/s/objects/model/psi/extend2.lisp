@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2013 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "extend"
 ;;;   Module:  "objects;model:psi:"
-;;;  version:  2.0 October 2009
+;;;  version:  2.1 March 2013
 
 ;; initiated 11/29/97. First given any content 7/7/98. 2/14/99 canonicalized
 ;; the find call.  2/4/05 Adding some generality - motivated by the call in
@@ -21,30 +20,18 @@
 ;;      it to interned v+v, starting with extend-psi-by-binding since it's at the
 ;;      center of so many operations.
 ;; 2.0 (6/19/09) Still isn't right. So largely starting from scratch with simpler
-;;  treatment.  10/9 Cleaned up.
+;;       treatment.  10/9 Cleaned up.
+;; 2.1 (3/22/13) Determined that add-binding-to is only used twice, so flushing
+;;       the macro because it's calling context is completely different than this
+;;       would suggest since it's old code that calls in and there's not a variable in 
+;;       that first position.
 
 (in-package :sparser)
-
-;;;------------------------------------
-;;; macro for binding variables on psi
-;;;------------------------------------
-
-; With an individual, one would call bind-variable and the binding would be
-; a side-effect that doesn't touch your local varables. But with psi, the
-; act of binding a variable returns a different psi than the one you started
-; with. (See bind-v+v within bind-variable.)  This macro makes that transparent
-; by incorporating the update on the variable your using to point to the psi
-
-(defmacro add-binding-to (variable-for-i/p variable-name value)
-  `(setq ,variable-for-i/p 
-         (bind-variable ,variable-name ,value ,variable-for-i/p)))
-
-; A flaw is that a function incorporating this will report that
-; the variable you use to point to the value is 'unused'. 
 
 
 ;;/// remove this entry point when all the callers identified
 (defun extend-psi-by-binding (variable value parent-psi)
+  (break "who calls this -- change what they call")
   ;; Given a psi, we want the next psi down the lattice from it
   ;; that binds this variable to this value, making the psi
   ;; and the lattice point if they don't already exist.
