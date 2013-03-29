@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:names:"
-;;;  version:  2.3 July 1996
+;;;  version:  2.3 March 2013
 
 ;; 1.0 (10/14/92 v2.3) shadowing old version to redesign the name fsa
 ;; 1.1 (11/9) bumped initials and single letters to 2, names to 4, 
@@ -23,6 +23,7 @@
 ;; 2.3 (4/12) bumped [scan] to 3
 ;;     (4/20) added [name words].  5/29 added [lists]
 ;;     (7/11/96) added [parens after name]
+;;     (3/28/13) added [gofers-for-examine]
 
 #| Dropped loading of abbreviations somewhere in late 1992.
 See rules/FSAs/abbreviations.lisp
@@ -50,6 +51,7 @@ See rules/FSAs/abbreviations.lisp
 (gload "names-fsa;do transitions1")
 (gload "names-fsa;embedded parse")
 (gload "names-fsa;record1")
+(gload "names-fsa;gofers-for-examine")
 (gload "names-fsa;examine")
 
 (gload "names-model;rules")
