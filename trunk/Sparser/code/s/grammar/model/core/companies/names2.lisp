@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "names"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  2.1 April 2011
+;;;  version:  2.1 March 2013
 
 ;; initiated 5/22/93 v2.3, added indexing routines 6/7
 ;; 1.1 (10/30) simplified the indexing scheme
@@ -23,6 +23,10 @@
 ;;      in the name because of changes to how variables are tied to categories.
 ;;     (2/15) Found another case that will require design. See render-name-
 ;;      as-company-name. And another in same place 4/7.
+;;     (3/22/13) Removed the add-binding-to call becuase it garbled the
+;;      return value in make-company-name-as-simple-sequence when not using
+;;      psi.  (3/29/13) find/company-name turned out to be returning then
+;;      company and not simply the name.
 
 (in-package :sparser)
 
@@ -102,8 +106,8 @@
         name )
     (setq name (define-individual 'company-name
                  :sequence sequence))
-    (let ((first-word (first-item-of-sequence sequence)))     
-      (add-binding-to name 'first-word first-word)
+    (let ((first-word (first-item-of-sequence sequence))) 
+      (bind-variable 'first-word first-word name)
       (map-name-words-to-name items name)
       name )))
 
@@ -205,8 +209,11 @@
       (when (member sequence instances :test #'eq)
         (let ((company-name
                (bound-in sequence :body-type 'company-name)))
-          (when company-name
-            (bound-in company-name :body-type 'company)))))))
+          company-name)))))
+;;  This earlier version returned the company when all that
+;;  was asked for was the name object.
+;;          (when company-name
+;;            (bound-in company-name :body-type 'company))
 
 
 

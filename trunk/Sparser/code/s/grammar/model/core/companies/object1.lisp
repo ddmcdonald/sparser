@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
-;;;   Module:  "model;core:names:companies:"
-;;;  version:  1.1 April 2011
+;;;   Module:  "model/core/companies/"
+;;;  version:  1.2 March 2013
 
 ;; initiated 5/22/93 v2.3; changed index, added print routine 6/7. Broke that out
 ;; as its own file 11/23/94.  5/3/95 added Define-company. 5/22 tweeked
@@ -20,6 +20,8 @@
 ;;   an initially uncategorized name gets converted to a company name. 4/7 put
 ;;   name-word in as case in define-company-given-name.
 ;;  (2/13/13) Made company specialize named-object (see core/names/object)
+;; 1.2 (3/21/13) Rebuilt define-company because existing version blew up on
+;;   "United Nations" and looked overly complex in any event. 
 
 (in-package :sparser)
 
@@ -49,6 +51,57 @@
 ;;; finding/making companies with a given name
 ;;;--------------------------------------------
 
+(defun define-company (list-of-word-strings &key aliases
+                                                 takes-the)
+  ;; Convert the words to strings. Find or make name-words for each of them
+  ;; as is (no lemmatization). Create the sequence, then the name,
+  ;; then the company. 
+  (flet ((do-company-name (list-of-word-strings)
+           (let* ((words (loop for string in list-of-word-strings
+                           collect (resolve-string-to-word/make string)))
+                  (name-words (loop for word in words
+                                collect (define-name-word word))))
+             ;; Need provision for all the other sorts of categorized things
+             ;; that can appear in company names, e.g. inc-term's
+
+             ;; Since we're explicitly defining this company, we can
+             ;; be reasonably certain that we don't need to search
+             ;; for this sequence already existing
+              (make-company-name-as-simple-sequence name-words))))
+
+    (let* ((name (do-company-name list-of-word-strings))
+           (company (make/company-with-name name)))
+      (when takes-the
+        (mark-company-name-as-taking-the name))
+      (when aliases
+        ;; The examplar in "U.N.", which the resolve step will
+        ;; convert to a polyword, which is just fine
+        (let ((name (do-company-name (car aliases))))
+          (aditional-name-for-company name company)))
+      company)))
+    
+        
+(defun aditional-name-for-company (name company)
+  (push-debug `(,name ,company))
+  (bind-variable 'name name company)
+  ;; That will put a name that might not have been analyzed 
+  ;; as a company name as the first 'name' binding on the
+  ;; company, which will freakout the company printer.
+  ;;   To make its life easier, we'll reverse the order
+  ;; of the bindings.  We can be confedent that there
+  ;; aren't other cases since we're in a continuous thread.
+  (setf (indiv-binds company)
+        (nreverse (indiv-binds company))))
+
+
+
+;; 3/21/13 This version didn't work in the Grok environment.
+;; The initializations that were to clean things up blew up
+;; (assumed the chart was wrapped), and a parse of "United Nations"
+;; did not go to name words but to a word and the (just previously)
+;; imported Comlex word "nation". Unclear why this thought
+;; the result would always be a single-edge that was a company. 
+#+ignore
 (defun define-company (full-name-as-string &key list-of-abbreviations)
   ;; This version is only to be used off-line when there is not
   ;; analysis underway since it uses the chart and will reclaim
