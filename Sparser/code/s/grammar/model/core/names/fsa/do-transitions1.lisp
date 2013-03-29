@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "do transitions"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.10 February 2013
+;;;  version:  1.11 March 2013
 
 ;; -.3 (12/17/93) added a catch to handle the fact that the capitalization of
 ;;      headers will catch them up in the initial scan.  (12/22) fixed a ramification
@@ -41,6 +41,9 @@
 ;;     to incorporate "the" preceding location names.
 ;; 1.10 (2/13/13) Reworked classify-&-record-span to accept named objects and
 ;;     not just names in what it gets from examine-capitalized-sequence.
+;; 1.11 (3/28/13) The outer catch tag in classify-&-record-span not longer appears
+;;    in the source, so replaced it with :abort-examination-not-a-name and another
+;;    clause for cons results. 
 
 (in-package :sparser)
 
@@ -126,15 +129,22 @@
 
   ;; Called from classify-and-record-name
   ;; the span has had its word actions run by the embedded parsing
-  ;; and consists of more than one item.  Now we run the transition
+  ;; and consists of more than one item.  
+  ;;   In the ancient regime, we would now run a transition
   ;; net over that sequence of words and edges. If the net accepts
   ;; the sequence it will return a final state, and we use that
   ;; to establish a referent and construct the edge over the whole
   ;; capitalized sequence. 
+  ;;   Now, however, the transition net has been abandoned in favor
+  ;; of an omnibus routine, examine-capitalized-sequence, which uses
+  ;; a body of internal evidence to figure out what sort of name to
+  ;; find or create. This is simpler to toss heuristic evidence into
+  ;; but loses the opportunity to have richly structured names. 
 
   (let ((result
-         (catch :found-the-named-entity
+         (catch :abort-examination-not-a-name
            (catch :leave-out-prefix
+             ;; normally returns a name 
              (examine-capitalized-sequence starting-position
                                            ending-position)))))
     (if result
@@ -151,14 +161,15 @@
            (category::named-object
             ;; referent alreay established
             (push-debug `(,result ,starting-position ,ending-position))
-            (break "success")) ;; for "WHO" see as directly referring to the organization
+            (break "success: found already named object")) ;; for "WHO" see as directly referring to the organization
            (otherwise
             (push-debug `(,result ,starting-position ,ending-position))
             (error "examine-capitalized-sequence returned a new category ~
                     of individual: ~a"  (itype-of result)))))
 
         (cons
-         (if (eq (first result) :suffix-flushed)
+         (cond
+          ((eq (first result) :suffix-flushed)
            (let ((first-edge
                   (do-referent-and-edge (second result)
                                         starting-position
@@ -167,10 +178,20 @@
                first-edge
                ;; if there's indeed something left to scan then do it.
                (classify&record-the-rest-of-the-sequence
-                first-edge (third result) ending-position)))
-           
-           (break "Unexpected 'cons' return value from ~
-                   Examine-capitalized-sequence:~%~A~%" result)))
+                first-edge (third result) ending-position))))
+
+           ((eq (first result) :not-a-name)
+            (push-debug `(,result ,starting-position ,ending-position))
+            (let ((end-pos (cdr result)))
+              (if (eq end-pos ending-position)
+                nil  ;; signal failure
+                (else 
+                 (break ":not-a-name return did not go to end")))))
+
+           (t
+            (push-debug `(,result ,starting-position ,ending-position))
+            (break "Unexpected 'cons' return value from ~
+                    Examine-capitalized-sequence:~%~A~%" result))))
         
         (position
          ;; from here, we fall through to return this value, the position,
