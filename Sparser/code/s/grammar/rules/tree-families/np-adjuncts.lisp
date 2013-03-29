@@ -49,6 +49,17 @@
                  :head right-edge
                  :binds (subtype left-edge)))))
 
+(define-exploded-tree-family premodifier-creates-type
+  :description "a modifier and the "
+  :binding-parameters ( type head-var  modifier-var )
+  :labels ( np np-head modifier )
+  :cases
+    ((:modifier (np (modifier np-head)
+                  :instantiate-individual type
+                  :head right-edge
+                  :binds (modifier-var left-edge
+                          head-var right-edge)))))
+
 
 (define-exploded-tree-family   np-and-postmodifier
   :description "A combination of the head of a noun phrase (either noun or n-bar) 
