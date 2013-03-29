@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1998,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1998,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.5 July 2011
+;;;  Version:  0.6 March 2013
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -16,7 +15,10 @@
 ;; 0.4 (1/3/98) Gave event a time variable.
 ;; 0.5 (5/20/09) Added additional bindings to event. Added modifier 6/9/09
 ;;     (7/14/09) Added participant binding to event. (4/7/11) Cleaning up.
-;;     (7/31) moved event category model/core/kinds/object
+;;     (7/31) moved event category model/core/kinds/object.
+;; 0.6 (3/28/13) Removed indexing from anonymous-agentive-action as a stop-
+;;      gap action in lieu of taking the time to rework the meaning of "do"
+;;      properly -- the word by itself does not  have an agent linked to it.
 
 (in-package :sparser)
 
@@ -73,7 +75,11 @@
   :specializes event
   :instantiates self
   :binds ((agent . anything))
-  :index (:temporary :key agent))
+;;  :index (:temporary :key agent)
+  ;; This is unreasonable as a referent for 'do' because it presumes
+  ;; we have our hands on the agent, which when just spanning that
+  ;; single word we do not.
+  )
 
 
 (def-cfr do ("do")
