@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  2.5 October 2011
+;;;  Version:  2.5 March 2013
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -19,7 +19,7 @@
 ;; 2.5 (2/27) changed case of edge index being 1 in Starting-edge-just-under
 ;;      to fix bug in opening edges via wb/treetops-below-edge
 ;;     (9/6) added Edge-vector-contains-edge? (2/22/07) added longest-edge-starting-at
-;;     (10/18/11) added search-ev-for-edge
+;;     (10/18/11) added search-ev-for-edge. (3/28/13) added lowest-edge.
 
 (in-package :sparser)
 
@@ -183,6 +183,16 @@
        (car vector))
       (:vector
        (aref vector (1- (ev-number-of-edges ev)))))))
+
+(defun lowest-edge (ev)
+  (let ((vector (ev-edge-vector ev)))
+    (ecase *edge-vector-type*
+      (:kcons-list
+       (push-debug `(,ev))
+       (break "Stub: write lowest-edge for a kcons-list ~
+               edge-vector"))
+      (:vector
+       (aref vector 0)))))
 
 
 (defun longest-edge-starting-at (position)
