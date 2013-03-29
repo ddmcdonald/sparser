@@ -176,6 +176,15 @@
       (trace-msg "Checking (e~a+e~a)  ~a + ~a"
                  left# right# left-category right-category))))
 
+(deftrace :referents-unsuitable-for-multiplying (left-edge right-edge
+                                                 left-referent right-referent)
+  (when *trace-check-edges*
+    (let ((left# (edge-position-in-resource-array left-edge))
+          (right# (edge-position-in-resource-array right-edge)))
+      (trace-msg "Can't try multiplying these referents~
+                ~%  ~a  ~a~
+                ~%  ~a  ~a" left# left-referent right# right-referent))))
+
 
 
 ;;--- Checks on form labels
