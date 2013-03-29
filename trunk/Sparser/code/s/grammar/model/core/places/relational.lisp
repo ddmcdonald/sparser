@@ -1,16 +1,20 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2011 David D. McDonald  -- all rights reserved
-;;; $Id$
+;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relational"
 ;;;   Module:  "model;core:places:"
-;;;  version:  October 2011
+;;;  version:  March 2013
 
 ;; Extracted from object file 7/21/11. Evicerated it 9/28 in lieu of
 ;; doing something more nuanced. Removed the category/individuals
 ;; spatial-orientation because the list in the spatial-prepositions
 ;; dossier includes many that server other functions as well such
-;; as organizing time. 10/27 fixed issue with the form rules
+;; as organizing time. 10/27 fixed issue with the form rules.
+;; (3/18/13) But since then that grouping of prepositions has been
+;; flushed in favor of giving them their own identities. Put in a
+;; couple of prepositions explicitly in the realization, and got in 
+;; a hassle with redefinition so added (now commented out cfr) just
+;; to see the results. 
 
 (in-package :sparser)
 
@@ -24,23 +28,23 @@
   :instantiates self
   :specializes location
   :binds ((place)
-          (functor spatial-orientation))
-;;   :realization (:tree-family content-pp
-;;                 :mapping ((type . :self)
-;;                           (articulator . functor)
-;;                           (item . place)
-;;                           (pp . :self)
-;;                           (preposition . spatial-orientation)
-;;                           (complement . np))))
-)
+          (functor :primitive word)) ;;  spatial-orientation))
+   :realization (:tree-family content-pp
+                 :mapping ((type . :self)
+                           (articulator . functor)
+                           (item . place)
+                           (pp . :self)
+                           (preposition . ("in" "on")) ;; what else is imortant?
+                           (complement . np))))
 
-(def-form-rule (spatial-preposition location)
+#|
+(def-cfr relative-location ("in" region)
   :form pp
-  :head :right-edge
+;;  :head :right-edge
   :referent (:instantiate-individual relative-location
              :with (place right-edge
                     functor left-edge)))
-
+|#
 (def-form-rule (spatio-temporal-preposition location)
   :form pp
   :head :right-edge
