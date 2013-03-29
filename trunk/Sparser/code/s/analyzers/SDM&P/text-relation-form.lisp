@@ -13,6 +13,10 @@
 ;;; form
 ;;;------
 
+(defvar *text-relation-top-initialized* nil
+  "Flag to do things we might do in-line in the text-relation-class
+   file")
+
 (defmacro def-text-relation (name supercs &rest key-arg-pairs)
   `(def-text-relation/expr ',name ',supercs
      ,@(quote-every-second-one key-arg-pairs)))
@@ -23,6 +27,9 @@
                                     slots
                                     action
                                     )
+  (unless *text-relation-top-initialized*
+    (initialize-top-text-relations)
+    (setq *text-relation-top-initialized* t))
   ;; check the super relations are valid
   (mapcar #'(lambda (symbol)
               (or (text-relation-named symbol)
@@ -31,13 +38,14 @@
           names-of-supercs)
   (let* ((tr-name (canonical-tr-name name))
          (tr (or (text-relation-named name)
-                (let ((new-tr (make-instance 'text-relation
-                                :name tr-name)))
-                  (index-text-relation-type tr-name new-tr)
-                  new-tr))))
+                 (let ((new-tr (make-instance 'text-relation
+                                 :name tr-name)))
+                   (index-text-relation-type tr-name new-tr)
+                   new-tr))))
     ;; The name is fixed, we (re)define everything else
     ;; without trying to be clever
     (when names-of-supercs
+      ;; come in as simple strings
       (setf (tr-super-classes tr) names-of-supercs))
     (when doc
       (setf (tr-doc tr) doc))
@@ -63,22 +71,14 @@
 ;;;----------------------------
 
 (defun make-class-for-text-relation (tr)
-  (let ((class-name (tr-class-name tr))
-        (supercs (tr-super-classes tr))
+  (let* ((class-name (tr-class-name tr))
+         (supercs (tr-super-classes tr))
+         (superc-names
+          (loop for name in supercs
+            collect (tr-class-name name)))
+         (slots (tr-class-slots tr)))      
 
- ;                  collect (tr-class-name name)))
-        (slots (tr-class-slots tr)))
-
-    (when (and (slot-boundp tr 'arguments)
-               (tr-arguments tr))
-      ;; These we count, so we automatically add this
-      ;; slot to provide that
-      (setq slots
-            `((instance-count :type integer :initform 0 
-                              :accessor number-of-instances)
-              ,@slots)))      
-
-    (let ((form `(defclass ,class-name ,supercs
+    (let ((form `(defclass ,class-name ,superc-names
                    ,slots)))
       (let* ((the-class (eval form))
              (its-name (class-name the-class)))

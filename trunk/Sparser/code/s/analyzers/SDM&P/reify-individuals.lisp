@@ -34,27 +34,37 @@ to the value of the viable after-action flag for segments.
 
 (defun reify-implicit-individuals-in-segment (coverage)
   (format-words-in-segment)
-  (break "coverage = ~a" coverage)
+  (format t "coverage = ~a~%" coverage)
   (case coverage
     (:one-edge-over-entire-segment
      (let* ((edge (edge-over-segment))
             (form (edge-form edge)))
-       (push-debu
+       (push-debug `(,edge ,form))
        (unless (typep (edge-referent edge) 'individual)
          (let* ((prefix (segment-minimal-prefix))
                 (prefix-form (edge-form prefix)))
            (case (cat-symbol form) ;; of the spanning edge
              (category::wh-pronoun) ;; doesn't make sense
              (category::np
-              (when (evidence-that-np-denotes-an-individual? prefix prefix-form edge)
+              (when (evidence-that-np-denotes-an-individual?
+                     prefix prefix-form edge)
                 (convert-referent-to-an-individual edge)))
              (category::verb+ed
               (convert-referent-to-an-individual edge))
              (otherwise
               (push-debug `(,form ,edge ,prefix))
-              (break "New case of one-edge form: ~a" form))))))))
+              (break "New case of one-edge form: ~a" form)))))))
 
-    (:all-contiguous-edges (break ":all-contiguous-edges"))
+    (:all-contiguous-edges
+     (let* ((suffix (edge-over-segment-suffix))
+            (suffix-form (when suffix (edge-form suffix)))
+            (prefix (edge-over-segment-prefix))
+            (prefix-form (when prefix (edge-form prefix))))
+       (when (and suffix-form prefix-form)
+         (when (noun-category? suffix-form)
+           (convert-referent-to-an-individual suffix)))))
+         
+
     (:no-edges (break ":no-edges"))
     (:discontinuous-edges (break "discontinuous"))
     (:some-adjacent-edges (break "some adjacente"))
@@ -64,6 +74,8 @@ to the value of the viable after-action flag for segments.
   (cond
    (*do-strong-domain-modeling*
     (sdm/analyze-segment coverage))
+   (*note-text-relations*
+    (note-text-relations-in-segment coverage))
    (t 
     (normal-segment-finished-options coverage))))
 
