@@ -1,5 +1,5 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER
-;;; copyright (c) 1995-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
@@ -13,7 +13,8 @@
     systematically organized files.  |#
 
 ;; 4/8/05 Accommodated change to pp-after-np schema
-;; 7/5/07 Gated the title realization.
+;; 7/5/07 Gated the title realization. 3/20/13 Blocked it for fanout from
+;; redesign of titles. 
 
 (in-package :sparser)
 
@@ -96,7 +97,7 @@
 
 ;; 3/13/96
 ;; title ->  title for-company-activity
-
+#+ignore
 (when *titles*
 (define-realization title
          pp-after-np
