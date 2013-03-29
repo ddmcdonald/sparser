@@ -22,7 +22,9 @@
 ;;      go immediately back to the segment level.
 ;; 8.4 (2/14/07) Fixed a bug with the interactions from conjunctions that
 ;;      overspan both TT boundaries then call parse-forest-and-do-treetops.
-;;      (3/7) Trying to fix infinite loop in parse-between-boundaries
+;;      (3/7) Trying to fix infinite loop in parse-between-boundaries.
+;; 8.5 (3/18/13) Adding wrapper policy to permit combining referents:
+;;      parse-forest-and-do-treetops/referents-too
 
 (in-package :sparser)
 
@@ -46,6 +48,16 @@
       ;; go right back if this level has been turned off
       (tr :forest-level-turned-off)
       (scan-next-segment *where-the-last-segment-ended*))))
+
+
+;;;--------------------
+;;; wrapping protocols
+;;;--------------------
+
+(defun parse-forest-and-do-treetops/referents-too (rightmost-position)
+  (let ((*edges-from-referent-categories* t))
+    (declare (special *edges-from-referent-categories*))
+    (parse-forest-and-do-treetops rightmost-position)))
 
 
 ;;;--------------------------------
