@@ -7,6 +7,8 @@
 
 ;; initiated on 12/13/99.
 
+(in-package :sparser)
+
 (gload "kinds;object")
 (gload "kinds;np rules")
 
