@@ -100,7 +100,7 @@
                 position-after)
     (set-status :brackets-from-prior-word-introduced
                 position-after))
-  (when (rule-set-for label)
+  (if (rule-set-for label)
     (let ((assignment (rs-phrase-boundary (rule-set-for label))))
       (if assignment
         (let ((ends-after    (ba-ends-after    assignment))
@@ -115,7 +115,10 @@
           assignment )
         (else
           (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
-          nil)))))
+          nil)))
+    (else
+     (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
+     nil)))
 
 
 (defun introduce-leading-brackets (label position-before
@@ -129,7 +132,7 @@
                 position-before)
     (set-status :brackets-from-word-introduced
                 position-before))
-  (when (rule-set-for label)
+  (if (rule-set-for label)
     (let ((assignment (rs-phrase-boundary (rule-set-for label))))
       (if assignment
         (let ((ends-before   (ba-ends-before   assignment))
@@ -144,7 +147,10 @@
           assignment )
         (else
           (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
-          nil)))))
+          nil)))
+    (else
+     (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
+     nil)))
 
 
 
