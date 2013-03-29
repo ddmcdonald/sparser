@@ -1,38 +1,39 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "cases"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  1.0 June 1994
+;;;  version:  1.2 March 2013
 
 ;; 1.0 (7/11/94) completely redone from scratch.
 ;; 1.1 (6/27/96) made "i" into "I" so that it would be correctly recognized.
+;; 1.2 (3/15/13) Replaced np form with prounoun
 
 (in-package :sparser)
 
 
 ;;--- subject pronouns   "X did it"
 
-(define-pronoun "I"    'first/singular 'np)
-(define-pronoun "you"  'second         'np)
-(define-pronoun "he"   'male           'np)
-(define-pronoun "she"  'female         'np)
-(define-pronoun "it"   'inanimate      'np)
+(define-pronoun "I"    'first/singular 'pronoun)
+(define-pronoun "you"  'second         'pronoun)
+(define-pronoun "he"   'male           'pronoun)
+(define-pronoun "she"  'female         'pronoun)
+(define-pronoun "it"   'inanimate      'pronoun)
 
 (defparameter *you* (find-individual 'pronoun/second
                                      :word "you"))
 
 
-(define-pronoun "we"   'first/plural 'np)
-(define-pronoun "they" 'plural       'np)
+(define-pronoun "we"   'first/plural 'pronoun)
+(define-pronoun "they" 'plural       'pronoun)
 
 
 ;;--- object pronouns   "known to X"
 
-(define-pronoun "me"   'first/singular 'np)
-(define-pronoun "us"   'first/plural   'np)
-(define-pronoun "him"  'male           'np)
-(define-pronoun "them" 'plural         'np)
+(define-pronoun "me"   'first/singular 'pronoun)
+(define-pronoun "us"   'first/plural   'pronoun)
+(define-pronoun "him"  'male           'pronoun)
+(define-pronoun "them" 'plural         'pronoun)
 
 
 ;;--- ambiguous between object and possessive
@@ -55,20 +56,20 @@
 
 ;;--- possessive, non-determiner pronouns   "X are bigger"
 
-(define-pronoun "mine"   'first/singular 'possessive/np)
-(define-pronoun "ours"   'first/plural   'possessive/np)
-(define-pronoun "yours"  'second         'possessive/np)
-(define-pronoun "theirs" 'plural         'possessive/np)
+(define-pronoun "mine"   'first/singular 'possessive/pronoun)
+(define-pronoun "ours"   'first/plural   'possessive/pronoun)
+(define-pronoun "yours"  'second         'possessive/pronoun)
+(define-pronoun "theirs" 'plural         'possessive/pronoun)
 
 
 ;;-- reflexives
 
-(define-pronoun "myself"     'first/singular 'reflexive/np)
-(define-pronoun "ourselves"  'first/plural   'reflexive/np)
-(define-pronoun "yourself"   'second         'reflexive/np)
-(define-pronoun "yourselves" 'second         'reflexive/np)
-(define-pronoun "himself"    'male           'reflexive/np)
-(define-pronoun "herself"    'female         'reflexive/np)
-(define-pronoun "itself"     'inanimate      'reflexive/np)
-(define-pronoun "themselves" 'plural         'reflexive/np)
+(define-pronoun "myself"     'first/singular 'reflexive/pronoun)
+(define-pronoun "ourselves"  'first/plural   'reflexive/pronoun)
+(define-pronoun "yourself"   'second         'reflexive/pronoun)
+(define-pronoun "yourselves" 'second         'reflexive/pronoun)
+(define-pronoun "himself"    'male           'reflexive/pronoun)
+(define-pronoun "herself"    'female         'reflexive/pronoun)
+(define-pronoun "itself"     'inanimate      'reflexive/pronoun)
+(define-pronoun "themselves" 'plural         'reflexive/pronoun)
 
