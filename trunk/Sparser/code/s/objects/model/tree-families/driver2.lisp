@@ -131,6 +131,12 @@
         (etf         (second rdata-schema))
         (mapping     (third rdata-schema))
         (local-cases (fourth rdata-schema)))
+
+    (flet ((head-schema-filled-with-words (field)
+             ;; We have cases like "person" where we want to instantiate
+             ;; new people but where the realization is used to provide
+             ;; a word that names (refers to) the category.
+             (some #'word-p field)))
     
     (let* ((no-head (eq head-field :no-head-word))
            (head-word-variable (unless no-head (cdr (first rdata-schema))))
@@ -142,9 +148,10 @@
                               head-word))))
       (unless no-head
         (unless head-word
-          (break "Expected the individual ~A~
+          (unless (head-schema-filled-with-words head-field)
+            (break "Expected the individual ~A~
                   ~%to have a value for its ~A variable.~
-                  ~%but it does not." individual head-word-variable)))
+                  ~%but it does not." individual head-word-variable))))
       
       (let ((rules
              (make-rules-for-rdata category
@@ -154,7 +161,7 @@
         
         (setf (unit-plist individual)
               `(:rules ,rules ,@(unit-plist individual)))
-        rules ))))
+        rules )))))
 
 
 
