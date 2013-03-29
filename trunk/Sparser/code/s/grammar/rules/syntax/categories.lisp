@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.6 February 2013
+;;;  Version:  0.7 March 2013
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -42,6 +42,9 @@
 ;; 0.6 (8/8/11) Converted form-category? to a method so it can take symbols.
 ;;     (9/29/11) Added two variants on preposition. (11/22/12) Added two conjunctions
 ;;     (2/8/13) added 'word'.
+;; 0.7 (3/14/13) Wrote some predicates that group sets of labels for uniformity
+;;      is code that operates over them like the text relations. 3/15 fan-out from
+;;      change to pronoun form.
 
 (in-package :sparser)
 
@@ -199,8 +202,8 @@
 (def-form-category  modifier)      ;; "red"
 (def-form-category  definite-modifier)   ;; "last (year)"
 (def-form-category  possessive)
-(def-form-category  possessive/np) ;; e.g "mine"
-(def-form-category  reflexive/np)  ;; "yourself"
+(def-form-category  possessive/pronoun) ;; e.g "mine"
+(def-form-category  reflexive/pronoun)  ;; "yourself"
 
 (def-form-category  adjective)
 (def-form-category  proper-adjective)
@@ -237,11 +240,79 @@
 
 (def-form-category  paragraph) ;; created by the NL fsas or XML tags
 
+
+;;;--------------------------------------------------------------------------
+;;; methods for testing whether a form category is one of a particular group
+;;;--------------------------------------------------------------------------
+
+(defgeneric noun-category? (label)
+  (:documentation "Nouns and their variants. Should be a single word"))
+(defmethod noun-category? ((e edge))
+  (noun-category? (edge-form e)))
+(defmethod noun-category? ((c referential-category))
+  (noun-category? (cat-symbol c)))
+(defmethod noun-category? ((name symbol))
+  (memq name '(category::noun 
+               category::common-noun 
+               category::common-noun/plural 
+               category::proper-noun category::proper-name
+               category::np-head
+               category::np ;; on pronouns -- change it
+               category::adjunct ;; on generic-co-word "business"
+               )))
+
+(defgeneric verb-category? (label)
+  (:documentation "Verbs and their variants. Should be a single word"))
+(defmethod verb-category? ((e edge))
+  (verb-category? (edge-form e)))
+(defmethod verb-category? ((c referential-category))
+  (verb-category? (cat-symbol c)))
+(defmethod verb-category? ((name symbol))
+  (memq name '(category::verb category::verb+present category::verb+s
+               category::verb+ed category::verb+ing)))
+
+(defgeneric pronoun-category? (label)
+  (:documentation "Pronouns and their variants. Should be a single word"))
+(defmethod pronoun-category? ((e edge))
+  (pronoun-category? (edge-form e)))
+(defmethod pronoun-category? ((c referential-category))
+  (pronoun-category? (cat-symbol c)))
+(defmethod pronoun-category? ((name symbol))
+  (memq name '(category::pronoun category::wh-pronoun
+               category::possessive ;; /// probably overkill
+               category::possessive/pronoun category::reflexive/pronoun
+               category::det ;; for isolated "that"
+               )))
+
+(defgeneric modifier-category? (label)
+  (:documentation "Adjectives and their variants. Should be a single word"))
+(defmethod modifier-category? ((e edge))
+  (modifier-category? (edge-form e)))
+(defmethod modifier-category? ((c referential-category))
+  (modifier-category? (cat-symbol c)))
+(defmethod modifier-category? ((name symbol))
+  (memq name '(category::adjective)))
+
+
+;; special purpose for text-relations - note-what-the-head-is
+(defgeneric ignorable-category? (label)
+  (:documentation "quantifiers, modals, and their variants. Should be a single word"))
+(defmethod ignorable-category? ((e edge))
+  (ignorable-category? (edge-form e)))
+(defmethod ignorable-category? ((c referential-category))
+  (ignorable-category? (cat-symbol c)))
+(defmethod ignorable-category? ((name symbol))
+  (memq name '(category::quantifier category::adverb
+               category::number
+               category::preposition
+               category::modal category::subordinate-conjunction)))
+
+
+
+
 ;;;------------------------------------
 ;;; bracket introduction by form rules
 ;;;------------------------------------
-
-
 
 
 
