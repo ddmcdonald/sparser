@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2000,2010-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2000,2010-2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  December 2012
+;;;   version:  March 2013
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -45,7 +45,8 @@
 ;; up just after the upper-model because they had followed location which depended
 ;; on them to formulate plurals. 9/16 Broke words loader into two parts: loader1
 ;; and loader-part-2. 9/29 moved 32d part later. 12/16/11 added hurricanes.
-;; 12/3/12 Removed bracket files to their own loader.
+;; 12/3/12 Removed bracket files to their own loader. 3/18/13 added 2d-loader
+;; for kinds.  Also bumped title loader to 3.
 
 (in-package :sparser)
 
@@ -148,7 +149,7 @@
       (gload "companies;loader1")))
 
   (gate-grammar *titles*
-    (gload "titles;loader1"))
+    (gload "titles;loader2"))
 
   (gate-grammar *money*
     (if *lattice-points*
@@ -260,6 +261,9 @@
   (gate-grammar *titles*
     (gate-grammar *pct*
       (titles-2d-stage-loader)))
+
+  (gate-grammar *kinds*
+    (gload "kinds;2d-loader"))
 
   (gload "cat-prefs;category preferences")
 
