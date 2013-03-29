@@ -27,7 +27,8 @@
 ;; *convert-eft-form-categories-to-form-rules*. Added *do-unanalyzed-hyphenated-
 ;; sequences* 11/5/12. Added *accumulate-content-across-documents* 2/18/13
 ;; 3/8/13 added *break-on-multiple-single-term-completions*.
-;; 3/9/13 added *note-text-relations*
+;; 3/9/13 added *note-text-relations*. Moved over *initialize-with-each-unit
+;; -of-analysis* 3/1413. 
 
 (in-package :sparser)
 
@@ -148,6 +149,13 @@
     "A switch read in segment-finished. Controls whether we collect
      purely textual relationship such as head, subject-verb, etc."))
 
+(defparameter *edge-for-unknown-words* t
+  "This switch dictates whether or not we create a category,
+   referent, and single-term rule for a word when it is unpacked.
+   See unpack-primed-word and its subroutines.")
+
+
+
 (unless (boundp '*new-dm&p*)
   (defparameter *new-dm&p* nil
     "Set as part of the switch settings, read within Segment-finished.
@@ -199,6 +207,9 @@
    per-article-initializations, presently bound to T by the doc-stream
    driver do-document-as-stream-of-files but could potentiallygo on all
    of them.")
+
+(defparameter *initialize-with-each-unit-of-analysis* t
+  "Read in analysis-core to gate the call to per-article-initializations")
 
 (defparameter *ignore-parentheses* nil
   "Flag examined prior to setting hooks for mark-open-paren and
