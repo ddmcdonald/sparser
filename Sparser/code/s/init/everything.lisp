@@ -1,11 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
 ;;; copyright (c) 1989-2005,2010-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   January 2013
+;;;   Version:   March 2013
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -78,7 +77,7 @@
 ;; cleanups, added *grok*.  11/24/12 Explicitly loading all the workspaces by name.
 ;; 1/28/13 Chanve the binaries directory for Allegro to "f" (1/29/13) put #+allegro, 
 ;; #+openmcl around value of *prefer-binaries* to keep CCL from trying to understand 
-;; ACL fasls.
+;; ACL fasls. 3/22/13 added *do-not-use-psi* flag, which is set to t in Grok mode.
 
 (in-package :cl-user)
 
@@ -754,6 +753,16 @@ or for loading the newer of the compiled or source files.
     "When non-nil, we finish off the loading of the grammar by including
      almost purely lexical knowledge about a horde of words."))
 
+(unless (boundp 'sparser::*do-not-use-psi*)
+  (defparameter *do-not-use-psi* nil
+   "There are circumstances when psi proliferate even in cases where they don't
+    make sense (perhaps the 'simple criteria' need significant extension),
+    and there is the problem that saturated psi don't convert to individuals.
+    They are the correct long-run approach, but a given application may
+    choose to not use them. When this flag is up, make/individual will only
+    create individuals with regular bindings and never make psi."))
+
+
 
 ;;--- Mutually exclusive application settings.
 ;; These correspond to alternative system configurations, some of them
@@ -908,6 +917,7 @@ or for loading the newer of the compiled or source files.
        (sparser::lload "grammar-configurations;just-bracketing"))
 
       (sparser::*grok*
+       (setq *do-not-use-psi* t)
        (sparser::lload "grammar-configurations;grok"))
 
       (sparser::*checkpoint-operations*
