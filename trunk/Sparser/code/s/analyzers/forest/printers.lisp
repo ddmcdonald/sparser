@@ -27,7 +27,8 @@
 ;;     (2/11/13) changed the init form for where print-segment left off
 ;;      so that it doesn't re-initalize when we're doing a stream of documents.
 ;;     (3/8/13) Fixed initialization problem with the init form for
-;;      *where-print-segment-left-off*
+;;      *where-print-segment-left-off*. 3/14 added print-treetop-labels-in-segment
+;;      3/18 added tts-form and tts-ref.
 
 (in-package :sparser)
 
@@ -343,6 +344,11 @@ there were ever to be any.  ///hook into final actions ??  |#
 ;;; the whole forest
 ;;;------------------
 
+(defparameter *treetop-label-to-use* :category
+  "Drives the choice in print-edge-as-category-and-text-segment
+   at the final point of tts calls of what part of the edge
+   to print: its :category, :form, or :referent.")
+
 (defun print-treetops (&optional  ;; sugar for official displays
                        (stream *standard-output*)
                        start-pos
@@ -351,6 +357,15 @@ there were ever to be any.  ///hook into final actions ??  |#
     (tts stream start-pos stop-pos))
   (terpri stream)(terpri stream))
 
+(defun tts-form ()
+  (let ((*treetop-label-to-use* form))
+    (declare (special *treetop-label-to-use*))
+    (tts)))
+
+(defun tts-ref ()
+  (let ((*treetop-label-to-use* :referent))
+    (declare (special *treetop-label-to-use*))
+    (tts)))
 
 (defun tts (&optional
             (stream *standard-output*)
@@ -433,9 +448,20 @@ there were ever to be any.  ///hook into final actions ??  |#
 
 
 (defun print-edge-as-category-and-text-segment (tt stream)
-  (let ((word-or-category (edge-category tt)))
+  (let ((word-or-category
+         (case *treetop-label-to-use* ;;:referent ;; :form
+           (:form (edge-form tt))
+           (:referent (edge-referent tt))
+           (:category (edge-category tt))
+           (otherwise
+            (push-debug `(,tt))
+            (error "Unexpected value for *treetop-label-to-use*: ~a"
+                   *treetop-label-to-use*)))))
+    (unless word-or-category
+      (setq word-or-category (edge-category tt)))
     (etypecase word-or-category
-      ((or category referential-category mixin-category)
+      ((or category referential-category mixin-category
+           individual)
        (format stream "~&e~A ~6,2t~A~30,2T~A ~S ~A~%"
                (edge-position-in-resource-array tt)
                (pname-for word-or-category)
@@ -541,6 +567,28 @@ there were ever to be any.  ///hook into final actions ??  |#
                                (concatenate 'string "
 " "      " (format nil "~A" tt)))
                            tts))))
+
+(defun print-treetop-labels-in-segment (stream starting-position ending-position)
+  (let ((tts (treetops-in-segment starting-position ending-position))
+         labels  )
+    (dolist (tt tts)
+      (typecase tt
+        (word (push (format nil "\"~a\"" (word-pname tt)) labels))
+        (polyword (push (format nil "\"~a\"" (pw-pname tt)) labels))
+        (edge (let ((category (edge-category tt)))
+                (if (or (category-p category)
+                        (word-p category)
+                        (polyword-p category))
+                  (push (cat-symbol category) labels)
+                  (else 
+                   (push-debug `(,tt ,tts .starting-position ,ending-position))
+                   (break "New case: ~a" category)))))
+        (otherwise
+         (push-debug `(,tt ,starting-position ,ending-position))
+         (error "New type of treetop: ~a" (type-of tt)))))
+    (setq labels (nreverse labels))
+    (format stream "~&~{~a ~}~%" labels)))
+
 
 (defun treetops-in-segment (starting-position ending-position)
   (let ((start starting-position)
