@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.16 February 2013
+;;;  Version:  2.16 March 2013
 
 ;; 1.1  (3/28/91 v1.8.1)  Added Clear-individuals, and improved the
 ;;      conditionalization according to the load-time switches
@@ -31,7 +31,8 @@
 ;; 2.16 (2/11/13) Broke out the 'real' per article initializatin so it
 ;;       can be called by itself. (2/18/13) broke out the individual and 
 ;;       history cleaner for the same reason. Gating that on the global
-;;       bound in do-document-as-stream-of-files
+;;       bound in do-document-as-stream-of-files. 
+;; 2.17 (3/14/13) Added section initialization and article creation,
 
 (in-package :sparser)
 
@@ -67,8 +68,9 @@
     ;(when *track-salient-objects*
     ; (initialize-salient-object-record))
 
-    (unless *accumulate-content-across-documents*
-      (clean-out-history-and-temp-objects))
+    (when *include-model-facilities*
+      (unless *accumulate-content-across-documents*
+        (clean-out-history-and-temp-objects)))
 
     #+mcl 
     (when *display-text-to-special-window*
