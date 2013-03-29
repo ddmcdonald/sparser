@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1997 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: core1.lisp 320 2009-10-20 19:36:28Z dmcdonal $
 ;;; 
 ;;;     File:  "core"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   1.4 April 2009
+;;;  Version:   1.5 March 2013
 
 ;; 1.2 (8/10/94) Redesigned core treatment to emphasize articles as a common
 ;;      path
@@ -13,6 +12,7 @@
 ;;     (8/17/97) added another to that.
 ;; 1.4 (4/27/09) Changed the basis of the return value. See code in drivers/
 ;;      sinks/return-value. 
+;; 1.6 (3/14/13) simplified gating, moved initialization gate to sessions/globals.
 
 (in-package :sparser)
 
@@ -21,14 +21,11 @@
 ;;; every source-driver ends up in this routine
 ;;;---------------------------------------------
 
-(defvar *initialize-with-each-unit-of-analysis* t)
-
 (defun analysis-core ()
   (catch :analysis-core
     (initialize-tokenizer-state)
     (initialize-chart-state)
-    (when (and *include-model-facilities*
-	       *initialize-with-each-unit-of-analysis*)
+    (when *initialize-with-each-unit-of-analysis*
       (per-article-initializations))
     (chart-based-analysis)
     (after-analysis-actions)
