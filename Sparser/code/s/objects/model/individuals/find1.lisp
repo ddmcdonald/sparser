@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "find"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.2 February 2005
+;;;  version:  1.2 March 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/10) fixing the semantics of some cases of the find operation
@@ -19,7 +19,8 @@
 ;;     (2/14/99) Tweaked find/individual to allow for categories without
 ;;      operations fields. 
 ;; 1.2 (2/3/05) revised find/individual to go to psi search if the make operation
-;;      would have yielded a psi
+;;      would have yielded a psi. 3/28/13 Patched find-simple-list to
+;;      recover from one-off cases
 
 (in-package :sparser)
 
@@ -119,10 +120,14 @@
 ;;;---------------
 
 (defun find/simple-list (category binding-instructions)
-  (dolist (individual (cat-instances category))
-    (when (check-bindings individual binding-instructions)
-      (return-from find/simple-list individual)))
-  nil )
+  (let ((instances (cat-instances category)))
+    (if (typep instances 'hash-table)
+      ;; Happened when droped key'ed index from 'do
+      nil
+      (dolist (individual (cat-instances category) nil)
+        (when (check-bindings individual binding-instructions)
+          (return-from find/simple-list individual))))))
+
 
 
 ;;;---------------
