@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;versions:v2.3:workspace:"
-;;;  version:  September 2009
+;;;  version:  March 2013
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -14,6 +13,7 @@
 ;; 7/21/09 vrp serves as 'wrapper' for exporting output in speech act-inspired format
 ;; Modified through 9/11/09. 9/18 factored out the checkpoint massaging done in
 ;; pp to the new file /grammar/model/sl/checkpoing/post-processing.lisp
+;; 3/15/13 Added p/art to simulate running a document stream
 
 (in-package :sparser)
 
@@ -97,6 +97,13 @@
   (unless *workshop-window*
     (format t "~%~%")
     (tts)))
+
+(defun p/art (string) ;; "article"
+  ;; ad-hoc initializations
+  (begin-new-article :name 'string-run)
+  (initialize-text-relationships)
+  (analyze-text-from-string string)
+  (tts))
 
 (defun p/e (string)  (pp string) (e))
 (defun p/te (string) (pp string) (the-edges))
