@@ -87,6 +87,7 @@
      ((multiple-memq `(,].punctuation ,punctuation.[) brackets) t)
      ((multiple-memq `(,].phrase ,phrase.[) brackets) t)
      ((multiple-memq `(,].conjunction ,conjunction.[) brackets) t)
+     ((multiple-memq `(,].proper-noun ,proper-noun.[) brackets) t)
      (t nil))))
 
 
