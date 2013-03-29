@@ -42,6 +42,8 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 ;; (grok-setting)  -- for meta-.
 
+;; (setq  *forest-level-protocol* 'parse-forest-and-do-treetops/referents-too)
+;; (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
 
 ;;--- Alternative post-parsing segment handlers
 ;  (do-normal-segment-finished-options)  ;; built-in default
@@ -57,9 +59,13 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 (defun ddm-setup () ;; 2/13/13 for finding odd bugs. New things turned off
   (setq *annotate-realizations* nil)
-  (setq *break-on-new-bracket-situations* nil)
+  (setq *break-on-new-bracket-situations* t)
+  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; blocks "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil)
-  (setq *new-segment-coverage* nil)
+;;  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops/referents-too)
+  (setq *new-segment-coverage* nil) ;; defange sdm/analyze-segment
+  (setq *do-strong-domain-modeling* nil) ;; completely turn it off
+;;  (do-note-text-relations-in-segment)
   (setq *note-text-relations* t))
 
 ;; If nil, this flag turns off all the errors about new cases for bracketsing and
@@ -81,6 +87,10 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 (reify-spelled-name 
  (list (word-named "H") (word-named "5") (word-named "N") (word-named "1")))
 
+;;/// 3/22/13 this drops "U.N." on the floor -- and the form is ugly
+;;  see core/company/object1.lisp
+(define-company '("United" "Nations") :aliases '(("U.N.")) :takes-the t)
+
 
 ;;;------------------
 ;;; testing routines
@@ -99,6 +109,13 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (p "in Iraq. H5N1 has killed at least 91 people,")
 
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/1 Aljazeera_Jan-18.txt")
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/2 ABCNews_Jan-30.txt")
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/3 Yahoo-India_Jan-30.txt")
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/5 bbc_Feb-3.txt")
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/6 Newsfactor_Feb-16.txt")
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/7 bbc_March-3.txt")
+;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/8 bbc_March-24.txt")
 
 ;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu") 
 
@@ -199,3 +216,23 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (setq *trace-edge-creation* nil)
   (setq *trace-paired-punctuation* nil)
   (setq *trace-completion-hook* nil))
+
+
+;;; for meta-.
+
+;; pronoun reference:  seek-person-for-pronoun
+
+;; treetops: move-to-forest-level (protocol dispatch)
+;;   parse-forest-and-do-treetops (standard protocol)
+;;   When it wants to punt with nothing to do:  consider-debris-analysis
+;;   driver: PPTT
+;;   first call (recursive?) try-parsing-tt in drivers/chart/psp/march-forest
+;; do-treetop -> do-conceptual-analysis-off-new-treetop 
+;;               do-generic-actions-off-treetop
+;; do-treetop-triggers is inside consider-debris-analysis 
+;;    and called if *do-debris-analysis* is nil 
+
+;; For age if it proves problematic
+;;  On the definition of person in model/core/people/object.lisp - make/person-with-name 
+;;    ad-hoc in file that isn't loaded: core/people/people+age  -- has cs rules
+;;    and in core/time/age1.lisp  - category age interpret-number-as-years-of-age
