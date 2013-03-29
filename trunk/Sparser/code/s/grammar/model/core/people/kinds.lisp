@@ -7,35 +7,43 @@
 ;;;   version:   March 2013
 
 ;; initiated 12/27/07. Relabeled 'person' for parsing 3/6/13.
+;; 3/25/13 converted it all to inherit from person-type.
 
 (in-package :sparser)
 
 (define-category  girl
   :instantiates person
-  :specializes person
+  :specializes person-type
   :rule-label person
   ;;/// How do we index this sort of thing?
   :realization (:common-noun "girl"))
 
 (define-category  boy
   :instantiates person
-  :specializes person
+  :specializes person-type
   :rule-label person
   :realization (:common-noun "boy"))
 
 (define-category  man
   :instantiates person
-  :specializes person
+  :specializes person-type
   :rule-label person
   :realization (:common-noun ("man" :plural "men")))
 
 (define-category  woman
   :instantiates person
-  :specializes person
+  :specializes person-type
   :rule-label person
   :realization (:common-noun ("woman" :plural "women")))
 
-; people person human -- need to know its underspecified
+(define-category  people ;; don't clash with the 'person' category
+  :instantiates person
+  :specializes person-type
+  :rule-label person
+  :realization ((:common-noun ("person" :plural "people"))))
+
+
+; human ??
 ; male female ???
 
 
