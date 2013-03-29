@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "inc terms"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  February 2005
+;;;  version:  March 2013
 
 ;; initiated 5/25/93 v2.3. 12/7/94 added String printer
 ;; 8/11/95 added "<cap'd-word>, <inc-term>".  10/30 tweeked string printer.
 ;; 12/12 added autodef.  1/5/96 added the obvious other cs rule  2/14/05 Revised
 ;; the binding call in Add-inc-term-to-company-name to accommodate psi.
+;; 3/22/13 Changed it back.
 
 (in-package :sparser)
 
@@ -97,6 +98,6 @@
     (when name
       ;; //// This isn't enough to get the inc-term
       ;; to show up in the print-form of the company.
-      (add-binding-to name 'inc-term inc-term))
+      (bind-variable 'inc-term inc-term name))
     company ))
 
