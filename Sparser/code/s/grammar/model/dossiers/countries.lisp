@@ -222,6 +222,9 @@
 ;;   need to fuse with "northern Iraq"
 (define-country "Kurdistan" :adjective "Kurdish") ;; Kurds
 ;; merology with other countries might be easy to do
-;;  West Bank, Palestine, "Gaza (Strip)"
+
+(define-country "Gaza" :aliases '("Gaza Strip"))
+(define-country "West Bank")
+;;  Palestine
 ;;  Siberia
 
