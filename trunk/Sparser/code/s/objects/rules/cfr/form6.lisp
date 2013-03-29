@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   6.5 August 2011
+;;;   Version:   6.6 March 2013
 
 ;; 6.0 (9/4/92 v2.3) Reworked the definition for parsimony with other cases
 ;;      and to have form and referent redone for already existing rules
@@ -18,6 +18,8 @@
 ;;      because it wasn't working, with the effect that the actual dup. check
 ;;      was being done in the Multiply, with a reversed set of args.
 ;; 6.5 (8/3/11) Added a schema keyword so the default can be overriden.
+;; 6.6 (3/18/13) Refactored def-cfr/expr to break out define-cfr/resolved so
+;;      there's a resolved entry point with the duplicate check
 
 (in-package :sparser)
 
@@ -50,29 +52,32 @@
          (when form (resolve/make form :source :def-category)))
         (decoded-referent-exp
          (when referent (resolve-referent-expression referent))))
-    
-    (let ((existing-cfr (if (null (cdr rhs)) ;; unary rule
-                          (lookup/cfr lhs rhs)
-                          (lookup/cfr nil rhs))))
 
-      (if existing-cfr
-        (if (redefinition-of-rule lhs existing-cfr)
-          (then
-            ;; pick out the rule with the matching lhs (when multiple
-            ;; lhs are allowed) and replace its form and referent
-            (changes-to-known-rule existing-cfr
-                                   lhs
-                                   form-object
-                                   decoded-referent-exp))
-          (duplication-check
-           ;; its a new lhs for the rhs so check that it's allowed
-           existing-cfr lhs rhs form-object decoded-referent-exp :def-cfr))
+    (define-cfr/resolved lhs rhs form-object decoded-referent-exp schema)))
 
-        (else
-          (construct-cfr lhs
-                         rhs
-                         form-object
-                         decoded-referent-exp
-                         :def-cfr
-                         schema ))))))
+(defun define-cfr/resolved (lhs rhs form-object decoded-referent-exp schema)
+  (let ((existing-cfr (if (null (cdr rhs)) ;; unary rule
+                        (lookup/cfr lhs rhs)
+                        (lookup/cfr nil rhs))))
+
+    (if existing-cfr
+      (if (redefinition-of-rule lhs existing-cfr)
+        (then
+         ;; pick out the rule with the matching lhs (when multiple
+         ;; lhs are allowed) and replace its form and referent
+         (changes-to-known-rule existing-cfr
+                                lhs
+                                form-object
+                                decoded-referent-exp))
+        (duplication-check
+         ;; its a new lhs for the rhs so check that it's allowed
+         existing-cfr lhs rhs form-object decoded-referent-exp :def-cfr))
+
+      (else ;; new case of the rhs
+       (construct-cfr lhs
+                      rhs
+                      form-object
+                      decoded-referent-exp
+                      :def-cfr
+                      schema )))))
 
