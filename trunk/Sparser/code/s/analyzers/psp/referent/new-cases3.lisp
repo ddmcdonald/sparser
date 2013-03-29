@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;;
 ;;;      File:  "new cases"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  3.1 November 2012
+;;;   Version:  3.2 March 2013
 
 ;; broken out from cases 8/24/93 v2.3.  (3/10/94) fixed typo. Added error
 ;; msg to Ref/head 6/14.  (7/15) patched in mixin-category  (7/19) rearranged
@@ -31,7 +31,8 @@
 ;; 3.1 (3/23/11) Refactored dolist over values in ref/instantiate-individual-
 ;;      with-binding in order to be able to pass an edge to annotate-site-bound-to.
 ;;     (5/10/11) Fixed gratuitous zero'ing of globals for the edges, setting both
-;;      in ref/head.  11/25/12 Quiet the compiler on unused composits.
+;;      in ref/head.  11/25/12 Quiet the compiler on unused composites.
+;; 3.2 (3/22/13) Fan out from *do-not-use-psi*
 
 (in-package :sparser)
 
@@ -89,8 +90,14 @@
       (referential-category
        ;; have to convert this into a psi that we can operate over.
        ;; The annotation is folded into the find-or-make
+       ;; (Done in in *do-not-use-psi* case)
        (setq head
-             (find-or-make-psi-for-base-category head))
+             (if *do-not-use-psi*
+               (let ((i (find-or-make/individual head nil))
+                     (lp (cat-lattice-position head)))
+                 (annotate-realization/base-case lp i)
+                 i)
+               (find-or-make-psi-for-base-category head)))
        (tr :ref/head-base-from-category head))
       (mixin-category
 ;       (unless *single-daughter-edge*
@@ -99,6 +106,7 @@
        ;; We need to leave something active here that will form the
        ;; derived category by folding in this mix-in with the real head
        ;; of the segment once it's been scanned.
+       (break "mixin case: ~a" head)
        (setq head
              (find-or-make-psi-for-base-category head))
        (tr :ref/head-base-from-mixin head))
@@ -149,6 +157,7 @@
        (rule-field left-referent right-referent right-edge)
   (declare (ignore right-edge))
   (let* (  head-edge  arg-edge  type-of-head  edge
+           variable  value  
          (head (case (second rule-field)
                  (left-referent
                   (setq head-edge *left-edge-into-reference*
@@ -163,69 +172,109 @@
                   ;; creating a new type of individual here
                   (second rule-field))))
          (binding-exp/s (cddr rule-field))
-         (psi
-          (typecase head
-            (psi
-             (setq type-of-head
-                   (base-category-of-psi head))
-             head)
-            (referential-category
-             (setq type-of-head head)
-             ;; We're adding a binding, so we presume that the result
-             ;; will be partially saturated even it's a simple category
-             (find-or-make-psi-for-base-category head))
-            (individual
-             (break "Shouldn't have gotten a full individual at ~
-                     this stage"))
-            (otherwise
-             (break "Unanticipated type as the head: ~a~%~a"
-              (type-of head) head))))
-         variable value )
+         return-value  )
+    
 
-    (tr :instantiating-individual-with-binding psi binding-exp/s)
+    (if *do-not-use-psi*
+      (let ((i (find-or-make/individual head nil))
+            (lp (cat-lattice-position head)))
+        (annotate-realization/base-case lp i)
+        ;; /// unforgivable direct copy&specialize of the edge decoder
+        ;; in the psi case
+        (setq type-of-head head)
+        (dolist (pair binding-exp/s)
+          (setq variable (car pair))
+          (multiple-value-setq (value edge)
+            (case (cdr pair)
+              (left-referent
+               (unless arg-edge
+                 (setq arg-edge *left-edge-into-reference*))
+               (unless head-edge
+                 (setq head-edge *right-edge-into-reference*))
+               (values left-referent *left-edge-into-reference*))
+              (right-referent
+               (unless arg-edge
+                 (setq arg-edge *right-edge-into-reference*))
+               (unless head-edge
+                 (setq head-edge *left-edge-into-reference*))
+               (values right-referent *right-edge-into-reference*))
+              (otherwise
+               (break "Can't decipher edges and referents. Why?"))))
+        
+          (bind-variable variable value i head)
+          (annotate-site-bound-to value variable type-of-head edge)
+          (setq return-value i)))
 
-    (dolist (pair binding-exp/s)
-      (setq variable (car pair))
-      (multiple-value-setq (value edge)
-        (case (cdr pair)
-          (left-referent
-           (unless arg-edge
-             (setq arg-edge *left-edge-into-reference*))
-           (unless head-edge
-             (setq head-edge *right-edge-into-reference*))
-           (values left-referent *left-edge-into-reference*))
-          (right-referent
-           (unless arg-edge
-             (setq arg-edge *right-edge-into-reference*))
-           (unless head-edge
-             (setq head-edge *left-edge-into-reference*))
-           (values right-referent *right-edge-into-reference*))
-          (otherwise
-           (let ((unit (cdr pair)))
-             (values (etypecase unit
-                       (psi unit)
-                       (individual unit)
-                       (referential-category
-                        (find-or-make-psi-for-base-category unit)))
-                     nil)))))
+      (let ((psi
+             (typecase head
+               (psi
+                (setq type-of-head
+                      (base-category-of-psi head))
+                head)
+               (referential-category
+                (setq type-of-head head)
+                ;; We're adding a binding, so we presume that the result
+                ;; will be partially saturated even it's a simple category
+                (find-or-make-psi-for-base-category head))
+               (individual
+                (break "Shouldn't have gotten a full individual at ~
+                  this stage"))
+               (otherwise
+                (break "Unanticipated type as the head: ~a~%~a"
+                       (type-of head) head)))))
 
-      (setq psi (find-or-make-psi-with-binding
-                 variable value psi))
-      ;; annotate what c+v the value has been bound to.
-      (annotate-site-bound-to value variable type-of-head edge))
+        (tr :instantiating-individual-with-binding psi binding-exp/s)
+
+        (dolist (pair binding-exp/s)
+          (setq variable (car pair))
+          (multiple-value-setq (value edge)
+            (case (cdr pair)
+              (left-referent
+               (unless arg-edge
+                 (setq arg-edge *left-edge-into-reference*))
+               (unless head-edge
+                 (setq head-edge *right-edge-into-reference*))
+               (values left-referent *left-edge-into-reference*))
+              (right-referent
+               (unless arg-edge
+                 (setq arg-edge *right-edge-into-reference*))
+               (unless head-edge
+                 (setq head-edge *left-edge-into-reference*))
+               (values right-referent *right-edge-into-reference*))
+              (otherwise
+               (let ((unit (cdr pair)))
+                 (values (etypecase unit
+                           (psi unit)
+                           (individual unit)
+                           (referential-category
+                            (find-or-make-psi-for-base-category unit)))
+                         nil)))))
+
+          (setq psi (find-or-make-psi-with-binding
+                     variable value psi))
+          ;; annotate what c+v the value has been bound to.
+          (annotate-site-bound-to value variable type-of-head edge))
+        (setq return-value psi) ;; after the dust has settled
+        ))
 
     (when *annotate-realizations*
       ;; annotate this combination
-      (cond ((and head-edge arg-edge) ;; canonical case
-             (annotate-realization-pair
-              psi (psi-lp psi) *rule-being-interpreted*
-              head-edge arg-edge))
+      (let ((lattice-point
+             (if *do-not-use-psi*
+               (cat-lattice-position head)
+               (psi-lp return-value))))
+        (cond 
+         ((and head-edge arg-edge) ;; canonical case
+          (annotate-realization-pair
+           return-value lattice-point *rule-being-interpreted*
+           head-edge arg-edge))
+         
+         (*single-daughter-edge* ;; called from unary subtype
+          (annotate-realization-pair
+           return-value lattice-point *rule-being-interpreted*
+           *parent-edge-getting-reference* :unary-rule)))))
 
-            (*single-daughter-edge* ;; called from unary subtype
-             (annotate-realization-pair
-              psi (psi-lp psi) *rule-being-interpreted*
-              *parent-edge-getting-reference* :unary-rule))))
-    psi ))
+    return-value ))
 
 
 
