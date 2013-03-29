@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  2.7 April 2003
+;;;  Version:  2.7 March 2013
 
 ;; 2.0  (7/20/92 v2.3) made over to use "real" categories
 ;; 2.1  (10/5) tweeked construct-temporary... to not make a polyword
@@ -25,6 +25,7 @@
 ;;      (4/10/03) Getting problem with reclaimation of multi-element numbers 
 ;;        like "83.97". Added a notion of "temporary? to the various contructors
 ;;        that's only invoked when we're comming in from construct-temporary-number.
+;;      (3/13/13) Gave digit and word numbers adjective brackets.
 
 
 (in-package :sparser)
@@ -95,12 +96,14 @@
             (define-cfr category::digit-sequence `(,word-object-for-digits)
 	      :form (category-named 'number)
               :referent number))
+      (assign-brackets-to-adjective word-object-for-digits) ;; ].adjective .[np
       (setf (cfr-schema rule) schematic-rule)
       (push rule rules))
 
     (when ones
       (unless (typep ones 'word)
         (setq ones (define-word ones)))
+      (assign-brackets-to-adjective ones)
       (set-number-ones number ones)
       (set-illion-distribution 
        number number (find-individual 'multiplier :name "one"))
@@ -121,6 +124,7 @@
     (when teens
       (unless (typep teens 'word)
         (setq teens (define-word teens)))
+      (assign-brackets-to-adjective teens)
       (set-number-teens number teens)
       (set-illion-distribution 
        number number (find-individual 'multiplier :name "one"))
@@ -141,6 +145,7 @@
     (when tens
       (unless (typep tens 'word)
         (setq tens (define-word tens)))
+      (assign-brackets-to-adjective tens)
       (set-number-tens number tens)
       (set-illion-distribution 
        number number (find-individual 'multiplier :name "one"))
@@ -162,6 +167,7 @@
     (when multiplicand
       (unless (typep multiplicand 'word)
         (setq multiplicand (define-word multiplicand)))
+      (assign-brackets-to-adjective multiplicand)
       (set-number-multiplicand number multiplicand)
 
       ;; This case is now doing double duty to define these words
