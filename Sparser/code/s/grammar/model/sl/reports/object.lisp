@@ -76,6 +76,7 @@
         ((:reversed-tag (subj-verb (vg np)
                           :head left-referent
                           :binds (agent right-referent)))
+         #+ignore
          (:final-tag (s (s "," subj-verb)
                        :head third-daughter
                        :binds (report first-daughter)))))))
