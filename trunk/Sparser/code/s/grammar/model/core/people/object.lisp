@@ -10,7 +10,10 @@
 ;; 0.2 (9/26) promulgating change to how instances are stored. 10/6 added properties
 ;;  (3/16/05) Adding realization rules.
 ;;  (2/13/13) Made person specialize named-object (see core/names/object)
-;;  (3/6/13) Added another pattern for age
+;;  (3/6/13) Added another pattern for age. Defined "person" here 3/21.
+;;  (3/25/13) Pulled that definition because it required an instance of
+;;   "a person" to have a name to be properly indexed. Introduced a new
+;;   cagegory -- person-type -- to carry those references. 
 
 (in-package :sparser)
 
@@ -33,6 +36,24 @@
                  :mapping ((property . age)
                            (np-head . :self)
                            (modifier . age)))))
+
+
+#| The person type is for categories like "girl" or "uncle"
+ and in particular for "person". They are descriptions of
+ particular people or may be for general statements about
+ a class of people ('girls are young and female'), though
+ that distinction is hard to make with just local evidence.
+   When it is a referent to a particular person we will
+ usually recognize their name, and at that point we can
+ instantiate the person category which is indexed on
+ the name, and need to carry over the attributes that
+ have acrused to the type, qua hook, and put them on 
+ the person instance.
+   The define person types are in the people/kinds file.
+|#
+(define-category person-type
+  :instantiates self
+  :specializes kind)
 
 
 ;;;------------
