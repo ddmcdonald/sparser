@@ -63,10 +63,28 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; blocks "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil)
 ;;  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops/referents-too)
-  (setq *new-segment-coverage* nil) ;; defange sdm/analyze-segment
+  (setq *new-segment-coverage* :none) ;; defange sdm/analyze-segment
   (setq *do-strong-domain-modeling* nil) ;; completely turn it off
 ;;  (do-note-text-relations-in-segment)
   (setq *note-text-relations* t))
+
+(defun grok-pass-one ()
+  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
+  (setq *new-segment-coverage* :none)
+  (setq *note-text-relations* t)
+  (do-note-text-relations-in-segment)
+  (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu)
+  ;; analysis and reification goes here. See collect-relations-from-articles
+  ;; and 
+  )
+
+(defun grok-pass-two-setup ()
+  (setq *note-text-relations* nil)
+  (setq *new-segment-coverage* :trivial)
+  (do-strong-domain-modeling)
+  (setq *profligate-creation-of-individuals* t)
+  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops/referents-too))
+
 
 ;; If nil, this flag turns off all the errors about new cases for bracketsing and
 ;; has them return plausible defaults. Useful if looking for weirder errors.
@@ -90,6 +108,9 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;/// 3/22/13 this drops "U.N." on the floor -- and the form is ugly
 ;;  see core/company/object1.lisp
 (define-company '("United" "Nations") :aliases '(("U.N.")) :takes-the t)
+
+;; Comlex doesn't have "burnt"
+(setup-verb (resolve/make "burnt") nil)
 
 
 ;;;------------------
@@ -117,7 +138,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/7 bbc_March-3.txt")
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/8 bbc_March-24.txt")
 
-;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu") 
+;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu) 
 
 ;; These are in dm&p in the workspaces file under init. They're stray medium size
 ;; articles lifted from the news
