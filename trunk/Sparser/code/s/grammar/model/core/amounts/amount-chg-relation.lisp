@@ -1,12 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "amount-chg relation"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  0.1 March 2005
+;;;  Version:  0.1 April 2013
 
 ;; instantiated 12/26/95. "in" -> "by" 1/2/96. Direction verb added to rules 1/9/96
 ;; 0.1 (3/30/05) Converting to a proper schematic treatment of the rules, through 3/31.
+;;  (4/1/13) turned off changed-in-direction (be direction) because it was snagging things
+;;    it shouldn't. 
 
 (in-package :sparser)
 
@@ -86,8 +88,8 @@
 
 
 ;; "was up"
-;;
-(def-cfr changed-in-direction (be direction)
+;;  -- triggering on "is [<distance><direction>} of <location>"
+#+ignore (def-cfr changed-in-direction (be direction)
   :form vp
   :referent (:instantiate-individual changed-in-direction
              :with (direction right-edge)))
