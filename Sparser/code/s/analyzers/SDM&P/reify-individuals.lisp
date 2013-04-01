@@ -33,27 +33,37 @@ to the value of the viable after-action flag for segments.
 ;;;--------
 
 (defun reify-implicit-individuals-in-segment (coverage)
-  (format-words-in-segment)
-  (format t "coverage = ~a~%" coverage)
+  ;;(format-words-in-segment)
+  ;;(format t "coverage = ~a~%" coverage)
   (case coverage
     (:one-edge-over-entire-segment
      (let* ((edge (edge-over-segment))
             (form (edge-form edge)))
-       (push-debug `(,edge ,form))
+       (when form ;; no form on puctuation edges
        (unless (typep (edge-referent edge) 'individual)
          (let* ((prefix (segment-minimal-prefix))
                 (prefix-form (edge-form prefix)))
            (case (cat-symbol form) ;; of the spanning edge
              (category::wh-pronoun) ;; doesn't make sense
-             (category::np
+             ((category::n-bar
+               category::number
+               category::common-noun
+               category::common-noun/plural
+               category::np-head)
               (when (evidence-that-np-denotes-an-individual?
                      prefix prefix-form edge)
                 (convert-referent-to-an-individual edge)))
-             (category::verb+ed
+             ((category::verb 
+               category::verb+s 
+               category::verb+ed
+               category::verb+ing 
+               category::verb+present
+               category::verb+passive)
               (convert-referent-to-an-individual edge))
              (otherwise
               (push-debug `(,form ,edge ,prefix))
-              (break "New case of one-edge form: ~a" form)))))))
+              (format-words-in-segment)
+              (break "New case of one-edge form: ~a" form))))))))
 
     (:all-contiguous-edges
      (let* ((suffix (edge-over-segment-suffix))
@@ -83,7 +93,9 @@ to the value of the viable after-action flag for segments.
 ;;--- heuristics go here
 
 (defun evidence-that-np-denotes-an-individual? (prefix form edge)
-  (or (eq form category::det)
+  (push-debug `(,prefix ,form ,edge))
+  (eq form category::det)
+  #+ignore(or (eq form category::det)
       (else
        (push-debug `(,prefix ,form ,edge))
        (break "If this should indicate that an np is an individual, extend the code~

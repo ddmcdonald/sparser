@@ -61,7 +61,7 @@
            (chart-position-before *right-segment-boundary*))))
 
 (defun segment-ends-with-appostrope-s? ()
-  (let* ((p (position-before-segment-final-polyword))
+  (let* ((p (position-before-segment-final-multi-word-edge))
          (ev (when p (pos-starts-here p)))
          (edge (when ev (lowest-edge ev))))
     (when edge
