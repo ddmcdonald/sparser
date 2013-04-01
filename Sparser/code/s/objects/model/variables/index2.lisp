@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995, 2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995, 2010-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  2.1 December 2010
+;;;  version:  2.1 April 2013
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -18,7 +17,8 @@
 ;;   a 'real' one that's associated with a category at runtime, i.e. when
 ;;   rules are executed. (12/14/10) method-ized find-variable-in-category
 ;;   to handle lattice points as the value of the type field.
-;;   (1/18/11) Wrote swap-variable-in-binding.
+;;   (1/18/11) Wrote swap-variable-in-binding. 4/1/13 Added signature for
+;;   individuals for dereference-variable.
 
 
 (in-package :sparser)
@@ -101,6 +101,11 @@
 (defmethod dereference-variable ((v anonymous-variable)
 				 (i psi))
   (let ((category (category-of-psi i)))
+    (dereference-variable v category)))
+
+(defmethod dereference-variable ((v anonymous-variable)
+				 (i individual))
+  (let ((category (itype-of i)))
     (dereference-variable v category)))
 
 (defmethod dereference-variable ((v anonymous-variable)
