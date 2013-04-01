@@ -3,10 +3,11 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  February 2013
+;;;  Version:  March 2013
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
+;; 3/29/13 hooked articles into document-set.
 
 (in-package :sparser)
 
@@ -24,6 +25,7 @@
   contents
 
   position-in-resource-array
+  document-set
   )
 
 (defstruct (section
@@ -156,20 +158,24 @@
 ;;; article factory
 ;;;-------------
 
-(defun begin-new-article (&key name location date source)
+(defun begin-new-article (&key name location date source doc-set)
   (unless *all-articles*
-    ;; call is probably via analyze-text-from-file for a single
-    ;; file rather than from do-document-as-stream-of-files where
-    ;; we make this call on each individual flle.
+    ;; In this case, thecall is probably via analyze-text-from-file for 
+    ;; a single file rather than from do-document-as-stream-of-files 
+    ;; where we make this call on each individual flle.
     (make-the-article-resource))
   (let ((obj (next-article-from-resource)))
     (setf (article-name obj) name
           (article-location obj) location
-          (article-date obj) date
+          (article-date obj) (or date
+                                 (date-&-time-as-formatted-string))
           (article-source obj) source
-          (article-contents obj) (fresh-contents))
+          (article-contents obj) (fresh-contents obj)
+          ;;   (article-document-set obj) doc-set
+          ) ;; /// remove on next load
     (setf *current-article* obj)
     (reset-paragraph-state-in-article)
+    (add-to-document-set obj)
     obj))
 
 ;;;-------------
@@ -241,7 +247,8 @@
   (setf (article-name obj)     nil
         (article-source obj)   nil
         (article-date obj)     nil
-        (article-location obj) nil))
+        (article-location obj) nil
+        (article-contents obj) nil))
 
 (defun initialize-section (obj)
   ;; Called from next-section-from-resource

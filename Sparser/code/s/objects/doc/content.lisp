@@ -5,12 +5,18 @@
 ;;;   Module:  "objects;doc:"
 ;;;  Version:  March 2013
 
-;; initiated 3/13/13
+;; initiated 3/13/13. Elaborated through 3/29/13
 
 (in-package :sparser)
 
-(defclass text-relation-contents ()
-  ((head-relations #|:type (or null common-tr-instance)|# ;; unclear why doesn't work
+;;;------------------
+;;; container object
+;;;------------------
+
+(defclass text-relation-contents (named-object)
+  ((container :initarg :container :accessor container
+     :documentation "The article or doc-set or whatever that this goes with")
+   (head-relations #|:type (or null common-tr-instance)|# ;; unclear why doesn't work
     ;; since the typep is ok.
     :initform nil :accessor head-relations)
    (classifier-heads :initform nil :accessor classifier-head-relations)
@@ -19,9 +25,32 @@
   (:documentation ""))
 
 
-(defun fresh-contents ()
-  ;; placeholder for resource -- but via a generating macro
-  (make-instance 'text-relation-contents))
+(defmethod display ((tc text-relation-contents)) ;; add a stream?
+  (format t "~&  ~a heads~
+             ~%  ~a clasifier-heads~
+             ~%  ~a modifier-heads~
+             ~%  ~a adjacencies  "
+          (length (head-relations tc))
+          (length (classifier-head-relations tc))
+          (length (modifier-head-relations tc))
+          (length (adjacency-relations tc)))
+  tc)
+
+
+
+(defun fresh-contents (article)
+  "Supplies the content field of an article"
+  ;; placeholder for resource -- but only via a generating macro that
+  ;; has some generality. 
+  (let ((contents (make-instance 'text-relation-contents :container article))
+        (symbol (article-name article)))
+    (if symbol 
+      (setf (name contents) symbol)
+      (setf (name contents) :no-name-in-article))
+    contents))
+
+
+
 
 (defun add-text-relation-to-article (relation instance)
   (unless *current-article*
