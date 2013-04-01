@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-
+;;;
 ;;;      File: "create-categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: 0.2 January 2013
+;;;   Version: 0.2 April 2013
 
 ;; Initiated 2/9/07. Elaborated through 8/6. Refactored the head form
 ;; elevator 2/4/08. Added cases through 4/24, then through 6/16.
@@ -14,7 +14,7 @@
 ;; for the case of literal words in rules, but it lead to coniptions with "."
 ;; 0.2 4/17/10 Uppercase category names were returning nil. Changed 
 ;;  elevation of segment edge of verb cases to vg from VP. 
-;;    (1/23/12) cleaned up. Trying to find duplication
+;;    (1/23/12) cleaned up. Trying to find duplication. 4/1/13 found it. 
 
 
 (in-package :sparser)
@@ -47,36 +47,47 @@
 		(edge-form edge))))))))
 
 
-;; CCl complains that there's a duplicate keyform in here but I don't see it
 (defun generalize-segment-edge-form-if-needed (edge)
   (let* ((form-category (edge-form edge))
 	 (symbol (when form-category (cat-symbol form-category))))
     (when symbol
       (case symbol
         ;; no change cases
-	((or category::np 
-             category::proper-name
-             category::proper-noun))
-
+	((category::np 
+          category::proper-name
+          category::proper-noun
+          category::pronoun
+          category::wh-pronoun
+          ))
         (category::subordinate-conjunction)
 	(category::adjunct)
         (category::possessive)
+        (category::quantifier)
+        (category::adjective)
+        (category::adverb)
+        (category::preposition)
+
+        (category::s)
+        (category::vp)
 
         ;; cases where we want to generalize
-	((or category::n-bar
-	     category::number
-	     category::common-noun
-	     category::common-noun/plural
-	     category::np-head
-             category::det) ;; "that"
+	((category::n-bar
+          category::number
+          category::noun
+          category::common-noun
+          category::common-noun/plural
+          category::np-head
+          category::det) ;; "that"
 	 (setf (edge-form edge) (category-named 'np)))
 
-	((or category::verb 
-             category::verb+s 
-             category::verb+ed
-	     category::verb+ing 
-             category::verb+present
-	     category::verb+passive)
+	((category::verb 
+          category::verb+s 
+          category::verb+ed
+          category::verb+ing 
+          category::verb+present
+          category::verb+passive
+          category::modal
+          )
 	 (setf (edge-form edge) (category-named 'vg)))
 
 	(otherwise
