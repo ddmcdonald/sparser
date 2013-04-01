@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.5 March 2013
+;;;  Version:  0.5 April 2013
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -17,7 +17,8 @@
 ;; 0.5 (7/27/10) Added [article1]. The file article has been in the system
 ;;      forever (1993), but grep doesn't find anything that lloads it.
 ;;    (9/2/12) added [doc-set] and [word-freq]. (2/28/13) added [content]
-;;    (3/14/13) moved the text-relations package here
+;;    (3/14/13) moved the text-relations package here. 4/1 reordered to me
+;;     dependency imposed by doc-set
 
 (in-package :sparser)
 
@@ -43,10 +44,11 @@
 (lload "doc;annotation")
 (lload "doc;header label")
 (lload "doc;style")
+(lload "doc;object")
 (lload "doc;doc-set")
 (lload "doc;doc stream")
 (lload "doc;context")
 (lload "doc;globals")
 (lload "doc;content")
-(lload "doc;object")
+
 
