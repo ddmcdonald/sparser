@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "look"
 ;;;   Module:  "analyzers;HA:"
-;;;  Version:  January 1995
+;;;  Version:  April 2013
 
 ;; 5/23/94 completely redesigned the check to take into account the
 ;;  source of the bracket.  Added traces 1/5/95.  Added {close/open}-bracket
-;;  already-there 1/24
+;;  already-there 1/24.
+;; 4/1/13 Checking off capitalized variants as well as lower case
 
 (in-package :sparser)
 
@@ -46,14 +47,18 @@
   
 (defun [-on-position-because-of-word? (p word)
   (tr :asking-[-on-pos p word)
+  ;; "Asking whether there is a [ on p~A because of '~A'"
   (let* ((starting-vector (pos-starts-here p))
-         (bracket (ev-boundary starting-vector)))
+         (bracket (ev-boundary starting-vector))
+         (variant (capitalized-correspondent word p)))
     (if bracket
       (let ((source
              (cadr (member :bracket-source (ev-plist starting-vector)
                            :test #'eq))))
-        (if (not (consp source))
-          (if (eq source word)
+        (if (not (consp source)) ;; two sources
+          (if (or (eq source word)
+                  (and variant 
+                       (eq source variant)))
             (then
               (tr :bracket-is-there)
               bracket)
@@ -61,7 +66,9 @@
               (tr :bracket-isnt-there)
               nil ))
 
-          (if (member word source :test #'eq)
+          (if (or (member word source :test #'eq)
+                  (and variant
+                       (member variant source :test #'eq)))
             (then
               (tr :bracket-is-there)
               bracket)
@@ -77,15 +84,16 @@
 (defun ]-on-position-because-of-word? (p word)
   (tr :asking-]-on-pos p word) ;; "Asking whether there is a ] on p~A because of '~A'"
   (let* ((ending-vector (pos-ends-here p))
-         (bracket (ev-boundary ending-vector)))
-    
+         (bracket (ev-boundary ending-vector))
+         (variant (capitalized-correspondent word p)))
     (if bracket      
       (let ((source
              (cadr (member :bracket-source (ev-plist ending-vector)
                            :test #'eq))))
-
         (if (not (consp source))
-          (if (eq source word)
+          (if (or (eq source word)
+                  (and variant 
+                       (eq source variant)))
             (then
               (tr :bracket-is-there)
               bracket)
@@ -93,7 +101,9 @@
               (tr :bracket-isnt-there)
               nil ))
 
-          (if (member word source :test #'eq)
+          (if  (or (member word source :test #'eq)
+                  (and variant
+                       (member variant source :test #'eq)))
             (then
               (tr :bracket-is-there)
               bracket)
