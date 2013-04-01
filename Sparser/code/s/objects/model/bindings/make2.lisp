@@ -66,7 +66,8 @@
   (when (consp category) ;; new 6/19
     (setq category (car category)))
 
-  (let ((variable (or (when (typep var/name 'lambda-variable)
+  (let ((variable (or (when (or (typep var/name 'lambda-variable)
+                                (typep var/name 'anonymous-variable))
                         var/name)
                       (find-variable-for-category var/name category))))
     (unless variable
