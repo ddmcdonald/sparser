@@ -132,25 +132,34 @@
                 position-before)
     (set-status :brackets-from-word-introduced
                 position-before))
-  (if (rule-set-for label)
-    (let ((assignment (rs-phrase-boundary (rule-set-for label))))
-      (if assignment
-        (let ((ends-before   (ba-ends-before   assignment))
-              (begins-before (ba-begins-before assignment)))
-          (if (or ends-before begins-before)
-            (tr :leading-brackets-introduced label) ;; "~A introduces leading brackets:"
-            (tr :no-brackets-introduced label)) ;; "~A does not introduce any brackets"
-          (when ends-before
-            (place-boundary/ends-before label position-before ends-before))
-          (when begins-before
-            (place-boundary/begins-before label position-before begins-before))
-          assignment )
-        (else
-          (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
-          nil)))
-    (else
+
+  
+
+
+  (flet ((assign-before (label)
+           (let ((assignment (rs-phrase-boundary (rule-set-for label))))
+             (if assignment
+               (let ((ends-before   (ba-ends-before   assignment))
+                     (begins-before (ba-begins-before assignment)))
+                 (if (or ends-before begins-before)
+                   (tr :leading-brackets-introduced label) ;; "~A introduces leading brackets:"
+                   (tr :no-brackets-introduced label)) ;; "~A does not introduce any brackets"
+                 (when ends-before
+                   (place-boundary/ends-before label position-before ends-before))
+                 (when begins-before
+                   (place-boundary/begins-before label position-before begins-before))
+                 assignment )
+               (else
+                (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
+                nil)))))
+
+    (if (rule-set-for label)
+      (assign-before label)
+      (else
+
+
      (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
-     nil)))
+     nil))))
 
 
 
