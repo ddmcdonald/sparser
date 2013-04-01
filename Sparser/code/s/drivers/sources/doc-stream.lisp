@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "doc stream"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  0.6 January 2013
+;;;  Version:  0.6 March 2013
 
 ;; initiated 12/13/93 v2.3, incorporates notions from original version
 ;; of 1990 but treats style seriously
@@ -23,6 +23,7 @@
 ;;      downstream indicating that we're continuing from one document to the
 ;;      next without reinitializing the chart and other resources.
 ;;     (2/18/13) Added binding of *accumulate-content-across-documents*
+;;     (3/29/13) Folded in the document set.
 
 (in-package :sparser)
 
@@ -171,7 +172,9 @@
 ;;; alternative toplevel call
 ;;;---------------------------
 
-(defun do-document-as-stream-of-files (ds-designator &key article-per-file?)
+(defun do-document-as-stream-of-files (ds-designator
+                                       &key article-per-file?
+                                            doc-set-name)
   ;; a toplevel call. In this case all of the files are to be
   ;; interpreted as parts of a single document, i.e. initialization
   ;; and the call to do-article only occur once.
@@ -180,6 +183,7 @@
   (run-real-per-article-initializations) ;; may react differently within the loop
   (let ((*current-document-stream* ds-designator)
         (*accumulate-content-across-documents* t)
+        (*initialize-with-each-unit-of-analysis* nil)
         (file-list
          (cond
           ((ds-directory ds-designator)
@@ -203,8 +207,10 @@
                      ~% no directory, substreams, or file-list"
                     ds-designator)))))
     (declare (special *current-document-stream*
-                      *accumulate-content-across-documents*))
+                      *accumulate-content-across-documents*
+                      *initialize-with-each-unit-of-analysis*))
 
+    (initialize-document-set doc-set-name)
     (initialize-article-resource)
     (initialize-section-resource)
 
@@ -223,7 +229,8 @@
       ;; Analyze-text-from-file 9/6/94
       (when *open-stream-of-source-characters*
         (close-character-source-file))
-      (let ((pathname (decode-file-expression/pathname file)))
+      (let* ((pathname (decode-file-expression/pathname file))
+             (file-name (pathname-name pathname)))
         (when *verbose-document-stream*
           (format t "~&~%~%About to read from~%  ~a~%~%" pathname))
         (establish-character-source/file pathname)
@@ -231,7 +238,7 @@
         ;; parts of analysis-core (9/6/94) that initialize the
         ;; buffers but nothing else.
         (when article-per-file?
-          (begin-new-article :name pathname :location pathname)
+          (begin-new-article :name file-name :location pathname)
           (per-article-initializations))
         (initialize-tokenizer-state)
         (chart-based-analysis)
@@ -240,13 +247,13 @@
                              (chart-position (1- chart-end))))
             (when (or (eql (pos-terminal pos) *source-start*)
                       (eql (pos-terminal pos) *end-of-source*))
-              (setf (pos-terminal pos) *newline*))
-            ))
+              (setf (pos-terminal pos) *newline*))))
 
         (when *open-stream-of-source-characters*
           (close-character-source-file))))
 
-    (after-analysis-actions)))
+    (after-analysis-actions)
+    (doc-set)))
 
 
 
