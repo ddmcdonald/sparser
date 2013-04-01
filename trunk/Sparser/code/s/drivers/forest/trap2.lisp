@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994,1995,1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "trap"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  2.7 January 1996
+;;;  Version:  2.7 April 2013
 
 ;; 2.0 (4/29/91 v1.8.4) bumped the version to 2 and started bringing it
 ;;      around to the new scheme.
@@ -19,12 +19,13 @@
 ;;      used-in is a quotation, in which case we ignore the error msg because\
 ;;      it really deserves a better treatment.  (12/29) added angle-brackets
 ;;      (12/31) added conjunctions. (1/1/96) added the rest of the established
-;;      'paired-punctuation' cases.
+;;      'paired-punctuation' cases.  4/1/13 Made defult of debug flag be nil,
+;;      and added no-doted to the ok-to-be-covered check
 
 (in-package :sparser)
 
 (unless (boundp '*debug-treetops*)
-  (defparameter *debug-treetops* t))
+  (defparameter *debug-treetops* nil))
 
 
 (defun do-treetop (tt next-position &key moment)
@@ -67,6 +68,8 @@
   (let* ((parent (top-edge-used-in tt))  ;; condition for getting here
          (category-name (cat-symbol (edge-category parent))))
     (or
+     (not (dotted-edge? tt))
+
      (member category-name
              `( category::quotation
                 category::parentheses
