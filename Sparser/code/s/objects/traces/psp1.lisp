@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 February 2013
+;;;  Version:  1.4 April 2013
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -25,7 +25,7 @@
 ;;     (6/2/10) added traces for new conditions in scan.
 ;;     (12/14/10) fixed capitalization bugs  (11/2/12) added PNF-resetting-open-bracket
 ;;      Continued adding and tweaking through 12/5/12. 
-;;     (2/10/13) added trace-status-history
+;;     (2/10/13) added trace-status-history. Bracket variant 4.1.13
 
 (in-package :sparser)
 
@@ -111,6 +111,12 @@
 
 
 ;;;---------- laying brackets down
+
+(deftrace :switched-to-capitalized-variant (old new)
+  ;; called from introduce-{trailing/leading/}brackets
+  (when (or *trace-network* *trace-brackets*)
+    (trace-msg "Getting brackets from \"~a\" instead of \"~a\""
+               (pname-for new) (pname-for old))))
 
 (deftrace :brackets-introduced (word)
   ;; called from introduce-{trailing/leading/}brackets
