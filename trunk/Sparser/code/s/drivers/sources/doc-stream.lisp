@@ -230,7 +230,8 @@
       (when *open-stream-of-source-characters*
         (close-character-source-file))
       (let* ((pathname (decode-file-expression/pathname file))
-             (file-name (pathname-name pathname)))
+             (file-name (intern (pathname-name pathname)
+                                (find-package :sparser))))
         (when *verbose-document-stream*
           (format t "~&~%~%About to read from~%  ~a~%~%" pathname))
         (establish-character-source/file pathname)
