@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1989-1995,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1989-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "time"
 ;;;   Module:  /Sparser/util/
-;;;  Version:  August 2012
+;;;  Version:  March 2013
 
 ;; initiated 11/89, substantially hacked 10/91
 ;; 9/8/93 v2.3 added Month-day.  3/29/95 included check against
 ;; Time-as.. having been loaded already.  5/1 added month-day-year
 ;; (3/9/11) Reworked to fit in ddm-util. 8/7/12 minor tweaks, updates. 
+;; 3/30/13 fixed call to time in date-&-time-as-formatted-string
 
 (in-package :ddm-util)
 
@@ -126,7 +127,7 @@
                                         ((:dot dot-instead-of-colon) nil))
   (format nil "~A ~A"
           (date-as-formatted-string)
-          (time-as-formatted-string :dot dot-instead-of-colon)))
+          (time-as-formatted-string nil :dot dot-instead-of-colon)))
 
 
 (defun day-&-month-as-formatted-string ()
