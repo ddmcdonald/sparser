@@ -7,9 +7,31 @@
 ;;;    Module: "analyzers;SDM&P:
 ;;;   Version: 1.0 January 2013
 
-;; Initiated 2/9/07. Completely redone starting 1/21/13. 
+;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
+;; simpler variation 4/1/13
 
 (in-package :sparser)
+
+;;;-----------
+;;; dispatch
+;;;-----------
+
+(defparameter *new-segment-coverage* :none
+  "Flag to specify what sort of simpler d&p operation to do
+   if any (default).")
+
+
+(defun sdm/analyze-segment (coverage)
+  (case *new-segment-coverage*
+    (:trivial
+     (just-cover-segment coverage))
+    (:full ;; could be segmented further
+     (analyze-segment coverage))
+    (:none
+     (normal-segment-finished-options coverage))
+    (otherwise
+     (error "Undefined value for *new-segment-coverage*: ~a"
+            *new-segment-coverage*))))
 
 #|  
   The point of this body of code is to heuristically fill in
@@ -23,22 +45,6 @@ drivers/chart/psp/pts[#].lisp after it has invoked the parser
 to make any semantic or form edges that the grammar dictates. 
 
 |#
-
-;;;-----------
-;;; dispatch
-;;;-----------
-
-(defparameter *new-segment-coverage* nil
-  "Flag to allow avoiding the analyze-segment path
- when it's not fully debugged.")
-
-
-(defun sdm/analyze-segment (coverage)
-  (if *new-segment-coverage*
-    (analyze-segment coverage)
-    ;; Otherwise go the regular route
-    (normal-segment-finished-options coverage)))
-
 
 
 (defun analyze-segment (coverage)
@@ -56,7 +62,7 @@ to make any semantic or form edges that the grammar dictates.
      (error "There should never be no edges in a segment"))
 
     (:discontinuous-edges (break "discontinuous"))
-    (:some-adjacent-edges (break "some adjacente"))
+    (:some-adjacent-edges (break "some adjacent"))
 
     (otherwise
      (break "Unanticipated value for segment coverage: ~A"
@@ -75,6 +81,105 @@ to make any semantic or form edges that the grammar dictates.
     ;; for spanning heuristics
     ;; Apply default runes to collect up all the bits
     (sf-action/all-contiguous-edges)))
+
+
+
+;;;-------------------------------------------------------
+;;; trivial variant - just cover the segment with an edge
+;;;-------------------------------------------------------
+
+;; Don't look at the edge or try to find more relations inside it,
+;; just make sure it's all covered with one edge, propagating the
+;; edge information from its suffix.
+
+(defun just-cover-segment (coverage)
+  (case coverage
+    (:one-edge-over-entire-segment
+     (generalize-segment-edge-form-if-needed (edge-over-segment)))
+
+    ((:all-contiguous-edges
+      :discontinuous-edges 
+      :some-adjacent-edges)
+     (if (no-edge-over-segment-head) ;; ignore these for now
+       (then
+        (format t "~&Ignoring segment without an edge over its head:")
+        (format-words-in-segment)
+        (print-treetop-labels-in-current-segment)
+        (terpri))
+       (propoagate-suffix-to-segment)))
+
+    (:no-edges ;; "burnt" or any other word not in Comlex
+     (format t "~&Ignoring segment with no edges:")
+     (format-words-in-segment)
+     (terpri))
+    (otherwise
+     (break "Unanticipated value for segment coverage: ~A"
+	    coverage)))
+  (normal-segment-finished-options coverage))
+
+
+(defun propoagate-suffix-to-segment ()
+  ;; Look up the edge on the suffix, use its data to
+  ;; create an edge over the whole segment
+  (let* ((suffix (edge-over-segment-head))
+         (suffix-label (edge-category suffix))
+         (suffix-form (edge-form suffix))
+         (suffix-referent (edge-referent suffix)))
+    (let ((edge (make-edge-over-long-span
+                 *left-segment-boundary*
+                 *right-segment-boundary*
+                 suffix-label
+                 :form suffix-form
+                 :referent suffix-referent
+                 :rule 'sdm-span-segment)))
+      (generalize-segment-edge-form-if-needed edge)
+      (convert-referent-to-individual edge)
+      (tr :sdm-span-segment edge)
+      edge)))
+
+
+(defparameter *profligate-creation-of-individuals* nil
+  "This flag says that when we encounter a category as 
+  the referent of a head edge we should replace it with
+  the corresponding individual. Also see reify-implicit-
+  individuals-in-segment, which has the same mission just
+  with more explicit cases, which has proved tedious to debug.")
+
+(defun convert-referent-to-individual (edge)
+  (let ((referent (edge-referent edge)))
+    (typecase referent
+      (referential-category
+       (when *profligate-creation-of-individuals*
+         (setf (edge-referent edge)
+               (instantiate-reified-segment-category referent))))
+      (mixin-category
+       referent) ;; "can"
+      (individual
+       referent)
+      (word ;; #<word HYPHEN>
+       referent)
+      (polyword  ;; "M1A1"
+       referent)
+      (symbol ;; :uncalculated -- for a number
+       referent)
+      (otherwise
+       (push-debug `(,edge ,referent))
+       (break "New type of object as referent of right-suffix: ~a~%~a"
+              (type-of referent) referent)))))
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ;;---------------- ignored below here
