@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:  "new cases"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  3.2 March 2013
+;;;   Version:  3.2 April 2013
 
 ;; broken out from cases 8/24/93 v2.3.  (3/10/94) fixed typo. Added error
 ;; msg to Ref/head 6/14.  (7/15) patched in mixin-category  (7/19) rearranged
@@ -32,7 +32,8 @@
 ;;      with-binding in order to be able to pass an edge to annotate-site-bound-to.
 ;;     (5/10/11) Fixed gratuitous zero'ing of globals for the edges, setting both
 ;;      in ref/head.  11/25/12 Quiet the compiler on unused composites.
-;; 3.2 (3/22/13) Fan out from *do-not-use-psi*
+;; 3.2 (3/22/13) Fan out from *do-not-use-psi*  4/1/13 ref/binding now dereferences
+;;      anonymous variables. 
 
 (in-package :sparser)
 
@@ -350,6 +351,10 @@
         (break "Bug:The referent passed in via ~A~%to be bound to ~A is Nil,~
                 ~%but you aren't allowed to bind a variable to nil."
                value-symbol variable)))
+
+    (when (typep variable 'anonymous-variable)
+      (let ((v (dereference-variable variable body)))
+        (setq variable v)))
 
     (when value
       (if psi?
