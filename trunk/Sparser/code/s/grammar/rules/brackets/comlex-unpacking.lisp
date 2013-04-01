@@ -288,6 +288,7 @@ places. ]]
            (when (memq :pastpart plist)
              (setq plist (subst :past-participle :pastpart plist)))
            plist))
+    (when clause ;; "burnt" hack in Grok -- want another way.
     (push-debug `(lift-special-case ,clause))
     (let ((verb-clause
            (if (consp (car clause)) ;; multiple clauses
@@ -315,6 +316,6 @@ places. ]]
           ;; (verb (:pastpart ("proved" "proven") :subc ... )
           (let ((clipped (cdr (memq :subc (reverse result)))))
             (setq result (reverse clipped))))
-        result))))
+        result)))))
 
 
