@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1995,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2012-2013  David D. McDonald  -- all rights reserved
 
 ;;;     File:  "place brackets"
 ;;;   Module:  "analyzers;HA:"
-;;;  Version:  1.0 December 2012
+;;;  Version:  1.1 March 2013
 
 ;; originated October 1990, estensively elaborated November 1990
 ;; 0.1 (4/21/91 v1.8.4) actually made it usable
@@ -18,6 +18,8 @@
 ;;      doing it to allow a check to keep the strongest bracket
 ;;     (4/30) added predicates that access brackets from labels. 12/5/12 added
 ;;      better traces.
+;; 1.1 (4/1/13) Getting brackets off capitalized variants when lc doesn't 
+;;      have a rule set
 
 (in-package :sparser)
 
@@ -100,6 +102,11 @@
                 position-after)
     (set-status :brackets-from-prior-word-introduced
                 position-after))
+  (unless (rule-set-for label) ;; assume it has backets
+    (let ((v (capitalized-correspondent label position-after)))
+      (when v
+        tr :switched-to-capitalized-variant label v)
+        (setq label v))))
   (if (rule-set-for label)
     (let ((assignment (rs-phrase-boundary (rule-set-for label))))
       (if assignment
@@ -121,6 +128,7 @@
      nil)))
 
 
+
 (defun introduce-leading-brackets (label position-before
                                    &optional source-is-an-edge? )
   ;; Called from scan-next-pos
@@ -133,8 +141,11 @@
     (set-status :brackets-from-word-introduced
                 position-before))
 
-  
-
+  (unless (rule-set-for label) ;; assume it has backets
+    (let ((v (capitalized-correspondent label position-before)))
+      (when v
+        (tr :switched-to-capitalized-variant label v)
+        (setq label v))))
 
   (flet ((assign-before (label)
            (let ((assignment (rs-phrase-boundary (rule-set-for label))))
@@ -156,10 +167,8 @@
     (if (rule-set-for label)
       (assign-before label)
       (else
-
-
-     (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
-     nil))))
+       (tr :no-brackets-introduced label) ;; "~A does not introduce any brackets"
+       nil))))
 
 
 
