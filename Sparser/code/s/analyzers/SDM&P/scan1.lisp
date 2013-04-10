@@ -1,16 +1,28 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: scan.lisp 207 2009-06-18 20:59:16Z cgreenba $
-
+;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: 1.0 January 2013
+;;;   Version: 1.0 April 2013
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
-;; simpler variation 4/1/13
+;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
 
 (in-package :sparser)
+
+#|  
+  The point of this body of code is to heuristically fill in
+anything inside a segment that the parser doesn't. It's also
+a site for making general observations about adjacency and
+modification facts in aid of getting a better picture of
+what the phrase denotes.
+
+  It is called from segment-finished within the PTS code in
+drivers/chart/psp/pts[#].lisp after it has invoked the parser
+to make any semantic or form edges that the grammar dictates. 
+
+|#
 
 ;;;-----------
 ;;; dispatch
@@ -33,56 +45,6 @@
      (error "Undefined value for *new-segment-coverage*: ~a"
             *new-segment-coverage*))))
 
-#|  
-  The point of this body of code is to heuristically fill in
-anything inside a segment that the parser doesn't. It's also
-a site for making general observations about adjacency and
-modification facts in aid of getting a better picture of
-what the phrase denotes.
-
-  It's calls from segment-finished within the PTS code in
-drivers/chart/psp/pts[#].lisp after it has invoked the parser
-to make any semantic or form edges that the grammar dictates. 
-
-|#
-
-
-(defun analyze-segment (coverage)
-  (declare (special *left-segment-boundary* *right-segment-boundary*))
-  (tr :calling-sdm/analyze-segment coverage)
-  (case coverage
-    (:one-edge-over-entire-segment
-     (generalize-segment-edge-form-if-needed (edge-over-segment))
-     (sf-action/spanned-segment))
-
-    (:all-contiguous-edges
-     (analyze-segment-with-continuous-edges))
-
-    (:no-edges
-     (error "There should never be no edges in a segment"))
-
-    (:discontinuous-edges (break "discontinuous"))
-    (:some-adjacent-edges (break "some adjacent"))
-
-    (otherwise
-     (break "Unanticipated value for segment coverage: ~A"
-	    coverage))))
-
-;;;-------
-;;; cases
-;;;-------
-
-(defun analyze-segment-with-continuous-edges ()
-  (tr :sdm-all-contiguous-edges)
-  (let ((edges (continuous-edges-between 
-                *left-segment-boundary* *right-segment-boundary*)))
-    (march-rightward-over-edges-by-form edges)
-    ;; march both rightwards for qualifiers and leftwards
-    ;; for spanning heuristics
-    ;; Apply default runes to collect up all the bits
-    (sf-action/all-contiguous-edges)))
-
-
 
 ;;;-------------------------------------------------------
 ;;; trivial variant - just cover the segment with an edge
@@ -95,7 +57,10 @@ to make any semantic or form edges that the grammar dictates.
 (defun just-cover-segment (coverage)
   (case coverage
     (:one-edge-over-entire-segment
-     (generalize-segment-edge-form-if-needed (edge-over-segment)))
+     (let ((edge (edge-over-segment)))
+       (generalize-segment-edge-form-if-needed edge)
+       (convert-referent-to-individual edge)
+       (record-any-determiner edge)))
 
     ((:all-contiguous-edges
       :discontinuous-edges 
@@ -106,7 +71,11 @@ to make any semantic or form edges that the grammar dictates.
         (format-words-in-segment)
         (print-treetop-labels-in-current-segment)
         (terpri))
-       (propoagate-suffix-to-segment)))
+       (else
+        (let ((edge (propoagate-suffix-to-segment)))
+          (generalize-segment-edge-form-if-needed edge)
+          (convert-referent-to-individual edge)
+          (record-any-determiner edge)))))
 
     (:no-edges ;; "burnt" or any other word not in Comlex
      (format t "~&Ignoring segment with no edges:")
@@ -132,8 +101,7 @@ to make any semantic or form edges that the grammar dictates.
                  :form suffix-form
                  :referent suffix-referent
                  :rule 'sdm-span-segment)))
-      (generalize-segment-edge-form-if-needed edge)
-      (convert-referent-to-individual edge)
+
       (tr :sdm-span-segment edge)
       edge)))
 
@@ -150,8 +118,12 @@ to make any semantic or form edges that the grammar dictates.
     (typecase referent
       (referential-category
        (when *profligate-creation-of-individuals*
+         ;; otherwise unchanged
          (setf (edge-referent edge)
-               (instantiate-reified-segment-category referent))))
+               (make-individual-for-dm&p referent))))
+      
+      ;; These cases are original from 2009 and 
+      ;; not reconsidered yet.
       (mixin-category
        referent) ;; "can"
       (individual
@@ -167,7 +139,73 @@ to make any semantic or form edges that the grammar dictates.
        (break "New type of object as referent of right-suffix: ~a~%~a"
               (type-of referent) referent)))))
 
+
+(defun record-any-determiner (edge)
+  ;; Wanted to have this done by the form rules in syntax/articles,
+  ;; but referent expression interpreter there needs adjustment
+  ;; so this is largely a hack
+  (push-debug `(,edge))
+  (multiple-value-bind (word length)
+                       (first-word-in-segment)
+    (when (= length 1)
+      (return-from record-any-determiner nil))
+    (when (determiner? word)
+      (let ((i (edge-referent edge)))
+        (unless (individual-p i)
+          ;;/// complain?
+          (return-from record-any-determiner nil))
+        (if (definite-determiner? word)
+          (bind-variable 'has-determiner category::definite
+                         i category::det)
+          (bind-variable 'has-determiner category::indefinite
+                         i category::det))
+        ;;/// This also gets the "the" in a company name,  
+        ;; but that's probably not relevant.
+        i))))
     
+
+
+
+;;;-------------------------------------
+;;; Analyze the interior of the segment
+;;;-------------------------------------
+
+#| Look for rules that could have applied given the
+ form of the edges in the segment
+|#
+
+(defun analyze-segment (coverage)
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
+  (tr :calling-sdm/analyze-segment coverage)
+  (case coverage
+    (:one-edge-over-entire-segment
+     (generalize-segment-edge-form-if-needed (edge-over-segment))
+     (sf-action/spanned-segment))
+
+    (:all-contiguous-edges
+     (analyze-segment-with-continuous-edges))
+
+    (:no-edges
+     (error "There should never be no edges in a segment"))
+
+    (:discontinuous-edges (break "discontinuous"))
+    (:some-adjacent-edges (break "some adjacent"))
+
+    (otherwise
+     (break "Unanticipated value for segment coverage: ~A"
+	    coverage))))
+
+;;--- cases
+
+(defun analyze-segment-with-continuous-edges ()
+  (tr :sdm-all-contiguous-edges)
+  (let ((edges (continuous-edges-between 
+                *left-segment-boundary* *right-segment-boundary*)))
+    (march-rightward-over-edges-by-form edges)
+    ;; march both rightwards for qualifiers and leftwards
+    ;; for spanning heuristics
+    ;; Apply default runes to collect up all the bits
+    (sf-action/all-contiguous-edges)))
 
 
 

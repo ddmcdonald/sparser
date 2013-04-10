@@ -163,6 +163,10 @@
       (setq top-node (highest-edge right-ev)))
     top-node))
 
+(defun first-word-in-segment ()
+  (values (pos-terminal *left-segment-boundary*)
+          (segment-length)))
+
 (defun edge-over-segment-prefix ()
   (let ((left-pos-start (pos-starts-here *left-segment-boundary*)))
     (when left-pos-start
@@ -211,4 +215,9 @@
 
 (defun format-words-in-segment (&optional (stream *standard-output*))
   (format stream "~&\"~{~a ~}\" " (mapcar #'word-pname (words-in-segment))))
+
+(defun format-words-between (start-pos end-pos
+                             &optional (stream *standard-output*))
+  (let ((words (words-between start-pos end-pos)))
+    (format stream "~&\"~{~a ~}\" " (mapcar #'word-pname words))))
 
