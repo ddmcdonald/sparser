@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  2.1 October 2011
+;;;  version:  2.2 April 2013
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -61,6 +60,7 @@
 ;;      rhs involves a form category. 9/9 put :method in, fixed but in 
 ;;      construct-referent for function case. 9/23 put method further in. 10/3 fixed
 ;;      bug in it (C&S).
+;; 2.2 (4/3/13) Installed check for Chomsky adjunction in the inner loop.
 
 (in-package :sparser)
 
@@ -216,6 +216,12 @@
   "Bound in instantiate-rule-schema to fill the 'schema' field of the
    cfrs that are created.")
 
+(defvar *Chomsky-adjunction-applies* nil
+  "Bound by instantiate-rule-schema when it encounters a schema where
+   the lhs category is included amoung the categories of the rhs. 
+   This case requires special handling when the rhs has a term with
+   multiple categories.")
+
 
 (defun instantiate-rule-schema (schema
                                 mapping 
@@ -243,8 +249,9 @@
                            (schr-form schema)))
          lhs rhs form referent-schema referent
 
-        (*schema-being-instantiated* schema))
-
+         (*schema-being-instantiated* schema)
+         (*Chomsky-adjunction-applies* (memq schematic-lhs schematic-rhs)))
+ 
     (setq lhs (replace-from-mapping
                schematic-lhs mapping category category-of-locals)
           rhs (mapcar #'(lambda (label)
@@ -275,9 +282,13 @@
      ;; rest of the rule's components, making several rules rather
      ;; than just one.
      ((listp lhs)
-      (i/r/s-multiply-through/lhs lhs rhs form referent relation))
+      (if *Chomsky-adjunction-applies*
+        (i/r/s/-coordinate-chomsky-adjunction lhs rhs form referent relation)
+        (i/r/s-multiply-through/lhs lhs rhs form referent relation)))
      ((some #'listp rhs)
-      (i/r/s-multiply-through/rhs lhs rhs form referent relation))
+      (if *Chomsky-adjunction-applies*
+        (i/r/s/-coordinate-chomsky-adjunction lhs rhs form referent relation)
+        (i/r/s-multiply-through/rhs lhs rhs form referent relation)))
      (t (i/r/s-make-the-rule lhs rhs form referent relation)))
 
     ;; Pass the realization schema through to each rule
@@ -368,6 +379,35 @@
      (t
       (i/r/s-make-the-rule 
        lhs (list left right) form referent relation)))))
+
+(defun i/r/s/-coordinate-chomsky-adjunction (lhs rhs form referent relation)
+  "The pattern of the schema is: foo -> bar foo, with the term for the lhs
+   also appearing on the rhs. When that term is mapped to a list of
+   categories, then we have to coordinate them so that we get coherent
+   rules. Note that the lhs will also have a list value since it was
+   the same term as the one on the right."
+  (push-debug `(,lhs ,rhs ,form ,referent ,relation)) 
+  ;; (setq lhs (car *) rhs (cadr *) form (caddr *) referent (cadddr *) relation (fifth *))
+  (flet ((find-list-term (flat-list)
+           (loop for term in flat-list
+             when (listp term) return term))
+         (value-is-first-or-second (value list)
+           (when (> (length list) 2)
+             (error "Test only applies to length 2 lists, not ~a" list))
+           (if (equal (car list) value) :first :second)))             
+    (let* ((list-term (find-list-term rhs))
+           (position (value-is-first-or-second list-term rhs))
+           (other-term (if (eq position :first)
+                         (cadr rhs)
+                         (car rhs))))
+      (dolist (term lhs)
+        (let ((corresponding-rhs
+               (if (eq position :first)
+                 `(,term ,other-term)
+                 `(,other-term ,term))))
+          (i/r/s-make-the-rule
+           term corresponding-rhs form referent relation))))))
+      
 
 
 
