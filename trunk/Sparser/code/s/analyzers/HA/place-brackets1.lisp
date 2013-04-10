@@ -3,7 +3,7 @@
 
 ;;;     File:  "place brackets"
 ;;;   Module:  "analyzers;HA:"
-;;;  Version:  1.1 March 2013
+;;;  Version:  1.1 April 2013
 
 ;; originated October 1990, estensively elaborated November 1990
 ;; 0.1 (4/21/91 v1.8.4) actually made it usable
@@ -18,7 +18,7 @@
 ;;      doing it to allow a check to keep the strongest bracket
 ;;     (4/30) added predicates that access brackets from labels. 12/5/12 added
 ;;      better traces.
-;; 1.1 (4/1/13) Getting brackets off capitalized variants when lc doesn't 
+;; 1.1 (4/1/13) Getting brackets off capitalized variants when lower case doesn't 
 ;;      have a rule set
 
 (in-package :sparser)
@@ -102,11 +102,16 @@
                 position-after)
     (set-status :brackets-from-prior-word-introduced
                 position-after))
-  (unless (rule-set-for label) ;; assume it has backets
-    (let ((v (capitalized-correspondent label position-after)))
-      (when v
-        tr :switched-to-capitalized-variant label v)
-        (setq label v))))
+
+  (when (word-p label)
+    (unless (rule-set-for label) ;; assume it has backets
+      ;; If "iraqi" does not introduce brackets, check for brackets
+      ;; on its variant "Iraqi"
+      (let ((v (capitalized-correspondent label position-after)))
+        (when v
+          (tr :switched-to-capitalized-variant label v)
+          (setq label v)))))
+
   (if (rule-set-for label)
     (let ((assignment (rs-phrase-boundary (rule-set-for label))))
       (if assignment
@@ -141,11 +146,12 @@
     (set-status :brackets-from-word-introduced
                 position-before))
 
-  (unless (rule-set-for label) ;; assume it has backets
-    (let ((v (capitalized-correspondent label position-before)))
-      (when v
-        (tr :switched-to-capitalized-variant label v)
-        (setq label v))))
+  (when (word-p label)
+    (unless (rule-set-for label) ;; assume it has backets
+      (let ((v (capitalized-correspondent label position-before)))
+        (when v
+          (tr :switched-to-capitalized-variant label v)
+          (setq label v)))))
 
   (flet ((assign-before (label)
            (let ((assignment (rs-phrase-boundary (rule-set-for label))))
