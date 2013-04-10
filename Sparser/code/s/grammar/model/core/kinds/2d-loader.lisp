@@ -10,6 +10,7 @@
 
 (in-package :sparser)
 
+(gload "kinds;relationships")
 (gload "kinds;rules-over-referents")
 
 
