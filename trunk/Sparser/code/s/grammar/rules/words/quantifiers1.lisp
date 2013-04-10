@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.6 November 2012
+;;;   Version:   1.7 April 2013
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -28,6 +27,7 @@
 ;;      other version of this file. 
 ;; 1.6 (11/2/12) Du'h the rules as written to rewrite a word as the saem word are circular.
 ;;      redoing them on the pattern of preposition. 11/30/12 fixed "no"
+;; 1.7 (4/8/13) Made "not" look like an auxiliary
 
 (in-package :sparser)
 
@@ -151,8 +151,9 @@
 
 (define-quantifier "no" :brackets '( ].quantifier  .[np )) 
 
-(define-quantifier "not"  :brackets '( ].quantifier ))  ;; ??
-  ;; gets you out of a problem with "...be careful not to..."
+(define-quantifier "not"  :brackets '( ].verb .[modal ))
+  ;; had been '( ].quantifier ))  
+  ;; which gets you out of a problem with "...be careful not to..."
   ;; where without this there's a break before "to"
 
 (define-quantifier "none" :brackets '( ].quantifier  phrase.[ ) :rules '(of))
