@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2012-2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.3 March 2012
+;;;  Version:  0.3 April 2013
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -17,7 +17,7 @@
 ;;     (4/19/95) added Find-or-make/capitalized-word-to-fit-position
 ;;     (5/18) added Word-at-this-position-is-lowercase?.  ...caps? on 5/19
 ;;     (12/31) added a case to Subsuming-variant. And again 1/16/96
-;;     (3/1/12) quieting compiler
+;;     (3/1/12) quieting compiler. 4/2/13 New cases is subsuming-variant.
 
 (in-package :sparser)
 
@@ -58,9 +58,12 @@
   (let ((variants (word-capitalization-variants lc-word)))
     (when (not (eq caps-type :lower-case))
       (when variants
-        (or (find caps-type variants      ;; exact match
-                  :key #'word-capitalization)
-            (subsuming-variant caps-type variants))))))
+        (unless (typep variants 'top-lattice-point)
+          ;; happened for "seven" as part of checking "on bracket 
+          ;; because of word" in "a seven-day deadline"
+          (or (find caps-type variants      ;; exact match
+                    :key #'word-capitalization)
+              (subsuming-variant caps-type variants)))))))
 
 
 (defun subsuming-variant (actual-state defined-variants)
@@ -69,24 +72,42 @@
   ;; We know that the actual state isn't lowercase and we've already
   ;; checked for an exact match between the state and a variant.
   (let ( variants-state )
-    (dolist (word defined-variants nil)
-      (setq variants-state (word-capitalization word))
-      (ecase variants-state
+    (when actual-state
+      ;; will be nil if the word hasn't been scanned yet,
+      ;; which can happen when we dip back down from the foresst
 
-        (:initial-letter-capitalized
-         (ecase actual-state
-           (:all-caps (return word))
-           (:mixed-case (return word))))  ;; (Knowledge) Factory -> "FACTory"
+      ;; These states don't have capitalized equivalents
+      (unless (or (eq actual-state :punctuation)
+                  (eq actual-state :digits))
 
-        (:mixed-case
-         (ecase actual-state
-           ;; (Knowledge) FACTory -> "Factory"
-           (:initial-letter-capitalized (return word))))
+        (dolist (word defined-variants nil)
+          (setq variants-state (word-capitalization word))
 
-        (:all-caps
-         (ecase actual-state
-           (:initial-letter-capitalized nil)))
-        ))))
+          (ecase variants-state
+            
+            (:initial-letter-capitalized
+             (ecase actual-state
+               (:all-caps (return word))
+               (:single-capitalized-letter nil)
+               (:mixed-case (return word))))  ;; (Knowledge) Factory -> "FACTory"
+
+            (:mixed-case
+             (ecase actual-state
+               ;; (Knowledge) FACTory -> "Factory"
+               (:initial-letter-capitalized (return word))))
+
+            (:all-caps
+             (ecase actual-state
+               (:initial-letter-capitalized nil)))
+
+            (:single-capitalized-letter
+             (case actual-state
+               (:initial-letter-capitalized (return word))
+               (:all-caps (return word))
+               (otherwise
+                (break "subsuming variant: new case for single cap'd"))))
+            
+            ))))))
 
 
 
