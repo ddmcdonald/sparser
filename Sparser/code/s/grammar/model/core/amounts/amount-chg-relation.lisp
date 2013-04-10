@@ -53,8 +53,8 @@
                :with (amount right-edge
                       direction left-edge)))
 
-(when-binding change-in-amount-verb direction change-by-amount
-  :transfer ((direction . direction)))
+;(when-binding change-in-amount-verb direction change-by-amount
+;  :transfer ((direction . direction)))
 
 
 ;;--- adjunct alternative to prior rule

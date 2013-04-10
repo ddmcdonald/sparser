@@ -163,26 +163,28 @@
 
 
 
+
+(unless *nothing-Mac-specific*
+
 ;;--- The forms used by the autodef save routine
 
-(defun save-change-in-amount-verb/up (stream)
-  ;; !! irregular morph.
-  (format stream
-          "~&~%;; ~A~
-           ~%(define-change-in-amount-verb/up ~S)~
-           ~%" (date-as-formatted-string) *slvd/word-string*))
+  (defun save-change-in-amount-verb/up (stream)
+    (declare (special *slvd/word-string*))
+    ;; !! irregular morph.
+    (format stream
+            "~&~%;; ~A~
+          ~%(define-change-in-amount-verb/up ~S)~
+      ~%" (date-as-formatted-string) *slvd/word-string*))
 
 
-(defun save-change-in-amount-verb/down (stream)
-  (format stream
+  (defun save-change-in-amount-verb/down (stream)
+    (declare (special *slvd/word-string*))
+    (format stream
           "~&~%;; ~A~
            ~%(define-change-in-amount-verb/down ~S)~
            ~%" (date-as-formatted-string) *slvd/word-string*))
 
 
-
-
-(unless *nothing-Mac-specific*
 
   ;;--- The forms used within the autodef to setup the widget-state
   ;;    that gets the morphology of the verb checked, etc.
