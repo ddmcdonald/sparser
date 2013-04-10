@@ -60,15 +60,25 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 (defun ddm-setup () ;; 2/13/13 for finding odd bugs. New things turned off
   (setq *annotate-realizations* nil)
   (setq *break-on-new-bracket-situations* t)
-  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; blocks "14-year-old" => age
+  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil)
 ;;  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops/referents-too)
   (setq *new-segment-coverage* :none) ;; defange sdm/analyze-segment
   (setq *do-strong-domain-modeling* nil) ;; completely turn it off
 ;;  (do-note-text-relations-in-segment)
-  (setq *note-text-relations* t))
+;;  (setq *note-text-relations* t)
+  )
 
 (defun grok-pass-one ()
+  "Just pull in the vocabulary all at once"
+  ;;(setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
+  ;; No supra-segment parsing for this pass
+  (setq *do-forest-level* nil)
+  (setq *new-segment-coverage* :none)
+  (do-normal-segment-finished-options)
+  (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu))
+
+(defun grok-pass-two ()
   (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
   (setq *new-segment-coverage* :none)
   (setq *note-text-relations* t)
@@ -83,7 +93,16 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (setq *new-segment-coverage* :trivial)
   (do-strong-domain-modeling)
   (setq *profligate-creation-of-individuals* t)
-  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops/referents-too))
+  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops))
+
+
+(defun syn-test (&optional (text *iraqi-girl*))
+  (setq *do-forest-level* t)
+  (setq *forest-level-protocol* 'parse-forest-and-do-treetops)
+  (do-strong-domain-modeling)
+  (setq *new-segment-coverage* :trivial) ;; which version of strong DM
+  (setq *profligate-creation-of-individuals* t)
+  (p text))
 
 
 ;; If nil, this flag turns off all the errors about new cases for bracketsing and
@@ -107,7 +126,10 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 ;;/// 3/22/13 this drops "U.N." on the floor -- and the form is ugly
 ;;  see core/company/object1.lisp
-(define-company '("United" "Nations") :aliases '(("U.N.")) :takes-the t)
+;;  Today (4/10) this blew up because of hitting new spot in add-permanent-individual
+;;   and it needs debugging
+;(define-with-all-instances-permanent
+;  (define-company '("United" "Nations") :aliases '(("U.N.")) :takes-the t))
 
 ;; Comlex doesn't have "burnt"
 (setup-verb (resolve/make "burnt") nil)
@@ -155,6 +177,18 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (p "the World Health Organization (WHO)")
 ;;  This article has all the pieces:
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
+
+
+#|
+ (mumble::say i)
+ mumble::has-realization?
+ (setq *try-without-annotation* t)
+ mumble::realize
+ mumble::convert-to-derivation-tree
+
+ mumble::realize-dtn
+ mumble::general-np-bundle-driver
+|#
 
 
 ;;;--------
@@ -208,8 +242,8 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 
 
-;; (no-Sparser-traces)
-(defun no-Sparser-traces ()
+;; (no-traces)
+(defun no-traces ()
   (untrace-fsas)
   (untrace-pnf)
   ;(untrace-jfp-sections)
@@ -243,6 +277,8 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 ;; pronoun reference:  seek-person-for-pronoun
 
+;; analysis-core
+
 ;; treetops: move-to-forest-level (protocol dispatch)
 ;;   parse-forest-and-do-treetops (standard protocol)
 ;;   When it wants to punt with nothing to do:  consider-debris-analysis
@@ -257,3 +293,38 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;  On the definition of person in model/core/people/object.lisp - make/person-with-name 
 ;;    ad-hoc in file that isn't loaded: core/people/people+age  -- has cs rules
 ;;    and in core/time/age1.lisp  - category age interpret-number-as-years-of-age
+
+;; edge-vector
+
+#|
+  initialize-discourse-history  
+  define-city  -- dossiers/cities
+
+  named-object  ;; clos classes
+
+  prime-word-from-comlex
+
+
+  comparative  ;; "bigger"
+  die  girl
+  define-function-term  
+
+  traces:  trace-edges
+
+  infering-categories: bind-open-var
+
+ scan-pattern-starting-pair
+ check-many-many
+|#
+
+;; loading  load-the-grammar
+
+
+
+
+
+
+
+
+
+
