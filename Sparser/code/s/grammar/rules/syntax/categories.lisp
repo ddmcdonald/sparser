@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.7 March 2013
+;;;  Version:  0.7 April 2013
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -44,7 +44,8 @@
 ;;     (2/8/13) added 'word'.
 ;; 0.7 (3/14/13) Wrote some predicates that group sets of labels for uniformity
 ;;      is code that operates over them like the text relations. 3/15 fan-out from
-;;      change to pronoun form.
+;;      change to pronoun form. 4/9/13 added relative-clause. Lots of little additions
+;;      to the predicates before that.
 
 (in-package :sparser)
 
@@ -121,6 +122,8 @@
 (def-form-category adjunct)
 (def-form-category adjunct-to-np)
 (def-form-category adjunct-to-s)
+
+(def-form-category relative-clause)
 
 
 
@@ -271,6 +274,18 @@
   (memq name '(category::verb category::verb+present category::verb+s
                category::verb+ed category::verb+ing)))
 
+
+(defgeneric aux/modal-category? (label)
+  (:documentation "modals, auxiliary forms of have and be, do"))
+(defmethod aux/modal-category? ((e edge))
+  (aux/modal-category? (edge-form e)))
+(defmethod aux/modal-category? ((c referential-category))
+  (aux/modal-category? (cat-symbol c)))
+(defmethod aux/modal-category? ((name symbol))
+  (memq name '(category::modal 
+               category::adverb)))
+
+
 (defgeneric pronoun-category? (label)
   (:documentation "Pronouns and their variants. Should be a single word"))
 (defmethod pronoun-category? ((e edge))
@@ -306,6 +321,26 @@
                category::number
                category::preposition
                category::modal category::subordinate-conjunction)))
+
+
+;;--- aux
+
+;;/// This might be easier to find somewhere else?
+(defvar *verbal-auxiliaries* nil
+  "Holds a list of all the auxiliary words, as words")
+
+(defun auxiliary-word? (word)
+  (unless *verbal-auxiliaries*
+    (populate-verbal-auxiliaries))
+  (memq word *verbal-auxiliaries*))
+
+(defun populate-verbal-auxiliaries ()
+  (setq *verbal-auxiliaries*
+        (mapcar #'word-named 
+                '("am" "are" "is" "were"
+                  "do" "does" "did"
+                  "have" "has" "had"
+                  "not"))))
 
 
 
