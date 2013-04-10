@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  3.2 February 2013
+;;;  Version:  3.2 April 2013
 
 ;; initiated 4/23/93 v2.3
 ;; putting in fsas 5/7
@@ -56,6 +56,7 @@
 ;;      that we're not a p0.
 ;;     (2/8/13) Adding more status information now that we have the whole history
 ;;      to use to make continuation decisions -- see set-status
+;;     (4/3/13) Another case to comment out in end-of-source-check.
 
 (in-package :sparser)
 
@@ -583,9 +584,11 @@
 
       (if *do-forest-level*
         (then
-          (setq *where-the-last-segment-ended* position-before)
-          (move-to-forest-level position-before :eos-reached))
+         (setq *where-the-last-segment-ended* position-before)
+         (move-to-forest-level position-before :eos-reached))
         (else
-          (do-the-last-things-in-an-analysis position-before)
-          (terminate-chart-level-process))))))
+         ;; Also invalid -- amoung other things it knows about
+         ;; the old paragraph structures
+         ;; (do-the-last-things-in-an-analysis position-before)
+         (terminate-chart-level-process))))))
 
