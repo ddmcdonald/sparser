@@ -178,14 +178,13 @@
       (values category
               rule))))
 
-#|  Can't use until the Chomsky adjunction issue with multiple
-    categories in an ETF mapping is sorted out
+
+
 (define-category located-in
   :instantiates self
   :specializes associated-with-country
   :binds ((country . country) ;;/// probably too narrow
           (region . location))) ;; maybe too narrow
-  |#
 
 (defmethod relationship-to-country ((c sh::country) (r sh::region-type))
   (declare (special *parent-edge-getting-reference*))
