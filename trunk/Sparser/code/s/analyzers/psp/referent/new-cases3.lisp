@@ -33,7 +33,9 @@
 ;;     (5/10/11) Fixed gratuitous zero'ing of globals for the edges, setting both
 ;;      in ref/head.  11/25/12 Quiet the compiler on unused composites.
 ;; 3.2 (3/22/13) Fan out from *do-not-use-psi*  4/1/13 ref/binding now dereferences
-;;      anonymous variables. 
+;;      anonymous variables. Modified how ref/head makes individuals -- using
+;;      unindexed until a better idea comes up, wrapped in make-individual-for-dm&p
+;;      (4/4/13).
 
 (in-package :sparser)
 
@@ -86,20 +88,32 @@
          (let ((*referent* head))
            (annotate-individual head :unary-rule))
          (annotate-individual head :globals-bound)))
+
       ;(composite-referent
       ; (annotate-composite head))
+
       (referential-category
-       ;; have to convert this into a psi that we can operate over.
-       ;; The annotation is folded into the find-or-make
-       ;; (Done in in *do-not-use-psi* case)
+       ;;////  do we -always- convert to individuals?
        (setq head
              (if *do-not-use-psi*
-               (let ((i (find-or-make/individual head nil))
-                     (lp (cat-lattice-position head)))
-                 (annotate-realization/base-case lp i)
-                 i)
-               (find-or-make-psi-for-base-category head)))
+               (then
+                ;; We have no information about this individual,
+                ;; and individuating it for find will usually require
+                ;; information that would be provided by a binding
+                ;; (and done as :instantiate-individual-with-binding).
+                ;; So we just make an unindexed individual and punt
+                ;; the identity question.
+                (let ((i (make-individual-for-dm&p head))
+                      ;; make-category-indexed-individual is another option
+                      ;; or define something new.
+                      (lp (cat-lattice-position head)))
+                  (annotate-realization/base-case lp i)
+                  i))
+               (else ;; psi case
+                ;; annotation is folded into the find-or-make
+                (find-or-make-psi-for-base-category head))))
        (tr :ref/head-base-from-category head))
+
       (mixin-category
 ;       (unless *single-daughter-edge*
 ;        (break "Only expected to instantiate mix-ins on single edges"))
@@ -115,6 +129,7 @@
       (otherwise
        (break "Unanticipated type as the head: ~a~%~a"
               (type-of head) head)))
+
     head ))
 
 
@@ -177,35 +192,44 @@
     
 
     (if *do-not-use-psi*
-      (let ((i (find-or-make/individual head nil))
-            (lp (cat-lattice-position head)))
-        (annotate-realization/base-case lp i)
-        ;; /// unforgivable direct copy&specialize of the edge decoder
-        ;; in the psi case
-        (setq type-of-head head)
-        (dolist (pair binding-exp/s)
-          (setq variable (car pair))
-          (multiple-value-setq (value edge)
-            (case (cdr pair)
-              (left-referent
-               (unless arg-edge
-                 (setq arg-edge *left-edge-into-reference*))
-               (unless head-edge
-                 (setq head-edge *right-edge-into-reference*))
-               (values left-referent *left-edge-into-reference*))
-              (right-referent
-               (unless arg-edge
-                 (setq arg-edge *right-edge-into-reference*))
-               (unless head-edge
-                 (setq head-edge *left-edge-into-reference*))
-               (values right-referent *right-edge-into-reference*))
-              (otherwise
-               (break "Can't decipher edges and referents. Why?"))))
-        
-          (bind-variable variable value i head)
-          (annotate-site-bound-to value variable type-of-head edge)
-          (setq return-value i)))
+      (then 
+       (let ((lp (cat-lattice-position head))
+             bindings-plist  annotation-list  )
+         (dolist (pair binding-exp/s)
+           ;; e.g. pair = (#<variable reporter> . right-referent)
+           (setq variable (car pair))
+           (multiple-value-setq (value edge)
+             (case (cdr pair)
+               (left-referent
+                (unless arg-edge (setq arg-edge *left-edge-into-reference*))
+                (unless head-edge (setq head-edge *right-edge-into-reference*))
+                (values left-referent *left-edge-into-reference*))
+               (right-referent
+                (unless arg-edge (setq arg-edge *right-edge-into-reference*))
+                (unless head-edge (setq head-edge *left-edge-into-reference*))
+                (values right-referent *right-edge-into-reference*))
+               (otherwise
+                (push-debug `(,pair))
+                (error "Can't decipher edges and referents. Why?"))))
 
+           ;; Create a binding instruction to pass to find
+           (push `(,variable ,value) bindings-plist)
+
+           ;; Create a list to use for annotating edges
+           (push `(,value ,variable ,edge)
+                 annotation-list))
+
+         ;(setq bindings-plist (nreverse bindings-plist))
+
+         (let ((i (find-or-make/individual head bindings-plist)))
+           (annotate-realization/base-case lp i)
+           (setq type-of-head head)
+           (dolist (annotation annotation-list)
+             (destructuring-bind (variable value edge) annotation
+               (annotate-site-bound-to value variable type-of-head edge)))
+           (setq return-value i))))
+
+      ;; psi case
       (let ((psi
              (typecase head
                (psi
@@ -223,9 +247,7 @@
                (otherwise
                 (break "Unanticipated type as the head: ~a~%~a"
                        (type-of head) head)))))
-
         (tr :instantiating-individual-with-binding psi binding-exp/s)
-
         (dolist (pair binding-exp/s)
           (setq variable (car pair))
           (multiple-value-setq (value edge)
@@ -250,7 +272,6 @@
                            (referential-category
                             (find-or-make-psi-for-base-category unit)))
                          nil)))))
-
           (setq psi (find-or-make-psi-with-binding
                      variable value psi))
           ;; annotate what c+v the value has been bound to.
