@@ -15,7 +15,9 @@
 (define-generic-company-word  "concern")
 (define-generic-company-word  "company" :abbrev '("co" "cos"))
 (define-generic-company-word  "corporation" :abbrev '("corp"))
+
 (define-generic-company-word  "organization")
+(define-generic-company-word  "organisation")
 
 ;; 9/13
 (define-generic-company-word "systems")
