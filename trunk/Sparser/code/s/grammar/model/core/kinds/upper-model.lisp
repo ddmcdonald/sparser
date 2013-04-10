@@ -1,23 +1,84 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010,2011 David D. McDonald 
+;;; Copyright (c) 2010-2013 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.1 December 2011
+;;;  version:  0.2 April 2013
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
    is often referred to as an 'upper model'. This is loosely derived from
-   the refinements to that model made at Zoesis in 2003.  |#
+   the refinements to that model made at Zoesis in 2003.  
+
+   Need some axioms and tighter review before buying in completely.
+   Also need a merger with my adoption of Dolce.
+
+|#
 
 ;; 0.1 (8/1/11) Moved in the 'top' categories from other parts of the
 ;;      core so they can be defined before they're referenced. 8/23 added
 ;;      the first relation. 9/16 added modifier (words;adverbs) tenatively.
 ;;      9/29 added operator as in the meeaning from the old days.
 ;;      12/17 added perdurant, not clear how to fit it in correctly.
+;; 0.2 (4/5/13) Exposed top and expressible top so there was somewhere
+;;      to hand the type variable.
 
 (in-package :sparser)
 
+
+;;;------------------------------
+;;;   the top of the lattice 
+;;;------------------------------
+
+; This is a formal top. Nothing should take 'top' as its value restriction
+; (except for mechanical defaults) and we shouldn't position any variables here. 
+; Its functional role is to provide a place for searches up the AKO tree
+; to stop.
+
+(define-category top
+  ;; Need these empty values to ensure that a shadow CLOS clase
+  ;; is creates for it, i.e. to make it a non-trivial class.
+  :instantiates nil
+  :specializes nil)
+
+(defparameter *top-of-category-tree* (category-named 'top))
+
+
+;;;-----------------------------------------------------------------
+;;;     'real' categories -- the effective top of the hierarchy
+;;;-----------------------------------------------------------------
+
+;;--- expressible-type
+
+; This is the category that dominates almost everything in the model.
+; These are the things that the world is comprised of - things, actions, 
+; properties -- unicorns, raising money, being -really- good.  
+;
+; You have to think very carefully if you want to introduce something
+; into the ontology that isn't a subcategory (doesn't inherit from)
+; expressive type. 
+; 
+; If we ignoring the capabilities provided by language and interpersonal
+; talk, everything that you model will get a single category (or a base
+; category and some mixins). But people have more options and can express
+; the same state of affairs from different perspectives -- the canonical
+; example is 'making a decision' and 'deciding', where you shift between
+; a thing and an action. These differences correspond here to differences
+; in the choice of expressive type and could be made for tactical reasons
+; within the text planner.
+;
+(define-category expressible-type
+  :instantiates nil
+  :specializes top)
+
+; This is the natural choice for a value restriction that can accept 'anything'.
+; All the categories for the things we can mention/talk about in language
+; fall under this category. 
+
+
+;;;------------------------------------------
+;;; work-a-day categories already in Sparser
+;;;------------------------------------------
 
 (define-category  kind
   :instantiates :self
@@ -48,56 +109,77 @@
            (substrate)))
 
 
-;; N.b. more exposed categories in the rest of the file
+;;;-----------------
+;;; operator et al.
+;;;-----------------
 
-#|  Need some axioms and tighter review before buying in completely.
-    Also need a merger with Mark's adoption of Dolce.
-
-;;;------------------------------
-;;;   the top of the lattice 
-;;;------------------------------
-
-; This is a formal top. Nothing should take 'top' as its value restriction
-; (except for mechanical defaults) and we shouldn't position any variables here. 
-; Its functional role is to provide a place for searches up the AKO tree
-; to stop.
-
-(define-category top)
-(defparameter *top-of-category-tree* (category-named 'top))
-
-
-
-
-;;;-----------------------------------------------------------------
-;;;     'real' categories -- the effective top of the hierarchy
-;;;-----------------------------------------------------------------
-
-;;--- expressible-type
-
-; This is the category that dominates almost everything in the model.
-; These are the things that the world is comprised of - things, actions, 
-; properties -- unicorns, raising money, being -really- good.  
+; The intuitions for the notion of 'operator' come ultimately from
+; logic. This is classification for properties (in this model these
+; are 'qualities' to stay with the clearest current literature) like
+; 'tall' or 'unusual' and for logical operators like 'not'.  
 ;
-; You have to think very carefully if you want to introduce something
-; into the ontology that isn't a subcategory (doesn't inherit from)
-; expressive type. 
-; 
-; If we ignoring the capabilities provided by language and interpersonal
-; talk, everything that you model will get a single category (or a base
-; category and some mixins). But people have more options and can express
-; the same state of affairs from different perspectives -- the canonical
-; example is 'making a decision' and 'deciding', where you shift between
-; a thing and an action. These differences correspond here to differences
-; in the choice of expressive type and could be made for tactical reasons
-; within the text planner.
+; Metaphysically speaking we group these together becase they are
+; concepts that only pick out a thing in the world when they are
+; part of a predication.  Some, like colors, are pretty vivid concepts,
+; but except neurologically the world only has colored things,
+; not colors qua colors. 
 ;
-(define-category expressible-type
-  super-category top)
+; Operationally we have the category 'operator' as the root category
+; of every quality, manner, conventional operator, and so that the parser
+; can have a uniform way of handling the grammatical juxtaposition
+; of operators with the terms as looking up in the model for a predication 
+; that that particular category of operator with that particular category
+; of term ("smart demon", "not unusual", "expected outcome").
+; Virtually all of the adjunction-based resources refer to something 
+; that derives from operator, which goes along with the fact that adjuncts 
+; are always grammatically optional.
 
-; This is the natural choice for a value restriction that can accept 'anything'.
-; All the categories for the things we can mention/talk about in language
-; fall under this category. 
+(define-category operator
+  :specializes nil
+  :binds ((name :primitive word)))
 
+; Atributes or predicates some propety of something.
+; Goes with the relation modified.
+(define-category modifier
+  :specializes operator)
+
+(define-category adverbial
+   :specializes modifier)
+
+
+; Predication is a category that exists because operator does. It will
+; usually be a mixin on a more conventinal category, but the parser can
+; always make an instance of it as a 'construction of last resort' if
+; the syntactic basis for the combination is definitive but there isn't
+; something already available for it in the model.
+;
+(define-category predication
+  :specializes nil
+  :binds ((term)
+          (operator . operator)))
+
+
+
+; We also need an unmarked, equally weighted 'relation' for what holds
+; among things like the members of a collection or between categories
+; taken generically. Don't want to assume a standard arity 
+; or a directionality (for that we'd use operator and predication). 
+
+(define-category relation
+  :specializes nil) ;; might be top, or perhaps expressible-type
+
+(define-category modifies
+  :specializes relation
+  :instantiates :self
+  :binds ((modifier . modifier)
+          (modified)))
+
+  
+
+
+;;---------------- nothing live beyone here ------------------
+
+#|  
 
 
 ;;--- categories that are classifications of effects rather than stuff
@@ -191,74 +273,9 @@
 ;;;--------------------------------------------------------------
 ;;;------- the expressive categories and subcategories ----------
 ;;;--------------------------------------------------------------
-|#
 
-; The intuitions for the notion of 'operator' come ultimately from
-; logic. This is classification for properties (in this model these
-; are 'qualities' to stay with the clearest current literature) like
-; 'tall' or 'unusual' and for logical operators like 'not'.  
-;
-; Metaphysically speaking we group these together becase they are
-; concepts that only pick out a thing in the world when they are
-; part of a predication.  Some, like colors, are pretty vivid concepts,
-; but except neurologically the world only has colored things,
-; not colors qua colors. 
-;
-; Operationally we have the category 'operator' as the root category
-; of every quality, manner, conventional operator, and so that the parser
-; can have a uniform way of handling the grammatical juxtaposition
-; of operators with the terms as looking up in the model for a predication 
-; that that particular category of operator with that particular category
-; of term ("smart demon", "not unusual", "expected outcome").
-; Virtually all of the adjunction-based resources refer to something 
-; that derives from operator, which goes along with the fact that adjuncts 
-; are always grammatically optional.
+;; operator et al. went here
 
-(define-category operator
-  :specializes nil
-  :binds ((name :primitive word)))
-
-; Atributes or predicates some propety of something.
-; Goes with the relation modified.
-(define-category modifier
-  :specializes operator)
-
-(define-category adverbial
-   :specializes modifier)
-
-
-; Predication is a category that exists because operator does. It will
-; usually be a mixin on a more conventinal category, but the parser can
-; always make an instance of it as a 'construction of last resort' if
-; the syntactic basis for the combination is definitive but there isn't
-; something already available for it in the model.
-;
-(define-category predication
-  :specializes nil
-  :binds ((term)
-          (operator . operator)))
-
-
-
-; We also need an unmarked, equally weighted 'relation' for what holds
-; among things like the members of a collection or between categories
-; taken generically. Don't want to assume a standard arity 
-; or a directionality (for that we'd use operator and predication). 
-
-(define-category relation
-  :specializes nil) ;; might be top, or perhaps expressible-type
-
-(define-category modifies
-  :specializes relation
-  :instantiates :self
-  :binds ((modifier . modifier)
-          (modified)))
-
-  
-
-
-
-#|
 ;;;-----------------------------------------------------------------------------
 ;;; conventional categories -- the conventional upper model of expressive types
 ;;;-----------------------------------------------------------------------------
