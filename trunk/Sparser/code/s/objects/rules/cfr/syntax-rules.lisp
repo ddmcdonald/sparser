@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "syntax rules"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   December 1994
+;;;   Version:   April 2013
 
 ;; cloned from [form-rules form] 12/30/94  v2.3 
+;; Rolled in stubbed specified schema 4/9/13. 
 
 (in-package :sparser)
 
@@ -17,7 +18,8 @@
                              rhs-expressions
                              &key ((:form form-expression))
                                   ((:referent referent-expression))
-                                  ((:head head-designator)))
+                                  ((:head head-designator))
+                                  ((:schema specified-schema)))
 
   ;; Expansion of Def-syntax-rule, the form for creating cfrs that
   ;; are based on combinations of two "form" labels that reflect
@@ -55,19 +57,31 @@
         (referent (when referent-expression
                    (resolve-referent-expression referent-expression))))
 
+    (unless (every #'form-category? rhs)
+      (push-debug `(,rhs))
+      (error "At least one of the categories in the righthand-side ~
+              of this rule is not a form category:~%~a" rhs))
+
     (when form-expression
       (unless form-category
         (error "Syntax rule: There is no form category with ~
                 the name ~A" form-expression)))
 
+    (when specified-schema
+      ;;/// It will need interpretation to resolve it
+      ;; to a schema object -- probably shift the variable
+      ;; and move it all up to the let.
+      )
+
     (do-syntax-rule/resolved rhs head-designator
-                             form-category referent)))
+                             form-category referent
+                             specified-schema)))
 
 
 
 
 
-(defun do-syntax-rule/resolved (rhs head-designator form referent)
+(defun do-syntax-rule/resolved (rhs head-designator form referent schema)
   
   ;; We're going to make a regular binary rule, except that the ids that
   ;; trigger it will be in form position rather than category position.
@@ -81,7 +95,8 @@
         (let ((cfr
                (construct-syntax-cfr rhs
                                      form
-                                     referent)))
+                                     referent
+                                     schema)))
 
           (setf (cfr-completion cfr) head-designator)
           cfr ))))
@@ -91,11 +106,12 @@
 ;;; builders
 ;;;----------
 
-(defun construct-syntax-cfr (rhs form referent)
+(defun construct-syntax-cfr (rhs form referent schema)
   (let ((cfr (make-cfr :category :syntactic-form
                        :rhs rhs
                        :form form
-                       :referent referent)))
+                       :referent referent
+                       :schema schema)))
 
     (setf (cfr-plist cfr) (list :syntax-rule))
 
