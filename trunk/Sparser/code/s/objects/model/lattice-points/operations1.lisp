@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 February 2013
+;;;  version:  1.0 April 2013
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -26,7 +26,7 @@
 ;;      reclaim operation. Whole scheme needs to be considered.
 ;;     (2/23/13) Put a trap in category-inherits-type? for the case of a
 ;;      category having itself as its super-type. Announces the problem and
-;;      returns nil. 
+;;      returns nil. (4/9/13) Extended super-categories-of.
 
 (in-package :sparser)
 
@@ -81,15 +81,24 @@
 ;;; what categories does a category inherit from
 ;;;----------------------------------------------
 
-(defun super-categories-of (c)
-  (typecase c
-    (referential-category
-     (if (cat-lattice-position c)
-       (super-categories-of1 c)
-       (list c)))
-    (otherwise
-     (push-debug `(,c))
-     (error "Unexpected type ~a" (type-of c)))))
+(defmethod super-categories-of ((c referential-category))
+  (if (cat-lattice-position c)
+    (super-categories-of1 c)
+    (list c)))
+
+(defmethod super-categories-of ((p psi))
+  (all-categories-in-psi p))
+
+(defmethod super-categories-of ((i individual))
+  (let ((type (indiv-type i)))
+    (if (null (cdr type))
+      (super-categories-of (car type))
+      (break "stub"))))
+
+(defmethod super-categories-of ((c T))
+  (push-debug `(,c))
+  (error "super-categories-of is not defined on objects of ~
+          type ~a" (type-of c)))
 
 (defun super-categories-of1 (c)
   (let* ((lp (cat-lattice-position c))
