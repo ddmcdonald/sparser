@@ -358,7 +358,7 @@ there were ever to be any.  ///hook into final actions ??  |#
   (terpri stream)(terpri stream))
 
 (defun tts-form ()
-  (let ((*treetop-label-to-use* form))
+  (let ((*treetop-label-to-use* :form))
     (declare (special *treetop-label-to-use*))
     (tts)))
 
