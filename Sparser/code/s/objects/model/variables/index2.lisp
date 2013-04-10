@@ -65,6 +65,10 @@
 ;;;--------------------
 
 (defun find/make-lambda-variable-for-category (name-symbol restriction category)
+  (unless category
+    (error "Cannot define the variable ~a~
+          ~%because the category parameter was not supplied.~
+          ~%Variables are only defined relative to categories." name-symbol))
   (let ((v (find-variable-in-category name-symbol category)))
     (if v
       (setf (var-value-restriction v) restriction)

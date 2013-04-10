@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "form"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  March 2013
+;;;  version:  April 2013
 
 ;; initiated 11/18/91  v2.1
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -15,6 +15,8 @@
 ;;   encountered in the load-order in sl/ambush/checkpoint
 ;; 2.1 (3/9/13) trying to allow a mix of categories and a primitive
 ;;    in a value restriction. 
+;; 2.2 (4/5/13) Storing free-defined variables with the category's
+;;    other binding variables.
 
 (in-package :sparser)
 
@@ -32,8 +34,21 @@
   (let ((restriction (resolve-variable-restriction
                       restriction-expression)))
 
-    (find/make-lambda-variable-for-category 
-     name-symbol restriction category)))
+    (let ((v (find/make-lambda-variable-for-category 
+              name-symbol restriction category))
+          (bindings (cat-slots category)))
+
+      (cond
+       ((null bindings)
+        (setf (cat-slots category) `(,v)))
+       ((memq v bindings))
+       (t (tail-cons v bindings)))
+
+      ;;///// index them independently because they can't always
+      ;; be found
+
+      v)))
+      
 
 
 
