@@ -108,12 +108,12 @@
                 ((eq cfr (second entry))
                  (setf (gethash target-site *edge-multiplication-table*)
                        (first entry)))
-                (t (break "The cfr to delete:~%  ~A~%is not one of the ~
+                (t (error "The cfr to delete:~%  ~A~%is not one of the ~
                            table entries for that righthand side."
                           cfr))))
          
          ((null (cdr entry))
-          (break "Unexpected format for entry:~
+          (error "Unexpected format for entry:~
                   ~%The entry for the righthand side:~%   ~A~
                   ~%maps to just one rule, but the entry is a list.~
                   ~%Continue if this is ok"
@@ -129,9 +129,12 @@
         (else
           (remhash target-site *edge-multiplication-table*)))
       (else
-        (break "There is no entry in the tables corresponding to~
+        (cerror "If you think this is ok, then just continue"
+                 "There is no entry in the tables corresponding to~
                 ~%the righthand side of the rule being deleted:~
-                ~%  ~A" cfr)
+                ~%  ~A~
+                ~%Maybe another rule with the same rhs has just been deleted?"
+                 cfr)
         (return-from flush-multiplier-table-entry)))))
 
 
