@@ -1,12 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 1990,1991  Content Technologies Inc.
 ;;; copyright (c) 1993-1997,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "complete HA"
 ;;;    Module:   "analyzers;psp:complete:"
 ;;;   Version:   3.5 February 2013
 
+;; 1.1  (5/2 v1.8.4)  Modified Complete-edge to check the quiescent
+;;      position of the forest-level parser
+;; 1.2  (10/21 v2.0) Overhauled it to streamline/make-consistent the
+;;      calling patterns & hooks.
+;;      (11/1) put in *do-completion-actions* in place of *..action..*
+;; 1.3 (7/14/92 v2.3) bumped version to 3 to go with changing the call
+;;       for anaphor recording of edges.
 ;; 3.1 (5/3/93) added status setting to word completion routine
 ;; 3.2 (6/11) passed positions through to next stage
 ;; 3.3 (12/6) flushed the polyword case since it's subsumed by edges
@@ -34,7 +41,8 @@
       (edge     (complete-edge/hugin     obj))
       (word     (complete-word/hugin obj position next-position))
       (otherwise
-       (break "Something other than an edge or a word passed in: ~a" obj)))))
+       (break "Something other than an edge or a word passed ~
+               to completion hook: ~a" obj)))))
 
 
 ;;;-------
@@ -81,37 +89,37 @@
 
 (defun subsumption-check/complete (edge)
   (let ((plist (plist-for (edge-category edge))))
-    ;; 7/22 patches around deep bug such that something is treating
+    ;; 7/22/94 patches around deep bug such that something is treating
     ;; (some? all?) polywords like they were words and put ':mixed-case'
     ;; in the plist field of "New York"
     (when (consp plist)
       (when (member :inhibit-completion-actions-of-subsumer
                     plist :test #'eq)
-    (let ((entry
-           (assoc (edge-category edge)
-                  *instances-of-subsumption-relevant-edges*)))
-      (if entry
-        (let ((old-start (first (cdr entry)))
-              (old-end   (second (cdr entry)))
-              (new-start (pos-token-index (pos-edge-starts-at edge)))
-              (new-end (pos-token-index (pos-edge-ends-at edge))))
-          (let ((subsumes?
-                 (unless (>= new-start old-end)
-                   (and (<= new-start old-start)
-                        (>= new-end old-end)))))
-            (if subsumes?
-              (then
-                (rplacd entry `(,new-start ,new-end))
-                t )
-              (else
-                (rplacd entry `(,new-start ,new-end))
-                nil ))))
-        (else
-          (push `(,(edge-category edge)
-                  . (,(pos-token-index (pos-edge-starts-at edge))
-                     ,(pos-token-index (pos-edge-ends-at edge))))
-                *instances-of-subsumption-relevant-edges*)
-          nil )))))))
+        (let ((entry
+               (assoc (edge-category edge)
+                      *instances-of-subsumption-relevant-edges*)))
+          (if entry
+            (let ((old-start (first (cdr entry)))
+                  (old-end   (second (cdr entry)))
+                  (new-start (pos-token-index (pos-edge-starts-at edge)))
+                  (new-end (pos-token-index (pos-edge-ends-at edge))))
+              (let ((subsumes?
+                     (unless (>= new-start old-end)
+                       (and (<= new-start old-start)
+                            (>= new-end old-end)))))
+                (if subsumes?
+                  (then
+                   (rplacd entry `(,new-start ,new-end))
+                   t )
+                  (else
+                   (rplacd entry `(,new-start ,new-end))
+                   nil ))))
+            (else
+             (push `(,(edge-category edge)
+                     . (,(pos-token-index (pos-edge-starts-at edge))
+                        ,(pos-token-index (pos-edge-ends-at edge))))
+                   *instances-of-subsumption-relevant-edges*)
+             nil )))))))
 
 
 
@@ -119,5 +127,6 @@
   ;; called from the grammar to setup the subsumption check
   ;; and inhibition on a specific label
   (push-onto-plist label
-                   t :inhibit-completion-actions-of-subsumer))
+                   t :inhibit-completion-actions-of-subsumer)
+  :done)
 
