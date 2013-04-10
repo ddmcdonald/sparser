@@ -52,7 +52,16 @@
 |#
 
 
-(define-mixin-category indefinite)
+;;;--------------------------------------------
+;;; Categories used for subtype specifications
+;;;--------------------------------------------
+;; But look at elaborations / alternatives in rules/syntax/articles
+
+(define-mixin-category  indefinite)
+  ;; The idea is to be able to search off of this in the dh
+  ;; to convert over any that are unresolved at the end.
+  ;; //never exploited yet
+
 (define-mixin-category definite)
 (define-mixin-category possessive)
 
