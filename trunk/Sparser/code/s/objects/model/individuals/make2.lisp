@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  2.1 March 2013
+;;;  version:  2.1 April 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -58,6 +58,8 @@
 ;;     (8/15/11) a bit of cleanup. (12/15/12) added make-permanent-unindexed-individual.
 ;; 2.1 (3/22/13) Experimenting with *do-not-use-psi* that is or's into fits-criteria-for
 ;;      -simple-individuals and makes it always return t. 
+;;     (4/4/13) Added make-individual-for-dm&p as a placeholder. Presently just calls
+;;      unindexed. 
 
 (in-package :sparser)
 
@@ -344,6 +346,7 @@
     (setf (indiv-id   individual) (next-id category))
     individual ))
 
+
 (defun subtype-individual (i subtype-category)
   ;; We are building a new individual that differs from its source
   ;; individual only in its category.  In particular we copy its
@@ -367,6 +370,19 @@
 
 (defun get-category-individual (category)
   (get-tag-for :individual category))
+
+
+;;;-------------------------
+;;; special 'make' for DM&P
+;;;-------------------------
+
+(defun make-individual-for-dm&p (category)
+  ;; This is a placeholder so when the decision about what to
+  ;; really do make we only have to change this one place
+  (let ((i (make-unindexed-individual category)))
+    (bind-category-of-instance i category)
+    i))
+
 
 ;;;--------------------------
 ;;; specializing individuals

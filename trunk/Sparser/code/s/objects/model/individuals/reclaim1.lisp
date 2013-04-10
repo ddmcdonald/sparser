@@ -94,6 +94,10 @@
   ;; temporary instances, gets moved on the category's list of
   ;; individuals so that all the temporaries are in front of it.
 
+  ;; If called directly from index-to-category then the
+  ;; individual ("instance") has just been cons'd onto the
+  ;; front of the instances list. 
+
   (let* ((plist (unit-plist category))
          (cell/permanent-list (member :permanent-individuals plist
                                       :test #'eq))
@@ -102,49 +106,86 @@
          (cell/instances (member :instances plist :test #'eq))
          (instances (second cell/instances)))
 
-    (if (null (cdr instances))
+    (cond
+     ((null (cdr instances))
       ;; this individual is the only instance in this category so
       ;; there's not much to do.
-      (then
+      (setf (unit-plist category)
+            `( :1st-permanent-individual
+              ,individual
+              :permanent-individuals
+              ,(list individual)
+              ,@plist )))
+
+     ((null cell/1st-permanent)
+      ;; none of the instances on the list are permanent
+      (break "look around and confirm assumptions")
+      ;; The other instances are temporary, so the permanent marker
+      ;; and this instance go below them -- see reclaimation code
+      (when (eq individual (car instances)) ;; trust but verify
+        (setq instances (cdr instances)))
+      (let ((instances-cell
+             (member instances plist :test #'eq))
+            (rest-of-the-plist (cddr instances-cell)))
+        ;; replace its list of instances with the shorter list
+        (rplacd instances-cell
+                (cons instances rest-of-the-plist))
+        (break "that look right?")
+
+        ;; add the permanent marker on the front
         (setf (unit-plist category)
               `( :1st-permanent-individual
                  ,individual
                  :permanent-individuals
                  ,(list individual)
-                 ,@plist )))
+                ,@plist))
 
+        (break "still look right?")))                
+    
+
+     ((eq (second cell/1st-permanent)
+          (second instances))
       ;; There is at least one other instance.
       ;; The individual has just been put at the front of the
       ;; instances list. If the 1st permanent individual is second 
       ;; on that list then we don't have to do any moving
-      (if (eq (second cell/1st-permanent)
-              (second instances))
-        (then
-          (rplacd cell/permanent-list
-                  ;; the permanent list should be identical to the
-                  ;; instances list
-                  `( ,(second cell/instances)
-                     ,@(cddr cell/permanent-list) ))
-          (rplacd cell/1st-permanent
-                  `( ,individual
-                     ,@(cddr cell/1st-permanent) )))
+      (rplacd cell/permanent-list
+              ;; the permanent list should be identical to the
+              ;; instances list
+              `( ,(second cell/instances)
+                ,@(cddr cell/permanent-list) ))
+      (rplacd cell/1st-permanent
+              `( ,individual
+                ,@(cddr cell/1st-permanent) )))
 
-        ;; It isn't at the front of the list, so it has to be moved
-        (else
-          (break "it isn't in front")
-          ;; pop it off the top of the instances list
-          (rplacd cell/instances (cddr cell/instances))
+     (t ;; It isn't at the front of the list, so it has to be moved
 
-          (let ((cell/1st-perm-indiv-in-instances
-                 (member (first cell/1st-permanent)
-                         instances :test #'eq)))
+      ;; (4/10/13) There was a break here: "not on top" so perhaps
+      ;; this wasn't fully worked through back in the day
+      ;; So putting in local checks to get a better error than
+      ;; 'nil is not the expected type 'cons'
 
-            ;; Shift its location in the list of allocated 
-            ;; individuals to just behind the presently first
-            ;; permanent object.  Nothing else has to change
-            (rplacd cell/1st-perm-indiv-in-instances
-                    `( ,individual ,@(cddr cell/permanent-list)))
-            ))))
+      (push-debug `(,(copy-list cell/instances)))
+      ;; pop it off the top of the instances list
+      (rplacd cell/instances (cddr cell/instances))
+
+      (let ((cell/1st-perm-indiv-in-instances
+             (member (first cell/1st-permanent)
+                     instances :test #'eq)))
+        (unless cell/1st-perm-indiv-in-instances
+          (error "Can't identify the first permanent individual ~
+                  when trying to make ~a~
+                ~%permanent in the instances of ~a"
+                 individual category))
+
+        ;; Shift its location in the list of allocated 
+        ;; individuals to just behind the presently first
+        ;; permanent object.  Nothing else has to change
+        (rplacd cell/1st-perm-indiv-in-instances
+                `( ,individual ,@(cddr cell/permanent-list)))
+
+        (pop-debug))))
+            
     plist ))
 
 
