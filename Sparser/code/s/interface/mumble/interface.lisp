@@ -20,12 +20,6 @@
 ;;; is there a realization?
 ;;;-------------------------
 
-(defmethod mumble::has-realization? ((i individual))
-  (unless *annotate-realizations*
-    (error "You have to set *annotate-realizations* to t"))
-  (or (indiv-rnodes i)
-      (mumble::has-realization? (itype-of i))))
-
 (defmethod mumble::has-realization? ((i psi))
   (unless *annotate-realizations*
     (error "You have to set *annotate-realizations* to t"))
@@ -33,10 +27,13 @@
     (lp-realizations lp)))
 
 (defmethod mumble::has-realization? ((c referential-category))
-  (unless *annotate-realizations*
-    (error "You have to set *annotate-realizations* to t"))
-  (let ((lp (cat-lattice-position c)))
-    (lp-realizations lp)))
+  (if *do-not-use-psi*
+    (cat-realization c)
+    (else
+     (unless *annotate-realizations*
+       (error "You have to set *annotate-realizations* to t"))
+     (let ((lp (cat-lattice-position c)))
+       (lp-realizations lp)))))
 
 (defmethod mumble::has-realization? ((e edge))
   (let ((referent (edge-referent e)))
@@ -49,8 +46,6 @@
 ;;; what is it?
 ;;;-------------
 
-;;--- realization-for 
-
 (defmethod mumble::realization-for ((o t))
   (let ((options (realization-history o)))
     ;; choice among alternatives probably goes here
@@ -60,13 +55,10 @@
       ;;(break "back from realization-for ~a~%with ~a" o dt)
       dt)))
 
-(defmethod mumble::realization-for ((e edge))
-  (let ((referent (edge-referent e)))
-    (mumble::realization-for referent)))
-    
 
-
-;;--- history
+;;;---------
+;;; history
+;;;---------
 
 (defgeneric realization-history (o)
   (:documentation "Soaks up the different possibilities for 
@@ -121,35 +113,6 @@
 ;;;---------
 ;;; helpers
 ;;;---------
-
-(defmethod mumble-phrase ((s-name symbol))
-  "Given a symbol in the sparser package, return the phrase
-   from mumble that has that name."
-  (let* ((m-name (intern (symbol-name s-name)
-                         (find-package :mumble)))
-         (phrase (mumble::phrase-named m-name)))
-    (unless phrase
-      (push-debug `(,s-name ,m-name))
-      (error "There is no phrase in Mumble with the name ~a" m-name))
-    phrase))
-
-
-(defmethod binds-a-word? ((i individual))
-  (or (binds i 'name)
-      (binds i 'word)))
-
-(defmethod bound-word ((i individual))
-  (let* ((binding/s (binds-a-word? i))
-	 ;; in principle there could be more than one
-	 (binding (typecase binding/s
-		    (cons (car binding/s))
-		    (binding binding/s)
-		    (otherwise
-		     (error "New type: ~a~%~a" 
-			    (type-of binding/s) binding/s)))))
-    (binding-value binding)))
-
-
 
 ;;--- move to psi somewhere
 
