@@ -292,16 +292,18 @@
   ;; whether one of the bindings there has this individual
   ;; as its body
   (push-debug `(,variable ,value ,individual))
-  (unless (typep variable 'anonymous-variable)
-    ;; those have no place to put this information, 
-    ;; so we can't ever retrieve it
-    (let ((instances-alist (var-instances variable)))
-      (when instances-alist
-        (let ((bindings (cdr (assoc value instances-alist
-                                    :test #'eq))))
-          (when bindings
-            (find individual bindings :test #'eq
-                  :key #'binding-body)))))))
+  (when (typep variable 'anonymous-variable)
+    (setq variable (dereference-variable variable individual)))
+
+  (let ((instances-alist (var-instances variable)))
+    (when instances-alist
+      (let ((bindings (cdr (assoc value instances-alist
+                                  :test #'eq))))
+        ;; /// If the individual gets dicy to identify (being arbitrary)
+        ;; the we probably want to shift to v+v objects.
+        (when bindings
+          (find individual bindings :test #'eq
+                :key #'binding-body))))))
 
 
 

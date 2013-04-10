@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  1.6 June 2009
+;;;  version:  1.7 April 2013
 
 ;; initiated 11/30/91 v2.1
 ;; 1.1 (7/20/92 v2.3) revised to fit new regime
@@ -22,6 +21,7 @@
 ;;     (5/18) adjusted that tweak to return the resulting new psi.
 ;;     (3/4/05) Added optional to make/binding so it only indexes the value
 ;;     (6/19/09) fan-out from psi changes. Capitalization tweaks.
+;; 1.7 (4/5/13) Redesigned the when-binding hook
 
 (in-package :sparser)
 
@@ -51,23 +51,30 @@
 
 (defun bind-variable (var/name value individual
                       &optional category)
+  ;; psi case
   (when (typep individual 'psi)
     (let ((new-psi (bind-v+v var/name value individual category)))
       (return-from bind-variable new-psi)))
 
+  ;; individual case
   (unless category
     (cond 
       ((referential-category-p individual) ;; 6/22/09
        (setq category individual))
       (t (setq category (indiv-type individual)))))
-  ;; ddm 6/19/09 How did this ever work? The fn above this is
-  ;; make-simple-individual which deliberately make indiv-type a list,
-  ;; yet the find-variable just below complains about that
-  (when (consp category) ;; new 6/19
+
+  (when (consp category) ;; new 6/19/09
     (setq category (car category)))
 
-  (let ((variable (or (when (or (typep var/name 'lambda-variable)
-                                (typep var/name 'anonymous-variable))
+  (when (typep var/name 'anonymous-variable)
+    (push-debug `(,var/name ,value ,individual ,category))
+    ;; anonymous variables are a scheme used in compiling
+    ;; realization schema in ETF to get around the fact that
+    ;; they can't know what category will used at runtime
+    ;; so they don't belong in internal code.
+    (break "Why have we got an anonymous variable?"))
+
+  (let ((variable (or (when (typep var/name 'lambda-variable)
                         var/name)
                       (find-variable-for-category var/name category))))
     (unless variable
@@ -83,19 +90,21 @@
 (defun bind-variable/expr (variable value individual)
   (let ((established-binding
          (find/binding variable value individual)))
-;    (break "bind-expr1")
     (if established-binding
       (let ((count-cons
              (member :incidence-count (unit-plist established-binding))))
         (rplacd count-cons
                 (cons (1+ (cadr count-cons))
                       (cddr count-cons)))
+        (when-binding-hook variable individual value
+                           :established established-binding)
         established-binding )
         
       (let ((new-binding (make/binding variable value individual)))
         (setf (unit-plist new-binding)
               `(:incidence-count 1 ,(unit-plist new-binding)))
-        (when-binding-hook value variable individual)
+        (when-binding-hook variable individual value
+                           :new new-binding)
         new-binding ))))
 
 
