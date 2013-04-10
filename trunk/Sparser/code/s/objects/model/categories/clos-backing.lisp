@@ -184,29 +184,36 @@
     (setf (indiv-shadow individual) shadow)
     shadow))
 
+(defmethod find-or-make-shadow ((i individual))
+  (or (get-shadow i :no-break)
+      (create-shadow i)))
 
-(defgeneric get-shadow (obj)
+
+(defgeneric get-shadow (obj &optional no-break)
   (:documentation "Return the CLOS instances that we apply
  in methods."))
 
-(defmethod get-shadow ((i individual))
+(defmethod get-shadow ((i individual) &optional no-break)
   (let ((s (indiv-shadow i)))
     (unless s
-      (push-debug `(,i))
-      (error "No shadow associated with ~a" i))
+      (unless no-break
+        (push-debug `(,i))
+        (error "No shadow associated with ~a" i)))
     s))
 
-(defmethod get-shadow ((c category))
+(defmethod get-shadow ((c category) &optional no-break)
   (let ((s (get-nominal-instance c)))
     (unless s
-      (push-debug `(,i))
-      (error "No shadow associated with ~a" i))
+      (unless no-break
+        (push-debug `(,c))
+        (error "No shadow associated with ~a" c)))
     s))
 
-(defmethod get-shadow ((obj t))
+(defmethod get-shadow ((obj t) &optional no-break)
   (push-debug `(,obj))
-  (error "There are no shadows associated with object of ~
-          type ~a~%  ~a" (type-of obj) obj))
+  (unless no-break
+    (error "There are no shadows associated with object of ~
+            type ~a~%  ~a" (type-of obj) obj)))
 
 (defvar *category-classes-to-nominal-instance* (make-hash-table))
 
