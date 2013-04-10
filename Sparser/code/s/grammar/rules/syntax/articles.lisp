@@ -18,10 +18,48 @@
 ;;; category
 ;;;----------
 
-(define-mixin-category  indefinite)
-  ;; The idea is to be able to search off of this in the dh
-  ;; to convert over any that are unresolved at the end.
-  ;; //never exploited yet
+;; The categories indefinite, definite, and possessive are defined
+;; as mixin's in /rules/tree-families/NP.lisp because that file
+;; loads before this one.
+
+
+(defun mark-instance-indefinite (arg)
+  ;; See hack in record-any-determiner
+  (push-debug `(,arg)) (break "indefinite stub"))
+
+
+(define-lambda-variable 'has-determiner nil category::det)
+
+;; too fine grained?
+(define-lambda-variable 'definite nil category::definite)
+(define-lambda-variable 'indefinite nil category::indefinite)
+
+
+;;/// this should be checked with treatments in tree-families/NP
+
+;; See pattern in rules/syntax/categories
+;; and consumer in record-any-determiner
+(defvar *indefinite-determiners* nil
+  "Holds list of all the indefinite article words")
+(defvar *definite-determiners* nil
+  "Holds list of all the definite article words")
+(defun populate-in/definite-articles ()
+  (setq *indefinite-determiners*
+        (mapcar #'word-named '("a" "an")))
+  (setq *definite-determiners*
+        ;; the other candiates are somewhat problematic
+        (mapcar #'word-named '("the"))))
+
+(defun definite-determiner? (word)
+  (unless *indefinite-determiners* (populate-in/definite-articles))
+  (memq word *definite-determiners*))
+(defun indefinite-determiner? (word)
+  (unless *indefinite-determiners* (populate-in/definite-articles))
+  (memq word *indefinite-determiners*))
+
+(defun determiner? (word)
+  (or (definite-determiner word)
+      (indefinite-determiner word)))
 
 
 ;;;------------
@@ -32,7 +70,9 @@
 
 (def-form-rule ("a" common-noun)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge ;; fn not going into referent
+         ;;    :function (mark-instance-indefinite right-edge))
+                       ))
 
 (def-form-rule ("an" common-noun)
   :form np
