@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "multiply"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  6.0 March 2013
+;;;  Version:  6.0 April 2013
 
 ;; 0.0 (9/4/92 v2.3) initiated.
 ;; 0.1 (10/12) pulled multiply-ids back to [chart;edges:multiplication],
@@ -29,6 +29,7 @@
 ;;      don't combine, so we just let category-ids return nil.
 ;;     (3/8/13) Fixed the name of the multiplier for referents so it's
 ;;      not a duplicate. Added trace for success and failure.
+;;     (4/9/13) Enabled option for syntactic rules.
 
 (in-package :sparser)
 
@@ -104,7 +105,10 @@
 			       left-edge right-edge)
       
           (when *edges-from-referent-categories*
-            (multiply-referents left-edge right-edge))))))
+            (multiply-referents left-edge right-edge))
+
+          (when *allow-pure-syntax-rules*
+            (check-form-form left-edge right-edge))))))
 
 
 ;;;-----------------------------------
