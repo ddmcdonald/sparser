@@ -4,14 +4,15 @@
 ;;;
 ;;;     File:  "relation"
 ;;;   Module:  "model;core:places:countries:"
-;;;  version:  March 2013
+;;;  version:  April 2013
 
 ;; initiated 8/6/07. Moved out the generic routine 9/4. Changed one of
 ;; the form rules from np-head to common-noun since that's what we
 ;; actually get. 
 ;; 0.1 (3/4/13) Substantially reworking it. Using an ETF. Fixed the
 ;;  method 3/8.  Blocking it 3/9  because the set of rules that
-;;  actually get created is bogus
+;;  actually get created is bogus. Put it back 4/3 when Chomnsky-adjunction
+;;  put into the rule creator
 
 (in-package :sparser)
 	
@@ -26,13 +27,6 @@ type of the item (person, vs city, vs government official) then we
 should use a category and use methods for the composition
 |#
 
-#|
-The ETF doesn't do the right thing (it's beyond it's ken) because
-it's random which of the two options for the region-type become
-lhs and rhs randomly when they should be systematically the same
-       person -> country person
- but   person -> country region-tpye
-
 (define-category associated-with-country
   :instantiates self
   :specializes modifies  ;; ???
@@ -43,10 +37,8 @@ lhs and rhs randomly when they should be systematically the same
                 :mapping ((np-head . (person region-type))
                           (modifier . country)
                           (combo-method . relationship-to-country))))
-|#
+
                            
-;;//// See people/names-to-people and places/regions to fix it all up
-;; and remove the hacks that are there
 
 (defgeneric relationship-to-country (country object)
   (:documentation "By default it just instantiates an instance
@@ -60,18 +52,17 @@ lhs and rhs randomly when they should be systematically the same
     ;; the form and category of the edge being created.
     ;; /// Should we do that here? What would it look like?
     (define-or-find-individual 'associated-with-country
-        :country country :item item)))
+        :country country :item item)
+    item))
 
 
 
-#|  Treatment in 2007  Model for a general compose
+#|  Treatment in 2007 -- a model for a general compose treatment
 (def-form-rule (country common-noun)
   :form n-bar
   :referent (:head right-edge
              :function bind-open-var left-edge right-edge))
-;; Extending the form rule machinery to do the expansion implicit
-;; in listing both form categories at once it besides the point
-;; just now (8/6/07)
+
 (def-form-rule (country n-bar)
   :form n-bar
   :referent (:head right-edge
