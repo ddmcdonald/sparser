@@ -1,13 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "that comp"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  March 2005
+;;;  version:  April 2013
 
 ;; initiated 10/22/93 v2.3.  Added def-rule data 3/8/95.
 ;; Converted uninteresting "+" to a "-" 5/2.  Added instantiation of
-;; 'result' 3/11/05
+;; 'result' 3/11/05. 4/3/13 Added family for just the tag parts.
 
 (in-package :sparser)
 
@@ -29,7 +29,7 @@
 
       (:tag (subj-verb (np vg)
                :head right-edge
-               :instantiate-individual result  
+                 
                :binds (agent left-edge)))
 
       (:late-complement (s (subj-verb s/that-comp)
@@ -43,3 +43,22 @@
 
       (:optional-that (s/that-comp ("that" s/that-comp)
                         :daughter right-edge))))
+
+
+(define-exploded-tree-family just-the-tags
+  :description "Provides trees for the subject+verb construction
+    that can be freely appended (or prepended) to any clause:
+    '... she said',  'she said ...'.  Binding parameters designed
+    for case where we're instantiating a category that represents
+    the verb."
+  :binding-parameters ( agent result )
+  :labels ( subj-verb np vg )
+  :cases 
+    ((:reversed-tag (subj-verb (vg np) ;; "said the minister"
+                      :instantiate-individual result
+                      :head left-edge
+                      :binds (agent right-edge)))
+     (:tag (subj-verb (np vg) ;; "the minister said"
+              :instantiate-individual result
+              :head right-edge
+              :binds (agent left-edge)))))
