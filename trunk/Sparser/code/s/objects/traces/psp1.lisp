@@ -241,8 +241,21 @@
                b (pos-token-index p-here)
                (pos-token-index p-back-there))))
 
+(deftrace :opening-bracket-refined (original replacement)
+  ;; called from refine-bracket-at-segment-boundary
+  (when (or *trace-network* *trace-brackets*)
+    (trace-msg "Refining seg-boundary brackets: ~a => ~a"
+               original replacement)))
 
+(deftrace :opening-bracket-at-p (position bracket)
+  (when (or *trace-network* *trace-brackets*)
+    (trace-msg "At p~a opening bracket = ~a"
+               (pos-token-index  position) bracket)))
 
+(deftrace :ending-segment-zeroing-opening-bracket ()
+  (when (or *trace-network* *trace-brackets*)
+    (trace-msg "Ending the segment, zero'ing ~
+                *bracket-opening-segment*")))
 
 
 (deftrace :]-ignored/no-left-boundary-yet (] word p)
