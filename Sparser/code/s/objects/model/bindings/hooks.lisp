@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991,1992,1993,1994,1995,1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "hooks"
 ;;;   Module:  "objects;model:bindings:"
 ;;;  version:  January 1996
 
-;; file created 11/3091 v2.1. Given some contents 1/8/96. Elaborated through 1/9
+;; file created 11/30/91 v2.1. Given some contents 1/8/96. Elaborated through 1/9
+;; Repurposing it 4/5/13, pushing the old code to one side.
 
 (in-package :sparser)
 
@@ -23,12 +24,40 @@
 ;;; def form
 ;;;----------
 
+;(defmacro when-binding (value-category var/name
+
+
+;(defun when-binding/expr
+
+
+;;;------
+;;; hook 
+;;;------
+
+(defun when-binding-hook (variable binder bound &key established new)
+  ;; Called at the end of Bind-variable.
+  (push-debug `(,variable ,binder ,bound ,established ,new))
+  (let ((alist (gethash variable *variables-to-alist-of-hook-entries*)))
+    alist))
+
+
+;;;------------------------------ original notion ----------------------------
+
+#|  If memory serves, this was part of an elaborate hack to move
+ information around when it was discovered at the wrong level
+ in the parse tree. 
+|#
+
+;;;----------
+;;; def form
+;;;----------
+#+ignore
 (defmacro when-binding (value-category var/name &optional body-category
                         &key transfer)
   `(when-binding/expr ',value-category ',var/name ',body-category
                       :transfer-instructions ',transfer))
 
-
+#+ignore
 (defun when-binding/expr (value-category-name var/name body-category-name
                           &key transfer-instructions)
   
@@ -106,7 +135,7 @@
 ;;;------
 ;;; hook 
 ;;;------
-
+#+ignore
 (defun when-binding-hook (bound-individual variable binding-individual)
   ;; Called at the end of Bind-variable when the binding is new.
   (let ((alist (gethash variable *variables-to-alist-of-hook-entries*)))

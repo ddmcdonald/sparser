@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  2.1 Feburary 2013
+;;;  version:  2.1 April 2013
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -32,7 +32,8 @@
 ;; 2.1 (1/18/11) Changed value-of to have an optional category argument to overrule 
 ;;      the category inferred from the individual. If the variable doesn't exist
 ;;      when the category is specified then we signal an error. 2/13/13 added an
-;;      argument test to value-of
+;;      argument test to value-of. 4.7.13 added with-bindings, and an escape for
+;;      value-of
 
 (in-package :sparser)
 
@@ -67,6 +68,8 @@
 	     (or (when (lambda-variable-p var-name)
 		   var-name)
 		 (find-variable-in-category var-name category))))
+       ;; find-variable-for-category
+
        (if variable
          (then
            (when (and (listp variable)
@@ -74,12 +77,24 @@
              (setq variable
                    (find-variable-for-category var-name category)))
            (value/var variable individual))
-         (when specified-category
-           ;; You should be asking for a variable that is associated
-           ;; with the category, otherwise you're confused.
-           (push-debug `(,var-name ,individual ,category))
-           (error "Cannot find a variable named ~a~%that is associated ~
-                   with the individual ~a" var-name individual)))))
+         (else
+          (when specified-category
+            ;; You should be asking for a variable that is associated
+            ;; with the category, otherwise you're confused.
+            (push-debug `(,var-name ,individual ,category))
+            (error "Cannot find a variable named ~a~%that is associated ~
+                    with the individual ~a" var-name individual))
+          (let ((bindings (indiv-binds individual)))
+            (when bindings
+              ;; maybe the variable genuinely isn't associated with
+              ;; the category ///If everything went to top then it
+              ;; could probably be found? 
+              ;; Prototype case is the variable category associated with 
+              ;; category expressible-type, see  make-individual-for-dm&p
+              (dolist (b bindings)
+                (when (eq (var-name (binding-variable b))
+                          var-name)
+                  (return (binding-value b))))))))))
 
     (referential-category
      (let ((category individual))
@@ -336,3 +351,20 @@
 
       (setf (binding-value binding)
             (kcons item (binding-value binding))))))
+
+
+
+
+
+(defmacro with-bindings (variable-list object &body body)
+  (let ((let-bindings
+          (loop for var-name in variable-list
+            collect `(,var-name (value-of ',var-name obj-pointer)))))
+    `(let* ((obj-pointer ,object)
+           ,@let-bindings)
+       ,@body)))
+
+
+
+
+
