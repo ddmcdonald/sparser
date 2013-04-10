@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2012 David D. McDonald
+;;; Copyright (c) 2012-2013 David D. McDonald
 ;;;
 ;;;     File: "predicates"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  December 2012
+;;;  Version:  April 2013
 
 ;; initiated 12/5/12 to collect tests and other operations that are cluttering
-;; the judgements file.
+;; the judgements file. Added only-aux-or-modal-to-left 4/2/13. 
 
 (in-package :sparser)
 
@@ -64,6 +64,7 @@
      (when brackets
        ,@body)))
 
+;;//////////// Move to sparser/util/
 (defun multiple-memq (items list)
   (loop for item in items
     always (memq item list)))
@@ -77,6 +78,13 @@
       (or (memq ].quantifier brackets)
           (memq .[np brackets)
           (memq .[adjective brackets)))))
+
+(defun word-is-an-adverb (word)
+  (with-word-brackets word
+    (if (multiple-memq (list ].adverb .[adverb) brackets)
+      t
+      nil)))
+
 
 (defun word-definitively-ends-segment (word)
   "Used in bracket ends the segment for tests on the next word.
@@ -128,5 +136,37 @@
 (defun segment-started-as-vg? ()
   (or (eq (first *bracket-opening-segment*) .[verb )
       (eq (first *bracket-opening-segment*) .[modal)))
+
+
+(defun only-aux-or-modal-to-left (start-pos end-pos)
+  ;; called from .[verb case in adjudicate-new-open-bracket
+  ;; when (eq *bracket-opening-previous-segment* .[verb)
+  ;; to see if we should ignore this start bracket and
+  ;; continue that verb group segment. That's a reasonable
+  ;; thing to do provided that we haven't already seen
+  ;; a main verb, e.g. in "she said testing for bird flu .."
+  ;; the second verb is actually a sentential complement
+  (let* ((words-between (words-between start-pos end-pos))
+         (edges-betweeen (edges-between start-pos end-pos))
+         (length (length words-between)))
+    (if (= length 1)
+      (let ((edge (edge-between start-pos end-pos)))
+        (if edge
+          (not (verb-category? edge))
+          (break "New one-word aux/modal case")))
+
+      (let ((word-edge-pairs
+             (mapcar #'cons words-between edges-betweeen)))                                     
+        (dolist (pair word-edge-pairs t)
+          (let ((word (car pair))
+                (edge (cdr pair)))
+            (unless (or (auxiliary-word? word)
+                        (verb-category? edge))
+              (return nil))))))))
+              
+
+
+
+
 
 

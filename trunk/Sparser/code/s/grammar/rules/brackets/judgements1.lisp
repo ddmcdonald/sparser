@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.9 March 2013
+;;;  Version:  1.9 April 2013
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -46,7 +46,8 @@
 ;;      bug from false segment starting bracket where proper name ends in "ing"
 ;;      (11/8/12) started folding in adj-verb brackets. (11/9/12) added debugging
 ;;      method brackets-on. Diverse tweaking through 12/10. Added a flag to inhibit
-;;      breaking on new cases. 3/13/13 Trying more interesting cases
+;;      breaking on new cases. 3/13/13 Trying more interesting cases. 
+;;      Finding and fixing cases through 4/8/13.
 
 (in-package :sparser)
 
@@ -101,8 +102,8 @@
                   (car *bracket-opening-segment*) b))
                (tr :[-ignored/left-boundary-already-in-place b p)))))
 
-        (*suppress-verb-reading*
-         (cond ((eq b .[verb)
+        (*suppress-verb-reading* ;;/// 4/2/13 look this up. Forgot
+         (cond ((eq b .[verb)    ;; what it does.
                 (if (eq *suppress-verb-reading*
                         (pos-terminal (chart-position-before p)))
                   (tr :[-ignored/suppressed-verb b p)
@@ -113,7 +114,9 @@
                   (interpret-open-bracket-as-segment-start b p))))           
 
         ((eq b .[verb)
-         (if (eq *bracket-opening-previous-segment* .[verb)
+         (if (and (eq *bracket-opening-previous-segment* .[verb)
+                  (only-aux-or-modal-to-left 
+                   *where-the-last-segment-started* p))
            (then
              (tr :segment-reopened-by-verb-verb
                  p b *where-the-last-segment-started*)
@@ -128,6 +131,8 @@
 (defun interpret-open-bracket-as-segment-start (b p)
   ;; subroutine of adjudicate-new-open-bracket to refine the
   (tr :[-sets-left-boundary p b)
+  ;; "Setting the left segment boundary to p~A~
+  ;;              ~%   because of the ~A in front of ~A"
   (setq *bracket-opening-segment*
         (if *bracket-opening-segment*
           (strongest-version-of-left-boundary-bracket b p)
@@ -135,11 +140,12 @@
   (setq *left-segment-boundary* p))
 
 
-(defun refine-bracket-at-segment-boundary (original-bracket new-bracket )
+(defun refine-bracket-at-segment-boundary (original-bracket new-bracket)  
   "Since we're still at the position where the segment starts,
    is the bracket we've just gotten more informative than what's there
    now. We want brackets that will make for more informed jugments
    as we consider extending this segment."
+  (tr ::opening-bracket-refined original-bracket new-bracket) 
   (let ((p (cdr *bracket-opening-segment*)))
     (flet ((replace-bracket ()
              (deallocate-kons *bracket-opening-segment*)
@@ -228,7 +234,15 @@
   ;; NPs can occur several in a row (e.g. "the seven ...").  
   ;; Only the first of these legitimately ends a segment.
 
+  (unless *bracket-opening-segment*
+    (push-debug `(,] ,position))
+    (error "Something has set *bracket-opening-segment* ~
+            to NIL, somewhere around p~a" 
+           (pos-token-index position)))
+
   (tr :bracket-ends-the-segment? ] )
+  (tr ::opening-bracket-at-p position *bracket-opening-segment*)  
+
   (let* ((bracket-opening-segment (first *bracket-opening-segment*))
          (segment-start-pos *left-segment-boundary*)
          (word-count (- (pos-token-index position)
@@ -323,12 +337,15 @@
                    t)))))
 
 
+
            ((eq ]  aux].)
             (if (or (eq (first *bracket-opening-segment*) .[modal )
                     (eq (first *bracket-opening-segment*) .[verb ))
               nil
               t))
        
+
+
            ((eq ]  mvb].)	       ;(break "mvb]. at ~a" position)
             (cond ((and *bracket-closing-segment*
                         (eq *bracket-closing-segment* ].verb))
@@ -342,6 +359,8 @@
                      t ))
                   (t t)))
 
+
+
            ((eq ]  ].adverb)
             (if (or (eq *bracket-closing-segment* ].verb )
                     (eq *bracket-closing-segment* ].adverb )
@@ -350,6 +369,8 @@
                     (eq (first *bracket-opening-segment*) .[article ))
               nil
               t))
+
+
 
            ((eq ] ].adjective)
             (cond 
@@ -475,6 +496,22 @@
               ;; for getting dead-wrong. Will want to find more features
               ;; to use here
               nil)
+             ((and (eq bracket-opening-segment np-vp.[)
+                   (= word-count 0)) ;; keep going
+              nil)
+             ((and (eq bracket-opening-segment np-vp].)
+                   (> word-count 0)
+                   (only-aux-or-modal-to-left 
+                   *where-the-last-segment-started* position))
+              ;; It's probably the main verb
+              nil)
+             ((and (eq bracket-opening-segment .[verb)
+                   (word-definitively-starts-nps next-word))
+              ;; we switch from a vg to an np
+              t)
+             ((and (eq bracket-opening-segment .[verb)
+                   (word-is-an-adverb next-word))
+              nil)
              ((eq bracket-opening-segment .[adverb)
               ;; This is an odd case, "made too many flights tardy" looking
               ;; at the ] from "flights".  Need more information.
@@ -575,6 +612,7 @@
        (when *bracket-opening-segment*
          (setq *bracket-opening-previous-segment*
                (car *bracket-opening-segment*))
+         (tr :ending-segment-zeroing-opening-bracket)
          (deallocate-kons *bracket-opening-segment*)
          (setq *bracket-opening-segment* nil))
 
