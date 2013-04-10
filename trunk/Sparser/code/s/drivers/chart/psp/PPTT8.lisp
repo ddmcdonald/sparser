@@ -54,10 +54,13 @@
 ;;; wrapping protocols
 ;;;--------------------
 
-(defun parse-forest-and-do-treetops/referents-too (rightmost-position)
-  (let ((*edges-from-referent-categories* t))
-    (declare (special *edges-from-referent-categories*))
-    (parse-forest-and-do-treetops rightmost-position)))
+;;  Don't do it this way, This frame gets left on the stack.
+;;  Instead integrate the binding of the globals inside the
+;;  regular (thoroughly debugged) protocoal
+;(defun parse-forest-and-do-treetops/referents-too (rightmost-position)
+;  (let ((*edges-from-referent-categories* t))
+;    (declare (special *edges-from-referent-categories*))
+;    (parse-forest-and-do-treetops rightmost-position)))
 
 
 ;;;--------------------------------
@@ -76,7 +79,9 @@
   (setq *left-boundary/treetop-actions* *rightmost-quiescent-position*)
 
   (let ((rightmost-edge/ev
-         (find-rightmost-edge rightmost-position)))
+         (find-rightmost-edge rightmost-position))
+        (*edges-from-referent-categories* t))
+    (declare (special *edges-from-referent-categories*))
 
     (if rightmost-edge/ev
       ;; This edge might start at the quiescent position, in which
