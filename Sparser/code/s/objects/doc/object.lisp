@@ -150,8 +150,15 @@
     (setf *current-paragraph* obj)
     obj))
 
+(defparameter *tts-after-each-section* nil
+  "Gates displaying the chart after each section")
+
 (defun terminate-section (obj end-pos)
-  (setf (section-ends-at-pos obj) end-pos)
+  (when *tts-after-each-section*
+    (format t "~^&~%")
+    (tts t (section-starts-at-pos obj) end-pos)
+    (format t "~^&~%"))
+  (setf (section-ends-at-pos obj) (chart-position-before end-pos))
   obj)
 
 ;;;-------------
