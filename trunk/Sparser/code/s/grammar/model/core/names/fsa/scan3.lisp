@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  3.3 February 2013
+;;;  Version:  3.3 April 2013
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -37,7 +37,8 @@
 ;;     (5/29) changed the capitalization-of-the-next-word check in the hyphen routine
 ;;      because reacted to the word rather than the position (never revised?)
 ;; 3.3 (1/21/13) Blocking continuaton over "of" or "and" when doing DM&P
-;;     (2/11/13) Trying to make it do Arabic names. 
+;;     (2/11/13) Trying to make it do Arabic names.  4/11/13 works now. the check
+;;      in lc-non-boundary-word-that-may-extend-cap-seq? was empty.
 
 (in-package :sparser)
 
@@ -46,11 +47,12 @@
 ;;;---------
 
 (defun cap-seq-continues-from-here? (position-before)
-  ;; called from Capitalized-word-fsa and then recursively.
+  ;; called from pnf/scan-classify-record
   ;; The prior position holds a capitalized word and the question is
   ;; whether the current one does as well, with special cases for
   ;; the punctuation that are checked first so that the brackets
   ;; punctuation introduces don't get in the way.
+  ;; The value that we return becomes *pnf-end-of-span*.
   (tr :Cap-seq-continues-from-here? position-before)
 
   ;; scan the next word
@@ -95,11 +97,28 @@
     (checkout-punctuation-for-capseq position-before))
    
    ((eq cap-state :lower-case)  ;; "de" 
-    (if (and (word-after-lc-word-is-capitalized? position-before)
-             (lc-non-boundary-word-that-may-extend-cap-seq?
-              (pos-terminal position-before)))
-      (break "PNF Scan: lowercase to check out")
-      position-before))
+    (if (lc-non-boundary-word-that-may-extend-cap-seq?
+              (pos-terminal position-before))
+      ;; Then see if the word after than is capitalized.
+      ;; Some of the words in the list are difinitive, but
+      ;; words like "of" are also in it.
+      (multiple-value-bind (capitalized? interveening-hyphen?)
+                           (word-after-lc-word-is-capitalized? position-before)
+        (if capitalized?
+          (then
+           (tr :continuing-over-lc position-before interveening-hyphen?)
+           (let* ((pos-after-lc-word (chart-position-after position-before))
+                  (continue-pos
+                   (if interveening-hyphen?
+                     (chart-position-after pos-after-lc-word)
+                     pos-after-lc-word)))                  
+             (cap-seq-continues-from-here? continue-pos)))
+          (else
+           ;; trace goes here
+           position-before)))
+      (else
+       ;; trace goes here
+       position-before)))
    
    (t
     (checkout-continuation-for-non-punctuation
@@ -445,13 +464,15 @@
 ;;;-------------------
 
 (defun word-after-lc-word-is-capitalized? (pos-before)
-  ;; Called from Boundary-continuation. There is a lowercase word
+  ;; Called from cap-seq-continues-from-here?/aux
+  ;; Called from Boundary-continuation . There is a lowercase word
   ;; at this position. We look ahead to the word after that
   ;; to check whether it is uppercase, in which case we return t.
-  (let* ((next-pos (chart-position-after pos-before)))
+  (let* ((next-pos (chart-position-after pos-before))
+         (interveening-hyphen? nil))
     (flet ((scan-ahead-with-check ()
               (let ((value-returned
-                     (catch :position-scan-terminates-PNF
+                     (catch :position-scan-terminates-PNF ;; n.b. tag not in source anymore
                        (scan-next-position))))
                 (when (eq value-returned :end-the-scan)
                   (break "Stub: Lookahead over the lowercase word ~
@@ -465,29 +486,46 @@
       (when (eq (pos-terminal next-pos) (word-named "-"))
         ;; skip over hyphens
         ;; /// should presumably incorporate a no-space check
-        (setq next-pos (chart-position-after next-pos))
+        (setq next-pos (chart-position-after next-pos)
+              interveening-hyphen? t)
         (unless (pos-terminal next-pos) ;; very lazy today
           (scan-ahead-with-check)))        
       
-      (case (pos-capitalization next-pos)
-        (:lower-case nil)
-        (:digits nil)
-        (:punctuation nil)
-        (otherwise t )))))
+      (values (case (pos-capitalization next-pos)
+                (:lower-case nil)
+                (:digits nil)
+                (:punctuation nil)
+                (otherwise t ))
+              interveening-hyphen?))))
 
 
+(defvar *lc-person-words* nil
+  "Holds words that are known to appear in lower-case within
+   a person's name.")
+(defun populate-lc-person-words ()
+  (unless *lc-person-words*
+    (setq *lc-person-words*
+          (mapcar #'resolve/make 
+                  '("al" "de" "von")))))
 
 (defun lc-word-that-may-extend-cap-seq? (word)
   ;; Called from boundary-continuation
-  (or (unless *do-strong-domain-modeling*
-        (or (eq word (word-named "of"))
-            (eq word (word-named "and"))))
-      (eq word (word-named "al"))))
+  (populate-lc-person-words)
+  (let ((yes?
+         (or (unless *do-strong-domain-modeling*
+               (or (eq word (word-named "of"))
+                   (eq word (word-named "and"))))
+             (memq word *lc-person-words*))))
+    (tr :lower-case-extends-over word yes?)
+    yes?))
 
 
 (defun lc-non-boundary-word-that-may-extend-cap-seq? (word)
-  ;; Called from Boundary-continuation
-  nil )
+  ;; Called from cap-seq-continues-from-here?/aux
+  (populate-lc-person-words)
+  (let ((yes? (memq word *lc-person-words*)))
+    (tr :lower-case-non-boundary-extends-over word yes?)
+    yes?))
 
 
 
