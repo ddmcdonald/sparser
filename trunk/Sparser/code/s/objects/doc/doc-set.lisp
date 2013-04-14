@@ -18,6 +18,10 @@
 (defclass document-set (named-object)
   ((articles :type list :initform nil :accessor articles
      :documentation "a list of article objects, in chronological order")
+   (merged-contents :accessor contents-of-doc-set
+     :documentation "A text-relations-contents object whose fields
+       are populated by summing the relations from each of the articles.
+       See collect-relations-from-articles ")
    )
   (:documentation
    "In general there would be many document sets. For the moment (3/13)
