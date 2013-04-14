@@ -44,10 +44,14 @@
 
     (when (word-p leftward-tt)
       ;; //// swallow comma
-      (push-debug `(,wh-edge ,leftward-tt))
-      (break "stub -- is this a comma? ~a" leftward-tt)
-      (setq start-pos (chart-position-before start-pos))
-      (setq leftward-tt (left-treetop-at start-pos)))
+      (if (eq leftward-tt word::comma)
+        (then 
+         (setq start-pos (chart-position-before start-pos))
+         (setq leftward-tt (left-treetop-at start-pos)))
+        (else
+         ;; it's unlikely to be a relative clause start
+         ;; so punt e.g "(WHO)"
+         (return-from who-subject-relative-clause-operation nil))))
 
     (when (edge-p leftward-tt)
       ;; if it's two words in a row then this simple scheme
