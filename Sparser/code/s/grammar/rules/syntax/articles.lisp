@@ -58,8 +58,8 @@
   (memq word *indefinite-determiners*))
 
 (defun determiner? (word)
-  (or (definite-determiner word)
-      (indefinite-determiner word)))
+  (or (definite-determiner? word)
+      (indefinite-determiner? word)))
 
 
 ;;;------------
