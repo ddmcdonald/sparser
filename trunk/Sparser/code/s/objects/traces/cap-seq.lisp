@@ -85,6 +85,25 @@
               ~%        Its bracket state is ~A"
                cap-state bracket)))
 
+(deftrace :lower-case-non-boundary-extends-over (word yes?)
+  ;; called by lc-non-boundary-word-that-may-extend-cap-seq?
+  (when *trace-pnf*
+    (trace-msg "PNF:  lowercase word ~a ~a extend the sequence"
+               word (if yes? "does" "does not"))))
+
+(deftrace :lower-case-extends-over (word yes?)
+  ;; called by lc-word-that-may-extend-cap-seq?
+  (when *trace-pnf*
+    (trace-msg "PNF:  lowercase word ~a ~a extend the sequence"
+               word (if yes? "does" "does not"))))
+
+(deftrace :continuing-over-lc (pos hyphen?)
+  ;; called from cap-seq-continues-from-here?/aux
+  (when *trace-pnf*
+    (trace-msg "PNF:  continuing over ~a ~a"
+               (pos-terminal pos)
+               (if hyphen? "and the hypen after it" ""))))
+
 
 (deftrace :pnf/next-pos-is-punct (pos)
   (when *trace-pnf*
