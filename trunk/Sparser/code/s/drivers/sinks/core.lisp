@@ -1,9 +1,9 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-1997 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1997,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "core"
 ;;;   module:  "drivers;sinks:"
-;;;  Version:  0.3 August 1997
+;;;  Version:  0.3 April 2013
 
 ;; redesigned from scratch 12/28/93 v2.3. Added fixed set of final
 ;; actions 1/16/94.
@@ -12,6 +12,7 @@
 ;; 0.3 (1/9/96) added a check for paragraph actions when there's no para.
 ;;     (8/17/97) sharpened that for when the delivery license doesn't even
 ;;      include that global. 
+;; 0.4 (4/11/13) Fan-out from change to treatment of sections
 
 (in-package :sparser)
 
@@ -25,19 +26,25 @@
   ;; go, especially if they are to be carried out in a specific
   ;; order.
   (when *recognize-sections-within-articles*
-    (when *current-section-type*
-      (terminate-ongoing-section last-position)))
+    (when *current-paragraph*
+      ;; as in Scott's treatment in objects/docts/object.lisp
+      (terminate-section *current-paragraph* last-position))))
 
+  #+ignore ;; Scott merged the notions of section and paragraph
+    ;; because the bird flu corpus didn't really differentiate
   (when *paragraph-detection*
-    (if *current-paragraph*
-      (finish-ongoing-paragraph last-position)
-      (else
-        (if-there-never-were-any-sections-do-after-para-actions)
-        (when *workshop-window*
-          ;; this step is also part of finishing a paragraph,
-          ;; hence this alternative site for the call when we're
-          ;; analyzing something without paragraphs.
-          (update-workbench))))))
+    (when *current-paragraph*
+      (finish-ongoing-paragraph last-position)))
+
+  #+ignore ;; a more general section closer, 
+    ;; and integration with the workbence
+  (else
+   (if-there-never-were-any-sections-do-after-para-actions)
+   (when *workshop-window*
+     ;; this step is also part of finishing a paragraph,
+     ;; hence this alternative site for the call when we're
+     ;; analyzing something without paragraphs.
+     (update-workbench)))
 
 
 
