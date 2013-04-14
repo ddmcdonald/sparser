@@ -156,6 +156,8 @@
   ;; of a capitalized sequence and hasn't already been defined as
   ;; a name word and thence been spanned by an edge
 
+  (declare (special *lc-person-words*))
+
   (unless (word-p lc-word)
     (if (and (individual-p lc-word)
              (indiv-typep lc-word 'name-word))
@@ -169,8 +171,9 @@
             in the position~%where the word occurred."))
 
 
-  (let* ((actual-word (find-or-make/capitalized-word-to-fit-position
-                       lc-word position))
+  (let* ((actual-word (or (car (memq lc-word *lc-person-words*))
+                          (find-or-make/capitalized-word-to-fit-position
+                           lc-word position)))
          (name
           (define-individual category::name-word
             :name actual-word)))
