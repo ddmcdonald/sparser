@@ -69,38 +69,58 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;  (setq *note-text-relations* t)
   )
 
+;; N.b. will hang on "N." if UN isn't predefined
 (defun grok-pass-one ()
   "Just pull in the vocabulary all at once"
   ;;(setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
   ;; No supra-segment parsing for this pass
   (setq *do-forest-level* nil)
   (setq *new-segment-coverage* :none)
+  (setq *do-heuristic-segment-analysis* nil)
   (do-normal-segment-finished-options)
   (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu))
 
 (defun grok-pass-two ()
   (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
+  ;;  (setq *do-forest-level* t)
+  (setq *allow-pure-syntax-rules* nil)
   (setq *new-segment-coverage* :none)
+  (setq *do-heuristic-segment-analysis* t)
   (setq *note-text-relations* t)
   (do-note-text-relations-in-segment)
   (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu)
-  ;; analysis and reification goes here. See collect-relations-from-articles
-  ;; and 
+  (collect-relations-from-articles)
+  ;; analysis and reification goes here. See the merged contents on (doc-set)
+  ;; and other code in that file
   )
 
-(defun grok-pass-two-setup ()
-  (setq *note-text-relations* nil)
+;; (setq *tts-after-each-section* t)
+
+(defun grok-pass-three-setup ()
+  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops) ;; semantic rules burned in
+  (setq *do-forest-level* t)
+  (setq *allow-pure-syntax-rules* t)
   (setq *new-segment-coverage* :trivial)
+  (setq *do-heuristic-segment-analysis* t)
+  (setq *note-text-relations* nil) ;; don't overwrite the merged contents on (doc-set)
+  ;; The relations noted on this pass will be straight off bindings
+  (do-note-text-relations-in-segment)
   (do-strong-domain-modeling)
   (setq *profligate-creation-of-individuals* t)
-  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops))
+  ;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu)
+  ;;  -- 1st look at some reification
+  )
+
 
 
 (defun syn-test (&optional (text *iraqi-girl*))
-  (setq *do-forest-level* t)
   (setq *forest-level-protocol* 'parse-forest-and-do-treetops)
-  (do-strong-domain-modeling)
+  (setq *allow-pure-syntax-rules* t)
   (setq *new-segment-coverage* :trivial) ;; which version of strong DM
+  (setq *do-forest-level* t)
+  (setq *do-heuristic-segment-analysis* t) ;; one at a time won't hurt what's in (doc-set)
+  ;; ?? (setq *note-text-relations* nil)
+  (do-strong-domain-modeling)
   (setq *profligate-creation-of-individuals* t)
   (p text))
 
@@ -151,6 +171,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (p *iraqi-girl*)
 ;; (p "in Iraq. H5N1 has killed at least 91 people,")
 
+;; (grok-pass-three-setup)
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/1 Aljazeera_Jan-18.txt")
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/2 ABCNews_Jan-30.txt")
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/3 Yahoo-India_Jan-30.txt")
@@ -278,6 +299,12 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; pronoun reference:  seek-person-for-pronoun
 
 ;; analysis-core
+;; terminate-section  => section objects
+;; scan-next-segment  ==> inner loop of controller
+
+;; Tokenizer level:   scan-next-position  add-terminal-to-chart  next-terminal 
+;;  next-token (= run-token-fsa )
+
 
 ;; treetops: move-to-forest-level (protocol dispatch)
 ;;   parse-forest-and-do-treetops (standard protocol)
@@ -313,8 +340,12 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
   infering-categories: bind-open-var
 
+  reclaimation issues:  declare-all-existing-individuals-permanent
+
  scan-pattern-starting-pair
  check-many-many
+
+ names:  examine-capitalized-sequence
 |#
 
 ;; loading  load-the-grammar
