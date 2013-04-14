@@ -16,7 +16,9 @@
 (defun collect-relations-from-articles (&optional (document-set (doc-set)))
   (let ((articles (articles document-set))
         (merged (make-instance 'text-relation-contents
-                  :name (name document-set))))
+                  :name (name document-set)))
+        contents  )
+    (setf (contents-of-doc-set document-set) merged)
     (dolist (article articles)
       (setq contents (article-contents article))
       (dolist (accessor '(head-relations
