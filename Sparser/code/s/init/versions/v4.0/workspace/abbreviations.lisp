@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;versions:v2.3:workspace:"
-;;;  version:  March 2013
+;;;  version:  April 2013
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -13,7 +13,8 @@
 ;; 7/21/09 vrp serves as 'wrapper' for exporting output in speech act-inspired format
 ;; Modified through 9/11/09. 9/18 factored out the checkpoint massaging done in
 ;; pp to the new file /grammar/model/sl/checkpoing/post-processing.lisp
-;; 3/15/13 Added p/art to simulate running a document stream
+;; 3/15/13 Added p/art to simulate running a document stream.
+;; 4/14 added ier for edge referents and binds for their bindings
 
 (in-package :sparser)
 
@@ -56,6 +57,17 @@
   (let ((rule (psr# number-of-rule)))
     (d rule)))
 (defun ic (category-name) (d (referential-category-named category-name)))
+
+(defun ier (number-of-edge) ;; inspect edge referent
+  (d (edge-referent (edge# number-of-edge))))
+
+(defun iber (number-of-edge) ;; inspect bindings of edge referent
+  (let ((i (edge-referent (edge# number-of-edge))))
+    (if (individual-p i)
+      (d (indiv-binds i))
+      (else
+       (format t "~&~a is not an individual~%" i)
+       i))))
 
 (defun psr# (n)
   (let ((symbol (intern (string-append "PSR" (format nil "~a" n))
