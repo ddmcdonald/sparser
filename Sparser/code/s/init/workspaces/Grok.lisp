@@ -107,7 +107,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (do-note-text-relations-in-segment)
   (do-strong-domain-modeling)
   (setq *profligate-creation-of-individuals* t)
-  ;; (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu)
+  (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu)
   ;;  -- 1st look at some reification
   )
 
@@ -115,9 +115,9 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 (defun syn-test (&optional (text *iraqi-girl*))
   (setq *forest-level-protocol* 'parse-forest-and-do-treetops)
+  (setq *do-forest-level* t)
   (setq *allow-pure-syntax-rules* t)
   (setq *new-segment-coverage* :trivial) ;; which version of strong DM
-  (setq *do-forest-level* t)
   (setq *do-heuristic-segment-analysis* t) ;; one at a time won't hurt what's in (doc-set)
   ;; ?? (setq *note-text-relations* nil)
   (do-strong-domain-modeling)
@@ -327,10 +327,15 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   initialize-discourse-history  
   define-city  -- dossiers/cities
 
+relationship-to-country (doesn't work on "Iraqi girl" for some reason
+ in people/names-to-people
+    or  Kurdish city
+
   named-object  ;; clos classes
 
   prime-word-from-comlex
-
+ 
+time:  relative-time
 
   comparative  ;; "bigger"
   die  girl
@@ -346,9 +351,28 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
  check-many-many
 
  names:  examine-capitalized-sequence
+    link-named-object-to-name-word
+    cap-seq-continues-from-here?
+  trace-pnf
+
+document-set
+
+Heuristics:  determiner-completion-heuristic
+
+free variable bindings:
+  mark-instance-indefinite  (definite indefinite)
+
+In progress:  
+  assimilate-appositive  -- for add-subject-relation
+
+text relations:  
+  make-text-relation-instance
+
+  collect-relations-from-articles (needs sort, thresholds, calls to realize)
+
 |#
 
-;; loading  load-the-grammar
+;; loading  load-the-grammar  categorize-and-form-name
 
 
 
