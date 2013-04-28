@@ -27,10 +27,10 @@
                           adjacencies))
         (let ((items (slot-value contents accessor)))
           (loop for item in items
-              do (pushnew item 
+              do (pushnew item
                           (slot-value merged accessor))))))
     merged))
-      
+
 
 
 (defun get-contents-of-current-article ()
@@ -44,6 +44,13 @@
 (length (classifier-head-relations contents))  ;; 18
 |#
 
+(defun text-relation-sorter-count-only (tr1 tr2)
+  (let ((count1 (incident-count tr1))
+        (count2 (incident-count tr2)))
+    (cond
+     ((> count1 count2) t)
+     ((> count2 count1) nil)
+     ((= count1 count2) t))))
 
 (defun text-relation-sorter (tr1 tr2)
   (let ((count1 (incident-count tr1))
