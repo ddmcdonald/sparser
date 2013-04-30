@@ -12,7 +12,7 @@
 ;; code developed for JTC/TRS.  3/9/13 added [note-text-relations] and [text-relations]
 ;; Distributed text-relations to relation-class, text-relation-form, and
 ;; text-relation-indexing 3/12/13. [analyze..] 3/14. 4/1 moved analyze-text-relations
-;; to rules
+;; to rules. 4/22/13 added [document-handling] for the grok passes
 
 (in-package :sparser)
 
@@ -28,6 +28,7 @@
 (lload "do SDM&P;text-relation-indexing")
 (lload "do SDM&P;note-text-relations")
 
+(lload "do SDM&P;document-handling")
 
 (lload "do SDM&P;traces")
 
