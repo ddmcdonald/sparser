@@ -10,6 +10,11 @@
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
+(in-package :sparser)
+
+;;  (tuned-grok)
+
+
 ;; Too many duplicated rules. Open objects/rules/cfr/duplicates and set the
 ;; break flag to t. Improve the trap to look up the file that holds the
 ;; older version of the rule.  
@@ -21,9 +26,6 @@
 cd sparser/Sparser/code/s/
 grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
 |#
-
-
-(in-package :sparser)
 
 ;;;------------------------------------
 ;;; setting control/display parameters
@@ -39,6 +41,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 ;;-- For Comlex shakeout
 (trace-lexicon-unpacking)
+;; (word-frequency-setting)
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 ;; (grok-setting)  -- for meta-.
 
@@ -57,59 +60,10 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 ;;----- Flags that we want on if we're momentarily by-passing some hard cases
 
-(defun ddm-setup () ;; 2/13/13 for finding odd bugs. New things turned off
-  (setq *annotate-realizations* nil)
-  (setq *break-on-new-bracket-situations* t)
-  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
-  (setq *uniformly-scan-all-no-space-token-sequences* nil)
-;;  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops/referents-too)
-  (setq *new-segment-coverage* :none) ;; defange sdm/analyze-segment
-  (setq *do-strong-domain-modeling* nil) ;; completely turn it off
-;;  (do-note-text-relations-in-segment)
-;;  (setq *note-text-relations* t)
-  )
-
-;; N.b. will hang on "N." if UN isn't predefined
-(defun grok-pass-one ()
-  "Just pull in the vocabulary all at once"
-  ;;(setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
-  ;; No supra-segment parsing for this pass
-  (setq *do-forest-level* nil)
-  (setq *new-segment-coverage* :none)
-  (setq *do-heuristic-segment-analysis* nil)
-  (do-normal-segment-finished-options)
-  (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu))
-
-(defun grok-pass-two ()
-  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
-  ;;  (setq *do-forest-level* t)
-  (setq *allow-pure-syntax-rules* nil)
-  (setq *new-segment-coverage* :none)
-  (setq *do-heuristic-segment-analysis* t)
-  (setq *note-text-relations* t)
-  (do-note-text-relations-in-segment)
-  (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu)
-  (collect-relations-from-articles)
-  ;; analysis and reification goes here. See the merged contents on (doc-set)
-  ;; and other code in that file
-  )
 
 ;; (setq *tts-after-each-section* t)
 
-(defun grok-pass-three-setup ()
-  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops) ;; semantic rules burned in
-  (setq *do-forest-level* t)
-  (setq *allow-pure-syntax-rules* t)
-  (setq *new-segment-coverage* :trivial)
-  (setq *do-heuristic-segment-analysis* t)
-  (setq *note-text-relations* nil) ;; don't overwrite the merged contents on (doc-set)
-  ;; The relations noted on this pass will be straight off bindings
-  (do-note-text-relations-in-segment)
-  (do-strong-domain-modeling)
-  (setq *profligate-creation-of-individuals* t)
-  (analyze-text-from-directory "Users/ddm/sift/nlp/Grok/corpus/bird-flu" :doc-set-name 'bird-flu)
-  ;;  -- 1st look at some reification
-  )
+
 
 
 
@@ -296,11 +250,15 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 ;;; for meta-.
 
-;; pronoun reference:  seek-person-for-pronoun
+;; abbrev:  ier 
+;;  tts  print-treetops
 
-;; analysis-core
+;; pronoun reference:  seek-person-for-pronoun dereference-proper-noun
+
+;; analysis-core    pts   analysis-core-return-value
 ;; terminate-section  => section objects
 ;; scan-next-segment  ==> inner loop of controller
+;; do-the-last-things-in-an-analysis
 
 ;; Tokenizer level:   scan-next-position  add-terminal-to-chart  next-terminal 
 ;;  next-token (= run-token-fsa )
@@ -315,6 +273,10 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;               do-generic-actions-off-treetop
 ;; do-treetop-triggers is inside consider-debris-analysis 
 ;;    and called if *do-debris-analysis* is nil 
+;;  right-treetop-at  march-back-from-the-right/forest
+;;  word-before
+
+;; execute-da-trie
 
 ;; For age if it proves problematic
 ;;  On the definition of person in model/core/people/object.lisp - make/person-with-name 
@@ -324,12 +286,20 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; edge-vector
 
 #|
+
+Collection/WHO problem:  collection  create-collection  string/sequence
+   acronym-is-alternative-for-name
+
   initialize-discourse-history  
   define-city  -- dossiers/cities
 
 relationship-to-country (doesn't work on "Iraqi girl" for some reason
  in people/names-to-people
     or  Kurdish city
+ give-kind-its-name
+
+hyphens and PNF -- trace-ns-sequences  hyphen-ca-hook
+  collect-no-space-sequence-into-word
 
   named-object  ;; clos classes
 
@@ -346,6 +316,7 @@ time:  relative-time
   infering-categories: bind-open-var
 
   reclaimation issues:  declare-all-existing-individuals-permanent
+     index/permanent-individual
 
  scan-pattern-starting-pair
  check-many-many
@@ -355,7 +326,7 @@ time:  relative-time
     cap-seq-continues-from-here?
   trace-pnf
 
-document-set
+document-set  do-document-as-stream-of-files
 
 Heuristics:  determiner-completion-heuristic
 
@@ -364,15 +335,29 @@ free variable bindings:
 
 In progress:  
   assimilate-appositive  -- for add-subject-relation
+  have
 
-text relations:  
-  make-text-relation-instance
-
+text relations:   trace-sdm&p
+  make-text-relation-instance  text-relation  def-text-relation
+  The cases are in grammar;rules:SDM&P:text-relations.lisp
+  sdm/analyze-segment
+  note-text-relations-in-segment  note-what-the-head-is
   collect-relations-from-articles (needs sort, thresholds, calls to realize)
+  edge-over-segment  text-relation-contents
+  reify-text-relation
+  bind-category-of-instance
+
+  binding-hook: bind-variable/expr when-binding-hook  with-bindings
+
+  allow-invisible-markup  setup-context-for-this-run
+
+schema on form rules:  def-form-rule/expr
+
+Mumble:  parameter-arg-list-from-dtn
 
 |#
 
-;; loading  load-the-grammar  categorize-and-form-name
+;; loading  load-the-grammar  categorize-and-form-name  the-Master-loader
 
 
 
