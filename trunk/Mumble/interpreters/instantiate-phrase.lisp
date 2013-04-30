@@ -33,7 +33,7 @@
   (cdr (assoc parameter *phrase-parameter-argument-list*)))
 
 (defun parameter-arg-list-from-dtn (dtn)
-  (format t "~&Creating parameter-arg-list-from ~a" dtn)
+  ;;(format t "~&Creating parameter-arg-list-from ~a" dtn)
   (mapcar #'(lambda (cn)
               (let* ((symbol (phrase-parameter cn))
                      (parameter (etypecase symbol
