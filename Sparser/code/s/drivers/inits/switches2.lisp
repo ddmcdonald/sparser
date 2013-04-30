@@ -292,6 +292,17 @@
   (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
 
+(defun tuned-grok ()
+  "Adjustments to Grok while we work things out"
+  (grok-setting)
+  (setq *break-on-new-bracket-situations* t)
+  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
+  (setq *uniformly-scan-all-no-space-token-sequences* nil)
+  ;; Turned on selectively - see grok-pass-one
+  (setq *new-segment-coverage* :none) ;; defange sdm/analyze-segment
+  (setq *do-strong-domain-modeling* nil) ;; completely turn it off
+  )
+
 (defun ambush-setting ()
   (fire-setting)
   (setq *keep-number-sequence-raw* t)
