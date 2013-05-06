@@ -1,5 +1,5 @@
-;;; 120-*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
-;;; $Id: types.lisp 301 2009-09-17 16:55:08Z dmcdonal $
+;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
+;;; Copyright (c) 2013 David D McDonald
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 
 ;;;  mumble/interface/derivations/types
@@ -7,6 +7,7 @@
 ;; initiated 3/20/07, elaborated through 7/07
 ;; 9/17/09 Commenting out the definiion of lexicalized-phrase in favor of the
 ;;  one in derivation-trees. Others are likely to soon become obsolete as well.
+;; 4/30/13 Adjusted fn name in bundle creator
 
 (in-package :mumble)
 
@@ -237,7 +238,7 @@
   (let ((bc (make-bundle-creator :name name
 				 :parameters args)))
     (setf (indexed-object-index bc) (index-object bc))
-    (let* ((fn-name (concat name '#:-bundle-creator))
+    (let* ((fn-name (concat '#:make-a- name '#:-bundle))
 	   (form `(defun ,fn-name ,args ,@body))
 	   (fn (eval form)))
       (setf (bc-function bc) fn)
@@ -249,6 +250,7 @@
 ;;; template resources
 ;;;--------------------
 
+#+ignore ;; tr isn't seen as a special, so instantiate-type isn't yet defined
 (instantiate-type (template-resource
 		   (#:tr-)
 		   ("#<template-resource ~a ~a>" tr
