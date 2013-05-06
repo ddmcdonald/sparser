@@ -12,6 +12,7 @@
 
 (defun complete (obj
                  &optional position next-position)
+  (declare (ignore obj position next-position))
   (error "The Complete routine has not been initialized"))
 
 

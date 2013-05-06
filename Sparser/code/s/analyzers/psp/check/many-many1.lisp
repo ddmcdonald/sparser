@@ -18,6 +18,8 @@
 
 
 (defun check-many-many (left-ending-vector right-ending-vector)
+  (declare (special *break-on-unexpected-cases*))
+
   (let ((left-count  (ev-number-of-edges left-ending-vector))
         (left-vector (ev-edge-vector     left-ending-vector))
         (right-count  (ev-number-of-edges right-ending-vector))
