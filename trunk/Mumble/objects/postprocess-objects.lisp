@@ -775,7 +775,7 @@ possessive."
 (define-postprocessing-function  specification-template  (ss)
   (let* ((fn-name (intern (concatenate 'string
                                        (symbol-name (name ss))
-                                       "-function")))
+                                       (symbol-name '#:-function))))
          (raw-fn `(defun ,fn-name ,(parameter-list ss)
                     ,@(function-from-objects-to-rspecs ss)) )
          (fn (eval raw-fn)))
