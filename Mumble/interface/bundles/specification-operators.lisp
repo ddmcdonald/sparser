@@ -28,18 +28,18 @@
   ;; this provides a shell that you then add a kernel, etc. to
   (make-a-bundle 'general-np))
 
-(def-bundle-creator unmarked-bundle ()
+(def-bundle-creator unmarked ()
   (make-a-bundle 'general-bundle))
 
 
 (def-bundle-creator np/common-noun (common-noun)
-  (let ((b (general-np))
+  (let ((b (make-a-general-np-bundle))
         (k (make-a-kernel 'np-common-noun common-noun)))
     (set-bundle-head b k)
     b ))
 
 (def-bundle-creator np/pronoun (pronoun)
-  (let ((b (unmarked-bundle))
+  (let ((b (make-a-unmarked-bundle))
         (k (make-a-kernel 'pronoun   ;; it's a single-choice
                           pronoun)))
     (set-bundle-head b k)
@@ -51,7 +51,7 @@
   (when (stringp prep)
     (setq prep (word-for-string prep 'preposition)))
     
-  (let ((b (unmarked-bundle))
+  (let ((b (make-a-unmarked-bundle))
         (k (make-a-kernel 'prepositional-phrase
                           prep lspec-for-complement)))
     (set-bundle-head b k)

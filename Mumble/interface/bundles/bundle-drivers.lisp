@@ -73,7 +73,6 @@
 ;################################################################
 
 (defun clausal-bundle-driver (dtn root-node)
-  (declare (ignore root-node))
   (landmark 'realizing-the-head-of-the-bundle dtn)
   (push-debug `(,dtn ,root-node))
   (break "Needs conversion to dtn")
