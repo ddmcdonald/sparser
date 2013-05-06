@@ -232,6 +232,7 @@
 
 
 (defun flush-last-punctuation-mark-from-text-output-stream (mark)
+  (declare (ignore mark))
   (case  (class-of-text-output-stream-supported)
     ;;(fancy-browser (backspace-over mark))
     (glass-tty     (send-text-output-stream-item-to-a-glass-teletype "//^H//"))
