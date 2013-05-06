@@ -13,7 +13,14 @@
 
 (defun display-chart-state ( &optional (stream *standard-output*)
                                        (c *the-chart*))
-  (declare (ignore c))
+  (declare (ignore c) 
+           (special *chart-not-yet-initialized*
+                    *chart-empty*
+                    *position-array-is-wrapped*
+                    *first-chart-position*
+                    *next-array-position-to-fill*
+                    *number-of-next-position*
+                    *next-chart-position-to-scan*))
   (format stream
           "~&~%State of the chart:~
            ~%           *chart-not-yet-initialized* = ~A~

@@ -59,6 +59,8 @@
 
   ;; store the word in the indicated position, then bump the relevant
   ;; pointers and initialize the next position after this one.
+  
+  (declare (special *trace-token-&-character-indicies* *text-out*))
 
   (setf (pos-terminal position) word)
   (setf (pos-capitalization position) *capitalization-of-current-token*)

@@ -34,6 +34,10 @@
 
 
 (defun sort-out-result-of-newline-analysis (position word)
+
+  (declare (special *newline-is-a-word* *newline-delimits-paragraphs*
+                    word::paragraph-start *sentence-boundary*))
+
   ;(format t "~&NL FSA returned: ~a at p~a~%" word (pos-token-index position))
   (cond ((eq word *newline*)
          (if *newline-is-a-word*

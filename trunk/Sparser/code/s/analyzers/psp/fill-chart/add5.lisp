@@ -17,6 +17,8 @@
 
 
 (defun add-terminal-to-chart ()
+  (declare (special *source-exhausted*))
+
   (if *source-exhausted*
     (break "scan has gone beyond the end of the text")
 
