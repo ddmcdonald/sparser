@@ -47,8 +47,8 @@
 				 property-predicated )
   (let ((k (make-a-kernel
 	     'predication_to-be
-	     (instantiate-mapping object-predicated-of)
-	     (instantiate-mapping property-predicated))))
+	     (realize object-predicated-of)
+	     (realize property-predicated))))
     k ))
 
 
@@ -68,7 +68,7 @@
       b (typecase kind-term
 	  (word   (make-a-kernel 'np-common-noun kind-term))
 	  (string (make-a-kernel 'np-common-noun (word-for-string kind-term)))
-	  (otherwise (instantiate-mapping kind-term))))
+	  (otherwise (realize kind-term))))
     (add-accessory b :person person)
     (add-accessory b :number number)
     (add-accessory b :gender gender)
@@ -83,7 +83,7 @@
       b (typecase kind-term
 	  (word   (make-a-kernel 'np-common-noun kind-term))
 	  (string (make-a-kernel 'np-common-noun (word-for-string kind-term)))
-	  (otherwise (instantiate-mapping kind-term))))
+	  (otherwise (realize kind-term))))
     (third-person b)
     (singular b)
     (initially-indefinite b)
@@ -97,7 +97,7 @@
       b (typecase kind-term
 	  (word   (make-a-kernel 'np-common-noun kind-term))
 	  (string (make-a-kernel 'np-common-noun (word-for-string kind-term)))
-	  (otherwise (instantiate-mapping kind-term))))
+	  (otherwise (realize kind-term))))
     (neuter-&-third-person b)
     (singular b)
     (initially-indefinite b)
@@ -110,7 +110,7 @@
       b (typecase kind-term
 	  (word   (make-a-kernel 'np-common-noun kind-term))
 	  (string (make-a-kernel 'np-common-noun (word-for-string kind-term)))
-	  (otherwise (instantiate-mapping kind-term))))
+	  (otherwise (realize kind-term))))
     (neuter-&-third-person b)
     (singular b)
     (always-definite b)
@@ -124,7 +124,7 @@
       b (typecase kind-term
 	  (word   (make-a-kernel 'np-common-noun kind-term))
 	  (string (make-a-kernel 'np-common-noun (word-for-string kind-term)))
-	  (otherwise (instantiate-mapping kind-term))))
+	  (otherwise (realize kind-term))))
     (neuter-&-third-person b)
     (singular b)
     (no-determiner b)
@@ -139,7 +139,7 @@
       b (typecase kind-term
 	  (word   (make-a-kernel 'np-common-noun kind-term))
 	  (string (make-a-kernel 'np-common-noun (word-for-string kind-term)))
-	  (otherwise (instantiate-mapping kind-term))))
+	  (otherwise (realize kind-term))))
     (neuter-&-third-person b)
     (singular b)
     (initially-indefinite b)
@@ -188,7 +188,7 @@
   (let ((b (general-np)))
     (set-bundle-head b (if (specificationp kind-term)
 			   kind-term
-			   (instantiate-mapping kind-term)))
+			   (realize kind-term)))
     (add-accessory b :person person)
     (add-accessory b :number number)
     (add-accessory b :gender gender)
@@ -266,8 +266,8 @@
 			       (object property)
   (funcall-template 'ongoing-state-of-affairs
 		    (funcall-template 'predication-of-a-simple-property
-				      (instantiate-mapping object)
-				      (instantiate-mapping property))))
+				      (realize object)
+				      (realize property))))
 
 
 ;################################################################
