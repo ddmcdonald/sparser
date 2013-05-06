@@ -38,6 +38,8 @@
 (defun next-word-does-not-indicate-a-significant-boundary (pos-before)
   ;; note the double negative -- we return nil if the word does not
   ;; signal the probable start of a significant boundary
+  (declare (special *the-punctuation-period* *the-punctuation-colon*
+                    *the-punctuation-open-angle-bracket*))
   (let ((next-word (pos-terminal pos-before)))
     (cond ((eq next-word *the-punctuation-period*)
            (tr :pts/period-seen pos-before)

@@ -52,19 +52,22 @@
   ;; to-chart such as throwing out above the call to Scan-next-position.
   ;; In such cases this routine will be called as part of getting
   ;; back into the mainline.
+  
+  (declare (special *position-to-start-tracing-at* 
+                    *position-to-stop-tracing-at*))
 
-    (set-status :scanned position)
+  (set-status :scanned position)
 
-    (when *position-to-start-tracing-at*
-      (when (= (pos-token-index position) *position-to-start-tracing-at*)
-        (turn-on-traces)))
+  (when *position-to-start-tracing-at*
+    (when (= (pos-token-index position) *position-to-start-tracing-at*)
+      (turn-on-traces)))
 
-    (when *position-to-stop-tracing-at*
-      (when (= (pos-token-index position) *position-to-stop-tracing-at*)
-        (turn-off-traces)))
+  (when *position-to-stop-tracing-at*
+    (when (= (pos-token-index position) *position-to-stop-tracing-at*)
+      (turn-off-traces)))
 
-    (tr :scan (pos-terminal position) position)
-    ;; "Scanned ~S at p~A"
+  (tr :scan (pos-terminal position) position)
+  ;; "Scanned ~S at p~A"
 
-    position )
+  position )
 
