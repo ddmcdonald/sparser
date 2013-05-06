@@ -122,6 +122,7 @@ there were ever to be any.  ///hook into final actions ??  |#
 ;;;--------------------------------
 
 (defun bracketing-tree (&optional (start-pos 0) (bracket-list *bracketing-progress*))
+  (declare (special *bracketing-progress*))
   (let ((text-list nil))
     (do* ((index start-pos (1+ index))
           (pos (chart-position index) (chart-position index))
@@ -257,7 +258,6 @@ there were ever to be any.  ///hook into final actions ??  |#
         (setq terms (value-of 'terms ref))
         (unless terms
           (break "Expected all segments to have 'terms' fields"))
-        (setq subref (car (last terms)))
         (unless ref
           (return-from stem-of-edges-referent nil)))
       (setq stem (value-of 'stem ref))

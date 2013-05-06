@@ -171,8 +171,8 @@
           (t nil))))
 
 (defun swap-top-two-starting-edges (start-pos end-pos)
-  (let ((starting-ev (pos-starts-here start-pos))
-	(ending-ev (pos-ends-here end-pos)))
+  (declare (ignore end-pos))
+  (let ((starting-ev (pos-starts-here start-pos)))
     (unless (>= (ev-number-of-edges starting-ev) 2)
       (break "Not enough edges on ~a to do the swap" starting-ev))
     (let* ((current-top (ev-top-node starting-ev))
