@@ -148,8 +148,8 @@
 
 (defun dereference-binding-expressions (variable-value-pairs)
   ;; subroutine to Decode-binds
-  (let ( variable-expression  variable
-         value-expression  value
+  (let ( variable-expression  
+         value-expression  
          result-pairs )
     (dolist (pair variable-value-pairs)
       (setq variable-expression (car pair)

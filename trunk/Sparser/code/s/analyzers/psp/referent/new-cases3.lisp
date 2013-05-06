@@ -386,7 +386,7 @@
     (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
 
     ;; annotate this combination
-    #+ignore (when psi?
+    (when psi?
       ;; composite case has does the annotation within the
       ;; code that does the opportunistic binding.
       ;; --- what about individuals ???  3/16/05 ----

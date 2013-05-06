@@ -26,7 +26,7 @@
 |#
 
 (defun print-composite-referent (cr stream depth)
-  (declare (ignore depth))
+  (declare (ignore depth cr))
   (format stream "#<composite >"))
 
 
