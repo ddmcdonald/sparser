@@ -245,10 +245,9 @@
 ;;
 (defun mult/ids-on-form-label (left-edge right-edge)
   (tr :mult/ids-on-form-label)
-  (let* ((left-category-ids (category-ids/rightward left-edge)) ;; category field
-	 (left-form-ids (form-ids/rightward left-edge)) ;; form field
-	 (right-category-ids (category-ids/leftward right-edge))
+  (let* ((left-form-ids (form-ids/rightward left-edge)) ;; form field
 	 (right-form-ids (form-ids/leftward right-edge)))
+
     ;; We're looking for a rule based on the category (vs. form) numbers,
     ;; but we're looking at a combination of the label in the category
     ;; field of one of the edges, and the label from the form field of
@@ -415,8 +414,6 @@
 ;;; check purely syntactic rules
 ;;;------------------------------
 
-(defparameter *allow-pure-syntax-rules* nil)
-;;//////////////////// hasn't yet been sanity checked in the 8/07 sweep
 (defun check-form-form (left-edge right-edge)
   (if *allow-pure-syntax-rules*
     (then
