@@ -110,8 +110,8 @@
                           (psi t)
                           (individual t)
                           (referential-category t)
-                          (category t)
                           (mixin-category t)
+                          (category t)
                           (otherwise nil))
                     (setq *referent* evolved-result))))
 
