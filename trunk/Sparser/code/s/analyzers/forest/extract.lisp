@@ -58,7 +58,7 @@
 ;;;-----------------
 
 (defun word-before-pos (position)
-  (let ((prior-pos (chart-position-before p)))
+  (let ((prior-pos (chart-position-before position)))
     (pos-terminal prior-pos)))
 
 
