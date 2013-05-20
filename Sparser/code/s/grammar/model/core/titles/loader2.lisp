@@ -49,6 +49,8 @@
     ))
 
 
+;; N.b.  All this has to be checked with the variations in PCT
+
 #|  loaded from dossiers
 (gload "dossiers;titles") ;; kept around, but all commented out and
    ;; not loaded. Has set of full titles as used back in 1990-1992
@@ -68,7 +70,9 @@
 (gload "titles;title adj")
 (gload "titles;title heads")
 (gload "titles;title cases")
-(gload "titles;board of directors")
+
+;;(gload "titles;board of directors")
+;;  Use the one in PCT
 
 (gload "titles;title+co")
 (gload "titles;title+time")
