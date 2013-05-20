@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   March 2013
+;;;   Version:   May 2013
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -78,11 +78,13 @@
 ;; 1/28/13 Chanve the binaries directory for Allegro to "f" (1/29/13) put #+allegro, 
 ;; #+openmcl around value of *prefer-binaries* to keep CCL from trying to understand 
 ;; ACL fasls. 3/22/13 added *do-not-use-psi* flag, which is set to t in Grok mode.
+;; 5/3/13 moved *allow-pure-syntax-rules* here. 5/7/13 Added Strider workspace.
+;; 5/9/13 Cleaned up what appears to be deadwood and improved lots of comments.
 
 (in-package :cl-user)
 
-#|  Flags
-  #+apple is MCL
+#|  Flags from *features*
+  #+apple is MCL, which only works on PowerPC Macs
   #+openmcl is Clozure (note the z)
   #+allegro is Franz
 |#
@@ -164,18 +166,16 @@ what files have changed, preparing ftp scripts, etc.
        (make-pathname :directory (pathname-directory *load-truename*))))))
 
 
-
-
 (unless (boundp 'sparser::*known-machine*)
   (defparameter sparser::*known-machine*
     ;; Used for sizing the workbench, so only relevant when running
     ;; under MCL on a Mac.
-    (cond ((string-equal cl-user::location-of-sparser-directory
-                         "G4:Users:ddm:nlp:Sparser:")
-           :g4)
-          ((string-equal cl-user::location-of-sparser-directory
-                         "Book:David:Sparser:")
-           :book)
+    (cond #+apple((string-equal cl-user::location-of-sparser-directory
+                                "G4:Users:ddm:nlp:Sparser:")
+                  :g4)
+          #+:apple((string-equal cl-user::location-of-sparser-directory
+                                 "Book:David:Sparser:")
+                   :book)
           (t :no))))
 
 
@@ -398,6 +398,12 @@ or for loading the newer of the compiled or source files.
     "If non-nil, we look for edge label combinations off the labels provided
      by the referent (often more general than the category) including
      composite referents."))
+
+(unless (boundp 'sparser::*allow-pure-syntax-rules*)
+  (defparameter sparser::*allow-pure-syntax-rules* nil
+    "Permits looking for combinations off the form labels of the two edges.
+     Obviously this is dangerous, so the policy is to locally bind this
+     flag inside treetop functions with clear dynamic scopes."))
 
 (unless (boundp 'sparser::*external-referents*)
   (defparameter sparser::*external-referents* nil
@@ -760,31 +766,34 @@ or for loading the newer of the compiled or source files.
     and there is the problem that saturated psi don't convert to individuals.
     They are the correct long-run approach, but a given application may
     choose to not use them. When this flag is up, make/individual will only
-    create individuals with regular bindings and never make psi."))
+    create individuals with regular bindings and never make psi.
+    N.b. this is set by the *grok* configuration. If it's to be set it has
+    to be done very early, before any model objects are constructed. Setting
+    it with the configuration is a safe way to do it."))
 
 
 
 ;;--- Mutually exclusive application settings.
 ;; These correspond to alternative system configurations, some of them
-;; now very old. They dictate choices of modules to load and values
+;; now very old and mothballed (i.e. not incorporated in the present
+;; codebase). They dictate choices of grammar modules to load and values
 ;; for initializations.
 
 (unless (boundp 'sparser::*just-bracketing*)
-  (defparameter sparser::*just-bracketing* nil))
+  (defparameter sparser::*just-bracketing* nil
+    "Leaves out all of the grammar except for the function words and
+     the knowledge we have about them, e.g. none of the name grammar is
+     included; no time, location, etc from core. None of the sublanguages."))
 
 (unless (boundp 'sparser::*grok*)
-  (defparameter sparser::*grok* nil))
+  (defparameter sparser::*grok* nil
+    "Includes the core grammar and selected sublanguages such as report.
+     Note that this sets the *do-not-use-psi* flag."))
 
-(unless (boundp 'sparser::*checkpoint-operations*)
+(unless (boundp 'sparser::*checkpoint-operations*) ;; in mothballs
   (defparameter sparser::*checkpoint-operations* nil))
 
-(unless (boundp 'sparser::*poirot-interface*)
-  (defparameter sparser::*poirot-interface* nil
-    "Use switch settings and other special cases to tune Sparser to be
-     linked to the Poirot system as its model. Should be accompanied
-     by the *poirot* grammar module."))
-
-(unless (boundp 'sparser::*fire*)
+(unless (boundp 'sparser::*fire*) ;; equivalent of Grok, but would use PSI
   (defparameter sparser::*fire*  nil
     "Fire stands for 'Free-text Information and Relation Extraction'"))
 
@@ -799,7 +808,6 @@ or for loading the newer of the compiled or source files.
 
 (unless (boundp 'sparser::*da*)
   (defparameter sparser::*da*  nil))
-
 
 (unless (boundp 'sparser::*assetnet*)
   (defparameter sparser::*assetnet* nil))
@@ -923,9 +931,6 @@ or for loading the newer of the compiled or source files.
       (sparser::*checkpoint-operations*
        (sparser::lload "grammar-configurations;checkpoint-ops"))
 
-      (sparser::*poirot-interface*
-       (sparser::lload "grammar-configurations;poirot"))
-
       (sparser::*fire*
        (sparser::lload "grammar-configurations;fire"))
 
@@ -974,16 +979,6 @@ or for loading the newer of the compiled or source files.
   (defparameter sparser::*include-model-facilities* t))
 
 
-(if sparser::*sparser-is-an-application?*
-  ;; then we use the source version of the config code
-  (let ((sparser::*insist-on-binaries* nil)
-        (sparser::*prefer-binaries* nil)
-        (sparser::*compile* nil))
-    (sparser::lload "config;load"))
-  (sparser::lload "config;load"))
-     ;; specialize the choice of some files in the master
-     ;; loader, sets variables for some parameterized files.
-
 
 ;;;-----------------
 ;;; doing the load
@@ -997,10 +992,21 @@ or for loading the newer of the compiled or source files.
 
 (when cl-user::*bidirectional*
   (unless (find-package :mumble) ;; it would load first
-    (defpackage :mumble (:use :common-lisp))))
+    (defpackage :mumble (:use :common-lisp :ddm-util))))
 
 (sparser::load/fasl-or-newest cl-user::master-loader)
 (sparser::lload "loaders;stubs")
+
+
+;; Set up basic sizing parameters
+(if sparser::*sparser-is-an-application?*    ;; then we use the source version.
+  (let ((sparser::*insist-on-binaries* nil)
+        (sparser::*prefer-binaries* nil)
+        (sparser::*compile* nil))
+    (sparser::lload "config;load"))
+  ;; otherwise we use the binaries or newer.
+  (sparser::lload "config;load"))
+  
 
 
 ;;;----------------------
@@ -1068,7 +1074,8 @@ or for loading the newer of the compiled or source files.
     (sparser::lload "init;workspaces:Darwin")
     (sparser::lload "init;workspaces:Mari")
     (sparser::lload "init;workspaces:med")
-    (sparser::lload "init;workspaces:dm&p")))
+    (sparser::lload "init;workspaces:dm&p")
+    (sparser::lload "init;workspaces:Strider")))
 	
   
   
@@ -1081,13 +1088,12 @@ or for loading the newer of the compiled or source files.
               sparser::*copy-file*)
     (format *standard-output* "~A" sparser::*salutation-string*))
   
-  
+  #+:apple
   (defun trivial-save (month day)
     (let ((filename (format nil
                             "Sparser:Sparser ~A/~A"
                             month day)))
       (save-application filename)))
-  
   #+:apple (format t "~%You can do (trivial-save <month> <day>)~%~%")
   
   )
