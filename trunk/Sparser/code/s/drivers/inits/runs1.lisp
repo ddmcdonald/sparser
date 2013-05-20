@@ -20,6 +20,8 @@
 
 
 (defun setup-context-for-this-run ( &key source )
+  (declare (special *document-source*))
+
   (if (and *recognize-sections-within-articles*
            (boundp '*document-source*))
     (then      
@@ -36,7 +38,8 @@
 
 
 (defun minimal-setup ()
+  (declare (special *NewLine-FSA-in-use* *newline-is-a-word*))
   (unless *NewLine-FSA-in-use* ;; check for it already having a setting
-    (setq *newline-is-a-word* nil) ;; NL is whitespace
-    ))
+    (setq *newline-is-a-word* nil))) ;; NL is whitespace
+    
 
