@@ -4,45 +4,24 @@
 ;;;
 ;;;      File:   "just dm&p"
 ;;;    Module:   "init;scripts:"
-;;;   version:   January 2013
+;;;   version:   May 2013
 
 ;; initiated 7/13/95
 ;; 11/06 Started tweaking for situation reports
 ;; 11-1/07 Modified to get the switch settings right.
-;; 1/28/13 Put in the right mswindows string
+;; 1/28/13 Put in the right mswindows string. 5/9/13 modified to work
+;; from load-nlp
 
 (in-package :cl-user)
 
-#|  ----- This file is intended to be loaded first. ----- |#
 
-;;;---------------------------
-;;; Platform-specific globals
-;;;---------------------------
+#|  ----- This file is intended to be loaded from load-nlp ----- |#
 
-;;; Specialize this global to the equivalent place on your machine
-;;; If running in a unix-based lisp such as Allegro (i.e. one that
-;;; sets the  #+unix feature in *features*), this global can be
-;;; removed because the code in everything.lisp will calculate its
-;;; file location automatically.
-;;;   If you don't set it, then provide a hard pathname in the
-;;; call to load at the bottom on this file.
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (unless (find-package :sparser)
+    (error "The sparser package is not defined. Did you load this ~
+            from ~/sparser/load-nlp.lisp ?")))
 
-(unless (boundp 'location-of-sparser-directory)
-  (defparameter location-of-sparser-directory
-    #+apple "G4:Users:ddm:nlp:Sparser:"
-    #+allegro "/Users/ddm/ws/nlp/Sparser/"
-    ))
-
-
-;;;--------------------
-;;; define the package
-;;;--------------------
-
-(or (find-package :sparser)
-    (make-package :sparser
-                  :use #+:apple '(ccl common-lisp)
-                       #+:unix  '(common-lisp)
-                       ))
 
 
 ;;;-------------------------------------------------

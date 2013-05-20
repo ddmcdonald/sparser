@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
-;;; copyright (c) 1991-1996, 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,201102013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "no grammar"
 ;;;    Module:   "init;scripts:"
-;;;   version:   February 2010
+;;;   version:   May 2013
 
 ;; This file sets up the parameter settings to load an otherwise
 ;; normal parsing engine but with no grammar beyond that which the
@@ -16,45 +16,17 @@
 ;; 2/14/10 Unpdated pathname for use with truename
 ;; 1/13/11 Modified it to just look for *load-truename* rather than presuming
 ;;  ACL. Switch settings to let it work with Clozure.
+;; 5/9/13 Modified to work under load-nlp
 
 (in-package :cl-user)
 
-;;;------------------------
-;;; Locate the base system
-;;;------------------------
 
-(unless (boundp 'location-of-sparser-directory)
-  (defparameter location-of-sparser-directory
-    (cond
-      ((pathnamep *load-truename*) ;;(member :allegro *features*)
-       (namestring
-	(merge-pathnames
-	 (make-pathname :directory 
-			'(:relative
-			  :up ;; scripts
-			  :up ;; init
-			  :up ;; s
-			  :up ;; code
-			  ))
-	 (make-pathname :directory (pathname-directory *load-truename*)))))
-      (t
-       (break "The system global *load-truename* doesn't point to a pathname. ~
-              ~%Can't construct relative pathname to location of Sparser~
-              ~%You'll have to set the value of ~
-              ~%        cl-user::location-of-sparser-directory~
-              ~%by hand in a wrapper to this file.")))))
+#|  ----- This file is intended to be loaded from load-nlp ----- |#
 
-
-;;;--------------------
-;;; define the package
-;;;--------------------
-
-(or (find-package :sparser)
-    (make-package :sparser
-                  :use #+:apple '(ccl common-lisp)
-                       #+:openmcl '(ccl common-lisp)
-                       #+(and :unix (not :openmcl)) '(common-lisp)
-                       ))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (unless (find-package :sparser)
+    (error "The sparser package is not defined. Did you load this ~
+            from ~/sparser/load-nlp.lisp ?")))
 
 
 ;;;----------------------
