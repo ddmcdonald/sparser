@@ -30,7 +30,7 @@
   (or (getf *spaces-cache* *xml-indentation*)
       (cache-new-length-of-spaces *xml-indentation*)))
 
-(defun cache-new-length-of-spaces (length) (break "stub"))
+(defun cache-new-length-of-spaces (length) length (break "stub"))
 ;  (let (new-length-of-spaces)
 ;    (with-output-to-string new-length-of-spaces
 ;      (format 
