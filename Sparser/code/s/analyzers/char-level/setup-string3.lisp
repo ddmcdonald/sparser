@@ -20,6 +20,7 @@
 (defvar *next-index/original-string* nil)
 
 (defun establish-character-source/string (string)
+  (declare (special *source-exhausted*))
   (let* ((source-length (length string))
          (usable-length (1- *usable-amount-of-character-buffer*))
             ;; because for the first buffer we have to take up
@@ -67,6 +68,8 @@
 ;;;------------------------------------
 
 (defun refill-character-buffer/string (old-buffer)
+  (declare (special *trace-invisible-markup*))
+
   (let* ((usable-length *usable-amount-of-character-buffer*)
          (next-index-in-source *next-index/original-string*)
          (position-in-source
@@ -79,6 +82,7 @@
                        next-index-in-source))
          (overflow (> remaining usable-length))
          new-buffer )
+    (declare (ignore position-in-source)) ;; for old traces
 
     (setq new-buffer                   *the-next-character-buffer*)
     (setq *the-next-character-buffer*  old-buffer)

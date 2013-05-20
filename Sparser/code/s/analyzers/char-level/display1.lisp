@@ -59,7 +59,9 @@
   ;; in the mode that ignores unknown words or maps all characters to
   ;; lowercase for the purpose of looking up words
 
-  (declare (ignore word))  ;; useful for debugging
+  (declare (ignore word)  ;; useful for debugging
+           (special *length-of-the-token* *number-of-characters-to-subtract*
+                    *capitalization-of-current-token*))
 
   (let* ((end ;(1+ *index-of-next-character*))
               *index-of-next-character*)
