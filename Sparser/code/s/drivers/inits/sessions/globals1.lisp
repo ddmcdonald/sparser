@@ -229,14 +229,6 @@
    than on edge over a terminal has a rule that extends it.")
 
 
-;;;-----------------------------------
-;;; semantic, bi-directional analysis
-;;;-----------------------------------
-
-(defparameter *annotate-realizations* nil ;; 3/21/11 not ready yet
-  "Determines whether we annotate individuals and lattice points with
-   the rules that lead to them")
-
 ;;;---------
 ;;; readout
 ;;;---------
