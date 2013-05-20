@@ -1,55 +1,25 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2010 David D. McDonald -- all rights reserved
+;;; Copyright (c) 2010-2013 David D. McDonald -- all rights reserved
 ;;; $Id:$
 ;;;
 ;;;      File:   "fire"
 ;;;    Module:   "init;scripts:"
-;;;   version:   November 2010
+;;;   version:   May 2013
 
 ;; Adapted from 'just dm&p' 6/20/07. 
-;; 11/9/10 incorporated CLOS parameter. 3/9/11 added use ddm-util
+;; 11/9/10 incorporated CLOS parameter. 3/9/11 added use ddm-util.
+;; 5/9/13 Integrating into load-nlp
 
 (in-package :cl-user)
 
-#|  ----- This file is intended to be loaded first. ----- |#
 
-;;;------------------------
-;;; Locate the base system
-;;;------------------------
+#|  ----- This file is intended to be loaded from load-nlp ----- |#
 
-(unless (boundp 'location-of-sparser-directory)
-  (defparameter location-of-sparser-directory
-    (cond
-      ((pathnamep *load-truename*)
-       (namestring
-	(merge-pathnames
-	 (make-pathname :directory 
-			'(:relative
-			  :up ;; scripts
-			  :up ;; init
-			  :up ;; s
-			  :up ;; code
-			  ))
-	 (make-pathname :directory (pathname-directory *load-truename*)))))
-      (t
-       (break "The system global *load-truename* doesn't point to a pathname. ~
-              ~%Can't construct relative pathname to location of Sparser~
-              ~%You'll have to set the value of ~
-              ~%        cl-user::location-of-sparser-directory~
-              ~%by hand in a wrapper to this file.")))))
-
-
-;;;--------------------
-;;; define the package
-;;;--------------------
-
-(or (find-package :sparser)
-    (make-package :sparser
-                  :use (common-lisp
-                        ddm-util
-                        #+:apple ccl
-                        #+:openmcl ccl )))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (unless (find-package :sparser)
+    (error "The sparser package is not defined. Did you load this ~
+            from ~/sparser/load-nlp.lisp ?")))
 
 
 
@@ -64,9 +34,6 @@
 (defparameter sparser::*load-ad-hoc-rules* t)
 
 (defparameter sparser::*no-image* t)
-
-;(unless (boundp 'sparser::*CLOS*)
-;  (defparameter sparser::*CLOS* nil))
 
 #+allegro (defparameter sparser::*binaries-directory-name* "s")
 
@@ -99,7 +66,6 @@
 
   (defparameter sparser::*external-grammar-files* 
     (concatenate 'string *location-of-ctam-grammar* "loader.lisp"))
-
 
   ) ;; CTAM
 
