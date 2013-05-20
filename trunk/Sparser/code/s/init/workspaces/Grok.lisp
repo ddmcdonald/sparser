@@ -27,6 +27,36 @@ cd sparser/Sparser/code/s/
 grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
 |#
 
+;;--- For feeding into grak-pass-one, etc, which are now in
+;;  analyzers/SDM&P/document-handling.lisp and take document-streams as input
+
+(setq cl-user::location-of-text-corpora
+ "Users:ddm:sift:nlp:corpus:")
+;; Note the pathname is given in ancient Mac syntax. 
+
+(def-logical-pathname "corpus;" cl-user::location-of-text-corpora)
+(def-logical-pathname "bird-flu;" "corpus;bird-flu:")
+(def-logical-pathname "bird-flu-2009;" "bird-flu;iraq-2006:")
+
+(defvar bird-flu
+  (define-document-stream '|Bird flu in Iraq 2006|
+    :style-name 'hand-typed/no-headers ;; accurate actually!
+    :directory "bird-flu-2009;"
+    :unified t))
+#|
+ (grok-pass-one bird-flu)
+ (grok-pass-two bird-flu)
+ (grok-pass-three bird-flu)
+|#
+  
+;; "die" comes in from Comlex as noun/verb ambiguous and that just confuses
+;; things too much right now (3/6/13), so I'm going to cheat
+(gload "disease;loader")
+
+
+
+
+
 ;;;------------------------------------
 ;;; setting control/display parameters
 ;;;------------------------------------
@@ -88,22 +118,6 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;;------------------------------------------------------------
 ;;; Work arounds -- problems that ultimately need dealing with
 ;;;------------------------------------------------------------
-
-;; "die" comes in from Comlex as noun/verb ambiguous and that just confuses
-;; things too much right now (3/6/13), so I'm going to cheat
-(gload "disease;loader")
-
-;;   (setq *uniformly-scan-all-no-space-token-sequences* t)
-;; That is causing problems right now (2/11/13), so committing a horrible thing instead
-(reify-spelled-name 
- (list (word-named "H") (word-named "5") (word-named "N") (word-named "1")))
-
-;;/// 3/22/13 this drops "U.N." on the floor -- and the form is ugly
-;;  see core/company/object1.lisp
-;;  Today (4/10) this blew up because of hitting new spot in add-permanent-individual
-;;   and it needs debugging
-;(define-with-all-instances-permanent
-;  (define-company '("United" "Nations") :aliases '(("U.N.")) :takes-the t))
 
 ;; Comlex doesn't have "burnt"
 (setup-verb (resolve/make "burnt") nil)
