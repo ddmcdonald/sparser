@@ -2,7 +2,6 @@
 ;;; copyright (c) 1991  Content Technologies Inc.
 ;;; copyright (c) 1992  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: NL-buffer.lisp 356 2010-05-13 19:54:30Z dmcdonal $
 ;;; 
 ;;;     File:  "NL buffer"
 ;;;   Module:  "analyzers:tokenizer:"
@@ -21,6 +20,7 @@
 
 
 (defun next-token/buffer ()
+  (declare (special *trace-next-token*))
   (let* ((word-buffered *word-buffered*)
          (token
           (if word-buffered

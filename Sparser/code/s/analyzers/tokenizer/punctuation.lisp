@@ -30,6 +30,8 @@
   ;; should be accumulated since spaces can occur in sequences, or
   ;; it's one of the special markers, or it's meaningless and
   ;; ignored.
+  (declare (special *source-exhausted*))
+
   (setq *capitalization-of-current-token* :punctuation)
   (setq *length-of-the-token* 1)
 
