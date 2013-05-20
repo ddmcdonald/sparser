@@ -51,6 +51,8 @@
 ;;;--------
 
 (defun per-article-initializations ()
+  (declare (special *saved-toplevel-parsing-protocol*))
+
   (when *saved-toplevel-parsing-protocol*
     ;; we could have error'd out before this was reset
     (resume-old-parsing-protocol))
