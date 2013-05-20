@@ -16,7 +16,7 @@
 ;;      when a dotted rule can be made when not in 'all-edges' mode, put in 
 ;;      more documentation 
 ;;     (1/19/11) Added flag to break when illegal duplicates have been found
-;; 0.7 (3/9/13) Discobered that the tests in duplication-check are duplicated
+;; 0.7 (3/9/13) Discovered that the tests in duplication-check are duplicated
 ;;      in establish-multiplier, which calls the duplication-msg itself.
 ;;      Clarified the duplication message. 
 
@@ -91,7 +91,7 @@
   ;; we announce the illegal duplication.  Since this routine is
   ;; the end of a tail-recursive change that will keep the rule
   ;; from going through
-  (break "Who calls this?")
+
   (cond (*permit-rules-with-duplicate-rhs*
          (construct-cfr lhs rhs form referent source))
 
