@@ -36,7 +36,7 @@
   ;; an exploded tree family.  This returns the corresponding
   ;; object from the alist implementing the mapping.
 
-  (declare (ignore allow-literals?))
+  (declare (ignore category allow-literals?))
   ;; 10/17 if we allow a category like 'apostrophe-s' on the same
   ;; principle as allowing literal words, then there's nothing
   ;; to distinguish the regular case from the case of Additional-cases
@@ -117,8 +117,6 @@
           target )       
 
          (t
-          ;(error "No instance of ~A in the mapping~%  ~A"
-          ;       label mapping) :foo 
           (error "The rule schema term ~A is undefined.~
                   ~%There is no mapping entry or actual category ~
                   with that name" label)))
@@ -308,6 +306,7 @@
   ;; the category is going to be constructed from parts vs. labels that
   ;; are to be set by the user.  This has to be intelligent about
   ;; the convention for slashes.
+  (declare (special *rdt/selected-schema*))
   (when (name-includes-slash symbol)
     (when (appears-as-lhs-of-some-case symbol *rdt/selected-schema*)
       t )))
@@ -327,6 +326,7 @@
 
 
 (defun appears-as-lhs-of-some-case (symbol schema)
+  (declare (special *break-on-unexpected-cases*))
   (unless (exploded-tree-family-p schema)
     (when *break-on-unexpected-cases*
       (break "Bad input -- ~S~%should be an exploded tree family~%" schema))

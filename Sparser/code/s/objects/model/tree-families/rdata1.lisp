@@ -82,7 +82,7 @@
         (tree-family (exploded-tree-family-named tree-family-name))
         (mapping (vivify-mapping-exp mapping-expression)))
     ;; This version was written in 1995
-    (declare (ignore category))
+
     ;; ?? make a permanent hookup to the category ??
     ;; Could be useful if a word substitution is involved
 
@@ -163,8 +163,7 @@
             (dolist (cfr new-rules)
               (pushnew cfr merged))
             (format t "~&~a merged" (length merged))
-            (let ((cons-cell (member :rules (cat-realization category)))
-                  (original (copy-list (cat-realization category))))
+            (let ((cons-cell (member :rules (cat-realization category))))
               (rplaca (cdr cons-cell)
                       merged)
               merged)))))))
@@ -425,7 +424,6 @@
 
   (let ((parameters (etf-parameters tf))
         (labels (etf-labels tf))
-        (variables (cat-slots category))
         term  value  var  cat  new-list )
 
     (dolist (pair mapping)
