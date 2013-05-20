@@ -99,6 +99,8 @@
 
 (def-form-category section-header)
 
+(def-form-category section-marker)
+
 ;;;--------------
 ;;; clause level
 ;;;--------------
