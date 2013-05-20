@@ -42,6 +42,7 @@
 
 
 (defun establish-character-source/open-file (file-stream)
+  (declare (special *open-stream-of-source-characters* *source-exhausted*))
   (let ((buffer *first-character-input-buffer*))
 
     (setq *open-stream-of-source-characters* file-stream)
@@ -69,6 +70,8 @@
 ;;;----------------------------------------------------------
 
 (defun refill-character-buffer/file (old-buffer)
+  (declare (special *open-stream-of-source-characters*))
+
   (let ((new-buffer *the-next-character-buffer*)
         (file-stream *open-stream-of-source-characters*))
         

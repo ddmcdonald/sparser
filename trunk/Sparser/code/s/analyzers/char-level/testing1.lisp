@@ -134,6 +134,8 @@
   ;; Next-char uses to actually get the characters and bump its
   ;; index.
 
+  (declare (special *long-string*))
+
   (establish-character-source/string *long-string*)
   ;; *long-string* is defined in [tokenizer;testing]
   ;; it's 865 characters long
