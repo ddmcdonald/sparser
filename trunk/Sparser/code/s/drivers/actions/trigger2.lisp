@@ -18,6 +18,7 @@
 
 
 (defun check-for-completion-actions/category (category edge)
+  (declare (special *trace-completion-hook*))
   (when *trace-completion-hook*
     (format t "~&Checking for completion actions associated with ~
                the category ~A~%" category))
@@ -37,6 +38,7 @@
 (defun check-for-completion-actions/word (word
                                           position-before
                                           position-after)
+  (declare (special *trace-completion-hook*))
   (when *trace-completion-hook*
     (format t "~&Checking for completion actions associated with the ~
                word ~A~%" word))
