@@ -3,11 +3,11 @@
 ;;;
 ;;;    File:  "doc-set"  ("document set")
 ;;;   Module:  "objects;doc:"
-;;;  Version:  March 2013
+;;;  Version:  May 2013
 
 ;; initiated 9/2/12 to provide an object to represent a set of documents and
 ;; facts about them. Use-case in frequency calculations.
-;; 3/29/13 Added real content. 
+;; 3/29/13 Added real content.  5/1/13 Tweaked initialization.
 
 (in-package :sparser)
 
@@ -66,6 +66,8 @@
 
 (defmethod add-to-document-set ((a article))
   ;; Called from begin-new-article
+  (unless (doc-set)
+    (initialize-document-set (article-name a)))
   (if (null (articles (doc-set))) ;; first one
     (setf (articles (doc-set)) `(,a))
     (ktail-cons a (articles (doc-set)))))

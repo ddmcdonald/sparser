@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-199,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "doc stream"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  1.6 March 1994
+;;;  Version:  1.7 May 2013
 
 ;; 1.1 (4/15 v1.8.3)  Rethreaded the test against whether the file exists
 ;;     so that if it didn't we'd just not get a definition of the stream,
@@ -16,6 +16,9 @@
 ;;     (1/3/94) fixed a bug
 ;; 1.5 (1/26) added the field for 'menu-item'
 ;; 1.6 (3/30) added requirement that there be a style
+;; 1.7 (5/1/13) Bringing file handling into modern age of unix, and
+;;      added a field to struct and def form for indicating that the
+;;      set of files formed a single content model.
 
 (in-package :sparser)
 
@@ -30,6 +33,8 @@
 
   name        ;; a mixed-case symbol suitable for a menu
   style       ;; a style object
+  unified-content ;; should the content of the documents be treated as one unit
+                 ;; or is any temporary content reclaimed after each one?
   substreams  ;; a list of document streams
   directory   ;; a namestring
   file-list   ;; a list of namestrings
@@ -105,7 +110,8 @@ are processed: one file is one article), or a list of explicit file names.
 (defun define-document-stream (symbol
                                &key style-name
                                     substream-of superstream
-                                    directory doc-streams file-list)
+                                    directory doc-streams file-list
+                                    unified )
 
   (when (or (and directory doc-streams)
             (and directory file-list)
@@ -150,10 +156,10 @@ are processed: one file is one article), or a list of explicit file names.
                              
         (directory-pathname
          (when directory
-           (pathname (concatenate
-                      'string
-                      (namelist-to-mac (expand-logical-pathname directory))
-                      ":"))))
+           (string-append
+            (namelist-to-unix  ;; N.b. generalize if Windows
+             (expand-logical-pathname directory))
+            "/")))
 
         (document-streams (when doc-streams
                             (or (check-and-return doc-streams)
@@ -181,6 +187,8 @@ are processed: one file is one article), or a list of explicit file names.
           (unless style
             (error "There is no document style named ~A" style-name)))
         (setf (ds-style      object) style)
+
+        (setf (ds-unified-content object) unified) ;; nil if not specified
 
         (setf (ds-directory  object) directory-pathname)
         (setf (ds-substreams object) document-streams)
