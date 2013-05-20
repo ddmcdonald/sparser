@@ -63,7 +63,7 @@
            ;; That's enough evidence to recast the edge and take it
            ;; as an acronym or ticker symbol, but we'll leave that
            ;; to context to determine which one
-           (unless (eq (edge-form first-edge) category::proper-name)
+           (unless (eq (edge-form first-edge) (category-named 'proper-name))
              ;; if so, then there's probably a hook for it and
              ;; we leave it alone.
              (convert-ordinary-word-edge-to-proper-name first-edge)))))
@@ -196,6 +196,7 @@
   ;; on the basis of the edge within it -- sort of cloning it.
   ;; To that end we want here to copy up the established referent
   ;; of that edge.
+  (declare (special *break-on-unexpected-cases*))
   (let ((referent-expression (cfr-referent cfr)))
     (case referent-expression
       (:the-single-edge
