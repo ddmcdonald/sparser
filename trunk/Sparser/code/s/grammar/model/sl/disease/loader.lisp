@@ -1,16 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
+;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "sl;disease:"
-;;;   version:   December 2007
+;;;   version:   May 2013
 
-;; initiated 12/27/07.
+;; initiated 12/27/07. Started expanding 5/6/13 with [named-entities],
+;; [h-n-scanner]
 
 (in-package :sparser)
 
 (gload "disease;death")
 (gload "disease;disease")
 (gload "disease;spread")
+(gload "disease;h-n-scanner")
+(gload "disease;named-entities")
 
