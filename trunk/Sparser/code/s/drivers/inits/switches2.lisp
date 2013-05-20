@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.19 October 2012
+;;;  Version:  2.20 April 2013
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -57,6 +56,7 @@
 ;;      run. (2/20/11) Folded *make-edges-over-new-digit-sequences* into standard ddm
 ;;      settings. 
 ;;      (10/30/12) Setting up for Grok. 1/21/13 Turned on *do-strong-domain-modeling* in it
+;; 2.20 (4/30/13) Converted Grok experiments into tuned-grok seeing
 
 
 (in-package :sparser)
@@ -285,9 +285,8 @@
 (defun grok-setting ()
   "Similar to answer and fire, but with annotations and ..."
   (fire-setting)
-  (progn ;; these are temporary overrides while we debug bracketing
-    (setq *annotate-realizations* nil)
-    (setq *new-dm&p* nil)) ;; these two from fire-setting
+  (setq *annotate-realizations* t)
+  (setq *new-dm&p* t)
   (include-comlex)
   (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
@@ -295,13 +294,16 @@
 (defun tuned-grok ()
   "Adjustments to Grok while we work things out"
   (grok-setting)
+  (progn ;; these are temporary overrides while we debug bracketing
+    (setq *annotate-realizations* nil)
+    (setq *new-dm&p* nil)) ;; these two from fire-setting
   (setq *break-on-new-bracket-situations* t)
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil)
   ;; Turned on selectively - see grok-pass-one
   (setq *new-segment-coverage* :none) ;; defange sdm/analyze-segment
   (setq *do-strong-domain-modeling* nil) ;; completely turn it off
-  )
+  (setq *switch-setting* :tuned-grok))
 
 (defun ambush-setting ()
   (fire-setting)
@@ -422,7 +424,7 @@
   (setq *count-input-lines* nil)
   (establish-word-frequency-classification
    ;; :standard 'standard-wf-classification)
-  :ignore-capitalization 'wf-classification/ignore-caps)
+   :ignore-capitalization 'wf-classification/ignore-caps)
   (setq *switch-setting* :word-frequency))
 
 (defun comlex-mode ()
