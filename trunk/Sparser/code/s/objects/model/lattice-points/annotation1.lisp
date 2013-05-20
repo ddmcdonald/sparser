@@ -47,6 +47,15 @@
 (in-package :sparser)
 
 
+;;;-----------------------------------
+;;; semantic, bi-directional analysis
+;;;-----------------------------------
+
+(defparameter *annotate-realizations* nil ;; 3/21/11 not ready yet
+  "Determines whether we annotate individuals and lattice points with
+   the rules that lead to them")
+
+
 ;;;------------------
 ;;; annotation cases
 ;;;------------------
@@ -62,6 +71,7 @@
 ;; in ref/instantiate-individual-with-binding
 ;;
 (defun annotate-realization/base-case (lattice-point category)
+  (declare (special *annotate-realizations*))
   (when *annotate-realizations*
     (unless lattice-point
       (break "No value provided for the lattice-point"))
@@ -177,7 +187,6 @@
 ;;
 (defun annotate-realization-pair (i lattice-point rule
                                   head-edge arg-edge)
-  (declare (special *annotate-realizations*))
   (when *annotate-realizations*
     ;; annotating the application of a canonical binary rule.
     ;; The rnodes of the two edge are linked to a new rnode
@@ -246,7 +255,6 @@
 ;; a larger relation on the basis of the same rule each time.
 ;;
 (defun annotate-site-bound-to (i/psi variable type edge)
-  (declare (special *annotate-realizations*))
   ;; The 'type' variable is the type-of-head in the caller,
   ;; which is either a base-category psi or a referential category.
 
