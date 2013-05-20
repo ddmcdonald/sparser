@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "doc stream"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  0.6 March 2013
+;;;  Version:  0.6 May 2013
 
 ;; initiated 12/13/93 v2.3, incorporates notions from original version
 ;; of 1990 but treats style seriously
@@ -24,6 +24,8 @@
 ;;      next without reinitializing the chart and other resources.
 ;;     (2/18/13) Added binding of *accumulate-content-across-documents*
 ;;     (3/29/13) Folded in the document set.
+;;     (5/1/13) Revising so that it can take a document stream where the
+;;      files should be seen as a single content model
 
 (in-package :sparser)
 
@@ -51,13 +53,42 @@
 
 
 
+;;--- common utility
+
+(defmethod files-in-directory ((ds document-stream) &optional file-extension)
+  #+openmcl (unless file-extension
+              ;; Otherwise we get the subdirectory. Are we out-of-date?
+              (setq file-extension "txt"))
+  (let ((directory-pathname (ds-directory ds))
+        (files (ds-file-list ds)))
+    (or files
+        (let* ((expanded ;; might be a Sparser logical pathname
+                (etypecase directory-pathname
+                  (pathname directory-pathname)
+                  (string (expand-namestring directory-pathname))))
+               (namestring (namestring expanded))     
+               ;; We presume that this names a directory, though that
+               ;; should be ensured upstream
+               (file-pattern
+                (if file-extension
+                  (string-append namestring "*." file-extension)
+                  (string-append namestring "*"))))
+          (let ((files
+                 #+openmcl (directory file-pattern :files t :directories nil)
+                 #-openmcl (directory file-pattern)))
+            ;; more filtering ?
+            files)))))
+
+
 ;;;-------------------------------------
 ;;; dispatch on type of document stream
 ;;;-------------------------------------
 
-(defun ds/Do-dispatch (ds)
+(defun ds/do-dispatch (ds)
   (let ((*current-document-stream* ds))
-    (cond ((ds-directory ds)
+    (cond ((ds-unified-content ds)
+           (do-document-as-stream-of-files ds))
+          ((ds-directory ds)
            (ds/do-files-in-directory ds))
           ((ds-substreams ds)
            (ds/do-substreams ds))
@@ -68,39 +99,23 @@
                     ds)))))
 
 
-(defun ds/Do-substreams (superstream)
+(defun ds/do-substreams (superstream)
   (let ((*current-superstream* superstream)
         (substreams (ds-substreams superstream)))
     (dolist (ds substreams)
       (ds/do-dispatch ds))))
 
 
-(defun ds/Do-files-in-directory (ds)
-  (let* ((directory-pathname (ds-directory ds))
-         (dir-expanded-pn (etypecase directory-pathname
-                            (pathname directory-pathname)
-                            (string
-                             (expand-namestring directory-pathname)))))
-
-    (unless (probe-file dir-expanded-pn)
-      (break "There is no directory corresponding to:~
-              ~%   ~A~
-              ~%   ~A" directory-pathname dir-expanded-pn))
-
-    ;; add a "*" so that we can get every file in the directory
-    (let* ((namestring (namestring dir-expanded-pn))
-           (file-pattern (concatenate 'string
-                                      namestring "*")))
-
-      (let ((files (directory file-pattern)))
-        (ds/do-explicit-file-list ds files)))))
+(defun ds/do-files-in-directory (ds)
+  (let ((files (files-in-directory ds)))
+    (ds/do-explicit-file-list ds files)))
 
 
 ;;;-------------------
 ;;; final common path
 ;;;-------------------
 
-(defun ds/Do-explicit-file-list (ds &optional file-list)
+(defun ds/do-explicit-file-list (ds &optional file-list)
   (let ((files (if file-list
                  file-list
                  (ds-file-list ds))))
@@ -172,40 +187,28 @@
 ;;; alternative toplevel call
 ;;;---------------------------
 
-(defun do-document-as-stream-of-files (ds-designator
-                                       &key article-per-file?
-                                            doc-set-name)
-  ;; a toplevel call. In this case all of the files are to be
-  ;; interpreted as parts of a single document, i.e. initialization
-  ;; and the call to do-article only occur once.
+(defun do-document-as-stream-of-files (document-stream)
+  ;; All of the files are to be interpreted as parts of a single document,
+  ;; i.e. initialization and the call to do-article only occur once.
   (clean-out-history-and-temp-objects)
     ;; normally done per-run, now we do it beween runs of whole doc streams
   (run-real-per-article-initializations) ;; may react differently within the loop
-  (let ((*current-document-stream* ds-designator)
+  (let ((*current-document-stream* document-stream)
         (*accumulate-content-across-documents* t)
         (*initialize-with-each-unit-of-analysis* nil)
+        (article-per-file? t)
+        (doc-set-name (ds-name document-stream)) ;; mixed case - change it ??
         (file-list
-         (cond
-          ((ds-directory ds-designator)
-           (let* ((directory-pathname (ds-directory ds-designator))
-                  (dir-expanded-pn
-                   (etypecase directory-pathname
-                     (pathname directory-pathname)
-                     (string (expand-namestring directory-pathname))))
-                  (namestring (namestring dir-expanded-pn))
-                  (file-pattern (concatenate 'string
-                                             namestring "*")))
-             (directory file-pattern)))
-
-          ((ds-file-list ds-designator)
-           (ds-file-list  ds-designator))
-
-          ((ds-substreams ds-designator)
-           (error "Cannot treat a recursive document stream as a ~
-                   single document"))
-          (t (break "ill-formed document stream: ~A~
-                     ~% no directory, substreams, or file-list"
-                    ds-designator)))))
+         (cond ((ds-directory document-stream)
+                (files-in-directory document-stream))
+               ((ds-file-list document-stream)
+                (ds-file-list  document-stream))
+               ((ds-substreams document-stream)
+                (error "Cannot treat a recursive document stream as a ~
+                                                  single document"))
+               (t (break "ill-formed document stream: ~A~
+                        ~% no directory, substreams, or file-list"
+                         document-stream)))))
     (declare (special *current-document-stream*
                       *accumulate-content-across-documents*
                       *initialize-with-each-unit-of-analysis*))
@@ -213,15 +216,6 @@
     (initialize-document-set doc-set-name)
     (initialize-article-resource)
     (initialize-section-resource)
-
-    ;; Do the setup that would normally be done by Do-article
-    ;; [sfriedman:20130206.1423CST] Only do this if we're parsing as a single article.
-
-    (unless article-per-file?
-      (begin-new-article :name (ds-name ds-designator)
-                         :location (or (ds-directory ds-designator)
-                                       (ds-file-list ds-designator)))
-      (per-article-initializations))
     (initialize-chart-state)
 
     (dolist (file file-list)

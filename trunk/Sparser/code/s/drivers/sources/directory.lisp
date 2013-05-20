@@ -4,22 +4,21 @@
 ;;;
 ;;;     File:  "string"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   January 2013
+;;;  Version:   May 2013
 
 ;; 1/30/13 Added .txt to the string passed to directory so it would work.
-;; Might be Clozure-specific requirement. 3/29/13 Added keyword to pass
-;; through. 
+;;  Might be Clozure-specific requirement. 3/29/13 Added keyword to pass
+;;  through. 
+;; 5/1/13 Made this largely superfluous since analyze-document-stream can
+;;  do the same thing, and with a real document stream. Revised arguments
+;;  to fit the new ones.
 
 (in-package :sparser)
 
-;; (export 'analyze-text-from-directory)
-
-
 (defun analyze-text-from-directory (dir &key doc-set-name)
+  (declare (ignore doc-set-name))
   (let* ((file-list (directory (format nil "~a/*.txt" dir)))
          (stream (define-document-stream (gensym "document-stream")
                      :style-name 'hand-typed/no-headers
                      :file-list file-list)))
-    (do-document-as-stream-of-files stream 
-                                    :article-per-file? t
-                                    :doc-set-name doc-set-name)))
+    (do-document-as-stream-of-files stream)))

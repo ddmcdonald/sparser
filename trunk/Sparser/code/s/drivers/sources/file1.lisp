@@ -21,7 +21,7 @@
   (let* ((pathname (decode-file-expression/pathname file))
          (file-name (intern (pathname-name pathname))))
     (establish-character-source/file pathname)
-    (when *recognize-sections-within-articles*
+    (when *recognize-sections-within-articles* ;; grammar module
       (initialize-article-resource)
       (initialize-section-resource)
       (begin-new-article :name file-name :location pathname))
