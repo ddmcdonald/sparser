@@ -3,7 +3,7 @@
 ;;; copyright (c) 1992 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "doc stream"
-;;;   Module:  "drivers;articles:"
+;;;   Module:  "drivers;articles:/Users/ddm/sparser/Sparser/code/s/drivers/articles/doc-stream.lisp"
 ;;;  Version:   March 1992
 
 ;; 1/13/92 pulled reference to ccl package on "files-in-directory"
@@ -11,6 +11,12 @@
 
 (in-package :sparser)
 
+#| ddm 5/1/13
+ This document-stream driver has to be reconciled / merged
+with the one in drivers/sourcse/articles.lisp, which is where
+we were working for the Grok project.  For the nonce, use the
+function analyze-document-stream in that file.
+|#
 
 (defun do-document-stream (document-stream)
   (let ((*current-document-stream* document-stream))
