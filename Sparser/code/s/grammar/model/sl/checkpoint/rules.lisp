@@ -100,8 +100,9 @@
   :referent (:instantiate-individual with-np
 	         :with (content right-edge)))
 
+#+ignore
 (def-form-rule ("with" possessive/np) ;; with her
-  :form pp
+  :form pp  ;; that pronoun isn't a form category
   :new-category with-np
   :referent (:instantiate-individual with-np
 	     :with (content right-edge)))
