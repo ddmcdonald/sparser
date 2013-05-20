@@ -1,14 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "debris analysis"
 ;;;    Module:  "<version>;config:grammar:"
-;;;   version:  August 1994
+;;;   version:  May 2013
 
 ;; initiated 1/93
 ;; added cases 5/11, rearranged and added 5/16
 ;; 9/13 added *da*.   8/3/94 made it identical to v2.3a [partial grammar]
-;; less its blockings
+;; less its blockings. 5/9/13 Put back DM&P, which had been commented out
+;; (one wonders why). Added SMD&P which has a lot more options these days,
+;; and added reversible. 
 
 (in-package :sparser)
 
@@ -159,7 +161,17 @@
 ;;; domain mining and populating
 ;;;------------------------------
 
-;;(include-grammar-module  *DM&P*)
+
+(include-grammar-module  *SDM&P*)
+(include-grammar-module  *DM&P*)
+
+
+;;;--------------------------------------
+;;; reversibility (connection to Mumble)
+;;;--------------------------------------
+
+(include-grammar-module  *reversable*)
+
 
 
 ;;;--------------
