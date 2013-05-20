@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;; copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:  "just bracketing"
 ;;;    Module:  "init;versions:v3.1:config:grammars:"
-;;;   version:  June 2010
+;;;   version:  May 2013
 
 ;; Initiated 2/20/10 by cutting down the 2/10 version of full-grammar
 ;; 5/27/10 removed the few core semantic modules that had been there
 ;; 6/6/10 Blocked SGML because its rules (e.g. for "p") runs outside 
 ;; of angle brackets. Put the core modules back after fixing problem
-;; with "also".
+;; with "also".  5/9/13 added reversible
 
 (in-package :sparser)
 
@@ -142,5 +142,12 @@
 
 (include-grammar-module  *DM&P*)
 (include-grammar-module  *SDM&P*)
+
+
+;;;--------------------------------------
+;;; reversibility (connection to Mumble)
+;;;--------------------------------------
+
+(include-grammar-module  *reversable*)
 
 
