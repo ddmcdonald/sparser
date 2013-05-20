@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.6 February 2013
+;;;  version:  0.7 May 2013
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -44,6 +44,9 @@
 ;; 0.6 (1/4/13) Rearranged files for adverbs and other function words to go into
 ;;      the singe flie [modifiers] so it's easier to keep track of them.
 ;;     (2/28/13) Removed the city's and their rules in favor of what's in region
+;; 0.7 (5/9/13) Pulled out the numbers and ordinals into the regular loader for
+;;      that module because the need to, e.g., define companies and spread their
+;;      elements means we can't wair for the rest of the dossiers. 
 
 (in-package :sparser)
 
@@ -90,10 +93,6 @@
 #+ignore(gate-grammar *comparatives* ;; moved to modifiers
   (gload "dossiers;comparatives")
   (gload "dossiers;rules comparatives"))
-
-(gate-grammar *numbers*
-  (gload "dossiers;numbers")
-  (gload "dossiers;ordinals"))
 
 (gate-grammar *time*
   (gload "dossiers;time units")
