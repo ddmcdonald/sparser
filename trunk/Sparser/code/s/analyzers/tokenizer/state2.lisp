@@ -34,6 +34,7 @@
 ;;;-----------------
 
 (defun initialize-tokenizer-state ()
+  (declare (special *length-of-the-token* *capitalization-of-current-token*))
   (setq *pending-entry* nil
         *category-of-accumulating-token* nil
         *length-of-the-token* 0
