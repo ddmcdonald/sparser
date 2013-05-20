@@ -279,10 +279,8 @@
 
   (when *load-dossiers-into-image*
     (gload "dossiers;loader")
-;    (gate-grammar *whos-news*
-;;       function seems to be misplaced somewhere
-;      (whos-news-post-dossiers-loader))
-    )
+    (gate-grammar *whos-news*
+     (whos-news-post-dossiers-loader)))
 
   (when *incorporate-generic-lexicon*
     (prime-comlex))

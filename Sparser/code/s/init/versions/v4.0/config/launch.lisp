@@ -169,7 +169,6 @@
     (*just-bracketing* (just-bracketing-setting))
 ;    (*checkpoint-ops* ;; oops -- points to a grammar module
 ;     (checkpoint-ops-setting))
-    (*poirot-interface* (poirot-interface-setting))
     (t (top-edges-setting/ddm))))
 
 

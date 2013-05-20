@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "salutation"
 ;;;   Module:  "init;versions:v3.1:"
-;;;  version:  October 2012
+;;;  version:  May 2013
 
 ;; initiated 6/92, v2.3.  Tweeked 8/24/93, updated copyright 1/6/94,1/23/95,
 ;; 1/17/96. Added 2d image salutation 6/5/96. Bumped the copyright 8/16/97.
@@ -13,7 +13,8 @@
 ;; copyright info to 2008. 7/22/09 extended it again. 11/10/10 updated to
 ;; reflect current reality moving towards open-source. 3/14/11 added 2011 
 ;; and removed BBN as confusing since if you go back far enough there are
-;; still other copyright holding statements. 10/30/12 copyright.
+;; still other copyright holding statements. 10/30/12 copyright. 5/9/13 ditto,
+;; and pointer to the license.
 
 (in-package :sparser)
 
@@ -21,7 +22,8 @@
 (defparameter *salutation-string*
 
   (format nil "~&~%Welcome to the Sparser natural language analysis system~
-               ~%  copyright (c) David D. McDonald 1991-2005,2010-2012
+               ~%  copyright (c) David D. McDonald 1991-2005,2010-2013~
+               ~%  Distributed under the Eclipse Public License.
                ~%~
                ~%Type (in-package :sparser) to use Sparser symbols directly.~
                ~%~%" )
