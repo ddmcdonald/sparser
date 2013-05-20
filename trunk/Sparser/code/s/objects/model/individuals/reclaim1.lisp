@@ -124,9 +124,9 @@
       ;; and this instance go below them -- see reclaimation code
       (when (eq individual (car instances)) ;; trust but verify
         (setq instances (cdr instances)))
-      (let ((instances-cell
-             (member instances plist :test #'eq))
-            (rest-of-the-plist (cddr instances-cell)))
+      (let* ((instances-cell
+              (member instances plist :test #'eq))
+             (rest-of-the-plist (cddr instances-cell)))
         ;; replace its list of instances with the shorter list
         (rplacd instances-cell
                 (cons instances rest-of-the-plist))
