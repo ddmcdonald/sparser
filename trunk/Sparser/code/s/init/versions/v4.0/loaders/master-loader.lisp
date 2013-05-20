@@ -159,10 +159,10 @@
   ;; and all the predefined spaces
 
 (lload "run FSAs;loader4")
+(lload "fill chart;loader4")
 (lload "init chart;loader1")
 (gate-grammar *polywords*
   (gload "fsa;polywords4"))
-(lload "fill chart;loader4")
 (lload "scan;loader2")
 (lload "assess;loader6")
 (if *lattice-points*

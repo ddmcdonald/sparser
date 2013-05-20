@@ -61,7 +61,7 @@
 (defun ier (number-of-edge) ;; inspect edge referent
   (d (edge-referent (edge# number-of-edge))))
 
-(defun iber (number-of-edge) ;; inspect bindings of edge referent
+(defun ierb (number-of-edge) ;; inspect bindings of edge referent
   (let ((i (edge-referent (edge# number-of-edge))))
     (if (individual-p i)
       (d (indiv-binds i))
@@ -110,13 +110,6 @@
     (format t "~%~%")
     (tts)))
 
-(defun p/art (string) ;; "article"
-  ;; ad-hoc initializations
-  (begin-new-article :name 'string-run)
-  (initialize-text-relationships)
-  (analyze-text-from-string string)
-  (tts))
-
 (defun p/e (string)  (pp string) (e))
 (defun p/te (string) (pp string) (the-edges))
 
@@ -127,11 +120,9 @@
 (defun f (pathname
           &key time (initial-region :header) )
   (declare (ignore initial-region))
-  (unless pathname
-    (setq pathname *article*))
   (when *open-stream-of-source-characters*
     (close-character-source-file))
-  (format t "~%analyzing ~A~%~%" pathname)
+  (format t "~%analyzing ~A~%" pathname)
   (if time
     (time (analyze-text-from-file pathname))
     (analyze-text-from-file pathname)))
