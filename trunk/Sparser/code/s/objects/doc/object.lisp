@@ -165,9 +165,9 @@
 ;;; article factory
 ;;;-------------
 
-(defun begin-new-article (&key name location date source doc-set)
+(defun begin-new-article (&key name location date source)
   (unless *all-articles*
-    ;; In this case, thecall is probably via analyze-text-from-file for 
+    ;; In this case, thec all is probably via analyze-text-from-file for 
     ;; a single file rather than from do-document-as-stream-of-files 
     ;; where we make this call on each individual flle.
     (make-the-article-resource))
@@ -177,9 +177,7 @@
           (article-date obj) (or date
                                  (date-&-time-as-formatted-string))
           (article-source obj) source
-          (article-contents obj) (fresh-contents obj)
-          ;;   (article-document-set obj) doc-set
-          ) ;; /// remove on next load
+          (article-contents obj) (fresh-contents obj))
     (setf *current-article* obj)
     (reset-paragraph-state-in-article)
     (add-to-document-set obj)
@@ -225,8 +223,7 @@
         *index-of-furthest-article-ever-allocated* 0
         *some-articles-released*         nil
         *article-resource-is-fragmented* nil
-        *article-resource-is-wrapped*    nil
-        ))
+        *article-resource-is-wrapped*    nil))
 
 (defun initialize-section-resource ()
   (unless *all-sections*
@@ -242,8 +239,7 @@
         *index-of-furthest-section-ever-allocated* 0
         *some-sections-released*         nil
         *section-resource-is-fragmented* nil
-        *section-resource-is-wrapped*    nil
-        ))
+        *section-resource-is-wrapped*    nil))
 
 ;; Init structures.
 

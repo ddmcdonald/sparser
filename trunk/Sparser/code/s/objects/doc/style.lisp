@@ -84,6 +84,7 @@ their def-forms are executed.  |#
 ;;;------------------
 
 (defun style-includes-feature (keyword)
+  (declare (special *current-style* *break-on-unexpected-cases*))
   (let ((current-style *current-style*))
     (if current-style
       (member keyword

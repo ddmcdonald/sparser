@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.5 April 2013
+;;;  Version:  0.5 May 2013
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -18,7 +18,8 @@
 ;;      forever (1993), but grep doesn't find anything that lloads it.
 ;;    (9/2/12) added [doc-set] and [word-freq]. (2/28/13) added [content]
 ;;    (3/14/13) moved the text-relations package here. 4/1 reordered to me
-;;     dependency imposed by doc-set
+;;     dependency imposed by doc-set  (5/1/13) Moved globals first so all the
+;;     symbols are known before they're referenced in code.
 
 (in-package :sparser)
 
@@ -32,6 +33,7 @@
                         :use nil))))
 
 
+(lload "doc;globals")
 (lload "doc;word-freq")
 (lload "doc;article1")
 (lload "doc;sections")
@@ -48,7 +50,6 @@
 (lload "doc;doc-set")
 (lload "doc;doc stream")
 (lload "doc;context")
-(lload "doc;globals")
 (lload "doc;content")
 
 

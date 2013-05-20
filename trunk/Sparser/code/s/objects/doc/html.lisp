@@ -48,6 +48,7 @@
 
 
 (defun define-html-attribute (string)
+  (declare (ignore string))
 
   ;; When instances of these are found they become properties
   ;; of the tag individuals that they are part of
