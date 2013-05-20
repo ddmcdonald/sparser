@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "lload"
 ;;;    Module:   "init;Lisp:"
-;;;   Version:   2.10 January 2013
+;;;   Version:   2.10 May 2013
 
 ;; initiated July 1990
 ;; 1.1  (7/19 v1.8.6)  Added capability to load .fasl or source, preferring
@@ -62,7 +62,8 @@
 ;; 2.10 (8/29/07) Adding/modifying as needed to handle MSWindows file systems.
 ;;      (1/28/13) Added a guard for the file write dates existing in just-compile.
 ;;      (1/29/13) put #+allegro, #+openmcl around value of *prefer-binaries* to keep
-;;       CCL from trying to understand ACL fasls. 
+;;       CCL from trying to understand ACL fasls.  (5/6/13) Put a check in expand-namestring
+;;       for the possibility that it was passed a unix filestring. 
 
 
 (in-package :sparser)
@@ -352,6 +353,16 @@ in the mix (this will blow out) we should revisit the whole treatment.
   ;; format, interposing the separators that go with the system in use.
   ;; If the file system calls for it, we also restrict the kinds of
   ;; characters in the names, doing substitutions where needed.
+
+  (when (position #\/ namestring)
+    ;; This code presumes that we have a pre-OSX mac namestring
+    ;; so if it's call by code that now has a unix-style namestring
+    ;; there's actually nothing to be done.
+    (unless (position #\/ (subseq namestring (1+  (position #\/ namestring))))
+      (push-debug `(,namestring ,already-expanded?))
+      (error "Probable unix-namestring doesn't have at least two slashes.~
+            ~%Take a look and fix this check:  ~a" namestring))
+    (return-from expand-namestring namestring))
 
   (let ((*suborn-non-unix-file-characters*
          (cond ((or cl-user::*unix-file-system*
