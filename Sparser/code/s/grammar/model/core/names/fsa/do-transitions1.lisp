@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "do transitions"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.11 March 2013
+;;;  version:  1.11 May 2013
 
 ;; -.3 (12/17/93) added a catch to handle the fact that the capitalization of
 ;;      headers will catch them up in the initial scan.  (12/22) fixed a ramification
@@ -43,7 +43,7 @@
 ;;     not just names in what it gets from examine-capitalized-sequence.
 ;; 1.11 (3/28/13) The outer catch tag in classify-&-record-span not longer appears
 ;;    in the source, so replaced it with :abort-examination-not-a-name and another
-;;    clause for cons results. 
+;;    clause for cons results. 5/9/13 Missed a case of name-of-location
 
 (in-package :sparser)
 
@@ -154,6 +154,7 @@
            ((or category::name
                 category::uncategorized-name
                 category::company-name
+                category::name-of-location
                 category::person-name
                 category::person-name/first-last)
             (do-referent-and-edge result
