@@ -92,7 +92,7 @@
          (value (cadr plist) (cadr rest))
          (value-cell (cdr plist) (cdr rest))
          (rest (cddr plist) (cddr rest)))
-        ((null tag))
+        ((null tag) value)
       (when (eq tag property)
         (rplaca value-cell new-value)))))
 
