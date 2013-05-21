@@ -55,7 +55,11 @@
 ;;  are in the package :ddm-util, which is also the name of its asd file
 
 ;; Utilities used everywhere 
-(asdf:operate 'asdf:load-op :ddm-util)
+#+openmcl(asdf:operate 'asdf:load-op :ddm-util)
+#+franz-inc (let ((*default-pathname-defaults* cl-user::*nlp-home*))
+              (load (merge-pathnames 
+                     (make-pathname :directory '(:relative "util") 
+                                    :name "loader.lisp"))))
 
 
 ;; #4 --- Create the sparser package
