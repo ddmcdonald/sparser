@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "positions"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  1.3 February 2013
+;;;  Version:  1.5 May 2013
 
 ;; 1.1 (2/11 v1.8.1)  Added Position-precedes
 ;;     (5/12/93 v2.3) commented out an unfinished fn.
@@ -18,30 +18,39 @@
 ;; 1.4 (12/19/12) SF - augmented set-status to incorporate a LIFO list
 ;;      of all the states that a position has been through. 
 ;;     (2/8/12) added pretty-print-status-history
+;; 1.5 (5/20/13) Loading Sparser in ACL 9.0 with its native GUI creates
+;;      a type for position in its foreign function module. Got around it
+;;      by shadowing the symbol and calling the cl:position function via
+;;      a macro. In the process made the without-package-locks superfluous.
 
 (in-package :sparser)
+
+
+(shadow '(#:position) (find-package :sparser))
+
+(defmacro sparser::position (&rest args)
+  `(common-lisp:position ,@args))
 
 
 ;;;---------------------------
 ;;;  Positions in the chart
 ;;;---------------------------
-(#+allegro excl:without-package-locks
- #-allegro progn
-  (defstruct (position
-               (:conc-name #:pos-)
-               (:print-function print-position-structure))
 
-    array-index
-    character-index
-    display-char-index
-    token-index
-    ends-here
-    starts-here
-    terminal
-    preceding-whitespace
-    capitalization
-    status-lifo
-    assessed? ))
+(defstruct (position
+             (:conc-name #:pos-)
+             (:print-function print-position-structure))
+
+  array-index
+  character-index
+  display-char-index
+  token-index
+  ends-here
+  starts-here
+  terminal
+  preceding-whitespace
+  capitalization
+  status-lifo
+  assessed? )
 
 
 
