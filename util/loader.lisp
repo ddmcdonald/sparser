@@ -1,5 +1,11 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
 ;;; Copyright (c) 2013 David D. McDonald All Rights Reserved
+;;;
+;;;     File:  "loader"
+;;;   Module:  "util"
+;;;  version:  May 2013
+
+;; Initiated 5/20/13 as a work-around if ASDF cannot be appled.
 
 (in-package :cl-user)
 
@@ -22,3 +28,7 @@
 (loadd "indexed-object")
 (loadd "indentation")
 (loadd "auto-gen")
+
+;; Signals to downstream components 
+;; that these are available
+(push :ddm-utils *features*)
