@@ -120,7 +120,9 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;;------------------------------------------------------------
 
 ;; Comlex doesn't have "burnt"
-(setup-verb (resolve/make "burnt") nil)
+;;;(setup-verb (resolve/make "burnt") nil)
+;;/// do workspaces load twice? in ACL "burnt" is category whose
+;; file location is config/launch.lisp
 
 
 ;;;------------------
