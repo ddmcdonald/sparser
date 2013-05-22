@@ -50,6 +50,7 @@
   ;; it defines, keeping the identity to use at a semantic level.
   ;; Sort of like the earlier 'anonymous-adverb' but with more
   ;; content.
+
   (unless brackets
     ;; Match these with set in assign-brackets-to-adverb that runs when
     ;; we get an adverb in a tree-family mapping. 
