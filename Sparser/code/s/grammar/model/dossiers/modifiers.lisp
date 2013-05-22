@@ -3,13 +3,13 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   January 2013
+;;;   Version:   May 2013
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
 ;; the adverbs from words/adverbs1, including the ones with only function 
 ;; word definitions because their category hasn't been defined yet. 
-;; (1/18/13) put in define-position-in-process. 
+;; (1/18/13) put in define-position-in-process. 5/22 added "no longer"
 
 (in-package :sparser)
 
@@ -134,6 +134,9 @@
 (define-function-word "so that" :brackets '(].phrase .[phrase))
 
 
+;;--- "dis-enablement" ??
+
+(define-adverb "no longer")
 
 
 
