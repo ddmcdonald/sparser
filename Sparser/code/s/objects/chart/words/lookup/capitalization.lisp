@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.3 April 2013
+;;;  Version:  0.3 May 2013
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -18,6 +18,8 @@
 ;;     (5/18) added Word-at-this-position-is-lowercase?.  ...caps? on 5/19
 ;;     (12/31) added a case to Subsuming-variant. And again 1/16/96
 ;;     (3/1/12) quieting compiler. 4/2/13 New cases is subsuming-variant.
+;;     (5/24/13) Still more cases there, plus otherwise breaks in place
+;;      of the ecase's.
 
 (in-package :sparser)
 
@@ -83,31 +85,40 @@
         (dolist (word defined-variants nil)
           (setq variants-state (word-capitalization word))
 
-          (ecase variants-state
+          (case variants-state
             
             (:initial-letter-capitalized
-             (ecase actual-state
+             (case actual-state
                (:all-caps (return word))
                (:single-capitalized-letter nil)
-               (:mixed-case (return word))))  ;; (Knowledge) Factory -> "FACTory"
+               (:mixed-case (return word)) ;; (Knowledge) Factory -> "FACTory"
+               (otherwise
+                (break "new case for :initial-letter-capitalized: ~a" actual-state))))
 
             (:mixed-case
-             (ecase actual-state
+             (case actual-state
                ;; (Knowledge) FACTory -> "Factory"
-               (:initial-letter-capitalized (return word))))
+               (:initial-letter-capitalized (return word))
+               (:single-capitalized-letter nil)
+               (otherwise
+                (break "new case for :mixed-case: ~a" actual-state))))
 
             (:all-caps
-             (ecase actual-state
-               (:initial-letter-capitalized nil)))
+             (case actual-state
+               (:initial-letter-capitalized nil)
+               (otherwise
+                (break "new case for :all-caps ~a" actual-state))))
 
             (:single-capitalized-letter
              (case actual-state
                (:initial-letter-capitalized (return word))
                (:all-caps (return word))
                (otherwise
-                (break "subsuming variant: new case for single cap'd"))))
+                (break "new case for single cap'd"))))
             
-            ))))))
+            (otherwise
+             (error "New variant-state of capitalization: ~a"
+                    variants-state))))))))
 
 
 
