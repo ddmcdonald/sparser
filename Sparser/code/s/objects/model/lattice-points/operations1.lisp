@@ -11,7 +11,7 @@
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
 ;; on 7/7.  11/29/97 moved to [lattice-points;].
 ;; 0.1 (3/22/98) started revamping the routines. Moved Lookup-fn-data-of-parent in
-;;      from [individuals;index]. 
+;;      from [individuals;index].
 ;;     (1/24/99) fixed Category-inherits-type? to conform to current model.
 ;;     (9/20) fixed infinite loop in Super-categories-of.
 ;; 0.2 (9/30) Modified Lookup-fn-data-of-parent to allow it to return nil if it
@@ -44,12 +44,12 @@
     (category item)
     (otherwise
      (break "New type passed to category-of: ~a~%~a"
-	    (type-of item) item))))
+            (type-of item) item))))
 
 (defun base-category-of-psi (psi)
   (base-category-of-lp (psi-lp psi)))
 
-(defmethod base-category-of-lp ((lp lattice-point))  
+(defmethod base-category-of-lp ((lp lattice-point))
   (base-category-of-lp (lp-top-lp lp)))
 
 (defmethod base-category-of-lp ((lp top-lattice-point))
@@ -74,7 +74,7 @@
        (list (lp-category (lp-top-lp (psi-lp psi)))))
       (otherwise
        (break "New type of lattice point: ~a~%~a"
-	      (type-of lp) lp)))))
+              (type-of lp) lp)))))
 
 
 ;;;----------------------------------------------
@@ -95,7 +95,7 @@
       (super-categories-of (car type))
       (break "stub"))))
 
-(defmethod super-categories-of ((c T))
+(defmethod super-categories-of ((c t))
   (push-debug `(,c))
   (error "super-categories-of is not defined on objects of ~
           type ~a" (type-of c)))
@@ -132,10 +132,10 @@
               (find variable-name variables :key #'var-name))
         (when target-variable
           (return-from super-category-has-variable-named target-variable))))))
-            
-      
 
-  
+
+
+
 
 
 ;;;----------------------------------------------
@@ -318,7 +318,7 @@
     toplevel-list ))
 
 (defun w/accl/daughters (c depth)
-  ;; the category itself ('c') is handled by the caller. 
+  ;; the category itself ('c') is handled by the caller.
   (let ((daughters (daughters-of-category c)))
     (if daughters
       (let ( intermediate-list  subnet )
