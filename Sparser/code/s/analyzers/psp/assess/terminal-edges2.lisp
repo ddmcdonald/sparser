@@ -109,7 +109,7 @@
     ;; as this constant word, which, by definition, initiates no edges
 
     (let ((capitalization-counts
-           (word-capitalization-variants word))
+           (word-capitalization-variants word)) ;; field lookup
           (actual-state (pos-capitalization position-scanned)))
       ;; it's not really unknown if it's the lowercase standin that was
       ;; created for a word that has rules only when it occurs in some
@@ -230,7 +230,7 @@
   ;; us handle default form categorizations of words without adding
   ;; more edges than are really called for.
   ;;   This is the final target for many of the threads, including
-  ;; Check-caps-variations, ///.
+  ;; check-caps-variations, ///.
 
   (let ( edge-for-literal form-rule single-term-rules single-term-edges )
 
