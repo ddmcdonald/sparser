@@ -5,7 +5,7 @@
 ;;;   Module:  "grammar;tests:citations:code:"
 ;;;  version:  November 1993
 
-;; initiated 11/2/93 v2.3
+;; initiated 11/2/93 v2.3. 5/24/13 Updated default to use merge pathnames
 
 (in-package :sparser)
 
@@ -20,11 +20,18 @@
 (defparameter *menu-cite-outfile*
               (concatenate 'string
                            cl-user::location-of-sparser-directory
-                           "code:s:grammar:tests:citations:cases:"
+                           "code/s/grammar/tests/citations/cases/"
                            "new ones")
 
   "This is the file they are written to, which may be bound to
    the outstream when automatically writing to a file.")
+
+
+
+;;; change the location of where citations are written
+
+(defun set-citation-file (relative-name-string)
+)
 
 
 ;;;--------
