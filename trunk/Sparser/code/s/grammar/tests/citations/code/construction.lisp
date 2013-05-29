@@ -1,14 +1,30 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "construction"
 ;;;   Module:  "grammar;tests:citations:code:"
-;;;  version:  0.1 December 1993
+;;;  version:  0.2 May 2013
 
 ;; initiated 11/2/93 v2.3
 ;; 0.1 (12/22) Added appreciation of :multiple-initial edges
+;; 0.2 (5/24/13) Adding version that can be run from the listener
 
 (in-package :sparser)
+
+;;;----------------------------------
+;;; short form for using in listener
+;;;----------------------------------
+
+(defun cite (text-string)
+  "Parse the text, then write out a citation to the Lisp listener."
+  (pp text-string)
+  (write-citation-from-last-run))
+
+(defun fcite (text-string)
+  "Parse the text, then write out a citation to the designated
+   file (see set-citation-file)."
+  (pp text-string)
+  (take-citation+check+save))
 
 
 ;;;----------------------------------------------------
