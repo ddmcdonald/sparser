@@ -12,8 +12,17 @@
 (in-package :sparser)
 
 
+;;;------------
+;;; enablement
+;;;------------
+;; These are subordinating conjunctions. The state that the term
+;; to their left makes possible the term to their right. Both terms
+
+
+
+
 ;;;-----------------------
-;;; position in a process
+;;; Position in a process
 ;;;-----------------------
 
 ;; Like the sequencers ("next", "subsequent") but always modifies
@@ -31,7 +40,7 @@
 ;;; reflection on 
 ;;;---------------
 ;; <A happened> despite <proposition P>
-;;  Binds to a clause to its right creating an adjust to the clause
+;;  Binds to a clause to its right creating an adjunct to the clause
 ;;  to its left in the same style as a purpose clause. 
 ;;  Functionally is a subordinating conjunction
 ;;  Takes nominalized clauses/participials
@@ -42,10 +51,4 @@
     :brackets '( ].adverb .[np )
     ;; This isn't the right ETF, but it sort of patterns right
     :tree-families '(sentence-adverb)))
-
-
-;;;------------
-;;; enablement
-;;;------------
-;;  a subordinating
 
