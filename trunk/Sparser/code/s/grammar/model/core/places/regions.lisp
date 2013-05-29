@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1994-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;;
-;;;     File:  "other"
+;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  March 2013
+;;;  version:  May 2013
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -16,7 +16,8 @@
 ;;  when we get it in an 'of' construction. 3/8/13 Why does a region-type
 ;;  like 'city' inherit from 'location'? Copied the relationship-to-country
 ;;  method to pick that up. ///Need to review the category choices and
-;;  inheritance structure in here. 
+;;  inheritance structure in here. 5/24/13 Removed the np-common-noun/defnp
+;;  case from region because it was creating a form rule that was too specific.
 
 (in-package :sparser)
 
@@ -35,9 +36,12 @@
           (containing-region . location))
   :index (:permanent :key name)
   :realization ((:proper-noun name) ;; for the predefined ones
-                (:tree-family  np-common-noun/defnp
-                 :mapping ((np . :self)
-                           (np-head . region-type)))
+
+
+;;               (:tree-family  np-common-noun/defnp
+;;                 :mapping ((np . :self)
+;;                           (np-head . region-type)))
+
                 (:tree-family  kind-of-name ;; "strait of Hormous"
                  :mapping ((np . region)
                            (complement . (name name-word)) ;; and what else?
