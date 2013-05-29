@@ -5,7 +5,8 @@
 ;;;   Module:  "model;sl:whos news:"
 ;;;  version:  April 1991            v1.8.2
 
-;; initiated in February 1991
+;; initiated in February 1991.  5/26/13 This is completely out of date,
+;; but can be mineid from. Started deleting rules that now appear elsewhere.
 
 (in-package :CTI-source)
 
@@ -29,9 +30,6 @@
              find-or-make/person right-edge))
 
 
-(def-csr  name person  :right-context  comma-title
-  :referent (:find-or-make-object
-             find-or-make/person left-edge))
 
 
 (def-csr  name person   :right-context  comma-number
