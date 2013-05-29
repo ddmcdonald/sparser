@@ -8,6 +8,8 @@
 
 (in-package :sparser)
 
+;; Not loaded anymore (5/13)
+
 
 ;;;---------------
 ;;; plural people

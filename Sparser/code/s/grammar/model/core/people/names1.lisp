@@ -50,7 +50,7 @@
 ;;--- make
 
 (defun make-person-name-from-items (items &key version and)
-  ;; Called from Categorize-and-form-name.
+  ;; Called from Categorize-and-form-name
   ;; The 'and' and 'version' arguments are indexes into the
   ;; list of items.    ///n.b. There is no provision
   ;; as yet for both of them including versions in their

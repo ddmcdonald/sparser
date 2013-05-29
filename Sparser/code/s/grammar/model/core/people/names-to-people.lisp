@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "names to people"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.2 April 2013
+;;;  version:  0.3 May 2013
 
 ;; copied over material from [random and hacks] 4/12/95
 ;; 0.1 (4/25) redid Interpret-name-as-person as a dispatch on itype to handle
@@ -12,6 +12,8 @@
 ;; 0.2 (3/16/05) Elaborated Interpret-name-as-person/aux along the same lines
 ;;  as done with companies.  2/18/13 folded in named-object case.
 ;;  3/5/13 Moved in the country+person method, Exposed 4/3/13
+;; 0.3 (5/26/13) Reworking the interpret-as-name code to fit current scheme,
+;;  and pulled in csr's for name and position. 
 
 (in-package :sparser)
 
@@ -42,14 +44,17 @@
 (defun interpret-name-as-person (name)
   ;; reconstrue this name as that of a person and then make 
   ;; a person with that name.
-  (if (category-p name) ;; "name/unknown-pattern"
-    *default-person*
-    (interpret-name-as-person/aux name)))
-
-(defun interpret-name-as-person/aux (name)
-  (etypecase name
+  ;(if (category-p name) ;; "name/unknown-pattern"
+  ;  *default-person*
+  ;; The default-person isn't defined now (in loaded coade)
+;  (flet 
+  (typecase name
     (individual
      (case (cat-symbol (itype-of name))
+;       (category::named-object
+;        (let* ((name-object (value-of 'name name))
+;               (seq
+
        (category::uncategorized-name
         (let* ((sequence (value-of 'name/s name)))
           (unless sequence
@@ -64,7 +69,7 @@
         (let ((items (value-of 'items name))
               people )
           (dolist (item items)
-            (push (interpret-name-as-person/aux item)
+            (push (interpret-name-as-person item)
                   people))
           (define-individual 'collection
             :items (nreverse people)
@@ -97,7 +102,11 @@
                            :sequence (define-sequence (list nw)
                                        category::name-word))))
        (or (find/person-with-name person-name)
-           (make/person-with-name person-name))))))
+           (make/person-with-name person-name))))
+    (otherwise
+     (push-debug `(name))
+     (error "New type of object: ~a~%~a"
+            (type-of name) name))))
 
 
 (defun name-word-to-person? (nw)
@@ -158,6 +167,14 @@
   :left-context name
   :form appositive-prefix
   :referent (:function interpret-number-as-years-of-age right-edge))
+
+
+;;--- title (position)
+
+(def-csr  name person  :right-context  comma-title
+  :form appositive-prefix
+  :referent (:function interpret-name-as-person left-edge))
+
 
 
 
