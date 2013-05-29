@@ -25,9 +25,11 @@
 (defun define-title-base-word (string)
   (define-individual 'title :name string))
 
-
 (defun define-title-modifier (string)
   (define-individual 'title-modifier :name string))
+
+(defun define-title-status-term (string)
+  (define-individual 'title-status :name string))
 
 (defun define-title-qualifier (string) string)
 ;; Dropping them on the floor -- see note in object2

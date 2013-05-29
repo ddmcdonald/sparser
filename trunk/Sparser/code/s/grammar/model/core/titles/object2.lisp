@@ -36,10 +36,22 @@
   :index (:permanent :key name)
   :realization (:adjective name))
 
-;; title-qualifiers in dossiers/title-qualifiers are more versatile
-;; words than just their relationship to titles: 
-;;  "acting" "current" "former" "(the) late", "retired"
-;  Dropping them on the floor for the moment -- see operation2
+(define-category title-status
+  :instantiates self
+  :specializes nil ;; ?? All status terms have uniform impact?
+  :binds ((name :primitive word))
+  :index (:permanent :key name)
+  :realization (:adjective name))
+#|
+ This handled "former", which predominately appears in this
+function. The other reading I can think of it "the former .. the later".
+Need to see how it distributes and what its actual frequency is.
+
+Meaning:  If someone is a "former" <position>? then at some time
+in the past they actually held the position.  We can ask 
+"when were they the <p>
+
+|#
 
 ;;;------------------------
 ;;; one composite category
@@ -58,6 +70,29 @@
                           (np . title)
                           (np-head . (title title-modifier))
                           (modifier . (title title-modifier)))))
+;; title-qualifiers in dossiers/title-qualifiers are more versatile
+;; words than just their relationship to titles: 
+;;  "acting" "current" "former" "(the) late", "retired"
+;  Dropping them on the floor for the moment -- see operation2
+
+;; Except for "former", which KWIC on the COCA shows always with
+;; a title except for vs. "the later". Arbitrarily call it a
+;; title-status to let others stay dropped on the flore. 
+;; They might work well with  modifier-adds-head-dependent-property
+
+(define-category qualified-title
+  :specializes title
+  :instantiates title
+  :rule-label title
+  :binds ((title . (:or title modified-title))
+          (qualifier . title-status))
+  :realization (:tree-family premodifier-creates-type
+                :mapping ((type . :self)
+                          (head-var . title)
+                          (modifier-var . qualifier)
+                          (np . :self)
+                          (modifier . title-status)
+                          (np-head . (title modified-title)))))
 
 
 ;;;---------------------------
@@ -67,6 +102,7 @@
 (define-category abbreviated-title
   :instantiates title
   :specializes title
+  :rule-label title
   :binds ((abbreviation)
           (full-form . title))
   :realization (:common-noun abbreviation))
