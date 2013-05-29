@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1994-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 April 2013
+;;;  version:  1.0 May 2013
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -26,7 +25,9 @@
 ;;      reclaim operation. Whole scheme needs to be considered.
 ;;     (2/23/13) Put a trap in category-inherits-type? for the case of a
 ;;      category having itself as its super-type. Announces the problem and
-;;      returns nil. (4/9/13) Extended super-categories-of.
+;;      returns nil. (4/9/13) Extended super-categories-of, and again on 5/23/13.
+;;     (5/26/13) added hack version of psi-inherits-type? that calls the individual's
+;;      case since the all-categories code for psi doesn't look at the lattice
 
 (in-package :sparser)
 
@@ -86,6 +87,11 @@
     (super-categories-of1 c)
     (list c)))
 
+(defmethod super-categories-of ((c mixin-category))
+  (if (cat-lattice-position c)
+    (super-categories-of1 c)
+    (list c)))
+
 (defmethod super-categories-of ((p psi))
   (all-categories-in-psi p))
 
@@ -137,10 +143,14 @@
 
 
 
-
 ;;;----------------------------------------------
 ;;; seeing if one category inherits from another
 ;;;----------------------------------------------
+
+(defun psi-inherits-type? (psi category)
+  ;; n.b. super-categories-of(psi) doesn't work. Doesn't sweep up
+  ;; the lattice
+  (individual-inherits-type? psi category))
 
 (defun individual-inherits-type? (i category)
   ;; does the primary category of the individual inherit from that category?
@@ -188,7 +198,7 @@
         (lookup-fn-data-of-parent parent)))))
 
 
-(defun inherited-operation/Find (base-category)
+(defun inherited-operation/find (base-category)
   ;; the base category doen't have a 'find' operation defined for it
   ;; but maybe there's one up higher.  If it can't be found provide
   ;; a clear break.
@@ -205,7 +215,7 @@
              base-category))))
 
 
-(defun inherited-operation/Reclaim (base-category)
+(defun inherited-operation/reclaim (base-category)
   ;; the base category doen't have a 'reclaim' operation defined for it
   ;; but maybe there's one up higher.  If it can't be found provide
   ;; a clear break.
@@ -255,7 +265,7 @@
     toplevel-categories ))
 
 
-(defun re-Compute-daughter-relationships (list-of-categories)
+(defun re-compute-daughter-relationships (list-of-categories)
   (setq *category->daughters* (make-hash-table :test #'eq))
   (compute-daughter-relationships list-of-categories))
 
