@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  0.1 May 1996
+;;;  Version:  0.1 May 2013
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
 ;; 0.1 (5/31/96) Started adding cases above 128 for umlauted character and such
 ;;      using the encoding scheme on the Macintosh
+;;     (5/23/13) Added Soft_Hyphen at 173 (Latin-1 char set)
 
 (in-package :sparser)
 
@@ -566,5 +567,10 @@
       `(:punctuation
         . :meaningless))
 
-;; characters from 128 onwards are repeated as #\200, etc.
+
+;;---- selected characters above 127
+
+(setf (elt *character-dispatch-array* 173) ;; #\Soft_Hyphen
+      `(:punctuation
+        . ,(punctuation-named #\- )))
 
