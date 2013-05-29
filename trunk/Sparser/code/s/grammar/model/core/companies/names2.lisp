@@ -108,7 +108,8 @@
                  :sequence sequence))
     (let ((first-word (first-item-of-sequence sequence))) 
       (bind-variable 'first-word first-word name)
-      (map-name-words-to-name items name)
+      ;;(map-name-words-to-name items name)
+      ;; wrong signature
       name )))
 
 
@@ -132,12 +133,15 @@
 
 
 
-(defun map-name-words-to-name (items name)
+;;///// The signature on the spread function is
+;; (sequence items &optional count), so this has to be
+;; rethought.
+#+ignore(defun map-name-words-to-name (items name)
   ;; 11/12/08 'name' is now a psi denoting the name, so this
   ;; call makes no sense anymore. Unclear what we'd want here without
   ;; reading the rest of this file
-  ;(spread-sequence-across-ordinals name items)
-  )
+  (when *do-not-use-psi*
+    (spread-sequence-across-ordinals name items)))
 
 
 
@@ -203,8 +207,12 @@
 ;;;-------------------------------------------------------------------
 
 (defun find/company-name (company-name-category binding-instructions)
-  (let ((sequence (value-of-instr 'sequence binding-instructions))
-        (instances (cat-instances company-name-category)))
+  (let ((sequence (value-of-instr 'sequence binding-instructions)))
+    (find/company-name/given-sequence sequence)))
+
+(defun find/company-name/given-sequence
+       (sequence &optional (category category::company-name))
+  (let ((instances (cat-instances category)))
     (when instances
       (when (member sequence instances :test #'eq)
         (let ((company-name
