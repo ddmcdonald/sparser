@@ -31,7 +31,8 @@
 ;; #1 --- set the base directory
 
 (defparameter *nlp-home*
-  (make-pathname :directory (pathname-directory *load-truename*)))
+  (make-pathname :directory (pathname-directory *load-truename*)
+                 :device (pathname-device *load-truename*))) ;; attempt to make Windows work
 ;; This is for by-hand for debugging. Change to fit where you put Sparser
 ;; (setq *nlp-home* "/Users/ddm/sparser/")
 
