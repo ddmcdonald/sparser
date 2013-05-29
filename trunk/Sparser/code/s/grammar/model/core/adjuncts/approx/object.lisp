@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:adjuncts:approx:"
-;;;  version:  0.3 September 2011
+;;;  version:  0.3 May 2013
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/7/92 v2.3) redone in the new semantics. 9/21/93 moved to [adjuncts]
@@ -15,7 +15,7 @@
 ;; 0.3 (1/4/13) Prety drastic reworking to feed define-function-term
 ;;      with parameters as an approximator rather than instantiate
 ;;      one per-se as was done in the 'original' code that's commented
-;;      out. 
+;;      out. (5/26/13) probagated change in deine-adverb's signature
 
 (in-package :sparser)
 
@@ -48,27 +48,8 @@
 
 
 (defun define-approximator/adverbial (string)
-  (define-adverb string
-    :brackets '( ].adverb .[adverb adverb.[ )
-    :super-category 'approximator))
+  (define-adverb string :super-category 'approximator))
 
-#|  original form of define-approximator/adverbial,
-      rhe approximator/determiner was essentially the same
-  (let* ((obj (define-individual 'approximator
-                :name string))
-         (word (resolve-string-to-word string)))
-
-    (assign-bracket/expr word ].adverb )
-    (assign-bracket/expr word .[adverb )
-    (assign-bracket/expr word adverb.[ )
-
-    (let ((cfr (car (get-tag-for :rules obj))))
-      (unless (cfr-p cfr)
-        (break "expected the rule for this approximator to be ~
-                on the plist:~%~A~%" obj))
-      (setf (cfr-form cfr) category::adverb)
-      
-      obj ))  |#
 
 
 ;;--- Autodef
