@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005, 2010 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.5 December 2010
+;;;  version:  0.5 May 2013
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -30,6 +29,7 @@
 ;;     (1/9/07) Tweaked Decode-value-for-primitive-v/r since Allegro doesn't support fixnump
 ;;     (6/19/09) Fan-out from lexical treatment of variables.
 ;;     (12/6/10) Turned break in decode/check-value into sort of a cerror
+;;     (5/26/13) Added superc check for psi case in decode-exp-as-ref-category
 
 (in-package :sparser)
 
@@ -134,11 +134,13 @@
     (psi
      (if (eq (category-of exp) category)
        exp
-       (v/r-violation "The type of the partially saturated individual given as the value,~
+       (if (psi-inherits-type? exp category)
+         exp
+         (v/r-violation "The type of the partially saturated individual given as the value,~
                        ~%   ~A~
                        ~%   whose type is ~a~
                        ~%does not match the value restriction ~A"
-                        exp (category-of exp) category)))
+                        exp (category-of exp) category))))
 
     (individual
      (if (eq (first (indiv-type exp)) category)
