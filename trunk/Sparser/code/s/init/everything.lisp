@@ -80,6 +80,8 @@
 ;; ACL fasls. 3/22/13 added *do-not-use-psi* flag, which is set to t in Grok mode.
 ;; 5/3/13 moved *allow-pure-syntax-rules* here. 5/7/13 Added Strider workspace.
 ;; 5/9/13 Cleaned up what appears to be deadwood and improved lots of comments.
+;; 5/26/13 changed value of *do-not-use-psi* to t because the psi are not resolving
+;; the sequences of two instances of a name correctly.
 
 (in-package :cl-user)
 
@@ -760,7 +762,7 @@ or for loading the newer of the compiled or source files.
      almost purely lexical knowledge about a horde of words."))
 
 (unless (boundp 'sparser::*do-not-use-psi*)
-  (defparameter *do-not-use-psi* nil
+  (defparameter *do-not-use-psi* t
    "There are circumstances when psi proliferate even in cases where they don't
     make sense (perhaps the 'simple criteria' need significant extension),
     and there is the problem that saturated psi don't convert to individuals.
