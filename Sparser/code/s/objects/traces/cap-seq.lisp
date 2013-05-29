@@ -3,13 +3,13 @@
 ;;; 
 ;;;     File:  "cap seq"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  February 2013   
+;;;  Version:  May 2013   
 
 ;; initiated 5/26/93 v2.3. added two more moments 12/17. And more 1/7/94.
 ;; Added traces for "of" in the scan 5/3. Added start/end fns 6/13.
 ;; (7/22) added traces in Classify and beyond.  
 ;; Extended yet again 4/29/95 ..5/21. 2/4/13 Added for new path through
-;; driver. 
+;; driver. And again 5/28/13 for the parsing process.
 
 (in-package :sparser)
 
@@ -293,6 +293,22 @@
                (string-of-words-between from to))))
 
 
+(deftrace :pfwpnf (pos-before final-pos)
+  (when *trace-pnf*
+    (trace-msg "[pfwpnf] called from ~a to p~a"
+               pos-before (pos-token-index final-pos))))
+
+(deftrace :pfwpnf-edge (edge)
+  (when *trace-pnf*
+    (trace-msg "[pfwpnf] found ~a" edge)))
+
+(deftrace :pfwpnf/fsa-succeeded (word ended-at)
+  (when *trace-pnf*
+    (trace-msg "[pfwpnf] fsa triggered by ~a ended at p~a"
+               word (pos-token-inded ended-at))))
+
+
+
 (deftrace :terminated-early-at (pos)
   ;; called from Classify-&-record-span
   (when *trace-pnf*
@@ -352,7 +368,11 @@
     (trace-msg "PNF: Resuming classification of the remainder:~
               ~%       \"~A\"" (string-of-words-between from to))))
 
-
+(deftrace :name-category-is (category)
+  ;; called from categorize-and-form-name just before it does the 
+  ;; find or make for a name
+  (when *trace-pnf*
+    (trace-msg "PNF: Going to find or make name for a ~a" category)))
 
 
 ;;;--------------------------------------
