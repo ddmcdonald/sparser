@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "form"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  April 2013
+;;;  version:  May 2013
 
 ;; initiated 11/18/91  v2.1
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -17,6 +17,11 @@
 ;;    in a value restriction. 
 ;; 2.2 (4/5/13) Storing free-defined variables with the category's
 ;;    other binding variables.
+;; 2.3 (5/26/13) Changed the variable-restriction category lookup from
+;;    the check variant that complains if a category is not yet defined
+;;    to resolve-or-make/symbol-to-category which makes it. Everything
+;;    goes to referential categories now that the model is ubiquitous,
+;;    so the object will just be fleshed out when it's finally encountered.
 
 (in-package :sparser)
 
@@ -53,7 +58,7 @@
 
 
 (defun resolve-variable-restriction (restriction-expression)
-  ;; called fromdefine-lambda-variable to convert from expressions
+  ;; called fromd efine-lambda-variable to convert from expressions
   ;; to objects
   (if restriction-expression
     (typecase restriction-expression
@@ -73,7 +78,7 @@
                  (push (car rest) categories-etc)
                  (push :primitive categories-etc)
                  (return))
-                (push (resolve-symbol-to-category/check item)
+                (push (resolve-or-make/symbol-to-category item)
                       categories-etc)))
             (cons :or (nreverse categories-etc))))
 
@@ -85,7 +90,7 @@
                   ~%   ~A"
                  (first restriction-expression) restriction-expression))))
       (symbol
-       (resolve-symbol-to-category restriction-expression))
+       (resolve-or-make/symbol-to-category restriction-expression))
       (otherwise
        (error "Unknown type of restriction expression on lambda ~
                variable:~%    ~A" restriction-expression)))
