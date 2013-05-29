@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "embedded parse"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.6 December 1995
+;;;  version:  0.6 May 1995
 
 ;; initiated 5/21/93 v2.3
 ;; 0.1 (6/9) revising the alg. because it's intended to be top-edges and
@@ -17,6 +17,7 @@
 ;;      case and patched around it.
 ;; 0.6 (12/29) added a full edge-parse to accomodate the change that makes
 ;;      titles parsed items rather than polywords.
+;;     (5/26/13) added some traces. 
 
 (in-package :sparser)
 
@@ -27,7 +28,8 @@
 
 (defun parse-from-within-pnf (from-pos to-pos)
 
-  ;; called from Classification-fsa
+  ;; called from c&r-multi-word-span (in earlier design was called
+  ;; from classification-fsa which does make for finer grain work.)
   ;; The words in the region have been scanned and their boundaries
   ;; introduced by the initial pass that collected up the capitalized
   ;; sequence.  We know there's more than one word in this region
@@ -35,7 +37,7 @@
 
   (pfwpnf from-pos to-pos)
   (parse-between-boundaries from-pos to-pos)
-  nil )
+  nil ) ;; return value is value of premature-termination?
 
 
 ;;;-------------------
@@ -51,6 +53,8 @@
   ;; with punctuation) then walk over them rather than re-process
   ;; their constituent words.
 
+  (tr :pfwpnf pos-before final-pos)
+
   (multiple-value-bind (word pos-after)
                        (next-word pos-before)
     (when (consp word)
@@ -62,28 +66,29 @@
     (let ((edge (single-nonword-edge-starts-at pos-before)))
       (if edge
         (let ((where-edge-ends-at (pos-edge-ends-at edge)))
+          (tr :pfwpnf-edge edge)
           (if (eq final-pos where-edge-ends-at)
             :done
             (pfwpnf where-edge-ends-at final-pos)))
 
         (let ((where-word-fsa-ends
                (do-word-fsas/only-known word pos-before)))
-          
           (if where-word-fsa-ends  ;; some word-fsa completed
-            (cond
-             ((eq where-word-fsa-ends
-                  final-pos)
-              :done )
-             ((position-precedes final-pos where-word-fsa-ends)
-              ;; we've gone past the span that the scan
-              ;; delimited, presumably because the fsa was
-              ;; a polyword.  The trouble is that this change
-              ;; in the end of the sequence has to be appreciated
-              ;; by the caller. 
-              (setq *pnf-end-of-span* where-word-fsa-ends)
-              :done )
-             (t
-              (pfwpnf where-word-fsa-ends final-pos)))
+            (then
+             (tr :pfwpnf/fsa-succeeded word where-word-fsa-ends)
+             (cond
+              ((eq where-word-fsa-ends final-pos)
+               :done )
+              ((position-precedes final-pos where-word-fsa-ends)
+               ;; we've gone past the span that the scan
+               ;; delimited, presumably because the fsa was
+               ;; a polyword.  The trouble is that this change
+               ;; in the end of the sequence has to be appreciated
+               ;; by the caller. 
+               (setq *pnf-end-of-span* where-word-fsa-ends)
+               :done )
+              (t
+               (pfwpnf where-word-fsa-ends final-pos))))
             
             (intro-edges-fwpnf
              word pos-before pos-after final-pos)))))))

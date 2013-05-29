@@ -468,18 +468,17 @@
                                  koc? ordinal location-head hurricane)
   (declare (ignore hurricane name-state country))
 
-  (push-debug `(,items))
-
   ;; Analyze the evidence and determine what sort of name this is
   ;; and make it [[ why not look for existing one? ]]. 
   ;; The referent of the edge is determined by our caller up in
   ;; classify-&-record-span using the fn do-referent-and-edge
 
   (cond
-   ((item-already-linked-to-entity items)) ;; throws if it succeeds
+   ((known-sequence items)) ;; throws if it succeeds
+   ((item-already-linked-to-entity items)) ;; ditto
    (of
-    (analyze-structure-of-name-with-of items of
-                                       &-sign initials? inc-term?))
+    (analyze-structure-of-name-with-of
+     items of &-sign initials? inc-term?))
    (t
     ;;--- examine evidence for a way to categorize the name
     (let ( name
@@ -557,6 +556,7 @@
                     names.~%  ~A~%  ~A" person-version items))))|#
 
       ;;--- Make the name
+      (tr :name-category-is category)
 
       (setq name
             (ecase (cat-symbol category)

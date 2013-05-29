@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "do transitions"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.11 May 2013
+;;;  version:  1.12 May 2013
 
 ;; -.3 (12/17/93) added a catch to handle the fact that the capitalization of
 ;;      headers will catch them up in the initial scan.  (12/22) fixed a ramification
@@ -43,7 +43,10 @@
 ;;     not just names in what it gets from examine-capitalized-sequence.
 ;; 1.11 (3/28/13) The outer catch tag in classify-&-record-span not longer appears
 ;;    in the source, so replaced it with :abort-examination-not-a-name and another
-;;    clause for cons results. 5/9/13 Missed a case of name-of-location
+;;    clause for cons results. 5/9/13 Missed a case of name-of-location.
+;; 1.12 (528/13) Broke out do-pnf-edge from the do referent and edge so it is
+;;    callable directly when the examine process returns a real entity and
+;;    not simply a name.
 
 (in-package :sparser)
 
@@ -127,47 +130,62 @@
 
 (defun classify-&-record-span (starting-position ending-position)
 
-  ;; Called from classify-and-record-name
-  ;; the span has had its word actions run by the embedded parsing
+  ;; Called from classify-and-record-name or by c&r-multi-word-span
+  ;; just above.
+  ;; The span has had its word actions run by the embedded parsing
   ;; and consists of more than one item.  
   ;;   In the ancient regime, we would now run a transition
-  ;; net over that sequence of words and edges. If the net accepts
-  ;; the sequence it will return a final state, and we use that
+  ;; net over that sequence of words and edges. If the net accepted
+  ;; the sequence it would return a final state, and we'd use that
   ;; to establish a referent and construct the edge over the whole
   ;; capitalized sequence. 
   ;;   Now, however, the transition net has been abandoned in favor
-  ;; of an omnibus routine, examine-capitalized-sequence, which uses
+  ;; of an omnibus routine -- examine-capitalized-sequence -- which uses
   ;; a body of internal evidence to figure out what sort of name to
   ;; find or create. This is simpler to toss heuristic evidence into
   ;; but loses the opportunity to have richly structured names. 
+  ;;
+  ;; If we have succeeded in finding named entity of some sort,
+  ;; we indicate that by returning an edge. If examine-capitalized-
+  ;; sequence just found a name, then this is done by the tail call
+  ;; to do-referent-and-edge. 
 
   (let ((result
          (catch :abort-examination-not-a-name
            (catch :leave-out-prefix
-             ;; normally returns a name 
-             (examine-capitalized-sequence starting-position
-                                           ending-position)))))
+             (catch :already-decoded-name
+               ;; normally returns a name 
+               (examine-capitalized-sequence starting-position
+                                             ending-position))))))
     (if result
       (typecase result
-        (individual  ;; i.e. a name -- this is the standard return value
+        (individual
          (case (cat-symbol (itype-of result))
-           ((or category::name
-                category::uncategorized-name
-                category::company-name
-                category::name-of-location
-                category::person-name
-                category::person-name/first-last)
+
+           ;; If the value is a type-of name, then we have to
+           ;; establish its referent and create an edge for it.
+           ((category::name
+             category::uncategorized-name
+             category::company-name
+             category::name-of-location
+             category::person-name
+             category::person-name/first-last)
             (do-referent-and-edge result
                                   starting-position ending-position))
-           (category::named-object
-            ;; referent alreay established
+
+           ;; The examination was resolved directly to an NE
+           ((category::named-object
+             category::company
+             category::person)
             (push-debug `(,result ,starting-position ,ending-position))
-            (break "success: found already named object")) ;; for "WHO" see as directly referring to the organization
+            (do-pnf-edge nil result starting-position ending-position))
+
            (otherwise
             (push-debug `(,result ,starting-position ,ending-position))
             (error "examine-capitalized-sequence returned a new category ~
                     of individual: ~a"  (itype-of result)))))
 
+        ;; Could these alternative paths ever involve real NE's ??
         (cons
          (cond
           ((eq (first result) :suffix-flushed)
@@ -264,20 +282,25 @@
     ;; so the edge over the name should include it.
     (when (itypep referent 'named-location)
       (when (eq (word-before starting-position) word::|the|)
-        (setq starting-position (chart-position-before starting-position)))) 
+        (setq starting-position (chart-position-before starting-position))))
 
-    (let ((edge (edge-over-proper-name
-                 starting-position
-                 ending-position
-                 (category-for-edge-given-name-type category-of-name referent)
-                 category::proper-name
-                 referent
-                 :pnf  ;; the "rule"
-                 (successive-treetops  ;; the daughters
-                  :from starting-position
-                  :to ending-position))))
-        
-        edge )))
+     (let ((label (category-for-edge-given-name-type category-of-name referent)))
+       (do-pnf-edge label referent starting-position ending-position))))
+
+(defun do-pnf-edge (category referent starting-position ending-position)
+  (unless category
+    (setq category (itype-of referent)))
+  (let ((edge (edge-over-proper-name
+               starting-position
+               ending-position
+               category
+               category::proper-name
+               referent
+               :pnf  ;; the "rule"
+               (successive-treetops  ;; the daughters
+                :from starting-position
+                :to ending-position))))
+    edge ))
 
 
 (defun category-for-edge-given-name-type (category-of-name name)
