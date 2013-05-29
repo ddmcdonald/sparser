@@ -26,7 +26,7 @@
   :specializes named-object
   :binds ((name . person-name)
           (age . age)
-          (position . position))
+          (position . (:or title position)))
   :index (:key name)
   :realization ((:tree-family  appositive
                  :mapping ((appositive-field . age)
@@ -56,12 +56,77 @@
   :specializes kind)
 
 
+;;;----------------------------------------
+;;; def-form for explicitly defined people
+;;;----------------------------------------
+
+(defun define-person (name-string &key alias nicknames)
+  (declare (ignore alias nicknames))
+  (let* ((name-strings (vet-person-name name-string))
+         (name-words (convert-name-strings-to-name-words name-strings))
+         (person-name ;; takes version keyword
+          (make-person-name-from-items1 name-words)))
+    (push-debug `(,person-name))
+    (or (find/person-with-name person-name)
+        (make/person-with-name person-name))))
+ 
+
+(defun vet-person-name (name-string)
+  "Check the name-string for validity. 
+   Return a list of name-words"
+  (let ( string-elements )
+    (typecase name-string
+      (string
+       ;;/// Any other characters to look for?
+       (setq string-elements
+             (if (position #\space name-string)
+               (break-up-at name-string :delimeter-chars '(#\space))
+               (list name-string))))
+      (cons
+       (if (every #'stringp name-string)
+         (setq string-elements name-string)
+         (else
+          (push-debug `(,name-string))
+          (break "New list case in person-name: ~a"
+                 name-string))))
+      (otherwise
+       (push-debug `(,name-string))
+       (error "Unexpected type of person name specifier: ~a~%~a"
+              (type-of name-string) name-string)))
+
+    (remove-if #'(lambda (s) (and (= 1 (length s))
+                                  (eql (elt s 0) #\space)))
+               string-elements)))
+                           
+                           
+
+
+(defun convert-name-strings-to-name-words (list-of-strings)
+  ;; Convert the strings to namewords, but note the
+  ;; cases in referents-of-list-of-edges show what to do
+  ;; with terms that have other meanings
+  (let ((words (loop for string in list-of-strings
+                 collect (resolve-string-to-word/make string))))
+    (flet ((make-name-word (word)
+             (cond
+              ((name-word-for-word word) ;; already is one
+               (get-tag-for :name-word word))
+              ((only-known-as-a-name word) ;
+               ;/// presumes an ordering on the pllist - may not be reliable
+               (define-name-word word))
+              (t ;; punting on the other real cases
+               (define-name-word word)))))
+      (loop for word in words
+        collect (make-name-word word)))))
+  
+         
 ;;;------------
 ;;; operations
 ;;;------------
 
 (defun make/person-with-name (name)
   (unless (indiv-typep name 'person-name)
+    (push-debug `(,name))
     (break "Expected a person-name and got:~%  ~A" name))
   (define-individual 'person
     :name name))

@@ -26,6 +26,9 @@
 (gload "people;names to people")
 (gload "people;kinds")
 
+;; Not loaded
+;;   people-rules, people+age
+
 #| in dossiers;
   (gload "dossiers;person prefixes")
   (gload "dossiers;person versions")

@@ -8,8 +8,11 @@
 
 ;; broken out from time;age 12/15/92 v2.3
 
-(in-package :sparser)
+;; Not loaded anymore. Functionality has been distributed
+;; mostly to realizations on the object. Also see the age file
+;; in core/time/ (5/13)
 
+(in-package :sparser)
 
 
 (def-cfr comma-number ("," number))
