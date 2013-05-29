@@ -303,5 +303,26 @@
     ;;  when (= 1 (length name-words))
     nil))
 
+(defun known-sequence (items)
+  ;;//// Sequence index presupposes that you know the category
+  ;;//// Have to change that
+  (let ((sequence (find-sequence items category::company-name)))
+    (when sequence
+      (let ((name ;;/// burning in company here too
+             (find/company-name/given-sequence sequence)))
+        (unless name
+          (push-debug `(,sequence ,items))
+          (break "Why isn't there a name associated with this ~
+                  sequence:~%  ~a" sequence))
+        (let ((entities (who-binds 'name name)))
+          (if (null (cdr entities))
+            (let ((company (car entities)))
+              (push-debug `(,company)) ;; to play with while debuggign
+              (throw :already-decoded-name company))
+            (else ;; its ambiguous
+             (push-debug `(,name ,entities))
+             ;;//// lookup format pattern for iterator !!!
+             (break "The name ~a~%is ambiguous" name))))))))
+
                                       
 
