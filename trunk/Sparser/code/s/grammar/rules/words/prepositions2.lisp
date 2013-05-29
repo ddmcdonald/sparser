@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   2.4 January 2013
+;;;   Version:   2.4 May 2013
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -33,7 +33,8 @@
 ;;      creator with special form categories to drive general rules. 10/4 original
 ;;      base rule was circular so made it have the prep category as its label.
 ;;     (2/20/12) Added schema to the constructed cfr.  11/25/12 "near", "far"
-;;     (1/18/13) Corrected order-of-args in push-onto-plist. 1/30/13 "away"
+;;     (1/18/13) Corrected order-of-args in push-onto-plist. 1/30/13 "away".
+;;     (5/24/13) "against"
 
 (in-package :sparser)
 
@@ -70,6 +71,7 @@
 (define-preposition "ahead" :form 'spatial-preposition)
 (define-preposition "ahead of" :form 'spatial-preposition)
 (define-preposition "after" :form 'spatio-temporal-preposition)
+(define-preposition "against" :form 'spatial-preposition)
 (define-preposition "along" :form 'spatial-preposition)
 (define-preposition "as")
 (define-preposition "at" :form 'spatial-preposition)
