@@ -7,5 +7,11 @@
 
 ;; initiated 5/6/13
 
-;; "company" isn't right for most of these, but it will do
-(define-company '("United" "Nations") :aliases '(("U.N.")) :takes-the t)
+(in-package :sparser)
+
+(define-with-all-instances-permanent
+
+    ;; "company" isn't right for most of these, but it will do
+    (define-company '("United" "Nations") :aliases '(("U.N.")) :takes-the t)
+
+) ;; closes with all permanent
