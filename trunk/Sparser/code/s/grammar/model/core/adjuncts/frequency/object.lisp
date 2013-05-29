@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2011-2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:frequency:"
-;;;  Version:  0.3 September 2011
+;;;  Version:  0.3 May 2013
 
 ;; initiated 5/16/93 v2.3
 ;; 0.1 (6/4) drastically reconceptualized how it works, 9/21 moved to [adjuncts]
@@ -11,6 +11,7 @@
 ;;     (5/25/94) added def-form with bracket assignment and autodef data
 ;; 0.2 (7/12) added define-function-word to the def-form
 ;; 0.3 (9/23/11) Reworked define-event-frequency as call to define-adverb.
+;;     (5/26/13) changed that signature to adapt to its new signature
 
 (in-package :sparser)
 
@@ -42,21 +43,8 @@
 ;;;----------
 
 (defun define-event-frequency (string)
-  (define-adverb string 
-    :brackets '( ].adverb )
-    :super-category 'frequency-of-event))
+  (define-adverb string :super-category 'frequency-of-event))
 
-#|  original definition
-  (let* ((word (resolve-string-to-word/make string))
-         (frequency (find-individual 'frequency-of-event
-                                     :name word)))
-    (if frequency
-      frequency
-      (else
-        (setq frequency (define-individual 'frequency-of-event
-                          :name word))
-        (define-function-word string :brackets '( ].adverb ))
-        frequency ))) |#
 
 
 ;;;---------
