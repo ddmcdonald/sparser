@@ -121,7 +121,7 @@
        ;; We need to leave something active here that will form the
        ;; derived category by folding in this mix-in with the real head
        ;; of the segment once it's been scanned.
-       (break "mixin case: ~a" head)
+       ;;(break "mixin case: ~a" head)
        (setq head
              (find-or-make-psi-for-base-category head))
        (tr :ref/head-base-from-mixin head))
