@@ -46,7 +46,7 @@
   :instantiates :self
   :rule-label path
   :specializes location
-  :binds ((authority :or country state)
+  :binds ((authority :or country US-state)
           (number . number))
   :realization (:tree-family pair-instantiates-category
                 :mapping ((result-type . :self)
