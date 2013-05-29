@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "have"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.1 May 1996
+;;;  Version:  0.3 May 2013
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3.  Fleshed out 6/4.
 ;; Added negative contractions 1/11/94.  7/21 switch aux rule to use
@@ -12,6 +12,8 @@
 ;; 0.1 (4/24) pulled the def. as a main verb in favor of the aux definition
 ;;      in [words;aux verbs]
 ;; 0.2 (5/27/96) disabled subtypes for the timebeing
+;; 0.3 (5/23/13) Disabled the realization for have. Need to make it
+;;      conditional on SDM&P or the like. 
 
 (in-package :sparser)
 
@@ -22,7 +24,12 @@
 
 (define-category  have
   :instantiates  self
-  :specializes   event
+  :specializes   event)
+#|   Turnng this off. The constraints are too loose to use
+ in 'everything' mode because the standard heuristics will
+ create constituents without referents. Needs to run in a light
+ version of DM&P where we have something valid for the referents.
+
   :binds ((agent)
           (stuff))
   :index (:temporary :list)
@@ -36,6 +43,7 @@
                           (vg . :self))
                 :special-case-head t
                 ))
+|#
 
 
 (def-cfr have ("have")
