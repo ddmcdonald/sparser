@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "modals"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2013
+;;;  Version:  May 2013
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3. Populated w/o semantics 1/11/94
 ;; Given a mix-in interpretation 7/11.  8/2 pulled the check for whether 'modal'
@@ -15,11 +15,15 @@
 ;; 1/27/95 added modal + verb+passive rules
 ;; 5/27/96 Disabled subtyping until it's reimplemented. 7/6/07 missed one.
 ;; 1/30/13 added "might"
+;; 5/22/13 Rewrote the whole thing using a uniform set of categories
+;;  and generating them for each modal. Incomplete because 
+;;   (1) need to implement the case of multiple terms in a rhs
+;;   (2) Aux hopping needs to be reformulated and pushed into a schema
 
 (in-package :sparser)
 
 ;;;------------
-;;; base forms
+;;; categories
 ;;;------------
 
 (define-mixin-category  be-able-to
@@ -32,120 +36,124 @@
   :binds ((condition)))
 
 
+;;-- category to hold the word
+(define-category modal-operator
+  :instantiates nil
+  :specializes operator
+  :binds ((name :primitive word)))
+
+
+;;;-------------
+;;; constructor
+;;;-------------
+
+;; Modals get their bracket assignments through a set of calls
+;; to define-function-word in words/aux-verbs
+
+(defmacro define-modal (words &key negatives referent)
+  (let ((ref (when referent
+               (typecase referent
+                 (symbol (category-named referent))
+                 (category referent)
+                 (otherwise (push-debug `(,referent))
+                            (error "Unknown referent specifier: ~a"
+                                   referent))))))
+  `(define-modal/expr ',words 
+     :negatives ',negatives 
+     :referent ',ref)))
+
+(defun define-modal/expr (words &key negatives ((:referent referent-to-use)))
+  (unless (consp words) (setq words (list words)))
+  (when negatives
+    ;;//// have to hack the multiple terms in the rhs
+    (setq negatives nil))
+  ;; define the category based on the first of the words
+  (let* ((string (car words))
+         (word (resolve-string-to-word/make string))
+         (category-name (name-to-use-for-category string))
+         (modal (category-named 'modal-operator))
+         (category
+          (define-category/expr category-name
+            `(:specializes  ,modal
+              :instantiates :self
+              :rule-label ,modal
+              :bindings (name ,word))))
+         (individual (make-category-indexed-individual category)))
+    (create-shadow individual)
+
+    ;; for each word, create the corresponding rule
+    (let ((form category::modal)
+          (schema (get-schematic-word-rule :modal)))
+
+      (flet ((positive-rule (w)
+               (let ((word (typecase w
+                             (string (resolve-string-to-word/make w))
+                             (word w)
+                             (polyword w)
+                             (category w)
+                             (symbol
+                              (let ((c (category-named w)))
+                                (unless c
+                                  (push-debug `(,w))
+                                  (error "There is no category named ~a" w))
+                                c))
+                             (otherwise
+                              (push-debug `(,w))
+                              (error "Unknown type of word specifier: ~a~%~a"
+                                     (type-of w) w)))))
+                 (define-cfr category::modal `(,word)
+                   :form form
+                   :referent (or referent-to-use
+                                 category) ;; or individual ??
+                   :schema schema
+                   :source :def-cfr))))
+
+        (let* ((pos-rules
+                (loop for word in words
+                  collect (positive-rule word)))
+               (neg-rules
+                (when negatives ;; see below
+                  (loop for word in negatives
+                    collect (positive-rule word))))
+               (rules (if neg-rules
+                        (nconc pos-rules neg-rules)
+                        pos-rules)))
+          (add-rules-to-category category rules)
+          category)))))
+
+
+
 ;;;-------
 ;;; cases
 ;;;-------
 
-#| This doesn't feel good enough, but it's a place to work from until
-   we get a sublanguage where these are really exercised.  |#
+(define-modal "can"
+              :negatives (("cann" apostrophe-t)
+                          ("can" apostrophe-t)
+                          "cannot")
+              :referent be-able-to)
 
-; will would could should can may
+(define-modal "could" 
+              :negatives (("couldn" apostrophe-t))
+              :referent be-able-to)
 
-(define-mixin-category  will
-  :specializes modal )
-(def-cfr will ("will")
-  :form modal
-  :referent  future )
+(define-modal "may" :referent be-able-to)
 
-(define-mixin-category  would
-  :specializes modal )
-(def-cfr would ("would")
-  :form modal
-  :referent  conditional )
+(define-modal "might" :referent be-able-to)
 
-(define-mixin-category  could
-  :specializes modal )
-(def-cfr could ("could")
-  :form modal
-  :referent be-able-to
-             ;;(:head be-able-to
-             ;; :subtype conditional)
-	     )
+(define-modal "must" :referent be-able-to)
 
-(define-mixin-category  should
-  :specializes modal )
-(def-cfr should ("should")
-  :form modal
-  :referent  be-able-to )
+(define-modal "should"
+              :negatives (("shouldn" apostrophe-t))
+              :referent be-able-to)
 
-(define-mixin-category  can
-  :specializes modal )
-(def-cfr can ("can")
-  :form modal
-  :referent  be-able-to )
+(define-modal ("will" apostrophe-ll) 
+              :negatives (("won" apostrophe-t))
+              :referent future)
 
-(define-mixin-category  may
-  :specializes modal )
-(def-cfr may ("may")
-  :form modal
-  :referent  be-able-to )
-
-(define-mixin-category  might
-  :specializes modal )
-(def-cfr might ("might")
-  :form modal
-  :referent  be-able-to )
-
-(define-mixin-category  must
-  :specializes modal )
-(def-cfr must ("must")
-  :form modal
-  :referent  be-able-to )
-
-
-;;;--------------
-;;; contractions
-;;;--------------
-
-(def-cfr will ( apostrophe-ll )
-  :form modal
-  :referent  future )
-
-
-;;--- with 'not'
-
-(def-cfr would ("won" apostrophe-t)
-  :form modal
-  :referent (:head will
-             ;;:subtype negative
-                   ))
-
-(def-cfr would ("wouldn" apostrophe-t)
-  :form modal
-  :referent (:head would
-             ;;:subtype negative
-                   ))
-
-(def-cfr could ("couldn" apostrophe-t)
-  :form modal
-  :referent (:head could
-             ;;:subtype negative
-                   ))
-
-(def-cfr should ("shouldn" apostrophe-t)
-  :form modal
-  :referent (:head should      ;; doesn't get connotation of permission
-             ;;:subtype negative
-                   ))
-
-(def-cfr can ("cann" apostrophe-t)
-  :form modal
-  :referent (:head can
-             ;;:subtype negative
-                   ))
-
-(def-cfr can ("can" apostrophe-t)
-  :form modal
-  :referent (:head can
-             ;;:subtype negative
-                   ))
-
-
-(def-cfr can ("cannot")
-  :form modal
-  :referent (:head can
-             ;;:subtype negative
-                   ))
+(define-modal "would" 
+              :negatives (("wouldn" apostrophe-t))
+              :referent conditional)
 
 
 
@@ -168,7 +176,16 @@
              ;;:subtype left-edge
                    ))
 
+#|
 
+Have to sort out how to do this. And they need schema anyway.
+If we just substitute 'modal' for the previous generated categories
+like 'will' then we have form rules with two form rules, which will
+blow up. 
+
+They would work find as syntax rules.
+They might well work as straight-up cfr rules, and that's a case
+ for a one-off ETF for aux-hopping
 
 ;;--- modal + infinitive
 
@@ -398,4 +415,7 @@
   :referent (:head right-edge
              ;;:subtype might
                    ))
+
+|#
+
 
