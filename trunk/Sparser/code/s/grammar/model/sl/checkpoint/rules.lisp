@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
-
+;;;
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/checkpoint/
-;;; version: September 2011
+;;; version: May 2013
 
 ;; Initiated 4/28/09. Elaborated through 8/14/09. 9/28/11 Commenting out the rules
-;; involving locations while waiting for a better, more general, treatment
+;; involving locations while waiting for a better, more general, treatment.
+;; Commenting out still more rules that assume too much.
 
 (in-package :sparser)
 
@@ -59,6 +59,8 @@
 ;;--- throwing away anticipated subjects ("you")
 ;;--- no longer "throwing away" -- we keep 'em!
   
+#|  Pronouns being redone. Can't assume that the verb, event, etc
+    will have a participant variable
 (def-form-rule (pronoun/second verb)
   :form s
   :new-category event
@@ -87,10 +89,11 @@
   :form s
   :referent (:daughter right-edge
 	         :bind (participant . left-edge)))
-
+|#
 
 ;;--- allows for "come with me" etc.
 
+#|  This is sort of DM&P, and should go there
 (define-category with-np
   :binds ((content)))
 
@@ -99,6 +102,7 @@
   :new-category with-np
   :referent (:instantiate-individual with-np
 	         :with (content right-edge)))
+|#
 
 #+ignore
 (def-form-rule ("with" possessive/np) ;; with her
@@ -123,6 +127,7 @@
 	        :bind (modifier right-edge)))
 |#
 
+#|  removed with-np, so remove these too
 (def-cfr event (verb+ed with-np)
   :form s
   :referent (:head left-edge
@@ -142,6 +147,8 @@
   :form s
   :referent (:head left-edge
              :bind (modifier . right-edge)))
+
+|#
 
 ;;--- additionally, a similar treatment of "please"
 ;;--- following a verb
