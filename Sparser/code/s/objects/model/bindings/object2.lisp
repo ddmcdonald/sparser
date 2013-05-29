@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  2.1 April 2013
+;;;  version:  2.2 May 2013
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -34,6 +34,7 @@
 ;;      when the category is specified then we signal an error. 2/13/13 added an
 ;;      argument test to value-of. 4.7.13 added with-bindings, and an escape for
 ;;      value-of
+;; 2.2 (5/28/13) Added who-binds as analog of value-of for the bound-in field.
 
 (in-package :sparser)
 
@@ -139,6 +140,33 @@
         (binding-value binding)))))
 
 
+(defun who-binds (variable value)
+  "This is 'who binds this variable to this value'.
+   Look in the bound-in field of 'value', which should be 
+   an individual for all the bindings that use that variable.
+   Return a list of all of the 'body' individuals in those
+   bindings."
+  (unless (individual-p value)
+    (push-debug `(,variable ,value))
+    (error "Expected the second argument to be an individual~
+          ~%But it's a ~a~%~a" (type-of value) value))
+  (let ((bindings (indiv-bound-in value))
+        (var-name (typecase variable
+                    (lambda-variable (var-name variable))
+                    (symbol variable)
+                    (otherwise
+                     (push-debug `(,variable ,value))
+                     (error "Unexpected value for variable argument:~
+                           ~% ~a  ~a" (type-of variable) variable)))))
+    ;; The variable knows what's bound to it, but the caller
+    ;; would have to be sure it had the right one
+    (when bindings
+      (loop for b in bindings
+        when (eq (var-name (binding-variable b))
+                 var-name)
+        collect (binding-body b)))))
+
+
 
 (defun all-bindings-such-that (bindings
                                &key ((:body-type-is body-type))
@@ -146,7 +174,7 @@
                                     )
 
   ;; return every binding some the argument set that fits the
-  ;; description laidout in the keyword arguments
+  ;; description laid out in the keyword arguments
 
   (let ( good-ones )
     (dolist (b bindings)
