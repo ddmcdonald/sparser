@@ -139,6 +139,15 @@ switched from lists to hashtables as needed.
 	      (gethash items category-entry))))))))
 
 
+;;--- move to utilities
+
+(defun first-n-of-list (n list)
+  "Returns a new list"
+  (loop for i from 0 to n
+    as item in list
+    collect item))
+
+
 ;;;----------
 ;;; indexing
 ;;;----------
