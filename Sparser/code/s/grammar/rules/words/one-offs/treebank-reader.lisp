@@ -465,6 +465,7 @@
   (with-open-file (stream full-filename
                     :direction :input
                     :if-does-not-exist :error)
+    (declare (ignore stream))
     (let ((eof? nil))
       (declare (ignore eof?))
       (break "stub"))))
