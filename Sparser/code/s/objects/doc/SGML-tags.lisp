@@ -47,7 +47,8 @@ routine for deletion.   |#
 
 (defun define-sgml-tag/expr (string name initiate terminate close
                              &aux new? )
-
+  (declare (special category::SGML-label))
+  (declare (special category::SECTION-MARKER))
   (let* ((word (resolve-string-to-word/make string))
          (sm-word (define-word/expr
                     (concatenate 'string "sm-" string)))
