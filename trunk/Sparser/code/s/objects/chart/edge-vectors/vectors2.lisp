@@ -40,7 +40,7 @@
 (defun knit-edge-into-position/vector (edge vector)
   (let ((array (ev-edge-vector vector))
         (count (ev-number-of-edges vector)))
-
+    (declare (special *maximum-number-of-edges-in-an-edge-vector*))
     (when (= 0 count)
       ;; This may be the very first time the edge vector at this point
       ;; in the chart has had edges, have to check and put in an array

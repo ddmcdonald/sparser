@@ -38,7 +38,8 @@
 (defun make-a-chart ()
   (let ((array (make-position-array))
         position )
-
+    (declare (special *number-of-positions-in-the-chart*))
+    (declare (special *make-chart-with-edge-vectors*))
     (dotimes (n *number-of-positions-in-the-chart* array)
       (setq position (make-position
                       :array-index n))

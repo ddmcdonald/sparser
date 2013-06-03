@@ -108,6 +108,7 @@
   (incf *current-paragraph-number-in-article*))
 
 (defun reset-paragraph-state-in-article ()
+  (declare (special *current-paragraph*))
   (setf *current-paragraph-number-in-article* 0)
   (setf *current-paragraph* nil))
 
@@ -121,6 +122,7 @@
 
 (defun new-section-in-article (sec-name start-pos)
   (let ((obj (next-section-from-resource)))
+    (declare (special *current-article*))
     (setf (section-article obj) *current-article*)
     (setf (section-name obj) sec-name)
     (setf (section-starts-at-pos obj) start-pos)
@@ -131,11 +133,13 @@
   ;; We need this because the newline handler isn't soaking up all
   ;; the newlines internally, and as a result makes one call to
   ;; this per newline character encountered.
+  (declare (special *current-paragraph*))
   (unless (and *current-paragraph*
                (eql start-pos (section-starts-at-pos *current-paragraph*)))
     (begin-new-paragraph start-pos)))
 
 (defun begin-new-paragraph (start-pos)
+  (declare (special *current-paragraph*))
   (let* ((sec-name (next-paragraph-name-in-article))
          (obj (new-section-in-article sec-name start-pos)))
     (setf (section-paragraph obj) t)
