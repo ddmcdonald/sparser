@@ -22,6 +22,7 @@
 ;; 1.6 (8/20/08) shifting from proper to common noun because proper noun introduces
 ;;      a leading ].proper-noun, which seems like overkill. Also rewriting the
 ;;      category to go to self instead of time
+;; 1.7 (5/30/13) Re-labeled catgeory month as time syntactically.  
 
 (in-package :sparser)
 
@@ -32,6 +33,7 @@
 (define-category  month
   :specializes time
   :instantiates self
+  :rule-label time ;;rule-label time sets the syntactic label as "time"
   :binds ((name :primitive word)
           (abbreviation :primitive word)
           (position-in-year . ordinal))

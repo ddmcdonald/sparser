@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "phrases"
 ;;;   Module:  "model;core:time:"
-;;;  version:  2.0 April 2011
+;;;  version:  3.0 May 2013
 
 ;; initiated 4/9 v1.8.2
 ;; 1.0 (12/15/92 v2.3) bumped version to prepare for new semantics
@@ -16,6 +16,9 @@
 ;; 2.0 (4/6/11) Redone as a category with a realization rather than
 ;;      a map over a set of syntactic rules. This way we get schema
 ;;      and a basis of reversing it. 
+;;3.0  (5/30/2013) generalized prep-time slightly
+;;      month/weekday are now realized syntactically as time, thus removed
+;;      added numeric-time to prep-time complement, e.g. "at five o'clock," "by two o'clock"
 
 (in-package :sparser)
 
@@ -32,7 +35,7 @@
                            (pp . :self)
                            (preposition . ("at" "by" "for" "in" "on"
                                            "over")) 
-                           (complement . (time-unit weekday month
+                           (complement . (time-unit numeric-time amount-of-time ;month weekday
                                           year time date))))))
                            
 

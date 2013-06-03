@@ -10,6 +10,7 @@
 ;; the adverbs from words/adverbs1, including the ones with only function 
 ;; word definitions because their category hasn't been defined yet. 
 ;; (1/18/13) put in define-position-in-process. 5/22 added "no longer"
+;; (5/30/13) added in earlier, sooner as adverbs and function words
 
 (in-package :sparser)
 
@@ -138,6 +139,9 @@
 
 (define-adverb "no longer")
 
+;; Added in 5/30/2013
+(define-adverb "sooner")
+(define-adverb "earlier")
 
 
 ;;;-----------
@@ -223,8 +227,10 @@
 
 ;;;---------- deictic, complement-taking
 
+;;Added in 5/30/13
 (define-function-word "earlier"  :brackets '( ].adverb  adverb.[ ))
 (define-function-word "later"  :brackets '( ].adverb  adverb.[ ))
+(define-function-word "sooner"  :brackets '( ].adverb  adverb.[ ))
 
 
 
