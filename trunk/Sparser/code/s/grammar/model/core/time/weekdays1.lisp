@@ -12,6 +12,8 @@
 ;;      was included.
 ;; 1.3 (3/15/05) Replaced position-in-a-sequence v/r of position-in-week with
 ;;      ordinal.
+;; 1.4 (5/30/13) Re-labeled category weekday as time syntactically.
+;;      weekday still labeled as both weekday and time, duplicate has remained elusive
 
 (in-package :sparser)
 
@@ -22,9 +24,11 @@
 (define-category  weekday
   :specializes time
   :instantiates time
+  :rule-label time  ;;this line should re-label weekday as time, but it doesn't
   :binds ((name :primitive word)
           (abbreviation :primitive word)
           (position-in-week . ordinal))
+  :realization (:common-noun name) ;;witout this line, time does not appear as a label
   :index (:permanent :key name))
   
 
@@ -57,6 +61,5 @@
                   :referent weekday) )
               ,@(unit-plist weekday)) )
 
-      (define-abbreviation word-string abbrev-string)
-
+     (define-abbreviation word-string abbrev-string)
       weekday )))
