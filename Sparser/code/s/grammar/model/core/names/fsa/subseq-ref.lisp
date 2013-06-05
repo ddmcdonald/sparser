@@ -307,7 +307,7 @@
   ;;//// Sequence index presupposes that you know the category
   ;;//// Have to change that
   (let ((sequence (find-sequence items category::company-name)))
-    (when sequence
+    (if sequence
       (let ((name ;;/// burning in company here too
              (find/company-name/given-sequence sequence)))
         (unless name
@@ -317,12 +317,17 @@
         (let ((entities (who-binds 'name name)))
           (if (null (cdr entities))
             (let ((company (car entities)))
-              (push-debug `(,company)) ;; to play with while debuggign
+              (push-debug `(,company)) ;; to play with while debugging
+              (tr :recognized-sequence-as company items)
               (throw :already-decoded-name company))
             (else ;; its ambiguous
              (push-debug `(,name ,entities))
              ;;//// lookup format pattern for iterator !!!
-             (break "The name ~a~%is ambiguous" name))))))))
+             (break "The name ~a~%is ambiguous" name)))))
+      (else
+       ;;(push-debug `(,items)) (break "Why not known?")
+       (tr :pnf-items-no-known-sequence items)
+       nil))))
 
                                       
 
