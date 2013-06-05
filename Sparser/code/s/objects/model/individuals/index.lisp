@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999, 2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.6 January 2011
+;;;  version:  0.7 June 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (9/18/93) added index/individual/seq-keys
@@ -20,6 +20,7 @@
 ;;      increasing reliance on psi.
 ;;     (1/11/11) Fixed call to field of operations in index-aux/individual
 ;;      when the category didn't have any because it was made by DM&P.
+;; 0/7 (6/3/13) Clarifying treatment of permanent vs. reclaim-able
 
 
 (in-package :sparser)
@@ -29,6 +30,7 @@
 ;;;------------------------------------------------------
 
 (defun index/permanent-individual (individual category bindings)
+  ;; called from make/permanent-individual
   (if (listp category)
     (dolist (cat category)
       (index-aux/individual individual cat bindings :permanent))
@@ -36,10 +38,15 @@
 
 
 (defun index/individual (individual category bindings)
-  (if (listp category)
-    (dolist (cat category)
-      (index-aux/individual individual cat bindings))
-    (index-aux/individual individual category bindings)))
+  ;; Called from make-simple-individual and friends
+  (flet ((index-it (i category bindings)
+           (if (permanent-individual? i)
+             (index-aux/individual i category bindings :permanent)
+             (index-aux/individual i category bindings))))
+    (if (listp category)
+      (dolist (cat category)
+        (index-it individual cat bindings))
+      (index-it individual category bindings))))
 
 
 ;;;--------
@@ -109,7 +116,7 @@
   (let ((category (category-named symbol-for-category)))
     (unless category
       (error "There is no category named ~A" symbol-for-category))
-    (cadr (member :instances (unit-plist category) :test #'eq))))
+    (all-instances category)))
 
 
 (defun all-instances (category)

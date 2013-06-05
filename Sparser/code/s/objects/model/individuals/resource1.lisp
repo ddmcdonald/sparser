@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-200 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "resource"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.0 February 2005
+;;;  version:  1.0 June 2013
 
 ;; initiated 7/20/92 v2.3. 8/10/94 redid definition of re-initialization
 ;; 10/3 added return-from a failure break
 ;; 1.0 (5/13/95) Added notion of a permanent individual that appears on a separate
 ;;      list and isn't recycled.  2/7/05 Added permanent-individual? and a value
 ;;      for the :permanent property
+;;     (6/3/13) Moved in the other general {+,-}permanent code and added doc.
 
 (in-package :sparser)
 
@@ -143,9 +144,23 @@
 ;;;---------------------------------------------------------------
 ;;; permanent individuals  -- outside the allocation/reuse system
 ;;;---------------------------------------------------------------
+#|
+Whether an individual is permanent or reclaim-able is determined by
+the call from define-individual, where the *index-under-permanent-instances*
+flag is set and read by make-simple-individual. Permanent individuals
+are done with calls to make-a-permanent-individual just below and just
+'make' a new instance of the structure. Reclaim-able are done by calls
+to allocate-individual.
+
+The usual progression of indexing calls for permanent individuals is
+index-aux/individual => index-to-category => add-permanent-individual
+
+Regardless of what the category may say about indexing, that function
+uses the two-lists on the plist conception of how things are done. 
+
+|#
 
 (defparameter *permanent-individuals* nil)
-
 
 (defun make-a-permanent-individual ()
   (let ((individual
@@ -153,15 +168,24 @@
           :type :never-used
           :plist `(:uid ,(incf *individual-count*)
                    :permanent t))))
-
     (push individual *permanent-individuals*)
     individual ))
 
 
 (defun permanent-individual? (i)
-  (get i :permanent))
+  (get-tag-for :permanent i))
 
 
+(defun note-permanence-of-categorys-individuals (category)
+  ;; called from decode-index-field-aux as it reads a category's
+  ;; index field. 
+  (push-onto-plist category t :instances-are-permanent))
+
+(defun individuals-of-this-category-are-permanent (category)
+  ;; called by define-individual to set the value of the flag
+  ;; *index-under-permanent-instances* which that function binds.
+  (get-tag-for :instances-are-permanent
+               category))
 
 
 ;;;-----------------

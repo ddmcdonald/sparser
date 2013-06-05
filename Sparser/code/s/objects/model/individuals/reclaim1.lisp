@@ -39,15 +39,13 @@
   ;; called from toplevel at strategic moments such as at the
   ;; end of loading the dossiers.
   ;(return-from declare-all-existing-individuals-permanent :no-op)
-
   (dolist (c *referential-categories*)
-    (declare-categories-instances-permanent c))
+    (declare-category-instances-permanent c))
   (setq *1st-permanent-individual/all-categories*
         (first *active-individuals*)))
 
 
-
-(defun declare-categories-instances-permanent (c)
+(defun declare-category-instances-permanent (c)
   ;; subroutine of Declare-all-existing-individuals-permanent
   (let ((instances (all-instances c)))
     (when instances
@@ -60,6 +58,8 @@
 
 
 (defun declare-all-new-instances-permanent (c)
+  "Move the permanent marker keyword up to the front of the 
+   list on the category."
   (let* ((instances (all-instances c))
          (plist (unit-plist c))
          (cell/permanent-list (member :permanent-individuals plist
@@ -87,9 +87,9 @@
 
 (defun add-permanent-individual (individual category)
 
-  ;; Called from Index/individual via a couple of subroutines
+  ;; Called from index/individual via a couple of subroutines
   ;; whenever the category involved indicates that all its
-  ;; instances are to be permanent.  The individual gets put
+  ;; instances are to be permanent. The individual gets put
   ;; on the permanent list, and, if the category has some 
   ;; temporary instances, gets moved on the category's list of
   ;; individuals so that all the temporaries are in front of it.
@@ -105,6 +105,17 @@
                                      :test #'eq))
          (cell/instances (member :instances plist :test #'eq))
          (instances (second cell/instances)))
+
+     (unless (permanent-individual? individual)
+       (push-debug `(,individual ,category ,plist))
+       (error "Threading bug: expected ~a~
+             ~%to be a permanent individual but it's not."
+              individual))
+
+    (note-permanence-of-categorys-individuals category)
+    ;; This isn't the same as "all of its individuals are permanent",
+    ;; but it suffices to keep reclaim from zero'ing its instance
+    ;; field.
 
     (cond
      ((null (cdr instances))
@@ -196,7 +207,7 @@
 (defparameter *trace-reclaimation* nil)
 (defun trace-reclaimation ()
   (setq *trace-reclaimation* t))
-(defun unTrace-reclaimation ()
+(defun untrace-reclaimation ()
   (setq *trace-reclaimation* nil))
 
 (defparameter *reclaimation-pauses* nil)
@@ -204,6 +215,7 @@
   (setq *reclaimation-pauses* t))
 (defun unstep-reclaimation ()
   (setq *reclaimation-pauses* nil))
+
 
 
 (defun reclaim-temporary-individuals ()  ;;is this name easier to remember ??
@@ -227,6 +239,10 @@
     (setq type-list
           (additional-categories-of-active-individuals type-list))
 
+    (when *trace-reclaimation*
+      (push-debug `(,type-list))
+      (break "Reap: ~a categories" (length type-list)))
+
     (let ( individuals-touched )
       (dolist (category type-list)
         (when category
@@ -235,14 +251,17 @@
                 (nconc individuals-touched
                        (reclaim-all-instances category)))))
 
+      (when *trace-reclaimation*
+        (push-debug `(,individuals-touched))
+        (break "Reap: touched ~a individuals" (length individuals-touched)))
+
       (cleanup-bindings-fields individuals-touched))
 
     (did-we-forget-any-unreaped-individuals?)
 
     (when *trace-reclaimation*
       (format t "~%----- reclaimation finished ------~%~%"))
-    (when *reclaimation-pauses* (break))
-    ))
+    (when *reclaimation-pauses* (break))))
 
 
 (defparameter *interesting-categories*
@@ -308,7 +327,7 @@
 ;;;--------------------------
 
 (defun reclaim-all-instances (category)
-  ;; Called from Reap-individuals.
+  ;; Called from reap-individuals.
   ;; deallocates all of the non-permanent individuals
   (let ((list-of-individuals (all-instances category))
         (1st-permanent-individual
@@ -348,7 +367,15 @@
              (unless (member i all-values :test #'eq)
                (push i all-bodies)))))))
 
-    (zero-category-index category 1st-permanent-individual)
+    (cond
+     ((individuals-of-this-category-are-permanent category)
+      (when *trace-reclaimation*
+        (format t "~&~%Retaining instances of ~a" category)))
+     (t
+      (when *trace-reclaimation*
+        (format t "~&~%Zero'ing instances of ~a" category))
+      (zero-category-index category 1st-permanent-individual)))
+
     (nconc all-values all-bodies)))
 
 
@@ -359,10 +386,10 @@
 ;;;----------------------------
 
 (defun zero-out-individual (i c)
-  (when (member :permanent (indiv-plist i) :test #'eq)
+  ;; called from reclaim-all-instances
+  (when (permanent-individual? i)
     (format t "~&trying to trash a permanent individual: ~A~%" i)
-    (when *reclaimation-pauses*
-      (break))
+    (push-debug `(,i ,c)) (break)
     (return-from zero-out-individual nil))
 
   (unless (eq (indiv-type i) :deallocated)
@@ -383,9 +410,9 @@
   (zero-out-individual i (itype-of i)))
 
 
-
 (defun zero-category-index (category 1st-permanent
                             &optional do-permanent-too? )
+  ;; called from reclaim-all-instances after instances are zero'd
   (cond (do-permanent-too?
          (reset-category-count category))
         (1st-permanent
