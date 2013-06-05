@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  2.1 February 2013
+;;;  version:  2.2 June 2013
 
 ;; initiated 6/7/93 v2.3, added sequences 6/9 - finished them 6/17
 ;; fixed a bug 10/29
@@ -21,12 +21,14 @@
 ;;      of lattice points and psi.  Just doing the easy case of explicitly defined
 ;;      sequences as used in the capitalzed-sequences of names, and enough of the
 ;;      rest to get-through.
-;; 2.0 (8/7/06) The replacd's in that scheme turn out to be buggy. Replacing iit
+;; 2.0 (8/7/06) The replacd's in that scheme turn out to be buggy. Replacing it
 ;;      with something simpler - eliminating the elaborate alist scheme.
 ;;     (11/13/08) Spread-sequence-across-ordinals got its first case of a word
 ;;      where it expected an edge
 ;; 2.1 (2/14/13) Put in operations on collections in same style as for sequences
-;;      and removed the old code
+;;      and removed the old code.
+;; 2.2 (6/5/13) When indexing an individual that is permanent, note that sequences
+;;      as a whole are permanent in the sense that we don't reap all their instances.
 
 (in-package :sparser)
 
@@ -153,6 +155,8 @@ switched from lists to hashtables as needed.
 ;;;----------
 
 (defun index-sequence (sequence)
+  (when (permanent-individual? sequence)
+    (note-permanence-of-categorys-individuals category::sequence))
   (let ((instances (cat-instances category::sequence)))
     (unless instances
       (setq instances (setf (cat-instances category::sequence)
@@ -174,6 +178,8 @@ switched from lists to hashtables as needed.
 	
 
 (defun index-collection (collection)
+  (when (permanent-individual? collection)
+    (note-permanence-of-categorys-individuals category::collection))
   (let ((instances (cat-instances category::collection)))
     (unless instances
       (setq instances (setf (cat-instances category::collection)
