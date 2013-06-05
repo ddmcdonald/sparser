@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  2.1 April 2013
+;;;  version:  2.2 June 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -60,6 +60,8 @@
 ;;      -simple-individuals and makes it always return t. 
 ;;     (4/4/13) Added make-individual-for-dm&p as a placeholder. Presently just calls
 ;;      unindexed. 
+;; 2.2 (6/3/13) Changed make/permanent-individual to use the correct common path:
+;;      make-a-permanent-individual. 
 
 (in-package :sparser)
 
@@ -185,10 +187,8 @@
 
 
 (defun make/permanent-individual (category binding-instructions)
-
   (let ((*index-under-permanent-instances* t)
-        (individual (make-individual :type `(,category)
-                                     :id (next-id category))))
+        (individual (make-a-permanent-individual)))
     (let ((bindings
            (apply-bindings individual binding-instructions)))
 
@@ -304,13 +304,11 @@
 ;;   n.b. this is the original make/individual, so care must be taken
 ;;   not to feed it things as complicated as it originally took 
 ;;   (e.g. 'appoint') since those should now be handled by psi.
-(defvar *i*)(defvar *instr*)(defvar *c*)
+
 (defun make-simple-individual (category binding-instructions)
-  (setq *c* category *instr* binding-instructions)
   (let ((individual (if *index-under-permanent-instances*
                       (make-a-permanent-individual)
                       (allocate-individual))))
-    (setq *i* individual)
     (setf (indiv-type individual) (list category))
     (setf (indiv-id   individual) (next-id category))
     (let ((bindings (apply-bindings individual binding-instructions)))
@@ -319,20 +317,20 @@
 
 
 (defun make-throw-away-individual (category)
-  (break "~&~%Trapped a call to Make-throw-away-individual~
+  (break "~&~%Trapped a call to make-throw-away-individual~
         ~%Just 'continue' from this break. It's only purpose~
         ~%is bookeeping.~%~%")
   (make-unindexed-temporary-individual category))
 
 (defun make-trivial-individual (category)
-  (break "~&~%Trapped a call to Make-trivial-individual~
+  (break "~&~%Trapped a call to make-trivial-individual~
         ~%Just 'continue' from this break. It's only purpose~
         ~%is bookeeping.~%~%")
   (make-unindexed-temporary-individual category))
 
 (defun make-unindexed-temporary-individual (category)
   (declare (ignore category))
-  (break "Replace with call to Make-unindexed-individual"))
+  (break "Replace with call to make-unindexed-individual"))
 
 (defun make-unindexed-individual (category)
   ;; called as a variation on define-individual by routines that
