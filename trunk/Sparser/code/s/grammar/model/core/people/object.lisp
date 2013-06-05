@@ -98,8 +98,6 @@
                                   (eql (elt s 0) #\space)))
                string-elements)))
                            
-                           
-
 
 (defun convert-name-strings-to-name-words (list-of-strings)
   ;; Convert the strings to namewords, but note the

@@ -79,6 +79,9 @@
         (let ((name (do-company-name (car aliases))))
           (aditional-name-for-company name company)))
       company)))
+
+
+
     
         
 (defun aditional-name-for-company (name company)
