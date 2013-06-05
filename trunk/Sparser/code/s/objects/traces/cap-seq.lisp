@@ -285,6 +285,17 @@
                its-referent (edge-position-in-resource-array new-edge))))
 
 
+;;--- in known-sequence
+
+(deftrace :recognized-sequence-as (ne items)
+  (when *trace-pnf*
+    (trace-msg "SubseqRef: recognized sequence as ~a" ne)))
+
+(deftrace :pnf-items-no-known-sequence (items)
+  (when *trace-pnf*
+    (trace-msg "SubseqRef: unknown sequence: ~a" items)))
+
+
 
 (deftrace :pnf/parsing-span (from to)
   ;; called from C&R-multi-word-span
