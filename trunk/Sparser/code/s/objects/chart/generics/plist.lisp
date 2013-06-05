@@ -13,6 +13,7 @@
 ;;     (12/1) in that routine changed indiv-plist to unit-plist
 ;;     (9/26/11) Added change-plist-value and added lattice-points
 ;;      to plist-for
+;; 0.2 (6/3/13) converted the push to a pushnew. 
 
 (in-package :sparser)
 
@@ -103,13 +104,14 @@
 ;;;--------------------
 
 (defun push-onto-plist (obj item tag)
-  (etypecase obj
-    (word     (push-onto-word-plist obj item tag))
-    ((or category referential-category mixin-category)
-     (push-onto-cat-plist  obj item tag))
-    (cfr      (push-onto-cfr-plist  obj item tag))
-    (polyword (push-onto-pw-plist   obj item tag))
-    (individual (push-onto-individual-plist obj item tag))))
+  (unless (eq item (get-tag-for tag obj))
+    (etypecase obj
+      (word     (push-onto-word-plist obj item tag))
+      ((or category referential-category mixin-category)
+       (push-onto-cat-plist  obj item tag))
+      (cfr      (push-onto-cfr-plist  obj item tag))
+      (polyword (push-onto-pw-plist   obj item tag))
+      (individual (push-onto-individual-plist obj item tag)))))
 
 
 (defun push-onto-word-plist (obj item tag)
