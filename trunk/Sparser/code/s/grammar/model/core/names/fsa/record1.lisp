@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "record"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  1.5 February 2013
+;;;  Version:  1.6 June 2013
 
 ;; initiated 5/15/93 v2.3, populated 6/7, added recording of single
 ;; word names 6/10. added *no-referent-calculations* option 1/6/94.
@@ -17,7 +17,9 @@
 ;; 1.3 (5/2) added 'collection' case
 ;; 1.4 (8/14/11) added locations.  Added person-name/first-last and
 ;;      commented out hurricane to quiet the compiler.
-;; 1.5 (2/14/13) Makng named-object's for unccategorized-names.
+;; 1.5 (2/14/13) Making named-object's for uncategorized-names.
+;; 1.6 (6/6/13) Folded back in use of dereference-shortened-name
+;;      rather than reflexively making a uncategorized named object.
 
 (in-package :sparser)
 
@@ -73,23 +75,23 @@
           ((or category::person-name category::person-name/first-last)
            (make/person-with-name name))
           (category::name-of-location (make/location-with-name name))
-;;          (category::hurricane (make/hurricane-with-name name))
+;;        (category::hurricane (make/hurricane-with-name name))
           (category::uncategorized-name
-           (make/named-object-with-name name))
-          (otherwise
-           (push-debug `(,category ,name))
-           (error "New category: ~a" category)))))))
-
-         
-#| Old scheme for what to do with uncategorized names
            (if (some-name-element-is-new? name)
-             name
+             (make/named-object-with-name name)
              (let ( referent )
                (multiple-value-setq (referent category)
                  (dereference-shortened-name name))
                (if referent
                  (cons referent category)
-                 name )))  |#
+                 (make/named-object-with-name name)))))
+          (otherwise
+           (push-debug `(,category ,name))
+           (error "New category: ~a" category)))))))
+
+         
+
+           
         
    
 

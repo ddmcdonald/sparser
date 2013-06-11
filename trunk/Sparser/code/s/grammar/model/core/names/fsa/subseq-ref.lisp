@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subseq ref"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.3 February 2013
+;;;  version:  0.3 June 2013
 
 ;; broken out from [names:fsa:record] 6/8/93 v2.3
 ;; (1/7/94) patched around earlier indexing bug in Item-in-a-known-name
@@ -17,7 +17,7 @@
 ;;     (2/13/13) Added a routine to use machinery like this off a directly
 ;;      linked name-word. Adapting dereference-proper-noun as well
 ;;      Rebuild it (item-already-linked-to-entity) while tracking down an infinite loop
-;;      on 2/22/13. Still returning nil.
+;;      on 2/22/13. Fixed basic case (name-of) for person 6/7/13
 
 (in-package :sparser)
 
@@ -58,7 +58,7 @@
 
 
 (defun dereference-shortened-name (name)
-  ;; called from Establish-referent-of-PN in the old scheme. OBE?
+  ;; called from establish-referent-of-pn 
   (unless (itype name 'uncategorized-name)
     (break "An individual other than an uncategorized name ~
             passed in:~%~A~%" name))
@@ -67,14 +67,14 @@
     (multiple-value-bind (category referent rule)
                          (subseqent-reference-by-shortened-name
                           (first name-words))
-
+      (declare (ignore rule category)) 
       (when referent
         (if (eq referent name)
           ;; unless we break out the different parts of that routine
           ;; it will always find this case the first time the name
           ;; appears
           nil
-          (values referent category))))))
+          referent)))))
         
 
 
@@ -89,6 +89,7 @@
     (otherwise nil)))
 
 (defun subsequent-reference-off-name-word (nw)
+  ;;/// As used now (6/13) this has to return a named entity, not a name
   (push-debug `(:subseq-ref ,nw))
   (let ((pos-in-sequence-bindings
          (bound-in nw :super-category 'ordinal :all t))
@@ -287,21 +288,18 @@
   ;;   If there is more than one name word then presumably that's
   ;; not a case for us, though the question of partial names
   ;; remains, and it isn't clear (2/15/13) that that's being handled
-  (let (  name-words  other  )
-    ;; Rebuilt this from a collecting loop when it failed to
-    ;; terminate. Problem was deep in the itypep call when an
-    ;; imported word clobbered the category for "kind"
-    (dolist (item items)
-      (if (and (individual-p item)
-               (itypep item 'name-word))
-        (push item name-words)
-        (push item other)))
+  (when (null (cdr items))
+    ;;/// To extend to multi-word fragments shorter than
+    ;; the whole sequence (handled by known-sequence)
+    ;; we will need more machinery.
+    (let ((item (car items)))
+      (when (itypep item 'name-word)
+        ;;/// could certainly be something else, but this one
+        ;; is certain. Need to coordinate with routines like
+        ;; index-person-name-to-person
+        (let ((entity (value-of 'name-of item)))
+          entity)))))
 
-    `(,name-words ,other)
-    ;; Looking for "the WHO" or for any single name word
-    ;; that has a company associated with it
-    ;;  when (= 1 (length name-words))
-    nil))
 
 (defun known-sequence (items)
   ;;//// Sequence index presupposes that you know the category
@@ -325,7 +323,6 @@
              ;;//// lookup format pattern for iterator !!!
              (break "The name ~a~%is ambiguous" name)))))
       (else
-       ;;(push-debug `(,items)) (break "Why not known?")
        (tr :pnf-items-no-known-sequence items)
        nil))))
 
