@@ -15,13 +15,15 @@
 ;; 1.4 (12/5) fixed glitches in the treatment of versions.
 ;;     (11/25/12) Blocked stub breaks for the interior of long names
 ;;      or the presence of 'version' in make-person-name-from-items1.
-;;     (3/6/13) Got an initial in first-name position. 3/7 revived version
+;;     (3/6/13) Got an initial in first-name position. 3/7 revived version.
 
 (in-package :sparser)
 
 ;;;--------
 ;;; object
 ;;;--------
+
+;;/// define-person allows for nicknames and aliases
 
 (define-category  person-name  ;; specialize the name ??
   :instantiates self
@@ -32,6 +34,10 @@
 
   :binds ((sequence . sequence)
           (last-name . name-word)))
+
+;; N.b.each category that specializes person-name
+;; needs it's own string-for setup. See string/person-name
+;; for an example. 
 
 (define-category  person-name/first-last
   :instantiates self
@@ -46,6 +52,18 @@
 ;;;------------
 ;;; operations
 ;;;------------
+
+(note-permanence-of-categorys-individuals
+ (category-named 'person))
+
+;;--- cross-indexing
+
+(defun index-person-name-to-person (name person)
+  ;; called from make/person-with-name
+  (push-debug `(,name ,person)) ;;(break "index")
+  (let ((last-name (value-of 'last-name name)))
+    ;; This handles the 'direct reference' case
+    (bind-variable 'name-of person last-name)))
 
 ;;--- make
 
@@ -80,6 +98,7 @@
                     :first-name first-name
                     :version version))
                  (t
+                  (push-debug `(,items))
                   (break "Fell through cases in person-name - new one?")))))
       name )))
 

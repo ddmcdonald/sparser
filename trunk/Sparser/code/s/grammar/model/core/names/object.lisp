@@ -362,6 +362,9 @@ WHO.
                    :schema (get-schematic-word-rule :proper-noun))))
       (values category rule name))))
 
+
+
+
       
 
 

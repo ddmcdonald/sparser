@@ -1,25 +1,28 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.2 March 2005
+;;;  version:  0.2 June 2013
 
 ;; file created 2/9/94 v2.3. Fleshed out 10/3.  Added string/person 2/24/95
 ;; 0.1 (7/7) revamped full version to do versions correctly.
 ;; 0.2 (1/17/96) Reorganized the whole thing to feed from the string-routine
 ;;      for person-name. Handles pathological case where there isn't a
-;;      name sequence. (3/16/05) fixed formatting.
+;;      name sequence. (3/16/05) fixed formatting. 6/7/13 updated to get
+;;      small shifts over time.
 
 (in-package :sparser)
 
+(defun string/person-name/first-last (name)
+  (string/person-name name))
 
 (defun string/person-name (name)
   (let ((last (value-of 'last-name name))
-        (first-sequence (value-of 'first-name/s name))
+        (first-sequence (value-of 'first-name name))
         (name-sequence (value-of 'sequence name))
         (version-obj (value-of 'version name)))
-         
+
     (let ((last-name
            (if last
              (string-for last)
@@ -61,7 +64,7 @@
 
 
 
-(defun string/Person (p)
+(defun string/person (p)
   (let ((name (value-of 'name p)))
     (if name
       (string-for name)
@@ -80,7 +83,6 @@
        ;; else if there isn't a 'name', just give its ids
        (format stream "#<person \"\" ~A,~A>"
                (indiv-id obj) (indiv-uid obj)))))
-
 
   :short ((let ((name (value-of 'name obj)))
            (if name
