@@ -49,6 +49,7 @@
 #+ccl(define-sort-function 'collection 'sort-sequences)
 
 (defun sort-sequences (s1 s2)
+  (push-debug `(,s1 ,s2))
   (break "stub"))
 
 

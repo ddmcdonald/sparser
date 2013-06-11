@@ -61,6 +61,7 @@
 ;;;-----------------------------
 |#
 (defun collection-of-type/dh (collections-dh-entry  &rest possible-types )
+  (push-debug `(,collections-dh-entry ,possible-types))
   (break "stub"))
 #|  (let ( instances  instance   )
     (dolist (item collections-dh-entry)

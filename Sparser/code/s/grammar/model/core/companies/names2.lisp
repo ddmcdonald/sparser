@@ -42,7 +42,6 @@
   :index (:special-case :find find/company-name
                         :index index/company-name
                         :reclaim reclaim/company-name)
-
   :binds ((sequence . sequence)
           (first-word . name-word)
           (prefix . sequence)
@@ -71,9 +70,51 @@
 (define-category company-name-prefix)
 
 
-;;;------------------------------------------
-;;; construction routine called from Examine
-;;;------------------------------------------
+;;;-----------------------
+;;; construction routines
+;;;-----------------------
+
+;;--- indexing for subsequent reference
+
+;; The subsequent reference code was looking for a name-of binding
+;; between name-word's and the collection of company that they are
+;; part of the names of. 
+;;   link-named-object-to-name-word  
+
+(defun index-company-name-to-company (name company)
+  (push-debug `(,name ,company))) ;; (break "index"))
+
+(defun link-alias-to-company (string name company)
+  (push-debug `(,string ,name ,company)) ;; (break "alias")
+  (let ((known-aliases (value-of 'aliases company)))
+    (if known-aliases
+      (tail-cons name known-aliases)
+      (bind-variable 'aliases (list name) company)))
+  (let* ((sequence (value-of 'sequence name))
+         (items (value-of 'items sequence)))
+    (if (null (cdr items)) ;; just one
+      (bind-variable 'name-of company (car items))
+      ;; 'associated-with' each of the items the name
+)))
+
+
+;;  (record-string-against-company full-name-as-string company))
+#+ignore
+(defun aditional-name-for-company (name company)
+  (push-debug `(,name ,company))
+  (bind-variable 'name name company)
+  ;; That will put a name that might not have been analyzed 
+  ;; as a company name as the first 'name' binding on the
+  ;; company, which will freakout the company printer.
+  ;;   To make its life easier, we'll reverse the order
+  ;; of the bindings.  We can be confedent that there
+  ;; aren't other cases since we're in a continuous thread.
+  (setf (indiv-binds company)
+        (nreverse (indiv-binds company))))
+
+
+
+
 
 (defun make-company-name-from-items (items
                                      &key &-sign inc-term?
@@ -86,22 +127,20 @@
      ;; // should try and pull out the names of people, and
      ;; setup a richer set of name structures, the better to predict
      ;; subsequent references. 
-
   (let ((co-name
          (if and
            (make-company-name/check-for-parts-being-companies items and)
            (make-company-name-as-simple-sequence items))))
-
     (when the
       ;; /// strip the "The" from the name (assuming we've gone that route
       ;; and it is indeed part of the original scanned sequence of words.
       ;; Then hack the company-printer to be sensitive to the 'the' binding.
       (mark-company-name-as-taking-the co-name))
-
     co-name ))
 
 
 (defun make-company-name-as-simple-sequence (items)
+  ;; Called from define-company as well as from just above.
   (let ((sequence (define-sequence items category::company-name))
         name )
     (setq name (define-individual 'company-name
@@ -133,13 +172,9 @@
 
 
 
-;;///// The signature on the spread function is
-;; (sequence items &optional count), so this has to be
-;; rethought.
-#+ignore(defun map-name-words-to-name (items name)
-  ;; 11/12/08 'name' is now a psi denoting the name, so this
-  ;; call makes no sense anymore. Unclear what we'd want here without
-  ;; reading the rest of this file
+(defun map-name-words-to-name (items name)
+  ;; This is hard to imagine doing as psi, and indeed there's nothing
+  ;; unsaturated about the objects involved.
   (when *do-not-use-psi*
     (spread-sequence-across-ordinals name items)))
 
