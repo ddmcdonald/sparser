@@ -3,13 +3,13 @@
 ;;;
 ;;;     File:  "inc terms"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  March 2013
+;;;  version:  June 2013
 
 ;; initiated 5/25/93 v2.3. 12/7/94 added String printer
 ;; 8/11/95 added "<cap'd-word>, <inc-term>".  10/30 tweeked string printer.
 ;; 12/12 added autodef.  1/5/96 added the obvious other cs rule  2/14/05 Revised
 ;; the binding call in Add-inc-term-to-company-name to accommodate psi.
-;; 3/22/13 Changed it back.
+;; 3/22/13 Changed it back. 6/10/13 Added type predicate
 
 (in-package :sparser)
 
@@ -23,6 +23,11 @@
   :binds ((name :primitive word))
   :index (:permanent  :key name)
   :realization (:word name))
+
+
+(defun inc-term? (obj)
+  (and (individual-p obj)
+       (itypep obj category::inc-term)))
 
 
 ;;;-----------------------

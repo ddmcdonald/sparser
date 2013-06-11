@@ -34,6 +34,7 @@
   :instantiates self
   :specializes named-object
   :binds ((name . company-name)
+          (aliases :primitive list) ;; of company-name's
           (description)
           (location))
   :index (:special-case :find find/company
@@ -51,171 +52,42 @@
 ;;; finding/making companies with a given name
 ;;;--------------------------------------------
 
-(defun define-company (list-of-word-strings &key aliases
-                                                 takes-the)
+(defun define-company (name-string &key aliases takes-the)
   ;; Convert the words to strings. Find or make name-words for each of them
   ;; as is (no lemmatization). Create the sequence, then the name,
   ;; then the company. 
-  (flet ((do-company-name (list-of-word-strings)
-           (let* ((words (loop for string in list-of-word-strings
-                           collect (resolve-string-to-word/make string)))
-                  (name-words (loop for word in words
-                                collect (define-name-word word))))
-             ;; Need provision for all the other sorts of categorized things
-             ;; that can appear in company names, e.g. inc-term's
+  (flet ((do-company-name (name-string)
+           (let* ((words (name-string-to-words name-string))
+                  (name-words
+                   ;; Add all the other sorts of categorized things
+                   ;; that can appear in company names, e.g. inc-term's
+                   (name-words-for-words words)))
 
              ;; Since we're explicitly defining this company, we can
              ;; be reasonably certain that we don't need to search
              ;; for this sequence already existing
-              (make-company-name-as-simple-sequence name-words))))
+             (make-company-name-as-simple-sequence name-words))))
 
-    (let* ((name (do-company-name list-of-word-strings))
+    (let* ((name (do-company-name name-string))
            (company (make/company-with-name name)))
       (when takes-the
         (mark-company-name-as-taking-the name))
+      (index-company-name-to-company name company)
       (when aliases
         ;; The examplar in "U.N.", which the resolve step will
-        ;; convert to a polyword, which is just fine
-        (let ((name (do-company-name (car aliases))))
-          (aditional-name-for-company name company)))
+        ;; convert to a polyword, which is just fine.
+        (loop for alias in aliases
+          as co-name = (do-company-name alias)
+          do (link-alias-to-company alias co-name company)))
+
       company)))
 
 
 
-    
-        
-(defun aditional-name-for-company (name company)
-  (push-debug `(,name ,company))
-  (bind-variable 'name name company)
-  ;; That will put a name that might not have been analyzed 
-  ;; as a company name as the first 'name' binding on the
-  ;; company, which will freakout the company printer.
-  ;;   To make its life easier, we'll reverse the order
-  ;; of the bindings.  We can be confedent that there
-  ;; aren't other cases since we're in a continuous thread.
-  (setf (indiv-binds company)
-        (nreverse (indiv-binds company))))
 
-
-
-;; 3/21/13 This version didn't work in the Grok environment.
-;; The initializations that were to clean things up blew up
-;; (assumed the chart was wrapped), and a parse of "United Nations"
-;; did not go to name words but to a word and the (just previously)
-;; imported Comlex word "nation". Unclear why this thought
-;; the result would always be a single-edge that was a company. 
+;; This is from the old version that ran the parser and used the usual
+;; PNF machinery to do the work.  Keeping it around "for parts"
 #+ignore
-(defun define-company (full-name-as-string &key list-of-abbreviations)
-  ;; This version is only to be used off-line when there is not
-  ;; analysis underway since it uses the chart and will reclaim
-  ;; any existing state and temporary individuals that were 
-  ;; active at the time it is called. 
-  (let ((*index-under-permanent-instances* t)
-        company )
-    
-    (initialize-used-portion-of-chart)
-    (initialize-edge-resource :clearing-position)
-    
-    (analyze-text-from-string full-name-as-string)
-
-    (let ((max-edge (edge-spanning-the-entire-chart)))
-      (unless max-edge
-        (format t "~%-------------------------------------~
-                   ~% \"~A\"" full-name-as-string)
-        (tts)
-        (break "Parsing this string for the full name of some company~
-              ~%did not lead to a single edge that spanned the whole string.~
-              ~%~%Continuing will proceed with the rest of the load.~%")
-        (return-from define-company))
-
-      (let ((name (edge-referent max-edge)))
-        (unless (individual-p name)
-	  (push-debug `(,name))
-          (break "The analysis of the string full name did not lead to ~
-                  an object of type name:~%   ~A~%" name))
-
-        (setq company (define-company-given-name name))
-        (record-string-against-company full-name-as-string company))
-      
-      ;; n.b. the individuals built here are temporary
-      (when list-of-abbreviations
-        (define-alternate-names-for-company
-          company list-of-abbreviations))
-      
-      company )))
-
-
-(defun define-alternate-names-for-company (company alternative-strings)
-  (dolist (string alternative-strings)
-    (let ((*treat-single-capitalized-words-as-names* t)
-          max-edge )
-      (analyze-text-from-string string)
-
-      (setq max-edge (edge-spanning-the-entire-chart))
-      (if (null max-edge)
-        (then
-          (format t "~%-------------------------------------~
-                     ~% \"~A\"" string)
-          (tts)
-          (break "Parsing that string did not lead to a single edge~
-                  ~%that spanned the whole string.~
-                  ~%Continue to go on to the rest of the cases in ~
-                  the definition of~%~A~%" company))
-        
-        (let ((name (edge-referent max-edge)))
-          (if (not (individual-p name))
-            (break "The analysis of this company abbreviation string ~
-                    ~%did not lead to an object of type name:~
-                    ~%   ~A~
-                    ~%Continue to go on to the rest of the cases ~
-                    the definition of~%   ~A~%" name company)
-            
-            (unless (eq name company) ;; it's a duplicate somehow
-              ;; The subseq. reference routine can be better than
-              ;; we might like here, since any name-word from the
-              ;; full name is going to retrieve the company, when
-              ;; what we'd have liked was really just the nw.
-              ;;   ///Sub-sequences of more than one word haven't
-              ;; yet been checked out (5/3/95)
-              
-              (if (itype name 'company)
-                ;; There was probably enough internal evidence within
-                ;; this alternative name for it to be recognized
-                ;; as a (different) company in its own right, so we
-                ;; have to back out of that.
-                (let* ((spurious-co name) ;; rename it for clarity
-                       (name-of-spurious-co (value-of 'name spurious-co))
-                       (name-binding (binds spurious-co 'name)))
-                  (break "~%!!!!!!!!!!!!!!!!!!!!!!!!!!~
-                          ~%Going further does a 'remove-binding..' which ~
-                          could clobber everything~
-                          ~%!!!!!!!!!!!!!!!!!!!!!!!!!!~
-                          ~%!!!!!!!!!!!!!!!!!!!!!!!!!!~")
-                  (remove-binding-from-individual name-binding spurious-co)
-                  (break "2")
-                  (bind-variable  'name name-of-spurious-co company)
-                  (break "3")
-                  (setf (indiv-binds company)
-                        (nreverse (indiv-binds company)))
-                  company )
-                
-                (else                     
-                  (setq name (render-name-as-company-name name))
-                  
-                  (bind-variable 'name name company)
-                  ;; That will put a name that might not have been analyzed 
-                  ;; as a company name as the first 'name' binding on the
-                  ;; company, which will freakout the company printer.
-                  ;;   To make its life easier, we'll reverse the order
-                  ;; of the bindings.  We can be confedent that there
-                  ;; aren't other cases since we're in a continuous thread.
-                  (setf (indiv-binds company)
-                        (nreverse (indiv-binds company)))
-                  
-                  company )))))))))
-
-
-
 (defun define-company-given-name (name)
   (cond
    ((itype name 'company)
@@ -246,15 +118,6 @@
     (break "The analysis of the string full name did not lead to ~
             an object of type name:~%   ~A~%" name))))
 
-
-
-;;-------------- move !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-(defun edge-spanning-the-entire-chart ()
-  (let ((top-edge-at-p1 (ev-top-node (pos-starts-here (position# 1)))))
-    (when top-edge-at-p1
-      (when (= (pos-token-index (pos-edge-ends-at top-edge-at-p1))
-               (1- *number-of-next-position*))
-        top-edge-at-p1 ))))
     
 
 
@@ -265,7 +128,7 @@
 (defun make/company-with-name (name)
   ;; called from name code
   (when (itype name 'collection)
-    ;; The name was built by Make-uncategorized-name-from-items which
+    ;; The name was built by make-uncategorized-name-from-items which
     ;; has dropped the 'and'. We have to put it back.
     (setq name (convert-collection-of-names-to-single-name name)))
 
@@ -316,8 +179,29 @@
 
 
 ;;;-------------------------------------
-;;; standard Define-individual routines
+;;; standard define-individual routines
 ;;;-------------------------------------
+
+(defun find/company (company-category binding-instructions)
+  (let* ((name (value-of-instr 'name binding-instructions))
+         (sequence (sequence-from-company-name name))
+         (dummy (unless sequence
+                  (break "Bug in find/Company's dispatch for ~
+                          identifying the sequence.")))
+         (first-item (first (value-of 'items sequence)))
+         (alist (cat-instances company-category)))
+    (declare (ignore dummy))
+    (find-company-given-first-name first-item alist name)))
+
+(defun find-company-given-first-name (item1 alist name)
+  (let ((entry (cdr (assoc item1 alist))))
+    (when entry
+      (if (cdr entry)
+        (break "Stub: several companies with the first word ~A~
+                ~%If they're discriminated by the rest of ~
+                the name,~%  ~A~%Then write that code."
+               item1 name)
+        (first entry) ))))
 
 (defun sequence-from-company-name (name)
   (let ((sequence (ecase (cat-symbol (itype-of name))
@@ -375,29 +259,6 @@
                   next-item (car next-cell))))))))
 
 
-
-(defun find/company (company-category binding-instructions)
-  (let* ((name (value-of-instr 'name binding-instructions))
-         (sequence (sequence-from-company-name name))
-         (dummy (unless sequence
-                  (break "Bug in find/Company's dispatch for ~
-                          identifying the sequence.")))
-         (first-item (first (value-of 'items sequence)))
-         (alist (cat-instances company-category)))
-    (declare (ignore dummy))
-
-    (find-company-given-first-name first-item alist name)))
-
-
-(defun find-company-given-first-name (item1 alist name)
-  (let ((entry (cdr (assoc item1 alist))))
-    (when entry
-      (if (cdr entry)
-        (break "Stub: several companies with the first word ~A~
-                ~%If they're discriminated by the rest of ~
-                the name,~%  ~A~%Then write that code."
-               item1 name)
-        (first entry) ))))
     
 
 
