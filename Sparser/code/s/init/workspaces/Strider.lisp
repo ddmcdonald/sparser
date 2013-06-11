@@ -13,7 +13,7 @@
 
 ;;--- display parameters
 
-;; (setq *tts-after-each-section* t)
+(setq *tts-after-each-section* t)
 
 
 ;;--- control parameters
@@ -35,8 +35,31 @@
 
 ;;      (trace-reclaimation)
 ;; Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces, head of Kadima, and leader of the opposition in the Knesset,
-#| Recognizing the IDF as a predefined company yields a position, which will need
-some more. position cs rules, and an adjunct ETF to tie it to person. 
+#| 
+(p "Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces,")
+
+2do: 6/7/14
+ - Run whole articles
+     - copy the scheme for setting up a corpus from Grok
+     - write that up some
+     - add a break option with *tts-after-each-section*
+ - Setup a little bit of general segment handling (lifted from Grok)
+   to give us a platform for noting named entities, and other items of interest
+ - Why does person individual here (and elsewhere) have a plist full of rules?
+ - Expand indexing of sequences so find doesn't need to know the category
+ - Do the other titles and refine position-at-co to appreciate them
+     head of Kadima
+     leader of the opposition in the Knesset
+       - probably entails predefining Kadima and the Knesset (ditto IDF)
+       - which will require a useful extension of the conceptualization
+         of named-entity
+
+Meta-dot
+  *trace-reclaimation* reclaim-all-instances
+  collection string/sequence spread-sequence-across-ordinals
+  string-for/name person named-object index-person-name-to-person
+  link-named-object-to-name-word names/parens-after-names.lisp
+
 |#
 ;;--- setting up a grammar module for Strider-specific content
 
