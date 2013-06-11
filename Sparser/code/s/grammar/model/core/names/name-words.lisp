@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "name words"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.7 February 2013
+;;;  version:  0.7 June 2013
 
 ;; [object] initiated 5/28/93 v2.3
 ;; 0.1 (12/30) allowed the case of the name-word maker being passes an already
@@ -28,7 +28,8 @@
 ;;     (8/29/09) Fixed some odd capitalizations.
 ;; 0.7 (2/13/13) Added a name-of variable to name word to allow acronyms to
 ;;      link to what they name since they're not one of the words in the
-;;      original name, plus operations to manage that.
+;;      original name, plus operations to manage that. 6/10/13 Got a polyword
+;;      as a name-word, so generalized the predicates plist functions.
 
 (in-package :sparser)
 
@@ -51,6 +52,7 @@
 
 
 ;;--- Linking name words to named-objects (companies, people, etc.)
+;;  Used with names/parens-after-names to handle the new alias
 
 (defun link-named-object-to-name-word (object nw)  
   (let ((collection (value-of 'name-of nw category::name-word)))
@@ -113,7 +115,7 @@
        (eq category::name-word (car (indiv-type obj)))))
 
 (defun name-word-for-word (word)
-  (cadr (member :name-word (unit-plist word) :test #'eq)))
+  (get-tag-for :name-word word))
 
 
 (defun only-known-as-a-name (word)
@@ -122,7 +124,7 @@
   ;; /// this depends on a systematic appreciation of how words can be
   ;; bound, which has yet to be developed. It's been initiated to
   ;; handle "Alexander & Alexander"
-  (let ((plist (unit-plist word)))
+  (let ((plist (plist-for word)))
     (eq (first plist) :name-word)))
 
 
@@ -290,7 +292,11 @@
     (when table
       (gethash word table))))
 
+(note-permanence-of-categorys-individuals
+ ;; otherwise the hash-table could be reaped
+ (category-named 'name-word))
 
+;; For debugging
 ;(setf (cat-instances (category-named 'name-word)) nil)
 
 (defun index/name-word (nw name-word-category bindings)
@@ -311,27 +317,29 @@
 
 
 (defun reclaim/name-word (nw table name-word-category)
-  (let* ((word (value-of 'name nw))
-         (nw-plist (unit-plist nw))
-         (cfr (cadr (member :rule nw-plist))))
-
-    (block delete-nw-cfr
-      (unless cfr
-        (when *break-on-pattern-outside-coverage?*
-          (break "Data check: no cfr listed with the name word~
-                  ~%  ~A~%" nw))
-        (return-from delete-nw-cfr))
-      (unless (cfr-p cfr)
-        (when *break-on-pattern-outside-coverage?*
-          (break "Object listed as the cfr for ~A~%isn't: ~A" nw cfr))
-        (return-from delete-nw-cfr))
-      (delete/cfr cfr))
-
-    (when (get-tag-for :name-word word)
-      (remove-property-from word :name-word))
-
-    (remhash word table)
-    nw ))
+  (declare (ignore name-word-category))
+  (unless (permanent-individual? nw)
+    (let* ((word (value-of 'name nw))
+           (nw-plist (unit-plist nw))
+           (cfr (cadr (member :rule nw-plist))))
+      
+      (block delete-nw-cfr
+        (unless cfr
+          (when *break-on-pattern-outside-coverage?*
+            (break "Data check: no cfr listed with the name word~
+              ~%  ~A~%" nw))
+          (return-from delete-nw-cfr))
+        (unless (cfr-p cfr)
+          (when *break-on-pattern-outside-coverage?*
+            (break "Object listed as the cfr for ~A~%isn't: ~A" nw cfr))
+          (return-from delete-nw-cfr))
+        (delete/cfr cfr))
+      
+      (when (get-tag-for :name-word word)
+        (remove-property-from word :name-word))
+      
+      (remhash word table)
+      nw )))
 
 
 
@@ -379,8 +387,6 @@
               (return-from some-name-element-is-new? t))))))))
 
 
-
-
 (defun names-including-name-word (nw)
   ;; Retrieve a list of all the names, regardless of their type,
   ;; that include this name-word.
@@ -401,12 +407,11 @@
 
 
 
-
 ;;;-------
 ;;; stubs
 ;;;-------
 
 (defun make-pw-for-name-elements (elements
                                   &key category referent)
-  elements category referent
+  (push-debug `(,elements ,category ,referent))
   (break "stub"))

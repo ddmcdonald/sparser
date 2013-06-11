@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "names to people"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.3 May 2013
+;;;  version:  0.3 Jue 2013
 
 ;; copied over material from [random and hacks] 4/12/95
 ;; 0.1 (4/25) redid Interpret-name-as-person as a dispatch on itype to handle
@@ -13,7 +13,7 @@
 ;;  as done with companies.  2/18/13 folded in named-object case.
 ;;  3/5/13 Moved in the country+person method, Exposed 4/3/13
 ;; 0.3 (5/26/13) Reworking the interpret-as-name code to fit current scheme,
-;;  and pulled in csr's for name and position. 
+;;  and pulled in csr's for name and position. Extended 6613
 
 (in-package :sparser)
 
@@ -47,17 +47,14 @@
   ;(if (category-p name) ;; "name/unknown-pattern"
   ;  *default-person*
   ;; The default-person isn't defined now (in loaded coade)
-;  (flet 
   (typecase name
     (individual
      (case (cat-symbol (itype-of name))
-;       (category::named-object
-;        (let* ((name-object (value-of 'name name))
-;               (seq
 
        (category::uncategorized-name
         (let* ((sequence (value-of 'name/s name)))
           (unless sequence
+            (push-debug `(,name))
             (break "Name is not based on a sequence:~%  ~A" name))
           (let ((person-name (make-person-name-from-items1 
                               (value-of 'items sequence)
@@ -89,13 +86,19 @@
         ;; We reified it earlier. Now lift out it's name part
         ;; and try again
         (let ((name-value (value-of 'name name)))
-          (unless name-value (error "Named-object without a name ???"))
+          (unless name-value
+            (push-debug `(,name))
+            (error "Named-object without a name ???"))
+          (when (eq name-value name) ;; trap potential loop
+            (error "Name slot of a named-object contains same ~
+                    named object."))
           (interpret-name-as-person name-value)))
 
        (otherwise
         (push-debug `(,name))
         (error "New category of name: ~a~%~a"
                (cat-symbol (itype-of name)) name))))
+
     (word
      (let* ((nw (define-individual 'name-word :name name))
             (person-name (define-individual 'person-name
@@ -103,6 +106,7 @@
                                        category::name-word))))
        (or (find/person-with-name person-name)
            (make/person-with-name person-name))))
+
     (otherwise
      (push-debug `(name))
      (error "New type of object: ~a~%~a"
@@ -175,6 +179,7 @@
   :form appositive-prefix
   :referent (:function interpret-name-as-person left-edge))
 
-
-
+(def-csr  name person  :right-context  comma-position-at-co
+  :form appositive-prefix
+  :referent (:function interpret-name-as-person left-edge))
 

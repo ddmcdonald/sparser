@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:people:"
-;;;  version:  0.2 March 2013
+;;;  version:  0.2 June 2013
 
 ;; initiated 6/8/93 v2.3
 ;; 0.1 (1/7/94) redesigned not to pre-index
@@ -14,6 +14,8 @@
 ;;  (3/25/13) Pulled that definition because it required an instance of
 ;;   "a person" to have a name to be properly indexed. Introduced a new
 ;;   cagegory -- person-type -- to carry those references. 
+;;  (6/6/13) Added position. Added cross-indexing for subseq. ref. Removed
+;;   stub special-printer. If we need one it goes in people/printers.lisp
 
 (in-package :sparser)
 
@@ -26,7 +28,7 @@
   :specializes named-object
   :binds ((name . person-name)
           (age . age)
-          (position . (:or title position)))
+          (position . (:or title position-at-co)))
   :index (:key name)
   :realization ((:tree-family  appositive
                  :mapping ((appositive-field . age)
@@ -35,8 +37,40 @@
                 (:tree-family premodifier-adds-property
                  :mapping ((property . age)
                            (np-head . :self)
-                           (modifier . age)))))
+                           (modifier . age)))
+                (:tree-family  appositive
+                 :mapping ((appositive-field . position)
+                           (np . :self)
+                           (appositive . position-at-co)))))
 
+
+        
+;;;------------
+;;; operations
+;;;------------
+
+(defun make/person-with-name (name)
+  (unless (indiv-typep name 'person-name)
+    (push-debug `(,name))
+    (break "Expected a person-name and got:~%  ~A" name))
+  (let ((person (define-individual 'person :name name)))
+    (index-person-name-to-person name person)
+    person))
+
+(defun find/person-with-name (name)
+  ;; ///add capability for near misses.
+  (let ((people (cat-instances category::person)))
+    (let ((person (gethash name people)))
+      (if (consp person)
+        (if (null (cdr person))
+          (car person)
+          (break "Multiple people with the same name"))
+        person ))))
+
+
+;;;-----------------
+;;; types of people
+;;;-----------------
 
 #| The person type is for categories like "girl" or "uncle"
  and in particular for "person". They are descriptions of
@@ -62,99 +96,58 @@
 
 (defun define-person (name-string &key alias nicknames)
   (declare (ignore alias nicknames))
-  (let* ((name-strings (vet-person-name name-string))
-         (name-words (convert-name-strings-to-name-words name-strings))
-         (person-name ;; takes version keyword
+  (let* ((words (name-string-to-words name-string))
+         (name-words (name-words-for-words words))
+         (person-name ;; also takes version keyword
           (make-person-name-from-items1 name-words)))
-    (push-debug `(,person-name))
     (or (find/person-with-name person-name)
         (make/person-with-name person-name))))
  
 
-(defun vet-person-name (name-string)
+(defun name-string-to-words (name-string)
   "Check the name-string for validity. 
-   Return a list of name-words"
-  (let ( string-elements )
-    (typecase name-string
-      (string
-       ;;/// Any other characters to look for?
-       (setq string-elements
-             (if (position #\space name-string)
-               (break-up-at name-string :delimeter-chars '(#\space))
-               (list name-string))))
-      (cons
-       (if (every #'stringp name-string)
-         (setq string-elements name-string)
-         (else
-          (push-debug `(,name-string))
-          (break "New list case in person-name: ~a"
-                 name-string))))
-      (otherwise
-       (push-debug `(,name-string))
-       (error "Unexpected type of person name specifier: ~a~%~a"
-              (type-of name-string) name-string)))
+   Returns a list of words"
+  (let ((string-elements
+         (typecase name-string
+          (string
+           ;;/// Any other characters to look for?
+           (if (position #\space name-string)
+             (break-up-at name-string :delimeter-chars '(#\space))
+             (list name-string)))
+          (cons
+           (if (every #'stringp name-string)
+             name-string
+             (else
+              (push-debug `(,name-string))
+              (break "New list case in person-name: ~a"
+                     name-string))))
+          (otherwise
+           (push-debug `(,name-string))
+           (error "Unexpected type of person name specifier: ~a~%~a"
+                  (type-of name-string) name-string)))))
 
-    (remove-if #'(lambda (s) (and (= 1 (length s))
-                                  (eql (elt s 0) #\space)))
-               string-elements)))
+    (setq string-elements
+          (remove-if #'(lambda (s) (and (= 1 (length s))
+                                        (eql (elt s 0) #\space)))
+                     string-elements))
+    (loop for string in string-elements
+                 collect (resolve-string-to-word/make string))))
                            
 
-(defun convert-name-strings-to-name-words (list-of-strings)
-  ;; Convert the strings to namewords, but note the
-  ;; cases in referents-of-list-of-edges show what to do
+(defun name-words-for-words (list-of-words)
+  ;; Find or make name-word individuals for all the words,
+  ;; but note the cases in referents-of-list-of-edges show what to do
   ;; with terms that have other meanings
-  (let ((words (loop for string in list-of-strings
-                 collect (resolve-string-to-word/make string))))
-    (flet ((make-name-word (word)
-             (cond
-              ((name-word-for-word word) ;; already is one
-               (get-tag-for :name-word word))
-              ((only-known-as-a-name word) ;
-               ;/// presumes an ordering on the pllist - may not be reliable
-               (define-name-word word))
-              (t ;; punting on the other real cases
-               (define-name-word word)))))
-      (loop for word in words
-        collect (make-name-word word)))))
+  (flet ((find-or-make-name-word (word)
+           (or (get-tag-for :name-word word)
+               ;;/// versions, initials, company-indicators, 
+               ;; inc-terms
+               (when (only-known-as-a-name word)
+                 ;/// presumes an ordering on the pllist - may not be reliable
+                 (define-name-word word))
+               ;; punting on the other real cases
+               (define-name-word word))))
+      (loop for word in list-of-words
+        collect (find-or-make-name-word word))))
   
-         
-;;;------------
-;;; operations
-;;;------------
-
-(defun make/person-with-name (name)
-  (unless (indiv-typep name 'person-name)
-    (push-debug `(,name))
-    (break "Expected a person-name and got:~%  ~A" name))
-  (define-individual 'person
-    :name name))
-
-(defun find/person-with-name (name)
-  ;; ///add capability for near misses.
-  (let ((people (cat-instances category::person)))
-
-    (let ((person (gethash name people)))
-      (if (consp person)
-        (if (null (cdr person))
-          (car person)
-          (break "Multiple people with the same name"))
-        person ))))
-
-
-
-;;;---------------
-;;; print routine
-;;;---------------
-#|
-(define-special-printing-routine-for-category  person-name
-  :full ((write-string "#<person-name " stream)
-         (  |#
-
-(defun shortest-person-string (person)
-  (let ((name-word
-         (value-of 'last-name
-                   (value-of 'name person))))
-    (let ((word
-           (value-of 'name name-word)))
-      (word-pname word))))
-
+ 
