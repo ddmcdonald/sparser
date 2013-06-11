@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:sequence:"
-;;;  version:  0.2 November 1995
+;;;  version:  0.3 June 2013
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/15/92 v2.3) setting up for new semantics
 ;; 0.2 (5/27/94) fleshed it out with def-forms, rdata, and autodef
 ;;     (9/12/95) tweeked the autodef.  11/15 fixed a typo in them
+;; 0.3 (6/6/13) Rebuilt the def form in the modern class-centric idiom.
 
 (in-package :sparser)
 
@@ -22,15 +23,6 @@
   :index (:key name :permanent)
   :realization (:word name))
 
-
-(define-autodef-data 'sequencer
-  :module *sequencers*
-  :display-string "sequencers"
-  :not-instantiable t 
-  :description "a modifier that says where something lies in within a sequence"
-  :examples "\"before\" \"next\"" )
-
-
 ;;;---------------
 ;;; defining form
 ;;;---------------
@@ -41,9 +33,6 @@
    the categories are unlikely to do any other work in the system
    so /// if there is eventually some way to define a 'pro forma'
    category as such that would be a good thing. |#
-
-(define-category sequencer/determiner)
-(define-category sequencer/preposition)
 
 
 (defun define-sequencer/determiner (string)
@@ -60,15 +49,6 @@
         (assign-brackets/expr word (list ].phrase .[np ))
         sequencer ))))
 
-(define-autodef-data 'sequencer/determiner
-  :display-string "acting like determiners"
-  :form 'define-sequencer/determiner
-  :dossier "dossiers;sequencers"
-  :module *sequencers*
-  :description "a sequencer that functions syntactically like a determiner"
-  :examples "\"next\" \"subsequent\"" )
-
-
 
 (defun define-sequencer/preposition (string)
   (let ((word (resolve-string-to-word/make string))
@@ -83,6 +63,30 @@
 
         (assign-brackets/expr word (list ].phrase  phrase.[ ))
         sequencer ))))
+
+
+;;;----------
+;;; auto-def
+;;;----------
+
+(define-autodef-data 'sequencer
+  :module *sequencers*
+  :display-string "sequencers"
+  :not-instantiable t 
+  :description "a modifier that says where something lies in within a sequence"
+  :examples "\"before\" \"next\"" )
+
+
+(define-category sequencer/determiner)
+(define-category sequencer/preposition)
+
+(define-autodef-data 'sequencer/determiner
+  :display-string "acting like determiners"
+  :form 'define-sequencer/determiner
+  :dossier "dossiers;sequencers"
+  :module *sequencers*
+  :description "a sequencer that functions syntactically like a determiner"
+  :examples "\"next\" \"subsequent\"" )
 
 (define-autodef-data 'sequencer/preposition
   :display-string "acting like prepositions"
