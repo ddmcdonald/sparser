@@ -1,10 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
-;;; $Id$
 ;;; Copyright (c) 2006 BBNT Solutions LLC.
-;;; Copyright (c) 2010-2011 David D. McDonald
+;;; Copyright (c) 2010-2013 David D. McDonald
 
 ;; 11/2010 Folding in forgotten functions from original set, i.e. Lisp Machine days
-;; 3/8/11 Moved out exports
+;; 3/8/11 Moved out exports. 6/10/13 Tweaked tail-cons.
 
 (in-package :ddm-util)
 
@@ -44,12 +43,16 @@
     (nreverse symbols)))
 
 (defun tail-cons (item list)
-  "Add the item to the end of the list"
+  "Add the item to the end of the list. 
+   Except for the case of the list being empty (length 0),
+   this operates destructively by rplacd's on the last cons
+   of the list. This is to allow fixed lists to be extended
+   without requiring the caller to make another setq."
   (case (length list)
     (0
      (list item))
     (1
-     (list (car list) item))
+     (rplacd list (list item)))
     (otherwise
      (let ((last-cell (last list)))
        (rplacd last-cell
