@@ -11,7 +11,6 @@
 ;; 0.1 (3/3/95) modified i-type-of to not break if it is passed an object
 ;;      other than an individual
 ;; 0.2 (9/13) extended indiv-typep to look up the lattice
-;; 0.2 (2/14/05)
 
 (in-package :sparser)
 
