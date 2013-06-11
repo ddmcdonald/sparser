@@ -13,6 +13,6 @@
     (define-person "Binyamin Netanyahu") ;; :nicknames ("Bibi")
     ;; first name also spelled "Binyamin"  
 
-    (define-company '("Israeli" "Defense" "Forces") :takes-the t)
+    (define-company "Israeli Defense Forces" :aliases '("IDF") :takes-the t)
 
 ) ;; closes with all permanent
