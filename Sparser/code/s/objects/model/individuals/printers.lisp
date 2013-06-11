@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.6 February 2013
+;;;  version:  0.6 June 2013
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -30,7 +30,7 @@
 ;;     almost certainly a bug. 11/6 fixed little chatter in string-for, adding
 ;;     case for word.  11/25/12 Quieted warning when running in *grok* mode.
 ;;     (2/15/13) Fixed print-individual-with-name to handle case of it getting
-;;      a name object rather than a word value. 
+;;      a name object rather than a word value. 6/7/13 More rationalizing.
 
 (in-package :sparser)
 
@@ -134,7 +134,8 @@
             (polyword
              (princ-polyword word stream))
             (individual
-             (princ-name-object word stream))
+             (let ((string (string-for/name word)))
+               (format stream "~a" string)))
             (otherwise
              (push-debug `(,word ,i))
              (error "Unanticipated type of 'word': ~a~%~a"
@@ -147,19 +148,6 @@
       (format stream " ~A" (indiv-id i))
       (write-string ">" stream))))
 
-(defun princ-name-object (name stream)
-  ;; Look for a sequence, otherwise print that there isn't one
-  (let ((sequence (value-of 'name/s name)))
-    (if sequence
-      (write-string (string/sequence sequence) stream)
-      (write-string " -no sequence- " stream))))
-
-
-  ;; This 
-#|case (cat-symbol (itype-of word))
-               (category::uncategorized-name
-                (let ((s                  (unless sequence
-                    (error "Can't get the "|#
 
 
 ;;;--------------------------------------------------
@@ -172,30 +160,16 @@
 (defvar *return-print-string* nil
   "Flag read by the special printers")
 
-#| original 2/16/95
-(defmacro define-special-printing-routine-for-category (category-name
-                                                        &key short
-                                                             full
-                                                             string )
-  (eval-when (:compile-toplevel
-              :load-toplevel :execute )
-    (let ((category (category-named category-name))
-          (fn-name (intern
-                    (concatenate 'string
-                                 (symbol-name category-name)
-                                 "-PRINT-ROUTINE"))))
-      (unless category
-        (error "There is no category named ~A" category-name))
-      (let ((ops (cat-operations category)))
-        (setf (cat-ops-print ops) fn-name)
-        
-        `(defun ,fn-name (obj stream)
-           (cond (*return-print-string*
-                  ,@string )
-                 (*print-short*
-                  ,@short )
-                 (t
-                  ,@full )))  ))))  |#
+(defvar *return-print-string* nil
+  "Flag read by the special printers")
+
+
+
+(defgeneric name-of-category-print-function (category)
+  (:documentation "Creates the name that will be used by the special 
+    printing routine machinery for the function it defines. Note that this
+    function name becomes the value of the print field operations of the
+    category. This routine is used by print-individual-structure."))
 
 (defmacro define-special-printing-routine-for-category (category-name
                                                         &key short
@@ -208,10 +182,7 @@
 (defun define-special-printing-routine-for-category/expr (category-name
                                                           short full string)
   (let ((category (category-named category-name))
-        (fn-name (intern
-                  (concatenate 'string
-                               (symbol-name category-name)
-                               "-PRINT-ROUTINE"))))
+        (fn-name (name-of-category-print-function category-name)))
     (unless category
       (error "There is no category named ~A" category-name))
     (let ((ops (cat-operations category)))
@@ -227,32 +198,42 @@
         (eval fn)))))
 
 
+(defgeneric name-of-string-for-function (category)
+  (:documentation "Creates the symbol that is expected by string-for
+    to matchup with an already defined function, e.g. string/initial."))
 
 
-(defun string-print-form (unit)
-  (let ((*return-print-string* t))
-    (format nil "~A" unit)))
+(defmethod name-of-category-print-function ((c category))
+  (name-of-string-for-function (cat-symbol c)))
 
+(defmethod name-of-category-print-function ((category-name symbol))
+  (intern (string-append category-name ':-print-routine)
+          *sparser-source-package*))
+
+
+(defmethod name-of-string-for-function ((c category))
+  (name-of-string-for-function (cat-symbol c)))
+
+(defmethod name-of-string-for-function ((category-name symbol))
+  (intern (string-append ':string/ category-name)
+          *sparser-source-package*))
 
 
 (defun string-for (i)
+  "Call the function that goes with this unit to return
+   a nice print string to incorporate into some other print routine."
   (typecase i
     (individual
-     (let* ((fn-string (concatenate
-                        'string 
-                        (symbol-name '#:string)
-                        (symbol-name (cat-symbol (itype-of i)))))
-            (fn-name (intern fn-string *sparser-source-package*)))
-       
+     (let ((fn-name (name-of-string-for-function (itype-of i))))
        (cond ((fboundp fn-name)
               (funcall fn-name i))
              ((value-of 'name i)
               (string-for/name i))
              (t
-              (unless *grok* ;; can't have this in the outpt
+              ;; Dangerous to have breaks/error in print function
+              (unless *grok* ;; can't have this in the output
                 (format t "~&String-for -- The printer ~A isn't defined ~
                              yet~%" fn-name))
-              ;(break)
               "" ))))
 
     ((or referential-category mixin-category category)
@@ -265,21 +246,17 @@
      (word-pname i))
     
     (otherwise
+     (push-debug `(,i))
      (format t "~&String-for -- No string-for routine for objects ~
                 of type~%     ~A~%" (type-of i))
      (format nil "~A" i))))
 
 
-(defun string-for/name (n)
-  ;; Called from String-for as a generic catch for any individual
-  ;; that binds a slot called 'name'
-  (let ((w/pw (value-of 'name n)))
-    (typecase w/pw
-      (word (word-pname w/pw))
-      (polyword (pw-pname w/pw))
-      (otherwise
-       (format t "String-for/name -- new type: ~A~%" (itype-of n))
-       "" ))))
+
+(defun string-print-form (unit)
+  (let ((*return-print-string* t))
+    (format nil "~A" unit)))
+
 
 
 ;;;------------------------
