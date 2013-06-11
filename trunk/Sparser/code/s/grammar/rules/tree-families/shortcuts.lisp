@@ -31,6 +31,7 @@
   `(make-individual-with-synonyms ',category-name ',word-list ',brackets ',no-morph))
 
 (defun make-individual-with-synonyms (category-name word-list brackets no-morph)
+  (push-debug `(,brackets ,no-morph)) ;;(break "who's the caller? This is passe")
   (let ((category (category-named category-name))
         rules )
     (unless category (error "There is no category named ~a" category-name))
