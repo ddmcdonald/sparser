@@ -6,6 +6,7 @@
 ;;;  Version:  October 1994
 
 ;; broken out as its own file 10/20/94 v2.3
+;; added years up to 2013 6/8/2013
 
 (in-package :sparser)
 
@@ -71,4 +72,7 @@
 (define-year "2008" 8)
 (define-year "2009" 9)
 (define-year "2010" 10)
+(define-year "2011" 11)
+(define-year "2012" 12)
+(define-year "2013" 13)
 
