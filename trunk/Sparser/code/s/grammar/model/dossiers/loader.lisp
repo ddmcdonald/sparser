@@ -100,6 +100,8 @@
   (gload "dossiers;weekdays")
   (gload "dossiers;months")
   (gload "dossiers;years")
+  ;;added seasons 6/8/13
+  (gload "dossiers;seasons") 
   (gload "dossiers;time of day")
   (gload "dossiers;timezones"))
 
