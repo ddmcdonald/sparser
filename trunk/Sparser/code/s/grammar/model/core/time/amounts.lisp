@@ -16,6 +16,8 @@
 
 ;;; amounts
 
+
+
 (define-category  amount-of-time   ;; "three months"
   :specializes amount
   :instantiates self
@@ -40,6 +42,10 @@
 (def-cfr amount-of-time ("the" amount-of-time)
   :form np
   :referent (:daughter right-edge))
+
+;;deleted the cfr #<PSR544  amount ->  number time>
+;;otherwise, it parses things like "June 26 2010" as [June]_TIME [26 2010]_AMOUNT
+(delete/cfr# 544)
 
 
 ;; Common noun referring to amount of time
@@ -69,4 +75,6 @@
   :referent (:instantiate-individual fraction-of-amount-of-time
              :with (selector left-edge)
                     portion right-edge))
+
+
 
