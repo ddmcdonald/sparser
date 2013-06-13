@@ -1,11 +1,14 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CTI-source LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1991  Content Technologies Inc.  -- all rights reserved
+;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "citations"
 ;;;   Module:  "model;core:time:"
 ;;;  version:  April 1991    (v1.8.2)
 
-(in-package :CTI-source)
+;; Compiled examples 4/91. Started converting to citations 6/12/13.
+
+(in-package :sparser)
 
 
 #|  citations of time phrases
