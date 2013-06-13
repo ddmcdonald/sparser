@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "find"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.2 March 2013
+;;;  version:  1.3 June 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/10) fixing the semantics of some cases of the find operation
@@ -21,6 +21,9 @@
 ;; 1.2 (2/3/05) revised find/individual to go to psi search if the make operation
 ;;      would have yielded a psi. 3/28/13 Patched find-simple-list to
 ;;      recover from one-off cases
+;; 1.3 (6/13/13) Changed define-or-find-individual to use define-individual
+;;      rather than make/individual so that it respects the realization
+;;      data on the category.
 
 (in-package :sparser)
 
@@ -56,7 +59,8 @@
           category binding-plist)))
 
     (or (find/individual category binding-instructions)
-        (make/individual category binding-instructions))))
+        ;;(make/individual category binding-instructions)
+        (define-individual category binding-plist))))
   
 
 
