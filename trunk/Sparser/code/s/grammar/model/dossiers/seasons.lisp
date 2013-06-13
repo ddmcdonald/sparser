@@ -1,12 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "seasons"
 ;;;   Module:  "model;dossiers:"
-;;;  Version:  1.0 June 2013
+;;;  Version:  June 2013
 
-(define-season "Summer"     1 "summer")
-(define-season "Fall"       2 "fall")
-(define-season "Autumn"     2 "autumn")
-(define-season "Winter"     3 "winter")
-(define-season "Spring"     4 "spring")
+;; Initiated 6/11/13. Lowercased the names and removed the lc
+;; "abbreviations" 6/12 since the right thing will happen 
+;; when the lowercase definition is parsed in upper case.
+
+(define-season "summer"     1 )
+(define-season "fall"       2 )
+(define-season "autumn"     2 )
+(define-season "winter"     3 )
+(define-season "spring"     4 )
