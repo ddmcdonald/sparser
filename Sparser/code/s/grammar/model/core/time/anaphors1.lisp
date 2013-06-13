@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-12 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id$
 ;;;
@@ -18,8 +18,21 @@
 ;;      to be just 'time' by changing their :instantiates values
 ;; 1.4 (5/14/12) Extended realization of calculated day to accommodate
 ;;      "today's date", where the "date" is ignored.
+;; 1.5 (6/13/13) Thoroughly reworked as indexicals with a real dereferenced
+;;      value. 
 
 (in-package :sparser)
+
+;;;-----------
+;;; indexical
+;;;-----------
+
+(define-mixin-category indexical
+  :binds ((value)))
+  ;; not clear what this might specialize (what axioms would it
+  ;; provide). The categories that it's mixed into have the indexing
+  ;; and instantiation rules specifications
+
 
 ;;;----------------
 ;;;  "now", "then"
