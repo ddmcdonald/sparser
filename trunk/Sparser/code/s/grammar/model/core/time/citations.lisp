@@ -10,6 +10,20 @@
 
 (in-package :sparser)
 
+;;--- fiscal2
+;;  Reflex is to use a different label that "quarter", but
+;; first look at the consumers.
+
+(define-citation "first quarter"
+  (1 QUARTER 3))
+
+(define-citation "first quarter of 1998"
+  (1 QUARTER 5))
+
+(define-citation "fiscal quarter"
+  (1 QUARTER 3))
+
+
 
 #|  citations of time phrases
 
