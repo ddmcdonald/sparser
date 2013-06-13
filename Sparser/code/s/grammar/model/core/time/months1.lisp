@@ -23,6 +23,7 @@
 ;;      a leading ].proper-noun, which seems like overkill. Also rewriting the
 ;;      category to go to self instead of time
 ;; 1.7 (5/30/13) Re-labeled catgeory month as time syntactically.  
+;; 1.8 (6/12/13) Backed out of the rule label with the idea that we need
 
 (in-package :sparser)
 
@@ -33,10 +34,11 @@
 (define-category  month
   :specializes time
   :instantiates self
-  :rule-label time ;;rule-label time sets the syntactic label as "time"
+  ;; :rule-label time
   :binds ((name :primitive word)
           (abbreviation :primitive word)
           (position-in-year . ordinal))
+  :index (:permanent :key name)
   :realization (:common-noun name ))
                           
 
@@ -46,28 +48,12 @@
 ;;;------
 
 (defun define-month (string integer &optional abbrev)
+  (let ((month (define-or-find-individual
+                   'month :name string))
+         (ordinal (nth-ordinal integer)))
+    (bind-variable 'position-in-year ordinal month)
 
-  (let* ((word (define-word string))
-         (abbrev-word (when abbrev (define-word abbrev)))
-         (ordinal (nth-ordinal integer))
-         month )
-
-    (unless (setq month (find-individual 'month :name word))
-      (setq month 
-            (if abbrev
-	      (let ((m (define-individual 'month
-			 :name word
-			 :abbreviation abbrev-word
-			 :position-in-year ordinal)))
-		(define-cfr category::month `(,abbrev-word)
-		  :form category::proper-noun
-		  :referent m))
-              (define-individual 'month
-                :name word
-                :position-in-year ordinal )))
-      
-      ;; 10/10/99 flush this one too 
-      (when abbrev
-        (define-abbreviation string abbrev))
-      
-      month )))
+    (when abbrev
+      (define-abbreviation string abbrev))
+    
+    month ))
