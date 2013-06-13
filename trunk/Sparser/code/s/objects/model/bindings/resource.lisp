@@ -1,13 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991,1992,1993,1994,1995,1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "resource"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  January 1995   
+;;;  version:  June 2013
 
 ;; initiated 11/30/91 v2.1. Put in the guts 8/8/94. Added master lists
 ;; 8/10.  1/7/96 modified Deallocate-binding to return from the loop
 ;; after anouncing that the binding isn't there. 
+;; 6/12/13 Made deallocate-binding look for the possibility of the
+;; binding already being deallocated. Converted break in the search
+;; loop for a cerror then to a simple return because permanent individuals
+;; were involved -- which has to be sorted out.
 
 (in-package :sparser)
 
@@ -47,32 +51,52 @@
 
 
 (defun deallocate-binding (b)
-  (setq *next-binding*
-        (kcons b *next-binding*))
+  (unless (or (deallocated-binding? b)
+              ;; Somethings already reached it by a different route.
+              ;; If we continue we're going to put the same binding
+              ;; on the list twice.
+              (permanent-individual? (binding-body b))
+              ;; Don't deallocate bindings permanent objects
+              ;; are using
+              (and (unit-p (binding-value b)) ;; vs a number
+                   (permanent-individual? (binding-value b))))
 
-  ;; remove it from the active list
-  (if (eq b (first *active-bindings*))
-    (setq *active-bindings* (cdr *active-bindings*))
+    (setq *next-binding*
+          (kcons b *next-binding*))
 
-    (let* ((prior-cell *active-bindings*)
-           (next-cell (cdr *active-bindings*))
-           (next-binding (car next-cell)))
-      (loop
-        (when (null next-binding)
-          (break "Couldn't find ~A amoung the active bindings" b)
-          (return))
-        (when (eq next-binding b)
-          ;; splice it out of kcons list
-          (rplacd prior-cell
-                  (cdr next-cell))
-          (deallocate-kons next-cell)
-          (return))
-        (setq prior-cell next-cell
-              next-cell (cdr next-cell)
-              next-binding (car next-cell)))))
+    ;; remove it from the active list
+    (if (eq b (first *active-bindings*))
+      (setq *active-bindings* (cdr *active-bindings*))
 
-  (setf (unit-plist b) `(:deallocated t ,@(unit-plist b)))
-  b )
+      (let* ((prior-cell *active-bindings*)
+             (next-cell (cdr *active-bindings*))
+             (next-binding (car next-cell)))
+        (loop
+          (when (null next-binding)
+            ;; Examined some of the cases, and they are in
+            ;; the bound-in field of the individual we're
+            ;; deallocating and appear to involve completely
+            ;; different structures. E.g. the number 26 was
+            ;; being deallocated from its occurrance in a date
+            ;; and the binding represents "26 millon".
+            ;; This is a conundrum, but not easily solved.
+            ;; One approach is to filter bound-in's for the
+            ;; individual being permanent.
+            ;(cerror "Just keep going"
+            ;        "Couldn't find ~A amoung the active bindings" b)
+            (return))
+          (when (eq next-binding b)
+            ;; splice it out of kcons list
+            (rplacd prior-cell
+                    (cdr next-cell))
+            (deallocate-kons next-cell)
+            (return))
+          (setq prior-cell next-cell
+                next-cell (cdr next-cell)
+                next-binding (car next-cell)))))
+
+    (setf (unit-plist b) `(:deallocated t ,@(unit-plist b)))
+    b ))
 
 
 (defun initialize-fields/binding (b)
@@ -94,7 +118,7 @@
     ;; checks made to avoid processing bindings, we can
     ;; treat "nil" as though it were a deallocated binding
     ;; and the right thing will happen (so long as ultimately
-    ;; we're reclaiming the individual that has this bindign)
+    ;; we're reclaiming the individual that has this binding)
     t ))
 
 
