@@ -80,8 +80,7 @@ part even if it's invariably left out as obvious except in comparisons. |#
   :binds ((thing-ended)
           (date . date))
   :realization (:tree-family  verb+direct-object
-                :mapping ((individual-for-verb . :self)
-                          (patient . date)
+                :mapping ((patient . date)
                           (result-type . :self)
                           (vp . :self)
                           (vg . end)
@@ -95,7 +94,7 @@ part even if it's invariably left out as obvious except in comparisons. |#
 ;; along.
 ;;
 (define-category end
-  :binds ((thing -ended)
+  :binds ((thing-ended)
           (time-ended))
   :realization (:main-verb ("end" 
                             :past-tense "ended" 
