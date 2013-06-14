@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  2.2 April 2013
+;;;  version:  2.2 June 2013
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -61,6 +61,8 @@
 ;;      construct-referent for function case. 9/23 put method further in. 10/3 fixed
 ;;      bug in it (C&S).
 ;; 2.2 (4/3/13) Installed check for Chomsky adjunction in the inner loop.
+;;     (6/13/13) Fixed case of :self as a variable in decode-binding. Flagged it
+;;      as illegal.
 
 (in-package :sparser)
 
@@ -73,7 +75,7 @@
                                         exploded-tf
                                         mapping
                                         local-cases)
-  ;; called from setup-rdata.
+  ;; called from dereference-and-store?-rdata-schema as part of setup-rdata.
   ;; Divides according to whether it's an original definition or
   ;; a redefinition.  <--- stoped this 7/23/98 because of
   ;; colateral damage from the timing of multiple rdata sets.
@@ -616,11 +618,14 @@
          ((null var-symbol))
 
       (setq map-variable (cdr (assoc var-symbol mapping :test #'eq)))
-      (setq variable 
-	    (or (eq map-variable category) ;; :self
-		(when map-variable
-		  (find-variable-for-category 
-		   (var-name map-variable) category))))
+      (when (eq map-variable category) ;; :self
+        (push-debug `(,map-variable ,var-symbol ,category ,mapping))
+        (error "Binding spec mapped to the category, not a variable:~
+              ~%  ~a => ~a" var-symbol var-symbol))
+       (setq variable
+             (when map-variable
+               (find-variable-for-category 
+                (var-name map-variable) category)))
 
       ;; originally was this, where we use the var-symbol defined by
       ;; the etf to retrieve the variable. So we go another step
