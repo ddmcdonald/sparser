@@ -23,7 +23,8 @@
 (define-citation "fiscal quarter"
   (1 QUARTER 3))
 
-
+(define-citation "first quarter ending June 26, 2004"
+  (1 QUARTER 8))
 
 #|  citations of time phrases
 
