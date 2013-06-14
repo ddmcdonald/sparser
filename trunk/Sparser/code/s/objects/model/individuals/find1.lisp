@@ -59,8 +59,8 @@
           category binding-plist)))
 
     (or (find/individual category binding-instructions)
-        ;;(make/individual category binding-instructions)
-        (define-individual category binding-plist))))
+        ;; N.b. this version applies realization data, the others don't.
+        (apply #'define-individual category binding-plist))))
   
 
 
