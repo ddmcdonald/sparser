@@ -64,8 +64,7 @@
         (let ((company-name
                (or (name-word-to-company? name)
                    (define-individual 'company-name
-                     :sequence (define-sequence (list name)
-                                 category::name-word)))))
+                     :sequence (define-sequence (list name))))))
           (or (find/company-with-name company-name)
               (make/company-with-name company-name))))))
     (word
@@ -73,8 +72,7 @@
                   :name name))
             (company-name (define-individual 'company-name
                             :sequence
-                                (define-sequence (list nw)
-                                  category::name-word))))
+                                (define-sequence (list nw)))))
        (or (find/company-with-name company-name)
            (make/company-with-name company-name))))))
 
