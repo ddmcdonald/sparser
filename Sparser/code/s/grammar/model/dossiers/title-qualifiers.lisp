@@ -4,11 +4,11 @@
 ;;;
 ;;;     File:  "title qualifiers"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  October 2009
+;;;  version:  June 2013
 
 ;; initiated 6/16/93 v2.3. Modified to use def-form 1/18/94
 ;; 10/12/09 Removed "formerly" when shifting the realization to :adjective
-;; 5/256/13 Introduced 'title-status' for words that predominantly
+;; 5/25/13 Introduced 'title-status' for words that predominantly
 ;;  modify titles. Punting on the others. 
 
 (in-package :sparser)
