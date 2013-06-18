@@ -12,7 +12,7 @@
 
 (in-package :sparser)
 
-;;  (tuned-grok)
+;;  (tuned-grok)  is the best all-round setting for 'grok mode'
 
 
 ;; Too many duplicated rules. Open objects/rules/cfr/duplicates and set the
@@ -128,10 +128,6 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;;------------------
 ;;; testing routines
 ;;;------------------
-
-;;  (tb-segmentation-tester "/Users/ddm/sift/nlp/Grok/corpus/treebank/500s.txt")
-;;  or 50s, 20000s
-;;  (treebank-smoke-test "/Users/ddm/sift/nlp/Grok/corpus/treebank-sentence-strings.txt")
 
 ;;--------- Cases for debugging segmentation, bracket calculations
 

@@ -19,6 +19,7 @@
 ;;--- control parameters
 
 ;; (setq *break-on-new-bracket-situations* nil)
+;; (setq *break-before-creating-name* t)
 
 (setq *do-domain-modeling-and-population* t) ;; ignores null referents
 ;; Need to adapt the segment-level switches and do this better
@@ -32,6 +33,23 @@
 
 ;;  (f "/Users/ddm/ws/Strider/ws/Aljazeera_9-7-12.txt")
 ;;  (f "/Users/ddm/ws/Strider/ws/OSC Articles.txt")
+
+(def-logical-pathname "Strider;" "corpus;Strider:")
+(def-logical-pathname "June15;" "Strider;OSC-rmr-15Jun13:")
+
+(defvar june15th
+  (define-document-stream '|Roger's articles as of June 15th 2013|
+    :style-name 'hand-typed/no-headers
+    :directory "June15;"
+    :unified t))
+
+#|
+ (tuned-grok)
+
+ (grok-pass-one june15th)
+ (grok-pass-two june15th)
+ (grok-pass-three june15th)
+|#
 
 ;;      (trace-reclaimation)
 ;; Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces, head of Kadima, and leader of the opposition in the Knesset,
@@ -55,10 +73,11 @@
          of named-entity
 
 Meta-dot
-  *trace-reclaimation* reclaim-all-instances
+  *trace-reclaimation* reclaim-all-instances get-tag-for
   collection string/sequence spread-sequence-across-ordinals
   string-for/name person named-object index-person-name-to-person
   link-named-object-to-name-word names/parens-after-names.lisp
+  relationship-to-country 
 
 |#
 ;;--- setting up a grammar module for Strider-specific content
@@ -74,5 +93,9 @@ Meta-dot
 (gate-grammar *middle-east*
   (gload "mideast;loader"))
 
+
+;; Something is off with the error handler. Going to the listener on
+;; the first error it gets, rather than collecting them.
+;;  (tb-segmentation-tester "/Users/ddm/sift/nlp/corpus/treebank/treebank-00.txt")
 
 
