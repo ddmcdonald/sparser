@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:countries:"
-;;;  version:  1.2 March 2013
+;;;  version:  1.2 June 2013
 
 ;; 1.0 (10/12/92 v2.1) introducing new semantics
 ;; 1.1 (9/7/93 v2.3) adding a define routine and a realization
@@ -17,6 +16,7 @@
 ;; 1.3 (3/4/13) Reworked define-country to not do anything fancy with
 ;;      the adjective form because places/countries/relation.lisp will
 ;;      handle that just from the adjective. Added brackets 3/6/13
+;; 1.4 (6/14/13) reworked the def form a bit. 
 
 (in-package :sparser)
 
@@ -38,27 +38,25 @@
 ;;; def form
 ;;;----------
 
-(defun define-country (name &key adjective aliases)
-  (let ((country (category-named 'country))
-        (word (resolve-string-to-word/make name))
-        (obj (define-individual 'country
-               :name name))
-        rules )
+(defun define-country (name &key adjective aliases) ;; Add 'language' for "Hebrew"
+  (let ((country (define-or-find-individual 'country :name name))
+        (category (category-named 'country))
+        word  rules )
     ;; The name gets  ].proper-noun proper-noun.[  is that ok?
     (when (or adjective aliases)
       (flet ((adjective-rule (string)
                (setq word (resolve-string-to-word/make string))
                (assign-brackets-to-adjective word)
-               (define-cfr country `(,word)
+               (define-cfr category `(,word)
                 :form category::adjective ;; or proper-adjective
                  ;; it's a question of picking up form rules
-                :referent obj))
+                :referent country))
              (alias-rule (string)
                (setq word (resolve-string-to-word/make string))
                (assign-brackets-as-a-common-noun word)
-               (define-cfr country `(,word)
+               (define-cfr category `(,word)
                  :form category::proper-noun
-                 :referent obj)))
+                 :referent country)))
         (when adjective
           (if (consp adjective)
             (loop for adj in adjective
@@ -67,9 +65,9 @@
         (when aliases
           (if (consp aliases)
             (loop for alias in aliases
-              do (push (alias-rule alias) rules))))
-        (add-rules-to-category (category-named 'country) rules)))
-    (values obj
+              do (push (alias-rule alias) rules))))))
+    (push-onto-plist country rules :rules)
+    (values country
             rules)))
 
 
