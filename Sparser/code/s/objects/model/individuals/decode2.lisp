@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.5 May 2013
+;;;  version:  0.5 June 2013
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -30,6 +30,8 @@
 ;;     (6/19/09) Fan-out from lexical treatment of variables.
 ;;     (12/6/10) Turned break in decode/check-value into sort of a cerror
 ;;     (5/26/13) Added superc check for psi case in decode-exp-as-ref-category
+;;     (6/14/13) break => error since the treebank test tends to fail in
+;;      this code and the error handler lets us keep going.
 
 (in-package :sparser)
 
@@ -72,8 +74,8 @@
           ;; today just assuming it's already evaluated and is correct
 
           (unless variable
-            (break "Can't locate a variable named \"~A\" ~
-                  for the category ~A" var-name category))
+            (error "Can't locate a variable named \"~A\" ~
+                    for the category ~A" var-name category))
 
           (setq value (decode-value-for-variable value-exp variable))))
 
@@ -115,7 +117,7 @@
 		   (type-of v/r) v/r)))))
     (when (consp result)
       (when (eq (car result) :violation)
-        (apply #'break (cdr result)) ;; wants to be a cerror
+        (error "~a" (cdr result)) ;;/// can we contiue?
 	(setq result value-exp)))
     result ))
 
@@ -200,7 +202,7 @@
           (setq succeeded? result)))
 
       (unless succeeded?
-        (break "None of the alternatives in the value restrictions ~
+        (error "None of the alternatives in the value restrictions ~
                 on~%  ~A~%were satisfied~%  ~A~%~%"
                value-exp v/r))
       succeeded? ))
@@ -209,7 +211,7 @@
     (decode-value-for-primitive-v/r value-exp (cadr v/r) variable))
 
    (t
-    (break "The value restriction -- ~A~
+    (error "The value restriction -- ~A~
             ~%is a list but it isn't based on the keywords ~
             :primitive or :or"
            v/r))))
@@ -219,7 +221,7 @@
   (if (consp v/r)
     (then
       (unless (eq (first v/r) :or)
-        (break "The ':primitive' value restriction is a list ~
+        (error "The ':primitive' value restriction is a list ~
                 ~%but its first item is not the keyword ':or'~
                 ~%  variable: ~A~
                 ~%  v/r: ~A" variable v/r))
@@ -232,7 +234,7 @@
                        (eq (car result) :violation))
             (setq succeeded result)))
         (unless succeeded
-          (break "None of the alternatives in the value restrictions ~
+          (error "None of the alternatives in the value restrictions ~
                 on~%  ~A~%were satisfied~%  ~A~%~%"
                value-exp v/r))
         succeeded ))
@@ -262,7 +264,7 @@
                               ~%for the variable ~A,~
                               ~%which is restricted to taking words."
                                value-exp variable)))
-             (t (break "violation")
+             (t
               (v/r-violation "Non-string, ~A, passed as value~
                               ~%for the variable ~A,~
                               ~%which is restricted to taking words."
@@ -345,5 +347,5 @@
        value-exp )
       
       (otherwise
-       (break "New kind of primitive value restriction: ~A"
+       (error "New kind of primitive value restriction: ~A"
               v/r)))))

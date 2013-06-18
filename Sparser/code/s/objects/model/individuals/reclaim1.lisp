@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.1 February 2013
+;;;  version:  1.2 June 2013
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
@@ -19,6 +19,8 @@
 ;;      a lattice-point.
 ;;     (2/7/13) Found case of a category assigned to lists having a hash-table. 
 ;;      Put in a catch in the iterator so reclamation can continue.
+;; 1.2 (6/15/13) Fixed tricky bug in making objects permanent exposed by
+;;      including instances from hashtables.
 
 (in-package :sparser)
 
@@ -98,6 +100,17 @@
   ;; individual ("instance") has just been cons'd onto the
   ;; front of the instances list. 
 
+  (unless (permanent-individual? individual)
+    (push-debug `(,individual ,category ,(unit-plist category)))
+    (error "Threading bug: expected ~a~
+          ~%to be a permanent individual but it's not."
+           individual))
+
+  (note-permanence-of-categorys-individuals category)
+  ;; This isn't the same as "all of its individuals are permanent",
+  ;; but it suffices to keep reclaim from zero'ing its instance
+  ;; field.
+
   (let* ((plist (unit-plist category))
          (cell/permanent-list (member :permanent-individuals plist
                                       :test #'eq))
@@ -106,16 +119,9 @@
          (cell/instances (member :instances plist :test #'eq))
          (instances (second cell/instances)))
 
-     (unless (permanent-individual? individual)
-       (push-debug `(,individual ,category ,plist))
-       (error "Threading bug: expected ~a~
-             ~%to be a permanent individual but it's not."
-              individual))
-
-    (note-permanence-of-categorys-individuals category)
-    ;; This isn't the same as "all of its individuals are permanent",
-    ;; but it suffices to keep reclaim from zero'ing its instance
-    ;; field.
+;    (push-debug `(,individual ,category))
+;    (format t "individual = ~a" individual) (break "break?")
+;    (setq individual (car *) category (cadr *))
 
     (cond
      ((null (cdr instances))
@@ -127,6 +133,7 @@
               :permanent-individuals
               ,(list individual)
               ,@plist )))
+
 
      ((null cell/1st-permanent)
       ;; none of the instances on the list are permanent
@@ -142,7 +149,6 @@
         (rplacd instances-cell
                 (cons instances rest-of-the-plist))
         (break "that look right?")
-
         ;; add the permanent marker on the front
         (setf (unit-plist category)
               `( :1st-permanent-individual
@@ -150,9 +156,9 @@
                  :permanent-individuals
                  ,(list individual)
                 ,@plist))
+        (break "still look right?")))          
+   
 
-        (break "still look right?")))                
-    
 
      ((eq (second cell/1st-permanent)
           (second instances))
@@ -163,20 +169,43 @@
       (rplacd cell/permanent-list
               ;; the permanent list should be identical to the
               ;; instances list
-              `( ,(second cell/instances)
+              `(,(second cell/instances)
                 ,@(cddr cell/permanent-list) ))
       (rplacd cell/1st-permanent
               `( ,individual
                 ,@(cddr cell/1st-permanent) )))
 
+
+
+     ((eq individual (car instances))
+      ;; As expected, it's at the front of the list
+      ;; (push-debug `(,individual ,category))
+      ;; (setq individual (car *) category (cadr *))
+      ;; (add-permanent-individual individual category)
+
+      ;; make it the 1st-permanent
+      (rplaca (cdr cell/1st-permanent)
+              individual)
+
+      ;; put it on the fron t of the permanent individuals list
+      (rplaca (cdr cell/permanent-list)
+              (cons individual (cadr cell/permanent-list))))
+
+      
+
      (t ;; It isn't at the front of the list, so it has to be moved
-
-      ;; (4/10/13) There was a break here: "not on top" so perhaps
-      ;; this wasn't fully worked through back in the day
-      ;; So putting in local checks to get a better error than
-      ;; 'nil is not the expected type 'cons'
-
-      (push-debug `(,(copy-list cell/instances)))
+      (push-debug `(,(copy-list instances) ,(copy-list cell/instances)
+                  ,(copy-list cell/1st-permanent)
+                  ,(copy-list cell/permanent-list)))
+ #|     (setq copies (peek-debug))
+      (setq instances (nth 0 copies)
+            cell/instances (nth 1 copies)
+            cell/1st-permanent (nth 2 copies)
+            cell/permanent-list (nth 3 copies))  |#
+      (push-debug `(,individual ,category))
+      (break "Make permanent: something else is going on")
+ 
+      ;;----------------- this is all suspect 6/14/13
       ;; pop it off the top of the instances list
       (rplacd cell/instances (cddr cell/instances))
 
@@ -194,7 +223,6 @@
         ;; permanent object.  Nothing else has to change
         (rplacd cell/1st-perm-indiv-in-instances
                 `( ,individual ,@(cddr cell/permanent-list)))
-
         (pop-debug))))
             
     plist ))
@@ -245,8 +273,7 @@
 
     (let ( individuals-touched )
       (dolist (category type-list)
-        (when category
-          ;; 
+        (unless (individuals-of-this-category-are-permanent category)
           (setq individuals-touched
                 (nconc individuals-touched
                        (reclaim-all-instances category)))))
