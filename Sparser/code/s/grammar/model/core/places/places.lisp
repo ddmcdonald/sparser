@@ -28,7 +28,7 @@
   ;; Called from categorize-and-form-name
   ;; Returns a name. The object with that name is created in 
   ;; establish-referent-of-pn, keying off the category of the name
-  (let* ((sequence (define-sequence items category::location))
+  (let* ((sequence (define-sequence items))
          (name (define-individual 'name-of-location
                  :sequence sequence
                  :type location-head)))
