@@ -14,7 +14,7 @@
 ;;    they could be assembled using lattice-points. 
 ;;    (3/17/05) Added np-common-noun/one-of-several schema to titlex2
 ;; 1.2 (2/21/11) Added abbreviated-title for things like CEO. 
-;; 2.0 (3/18/13) Redit everything.
+;; 2.0 (3/18/13) Redid everything.
 
 (in-package :sparser)
 
@@ -49,7 +49,7 @@ Need to see how it distributes and what its actual frequency is.
 
 Meaning:  If someone is a "former" <position>? then at some time
 in the past they actually held the position.  We can ask 
-"when were they the <p>
+"when were they the <p>".
 
 |#
 
@@ -62,14 +62,25 @@ in the past they actually held the position.  We can ask
   :instantiates title
   :rule-label title
   :binds ((base-title . title)
-          (modifier . (:or title title-modifier)))
-  :realization (:tree-family premodifier-creates-type
-                :mapping ((type . :self)
-                          (head-var . base-title)
-                          (modifier-var . modifier)
-                          (np . title)
-                          (np-head . (title title-modifier))
-                          (modifier . (title title-modifier)))))
+          (modifier . (:or title title-modifier))
+          (locale . country))
+  ;; What else can anchor a title to a place?
+  ;; If we make it location will a rule over referents
+  ;; do the trick?
+  :index (:permanent :sequential-keys base-title modifier)
+  :realization ((:tree-family premodifier-creates-type
+                 :mapping ((type . :self)
+                           (head-var . base-title)
+                           (modifier-var . modifier)
+                           (np . title)
+                           (np-head . (title title-modifier))
+                           (modifier . (title title-modifier))))
+                (:tree-family premodifier-adds-property
+                 :mapping ((property . locale)
+                           (modifier . country)
+                           (np-head . (title title-modifier))))))
+
+
 ;; title-qualifiers in dossiers/title-qualifiers are more versatile
 ;; words than just their relationship to titles: 
 ;;  "acting" "current" "former" "(the) late", "retired"
@@ -86,6 +97,7 @@ in the past they actually held the position.  We can ask
   :rule-label title
   :binds ((title . (:or title modified-title))
           (qualifier . title-status))
+  :index (:permanent :sequential-keys title qualifier)
   :realization (:tree-family premodifier-creates-type
                 :mapping ((type . :self)
                           (head-var . title)
@@ -105,6 +117,7 @@ in the past they actually held the position.  We can ask
   :rule-label title
   :binds ((abbreviation)
           (full-form . title))
+  :index (:permanent :key abbreviation)
   :realization (:common-noun abbreviation))
 
 (defun define-abbreviated-title (abbreviation/s &key full)
