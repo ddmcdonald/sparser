@@ -284,6 +284,7 @@
 (defun assemble-raw-number-sequence (starting-position
 				     end-of-number-word-sequence
 				     prior-number-edge)
+  (declare (ignore prior-number-edge))
   ;; n.b. this is an fsa, so we're obligated to return a position
   (let ( numbers )
     (do ((position starting-position (chart-position-after position))
@@ -297,7 +298,7 @@
 	(error "Why isn't there a number reference on edge ~a" edge))
       (push number numbers))
     (setq numbers (nreverse numbers))
-    (let* ((sequence (define-sequence numbers (category-named 'number)))
+    (let* ((sequence (define-sequence numbers))
 	   (referent (define-or-find-individual (category-named 'sequence-of-numbers)
 		       :numbers sequence)))
       (make-chart-edge
