@@ -1,16 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "generic"
 ;;;    Module:   "objects;rules:rule links:"
-;;;   Version:   1.4 May 1995
+;;;   Version:   1.4 June 2013
 
 ;;  1.1  (v1.5)  cat-rules -> cat-rule-set
 ;;  1.2  (3/20/91 v1.8.1)  Changed Establish-rule-set-for to look for an
 ;;       already existing set before making a new one.
 ;;  1.3  (9/2/92 v2.3) added referential-category, mixed-category
 ;;  1.4  (7/11/94) "mixed" became "mixin" somewhere in the meantime
-;;       (5/22/95) added Remove-rule-set-from
+;;       (5/22/95) added Remove-rule-set-from. 6.14.13 added null case
+;;        for individual.
 
 (in-package :sparser)
 
@@ -26,6 +27,7 @@
       (polyword (pw-rules obj))
       ((or category referential-category mixin-category)
        (cat-rule-set obj))
+      (individual nil)
       (otherwise
        (unless ignore-otherwise-case
          (error "No generic access function for rule-sets defined ~
