@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "names"
 ;;;   Module:  "model;core:people:"
-;;;  version:  1.4 March 2013
+;;;  version:  1.4 June 2013
 
 ;; initiated 6/8/93 v2.3, added indexes 6/15.
 ;; 1.1 (1/7/94) Beginning to simplify the indexing.  Tweeked that 10/3.
@@ -14,8 +14,10 @@
 ;; 1.3 (10/30) put in a treatment for collections and tweeked versions
 ;; 1.4 (12/5) fixed glitches in the treatment of versions.
 ;;     (11/25/12) Blocked stub breaks for the interior of long names
-;;      or the presence of 'version' in make-person-name-from-items1.
+;;      or the presence of 'version' in make-person-name-from-items.
 ;;     (3/6/13) Got an initial in first-name position. 3/7 revived version.
+;;     (6/14/13) Refactored to let the real person-name builder have the
+;;      cleaner name.
 
 (in-package :sparser)
 
@@ -60,27 +62,22 @@
 
 (defun index-person-name-to-person (name person)
   ;; called from make/person-with-name
-  (push-debug `(,name ,person)) ;;(break "index")
   (let ((last-name (value-of 'last-name name)))
-    ;; This handles the 'direct reference' case
+    (unless last-name
+      (push-debug `(,name ,person))
+      (error "The name of this person, ~a,~%does not have ~
+              a last-name variable.~%Something upstream used ~
+              something other than make-person-name-from-items."
+             person))
     (bind-variable 'name-of person last-name)))
 
 ;;--- make
 
-(defun make-person-name-from-items (items &key version and)
+(defun make-person-name-from-items (items &key version sequence)
   ;; Called from Categorize-and-form-name
-  ;; The 'and' and 'version' arguments are indexes into the
-  ;; list of items.    ///n.b. There is no provision
-  ;; as yet for both of them including versions in their
-  ;; names -- Examine would have to anticipate that.
-  (if and
-    (make-a-collection-of-person-names items and version)
-    (make-person-name-from-items1 items :version version)))
-
-
-(defun make-person-name-from-items1 (items &key version sequence)
+  ;; The 'version' argument is an index into the list of items.
   (let ((sequence (or sequence
-                      (define-sequence items category::name-word)))
+                      (define-sequence items)))
         (last-name (if version ;; "Jr." for now just pressume it's last
                      (cadr (reverse items))
                      (car (last items))))
@@ -103,10 +100,8 @@
       name )))
 
 
-
-
 (defun make-a-collection-of-person-names (items and version-cons)
-  ;; Called from Make-person-name-from-items.
+  ;; Called from categorize-and-form-name
   ;; Split the items at the position of the 'and', make person names
   ;; out of them both, then stash them into a collection.
   (let ((first-items (subseq items 0 (1- and)))
@@ -120,17 +115,17 @@
       ;; distributes across the names.
       (if (> version-index and)
         ;; Then it goes with the second name.
-        (setq first (make-person-name-from-items1 first-items)
-              second (make-person-name-from-items1
+        (setq first (make-person-name-from-items first-items)
+              second (make-person-name-from-items
                       second-items
                       :version version-object))
-        (setq first (make-person-name-from-items1
+        (setq first (make-person-name-from-items
                      first-items
                      :version version-object)
-              second (make-person-name-from-items1 second-items)))
+              second (make-person-name-from-items second-items)))
 
-      (setq first (make-person-name-from-items1 first-items)
-            second (make-person-name-from-items1 second-items)))
+      (setq first (make-person-name-from-items first-items)
+            second (make-person-name-from-items second-items)))
 
     (setq collection (define-or-find-individual 'collection
                        :items (list first second)

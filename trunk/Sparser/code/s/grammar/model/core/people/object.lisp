@@ -2,7 +2,7 @@
 ;;; copyright (c) 1993-2005,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
-;;;   Module:  "model;core:names:people:"
+;;;   Module:  "model;core:people:"
 ;;;  version:  0.2 June 2013
 
 ;; initiated 6/8/93 v2.3
@@ -99,7 +99,7 @@
   (let* ((words (name-string-to-words name-string))
          (name-words (name-words-for-words words))
          (person-name ;; also takes version keyword
-          (make-person-name-from-items1 name-words)))
+          (make-person-name-from-items name-words)))
     (or (find/person-with-name person-name)
         (make/person-with-name person-name))))
  

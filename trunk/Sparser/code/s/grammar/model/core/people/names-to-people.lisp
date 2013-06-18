@@ -56,7 +56,7 @@
           (unless sequence
             (push-debug `(,name))
             (break "Name is not based on a sequence:~%  ~A" name))
-          (let ((person-name (make-person-name-from-items1 
+          (let ((person-name (make-person-name-from-items
                               (value-of 'items sequence)
                               :sequence sequence)))
             (or (find/person-with-name person-name)
@@ -76,9 +76,8 @@
        (category::name-word
         (let ((person-name
                (or (name-word-to-person? name)
-                   (define-individual 'person-name
-                     :sequence (define-sequence (list name)
-                                 category::name-word)))))
+                   (make-person-name-from-items
+                    (list name)))))
           (or (find/person-with-name person-name)
               (make/person-with-name person-name))))
 
@@ -101,9 +100,7 @@
 
     (word
      (let* ((nw (define-individual 'name-word :name name))
-            (person-name (define-individual 'person-name
-                           :sequence (define-sequence (list nw)
-                                       category::name-word))))
+            (person-name (make-person-name-from-items (list nw))))
        (or (find/person-with-name person-name)
            (make/person-with-name person-name))))
 
