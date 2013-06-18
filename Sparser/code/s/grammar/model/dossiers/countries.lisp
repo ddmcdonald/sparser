@@ -103,7 +103,7 @@
 (define-country "Iran")
 (define-country "Iraq" :adjective "Iraqi")
 (define-country "Ireland")
-(define-country "Israel")
+(define-country "Israel" :adjective '("Israeli" "Jewish")) ;; :language "Hebrew"
 (define-country "Italy")
 (define-country "Jamaica")
 (define-country "Japan" :adjective "Japanese")
