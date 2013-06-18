@@ -269,7 +269,7 @@
 ;;;---------------------------------------------
 
 (defun make/uncategorized-name (list-of-name-words)
-  (let ((sequence (define-sequence list-of-name-words category::name-word))
+  (let ((sequence (define-sequence list-of-name-words))
         (obj (make-unindexed-individual category::uncategorized-name)))
 
     ;; The name doesn't have to be indexed because we recover it from
@@ -293,9 +293,7 @@
   ;; called from a name-creator. The sequence of name words
   ;; has to exist, and then it has to have been bound as the
   ;; name/s of some uncategorized-name
-  (let ((seq
-         (find-sequence list-of-name-words
-                        category::name-word)))
+  (let ((seq (find-sequence list-of-name-words)))
     (when seq
       (name-based-on-sequence/uncategorized seq))))
 
@@ -341,7 +339,7 @@ WHO.
   ;; This part is take from make/uncategorized-name
   ;; Return value designed to feed edge creation in 
   ;; reify-ns-name-and-make-edge
-  (let ((sequence (define-sequence words category::word))
+  (let ((sequence (define-sequence words))
         (name (make-unindexed-individual category::spelled-name)))
     (bind-variable :name/s sequence name category::spelled-name)
 
