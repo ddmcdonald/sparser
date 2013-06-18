@@ -169,7 +169,7 @@
   ;; Called from Cap-seq-continues-from-here? when there is a 
   ;; close-bracket on the position before the next word and we're
   ;; supposed to respect it: *pnf-scan-respects-segment-boundaries*
-  (tr :Boundary-continuation position-before)
+  (tr :boundary-continuation position-before)
   (if (eq cap-state :punctuation)
     (checkout-punctuation-for-capseq position-before)
     (if (actual-word-introduces-bracket position-before cap-state)
@@ -294,7 +294,7 @@
 (defun checkout-punctuation-for-capseq (position-before)
   ;; the terminal at this position is punctuation of some sort.
   ;; Decide what to do on a case-by-case basis
-  (tr :Checkout-punctuation-for-capseq position-before)
+  (tr :checkout-punctuation-for-capseq position-before)
   (let ((punct (pos-terminal position-before)))
     (cond
      ((eq punct word::.)

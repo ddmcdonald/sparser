@@ -452,7 +452,7 @@
              (name-words (mapcar #'(lambda (w)
                                      (define-individual 'name-word :name w))
                                  words))
-             (sequence (define-sequence name-words category::name-word)))
+             (sequence (define-sequence name-words)))
         sequence))
 
      (t (push-debug `(,edge ,purpose))

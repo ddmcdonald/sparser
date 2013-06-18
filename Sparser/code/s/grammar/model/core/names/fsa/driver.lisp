@@ -21,7 +21,7 @@
 ;;     beause the initial company is swallowing any following under-modeled
 ;;     verb in DM&P mode. 
 ;; 0.7 (2/3/13) Changed pnf/scan-classify-record to ignore function words
-;;     at sentence stsarts. 
+;;     at sentence starts. 
 
 (in-package :sparser)
 
@@ -116,7 +116,7 @@
    ((and (function-word? (pos-terminal starting-position))
          (could-be-the-start-of-a-sentence starting-position))
     (tr :pnf/fn-word-at-sentence-start (pos-terminal starting-position))
-     (set-status :pnf-preempted starting-position)
+    (set-status :pnf-preempted starting-position)
     nil )
    (t
     (set-status :PNF-checked

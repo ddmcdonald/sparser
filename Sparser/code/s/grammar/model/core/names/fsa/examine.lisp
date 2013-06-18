@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.18 March 2013
+;;;  version:  0.18 June 2013
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -67,7 +67,8 @@
 ;;       in the monster loop and double-country-check that's called if more than
 ;;       one country is seen. Right now this always throws "not a name" to abort
 ;;       further processing. Could be considerably refined (e.g. for countries in
-;;       adjective form), but need the cases.   
+;;       adjective form), but need the cases. 6/14/13 Refactored call to make person
+;;       name.
 
 (in-package :sparser)
 
@@ -460,6 +461,10 @@
             name ))))))
 
 
+(defvar *break-before-creating-name* nil
+  "Helpful in debugging PNF. Traps it before it's made any 
+   real mistakes and built something we'll have to rip out.")
+
 
 (defun categorize-and-form-name (items 
                                  name-state country
@@ -472,6 +477,10 @@
   ;; and make it [[ why not look for existing one? ]]. 
   ;; The referent of the edge is determined by our caller up in
   ;; classify-&-record-span using the fn do-referent-and-edge
+
+  (when *break-before-creating-name*
+    (push-debug `(,items)) ;; all of them?
+    (break "Look around at what categorize-and-form-name will do"))
 
   (cond
    ((known-sequence items)) ;; throws if it succeeds
@@ -568,8 +577,9 @@
 
               ;; Why don't these do find's first?
               (category::person-name
-               (make-person-name-from-items
-                items :version person-version :and and))
+               (if and
+                 (make-a-collection-of-person-names items and person-version)
+                 (make-person-name-from-items items :version person-version)))
               (category::company-name
                (make-company-name-from-items items
                  :&-sign &-sign          :ordinal ordinal

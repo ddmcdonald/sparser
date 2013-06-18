@@ -216,7 +216,7 @@
         (name-word (make-name-word-for-unknown-word-in-name word position)))
     (tr :pnf/items-for-unknown-word word name name-word)
 
-    (let ((sequence (define-sequence (list name-word) category::name-word)))
+    (let ((sequence (define-sequence (list name-word))))
 
       (bind-variable 'name/s sequence name)
       (index/uncategorized-name name sequence)
