@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.7 June 2013
+;;;  version:  0.8 June 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (9/18/93) added index/individual/seq-keys
@@ -20,7 +20,9 @@
 ;;      increasing reliance on psi.
 ;;     (1/11/11) Fixed call to field of operations in index-aux/individual
 ;;      when the category didn't have any because it was made by DM&P.
-;; 0/7 (6/3/13) Clarifying treatment of permanent vs. reclaim-able
+;; 0.7 (6/3/13) Clarifying treatment of permanent vs. reclaim-able
+;; 0.8 (6/14/13) Generalized all-instances to do hash-tables. 6/17 cleaned up
+;;      from initially going overboard. 
 
 
 (in-package :sparser)
@@ -52,7 +54,6 @@
 ;;;--------
 ;;; driver
 ;;;--------
-
 
 (defun index-aux/individual (individual
                              category
@@ -86,7 +87,6 @@
          *index-under-permanent-instances*))))
 
 
-
 (defun index-to-category (individual category permanent?)
 
   ;; called by Index-aux/individual to handle the interaction
@@ -112,21 +112,9 @@
 ;;; access routines
 ;;;-----------------
 
-(defun all-instances-of (symbol-for-category)
-  (let ((category (category-named symbol-for-category)))
-    (unless category
-      (error "There is no category named ~A" symbol-for-category))
-    (all-instances category)))
-
-
-(defun all-instances (category)
-  (cadr (member :instances (unit-plist category) :test #'eq)))
-
-
 (defun instance# (integer symbol-for-category)
   (let ((instances (all-instances-of symbol-for-category)))
     (find integer instances :key #'indiv-id)))
-
 
 (defun list-instances (symbol-for-category)
   (let ((category (category-named symbol-for-category)))
@@ -135,5 +123,28 @@
     (let ((instances (all-instances category)))
       (pl instances)
       (length instances))))
+
+
+(defun all-instances-of (symbol-for-category)
+  (let ((category (category-named symbol-for-category)))
+    (unless category
+      (error "There is no category named ~A" symbol-for-category))
+    (all-instances category)))
+
+(defun all-instances (category)
+  (let ((listing (cat-instances category))
+        (plisting
+         (cadr (member :instances (unit-plist category) :test #'eq))))
+    (cond
+     ((null listing) 
+      nil)
+     ((typep listing 'hash-table)
+      (loop for v being the hash-value of listing
+        collect v))
+     (plisting
+      plisting)
+     (t (push-debug `(,category))
+        (error "Unclear how to collect the instances of ~a"
+               category)))))
 
 
