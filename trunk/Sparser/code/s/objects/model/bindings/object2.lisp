@@ -35,6 +35,8 @@
 ;;      argument test to value-of. 4.7.13 added with-bindings, and an escape for
 ;;      value-of
 ;; 2.2 (5/28/13) Added who-binds as analog of value-of for the bound-in field.
+;;     (6/15/13) Clarified what has-binding is doing an added guards to ensure
+;;      that it's used correctly.
 
 (in-package :sparser)
 
@@ -262,6 +264,10 @@
 
 (defun has-binding (indiv &key ((:variable var-name))
                                 value)
+  "Does the individual bind this value, and if so does the value
+   of that binding match this specified value?"
+  (unless var-name (error "A variable has to be specified"))
+  (unless value (error "A value has to be specified"))
   (let ((variable (decode-variable-name var-name :individual indiv))
         (bindings (indiv-binds indiv))
         with-variable )
