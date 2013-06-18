@@ -14,9 +14,11 @@
   "Just pull in the vocabulary all at once"
   (let ((*do-forest-level* nil)  ;; No supra-segment parsing for this pass
         (*new-segment-coverage* :none)
-        (*do-heuristic-segment-analysis* nil))
+        (*do-heuristic-segment-analysis* nil)
+        (*tts-after-each-section* nil))
     (declare (special *do-forest-level* *new-segment-coverage*
-                      *do-heuristic-segment-analysis*))
+                      *do-heuristic-segment-analysis*
+                      *tts-after-each-section*))
     (do-normal-segment-finished-options)
     (analyze-document-stream document-stream)))
 
