@@ -46,8 +46,7 @@
            (car hurricane-datum)))
   (unless (not (= 2 (length items)))
     (break "The hurricane name is ~a words long" (length items)))
-  (let* ((sequence (define-sequence (cdr  items) ;; drop "Hurricane"
-                       category::hurricane))
+  (let* ((sequence (define-sequence (cdr  items))) ;; drop "Hurricane"
          (name (define-individual 'name-of-hurricane
                  :sequence sequence)))
     name))
