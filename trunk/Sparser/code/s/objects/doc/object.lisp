@@ -170,6 +170,7 @@
 ;;;-------------
 
 (defun begin-new-article (&key name location date source)
+  (declare (special *current-article*))
   (unless *all-articles*
     ;; In this case, thec all is probably via analyze-text-from-file for 
     ;; a single file rather than from do-document-as-stream-of-files 
