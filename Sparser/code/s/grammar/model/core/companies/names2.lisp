@@ -141,7 +141,7 @@
 
 (defun make-company-name-as-simple-sequence (items)
   ;; Called from define-company as well as from just above.
-  (let ((sequence (define-sequence items category::company-name))
+  (let ((sequence (define-sequence items))
         name )
     (setq name (define-individual 'company-name
                  :sequence sequence))
