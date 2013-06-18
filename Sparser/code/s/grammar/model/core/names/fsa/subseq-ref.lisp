@@ -18,6 +18,8 @@
 ;;      linked name-word. Adapting dereference-proper-noun as well
 ;;      Rebuild it (item-already-linked-to-entity) while tracking down an infinite loop
 ;;      on 2/22/13. Fixed basic case (name-of) for person 6/7/13
+;;     (6/15/13) Fixed subsequent-reference-off-name-word
+;;     (6/17/13) Generalized known-sequence beyond companies. 
 
 (in-package :sparser)
 
@@ -94,10 +96,16 @@
   (let ((pos-in-sequence-bindings
          (bound-in nw :super-category 'ordinal :all t))
         (direct-reference
-         (when (has-binding nw :variable 'name-of)
-           (value-of 'name-of nw))))
-    (or direct-reference
-        (when pos-in-sequence-bindings
+         (value-of 'name-of nw)))
+    (if direct-reference
+      (let ((i direct-reference)) ;; for clarity
+        (unless (individual-p i)
+          (error "Expected the object linked to ~a to be an individual" nw))
+        (values (itype-of i)
+                i
+                :linked-to-name-word))
+
+      (when pos-in-sequence-bindings
           (let ( pos-in-sequence  sequence  person-name  co-name  name
                  person  company )
         
@@ -302,29 +310,34 @@
 
 
 (defun known-sequence (items)
-  ;;//// Sequence index presupposes that you know the category
-  ;;//// Have to change that
-  (let ((sequence (find-sequence items category::company-name)))
+  "Have we seen this sequence before. If so, what names are based
+   on it, and what do they name. If this picks out a single entity
+   we return it. Stubs for cases of multiple names or multiple named
+   entities."
+  (let ((sequence (find-sequence items)))
     (if sequence
-      (let ((name ;;/// burning in company here too
-             (find/company-name/given-sequence sequence)))
-        (unless name
-          (push-debug `(,sequence ,items))
-          (break "Why isn't there a name associated with this ~
-                  sequence:~%  ~a" sequence))
-        (let ((entities (who-binds 'name name)))
-          (if (null (cdr entities))
-            (let ((company (car entities)))
-              (push-debug `(,company)) ;; to play with while debugging
-              (tr :recognized-sequence-as company items)
-              (throw :already-decoded-name company))
-            (else ;; its ambiguous
-             (push-debug `(,name ,entities))
-             ;;//// lookup format pattern for iterator !!!
-             (break "The name ~a~%is ambiguous" name)))))
+      ;; (whole) sequences link to names and ordinals for each item
+      (let ((references (who-binds 'sequence sequence)))
+        (when references
+          ;; pick out the name 
+          (let ((names (loop for ref in references
+                        when (itypep ref 'name)
+                        collect ref)))
+            (if (null (cdr names))
+              ;; Is it always "names" for the variable?
+              (let ((entities (who-binds 'name (car names))))
+                (if (null (cdr entities))
+                  (throw :already-decoded-name (car entities))
+                  (else
+                   (push-debug `(,entities ,names))
+                   (error "Ambiguous name: ~a" entities))))
+              (else
+               (push-debug `(,names))
+               (error "Sequence identifies multiple names: ~a"
+                      names)))))))
       (else
        (tr :pnf-items-no-known-sequence items)
-       nil))))
+       nil)))
 
                                       
 
