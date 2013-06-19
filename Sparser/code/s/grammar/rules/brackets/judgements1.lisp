@@ -581,6 +581,8 @@
              ((eq bracket-opening-segment .[|that|)
               (refine-bracket-at-segment-boundary preposition.[ .[adjective)
               t)
+             ((eq bracket-opening-segment punctuation.[)
+              nil)
              (t (if *break-on-new-bracket-situations*
                   (then
                    (push-debug `(,position ,*bracket-opening-segment*
