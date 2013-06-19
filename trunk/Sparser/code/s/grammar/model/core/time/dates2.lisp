@@ -41,12 +41,8 @@
                           (term4 . weekday))
                 :common-noun "date"))
 
-;;this cfr is for phrases like June 26 2013, added 6/6/13
-(def-cfr date (date year))
-;;this cfr is for phrases like Monday June 26 2013, added 6/6/13
-(def-cfr date (time date))
-;;this cfr is for phrases like "Summer of 2010" or "Winter 2013", added 6/8/13
-(def-cfr date (season year))
+
+
 
 
 
