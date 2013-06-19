@@ -73,13 +73,13 @@
 ;;; scan traces
 ;;;-------------
 
-(deftrace :Cap-seq-looking-at (pos)
+(deftrace :cap-seq-looking-at (pos)
   (when *trace-pnf*
     (trace-msg "PNF: Checking for continuation at p~A, \"~A\""
                (pos-token-index pos)
                (word-pname (pos-terminal pos)))))
 
-(deftrace :Cap-seq-continues/status (cap-state bracket)
+(deftrace :cap-seq-continues/status (cap-state bracket)
   (when *trace-pnf*
     (trace-msg "PNF:    Its capitalization is ~A~
               ~%        Its bracket state is ~A"
