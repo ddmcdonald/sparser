@@ -323,6 +323,10 @@
           (let ((names (loop for ref in references
                         when (itypep ref 'name)
                         collect ref)))
+            (unless names
+              (push-debug `(,references ,sequence ,items))
+              (error "Expected at least one name to be associated ~
+                      with this sequence:~%~a" sequence))
             (if (null (cdr names))
               ;; Is it always "names" for the variable?
               (let ((entities (who-binds 'name (car names))))
