@@ -15,7 +15,7 @@
 ;;; the style object
 ;;;------------------
 
-(define-document-style  Hand-typed/no-headers
+(define-document-style  hand-typed/no-headers
   :init-fn setup-for-typed/no-headers)
 
 
