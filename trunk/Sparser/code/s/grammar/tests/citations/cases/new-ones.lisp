@@ -163,29 +163,29 @@ e8    FRACTION-OF-AMOUNT-OF-TIME  2 "the first three months" 6
   (1 DATE 5))
 
 ;;date without comma-year, less standard notation but same meaning as above
-;;this one no longer works
-#|
 (define-citation "June 26 2010"
-  (1 DATE 4))|#
+  (1 DATE 4))
 
 ;;expanded date with weekday and commas
-;;this one no longer works
-#|(define-citation "Monday, June 26, 2010"
-  (1 DATE 7))|#
+(define-citation "Monday, June 26, 2010"
+  (1 DATE 7))
 
 ;;expanded date with weekday but no commas
-;;no longer works
-#|(define-citation "Monday June 26 2010"
-  (1 DATE 5))|#
+(define-citation "Monday June 26 2010"
+  (1 DATE 5))
 
 ;;expanded date with weekday and comma-year
-;;no longer works
-#|(define-citation "Monday June 26, 2010"
-  (1 DATE 6))|#
+(define-citation "Monday June 26, 2010"
+  (1 DATE 6))
 
-;;expanded date with only first comma causes an error
-#|(define-citation "Monday, June 26 2010"
-  (1 DATE 6))|#
+;;expanded date with only first comma
+(define-citation "Monday, June 26 2010"
+  (1 DATE 6))
+
+;;season with year works as date, but do we want to call this a date? 
+;;(according to TimeML, yes)
+(define-citation "summer of 1964"
+(1 DATE 4))
 
 ;;more complicated dates are not parsed compositionally
 
@@ -195,14 +195,6 @@ e0                               "the"
 e1    PHASE-OF-DAY            2 "morning" 3
 e2 e3                            "of" :: of, OF
 e11   DATE                    4 "january 31 , 1999" 8
-                                 END-OF-SOURCE))|#
-
-;;seasons are not labeled at all, and so the following is also not yet seen as a date
-
-#|(define-citation "summer of 1964"
-  (                                 SOURCE-START
-e0    TIME                    1 "summer" 2
-e4    OF-YEAR                 2 "of 1964" 4
                                  END-OF-SOURCE))|#
 
 #|(define-citation "9 o'clock January 1, 1999"
