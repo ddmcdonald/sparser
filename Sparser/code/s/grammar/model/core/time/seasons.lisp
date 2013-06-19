@@ -33,7 +33,7 @@
 
 This pattern is the same one that we get for months
 and years, and would hold for periods in the day ("morning", 
-"evenng") for the most part. 
+"evening") for the most part. 
 
 "Spring"
 "spring"
