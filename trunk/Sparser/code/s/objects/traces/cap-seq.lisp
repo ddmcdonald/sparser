@@ -399,48 +399,48 @@
   (setq *trace-pnf-network* nil))
 
 
-(deftrace :Cap-seq-continues-from-here? (p)
+(deftrace :cap-seq-continues-from-here? (p)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Cap-seq-continues-from-here? p~A"
                (pos-token-index p))))
 
-(deftrace :Checkout-continuation-for-non-punctuation (p)
+(deftrace :checkout-continuation-for-non-punctuation (p)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Checkout-continuation-for-non-punctuation p~A"
                (pos-token-index p))))
 
-(deftrace :Boundary-continuation (p)
+(deftrace :boundary-continuation (p)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Boundary-continuation p~A"
                (pos-token-index p))))
 
-(deftrace :Non-boundary-continuation (p)
+(deftrace :non-boundary-continuation (p)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Non-boundary-continuation p~A"
                (pos-token-index p))))
 
-(deftrace :Non-boundary-continuation/bracket-checked (p)
+(deftrace :non-boundary-continuation/bracket-checked (p)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Non-boundary-continuation/bracket-checked p~A"
                (pos-token-index p))))
 
-(deftrace :Checkout-punctuation-for-capseq (p)
+(deftrace :checkout-punctuation-for-capseq (p)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Checkout-punctuation-for-capseq p~A"
                (pos-token-index p))))
 
 
-(deftrace :Look-ahead-for-initial (p)
+(deftrace :look-ahead-for-initial (p)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Look-ahead-for-initial p~A"
                (pos-token-index p))))
 
-(deftrace :Check-for-initial-before-position (p)
+(deftrace :check-for-initial-before-position (p)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Check-for-initial-before-position p~A"
                (pos-token-index p))))
 
-(deftrace :Examine-capitalized-sequence (start-pos end-pos)
+(deftrace :examine-capitalized-sequence (start-pos end-pos)
   (when *trace-pnf-network*
     (trace-msg "[PNF network] Examine-capitalized-sequence - p~A to p~A"
                (pos-token-index start-pos)
