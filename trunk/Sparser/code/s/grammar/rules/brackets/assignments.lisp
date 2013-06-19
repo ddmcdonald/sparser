@@ -197,8 +197,8 @@
     
 
 
-(defun setup-adjective (word clause &optional ambiguous?)
-  (declare (ignore clause)) ;; /// pull stuff out of it
+(defun setup-adjective (word comlex-clause &optional ambiguous?)
+  ;; /// pull stuff out of the clause
   ;; Comlex has a 'gradable' feature on adjectives, with 
   ;; a flag for er-est. See adjectives in sl/checkpoint/
   (let ((category-name (name-to-use-for-category word))
@@ -208,7 +208,7 @@
             (construct-disambiguating-category-name
              category-name super-category)))
     (when (category-named category-name)
-      (push-debug `(,category-name ,word))
+      (push-debug `(,category-name ,word ,comlex-clause))
       (error "Setup: The category named ~a already exists."
              category-name))
     (let* ((category (define-category/expr category-name
