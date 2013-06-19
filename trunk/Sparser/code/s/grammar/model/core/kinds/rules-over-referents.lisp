@@ -57,5 +57,28 @@
   :form np
   :referent (:function assimilate-appositive left-edge right-edge))
 
+;;--- time grammar
+
+;;--- for dates
+
+;;this cfr is for phrases like June 26 2013, added 6/6/13
+;;Chomsky adjunction
+(def-cfr date (date year)
+  :form np
+  :referent(:head left-edge
+            :bind (year right-edge)))
+
+;;this cfr is for phrases like Monday June 26 2013, added 6/6/13
+;;Chomsky adjunction
+(def-cfr date (time date)
+  :form np
+  :referent(:head right-edge
+            :bind (time left-edge)))
+
+;;this cfr is for phrases like "Summer of 2010" or "Winter 2013", added 6/8/13
+;;Instantiate a category
+(def-cfr date (season year)
+  :form np
+  :referent(:instantiate-individual date))
 
 
