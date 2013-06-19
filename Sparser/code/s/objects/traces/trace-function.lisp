@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "trace function"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  0.3 December 2012
+;;;  Version:  0.3 June 2013
 
 ;; initiated 9/13/92 v2.3
 ;; 0.1 (4/23/93) added Trace-msg/ad-lib
@@ -39,20 +39,22 @@
 (export 'deftrace)
 
 (defun deftrace/expr (keyword arguments body)
-  (let* ((kw-string (string-downcase (symbol-name keyword)))
-         (fn-exp
+  (let* ((fn-exp
           `(defun ,(intern (concatenate 'string
                                         (symbol-name '#:trace)
                                         "-"
-                                        kw-string)
+                                        (symbol-name keyword))
                            (find-package :sparser))
                   ,arguments
              ,@body ))
-         
          (fn (eval fn-exp)))
-    
-    (setf (gethash keyword *trace-keyword-to-function*)
-          fn)))
+
+    (let ((key (if (not (eq 'aa 'AA)) ;; mlisp
+                 (intern (string-downcase 
+                          (symbol-name keyword))
+                         (find-package :keyword))
+                 keyword)))
+         (setf (gethash key *trace-keyword-to-function*) fn))))
 
 
 ;;;------------------------
