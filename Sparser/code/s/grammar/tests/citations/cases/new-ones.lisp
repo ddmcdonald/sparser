@@ -98,8 +98,8 @@ Martin and Westinghouse also"
 ;;"during" gets two labels: a sequencer and its own label during.  
 ;;it fails to combine with weekdays because weekdays still have two labels (WEEKDAY and TIME)
 
-(define-citation "during"
-  (SEQUENCER, DURING))
+#|(define-citation "during"
+  (SEQUENCER, DURING))|#
 
 (define-citation "during January"
   (1 TIME 3))
