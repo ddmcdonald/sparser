@@ -14,6 +14,7 @@
 ;;      of psi.  (3/11/05) Added CA check for stranded years.
 ;;     (5/14/12) Added "date" to supply an empty head in, e.g. "today's date"
 ;;     (6/6/13)  Added two new cfrs to capture longer dates like "Monday, June 26, 2010"
+;;     (6/11/13) Removed cfrs and moved to rules-over-referents.lisp (in dossiers)
 
 (in-package :sparser)
 
