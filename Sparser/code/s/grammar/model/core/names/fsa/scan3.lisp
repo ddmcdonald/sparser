@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993-1995,2013  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
 ;;;  Version:  3.3 April 2013
@@ -13,7 +13,7 @@
 ;;      involve polywords
 ;; 2.2 (1/7/94) modifying the reaction to ] for the case of "A."
 ;; 2.3 (3/21) Adding appreciation of "/"
-;; 2.4 (4/4) putting in special appreciation of "of". 5/2 Debugged a misspelling 
+;; 2.4 (4/4) putting in special appreciation of "of". 5/2 Debugged a misspelling
 ;;       and 5/5 put check for abbreviations there (may be unreachable though)
 ;; 2.5 (5/17) bringing bracket-introduction calls into sync with new scheme
 ;; 2.6 (6/13) fleshed out Checkout-&-for-capseq to look at capitalization of next word,
@@ -53,7 +53,7 @@
   ;; the punctuation that are checked first so that the brackets
   ;; punctuation introduces don't get in the way.
   ;; The value that we return becomes *pnf-end-of-span*.
-  (tr :Cap-seq-continues-from-here? position-before)
+  (tr :cap-seq-continues-from-here? position-before)
 
   ;; scan the next word
   (unless (pos-terminal position-before)
@@ -63,18 +63,18 @@
       (when (eq value-returned :end-the-scan)
         (return-from cap-seq-continues-from-here?
           position-before))))
-  (tr :Cap-seq-looking-at position-before)
+  (tr :cap-seq-looking-at position-before)
 
   ;; evaluate whether to continue the sequence
   (let* ((cap-state (pos-capitalization position-before))
          (position-after (chart-position-after position-before))
          (bracket (bracket-closing-segment-at position-before)))
 
-    (tr :Cap-seq-continues/status cap-state bracket)
+    (tr :cap-seq-continues/status cap-state bracket)
 
     (if (eq cap-state :digits)
       position-before
-      
+
       (if bracket   ;; "of"  "."
         (if *pnf-scan-respects-segment-boundaries*
           (boundary-continuation position-before position-after
@@ -89,14 +89,14 @@
 
 (defun cap-seq-continues-from-here?/aux (cap-state position-before)
   (cond
-   ((eq cap-state :punctuation)  ;; "&" 
+   ((eq cap-state :punctuation)  ;; "&"
     (tr :pnf/next-pos-is-punct position-before)
     ;; the punctuation will decide whether we continue, and
     ;; if not, will return the current position-before which
     ;; will become the call of this value as well
     (checkout-punctuation-for-capseq position-before))
-   
-   ((eq cap-state :lower-case)  ;; "de" 
+
+   ((eq cap-state :lower-case)  ;; "de"
     (if (lc-non-boundary-word-that-may-extend-cap-seq?
               (pos-terminal position-before))
       ;; Then see if the word after than is capitalized.
@@ -111,7 +111,7 @@
                   (continue-pos
                    (if interveening-hyphen?
                      (chart-position-after pos-after-lc-word)
-                     pos-after-lc-word)))                  
+                     pos-after-lc-word)))
              (cap-seq-continues-from-here? continue-pos)))
           (else
            ;; trace goes here
@@ -119,7 +119,7 @@
       (else
        ;; trace goes here
        position-before)))
-   
+
    (t
     (checkout-continuation-for-non-punctuation
      position-before
@@ -133,7 +133,7 @@
                                                   status
                                                   cap-state)
 
-  (tr :Checkout-continuation-for-non-punctuation position-before)
+  (tr :checkout-continuation-for-non-punctuation position-before)
   (let ((position-after (chart-position-after position-before)))
     (case status
       (:scanned
@@ -143,15 +143,15 @@
       (:preterminals-installed )
       (otherwise (break "assimilate new case for status in ~
                          PNF: ~A" status)))
-    
+
     ;; If the next position is capitalized keep on going, otherwise
     ;; return this next position, as it is the index just after
     ;; the last word thus far that wasn't lowercase.
-    
+
     (let ((bracket (]-on-position-because-of-word?
                     ;; e.g. we just scanned "was"
                     position-before (pos-terminal position-before))))
-      
+
       (if bracket
         (if *pnf-scan-respects-segment-boundaries*
           (boundary-continuation position-before position-after
@@ -166,7 +166,7 @@
 
 (defun boundary-continuation (position-before position-after cap-state)
 
-  ;; Called from Cap-seq-continues-from-here? when there is a 
+  ;; Called from Cap-seq-continues-from-here? when there is a
   ;; close-bracket on the position before the next word and we're
   ;; supposed to respect it: *pnf-scan-respects-segment-boundaries*
   (tr :boundary-continuation position-before)
@@ -178,14 +178,14 @@
         (cond ((eq (pos-terminal position-before) *end-of-source*)
                (tr :pnf/stop-at-close-bracket)
                position-before)
-              
+
               ((look-ahead-for-initial position-before)  ;; e.g. "A."
                (tr :pnf/]-ignored-because-of-initial)
                (cap-seq-continues-from-here? position-after))
-              
+
               ((look-ahead-for-abbreviation position-before)
                (cap-seq-continues-from-here? position-after))
-              
+
               ((word-after-lc-word-is-capitalized? position-before)
                (if (lc-word-that-may-extend-cap-seq?
                     (pos-terminal position-before))
@@ -198,7 +198,7 @@
                     (chart-position-after position-after)))
                  (else
                    position-before)))
-              
+
               (t
                (tr :pnf/stop-at-close-bracket)
                position-before)))
@@ -225,12 +225,12 @@
   ;; are the 'extra strong' brackets such as the one introduced by
   ;; multiple empty lines.
 
-  ;; ///called from Cap-seq-continues-from-here? when there is a 
+  ;; ///called from Cap-seq-continues-from-here? when there is a
   ;; close-bracket on the position before the next word -but-
   ;; the *pnf-scan-respects-segment-boundaries* is down and
-  ;; we're supposed to ignore it. 
+  ;; we're supposed to ignore it.
 
-  (tr :Non-boundary-continuation position-before)
+  (tr :non-boundary-continuation position-before)
   (if bracket
     (if (= 0 (rank-of-bracket bracket))
       position-before
@@ -241,7 +241,7 @@
 
 (defun non-boundary-continuation/bracket-checked
        (position-before position-after cap-state)
-  (tr :Non-boundary-continuation/bracket-checked position-before)
+  (tr :non-boundary-continuation/bracket-checked position-before)
   (case cap-state
     (:lower-case
      (tr :pnf/next-pos-is-lowercase position-before)
@@ -271,7 +271,7 @@
            (capitalized-version (pos-terminal position-before)
                                 cap-state))
           rs  bs )
-      
+
       (when caps-version
         ;; there sort of has to be a capitalized version of the
         ;; word, otherwise we wouldn't be within PNF, but this
@@ -361,7 +361,7 @@
     (let ((next-position (chart-position-after position)))
       (unless (pos-assessed? next-position)
         (scan-next-position))
-      
+
       (if (and (null (pos-preceding-whitespace next-position))
                (word-at-this-position-is-capitalized? next-position))
         (cap-seq-continues-from-here? next-position)
@@ -489,8 +489,8 @@
         (setq next-pos (chart-position-after next-pos)
               interveening-hyphen? t)
         (unless (pos-terminal next-pos) ;; very lazy today
-          (scan-ahead-with-check)))        
-      
+          (scan-ahead-with-check)))
+
       (values (case (pos-capitalization next-pos)
                 (:lower-case nil)
                 (:digits nil)
@@ -505,7 +505,7 @@
 (defun populate-lc-person-words ()
   (unless *lc-person-words*
     (setq *lc-person-words*
-          (mapcar #'resolve/make 
+          (mapcar #'resolve/make
                   '("al" "de" "von")))))
 
 (defun lc-word-that-may-extend-cap-seq? (word)

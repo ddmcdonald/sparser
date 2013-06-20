@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1993-1997,2012-2013  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
 ;;;  Version:  0.7 February 2013
@@ -19,9 +19,9 @@
 ;;     (8/17/97) moved *ignore-capitalization* up to [drivers;inits:sessions:globals1]
 ;; 0.6 (11/1/12) In pnf/scan-classify-record added call to sort out the bracketing
 ;;     beause the initial company is swallowing any following under-modeled
-;;     verb in DM&P mode. 
+;;     verb in DM&P mode.
 ;; 0.7 (2/3/13) Changed pnf/scan-classify-record to ignore function words
-;;     at sentence starts. 
+;;     at sentence starts.
 
 (in-package :sparser)
 
@@ -45,7 +45,7 @@
 (defparameter *cap-seq-edge-data-routine* 'cap-seq-no-referent
   "The function used by Make-edge-over-capitalized-sequence to compute
    the category, form, referent, etc. of the edge formed when the
-   PNF routine doesn't use the full bore classification routines.") 
+   PNF routine doesn't use the full bore classification routines.")
 
 (defvar *pnf-has-control* nil
   "A flag used to communicate to embedded parsing and action
@@ -57,7 +57,7 @@
    same routines can communicate changes to it.")
 
 (defvar *pnf-scan-starts-here* nil
-  "set by PNF before it begins its scan and referenced within the 
+  "set by PNF before it begins its scan and referenced within the
    classifier and such as part of making subdivisions of names compounded
    out of other names.")
 
@@ -71,7 +71,7 @@
 
 
 ;;;----------------------
-;;; parameterized driver 
+;;; parameterized driver
 ;;;----------------------
 
 (defun establish-pnf-routine (keyword &optional fn-name)
@@ -104,7 +104,7 @@
 ; (establish-pnf-routine :scan-classify-record)
 
 (defun pnf/scan-classify-record (starting-position)
-  (tr :initiating-PNF starting-position)
+  (tr :initiating-pnf starting-position)
   (set-status :pnf-checked starting-position) ;; move below when coordinated
                                               ;; with the scan differently
   ;;(break "PNF starting with ~a" starting-position)
@@ -119,7 +119,7 @@
     (set-status :pnf-preempted starting-position)
     nil )
    (t
-    (set-status :PNF-checked
+    (set-status :pnf-checked
                 starting-position)
     (let ((*pnf-has-control* t)
           (*pnf-scan-starts-here* starting-position)
@@ -134,7 +134,7 @@
         (let ((edge
                (classify-and-record-name starting-position
                                          *pnf-end-of-span*)))
-          
+
           (if edge
             (tr :pnf/classification edge *pnf-end-of-span*)
             (tr :pnf/aborted-during-classification))
@@ -158,7 +158,7 @@
 (defun pnf/scan/ignore-boundaries (starting-position)
   ;; designed for dm&p where there are lots of names but they aren't
   ;; the names of people or companies
-  (tr :initiating-PNF starting-position)
+  (tr :initiating-pnf starting-position)
   (set-status :pnf-checked starting-position)
   (if *capitalization-is-uninformative*
     (then (tr :pnf/preempted)
@@ -175,7 +175,7 @@
                                             starting-position))))
         (tr :pnf/sequence-ended *PNF-end-of-span*)
 
-        ;; One of the ways we can come out of the scan is via 
+        ;; One of the ways we can come out of the scan is via
         ;; a Throw from some routine that says explicitly that
         ;; the scan should be ended. (The Catch is in Cap-seq-
         ;; continues-from-here?)  Sometimes that routine initiating
@@ -195,7 +195,7 @@
 
 (defun pnf/scan/ignore-boundaries/initials-ok (starting-position)
   ;; Identical to the driver above except for the initials flag
-  (tr :initiating-PNF starting-position)
+  (tr :initiating-pnf starting-position)
   (set-status :pnf-checked starting-position)
   (if *capitalization-is-uninformative*
     (then (tr :pnf/preempted)
