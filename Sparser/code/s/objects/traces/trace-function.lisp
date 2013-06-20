@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1992-2005,2012-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; 
+;;;
 ;;;     File:  "trace function"
 ;;;   Module:  "objects;traces:"
 ;;;  Version:  0.3 June 2013
@@ -70,9 +70,10 @@
   (declare (special *trace-the-trace-calls*))
   (when *trace-the-trace-calls*
     (format t "~&tr: ~a~%" keyword))
-  (let ((fn (gethash keyword *trace-keyword-to-function*)))
+  (let* ((lcase (intern (string-downcase (symbol-name keyword)) :keyword))
+         (fn (gethash lcase *trace-keyword-to-function*)))
     (unless fn
-      (error "The trace function for ~A is undefined" keyword))
+      (error "The trace function for ~A is undefined" lcase))
     (apply fn arguments)
     :trace ))
 
