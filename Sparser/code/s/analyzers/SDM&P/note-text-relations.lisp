@@ -116,22 +116,22 @@
         (when (or (ignorable-category? edge-just-to-the-left)
                   (pronoun-category? edge-just-to-the-left)
                   (verb-category? edge-just-to-the-left)) ;; an aux
-          ;; unlikely to be anything interesting further to 
+          ;; unlikely to be anything interesting further to
           ;; the left and still inside the segment
           (return))
 
         (setq word-just-to-the-left
               (word-just-to-the-left edge-just-to-the-left))
-      
+
         (note 'adjacent word-just-to-the-left word-to-the-right)
 
         (if (edge-starts-at-segment-boundary edge-just-to-the-left)
           (return)
           (setq right-edge edge-just-to-the-left))))))
-      
 
 
-       
+
+
 
 ;;;--------------------------------------------------------------
 ;;; directly cataloging countries, names, dates, locations, ...
@@ -143,6 +143,8 @@
    scattered to characterize with a predicate. Turn this back
    on when looking at specifically targeted texts with good
    segment-internal markers/rules.")
+
+(defparameter *edge-delivery-function* nil)
 
 (defun segment-denotes-interesting-object (coverage)
   ;; called from note-text-relations-in-segment
@@ -162,32 +164,34 @@
           (ignorable-category? form)
           (punctuation? referent))
       nil)
-
-     ;; these are, and are noted
-     ((eq label category::name-word)) ;; ???? "Sulaimaniya" 1st pass
-     ((eq label category::name)
-      (note-name referent))
-     ((or (eq label category::date)
-          (eq label category::weekday)
-          (eq label category::time))
-      (note-date referent))
-     ((eq label category::country)
-      (note-country referent))
-     ((eq label category::company)
-      (note-company referent))
-     ((eq label category::person)
-      (note-name referent))
-     ((eq label category::title)
-      (note-title referent))
-
-     (t 
-      (if *break-on-new-possibly-interesting-objects*
-        (then  (push-debug `(,edge ,label ,referent))
-               ;; (setq edge (car *) label (cadr *) referent (caddr *))
-               (break "Is this an interesting object?~
+     (t
+      ;; It's iteresting.
+      (when *edge-delivery-function*
+        (funcall *edge-delivery-function* edge))
+      (cond ;; these are, and are noted
+       ((eq label category::name-word)) ;; ???? "Sulaimaniya" 1st pass
+       ((eq label category::name)
+        (note-name referent))
+       ((or (eq label category::date)
+            (eq label category::weekday)
+            (eq label category::time))
+        (note-date referent))
+       ((eq label category::country)
+        (note-country referent))
+       ((eq label category::company)
+        (note-company referent))
+       ((eq label category::person)
+        (note-name referent))
+       ((eq label category::title)
+        (note-title referent))
+       (t
+        (if *break-on-new-possibly-interesting-objects*
+            (then  (push-debug `(,edge ,label ,referent))
+                   ;; (setq edge (car *) label (cadr *) referent (caddr *))
+                   (break "Is this an interesting object?~
                      ~%  referent = ~a~
                      ~%  category = ~a" referent label))
-        nil)))))
+          nil)))))))
 
 (defun note-country (country) country)
 (defun note-date (date) date)
@@ -196,4 +200,4 @@
 (defun note-company (company) company)
 
 
-           
+
