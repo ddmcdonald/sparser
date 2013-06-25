@@ -60,3 +60,17 @@
                  :age amt)))
       age )))
 
+;;simple copy of the "old" treatment
+;;lacks an interpretation of number of years of age, however
+(define-category  age-ago   ;; in the abstract, -not- someone being a certain age
+  :specializes nil
+  :instantiates self
+  :binds ((age-ago . amount-of-time))
+  :index (:sequential-keys age-ago)
+  :realization (:tree-family  item+idiomatic-head
+                :mapping ((np . :self)
+                          (modifier . amount-of-time)
+                          (np-head . "ago")
+                          (result-type . :self)
+                          (item . age-ago))))
+
