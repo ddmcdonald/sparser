@@ -70,10 +70,13 @@
   (declare (special *trace-the-trace-calls*))
   (when *trace-the-trace-calls*
     (format t "~&tr: ~a~%" keyword))
-  (let* ((lcase (intern (string-downcase (symbol-name keyword)) :keyword))
-         (fn (gethash lcase *trace-keyword-to-function*)))
+  (let* ((key (if (eq 'aa 'AA) ;; not case sensitive
+                keyword
+                (intern (string-downcase (symbol-name keyword)) :keyword)))
+         (fn (gethash key *trace-keyword-to-function*)))
     (unless fn
-      (error "The trace function for ~A is undefined" lcase))
+      (error "The trace function for ~A is undefined~
+            ~%Check for a symbol-case problem." key))
     (apply fn arguments)
     :trace ))
 
