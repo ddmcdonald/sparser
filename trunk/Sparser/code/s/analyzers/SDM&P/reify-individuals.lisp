@@ -25,6 +25,9 @@ to the value of the viable after-action flag for segments.
 ;;; driver
 ;;;--------
 
+(defparameter *debug-reify-implicit-individuals* nil
+  "Guards breaks in new cases in the function")
+
 (defun reify-implicit-individuals-in-segment (coverage)
   ;; Called from after-action-on-segments or by another after-segment
   ;; action. 
@@ -70,12 +73,16 @@ to the value of the viable after-action flag for segments.
          (when (noun-category? suffix-form)
            (convert-referent-to-individual suffix)))))
          
+    ;; (treetops-in-current-segment)
     (:no-edges
-     (break "reify-implicit-individuals: no-edges"))
+     (when *debug-reify-implicit-individuals*
+       (break "reify-implicit-individuals: no-edges")))
     (:discontinuous-edges
-     (break "reify-implicit-individuals: discontinuous"))
-    (:some-adjacent-edges 
-     (break "reify-implicit-individuals: some adjacent"))
+     (when *debug-reify-implicit-individuals*
+       (break "reify-implicit-individuals: discontinuous")))
+    (:some-adjacent-edges
+     (when *debug-reify-implicit-individuals*
+       (break "reify-implicit-individuals: some adjacent")))
     (otherwise
      (break "Unanticipated value for segment coverage: ~A"
 	    coverage)))
