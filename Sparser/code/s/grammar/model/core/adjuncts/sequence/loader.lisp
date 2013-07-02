@@ -5,7 +5,7 @@
 ;;;    Module:  "grammar;model:core:adjuncts:sequence:"
 ;;;   version:  September 1993
 
-;; initiated 9/21/93 v2.3
+;; initiated 9/21/93 v2.3.
 
 (in-package :sparser)
 
