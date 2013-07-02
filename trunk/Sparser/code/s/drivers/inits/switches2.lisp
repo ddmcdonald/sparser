@@ -286,8 +286,10 @@
   "Similar to answer and fire, but with annotations and ..."
   (fire-setting)
   (setq *annotate-realizations* t)
-  (setq *new-dm&p* t)
   (include-comlex)
+  (setq *new-segment-coverage* :trivial)
+  (setq *profligate-creation-of-individuals* t)
+  (setq *allow-pure-syntax-rules* t)
   (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
 
@@ -299,10 +301,7 @@
     (setq *new-dm&p* nil)) ;; these two from fire-setting
   (setq *break-on-new-bracket-situations* t)
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
-  (setq *uniformly-scan-all-no-space-token-sequences* nil)
-  ;; Turned on selectively - see grok-pass-one
-  (setq *new-segment-coverage* :none) ;; defange sdm/analyze-segment
-  (setq *do-strong-domain-modeling* nil) ;; completely turn it off
+  (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
   (setq *switch-setting* :tuned-grok))
 
 (defun ambush-setting ()
