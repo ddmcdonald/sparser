@@ -3,9 +3,9 @@
 ;;;
 ;;;     File:  "rules-over-referents"
 ;;;   Module:  "model/core/kinds/"
-;;;  version:  April 2013
+;;;  version:  July 2013
 
-;; initiated 3/18/13. Elaborated through 4/9/13
+;; initiated 3/18/13. Elaborated through 7/1/13
 
 (in-package :sparser)
 
@@ -16,6 +16,7 @@
 |#
 
 ;;//// Add schema -- from vp adjuncts perhaps
+
 (def-cfr event (event time)
   :form s
   :referent (:head left-edge
@@ -56,6 +57,15 @@
                  :head :left-edge
   :form np
   :referent (:function assimilate-appositive left-edge right-edge))
+
+
+;;--- direct object
+
+(def-syntax-rule (vg np)
+                 :head :left-edge
+  :form VP
+  :referent (:head left-edge
+             :bind (participant right-edge)))
 
 ;;--- time grammar
 
