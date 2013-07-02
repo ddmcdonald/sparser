@@ -3,13 +3,15 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:sequence:"
-;;;  version:  0.3 June 2013
+;;;  version:  0.3 July 2013
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/15/92 v2.3) setting up for new semantics
 ;; 0.2 (5/27/94) fleshed it out with def-forms, rdata, and autodef
 ;;     (9/12/95) tweeked the autodef.  11/15 fixed a typo in them
-;; 0.3 (6/6/13) Rebuilt the def form in the modern class-centric idiom.
+;; 0.3 (6/6/13) Rebuilt the def form in the modern class-centric idiom. 
+;;     (7/1/13) Changed the leading bracket on determiner case to be
+;;      ].quantifier, otherwise it messed up on "the last ..."
 
 (in-package :sparser)
 
@@ -46,7 +48,7 @@
         (setq sequencer (define-individual 'sequencer
                             :name word))
 
-        (assign-brackets/expr word (list ].phrase .[np ))
+        (assign-brackets/expr word (list ].quantifier .[np ))
         sequencer ))))
 
 
