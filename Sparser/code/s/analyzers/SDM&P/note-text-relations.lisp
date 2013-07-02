@@ -34,17 +34,20 @@
         (:no-edges
          ;; happened in #1 for the word "burnt" which is not in
          ;; Comlex's vocabulary. ///do by hand?
-         (format t "~&~%Ignoring the no-edges segment:")
-         (format-words-in-segment)
-         (terpri))
+         (when *dbg-print*
+           (format t "~&~%Ignoring the no-edges segment:")
+           (format-words-in-segment)
+           (terpri)))
         (:discontinuous-edges
-         (format t "~&~%Ignoring discontinuous segment:")
-         (print-treetop-labels-in-current-segment))
+         (when *dbg-print*
+           (format t "~&~%Ignoring discontinuous segment:")
+           (print-treetop-labels-in-current-segment)))
         (:some-adjacent-edges
          ;; "the deadly avian flu" where "avian" isn't in
          ;; Comlex and for some reason no edge over "deadly"
-         (format t "~&~%Ignoring 'some adjacent' segment:")
-         (print-treetop-labels-in-current-segment))
+         (when *dbg-print*
+           (format t "~&~%Ignoring 'some adjacent' segment:")
+           (print-treetop-labels-in-current-segment)))
         (otherwise
          (break "Unanticipated value for segment coverage: ~A"
                 coverage)))))
@@ -80,8 +83,6 @@
                        form head-edge))))))))))
 
 (defun note-immediate-relations-to-head ()
-  (edge-over-segment-suffix)
-
   (let ((head-word (head-word-of-segment))
         (head-edge (edge-over-segment-head)))
     (when head-edge ;; see above
@@ -128,8 +129,6 @@
         (if (edge-starts-at-segment-boundary edge-just-to-the-left)
           (return)
           (setq right-edge edge-just-to-the-left))))))
-
-
 
 
 
@@ -186,9 +185,9 @@
         (note-title referent))
        (t
         (if *break-on-new-possibly-interesting-objects*
-            (then  (push-debug `(,edge ,label ,referent))
-                   ;; (setq edge (car *) label (cadr *) referent (caddr *))
-                   (break "Is this an interesting object?~
+          (then  (push-debug `(,edge ,label ,referent))
+                 ;; (setq edge (car *) label (cadr *) referent (caddr *))
+                 (break "Is this an interesting object?~
                      ~%  referent = ~a~
                      ~%  category = ~a" referent label))
           nil)))))))
