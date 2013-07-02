@@ -3,10 +3,10 @@
 ;;;
 ;;;     File:  "Grok"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  March 2012
+;;;  version:  July 2013
 
 ;; Initiated 10/30/12 to take over from the Fire workspace. Tweeked through
-;; 3/9/13
+;; 3/9/13. Pulling stuff out of it and rearranging through 7/1/13
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -305,9 +305,7 @@ Collection/WHO problem:  collection  create-collection  string/sequence
   initialize-discourse-history  
   define-city  -- dossiers/cities
 
-relationship-to-country (doesn't work on "Iraqi girl" for some reason
- in people/names-to-people
-    or  Kurdish city
+relationship-to-country 
  give-kind-its-name
 
 hyphens and PNF -- trace-ns-sequences  hyphen-ca-hook
