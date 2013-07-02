@@ -3,16 +3,20 @@
 ;;;
 ;;;     File:  "relationships"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  April 2013
+;;;  version:  July 2013
 
 ;; This file holds independent lambda variables and such that
 ;; don't otherwise have a natural place to put them, or that refer
 ;; to categories that aren't yet defined at that place. 
 
 ;; Started populating 4/10/13.
+;; 7/1/13 Added generic method for compose
 
 (in-package :sparser)
 
+;;;------------------
+;;; expressible type
+;;;------------------
 
 (define-lambda-variable 
     ;; Used to explicitly mark the type of an individual
@@ -28,3 +32,14 @@
   ;; the binding is done
   (bind-variable 'category category i category::expressible-type))
 
+
+;;;---------
+;;; compose
+;;;---------
+
+(defgeneric compose (left right)
+  (:documentation "This provides a hook for co-composition or simply
+   for type specialization or adding additional relations to a 'daughter'
+   style rule. Expecially well suited for form rules. Can be used as
+   a dispatch point for more specific binary compostions. Intended to be
+   the most generic way to compose the referents of two edges."))
