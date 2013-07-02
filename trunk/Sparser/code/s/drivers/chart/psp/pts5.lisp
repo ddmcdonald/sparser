@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1991-1996,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.14 February 2013
+;;;  Version:  5.14 July 2013
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -48,6 +47,7 @@
 ;;       for the threading bug where the right segment boundary global is nil
 ;;       so we get a more intelligible error message. 
 ;; 5.14 (2/28/13) Abstracted the after-parsing protocol choice.
+;;      (7/1/13) Moved in the reify implicit individuals options. 
 
 (in-package :sparser)
 
@@ -127,13 +127,17 @@ have to be tail recursion to the next thing to do.
 
 (unless (boundp '*after-action-on-segments*)
   (defparameter *after-action-on-segments* 
-    (cond 
-     (*do-domain-modeling-and-population* 
-      'dm/analyze-segment)
-     (*note-text-relations*
-      'note-text-relations-in-segment)
+    (cond
      (*do-strong-domain-modeling*
       'sdm/analyze-segment)
+     (*reify-implicit-individuals*
+      'reify-implicit-individuals-in-segment)
+     ;;(*do-domain-modeling-and-population*
+     ;; This is the 1995 version of DM&P, which is overly clumsy
+     ;; but has good ideas to mine from it. 
+     ;; 'dm/analyze-segment)
+     (*note-text-relations*
+      'note-text-relations-in-segment)
      (t 
       'normal-segment-finished-options))
     "Name of the function to call after the interior of a segment
@@ -161,6 +165,13 @@ have to be tail recursion to the next thing to do.
 ;;  (do-note-text-relations-in-segment)
 (defun do-note-text-relations-in-segment ()
   (setq *after-action-on-segments* 'note-text-relations-in-segment))
+
+;;  (do-reify-implicit-individuals-in-segment)
+(defun do-reify-implicit-individuals-in-segment ()
+  "Looks for criteria that warrant taking a segment that's headed
+   by a category and converting it to an individual."
+  (setq *after-action-on-segments* 'reify-implicit-individuals-in-segment))
+
 
 
 ;;;------------------------
