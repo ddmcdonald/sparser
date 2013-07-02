@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions opyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  2.2 June 2013
+;;;  version:  2.2 July 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -61,7 +60,7 @@
 ;;     (4/4/13) Added make-individual-for-dm&p as a placeholder. Presently just calls
 ;;      unindexed. 
 ;; 2.2 (6/3/13) Changed make/permanent-individual to use the correct common path:
-;;      make-a-permanent-individual. 
+;;      make-a-permanent-individual. 7/1/13 Smidgen of internal doc.
 
 (in-package :sparser)
 
@@ -349,6 +348,7 @@
   ;; We are building a new individual that differs from its source
   ;; individual only in its category.  In particular we copy its
   ;; intrinsic properties, i.e. the list in its bound field
+  ;;/// c.f. add-category-to-individual
   (let ((si (make-a-permanent-individual)))
     (setf (indiv-type si) (list subtype-category))
     (setf (indiv-id si) (next-id subtype-category))
@@ -389,7 +389,8 @@
 (defun add-category-to-individual (individual category)
   ;; /// should look for the subtype already existing in the
   ;; model as a compound category
-
+  (break "Call to add-category-to-individual~
+        ~%Think through how to hack the CLOS.")
   (let ((type-field (indiv-type individual)))
     (if (rest type-field)
       (setf (indiv-type individual)
