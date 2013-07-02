@@ -35,14 +35,14 @@
   :head :right-edge
   ;;//// Dropping the argument ("Iraq's .. minister")
   ;; on the floor for the moment. See syntax/possessive
-  ;; for a method to use in this rule. 
+  ;; for a method to use in this rule.
   ;;/// N.b. doesn't work in *iraqi-girl* because of timing
   ;; where the title has been swallowed before the country
   ;; could see it.  A heuristic might be entitled to lift
   ;; up the left edge on the grounds that it must compose
   ;; so it's only a question of which edge it composes
   ;; with -- a peek would get this rule and look for a
-  ;; title. 
+  ;; title.
   :referent (:daughter right-edge))
 
 
@@ -63,7 +63,7 @@
 
 (def-syntax-rule (vg np)
                  :head :left-edge
-  :form VP
+  :form vp
   :referent (:head left-edge
              :bind (participant right-edge)))
 
