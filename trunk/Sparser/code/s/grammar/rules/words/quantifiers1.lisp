@@ -118,7 +118,7 @@
 (define-quantifier "any"     :brackets '( ].quantifier  .[np ) :rules '(of))
 (define-quantifier "both"    :brackets '( ].quantifier  .[np ) :rules '(of))
 (define-quantifier "each"    :brackets '( ].quantifier  .[np ))
-(define-quantifier "enough"    :brackets '( ].quantifier  .[np ))
+(define-quantifier "enough"  :brackets '( ].quantifier  .[np ))
 (define-quantifier "every"   :brackets '( ].quantifier  .[np ))
 (define-quantifier "few"     :brackets '( ].quantifier  .[np ) :rules '(of))
 (define-quantifier "much"    :brackets '( ].quantifier  .[np ) :rules '(of))
