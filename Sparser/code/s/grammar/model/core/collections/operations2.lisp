@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  2.2 June 2013
+;;;  version:  2.2 July 2013
 
 ;; initiated 6/7/93 v2.3, added sequences 6/9 - finished them 6/17
 ;; fixed a bug 10/29
@@ -30,7 +30,7 @@
 ;; 2.2 (6/5/13) When indexing an individual that is permanent, note that sequences
 ;;      as a whole are permanent in the sense that we don't reap all their instances.
 ;; 2.3 (6/15/13) Have to revise indexing to no longer rely on categories to do lookup.
-;;      Otherwise
+;;      Otherwise. 7/2/13 Fixed bug (missing clause) in the find routine. 
 
 (in-package :sparser)
 
@@ -71,6 +71,7 @@
     (index-sequence sequence)
     sequence))
 
+;;/// Need make-over as with sequence
 (defun create-collection (items category-specifier)
   ;; The individual is unindexed because it's only used as the
   ;; value of bindings and the provides their indentity
@@ -112,35 +113,7 @@
 ;;; find
 ;;;------
 
-; The instance field of the category sequence holds a hashtable by
-; length of the sequence. The length entries are tables from categories
-; to a table indexed by the identity of the entries.
-
-#| (2/14/13) doing the same for categories. This seems pretty
-heavy weight in that it assumes that we'll have lots of these
-of diverse types and lengths.  Would be nice to see if that's actuall
-the case, or whether we could have some tabular machinery that
-switched from lists to hashtables as needed.
-|#
-
-(defun find-sequence (items)
-  (let ((instances (cat-instances category::sequence))
-        (first-item (car items)))
-    (when instances
-      (let ((values (gethash first-item instances)))
-        (if (null (cdr values))
-          (car values)
-          (find items values :test #'equal))))))
-
-
- #|       (count (length items)))
-    (when instances
-      (let ((length-entry (gethash count instances)))
-	(when length-entry
-	  (let ((category-entry (gethash category length-entry)))
-	    (when category-entry
-	      (gethash items category-entry))))))))  |#
-
+;;/// Need make-over as with sequence
 (defun find-collection (items category)
   (let ((instances (cat-instances category::collection))
         (count (length items)))
@@ -161,6 +134,19 @@ switched from lists to hashtables as needed.
     collect item))
 
 
+(defun find-sequence (items)
+  (let ((instances (cat-instances category::sequence))
+        (first-item (car items)))
+    (when instances
+      (let ((sequences (gethash first-item instances)))
+        (when sequences
+          (if (null (cdr sequences))
+            (car sequences)
+            (loop for seq in sequences
+              as seq-items = (value-of 'items seq)
+              when (equal seq-items items)
+              return seq)))))))
+
 ;;;----------
 ;;; indexing
 ;;;----------
@@ -180,23 +166,8 @@ switched from lists to hashtables as needed.
         (setf (gethash first-item table)
               (list sequence))))))
 
-#|
-    (let* ((count (value-of 'number sequence))
-	   (length-entry (gethash count instances)))
-      (unless length-entry
-	(setq length-entry (setf (gethash count instances)
-				 (make-hash-table :test #'eql))))
-      (let* ((category (value-of 'type sequence))
-	     (category-entry (gethash category length-entry)))
-	(unless category-entry
-	  (setq category-entry (setf (gethash category length-entry)
-				     (make-hash-table :test #'equal))))
-	(let ((items (value-of 'items sequence)))
-	  (setf (gethash items category-entry)
-		sequence)
-	  sequence)))))  |#
 	
-
+;;/// Need make-over as with sequence
 (defun index-collection (collection)
   (when (permanent-individual? collection)
     (note-permanence-of-categorys-individuals category::collection))
