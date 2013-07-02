@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  March 2013
+;;;  Version:  July 2013
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -28,7 +28,8 @@
 ;; sequences* 11/5/12. Added *accumulate-content-across-documents* 2/18/13
 ;; 3/8/13 added *break-on-multiple-single-term-completions*.
 ;; 3/9/13 added *note-text-relations*. Moved over *initialize-with-each-unit
-;; -of-analysis* 3/1413. 
+;; -of-analysis* 3/1413. 7/1/13 added *reify-implicit-individuals* and similar
+;; in-file flages from Grok work. Added *dbg-print*. 
 
 (in-package :sparser)
 
@@ -45,6 +46,10 @@
    analysis are to be displayed as they are processed.  The flag
    is looked for within Next-token, and the display is done
    #<word> by #<word>.")
+
+(defparameter *dbg-print* t
+  "Guards ad-hoc debugging statements, i.e. temporary info that
+   won't be converted to traces.")
 
 
 (defparameter *display-article-name* t
@@ -144,10 +149,27 @@
   (defparameter *do-strong-domain-modeling* nil
     "Set as part of the switch settings, read in Segment-finished"))
 
+(defparameter *new-segment-coverage* :none
+  "Flag to specify what sort of simpler d&p operation to do
+   if any (default).")
+
 (unless (boundp '*note-text-relations*)
   (defparameter *note-text-relations* nil
     "A switch read in segment-finished. Controls whether we collect
      purely textual relationship such as head, subject-verb, etc."))
+
+(unless (boundp '*reify-implicit-individuals*)
+  (defparameter *reify-implicit-individuals* t
+    "Read in segment-finished. Looks for criteria to replace
+     category segment heads with the corresponding individuals."))
+
+(defparameter *profligate-creation-of-individuals* nil
+  "This flag says that when we encounter a category as 
+  the referent of a head edge we should replace it with
+  the corresponding individual. Also see reify-implicit-
+  individuals-in-segment, which has the same mission just
+  with more explicit cases, which has proved tedious to debug.")
+
 
 (defparameter *edge-for-unknown-words* t
   "This switch dictates whether or not we create a category,
