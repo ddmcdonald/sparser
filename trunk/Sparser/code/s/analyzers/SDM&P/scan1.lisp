@@ -28,12 +28,12 @@ to make any semantic or form edges that the grammar dictates.
 ;;; dispatch
 ;;;-----------
 
-(defparameter *new-segment-coverage* :none
-  "Flag to specify what sort of simpler d&p operation to do
-   if any (default).")
-
-
 (defun sdm/analyze-segment (coverage)
+  "Dispatch point for the alternative analyses we could do.
+   The :trivial choice is robust. The :full option would be
+   better, especially for reversing since it wants to recover
+   the tree family that might have been used, but it's not
+   at all complete."
   (case *new-segment-coverage*
     (:trivial
      (just-cover-segment coverage))
@@ -66,7 +66,7 @@ to make any semantic or form edges that the grammar dictates.
       :discontinuous-edges 
       :some-adjacent-edges)
      (if (no-edge-over-segment-head) ;; ignore these for now
-       (then
+       (when *dbg-print*
         (format t "~&Ignoring segment without an edge over its head:")
         (format-words-in-segment)
         (print-treetop-labels-in-current-segment)
@@ -78,13 +78,20 @@ to make any semantic or form edges that the grammar dictates.
           (record-any-determiner edge)))))
 
     (:no-edges ;; "burnt" or any other word not in Comlex
-     (format t "~&Ignoring segment with no edges:")
-     (format-words-in-segment)
-     (terpri))
+     (when *dbg-print*
+       (format t "~&Ignoring segment with no edges:")
+       (format-words-in-segment)
+       (terpri)))
     (otherwise
      (break "Unanticipated value for segment coverage: ~A"
 	    coverage)))
-  (normal-segment-finished-options coverage))
+  
+  (setq coverage (segment-coverage)) ;; update
+  (cond
+   (*note-text-relations*
+    (note-text-relations-in-segment coverage))
+   (t
+    (normal-segment-finished-options coverage))))
 
 
 (defun propoagate-suffix-to-segment ()
@@ -106,21 +113,20 @@ to make any semantic or form edges that the grammar dictates.
       edge)))
 
 
-(defparameter *profligate-creation-of-individuals* nil
-  "This flag says that when we encounter a category as 
-  the referent of a head edge we should replace it with
-  the corresponding individual. Also see reify-implicit-
-  individuals-in-segment, which has the same mission just
-  with more explicit cases, which has proved tedious to debug.")
-
 (defun convert-referent-to-individual (edge)
+  "Converts category referents to individuals. Has cases for
+   everything else that could appear should we ever want to do
+   something with them."
   (let ((referent (edge-referent edge)))
     (typecase referent
       (referential-category
+       ;;/// Could imagine using a find-individual here,
+       ;; but with no binding values we've nothing to find against.
        (when *profligate-creation-of-individuals*
-         ;; otherwise unchanged
-         (setf (edge-referent edge)
-               (make-individual-for-dm&p referent))))
+         (let ((super (supercategory-of-constructed-category referent)))
+           (setf (edge-referent edge)
+                 (make-individual-for-dm&p (or super
+                                               referent))))))
       
       ;; These cases are original from 2009 and 
       ;; not reconsidered yet.
@@ -144,7 +150,7 @@ to make any semantic or form edges that the grammar dictates.
   ;; Wanted to have this done by the form rules in syntax/articles,
   ;; but referent expression interpreter there needs adjustment
   ;; so this is largely a hack
-  (push-debug `(,edge))
+  ;;(push-debug `(,edge))
   (multiple-value-bind (word length)
                        (first-word-in-segment)
     (when (= length 1)

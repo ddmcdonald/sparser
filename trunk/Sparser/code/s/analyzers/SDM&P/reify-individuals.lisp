@@ -3,9 +3,11 @@
 ;;;
 ;;;      File: "reify-individuals"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: February 2013
+;;;   Version: July 2013
 
 ;; Initiated 2/28/13
+;; 0.1 (7/1/13) Switched to using the category->individual routine
+;;      from sdm/analyze-segment
 
 (in-package :sparser)
 
@@ -19,20 +21,13 @@ individuals as needed. It then continues into ordinary operations accordign
 to the value of the viable after-action flag for segments. 
 |#
 
-;;;-------------------------------
-;;; wire it into segment-finished
-;;;-------------------------------
-
-;;  (do-reify-implicit-individuals-in-segment)
-(defun do-reify-implicit-individuals-in-segment ()
-  (setq *after-action-on-segments* 'reify-implicit-individuals-in-segment))
-
-
 ;;;--------
 ;;; driver
 ;;;--------
 
 (defun reify-implicit-individuals-in-segment (coverage)
+  ;; Called from after-action-on-segments or by another after-segment
+  ;; action. 
   ;;(format-words-in-segment)
   ;;(format t "coverage = ~a~%" coverage)
   (case coverage
@@ -40,30 +35,31 @@ to the value of the viable after-action flag for segments.
      (let* ((edge (edge-over-segment))
             (form (edge-form edge)))
        (when form ;; no form on puctuation edges
-       (unless (typep (edge-referent edge) 'individual)
-         (let* ((prefix (segment-minimal-prefix))
-                (prefix-form (edge-form prefix)))
-           (case (cat-symbol form) ;; of the spanning edge
-             (category::wh-pronoun) ;; doesn't make sense
-             ((category::n-bar
-               category::number
-               category::common-noun
-               category::common-noun/plural
-               category::np-head)
-              (when (evidence-that-np-denotes-an-individual?
-                     prefix prefix-form edge)
-                (convert-referent-to-an-individual edge)))
-             ((category::verb 
-               category::verb+s 
-               category::verb+ed
-               category::verb+ing 
-               category::verb+present
-               category::verb+passive)
-              (convert-referent-to-an-individual edge))
-             (otherwise
-              (push-debug `(,form ,edge ,prefix))
-              (format-words-in-segment)
-              (break "New case of one-edge form: ~a" form))))))))
+         (unless (typep (edge-referent edge) 'individual)
+           (let* ((prefix (segment-minimal-prefix))
+                  (prefix-form (edge-form prefix)))
+             (case (cat-symbol form) ;; of the spanning edge
+               (category::wh-pronoun) ;; doesn't make sense
+               ((category::n-bar
+                 category::number
+                 category::common-noun
+                 category::common-noun/plural
+                 category::np-head)
+                (when (evidence-that-np-denotes-an-individual?
+                       prefix prefix-form edge)
+                  (convert-referent-to-individual edge)))
+               ((category::verb 
+                 category::verb+s 
+                 category::verb+ed
+                 category::verb+ing 
+                 category::verb+present
+                 category::verb+passive)
+                (convert-referent-to-individual edge))
+               (otherwise
+                (push-debug `(,form ,edge ,prefix))
+                (format-words-in-segment)
+                (break "reify-implicit-individuals: New case of ~
+                       one-edge form: ~a" form))))))))
 
     (:all-contiguous-edges
      (let* ((suffix (edge-over-segment-suffix))
@@ -72,12 +68,14 @@ to the value of the viable after-action flag for segments.
             (prefix-form (when prefix (edge-form prefix))))
        (when (and suffix-form prefix-form)
          (when (noun-category? suffix-form)
-           (convert-referent-to-an-individual suffix)))))
+           (convert-referent-to-individual suffix)))))
          
-
-    (:no-edges (break ":no-edges"))
-    (:discontinuous-edges (break "discontinuous"))
-    (:some-adjacent-edges (break "some adjacente"))
+    (:no-edges
+     (break "reify-implicit-individuals: no-edges"))
+    (:discontinuous-edges
+     (break "reify-implicit-individuals: discontinuous"))
+    (:some-adjacent-edges 
+     (break "reify-implicit-individuals: some adjacent"))
     (otherwise
      (break "Unanticipated value for segment coverage: ~A"
 	    coverage)))
@@ -94,25 +92,15 @@ to the value of the viable after-action flag for segments.
 
 (defun evidence-that-np-denotes-an-individual? (prefix form edge)
   (push-debug `(,prefix ,form ,edge))
-  (eq form category::det)
-  #+ignore(or (eq form category::det)
+  (or (eq form category::det)
+      (eq form category::number)
+      (eq form category::quantifier)
+  #+ignore
       (else
-       (push-debug `(,prefix ,form ,edge))
-       (break "If this should indicate that an np is an individual, extend the code~
+       (break "If this should indicate that an np is an ~
+               individual, extend the code~
              ~%  prefix form = ~a~
              ~%  prefix = ~a~
              ~%  on edge ~a" form prefix edge))))
 
-
-;;--- rebuild it
-
-(defun convert-referent-to-an-individual (edge)
-  ;; /// this doesn't worry about bindings on the category 
-  (let* ((ref-category (edge-referent edge))
-         (supercategory-of-constructed-category ref-category))
-    (let ((i (find-or-make/individual 
-              (or supercategory-of-constructed-category ;; e.g. event
-                  ref-category)
-              nil)))
-      (setf (edge-referent edge) i))))
 

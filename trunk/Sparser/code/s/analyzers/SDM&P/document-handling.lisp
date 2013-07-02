@@ -3,10 +3,10 @@
 ;;;
 ;;;     File:  "document handling"
 ;;;   Module:  "analyzers/SDM&P/"
-;;;  version:  May 2012
+;;;  version:  July 2012
 
 ;; Broken out from Grok workspace and cleaned up 4/24/13. Made to take
-;; document strings 5/1/13.
+;; document strings 5/1/13. Turned off another switch 7/1/13.
 
 (in-package :sparser)
 
@@ -14,9 +14,11 @@
   "Just pull in the vocabulary all at once"
   (let ((*do-forest-level* nil)  ;; No supra-segment parsing for this pass
         (*new-segment-coverage* :none)
+        (*do-strong-domain-modeling* nil)
         (*do-heuristic-segment-analysis* nil)
         (*tts-after-each-section* nil))
     (declare (special *do-forest-level* *new-segment-coverage*
+                      *do-strong-domain-modeling*
                       *do-heuristic-segment-analysis*
                       *tts-after-each-section*))
     (do-normal-segment-finished-options)

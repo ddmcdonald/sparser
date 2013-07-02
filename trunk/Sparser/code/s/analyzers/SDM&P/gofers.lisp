@@ -3,11 +3,12 @@
 ;;;
 ;;;      File: "gofers"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: March 2013
+;;;   Version: July 2013
 
 ;; Broken out of scan1 2/28/13. 3/13/13 added word-to-left-of-head,
 ;; edge-to-left-of-head. Coping with polyword at end of segment 3/14.
-;; Generalizing that notion 3/28/13.
+;; Generalizing that notion 3/28/13. Fixed edge-over-segment-prefix
+;; to notice multiple-edges case
 
 (in-package :sparser)
 
@@ -168,9 +169,12 @@
           (segment-length)))
 
 (defun edge-over-segment-prefix ()
-  (let ((left-pos-start (pos-starts-here *left-segment-boundary*)))
-    (when left-pos-start
-      (ev-top-node left-pos-start))))
+  (let* ((left-pos-start (pos-starts-here *left-segment-boundary*))
+         (top-node (ev-top-node left-pos-start)))
+    (when (eq top-node :multiple-initial-edges)
+      ;; arbitrarily take the most recent edge
+      (setq top-node (highest-edge left-pos-start))
+      top-node)))
 
 (defun segment-minimal-prefix ()
   ;; The segment is covered by an edge or at least a large part
