@@ -87,6 +87,11 @@
 
 ;;this cfr is for phrases like "Summer of 2010" or "Winter 2013", added 6/8/13
 ;;Instantiate a category
+;;should be its own category rather than a date
+;;day-month, month-year, no rules associated with them possibly
+;;then take a look at tree families for this kind of pattern (very similar to date)
+;;should be its own category because often times season will not be present for a date
+;;so we make it a new category eventually, call it season-year (season-of-the-year?).  
 (def-cfr date (season year)
   :form np
   :referent(:instantiate-individual date))
