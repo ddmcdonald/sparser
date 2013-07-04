@@ -205,4 +205,22 @@ e11   DATE                    5 "january 1 , 1999" 9
 
 
 
+;;;---------
+;;; age/ago
+;;;---------
 
+(define-citation "10 days old"
+  (1 AGE 4))
+
+#|(define-citation "10 days ago"
+  (1 ??? 4))|#
+
+#|(define-citation "10 days before"
+  (1 ??? 4))|#
+
+#|(define-citation "10 days after"
+  (1 ??? 4))|#
+
+;;this doesn't come up as age, since "a day" is considered a time-unit
+#|(define-citation "a day ago"
+  (1 AGE 4))|#
