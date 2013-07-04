@@ -45,7 +45,7 @@
 
 ;;deleted the cfr #<PSR544  amount ->  number time>
 ;;otherwise, it parses things like "June 26 2010" as [June]_TIME [26 2010]_AMOUNT
-(delete/cfr# 544)
+;;(delete/cfr# 544)
 
 
 ;; Common noun referring to amount of time
