@@ -92,8 +92,10 @@
 ;;then take a look at tree families for this kind of pattern (very similar to date)
 ;;should be its own category because often times season will not be present for a date
 ;;so we make it a new category eventually, call it season-year (season-of-the-year?).  
-(def-cfr date (season year)
+#|(def-cfr date (season year)
   :form np
-  :referent(:instantiate-individual date))
+  :referent(:instantiate-individual date))|#
+
+
 
 
