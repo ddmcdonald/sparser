@@ -184,8 +184,9 @@ e8    FRACTION-OF-AMOUNT-OF-TIME  2 "the first three months" 6
 
 ;;season with year works as date, but do we want to call this a date? 
 ;;(according to TimeML, yes)
+;;however we will make it its own category, season-year, for now
 (define-citation "summer of 1964"
-(1 DATE 4))
+(1 SEASON-YEAR 4))
 
 ;;more complicated dates are not parsed compositionally
 
