@@ -30,6 +30,7 @@
 (defun establish-referent-of-pn (category name)
   ;; called from Do-referent-and-edge to come up with the referent
   ;; to use with the name edge.
+  (tr :establish-pn-referent category name)
   (let* ((existing-referent  ;; see if anything already has that name
           (case (cat-symbol category)
             (category::company-name
@@ -60,6 +61,10 @@
              (break "New category for a name: ~a" category)))))
 
     (if existing-referent
+      (tr :found-existing-referent-for-pn existing-referent)
+      (tr :no-existing-referent-for-pn))
+
+    (if existing-referent
       (if (listp existing-referent)
         (if (null (cdr existing-referent))
           ;; the supplier of the candidates uses a list by
@@ -71,12 +76,25 @@
       (else
        ;; Fix this too for new cases
         (case (cat-symbol category)
-          (category::company-name (make/company-with-name name))
+          (category::company-name
+           (make/company-with-name name))
           ((or category::person-name category::person-name/first-last)
            (make/person-with-name name))
-          (category::name-of-location (make/location-with-name name))
+          (category::name-of-location
+           (make/location-with-name name))
 ;;        (category::hurricane (make/hurricane-with-name name))
           (category::uncategorized-name
+           (make/named-object-with-name name))
+          (otherwise
+           (push-debug `(,category ,name))
+           (error "New category: ~a" category)))))))
+
+
+;; This is the earlier routine for sorting out uncategoried names
+;; but looking for the possibility that they are part of some known
+;; name. But I don't trust some-name-element-is-new?, which is ancient
+;;///// We do need something like this
+#+ignore
            (if (some-name-element-is-new? name)
              (make/named-object-with-name name)
              (let ( referent )
@@ -84,11 +102,7 @@
                  (dereference-shortened-name name))
                (if referent
                  (cons referent category)
-                 (make/named-object-with-name name)))))
-          (otherwise
-           (push-debug `(,category ,name))
-           (error "New category: ~a" category)))))))
-
+                 (make/named-object-with-name name))))
          
 
            

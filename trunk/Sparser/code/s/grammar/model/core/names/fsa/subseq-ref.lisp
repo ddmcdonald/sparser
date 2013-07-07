@@ -290,7 +290,7 @@
   ;; called from categorize-and-form-name to get the case where
   ;; we have an acronym or other sort of abbreviated form that
   ;; directly connects to the entity, short-circuiting the path
-  ;; via its (usually full) name.  
+  ;; via its (usually full) name. Throws to classify-&-record-span
   ;;   This will be indicated by a name-word that's been linked
   ;; to the entity. 
   ;;   If there is more than one name word then presumably that's
@@ -306,7 +306,8 @@
         ;; is certain. Need to coordinate with routines like
         ;; index-person-name-to-person
         (let ((entity (value-of 'name-of item)))
-          entity)))))
+          ;;/// what about a name-word in multiple names?
+          (throw :already-decoded-name entity))))))
 
 
 (defun known-sequence (items)
@@ -314,34 +315,45 @@
    on it, and what do they name. If this picks out a single entity
    we return it. Stubs for cases of multiple names or multiple named
    entities."
+  ;; called from categorize-and-form-name
+  ;; throws to classify-&-record-span
   (let ((sequence (find-sequence items)))
     (if sequence
-      ;; (whole) sequences link to names and ordinals for each item
-      (let ((references (who-binds 'sequence sequence)))
-        (when references
-          ;; pick out the name 
-          (let ((names (loop for ref in references
-                        when (itypep ref 'name)
-                        collect ref)))
-            (unless names
-              (push-debug `(,references ,sequence ,items))
-              (error "Expected at least one name to be associated ~
-                      with this sequence:~%~a" sequence))
-            (if (null (cdr names))
-              ;; Is it always "names" for the variable?
-              (let ((entities (who-binds 'name (car names))))
-                (if (null (cdr entities))
-                  (throw :already-decoded-name (car entities))
-                  (else
-                   (push-debug `(,entities ,names))
-                   (error "Ambiguous name: ~a" entities))))
-              (else
-               (push-debug `(,names))
-               (error "Sequence identifies multiple names: ~a"
-                      names)))))))
+      (let ((names
+             (or (let ((references (who-binds 'sequence sequence)))
+                   ;; (whole) sequences linked-to by names and by 
+                   ;; an ordinal for each item
+                   (when references
+                     (push-debug `(,references))
+                     (let ((name-refs (loop for ref in references
+                                        when (itypep ref 'name)
+                                        collect ref)))
+                       name-refs)))
+                 (name-based-on-sequence/uncategorized sequence))))
+        (unless names
+          (push-debug `(,sequence ,items))
+          (error "Expected at least one name to be associated ~
+                  with this sequence:~%~a" sequence))
+        (when (consp names)
+          (if (null (cdr names))
+            (setq names (car names))
+            (else
+             (push-debug `(,names ,items ,sequence))
+             (error "Sequence identifies multiple names: ~a"
+                    names))))
+        (let ((entities (who-binds 'name names)))
+          (unless entities
+            (push-debug `(,names ,sequence ,items))
+            (error "No named entity associated with the named ~
+                  ~%~a" names))
+          (if (null (cdr entities))
+            (throw :already-decoded-name (car entities))
+            (else
+             (push-debug `(,entities ,names))
+             (error "Ambiguous name: ~a" entities)))))          
       (else
        (tr :pnf-items-no-known-sequence items)
-       nil)))
+       nil))))
 
                                       
 
