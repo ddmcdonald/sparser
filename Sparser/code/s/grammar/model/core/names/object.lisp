@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993-2005,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.1 February 2013
+;;;  version:  0.1 July 2013
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -17,6 +16,7 @@
 ;;  (2/8/13) Added names built from no-space pattern. 2/13/13 Added a class
 ;;   for named-object. Could have been in upper-model, but didn't want
 ;;   a complication with the restriction of the name variable to name.
+;;  (7/4/131) Marked named-object permanent. Put traces in its find/make functions
 
 (in-package :sparser)
 
@@ -44,17 +44,22 @@
   ;; for people and companies and uncategorized-names the
   ;; name is based on a sequence. See core/names/object.lisp
   :binds ((name . name))
-  :index (:key name)) ;; instances field is now a table
+  :index (:permanent :key name)) ;; instances field is now a table
 
 
 (defun find/named-object-with-name (name)
   (let* ((table (cat-instances (category-named 'named-object)))
          (object (gethash name table)))
     ;; place for tests
+    (if object
+      (tr :found-named-obj-with-name name object)
+      (tr :id-not-find-named-object-for-name name))
     object))
 
 (defun make/named-object-with-name (name)
-  (define-individual 'named-object :name name))
+  (let ((i (define-individual 'named-object :name name)))
+    (tr :made-named-object-with-name i name)
+    i))
   
 
 ;;;-----------------------------------
@@ -271,12 +276,11 @@
 (defun make/uncategorized-name (list-of-name-words)
   (let ((sequence (define-sequence list-of-name-words))
         (obj (make-unindexed-individual category::uncategorized-name)))
-
     ;; The name doesn't have to be indexed because we recover it from
     ;; the sequence it's comprised of.  If/when we find out what sort of name
     ;; it really is we would index that.
-
     (bind-variable :name/s sequence obj)
+    (tr :make-uncategorized-name obj sequence)
     obj ))
 
     
@@ -293,10 +297,16 @@
   ;; called from a name-creator. The sequence of name words
   ;; has to exist, and then it has to have been bound as the
   ;; name/s of some uncategorized-name
-  (let ((seq (find-sequence list-of-name-words)))
-    (when seq
-      (name-based-on-sequence/uncategorized seq))))
-
+  (let ((sequence (find-sequence list-of-name-words)))
+    (if sequence
+      (let ((i (name-based-on-sequence/uncategorized sequence)))
+        (if i
+          (tr :found-uncategoried-cname i sequence)
+          (tr :no-uncategoried-cname-for sequence))
+        i)
+      (else
+       (tr :no-sequence-for-nws list-of-name-words)
+       nil))))
 
 (defun name-based-on-sequence/uncategorized (seq)
   (let ((links-to-name-objects

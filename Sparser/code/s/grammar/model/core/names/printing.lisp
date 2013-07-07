@@ -3,20 +3,24 @@
 ;;;
 ;;;     File:  "printing"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.1 June 2013
+;;;  version:  0.1 July 2013
 
 ;; initiated 2/1/94 v2.3, breaking the special fns out of specific files
 ;; (4/5) stubbed a generic printer.  10/3 added string-printers
 ;; 0.1 (1/25/95) gated the routine for initials.
 ;;     (2/28) added case for uncategorized names.
-;;     (6/7/13) Tweaking for adjustments over the years
+;;     (6/7/13) Tweaking for adjustments over the years. 7/4/13 more.
 
 (in-package :sparser)
 
 (defun string-for/name (n)
   ;; Called from String-for as a generic catch for any individual
   ;; that binds a slot called 'name' Returns a string
-  (let ((w/pw (value-of 'name n)))
+  (let ((w/pw (or (value-of 'name n) ;; normal name-is-a-word case
+                  (value-of 'name/s n)))) ;; for name-is-a-name-object case
+    (unless w/pw
+      (error "The object ~a should should have a 'name' binding ~
+             but doesn't.~%Probably an issue with the caller." n))
     (typecase w/pw
       (word (word-pname w/pw))
       (polyword (pw-pname w/pw))
@@ -25,12 +29,15 @@
          (category::name-word (string/name-word w/pw))
          (category::uncategorized-name
           (string/uncategorized-name w/pw))
+         (category::sequence ;; upstream should catch this quicker
+          (string/sequence w/pw))
          (otherwise
           (push-debug `(,n ,w/pw))
           (error "Unexpected type of individual for a name: ~a~%~a"
                  (type-of w/pw) w/pw))))
       (otherwise
-       (format t "String-for/name -- new type: ~A~%" (itype-of n))
+       (push-debug `(,n ,w/pw))
+       (format t "String-for/name -- new type: ~A~%" (itype-of w/pw))
        "" ))))
 
 
