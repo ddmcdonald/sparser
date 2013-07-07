@@ -100,6 +100,7 @@ Meta-dot
   inc-term
   cite set-citation-file
   unpack-primed-word
+  string-for/name print-individual-structure string/sequence
 
 |#
 ;;--- setting up a grammar module for Strider-specific content
