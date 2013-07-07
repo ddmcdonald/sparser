@@ -386,6 +386,69 @@
     (trace-msg "PNF: Going to find or make name for a ~a" category)))
 
 
+
+(deftrace :found-named-obj-with-name (name object)
+  ;; called from find/named-object-with-name
+  (when *trace-pnf*
+    (trace-msg "PNF: Found ~a~
+              ~%    for namd ~a" object name)))
+
+(deftrace :did-not-find-named-object-for-name (name)
+  ;; called from find/named-object-with-name
+  (when *trace-pnf*
+    (trace-msg "PNF: Did not find a named object for ~a"  name)))
+
+(deftrace :made-named-object-with-name (i name)
+  ;; called from make/named-object-with-name
+  (when *trace-pnf*
+    (trace-msg "PNF: made the named object ~a~
+              ~%    from namd ~a" i name)))
+
+(deftrace :make-uncategorized-name (name sequence)
+  ;; called from make/uncategorized-name
+  (when *trace-pnf*
+    (trace-msg "PNF: make the uncategories named ~a~
+              ~%    from the sequence ~a" name sequence)))
+
+(deftrace :found-uncategoried-cname (name sequence)
+  ;; called from find/uncategorized-name
+  (when *trace-pnf*
+    (trace-msg "PNF: found the uncategories named ~a~
+              ~%    given the sequence ~a" name sequence)))
+
+(deftrace :no-uncategoried-cname-for (sequence)
+  ;; called from find/uncategorized-name
+  (when *trace-pnf*
+    (trace-msg "PNF: no uncategorized name for the sequence~
+             ~%     ~a" sequence)))
+
+(deftrace :no-sequence-for-nws (list-of-name-words)
+  ;; called from find/uncategorized-name
+  (when *trace-pnf*
+    (trace-msg "PNF: no sequence fits the name-words~
+             ~%     ~a" list-of-name-words)))
+
+
+
+(deftrace :establish-pn-referent (category name)
+  ;; called from establish-referent-of-pn
+  (when *trace-pnf*
+    (trace-msg "PNF: Find-or-make referent of the ~a~
+              ~%     ~a" category name)))
+
+(deftrace :found-existing-referent-for-pn (existing-referent)
+  ;; called from establish-referent-of-pn
+  (when *trace-pnf*
+    (trace-msg "PNF:  found ~a" existing-referent)))
+
+(deftrace :no-existing-referent-for-pn ()
+  ;; called from establish-referent-of-pn
+  (when *trace-pnf*
+    (trace-msg "PNF: no referent found. Making one.")))
+  
+
+
+
 ;;;--------------------------------------
 ;;; exhaustive trace of the PNF routines
 ;;;--------------------------------------
