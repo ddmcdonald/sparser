@@ -241,8 +241,6 @@
           (t (pos-terminal position)))))
 
 
-
-
 (defun sort-out-multiple-preterminals-for-pnf (position)
   ;; there is more than one edge over the terminal at this position.
   ;; We go through the vector and see if there's some applicable criteria
@@ -259,9 +257,6 @@
     (if (null (cdr residue))  ;; there's just one left
       (kpop residue)
       (pnf/remove-name-words-from-preterminals residue position))))
-
-
-
 
 
 (defun pnf/remove-name-words-from-preterminals (edges position)

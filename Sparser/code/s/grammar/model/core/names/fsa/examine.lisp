@@ -479,7 +479,7 @@
   ;; classify-&-record-span using the fn do-referent-and-edge
 
   (when *break-before-creating-name*
-    (push-debug `(,items)) ;; all of them?
+    (push-debug `(,items)) ;; more flags?
     (break "Look around at what categorize-and-form-name will do"))
 
   (cond
@@ -522,9 +522,9 @@
       (when ordinal  ;; e.g. "III", "Fourth"
         ;; a cons of the count and an ordinal unit
         (if (= (car ordinal) (length items))
-          ;; is it at the end of the sequence? If so we definitively
-          ;; take it to be part of the name of a person. 
           (then
+           ;; is it at the end of the sequence? If so we definitively
+           ;; take it to be part of the name of a person. 
             (setq person-version (cdr ordinal))
             (setq items (all-but-last-item! items)))
           (else
@@ -551,7 +551,7 @@
           ;; of the scan. 
           (declare (ignore title-elements))
           (setq items name-elements)
-          (setq name category::person-name)))          
+          (setq category category::person-name)))          
 
     #|(when person-version  ;; e.g. "Jr."
         ;; substitute the object for the index that Examine... has passed in
