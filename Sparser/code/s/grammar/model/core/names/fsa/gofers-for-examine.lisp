@@ -2,10 +2,13 @@
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: March 2013
+;;;   Version: July 2013
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
+;; 0.1 (7/7/13) Rewrote sort-out-multiple-preterminals-for-pnf to prefer
+;;      name-words rather than ignore them. Since that was the old policy
+;;      there could be repurcussions. 
 
 (in-package :sparser)
 
@@ -256,9 +259,26 @@
 
     (if (null (cdr residue))  ;; there's just one left
       (kpop residue)
-      (pnf/remove-name-words-from-preterminals residue position))))
+      ;; (pnf/remove-name-words-from-preterminals residue position)
+      ;; The explicit definitions of NE are all in terms of name-words.
+      ;; The possibility that a word might carry additional (relevant)
+      ;; meanings is ignored (like "Israeli" as the adjective form
+      ;; of the country.
+      ;; //// If we revisit this, it has to be all the way through,
+      ;; since as it stands, ignoring (vs. prefering) the name-words
+      ;; causes predefined entities to be lost to PNF
+      (pnf/prefer-name-words edges position))))
 
 
+(defun pnf/prefer-name-words (edges position)
+  (let ( residue )
+    (dolist (edge edges)
+      (if (eq (edge-category edge) category::name-word)
+        (return-from pnf/prefer-name-words edge)
+        (kpush edge residue))
+      (pnf/prefer-heads-over-modifiers edges position))))
+
+#+ignore ;; see note just above
 (defun pnf/remove-name-words-from-preterminals (edges position)
   ;; have to be at least two edges or we wouldn't have gotten here
   (let ( residue )
