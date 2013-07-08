@@ -53,7 +53,7 @@
     ;; place for tests
     (if object
       (tr :found-named-obj-with-name name object)
-      (tr :id-not-find-named-object-for-name name))
+      (tr :did-not-find-named-object-for-name name))
     object))
 
 (defun make/named-object-with-name (name)
@@ -180,7 +180,7 @@
   :instantiates name
   :specializes name
   :binds ((name/s sequence))
-  :index (:special-case))
+  :index (:permanent :special-case))
            #| This category is not supposed to be instantiated 
               by hand in a dossier, only from the Proper Name
               facility.   Hence it's never going to be called or
