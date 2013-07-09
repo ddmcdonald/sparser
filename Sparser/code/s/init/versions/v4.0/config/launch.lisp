@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1991-1997,2012-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; 
+;;;
 ;;;     File:  "launch"
 ;;;   Module:  "init;versions:v4.0:config:"
 ;;;  version:  January 2013
@@ -29,14 +29,14 @@
 ;; to the protocol switches options. 2/18/10 flipped *display-word-stream*
 ;; back again. We can locally override it for specific applications.
 ;; 6/17/11 changed top-edges-setting default to top-edges-setting/ddm because
-;; it's missing some needed elements. 6/30/11 Commented out checkpoint-ops 
+;; it's missing some needed elements. 6/30/11 Commented out checkpoint-ops
 ;; case in switch-settings because in and 'everything' load (the default
 ;; now) that option symbol is bound to a grammar module. Need a different
 ;; scheme. 10/30/12 added *grok*, minor cleanup. 1/28/13 Wrapped an eval-when
 ;; around final forms to avoid running them when compiling.
 
 (in-package :sparser)
- 
+
 
 ;;;-------------------------------------------------------------------
 ;;; This is the standard set of launch-time configuration operations.
@@ -44,16 +44,16 @@
 ;;;-------------------------------------------------------------------
 
 (defun standard-configuration-operations ()
-  
+
   ;;--- traces
-  
+
   (setq *display-word-stream* t)  ;; or *standard-output* )
-  
+
   (setq *display-salient-objects* nil)
 
-   
+
   ;;--- sizing and initializing the resource data structures
-  
+
   ;; The defaults for these (given here) are in config;load
   ;; These settings (if you change them) would be per-launch overrides.
   ;*maximum-number-of-edges-in-an-edge-vector*  10
@@ -61,28 +61,28 @@
   ;*number-of-cons-cells-in-initial-allocation* 500
   ;*number-of-cons-cells-per-increment*         100
   ;(resize-stack-of-pending-left-openers 20)
-  
+
   ;(setq *number-of-positions-in-the-chart* 500)
   ;;  In case you change this during a sesstion, run this form:
   ;;      (progn (make-the-chart) t)
 
   ;(setq *length-of-edge-resource* 5000)
-  ;;  (progn (make-the-edge-resource) t)  
-  
+  ;;  (progn (make-the-edge-resource) t)
+
   )
 
 
 
-  
+
 ;;;--------------------------
 ;;; finding the test corpora
 ;;;--------------------------
-  
+
 (defun check-for-delayed-connection-to-the-corpus ()
-  
+
   (when (and (null *connect-to-the-corpus*)
              cl-user::location-of-text-corpora)
-    
+
     ;; The connect flag would have been turned off because the image was
     ;; made on one machine for use on another and the corpus is located
     ;; is different places on the two machines.   We delay loading
@@ -101,8 +101,8 @@
       (when (probe-file (concatenate 'string
                                      (namelist-to-namestring
                                       (expand-logical-pathname "corpus-data;"))
-                                     "loader"))                         
-        (lload "corpus-data;loader")) 
+                                     "loader"))
+        (lload "corpus-data;loader"))
 
 
       (format t "~%~%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~
@@ -125,7 +125,7 @@
                              "Workspaces\\")
                             (t ;; apple
                              "Workspaces:")))
-             
+
              (concatenate 'string
                           cl-user::location-of-sparser-directory
                           (cond
@@ -138,7 +138,7 @@
     (when (probe-file namestring)
       (let ((files (directory (concatenate 'string namestring "*"))))
         (mapcar
-         #'(lambda (x) 
+         #'(lambda (x)
              (unless (or (search ".svn" (format nil "~s" x))
                          (search ".DS_Store" (format nil "~s" x)))
                (load x)))
@@ -158,7 +158,7 @@
 
   (when *load-the-grammar*
     (setup-session-globals/grammar))
-  
+
   ;;;---------------------------
   ;;; set the protocol switches
   ;;;---------------------------
@@ -199,7 +199,7 @@
 ;; isn't intended to, or we've deliberately delayed loading the grammar
 ;; so that it can change between launches. The flag checked here is set
 ;; in the governing script (or defaulted in [everything]).
- 
+
 (unless *load-the-grammar*
   ;; If this is true, then the grammar will already have been loaded
   ;; when the image was created.
@@ -219,7 +219,7 @@
 
     ;; Now that we've got the grammar loaded, have a regular image
     ;; saved out, ignoring everything from here on down. The gate
-    ;; is there for the situation when we're in the middle of a 
+    ;; is there for the situation when we're in the middle of a
     ;; development load and don't ever intend to save an image during
     ;; that session
     (if *do-not-create-an-image*
@@ -237,23 +237,23 @@
 (when *load-the-grammar*
   ;; The dossiers don't make sense unless the (standard) grammar has
   ;; been loaded as indicated by this flag.
-  
+
   (unless *load-dossiers-into-image*
     ;; They were already loaded on the 1st pass that build the engine
-    
+
     (unless *delayed-loading-of-the-grammar*
       ;; We don't want them this time because we might want to create
       ;; an image from this grammar load, and if we included the
       ;; dossiers now, we wouldn't be able to choose to have different
       ;; values for them later.
-      
+
       (when *include-model-facilities*
         ;; Otherwise they're irrelevant
-        
+
         (format t "~&~%~%---------------------~
                    ~% loading the dossiers~
                    ~%----------------------~%")
-        
+
         (lload "dossiers;loader")))))
 
 
@@ -264,7 +264,7 @@
 
 ;;--- Corpus connection
 
-(eval-when (:load-topleve :execute)
+(eval-when (:load-toplevel :execute)
 
   (when *load-the-grammar*
     ;; No point in doing these systematic analyses unless the grammar is loaded
