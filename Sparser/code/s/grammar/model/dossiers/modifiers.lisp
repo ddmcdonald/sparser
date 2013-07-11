@@ -207,12 +207,12 @@
 (define-sequencer/determiner "next")
 (define-sequencer/determiner "subsequent")
 
-(define-sequencer/preposition "after")
-(define-sequencer/preposition "before")
+(define-sequencer/preposition "after" ">")
+(define-sequencer/preposition "before" "<")
 
 
 ;; 11/15
-(define-sequencer/preposition "during")
+(define-sequencer/preposition "during" "d")
 
 
 ;;;------
