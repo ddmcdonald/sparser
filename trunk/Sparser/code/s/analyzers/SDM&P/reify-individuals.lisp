@@ -59,10 +59,11 @@ to the value of the viable after-action flag for segments.
                  category::verb+passive)
                 (convert-referent-to-individual edge))
                (otherwise
-                (push-debug `(,form ,edge ,prefix))
-                (format-words-in-segment)
-                (break "reify-implicit-individuals: New case of ~
-                       one-edge form: ~a" form))))))))
+                (when *debug-reify-implicit-individuals*
+                  (push-debug `(,form ,edge ,prefix))
+                  (format-words-in-segment)
+                  (break "reify-implicit-individuals: New case of ~
+                          one-edge form: ~a" form)))))))))
 
     (:all-contiguous-edges
      (let* ((suffix (edge-over-segment-suffix))
