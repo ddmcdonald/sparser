@@ -12,6 +12,7 @@
 ;; 0.3 (6/6/13) Rebuilt the def form in the modern class-centric idiom. 
 ;;     (7/1/13) Changed the leading bracket on determiner case to be
 ;;      ].quantifier, otherwise it messed up on "the last ..."
+;;     (7/10/13) modified sequencer and define-sequencer/preposition to incorporate interval relations
 
 (in-package :sparser)
 
@@ -21,7 +22,8 @@
 
 (define-category sequencer
   :instantiates  modifier
-  :binds ((name :primitive word))
+  :binds ((name :primitive word)
+          (relation :primitive word)) ;;added this variable in for interval relationships
   :index (:key name :permanent)
   :realization (:word name))
 
@@ -52,16 +54,19 @@
         sequencer ))))
 
 
-(defun define-sequencer/preposition (string)
+(defun define-sequencer/preposition (string relation) ;;added in relation as a string
   (let ((word (resolve-string-to-word/make string))
+        (word2 (resolve-string-to-word/make relation))
         sequencer )
     (if (setq sequencer
               (find-individual 'sequencer
-                               :name word))
+                               :name word
+                               :relation word2))
       sequencer
       (else
         (setq sequencer (define-individual 'sequencer
-                            :name word))
+                            :name word
+                            :relation word2))
 
         (assign-brackets/expr word (list ].phrase  phrase.[ ))
         sequencer ))))
