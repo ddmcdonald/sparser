@@ -173,6 +173,10 @@ have to be tail recursion to the next thing to do.
   (setq *after-action-on-segments* 'reify-implicit-individuals-in-segment))
 
 
+(defparameter *debug-segment-handling* t
+  "Guards errors and breaks within the segment handling code that traps
+   new cases or violations of standing assumptions.")
+
 
 ;;;------------------------
 ;;; decide what to do next
