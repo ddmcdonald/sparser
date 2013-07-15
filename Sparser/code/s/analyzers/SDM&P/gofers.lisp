@@ -43,7 +43,7 @@
 ;;--- predicates
 
 (defun position-before-segment-final-multi-word-edge ()
-  ;; Normally a segment will end in a word and if the flag 
+  ;; Normally a segment will end in a word and if the flag
   ;; *edge-for-unknown-words* is up that word will have an edge
   ;; over it. But it can also happen that the segment ends with
   ;; a polyword. We check for that, and return the position
@@ -72,7 +72,7 @@
   (let ((start-pos (position-before-segment-final-multi-word-edge)))
     (when start-pos
       (eq start-pos *left-segment-boundary*))))
-      
+
 
 
 
@@ -126,8 +126,11 @@
 
 (defun edge-just-to-left-of (edge)
   (push-debug `(,edge))
-  (let ((start-pos (pos-edge-starts-at edge)))
-    (top-edge-at/ending start-pos)))
+  (let* ((start-pos (pos-edge-starts-at edge))
+         (top-node (top-edge-at/ending start-pos)))
+    (when (eql top-node :multiple-initial-edges)
+      (setq top-node (highest-edge (pos-ends-here start-pos))))
+    top-node))
 
 (defun word-just-to-the-left (edge)
   (let* ((p1 (pos-edge-starts-at edge))
@@ -135,7 +138,7 @@
          ;; more than one word.
          (p0 (chart-position-before p1)))
     (pos-terminal p0)))
-    
+
 
 
 (defun treetops-in-current-segment ()
@@ -144,7 +147,7 @@
                        *right-segment-boundary*))
 
 (defun print-treetop-labels-in-current-segment (&optional (stream *standard-output*))
-  (print-treetop-labels-in-segment stream 
+  (print-treetop-labels-in-segment stream
                                    *left-segment-boundary*
                                    *right-segment-boundary*))
 
@@ -159,7 +162,7 @@
 
 (defun edge-over-segment-suffix ()
   (let* ((right-ev (pos-ends-here *right-segment-boundary*))
-	 (top-node (ev-top-node right-ev)))
+         (top-node (ev-top-node right-ev)))
     (when (eq top-node :multiple-initial-edges)
       ;; arbitrarily take the most recent edge
       (setq top-node (highest-edge right-ev)))
@@ -184,13 +187,13 @@
          (array (ev-edge-vector ev)))
     ;; should check *edge-vector-type*
     (aref array 0)))
-    
+
 (defun where-prefix-edge-ends ()
   (let* ((left-pos-start (pos-starts-here *left-segment-boundary*))
-	 (top-edge (ev-top-node left-pos-start)))
+         (top-edge (ev-top-node left-pos-start)))
     (if (eq top-edge :multiple-initial-edges)
       (let ((longest (longest-edge-starting-at *left-segment-boundary*)))
-	(ev-position (edge-ends-at longest)))
+        (ev-position (edge-ends-at longest)))
       (ev-position (edge-ends-at top-edge)))))
 
 (defun words-in-segment-after-prefix ()
