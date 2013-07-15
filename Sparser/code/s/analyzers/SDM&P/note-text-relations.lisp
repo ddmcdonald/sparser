@@ -3,9 +3,10 @@
 ;;;
 ;;;      File: "note-text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: March 2013
+;;;   Version: July 2013
 
-;; Initiated 3/9/13. Elaborated through 3/28/13.
+;; Initiated 3/9/13. Elaborated through 3/28/13. 7/15/13 Added gate
+;; on new cases.
 
 (in-package :sparser)
 
@@ -49,8 +50,9 @@
            (format t "~&~%Ignoring 'some adjacent' segment:")
            (print-treetop-labels-in-current-segment)))
         (otherwise
-         (break "Unanticipated value for segment coverage: ~A"
-                coverage)))))
+         (when *debug-segment-handling*
+           (break "Unanticipated value for segment coverage: ~A"
+                  coverage))))))
     (normal-segment-finished-options coverage))
 
 ;;;-------
@@ -78,9 +80,10 @@
                ((or (pronoun-category? form) ;; ignore
                     (ignorable-category? form)))
                (t
-                (push-debug `(,head-word ,head-edge))
-                (break "New head form ~a for ~a"
-                       form head-edge))))))))))
+                (when *debug-segment-handling*
+                  (push-debug `(,head-word ,head-edge))
+                  (break "New head form ~a for ~a"
+                         form head-edge)))))))))))
 
 (defun note-immediate-relations-to-head ()
   (let ((head-word (head-word-of-segment))

@@ -42,8 +42,9 @@ to make any semantic or form edges that the grammar dictates.
     (:none
      (normal-segment-finished-options coverage))
     (otherwise
-     (error "Undefined value for *new-segment-coverage*: ~a"
-            *new-segment-coverage*))))
+     (when *debug-segment-handling*
+       (error "Undefined value for *new-segment-coverage*: ~a"
+              *new-segment-coverage*)))))
 
 
 ;;;-------------------------------------------------------
@@ -58,9 +59,10 @@ to make any semantic or form edges that the grammar dictates.
   (case coverage
     (:one-edge-over-entire-segment
      (let ((edge (edge-over-segment)))
-       (generalize-segment-edge-form-if-needed edge)
-       (convert-referent-to-individual edge)
-       (record-any-determiner edge)))
+       (when edge ;; That will fail if its assumptions are violated
+         (generalize-segment-edge-form-if-needed edge)
+         (convert-referent-to-individual edge)
+         (record-any-determiner edge))))
 
     ((:all-contiguous-edges
       :discontinuous-edges 
@@ -83,8 +85,9 @@ to make any semantic or form edges that the grammar dictates.
        (format-words-in-segment)
        (terpri)))
     (otherwise
-     (break "Unanticipated value for segment coverage: ~A"
-	    coverage)))
+     (when *debug-segment-handling*
+       (break "Unanticipated value for segment coverage: ~A"
+              coverage))))
   
   (setq coverage (segment-coverage)) ;; update
   (cond
@@ -141,9 +144,10 @@ to make any semantic or form edges that the grammar dictates.
       (symbol ;; :uncalculated -- for a number
        referent)
       (otherwise
-       (push-debug `(,edge ,referent))
-       (break "New type of object as referent of right-suffix: ~a~%~a"
-              (type-of referent) referent)))))
+       (when *debug-segment-handling*
+         (push-debug `(,edge ,referent))
+         (break "New type of object as referent of right-suffix: ~a~%~a"
+                (type-of referent) referent))))))
 
 
 (defun record-any-determiner (edge)
@@ -198,8 +202,9 @@ to make any semantic or form edges that the grammar dictates.
     (:some-adjacent-edges (break "some adjacent"))
 
     (otherwise
-     (break "Unanticipated value for segment coverage: ~A"
-	    coverage))))
+     (when *debug-segment-handling*
+       (break "Unanticipated value for segment coverage: ~A"
+              coverage)))))
 
 ;;--- cases
 
@@ -268,8 +273,9 @@ to make any semantic or form edges that the grammar dictates.
        (sdm-span-segment))
       ;; (:one-edge-over-entire-segment) ;; parsing got something
       (otherwise
-       (break "Unexpected outcome of embedded parse with continuous-edges: ~a"
-	      coverage)))
+       (when *debug-segment-handling*
+         (break "Unexpected outcome of embedded parse with continuous-edges: ~a"
+                coverage))))
 
   ;; When we're collecting relations then we'll have things to do here
 ;  (unless (edge-between *left-segment-boundary*
