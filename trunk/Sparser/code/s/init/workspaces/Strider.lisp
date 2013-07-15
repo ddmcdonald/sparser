@@ -18,6 +18,8 @@
 
 ;;--- control parameters
 
+(setq *debug-segment-handling* nil) ;; override default
+
 ;; (setq *break-on-new-bracket-situations* nil)
 ;; (setq *break-before-creating-name* t)
 
@@ -59,6 +61,8 @@ e0    NAMED-OBJECT            1 "shaul mofaz" 3
 e18   COMMA-POSITION-AT-CO    3 ", former chief of staff of the israeli defense forces" 13
 e15                              "COMMA"
 
+;; interpret-name-as-person disconnect-named-object find/person-with-name
+;; make-person-name-from-items
 
 
 (p "Western spy agencies, collaborated by the terrorist MKO, have assassinated several Iranian scientists in the last three years.")
