@@ -410,13 +410,13 @@
     (trace-msg "PNF: make the uncategories named ~a~
               ~%    from the sequence ~a" name sequence)))
 
-(deftrace :found-uncategoried-cname (name sequence)
+(deftrace :found-uncategoried-name (name sequence)
   ;; called from find/uncategorized-name
   (when *trace-pnf*
     (trace-msg "PNF: found the uncategories named ~a~
               ~%    given the sequence ~a" name sequence)))
 
-(deftrace :no-uncategoried-cname-for (sequence)
+(deftrace :no-uncategoried-name-for (sequence)
   ;; called from find/uncategorized-name
   (when *trace-pnf*
     (trace-msg "PNF: no uncategorized name for the sequence~
@@ -427,6 +427,13 @@
   (when *trace-pnf*
     (trace-msg "PNF: no sequence fits the name-words~
              ~%     ~a" list-of-name-words)))
+
+
+(deftrace :interpreting-name-as-person (name)
+  ;; called from interpret-name-as-person
+  (when *trace-pnf*
+    (trace-msg "Interpreting this name as a person:~
+              ~%    ~a" name)))
 
 
 
@@ -445,6 +452,29 @@
   ;; called from establish-referent-of-pn
   (when *trace-pnf*
     (trace-msg "PNF: no referent found. Making one.")))
+
+
+(deftrace :made-person-with-name (person name)
+  ;; called from make/person-with-name
+  (when *trace-pnf*
+    (trace-msg "PNF: made the person ~a~
+              ~%    from the name ~a" person name)))
+
+(deftrace :looking-for-person-with-name (name)
+  ;; called from fine/person-with-name
+  (when *trace-pnf*
+    (trace-msg "PNF: looking for a person with the name ~a"
+               name)))
+
+(deftrace :found-person-with-name (person)
+  ;; called from fine/person-with-name
+  (when *trace-pnf*
+    (trace-msg "   found ~a" person)))
+
+(deftrace :did-not-find-person-with-name ()
+  ;; called from fine/person-with-name
+  (when *trace-pnf*
+    (trace-msg "   no person with that name")))
   
 
 
