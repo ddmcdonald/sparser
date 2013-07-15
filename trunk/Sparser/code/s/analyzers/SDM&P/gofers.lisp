@@ -102,8 +102,9 @@
        ((or (polyword-p label)
             (word-p label))
         label)
-       (t (push-debug `(,label ,vector ,*segment-position-just-left-of-head*))
-          (error "Assumptions violated"))))
+       (t (when *debug-segment-handling*
+            (push-debug `(,label ,vector ,*segment-position-just-left-of-head*))
+            (error "Assumptions violated")))))
     (pos-terminal *segment-position-just-left-of-head*)))
 
 
