@@ -65,25 +65,27 @@
     (unless (and head-edge
                  (edge-denotes-interesting-object head-edge))
       (let ((head-word (head-word-of-segment)))
-        (unless (punctuation? head-word)
-          (let ((form (when head-edge
-                        (edge-form head-edge))))
-            (when form
-              ;; in [15 days earlier] there's no edge over
-              ;; "earlier" becaues it's built-in and we've not
-              ;; gotten there yet.
-              (cond
-               ((or (noun-category? form)
-                    (verb-category? form)
-                    (modifier-category? form))
-                (note 'head head-word))
-               ((or (pronoun-category? form) ;; ignore
-                    (ignorable-category? form)))
-               (t
-                (when *debug-segment-handling*
-                  (push-debug `(,head-word ,head-edge))
-                  (break "New head form ~a for ~a"
-                         form head-edge)))))))))))
+        (when head-word ;; if assumptions are violated this
+          ;; will be nil. 
+          (unless (punctuation? head-word)
+            (let ((form (when head-edge
+                          (edge-form head-edge))))
+              (when form
+                ;; in [15 days earlier] there's no edge over
+                ;; "earlier" becaues it's built-in and we've not
+                ;; gotten there yet.
+                (cond
+                 ((or (noun-category? form)
+                      (verb-category? form)
+                      (modifier-category? form))
+                  (note 'head head-word))
+                 ((or (pronoun-category? form) ;; ignore
+                      (ignorable-category? form)))
+                 (t
+                  (when *debug-segment-handling*
+                    (push-debug `(,head-word ,head-edge))
+                    (break "New head form ~a for ~a"
+                           form head-edge))))))))))))
 
 (defun note-immediate-relations-to-head ()
   (let ((head-word (head-word-of-segment))
