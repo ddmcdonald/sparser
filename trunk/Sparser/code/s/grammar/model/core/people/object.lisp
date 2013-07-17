@@ -43,7 +43,6 @@
                            (np . :self)
                            (appositive . position-at-co)))))
 
-
         
 ;;;------------
 ;;; operations
@@ -54,18 +53,23 @@
     (push-debug `(,name))
     (break "Expected a person-name and got:~%  ~A" name))
   (let ((person (define-individual 'person :name name)))
+    (tr :made-person-with-name person name)
     (index-person-name-to-person name person)
     person))
 
 (defun find/person-with-name (name)
   ;; ///add capability for near misses.
+  (tr :looking-for-person-with-name name) 
   (let ((people (cat-instances category::person)))
     (let ((person (gethash name people)))
-      (if (consp person)
+      (when (consp person)
         (if (null (cdr person))
-          (car person)
-          (break "Multiple people with the same name"))
-        person ))))
+          (setq person (car person))
+          (break "Multiple people with the same name")))
+      (if person
+        (tr :found-person-with-name person)
+        (tr :did-not-find-person-with-name))
+      person )))
 
 
 ;;;-----------------
