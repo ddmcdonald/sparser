@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.5 May 2013
+;;;  Version:  0.6 July 2013
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -20,6 +20,8 @@
 ;;    (3/14/13) moved the text-relations package here. 4/1 reordered to me
 ;;     dependency imposed by doc-set  (5/1/13) Moved globals first so all the
 ;;     symbols are known before they're referenced in code.
+;; 0.6 (7/15/13) Bumped [object] to 1 to start adjustments for greater uniformity
+;;      in accumulators and operations. Added [classes]
 
 (in-package :sparser)
 
@@ -32,7 +34,7 @@
                         ::nicknames '(:tr)
                         :use nil))))
 
-
+(lload "doc;classes")
 (lload "doc;globals")
 (lload "doc;word-freq")
 (lload "doc;article1")
@@ -46,7 +48,7 @@
 (lload "doc;annotation")
 (lload "doc;header label")
 (lload "doc;style")
-(lload "doc;object")
+(lload "doc;object1")
 (lload "doc;doc-set")
 (lload "doc;doc stream")
 (lload "doc;context")
