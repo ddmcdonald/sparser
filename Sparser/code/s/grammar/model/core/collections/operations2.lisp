@@ -141,7 +141,9 @@
       (let ((sequences (gethash first-item instances)))
         (when sequences
           (if (null (cdr sequences))
-            (car sequences)
+            (let ((singleton (car sequences)))
+              (when (equal items (value-of 'items singleton))
+                singleton))
             (loop for seq in sequences
               as seq-items = (value-of 'items seq)
               when (equal seq-items items)
