@@ -20,6 +20,8 @@
 
 (setq *debug-segment-handling* nil) ;; override default
 
+;; "the Iranian scientists Massoud Ali-Mohammadi,"
+
 ;; (setq *break-on-new-bracket-situations* nil)
 ;; (setq *break-before-creating-name* t)
 
@@ -45,6 +47,7 @@
     :directory "June15;"
     :unified t))
 
+; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
 
  (tuned-grok)
 #|
@@ -62,7 +65,7 @@ e18   COMMA-POSITION-AT-CO    3 ", former chief of staff of the israeli defense 
 e15                              "COMMA"
 
 ;; interpret-name-as-person disconnect-named-object find/person-with-name
-;; make-person-name-from-items
+;; make-person-name-from-items index-person-name-to-person pct/person+title
 
 
 (p "Western spy agencies, collaborated by the terrorist MKO, have assassinated several Iranian scientists in the last three years.")
@@ -80,7 +83,8 @@ e23   SCIENTIST               13 "several iranian scientists" 16
 e34   PREP-TIME               16 "in the last three years" 21
 e33                              "PERIOD"
 ;; Quiescence pointer doewn't move when e23 added, so doesn't look at the verb
-;; The kind-of-company word "agency" is predefined and needs to get NP brackets.
+;; NP brakets on "agencies" -- ].np .[np -- aren't extending the initial segment
+;;   where "spy" has the n/v ambiguous labelings:  ].np-vp .[np-vp np-vp]. np-vp.[
 ;; Should let the stranded time look leftward for an event.
 
 (p "Computers of some Iranian nuclear sites were attacked by the Stuxnet virus, the first known computer worm discovered in 2010 to target industrial controls.")
@@ -132,12 +136,14 @@ e33   ELITE                   20 "the country ' s elites" 25
 e34                              "and"
 e37   SCIENTIST               26 "nuclear scientists" 28
 e38                              "PERIOD"
-;; E3 is overreaching by "in", and should be predefined anyway.
+;; E3 is overreaching by "in", and that should be predefined anyway.
 ;; Need to write DA heuristics for "of"
 ;; The country possessive should bind rightwards, which could be a timing issue
 ;;   since the country is being swallowed into the event as a location and
 ;;   should have looked rightward first.
 ;; Should define "the country" as a defNP and do the anaphhora
+
+;; (period-hook-on)
 
 
 

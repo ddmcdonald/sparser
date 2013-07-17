@@ -192,6 +192,14 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (trace-network-flow)
   (trace-status-history))
 
+(defun untrace-segmentation ()
+  (untrace-brackets)
+  (untrace-segment-completion)
+  (untrace-segments)
+  (untrace-network)
+  (untrace-network-flow)
+  (untrace-status-history))
+
 ;; (trace-forest-edges) ;; like trace-edges but over treetops
 
 ;; (trace-pnf)  ;; when proper names / capitalized sequences are implicated
