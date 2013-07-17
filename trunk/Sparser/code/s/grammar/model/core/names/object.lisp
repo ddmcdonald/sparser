@@ -60,6 +60,22 @@
   (let ((i (define-individual 'named-object :name name)))
     (tr :made-named-object-with-name i name)
     i))
+
+(defun disconnect-named-object (named-object name)
+  ;; called from interpret-name-as-person
+  ;; We want to remove the binding that links the
+  ;; named-object to its name. The objects are permanent,
+  ;; but the bindings are not. 
+  (let ((b (binds named-object 'name)))
+    (unless b
+      (push-debug `(,named-object ,name))
+      (error "The name variable isn't bound on the NE we're disconnecting"))
+    (let ((variable (binding-variable b))
+          (value (binding-value b)))
+      (unindex-binding b variable value)
+      (remove-binding-from-binds-field b named-object)
+      (remove-binding-from-bound-in-field b name)
+      named-object)))
   
 
 ;;;-----------------------------------
@@ -301,12 +317,24 @@
     (if sequence
       (let ((i (name-based-on-sequence/uncategorized sequence)))
         (if i
-          (tr :found-uncategoried-cname i sequence)
+          (tr :found-uncategoried-name i sequence)
           (tr :no-uncategoried-cname-for sequence))
         i)
       (else
        (tr :no-sequence-for-nws list-of-name-words)
        nil))))
+
+(defun disconnect-uncategorized-name (name)
+  ;; called from interpret-name-as-person
+  ;; We want names to be permanent, and it's a complicated matter
+  ;; to reclaim them. We can, however, remove the binding
+  ;; that links the sequence to the name so it can't be followed
+  ;; up when we have the sequence in hand later.
+  (let ((binding (binding-of-individual 'name/s name)))
+    (unless binding
+      (push-debug `(,name))
+      (error "Expected a name/s binding on ~a" name))
+    (unindex/binding binding)))
 
 (defun name-based-on-sequence/uncategorized (seq)
   (let ((links-to-name-objects
