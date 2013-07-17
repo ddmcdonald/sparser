@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "first item"
 ;;;   Module:  "grammar;rules:CA:"
-;;;  Version:  0.6 February 2013
+;;;  Version:  0.6 July 2013
 
 ;; 0.5 (12/7/93 v2.3) drastically simplified and started cleaning them up.
 ;; 0.6 (1/27/94) 1st serious application
@@ -11,6 +11,7 @@
 ;;     (1/9/95) added *most-recent-sentence-start* facility
 ;;     (7/13/11) Fixed case of dotted edge in could-be-the-start-of-a-sentence
 ;;     (2/3/13) Improved (updated?) sentence-start criteria. 
+;;     (7/15/13) Moved *most-recent-sentence-start* to rules/DM&P/period-hook
 
 (in-package :sparser)
 
@@ -65,14 +66,8 @@
 ;;; beginning of a sentence
 ;;;-------------------------
 
-(defvar *most-recent-sentence-start* nil
-  "Bound to a position by any routine that knows that some position
-   starts a sentence (e.g. a sectionizing routine).  It is up to the
-   managing programs to be sure that any relevant analysis on an
-   ongoing sentence is finished before it updates this state variable.")
-
-
 (defun could-be-the-start-of-a-sentence (position)
+  (declare (special *most-recent-sentence-start*))
   (if (eq position *most-recent-sentence-start*)
     t
     (let ((tt-to-the-left (left-treetop-at/edge position)))
