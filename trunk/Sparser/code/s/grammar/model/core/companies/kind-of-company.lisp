@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "kind of company"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  0.6 September 2009
+;;;  version:  0.6 July 2013
 
 ;; initiated 5/23/93 v2.3, added some rules 6/14
 ;; 0.1 (1/20/94) redid them as subtypes rather than individuals by analogy
@@ -20,6 +19,9 @@
 ;; 0.5 (3/29/96) changed the eft used by define-kind-of-company-phrase
 ;; 0.6 (9/21/09) Commented out the n-bar mapping in uses of np-common-noun/definite
 ;;      where that option has (debatably) been removed.
+;;     (7/15/13) Weird, very old-fashioned def form. We're not taking advantage
+;;      of it to create specializations of named-enties using these categories.
+;;      For now just added bracket information
 
 (in-package :sparser)
 
@@ -108,9 +110,13 @@
 ;;;------------------------------------------
 
 (defun define-kind-of-company (string &key abbrev)
-  (let ((word (define-word/expr string))
-        (symbol (intern string *category-package*))
-        cat  rules  nw )
+  (let* ((word (define-word/expr string))
+         (plural (plural-version word))
+         (symbol (intern string *category-package*))
+         cat  rules  nw )
+
+    (assign-brackets-as-a-common-noun word)
+    (assign-brackets-as-a-common-noun plural)
 
     (unless (setq cat (category-named symbol))
       (setq cat (define-category/expr symbol
@@ -123,7 +129,7 @@
                     :referent cat )
 
                   (define-cfr category::kind-of-company
-                              `( ,(plural-version word) )
+                              `( ,plural )
                     :form category::np-head
                     :referent `(:head ,cat
                                 :subtype ,category::collection))))
