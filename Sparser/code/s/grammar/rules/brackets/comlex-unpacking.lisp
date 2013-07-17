@@ -3,10 +3,11 @@
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  March 2013
+;;;  Version:  July 2013
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
+;; 7/8/13 added get-comlex-entry for after-the-fact debugging
 
 (in-package :sparser)
 
@@ -317,5 +318,25 @@ places. ]]
           (let ((clipped (cdr (memq :subc (reverse result)))))
             (setq result (reverse clipped))))
         result)))))
+
+
+;;--- for debugging / understanding word sources
+
+(defgeneric get-comlex-entry (word)
+  (:documentation "Return the Comlex entry for the word or word-symbol
+ if it exists. Recreates what the code does but not used by the code
+ which is always working from unknown words (see discussion at top of
+ the file) while we using this after the fact."))
+
+(defmethod get-comlex-entry ((s string))
+  (let ((w (word-named s)))
+    (unless w (error "~s is not a defined word" s))
+    (get-comlex-entry (word-symbol w))))
+
+(defmethod get-comlex-entry ((w word))
+  (get-comlex-entry (word-symbol w)))
+
+(defmethod get-comlex-entry ((s symbol))
+  (gethash (symbol-name s) *primed-words*))
 
 
