@@ -58,6 +58,7 @@
           category::proper-noun
           category::pronoun
           category::wh-pronoun
+          category::reflexive/pronoun
           ))
         (category::subordinate-conjunction)
 	(category::adjunct)
