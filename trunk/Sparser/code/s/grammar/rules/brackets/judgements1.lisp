@@ -48,6 +48,9 @@
 ;;      method brackets-on. Diverse tweaking through 12/10. Added a flag to inhibit
 ;;      breaking on new cases. 3/13/13 Trying more interesting cases. 
 ;;      Finding and fixing cases through 4/8/13.
+;; 1.10 (7/17/13) Fixed case in adjudicate-new-open-bracket that moved back the
+;;       segment boundary because a verb is following a verb but was not resetting
+;;       the global like the other paths through the code do.
 
 (in-package :sparser)
 
@@ -121,7 +124,11 @@
              (tr :segment-reopened-by-verb-verb
                  p b *where-the-last-segment-started*)
              (setq *left-segment-boundary*
-                   *where-the-last-segment-started*))
+                   *where-the-last-segment-started*)
+             (setq *bracket-opening-segment*
+                   (kcons *bracket-opening-previous-segment*
+                          *where-the-last-segment-started*)))
+
            (interpret-open-bracket-as-segment-start b p)))
 
         (t (interpret-open-bracket-as-segment-start b p))))
@@ -374,7 +381,9 @@
 
            ((eq ] ].adjective)
             (cond 
-             ((eq bracket-opening-segment mvb.[) t)
+             ((or (eq bracket-opening-segment mvb.[) 
+                  (eq bracket-opening-segment .[|that|)) 
+              t)
              ((or (eq bracket-opening-segment preposition.[)
                   (eq bracket-opening-segment .[np-vp)
                   (segment-started-as-np?)
