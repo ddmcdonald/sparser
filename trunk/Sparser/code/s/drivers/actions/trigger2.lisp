@@ -50,6 +50,8 @@
            (format t "~&  There aren't any -- it's whitespace")))
         (rule-set
          (let ((actions (rs-completion-actions rule-set)))
+           ;(when actions
+           ;  (push-debug `(,actions ,rule-set ,word)) (break "actions"))
            (if actions
              (carry-out-actions
               actions word position-before position-after)
