@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation bracketing"
 ;;;   Module:  "grammar;rules:words:"
-;;;  Version:  0.2 March 2005
+;;;  Version:  0.2 July 2013
 
 ;; initiated 4/26/91, extended 4/28,10/2
 ;; Required assignments to the source start/end pulled 11/24
@@ -13,13 +13,14 @@
 ;; 0.2 (3/18/05) Gave ".", "?", and "!" a .[phrase bracket so that periods would  
 ;;  have segments over them, which, since they never extend, will force a move
 ;;  to the forest-level at the end of every sentence.
+;;  (7/17/13) added square and curly brackets
 
 (in-package :sparser)
 
 
-;;;--------------------
-;;; (...), "..." <...>
-;;;--------------------
+;;;----------------------------------
+;;; (...), "..." <...>  [...]  {...}
+;;;----------------------------------
 
 (assign-bracket  open-paren  ].phrase )
 (assign-bracket  open-paren  phrase.[ )
@@ -30,6 +31,16 @@
 (assign-bracket  open-angle-bracket  phrase.[ )
 (assign-bracket  close-angle-bracket  ].phrase )
 (assign-bracket  close-angle-bracket  phrase.[ )
+
+(assign-bracket  open-square-bracket ].phrase)
+(assign-bracket  open-square-bracket phrase.[)
+(assign-bracket  close-square-bracket ].phrase)
+(assign-bracket  close-square-bracket phrase.[)
+
+(assign-bracket  open-curly-bracket ].phrase)
+(assign-bracket  open-curly-bracket phrase.[)
+(assign-bracket  close-curly-bracket ].phrase)
+(assign-bracket  close-curly-bracket phrase.[)
 
 (assign-bracket  double-quote  ].phrase )
 (assign-bracket  double-quote  phrase.[ )
