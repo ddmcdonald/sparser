@@ -253,6 +253,7 @@
                (pos-token-index  position) bracket)))
 
 (deftrace :ending-segment-zeroing-opening-bracket ()
+  ;; called from bracket-ends-the-segment?
   (when (or *trace-network* *trace-brackets*)
     (trace-msg "Ending the segment, zero'ing ~
                 *bracket-opening-segment*")))
