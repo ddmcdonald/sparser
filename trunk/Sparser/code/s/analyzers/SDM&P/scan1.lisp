@@ -4,10 +4,11 @@
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: 1.0 April 2013
+;;;   Version: 1.0 July 2013
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
+;; 7/17/13 Fixed bug in propoagate-suffix-to-segment
 
 (in-package :sparser)
 
@@ -100,7 +101,7 @@ to make any semantic or form edges that the grammar dictates.
 (defun propoagate-suffix-to-segment ()
   ;; Look up the edge on the suffix, use its data to
   ;; create an edge over the whole segment
-  (let* ((suffix (edge-over-segment-head))
+  (let* ((suffix (edge-over-segment-suffix))
          (suffix-label (edge-category suffix))
          (suffix-form (edge-form suffix))
          (suffix-referent (edge-referent suffix)))
