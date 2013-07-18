@@ -84,7 +84,17 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;  (do-reify-implicit-individuals-in-segment)
 ;  (do-note-text-relations-in-segment)
 
-; (setq *break-on-new-name-converter-cases* t) 
+(defun turn-on-debugging-flags ()
+  (setq *break-on-new-name-converter-cases* t
+        *debug-reify-implicit-individuals* t
+        *break-on-new-bracket-situations* t
+        *debug-segment-handling* t))
+
+(defun turn-off-debugging-flags ()
+  (setq *break-on-new-name-converter-cases* nil
+        *debug-reify-implicit-individuals* nil
+        *break-on-new-bracket-situations* nil
+        *debug-segment-handling* nil))
 
 ;; (setq *new-segment-coverage* t)   ;; to debug strong-domain-modeling, add cases
 
@@ -220,11 +230,10 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 ;; (trace-pnf)
 ;; (trace-segments)
-;; (trace-treetops)
+
 ;; (trace-sdm&p)
 ;; (trace-ns-sequences)
 ;; (trace-edges) ;; = *parse-edges* + (trace-edge-creation) + (trace-edge-check)
-;; (trace-treetops)
 ;; (trace-scan-patterns)
 
 ;; (trace-conjunction)
@@ -234,6 +243,18 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (trace-psi-construction)
 ;; (trace-referent-creation)
 ;; (trace-bind-open-var)
+
+(defun trace-forest ()
+  (trace-treetops)
+  (trace-da-hook)
+  (trace-da)
+  (trace-extension))
+(defun untrace-forest ()
+  (untrace-treetops)
+  (untrace-da-hook)
+  (untrace-da)
+  (untrace-extension))
+
 
 
 
@@ -249,6 +270,9 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
   (untrace-segments)
   (untrace-segment-completion)
   (untrace-treetops)
+  (untrace-da-hook)
+  (untrace-da)
+  (untrace-extension)
   (untrace-edges)
   (untrace-edge-multiplication)
   (untrace-treetops)
