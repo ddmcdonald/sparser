@@ -19,14 +19,15 @@
 ;;--- control parameters
 
 (setq *debug-segment-handling* nil) ;; override default
-
-;; "the Iranian scientists Massoud Ali-Mohammadi,"
-
-;; (setq *break-on-new-bracket-situations* nil)
-;; (setq *break-before-creating-name* t)
+(strider-setting)
 
 (setq *do-domain-modeling-and-population* t) ;; ignores null referents
 ;; Need to adapt the segment-level switches and do this better
+
+(turn-off-debugging-flags) ;; presently defined in Grok workspace
+;; (turn-on-debugging-flags)
+
+;; (setq *break-before-creating-name* t)
 
 
 
@@ -47,14 +48,30 @@
     :directory "June15;"
     :unified t))
 
-; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
-
- (tuned-grok)
 #|
  (grok-pass-one june15th)
  (grok-pass-two june15th)
  (grok-pass-three june15th)
 |#
+
+
+; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
+; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
+
+
+
+;; (p "the Iranian scientists Massoud Ali-Mohammadi,")
+#|
+e8    PERSON                  1 "the iranian scientists massoud ali - mohammadi" 8
+e9                               "COMMA"
+;; But the information isn't correctly distributed. Rules need tuning so that
+;; the content all acrues to the person
+|#
+
+;; (p "a 32-year-old Iranian scientist, Mostafa Ahmadi Roshan, ")
+;;  Need to finish title-in-apposative-foo
+
+
 
 ;;      (trace-reclaimation)
 ;; Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces, head of Kadima, and leader of the opposition in the Knesset,
