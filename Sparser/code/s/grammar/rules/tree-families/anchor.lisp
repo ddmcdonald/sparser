@@ -21,12 +21,14 @@
                              term3 ;; amount-of-time
                              term4 ;; season-year
                              term5 ;; season
+                             term6 ;; adverb
                              )
   :labels ( np n1 ;; sequencer
                n2 ;; date
                n3 ;; amount-of-time
                n4 ;; season-year
                n5 ;; season
+               n6 ;; adverb
                )
   :cases
      (
@@ -56,4 +58,18 @@
                :head right-edge
                :instantiate-individual type
                :binds (term1 left-edge
-                       term5 right-edge)))))
+                       term5 right-edge)))
+
+      ;; "two months after"
+      (:np (np (n3 n1)
+               :head left-edge
+               :instantiate-individual type
+               :binds (term3 left-edge
+                       term1 right-edge)))
+
+      ;; "two months later"
+      (:np (np (n3 n6)
+               :head left-edge
+               :instantiate-individual type
+               :binds (term6 right-edge
+                       term3 left-edge)))))
