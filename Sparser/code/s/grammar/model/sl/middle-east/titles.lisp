@@ -1,13 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
 ;;;
-;;;      File:   "loader"
+;;;      File:   "titles"
 ;;;    Module:   "sl;middle-east"
 ;;;   version:   July 2013
 
-;; initiated 5/23/13. Added titles 7/17/13
+;; initiated 7/17/13
 
 (in-package :sparser)
 
-(gload "mideast;named-entities")
-(gload "mideast;titles")
+(define-single-word-title "chief")
+(define-single-word-title "colleague")
+(define-single-word-title "driver")
+(define-single-word-title "terrorist")
+;;(define-single-word-title "")
