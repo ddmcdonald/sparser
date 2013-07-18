@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  2.0 March 2013
+;;;  version:  2.0 July 2013
 
 ;; initiated 6/10/93 v2.3.  Moved out the print macro 1/6/94 to help the
 ;; compiler.  1/18 added title-heads and title-modifiers
@@ -15,6 +15,7 @@
 ;;    (3/17/05) Added np-common-noun/one-of-several schema to titlex2
 ;; 1.2 (2/21/11) Added abbreviated-title for things like CEO. 
 ;; 2.0 (3/18/13) Redid everything.
+;;     (7/17/13) added age+title, which is odd
 
 (in-package :sparser)
 
@@ -127,6 +128,16 @@ in the past they actually held the position.  We can ask
     (break "Stub: extend define-abbreviated-title to take a list"))
   (let ((word (define-word/expr abbreviation/s)))
     (define-individual 'abbreviated-title :abbreviation word)))
+
+
+
+;;; oddities
+
+(define-category age+title
+  :specializes title
+  :binds ((title . (:or title modified-title qualified-title)) ;; use CLOS ?
+          (age . age))
+  :index (:permanent :sequential-keys title age))
 
 
 
