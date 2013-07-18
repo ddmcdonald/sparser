@@ -12,13 +12,15 @@
 
 (in-package :sparser)
 
-(def-form-rule (sequencer np)
+#|(def-form-rule (sequencer np)
   :form np
-  :referent (:head right-edge
-             :method compose left-edge right-edge))
+  :referent (:instantiate-individual interval
+             )
+  :new-category interval)|#
 
 
 (def-k-method compose (sequencer amount-of-time)
   ;; "(the) last three years"
   (declare (ignore sequencer)) ;; should instantiate a new category
-  amount-of-time)
+  (instantiate-individual interval
+      :with (sequencer sequencer)))
