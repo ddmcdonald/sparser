@@ -8,6 +8,7 @@
 ;; initiated 10/26/94 v2.3.  Enriched it 5/5/95. Tweeked ..5/18
 ;; 1.0 (5/19) redid the treewalk loop as tail recursion to setup for interleaving
 ;;      and get around bug in position started at.
+;;      (7/17/13) salted in some debugging things
 
 (in-package :sparser)
 
@@ -27,6 +28,7 @@
                *da-dispatch-position*
                *left-boundary/treetop-actions*)
              *left-boundary/treetop-actions*)))
+      ;;(break "da start")
 
       (tr :beginning-da starting-point)
       (look-for-da-patterns starting-point))
@@ -66,10 +68,12 @@
         (let ( 1st-vertex  arc )
           (cond
            ((setq 1st-vertex (trie-for-1st-item tt))
-            (tr :starts-da-pattern-with tt)
+            (push-debug `(,1st-vertex))
+            (tr :starts-da-pattern-with tt) ;; "[DA check] ~A starts a DA pattern" 
             (execute-da-trie 1st-vertex tt position next-position))
 
            ((setq arc (is-an-item-anywhere-in-a-trie tt))
+            (push-debug `(,arc))
             (tr :starts-da-pattern/middle-out tt)
             (execute-trie-middle-out arc tt position next-position))
 
