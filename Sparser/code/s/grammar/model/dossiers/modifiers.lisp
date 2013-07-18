@@ -142,6 +142,7 @@
 ;; Added in 5/30/2013
 (define-adverb "sooner")
 (define-adverb "earlier")
+(define-adverb "later")
 
 
 ;;;-----------
