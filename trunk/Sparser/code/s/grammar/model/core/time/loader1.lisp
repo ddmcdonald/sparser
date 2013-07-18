@@ -33,6 +33,7 @@
 ;(gload "time;month-in-year1")
 (gload "time;dates2")
 (gload "time;season-year")
+(gload "time;anchor")
 (gload "time;amounts")
 (gload "time;phrases2")
 (gload "time;anaphors1")
