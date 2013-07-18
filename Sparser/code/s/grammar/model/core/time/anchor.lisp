@@ -39,3 +39,12 @@
                           (n6 . adverb)
                           (term6 . adverb))
                 :common-noun "anchor"))
+;; "10 days ago"
+(def-cfr anchor (age-ago)
+  :referent (:instantiate-individual anchor))
+
+;;;------------
+;;; form
+;;;------------
+
+;;Any pre-defined anchors?
