@@ -198,3 +198,19 @@
   :form appositive-prefix
   :referent (:function interpret-name-as-person left-edge))
 
+(def-csr  named-object person :left-context title
+  :form np
+  :referent (:function interpret-name-as-person right-edge))
+
+(define-debris-analysis-rule title+comma+ne+comma
+  :pattern ( title "," named-object "," )
+  :action (:function title-in-apposative-foo third))
+
+(defun title-in-apposative-foo (ne-edge)
+  (let* ((named-object (edge-referent ne-edge))
+         (person (interpret-name-as-person named-object)))
+    ;; *da-starting-position* *da-ending-position*
+    (push-debug `(,person ,ne-edge))
+    (break "How to we make the edges?")))
+
+
