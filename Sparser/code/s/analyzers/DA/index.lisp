@@ -187,6 +187,7 @@
   ;; Recursively checks pattern elements against existing paths
   ;; through the trie.  At the first point of divergence it
   ;; throws nil back to the caller.
+  (push-debug `(,vertex ,pattern))
   (when (end-vertex-p vertex)
     (if pattern
       ;; it's longer

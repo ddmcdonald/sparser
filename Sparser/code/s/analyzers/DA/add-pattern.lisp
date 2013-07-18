@@ -97,11 +97,11 @@
 
 
 
- (defun item-in-new-pattern-fits-existing-arc? (vertex item)
-  ;; If one of the arcs matches, return its right-vertex,
-  ;; otherwise return nil.
-  (tr :checking-pattern-item-to-arcs-at vertex item)
-
+(defun item-in-new-pattern-fits-existing-arc? (vertex item)
+   ;; If one of the arcs matches, return its right-vertex,
+   ;; otherwise return nil.
+   (tr :checking-pattern-item-to-arcs-at vertex item)
+   (push-debug `(,vertex ,item))
   (let ((arcs (vertex-rightward-extensions vertex))
         matching-arc )
 
