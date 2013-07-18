@@ -21,7 +21,8 @@
           (date . date)
           (amount-of-time . amount-of-time)
           (season-year . season-year)
-          (season . season))
+          (season . season)
+          (adverb . adverb))
   :realization (:tree-family  anchor-pattern
                 :mapping ((type . :self)
                           (np . :self)
@@ -34,5 +35,7 @@
                           (n4 . season-year)
                           (term4 . season-year)
                           (n5 . season)
-                          (term5 . season))
+                          (term5 . season)
+                          (n6 . adverb)
+                          (term6 . adverb))
                 :common-noun "anchor"))
