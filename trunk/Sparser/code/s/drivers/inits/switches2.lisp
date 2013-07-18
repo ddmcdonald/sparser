@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.20 April 2013
+;;;  Version:  2.20 July 2013
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -57,6 +57,7 @@
 ;;      settings. 
 ;;      (10/30/12) Setting up for Grok. 1/21/13 Turned on *do-strong-domain-modeling* in it
 ;; 2.20 (4/30/13) Converted Grok experiments into tuned-grok seeing
+;;      (7/17/13) added strider-setting
 
 
 (in-package :sparser)
@@ -303,6 +304,11 @@
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
   (setq *switch-setting* :tuned-grok))
+
+(defun strider-setting ()
+  (tuned-grok)
+  (setq *do-debris-analysis* t)
+  (setq *switch-setting* :strider))
 
 (defun ambush-setting ()
   (fire-setting)
