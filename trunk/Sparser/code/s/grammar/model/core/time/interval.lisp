@@ -25,10 +25,10 @@
   ;;:realization (:common-noun name )
   )
 
-(def-cfr interval (sequencer amount-of-time) ;;this is not an actual interval, only the anchor part of it
+#|(def-cfr interval (sequencer amount-of-time) ;;this is not an actual interval, only the anchor part of it
   :form np
   :referent(:instantiate-individual interval
-            :with (sequencer left-edge amount-of-time right-edge)))      
+            :with (sequencer left-edge amount-of-time right-edge)))|#      
                           
 
 
