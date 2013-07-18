@@ -4,10 +4,10 @@
 ;;;
 ;;;     File:  "title heads"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  May 2013
+;;;  version:  July 2013
 
 ;; initiated 6/10/93 v2.3. Initially populated 12/8/95. 3/25/08 added
-;; "minister". 5/24/13 "chief of staff" as a polyword. 
+;; "minister". 5/24/13 "chief of staff" as a polyword. 7/17/13 "scientist"
 
 (in-package :sparser)
 
@@ -25,18 +25,18 @@
 (define-single-word-title "professor")
 (define-single-word-title "publisher")
 (define-single-word-title "secretary")
+(define-single-word-title "scientist")
 (define-single-word-title "treasurer")
 (define-single-word-title "trustee")
 
-
-(define-title-base-word "executive")
 
 (define-single-word-title "Chief of Staff")
 ;; If this is lowercase, like it should be, PNF will see it
 ;; as a name. 
 
-;;-------------- added from the workbench ------------------
 
+
+;;-------------- added from the workbench ------------------
 
 
 
