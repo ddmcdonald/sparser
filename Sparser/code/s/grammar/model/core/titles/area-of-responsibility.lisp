@@ -20,6 +20,10 @@
 
 ;;--- "director of engineering"
 
+;; there's a weirdness in the comparison of this netword
+;; with the one in place at the bottom of people/names-to-people
+;; and it's screwing up the load.
+#+ignore
 (define-debris-analysis-rule  title-of-area1
   :pattern ( title "of" (:word) )
   :action title-of-area1/action )
