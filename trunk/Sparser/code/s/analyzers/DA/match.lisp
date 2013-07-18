@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "match"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  November 2011
+;;;  Version:  July 2013
 
 ;; initiated 5/5/95.  Elaborated ..5/12. 11/3/11 Fixing match against
-;; multiple words as tt. 
+;; multiple words as tt.  7/17/13 Cleaning up, elaborating debugging
 
 (in-package :sparser)
 
@@ -46,18 +46,21 @@
 
 
 
-(defparameter *arc* nil)  ;; for debugging
-(defparameter *tt* nil)
-
-
 (defun arc-matches-tt? (arc tt)
   ;; called from Check-for-extension-from-vertex
   (tr :arc-matches-tt? arc tt)
-  (setq *arc* arc
-        *tt* tt)
-  (push-debug `(,arc ,tt))
+  (when *trace-DA*
+    (format t " *edge-tt* = ~a~% *word-tt* = ~a~
+             ~% *multiple-edges-over-word* = ~a~% *boundary-tt* = ~a~
+             ~% The arc ~a is a ~a~
+             ~% tt = ~a"
+            *edge-tt* *word-tt* *multiple-edges-over-word* 
+            *boundary-tt* arc (type-of arc) tt))
+  (push-debug `(,arc ,tt)) ;;(break "arc type")
+  ;; (setq arc (car *) tt (cadr *))
+
   (let ((match?
-         (etypecase arc
+         (typecase arc
            
            (label-arc
             (when *edge-tt*
@@ -88,9 +91,14 @@
                      (edge (when (eq (edge-category obj) target-word)
                              (return-from arc-matches-tt? obj)))
                      (otherwise
-                      (push-debug `(,obj ,tt ,arg))
+                      (push-debug `(,obj ,tt))
                       (error "Unexpected type in multiple edge tt: ~a"
                              (type-of obj)))))))
+              (*edge-tt*
+               (let ((left-daughter (edge-left-daughter tt)))
+                 (when (word-p left-daughter)
+                   (eq left-daughter (arc-word arc)))))
+
               (t nil)))
            
            (polyword-arc
@@ -106,7 +114,12 @@
            (gap-arc
             (break "gap arc"))
 
-           )))
+           (otherwise 
+            (push-debug `(,arc ,tt))
+            (error "Unknown type of DA arc: ~a~%  ~a"
+                   (type-of arc) arc) ))))
+
+    ;;(unless match? (break "no match"))
 
     (if match?
       (tr :arc-matches-tt?/matches)
