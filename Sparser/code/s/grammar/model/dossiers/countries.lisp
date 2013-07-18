@@ -42,7 +42,7 @@
 (define-country "Botswana")
 (define-country "Brazil")
 (define-country "Britain" :aliases '("United Kingdom") :adjective "British")
-;; England  Scotland  Wales  Northern Irland
+;; England  Scotland  Wales  Northern Ireland
 (define-country "Brunei")
 (define-country "Bulgaria")
 (define-country "Burkina Faso"  )
@@ -100,7 +100,7 @@
 (define-country "Iceland")
 (define-country "India" :adjective "Indian")
 (define-country "Indonesia")
-(define-country "Iran")
+(define-country "Iran" :adjective "Iranian")
 (define-country "Iraq" :adjective "Iraqi")
 (define-country "Ireland")
 (define-country "Israel" :adjective '("Israeli" "Jewish")) ;; :language "Hebrew"
