@@ -75,7 +75,6 @@
                           (base-category . reference-time))))
 
 
-
 ;;--- Specific instance of time (units): "that day", "last month"
 ;;  These become particular times that can be dereferenced in context
 ;;     "Later that day it ..."
