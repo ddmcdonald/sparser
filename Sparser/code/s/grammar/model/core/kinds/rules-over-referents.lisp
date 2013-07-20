@@ -70,6 +70,7 @@
 ;;--- time grammar
 
 ;;--- for dates
+;;should we add these patterns to date-pattern in tree-families?
 
 ;;this cfr is for phrases like June 26 2013, added 6/6/13
 ;;Chomsky adjunction
@@ -85,16 +86,13 @@
   :referent(:head right-edge
             :bind (time left-edge)))
 
-;;this cfr is for phrases like "Summer of 2010" or "Winter 2013", added 6/8/13
-;;Instantiate a category
-;;should be its own category rather than a date
-;;day-month, month-year, no rules associated with them possibly
-;;then take a look at tree families for this kind of pattern (very similar to date)
-;;should be its own category because often times season will not be present for a date
-;;so we make it a new category eventually, call it season-year (season-of-the-year?).  
-#|(def-cfr date (season year)
-  :form np
-  :referent(:instantiate-individual date))|#
+;;csr for year from javan-online.text
+;;captures instances of "the year 90"
+;;this works, but has no referent.  
+(def-csr number year
+  :left-context time-unit
+  :form np)
+
 
 
 
