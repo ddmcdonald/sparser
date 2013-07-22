@@ -1,12 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005 David D. McDonald  -- all rights reserved
-;;; extensions copyright (c) 2006-2008 BBNT Solutions LLC. All Rights Reserved
+;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "interval"
 ;;;   Module:  "model;core:time:"
-;;;  version:  1.0 July 2013
+;;;  version:  July 2013
 
-;;
+;; initiated 7/18/13
 
 (in-package :sparser)
 
@@ -23,8 +22,7 @@
   :instantiates self
   :binds ((anchor . anchor) ;;doesn't have to be an anchor, just a slot for some timex
           (event . e)) ;;how to relate intervals with multiple events?  is this really correct?
-  :realization (:common-noun "interval")
-  )
+  :realization (:common-noun "interval"))
 
 #|(def-cfr interval (time amount-of-time) ;;this is not an actual interval, only the anchor part of it
   :form np
