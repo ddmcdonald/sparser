@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "index"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  July 2013
 
 ;; initiated 5/5/95.  Elaborated ..5/22.  5/30 added case to Find-word-in-tt-alist
+;; 7/18/13 Patched around case of getting a list of edges.
 
 (in-package :sparser)
 
@@ -33,13 +34,24 @@
   ;; Called from Look-for-and-execute-any-DA-pattern as the
   ;; hook into the search machinery.
   (let ((primary-key
-         (etypecase tt
+         (typecase tt
            (edge (edge-category tt))
            (word tt)
            (edge-vector 
             ;; this is arbitrary, but it gets rid of literals without
             ;; bothering to look, so it's a reasonable starting point.
-            (highest-edge tt)))))
+            (highest-edge tt))
+           (cons
+            ;; case of two edges: literal for "of" and the
+            ;; preposition form. ////find the code that defines
+            ;; a preference and use it here.
+            ;; This heuristically assumes the interesting one
+            ;; is late in the list.
+            (car (last tt)))
+           (otherwise
+            (push-debug `(,tt))
+            (error "Unexpected type of treetop object: ~a~%  ~a"
+                   (type-of tt) tt)))))
 
     (let ((trie-vertex
            (gethash primary-key
@@ -79,9 +91,15 @@
 
 (defun is-an-item-anywhere-in-a-trie (tt)
   ;; called from Look-for-and-execute-any-DA-pattern
-  (let ((key (etypecase tt
+  (let ((key (typecase tt
                (edge (edge-category tt))
-               (word tt)))
+               (word tt)
+               (cons ;; see above
+                (car (last tt)))
+               (otherwise
+                (push-debug `(,tt))
+                (error "Unexpected type of treetop object: ~a~%  ~a"
+                       (type-of tt) tt))))
         (table (da-trie-data-table-of-labels-anywhere *da-trie*)))
 
     (let ((arcs (gethash key table)))
