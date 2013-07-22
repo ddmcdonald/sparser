@@ -190,27 +190,58 @@
 
 ;;--- title (position)
 
-(def-csr  name-object person  :right-context  comma-title
-  :form appositive-prefix
-  :referent (:function interpret-name-as-person left-edge))
-
-(def-csr  named-object person  :right-context  comma-position-at-co
-  :form appositive-prefix
-  :referent (:function interpret-name-as-person left-edge))
-
-(def-csr  named-object person :left-context title
-  :form np
-  :referent (:function interpret-name-as-person right-edge))
-
 (define-debris-analysis-rule title+comma+ne+comma
   :pattern ( title "," named-object "," )
-  :action (:function title-in-apposative-foo third))
+  :action (:function title-ne-in-apposative-DA third))
 
-(defun title-in-apposative-foo (ne-edge)
+(define-debris-analysis-rule title+comma+person+comma
+  :pattern ( title "," person "," )
+  :action (:function title-person-in-apposative-DA third))
+
+
+(defun title-ne-in-apposative-DA (ne-edge)
   (let* ((named-object (edge-referent ne-edge))
          (person (interpret-name-as-person named-object)))
-    ;; *da-starting-position* *da-ending-position*
-    (push-debug `(,person ,ne-edge))
-    (break "How to we make the edges?")))
+    (let ((narrow-person-edge
+           (do-pnf-edge category::person
+                        person
+                        (pos-edge-starts-at ne-edge)
+                        (pos-edge-ends-at ne-edge)
+                        title-ne-in-apposative-DA)))
+      (title-person-in-apposative-DA narrow-person-edge))))
+
+(defun title-person-in-apposative-DA (person-edge)
+  (declare (special *da-starting-position* *da-ending-position*))
+  (let ((before-leading-comma
+         (chart-position-before (pos-edge-starts-at person-edge)))
+        (after-trailing-comma
+         (chart-position-after (pos-edge-ends-at person-edge)))
+        (title+person (find-cfr 'person '(title person)))
+        (title-edge (right-treetop-at *da-starting-position*)))
+    (unless title+person
+      (error "Presumed rule not found"))
+    (push-debug `(,title-edge)) (break "confirm comma positions")
+    (let ((consituents `(,(right-treetop-at before-leading-comma)
+                         ,person-edge
+                         ,(left-treetop-at after-trailing-comma))))
+      (break "consituents")
+      (let ((appositive-edge
+           (make-edge-over-long-span
+            before-leading-comma
+            after-trailing-comma
+            category::person
+            :rule :title-person-in-apposative-DA
+            :form category::appositive
+            :referent (edge-referent person-edge)
+            :constituents consituents)))
+        
+        (let ((full-edge
+               (make-completed-binary-edge
+                title-edge appositive-edge title+person)))
+          full-edge)))))
+                          
+                          
+
+                        
 
 
