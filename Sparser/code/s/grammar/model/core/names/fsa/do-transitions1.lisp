@@ -287,7 +287,8 @@
     (let ((label (category-for-edge-given-name-type category-of-name referent)))
       (do-pnf-edge label referent starting-position ending-position))))
 
-(defun do-pnf-edge (category referent starting-position ending-position)
+(defun do-pnf-edge (category referent starting-position ending-position
+                    &optional rule)
   (unless category
     (setq category (itype-of referent)))
   (let ((edge (edge-over-proper-name
@@ -296,7 +297,8 @@
                category
                category::proper-name
                referent
-               :pnf  ;; the "rule"
+               (or rule
+                   :pnf)  ;; the "rule"
                (successive-treetops  ;; the daughters
                 :from starting-position
                 :to ending-position))))
