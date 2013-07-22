@@ -107,7 +107,7 @@
 
     (dolist (arc arcs)
       (tr :checking-pattern-item-to-arc arc)
-      (setq *arc* arc)
+      (push-debug `(,arc))
       (etypecase arc
         (label-arc
          (when (or (referential-category-p item)
