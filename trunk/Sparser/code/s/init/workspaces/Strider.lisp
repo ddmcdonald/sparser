@@ -19,7 +19,7 @@
 ;;--- control parameters
 
 (setq *debug-segment-handling* nil) ;; override default
-(strider-setting)
+(strider-setting) ;; adds (setq *do-debris-analysis* t)
 
 (setq *do-domain-modeling-and-population* t) ;; ignores null referents
 ;; Need to adapt the segment-level switches and do this better
@@ -27,7 +27,8 @@
 (turn-off-debugging-flags) ;; presently defined in Grok workspace
 ;; (turn-on-debugging-flags)
 
-;; (setq *break-before-creating-name* t)
+;; (setq *break-before-creating-name* t) 
+;;   to look at what could happen before it creates facts
 
 
 
@@ -56,7 +57,9 @@
 
 
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
+;;   "Haj Aqa [honorific title, like Sir], -- add "title"
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
+;;  (p "Deputy Chief of Staff of the Iranian Armed Forces Brigadier General Massoud Jazzayeri said Monday")
 
 
 
@@ -64,12 +67,13 @@
 #|
 e8    PERSON                  1 "the iranian scientists massoud ali - mohammadi" 8
 e9                               "COMMA"
-;; But the information isn't correctly distributed. Rules need tuning so that
-;; the content all acrues to the person
+;; All the pieces are there. The country relationship is 'bound-in' on the
+;; person object. See nationality in core/people/names-to-people
+   relationship-to-country  nationality
 |#
 
 ;; (p "a 32-year-old Iranian scientist, Mostafa Ahmadi Roshan, ")
-;;  Need to finish title-in-apposative-foo
+;;  Redesribution from age+title to the person is ready to flesh out
 
 
 
@@ -77,10 +81,7 @@ e9                               "COMMA"
 ;; Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces, head of Kadima, and leader of the opposition in the Knesset,
 #| 
 (p "Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces,")
-e0    NAMED-OBJECT            1 "shaul mofaz" 3
-e18   COMMA-POSITION-AT-CO    3 ", former chief of staff of the israeli defense forces" 13
-e15                              "COMMA"
-
+;;  roles up to a person
 ;; interpret-name-as-person disconnect-named-object find/person-with-name
 ;; make-person-name-from-items index-person-name-to-person pct/person+title
 
