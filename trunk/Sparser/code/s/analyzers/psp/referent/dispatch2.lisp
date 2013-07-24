@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1998,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1998,2011-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "dispatch"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   2.2 September 2011
+;;;   Version:   2.2 July 2013
 
 ;; initiated 12/91
 ;; 1.0 (7/17/92 v2.3) added :instantiate-individual-with-binding
@@ -19,6 +19,7 @@
 ;;      for the :bindings case.
 ;;     (9/1/11) Added dispatch for :method. 9/26/11 Fixed case where bindings
 ;;      call to annotate presumed it had a psi and got an individual instead
+;;     (7/21/13) Consolidated globals to driver
 
 (in-package :sparser)
 
@@ -81,9 +82,6 @@
 ;;;---------------------------------------------------
 ;;; facility for caching realization nodes with edges
 ;;;---------------------------------------------------
-
-(defvar *head-edge* nil)
-(defvar *arg-edge* nil)
 
 (defun indicate-head (direction)
   (ecase direction
