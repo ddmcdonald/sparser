@@ -64,7 +64,8 @@ in the past they actually held the position.  We can ask
   :rule-label title
   :binds ((base-title . title)
           (modifier . (:or title title-modifier))
-          (locale . country))
+          (locale . country)
+          (time))
   ;; What else can anchor a title to a place?
   ;; If we make it location will a rule over referents
   ;; do the trick?
@@ -97,7 +98,7 @@ in the past they actually held the position.  We can ask
   :instantiates title
   :rule-label title
   :binds ((title . (:or title modified-title))
-          (qualifier . title-status))
+          (qualifier . (:or title-status calculated-time)))
   :index (:permanent :sequential-keys title qualifier)
   :realization (:tree-family premodifier-creates-type
                 :mapping ((type . :self)
