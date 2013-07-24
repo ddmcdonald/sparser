@@ -1,17 +1,32 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "rules"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  1.2 May 1995
+;;;  version:  1.3 July 2013
 
 ;; 1.0 (10/30/91 v2.3) flushed everything to get in a rule that Capitalization
 ;;      needed just to get running.
 ;; 1.1 (6/15/93) put back the preposition rules
 ;; 1.2 (5/3/95) pulled out the prepositions to a public dossier. Nothing's left
 ;;      here except the unvetted stuff
+;; 1.3 (7/23/13) Starting to mine and add stuff. DA for <country>'s <co>. 
 
 (in-package :sparser)
+
+;;;---------
+;;; country
+;;;---------
+
+(def-cfr company (country company)
+  :form np
+  :referent (:function relate-company-to-country left-edge right-edge))
+
+(defun relate-company-to-country (country company)
+  ;;//////// Nothing is checking the possessive
+  ;; Where could we put that?
+  (bind-variable 'location country company)
+  company)
 
 
 
