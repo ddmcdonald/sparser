@@ -148,7 +148,10 @@
       (gload "companies;loader2")
       (gload "companies;loader1")))
 
-  (gate-grammar *titles*
+  (gate-grammar *time*  ;; needs find/ordinal
+    (gload "core;time:loader1"))
+
+  (gate-grammar *titles* ;; needs calculated-time
     (gload "titles;loader2"))
 
   (gate-grammar *money*
@@ -160,9 +163,6 @@
     (if *lattice-points*
       (gload "finance;loader1")
       (gload "finance;loader")))
-
-  (gate-grammar *time*  ;; needs find/ordinal
-    (gload "core;time:loader1"))
 
   (gate-grammar *pronoun-objects*
     (gload "pronouns;loader2"))
