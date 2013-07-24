@@ -15,8 +15,13 @@
 ;; 0.1 (1/1/08) Trying to do it using context to determine whether the
 ;;  function of a specific prounoun is relative or interogative.
 ;; 0.2 (4/9/13) Throwing that over in favor of a completion rule
+;; 0.3 (7/24/13) Moving in the syntax rules for subject relatives
+;;  from rules-over-referents for consolidation
 
 (in-package :sparser)
+
+
+;;--- Completion rule treatment (appears not to work ??)
 
 ;;--- One-off treatment for subject relatives. 
 ;; Needs generalization for other wh terms. They are individuals, so commonalities
@@ -30,6 +35,26 @@
 
 (inhibit-completion-when-subsumes category::who)
 
+
+;;--- syntactic rule treatment (appears to work)
+
+(def-syntax-rule (wh-pronoun s) ;; also vp ?
+                 :head :right-edge
+  :form relative-clause
+  :referent (:function compose-wh-with-vp left-edge right-edge))
+
+(def-syntax-rule (wh-pronoun vp) ;; also vp ?
+                 :head :right-edge
+  :form relative-clause
+  :referent (:function compose-wh-with-vp left-edge right-edge))
+
+(def-syntax-rule (np relative-clause)
+                 :head :left-edge
+  :form np
+  :referent (:function assimilate-appositive left-edge right-edge))
+
+
+;;--- support fns
 
 (defun who-subject-relative-clause-operation (wh-edge)
   (let* ((start-pos (pos-edge-starts-at wh-edge))
@@ -72,6 +97,7 @@
             edge))))))
 
 
+
 (defun compose-wh-with-vp (wh-referent predicate-referent)
   ;; We've just completed the composition of a wh term and
   ;; the vp (probably labeled as an s) to its right. That
@@ -94,6 +120,7 @@
     ;; predicate, now with a binding to reflect the relationship
     ;; to the subject (... or should it be called something else?)
     event))
+
 
 (defun add-subject-relation (event subject)
   ;;/// where should these go?
