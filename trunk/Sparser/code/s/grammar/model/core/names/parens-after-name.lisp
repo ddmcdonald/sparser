@@ -3,11 +3,12 @@
 ;;;
 ;;;     File:  "parens after name"
 ;;;   Module:  "model;core:names:"
-;;;  version:  February 2013
+;;;  version:  July 2013
 
-;; initiated 7/11/96. Revised and updated 2/13/13
+;; initiated 7/11/96. Revised and updated 2/13/13. 
 
 (in-package :sparser)
+
 
 ;;;-------------------------------------------
 ;;; e.g. "Electronic Book Technologies (EBT)"
@@ -88,9 +89,13 @@ form (or whatever it is), which would be an adjunction from the perspective
 of the generator, so it should be a form rule for the parser. 
 |#
 
-(def-cfr company  (company single-capitalized-word-in-parentheses)
+(def-cfr company (company single-capitalized-word-in-parentheses)
   :form np
   :referent (:function acronym-is-alternative-for-name left-edge right-edge))
+
+(def-cfr company (company company-in-parentheses)
+  :form np
+  :referent (:daughter left-edge))
 
 (def-form-rule (proper-name single-capitalized-word-in-parentheses)
   :form proper-name
