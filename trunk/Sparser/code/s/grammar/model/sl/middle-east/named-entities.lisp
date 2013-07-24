@@ -2,9 +2,9 @@
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "sl;middle-east"
-;;;   version:   May 2013
+;;;   version:   July 2013
 
-;; initiated 5/23/13
+;; initiated 5/23/13. Extended through 7/22/13
 
 (in-package :sparser)
 
@@ -14,6 +14,8 @@
     ;; first name also spelled "Binyamin"  
 
     (define-company "Israeli Defense Forces" :aliases '("IDF") :takes-the t)
+
+    (define-company "International Atomic Energy Agency" :aliases '("IAEA") :takes-the t)
 
 ) ;; closes with all permanent
 
