@@ -220,6 +220,7 @@
                  annotation-list))
 
          ;(setq bindings-plist (nreverse bindings-plist))
+         ;;(push-debug `(,head ,bindings-plist)) (break "f or m")
 
          (let ((i (find-or-make/individual head bindings-plist)))
            (annotate-realization/base-case lp i)
