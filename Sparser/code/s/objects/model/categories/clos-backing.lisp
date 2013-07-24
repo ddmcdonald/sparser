@@ -1,10 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 2010-2013 David D. McDonald  -- all rights reserved
-;;; $Id$
 ;;;
 ;;;     File:  "clos-backing"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  0.0 January 2013
+;;;  version:  0.0 July 2013
 
 ;; initated 11/9/10. Modified the storage scheme 11/11. Tweaking cases
 ;; through 12/6. 6/16/11 fixed case of clash with existing classes.
@@ -13,6 +12,8 @@
 ;; of a subclass. 9/3 simplified the names by using a different package
 ;; and flushed the check to see if the class already exists, which made
 ;; the MOP problem go away. 1/4/13 Added get-shadow. 
+;; 7/21/13 Moved in the macro that hides the shift-in-representation 
+;; messiness and its ancilary parts so facility can be taken as a whole
 
 (in-package :sparser)
 
@@ -230,6 +231,97 @@
 (defmethod make-and-store-nominal-instance ((cl standard-class))
   (let ((i (make-instance cl)))
     (setf (gethash cl *category-classes-to-nominal-instance*) i)))
+
+
+
+;;;--------------------------------------------------------------
+;;; getting back the individuals from the shadows invoke methods
+;;;--------------------------------------------------------------
+
+(defvar *shadows-to-individuals* nil
+  "Set with each call to the setup wrapper below. 
+   Alist from the nominal category instance use to invoke
+   the method and the referent (usually an individual) 
+   that is the 'real' referent.")
+
+(defun dereference-shadow-individual (shadow)
+  (let ((value (cdr (assoc shadow  *shadows-to-individuals*))))
+    (unless value
+      (error "No Krisp value found for nominal instance ~a"
+             shadow))
+    value))
+
+
+;;;------------------------------------------------------
+;;; macro to sugar shifting representations in defmethod
+;;;------------------------------------------------------
+
+(defmacro def-k-method (name args &body body)
+  `(def-k-method/expr ',name ',args ',body))
+
+(defun def-k-method/expr (name args body)
+  ;;(push-debug `(,name ,args ,body))
+  (unless (every #'symbolp args)
+    (error "The arguments in a k-method must be symbols~
+          ~%At least one of them is not: ~a" args))
+  (unless (every #'category-named args)
+    (error "As least of of the args to the k-method is not a category:~
+          ~%~a" args))
+  (let* ((categories (loop for arg in args collect (category-named arg)))
+         (shadow-classes
+          (loop for c in categories collect (get-sclass c)))
+         (dummy-parameters
+          (loop with i = 0
+            collect (intern (string-append '#:d "-" (incf i))
+                            (find-package :sparser))
+            until (= i (length shadow-classes))))
+         (method-args
+          (loop for s in shadow-classes
+            as d in dummy-parameters
+            collect `(,d ,s)))
+         (let-bindings
+          (loop for d in dummy-parameters
+            as s in args
+            collect `(,s (dereference-shadow-individual ,d)) )))
+
+    ;;(push-debug `(,let-bindings ,method-args ,dummy-parameters ,shadow-classes))
+    (let ((form 
+           `(defmethod ,name ,method-args
+              (let ,let-bindings
+                ,@body))))
+      ;;(pprint form)      
+      (eval form))))
+
+
+;;;-------------------------------------------------------
+;;; wrapper to setup environment for calling def-k-method
+;;;-------------------------------------------------------
+
+;; Used in ref/method and call-redistribute-if-appropriate
+
+(defmacro setup-args-and-call-k-method (left-referent right-referent
+                                        &body body)
+  `(flet ((dispatch-type-of (o)
+           (typecase o
+             (psi (base-category-of-psi o))
+             (individual (i-type-of o))
+             (category o)
+             (otherwise
+              (push-debug `(,o))
+              (error "Unexpected type of object passed to ref/method: ~
+                      ~a~%   ~a" (type-of o) o)))))
+     (let* ((left-type (dispatch-type-of left-referent))
+            (right-type (dispatch-type-of right-referent))
+            (left-shadow (get-nominal-instance (get-sclass left-type)))
+            (right-shadow (get-nominal-instance (get-sclass right-type)))
+            (*shadows-to-individuals*
+             `((,left-shadow . ,left-referent)
+               (,right-shadow . ,right-referent))))
+       (declare (special *shadows-to-individuals*))
+       ;; (push-debug `(,left-shadow ,right-shadow))
+       ,@body)))
+
+
 
 
  
