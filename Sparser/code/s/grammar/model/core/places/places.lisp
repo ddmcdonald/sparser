@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
-;;; $Id:$
+;;; copyright (c) 2011-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "places"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2011
+;;;  version:  July 2013
 
 ;; places -- entities that denote locations
 
-;; initated 8/12/11. Added name->place-name 11/7.
+;; initated 8/12/11. Added name->place-name 11/7. 7/22/13 made the
+;; names permanent. 
 
 (in-package :sparser)
 
@@ -22,7 +22,7 @@
   :specializes name
   :binds ((sequence . sequence)
           (type . path-type)) ;; and what else?
-  ) ;; special index??
+  :index (:permanent :key sequence))
 
 (defun make-location-name (items location-head)
   ;; Called from categorize-and-form-name
@@ -71,7 +71,8 @@
   :specializes location
   :binds ((type . path-type)
           (name . name-of-location))
-  :index (:special-case :find find/named-location
+  :index (:permanent
+          :special-case :find find/named-location
                         :index index/named-location
                         :reclaim reclaim/named-location))
 
