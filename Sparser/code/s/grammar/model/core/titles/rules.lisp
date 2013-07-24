@@ -53,3 +53,63 @@
              :with (age left-edge
                     title right-edge)))
 
+
+;;;-------------------
+;;; (usually) country
+;;;-------------------
+
+(def-form-rule (possessive title)
+  :form np
+  :head :right-edge
+  ;;//// Dropping the argument ("Iraq's .. minister")
+  ;; on the floor for the moment. See syntax/possessive
+  ;; for a method to use in this rule.
+  ;;/// N.b. doesn't work in *iraqi-girl* because of timing
+  ;; where the title has been swallowed before the country
+  ;; could see it.  A heuristic might be entitled to lift
+  ;; up the left edge on the grounds that it must compose
+  ;; so it's only a question of which edge it composes
+  ;; with -- a peek would get this rule and look for a
+  ;; title.
+  :referent (:head right-edge
+             :function sort-out-passessive+title left-edge right-edge))
+
+(defun sort-out-passessive+title (possessive title)
+  (push-debug `(,possessive ,title)) ;;(break "check args")
+  (cond
+   ((itypep possessive 'pronoun)
+    )
+   ((itypep possessive 'country)
+    )
+   (t (push-debug `(,possessive ,title))
+      (error "New type for possessive: ~a~%  ~a"
+             (i-type-of possessive) possessive)))
+  title)
+
+
+;;;-----------------------
+;;; then, now, (former ?)
+;;;-----------------------
+
+(def-cfr title (calculated-time title)
+  :form np
+  :referent (:head right-edge
+             :function massage-deictic-time-in-title left-edge right-edge))
+
+(defun massage-deictic-time-in-title (time title)
+  "Provides a place to dereference the time or to provide a 
+   more noticable data structure to do it on a second pass."
+  ;;(push-debug `(,time ,title))
+  (if (itypep title 'qualified-title)
+    (then
+     (bind-variable 'time time title)
+     title)
+    (let ((new-title ;; make it one
+           (define-or-find-individual 'qualified-title
+             :title title  :qualifier time)))
+      new-title)))
+
+
+
+
+
