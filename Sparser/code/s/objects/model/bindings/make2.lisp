@@ -31,6 +31,7 @@
 ;;;---------------------------
 
 (defun apply-bindings (individual binding-instructions)
+  ;; Called from, e.g., make-simple-individual
 ;  (break "apply-bindings1")
   (let ( bindings  variable  value )
     (dolist (instr binding-instructions)
