@@ -65,7 +65,8 @@
                 :mapping ((np . time)
                           (modifier . (approximator
                                        sequencer
-                                       modifier))
+                                       ;;modifier ?? since when/how is a title a modifier?
+                                       ))
                           (np-head . (time
                                       time-unit
                                       month
