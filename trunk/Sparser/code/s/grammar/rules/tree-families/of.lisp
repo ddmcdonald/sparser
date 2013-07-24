@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "of"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  February 2013
+;;;  version:  July 2013
 
 ;; formed 10/26/94 from [of genitive] and [group of type]. Added def-rule data 3/8/95
 ;; 7/13/98 added item-of-value. 7/8/00 added member-of.
@@ -14,13 +14,13 @@
 ;; simple-of-complement. 9/26 reordered cases to make postprocessing happy, also
 ;; modified dependent-of so that the head and daughter would both pickout
 ;; the same edge, even if it doesn't make all that much sense.
-;; 2/28/13 added kind-of-name
+;; 2/28/13 added kind-of-name. 7/23/13 added empty-head-of-complement
 
 (in-package :sparser)
 
 #|  Tree families in this file:
 
-       of-complement ----- "stock target of 62" No assumptions about meanings
+       simple-of-complement ----- "stock target of 62" No assumptions about meanings
        quantify-of-stuff - "530 tons of liquid nitrogen"
        of/genitive ------- "John's cat"
        group-of-type ----- "board of directors"
@@ -43,6 +43,23 @@
                         :instantiate-individual result-type
                         :binds (np-item right-edge
                                 of-item left-edge)))
+
+     (of-complement (of-/complement ("of"  complement)
+                         :daughter right-edge
+                         :head right-edge))))
+
+
+
+;;; <constant> of complement
+
+(define-exploded-tree-family  empty-head-of-complement
+  :binding-parameters ( of-item )
+  :labels ( np  complement  base-np  result-type )
+  :cases
+    ((np+of-complement (np (base-np of-/complement)
+                        :head left-edge
+                        :instantiate-individual result-type
+                        :binds (of-item left-edge)))
 
      (of-complement (of-/complement ("of"  complement)
                          :daughter right-edge
