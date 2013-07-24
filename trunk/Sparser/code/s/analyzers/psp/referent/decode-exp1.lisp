@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2001,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2001,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "decode exp"
 ;;;    Module:   "analyzers;psp:referent:"
@@ -28,6 +27,7 @@
 ;;      of plurals.
 ;; 1.10 (6/11/08) Added individuals. Only seems obvious - motivated by quantifiers
 ;;      (8/31/11) added :method to *toplevel-referent-actions*
+;;      (7/24/13) Removed the undefined function warning.
 
 (in-package :sparser)
 
@@ -221,10 +221,6 @@
     (unless (symbolp function-name)
       (error "The first argument to the :function referent expression ~
               must be a symbol.~%    ~A is not." function-name))
-    (unless (fboundp function-name)
-      (format t "~%~%Warning: the function ~A~%is mentioned in a ~
-                 referent expression~%but does not yet have a ~
-                 definition" function-name))
     (replace-with-canonical-ref-vars arguments)))
       
 
