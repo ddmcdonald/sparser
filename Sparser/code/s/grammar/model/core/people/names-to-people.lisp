@@ -174,7 +174,6 @@
   :referent (:function interpret-name-as-person left-edge))
 
 
-
 ;;--- age rewriting rules when the age is given as just a bare number
 
 (def-csr comma-number comma-age
@@ -187,59 +186,6 @@
   :form appositive-prefix
   :referent (:function interpret-number-as-years-of-age right-edge))
 
-
-;;--- title (position)
-
-(define-debris-analysis-rule title+comma+ne+comma
-  :pattern ( title "," named-object "," )
-  :action (:function title-ne-in-apposative-DA third))
-
-(define-debris-analysis-rule title+comma+person+comma
-  :pattern ( title "," person "," )
-  :action (:function title-person-in-apposative-DA third))
-
-
-(defun title-ne-in-apposative-DA (ne-edge)
-  (let* ((named-object (edge-referent ne-edge))
-         (person (interpret-name-as-person named-object)))
-    (let ((narrow-person-edge
-           (do-pnf-edge category::person
-                        person
-                        (pos-edge-starts-at ne-edge)
-                        (pos-edge-ends-at ne-edge)
-                        title-ne-in-apposative-DA)))
-      (title-person-in-apposative-DA narrow-person-edge))))
-
-(defun title-person-in-apposative-DA (person-edge)
-  (declare (special *da-starting-position* *da-ending-position*))
-  (let ((before-leading-comma
-         (chart-position-before (pos-edge-starts-at person-edge)))
-        (after-trailing-comma
-         (chart-position-after (pos-edge-ends-at person-edge)))
-        (title+person (find-cfr 'person '(title person)))
-        (title-edge (right-treetop-at *da-starting-position*)))
-    (unless title+person
-      (error "Presumed rule not found"))
-    (push-debug `(,title-edge)) (break "confirm comma positions")
-    (let ((consituents `(,(right-treetop-at before-leading-comma)
-                         ,person-edge
-                         ,(left-treetop-at after-trailing-comma))))
-      (break "consituents")
-      (let ((appositive-edge
-           (make-edge-over-long-span
-            before-leading-comma
-            after-trailing-comma
-            category::person
-            :rule :title-person-in-apposative-DA
-            :form category::appositive
-            :referent (edge-referent person-edge)
-            :constituents consituents)))
-        
-        (let ((full-edge
-               (make-completed-binary-edge
-                title-edge appositive-edge title+person)))
-          full-edge)))))
-                          
                           
 
                         
