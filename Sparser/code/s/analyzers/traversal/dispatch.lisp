@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "dispatch"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  0.2 February 2013
+;;;  Version:  0.2 July 2013
 
 ;; initiated 6/15/94 v2.3.  9/26 Fixed :multiple-initial-edges bug
 ;; 9/13/95 fleshed out stub for hook being a cfr. 9/15 fixed a bug.
@@ -18,6 +18,7 @@
 ;;     (9/12/11) Added function for creating the obvious edge.
 ;; 0.2 (2/11/13) Adding check for an ordinary word needing to be
 ;;      reanalyzed when it appears in all caps or capitalized
+;;     (7/23/13) Extended criteria for suspecting a hook.
 
 (in-package :sparser)
 
@@ -63,7 +64,8 @@
            ;; That's enough evidence to recast the edge and take it
            ;; as an acronym or ticker symbol, but we'll leave that
            ;; to context to determine which one
-           (unless (eq (edge-form first-edge) (category-named 'proper-name))
+           (unless (or (eq (edge-form first-edge) (category-named 'proper-name))
+                       (eq (edge-form first-edge) (category-named 'np)))
              ;; if so, then there's probably a hook for it and
              ;; we leave it alone.
              (convert-ordinary-word-edge-to-proper-name first-edge)))))
