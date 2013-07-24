@@ -18,14 +18,16 @@
 ;;     (9/21/09) Put [area of responsibility] under *da* gate
 ;;     (2/21/11) Annotated the state of the dossiers.
 ;; 2.0 (3/18/13) Revamping them yet again. Commenting most everything out
-;;      to bring them back gradually
+;;      to bring them back gradually. 7/23/13 bumped [head-of] to 1 and
+;;      put it back in. 
 
 (in-package :sparser)
 
 
 (gate-grammar *titles-core*
   (gload "titles;object2")
-  (gload "titles;rules")
+  (gload "titles;rules")  
+  (gload "titles;head-of1")
   (gate-grammar *da*
     (gload "titles;area of responsibility")))
 #|  wait until vetted
