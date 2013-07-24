@@ -33,6 +33,19 @@
                           (base-np . title)
                           (result-type . :self))))
 
+
+;;;----------------------
+;;; cs rules with person
+;;;----------------------
+
+(def-csr  named-object person
+  :right-context  COMMA-POSITION-AT-CO ;; defined in rspec for person
+  :form appositive-prefix
+  :referent (:function interpret-name-as-person left-edge))
+
+
+
+
 ;;;--------------------------
 ;;; preposition combinations
 ;;;--------------------------

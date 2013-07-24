@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993-1994,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-
+;;;
 ;;;
 ;;;     File:  "person+title"
 ;;;   Module:  "model;sl:pct:"
@@ -50,10 +50,12 @@
 #| ?? what's a plausible route for getting the cs rules done automatically ??
    Maybe a notion of "named thing" ??  |#
 
+;;////////// move into person rspec
 (def-cfr person (title person)
   :form np
   :referent (:head right-edge
              :bind (position left-edge)))
+
 
 (def-csr  named-object person 
   :left-context title
@@ -76,6 +78,7 @@
 ;;; appositive setup -- stupid comma treatment
 ;;;--------------------------------------------
 
+;;//// don't these two fall  out from rspec on person?
 (def-cfr comma-title ("," title)
   :form appositive
   :referent (:daughter right-edge))
@@ -87,13 +90,77 @@
                  :with (person left-edge
                         title right-edge)))
 
-(def-csr  name-object person
+
+(def-csr  named-object person
   :right-context  comma-title
   :form appositive-prefix
   :referent (:function interpret-name-as-person left-edge))
 
-(def-csr  name-object person
+(def-csr  named-object person
   :right-context  comma-title
   :form appositive-prefix
   :referent (:function interpret-name-as-person left-edge))
+
+
+;;;----------------------------
+;;; <title> , <person or ne> ,  
+;;;----------------------------
+
+(define-debris-analysis-rule title+comma+ne+comma
+  :pattern ( title "," named-object "," )
+  :action (:function title-ne-in-appositive-DA third))
+
+(define-debris-analysis-rule title+comma+person+comma
+  :pattern ( title "," person "," )
+  :action (:function title-person-in-appositive-DA third))
+
+
+(defun title-ne-in-appositive-DA (ne-edge)
+  (let* ((named-object (edge-referent ne-edge))
+         (person (interpret-name-as-person named-object)))
+    (let ((narrow-person-edge
+           (do-pnf-edge category::person
+                        person
+                        (pos-edge-starts-at ne-edge)
+                        (pos-edge-ends-at ne-edge)
+                        :title-ne-in-apposative-DA)))
+      (title-person-in-appositive-DA narrow-person-edge))))
+
+(defun title-person-in-appositive-DA (person-edge)
+  (declare (special *da-starting-position* *da-ending-position*))
+  (let ((before-leading-comma
+         (chart-position-before (pos-edge-starts-at person-edge)))
+        (after-trailing-comma
+         (chart-position-after (pos-edge-ends-at person-edge)))
+        (title+person (find-cfr 'person '(title person)))
+        (title-edge (right-treetop-at *da-starting-position*)))
+    (unless title+person
+      (error "Presumed rule not found"))
+    (let ((consituents `(,(right-treetop-at before-leading-comma)
+                         ,person-edge
+                         ,(left-treetop-at after-trailing-comma))))
+      (let ((appositive-edge
+           (make-edge-over-long-span
+            before-leading-comma
+            after-trailing-comma
+            category::person
+            :rule :title-person-in-apposative-DA
+            :form category::appositive
+            :referent (edge-referent person-edge)
+            :constituents consituents)))
+        (let ((full-edge
+               (make-completed-binary-edge
+                title-edge appositive-edge title+person)))
+          full-edge)))))
+
+;;/// delete next pass
+(def-k-method redistribute (title person)
+  (push-debug `(,title ,person))
+  nil)
+
+(def-k-method redistribute (age+title person)
+  (push-debug `(,age+title ,person)) (break "right place"))
+                          
+
+
 
