@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "names to companies"
 ;;;   Module:  "model;core:companies:"
@@ -11,7 +11,8 @@
 ;; variant to the name-word case that first checks for a company-name that
 ;; incorporates the name-word before makeing a new one. Added subroutine to
 ;; to the check: name-word-to-name?, which knows about person and company
-;; names. Tweaking through 3/16.
+;; names. Tweaking through 3/16. 7/23/13 Moved in the company in parens
+;; code that needs to know that 
 
 (in-package :sparser)
 
@@ -81,4 +82,31 @@
   (dolist (b (indiv-bound-in nw) nil)
     (when (eq (category-of (binding-body b)) category::company-name)
       (return (binding-body b)))))
+
+
+
+;;;--------------------------------------
+;;; already known company in parentheses
+;;;--------------------------------------
+;; was in names/parens-after-name. See acronym-is-alternative-for-name
+
+(define-interior-action category::company :square-brackets 'span-company-in-parentheses)
+(define-interior-action category::company :parentheses 'span-company-in-parentheses)
+
+(define-category company-in-parentheses) ;; just for reference in rules
+
+(defun span-company-in-parentheses (edge pos-before-open pos-after-close
+                                    pos-after-open pos-before-close layout)
+  (push-debug `(,edge ,pos-before-open ,pos-after-close
+                ,pos-after-open ,pos-before-close ,layout))
+  (let ((referent (edge-referent edge)))
+    ;; ?? Look at the edge to the left and check that they're referring
+    ;; to the same company?
+    (make-edge-over-long-span
+     pos-before-open
+     pos-after-close
+     (category-named 'company-in-parentheses)
+     :form (category-named 'parentheses)
+     :referent referent)))
+
       
