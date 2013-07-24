@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2013 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   2.3 January 2007
+;;;   Version:   2.4 July 2013
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -28,6 +27,7 @@
 ;; 2.3 (1/10/07) Refined decision for 2.1 so that only certain classes update
 ;;      the referent (cases from dm&p rules)
 ;;     (4/27/11) Cleanup. More on 5/10
+;; 2.4 (7/22/13) Added some doc and the base of the redistribute method
 
 (in-package :sparser)
 
@@ -35,16 +35,26 @@
 ;;; globals
 ;;;---------
 
+;; Lexically bound immediately when referent-from-rule is called
 (defvar *left-edge-into-reference*  nil)
 (defvar *right-edge-into-reference* nil)
 (defvar *parent-edge-getting-reference* nil)
 (defvar *rule-being-interpreted* nil)
-
-(defvar *referent* nil)
-
 (defvar left-referent nil)
 (defvar right-referent nil)
 
+;; Used in setting up annotations and keeping track
+;; of which edge is which in routines that are sensitive
+;; to head constituents
+(defvar *head-edge* nil)
+(defvar *arg-edge* nil)
+
+;; Tracks the referent as it morphs when looping
+;; through successive terms in the rule-field
+(defvar *referent* nil)
+
+
+;; For N-ary rules
 (defvar first-daughter nil)
 (defvar second-daughter nil)
 (defvar third-daughter nil)
@@ -124,6 +134,31 @@
             (setq *referent* rule-field)
             (annotate-individual *referent* :immediate-referent)))
 
+        (call-redistribute-if-appropriate left-referent right-referent)
+
         *referent* ))))
+
+
+
+;;--- redistributing bindings
+
+(defun call-redistribute-if-appropriate (left-referent right-referent)
+  (when (and left-referent right-referent)
+    (when (and (individual-p left-referent)
+               (individual-p right-referent))
+      (setup-args-and-call-k-method 
+       left-referent right-referent
+       (push-debug `(,left-referent ,right-referent))
+       (funcall #'redistribute left-shadow right-shadow)))))
+
+(defgeneric redistribute (left-referent right-referent)
+  ;; or should it be head and arg ??
+  (:documentation "Provides a mechanism for part of the referent of
+    one edge (i.e. one or more bindings) to be transfered to the
+    referent of the other edge."))
+
+(defmethod redistribute ((left t) (right t))
+  (declare (ignore left right))
+  nil)
        
 
