@@ -60,26 +60,30 @@
      (t
       (multiple-value-bind (tt next-position multiple?)
                            (next-treetop/rightward position)
+        (if tt
+          (then
+           (when multiple?
+             (setq tt (reduce-multiple-initial-edges tt)))
 
-        (when multiple?
-          (setq tt (reduce-multiple-initial-edges tt)))
+           ;; subsumed what had been Look-for-and-execute-any-DA-pattern
+           (let ( 1st-vertex  arc )
+             (cond
+              ((setq 1st-vertex (trie-for-1st-item tt))
+               (push-debug `(,1st-vertex))
+               (tr :starts-da-pattern-with tt) ;; "[DA check] ~A starts a DA pattern" 
+               (execute-da-trie 1st-vertex tt position next-position))
+              
+              ((setq arc (is-an-item-anywhere-in-a-trie tt))
+               (push-debug `(,arc))
+               (tr :starts-da-pattern/middle-out tt)
+               (execute-trie-middle-out arc tt position next-position))
 
-        ;; subsumed what had been Look-for-and-execute-any-DA-pattern
-        (let ( 1st-vertex  arc )
-          (cond
-           ((setq 1st-vertex (trie-for-1st-item tt))
-            (push-debug `(,1st-vertex))
-            (tr :starts-da-pattern-with tt) ;; "[DA check] ~A starts a DA pattern" 
-            (execute-da-trie 1st-vertex tt position next-position))
+              (t
+               (tr :no-da-pattern-started-by tt)
+               (look-for-da-patterns next-position)))))
 
-           ((setq arc (is-an-item-anywhere-in-a-trie tt))
-            (push-debug `(,arc))
-            (tr :starts-da-pattern/middle-out tt)
-            (execute-trie-middle-out arc tt position next-position))
-
-           (t
-            (tr :no-da-pattern-started-by tt)
-            (look-for-da-patterns next-position)))))))))
+          (else ;; will be nil at the edge of the chart
+           (do-treetop-triggers))))))))
 
     
 
