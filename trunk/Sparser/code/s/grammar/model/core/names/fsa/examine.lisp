@@ -361,7 +361,7 @@
          ;; That was the end of check-cases,
 
          (label-for (tt)
-           (etypecase tt 
+           (typecase tt 
              (edge
               (if (word-p (edge-category tt))
                 (then (setq edge-labeled-by-word tt
@@ -382,7 +382,12 @@
              (cons
               (unless (eq (car tt) :multiple-treetops)
                 (break "Unexpected cons returned from pnf-treetop-at:~%~a" tt))
-              (setq multiple-treetops (cdr tt))))))
+              (setq multiple-treetops (cdr tt)))
+
+             (otherwise
+              (push-debug `(,tt))
+              (error "label-for in examine-capitalized-sequence:~
+                    ~%New type of treetop: ~a  ~a" (type-of tt) tt)))))
 
 
       ;; That was the end of the two flets. This is where we start actually

@@ -9,6 +9,9 @@
 ;; 0.1 (7/7/13) Rewrote sort-out-multiple-preterminals-for-pnf to prefer
 ;;      name-words rather than ignore them. Since that was the old policy
 ;;      there could be repurcussions. 
+;; 0.2 (7/22/13) fixed pnf-treetop-at to return nil if its heuristics
+;;      don't return something, and tweaked its subroutines, which do need
+;;      work.
 
 (in-package :sparser)
 
@@ -237,11 +240,18 @@
 
 (defun pnf-treetop-at (position)
   (let ((top-node-field (ev-top-node (pos-starts-here position))))
-    (cond ((eq top-node-field :multiple-initial-edges)
-           (sort-out-multiple-preterminals-for-pnf position))
-          (top-node-field ;; i.e. an edge
-           top-node-field)
-          (t (pos-terminal position)))))
+    (let ((tt (cond
+               ((eq top-node-field :multiple-initial-edges)
+                (sort-out-multiple-preterminals-for-pnf position))
+               (top-node-field ;; i.e. an edge
+                top-node-field)
+               (t (pos-terminal position)))))
+      (unless tt
+        (push-debug `(,position))
+        (error "Did not compute a treetop for position ~a~
+              ~%Extend/fix the algorith." 
+               (pos-array-index position)))
+      tt)))
 
 
 (defun sort-out-multiple-preterminals-for-pnf (position)
@@ -271,12 +281,14 @@
 
 
 (defun pnf/prefer-name-words (edges position)
-  (let ( residue )
-    (dolist (edge edges)
-      (if (eq (edge-category edge) category::name-word)
-        (return-from pnf/prefer-name-words edge)
-        (kpush edge residue))
-      (pnf/prefer-heads-over-modifiers edges position))))
+  (dolist (edge edges)
+    (when (eq (edge-category edge) category::name-word)
+      (return-from pnf/prefer-name-words edge)))
+  (pnf/prefer-kinds-over-modifiers-or-events edges position))
+
+(defun pnf/prefer-kinds-over-modifiers-or-events (edges position)
+  ;;/// where's the info on type?
+  (pnf/prefer-heads-over-modifiers edges position))
 
 #+ignore ;; see note just above
 (defun pnf/remove-name-words-from-preterminals (edges position)
@@ -297,31 +309,33 @@
   ;; a phrase, whereas the heads are often in composition with terms
   ;; outside the grammar and are less likely to have parsed up under
   ;; a larger edge
-  (let ( residue  head  multiple-heads  form-label )
+  (let ( residue  head  noun  form-label )
     (dolist (edge edges)
       (setq form-label (edge-form edge))
       (if form-label
-        (if (eq form-label category::np-head)
-          (then
-            (if head
-              (setq multiple-heads
-                    (etypecase head
-                      (cons (cons edge multiple-heads))
-                      (edge (list edge head))))
-              (setq head edge)))
-          (push edge residue))
+        (case (cat-symbol form-label)
+          (category::np-head
+           (setq head edge))
+          ((category::noun 
+            category::common-noun 
+            category::common-noun/plural)
+           (setq noun edge)) ;; could get more than one
+          (otherwise
+           (push edge residue)))
+
+        ;; no form label
         (push edge residue)))
 
-    (cond (multiple-heads
-           (break "The word ~A has more than one interpretation ~
-                   as a head~%" (pos-terminal position)))
-          (head  head)
-          (residue
-           `(:multiple-treetops ,@residue))
-          (t ;; shouldn't get here
-           (break "Threading bug: none of the defined cases cover ~
-                   the situation")))))
+    (or head 
+        noun
+        (pnf/throw-up-hands residue position))))
 
+(defun pnf/throw-up-hands (edges position)
+  (push-debug `(,edges ,position))
+  (error "Have run out of criteria for prefering one edge over another~
+        ~%when a word is spanned by more than one edge and we need~
+        ~%a PNR treetop label.~%position = ~a~%remaining edges = ~a"
+         position edges))
 
 
 
