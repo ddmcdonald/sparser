@@ -34,10 +34,46 @@
   :instantiates self
   :specializes  event
   :binds ((who person)) ;; animate? What about the birds -- need "animal" ??
+  :index (:key who)
   :realization ((:main-verb "die")
 		(:tree-family intransitive
 		 :mapping ((agent . who)
 			   (s . :self)
 			   (vp . :self)
 			   (np/subject . person)))))
+
+
+(define-category kill
+  :instantiates self
+  :specializes  event
+  :binds ((who person)
+          (by-whom person))
+  :index (:key who) ;; ought to suffice
+  :realization ((:main-verb "kill")
+                (:tree-family transitive/passive
+                 :mapping ((agent . by-whom)
+                           (patient . who)
+                           (s . :self)
+                           (vp . :self)
+                           (vg . :self)
+                           (np/subject . person)
+                           (np/object . person)))))
+
+;;/// need a "just like" macro or function that can be smart about
+;; the substitutions
+(define-category assassinate
+  :instantiates self
+  :specializes  event
+  :binds ((who person)
+          (by-whom person))
+  :index (:key who) ;; ought to suffice
+  :realization ((:main-verb "assassinate")
+                (:tree-family transitive/passive
+                 :mapping ((agent . by-whom)
+                           (patient . who)
+                           (s . :self)
+                           (vp . :self)
+                           (vg . :self)
+                           (np/subject . person)
+                           (np/object . person)))))
 
