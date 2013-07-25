@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993-1995,2011  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "determiner"
 ;;;   Module:  "grammar;rules:HA:"
 ;;;  Version:  0.4 November 1995
@@ -33,7 +33,7 @@
     (when (word-p label)
       (when (determiner? label)
         (if *do-debris-analysis*
-          (DA/prefix-dispatch/determiner label prefix-edge right-end-pos)
+          (da/prefix-dispatch/determiner label prefix-edge right-end-pos)
           (else
             ;; We know that this segment is definitely a NP, but
             ;; unless heuristics about common nouns and heads are

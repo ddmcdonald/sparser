@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993,2011  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "prefix dispatch"
 ;;;   Module:  "analyzers;DA:"
 ;;;  Version:  July 1993
@@ -10,7 +10,7 @@
 (in-package :sparser)
 
 
-(defun DA/prefix-dispatch/determiner (label prefix-edge right-end-pos)
+(defun da/prefix-dispatch/determiner (label prefix-edge right-end-pos)
 
   ;; Called from determiner-completion-heuristic as an alternative to
   ;; its processing if the debris analysis flag is up.
@@ -27,7 +27,7 @@
         (middle? nil)) ;;/////
 
     ;;///
-    
+
     (let ((edge (make-chart-edge      ;;//unchanged from HA routine
                  :starting-position (pos-edge-starts-at prefix-edge)
                  :ending-position right-end-pos
