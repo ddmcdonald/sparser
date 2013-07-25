@@ -114,6 +114,13 @@
   :pattern ( title "," person "," )
   :action (:function title-person-in-appositive-DA third))
 
+(define-debris-analysis-rule comma+person+comma
+  :pattern ( "," person "," )
+  :action (:function person-absorb-appos-commas-look-around second))
+
+
+(defun person-absorb-appos-commas-look-around (person-edge)
+  (push-debug `(,person-edge)) (break "absorb-appos-commas"))
 
 (defun title-ne-in-appositive-DA (ne-edge)
   (let* ((named-object (edge-referent ne-edge))
@@ -133,7 +140,7 @@
         (after-trailing-comma
          (chart-position-after (pos-edge-ends-at person-edge)))
         (title+person (find-cfr 'person '(title person)))
-        (title-edge (right-treetop-at *da-starting-position*)))
+        (title-edge (left-treetop-at *da-starting-position*)))
     (unless title+person
       (error "Presumed rule not found"))
     (let ((consituents `(,(right-treetop-at before-leading-comma)
@@ -151,15 +158,13 @@
         (let ((full-edge
                (make-completed-binary-edge
                 title-edge appositive-edge title+person)))
+          (break "full edge")
           full-edge)))))
 
-;;/// delete next pass
-(def-k-method redistribute (title person)
-  (push-debug `(,title ,person))
-  nil)
 
 (def-k-method redistribute (age+title person)
-  (push-debug `(,age+title ,person)) (break "right place"))
+  (push-debug `(,age+title ,person)) ;;(break "right place")
+  )
                           
 
 
