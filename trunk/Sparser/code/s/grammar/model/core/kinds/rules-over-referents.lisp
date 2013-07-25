@@ -55,14 +55,6 @@
   :referent(:head right-edge
             :bind (time left-edge)))
 
-;;csr for year from javan-online.text
-;;captures instances of "the year 90"
-;;this works, but has no referent.  
-(def-csr number year
-  :left-context time-unit
-  :form np)
-
-
 
 
 
