@@ -58,6 +58,10 @@
 ;;; (usually) country
 ;;;-------------------
 
+;;///// something happens within the load such that this rule
+;; turns up with its completion field as :left-edge making the
+;; possessive constituent that head. Refefining it (after clearing
+;; the duplication) sets it correctly.
 (def-form-rule (possessive title)
   :form np
   :head :right-edge
