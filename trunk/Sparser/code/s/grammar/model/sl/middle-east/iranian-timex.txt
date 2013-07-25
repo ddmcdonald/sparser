@@ -1,0 +1,44 @@
+;;javan-online.txt timex
+
+"in the months of azar and dey [ the months that start on the 21 st november and end on 20 th january]"
+
+"each year"
+
+"these months"
+
+"these winter days"
+
+"these days in the month of dey"
+
+"the 21 st day of winter"
+
+"in the year 90 [the year that started on 20 march 2009]"
+
+"a month later"
+
+"a few days after"
+
+"in the year 77 [the year that started on 20 march 1998]"
+
+"in the year 81"
+
+"at the beginning of his student days"
+
+;;iranian-commander.txt timex
+
+"in two years"
+
+"on January 11"
+
+"in January 2010"
+
+;;european style of date
+"23 July 2011"
+
+"on Sunday"
+
+"Late in June"
+
+"late last month"
+
+"in the last three years"
