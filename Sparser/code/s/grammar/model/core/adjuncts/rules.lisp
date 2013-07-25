@@ -8,10 +8,12 @@
 ;; This file is loaded after the regular grammar/model so that it can
 ;; freely refer to categories form any other module
 
-;; initiated 7/1/13
+;; initiated 7/1/13. Back to square one 7/24/13
 
 (in-package :sparser)
 
+
+;; not finished 
 #|(def-form-rule (sequencer np)
   :form np
   :referent (:instantiate-individual interval
@@ -19,8 +21,3 @@
   :new-category interval)|#
 
 
-(def-k-method compose (sequencer amount-of-time)
-  ;; "(the) last three years"
-  (declare (ignore sequencer)) ;; should instantiate a new category
-  (instantiate-individual interval
-      :with (sequencer sequencer)))
