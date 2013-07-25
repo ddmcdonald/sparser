@@ -132,27 +132,27 @@
 
 (defparameter *allow-da-to-look-under-edges* t)
 
-(defun da/Look-under-edge (edge label)
+(defun da/look-under-edge (edge label)
   ;; Called from Arc-matches-tt? when a treetop edge is being
   ;; compared against its category label and there is not a
   ;; match.
   (when *allow-da-to-look-under-edges*
-    (if *Da-search-is-going-leftwards*
+    (if *da-search-is-going-leftwards*
       (da/look-under-edge/leftwards edge label)
       (da/look-under-edge/rightwards edge label))))
 
-(defun da/Look-under-edge/Rightwards (edge label)
+(defun da/look-under-edge/Rightwards (edge label)
   (da/look-under-edge/scan-edges 
    (pos-starts-here (pos-edge-starts-at edge))
    label))
 
-(defun da/Look-under-edge/Leftwards (top-edge label)
+(defun da/look-under-edge/Leftwards (top-edge label)
   (da/look-under-edge/scan-edges 
    (pos-ends-here (pos-edge-ends-at top-edge))
    label))
 
 
-(defun da/Look-under-edge/scan-edges (ev label)
+(defun da/look-under-edge/scan-edges (ev label)
   (let ((edge-vector (ev-edge-vector ev))
         (max (ev-number-of-edges ev))
         edge  edge-that-matches )
