@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "years"
 ;;;   Module:  "model;core:time:"
-;;;  version:  2.0 July 2000
+;;;  version:  2.0 July 2013
 
 ;; initiated in February 1991
 ;; 0.1 (4/9 v1.8.2)  Added the years from 1959 to 1979
@@ -15,7 +14,9 @@
 ;; 2.0 (7/9/00) Reworked as psi.
 ;; 2.1 (8/20/08) shifting from proper to common noun because proper noun introduces
 ;;      a leading ].proper-noun, which seems like overkill. Also rewriting the
-;;      category to go to self instead of time
+;;      category to go to self instead of time.
+;; 2.2 (7/25/13) Added csr and function for one case of contextually establishing
+;;      that a number is a year.
 
 (in-package :sparser)
 
@@ -45,3 +46,22 @@
                    :year-of-century integer)))
     year ))
 
+
+;;;---------------------------
+;;; making years from context
+;;;---------------------------
+
+;;csr for year from javan-online.text
+;;captures instances of "the year 90"
+;;this works, but has no referent.  
+(def-csr number year
+  :left-context time-unit
+  :form np
+  ;; n.b. context-sensitive rules are effectively binary,
+  ;; so the number will be  under the right-edge
+  :referent (:function make-year-from-constituent right-edge))
+
+(defun make-year-from-constituent (number)
+  (let ((string (string/number number))
+        (integer (number-value number)))
+    (define-year string integer)))
