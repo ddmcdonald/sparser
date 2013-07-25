@@ -21,5 +21,5 @@
 
 ;;some Iranian months from javan-online
 ;;"the months that start on the 21st November and end on 20th January"
-(define-month "Azar" 1)
-(define-month "Dey" 2)
+(define-month "azar" 1)
+(define-month "dey" 2)
