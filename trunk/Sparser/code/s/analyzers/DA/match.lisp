@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1995,2011-2013  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "match"
 ;;;   Module:  "analyzers;DA:"
 ;;;  Version:  July 2013
@@ -54,30 +54,30 @@
              ~% *multiple-edges-over-word* = ~a~% *boundary-tt* = ~a~
              ~% The arc ~a is a ~a~
              ~% tt = ~a"
-            *edge-tt* *word-tt* *multiple-edges-over-word* 
+            *edge-tt* *word-tt* *multiple-edges-over-word*
             *boundary-tt* arc (type-of arc) tt))
   (push-debug `(,arc ,tt)) ;;(break "arc type")
   ;; (setq arc (car *) tt (cadr *))
 
   (let ((match?
          (typecase arc
-           
+
            (label-arc
             (when *edge-tt*
               (if (eq (edge-category tt) (arc-label arc))
                 t
                 (da/look-under-edge tt (arc-label arc)))))
-           
+
            (form-arc
             (when *edge-tt*
               (eq (edge-form tt) (arc-label arc))))
-           
+
            (morph-arc
             (when *word-tt*
               (eq (word-morphology tt) (arc-morph-keyword arc))))
-           
+
            (word-arc
-            (cond 
+            (cond
               (*word-tt*
                (eq tt (arc-word arc)))
               (*multiple-edges-over-word*
@@ -100,7 +100,7 @@
                    (eq left-daughter (arc-word arc)))))
 
               (t nil)))
-           
+
            (polyword-arc
             (when *edge-tt*
               (eq (edge-category tt) (arc-polyword arc))))
@@ -114,7 +114,7 @@
            (gap-arc
             (break "gap arc"))
 
-           (otherwise 
+           (otherwise
             (push-debug `(,arc ,tt))
             (error "Unknown type of DA arc: ~a~%  ~a"
                    (type-of arc) arc) ))))
@@ -141,13 +141,13 @@
       (da/look-under-edge/leftwards edge label)
       (da/look-under-edge/rightwards edge label))))
 
-(defun da/look-under-edge/Rightwards (edge label)
-  (da/look-under-edge/scan-edges 
+(defun da/look-under-edge/rightwards (edge label)
+  (da/look-under-edge/scan-edges
    (pos-starts-here (pos-edge-starts-at edge))
    label))
 
-(defun da/look-under-edge/Leftwards (top-edge label)
-  (da/look-under-edge/scan-edges 
+(defun da/look-under-edge/leftwards (top-edge label)
+  (da/look-under-edge/scan-edges
    (pos-ends-here (pos-edge-ends-at top-edge))
    label))
 
