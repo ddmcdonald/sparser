@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "fsa"
 ;;;   Module:  "drivers;DA:"
 ;;;  Version:  May 1995
@@ -11,12 +11,12 @@
 
 
 (defun follow-out-matched-arc (arc)
-  (if *Da-search-is-going-leftwards*
+  (if *da-search-is-going-leftwards*
     (follow-out-matched-arc/leftwards arc)
-    
+
     (let ((next-vertex (arc-right-vertex arc)))
       (tr :next-da-vertex next-vertex)
-      
+
       (if (end-vertex-p next-vertex)
         (if (vertex-p next-vertex)
           (then
