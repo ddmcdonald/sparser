@@ -316,7 +316,7 @@
 (deftrace :pfwpnf/fsa-succeeded (word ended-at)
   (when *trace-pnf*
     (trace-msg "[pfwpnf] fsa triggered by ~a ended at p~a"
-               word (pos-token-inded ended-at))))
+               word (pos-token-index ended-at))))
 
 
 
