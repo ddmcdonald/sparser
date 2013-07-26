@@ -106,6 +106,11 @@
             (setq person (interpret-name-as-person name-value))
             (disconnect-named-object name name-value)))
 
+         (category::company
+          ;; Can happen when a cs rule wants to convert a cap seq.
+          ;; that's already defined.
+          (setq person name))
+
          (otherwise
           (push-debug `(,name))
           (error "New category of name: ~a~%~a"
