@@ -30,6 +30,19 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+;; This is a general issue for which I don't have a comfortable
+;; sense of how to conceptualize it. There are references to the
+;; notion of a title, or characterizing something as being a title
+;; and that phenomenon is ubiquitous. 
+;;    "Haj Aqa [honorific title, like Sir]"
+;;                 -- this doesn't work
+(define-category generic-title
+  :specializes title
+  :rule-label title
+  :realization (:common-noun "title"))
+
+
+
 (define-category  title-modifier
   :instantiates self
   :specializes nil
@@ -165,3 +178,9 @@ in the past they actually held the position.  We can ask
 
 |#
 
+#| Stray ph
+
+
+
+
+|#
