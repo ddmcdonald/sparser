@@ -25,3 +25,10 @@
   (1 PREP-TIME 3))
 
 
+#|(defun get-all-rules (n)
+  (setq a nil)
+  (setq b 0)
+  (loop
+    (cons b a)
+    (+ b 1)
+    (when (= b n) (return a))))|#
