@@ -15,11 +15,12 @@
 
 (setq *tts-after-each-section* t)
 
-
 ;;--- control parameters
 
 (setq *debug-segment-handling* nil) ;; override default
+
 (strider-setting) ;; adds (setq *do-debris-analysis* t)
+(setq *arabic-names* t)
 
 (setq *do-domain-modeling-and-population* t) ;; ignores null referents
 ;; Need to adapt the segment-level switches and do this better
@@ -57,8 +58,9 @@
 
 
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
-;;   "Haj Aqa [honorific title, like Sir], -- add "title"
+;;   
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
+
 ;;  (p "Deputy Chief of Staff of the Iranian Armed Forces Brigadier General Massoud Jazzayeri said Monday")
 
 
