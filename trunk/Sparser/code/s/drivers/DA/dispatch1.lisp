@@ -51,9 +51,15 @@
             ;; so best to err on the safe side.
             (tr :resuming-DA-walk-at pos-after)
             (look-for-da-patterns pos-after))))
+
+        (cons ;; trap wacko bug
+         (push-debug `(,result ,1st-vertex ,tt ,pos-before ,pos-after))
+         ;; (setq result (car *) 1st-vertex (second *) tt (third *) pos-before (fourth *) pos-after (fifth *))
+         (break "Result from checking for extensions from ~a~
+               ~%is a list of length ~d" 1st-vertex (length result)))
         
         (otherwise
-         (push-debug `(,result))
+         (push-debug `(,result ,1st-vertex ,tt ,pos-before ,pos-after))
          (break "Unanticipated type of result: ~a" (type-of result))))
 
       (else
