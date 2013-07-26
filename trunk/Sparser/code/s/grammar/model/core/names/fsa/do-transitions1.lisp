@@ -176,7 +176,8 @@
            ;; The examination was resolved directly to an NE
            ((category::named-object
              category::company
-             category::person)
+             category::person
+             category::named-location)
             (push-debug `(,result ,starting-position ,ending-position))
             (do-pnf-edge nil result starting-position ending-position))
 
