@@ -233,14 +233,14 @@ e11   DATE                    5 "january 1 , 1999" 9
 ;;;javan-online.txt
 
 ;;iranian months mentioned in javan-online.txt
-(define-citation "in the months of azar and dey"
+#|(define-citation "in the months of azar and dey"
   (                                 SOURCE-START
 e7    PREP-TIME               1 "in the months" 4
 e5 e6                            "of" :: of, OF
                                  "azar"
 e8                               "and"
 e9    MONTH                   7 "dey" 8
-                                 END-OF-SOURCE)
+                                 END-OF-SOURCE))|#
 
 ;;are these really instances of time-unit?
 (define-citation "each year"
@@ -328,6 +328,7 @@ e3    TIME                    2 "last month" 4
     (                                 SOURCE-START
 e10   RELATIVE-LOCATION       1 "in the last three years" 6
                                  END-OF-SOURCE))|#
+
 
 
 
