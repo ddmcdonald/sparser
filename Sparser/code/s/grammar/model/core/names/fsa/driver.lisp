@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  0.7 February 2013
+;;;  Version:  0.8 July 2013
 
 ;; initiated 5/15/93 v2.3, added traces 5/26
 ;; 0.1 (12/9) Added pre-emptive state variable
@@ -22,6 +22,7 @@
 ;;     verb in DM&P mode.
 ;; 0.7 (2/3/13) Changed pnf/scan-classify-record to ignore function words
 ;;     at sentence starts.
+;; 0.8 (7/25/13) Added *arabic-names*
 
 (in-package :sparser)
 
@@ -68,6 +69,11 @@
 
 (defparameter *pnf-scan-ignores-the-possibility-of-initials* nil
   "Read in Checkout-punctuation-for-capseq. Bound by the PNF routine.")
+
+
+(defparameter *arabic-names* nil
+  "Read in checkout-single-quote-for-capseq to permit any lowercase
+   continuation after an appostrophe.")
 
 
 ;;;----------------------

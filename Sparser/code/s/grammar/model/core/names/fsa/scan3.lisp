@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  Version:  3.3 April 2013
+;;;  Version:  3.3 July 2013
 
 ;; initiated 5/15/93 v2.3 on a few pieces of names:fsa:fsa8
 ;; 5/21 fixed a bug, 5/26 added traces
@@ -39,6 +39,7 @@
 ;; 3.3 (1/21/13) Blocking continuaton over "of" or "and" when doing DM&P
 ;;     (2/11/13) Trying to make it do Arabic names.  4/11/13 works now. the check
 ;;      in lc-non-boundary-word-that-may-extend-cap-seq? was empty.
+;;     (7/25/13) Another Arabic case: Mas'ud
 
 (in-package :sparser)
 
@@ -312,11 +313,12 @@
       position-before)
      ((eq punct word::/)
       (checkout-forward-slash-for-capseq position-before))
+     ((eq punct word::\') 
+      (checkout-single-quote-for-capseq position-before))
      (t
       position-before))))
 #|
-     ((eq punct word::\') (checkout-single-quote-for-capseq position-before))
-     ((eq punct word::\,) (checkout-comma-for-capseq position-before))
+          ((eq punct word::\,) (checkout-comma-for-capseq position-before))
      |#
 
 
@@ -422,7 +424,6 @@
     position ))
 
 
-;;----------- not being used -------------
 (defun checkout-single-quote-for-capseq (position)
   ;; cases:
   ;;  The next word is "s" and the "'" is acting as an appostrophe,
@@ -436,22 +437,37 @@
   ;; the sequence -- handling the meaning of these cases is left to
   ;; classification.
 
-  (let ((next-position (chart-position-after position)))
+  (let ((next-position (chart-position-after position)))         
     (case (pos-assessed? next-position)
       (:scanned )
       (:assessed )
       (otherwise (scan-next-position)))
 
-    (cond ((eq word::\s (pos-terminal next-position))
-           ;; leave the "'s" to be gotten later
-           position)
-          ((capitalized (pos-terminal next-position))
-           (cap-seq-continues-from-here? position))
-          (t
-           (break "new case for single-quote while looking to extend ~
-                   a capitalized sequence.~%The next word is ~A ~
-                   at position ~A" (pos-terminal next-position)
-                  (pos-token-index next-position))))))
+    (let ((next-word (pos-terminal next-position))
+          (caps-state (pos-capitalization next-position)))
+
+      (cond ((eq word::\s (pos-terminal next-position))
+             ;; leave the "'s" to be gotten later
+             position)
+
+            ((memq next-word *lc-person-words*)
+             ;;//// There's a bug here in the threading that happens
+             ;; in this recursive call. Given "Mas'ud" the scan strands
+             ;; that lowercase follow-on
+             (cap-seq-continues-from-here? next-position))
+
+            ((capitalized (pos-terminal next-position))
+             (cap-seq-continues-from-here? position))
+
+            ((and (eq caps-state :lower-case)
+                  *arabic-names*)
+             (cap-seq-continues-from-here? next-position))
+
+            (t
+             (break "new case for single-quote while looking to extend ~
+                     a capitalized sequence.~%The next word is ~A ~
+                     at position ~A" (pos-terminal next-position)
+                     (pos-token-index next-position)))))))
 
 
 ;;----------- not being used -------------
@@ -506,7 +522,7 @@
   (unless *lc-person-words*
     (setq *lc-person-words*
           (mapcar #'resolve/make
-                  '("al" "de" "von")))))
+                  '("al" "ud" "i" "de" "von")))))
 
 (defun lc-word-that-may-extend-cap-seq? (word)
   ;; Called from boundary-continuation

@@ -11,7 +11,7 @@
 ;;      there could be repurcussions. 
 ;; 0.2 (7/22/13) fixed pnf-treetop-at to return nil if its heuristics
 ;;      don't return something, and tweaked its subroutines, which do need
-;;      work.
+;;      work. (7/25/13) Added silent NW for #\'
 
 (in-package :sparser)
 
@@ -494,6 +494,10 @@
 ;;;-------------------------------------------------
 
 (make-name-word-for/silent (word-named "&")
+                           nil  ;; the position
+                           :use-lowercase-word t)
+
+(make-name-word-for/silent (word-named "'")
                            nil  ;; the position
                            :use-lowercase-word t)
 
