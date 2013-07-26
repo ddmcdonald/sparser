@@ -86,8 +86,6 @@
   (terpri stream))
 
 
-
-#+ignore   ;; Lambda-variable design shifted
 (defun writeout-dereferenced-mapping-for-revival (mapping stream)
   (format stream "~&~9,3T(")
   (do* ((remaining-pairs mapping (cdr remaining-pairs))
@@ -112,7 +110,10 @@
                   (lambda-variable
                    `(,(var-name value)
                      ,(string-downcase
-                       (cat-symbol (first (var-binding-sites value))))))
+                       ;; 7/25/13 That's nonsense, but var-binding-sites
+                       ;; has been reworked
+                       (cat-symbol (first value ;;(var-binding-sites value)
+                                          )))))
                   (word
                    (format nil "\"~A\"" (word-pname value)))
                   ((or referential-category mixin-category category)
