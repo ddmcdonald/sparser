@@ -69,7 +69,9 @@
 
 (defparameter *no-referent-calculations* nil)
 
-
+(defun right-edge-for-referent ()
+  (or *right-edge-into-reference*
+      (error "Right edge isn't bound now")))
 
 ;;;------------
 ;;; the driver
@@ -139,8 +141,9 @@
         *referent* ))))
 
 
-
-;;--- redistributing bindings
+;;;-------------------------
+;;; redistributing bindings
+;;;-------------------------
 
 (defun call-redistribute-if-appropriate (left-referent right-referent)
   (when (and left-referent right-referent)
