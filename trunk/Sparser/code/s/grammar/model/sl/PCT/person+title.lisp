@@ -120,7 +120,8 @@
 
 
 (defun person-absorb-appos-commas-look-around (person-edge)
-  (push-debug `(,person-edge)) (break "absorb-appos-commas"))
+  (push-debug `(,person-edge)) ;;(break "absorb-appos-commas")
+  )
 
 (defun title-ne-in-appositive-DA (ne-edge)
   (let* ((named-object (edge-referent ne-edge))
