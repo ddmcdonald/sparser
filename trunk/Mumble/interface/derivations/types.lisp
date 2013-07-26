@@ -250,7 +250,6 @@
 ;;; template resources
 ;;;--------------------
 
-#+ignore ;; tr isn't seen as a special, so instantiate-type isn't yet defined
 (instantiate-type (template-resource
 		   (#:tr-)
 		   ("#<template-resource ~a ~a>" tr
