@@ -26,6 +26,7 @@
 
 ;;iranian-commander.txt timex
 
+;;these should all be PREP-TIME, nothing special here
 "in two years"
 
 "on January 11"
