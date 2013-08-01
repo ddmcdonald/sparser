@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  4.2 March 2005
+;;;  version:  4.3 July 2013
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -14,6 +14,9 @@
 ;;      in it.  (1/16/96) added a filter against background companies. 
 ;;      (3/11/05) Tweaked Respan-pn-with-most-recent-company-anaphor to use the 
 ;;      form of the pronoun - addresses case of "its".
+;; 4.3 (7/30/13) Rewrote respan-pn-with-most-recent-person-anaphor to change
+;;      the edge that's passed in rather than make a new one. The new one was
+;;      getting lost.
 
 (in-package :sparser)
 
@@ -49,7 +52,7 @@
 (defun respan-pn-with-most-recent-person-anaphor (pn-edge)
   (let ((person-entries
          (discourse-entry (category-named 'person))))
-
+    
     (let ((person
            (if (cdr person-entries) ;; more than one?
              (most-recently-mentioned person-entries)
@@ -65,14 +68,27 @@
                     ;; But that gets unduely hairy and is quite presumptive.
                ))))
 
+      (unless person
+        (push-debug `(,person-entries))
+        ;; (setq person-entries (car *))
+        (break "why couldn't it find a person?"))
 
       (when person
-        (let ((edge
-               (make-new-edge-over-pronoun pn-edge
-                                           (category-named 'person)
-                                           (category-named 'np)
-                                           person)))
-          edge )))))
+        ;; we have the edge in our hand, we just change the category
+        ;; and referent
+        (setf (edge-category pn-edge) (category-named 'person))
+        ;; keep the form, it could be 'possessive', which is useful
+        (setf (edge-referent pn-edge) person))
+
+      ;;(push-debug `(,pn-edge)) (break "record the edge")
+      pn-edge)))
+
+;         (let ((edge
+;               (make-new-edge-over-pronoun pn-edge
+;                                           (category-named 'person)
+;                                           (category-named 'np)
+;                                           person)))
+;          edge )
 
 
 
