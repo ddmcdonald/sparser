@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "fsa"
 ;;;   Module:  "drivers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  July 2013
 
-;; initiated 5/5/95
+;; initiated 5/5/95. 7/29/13 Added in-line doc and better stubs
 
 (in-package :sparser)
 
@@ -26,8 +26,6 @@
         (get-next-treetop next-vertex)))))
 
 
-
-
 (defun get-next-treetop (vertex)
   (let ((position *da-next-position*))
     (multiple-value-bind (tt next-position multiple?)
@@ -46,9 +44,13 @@
 
 
 (defun check-for-extension-from-vertex (vertex tt)
-  ;; prime entry point -- called from Execute-da-trie
+  ;; prime entry point -- called from execute-da-trie
   (tr :checking-extension-from vertex tt)
   (let ((arc-set (vertex-rightward-extensions vertex)))
+    (unless (every #'da-arc-p arc-set)
+      (push-debug `(,arc-set ,vertex ,tt))
+      (error "rightward-extensions returned some non-vertexes ~
+              from ~a on ~a" vertex tt))
     (check-tt-against-arc-set tt arc-set vertex)))
 
 (defun check-tt-against-arc-set (tt arc-set vertex)
@@ -59,11 +61,11 @@
         (push arc matches)))
     (cond
      ((cdr matches)
-      (tr :da-match-extends)
+      (tr :da-match-extends matches)
       (setup-return-point vertex (cdr matches))
       (follow-out-matched-arc (car matches)))
      (matches
-      (tr :da-match-extends)
+      (tr :da-match-extends matches)
       (follow-out-matched-arc (car matches)))
      (t
       (tr :da-didnt-match-any-arc)
@@ -91,7 +93,8 @@
 
 (defun setup-return-point (left-vertex remaining-arcs)
   ;; *pending-arcs*
-  (break))
+  (push-debug `(,left-vertex ,remaining-arcs))
+  (break "stub: multiple matches"))
 
 (defun backup-to-any-pending-arc-set ()
   (if *pending-arcs*
