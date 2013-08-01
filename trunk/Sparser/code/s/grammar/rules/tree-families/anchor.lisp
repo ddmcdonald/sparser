@@ -1,18 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1999 David D. McDonald  -- all rights reserved
-;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "anchor"
 ;;;   Module:  "grammar;rules:tree-families:"
 ;;;  version:  March 2007
 
-;; initiated 9/27/99. 3/22/07 Found a typo in the mapping - the year was getting
-;; the label for days.
 
 (in-package :sparser)
 
-#| This is a very ad-hoc pattern, but then so are dates. |#
+
 
 (define-exploded-tree-family  anchor-pattern
   :description ""
