@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.2 June 2013
+;;;  version:  0.2 July 2013
 
 ;; initiated 6/8/93 v2.3
 ;; 0.1 (1/7/94) redesigned not to pre-index
@@ -16,6 +16,8 @@
 ;;   cagegory -- person-type -- to carry those references. 
 ;;  (6/6/13) Added position. Added cross-indexing for subseq. ref. Removed
 ;;   stub special-printer. If we need one it goes in people/printers.lisp
+;;  (7/29/13) Added notion of a role-based-person and the convert-title-to-person
+;;   routine to make them.
 
 (in-package :sparser)
 
@@ -28,7 +30,8 @@
   :specializes named-object
   :binds ((name . person-name)
           (age . age)
-          (position . (:or title position-at-co)))
+          (position . (:or title position-at-co))
+          (nationality . country)) ;; simplistic
   :index (:key name)
   :realization ((:tree-family  appositive
                  :mapping ((appositive-field . age)
@@ -43,7 +46,60 @@
                            (np . :self)
                            (appositive . position-at-co)))))
 
-        
+
+;;;-----------------
+;;; types of people
+;;;-----------------
+
+#| The person type is for categories like "girl" or "uncle"
+ and in particular for "person". They are descriptions of
+ particular people or may be for general statements about
+ a class of people ('girls are young and female'), though
+ that distinction is hard to make with just local evidence.
+   When it is a referent to a particular person we will
+ usually recognize their name, and at that point we can
+ instantiate the person category which is indexed on
+ the name, and need to carry over the attributes that
+ have acrused to the type, qua hook, and put them on 
+ the person instance.
+   The define person types are in the people/kinds file.
+|#
+(define-category person-type
+  :instantiates self
+  :specializes kind)
+
+
+;;;-----------------------------------------
+;;; people defined implicitly by their role
+;;;-----------------------------------------
+
+(define-category role-based-person
+  :instantiates person
+  :specializes person
+  :index (:key role)
+  :binds ((role . title)))
+
+
+(defun convert-title-to-person (title title-edge)
+  ;; called from consider-converting-title-to-person
+  ;; and sort-out-passessive+title
+  ;;(push-debug `(,title ,title-edge))
+  (let ((person (define-or-find-individual 'role-based-person
+                  :role title)))
+    (make-completed-unary-edge
+     (edge-starts-at title-edge) ;; starting vector
+     (edge-ends-at title-edge)  ;; ending vector
+     :convert-title-to-person  ;; rule
+     title-edge  ;; daughter
+     category::person ;; category
+     category::np  ;; form
+     person)  ;; referent
+
+    ;; return value for routines that use the person
+    person))
+
+
+
 ;;;------------
 ;;; operations
 ;;;------------
@@ -71,27 +127,6 @@
         (tr :did-not-find-person-with-name))
       person )))
 
-
-;;;-----------------
-;;; types of people
-;;;-----------------
-
-#| The person type is for categories like "girl" or "uncle"
- and in particular for "person". They are descriptions of
- particular people or may be for general statements about
- a class of people ('girls are young and female'), though
- that distinction is hard to make with just local evidence.
-   When it is a referent to a particular person we will
- usually recognize their name, and at that point we can
- instantiate the person category which is indexed on
- the name, and need to carry over the attributes that
- have acrused to the type, qua hook, and put them on 
- the person instance.
-   The define person types are in the people/kinds file.
-|#
-(define-category person-type
-  :instantiates self
-  :specializes kind)
 
 
 ;;;----------------------------------------
