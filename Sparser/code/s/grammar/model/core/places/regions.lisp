@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  May 2013
+;;;  version:  July 2013
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -18,6 +18,7 @@
 ;;  method to pick that up. ///Need to review the category choices and
 ;;  inheritance structure in here. 5/24/13 Removed the np-common-noun/defnp
 ;;  case from region because it was creating a form rule that was too specific.
+;; (7/30/13) Rewrote relationship-to-country to use revise-parent-edge
 
 (in-package :sparser)
 
@@ -201,10 +202,8 @@
 (defun relation-to-country-region/location-core (c r)
   (let ((country (dereference-shadow-individual c))
         (location (dereference-shadow-individual r)))
-    (setf (edge-category *parent-edge-getting-reference*)
-          category::region-type)
-    (setf (edge-form *parent-edge-getting-reference*)
-          category::np)
+    (revise-parent-edge :category category::region-type
+                        :form category::np)          
     (define-or-find-individual category::located-in
         :country country :region location)
     location)) ;; return the referent of the right edge
