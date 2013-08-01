@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1992-1998,2011 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "transitive"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.3 August 2011
+;;;  version:  0.3 July 2011
 
 ;; initiated 8/5/92 v2.3, added passives 8/24
 ;; 0.1 (10/13) reorganized (in)transitive to fit the paper
@@ -16,6 +15,7 @@
 ;; 0.3 (1/29/08) In intransitive, changed the vg to vp
 ;;     (4/20/09) moved transitive/pp to verbs-taking-pps in order to specialize it
 ;;     (8/7/11) moved in transitive-location, which isn't all that well designed. 
+;;     (7/31/13) Added passive for "martyered" which is never active
 
 (in-package :sparser)
 
@@ -76,6 +76,17 @@
                        :head right-edge
                        :binds (patient left-edge)))
       ))
+
+(define-exploded-tree-family  passive
+  :description "For a verb that only appears in the passive."
+  :binding-parameters ( patient )
+  :labels ( vp vg np/object )
+  :cases
+     ((:passive (s  (np/object vg/+ed)
+                       :head right-edge
+                       :binds (patient left-edge)))
+      ))
+
 
 
 ;; Was in checkpoint/vocabulary, but surely doesn't belong there
