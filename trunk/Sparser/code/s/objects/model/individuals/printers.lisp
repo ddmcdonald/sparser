@@ -134,8 +134,14 @@
             (polyword
              (princ-polyword word stream))
             (individual
-             (let ((string (string-for/name word)))
-               (format stream "~a" string)))
+             (case (cat-symbol (itype-of word))
+               ((category::person-name/first-last
+                 category::person-name)
+                (let ((string (string/person-name word)))
+                  (format stream "~a" string)))
+               (otherwise
+                (let ((string (string-for/name word)))
+                  (format stream "~a" string)))))
             (otherwise
              (push-debug `(,word ,i))
              (error "Unanticipated type of 'word': ~a~%~a"
