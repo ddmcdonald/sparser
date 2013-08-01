@@ -10,10 +10,14 @@
 (in-package :sparser)
 
 #|  From javan-online
-the martyrdom of martyr Alimohammadi, a nuclear scientist
+---- martyrdom
+;; "the martyrdom of martyr Alimohammadi, a nuclear scientist"
 the anniversary of the martyrdom of martyr Majid Shahriari, another Iranian nuclear scientist,
  and martyred him
+
+--- title/adjective
 Martyr Mostafa Ahmadi-Rowshan was s graduate of Sharif University
+
 He was martyred in Golnabi Street
 please pray that I may be martyred.
 what you should do to become a martyr.
@@ -40,16 +44,25 @@ Has nominal form martyrdom
   :binds ((who person)
           (what . martyrdom)) ;; syntactic placeholder
   :index (:key who)
-  :realization (:tree-family simple-of-complement
-                :mapping ((np-item . what)
-                          (of-item . who)
-                          (result-type . :self)
-                          (base-np . martyrdom)
-                          (complement . person)
-                          (np . :self))))
-  
+  :realization ((:tree-family simple-of-complement
+                 ;; "the martyrdom of <person>"
+                 :mapping ((np-item . what)
+                           (of-item . who)
+                           (result-type . :self)
+                           (base-np . martyrdom)
+                           (complement . person)
+                           (np . :self)))
+                (:tree-family passive
+                 :mapping ((patient . who)
+                           (vp . :self)
+                           (vg . :self)
+                           (np/object . person))
+                 :main-verb "martyr")))
+;;/// We only want the passive (+ed) form of the verb,
+;; which will entail a new keyword and some refactoring
 
-
+;; With it as a regular verb it clobbers the title interpretation
+;; of the word. 
 (define-title-base-word "martyr")
 ;; Will need co-composition to transfer the full relation
 ;; to the person. And this is evidence of a person.
