@@ -111,6 +111,10 @@
           ;; that's already defined.
           (setq person name))
 
+         (category::person
+          ;; as with companies
+          (setq person name))
+
          (otherwise
           (push-debug `(,name))
           (error "New category of name: ~a~%~a"
