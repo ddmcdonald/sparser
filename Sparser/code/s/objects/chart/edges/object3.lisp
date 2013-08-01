@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  3.5 January 2013
+;;;  Version:  3.5 July 2013
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -27,7 +27,7 @@
 ;;      which may or may not end up being a problem).
 ;; 3.5 (3/31/06) added constituents field. 4/6 added spanned-words.
 ;;     (2/22/07) added edge-length. (3/15/12) quieting compiler
-;;     (1/23/13) added continuous-edges-between
+;;     (1/23/13) added continuous-edges-between (7/30/13) added edges-higher-than
 
 (in-package :sparser)
 
@@ -338,6 +338,14 @@
          (< p end))))
 
 
+(defmethod edges-higher-than (ev index)
+  ;; The index is the location of an edge returned by
+  ;; index-of-edge-in-vector. Return a list of all
+  ;; the edges above that
+  (let ((array (ev-edge-vector ev)) ;; zero based
+        (count (ev-number-of-edges ev)))
+    (loop as i from (1+ index) to (1- count)
+      collect (aref array i))))
 
 
 (defun show/edges/ending-at (position)
