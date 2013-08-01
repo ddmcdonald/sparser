@@ -3,13 +3,94 @@
 ;;; 
 ;;;     File:  "vectors"
 ;;;   Module:  "objects;edge vectors:"
-;;;  Version:  2.2 April 1994
+;;;  Version:  2.2 July 2013
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;; 2.1 (4/6/93) Put in switch for kcons vs. vector versions
 ;; 2.2 (4/1/94) added remove-edge-from-chart
+;;     (7/30/13) Added a set of function to lift up the fringe of an
+;;      established edge, where one of its edges has been composed
+;;      (to the right) with another edge, and reknit everything together
+;;      properly. 
 
 (in-package :sparser)
+
+
+(defun tuck-new-edge-under-already-knit (subsumed-edge top-edge dominating-edge)
+  ;; We looked under an edge, identified an edge along its
+  ;; fringe (subsumed-edge), and composed that edge with one adjacent
+  ;; to the right (left) to form a new edge (top-edge).
+  ;; Now we have to reconstruct pointers so that the edge that
+  ;; had dominated the subsumed one dominates the new pair.
+  (push-debug `(,subsumed-edge ,top-edge ,dominating-edge))
+  ;; (setq subsumed-edge (car *) top-edge (cadr *) dominating-edge (caddr *))
+
+  ;; Cleanup the used-in of the subsumed-edge
+  (setf (edge-used-in subsumed-edge) top-edge)
+
+  ;; This assumes we're working on the right fringe of
+  ;; the dominating edge
+  (let ((dominating-ends-at (edge-ends-at dominating-edge))
+        (top-ends-at (edge-ends-at top-edge)))
+    (push-debug `(,dominating-ends-at ,top-ends-at))
+    ;; (setq dominating-ends-at (car *) top-ends-at (cadr *))
+
+    ;; plug in top-edge in place of subsumed-edge
+    (set-used-by top-edge dominating-edge)
+
+    ;; replace old subsumed right-daughter (... presumes binary)
+    (setf (edge-right-daughter dominating-edge) top-edge)
+
+    ;; Remove the dominating edge from its ends-at vector
+    (if (eq dominating-edge (highest-edge dominating-ends-at))
+      ;; easy case
+      (then 
+       (pop-topmost-edge dominating-ends-at)
+       ;; insert the dominating edge just above the top edge
+       ;; at the end location
+       (tuck-in-just-above top-ends-at top-edge dominating-edge))
+      (else
+       ;; Several edges are above the edge now just above the
+       ;; subsumed-edge. They all have to be repositioned (in order)
+       ;; at the end-position of the top-edge where sit above it
+       ;;(break "check args")
+       (move-edges-above-to-new-pos 
+        subsumed-edge (edge-ends-at subsumed-edge) top-ends-at)))
+    ;;(break "and what else?")
+    ;;/// We now have two edges that are adjacent that weren't before
+    ;; so we should see if there's a rule and recompute the referent
+    ))
+
+(defun move-edges-above-to-new-pos (above-this-one
+                                    old-location new-location)
+  (push-debug `(,above-this-one ,old-location ,new-location))
+  (let* ((index (index-of-edge-in-vector above-this-one old-location)))
+    ;;(break "index = ~a" index)
+    (let ((edges-to-move (edges-higher-than old-location index)))
+      (push-debug `(,edges-to-move))
+      (loop for edge in edges-to-move
+        do (setf (edge-ends-at edge) new-location))
+      (loop for edge in edges-to-move
+        do (knit-edge-into-position edge new-location)))))
+
+
+(defun tuck-in-just-above (ev edge-below edge-above)
+  ;; Assumes that the edge-below (top-edge) is already in the ev.
+  ;; We add the edge-above (dominating-edge) just above it
+  ;; in the vector and adjust things accordingly. 
+  (push-debug `(,ev ,edge-below ,edge-above)) (break "stub: check tuck"))
+
+(defun pop-topmost-edge (ev)
+  "Remove the topmost edge from this vector and adjust
+   the other fields to fit."
+  (let* ((topmost (ev-top-node ev))
+         (index (index-of-edge-in-vector topmost ev))
+         (count (ev-number-of-edges ev))
+         (array (ev-edge-vector ev)))  (break "correct args?")
+    (setf (aref array index) nil) ;; remove it
+    (setf (ev-number-of-edges ev) (1- count)) ;; adjust count
+    (let ((next-item-down (aref array (1- index))))
+      (setf (ev-top-node ev) next-item-down))))
 
 
 ;;;-------------------------------
