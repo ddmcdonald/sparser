@@ -58,16 +58,10 @@
 ;;; (usually) country
 ;;;-------------------
 
-;;///// something happens within the load such that this rule
-;; turns up with its completion field as :left-edge making the
-;; possessive constituent that head. Refefining it (after clearing
-;; the duplication) sets it correctly.
 (def-form-rule (possessive title)
   :form np
   :head :right-edge
-  ;;//// Dropping the argument ("Iraq's .. minister")
-  ;; on the floor for the moment. See syntax/possessive
-  ;; for a method to use in this rule.
+
   ;;/// N.b. doesn't work in *iraqi-girl* because of timing
   ;; where the title has been swallowed before the country
   ;; could see it.  A heuristic might be entitled to lift
@@ -80,15 +74,48 @@
 
 (defun sort-out-passessive+title (possessive title)
   (push-debug `(,possessive ,title)) ;;(break "check args")
-  (cond
-   ((itypep possessive 'pronoun)
-    )
-   ((itypep possessive 'country)
-    )
-   (t (push-debug `(,possessive ,title))
-      (error "New type for possessive: ~a~%  ~a"
-             (i-type-of possessive) possessive)))
+  (flet ((title->person ()
+           (let* ((title-edge (right-edge-for-referent))
+                  (person (convert-title-to-person title title-edge)))
+             (revise-parent-edge :category category::person)
+             person)))
+    (cond
+     ((itypep possessive 'pronoun) ;; "his driver"
+      ;; the pronoun wasn't dererenced for some reason
+      (setq title (title->person))) ;; return value for the edge
+
+     ((itypep possessive 'person)
+      ;; pronoun was derefenced
+      (let ((role-person (title->person)))
+        ;; the relation between the person from the pronoun
+        ;; and this role-person is just based on the title
+        ;; -- anonymously unless it passes through a method
+        ;; somewhere -- Can we formulate a generic form?
+        (define-or-find-individual 'plays-role-for
+          :role title :for possessive)
+        (setf title role-person)))
+
+     ((itypep possessive 'country) ;; "Iran's prime minister"
+      (unless (itypep title 'modified-title)
+        (break "Need to convert title to modified-title"))
+      (bind-variable 'locale possessive title))
+
+     (t (push-debug `(,possessive ,title))
+        (error "New type for possessive: ~a~%  ~a"
+               (i-type-of possessive) possessive))))
+
   title)
+
+(define-category plays-role-for
+  :instantiates self
+  ;;  :specializes  ????
+  ;; This should be the top of a set of generated categories
+  ;; based on the the title. For now we just stash it and
+  ;; index on it.  "college" needs two of these?
+  :binds ((role . title)
+          (for . person))
+  :index (:key role person))
+          
 
 
 ;;;-----------------------
@@ -113,6 +140,27 @@
              :title title  :qualifier time)))
       new-title)))
 
+
+;;;----------------------------------
+;;; titles as standing in for people
+;;;----------------------------------
+
+(defun consider-converting-title-to-person (edge)
+  ;; Called from check-segment-finished-hook, so we're still
+  ;; within an active segment and can use those gofers.
+  ;; If it's plural or incorporates a possessive, then we can assume
+  ;; that it denotes a person/s who has that role. ///This ignores
+  ;; the possibility of generic references to the class, but we can
+  ;; take that up later.
+  (let ((referent (edge-referent edge)))
+    (when (title-is-plural?)
+      (convert-title-to-person referent edge))))
+
+
+(defun title-is-plural? ()
+  ;; other things to consider adopting are in make-cn-rules/aux
+  (let ((word (head-word-of-segment)))
+    (eq (word-morphology word) :ends-in-s)))
 
 
 
