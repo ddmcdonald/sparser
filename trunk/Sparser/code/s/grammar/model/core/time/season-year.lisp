@@ -15,7 +15,8 @@
 
 (define-category season-year
   :specializes time
-  :instantiates time
+  :instantiates self
+  :rule-label time ;;should this be like season and have its label be time as well?
   :binds ((season . season)
           (year . year))
   :realization (:tree-family  season-year-pattern
