@@ -85,7 +85,7 @@
 
 
 (deftrace :checking-extension-from (vertex tt)
-  ;; called from Check-for-extension-from-vertex
+  ;; called from check-for-extension-from-vertex
   (when *trace-DA*
     (trace-msg "[DA] Checking whether ~A~
               ~%     extends any of the options from ~A"
@@ -93,10 +93,11 @@
     ;(pl (vertex-rightward-extensions vertex) t *trace-stream*)
     ))
 
-(deftrace :da-match-extends ()
+(deftrace :da-match-extends (matches)
   ;; called from Check-for-extension-from-vertex
   (when *trace-DA*
-    (trace-msg "      It does")))
+    (trace-msg "      It does: ~d match/s"
+               (length matches))))
 
 
 (deftrace :da-didnt-match-any-arc ()
@@ -140,6 +141,13 @@
     (trace-msg "[DA]       They don't match")))
 
 
+(deftrace :da-executing-action (rule)
+  (when *trace-DA*
+    (trace-msg "[DA] executing rule on ~a" rule)))
+
+(deftrace :da-applying-fn-to-args (function args)
+  (when *trace-DA*
+    (trace-msg "[DA] applying ~a to ~a" function args)))
 
 
 ;;;----------------------
