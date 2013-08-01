@@ -2,9 +2,9 @@
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "sl;middle-east"
-;;;   version:   July 2013
+;;;   version:   August 2013
 
-;; initiated 5/23/13. Extended through 7/22/13
+;; initiated 5/23/13. Extended through 8/1/13
 
 (in-package :sparser)
 
@@ -24,9 +24,21 @@
     ;; wants to make it a person:
     ;; "Fereydun Abbasi, the director the Nuclear Energy Organization"
 
+    (define-company "Atomic Energy Organization") ;; abbrevation ???
+    ;; Full phrase in the iranian-commander article is
+    ;; "Iran's Atomic Energy Organization" but don't see IAEO anywhere
+
 ) ;; closes with all permanent
 
 
+;;---- Patch up
+#|  All the words in the companies that aren't already in the known vocabulary
+will not be pulled from Comlex when they're encountered in the text, e.g. in
+"nuclear scientist", so they won't have any bracket information. 
+
+|#
+
+;;---- Months
 
 ;;some Iranian months from javan-online -- ordering is bogus because for that
 ;;  we'd have to look them up.
