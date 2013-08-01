@@ -112,10 +112,8 @@
      (if matching-edge 
        (conjoin-and-rethread-edges matching-edge edge-after :left)
        (else
-         ;; debugging case. /// Replace with looking rightward
-         (push-debug `(,ev ,label))
-         ;;(error "no match")
-)))))
+         ;; /// Look rightward
+         (push-debug `(,ev ,label)))))))
 
 (defun conjoin-and-rethread-edges (left-edge right-edge direction)
   (let* ((heuristic (ecase direction
