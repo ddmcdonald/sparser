@@ -1,12 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005 David D. McDonald  -- all rights reserved
-;;; extensions copyright (c) 2006-2008 BBNT Solutions LLC. All Rights Reserved
+;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "anchor"
 ;;;   Module:  "model;core:time:"
 ;;;  version:  1.0 July 2013
 
-;;
+;;the anchor category is meant to capture time expressions which put events/entities at specific points
+;;i.e., these timex 'anchor' the event to a particular time
+;;currently the anchor captures the linear order of sequencers and different timex
+;;should flesh out into multiple categories, with super class as a general anchor?
+;;this is the abstract class for anchors
 
 (in-package :sparser)
 
@@ -15,6 +18,10 @@
 ;;;------------
 
 (define-category anchor
+  :specializes time
+  :instantiates anchor)
+
+#|(define-category anchor
   :specializes time
   :instantiates time
   :binds ((sequencer . sequencer)
@@ -38,7 +45,7 @@
                           (term5 . season)
                           (n6 . adverb)
                           (term6 . adverb))
-                :common-noun "anchor"))
+                :common-noun "anchor"))|#
 
 ;; "10 days ago"
 (def-cfr anchor (age-ago)
