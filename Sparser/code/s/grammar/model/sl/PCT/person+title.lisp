@@ -171,12 +171,12 @@
 
 (defun title-person-in-appositive-DA (person-edge)
   (declare (special *da-starting-position* *da-ending-position*))
-  (let ((before-leading-comma
-         (chart-position-before (pos-edge-starts-at person-edge)))
-        (after-trailing-comma
-         (chart-position-after (pos-edge-ends-at person-edge)))
-        (title+person (find-cfr 'person '(title person)))
-        (title-edge (left-treetop-at *da-starting-position*)))
+  (let* ((before-leading-comma
+          (chart-position-before (pos-edge-starts-at person-edge)))
+         (after-trailing-comma
+          (chart-position-after (pos-edge-ends-at person-edge)))
+         (title+person (find-cfr 'person '(title person)))
+         (title-edge (left-treetop-at before-leading-comma)))
     (unless title+person
       (error "Presumed rule not found"))
     (let ((consituents `(,(right-treetop-at before-leading-comma)
