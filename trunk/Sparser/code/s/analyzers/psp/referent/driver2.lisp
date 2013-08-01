@@ -43,6 +43,16 @@
 (defvar left-referent nil)
 (defvar right-referent nil)
 
+
+(defun left-edge-for-referent ()
+  (or *left-edge-into-reference*
+      (error "Left edge isn't bound now")))
+
+(defun right-edge-for-referent ()
+  (or *right-edge-into-reference*
+      (error "Right edge isn't bound now")))
+
+
 ;; Used in setting up annotations and keeping track
 ;; of which edge is which in routines that are sensitive
 ;; to head constituents
@@ -69,9 +79,8 @@
 
 (defparameter *no-referent-calculations* nil)
 
-(defun right-edge-for-referent ()
-  (or *right-edge-into-reference*
-      (error "Right edge isn't bound now")))
+
+
 
 ;;;------------
 ;;; the driver
@@ -138,7 +147,22 @@
 
         (call-redistribute-if-appropriate left-referent right-referent)
 
+        ;;(dereference
+
         *referent* ))))
+
+
+;;; operating over the edges
+
+(defun revise-parent-edge (&key category form)
+  (let ((edge *parent-edge-getting-reference*))
+    (unless edge
+      (error "*parent-edge-getting-reference* isn't bound now"))
+    (when category
+      (setf (edge-category edge) category))
+    (when form
+      (setf (edge-form edge) form))
+    edge))
 
 
 ;;;-------------------------
