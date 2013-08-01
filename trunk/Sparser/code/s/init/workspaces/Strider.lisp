@@ -21,6 +21,7 @@
 
 (strider-setting) ;; adds (setq *do-debris-analysis* t)
 (setq *arabic-names* t)
+(setq *allow-da-to-look-under-edges* nil) ;;/// arc-matches-tt? needs to adjust the next tt
 
 (setq *do-domain-modeling-and-population* t) ;; ignores null referents
 ;; Need to adapt the segment-level switches and do this better
@@ -30,6 +31,8 @@
 
 ;; (setq *break-before-creating-name* t) 
 ;;   to look at what could happen before it creates facts
+
+;; (setq *trace-completion-hook* t) e.g. to trace pronoun triggering
 
 
 
