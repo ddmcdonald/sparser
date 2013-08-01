@@ -21,7 +21,7 @@
   :instantiates self
   :binds ((sequencer . sequencer)
           (date . date))
-  :realization (:common-noun "anchor-date"))
+  )  ;;; note to put in a real one :realization (:common-noun "anchor-date"))
 
 (def-cfr anchor-date (sequencer date)
   :referent (:instantiate-individual anchor-date))
