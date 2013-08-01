@@ -50,10 +50,10 @@
   ;; called from Check-for-extension-from-vertex
   (tr :arc-matches-tt? arc tt)
   (when *trace-DA*
-    (format t " *edge-tt* = ~a~% *word-tt* = ~a~
-             ~% *multiple-edges-over-word* = ~a~% *boundary-tt* = ~a~
-             ~% The arc ~a is a ~a~
-             ~% tt = ~a"
+    (format t "   *edge-tt* = ~a~%   *word-tt* = ~a~
+             ~%   *multiple-edges-over-word* = ~a~%   *boundary-tt* = ~a~
+             ~%   The arc ~a is a ~a~
+             ~%   tt = ~a"
             *edge-tt* *word-tt* *multiple-edges-over-word*
             *boundary-tt* arc (type-of arc) tt))
   (push-debug `(,arc ,tt)) ;;(break "arc type")
@@ -141,13 +141,14 @@
       (da/look-under-edge/leftwards edge label)
       (da/look-under-edge/rightwards edge label))))
 
+
 (defun da/look-under-edge/rightwards (edge label)
-  (da/look-under-edge/scan-edges
+  (da/look-under-edge/scan-edges 
    (pos-starts-here (pos-edge-starts-at edge))
    label))
 
 (defun da/look-under-edge/leftwards (top-edge label)
-  (da/look-under-edge/scan-edges
+  (da/look-under-edge/scan-edges 
    (pos-ends-here (pos-edge-ends-at top-edge))
    label))
 
@@ -156,12 +157,10 @@
   (let ((edge-vector (ev-edge-vector ev))
         (max (ev-number-of-edges ev))
         edge  edge-that-matches )
-
     (dotimes (i (1- max))
       (setq edge (elt edge-vector (- max i 1)))
       (when (eq (edge-category edge) label)
         (setq edge-that-matches edge)
         (return)))
-
     edge-that-matches))
 
