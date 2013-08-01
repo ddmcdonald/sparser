@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "form-rule form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.5 January 2013
+;;;   Version:   0.7 July 2013
 
 ;; initiated 9/3/92 v2.3, 
 ;; 0.1 (10/12) formulated better now that it's getting used
@@ -20,6 +20,8 @@
 ;;      for relative locations.
 ;; 0.6 (10/10/12) Patched call to def-form-rule/resolved from define-rewriting-form-rule
 ;;      to provide a new third argument. (1/29/13) Wrote define-form-rule-from-schema
+;; 0.7 (7/29/13) Reworked def-form-rule/resolved to handle the head edge
+;;      better. Corrects problem with possessive+title having the wrong head.
 
 (in-package :sparser)
 
@@ -88,7 +90,7 @@
   ;; rule (the "new-category") rather than let the rule carry-up the
   ;; head category of the rhs
   
-  (multiple-value-bind (edge form-category regular-label)
+  (multiple-value-bind (form-edge form-category regular-label)
                        (check-for-just-one-form-category rhs)
 
     ;; "edge" will be a keyword indicating which of the two labels
@@ -111,30 +113,32 @@
 
     ;; is there already a rule based on this rhs ?
     (let ((form-rs (rule-set-for form-category))
-          (regular-rs (rule-set-for regular-label)))
+          (regular-rs (rule-set-for regular-label))
+          (edge (or head-edge ;; designated by caller
+                    form-edge)))
+
+      ;; :head-edge
+      ;; The usual situation is that we have a semantically labeled edge
+      ;; like "will" that we want to be swallowed by the head-line
+      ;; edge on the basis of the head-line's form label (e.g. vg).
+      ;; But sometimes, notably with prepositions these days (10/11),
+      ;; we're capturing the generality of the prepositions via a form
+      ;; label on their word edges, and composing them with semantic
+      ;; edges. In these situations the head line is the oposite of
+      ;; the usual. The :head keyword in def-form-rule lets you set up
+      ;; this override.
 
       (if (and form-rs regular-rs)
         (let* ( form-id regular-id cfr )
-          (if head-edge
-            ;; The usual situation is that we have a semantically labeled edge
-            ;; like "will" that we want to be swallowed by the head-line
-            ;; edge on the basis of the head-line's form label (e.g. vg).
-            ;; But sometimes, notably with prepositions these days (10/11),
-            ;; we're capturing the generality of the prepositions via a form
-            ;; label on their word edges, and composing them with semantic
-            ;; edges. In these situations the head line is the oposite of
-            ;; the usual. The :head keyword in def-form-rule lets you set up
-            ;; this override.
-            (setq edge head-edge) 
-            (ecase edge
-              (:left-edge
-               ;; the left (first) label of the pair in the rhs is
-               ;; the form category
-               (setq form-id (cdr (rs-right-looking-ids form-rs))
-                     regular-id (cdr (rs-left-looking-ids regular-rs))))
-              (:right-edge
-               (setq form-id (cdr (rs-left-looking-ids form-rs))
-                     regular-id (cdr (rs-right-looking-ids regular-rs))))))
+          (ecase form-edge
+            (:left-edge
+             ;; the left (first) label of the pair in the rhs is
+             ;; the form category
+             (setq form-id (cdr (rs-right-looking-ids form-rs))
+                   regular-id (cdr (rs-left-looking-ids regular-rs))))
+            (:right-edge
+             (setq form-id (cdr (rs-left-looking-ids form-rs))
+                   regular-id (cdr (rs-right-looking-ids regular-rs)))))
             
           (if (and form-id regular-id)
             (then
