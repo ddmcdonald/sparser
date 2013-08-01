@@ -15,9 +15,7 @@
   ;; the parts that have changed. 
   (tr :redefining-da-rule rule)
   (when (not (equal pattern (da-pattern-description rule)))
-    (break "new pattern for existing rule")
     (setup-da-pattern pattern rule))
-
   (setup-da-action action rule)
   rule )
 
