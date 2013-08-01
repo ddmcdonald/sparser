@@ -67,13 +67,20 @@
   :binds ((who person)
           (by-whom person))
   :index (:key who) ;; ought to suffice
-  :realization ((:main-verb "assassinate")
-                (:tree-family transitive/passive
+  :realization ((:tree-family transitive/passive
                  :mapping ((agent . by-whom)
                            (patient . who)
                            (s . :self)
                            (vp . :self)
                            (vg . :self)
                            (np/subject . person)
-                           (np/object . person)))))
+                           (np/object . person))
+                 :main-verb "assassinate")
+                (:tree-family empty-head-of-complement
+                 :mapping ((result-type . :self)
+                           (of-item . who)
+                           (base-np . :self)
+                           (complement . person)
+                           (np . :self))
+                 :common-noun "assassination")))
 
