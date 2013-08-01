@@ -32,16 +32,25 @@
 ;(gload "time;day-in-month1")
 ;(gload "time;month-in-year1")
 (gload "time;dates2")
+
+;;seasons/their like
+(gload "time;seasons")
 (gload "time;season-year")
+
+;;anchors
 (gload "time;anchor")
+(gload "time;anchor-date")
+(gload "time;anchor-amount")
+(gload "time;anchor-time")
+
 (gload "time;amounts")
 (gload "time;phrases2")
 (gload "time;anaphors1")
 (gload "time;age1")
 (gload "time;fiscal2")
-(gload "time;seasons")
+
 
 (gload "time;citations")
 
 
-(gload "time;interval")
+;;(gload "time;interval")
