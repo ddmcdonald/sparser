@@ -48,6 +48,9 @@
 ;;       so we get a more intelligible error message. 
 ;; 5.14 (2/28/13) Abstracted the after-parsing protocol choice.
 ;;      (7/1/13) Moved in the reify implicit individuals options. 
+;;      (7/29/13) Added check-segment-finished-hook in the main line but just
+;;       as a one-off to convert some titles to people. Rearranged the code
+;;       a bit for better reading.
 
 (in-package :sparser)
 
@@ -114,6 +117,27 @@
   (segment-finished (segment-coverage)))
 
 
+;;;------------------------
+;;; decide what to do next
+;;;------------------------
+
+(defun segment-finished (coverage)
+  (tr :segment-finished coverage)
+  (tidy-up-segment-globals coverage)
+  (if (eq coverage :null-span)
+    ;; begins and ends on the same position so it's a spurious
+    ;; interaction of brackets laid down by adjacent words
+    ;; and we just keep going. Since we know a lot about what's
+    ;; just happened, we can be very specific about where to drop into
+    ;; the word-level fsa rather than just call scan-next-segment.
+    (then
+      (return-to-scan-level-from-null-span
+       *where-the-last-segment-ended*))
+    (else
+     (after-action-on-segments coverage))))
+
+
+
 ;;;-------------------------------------
 ;;; choice of segment-finished protocol
 ;;;-------------------------------------
@@ -146,6 +170,11 @@ have to be tail recursion to the next thing to do.
      and ultimately scan another segment or move to the forest level."))
 
 
+
+(defun after-action-on-segments (coverage)
+  (funcall *after-action-on-segments* coverage))
+
+
 ;;--- cases for switching options
 
 ;; (do-normal-segment-finished-options)
@@ -176,53 +205,6 @@ have to be tail recursion to the next thing to do.
 (defparameter *debug-segment-handling* t
   "Guards errors and breaks within the segment handling code that traps
    new cases or violations of standing assumptions.")
-
-
-;;;------------------------
-;;; decide what to do next
-;;;------------------------
-
-(defun segment-finished (coverage)
-  (tr :segment-finished coverage)
-  (tidy-up-segment-globals coverage)
-  (if (eq coverage :null-span)
-    ;; begins and ends on the same position so it's a spurious
-    ;; interaction of brackets laid down by adjacent words
-    ;; and we just keep going. Since we know a lot about what's
-    ;; just happened, we can be very specific about where to drop into
-    ;; the word-level fsa rather than just call scan-next-segment.
-    (then
-      (return-to-scan-level-from-null-span
-       *where-the-last-segment-ended*))
-    (else
-     (after-action-on-segments coverage))))
-
-(defun after-action-on-segments (coverage)
-  (funcall *after-action-on-segments* coverage))
-
-(defun normal-segment-finished-options (coverage)
-  ;; This is "segment-finished" for the purposes of the inline doc below
-  ;; broken out of segment-finished to let us call it as a fall-back
-  ;; in the sdm routines or as a follow-on to what they do.
-  (case coverage
-    (:one-edge-over-entire-segment
-     (sf-action/spanned-segment))
-    
-    (:no-edges
-     (sf-action/no-edges))
-    
-    (:discontinuous-edges
-     (sf-action/discontinuous-edges))
-    
-    (:some-adjacent-edges
-     (sf-action/some-adjacent-edges))
-    
-    (:all-contiguous-edges
-     (sf-action/all-contiguous-edges))
-    
-    (otherwise
-     (break "Unanticipated value for segment coverage: ~A"
-            coverage))))
 
 
 
@@ -266,10 +248,37 @@ have to be tail recursion to the next thing to do.
 ;;; dispatch routines for Segment-finished
 ;;;----------------------------------------
 
+(defun normal-segment-finished-options (coverage)
+  ;; This is "segment-finished" for the purposes of the inline doc below
+  ;; broken out of segment-finished to let us call it as a fall-back
+  ;; in the sdm routines or as a follow-on to what they do.
+  (case coverage
+    (:one-edge-over-entire-segment
+     (sf-action/spanned-segment))
+    
+    (:no-edges
+     (sf-action/no-edges))
+    
+    (:discontinuous-edges
+     (sf-action/discontinuous-edges))
+    
+    (:some-adjacent-edges
+     (sf-action/some-adjacent-edges))
+    
+    (:all-contiguous-edges
+     (sf-action/all-contiguous-edges))
+    
+    (otherwise
+     (break "Unanticipated value for segment coverage: ~A"
+            coverage))))
+
+
+
 (defun sf-action/spanned-segment ()
   ;; called from segment-finished when there's one edge over the entire
   ;; segment. 
   (tr :spanned-segment)
+  (check-segment-finished-hook)
   (if *pending-conjunction*
     (if *do-heuristic-segment-analysis*
       (check-out-possible-conjunction *left-segment-boundary*)
@@ -278,6 +287,15 @@ have to be tail recursion to the next thing to do.
         (setq *pending-conjunction* nil)
         (sf-action/spanned-segment1)))
     (sf-action/spanned-segment1)))
+
+;;/// fleshout and move if it looks generally useful
+(defun check-segment-finished-hook ()
+  ;; Stub of a proper hook. Called from sf-action/spanned-segment
+  (let ((convering-edge (edge-over-segment)))
+    (when convering-edge
+      (when (eq (edge-category convering-edge)
+                category::title)
+        (consider-converting-title-to-person convering-edge)))))
 
 (defun sf-action/spanned-segment1 ()
   (unless *right-segment-boundary*
@@ -437,7 +455,7 @@ have to be tail recursion to the next thing to do.
   (let ((right-boundary *right-segment-boundary*))
     (if (scan-another-segment? right-boundary)
       (then (no-further-action-on-segment)
-            (Scan-next-segment right-boundary))
+            (scan-next-segment right-boundary))
 
       (else
         ;; had made the position where forest parsing should start be the
@@ -467,8 +485,9 @@ have to be tail recursion to the next thing to do.
 
 
 
+
 ;;;------------------------------------------------------------
-;;; describe the patterns of terminal edges within the segment
+;;; describe the coverage of terminal edges within the segment
 ;;;------------------------------------------------------------
 
 (defun segment-coverage ()
