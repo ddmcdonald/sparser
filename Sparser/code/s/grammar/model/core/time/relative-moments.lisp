@@ -75,6 +75,8 @@
                           (individuator . relativizer)
                           (base-category . reference-time))))
 
+(delete/cfr# 618)
+
 
 ;;--- Specific instance of time (units): "that day", "last month"
 ;;  These become particular times that can be dereferenced in context
