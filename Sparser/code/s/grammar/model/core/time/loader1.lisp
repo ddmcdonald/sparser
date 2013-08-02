@@ -41,7 +41,8 @@
 (gload "time;anchor")
 (gload "time;anchor-date")
 (gload "time;anchor-amount")
-(gload "time;anchor-time")
+;;removed in favor of relative-time
+;;(gload "time;anchor-time")
 
 (gload "time;amounts")
 (gload "time;phrases2")
