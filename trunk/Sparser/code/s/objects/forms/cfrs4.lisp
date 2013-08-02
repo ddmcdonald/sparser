@@ -14,8 +14,8 @@
 ;;  1.4  (7/21/92 v2.3) added stub for relation keyword.
 ;;  1.5  (4/1/13) Added argument for schema
 
-(export '(Def-cfr
-          Def-cfr/multiple-rhs
+(export '(def-cfr
+          def-cfr/multiple-rhs
           ))
 
 ;;;---------------
@@ -37,7 +37,7 @@
                  :referent ',referent
                  :schema  ',schema) )
 
-          
+
 ;;;--------------
 ;;; multiple RHS
 ;;;--------------
