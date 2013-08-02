@@ -21,7 +21,7 @@
   :instantiates self
   :binds ((sequencer . sequencer)
           (amount-of-time . amount-of-time))
-  )  ;;; note to put in a real one :realization (:common-noun "anchor-amount"))
+  ) ;; :realization(:common-noun "anchor-amount"))
 
 (def-cfr anchor-amount (sequencer amount-of-time)
   :referent (:instantiate-individual anchor-amount))
