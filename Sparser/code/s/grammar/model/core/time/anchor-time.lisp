@@ -20,7 +20,7 @@
   :instantiates self
   :binds ((sequencer . sequencer)
           (time . time))
-  :realization (:common-noun "anchor-time"))
+  ) ;; note :realization (:common-noun "anchor-time"))
 
 (def-cfr anchor-time (sequencer time)
   :referent (:instantiate-individual anchor-time))
