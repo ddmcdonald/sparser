@@ -232,6 +232,20 @@ e11   DATE                    5 "january 1 , 1999" 9
 
 ;;;javan-online.txt
 
+;;example of in-predicate, specific instance of "in charge of"
+;;context is here, citation is below
+#|e143  NAMED-OBJECT            446 "martyr mostafa ahmadi - rowshan" 451
+e148  GRADUATE-KIND           451 "was s graduate" 454
+e172  OF-COMPANY              454 "of sharif university" 457
+e153                             "and"
+e158  TITLE                   458 "the deputy director" 461
+e159 e160                        "of" :: of, OF
+e163  SITE-OF-ACTIVITY        462 "natanz nuclear site" 465
+e170  IN-PREDICATE            465 "in charge of commercial affairs" 470|#
+
+(define-citation "in charge of commercial affairs"
+  (1 IN-PREDICATE 6))
+
 ;;iranian months mentioned in javan-online.txt
 #|(define-citation "in the months of azar and dey"
   (                                 SOURCE-START
