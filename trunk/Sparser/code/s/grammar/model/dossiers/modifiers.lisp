@@ -144,6 +144,11 @@
 (define-adverb "earlier")
 (define-adverb "later")
 
+;; Added in 8/2013
+;;one must be careful about potential ambiguity
+;;e.g. "He did it as well as the rest" vs "He did it as well/also"
+(define-adverb "as well")
+
 
 ;;;-----------
 ;;; Frequency
