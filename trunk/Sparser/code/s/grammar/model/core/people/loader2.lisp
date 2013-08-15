@@ -25,6 +25,7 @@
 (gload "people;printers")
 (gload "people;names to people")
 (gload "people;kinds")
+(gload "people;in-predicate")
 
 ;; Not loaded
 ;;   people-rules, people+age
