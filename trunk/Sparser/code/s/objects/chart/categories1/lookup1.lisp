@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2010-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2010-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  1.8 De 2012
+;;;  Version:  1.9 August 2013
 
 (in-package :sparser)
 
@@ -30,6 +29,7 @@
 ;;     (3/2/12) moved accumulators to object2 to quiet compiler. 11/4 moved in
 ;;      function now needed pretty early.  (12/11/12) moved name-to-use-for-category
 ;;      to brackets/assignments. 
+;; 1.9 (8/14/13) Converted category-named to a method so it could be fed categories
 
 ;;;------
 ;;; find
@@ -152,20 +152,37 @@
 ;;; find
 ;;;------
 
-(defun category-named (symbol)
+(defgeneric category-named (symbol &optional break-if-no-category)
+  (:documentation "This function's primary function is to
+    lookup the category that corresponds to particular symbol.
+    But we don't want it to choke if given a category directly.
+    The break-if-no-category flag, which the caller has to set,
+    is useful to catch typos."))
+
+(defmethod category-named ((symbol symbol) &optional break-if-no-category)
   (let ((c-symbol (if (eq (symbol-package symbol)
                           *category-package*)
                     symbol
                     (find-symbol (symbol-name symbol)
                                  *category-package*))))
-    (when c-symbol
+    (if c-symbol
       (if (boundp c-symbol)
         (values (symbol-value c-symbol)
               c-symbol)
         (else
           ;(break "The symbol ~A exists, but it is not linked to ~
           ;        a category~%If this is ok, continue." c-symbol)
-          nil )))))
+          nil ))
+      (when break-if-no-category
+        (error "There is no category named ~a" symbol)))))
+
+(defmethod category-named ((c T) &optional break-if-no-category)
+  (if (category-p c)
+    c
+    (when break-if-no-category
+      (error "Argument is neither category nor a symbol:~%~a  ~a"
+             (type-of c) c))))
+
 
 (defun referential-category-named (symbol)
   (let ((category (category-named symbol)))
