@@ -31,12 +31,26 @@
 ) ;; closes with all permanent
 
 
-;;---- Patch up
-#|  All the words in the companies that aren't already in the known vocabulary
-will not be pulled from Comlex when they're encountered in the text, e.g. in
-"nuclear scientist", so they won't have any bracket information. 
+;;---- Patch up ordinary words
+#|  The words in the companies that aren't otherwise defined in the load
+will not automatically be pulled from Comlex when they're encountered in the text, 
+e.g. "nuclear" in "nuclear scientist", because they are "known" words.
+As a result they won't have any bracket information and we get segments like
+... [nuclear] [scientist] ...
 
+This code does the Comlex unpacking. I'm doing it by eye for any word
+in any of the names that is not a pure "name" like Binyamin.
 |#
+
+(defparameter *words-from-names-that-need-unpacking*
+  '(;; "defense"   no Comlex entry (??)
+    ;; "force"  ditto
+    "atomic" "energy"
+    "foreign" ;;/// this one ought to be in the standard set
+    ;;"relations" -- relation is in the upper model
+    "nuclear" 
+    ))
+
 
 ;;---- Months
 
