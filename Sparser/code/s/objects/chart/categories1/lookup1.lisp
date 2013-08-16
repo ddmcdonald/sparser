@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1991-2005,2010-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; 
+;;;
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
 ;;;  Version:  1.9 August 2013
@@ -28,7 +28,7 @@
 ;; 1.8 (12/3/10) Incorporated CLOS class backing
 ;;     (3/2/12) moved accumulators to object2 to quiet compiler. 11/4 moved in
 ;;      function now needed pretty early.  (12/11/12) moved name-to-use-for-category
-;;      to brackets/assignments. 
+;;      to brackets/assignments.
 ;; 1.9 (8/14/13) Converted category-named to a method so it could be fed categories
 
 ;;;------
@@ -40,17 +40,17 @@
     (symbol (find-or-make-category-object item source))
     (word
      (let ((symbol (intern (word-pname item)
-			   (find-package :sparser))))
+                           (find-package :sparser))))
        (find-or-make-category-object symbol source)))
     (polyword
      (let ((symbol (intern (hyphenated-string-for-pw item)
-			   (find-package :sparser))))
+                           (find-package :sparser))))
        (find-or-make-category-object symbol source)))
     (otherwise
      (break "New object type passed in: ~a~%~a"
-	    (type-of item) item))))
+            (type-of item) item))))
 
-	 
+
 
 (defun find-or-make-category-object (symbol source)
   ;; core routine used by all the various sources for categories to
@@ -89,7 +89,7 @@
                     (make-category :symbol c-symbol))))
 
                (symbol-value c-symbol))))
-        
+
         (when new?
           (catalog/category category c-symbol)
           (note-file-location category)
@@ -126,7 +126,7 @@
              (push category *derived-categories*))))
 
         (setq *all-intra-category-relationships-noticed?* nil)
-        
+
         (values category new?) ))))
 
 
@@ -176,7 +176,7 @@
       (when break-if-no-category
         (error "There is no category named ~a" symbol)))))
 
-(defmethod category-named ((c T) &optional break-if-no-category)
+(defmethod category-named ((c t) &optional break-if-no-category)
   (if (category-p c)
     c
     (when break-if-no-category
@@ -218,7 +218,7 @@
 
 
 ;;;------------------
-;;; string -> symbol 
+;;; string -> symbol
 ;;;------------------
 
 (defmethod name-to-use-for-category ((string string))
