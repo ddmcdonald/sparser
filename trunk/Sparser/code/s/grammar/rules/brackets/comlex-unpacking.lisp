@@ -3,11 +3,12 @@
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  July 2013
+;;;  Version:  August 2013
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
 ;; 7/8/13 added get-comlex-entry for after-the-fact debugging
+;; 8/1/13 Added standalone-lexicon-unpacker
 
 (in-package :sparser)
 
@@ -75,15 +76,18 @@ places. ]]
   ;; we've just seen, and the 'lemma' is the head word of
   ;; the entry.
 
-  (let* ((instance-word (make-word-from-lookup-buffer))
-         (instance-string (word-pname instance-word))
+  (let ((instance-word (make-word-from-lookup-buffer)))
+    (continue-unpacking-lexical-entry instance-word entry)))
+
+(defun continue-unpacking-lexical-entry (instance-word entry)
+  (let* ((instance-string (word-pname instance-word))
          (lemma-string (cadr entry))
          (lemma-word (if (string= (word-pname instance-word)
                                   lemma-string)
                        instance-word
                        (resolve-string-to-word/make lemma-string)))
          (clauses (cddr entry)))
-    (tr :unpacking instance-word)
+    (tr :unpacking lemma-word)
     (cond
       ((= (length clauses) 1)
        (unambiguous-comlex-primed-decoder lemma-word (car clauses)))
@@ -94,6 +98,22 @@ places. ]]
        ;;(or (look-for-and-decode-comlex-irregular instance-string clauses)
        (ambiguous-comlex-primed-decoder lemma-word clauses)))
     instance-word ))
+
+
+(defgeneric standalone-lexicon-unpacker (word)
+  (:documentation "Used when we need to get the benefit of
+    the information in Comlex for a word that's been independently
+    defined. Notably in explicitly defined companies."))
+
+(defmethod standalone-lexicon-unpacker ((s string))
+  (let ((w (word-named s)))
+    (unless w (error "There is no defined word spelled ~s" s))
+    (let ((entry (gethash s *primed-words*)))
+      (if entry
+        (continue-unpacking-lexical-entry w entry)
+        (if (known-word? w) ;; has a rule set
+          (format t "~%!! No Comlex entry for ~a" w)
+          (format t "~%!! No Comlex entry for unknown word ~a" w))))))
 
 
 
