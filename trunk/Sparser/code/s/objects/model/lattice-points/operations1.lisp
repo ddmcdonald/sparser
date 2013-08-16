@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 May 2013
+;;;  version:  1.1 August 2013
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -28,6 +28,8 @@
 ;;      returns nil. (4/9/13) Extended super-categories-of, and again on 5/23/13.
 ;;     (5/26/13) added hack version of psi-inherits-type? that calls the individual's
 ;;      case since the all-categories code for psi doesn't look at the lattice
+;; 1.1 (8/14/13) Made category-inherits-type? look at the base case of the
+;;      category being identical to the supercategory. Same as super-categories of.
 
 (in-package :sparser)
 
@@ -164,22 +166,24 @@
   lattice from the catgory until we find the reference-category or
   top-out with a super-category of nil since the network has multiple
   roots, c.f. model/core/kinds/upper-model.lisp"
-  (let ((super-category
-         (lp-super-category (cat-lattice-position category))))
-    (when super-category
-      (when (eq category super-category)
+  (if (eq category reference-category)
+    t
+    (let ((super-category
+           (lp-super-category (cat-lattice-position category))))
+      (when super-category
+        (when (eq category super-category)
 ;; Keeping this in case we ever want to debug it case by case
 ;        (push-debug `(,super-category ,reference-category))
 ;        (error "The category ~a  has itself as a supercategory.~
 ;              ~%Probably clobbered by an imported word with that spelling"
 ;               category)
-        (format t "~%~%The category ~a  has itself as a supercategory.~
-              ~%Probably clobbered by an imported word with that spelling~%~%"
-               category)
-        (return-from category-inherits-type? nil))
-      (if (eq super-category reference-category)
-        t
-        (category-inherits-type? super-category reference-category)))))
+          (format t "~%~%The category ~a  has itself as a supercategory.~
+                     ~%Probably clobbered by an imported word with that spelling~%~%"
+                  category)
+          (return-from category-inherits-type? nil))
+        (if (eq super-category reference-category)
+          t
+          (category-inherits-type? super-category reference-category))))))
 
 
 
