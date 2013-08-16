@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   May 2013
+;;;   Version:   August 2013
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -81,7 +81,8 @@
 ;; 5/3/13 moved *allow-pure-syntax-rules* here. 5/7/13 Added Strider workspace.
 ;; 5/9/13 Cleaned up what appears to be deadwood and improved lots of comments.
 ;; 5/26/13 changed value of *do-not-use-psi* to t because the psi are not resolving
-;; the sequences of two instances of a name correctly.
+;; the sequences of two instances of a name correctly. 8/14/13 Commented out the 
+;; explicit workspaces load to use the implicit one. 
 
 (in-package :cl-user)
 
@@ -996,7 +997,11 @@ or for loading the newer of the compiled or source files.
   (unless (find-package :mumble) ;; it would load first
     (defpackage :mumble (:use :common-lisp :ddm-util))))
 
+;; This call does the entire load
 (sparser::load/fasl-or-newest cl-user::master-loader)
+
+;; Provide definitions for function we know (given the configuration)
+;; don't have definitions
 (sparser::lload "loaders;stubs")
 
 
@@ -1036,7 +1041,7 @@ or for loading the newer of the compiled or source files.
 
   ;; If the grammar hasn't already been loaded, the calls in the config
   ;; routines will do it, and in either case it will have the dossiers
-  ;; loaded and the corpus linked up.
+  ;; loaded and the corpus linked up. Also loads workspaces
   (let ((config (or *custom-launch-time-config-file*
 		    "config;launch")))
     (if sparser::*sparser-is-an-application?*    ;; then we use the source version.
@@ -1066,18 +1071,23 @@ or for loading the newer of the compiled or source files.
     (sparser::launch-sparser-menus))
 
 
-  ;;--- load workspaces
-  (cond ;; This format gives us a hook to load workspaces
-   ;; according to the system mode we're in. But for now
-   ;; load them al
-   (t
-    (sparser::lload "init;workspaces:Grok")
-    (sparser::lload "init;workspaces:ERN")
-    (sparser::lload "init;workspaces:Darwin")
-    (sparser::lload "init;workspaces:Mari")
-    (sparser::lload "init;workspaces:med")
-    (sparser::lload "init;workspaces:dm&p")
-    (sparser::lload "init;workspaces:Strider")))
+#| If we want to tailor the workspaces to the application,
+then the load-workspaces in config/launch.lisp. At this point
+in the overall load the config code has executed so these
+are a duplication. 
+|#
+;;   ;;--- load workspaces
+;;   (cond ;; This format gives us a hook to load workspaces
+;;    ;; according to the system mode we're in. But for now
+;;    ;; load them al
+;;    (t
+;;     (sparser::lload "init;workspaces:Grok")
+;;     (sparser::lload "init;workspaces:ERN")
+;;     (sparser::lload "init;workspaces:Darwin")
+;;     (sparser::lload "init;workspaces:Mari")
+;;     (sparser::lload "init;workspaces:med")
+;;     (sparser::lload "init;workspaces:dm&p")
+;;     (sparser::lload "init;workspaces:Strider")))
 	
   
   
