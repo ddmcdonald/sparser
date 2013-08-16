@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   2.4 July 2013
+;;;   Version:   2.4 August 2013
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -28,6 +28,7 @@
 ;;      the referent (cases from dm&p rules)
 ;;     (4/27/11) Cleanup. More on 5/10
 ;; 2.4 (7/22/13) Added some doc and the base of the redistribute method
+;;     (8/14/13) More syntactic sugar.
 
 (in-package :sparser)
 
@@ -42,16 +43,6 @@
 (defvar *rule-being-interpreted* nil)
 (defvar left-referent nil)
 (defvar right-referent nil)
-
-
-(defun left-edge-for-referent ()
-  (or *left-edge-into-reference*
-      (error "Left edge isn't bound now")))
-
-(defun right-edge-for-referent ()
-  (or *right-edge-into-reference*
-      (error "Right edge isn't bound now")))
-
 
 ;; Used in setting up annotations and keeping track
 ;; of which edge is which in routines that are sensitive
@@ -78,7 +69,6 @@
 
 
 (defparameter *no-referent-calculations* nil)
-
 
 
 
@@ -152,17 +142,48 @@
         *referent* ))))
 
 
-;;; operating over the edges
+;;;---------------------------------
+;;; syntactic sugar for the globals
+;;;---------------------------------
 
-(defun revise-parent-edge (&key category form)
-  (let ((edge *parent-edge-getting-reference*))
-    (unless edge
-      (error "*parent-edge-getting-reference* isn't bound now"))
-    (when category
-      (setf (edge-category edge) category))
-    (when form
-      (setf (edge-form edge) form))
-    edge))
+(defun left-edge-for-referent ()
+  (or *left-edge-into-reference*
+      (error "Left edge isn't bound now")))
+
+(defun right-edge-for-referent ()
+  (or *right-edge-into-reference*
+      (error "Right edge isn't bound now")))
+
+(defun parent-edge-for-referent ()
+  (or *parent-edge-getting-reference*
+      (error "*parent-edge-getting-reference* isn't bound now")))
+
+
+;;;--------------------------
+;;; operating over the edges
+;;;--------------------------
+
+(defun revise-parent-edge (&key category form referent)
+  (let ((edge (parent-edge-for-referent)))
+    (revise-edge edge category form referent)))
+
+(defun revise-left-edge-into-rule (&key category form referent)
+  (let ((edge (left-edge-for-referent)))
+    (revise-edge edge category form referent)))
+
+(defun revise-right-edge-into-rule (&key category form referent)
+  (let ((edge (right-edge-for-referent)))
+    (revise-edge edge category form referent)))
+
+(defun revise-edge (edge category form referent)
+  (when category
+    (setf (edge-category edge) category))
+  (when form
+    (setf (edge-form edge) form))
+  (when referent
+    (setf (edge-referent edge) referent))
+  edge)
+
 
 
 ;;;-------------------------
