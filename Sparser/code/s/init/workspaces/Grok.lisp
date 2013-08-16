@@ -84,17 +84,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;  (do-reify-implicit-individuals-in-segment)
 ;  (do-note-text-relations-in-segment)
 
-(defun turn-on-debugging-flags ()
-  (setq *break-on-new-name-converter-cases* t
-        *debug-reify-implicit-individuals* t
-        *break-on-new-bracket-situations* t
-        *debug-segment-handling* t))
 
-(defun turn-off-debugging-flags ()
-  (setq *break-on-new-name-converter-cases* nil
-        *debug-reify-implicit-individuals* nil
-        *break-on-new-bracket-situations* nil
-        *debug-segment-handling* nil))
 
 ;; (setq *new-segment-coverage* t)   ;; to debug strong-domain-modeling, add cases
 
