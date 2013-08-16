@@ -95,6 +95,21 @@ in the past they actually held the position.  We can ask
                            (modifier . country)
                            (np-head . (title title-modifier))))))
 
+(defun convert-to-modified-title (title)
+  ;; called from sort-out-passessive+title when it wants to add
+  ;; a binding to the title and determines that it has only a
+  ;; simple title in it's hands and so no place to put it unless
+  ;; we coerce the title into category that has the needed
+  ;; variable. 
+  (unless (itypep title 'title)
+    (error "Argument is not a title individual.~% ~a  ~a"
+           (type-of title) title))
+  (push-debug `(,title))
+  (break "Stub: finish this function or look for a more general ~
+    way to handle the problem, e.g. extend lattice-points to ~
+    notice subcategories.")
+  title)
+
 
 ;; title-qualifiers in dossiers/title-qualifiers are more versatile
 ;; words than just their relationship to titles: 
