@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSE/Users/ddm/sparser/Sparser/code/s/grammar/model/dossiers/loader.lispR -*-
 ;;; copyright (c) 1991-2005,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.7 May 2013
+;;;  version:  0.7 August 2013
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -46,7 +45,8 @@
 ;;     (2/28/13) Removed the city's and their rules in favor of what's in region
 ;; 0.7 (5/9/13) Pulled out the numbers and ordinals into the regular loader for
 ;;      that module because the need to, e.g., define companies and spread their
-;;      elements means we can't wair for the rest of the dossiers. 
+;;      elements means we can't wair for the rest of the dossiers.
+;;     (8/12/13) Re-exposed the list of cities. 
 
 (in-package :sparser)
 
@@ -136,9 +136,9 @@
 ;; These interfer with / are OBE by the treatment in regions
 ;; and there wasn't that much there in the first place
 ;; as opposed to these other two.
-;;  (gate-grammar *cities*
-;;    (gload "dossiers;cities")
-;;    (gload "dossiers;city rules"))
+  (gate-grammar *cities*
+    (gload "dossiers;cities"))
+;;   (gload "dossiers;city rules"))
   (gate-grammar *US-States*
     (gload "dossiers;U.S. States")
     (gload "dossiers;U.S. State rules"))
