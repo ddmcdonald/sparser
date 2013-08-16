@@ -3,9 +3,9 @@
 ;;;
 ;;;     File:  "Strider"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  July 2012
+;;;  version:  August 2012
 
-;; Initiated 5/7/13. Adding bits through 7/8/13
+;; Initiated 5/7/13. Adding bits through 8/16/13
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -35,6 +35,28 @@
 ;; (setq *trace-completion-hook* t) e.g. to trace pronoun triggering
 
 
+
+;;--- setting up a grammar module for Strider-specific content
+
+(define-grammar-module *middle-east*
+  :name "The Middle East"
+  :parent *sublanguages*)
+
+(include-grammar-module *middle-east*)
+
+(def-logical-pathname "mideast;" "sl;middle-east:")
+
+(gate-grammar *middle-east*
+  (gload "mideast;loader"))
+
+;;---- Patch up ordinary words
+;; see note and list in middle eastern named-entities
+(mapcar #'standalone-lexicon-unpacker  ;; n.b. can't run until after Comlex is loaded
+        *words-from-names-that-need-unpacking*)
+
+;; Scott's problematic texts 8/12/13
+;; (p "The minister said Iranian scientists have made great success in various areas of science and technology, but the country cannot introduce all these outstanding figures because it does not want the country's scientists to come to the center of attention in such enemy plots.")
+;; (p "A number of countries, whose territories and facilities had been misused by the Mossad-backed terrorist teams, have provided the Iranian officials with relevant information, the statement added.")
 
 ;;--- text
 
@@ -78,8 +100,19 @@ e9                               "COMMA"
 |#
 
 ;; (p "a 32-year-old Iranian scientist, Mostafa Ahmadi Roshan, ")
-;;  Redesribution from age+title to the person is ready to flesh out
-
+#|  [a 32-year-old iranian scientist], [ mostafa ahmadi roshan]
+e22   PERSON                  1 "a 32 - year - old iranian scientist , mostafa ahmadi roshan ," 14
+? (ier 22)
+#<person Roshan, Mostafa  3,1026>
+Type: individual
+Class: #<structure-class individual>
+id: 3
+type: (#<ref-category PERSON>)
+binds: (#<494 age = #<age 1>> #<495 position = #<title scientist 15,784>>
+        #<nil name = #<person-name/first-last 3>>)
+bound-in: (#<496 name-of = #<person Roshan, Mostafa  3,1026>>)
+;;/// Switch from a relation for Iranian to using the new nationality variable
+|#
 
 
 ;;      (trace-reclaimation)
@@ -247,19 +280,6 @@ Meta-dot
   string-for/name print-individual-structure string/sequence
 
 |#
-;;--- setting up a grammar module for Strider-specific content
-
-(define-grammar-module *middle-east*
-  :name "The Middle East"
-  :parent *sublanguages*)
-
-(include-grammar-module *middle-east*)
-
-(def-logical-pathname "mideast;" "sl;middle-east:")
-
-(gate-grammar *middle-east*
-  (gload "mideast;loader"))
-
 
 ;; Something is off with the error handler. Going to the listener on
 ;; the first error it gets, rather than collecting them.
