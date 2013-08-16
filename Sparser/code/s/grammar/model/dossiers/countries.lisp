@@ -206,7 +206,9 @@
 (define-country "Uganda")
 (define-country "Ukraine")
 (define-country "United Arab Emirates")
-(define-country "United States" :aliases '("US" "U.S." "U.S.A." "America" ))
+(define-country "United States"
+  :aliases '("US" "U.S." "U.S.A." "America" )
+  :adjective '("American"))
 (define-country "Uruguay")
 (define-country "Uzbekistan")
 (define-country "Vanuatu")
