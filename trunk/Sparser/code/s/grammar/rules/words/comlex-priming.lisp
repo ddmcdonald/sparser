@@ -1,11 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2012 David D. McDonald
+;;; Copyright (c) 2010-2013 David D. McDonald
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  December 2012
+;;;  Version:  August 2013
 
-;; Extracted from one-offs/comlex 12/3/12
+;; Extracted from one-offs/comlex 12/3/12.
+;; 0.1 (8/12/13) Wrapped the eval of the def-word expression in an
+;;      ignore-errors because the mlisp load in my ACL 8.2 was choking
+;;      on unicode characters in French words.
 
 (in-package :sparser)
 
@@ -50,7 +53,8 @@
         (unless (eq (car entry) 'def-word)
           (error "Comlex entry based on something other than ~
                 def-word:~%  ~a" entry))
-        (eval entry)))))
+        (ignore-errors 
+         (eval entry))))))
 
 
 ;; This is the expansion of a macro, so any change to it requires an
