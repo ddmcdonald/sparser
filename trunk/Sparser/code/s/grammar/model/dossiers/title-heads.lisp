@@ -16,6 +16,7 @@
 (define-single-word-title "attorney")
 (define-single-word-title "cashier")
 (define-single-word-title "chairman")
+(define-single-word-title "chief")
 (define-single-word-title "commissioner")
 (define-single-word-title "counsel")
 (define-single-word-title "controller")
