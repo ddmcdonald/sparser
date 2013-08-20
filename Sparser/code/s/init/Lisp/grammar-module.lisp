@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "grammar-module"
 ;;;    Module:  "init;Lisp:"
-;;;   version:  1.6 February 2005
+;;;   version:  1.6 August 2013
 
 ;; initiated 2/9/92 v2.2, finished 2/10
 ;; 1.1 (2/20 v2.2) Added a notion of "source" to Note-grammar-module
@@ -22,6 +22,7 @@
 ;; 1.5 (9/12) added 'dossier/s' field.   (11/9) flushed a call to 'then'.
 ;; 1.6 (10/3/97) added *loading-public-grammar-module* flag as part of
 ;;      Gate-grammar.  (2/17/05) Added another case to note-grammar-module
+;;     (8/19/13) added citations field.
 
 (in-package :sparser)
 
@@ -52,6 +53,7 @@
   public?   ;; t or nil
 
   dossier/s
+  citations
   )
 
 
