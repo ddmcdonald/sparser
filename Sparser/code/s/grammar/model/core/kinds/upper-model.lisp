@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.2 April 2013
+;;;  version:  0.2 August 2013
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -22,6 +22,8 @@
 ;;      12/17 added perdurant, not clear how to fit it in correctly.
 ;; 0.2 (4/5/13) Exposed top and expressible top so there was somewhere
 ;;      to hand the type variable.
+;;     (8/19/13) Trying a stand-alone definition for "relation" to go with
+;;      the class.
 
 (in-package :sparser)
 
@@ -174,10 +176,10 @@
   :binds ((modifier . modifier)
           (modified)))
 
-  
+(head-noun "relation" relation)
 
 
-;;---------------- nothing live beyone here ------------------
+;;---------------- nothing live beyond here ------------------
 
 #|  
 
