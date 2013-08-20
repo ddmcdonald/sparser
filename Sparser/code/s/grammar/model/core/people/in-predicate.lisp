@@ -22,68 +22,46 @@
 ;;useful for making a single set of additional cfrs
 (define-category in-predicate
   :specializes event
-  :instantiates self)
+  :instantiates self
+  :binds ((head :primitive word)
+          (who NP)
+          (of-what NP))
+  :index (:key head)
+  :realization ((:adjective head)
+                (:tree-family transitive/passive
+                 :mapping ((agent . who)
+                           (patient . of-what)
+                           (s . :self)
+                           (vp . :self)
+                           (vg . :self)
+                           (np/subject . person)
+                           (np/object . NP)))))
+
+
+;;;------
+;;; form
+;;;------
+
+
+(defun define-in-predicate (string)
+  (let ((head (define-or-find-individual
+                    'in-predicate :head string)))
+        head))
 
 ;;;------------
 ;;; the instances
 ;;;------------
 
+
 ;;these ones are very predicate like
 ;;and can be thought to be equivalent to their verbal forms
 ;;He is in command of = He commands, She is in control of = She controls
 ;;though there are subtle semantic and pragmatic differences
-(define-category  in-charge
-  :specializes in-predicate
-  :instantiates self
-  :rule-label in-predicate
-  :binds ((who person)
-          (of-what NP))
-  :index (:key who)
-  :realization ((:adjective "in charge of") ;;still a semantic predicate
-                (:tree-family transitive/passive
-                 :mapping ((agent . who)
-                           (patient . of-what)
-                           (s . :self)
-                           (vp . :self)
-                           (vg . :self)
-                           (np/subject . person)
-                           (np/object . NP)))))
+(define-in-predicate "in charge")
 
+(define-in-predicate "in command")
 
-(define-category  in-command
-  :specializes in-predicate
-  :instantiates self
-  :rule-label in-predicate
-  :binds ((who person)
-          (of-what NP))
-  :index (:key who)
-  :realization ((:adjective "in command of") ;;still a semantic predicate
-                (:tree-family transitive/passive
-                 :mapping ((agent . who)
-                           (patient . of-what)
-                           (s . :self)
-                           (vp . :self)
-                           (vg . :self)
-                           (np/subject . person)
-                           (np/object . NP)))))
-
-
-(define-category  in-control
-  :specializes in-predicate
-  :instantiates self
-  :rule-label in-predicate
-  :binds ((who person)
-          (of-what NP))
-  :index (:key who)
-  :realization ((:adjective "in control of") ;;still a semantic predicate
-                (:tree-family transitive/passive
-                 :mapping ((agent . who)
-                           (patient . of-what)
-                           (s . :self)
-                           (vp . :self)
-                           (vg . :self)
-                           (np/subject . person)
-                           (np/object . NP)))))
+(define-in-predicate "in control")
 
 ;;these last three are less predicate like than the following
 ;;and should probably be made into a different category altogether
@@ -91,64 +69,16 @@
 ;;and have little semantic meaning--much of which is open to interpretation
 ;;it may not suffice to call them predicates, as they are very discourse like too
 ;;the subjects are not necessarily persons either--they can be pretty much anything
-(define-category  in-place
-  :specializes in-predicate
-  :instantiates self
-  :rule-label in-predicate
-  :binds ((who person)
-          (of-what NP))
-  :index (:key who)
-  :realization ((:adjective "in place of") ;;more discourse than predicate like
-                (:tree-family transitive/passive
-                 :mapping ((agent . who)
-                           (patient . of-what)
-                           (s . :self)
-                           (vp . :self)
-                           (vg . :self)
-                           (np/subject . person)
-                           (np/object . NP)))))
+(define-in-predicate "in place")
 
-
-(define-category  in-lieu
-  :specializes in-predicate
-  :instantiates self
-  :rule-label in-predicate
-  :binds ((who person)
-          (of-what NP))
-  :index (:key who)
-  :realization ((:adjective "in lieu of") ;;more discourse than predicate like
-                (:tree-family transitive/passive
-                 :mapping ((agent . who)
-                           (patient . of-what)
-                           (s . :self)
-                           (vp . :self)
-                           (vg . :self)
-                           (np/subject . person)
-                           (np/object . NP)))))
-
+(define-in-predicate "in lieu")
 
 ;;this one is less obvious, and probably requires more attention to detail
 ;;the problem is "instead" can be used without an overt object
 ;;e.g. "Instead, the government decided to pull the troops."
 ;;where the 'object' of "instead" would be someother sentence in the previous discourse
 ;;this feature is absent from all the above, *"In place of, the government..."
-(define-category  instead
-  :specializes in-predicate
-  :instantiates self
-  :rule-label in-predicate
-  :binds ((who person)
-          (of-what NP))
-  :index (:key who)
-  :realization ((:adjective "instead of") ;;more discourse than predicate like
-                (:tree-family transitive/passive
-                 :mapping ((agent . who)
-                           (patient . of-what)
-                           (s . :self)
-                           (vp . :self)
-                           (vg . :self)
-                           (np/subject . person)
-                           (np/object . NP)))))
-
+(define-in-predicate "instead")
 
 ;;;------------
 ;;; cfrs
