@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "names"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  2.1 March 2013
+;;;  version:  2.2 August 2013
 
 ;; initiated 5/22/93 v2.3, added indexing routines 6/7
 ;; 1.1 (10/30) simplified the indexing scheme
@@ -27,6 +27,7 @@
 ;;      return value in make-company-name-as-simple-sequence when not using
 ;;      psi.  (3/29/13) find/company-name turned out to be returning then
 ;;      company and not simply the name.
+;; 2.2 (8/16/13) Make the category permanet as part of its definition
 
 (in-package :sparser)
 
@@ -39,7 +40,8 @@
       ;; the company is entered into the discourse model,
       ;; not the company's name
   :specializes name
-  :index (:special-case :find find/company-name
+  :index (:permanent
+          :special-case :find find/company-name
                         :index index/company-name
                         :reclaim reclaim/company-name)
   :binds ((sequence . sequence)

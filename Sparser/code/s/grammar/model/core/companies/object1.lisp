@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model/core/companies/"
-;;;  version:  1.2 March 2013
+;;;  version:  1.3 August 2013
 
 ;; initiated 5/22/93 v2.3; changed index, added print routine 6/7. Broke that out
 ;; as its own file 11/23/94.  5/3/95 added Define-company. 5/22 tweeked
@@ -22,6 +22,7 @@
 ;;  (2/13/13) Made company specialize named-object (see core/names/object)
 ;; 1.2 (3/21/13) Rebuilt define-company because existing version blew up on
 ;;   "United Nations" and looked overly complex in any event. 
+;; 1.3 (8/16/13) Make company permanent in the category definition
 
 (in-package :sparser)
 
@@ -37,7 +38,8 @@
           (aliases :primitive list) ;; of company-name's
           (description)
           (location))
-  :index (:special-case :find find/company
+  :index (:permanent
+          :special-case :find find/company
                         :index index/company
                         :reclaim reclaim/company))
 
