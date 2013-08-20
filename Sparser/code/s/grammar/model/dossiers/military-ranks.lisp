@@ -10,6 +10,7 @@
 
 (in-package :sparser)
 
+(define-military-rank "Brigadier") ;; :abbreviations '(""))
 (define-military-rank "Captain" :abbreviations '("Cpt"))
 (define-military-rank "General" :abbreviations '("Gen"))
 (define-military-rank "Colonel" :abbreviations '("Col"))
