@@ -165,7 +165,8 @@
         (end   (pos-token-index (ev-position (edge-ends-at edge))))
         (rule (edge-rule edge))
         (left-daughter  (edge-left-daughter  edge))
-        (right-daughter (edge-right-daughter edge)))
+        (right-daughter (edge-right-daughter edge))
+        (constituents (edge-constituents edge)))
     
     (let ((indentation-space (string-of-N-spaces offset))
           (label-string (typecase label
@@ -185,7 +186,9 @@
              (etypecase rule
                (cfr (concatenate 'string
                       "rule " (subseq (symbol-name (cfr-symbol rule)) 3)))
-               (list (format nil "~A" rule))
+               (list (if (eq right-daughter :literal-in-a-rule)
+                       "literal"
+                       (format nil "~A" rule)))
                (symbol (string-downcase (symbol-name rule))))
              "terminal")))
       
@@ -196,23 +199,42 @@
               start
               end
               rule-name)
-      
-      (when left-daughter
-        (etypecase left-daughter
-          (edge (display-edge-as-tree left-daughter (+ offset 2) s))
-          (word (display-word-in-tree left-daughter (+ offset 2) s))
-          (polyword (display-pw-in-tree right-daughter (+ offset 2) s))
-          (list (dolist (item left-daughter)
-                  (display-edge-as-tree item (+ offset 2) s)))
-          (symbol )))
-      (when right-daughter
-        (etypecase right-daughter
-          (edge (display-edge-as-tree right-daughter (+ offset 2) s))
-          (word (display-word-in-tree right-daughter (+ offset 2) s))
-          (polyword (display-pw-in-tree right-daughter (+ offset 2) s))
-          (symbol )))
 
-      edge )))
+      (flet ((display (item)
+               (typecase item
+                 (edge (display-edge-as-tree item (+ offset 2) s))
+                 (word (display-word-in-tree item (+ offset 2) s))
+                 (polyword (display-pw-in-tree item (+ offset 2) s))
+                 (list (dolist (sub-item item)
+                         (display-edge-as-tree sub-item (+ offset 2) s)))
+                 (symbol )
+                 (otherwise
+                  (push-debug `(,item ,edge ,offset))
+                  (error "Unexpected type of object in edge display: ~a~%~a"
+                         (type-of item) item)))))
+
+        (if (symbolp right-daughter) ;; e.g. :proper-name
+          (cond
+           ;; We've hit the bottom. If there are constituents
+           ;; display them. Otherwise ??
+           (constituents
+            (loop for c in constituents do (display c)))
+           ((word-p left-daughter)
+            (display left-daughter))
+           ((eq right-daughter :single-term)
+            (display left-daughter))
+           ((eq right-daughter :context-sensitive)
+            (display left-daughter))
+           (t 
+            (break "New case in tree display")))
+
+          (else
+           (when left-daughter
+             (display left-daughter))
+           (when right-daughter
+             (display right-daughter))))
+
+        edge ))))
 
 
 (defun display-word-in-tree (word offset s)
