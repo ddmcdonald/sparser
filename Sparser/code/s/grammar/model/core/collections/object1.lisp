@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-2005,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2012-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  1.0 April 2012
+;;;  version:  1.0 August 2013
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -11,6 +11,7 @@
 ;;     (4/29) Added realization for "three companies".
 ;;     (2/2/05) Added commentary. (4/1/12) exposed collection-of-type/dh
 ;;     to quiet compiler
+;; 1.1 (8/16/13) Make sequences permanent to avoid odd bugs due to reclamation
 
 (in-package :sparser)
 
@@ -46,6 +47,7 @@
 (define-category  sequence
   :instantiates collection
   :specializes collection
+  :index (:permanent :key items)
   :binds ((items :primitive list)   ;;/// ought to do inheritance
           (item)   ;; i.e. each individual item
           (type)
