@@ -1,51 +1,50 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "area of responsibility"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  May 1995
+;;;  version:  August 2013
 
-;; initiated 5/17/95
+;; initiated 5/17/95. 8/19/13 Revised to use search for an np and
+;; to add the area to a modified-title rather than make an edge
 
 (in-package :sparser)
-
-
-(define-category  area-of-responsibility
-  :specializes nil
-  :instantiates nil )   ;; just a shell
 
 ;;;----------
 ;;; DA rules
 ;;;----------
 
-;;--- "director of engineering"
+;;--- "director of engineering" -- 1995, was just a word
+;; "Deputy Chief of Staff of the Iranian Armed Forces" 
 
-;; there's a weirdness in the comparison of this netword
-;; with the one in place at the bottom of people/names-to-people
-;; and it's screwing up the load.
-#+ignore
 (define-debris-analysis-rule  title-of-area1
-  :pattern ( title "of" (:word) )
+  :pattern ( title "of" np )
   :action title-of-area1/action )
 
 (defun title-of-area1/action ()
-  (let* ((data-for-word (lookup-matched-tt 'third))
-         (word       (first data-for-word))
-         (pos-before (second data-for-word))
-         (pos-after  (third data-for-word)))
+  (let* ((title-edge (lookup-matched-tt 'first))
+         (title (edge-referent title-edge)) ; 
+         (np-edge (lookup-matched-tt 'third))
+         (np-ref (edge-referent np-edge)))
+    (unless (itypep (edge-referent title-edge) 'modified-title)
+      (setf (edge-referent title-edge)
+            (setq title (convert-to-modified-title title))))
 
-    (let ((edge (make-chart-edge
-                 :starting-position pos-before
-                 :ending-position pos-after
-                 :category  category::area-of-responsibility
-                 :form  (category-named 'np)
-                 :referent  word   ;; ??? depends on later consumers knowing
-                                   ;; what to do
-                 :rule-name :title-of-area1 )))
-      edge )))
+    ;; Really ought to have a rule that packages this property.
+    ;; Then could just call make-binary-edge
+    (bind-variable 'area-of-responsibility np-ref title)
+    (let ((start (pos-edge-starts-at title-edge))
+          (end (pos-edge-ends-at np-edge)))
+      (make-edge-over-long-span start end category::title
+        :rule :title-of-area1/action
+        :form category::np
+        :referent title))))
+       
+      
 
 
 
+;; 1995
 ;;--- "general manager of personal communications services"
 #| 'gap' items still under development
 (define-debris-analysis-rule  title-of-area2
