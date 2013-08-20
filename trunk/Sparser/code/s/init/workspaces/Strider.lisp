@@ -11,29 +11,15 @@
 
 (in-package :sparser)
 
-;;--- display parameters
-
-(setq *tts-after-each-section* t)
-
-;;--- control parameters
-
-(setq *debug-segment-handling* nil) ;; override default
-
 (strider-setting) ;; adds (setq *do-debris-analysis* t)
-(setq *arabic-names* t)
-(setq *allow-da-to-look-under-edges* nil) ;;/// arc-matches-tt? needs to adjust the next tt
 
-(setq *do-domain-modeling-and-population* t) ;; ignores null referents
-;; Need to adapt the segment-level switches and do this better
-
-(turn-off-debugging-flags) ;; presently defined in Grok workspace
+(turn-off-debugging-flags)
 ;; (turn-on-debugging-flags)
 
 ;; (setq *break-before-creating-name* t) 
 ;;   to look at what could happen before it creates facts
 
 ;; (setq *trace-completion-hook* t) e.g. to trace pronoun triggering
-
 
 
 ;;--- setting up a grammar module for Strider-specific content
@@ -48,6 +34,9 @@
 
 (gate-grammar *middle-east*
   (gload "mideast;loader"))
+
+;; (test-modules-citations
+;; *citations* *time* *proper-names*
 
 ;;---- Patch up ordinary words
 ;; see note and list in middle eastern named-entities
@@ -83,11 +72,13 @@
 
 
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
-;;   
+;;   sort-out-passessive+title
+
+
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
 
 ;;  (p "Deputy Chief of Staff of the Iranian Armed Forces Brigadier General Massoud Jazzayeri said Monday")
-
+;; (trace-da-hook)  (trace-da)
 
 
 ;; (p "the Iranian scientists Massoud Ali-Mohammadi,")
@@ -270,7 +261,8 @@ Meta-dot
   *trace-reclaimation* reclaim-all-instances get-tag-for
   collection string/sequence spread-sequence-across-ordinals
   string-for/name person named-object index-person-name-to-person
-  link-named-object-to-name-word names/parens-after-names.lisp
+  link-named-object-to-name-word names/parens-after-names.lisp 
+     elevate-fully-spanning-category/parentheses
   relationship-to-country 
   decode-index-field print-binding-structure
   date weekday month season relative-time-adverb numeric-time approximator
@@ -278,6 +270,12 @@ Meta-dot
   cite set-citation-file
   unpack-primed-word
   string-for/name print-individual-structure string/sequence
+  short-cuts: head-noun  
+  define-lambda-variable  define-position-in-process  ref/method  compose
+  dereference-DefNP  do-paired-punctuation-interior define-interior-action
+  allocate-individual
+
+  convert-to-modified-title
 
 |#
 
