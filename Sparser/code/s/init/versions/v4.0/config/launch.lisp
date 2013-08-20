@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "launch"
 ;;;   Module:  "init;versions:v4.0:config:"
-;;;  version:  January 2013
+;;;  version:  August 2013
 
 ;; 10/7/94 commented out the call to make objects permanent and move it to the
 ;; save images file. 10/12 turning off the break-outside-coverage flag
@@ -33,7 +33,10 @@
 ;; case in switch-settings because in and 'everything' load (the default
 ;; now) that option symbol is bound to a grammar module. Need a different
 ;; scheme. 10/30/12 added *grok*, minor cleanup. 1/28/13 Wrapped an eval-when
-;; around final forms to avoid running them when compiling.
+;; around final forms to avoid running them when compiling. 8/19/13 Added
+;; ".lisp" to the wildcard in load-workspaces to make it work in CCL. Also
+;; blocked the workspaces when compiling since they can invoke grammar
+;; resources that won't exist when just compiling files. 
 
 (in-package :sparser)
 
@@ -136,7 +139,7 @@
                             (t
                              "code:s:init:workspaces:"))))))
     (when (probe-file namestring)
-      (let ((files (directory (concatenate 'string namestring "*"))))
+      (let ((files (directory (concatenate 'string namestring "*.lisp"))))
         (mapcar
          #'(lambda (x)
              (unless (or (search ".svn" (format nil "~s" x))
@@ -272,7 +275,8 @@
 
   ;;--- Workspace files
 
-  (load-workspaces)
+  (unless *compile*
+    (load-workspaces))
 
   ;;--- parameters
 
