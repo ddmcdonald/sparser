@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.2 June 2013
+;;;  version:  1.2 August 2013
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
@@ -21,6 +21,8 @@
 ;;      Put in a catch in the iterator so reclamation can continue.
 ;; 1.2 (6/15/13) Fixed tricky bug in making objects permanent exposed by
 ;;      including instances from hashtables.
+;; 1.3 (8/19/13) Added facility for making later call to make-permanent
+;;      for use at the bottom of everything.
 
 (in-package :sparser)
 
@@ -34,6 +36,10 @@
    to one of those individuals, that is used when reclaiming to
    indicate where to stop when cdr'ing down that list.")
 
+(defvar *rule-count-at-make-permanent* nil
+  "This is set by declare-all-existing-individuals-permanent
+   to the rule count at the time. It's checked and acted on
+   by redeclare-permanent-individuals-if-necessary")
 
 ;;--- Toplevel calls
 
@@ -44,19 +50,33 @@
   (dolist (c *referential-categories*)
     (declare-category-instances-permanent c))
   (setq *1st-permanent-individual/all-categories*
-        (first *active-individuals*)))
+        (first *active-individuals*))
+  (setq *rule-count-at-make-permanent* 
+        *next-number-for-phrase-structure-rule*))
 
 
 (defun declare-category-instances-permanent (c)
   ;; subroutine of Declare-all-existing-individuals-permanent
   (let ((instances (all-instances c)))
     (when instances
-      (format t "~&~A has ~A instances"
-              (cat-symbol c) (length instances))
-      (setf (unit-plist c)
-            `(:1st-permanent-individual ,(first instances)
-              :permanent-individuals ,instances  ;; the sublist
-              ,@(unit-plist c))))))
+      (if (memq :1st-permanent-individual (unit-plist c))
+        (declare-all-new-instances-permanent c)
+        (else
+         (format t "~&~A has ~A instances"
+                 (cat-symbol c) (length instances))
+         (setf (unit-plist c)
+               `(:1st-permanent-individual ,(first instances)
+                 :permanent-individuals ,instances  ;; the sublist
+                 ,@(unit-plist c))))))))
+
+
+(defun redeclare-permanent-individuals-if-necessary ()
+  ;; Called from everything at the very end.
+  (unless (= *rule-count-at-make-permanent* 
+             *next-number-for-phrase-structure-rule*)
+    ;; rules have been added, which likely means that more
+    ;; individuals have also been added.
+    (declare-all-existing-individuals-permanent)))
 
 
 (defun declare-all-new-instances-permanent (c)
