@@ -3,11 +3,12 @@
 ;;;
 ;;;     File:  "test"
 ;;;   Module:  "grammar;tests:citations:code:"
-;;;  version:  0.1 September 1996
+;;;  version:  0.1 August 2013
 
 ;; initiated 11/4/93 v2.3
 ;; 0.1 (12/22) Added appreciation of :multiple-initial edges
 ;;     (9/4/96) added more cases to the mismatch descriptions.
+;;     (8/19/13) Added more printed results
 
 (in-package :sparser)
 
@@ -27,10 +28,12 @@
 
     ;; if we get a lisp error from this, tuffers.
     (pp string)
-    (when official-tts
-      (match-chart-to-citation official-tts))
     (when official-bracketing
-      (match-bracketing-to-citation official-bracketing))))
+      (format stream "~&   bracketing:  ~a"
+              (match-bracketing-to-citation official-bracketing)))
+    (when official-tts
+      (format stream "~&   treetops:  ~a"
+              (match-chart-to-citation official-tts)))))
 
 (defun match-bracketing-to-citation (official-bracketing)
   (let ((bracketing (bracketing-tree)))
