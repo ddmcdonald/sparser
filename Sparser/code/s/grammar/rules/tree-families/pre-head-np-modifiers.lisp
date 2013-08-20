@@ -244,7 +244,7 @@ Whether it's generic enough to hand all sorts of quantifying determiners
            (np (first second)
              :instantiate-individual result-type
              :binds (item1 left-edge
-                     item1 right-edge)
+                     item2 right-edge)
              :head right-edge))))
 
 
