@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.2 July 2013
+;;;  version:  0.3 August 2013
 
 ;; initiated 6/8/93 v2.3
 ;; 0.1 (1/7/94) redesigned not to pre-index
@@ -18,6 +18,7 @@
 ;;   stub special-printer. If we need one it goes in people/printers.lisp
 ;;  (7/29/13) Added notion of a role-based-person and the convert-title-to-person
 ;;   routine to make them.
+;; 0.3 (8/16/13) Make person permanent in the category definition
 
 (in-package :sparser)
 
@@ -32,7 +33,7 @@
           (age . age)
           (position . (:or title position-at-co))
           (nationality . country)) ;; simplistic
-  :index (:key name)
+  :index (:permanent :key name)
   :realization ((:tree-family  appositive
                  :mapping ((appositive-field . age)
                            (np . :self)
@@ -76,7 +77,7 @@
 (define-category role-based-person
   :instantiates person
   :specializes person
-  :index (:key role)
+  :index (:key role)  ;; should these be permanent?
   :binds ((role . title)))
 
 
