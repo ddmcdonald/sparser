@@ -63,11 +63,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 (setq *annotate-realizations* nil) ;; Will be t, but not ready yet
 
-;;-- Default display setup. Interleave the segment markers with
-;; the running text.
-(setq *display-word-stream* nil)
-(setq *readout-segments-inline-with-text* t)
-(setq *record-bracketing-progress* t)
+(display-bracketing)
 
 ;;-- For Comlex shakeout
 (trace-lexicon-unpacking)
