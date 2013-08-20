@@ -190,40 +190,40 @@
   
 
 
-(defun title-elements-in-items (items)
-  (when (some #'word-p items)
-    ;; then remove them so rest will go through
-    (setq items (loop for item in items
-                  when (individual-p item)
-                  collect item)))
-  (unless (every #'(lambda (o) (typep o 'individual)) items)
-    (push-debug `(,items))
-    (error "Unexpected: not every item in a name is an individual"))
-  (let ((categories (mapcar #'cat-symbol
-                            (mapcar #'i-type-of items))))
-    (push-debug `(,categories ,items))
-    (or (memq 'category::title-modifier categories)
-        (memq 'category::title categories)
-        (memq 'category::country categories)
-        (memq 'category::military-rank categories))))
+(defmethod title-element? ((e edge))
+  (let ((referent (edge-referent e)))
+    (when referent
+      (when (individual-p referent)
+        (title-element? referent)))))
 
+(defmethod title-element? ((i individual))
+  (let ((c (i-type-of i)))
+    (memq c `(,category::title-modifier
+              ,category::title
+              ;;,category::country
+              ;;  "American Foreign Relations Council"
+              ;;/// Need to be more deliberate about this
+              ,category::military-rank))))
 
-(defun split-off-title-from-name (items)
-  (flet ((title-element? (e)
-           (or (itypep e category::title-modifier)
-                 (itypep e category::title)
-                 (itypep e category::country)
-                 (itypep e category::military-rank))))
-    (let ( title  name )
-      (dolist (item items)
-        (cond
-         ((word-p item) ;; "and" in "Greece and Germany"
-          ) ;; ignore it
-         ((title-element? item)
-          (push item title))
-         (t (setq name (memq item items))
-            (return))))
-      (values (nreverse title) name))))
+(defun title-elements-in-items (item-edges)
+  ;; Called from examine-capitalized-sequence
+  (dolist (item item-edges)
+    (when (edge-p item)
+      (when (title-element? item)
+        (return t)))))
+
+(defun split-off-title-from-name (reversed-list-of-edges)
+  ;; Remove any title edges and return the rest.
+  ;; We know there is at least one title element in here
+  ;; because we're gated by title-elements-in-items
+  (let ((title-index 0))
+    (let ((name-edges
+           (loop for edge in reversed-list-of-edges
+             until (title-element? edge) collect edge
+             do (incf title-index))))
+      ;;(break "split-off-title intex = ~a" title-index)
+      (values (nthcdr title-index reversed-list-of-edges)
+              name-edges))))
 
 
 

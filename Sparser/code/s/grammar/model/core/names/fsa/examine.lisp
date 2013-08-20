@@ -69,6 +69,9 @@
 ;;       further processing. Could be considerably refined (e.g. for countries in
 ;;       adjective form), but need the cases. 6/14/13 Refactored call to make person
 ;;       name.
+;; 0.19 (8/19/13) Moved the title-element-in-items check up from categorize-and-form-name
+;;       to examine-capitalized-sequence so the title could be just omitted from
+;;       consideration as one of the items in the name.
 
 (in-package :sparser)
 
@@ -124,7 +127,7 @@
         name-state  edge-labeled-by-word multiple-treetops
         &-sign  initials?  person-version  inc-term?  of  and  the  slash
         generic-co co-activity koc?  ordinal  flush-suffix 
-        country
+        country  title
         location-head  location  hurricane)
     
     (flet
@@ -448,9 +451,21 @@
           (when (= count (caar location))
             (setq location-head (cdar location))))
 
+        (when (title-elements-in-items items)
+          (multiple-value-bind (title-elements name-elements)
+                               (split-off-title-from-name items)
+            (if (null name-elements)
+              (then 
+               ;; It's all a title, blow it away
+               (throw :abort-examination-not-a-name
+                      `(:not-a-name . ,ending-position)))
+              (else ;; /// reset positions
+               (setq title title-elements)
+               (setq items name-elements)))))
+
         (let ((name
                (categorize-and-form-name (referents-of-list-of-edges items)
-                                         name-state country
+                                         name-state country title
                                          &-sign initials? person-version
                                          inc-term? of and the generic-co co-activity
                                          koc? ordinal location-head hurricane)))
@@ -472,7 +487,7 @@
 
 
 (defun categorize-and-form-name (items 
-                                 name-state country
+                                 name-state country title
                                  &-sign initials? person-version
                                  inc-term? of and the generic-co co-activity
                                  koc? ordinal location-head hurricane)
@@ -481,7 +496,7 @@
   ;; Analyze the evidence and determine what sort of name this is
   ;; and make it [[ why not look for existing one? ]]. 
   ;; The referent of the edge is determined by our caller up in
-  ;; classify-&-record-span using the fn do-referent-and-edge
+  ;; classify-&-record-span using the fn do-referent-and-edge  
 
   (when *break-before-creating-name*
     (push-debug `(,items)) ;; more flags?
@@ -498,6 +513,7 @@
     (let ( name
            (category
             (cond (inc-term? category::company-name)
+                  (title category::person-name)
                   (location-head category::location)
                   (&-sign    category::company-name)
                   ;;(the       category::company-name)
@@ -548,15 +564,6 @@
           ;;//// look for the similar cases and rationalize
           (setq items (cdr items))))
 
-      (when (title-elements-in-items items)
-        (multiple-value-bind (title-elements name-elements)
-                             (split-off-title-from-name items)
-          ;; FIXME -- droping these on the floor ////////////////////
-          ;; They really should have been picked up in the examination
-          ;; of the scan. 
-          (declare (ignore title-elements))
-          (setq items name-elements)
-          (setq category category::person-name)))          
 
     #|(when person-version  ;; e.g. "Jr."
         ;; substitute the object for the index that Examine... has passed in
