@@ -345,6 +345,20 @@ e10   RELATIVE-LOCATION       1 "in the last three years" 6
 
 
 ;;;---------
+;;; in-predicate
+;;;---------
+
+;;semantic predicates that take the form of "in" + a semantically contentful head
+
+;;from javan-online
+;; "the deputy director of Natanz nuclear site in charge of commercial affairs"
+
+(define-citation "the man is in charge"
+  (1 IN-PREDICATE 6))
+
+
+
+;;;---------
 ;;; anchor
 ;;;---------
 
