@@ -82,7 +82,8 @@
 ;; 5/9/13 Cleaned up what appears to be deadwood and improved lots of comments.
 ;; 5/26/13 changed value of *do-not-use-psi* to t because the psi are not resolving
 ;; the sequences of two instances of a name correctly. 8/14/13 Commented out the 
-;; explicit workspaces load to use the implicit one. 
+;; explicit workspaces load to use the implicit one. 8/19/13 added a redeclare-permanent
+;; at the very end since workspace items were being reclaimed.
 
 (in-package :cl-user)
 
@@ -974,7 +975,8 @@ or for loading the newer of the compiled or source files.
        (sparser::lload "grammar-configurations;full grammar"))
 
       (t
-       (break "No grammar configuration file specified")))
+       (unless sparser::*compile*
+         (break "No grammar configuration file specified"))))
 
 
 
@@ -1072,9 +1074,9 @@ or for loading the newer of the compiled or source files.
 
 
 #| If we want to tailor the workspaces to the application,
-then the load-workspaces in config/launch.lisp. At this point
-in the overall load the config code has executed so these
-are a duplication. 
+then the load-workspaces call in config/launch.lisp is the
+place to do it. At this point in the overall load the config 
+code has already executed so these are a duplication. 
 |#
 ;;   ;;--- load workspaces
 ;;   (cond ;; This format gives us a hook to load workspaces
@@ -1090,7 +1092,7 @@ are a duplication.
 ;;     (sparser::lload "init;workspaces:Strider")))
 	
   
-  
+  (redeclare-permanent-individuals-if-necessary) ;; e.g. from workspaces
   
   ;;--- saluation
   
