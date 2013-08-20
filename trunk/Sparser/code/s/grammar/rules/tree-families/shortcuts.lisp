@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  September 2011
+;;;  version:  August 2013
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
 ;; 7/16/09: added modifier to np-head Modified 7/21/09: replaced
@@ -19,7 +18,8 @@
 ;; adverbials to fit changes to the ETF. 9/26 expunged spatial-orientation
 ;; by removing sv-spatial-prep-marked-o (which had no applications) and
 ;; making sv-location mostly meaningless by duplicating the problematic
-;; case. 
+;; case. 8/19/13 Added head-noun as first of possibly many short-cuts
+;; for already defined categories. 
 
 (in-package :sparser)
 
@@ -56,6 +56,29 @@
 
 
 ;;--- NP patterns
+
+(defmacro head-noun (string category &optional referent)
+  "Like np-head, but we already have the category/referent and
+   just want to assign the word to it."
+  `(head-noun/expr ',string ',category ',referent))
+
+(defun head-noun/expr (string category referent)
+  (typecase category
+    (referential-category)
+    (symbol 
+     (setq category (category-named category :break-if-missing)))
+    (otherwise 
+     (push-debug `(,string ,category ,referent))
+     (error "Unexpected type for the category argument: ~a~%~a"
+            (type-of category) category)))
+  (unless referent
+    (setq referent category))
+  ;; Idea is to follow pattern in setup-common-noun
+  (let ((word (resolve string)))
+    (make-cn-rules word category referent)))
+  
+
+
 
 (defun np-head (string-for-noun) ;; "trunk", "car", ...
   (unless (stringp string-for-noun)
