@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:individuals:"
 ;;;  version:  July 1992
 
 ;; initiated 7/16/92 v2.3.
-;; 8/16/13 Added a method that logically belongs in objecs/chart/
-;; categories/lookup, but the type's not available then.
+
+;;--------- NOT LOADED --look at ops-structure instead -------------
+
 
 (in-package :sparser)
 
@@ -46,13 +47,3 @@
   (write-string "#<operations for " stream)
   (princ-category (cat-ops-category obj) stream)
   (write-string ">" stream))
-
-
-;;;------------------
-;;; Other operations
-;;;------------------
-
-;; Other cases in objecs/chart/categories/lookup,
-(defmethod category-named ((c referential-category) &optional break-if-no-category)
-  (declare (ignore break-if-no-category))
-  c)
