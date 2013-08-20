@@ -1,20 +1,26 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012-2013  David D. McDonald  -- all rights reserved
 
 ;;;     File:  "ranks"
 ;;;   Module:  model/sl/military
-;;;  version:  November 2012
+;;;  version:  August 2013
 
 ;; Initiated 3/8/07. Added rules to compose the rank 3/22. Moved in to 
 ;; generic military and tweaked 11/24/12. Fixed abbreviations 11/30/12.
+;; 8/16/13 Added composite ranks by analogy to treatment of titles.
+;;  made the category take the title rule-label so the rules don't
+;;  have to be multiplied
 
 (in-package :sparser)
 
 ;; #1 Define the semantic category we're going to use for parsing
-;;
+;;  By using the :rule-label we can let these behave (pattern) just
+;;  like titles do, while retaining the distinction semantically. 
+
 (define-category military-rank
   :instantiates :self
+  :rule-label title
   :binds ((name :primitive word)
 	  (abbreviations  :primitive list))
   :realization (:common-noun name))
@@ -101,3 +107,29 @@
   :form np
   :referent (:head right-edge
              :bind (has-rank left-edge)))
+
+;; Allow ranks to compose. Note that we need a new category to hold
+;; the information. The template is modified-title.
+
+(define-category modified-military-rank
+  :specializes military-rank
+  :instantiates military-rank
+  :rule-label title
+  :binds ((base-rank . military-rank)
+          (modifier . military-rank)
+          (status . title-status) ;; e.g. retired
+          (country . country))
+  :index (:permanent :sequential-keys base-rank modifier)
+  :realization ((:tree-family premodifier-creates-type
+                 :mapping ((type . :self)
+                           (head-var . base-rank)
+                           (modifier-var . modifier)
+                           (np . title) ;; needed? Where does rule-label fire?
+                           (np-head .  (military-rank title))
+                           (modifier . military-rank)))
+                (:tree-family premodifier-adds-property
+                 :mapping ((property . country)
+                           (modifier . country)
+                           (np-head . (title military-rank
+                                       modified-military-rank))))))
+
