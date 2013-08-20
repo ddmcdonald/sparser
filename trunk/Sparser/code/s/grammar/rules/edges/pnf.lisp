@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pnf"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  0.2 September 1994
+;;;  Version:  0.2 August 2013
 
 ;; initiated 5/28/93 v2.3)
 ;; 0.1 (2/24/94) added daughter and used-in encoding
-;; 0.2 (9/28) added form parameter
+;; 0.2 (9/28/94) added form parameter
+;;     (8/16/13) Set the constituents field
 
 (in-package :sparser)
 
@@ -49,6 +50,7 @@
 
     (setf (edge-left-daughter edge) (first daughters))
     (setf (edge-right-daughter edge) :proper-name)
+    (setf (edge-constituents edge) daughters)
 
     (when *trace-edge-creation*
       (format t "~&creating ~A for a proper name"
