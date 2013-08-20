@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   0.7 March 2013
+;;;   Version:   0.7 August 2013
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -28,7 +28,7 @@
 ;;      so that it doesn't re-initalize when we're doing a stream of documents.
 ;;     (3/8/13) Fixed initialization problem with the init form for
 ;;      *where-print-segment-left-off*. 3/14 added print-treetop-labels-in-segment
-;;      3/18 added tts-form and tts-ref.
+;;      3/18 added tts-form and tts-ref. 8/16/13 Added display-bracketing
 
 (in-package :sparser)
 
@@ -63,6 +63,17 @@
 
 (defvar *where-the-readout-left-off* nil)
 (define-per-run-init-form '(setq *where-the-readout-left-off* nil))
+
+
+;;--- Aggregate switch setter
+
+(defun display-bracketing ()
+  ;; Interleave the segment markers with
+  ;; the running text.
+  (setq *display-word-stream* nil)
+  (setq *readout-segments-inline-with-text* t)
+  (setq *record-bracketing-progress* t))
+
 
 
 
