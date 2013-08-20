@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;tests:citations:code:"
-;;;  version:  November 1993
+;;;  version:  August 2013
 
-;; initiated 11/4/93 v2.3
+;; initiated 11/4/93 v2.3. Folded in grammar-module indexing
+;; 8/19/13
 
 (in-package :sparser)
 
@@ -20,7 +21,8 @@
             (:conc-name #:cite-))
   string
   bracketing
-  edge-descriptors )
+  edge-descriptors
+  grammar-module )
 
 
 (defun print-citation-structure (obj stream depth)
@@ -41,9 +43,13 @@
               (make-hash-table :test #'equal)
   "Used to intern citations to avoid duplications")
 
-
 (defun citation-named (string)
   (gethash string *string-to-citation-mapping*))
+
+
+(defvar *gmods-with-citations* nil
+  "Records the grammar modules that have their own set
+   of citations.")
 
 
 ;;;----------
@@ -57,6 +63,7 @@
   `(define-citation/expr ,string nil ',bracketing))
 
 (defun define-citation/expr (string descriptors bracketing)
+  (declare (special *grammar-module-being-loaded*))
   (let ((obj (citation-named string)))
     (unless obj
       (setq obj (make-citation :string string))
@@ -68,4 +75,12 @@
     ;; even if this is a re-execution of the same definition
     (setf (cite-edge-descriptors obj) descriptors)
     (setf (cite-bracketing obj) bracketing)
+
+    (when *grammar-module-being-loaded*
+      (let ((gmod *grammar-module-being-loaded*))
+        (setf (cite-grammar-module obj) gmod)
+        (pushnew obj (gmod-citations gmod))
+        (pushnew gmod *gmods-with-citations*)))
+    
     obj ))
+
