@@ -33,6 +33,18 @@
                           (base-np . title)
                           (result-type . :self))))
 
+;;/// What would this be as an auxiliary rule?
+;; "Fereydun Abbasi, the director the Nuclear Energy Organization,"
+;; From javan-online, the "of" is missing
+(define-additional-realization position-at-co
+  (:tree-family pair-instantiates-category
+   :mapping ((item1 . title) ;; left-edge
+             (item2 . company)
+             (result-type . position-at-co)
+             (np . position-at-co)
+             (first . title)
+             (second . company))))
+
 
 ;;;----------------------
 ;;; cs rules with person
