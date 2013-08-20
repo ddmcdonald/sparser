@@ -133,7 +133,7 @@ the grammar-gating switch to nil.
 (just-compile "version;loaders:logicals")
 (just-compile "version;loaders:master-loader")
 (just-compile "version;loaders:model")
-(unless *nothing-mac-specific*
+(unless *nothing-Mac-specific*
   (just-compile "version;loaders:save-routine"))
 (just-compile "version;loaders:stubs")
 
