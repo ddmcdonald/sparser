@@ -221,9 +221,10 @@
             (loop for c in constituents do (display c)))
            ((word-p left-daughter)
             (display left-daughter))
-           ((eq right-daughter :single-term)
-            (display left-daughter))
-           ((eq right-daughter :context-sensitive)
+           ((or (eq right-daughter :single-term)
+                (eq right-daughter :context-sensitive)
+                (eq right-daughter :digit-based-number)
+                (eq right-daughter :number-fsa))
             (display left-daughter))
            (t 
             (break "New case in tree display")))
