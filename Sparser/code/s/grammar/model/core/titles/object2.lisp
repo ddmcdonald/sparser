@@ -78,6 +78,7 @@ in the past they actually held the position.  We can ask
   :binds ((base-title . title)
           (modifier . (:or title title-modifier))
           (locale . country)
+          (area-of-responsibility) ;; unclear if there's a common root here
           (time))
   ;; What else can anchor a title to a place?
   ;; If we make it location will a rule over referents
