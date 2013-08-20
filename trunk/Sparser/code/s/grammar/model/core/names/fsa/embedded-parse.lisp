@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "embedded parse"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.6 May 1995
+;;;  version:  0.8 August 2013
 
 ;; initiated 5/21/93 v2.3
 ;; 0.1 (6/9) revising the alg. because it's intended to be top-edges and
@@ -15,9 +15,11 @@
 ;;      endpoint by a set on the global *PNF-end-of-span*.
 ;; 0.5 (5/4) hit a case of :multiple-initial-edges in the single-non-word-edge
 ;;      case and patched around it.
-;; 0.6 (12/29) added a full edge-parse to accomodate the change that makes
+;; 0.6 (12/29/95) added a full edge-parse to accomodate the change that makes
 ;;      titles parsed items rather than polywords.
 ;;     (5/26/13) added some traces. 
+;; 0.7 (8/18/13) Reordered polyword check before edge check: "Deputy Chief of 
+;;      Staff", where CoS is a polyword.
 
 (in-package :sparser)
 
@@ -63,35 +65,35 @@
                (pos-array-index pos-before) word)
         (setq word (first word))))
 
-    (let ((edge (single-nonword-edge-starts-at pos-before)))
-      (if edge
+    (let ((where-word-fsa-ends
+               (do-word-fsas/only-known word pos-before))
+          (edge (single-nonword-edge-starts-at pos-before)))
+      (cond
+       (where-word-fsa-ends  ;; some word-fsa completed
+        (tr :pfwpnf/fsa-succeeded word where-word-fsa-ends)
+        (cond
+         ((eq where-word-fsa-ends final-pos)
+          :done )
+         ((position-precedes final-pos where-word-fsa-ends)
+          ;; we've gone past the span that the scan
+          ;; delimited, presumably because the fsa was
+          ;; a polyword.  The trouble is that this change
+          ;; in the end of the sequence has to be appreciated
+          ;; by the caller. 
+          (setq *pnf-end-of-span* where-word-fsa-ends)
+          :done )
+         (t
+          (pfwpnf where-word-fsa-ends final-pos))))
+
+       (edge
         (let ((where-edge-ends-at (pos-edge-ends-at edge)))
           (tr :pfwpnf-edge edge)
           (if (eq final-pos where-edge-ends-at)
             :done
-            (pfwpnf where-edge-ends-at final-pos)))
-
-        (let ((where-word-fsa-ends
-               (do-word-fsas/only-known word pos-before)))
-          (if where-word-fsa-ends  ;; some word-fsa completed
-            (then
-             (tr :pfwpnf/fsa-succeeded word where-word-fsa-ends)
-             (cond
-              ((eq where-word-fsa-ends final-pos)
-               :done )
-              ((position-precedes final-pos where-word-fsa-ends)
-               ;; we've gone past the span that the scan
-               ;; delimited, presumably because the fsa was
-               ;; a polyword.  The trouble is that this change
-               ;; in the end of the sequence has to be appreciated
-               ;; by the caller. 
-               (setq *pnf-end-of-span* where-word-fsa-ends)
-               :done )
-              (t
-               (pfwpnf where-word-fsa-ends final-pos))))
-            
-            (intro-edges-fwpnf
-             word pos-before pos-after final-pos)))))))
+            (pfwpnf where-edge-ends-at final-pos))))    
+       (t            
+        (intro-edges-fwpnf
+         word pos-before pos-after final-pos))))))
 
 
 

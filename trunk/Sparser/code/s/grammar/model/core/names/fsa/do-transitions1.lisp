@@ -186,8 +186,7 @@
             (error "examine-capitalized-sequence returned a new category ~
                     of individual: ~a"  (itype-of result)))))
 
-        ;; Could these alternative paths ever involve real NE's ??
-        (cons
+        (cons ;; some sort of encoding
          (cond
           ((eq (first result) :suffix-flushed)
            (let ((first-edge
@@ -207,7 +206,6 @@
                 nil  ;; signal failure
                 (else 
                  (break ":not-a-name return did not go to end")))))
-
            (t
             (push-debug `(,result ,starting-position ,ending-position))
             (break "Unexpected 'cons' return value from ~
