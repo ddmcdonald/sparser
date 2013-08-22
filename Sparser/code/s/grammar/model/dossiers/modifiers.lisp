@@ -139,11 +139,6 @@
 
 (define-adverb "no longer")
 
-;; Added in 5/30/2013
-(define-adverb "sooner")
-(define-adverb "earlier")
-(define-adverb "later")
-
 ;; Added in 8/2013
 ;;one must be careful about potential ambiguity
 ;;e.g. "He did it as well as the rest" vs "He did it as well/also"
@@ -190,7 +185,9 @@
 (define-function-word "probably"   :brackets '( ].adverb ))
 
 
-;;;---------- position within a process
+;;;---------------------------
+;;; position within a process
+;;;---------------------------
 ; These can be positioned sentence initial or final as well
 ; a pre-verb, so they need bracketing that can indicate
 ; segment starts too.
@@ -216,10 +213,16 @@
 (define-sequencer/preposition "after" ">")
 (define-sequencer/preposition "before" "<")
 
-
-;; 11/15
 (define-sequencer/preposition "during" "d")
 
+
+;;;-----------
+;;; subjuncts
+;;;-----------
+
+;; Quirk et all 8.116, H&P p586
+(define-focusing-adverb "also")  
+        
 
 ;;;------
 ;;; time
@@ -232,11 +235,10 @@
 
 
 ;;;---------- deictic, complement-taking
+;;  take "than" complements
 
-;;Added in 5/30/13
-(define-function-word "earlier"  :brackets '( ].adverb  adverb.[ ))
-(define-function-word "later"  :brackets '( ].adverb  adverb.[ ))
-(define-function-word "sooner"  :brackets '( ].adverb  adverb.[ ))
-
+(define-adverb "sooner")
+(define-adverb "earlier")
+(define-adverb "later")
 
 
