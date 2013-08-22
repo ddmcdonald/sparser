@@ -107,6 +107,11 @@
             (error "Assumptions violated")))))
     (pos-terminal *segment-position-just-left-of-head*)))
 
+(defun edge-starts-at-left-boundary? (edge)
+  (eq (pos-edge-starts-at edge)
+      *left-segment-boundary*))
+  
+
 
 
 

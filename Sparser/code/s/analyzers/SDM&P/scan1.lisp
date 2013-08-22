@@ -92,6 +92,8 @@ to make any semantic or form edges that the grammar dictates.
   
   (setq coverage (segment-coverage)) ;; update
   (cond
+   (*reify-implicit-individuals*
+    (reify-implicit-individuals-in-segment coverage))
    (*note-text-relations*
     (note-text-relations-in-segment coverage))
    (t
