@@ -22,8 +22,9 @@
 (define-category pathogen
   :specializes nil
   :instantiates self
-  :binds ((name :primitive word))
-          ;;(vector :primitive word) e.g. avian flu is spread by infected birds 
+  :binds ((name :primitive word)
+          (pathogen-type pathogen-type)) ;e.g. h5n1 is a virus, ecoli is a bacteria
+          ;;(vector :primitive word) e.g. avian flu is spread by infected birds
   :index (:permanent :key name)
   :realization (:common-noun name)) ;;are pathogens common nouns syntactically?  
 
@@ -43,6 +44,7 @@
                   'pathogen :name string)))
         name))
 
+
 ;;;------------
 ;;; the instances
 ;;;------------
@@ -50,3 +52,20 @@
 (define-pathogen "h5n1")
 
 
+;;;------------
+;;; cfrs
+;;;------------
+
+;;cfr to absorb pathogen-type
+;;e.g. "the h5n1 virus"
+(def-cfr pathogen (pathogen pathogen-type)
+  :form common-noun
+  :referent (:head left-edge
+             :bind (pathogen-type . right-edge)))
+
+;;mirror of above
+;;e.g. "the bird flu virus h5n1"
+(def-cfr pathogen (pathogen-type pathogen)
+  :form common-noun
+  :referent (:head right-edge
+             :bind (pathogen-type . left-edge)))
