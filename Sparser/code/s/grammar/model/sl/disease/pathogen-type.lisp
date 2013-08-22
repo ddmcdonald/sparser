@@ -53,3 +53,5 @@
 (define-pathogen-type "bacteria")
 
 (define-pathogen-type "disease") ;;not really a kind of pathogen
+
+(define-pathogen-type "strain") ;;same as above
