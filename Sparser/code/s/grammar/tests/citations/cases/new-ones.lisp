@@ -357,14 +357,29 @@ e10   RELATIVE-LOCATION       1 "in the last three years" 6
   (1 IN-PREDICATE 6))
 
 ;;;---------
-;;; pathogen
+;;; pathogens
 ;;;---------
 
-;;category to represent various commonly reported diseases in sl;disease
+;;category pathogen to represent various commonly reported diseases in sl;disease
 ;;from 1 Aljazeera_Jan-18.txt
+
+(define-citation "h5n1"
+  (1 PATHOGEN 5))
 
 (define-citation "the bird flu virus h 5 n 1"
   (1 PATHOGEN 9))
+
+(define-citation "the h5n1 virus"
+  (1 PATHOGEN 7))
+
+;;category pathogen-type to represent kinds of diseases in sl;disease
+;;from 2 ABCNews_Jan-30.txt
+;;this are pronoun like in that they should always pick out a salient named pathogen
+;;may require a similar implementation
+
+(define-citation "the avian bird flu"
+  (1 PATHOGEN-TYPE 5))
+
 ;;;---------
 ;;; anchor
 ;;;---------
