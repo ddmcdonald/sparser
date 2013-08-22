@@ -52,3 +52,19 @@
     ;; This isn't the right ETF, but it sort of patterns right
     :tree-families '(sentence-adverb)))
 
+
+;;;-----------
+;;; subjuncts
+;;;-----------
+; These are interesting semantically in the discourse relationships
+; they create/evoke, but it's subtle so when we understand it we can
+; handle it in the modified method. The different functions mostly
+; follow Quirk. 
+;//// Cries out for a few categories (specializing modifies) to
+; carry at least a weak meaning. 
+
+;; Letting it all flow thru adverb is laziness since there are
+;; patterns that don't always apply
+(defun define-focusing-adverb (string)
+  (define-adverb string))
+  
