@@ -8,6 +8,7 @@
 ;; initiated 3/91. Added *..new-cases* 6/13/95.  Started the debugging flags
 ;; accumulator 7/25. Added to it 8/9.  Moved the two pre-existing flags into
 ;; the aggregating routine 9/5/95. 8/14/13 Added in the new crop of flags.
+;; 8/22/13 added *debug-pronouns*.
 
 (in-package :sparser)
 
@@ -44,6 +45,7 @@
 (defun turn-on-debugging-flags ()
   (setq *announce-missing-sort-routines* t
         *debug-treetops* t
+        *debug-pronouns* t
         *debug-pnf* t
         *break-on-new-categories-in-cap-seq* t
         *break-on-new-cases* t
@@ -58,6 +60,7 @@
 (defun turn-off-debugging-flags ()
   (setq *announce-missing-sort-routines* nil
         *debug-treetops* nil
+        *debug-pronouns* nil
         *debug-pnf* nil
         *break-on-new-categories-in-cap-seq* nil
         *break-on-new-cases* nil
