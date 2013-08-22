@@ -27,17 +27,22 @@
     (error "Method calls restricted to two arguments.~
          ~%%This is different:~%   ~a" rule-field))
 
-  (let ((method (car rule-field)))
-    (setup-args-and-call-k-method 
-     left-referent right-referent
-     (let ((referent
-             ;; Have to get the order of arguments correct
-             (cond
-              ((equal (cdr rule-field) '(left-referent right-referent))
-               (funcall method left-shadow right-shadow))
-              ((equal (cdr rule-field) '(right-referent left-referent))
-               (funcall method right-shadow left-shadow))
-              (t (push-debug `(,rule-field))
-                 (error "Unanticipated layout of the rule field ~
-                         in a method call:~%  ~a" (cdr rule-field))))))
-        referent))))                     
+  (unless (or (word-p left-referent)
+              (word-p right-referent))
+    ;; There is a residue of edges that have words as their referents
+    ;; and wouldn't make sense. 
+    
+    (let ((method (car rule-field)))
+      (setup-args-and-call-k-method 
+       left-referent right-referent
+       (let ((referent
+              ;; Have to get the order of arguments correct
+              (cond
+               ((equal (cdr rule-field) '(left-referent right-referent))
+                (funcall method left-shadow right-shadow))
+               ((equal (cdr rule-field) '(right-referent left-referent))
+                (funcall method right-shadow left-shadow))
+               (t (push-debug `(,rule-field))
+                  (error "Unanticipated layout of the rule field ~
+         in a method call:~%  ~a" (cdr rule-field))))))
+         referent)))))
