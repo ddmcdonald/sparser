@@ -40,7 +40,14 @@
 		 :mapping ((agent . who)
 			   (s . :self)
 			   (vp . :self)
-			   (np/subject . person)))))
+			   (np/subject . person)))
+                (:tree-family empty-head-of-complement
+                 :mapping ((result-type . :self)
+                           (of-item . who)
+                           (base-np . :self)
+                           (complement . person)
+                           (np . :self))
+                 :common-noun "death")))
 
 
 (define-category kill
