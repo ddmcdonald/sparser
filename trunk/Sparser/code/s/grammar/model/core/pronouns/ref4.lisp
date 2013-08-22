@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  4.3 July 2013
+;;;  version:  4.3 August 2013
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -16,9 +16,15 @@
 ;;      form of the pronoun - addresses case of "its".
 ;; 4.3 (7/30/13) Rewrote respan-pn-with-most-recent-person-anaphor to change
 ;;      the edge that's passed in rather than make a new one. The new one was
-;;      getting lost.
+;;      getting lost. (8/22/13) Added the *debug-pronouns* to guard breaks where
+;;      the result was unexpected.
 
 (in-package :sparser)
+
+(defparameter *debug-pronouns* nil
+  "Guards breaks like the one in seek-person-for-pronoun where the search
+   was expected to return an entity but didn't.")
+
 
 ;;;-----------
 ;;; CA action
@@ -69,9 +75,10 @@
                ))))
 
       (unless person
-        (push-debug `(,person-entries))
-        ;; (setq person-entries (car *))
-        (break "why couldn't it find a person?"))
+        (when *debug-pronouns*
+          (push-debug `(,person-entries))
+          ;; (setq person-entries (car *))
+          (break "why couldn't it find a person?")))
 
       (when person
         ;; we have the edge in our hand, we just change the category
@@ -112,6 +119,7 @@
               (return)))
           (setq name (first (first name-entries))))
 
+        ;;;//// redo as taking over the edge as with people
         (setq edge
               (make-new-edge-over-pronoun pn-edge
                                           (category-named 'name)
@@ -150,6 +158,7 @@
                     ;; unless a form rule swallows it.
                ))))
 
+      ;;/// take over the edge
       (when company
         (let ((edge
                (make-new-edge-over-pronoun
@@ -184,6 +193,7 @@
          (respan-pn-with-agent-of-prior-report pn-edge edge-to-the-left))
         (otherwise nil)))))
 
+;;/// take over the edge
 (defun respan-pn-with-agent-of-prior-report (pn-edge report-edge)
   (let ((agent (value-of 'agent (edge-referent report-edge))))
     ;;?? does there have to be a sanity check??
@@ -218,6 +228,7 @@
                     discourse history.~%Add the code to take the most ~
                     recent one.~%~%")
 
+            ;;/// take over the edge
             (let ((most-recent-people (car (first collections-of-people/dh))))
               (let ((edge
                      (make-new-edge-over-pronoun
