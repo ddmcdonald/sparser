@@ -88,8 +88,8 @@ to the value of the viable after-action flag for segments.
      (break "Unanticipated value for segment coverage: ~A"
 	    coverage)))
   (cond
-   (*do-strong-domain-modeling*
-    (sdm/analyze-segment coverage))
+   ;; Can's do sdm/analyze-segment coverage because that should
+   ;; have run before this.
    (*note-text-relations*
     (note-text-relations-in-segment coverage))
    (t 

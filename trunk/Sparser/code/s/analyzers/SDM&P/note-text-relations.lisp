@@ -91,7 +91,9 @@
   (let ((head-word (head-word-of-segment))
         (head-edge (edge-over-segment-head)))
     (when head-edge ;; see above
-      (when (noun-category? head-edge)
+      (when (and (noun-category? head-edge)
+                 (not (edge-starts-at-left-boundary? head-edge))
+                 head-word) ;; null when a name is spanned
         (let* ((adjacent-word (word-to-left-of-head))
                (adjacent-edge (edge-to-left-of-head)))
           (cond
@@ -112,8 +114,7 @@
         word-just-to-the-left   edge-just-to-the-left )
     ;; The segment has to be at least 3 words long, so we
     ;; should be able to get a little into this loop anyway.
-    (unless (eq (pos-edge-starts-at right-edge)
-                *left-segment-boundary*)
+    (unless (edge-starts-at-left-boundary? right-edge)
       ;; except in that case, first found with an "'s"
       (loop
         (setq edge-just-to-the-left
