@@ -150,6 +150,13 @@ have to be tail recursion to the next thing to do.
 |#
 
 (unless (boundp '*after-action-on-segments*)
+  ;; These are run in this order. A conditional at the end of
+  ;; sdm/analyze-segment looks to the flags to tell it whether
+  ;; it should call the individual's reifier or if not should
+  ;; it call the text relation noter, and so one. 
+  ;;   If we change this order for some reason, we need to
+  ;; change the order of the conditionals in these operations
+  ;; to match.
   (defparameter *after-action-on-segments* 
     (cond
      (*do-strong-domain-modeling*
