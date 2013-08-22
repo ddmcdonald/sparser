@@ -67,7 +67,10 @@
 
 
 (define-exploded-tree-family  transitive/passive
-  :description "A verb that requires a subject and a direct object to have a complete sentence. These verbs can appear in the passive, proceeded by some form of the auxiliary 'be'. When passive, the agent may or may not be included as a later prepositional 'by' phrase"
+  :description "A verb that requires a subject and a direct object 
+     to have a complete sentence. These verbs can appear in the passive, 
+     proceeded by some form of the auxiliary 'be'. When passive, the agent 
+     may or may not be included as a later prepositional 'by' phrase"
   :incorporates transitive
   :binding-parameters ( patient )
   :labels ( vp vg np/object )
