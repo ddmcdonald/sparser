@@ -63,6 +63,11 @@
 
 (define-in-predicate "in control")
 
+;;this one is an outlier, but it patterns similarly to the above
+;;e.g. "the country's progress in the field of civilian nuclear technology"
+
+(define-in-predicate "in the field of")
+
 ;;these last three are less predicate like than the following
 ;;and should probably be made into a different category altogether
 ;;this is apparent because their head words are closer to prepositions
