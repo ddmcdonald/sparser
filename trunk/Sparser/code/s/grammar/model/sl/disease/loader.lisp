@@ -13,7 +13,9 @@
 
 (gload "disease;death")
 (gload "disease;disease")
+(gload "disease;pathogen")
 (gload "disease;spread")
 (gload "disease;h-n-scanner")
 (gload "disease;named-entities")
+
 
