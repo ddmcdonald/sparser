@@ -356,8 +356,15 @@ e10   RELATIVE-LOCATION       1 "in the last three years" 6
 (define-citation "the man is in charge"
   (1 IN-PREDICATE 6))
 
+;;;---------
+;;; pathogen
+;;;---------
 
+;;category to represent various commonly reported diseases in sl;disease
+;;from 1 Aljazeera_Jan-18.txt
 
+(define-citation "the bird flu virus h 5 n 1"
+  (1 PATHOGEN 9))
 ;;;---------
 ;;; anchor
 ;;;---------
@@ -385,3 +392,5 @@ e10   RELATIVE-LOCATION       1 "in the last three years" 6
 
 #|(define-citation "two months later"
   (1 ANCHOR-DATE 4))|#
+
+
