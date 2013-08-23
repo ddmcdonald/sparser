@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.7 April 2013
+;;;   Version:   1.8 August 2013
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -27,7 +27,10 @@
 ;;      other version of this file. 
 ;; 1.6 (11/2/12) Du'h the rules as written to rewrite a word as the saem word are circular.
 ;;      redoing them on the pattern of preposition. 11/30/12 fixed "no"
-;; 1.7 (4/8/13) Made "not" look like an auxiliary
+;; 1.7 (4/8/13) Made "not" look like an auxiliary.
+;; 1.8 (8/22/13) Changed the rules for the quantifiers to use the constructed
+;;      category for each quantifier, not the words -- they weren't triggering
+;;      the method. 
 
 (in-package :sparser)
 
@@ -85,10 +88,10 @@
         (push cfr cfrs))
 
       (when (memq 'det rules)
-        (let ((cfr1 (def-form-rule/expr `(,word ,category::noun)
+        (let ((cfr1 (def-form-rule/expr `(,category ,category::noun)
                        :form 'np 
                        :referent '(:method quantify left-referent right-referent)))
-              (cfr2 (def-form-rule/expr `(,word ,category::np)
+              (cfr2 (def-form-rule/expr `(,category ,category::np)
                         :form 'np
                         :referent '(:method quantify left-referent right-referent))))
           (push cfr1 cfrs)
