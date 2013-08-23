@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   July 2013
+;;;   Version:   August 2013
 
 ;; created 9/1/11. 10/3 Adapting to getting categories as arguments, e.g.
 ;; in the case of prepositions. 11/8/12 Adjusted argument order to match
@@ -11,7 +11,8 @@
 ;; actually run. Cleaned up. 7/1/13 Added def-k-method as syntactic sugar
 ;; to hide the uglyness. 7/21/13 Refactored to set a method-setup that
 ;; can be used independently of referent specifications and moved them
-;; out to the rest of that machinery.
+;; out to the rest of that machinery. 8/22/13 Put in a check so methods
+;; aren't applied to words.
 
 (in-package :sparser)
 
