@@ -21,7 +21,8 @@
 
 ;; (setq *trace-completion-hook* t) e.g. to trace pronoun triggering
 
-;; (p "Another Iranian scientist, Dariush Rezaeinejad, was never assassinated on July 32, 2011.")
+;; (p "Another Iranian scientist, Dariush Rezaeinejad, was also assassinated on July 32, 2011.")
+;; (p "Iranian scientist Dariush Rezaeinejad was assassinated on July 32, 2011.")
 ;; (setq *note-text-relations* t)
 ;;    note-immediate-relations-to-head
 
