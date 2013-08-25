@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; $Id:$
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 May 2009
+;;;  Version:  0.2 August 2013
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -19,6 +19,8 @@
 ;; 0.2 (5/10/09) Removed the realization. It's getting in the way of things
 ;;     like "where are you going" by creating a 'be-something' over "are you"
 ;;     which is just wrong.
+;;    (8/24/13) Modified lookup-passive-counterpart to use #:ed for forming
+;;     the passive symbol. 
 
 (in-package :sparser)
 
@@ -45,7 +47,7 @@
 ;                )
   )
 
-(defun string/BE (i)
+(defun string/be (i)
   "be")
 
 
@@ -137,7 +139,9 @@
   
   (let* ((stem (symbol-name (cat-symbol verb-category)))
          (name-of-passive-label
-          (intern (concatenate 'string stem "+ED")))
+          (intern ;;(concatenate 'string stem "+ED")))
+           (string-append stem '#:+ed)
+           (find-package :sparser)))
          (passive-category
           (category-named name-of-passive-label)))
 
