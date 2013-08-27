@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 1993-2005.2013  David D. McDonald  -- all rights reserved
 ;;; extensions Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "classify"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.10 March 2013
+;;;  version:  1.11 August 2013
 
 ;; initiated 5/15/93 v2.3 to fit PNF paper
 ;; 0.1 (6/10) tweeked judgement over single words
@@ -49,7 +48,9 @@
 ;;     (10/12/09) Gave could-be-the-start-of-a-sentence a real definition.
 ;;     (2/13/13) Removed version of could-be-the-start-of-a-sentence in this file
 ;;      in favor of the one in rules/CA/first-item
-;;     (3/6/13) Generalized reduce-multiple-initial-edges to any length vector
+;;     (3/6/13) Generalized reduce-multiple-initial-edges to any length vector.
+;; 1.11 (8/26/13) Modifying the single-word path to look more like the multi-word.
+;;      left subs in the cases where there's more than one word.
 
 (in-package :sparser)
 
@@ -148,8 +149,7 @@
 
 
 (defun c&r-single-word (position next-position)
-
-  ;; Called from Classify-and-record-name
+  ;; Called from classify-and-record-name
   ;; The sequence is just one word long. We introduce its edges,
   ;; and if there aren't any, distinguish between function words
   ;; (which we assume not to be names) and other. We then consult
@@ -172,11 +172,12 @@
        (unless (ev-top-node ev)
          ;; check whether this is the second time around and
          ;; edges were installed then.  "Is Appletalk"
+         ;;//// Multiple-words case does parse-from-within-pnf
          (install-terminal-edges word position next-position)))
       (:preterminals-installed)  ;; Dalton in "Messrs. Dalton and ..."
       (otherwise
        (break "Unexpected value for status: ~a~%Expected :pnf-checked  ~
-               or :preterminald-installed" status)))
+               or :preterminals-installed" status)))
 
     (if (ev-top-node ev)
       (then ;; there are some edges 
@@ -274,7 +275,7 @@
 ;;--- one edge over the word
 
 (defun sortout-single-edge-over-capitalized-word (ev position)
-  ;; subroutine of Sortout-edges-over-single-cap-word
+  ;; subroutine of sortout-edges-over-single-cap-word
   (let ((edge (ev-top-node ev)))
     (cond
      ((or (eq (edge-form edge) category::proper-noun)
@@ -302,6 +303,7 @@
 
 (defun sortout-two-edges-over-single-capitalized-word (position next-position)
   ;; subroutine of Sortout-edges-over-single-cap-word
+  ;;(push-debug `(,position ,next-position))
   (let ((edges (edges-between position next-position))
         good-edge  literal  name-word )
     (cond
@@ -351,6 +353,8 @@
 
 (defun sortout-multiple-edges-over-single-capitalized-word (position next-position)
   ;; subroutine of Sortout-edges-over-single-cap-word
+  (push-debug `(,position ,next-position))
+  (break "Examine, rewrite sortout-multiple-edges-over-single-capitalized-word")
   (let* ((edges-including-literals (edges-between position next-position))
          (edges (remove-literals-from-list-of-edges edges-including-literals)))
     (if (edges-all-chain position :start)
