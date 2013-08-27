@@ -59,12 +59,7 @@
                                      (vp . :self)
                                      (vg . :self)
                                      (np/subject . person)
-                                     (np/object . NP))))))
-         (rule
-          (def-cfr form (be form)
-            :form adjective
-            :referent (:head right-edge))))
-    (push-onto-plist form rule :rule)
+                                     (np/object . NP)))))))
     (eval form))
   string)
 
