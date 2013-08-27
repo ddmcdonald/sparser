@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1991-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  2.2 May 2013
+;;;  version:  2.3 August 2013
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -37,6 +36,8 @@
 ;; 2.2 (5/28/13) Added who-binds as analog of value-of for the bound-in field.
 ;;     (6/15/13) Clarified what has-binding is doing an added guards to ensure
 ;;      that it's used correctly.
+;; 2.3 (8/26/13) Refactored value of bindings search a bit. Added bound-in-value-of
+;;      as direct analog of value-of
 
 (in-package :sparser)
 
@@ -53,6 +54,24 @@
 ;;;----------------------------------------------------
 ;;; operations over bindings and individuals with them
 ;;;----------------------------------------------------
+
+(defun bound-in-value-of (var-name individual &optional category)
+  (when (typep individual 'psi)
+    (push-debug `(,var-name ,individual))
+    (break "Stub: called with a psi"))
+  (when category
+    (setq category (category-named category :break)))
+  (let ((bindings (indiv-bound-in individual))
+        (variable (if category
+                    (find-variable-in-category var-name category)
+                    (find-variable-from-individual var-name individual))))
+    (unless variable
+      (push-debug `(,var-name ,individual))
+      (error "Cannot find a variable named ~a~%associated with ~
+              the individual ~a" var-name individual))
+    (find-bindings-body-for-var bindings variable)))
+
+
 
 (defun value-of (var-name individual &optional specified-category)
   ;; convenient version for using in code since the variable
@@ -110,7 +129,6 @@
      (break "Object passed in as 'individual' parameter is of~
            ~%unexpected type: ~a~%~a" (type-of individual) individual))))
 
-
 (defun value/var (variable individual)
   ;; version to use when the object for the variable is available
   (etypecase individual
@@ -118,12 +136,26 @@
      (value/var/v+v variable individual))
     (individual
      (let ((bindings (indiv-binds individual)))
-       (when bindings
-         (let ((binding
-                (find variable bindings
-                      :test #'eq :key #'binding-variable)))
-           (when binding
-             (binding-value binding))))))))
+       (find-bindings-value-for-var bindings variable)))))
+
+
+(defun find-bindings-value-for-var (bindings variable)
+  ;; factored out for others to use
+  (when bindings
+    (let ((binding
+           (find variable bindings
+                 :test #'eq :key #'binding-variable)))
+      (when binding
+        (binding-value binding)))))
+
+(defun find-bindings-body-for-var (bindings variable)
+  ;; factored out for others to use
+  (when bindings
+    (let ((binding
+           (find variable bindings
+                 :test #'eq :key #'binding-variable)))
+      (when binding
+        (binding-body binding)))))
 
 
 (defun value-of/binding (var-name list-of-bindings &optional category)
