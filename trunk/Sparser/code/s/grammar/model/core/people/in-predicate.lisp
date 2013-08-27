@@ -37,6 +37,29 @@
                            (np/subject . person)
                            (np/object . NP)))))
 
+;;an attempt at a more general way of defining in-predicate
+;;based on the code from shortcuts
+;;not yet fully operational
+#|(defun define-in-predicate2 (string)
+  (let* ((name (category-name-from-string-arg string))
+	 (form
+	  `(define-category ,name
+             :specializes event
+             :instantiates self
+             :binds ((head :primitive word)
+                     (who NP)
+                     (of-what NP))
+             :index (:key head)
+             :realization ((:adjective head)
+                           (:tree-family transitive/passive
+                           :mapping ((agent . who)
+                                     (patient . of-what)
+                                     (s . :self)
+                                     (vp . :self)
+                                     (vg . :self)
+                                     (np/subject . person)
+                                     (np/object . NP)))))))
+    (eval form)) string)|#
 
 ;;;------
 ;;; form
@@ -65,7 +88,6 @@
 
 ;;this one is an outlier, but it patterns similarly to the above
 ;;e.g. "the country's progress in the field of civilian nuclear technology"
-
 (define-in-predicate "in the field of")
 
 ;;these last three are less predicate like than the following
