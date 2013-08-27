@@ -11,48 +11,10 @@
 ;;should flesh out into multiple categories, with super class as a general anchor?
 ;;this is the abstract class for anchors
 
-(in-package :sparser)
+;;the anchor category is meant to capture time expressions which put events/entities at specific points
+;;i.e., these timex 'anchor' the event to a particular time
+;;the anchor-date captures the complex time adverbials of sequencers followed by dates
+;;should this category also include seasons/season-year ? 
+;;captures "after March 1"
 
-;;;------------
-;;; the object
-;;;------------
-
-(define-category anchor
-  :specializes time
-  :instantiates anchor)
-
-#|(define-category anchor
-  :specializes time
-  :instantiates time
-  :binds ((sequencer . sequencer)
-          (date . date)
-          (amount-of-time . amount-of-time)
-          (season-year . season-year)
-          (season . season)
-          (adverb . adverb))
-  :realization (:tree-family  anchor-pattern
-                :mapping ((type . :self)
-                          (np . :self)
-                          (n1 . sequencer)
-                          (term1 . sequencer)
-                          (n2 . date)
-                          (term2 . date)
-                          (n3 . amount-of-time)
-                          (term3 . amount-of-time)
-                          (n4 . season-year)
-                          (term4 . season-year)
-                          (n5 . season)
-                          (term5 . season)
-                          (n6 . adverb)
-                          (term6 . adverb))
-                :common-noun "anchor"))|#
-
-;; "10 days ago"
-(def-cfr anchor (age-ago)
-  :referent (:instantiate-individual anchor))
-
-;;;------------
-;;; form
-;;;------------
-
-;;Any pre-defined anchors?
+;;captures "last three years", "two months later" 
