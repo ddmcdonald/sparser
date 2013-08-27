@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "of"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  July 2013
+;;;  version:  August 2013
 
 ;; formed 10/26/94 from [of genitive] and [group of type]. Added def-rule data 3/8/95
 ;; 7/13/98 added item-of-value. 7/8/00 added member-of.
@@ -15,6 +15,8 @@
 ;; modified dependent-of so that the head and daughter would both pickout
 ;; the same edge, even if it doesn't make all that much sense.
 ;; 2/28/13 added kind-of-name. 7/23/13 added empty-head-of-complement
+;; 8/26/13 Fixed bug in simple-of-complement where binding of the left and right edges
+;; was wrong. 
 
 (in-package :sparser)
 
@@ -41,8 +43,8 @@
     ((np+of-complement (np (base-np of-/complement)
                         :head left-edge
                         :instantiate-individual result-type
-                        :binds (np-item right-edge
-                                of-item left-edge)))
+                        :binds (np-item left-edge
+                                of-item right-edge)))
 
      (of-complement (of-/complement ("of"  complement)
                          :daughter right-edge
