@@ -33,7 +33,8 @@
 (define-category  die
   :instantiates self
   :specializes  event
-  :binds ((who person)) ;; animate? What about the birds -- need "animal" ??
+  :binds ((who person) ;; animate? What about the birds -- need "animal" ??
+          (of-what np)) ;;e.g. age, disease, warfare, crime, accident, etc.
   :index (:key who)
   :realization ((:main-verb "die")
 		(:tree-family intransitive
@@ -90,4 +91,20 @@
                            (complement . person)
                            (np . :self))
                  :common-noun "assassination")))
+
+
+;;;------------
+;;; cfrs
+;;;------------
+
+;;cfr to bind a cause adjunct to a dying event
+;;we should probably come up with a general analysis of cause-adjuncts
+;;for now this ad-hoc rule will suffice for cases like "X died of Y"
+#|(def-cfr die (die np)
+  :form main-verb
+  :referent (:head left-edge
+             :bind (of-what . right-edge)))|#
+
+
+
 
