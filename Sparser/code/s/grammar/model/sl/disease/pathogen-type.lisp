@@ -18,7 +18,7 @@
 ;;;------------
 
 (define-category pathogen-type
-  :specializes nil
+  :specializes pathogen
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
