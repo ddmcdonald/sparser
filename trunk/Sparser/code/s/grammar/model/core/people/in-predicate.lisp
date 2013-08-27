@@ -20,6 +20,7 @@
 
 ;;a generalized category for all in-predicates
 ;;useful for making a single set of additional cfrs
+#|
 (define-category in-predicate
   :specializes event
   :instantiates self
@@ -35,22 +36,22 @@
                            (vp . :self)
                            (vg . :self)
                            (np/subject . person)
-                           (np/object . NP)))))
+                           (np/object . NP)))))|#
 
 ;;an attempt at a more general way of defining in-predicate
 ;;based on the code from shortcuts
 ;;not yet fully operational
-#|(defun define-in-predicate2 (string)
+(defun define-in-predicate (string)
   (let* ((name (category-name-from-string-arg string))
 	 (form
 	  `(define-category ,name
              :specializes event
              :instantiates self
              :binds ((head :primitive word)
-                     (who NP)
-                     (of-what NP))
+                     (who)
+                     (of-what))
              :index (:key head)
-             :realization ((:adjective head)
+             :realization ((:adjective ,string)
                            (:tree-family transitive/passive
                            :mapping ((agent . who)
                                      (patient . of-what)
@@ -58,18 +59,24 @@
                                      (vp . :self)
                                      (vg . :self)
                                      (np/subject . person)
-                                     (np/object . NP)))))))
-    (eval form)) string)|#
+                                     (np/object . NP))))))
+         (rule
+          (def-cfr form (be form)
+            :form adjective
+            :referent (:head right-edge))))
+    (push-onto-plist form rule :rule)
+    (eval form))
+  string)
 
 ;;;------
 ;;; form
 ;;;------
 
 
-(defun define-in-predicate (string)
+#|(defun define-in-predicate (string)
   (let ((head (define-or-find-individual
                     'in-predicate :head string)))
-        head))
+        head))|#
 
 ;;;------------
 ;;; the instances
