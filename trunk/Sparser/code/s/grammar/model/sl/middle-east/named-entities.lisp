@@ -15,18 +15,27 @@
 
     (define-company "Israeli Defense Forces" :aliases '("IDF") :takes-the t)
 
-    (define-company "International Atomic Energy Agency" :aliases '("IAEA") :takes-the t)
+  (define-company "International Atomic Energy Agency" :aliases '("IAEA") :takes-the t)
 
-    (define-company "American Foreign Relations Council" :takes-the t)
+  (define-company "American Foreign Relations Council" :takes-the t)
 
-    (define-company "Nuclear Energy Organization" :takes-the t)
+  (define-company "Nuclear Energy Organization" :takes-the t)
     ;; This one matters, since it's in construction with a title that
     ;; wants to make it a person:
     ;; "Fereydun Abbasi, the director the Nuclear Energy Organization"
 
-    (define-company "Atomic Energy Organization") ;; abbrevation ???
+  (define-company "Atomic Energy Organization") ;; abbrevation ???
     ;; Full phrase in the iranian-commander article is
     ;; "Iran's Atomic Energy Organization" but don't see IAEO anywhere
+
+  ;;--- Spy agencies
+  (define-company "Mossad" :takes-the t)
+
+  (define-company "Shin Bet")
+
+  (define-company "Central Intelligence Agency" :aliases '("CIA") :takes-the t)
+
+  (define-company "National Security Agency" :aliases '("NSA") :takes-the t)
 
 ) ;; closes with all permanent
 
