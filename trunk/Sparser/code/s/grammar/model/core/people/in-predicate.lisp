@@ -18,39 +18,24 @@
 ;;; the object
 ;;;------------
 
-;;a generalized category for all in-predicates
-;;useful for making a single set of additional cfrs
-#|
 (define-category in-predicate
   :specializes event
-  :instantiates self
-  :binds ((head :primitive word)
-          (who NP)
-          (of-what NP))
-  :index (:key head)
-  :realization ((:adjective head)
-                (:tree-family transitive/passive
-                 :mapping ((agent . who)
-                           (patient . of-what)
-                           (s . :self)
-                           (vp . :self)
-                           (vg . :self)
-                           (np/subject . person)
-                           (np/object . NP)))))|#
+  :instantiates self)
 
 ;;an attempt at a more general way of defining in-predicate
-;;based on the code from shortcuts
-;;not yet fully operational
+;;based on the code from shortcuts and define-function-word
 (defun define-in-predicate (string)
   (let* ((name (category-name-from-string-arg string))
 	 (form
 	  `(define-category ,name
-             :specializes event
+             :specializes in-predicate
              :instantiates self
+             :rule-label in-predicate
              :binds ((head :primitive word)
                      (who)
-                     (of-what))
-             :index (:key head)
+                     (of-what)
+                     (np-item))
+             :index (:key of-what)
              :realization ((:adjective ,string)
                            (:tree-family transitive/passive
                            :mapping ((agent . who)
@@ -59,7 +44,13 @@
                                      (vp . :self)
                                      (vg . :self)
                                      (np/subject . person)
-                                     (np/object . NP)))))))
+                                     (np/object . NP)))
+                           (:tree-family empty-head-of-complement ;;does not include agent
+                            :mapping ((result-type . :self)
+                              (of-item . of-what)
+                              (base-np . :self)
+                              (complement . person)
+                              (np . :self)))))))
     (eval form))
   string)
 
@@ -115,9 +106,7 @@
 
 ;;cfr to absorb the copula
 ;;it does carry tense/aspectual information
-;;but it has no contribution to the semantic interpretation
-;;however, absence of the copula will indicate a left or right dislocation
-;;and seems very adjunct like
+;;absence of the copula will indicate an adjunct like left or right dislocation
 ;;e.g. "In command of the army, General Patton..."
 ;;versus "General Patton is in command of the army."
 (def-cfr in-predicate (be in-predicate)
