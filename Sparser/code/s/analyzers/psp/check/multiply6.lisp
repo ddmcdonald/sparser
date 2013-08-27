@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1992-2005,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "multiply"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  6.0 April 2013
+;;;  Version:  6.0 August 2013
 
 ;; 0.0 (9/4/92 v2.3) initiated.
 ;; 0.1 (10/12) pulled multiply-ids back to [chart;edges:multiplication],
@@ -30,6 +29,10 @@
 ;;     (3/8/13) Fixed the name of the multiplier for referents so it's
 ;;      not a duplicate. Added trace for success and failure.
 ;;     (4/9/13) Enabled option for syntactic rules.
+;;     (8/26/13) Added a check in check-form-form for the left edge being 
+;;      a dotted intermediary. Probably need to do something more interesting for
+;;      these edges at segment boundarier or certainly once we've moved to the
+;;      forest level.
 
 (in-package :sparser)
 
@@ -420,6 +423,10 @@
       (tr :looking-for-syntactic-combination)
       (let ((left-form-label (edge-form left-edge))
             (right-form-label (edge-form right-edge)))
+        (when (eq left-form-label :dotted-intermediary)
+          ;; it's a stranded partially complete polyword.
+          (return-from check-form-form nil))
+
         (cond
          ((and left-form-label right-form-label)
           (let ((left-form-rs (label-rule-set left-form-label))
