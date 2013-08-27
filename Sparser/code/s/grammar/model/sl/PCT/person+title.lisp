@@ -20,6 +20,7 @@
 ;;;----------
 
 ;; Depricated not that position is a variable on person
+#+ignore
 (define-category  has-title
   :instantiates self
   :specializes nil
@@ -86,9 +87,7 @@
 (def-cfr person (person comma-title)
   :form np
   :referent (:head left-edge
-             :instantiate-individual has-title
-                 :with (person left-edge
-                        title right-edge)))
+             :bind (position right-edge)))
 
 
 (def-csr  named-object person
