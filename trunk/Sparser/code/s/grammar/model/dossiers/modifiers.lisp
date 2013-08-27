@@ -210,10 +210,10 @@
 (define-sequencer/determiner "next")
 (define-sequencer/determiner "subsequent")
 
-(define-sequencer/preposition "after" ">")
-(define-sequencer/preposition "before" "<")
+(define-sequencer/preposition "after")
+(define-sequencer/preposition "before")
 
-(define-sequencer/preposition "during" "d")
+(define-sequencer/preposition "during")
 
 
 ;;;-----------
