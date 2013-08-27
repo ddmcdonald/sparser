@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1991-1997,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  2.0 March 2013
+;;;  version:  2.1 August 2013
 
 ;; (4/19/92 v2.2) added title+miscl 
 ;; 1.0 (6/10/93 v2.3) completely revamped everything from scratch
@@ -20,16 +19,22 @@
 ;; 2.0 (3/18/13) Revamping them yet again. Commenting most everything out
 ;;      to bring them back gradually. 7/23/13 bumped [head-of] to 1 and
 ;;      put it back in. 
+;; 2.1 (8/25/13) added [of-titles], which subsumed all the content of
+;;      [head-of1] and [rea of responsibility]. 8/26 Moved operations ahead
+;;      of [of-titles] to make its fns available - no longer seems to have
+;;      the dependencies that shifted it late.
 
 (in-package :sparser)
 
 
 (gate-grammar *titles-core*
   (gload "titles;object2")
-  (gload "titles;rules")  
-  (gload "titles;head-of1")
+  (gload "titles;operations2")
+  (gload "titles;rules")
   (gate-grammar *da*
-    (gload "titles;area of responsibility")))
+    (gload "titles;of-titles")
+
+))
 #|  wait until vetted
 (gate-grammar *title-qualifiers*
   (gload "titles;status")
@@ -39,8 +44,11 @@
   (gload "titles;types of people"))
 |#
 
-(gate-grammar *titles-core*
-  (gload "titles;operations2")) ;; comes late so compiler will have seen the types
+#| Obsolete / subsumed into another file 
+;(gload "titles;head-of1")
+(gload "titles;area of responsibility")
+|#
+
 
 (defun titles-2d-stage-loader ()
   ;; called from Load-the-grammar when all the rest of the core
