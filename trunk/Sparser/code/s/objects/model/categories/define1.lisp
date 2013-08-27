@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.3 September 2011
+;;;  version:  1.4 August 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -35,6 +35,7 @@
 ;; 1.2 (11/9/10) folded in optional CLOS class creation.
 ;;     (8/21/11) Fixed bug in decode-category-to-instantiate
 ;; 1.3 (9/6/11) Added rule-label field to over-ride the default. 
+;; 1.4 (8/26/13) Added mixins keyword to decode-category-parameter-list.
 
 (in-package :sparser)
 
@@ -93,7 +94,8 @@
 ;;;-----------
 
 (defun decode-category-parameter-list (category
-                                       &key instantiates
+                                       &key mixins
+                                            instantiates
                                             specializes
                                             rule-label
                                             ((:binds var-v/r-pair))
@@ -103,7 +105,12 @@
   (let ((specialized-category
          (when specializes (etypecase specializes
                              (symbol (category-named specializes))
-                             (referential-category specializes)))))
+                             (referential-category specializes))))
+        (mixin-categories
+         (when mixins
+           (loop for symbol in mixins
+             collect (category-named symbol :break-if-missing)))))
+
     (when specializes
       (unless specialized-category
         (break "~A is supposed to be a specialization of ~A~
@@ -119,6 +126,9 @@
         (setq specialized-category
               (convert-simple-to-referential-category
                specialized-category))))
+
+    (when mixin-categories
+      (setf (cat-mix-ins category) mixin-categories))
 
     (define-variables var-v/r-pair category)
 
