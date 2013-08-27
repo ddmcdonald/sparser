@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subseq ref"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.3 June 2013
+;;;  version:  0.3 August 2013
 
 ;; broken out from [names:fsa:record] 6/8/93 v2.3
 ;; (1/7/94) patched around earlier indexing bug in Item-in-a-known-name
@@ -20,6 +20,8 @@
 ;;      on 2/22/13. Fixed basic case (name-of) for person 6/7/13
 ;;     (6/15/13) Fixed subsequent-reference-off-name-word
 ;;     (6/17/13) Generalized known-sequence beyond companies. 
+;;     (8/26/13) Added another case to subsequent-reference-off-name-word but
+;;      it's restricted to just finding companies.
 
 (in-package :sparser)
 
@@ -95,44 +97,51 @@
   (push-debug `(:subseq-ref ,nw))
   (let ((pos-in-sequence-bindings
          (bound-in nw :super-category 'ordinal :all t))
-        (direct-reference
-         (value-of 'name-of nw)))
-    (if direct-reference
+        (direct-reference (value-of 'name-of nw))
+        (first-word-of (bound-in-value-of 'first-word nw 'company-name)))
+    (cond
+     (direct-reference
       (let ((i direct-reference)) ;; for clarity
         (unless (individual-p i)
           (error "Expected the object linked to ~a to be an individual" nw))
         (values (itype-of i)
                 i
-                :linked-to-name-word))
+                :linked-to-name-word)))
 
-      (when pos-in-sequence-bindings
-          (let ( pos-in-sequence  sequence  person-name  co-name  name
-                 person  company )
+     (first-word-of ;;//// company-name -- needs uniformity, refactoring
+      (let ((company (bound-in-value-of 'name first-word-of 'company)))
+        (values category::company
+                company
+                :nw-linked-to-first-word-of)))
+
+      (pos-in-sequence-bindings
+       (let ( pos-in-sequence  sequence  person-name  co-name  name
+              person  company )
         
-            (dolist (b pos-in-sequence-bindings)
-              (setq pos-in-sequence (binding-body b)
-                    sequence (value-of 'sequence pos-in-sequence))
-              (when sequence ;; check all the cases
-                (setq person-name (bound-in sequence :body-type 'person-name)
-                      co-name (bound-in sequence :body-type 'company-name)
-                      name (bound-in sequence :body-type 'uncategorized-name))))
+         (dolist (b pos-in-sequence-bindings)
+           (setq pos-in-sequence (binding-body b)
+                 sequence (value-of 'sequence pos-in-sequence))
+           (when sequence ;; check all the cases
+             (setq person-name (bound-in sequence :body-type 'person-name)
+                   co-name (bound-in sequence :body-type 'company-name)
+                   name (bound-in sequence :body-type 'uncategorized-name))))
 
-            (cond ((and person-name co-name)
-                   (break "Stub: name word is part of both a person and ~
-                           a company:~%~A~%" nw))
-                  (person-name
-                   (setq person (bound-in person-name :body-type 'person))
-                   (when person
-                     (values category::person person
-                             :name-word-somewhere-in-person-name)))
-                  (co-name
-                   (setq company (bound-in co-name :body-type 'company))
-                   (when company
-                     (values category::company company
-                             :name-word-somewhere-in-company-name)))
-                  (name
-                   (values category::uncategorized-name name
-                           :name-word-somewhere-in-name))))))))
+         (cond ((and person-name co-name)
+                (break "Stub: name word is part of both a person and ~
+                        a company:~%~A~%" nw))
+               (person-name
+                (setq person (bound-in person-name :body-type 'person))
+                (when person
+                  (values category::person person
+                          :name-word-somewhere-in-person-name)))
+               (co-name
+                (setq company (bound-in co-name :body-type 'company))
+                (when company
+                  (values category::company company
+                          :name-word-somewhere-in-company-name)))
+               (name
+                (values category::uncategorized-name name
+                        :name-word-somewhere-in-name))))))))
             
 
     
