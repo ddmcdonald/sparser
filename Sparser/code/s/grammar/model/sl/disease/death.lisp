@@ -34,8 +34,8 @@
   :instantiates self
   :specializes  event
   :binds ((who person) ;; animate? What about the birds -- need "animal" ??
-          (of-what np)) ;;e.g. age, disease, warfare, crime, accident, etc.
-  :index (:key who)
+          (of-what pathogen)) ;;e.g. age, disease, warfare, crime, accident, etc.
+  ;;:index (:key who) doesn't work for "die of Y" since no who variable used
   :realization ((:main-verb "die")
 		(:tree-family intransitive
 		 :mapping ((agent . who)
@@ -48,7 +48,14 @@
                            (base-np . :self)
                            (complement . person)
                            (np . :self))
-                 :common-noun "death")))
+                 :common-noun "death")
+                (:tree-family empty-head-of-complement ;;i.e. "die of h5n1"
+                 :mapping ((result-type . :self)
+                           (of-item . of-what)
+                           (base-np . :self)
+                           (complement . pathogen)
+                           (np . :self))
+                 :main-verb "die")))
 
 
 (define-category kill
