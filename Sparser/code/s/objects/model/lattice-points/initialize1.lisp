@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "initialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 August 2009
+;;;  version:  1.0 August 2013
 
 ;; initiated 11/29/97. Moved code in from other files 7/7/98. 9/3/99 renamed
 ;; Construct-self-lattice-point to avoid brain-dead conflict with the
@@ -21,6 +20,7 @@
 ;; problem with Find-self-node returning a list instead of the self-lp.
 ;; 1.0 (7/22/09) Fan out from simplifying the indexing structure and putting more
 ;;   on the psi. Working on it through 8/6.
+;; 1.1 (8/26/13) Added setting of subtypes to initialize-top-lattice-point
 
 (in-package :sparser)
 
@@ -44,6 +44,11 @@
     (setf (lp-subtypes lp) nil)
     (setf (lp-top-psi lp) nil)
     (setf (lp-top-lp lp) lp)
+
+    (when specializes
+      (let ((super-lp (cat-lattice-position specializes)))
+        (pushnew `(,category ,lp)
+                 (lp-subtypes super-lp))))
 
     lp ))
 
