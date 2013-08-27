@@ -52,6 +52,7 @@
 ;;(define-pathogen "h5n1")
 
 ;;function that iterates over all possible combinations of bird flu
+;;x, y <= 9
 (defun define-hXnY ()
   (loop for i from 1 below 10 do
     (loop for j from 1 below 10 do
