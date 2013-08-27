@@ -13,6 +13,20 @@
 
 (strider-setting) ;; adds (setq *do-debris-analysis* t)
 
+
+;;  (p "Deputy Chief of Staff of the Iranian Armed Forces Brigadier General Massoud Jazzayeri said Monday")
+;; (trace-da-hook)  (trace-da)
+#|  8/26/13 4pm
+[deputy chief of staff] of [ the iranian armed forces] [ brigadier general massoud jazzayeri][ said][ monday]
+e14   TITLE                   1 "deputy chief of staff of the iranian armed forces" 10
+e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monday" 16
+  Treetops are rolling up from the right. The report gets the person before the title can see it.
+  Can correct it in this case by reconceptualizing the (presently underthought) treatment
+  of attributions to go for semantics rather than conventional syntax
+|#
+
+;;  (p "Meir Dagan, ex chief of the Mossad, who apparently oversaw much of what occurred in Iran, and Yuval Diskin, chief of Shin Bet, have warned against a current military strike on Iran.")
+
 (turn-off-debugging-flags)
 ;; (turn-on-debugging-flags)
 
@@ -23,7 +37,6 @@
 
 ;; (p "Another Iranian scientist, Dariush Rezaeinejad, was also assassinated on July 32, 2011.")
 ;; (p "Iranian scientist Dariush Rezaeinejad was assassinated on July 32, 2011.")
-;; (setq *note-text-relations* t)
 ;;    note-immediate-relations-to-head
 
 
@@ -82,8 +95,6 @@
 
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
 
-;;  (p "Deputy Chief of Staff of the Iranian Armed Forces Brigadier General Massoud Jazzayeri said Monday")
-;; (trace-da-hook)  (trace-da)
 
 
 ;; (p "the Iranian scientists Massoud Ali-Mohammadi,")
