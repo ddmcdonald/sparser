@@ -381,6 +381,17 @@ e10   RELATIVE-LOCATION       1 "in the last three years" 6
   (1 PATHOGEN-TYPE 5))
 
 ;;;---------
+;;; outbreak
+;;;---------
+
+;;category to represent disease outbreaks
+
+;;full sentence this is only the second outbreak of H5N1 in France
+(define-citation "outbreak of h5n1"
+  (1 OUTBREAK 7))
+
+
+;;;---------
 ;;; anchor
 ;;;---------
 
