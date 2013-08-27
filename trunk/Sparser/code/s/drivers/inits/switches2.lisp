@@ -313,6 +313,7 @@
   ;;   Need to adapt the segment-level switches and do this better
   (setq *allow-da-to-look-under-edges* nil)
   ;;   /// arc-matches-tt? needs to adjust the next tt
+  (setq *note-text-relations* t) ;; transfering content from in here
   ;; misc. display settings
   (display-bracketing)
   (setq *tts-after-each-section* t)
