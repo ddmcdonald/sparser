@@ -17,7 +17,7 @@
 ;; The others take on a qualifying role when used with
 ;; titles, but have manny other uses. 
 (define-title-status-term "former")
-
+(define-title-status-term "ex")
 
 ;; "ousted"  "emeritus"  (sequencer title) "the sixth director"
 ;; "a" vs. "the", (country title)
