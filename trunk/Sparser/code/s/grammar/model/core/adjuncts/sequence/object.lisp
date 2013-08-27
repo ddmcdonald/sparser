@@ -54,19 +54,16 @@
         sequencer ))))
 
 
-(defun define-sequencer/preposition (string relation) ;;added in relation as a string
+(defun define-sequencer/preposition (string)
   (let ((word (resolve-string-to-word/make string))
-        (word2 (resolve-string-to-word/make relation))
         sequencer )
     (if (setq sequencer
               (find-individual 'sequencer
-                               :name word
-                               :relation word2))
+                               :name word))
       sequencer
       (else
         (setq sequencer (define-individual 'sequencer
-                            :name word
-                            :relation word2))
+                            :name word))
 
         (assign-brackets/expr word (list ].phrase  phrase.[ ))
         sequencer ))))
