@@ -7,8 +7,29 @@
 ;;;   version:   December 2007
 
 ;; initiated 12/28/07.
+;;removed citations having to do with outbreaks specifically
+;;moved these to sl;disease:outbreak
 
-;; this is only the second outbreak of H5N1 in France
+;;in a very general sense we can think of disease spreading events as being trivalent
+;;i.e. spread involves a transmission from a source to a target location via some carrier
+;;e.g. "bird flu is believed to spread along bird migration routes"
+;;here the source is not specified, target = migration routes, vector = birds
+;;from the articles however spreading events do not always manifest this way syntactically
+;;there are other headwords, like "transmit," "find", which each have different syntax
+
+;;a skeletal category definition, not yet implemented
+#|(define-category spread
+  :specializes event
+  :instantiates self
+  :binds ((source location)
+          (target location)
+          (vector carrier))
+  :realization (:commmon-noun "spread"))|#
+          
+
+;;;-----------
+;;; citations
+;;;-----------
 
 ;; authorities in France had been carrying out tests on wild birds 
 ;;     over the past week in several locations in the east.
@@ -16,7 +37,6 @@
 
 ;; last month the virus was found on two poultry farms in the Czech Republic
 
-;; outbreaks were reported last year in 13 European Union countries
 ;; the H5N1 strain has been found in poultry farms 
 ;;    in three other EU countries this year
 
@@ -28,5 +48,4 @@
 
 ;; France experienced a bird flu scare
 
-;; after an outbreak of the lethal disease 
-;;    in February 2006 in the eastern Ain region.
+
