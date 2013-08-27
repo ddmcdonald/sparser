@@ -26,7 +26,7 @@
           (pathogen-type pathogen-type)) ;e.g. h5n1 is a virus, ecoli is a bacteria
           ;;(vector :primitive word) e.g. avian flu is spread by infected birds
   :index (:permanent :key name)
-  :realization (:common-noun name)) ;;are pathogens common nouns syntactically?  
+  :realization (:common-noun name)) 
 
 ;;;-----------
 ;;; citations
@@ -49,9 +49,15 @@
 ;;; the instances
 ;;;------------
 
-(define-pathogen "h5n1")
+;;(define-pathogen "h5n1")
 
+;;function that iterates over all possible combinations of bird flu
+(defun define-hXnY ()
+  (loop for i from 1 below 10 do
+    (loop for j from 1 below 10 do
+      (define-pathogen (concatenate 'string "h" (write-to-string i) "n" (write-to-string j))))))
 
+(define-hXnY)
 ;;;------------
 ;;; cfrs
 ;;;------------
