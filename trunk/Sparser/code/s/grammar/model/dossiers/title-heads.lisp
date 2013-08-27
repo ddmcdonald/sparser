@@ -31,10 +31,6 @@
 (define-single-word-title "trustee")
 
 
-(define-single-word-title "chief of staff")
-;; If this is lowercase, like it should be, PNF will see it
-;; as a name. 
-
 
 
 ;;-------------- added from the workbench ------------------
