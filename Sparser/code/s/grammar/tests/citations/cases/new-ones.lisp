@@ -372,6 +372,10 @@ e10   RELATIVE-LOCATION       1 "in the last three years" 6
 (define-citation "the h5n1 virus"
   (1 PATHOGEN 7))
 
+;;from 5 bbc_Feb-3.txt
+(define-citation "a teenage girl died of the h 5 n 1 strain"
+  (1 DIE 12))
+
 ;;category pathogen-type to represent kinds of diseases in sl;disease
 ;;from 2 ABCNews_Jan-30.txt
 ;;this are pronoun like in that they should always pick out a salient named pathogen
@@ -390,33 +394,5 @@ e10   RELATIVE-LOCATION       1 "in the last three years" 6
 (define-citation "outbreak of h5n1"
   (1 OUTBREAK 7))
 
-
-;;;---------
-;;; anchor
-;;;---------
-
-;;anchor with dates
-
-(define-citation "after March 1"
-  (1 ANCHOR-DATE 4))
-
-;;anchor with time (seasons, days of week, season-years, etc.)
-
-(define-citation "after Monday"
-  (1 ANCHOR-TIME 3))
-
-(define-citation "during the winter"
-  (1 ANCHOR-TIME 4))
-
-(define-citation "during the spring of 2010"
-  (1 ANCHOR-TIME 6))
-
-;;anchor with amounts
-
-(define-citation "the last three years"
-  (1 ANCHOR-AMOUNT 5))
-
-#|(define-citation "two months later"
-  (1 ANCHOR-DATE 4))|#
 
 

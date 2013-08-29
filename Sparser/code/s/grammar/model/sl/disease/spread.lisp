@@ -48,4 +48,21 @@
 
 ;; France experienced a bird flu scare
 
+;; 5 bbc_Feb-3.txt
 
+;; bird flu has been found in poultry
+
+;; 6 Newsfactor_Feb-16.txt
+
+;; but catching the disease
+
+;; cases of birds being found with the disease
+
+;; the dead uncle of an iraqi girl who died last month 
+;; after contracting the deadly bird flu virus
+
+;; the uncle had caught the virus from his niece
+
+;; a virus capable of being passed directly between humans
+
+;; the uncle did in fact have bird flu h5n1
