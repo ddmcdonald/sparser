@@ -51,3 +51,7 @@
 
 ;; after an outbreak of the lethal disease 
 ;;    in February 2006 in the eastern Ain region.
+
+;; 5 bbc_Feb-3.txt
+
+;; confirmed outbreaks of the disease in poultry
