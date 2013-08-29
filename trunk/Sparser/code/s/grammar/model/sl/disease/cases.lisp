@@ -31,7 +31,7 @@
 ;; the uncle's samples came back positive from cairo for avian influenza h5n1
 
 ;; the sample from the uncle had tested positive for h5n1
-;; when analyzed by the u.s. navy medical research unit
+;; when analyzed by the u.s. navy medical research units
 
 
 
