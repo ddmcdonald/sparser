@@ -21,7 +21,7 @@
 ;; last month the virus was found on two poultry farms in the Czech Republic
 
 ;; the H5N1 strain has been found in poultry farms 
-;;    in three other EU countries this year
+;;    in three other EU countries this year 
 
 ;; bird flu has been found in poultry
 
@@ -40,4 +40,4 @@
 
 ;; but catching the disease
 
-;; the uncle had caught the virus from his niece
+;; the uncle had caught the virus from his niece s
