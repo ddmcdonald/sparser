@@ -15,6 +15,7 @@
 (gload "disease;pathogen")
 (gload "disease;pathogen-type")
 (gload "disease;outbreak")
+(gload "disease;contract")
 (gload "disease;spread")
 (gload "disease;h-n-scanner")
 (gload "disease;named-entities")
