@@ -90,6 +90,14 @@
   :referent be )
 
 
+;;;----------------------------
+;;; be + adjective
+;;;----------------------------
+
+(def-form-rule (be adjective)
+  :form adjective
+  :referent (:head right-edge))
+
 
 ;;;----------------------------
 ;;; form rules for aux-hopping
