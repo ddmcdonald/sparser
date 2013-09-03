@@ -12,6 +12,46 @@
 ;;generally binary, but can include a source as well
 ;;e.g. "the uncle had caught the virus from his niece"
 
+(in-package :sparser)
+
+;;;------------
+;;; the object
+;;;------------
+
+(define-category contract
+  :specializes event
+  :instantiates self)
+                
+(defun define-contract-disease (string)
+  (let* ((name (category-name-from-string-arg (concatenate 'string (string-upcase string) "-DISEASE")))
+	 (form
+	  `(define-category ,name
+             :specializes event
+             :instantiates self
+             :binds ((who)
+                     (pathogen pathogen)
+                     (source))
+             ;;:index (:key ) left empty for now
+             :realization ((:main-verb ,string)
+                           (:tree-family transitive/passive
+                           :mapping ((agent . who)
+                                     (patient . pathogen)
+                                     (s . :self)
+                                     (vp . :self)
+                                     (vg . :self)
+                                     (np/subject . person)
+                                     (np/object . pathogen)))))))
+    (eval form))
+  string)
+
+;;;------------
+;;; instances
+;;;------------
+
+(define-contract-disease "catch")
+
+(define-contract-disease "contract")
+  
 ;;;-----------
 ;;; citations
 ;;;-----------
