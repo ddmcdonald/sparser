@@ -46,5 +46,15 @@
     :past-participle "given"
     :present-participle "giving")
 
+;;added in 8/30/13
+#|
+(define-main-verb 'catch
+  :infinitive "catch"
+  :past-tense "caught"
+  :past-participle "caught"
+  :present-participle "catching")|#
+
+
+
 
 
