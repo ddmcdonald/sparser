@@ -45,6 +45,7 @@
                                      (vg . :self)
                                      (np/subject . person)
                                      (np/object . NP)))
+                           ;;this rule was not joinng with BE because it recasts it to an NP
                            (:tree-family empty-head-of-complement ;;does not include agent
                             :mapping ((result-type . :self)
                               (of-item . of-what)
