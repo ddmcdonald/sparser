@@ -25,12 +25,12 @@
 ;;an attempt at a more general way of defining in-predicate
 ;;based on the code from shortcuts and define-function-word
 (defun define-in-predicate (string)
-  (let* ((name (category-name-from-string-arg string))
+  (let* ((name (category-name-from-string-arg (concatenate 'string "IN-" (string-upcase (subseq string 3)))))
 	 (form
 	  `(define-category ,name
              :specializes in-predicate
              :instantiates self
-             :rule-label in-predicate
+             ;;:rule-label in-predicate
              :binds ((head :primitive word)
                      (who)
                      (of-what)
@@ -98,7 +98,7 @@
 ;;e.g. "Instead, the government decided to pull the troops."
 ;;where the 'object' of "instead" would be someother sentence in the previous discourse
 ;;this feature is absent from all the above, *"In place of, the government..."
-(define-in-predicate "instead")
+;;(define-in-predicate "instead")
 
 ;;;------------
 ;;; cfrs
@@ -109,6 +109,6 @@
 ;;absence of the copula will indicate an adjunct like left or right dislocation
 ;;e.g. "In command of the army, General Patton..."
 ;;versus "General Patton is in command of the army."
-(def-cfr in-predicate (be in-predicate)
+#|(def-cfr in-predicate (be in-predicate)
   :form adjective
-  :referent (:head right-edge))
+  :referent (:head right-edge))|#
