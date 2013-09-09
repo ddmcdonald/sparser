@@ -40,6 +40,8 @@
 ;;     (2/11/13) Trying to make it do Arabic names.  4/11/13 works now. the check
 ;;      in lc-non-boundary-word-that-may-extend-cap-seq? was empty.
 ;;     (7/25/13) Another Arabic case: Mas'ud
+;; 3.4 (8/30/13) Modified lc-word-that-may-extend-cap-seq? to take back the block
+;;      against continuing over "of"
 
 (in-package :sparser)
 
@@ -528,9 +530,8 @@
   ;; Called from boundary-continuation
   (populate-lc-person-words)
   (let ((yes?
-         (or (unless *do-strong-domain-modeling*
-               (or (eq word (word-named "of"))
-                   (eq word (word-named "and"))))
+         (or (or (eq word (word-named "of"))
+                 (eq word (word-named "and")))
              (memq word *lc-person-words*))))
     (tr :lower-case-extends-over word yes?)
     yes?))

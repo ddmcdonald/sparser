@@ -51,6 +51,8 @@
 ;;     (3/6/13) Generalized reduce-multiple-initial-edges to any length vector.
 ;; 1.11 (8/26/13) Modifying the single-word path to look more like the multi-word.
 ;;      left subs in the cases where there's more than one word.
+;;     (8/28/13) Did sortout-multiple-edges-over-single-capitalized-word but not
+;;      happy with result when "I" is involved.
 
 (in-package :sparser)
 
@@ -354,10 +356,10 @@
 (defun sortout-multiple-edges-over-single-capitalized-word (position next-position)
   ;; subroutine of Sortout-edges-over-single-cap-word
   (push-debug `(,position ,next-position))
-  (break "Examine, rewrite sortout-multiple-edges-over-single-capitalized-word")
   (let* ((edges-including-literals (edges-between position next-position))
          (edges (remove-literals-from-list-of-edges edges-including-literals)))
-    (if (edges-all-chain position :start)
+    (or
+     (when (edges-all-chain position :start)
       ;; if one is a respan of the other, check for various anticipated cases
       (let ((top-edge (ev-top-node (pos-starts-here position))))
         (if (eq (edge-rule top-edge) :respan-over-pronoun)
@@ -366,19 +368,21 @@
             (when *debug-pnf*
               (break "Stub: new case for two edges over a single ~
                       capitalized word~%where all the edges chain~%~%"))
-            (car (last edges)))))  ;; assumes most specific goes on last
+            (car (last edges))))))  ;; assumes most specific goes on last
 
+     ;;/// This works in isolated test, but not in regular text
+     ;; "he asked that professor of morals: please pray that I may be martyred."
+     (find category::pronoun edges :key #'edge-form :test #'eq)
 
+     (else
       ;; Take them all, and dereference the name words since they probably
       ;; would lead to anaphors of companies or people
-      (else
-        (dolist (edge edges)
-          (when (or (eq (edge-form edge) category::proper-noun)
-                    (eq (edge-form edge) category::proper-adjective))
-            (dereference-proper-noun edge)))
-
-        ;; return success
-        edges ))))
+      (dolist (edge edges)
+        (when (or (eq (edge-form edge) category::proper-noun)
+                  (eq (edge-form edge) category::proper-adjective))
+          (dereference-proper-noun edge)))
+      ;; return success
+      edges ))))
 
 
 (defun remove-literals-from-list-of-edges (list-of-edges)

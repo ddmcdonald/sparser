@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subseq ref"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.3 August 2013
+;;;  version:  0.3 September 2013
 
 ;; broken out from [names:fsa:record] 6/8/93 v2.3
 ;; (1/7/94) patched around earlier indexing bug in Item-in-a-known-name
@@ -22,6 +22,8 @@
 ;;     (6/17/13) Generalized known-sequence beyond companies. 
 ;;     (8/26/13) Added another case to subsequent-reference-off-name-word but
 ;;      it's restricted to just finding companies.
+;;     (9/6/13) refactored known-sequence to have pieces that can be used
+;;      without envoking the throw when they're successful.
 
 (in-package :sparser)
 
@@ -94,6 +96,7 @@
 
 (defun subsequent-reference-off-name-word (nw)
   ;;/// As used now (6/13) this has to return a named entity, not a name
+  ;; If  there are complications with companies, tune with index-company-name-to-company
   (push-debug `(:subseq-ref ,nw))
   (let ((pos-in-sequence-bindings
          (bound-in nw :super-category 'ordinal :all t))
@@ -328,41 +331,53 @@
   ;; throws to classify-&-record-span
   (let ((sequence (find-sequence items)))
     (if sequence
-      (let ((names
-             (or (let ((references (who-binds 'sequence sequence)))
-                   ;; (whole) sequences linked-to by names and by 
-                   ;; an ordinal for each item
-                   (when references
-                     (push-debug `(,references))
-                     (let ((name-refs (loop for ref in references
-                                        when (itypep ref 'name)
-                                        collect ref)))
-                       name-refs)))
-                 (name-based-on-sequence/uncategorized sequence))))
+      (let ((names (names-based-on-sequence sequence)))
         (unless names
           (push-debug `(,sequence ,items))
           (error "Expected at least one name to be associated ~
                   with this sequence:~%~a" sequence))
-        (when (consp names)
-          (if (null (cdr names))
-            (setq names (car names))
-            (else
-             (push-debug `(,names ,items ,sequence))
-             (error "Sequence identifies multiple names: ~a"
-                    names))))
-        (let ((entities (who-binds 'name names)))
+
+        (let ((entities (entities-with-names names)))
           (unless entities
             (push-debug `(,names ,sequence ,items))
-            (error "No named entity associated with the named ~
+            (error "No named entity associated with the name ~
                   ~%~a" names))
           (if (null (cdr entities))
             (throw :already-decoded-name (car entities))
-            (else
-             (push-debug `(,entities ,names))
-             (error "Ambiguous name: ~a" entities)))))          
+            (ambiguous-name-stub names entities))))
       (else
        (tr :pnf-items-no-known-sequence items)
        nil))))
+
+
+(defun ambiguous-name-stub (names entities)
+  (push-debug `(,names ,entities))
+  (break "More than one entity returned for the names~
+        ~%  ~a~
+        ~%Look at this and decide what to do." names))
+
+
+(defun names-based-on-sequence (sequence)
+  (or (let ((references (who-binds 'sequence sequence)))
+        ;; (whole) sequences linked-to by names and by 
+        ;; an ordinal for each item
+        (when references
+          (push-debug `(,references))
+          (let ((name-refs (loop for ref in references
+                             when (itypep ref 'name)
+                             collect ref)))
+            name-refs)))
+      (name-based-on-sequence/uncategorized sequence)))
+
+(defun entities-with-names (names)
+  (loop for name in names
+    append (who-binds 'name name)))
+
+
+
+        
+        
+
 
                                       
 

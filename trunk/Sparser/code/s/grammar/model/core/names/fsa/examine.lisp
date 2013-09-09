@@ -1,11 +1,10 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1994-1996,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "examine"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.18 June 2013
+;;;  version:  0.20 September 2013
 
 ;; initiated 4/1/94 v2.3
 ;; 0.1 (4/23) fixed change of where :literal-in-a-rule is in Sort-out-multiple-
@@ -72,6 +71,8 @@
 ;; 0.19 (8/19/13) Moved the title-element-in-items check up from categorize-and-form-name
 ;;       to examine-capitalized-sequence so the title could be just omitted from
 ;;       consideration as one of the items in the name.
+;; 0.20 (9/6/13) Realized that "of" is now a spanned edge, so move that check
+;;       to the edge section. ////There must be others -- check.
 
 (in-package :sparser)
 
@@ -145,8 +146,8 @@
                 (word::and-sign  
                  (setq &-sign items))
                   
-                (word::|of|
-                  (if items
+                (word::|of| ;; now most likely coverted by an edge with the
+                  (if items ;; label= the category 'of' -- move to category checks
                     (if (valid-of-context? items)
                       (setq of count)
                       (else
@@ -237,13 +238,34 @@
                         (kpush :word name-state))
                       (kpush :word name-state)))))))
               
-               ;;---- That was the end of the word cases, now we look at
-               ;;  category edge labels
+             ;;---- That was the end of the word cases, now we look at
+             ;;  category edge labels
                
              (category::name-word
               (when (get-tag-for :heuristic-company-word
                                  (edge-referent tt))
                 (setq koc? count)))
+
+             (category::of  ;; prepositions now get edges
+              (if items
+                (if (valid-of-context? items)
+                  (setq of count)
+                  (else
+                   (tr :pnf/of-bad-prefix position)
+                   (setq flush-suffix position)
+                   ;; signal to the driver that the name ends here,
+                   ;; then return from the loop so we'll fall through
+                   ;; to the name constructor without looking at
+                   ;; the rest of the items.
+                   (return-from check-cases nil)))
+                (else
+                 ;; If there are no 'items', then we're at the beginning
+                 ;; of the capitalized sequence. This can happen if we're
+                 ;; in a title or the like and the "of" is capitalized.
+                 ;; We want to get out of the loop (as above) but there's
+                 ;; no 'prefix' to be rendered into a name so we don't
+                 ;; set 'flush-suffix'.
+                 (return-from check-cases nil))))
                
              #|(category::company-generalization-word
              (setq koc? t))|#
@@ -500,14 +522,14 @@
 
   (when *break-before-creating-name*
     (push-debug `(,items)) ;; more flags?
-    (break "Look around at what categorize-and-form-name will do"))
+    (break "Look at what categorize-and-form-name with these items:~
+          ~%  ~a" items))
 
   (cond
    ((known-sequence items)) ;; throws if it succeeds
-   ((item-already-linked-to-entity items)) ;; ditto
-   (of
-    (analyze-structure-of-name-with-of
-     items of &-sign initials? inc-term?))
+   ((item-already-linked-to-entity items)) ;; ditto - just single words
+   ((and of (shared-name-prefix items of)))
+
    (t
     ;;--- examine evidence for a way to categorize the name
     (let ( name
