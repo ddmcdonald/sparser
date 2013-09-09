@@ -96,20 +96,50 @@ in the past they actually held the position.  We can ask
                            (modifier . country)
                            (np-head . (title title-modifier))))))
 
-(defun convert-to-modified-title (title)
+(defun convert-to-modified-title (title var-name)
   ;; called from sort-out-passessive+title when it wants to add
   ;; a binding to the title and determines that it has only a
   ;; simple title in it's hands and so no place to put it unless
   ;; we coerce the title into category that has the needed
   ;; variable. 
+  ;;//// Might want to bury this within the the call to bind-variable
+  ;; And then make it a method specific to the category
   (unless (itypep title 'title)
     (error "Argument is not a title individual.~% ~a  ~a"
            (type-of title) title))
-  (push-debug `(,title))
-  (break "Stub: finish this function or look for a more general ~
-    way to handle the problem, e.g. extend lattice-points to ~
-    notice subcategories.")
-  title)
+  (let ((subcategory (subtype-with-variable var-name category::title)))
+    (unless subcategory
+      (push-debug `(,title ,var-name))
+      (error "subtype-with-variable could not find a subcategory ~
+              of ~a that bound the variable ~a"
+             category::title var-name))
+    (coerce-individual title subcategory)
+    title))
+
+
+(defun coerce-individual (i new-category)
+  "Change the type of this individual to be this new category,
+   which is a subcategory of its present type."
+  ;;//// Probably have to hack this individual's shaddow too
+  (setf (indiv-type i) (cons new-category (cdr (indiv-type i))))
+  i)
+
+
+(defun subtype-with-variable (var-name category)
+  "Does any of the sub-categories of this category bind a variable
+   with this name?  Note that presently look only one level deep
+   and don't recurse on the subcategories."
+  (when (symbolp category)
+    (setq category (category-named category)))
+  (let* ((top-lp (cat-lattice-position category))
+         (subtypes-alist (lp-subtypes top-lp)))
+    ;; breadth first, see if we can find it in one level
+    (dolist (pair subtypes-alist)
+      (let* ((c (car pair))
+             (variables (cat-slots c)))
+        (dolist (v variables)
+          (when (eq (var-name v) var-name)
+            (return-from subtype-with-variable c)))))))
 
 
 ;; title-qualifiers in dossiers/title-qualifiers are more versatile
