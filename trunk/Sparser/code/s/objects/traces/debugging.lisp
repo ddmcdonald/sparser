@@ -55,6 +55,7 @@
         *debug-reify-implicit-individuals* t
         *debug-segment-handling* t
         *break-on-new-bracket-situations* t
+        *break-on-multiple-values-single-key-Mostafa* t
         ))
 
 (defun turn-off-debugging-flags ()
@@ -70,5 +71,6 @@
         *debug-reify-implicit-individuals* nil
         *debug-segment-handling* nil
         *break-on-new-bracket-situations* nil
+        *break-on-multiple-values-single-key-Mostafa* nil
         ))
 
