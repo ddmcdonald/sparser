@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "names"
 ;;;   Module:  "model;core:people:"
-;;;  version:  1.5 August 2013
+;;;  version:  1.5 September 2013
 
 ;; initiated 6/8/93 v2.3, added indexes 6/15.
 ;; 1.1 (1/7/94) Beginning to simplify the indexing.  Tweeked that 10/3.
@@ -18,7 +18,8 @@
 ;;     (3/6/13) Got an initial in first-name position. 3/7 revived version.
 ;;     (6/14/13) Refactored to let the real person-name builder have the
 ;;      cleaner name.
-;; 1.5 (8/16/13) Made the name categorie permanent
+;; 1.5 (8/16/13) Made the name category permanent. (9/9/13) Added 'last-name'
+;;      to the keys of person-name/first-last.
 
 (in-package :sparser)
 
@@ -48,7 +49,7 @@
   :specializes person-name
   ;; "W. Ed Tyler"
   ;; Flag the initial specifically ?
-  :index (:permanent :key first-name)
+  :index (:permanent :key first-name last-name)
   :binds ((first-name . (:or name-word initial))
           (standard-prefix . person-prefix)
           (version . person-version)))
