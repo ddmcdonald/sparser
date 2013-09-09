@@ -98,17 +98,16 @@
      ((itypep possessive 'country) ;; "Iran's prime minister"
       (unless (itypep title 'modified-title)
         (setq title (revise-right-edge-into-rule
-                     :referent (convert-to-modified-title title))))
+                     :referent (convert-to-modified-title title 'locale))))
       (bind-variable 'locale possessive title))
 
      (t (push-debug `(,possessive ,title))
         (error "New type for possessive: ~a~%  ~a"
                (if (individual-p possessive)
                  (i-type-of possessive) 
-                 (type-of possessive) )
-               possessive))))
-
-  title)
+                 (type-of possessive))
+               possessive)))
+    title))
 
 (define-category plays-role-for
   :instantiates self
