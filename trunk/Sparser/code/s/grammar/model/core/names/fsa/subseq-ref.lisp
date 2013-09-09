@@ -367,7 +367,7 @@
                              when (itypep ref 'name)
                              collect ref)))
             name-refs)))
-      (name-based-on-sequence/uncategorized sequence)))
+      (list (name-based-on-sequence/uncategorized sequence))))
 
 (defun entities-with-names (names)
   (loop for name in names
