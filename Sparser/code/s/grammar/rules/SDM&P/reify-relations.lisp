@@ -3,9 +3,9 @@
 ;;;
 ;;;      File: "loader"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: March 2013
+;;;   Version: August 2013
 
-;; Initiated 3/18/13
+;; Initiated 3/18/13. Fixing edge cases through 8/31/13.
 
 (in-package :sparser)
 
@@ -15,7 +15,8 @@
   category)
 
 (defun derived-from-text-relation? (category)
-  (memq :dederived-from-text-relation (cat-plist category)))
+  (when (category-p category)
+    (memq :dederived-from-text-relation (cat-plist category))))
 
 (defmethod reify-text-relation ((tr classifier-head-tr-instance))
   (let* ((head-word (classified-head tr))
