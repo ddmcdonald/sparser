@@ -3,15 +3,27 @@
 ;;;
 ;;;     File:  "Strider"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  August 2012
+;;;  version:  September 2012
 
-;; Initiated 5/7/13. Adding bits through 8/16/13
+;; Initiated 5/7/13. Adding bits through 9/6/13
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
 (in-package :sparser)
 
 (strider-setting) ;; adds (setq *do-debris-analysis* t)
+
+
+;; (setq *note-text-relations* nil)  bad way to make the display quieter, at expense of latient bugs
+
+; (p "Mossad, the Israeli secret service, acknowledged that last week it murdered Majid Shahriari and wounded another physicist in Iran, according to Mossad sources, in an operation carried out in Teheran.")
+
+; (p "In June 2011, gunmen shot dead Iranian nuclear scientist Darioush Rezai and his wife.")
+
+; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
+;;   sort-out-passessive+title  
+;;   #<people> instead of #<person>  (most-recently-mentioned (discourse-entry (category-named 'person)))
+;; print-category-discourse-history
 
 
 ;;  (p "Deputy Chief of Staff of the Iranian Armed Forces Brigadier General Massoud Jazzayeri said Monday")
@@ -88,10 +100,8 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
  (grok-pass-three june15th)
 |#
 
-
-; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
-;;   sort-out-passessive+title
-
+;;(p "Mostafa Ahmadi-Rowshan had started his studies in Sharif University of Technology in the year 77, the year that started on 20 March 1998, in the field of chemical engineering, and he received his B.Sc. Degree in the year 81. As part of his research for his B.Sc. course he collaborated with Reza Rustazad and Seyyed Abbas Musavi in a joint project on \"the manufacturing of polymeric membrane [ghesha] for separating gases\". Even at the beginning of his student days, he had published many articles on polymers in ISI [previous acronym given in English] under the name of Mostafa Ahmadi. The method that Ahmadi-Rowshan and his colleagues were working on was about a method for enriching uranium, because according to that method they had to use polymeric membranes for enriching uranium. In order to enrich uranium, at first uranium is turned into uranium hexafluoride gas, and then that gas is passed through a layer of polymeric membranes and this is how it is enriched.")
+;;  (trace-pronouns) interpret-name-as-person  find/person-name/sequence  disconnect-uncategorized-name
 
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
 
