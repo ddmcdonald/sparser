@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "index instances"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  2.0 June 2013
+;;;  version:  2.0 September 2013
 
 ;; initiated 8/9/94 v2.3 from pieces of other files. Tweeking ...8/19
 ;; (4/20/95) added subr and predicate for permanent objects.
@@ -15,6 +15,8 @@
 ;;     (2/4/13) Improved error message for missing key in hash case.
 ;;     (6/3/13) Added more documentation. Moved permanence of categories
 ;;      code to resouces1.lisp, and improved the in-line documentation.
+;;     (9/9/13) Put a block into index/individual/key/hash to postpone dealing
+;;      with same first-name, different later part names. 
 
 (in-package :sparser)
 
@@ -126,6 +128,11 @@
 
 ;;--- hashtable keyed on the value of one variable
 
+(defparameter *break-on-multiple-values-single-key-Mostafa* nil
+  "Mostafa Ahmadi Roshan can get this because of different sequences since
+   his name can have different spellings. If this flag is up we stop to
+   notice/debug the difference. If down we take the original value.")
+
 (defun index/individual/key/hash (variable individual category bindings)
   (let* ((table (cat-instances category)))
     (unless table
@@ -146,12 +153,13 @@
         (let ((entry (gethash value table)))
           (if entry
             (unless (eq entry individual) ;; same individual again
-	      (push-debug `(:index ,category ,value ,individual ,entry))
-              (break "Attempting to index more than one individual ~
-                      to a category~%that has only one key:~
-                    ~% ~A~% key ~A~% rejected new value ~A~
-                    ~% established value ~A"
-                     category value individual entry))
+              (when *break-on-multiple-values-single-key-Mostafa*
+                (push-debug `(,value ,individual ,entry ,category))
+                (break "Attempting to index more than one individual ~
+                        to a category~%that has only one key:~
+                      ~% ~A~% key ~A~% rejected new value ~A~
+                      ~% established value ~A"
+                       category value individual entry)))
             (else 
              ;(break "hashing")
              (if earlier-value
