@@ -3,10 +3,10 @@
 ;;;
 ;;;      File: "note-text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: July 2013
+;;;   Version: August 2013
 
 ;; Initiated 3/9/13. Elaborated through 3/28/13. 7/15/13 Added gate
-;; on new cases.
+;; on new cases. Occasional fixes to edge cases through 8/31/13
 
 (in-package :sparser)
 
@@ -114,7 +114,8 @@
         word-just-to-the-left   edge-just-to-the-left )
     ;; The segment has to be at least 3 words long, so we
     ;; should be able to get a little into this loop anyway.
-    (unless (edge-starts-at-left-boundary? right-edge)
+    (unless (or (null right-edge)
+                (edge-starts-at-left-boundary? right-edge))
       ;; except in that case, first found with an "'s"
       (loop
         (setq edge-just-to-the-left
