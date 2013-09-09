@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005, 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.4 January 2011
+;;;  Version:  3.4 September 2013
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -38,6 +38,8 @@
 ;;      external referents into add-subsuming-object-to-discourse-history
 ;;     (1/11/11) Patched check for operations of category to look first. Problem
 ;;      comes from category created by DM&P without all its parts.
+;;     (9/6/13) Factored out position string printer and narrowed the output of
+;;      the trace in update-discourse-history
 
 (in-package :sparser)
 
@@ -143,7 +145,24 @@
                 (car pos-cons) (cdr pos-cons)))))
   (format stream "~%~%~%~%"))
 
+(defun print-category-discourse-history (category 
+                                         &optional (stream *standard-output*))
+  (format stream "~&~%~A:~%" category)
+  (dolist (sub-entry (discourse-entry category))
+    (format stream "~&   ~A   " (car sub-entry))
+    (dolist (pos-cons (cdr sub-entry))
+      (format stream "~&~15,3t~a - ~a"
+              (string-for-recycled-pos (car pos-cons))
+              (string-for-recycled-pos (cdr pos-cons))))))
 
+(defun string-for-recycled-pos (p)
+  "Returns a compact string for the position with actual and
+   absolute indexes"
+  (let ((token-index (pos-token-index p))  ;; always extends
+        (array-index (pos-array-index p))) ;; recycles
+    (if (>= token-index *number-of-positions-in-the-chart*)
+      (format nil "p~a(~a)" token-index array-index)
+      (format nil "p~a" array-index))))
 
 ;;;----------
 ;;; creation
@@ -207,7 +226,7 @@
       (update-discourse-history cat-to-instantiate obj start-pos end-pos))))
 
 
-;(setq *trace-discourse-history* t)
+;(setq *trace-discourse-history* t) category::person
 ;(setq *trace-discourse-history* nil)
 
 
@@ -222,9 +241,11 @@
       (update-discourse-history c instance start-pos end-pos))
 
     (else
-      (when *trace-discourse-history*
-        (format t "~&An instance of ~A from ~A to ~A~%"
-                category start-pos end-pos))
+      (when (eq *trace-discourse-history* category)
+        (format t "~&~%Recording ~A ~a from ~A to ~A~%~%"
+                (cat-symbol category) instance
+                (string-for-recycled-pos start-pos)
+                (string-for-recycled-pos end-pos)))
       
       (let ((entry (discourse-entry category)))
         (if entry
@@ -252,7 +273,6 @@
          (category-instantiated
           (cat-ops-instantiate (cat-operations primary-category)))
          (entry (discourse-entry category-instantiated)))
-
     (when entry
       (assoc i entry :test #'eq))))
 
@@ -577,6 +597,7 @@
 ;;;------------------
 
 (defun most-recently-mentioned (c/dh)
+  ;; called from respan-pn-with-most-recent-person-anaphor
   (if (null (cdr c/dh))
     ;; if there's only one, then it's trivially the most recent
     (caar c/dh)
