@@ -39,7 +39,6 @@
       :name name-of-person)))
 
 
-
 ;;--- multiple words
 
 (defun interpret-name-as-person (name)
@@ -62,15 +61,30 @@
             (unless sequence
               (push-debug `(,name))
               (break "Name is not based on a sequence:~%  ~A" name))
-            (let* ((person-name (make-person-name-from-items
-                                 (value-of 'items sequence)
-                                 :sequence sequence))
+            (let* ((person-name
+                    (or (find/person-name/sequence sequence)
+                        (make-person-name-from-items
+                         (value-of 'items sequence)
+                         :sequence sequence)))
                    (i (or (find/person-with-name person-name)
                           (make/person-with-name person-name))))
               (setq person i)
               (disconnect-uncategorized-name name)
               i)))
        
+         (category::named-object
+          ;; We reified it earlier. Now lift out it's name part
+          ;; and try again
+          (let ((name-value (value-of 'name name)))
+            (unless name-value
+              (push-debug `(,name))
+              (error "Named-object without a name ???"))
+            (when (eq name-value name) ;; trap potential loop
+              (error "Name slot of a named-object contains same ~
+                      named object."))
+            (setq person (interpret-name-as-person name-value))
+            (disconnect-named-object name name-value)))
+
          ((or category::sequence category::collection)
           (let ((items (value-of 'items name))
                 people )
@@ -92,19 +106,6 @@
                         (make/person-with-name person-name))))
             (setq person i)
             i))
-
-         (category::named-object
-          ;; We reified it earlier. Now lift out it's name part
-          ;; and try again
-          (let ((name-value (value-of 'name name)))
-            (unless name-value
-              (push-debug `(,name))
-              (error "Named-object without a name ???"))
-            (when (eq name-value name) ;; trap potential loop
-              (error "Name slot of a named-object contains same ~
-                      named object."))
-            (setq person (interpret-name-as-person name-value))
-            (disconnect-named-object name name-value)))
 
          (category::company
           ;; Can happen when a cs rule wants to convert a cap seq.

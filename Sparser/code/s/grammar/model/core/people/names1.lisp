@@ -153,6 +153,15 @@
                (name-based-on-sequence/uncategorized sequence)))
           (when name
             (person-who-has-name name)))))))
+;;/// refactor these two
+(defun find/person-name/sequence (sequence)
+  ;; called from interpret-name-as-person when we have the sequence
+  ;; in hand from an uncategorized-name.
+  (push-debug `(,sequence))
+  (let ((instances (cat-instances category::person-name)))
+    (when instances
+      (car (memq sequence instances)))))
+
 
 (defun person-who-has-name (name)
   (let ((bindings (indiv-bound-in name)))
