@@ -128,7 +128,7 @@
 ;;;---------------------------------------------------
 
 (defun make/company-with-name (name)
-  ;; called from name code
+  ;; called by establish-referent-of-pn or define-company
   (when (itype name 'collection)
     ;; The name was built by make-uncategorized-name-from-items which
     ;; has dropped the 'and'. We have to put it back.
@@ -139,11 +139,12 @@
 
   (let ((new-company (define-individual 'company
                        :name name)))
+    (index-company-name-to-company name new-company)
     new-company ))
 
 
 (defun find/company-with-name (name)
-  ;; call from name code
+  ;; call by establish-referent-of-pn
   (let ((type-of-name (cat-symbol (category-of  name))))
 
     (declare (ignore type-of-name))

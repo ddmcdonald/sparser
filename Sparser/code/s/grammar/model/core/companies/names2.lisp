@@ -27,7 +27,7 @@
 ;;      return value in make-company-name-as-simple-sequence when not using
 ;;      psi.  (3/29/13) find/company-name turned out to be returning then
 ;;      company and not simply the name.
-;; 2.2 (8/16/13) Make the category permanet as part of its definition
+;; 2.2 (8/16/13) Make the category permaent as part of its definition
 
 (in-package :sparser)
 
@@ -84,7 +84,17 @@
 ;;   link-named-object-to-name-word  
 
 (defun index-company-name-to-company (name company)
-  (push-debug `(,name ,company))) ;; (break "index"))
+  ;;(push-debug `(,name ,company)) (break "index")
+  (let* ((sequence (value-of 'sequence name))
+         (name-words (value-of 'items sequence)))
+    (loop for nw in name-words
+      ;; see subsequent-reference-off-name-word, which was
+      ;; really only intended for single words, but we
+      ;; can adapt
+      do (bind-variable 'name-of company nw))
+    name-words))
+  
+
 
 (defun link-alias-to-company (string name company)
   (push-debug `(,string ,name ,company)) ;; (break "alias")
@@ -244,6 +254,7 @@
 ;;;-------------------------------------------------------------------
 
 (defun find/company-name (company-name-category binding-instructions)
+  (declare (ignore company-name-category))
   (let ((sequence (value-of-instr 'sequence binding-instructions)))
     (find/company-name/given-sequence sequence)))
 
