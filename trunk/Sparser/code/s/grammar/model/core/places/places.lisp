@@ -3,12 +3,13 @@
 ;;;
 ;;;     File:  "places"
 ;;;   Module:  "model;core:places:"
-;;;  version:  July 2013
+;;;  version:  August 2013
 
 ;; places -- entities that denote locations
 
 ;; initated 8/12/11. Added name->place-name 11/7. 7/22/13 made the
-;; names permanent. 
+;; names permanent.8/28/13 Made convert-name-to-place-name take other
+;; types of arguments
 
 (in-package :sparser)
 
@@ -36,13 +37,18 @@
 
 (defun convert-name-to-place-name (name-edge)
   ;; Called from move+to+name DA rule in moving.lisp
-  (let ((name (edge-referent name-edge)))
-    (unless (itypep name 'uncategorized-name)
-      (push-debug `(,name name-edge))
-      (error "Expected an uncategoried name, got a ~a"
-             (i-type-of name)))
-    (let* ((sequence (value-of 'name/s name))
-           (place-name (define-individual 'name-of-location
+  ;; And (at least for the moment) by give-kind-its-name
+  (let* ((name (edge-referent name-edge))
+         (sequence
+          (cond
+           ((itypep name 'uncategorized-name)
+            (value-of 'name/s name))
+           ((itypep name 'name-word)
+            (define-sequence `(,name)))
+           (t (push-debug `(,name name-edge))
+              (error "Unexpected type of name: ~a~%~a"
+                     (i-type-of name) name)))))
+    (let* ((place-name (define-individual 'name-of-location
                          :sequence sequence))
            (place (define-individual 'named-location
                     :name place-name)))

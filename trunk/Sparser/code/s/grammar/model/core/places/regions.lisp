@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  July 2013
+;;;  version:  August 2013
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -19,6 +19,7 @@
 ;;  inheritance structure in here. 5/24/13 Removed the np-common-noun/defnp
 ;;  case from region because it was creating a form rule that was too specific.
 ;; (7/30/13) Rewrote relationship-to-country to use revise-parent-edge
+;; (8/28/13) Provided draft content to give-kind-its-name.
 
 (in-package :sparser)
 
@@ -44,7 +45,7 @@
 ;;                           (np-head . region-type)))
 
                 (:tree-family  kind-of-name ;; "strait of Hormous"
-                 :mapping ((np . region)
+                 :mapping ((np . region-type)
                            (complement . (name name-word)) ;; and what else?
                            (result-np . :self)))))
 
@@ -60,33 +61,52 @@
   ;; by making the ETF use a method rather than a function
   ;; N.b. this returns the referent of the edge, which will be
   ;; a region based on this name
-  
-  (declare (ignore name)) region)
+
+
 #|  Turning this off until the two types of values in the name field
     is made possible (one of them being a primitive), and until the
     Chomsky-adjunction conundrum in the rule construction is done and
-    we get dependable rules
-  (push-debug `(:kind-name ,region ,name))
-  (let ((region-name (convert-to-canonical-name-form name)))
-    (unless (indiv-typep region category::location)
-      ;; Need to be sure that the variables are there for binding
-      (break "the 'region' individual is not a location"))
- 
-    (let ((new-region (define-or-find-individual category::region
-                        :name region-name)))
+    we get dependable rules |#
+  (push-debug `(,region ,name))
+  (let ((region-name (convert-to-canonical-name-form name))
+        new-region )
+    (cond
+     ((eq region category::city)
+      ;; These parse to region-types, but the independent definition
+      ;; of the city category is the value that we get.
+      ;;/// But the city category doesn't believe in names and
+      ;; interpret-name-as-city is going to devolve it down to a word
+      (let ((name-edge (right-edge-for-referent)))
+        (convert-name-to-place-name name-edge) ;; changes label and referent
+        (let ((place (edge-referent name-edge)))
+          ;;/// see note next to named-location
+          ;; ?? set the type? or just move to instantiating them
+          (setq new-region place))))
+
+     ((category-p region)
+      (break "Another case of a category for the region: ~a" region))
+
+     ((individual-p region)
+      (unless (indiv-typep region category::location)
+        ;; Need to be sure that the variables are there for binding
+        (break "the 'region' individual is not a location"))
+      (setq new-region (define-or-find-individual category::region
+                          :name region-name))
       ;; Is the region the right sort of thing to be it's type??
       ;; /// Loses the fact that the new-region is, e.g. a city
       ;;  <what's the instruction for creating a binding ??>
       ;; Now we make the word refer to this region
-      (if nil
-        (then ;; Yesterday the input was a word. Today it's a name
-         (remove-rules-from-word word)
-         (let ((rule (define-cfr category::region `(,word)
+      
+      ;;(remove-rules-from-word word)
+       #+ignore(let ((rule (define-cfr category::region `(,word)
                        :form category::proper-name
                        ;; /// what's the schema ???
-                       :referent new-region)))))
-        new-region))))
-|#
+                       :referent new-region))))
+      )
+     (t (error "New situation in give-kind-its-name")))
+
+    new-region))
+
 ;; What about subsequent runs of "city of S" after s has this rule?
 ;;  pattern becomes <region> of <region>, which is odd.
     
