@@ -113,19 +113,54 @@
            nil )))))  |#
 
 
-(defun analyze-structure-of-name-with-of (items of
-                                          &-sign initials? inc-term?)
 
-  ;; Called from Categorize-and-form-name if the "of" gets through
-  ;; the filter.  It's called here rather than in company names 
-  ;; because of the possibility of "Anne of Arragon" and the like.
+;; Originally we had analyze-name-with-of that included
+;; more arguments but really was just a stub that created
+;; a company form the sequence.
+;; A noted said it was for names like of "Anne of Arragon" 
+;; and such, but when we want that we can revisit the layout
 
-  (declare (ignore of &-sign initials? inc-term?))
-  ;; ignoring it all for the moment given this stub
+(defun shared-name-prefix (items of)
+  ;; Called from categorize-and-form-name. If there's no
+  ;; shared prefix then we return nil and fall through
+  ;; to regular name construction. If there is, then we
+  ;; assume this is just a longer version of that name
+  ;; and set that up. Throwing the entity (usually a company)
+  ;; that we've found to :already-decoded-name to the catch
+  ;; in classify-&-record-span
+  (push-debug `(,items ,of)) ;;(break "analyze name with of")
 
-  (let ((sequence (define-sequence items)))
-    (define-individual 'company-name
-      :sequence sequence)))
+  ;; Names that include "of" are often shortened by dropping
+  ;; the of-part. Is there already such a sequence?
+  (let* ((prefix (subseq items 0 (1- of)))
+         (prefix-seq (find-sequence prefix)))
+      (when prefix-seq
+        (let ((names (names-based-on-sequence prefix-seq)))
+          (when names
+            (let ((entities (entities-with-names names)))
+              (when entities
+                (when (cdr entities)
+                  (ambiguous-name-stub names entities))
+                (add-longer-name-to-entity
+                 (car entities) prefix names items)
+                (throw :already-decoded-name (car entities)))))))))
+
+(defun add-longer-name-to-entity (entity prefix names items)
+  (push-debug `(,entity ,prefix ,names ,items))
+  (let ((longer-name (make-company-name-as-simple-sequence items)))
+    (bind-variable 'prefix prefix longer-name)
+    (index-company-name-to-company longer-name entity)
+
+    ;; This call is suspect. It goes straight to 
+    ;; spread-sequence-across-ordinals but examples involve
+    ;; feeding it a name yet spread takes a sequence
+    ;(map-name-words-to-name items longer-name)
+
+    ;; Could take the original, shorter name and make it
+    ;; an alias so there's only one "name". This makes there two
+    (bind-variable 'name longer-name entity)
+    longer-name))
+
 
 
 
@@ -139,7 +174,7 @@
   ;; are proper-adjective's then we may leave them in,
   ;; and if some other word is involved that would be odd too
   (throw :abort-examination-not-a-name
-         `(:not-a-name . ,(pos-edge-ends-at country-tt))))
+         `(:not-a-name ,(pos-edge-ends-at country-tt))))
 
 
 
