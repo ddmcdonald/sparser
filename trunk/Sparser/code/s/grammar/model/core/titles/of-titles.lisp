@@ -99,7 +99,8 @@
          (np-ref (edge-referent np-edge)))
     (unless (itypep (edge-referent title-edge) 'modified-title)
       (setf (edge-referent title-edge)
-            (setq title (convert-to-modified-title title))))
+            (setq title (convert-to-modified-title 
+                         title 'area-of-responsibility))))
 
     ;; Really ought to have a rule that packages this property.
     ;; Then could just call make-binary-edge
