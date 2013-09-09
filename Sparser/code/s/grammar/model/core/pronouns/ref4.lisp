@@ -18,6 +18,7 @@
 ;;      the edge that's passed in rather than make a new one. The new one was
 ;;      getting lost. (8/22/13) Added the *debug-pronouns* to guard breaks where
 ;;      the result was unexpected.
+;; 4.4 (8/28/13) Extended respan with person to look for named-objects. 
 
 (in-package :sparser)
 
@@ -53,12 +54,11 @@
 ;;;---------------------------------------
 
 (defun seek-person-for-pronoun (pn-edge)
+  (tr :seek-person-for-pronoun pn-edge)
   (respan-pn-with-most-recent-person-anaphor pn-edge))
 
 (defun respan-pn-with-most-recent-person-anaphor (pn-edge)
-  (let ((person-entries
-         (discourse-entry (category-named 'person))))
-    
+  (let ((person-entries (discourse-entry (category-named 'person))))
     (let ((person
            (if (cdr person-entries) ;; more than one?
              (most-recently-mentioned person-entries)
@@ -74,6 +74,15 @@
                     ;; But that gets unduely hairy and is quite presumptive.
                ))))
 
+      ;; /// Catch wacko case
+      (when (and person (itypep person 'people))
+        (push-debug `(,pn-edge ,person))
+        (break "Got people for the person"))
+
+      (unless person
+        (tr :no-discourse-entries-for-people)
+        (setq person (coerce-nearest-named-object-to-person pn-edge)))
+
       (unless person
         (when *debug-pronouns*
           (push-debug `(,person-entries))
@@ -81,22 +90,34 @@
           (break "why couldn't it find a person?")))
 
       (when person
+        (tr :subverting-pn-edge pn-edge (category-named 'person) person)
         ;; we have the edge in our hand, we just change the category
         ;; and referent
         (setf (edge-category pn-edge) (category-named 'person))
         ;; keep the form, it could be 'possessive', which is useful
         (setf (edge-referent pn-edge) person))
 
-      ;;(push-debug `(,pn-edge)) (break "record the edge")
       pn-edge)))
 
-;         (let ((edge
-;               (make-new-edge-over-pronoun pn-edge
-;                                           (category-named 'person)
-;                                           (category-named 'np)
-;                                           person)))
-;          edge )
 
+(defun coerce-nearest-named-object-to-person (pn-edge)
+  ;;(declare (ignore pn-edge)) ;; for calculating distances
+  (let ((named-object-entries
+         (discourse-entry (category-named 'named-object))))
+    (when named-object-entries
+      ;; distance considerations go here
+      ;; an entry looks like
+      ;;  (#<named-object Ahmadi - Rowshan 2> 
+      ;;     (#<position4 4 "ahmadi"> . #<position7 7 "and">))
+      ;; They're ordered, so taking the first is fine
+      (let ((ne (most-recently-mentioned named-object-entries)))
+        ;;/////// Reindex the ne as a person
+        (when (itypep ne 'people) 
+          (push-debug `(,pn-edge ,ne))
+          (break "go ne as people"))
+        (tr :interpreting-ne-discourse-entry-as-person ne)
+        (interpret-name-as-person ne)))))
+  
 
 
 (defun respan-pn-with-most-recent-name-anaphor (pn-edge)
