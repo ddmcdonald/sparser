@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "cases-loader"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  0.3 July 1998
+;;;  Version:  1.0 September 2013
 
 ;; directory initiated 3/91 v1.8.1
 ;; added psp-all-edges 12/6, bumped [FSA] to 1 12/29
@@ -17,12 +17,14 @@
 ;;     (10/6/95) added [scan patterns]
 ;; 1.x <<unclear when bumped to v1>>
 ;;     (7/3/98) added [psi]
+;;     (9/1/13) added [pronouns]
 
 (in-package :sparser)
 
 (lload "traces;tokenizer")
 (lload "traces;FSA1")
 (lload "traces;cap seq")
+(lload "traces;pronouns")
 (lload "traces;edges1")
 (lload "traces;psp1")
 (lload "traces;psp-all-edges")
