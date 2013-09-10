@@ -2,7 +2,7 @@
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: July 2013
+;;;   Version: September 2013
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
@@ -12,6 +12,9 @@
 ;; 0.2 (7/22/13) fixed pnf-treetop-at to return nil if its heuristics
 ;;      don't return something, and tweaked its subroutines, which do need
 ;;      work. (7/25/13) Added silent NW for #\'
+;;     (9/9/13) Finished shorter-from-longer-name, which complements the
+;;      recent hack on 'of' add-longer-name-to-entity when the names share
+;;      a prefix.
 
 (in-package :sparser)
 
@@ -160,6 +163,56 @@
     ;; an alias so there's only one "name". This makes there two
     (bind-variable 'name longer-name entity)
     longer-name))
+
+(defun shorter-from-longer-name (list-of-names)
+  ;; Called from known-sequence (in turn called from categorize-and-form-name)
+  ;; when the sequence it has a name that it corresponds to, but that
+  ;; name has no associated company or other sort of NE. 
+  ;; The case that motivates it is a shorter reference to an university
+  ;; that's already been introduced in a longer form. 
+  ;; "he Shahid Beheshti University of Teheran" => "Shahid Beheshti University"
+  ;; Only deals with case of one name. Returns a list.
+  (when (null (cdr list-of-names)) 
+    ;; or call a variant on (ambiguous-name-stub names entities)
+    (let ((name (car list-of-names)))
+      (unless (itypep name 'company-name)
+        (error "Shorter names from longer only implemented for company-names,
+              ~%not this one: ~a" name))
+      ;; These indexes are the name sequences. Pooh
+      (let* ((sequence (value-of 'sequence name))
+             (first-word (value-of 'first-word name))
+             (instances (cat-instances category::company-name))
+             (sequences-with-same-start
+              (loop for s in instances
+                as items = (value-of 'items s)
+                when (eq (car items) first-word)
+                collect s)))
+
+        (let ((candiates (loop for s in sequences-with-same-start
+                           when (> (value-of 'number s)
+                                   (value-of 'number sequence))
+                           collect s)))
+          (when candiates
+            (let ((candiate-names
+                   (loop for s in candiates
+                     collect (bound-in s :body-type 'company-name))))
+
+              (let ((companies
+                     (loop for cn in candiate-names
+                       as co = (bound-in cn :body-type 'company)
+                       when co  collect co)))
+
+                (let ((company (car companies)))
+                  ;; They all have the same name, or close enough,
+                  ;; so the choice doesn't matter. 
+                  ;; One examined case had two companies in this
+                  ;; list, but they were both the same one
+                  (bind-variable 'name name company)
+                  
+                  (list company))))))))))
+            
+      
+    
 
 
 
