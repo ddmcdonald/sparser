@@ -338,10 +338,12 @@
                   with this sequence:~%~a" sequence))
 
         (let ((entities (entities-with-names names)))
-          (unless entities
-            (push-debug `(,names ,sequence ,items))
-            (error "No named entity associated with the name ~
-                  ~%~a" names))
+          (or entities
+              (setq entities (shorter-from-longer-name names))
+              (else
+               (push-debug `(,names ,sequence ,items))
+               (error "No named entity associated with the name ~
+                     ~%~a" names)))
           (if (null (cdr entities))
             (throw :already-decoded-name (car entities))
             (ambiguous-name-stub names entities))))
