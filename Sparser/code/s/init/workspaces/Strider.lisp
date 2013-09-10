@@ -20,6 +20,8 @@
 
 ; (p "In June 2011, gunmen shot dead Iranian nuclear scientist Darioush Rezai and his wife.")
 
+; (f "/Users/ddm/ws/Strider/strider/trunk/code/corpus/covert-test/doc0.txt") ;; 1, 2, 3
+
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
 ;;   sort-out-passessive+title  
 ;;   #<people> instead of #<person>  (most-recently-mentioned (discourse-entry (category-named 'person)))
