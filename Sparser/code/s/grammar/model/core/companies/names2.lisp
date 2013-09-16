@@ -91,6 +91,9 @@
       ;; see subsequent-reference-off-name-word, which was
       ;; really only intended for single words, but we
       ;; can adapt
+      when (and (individual-p nw) ;; not words like "and"
+                (itypep nw 'name-word))
+      ;; Company terms, countries, ...
       do (bind-variable 'name-of company nw))
     name-words))
   
