@@ -3,9 +3,10 @@
 ;;;
 ;;;     File:  "parens after name"
 ;;;   Module:  "model;core:names:"
-;;;  version:  July 2013
+;;;  version:  September 2013
 
-;; initiated 7/11/96. Revised and updated 2/13/13. 
+;; initiated 7/11/96. Revised and updated 2/13/13. Put in a guard to not
+;; require it to always be debugged 9/16/13.
 
 (in-package :sparser)
 
@@ -18,7 +19,6 @@
 
 (defun acronym-is-alternative-for-name (referent-of-left-edge
                                         referent-of-right-edge)
-  (push-debug `(,referent-of-left-edge ,referent-of-right-edge))
 
   ;; The function on 'company ->  company single-capitalized-word-in-parentheses'.
   ;; The item on the left is something that has a name, and the item to the right
@@ -35,16 +35,22 @@
             (setup-acronym-as-name-for-company referent-of-right-edge 
                                                referent-of-left-edge))
            (t 
-            (error "~&>>>>>>>> new case:~
-                       ~%  an acronym in parentheses has appeared just after ~
-                       ~%  a new kind of of individual: ~A~%(e~A)~%" 
-                   (itype-of referent-of-left-edge)
-                   (edge-position-in-resource-array *left-edge-into-reference*)))))
+            (when *break-on-new-cases*
+              ;; iranian-commander starts "TEHRAN (FNA)" where that's 
+              ;; a new-agency that should be on a list.
+              (push-debug `(,referent-of-left-edge ,referent-of-right-edge))
+              (error "~&>>>>>>>> new case:~
+                      ~%  an acronym in parentheses has appeared just after ~
+                      ~%  a new kind of of individual: ~A~%(e~A)~%" 
+                     (itype-of referent-of-left-edge)
+                     (edge-position-in-resource-array *left-edge-into-reference*))))))
     (otherwise
-     (format t "~&>>>>>>>> new case:~
-                ~%  an acronym in parentheses has appeared just after an object~
-                ~%  of type ~A (e~A)~%" (type-of referent-of-left-edge)
-             (edge-position-in-resource-array *left-edge-into-reference*))))
+     (when *break-on-new-cases*
+       (push-debug `(,referent-of-left-edge ,referent-of-right-edge))
+       (format t "~&>>>>>>>> new case:~
+                  ~%  an acronym in parentheses has appeared just after an object~
+                  ~%  of type ~A (e~A)~%" (type-of referent-of-left-edge)
+                  (edge-position-in-resource-array *left-edge-into-reference*)))))
 
   ;; Any name we make here is for its effect on later parts of the text.
   ;; Our return value is going to be the referent of the rule and entered into
