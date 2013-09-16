@@ -40,6 +40,9 @@
 ;;      comes from category created by DM&P without all its parts.
 ;;     (9/6/13) Factored out position string printer and narrowed the output of
 ;;      the trace in update-discourse-history
+;; 3.5 (9/16/13) Fixing long-term-ify/edge-referents/at et al. As well as redesigning
+;;      most-recently-mentioned since it looks through all of an individual's history
+;;      and only has to take the first entry.
 
 (in-package :sparser)
 
@@ -152,17 +155,20 @@
     (format stream "~&   ~A   " (car sub-entry))
     (dolist (pos-cons (cdr sub-entry))
       (format stream "~&~15,3t~a - ~a"
-              (string-for-recycled-pos (car pos-cons))
-              (string-for-recycled-pos (cdr pos-cons))))))
+              (string-for-recycled-pos pos-cons)
+              (string-for-recycled-pos pos-cons)))))
 
-(defun string-for-recycled-pos (p)
+(defun string-for-recycled-pos (pos-cons)
   "Returns a compact string for the position with actual and
    absolute indexes"
-  (let ((token-index (pos-token-index p))  ;; always extends
-        (array-index (pos-array-index p))) ;; recycles
-    (if (>= token-index *number-of-positions-in-the-chart*)
-      (format nil "p~a(~a)" token-index array-index)
-      (format nil "p~a" array-index))))
+  (if (eq (car pos-cons) :display-index) ;; position array wrapped
+    (format nil "p~a" (cadr pos-cons))
+    (let ((p (car pos-cons)))
+      (let ((token-index (pos-token-index p))  ;; always extends
+            (array-index (pos-array-index p))) ;; recycles
+        (if (>= token-index *number-of-positions-in-the-chart*)
+          (format nil "p~a(~a)" token-index array-index)
+          (format nil "p~a" array-index))))))
 
 ;;;----------
 ;;; creation
@@ -242,8 +248,10 @@
 
     (else
       (when (eq *trace-discourse-history* category)
-        (format t "~&~%Recording ~A ~a from ~A to ~A~%~%"
+        (format t "~&~%Recording ~A ~a  ~s~
+                     ~%      from ~A to ~A~%~%"
                 (cat-symbol category) instance
+                (string-of-words-between start-pos end-pos)
                 (string-for-recycled-pos start-pos)
                 (string-for-recycled-pos end-pos)))
       
@@ -255,7 +263,6 @@
            category instance start-pos end-pos))
         
         category ))))
-
 
 
 ;;;--------
@@ -469,12 +476,12 @@
 (defun long-term-ify/edge-referents/at (position-to-clear
                                         &key  workbench-active? )
 
-  ;; called from Bump-&-store-word. The position is the one about
+  ;; Called from bump-&-store-word -- The position is the one about
   ;; to be recycled -- this means that references to its indexes
   ;; will become invalid, so we have to replace them with something
   ;; longer term.  If the workbench is up, we use the display indexes
   ;; into the text-view pane; othewise we use the token indexes.
-  ;; If the workbench isn't up then this won't be called.
+
   (when *position-array-is-wrapped*
     (let* ((ev (pos-starts-here position-to-clear))
            (edges-array (ev-edge-vector ev))
@@ -511,12 +518,10 @@
               ;; edge resource and consequently might not yet have been
               ;; long-term-ified.
               
-              
               (when (individual-p referent)
-                (when workbench-active?
-                  (long-term-ify/individual referent
-                                            (pos-edge-starts-at edge)
-                                            (pos-edge-ends-at edge))))
+                (long-term-ify/individual referent workbench-active?
+                                          (pos-edge-starts-at edge)
+                                          (pos-edge-ends-at edge)))
 
               ;(format t "~&Deactivating e#~A because chart is recycling~%"
               ;        (edge-position-in-resource-array edge))
@@ -524,11 +529,15 @@
 
 
 
-(defun long-term-ify/individual (i start-pos end-pos)
+(defun long-term-ify/individual (i workbench? start-pos end-pos)
   (let ((instances-record
          (cdr (individuals-discourse-entry i)))
-        (start-index (pos-display-char-index start-pos))
-        (end-index (pos-display-char-index end-pos)))
+        (start-index (if workbench? 
+                       (pos-display-char-index start-pos)
+                       (pos-token-index start-pos)))
+        (end-index (if workbench?
+                     (pos-display-char-index end-pos)
+                     (pos-token-index end-pos))))
 
     (when (or (null start-index) (null end-index))
       (break "Display index/s is nil -- Some threading is bad.~%"))
@@ -536,18 +545,22 @@
     (when instances-record
       (dolist (cell instances-record
                     (already-long-term-ified? instances-record
+                                              workbench?
                                               start-index
                                               end-index))
+       
         (when (eq (car cell) start-pos)
+;          (when (eq *trace-discourse-history* (itype-of i))
+;            (break "old person"))
+ 
           (rplaca cell :display-index)
           (rplacd cell (kcons start-index
                               end-index))
-
           (return))))))
 
 
 
-(defun already-long-term-ified? (instances-record
+(defun already-long-term-ified? (instances-record workbench?
                                  start-index end-index)
   ;; there are occasions where there will be two edges at a given
   ;; position with the same referent, e.g. the word "one" gets spanned
@@ -555,18 +568,20 @@
   ;; which have the same referent (but different sets of rules that
   ;; they are part of).
   (dolist (cell instances-record
-                (long-term-already-subsumed? instances-record
-                                             start-index end-index))
-
-                
-    (when (eq (car cell) :display-index)
-      (when (equal (car (cdr cell)) start-index)
-        (return)))))
-
+           (when workbench?
+             (long-term-already-subsumed? instances-record
+                                          start-index end-index)))
+      (when (eq (car cell) :display-index)
+        (when (equal (car (cdr cell)) start-index)
+          (return)))))
 
 
+;; Don't remember the point of this anymore, but as it doesn't
+;; change any values, just making it dependent on the workbench
+;; (in caller just above) and ignoring it. 9/16/13. 
 (defun long-term-already-subsumed? (instances-record
                                     start-index end-index)
+  ;; In particular, why are the indicies lists?
   (let ((display-start (car start-index))
         (display-end (car end-index))
         record-start  record-end )
@@ -602,29 +617,33 @@
     ;; if there's only one, then it's trivially the most recent
     (caar c/dh)
 
+    ;; The discourse history is for an entire category.
+    ;; Each entry is (<individual> . <list of mentions,
+    ;; most-recent first>). The mentions are (<start-pos> . <end-pos)
+    ;; until the chart (or workbench display) recycles, when it
+    ;; is (:display-index start-number . end-number) because the
+    ;; positions are no longer meaningful. 
+
     (let ((candidates-entries
            (etypecase c/dh
              (cons  ;; we'll assume it's a discourse entry
               c/dh)
              (referential-category (discourse-entry c/dh))))
-          
           (largest-index-so-far 0)
           individual  last-mention  nearest-individual-so-far  )
-      
+
       (dolist (dh candidates-entries)
         (setq individual (first dh)
               last-mention (car (second dh)))  ;; start-pos of its edge
-        
-        (when (eq last-mention :display-index)
-          ;; it's way out of bounds (the display has wrapped on it)
+        ;(break "~a at ~a" individual last-mention)
+
+        (unless (eq last-mention :display-index)
+          ;; This mention is way out of bounds (the display has wrapped)
           ;; so we shouldn't use it.
-          (return-from most-recently-mentioned nil))
-        
-        (when (> (pos-token-index last-mention)
-                 largest-index-so-far)
-          
-          (setq largest-index-so-far (pos-token-index last-mention)
-                nearest-individual-so-far individual)))
+          (when (> (pos-token-index last-mention)
+                   largest-index-so-far)
+            (setq largest-index-so-far (pos-token-index last-mention)
+                  nearest-individual-so-far individual))))
       
       nearest-individual-so-far )))
 
