@@ -3,10 +3,10 @@
 ;;;
 ;;;      File: "note-text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: August 2013
+;;;   Version: September 2013
 
 ;; Initiated 3/9/13. Elaborated through 3/28/13. 7/15/13 Added gate
-;; on new cases. Occasional fixes to edge cases through 8/31/13
+;; on new cases. Occasional fixes to edge cases through 9/1613
 
 (in-package :sparser)
 
@@ -128,14 +128,15 @@
           ;; the left and still inside the segment
           (return))
 
-        (setq word-just-to-the-left
-              (word-just-to-the-left edge-just-to-the-left))
-
-        (note 'adjacent word-just-to-the-left word-to-the-right)
-
-        (if (edge-starts-at-segment-boundary edge-just-to-the-left)
-          (return)
-          (setq right-edge edge-just-to-the-left))))))
+        (if edge-just-to-the-left
+          (then
+           (setq word-just-to-the-left
+                 (word-just-to-the-left edge-just-to-the-left))
+           (note 'adjacent word-just-to-the-left word-to-the-right)
+           (if (edge-starts-at-segment-boundary edge-just-to-the-left)
+             (return)
+             (setq right-edge edge-just-to-the-left))))
+        (return)))))
 
 
 
