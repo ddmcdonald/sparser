@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "do transitions"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.12 July 2013
+;;;  version:  1.12 September 2013
 
 ;; -.3 (12/17/93) added a catch to handle the fact that the capitalization of
 ;;      headers will catch them up in the initial scan.  (12/22) fixed a ramification
@@ -201,7 +201,10 @@
 
            ((eq (first result) :not-a-name)
             (push-debug `(,result ,starting-position ,ending-position))
-            (let ((end-pos (cdr result)))
+            (let ((end-pos (cadr result)))
+              (unless (position-p end-pos) ;; lookup had been cdr
+                (push-debug `(,result ,starting-position ,ending-position))
+                (error ":not-a-name result miscoded the position"))
               (if (eq end-pos ending-position)
                 nil  ;; signal failure
                 (else 
