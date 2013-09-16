@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "both ends"
 ;;;   Module:  "grammar;rules:HA:"
-;;;  Version:  1.2 May 1996
+;;;  Version:  1.2 September 2013
 
 ;; initiated 6/13/93 v2.3 completely new model based on independent notion
 ;; of "segments"
@@ -12,6 +12,9 @@
 ;;      done right.
 ;;     (12/4) fixed a glitch in Inner-edges-go-with-head-heuristic
 ;;     (5/27/96) fixed another one.
+;;     (9/16/13) Folded in call to category-to-apply rather than blindly
+;;      take what's in the rule's category field in inner-edges. Can trip
+;;      over a form rule. 
 
 (in-package :sparser)
 
@@ -59,7 +62,7 @@
                    (make-chart-edge
                     :left-edge edge-after-prefix
                     :right-edge head-edge
-                    :category (cfr-category rule)
+                    :category (category-to-apply rule)
                     :form (cfr-form rule)
                     :rule rule )))
               
