@@ -1,12 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "cs"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  2.3 June 1993
+;;;  Version:  2.4 September 2013
 
 ;; 1.1 (1/16/91 v1.8)  Changed the Context-sensitive routine considerably
 ;;      so that it could see the context edge as part of having its
@@ -18,6 +17,7 @@
 ;;     (6/16) populated it
 ;; 2.4 (8/6/07) slight modification to what's passed through as the lhs-category
 ;;      to accommodate the trick of interpolated rewriting form rules.
+;;     (9/16/13) added form-rule-head-category
 
 (in-package :sparser)
 
@@ -56,8 +56,17 @@
 
       (keyword
        (form-rule-completion completion-field
-                             left-edge right-edge rule))
-      )))
+                             left-edge right-edge rule)))))
+
+
+(defun form-rule-head-category (rule direction)
+  "Read the rhs of the rule and the direction keyword to identify
+   the label to use for the rule"
+  ;; called by category-to-apply
+  (let ((rhs (cfr-rhs rule)))
+    (ecase direction
+      (:left-edge (car rhs))
+      (:right-edge (cadr rhs)))))
 
 
 ;;;-------------------------
