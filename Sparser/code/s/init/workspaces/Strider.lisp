@@ -25,7 +25,8 @@
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
 ;;   sort-out-passessive+title  
 ;;   #<people> instead of #<person>  (most-recently-mentioned (discourse-entry (category-named 'person)))
-;; print-category-discourse-history
+;; (print-category-discourse-history category::person)
+;; (setq *trace-discourse-history* category::person)
 
 
 ;;  (p "Deputy Chief of Staff of the Iranian Armed Forces Brigadier General Massoud Jazzayeri said Monday")
