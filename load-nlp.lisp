@@ -101,6 +101,7 @@
         (case script
           (:fire "scripts/fire")
           (:grok "scripts/grok")
+          (:c3 "scripts/no-grammar")
           (:no-grammar "scripts/no-grammar")
           (:just-dm&p "scripts/just-dm&p")
           (:default "everything") ;; i.e. no specializing script
