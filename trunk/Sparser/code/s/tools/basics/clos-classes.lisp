@@ -3,10 +3,10 @@
 ;;;
 ;;;    File:  "clos-classes"
 ;;;   Module:  tools/basics/
-;;;  Version:  March 2013
+;;;  Version:  September 2013
 
 ;; initiated 3/29/13 to hold general clos classes that will be used as
-;; mix-ins and  such 
+;; mix-ins and such. 9/16/13 added ordered. 9/17/13 added indexed.
 
 (in-package :sparser)
 
@@ -23,6 +23,14 @@
     (format stream "~s" (name i))))
 
 
+;;--- has a unique number for each of its instances
+
+(defclass indexed ()
+  ((index :type integer :initarg :index :accessor index
+    :documentation ""))
+   (:documentation ""))
+
+
 ;;--- partonomy: parent and children
 
 (defclass has-parent ()
@@ -32,8 +40,21 @@
   (:documentation "The leaf structure will only have a parent"))
 
 (defclass has-children ()
-  ((children
+  ((children :accessor children
     :documentation "Point to one or more structures that are 
       in some sense contained by this object."))
   (:documentation "The topmost structure in a partonomy will
     only have children."))
+
+
+;;---- double linked list
+
+(defclass ordered ()
+  ((previous :accessor previous
+    :documentation "Points to the previous adjacent ordered item or nil")
+   (next :accessor next
+    :documentation "Points to the next adjacent ordered item or nil"))
+  (:documentation "Provides links to follow through a sequence
+    of anything that has a sense of direction (creation order, scanning
+    order, ...) where the notion of 'the next one' and 'the last (previous, 
+    prior) one' makes sense."))
