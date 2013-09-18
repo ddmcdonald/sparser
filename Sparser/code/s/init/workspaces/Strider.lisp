@@ -5,7 +5,7 @@
 ;;;   Module:  "init;workspaces:"
 ;;;  version:  September 2012
 
-;; Initiated 5/7/13. Adding bits through 9/6/13
+;; Initiated 5/7/13. Adding or rearranging bits through 9/16/13
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -13,20 +13,25 @@
 
 (strider-setting) ;; adds (setq *do-debris-analysis* t)
 
+;; (setq *note-text-relations* nil) Make the display quieter, at expense of latient bugs
 
-;; (setq *note-text-relations* nil)  bad way to make the display quieter, at expense of latient bugs
+; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
+
+(turn-off-debugging-flags)
+;; (turn-on-debugging-flags)
+
+;; (setq *break-before-creating-name* t) 
+;;   to look at what could happen before it creates facts
+
+;; (setq *trace-completion-hook* t) e.g. to trace pronoun triggering
+
+
+
 
 ; (p "Mossad, the Israeli secret service, acknowledged that last week it murdered Majid Shahriari and wounded another physicist in Iran, according to Mossad sources, in an operation carried out in Teheran.")
 
 ; (p "In June 2011, gunmen shot dead Iranian nuclear scientist Darioush Rezai and his wife.")
 
-; (f "/Users/ddm/ws/Strider/strider/trunk/code/corpus/covert-test/doc0.txt") ;; 1, 2, 3
-
-; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
-;;   sort-out-passessive+title  
-;;   #<people> instead of #<person>  (most-recently-mentioned (discourse-entry (category-named 'person)))
-;; (print-category-discourse-history category::person)
-;; (setq *trace-discourse-history* category::person)
 
 
 ;;  (p "Deputy Chief of Staff of the Iranian Armed Forces Brigadier General Massoud Jazzayeri said Monday")
@@ -42,18 +47,20 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
 
 ;;  (p "Meir Dagan, ex chief of the Mossad, who apparently oversaw much of what occurred in Iran, and Yuval Diskin, chief of Shin Bet, have warned against a current military strike on Iran.")
 
-(turn-off-debugging-flags)
-;; (turn-on-debugging-flags)
-
-;; (setq *break-before-creating-name* t) 
-;;   to look at what could happen before it creates facts
-
-;; (setq *trace-completion-hook* t) e.g. to trace pronoun triggering
-
 ;; (p "Another Iranian scientist, Dariush Rezaeinejad, was also assassinated on July 32, 2011.")
 ;; (p "Iranian scientist Dariush Rezaeinejad was assassinated on July 32, 2011.")
 ;;    note-immediate-relations-to-head
 
+
+
+;; Scott's problematic texts 8/12/13
+;; (p "The minister said Iranian scientists have made great success in various areas of science and technology, but the country cannot introduce all these outstanding figures because it does not want the country's scientists to come to the center of attention in such enemy plots.")
+;; (p "A number of countries, whose territories and facilities had been misused by the Mossad-backed terrorist teams, have provided the Iranian officials with relevant information, the statement added.")
+
+
+;;;-----------------
+;;;     texts
+;;;-----------------
 
 ;;--- setting up a grammar module for Strider-specific content
 
@@ -68,19 +75,13 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
 (gate-grammar *middle-east*
   (gload "mideast;loader"))
 
-;; (test-modules-citations
-;; *citations* *time* *proper-names*
+;; (test-modules-citations *citations* *time* *proper-names*
 
 ;;---- Patch up ordinary words
 ;; see note and list in middle eastern named-entities
 (mapcar #'standalone-lexicon-unpacker  ;; n.b. can't run until after Comlex is loaded
         *words-from-names-that-need-unpacking*)
 
-;; Scott's problematic texts 8/12/13
-;; (p "The minister said Iranian scientists have made great success in various areas of science and technology, but the country cannot introduce all these outstanding figures because it does not want the country's scientists to come to the center of attention in such enemy plots.")
-;; (p "A number of countries, whose territories and facilities had been misused by the Mossad-backed terrorist teams, have provided the Iranian officials with relevant information, the statement added.")
-
-;;--- text
 
 ;; ddm's hard pathnames. Replace with a logical or computed form
 ;;  (f "/Users/ddm/sift/nlp/Grok/corpus/helicopter-attack.txt")
@@ -90,11 +91,18 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
 
 (def-logical-pathname "Strider;" "corpus;Strider:")
 (def-logical-pathname "June15;" "Strider;OSC-rmr-15Jun13:")
+(def-logical-pathname "Covert;" "Strider;covert-test:")
 
 (defvar june15th
   (define-document-stream '|Roger's articles as of June 15th 2013|
     :style-name 'hand-typed/no-headers
     :directory "June15;"
+    :unified t)) ;; when modeling treat as one unit
+
+(defvar covert-texts
+  (define-document-stream '|Selected paragraphs from the Iranian documents|
+    :style-name 'hand-typed/no-headers
+    :directory "Covert;"
     :unified t))
 
 #|
@@ -103,10 +111,21 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
  (grok-pass-three june15th)
 |#
 
+; (f "/Users/ddm/ws/Strider/strider/trunk/code/corpus/covert-test/doc0.txt") ;; 1, 2, 3
+
+
+
+
+;; Get's through 9/16/13
+; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
+;;   sort-out-passessive+title  
+;;   #<people> instead of #<person>  (most-recently-mentioned (discourse-entry (category-named 'person)))
+;; (print-category-discourse-history category::person)
+;; (setq *trace-discourse-history* category::person)
+
+
 ;;(p "Mostafa Ahmadi-Rowshan had started his studies in Sharif University of Technology in the year 77, the year that started on 20 March 1998, in the field of chemical engineering, and he received his B.Sc. Degree in the year 81. As part of his research for his B.Sc. course he collaborated with Reza Rustazad and Seyyed Abbas Musavi in a joint project on \"the manufacturing of polymeric membrane [ghesha] for separating gases\". Even at the beginning of his student days, he had published many articles on polymers in ISI [previous acronym given in English] under the name of Mostafa Ahmadi. The method that Ahmadi-Rowshan and his colleagues were working on was about a method for enriching uranium, because according to that method they had to use polymeric membranes for enriching uranium. In order to enrich uranium, at first uranium is turned into uranium hexafluoride gas, and then that gas is passed through a layer of polymeric membranes and this is how it is enriched.")
 ;;  (trace-pronouns) interpret-name-as-person  find/person-name/sequence  disconnect-uncategorized-name
-
-; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
 
 
 
