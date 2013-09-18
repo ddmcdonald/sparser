@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995,1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "select"
 ;;;   Module:  "drivers;chart:"
-;;;  Version:  2.4 January 1996
+;;;  Version:  2.4 September 2013
 
 ;; 2.0 (9/12/92) moved up to chart level from psp
 ;; 2.1 (4/7/93) commented out the wsj-headers option
@@ -11,6 +11,7 @@
 ;; 2.3 (9/8) cleaned out the cases that aren't defined any more
 ;; 2.4 (1/24/95) Added another kind :test-protocol, with call (initiate-test-protocol)
 ;;     (1/9/96) added :scan-for-closing-markup-tag
+;;     (9/16/13) added :c3-protocol
 
 (in-package :sparser)
 
@@ -66,12 +67,14 @@
          (inititate-top-edges-protocol))
         (:all-edges
          (initiate-all-edges-protocol))
+        (:c3-protocol
+         (initiate-c3-protocol))
         (:just-do-terminals
          (look-at-all-terminals))
         (:scan-for-closing-markup-tag
          (initiate-scan-for-closing-markup-tag))
-        (:test-protocol
-         (initiate-test-protocol))
+        ;(:test-protocol  ;; ?? where's the definition?
+        ; (initiate-test-protocol))
         )))
 
   ;; we won't get here unless the throw is taken, because if we
