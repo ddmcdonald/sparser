@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.20 August 2013
+;;;  Version:  2.20 September 2013
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -58,7 +58,7 @@
 ;;      (10/30/12) Setting up for Grok. 1/21/13 Turned on *do-strong-domain-modeling* in it
 ;; 2.20 (4/30/13) Converted Grok experiments into tuned-grok seeing
 ;;      (7/17/13) added strider-setting. (8/19/13) Added display setting and other odd
-;;       things to it to esure they took effect.
+;;       things to it to esure they took effect. (9/16/13) stubbed c3-setting
 
 (in-package :sparser)
 
@@ -214,10 +214,8 @@
 
 (defun include-comlex ()
   (setq *incorporate-generic-lexicon* t)
-  (what-to-do-with-unknown-words :check-for-primed)
-  (establish-version-of-def-word :comlex)
-  (unless *comlex-word-lists-loaded*
-    (load-comlex))
+  (what-to-do-with-unknown-words :check-for-primed)  
+  (comlex-mode)
   (unless *comlex-words-primed*
     (prime-comlex)))
 
@@ -419,6 +417,17 @@
   (setq *ignore-parentheses* t)
   (setq *timezones-off* t)
   (setq *cfg-flag* t))
+
+
+;;--- C3, and now for something completely different
+(defun c3-setting ()
+  "Start by turning everthing off"
+  (word-frequency-setting) ;; get most of them
+  (what-to-do-with-unknown-words :ignore) ;; more like throw an error
+  (setq *make-edges-for-unknown-words-from-their-properties* nil
+        )
+  (establish-kind-of-chart-processing-to-do :c3-protocol)
+  (setq *switch-setting* :c3))
   
 
 ;;--- Measuring word frequencies
