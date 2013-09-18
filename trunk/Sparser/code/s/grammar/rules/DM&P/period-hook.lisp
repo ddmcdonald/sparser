@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
+;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  July 2010
+;;;   version:  September 2013
 
-;; initiated 5/26/10. Picked up working on it 7/10. 
+;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
+;; hooked it into creating sentences. 
 
 (in-package :sparser)
 
@@ -44,12 +45,13 @@
     ;; all start with a lot of topic lines that don't use periods,
     ;; so we should coordinate this with paragraph breaks to get the
     ;; right size 'sentence chunks'
-    (break "3")
-
     (delimited-sentence *position-before-last-period* position-before)
     (push-debug `(,*position-before-last-period* ,position-before))
     (break "got to period hook~% last = ~a~% now = ~a"
-           *position-before-last-period* position-before))
+           *position-before-last-period* position-before)
+    (start-sentence position-before))
+
+  (break "bottom of period-hook")
   (setq *position-before-last-period* position-before))
 
 
