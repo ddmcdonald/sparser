@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   August 2013
+;;;   Version:   September 2013
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -83,7 +83,7 @@
 ;; 5/26/13 changed value of *do-not-use-psi* to t because the psi are not resolving
 ;; the sequences of two instances of a name correctly. 8/14/13 Commented out the 
 ;; explicit workspaces load to use the implicit one. 8/19/13 added a redeclare-permanent
-;; at the very end since workspace items were being reclaimed.
+;; at the very end since workspace items were being reclaimed. 9/16/13 Added *c3*
 
 (in-package :cl-user)
 
@@ -794,6 +794,12 @@ or for loading the newer of the compiled or source files.
     "Includes the core grammar and selected sublanguages such as report.
      Note that this sets the *do-not-use-psi* flag."))
 
+(unless (boundp 'sparser::*c3*)
+  (defparameter sparser::*c3* nil
+    "Uses minimal built-in grammar. Has its own protocol over the chart,
+     and uses a set of document structures to maintain a 'situation' construct."))
+
+
 (unless (boundp 'sparser::*checkpoint-operations*) ;; in mothballs
   (defparameter sparser::*checkpoint-operations* nil))
 
@@ -931,6 +937,9 @@ or for loading the newer of the compiled or source files.
       (sparser::*grok*
        (setq *do-not-use-psi* t)
        (sparser::lload "grammar-configurations;grok"))
+
+      (sparser::*c3*
+       (sparser::lload "grammar-configurations;c3"))
 
       (sparser::*checkpoint-operations*
        (sparser::lload "grammar-configurations;checkpoint-ops"))
