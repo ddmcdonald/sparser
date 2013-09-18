@@ -3,9 +3,10 @@
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  March 2013
+;;;  Version:  September 2013
 
-;; initiated 3/13/13. Elaborated through 3/29/13
+;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
+;; from sections make-over.
 
 (in-package :sparser)
 
@@ -43,7 +44,7 @@
   ;; placeholder for resource -- but only via a generating macro that
   ;; has some generality. 
   (let ((contents (make-instance 'text-relation-contents :container article))
-        (symbol (article-name article)))
+        (symbol (name article)))
     (if symbol 
       (setf (name contents) symbol)
       (setf (name contents) :no-name-in-article))
@@ -55,7 +56,7 @@
 (defun add-text-relation-to-article (relation instance)
   (unless *current-article*
     (error "Initialization/threading error. No value for *current-article*"))
-  (let ((content-obj (article-contents *current-article*)))
+  (let ((content-obj (contents *current-article*)))
     (case (name relation)
       (text-relationships::head
        (push instance (head-relations content-obj)))
@@ -67,5 +68,6 @@
        (push instance (adjacency-relations content-obj)))
       (otherwise
        (push-debug `(,relation ,instance))
-       (error "No provision for storing ~a yet" relation))))
-  (format t "~&Added ~a~%" instance))
+       (error "No provision for storing ~a yet" relation)))))
+;; Noisy -- put it under a trace
+;;  (format t "~&Added ~a~%" instance)
