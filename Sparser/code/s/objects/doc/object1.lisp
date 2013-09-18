@@ -17,310 +17,208 @@
 ;;; the objects
 ;;;-------------
 
-(defclass sentence (chart-region has-content-model has-parent resource)
+(defclass sentence (chart-region document-region has-content-model
+                    has-parent ordered resource)
   ()
   (:documentation 
    "Represents the content or other interesting features
     of a sentence within the text. If there is an active section or
     paragraph that is parent."))
-
 ;;(def-resource-data-for sentence)
 
+(defmethod print-object ((s sentence) stream)
+  (print-unreadable-object (s stream :type t)
+    (format stream "p~a -- "
+            (pos-token-index (starts-at-pos s))) ;; !! recycles !!
+    (when (ends-at-pos s)
+      (format stream "p~a" (ends-at-pos s)))))
+
+(defvar *previous-sentence* nil)
+(defun previous-sentence () *previous-sentence*)
+
+(defvar *current-sentence* nil)
+(defun sentence () *current-sentence*)
+
+(defun start-sentence (pos)
+  (let ((s (make-instance ;;/// replace with resource
+               'sentence 
+             :starts-at-pos pos
+             :starts-at-char (pos-character-index pos))))
+    ;; lookup the current section for parent
+    ;; put in a switched choice of content
+    (when *current-sentence*
+      (let ((last *current-sentence*))
+        (setq *previous-sentence* last)
+        (setf (next last) s)
+        (setf (previous s) last)
+        (setf (ends-at-pos last) pos)
+        (setf (ends-at-char last) (pos-character-index pos))
+        ;; tie off the prev contents
+        ))
+    (setq *current-sentence* s)))
 
 
+
+;;--- articles
+#|
 (defstruct (article
             (:print-function print-article-structure))
-
   name
   location
   date
   source
-  contents
-
   position-in-resource-array
   document-set
-  )
+  )  |#
 
-(defstruct (section
-            (:print-function print-section-structure))
+(defclass article (named-object has-parent has-children
+                   has-content-model indexed)
+  ((location :accessor article-location
+    :documentation "Usually a short form of the file name")
+   (date :accessor article-date
+    :documentation "In principle should be a date object, but
+     in practice just a string encoding the date")
+   (source :accessor article-source
+    :documentation "The pathname of the document"))
+  (:documentation ""))
 
-  name
-  article
-  contents
+(defmethod print-object ((a article) stream)
+  (print-unreadable-object (a stream :type t)
+    (format stream " ~a" (name a))
+    (when (article-date a)
+      (format stream " ~a" (article-date a)))))
 
-  starts-at-pos  ;; The position obj of the first word in the section, inclusive.
-  ends-at-pos    ;; The position obj of the last word in the section, exclusive.
-  starts-at-char ;; The char index the first word in the section, inclusive.
-  ends-at-char   ;; The char index of the character that ends this section.
+(define-resource article)
 
-  paragraph      ;; A boolean variable.  Paragraphs are leaf sections.
+(defun initialize-article-resource ()
+  ;; called from do-document-as-stream-of-files or
+  ;; from analyze-text-from-file
+  (let ((r (get-resource :article)))
+    ;;/// try to do this on the resource class
+    (loop for a in (resource-store r)
+      do (clear a))
+    (setf (instance-counter r) -1)
+    r))
 
-  ;; These two are for iterating back and forth for resolving references.
-  ;; They are only bound for paragraph sections.
-  next-paragraph
-  prev-paragraph
+(defmethod clear ((a article))
+  (setf (article-location a) nil)
+  (setf (article-date a) nil)
+  (setf (article-source a) nil)
+  (call-next-method))
 
-  ;; TODO: track the character offsets to easily zoom to a location in the text.
-
-  position-in-resource-array
-  )
-
-
-;;;-------------
-;;; the printers
-;;;-------------
-
-(defun print-article-structure (obj stream depth)
-  (declare (ignore depth))
-  (write-string "#<article" stream)
-  (princ (article-position-in-resource-array obj) stream)
-  (write-string " " stream)
-  (when (article-name obj)
-    (princ (article-name obj) stream)
-    (write-string " " stream))
-  (when (article-source obj)
-    (princ (article-source obj) stream)
-    (write-string " " stream))
-  (when (article-date obj)
-    (princ (article-date obj) stream)
-    (write-string " " stream))
-  (write-string ">" stream))
-
-(defun print-section-structure (obj stream depth)
-  (declare (ignore depth))
-  (write-string "#<section" stream)
-  (princ (section-position-in-resource-array obj) stream)
-  (write-string " " stream)
-  (princ (section-name obj) stream)
-  (write-string " " stream)
-  (princ (section-starts-at-char obj) stream)
-  (write-string "-" stream)
-  (princ (section-ends-at-char obj) stream)
-  (write-string ">" stream))
+(defun allocate-article ()
+  (allocate-next-instance (get-resource :article)))
 
 
-;;;-------------
-;;; the accessors
-;;;-------------
-
-(defun find/sections-for-article (article)
-  (remove-if-not #'(lambda (s)
-                     (eql (section-article s) article))
-                 *all-sections*))
-
-(defun article# (index)
-  (aref *all-articles* index))
-
-(defun section# (index)
-  (aref *all-sections* index))
-
-;; Paragraph number is zero-based, so that we can incr & retun it
-;; and get a nonzero number.
-
-(defun next-paragraph-number-in-article ()
-  (incf *current-paragraph-number-in-article*))
-
-(defun reset-paragraph-state-in-article ()
+(defun begin-new-article (&key name location date source)
+  ;; called from do-document-as-stream-of-files
   (declare (special *current-paragraph*))
-  (setf *current-paragraph-number-in-article* 0)
-  (setf *current-paragraph* nil))
+  (let ((obj (allocate-article)))
+    (setf (name obj) name)
+    (setf (article-location obj) location)
+    (setf (article-date obj) (or date
+                                 (date-&-time-as-formatted-string)))
+    (setf (article-source obj) source)
+    (setf (contents obj) (fresh-contents obj))
 
-(defun next-paragraph-name-in-article ()
-  (let ((next-nbr (next-paragraph-number-in-article)))
-    (format nil "Paragraph ~A" next-nbr)))
-
-;;;-------------
-;;; section & paragraph factory
-;;;-------------
-
-(defun new-section-in-article (sec-name start-pos)
-  (let ((obj (next-section-from-resource)))
-    (declare (special *current-article*))
-    (setf (section-article obj) *current-article*)
-    (setf (section-name obj) sec-name)
-    (setf (section-starts-at-pos obj) start-pos)
-    (setf (section-starts-at-char obj) (pos-character-index start-pos))
+    (setf *current-article* obj)
+    (add-to-document-set obj)
+    (initialize-sections) ;; make the 1st one
     obj))
 
+
+
+;;--- sections / paragraphs
+
+(defclass section (named-object chart-region document-region
+                   has-parent has-children has-content-model
+                   ordered indexed)
+  ()
+  (:documentation ""))
+
+(defmethod print-object ((s section) stream)
+  (print-unreadable-object (s stream :type t)
+    (when (name s)
+      (format stream " ~a" (name s)))
+    (when (starts-at-pos s)
+      (format stream " p~a" (pos-token-index (starts-at-pos s))))
+    (when (ends-at-pos s)
+      (format stream "--p~a" (pos-token-index (ends-at-pos s))))))
+
+
+(define-resource section)
+
+(defun initialize-section-resource ()
+  ;; called from do-document-as-stream-of-files or
+  ;; from analyze-text-from-file
+  (initialize-resource (get-resource :section))) ;; clears everything
+
+(defun initialize-sections ()
+  (let ((s1 (new-section-in-article nil (position# 1)))
+        (article *current-article*))
+    (unless article
+      (error "Threading bug - expected a value on *current-article*"))
+    (setf (children article) s1)
+    (setf (parent s1) article)
+    (setq *current-paragraph* s1)))
+
+
+(defmethod clear ((s section))
+  (setf (parent s) nil) ;; these need their own clear's
+  (setf (name s) nil)
+  (call-next-method))
+
+(defun allocate-section ()
+  (allocate-next-instance (get-resource :section)))
+
+(defun new-section-in-article (sec-name start-pos)
+  (let ((obj (allocate-section))
+        (name (or sec-name (next-indexical-name :section))))
+    (declare (special *current-article*))
+    (setf (parent obj) *current-article*)
+    ;; setup a sentence
+    (setf (name obj) name)
+    (setf (starts-at-pos obj) start-pos)
+    (setf (starts-at-char obj) (pos-character-index start-pos))
+    obj))
+
+
+
+;;;--------------------------------
+;;; action at paragraph boundaries
+;;;--------------------------------
+
+; Original design overloaded section with the actions
+; for paragraphs by making some section as being paragraphs.
+; For now, use sections straight-up as being paragraphs
+; and make a class for them specifically if we have a need
+; to distinguish them. 
+
 (defun check-begin-new-paragraph (start-pos)
+  ;; Called from sort-out-result-of-newline-analysis
   ;; We need this because the newline handler isn't soaking up all
   ;; the newlines internally, and as a result makes one call to
   ;; this per newline character encountered.
-  (declare (special *current-paragraph*))
+  (declare (special *current-paragraph* *tts-after-each-section*))
   (unless (and *current-paragraph*
                (eql start-pos (section-starts-at-pos *current-paragraph*)))
     (begin-new-paragraph start-pos)))
 
 (defun begin-new-paragraph (start-pos)
   (declare (special *current-paragraph*))
-  (let* ((sec-name (next-paragraph-name-in-article))
-         (obj (new-section-in-article sec-name start-pos)))
-    (setf (section-paragraph obj) t)
-    (when (and *current-paragraph*
-               (section-paragraph *current-paragraph*))
-      ;; We check here to ensure that the last paragraph has been terminated.
-      (terminate-section *current-paragraph* start-pos)
-      (setf (section-prev-paragraph obj) *current-paragraph*)
-      (setf (section-next-paragraph *current-paragraph*) obj)
-      (setf (section-ends-at-char *current-paragraph*)
-            (1- (pos-character-index start-pos))))
-    (setf *current-paragraph* obj)
-    obj))
+  (let ((s (new-section-in-article nil start-pos))
+        (ongoing *current-paragraph*))
+    (when ongoing ;; should always be true
+      (setf (previous s) ongoing)
+      (setf (next ongoing) s)
+      (setf (ends-at-pos ongoing) start-pos)
+      (setf (ends-at-char ongoing) (pos-character-index start-pos))
+      (when *tts-after-each-section*
+        (format t "~^&~%")
+        (tts t (starts-at-pos ongoing) start-pos)
+        (format t "~^&~%")))  
+      (setf *current-paragraph* s)
+    s))
 
-(defparameter *tts-after-each-section* nil
-  "Gates displaying the chart after each section")
 
-(defun terminate-section (obj end-pos)
-  (when *tts-after-each-section*
-    (format t "~^&~%")
-    (tts t (section-starts-at-pos obj) end-pos)
-    (format t "~^&~%"))
-  (setf (section-ends-at-pos obj) (chart-position-before end-pos))
-  obj)
 
-;;;-------------
-;;; article factory
-;;;-------------
-
-(defun begin-new-article (&key name location date source)
-  (declare (special *current-article*))
-  (unless *all-articles*
-    ;; In this case, thec all is probably via analyze-text-from-file for 
-    ;; a single file rather than from do-document-as-stream-of-files 
-    ;; where we make this call on each individual flle.
-    (make-the-article-resource))
-  (let ((obj (next-article-from-resource)))
-    (setf (article-name obj) name
-          (article-location obj) location
-          (article-date obj) (or date
-                                 (date-&-time-as-formatted-string))
-          (article-source obj) source
-          (article-contents obj) (fresh-contents obj))
-    (setf *current-article* obj)
-    (reset-paragraph-state-in-article)
-    (add-to-document-set obj)
-    obj))
-
-;;;-------------
-;;; resource management
-;;;-------------
-
-;; Make resources.
-
-(defun make-the-article-resource ()
-  (setq *all-articles*
-        (make-array *length-of-article-resource*
-                    :element-type t))
-  (dotimes (n *length-of-article-resource* *length-of-article-resource*)
-    (setf (aref *all-articles* n)
-          (make-article
-           :position-in-resource-array n))))
-
-(defun make-the-section-resource ()
-  (setq *all-sections*
-        (make-array *length-of-section-resource*
-                    :element-type t))
-  (dotimes (n *length-of-section-resource* *length-of-section-resource*)
-    (setf (aref *all-sections* n)
-          (make-section
-           :position-in-resource-array n))))
-
-;; Init resources.
-
-(defun initialize-article-resource ()
-  (unless *all-articles*
-    (make-the-article-resource))
-  (let ( obj )
-    (dotimes (n (if *article-resource-is-wrapped*
-                  *length-of-article-resource*
-                  *index-of-furthest-article-ever-allocated*))
-      (setq obj (aref *all-articles* n))
-      (release-article-to-resource obj)))
-
-  (setq *position-of-next-available-article-in-resource* 0
-        *index-of-furthest-article-ever-allocated* 0
-        *some-articles-released*         nil
-        *article-resource-is-fragmented* nil
-        *article-resource-is-wrapped*    nil))
-
-(defun initialize-section-resource ()
-  (unless *all-sections*
-    (make-the-section-resource))
-  (let ( obj )
-    (dotimes (n (if *section-resource-is-wrapped*
-                  *length-of-section-resource*
-                  *index-of-furthest-section-ever-allocated*))
-      (setq obj (aref *all-sections* n))
-      (release-section-to-resource obj)))
-
-  (setq *position-of-next-available-section-in-resource* 0
-        *index-of-furthest-section-ever-allocated* 0
-        *some-sections-released*         nil
-        *section-resource-is-fragmented* nil
-        *section-resource-is-wrapped*    nil))
-
-;; Init structures.
-
-(defun initialize-article (obj)
-  ;; Called from next-article-from-resource
-  ;; We zero out every field in the article except its position in
-  ;; the resource array, which is always fixed.
-  (setf (article-name obj)     nil
-        (article-source obj)   nil
-        (article-date obj)     nil
-        (article-location obj) nil
-        (article-contents obj) nil))
-
-(defun initialize-section (obj)
-  ;; Called from next-section-from-resource
-  ;; We zero out every field in the section except its position in
-  ;; the resource array, which is always fixed.
-  (setf (section-name           obj) nil
-        (section-article        obj) nil
-        (section-starts-at-pos  obj) nil
-        (section-ends-at-pos    obj) nil
-        (section-next-paragraph obj) nil
-        (section-prev-paragraph obj) nil
-        (section-starts-at-char obj) nil
-        (section-ends-at-char   obj) nil))
-
-;; Release
-
-(defun release-article-to-resource (obj)
-  (initialize-article obj)
-  (setf *some-articles-released* t)
-  obj)
-
-(defun release-section-to-resource (obj)
-  (initialize-section obj)
-  (setf *some-sections-released* t)
-  obj)
-
-;; Allocate
-
-;; [sfriedman:20130206.2157CST]
-;; N.B. unlike edges, we don't manage the resource before re-initializing
-;; an entity; we just steam-roll over it, assuming that the subroutines that
-;; convert the discourse history information to long-term format have already
-;; consumed this information.  The chart and edges recycle quicker than sections
-;; and articles.
-
-(defun next-article-from-resource ()
-  (let ((article (aref *all-articles* *position-of-next-available-article-in-resource*))
-        (next-index (incf *position-of-next-available-article-in-resource*)))
-    (when (= next-index *length-of-article-resource*)
-      (setq *position-of-next-available-article-in-resource* 0
-            *article-resource-is-wrapped* t))
-    (initialize-article article)
-    article))
-
-(defun next-section-from-resource ()
-  (unless *all-sections*
-    (error "section resource hasn't been initialized"))
-  (let ((section (aref *all-sections* *position-of-next-available-section-in-resource*))
-        (next-index (incf *position-of-next-available-section-in-resource*)))
-    (when (= next-index *length-of-section-resource*)
-      (setq *position-of-next-available-section-in-resource* 0
-            *section-resource-is-wrapped* t))
-    (initialize-section section)
-    section))
