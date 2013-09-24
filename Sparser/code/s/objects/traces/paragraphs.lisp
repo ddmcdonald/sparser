@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: paragraphs.lisp 354 2010-03-15 13:47:53Z dmcdonal $
 ;;; 
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  March 2010
+;;;  Version:  September 2013
 
 ;; initiated 1/5/94 v2.3. Added untrace fn. 5/20
 ;; (3/12/10) Added more traces to track the FSA
+;; (9/18/13) Started sentence traces.
 
 (in-package :sparser)
 
@@ -51,4 +51,13 @@
   (when *trace-paragraphs*
     (trace-msg "[P] Introducing paragraph marker at p~a"
 	       (pos-token-index p))))
+
+
+;;---- sentences
+
+(deftrace :period-hook (from to)
+  ;; Called from period-hook
+  (when *trace-paragraphs*
+    (trace-msg "[S] Delimited the next sentence from p~a to p~a"
+               (pos-token-index from) (pos-token-index to))))
 
