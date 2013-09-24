@@ -1,14 +1,62 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
+;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "time-of-day"
 ;;;   Module:  "model;core:time:"
-;;;  version:  August 2008
+;;;  version:  September 2013
 
-;; initiated 8/27/08
+;; initiated 8/27/08 (CG). 9/23/13 Adding and revising a lot.
 
 (in-package :sparser)
+
+;;;------------------
+;;; phase of the day
+;;;------------------
+
+(define-category phase-of-day
+  :instantiates  self
+  :specializes  nil
+  :binds ((name :primitive word))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(defun define-phase-of-day (string)
+  ;; hook to add arguments later
+  (define-or-find-individual 'phase-of-day :name string))
+
+
+;;;-------------
+;;; time of day
+;;;-------------
+
+(define-category time-of-day
+  :instantiates  self
+  :specializes  nil
+  :binds ((name :primitive word))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(defun define-time-of-day (string)
+  ;; hook to add arguments later
+  (define-or-find-individual 'time-of-day :name string))
+
+
+;;;-----------
+;;; meal time
+;;;-----------
+
+(define-category meal-time ;; sort of similar "having a late dinner"
+  :instantiates  self   ;; but lots more content
+  :specializes  nil     ;; and patterning needs to be done
+  :binds ((name :primitive word))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(defun define-meal-time (string)
+  (define-or-find-individual 'meal-time :name string))
+
+
 
 ;;;------------
 ;;; Numeric times
