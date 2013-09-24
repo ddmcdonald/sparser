@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.6 July 2013
+;;;  Version:  0.6 September 2013
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -21,7 +21,8 @@
 ;;     dependency imposed by doc-set  (5/1/13) Moved globals first so all the
 ;;     symbols are known before they're referenced in code.
 ;; 0.6 (7/15/13) Bumped [object] to 1 to start adjustments for greater uniformity
-;;      in accumulators and operations. Added [classes]
+;;      in accumulators and operations. Added [classes]. (9/18/13) added
+;;      [situation].
 
 (in-package :sparser)
 
@@ -53,5 +54,5 @@
 (lload "doc;doc stream")
 (lload "doc;context")
 (lload "doc;content")
-
+(lload "doc;situation")
 

@@ -15,7 +15,7 @@
 
 (defclass chart-region ()
   ((starts-at-pos ;; :type position -- no hassles from nil
-    :accessor starts-at-pos
+    :initarg :start-pos :accessor starts-at-pos
     :documentation "The position just before the region starts")
    (ends-at-pos ;; :type position
     :accessor ends-at-pos
@@ -35,7 +35,7 @@
 
 (defclass document-region ()
   ((starts-at-char ;; :type integer 
-                   :accessor starts-at-char
+    :initarg :start-char :accessor starts-at-char
     :documentation "The index of the first character in the region")
    (ends-at-char ;; :type position -- not defined yet
     :accessor ends-at-char
