@@ -3,12 +3,12 @@
 ;;;
 ;;;      File: "gofers"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: July 2013
+;;;   Version: September 2013
 
 ;; Broken out of scan1 2/28/13. 3/13/13 added word-to-left-of-head,
 ;; edge-to-left-of-head. Coping with polyword at end of segment 3/14.
 ;; Generalizing that notion 3/28/13. Fixed edge-over-segment-prefix
-;; to notice multiple-edges case
+;; to notice multiple-edges case. 9/21/13 trivial doc, checks 
 
 (in-package :sparser)
 
@@ -86,6 +86,9 @@
                   *right-segment-boundary*)))
 
 (defun edge-over-segment-head ()
+  "The edge over just the word in head position (rightmost in
+   the segment. Doesn't notice if there's a bigger edge that
+   goes over it."
   (edge-between *segment-position-just-left-of-head*
                 *right-segment-boundary*))
 
@@ -130,12 +133,14 @@
 
 
 (defun edge-just-to-left-of (edge)
-  (push-debug `(,edge))
+  "Return the edge that is adjacent to the left of argument edge.
+   Caller should check that it exists, e.g. note-in-segment-adgacences"
   (let* ((start-pos (pos-edge-starts-at edge))
          (top-node (top-edge-at/ending start-pos)))
-    (when (eql top-node :multiple-initial-edges)
-      (setq top-node (highest-edge (pos-ends-here start-pos))))
-    top-node))
+    (when top-node
+      (when (eql top-node :multiple-initial-edges)
+        (setq top-node (highest-edge (pos-ends-here start-pos))))
+      top-node)))
 
 (defun word-just-to-the-left (edge)
   (let* ((p1 (pos-edge-starts-at edge))
