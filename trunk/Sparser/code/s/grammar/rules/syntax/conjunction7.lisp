@@ -67,7 +67,9 @@
 (defun conjoin-adjacent-like-treetops (position-after)
   ;; Called by invoking the treetop-action above during the
   ;; forest scan. Timing of the segment scan prohibited running
-  ;; via the usual entry point
+  ;; via the usual entry point.
+  ;; position-after is the one that immediately follows the
+  ;; conjunction.
 
   (when (edge-p position-after)
     ;; Can happen if we have an edge over "and", which we'll get
@@ -76,8 +78,7 @@
     (setq position-after (pos-edge-ends-at position-after)))
 
   (tr :calling-conj-treetop-hook position-after)
-  ;; position-after is the one that immediately follows the
-  ;; conjunction.
+  
   (let* ((position-before (chart-position-before position-after))
          (edge-before (span-ending-at position-before))
          (edge-after (span-starting-at position-after)))
