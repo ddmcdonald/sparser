@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  2.0 July 2013
+;;;  version:  2.0 September 2013
 
 ;; initiated 6/10/93 v2.3.  Moved out the print macro 1/6/94 to help the
 ;; compiler.  1/18 added title-heads and title-modifiers
@@ -15,7 +15,10 @@
 ;;    (3/17/05) Added np-common-noun/one-of-several schema to titlex2
 ;; 1.2 (2/21/11) Added abbreviated-title for things like CEO. 
 ;; 2.0 (3/18/13) Redid everything.
-;;     (7/17/13) added age+title, which is odd
+;;     (7/17/13) added age+title, though it's odd. (9/18/13) Added 
+;;     kind-of-company as a title modifier: "university (professor)"
+;;     but doesn't work if the title head word has been swallowed by
+;;     a person, but that's not the rule's fault.  
 
 (in-package :sparser)
 
@@ -90,7 +93,7 @@ in the past they actually held the position.  We can ask
                            (modifier-var . modifier)
                            (np . title)
                            (np-head . (title title-modifier))
-                           (modifier . (title title-modifier))))
+                           (modifier . (title title-modifier kind-of-company))))
                 (:tree-family premodifier-adds-property
                  :mapping ((property . locale)
                            (modifier . country)
