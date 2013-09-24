@@ -3,12 +3,12 @@
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  August 2013
+;;;  Version:  September 2013
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
 ;; 7/8/13 added get-comlex-entry for after-the-fact debugging
-;; 8/1/13 Added standalone-lexicon-unpacker
+;; 8/1/13 Added standalone-lexicon-unpacker. 9/23/13 sconj+verb
 
 (in-package :sparser)
 
@@ -262,7 +262,12 @@ places. ]]
          (setup-verb lemma clauses :ambiguous))
        (assign-noun-verb-brackets lemma clauses))
 
-      
+      ((equal combinations '(sconj verb)) ;; "provide"
+       ;; sconj is a weak analysis. /// look for other cases
+       ;; to establish if this simple version is  ok
+       (when *edge-for-unknown-words*
+         (setup-verb lemma clauses)) ;; n.b. not ambiguous
+       (assign-brackets-as-a-main-verb lemma))      
 
       ;; "firm" is four-ways ambiguous
 
