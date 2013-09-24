@@ -3,13 +3,14 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  March 2013
+;;;  Version:  September 2013
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
 ;; 3/29/13 hooked articles into document-set.
 ;; 1.0 (7/15/13) Bumped to add sentence and to get more uniformity on
 ;;      operations like noting and operations on contents.
+;;     (9/23/13) Pretty much finished with the make-over except for occasional fanout.
 
 (in-package :sparser)
 
@@ -18,7 +19,7 @@
 ;;;-------------
 
 (defclass sentence (chart-region document-region has-content-model
-                    has-parent ordered resource)
+                    has-parent ordered)
   ()
   (:documentation 
    "Represents the content or other interesting features
@@ -30,8 +31,10 @@
   (print-unreadable-object (s stream :type t)
     (format stream "p~a -- "
             (pos-token-index (starts-at-pos s))) ;; !! recycles !!
-    (when (ends-at-pos s)
-      (format stream "p~a" (ends-at-pos s)))))
+    (if (and (slot-boundp s 'ends-at-pos)
+               (ends-at-pos s))
+      (format stream "p~a" (pos-token-index(ends-at-pos s)))
+      (format stream "?"))))
 
 (defvar *previous-sentence* nil)
 (defun previous-sentence () *previous-sentence*)
@@ -42,19 +45,25 @@
 (defun start-sentence (pos)
   (let ((s (make-instance ;;/// replace with resource
                'sentence 
-             :starts-at-pos pos
-             :starts-at-char (pos-character-index pos))))
+             :start-pos pos
+             :start-char (pos-character-index pos))))
     ;; lookup the current section for parent
     ;; put in a switched choice of content
     (when *current-sentence*
-      (let ((last *current-sentence*))
+      (let* ((last *current-sentence*)
+             (section (parent last)))
         (setq *previous-sentence* last)
         (setf (next last) s)
         (setf (previous s) last)
-        (setf (ends-at-pos last) pos)
+        (setf (parent s) section)
+        (setf (ends-at-pos last) ;; stop at the period
+              (chart-position-before pos))
         (setf (ends-at-char last) (pos-character-index pos))
         ;; tie off the prev contents
-        ))
+        (setq *previous-sentence* last)))
+    ;; 1st sentence in a section (= paragraph) is has the
+    ;; section as its parent
+    
     (setq *current-sentence* s)))
 
 
@@ -176,11 +185,14 @@
         (name (or sec-name (next-indexical-name :section))))
     (declare (special *current-article*))
     (setf (parent obj) *current-article*)
-    ;; setup a sentence
-    (setf (name obj) name)
-    (setf (starts-at-pos obj) start-pos)
-    (setf (starts-at-char obj) (pos-character-index start-pos))
-    obj))
+    (let ((s (start-sentence (position# 1))))
+      (setf (parent s) obj)
+      (setf (children obj) s) ;; first of a chain
+
+      (setf (name obj) name)
+      (setf (starts-at-pos obj) start-pos)
+      (setf (starts-at-char obj) (pos-character-index start-pos))
+      obj)))
 
 
 
@@ -199,13 +211,13 @@
   ;; We need this because the newline handler isn't soaking up all
   ;; the newlines internally, and as a result makes one call to
   ;; this per newline character encountered.
-  (declare (special *current-paragraph* *tts-after-each-section*))
+  (declare (special *current-paragraph*))
   (unless (and *current-paragraph*
-               (eql start-pos (section-starts-at-pos *current-paragraph*)))
+               (eql start-pos (starts-at-pos *current-paragraph*)))
     (begin-new-paragraph start-pos)))
 
 (defun begin-new-paragraph (start-pos)
-  (declare (special *current-paragraph*))
+  (declare (special *current-paragraph* *tts-after-each-section*))
   (let ((s (new-section-in-article nil start-pos))
         (ongoing *current-paragraph*))
     (when ongoing ;; should always be true
@@ -213,11 +225,12 @@
       (setf (next ongoing) s)
       (setf (ends-at-pos ongoing) start-pos)
       (setf (ends-at-char ongoing) (pos-character-index start-pos))
-      (when *tts-after-each-section*
+      (when (and *tts-after-each-section*
+                 (pos-terminal start-pos)) ;; first one doesn't
         (format t "~^&~%")
         (tts t (starts-at-pos ongoing) start-pos)
-        (format t "~^&~%")))  
-      (setf *current-paragraph* s)
+        (format t "~^&~%")))
+    (setf *current-paragraph* s)
     s))
 
 
