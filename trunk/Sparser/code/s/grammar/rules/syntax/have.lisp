@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "have"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.3 May 2013
+;;;  Version:  0.3 September 2013
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3.  Fleshed out 6/4.
 ;; Added negative contractions 1/11/94.  7/21 switch aux rule to use
@@ -13,7 +13,8 @@
 ;;      in [words;aux verbs]
 ;; 0.2 (5/27/96) disabled subtypes for the timebeing
 ;; 0.3 (5/23/13) Disabled the realization for have. Need to make it
-;;      conditional on SDM&P or the like. 
+;;      conditional on SDM&P or the like. (9/18/13) Added variant for
+;;      have+verb-ed since it can also be verb+passive
 
 (in-package :sparser)
 
@@ -76,6 +77,12 @@
 ;;---- "have" + "ed"
 
 (def-form-rule (have verb+ed)
+  :form verb
+  :referent (:head right-edge
+             ;;:subtype perfect
+             ))
+
+(def-form-rule (have verb+passive)
   :form verb
   :referent (:head right-edge
              ;;:subtype perfect
