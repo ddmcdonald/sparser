@@ -19,7 +19,7 @@
 ;;; category
 ;;;----------
 
-;; Depricated not that position is a variable on person
+;; Depricated now that position is a variable on person
 #+ignore
 (define-category  has-title
   :instantiates self
@@ -36,12 +36,12 @@
          thing-is-description
          ((np/subject . person)
           (s . event)
-          (description . (TITLE qualified-title))
+          (description . (title qualified-title))
           (result . has-title)
           (vp . be-title)
           (be . be)
           (complement . title)
-          (individual . (PERSON employed-as))))
+          (individual . (person employed-as))))
 
 
 ;;;----------------
@@ -68,7 +68,7 @@
   :form np
   :referent (:function interpret-name-as-person right-edge))
 
-(def-csr  capitalized-word person  ;; possible now?
+(def-csr  capitalized-word person  ;; still possible?
   :left-context title
   :form np
   :referent (:function interpret-cap-word-as-person right-edge))
@@ -89,11 +89,6 @@
   :referent (:head left-edge
              :bind (position right-edge)))
 
-
-(def-csr  named-object person
-  :right-context  comma-title
-  :form appositive-prefix
-  :referent (:function interpret-name-as-person left-edge))
 
 (def-csr  named-object person
   :right-context  comma-title
@@ -130,6 +125,8 @@
              (ends-there (pos-ends-here start-pos))
              (title-edge (da/look-under-edge/scan-edges
                           ends-there category::title)))
+        (when title-edge
+          (break "ne-absorb-appos-commas-look-around"))
         (if title-edge
           ;; then we convert the ne to a person and
           ;; form the combined edge
@@ -141,7 +138,7 @@
                     (make-completed-binary-edge
                      title-edge appos-edge title+person)))
               (tuck-new-edge-under-already-knit
-               title-edge full-edge edge-over-title)
+               title-edge full-edge edge-over-title :right)
               full-edge))
           ;; otherwise we just return the ne edge having
           ;; absorbed the commas
