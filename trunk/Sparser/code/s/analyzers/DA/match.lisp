@@ -3,10 +3,11 @@
 ;;;
 ;;;     File:  "match"
 ;;;   Module:  "analyzers;DA:"
-;;;  Version:  July 2013
+;;;  Version:  September 2013
 
 ;; initiated 5/5/95.  Elaborated ..5/12. 11/3/11 Fixing match against
-;; multiple words as tt.  7/17/13 Cleaning up, elaborating debugging
+;; multiple words as tt.  7/17/13 Cleaning up, elaborating debugging.
+;; 9/19/13 Moed out look-under code to objects/chart/edge-vectors/peek.
 
 (in-package :sparser)
 
@@ -140,27 +141,4 @@
     (if *da-search-is-going-leftwards*
       (da/look-under-edge/leftwards edge label)
       (da/look-under-edge/rightwards edge label))))
-
-
-(defun da/look-under-edge/rightwards (edge label)
-  (da/look-under-edge/scan-edges 
-   (pos-starts-here (pos-edge-starts-at edge))
-   label))
-
-(defun da/look-under-edge/leftwards (top-edge label)
-  (da/look-under-edge/scan-edges 
-   (pos-ends-here (pos-edge-ends-at top-edge))
-   label))
-
-
-(defun da/look-under-edge/scan-edges (ev label)
-  (let ((edge-vector (ev-edge-vector ev))
-        (max (ev-number-of-edges ev))
-        edge  edge-that-matches )
-    (dotimes (i (1- max))
-      (setq edge (elt edge-vector (- max i 1)))
-      (when (eq (edge-category edge) label)
-        (setq edge-that-matches edge)
-        (return)))
-    edge-that-matches))
 
