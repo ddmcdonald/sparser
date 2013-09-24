@@ -4,11 +4,12 @@
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: 1.0 July 2013
+;;;   Version: 1.0 September 2013
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
-;; 7/17/13 Fixed bug in propoagate-suffix-to-segment
+;; 7/17/13 Fixed bug in propoagate-suffix-to-segment. 9/18/13 Reified
+;; the continuation code so it's easier to maintain
 
 (in-package :sparser)
 
@@ -30,6 +31,8 @@ to make any semantic or form edges that the grammar dictates.
 ;;;-----------
 
 (defun sdm/analyze-segment (coverage)
+  ;; Called from after-action-on-segments if the parameter
+  ;; *do-strong-domain-modeling* is up
   "Dispatch point for the alternative analyses we could do.
    The :trivial choice is robust. The :full option would be
    better, especially for reversing since it wants to recover
@@ -41,12 +44,21 @@ to make any semantic or form edges that the grammar dictates.
     (:full ;; could be segmented further
      (analyze-segment coverage))
     (:none
-     (normal-segment-finished-options coverage))
+     (continue-from-sdm/analyze-segment coverage))
     (otherwise
      (when *debug-segment-handling*
        (error "Undefined value for *new-segment-coverage*: ~a"
               *new-segment-coverage*)))))
 
+
+(defun continue-from-sdm/analyze-segment (coverage)
+  (cond
+   (*reify-implicit-individuals*
+    (reify-implicit-individuals-in-segment coverage))
+   (*note-text-relations*
+    (note-text-relations-in-segment coverage))
+   (t
+    (normal-segment-finished-options coverage))))
 
 ;;;-------------------------------------------------------
 ;;; trivial variant - just cover the segment with an edge
@@ -91,13 +103,7 @@ to make any semantic or form edges that the grammar dictates.
               coverage))))
   
   (setq coverage (segment-coverage)) ;; update
-  (cond
-   (*reify-implicit-individuals*
-    (reify-implicit-individuals-in-segment coverage))
-   (*note-text-relations*
-    (note-text-relations-in-segment coverage))
-   (t
-    (normal-segment-finished-options coverage))))
+  (continue-from-sdm/analyze-segment coverage))
 
 
 (defun propoagate-suffix-to-segment ()
