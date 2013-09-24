@@ -41,21 +41,14 @@
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
   (when (period-marks-sentence-end? position-after)
-    ;; For the moment lets ignore the first sentence. The bio chapters
-    ;; all start with a lot of topic lines that don't use periods,
-    ;; so we should coordinate this with paragraph breaks to get the
-    ;; right size 'sentence chunks'
     (delimited-sentence *position-before-last-period* position-before)
     (push-debug `(,*position-before-last-period* ,position-before))
-    (break "got to period hook~% last = ~a~% now = ~a"
-           *position-before-last-period* position-before)
-    (start-sentence position-before))
+    (tr :period-hook *position-before-last-period* position-before)
+    (let* ((pos-after-period (chart-position-after position-before))
+           (s (start-sentence pos-after-period)))
+      (push-debug `(,s))))
 
-  (break "bottom of period-hook")
   (setq *position-before-last-period* position-before))
-
-
-
 
 
 ;;--- Sentences
