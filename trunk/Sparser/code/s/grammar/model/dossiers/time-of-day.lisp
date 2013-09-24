@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
+;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "time of day"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  August 2008
-;;;   author:  Charlie Greenbacker
+;;;  version:  September 2013
+;;;   author:  Charlie Greenbacker 8/08, completely revised by ddm 9/13
 
-;; initiated 8/26/08
+;; initiated 8/26/08. 9/23/13 Total makeover since there are no referents
+;; behind the rules. Commenting out the clock time for the moment
 
 ;;; rules for identifying instances of time-of-day
 
@@ -16,7 +17,7 @@
 ;;;-----------------------
 ;;; based on ISO 8601 standard numeric representations
 ;;;-----------------------
-
+#|
 ; example: 23:59:59 or 23:59:59.9942
 ; should be restricted to (0-23):(0-59):(0-60).(0-999999...)
 (def-cfr numeric-time (number colon numeric-time))
@@ -51,39 +52,38 @@
 (def-cfr numeric-time (numeric-time timezone))
 (def-cfr numeric-time (numeric-time "z")) ;conflicts with 'SINGLE-CAPITALIZED-LETTER'?
 ; also need rule w/function to match 4-digit number from 0000-2359 plus 'z'
-
+|#
 ;;;-----------------------
 ;;; time of day
 ;;;-----------------------
 
-(def-cfr meal-time ("breakfast"))
-(def-cfr meal-time ("brunch"))
-(def-cfr meal-time ("lunch"))
-(def-cfr meal-time ("supper"))
-(def-cfr meal-time ("dinner"))
-(def-cfr time-of-day (sequencer meal-time))
+(define-meal-time "breakfast")
+(define-meal-time "brunch")
+(define-meal-time "lunch")
+(define-meal-time "supper")
+(define-meal-time "dinner")
+;; (def-cfr time-of-day (sequencer meal-time))
 
-(def-cfr time-of-day ("noon"))
-(def-cfr time-of-day ("midnight"))
-(def-cfr time-of-day ("midnite"))
-(def-cfr time-of-day (sequencer "noon"))
-(def-cfr time-of-day (sequencer "midnight"))
-(def-cfr time-of-day (sequencer "midnite"))
+(define-time-of-day "noon")
+(define-time-of-day "midnight")
+(define-time-of-day "midnite")
+;(def-cfr time-of-day (sequencer "noon"))
 
-(def-cfr time-of-day ("now"))
+(define-time-of-day "dawn")
+(define-time-of-day "dusk")
 
-(def-cfr time-of-day ("dawn"))
-(def-cfr time-of-day ("dusk"))
-(def-cfr time-of-day (sequencer "dawn"))
-(def-cfr time-of-day (sequencer "dusk"))
 
-(def-cfr phase-of-day ("morning"))
-(def-cfr phase-of-day ("afternoon"))
-(def-cfr phase-of-day ("evening"))
-(def-cfr phase-of-day ("night"))
+(define-phase-of-day "morning")
+(define-phase-of-day "afternoon")
+(define-phase-of-day "evening")
+(define-phase-of-day "night")
+
+;; These are much more general
+#|
 (def-cfr phase-offset ("early"))
 (def-cfr phase-offset ("mid"))
-(def-cfr phase-offset ("late"))
-(def-cfr time-of-day (phase-offset phase-of-day))
+(def-cfr phase-offset ("late"))  |#
+
+;; (def-cfr time-of-day (phase-offset phase-of-day))
 
 ; maybe add UNIX time as well? would have to combine with date rules...
