@@ -62,8 +62,10 @@
       ;; unclear why we don't get a null. In emacs in this case the 
       ;; bad character prints as a capital o with an umlaut. 
       (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))
-      (error "Unknown character in input at buffer position ~a" 
-             *index-of-next-character*))
+      (let* ((char (elt *character-buffer-in-use* *index-of-next-character*))
+             (code-point (char-code char)))
+        (error "No entry for code-point ~a,~%  ~a~%at index ~a"
+               code-point char *index-of-next-character*)))
 
     (if next-entry
       (if (eq (car next-entry) :punctuation)
