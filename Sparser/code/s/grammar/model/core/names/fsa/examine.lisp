@@ -480,10 +480,17 @@
               (then 
                ;; It's all a title, blow it away
                (throw :abort-examination-not-a-name
-                      `(:not-a-name . ,ending-position)))
+                      `(:not-a-name ,ending-position)))
               (else ;; /// reset positions
                (setq title title-elements)
                (setq items name-elements)))))
+
+        (when country
+          (when (only-country-in-items
+                 items starting-position ending-position)
+            (throw :abort-examination-not-a-name
+                   `(:not-a-name ,ending-position))))
+
 
         (let ((name
                (categorize-and-form-name (referents-of-list-of-edges items)

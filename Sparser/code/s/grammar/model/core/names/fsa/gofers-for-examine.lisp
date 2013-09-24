@@ -215,7 +215,7 @@
     
 
 
-
+;;--- countries
 
 (defun double-country-check (country-tt items count)
   (push-debug `(,country-tt ,items ,count))
@@ -228,6 +228,24 @@
   ;; and if some other word is involved that would be odd too
   (throw :abort-examination-not-a-name
          `(:not-a-name ,(pos-edge-ends-at country-tt))))
+
+(defun only-country-in-items (items start-pos end-pos)
+  ;(unless *non-country-categories
+  (let ((just-countries t)
+        label )
+    (dolist (tt items)
+      (setq label (edge-category tt))
+      (cond
+       ((eq label category::country))
+       ((eq label word::hyphen))
+       ;((or (eq label category::digest-kind) ;;//// language of newspapers
+       ; (setq just-countries nil))
+       (t
+        (push-debug `(,label ,tt ,items))
+ ;       (break "Continue unless these are just country stuff:~%~a~%~a"
+ ;              (words-between start-pos end-pos) items)
+        (setq just-countries nil))))
+    just-countries))
 
 
 
@@ -548,12 +566,22 @@
     referents ))
 
 
+(defparameter *categories-that-appear-in-names* nil
+  "Given an edge with one of these labels we use their referent directly.")
+
+(defun populate-categories-that-appear-in-names ()
+  (setq *categories-that-appear-in-names*
+        (list category::phase-of-day  ;; "Morning", in a newspape's name
+        )))
+
 (defun get-name-referent-of-odd-edge (edge purpose)
   "Some edges are built by processes that aren't model-directed, 
    so we have to figure out what they should be given the purpose
    this is being called (just :pnf right now)"
   (unless (eq  purpose :pnf)
     (error "Function hasn't been generalized beyond proper names"))
+  (unless *categories-that-appear-in-names*
+    (populate-categories-that-appear-in-names))
   (let ((label (edge-category edge)))
     (cond
      ((eq label category::hyphenated-sequence) ;; "Rolls-Royce"
@@ -571,6 +599,13 @@
                                  words))
              (sequence (define-sequence name-words)))
         sequence))
+
+     ((memq label *categories-that-appear-in-names*)
+      (let ((ref (edge-referent edge)))
+        (unless ref
+          (break "New referent for odd edge in name that doesn't have one:~
+                ~%  ~a" edge))
+        ref))
 
      (t (push-debug `(,edge ,purpose))
         (error "New label on odd edge in pnf: ~a" edge)))))
