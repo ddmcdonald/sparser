@@ -59,6 +59,8 @@
 ;; 2.20 (4/30/13) Converted Grok experiments into tuned-grok seeing
 ;;      (7/17/13) added strider-setting. (8/19/13) Added display setting and other odd
 ;;       things to it to esure they took effect. (9/16/13) stubbed c3-setting
+;;      (9/18/13) Changed grok to enable all the after-segment options. Rely on
+;;       the passes to tune them.
 
 (in-package :sparser)
 
@@ -286,7 +288,10 @@
   (fire-setting)
   (setq *annotate-realizations* t)
   (include-comlex)
-  (setq *new-segment-coverage* :trivial)
+  (setq *do-strong-domain-modeling* t
+        *new-segment-coverage* :trivial
+        *reify-implicit-individuals* t
+        *note-text-relations* t)
   (setq *profligate-creation-of-individuals* t)
   (setq *allow-pure-syntax-rules* t)
   (turn-off-interfering-rules :grok)
