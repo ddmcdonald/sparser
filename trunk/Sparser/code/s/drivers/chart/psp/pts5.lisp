@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.14 July 2013
+;;;  Version:  5.15 September 2013
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -50,7 +50,11 @@
 ;;      (7/1/13) Moved in the reify implicit individuals options. 
 ;;      (7/29/13) Added check-segment-finished-hook in the main line but just
 ;;       as a one-off to convert some titles to people. Rearranged the code
-;;       a bit for better reading.
+;;       a bit for better reading. (9/18/13) added more documentation.
+;; 5.15 (9/21/13) modified segment-finished to slip in a new operation,
+;;       march-peeking-rightward, to deal with the cases of the rightmost
+;;       swallowing part of a potential constituent in the left part of
+;;       the segment. 
 
 (in-package :sparser)
 
@@ -120,6 +124,7 @@
 ;;;------------------------
 ;;; decide what to do next
 ;;;------------------------
+(defparameter *peek-rightward* t) ;; stopgap while debuggign
 
 (defun segment-finished (coverage)
   (tr :segment-finished coverage)
@@ -133,98 +138,11 @@
     (then
       (return-to-scan-level-from-null-span
        *where-the-last-segment-ended*))
-    (else
-     (after-action-on-segments coverage))))
-
-
-
-;;;-------------------------------------
-;;; choice of segment-finished protocol
-;;;-------------------------------------
-
-#| These alternatives for what to do after parsing of the segment
-is finished sometimes take over all the operations. More often they
-do some special process and then join the main line again.
-  N.b. this is a central part of the control fsa so all returns
-have to be tail recursion to the next thing to do.
-|#
-
-(unless (boundp '*after-action-on-segments*)
-  ;; These are run in this order. A conditional at the end of
-  ;; sdm/analyze-segment looks to the flags to tell it whether
-  ;; it should call the individual's reifier or if not should
-  ;; it call the text relation noter, and so one. 
-  ;;   If we change this order for some reason, we need to
-  ;; change the order of the conditionals in these operations
-  ;; to match.
-  (defparameter *after-action-on-segments* 
-    (cond
-     (*do-strong-domain-modeling*
-      'sdm/analyze-segment)
-     (*reify-implicit-individuals*
-      'reify-implicit-individuals-in-segment)
-     ;;(*do-domain-modeling-and-population*
-     ;; This is the 1995 version of DM&P, which is overly clumsy
-     ;; but has good ideas to mine from it. 
-     ;; 'dm/analyze-segment)
-     (*note-text-relations*
-      'note-text-relations-in-segment)
-     (t 
-      'normal-segment-finished-options))
-    "Name of the function to call after the interior of a segment
-     has been parsed. It may do further analyses of what's in the
-     segments, but eventually has to do the 'normal' options
-     and ultimately scan another segment or move to the forest level."))
-
-
-
-(defun after-action-on-segments (coverage)
-  (funcall *after-action-on-segments* coverage))
-
-
-;;--- cases for switching options
-
-;; (do-normal-segment-finished-options)
-(defun do-normal-segment-finished-options ()
-  (setq *after-action-on-segments* 'normal-segment-finished-options))
-
-;; (do-domain-modeling-and-population)
-(defun do-domain-modeling-and-population ()
-  ;; This is 1995 code, which, while reasonably well documented,
-  ;; isn't the way of the future
-  (setq *after-action-on-segments* 'dm/analyze-segment))
-
-;; (do-strong-domain-modeling)
-(defun do-strong-domain-modeling ()
-  (setq *after-action-on-segments* 'sdm/analyze-segment))
-
-;;  (do-note-text-relations-in-segment)
-(defun do-note-text-relations-in-segment ()
-  (setq *after-action-on-segments* 'note-text-relations-in-segment))
-
-;;  (do-reify-implicit-individuals-in-segment)
-(defun do-reify-implicit-individuals-in-segment ()
-  "Looks for criteria that warrant taking a segment that's headed
-   by a category and converting it to an individual."
-  (setq *after-action-on-segments* 'reify-implicit-individuals-in-segment))
-
-
-(defparameter *debug-segment-handling* t
-  "Guards errors and breaks within the segment handling code that traps
-   new cases or violations of standing assumptions.")
-
-
-
-
-;;--- common subroutine
-
-(defun no-further-action-on-segment ()
-  (tr :segment-completely-finished)
-  (setq *left-segment-boundary* nil
-        *right-segment-boundary* nil
-        ;; *bracket-opening-segment* is zero'ed in //
-        ;;  when the closing bracket is seen.
-        *bracket-closing-segment* nil))
+    (else ;; (p "Roshan's driver Reza Qashqaei")
+     (when *peek-rightward*
+       (unless (eq coverage :one-edge-over-entire-segment)
+         (march-peeking-rightward coverage)))
+     (after-action-on-segments (segment-coverage)))))
 
 
 
@@ -248,6 +166,122 @@ have to be tail recursion to the next thing to do.
 
   ;; state variables used in analyzers/sdm&p/gofers.lisp
   (initialize-segment-state-variables))
+
+
+;;;---------------------------------------------------
+;;; choice of segment-finished after-action protocols
+;;;---------------------------------------------------
+
+(defparameter *debug-segment-handling* t
+  "Guards errors and breaks within the segment handling code that traps
+   new cases or violations of standing assumptions.")
+
+#| These alternatives for what to do after parsing of the segment
+is finished sometimes take over all the operations. More often they
+do some special process and then join the main line again.
+  N.b. this is a central part of the control fsa so all returns
+have to be tail recursion to the next thing to do.
+|#
+
+(unless (boundp '*after-action-on-segments*)
+  ;; The protocols form a tail-recursive chain that moves
+  ;; from one to the next in the order that they appear in
+  ;; in this cond.
+  ;;   Each one is governed by the parameter flags used
+  ;; here. They consult these parameter values after they've
+  ;; finished their individual operations. 
+
+  ;; These are run in this order. A conditional at the end of
+  ;; sdm/analyze-segment looks to the flags to tell it whether
+  ;; it should call the individual's reifier or if not should
+  ;; it call the text relation noter, and so one. 
+
+
+  ;;   If we change this order for some reason, we need to
+  ;; change the order of the conditionals in these operations
+  ;; to match.
+  (defparameter *after-action-on-segments* 
+    (cond
+     (*do-strong-domain-modeling*
+      'sdm/analyze-segment)
+     (*reify-implicit-individuals*
+      'reify-implicit-individuals-in-segment)
+     ;;(*do-domain-modeling-and-population*
+     ;; This is the 1995 version of DM&P, which is overly clumsy
+     ;; but has good ideas to mine from it. 
+     ;; 'dm/analyze-segment)
+     (*note-text-relations*
+      'note-text-relations-in-segment)
+     (t 
+      'normal-segment-finished-options))
+    "Name of the function to call after the interior of a segment
+     has been parsed. It may do further analyses of what's in the
+     segments, but eventually has to do the 'normal' options
+     and ultimately scan another segment or move to the forest level."))
+
+
+(defun after-action-on-segments (coverage)
+  ;; called from segment-finished
+  (funcall *after-action-on-segments* coverage))
+
+
+;;--- function for setting options from settings
+
+;; 0th (do-domain-modeling-and-population)
+(defun do-domain-modeling-and-population ()
+  ;; This is 1995 code, which, while reasonably well documented,
+  ;; isn't the way of the future
+  (setq *after-action-on-segments* 'dm/analyze-segment))
+
+
+;; 1st (do-strong-domain-modeling)
+(defun do-strong-domain-modeling ()
+  "Should be 'do-simple-domain-modeling' in constrast to the 'strong'
+   DM&P of 1995. Consults the parameter *new-segment-coverage* to determine
+   what to do:
+    :none (default) -- continue to next enabled protocol
+    :trivial -- Use just-cover-segment to propagate the head's values
+       via propoagate-suffix-to-segment to an edge over the segment
+    :full -- The experimental (britle) use of analyze-segment to find
+       rules that could account for the relationships within the segment."
+  (setq *after-action-on-segments* 'sdm/analyze-segment))
+
+
+;; 2d (do-reify-implicit-individuals-in-segment)
+(defun do-reify-implicit-individuals-in-segment ()
+  "Looks for criteria that warrant taking a segment that's headed
+   by a category and converting it to an individual. The criteria
+   is established in this function, and convert-referent-to-individual
+   does the actual work. Doesn't change coverage."
+  (setq *after-action-on-segments* 'reify-implicit-individuals-in-segment))
+
+
+;; 3d (do-note-text-relations-in-segment)
+(defun do-note-text-relations-in-segment ()
+  "Looks at the head of the segment and pairwise at the words
+   within it (and the edge as a whole if it's spanned) to record
+   their relationships. Records are done using the note function."
+  (setq *after-action-on-segments* 'note-text-relations-in-segment))
+
+
+;; 4th (do-normal-segment-finished-options)
+(defun do-normal-segment-finished-options ()
+  "Looks for conjunction with the prior segment if there's a pending
+   conjunction (check-out-possible-conjunction). Runs the 
+   check-segment-finished-hook function."
+  (setq *after-action-on-segments* 'normal-segment-finished-options))
+
+
+
+;;--- common subroutine
+
+(defun no-further-action-on-segment ()
+  (tr :segment-completely-finished)
+  (setq *left-segment-boundary* nil
+        *right-segment-boundary* nil
+        ;; *bracket-opening-segment* is zero'ed in //
+        ;;  when the closing bracket is seen.
+        *bracket-closing-segment* nil))
 
 
 
