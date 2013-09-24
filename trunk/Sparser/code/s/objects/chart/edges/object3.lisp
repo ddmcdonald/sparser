@@ -28,6 +28,8 @@
 ;; 3.5 (3/31/06) added constituents field. 4/6 added spanned-words.
 ;;     (2/22/07) added edge-length. (3/15/12) quieting compiler
 ;;     (1/23/13) added continuous-edges-between (7/30/13) added edges-higher-than
+;;     (9/19/13) moved find/edge-with-category to edge-vectors/peek to consolidate
+;;      the operation down to one function.
 
 (in-package :sparser)
 
@@ -267,21 +269,6 @@
     (nreverse edges)))
 
 
-
-(defun find/edge-with-category (edge-vector category)
-  (declare (special *edge-vector-type*))
-  (ecase *edge-vector-type*
-    (:kcons-list
-     (break "write the code for the kcons variation"))
-    (:vector
-     (let ((vector (ev-edge-vector edge-vector))
-           edge )
-       (dotimes (i (ev-number-of-edges edge-vector))
-         (setq edge (aref vector i))
-         (when (eq (edge-category edge)
-                   category)
-           (return-from find/edge-with-category edge)))
-       nil ))))
 
 
 ;;;------------------------------------
