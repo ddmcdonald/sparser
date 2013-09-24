@@ -13,7 +13,9 @@
 
 (strider-setting) ;; adds (setq *do-debris-analysis* t)
 
-;; (setq *note-text-relations* nil) Make the display quieter, at expense of latient bugs
+; (f "/Users/ddm/sift/nlp/corpus/Strider/STRIDER Financial Problem.txt")
+; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
+;;  (setq *peek-rightward* t) (p "Roshan's driver Reza Qashqaei")
 
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/iranian-commander.txt")
 
@@ -74,6 +76,19 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
 
 (gate-grammar *middle-east*
   (gload "mideast;loader"))
+
+
+
+(define-grammar-module *Banking*
+  :name "Banking"
+  :parent *sublanguages*)
+
+(include-grammar-module *Banking*)
+
+(def-logical-pathname "banking;" "sl;banking:")
+
+(gate-grammar *Banking*
+  (gload "banking;loader"))
 
 ;; (test-modules-citations *citations* *time* *proper-names*
 
