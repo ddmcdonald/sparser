@@ -3,13 +3,14 @@
 ;;; 
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  0.1 May 2013
+;;;  Version:  0.2 September 2013
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
 ;; 0.1 (5/31/96) Started adding cases above 128 for umlauted character and such
 ;;      using the encoding scheme on the Macintosh
 ;;     (5/23/13) Added Soft_Hyphen at 173 (Latin-1 char set)
+;; 0.2 (9/23/13) Adding characters in what should be UTF-8
 
 (in-package :sparser)
 
@@ -570,7 +571,15 @@
 
 ;;---- selected characters above 127
 
+(setf (elt *character-dispatch-array* 160) ;; #\No-break_Space
+      '(:punctuation
+        . :space))
+
 (setf (elt *character-dispatch-array* 173) ;; #\Soft_Hyphen
       `(:punctuation
         . ,(punctuation-named #\- )))
+
+(setf (elt *character-dispatch-array* 194) ;; #\Latin_Capital_Letter_A_With_Circumflex
+      `(:alphabetical
+        . (:uppercase . ,#\a )))
 
