@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  3.0 February 2005
+;;;  Version:  3.2 September 2013
 
 ;; initiated [ordinals1] 9/18/93 v2.3 as completely new treatment
 ;; 1.0 (1/7/94) redesigned as specialized categories
@@ -19,6 +19,10 @@
 ;; 3.1 (3/15) Reverting to 'position-in-a-sequence' in addition to an object for
 ;;      simple ordinals -- drops the partial-ness of ordinals and transfers that 
 ;;      functionality to the new (old) category.
+;; 3.2 (9/18/13) Replaced the *load-ad-hoc-rules* gate on the 'nd' rules at the
+;;      bottom with nil since it's unclear how they work: /// need a no-space
+;;      criteria added to them, then we get "23rd" with some assurance. 
+;;      Added ordinal+common-noun form rule - flow of referents needs work
 
 (in-package :sparser)
 
@@ -55,6 +59,21 @@
   :binds ((number . ordinal)
           (item)
           (sequence . sequence)))
+
+;; /// See if we can follow the scheme in the Krisp paper
+
+;; "the fifth attack" ///Referent is the sequence. Ought to be the attack
+(def-form-rule (ordinal common-noun)
+  ;; possible ETF: designated-instance-of-set ("third quarter")
+  ;;  or modifier-creates-definite-individual ("last year")
+  ;; The point is to create the position-in-a-sequence while
+  ;; leaving the common-noun as the head.  
+  :form n-bar
+  :head :right-edge
+  :referent (:head right-edge
+             :instantiate-individual position-in-a-sequence
+             :with (number left-edge
+                    item right-edge)))
 
 
 ;;;------
@@ -115,7 +134,7 @@
 ;;; phrase structure rules
 ;;;------------------------
 
-(when *load-ad-hoc-rules* ;;/// these should get swallowed into reversible rdata  
+(when nil ;;/// these should get swallowed into reversible rdata  
 
   (def-cfr ordinal (number "st")
     :referent (:instantiate-individual position-in-a-sequence
