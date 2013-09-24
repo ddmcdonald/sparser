@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  2.5 March 2013
+;;;  Version:  2.5 September 2013
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -20,6 +20,7 @@
 ;;      to fix bug in opening edges via wb/treetops-below-edge
 ;;     (9/6) added Edge-vector-contains-edge? (2/22/07) added longest-edge-starting-at
 ;;     (10/18/11) added search-ev-for-edge. (3/28/13) added lowest-edge.
+;;     (9/19/13) moved search-ev-for-edge to peek.
 
 (in-package :sparser)
 
@@ -67,23 +68,6 @@
   (member edge (preterminal-edges (ev-position ev))))
 
 
-(defun search-ev-for-edge (ev label)
-  "Scan up from the bottom-most edge on the edge-vector for 
-   an edge that has the indicated label. Return that edge
-   if it exists. look-for-submerged-matching-conj-edge is
-   the motivating case."
-  (when (eq *edge-vector-type* :kcons-list)
-    (push-debug `(,ev ,label))
-    (break "Stub: search-ev-for-edge needs to be extended to ~
-            handle :kcons-list edge-vectors"))
-  (let ((vector (ev-edge-vector ev))
-        edge )
-    (dotimes (i (ev-number-of-edges ev))
-      (setq edge (aref vector i))
-      (when (eq (edge-category edge) label)
-        (return-from search-ev-for-edge edge)))
-    nil))
-
 (defun edges-on-ev-above (edge ev)
   "Scan up to the edge, then return a list of the edges above
    that, including the edge, ordered from bottom to top."
@@ -99,6 +83,15 @@
       (when accumulate?
         (push e edges-above)))
     (nreverse edges-above)))
+
+
+(defun all-edges-on (ev)
+  ;; Called by peek-rightward but may be useful in general
+  ;; (surposing it doesn't already exist). Returns the edges
+  ;; in order from bottom (shortest) to top (longest). 
+  (let ((vector (ev-edge-vector ev)))
+    (loop for i from 0 upto (1- (ev-number-of-edges ev))
+      collect (aref vector i))))
 
 
 
