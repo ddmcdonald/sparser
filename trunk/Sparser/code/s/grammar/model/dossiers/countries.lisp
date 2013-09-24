@@ -55,7 +55,7 @@
 (define-country "Central African Republic")
 (define-country "Chad")
 (define-country "Chile")
-(define-country "China")
+(define-country "China" :adjective "Chinese")
 (define-country "Colombia")
 (define-country "Comoros")
 (define-country "Costa Rica")
