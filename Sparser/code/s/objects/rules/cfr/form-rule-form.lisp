@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "form-rule form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.7 July 2013
+;;;   Version:   0.7 September 2013
 
 ;; initiated 9/3/92 v2.3, 
 ;; 0.1 (10/12) formulated better now that it's getting used
@@ -22,6 +22,7 @@
 ;;      to provide a new third argument. (1/29/13) Wrote define-form-rule-from-schema
 ;; 0.7 (7/29/13) Reworked def-form-rule/resolved to handle the head edge
 ;;      better. Corrects problem with possessive+title having the wrong head.
+;;      (9/18/13) Added option of an explicit schema. 
 
 (in-package :sparser)
 
@@ -33,7 +34,8 @@
                            &key ((:form form-expression))
                                 ((:head edge-for-the-head))
                                 ((:referent referent-expression))
-                                ((:new-category new-category-symbol)))
+                                ((:new-category new-category-symbol))
+                                ((:schema specified-schema)))
 
   ;; Expansion of Def-form-rule, the form for creating cfrs that are
   ;; based on combinations of category labels and "form" labels that
@@ -76,12 +78,12 @@
                 the name ~A" form-expression)))
 
     (def-form-rule/resolved rhs form-category edge-for-the-head
-                            referent new-category)))
+                            referent new-category specified-schema)))
 
 
 
 (defun def-form-rule/resolved (rhs form head-edge referent
-                               &optional new-category)
+                               &optional new-category schema)
 
   ;; called from Instantiate-rule-schema as well as being just a
   ;; subroutine for the expansion of the def-form-rule macro just above.
@@ -162,7 +164,8 @@
                                         edge)
                                       rhs
                                       form
-                                      referent))))
+                                      referent
+                                      schema))))
 
             (else  ;; both ids aren't defined yet
               (construct-form-cfr (if new-category
@@ -170,7 +173,8 @@
                                     edge)
                                   rhs
                                   form
-                                  referent))))
+                                  referent
+                                  schema))))
 
         (else  ;; both rule-sets aren't defined yet
           (construct-form-cfr (if new-category
@@ -178,7 +182,8 @@
                                 edge)
                               rhs
                               form
-                              referent))))))
+                              referent
+                              schema))))))
 
 
 
@@ -199,7 +204,10 @@
                          rhs head-side *schema-being-instantiated*)))
       ;;(break "revised rhs = ~a" revised-rhs)
       (when revised-rhs
-        (let* ((cfr (def-form-rule/resolved revised-rhs form head-side referent))
+        (let* ((cfr (def-form-rule/resolved
+                      revised-rhs form head-side referent
+                      nil ;; new-category argument
+                      *schema-being-instantiated*))
                (variable-to-be-bound
                 (first (second (memq/assq :binding referent))))
                (v/r (var-value-restriction variable-to-be-bound)))
@@ -228,7 +236,8 @@
                                    :form form
                  :head (intern (symbol-name head-edge)
                                (find-package :keyword))
-                 :referent referent-exp)))
+                 :referent referent-exp
+                 :schema schr)))
       cfr)))
                  
 
@@ -238,16 +247,17 @@
 ;;; builders
 ;;;----------
 
-(defun construct-form-cfr (edge rhs form referent)
+(defun construct-form-cfr (edge rhs form referent schema)
   (declare (special *schema-being-instantiated*))
-  (let ((cfr (make-cfr :category :syntactic-form
-                       :rhs rhs
-                       :form form
-                       :referent referent
-                       :schema *schema-being-instantiated*)))
+  (let* ((schema-to-use (or schema *schema-being-instantiated*))
+         (cfr (make-cfr :category :syntactic-form
+                        :rhs rhs
+                        :form form
+                        :referent referent
+                        :schema schema-to-use)))
 
-    (when *schema-being-instantiated*
-      (setf (schr-form-rule *schema-being-instantiated*) cfr))
+    (when schema-to-use
+      (setf (schr-form-rule schema-to-use) cfr))
 
     (setf (cfr-plist cfr) (list :form-rule ))
     (setf (cfr-completion cfr) edge)
