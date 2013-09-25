@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 199-1995,2011-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "countries"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.1 March 2013
+;;;  version:  0.2 September 2013
 
 ;; 0.1 (10/12/92 v2.1) introducing new semantics
 ;;     (9/7 v2.3) revived the existing set of cases
@@ -14,6 +13,7 @@
 ;; 0.1 (11/24/12) pulled in  Charlie G's dump for IL MDIS 
 ;;     work circa January 2010 from state.gov
 ;;     (3/4/13) Added Kurdistan and its adjective, /// but it's not really a country
+;; 0.2 (9/25/13) Added a bunch of cities. 
 
 (in-package :sparser)
 
@@ -41,12 +41,17 @@
 (define-country "Bosnia and Herzegovina")
 (define-country "Botswana")
 (define-country "Brazil")
-(define-country "Britain" :aliases '("United Kingdom") :adjective "British")
-;; England  Scotland  Wales  Northern Ireland
+(define-country "Britain" :aliases '("United Kingdom") :adjective "British"
+  :cities '("London" "Birmingham" "Cardiff"))
+ (define-country "England" :adjective "English")
+ (define-country "Scotland" :adjective "Scotish")
+ (define-country "Wales" :adjective "Welsh")
+;;  Northern Ireland
 (define-country "Brunei")
 (define-country "Bulgaria")
 (define-country "Burkina Faso"  )
-(define-country "Burma")
+(define-country "Burma" :adjective "Burmese" :aliases '("Myanmar")
+  :cities '("Rangoon"))
 (define-country "Burundi")
 (define-country "Cambodia")
 (define-country "Cameroon")
@@ -55,7 +60,8 @@
 (define-country "Central African Republic")
 (define-country "Chad")
 (define-country "Chile")
-(define-country "China" :adjective "Chinese")
+(define-country "China" :adjective "Chinese" :aliases '("PRC")
+  :cities '("Beijing" "Shanghai" "Guangzhou"))
 (define-country "Colombia")
 (define-country "Comoros")
 (define-country "Costa Rica")
@@ -98,7 +104,8 @@
 (define-country "Hong Kong")
 (define-country "Hungary")
 (define-country "Iceland")
-(define-country "India" :adjective "Indian")
+(define-country "India" :adjective "Indian"
+  :cities '("New Deli" "Mumbai"))
 (define-country "Indonesia")
 (define-country "Iran" :adjective "Iranian")
 (define-country "Iraq" :adjective "Iraqi")
@@ -106,10 +113,12 @@
 (define-country "Israel" :adjective '("Israeli" "Jewish")) ;; :language "Hebrew"
 (define-country "Italy")
 (define-country "Jamaica")
-(define-country "Japan" :adjective "Japanese")
+(define-country "Japan" :adjective "Japanese"
+  :cities '("Tokyo"))
 (define-country "Jordan")
 (define-country "Kazakhstan")
-(define-country "Kenya" :adjective "Kenyian")
+(define-country "Kenya" :adjective "Kenyian"
+  :cities '("Nairobi"))
 (define-country "Kiribati")
 (define-country "Kosovo")
 (define-country "Kuwait")
@@ -143,7 +152,7 @@
 (define-country "Namibia")
 (define-country "Nauru")
 (define-country "Nepal")
-(define-country "Netherlands":adjective "Dutch" :aliases '("Holland"))
+(define-country "Netherlands" :adjective "Dutch" :aliases '("Holland"))
 (define-country "New Zealand")
 (define-country "Nicaragua")
 (define-country "Niger")
@@ -151,7 +160,8 @@
 (define-country "North Korea")
 (define-country "Norway")
 (define-country "Oman")
-(define-country "Pakistan")
+(define-country "Pakistan" :adjective "Pakistani"
+  :cities '("Islamabad" "Lahore"))                
 (define-country "Palau")
 (define-country "Panama")
 (define-country "Papua New Guinea")
@@ -208,7 +218,8 @@
 (define-country "United Arab Emirates")
 (define-country "United States"
   :aliases '("US" "U.S." "U.S.A." "America" )
-  :adjective '("American"))
+  :adjective '("American")
+  :cities '("Washington, D.C." "New York"))
 (define-country "Uruguay")
 (define-country "Uzbekistan")
 (define-country "Vanuatu")
