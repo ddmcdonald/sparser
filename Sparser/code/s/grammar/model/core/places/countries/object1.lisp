@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:countries:"
-;;;  version:  1.2 June 2013
+;;;  version:  1.5 September 2013
 
 ;; 1.0 (10/12/92 v2.1) introducing new semantics
 ;; 1.1 (9/7/93 v2.3) adding a define routine and a realization
@@ -17,6 +17,7 @@
 ;;      the adjective form because places/countries/relation.lisp will
 ;;      handle that just from the adjective. Added brackets 3/6/13
 ;; 1.4 (6/14/13) reworked the def form a bit. 
+;; 1.5 (9/25/13) Added city option to the countries def form. 
 
 (in-package :sparser)
 
@@ -38,7 +39,8 @@
 ;;; def form
 ;;;----------
 
-(defun define-country (name &key adjective aliases) ;; Add 'language' for "Hebrew"
+(defun define-country (name &key adjective aliases ;; Add 'language' for "Hebrew"
+                            cities)
   (let ((country (define-or-find-individual 'country :name name))
         (category (category-named 'country))
         word  rules )
@@ -67,6 +69,10 @@
             (loop for alias in aliases
               do (push (alias-rule alias) rules))))))
     (push-onto-plist country rules :rules)
+    (when cities
+      (dolist (city-string cities)
+        (let ((city (define-or-find-individual 'city :name city-string)))
+          (bind-variable 'country country city))))
     (values country
             rules)))
 
