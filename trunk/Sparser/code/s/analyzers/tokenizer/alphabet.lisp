@@ -580,6 +580,13 @@
         . ,(punctuation-named #\- )))
 
 (setf (elt *character-dispatch-array* 194) ;; #\Latin_Capital_Letter_A_With_Circumflex
-      `(:alphabetical
-        . (:uppercase . ,#\a )))
+      '(:punctuation
+        . :space))
+;; Loading the utf-8 file into Hemlock it appears as a space, 
+;; in Emacs (in whatever it's default is -- Hemloc says its utf-8)
+;; is appears as \302\240, and ACL just rolls over it.)
+;; in the character buffer itself is appears like it says: as an
+;; a with a circumflex over it.
+;      `(:alphabetical
+;        . (:uppercase . ,#\a )))
 
