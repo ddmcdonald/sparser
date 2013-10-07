@@ -33,21 +33,22 @@
 
 ;;--- Basic hook function. Invoked by completion of a period
 
+(defparameter *break-on-next-sentence* nil
+  "Flag to cut in when we want to see something")
+
 (defun period-hook (the-word-period position-before position-after)
   ;; position-before is the one with the period on it. After picks out
   ;; the word following the period. 
-  (push-debug `(,the-word-period ,position-before ,position-after))
   ;;(setq position-before (cadr *) position-after (caddr *))
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
   (when (period-marks-sentence-end? position-after)
-    (delimited-sentence *position-before-last-period* position-before)
-    (push-debug `(,*position-before-last-period* ,position-before))
-    (tr :period-hook *position-before-last-period* position-before)
     (let* ((pos-after-period (chart-position-after position-before))
            (s (start-sentence pos-after-period)))
-      (push-debug `(,s))))
-
+      (tr :period-hook)
+      (when *break-on-next-sentence*
+        (push-debug `(,s))
+        (break "sentence: ~a" s))))
   (setq *position-before-last-period* position-before))
 
 
@@ -62,10 +63,6 @@
       (eq (pos-capitalization position-after)
           :initial-letter-capitalized)))
 
-(defun delimited-sentence (pos-previous-period pos-this-period)
-  (format t "~&[  ~a  ]~%" ;; sentence length
-	  (- (pos-token-index pos-this-period)
-	     (pos-token-index pos-previous-period))))
 
 
 
