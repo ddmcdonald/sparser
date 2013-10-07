@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "Strider"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  September 2012
+;;;  version:  October 2012
 
 ;; Initiated 5/7/13. Adding or rearranging bits through 9/16/13
 
@@ -13,6 +13,10 @@
 
 (strider-setting) ;; adds (setq *do-debris-analysis* t)
 
+;; For testing the containers. 
+;(p "Martyr Mostafa Ahmadi-Rowshan was a graduate of Sharif University and the deputy director of Natanz nuclear site in charge of commercial affairs. He was martyred in Golnabi Street in front of the Faculty of Communications of Allameh Tabataba'i University at 8.19 on 21 Dey of the year 90 [ 10 January 2010]. ")
+; (trace-paragraphs)
+
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/STRIDER Financial Problem.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/Strider/iranian-martyrs/javan-online.txt")
 ;;  (setq *peek-rightward* t) (p "Roshan's driver Reza Qashqaei")
@@ -21,6 +25,8 @@
 
 (turn-off-debugging-flags)
 ;; (turn-on-debugging-flags)
+
+;; (setq *break-on-next-paragraph* t)  on detection of next one
 
 ;; (setq *break-before-creating-name* t) 
 ;;   to look at what could happen before it creates facts
