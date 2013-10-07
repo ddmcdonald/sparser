@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2011-2013  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "sections"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  August 2011
+;;;  Version:  October 2013
 
 ;; 6/13/94 added flags for more kinds of markup. 8/29/11 Added another
-;; in paired-punct. 
+;; in paired-punct. 10/3/13 Added a set to track the creation of the
+;; new scheme for document elements. 
 
 (in-package :sparser)
 
@@ -112,6 +113,11 @@
   (when *trace-sections*
     (trace-msg "Region between punction is not single-strand: ~a"
                layout)))
+
+
+;;;-------------------
+;;; document elements
+;;;-------------------
   
 
 

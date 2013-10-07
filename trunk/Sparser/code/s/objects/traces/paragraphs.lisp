@@ -55,9 +55,14 @@
 
 ;;---- sentences
 
-(deftrace :period-hook (from to)
+(deftrace :period-hook ()
   ;; Called from period-hook
   (when *trace-paragraphs*
-    (trace-msg "[S] Delimited the next sentence from p~a to p~a"
-               (pos-token-index from) (pos-token-index to))))
+    (trace-msg "[S] finished ~a" (previous-sentence))))
 
+;;---- sentence containers
+
+(deftrace :adding-to-container (item s)
+  ;; called from add-to-container
+  (when *trace-paragraphs*
+    (trace-msg "Adding ~a to ~a" item s)))
