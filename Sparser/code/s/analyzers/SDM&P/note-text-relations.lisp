@@ -3,10 +3,11 @@
 ;;;
 ;;;      File: "note-text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: September 2013
+;;;   Version: October 2013
 
 ;; Initiated 3/9/13. Elaborated through 3/28/13. 7/15/13 Added gate
-;; on new cases. Occasional fixes to edge cases through 9/1613
+;; on new cases. Occasional fixes to edge cases through 9/16/13.
+;; 10/2/13 Provided read content to note-country and its friends.
 
 (in-package :sparser)
 
@@ -200,11 +201,20 @@
                      ~%  category = ~a" referent label))
           nil)))))))
 
-(defun note-country (country) country)
-(defun note-date (date) date)
-(defun note-name (name) name)
-(defun note-title (title) title)
-(defun note-company (company) company)
+(defun note-country (country)
+  (note-entity country))
+
+(defun note-date (date)
+  (note-entity date))
+
+(defun note-name (name) 
+  (note-entity name))
+
+(defun note-title (title) 
+  (note-entity title))
+
+(defun note-company (company) 
+  (note-entity company))
 
 
 
