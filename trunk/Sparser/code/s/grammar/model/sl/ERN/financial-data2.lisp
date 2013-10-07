@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "financial data"
 ;;;   Module:  "model;sl:ERN:"
-;;;  Version:  2.0 FEBRUARY 2005
+;;;  Version:  2.0 September 2013
 
 ;; initiated 12/20/95. Elaborated through 1/9/96
 ;; 1.0 (7/12/98) Started to rework the files into the new era of lattice-points.
 ;; 2.0 (9/5/00) Started completely reworking the model given psi.  (2/10/05) Bringing
-;;  back the qualifiers.
+;;  back the qualifiers. 9/25/13 financial -> financial-datum to avoid swallowing
+;;  the actual word gratuitously. 
 
 (in-package :sparser)
 
@@ -19,7 +20,7 @@
 #|  A 'financial' is just the kind of thing whose values are reported,
  such as '(net) income, not any of the relationships that involve them.  |#
 
-(define-category financial
+(define-category financial-datum
   :specializes nil
   :instantiates self
   :binds ((name :primitive (:or word polyword)))
@@ -33,10 +34,10 @@
 
 (defun define-financial (string)
   (let ((w/pw (resolve-string-to-word/make string)))
-    (define-individual 'financial
+    (define-individual 'financial-datum
       :name w/pw)))
 
-(define-autodef-data  'financial
+(define-autodef-data  'financial-datum
   :module *finance*
   :display-string "kind of data"
   :dossier "dossiers;financial data items"
