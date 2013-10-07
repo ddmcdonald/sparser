@@ -26,4 +26,9 @@
 
 #|
 only the students and professors who
+was a graduate of Sharif University 
+his research for his B.Sc. course
+his B.Sc. Degree  <==== Capitalized Degree seen as name
+in the field of chemical engineering
+one of the students of
 |#
