@@ -3,10 +3,10 @@
 ;;;
 ;;;      File: "text-relations"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: March 2013
+;;;   Version: October 2013
 
 ;; Initiated 3/9/13. Distributed to other files for easier development
-;; 3/12/13.
+;; 3/12/13. 10/2/13 Added note-entity, 
 
 (in-package :sparser)
 
@@ -72,6 +72,9 @@
       i)))
 ;;//// we need the relationship from the word/s
 ;; to the relations they're in
+
+(defun note-entity (item)
+  (add-to-container item (sentence)))
 
 
 (defun set-text-relation-instance-print-args (tr i)
