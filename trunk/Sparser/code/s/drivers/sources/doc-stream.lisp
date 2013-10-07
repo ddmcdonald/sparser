@@ -196,7 +196,6 @@
   (let ((*current-document-stream* document-stream)
         (*accumulate-content-across-documents* t)
         (*initialize-with-each-unit-of-analysis* nil)
-        (article-per-file? t)
         (doc-set-name (ds-name document-stream)) ;; mixed case - change it ??
         (file-list
          (cond ((ds-directory document-stream)
@@ -214,9 +213,10 @@
                       *initialize-with-each-unit-of-analysis*))
 
     (initialize-document-set doc-set-name)
-    (initialize-article-resource)
-    (initialize-section-resource)
-    (initialize-chart-state)
+    (initialize-document-element-resources)
+
+
+    ;;(initialize-chart-state)
 
     (dolist (file file-list)
       ;; these we have to open/close by hand. This is copied from
@@ -228,15 +228,20 @@
                                 (find-package :sparser))))
         (when *verbose-document-stream*
           (format t "~&~%~%About to read from~%  ~a~%~%" pathname))
+
+
         (establish-character-source/file pathname)
 
-        ;; parts of analysis-core (9/6/94) that initialize the
-        ;; buffers but nothing else.
-        (when article-per-file?
-          (begin-new-article :name file-name :location pathname)
-          (per-article-initializations))
-        (initialize-tokenizer-state)
-        (chart-based-analysis)
+     
+        (set-initial-state :name file-name :location pathname)
+
+          ;(per-article-initializations) in core
+
+        (analysis-core)
+
+        ;(initialize-tokenizer-state)
+        ;(chart-based-analysis)
+
         (let ((chart-end  *number-of-next-position*))
           (dolist (pos (list (chart-position chart-end)
                              (chart-position (1- chart-end))))

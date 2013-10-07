@@ -3,12 +3,13 @@
 ;;; 
 ;;;     File:  "file"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   April 2013
+;;;  Version:   0.1 October 2013
 
 ;; initiated 2/91, added Analyze-text-from-file/at-filepos 12/14/94
 ;; 2/15/13 Folded in initializations from do-document-as-stream-of-files,
 ;;  for the code in objects/doc/object.lisp. 3.14.13 fixed it.  Fan-out
 ;;  from further change 4/1/13.
+;; 0.1 (10/3/13) Reorganized the initialization.
 
 (in-package :sparser)
 
@@ -20,19 +21,15 @@
     (close-character-source-file))
   (let* ((pathname (decode-file-expression/pathname file))
          (file-name (intern (pathname-name pathname))))
+    (initialize-document-element-resources)
+    (begin-new-article :name file-name :location pathname)
     (establish-character-source/file pathname)
-    (when *recognize-sections-within-articles* ;; grammar module
-      (initialize-article-resource)
-      (initialize-section-resource)
-      (begin-new-article :name file-name :location pathname))
-    (when *note-text-relations*
-      (initialize-text-relationships))
     (analysis-core)
     (when *open-stream-of-source-characters*
       (close-character-source-file))))
 
 
-
+;; N.b. hasn't been run since the early 1990s
 (defun analyze-text-from-file/at-filepos (file file-position)
   (when *open-stream-of-source-characters*
     (close-character-source-file))

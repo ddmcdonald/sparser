@@ -34,13 +34,8 @@
 
 (defvar *current-text-under-analysis* nil)
 
-(defparameter *current-article* nil
-  "Bound by any of the drivers that analyze whole articles.  The
-   value is an article object.")
 
-(defparameter *current-paragraph* nil
-  "The current leaf-level section being analyzed by the text. The
-   value is a section object.")
+
 
 (defparameter *current-style* nil
   "Bound by document-stream drivers. Access at various points.")
