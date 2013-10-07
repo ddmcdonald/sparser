@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.20 September 2013
+;;;  Version:  2.20 October 2013
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -60,7 +60,7 @@
 ;;      (7/17/13) added strider-setting. (8/19/13) Added display setting and other odd
 ;;       things to it to esure they took effect. (9/16/13) stubbed c3-setting
 ;;      (9/18/13) Changed grok to enable all the after-segment options. Rely on
-;;       the passes to tune them.
+;;       the passes to tune them. 10/2/13 Integrated sentence handling into Strider
 
 (in-package :sparser)
 
@@ -317,6 +317,8 @@
   (setq *allow-da-to-look-under-edges* nil)
   ;;   /// arc-matches-tt? needs to adjust the next tt
   (setq *note-text-relations* t) ;; transfering content from in here
+  (period-hook-on)
+  (designate-sentence-container :simple)
   ;; misc. display settings
   (display-bracketing)
   (setq *tts-after-each-section* t)
