@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "context"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  June 1992
+;;;  Version:  0.1 October 2013
 
-;; initiated 6/18/92
+;; initiated 6/18/92.
+;; 0.1 (10/4/13) Adding simpler uses of the context global.
 
 (in-package :sparser)
 
@@ -20,6 +21,22 @@
 (defvar *context-variables-and-init-values* nil
   "accumulates all the symbols. Used as a table -- sorted alphabetically
    for display off a menu.")
+
+
+;;--- clearing -- early in per-article initizations
+
+(defun clear-context-variables () ;; syntactic sugar and a hook
+  (setq *context-variables-and-init-values* nil))
+
+
+;;--- push, probe
+
+(defun set-context-variable (indicator value)
+  (push `(,indicator . ,value)
+        *context-variables-and-init-values*))
+
+(defun known-in-context (indicator)
+  (cdr (assq indicator *context-variables-and-init-values* )))
 
 
 ;;;------------

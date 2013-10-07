@@ -4,13 +4,18 @@
 ;;;
 ;;;     File:  "situation"
 ;;;   Module:  "objects/doc/"
-;;;  version:  September 2013
+;;;  version:  October 2013
 
 ;; Initiated 9/18/13. 
 
 (in-package :sparser)
 
 
-(defclass base-situation (ordered)
+(defclass base-situation (container ordered)
   ()
   (:documentation ""))
+
+(defun make-sentence-container/situation (sentence)
+  (declare (ignore sentence))
+  (break "Stub"))
+
