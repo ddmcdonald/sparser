@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2003,2011-2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  6.8 February 2011
+;;;  Version:  6.9 September 2013
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -40,6 +39,9 @@
 ;;       so it gets the illion done right for "93.85".
 ;;     (2/8/07) Added ws check to keep the check for a prior decimal point from
 ;;       looking back across a line break. 2/20/11 tweeked process description.
+;; 6.9 (9/25/13) The heuristic about the period in map-out-the-distribution
+;;       (of illions) assumes that the illion work is included in the array of
+;;       edges passed to it. Calls for a thorough examination.
 
 (in-package :sparser)
 
@@ -353,10 +355,12 @@ unknown---in any event, we're taking the first edge that is installed.
               (construct-temporary-number nil nil net-value)
               net-value)))
 
-      (when *include-model-facilities*
-        (map-out-the-distribution number-object
-                                  number-of-segments
-                                  digits-array))
+      ;; This call is to handle 'illions, but the fsa doesn't
+      ;; include them in the digits array
+;      (when *include-model-facilities*
+;        (map-out-the-distribution number-object
+;                                  number-of-segments
+;                                  digits-array))
 
       ;; construct-temp. had been used to make a polyword to memoize
       ;; compound digit strings, for which it passed through a constructed
@@ -418,7 +422,13 @@ unknown---in any event, we're taking the first edge that is installed.
                                 digits-array
                                 net-number)))
 
+;; Original scheme worked on "4 billion" ".4 billion"
+;; but not on "0.4 billion" or "5.4 billion"
+;; Ah -- and with "4 billion" the illion is not in the digits array
+;;  so dyking the call to this back in span-digits-number
 (defun map-out-the-distribution (number number-of-segments digits-array)
+  (push-debug `(,number ,number-of-segments ,digits-array))
+  (break "This code is likely bogus -- look at the array")
   (when *period-within-digit-sequence*
     (set-illion-distribution 
      number 
@@ -439,6 +449,8 @@ unknown---in any event, we're taking the first edge that is installed.
   (let ((value (edge-referent edge))
         (illion (find-individual 'multiplier :name name-of-illion)))
     (set-illion-distribution number value illion)))
+
+  
 
 
 
