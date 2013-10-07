@@ -58,6 +58,7 @@
     (resume-old-parsing-protocol))
 
   (clear-debug) ;; zero's the stack
+  (clear-context-variables)
 
   (when *load-the-grammar*
     (when *context-variables*
@@ -70,19 +71,23 @@
     ;(when *track-salient-objects*
     ; (initialize-salient-object-record))
 
-    (when *include-model-facilities*
-      (unless *accumulate-content-across-documents*
-        (clean-out-history-and-temp-objects)))
-
     #+mcl 
     (when *display-text-to-special-window*
       (clear-special-text-display-window))
+    
+    (when *recognize-sections-within-articles*
+      (initialize-document-element-resources)
+      (begin-new-article))
+
+    (when *include-model-facilities*
+      (unless *accumulate-content-across-documents*
+        (clean-out-history-and-temp-objects))))
 
     ;; These flags are grammar modules
-    (when *paragraph-detection*
+#|    (when *paragraph-detection*
       (initialize-paragraph-state))
     (when *recognize-sections-within-articles*
-      (initialize-section-state)))
+      (initialize-section-state)))  |#
 
   (run-real-per-article-initializations))
 
