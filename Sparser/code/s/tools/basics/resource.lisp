@@ -88,7 +88,7 @@
   `(define-resource/expr ',class-name ,count ,delta))
 
 (defun define-resource/expr (class-name count delta)
-  (unless count(setq count 100))
+  (unless count (setq count 100))
   (unless delta (setq delta 50))
   (unless (symbolp class-name)
     (error "The first argument must be a symbol naming the class"))
@@ -117,7 +117,7 @@
   anything)
 
 #| 
-TThe type that we create
+The type that we create
 It's initialization method
 its reclaim method
 Its clean method
