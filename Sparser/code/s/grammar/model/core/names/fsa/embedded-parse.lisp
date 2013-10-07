@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "embedded parse"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.8 August 2013
+;;;  version:  0.8 October 2013
 
 ;; initiated 5/21/93 v2.3
 ;; 0.1 (6/9) revising the alg. because it's intended to be top-edges and
@@ -19,7 +19,9 @@
 ;;      titles parsed items rather than polywords.
 ;;     (5/26/13) added some traces. 
 ;; 0.7 (8/18/13) Reordered polyword check before edge check: "Deputy Chief of 
-;;      Staff", where CoS is a polyword.
+;;      Staff", where CoS is a polyword. 
+;; 0.8 (10/1/13) Reorganized single-nonword-edge-starts-at a bit and stubbed out
+;;      a choice between the two versions of "New York"
 
 (in-package :sparser)
 
@@ -109,55 +111,54 @@
 ;;;--------------------------
 
 (defun single-nonword-edge-starts-at (position)
+  ;; Called from pfwpnf -- return the preferred edge if there are
+  ;; several to choose from. Note that this is coming right after
+  ;; a call to look for FSAs (e.g. polywords) starting at this
+  ;; position, and they may have let to some edges. 
   (let* ((ev (pos-starts-here position))
          (top-node (ev-top-node ev)))
-    
     (when top-node
-      ;; usually there won't be
-      (cond
-       ((= 1 (ev-number-of-edges ev))
-        (let ((edge (ev-top-node ev)))
-          (if (not (word-p (edge-category edge)))
-            edge
-            nil)))
+      (let* ((e0 (elt (ev-edge-vector ev) 0))
+             (e-max (highest-edge ev))       ;; evade problem with
+             (edges (edges-between position  ;; multiple-initial-edges
+                                   (pos-edge-ends-at e-max))))
+        (cond
+         ((= 1 (ev-number-of-edges ev))
+          (let ((edge (ev-top-node ev)))
+            (if (not (word-p (edge-category edge)))
+              edge
+              nil)))
 
-       ((edges-all-chain position :start)
-        (if (eq top-node :multiple-initial-edges)
-          (highest-edge ev)
-          top-node ))
+         ((edges-all-chain position :start)
+          (if (eq top-node :multiple-initial-edges)
+            (highest-edge ev)
+            top-node ))
 
-       (t
-        (let* ((e0 (elt (ev-edge-vector ev) 0))
-               (e-max (highest-edge ev))       ;; evade problem with
-               (edges (edges-between position  ;; multiple-initial-edges
-                                    (pos-edge-ends-at
-                                     e-max))))
+         ((and (= (length edges) 2)
+               (edge-for-literal? e0))
+          (elt (ev-edge-vector ev) 1))
 
-          (cond
-           ((and (= (length edges) 2)
-                 (edge-for-literal? e0))
-            (elt (ev-edge-vector ev) 1))
-
-           (t
-            ;; this case shouldn't happen when all that's happened
-            ;; here was the cap-seq scan, so it's a not-designed-for
-            ;; bug
-            ;(break "PNF: more than one edge starts at p~A~
-            ;        and they're not on a chain"
-            ;       (pos-token-index position))
-            ;;/// 6/19 hits on "Messrs.", which has three edges
-            ;; of identical length: "messrs", preson-prefix, and
-            ;; name-word
-            
-            (let ((foo
-                   (find 'category::person-prefix
-                         edges
-                         :key #'(lambda (e)
-                                  (cat-symbol
-                                   (edge-category e))))))
-              (if foo
-                foo
+         (t
+          (let ((prefix 
+                 ;;/// 6/19/93 hits on "Messrs.", which has three edges
+                 ;; of identical length: "messrs", preson-prefix, and
+                 ;; name-word
+                 (find 'category::person-prefix
+                       edges
+                       :key #'(lambda (e)
+                                (cat-symbol (edge-category e))))))
+            (or prefix
+                (city-vs-state edges) ;; returns the edge itself
                 (else
-                  (break "Stub: another case to do")
-                  :foo )))))))))))
+                 (push-debug `(,ev ,top-node ,edges))
+                 (break "PFWPNF: Stub -- another case to do"))))))))))
+
+(defun city-vs-state (edges)
+  ;; if there's both a city and a state in the set of edges,
+  ;; prefer the state. May only occur for New York. 
+  (second edges)) ;; total hack. Works in the presenting case
+  
+
+
+
 
