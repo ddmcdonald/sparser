@@ -11,3 +11,5 @@
 
 (define-company "Hong Kong and Shanghai Banking Corporation"
                 :aliases '("HSBC") :takes-the t)
+
+(define-company "Standard Chartered Bank" :aliases '("StanChart"))
