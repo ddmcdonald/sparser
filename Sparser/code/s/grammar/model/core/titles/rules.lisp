@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "rules"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  0.1 July 2013
+;;;  version:  0.1 October 2013
 
 ;; initited 6/15/93, starting over from scratch. 3/17/05 These are
 ;; interacting with rules made automatically from the etf schemas,
@@ -12,7 +12,8 @@
 ;; rules because references have to happen before they're created
 ;; haphadardly by order of ETF definition. Added case of 'to-title'
 ;; 0.1 (2/21/11) Reworked as marker categories. 
-;;     (7/17/13) added age rule
+;;     (7/17/13) added age rule. 10/6/13 Reorganized country case in 
+;;     sorting out possessive. 
 
 (in-package :sparser)
 
@@ -97,8 +98,9 @@
 
      ((itypep possessive 'country) ;; "Iran's prime minister"
       (unless (itypep title 'modified-title)
-        (setq title (revise-right-edge-into-rule
-                     :referent (convert-to-modified-title title 'locale))))
+        (let ((title-mod (convert-to-modified-title title 'locale)))
+          (setq title title-mod)
+          (revise-right-edge-into-rule :referent title-mod)))
       (bind-variable 'locale possessive title))
 
      (t (push-debug `(,possessive ,title))
