@@ -41,7 +41,7 @@
 (define-country "Bosnia and Herzegovina")
 (define-country "Botswana")
 (define-country "Brazil")
-(define-country "Britain" :aliases '("United Kingdom") :adjective "British"
+(define-country "Britain" :aliases '("United Kingdom" "UK") :adjective "British"
   :cities '("London" "Birmingham" "Cardiff"))
  (define-country "England" :adjective "English")
  (define-country "Scotland" :adjective "Scotish")
