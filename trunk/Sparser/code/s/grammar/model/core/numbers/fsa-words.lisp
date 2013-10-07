@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1999,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1999,2012-2013  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "fsa words"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  0.3 April 2012
+;;;  Version:  0.4 September 2013
 
 ;; initiated (redesigned from scratch) 11/30/93 v2.3, finished the first
 ;; version with stubs for the multi-word case 12/6.  Fixed a bug 1/14/94.
@@ -18,7 +17,8 @@
 ;;      for the number.
 ;; 0.3 (7/16/07) Added alternative to just take them as a sequence rather
 ;;      than multiplying them out as a number.  4/1/12 blocked call to undefined
-;;      fn for after commas.
+;;      fn for after commas.  
+;; 0.4 (9/27/13) Discriminated more cases in apply-multiplier.
 
 (in-package :sparser)
 
@@ -184,8 +184,22 @@
     (unless (XXX number 'multiplier)
       (break "Threading bug: the left-referent is not a multiplier: ~
               ~%   ~a" multiplier))|#
-    (let* ((number-value (value-of 'value  number))
-           (multiplier-value (value-of 'value (value-of 'value multiplier)))
+    (push-debug `(,number ,multiplier))
+    (let* ((number-value
+            (cond ((typep number 'number) number)
+                  ((itypep number 'multiplier) ;; more specific than number
+                   (value-of 'value (value-of 'value number)))
+                  ((itypep number 'number)
+                   (value-of 'value number))
+                  (t (error "New type for number: ~a"
+                            (itype-of number)))))
+           (multiplier-value 
+            (cond ((typep multiplier 'number) multiplier)
+                  ((itypep multiplier 'multiplier)
+                   (value-of 'value (value-of 'value multiplier)))
+                  (t (error "New type for multiplier: ~a"
+                            (itype-of multiplier)))))
+
            (net-value (* number-value multiplier-value))
            (net-number
             (find-or-make-number net-value)))
