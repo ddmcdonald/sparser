@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1994,2010-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2010-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "grammar;rules:paragraphs:"
-;;;  Version:  2.2 April 2012
+;;;  Version:  2.3 October 2013
 
 ;; 1.1 (10/25/93 v2.0) [-> "1"]  New design for section markers
 ;; 1.2 (1/5/94 v2.3) fleshing out the object now that it's being used
@@ -17,6 +16,9 @@
 ;;      form category named paragraph. Calling it paragraph-structure, which
 ;;      isn't all that unnatural. Propagated changes through this file. 
 ;;      4/1/12 Couple of incorrect accessors.
+;; 2.3 (10/3/13) Propagated -structure through the rest of the resource
+;;      to distinguish them from what's in objects/doc/object1 in lieu of
+;;      looking around and replacing this entirely. 
 
 (in-package :sparser)
 
@@ -24,8 +26,9 @@
 ;;; globals
 ;;;----------
 
-(defvar *current-paragraph* nil
-  "points to the paragraph whose text is being analyzed")
+;; Move the definition to objects/doc/object1.lisp 10/2/13
+;(defvar *current-paragraph* nil
+;  "points to the paragraph whose text is being analyzed")
 
 (defvar *next-paragraph* nil
   "points to the paragraph that is about to start. Serves as a global
@@ -94,7 +97,7 @@
     (defparameter *number-of-paragraphs-to-make-in-advance*
                   10))
 
-(defparameter *paragraph-resource* nil)
+(defparameter *paragraph-structure-resource* nil)
 
 (defun pre-allocate-paragraphs (&aux para)
   ;; called at launch time as an initialization along with
@@ -114,18 +117,18 @@
     (deallocate-paragraph p)))
 
 
-(defun allocate-paragraph ()
-  (if *paragraph-resource*
-    (pop *paragraph-resource*)
+(defun allocate-paragraph-structure ()
+  (if *paragraph-structure-resource*
+    (pop *paragraph-structure-resource*)
     (else
       (allocate-more-paragraphs)
-      (pop *paragraph-resource*))))
+      (pop *paragraph-structure-resource*))))
 
 
-(defun deallocate-paragraph (p)
+(defun deallocate-paragraph-structure (p)
   (setf (paragraph-structure-number p) nil
         (paragraph-structure-start p) nil
         (paragraph-structure-end p) nil)
-  (push p *paragraph-resource*)
+  (push p *paragraph-structure-resource*)
   p )
 
