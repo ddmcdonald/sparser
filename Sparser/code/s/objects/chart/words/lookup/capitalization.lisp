@@ -113,6 +113,7 @@
             (:single-capitalized-letter
              (case actual-state
                (:initial-letter-capitalized (return word))
+               (:mixed-case (return word))
                (:all-caps (return word))
                (otherwise
                 (break "new case for single cap'd"))))
