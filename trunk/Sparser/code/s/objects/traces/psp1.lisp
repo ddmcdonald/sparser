@@ -1225,3 +1225,13 @@
 (deftrace :do-treetop-loop (tt)
   (when *trace-network-flow*
     (trace-msg "[forest] do-treetop-loop - ~A" tt)))
+
+
+
+(deftrace :check-if-word-starts-segment (pos-before word)
+  (when *trace-network-flow*
+    (trace-msg "[c3] does ~a just after p~a start a segment?"
+               (word-pname word) (pos-token-index pos-before))))
+
+
+
