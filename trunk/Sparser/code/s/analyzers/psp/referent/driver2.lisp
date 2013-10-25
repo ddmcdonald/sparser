@@ -29,6 +29,7 @@
 ;;     (4/27/11) Cleanup. More on 5/10
 ;; 2.4 (7/22/13) Added some doc and the base of the redistribute method
 ;;     (8/14/13) More syntactic sugar.
+;;     (10/10/13) Added final hook to incorporate the referent into the situation. 
 
 (in-package :sparser)
 
@@ -138,6 +139,10 @@
         (call-redistribute-if-appropriate left-referent right-referent)
 
         ;;(dereference
+
+        (when *c3*
+          (break "ref -- not unary rule -- check")
+          (incorprate-into-the-situation *referent* rule parent-edge))
 
         *referent* ))))
 
