@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "copula patterns"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  October 1995
+;;;  version:  October 2013
 
-;; formed 10/18/95
+;; formed 10/18/95. Cleaned up a bit 10/9/13.
 
 (in-package :sparser)
 
@@ -17,7 +17,10 @@
   ;; syntactic rules where the full def. of 'be' will be given
 
 (define-exploded-tree-family   thing-is-description
-  :description "A clause based on the verb 'to be'. A property is being ascribed to a (usually concrete) individual: \"The sky is blue\". Semantically, the result is to put the individual into a relationship with the property or description."
+  :description "A clause based on the verb 'to be'. 
+      A property is being ascribed to a (usually concrete) individual: \"The sky is blue\". 
+      Semantically, the result is to put the individual into a relationship 
+      with the property or description."
   :binding-parameters ( result  individual  description )
   :labels ( s  vp  np/subject  complement )
   :cases
