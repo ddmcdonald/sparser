@@ -111,6 +111,9 @@
   (gate-grammar *standard-adjuncts*
     (gload "adjuncts;loader"))
 
+  (gate-grammar *qualities*
+    (gload "qualities;loader"))
+
   (gate-grammar *syntax*
      ;; be & have (etc) reference tree-families
     (gload "syntax;loader3"))
@@ -205,6 +208,18 @@
 
   (gate-grammar *hurricanes*
     (gload "hurricanes;loader"))
+
+  (gate-grammar *middle-east*
+    (gload "mideast;loader"))
+
+  (gate-grammar *Banking*
+    (gload "banking;loader"))
+
+  (gate-grammar *ISR*
+    (gload "isr;loader"))
+
+  (gate-grammar *c3*
+    (gload "sit-rules;loader"))
 
 
 #| irrelevant until GL comes back up

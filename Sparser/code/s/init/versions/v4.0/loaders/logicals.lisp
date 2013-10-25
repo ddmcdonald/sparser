@@ -174,6 +174,8 @@
 (def-logical-pathname "traces;"     "objects;traces:")
 (def-logical-pathname "doc;"        "objects;doc:")
 
+(def-logical-pathname "situation-objs;" "objects;situation:")
+
 
 (def-logical-pathname "analyzers;"   "Sparser-source;analyzers:")
 (def-logical-pathname "chars;"       "analyzers;char-level:")
@@ -275,6 +277,8 @@
 (def-logical-pathname "gl form;"      "gl;form:")
 (def-logical-pathname "gl entries;"   "gl;entries:")
 
+(def-logical-pathname "sit-rules;"    "rules;situation:")
+
 
 (def-logical-pathname "model;"        "grammar;model:")
 (def-logical-pathname "model forms;"  "objects;model:forms:")
@@ -286,6 +290,7 @@
 (def-logical-pathname "kinds;"        "core;kinds:")
 (def-logical-pathname "numbers;"      "core;numbers:")
 (def-logical-pathname "amounts;"      "core;amounts:")
+(def-logical-pathname "qualities;"    "core;qualities:")
 (def-logical-pathname "time;"         "core;time:")
 (def-logical-pathname "money;"        "core;money:")
 (def-logical-pathname "finance;"      "core;finance:")
@@ -320,6 +325,10 @@
 (def-logical-pathname "nih;"          "sl;NIH:")
 (def-logical-pathname "disease;"      "sl;disease:")
 (def-logical-pathname "hurricanes;"    "sl;hurricanes:")
+
+(def-logical-pathname "mideast;" "sl;middle-east:")
+(def-logical-pathname "banking;" "sl;banking:")
+(def-logical-pathname "isr;"     "sl;ISR:")
 
 (def-logical-pathname "Who's News;"   "sl;Who's News:")
 (def-logical-pathname "acts;"         "Who's News;acts:")
