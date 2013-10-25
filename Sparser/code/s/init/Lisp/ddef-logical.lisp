@@ -1,19 +1,20 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1997  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ddef-logical"
 ;;;   module   "init;Lisp:"
-;;;  version:  October 1997
+;;;  version:  October 2013
 
 ;; This is a replacement for MCL's Def-logical-pathname
-;; initiated 12/4, modified 12/16 to fix in heterogenious env.
+;; initiated 12/4/92, modified 12/16 to fix in heterogenious env.
 ;; 12/28 wrote revert routine.  1/27/93 reworked to make it permanent
 ;; given that MCL 2.0 has put the notion in it's 'going away soon'
 ;; category.   4/5/95 added 'reconstruction' routine.
 ;; 8/9 added gate to allow redefinition of logicals without the check.
 ;; 6/4/96 added a comment.  6/5 incorporated a sanity check before the
 ;; query about multiple definitions of the same logical. 10/11/97 fixed
-;; a format glitch in Def-logical-pathname.
+;; a format glitch in Def-logical-pathname. 10/9/13 moved semicolon
+;; check earlier in def-logical-pathname because ccl complained.
 
 (in-package :sparser)
 
@@ -58,9 +59,9 @@
       (break "Wrong datatype in referent field. Should be a string ~
               or a form to be evaled.   ~A" referent)))
   
-  (let ( length-of-logical logical-name 
-                           referent-name-list )
-    
+  (let ( length-of-logical  logical-name  referent-name-list )
+    (unless (position #\; logical)
+      (error "The logical ~a does not contain a semicolon" logical))    
     (setq length-of-logical (length logical))
     (unless (= (+ 1 (position #\; logical))
                length-of-logical)
