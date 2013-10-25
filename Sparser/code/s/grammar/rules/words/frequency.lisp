@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2010-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2010-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  0.4 Septembe 2012
+;;;  Version:  0.4 October 2012
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -18,7 +18,7 @@
 ;;     7/23-25 folding in #<document> object. Refining ...8/16.
 ;;     7/28/11 Abstracted out def-word to its own file. 3/31/12 fixed fn call.
 ;;     Through August, September 2012 adding documentation, refining
-;;     the code overall. 
+;;     the code overall. 10/24/13 Started stubbing a document-set driver
 
 (in-package :sparser)
 
@@ -818,6 +818,15 @@
     (setf (token-count doc) *words-in-run*)
     doc))
 
+(defmethod count-word-frequencies ((doc-set document-set))
+  (word-frequency-setting)
+  (initialize-word-frequency-data)
+  ;; need before/after-{document type} methods to provide 
+  ;; a hook for collecting. Perhaps a 'we're counting words' mode
+  ;; special for them to consult? Or perhaps the equivalent would
+  ;; be something that's set anyway to support word-frequency settings
+  ;; that's easily consulted.
+  (do-document-as-stream-of-files doc-set))
 
 
 
