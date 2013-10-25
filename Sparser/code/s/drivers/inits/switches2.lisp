@@ -61,6 +61,9 @@
 ;;       things to it to esure they took effect. (9/16/13) stubbed c3-setting
 ;;      (9/18/13) Changed grok to enable all the after-segment options. Rely on
 ;;       the passes to tune them. 10/2/13 Integrated sentence handling into Strider
+;; 2.21 (10/21/13) Moved the old contents of fire into Grok and then made grok the
+;;       equivalent of Strider so we can use that going forward as the default
+;;       that operations are built on.
 
 (in-package :sparser)
 
@@ -272,7 +275,8 @@
   (setq *switch-setting* :top-edges/with-extras-and-negatives
         *current-analysis-mode* :no-dm&p))
 
-(defun fire-setting ()
+(defun grok-setting ()
+  "Similar to answer and fire, but with annotations and ..."
   (top-edges-setting/ddm)
   (setq *new-dm&p* t)
   (setq *do-strong-domain-modeling* t)
@@ -281,11 +285,9 @@
   (setq *treat-single-Capitalized-words-as-names* t)
   (setq *annotate-realizations* nil)
   (setq *do-conceptual-analysis* nil) ;; probably need finer resolution
-  (setq *switch-setting* :fire))
+  (setq *switch-setting* :fire)
+  ;; that was the former fire-setting parts above here
 
-(defun grok-setting ()
-  "Similar to answer and fire, but with annotations and ..."
-  (fire-setting)
   (setq *annotate-realizations* t)
   (include-comlex)
   (setq *do-strong-domain-modeling* t
@@ -302,7 +304,7 @@
   (grok-setting)
   (progn ;; these are temporary overrides while we debug bracketing
     (setq *annotate-realizations* nil)
-    (setq *new-dm&p* nil)) ;; these two from fire-setting
+    (setq *new-dm&p* nil)) ;; these two from (former) fire-setting
   (setq *break-on-new-bracket-situations* t)
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
@@ -325,6 +327,13 @@
   (setq *dbg-print* nil)
   (turn-off-debugging-flags)
   (setq *switch-setting* :strider))
+
+
+(defun fire-setting ()
+  ;; Now (10/21/13) the setting we get when we 
+  (strider-setting)
+  (setq *switch-setting* :fire))
+
 
 (defun ambush-setting ()
   (fire-setting)
@@ -434,6 +443,7 @@
   (setq *make-edges-for-unknown-words-from-their-properties* nil
         )
   (establish-kind-of-chart-processing-to-do :c3-protocol)
+  (designate-sentence-container :situation)
   (setq *switch-setting* :c3))
   
 
