@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.4 August 2013
+;;;  version:  1.4 October 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -36,6 +36,7 @@
 ;;     (8/21/11) Fixed bug in decode-category-to-instantiate
 ;; 1.3 (9/6/11) Added rule-label field to over-ride the default. 
 ;; 1.4 (8/26/13) Added mixins keyword to decode-category-parameter-list.
+;;     (10/24/13) Added restrict to it.
 
 (in-package :sparser)
 
@@ -100,6 +101,7 @@
                                             rule-label
                                             ((:binds var-v/r-pair))
                                             bindings
+                                            ((:restrict restrictions))
                                             ((:realization rdata))
                                             index )
   (let ((specialized-category
@@ -148,6 +150,9 @@
     (prepare-category-operations category index instantiates rule-label)
     ;; has to preceed rdata setup since some calculations there
     ;; can depend upon it.
+
+    (when restrictions
+      (handle-variable-restrictions category restrictions))
 
     (when rdata
       (setup-rdata category rdata))
