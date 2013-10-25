@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;versions:v2.3:workspace:"
-;;;  version:  April 2013
+;;;  version:  October 2013
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -14,7 +14,8 @@
 ;; Modified through 9/11/09. 9/18 factored out the checkpoint massaging done in
 ;; pp to the new file /grammar/model/sl/checkpoing/post-processing.lisp
 ;; 3/15/13 Added p/art to simulate running a document stream.
-;; 4/14 added ier for edge referents and binds for their bindings
+;; 4/14 added ier for edge referents and binds for their bindings.
+;; 10/9/13 added ietf. 10/17/13 augmented ic to get mixins.
 
 (in-package :sparser)
 
@@ -56,7 +57,15 @@
 (defun ir (number-of-rule)
   (let ((rule (psr# number-of-rule)))
     (d rule)))
-(defun ic (category-name) (d (referential-category-named category-name)))
+
+(defun ic (category-name)
+  (let ((category (or (referential-category-named category-name)
+                      (category-named category-name)))) ;; e.g. mixin
+    (if category
+      (d category)
+      (else 
+       (format t "\"~a\" does not name a category" category-name)
+       nil))))
 
 (defun ier (number-of-edge) ;; inspect edge referent
   (d (edge-referent (edge# number-of-edge))))
@@ -87,6 +96,12 @@
   (psi-object# n))
 
 ;; lp#  -- for lattice points
+
+(defun ietf (name)
+  (let ((etf (exploded-tree-family-named name)))
+    (if etf
+      (d etf)
+      (format nil "No exploded tree family is named ~a" name))))
 
 
 (defmacro ml (label-name1 label-name2)
