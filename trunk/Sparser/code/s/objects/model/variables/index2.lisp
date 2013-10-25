@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  2.1 April 2013
+;;;  version:  2.1 October 2013
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -18,7 +18,8 @@
 ;;   rules are executed. (12/14/10) method-ized find-variable-in-category
 ;;   to handle lattice points as the value of the type field.
 ;;   (1/18/11) Wrote swap-variable-in-binding. 4/1/13 Added signature for
-;;   individuals for dereference-variable.
+;;   individuals for dereference-variable. 10/17/13 added signature to get
+;;   categories via symbols in find-variable-in-category.
 
 
 (in-package :sparser)
@@ -40,6 +41,12 @@
   (let ((variables (cat-slots category)))
     (when variables
       (find symbol variables :key #'var-name))))
+
+(defmethod find-variable-in-category (symbol (category-name symbol))
+  (let ((category (category-named category-name :break-if-missing)))
+    (let ((variables (cat-slots category)))
+      (when variables
+        (find symbol variables :key #'var-name)))))
 
 (defmethod find-variable-in-category (symbol (lp lattice-point))
   (let ((category (base-category-of-lp lp)))
