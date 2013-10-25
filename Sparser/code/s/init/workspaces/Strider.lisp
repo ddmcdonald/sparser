@@ -70,24 +70,7 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
 ;;;     texts
 ;;;-----------------
 
-;;--- setting up a grammar module for Strider-specific content
-
-(define-grammar-module *middle-east*
-  :name "The Middle East"
-  :parent *sublanguages*)
-
-(include-grammar-module *middle-east*)
-
-(def-logical-pathname "mideast;" "sl;middle-east:")
-
-(gate-grammar *middle-east*
-  (gload "mideast;loader"))
-
-
-
-(define-grammar-module *Banking*
-  :name "Banking"
-  :parent *sublanguages*)
+#| Preserved in one place to incorporate into documentation
 
 (include-grammar-module *Banking*)
 
@@ -95,6 +78,7 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
 
 (gate-grammar *Banking*
   (gload "banking;loader"))
+|#
 
 ;; (test-modules-citations *citations* *time* *proper-names*
 
