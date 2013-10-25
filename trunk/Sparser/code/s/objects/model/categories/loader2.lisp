@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1997, 2010 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2010-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  2.1. November 2010
+;;;  version:  2.1. October 2013
 
 ;; initiated 7/16/92 v2.3, copied over [object] 9/1
 ;; Added [index instances] 8/9/94 - bumped to save old permanent/temp scheme
@@ -16,6 +15,7 @@
 ;; 2.0 (10/9/09) Found interactions between indexing operations and the new
 ;;      treatment of variables for psi. Bumped index to 2
 ;; 2.1 (11/9/10) Added clos-backing.
+;;     (10/24/13) Added extensions. 
 
 (in-package :sparser)
 
@@ -25,4 +25,5 @@
 (lload "categories;printing")
 (lload "categories;index instances2")
 (lload "categories;define1")
+(lload "categories;extensions")
 (lload "categories;clos-backing")
