@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   September 2013
+;;;   Version:   October 2013
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -83,7 +83,8 @@
 ;; 5/26/13 changed value of *do-not-use-psi* to t because the psi are not resolving
 ;; the sequences of two instances of a name correctly. 8/14/13 Commented out the 
 ;; explicit workspaces load to use the implicit one. 8/19/13 added a redeclare-permanent
-;; at the very end since workspace items were being reclaimed. 9/16/13 Added *c3*
+;; at the very end since workspace items were being reclaimed. 9/16/13 Added *c3*.
+;; 10/21/13 Switch the grammar config for fire to be the full grammar.
 
 (in-package :cl-user)
 
@@ -803,7 +804,7 @@ or for loading the newer of the compiled or source files.
 (unless (boundp 'sparser::*checkpoint-operations*) ;; in mothballs
   (defparameter sparser::*checkpoint-operations* nil))
 
-(unless (boundp 'sparser::*fire*) ;; equivalent of Grok, but would use PSI
+(unless (boundp 'sparser::*fire*) ;; essentially Grok going forward
   (defparameter sparser::*fire*  nil
     "Fire stands for 'Free-text Information and Relation Extraction'"))
 
@@ -945,7 +946,9 @@ or for loading the newer of the compiled or source files.
        (sparser::lload "grammar-configurations;checkpoint-ops"))
 
       (sparser::*fire*
-       (sparser::lload "grammar-configurations;fire"))
+       ;; Had been a configuration specific to fire, but that
+       ;; file was reaped and this is essentially what it was.
+       (sparser::lload "grammar-configurations;full grammar"))
 
       (sparser::*da*
        (sparser::lload "grammar-configurations;Debris analysis"))
