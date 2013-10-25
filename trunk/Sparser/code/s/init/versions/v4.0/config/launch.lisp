@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "launch"
 ;;;   Module:  "init;versions:v4.0:config:"
-;;;  version:  September 2013
+;;;  version:  October 2013
 
 ;; 10/7/94 commented out the call to make objects permanent and move it to the
 ;; save images file. 10/12 turning off the break-outside-coverage flag
@@ -36,7 +36,9 @@
 ;; around final forms to avoid running them when compiling. 8/19/13 Added
 ;; ".lisp" to the wildcard in load-workspaces to make it work in CCL. Also
 ;; blocked the workspaces when compiling since they can invoke grammar
-;; resources that won't exist when just compiling files. 9/16/13 added c3 setting
+;; resources that won't exist when just compiling files. 9/16/13 added c3 setting.
+;; 10/21/13 Changed the default switch setting to fire, which at the moment
+;; is the equivalent of making it Strider's settings.
 
 (in-package :sparser)
 
@@ -173,7 +175,7 @@
     (*just-bracketing* (just-bracketing-setting))
 ;    (*checkpoint-ops* ;; oops -- points to a grammar module
 ;     (checkpoint-ops-setting))
-    (t (top-edges-setting/ddm))))
+    (t (fire-setting))))
 
 
 
