@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2012-2013 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  3.2 August 1994
+;;;  Version:  3.2 October 2013
 
 ;; 3.0 (6/2/93) changed the object to inherit from label
 ;; 3.1 (7/19) added wrapping data-check on Word-string to catch the
@@ -13,6 +13,7 @@
 ;;     (6/7) added Put-property-on-word and Property-of-word
 ;;     (8/2) added null check to Princ-word
 ;;     (10/31/12) Added more simple printers and clean-word
+;;     (10/9/13) Added word-with-single-edge-rules? for C3's benefit
 
 (in-package :sparser)
 
@@ -62,6 +63,11 @@
           (rs-left-looking-ids rs)
           (rs-fsa rs)
           (rs-completion-actions rs)))))
+
+(defun word-with-single-edge-rules? (w)
+  (let ((rs (word-rules w)))
+    (when rs
+      (rs-single-term-rewrites rs))))
 
 (defun defines-phrase-boundaries? (w)
   (let ((rs (word-rules w)))
