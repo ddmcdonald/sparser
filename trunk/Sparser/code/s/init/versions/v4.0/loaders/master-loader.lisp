@@ -129,6 +129,9 @@
            *include-model-facilities*)  ;; uses routines in the model facilities
   (lload "objects;doc:loader"))
 
+(when *c3*
+  (lload "objects;situation:loader"))
+
 (when *da*
   (lload "objects;rules:DA:loader"))
 
