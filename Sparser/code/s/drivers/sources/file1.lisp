@@ -21,8 +21,7 @@
     (close-character-source-file))
   (let* ((pathname (decode-file-expression/pathname file))
          (file-name (intern (pathname-name pathname))))
-    (initialize-document-element-resources)
-    (begin-new-article :name file-name :location pathname)
+    (set-initial-state :name file-name :location pathname)
     (establish-character-source/file pathname)
     (analysis-core)
     (when *open-stream-of-source-characters*
