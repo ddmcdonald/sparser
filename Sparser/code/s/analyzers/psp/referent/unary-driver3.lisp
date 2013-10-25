@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012-2013 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "unary driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   3.0 September 2009
+;;;   Version:   3.1 October 2013
 
 ;; broken out as its own file 11/91
 ;; 1.0 (10/23/92 v2.3) Got the options set up to date with actions in
@@ -34,6 +33,7 @@
 ;;     (2/6/07) Removed an ecase.
 ;; 3.0 (7/22/09) fanout from changes in psi design. (9/1) Added exception for
 ;;      external referents into referent-from-unary-rule. Added notes 11/12/12
+;; 3.1 (10/10/13) Added final hook to incorporate the referent into the situation. 
 
 (in-package :sparser)
 
@@ -95,6 +95,10 @@
 	   (unless *external-referents*
 	     (break "Unexpected type: ~a~%~a" 
 		    (type-of *referent*) *referent*)))))
+
+      (when *c3*
+        (incorprate-into-the-situation *referent* rule edge))
+
       *referent* )))
 
 
