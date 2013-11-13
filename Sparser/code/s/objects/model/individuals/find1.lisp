@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "find"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.3 June 2013
+;;;  version:  1.3 November 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/10) fixing the semantics of some cases of the find operation
@@ -24,6 +24,7 @@
 ;; 1.3 (6/13/13) Changed define-or-find-individual to use define-individual
 ;;      rather than make/individual so that it respects the realization
 ;;      data on the category.
+;;     (11/13/13) Improved error msg in find/individual/key/hash
 
 (in-package :sparser)
 
@@ -49,10 +50,8 @@
   ;; to fit calls from category-specific code
   (etypecase category
     (referential-category category)
-    (symbol (let ((name category))
-              (setq category (category-named name))
-              (unless category
-                (error "There is no category named ~A" name)))))
+    (symbol
+     (setq category (category-named category :break-if-missing))))
 
   (let ((binding-instructions
          (decode-category-specific-binding-instr-exps
@@ -61,7 +60,11 @@
     (or (find/individual category binding-instructions)
         ;; N.b. this version applies realization data, the others don't.
         (apply #'define-individual category binding-plist))))
-  
+
+(defun find-or-make-individual (category &rest binding-plist)
+  ;; I can't remember what this function is called so trying this
+  ;; variation out
+  (apply #'define-or-find-individual category binding-plist))
 
 
 
@@ -150,9 +153,12 @@
   (let ((table (cat-instances category))
         (value (cadr (assoc variable binding-instructions))))
     (unless value
-      (break "Find was called with binding instructions that don't ~
-              include the designated key variable:~%  ~A~%~A"
-             variable binding-instructions))
+      (if (assoc variable binding-instructions)
+        (error "Got nil as the value of the indexing variable, ~a"
+               variable)
+        (error "Find was called with binding instructions that don't ~
+                include the designated key variable:~%  ~A~%~A"
+               variable binding-instructions)))
 
     (when table ;; it's nilled out after a reinitialization
       (let ((individual (gethash value table)))
