@@ -347,8 +347,8 @@ These would be of/genitive except that
     ((:possessive (np (possessive np-head)
                     :head right-edge
                     :instantiate-individual result-type
-                    :binds (pos-slot left-edge)
-                            head-slot right-edge))))
+                    :binds (pos-slot left-edge
+                            head-slot right-edge)))))
 
 
 (define-exploded-tree-family  possessive/bind-slot
