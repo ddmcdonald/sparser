@@ -1,11 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012-2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File:  "word-freq"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  September 2012
+;;;  Version:  October 2013
 
 ;; initiated 9/2/12 to provide a mix-in for tabulating word-frequency information.
+;; 10/26/13 Reworked as a regular class form with initial values since the initialize
+;; method was never pushed through the other classes.
 
 (in-package :sparser)
 
@@ -13,10 +15,14 @@
 ;;; object
 ;;;--------
 
-(defobject word-frequency ()
-  ((words-to-count) ;; hash-table
-   (words)  ;; list of the words in the document
-   (token-count)) ;; total word count
+(defclass word-frequency ()
+  ((words-to-count :type hash-table :initform (make-hash-table)
+    :accessor words-to-count
+    :documentation "a hash-table from a word to its count")
+   (words :type list :initform nil :accessor words
+    :documentation "list of the words in the document")
+   (token-count :type integer :initform 0 :accessor token-count
+    :documentation "total word token count in the document"))
   (:documentation "Provides a mix-in for anything that contains words whose
  frequencies can be counted."))
 
@@ -24,11 +30,6 @@
 ;;;------------
 ;;; operations
 ;;;------------
-
-(defmethod initialize ((o word-frequency))
-  (setf (words-to-count o) (make-hash-table))
-  (setf (token-count o) 0))
-
 
 (defmethod clear ((o word-frequency))
   (setf (words o) nil)
