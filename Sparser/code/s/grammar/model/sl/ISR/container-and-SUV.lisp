@@ -4,13 +4,39 @@
 ;;;
 ;;;     File:  "container-and-SUV"
 ;;;   Module:  "grammar/sl/ISR/
-;;;  version:  October 2013
+;;;  version:  November 2013
 
 ;; Initiated 10/24/13 to breakout the design of SUV and container
-;; into their own file. 
+;; into their own file. Removed space to is own file 11/11/13
 
 (in-package :sparser)
 
+
+(define-category container
+  :specializes C3-region)
+
+#| Notes for the basis for SUV qua container
+
+located  {  }
+
+a container is a place, preposition = "in"
+
+|#
+(define-category motor-vehicle
+  :specializes artifact
+  :mixins (physical-surface ;;// has to be generalized 
+           has-spatial-location
+           spatial-region)
+  :restrict ((made-by . car-manufacturer)))
+
+(define-category car-type
+  :specializes has-name ;;???
+  ;; SUV, sedan, hybrid, truck - not all exclusive
+  ;; It's a label/classification that applies to the whole entity
+  ;; so it's probably not an attribute
+  )
+
+(define-individual 'car-type :name "suv")
 
 #| Notes on vehicle/car per se
 A car has a 
@@ -28,30 +54,3 @@ which is now in good to excellent condition (terms from Kelly Blue Book)
 with a very small number of scratches and cracks. 
 |#
 
-(define-category motor-vehicle
-  :specializes artifact
-;;  :mixins
-)
-#| Notes for the basis for SUV qua container
-
-located  { has-location }
-  Said of something that must have a location
-  Supplies a location variable whose value says where
-    this thing is.
-  Agnostic about when the value holds. That's recorded elsewhere,
-    presumably as a situation/time index
-
-place { location }
-  The supercategory of the restriction on located.location
-  "My wedding ring is on my (left ring) finger" 
-  "My cell phone is in my pocket"
- The pants pocket is the place. To express the relation of
-  [ David's-cell-phone.location = pocket of his jeans ]
-  we need to say "is in", where the choice of preposition is
-  idiosyncratically dependent on the category of location
-
-a container is a place, preposition = "in"
-
-
-
-|#

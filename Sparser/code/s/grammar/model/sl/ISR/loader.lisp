@@ -13,4 +13,9 @@
 (in-package :sparser)
 
 (gload "isr;draft-categories")
+(gload "isr;space")
 (gload "isr;container-and-SUV")
+(gload "isr;entities")
+
+;; Don't load until the code runs
+;; (gload "isr;draft-lexicon")
