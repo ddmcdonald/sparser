@@ -214,7 +214,7 @@
      :constituents consituents)))
 
 
-(def-k-method redistribute (age+title person)
+(def-k-method redistribute ((age+title age+title) (person person))
   ;; Called for side-effects at the bottom of referent from rule
   (push-debug `(,age+title ,person)) ;;(break "right place")
   ;; (setq age+title (car *) person (cadr *))
@@ -233,7 +233,7 @@
       (call-next-method)
       person)))
     
-(def-k-method redistribute (title person)
+(def-k-method redistribute ((title title) (person person))
   (let ((country-binding (binds title 'locale)))
     (when country-binding
       (bind-variable
