@@ -3,7 +3,7 @@
 
 ;;; MUMBLE-86:  message-level >  bundle-drivers
 
-;;; Copyright (C) 1985-2000 David D. McDonald
+;;; Copyright (C) 1985-2013 David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for
@@ -22,6 +22,7 @@
 ;;  8/30 Removed the constraints in Process-np-accessories that any of the
 ;;   accessories are requied. Number and determiner-policy had been required,
 ;;   person and proper-name weren't.
+;; 11/20/13 Started the makeover in earnest.
 
 
 ;#################################################################
@@ -73,9 +74,18 @@
 ;################################################################
 
 (defun clausal-bundle-driver (dtn root-node)
+  ;; The resource of the dtn was extracted and instantiated by
+  ;; realize-dtn using instantiate-phrase-in-dtn to populate
+  ;; the parameter list. All we have to do here is handle
+  ;; accessories and further specifications
   (landmark 'realizing-the-head-of-the-bundle dtn)
-  (push-debug `(,dtn ,root-node))
-  (break "Needs conversion to dtn")
+  (set-backpointer-of-root root-node dtn)
+  (entering-new-context root-node)
+  (process-attachments dtn root-node)
+  (process-clause-features dtn)
+  (leaving-previous-context root-node)
+  root-node)
+
   #+ignore
   (let ((result (realize-kernel-specification (head bundle)))) ;; ignored
     ;; see realize.lisp
@@ -84,10 +94,46 @@
     (process-clausal-accessories bundle)
     (process-clausal-further-specifications bundle)
     (leaving-previous-context result)
-    result))
+    result)
 
 
+(defun process-attachments (dtn root-node)
+  (let ((satellite-nodes (adjuncts dtn)))
+    (when satellite-nodes
+      (push-debug `(,dtn ,root-node ,satellite-nodes))
+      (break "stub"))))
 
+#+ignore
+(defun process-clausal-further-specifications (bundle)
+  ;;really need to think about order of attachments!!!
+  (dolist (fspec (reverse
+		   (further-specifications bundle)))
+   ; (landmark 'Processing-further-specification fspec bundle)
+    (attach (specification fspec)
+	    (attachment-function fspec))))
+
+(defun process-clause-features (dtn)
+  (let ((features (features dtn)))
+    (when features
+      (macrolet ((ac (ac-name fun ac-value?)
+		 `(let ((it (assoc (accessory-type-named ,ac-name)
+				   (features dtn))))
+		    (when it
+		      (landmark 'processing-accessory it)
+		      ,(if ac-value?
+			   `(,fun (cdr it))
+			   `(,fun))))))
+        ;; These have to be done in the following order
+        (ac :question    process-question-accessory    nil)
+        (ac :tense-modal process-tense-modal-accessory   t)
+        (ac :command     process-command-accessory     nil)
+        (ac :perfect     process-perfect-accessory     nil)
+        (ac :progressive process-progressive-accessory nil)
+        (ac :negate      process-negate-accessory      nil)
+        (ac :wh-adj      process-wh-adjunct-accessory    t)))))
+;; If we keep the bundle path alive, 
+;; then fold these together
+#+ignore
 (defun process-clausal-accessories (bundle)
   (check-type bundle bundle-specification)
   (macrolet ((ac (ac-name fun ac-value?)
@@ -107,19 +153,12 @@
     (ac :negate      process-negate-accessory      nil)
     (ac :wh-adj      process-wh-adjunct-accessory    t))
   )
-
-(defun process-clausal-further-specifications (bundle)
-  ;;really need to think about order of attachments!!!
-  (dolist (fspec (reverse
-		   (further-specifications bundle)))
-   ; (landmark 'Processing-further-specification fspec bundle)
-    (attach (specification fspec)
-	    (attachment-function fspec))))
 
 
 ;################################################################
 
 (defun general-np-bundle-driver (dtn np-root)
+  (push-debug `(:np ,dtn ,np-root))
   (let* ((dom-clause (dominating-clause))
          (reason-to-pronominalize 
           (should-be-pronominalized-in-present-context dtn))
@@ -164,16 +203,6 @@
     ;; Ordering of APs happens upstream
     (dolist (fspec adjunction-nodes)
       (attach (value fspec) (ap fspec)))))
-
-(defun get-accessory-value (accessory-name dtn &optional complain-if-null?)
-  (let* ((accessory-type (accessory-type-named accessory-name))
-	 (accessory-pair (assoc accessory-type (features dtn)))
-         (value (cdr accessory-pair)))
-    (when (and (null value) complain-if-null?)
-      (mbug "Caller expected the bundle ~a to have a ~a accessory value, ~
-             but it doesn't."
-	    dtn accessory-name))
-    value))
 
 
 ;################################################################

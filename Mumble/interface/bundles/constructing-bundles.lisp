@@ -5,7 +5,7 @@
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.
-;;; Copyright (C) 1995-2000 David D. McDonald
+;;; Copyright (C) 1995-2000,2013 David D. McDonald
 ;;;   All rights reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
@@ -24,6 +24,7 @@
 ;;    ap being a symbol.
 ;;  8/27/00 -- allowed MAKE-A-BUNDLE to take a bundle-type as an
 ;;    alternative to the name of one.
+;;  11/21/13 -- Added add-feature
 
 (in-package :mumble)
 
@@ -108,6 +109,44 @@
   bundle)
 
 
+(defun add-feature (dtn name &optional value literal?)
+  "Copies add-accessory but operates over derivation tree nodes."
+  (let ((accessory
+         (etypecase name
+	    (symbol
+	      (if (keywordp name)
+		  (accessory-type-named name)
+		  (mbug "Accessory types are to be indicated with keywords~%~
+                         you used a symbol for ~A in ~A"  name dtn)))))
+        (accessory-value
+         (if literal?
+           value
+	   (when value
+	     (etypecase value
+	       (symbol (or (accessory-value-named value)
+			   (label-named value)))	  
+	       (accessory-value value)
+	       (label value)
+	       (specification   value)
+	       (list value)
+	       (string (word-for-string value)))))))
+    (unless (slot-exists-p dtn 'features)
+      (error "Can only add features to a derivation-tree-node~
+            ~%not a ~a~%~a" (type-of dtn) dtn))
+    (push `(,accessory . ,accessory-value)
+          (features dtn))))
+
+(defun get-accessory-value (accessory-name dtn &optional complain-if-null?)
+  (let* ((accessory-type (accessory-type-named accessory-name))
+	 (accessory-pair (assoc accessory-type (features dtn)))
+         (value (cdr accessory-pair)))
+    (when (and (null value) complain-if-null?)
+      (mbug "Caller expected the bundle ~a to have a ~a accessory value, ~
+             but it doesn't."
+	    dtn accessory-name))
+    value))
+
+
 (defun add-accessory (bundle name &optional value literal?)
   (let ((accessory
          (etypecase name
@@ -141,7 +180,8 @@
 	    name value bundle))
       
     (let* ((existing-accessories
-	     (accessories bundle))	   (accessories-with-additions
+	     (accessories bundle))
+	   (accessories-with-additions
 	     (cons (cons accessory accessory-value)
 		   existing-accessories)))
       (set-accessories bundle accessories-with-additions)
