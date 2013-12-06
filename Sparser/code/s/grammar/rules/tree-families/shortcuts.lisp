@@ -290,6 +290,8 @@
 
 ;;--- go'fers
 
+;; Compare code in name-to-use-for-category
+
 (defun category-name-from-string-arg (string-arg)
   ;; Could actually be a cons to cover irregulars
   (typecase string-arg
