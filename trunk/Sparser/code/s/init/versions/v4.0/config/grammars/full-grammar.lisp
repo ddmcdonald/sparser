@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1991-2000,2010-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:  "full grammar"
 ;;;    Module:  "init;versions:v2.7:config:grammars:"
-;;;   version:  October 2013
+;;;   version:  November 2013
 
 ;; 7/18/92 v2.3 blocked out the gl and Tipster grammar
 ;; 12/4 pulled word options made irrelevant in master-loader
@@ -30,7 +29,7 @@
 ;; 11/15/10 removed it, added *reversable*. 6/14/11 removed *poirot*.
 ;; 7/19/11 added *generic-military*. 8/31/11 added *default-quantifier-semantics*.
 ;; 12/15/11 added *hurricanes*. 10/16/13 added *qualities*, sl's for strider,
-;; grok. 
+;; grok. 11/30/13 *waypoints*.
 
 
 (in-package :sparser)
@@ -261,6 +260,7 @@
 (include-grammar-module *middle-east*)
 (include-grammar-module *Banking*)
 (include-grammar-module *ISR*)
+(include-grammar-module *waypoints*)
 
 (include-grammar-module  *load-Tipster-grammar-into-image*)
 (include-grammar-module  *jv/phrases*)
