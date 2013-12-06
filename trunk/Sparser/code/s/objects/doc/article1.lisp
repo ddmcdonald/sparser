@@ -2,7 +2,6 @@
 ;;; copyright (c) 1993  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; copyright (c) 2010  David D. McDonald  -- All Rights Reserved
-;;; $Id$
 ;;; 
 ;;;     File:  "article"
 ;;;   Module:  "objects;doc:"
@@ -20,9 +19,7 @@
 
 (in-package :sparser)
 
-#| Every run is with respect to a document, though not every
-   "document" reflects something that we would intuitively think
-   of in those terms, and probably wouldn't be referenced long-term. |#
+#| NOT USING THIS VERSION. Equivalent code is in objects/doc/object1.lisp
 
 ;;;--------
 ;;; object
@@ -60,6 +57,4 @@
 (defmethod print-object ((d document) stream)
   (format stream "#<document ~a>"
 	  (name d)))
-
-
-
+|#
