@@ -2,18 +2,20 @@
 ;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
-;;;     File:  "C3"
+;;;     File:  "C3-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  September 2013
+;;;  version:  November 2013
 
-;; Initiated 9/16/13
+;; Initiated 9/16/13. Elaborated through 11/13/13
 
 (in-package :sparser)
 
 ;; (setq cl-user::script :c3)
 ;; (load "/Users/ddm/sparser/load-nlp.lisp")
 
-;;  While there's teething problems getting it all loading 
+;; While there's teething problems getting it all loading 
+;;  or if we use a load that doesn't set *c3* 
+; (setq *c3* t)
 ; (lload "objects;situation:loader")
 ; (gload "sit-rules;loader")
 ; (gload "isr;loader")
@@ -34,8 +36,6 @@
 ;;      crib from inititate-top-edges-protocol
 
 ;; c3-grammar-module-choices  lambda-variable-named itype
-
-;; (c3-setting)
 
 ; the-Master-loader load-the-grammar  c3-grammar-module-choices
 

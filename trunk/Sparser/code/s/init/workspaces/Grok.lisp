@@ -63,10 +63,10 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 (setq *annotate-realizations* nil) ;; Will be t, but not ready yet
 
-(display-bracketing)
+
 
 ;;-- For Comlex shakeout
-(trace-lexicon-unpacking)
+;; (trace-lexicon-unpacking)
 ;; (word-frequency-setting)
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 ;; (grok-setting)  -- for meta-.
@@ -83,13 +83,6 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 
 ;; (setq *new-segment-coverage* t)   ;; to debug strong-domain-modeling, add cases
-
-;;----- Flags that we want on if we're momentarily by-passing some hard cases
-
-
-;; (setq *tts-after-each-section* t)
-
-
 
 
 
@@ -109,7 +102,6 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; has them return plausible defaults. Useful if looking for weirder errors.
 ;;   (setq *break-on-new-bracket-situations* nil)
 
-(setq *verbose-document-stream* t)
 
 ;;;------------------------------------------------------------
 ;;; Work arounds -- problems that ultimately need dealing with
@@ -160,18 +152,6 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (p "the World Health Organization (WHO)")
 ;;  This article has all the pieces:
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
-
-
-#|
- (mumble::say i)
- mumble::has-realization?
- (setq *try-without-annotation* t)
- mumble::realize
- mumble::convert-to-derivation-tree
-
- mumble::realize-dtn
- mumble::general-np-bundle-driver
-|#
 
 
 ;;;--------

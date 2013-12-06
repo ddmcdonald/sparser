@@ -160,7 +160,7 @@ bound-in: (#<496 name-of = #<person Roshan, Mostafa  3,1026>>)
 
 
 ;;      (trace-reclaimation)
-;; Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces, head of Kadima, and leader of the opposition in the Knesset,
+;; (p "Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces, head of Kadima, and leader of the opposition in the Knesset,")
 #| 
 (p "Shaul Mofaz, former Chief of Staff of the Israeli Defense Forces,")
 ;;  roles up to a person

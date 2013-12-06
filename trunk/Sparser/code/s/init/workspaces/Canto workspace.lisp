@@ -12,15 +12,52 @@
 
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
 
+#|
+;; goes in <version>/loaders/grammar-modules
 (define-grammar-module *waypoints*
                        :name "Waypoints and related concepts"
                        :parent *sublanguages*)
+
+;; in <version>/config/grammars/full-grammar.lisp
+;; and any other specialized loads
 (include-grammar-module *waypoints*)
-(def-logical-pathname "waypoint;"  "sl;waypoints:")
 
-; (gload "waypoint;loader")
+;; in loaders/logicals.lisp
+(def-logical-pathname "waypoints;"  "sl;waypoints:")
+|#
+; (gload "waypoints;loader")
+
+#| NLG meta-.
+gophers: extract-mword-from-rule
+conversions: convert-to-derivation-tree
+binding-centric: make-derivation-tree-from-bindings
+interface: realization-history
+
+|#
+
+#| Files to examine in canto/trunk/code/synthetic-teammate/
+
+situation/uav_domain2.lisp  seems to have the relevant productions
+  to go with Stu's notes: situation/working_notes20130628.txt
+ As opposed to the one's in situation/situation_model_productions.lisp
+  that Mark says are what's loaded.
+situation/domain_ontology.lisp
+
+diverse helpers in situation/sit_mod_support.lisp
+
+|#
 
 
+#|
+ (mumble::say i)
+ mumble::has-realization?
+ (setq *try-without-annotation* t)
+ mumble::realize
+ mumble::convert-to-derivation-tree
+
+ mumble::realize-dtn
+ mumble::general-np-bundle-driver
+|#
 
 #|
 (defvar *exact-comm*
