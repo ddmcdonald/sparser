@@ -12,6 +12,7 @@
 ;;      operations like noting and operations on contents.
 ;;     (9/23/13) Pretty much finished with the make-over except for occasional fanout.
 ;; 1.1 (10/3/13) Making paragraphs real. Lifting out the generalization
+;;     (10/26/13) Added word-frequency mixin to article. What about the others?
 
 (in-package :sparser)
 
@@ -46,7 +47,7 @@
 ;;; Articles (whole documents/files)
 ;;;-----------------------------------
 
-(defclass article (document-element named-object)
+(defclass article (document-element named-object word-frequency)
   ((location :accessor article-location
     :documentation "Usually a short form of the file name")
    (date :accessor article-date
