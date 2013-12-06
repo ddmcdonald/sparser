@@ -4,8 +4,14 @@
 ;;;
 ;;;     File:  "loader"
 ;;;            grammar/model/sl/waypoints/
-;;;  version:  October 2013
+;;;  version:  December 2013
 
-;; Initiated 10/22/13
+;; Initiated 10/22/13. Pulled parts out of waypoints to create
+;; extensions and attributes 12/2/13
 
 (in-package :sparser)
+
+(gload "waypoints;extensions-to-core")
+(gload "waypoints;attributes")
+(gload "waypoints;waypoint")
+
