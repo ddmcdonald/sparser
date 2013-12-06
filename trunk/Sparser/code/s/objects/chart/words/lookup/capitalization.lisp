@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.3 May 2013
+;;;  Version:  0.4 Novewmber 2013
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -20,6 +20,8 @@
 ;;     (3/1/12) quieting compiler. 4/2/13 New cases is subsuming-variant.
 ;;     (5/24/13) Still more cases there, plus otherwise breaks in place
 ;;      of the ecase's.
+;; 0.4 (11/7/13) Fixed bad assumption about what position the capitalization 
+;;      was on  when source is ] after. 
 
 (in-package :sparser)
 
@@ -44,13 +46,14 @@
 
 
 
-(defun capitalized-correspondent (lc-word position)
+(defun capitalized-correspondent (lc-word position-after-word)
   ;; given the lowercase word, is the position marked for
   ;; capitalization and does that marking match or is it subsumed
   ;; by a defined capitalized-variant of the word.
   ;;   If the position isn't marked or there are no variants
   ;; then return nil right away.
-  (let ((capitalization (pos-capitalization position)))
+  (let* ((position-before (chart-position-before position-after-word))
+         (capitalization (pos-capitalization position-before)))
     (capitalized-version lc-word capitalization)))
 
 
