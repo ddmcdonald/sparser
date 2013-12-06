@@ -202,6 +202,9 @@
                ((or word specification)
                 (set-contents slot value))
                (node (knit-phrase-into-tree slot value))
+               (derivation-tree-node
+                (let ((root (realize-dtn value)))
+                  (knit-phrase-into-tree slot root)))
                (otherwise 
                 (if (has-realization? value)
                   (set-contents slot value)
