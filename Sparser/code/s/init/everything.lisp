@@ -84,7 +84,8 @@
 ;; the sequences of two instances of a name correctly. 8/14/13 Commented out the 
 ;; explicit workspaces load to use the implicit one. 8/19/13 added a redeclare-permanent
 ;; at the very end since workspace items were being reclaimed. 9/16/13 Added *c3*.
-;; 10/21/13 Switch the grammar config for fire to be the full grammar.
+;; 10/21/13 Switch the grammar config for fire to be the full grammar. 
+;; 10/25/13 specialized the name of the C3 grammar configuration file.
 
 (in-package :cl-user)
 
@@ -940,7 +941,7 @@ or for loading the newer of the compiled or source files.
        (sparser::lload "grammar-configurations;grok"))
 
       (sparser::*c3*
-       (sparser::lload "grammar-configurations;c3"))
+       (sparser::lload "grammar-configurations;c3-configuration"))
 
       (sparser::*checkpoint-operations*
        (sparser::lload "grammar-configurations;checkpoint-ops"))
