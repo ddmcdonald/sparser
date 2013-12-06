@@ -84,6 +84,8 @@
 (defun ]-on-position-because-of-word? (p word)
   (tr :asking-]-on-pos p word) 
   ;; "Asking whether there is a ] on p~A because of '~A'"
+  ;; The position p is on the right side of the word.
+  ;; We want to know if that word introduces a bracket
   (let* ((ending-vector (pos-ends-here p))
          (bracket (ev-boundary ending-vector))
          (variant (when (word-p word) ;; vs. a form category
