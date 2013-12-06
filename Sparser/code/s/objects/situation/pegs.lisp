@@ -19,10 +19,24 @@
    (variables :type list :initform nil :accessor vars
     :documentation "draft -- make it a alist vs. v+v's")))
 
+(defvar *current-peg* nil
+  "There will only ever be one, since interesting things are
+   associated with indexicals after we finish off the individual
+   we're assembling on the peg.")
+
+(defun current-peg ()
+  (let ((p *current-peg*))
+    (unless p
+      (error "There is no current peg."))
+    p))
+
 (defun setup-a-peg (state)
   ;; through back a peg. When it's clearer what they are
   ;; then setup a resource
-  (make-instance 'peg :name state))
+  (setq *current-peg*
+        (make-instance 'peg :name state)))
+
+
 
 
 (defmethod bind-variable-on-peg ((peg peg) (variable lambda-variable)
