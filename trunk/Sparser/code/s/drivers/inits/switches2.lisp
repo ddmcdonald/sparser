@@ -220,9 +220,17 @@
 (defun include-comlex ()
   (setq *incorporate-generic-lexicon* t)
   (what-to-do-with-unknown-words :check-for-primed)  
-  (comlex-mode)
+  (establish-version-of-def-word :comlex)
+  (unless *comlex-word-lists-loaded*
+    (load-comlex))
   (unless *comlex-words-primed*
     (prime-comlex)))
+
+(defun ignore-comlex ()
+  ;; Assumes we started in a configuration that included
+  ;; comlex, so its words have already been primed.
+  ;; This makes sure they aren't accessed.
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology))
 
 
 ;;---- Specific cases
@@ -328,12 +336,75 @@
   (turn-off-debugging-flags)
   (setq *switch-setting* :strider))
 
-
 (defun fire-setting ()
   ;; Now (10/21/13) the setting we get when we 
   (strider-setting)
   (setq *switch-setting* :fire))
 
+
+;;--- C3, and now for something completely different
+(defun c3-setting ()
+  "Start by turning everthing off"
+  (word-frequency-setting) ;; gets most of them
+  (what-to-do-with-unknown-words :ignore) ;; though better to throw an error
+  (setq *make-edges-for-unknown-words-from-their-properties* nil
+        )
+  (establish-kind-of-chart-processing-to-do :c3-protocol)
+  (designate-sentence-container :situation)
+  (setq *switch-setting* :c3))
+
+
+
+;;--- Measuring word frequencies
+
+(defun word-frequency-setting ()
+  (ignore-comlex)
+  (establish-character-translation-protocol :no-changes)
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
+  (setq *make-edges-for-unknown-words-from-their-properties* t
+        *do-forest-level* nil
+        *do-conceptual-analysis* nil
+        *do-heuristic-boundary-detection* nil
+	*do-heuristic-segment-analysis* nil
+	*do-domain-modeling-and-population* nil
+	*do-strong-domain-modeling* nil)
+  (establish-version-of-next-terminal-to-use :pass-through-all-tokens)
+  (establish-kind-of-chart-processing-to-do :just-do-terminals)
+  (establish-version-of-look-at-terminal :record-word-frequency)
+  (establish-version-of-complete :ca/ha)
+  (setq *count-input-lines* nil)
+  (establish-word-frequency-classification
+   ;; :standard 'standard-wf-classification)
+   :ignore-capitalization 'wf-classification/ignore-caps)
+  (setq *switch-setting* :word-frequency))
+
+(defun just-bracketing-setting ()
+  (word-frequency-setting) ;; to turn off fire setting et al.
+  (ignore-comlex)
+  ;; from top-edges
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
+  (establish-type-of-edge-vector-to-use :vector)
+  (setq *do-general-actions-on-treetops* t)
+  (setq *permit-rules-with-duplicate-rhs* nil)
+  (setq *dotted-rules-can-duplicate-regular-rules* t)
+  (setq *ignore-capitalization* t) ;; turns off PNF
+  (establish-version-of-capitalization-dispatch :no-op) ;; exposed when not doing PNF
+  (establish-version-of-assess-edge-label :treetops) ;; vs. all-edges
+  (setq *annotate-realizations* nil)
+  (setq  *the-category-of-digit-sequences* category::number)
+  (use-return-newline-tokens-fsa) ;; it's returned as a regular whitespace char.
+  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+  (use-unknown-words)
+  (setq *switch-setting* :just-bracketing))
+
+(defun just-bracketing-with-comlex-setting ()
+  (just-bracketing-setting)
+  (comlex-mode)
+  (setq *switch-setting* :just-bracketing-with-comlex))
+
+
+
+;;--- Older, unused switch sets
 
 (defun ambush-setting ()
   (fire-setting)
@@ -435,68 +506,8 @@
   (setq *cfg-flag* t))
 
 
-;;--- C3, and now for something completely different
-(defun c3-setting ()
-  "Start by turning everthing off"
-  (word-frequency-setting) ;; get most of them
-  (what-to-do-with-unknown-words :ignore) ;; more like throw an error
-  (setq *make-edges-for-unknown-words-from-their-properties* nil
-        )
-  (establish-kind-of-chart-processing-to-do :c3-protocol)
-  (designate-sentence-container :situation)
-  (setq *switch-setting* :c3))
+
   
-
-;;--- Measuring word frequencies
-
-(defun word-frequency-setting ()
-  (establish-character-translation-protocol :no-changes)
-  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
-  (setq *make-edges-for-unknown-words-from-their-properties* t
-        *do-forest-level* nil
-        *do-conceptual-analysis* nil
-        *do-heuristic-boundary-detection* nil
-	*do-heuristic-segment-analysis* nil
-	*do-domain-modeling-and-population* nil
-	*do-strong-domain-modeling* nil)
-  (establish-version-of-next-terminal-to-use :pass-through-all-tokens)
-  (establish-kind-of-chart-processing-to-do :just-do-terminals)
-  (establish-version-of-look-at-terminal :record-word-frequency)
-  (establish-version-of-complete :ca/ha)
-  (setq *count-input-lines* nil)
-  (establish-word-frequency-classification
-   ;; :standard 'standard-wf-classification)
-   :ignore-capitalization 'wf-classification/ignore-caps)
-  (setq *switch-setting* :word-frequency))
-
-(defun comlex-mode ()
-  "A mix-in to other modes"
-  (establish-version-of-def-word :comlex)
-  (unless *comlex-word-lists-loaded*
-    (load-comlex)))
-
-(defun just-bracketing-setting ()
-  (word-frequency-setting) ;; to turn of fire setting et al.
-  ;; from top-edges
-  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
-  (establish-type-of-edge-vector-to-use :vector)
-  (setq *do-general-actions-on-treetops* t)
-  (setq *permit-rules-with-duplicate-rhs* nil)
-  (setq *dotted-rules-can-duplicate-regular-rules* t)
-  (setq *ignore-capitalization* t) ;; turns off PNF
-  (establish-version-of-capitalization-dispatch :no-op) ;; exposed when not doing PNF
-  (establish-version-of-assess-edge-label :treetops) ;; vs. all-edges
-  (setq *annotate-realizations* nil)
-  (setq  *the-category-of-digit-sequences* category::number)
-  (use-return-newline-tokens-fsa) ;; it's returned as a regular whitespace char.
-  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
-  (use-unknown-words)
-  (comlex-mode)
-  (setq *switch-setting* :just-bracketing))
-
-
-
-
 ;;;---------------------------------------------
 ;;; Switching modes from the Preferences dialog
 ;;;---------------------------------------------
