@@ -1,14 +1,18 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
 ;;; $Id$
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2010-2012 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2010-2013 David D. McDonald  All Rights Reserved
 
 ;; /Mumble/derivation-trees/make.lisp
 
-;; 11/12 Picked it up again and making diverse little changes.
+;; 11/12 Picked it up again and making diverse little changes. More on
+;; 11/19/13.
 
 (in-package :mumble)
 
+;;;--------------------------------
+;;; Operations on derivation trees
+;;;--------------------------------
 
 (defvar *the-derivation-tree* nil
   "This is the scratch pad for the microplanner as it works out what to say.")
@@ -27,6 +31,22 @@
 	 (when unit
 	   (push unit (participants *the-derivation-tree*))))))))
 
+(defun derivation-tree ()
+  "Return the current value of the global derivation tree
+   which have been rebound to a local dynamic scope."
+  *the-derivation-tree*)
+
+(defun set-derivation-tree (dt)
+  "Set the value of the global derivaton tree"
+  (setq *the-derivation-tree* dt))
+
+;;/// doesn't work -- a variable in the dt position
+;; is unused
+(defmacro with-derivation-tree (dt &body body)
+  `(let ((*the-derivation-tree* ',dt))
+     (declare (special *the-derivation-tree*))
+     ,@body
+     ))
 
 
 ;;--- base case
