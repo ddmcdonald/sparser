@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.4 March 2013
+;;;  version:  1.5 December 2013
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -46,6 +46,8 @@
 ;;     (3/7/13) added :method to go with :function in ever-appears-in-function-referent
 ;;      that lets us supply functions to the mappings as though they were
 ;;      conventional binding-parameters. 
+;;     (11/18/13) Added some routines to root around inside realization data.
+;; 1.5 (12/4/13) Modified deref-rdata-word to look at all slots and not just local ones.
 
 (in-package :sparser)
 
@@ -112,9 +114,15 @@
 
 
 (defmacro define-additional-realization (category &body rdata)
-  `(if (category-named ',category)
-     (setup-rdata (category-named ',category) ',rdata nil) ;; nil overrides delete?
-     (break "There is no category named ~a" ',category)))
+  `(define-additional-realization/expr ',category ',rdata))
+
+(defmethod define-additional-realization/expr ((category referential-category) rdata)
+  (setup-rdata category rdata nil)) ;; nil overrides delete?
+
+(defmethod define-additional-realization/expr ((category symbol) rdata)
+  (if (category-named category)
+    (setup-rdata (category-named category) rdata nil) ;; nil overrides delete?
+    (break "There is no category named ~a" category)))
 
 
 ;;;-----------------------------------------------------------
@@ -169,7 +177,6 @@
               merged)))))))
 
 
-
 (defun setup-single-rdata (category rdata)
   ;; 1st check for spelling errors in the keywords
   (vet-rdata-keywords category rdata)
@@ -206,6 +213,8 @@
 
 
 
+;;--- Check for legal keywords in realization field of category
+
 (defun vet-rdata-keywords (category rdata)
   (do ((key (car rdata) (car rest))
        (rest (cddr rdata) (cddr rest)))
@@ -233,7 +242,39 @@
 
 
 
+;;--- methods for other routines (like NLG) that need to examine schema
 
+(defmethod retrieve-schema-forms ((category referential-category))
+  (let ((rdata  (cat-realization category)))
+    (when rdata
+      (retrieve-schema-forms rdata))))
+
+(defmethod retrieve-schema-forms ((realization-data cons))
+  (loop for form in realization-data
+    when (and (consp form) (eq (car form) :schema))
+    collect (cadr form)))
+
+(defmethod identify-schema-with-variable ((schema-forms cons) &optional break?)
+  ;; (:schema ((:proper-noun . #<variable nname>) nil nil nil))
+  (let ((value
+         (loop for form in schema-forms
+           as head-field = (first (second form))
+           as value = (cdr head-field)
+           when (lambda-variable-p value) return form)))
+    (or value
+        (when break?
+          (error "No realization schema based on a variable. Check definitions")))))
+;; If I need a third one of these it goes into a macro
+(defmethod identify-schema-with-word ((schema-forms cons) &optional break?)
+  ;; (:schema (((:common-noun . #<word "waypoint">) nil nil nil))
+  (let ((value
+         (loop for form in schema-forms
+           as head-field = (first form)
+           as value = (cdr head-field)
+           when (word-p value) return form)))
+    (or value
+        (when break?
+          (error "No realization schema based on a variable. Check definitions")))))
 
   
 ;;;------------------------------------------------
@@ -352,8 +393,7 @@
 
     (symbol
      (if string-or-symbol
-       (let ((var (find string-or-symbol (cat-slots category)
-                        :key #'var-name)))
+       (let ((var (find-variable-for-category string-or-symbol category)))
          (unless var
            (error "Rdata word field contains a symbol indicating it ~
                    denotes a variable~%but the symbol ~A does not ~
@@ -501,3 +541,60 @@
           (when (memq term fn-exp)
             (setq does-appear? t)))))
     does-appear?))
+
+
+
+;;;--------------------------------------
+;;; decoding category realization fields
+;;;--------------------------------------
+;; This code was originally in tsro gophers
+
+(defun analyze-realization-data (category)
+  ;; called from standard-tsro-via-category and from various
+  ;; definition routines that want their words handled by
+  ;; the standard mechanisms
+  (when (sparser::cat-realization category)
+    ;; // the organization of this plist is not particularly coherent
+    (let ((realization-data (sparser::cat-realization category))
+          schema  etf  word-pattern)
+      (do ((item (first realization-data) (first rest))
+           (next-item (second realization-data) (second rest))
+           (rest (cdr realization-data) (cdr rest)))
+          ((null item)) ;; there can be multiple schema
+        ;; first case that was written
+        (when (and (consp item)
+                   (eq (car item) :schema))
+          (setq schema (second item)))
+
+        ;; Ordinal is like this
+        (when (eq item :schema)
+          (setq schema next-item))
+
+        (when schema
+          (dolist (term schema)
+            (when (typep term 'sparser::exploded-tree-family)
+              (push term etf))
+            (when (and (consp term)
+                       (keywordp (first term))
+                       (sparser::defined-type-of-single-word 
+                         (first term)))
+              (setq word-pattern term)))
+          (setq schema nil)))
+
+        (values etf word-pattern))))
+
+
+
+(defun find-word-realization-within-category-realization (category)
+  (let ((realization (realization-for category)))
+    (when realization
+      (dolist (element realization nil)
+        (unless (eq element :rules)
+          (when (eq (car element) :schema)
+            (let* ((schema (second element))
+                   (first-term (first schema))) ;; too arbitrary !!
+              (unless (eq first-term :no-head-word)
+                (when (keywordp (car first-term))
+                  (return-from find-word-realization-within-category-realization
+                    (and (sparser::word-p (cdr first-term))
+                         (cdr first-term))))))))))))

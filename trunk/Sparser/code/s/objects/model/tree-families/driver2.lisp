@@ -116,18 +116,73 @@
 ;;; instantiating rdata for individuals
 ;;;-------------------------------------
 
+(defun apply-single-category-rdata (individual category)
+  ;; Called from define-individual
+  (let ((realization-data (cat-realization category)))
+    (when realization-data 
+      (when (eq (car realization-data) :rules)
+        (setq realization-data (cdr realization-data)))
+      (etypecase (first realization-data)
+        (cons  ;; Multiple schemas
+         (dolist (item realization-data)
+           (when (and (consp item) (eq (first item) :schema))
+             (setq rdata-schema (cadr item))
+             (apply-realization-schema-to-individual
+              individual category rdata-schema))))
+        (keyword
+         (case (first realization-data)
+           (:rules)
+           (:synonyms)
+           (:schema
+            (setq rdata-schema (second realization-data))
+            (apply-realization-schema-to-individual
+             individual category rdata-schema))
+           (otherwise
+            (push-debug `(,category ,individual ,realization-data))
+            (error "New keyword at car of realization data for ~a"
+                   category))))))))
+
+(defun apply-distributed-realization-data (individual)
+  ;; Called from define-individual when the *c3* flag is up.
+  ;; Has to consider that category of the variable that binding a
+  ;; particular value (only worrying about words for now) when
+  ;; looking up the rschema that applies to it.
+  (push-debug `(,individual))
+  (dolist (b (indiv-binds individual))
+    (let ((value (binding-value b)))
+      (when (or (word-p value)
+                (polyword-p value))
+        (let* ((v (binding-variable b))
+               (category (var-category v)))
+          (apply-single-category-rdata individual category)
+          ;; That category will be something like has-name, 
+          ;; not the category of the individual, so some surgury
+          ;; is needed.
+          (let ((rs (rule-set-for value)))
+            (unless rs 
+              (push-debug `(,value)) 
+              (error "Expected a rule-set on ~a" value))
+            (let ((rule (car (rs-single-term-rewrites rs))))
+              (unless rule
+                (push-debug `(,rs ,value ,individual))
+                (error "Expected a rule in the rule set of ~a" value))
+              ;; I -think- this doesn't affect the indexing
+              (setf (cfr-category rule) (itype-of individual))
+              (push-debug `(,rule))
+              (return-from apply-distributed-realization-data value))))))))
+
+
 (defun apply-realization-schema-to-individual (individual
                                                category
                                                rdata-schema)
   
-  ;; Called from define-individual. The rdata-schema is the value 
-  ;; of the :schema key in the realization field of the category. 
-  ;; We're applying a realization schema that was defined for
-  ;; a category that defined its head-word as the value of
-  ;; one of the variables that will be bound as the way to
-  ;; individuate individuals. We take the word that has been
-  ;; bound to that individuating variable, make it the head
-  ;; word, and instantiated the rules that the schema defines.
+  ;; The rdata-schema is the value of the :schema key in the realization
+  ;; field of the category.  We're applying a realization schema that was
+  ;; defined for a category that defined its head-word as the value of one
+  ;; of the variables that will be bound as the way to individuate
+  ;; individuals. We take the word that has been bound to that
+  ;; individuating variable, make it the head word, and instantiated the
+  ;; rules that the schema defines.
   
   (let ((head-field (first rdata-schema))
         (etf         (second rdata-schema))
@@ -140,30 +195,38 @@
              ;; a word that names (refers to) the category.
              (some #'word-p field)))
     
-    (let* ((no-head (eq head-field :no-head-word))
-           (head-word-variable (unless no-head (cdr (first rdata-schema))))
-           (head-word-type     (unless no-head (car (first rdata-schema))))
-           (head-word (when head-word-variable
-                        (value-of head-word-variable individual)))
-           (head-pair (unless no-head
-                        (cons head-word-type
-                              head-word))))
-      (unless no-head
-        (unless head-word
-          (unless (head-schema-filled-with-words head-field)
-            (break "Expected the individual ~A~
-                  ~%to have a value for its ~A variable.~
-                  ~%but it does not." individual head-word-variable))))
+      (let* ((no-head (eq head-field :no-head-word))
+             (head-word-variable (unless no-head (cdr (first rdata-schema))))
+             (head-word-type     (unless no-head (car (first rdata-schema))))
+             (head-word (when head-word-variable
+                          (value-of head-word-variable individual)))
+             (head-pair (unless no-head
+                          (cons head-word-type
+                                head-word))))
+
+        (when (word-p head-word-variable)
+          ;; another configuration that the head filled with words
+          ;; is looking for. See waypoint  The schema arrangement
+          ;; is flimsy right now.
+          (setq head-word head-word-variable
+                head-pair (cons head-word-type head-word)))
+
+        (unless no-head
+          (unless head-word
+            (unless (head-schema-filled-with-words head-field)
+              (break "Expected the individual ~A~
+                    ~%to have a value for its ~A variable.~
+                   ~%but it does not." individual head-word-variable))))
       
-      (let ((rules
-             (make-rules-for-rdata category
-                                   head-pair
-                                   etf mapping local-cases
-                                   individual )))
+        (let ((rules
+               (make-rules-for-rdata category
+                                     head-pair
+                                     etf mapping local-cases
+                                     individual )))
         
-        (setf (unit-plist individual)
-              `(:rules ,rules ,@(unit-plist individual)))
-        rules )))))
+          (setf (unit-plist individual)
+                `(:rules ,rules ,@(unit-plist individual)))
+          rules )))))
 
 
 
