@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  0.4 October 2012
+;;;  Version:  0.5 October 2013
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -18,7 +18,8 @@
 ;;     7/23-25 folding in #<document> object. Refining ...8/16.
 ;;     7/28/11 Abstracted out def-word to its own file. 3/31/12 fixed fn call.
 ;;     Through August, September 2012 adding documentation, refining
-;;     the code overall. 10/24/13 Started stubbing a document-set driver
+;;     the code overall. 10/24/13 Started stubbing a document-set driver.
+;; 0.5 (10/28/13) Fanout from the make-over of the document classes.
 
 (in-package :sparser)
 
@@ -79,10 +80,6 @@
 (defparameter *word-count-buckets-most-freq-highest* nil
   "The same list ordered from most frequent word to least.")
 
-(defvar *documents-analyized* nil
-  "A list of each document that has been analyzed for frequency
-   in a given set (i.e. between initializations")
-
 
 ;;;----------------
 ;;; initialization
@@ -95,7 +92,6 @@
         *sorted-word-entries* nil
         *word-count-buckets* nil
         *word-count-buckets-most-freq-highest* nil
-	*documents-analyized* nil
 	*function-words-seen-in-run* nil
 	*punctuation-seen-in-run* nil))
 
@@ -519,7 +515,7 @@
 ;;; Differential counts by article (baby steps towards tf/idf)
 ;;;------------------------------------------------------------
 
-(defmethod unique-words ((d1 document) (d2 document))
+(defmethod unique-words ((d1 word-frequency) (d2 word-frequency))
   "What wards are in d1 that aren't in d2?"
   (let ( unique-to-d1
 	(table1 (words-to-count d1))
@@ -532,7 +528,7 @@
     unique-to-d1))
     
 
-(defmethod normalized-count ((w word) (d document))
+(defmethod normalized-count ((w word) (d word-frequency))
   (let ((total-tokens (token-count d))
 	(count-for-word (count-in-document w d)))
     (unless (or (= total-tokens 0)
@@ -542,7 +538,7 @@
 	 (format nil "~,8F" ratio)
 	 ratio)))))
 
-(defmethod term-frequency ((w word) (d document))
+(defmethod term-frequency ((w word) (d word-frequency))
   (let ((total-tokens (token-count d))
 	(count-for-word (count-in-document w d)))
     (unless (or (= total-tokens 0)
@@ -556,13 +552,14 @@
       0)))
 
 
-(defmethod inverse-document-frequency ((w word) list-of-documents)
+(defmethod inverse-document-frequency ((w word) (list-of-documents list))
   (let* ((doc-count (length list-of-documents))
          (incident-count (number-of-documents-containing-word w))
          (ratio (/ doc-count (1+ incident-count))))
     (log ratio)))
 
-(defmethod tf-idf ((w word) document list-of-documents)
+(defmethod tf-idf ((w word) (document word-frequency)
+                   (list-of-documents list))
   (let ((tf (term-frequency w document)))
     (when tf
       (* tf
@@ -729,8 +726,13 @@
       (case capitalization
 	(:digits *number-word*)
 	(otherwise
-	 (or (word-named stem)
-	     (define-word/expr stem)))))))
+         (typecase stem
+           (word stem)
+           (string (or (word-named stem)
+                       (define-word/expr stem)))
+           (otherwise
+            (push-debug `(,stem ,word ,position ,capitalization))
+            (error "Unexpected type of stem"))))))))
 
 (defun wf-classification/ignore-caps/known (word position)
   (if (member :function-word (word-plist word))
@@ -793,27 +795,21 @@
 ;; (readout-frequency-table)
 
 (defun f/wf (namestring)
-  "Original driver. Works over a single file. Hold all the
+  "Original driver. Works over a single file. Holds all the
   computed information in globals that have to be manually
   harvested and dealt with before the next run."
   (word-frequency-setting)
-  (let ((*current-article*
-	 (find-or-make-document-object namestring :clear)))
-    (declare (special *current-article*))
-    (pushnew *current-article* *documents-analyized*)
-    (analyze-text-from-file namestring)))
+  (analyze-text-from-file namestring))
 
 (defgeneric count-word-frequencies (document)
   (:documentation "Gets the text to be analyzed and counted
    from the document (doc-set, etc.) and stores the results 
    on the object. "))
 
-(defmethod count-word-frequencies ((doc document))
+(defmethod count-word-frequencies ((doc article))
   (word-frequency-setting)
   (initialize-word-frequency-data)
-  (let ((*current-article* doc)
-        (filename (location doc)))
-    (declare (special *current-article*))
+  (let ((filename (location doc)))
     (analyze-text-from-file filename)
     (setf (token-count doc) *words-in-run*)
     doc))
