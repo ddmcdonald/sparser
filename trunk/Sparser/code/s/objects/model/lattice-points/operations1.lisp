@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.1 August 2013
+;;;  version:  1.2 November 2013
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -30,6 +30,7 @@
 ;;      case since the all-categories code for psi doesn't look at the lattice
 ;; 1.1 (8/14/13) Made category-inherits-type? look at the base case of the
 ;;      category being identical to the supercategory. Same as super-categories of.
+;; 1.2 (11/9/13) Added mixins check to the supercategory sweep. 
 
 (in-package :sparser)
 
@@ -84,6 +85,7 @@
 ;;; what categories does a category inherit from
 ;;;----------------------------------------------
 
+;;--- entry points
 (defmethod super-categories-of ((c referential-category))
   (if (cat-lattice-position c)
     (super-categories-of1 c)
@@ -101,24 +103,85 @@
   (let ((type (indiv-type i)))
     (if (null (cdr type))
       (super-categories-of (car type))
-      (break "stub"))))
+      (else
+       (push-debug `(,i ,type))
+       (error "Stub: right the code to handle collecting ~
+          the super-categories-of an individual with more ~
+          than one type.~%~a~%~a" i type)))))
 
 (defmethod super-categories-of ((c t))
   (push-debug `(,c))
   (error "super-categories-of is not defined on objects of ~
           type ~a" (type-of c)))
 
+
+;;--- doing the work
+
 (defun super-categories-of1 (c)
-  (let* ((lp (cat-lattice-position c))
-         (super-category
-          (when lp
-            ;; they all should have lattice-points, but this protects us
-             (lp-super-category lp))))
-    (if super-category
-      (cons c (super-categories-of1 super-category))
-      (list c))))
+  ;;(format t "~&~%supers-of ~a" c)
+  (let ((lp (cat-lattice-position c)))
+    (cond
+     ((null lp)
+      (push-debug `(,c))
+      (error "The cat-lattice-position slot of ~a is empty" c))
+     ((category-p lp)
+      ;; true of form categories
+      (list c lp))
+     ((lattice-point-p lp)
+      (collect-supercategories-off-lp c lp))
+     (t
+      (push-debug `(,c ,lp))
+      (error "Unexpected type of object in the lattice-position ~
+        field of ~a~%  ~a  ~a" c (type-of lp) lp)))))
+             
+(defun collect-supercategories-off-lp (c lp)
+  (let* ((mixins (cat-mix-ins c))
+         (mixin-supers
+          (when mixins ;; if there's one there will likely be several
+            (super-categories-of-list-type mixins)))
+         (immediate-super-category
+          (lp-super-category lp))
+         (immediate-super-lp
+          (when immediate-super-category
+            (cat-lattice-position immediate-super-category)))
+         (super-supers
+          (when (and immediate-super-lp
+                     (top-lattice-point-p immediate-super-lp)
+                     (lp-super-category immediate-super-lp))
+            (super-categories-of1 immediate-super-category))))
+    #+ignore (format t "~%  mixin-supers  ~a~
+               ~%  super-supers  ~a~
+               ~%  immediate-super ~a~%" 
+           mixin-supers super-supers immediate-super-category)
+    (let ((supers
+           (cond
+            ((and mixin-supers super-supers immediate-super-category)
+             (cons c (append mixin-supers super-supers)))
+            
+            ((and mixin-supers super-supers)
+             (cons c (append mixin-supers super-supers)))
+            
+            ((and mixin-supers immediate-super-category)
+             (cons c (cons immediate-super-category mixin-supers)))
+            
+            (super-supers ;; includes the immediate-super-category
+             (cons c super-supers))
+            
+            (immediate-super-category
+             (list c immediate-super-category))
+            
+            (mixin-supers
+             (cons c mixin-supers)))))
+      (remove-duplicates supers))))
 
 
+(defun super-categories-of-list-type (category-list)
+  (loop for category in category-list
+    append (super-categories-of category) into supers 
+    append (list category) into supers
+    finally (return supers)))
+
+;;--- misc
 
 (defun lattice-depth (c)
   (if (lattice-point-p (cat-lattice-position c))
@@ -127,7 +190,6 @@
         (1+ (lattice-depth superc))
         1 ))
     0))
-
 
 
 (defun super-category-has-variable-named (variable-name base-category)
