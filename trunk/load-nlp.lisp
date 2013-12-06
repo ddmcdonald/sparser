@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2010-2013 David D. McDonald
 ;;;
 ;;;   File:   load-nlp
-;;; Version:  May 2013
+;;; Version:  December 2013
 
 ;; This file will load the language understanding system Sparser, 
 ;; the language generator Mumble, and a shared set of utilities.
@@ -101,7 +101,7 @@
         (case script
           (:fire "scripts/fire")
           (:grok "scripts/grok")
-          (:c3 "scripts/no-grammar")
+          (:c3 "scripts/C3-script")
           (:no-grammar "scripts/no-grammar")
           (:just-dm&p "scripts/just-dm&p")
           (:default "everything") ;; i.e. no specializing script
@@ -117,8 +117,9 @@
                      sparser-load-script
                      ".lisp")))
 
-;; #7 load the files from Mumble that depend on Sparser
+;; #7 load the files from Mumble that reference types in Sparser
 
 (asdf:operate 'asdf:load-op :mumble-after-sparser)
 (load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
+(load (concatenate 'string *mumble-location* "derivation-trees/builders.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
