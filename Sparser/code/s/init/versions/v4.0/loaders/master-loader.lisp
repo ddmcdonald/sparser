@@ -346,6 +346,7 @@
 ;;
 (lload "version;workspace:abbreviations")
 (lload "version;workspace:traces")
+(lload "version;workspace:display")
 (lload "version;workspace:switch settings")
 
 (when *external-workspace-files*

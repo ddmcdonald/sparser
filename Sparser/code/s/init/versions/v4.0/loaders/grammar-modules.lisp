@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar modules"
 ;;;    Module:  "init;versions:v4.0:loaders:"
-;;;   version:  October 2013
+;;;   version:  November 2013
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
 ;; 5/11/93 added refinements in words and syntax
@@ -34,7 +34,7 @@
 ;; added *reversable*. 7/19/11 added *generic-military* since none of the
 ;; others looked right. 8/31/11 added *default-quantifier-semantics*
 ;; 12/15/11 added *hurricanes*. 10/8/13 added *qualities*, *middle-east*,
-;; *Banking*, *ISR*.
+;; *Banking*, *ISR*. 11/30/13 *waypoints*.
 
 (in-package :sparser)
 
@@ -469,7 +469,9 @@
   :name "Intelligence, survalence, and reconaisance"
   :parent *sublanguages*)
 
-
+(define-grammar-module *waypoints*
+  :name "Waypoints and related concepts"
+  :parent *sublanguages*)
 
 
 ;;;-----------------------------------------------------
