@@ -67,6 +67,12 @@
        (format t "\"~a\" does not name a category" category-name)
        nil))))
 
+;(defun iv (variable-name)
+;  (let ((v (find-variable variable-name)))
+;    (
+
+
+
 (defun ier (number-of-edge) ;; inspect edge referent
   (d (edge-referent (edge# number-of-edge))))
 
