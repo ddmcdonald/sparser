@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "clos-backing"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  0.0 July 2013
+;;;  version:  November 2013
 
 ;; initated 11/9/10. Modified the storage scheme 11/11. Tweaking cases
 ;; through 12/6. 6/16/11 fixed case of clash with existing classes.
@@ -13,13 +13,22 @@
 ;; and flushed the check to see if the class already exists, which made
 ;; the MOP problem go away. 1/4/13 Added get-shadow. 
 ;; 7/21/13 Moved in the macro that hides the shift-in-representation 
-;; messiness and its ancilary parts so facility can be taken as a whole
+;; messiness and its ancilary parts so facility can be taken as a whole.
+;; 11/13/13 Added treatment of lamba variables and doc.
 
 (in-package :sparser)
 
 ;;;---------------------------------
 ;;; stashing the classes on a table
 ;;;---------------------------------
+
+#| Every category is "backed" by a conventional CLOS class.
+These "shadow" classes -- sclass's -- are the basis of driving
+type-specific methods off them since without a class of type,
+e.g. #<standard-class shadow::waypoint>, all we could dispatch
+off of would be #<ref-category WAYPOINT> and that type is identical
+for every category.
+|#
 
 (defvar *categories-to-classes* (make-hash-table))
 
@@ -46,16 +55,18 @@
   ;; we have created everything we can about the category. Also called
   ;; from find-or-make-category-object for other cases, notably
   ;; form categories like 'modal'. 
-  (push-debug `(,c))
+  ;(push-debug `(,c))
   (case source
     (:minimal)
     (:define-category)
     ((or :referential :form)
      (let* ((class-name (backing-class-name-for-cateory c))
-            (supercat (when (cat-lattice-position c)
-                        (lp-super-category (cat-lattice-position c))))
-            (superc-name ;; presume there's just one
+            (supercat
+             (when (cat-lattice-position c)
+               (lp-super-category (cat-lattice-position c))))
+            (superc-name
              (when supercat (backing-superclass-for-category supercat)))
+            ;;//// Have to incorporate mixins to supercs. 
             (variables (cat-slots c))
             (slot-expressions 
              (when variables (backing-class-slots-for-category variables))))
@@ -63,7 +74,7 @@
        (let ((form
               `(defclass ,class-name ,(if superc-name `(,superc-name) nil)
                  ,slot-expressions)))
-         (push-debug `(,form))
+         ;(push-debug `(,form))
          (let ((class (eval form)))
            (store-class-for-category c class)
            (push c *classes-defined*)
@@ -74,7 +85,7 @@
      (break "New backing-CLOS class source: ~a~%~a" source c))))
 
 (defun backing-class-name-for-cateory (c)
-  ;; N.b. do not check for the class already existing.
+  ;; N.b. we do not check for the class already existing.
   ;; 1. It doesn't. 2. If you do, and seeing as how we haven't
   ;; defined it yet, the MOP in its wisdom will create
   ;; a forward-reference-class for it rather than a standard-
@@ -99,11 +110,11 @@
     class-name))
 
 (defun backing-superclass-for-category (superc)
-  ;; stub something if there's not already a class?
   (let* ((superc-name (backing-class-name-for-cateory superc))
          (super-class (get-sclass superc)))
     (unless super-class
-      (break "The CLOS class for ~a doesn't exist yet." superc-name))
+      ;; alternatively, stub something for it?
+      (error "The CLOS class for ~a doesn't exist yet." superc-name))
     superc-name))
 
 (defun backing-class-slots-for-category (variables)
@@ -171,11 +182,48 @@
      (break "New type for v/r: ~a~%  ~a" (type-of v/r) v/r))))
 
 
+
+;;;-------------------------------------
+;;; Pulling the same trick on variables
+;;;-------------------------------------
+
+(defclass c3-lambda-variable ()
+  ((variable :type lambda-variable :initarg :var :accessor variable)
+   (name :type symbol :initarg :name :accessor c3-var-name))
+  (:documentation "Super class for all the lambda variable
+     constructed classes / shadow instances. 
+     Will work best under a C3 regime where there's only 
+     one instance of a variable with a given name.
+     Could be expanded for more uses in C3."))
+
+(defun create-backing-for-lambda-variable (v)
+  "Creates the class and stores the nominal instance of it
+   on the variable object in the shadow slot."
+  (let* ((class-name (intern (string-append '#:c3-var-
+                                            (var-name v))
+                             *shadow-package*))
+         (form `(defclass ,class-name (c3-lambda-variable)
+                  () )  )
+         (var-class (eval form)))
+    (let ((shadow-instance (make-instance class-name
+                             :name class-name :var v)))
+      (setf (var-shadow v) shadow-instance)
+      (values shadow-instance var-class))))
+
+(defmethod print-object ((v c3-lambda-variable) stream)
+  (print-unreadable-object (v stream)
+    (format stream "c3-lambda-variable ~a" (var-name (variable v)))))
+
+
+
 ;;;-------------------------------------------------------------
 ;;; Dealing with individuals and the instances that shadow them
 ;;;-------------------------------------------------------------
 
 (defun create-shadow (individual)
+  ;; Called from define-function-term and similar routines in modals
+  ;; and adverbs when we know the word (word's shallow referent) is
+  ;; going to be involved in k-method calls.
   (let* ((type (indiv-type individual))
          (category (etypecase type
                      (cons (car type))
@@ -216,6 +264,15 @@
     (error "There are no shadows associated with object of ~
             type ~a~%  ~a" (type-of obj) obj)))
 
+
+;;;---------------------------
+;;; Vacuous concept instances
+;;;---------------------------
+
+; Method calls are against instances, not categories.
+; Every backing class (sclass) has token instance made for
+; it that we trot out for purposes of doing the method call.
+
 (defvar *category-classes-to-nominal-instance* (make-hash-table))
 
 (defmethod get-nominal-instance ((c category))
@@ -231,6 +288,9 @@
 (defmethod make-and-store-nominal-instance ((cl standard-class))
   (let ((i (make-instance cl)))
     (setf (gethash cl *category-classes-to-nominal-instance*) i)))
+
+
+
 
 
 
@@ -259,6 +319,7 @@
 (defmacro def-k-method (name args &body body)
   `(def-k-method/expr ',name ',args ',body))
 
+#|  Original before variable dispatch
 (defun def-k-method/expr (name args body)
   ;;(push-debug `(,name ,args ,body))
   (unless (every #'symbolp args)
@@ -290,8 +351,94 @@
               (let ,let-bindings
                 ,@body))))
       ;;(pprint form)      
-      (eval form))))
+      (eval form)))) |#
 
+(defun def-k-method/expr (name args body)
+  ;;(push-debug `(,name ,args ,body))
+  (vet-k-method-argument-form args)
+  (multiple-value-bind (parameters type-restrictions)
+                       (establish-k-method-restrictions args)
+    (let* ((dummy-parameters
+            (loop with i = 0
+              collect (intern (string-append '#:d- (incf i))
+                              (find-package :sparser))
+              until (= i (length parameters))))
+           (method-args
+            (loop for r in type-restrictions
+              as d in dummy-parameters
+              collect `(,d ,r)))
+           (let-bindings
+            (construct-let-bindings 
+             dummy-parameters parameters type-restrictions)))
+      ;;(break "check args")
+      (let ((form
+             `(defmethod ,name ,method-args
+                (let ,let-bindings
+                  ,@body)) ))
+        ;;(pprint form)  ;; (break "double check")
+        (eval form)))))
+
+
+(defun construct-let-bindings (dummy-parameters parameters type-restrictions)
+  (loop 
+    for d in dummy-parameters
+    as p in parameters
+    as r in type-restrictions
+    unless (eq r t)
+    collect `(,p (dereference-shadow-individual ,d))
+    else 
+    collect `(,p ,d)))
+
+(defun vet-k-method-argument-form (args)
+  (loop for arg in args
+    unless (consp arg) do (error "k-argument ~a is not a list" arg))
+  (loop for arg in args
+    unless (= 2 (length arg))
+    do (error "k-argument ~a is not a pair" arg))
+  (loop for arg in args
+    as class = (cadr arg)
+    when (consp class)
+    unless (eq (car (cadr arg)) 'variable)
+    do (error "unknown compound k-argument flag")))
+
+(defun establish-k-method-restrictions (args)
+  "Returns the shadow classes, lisp type, or variable class specified
+   for each argument."
+  (let ( parameters type-symbols )
+    (dolist (arg args)
+      (let ((parameter (car arg))
+            (type-specifier (cadr arg)))
+        (push parameter parameters)
+        (cond
+         ((eq type-specifier t) (push t type-symbols))
+         ((and (consp type-specifier)
+               (eq (car type-specifier) 'variable))
+          (let* ((var-name (cadr type-specifier))
+                 (lambda-variable
+                  (variable-defined-on-one-category var-name)))
+            (unless (lambda-variable-p lambda-variable)
+              (push-debug `(,var-name ,type-specifier))
+              (error "Variable lookup failed. Returned ~a"
+                     lambda-variable))
+            (let ((shadow (var-shadow lambda-variable)))
+              (unless shadow
+                (create-backing-for-lambda-variable lambda-variable))
+              (push (find-class (c3-var-name (var-shadow lambda-variable)))
+                    type-symbols))))
+         ((symbolp type-specifier)
+          (let ((category (category-named type-specifier :break)))
+            (push (get-sclass category)
+                  type-symbols)))
+         (t
+          (push-debug `(,type-specifier ,arg))
+          (error "Can't make sense of k-restriction ~a"
+                 type-specifier)))))
+    (values (nreverse parameters)
+            (nreverse type-symbols))))
+    
+      
+
+;  
 
 ;;;-------------------------------------------------------
 ;;; wrapper to setup environment for calling def-k-method
@@ -321,6 +468,12 @@
        ;; (push-debug `(,left-shadow ,right-shadow))
        ,@body)))
 
+
+(defmacro call-k-method (method-name &rest args)
+  `(setup-and-funcall-k-method ',method-name ',args))
+
+(defun setup-and-funcall-k-method (method-name args)
+  (push-debug `(,method-name ,args)) (break "stub"))
 
 
 
