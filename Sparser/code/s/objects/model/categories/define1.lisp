@@ -96,6 +96,7 @@
 
 (defun decode-category-parameter-list (category
                                        &key mixins
+                                            documentation
                                             instantiates
                                             specializes
                                             rule-label
@@ -104,6 +105,7 @@
                                             ((:restrict restrictions))
                                             ((:realization rdata))
                                             index )
+
   (let ((specialized-category
          (when specializes (etypecase specializes
                              (symbol (category-named specializes))
@@ -132,6 +134,9 @@
     (when mixin-categories
       (setf (cat-mix-ins category) mixin-categories))
 
+    (when documentation
+      (store-category-documentation category documentation))
+ 
     (define-variables var-v/r-pair category)
 
     (when bindings

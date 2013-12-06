@@ -15,3 +15,7 @@
   ;; When the category is C, the restriction on variable V is R
 )
 
+
+(defun store-category-documentation (category documentation)
+  ;; leave it on the floor for now
+  category documentation)
