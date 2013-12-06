@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.2 August 2013
+;;;  version:  0.2 December 2013
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -100,6 +100,10 @@
           (participant)))
 
 (define-category  perdurant
+  :instantiates nil
+  :specializes  nil)
+
+(define-category  quality
   :instantiates nil
   :specializes  nil)
 
