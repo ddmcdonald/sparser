@@ -24,26 +24,52 @@
 ;                 :mapping ((
 ))
 
-;;---- Ford
+;;---- These migrate to the upper model
 
-;; These migrate to the upper model
+;; What's the point of Endurant as a predicate-contributing category?
+;;   supplies identity somehow
+;;   and type ??  
+;;   predicates associated with its lifetime
+
+;;--- thin thread to handle the 1st NP
+
 (define-category agent
   :specializes nil 
   ;; foundation says agent < PhysicalObject < Physical < Endurant < Top
   ;; What special sause does 'agent' add? 
   :realization (:common-noun "agent")) ;; n.b. "Mossad agent"
 
+(define-category has-name
+  :specializes nil ;; Endurant maybe? 
+  :binds ((name :primitive word))
+  ;; /// v/r should be 'name' from model/core/names/object.lisp
+  ;; but that doesn't itself have a 'name' slot, as the decoder
+  ;; wants (see def. of wakil) and if it did, it wouldn't know
+  ;; what to do with a simple one word string.
+  ;;
+  ;; Can hang lots of realizations here
+  ;; 'known as', 'called', ...
+  :realization (:proper-noun name)) ;; Wakil
+
+(define-category type-name
+  :specializes has-name
+  :realization (:common-noun name))
+
+
 (define-category artifact
-  :specializes nil) ;; PhysicalObject?  Presumably binds the thing that makes it?
+  :specializes nil ;; PhysicalObject?  
+  :binds ((made-by . maker-of-artifacts))
+  ;; also time-created or is it a specialization from the lifetime of Endurant?
+  :realization (:common-noun "artifact"))
 
 (define-category process
-  :specializes nil) ;; Process < Perdurant
+  :specializes nil) ;; Process < Perdurant (with participants var.)
 
 (define-category make-artifacts
   :specializes process 
   :binds (;; (maker . agent) [1]
           (procedure . process) ;; though instructions aren't a process
-            ;; but what is this?
+            ;; but what is this by itself?
           (product ;; ???? Would growing tomatoes count?
            . artifact)))
 ; [1] We get more milage if we remove the agent, because then
@@ -52,15 +78,14 @@
 ; of a process, where in order to carry out the process you need to
 ; incorporate an agent. 
 
-;; Generation goal: "Ford makes trucks"
-
 (define-category maker-of-artifacts
   :specializes agent
-  :mixins (make-artifacts) ;; company (corporate entity)
-)
+  :mixins (make-artifacts type-name)) ;;has-name))
+;; has-name makes proper nouns, hack "ford" to be a common noun.
 
 ;; Would "manufacturer" add anything useful? Maybe distinguish crofters
 ;; in the Shetlands knitting sweaters from industrial giants?
+ ;; ?? company (corporate entity)
 
 (define-category car-manufacturer
   :specializes maker-of-artifacts
@@ -76,5 +101,10 @@ It creates artifacts,
 It has buildings that it does its manufacturing in
  these are the place of the artifact creation
 |#
+                    
+    
+
+
+
 
 
