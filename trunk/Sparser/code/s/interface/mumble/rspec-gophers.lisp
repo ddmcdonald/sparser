@@ -42,13 +42,17 @@
 (defun extract-word-from-category-definition (c)
   (let ((realization-field (cat-realization c)))
     (unless realization-field (error "No realization on ~a" c))
-    (let ((schema  (cadr (memq :schema realization-field))))
-      (unless schema (error "No schema in realization of ~a" c))
-      (let ((w (cdr (assq :common-noun schema))))
-        (unless w
-          (push-debug `(,schema ,c))
+    (let ((schema-forms (retrieve-schema-forms realization-field)))
+      (unless schema-forms
+        (push-debug `(,realization-field ,c))
+        (error "No schema in realization of ~a" c))
+      (let ((schema (identify-schema-with-word schema-forms)))
+        (unless schema
+          (push-debug `(,schema-forms ,c))
           (error "Could not find a word for ~a" c))
-        w))))
+        ;;(push-debug `(,schema))
+        (let ((w (cdr (car schema))))
+          w)))))
 
 
 ;;--- determiners

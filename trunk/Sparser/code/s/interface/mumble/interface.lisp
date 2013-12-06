@@ -1,39 +1,34 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2010-2012 David D. McDonald  -- all rights reserved
-;;; $Id:$
+;;; copyright (c) 2010-2013 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  0.0 October 2012
+;;;  version:  0.1 November 2013
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
 ;; 11/21/11 Added sanity check that we're annotating realizations. 10/12/12
 ;; added methods that start with edges. 
+;; 0.1 (11/18/13) Removed all rnode/psi centric code  out to rnode-centric
+;;      to clear the decks for working more directly with Krisp objects
+;;      and improvising.
 
 (in-package :sparser)
 
 ;; N.b. there's a check that the mumble code is loaded (package define)
-;; in the grammar loader that bring this code in. 
+;; in the grammar loader that brings this code in. 
 
 ;;;-------------------------
 ;;; is there a realization?
 ;;;-------------------------
 
-(defmethod mumble::has-realization? ((i psi))
-  (unless *annotate-realizations*
-    (error "You have to set *annotate-realizations* to t"))
-  (let ((lp (psi-lp i)))
-    (lp-realizations lp)))
-
 (defmethod mumble::has-realization? ((c referential-category))
-  (if *do-not-use-psi*
-    (cat-realization c)
-    (else
-     (unless *annotate-realizations*
-       (error "You have to set *annotate-realizations* to t"))
-     (let ((lp (cat-lattice-position c)))
-       (lp-realizations lp)))))
+  (when *do-not-use-psi*
+    (cat-realization c)))
+
+(defmethod mumble::has-realization? ((i individual))
+  (when *do-not-use-psi*
+    (indiv-binds i)))
 
 (defmethod mumble::has-realization? ((e edge))
   (let ((referent (edge-referent e)))
@@ -41,102 +36,97 @@
       (error "No referent on the edge ~a" e))
     (mumble::has-realization? referent)))
 
+(defmethod mumble::has-realization? ((b binding))
+  b)
 
-;;;-------------
-;;; what is it?
-;;;-------------
+(defmethod mumble::has-realization? ((w word))
+  w)
+
+;;;-----------------------------
+;;; Construct DTN (or whatever)
+;;;-----------------------------
+
+;;--- realization-for
+;; Called from mumble::realize -- has to return something
+;; that it can consume
+
 
 (defmethod mumble::realization-for ((o t))
-  (let ((options (realization-history o)))
-    ;; choice among alternatives probably goes here
-    ;; but surely wants more context
-    (let ((dt (mumble::convert-to-derivation-tree options o)))
-      (push-debug `(:dt ,dt))
-      ;;(break "back from realization-for ~a~%with ~a" o dt)
-      dt)))
+  (push-debug `(,o))
+  (error "There is no realization-for method for~
+        ~%the object ~a~
+        ~%of type ~a" o (type-of o)))
 
 
-;;;---------
-;;; history
-;;;---------
+;;;-----------------------------------------
+;;; realizations for classes of individuals
+;;;-----------------------------------------
 
-(defgeneric realization-history (o)
-  (:documentation "Soaks up the different possibilities for 
- how to get the stands of rnodes that have been accumulated
- given different sorts of Krisp objects."))
-
-(defmethod realization-history ((i individual))
-  (or (indiv-rnodes i)
-      (realization-history (itype-of i))))
-
-(defmethod realization-history ((c referential-category))
-  (let ((lp (cat-lattice-position c)))
-    (lp-realizations lp)))
-
-(defmethod realization-history ((i psi))
-  (lp-realizations (psi-lp i)))
+(defmethod mumble::realization-for ((i individual))
+  ;; 1st look for a tailored realization
+  ;; 2d does this have a name?
+  ;; 3d make a defNP from the name of the category
+  (push-debug `(,i)) (break "stub"))
 
 
+;;;--------------------------------------------
+;;; experiment on 4/5/13 that wasn't completed
+;;;--------------------------------------------
 
-;;;---------------------------------
-;;; Using rnodes to extract content
-;;;---------------------------------
-
-(defgeneric apply-rnode (rnode item)
-  (:documentation "Use the information in the rnode to decode
- the content of the item so as to return a resource suitable
- for putting into a dtn."))
-
-(defmethod apply-rnode ((rnode realization-node) (c category))
-  (push-debug `(,rnode ,c))
-  (unless (memq rnode (cat-rnodes c))
-    (break "Does it matter that this rnode is listed on this category?"))
-  (apply-rnode (rn-cfr rnode) c))
-
-(defmethod apply-rnode ((schr schematic-rule) (c category))
-  (let* ((realization-field (cat-realization c))
-         (schema-part (third realization-field ))
-         (keyword (car (schr-original-expression schr))))
-    ;;(push-debug `(,schr ,keyword ,schema-part ,realization-field))
-    ;;/// look up the general form of the schema field
-    (let* ((entry (cadr schema-part))
-           (word-part (car entry)))
-      (if (eq (car word-part) keyword)
-        word-part ;; (:common-noun . #<word "target">)
-        (else
-         (push-debug `(,entry))
-         (break "Schema not structured as expected"))))))
-        
-         
+(defmethod mumble::realization-for ((e edge))
+  (let ((referent (edge-referent e)))
+    ;; new experiment 
+    (let ((shadow (find-or-make-shadow referent)))
+      (or (tailored-realization shadow e referent)
+          (make-derivation-tree-from-bindings
+             referent e)))))
 
 
-;;;---------
-;;; helpers
-;;;---------
+;;; tailored realizations
 
-;;--- move to psi somewhere
+(defmethod tailored-realization ((shadow t) (e edge) (referent t))
+  (push-debug `(,shadow ,edge ,referent))
+  nil)
 
-(defun decompose-psi-by-rnode (psi rnode)
-  ;; Syntactically, the psi has been realized with a binary rule
-  ;; that factors into a head and an argument. Find (construct?) the
-  ;; corresponding factoring in the psi and return those two parts
-  ;; to provide referents for those parts of the generation process.
-  (push-debug `(,psi ,rnode :decompose-by-rnode))
-  (let* ((head-c+v (rn-head-c+v rnode))
-         (head-var (when head-c+v (cv-variable head-c+v)))
-         (arg-c+v (rn-arg-c+v rnode))
-         (arg-var (when arg-c+v (cv-variable arg-c+v))))
-    (let ((head (when head-var (value/var/v+v head-var psi)))
-          (arg (when arg-var (value/var/v+v arg-var psi))))
-      (unless (or head arg)
-        (push-debug `(,head-c+v ,arg-c+v))
-        (break "One of the head or the argument can't be found"))
-      (values head arg))))
-      
+
+;;; from first principles
+
+(defun make-derivation-tree-from-bindings (referent edge)
+  (case (cat-symbol (edge-form edge))
+     (category::np
+      (make-np-dtn-from-bindings referent))
+    (otherwise
+     (push-debug `(,referent ,edge))
+     (break "New form: ~a"
+            (edge-form edge)))))
+
+(defmethod make-np-dtn-from-bindings ((i individual))
+  (with-bindings (category has-determiner) i
+    (unless category (error "no category binding"))
+    (ad-hoc-1 category has-determiner i)))
+
+(defun ad-hoc-1 (head-category determiner-value i)
+  ;; do it all by hand just to see something completely through
+  (push-debug `(,head-category ,determiner-value ,i))
+  ;; (setq head-category (car *) determiner-value (cadr *) i (caddr *))
+  (let* ((dtn (mumble::make-derivation-tree-node
+              :referent i))
+         (phrase (mumble-phrase 'common-noun))
+         ;; args = h
+         (args (mumble::parameters-to-phrase phrase)))
+
+    (setf (mumble::resource dtn)
+          phrase)
+    (mumble::make-complement-node (car args)
+                                  head-category
+                                  dtn)
+    (setf (mumble::features dtn)
+          `(,(convert-determiner-value-to-policy
+              determiner-value)))
+    dtn))
 
 
 
-    
 
 
 
