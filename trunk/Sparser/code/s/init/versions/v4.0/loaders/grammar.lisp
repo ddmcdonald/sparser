@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  July 2013
+;;;   version:  December 2013
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -46,7 +46,7 @@
 ;; and loader-part-2. 9/29 moved 32d part later. 12/16/11 added hurricanes.
 ;; 12/3/12 Removed bracket files to their own loader. 3/18/13 added 2d-loader
 ;; for kinds.  Also bumped title loader to 3.  7/1/13 Added a post-loader for adjunct
-;; rules. 
+;; rules. 12/2/13 waypoints.
 
 (in-package :sparser)
 
@@ -220,6 +220,9 @@
 
   (gate-grammar *c3*
     (gload "sit-rules;loader"))
+
+  (gate-grammar *waypoints*
+    (gload "waypoints;loader"))
 
 
 #| irrelevant until GL comes back up

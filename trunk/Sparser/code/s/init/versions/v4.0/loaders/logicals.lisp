@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 1992-1999,2010-2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2010-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;; 
 ;;;     File:  "logicals"
 ;;;   Module:  "init:versions:v4.0:loaders:"
-;;;  version:  December 2011
+;;;  version:  November 2013
 
 ;; 4/21/92 added new,  5/10 broke apart CA/HA,  7/18 promoted all the
 ;; directories under "names;" up to "core;",  7/23 added tools;time
@@ -44,7 +43,7 @@
 ;; in the initial special cases. 6/09 added checkpoint. 8/27/09 added poirot.
 ;; 8/15/10 added one-offs under words. 11/12/10 removed poirot, added mumble-
 ;; interface. 7/19/11 added mil; for sl;military. 8/31/11 added syntax-quant;
-;; 12/15/11 added hurricanes.
+;; 12/15/11 added hurricanes. 11/30/13 *waypoints*.
 
 
 (in-package :sparser)
@@ -329,6 +328,7 @@
 (def-logical-pathname "mideast;" "sl;middle-east:")
 (def-logical-pathname "banking;" "sl;banking:")
 (def-logical-pathname "isr;"     "sl;ISR:")
+(def-logical-pathname "waypoints;"  "sl;waypoints:")
 
 (def-logical-pathname "Who's News;"   "sl;Who's News:")
 (def-logical-pathname "acts;"         "Who's News;acts:")
