@@ -74,6 +74,7 @@
           ;; today just assuming it's already evaluated and is correct
 
           (unless variable
+            (push-debug `(,var-name ,category))
             (error "Can't locate a variable named \"~A\" ~
                     for the category ~A" var-name category))
 

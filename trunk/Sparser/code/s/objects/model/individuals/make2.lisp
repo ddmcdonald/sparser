@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  2.2 July 2013
+;;;  version:  2.3 December 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -61,6 +61,11 @@
 ;;      unindexed. 
 ;; 2.2 (6/3/13) Changed make/permanent-individual to use the correct common path:
 ;;      make-a-permanent-individual. 7/1/13 Smidgen of internal doc.
+;; 2.3 (11/18/13) Revised schema handling in define-individual because of a new kind
+;;      of cases. Backed out of it 11/20 see notes w/ fn.
+;;     (12/3/13) Hit a new case in applying rdata because of distributed categories
+;;      in C3 so factored the realization out completely and moved original version
+;;      to objects/model/tree-families/driver2. Cleaned up.
 
 (in-package :sparser)
 
@@ -105,43 +110,24 @@
            (binding-instructions
             (decode-category-specific-binding-instr-exps
              category
-             var-name+value-pairs))
-           rdata-schema )
+             var-name+value-pairs)))
+
       (let ((*index-under-permanent-instances* ;;t
              (or *index-under-permanent-instances* ;; for recursive calls
                  (individuals-of-this-category-are-permanent category))))
-        (let ((realization-data (cat-realization category))
-              (individual
+        (let ((individual
                (find-or-make/individual category binding-instructions)))
-          (when realization-data 
-            (when (eq (car realization-data) :rules)
-              (setq realization-data (cdr realization-data)))
-            (etypecase (first realization-data)
-              (cons  ;; Multiple schemas
-               (dolist (item realization-data)
-                 (when (and (consp item) (eq (first item) :schema))
-                   (setq rdata-schema (cadr item))
-                   (apply-realization-schema-to-individual
-                    individual category rdata-schema))))
-              (keyword
-               (case (first realization-data)
-                 (:rules)
-                 (:synonyms)
-                 (:schema
-                  (setq rdata-schema (second realization-data))
-                  (apply-realization-schema-to-individual
-                   individual category rdata-schema))
-                 (otherwise
-                  (push-debug `(,category ,individual ,realization-data))
-                  (error "New keyword at car of realization data for ~a"
-                         category))))))
-          individual)))))
 
+          (if *c3*
+            (apply-distributed-realization-data individual)
+            (apply-single-category-rdata individual category))
+
+          individual)))))
 
 
 (defun make-an-individual (symbol 
                            &rest var-name+value-pairs)
-  ;; Just like aefine-individual in its arguments but is for run-time
+  ;; Just like define-individual in its arguments but is for run-time
   ;; relations rather than populating categories (e.g. no rdata).
   ;; This syntax is convenient for calls from code. 
   (let* ((category
