@@ -66,3 +66,6 @@ Has nominal form martyrdom
 (define-title-base-word "martyr")
 ;; Will need co-composition to transfer the full relation
 ;; to the person. And this is evidence of a person.
+
+
+;;; bombs and explosions
