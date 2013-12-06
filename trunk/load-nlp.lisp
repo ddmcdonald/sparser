@@ -121,5 +121,4 @@
 
 (asdf:operate 'asdf:load-op :mumble-after-sparser)
 (load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
-(load (concatenate 'string *mumble-location* "derivation-trees/builders.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
