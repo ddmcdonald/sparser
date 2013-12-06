@@ -4,12 +4,22 @@
 ;;;
 ;;;     File:  "compose"
 ;;;            grammar/rules/situation/
-;;;  version:  October 2013
+;;;  version:  December 2013
 
 ;; Initiated 10/9/13 for the routines that take content from the
 ;; chart and incorporate it into the situation. Elaborated 10/1013.
+;; Revised a bit 12/3/13 on word #2. 
 
 (in-package :sparser)
+
+
+(defvar *this-is-the-head* nil
+  "Set by introduce-next-word when it knows that it's reached
+   the last word of the segment. Indicates that we should transfer
+   the current peg's contents to the referent we're presently
+   incorporating.")
+
+
 
 (defgeneric incorprate-into-the-situation (referent rule edge)
   (:documentation "The conduit between the addition of referents
@@ -21,24 +31,29 @@
     cleanly (vs. re-enter the loop on its own). Nothing is looking
     at its return value."))
 
-
-;; more like a total update fn
 (defmethod incorprate-into-the-situation ((referent t) (rule cfr) (edge edge))
-  (push-debug `(,referent ,rule ,edge)) ;;(break "incorporate ~a" referent)
-  ;; (setq referent (car *) rule (cadr *) edge (caddr *))
+  (push-debug `(,referent ,rule ,edge)) ;; (setq referent (car *) rule (cadr *) edge (caddr *))
 
-  ;; Update the state
-  (let ((new-state (update-situation-state edge)))
-    (push-debug `(,new-state)) ;; goes to a trace stmt
-    (let* ((var (indexical-for-state new-state))
-           (peg ;; draft to get stuff to turn over
-            (value-of-indexical var))
-           (type (cat-symbol (itype-of referent))))
+  (if *this-is-the-head*
+    (incorporate-phrasal-head referent (current-peg))
+
+    ;; Otherwise update the situation pushing on a peg
+    (let* ((current-state (situation-state))
+           (new-state (update-situation-state edge))
+           (type (cat-symbol (itype-of referent)))
+           peg )
+      (if (eq current-state new-state)
+        (then ;; trace here
+         (setq peg (current-peg)))
+        (else
+         (let ((var (indexical-for-state new-state)))
+           (push-debug `(,new-state ,var)) ;; goes to a trace stmt
+           (setq peg (value-of-indexical var)))))
       (push-debug `(,type ,referent ,peg))
       (incorporate type referent peg))))
 
 
-(defmethod incorporate ((type (eql 'category::color))
+(defmethod incorporate ((type symbol) ;;(eql 'category::color))
                         (value t) ;; premature?
                         (peg t)) ;; ditto
   (let ((variable ;; a real one
@@ -51,7 +66,14 @@
   (case symbol
     (category::color
      (find-variable-in-category 'color 'physical-surface))
+    (category::car-manufacturer ;; generalize to maker-of-artifacts
+     (find-variable-in-category 'made-by 'artifact))
     (otherwise
      (push-debug `(,symbol))
      (break "No variable associated with the category symbol ~a"
             symbol))))
+
+
+(defun incorporate-phrasal-head (referent ongoing-peg)
+  (push-debug `(,referent ,ongoing-peg))
+  (break "do the head"))

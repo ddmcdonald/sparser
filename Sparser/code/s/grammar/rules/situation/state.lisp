@@ -35,9 +35,17 @@ That's probably simplistic
      (state-transition-table form state)))
 
 
+;; "black"
 (defmethod state-transition-table ((e (eql 'category::adjective))
                                    (s (eql :initial-state)))
   (let* ((new-state (set-situation-state :assembling-np))
          (peg (setup-a-peg new-state)))
     (activate-current-np-referent peg)
     new-state))
+
+;; "Ford" (but actually "ford")
+(defmethod state-transition-table ((e (eql 'category::proper-noun))
+                                   (s (eql :assembling-np)))
+  ;; the state doesn't change, so return current one
+  (situation-state))
+  
