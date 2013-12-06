@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.11 September 2013
+;;;  version:  1.12 November 2013
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -84,6 +84,8 @@
 ;; 1.11 (12/4/12) Moved out all the assignments to rules/brackets/assignments.
 ;;      (9/7/13) Put what may be a hack int make-cn-rules/aux to notice that a
 ;;       special case plural is still a string and not a word. 
+;; 1.12 (11/27/13) Modified it further to factor out the plural creator and
+;;       allow it to be blocked. 
 
 (in-package :sparser)
 
@@ -834,6 +836,10 @@
                                  category referent
                                  (rest word)))))))
 
+(defparameter *inihibit-constructing-plural* nil
+  "Intended to be bound by word-constructors when they know that 
+   the noun does not make sense in the plural.")
+
 (defun make-cn-rules/aux (word given-category referent
                           &optional special-cases)
 
@@ -862,14 +868,20 @@
                                  (polyword (pw-plist word))))
         ;; so we don't pluralize it
         (list singular-rule)
-        
-        (let ((plural (or (cadr (member :plural special-cases))
-                           (etypecase word
-                             (polyword (plural-version/pw word))
-                             (word (plural-version word))))))
-          (when (stringp plural) ;; see note
-            (setq plural (resolve/make plural)))
-          (let ((plural-rule
+
+        (unless *inihibit-constructing-plural*
+          (make-cn-rules/aux/plural
+           word special-cases category referent singular-rule schematic-rule))))))
+
+(defun make-cn-rules/aux/plural (word special-cases category referent
+                                 singular-rule schematic-rule)
+  (let ((plural (or (cadr (member :plural special-cases))
+                    (etypecase word
+                      (polyword (plural-version/pw word))
+                      (word (plural-version word))))))
+    (when (stringp plural) ;; see note
+      (setq plural (resolve/make plural)))
+    (let ((plural-rule
 ;; This one is for categories where we expect sets: companies, people
 ;                (define-cfr category (list plural)
 ;                  :form  category::common-noun/plural
@@ -878,22 +890,22 @@
 ;                               :subtype (:instantiate-individual collection
 ;                                           :with (type ,referent)))))
 ;; This is simple cases where the set would never be enumerated: share-of-stock
-                 (define-cfr category (list plural)
-                   :form  category::common-noun/plural
-                   :referent 
-                      (if *external-referents*
-                        referent
-                        (resolve-referent-expression
-                         `(:head ,referent
-                           :subtype ,(category-named 'collection)))))))
+           (define-cfr category (list plural)
+             :form  category::common-noun/plural
+             :referent 
+             (if *external-referents*
+               referent
+               (resolve-referent-expression
+                `(:head ,referent
+                  :subtype ,(category-named 'collection)))))))
 
-            (record-inflections `(,plural) word :noun)
-            (record-lemma plural word :noun)
+      (record-inflections `(,plural) word :noun)
+      (record-lemma plural word :noun)
             
-            (assign-brackets-as-a-common-noun plural)
-            (setf (cfr-schema plural-rule) schematic-rule)
-            (list singular-rule
-                  plural-rule)))))))
+      (assign-brackets-as-a-common-noun plural)
+      (setf (cfr-schema plural-rule) schematic-rule)
+      (list singular-rule
+            plural-rule))))
 
 ;; Note -- the marked irregular plural can in as a string via this call
 ;;   (define-single-word-title '(:common-noun "gunman" :plural "gunmen"))
