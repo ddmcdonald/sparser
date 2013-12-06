@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  2.1 October 2013
+;;;  version:  2.1 November 2013
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -20,6 +20,9 @@
 ;;   (1/18/11) Wrote swap-variable-in-binding. 4/1/13 Added signature for
 ;;   individuals for dereference-variable. 10/17/13 added signature to get
 ;;   categories via symbols in find-variable-in-category.
+;;   (10/31/13) added find-variable-in-mixins to the mix.
+;;   (11/13/13) Finished var name registration that lets you get a single
+;;    variable from the name if that's the case. 
 
 
 (in-package :sparser)
@@ -37,6 +40,21 @@
 ;;; finding
 ;;;---------
 
+(defun find-variable-for-category (variable-name category)
+  "The prefered way to access variables from their name."
+  (when (eq (symbol-package variable-name) (find-package :keyword))
+    ;; Happens when coming in from find-individual
+    (setq variable-name (intern (symbol-name variable-name)
+				(find-package :sparser))))
+  (or (find-variable-in-category variable-name category)
+      (super-category-has-variable-named variable-name category)
+      (find-variable-in-mixins variable-name category)))
+
+
+(defun find-variable-from-individual (variable-name i)
+  (find-variable-in-category variable-name (first (indiv-type i))))
+
+
 (defmethod find-variable-in-category (symbol (category model-category))
   (let ((variables (cat-slots category)))
     (when variables
@@ -53,18 +71,20 @@
     (find-variable-in-category symbol category)))
   
 
-(defun find-variable-for-category (variable-name category)
-  "The prefered way to access variables from their name."
-  (when (eq (symbol-package variable-name) (find-package :keyword))
-    ;; Happens when coming in from find-individual
-    (setq variable-name (intern (symbol-name variable-name)
-				(find-package :sparser))))
-  (or (find-variable-in-category variable-name category)  
-      (super-category-has-variable-named variable-name category)))
-
-(defun find-variable-from-individual (variable-name i)
-  (find-variable-in-category variable-name (first (indiv-type i))))
-
+;;--- mixins
+(defun find-variable-in-mixins (variable-name category)
+  (let ((mixin-categories (cat-mix-ins category)))
+    (when mixin-categories
+      ;; first look in each mixin
+      (dolist (mixin  mixin-categories)
+        (let ((var (find-variable-in-category variable-name mixin)))
+          (when var
+            (return-from find-variable-in-mixins var))))
+      ;; Now look up the line of super-categories
+      (dolist (mixin  mixin-categories)
+        (let ((var (super-category-has-variable-named variable-name mixin)))
+          (when var
+            (return-from find-variable-in-mixins var)))))))
 
 
 ;;;--------------------
@@ -72,19 +92,61 @@
 ;;;--------------------
 
 (defun find/make-lambda-variable-for-category (name-symbol restriction category)
+  ;; called by define-lambda-variable
   (unless category
     (error "Cannot define the variable ~a~
           ~%because the category parameter was not supplied.~
           ~%Variables are only defined relative to categories." name-symbol))
   (let ((v (find-variable-in-category name-symbol category)))
     (if v
-      (setf (var-value-restriction v) restriction)
+      (setf (var-value-restriction v) restriction) ;; pro
 
       (setq v (make-lambda-variable
                :name  name-symbol
                :value-restriction  restriction
 	       :category category )))
     v))
+
+
+;;;----------------------------------------------------------------------
+;;; Access to all the variable/category combinations for a variable-name
+;;;----------------------------------------------------------------------
+
+(defvar *symbols-to-variables* (make-hash-table)
+  "Maps from the name of a symbol to dotted pairs of 
+   variable and category. Set during the find-or-make.")
+
+(defun register-var-name-to-category-list (name-symbol variable category)
+  ;; called by define-lambda-variable
+  (let ((entry (get-variable-category-pairs-for-var-name name-symbol)))
+    (if (null entry)
+      (setf (gethash name-symbol *symbols-to-variables*)
+            `((,category . ,variable)))
+      (unless (assq category entry)
+        (setf (gethash name-symbol *symbols-to-variables*)
+              (cons `(,category . ,variable)
+                    entry))))))
+
+(defun get-variable-category-pairs-for-var-name (name-symbol)
+  (gethash name-symbol *symbols-to-variables*))
+
+(defun variable-defined-on-one-category (name-symbol)
+  (let ((pairs (get-variable-category-pairs-for-var-name name-symbol)))
+    (when pairs
+      (when (= (length pairs) 1)
+        (let ((pair (car pairs)))
+          (cdr pair))))))
+
+(defun find-variable (name-symbol)
+  "Returns a single variable if is is only bound by one category,
+   otherwise returns the full list or nil if undefined."
+  (let ((entry (get-variable-category-pairs-for-var-name name-symbol)))
+    (cond
+     ((null entry) nil)
+     ((null (cdr entry)) (cdr (car entry)))
+     (t entry))))
+
+
 
 
 
@@ -98,7 +160,8 @@
   (unless (symbolp symbol)
     (error "The argument to lambda-variable-named must be a symbol.~
             ~%It was passed ~A" symbol))
-  (or (gethash symbol *strings-to-anonymous-variable*)
+  (or (variable-defined-on-one-category symbol)
+      (gethash symbol *strings-to-anonymous-variable*)
       (let ((avar (make-anonymous-variable :name symbol)))
 	(setf (gethash symbol *strings-to-anonymous-variable*) avar)
 	avar)))

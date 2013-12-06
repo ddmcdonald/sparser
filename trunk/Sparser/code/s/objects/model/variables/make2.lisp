@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "form"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  May 2013
+;;;  version:  November 2013
 
 ;; initiated 11/18/91  v2.1
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -22,6 +22,7 @@
 ;;    to resolve-or-make/symbol-to-category which makes it. Everything
 ;;    goes to referential categories now that the model is ubiquitous,
 ;;    so the object will just be fleshed out when it's finally encountered.
+;;   (11/13/13) Added registration.
 
 (in-package :sparser)
 
@@ -49,8 +50,8 @@
        ((memq v bindings))
        (t (tail-cons v bindings)))
 
-      ;;///// index them independently because they can't always
-      ;; be found
+      (register-var-name-to-category-list 
+       name-symbol v category)
 
       v)))
       
@@ -58,8 +59,8 @@
 
 
 (defun resolve-variable-restriction (restriction-expression)
-  ;; called fromd efine-lambda-variable to convert from expressions
-  ;; to objects
+  ;; called fromd define-lambda-variable to convert expressions
+  ;; into objects
   (if restriction-expression
     (typecase restriction-expression
       (list
