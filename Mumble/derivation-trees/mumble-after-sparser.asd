@@ -14,4 +14,5 @@
 (defsystem :mumble-after-sparser
   :serial t
   ;; depends on classes in Sparser, which isn't under asdf control
-  :components ((:file "conversions")))
+  :components ((:file "conversions")
+               (:file "builders")))
