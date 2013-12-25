@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "forces"
 ;;;   Module:  "model:sl:military:"
-;;;  version:  August 2013
+;;;  version:  December 2013
 
 ;; For any sort of group that can engage in military operations.
 
@@ -73,7 +73,10 @@
 
 (define-type-of-force "coalition forces" "cf")
 
-(define-type-of-force "close air support" "cas")
+;;this unfortunately parses "cases" as the plural of "cas"!
+;;blocking rule out for now
+
+;;(define-type-of-force "close air support" "cas")
 
 (define-type-of-force "insurgent" "ins") ;; is this right for CAS?
 
