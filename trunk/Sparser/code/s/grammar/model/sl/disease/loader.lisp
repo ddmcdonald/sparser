@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "sl;disease:"
-;;;   version:   May 2013
+;;;   version:   December 2013
 
 ;; initiated 12/27/07. Started expanding 5/6/13 with [named-entities],
 ;; [h-n-scanner]
@@ -19,5 +19,7 @@
 (gload "disease;spread")
 (gload "disease;h-n-scanner")
 (gload "disease;named-entities")
+(gload "disease;disease-ref")
+(gload "disease;cases")
 
 
