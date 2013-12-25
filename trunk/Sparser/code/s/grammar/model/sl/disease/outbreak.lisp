@@ -25,7 +25,6 @@
   :realization ((:common-noun "outbreak")))
 
 ;;captures simple case of "outbreak of X"
-;;for some reason, it refuses to acknowledge pathogen-type as a valid complement
 (define-category outbreak-pathogen
   :specializes outbreak
   :instantiates self
