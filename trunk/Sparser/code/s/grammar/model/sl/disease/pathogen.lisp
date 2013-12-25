@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "pathogen"
 ;;;    Module:   "sl;disease:"
-;;;   version:   August 2013
+;;;   version:   December 2013
 
 ;;category to represent named dieases, like bird flu.
 ;;I conspicuously decide not to name this file disease
@@ -34,6 +34,8 @@
 
 ;;"the bird flu virus h 5 n 1" from 1 Aljazeera_Jan-18.txt
 
+;;"the potentially fatal MERS virus" from Saudia Arabia MERS article
+
 
 ;;;------
 ;;; form
@@ -57,6 +59,9 @@
   (loop for i from 1 below 10 do
     (loop for j from 1 below 10 do
       (define-pathogen (concatenate 'string "h" (write-to-string i) "n" (write-to-string j))))))
+
+;;from Saudia Arabia article - MERS is Middle Eastern Respiratory Syndrome
+(define-pathogen "MERS")
 
 (define-hXnY)
 ;;;------------
