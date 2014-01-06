@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.2 August 2011
+;;;  version:  1.2 December 2013
 
 ;; initiated 8/5/92 v2.3, added NP & morphology 8/31, added [that comp] 10/22/93
 ;; 10/7/94 added [group of type],  10/14 added [of genitive]
@@ -23,6 +22,7 @@
 ;;     (2/24/01) Added a [compounds]. (3/11/05) Added adverbs.
 ;;     (3/27/09) Added [shortcuts]. (7/23/09) Added interjections.
 ;; 1.2 (10/5/09) Added [correspondences]. 8/4/11 Added vp-adjuncts
+;;     (12/26/13) Moved vp's after clauses so "be" is defined.
 
 (in-package :sparser)
 
@@ -38,16 +38,15 @@
 (gload "tree-families;season-year")
 (gload "tree-families;anchor")
 
-(gload "tree-families;vp")
-(gload "tree-families;vp-adjuncts")
-
-
 (gload "tree-families;transitive")
 (gload "tree-families;ditransitive")
 (gload "tree-families;indirect obj pattern")
 (gload "tree-families;verbs taking pps")
 (gload "tree-families;copula patterns")
 (gload "tree-families;that comp")
+
+(gload "tree-families;vp")
+(gload "tree-families;vp-adjuncts")
 
 (gload "tree-families;compounds")
 
