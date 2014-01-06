@@ -313,6 +313,6 @@
 
 (defmethod display-contents  ((s sentence)
                               &optional (stream *standard-output*))
-  (display-contents (contents s)))
+  (display-contents (contents s) stream))
 
 
