@@ -36,7 +36,7 @@
       (format stream "~a  " (type-of doc-object))
       (if items
         (format stream "~a items" (length items))
-        (format stream "empty" (length items))))))
+        (format stream "empty")))))
 
 
 ;;--- adding items
