@@ -118,7 +118,8 @@
 
 (defun apply-single-category-rdata (individual category)
   ;; Called from define-individual
-  (let ((realization-data (cat-realization category)))
+  (let ((realization-data (cat-realization category))
+        rdata-schema  )
     (when realization-data 
       (when (eq (car realization-data) :rules)
         (setq realization-data (cdr realization-data)))
