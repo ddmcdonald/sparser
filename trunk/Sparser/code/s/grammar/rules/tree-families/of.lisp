@@ -96,7 +96,9 @@
 ;;;--------------------------------------------------------------------------
 
 (define-exploded-tree-family   of/genitive
-  :description "A part-whole relation. Relates two nps: a 'smaller', 'base' np is part of a 'larger', 'complement' np. They can be composed either using \"of\" or with a possessive."
+  :description "A part-whole relation. Relates two nps: a 'smaller', 'base' np 
+     is part of a 'larger', 'complement' np. They can be composed either using
+     \"of\" or with a possessive."
   :binding-parameters ( larger  smaller )
   :labels ( np  possessive  complement  base-np  result-type )
   :cases
