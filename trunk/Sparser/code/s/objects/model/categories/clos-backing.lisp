@@ -188,7 +188,7 @@ for every category.
 ;;;-------------------------------------
 
 (defclass c3-lambda-variable ()
-  ((variable :type lambda-variable :initarg :var :accessor variable)
+  ((variable :type lambda-variable :initarg :var :accessor c3-variable)
    (name :type symbol :initarg :name :accessor c3-var-name))
   (:documentation "Super class for all the lambda variable
      constructed classes / shadow instances. 
@@ -212,7 +212,7 @@ for every category.
 
 (defmethod print-object ((v c3-lambda-variable) stream)
   (print-unreadable-object (v stream)
-    (format stream "c3-lambda-variable ~a" (var-name (variable v)))))
+    (format stream "c3-lambda-variable ~a" (var-name (c3-variable v)))))
 
 
 
