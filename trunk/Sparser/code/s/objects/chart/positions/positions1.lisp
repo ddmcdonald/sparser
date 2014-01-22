@@ -144,6 +144,9 @@
 (defun includes-state (p keyword)
   (memq keyword (pos-status-lifo p)))
 
+(defun has-been-status? (keyword p)
+  ;; Return non-nil if this position has been the given status.
+  (member keyword (pos-status-lifo p)))
 
 
 ;;;------------
@@ -161,10 +164,6 @@
   ;; between those two positions
   (- (pos-token-index p2)
      (pos-token-index p1)))
-
-(defun has-been-status? (keyword p)
-  ;; Return non-nil if this position has been the given status.
-  (member keyword (pos-status-lifo p)))
 
 ;;;------------------------
 ;;; construction functions
