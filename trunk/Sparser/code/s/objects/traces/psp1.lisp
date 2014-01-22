@@ -1234,4 +1234,24 @@
                (word-pname word) (pos-token-index pos-before))))
 
 
+;;;--------------
+;;;  C3 traces 
+;;;--------------
+
+(defvar *trace-c3* nil)
+
+(defun trace-c3 ()
+  (setq *trace-c3* t))
+
+(defun untrace-c3 ()
+  (setq *trace-c3* nil))
+
+
+(deftrace :incorporate-into-situation (referent edge)
+  (when *trace-c3*
+    (trace-msg "[c3] incorporating ~a from ~a" referent edge)))
+
+
+
+
 
