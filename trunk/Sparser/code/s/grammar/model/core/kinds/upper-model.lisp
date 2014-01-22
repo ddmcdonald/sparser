@@ -23,7 +23,7 @@
 ;; 0.2 (4/5/13) Exposed top and expressible top so there was somewhere
 ;;      to hand the type variable.
 ;;     (8/19/13) Trying a stand-alone definition for "relation" to go with
-;;      the class.
+;;      the class. 12/17/13 added scalar-quality and state
 
 (in-package :sparser)
 
@@ -103,9 +103,17 @@
   :instantiates nil
   :specializes  nil)
 
+(define-category state ;; copied up from M/Zo
+  :specializes perdurant
+  :binds ((theme))) ;; one salient value
+
 (define-category  quality
   :instantiates nil
   :specializes  nil)
+
+(define-category scalar-quality
+  :instantiates nil
+  :specializes quality)
 
 
 (define-category dependent-substrate
@@ -144,7 +152,7 @@
   :specializes nil
   :binds ((name :primitive word)))
 
-; Atributes or predicates some propety of something.
+; Atributes or predicates some property of something.
 ; Goes with the relation modified.
 (define-category modifier
   :specializes operator)
@@ -163,6 +171,26 @@
   :specializes nil
   :binds ((term)
           (operator . operator)))
+
+
+(define-category  attribute
+  :instantiates :self
+  ;; Sort of the same thing as a predicate but emphasizes the
+  ;; point that it will be an attribute of 'something', which is
+  ;; a narrower notion than predicate.
+  ;; Sort out with operator discussion just below.
+  :specializes quality
+  ;; in some cases a sublass of attribute will specialize
+  ;; scalar quality. 
+  :binds ((name :primitive word)))
+
+(define-category  attribute-value
+  ;; as in 'attribute-value pair'
+  :specializes predication ;;/// re-think the variables there
+  :binds ((attribute . attribute)
+          (value))
+  :index (:permanent :sequential-keys attribute value))
+
 
 
 
