@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2003,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2003,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.9 April 2013
+;;;  Version:  1.9 January 2014
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -51,6 +50,7 @@
 ;; 1.10 (7/17/13) Fixed case in adjudicate-new-open-bracket that moved back the
 ;;       segment boundary because a verb is following a verb but was not resetting
 ;;       the global like the other paths through the code do.
+;;      (1/21/14) Adjusting rule for proper-nouns given C3 cases.
 
 (in-package :sparser)
 
@@ -248,7 +248,7 @@
            (pos-token-index position)))
 
   (tr :bracket-ends-the-segment? ] )
-  (tr ::opening-bracket-at-p position *bracket-opening-segment*)  
+  (tr ::opening-bracket-at-p position *bracket-opening-segment*)
 
   (let* ((bracket-opening-segment (first *bracket-opening-segment*))
          (segment-start-pos *left-segment-boundary*)
@@ -265,20 +265,26 @@
      (cond
       ((word-definitively-ends-segment next-word) t)
 
-        ((eq ]  phrase].)   t)
-        ((eq ]  ].phrase)   t)
+      ((eq ]  phrase].)   t)
+      ((eq ]  ].phrase)   t)
           
-           ((eq ]  np].)  t)
+      ((eq ]  np].)  t)
 
-           ((eq ]  ].np)
-            (unless (segment-started-as-np?)
-              t))
+      ((eq ]  ].np)
+       (unless (segment-started-as-np?)
+         t))
 
-           ((eq ]  ].pronoun) t)
+      ((eq ]  ].pronoun) t)
 	  
-           ((eq ]  ].proper-noun) t)
+      ((eq ]  ].proper-noun)
+       ;(push-debug `(,previous-word ,bracket-opening-segment))
+       ;(break "proper")
+       (if (or (word-is-np-modifier previous-word)
+               (word-is-a-proper-noun previous-word))
+         nil
+         t))
 
-           ((eq ]  ].quantifier)
+      ((eq ]  ].quantifier)
             (if (or (eq (first *bracket-opening-segment*) .[np )
                     (eq (first *bracket-opening-segment*) .[article )
                     (eq bracket-opening-segment .[adverb)) ;; "very few"
