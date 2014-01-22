@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "C3-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  October 2013
+;;;  version:  January 2014
 
 ;; Initiated 9/18/13 by analogy to inititate-top-edges-protocol.
-;; 10/9/13 started putting meat on its bones. 
+;; 10/9/13 started putting meat on its bones. Debugging segement 
+;; scan through 1/21/14
 
 (in-package :sparser)
 
@@ -26,13 +27,14 @@
   ;; This is the fixed point where resume between segments.
 
   ;; first delimit the segment
-  (let ((last-position (read-through-segment-to-end start-pos))
-        (position start-pos))
+  (let* ((last-position (read-through-segment-to-end start-pos))
+         (position start-pos)
+         (head-position (chart-position-before last-position)))
     ;; Then walk through it left-to-right extending
     ;; the situation. Assume that the final word is the head.
     (break "last-position = ~a" last-position)
     (loop 
-      (introduce-next-word position (eq position last-position))
+      (introduce-next-word position (eq position head-position))
       (setq position (chart-position-after position))
       (when (eq position last-position)
         (return)))
@@ -40,29 +42,34 @@
     (break "where are we?")))
 
 
-(defun introduce-next-word (position-before head?)
-  (declare (special *this-is-the-head*))
+(defun introduce-next-word (position-before head-word?)
   (let ((word (pos-terminal position-before)))
     (unless (word-with-single-edge-rules? word)
       (push-debug `(,position-before ,word))
       (error "C3 only runs on known words. The word ~s at p~a is unknown"
              (word-pname word) (pos-token-index position-before)))
-    (setq *this-is-the-head* head?)
-    (let ((position-after (chart-position-after position-before)))
-      ;; All the good stuff now happens in the referent processing
-      (install-terminal-edges word position-before position-after))))
+    (let ((*this-is-the-head* head-word?))
+      (declare (special *this-is-the-head*))    
+      (let ((position-after (chart-position-after position-before)))
+        ;; All the good stuff now happens in the referent processing
+        (install-terminal-edges word position-before position-after)))))
 
 
+(defvar *trace-read-through-segment-to-end* nil "Ad-hoc one-off debugging")
+; (setq *trace-read-through-segment-to-end* t)
 
 (defun read-through-segment-to-end (start-pos)
   (let ((start-bracket (bracket-that-starts-the-segment start-pos)))
     (interpret-open-bracket-as-segment-start start-bracket start-pos)
+    (when *trace-read-through-segment-to-end*
+      (push-debug `(,start-bracket ,start-pos)))
     (let ((position-before start-pos)
           word-after )
       (loop
         (unless (pos-terminal position-before)
           (scan-next-position))
-        (break "position before = ~a" position-before)
+        (when *trace-read-through-segment-to-end*
+          (break "position before = ~a" position-before))
         (setq word-after (pos-terminal position-before))
 
         (when (eq word-after *end-of-source*)
@@ -81,7 +88,9 @@
           (if ]
             (if (bracket-ends-the-segment? ] position-before)
               (then
-               (break "segment ended on brackets of ~a" word-after)
+               (when *trace-read-through-segment-to-end*
+                 (push-debug `(,] ,position-before))
+                 (break "segment ended on brackets of ~a" word-after))
                ;; bracket-check set the right-boundary global
                (return position-before))
               (else ;; loop around
