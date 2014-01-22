@@ -15,12 +15,19 @@
 
 ;; While there's teething problems getting it all loading 
 ;;  or if we use a load that doesn't set *c3* 
-; (setq *c3* t)
-; (lload "objects;situation:loader")
-; (gload "sit-rules;loader")
-; (gload "isr;loader")
 
-; (c3-setting)
+;; (ad-hoc-c3-loader)
+(defun ad-hoc-c3-loader ()
+  (setq *c3* t)
+  (lload "objects;situation:loader")
+  (gload "sit-rules;loader")
+  (gload "isr;loader")
+  (create-ford-motor-company)
+  (create-wakil)
+  (c3-setting))
+
+; (p "black ford suv has entered wakil")
+
 ; (just-bracketing-setting)
 ; (word-frequency-setting)
 
@@ -61,6 +68,8 @@
     :directory "gboss;"
     :unified t))
 
+;; Text that breaks -- for Alex
+;; (p "Saudi Arabia has confirmed six new infections from the potentially fatal MERS virus, the World Health Organization reported Friday, raising the total number of cases worldwide to 136. Most of the cases, which have resulted in 58 deaths, have been in Saudi Arabia. The latest cases, the W.H.O. said in a statement, afflicted three men and three women, all from the Riyadh region. MERS stands for Middle East Respiratory Syndrome. It is believed to be spread by bats and possibly camels. The concentration of MERS cases in Saudi Arabia has raised concern about the possible spread of the infection during the annual pilgrimage to Mecca and Medina later this month, when millions of Muslims from around the world visit the kingdom.")
 
 
 

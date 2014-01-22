@@ -1,16 +1,28 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 SIFT LLC.  -- all rights reserved
+;;; copyright (c) 2013-2014 SIFT LLC.  -- all rights reserved
 ;;; This file is part of the SIFT CANTO project
 ;;;
 ;;;     File:  "Canto workspace"
 ;;;            "init;workspaces:"
-;;;  version:  October 2013
+;;;  version:  January 2014
 
-;; Initiated 10/22/13
+;; Initiated 10/22/13. Tweaking, elaborating with cases through 1/22/14
 
 (in-package :sparser)
 
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
+
+#| NLG meta-.
+gophers: extract-mword-from-rule
+conversions: convert-to-derivation-tree
+binding-centric: make-derivation-tree-from-bindings
+interface: realization-history
+
+control: resume-after-error has-been-status?
+  pts inititate-top-edges-protocol
+
+|#
+
 
 #|
 ;; goes in <version>/loaders/grammar-modules
@@ -26,14 +38,6 @@
 (def-logical-pathname "waypoints;"  "sl;waypoints:")
 |#
 ; (gload "waypoints;loader")
-
-#| NLG meta-.
-gophers: extract-mword-from-rule
-conversions: convert-to-derivation-tree
-binding-centric: make-derivation-tree-from-bindings
-interface: realization-history
-
-|#
 
 #| Files to examine in canto/trunk/code/synthetic-teammate/
 
