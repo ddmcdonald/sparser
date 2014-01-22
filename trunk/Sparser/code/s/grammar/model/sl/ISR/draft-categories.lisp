@@ -89,7 +89,8 @@
 
 (define-category car-manufacturer
   :specializes maker-of-artifacts
-  :restrict ((product . motor-vehicle)))
+  :restrict ((product . motor-vehicle))
+  :index (:permanent :key name))
 #| Notes for Ford qua manufacturer of cars, 
 thence as a make of car (vehicle) http://en.wikipedia.org/wiki/Ford
 Ford is a manufacturer
