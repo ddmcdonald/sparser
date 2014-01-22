@@ -6,7 +6,7 @@
 ;;;    Mumble Development Group.  All rights reserved.
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
 ;;;    non-commercial purposes.
-;;; Copyright (c) 2005,2011 David D. McDonald
+;;; Copyright (c) 2005,2011-2013 David D. McDonald
 
 ;; Changelog
 ;;  6/6/95 added VP-one-arg/not-passive.  11/30/97 added set of SVPO phrases
@@ -15,6 +15,7 @@
 ;; 1/10/05 Pulled the define-word calls.
 ;; 1/25 Added two-element-captialized-sequence
 ;; 3/28/11 Removed duplicate of qualifier-head. 4/6 added head-qualifier
+;; 12/27/13 added number-np
 
 (in-package :mumble)
 
@@ -1523,6 +1524,11 @@
 (define-phrase det-np (d n)  
   (np/no-det
    determiner d
+   np-head h))
+
+(define-phrase number-np (n h)
+  (np/no-det
+   number n
    np-head h))
 
 (define-phrase possessive-np (p n) ;; compare phrase-schema possessed-np
