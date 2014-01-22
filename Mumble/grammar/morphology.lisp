@@ -3,7 +3,7 @@
 ;;;
 ;;; Mumble-05:  grammar; morphology
 ;;;
-;;; Copyright (C) 2005 David D. McDonald
+;;; Copyright (C) 2005,2013 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald and the
 ;;;    Mumble Development Group.  All rights reserved.
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
@@ -14,6 +14,9 @@
 ;;  6/8/95 ddm - changed Determine-case-from-labels to put pronouns in  possessive slots
 ;;   in the possessive-np case.
 ;;  1/17/05 Started make-over to lemmas, etc.
+;;  12/28/13 Code wanted to pluralize every noun. Dropped that since it
+;;   appears that there's no way to do plural on demand. MWM may have hacked
+;;   a short-cut. 
 
 (in-package :mumble)
 
@@ -35,11 +38,18 @@
             (comp-of-be-position labels))
        (predicate-adjective item))
       
-      ((and (or
-             (part-of-speech 'noun item)
-             (part-of-speech 'proper-noun item))
+      ((and (or (part-of-speech 'noun item)
+                (part-of-speech 'proper-noun item))
             (noun-position labels))
-       (noun-morphology-plural item))
+       ;; Why is it this specific in the ancient code and doesn't
+       ;; just accept the POS?
+       ;; It always pluralized.
+       ;;    (noun-morphology-plural item)
+       ;;//// Need to see an explicit marker
+       ;; that the word should be pluralized in this case.
+       ;; Presumably a feature on the slot
+       (send-to-output-stream (pname item) item))
+       
       
       (t (send-to-output-stream (pname item) item) )))
     (tense-marker (process-tense item))
