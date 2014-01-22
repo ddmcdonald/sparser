@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.20 October 2013
+;;;  Version:  2.22 January 2014
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -64,6 +64,7 @@
 ;; 2.21 (10/21/13) Moved the old contents of fire into Grok and then made grok the
 ;;       equivalent of Strider so we can use that going forward as the default
 ;;       that operations are built on.
+;; 2.22 (1/22/14) Added (turn-off-c3) to all the bigger sets.
 
 (in-package :sparser)
 
@@ -257,6 +258,7 @@
 ;; in segment-finished
 
 (defun top-edges-setting/ddm ()
+  (turn-off-c3)
   (top-edges-setting)
   (standard-extras)
   ;; this setting can be called as a way to negate the effects
@@ -309,6 +311,7 @@
 
 (defun tuned-grok ()
   "Adjustments to Grok while we work things out"
+  (turn-off-c3)
   (grok-setting)
   (progn ;; these are temporary overrides while we debug bracketing
     (setq *annotate-realizations* nil)
@@ -319,6 +322,8 @@
   (setq *switch-setting* :tuned-grok))
 
 (defun strider-setting ()
+  (declare (special *tts-after-each-section*))
+  (turn-off-c3)
   (tuned-grok)
   (setq *do-debris-analysis* t)
   (setq *arabic-names* t)
@@ -353,11 +358,18 @@
   (designate-sentence-container :situation)
   (setq *switch-setting* :c3))
 
+(defun turn-off-c3 ()
+  (when (or (eq *switch-setting* :c3)
+            *c3*)
+    (setq *c3* nil) ;; turn off the flag
+    (designate-sentence-container :simple))) ;; only other option
+
 
 
 ;;--- Measuring word frequencies
 
 (defun word-frequency-setting ()
+  (turn-off-c3)
   (ignore-comlex)
   (establish-character-translation-protocol :no-changes)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
@@ -404,7 +416,7 @@
 
 
 
-;;--- Older, unused switch sets
+;;--- Older, unused switch sets, no reason to assume they're consistent
 
 (defun ambush-setting ()
   (fire-setting)
