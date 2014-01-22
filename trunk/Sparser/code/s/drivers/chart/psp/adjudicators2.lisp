@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1997,2012-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1997,2012-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "adjudicators"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  2.0 February 2013
+;;;  Version:  2.0 January 2014
 
 ;; broken out from [scan] 5/13/94 v2.3.  5/16,17,18 working out details
 ;; 5/24 updated args.  6/14 added a case in fsa.
@@ -31,9 +31,62 @@
 ;;      fsa on the resulting edge, stranding the apostrophe-s edge.
 ;; 2.1 (2/8/13) Put in a lot of debugging info since the state space
 ;;      is getting considerably larger.
+;;     (1/22/14) Added a workable version of resume-after-error
 
 (in-package :sparser)
 
+;;;--------------
+;;; General case
+;;;--------------
+
+#|  Cases
+1. EOS
+ We might have already been at the EOS.
+ The next chart position might hold the EOS.
+ In both cases add a state (avoid loops) and
+ try just running the EOS check.
+2. Skip to the right segment boundary
+ If the segment bounds have been established and
+ the current position is strictly to the right
+|#
+
+(defun resume-after-error ()
+  (let* ((next-pos (the-next-position-to-scan))
+         (rightmost-pos (chart-position-before next-pos))
+         (word (when (includes-state rightmost-pos :scanned)
+                 (pos-terminal rightmost-pos))))
+    ;; Were we at the end-of-source
+    (if word
+      (end-of-source-check word rightmost-pos) ;; throws
+      (else ;; Are we there now?
+       (scan-next-position)
+       (setq word (pos-terminal next-pos))
+       (when (eq word *end-of-source*)
+         (terminate-chart-level-process))))
+
+    ;; Are there established segment boundaries 
+    ;; and the bug was in the segment processing
+    ;; or above it?
+    (if *where-the-last-segment-ended*
+      (then ;;/// need a test case
+       ;; before writing this. So punting for the moment
+       (scan-next-pos next-pos))
+      (else
+       ;; place for a trace
+       ;; By definition, the next position to scan hasn't
+       ;; been assessed or had anything at all done to it,
+       ;; so it's probably a reasonable default for where
+       ;; to resume that's not going to loop us.
+       (scan-next-pos next-pos)))))
+         
+
+
+
+
+
+;;;----------------
+;;; Specific cases
+;;;----------------
 
 (defun return-to-scan-level-from-null-span (where-seg-ended)
   ;; called from Segment-finished when the coverage is :null-span
