@@ -2,7 +2,7 @@
 
 ;;; MUMBLE-05:  interpreters> realization> realize
 
-;;; Copyright (C) 2005,2010-2011 David D. McDonald
+;;; Copyright (C) 2005,2010-2013 David D. McDonald
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
@@ -13,7 +13,7 @@
 ;; 9/16/09 Added generic method for realization-for. 9/18 revised realize to
 ;; no longer feed instantate-rspec (that level of interpretation belongs in
 ;; realization-for and to take a lexicalized-phrase as a return value
-;; 3/17/11 Tweaking things a little
+;; 3/17/11 Tweaking things a little. 12/27/13 tweek to realize-dtn
 
 (in-package :mumble)
 
@@ -105,7 +105,7 @@
        (case (name phrase-type)
          (clause
           (clausal-bundle-driver dtn root-node))
-         (np
+         ((np np/no-det)
           (general-np-bundle-driver dtn root-node))
          (otherwise 
           (error "Unexpected name of phrase-type: ~a"
