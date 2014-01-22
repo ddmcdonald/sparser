@@ -8,17 +8,19 @@
 
 ;; Taken from waypoints as its own file 12/2/13. These should 
 ;; be folded back into the core when we cleanup. Using this file
-;; to experiment with. 
+;; to experiment with. 12/16/13 added "knot"
 
 (in-package :sparser)
 
-
-;;--- rate of change measures
+;;;-------------------------
+;;; rate of change measures
+;;;-------------------------
 
 (define-category unit-of-rate-of-change
   :specializes unit-of-measure
   :binds ((distance-measure . unit-of-measure) ;; e.g. miles
-          (time-measure . time-unit))  ;; e.g. hour
+          (time-measure . time-unit)  ;; e.g. hour
+          (name :primitive word)) ;; need compact form for generating
   :index (:permanent :sequential-keys distance-measure time-measure)
   ;; "knot" is a rate of change all in one word: one nautical mile per hour
   :realization (:tree-family  N-per-unit
@@ -42,15 +44,21 @@
                   :distance-measure distance
                   :time-measure time)))
       (when abbreviations
+        ;;//// it needs the plural -- parenthesize the marked case        
         (let ((*inihibit-constructing-plural* t))
           (declare (special *inihibit-constructing-plural*))
           (dolist (string abbreviations)
             (let ((word (define-word/expr string)))
               (make-cn-rules/aux 
-               word (category-named 'unit-of-rate-of-change) unit)))))
+               word (category-named 'unit-of-rate-of-change) unit)))
+          (bind-variable 'name (word-named (car abbreviations)) unit)))
       unit)))
 
 (def-rate-of-change-unit "mile" "hour" ("mph"))
+
+(define-unit-of-measure "nautical mile")
+;; Putting it in explicitly gets the job done in lieu of marking it. 
+(def-rate-of-change-unit "nautical mile" "hour" ("knot" "knots"))
 
 
 ;;--- Instances of rates, actual values
@@ -59,7 +67,7 @@
   :specializes measurement
   :binds ((units . unit-of-rate-of-change)
           (quantity . number)) ;;  :or quantity number)
-  :index (:temporary :sequential-keys units quantity)
+  :index (:permanent :sequential-keys units quantity)
   :realization ((:common-noun "rate")
                 (:tree-family  quantity+kind
                 :mapping ((quantity . quantity)
@@ -68,3 +76,26 @@
                           (np-head . unit-of-rate-of-change)
                           (modifier . (number quantity))
                           (result-type . :self)))))
+
+;;;----------
+;;; distance
+;;;----------
+
+#|
+"What distance does he like to run?" "400 meters"
+"What's the distance to New York City from here?
+"How far is it to NYC?"
+
+See QGLS 8.3 and many other places where it's classified 
+as an adverbial. Specifically a spatial-measure.
+
+The basic case is "the <measure-term> is <measurement>
+and the word can stand by itself "that distance"
+|#
+
+(define-category named-measure
+  ;; Provides a common supercategory. ///Easily replaced
+  :specializes measurement)
+
+;;(define-scalar-quality "distance" :super-category named-measure
+;;   :value measurement)
