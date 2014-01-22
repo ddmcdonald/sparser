@@ -183,6 +183,8 @@
     (push-debug `(:np-bundle ,result))
     result))
 
+;; need a plural feature !!
+
 (defun process-np-accessories (np-root dtn)
   (let ((number-acc (get-accessory-value :number dtn))
         (person-acc (get-accessory-value :person dtn))
