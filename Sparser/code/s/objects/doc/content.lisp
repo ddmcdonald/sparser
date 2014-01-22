@@ -77,6 +77,7 @@
    or (the motive for all this) a situation.")
 
 (defun make-sentence-container (sentence)
+  ;; called from start-sentence
   (declare (ignore sentence))
   (error "No version of make-sentence-container has been specified"))
 
