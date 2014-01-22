@@ -1,13 +1,17 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; $Id$
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2010-2012 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2010-2013 David D. McDonald  All Rights Reserved
 
 ;; /Mumble/derivation-trees/conversions.lisp
 
 ;; Initated 10/6/09. First real code 10/23. Real code that runs 11/9 (sigh)
 ;; Modified through 11/27. Completely redone 12/9/10. Picked up again 3/22/11.
-;; Refining through 3/28. Picked up again 10/12/12
+;; Refining through 3/28. Picked up again 10/12/12. 
+;; 12/28/13 Moved out the word converter methods to gophers. This code is
+;; dormant because it's based on reversing an ETF (a good thing) which was
+;; only used when working off of rnodes and PSI (rediculously hard to debug
+;; so dropped for now circa March 2013). It can be reviced, but for the moment
+;; it's irrelevant. 
 
 (in-package :mumble)
 
@@ -163,23 +167,6 @@
             ;; N.b. the ap-node has an error when it prints
             dtn))))))
                                  
-
-
-
-;;--- Words
-
-(defmethod find-or-make-word ((sw sparser::word))
-  ;; Need to carry over the data on irregulars, which will be tricky
-  ;; Could make inference from its brackets: 
-  ;;   (rs-phrase-boundary (rule-set-for sw))
-  ;;/// Ought to really fuse the two conceptions of the word object
-  ;;  Or at least make these at the time on the sparser side when
-  ;;  we have all the information right in our hand. 
-  (find-or-make-word (sparser::word-pname sw)))
-
-(defmethod find-or-make-word ((s string))
-  (or (word-for-string s)
-      (define-word/expr s '(noun))))
 
 
 
