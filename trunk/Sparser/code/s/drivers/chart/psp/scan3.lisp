@@ -576,11 +576,11 @@
     (if (eq *rightmost-quiescent-position* position-before)
       ;; we have to make this check to ensure that all the forest level
       ;; parsing is also finished.  ///?? treetop level too ???
-        (then
-         ;; [sfriedman:20130211.2000CST]
-         ;; Section representation has changed, so this is no longer valid.
-         ;; (do-the-last-things-in-an-analysis position-before)
-         (terminate-chart-level-process))
+      (then
+       ;; [sfriedman:20130211.2000CST]
+       ;; Section representation has changed, so this is no longer valid.
+       ;; (do-the-last-things-in-an-analysis position-before)
+       (terminate-chart-level-process))
 
       (if *do-forest-level*
         (then
