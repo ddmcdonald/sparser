@@ -27,43 +27,22 @@ It's a 'rate' --
   which is measured as a quantity of some unit-of-measure
   "per" some time-unit. 
 |#
+(define-scalar-quality "speed" :value (rate number))
 #|
+;; This makes a predicate -- speed-of, with a simple category
+;; for its predicate. Need a real category for these predicates
 (def-attribution "speed" quality 
-  ;; 
-  ;; 
   :subject-type waypoint
   :attribute-type rate)
-
-#+ignore
-(define-category speed-description
-  :instantiates :self
-  :specializes quality
-  :binds ((subject . waypoint)
-          (name :primitive word))
-  :index (:permanent :key subject)
-  :realization ((:common-noun "speed")
-                (:tree-family possessive/new-object
-                 :mapping ((result-type . :self)
-                           (pos-slot . subject)
-                           (head-slot . name)
-                           (np . :self)
-                           (possessive . waypoint)
-                           (np-head . "speed")))
-                (:tree-family simple-of-complement
-                 :mapping ((np-item . name)
-                           (of-item . subject)
-                           (result-type . :self)
-                           (np . :self)
-                           (base-np . ("speed" speed-description))
-                           (complement . waypoint)))))
-
-
 
 ;;--- (effective) radius
 
 (def-attribution "radius" amount
   :subject-type waypoint
-  :attribute-type measurement)
-|#
+  :value-type measurement)  |#
+
+; "effective" here has the same meaning as "in effect" or
+; "for all intents and purposes". It doesn't mean 'useful'
+; or 'good at what it does'. 
 
 
