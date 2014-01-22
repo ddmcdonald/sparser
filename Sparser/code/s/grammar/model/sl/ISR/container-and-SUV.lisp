@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "container-and-SUV"
 ;;;   Module:  "grammar/sl/ISR/
-;;;  version:  November 2013
+;;;  version:  January 2014
 
 ;; Initiated 10/24/13 to breakout the design of SUV and container
-;; into their own file. Removed space to is own file 11/11/13
+;; into their own file. Removed space to is own file 11/11/13. 
+;; Tweaking through 1/22/14
 
 (in-package :sparser)
 
@@ -34,7 +35,7 @@ a container is a place, preposition = "in"
   ;; SUV, sedan, hybrid, truck - not all exclusive
   ;; It's a label/classification that applies to the whole entity
   ;; so it's probably not an attribute
-  )
+  :index (:permanent :key name))
 
 (define-individual 'car-type :name "suv")
 
