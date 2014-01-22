@@ -47,7 +47,8 @@
     (funcall #'realization-for-triple body-shadow var-shadow value)))
 
 #|  Kills load until waypoint module is integrated in regular load |#
-(def-k-method realization-for-triple ((wp waypoint) (v (variable nname)) (value t))
+(def-k-method realization-for-triple ((wp waypoint) 
+                                      (v (variable nname)) (value t))
   (push-debug `(,wp ,v ,value)) ;;(break "name triple")
   ;; (setq wp (car *) v (cadr *) value (caddr *))
   ;; "the name of waypoint is LVN"
