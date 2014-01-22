@@ -48,6 +48,8 @@
 ;;      conventional binding-parameters. 
 ;;     (11/18/13) Added some routines to root around inside realization data.
 ;; 1.5 (12/4/13) Modified deref-rdata-word to look at all slots and not just local ones.
+;;     (12/26/13) Tweeked decode-rdata-mapping to notice an explicit category
+;;      as the equivalent of :self.
 
 (in-package :sparser)
 
@@ -481,15 +483,25 @@
                      ~%Continuing anyway." pair category)))
       (cond
        ((member term parameters :test #'eq)
-        (if (eq value :self)
-          (setq var category)
-          (else
+        (or (and (eq value :self)
+                 (setq var category))
+
+            #|(let ((possible-self 
+                   (etypecase value
+                     (category value)
+                     (symbol (category-named value)))))
+              (when possible-self
+                (when (eq possible-self category)
+                  (setq var category)))) |#
+
             (setq var (find-variable-for-category value category))
-            (unless var
-              (if (ever-appears-in-function-referent term tf)
-                (setq var value)
-                (error "There is no variable named ~A in ~A,~
-                        ~%as used in its rdata." term category)))))
+            (and (ever-appears-in-function-referent term tf)
+                 (setq var value))
+            (else
+             (push-debug `(,term ,value ,mapping ,category ,tf))
+             (error "There is no variable named ~A in ~A,~
+                   ~%as used in its rdata with value ~a."
+                    term category value)))
         (push (cons term var)
               new-list))
 
