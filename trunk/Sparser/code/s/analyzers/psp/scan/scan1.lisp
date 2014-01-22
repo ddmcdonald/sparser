@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "scan"
 ;;;   Module:  "analyzers;psp:scan:"
-;;;  Version:  1.5 February 1995
+;;;  Version:  1.6 January 2014
 
 ;; 1.1  (??/92 v2.3) moved the file back to analyzers
 ;; 1.2  (10/5) added traces, made this level the one responsible for the
@@ -12,10 +12,15 @@
 ;; 1.4  (1/13/94) added traces hook, 3/17 added 'stop tracing' hook.
 ;;       5/5 put in sugared call to set position status
 ;; 1.5  (2/13/95) broke the routine into two parts to accomodate more complex
-;;       actions inside Add-terminal-to-chart
+;;       actions inside Add-terminal-to-chart.
+;; 1.6  (1/8/14) Abstracted out the-next-position-to-scan so it can be used
+;;       in the adjudicators.
 
 (in-package :sparser)
 
+
+(defun the-next-position-to-scan ()
+  (aref *the-chart* *next-chart-position-to-scan*))
 
 (defun scan-next-position ()
   ;; Called from Scan-and-assess
@@ -24,8 +29,7 @@
   ;; Does its own calls to Add-terminal to keep the chart always
   ;;  full one position out.
 
-  (let ((position (aref *the-chart*
-                        *next-chart-position-to-scan*))
+  (let ((position (the-next-position-to-scan))
         (next-index (incf *next-chart-position-to-scan*)))
 
     (when (null position)
