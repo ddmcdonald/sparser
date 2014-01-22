@@ -30,6 +30,18 @@
         (make-complement-node (second parameters) value dt)
         (present dt)))))
 
+(defun simple-2-arg-phrase (phrase-name arg1 arg2)
+  (multiple-value-bind (phrase parameters)
+                       (provide-phrase-and-data phrase-name)
+    (let ((dtn (make-instance 'derivation-tree-node
+                 :resource phrase)))
+      (set-derivation-tree dtn)
+      (make-complement-node (first parameters) arg1 dtn)
+      (make-complement-node (second parameters) arg2 dtn)
+      ;; caller applies any needed operators
+      dtn)))
+
+
 
 (defmethod instance-of-a-class ((i sparser::individual))
   ;; look up the type, get its realization (as an np head) and
