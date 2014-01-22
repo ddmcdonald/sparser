@@ -33,7 +33,7 @@
 
 (defmethod incorprate-into-the-situation ((referent t) (rule cfr) (edge edge))
   (push-debug `(,referent ,rule ,edge)) ;; (setq referent (car *) rule (cadr *) edge (caddr *))
-
+  (tr :incorporate-into-situation referent edge)
   (if *this-is-the-head*
     (incorporate-phrasal-head referent (current-peg))
 
@@ -76,4 +76,5 @@
 
 (defun incorporate-phrasal-head (referent ongoing-peg)
   (push-debug `(,referent ,ongoing-peg))
+  ;; (setq referent (car *) ongoing-peg (cadr *))
   (break "do the head"))
