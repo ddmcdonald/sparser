@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "form"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  November 2013
+;;;  version:  December 2013
 
 ;; initiated 11/18/91  v2.1
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -22,7 +22,8 @@
 ;;    to resolve-or-make/symbol-to-category which makes it. Everything
 ;;    goes to referential categories now that the model is ubiquitous,
 ;;    so the object will just be fleshed out when it's finally encountered.
-;;   (11/13/13) Added registration.
+;;   (11/13/13) Added registration. 12/24/13 Let resolve-variable-restriction
+;;    be fed categories directly. 
 
 (in-package :sparser)
 
@@ -92,6 +93,9 @@
                  (first restriction-expression) restriction-expression))))
       (symbol
        (resolve-or-make/symbol-to-category restriction-expression))
+
+      (referential-category restriction-expression)
+
       (otherwise
        (error "Unknown type of restriction expression on lambda ~
                variable:~%    ~A" restriction-expression)))
