@@ -1,12 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2012-2013 David D. McDonald
+;;; Copyright (c) 2012-2014 David D. McDonald
 ;;;
 ;;;     File: "predicates"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  April 2013
+;;;  Version:  January 2014
 
 ;; initiated 12/5/12 to collect tests and other operations that are cluttering
-;; the judgements file. Added only-aux-or-modal-to-left 4/2/13. 
+;; the judgements file. Added only-aux-or-modal-to-left 4/2/13. Removed
+;; proper-noun from definitively ends segment and added word-is-a-proper-noun
+;; 1/21/14. 
 
 (in-package :sparser)
 
@@ -79,6 +81,12 @@
           (memq .[np brackets)
           (memq .[adjective brackets)))))
 
+(defun word-is-a-proper-noun (word)
+  (with-word-brackets word
+    (if (multiple-memq (list  ].proper-noun proper-noun.[) brackets)
+      t
+      nil)))
+
 (defun word-is-an-adverb (word)
   (with-word-brackets word
     (if (multiple-memq (list ].adverb .[adverb) brackets)
@@ -95,7 +103,7 @@
      ((multiple-memq `(,].punctuation ,punctuation.[) brackets) t)
      ((multiple-memq `(,].phrase ,phrase.[) brackets) t)
      ((multiple-memq `(,].conjunction ,conjunction.[) brackets) t)
-     ((multiple-memq `(,].proper-noun ,proper-noun.[) brackets) t)
+     ;;((multiple-memq `(,].proper-noun ,proper-noun.[) brackets) t)
      (t nil))))
 
 
