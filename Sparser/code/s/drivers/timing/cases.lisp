@@ -1,15 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:
 ;;; 
 ;;;     File:  "cases"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:   June 2011
+;;;  Version:   January 2014
 
 ;; initiated 2/91. 10/3/07 folding in some items from other test files and
 ;; adding more fixed strings to test. 6/17/11 Lowercased the "An" in *iraqi-
-;; girl* to avoid yet-to-be-debuged PNF problem.
+;; girl* to avoid yet-to-be-debuged PNF problem. 1/27/14 fixed *100-iraqi-girl*
+;; to not be aaaa's
 
 (in-package :sparser)
 
@@ -52,7 +52,7 @@
     (dotimes (i 100)
       (setq accumulating-string
             (concatenate 'string
-                         *200-aaaa*
+                         *iraqi-girl*
                          accumulating-string)))
     accumulating-string ))
 
