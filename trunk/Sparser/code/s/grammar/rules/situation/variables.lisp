@@ -50,15 +50,22 @@
       var)))
 
 
-(defun add-indexical-to-situation (name peg)
+(defmethod add-indexical-to-situation ((name symbol) (value t))
   (let ((var (get-indexical-variable name)))
     (unless var
       (error "No indexical variable named ~a" name))
-    (let* ((situation (the-situation)) ;; does the error checking
-           (variables-alist (variable-values situation)))
-      (setf (variable-values situation)
-            (cons `(,var . ,peg)
-                  variables-alist)))))
+    (add-indexical-to-situation var value)))
+
+(defmethod add-indexical-to-situation ((var indexical-functional-variable)
+                                       (value t))
+  (let* ((situation (the-situation)) ;; does the error checking
+         (variables-alist (variable-values situation)))
+    (setf (variable-values situation)
+          (cons `(,var . ,value)
+                variables-alist))
+    ;; Return the peg given use in incorporate-referent-into-the-situation
+    ;; (when working at the phrase level)
+    value))
 
 
 (defmethod value-of-indexical ((name symbol)) ;; take a situation argument?
@@ -82,6 +89,8 @@
 
 (define-indexical-variable current-np-referent)
 
+(define-indexical-variable subject)
+
 
 
 
@@ -89,8 +98,9 @@
 ;; then we can predefine the association.
 
 (defun indexical-for-state (state)
-  (case state
+  (case (name state)
     (:assembling-np (get-indexical-variable 'current-np-referent))
+    (:subject-seen (get-indexical-variable 'subject))
     (otherwise
      (error "The state ~a is not (yet) associated with an indexical"
             state))))
