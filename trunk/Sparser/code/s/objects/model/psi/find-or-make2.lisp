@@ -154,6 +154,10 @@
 	(tr :subtype-unit-found subtype-unit)
         subtype-unit))))
 
+(defun psi-lattice-point (unit)
+  (declare (ignore unit))
+  (error "psi-lattice-point is no longer defined"))
+
 
 (defun find-or-make-psi-for-subtype (subtype-lp source-psi)
   (break  "unvetted: find-or-make-psi-for-subtype")
