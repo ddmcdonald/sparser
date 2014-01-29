@@ -21,6 +21,9 @@ interface: realization-history
 control: resume-after-error has-been-status?
   pts inititate-top-edges-protocol
 
+model: make-waypoint  def-attribution
+  def-rate-of-change-unit  decode-quality-parameter-list
+
 |#
 
 
