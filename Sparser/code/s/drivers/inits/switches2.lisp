@@ -356,6 +356,7 @@
         )
   (establish-kind-of-chart-processing-to-do :c3-protocol)
   (designate-sentence-container :situation)
+  (setq *c3* t) ;; already on if loaded as c3, this is for changing
   (setq *switch-setting* :c3))
 
 (defun turn-off-c3 ()
