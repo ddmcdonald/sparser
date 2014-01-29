@@ -142,7 +142,7 @@
 
         (when *c3*
           (break "ref -- not unary rule -- check")
-          (incorprate-into-the-situation *referent* rule parent-edge))
+          (incorporate-referent-into-the-situation *referent* rule parent-edge))
 
         *referent* ))))
 
