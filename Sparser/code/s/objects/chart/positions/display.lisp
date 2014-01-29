@@ -1,12 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990-1991  Content Technologies Inc.
-;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "display"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  0.5 March 2012
+;;;  Version:  0.5 January 2014
 
 ;; 0.1 (1/29 v1.8)  Added the key :ends-rather-than-starts? to Display-
 ;;      chart-edges.
@@ -16,7 +15,7 @@
 ;; 0.5 (1/13/94) debugged Display-chart-terminals explicit From case for a
 ;;      large chart
 ;;     (5/18/09) Added mixin-category to display-edge-as-tree
-;;     (3/4/12) quiet compiler
+;;     (3/4/12) quiet compiler (1/27/14) another case in display-edge-as-tree
 
 (in-package :sparser)
 
@@ -213,7 +212,8 @@
                   (error "Unexpected type of object in edge display: ~a~%~a"
                          (type-of item) item)))))
 
-        (if (symbolp right-daughter) ;; e.g. :proper-name
+        (if (and (symbolp right-daughter) ;; e.g. :proper-name
+                 (not (null right-daughter)))
           (cond
            ;; We've hit the bottom. If there are constituents
            ;; display them. Otherwise ??
