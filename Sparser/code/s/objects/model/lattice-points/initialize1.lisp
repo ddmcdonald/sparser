@@ -178,6 +178,10 @@
     (reclaim-lattice (find-lp-daughter category top-lp))
     (setf (lp-index-by-variable top-lp) nil)))
 
+(defun find-lp-daughter (category top-lp)
+  (declare (ignore category top-lp))
+  (error "find-lp-daughter is no longer defined"))
+
 (defun reclaim-lattice (top-lp)
   (when top-lp
     (dolist (lp (lp-down-pointers top-lp))
