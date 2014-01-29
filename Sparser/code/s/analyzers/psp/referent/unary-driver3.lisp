@@ -93,11 +93,11 @@
 	  (section-marker)
           (otherwise
 	   (unless *external-referents*
-	     (break "Unexpected type: ~a~%~a" 
+	     (break "Unexpected type: ~a~%~a" ; 
 		    (type-of *referent*) *referent*)))))
 
       (when *c3*
-        (incorprate-into-the-situation *referent* rule edge))
+        (incorporate-referent-into-the-situation *referent* rule edge))
 
       *referent* )))
 

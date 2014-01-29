@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2005,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2005,2012-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "composite referent"
 ;;;    Module:   "analyzers;psp:referent:"
@@ -9,11 +9,13 @@
 ;; 0.1 (2/9/05) Can't remember what this helped to do. Perhaps it's involved with
 ;;   annotation. So commenting out the structure to see what breaks. Added
 ;;   and ignore 11/25/12 to quiet the compiler.
+;; 0.2 (1/27/14) These go with the paper in the ACL 2000 workshop. Putting them
+;;   back in to further quiet the compiler while not yet using them. 
 
 ;;;---------
 ;;; object
 ;;;---------
-#|
+
 (defstruct (composite-referent
             (:conc-name #:cr-)
             (:print-function print-composite-referent))
@@ -23,7 +25,7 @@
   others
 
   )
-|#
+
 
 (defun print-composite-referent (cr stream depth)
   (declare (ignore depth cr))
