@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.5 June 2013
+;;;  version:  0.5 January 2014
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -32,6 +32,7 @@
 ;;     (5/26/13) Added superc check for psi case in decode-exp-as-ref-category
 ;;     (6/14/13) break => error since the treebank test tends to fail in
 ;;      this code and the error handler lets us keep going.
+;;     (1/22/14) category added as a primitive type
 
 (in-package :sparser)
 
@@ -346,6 +347,14 @@
                          symbol~%but it is a ~A" value-exp variable
                         (type-of value-exp)))
        value-exp )
+
+      (category
+       (unless (symbolp value-exp)
+         (v/r-violation "The value ~A was passed in to be bound to the ~
+                         variable~%   ~A~%which is restricted to be a ~
+                         symbol~%but it is a ~A" value-exp variable
+                        (type-of value-exp)))
+       (category-named value-exp :break-if-no-category))
       
       (otherwise
        (error "New kind of primitive value restriction: ~A"
