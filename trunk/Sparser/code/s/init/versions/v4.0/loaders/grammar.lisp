@@ -46,7 +46,9 @@
 ;; and loader-part-2. 9/29 moved 32d part later. 12/16/11 added hurricanes.
 ;; 12/3/12 Removed bracket files to their own loader. 3/18/13 added 2d-loader
 ;; for kinds.  Also bumped title loader to 3.  7/1/13 Added a post-loader for adjunct
-;; rules. 12/2/13 waypoints.
+;; rules. 12/2/13 waypoints. 1/29/14 Removing the *c3* guards to see if everything
+;; will load compatibly. 
+
 
 (in-package :sparser)
 
@@ -218,8 +220,8 @@
   (gate-grammar *ISR*
     (gload "isr;loader"))
 
-  (gate-grammar *c3*
-    (gload "sit-rules;loader"))
+  ;(gate-grammar *c3*
+    (gload "sit-rules;loader") ;)
 
   (gate-grammar *waypoints*
     (gload "waypoints;loader"))

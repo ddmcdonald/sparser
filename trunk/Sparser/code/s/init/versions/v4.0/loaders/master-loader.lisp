@@ -1,11 +1,10 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP)
-;;; copyright (c) 1991-2003,2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2003,2010-2014 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;versions:v2.7:loaders:"
-;;;  Version:   September 2011
+;;;  Version:   JANUARY 2014
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -80,7 +79,8 @@
 ;; 2/9/07 Added *SDM&P* 4/8/09 Added alternative load in drivers;DA when the
 ;; *da* module isn't included.  8/27 Added objects/import/. 9/23/11 Removed it
 ;; since it no longer does any work. Also removed load of basic-tests workspace
-;; because it's too confusing.
+;; because it's too confusing. 1/29/14 Removing the *c3* guards to see if everything
+;; will load compatibly. 
 
 (in-package :sparser)
 
@@ -129,8 +129,8 @@
            *include-model-facilities*)  ;; uses routines in the model facilities
   (lload "objects;doc:loader"))
 
-(when *c3*
-  (lload "objects;situation:loader"))
+;(when *c3*
+  (lload "objects;situation:loader") ;)
 
 (when *da*
   (lload "objects;rules:DA:loader"))
