@@ -8,7 +8,8 @@
 
 ;; Initiated 11/21/13. 12/2/13 Added the "the radius is 2.5 miles" case.
 ;; Finished debugging basic patter 12/16/13. 1/7/14 Looks like it both
-;; works and is sensible now, modulo additional tests.
+;; works and is sensible now, modulo additional tests. 1/23/14 fixed nit
+;; in decode-quality-parameter-list.
 
 (in-package :sparser)
 
@@ -139,7 +140,7 @@ them quickly.
           `(define-category ,category-name ;; speed
              :instantiates ,super-category ;; attribute ;; "attribute (is value)"
              :specializes ,super-category ;;attribute
-             :bindings (name ,word) ;; plist
+             :bindings (name ',word) ;; plist
              :index (:permanent :key name)
              ;;/// ought to inherit the realization
              :realization (:common-noun ,word-pname))))
