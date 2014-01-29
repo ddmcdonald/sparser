@@ -449,11 +449,12 @@
 ;;; stripping suffixes
 ;;;--------------------
 
-;; No users seen 8/8/10, but storing on the plist is a good idea
-;(defun word-stem (word)
-;  ;; /// change choice of tag to be more generic, or patch in a
-;  ;; domain-specific override capacity 
-;  (cadr (member :ls-stem (unit-plist word))))
+;; Used in DM&P mine-term and friends.
+;;//// This is no longer being maintained but is should be
+(defun word-stem (word)
+  ;; /// change choice of tag to be more generic, or patch in a
+  ;; domain-specific override capacity 
+  (cadr (member :ls-stem (unit-plist word))))
 
 (defmethod stem-form ((s symbol))
   (stem-form (symbol-name s)))
