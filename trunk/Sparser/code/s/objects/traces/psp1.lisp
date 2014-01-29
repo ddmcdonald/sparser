@@ -1246,10 +1246,27 @@
 (defun untrace-c3 ()
   (setq *trace-c3* nil))
 
+(deftrace :delimited-c3-segment (from to)
+  ;; in scan-segment
+  (when *trace-c3*
+    (trace-msg "[c3] delimited segment from p~a to p~a"
+               (pos-token-index from)
+               (pos-token-index to))))
 
 (deftrace :incorporate-into-situation (referent edge)
+  ;; in incorporate-referent-into-the-situation
   (when *trace-c3*
     (trace-msg "[c3] incorporating ~a from ~a" referent edge)))
+
+(deftrace :c3-phrasal-head (referent)
+  ;; in incorporate-referent-into-the-situation
+  (when *trace-c3*
+    (trace-msg "[c3] ~a is the head" referent)))
+
+(deftrace :not-c3-phrasal-head (referent)
+  ;; in incorporate-referent-into-the-situation
+  (when *trace-c3*
+    (trace-msg "[c3] ~a is not the head" referent)))
 
 
 
