@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 SIFT LLC.  -- all rights reserved
+;;; copyright (c) 2013-2014 SIFT LLC.  -- all rights reserved
 ;;; This file is part of the SIFT CANTO project
 ;;;
 ;;;     File:  "extensions-to-core"
 ;;;            grammar/model/sl/waypoints/
-;;;  version:  December 2013
+;;;  version:  January 2014
 
 ;; Taken from waypoints as its own file 12/2/13. These should 
 ;; be folded back into the core when we cleanup. Using this file
-;; to experiment with. 12/16/13 added "knot"
+;; to experiment with. 12/16/13 added "knot". Fixed up named-measure
+;; which let 'distance' work.
 
 (in-package :sparser)
 
@@ -93,9 +94,11 @@ The basic case is "the <measure-term> is <measurement>
 and the word can stand by itself "that distance"
 |#
 
-(define-category named-measure
-  ;; Provides a common supercategory. ///Easily replaced
+(define-category named-measure ; 
+                 ;; Provides a common supercategory. ///Easily replaced
+  :binds ((name :primitive word))
   :specializes measurement)
 
-;;(define-scalar-quality "distance" :super-category named-measure
-;;   :value measurement)
+(define-scalar-quality "distance" :super-category named-measure
+   :value measurement)
+
