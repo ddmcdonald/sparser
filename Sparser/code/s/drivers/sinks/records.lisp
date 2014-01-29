@@ -8,6 +8,10 @@
 
 (in-package :sparser)
 
+#| 1/29/14 The initialize and readout methods are not part of
+  the current build, though they would be good to revive in
+  some form. So blocking out this whole file to cut down on
+  the compiler complaints.
 
 ;;;------------------
 ;;; toplevel drivers
@@ -33,3 +37,4 @@
 
 (defun wf (string) (analyze-text/from-file/write-records string))
 
+|#
