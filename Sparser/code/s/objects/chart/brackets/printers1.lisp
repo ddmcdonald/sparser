@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "printers"
 ;;;   Module:  "objects;chart:brackets:"
-;;;  Version:   1.4 January 1995
+;;;  Version:   1.4 January 2014
 
 ;; 1.1 (4/26/91 v1.8.4)  Reworked to use bracket symbols
 ;; 1.2 (11/24/92 v2.3) Added a routine for printing segments on successive lines
@@ -11,6 +11,7 @@
 ;; 1.4 (12/15) extended Display-bracked-segments to hack a wrapped chart and
 ;;      stoped it from looping when the analysis wasn't finished
 ;;     (1/4/95) extended distance Display-chart-brackets printed by one
+;;     (1/27/14) Updated call on paragraph in display-segments-in-paragraph
 
 (in-package :sparser)
 
@@ -110,8 +111,8 @@
 
 (defun display-segments-in-paragraph (p
                                       &optional (stream *standard-output*))
-  (let ((start-pos (paragraph-start p))
-        (end-pos (paragraph-end p)))
+  (let ((start-pos (starts-at-pos p))
+        (end-pos (ends-at-pos p)))
     (display-bracketed-segments
      :stream stream  :from start-pos  :to end-pos)
     (format stream "~%~%")))
