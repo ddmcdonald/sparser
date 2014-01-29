@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2014 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.2 November 2013
+;;;  version:  1.2 January 2014
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -31,6 +31,7 @@
 ;; 1.1 (8/14/13) Made category-inherits-type? look at the base case of the
 ;;      category being identical to the supercategory. Same as super-categories of.
 ;; 1.2 (11/9/13) Added mixins check to the supercategory sweep. 
+;;     (1/13/14) added it to category-inherits-type?
 
 (in-package :sparser)
 
@@ -223,29 +224,37 @@
       t
       (category-inherits-type? base-category category))))
 
+
 (defun category-inherits-type? (category reference-category)
-  "Is the category a subcategory of the reference-category? Walk up the
-  lattice from the catgory until we find the reference-category or
+  "Is the category equal to or a subcategory of the reference-category? 
+  Walk up the lattice from the catgory until we find the reference-category or
   top-out with a super-category of nil since the network has multiple
-  roots, c.f. model/core/kinds/upper-model.lisp"
+  roots, c.f. model/core/kinds/upper-model.lisp. When a category has
+  mixins those are traversed independently."
   (if (eq category reference-category)
     t
+
     (let ((super-category
-           (lp-super-category (cat-lattice-position category))))
-      (when super-category
+           (lp-super-category (cat-lattice-position category)))
+          (mixins (cat-mix-ins category)))
+
+      (or
+       (when super-category
         (when (eq category super-category)
-;; Keeping this in case we ever want to debug it case by case
-;        (push-debug `(,super-category ,reference-category))
-;        (error "The category ~a  has itself as a supercategory.~
-;              ~%Probably clobbered by an imported word with that spelling"
-;               category)
           (format t "~%~%The category ~a  has itself as a supercategory.~
                      ~%Probably clobbered by an imported word with that spelling~%~%"
                   category)
           (return-from category-inherits-type? nil))
-        (if (eq super-category reference-category)
-          t
-          (category-inherits-type? super-category reference-category))))))
+         (if (eq super-category reference-category)
+           t
+           (category-inherits-type? super-category reference-category)))
+
+       (when mixins
+         (or (memq reference-category mixins)
+             (loop for m in mixins
+               when (category-inherits-type? m reference-category)
+               return m
+               finally (return nil))))))))
 
 
 
