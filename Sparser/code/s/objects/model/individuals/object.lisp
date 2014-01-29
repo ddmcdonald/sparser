@@ -21,6 +21,8 @@
 ;;; basic operations & predicates 
 ;;;-------------------------------
 
+;;--- entry points (/// should be consolidated)
+
 (defun itype-of (i) (i-type-of i))
 
 (defun i-type-of (i)
@@ -35,8 +37,6 @@
      (error "i-type-of applied to a ~a rather than ~
              an individual" (type-of i)))))
 
-
-
 (defun itypep (i c/s) 
   (typecase i
     (individual
@@ -50,6 +50,9 @@
 
 (defun itype (i c/s)
   (indiv-typep i c/s))
+
+
+;;--- Does the search
 
 (defun indiv-typep (individual category/symbol)
   ;; analogous to Typep -- does this individual include this
@@ -71,3 +74,5 @@
        (push-debug `(,individual ,category/symbol))
        (error "indiv-typep not applied to an individual:~%~a  ~a"
               (type-of individual) individual)))))
+
+
