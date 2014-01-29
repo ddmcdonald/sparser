@@ -82,3 +82,6 @@
       (write-string "." stream))
     (write-string (symbol-name (var-name v)) stream)))
 
+(defun var-binding-sites (v)
+  (error "var-binding-sites is no longer defined: ~a" v))
+
