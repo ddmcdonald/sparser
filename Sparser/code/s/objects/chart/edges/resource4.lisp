@@ -151,6 +151,7 @@
           ;(format t "~&Long-term-ifying ~A~
           ;           ~%   of ~A~%" (edge-referent next-edge) next-edge)
           (long-term-ify/individual (edge-referent next-edge)
+                                    nil ;; workbench
                                     (pos-edge-starts-at next-edge)
                                     (pos-edge-ends-at next-edge))))
       
