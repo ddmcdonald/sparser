@@ -26,15 +26,18 @@ a container is a place, preposition = "in"
 (define-category motor-vehicle
   :specializes artifact
   :mixins (physical-surface ;;// has to be generalized 
-           has-spatial-location
+           has-spatial-location ;;// commits us to actual object
            spatial-region)
   :restrict ((made-by . car-manufacturer)))
 
 (define-category car-type
-  :specializes has-name ;;???
+  :specializes type-name
   ;; SUV, sedan, hybrid, truck - not all exclusive
   ;; It's a label/classification that applies to the whole entity
   ;; so it's probably not an attribute
+  :bindings (type-of 'motor-vehicle) ;;// that quote is an
+  ;; quirk of the  likely out-mooded assumptions of the code in
+  ;; attach-bindings-to-category
   :index (:permanent :key name))
 
 (define-individual 'car-type :name "suv")
