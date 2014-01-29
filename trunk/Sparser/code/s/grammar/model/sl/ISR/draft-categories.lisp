@@ -39,6 +39,11 @@
   ;; What special sause does 'agent' add? 
   :realization (:common-noun "agent")) ;; n.b. "Mossad agent"
 
+(define-category process
+  :specializes nil) ;; Process < Perdurant (with participants var.)
+
+
+
 (define-category has-name
   :specializes nil ;; Endurant maybe? 
   :binds ((name :primitive word))
@@ -51,9 +56,15 @@
   ;; 'known as', 'called', ...
   :realization (:proper-noun name)) ;; Wakil
 
+;; Need more interesting notion of names here rather than
+;; this implicit category distinction
+
 (define-category type-name
   :specializes has-name
+  :binds ((type-of :primitive category))
   :realization (:common-noun name))
+
+
 
 
 (define-category artifact
@@ -62,8 +73,6 @@
   ;; also time-created or is it a specialization from the lifetime of Endurant?
   :realization (:common-noun "artifact"))
 
-(define-category process
-  :specializes nil) ;; Process < Perdurant (with participants var.)
 
 (define-category make-artifacts
   :specializes process 
