@@ -91,7 +91,8 @@
           (funcall cfr daughter-edge pos-before-open pos-after-close)))
 
       (else
-        (trap-unclassified-phenomena-inside-<> pos-after-open)
+        ;; Not defined in 1/27/14 load. Probably commented out somewhere
+        ;;(trap-unclassified-phenomena-inside-<> pos-after-open)
         (let ((edge (make-edge-over-long-span
                      pos-before-open
                      pos-after-close
