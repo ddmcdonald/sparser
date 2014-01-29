@@ -32,14 +32,21 @@
          (head-position (chart-position-before last-position)))
     ;; Then walk through it left-to-right extending
     ;; the situation. Assume that the final word is the head.
-    (break "last-position = ~a" last-position)
+    (tr :delimited-c3-segment start-pos last-position)
+;    (break "last-position = ~a" last-position) ;; => trace
     (loop 
       (introduce-next-word position (eq position head-position))
       (setq position (chart-position-after position))
       (when (eq position last-position)
         (return)))
-    ;; pts-style inside-the-segment parsing goes here
-    (break "where are we?")))
+    ;; After it gets to the head (assumed to be the last constituent
+    ;; but verb groups are more interesting with adverbs and such)
+    ;; are drops out of the loop, we need to span the whole
+    ;; segment with an edge and update the sentential state
+    (c3-process-segment-and-update-state start-pos last-position)
+
+    ;; presumably we now just scan the next segment
+    (scan-segment last-position)))
 
 
 (defun introduce-next-word (position-before head-word?)
@@ -73,6 +80,8 @@
         (setq word-after (pos-terminal position-before))
 
         (when (eq word-after *end-of-source*)
+          (push-debug `(,start-pos ,position-before))
+          (break "EOS -- how do we tell what remains to be done?")
           (if *left-segment-boundary*
             ;; there's more processing to do
             (break "returning the correct position on eos?"
@@ -98,9 +107,67 @@
                      (chart-position-after position-before))))))))))
  
 
+
+
+
+(defun c3-process-segment-and-update-state (start-pos last-pos)
+  (push-debug `(,start-pos ,last-pos))
+  ;; Can make the edge by fiat. Take the referent from the
+  ;; head edge as put there by incorporate-phrasal-head and
+  ;; take the form from the state and the label from the head edge
+  ;; Now we can make a legitimate sentence-level state update.
+  ;;//// What we need to do going forward is to parse within
+  ;; the segment (with the normal machinery abstracted out from
+  ;; pt) so those relations can be incorporated into the situation
+  ;; and we have a normally formed edge instead of this silly
+  ;; long-span
+  (let* ((head (edge-ending-at last-pos))
+         (label (edge-category head))
+         (referent (edge-referent head))
+         (form (determine-from-from-phrasal-state))
+         (edge (make-edge-over-long-span 
+                start-pos last-pos label
+                :rule :c3-process-segment
+                :form form
+                :referent referent
+                :words (words-between start-pos last-pos))))
+    (push-debug `(,edge))
+    (set-phrasal-state :initial-state) ;; reset phrase level
+    (let* ((new-state (update-situation-state edge 'sentence))
+           (var (indexical-for-state new-state)))
+      (add-indexical-to-situation var referent)
+      (push-debug `(,new-state ,var))
+      
+
+    ;; The situation was updated by the operations inside
+    ;; incorporate-phrasal-head -- which is what happened just
+    ;; before we got here. Do we 'incorporate' this edge?
+    ;; Certainly we need to get a variable pointing to it
+    ;; so we can use it when we get to the VG. 
+    ;; Essence from incorporate-referent-into-the-situation is
+    ;;   (indexical-for-state new-state)
+    ;;   (add-indexical-to-situation var peg)
+)))
+
+
+
 ;;;----------
 ;;;  gofers
 ;;;----------
+
+(defun determine-from-from-phrasal-state ()
+  ;; called from c3-process-segment-and-update-state and just does
+  ;; a inline table lookup.
+  ;; //// if this get's too big move it out to the states,
+  ;; which might be easier for fledglings anyway.
+  (let ((state (phrasal-state)))
+    (case (name state)
+      (:assembling-np (category-named 'np))
+      (otherwise
+       (push-debug `(,state))
+       (error "No form category listed for ~a" state)))))
+
+
 
 (defun bracket-that-starts-the-segment (start-pos)
   ;; Should look at the position and think about it
