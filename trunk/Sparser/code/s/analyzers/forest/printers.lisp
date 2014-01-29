@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   0.7 August 2013
+;;;   Version:   0.7 Januaey 2014
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -29,6 +29,7 @@
 ;;     (3/8/13) Fixed initialization problem with the init form for
 ;;      *where-print-segment-left-off*. 3/14 added print-treetop-labels-in-segment
 ;;      3/18 added tts-form and tts-ref. 8/16/13 Added display-bracketing
+;;      1/27/14 added undisplay-bracketing
 
 (in-package :sparser)
 
@@ -74,6 +75,10 @@
   (setq *readout-segments-inline-with-text* t)
   (setq *record-bracketing-progress* t))
 
+(defun undisplay-bracketing ()
+  (setq *display-word-stream* t)
+  (setq *readout-segments-inline-with-text* nil)
+  (setq *record-bracketing-progress* nil))
 
 
 
