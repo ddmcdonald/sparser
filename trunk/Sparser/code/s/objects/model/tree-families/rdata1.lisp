@@ -598,7 +598,7 @@
 
 
 (defun find-word-realization-within-category-realization (category)
-  (let ((realization (realization-for category)))
+  (let ((realization (mumble::realization-for category)))
     (when realization
       (dolist (element realization nil)
         (unless (eq element :rules)
