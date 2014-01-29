@@ -270,6 +270,9 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; scan-next-segment  ==> inner loop of controller
 ;; do-the-last-things-in-an-analysis
 
+;; Segment level operations:  reify-implicit-individuals-in-segment
+;;   sdm/analyze-segment
+
 ;; Tokenizer level:   scan-next-position  add-terminal-to-chart  next-terminal 
 ;;  next-token (= run-token-fsa )
 
@@ -296,6 +299,10 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; edge-vector
 
 #|
+
+Fixing segmentation:  brackets-on  adjudicate-new-open-bracket
+  bracket-ends-the-segment?
+
 
 Collection/WHO problem:  collection  create-collection  string/sequence
    acronym-is-alternative-for-name
