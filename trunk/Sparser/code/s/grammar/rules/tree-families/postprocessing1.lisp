@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "postprocessing"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.0 September 2011
+;;;  version:  1.1 January 2014
 
 ;; initiated 1/17/95. Stubbed Postprocess-tree-families 2/22.
 ;; Finished 4/14.   4/27 tweeked it enough to allow it to be run
@@ -16,6 +16,8 @@
 ;;   Killed off the older version of this in objects/model/tree-families
 ;;   (9/26) Added a few more cases. Need to think through the old rationale
 ;;   for why to complain.
+;; 1.1 (1/27/14) Removing the complaints and just cataloging the remainder
+;;   under misc.
 
 (in-package :sparser)
 
@@ -29,6 +31,7 @@
                      (category-named 'pp)
                      (category-named 'adjunct-to-np)
                      (category-named 'adjunct-to-s)
+                     'other-eft-roots
                      )
   "This could be dynamically extended by the checks made during postprocessing,
    but holding off on that until the set gets larger and all the conventions
@@ -44,7 +47,9 @@
   (setf (gethash (category-named 'np) *root-categories-to-ETFs*) nil)
   (setf (gethash (category-named 'pp) *root-categories-to-ETFs*) nil)
   (setf (gethash (category-named 'adjunct-to-np) *root-categories-to-ETFs*) nil)
-  (setf (gethash (category-named 'adjunct-to-s) *root-categories-to-ETFs*) nil))
+  (setf (gethash (category-named 'adjunct-to-s) *root-categories-to-ETFs*) nil)
+  (setf (gethash 'other-eft-roots *root-categories-to-ETFs*) nil))
+
 
 
 
@@ -55,7 +60,7 @@
 (defun postprocess-tree-families ( &optional
                                    (list-of-tree-families
                                     *tree-families-defined*) )
-  ;; Called from Postprocess-grammar-indexes. What it returns is
+  ;; Called from Postprocess-grammar-indexes . What it returns is
   ;; bound to *tree-families-defined* //and should be sorted.
 
   (let* ((s-etfs (gethash (category-named 's) *root-categories-to-ETFs*))
@@ -63,10 +68,10 @@
          (pp-etfs (gethash (category-named 'pp) *root-categories-to-ETFs*))
          (np-adjnt-etfs (gethash (category-named 'adjunct-to-np) *root-categories-to-ETFs*))
          (s-adjnt-etfs (gethash (category-named 'adjunct-to-s) *root-categories-to-ETFs*))
+         (other-etfs (gethash 'other-eft-roots *root-categories-to-ETFs*))
          first-case  lhs-symbol )
 
     (dolist (etf list-of-tree-families)
-
 
       (unless (eq (etf-type etf) :mixin)
         (unless (referential-category-p etf)  ;; ?? how do these get on the list ??
@@ -74,22 +79,20 @@
                 lhs-symbol (schr-lhs first-case))
           (cond
            ((eq lhs-symbol 's)
-            (unless (member etf s-etfs)
-              (push etf s-etfs)))
+            (pushnew etf s-etfs))
            
            ((or (eq lhs-symbol 'np)
                 (eq lhs-symbol 'result-np)
                 (eq lhs-symbol 'top-np)
                 (eq lhs-symbol 'np-head))
-            (unless (member etf np-etfs)
-              (push etf np-etfs)))
+            (pushnew etf np-etfs))
 
            ((eq lhs-symbol 'pp)
-            (unless (member etf pp-etfs)
-              (push etf pp-etfs)))
+            (pushnew etf pp-etfs))
            
            ((member lhs-symbol (schr-rhs first-case)
                     :test #'eq)
+            ;; chomsky adjunctions
             (case lhs-symbol
               (np-head
                (unless (member etf np-adjnt-etfs)
@@ -98,20 +101,14 @@
                (unless (member etf s-adjnt-etfs)
                  (push etf s-adjnt-etfs)))
               (otherwise
-               (unless (form-category? (category-named lhs-symbol))
+               (pushnew etf other-etfs)
+               #+ignore(unless (form-category? (category-named lhs-symbol))
                  ;; /// But we do want to catalog the modifier etfs somewhere.
                  (format t "~&~%The tree family ~A~
                             ~%appears to involve Chomsky adjunction but its lhs-~
                             symbol wasn't anticipated:~%  ~A~%~%" etf lhs-symbol)))))
            
-           (t (unless (eq etf *single-words*)
-                (format t "~&~%The tree family ~A~
-                             ~%Doesn't appear to involve Chomsky adjunction~
-                             ~%and has ~A as the lhs on its first case.~
-                            ~%Where the only options are np or s~%~%"
-                        etf lhs-symbol )
-                ;;(break)
-                ))))))
+           (t (pushnew etf other-etfs))))))
 
     ;; update
     (setf (gethash (category-named 's) *root-categories-to-ETFs*)
@@ -123,4 +120,10 @@
     (setf (gethash (category-named 'adjunct-to-np) *root-categories-to-ETFs*)
           np-adjnt-etfs)
     (setf (gethash (category-named 'adjunct-to-s) *root-categories-to-ETFs*)
-          s-adjnt-etfs)))
+          s-adjnt-etfs)
+    (setf (gethash 'other-eft-roots *root-categories-to-ETFs*)
+          other-etfs)
+
+    ;; return the original list until we identify some more informative
+    ;; thing to return.
+    *tree-families-defined*))
