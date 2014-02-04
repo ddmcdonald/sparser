@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.5 January 2014
+;;;  version:  0.6 Fwbruary 2014
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -32,7 +32,9 @@
 ;;     (5/26/13) Added superc check for psi case in decode-exp-as-ref-category
 ;;     (6/14/13) break => error since the treebank test tends to fail in
 ;;      this code and the error handler lets us keep going.
-;;     (1/22/14) category added as a primitive type
+;;     (1/22/14) category added as a primitive type.
+;; 0.6 (2/3/13) Reworked treatment of an :or over both categories and
+;;      a primitive v/r in decode-value-for-var/list
 
 (in-package :sparser)
 
@@ -187,22 +189,40 @@
   ;; the value restriction is a list
   (cond
    ((eq (car v/r) :or)
-    (let ( result  succeeded? )
-      (dolist (restriction (cdr v/r))
+    (let ((cases (cdr v/r))
+          result  succeeded? )
+      (do* ((restriction (car cases) (car rest))
+            (rest (cdr cases) (cdr rest)))
+           ((null restriction))
         ;; if the v/r is satisfied, then all but one of its
         ;; cases is going to fail, passing back a 'violation'
         ;; list
+        (when (eq restriction :primitive)
+          (setq result
+                (decode-value-for-primitive-v/r
+                 ;; resolve-variable-restriction set this up, so should
+                 ;; something come out wrong, look there
+                 value-exp (car rest) variable))
+          ;; This is the last form. If we don't get out of this
+          ;; loop we'll try to check against the primitive's symbol
+          (return))
+
         (setq result  ;; this code is the heart of Decode/check-value
-              (etypecase restriction
+              (typecase restriction
                 (list (decode-value-for-var/list
                        value-exp variable restriction))
                 (referential-category
-                 (decode-exp-as-ref-category value-exp restriction))))
+                 (decode-exp-as-ref-category value-exp restriction))
+                (otherwise
+                 (push-debug `(,restriction ,value-exp ,variable ,v/r))
+                 (error "Unexpected type when decoding value of a ~
+                           variable: ~a" restriction))))
 
         (unless (and (consp result)
                      (eq (car result) :violation))
           (setq succeeded? result)))
 
+      ;; after the loop
       (unless succeeded?
         (error "None of the alternatives in the value restrictions ~
                 on~%  ~A~%were satisfied~%  ~A~%~%"
@@ -217,6 +237,7 @@
             ~%is a list but it isn't based on the keywords ~
             :primitive or :or"
            v/r))))
+
 
 
 (defun decode-value-for-primitive-v/r (value-exp v/r variable)
@@ -270,8 +291,7 @@
               (v/r-violation "Non-string, ~A, passed as value~
                               ~%for the variable ~A,~
                               ~%which is restricted to taking words."
-                             value-exp variable)
-              :foo )))
+                             value-exp variable))))
 
       (polyword
        (if (polyword-p value-exp)
