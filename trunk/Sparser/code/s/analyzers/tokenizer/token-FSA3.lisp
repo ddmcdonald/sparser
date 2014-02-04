@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "token FSA"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  3.2 January 2013
+;;;  Version:  3.2 February 2014
 
 ;;  initated ~6/90
 ;;  1.1  (12/90) Added a call to zero-lookup-buffer when the end-of-stream is
@@ -17,6 +17,7 @@
 ;;        if not it calls a break with an explanation of what to do.
 ;;       (1/30/13) continue-token got an char entry of 0 on a bad character
 ;;        so added check for that case to improve the error. 
+;;  3.3  (2/3/14) Added check and dispatch for character above 256.
  
 
 (in-package :sparser)
@@ -32,7 +33,7 @@
             (elt *character-dispatch-array*
                  (char-code
                   (elt *character-buffer-in-use*
-                       (incf *index-of-next-character*))))))
+                       (incf *index-of-next-character*)))))) ; 
 
     (if entry
       (if (eq :punctuation 
@@ -52,39 +53,41 @@
       (announce-out-of-range-character))))
 
 
+
 (defun continue-token (accumulated-entries length char-type)
-  (let ((next-entry (elt *character-dispatch-array*
-                         (char-code
-                          (elt *character-buffer-in-use*
-                               (incf *index-of-next-character*))))))
+  (let ((char-code (char-code (elt *character-buffer-in-use*
+                                   (incf *index-of-next-character*)))))
+    (let ((next-entry
+           (if (< char-code 256) ;; length of *character-dispatch-array*
+             (elt *character-dispatch-array* char-code)
+             (entry-for-out-of-band-character char-code))))
 
-    (when (and (numberp next-entry) (= next-entry 0))
-      ;; unclear why we don't get a null. In emacs in this case the 
-      ;; bad character prints as a capital o with an umlaut. 
-      (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))
-      (let* ((char (elt *character-buffer-in-use* *index-of-next-character*))
-             (code-point (char-code char)))
-        (error "No entry for code-point ~a,~%  ~a~%at index ~a"
-               code-point char *index-of-next-character*)))
+      (when (and (numberp next-entry) (= next-entry 0))
+        ;; unclear why we don't get a null. In emacs in this case the 
+        ;; bad character prints as a capital o with an umlaut. 
+        (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))
+        (let* ((char (elt *character-buffer-in-use* *index-of-next-character*))
+               (code-point (char-code char)))
+          (push-debug `(,code-point ,char))
+          (error "No entry for code-point ~a,~%  '~a'~%at index ~a"
+                 code-point char *index-of-next-character*)))
 
-    (if next-entry
-      (if (eq (car next-entry) :punctuation)
-        (do-punctuation-from-continue
-         next-entry accumulated-entries length char-type)
+      (if next-entry
+        (if (eq (car next-entry) :punctuation)
+          (do-punctuation-from-continue
+           next-entry accumulated-entries length char-type)
         
-        (if (eq *category-of-accumulating-token*
-                (car next-entry))
-          
-          (continue-token (kcons (cdr next-entry)
-                                 accumulated-entries)
-                          (1+ length)
-                          char-type )
-          (else
-            (setq *pending-entry* next-entry)
-            (finish-token accumulated-entries length char-type)
-            )))
+          (if (eq *category-of-accumulating-token*
+                  (car next-entry))
+            (continue-token (kcons (cdr next-entry)
+                                   accumulated-entries)
+                            (1+ length)
+                            char-type )
+            (else
+             (setq *pending-entry* next-entry)
+             (finish-token accumulated-entries length char-type))))
       
-      (announce-out-of-range-character))))
+        (announce-out-of-range-character)))))
 
 
 

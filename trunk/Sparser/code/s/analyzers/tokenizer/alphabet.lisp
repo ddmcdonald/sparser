@@ -10,7 +10,9 @@
 ;; 0.1 (5/31/96) Started adding cases above 128 for umlauted character and such
 ;;      using the encoding scheme on the Macintosh
 ;;     (5/23/13) Added Soft_Hyphen at 173 (Latin-1 char set)
-;; 0.2 (9/23/13) Adding characters in what should be UTF-8
+;; 0.2 (9/23/13) Adding characters in the Latin-1 range of UTF-8.
+;; 0.3 (2/3/14) Added entry-for-out-of-band-character and friends to
+;;      accommodate characters above that. 
 
 (in-package :sparser)
 
@@ -41,8 +43,12 @@
             ~%spot called '<code>' and the Lisp slashed form for the character~
             ~%in '<char number>'.  For example an \"a\" with an umlaut over~
             ~%it is represented in Lisp as #\\212 and has the character code~
-            ~%number 138.~%"
-           character code )))
+            ~%number 138.
+            ~%~
+            ~%Note that characters whose codes are larger than ~a, the present ~
+            ~%length of the character array, need special handling. See the ~
+            ~%function entry-for-out-of-band-character~%"
+           character code (length *character-dispatch-array*))))
          
 
 #+:apple
@@ -569,7 +575,7 @@
         . :meaningless))
 
 
-;;---- selected characters above 127
+;;---- selected characters above 127 and below 256
 
 (setf (elt *character-dispatch-array* 160) ;; #\No-break_Space
       '(:punctuation
@@ -589,4 +595,23 @@
 ;; a with a circumflex over it.
 ;      `(:alphabetical
 ;        . (:uppercase . ,#\a )))
+
+;;;-------------------------------------------
+;;; Machinery for characters higher than that 
+;;;-------------------------------------------
+
+(defparameter *entries-for-out-of-band-characters*
+  '((353  ;; #\Latin_Small_Letter_S_With_Caron
+     (:alphabetical . (:lowercase . #\s)))
+    )
+  "If it's not a defparameter, CCL won't let us extend it 
+   in a running lisp.")
+
+(defun entry-for-out-of-band-character (char-code)
+  (let ((entry
+         (cadr (assoc char-code *entries-for-out-of-band-characters*))))
+    (unless entry
+      (announce-out-of-range-character))
+    entry))
+
 
