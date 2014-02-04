@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "duplicates"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.6 March 2013
+;;;   Version:   0.7 January 2014
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 0.1 (11/1) fixed polarity of dotted rules can be duplicated.
@@ -18,7 +18,8 @@
 ;;     (1/19/11) Added flag to break when illegal duplicates have been found
 ;; 0.7 (3/9/13) Discovered that the tests in duplication-check are duplicated
 ;;      in establish-multiplier, which calls the duplication-msg itself.
-;;      Clarified the duplication message. 
+;;      Clarified the duplication message. 1/30/14 Added doc. aimed at
+;;      sorting this out further.
 
 (in-package :sparser)
 
@@ -104,9 +105,22 @@
           (duplication-msg existing-cfr lhs)
 	  (when *break-on-illegal-duplicate-rules*
 	    (push-debug `(,existing-cfr ,lhs ,rhs ,form ,referent ,source))
-	    (break "Look at why there's a duplicate rule~
+	    (break "[dup. check] Look at why there's a duplicate rule~
                   ~%and sort it out.")))))
 
+#| The path to the call to duplication check 
+from establish-multiplier 
+  < knit-in-binary-rule < construct-cfr < define-cfr
+   < i/r/s-make-the-rule < r/r/s-multiply-through/rhs < r/r/s-multiply-through/lhs
+     < instantiate-rule-schema < make-rules-for-rdata 
+       < dereference-and-store?-rdata-schema < setup-rdata 
+          < decode-category-parameter-list < define-category/expr
+
+from define-cfr it depends on whether redefinition-of-rule says yes,
+  which is gated by lookup/cfr on the lhs and rhs returning a rule/s.
+
+
+|#
 
 
 (defun duplication-msg (existing-cfr proposed-new-lhs)
