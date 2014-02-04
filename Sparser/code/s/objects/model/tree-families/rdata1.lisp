@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.5 December 2013
+;;;  version:  1.5 February 2014
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -49,7 +49,8 @@
 ;;     (11/18/13) Added some routines to root around inside realization data.
 ;; 1.5 (12/4/13) Modified deref-rdata-word to look at all slots and not just local ones.
 ;;     (12/26/13) Tweeked decode-rdata-mapping to notice an explicit category
-;;      as the equivalent of :self.
+;;      as the equivalent of :self. (2/1/14) Finished retrieve-word-constructor for
+;;      use in abbreviation code.
 
 (in-package :sparser)
 
@@ -277,6 +278,56 @@
     (or value
         (when break?
           (error "No realization schema based on a variable. Check definitions")))))
+
+
+;;--- for use in short-cuts like define-named-individual-with-synonyms/expr
+(defmethod retrieve-word-constructor ((category-name symbol))
+  (retrieve-word-constructor (category-named category-name :break-if-none)))
+
+(defmethod retrieve-word-constructor ((category referential-category))
+  (let ((rdata  (cat-realization category)))
+    (when rdata
+      (let ((schema (find-schema-inside-rdata rdata)))
+        (when schema
+          (find-word-type-spec-in-rdata-schema schema))))))
+
+;; Flet if doesn't have other utility
+(defun find-schema-inside-rdata (rdata)
+  ;; there's a deference in structure between a category with several realizations
+  ;; and one with just one. This is targeted at the simple ones that just setup
+  ;; the lexical type of their name. 
+  (let ((schema-info (cadr (memq :schema rdata))))
+    schema-info)) ;; or if they're all lists, then one of the above will apply
+
+;; ditto
+(defun find-word-type-spec-in-rdata-schema (schema-list)
+  (dolist (item schema-list)
+    (when (and (consp item)
+               (keywordp (car item)))
+      (let ((keyword (car item)))
+        (when (defined-type-of-single-word keyword)
+          ;;/// hack hack. A refactoring of head-word-rule-construction-dispatch
+          ;; would make this duplication irrelevant
+          (push-debug `(,keyword ,schema-list))
+          (case keyword
+            (:verb (return 'make-verb-rules)) ;; #' ?? Depends on timing. 
+            (:common-noun (return 'make-cn-rules))
+            (:proper-noun (return 'make-pn-rules))
+            (:adjective (return 'make-rules-for-adjectives))
+            (:quantifier (return 'make-rules-for-word-w/o-morph))
+            (:adverb (return 'make-rules-for-adverbs))
+            (:interjection (return 'make-interjection-rules))
+            (:preposition (return 'make-preposition-rules))
+            (:word (return 'make-rules-for-word-w/o-morph))
+            (standalone-word (return 'make-rules-for-standalone-word))
+            (otherwise
+             (error "Unexpected keyword: ~a" keyword))))))))
+    
+
+;; :modal and :number ore on defined-type-of-single-word 
+;; but not head-word-rule-construction-dispatch, which has
+;; standalone-word just itself
+
 
   
 ;;;------------------------------------------------
