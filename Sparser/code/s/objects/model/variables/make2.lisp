@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "form"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  December 2013
+;;;  version:  February 2014
 
 ;; initiated 11/18/91  v2.1
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -23,7 +23,8 @@
 ;;    goes to referential categories now that the model is ubiquitous,
 ;;    so the object will just be fleshed out when it's finally encountered.
 ;;   (11/13/13) Added registration. 12/24/13 Let resolve-variable-restriction
-;;    be fed categories directly. 
+;;    be fed categories directly. 2/1/14 fixed resolve-variable-restriction
+;;    treatment of combination of categories and :primitive. 
 
 (in-package :sparser)
 
@@ -69,20 +70,24 @@
          (:or
 ;          `(:or ,@(mapcar #'resolve-symbol-to-category/check
 ;                          (rest restriction-expression)) )
-          (let ( categories-etc )
+          (let ((primitive-section (memq :primitive restriction-expression))
+                categories-etc  )
             (do ((item (car (cdr restriction-expression)) (car rest))
                  (rest (cddr restriction-expression) (cdr rest)))
                 ((null item))
               (if (eq item :primitive)
                 (then
-                 (unless (= (length rest) 1)
-                   (error "new decoder has wrong pattern"))
-                 (push (car rest) categories-etc)
-                 (push :primitive categories-etc)
+                 ;(push (car rest) categories-etc)
+                 ;(push :primitive categories-etc)
                  (return))
                 (push (resolve-or-make/symbol-to-category item)
                       categories-etc)))
-            (cons :or (nreverse categories-etc))))
+            (let ((result
+                   (or (when (and categories-etc primitive-section)
+                         (append (nreverse categories-etc) primitive-section))
+                       (nreverse categories-etc)
+                       primitive-section)))
+              (cons :or result))))
 
          (:primitive  ;; e.g. "(:lisp-primitive number)"
           restriction-expression)
