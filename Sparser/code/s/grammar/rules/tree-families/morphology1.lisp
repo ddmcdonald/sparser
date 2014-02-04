@@ -454,7 +454,7 @@
 (defun word-stem (word)
   ;; /// change choice of tag to be more generic, or patch in a
   ;; domain-specific override capacity 
-  (cadr (member :ls-stem (unit-plist word))))
+  (cadr (member :stem (unit-plist word))))
 
 (defmethod stem-form ((s symbol))
   (stem-form (symbol-name s)))
@@ -1067,8 +1067,8 @@
     (else
       (let ((pn-schematic-rule (get-schematic-word-rule :proper-noun))
             (cfr  (define-cfr category (list word)
-              :form category::proper-noun
-              :referent referent )))
+                    :form category::proper-noun
+                    :referent referent )))
         (assign-brackets-to-proper-noun word)
         (setf (cfr-schema cfr) pn-schematic-rule)
         (list cfr)))))
