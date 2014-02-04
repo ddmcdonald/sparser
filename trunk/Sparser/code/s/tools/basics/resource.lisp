@@ -46,7 +46,8 @@
 (defun allocate-next-instance (r) ;; make a method on subtypes of resource
   (let* ((index (incf (instance-counter r)))
          (i (nth index (resource-store r))))
-    ;;/// initalize ???
+    (unless i
+      (error "Ran out of ~a. Implement the resource incrementer"))
     i))
 
 (defun initialize-resource (r) ;; ditto
