@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2010-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2010-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  0.5 October 2013
+;;;  Version:  0.5 February 2014
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -20,6 +20,8 @@
 ;;     Through August, September 2012 adding documentation, refining
 ;;     the code overall. 10/24/13 Started stubbing a document-set driver.
 ;; 0.5 (10/28/13) Fanout from the make-over of the document classes.
+;;     (2/3/14) Some further change required redoing the scope of the
+;;     call to stem in wf-classification/ignore-caps
 
 (in-package :sparser)
 
@@ -268,6 +270,7 @@
    and not comparing word frequencies across documents"
   (setup-word-frequency-data)
   (display-sorted-results stream
+                          nil ;; just-summary parameter
                           *sorted-word-entries*)
   '*sorted-word-entries*)
 
@@ -298,8 +301,8 @@
         (incf words-on-the-line)
         (when (= 5 words-on-the-line)
           (format stream "~%   ")
-          (setq words-on-the-line 0))
-        (terpri stream)))
+          (setq words-on-the-line 0)
+          (terpri stream))))
     (terpri stream)))
 
 
@@ -720,19 +723,20 @@
   (if (word-rules word) ;; known
     (wf-classification/ignore-caps/known word position)
     (let ((capitalization (pos-capitalization position))
-	  (stem (if *stem-words-for-frequency-counts*
-		  (stem-form word) ;; in rules/tree-families/morphology1.lisp
-		  (word-pname word))))
+	  )
       (case capitalization
 	(:digits *number-word*)
 	(otherwise
+         (let ((stem (if *stem-words-for-frequency-counts*
+		  (stem-form word) ;; in rules/tree-families/morphology1.lisp
+		  (word-pname word))))
          (typecase stem
            (word stem)
            (string (or (word-named stem)
                        (define-word/expr stem)))
            (otherwise
             (push-debug `(,stem ,word ,position ,capitalization))
-            (error "Unexpected type of stem"))))))))
+            (error "Unexpected type of stem")))))))))
 
 (defun wf-classification/ignore-caps/known (word position)
   (if (member :function-word (word-plist word))
