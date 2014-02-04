@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2014 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  August 2013
+;;;  version:  January 2014
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
 ;; 7/16/09: added modifier to np-head Modified 7/21/09: replaced
@@ -19,7 +19,7 @@
 ;; by removing sv-spatial-prep-marked-o (which had no applications) and
 ;; making sv-location mostly meaningless by duplicating the problematic
 ;; case. 8/19/13 Added head-noun as first of possibly many short-cuts
-;; for already defined categories. 
+;; for already defined categories. 1/30/14 Started cleaning them up. 
 
 (in-package :sparser)
 
@@ -27,31 +27,52 @@
 ;;--- Synonyms
 
 (defmacro define-named-individual-with-synonyms (category-name word-list
-					&key brackets no-morph)
-  `(make-individual-with-synonyms ',category-name ',word-list ',brackets ',no-morph))
+                                                 &key brackets no-morph)
+  "Create an instance of the named category. 
+   The category must bind a name variable and an aliases variable.
+   The new individual is made the referent of all of its aliases, which are
+   defined according to the realization specification on the category.
+   Returns the individual."
+  ;; To do:
+  ;; -- record the rules.
+  ;; -- mark the synonyms as such.
+  ;; -- figure out more clever way to do :no-morph, e.g. for ("kilometer" "km")
+  ;;    And this might just mean 'no plural' -- see *inihibit-constructing-plural*
+  ;; -- need to allow for irregulars
+  ;; -- Decide whether it makes sense to specify brackets if we can
+  ;;    get realization information from the category
+  `(define-named-individual-with-synonyms/expr ',category-name ',word-list ',brackets ',no-morph))
 
-(defun make-individual-with-synonyms (category-name word-list brackets no-morph)
-  (push-debug `(,brackets ,no-morph)) ;;(break "who's the caller? This is passe")
-  (let ((category (category-named category-name))
+(defun define-named-individual-with-synonyms/expr (category-name word-list 
+                                                   &optional brackets no-morph)
+  (push-debug `(,brackets ,no-morph))
+  (let ((category (category-named category-name :break-if-undefined))
         rules )
-    (unless category (error "There is no category named ~a" category-name))
-    ;;/// lookup the realization information on the category and deploy it
-    ;; for the synonyms unless no-morph.
-    (let* ((form `(define-individual ',category-name :name ,(car word-list)))
+    ;; Define the individual, which becomes the
+    (let* ((form `(find-or-make-individual ',category-name :name ,(car word-list)))
            (i (eval form)))
-      (dolist (string (cdr word-list))
-        (let* ((rule-form `(def-cfr/expr ',category-name '(,string) :referent ,i))
-               (rule (eval rule-form)))
-          (push rule rules)))
-      ;;/// How do we record these synonyms with the instance given that this
-      ;; scheme (taken from unit-of-measure) makes an instance for each case
-      ;; but the realization information is kept with the category?
-      ;; We can either change the encoding scheme (but it's ubiquitous) or
-      ;; devise some other channel for organizing the information.
-;      (let ((words (mapcar #'word-named word-list)))
-;	(setf (cat-realization category)
-;	      `(:synonyms ,words . ,(cat-realization category)))
-;	(push-debug `(,category ,i ,rules)) (break "synonyms"))
+
+      ;; look up schema to apply
+      (let ((fn (retrieve-word-constructor category)))
+        ;; no-morph would fit in here
+        (dolist (string (cdr word-list))
+          (if fn
+            (let ((word (resolve/make string)))
+              (funcall fn word category i)) ;; word, category, referent
+            (let* ((rule-form `(def-cfr/expr ',category-name '(,string)
+                                 ;; can we guess it's a common noun for form?
+                                 :referent ,i))
+                   (rule (eval rule-form)))
+              (push rule rules)))))
+          ;;/// How do we record these synonyms with the instance given that this
+          ;; scheme (taken from unit-of-measure) makes an instance for each case
+          ;; but the realization information is kept with the category?
+          ;; We can either change the encoding scheme (but it's ubiquitous) or
+          ;; devise some other channel for organizing the information.
+          ;   (let ((words (mapcar #'word-named word-list)))
+          ;	(setf (cat-realization category)
+          ;	      `(:synonyms ,words . ,(cat-realization category)))
+          ;	(push-debug `(,category ,i ,rules)) (break "synonyms"))
       i)))
 
 
