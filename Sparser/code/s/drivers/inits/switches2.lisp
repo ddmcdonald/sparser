@@ -64,7 +64,8 @@
 ;; 2.21 (10/21/13) Moved the old contents of fire into Grok and then made grok the
 ;;       equivalent of Strider so we can use that going forward as the default
 ;;       that operations are built on.
-;; 2.22 (1/22/14) Added (turn-off-c3) to all the bigger sets.
+;; 2.22 (1/22/14) Added (turn-off-c3) to all the bigger sets. 1/29/14 refined 
+;;       fire-setting so we cover the segments. 
 
 (in-package :sparser)
 
@@ -304,13 +305,14 @@
         *new-segment-coverage* :trivial
         *reify-implicit-individuals* t
         *note-text-relations* t)
+  (setq *new-segment-coverage* :full)
   (setq *profligate-creation-of-individuals* t)
   (setq *allow-pure-syntax-rules* t)
   (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
 
 (defun tuned-grok ()
-  "Adjustments to Grok while we work things out"
+  "Simplifications to Grok while we work things out"
   (turn-off-c3)
   (grok-setting)
   (progn ;; these are temporary overrides while we debug bracketing
@@ -331,7 +333,6 @@
   ;;   Need to adapt the segment-level switches and do this better
   (setq *allow-da-to-look-under-edges* nil)
   ;;   /// arc-matches-tt? needs to adjust the next tt
-  (setq *note-text-relations* t) ;; transfering content from in here
   (period-hook-on)
   (designate-sentence-container :simple)
   ;; misc. display settings
@@ -344,6 +345,10 @@
 (defun fire-setting ()
   ;; Now (10/21/13) the setting we get when we 
   (strider-setting)
+  (setq *new-segment-coverage* :trivial)
+  (setq *after-action-on-segments* 'sdm/analyze-segment)
+  ;; Have to set after-action explicitly to be sure it takes
+  ;;  when switching modes a lot. 
   (setq *switch-setting* :fire))
 
 
@@ -380,7 +385,10 @@
         *do-heuristic-boundary-detection* nil
 	*do-heuristic-segment-analysis* nil
 	*do-domain-modeling-and-population* nil
-	*do-strong-domain-modeling* nil)
+	*do-strong-domain-modeling* nil
+        *recognize-sections-within-articles* nil
+        *newline-delimits-paragraphs* nil
+        *after-action-on-segments* 'normal-segment-finished-options)
   (establish-version-of-next-terminal-to-use :pass-through-all-tokens)
   (establish-kind-of-chart-processing-to-do :just-do-terminals)
   (establish-version-of-look-at-terminal :record-word-frequency)
