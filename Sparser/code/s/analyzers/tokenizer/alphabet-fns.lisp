@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "alphabet fns"
 ;;;   Module:  "analyzers;tokenizer:"
-;;;  Version:  0.2 May 1996
+;;;  Version:  0.2 February 2014
 
 ;; initiated 9/21/92 v2.3
 ;; (4/20/93) added Set-tokenizer-table-entry
@@ -12,6 +12,7 @@
 ;;      and fixed a bug
 ;;     (6/9/94) added character-type predicates.
 ;; 0.2 (5/31/96) Increased the size of the array to 256.
+;;     (2/3/13) added doc that its value is burned in.
 
 (in-package :sparser)
 
@@ -20,7 +21,14 @@
 ;;; the array
 ;;;-----------
 
-(defparameter *character-dispatch-array* (make-array 256))
+(defparameter *character-dispatch-array* (make-array 256)
+  "This is essentially ascii plus the second 128 character block
+   of UTF-8, where a lot of Latin-1 lives.
+   NOTE -- this number is burned into the code of continue-token 
+   because we don't want to further burden the inner-most of
+   inner loops.")
+
+
 
 
 ;;;----------------------------
