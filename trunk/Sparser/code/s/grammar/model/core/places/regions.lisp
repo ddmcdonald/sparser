@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2011-2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  August 2013
+;;;  version:  0.1 January 2014
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -20,6 +20,9 @@
 ;;  case from region because it was creating a form rule that was too specific.
 ;; (7/30/13) Rewrote relationship-to-country to use revise-parent-edge
 ;; (8/28/13) Provided draft content to give-kind-its-name.
+;; 0.1 (1/30/14) Determined that defining a region the established way
+;;   is the source of the duplicated rules in the load, so refactored it
+;;   into a named regions and a relation to its type. 
 
 (in-package :sparser)
 
@@ -28,50 +31,63 @@
 ;;;    and nothing more specific
 ;;;-----------------------------------
 
+;; Dossier of named regions is [regions]
+;; Dossier of region types and edge types is [location kinds]
+
 (define-category  region    
   ;; e.g. New England, real places
   :instantiates  location
   :specializes  location
-  :binds ((name :primitive word) ;;(:or name :primitive word))
+  :binds ((name ;;:primitive word) 
+           (:or name :primitive word))
           (aliases  :primitive list)
           (type . region-type)
           (containing-region . location))
   :index (:permanent :key name)
-  :realization ((:proper-noun name) ;; for the predefined ones
+  :realization (:proper-noun name)) ;; for the predefined ones
+
+(defun define-region (name-string &key part-of aliases)
+  (let ((r (define-named-individual-with-synonyms/expr
+               'region
+               (cons name-string aliases))))
+
+    (when part-of
+      (push-debug `(,r ,part-of))
+      (cerror "just continue"
+              "Deal with part-of in region definitions ~
+               now? (\"~a\")" name-string))
+
+ ; Note to self to make sure the ancillary bits to this
+ ;       (setf (unit-plist obj)
+ ;             `(:rules ,rules ,@(unit-plist obj)))
+
+    r ))
 
 
-;;               (:tree-family  np-common-noun/defnp
-;;                 :mapping ((np . :self)
-;;                           (np-head . region-type)))
-
-                (:tree-family  kind-of-name ;; "strait of Hormous"
-                 :mapping ((np . region-type)
-                           (complement . (name name-word)) ;; and what else?
-                           (result-np . :self)))))
-
-;; Dossier of named regions is [regions]
-;; Dossier of region types and edge types is [location kinds]
+(define-category typed-region  ;; "the Kurdish city of Sulaimaniya
+  :specializes relation ;;/// probably more specific
+  :rule-label region
+  ;; This is a category that fits the way the information is conveyed.
+  ;; We're really identifying something about the region itself,
+  ;; but to get it we need to pull it from this relation.
+  :binds ((type . region-type)
+          (region . region))
+  ;; This ETF has the transfer built into it, as give-kind-its-name,
+  ;; which is awfully specialized. 
+  :realization (:tree-family  kind-of-name ;; "strait of Hormous"
+                :mapping ((np . region-type)
+                          (complement . (name name-word)) ;; and what else?
+                          (result-np . :self))))
 
 (defun give-kind-its-name (region name) ;; left-referent and right-referent
-  ;; function called by kind-of-name ETF
-  ;; Definitely has more generality, but makes sense right here and
-  ;; 'kind' isn't as articulated as this
-  ;; Since what we get here are the referents, which I've renamed to
-  ;; reflect what they provide, we might well get more generality
-  ;; by making the ETF use a method rather than a function
-  ;; N.b. this returns the referent of the edge, which will be
-  ;; a region based on this name
-
-
-#|  Turning this off until the two types of values in the name field
-    is made possible (one of them being a primitive), and until the
-    Chomsky-adjunction conundrum in the rule construction is done and
-    we get dependable rules |#
-  (push-debug `(,region ,name))
+  ;; The function called by kind-of-name ETF in of.lisp
+  (push-debug `(,region ,name)) (break "cit of x")
   (let ((region-name (convert-to-canonical-name-form name))
         new-region )
     (cond
      ((eq region category::city)
+      ;;//// "the Kurdish city" leads to an -instance- of the city
+      ;;   category, not the category
       ;; These parse to region-types, but the independent definition
       ;; of the city category is the value that we get.
       ;;/// But the city category doesn't believe in names and
@@ -84,26 +100,23 @@
           (setq new-region place))))
 
      ((category-p region)
+      (push-debug `(,region ,name))
       (break "Another case of a category for the region: ~a" region))
 
      ((individual-p region)
       (unless (indiv-typep region category::location)
         ;; Need to be sure that the variables are there for binding
+        (push-debug `(,region ,name))
         (break "the 'region' individual is not a location"))
-      (setq new-region (define-or-find-individual category::region
-                          :name region-name))
+      (push-debug `(,region-name)) (break "Consider stripping name-word")
       ;; Is the region the right sort of thing to be it's type??
       ;; /// Loses the fact that the new-region is, e.g. a city
-      ;;  <what's the instruction for creating a binding ??>
-      ;; Now we make the word refer to this region
-      
-      ;;(remove-rules-from-word word)
-       #+ignore(let ((rule (define-cfr category::region `(,word)
-                       :form category::proper-name
-                       ;; /// what's the schema ???
-                       :referent new-region))))
-      )
-     (t (error "New situation in give-kind-its-name")))
+      ;; => instantiate the typed-region
+      (setq new-region (define-or-find-individual category::region
+                          :name region-name)))
+     (t
+      (push-debug `(,region ,name))
+      (error "New situation in give-kind-its-name")))
 
     new-region))
 
@@ -120,39 +133,6 @@
       (delete/cfr rule))))
 
 
-(defun define-region (name-string &key part-of aliases)
-  (declare (ignore part-of))
-  (let ((name
-         (etypecase name-string
-           (string (resolve-string-to-word/make name-string))
-           (word name-string)))
-        obj )
-
-    (if (setq obj (find-individual 'region :name name))
-      obj
-      (let ( rule  rules )
-        (setq obj (define-individual 'region :name name ))
-
-        (when aliases
-          (let ( word )
-            (dolist (alias-string aliases)
-              (setq word (resolve-string-to-word/make alias-string))
-              (push (define-cfr category::region `( ,word )
-                      :form category::proper-noun
-                      :referent obj)
-                    rules))
-            (when rules
-              (setq rule (cons rule (nreverse rules))))))
-
-        (when part-of
-          (cerror "just continue"
-                  "Deal with part-of in region definitions ~
-                   now? (\"~a\")" name-string))
-
-        (setf (unit-plist obj)
-              `(:rules ,rules ,@(unit-plist obj)))
-
-        obj ))))
 
 
 
