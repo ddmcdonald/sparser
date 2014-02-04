@@ -42,7 +42,7 @@
          (duplication-msg existing-rule/s (cfr-category cfr))
          (when *break-on-illegal-duplicate-rules*
            (push-debug `(,cfr ,existing-rule/s))
-           (break "Look at why there's a duplicate rule~
+           (break "[estab. multiplier] Look at why there's a duplicate rule~
                   ~%and sort it out.")))))
 
     (let ((target-site (+ left-id right-id)))
