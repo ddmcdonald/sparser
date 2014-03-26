@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.9 January 2014
+;;;  Version:  1.9 February 2014
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -51,6 +51,7 @@
 ;;       segment boundary because a verb is following a verb but was not resetting
 ;;       the global like the other paths through the code do.
 ;;      (1/21/14) Adjusting rule for proper-nouns given C3 cases.
+;;      Misc. small tweaks through 2/26/14. 
 
 (in-package :sparser)
 
@@ -106,6 +107,7 @@
                (tr :[-ignored/left-boundary-already-in-place b p)))))
 
         (*suppress-verb-reading* ;;/// 4/2/13 look this up. Forgot
+         (break "suppressed")
          (cond ((eq b .[verb)    ;; what it does.
                 (if (eq *suppress-verb-reading*
                         (pos-terminal (chart-position-before p)))
@@ -128,7 +130,6 @@
              (setq *bracket-opening-segment*
                    (kcons *bracket-opening-previous-segment*
                           *where-the-last-segment-started*)))
-
            (interpret-open-bracket-as-segment-start b p)))
 
         (t (interpret-open-bracket-as-segment-start b p))))
@@ -258,8 +259,16 @@
          (next-word (pos-terminal position))
          ends-the-segment? )
 
+    ;; 2/26/14 Debugging segmentation, so just setting this up
+    ;; for all cases. 
+    (push-debug `(,position ,bracket-opening-segment
+                  ,word-count ,previous-word ,segment-start-pos))
+    ;; (setq position (car *) bracket-opening-segment (cadr *) word-count (nth 2 *) previous-word (nth 3 *) segment-start-pos (nth 4 *))
+
     ;; Set the flag. After this very long set of cases adjust
     ;; global state variables as needed.
+    ;;
+    ;; Returning t ends the segment. Returning nil continues it.
     (setq
      ends-the-segment? ;; mitigate right-margin creep
      (cond
@@ -267,12 +276,37 @@
 
       ((eq ]  phrase].)   t)
       ((eq ]  ].phrase)   t)
-          
-      ((eq ]  np].)  t)
 
-      ((eq ]  ].np)
-       (unless (segment-started-as-np?)
-         t))
+         
+      ((eq ]  ].punctuation)
+       t)
+          
+      ((eq ] ].conjunction)
+       t)
+
+      ((and (eq bracket-opening-segment conjunction.[)
+            (= word-count 0))
+       ;; we're at the word that immediately follows
+       ;; the conjunction. It has to lie in the following
+       ;; segment
+       nil)
+
+
+      ;;--- NPs and friends
+          
+      ((eq ]  np].)
+       t)
+
+      ((eq ]  ].np)       
+       ;;(break "].np")
+       (cond 
+        ((and previous-word
+              (participle? previous-word))
+         nil)
+        ((segment-started-as-np?)
+         t)
+        (t
+         nil)))
 
       ((eq ]  ].pronoun) t)
 	  
@@ -285,92 +319,100 @@
          t))
 
       ((eq ]  ].quantifier)
-            (if (or (eq (first *bracket-opening-segment*) .[np )
-                    (eq (first *bracket-opening-segment*) .[article )
-                    (eq bracket-opening-segment .[adverb)) ;; "very few"
-              nil
-              t))
+       (if (or (eq (first *bracket-opening-segment*) .[np )
+               (eq (first *bracket-opening-segment*) .[article )
+               (eq bracket-opening-segment .[adverb)) ;; "very few"
+         nil
+         t))
 
-           ((eq ]  ].preposition) 
-            (if (eq (car *bracket-opening-segment*) mvb.[)
-              ;; We've just finished a segment because a verb said to do so.
-              ;; In principle there could be interveening adverbs, so this may
-              ;; need tuning if they aren't already folded into the VG that
-              ;; we've just finished. 
-              (check-for-verb-preposition-pair position)
-              t))
+      ((eq ]  ].preposition) 
+       (if (eq (car *bracket-opening-segment*) mvb.[)
+         ;; We've just finished a segment because a verb said to do so.
+         ;; In principle there could be interveening adverbs, so this may
+         ;; need tuning if they aren't already folded into the VG that
+         ;; we've just finished. 
+         (check-for-verb-preposition-pair position)
+         t))
 
-           ((eq ]  preposition].) t)
+      ((eq ]  preposition].) t)
 
-           ((eq ]  ].treetop)  t)
+      ((eq ]  ].treetop)  t)
 
-           ((eq ] *close-before-newline*)  t)
+      ((eq ] *close-before-newline*)  t)
 
-           ((eq ]  ].text-segment)  t)
+      ((eq ]  ].text-segment)  t)
+
+      ;;----------- ].verb
+      ((eq ]  ].verb)  
+       ;;(break "at ].verb at ~a" position)
+       (cond 
+        ((= word-count 0) t)
+        ((or (eq *bracket-closing-segment* ].verb )
+             (eq (first *bracket-opening-segment*) .[verb )
+             (eq (first *bracket-opening-segment*) .[modal ))
+         nil )
+
+        ((eq bracket-opening-segment .[article ) nil)
+        ;; e.g. "the sounds" -- where "sounds" can be a verb.
+        ;; A word that is noun/verb ambiguous will lay down
+        ;; brackets for a verb -- this is a case where we can
+        ;; know definitively that the noun sense is the right one.
+
+        ((or (eq bracket-opening-segment .[np )
+             (eq bracket-opening-segment .[np-vp )
+             (eq bracket-opening-segment .[|that| ))                  
+         t)
+        ((segment-started-as-np?) ;; and now we have an unambiguous verb
+         t)
+        ((eq (first *bracket-opening-segment*) .[adverb)
+         nil )
+        ((or (eq bracket-opening-segment pronoun.[)
+             (eq bracket-opening-segment punctuation.[)
+             (eq bracket-opening-segment preposition.[))
+         t)
+        ((eq bracket-opening-segment mvb.[) ;; not two in a row
+         t)
+        ((eq (first *bracket-opening-segment*) phrase.[) ;; refine the case?
+         t)  ;; example was "Rainya is " PNF should be more definitive?
+        (t (if *break-on-new-bracket-situations*
+             (then
+              (push-debug `(,position ,bracket-opening-segment
+                            ,word-count ,previous-word ,segment-start-pos))
+              (break "].verb  next case.~
+                   ~%The bracket opening the segment is ~a.~
+                   ~%The word is ~a~
+                   ~%The segment so far is \"~{~a ~}\" "
+                     bracket-opening-segment (pos-terminal position)
+                     (words-between segment-start-pos position)))
+             (else
+              t)))))
 
 
-           ((eq ]  ].verb)  ; (break "at ].verb at ~a" position)
-            (cond 
-             ((= word-count 0) t)
-             ((or (eq *bracket-closing-segment* ].verb )
-                  (eq (first *bracket-opening-segment*) .[verb )
-                  (eq (first *bracket-opening-segment*) .[modal ))
-              nil )
-             ((eq bracket-opening-segment .[article ) t)
-              ;; e.g. "the sounds" -- where "sounds" can be a verb.
-              ;; A word that is noun/verb ambiguous will lay down
-              ;; brackets for a verb -- this is a case where we can
-              ;; know definitively that the noun sense is the right one.
-             ((or (eq bracket-opening-segment .[np )
-                  (eq bracket-opening-segment .[np-vp )
-                  (eq bracket-opening-segment .[|that| ))                  
-              t)
-             ((segment-started-as-np?) ;; and now we have an unambiguous verb
-              t)
-             ((eq (first *bracket-opening-segment*) .[adverb)
-              nil )
-             ((or (eq bracket-opening-segment pronoun.[)
-                  (eq bracket-opening-segment punctuation.[)
-                  (eq bracket-opening-segment preposition.[)
-                  (eq bracket-opening-segment mvb.[)) ;; not two in a row
-              t)
-             ((eq (first *bracket-opening-segment*) phrase.[) ;; refine the case?
-              t)  ;; example was "Rainya is " PNF should be more definitive?
-             (t (if *break-on-new-bracket-situations*
-                  (then
-                   (push-debug `(,position ,*bracket-opening-segment*
-                                 ,word-count ,previous-word ,segment-start-pos))
-                   (break "].verb  next case.~
-                         ~%The bracket opening the segment is ~a.~
-                         ~%The word is ~a~
-                         ~%The segment so far is \"~{~a ~}\" "
-                          bracket-opening-segment (pos-terminal position)
-                          (words-between segment-start-pos position)))
-                  (else
-                   t)))))
-
-
-
-           ((eq ]  aux].)
-            (if (or (eq (first *bracket-opening-segment*) .[modal )
-                    (eq (first *bracket-opening-segment*) .[verb ))
-              nil
-              t))
+      ((eq ]  aux].)
+       (if (or (eq (first *bracket-opening-segment*) .[modal )
+               (eq (first *bracket-opening-segment*) .[verb ))
+         nil
+         t))
        
 
+      ((eq ]  mvb].) 
+       ;;(break "mvb]. at ~a" position)
+       (cond
+        ((and (participle? previous-word)
+              (participle? next-word))
+         t)
 
-           ((eq ]  mvb].)	       ;(break "mvb]. at ~a" position)
-            (cond ((and *bracket-closing-segment*
-                        (eq *bracket-closing-segment* ].verb))
-                   nil )
-                  (*suppress-verb-reading*
-                   (if (eq *suppress-verb-reading*
-                           (pos-terminal (chart-position-before position)))
-                     ;; if the flag is still relevant, then we ignore this
-                     ;; instance of the bracket
-                     nil
-                     t ))
-                  (t t)))
+        ((and *bracket-closing-segment*
+              (eq *bracket-closing-segment* ].verb))
+         nil )
+        (*suppress-verb-reading*
+         (if (eq *suppress-verb-reading*
+                 (pos-terminal (chart-position-before position)))
+           ;; if the flag is still relevant, then we ignore this
+           ;; instance of the bracket
+           nil
+           t ))
+        (t t)))
 
 
 
@@ -415,21 +457,7 @@
                   (else
                    nil)))))
 
-          
-           ((eq ]  ].punctuation)
-            t)
-          
-           ((eq ] ].conjunction)
-            t)
-
-           ((and (eq bracket-opening-segment conjunction.[)
-                 (= word-count 0))
-            ;; we're at the word that immediately follows
-            ;; the conjunction. It has to lie in the following
-            ;; segment
-            nil)
-
-
+ 
 
            ;;--- the ambiguous cases ---
 
@@ -445,16 +473,16 @@
                    (eq (first *bracket-opening-segment*) .[modal ))
                nil )
 
+              ((eq bracket-opening-segment mvb.[)
+               ;; reason to end because we've probably got a noun
+               t)
+
               ;; reasons to interpret it as a verb and terminate an np segment
               ((eq bracket-opening-segment .[|that|) t)
 
               ;; We're probably coming out of an apositive so it's a verb
               ;; and we terminate anything that's ongoing
               ((eq (word-symbol previous-word) 'word::comma)
-               t)
-
-              ((eq bracket-opening-segment mvb.[)
-               ;; reason to end because we've probably got a noun
                t)
 
               ;; Reasons to interpret it as a noun and continue
@@ -483,9 +511,14 @@
               ((eq bracket-opening-segment phrase.[) t) ;; after a period
               ((eq bracket-opening-segment preposition.[) t) ;; after preposition
 
+              ((and (eq bracket-opening-segment punctuation.[)
+                    (> word-count 1))
+               ;; nps get longer more easily than vgs
+               nil)
+
               (t (if *break-on-new-bracket-situations*
                    (then
-                    (push-debug `(,position ,*bracket-opening-segment*
+                    (push-debug `(,position ,bracket-opening-segment
                                   ,word-count ,previous-word ,segment-start-pos))
                     (break "].np-vp next case.~
                          ~%The bracket opening the segment is ~a.~
@@ -533,9 +566,15 @@
               nil)
              ((eq bracket-opening-segment .[modal) ;; "will know"
               nil)
+
+             ((and (eq bracket-opening-segment punctuation.[)
+                    (> word-count 1))
+               ;; nps get longer more easily than vgs
+               nil)
+
              (t (if *break-on-new-bracket-situations*
                   (then
-                   (push-debug `(,position ,*bracket-opening-segment*
+                   (push-debug `(,position ,bracket-opening-segment
                                  ,word-count ,previous-word ,segment-start-pos))
                    (break "np-vp.] next case.~
                         ~%The bracket opening the segment is ~a.~
