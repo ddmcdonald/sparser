@@ -147,14 +147,23 @@
 ;;  Define before mention is easy on the code.
 ;;  Forward ref. is tricky w/o knowing the level of the state
 
+;;--- NPs
+
 (define-state :assembling-np phrase ;; "Ford" (but actually "ford")
   ((proper-noun :assembling-np)
    ))
 
-
 (define-state :initial-state phrase ;; "black"
   ((adjective :assembling-np)
+   (verb+s :assembling-vg) ;; "has" when not a head
    ))
+
+;;--- VGs
+
+(define-state :assembling-vg phrase
+  ((verb+s :assembling-vg)
+   ))
+
 
 
 ;;--- sentence level

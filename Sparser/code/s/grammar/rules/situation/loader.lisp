@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "loader"
 ;;;            grammar/rules/situation/
-;;;  version:  October 2013
+;;;  version:  March 2014
 
-;; Initiated 10/9/13.
+;; Initiated 10/9/13. Added rules 3/20/14
 
 (in-package :sparser)
 
 (gload "sit-rules;variables")
 (gload "sit-rules;state")
 (gload "sit-rules;compose")
+(gload "sit-rules;rules")

@@ -35,7 +35,7 @@
 
 (defmethod incorporate-referent-into-the-situation ((referent t) (rule cfr) (edge edge))
   (let* ((current-state (phrasal-state))
-         (peg (if (eq (name current-state) :inital-state)
+         (peg (if (eq (name current-state) :initial-state)
                 (activate-current-np-referent (setup-a-peg current-state))
                 (current-peg))))
     (tr :incorporate-into-situation referent edge)
@@ -45,14 +45,12 @@
        (incorporate-phrasal-head referent peg edge))
       (else
        (tr :not-c3-phrasal-head referent)
-       (let ((new-state (update-situation-state edge 'phrase))
-             (type (cat-symbol (itype-of referent))))
+       (let ((new-state (update-situation-state edge 'phrase)))             
          (unless (eq current-state new-state)
            (let ((var (indexical-for-state new-state)))
              (add-indexical-to-situation var peg)
              (push-debug `(,new-state ,var))))
-         (push-debug `(,type ,referent ,peg))
-         (add-to-peg type referent peg))))))
+         (add-referent-to-peg referent peg))))))
 
 
 (defun incorporate-phrasal-head (referent peg edge)
@@ -85,30 +83,6 @@
       ;; information up to the poor-man's segment level
       (setf (edge-referent edge) i)
       i)))
-
-
-;;--- stash on peg
-
-(defmethod add-to-peg ((type symbol) ;;(eql 'category::color))
-                       (value t) ;; premature?
-                       (peg t)) ;; ditto
-  (let ((variable ;; a real one
-         (lookup-variable-for-value-type type)))
-    (bind-variable-on-peg peg variable value)))
-
-(defun lookup-variable-for-value-type (symbol)
-  ;;/// This is a total hack since it should be done by inverting
-  ;; the rule's mapping. Probably easily added to the schema.
-  (case symbol
-    (category::color
-     (find-variable-in-category 'color 'physical-surface))
-    (category::car-manufacturer ;; generalize to maker-of-artifacts
-     (find-variable-in-category 'made-by 'artifact))
-    (otherwise
-     (push-debug `(,symbol))
-     (break "No variable associated with the category symbol ~a"
-            symbol))))
-
 
 
 ;;--- gofer
