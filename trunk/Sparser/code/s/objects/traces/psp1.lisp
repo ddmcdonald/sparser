@@ -1179,6 +1179,78 @@
   (when *trace-segments*
     (trace-msg "[segment]  no-edges")))
 
+(deftrace :segment-parsed1 ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] segment-parsed1")))
+
+(deftrace :tidy-up-segment-globals ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] tidy-up-segment-globals")))
+
+(deftrace :after-action-on-segments ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] after-action-on-segments")))
+
+(deftrace :normal-segment-finished-options ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] normal-segment-finished-options")))
+
+(deftrace :check-segment-finished-hook ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] check-segment-finished-hook")))
+
+(deftrace :sf-action/spanned-segment1 ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] sf-action/spanned-segment1")))
+
+(deftrace :sf-action/all-contiguous-edges ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] sf-action/all-contiguous-edges")))
+
+(deftrace :sf-action/all-contiguous-edges/no-more-heuristics () ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] sf-action/all-contiguous-edges/no-more-heuristics ()")))
+
+(deftrace :sf-action/some-adjacent-edges/no-more-heuristics () ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] sf-action/some-adjacent-edges/no-more-heuristics ()")))
+
+(deftrace :resume-after-error ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] resume-after-error")))
+#|
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] ")))
+
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] ")))
+
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] ")))
+
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] ")))
+
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] ")))
+
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] ")))
+
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] ")))
+
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] ")))
+|#
 
 
 
