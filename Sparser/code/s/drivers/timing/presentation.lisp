@@ -23,14 +23,17 @@
          (*do-strong-domain-modeling* nil)  ;; Have to turn all of these
          (*reify-implicit-individuals* nil) ;; off explicitly given how
          (*note-text-relations* nil)  ;; after-action-on-segments is pre-set
-         (*after-action-on-segments* 'normal-segment-finished-options))
+         (*after-action-on-segments* 'normal-segment-finished-options)
+         (*debug* nil) ;; disables push-debug
+         )
      (declare (special *display-word-stream*
                        *recognize-sections-within-articles*
                        *newline-delimits-paragraphs*
                        *do-strong-domain-modeling*
                        *reify-implicit-individuals*
                        *note-text-relations*
-                       *after-action-on-segments*))
+                       *after-action-on-segments*
+                       *debug*))
      ,@body))
 
 
