@@ -83,27 +83,6 @@
              var situation))
     (cdr entry)))
 
-;;;----------------
-;;; the indexicals
-;;;----------------
-
-(define-indexical-variable current-np-referent)
-
-(define-indexical-variable subject)
-
-
-
-
-;;-- If there's one indexical per state as a starting draft,
-;; then we can predefine the association.
-
-(defun indexical-for-state (state)
-  (case (name state)
-    (:assembling-np (get-indexical-variable 'current-np-referent))
-    (:subject-seen (get-indexical-variable 'subject))
-    (otherwise
-     (error "The state ~a is not (yet) associated with an indexical"
-            state))))
 
 
 
