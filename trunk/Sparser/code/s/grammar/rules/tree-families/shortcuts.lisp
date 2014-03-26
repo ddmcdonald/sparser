@@ -99,25 +99,46 @@
     (make-cn-rules word category referent)))
   
 
-
-
-(defun np-head (string-for-noun) ;; "trunk", "car", ...
+(defun np-head (string-for-noun &key super)
+  ;; "trunk", "car", ...
   (unless (stringp string-for-noun)
-    (error "Argument must be a string providing the base noun")) 
+    (error "Argument must be a string providing the base noun"))
+  (unless super
+    (setq super 'individual))
   (let* ((name (intern string-for-noun
 		       (find-package :sparser)))
          (form
           `(define-category ,name
              :instantiates :self
-             :specializes individual
+             :specializes ,super
              :binds ((modifier))
              :realization
-             (:tree-family np-common-noun/possessive-pns
-              :mapping ((np . individual)
-                        (np-head . :self)
-                        (modifier . modifier))
-              :common-noun ,string-for-noun))))
+             (:common-noun ,string-for-noun))))
     (eval form)))
+
+
+(defun np-head/of (string-for-noun &key super of)
+  ;; "trunk", "car", ...
+  (unless (stringp string-for-noun)
+    (error "Argument must be a string providing the base noun"))
+  (unless super
+    (setq super 'individual))
+  (let* ((name (intern string-for-noun
+		       (find-package :sparser)))
+         (of-restriction (or of 'individual))
+         (form
+          `(define-category ,name
+             :instantiates :self
+             :specializes ,super
+             :binds ((on . ,of-restriction))
+             :realization (:tree-family group-of-type
+                           :mapping ((type . on)
+                                     (np . :self)
+                                     (group . :self)
+                                     (complement . ,of-restriction))
+                           :common-noun ,string-for-noun))))
+    (eval form)))
+
 
 
 ;;--- Modifier patterns
@@ -172,6 +193,7 @@
 
 ;;--- verb patterns
 
+;; original 
 (defun sv (string-for-verb)
   (let* ((name (category-name-from-string-arg string-for-verb))
          (form
@@ -187,6 +209,29 @@
                         (agent . subject))
               :main-verb ,string-for-verb))))
     (eval form)))
+
+#|
+(define-category-abbreviation-class sv intransitive
+  :parameter-defaults ((subject . individual)))
+|#
+;; envisioned
+#+ignore(defun sv (verb &optional super-category &key instantiates subject)
+  (let* ((category-name (category-name-from-string-arg verb))
+         (subject-restriction (or subject 'individual))
+         (specializes (or super-category 'event))
+         (category-instantiated (or instantiates :self))
+         (form
+          `(define-category ,category-name
+             :instantiates ,category-instantiated
+             :specializes ,specializes
+             :binds ((subject . ,subject-restriction))
+             :index (:key subject))))
+    (let ((category (eval form)))
+      category)))
+             
+          
+
+
 
 (defun svo (string-for-verb)
   (let* ((name (category-name-from-string-arg string-for-verb))
@@ -307,6 +352,75 @@
           (add-rule-to-category rule category)
           category)
         (error "v+p-rule is missing")))))
+
+
+(defun svo/nominal (verb nominalization &key subject theme)
+  (let ((subject-restriction (or subject 'individual))
+        (theme-restriction (or theme 'individual)))
+    (let* ((name (category-name-from-string-arg nominalization))
+           (form
+            `(define-category ,name
+              :instantiates self
+              :specializes  event
+              :binds ((subject person)
+                      (theme person))
+               :index (:key theme) ;; ought to suffice
+               :realization
+                  ((:tree-family transitive
+                    :mapping ((agent . subject)
+                              (patient . theme)
+                              (s . :self)
+                              (vp . :self)
+                              (vg . :self)
+                              (np/subject . ,subject-restriction)
+                              (np/object . ,theme-restriction))
+                    :main-verb ,verb)
+                  (:tree-family empty-head-of-complement
+                   :mapping ((result-type . :self)
+                             (of-item . theme)
+                             (base-np . :self)
+                             (complement . ,theme-restriction)
+                             (np . :self))
+                   :common-noun ,nominalization)))))
+      (eval form))))
+
+
+
+(defun svo/nominal/adjective (verb nominalization adjective
+                              &key subject theme)
+  (let ((subject-restriction (or subject 'individual))
+        (theme-restriction (or theme 'individual)))
+    (let* ((name (category-name-from-string-arg nominalization))
+           (form
+            `(define-category ,name
+              :instantiates self
+              :specializes  event
+              :binds ((subject person)
+                      (theme person))
+               :index (:key theme) ;; ought to suffice
+               :realization
+                  ((:tree-family transitive
+                    :mapping ((agent . subject)
+                              (patient . theme)
+                              (s . :self)
+                              (vp . :self)
+                              (vg . :self)
+                              (np/subject . ,subject-restriction)
+                              (np/object . ,theme-restriction))
+                    :main-verb ,verb)
+                  (:tree-family empty-head-of-complement
+                   :mapping ((result-type . :self)
+                             (of-item . theme)
+                             (base-np . :self)
+                             (complement . ,theme-restriction)
+                             (np . :self))
+                   :common-noun ,nominalization)
+                  ;(:tree-family adjective-really-creates-subtype
+                  ; :mapping (
+                  ; :adjective ,adjective)             
+                   ))))
+      (eval form))))
+
 
 
 ;;--- go'fers
