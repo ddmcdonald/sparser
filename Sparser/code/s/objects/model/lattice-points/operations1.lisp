@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.2 January 2014
+;;;  version:  1.2 March 2014
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -32,6 +32,8 @@
 ;;      category being identical to the supercategory. Same as super-categories of.
 ;; 1.2 (11/9/13) Added mixins check to the supercategory sweep. 
 ;;     (1/13/14) added it to category-inherits-type?
+;;     (3/3/14) Fixed bug where mixins on super-categories were being misseed and
+;;      started caching superc's on the category's plist.
 
 (in-package :sparser)
 
@@ -120,20 +122,25 @@
 
 (defun super-categories-of1 (c)
   ;;(format t "~&~%supers-of ~a" c)
-  (let ((lp (cat-lattice-position c)))
-    (cond
-     ((null lp)
-      (push-debug `(,c))
-      (error "The cat-lattice-position slot of ~a is empty" c))
-     ((category-p lp)
-      ;; true of form categories
-      (list c lp))
-     ((lattice-point-p lp)
-      (collect-supercategories-off-lp c lp))
-     (t
-      (push-debug `(,c ,lp))
-      (error "Unexpected type of object in the lattice-position ~
-        field of ~a~%  ~a  ~a" c (type-of lp) lp)))))
+  (or (get-tag-for :super-categories c)
+      (let* ((lp (cat-lattice-position c))
+             (supers
+              (cond
+               ((null lp)
+                (push-debug `(,c))
+                (error "The cat-lattice-position slot of ~a is empty" c))
+               ((category-p lp)
+                ;; true of form categories
+                (list c lp))
+               ((lattice-point-p lp)
+                (collect-supercategories-off-lp c lp))
+               (t
+                (push-debug `(,c ,lp))
+                (error "Unexpected type of object in the lattice-position ~
+                        field of ~a~%  ~a  ~a" c (type-of lp) lp)))))
+        (push-onto-plist c supers :super-categories) 
+        supers)))
+    
              
 (defun collect-supercategories-off-lp (c lp)
   (let* ((mixins (cat-mix-ins c))
@@ -142,6 +149,11 @@
             (super-categories-of-list-type mixins)))
          (immediate-super-category
           (lp-super-category lp))
+         (mixins-of-immediate-super-category
+          (when immediate-super-category
+            (when (cat-mix-ins immediate-super-category)
+              (super-categories-of-list-type
+               (cat-mix-ins immediate-super-category)))))
          (immediate-super-lp
           (when immediate-super-category
             (cat-lattice-position immediate-super-category)))
@@ -150,12 +162,18 @@
                      (top-lattice-point-p immediate-super-lp)
                      (lp-super-category immediate-super-lp))
             (super-categories-of1 immediate-super-category))))
-    #+ignore (format t "~%  mixin-supers  ~a~
-               ~%  super-supers  ~a~
-               ~%  immediate-super ~a~%" 
-           mixin-supers super-supers immediate-super-category)
+    (when nil
+      (format t "~%  mixin-supers  ~a~
+                 ~%  super-supers  ~a~
+                 ~%  mixins of immediate super-category ~a~
+                 ~%  immediate-super ~a~%" 
+              mixin-supers super-supers mixins-of-immediate-super-category
+              immediate-super-category))
     (let ((supers
            (cond
+            ((and mixin-supers super-supers immediate-super-category)
+             (cons c (append mixin-supers super-supers)))
+
             ((and mixin-supers super-supers immediate-super-category)
              (cons c (append mixin-supers super-supers)))
             
@@ -173,6 +191,8 @@
             
             (mixin-supers
              (cons c mixin-supers)))))
+      (when mixins-of-immediate-super-category
+        (setq supers (append mixins-of-immediate-super-category supers)))
       (remove-duplicates supers))))
 
 
