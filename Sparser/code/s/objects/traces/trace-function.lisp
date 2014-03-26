@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "trace function"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  0.3 June 2013
+;;;  Version:  0.4 February 2014
 
 ;; initiated 9/13/92 v2.3
 ;; 0.1 (4/23/93) added Trace-msg/ad-lib
@@ -13,6 +13,8 @@
 ;;     (12/5/12) neutral case'd it so will work in CCL as well as ACL
 ;;     (6/19/13) Downcase'ing the keywords so they work in mlisp. PNF traces
 ;;      are all capitalized.
+;; 0.4 (2/26/14) Added *allow-tr-tracing* to turn off all the trace
+;;      code when doing timings
 
 (in-package :sparser)
 
@@ -66,19 +68,23 @@
 
 (export 'tr)
 
+(defparameter *allow-tr-tracing* t
+  "Master switch allowing all trace code to be ignored.")
+
 (defun tr/expr (keyword  &rest arguments)
   (declare (special *trace-the-trace-calls*))
-  (when *trace-the-trace-calls*
-    (format t "~&tr: ~a~%" keyword))
-  (let* ((key (if (eq 'aa 'AA) ;; not case sensitive
-                keyword
-                (intern (string-downcase (symbol-name keyword)) :keyword)))
-         (fn (gethash key *trace-keyword-to-function*)))
-    (unless fn
-      (error "The trace function for ~A is undefined~
-            ~%Check for a symbol-case problem." key))
-    (apply fn arguments)
-    :trace ))
+  (when *allow-tr-tracing*
+    (when *trace-the-trace-calls*
+      (format t "~&tr: ~a~%" keyword))
+    (let* ((key (if (eq 'aa 'AA) ;; not case sensitive
+                  keyword
+                  (intern (string-downcase (symbol-name keyword)) :keyword)))
+           (fn (gethash key *trace-keyword-to-function*)))
+      (unless fn
+        (error "The trace function for ~A is undefined~
+              ~%Check for a symbol-case problem." key))
+      (apply fn arguments)
+      :trace )))
 
 
 ;;;-------------------
