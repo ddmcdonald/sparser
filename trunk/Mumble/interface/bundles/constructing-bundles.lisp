@@ -5,7 +5,7 @@
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.
-;;; Copyright (C) 1995-2000,2013 David D. McDonald
+;;; Copyright (C) 1995-2000,2013-2014 David D. McDonald
 ;;;   All rights reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
@@ -24,9 +24,14 @@
 ;;    ap being a symbol.
 ;;  8/27/00 -- allowed MAKE-A-BUNDLE to take a bundle-type as an
 ;;    alternative to the name of one.
-;;  11/21/13 -- Added add-feature
+;;  11/21/13 -- Added add-feature. 1/26/14 Added instanitate-mapping to
+;;    keep compiler quiet while we look for the real definition.
 
 (in-package :mumble)
+
+(defun instantiate-mapping (something)
+  (declare (ignore something))
+  (break "Look in very old code for a definition of instantiate-mapping"))
 
 
 ;################################################################
