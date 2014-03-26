@@ -103,8 +103,9 @@
       (push-debug `(,dtn ,root-node ,satellite-nodes))
       (break "stub"))))
 
-#+ignore
+
 (defun process-clausal-further-specifications (bundle)
+  (break "Call to process-clausal-further-specifications. Threaded right?")
   ;;really need to think about order of attachments!!!
   (dolist (fspec (reverse
 		   (further-specifications bundle)))
@@ -133,8 +134,9 @@
         (ac :wh-adj      process-wh-adjunct-accessory    t)))))
 ;; If we keep the bundle path alive, 
 ;; then fold these together
-#+ignore
+
 (defun process-clausal-accessories (bundle)
+  (break "Call to process-clausal-accessories. Threaded right?")
   (check-type bundle bundle-specification)
   (macrolet ((ac (ac-name fun ac-value?)
 		 `(let ((it (assoc (accessory-type-named ,ac-name)
