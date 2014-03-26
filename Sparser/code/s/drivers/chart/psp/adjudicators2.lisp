@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "adjudicators"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  2.0 January 2014
+;;;  Version:  2.2 February 2014
 
 ;; broken out from [scan] 5/13/94 v2.3.  5/16,17,18 working out details
 ;; 5/24 updated args.  6/14 added a case in fsa.
@@ -32,6 +32,8 @@
 ;; 2.1 (2/8/13) Put in a lot of debugging info since the state space
 ;;      is getting considerably larger.
 ;;     (1/22/14) Added a workable version of resume-after-error
+;; 2.2 (2/26/14) Extended adjudicate-result-of-word-fsa to handle the case
+;;      where the end-position hadn't been scanned. 
 
 (in-package :sparser)
 
@@ -51,6 +53,7 @@
 |#
 
 (defun resume-after-error ()
+  (tr :resume-after-error)
   (let* ((next-pos (the-next-position-to-scan))
          (rightmost-pos (chart-position-before next-pos))
          (word (when (includes-state rightmost-pos :scanned)
@@ -357,7 +360,13 @@
     ;;    there is an edge over the span:~%    ~A"
     (when *trace-status-history*
       (pretty-print-status-history pos-after-fsa-result))
-    (if edge
+    (cond
+     ((null status) ;; return position hasn't been scanned
+      ;;/// should we inccorporate some of what happens
+      ;; in the next clause ??
+      (scan-next-pos pos-after-fsa-result))
+
+    (edge
       ;; This is a fresh edge, we  have to see if it has its
       ;; own brackets and/or fsa before looking further on. 
       ;; Treating the edge like it was the result
@@ -367,10 +376,12 @@
       ;; with the earlier treatment applied to a possessive.
       (check-preterminal-edges
        (list edge) word
-       pos-before-word pos-after-fsa-result)      
+       pos-before-word pos-after-fsa-result))
 
+    (t ;; other two cases cover whats likely special here
       (adjudicate-status-after-fsa-returned
-       status pos-after-fsa-result))))
+       status pos-after-fsa-result)))))
+
 
 (defun adjudicate-status-after-fsa-returned (status pos-after-fsa-result)
   ;; Subroutine of adjudicate-result-of-word-fsa
