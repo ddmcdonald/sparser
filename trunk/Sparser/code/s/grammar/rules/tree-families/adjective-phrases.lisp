@@ -46,3 +46,11 @@
                       :head right-edge
                       :function (specializing-function left-edge)))))
 
+(define-exploded-tree-family  adjective-really-creates-subtype
+  :description ""
+  :binding-parameters ( subtype ) ;; ad-hoc: see Decode-rdata-mapping
+  :labels ( adjective )
+  :cases ((:subtype (np (adjective common-noun)
+                      :head right-edge
+                      :function (specializing-function left-edge)))))
+
