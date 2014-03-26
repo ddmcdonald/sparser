@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.22 January 2014
+;;;  Version:  2.22 March 2014
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -65,7 +65,8 @@
 ;;       equivalent of Strider so we can use that going forward as the default
 ;;       that operations are built on.
 ;; 2.22 (1/22/14) Added (turn-off-c3) to all the bigger sets. 1/29/14 refined 
-;;       fire-setting so we cover the segments. 
+;;       fire-setting so we cover the segments. 3/3/14 added bio-setting. 
+;;       3/18/14 tweak to the c3 setting.
 
 (in-package :sparser)
 
@@ -321,6 +322,7 @@
   (setq *break-on-new-bracket-situations* t)
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
+  (display-bracketing)
   (setq *switch-setting* :tuned-grok))
 
 (defun strider-setting ()
@@ -336,7 +338,6 @@
   (period-hook-on)
   (designate-sentence-container :simple)
   ;; misc. display settings
-  (display-bracketing)
   (setq *tts-after-each-section* t)
   (setq *dbg-print* nil)
   (turn-off-debugging-flags)
@@ -351,6 +352,14 @@
   ;;  when switching modes a lot. 
   (setq *switch-setting* :fire))
 
+(defun bio-setting ()
+  (turn-off-c3)
+  (tuned-grok)
+  (ignore-comlex)
+  (period-hook-off)
+  (setq *uniformly-scan-all-no-space-token-sequences* t)
+   (setq *switch-setting* :biology))
+
 
 ;;--- C3, and now for something completely different
 (defun c3-setting ()
@@ -361,6 +370,7 @@
         )
   (establish-kind-of-chart-processing-to-do :c3-protocol)
   (designate-sentence-container :situation)
+  (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
   (setq *c3* t) ;; already on if loaded as c3, this is for changing
   (setq *switch-setting* :c3))
 
@@ -389,6 +399,7 @@
         *recognize-sections-within-articles* nil
         *newline-delimits-paragraphs* nil
         *after-action-on-segments* 'normal-segment-finished-options)
+  (period-hook-off)
   (establish-version-of-next-terminal-to-use :pass-through-all-tokens)
   (establish-kind-of-chart-processing-to-do :just-do-terminals)
   (establish-version-of-look-at-terminal :record-word-frequency)
