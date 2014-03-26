@@ -276,6 +276,16 @@
   (memq name '(category::verb category::verb+present category::verb+s
                category::verb+ed category::verb+ing)))
 
+(defmethod participle? ((s string))
+  (participle? (word-named s)))
+(defmethod participle? ((w word))
+  (let ((morphology (word-morphology w)))
+    (case morphology
+      ((:ends-in-ed
+        :ends-in-ing) t)
+      (otherwise nil))))
+
+
 
 (defgeneric aux/modal-category? (label)
   (:documentation "modals, auxiliary forms of have and be, do"))
