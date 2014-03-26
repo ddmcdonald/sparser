@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "token FSA"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  3.2 February 2014
+;;;  Version:  3.4 March 2014
 
 ;;  initated ~6/90
 ;;  1.1  (12/90) Added a call to zero-lookup-buffer when the end-of-stream is
@@ -18,7 +18,9 @@
 ;;       (1/30/13) continue-token got an char entry of 0 on a bad character
 ;;        so added check for that case to improve the error. 
 ;;  3.3  (2/3/14) Added check and dispatch for character above 256.
- 
+;;       (2/27/14) cleaned up the no-entry logic in continue-token
+;;  3.4  (3/2/14) Folded in the common function character-entry to replace
+;;        the open-coded versions.
 
 (in-package :sparser)
 
@@ -30,10 +32,9 @@
       (then (setq entry *pending-entry*
                   *pending-entry* nil))
       (setq entry
-            (elt *character-dispatch-array*
-                 (char-code
-                  (elt *character-buffer-in-use*
-                       (incf *index-of-next-character*)))))) ; 
+            (character-entry 
+             (elt *character-buffer-in-use*
+                  (incf *index-of-next-character*)))))
 
     (if entry
       (if (eq :punctuation 
@@ -52,42 +53,50 @@
       
       (announce-out-of-range-character))))
 
-
-
-(defun continue-token (accumulated-entries length char-type)
+#+ignore
   (let ((char-code (char-code (elt *character-buffer-in-use*
                                    (incf *index-of-next-character*)))))
     (let ((next-entry
-           (if (< char-code 256) ;; length of *character-dispatch-array*
-             (elt *character-dispatch-array* char-code)
-             (entry-for-out-of-band-character char-code))))
+           (cond 
+            ((< char-code 128) ;; this range is completely filled in
+             (elt *character-dispatch-array* char-code))
+            ((< char-code 256) ;; length of *character-dispatch-array*
+             ;; but sparsely populated. Empty code points return 0.
+             (elt *character-dispatch-array* char-code))
+            (t ;; consult a table -- the escape for the rest of Unicode
+             (entry-for-out-of-band-character char-code)))))
+      ))
 
-      (when (and (numberp next-entry) (= next-entry 0))
-        ;; unclear why we don't get a null. In emacs in this case the 
-        ;; bad character prints as a capital o with an umlaut. 
-        (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))
-        (let* ((char (elt *character-buffer-in-use* *index-of-next-character*))
-               (code-point (char-code char)))
-          (push-debug `(,code-point ,char))
-          (error "No entry for code-point ~a,~%  '~a'~%at index ~a"
-                 code-point char *index-of-next-character*)))
+(defun continue-token (accumulated-entries length char-type)
+  (let ((next-entry
+         (character-entry (elt *character-buffer-in-use*
+                                   (incf *index-of-next-character*)))))
 
-      (if next-entry
-        (if (eq (car next-entry) :punctuation)
-          (do-punctuation-from-continue
-           next-entry accumulated-entries length char-type)
+    (when (and (numberp next-entry) (= next-entry 0))
+      ;; Presumably a character in the Latin-1 range that we don't
+      ;; haev an entry for, but keeping this info around just in case
+      (push-debug `(,*index-of-next-character* ,*character-buffer-in-use*))
+      (let* ((char (elt *character-buffer-in-use* *index-of-next-character*))
+             (code-point (char-code char)))
+        (push-debug `(,code-point ,char))
+        (announce-out-of-range-character)))
+
+    (if next-entry
+      (if (eq (car next-entry) :punctuation)
+        (do-punctuation-from-continue
+         next-entry accumulated-entries length char-type)
         
-          (if (eq *category-of-accumulating-token*
-                  (car next-entry))
-            (continue-token (kcons (cdr next-entry)
-                                   accumulated-entries)
-                            (1+ length)
-                            char-type )
-            (else
-             (setq *pending-entry* next-entry)
-             (finish-token accumulated-entries length char-type))))
+        (if (eq *category-of-accumulating-token*
+                (car next-entry))
+          (continue-token (kcons (cdr next-entry)
+                                 accumulated-entries)
+                          (1+ length)
+                          char-type )
+          (else
+           (setq *pending-entry* next-entry)
+           (finish-token accumulated-entries length char-type))))
       
-        (announce-out-of-range-character)))))
+      (announce-out-of-range-character))))
 
 
 
@@ -101,7 +110,7 @@
             "<trunc>"
             *word-lookup-buffer-length*)
 
-    (let ((interning-array *word-lookup-buffer*) ;;local copy of ptr
+    (let ((interning-array *word-lookup-buffer*) ;;local version of ptr
           (index length)
           (capitalization-state :start)
           entry )
