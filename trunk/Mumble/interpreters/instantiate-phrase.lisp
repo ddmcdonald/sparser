@@ -3,7 +3,7 @@
 
 ;;; MUMBLE-05:  interpreters> realization> instantiate-phrase
 
-;;; Copyright (C) 2005,2011-2012 David D. McDonald
+;;; Copyright (C) 2005,2011-2014 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
@@ -18,7 +18,8 @@
 ;; so as to avoid the choice and tree-family intermediaries whenever that makes sense.
 ;; 9/18/09 ddm. Converted instantiate-lexicalized-phrase to a method.
 ;; 3/28/11 ddm: Fixing glitches in mapping from DTN. 11/21/12 accomodate directly
-;; pasing in a parameter object.
+;; pasing in a parameter object. 1/27/14 Added instantiate-phrase to quiet the
+;; compiler even though it's not likely to work
 
 (in-package :mumble)
 
@@ -126,6 +127,10 @@
         (create-phrase-parameter-argument-list
 	     (parameters-to-phrase phrase) arguments)))
     (build-rooted-phrase (definition phrase))))
+
+(defun instantiate-phrase (phrase arguments)
+  ;; Mostly here to quiet the compiler
+  (old-instantiate-phrase phrase arguments))
 
 (defun build-rooted-phrase (definition)
   (let*-with-dynamic-extent 
