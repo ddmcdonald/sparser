@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.6 June 2013
+;;;  version:  0.7 February 2014
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -31,6 +31,8 @@
 ;;     case for word.  11/25/12 Quieted warning when running in *grok* mode.
 ;;     (2/15/13) Fixed print-individual-with-name to handle case of it getting
 ;;      a name object rather than a word value. 6/7/13 More rationalizing.
+;; 0.7 (2/6/14) Refactored print-individual-with-name to get around it's
+;;      presumtion that a 'name' variable always holds a word.
 
 (in-package :sparser)
 
@@ -102,6 +104,10 @@
              (word (if (consp value) (first value) value)))
         word))))
 
+(defun princ-name (name stream)
+  (let ((string (string-for/name/individual name)))
+    (format stream "~a" string)))
+
 
 (defun print-individual-with-name (i stream)
   ;; a 'special-routine' that is used with individuals that
@@ -117,42 +123,34 @@
           (unless name
             (find 'word (indiv-binds i)
                   :key #'(lambda (b)
-                           (var-name (binding-variable b)))))))
-    (let ((word
-           (cond (name name)
-                 (word-binding (binding-value word-binding)))))
-      (if word
-        (then
-          (unless *print-short*
-            (dolist (category (indiv-type i))
-              (princ-category category stream)
-              (write-string " " stream)))
+                           (var-name (binding-variable b))))))
+         (word
+          (cond (name name)
+                (word-binding (binding-value word-binding)))))
+    (if word
+      (then
+       (unless *print-short*
+         (dolist (category (indiv-type i))
+           (princ-category category stream)
+           (write-string " " stream)))
+       (typecase word
+         (word 
+          (princ-word word stream))
+         (polyword
+          (princ-polyword word stream))
+         (individual
+          (princ-name word stream))
+         (otherwise
+          (push-debug `(,word ,i))
+          (error "Unanticipated type of 'word': ~a~%~a"
+                 (type-of word) word))))
+      (else
+       (dolist (category (indiv-type i))
+         (princ-category category stream)
+         (write-string " " stream))))
 
-          (typecase word
-            (word 
-             (princ-word word stream))
-            (polyword
-             (princ-polyword word stream))
-            (individual
-             (case (cat-symbol (itype-of word))
-               ((category::person-name/first-last
-                 category::person-name)
-                (let ((string (string/person-name word)))
-                  (format stream "~a" string)))
-               (otherwise
-                (let ((string (string-for/name word)))
-                  (format stream "~a" string)))))
-            (otherwise
-             (push-debug `(,word ,i))
-             (error "Unanticipated type of 'word': ~a~%~a"
-                    (type-of word) word))))
-        (else
-          (dolist (category (indiv-type i))
-              (princ-category category stream)
-              (write-string " " stream))))
-
-      (format stream " ~A" (indiv-id i))
-      (write-string ">" stream))))
+    (format stream " ~A" (indiv-id i))
+    (write-string ">" stream)))
 
 
 
