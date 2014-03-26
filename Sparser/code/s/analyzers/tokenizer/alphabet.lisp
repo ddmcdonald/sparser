@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  0.2 September 2013
+;;;  Version:  0.3 February 2014
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
@@ -13,6 +13,7 @@
 ;; 0.2 (9/23/13) Adding characters in the Latin-1 range of UTF-8.
 ;; 0.3 (2/3/14) Added entry-for-out-of-band-character and friends to
 ;;      accommodate characters above that. 
+;;     (2/27/14) Added lowercase greek up to lambda
 
 (in-package :sparser)
 
@@ -28,8 +29,10 @@
 
     (break "~%The input stream contains the character \"~A\", whose character code~
             ~%is ~A.  That character is not part of the ascii character set~
-            ~%(0 to 127), and has not yet been entered into Sparser's character~
-            ~%array.~
+            ~%(0 to 127), and has not yet been entered into either Sparser's ~
+            ~$extended character array (128 to 255) or its table of 'out of bound'~
+            ~%characters. Note that above ascii the character encoding is~
+            ~%expected to be unicode, UTF-8.~
             ~%~
             ~%   If the character shouldn't have been in the stream, then you~
             ~%can just remove it and restart. If it does belong there, then ~
@@ -39,25 +42,25 @@
             ~%         `(:alphabetical~
             ~%            . (:lowercase . ,#\<char number> )))~
             ~%~
-            ~%where you use the character code of the new character in the~
-            ~%spot called '<code>' and the Lisp slashed form for the character~
-            ~%in '<char number>'.  For example an \"a\" with an umlaut over~
-            ~%it is represented in Lisp as #\\212 and has the character code~
-            ~%number 138.
-            ~%~
-            ~%Note that characters whose codes are larger than ~a, the present ~
-            ~%length of the character array, need special handling. See the ~
-            ~%function entry-for-out-of-band-character~%"
+            ~%Consult the examples in analyzers/tokenizer/alphabet.lisp for~
+            ~%examples and details~%"
            character code (length *character-dispatch-array*))))
          
 
-#+:apple
+#+:apple ;; old character set, hopefully OBE
 (setf (elt *character-dispatch-array* 138)  ;; #\212  "a" with an umlaut
       `(:alphabetical
         . (:lowercase . ,#\212 )))
+#|
+Entries are decoded by continue-token which uses the car to determine
+the character type (for token boundaries), then the cdr is accumulated
+and eventually passed to finish-token where the capitalization information
+is noted by the capitalization-fsa and the character is entered into
+the buffer that is fed to find-word and becomes part of the word's pname.
 
+(:alphabetical . (:lowercase . ,#\212 ))
 
-
+|#
 
 ;;---------------- standard ascii ----------------
 
@@ -600,9 +603,35 @@
 ;;; Machinery for characters higher than that 
 ;;;-------------------------------------------
 
+;; (code-char 954) => #\Greek_Small_Letter_Kappa
+;; (format nil "~x" 954) => 3BA
+
 (defparameter *entries-for-out-of-band-characters*
-  '((353  ;; #\Latin_Small_Letter_S_With_Caron
+  `((353  ;; #\Latin_Small_Letter_S_With_Caron
      (:alphabetical . (:lowercase . #\s)))
+    ;; 03B1
+    (945 ;; #\Greek_Small_Letter_Alpha
+     (:alphabetical . (:lowercase . ,(code-char 945))))
+    (946 ;; #\Greek_Small_Letter_Beta
+     (:alphabetical . (:lowercase . ,(code-char 946))))
+    (947 ;; #\Greek_Small_Letter_Gamma
+     (:alphabetical . (:lowercase . ,(code-char 947))))
+    (948 ;; #\Greek_Small_Letter_Delta
+     (:alphabetical . (:lowercase . ,(code-char 948))))
+    (949 ;; #\Greek_Small_Letter_Epsilon
+     (:alphabetical . (:lowercase . ,(code-char 949))))
+    (950 ;; #\Greek_Small_Letter_Ze49
+     (:alphabetical . (:lowercase . ,(code-char 950))))
+    (951 ;; #\Greek_Small_Letter_Eta
+     (:alphabetical . (:lowercase . ,(code-char 951))))
+    (952 ;; #\Greek_Small_Letter_Theta
+     (:alphabetical . (:lowercase . ,(code-char 952))))
+    (953 ;; #\Greek_Small_Letter_Iota
+     (:alphabetical . (:lowercase . ,(code-char 953))))
+    (954 ;; #\Greek_Small_Letter_Kappa  U#03BA
+     (:alphabetical . (:lowercase . ,(code-char 954))))
+    (955 ;; #\Greek_Small_Letter_Lambda
+     (:alphabetical . (:lowercase . ,(code-char 955))))
     )
   "If it's not a defparameter, CCL won't let us extend it 
    in a running lisp.")

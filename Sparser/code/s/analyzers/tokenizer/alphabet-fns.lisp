@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "alphabet fns"
 ;;;   Module:  "analyzers;tokenizer:"
-;;;  Version:  0.2 February 2014
+;;;  Version:  0.3 March 2014
 
 ;; initiated 9/21/92 v2.3
 ;; (4/20/93) added Set-tokenizer-table-entry
@@ -13,6 +13,9 @@
 ;;     (6/9/94) added character-type predicates.
 ;; 0.2 (5/31/96) Increased the size of the array to 256.
 ;;     (2/3/13) added doc that its value is burned in.
+;; 0.3 (3/2/13) Added character-entry to be the common access point
+;;      for all ranges of character codes.
+;;     (3/18/13) Moved in the setup code for Greek characters
 
 (in-package :sparser)
 
@@ -39,10 +42,35 @@
   (unless (characterp character)
     (error "Argument has to be a character. ~%~A is a ~A"
            character (type-of character)))
+  (character-entry character))
 
-  ;; n.b. this is open-coded in Run-token-fsa
-  (elt *character-dispatch-array*
-       (char-code character)))
+(defun character-entry (character)
+  ;; caller has to guarentee that the argument is a character
+  ;; since this is part of the tokenizer's inner loop
+  (let ((char-code (char-code character)))
+    (cond 
+     ((< char-code 128) ;; this range is completely filled in
+      (elt *character-dispatch-array* char-code))
+     ((< char-code 256) ;; length of *character-dispatch-array*
+      ;; but sparsely populated. Empty code points return 0.
+      (elt *character-dispatch-array* char-code))
+     (t ;; consult a table -- the escape for the rest of Unicode
+      (entry-for-out-of-band-character char-code)))))
+
+(defun entry-given-char-code (char-code)
+  ;; How expensive is a tail call?  Maintenance says this should
+  ;; be a subroutine of character-entry
+  ;; N.b. This will blow up or be stupid if you call it with
+  ;; an unknown out-of-band character
+  (cond 
+   ((< char-code 128) ;; this range is completely filled in
+    (elt *character-dispatch-array* char-code))
+   ((< char-code 256) ;; length of *character-dispatch-array*
+    ;; but sparsely populated. Empty code points return 0.
+    (elt *character-dispatch-array* char-code))
+   (t ;; consult a table -- the escape for the rest of Unicode
+    (entry-for-out-of-band-character char-code))))
+
 
 
 ;;;------------
@@ -146,3 +174,45 @@
           (:alphabetical
            `(:alphabetical . (,case . ,character))))))
        
+
+;;;--------------------------
+;;; Greek character handling 
+;;;--------------------------
+;; See rules-with-greek-chars-substituted
+
+(defvar *greek-character-map* nil
+  "A map from a string like 'alpha' to the corresponding
+   greek chaacter")
+
+(defun populate-greek-character-map ()
+  (labels
+     ((populate (string number)
+        (let ((entry (entry-given-char-code number)))
+          (let* ((char(character-in-entry entry))
+                 (char-string (make-string 1 :initial-element char)))
+            (push `(,string . ,char-string) 
+                  *greek-character-map*))))
+
+      (character-in-entry (list)
+        ;; e.g. (:alphabetical :lowercase . #\Greek_Small_Letter_Kappa)
+        (cdr (cdr list))))
+
+    (populate "alpha"   945)
+    (populate "beta"    946)
+    (populate "gamma"   947)
+    (populate "delta"   948)
+    (populate "epsilon" 949)
+    (populate "zeta"    950)
+    (populate "eta"     951)
+    (populate "theta"   952)
+    (populate "iota"    953)
+    (populate "kappa"   954)
+    *greek-character-map*))
+
+(defun greek-character-for (character-name)
+  (let ((pair (assoc character-name *greek-character-map*
+                     :test #'string-equal)))
+    (unless pair
+      (error "No Greek character listed for \"~a\"" character-name))
+    (cdr pair)))
+
