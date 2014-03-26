@@ -35,11 +35,13 @@
 ;; Dossier of region types and edge types is [location kinds]
 
 (define-category  region    
-  ;; e.g. New England, real places
+  ;; e.g. New England, real places. Should be relatively large, 
+  ;; and not have a more specific characterization. 
+  ;; The notion of a named-location is similar and some consolidation
+  ;; is in order.
   :instantiates  location
   :specializes  location
-  :binds ((name ;;:primitive word) 
-           (:or name :primitive word))
+  :binds ((name :primitive word) 
           (aliases  :primitive list)
           (type . region-type)
           (containing-region . location))
@@ -50,17 +52,14 @@
   (let ((r (define-named-individual-with-synonyms/expr
                'region
                (cons name-string aliases))))
-
     (when part-of
       (push-debug `(,r ,part-of))
       (cerror "just continue"
               "Deal with part-of in region definitions ~
                now? (\"~a\")" name-string))
-
  ; Note to self to make sure the ancillary bits to this
  ;       (setf (unit-plist obj)
  ;             `(:rules ,rules ,@(unit-plist obj)))
-
     r ))
 
 
@@ -81,11 +80,11 @@
 
 (defun give-kind-its-name (region name) ;; left-referent and right-referent
   ;; The function called by kind-of-name ETF in of.lisp
-  (push-debug `(,region ,name)) (break "cit of x")
+  (push-debug `(,region ,name)) ;;(break "cit of x")
   (let ((region-name (convert-to-canonical-name-form name))
         new-region )
     (cond
-     ((eq region category::city)
+     ((itypep region 'city)
       ;;//// "the Kurdish city" leads to an -instance- of the city
       ;;   category, not the category
       ;; These parse to region-types, but the independent definition
@@ -97,6 +96,9 @@
         (let ((place (edge-referent name-edge)))
           ;;/// see note next to named-location
           ;; ?? set the type? or just move to instantiating them
+          (push-debug `(,place ,name-edge))
+          ;;//// make a typed-region instance and have some rule that
+          ;; copies over the information from the region to the place
           (setq new-region place))))
 
      ((category-p region)
@@ -108,15 +110,17 @@
         ;; Need to be sure that the variables are there for binding
         (push-debug `(,region ,name))
         (break "the 'region' individual is not a location"))
-      (push-debug `(,region-name)) (break "Consider stripping name-word")
+      (push-debug `(,region-name)) (break "Does this path make sense?")
       ;; Is the region the right sort of thing to be it's type??
       ;; /// Loses the fact that the new-region is, e.g. a city
       ;; => instantiate the typed-region
+      ;; /// look at convert-name-to-place-name for use here. 
       (setq new-region (define-or-find-individual category::region
                           :name region-name)))
      (t
       (push-debug `(,region ,name))
-      (error "New situation in give-kind-its-name")))
+      (error "New situation in give-kind-its-name.~
+            ~%  region = ~a~%  name = ~a" region name)))
 
     new-region))
 
