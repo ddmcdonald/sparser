@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2003,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2003,2011-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "of"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  August 2013
+;;;  version:  March 2014
 
 ;; formed 10/26/94 from [of genitive] and [group of type]. Added def-rule data 3/8/95
 ;; 7/13/98 added item-of-value. 7/8/00 added member-of.
@@ -17,6 +17,8 @@
 ;; 2/28/13 added kind-of-name. 7/23/13 added empty-head-of-complement
 ;; 8/26/13 Fixed bug in simple-of-complement where binding of the left and right edges
 ;; was wrong. 
+;; 3/3/14 Added of/genitive/self-base/no-poss-marker to handle odd case of
+;; "p100 processing"
 
 (in-package :sparser)
 
@@ -116,6 +118,32 @@
                         :instantiate-individual result-type
                         :binds (larger left-edge
                                 smaller right-edge)))
+
+      (of-complement  (of-/complement  ("of"  complement)
+                         :head right-edge))))
+
+
+;; 
+(define-exploded-tree-family   of/genitive/self-base/no-poss-marker
+  :description "Just like of/genitive except that there is only one binding
+     because the 'base' np is created by  instantiating the result type.
+     The 'no-poss-marker' is for cases where the 'possessor' don't take
+     possessive morphology"
+  :binding-parameters ( bound )
+  :labels ( np  possessive  complement  base-np  result-type )
+  :cases
+     ((np+genitive-of (np  (base-np  of-/complement)
+                        :head left-edge
+                        :instantiate-individual result-type
+                        :binds (bound right-edge)))
+
+;      (possessive-formation (possessive/-s  (possessive  apostrophe-s)
+;                              :head left-edge))
+
+      (possessive+np  (np  (possessive  base-np) ;;(possessive/-s  base-np)
+                        :head right-edge
+                        :instantiate-individual result-type
+                        :binds (bound left-edge)))
 
       (of-complement  (of-/complement  ("of"  complement)
                          :head right-edge))))
