@@ -117,6 +117,7 @@
 (defun segment-parsed1 ()
   ;; called from within the march/segment parsing routines once
   ;; they have walked all the way back to the left end of the segment
+  (tr :segment-parsed1)
   (tr :parsing-of-segment-finished)
   (segment-finished (segment-coverage)))
 
@@ -148,6 +149,7 @@
 
 (defun tidy-up-segment-globals (coverage)
   ;; called by segment-finished before it does anything else
+  (tr :tidy-up-segment-globals)
   (end-of-segment-measurements)
   (unless coverage
     (break "The coverage calculation between p~A and p~A didn't have ~
@@ -222,6 +224,7 @@ have to be tail recursion to the next thing to do.
 
 (defun after-action-on-segments (coverage)
   ;; called from segment-finished
+  (tr :after-action-on-segments)
   (funcall *after-action-on-segments* coverage))
 
 
@@ -293,6 +296,7 @@ have to be tail recursion to the next thing to do.
   ;; This is "segment-finished" for the purposes of the inline doc below
   ;; broken out of segment-finished to let us call it as a fall-back
   ;; in the sdm routines or as a follow-on to what they do.
+  (tr :normal-segment-finished-options)
   (case coverage
     (:one-edge-over-entire-segment
      (sf-action/spanned-segment))
@@ -332,6 +336,7 @@ have to be tail recursion to the next thing to do.
 ;;/// fleshout and move if it looks generally useful
 (defun check-segment-finished-hook ()
   ;; Stub of a proper hook. Called from sf-action/spanned-segment
+  (tr :check-segment-finished-hook)
   (let ((convering-edge (edge-over-segment)))
     (when convering-edge
       (when (eq (edge-category convering-edge)
@@ -339,6 +344,7 @@ have to be tail recursion to the next thing to do.
         (consider-converting-title-to-person convering-edge)))))
 
 (defun sf-action/spanned-segment1 ()
+  (tr :sf-action/spanned-segment1)
   (unless *right-segment-boundary*
     (error "Threading bug somewhere upstream in the master control ~
             FSA~%There is no value for *right-segment-boundary*"))
@@ -367,6 +373,7 @@ have to be tail recursion to the next thing to do.
   ;; we don't allow this case to be trivially spanned as a segment.
   ;; Because of the first, we pass it to HA to see if it can do
   ;; anything with the segment's prefix and head.
+  (tr :sf-action/all-contiguous-edges)
 
   (let ((revised-coverage (when *do-heuristic-segment-analysis*
                             (apply-HA-to-current-segment))))
@@ -388,11 +395,12 @@ have to be tail recursion to the next thing to do.
 
 
 (defun sf-action/all-contiguous-edges/no-more-heuristics ()
+  (tr :sf-action/all-contiguous-edges/no-more-heuristics)
   (when *pending-conjunction*
     (if *do-heuristic-segment-analysis*
       (check-out-possible-conjunction *left-segment-boundary*)
       (else
-        (tr ::turning-off-conj-flag-w/o-any-action)
+        (tr :turning-off-conj-flag-w/o-any-action)
         (setq *pending-conjunction* nil))))
 
   (sf-action/spanned-segment1))
@@ -426,6 +434,7 @@ have to be tail recursion to the next thing to do.
         (sf-action/some-adjacent-edges/no-more-heuristics)))))
 
 (defun sf-action/some-adjacent-edges/no-more-heuristics ()
+  (tr :sf-action/some-adjacent-edges/no-more-heuristics)
   (when *pending-conjunction*
     (tr ::turning-off-conj-flag-w/o-any-action)
     (setq *pending-conjunction* nil))
