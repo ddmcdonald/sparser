@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995, 2010-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2010-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  2.1 November 2013
+;;;  version:  2.2 March 2014
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -23,7 +23,6 @@
 ;;   (10/31/13) added find-variable-in-mixins to the mix.
 ;;   (11/13/13) Finished var name registration that lets you get a single
 ;;    variable from the name if that's the case. 
-
 
 (in-package :sparser)
 
