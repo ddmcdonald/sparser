@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
-;;; Copyright (c) 2013 David D McDonald
+;;; Copyright (c) 2013-2014 David D McDonald
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 
 ;;;  mumble/interface/derivations/types
@@ -7,9 +7,12 @@
 ;; initiated 3/20/07, elaborated through 7/07
 ;; 9/17/09 Commenting out the definiion of lexicalized-phrase in favor of the
 ;;  one in derivation-trees. Others are likely to soon become obsolete as well.
-;; 4/30/13 Adjusted fn name in bundle creator
+;; 4/30/13 Adjusted fn name in bundle creator.
 
 (in-package :mumble)
+
+#| N.b. This set of types is deprecated, and somewhat incompatible
+   with the CLOS classes defined in Mumble/derivation-trees/types.lisp |#
 
 ;;;---------------------------------------------------
 ;;;                     types
@@ -87,7 +90,7 @@
 ;;;---------------------
 ;;; lexicalized-phrases
 ;;;---------------------
-#|
+#+ignore  ;; it's defined in CLOS somewhere
 (instantiate-type (lexicalized-phrase
 		   (#:lp- )
 		   ("#<lp ~a ~a ~a>" lp
@@ -99,8 +102,24 @@
   (parameter-value-pairs)
   (open-parameters))
 
+;; Stubs to quiet the compiler. Caller is construct-unpacked-phrasal-root
+;; But defining these isn't enough -- need the setf functions as well
+(defun lp-parameter-value-pairs (lp)
+  (declare (ignore lp))
+  (error "undefined until the struct version of lexicalized-phrase is moved"))
+(defun lp-phrase (lp)
+  (declare (ignore lp))
+  (error "undefined until the struct version of lexicalized-phrase is moved"))
+(defun lp-open-parameters (lp)
+  (declare (ignore lp))
+  (error "undefined until the struct version of lexicalized-phrase is moved"))
+
+
 ;; e.g. (SVPrepO (v . "bark") (p . "at"))
 ;;
+;; This is the one place that uses the 2007-style lexicalized-phrase
+;; so it ought to suffice to quiet things down
+#+ignore
 (defun dereference-lexicalized-phrase-expression (exp)
   (let ((phrase (phrase-named (car exp)))
 	(pairs (cdr exp)))	
@@ -179,7 +198,7 @@
 	  (rplacd cons known-value)))) ;;(setq *uppr* uppr) (break "uppr")
     uppr)) ;;(defvar *uppr* nil)
 
-|#
+
 
 
 ;;;------------------
