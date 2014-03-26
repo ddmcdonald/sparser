@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  0.3 February 2013
+;;;  version:  0.4 February 2014
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
 ;; of it and reconstruing these results as names. 
+;; 0.4 2/25/14 Modified to retain the interior punctuation.
 
 (in-package :sparser)
 
@@ -104,14 +105,20 @@
               (tr :ns-reached-eos-at next-position)
               (return)))))
 
+      ;; remove terminal punctuation, unless it's hyphen
+      (when (eq (pos-capitalization position) :punctuation)
+        (unless (eq (pos-terminal position) word::hyphen)
+          (pop words)))
+
       (setq words (nreverse words))
 
       ;; remove things swept up that don't belong
       (when (eq (car words) *source-start*)
         (setq words (cdr words)))
-      (loop for w in words
-        when (punctuation? w) ;; ,"
-        do (setq words (remove w words :test #'eq)))
+      ;; Retain interior punctuation
+      ;;(loop for w in words
+      ;; when (punctuation? w) ;; ,"
+      ;; do (setq words (remove w words :test #'eq)))
 
       (unless (> (length words) 1) ;; false alarm
         (return-from collect-no-space-sequence-into-word nil))
