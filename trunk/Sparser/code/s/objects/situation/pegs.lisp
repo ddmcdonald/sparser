@@ -31,12 +31,12 @@
       (error "There is no current peg."))
     p))
 
-(defun setup-a-peg (state)
+(defmethod setup-a-peg ((state state))
   ;; through back a peg. When it's clearer what they are
-  ;; then setup a resource
-  (setq *current-peg*
-        (make-instance 'peg :name state)))
-
+  ;; then setup a resource.
+  (let ((name (name state)))
+    (setq *current-peg*
+          (make-instance 'peg :name name))))
 
 
 (defmethod bind-variable-on-peg ((peg peg) (variable lambda-variable)
