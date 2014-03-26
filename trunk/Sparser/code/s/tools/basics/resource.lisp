@@ -1,13 +1,18 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "resource"
 ;;;    Module:   "tools:basics"
-;;;   Version:   September 2013
+;;;   Version:   March 2014
 
 ;; initiated 7/15/13 to provide a general facility for automating
 ;; the construction and management of resources. 9/17/13 Got it to
-;; turn over and do useful tings 
+;; turn over and do useful things, but still has loose ends.
+;; 3/24/14 Added a facility for automatic the find-or-make setup.
+
+;;;-----------------------------------
+;;; Resource of recyclable data types 
+;;;-----------------------------------
 
 (defclass resource-specification (named-object)
   ((storage-type
@@ -42,6 +47,23 @@
   (print-unreadable-object (r stream :type t)
     (format stream "~a" (resource-class-name r))))
 
+
+#| 
+The type that we create
+It's initialization method
+its reclaim method
+Its clean method
+
+with a kons list
+an init function
+  which creates an alloq
+the instance need to put itself somewhere that we can get it back 
+from, perhaps a global table
+
+
+That's a pack of methods, so the resource initialization has to 
+make them according to the spec given in the class instance
+|#
 
 (defun allocate-next-instance (r) ;; make a method on subtypes of resource
   (let* ((index (incf (instance-counter r)))
@@ -117,20 +139,54 @@
   ;; where that chain of calls will stop.
   anything)
 
-#| 
-The type that we create
-It's initialization method
-its reclaim method
-Its clean method
 
-with a kons list
-an init function
-  which creates an alloq
-the instance need to put itself somewhere that we can get it back 
-from, perhaps a global table
+;;;-------------------------------
+;;; Find-or-make facility creator
+;;;-------------------------------
+
+(defun setup-find-or-make (class-name)
+                           ;;&key (storage-type :table))
+  "Makes a customized table, get function, and find or make function
+   for the indicated class. If the class-name was the symbol 'speaker
+   then it makes a special variable SPEAKER-TABLE that is bound to
+   a hashtable from symbols to instances. Given the symbol that names
+   the instance the function GET-SPEAKER will retrieve it. The function
+   FIND-OR-MAKE-SPEAKER will make an instance of the speaker class
+   with the symbol it takes as an argument. 
+
+Presumes, but doesn't check, that the class inherits from has-name
+   to simplify (by burning in) the initialization parameters of the
+   class. 
+"
+;  (ecase storage-type
+;    (:table))
+  (unless (symbolp class-name)
+    (error "Class argument should be the symbol that names the class"))
+  (let* ((class-string (symbol-name class-name))
+         (sparser-package (find-package :sparser))
+         (table-name (intern (string-append "*" class-string "-TABLE*")
+                             sparser-package))
+         (finder-name (intern (string-append "FIND-OR-MAKE-" class-string)
+                              sparser-package))
+         (getter-name (intern (string-append "GET-" class-string)
+                              sparser-package)))
+    ;; Could return a progn that does all this, but this version
+    ;; is easier to incrementally debug
+    (let ((table-form `(defvar ,table-name (make-hash-table))))
+      (eval table-form))
+    (let ((getter-form `(defun ,getter-name (name)
+                          (gethash name ,table-name))))
+      (eval getter-form))
+    (let ((fom-form `(defun ,finder-name (name)
+                       (or (,getter-name name)
+                           (let ((i (make-instance ',class-name :name name)))
+                             (setf (gethash name ,table-name) i)
+                             i)))))
+      ;;(break "fom-form")
+      (eval fom-form))
+    class-string))
 
 
-That's a pack of methods, so the resource initialization has to 
-make them according to the spec given in the class instance
-|#
+
+
 
