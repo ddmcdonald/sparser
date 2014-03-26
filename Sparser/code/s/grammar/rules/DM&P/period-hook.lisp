@@ -1,19 +1,22 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  September 2013
+;;;   version:  February 2014
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
-;; hooked it into creating sentences. 
+;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
 
 (in-package :sparser)
 
 
 (defun period-hook-on ()
   (define-completion-action word::period :hook 'period-hook))
+
+(defun period-hook-off ()
+  (delete-completion-action word::period :hook))
 
 
 ;;--- state variable
