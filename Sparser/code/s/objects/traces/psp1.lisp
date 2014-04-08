@@ -1318,12 +1318,37 @@
 (defun untrace-c3 ()
   (setq *trace-c3* nil))
 
+(deftrace :starting-c3-segment (pos)
+  ;; in scan-segment
+  (when *trace-c3*
+    (trace-msg "[c3] starting new segment at p~a"
+               (pos-token-index pos))))
+
 (deftrace :delimited-c3-segment (from to)
   ;; in scan-segment
   (when *trace-c3*
     (trace-msg "[c3] delimited segment from p~a to p~a"
                (pos-token-index from)
                (pos-token-index to))))
+
+(deftrace :c3-segment-scan-start (start-pos start-bracket)
+  ;; called from read-through-segment-to-end
+  (when *trace-c3*
+    (trace-msg "[c3 seg] Starting next segment at p~a on ~a"
+               (pos-token-index start-pos)
+               start-bracket)))
+
+(deftrace :c3-segment-scan-ended (word-after position-before)
+  (when *trace-c3*
+    (trace-msg "[c3 seg]] Segment ended at p~a by brackets on \"~a\""
+               (pos-token-index position-before)
+               (word-pname word-after))))
+
+(deftrace :c3-segment-advancing-to (position)
+  (when *trace-c3*
+    (trace-msg "[c3 seg]] Advancing segment to p~a"
+               (pos-token-index position))))
+
 
 (deftrace :incorporate-into-situation (referent edge)
   ;; in incorporate-referent-into-the-situation
@@ -1339,6 +1364,25 @@
   ;; in incorporate-referent-into-the-situation
   (when *trace-c3*
     (trace-msg "[c3] ~a is not the head" referent)))
+
+(deftrace :state-update (state new-state type)
+  ;; in update-situation-state
+  (when *trace-c3*
+    (trace-msg "[c3] updating the ~a state from ~a to ~a"
+               type state new-state)))
+
+(deftrace :c3-composing (left-ref right-ref)
+  ;; in incorporate-composition-into-situation
+  (when *trace-c3*
+    (trace-msg "[c3] composing a ~a with a ~a"
+               (cat-symbol (itype-of left-ref))
+               (cat-symbol (itype-of right-ref)))))
+
+(deftrace :c3-composing-result (result)
+  ;; in incorporate-composition-into-situation
+  (when *trace-c3*
+    (trace-msg "[c3] the result of the composition is ~a" 
+               result)))
 
 
 
