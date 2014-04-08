@@ -45,7 +45,7 @@
 (defun category-of (item)
   (typecase item
     (psi (base-category-of-psi item))
-    (individual (first (indiv-type item)))
+    (individual (first (indiv-type item))) ;; c.f. i-type-of
     (mixin-category item)
     (referential-category item)
     (category item)
