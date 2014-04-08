@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2014 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   2.4 August 2013
+;;;   Version:   2.4 April 2014
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -30,6 +30,9 @@
 ;; 2.4 (7/22/13) Added some doc and the base of the redistribute method
 ;;     (8/14/13) More syntactic sugar.
 ;;     (10/10/13) Added final hook to incorporate the referent into the situation. 
+;;     (3/31/14) Put real call for the c3 case. (4/7/14) Letting the result of
+;;      the C3 call (which wraps a call to compose) override the referent.
+
 
 (in-package :sparser)
 
@@ -83,6 +86,7 @@
                            rule
                            &key left-ref
                                 right-ref )
+  (declare (special *c3*))
 
   (setq *referent* nil) ;; cleanup from last time
 
@@ -138,11 +142,13 @@
 
         (call-redistribute-if-appropriate left-referent right-referent)
 
-        ;;(dereference
-
         (when *c3*
-          (break "ref -- not unary rule -- check")
-          (incorporate-referent-into-the-situation *referent* rule parent-edge))
+          (let ((result (incorporate-composition-into-situation 
+                         left-referent right-referent 
+                         *referent* rule parent-edge)))
+            (when result
+              (unless (eq result *referent*)
+                (setq *referent* result)))))
 
         *referent* ))))
 
