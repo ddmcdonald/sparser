@@ -14,7 +14,8 @@
 
 
 (define-category container
-  :specializes c3-region)
+  :specializes c3-region
+  :binds ((contents)))
 
 #| Notes for the basis for SUV qua container
 

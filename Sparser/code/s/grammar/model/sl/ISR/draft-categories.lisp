@@ -39,9 +39,6 @@
   ;; What special sause does 'agent' add? 
   :realization (:common-noun "agent")) ;; n.b. "Mossad agent"
 
-(define-category process
-  :specializes nil) ;; Process < Perdurant (with participants var.)
-
 
 
 (define-category has-name
@@ -111,8 +108,7 @@ It creates artifacts,
 It has buildings that it does its manufacturing in
  these are the place of the artifact creation
 |#
-                    
-    
+      
 
 
 
