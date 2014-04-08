@@ -69,7 +69,7 @@ make them according to the spec given in the class instance
   (let* ((index (incf (instance-counter r)))
          (i (nth index (resource-store r))))
     (unless i
-      (error "Ran out of ~a. Implement the resource incrementer"))
+      (error "Ran out of ~a. Implement the resource incrementer" r))
     i))
 
 (defun initialize-resource (r) ;; ditto
@@ -144,21 +144,21 @@ make them according to the spec given in the class instance
 ;;; Find-or-make facility creator
 ;;;-------------------------------
 
-(defun setup-find-or-make (class-name)
-                           ;;&key (storage-type :table))
+(defun setup-find-or-make (class-name) ;;&key (storage-type :table))
   "Makes a customized table, get function, and find or make function
    for the indicated class. If the class-name was the symbol 'speaker
    then it makes a special variable SPEAKER-TABLE that is bound to
    a hashtable from symbols to instances. Given the symbol that names
    the instance the function GET-SPEAKER will retrieve it. The function
    FIND-OR-MAKE-SPEAKER will make an instance of the speaker class
-   with the symbol it takes as an argument. 
+   with the symbol it takes as an argument. The function CLEAR-SPEAKER
+   will reinitialize the table.
 
-Presumes, but doesn't check, that the class inherits from has-name
+   Presumes, but doesn't check, that the class inherits from has-name
    to simplify (by burning in) the initialization parameters of the
-   class. 
-"
-;  (ecase storage-type
+   class. "
+
+;  (ecase storage-type ;; alist??
 ;    (:table))
   (unless (symbolp class-name)
     (error "Class argument should be the symbol that names the class"))
@@ -169,7 +169,9 @@ Presumes, but doesn't check, that the class inherits from has-name
          (finder-name (intern (string-append "FIND-OR-MAKE-" class-string)
                               sparser-package))
          (getter-name (intern (string-append "GET-" class-string)
-                              sparser-package)))
+                              sparser-package))
+         (clear-name (intern (string-append "CLEAR-" class-string)
+                             sparser-package)))
     ;; Could return a progn that does all this, but this version
     ;; is easier to incrementally debug
     (let ((table-form `(defvar ,table-name (make-hash-table))))
@@ -182,8 +184,10 @@ Presumes, but doesn't check, that the class inherits from has-name
                            (let ((i (make-instance ',class-name :name name)))
                              (setf (gethash name ,table-name) i)
                              i)))))
-      ;;(break "fom-form")
       (eval fom-form))
+    (let ((clear-form `(defun ,clear-name ()
+                         (clrhash ,table-name)) ))
+      (eval clear-form))
     class-string))
 
 
