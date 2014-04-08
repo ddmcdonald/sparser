@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2000,2010-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2000,2010-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  December 2013
+;;;   version:  March 2014
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -47,7 +47,8 @@
 ;; 12/3/12 Removed bracket files to their own loader. 3/18/13 added 2d-loader
 ;; for kinds.  Also bumped title loader to 3.  7/1/13 Added a post-loader for adjunct
 ;; rules. 12/2/13 waypoints. 1/29/14 Removing the *c3* guards to see if everything
-;; will load compatibly. 
+;; will load compatibly. 3/28/14 converted loading kinds;upper-model to kinds;1st-loader
+;; so that file could be broken into more useful pieces.
 
 
 (in-package :sparser)
@@ -94,7 +95,7 @@
       (gload "tree-families;loader1")
       (gload "tree-families;loader")))
 
-  (gload "kinds;upper-model") ;; defines individual and such 
+  (gload "kinds;1st-loader") ;; defines individual and such 
 
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
