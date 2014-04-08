@@ -151,7 +151,7 @@
      obj)
     (t
      (typecase obj
-       (psi
+       #+ignore(psi
 	(let ((top-cat
 	       (lp-super-category 
 		(if cl-user::*psi-2009*
@@ -283,11 +283,9 @@
       ((eq 'psi (type-of value)) 
        (if (and (eq 'content (var-name variable))
 		(eq (category-named 'event)
-		    (if cl-user::*psi-2009*
-		      (lp-super-category (lp-top-lp (psi-lp value)))
-		      (lp-super-category (climb-lattice-to-top (psi-lattice-point value))))))
-	   (list (export-as-value-name-for variable) (export-object value)) 
-	   (cons (export-as-value-name-for variable) (export-object value))))
+                    (lp-super-category (lp-top-lp (psi-lp value)))))
+         (list (export-as-value-name-for variable) (export-object value)) 
+         (cons (export-as-value-name-for variable) (export-object value))))
       ((eq 'word (type-of value)) 
        (list (export-as-value-name-for variable)
 	     (car (export-object value))))
