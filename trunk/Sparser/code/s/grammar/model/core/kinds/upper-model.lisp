@@ -78,37 +78,8 @@
 ; fall under this category. 
 
 
-;;;------------------------------------------
-;;; work-a-day categories already in Sparser
-;;;------------------------------------------
-
-(define-category  kind
-  :instantiates :self
-  :binds ((name :primitive word)))
-
-(define-category  individual ;; purely a placeholder like "kind"
-  :binds ((modifier)))
-
-(define-category  event ;; rename it "eventuality" at some pont
-    ;; and merge into the top-level ontology when it's rationalized
-  :instantiates nil
-  :specializes  nil
-  :binds ((time)
-          (location)
-          (purpose)
-          (modifier)
-          (participant)))
-
-(define-category  perdurant
-  :instantiates nil
-  :specializes  nil)
-
-(define-category state ;; copied up from M/Zo
-  :specializes perdurant
-  :binds ((theme))) ;; one salient value
-
 (define-category  quality
-  :instantiates nil
+  :instantiates top
   :specializes  nil)
 
 (define-category scalar-quality
