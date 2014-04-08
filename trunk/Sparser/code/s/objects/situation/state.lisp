@@ -3,7 +3,7 @@
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "state"
-;;;            grammar/rules/situation/
+;;;            objects/situation/
 ;;;  version:  October 2013
 
 ;; Initiated 10/9/13. Elaborated 10/10/13
@@ -42,8 +42,11 @@
 ;;;---------
 
 (defmethod update-situation-state ((edge edge) (type symbol))
-  ;; called from incorporate-referent-into-the-situation which
-  ;; wants the new state returned. 
+  ;; called from incorporate-referent-into-the-situation on
+  ;; edges over individual words (or polywords). Also called
+  ;; from c3-process-segment-and-update-state where the edge
+  ;; is over the entire segment and we're updating the sentence
+  ;; state. Both want the new state returned. 
   (let* ((situation (the-situation))
          (state (ecase type
                   (phrase (state situation))
@@ -51,20 +54,24 @@
                   (discourse (break "stub"))))
          (transitions (transition-table state))
          (form (edge-form edge)))
+
     (let ((entry (assoc form transitions)))
       (unless entry
         (push-debug `(,situation ,state ,form ,transitions))
         (error "No transition in ~a for ~a" state form))
       (push-debug `(,entry)) ;(break "decipher entry")
+
       (let ((new-state (cadr entry))
-            (actions (cddr entry))) ;; deprecated if we can
-        (when actions               ;; get away with it
+            (actions (cddr entry))) ;; deprecated if we can get away with i
+        (tr :state-update state new-state type)
+        (when actions
           (push-debug `(,actions ,entry))
           (break "first case of actions on a state transition"))
         (ecase type
           (phrase (setf (state situation) new-state))
           (sentence (setf (sentence-state situation) new-state))
           (discourse (break "stub")))
+
         new-state))))
 
 
@@ -77,6 +84,9 @@
         (situation (the-situation)))
     (setf (state situation) state)))
     
+
+(defun sentential-state ()
+  (sentence-state (the-situation)))
 
 
 ;;;-----------------
@@ -139,42 +149,5 @@
           (push `(,category ,state)
                 entries))))
     (nreverse entries)))
-
-
-;;;-------
-;;; cases
-;;;-------
-;;  Define before mention is easy on the code.
-;;  Forward ref. is tricky w/o knowing the level of the state
-
-;;--- NPs
-
-(define-state :assembling-np phrase ;; "Ford" (but actually "ford")
-  ((proper-noun :assembling-np)
-   ))
-
-(define-state :initial-state phrase ;; "black"
-  ((adjective :assembling-np)
-   (verb+s :assembling-vg) ;; "has" when not a head
-   ))
-
-;;--- VGs
-
-(define-state :assembling-vg phrase
-  ((verb+s :assembling-vg)
-   ))
-
-
-
-;;--- sentence level
-
-;; inital -> subject-seen -> verb-seen -> np-complement-seen
-
-(define-state :subject-seen sentence nil)
-
-(define-state :initial-sentence-state sentence
-  ((np :subject-seen)))
-
-
 
 

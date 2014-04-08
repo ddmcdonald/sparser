@@ -3,7 +3,7 @@
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "variables"
-;;;            grammar/rules/situation/
+;;;            objects/situation/
 ;;;  version:  October 2013
 
 ;; Initiated 10/9/13. Given some content 10/10
