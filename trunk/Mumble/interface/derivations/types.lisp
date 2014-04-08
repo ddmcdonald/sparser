@@ -59,10 +59,10 @@
       (error "There is no lexical-resource named ~a" lr-name))
     (let ((operator
 	   (typecase resource
-	     (lexical-resource
+	     #+ignore(lexical-resource
 	      (dereference-lexicalized-phrase-expression
 	       (lr-expression resource)))
-	     (template-resource
+	     #+ignore(template-resource
 	      (dereference-template-resource resource lexical-resource))
 	     (otherwise
 	      (break "Dereferencing resource expression - new type: ~a~%~a"
