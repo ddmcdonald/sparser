@@ -4,11 +4,12 @@
 ;;;
 ;;;     File:  "C3-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  January 2014
+;;;  version:  April 2014
 
 ;; Initiated 9/18/13 by analogy to inititate-top-edges-protocol.
 ;; 10/9/13 started putting meat on its bones. Debugging segement 
-;; scan through 1/21/14
+;; scan through 1/21/14. Debugging extension of scan into next
+;; segment through 4/7/14
 
 (in-package :sparser)
 
@@ -23,18 +24,21 @@
 
 
 (defun scan-segment (start-pos)
-  ;; Compare scan-next-segment in the regular protocol.
+  ;; Compare to scan-next-segment in the regular protocol.
   ;; This is the fixed point where resume between segments.
-
-  ;; first delimit the segment
+  (tr :starting-c3-segment start-pos)
   (let* ((last-position (read-through-segment-to-end start-pos))
+         ;; first delimit the next segment that starts here
          (position start-pos)
          (head-position (chart-position-before last-position)))
-    ;; Then walk through it left-to-right extending
-    ;; the situation. Assume that the final word is the head.
     (tr :delimited-c3-segment start-pos last-position)
-;    (break "last-position = ~a" last-position) ;; => trace
+    (when (eq start-pos last-position)
+      (push-debug `(,last-position))
+      (error "Empty segment?"))
+
     (loop 
+      ;; Then walk through it left-to-right extending
+      ;; the situation. Assume that the final word is the head.
       (introduce-next-word position (eq position head-position))
       (setq position (chart-position-after position))
       (when (eq position last-position)
@@ -50,6 +54,7 @@
 
 
 (defun introduce-next-word (position-before head-word?)
+  ;; called from scan-segment word-by-word
   (let ((word (pos-terminal position-before)))
     (unless (word-with-single-edge-rules? word)
       (push-debug `(,position-before ,word))
@@ -62,22 +67,32 @@
         (install-terminal-edges word position-before position-after)))))
 
 
-(defvar *trace-read-through-segment-to-end* nil "Ad-hoc one-off debugging")
-; (setq *trace-read-through-segment-to-end* t)
 
 (defun read-through-segment-to-end (start-pos)
-  (let ((start-bracket (bracket-that-starts-the-segment start-pos)))
-    (interpret-open-bracket-as-segment-start start-bracket start-pos)
-    (when *trace-read-through-segment-to-end*
-      (push-debug `(,start-bracket ,start-pos)))
-    (let ((position-before start-pos)
-          word-after )
+  (flet ((starting-bracket (p)
+           (ev-boundary (pos-starts-here p))))
+    ;; We're starting here because the previous segment ended here
+    (let ((start-bracket (starting-bracket start-pos))
+          (position-before start-pos) ;; for the loop
+          (skip-]-check t) ;; for operating on the first word
+          word-after  ] )
+      (push-debug `(,start-pos ,start-bracket)) 
+      ;;(break "start at ~a" start-pos)
+      (tr :c3-segment-scan-start start-pos start-bracket)
+      (unless start-bracket
+        (if (= 1 (pos-character-index start-pos)) ;; p1
+          (setq start-bracket phrase.[)
+          (else
+           (push-debug `(,start-pos))
+           (error "Threading bug: no starting bracket"))))
+      (interpret-open-bracket-as-segment-start start-bracket start-pos)
+   
       (loop
+        ;;  position-before -> word-after 
         (unless (pos-terminal position-before)
           (scan-next-position))
-        (when *trace-read-through-segment-to-end*
-          (break "position before = ~a" position-before))
         (setq word-after (pos-terminal position-before))
+        ;;(break "new position-before = ~a" position-before)
 
         (when (eq word-after *end-of-source*)
           (push-debug `(,start-pos ,position-before))
@@ -90,27 +105,37 @@
             ;; else we're done
             (terminate-chart-level-process)))) ;; does a throw
 
-        (introduce-leading-brackets word-after position-before) ;; brackets to the left
-        ;; cribed from check-for-]-from-word-after
-        (let ((] (]-on-position-because-of-word? position-before word-after)))
-          (set-status :]-from-word-after-checked position-before)
-          (if ]
-            (if (bracket-ends-the-segment? ] position-before)
-              (then
-               (when *trace-read-through-segment-to-end*
-                 (push-debug `(,] ,position-before))
-                 (break "segment ended on brackets of ~a" word-after))
-               ;; bracket-check set the right-boundary global
-               (return position-before))
-              (else ;; loop around
-               (setq position-before 
-                     (chart-position-after position-before))))))))))
+        (unless skip-]-check
+          ;; we introduced the leading brackets as 
+          ;; we ended the previous segment. We also wait one word
+          ;; before checking for end-brackets
+          ;; This does set-status :brackets-from-word-introduced on the position
+          (introduce-leading-brackets word-after position-before)
+          (setq ] (]-on-position-because-of-word? position-before word-after))
+          (set-status :]-from-word-after-checked position-before))
+
+        (if (and ] (bracket-ends-the-segment? ] position-before))                     
+          (then
+           (tr :c3-segment-scan-ended word-after position-before)
+           (when (eq start-pos position-before)
+             (push-debug `(,] ,position-before))
+             (break "still not fixed: ~a" position-before))
+           ;; bracket-check set the right-boundary global
+           (return position-before))
+
+          (else ;; loop around
+           (setq skip-]-check nil)
+           (setq position-before 
+                 (chart-position-after position-before))
+           (tr :c3-segment-advancing-to position-before)))))))
  
 
 
 
 
 (defun c3-process-segment-and-update-state (start-pos last-pos)
+  ;; called by scan-segment just after it gets out of its
+  ;; accumulation loop, which includes the head edge. 
   (push-debug `(,start-pos ,last-pos))
   ;; Can make the edge by fiat. Take the referent from the
   ;; head edge as put there by incorporate-phrasal-head and
@@ -121,21 +146,12 @@
   ;; pt) so those relations can be incorporated into the situation
   ;; and we have a normally formed edge instead of this silly
   ;; long-span
-  (let* ((head (edge-ending-at last-pos))
-         (label (edge-category head))
-         (referent (edge-referent head))
-         (form (determine-from-from-phrasal-state))
-         (edge (make-edge-over-long-span 
-                start-pos last-pos label
-                :rule :c3-process-segment
-                :form form
-                :referent referent
-                :words (words-between start-pos last-pos))))
+  (let ((edge (c3-segment-parse start-pos (chart-position-before last-pos))))
     (push-debug `(,edge))
     (set-phrasal-state :initial-state) ;; reset phrase level
     (let* ((new-state (update-situation-state edge 'sentence))
            (var (indexical-for-state new-state)))
-      (add-indexical-to-situation var referent)
+      (add-indexical-to-situation var (edge-referent edge))
       (push-debug `(,new-state ,var))
       
 
@@ -149,7 +165,56 @@
     ;;   (add-indexical-to-situation var peg)
 )))
 
+;; This is a clone of parse-at-the-segment-level, which can't be
+;; used as-is because it knits back to segment-parsed1 of the
+;; standard protocol. Also we can make different assumptions
+;; because, e.g., we know there is only one edge over every
+;; word because we're going to do ambiguity in the situation,
+;; and indeed that there is an edge over every word.
+(defun c3-segment-parse (start-position end-position)
+  (let* ((head-edge (edge-starting-at end-position))
+         (head-starts-at (pos-edge-starts-at head-edge))
+         (edge-just-to-the-left (edge-ending-at head-starts-at))
+         (*allow-pure-syntax-rules* t))
+    (declare (special *allow-pure-syntax-rules*))
+    (push-debug `(,head-edge ,head-starts-at ,edge-just-to-the-left))
+    ;; everthing acrues to the head, ///no provision yet for
+    ;; composition of pre-head constituents
+    ;;(break "before the loop")
+    (let ((right-edge head-edge)
+          (left-edge edge-just-to-the-left)
+          edge  )
+      (loop
+        ;(break "Looking at e~a + e~a"
+        ;      (edge-position-in-resource-array left-edge)
+        ;      (edge-position-in-resource-array right-edge))
+        (push-debug `(,left-edge ,right-edge)) ;;(break "try by hand")
+        (setq edge (check-one-one left-edge right-edge))
+        ;; N.b. there's a call to compose in there after the referent's
+        ;; computed. 
+        (unless edge
+          (push-debug `(,left-edge ,right-edge))
+          (error "e~a and e~a didn't compose"
+                 (edge-position-in-resource-array left-edge)
+                 (edge-position-in-resource-array right-edge)))
+        (if (eq (pos-edge-starts-at edge) start-position)
+          (return)
+          (else
+           (setq right-edge edge)
+           (setq left-edge (edge-ending-at (pos-edge-starts-at edge))))))
+      edge)))
 
+
+#+ignore ((head (edge-ending-at last-pos))
+         (label (edge-category head))
+         (referent (edge-referent head))
+         (form (determine-from-from-phrasal-state))
+         (edge (make-edge-over-long-span 
+                start-pos last-pos label
+                :rule :c3-process-segment
+                :form form
+                :referent referent
+                :words (words-between start-pos last-pos))))
 
 ;;;----------
 ;;;  gofers
@@ -168,11 +233,4 @@
        (error "No form category listed for ~a" state)))))
 
 
-
-(defun bracket-that-starts-the-segment (start-pos)
-  ;; Should look at the position and think about it
-  ;; so that the algebra works out.
-  ;;/// once we're going the lead word may have included start brackets
-  (declare (ignore start-pos))
-  phrase.[ )
 
