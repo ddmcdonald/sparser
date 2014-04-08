@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions opyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  2.3 December 2013
+;;;  version:  2.3 April 2013
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -66,6 +66,7 @@
 ;;     (12/3/13) Hit a new case in applying rdata because of distributed categories
 ;;      in C3 so factored the realization out completely and moved original version
 ;;      to objects/model/tree-families/driver2. Cleaned up.
+;;     (4/7/14) Modified make-simple-individual to include a shadow
 
 (in-package :sparser)
 
@@ -298,6 +299,7 @@
     (setf (indiv-id   individual) (next-id category))
     (let ((bindings (apply-bindings individual binding-instructions)))
       (index/individual individual category bindings)
+      (create-shadow individual)
       individual )))
 
 
