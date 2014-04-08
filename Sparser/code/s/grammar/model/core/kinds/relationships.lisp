@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relationships"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  July 2013
+;;;  version:  March 2014
 
 ;; This file holds independent lambda variables and such that
 ;; don't otherwise have a natural place to put them, or that refer
 ;; to categories that aren't yet defined at that place. 
 
 ;; Started populating 4/10/13.
-;; 7/1/13 Added generic method for compose
+;; 7/1/13 Added generic method for compose. 3/31/14 added a t,t method.
 
 (in-package :sparser)
 
@@ -43,3 +43,8 @@
    style rule. Expecially well suited for form rules. Can be used as
    a dispatch point for more specific binary compostions. Intended to be
    the most generic way to compose the referents of two edges."))
+
+(defmethod compose ((ignore1 t) (ignore2 t))
+  "Null method at the top of the type hierarch so that call-next-method
+   always has a place to stop."
+  nil )
