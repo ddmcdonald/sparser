@@ -4,15 +4,15 @@
 ;;;
 ;;;     File:  "C3-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  January 2014
+;;;  version:  March 2014
 
-;; Initiated 9/16/13. Elaborated through 1/23/14
+;; Initiated 9/16/13. Elaborated through 3/26/14
 
 (in-package :sparser)
 
-;;//// Add quantifiers to the grammar
-
+;;//// Add quantifiers to the C3 grammar
 ;; (setq cl-user::script :c3)
+
 ;; (load "/Users/ddm/sparser/load-nlp.lisp")
 
 ;; While there's teething problems getting it all loading 
@@ -32,6 +32,8 @@
 
 ; (just-bracketing-setting)
 ; (word-frequency-setting)
+
+; (load "/Users/ddm/sift/nlp/C3/code/ISR-ripper.lisp")
 
 ;;--- Setting up restrictions
 ; decode-category-parameter-list handle-variable-restrictions
