@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "article"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  July 2010
+;;;  Version:  October 2010
 
 ;; initiated 12/15/93 v2.3
 ;; c.f. grammar/rules/context/article.lisp for some similar notions
@@ -19,7 +19,7 @@
 
 (in-package :sparser)
 
-#| NOT USING THIS VERSION. Equivalent code is in objects/doc/object1.lisp
+#| NOT USING THIS VERSION. Equivalent code is in OBJECTS/DOC/OBJECT1.LISP
 
 ;;;--------
 ;;; object
