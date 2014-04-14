@@ -173,12 +173,13 @@
 	 (v (car values) (car rest-of-values))
 	 (rest-of-values (cdr values) (cdr rest-of-values)))
 	((null p))
-      (let ((cons (assq p alist)))
+      (let ((cons (ddm-util::assq  p alist))) ;; 4/8/14 Why isn't the import working?
 	(unless cons
 	  (error "There is no ~a in the parameters of the uppr" p))
 	(rplacd cons v)))))
 
 (defun construct-unpacked-phrasal-root (lp source)
+  (declare (ignore source))
   (unless (typep lp 'lexicalized-phrase)
     (break "Expected the lexicalized resource to be lexicalized-phrase, ~
             but it's a ~a~%~a" (type-of lp) lp))
@@ -193,7 +194,7 @@
     ;; 2d see which ones are filled and copy over the filler
     (dolist (cons (uppr-parameter-values uppr))
       (let* ((parameter (car cons))
-	     (known-value (cdr (assq parameter alist))))
+	     (known-value (cdr (ddm-util::assq parameter alist))))
 	(when known-value
 	  (rplacd cons known-value)))) ;;(setq *uppr* uppr) (break "uppr")
     uppr)) ;;(defvar *uppr* nil)
