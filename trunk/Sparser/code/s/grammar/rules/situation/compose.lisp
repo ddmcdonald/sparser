@@ -82,7 +82,6 @@
                     (type-of referent) referent))))
          ;;/// subsequent reference has to kick in here or before
          (i (make-unindexed-individual category)))
-    (create-shadow i)
     (push-debug `(,i ,category))
     ;; Does this individual include all the categories required
     ;; by the variables on the peg? If not then the bindings
@@ -142,12 +141,14 @@
   ;; *edges-from-referent-categories*
   ;; 
   (tr :c3-composing left-ref right-ref)
-  (let ((result (compose left-ref right-ref)))
+  (let ((result (call-compose left-ref right-ref)))
     (unless result
       (push-debug `(,left-ref ,right-ref))
       (error "Did compose fire? Result is nil"))
     (tr :c3-composing-result result)
-    referent))
+    result))
+
+                                
 
 
 

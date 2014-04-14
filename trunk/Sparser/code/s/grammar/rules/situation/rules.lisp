@@ -150,6 +150,15 @@
   :referent (:head right-edge))
 
 
+;; have provides a form rule that would do subtype perfect
+;; if we implemented that
+
+(def-syntax-rule (np vg)
+                 :head :right-edge
+  :form subj+verb
+  :referent (:head right-edge))
+
+
 ;;;---------
 ;;; methods
 ;;;---------
@@ -157,9 +166,22 @@
 ;; defined. Barring a substantial reorganization of the load order
 ;; it's simplest to include them here. 
 
-(def-k-method compose ((mgfg car-manufacturer) (kind car-type))
-  (push-debug `(,mgfg ,kind))
-  (break "got here - compose"))
+                                ;; generalize to named-type ?
+(def-k-method compose ((mgfr car-manufacturer) (head car-type))
+  "If the head (the kind argument) is abstract, then we need to
+   make it concrete since a car manufacturers are makers of artifacts
+   and those are always physical."
+  (push-debug `(,mgfr ,head))
+  (if (itypep kind 'named-type)
+    (then
+     (add-relation 'type-of-product mgfr head)
+     (let ((physical-equivalent (value-of 'type-of category::car-type)))
+       (tr :changing-type-of kind physical-equivalent)
+       (clone-individual-changing-type head physical-equivalent))
+    head))) ;; otherwise return the head unchanged
 
+;; red + physical
+
+;; can-change-location + move
 
 
