@@ -322,13 +322,13 @@
 (defun make-unindexed-individual (category)
   ;; called as a variation on define-individual by routines that
   ;; do their own indexing and don't want to go through the
-  ;; standard mechanisms.  The 'temporary' part of the fn name
-  ;; is up for revision.
+  ;; standard mechanisms.  
   (let ((individual (if *index-under-permanent-instances*
                       (make-a-permanent-individual)
                       (allocate-individual))))
     (setf (indiv-type individual) (list category))
     (setf (indiv-id   individual) (next-id category))
+    (create-shadow individual)
     individual ))
 
 
