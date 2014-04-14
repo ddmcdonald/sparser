@@ -8,22 +8,10 @@
 
 ;; Initiated 10/24/13 to breakout the design of SUV and container
 ;; into their own file. Removed space to is own file 11/11/13. 
-;; Tweaking through 1/22/14
+;; Tweaking through 1/22/14. 4/14/14 Moved out 'container'
 
 (in-package :sparser)
 
-
-(define-category container
-  :specializes c3-region
-  :binds ((contents)))
-
-#| Notes for the basis for SUV qua container
-
-located  {  }
-
-a container is a place, preposition = "in"
-
-|#
 
 
 (define-category car-manufacturer
