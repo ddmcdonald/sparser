@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "frequency"
 ;;;   Module:  "rules;words:"
-;;;  Version:  0.5 February 2014
+;;;  Version:  0.5 April 2014
 
 ;; initiated 10/90
 ;; 3/21/92 Added capitalization information to the dummy words
@@ -22,6 +22,7 @@
 ;; 0.5 (10/28/13) Fanout from the make-over of the document classes.
 ;;     (2/3/14) Some further change required redoing the scope of the
 ;;     call to stem in wf-classification/ignore-caps
+;;     (4/9/14) Added back the document class.
 
 (in-package :sparser)
 
@@ -810,10 +811,10 @@
    from the document (doc-set, etc.) and stores the results 
    on the object. "))
 
-(defmethod count-word-frequencies ((doc article))
+(defmethod count-word-frequencies ((doc document))
   (word-frequency-setting)
   (initialize-word-frequency-data)
-  (let ((filename (location doc)))
+  (let ((filename (doc-location doc)))
     (analyze-text-from-file filename)
     (setf (token-count doc) *words-in-run*)
     doc))
