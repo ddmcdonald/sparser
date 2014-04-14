@@ -40,6 +40,7 @@ for every category.
     (unless c (error "No category named ~a" s))
     (get-sclass c)))
 
+
 (defun store-class-for-category (c class)
   (setf (gethash c *categories-to-classes*) class))
 
@@ -265,6 +266,46 @@ for every category.
             type ~a~%  ~a" (type-of obj) obj)))
 
 
+;;;-------------------------------
+;;; changing an individual's type
+;;;-------------------------------
+
+(defgeneric change-itype (individual new-category)
+  (:documentation "This is a placeholder for a more interesting operation 
+     that really would change the CLOS type of an established instance.
+     Here we just change properties of this individual:
+       (a) we add the new category to the front of the type list
+       (b) we switch to the shadow of the new category.
+     Returns the individual."))
+
+(defmethod change-itype ((i individual) (new-category category))
+  (let ((established-type (indiv-type i)))
+    (setf (indiv-type i) (cons new-category established-type))
+    (let* ((sclass (get-sclass new-category))
+           (new-shadow (make-instance sclass)))
+      (setf (indiv-shadow i) new-shadow)
+      i)))
+
+(defgeneric clone-individual-changing-type (individual new-category)
+  (:documentation
+   "Just like change-itype except that we do the change to
+    a new individual. It's the caller's responsibility to index
+    or otherwise keep trace of the new individual"))
+
+(defmethod clone-individual-changing-type ((i individual) 
+                                           (new-category category))
+  ;;/// what do we do with the bindings? Ought to already be 
+  ;; a function of cloning them. Ignoring for the nonce.
+  (let ((established-type (indiv-type i))
+        (new (make-unindexed-individual new-category))) ;; includes shadow
+    (when (cdr established-type) ;; carry over any mix-ins
+      (setf (indiv-type i) (cons new-category (cdr established-type))))
+    (push-debug `(,i ,new ,new-category)) (break "write binding cloner")
+    new))
+  
+
+
+
 ;;;---------------------------
 ;;; Vacuous concept instances
 ;;;---------------------------
@@ -288,9 +329,6 @@ for every category.
 (defmethod make-and-store-nominal-instance ((cl standard-class))
   (let ((i (make-instance cl)))
     (setf (gethash cl *category-classes-to-nominal-instance*) i)))
-
-
-
 
 
 
@@ -375,7 +413,7 @@ for every category.
              `(defmethod ,name ,method-args
                 (let ,let-bindings
                   ,@body)) ))
-        ;;(pprint form)  ;; (break "double check")
+        (pprint form)  ;; (break "double check")
         (eval form)))))
 
 
