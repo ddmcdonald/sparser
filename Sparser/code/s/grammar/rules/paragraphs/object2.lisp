@@ -114,7 +114,7 @@
 
 (defun reinitialize-the-paragraph-resource ()
   (dolist (p *paragraphs-in-the-article*)
-    (deallocate-paragraph p)))
+    (deallocate-paragraph-structure p)))
 
 
 (defun allocate-paragraph-structure ()
