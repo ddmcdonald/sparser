@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  October 2013
+;;;  Version:  April 2014
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -13,6 +13,8 @@
 ;;     (9/23/13) Pretty much finished with the make-over except for occasional fanout.
 ;; 1.1 (10/3/13) Making paragraphs real. Lifting out the generalization
 ;;     (10/26/13) Added word-frequency mixin to article. What about the others?
+;;     (4/9/14) Moved in the get-document code from objects/doc/article1 so that
+;;      some older code is happy. 
 
 (in-package :sparser)
 
@@ -314,5 +316,30 @@
 (defmethod display-contents  ((s sentence)
                               &optional (stream *standard-output*))
   (display-contents (contents s) stream))
+
+
+
+;;;--------------
+;;; "documents"
+;;;--------------
+;; This is an old bit of syntactic sugar over files that wraps them
+;; in an object and used their pathname-name as their index. 
+;; Good for operations over all the files in a directory where the
+;; internal organization of the file isn't interesting or relevant. 
+;; See count-word-frequencies as an example.
+
+(defclass document (named-object word-frequency)
+  ((location :accessor doc-location
+    :documentation "Holds an absolute pathname as returned
+      from a call to directory."))
+  (:documentation
+   "Poor man's version of the article class"))
+
+;; Make a resource? Or will they usually be part of one-off's.
+
+(setup-find-or-make 'document)
+
+
+
 
 
