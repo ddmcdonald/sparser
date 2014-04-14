@@ -53,19 +53,22 @@
   ;; 'known as', 'called', ...
   :realization (:proper-noun name)) ;; Wakil
 
-;; Need more interesting notion of names here rather than
-;; this implicit category distinction
 
-(define-category type-name
+(define-category named-type
   :specializes has-name
   :binds ((type-of :primitive category))
-  :realization (:common-noun name))
-
+  :realization (:common-noun name)
+  :documentation
+    "Describes or names something. Not a thing itself (not physical)
+ because if anything it designates the whole class of the stuff 
+ it names. The type-of variable indicates what actual kind of thing
+ to instantiate when we have reason to deference this type to something
+ physical.")
 
 
 
 (define-category artifact
-  :specializes nil ;; PhysicalObject?  
+  :specializes physical  
   :binds ((made-by . maker-of-artifacts))
   ;; also time-created or is it a specialization from the lifetime of Endurant?
   :realization (:common-noun "artifact"))
@@ -77,7 +80,8 @@
           (procedure . process) ;; though instructions aren't a process
             ;; but what is this by itself?
           (product ;; ???? Would growing tomatoes count?
-           . artifact)))
+           . artifact)
+          (type-of-product . named-type)))
 ; [1] We get more milage if we remove the agent, because then
 ; we can treat Ford as an agent and mix this in.
 ; It would nice to have a notion of 'activity' which is a description
@@ -86,28 +90,12 @@
 
 (define-category maker-of-artifacts
   :specializes agent
-  :mixins (make-artifacts type-name)) ;;has-name))
+  :mixins (make-artifacts named-type)) ;;has-name))
 ;; has-name makes proper nouns, hack "ford" to be a common noun.
 
 ;; Would "manufacturer" add anything useful? Maybe distinguish crofters
 ;; in the Shetlands knitting sweaters from industrial giants?
  ;; ?? company (corporate entity)
-
-(define-category car-manufacturer
-  :specializes maker-of-artifacts
-  :restrict ((product . motor-vehicle))
-  :index (:permanent :key name))
-#| Notes for Ford qua manufacturer of cars, 
-thence as a make of car (vehicle) http://en.wikipedia.org/wiki/Ford
-Ford is a manufacturer
-  what is manufactures is cars and trucks (farm equipment)
-It creates artifacts,
-  that concept licenses 'creator'{builder, assembler}
-    and 'creation time' {birth date} 
-      "came off the assembly line at <clock> on <date>"
-It has buildings that it does its manufacturing in
- these are the place of the artifact creation
-|#
       
 
 
