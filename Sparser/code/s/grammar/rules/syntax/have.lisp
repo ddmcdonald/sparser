@@ -77,9 +77,9 @@
 ;;---- "have" + "ed"
 
 (def-form-rule (have verb+ed)
-  :form verb
+  :form vg
   :referent (:head right-edge
-             ;;:subtype perfect
+             :subtype perfect
              ))
 
 (def-form-rule (have verb+passive)
