@@ -5,7 +5,9 @@
 ;;;    Module: "analyzers;SDM&P:
 ;;;   Version: March 2013
 
-;; Initiated 3/14/13
+;; Initiated 3/14/13. 4/8/14 Patching in fan-out from the massive
+;; make-over to document structure, but only to quiet the compiler
+;; so this may well not work in practice. 
 
 (in-package :sparser)
 
@@ -20,7 +22,7 @@
         contents  )
     (setf (contents-of-doc-set document-set) merged)
     (dolist (article articles)
-      (setq contents (article-contents article))
+      (setq contents (contents article))
       (dolist (accessor '(head-relations
                           classifier-heads
                           modifier-heads
@@ -34,7 +36,7 @@
 
 
 (defun get-contents-of-current-article ()
-  (article-contents *current-article*))
+  (contents *current-article*))
 
 #|
 (setq all (collect-relations-from-articles))
