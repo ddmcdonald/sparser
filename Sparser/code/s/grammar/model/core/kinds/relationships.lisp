@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "relationships"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  March 2014
+;;;  version:  April 2014
 
 ;; This file holds independent lambda variables and such that
 ;; don't otherwise have a natural place to put them, or that refer
@@ -11,6 +11,7 @@
 
 ;; Started populating 4/10/13.
 ;; 7/1/13 Added generic method for compose. 3/31/14 added a t,t method.
+;; 4/9/14 Added the wrapper call-compose. 
 
 (in-package :sparser)
 
@@ -48,3 +49,12 @@
   "Null method at the top of the type hierarch so that call-next-method
    always has a place to stop."
   nil )
+
+;;/// def-k-method/expr should write "call-" function like this
+;; as another side-effect
+;;
+(defun call-compose (left-ref right-ref)
+  (setup-args-and-call-k-method 
+   left-ref right-ref
+   (push-debug `(,left-ref ,right-ref)) ;; keep compiler from complaining
+   (funcall #'compose left-shadow right-shadow)))
