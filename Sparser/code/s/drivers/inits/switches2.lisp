@@ -431,7 +431,7 @@
 
 (defun just-bracketing-with-comlex-setting ()
   (just-bracketing-setting)
-  (comlex-mode)
+  (include-comlex)
   (setq *switch-setting* :just-bracketing-with-comlex))
 
 
