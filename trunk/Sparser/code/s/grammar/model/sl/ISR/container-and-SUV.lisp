@@ -24,15 +24,36 @@ located  {  }
 a container is a place, preposition = "in"
 
 |#
+
+
+(define-category car-manufacturer
+  :specializes maker-of-artifacts
+  :restrict ((product . motor-vehicle))
+  :index (:permanent :key name))
+#| Notes for Ford qua manufacturer of cars, 
+thence as a make of car (vehicle) http://en.wikipedia.org/wiki/Ford
+Ford is a manufacturer
+  what is manufactures is cars and trucks (farm equipment)
+It creates artifacts,
+  that concept licenses 'creator'{builder, assembler}
+    and 'creation time' {birth date} 
+      "came off the assembly line at <clock> on <date>"
+It has buildings that it does its manufacturing in
+ these are the place of the artifact creation
+|#
+
 (define-category motor-vehicle
   :specializes artifact
   :mixins (physical-surface ;;// has to be generalized 
+           object
            has-spatial-location ;;// commits us to actual object
-           spatial-region)
+           spatial-region
+           container
+           can-change-location)
   :restrict ((made-by . car-manufacturer)))
 
 (define-category car-type
-  :specializes type-name
+  :specializes named-type
   ;; SUV, sedan, hybrid, truck - not all exclusive
   ;; It's a label/classification that applies to the whole entity
   ;; so it's probably not an attribute
