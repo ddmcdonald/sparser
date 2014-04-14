@@ -1384,6 +1384,12 @@
     (trace-msg "[c3] the result of the composition is ~a" 
                result)))
 
+(deftrace :changing-type-of (i category)
+  ;; in compose(car-manufacturer car-type)
+  (when *trace-c3*
+    (trace-msg "[c3] Changing ~a to be a ~a"
+               i (cat-symbol category))))
+
 
 
 
