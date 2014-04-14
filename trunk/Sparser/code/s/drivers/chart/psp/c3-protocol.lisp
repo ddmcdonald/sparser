@@ -150,16 +150,13 @@
     (push-debug `(,edge))
     (set-phrasal-state :initial-state) ;; reset phrase level
     (let* ((new-state (update-situation-state edge 'sentence))
-           (var (indexical-for-state new-state)))
-      (add-indexical-to-situation var (edge-referent edge))
+           (var (indexical-for-state new-state))
+           (referent (edge-referent edge)))
+      (add-indexical-to-situation var referent)
+      ;; Expand it here, now that it's got all it's parts
+      (break "add-entity for ~a ??" referent)
       (push-debug `(,new-state ,var))
       
-
-    ;; The situation was updated by the operations inside
-    ;; incorporate-phrasal-head -- which is what happened just
-    ;; before we got here. Do we 'incorporate' this edge?
-    ;; Certainly we need to get a variable pointing to it
-    ;; so we can use it when we get to the VG. 
     ;; Essence from incorporate-referent-into-the-situation is
     ;;   (indexical-for-state new-state)
     ;;   (add-indexical-to-situation var peg)
