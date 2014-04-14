@@ -1053,6 +1053,7 @@ or for loading the newer of the compiled or source files.
 ;; is launched. 
 
 (let ((sparser::*do-not-create-an-image* t))
+  (declare (special sparser::*salutation-string*))
 
   ;; If the grammar hasn't already been loaded, the calls in the config
   ;; routines will do it, and in either case it will have the dossiers
