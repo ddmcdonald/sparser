@@ -75,4 +75,6 @@
        (error "indiv-typep not applied to an individual:~%~a  ~a"
               (type-of individual) individual)))))
 
+           
+
 
