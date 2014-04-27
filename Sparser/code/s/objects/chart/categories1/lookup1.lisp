@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2010-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2010-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "lookup"
 ;;;   Module:  "objects;chart:categories:"
-;;;  Version:  1.9 August 2013
+;;;  Version:  1.9 April 2014
 
 (in-package :sparser)
 
@@ -30,6 +30,7 @@
 ;;      function now needed pretty early.  (12/11/12) moved name-to-use-for-category
 ;;      to brackets/assignments.
 ;; 1.9 (8/14/13) Converted category-named to a method so it could be fed categories
+;;     (4/16/14) Added the extra arg for mixins in CLOS backing. 
 
 ;;;------
 ;;; find
@@ -100,11 +101,11 @@
               (:referential) ;; done in decode-category-parameter-list
               (:mixin) ;; also in decode-category-parameter-list
               (:form
-               (setup-backing-clos-class category :form))
+               (setup-backing-clos-class category nil :form))
               (:derived
-               (setup-backing-clos-class category :derived))
+               (setup-backing-clos-class category nil :derived))
               ((or :def-category :define-category :dm&p)
-               (setup-backing-clos-class category :minimal))))
+               (setup-backing-clos-class category nil :minimal))))
 
           (ecase source
             (:referential
