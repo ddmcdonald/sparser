@@ -125,9 +125,9 @@
   (:documentation "Called from referent-from-rule after the rule
    has applied, the referent built, any redistributions applied, etc.
    It's the very last thing that happens before the referent is returned
-   and the processing of the edge finished. 
-      However, as it is within the main line fsa we have to return
-   cleanly, though nothing will look at the result."))
+   and the processing of the edge finished. If the value this returns
+   is different from the established referent then the returned value
+   becomes the referent of the edge."))
 ; c.f. left-edge-for-referent and the other go-fers
 
 (defmethod incorporate-composition-into-situation ((left-ref t)
@@ -137,16 +137,19 @@
                                                    (parent-edge edge))
   ;;/// May not need all these parameters
   (push-debug `(,left-ref ,right-ref ,referent ,rule ,parent-edge))
-  ;; How do we do compose as a kmethod ??
   ;; *edges-from-referent-categories*
   ;; 
   (tr :c3-composing left-ref right-ref)
   (let ((result (call-compose left-ref right-ref)))
     (unless result
+      ;; Happens when we only match on the t,t case of compose
       (push-debug `(,left-ref ,right-ref))
-      (error "Did compose fire? Result is nil"))
+      ;; (setq left-ref (car *) right-ref (cadr *))
+      (cerror "Just keep going"
+              "No method composes ~a and ~a" left-ref right-ref))
     (tr :c3-composing-result result)
-    result))
+    (or result
+        referent)))
 
                                 
 

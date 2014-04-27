@@ -167,20 +167,33 @@
 ;; it's simplest to include them here. 
 
                                 ;; generalize to named-type ?
-(def-k-method compose ((mgfr car-manufacturer) (head car-type))
+(def-k-method compose ((mgfr make-artifacts) (head car-type))
   "If the head (the kind argument) is abstract, then we need to
    make it concrete since a car manufacturers are makers of artifacts
    and those are always physical."
   (push-debug `(,mgfr ,head))
-  (if (itypep kind 'named-type)
+  (if (itypep head 'named-type)
     (then
      (add-relation 'type-of-product mgfr head)
      (let ((physical-equivalent (value-of 'type-of category::car-type)))
-       (tr :changing-type-of kind physical-equivalent)
-       (clone-individual-changing-type head physical-equivalent))
-    head))) ;; otherwise return the head unchanged
+       (tr :changing-type-of head physical-equivalent)
+       (let ((new (clone-individual-changing-type
+                   head physical-equivalent)))
+         ;;(push-debug `(,new)) (break "huh")
+         new)))
+    head)) ;; otherwise return the head unchanged
 
 ;; red + physical
+(def-k-method compose ((color color) (obj motor-vehicle)) ;;physical-surface))
+  ;;/////////// pifflewart. Mixins need to be integrated into shadows
+  ;;     by some means or another.
+  ;;// probably should be physical, but not clear how quite
+  ;; to conceptualize, e.g., the plastic of the car body or
+  ;; the clay of the statue. Do these things attribute directly
+  ;; to physical, or to an intermediary that holds these properties
+  (push-debug `(,color ,obj))
+  (add-relation 'color obj color)
+  obj)
 
 ;; can-change-location + move
 
