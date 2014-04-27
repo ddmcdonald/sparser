@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "container-and-SUV"
 ;;;   Module:  "grammar/sl/ISR/
-;;;  version:  January 2014
+;;;  version:  April 2014
 
 ;; Initiated 10/24/13 to breakout the design of SUV and container
 ;; into their own file. Removed space to is own file 11/11/13. 
@@ -67,4 +67,12 @@ depending on the model-year. I bound a instances of the 2004 Acura TSX,
 which is now in good to excellent condition (terms from Kelly Blue Book)
 with a very small number of scratches and cracks. 
 |#
+
+(define-category pperson
+  ;; avoid classing with 'person' or 'people'
+  :specializes object
+  :mixins (has-location ;; location variable v/r is c3-location
+           can-change-location 
+           ;; count (vs. mass)
+           ))
 
