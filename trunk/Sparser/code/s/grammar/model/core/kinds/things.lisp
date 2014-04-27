@@ -44,12 +44,29 @@
 (define-category physical-object 
   :specializes physical
   :documentation 
-  "A physical object ('physobj' ??) has a location, a spatial extent,
+  "A physical object ('physobj' ??) has a spatial extent,
  and is constitued of something (e.g. the clay in a statue).")
+
 
 (define-category object 
   :specializes physical-object
   :documentation
   "Conventional physical objects: chairs, amoeba, mountains, breaths of air.")
+
+(define-mixin-category agent
+  :specializes physical-object
+  ;; Making it a mix-in is my compromise since it feels to me is more
+  ;; of a role sometimes rather than a supertype. 
+  :documentation ;; from foundation.prxo
+  "We call something an agent if we ascribe intentions, beliefs, and desires
+ to it, so besides this class covering people it can also cover robots and
+ many computer programs. Agents are capable of deliberately dealing with
+ objects or states in the world. As opposed to the unintended effects of
+ a mudslide or a tree disrupting the sidewalk as its roots grow.
+ Agency is not to be equated with causality.
+   Agentive objects are usually constituted of (are made out of) regular
+ Object's. People have bodies. Robots are assembled out of engines and
+ sensors and such (Legos). "
+  :realization (:common-noun "agent")) ;; n.b. "Mossad agent"
 
 
