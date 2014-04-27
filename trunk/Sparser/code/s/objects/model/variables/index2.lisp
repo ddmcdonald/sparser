@@ -51,7 +51,7 @@
 
 
 (defun find-variable-from-individual (variable-name i)
-  (find-variable-in-category variable-name (first (indiv-type i))))
+  (find-variable-for-category variable-name (first (indiv-type i))))
 
 
 (defmethod find-variable-in-category (symbol (category model-category))
