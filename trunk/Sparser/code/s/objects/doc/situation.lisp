@@ -86,16 +86,48 @@
 (defmethod add-relation ((var-name symbol) &rest args)
   ;; decode to a variable
   ;; make a binding: 1st arg is the individual, 2d is the value
-  ;; Lookup the present situation. (Would be nice if didn't h vae
+  ;; Lookup the present situation. (Would be nice if didn't have
   ;; to go via the current sentence.)
   ;; do an add-to-container to the situation that knows that
   ;; the result goes into the relations slot of the situation's model
-  (push-debug `(,var-name ,args)) (break "write add-relation now?")
-  nil)
+  (unless (= 2 (length args))
+    (push-debug `(,var-name ,args))
+    (error "Unexpected situation. ~a arguments to add relation"
+           (length args)))
+  ;;/// type check both args are individuals
+  (let* ((i (car args))
+         (value (cadr args))
+         (variable (find-variable-from-individual var-name i)))
+    (let ((b (bind-variable variable value i))
+          (s (the-situation))) ;; who would know about the level?
+      ;; that makes the associaton on the instance
+      ;; Now we add it to the content as another relation
+      (integrate-into-situation b s)
+      ;; return value isn't consumed
+      b)))
 
-;; Do add-entity the same way
+(defgeneric add-entity (item)
+  (:documentation "Incorporate the item into the ongoing situation
+    at the appropriate level, carrying out any associated inferences
+    or priming operations."))
+
+(defmethod add-entity ((item t))
+  "Just stash it in the entity field of the model just to park it.
+   Essentially a no-op."
+  (let ((model (model (the-situation)))) ;; level ?? 
+    (push item (entities model))))
 
 
+
+(defgeneric integrate-into-situation (item situation)
+  (:documentation "Provides a hook for doing interesting things
+    when an item of a particular type is being added into
+    a particular type of situation. Default is to just add
+    to the appropriate slot in the vanila model-of-situation."))
+
+(defmethod integrate-into-situation ((b binding) (s core-situation))
+  (let ((model (model s)))
+    (push b (relations model) )))
 
 
 
