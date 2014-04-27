@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005, 2010 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2010-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "structure"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  November 2010
+;;;  version:  April 2014
 
 ;; broken out from [object] file 8/12/94. Added category-p 9/12/98
 ;; 3/26/00 Added a rnodes field to referential categories.
@@ -11,6 +11,8 @@
 ;; 11/9/10 Added 'class' field to referential-category. Took it out on the 11th
 ;;  because even with a full recompile it couldn't access the slot -- was
 ;;  always declared out of range. 
+;; 4/15/14 Moved mix-ins slot to model-category so it gets inherited by
+;;  mixin-category as well as referential-category
 
 (in-package :sparser)
 
@@ -29,6 +31,10 @@
             ;; value-restrictionpairs
 
   binds     ;; a list of bindings
+
+
+  mix-ins   ;; a list of categories of any type
+
 
   realization  ;; a structure representing how individuals with this
                ;; category are given in language
@@ -52,9 +58,6 @@
             (:include model-category)
             (:conc-name #:cat-)
             (:print-function print-ref-category-structures))
-
-
-  mix-ins   ;; a list of referential-categories
 
   instances  ;; a structure by which to gain access to objects with
              ;; this category -- its "catalog"
