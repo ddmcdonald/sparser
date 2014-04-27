@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.4 October 2013
+;;;  version:  1.4 April 2014
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -37,6 +37,7 @@
 ;; 1.3 (9/6/11) Added rule-label field to over-ride the default. 
 ;; 1.4 (8/26/13) Added mixins keyword to decode-category-parameter-list.
 ;;     (10/24/13) Added restrict to it.
+;;     (4/15/14) Passing mixins to backing-class constructor.
 
 (in-package :sparser)
 
@@ -163,7 +164,7 @@
       (setup-rdata category rdata))
 
     (when *CLOS*
-      (setup-backing-clos-class category :referential))
+      (setup-backing-clos-class category mixins :referential))
 
     category ))
 
