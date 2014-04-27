@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  March 2014
+;;;   version:  April 2014
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -48,7 +48,8 @@
 ;; for kinds.  Also bumped title loader to 3.  7/1/13 Added a post-loader for adjunct
 ;; rules. 12/2/13 waypoints. 1/29/14 Removing the *c3* guards to see if everything
 ;; will load compatibly. 3/28/14 converted loading kinds;upper-model to kinds;1st-loader
-;; so that file could be broken into more useful pieces.
+;; so that file could be broken into more useful pieces. 4/16/14 moved it just below
+;; collections so plural realizations would work.
 
 
 (in-package :sparser)
@@ -95,14 +96,14 @@
       (gload "tree-families;loader1")
       (gload "tree-families;loader")))
 
-  (gload "kinds;1st-loader") ;; defines individual and such 
-
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
     ;; the loading of amounts
     (if *lattice-points*
       (gload "collections;loader1")
       (gload "collections;loader")))
+
+  (gload "kinds;1st-loader") ;; defines individual and such 
 
   (gate-grammar *kinds*
     (gload "kinds;loader"))
