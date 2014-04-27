@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "create-categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: 0.2 April 2013
+;;;   Version: 0.2 April 2014
 
 ;; Initiated 2/9/07. Elaborated through 8/6. Refactored the head form
 ;; elevator 2/4/08. Added cases through 4/24, then through 6/16.
@@ -14,7 +14,8 @@
 ;; for the case of literal words in rules, but it lead to coniptions with "."
 ;; 0.2 4/17/10 Uppercase category names were returning nil. Changed 
 ;;  elevation of segment edge of verb cases to vg from VP. 
-;;    (1/23/12) cleaned up. Trying to find duplication. 4/1/13 found it. 
+;;  (1/23/12) cleaned up. Trying to find duplication. 4/1/13 found it.
+;;  (4/14/14) Added case to generalize-segment-edge 
 
 
 (in-package :sparser)
@@ -70,6 +71,7 @@
 
         (category::s)
         (category::vp)
+        (category::pp)
 
         ;; cases where we want to generalize
 	((category::n-bar
