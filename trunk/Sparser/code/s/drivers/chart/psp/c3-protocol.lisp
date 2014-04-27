@@ -154,7 +154,7 @@
            (referent (edge-referent edge)))
       (add-indexical-to-situation var referent)
       ;; Expand it here, now that it's got all it's parts
-      (break "add-entity for ~a ??" referent)
+      (add-entity referent)
       (push-debug `(,new-state ,var))
       
     ;; Essence from incorporate-referent-into-the-situation is
@@ -202,16 +202,6 @@
       edge)))
 
 
-#+ignore ((head (edge-ending-at last-pos))
-         (label (edge-category head))
-         (referent (edge-referent head))
-         (form (determine-from-from-phrasal-state))
-         (edge (make-edge-over-long-span 
-                start-pos last-pos label
-                :rule :c3-process-segment
-                :form form
-                :referent referent
-                :words (words-between start-pos last-pos))))
 
 ;;;----------
 ;;;  gofers
