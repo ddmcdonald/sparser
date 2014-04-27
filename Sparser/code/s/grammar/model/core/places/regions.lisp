@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.1 January 2014
+;;;  version:  0.1 April 2014
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -23,6 +23,7 @@
 ;; 0.1 (1/30/14) Determined that defining a region the established way
 ;;   is the source of the duplicated rules in the load, so refactored it
 ;;   into a named regions and a relation to its type. 
+;;   (4/14/14) Fixed instantiation issue in border. 
 
 (in-package :sparser)
 
@@ -247,7 +248,11 @@
                            (np-head . border-type)
                            (preposition . "of")
                            (pp . of-region)
-                           (result-type . :self))))
+                           (result-type . border))))
+;; N.b. the result-type can't be self because that mapping translates
+;; to the rule-label override, and we're very much instantiating a
+;; border here, not a location. Location is just the label for 
+;; purposes of phrase composition. 
 
 
 ;;;---------

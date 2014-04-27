@@ -1,17 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
-;;; $Id:$
+;;; copyright (c) 2011-2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "moving"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2011
+;;;  version:  April 2014
 
 ;; Intended for modeling movement in direction or w.r.t. some
 ;; spatial feature.
 
 ;; initated 8/4/11. 9/5/11 added path-type adjunct. 9/12 Added some more.
 ;; 9/26 "immediately". More bits through 10/4/11. 11/3 added DA rule to
-;; convert a name.
+;; convert a name. 4/14/14 Excised the old version of the 'move' category
+;; in favor of the new one in kinds/movement. 
 
 (in-package :sparser)
 
@@ -20,11 +20,6 @@
 ;; turn <direction> onto<path>
 ;; cross <landmark ??>
 ;; follow <path> to<configuration> past<landmark> (<distance>)
-
-(define-category  move
-  :instantiates self
-  :specializes event ;; well actually just 'action' since the examples aren't tensed
-  :binds ((mover))) ;; the one that moves. Could be anything
 
 
 ;; A category generator based on these verbs, with the assumption

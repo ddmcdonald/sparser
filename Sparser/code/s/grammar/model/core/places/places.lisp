@@ -1,19 +1,30 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "places"
 ;;;   Module:  "model;core:places:"
-;;;  version:  August 2013
+;;;  version:  0.1 April 2014
 
 ;; places -- entities that denote locations
 
 ;; initated 8/12/11. Added name->place-name 11/7. 7/22/13 made the
 ;; names permanent.8/28/13 Made convert-name-to-place-name take other
-;; types of arguments
+;; types of arguments. 
+;; 0.1 4/14/14 Changed the v/r on type in name-of-location and named-
+;;   location to be a category rather than 'path-type' (which could
+;;   never have worked). 
 
 (in-package :sparser)
 
+#|  The idea is to treat places that have names just like people
+that have names, with a special kind of name: name-of-location
+which is created by a call to make-location name from 
+categorize-and-form-name (/// which is probably a rusty pathway)
 
+Those are the names of named-location instances, which are organized
+by their type (pond, river, street, town, etc.)
+
+|#
 ;;;---------------------------------
 ;;; place names -- name-of-location
 ;;;---------------------------------
@@ -22,13 +33,14 @@
   :instantiates self
   :specializes name
   :binds ((sequence . sequence)
-          (type . path-type)) ;; and what else?
+          (type :primitive category)) ;; e.g. "Pond"
   :index (:permanent :key sequence))
 
 (defun make-location-name (items location-head)
   ;; Called from categorize-and-form-name
   ;; Returns a name. The object with that name is created in 
   ;; establish-referent-of-pn, keying off the category of the name
+  ;;/// type-checks on location-head: (:or region-type path-type)
   (let* ((sequence (define-sequence items))
          (name (define-individual 'name-of-location
                  :sequence sequence
@@ -75,7 +87,7 @@
 (define-category named-location
   :instantiates location
   :specializes location
-  :binds ((type . path-type)
+  :binds ((type  :primitive category)
           (name . name-of-location))
   :index (:permanent
           :special-case :find find/named-location
