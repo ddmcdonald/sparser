@@ -1,20 +1,22 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2010-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2010-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "clos-backing"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  November 2013
+;;;  version:  April 2014
 
 ;; initated 11/9/10. Modified the storage scheme 11/11. Tweaking cases
 ;; through 12/6. 6/16/11 fixed case of clash with existing classes.
 ;; 9/1/11 Tried a scheme for making instances of each class at the moment
-;; the class is defined but it triggered a MOP issue on the first instance
-;; of a subclass. 9/3 simplified the names by using a different package
-;; and flushed the check to see if the class already exists, which made
-;; the MOP problem go away. 1/4/13 Added get-shadow. 
+;;  the class is defined but it triggered a MOP issue on the first instance
+;;  of a subclass. 9/3 simplified the names by using a different package
+;;  and flushed the check to see if the class already exists, which made
+;;  the MOP problem go away. 1/4/13 Added get-shadow. 
 ;; 7/21/13 Moved in the macro that hides the shift-in-representation 
-;; messiness and its ancilary parts so facility can be taken as a whole.
+;;  messiness and its ancilary parts so facility can be taken as a whole.
 ;; 11/13/13 Added treatment of lamba variables and doc.
+;; 4/16/14 Added treatment of mixins. They're folded into the set of
+;;  slots and the superc's. 
 
 (in-package :sparser)
 
@@ -51,7 +53,7 @@ for every category.
 ;;; entry point
 ;;;-------------
 
-(defun setup-backing-clos-class (c source)
+(defun setup-backing-clos-class (c mixins source)
   ;; Called from the bottom of decode-category-parameter-list when
   ;; we have created everything we can about the category. Also called
   ;; from find-or-make-category-object for other cases, notably
@@ -61,29 +63,64 @@ for every category.
     (:minimal)
     (:define-category)
     ((or :referential :form)
-     (let* ((class-name (backing-class-name-for-cateory c))
-            (supercat
-             (when (cat-lattice-position c)
-               (lp-super-category (cat-lattice-position c))))
-            (superc-name
-             (when supercat (backing-superclass-for-category supercat)))
-            ;;//// Have to incorporate mixins to supercs. 
-            (variables (cat-slots c))
-            (slot-expressions 
-             (when variables (backing-class-slots-for-category variables))))
-       (setq class-name (check-for-circularities class-name superc-name))
-       (let ((form
-              `(defclass ,class-name ,(if superc-name `(,superc-name) nil)
-                 ,slot-expressions)))
-         ;(push-debug `(,form))
-         (let ((class (eval form)))
-           (store-class-for-category c class)
-           (push c *classes-defined*)
-           (make-and-store-nominal-instance c)
-           c))))
+     (make-backing-clos-class c mixins))
     (otherwise
-     (push-debug `(,c ,source))
+     (push-debug `(,c ,mixins ,source))
      (break "New backing-CLOS class source: ~a~%~a" source c))))
+
+(defun make-backing-clos-class (c mixins)
+  (when mixins 
+    (unless (every #'category-p mixins)
+      (if (every #'symbolp mixins)
+        (setq mixins
+              (loop for m in mixins collect
+                (category-named m :break-if-missing)))
+        (else (push-debug `(,c ,mixins))
+              (error "Unexpected type for mixins")))))
+  (let* ((class-name (backing-class-name-for-cateory c))
+         (supercat
+          (when (cat-lattice-position c)
+            (lp-super-category (cat-lattice-position c))))
+         (superc-name
+          (when supercat (backing-superclass-for-category supercat)))
+         (variables (cat-slots c))
+         ;;//////// Should the value-restrictions on slots be
+         ;;  shadow categories or regular ones ?
+         (mixin-class-names
+          (when mixins (loop for m in mixins
+                         collect (backing-class-name-for-cateory m))))
+         (mixin-variables
+          (when mixins (loop for m in mixins
+                         append (cat-slots m))))
+         (slot-expressions 
+          (when (or variables mixin-variables)
+            (backing-class-slots-for-category 
+             (append variables mixin-variables)))))
+    ;(when mixins
+    ;  (break "Look at locals"))
+    (setq class-name (check-for-circularities class-name superc-name))
+    (let ((superc-list
+           (cond
+            ((and superc-name mixin-class-names)
+             (cons superc-name mixin-class-names))
+            (superc-name 
+             `(,superc-name))
+            (mixin-class-names
+             mixin-class-names)
+            (t nil))))
+      ;(when mixins
+      ;  (break "superc-list: ~a" superc-list))
+      (let ((form
+             `(defclass ,class-name ,superc-list
+                ,slot-expressions)))
+        ;(when mixins (push-debug `(,form)) (break "check form"))
+        (let ((class (eval form)))
+          (store-class-for-category c class)
+          (push c *classes-defined*)
+          (make-and-store-nominal-instance c)
+          c)))))
+
+
 
 (defun backing-class-name-for-cateory (c)
   ;; N.b. we do not check for the class already existing.
@@ -174,7 +211,8 @@ for every category.
        (otherwise
 	(push-debug `(,v/r))
 	(break "New form for cons-based value restriction:~%  ~a" v/r))))
-    (referential-category
+    ((or referential-category
+         mixin-category)
      (backing-class-name-for-cateory v/r))
     (symbol
      v/r)
@@ -294,13 +332,18 @@ for every category.
 
 (defmethod clone-individual-changing-type ((i individual) 
                                            (new-category category))
-  ;;/// what do we do with the bindings? Ought to already be 
-  ;; a function of cloning them. Ignoring for the nonce.
   (let ((established-type (indiv-type i))
         (new (make-unindexed-individual new-category))) ;; includes shadow
     (when (cdr established-type) ;; carry over any mix-ins
       (setf (indiv-type i) (cons new-category (cdr established-type))))
-    (push-debug `(,i ,new ,new-category)) (break "write binding cloner")
+    ;; The 'binds' bindings are probably intrinsic to the nature of
+    ;; the object we're starting from and wouldn't make sense on
+    ;; the new object since the whole point was to change the type.
+    ;; But the 'bound-in' are relationships from other objects to
+    ;; the one we're cloning, so they will (ought to) continue to be
+    ;; relevant.  ///first case doesn't fall out that neatly, which
+    ;; suggests a knowledge-based, case by case cloning. 
+    (push-debug `(,i ,new ,new-category)) ;(break "write binding cloner")
     new))
   
 
@@ -391,6 +434,9 @@ for every category.
       ;;(pprint form)      
       (eval form)))) |#
 
+(defparameter *print-generated-k-method-forms* nil
+  "Turn in on when you suspect the generated code is wrong.")
+
 (defun def-k-method/expr (name args body)
   ;;(push-debug `(,name ,args ,body))
   (vet-k-method-argument-form args)
@@ -408,12 +454,17 @@ for every category.
            (let-bindings
             (construct-let-bindings 
              dummy-parameters parameters type-restrictions)))
+
+      ;;//// Added a generated "call-<method name>" function
+      ;; in the same style as call-compose
+
       ;;(break "check args")
       (let ((form
              `(defmethod ,name ,method-args
                 (let ,let-bindings
                   ,@body)) ))
-        (pprint form)  ;; (break "double check")
+        (when *print-generated-k-method-forms*
+          (pprint form))
         (eval form)))))
 
 
