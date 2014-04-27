@@ -33,13 +33,6 @@
 
 ;;--- thin thread to handle the 1st NP
 
-(define-category agent
-  :specializes nil 
-  ;; foundation says agent < PhysicalObject < Physical < Endurant < Top
-  ;; What special sause does 'agent' add? 
-  :realization (:common-noun "agent")) ;; n.b. "Mossad agent"
-
-
 
 (define-category has-name
   :specializes nil ;; Endurant maybe? 
