@@ -1,6 +1,6 @@
 ********************************
 * How to install & run Sparser *
-* Version 0.3 - 11/24/12       *
+* Version 0.4 - 5/3/14         *
 ********************************
 
 Thank you for downloading Sparser. This short guide
@@ -12,7 +12,7 @@ Installation & Setup
 
 1. Install the root directory "sparser" wherever you like.
 We recommend (and the default configuration assumes)
-you keep it in your home directory, e.g as ~/sparser/.
+you keep it in your home directory, e.g., as ~/sparser/.
 
 When you checkout the trunk of the svn distribution to
 that root location, it should contain three immediate
@@ -55,7 +55,7 @@ parse a simple phrase. Execute "(p "10 days")".
 Your output should look something like this:
 ====================
 sparser(3): (p "10 days")
-10 days
+[10 days]
 
                                  source-start
 e3    amount-of-time          1 "10 days" 3
@@ -64,6 +64,6 @@ e3    amount-of-time          1 "10 days" 3
 ====================
 
 If so, congratulations -- Sparser is working. Check out
-the documentation in "Sparser/Sparser/documentation" to
+the documentation in "~/sparser/Sparser/documentation" to
 see how you can start writing your own grammars.
 
