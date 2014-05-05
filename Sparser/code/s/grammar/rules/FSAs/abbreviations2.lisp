@@ -1,17 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  2.2 September 1995
+;;;  Version:  2.2 May 2014
 
 ;; 2.0 (11/11/92 v2.3) new design to go with new style of caps fsa
 ;;     (5/22/93) finishing the job
 ;; 2.1 (5/5/94) added check against capitalization. Fixed case in it 5/10
 ;;     (4/30/95) added traces
-;; 2.2 (9/6) broke out the routine that makes the edges so there can be a check
+;; 2.2 (9/6/95) broke out the routine that makes the edges so there can be a check
 ;;      for masked end-of-sentence periods.
-
+;;     (5/2/14) in check-for-abbreviation-before-position, the position
+;;      that it passed to capitalized-correspondent was causing failures.
+;;      That routine must have changed its convention.
 
 (in-package :sparser)
 
@@ -184,7 +186,7 @@
   (let* ((prior-position (chart-position-before position))
          (lc-abbrev-word? (pos-terminal prior-position))
          (caps-variant? (capitalized-correspondent
-                             lc-abbrev-word? prior-position))
+                             lc-abbrev-word? position))
          full-word )
 
     (if (setq full-word
