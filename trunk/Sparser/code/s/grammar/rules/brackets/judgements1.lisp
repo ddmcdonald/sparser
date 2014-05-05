@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.9 February 2014
+;;;  Version:  1.9 April 2014
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -51,7 +51,7 @@
 ;;       segment boundary because a verb is following a verb but was not resetting
 ;;       the global like the other paths through the code do.
 ;;      (1/21/14) Adjusting rule for proper-nouns given C3 cases.
-;;      Misc. small tweaks through 2/26/14. 
+;;      Misc. small tweaks through 4/30/14. 
 
 (in-package :sparser)
 
@@ -293,7 +293,8 @@
 
 
       ;;--- NPs and friends
-          
+      ;; Returning t ends the segment. Returning nil continues it.
+
       ((eq ]  np].)
        t)
 
@@ -304,9 +305,9 @@
               (participle? previous-word))
          nil)
         ((segment-started-as-np?)
-         t)
+         nil)
         (t
-         nil)))
+         t)))
 
       ((eq ]  ].pronoun) t)
 	  
