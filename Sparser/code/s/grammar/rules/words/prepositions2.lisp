@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   2.4 May 2013
+;;;   Version:   2.4 April 2014
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -34,7 +33,7 @@
 ;;      base rule was circular so made it have the prep category as its label.
 ;;     (2/20/12) Added schema to the constructed cfr.  11/25/12 "near", "far"
 ;;     (1/18/13) Corrected order-of-args in push-onto-plist. 1/30/13 "away".
-;;     (5/24/13) "against"
+;;     (5/24/13) "against" (4/30/14) "onto"
 
 (in-package :sparser)
 
@@ -95,6 +94,7 @@
 (define-preposition "inside" :form 'spatial-preposition)
 (define-preposition "near" :form 'spatial-preposition)
 (define-preposition "on" )
+(define-preposition "onto" :form 'spatial-preposition)
 (define-preposition "of" )
 (define-preposition "off" )
 (define-preposition "out" )
