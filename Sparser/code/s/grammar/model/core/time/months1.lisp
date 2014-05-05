@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,20 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "months"
@@ -23,7 +23,7 @@
 ;;      a leading ].proper-noun, which seems like overkill. Also rewriting the
 ;;      category to go to self instead of time
 ;; 1.7 (5/30/13) Re-labeled catgeory month as time syntactically.  
-;; 1.8 (6/12/13) Backed out of the rule label with the idea that we need
+;; 1.8 (6/12/13) Backed out of the rule label.
 
 (in-package :sparser)
 
