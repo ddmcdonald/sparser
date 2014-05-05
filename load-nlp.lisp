@@ -1,21 +1,20 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2010-2013 David D. McDonald
+;;; Copyright (c) 2010-2014 David D. McDonald
 ;;;
 ;;;   File:   load-nlp
-;;; Version:  December 2013
+;;; Version:  May 2014
 
-;; This file will load the language understanding system Sparser, 
-;; the language generator Mumble, and a shared set of utilities.
+;; This file will load the language understanding system Sparser, the
+;; language generator Mumble, and a shared set of utilities.
 
-;; Part of the system is loaded using ASDF, most is loaded by
-;; explicit load files. The common reference point is the location
-;; of this file. 
-;;   We collect the location of this file using *load-truename*
-;; in step 2. There are other files however that must be given
-;; explicit pathnames. The values here assume you checked out 
-;; the system to the directory "sparser" in your home directory
-;; (i.e. ~/sparser). If you put it somewhere else then you will
-;; need to changed those paths
+;; Part of the system is loaded using ASDF, most is loaded by explicit load
+;; files. The common reference point is the location of this file. We
+;; collect the location of this file using *load-truename* in step 1.
+
+;; There are other files however that must be given pathnames in this file.
+;; The values here now assume that you checked out the system to the
+;; directory "sparser" in your home directory (i.e. ~/sparser). If you put
+;; it somewhere else then you will need to changed those paths
 
 ;; What this file does:
 ;; 1. Records the location of this file as *nlp-home*
@@ -32,8 +31,9 @@
 
 (defparameter *nlp-home*
   (make-pathname :directory (pathname-directory *load-truename*)
-                 :device (pathname-device *load-truename*))) ;; attempt to make Windows work
-;; This is for by-hand for debugging. Change to fit where you put Sparser
+                 :device (pathname-device *load-truename*)))
+;; This is only for by-hand debugging if something goes wrong.
+;; Change to fit where you put Sparser
 ;; (setq *nlp-home* "/Users/ddm/sparser/")
 
 
@@ -53,14 +53,17 @@
 
 
 ;; #3 --- Load the utilities. Note that their exported symbols
-;;  are in the package :ddm-util, which is also the name of its asd file
+;; are in the package :ddm-util, which is also the name of its asd file
 
 ;; Utilities used everywhere 
 #+openmcl(asdf:operate 'asdf:load-op :ddm-util)
-#+franz-inc (let ((*default-pathname-defaults* cl-user::*nlp-home*))
-              (load (merge-pathnames 
-                     (make-pathname :directory '(:relative "util") 
-                                    :name "loader.lisp"))))
+
+;; Accommodates an undiagnosed issue with Allegro CL
+#-openmcl(let ((*default-pathname-defaults* cl-user::*nlp-home*))
+           (load (merge-pathnames 
+                  (make-pathname :directory '(:relative "util") 
+                                 :name "loader.lisp"))))
+
 
 
 ;; #4 --- Create the sparser package
@@ -86,8 +89,7 @@
 
 ;; #6  Use the selected script to pick the desired version of Sparser
 ;;  and load it.
-
-;; The easiest way to use something other than the default is to set this
+;;   The easiest way to use something other than the default is to set this
 ;; variable before you load this file. Note that right now we are in the
 ;; symbol package :cl-user, which is also the usual default package when a lisp
 ;; is loaded.
@@ -116,6 +118,7 @@
                      init-location
                      sparser-load-script
                      ".lisp")))
+
 
 ;; #7 load the files from Mumble that reference types in Sparser
 
