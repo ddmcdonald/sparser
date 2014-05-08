@@ -115,6 +115,7 @@
   "Just stash it in the entity field of the model just to park it.
    Essentially a no-op."
   (let ((model (model (the-situation)))) ;; level ?? 
+    (push-debug `(,item ,model)) (break "adding ~a" item)
     (push item (entities model))))
 
 
