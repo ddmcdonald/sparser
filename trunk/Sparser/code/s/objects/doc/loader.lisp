@@ -22,8 +22,7 @@
 ;;     symbols are known before they're referenced in code.
 ;; 0.6 (7/15/13) Bumped [object] to 1 to start adjustments for greater uniformity
 ;;      in accumulators and operations. Added [classes]. (9/18/13) added
-;;      [situation]. 10/3/13 [initialization]. 5/8/14 [latent-predicates]
-
+;;      [situation]. 10/3/13 moved out [situation].
 (in-package :sparser)
 
 ;; package to distinguish text-relations
@@ -54,7 +53,5 @@
 (lload "doc;doc stream")
 (lload "doc;context")
 (lload "doc;content")
-(lload "doc;atent-predicates")
-(lload "doc;situation")
 (lload "doc;initialization")
 
