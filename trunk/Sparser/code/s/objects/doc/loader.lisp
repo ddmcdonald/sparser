@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.6 October 2013
+;;;  Version:  0.6 May 2014
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -22,7 +22,7 @@
 ;;     symbols are known before they're referenced in code.
 ;; 0.6 (7/15/13) Bumped [object] to 1 to start adjustments for greater uniformity
 ;;      in accumulators and operations. Added [classes]. (9/18/13) added
-;;      [situation]. 10/3/13 [initialization].
+;;      [situation]. 10/3/13 [initialization]. 5/8/14 [latent-predicates]
 
 (in-package :sparser)
 
@@ -54,6 +54,7 @@
 (lload "doc;doc stream")
 (lload "doc;context")
 (lload "doc;content")
+(lload "doc;atent-predicates")
 (lload "doc;situation")
 (lload "doc;initialization")
 
