@@ -11,12 +11,9 @@
 ;; to experiment with. 12/16/13 added "knot". Fixed up named-measure
 ;; which let 'distance' work.
 
+;; 5/6/14 Moved out everyting to core/amounts/measurements or a dossier
+
 (in-package :sparser)
-
-;;;-------------------------
-;;; rate of change measures
-;;;-------------------------
-
 (define-category unit-of-rate-of-change
   :specializes unit-of-measure
   :binds ((distance-measure . unit-of-measure) ;; e.g. miles
