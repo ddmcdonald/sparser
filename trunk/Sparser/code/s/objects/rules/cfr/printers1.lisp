@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2012-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   1.5 March 2012
+;;;   Version:   1.5 May 2014
 
 ;; 1.1 (5/2/92 v2.2) Added short-forms
 ;; 1.2 (9/3 v2.3) added cases for referential categories and (9/7) for
@@ -14,6 +14,7 @@
 ;; 1.5 (6/20/95) made the menu printer sensitive to the version in the grammar menu
 ;;     (2/14/98) added symbol case to Princ-rule-term so it could be used 
 ;;      for the cases in tree families. (3/16/12) quiet the compiler
+;;     (5/16/14) cleaned up some ecases. 
 
 (in-package :sparser)
 
@@ -67,11 +68,14 @@
 ;;------ vanila
 
 (defun princ-cfr (cfr stream)
-  (etypecase (cfr-category cfr)
+  (typecase (cfr-category cfr)
     ((or category referential-category mixin-category)
      (princ-category (cfr-category cfr) stream))
     (word     (princ-word   (cfr-category cfr) stream))
-    (polyword (display-polyword (cfr-category cfr) stream)))
+    (polyword (display-polyword (cfr-category cfr) stream))
+    (otherwise
+     (push-debug `(,(cfr-category cfr)))
+     (error "Unexpected type of lhs of cfr while printing")))
   (write-string " -> " stream)
   (let ((rhs (cfr-rhs cfr)))
     (if (typep rhs 'polyword)
@@ -80,21 +84,27 @@
             (write-string "\"" stream))
       (dolist (item (cfr-rhs cfr))
         (write-string " " stream)
-        (etypecase item
+        (typecase item
           ((or category referential-category mixin-category)
            (princ-category item stream))
           (word     (princ-word   item stream))
           (polyword (write-string "\"" stream)
                     (display-polyword item stream)
-                    (write-string "\"" stream)))))))
+                    (write-string "\"" stream))
+          (otherwise
+           (push-debug `(,item)) ; 
+           (error "Unexpected item in rhs of cfr while printing")))))))
 
 (defun princ-rule-term (term stream)
-  (etypecase term
-      ((or category referential-category mixin-category)
-       (princ-category term stream))
-      (word     (princ-word term stream))
-      (polyword (display-polyword term stream))
-      (symbol (princ term stream))))
+  (typecase term
+    ((or category referential-category mixin-category)
+     (princ-category term stream))
+    (word     (princ-word term stream))
+    (polyword (display-polyword term stream))
+    (symbol (princ term stream))
+    (otherwise
+     (push-debug `(,term))
+     (error "unexpected kind of term while printing"))))
 
 
 ;;------ polyword
