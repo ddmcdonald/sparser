@@ -43,7 +43,7 @@
 
 ;;---- hyphenated numbers
 
-(define-citation "194-42-4289"
+(define-citation "194-42-4279"
   (1 HYPHENATED-NUMBER 6))
 
 ;;  The hyphen and period words blows up in
@@ -53,7 +53,7 @@
   (1 HYPHENATED-NUMBER 4)
   (4 "." 5))
 
-(define-citation "194-42-4289-"
+(define-citation "194-42-4279-"
   (1 HYPHENATED-NUMBER 6)
   (6 "-" 7))
 
