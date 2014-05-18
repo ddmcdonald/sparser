@@ -1,14 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2014 David D. McDonald  -- all rights reserved
 ;;; extensions opyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "units of measure"
 ;;;   module:  "model;dossiers:"
-;;;  Version:  February 2010
+;;;  Version:  May 2014
 
 ;; initiated 9/18/93 v2.3. 2/17/10 Added a few more cases and started
-;; using the synonyms form.
+;; using the synonyms form. 5/6/14 moved in new cases from waypoints.
 
 (in-package :sparser)
 
@@ -21,6 +20,8 @@
 
 (define-named-individual-with-synonyms unit-of-measure
     ("mile"))
+
+(define-unit-of-measure "nautical mile")
 
 (define-named-individual-with-synonyms unit-of-measure
     ("kilometer" "km")
@@ -54,3 +55,6 @@
   :no-morph t)
 
 
+;;--- rates
+
+(def-rate-of-change-unit "nautical mile" "hour" ("knot" "knots"))
