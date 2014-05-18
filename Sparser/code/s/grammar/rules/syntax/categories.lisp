@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.7 April 2013
+;;;  Version:  0.8 May 2014
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -46,6 +45,7 @@
 ;;      is code that operates over them like the text relations. 3/15 fan-out from
 ;;      change to pronoun form. 4/9/13 added relative-clause. Lots of little additions
 ;;      to the predicates before that.
+;; 0.8 (5/17/14) Modified ignorable-category? to move number into modifier-category?.
 
 (in-package :sparser)
 
@@ -318,7 +318,8 @@
 (defmethod modifier-category? ((c referential-category))
   (modifier-category? (cat-symbol c)))
 (defmethod modifier-category? ((name symbol))
-  (memq name '(category::adjective)))
+  (memq name '(category::adjective
+               category::number)))
 
 
 ;; special purpose for text-relations - note-what-the-head-is
@@ -330,7 +331,6 @@
   (ignorable-category? (cat-symbol c)))
 (defmethod ignorable-category? ((name symbol))
   (memq name '(category::quantifier category::adverb
-               category::number
                category::preposition
                category::modal category::subordinate-conjunction)))
 
