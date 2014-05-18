@@ -51,6 +51,7 @@
 ;;     (12/26/13) Tweeked decode-rdata-mapping to notice an explicit category
 ;;      as the equivalent of :self. (2/1/14) Finished retrieve-word-constructor for
 ;;      use in abbreviation code.
+;;     (5/12/14) Fixed error message in decode-rdata-mapping. 
 
 (in-package :sparser)
 
@@ -550,9 +551,10 @@
                  (setq var value))
             (else
              (push-debug `(,term ,value ,mapping ,category ,tf))
+             ;; (setq term (car *) value (cadr *) mapping (caddr *) category (fourth *) tf (fifth *))
              (error "There is no variable named ~A in ~A,~
-                   ~%as used in its rdata with value ~a."
-                    term category value)))
+                   ~%as used in its rdata for the parameter ~a."
+                    value category term)))
         (push (cons term var)
               new-list))
 
