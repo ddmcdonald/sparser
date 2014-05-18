@@ -24,7 +24,8 @@
 (when *nothing-Mac-specific*
   (defun launch-sparser-menus ())
   (defun increment-line-count ())
-  (defun synchronize/should-we-pause? (sm &optional start-edge end-edge ))
+  (defun synchronize/should-we-pause? (sm &optional start-edge end-edge ) 
+    (values sm start-edge end-edge))
   (defun update-workbench ())
   (defun rtd/shutdown ())
   (defun warp-announcement-widgets-off-screen ())
@@ -32,7 +33,7 @@
   (defun announce-effect-of-rule-definition ())
   (defun slvd/prepare-for-save-process ())
   (defun write-to-text-window (*NL-as-string* position)
-    (declare (ignore *NL-as-string* position)))
+    (declare (ignore position)))
   )
 
 (unless *include-model-facilities*
