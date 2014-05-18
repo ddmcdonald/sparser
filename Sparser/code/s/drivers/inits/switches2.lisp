@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.22 March 2014
+;;;  Version:  2.22 May 2014
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -66,7 +66,8 @@
 ;;       that operations are built on.
 ;; 2.22 (1/22/14) Added (turn-off-c3) to all the bigger sets. 1/29/14 refined 
 ;;       fire-setting so we cover the segments. 3/3/14 added bio-setting. 
-;;       3/18/14 tweak to the c3 setting.
+;;       3/18/14 tweak to the c3 setting. 5/7/14 Completion actions were still
+;;       running in just-bracketing setting.
 
 (in-package :sparser)
 
@@ -211,6 +212,7 @@
   (setq *do-heuristic-segment-analysis* *ha*)
   (setq *do-conceptual-analysis* *ca*)
   (setq *do-debris-analysis* *da*)
+  (setq *do-completion-actions* t)
   (setq *count-input-lines* t))
 
 (defun turnoff-standard-extras ()
@@ -327,7 +329,6 @@
 
 (defun strider-setting ()
   (declare (special *tts-after-each-section*))
-  (turn-off-c3)
   (tuned-grok)
   (setq *do-debris-analysis* t)
   (setq *arabic-names* t)
@@ -398,6 +399,7 @@
 	*do-strong-domain-modeling* nil
         *recognize-sections-within-articles* nil
         *newline-delimits-paragraphs* nil
+        *do-completion-actions* nil
         *after-action-on-segments* 'normal-segment-finished-options)
   (period-hook-off)
   (establish-version-of-next-terminal-to-use :pass-through-all-tokens)
