@@ -24,12 +24,14 @@
   (lload "objects;situation:loader")
   (gload "sit-rules;loader")
   (gload "isr;loader")
+  (setq *use-subtypes* t)
   (create-ford-motor-company)
   (create-wakil)
   (c3-setting))
 
 ;; 72  (p "black ford suv has entered wakil")
-;; 73  (p "black ford suv has entered wakil. two people are dismounting.")
+;; 73  (p "two people are dismounting.")
+;; (p "black ford suv has entered wakil. Two people are dismounting.")
 ;; 74  etc.  "correction, three people"
 ;; 79  "three guys entered the black ford suv in wakil"
 ;; 82  "black ford suv is leaving wakil to the west"
@@ -146,7 +148,7 @@ stuff in in the compose methods that execute when these rules
 complete (see same file). 
 
 c3-segment-parse returns the final, segment-spanning edge to
-c3-process-segment-and-update-state. There, the phase-level state
+c3-process-segment-and-update-state There, the phase-level state
 is reinitialized, the sentence-level state is updated given the
 form of this edge, an indexical for the new edge's referent at
 the sentence level is created, and we call add-entity.
