@@ -4,10 +4,11 @@
 ;;;
 ;;;     File:  "rules"
 ;;;            grammar/rules/situation/
-;;;  version:  March 2014
+;;;  version:  May 2014
 
 ;; Initiated 3/20/14 to collect all the cases, the grammar, from the
-;; individual files into one place.
+;; individual files into one place. Incremental extensions through
+;; 5/12/14. 
 
 (in-package :sparser)
 
@@ -19,6 +20,8 @@
 (define-indexical-variable current-vg-referent)
 
 (define-indexical-variable subject)
+(define-indexical-variable verb)
+(define-indexical-variable object)
 
 
 ;;-- If there's one indexical per state as a starting draft,
@@ -32,6 +35,8 @@
     (:assembling-np (get-indexical-variable 'current-np-referent))
     (:assembling-vg (get-indexical-variable 'current-vg-referent))
     (:subject-seen (get-indexical-variable 'subject))
+    (:verb-seen (get-indexical-variable 'verb))
+    (:np-complement-seen (get-indexical-variable 'object))
     (otherwise
      (error "The state ~a is not (yet) associated with an indexical"
             state))))
@@ -122,7 +127,13 @@
 
 ;; inital -> subject-seen -> verb-seen -> np-complement-seen
 
-(define-state :subject-seen sentence nil)
+(define-state :np-complement-seen sentence nil)
+
+(define-state :verb-seen sentence
+  ((proper-noun :np-complement-seen)))
+
+(define-state :subject-seen sentence
+  ((vg :verb-seen)))
 
 (define-state :initial-sentence-state sentence
   ((np :subject-seen)))
@@ -132,6 +143,7 @@
 ;;; Additional rules
 ;;;------------------
 
+;;---- Syntactic rules
 ;; These can't be allowed out 'into the wild' except under
 ;; very controlled cirumstances since they can overgenerate
 ;; and introduce ambiguity.
@@ -150,9 +162,6 @@
   :referent (:head right-edge))
 
 
-;; have provides a form rule that would do subtype perfect
-;; if we implemented that
-
 (def-syntax-rule (np vg)
                  :head :right-edge
   :form subj+verb
@@ -166,22 +175,47 @@
 ;; defined. Barring a substantial reorganization of the load order
 ;; it's simplest to include them here. 
 
-                                ;; generalize to named-type ?
+                                ;;/// generalize to named-type ?
 (def-k-method compose ((mgfr make-artifacts) (head car-type))
   "If the head (the kind argument) is abstract, then we need to
    make it concrete since a car manufacturers are makers of artifacts
    and those are always physical."
   (push-debug `(,mgfr ,head))
-  (if (itypep head 'named-type)
-    (then
-     (add-relation 'type-of-product mgfr head)
-     (let ((physical-equivalent (value-of 'type-of category::car-type)))
-       (tr :changing-type-of head physical-equivalent)
-       (let ((new (clone-individual-changing-type
-                   head physical-equivalent)))
-         ;;(push-debug `(,new)) (break "huh")
-         new)))
-    head)) ;; otherwise return the head unchanged
+  (when (itypep head 'named-type)
+    (add-relation 'type-of-product mgfr head) ;; Ford makes trucks
+    (let ((physical-equivalent (value-of 'type-of category::car-type)))
+      (tr :changing-type-of head physical-equivalent)
+      (let ((new (clone-individual-changing-type
+                  head physical-equivalent)))
+        (transfer-bindings head new)
+        (setq head new))))
+  ;; or call-compose on the new version of the head, which is going
+  ;; to be an artifact
+  (add-relation 'made-by head mgfr)
+  head)
+
+(defun transfer-bindings (old new)
+  ;; Go through the bindings on the old individual, which we are
+  ;; dropping on the floor (perhaps because we replaced a abstract
+  ;; with a concrete), to the new.
+  ;; /// With more information, we would know which bindings should
+  ;; be kept with the old (e.g. name), but now to be safe just making
+  ;; all new bindings with the value of their body changed.
+  ;; Ignoring bound-in's because those are most likely to be
+  ;; intrinsic to the old individual. 
+  (push-debug `(,old ,new))
+  (let* ((bindings-from-new (indiv-binds new)) ;; unlikely
+         (bindings-from-old
+          (loop for b in (indiv-binds old)
+            collect (bind-variable/expr (binding-variable b)
+                                  (binding-value b)
+                                  (binding-body b))))
+         (bindings (if bindings-from-new
+                     (append bindings-from-new
+                             bindings-from-old)
+                     bindings-from-old)))
+    (setf (indiv-binds new) bindings)
+    (values new old))) ;; dispense with return value when debugged
 
 ;; red + physical
 (def-k-method compose ((color color) (obj motor-vehicle)) ;;physical-surface))
@@ -195,6 +229,42 @@
   (add-relation 'color obj color)
   obj)
 
+(def-k-method compose ((aux have) (e event))
+  ;; corresponds to a form rule. Not clear there's anything to do
+  ;; at the situation level that wasn't done with the subtype already
+  (declare (ignore aux))
+  ;;(push-debug `(,e)) (break "bindings on e ?")
+  (when (referential-category-p e)
+    ;; This lets the suv get bound as the theme of "enter"
+    (setq e (make/individual e nil)))
+  e)
+
 ;; can-change-location + move
+(def-k-method compose ((theme can-change-location) (e move))
+  (push-debug `(,theme ,e)) ;;(break "e has theme?")
+#| move: when-bound(theme) 
+  ;; we know that this is same as when-bound(can-change-location
+  ;; Trigger probably goes down in the binding operation itself
+           assert (moved theme) 
+   moved(x) :: present-location -> former-location
+     when (null present-location)
+       -> instantiate an event-relative location: before(move-event)
+|#
+  ;; This gets us right into event transitions and situation chaining
+  ;; since location(suv) is a functor, so putting it off
+  e )
+
+(def-k-method compose ((e move) (loc container))
+  (push-debug `(,e ,loc)) ;; (setq e (car *) loc (cadr *))
+#| move: when-bound(to-location)
+     assert: (moved-to theme to-location)
+|#
+  (let ((theme (value-of 'theme e)))
+    (unless theme
+      (error "We lost the theme binding somewhere"))
+    (add-relation 'present-location theme loc)
+    e))
+
+              
 
 

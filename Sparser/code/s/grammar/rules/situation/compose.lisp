@@ -4,12 +4,13 @@
 ;;;
 ;;;     File:  "compose"
 ;;;            grammar/rules/situation/
-;;;  version:  January 2014
+;;;  version:  May 2014
 
 ;; Initiated 10/9/13 for the routines that take content from the
 ;; chart and incorporate it into the situation. Elaborated 10/1013.
 ;; Revised a bit 12/3/13 on word #2. 1/23/14 Got the head operations
-;; running.
+;; running. Differentiated case of referent already being an individual
+;; 5/12/14. 
 
 (in-package :sparser)
 
@@ -68,7 +69,13 @@
          (add-referent-to-peg referent peg))))))
 
 
-(defun incorporate-phrasal-head (referent peg edge)
+(defgeneric incorporate-phrasal-head (referent peg edge)
+  (:documentation "If the head is a category, then make
+    an individual for it. In general this is where we
+    transfer from the peg to the (possibly new) individual."))
+
+(defmethod incorporate-phrasal-head ((referent referential-category)
+                                     (peg peg) (edge edge))
   (push-debug `(,referent ,peg))
   ;; (setq referent (car *) ongoing-peg (cadr *))
   (let* ((category
@@ -105,6 +112,12 @@
       ;; information up to the poor-man's segment level
       (setf (edge-referent edge) i)
       i)))
+
+(defmethod incorporate-phrasal-head ((i individual) (peg peg) (edge edge))
+  ;; motivating case is "wakil", but also gets "suv"
+  (transfer-peg-bindings-to-individual peg i)
+  (setf (edge-referent edge) i)
+  i)
 
 
 ;;--- gofer
