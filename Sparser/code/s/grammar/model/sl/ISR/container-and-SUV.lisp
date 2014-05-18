@@ -69,10 +69,14 @@ with a very small number of scratches and cracks.
 |#
 
 (define-category pperson
-  ;; avoid classing with 'person' or 'people'
+  ;; avoid classing with 'person' or 'people'. See 5/15/14 notes.
   :specializes object
-  :mixins (has-location ;; location variable v/r is c3-location
+  :mixins (has-spatial-location ;; location variable v/r is c3-location
            can-change-location 
            ;; count (vs. mass)
            ))
+
+(def-rspec "person" noun pperson)
+
+(def-rspec "people" noun (collection type pperson))
 
