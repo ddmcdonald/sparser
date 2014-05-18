@@ -43,18 +43,17 @@
 
     (let ((pathogen
            (if (cdr pathogen-entries) ;; more than one entry
-           	(most-recently-mentioned pathogen-entries)
-		(if pathogen-entries ;;else it's empty so we don't respan the edge
-		  (first (first pathogen-entries))
-		  nil
-		))))
+             (most-recently-mentioned pathogen-entries)
+             (when pathogen-entries
+               ;;else it's empty so we don't respan the edge
+               (first (first pathogen-entries))))))
 
       ;;/// take over the edge
       (when pathogen
         (let ((edge
                (make-new-edge-over-pronoun
                 pt-edge  ;; edge to respan
-                (category-for-pathogen-pt-respan pt-edge)   ;; new category
+                (category-for-pathogen-pt-respan)   ;; new category
                 pt-form  ;; form
                 pathogen ;; referent
                 )))
@@ -62,5 +61,5 @@
           edge )))))
 
 
-(defun category-for-pathogen-pt-respan (pt-edge)
-    (category-named 'pathogen))
+(defun category-for-pathogen-pt-respan ()
+  (category-named 'pathogen))
