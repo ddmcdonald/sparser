@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1998-2005,2011 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "find or make"
 ;;;   Module:  "objects;model:psi:"
-;;;  version:  0.1 July 2007
+;;;  version:  2.1 September 2011
 
 ;; These get called during an analysis and make calls out to annotation.
 
@@ -122,11 +121,13 @@
 ;;; subtypes
 ;;;----------
 
+
 (defun corresponding-unit-of-subtype (unit category-of-subtype)
   (break "unvetted: corresponding-unit-of-subtype")
   (tr :looking-for-subtype-unit unit category-of-subtype)
   ;; called from ref/subtype and expected to supply the object
   ;; that will be the referent it assembles.
+  #+ignore
   (let* ((type (typecase unit
                  (psi (psi-lattice-point unit))
                  (individual (cat-lattice-position (first (indiv-type unit))))
@@ -160,8 +161,9 @@
 
 
 (defun find-or-make-psi-for-subtype (subtype-lp source-psi)
+  (declare (ignore subtype-lp source-psi))
   (break  "unvetted: find-or-make-psi-for-subtype")
-  (let ((instances (lp-subtype-instances subtype-lp)))
+  #+ignore(let ((instances (lp-subtype-instances subtype-lp)))
     (tr :find-psi-instances-of-type instances subtype-lp)
     (or (when instances
           (dolist (psi instances)
