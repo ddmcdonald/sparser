@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013-2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "years"
 ;;;   Module:  "model;dossiers:"
-;;;  Version:  October 1994
+;;;  Version:  May 2014
 
 ;; broken out as its own file 10/20/94 v2.3
-;; added years up to 2013 6/8/2013
+;; added years up to 2013 6/8/2013. Up to 2022 5/14/14
 
 (in-package :sparser)
 
@@ -75,4 +75,13 @@
 (define-year "2011" 11)
 (define-year "2012" 12)
 (define-year "2013" 13)
+(define-year "2014" 14)
+(define-year "2015" 15)
+(define-year "2016" 16)
+(define-year "2017" 17)
+(define-year "2018" 18)
+(define-year "2019" 19)
+(define-year "2020" 20)
+(define-year "2021" 21)
+(define-year "2022" 22)
 
