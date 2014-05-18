@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSE/Users/ddm/sparser/Sparser/code/s/grammar/model/dossiers/loader.lispR -*-
-;;; copyright (c) 1991-2005,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.7 August 2013
+;;;  version:  0.7 May 2014
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -46,7 +46,8 @@
 ;; 0.7 (5/9/13) Pulled out the numbers and ordinals into the regular loader for
 ;;      that module because the need to, e.g., define companies and spread their
 ;;      elements means we can't wair for the rest of the dossiers.
-;;     (8/12/13) Re-exposed the list of cities. 
+;;     (8/12/13) Re-exposed the list of cities. (5/6/14) Added attributes and
+;;      moved the one quantity to modifiers. 
 
 (in-package :sparser)
 
@@ -150,7 +151,8 @@
   ;; has to follow 'directions' because they're referenced
   ;; in 'change-in-amount verbs'
   (gload "dossiers;units of measure")
-  (gload "dossiers;quantities")
+  ;;(gload "dossiers;quantities") => modifiers
+  (gload "dossiers;attributes")
 
 ;;/////////////// left off here. March 2005 ///////////////
 
