@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2013 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2014 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  Fwbruary 2013
+;;;  Version:  May 2014
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -11,7 +11,7 @@
 ;; and to trap constructed categories that have the same name as
 ;; one that already exists to cut down of weird definition changes.
 ;; 2/28/13 included primitive way to tell the provinance of the
-;; categories we make here
+;; categories we make here. 
 
 (in-package :sparser)
 
@@ -38,6 +38,7 @@
 
 (defun assign-brackets-to-proper-noun (word)
   (assign-brackets/expr word (list ].proper-noun proper-noun.[ )))
+ 
 
 
 (defun assign-brackets-to-adverb (word)
