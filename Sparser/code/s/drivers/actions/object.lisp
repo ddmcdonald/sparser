@@ -1,12 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "drivers;actions:"
-;;;  Version:  December 1994
+;;;  Version:  May 2014
 
 ;; initiated 10/21/91, tweeked 10/23,10/26
 ;; 12/14/94 added the other kinds of categories to the dispatch check
+;; 5/7/14 Modified delete-completion-action to not presume that there
+;; is a completion action. Applied to case of period-hook which is
+;; not on by default. 
 
 (in-package :sparser)
 
@@ -61,16 +64,13 @@ each is distinguished by a tag -- the rs field is essentially a plist.
     (when (null rs)
       (break "Expected the label ~A to have a rule-set" label))
     (let ((action-plist (rs-completion-actions rs)))
-      (unless action-plist
-        (break "Expected the rule-set for the label ~A~
-                ~%to include completion-actions" label))
-
-      (if (eq (car action-plist) tag)
-        (setf (rs-completion-actions rs) (cddr action-plist))
-        (let ((cons-for-the-tag
-               (member tag action-plist)))
-          (rplaca cons-for-the-tag
-                  (car (cddr cons-for-the-tag)))
-          (rplacd cons-for-the-tag
-                  (cdr (cddr cons-for-the-tag))))))))
+      (when action-plist
+        (if (eq (car action-plist) tag)
+          (setf (rs-completion-actions rs) (cddr action-plist))
+          (let ((cons-for-the-tag (member tag action-plist)))
+            (when cons-for-the-tag
+              (rplaca cons-for-the-tag
+                      (car (cddr cons-for-the-tag)))
+              (rplacd cons-for-the-tag
+                      (cdr (cddr cons-for-the-tag))))))))))
     
