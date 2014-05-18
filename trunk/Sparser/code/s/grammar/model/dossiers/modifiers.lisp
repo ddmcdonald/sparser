@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   May 2013
+;;;   Version:   May 2014
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -11,6 +11,7 @@
 ;; word definitions because their category hasn't been defined yet. 
 ;; (1/18/13) put in define-position-in-process. 5/22 added "no longer"
 ;; (5/30/13) added in earlier, sooner as adverbs and function words
+;; 5/6/14 Moved in the quantities from its own file
 
 (in-package :sparser)
 
@@ -196,6 +197,16 @@
 (define-position-in-process "finally")
 (define-position-in-process "eventually")
 
+
+
+;;;----------
+;;; quantity
+;;;----------
+#|  A "quantity", like a number, is the answer to "how many"
+    Quantities distribute exactly like numbers, including their composition
+    to form measurements and their capacity as determiners.  |#
+
+(define-quantity  "several")
 
 
 
