@@ -1,8 +1,8 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995,2010  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2010  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "categories"
-;;;    Module:   "grammar;forms:"
+;;;    Module:   "objects;forms:"
 ;;;   Version:   1.4 September 1993
 
 ;; 1.1 (2/20/92 v2.2) Changed the call out of the macro so the source
