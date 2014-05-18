@@ -9,6 +9,8 @@
 ;; "abbreviations" 6/12 since the right thing will happen 
 ;; when the lowercase definition is parsed in upper case.
 
+(in-package :sparser)
+
 (define-season "summer"     1 )
 (define-season "fall"       2 )
 (define-season "autumn"     2 )
