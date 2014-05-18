@@ -4,10 +4,11 @@
 ;;;
 ;;;     File:  "movement"
 ;;;   Module:  "grammar/model/core/kinds/"
-;;;  version:  April 2014
+;;;  version:  May 2014
 
 ;; Initiated 3/20/14. Elaborated 3/31/14. 4/14/14 Moved to core/kinds/
-;; and expunged of ISR vocabulary/
+;; and expunged of ISR vocabulary/. 5/12/14 Working on getting 
+;; inferences going. 
 
 (in-package :sparser)
 
@@ -44,6 +45,9 @@ Cases:
 
 
 
+;; N.b. After this loads it tramples all over the 'move' defined
+;; in model/core/places/moving. They have to merge.
+;;
 (define-category move
   :specializes accomplishment
   :mixins (event) ;;//////// Sort out 'event' vs. 'perdurant'
