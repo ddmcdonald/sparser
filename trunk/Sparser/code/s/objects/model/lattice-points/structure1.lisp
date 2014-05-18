@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2010-2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2010-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "structure"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.2 March 2011
+;;;  version:  1.3 May 2014
 
 ;; initiated 11/29/97
 ;; 0.1 (2/24/98) Started reworking the initial sketch to fit all the 
@@ -25,6 +24,8 @@
 ;; 1.2 (1/25/11) Removed need to check against core-omar.
 ;;     (3/23/11) Uncommented out upward-links and added variable to
 ;;      realization-node.
+;; 1.3 (5/9/14) Tweaked subtype-lattice-point to support the new simpler
+;;      scheme based on shadows. 
 
 (in-package :sparser)
 
@@ -116,7 +117,7 @@
 
   supertype  ;; backpointer to the lattice point it specializes
 
-  subtype-instances  ;; a list of psi
+  subtype ;; pointer to the subtyped-category object
 
   )
 
