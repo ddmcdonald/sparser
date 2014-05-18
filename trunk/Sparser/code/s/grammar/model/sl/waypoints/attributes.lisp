@@ -13,6 +13,9 @@
 (in-package :sparser)
 
 
+;;--------- 5/6/14 moved to dossiers/attributes ---------
+
+
 #|
 There are no airspeed or altitude restrictions.
 The airspeed restriction is between 50 and 200 knots.
