@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2010-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 April 2013
+;;;  Version:  1.4 May 2014
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -26,6 +26,7 @@
 ;;     (12/14/10) fixed capitalization bugs  (11/2/12) added PNF-resetting-open-bracket
 ;;      Continued adding and tweaking through 12/5/12. 
 ;;     (2/10/13) added trace-status-history. Bracket variant 4.1.13
+;;     (5/12/14) Bunch of C3 traces
 
 (in-package :sparser)
 
@@ -1339,15 +1340,22 @@
                start-bracket)))
 
 (deftrace :c3-segment-scan-ended (word-after position-before)
+  ;; called from read-through-segment-to-end
   (when *trace-c3*
-    (trace-msg "[c3 seg]] Segment ended at p~a by brackets on \"~a\""
+    (trace-msg "[c3 seg] Segment ended at p~a by brackets on \"~a\""
                (pos-token-index position-before)
                (word-pname word-after))))
 
 (deftrace :c3-segment-advancing-to (position)
+  ;; called from read-through-segment-to-end
   (when *trace-c3*
-    (trace-msg "[c3 seg]] Advancing segment to p~a"
+    (trace-msg "[c3 seg] Advancing segment to p~a"
                (pos-token-index position))))
+
+(deftrace :read-through-scanned-eos ()
+  ;; called from read-through-segment-to-end
+  (when *trace-c3*
+    (trace-msg "[c3 seg] Scanned EOS")))
 
 
 (deftrace :incorporate-into-situation (referent edge)
@@ -1364,6 +1372,29 @@
   ;; in incorporate-referent-into-the-situation
   (when *trace-c3*
     (trace-msg "[c3] ~a is not the head" referent)))
+
+
+(deftrace :c3-segment-parse (start end)
+  ;; in c3-segment-parse
+  (when *trace-c3*
+    (trace-msg "[c3] Parsing segment between p~a and p~a"
+               (pos-token-index start)
+               (pos-token-index end))))
+
+(deftrace :c3-segment-edge (left-edge right-edge edge)
+  ;; in c3-segment-parse
+  (when *trace-c3*
+    (trace-msg "[c3] e~a,~a + e~a~a => ~a"
+               (edge-position-in-resource-array left-edge)
+               (edge-category left-edge)
+               (edge-position-in-resource-array right-edge)
+               (edge-category right-edge)
+               edge)))
+
+(deftrace :c3-segment-parse-value (edge)
+  ;; in c3-segment-parse
+  (when *trace-c3*
+    (trace-msg "[c3] Segment spanned by ~a" edge)))
 
 (deftrace :state-update (state new-state type)
   ;; in update-situation-state
@@ -1389,6 +1420,18 @@
   (when *trace-c3*
     (trace-msg "[c3] Changing ~a to be a ~a"
                i (cat-symbol category))))
+
+(deftrace :adding-relation-to-situation (variable i value)
+  ;; in add-relation
+  (when *trace-c3*
+    (trace-msg "[c3] Adding ~a(~a, ~a) to the situation"
+               (var-name variable)
+               i value)))
+
+(deftrace ::adding-entity-to-situation (i)
+  ;; called from add-entity
+  (when *trace-c3*
+    (trace-msg "[c3] Adding ~a to the situation" i)))
 
 
 
