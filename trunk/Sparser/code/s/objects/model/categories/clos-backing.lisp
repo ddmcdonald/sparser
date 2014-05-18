@@ -62,7 +62,7 @@ for every category.
   (case source
     (:minimal)
     (:define-category)
-    ((or :referential :form)
+    ((or :referential :form :derived)
      (make-backing-clos-class c mixins))
     (otherwise
      (push-debug `(,c ,mixins ,source))

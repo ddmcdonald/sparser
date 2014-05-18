@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.4 April 2014
+;;;  version:  1.4 May 2014
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -38,6 +38,7 @@
 ;; 1.4 (8/26/13) Added mixins keyword to decode-category-parameter-list.
 ;;     (10/24/13) Added restrict to it.
 ;;     (4/15/14) Passing mixins to backing-class constructor.
+;;     (5/12/14) Added mixin to define-subtype-derived-category
 
 (in-package :sparser)
 
@@ -72,14 +73,17 @@
 
 ;; Called from make-subtype
 ;;
-(defun define-subtype-derived-category (subtype-lp super-category)
+(defun define-subtype-derived-category (subtype-lp super-category mixin)
   (let* ((namestring (lp-supertype-print-string subtype-lp))
          (category (find-or-make-category-object
                     (intern namestring)
                     :derived))
-         (operations (make-category-operations :category category)))
+         (operations (make-category-operations :category category))
+         (base-slots (cat-slots super-category))
+         (mixin-slots (cat-slots mixin)))
 
-    (setf (cat-slots category) (cat-slots super-category))
+    (setf (cat-slots category) 
+          (append mixin-slots base-slots))
     (setf (cat-lattice-position category) subtype-lp)
 
     (let ((super-ops (cat-operations super-category)))

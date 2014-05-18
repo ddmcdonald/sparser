@@ -12,7 +12,9 @@
 ;;  because even with a full recompile it couldn't access the slot -- was
 ;;  always declared out of range. 
 ;; 4/15/14 Moved mix-ins slot to model-category so it gets inherited by
-;;  mixin-category as well as referential-category
+;;  mixin-category as well as referential-category.
+;; 5/9/14 Putting some flesh on subtyped-category.
+
 
 (in-package :sparser)
 
@@ -84,6 +86,14 @@
             (:include referential-category)
             (:conc-name #:cat-)
             (:print-function print-subtype-category-structures))
+  ;; Besides the slots from referential and model structures
+  ;; we have to remember that we've got symbol and rule-set
+  ;; slots from label by way of thevanilla category struct.
+  ;; We use the inherited mix-in slot to hold the specializer
+  ;; and the lattice-position now holds a subtype-lattice-point.
+
+  specialized-class ;; caches the CLOS sclass
+  
   )
 
 
