@@ -301,10 +301,10 @@
       ((eq ]  ].np)       
        ;;(break "].np")
        (cond 
+        ((segment-started-as-np?)
+         nil)
         ((and previous-word
               (participle? previous-word))
-         nil)
-        ((segment-started-as-np?)
          nil)
         (t
          t)))

@@ -3,12 +3,12 @@
 ;;;
 ;;;     File: "predicates"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  January 2014
+;;;  Version:  May 2014
 
 ;; initiated 12/5/12 to collect tests and other operations that are cluttering
 ;; the judgements file. Added only-aux-or-modal-to-left 4/2/13. Removed
 ;; proper-noun from definitively ends segment and added word-is-a-proper-noun
-;; 1/21/14. 
+;; 1/21/14. Occasional tweaks through 5/17/14
 
 (in-package :sparser)
 
@@ -109,8 +109,8 @@
 
 (defun word-definitively-starts-nps (word)
   (with-word-brackets word
-    (memq .[article brackets))) ;;/// what else?
-
+    (or (memq .[article brackets) ;;/// what else?
+        (memq .[np brackets))))
 
 
 ;;;-------------------
@@ -161,7 +161,11 @@
       (let ((edge (edge-between start-pos end-pos)))
         (if edge
           (not (verb-category? edge))
-          (break "New one-word aux/modal case")))
+          (else
+           (when *break-on-new-bracket-situations*
+             (push-debug `(,start-pos ,end-pos))
+             (break "New one-word aux/modal case"))
+           nil)))
 
       (let ((word-edge-pairs
              (mapcar #'cons words-between edges-betweeen)))                                     
