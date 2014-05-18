@@ -198,7 +198,7 @@
   (let* ((name (category-name-from-string-arg string-for-verb))
          (form
           `(define-category ,name
-	         :instantiates :self ;; place for generalization
+	     :instantiates :self ;; place for generalization
              :specializes event
              :binds ((subject . individual))
              :realization
@@ -214,7 +214,7 @@
 (define-category-abbreviation-class sv intransitive
   :parameter-defaults ((subject . individual)))
 |#
-;; envisioned
+;; envisioned -- needs the customized rspec to be designed
 #+ignore(defun sv (verb &optional super-category &key instantiates subject)
   (let* ((category-name (category-name-from-string-arg verb))
          (subject-restriction (or subject 'individual))
@@ -229,21 +229,17 @@
     (let ((category (eval form)))
       category)))
              
-          
-
-
-
 (defun svo (string-for-verb)
   (let* ((name (category-name-from-string-arg string-for-verb))
          (form
           `(define-category ,name
-	         :instantiates :self ;; place for generalization
+	      :instantiates :self ;; place for generalization
              :specializes event
              :binds ((subject . individual)
                      (object . individual))
              :realization
              (:tree-family transitive
-	          :mapping ((s . event)
+	      :mapping ((s . event)
                         (vp . event)
                         (vg . :self)
                         (np/subject . individual)
@@ -262,9 +258,9 @@
       name)
     (let* ((bootstap-rule
             `(def-cfr event (,name pronoun/inanimate)
-	           :form vp
+	       :form vp
                :referent (:head left-edge
-			              :bind (object right-edge))))
+			  :bind (object right-edge))))
            (rule (eval bootstap-rule)))
       (add-rule-to-category rule category)
       name)))
@@ -282,7 +278,7 @@
              :binds ((subject . individual))
              :realization
              (:tree-family intransitive-with-preposition
-	          :mapping ((s . event)
+	      :mapping ((s . event)
                         (vp . event)
                         (vg . :self)
                         (np/subject . individual)
@@ -317,6 +313,44 @@
                        :main-verb ,string-for-verb))))
     (eval form)))
 
+
+;; See dismount in sl/ISR/specifics
+;; Assumes the variables are defined on more abstract categories
+;; than this one. The subject & object info is for the mapping
+(defun c3-sv-optional-o (verb super-category 
+                         &key restrict mixin subject object)
+  (unless super-category
+    (setq super-category 'event))
+  (unless subject object
+    (error "Need subject and object specified"))
+  (let ((subj-v/r (car subject))
+        (subj-var (cadr subject))
+        (obj-v/r (car object))
+        (obj-var (cadr object)))
+
+  (let* ((name (category-name-from-string-arg verb))
+         (form
+          `(define-category ,name
+             :instantiates :self
+             :specializes ,super-category
+             :restrict ,restrict
+             :mixins ,mixin
+             :realization
+               ((:tree-family intransitive
+                 :mapping ((agent . ,subj-var)
+                           (s . :self)
+                           (vp . :self)
+                           ;; Needs *edges-from-referent-categories*
+                           (np/subject . ,subj-v/r))
+                 :main-verb ,verb)
+                (:tree-family subj/verb+np
+                 ;; C3 left to right parsing
+                 :mapping ((object . ,obj-var)
+                           (s . :self)
+                           (np/object . ,obj-v/r))))) ))
+    (eval form))))
+
+
 (defun sv-prep-marked-o (verb preposition)
   (unless (and (stringp verb) (stringp preposition))
     (error "Arguments must be string giving the base for of words"))
@@ -324,7 +358,7 @@
 		(string-append verb "/" preposition)))
          (form
           `(define-category ,name
-	         :instantiates :self ;; place for generalization
+	     :instantiates :self ;; place for generalization
              :specializes event
              :binds ((subject . individual)
                      (object . individual))
