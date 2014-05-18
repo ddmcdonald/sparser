@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:  "new cases"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  3.2 April 2013
+;;;   Version:  3.2 May 2014
 
 ;; broken out from cases 8/24/93 v2.3.  (3/10/94) fixed typo. Added error
 ;; msg to Ref/head 6/14.  (7/15) patched in mixin-category  (7/19) rearranged
@@ -35,7 +34,7 @@
 ;; 3.2 (3/22/13) Fan out from *do-not-use-psi*  4/1/13 ref/binding now dereferences
 ;;      anonymous variables. Modified how ref/head makes individuals -- using
 ;;      unindexed until a better idea comes up, wrapped in make-individual-for-dm&p
-;;      (4/4/13).
+;;      (4/4/13).  5/9/14 Changed the call that ref/subtype makes.
 
 (in-package :sparser)
 
@@ -317,7 +316,7 @@
     (break "Subtype called without a head specified -- check rule:~
             ~%  ~A" *rule-being-interpreted*))
   (if *use-subtypes*
-    (corresponding-unit-of-subtype *referent* ref-exp)
+    (specialize-object *referent* ref-exp)
     *referent*))
 
 
