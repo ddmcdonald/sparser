@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "transitive"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.3 July 2011
+;;;  version:  0.3 May 2014
 
 ;; initiated 8/5/92 v2.3, added passives 8/24
 ;; 0.1 (10/13) reorganized (in)transitive to fit the paper
@@ -16,12 +16,16 @@
 ;;     (4/20/09) moved transitive/pp to verbs-taking-pps in order to specialize it
 ;;     (8/7/11) moved in transitive-location, which isn't all that well designed. 
 ;;     (7/31/13) Added passive for "martyered" which is never active
+;;     (5/12/14) Adding subj/verb+np because C3 is parsing from the left
+;;      and composed "suv + enter" before it see's the new location np.
 
 (in-package :sparser)
 
 
 (define-exploded-tree-family  intransitive
-  :description "A verb that requires only a subject to have a complete sentence. It may be followed by prepositional phrases that carry crucial information, but that information may also just be conveyed by context."
+  :description "A verb that requires only a subject to have a complete sentence.
+     It may be followed by prepositional phrases that carry crucial information,
+     but that information may also just be conveyed by context."
   :binding-parameters ( agent )
   :labels ( s vp np/subject ) ;; shouldn't that be vg ???
   :cases
@@ -111,4 +115,16 @@
       (:location (vp (vg loc3) ;; spatial-orientation)
 		    :head left-edge
 		    :binds (location right-edge)))))
+
+
+(define-exploded-tree-family subj/verb+np
+  :description "This is the equivalent of transitive or transitive-location
+     except that we are rolling of left to right rather than right to left"
+  :binding-parameters ( object )
+  :labels ( s np/object )
+  :cases ((:direct-object (s (s np/object)
+                           :head left-edge
+                           :binds (object right-edge)))))
+
+
 
