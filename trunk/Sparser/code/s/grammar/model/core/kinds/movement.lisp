@@ -54,7 +54,7 @@ Cases:
   :binds ((theme . can-change-location)
           ;;/// FrameNet for the thing that moves
           ;; /// If this is a useful variable move it higher
-          (moved-from) ;; source - the theme's former location
+          (from-location) ;; source - the theme's former location
           (to-location) ;; goal - its new location
           ;; See set of variables in define-movement-verb that
           ;; could all be inherited.///modulo when their restriction
