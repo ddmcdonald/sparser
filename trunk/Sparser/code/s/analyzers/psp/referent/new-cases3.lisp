@@ -34,7 +34,8 @@
 ;; 3.2 (3/22/13) Fan out from *do-not-use-psi*  4/1/13 ref/binding now dereferences
 ;;      anonymous variables. Modified how ref/head makes individuals -- using
 ;;      unindexed until a better idea comes up, wrapped in make-individual-for-dm&p
-;;      (4/4/13).  5/9/14 Changed the call that ref/subtype makes.
+;;      (4/4/13).  5/9/14 Changed the call that ref/subtype makes. 5/19/14 added
+;;      another case to ref/binding where null referents are ok.
 
 (in-package :sparser)
 
@@ -368,6 +369,7 @@
 
     (unless value
       (unless (or *do-domain-modeling-and-population*
+                  *do-strong-domain-modeling* ;; actually 'weaker'
                   *ignore-capitalization*)
         (break "Bug:The referent passed in via ~A~%to be bound to ~A is Nil,~
                 ~%but you aren't allowed to bind a variable to nil."
