@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 199-1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 199-1995,2011-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "countries"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.2 September 2013
+;;;  version:  0.2 May 2014
 
 ;; 0.1 (10/12/92 v2.1) introducing new semantics
 ;;     (9/7 v2.3) revived the existing set of cases
@@ -14,6 +14,8 @@
 ;;     work circa January 2010 from state.gov
 ;;     (3/4/13) Added Kurdistan and its adjective, /// but it's not really a country
 ;; 0.2 (9/25/13) Added a bunch of cities. 
+;;     (5/19/14) Removed "The" from Bahamas. Because of how polywords are done
+;;      that's creating a version of "The" without a form field.
 
 (in-package :sparser)
 
@@ -28,7 +30,7 @@
 (define-country "Australia" :adjective "Australian")
 (define-country "Austria")
 (define-country "Azerbaijan")
-(define-country "The Bahamas")
+(define-country "Bahamas")
 (define-country "Bahrain")
 (define-country "Bangladesh")
 (define-country "Barbados")
@@ -88,7 +90,7 @@
 (define-country "Finland")
 (define-country "France"  :adjective "french")
 (define-country "Gabon")
-(define-country "The Gambia")
+(define-country "Gambia")
 (define-country "Georgia")
 (define-country "Germany" :adjective "German")
 (define-country "Ghana")
