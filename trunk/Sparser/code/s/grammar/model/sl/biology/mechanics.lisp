@@ -22,17 +22,20 @@
   ;; we're doing organic or inorganic chemistry.
   :specializes bio-entity
   :instantiates :self
+  :index (:permanent :key name)
   :realization (:common-noun "molecule"))
 
 (define-category amino-acid
   :specializes molecule
   :instantiates :self
+  :index (:permanent :key name)
   :realization (:common-noun "amino acid")) ;; need hypenated version
 
 (define-category protein
   :specializes molecule
   :instantiates :self
   :rule-label bio-entity
+  :index (:permanent :key name)
   :realization (:common-noun "protein"))
   
 
@@ -40,6 +43,7 @@
   :specializes protein
   :instantiates :self
   :rule-label bio-entity
+  :index (:permanent :key name)
   :realization (:common-noun "kinase"))
 
 
