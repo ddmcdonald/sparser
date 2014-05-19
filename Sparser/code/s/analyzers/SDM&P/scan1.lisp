@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: 1.0 September 2013
+;;;   Version: 1.0 May 2014
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
 ;; 7/17/13 Fixed bug in propoagate-suffix-to-segment. 9/18/13 Reified
-;; the continuation code so it's easier to maintain
+;; the continuation code so it's easier to maintain. 5/19/14 put
+;; guards around missing cases in analyze-segment. 
 
 (in-package :sparser)
 
@@ -192,6 +193,7 @@ to make any semantic or form edges that the grammar dictates.
 #| Look for rules that could have applied given the
  form of the edges in the segment
 |#
+;; Runs when *new-segment-coverage* is :full
 
 (defun analyze-segment (coverage)
   (declare (special *left-segment-boundary* *right-segment-boundary*))
@@ -207,13 +209,19 @@ to make any semantic or form edges that the grammar dictates.
     (:no-edges
      (error "There should never be no edges in a segment"))
 
-    (:discontinuous-edges (break "discontinuous"))
-    (:some-adjacent-edges (break "some adjacent"))
+    (:discontinuous-edges
+     (when *debug-segment-handling*
+       (break "discontinuous")))
+    (:some-adjacent-edges
+     (when *debug-segment-handling*
+       (break "some adjacent")))
 
     (otherwise
      (when *debug-segment-handling*
        (break "Unanticipated value for segment coverage: ~A"
-              coverage)))))
+              coverage))))
+  (setq coverage (segment-coverage))
+  (continue-from-sdm/analyze-segment coverage))
 
 ;;--- cases
 
