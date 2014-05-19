@@ -67,7 +67,7 @@
 ;; 2.22 (1/22/14) Added (turn-off-c3) to all the bigger sets. 1/29/14 refined 
 ;;       fire-setting so we cover the segments. 3/3/14 added bio-setting. 
 ;;       3/18/14 tweak to the c3 setting. 5/7/14 Completion actions were still
-;;       running in just-bracketing setting.
+;;       running in just-bracketing setting. 5/19/14 Tuned bio-setting.
 
 (in-package :sparser)
 
@@ -356,10 +356,12 @@
 (defun bio-setting ()
   (turn-off-c3)
   (tuned-grok)
+  ;; Except, for now back off a bit
+    (setq *new-segment-coverage* :trivial) ;; vs. :full or :none
   (ignore-comlex)
   (period-hook-off)
   (setq *uniformly-scan-all-no-space-token-sequences* t)
-   (setq *switch-setting* :biology))
+  (setq *switch-setting* :biology))
 
 
 ;;--- C3, and now for something completely different
