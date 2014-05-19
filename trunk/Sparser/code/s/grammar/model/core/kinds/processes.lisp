@@ -41,7 +41,8 @@
           (location)
           (purpose)
           (modifier)
-          (aspect . tense/aspect))) ;; see rules/tense
+          (aspect . tense/aspect)) ;; see rules/tense
+  :realization (:common-noun "event"))
 
 
 (define-category state
