@@ -134,7 +134,7 @@
 ;;; phrase structure rules
 ;;;------------------------
 
-(when nil ;;/// these should get swallowed into reversible rdata  
+(when t ;;/// these should get swallowed into reversible rdata  
 
   (def-cfr ordinal (number "st")
     :referent (:instantiate-individual position-in-a-sequence
