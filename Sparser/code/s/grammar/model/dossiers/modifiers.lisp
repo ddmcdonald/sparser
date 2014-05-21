@@ -217,9 +217,11 @@
 ;; initiated 5/27/94 v2.3
 
 (define-sequencer/determiner "last")
+(define-sequencer/determiner "previous")
 
 (define-sequencer/determiner "next")
 (define-sequencer/determiner "subsequent")
+(define-sequencer/determiner "following")
 
 (define-sequencer/preposition "after")
 (define-sequencer/preposition "before")
