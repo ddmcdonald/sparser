@@ -34,13 +34,14 @@
 ;;     (2/20/12) Added schema to the constructed cfr.  11/25/12 "near", "far"
 ;;     (1/18/13) Corrected order-of-args in push-onto-plist. 1/30/13 "away".
 ;;     (5/24/13) "against" (4/30/14) "onto"
+;;     (5/29/14) many added from Comlex; added code for synonyms
 
 (in-package :sparser)
 
-;; add 'abbreviations' field: make sure it is OK.
+
 ;; do we care to distinguish which can be complements of NP, for example, vs which can't? e.g. 'a book about science' *'a book besides science'
 
-(defun define-preposition (string &key brackets form super-category)
+(defun define-preposition (string &key brackets form super-category synonyms)
   (unless brackets  ;; v.s. ].treetop  treetop.[ 
     ;; Keep set in assign-brackets-to-preposition in sync
     (setq brackets (list  ].preposition preposition]. preposition.[ )))
@@ -62,6 +63,13 @@
               :form (resolve-form-category form)
               :schema (get-schematic-word-rule :preposition)
               :referent category)))
+      (when synonyms
+        (dolist (syn-string synonyms)
+          (let ((synonym (resolve-string-to-word/make syn-string)))
+            (define-cfr category `(,synonym)
+              :form (resolve-form-category form)
+              :schema (get-schematic-word-rule :preposition)
+              :referent category))))
       (push-onto-plist category word-rule :rule)
       (values category
               word-rule
@@ -72,7 +80,7 @@
 (define-preposition "abaft" :form 'spatial-preposition)
 (define-preposition "abeam" :form 'spatial-preposition)
 (define-preposition "aboard" :form 'spatial-preposition)
-(define-preposition "about") ;; HOW TO CLASSIFY?
+;; See modifiers.lisp (define-preposition "about")
 (define-preposition "above" :form 'spatial-preposition)
 (define-preposition "abreast of") ;; reference?
 (define-preposition "according to") ;; reference?
@@ -81,18 +89,16 @@
 (define-preposition "afore" :form 'spatio-temporal-preposition)
 (define-preposition "after" :form 'spatio-temporal-preposition)
 (define-preposition "against" :form 'spatial-preposition) ;;what about non-spatial sense
-(define-preposition "ahead" :form 'spatial-preposition) ;;more like an adverb, no?
+;; Seems like an adverb (define-preposition "ahead" :form 'spatial-preposition)
 (define-preposition "ahead of" :form 'spatial-preposition)
 (define-preposition "along" :form 'spatial-preposition)
 (define-preposition "along with") ;;??
-(define-preposition "amid") ;;spatiotemporal?
-(define-preposition "amidst") ;;should be synonymous with "amid" ?
-(define-preposition "among") ;;?
-(define-preposition "amongst") ;;syn of 'among' ?
-(define-preposition "apart from") ;;?
-(define-preposition "around") ;;?
+(define-preposition "amid" :synonyms '("amidst")) ;;spatiotemporal?
+(define-preposition "among" :synonyms '("amongst")) 
+(define-preposition "apart from")
+(define-preposition "around")
 (define-preposition "as")
-(define-preposition "as a result of") ;;
+(define-preposition "as a result of")
 (define-preposition "as far as")
 (define-preposition "as for")
 (define-preposition "as from")
@@ -121,17 +127,17 @@
 (define-preposition "by means of")
 (define-preposition "by virtue of")
 (define-preposition "by way of")
-(define-preposition "close to" :form 'spatial-preposition) ;;can also be temporal?
+(define-preposition "close to" :form 'spatial-preposition) ;;can also be temporal, even an approximator?
 (define-preposition "contrary to")
 (define-preposition "despite")
 (define-preposition "devoid of")
 (define-preposition "down"  ) ;; as in, 'down the street' ?
 (define-preposition "due to")
 (define-preposition "during"  )
-(define-preposition "except") ;;synonym: "save for" and others?
+(define-preposition "except")
 (define-preposition "except for") 
 (define-preposition "exclusive of")
-(define-preposition "far" :form 'spatial-preposition)
+;; This is more of an adverb, no? (define-preposition "far" :form 'spatial-preposition)
 (define-preposition "for" )
 (define-preposition "for sake of")
 (define-preposition "for the sake of")
@@ -139,6 +145,7 @@
 (define-preposition "from" )
 (define-preposition "from want of")
 (define-preposition "in" )
+(define-preposition "including")
 (define-preposition "in process of")
 (define-preposition "in accordance with")
 (define-preposition "in addition to")
@@ -169,16 +176,16 @@
 (define-preposition "in respect to")
 (define-preposition "in return for")
 (define-preposition "in search of")
-(define-preposition "in spite of") ;;synonym for 'despite' ?
+(define-preposition "in spite of")
 (define-preposition "in terms of")
-(define-preposition "in the face of") ;; syn for 'in face of' 
+(define-preposition "in the face of")
 (define-preposition "in the light of")
 (define-preposition "in the process of")
 (define-preposition "in view of")
 (define-preposition "inside" :form 'spatial-preposition)
 (define-preposition "inside of" :form 'spatial-preposition)
 (define-preposition "instead of")
-(define-preposition "into" :form 'spatial-preposition) ;;"I am really into sports" ??
+(define-preposition "into" :form 'spatial-preposition)
 (define-preposition "irrespective of")
 (define-preposition "like")
 (define-preposition "minus")
@@ -216,9 +223,9 @@
 (define-preposition "preparatory to")
 (define-preposition "previous to")
 (define-preposition "prior to")
-(define-preposition "pursuant to") ;;syns, e.g. 'in conformity with'
+(define-preposition "pursuant to")
 (define-preposition "regardless of")
-(define-preposition "short of") ;;is it ever not predicative?
+(define-preposition "short of")
 (define-preposition "since")
 (define-preposition "subsequent to")
 (define-preposition "such as")
@@ -239,18 +246,17 @@
 (define-preposition "up to")
 (define-preposition "upon")
 (define-preposition "upwards of")
-(define-preposition "versus") ;;add 'vs' as abbreviation or at least synonym?
+(define-preposition "versus" :synonyms '("vs" "vs.")) 
 (define-preposition "via")
 (define-preposition "void of")
-(define-preposition "with" )
+(define-preposition "with" :synonyms '("w/"))
 (define-preposition "with reference to")
 (define-preposition "with regard to")
-(define-preposition "with respect to")
+(define-preposition "with respect to" :synonyms '("w.r.t."))
 (define-preposition "with the exception of")
 (define-preposition "within" :form 'spatial-preposition)
-(define-preposition "without" )
+(define-preposition "without" :synonyms '("w/o"))
 (define-preposition "worth")
-
 
 
 
