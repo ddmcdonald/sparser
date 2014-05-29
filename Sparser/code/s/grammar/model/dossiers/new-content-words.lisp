@@ -10,8 +10,8 @@
 (in-package :sparser)
 
 ;; 4/12
-(define-adverb "potentially")
+;;(define-adverb "potentially") MOVED TO MODIFIERS 05/14
 
 ;; 10/13
-(define-adverb "previously")
+;;(define-adverb "previously") MOVED TO MODIFIERS 05/14
 
