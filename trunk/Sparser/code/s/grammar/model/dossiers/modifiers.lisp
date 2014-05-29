@@ -254,3 +254,15 @@
 (define-adverb "earlier")
 (define-adverb "later")
 
+;;;---------
+;;; adverbs
+;;;--------
+
+(define-adverb "potentially")
+(define-adverb "previously") ;; maybe want to specify something else?
+
+
+
+
+
+
