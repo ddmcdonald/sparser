@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.8 January 2013
+;;;   Version:   0.8 May 2014
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -19,7 +19,7 @@
 ;;      and added make-minimal-word-form-rule
 ;; 0.8 (1/4/13) Moved in a generalized version of the define-adverb function
 ;;      that correctly build individuals and categories for meaning-bearing
-;;      function words.
+;;      function words. (5/28/14) Smidgen of doc and clean-up. 
 
 (in-package :sparser)
 
@@ -93,6 +93,10 @@
 ;; for adverbs circa December 2012 to better fit meaning-bearing 
 ;; function words into the method-application machinery.
 
+;; It presently presumes that the tree-family is one of a small
+;; set that involve a single label and lead to form-rules.
+;; See etf-form-substitution-label for the list. 
+
 (defun define-function-term (string form 
                              &key  brackets super-category
                                    tree-families)
@@ -105,7 +109,7 @@
             (det (list  ].phrase .[article ))
             (standalone (list  ].phrase phrase.[ ))
             (otherwise
-             (break "Need brackets for another form: ~a" form)))))
+             (break "Need brackets for another syntactic form: ~a" form)))))
   (unless super-category
     (setq super-category 'adverbial))
 
@@ -121,7 +125,7 @@
       (cerror "Ignore and keep going"
               "We're about to redefine the category ~a" category-name))
     (let* ((category ;; for the function word
-            (define-category/expr category-name  ;; e.g. 'only
+            (define-category/expr category-name  ;; e.g. 'only'
               `(:specializes ,super-category
                 :instantiates :self
                 :rule-label ,super-category
@@ -149,18 +153,10 @@
 
 
 (defun apply-function-term-etf (category raw-tree-family-data)
-  "We recreate rdata expressions where the mapping is just the one
+  "We recreate rdata expressions where the mapping is just one
    label, which we replace with category, then we apply a farily
    deep entry point inside model/tree-tamilies/driver to create
    the rule."
-  (push-debug `(,category ,raw-tree-family-data))
- 
-    ;; Can consider using some suite of abbreviations, but do want
-    ;; to incorporate, here pesumably, the substitution label
-    ;; since it's going to be specific to the ETF.
-    ;; So if we get an atom, we check that there's an ETF with
-    ;; that name and replace it with a pair.
-
   (let ( tree-family-pairs )
     (dolist (raw raw-tree-family-data)
       (cond
@@ -185,15 +181,15 @@
             (let ((rule (instantiate-rule-schema
                          schema mapping category)))
               (push rule rules)))
-          ;; 1/5/13 16:40 There's something wrong with these
-          ;; rules. There's an unprintable element in their
-          ;; print form that hoses the inspector
           (add-rules-to-category category rules))))))
 
 
 (defun etf-form-substitution-label (etf)
   (unless (memq (etf-name etf)
                 '(generic-np-premodifier
-                  pre-verb-adverb post-verb-adverb sentence-adverb))
+                  pre-verb-adverb 
+                  post-verb-adverb 
+                  sentence-adverb))
     (error "Haven't yet vetted this ETF for form rules: ~a" etf))
   (car (etf-labels etf)))
+
