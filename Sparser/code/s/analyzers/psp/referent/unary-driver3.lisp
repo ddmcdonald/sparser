@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2012-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012-2014 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "unary driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   3.1 October 2013
+;;;   Version:   3.1 May 2014
 
 ;; broken out as its own file 11/91
 ;; 1.0 (10/23/92 v2.3) Got the options set up to date with actions in
@@ -34,6 +34,7 @@
 ;; 3.0 (7/22/09) fanout from changes in psi design. (9/1) Added exception for
 ;;      external referents into referent-from-unary-rule. Added notes 11/12/12
 ;; 3.1 (10/10/13) Added final hook to incorporate the referent into the situation. 
+;;     (5/30/14 Fixed long-standing bug in funcall cases. 
 
 (in-package :sparser)
 
@@ -132,13 +133,15 @@
               (apply (first rule-field)
                      (rest rule-field))))
 
-           ((cdr rule-field)
-            (funcall (first rule-field)
-                     (if (eq (second rule-field) 'daughter)
+           ((= 3 (length rule-field))
+            (funcall (second rule-field)
+                     (if (eq (third rule-field) 'daughter)
                        (edge-referent *single-daughter-edge*)
-                       (second rule-field))))
-           (t
-            (funcall (first rule-field)))))
+                       (third rule-field))))
+           ((= 2 (length rule-field)) ; 
+            (funcall (second rule-field)))
+           (t (push-debug `(,rule-field))
+              (error "Unexpected funcall case: ~a" rule-field))))
     (otherwise
      (break "Unexpected keyword in referent of unary rule: ~a"
 	    (car rule-field)))))
