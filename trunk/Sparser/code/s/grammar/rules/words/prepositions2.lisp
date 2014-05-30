@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   2.4 April 2014
+;;;   Version:   2.4 May 2014
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -35,6 +35,7 @@
 ;;     (1/18/13) Corrected order-of-args in push-onto-plist. 1/30/13 "away".
 ;;     (5/24/13) "against" (4/30/14) "onto"
 ;;     (5/29/14) many added from Comlex; added code for synonyms
+;;       Noticed some duplications in modifiers. Commented them out with a note.
 
 (in-package :sparser)
 
@@ -96,7 +97,7 @@
 (define-preposition "amid" :synonyms '("amidst")) ;;spatiotemporal?
 (define-preposition "among" :synonyms '("amongst")) 
 (define-preposition "apart from")
-(define-preposition "around")
+;; (define-preposition "around") moved to modifiers as an approximator
 (define-preposition "as")
 (define-preposition "as a result of")
 (define-preposition "as far as")
@@ -129,7 +130,7 @@
 (define-preposition "by way of")
 (define-preposition "close to" :form 'spatial-preposition) ;;can also be temporal, even an approximator?
 (define-preposition "contrary to")
-(define-preposition "despite")
+;; (define-preposition "despite") in modifiers as a reflection-on
 (define-preposition "devoid of")
 (define-preposition "down"  ) ;; as in, 'down the street' ?
 (define-preposition "due to")
@@ -176,7 +177,7 @@
 (define-preposition "in respect to")
 (define-preposition "in return for")
 (define-preposition "in search of")
-(define-preposition "in spite of")
+;; (define-preposition "in spite of") in modifiers as a reflection-on
 (define-preposition "in terms of")
 (define-preposition "in the face of")
 (define-preposition "in the light of")
@@ -224,7 +225,7 @@
 (define-preposition "previous to")
 (define-preposition "prior to")
 (define-preposition "pursuant to")
-(define-preposition "regardless of")
+;; (define-preposition "regardless of") in modifiers as a reflection-on
 (define-preposition "short of")
 (define-preposition "since")
 (define-preposition "subsequent to")
