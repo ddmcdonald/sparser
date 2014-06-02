@@ -252,6 +252,41 @@
       (define-sequence temp (value-of 'type  sequence)))))
 
 
+(defgeneric nth-item (n sequence)
+  (:documentation "Given a sequence, return the its
+    nth element, given zero-based indexing."))
+
+(def-k-method nth-item ((n integer) (category sequential))
+  ;; Motivating use is pulling the month sequences out of 
+  ;; the month category
+  (let ((value (value-of 'sequence category)))
+    (unless value
+      (push-debug `(,n ,category))
+      (error "No sequence binding on ~a"))
+    (call-nth-item n value)))
+
+(def-k-method nth-item ((n integer) (seq sequence))
+  (let ((items (value-of 'items seq)))
+    (nth-item n items)))
+
+(defmethod nth-item ((n integer) (items list))
+  (nth n items))
+
+
+(defgeneric next-item (reference sequence)
+  (:documentation "Return the item that follows the
+    reference item in the sequence."))
+
+(defmethod next-item ((n integer) (items list))
+  (nth-item (1+ n) items))
+
+(defgeneric next-item-in-cycle (reference sequence length)
+  (:documentation "Return the item that follows the
+    reference item in the sequence. When the reference
+    is to the last item, treat the sequence as a
+    cycle and return the first item."))
+
+
 ;;;---------------------------
 ;;; operations on collections
 ;;;---------------------------
