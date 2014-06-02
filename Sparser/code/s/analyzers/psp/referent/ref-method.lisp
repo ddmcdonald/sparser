@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2014 David D. McDonald  -- all rights reserved
 ;;;
-;;;      File:   "loader"
+;;;      File:   "ref-method"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   August 2013
+;;;   Version:   May 2014
 
 ;; created 9/1/11. 10/3 Adapting to getting categories as arguments, e.g.
 ;; in the case of prepositions. 11/8/12 Adjusted argument order to match
@@ -12,7 +12,8 @@
 ;; to hide the uglyness. 7/21/13 Refactored to set a method-setup that
 ;; can be used independently of referent specifications and moved them
 ;; out to the rest of that machinery. 8/22/13 Put in a check so methods
-;; aren't applied to words.
+;; aren't applied to words. 5/30/14 Added a trace. Pulled the constraint
+;; that neigher referent can be a word.
 
 (in-package :sparser)
 
@@ -27,13 +28,9 @@
   (unless (= 3 (length rule-field))
     (error "Method calls restricted to two arguments.~
          ~%%This is different:~%   ~a" rule-field))
-
-  (unless (or (word-p left-referent)
-              (word-p right-referent))
-    ;; There is a residue of edges that have words as their referents
-    ;; and wouldn't make sense. 
     
     (let ((method (car rule-field)))
+      (tr :calling-method method)
       (setup-args-and-call-k-method 
        left-referent right-referent
        (let ((referent
@@ -46,4 +43,4 @@
                (t (push-debug `(,rule-field))
                   (error "Unanticipated layout of the rule field ~
          in a method call:~%  ~a" (cdr rule-field))))))
-         referent)))))
+         referent))))
