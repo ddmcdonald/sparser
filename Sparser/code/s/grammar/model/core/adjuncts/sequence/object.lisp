@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2013-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:sequence:"
-;;;  version:  0.3 July 2013
+;;;  version:  0.4 May 2014
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/15/92 v2.3) setting up for new semantics
@@ -12,7 +12,11 @@
 ;; 0.3 (6/6/13) Rebuilt the def form in the modern class-centric idiom. 
 ;;     (7/1/13) Changed the leading bracket on determiner case to be
 ;;      ].quantifier, otherwise it messed up on "the last ..."
-;;     (7/10/13) modified sequencer and define-sequencer/preposition to incorporate interval relations
+;;     (7/10/13) modified sequencer and define-sequencer/preposition to 
+;;     incorporate interval relations.
+;; 0.4 (5/28/14) Rebuilding it in terms of categories rather than 
+;;      individuals. (5/30/14) Elaborated the call to define-function-term
+;;      and put in the needed form rules
 
 (in-package :sparser)
 
@@ -32,27 +36,38 @@
 ;;;---------------
 
 #| For the purpose of introducing brackets we need to subcategorize
-   these into two sorts, roughly determiners and prepositions.
-   To do that with autodef we need two categories and two def-forms,
-   the categories are unlikely to do any other work in the system
-   so /// if there is eventually some way to define a 'pro forma'
-   category as such that would be a good thing. |#
+   these into two sorts, roughly determiners and prepositions. |#
 
+;;--- determiners
 
 (defun define-sequencer/determiner (string)
-  (let ((word (resolve-string-to-word/make string))
-        sequencer )
-    (if (setq sequencer
-              (find-individual 'sequencer
-                               :name word))
-      sequencer
-      (else
-        (setq sequencer (define-individual 'sequencer
-                            :name word))
+  (define-function-term string 'det
+    :super-category 'sequencer
+    :rule-label 'sequencer
+    :discriminator 'sequence
+    :brackets (list ].quantifier .[np )
+    :tree-families '(generic-np-premodifier)))
 
-        (assign-brackets/expr word (list ].quantifier .[np ))
-        sequencer ))))
+;; Define-function-term would normally make the needed
+;; function rules, but when we make we use a generalizing rule-label
+;; like this is would make the same rhs for all of these, which
+;; would raise a flag and muddy the waters.
 
+(def-form-rule (sequencer common-noun)
+  :form np
+  :referent (:method modifier+noun left-edge right-edge))
+(def-form-rule (sequencer n-bar)
+  :form np
+  :referent (:method modifier+noun left-edge right-edge))
+(def-form-rule (sequencer np-head)
+  :form np
+  :referent (:method modifier+noun left-edge right-edge))
+(def-form-rule (sequencer np)
+  :form np
+  :referent (:method modifier+noun left-edge right-edge))
+
+
+;;--- prepositions
 
 (defun define-sequencer/preposition (string)
   (let ((word (resolve-string-to-word/make string))
