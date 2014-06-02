@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.2 March 2014
+;;;  version:  1.2 May 2014
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -34,6 +34,8 @@
 ;;     (1/13/14) added it to category-inherits-type?
 ;;     (3/3/14) Fixed bug where mixins on super-categories were being misseed and
 ;;      started caching superc's on the category's plist.
+;;     (5/22/14) Wrote display-category-tree and some ancilary routines to print
+;;      the whole set of categories nicely. 
 
 (in-package :sparser)
 
@@ -87,6 +89,11 @@
 ;;;----------------------------------------------
 ;;; what categories does a category inherit from
 ;;;----------------------------------------------
+
+(defun has-supercategories? (c)
+  (let ((lp (cat-lattice-position c)))
+    (when lp
+      (lp-super-category lp))))
 
 ;;--- entry points
 (defmethod super-categories-of ((c referential-category))
@@ -364,6 +371,58 @@
   (setq *category->daughters* (make-hash-table :test #'eq))
   (compute-daughter-relationships list-of-categories))
 
+;;;-------------------------------------------------------------
+;;------ recomputing daughter (subcategory) info down from top
+;; This old scheme is flawed in non-obvious way. 
+
+(defgeneric subcategories-of (category))
+
+(defmethod subcategories-of ((name symbol))
+  (subcategories-of (category-named name :break-if-none)))
+
+(defmethod subcategories-of ((c category))
+  (let ((lp (cat-lattice-position c)))
+    ;;(unless lp (error "No lattice point on ~a" c))
+    (when lp
+      (let ((pairs (lp-subtypes lp)))
+        ;; (<category> <its lattice point>)
+        (loop for pair in pairs collect (car pair))))))
+
+(defvar *category-was-displayed* (make-hash-table :size 600)
+  "Check list used by display-category-tree")
+
+(defun display-category-tree (&optional (stream *standard-output*))
+  ;; Start with top and walk all the way down, marking
+  ;; categories as displayed when they're reached. 
+  ;; When that's exhausted, sweep the remaining categories
+  ;; from the master list for those without supercategories
+  ;; and treat them as level 0 seeds.
+  (clrhash *category-was-displayed*)
+  (initialize-indentation)
+  (display-with-subcs (category-named 'top) stream)
+  (let* ((remaining (loop for c in *categories-defined*
+                      unless (gethash c *category-was-displayed*)
+                      collect c))
+         (remaining-without-supercs
+          (loop for r in remaining
+            unless (has-supercategories? r)
+            collect r)))
+    (format t "~&~%~a remaining, ~a without a supercategory~%~%~%"
+            (length remaining) (length remaining-without-supercs))
+    (dolist (c remaining-without-supercs)
+      (unless (gethash c *category-was-displayed*)
+        (initialize-indentation)
+        (display-with-subcs c stream)))))
+
+
+(defun display-with-subcs (category stream)
+  (emit-line stream "~a" (cat-symbol category))
+  (setf (gethash category *category-was-displayed*) t)
+  (push-indentation)
+  (loop for subc in (subcategories-of category)
+    do (display-with-subcs subc stream))
+  (pop-indentation))
+  
 
 
 ;;;----------------------------------------------------
