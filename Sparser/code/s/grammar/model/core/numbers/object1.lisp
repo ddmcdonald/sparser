@@ -1,11 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999 David D. McDonald  -- all rights reserved
-;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
+;;; copyright (c) 1992-1999,2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  1.3 September 1999
+;;;  Version:  1.3 May 2014
 
 ;; 1.2 (7/19/92 v2.3) made over as "real" category. 8/4/94 finished princ routine
 ;;     (10/3) improved the printer.  11/15/95 added a sort routine.
@@ -24,6 +22,7 @@
   :specializes   nil
   :binds  ((value :primitive number))
   :index (:key value))
+(mark-as-form-category 'number)
 
 
 (define-category multiplier
