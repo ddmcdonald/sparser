@@ -1,10 +1,10 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2005,2011-2013 David D. McDonald  -- all rights reserved
+  ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 1994-2005,2011-2014 David D. McDonald  -- all rights reserved
 ;;; copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pre-head np modifiers"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.8 January 2013
+;;;  version:  0.8 May 2014
 
 ;; initiated 4/28/94 v2.3
 ;; 0.1 (10/20) refined some of the distinctions amoung cases
@@ -29,6 +29,7 @@
 ;;     (1/5/13) Removed common-noun/plural case from generic-np-premodifier because
 ;;      decode-rdata-mapping was taking it to be a slashed category. ///Check whether
 ;;      we'd ever get a form category of that name.
+;;     (5/22/14) Added modifier-creates-instance
 
 (in-package :sparser)
 
@@ -36,12 +37,15 @@
 
         modifier-creates-subtype --------------- "fiscal quarter"
         modifier-creates-individual ------------ "Dutch company", "publishing group"
+        modifier-creates-instance -------------- "NFkappaB2 gene"
         modifier-creates-definite-individual --- "last year"
         designated-instance-of-set ------------- "(the) third quarter"
         quantity+kind -------------- "7 tons"
         number-of-quantity --------- "10 million", "7 dozen"
         quantity-of-kind ----------- "three companies"
         quantity+idiomatic-head ---- "45(-year) old"
+        item+idiomatic-head -------- "New Your -based"
+        pair-instantiates-category - "MA 128"
         def+proper+np-head --------- "the Southeast Bank unit"
         definite-proper+np-head ---- "Australian dollar"
         classifier-head/of/prep ---- "(the) CEO of Worlco", "(the) Worlco CEO"
@@ -90,6 +94,17 @@
                    :head right-edge ))))
 
 
+(define-exploded-tree-family  modifier-creates-instance
+  :description "Like modifier-creates-individual in that it combines a modifier
+      and a np-head to create an n-bar, but the head remains the type of the
+      result rather than being subtyped or supplanted"
+  :binding-parameters ( property  head  )
+  :labels ( n-bar modifier np-head )
+  :cases
+     ((:modifier (n-bar (modifier np-head)
+                   :instantiate-individual head
+                   :binds (property left-edge)
+                   :head right-edge))))
 
 
 #|  The modifer takes a n-bar that denotes a category of stuff and
@@ -109,8 +124,9 @@
         (np (modifier np-head)
           :instantiate-individual result-type
           :binds (individuator left-edge
-                  base-category right-edge))
-        :head right-edge )
+                  base-category right-edge)
+          :method (modifier+noun left-edge right-edge)
+          :head right-edge ))
 
       (:hyphenated (np-head ("-" np-head)
                     :head right-edge))))
@@ -221,7 +237,11 @@ Whether it's generic enough to hand all sorts of quantifying determiners
    phrase type.  e.g. "(44-year)-old"   |#
 
 (define-exploded-tree-family  item+idiomatic-head
-  :description "A complete noun phrase that consists of a specific individual and a semantically empty word, often linked by a hyphen, where the function of the empty, idiomatic word is to indicate what kind of individual the phrase as a whole refers to, e.g. \"44-year-old\", which takes the amount of time into an age, or \"New York-based\", which takes the city into a location."
+  :description "A complete noun phrase that consists of a specific individual
+      and a semantically empty word, often linked by a hyphen, where the function 
+      of the empty, idiomatic word is to indicate what kind of individual the phrase 
+      as a whole refers to, e.g. \"44-year-old\", which takes the amount of time into 
+      an age, or \"New York-based\", which takes the city into a location."
   :binding-parameters ( item )
   :labels ( np modifier np-head result-type )
   :cases
@@ -237,7 +257,8 @@ Whether it's generic enough to hand all sorts of quantifying determiners
 ;; Written for "US 20" "MA 102". Quite idiosyncrating
 ;;
 (define-exploded-tree-family  pair-instantiates-category
-  :description "It takes both items to define the category, very weak notion of a head, but nonimally it's the second item."
+  :description "It takes both items to define the category, very weak notion of a head, 
+     but nonimally it's the second item."
   :binding-parameters ( item1  item2 )
   :labels ( np first second result-type )
   :cases ((:modifier ;;????
@@ -256,7 +277,9 @@ Whether it's generic enough to hand all sorts of quantifying determiners
 |#
 
 (define-exploded-tree-family  def+proper+np-head
-  :description "A combination of a general head and a modifier that refers to a specific individual. The result needs a determiner to be a complete NP, and refers to a different kind of individual than the head does. E.g. \"(the) Southeast Bank unit\""
+  :description "A combination of a general head and a modifier that refers to a specific 
+    individual. The result needs a determiner to be a complete NP, and refers to 
+    a different kind of individual than the head does. E.g. \"(the) Southeast Bank unit\""
   :incorporates np-common-noun/definite
   :binding-parameters ( individual  base )
   :labels ( np n-bar proper-modifier np-head result-type )
@@ -318,7 +341,10 @@ These would be of/genitive except that
     head, but I need more examples to be sure.  |#
 
 (define-exploded-tree-family  classifier-head/of/prep
-  :description "A pair of two nouns (gerunds, etc.) that combine to produce an object of a related but different type: \"Worlco director\", \"war story\", \"toy gun\", that can alternate with a prepositional form: \"director of Worlco\", \"story about (the) war\""
+  :description "A pair of two nouns (gerunds, etc.) that combine to produce an object 
+    of a related but different type: \"Worlco director\", \"war story\", \"toy gun\", 
+    that can alternate with a prepositional form: \"director of Worlco\", \"story about 
+    (the) war\""
   :binding-parameters ( classifier  base )
   :labels ( np modifier np-head preposition pp result-type )
   :cases
@@ -363,7 +389,9 @@ These would be of/genitive except that
 
 
 (define-exploded-tree-family  generic-np-premodifier
-  :description "Form-rules to allow the combination of a designated modifier with any of the possible np heads. Have to specify the function/method to use for working out the referent."
+  :description "Form-rules to allow the combination of a designated modifier with 
+      any of the possible np heads. Have to specify the function/method to use for 
+      working out the referent."
   :binding-parameters ()
   :labels ( premod ) ;; n.b. this label can't be a form category
                      ;; or it will become the form of the rule
