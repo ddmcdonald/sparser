@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-2005,2012-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2012-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  1.0 August 2013
+;;;  version:  1.1 May 2013
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -12,6 +12,7 @@
 ;;     (2/2/05) Added commentary. (4/1/12) exposed collection-of-type/dh
 ;;     to quiet compiler
 ;; 1.1 (8/16/13) Make sequences permanent to avoid odd bugs due to reclamation
+;;     (5/27/14) Added mixins sequential, cyclic
 
 (in-package :sparser)
 
@@ -52,6 +53,20 @@
           (item)   ;; i.e. each individual item
           (type)
           (number :primitive integer)))
+
+
+
+;;---- mixin
+
+(define-mixin-category sequential
+  ;; motivating case is the cyclic aspect of calendar time.
+  ;; Doesn't directly model the 'cycle' or 'spiral' aspect
+  ;; of the calendar ("what month comes after December?"
+  ;; but it's a start.
+  :binds ((sequence . sequence)))
+
+(define-mixin-category cyclic
+  :binds ((cycle-length :primitive number)))
 
 
 
