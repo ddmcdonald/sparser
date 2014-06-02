@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990 Content Technologies Inc.
+;;; copyright (c) 1992,2012-2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;categories:"
-;;;  Version:   1.3 December 2012
+;;;  Version:   1.3 May 2014
 
 ;; initiated 6/90
 ;; 1.1 (v1.5) added new fields to handle the new rule regime
@@ -16,7 +16,8 @@
 ;;       to make 'referential-category' that has more slots than this one
 ;;       used to.
 ;;     (3/2/12) moved accumulators up to here to quiet compiler,
-;;     (12/15/12) added add-rules-to-category
+;;     (12/15/12) added add-rules-to-category.
+;;     (5/28/14) Moved it to objects/model/categories/define
 
 (in-package :sparser)
 
@@ -43,13 +44,4 @@
 (defvar *derived-categories* nil)
 
 
-;;;--------------------
-;;; rules on the plist
-;;;--------------------
-;; /// feels redundant, but exemplars so far seem open-coded
-
-(defun add-rules-to-category (category rules)
-  (let ((existing-rules (get-tag-for :rules category)))
-    (declare (ignore existing-rules)) ;;/// need a protocol
-    (push-onto-plist category rules :rules)))
 
