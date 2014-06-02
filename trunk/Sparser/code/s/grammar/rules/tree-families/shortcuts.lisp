@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  January 2014
+;;;  version:  May 2014
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
 ;; 7/16/09: added modifier to np-head Modified 7/21/09: replaced
@@ -20,6 +20,7 @@
 ;; making sv-location mostly meaningless by duplicating the problematic
 ;; case. 8/19/13 Added head-noun as first of possibly many short-cuts
 ;; for already defined categories. 1/30/14 Started cleaning them up. 
+;; 5/28/14 Pulled the rule-adders to uniform place.
 
 (in-package :sparser)
 
@@ -487,22 +488,6 @@
      (let ((base (car string-arg)))
        (intern base (find-package :sparser))))))
 
-
-(defun add-rule-to-category (rule category)
-  ;; This is done in objects;model:tree-families:rdata1, but doesn't
-  ;; appear to be a clean factoring of that code for this one-off
-  ;; addition
-  (let ((rule-list (cadr (member :rules (cat-realization category)))))
-    (rplacd (last rule-list)
-	    (list (car (last rule-list)) rule))))
-
-(defun find-rule-in-category (category relation)
-  (let ((rules (cadr (member :rules (cat-realization category)))))
-    (dolist (rule rules)
-      (let ((schema (cfr-schema rule)))
-        (when schema
-          (when (eq (schr-relation schema) relation)
-            (return rule)))))))
 
 
 
