@@ -81,41 +81,19 @@
    alternatives together")
 
 
-(defun switch-settings ( &optional (stream *standard-output*) )
+(defun switch-settings (&optional full? (stream *standard-output*) )
   (format stream "~&~%Sparser switch settings:")
   (format stream " ~A" *switch-setting*)
-  (format stream "~%            character translations: ~A"
-          *character-translation-protocol*)
-  (format stream "~% *break-on-meaningless-characters*: ~A"
-          *break-on-meaningless-characters*)
+  (format stream "~%              Chart-level protocol: ~A"
+          *kind-of-chart-processing-to-do*)
   (format stream "~%                     unknown words: ~A"
-          *unknown-word-policy*)
-  (format stream "~%             protocol for newlines: ~A"
-          *newline-fsa-in-use*)
-  (format stream "~%     is a newline word whitespace?: ~A"
-          (not *newline-is-a-word*))
-  (format stream "~%   are source lines being counted?: ~A"
-          *count-input-lines*)
-  (format stream "~%                     next-terminal: ~A"
-          *definition-of-next-terminal*)
+          *unknown-word-policy*) ;; :check-for-primed = Comlex
   (format stream "~%       capitalization FSA dispatch: ~A"
           *version-of-capitalization-dispatch*)
   (format stream "~%                       PNF routine: ~A"
           *pnf-routine*)
   (format stream "~%treat single cap'd words as names?: ~A"
 	  *treat-single-Capitalized-words-as-names*)
-  (format stream "~%        keep number sequences raw?: ~A"
-	  *keep-number-sequence-raw*)
-  (format stream "~%       believe the text is speech?: ~A"
-	  *speech*)
-  (format stream "~%               type of edge-vector: ~A"
-          *edge-vector-type*)
-  (format stream "~%              Chart-level protocol: ~A"
-          *kind-of-chart-processing-to-do*)
-  (format stream "~%                          Complete: ~A"
-          *version-of-complete*)
-  (format stream "~%      include property-based edges? ~A"
-          *make-edges-for-unknown-words-from-their-properties*)
   (format stream "~%    edges over new digit sequences? ~A"
           *make-edges-over-new-digit-sequences*)
   (format stream "~%        brackets for unknown words? ~A"
@@ -142,14 +120,39 @@
           *do-general-actions-on-treetops*)
   (format stream "~%           collect salient objects? ~A"
           *track-salient-objects*)
+  (format stream "~%      include property-based edges? ~A"
+          *make-edges-for-unknown-words-from-their-properties*)
+
   (format stream "~%               Length of the chart: ~A"
           (length *the-chart*))
   (format stream "~%       Length of the edge resource: ~A"
           (length *all-edges*))
   ;(when *load-the-grammar*
   ;  (grammar-switch-settings stream))
-  (format stream "~% Per-run initialization forms:")
-  (list-per-run-init-forms)
+  (when full?
+    (format stream "~%               type of edge-vector: ~A"
+            *edge-vector-type*)
+    (format stream "~%                     next-terminal: ~A"
+            *definition-of-next-terminal*)
+    (format stream "~%            character translations: ~A"
+            *character-translation-protocol*)
+    (format stream "~% *break-on-meaningless-characters*: ~A"
+            *break-on-meaningless-characters*)
+    (format stream "~%     is a newline word whitespace?: ~A"
+            (not *newline-is-a-word*))
+    (format stream "~%             protocol for newlines: ~A"
+            *newline-fsa-in-use*)
+    (format stream "~%                          Complete: ~A"
+            *version-of-complete*)
+    (format stream "~%   are source lines being counted?: ~A"
+          *count-input-lines*)
+    (format stream "~%        keep number sequences raw?: ~A"
+            *keep-number-sequence-raw*)
+    (format stream "~%       believe the text is speech?: ~A"
+            *speech*)
+
+    (format stream "~% Per-run initialization forms:")
+    (list-per-run-init-forms))
   (terpri stream))
 
 
@@ -305,10 +308,9 @@
   (setq *annotate-realizations* t)
   (include-comlex)
   (setq *do-strong-domain-modeling* t
-        *new-segment-coverage* :trivial
+        *new-segment-coverage* :full  ;; vs :trivial
         *reify-implicit-individuals* t
         *note-text-relations* t)
-  (setq *new-segment-coverage* :full)
   (setq *profligate-creation-of-individuals* t)
   (setq *allow-pure-syntax-rules* t)
   (turn-off-interfering-rules :grok)
@@ -380,7 +382,8 @@
 (defun turn-off-c3 ()
   (when (or (eq *switch-setting* :c3)
             *c3*)
-    (setq *c3* nil) ;; turn off the flag
+    (setq *c3* nil ;; turn off the flag
+          *use-subtypes* nil)
     (designate-sentence-container :simple))) ;; only other option
 
 
