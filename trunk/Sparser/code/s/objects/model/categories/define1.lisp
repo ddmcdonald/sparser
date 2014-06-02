@@ -39,6 +39,8 @@
 ;;     (10/24/13) Added restrict to it.
 ;;     (4/15/14) Passing mixins to backing-class constructor.
 ;;     (5/12/14) Added mixin to define-subtype-derived-category
+;;     (5/29/14) Moved in add-rules-to-category from diverse other files
+;;      and generalized a little. 
 
 (in-package :sparser)
 
@@ -332,3 +334,43 @@
       (push rc *referential-categories*)
 
       (values rc sc))))
+
+
+;;;--------------------
+;;; rules on the plist
+;;;--------------------
+;; This is also done by setup-rdata and related functions in
+;; objects/model/tree-families/rdata1, but in a haphazard way.
+;; These try to at least look before they leap.
+
+(defgeneric get-rules (category)
+  (:documentation "Provides abstraction since schema setup 
+    will change because it's so weird"))
+(defmethod get-rules ((name symbol))
+  (get-rules (category-named name :break-if-none)))
+(defmethod get-rules ((category model-category))
+  (cadr (member :rules (cat-realization category))))
+
+(defun add-rules-to-category (category rules)
+  (let* ((existing-rules (get-rules category))
+         (total-rules (if existing-rules
+                        (append rules existing-rules)
+                        rules)))  
+    (push-onto-plist category total-rules :rules)))
+
+
+(defun add-rule-to-category (rule category)
+  (let ((rule-list (get-rules category)))
+    (if (null rule-list)
+      (push-onto-plist category `(,rule) :rules)
+      (rplacd (last rule-list)
+              (list (car (last rule-list)) rule)))))
+
+
+(defun find-rule-in-category (category relation)
+  (let ((rules (get-rules category)))
+    (dolist (rule rules)
+      (let ((schema (cfr-schema rule)))
+        (when schema
+          (when (eq (schr-relation schema) relation)
+            (return rule)))))))
