@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "anaphors"
 ;;;   Module:  "model;core:time:"
-;;;  version:  1.2 May 2012
+;;;  version:  1.5 May 2014
 
 ;; 1.1 (10/19/94) completely reconceptualized.  10/30 fixed bad v/r
 ;;     (8/28/95) added simple phrases with sequencers
@@ -20,6 +19,7 @@
 ;;      "today's date", where the "date" is ignored.
 ;; 1.5 (6/13/13) Thoroughly reworked as indexicals with a real dereferenced
 ;;      value. 
+;;     (5/28/14) Trying that again since previous effort didn't get too far.
 
 (in-package :sparser)
 
@@ -28,10 +28,8 @@
 ;;;-----------
 
 (define-mixin-category indexical
-  :binds ((value)))
-  ;; not clear what this might specialize (what axioms would it
-  ;; provide). The categories that it's mixed into have the indexing
-  ;; and instantiation rules specifications
+  :binds ((extension)))
+
 
 
 ;;;----------------
@@ -44,6 +42,7 @@
 (define-category  calculated-time 
   :specializes time
   :instantiates time
+  :rule-label time
   :binds ((name :primitive word))
   :index (:key name)
   :realization (:standalone-word name))  ;; //this needs a hook for doing 
@@ -57,35 +56,74 @@
 (define-category  calculated-day 
   :specializes calculated-time
   :instantiates time
+  :rule-label time
+  :mixins (indexical)
   :binds ((name :primitive word)
-          (actual-date calculated-day))  ;; should be time if we calculated it
-  :index (:key name)
-  :realization (:standalone-word name
-                :tree-family item+idiomatic-head
-                :mapping ((np . :self)
-                          (modifier . calculated-day)
-                          (np-head . date)
-                          (result-type . :self)
-                          (item . actual-date))))
+          (calculator :primitive symbol))
+  :index (:key name))
+
+;;--- should be possible to convert this to a macro 
+;;
+(defun define-calculated-day (string calculation-fn)
+  (let* ((word (resolve/make string))
+         (i (find-or-make-individual 'calculated-day 
+                                     :name word
+                                     :calculator calculation-fn)))
+    (assign-brackets-as-a-common-noun word)
+
+    ;; This is a completely ad-hoc rule, but pushing this
+    ;; through the existing single-word rdata construction
+    ;; was not going to happen easily
+    (let* ((rule-form `(def-cfr time ;; knows about the rule-label
+                               (,word)
+                         :form noun
+                         :referent (:function ,calculation-fn)))
+           (rule (eval rule-form)))
+      (add-rule-to-category rule category::calculated-day)
+      (values rule i))))
+      
+      
 
               
-
 
 ;;;---------
 ;;; phrases
 ;;;---------
 
-;;--- dummy function as a stand-in
+(defgeneric identify-this-time-unit (determiner time-unit)
+  (:documentation "Uses the temporal-index to identify the
+     current month or year, etc."))
 
-(defun calculate-time (sequencer unit)
-  (declare (ignore sequencer unit))
-  :no-value-calculated-yet )
+;;/// Modify ref/method to be able to setup for
+;; one argument method calls. 
 
 
-(def-cfr time ("this" weekday)
+(def-cfr time ("this" month) ;; "this December"
   :form np
-  :referent (:function calculate-time left-edge right-edge))
+  :referent (:method identify-this-time-unit left-edge right-edge))
 
+(def-cfr time ("this" time-unit) ;; "this month"
+  :form np
+  :referent (:method identify-this-time-unit left-edge right-edge))
+
+(def-k-method identify-this-time-unit ((ignore t) (unit time-unit))
+  (declare (ignore ignore))
+  ;(let ((unit (dereference-shadow-individual sh2)))
+    (push-debug `(,unit)) (break "identify-time-unit")
+    ;; Time units are individuals. The easiest way to
+    ;; discriminate them is to use the words that name them
+    (let* ((word (value-of 'name unit))
+           (symbol (word-symbol word)))
+      (case symbol
+        (word::|month|
+          (break "got to month"))
+        (otherwise
+         (push-debug `(,word ,unit))
+         (break "What's the right default")))))
+
+
+
+#| being overhauled 5/30/14
 (def-cfr time (sequencer/determiner  ;; e.g. "next"
                weekday)
   :form np
@@ -99,7 +137,7 @@
 (def-cfr time (sequencer/determiner time-unit)
   :form np
   :referent (:function calculate-time left-edge right-edge))
-
+|#
 
 ;; 7/24/09 Doesn't work because there's no time variable anywhere
 ;; upstream from calculated-day or some way to construe 'time'

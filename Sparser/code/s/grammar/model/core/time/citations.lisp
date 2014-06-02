@@ -43,6 +43,9 @@
 [event]  "around the end of 1991"           Dec2;246
 
 {effective} "July 1",                       (tandy)
+(define-citation "June 10"
+  (1 DATE 3))
+
 {effective} "Jan. 1".                       Dec2;227
 {effective} "this Thursday"                 (bone)
 {effective} "in early January"              Dec2;220
