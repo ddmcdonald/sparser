@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  April 2014
+;;;   version:  June 2014
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -49,7 +49,9 @@
 ;; rules. 12/2/13 waypoints. 1/29/14 Removing the *c3* guards to see if everything
 ;; will load compatibly. 3/28/14 converted loading kinds;upper-model to kinds;1st-loader
 ;; so that file could be broken into more useful pieces. 4/16/14 moved it just below
-;; collections so plural realizations would work.
+;; collections so plural realizations would work. 5/25/14 added a call to make temporal
+;; sequences among the final operations after dossiers are loaded. 6/1/14 added
+;; more temporal bits that late. 
 
 
 (in-package :sparser)
@@ -306,6 +308,10 @@
     (gload "dossiers;loader")
     (gate-grammar *whos-news*
      (whos-news-post-dossiers-loader)))
+
+  (when *time*
+    (late-time-files)
+    (make-temporal-sequences))
 
   (when *incorporate-generic-lexicon*
     (prime-comlex))
