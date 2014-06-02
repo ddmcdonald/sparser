@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  2.3 April 2013
+;;;  version:  2.3 May 2014
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -67,6 +67,7 @@
 ;;      in C3 so factored the realization out completely and moved original version
 ;;      to objects/model/tree-families/driver2. Cleaned up.
 ;;     (4/7/14) Modified make-simple-individual to include a shadow
+;;     (5/29/14) Added some (now commented out) debugging code to make-simple-individual
 
 (in-package :sparser)
 
@@ -292,12 +293,15 @@
 ;;   (e.g. 'appoint') since those should now be handled by psi.
 
 (defun make-simple-individual (category binding-instructions)
+  (declare (special *index-under-permanent-instances*))
+  ;;(break "permanent = ~a" *index-under-permanent-instances*)
   (let ((individual (if *index-under-permanent-instances*
                       (make-a-permanent-individual)
                       (allocate-individual))))
     (setf (indiv-type individual) (list category))
     (setf (indiv-id   individual) (next-id category))
     (let ((bindings (apply-bindings individual binding-instructions)))
+      ;;(push-debug `(,individual ,category ,bindings))
       (index/individual individual category bindings)
       (create-shadow individual)
       individual )))
