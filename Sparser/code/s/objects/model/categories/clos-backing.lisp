@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "clos-backing"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  April 2014
+;;;  version:  May 2014
 
 ;; initated 11/9/10. Modified the storage scheme 11/11. Tweaking cases
 ;; through 12/6. 6/16/11 fixed case of clash with existing classes.
@@ -17,6 +17,8 @@
 ;; 11/13/13 Added treatment of lamba variables and doc.
 ;; 4/16/14 Added treatment of mixins. They're folded into the set of
 ;;  slots and the superc's. 
+;; 5/29/14 Found bug in k-method call macro, folded in integers,
+;;  auto-generating the call-xx methods along with the k-methods.
 
 (in-package :sparser)
 
@@ -188,6 +190,7 @@ for every category.
 	     (cfr 'cfr)
 	     (category 'category)
 	     (segment 'segment)
+             (symbol 'symbol)
 	     (otherwise (push-debug `(,v/r))
 			(break "Another v/r primitive symbol: ~a" (second v/r)))))
 	  (cons
@@ -375,67 +378,15 @@ for every category.
 
 
 
-;;;--------------------------------------------------------------
-;;; getting back the individuals from the shadows invoke methods
-;;;--------------------------------------------------------------
-
-(defvar *shadows-to-individuals* nil
-  "Set with each call to the setup wrapper below. 
-   Alist from the nominal category instance use to invoke
-   the method and the referent (usually an individual) 
-   that is the 'real' referent.")
-
-(defun dereference-shadow-individual (shadow)
-  (let ((value (cdr (assoc shadow  *shadows-to-individuals*))))
-    (unless value
-      (error "No Krisp value found for nominal instance ~a"
-             shadow))
-    value))
-
-
 ;;;------------------------------------------------------
 ;;; macro to sugar shifting representations in defmethod
 ;;;------------------------------------------------------
 
-(defmacro def-k-method (name args &body body)
-  `(def-k-method/expr ',name ',args ',body))
-
-#|  Original before variable dispatch
-(defun def-k-method/expr (name args body)
-  ;;(push-debug `(,name ,args ,body))
-  (unless (every #'symbolp args)
-    (error "The arguments in a k-method must be symbols~
-          ~%At least one of them is not: ~a" args))
-  (unless (every #'category-named args)
-    (error "As least of of the args to the k-method is not a category:~
-          ~%~a" args))
-  (let* ((categories (loop for arg in args collect (category-named arg)))
-         (shadow-classes
-          (loop for c in categories collect (get-sclass c)))
-         (dummy-parameters
-          (loop with i = 0
-            collect (intern (string-append '#:d "-" (incf i))
-                            (find-package :sparser))
-            until (= i (length shadow-classes))))
-         (method-args
-          (loop for s in shadow-classes
-            as d in dummy-parameters
-            collect `(,d ,s)))
-         (let-bindings
-          (loop for d in dummy-parameters
-            as s in args
-            collect `(,s (dereference-shadow-individual ,d)) )))
-
-    ;;(push-debug `(,let-bindings ,method-args ,dummy-parameters ,shadow-classes))
-    (let ((form 
-           `(defmethod ,name ,method-args
-              (let ,let-bindings
-                ,@body))))
-      ;;(pprint form)      
-      (eval form)))) |#
-
 (defparameter *print-generated-k-method-forms* nil
   "Turn in on when you suspect the generated code is wrong.")
+
+(defmacro def-k-method (name args &body body)
+  `(def-k-method/expr ',name ',args ',body))
 
 (defun def-k-method/expr (name args body)
   ;;(push-debug `(,name ,args ,body))
@@ -454,11 +405,17 @@ for every category.
            (let-bindings
             (construct-let-bindings 
              dummy-parameters parameters type-restrictions)))
-
-      ;;//// Added a generated "call-<method name>" function
-      ;; in the same style as call-compose
-
-      ;;(break "check args")
+ 
+      (let* ((caller-name (intern (string-append '#:call- name)
+                                   (find-package :sparser)))
+             (caller-form
+              `(defun ,caller-name ,parameters
+                 (setup-args-and-call-k-method ,@parameters
+                   (funcall #',name left-shadow right-shadow))) ))
+        (when *print-generated-k-method-forms*
+          (pprint caller-form))
+        (eval caller-form))
+       
       (let ((form
              `(defmethod ,name ,method-args
                 (let ,let-bindings
@@ -515,19 +472,24 @@ for every category.
               (push (find-class (c3-var-name (var-shadow lambda-variable)))
                     type-symbols))))
          ((symbolp type-specifier)
-          (let ((category (category-named type-specifier :break)))
-            (push (get-sclass category)
-                  type-symbols)))
+          (if (lisp-type? type-specifier)
+            (push type-specifier type-symbols)
+            (let ((category (category-named type-specifier :break)))
+              (push (get-sclass category)
+                    type-symbols))))
          (t
           (push-debug `(,type-specifier ,arg))
           (error "Can't make sense of k-restriction ~a"
                  type-specifier)))))
     (values (nreverse parameters)
             (nreverse type-symbols))))
-    
-      
 
-;  
+(defun lisp-type? (symbol)
+  ;; Not every k-method is over Krisp domain types.
+  ;; There ought to be a native call for this, but an enumeration
+  ;; will suffice.
+  (memq symbol '(integer list)))
+
 
 ;;;-------------------------------------------------------
 ;;; wrapper to setup environment for calling def-k-method
@@ -542,27 +504,61 @@ for every category.
              (psi (base-category-of-psi o))
              (individual (i-type-of o))
              (category o)
+             (integer o)
+             (word o)
              (otherwise
               (push-debug `(,o))
-              (error "Unexpected type of object passed to ref/method: ~
+              (error "Unexpected type of object passed to k-method setup: ~
                       ~a~%   ~a" (type-of o) o)))))
-     (let* ((left-type (dispatch-type-of left-referent))
-            (right-type (dispatch-type-of right-referent))
+     (push-debug `(,left-referent ,right-referent))
+     ;;(format t "~&left=~a right=~a~%" left-referent right-referent)
+     (let* ((left-type (dispatch-type-of ,left-referent))
+            (right-type (dispatch-type-of ,right-referent))
             (left-shadow (get-nominal-instance (get-sclass left-type)))
             (right-shadow (get-nominal-instance (get-sclass right-type)))
             (*shadows-to-individuals*
-             `((,left-shadow . ,left-referent)
-               (,right-shadow . ,right-referent))))
+             (list (cons left-shadow ,left-referent)
+                   (cons right-shadow ,right-referent))))
        (declare (special *shadows-to-individuals*))
        ;; (push-debug `(,left-shadow ,right-shadow))
        ,@body)))
 
 
-(defmacro call-k-method (method-name &rest args)
-  `(setup-and-funcall-k-method ',method-name ',args))
+;;--- getting back the individuals from the shadows invoke methods
 
-(defun setup-and-funcall-k-method (method-name args)
-  (push-debug `(,method-name ,args)) (break "stub"))
+(defvar *shadows-to-individuals* nil
+  "Set with each call to the setup wrapper. 
+   Alist from the nominal category instance use to invoke
+   the method and the referent (usually an individual) 
+   that is the 'real' referent.")
+
+(defun dereference-shadow-individual (shadow)
+  (declare (special *shadows-to-individuals*))
+  (let ((value (cdr (assoc shadow *shadows-to-individuals*))))
+    (unless value
+      (push-debug `(,shadow ,*shadows-to-individuals*))
+      (error "No Krisp value found for nominal instance ~a"
+             shadow))
+    value))
+
+#| Example generated k-method
+(defmethod nth-item ((d-1 integer) (d-2 #<standard-class shadow::sequence>))
+  (let ((n (dereference-shadow-individual d-1))
+        (seq (dereference-shadow-individual d-2)))
+    (let ((items (value-of 'items seq)))
+      (nth-item n items)))) |#
+
+(defmethod get-sclass ((n number))
+  n)
+(defmethod get-nominal-instance ((n number))
+  n)
+
+(defmethod get-sclass ((w word))
+  t)
+(defmethod get-nominal-instance ((w t))
+  w)
+
+(defmethod is-a-lisp-type ((n number)) t)
 
 
 
