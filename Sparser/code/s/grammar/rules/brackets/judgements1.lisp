@@ -444,6 +444,9 @@
               ;; that's weak, but for "xx-based . regional office" it's the
               ;; only evidence that's explicit.
               nil)
+             ((eq bracket-opening-segment phrase.[)
+              ;; np's are usually sentence initial, so keep it open
+              nil)
              ((= 0 word-count) nil) ;; something should follow this adjective
              (t (if *break-on-new-bracket-situations*
                   (then
