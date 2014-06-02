@@ -656,3 +656,53 @@
     (trace-msg "[Multiply threading] Called mult/just-Right-ids")))
 
 
+;;;------------------
+;;; in method calls
+;;;------------------
+
+(deftrace :calling-method (method-name)
+  ;; called from ref/method
+  (when *trace-referent-creation*
+    (trace-msg "Calling the method ~a" method-name)))
+
+;;--- Adjective
+(deftrace :modifier+noun_t+t ()
+  (when *trace-referent-creation*
+    (trace-msg "modifier+noun: t+t")))
+
+(deftrace :modifier+noun_modifier+t ()
+  (when *trace-referent-creation*
+    (trace-msg "modifier+noun: modifier+t")))
+
+(deftrace :next+month (month)
+  (when *trace-referent-creation*
+    (trace-msg "Method call: next + ~a" month)))
+
+
+;;--- Adverb
+(deftrace :modified_modifier+t ()
+  (when *trace-referent-creation*
+    (trace-msg "modified: modifier+t")))
+
+;;--- Preposition
+(deftrace :analyze-pp_t+t ()
+  (when *trace-referent-creation*
+    (trace-msg "analyze-pp: t+t")))
+#|
+(deftrace 
+  (when *trace-referent-creation*
+    (trace-msg "")))
+
+(deftrace 
+  (when *trace-referent-creation*
+    (trace-msg "")))
+
+(deftrace 
+  (when *trace-referent-creation*
+    (trace-msg "")))
+
+(deftrace 
+  (when *trace-referent-creation*
+    (trace-msg "")))
+|#
+
