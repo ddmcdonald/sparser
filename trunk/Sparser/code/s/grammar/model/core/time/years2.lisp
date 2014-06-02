@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "years"
 ;;;   Module:  "model;core:time:"
-;;;  version:  2.0 July 2013
+;;;  version:  2.2 May 2014
 
 ;; initiated in February 1991
 ;; 0.1 (4/9 v1.8.2)  Added the years from 1959 to 1979
@@ -16,7 +16,7 @@
 ;;      a leading ].proper-noun, which seems like overkill. Also rewriting the
 ;;      category to go to self instead of time.
 ;; 2.2 (7/25/13) Added csr and function for one case of contextually establishing
-;;      that a number is a year.
+;;      that a number is a year. 5/26/14 Moved comma-year here from dates2
 
 (in-package :sparser)
 
@@ -65,3 +65,37 @@
   (let ((string (string/number number))
         (integer (number-value number)))
     (define-year string integer)))
+
+
+
+;;;---------------
+;;; stranded year
+;;;---------------
+
+; In the standard pattern for dates, "June 26, 2004", the comma will
+; terminate the segment. If there's more in the segment than just the
+; month-day combination (e.g. "for [its fiscal 2004 third quarter
+; ended June 26, 2004"), then the date edge of the date->date comma-year
+; rule will be covered before the comma-year can see it. 
+; So we look under the hood of the edge-vector and extend the date
+; edge if we find one.   ////Consider whether this should be a standard
+; check within pts.
+
+;;/// This category would have come from the all-in-one date model
+;; but trying the old month+day month+year conception of dates
+;; so it's not loaded (5/27/14)
+(def-cfr comma-year ("," year)
+  :form apposative
+  :referent (:daughter right-edge))
+
+(set-ca-action category::comma-year 'check-for-stranded-date)
+
+(defun check-for-stranded-date (comma-year-edge)
+  (let* ((position (pos-edge-starts-at comma-year-edge))
+         (ev (pos-ends-here position))
+         (date-edge (vector-contains-edge-of-category ev category::date)))
+    (when date-edge
+      (let ((rule (multiply-edges date-edge comma-year-edge)))
+        (when rule
+          (make-edge-below-top-edge date-edge comma-year-edge rule))))))
+

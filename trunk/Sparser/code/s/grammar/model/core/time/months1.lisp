@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,20 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "months"
@@ -24,6 +24,7 @@
 ;;      category to go to self instead of time
 ;; 1.7 (5/30/13) Re-labeled catgeory month as time syntactically.  
 ;; 1.8 (6/12/13) Backed out of the rule label.
+;; 1.9 (5/25/14) Adding number of days and sequence.
 
 (in-package :sparser)
 
@@ -35,9 +36,11 @@
   :specializes time
   :instantiates self
   ;; :rule-label time
+  :mixins (sequential cyclic)
   :binds ((name :primitive word)
           (abbreviation :primitive word)
-          (position-in-year . ordinal))
+          (position-in-year . ordinal)
+          (number-of-days . number))
   :index (:permanent :key name)
   :realization (:common-noun name ))
                           
@@ -47,13 +50,16 @@
 ;;; form
 ;;;------
 
-(defun define-month (string integer &optional abbrev)
+(defun define-month (string integer &optional length  abbrev)
   (let ((month (define-or-find-individual
                    'month :name string))
-         (ordinal (nth-ordinal integer)))
+        (ordinal (nth-ordinal integer))
+        ;; Allowing dnumber of days to be optional to
+        ;; accommodate cases where we don't know them,
+        ;; see model/sl/middle-east/months.lisp
+        (count (when length (find-or-make-number length))))
     (bind-variable 'position-in-year ordinal month)
-
+    (when count (bind-variable 'number-of-days count month))
     (when abbrev
       (define-abbreviation string abbrev))
-    
     month ))

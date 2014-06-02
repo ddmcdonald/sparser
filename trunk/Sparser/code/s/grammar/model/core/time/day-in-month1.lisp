@@ -18,7 +18,7 @@
 
 (define-category day-of-the-month
   :specializes time
-  :instantiates time
+  :instantiates self
   :binds ((month . month)
           (number . number)
           (day-of-the-week . weekday))
