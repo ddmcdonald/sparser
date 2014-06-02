@@ -3,9 +3,9 @@
 ;;;
 ;;;    File: "NFkappaB"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: March 2014
+;;; version: May 2014
 
-;; Initiated 3/2/14, adding items through 3/5/14
+;; Initiated 3/2/14, adding items through 3/5/14, then through 5/22/14
 
 (in-package :sparser)
 
@@ -13,8 +13,10 @@
 ;;--- entities
 
 ;; nuclear factor NF-kappa-B p100 subunit
-(def-bio "nfkappab2" nil 'protein ;; ???
+(def-bio "nfkappab2" nil 'protein ;; transcription factor ???
   :identifier "PR:000011178" :greek "kappa")
+
+(def-bio "nf-kappab" nil 'protein :greek "kappa")
 
 (def-bio "p100" nil 'protein :identifier "PR:000011178")
 
@@ -38,6 +40,44 @@
                           (possessive . bio-entity)
                           (complement . bio-entity))
                 :common-noun "processing"))
+
+;; "the nfκb2 gene product p100"
+;; p100 is a "precursor protein" to NF-kappaB2 (and to p52
+;; sometimes written NF-bappaB2/p100
+;; There's such a gene, so it's something that's "expressed"
+;; It was identified as a G-protein
+;; NFKB1 is a gene
+;; NF-kappaB is a transcription factor
+;; Google ["nf-kappab2 gene product"]
+;
+; So "gene product" takes p100 on its right
+; and that then takes nfkappab2 on its left
+; or does it roll up the other way?
+;
+; Unclear what the pattern here is so writing raw rules
+; Also unclear whether this high-frequency phrase is worth
+; decomposing in it's representation, as opposed to in
+; it's axioms
+;   This is a characterization of p100
+
+(define-category gene ;; "NFkappaB2 gene"
+  :specializes bio-entity
+  :mixins (has-name)
+  :binds ((transcription-factor . protein))
+  :index (:permanent :key transcription-factor)
+  ;; Well the name is also defintive?  /// need an 'or' index
+  :realization (:tree-family modifier-creates-instance
+                :mapping ((head . :self)
+                          (property . transcription-factor)
+                          (n-bar . :self)
+                          (modifier . protein)
+                          (np-head . :self))
+                :common-noun "gene"))
+
+;; gene product <=> product of gene
+
+
+
 
 
 
