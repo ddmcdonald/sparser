@@ -46,6 +46,8 @@
 ;;      change to pronoun form. 4/9/13 added relative-clause. Lots of little additions
 ;;      to the predicates before that.
 ;; 0.8 (5/17/14) Modified ignorable-category? to move number into modifier-category?.
+;;     (5/21/14) Added mark-as-form-category so you can make a referential category
+;;      e.g. number, look like a form category when you want it to.
 
 (in-package :sparser)
 
@@ -85,13 +87,18 @@
 (defun define-form-category/expr (symbol)
   (let ((c (def-category/expr symbol :source :form)))
              ;; this pattern makes a referential-category
-
     (when *include-model-facilities*
       (setf (cat-lattice-position c) *the-top-form-category*))
-    
-    (setf (cat-plist c) `( :form-category t ,@(cat-plist c)))  
-     c ))
+    (mark-as-form-category c)
+    c ))
 
+
+(defmethod mark-as-form-category ((category-name symbol))
+  (mark-as-form-category (category-named category-name :break-if-none)))
+
+(defmethod mark-as-form-category ((c category))
+  (setf (cat-plist c)
+        `( :form-category t ,@(cat-plist c))))
 
 ;;;-----------------
 ;;; paragraph level
