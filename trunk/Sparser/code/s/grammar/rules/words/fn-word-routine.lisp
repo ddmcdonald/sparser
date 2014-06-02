@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.8 May 2014
+;;;   Version:   0.9 May 2014
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -20,6 +20,8 @@
 ;; 0.8 (1/4/13) Moved in a generalized version of the define-adverb function
 ;;      that correctly build individuals and categories for meaning-bearing
 ;;      function words. (5/28/14) Smidgen of doc and clean-up. 
+;; 0.9 (5/30/14) Adding more options to define-function-term to allow more
+;;      tailoring of the results. 
 
 (in-package :sparser)
 
@@ -99,6 +101,7 @@
 
 (defun define-function-term (string form 
                              &key  brackets super-category
+                                   rule-label discriminator
                                    tree-families)
   (unless form
     (setq form 'standalone)) ;; seems safest
@@ -112,43 +115,55 @@
              (break "Need brackets for another syntactic form: ~a" form)))))
   (unless super-category
     (setq super-category 'adverbial))
+  (when rule-label
+    (setq rule-label (category-named rule-label :break-if-none)))
 
- 
-  (let* ((category-name (name-to-use-for-category string))
-         (word (if (typep string 'word)
-                 (prog1 string
-                   (assign-brackets-to-word string brackets))
-                 (define-function-word string 
-                   :brackets brackets ;; this does bracket assignment
-                   :form form))))
-    (when (category-named category-name)
-      (cerror "Ignore and keep going"
-              "We're about to redefine the category ~a" category-name))
-    (let* ((category ;; for the function word
-            (define-category/expr category-name  ;; e.g. 'only'
-              `(:specializes ,super-category
-                :instantiates :self
-                :rule-label ,super-category
-                :bindings (name ,word))))
-           ;; In the adverb formulation, there's variable created
-           ;; by :binds ((value)) but no record of its function
+  (let ((word (if (typep string 'word)
+                (prog1 string
+                  (assign-brackets-to-word string brackets))
+                (define-function-word string 
+                  :brackets brackets ;; this does bracket assignment
+                  :form form))))
+    (let* ((base-name (name-to-use-for-category string))
+           (category-name 
+            (if discriminator ;;/// check mlisp version
+              (intern (string-append base-name "-" discriminator)
+                      (find-package :sparser))
+              base-name)))
+      (when (category-named category-name)
+        (cerror "Ignore and keep going"
+                "We're about to redefine the category ~a" category-name))
 
-           (individual (make-category-indexed-individual category)))
+      (let ((category ;; for the function word
+             (define-category/expr category-name  ;; e.g. 'only'
+               `(:specializes ,super-category
+                 :instantiates :self ;;?? super-category ??
+                 :rule-label ,(or rule-label
+                                  super-category)
+                 :bindings (name ,word)))))
        
-      (create-shadow individual)
-      (let ((rule
-             ;; Create the single-term rule that rewrites the word
-             ;; as the category we've created for it
-             (define-cfr category (list word)
-               :form (category-named form)
-               :referent individual)))
-        (push-onto-plist category rule :rule)
+        (let ((rule
+               ;; Create the single-term rule that rewrites the word
+               ;; as the category we've created for it
+               (define-cfr (or rule-label
+                               category)
+                           (list word)
+                 :form (category-named form)
+                 :referent category)))
+          (push-onto-plist category rule :rule)
 
-        (when tree-families
-          ;; Now knit the category into the right set of form rules
-          (apply-function-term-etf category tree-families))
+          (when tree-families
+            ;; Now knit the category into the right set of form rules
+            (unless rule-label
+              ;; But if there's a specified rule-label, e.g. specifying
+              ;; sequencer for "next" instead of using the category
+              ;; for "next" that we just created, then any other,
+              ;; e.g., sequencer/determiner would make those same
+              ;; form rules and we'd get a clash.
+              (apply-function-term-etf category tree-families)))
  
-        category))))
+          (values category
+                  rule))))))
 
 
 
