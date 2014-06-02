@@ -17,7 +17,10 @@
 
 
 (define-exploded-tree-family   adj-defines-function
-  :description "A combination of an adjective and a complement phrase where the lhs category is determined by the adjective. All of the semantic content is in the complement, with the adjective just determining how the phrase should be labeled and attached. They often act as adjuncts to events or states, e.g. \"worth $10 million\", \"expected by Thursday\""
+  :description "A combination of an adjective and a complement phrase where the lhs category 
+    is determined by the adjective. All of the semantic content is in the complement, 
+    with the adjective just determining how the phrase should be labeled and attached. 
+    They often act as adjuncts to events or states, e.g. \"worth $10 million\", \"expected by Thursday\""
   :binding-parameters ()
   :labels (adjp adjective complement)
   :cases
@@ -27,7 +30,10 @@
 
 
 (define-exploded-tree-family    modifier-specializes-adjective
-  :description "A combination of a base (head) adjective or adjective phrase and a modifier to its left (another adjective, an adverb, a participle, etc.) that names a new type of object that is effectively a specialization of the object named by the head, e.g. 'president' and 'vice president', or 'blue' and 'light blue'."
+  :description "A combination of a base (head) adjective or adjective phrase and 
+      a modifier to its left (another adjective, an adverb, a participle, etc.) 
+      that names a new type of object that is effectively a specialization of 
+      the object named by the head, e.g. 'president' and 'vice president', or 'blue' and 'light blue'."
   :binding-parameters ( base specializer )
   :labels ( adjp modifier adjective  specialized-type )
   :cases
