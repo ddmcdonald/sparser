@@ -20,7 +20,7 @@
 (define-individual 'calculated-time :name "now")
 (define-individual 'calculated-time :name "then")
 
-(define-individual 'calculated-day :name "today")
+(define-calculated-day "today" 'today)
 (define-individual 'calculated-day :name "tomorrow")
 (define-individual 'calculated-day :name "yesterday")
 
