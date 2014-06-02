@@ -3,9 +3,9 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: March 2014
+;;; version: May 2014
 
-;; Initiated 3/2/14.
+;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 
 (in-package :sparser)
 
@@ -47,7 +47,7 @@
   :realization (:common-noun "kinase"))
 
 
-(defun def-bio (short long kind &key greek identifier)
+(defun def-bio (short long kind &key greek identifier synonyms)
   ;; short = "NIK", long = "NF-κB-inducing kinase"
   ;; kind = kinase, greek = "alpha"
   ;; Makes individuals (particulars), that are instances of 
@@ -76,6 +76,13 @@
 
     (when identifier
       (bind-variable 'uid identifier i))
+
+    (when synonyms ;; quoted list of strings
+      (dolist (syn synonyms)
+        (push (define-cfr label `(,(resolve/make syn))
+                :form category::common-noun
+                :referent i)
+              rules)))
 
     ;; Now we do that by-hand for the long-form. If the long form needs
     ;; to have a variant with a greek letter in it we'll make two rules.
