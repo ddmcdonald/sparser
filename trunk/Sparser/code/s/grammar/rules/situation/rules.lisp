@@ -113,6 +113,7 @@
 (define-state :initial-state phrase ;; "black"
   ((adjective :assembling-np)
    (verb+s :assembling-vg) ;; "has" when not a head
+   (number :assembling-np)
    ))
 
 ;;--- VGs
