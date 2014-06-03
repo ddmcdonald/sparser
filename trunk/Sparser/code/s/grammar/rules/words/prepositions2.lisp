@@ -40,8 +40,6 @@
 (in-package :sparser)
 
 
-;; do we care to distinguish which can be complements of NP, for example, vs which can't? e.g. 'a book about science' *'a book besides science'
-
 (defun define-preposition (string &key brackets form super-category synonyms)
   (unless brackets  ;; v.s. ].treetop  treetop.[ 
     ;; Keep set in assign-brackets-to-preposition in sync
@@ -225,6 +223,7 @@
 (define-preposition "previous to")
 (define-preposition "prior to")
 (define-preposition "pursuant to")
+(define-preposition "regarding")
 ;; (define-preposition "regardless of") in modifiers as a reflection-on
 (define-preposition "short of")
 (define-preposition "since")
