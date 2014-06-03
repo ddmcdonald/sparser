@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2012-2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.4 Novewmber 2013
+;;;  Version:  0.4 June 2014
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -21,7 +21,8 @@
 ;;     (5/24/13) Still more cases there, plus otherwise breaks in place
 ;;      of the ecase's.
 ;; 0.4 (11/7/13) Fixed bad assumption about what position the capitalization 
-;;      was on  when source is ] after. 
+;;      was on  when source is ] after. (6/3/14) fixed case in capitalized-correspondent
+;;      where the 'word' was actually a category.
 
 (in-package :sparser)
 
@@ -52,9 +53,14 @@
   ;; by a defined capitalized-variant of the word.
   ;;   If the position isn't marked or there are no variants
   ;; then return nil right away.
-  (let* ((position-before (chart-position-before position-after-word))
-         (capitalization (pos-capitalization position-before)))
-    (capitalized-version lc-word capitalization)))
+  (unless (category-p lc-word)
+    ;; When we get here from [-on-position-because-of-word? when
+    ;; it's looking for brackets associated with the form label
+    ;; on an edge, we get a category for this parameter rather than
+    ;; a word, so of course this doesn't make sense.
+    (let* ((position-before (chart-position-before position-after-word))
+           (capitalization (pos-capitalization position-before)))
+      (capitalized-version lc-word capitalization))))
 
 
 (defun capitalized-version (lc-word caps-type)
