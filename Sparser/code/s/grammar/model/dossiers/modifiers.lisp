@@ -263,6 +263,10 @@
 
 
 
+;;;------
+;;; adjectives
+;;;------
 
+(define-adjective "known")
 
 
