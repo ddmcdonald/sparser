@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2003,2011-2014 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  6.9 September 2013
+;;;  Version:  6.9 June 2014
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -42,6 +42,9 @@
 ;; 6.9 (9/25/13) The heuristic about the period in map-out-the-distribution
 ;;       (of illions) assumes that the illion work is included in the array of
 ;;       edges passed to it. Calls for a thorough examination.
+;;     (6/3/14) In continue-digit-sequence-after-period got a case where there
+;;       were multiple edges over "3", apparently because it's appeared as
+;;       a literal somewhere. 
 
 (in-package :sparser)
 
@@ -52,9 +55,9 @@ marks the capitalization field (pos-capitalization) corresponding to the word
 it created as :digits.  This is picked up when the preterminals are being 
 introduced into the chart and reacted to by preterminals-for-unknown, under
 the control of the flag *make-edges-over-new-digit-sequences*
-.
+
 The result is a call to make-edge-over-unknown-digit-sequence, which leads to
-an edge over the word, with the label Digit-sequence, nothing in its form field,
+an edge over the word, with the label digit-sequence, nothing in its form field,
 and either a lisp number or a Krisp number as its referent, depending on the
 whether or not the model is loaded.  The category Digit-sequence has the fsa
 field of its rule set set to the Fsa-for-digits, defined here.  If it were
@@ -289,13 +292,18 @@ unknown---in any event, we're taking the first edge that is installed.
     
     (if (null (pos-preceding-whitespace next-position))
       (if (eq :digits (pos-capitalization next-position))
-        (let ((digits-edge
-               (car (install-terminal-edges
-                     (pos-terminal next-position)
-                     next-position
-                     (chart-position-after next-position)))))
-          ;; we're depending on known numbers only engendering one edge
-                                  
+        (let* ((edges (install-terminal-edges
+                       (pos-terminal next-position)
+                       next-position
+                       (chart-position-after next-position)))
+               (digits-edge
+                (if (null (cdr edges)) ;; only one edge
+                  (car edges)
+                  (or (includes-edge-with-label category::digit-sequence edges)
+                      (else
+                       (push-debug `(,edges ,next-position))
+                       (error "No obvious digit edge amoung~%~a" edges))))))
+
           (when (> next-cell 4)
             (error "No provision for digit-based numbers in the quadrillions ~
                     or larger"))
