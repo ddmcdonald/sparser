@@ -258,6 +258,8 @@
 ;;; adverbs
 ;;;--------
 
+(define-adverb "e.g.")
+(define-adverb "for example")
 (define-adverb "in fact")
 (define-adverb "potentially")
 (define-adverb "previously") ;; maybe want to specify something else?
