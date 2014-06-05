@@ -1,12 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "parentheses"
 ;;;   Module:  "grammar;rules:traversal:"
-;;;  Version:  0.5. August 2011
-
+;;;  Version:  0.6 June2014
+; 
 ;; initiated 5/1/91, v1.8.4
 ;; 0.1 (5/15/94) flushed the segment-start hack
 ;; 0.2 (10/31) handling an interaction with the forest-level parse
@@ -15,6 +14,8 @@
 ;;     (2/23/07) dropped the guarded check for a missing open.
 ;; 0.5 (8/31/09) Broke out the capitalized-word hook into its own file so that
 ;;     it could be gated by *proper-name*. 8/28/11 cleaned up.
+;; 0.6 (6/4/14) Added *permit-extra-open-parens* flag to accommodate bio text
+;;      where arrow is expressed as an open-paren.
 
 (in-package :sparser)
 
@@ -36,18 +37,25 @@
 
 (defparameter *pending-open-paren-stack* nil)
 
+(defparameter *permit-extra-open-parens* nil)
+
 (defun mark-open-paren (start-pos end-pos)
   (declare (ignore end-pos))
   (unless *ignore-parentheses*
     (if *position-of-pending-open-paren*
-	;; Then we're already inside an open parenthesis
-	  (then (break "double parens")
-            (push *position-of-pending-open-paren*
-                  *pending-open-paren-stack*)
-	      (setq *position-of-pending-open-paren* start-pos))
+      ;; Then we're already inside an open parenthesis
+      (then 
+       ;; condition this break?  Happens in Larry Hunter's book
+       ;; where the arrow of a chemical equation is expressed
+       ;; as an open paren
+       ;;(break "double parens")
+       (unless *permit-extra-open-parens*
+         (push *position-of-pending-open-paren*
+               *pending-open-paren-stack*))
+       (setq *position-of-pending-open-paren* start-pos))
       (else
-        (tr :open-paren-seen start-pos)
-        (setq *position-of-pending-open-paren* start-pos)))))
+       (tr :open-paren-seen start-pos)
+       (setq *position-of-pending-open-paren* start-pos)))))
 
 
 
