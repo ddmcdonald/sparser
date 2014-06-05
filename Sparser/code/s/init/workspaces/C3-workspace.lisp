@@ -15,16 +15,10 @@
 
 ;; (load "/Users/ddm/sparser/load-nlp.lisp")
 
-;; While there's teething problems getting it all loading 
-;;  or if we use a load that doesn't set *c3* 
-
-;; (ad-hoc-c3-loader)
+;; For when we use a load that doesn't set *c3* 
+;;    (ad-hoc-c3-loader)
 (defun ad-hoc-c3-loader ()
   (setq *c3* t)
-  (lload "objects;situation:loader")
-  (gload "sit-rules;loader")
-  (gload "isr;loader")
-  (setq *use-subtypes* t)
   (create-ford-motor-company)
   (create-wakil)
   (c3-setting))
