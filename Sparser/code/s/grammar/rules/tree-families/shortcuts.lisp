@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  May 2014
+;;;  version:  June 2014
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
 ;; 7/16/09: added modifier to np-head Modified 7/21/09: replaced
@@ -20,7 +20,7 @@
 ;; making sv-location mostly meaningless by duplicating the problematic
 ;; case. 8/19/13 Added head-noun as first of possibly many short-cuts
 ;; for already defined categories. 1/30/14 Started cleaning them up. 
-;; 5/28/14 Pulled the rule-adders to uniform place.
+;; 5/28/14 Pulled the rule-adders to uniform place. 6/4/14 added vo. 
 
 (in-package :sparser)
 
@@ -352,6 +352,35 @@
     (eval form))))
 
 
+(defun vo (verb super-category &key object)
+  ;;// rule-for, restrict, mixin
+  ;; Based on verb+direct-object, the variable for the object
+  ;; is 'theme' by a convention out of c3.
+  (let ((name (category-name-from-string-arg verb)))
+    (multiple-value-bind
+        (binding-vr parsing-vr)
+        (typecase object
+          (symbol (values object object))
+          ;; a cons would distinguish type from vr
+          (otherwise
+           (push-debug `(,object))
+           (error "New object case for vo: ~a" object)))
+      (let ((form
+             `(define-category ,name
+                :instantiates :self
+                :specializes ,super-category
+                :binds ((theme . ,binding-vr))
+                :realization
+                  (:tree-family verb+direct-object
+                   :mapping ((patient . theme)
+                             (result-type . :self)
+                             (vp . :self)
+                             (vg . :self)
+                             (np/object . ,parsing-vr))
+                   :main-verb ,verb))))
+        (eval form)))))
+
+
 (defun sv-prep-marked-o (verb preposition)
   (unless (and (stringp verb) (stringp preposition))
     (error "Arguments must be string giving the base for of words"))
@@ -455,6 +484,8 @@
                   ; :adjective ,adjective)             
                    ))))
       (eval form))))
+
+
 
 
 
