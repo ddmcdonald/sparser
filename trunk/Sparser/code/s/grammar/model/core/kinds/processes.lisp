@@ -42,7 +42,10 @@
           (purpose)
           (modifier)
           (aspect . tense/aspect)) ;; see rules/tense
-  :realization (:common-noun "event"))
+  :realization (:common-noun "event")
+  :documentation
+ "This was the original (circa '89) superclass of all clausal verbs.
+")
 
 
 (define-category state
