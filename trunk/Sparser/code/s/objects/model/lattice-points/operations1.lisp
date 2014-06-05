@@ -419,8 +419,9 @@
   (emit-line stream "~a" (cat-symbol category))
   (setf (gethash category *category-was-displayed*) t)
   (push-indentation)
-  (loop for subc in (subcategories-of category)
-    do (display-with-subcs subc stream))
+  (unless (form-category? category)
+    (loop for subc in (subcategories-of category)
+      do (display-with-subcs subc stream)))
   (pop-indentation))
   
 
