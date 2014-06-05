@@ -4,13 +4,12 @@
 ;;;
 ;;;     File:  "loader"
 ;;;            grammar/rules/situation/
-;;;  version:  March 2014
+;;;  version:  June 2014
 
 ;; Initiated 10/9/13. Added rules 3/20/14. Moved variables and
-;; state to objects/situation/ 3/26/14
+;; state to objects/situation/ 3/26/14. Moved compose to master 
+;; loader 6/4/14
 
 (in-package :sparser)
 
-
-(gload "sit-rules;compose")
 (gload "sit-rules;rules")
