@@ -1,18 +1,20 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "adjective phrases"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  April 2005
+;;;  version:  June 2014
 
 ;; initiated 8/28/95. 12/6 added modifier-specializes-adjective. 4/11/05 added
-;; adjective-creates-subtype.
+;; adjective-creates-subtype. 6/4/14 Added prenominal-adjective for the general
+;; case with form rules as with adverbs. 
 
 (in-package :sparser)
 
 #|  adj-defines-function
     modifier-specializes-adjective
     adjective-creates-subtype ----------- "fiscal ____"
+    prenominal-adjective  -- form rules calling modifier+noun
 |#
 
 
@@ -59,4 +61,26 @@
   :cases ((:subtype (np (adjective common-noun)
                       :head right-edge
                       :function (specializing-function left-edge)))))
+
+
+(define-exploded-tree-family  prenominal-adjective
+  :description "Creates form rules for all the possibilies"
+  :binding-parameters ( )
+  :labels ( adjective )
+  :cases
+     ((:modified (n-bar (adjective noun)
+                  :head right-edge
+                  :method (modifier+noun left-edge right-edge)))
+      (:modified (n-bar (adjective common-noun)
+                  :head right-edge
+                  :method (modifier+noun left-edge right-edge)))
+      (:modified (n-bar (adjective common-noun/plural)
+                  :head right-edge
+                  :method (modifier+noun left-edge right-edge)))
+      (:modified (n-bar (adjective n-bar)
+                  :head right-edge
+                  :method (modifier+noun left-edge right-edge)))
+      (:modified (np (adjective np) ;; odd grammar but possible
+                  :head right-edge
+                  :method (modifier+noun left-edge right-edge)))))
 
