@@ -5,12 +5,13 @@
 ;;;  Module: "grammar/model/sl/biology/
 ;;; version: May 2014
 
-;; Initiated 3/2/14, adding items through 3/5/14, then through 5/22/14
+;; Initiated 3/2/14, adding items through 3/5/14, then through 6/4/14
 
 (in-package :sparser)
 
-
-;;--- entities
+;;;----------
+;;; entities
+;;;----------
 
 ;; nuclear factor NF-kappa-B p100 subunit
 (def-bio "nfkappab2" nil 'protein ;; transcription factor ???
@@ -22,7 +23,23 @@
 
 (def-bio "p52" nil 'protein)  ;; :identifier ??
 
+;; "by NF-κB-inducing kinase (NIK)"
+;;//  How to we do this with the NF-kappaB as an entity?
+(def-bio "NIK" "NF-kappaB-inducing kinase" 'kinase
+  :greek "kappa"
+  :synonyms '("NIK"))
 
+;; its downstream kinase, IkappaB kinase alpha (IKKalpha).
+(def-bio "IKKalpha" "IkappaB kinase alpha" 'kinase
+  :greek '("kappa" "alpha"))
+
+
+
+;;;-------------------------
+;;; relations and processes
+;;;-------------------------
+
+;;----------- S1  (kappa-1)
 ;;--- "p100 processing" "the processing of p100"
 ;;/// abstract and add to shortcuts
 (define-category protein-processing ;; GO:0016485	
@@ -78,17 +95,87 @@
 
 
 
+;;--- "to generate p52"
+
+(vo "generate" 'event ;;/// as a vp it's not 'event'
+  :object 'bio-entity)
+
+;;//// should be a new file in rules/syntax/ for infinitives and these
+(def-form-category to-vp) ;;/// to categories.lisp 
+;;/// read the purpose-clause paper.
+
+(def-form-rule ("to" vp)
+  :form to-vp
+  :referent (:daughter right-edge))
+
+;; syntactic rule?  np + to-vp
+#+ignore(def-cfr event (event generate)
+  :form np
+  :referent (:daughter left-edge))
+
+;;//// Yeuch
+(define-category do-for-a-purpose
+  :binds ((what)
+          (why)))
+;; This does the composition, but can't get the scope right.
+;; It binds the to-vp low to the first np to its left.
+;; Clear demonstration of the benefit of semantic rules
+(def-syntax-rule (np to-vp)
+  :head :left-edge
+  :form np
+  :referent (:instantiate-individual do-for-a-purpose
+             :with (what left-edge
+                    why right-edge)))
+
+
+;;----- Regulation & event
+;;
+;;  "... is a regulated event"
+;;  "this tightly controlled event"
+;;  "is regulated positively by"
+;;  "the ... roles of ... in regulating p100 processing"
+;;  "the tight control of p100 processing"
+#| Presumably the "regulated" of event is the same
+ as the positive/negative regulation in the canonical use. 
+  -- Related to "monitored event" but not "popular event"
+unless we go all the way out to 'regulated by' and 'popular to'
+and pull in an agent and a <what?>
+|#
+
+
+
+;;------------ s2 (kappa-2)
+
+
+;;------------ s3 (kappa-3)
+
+(define-adjective "precise") ;;/// "precisely"
+
+(np-head "mechanism" :super 'perdurant)
+;;/// place-holder superc. These 'do' things, need to see moe
+
+;;--- induction 
+;; GO:0048518  BP  positive regulation of biological process  Not exactly, but close enough for government work. ;)
+;  "NF-κB-inducing kinase"
+;  "IKKα induce p100 processing"
+;  "for inducible processing of p100"
+;  "overexpression of IKKα ... fails to induce p100 processing"
+
+(svo/nominal/adjective "induce" "induction" "inducible"
+                       :subject 'bio-entity :theme 'event) ;; processing of p100
+;;/// want subtypes, want to understand the syntax of "-inducing"
+
+
+;;------------ s4, (kappa-4)
+
+(svo/nominal "activate" "activation"
+   :subject 'bio-entity
+   :theme 'bio-entity)
 
 
 
 
-;; "by NF-κB-inducing kinase (NIK)"
-
-;;  How to we do this with the NF-kappaB as an entity?
-;(def-bio "NIK" "NF-kappaB-inducing" 'kinase :greek "kappa")
-
-
-
+;;------------ s5, (kappa-5)
 
 ;; two specific amino acid residues, serine 866 and serine 870, of p100
 
@@ -108,17 +195,9 @@
 ;; for "serine 866"
 
 
-;;--- induction 
-;; GO:0048518  BP  positive regulation of biological process  Not exactly, but close enough for government work. ;)
-;  "NF-κB-inducing kinase"
-;  "IKKα induce p100 processing"
-;  "for inducible processing of p100"
-;  "overexpression of IKKα ... fails to induce p100 processing"
 
-(svo/nominal/adjective "induce" "induction" "inducible"
-                       :subject 'bio-entity :theme 'event) ;; processing of p100
-;;/// want subtypes, want to understand the syntax of "-inducing"
 
+;;------------ s6 (kappa-6)
 
 ;;--- phosphorylation
 ;; GO:0016310	
