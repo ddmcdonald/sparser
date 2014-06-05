@@ -76,14 +76,6 @@ These data also provide the first evidence for explaining why overexpression of 
 ; (p "HBP1 is a repressor of the cyclin D1 gene and inhibits the Wnt signaling pathway. The inhibition of Wnt signaling and growth requires a common domain of HBP1. The apparent mechanism is an inhibition of TCF/LEF DNA binding through physical interaction with HBP1")
 
 
-;; N.b. this is a draft of the arrangement of the sublanguage.
-;; When it's ok we knit it into the usual set of files
-
-(define-grammar-module *biology*
-                       :name "Biology for Big Mechanism"
-                       :parent *sublanguages*)
-(include-grammar-module *biology*)
-(def-logical-pathname "bio;" "sl;biology:")
 
 
 ; (f "/Users/ddm/sift/nlp/corpus/biology/cholera.txt")
