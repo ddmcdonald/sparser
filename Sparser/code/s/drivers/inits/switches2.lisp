@@ -216,6 +216,7 @@
   (setq *do-conceptual-analysis* *ca*)
   (setq *do-debris-analysis* *da*)
   (setq *do-completion-actions* t)
+  (setq *no-segment-level-operations* nil)
   (setq *count-input-lines* t))
 
 (defun turnoff-standard-extras ()
@@ -223,6 +224,7 @@
   (setq *do-heuristic-segment-analysis* nil)
   (setq *do-conceptual-analysis* nil)
   (setq *do-conceptual-analysis* nil)
+  (setq *no-segment-level-operations* t)
   (setq *count-input-lines* nil))
 
 (defun include-comlex ()
@@ -242,6 +244,35 @@
 
 
 ;;---- Specific cases
+
+(defun top-edges-setting/ddm ()
+  (turn-off-c3)
+  (top-edges-setting)
+  (standard-extras)
+  ;; this setting can be called as a way to negate the effects
+  ;; of other settings such as DM&P to get back to a state
+  ;; where the sublanguage-based extraction is setup for. As a
+  ;; result we have to set a lot more items than if we were
+  ;; starting from scratch and hadn't already run any of the
+  ;; more specific settings
+  (setq *use-segment-edges-as-segment-defaults* nil)
+  (ignore-unknown-words)
+  (setq *make-edges-over-new-digit-sequences* t)
+  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
+  (setq *segment-scan/forest-level-transition-protocol*
+        :move-when-segment-can-never-extend-rightwards)
+  (setq *do-debris-analysis* nil)
+  (setq *do-domain-modeling-and-population* nil)
+  (setq *new-dm&p* nil)
+  (setq *do-strong-domain-modeling* nil)
+
+  (setq *ignore-capitalization* nil)
+  (setq *treat-single-Capitalized-words-as-names* nil)
+  (setq *keep-number-sequence-raw* nil)
+  (setq *speech* nil)
+  (establish-pnf-routine :scan-classify-record)
+  (setq *switch-setting* :top-edges/with-extras-and-negatives
+        *current-analysis-mode* :no-dm&p))
 
 (defun answer-setting ()
   ;;(DM&P-setting)
@@ -264,34 +295,6 @@
 ;; *do-domain-modeling-and-population* when we do the dispatch
 ;; in segment-finished
 
-(defun top-edges-setting/ddm ()
-  (turn-off-c3)
-  (top-edges-setting)
-  (standard-extras)
-  ;; this setting can be called as a way to negate the effects
-  ;; of other settings such as DM&P to get back to a state
-  ;; where the sublanguage-based extraction is setup for. As a
-  ;; result we have to set a lot more items than if we were
-  ;; starting from scratch and hadn't already run any of the
-  ;; more specific settings
-  (setq *use-segment-edges-as-segment-defaults* nil)
-  (ignore-unknown-words)
-  (setq *make-edges-over-new-digit-sequences* t)
-  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
-  (setq *segment-scan/forest-level-transition-protocol*
-        :move-when-segment-can-never-extend-rightwards)
-  (setq *do-debris-analysis* nil)
-  (setq *do-domain-modeling-and-population* nil)
-  (setq *new-dm&p* nil)
-  (setq *do-strong-domain-modeling* nil)
-  (setq *ignore-capitalization* nil)
-  (setq *treat-single-Capitalized-words-as-names* nil)
-  (setq *keep-number-sequence-raw* nil)
-  (setq *speech* nil)
-  (establish-pnf-routine :scan-classify-record)
-  (setq *switch-setting* :top-edges/with-extras-and-negatives
-        *current-analysis-mode* :no-dm&p))
-
 (defun grok-setting ()
   "Similar to answer and fire, but with annotations and ..."
   (top-edges-setting/ddm)
@@ -304,7 +307,6 @@
   (setq *do-conceptual-analysis* nil) ;; probably need finer resolution
   (setq *switch-setting* :fire)
   ;; that was the former fire-setting parts above here
-
   (setq *annotate-realizations* t)
   (include-comlex)
   (setq *do-strong-domain-modeling* t
@@ -372,7 +374,7 @@
   (word-frequency-setting) ;; gets most of them
   (what-to-do-with-unknown-words :ignore) ;; though better to throw an error
   (setq *make-edges-for-unknown-words-from-their-properties* nil
-        )
+        *use-subtypes* t)
   (establish-kind-of-chart-processing-to-do :c3-protocol)
   (designate-sentence-container :situation)
   (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
@@ -433,6 +435,7 @@
   (setq  *the-category-of-digit-sequences* category::number)
   (use-return-newline-tokens-fsa) ;; it's returned as a regular whitespace char.
   (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+  (setq *no-segment-level-operations* t)
   (use-unknown-words)
   (setq *switch-setting* :just-bracketing))
 
