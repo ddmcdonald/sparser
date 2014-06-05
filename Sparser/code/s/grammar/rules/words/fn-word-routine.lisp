@@ -109,6 +109,7 @@
     (setq brackets
           (case form ;; match with values in rules/brackeets/assignments (!!)
             (adverb (list  ].adverb .[adverb))
+            (adjective (list ].adjective .[np ))
             (det (list  ].phrase .[article ))
             (standalone (list  ].phrase phrase.[ ))
             (otherwise
@@ -202,6 +203,7 @@
 (defun etf-form-substitution-label (etf)
   (unless (memq (etf-name etf)
                 '(generic-np-premodifier
+                  prenominal-adjective
                   pre-verb-adverb 
                   post-verb-adverb 
                   sentence-adverb))
