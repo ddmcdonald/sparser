@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.15 September 2013
+;;;  Version:  5.16 June 2014
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -55,10 +55,13 @@
 ;;       march-peeking-rightward, to deal with the cases of the rightmost
 ;;       swallowing part of a potential constituent in the left part of
 ;;       the segment. 
+;; 5.16 (6/4/14) Added *no-segment-level-operations* to skip on to scan the
+;;       next segment if it's up. Motivated by just-brackets testing. 
 
 (in-package :sparser)
 
-
+(defparameter *no-segment-level-operations* nil
+  "Used for testing backeting without any parsing above the single word")
 
 (defun pts ( &optional boundary-from-edge? )
   ;; called once the boundary to the segment has been
@@ -86,7 +89,13 @@
          *left-segment-boundary* *right-segment-boundary*))))
 
     (tr :pts-coverage coverage)
-    (if coverage
+
+    (cond
+     #+ignore(*no-segment-level-operations* ;; nope. Not right yet
+      (tidy-up-segment-globals coverage)    ;; Leaves things in inconsistent state
+      (no-further-action-on-segment)
+      (scan-next-segment *right-segment-boundary*))
+     (coverage
       (ecase coverage
         (:null-span
          (segment-finished :null-span))
@@ -106,12 +115,13 @@
         (:discontinuous-edges
          ;; Nothing to be gained by running the parser over the segment
          ;; since none of the edges touch
-         (segment-finished :discontinuous-edges)))
+         (segment-finished :discontinuous-edges))))
 
+     ((null coverage)
       ;; Segment-coverage returned nil, indicating that the left-boundary
       ;; hadn't been set and we're at a spurious segment end at the
       ;; very beginning of the text
-      (scan-next-segment *right-segment-boundary*))))
+      (scan-next-segment *right-segment-boundary*)))))
 
 
 (defun segment-parsed1 ()
