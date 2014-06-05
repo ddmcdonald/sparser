@@ -1,14 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2013 David D. McDonald
+;;; Copyright (c) 2010-2014 David D. McDonald
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  September 2013
+;;;  Version:  June 2014
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
 ;; 7/8/13 added get-comlex-entry for after-the-fact debugging
 ;; 8/1/13 Added standalone-lexicon-unpacker. 9/23/13 sconj+verb
+;; 6/2/14 The split in standalone-lexicon-unpacker had been between
+;; words with an entry and then whether the word was known. Simplified
+;; is layout and added a parameter to quiet the complaints. 
 
 (in-package :sparser)
 
@@ -105,15 +108,17 @@ places. ]]
     the information in Comlex for a word that's been independently
     defined. Notably in explicitly defined companies."))
 
+(defparameter *complain-about-words-missing-from-comlex* nil)
+
 (defmethod standalone-lexicon-unpacker ((s string))
   (let ((w (word-named s)))
     (unless w (error "There is no defined word spelled ~s" s))
     (let ((entry (gethash s *primed-words*)))
       (if entry
         (continue-unpacking-lexical-entry w entry)
-        (if (known-word? w) ;; has a rule set
-          (format t "~%!! No Comlex entry for ~a" w)
-          (format t "~%!! No Comlex entry for unknown word ~a" w))))))
+        (unless (known-word? w)
+          (when *complain-about-words-missing-from-comlex*
+            (format t "~&No entry in Comlex for ~a~%" w)))))))
 
 
 
