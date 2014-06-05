@@ -75,6 +75,16 @@
                           (individuator . relativizer)
                           (base-category . reference-time))))
 
+(defun make-a-relative-time (relative reference)
+  ;; Called from, e.g., value-of-current-time-unit when it cann't do
+  ;; something more interesting. Writing the code here to keep that
+  ;; code relatively clean
+  (find-or-make-individual 'relative-time
+    :relativizer relative ; 
+    :reference-time reference))
+
+
+
 ;;--- Specific instance of time (units): "that day", "last month"
 ;;  These become particular times that can be dereferenced in context
 ;;     "Later that day it ..."

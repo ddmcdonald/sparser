@@ -101,6 +101,31 @@
 
 
 
+;;; "this <time unit>"
+
+(defun value-of-current-time-unit (unit)
+  ;; Time units are individuals. The easiest way to
+  ;; discriminate them is to use the words that name them
+  (let* ((word (value-of 'name unit))
+         (symbol (word-symbol word))
+         (index (current-temporal-index)))
+    (case symbol
+      (word::|year| (current-year index))
+      (word::|month| (current-month index))
+      ;; week
+      (word::|day| (today))
+      ((or word::|hour| word::|minute| word::|second|)
+       ;; Should be a call to make-a-relative-time here, but
+       ;; (1) we've lost the actual relativizer, and (2)
+       ;; in the presenting case it's the word "this"
+       ;; which is only a function word, not an instance
+       ;; of a determiner. 
+       unit)
+      (otherwise
+       (push-debug `(,word ,unit))
+         (break "What's the right default for 'this ~a'" unit)))))
+
+
 
 ;;;----------------------------
 ;;; packaging system time data

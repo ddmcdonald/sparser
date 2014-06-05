@@ -108,19 +108,7 @@
 
 (def-k-method identify-this-time-unit ((ignore t) (unit time-unit))
   (declare (ignore ignore))
-  ;(let ((unit (dereference-shadow-individual sh2)))
-    (push-debug `(,unit)) (break "identify-time-unit")
-    ;; Time units are individuals. The easiest way to
-    ;; discriminate them is to use the words that name them
-    (let* ((word (value-of 'name unit))
-           (symbol (word-symbol word)))
-      (case symbol
-        (word::|month|
-          (break "got to month"))
-        (otherwise
-         (push-debug `(,word ,unit))
-         (break "What's the right default")))))
-
+  (value-of-current-time-unit unit))
 
 
 #| being overhauled 5/30/14
