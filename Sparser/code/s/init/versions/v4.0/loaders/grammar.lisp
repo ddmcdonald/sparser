@@ -51,7 +51,7 @@
 ;; so that file could be broken into more useful pieces. 4/16/14 moved it just below
 ;; collections so plural realizations would work. 5/25/14 added a call to make temporal
 ;; sequences among the final operations after dossiers are loaded. 6/1/14 added
-;; more temporal bits that late. 
+;; more temporal bits that late. 6/4/14 Removed NIH, 
 
 
 (in-package :sparser)
@@ -197,9 +197,6 @@
       (gload "ern;loader1")
       (gload "ern;loader")))
 
-  (gate-grammar *nih*
-    (gload "nih;loader"))
-
   (gate-grammar *ambush*
     (gload "ambush;loader"))
 
@@ -221,11 +218,11 @@
   (gate-grammar *Banking*
     (gload "banking;loader"))
 
-  (gate-grammar *ISR*
-    (gload "isr;loader"))
-
-  ;(gate-grammar *c3*
+  ;(when *c3*
+    (gate-grammar *ISR*
+      (gload "isr;loader"))
     (gload "sit-rules;loader") ;)
+
 
   (gate-grammar *waypoints*
     (gload "waypoints;loader"))

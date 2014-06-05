@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2010-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2010-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar modules"
 ;;;    Module:  "init;versions:v4.0:loaders:"
-;;;   version:  November 2013
+;;;   version:  June 2014
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
 ;; 5/11/93 added refinements in words and syntax
@@ -35,6 +35,8 @@
 ;; others looked right. 8/31/11 added *default-quantifier-semantics*
 ;; 12/15/11 added *hurricanes*. 10/8/13 added *qualities*, *middle-east*,
 ;; *Banking*, *ISR*. 11/30/13 *waypoints*.
+;; 6/4/14 Removed *NIH* as redundant with *biology*, brought here from
+;; a workspace. 
 
 (in-package :sparser)
 
@@ -248,42 +250,35 @@
 
 (define-grammar-module  *finance*
                         :name "finance"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 (define-grammar-module  *money*
                         :name "money"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 (define-grammar-module  *numbers*
                         :name "numbers"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 (define-grammar-module  *digits-fsa*
                         :name "digits fsa"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 (define-grammar-module  *amounts*
                         :name "amounts"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 
 
 (define-grammar-module  *time*
                         :name "time"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 
 
 (define-grammar-module  *location*
                         :name "location"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 (define-grammar-module  *other-locations*
                         :name "other"
@@ -343,20 +338,17 @@
 
 (define-grammar-module  *people*
                         :name "people"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 
 (define-grammar-module  *proper-names*
                         :name "proper names"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 
 (define-grammar-module  *collections*
                         :name "collections"
-                        :parent *model-core*
-                        )
+                        :parent *model-core*)
 
 
 ;;;--------------
@@ -381,11 +373,6 @@
 
 
 
-(define-grammar-module  *nih*
-                        :name "molecular biology"
-                        :parent *sublanguages*)
-
-
 (define-grammar-module  *ern*
                         :name "earnings reports"
                         :parent *sublanguages*)
@@ -393,23 +380,19 @@
 
 (define-grammar-module  *whos-news*
                         :name "Who's News"
-                        :parent *sublanguages*
-                        )
+                        :parent *sublanguages* )
 
 (define-grammar-module  *whos-news/core*
                         :name "core"
-                        :parent *whos-news*
-                        )
+                        :parent *whos-news* ) 
 
 (define-grammar-module  *job-events*
                         :name "Job events"
-                        :parent *whos-news*
-                        )
+                        :parent *whos-news* )
 
 (define-grammar-module  *whos-news-special-grammar*
                         :name "special grammar"
-                        :parent *whos-news*
-                        )
+                        :parent *whos-news* )
 
 
 (define-grammar-module  *reports*
@@ -419,14 +402,12 @@
 
 (define-grammar-module  *pct*
                         :name "person, company, title"
-                        :parent *sublanguages*
-                        )
+                        :parent *sublanguages* )
 
 
 (define-grammar-module  *internet*
                         :name "Internet items"
-                        :parent *sublanguages*
-                        )
+                        :parent *sublanguages* )
 
 
 
@@ -453,6 +434,10 @@
     :name "Disease and death"
     :parent *sublanguages*)
 
+(define-grammar-module *biology*
+                       :name "Biology for Big Mechanism"
+                       :parent *sublanguages*)
+
 (define-grammar-module *hurricanes*
     :name "Hurricanes and the events they are part of"
     :parent *sublanguages*)
@@ -472,6 +457,8 @@
 (define-grammar-module *waypoints*
   :name "Waypoints and related concepts"
   :parent *sublanguages*)
+
+
 
 
 ;;;-----------------------------------------------------

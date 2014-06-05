@@ -130,7 +130,7 @@
   (lload "objects;doc:loader"))
 
 ;(when *c3*
-  (lload "objects;situation:loader") ;)
+(lload "objects;situation:loader")
 
 (when *da*
   (lload "objects;rules:DA:loader"))
@@ -255,6 +255,9 @@
 (lload "chart-drivers;traversal1")
 (lload "chart-drivers;all-edges:loader1")
 (lload "forest-drivers;loader")
+
+;(when *c3*
+(gload "sit-rules;compose")
 
 (if *da*
   (lload "drivers;DA:loader")
