@@ -20,6 +20,10 @@
     as the end of the load and thereby give any messages that do occur
     real significance.   |#
 
+(unless *c3*
+  (defun create-wakil ())
+  (defun create-ford-motor-company ())
+)
 
 (when *nothing-Mac-specific*
   (defun launch-sparser-menus ())
