@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "unary driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   3.1 May 2014
+;;;   Version:   3.1 June 2014
 
 ;; broken out as its own file 11/91
 ;; 1.0 (10/23/92 v2.3) Got the options set up to date with actions in
@@ -34,7 +34,8 @@
 ;; 3.0 (7/22/09) fanout from changes in psi design. (9/1) Added exception for
 ;;      external referents into referent-from-unary-rule. Added notes 11/12/12
 ;; 3.1 (10/10/13) Added final hook to incorporate the referent into the situation. 
-;;     (5/30/14 Fixed long-standing bug in funcall cases. 
+;;     (5/30/14 Fixed long-standing bug in funcall cases.  (6/4/13) Added instantiate
+;;     case to the dispatch.
 
 (in-package :sparser)
 
@@ -142,6 +143,8 @@
             (funcall (second rule-field)))
            (t (push-debug `(,rule-field))
               (error "Unexpected funcall case: ~a" rule-field))))
+    (:instantiate-individual-with-binding
+     (one-edge-instantiate-individual-with-binding (cdr rule-field)))
     (otherwise
      (break "Unexpected keyword in referent of unary rule: ~a"
 	    (car rule-field)))))

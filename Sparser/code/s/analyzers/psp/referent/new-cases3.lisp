@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "new cases"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  3.2 May 2014
+;;;   Version:  3.2 June 2014
 
 ;; broken out from cases 8/24/93 v2.3.  (3/10/94) fixed typo. Added error
 ;; msg to Ref/head 6/14.  (7/15) patched in mixin-category  (7/19) rearranged
@@ -35,7 +35,8 @@
 ;;      anonymous variables. Modified how ref/head makes individuals -- using
 ;;      unindexed until a better idea comes up, wrapped in make-individual-for-dm&p
 ;;      (4/4/13).  5/9/14 Changed the call that ref/subtype makes. 5/19/14 added
-;;      another case to ref/binding where null referents are ok.
+;;      another case to ref/binding where null referents are ok. 6/4/14 added
+;;      one-edge-instantiate-individual-with-binding.
 
 (in-package :sparser)
 
@@ -167,7 +168,14 @@
           (tr :instantiated-an-individual i)
           i)))))
 
-
+(defun one-edge-instantiate-individual-with-binding (rule-field)
+  ;; Comes from the C3 definition of people as a collection
+  ;; whose type field is bound to the category pperson. All the
+  ;; arguments are dereferenced. See decode-rspec-type-spec
+  (let ((category (car rule-field))
+        (binding-pairs (cdr rule-field)))
+    ;;(push-debug `(,category ,binding-pairs))
+    (find-or-make/individual category binding-pairs)))
 
 (defun ref/instantiate-individual-with-binding
        (rule-field left-referent right-referent right-edge)
@@ -189,7 +197,6 @@
                   (second rule-field))))
          (binding-exp/s (cddr rule-field))
          return-value  )
-    
 
     (if *do-not-use-psi*
       (then 
