@@ -411,6 +411,7 @@
 (define-adverb "oddly")
 (define-adverb "openly")
 (define-adverb "originally")
+(define-adverb "otherwise") ;;
 (define-adverb "osmotically")
 (define-adverb "painstakingly")
 (define-adverb "passively")
@@ -427,6 +428,7 @@
 (define-adverb "powerfully")
 (define-adverb "precipitously")
 (define-adverb "precisely")
+(define-adverb "predictably")
 (define-adverb "predominantly")
 (define-adverb "preferentially")
 (define-adverb "prematurely")
@@ -489,6 +491,7 @@
 (define-adverb "thermodynamically")
 (define-adverb "thoroughly")
 (define-adverb "tightly")
+(define-adverb "together") ;;
 (define-adverb "totally") ;;
 (define-adverb "traditionally")
 (define-adverb "tremendously")
@@ -504,8 +507,6 @@
 (define-adverb "variously")
 (define-adverb "visually")
 (define-adverb "wonderfully")
-
-
 
 
 ;;;------
