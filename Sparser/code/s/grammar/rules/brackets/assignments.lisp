@@ -291,26 +291,6 @@
     (name-to-use-for-category disambiguated)))
 
 
-(defmethod name-to-use-for-category ((string string))
-  "Encapsulates the lisp-specific checks for what case to use."
-  (let* ((s #+mlisp string
-            #+(or :ccl :alisp)(string-upcase string))
-         (symbol (intern s (find-package :sparser))))
-    ;; n.b. not the category package. The pname will be interned there
-    ;; as part of creating the category
-    symbol))
-
-(defmethod name-to-use-for-category ((w word))
-  (name-to-use-for-category (word-pname w)))
-
-
-(defun explicit-plurals (comlex-clause)
-  (when (some #'keywordp comlex-clause)
-    (let ((plural-entry (cadr (assoc :plural comlex-clause))))
-      (when plural-entry
-        `(:plural ,plural-entry)))))
-
-
 ;;--- Probably simpler way to do this
 ;; Want it for the reification code in analyzers/SDM&P/reify-individuals
 ;; So that it generalizes correctly
@@ -325,6 +305,53 @@
 
 (defun supercategory-of-constructed-category (category)
   (gethash category *constructed-categories-to-supercategory*))
+
+
+
+(defun explicit-plurals (comlex-clause)
+  (when (some #'keywordp comlex-clause)
+    (let ((plural-entry (cadr (assoc :plural comlex-clause))))
+      (when plural-entry
+        `(:plural ,plural-entry)))))
+
+
+;;;-------------------------------------------
+;;; Making a category name from a word string
+;;;-------------------------------------------
+
+(defmethod name-to-use-for-category ((string string))
+  "Encapsulates the lisp-specific checks for what case to use."
+  (let* ((s #+mlisp string
+            #+(or :ccl :alisp)(string-upcase string))
+         (symbol (intern s (find-package :sparser))))
+    ;; n.b. not the category package. The pname will be interned there
+    ;; as part of creating the category
+    symbol))
+
+(defmethod name-to-use-for-category ((w word))
+  (name-to-use-for-category (word-pname w)))
+
+(defmethod name-to-use-for-category ((exp cons))
+  ;; We get this case when the word includes keywords to mark
+  ;; irregular word forms. We pull out the base word and make
+  ;; the category from that. 
+  ;; Have to check (a) that there is at least one keyword since
+  ;; another case of multiple word strings in a list is as a way
+  ;; to do synonyms (which we should stop using), so that 
+  (unless (cdr exp)
+    (error "No irregular markers in list string definition: ~a" exp))
+  (unless (and (cddr exp) ;; length at least three
+               (keywordp (cadr exp)))
+    (error "Bad form in word irregulars expression: ~a" exp))
+  (unless (stringp (car exp))
+    (error "Expected first element of word specification to be a string,~
+          ~%not a ~a~%~a" (type-of exp) exp))
+  (check-for-correct-irregular-word-markers (cdr exp))
+  (let ((base (car exp)))
+    (name-to-use-for-category base)))
+  
+
+
 
 
 
