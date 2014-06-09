@@ -31,14 +31,16 @@
 ;;      specific definitions rather than the old two-step dance that had
 ;;      so much inconsistency.
 ;; 2.0 (5/22/13) Made-over as a call to define-function-term and made being
-;;      sentential adverbs the marked case. 
+;;      sentential adverbs the marked case. 6/9/14 added the other arguments
+;;      to define-function-term.
 
 (in-package :sparser)
 
 ;; For list of adverbs of diverse sorts see dossiers/modifiers.lisp
 ;; For the method used by adverbs see rules/syntax/adverbs1.lisp
 
-(defun define-adverb (string &key super-category sentential?)
+(defun define-adverb (string &key super-category sentential?
+                                  rule-label discriminator)
   "The string can be a single word or a polyword. The super-category
    defaults to adverbia. If you supply a value is should be the symbols
    that names the category, not the actual category, and note that this
@@ -48,7 +50,9 @@
    we include the tree family for sentence-adverb."
   (define-function-term string 'adverb
     :super-category (or super-category
-                        'adverbial)
+                        (super-category-for-POS :adverb))
+    :rule-label rule-label
+    :discriminator discriminator
     :tree-families (if sentential?
                      '(pre-verb-adverb post-verb-adverb sentence-adverb)
                      '(pre-verb-adverb post-verb-adverb))))
