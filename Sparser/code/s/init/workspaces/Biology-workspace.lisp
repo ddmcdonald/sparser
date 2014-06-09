@@ -16,7 +16,8 @@
 (defun setup-bio ()
   (gload "bio;loader")
   (remove-paragraph-marker)
-  (bio-setting))
+  (bio-setting)
+  (ignore-comlex))
 
 ;; 2/27/14
 ; The greek characters are in -- entry-for-out-of-band-character --
