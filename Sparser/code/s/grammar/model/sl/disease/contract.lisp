@@ -23,7 +23,8 @@
   :instantiates self)
                 
 (defun define-contract-disease (string)
-  (let* ((name (category-name-from-string-arg (concatenate 'string (string-upcase string) "-DISEASE")))
+  (let* ((name (name-to-use-for-category
+                (concatenate 'string (string-upcase string) "-DISEASE")))
 	 (form
 	  `(define-category ,name
              :specializes event
