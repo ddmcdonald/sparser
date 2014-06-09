@@ -421,7 +421,7 @@
 (define-adverb "physically")
 (define-adverb "physiologically")
 (define-adverb "popularly")
-(define-adverb "positively")
+;;(define-adverb "positively") moved to NFkappB to go with "positive"
 (define-adverb "possibly") ;;maybe move up to likelihood
 (define-adverb "potentially")
 (define-adverb "potently")
