@@ -11,11 +11,6 @@
 (in-package :sparser)
 
 
-(define-individual 'relative-time-adverb :name "immediately")
-
-
-(define-individual 'relative-time-noun :name "soon")
-
 
 (define-individual 'calculated-time :name "now")
 (define-individual 'calculated-time :name "then")
