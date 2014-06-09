@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "Grok"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  July 2013
+;;;  version:  June 2014
 
 ;; Initiated 10/30/12 to take over from the Fire workspace. Tweeked through
-;; 3/9/13. Pulling stuff out of it and rearranging through 7/1/13
+;; 3/9/13. Pulling stuff out of it and rearranging through 7/1/13.
+;; 6/9/14 pulled the loading of sl/disease now that it's in the main line. 
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -48,22 +49,13 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
  (grok-pass-two bird-flu)
  (grok-pass-three bird-flu)
 |#
-  
-;; "die" comes in from Comlex as noun/verb ambiguous and that just confuses
-;; things too much right now (3/6/13), so I'm going to cheat
-(gload "disease;loader")
-
-
-
-
+ 
 
 ;;;------------------------------------
 ;;; setting control/display parameters
 ;;;------------------------------------
 
 (setq *annotate-realizations* nil) ;; Will be t, but not ready yet
-
-
 
 ;;-- For Comlex shakeout
 ;; (trace-lexicon-unpacking)
@@ -80,10 +72,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;  (do-reify-implicit-individuals-in-segment)
 ;  (do-note-text-relations-in-segment)
 
-
-
 ;; (setq *new-segment-coverage* t)   ;; to debug strong-domain-modeling, add cases
-
 
 
 (defun syn-test (&optional (text *iraqi-girl*))
