@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.12 November 2013
+;;;  version:  1.12 June 2014
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -85,7 +85,7 @@
 ;;      (9/7/13) Put what may be a hack int make-cn-rules/aux to notice that a
 ;;       special case plural is still a string and not a word. 
 ;; 1.12 (11/27/13) Modified it further to factor out the plural creator and
-;;       allow it to be blocked. 
+;;       allow it to be blocked. (6/9/14) Added check-for-correct-irregular-word-markers
 
 (in-package :sparser)
 
@@ -128,6 +128,31 @@
   '(:third-singular :past-tense :present-participle :third-plural
     :past-participle :nominalization
     :plural))
+
+(defun check-for-correct-irregular-word-markers (plist)
+  "Should start with a valid keyword followed by a string
+   and on in that pattern for the length of the list.
+   Errors out if any aspect of the pattern is wrong."
+  ;; Called from name-to-use-for-category with the word already
+  ;; stripped off.
+  (do ((keyword (first plist) (car rest))
+       (string (second plist) (cadr rest))
+       (rest (cddr plist) (cddr rest)))
+      ((null keyword))
+    ;;(break "keyword = ~a  string = ~a" keyword string)
+    (unless (keywordp keyword)
+      (error "Looks like a badly formed irregulars list:~%~a" plist))
+    (unless (memq keyword *valid-keywords-for-irregular-word-forms*)
+      (error "Keyword for marking an irregular form, ~a, isn't one ~
+              of these:~%  ~a" keyword
+              *valid-keywords-for-irregular-word-forms*))
+    (unless string
+      (error "irregular marking keyword ~a is not followed by a string"
+             keyword))
+    (unless (stringp string)
+      (error "Words have to be given as strings. ~a isn't:~%~a"
+             string plist))))
+  
 
 
 ;;;-------------------------------------------------------
