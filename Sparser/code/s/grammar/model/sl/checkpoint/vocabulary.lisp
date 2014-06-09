@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 
 ;;;    File: "vocabulary"
 ;;;  Module: "grammar/model/sl/checkpoint/
@@ -9,7 +8,8 @@
 
 ;; Initiated 4/8/09. Elaborated through 9/26/09. 8/4/11 pulled out the ETF
 ;; since it can't be found there. 8/5 commented out "drive" and others  that
-;; create interference with better definitions upstream.
+;; create interference with better definitions upstream. 6/9/14 stripping out
+;; still more vocabulary that's been overtaken by events 
 
 (in-package :sparser)
 
@@ -41,19 +41,6 @@
 (np-head "id")
 (np-head "identification")
 
-
-;;-- thrown away modifiers
-
-;;(ignorable-np-modifier "any") won't ignore now
-;;(ignorable-np-modifier "some")
-
-;;(ignorable-np-modifier "our") ;; all the possessive pns
-;;(ignorable-np-modifier "your")
-
-;;-- kept modifiers
-
-(adverbial "keep")
-(sentence-adverbial "please")
 
 ;;-- Acknowledgements
 (define-category  acknowledgement
