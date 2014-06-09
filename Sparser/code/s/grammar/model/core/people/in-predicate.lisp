@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "in-predicate"
 ;;;   Module:  "model;core:people:"
-;;;  version:  August 2013
+;;;  version:  June 2014
 
 ;;this deals with a small set of words preceded by "in" and followed usually by "of"
 ;;e.g. "in charge of", "in place of", "instead of"
@@ -13,6 +13,7 @@
 ;;previously these were parsed as relative-locations (a common overgeneration by the grammar)
 ;;unsure however where to exactly put this category
 ;;for now it will be placed in model;core:people:
+;; 6/9/14 Fanout from short-cut rationalizations
 
 ;;;------------
 ;;; the object
@@ -25,7 +26,8 @@
 ;;an attempt at a more general way of defining in-predicate
 ;;based on the code from shortcuts and define-function-word
 (defun define-in-predicate (string)
-  (let* ((name (category-name-from-string-arg (concatenate 'string "IN-" (string-upcase (subseq string 3)))))
+  (let* ((name (name-to-use-for-category
+                (concatenate 'string "IN-" (string-upcase (subseq string 3)))))
 	 (form
 	  `(define-category ,name
              :specializes in-predicate
