@@ -3,9 +3,9 @@
 ;;;
 ;;;    File: "NFkappaB"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2014
+;;; version: June 2014
 
-;; Initiated 3/2/14, adding items through 3/5/14, then through 6/4/14
+;; Initiated 3/2/14, adding items through 3/5/14, then through 6/9/14
 
 (in-package :sparser)
 
@@ -13,24 +13,25 @@
 ;;; entities
 ;;;----------
 
-;; nuclear factor NF-kappa-B p100 subunit
 (def-bio "nfkappab2" nil 'protein ;; transcription factor ???
-  :identifier "PR:000011178" :greek "kappa")
+  :identifier "PR:000011178" 
+  :greek "kappa")
 
-(def-bio "nf-kappab" nil 'protein :greek "kappa")
+(def-bio "NF-kappab" nil 'protein 
+  :identifier "GO:0071159" 
+  :greek "kappa")
 
 (def-bio "p100" nil 'protein :identifier "PR:000011178")
 
 (def-bio "p52" nil 'protein)  ;; :identifier ??
 
-;; "by NF-κB-inducing kinase (NIK)"
-;;//  How to we do this with the NF-kappaB as an entity?
 (def-bio "NIK" "NF-kappaB-inducing kinase" 'kinase
-  :greek "kappa"
-  :synonyms '("NIK"))
+  :identifier "GO:0004704"
+  :greek "kappa")
 
 ;; its downstream kinase, IkappaB kinase alpha (IKKalpha).
 (def-bio "IKKalpha" "IkappaB kinase alpha" 'kinase
+  :identifier "PR:000001775"
   :greek '("kappa" "alpha"))
 
 
@@ -71,7 +72,8 @@
 ; and that then takes nfkappab2 on its left
 ; or does it roll up the other way?
 ;
-; Unclear what the pattern here is so writing raw rules
+; Unclear what the pattern here is so writing raw rules rather
+; than using a shortcut. 
 ; Also unclear whether this high-frequency phrase is worth
 ; decomposing in it's representation, as opposed to in
 ; it's axioms
@@ -145,6 +147,14 @@ and pull in an agent and a <what?>
 
 
 ;;------------ s2 (kappa-2)
+
+;; "We previously demonstrated that"
+
+(svcomp "demonstrate" nil 
+  :subject person :complement processs)
+
+;(adj/adv "positive" "positively") 
+;; :super-categpry ?? some sort of scalar-quality ? Related to up and down?
 
 
 ;;------------ s3 (kappa-3)

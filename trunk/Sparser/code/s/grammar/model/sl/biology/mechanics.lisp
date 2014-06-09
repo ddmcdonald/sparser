@@ -3,9 +3,10 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2014
+;;; version: June 2014
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
+;; 6/9/14 Pulled types out from regular kinds. 
 
 (in-package :sparser)
 
@@ -17,34 +18,55 @@
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name))
 
+(define-category bio-type ;; the name for a class of endurants
+  :specializes bio-entity
+  :mixins (has-UID has-name)
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+
+(define-individual 'bio-type
+  :name "molecule")
+
 (define-category molecule  ;; CHEBI:36357
-  ;; makes for sense for ATP than H20, but not worrying about whether
+  ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry.
   :specializes bio-entity
   :instantiates :self
   :index (:permanent :key name)
-  :realization (:common-noun "molecule"))
+  :realization (:common-noun name))
+
+
+(define-individual 'bio-type
+  :name "amino acid")
 
 (define-category amino-acid
   :specializes molecule
   :instantiates :self
   :index (:permanent :key name)
-  :realization (:common-noun "amino acid")) ;; need hypenated version
+  :realization (:common-noun name)) ;; need hypenated version
+
+
+(define-individual 'bio-type
+  :name "protein")
 
 (define-category protein
   :specializes molecule
   :instantiates :self
   :rule-label bio-entity
   :index (:permanent :key name)
-  :realization (:common-noun "protein"))
+  :realization (:common-noun name))
   
+
+(define-individual 'bio-type
+  :name "kinase")
 
 (define-category kinase  ;; GO:0016301
   :specializes protein
   :instantiates :self
   :rule-label bio-entity
   :index (:permanent :key name)
-  :realization (:common-noun "kinase"))
+  :realization (:common-noun name))
 
 
 (defun def-bio (short long kind &key greek identifier synonyms)
@@ -54,11 +76,11 @@
   ;; a specific kind. Staying vague about what they might denote.
   (unless (and kind (symbolp kind))
     (error "A symbol giving kind (category) of ~a is required." short))
-  (let* ((name (resolve/make short))
+  (let* ((word (resolve/make short))
          (category (category-named kind :break-if-undefined))
          (label (or (override-label category) category))
          (form (category-named 'common-noun)) ;;/// presumably
-         (i (find-or-make-individual category :name name))
+         (i (find-or-make-individual category :name word))
          rules  )
     ;; The find-or-make call will set up a rule for the short form
     ;; as a common noun that has this individual as its referent.
@@ -68,8 +90,8 @@
     ;; So we'll do it by hand
     ;;//////////////// brackets???
     ;;???? identical to head-noun  ????
-    (let ((hack-rule
-           (define-cfr label `(,name)
+    #+ignore(let ((hack-rule
+           (define-cfr label `(,word)
              :form category::common-noun
              :referent i)))
       (push hack-rule rules))
