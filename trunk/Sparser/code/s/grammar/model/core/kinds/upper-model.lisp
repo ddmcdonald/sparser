@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2013 David D. McDonald 
+;;; Copyright (c) 2010-2014 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.2 December 2013
+;;;  version:  0.2 June 2014
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -23,7 +23,8 @@
 ;; 0.2 (4/5/13) Exposed top and expressible top so there was somewhere
 ;;      to hand the type variable.
 ;;     (8/19/13) Trying a stand-alone definition for "relation" to go with
-;;      the class. 12/17/13 added scalar-quality and state
+;;      the class. 12/17/13 added scalar-quality and state. 6/9/14
+;;      pulled the standalone definition. It was a one-off. 
 
 (in-package :sparser)
 
@@ -171,15 +172,14 @@
 ; or a directionality (for that we'd use operator and predication). 
 
 (define-category relation
-  :specializes nil) ;; might be top, or perhaps expressible-type
+  :specializes top
+  :realization (:common-noun "relation"))
 
 (define-category modifies
   :specializes relation
   :instantiates :self
   :binds ((modifier . modifier)
           (modified)))
-
-(head-noun "relation" relation)
 
 
 ;;---------------- nothing live beyond here ------------------
