@@ -126,6 +126,7 @@
 (define-preposition "by means of")
 (define-preposition "by virtue of")
 (define-preposition "by way of")
+(define-preposition "circa" :synonyms '("ca.")) 
 (define-preposition "close to" :form 'spatial-preposition) ;;can also be temporal, even an approximator?
 (define-preposition "contrary to")
 ;; (define-preposition "despite") in modifiers as a reflection-on
