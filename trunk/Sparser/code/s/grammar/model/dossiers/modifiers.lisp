@@ -28,18 +28,28 @@
 ;;  These bind to their left,
 ;;  and they terminate whatever is ongoing
 
+;; what to do about stacks e.g. "just barely"
+
 (define-approximator/determiner "almost")
 (define-approximator/determiner "about")
 (define-approximator/determiner "around")
 
 (define-approximator/determiner "at least")
 (define-approximator/determiner "at most")
-
-(define-approximator/determiner "more than")
+(define-approximator/determiner "barely")
+(define-approximator/determiner "exactly")
+(define-approximator/determiner "just")
 (define-approximator/determiner "less than")
+(define-approximator/determiner "more than")
+(define-approximator/determiner "nearly") ;; could also be approx/adverbial. what to do??
+(define-approximator/determiner "precisely")
+(define-approximator/determiner "somewhat")
+
+
 
 (define-approximator/adverbial  "fairly")
-(define-approximator/determiner "just")
+(define-approximator/adverbial "hardly") ;; can go before adjectives, right?
+(define-approximator/adverbial "mostly")
 (define-approximator/adverbial  "only")
 
 
@@ -152,13 +162,23 @@
 
 ;; initiated 6/4/93 v2.3. redone w/ def-form 5/25/94
 
-(define-event-frequency  "always")
-(define-event-frequency  "frequently")
-(define-event-frequency  "never")
-(define-event-frequency  "often")
-(define-event-frequency  "rarely")
-(define-event-frequency  "seldom")
-(define-event-frequency  "usually")
+(define-event-frequency "always")
+(define-event-frequency "constantly")
+(define-event-frequency "daily")
+(define-event-frequency "ever")
+(define-event-frequency "forever") ;; is this more of a duration? does it matter?
+(define-event-frequency "frequently")
+(define-event-frequency "hourly")
+(define-event-frequency "indefinitely") ;;does this belong?
+(define-event-frequency "monthly")
+(define-event-frequency "never")
+(define-event-frequency "often")
+(define-event-frequency "rarely")
+(define-event-frequency "seldom")
+(define-event-frequency "usually")
+(define-event-frequency "yearly")
+
+
 
 #|  "frequency idioms"  initiated 10/24/94
 
@@ -178,6 +198,7 @@
 
 (define-function-word "too"   :brackets '( ].adverb .[adverb ))
 (define-function-word "very"  :brackets '( ].adverb .[adverb ))
+;;immensely?
 
 
 
@@ -193,9 +214,11 @@
 ; a pre-verb, so they need bracketing that can indicate
 ; segment starts too.
 
-(define-position-in-process "initially")
-(define-position-in-process "finally")
 (define-position-in-process "eventually")
+(define-position-in-process "finally")
+(define-position-in-process "initially")
+(define-position-in-process "subsequently")
+
 
 
 
@@ -243,8 +266,16 @@
 
 ;;;---------- deictic, standalone
 
-(define-function-word "immediately" :brackets '( ].adverb  adverb.[ ))
-(define-function-word "soon"        :brackets '( ].adverb  adverb.[ ))
+(define-individual 'relative-time-adverb :name "as yet")
+(define-individual 'relative-time-adverb :name "currently")
+(define-individual 'relative-time-adverb :name "formerly") ;; might move / redefine?
+(define-individual 'relative-time-adverb :name "immediately")
+(define-individual 'relative-time-adverb :name "lately")
+(define-individual 'relative-time-adverb :name "presently")
+(define-individual 'relative-time-adverb :name "previously") ;;maybe
+(define-individual 'relative-time-adverb :name "recently")
+(define-individual 'relative-time-adverb :name "soon")
+(define-individual 'relative-time-adverb :name "yet")
 
 
 ;;;---------- deictic, complement-taking
@@ -264,17 +295,20 @@
 (define-adverb "additionally")
 (define-adverb "adequately")
 (define-adverb "admirably")
+(define-adverb "admittedly")
 (define-adverb "agriculturally")
 (define-adverb "alternatively")
 (define-adverb "anatomically") ;; not a manner..hmm
+(define-adverb "analytically")
 (define-adverb "appropriately")
 (define-adverb "approximately")
+(define-adverb "aptly")
 (define-adverb "arbitrarily")
 (define-adverb "arguably")
 (define-adverb "asexually")
 (define-adverb "asymmetrically")
+(define-adverb "at once")
 (define-adverb "badly")
-(define-adverb "barely") ;; MIGHT want to make this e.g. an approximator?
 (define-adverb "basically")
 (define-adverb "beautifully")
 (define-adverb "bilaterally")
@@ -283,9 +317,14 @@
 (define-adverb "briefly")
 (define-adverb "broadly")
 (define-adverb "carefully")
+(define-adverb "casually")
+(define-adverb "categorically")
+(define-adverb "centrally")
 (define-adverb "certainly")
+(define-adverb "characteristically")
 (define-adverb "cheaply")
 (define-adverb "chemically")
+(define-adverb "chronologically")
 (define-adverb "circularly")
 (define-adverb "clinically")
 (define-adverb "closely")
@@ -300,7 +339,6 @@
 (define-adverb "conditionally")
 (define-adverb "confidently")
 (define-adverb "consistently")
-(define-adverb "constantly")
 (define-adverb "continuously")
 (define-adverb "conventionally")
 (define-adverb "conversely")
@@ -314,6 +352,9 @@
 (define-adverb "definitely")
 (define-adverb "densely")
 (define-adverb "differently")
+(define-adverb "discreetly")
+(define-adverb "discretely")
+(define-adverb "distributionally")
 (define-adverb "dramatically")
 (define-adverb "dynamically")
 (define-adverb "e.g.")
@@ -333,6 +374,7 @@
 (define-adverb "ethically")
 (define-adverb "evocatively")
 (define-adverb "evolutionarily")
+(define-adverb "excessively")
 (define-adverb "exclusively")
 (define-adverb "experimentally")
 (define-adverb "extensively")
@@ -341,6 +383,7 @@
 (define-adverb "extremely")
 (define-adverb "famously")
 (define-adverb "federally")
+(define-adverb "figuratively")
 (define-adverb "finely")
 (define-adverb "for example")
 (define-adverb "forcefully")
@@ -351,8 +394,10 @@
 (define-adverb "fully") ;;
 (define-adverb "functionally")
 (define-adverb "fundamentally")
+(define-adverb "generally")
 (define-adverb "generically")
 (define-adverb "genetically")
+(define-adverb "gently")
 (define-adverb "genuinely")
 (define-adverb "geographically")
 (define-adverb "geologically")
@@ -364,15 +409,16 @@
 (define-adverb "homeostatically")
 (define-adverb "hugely")
 (define-adverb "ideally")
+(define-adverb "identifiably")
 (define-adverb "illustratively")
 (define-adverb "implicitly")
 (define-adverb "importantly")
 (define-adverb "in fact")
+(define-adverb "inaccurately")
 (define-adverb "inadvertently")
 (define-adverb "incidentally")
 (define-adverb "incompletely")
 (define-adverb "incorrectly")
-(define-adverb "indefinitely")
 (define-adverb "independently")
 (define-adverb "indirectly")
 (define-adverb "individually")
@@ -382,7 +428,9 @@
 (define-adverb "informally")
 (define-adverb "infrequently")
 (define-adverb "inherently")
+(define-adverb "innately")
 (define-adverb "intensely")
+(define-adverb "intentionally")
 (define-adverb "interestingly")
 (define-adverb "internally")
 (define-adverb "intimately")
@@ -391,22 +439,35 @@
 (define-adverb "jointly")
 (define-adverb "kinetically")
 (define-adverb "legally")
+(define-adverb "lightly")
 (define-adverb "linearly")
 (define-adverb "literally")
+(define-adverb "logically")
+(define-adverb "loosely") ;; maybe move to approx.
 (define-adverb "mainly") ;;
+(define-adverb "marginally")
+(define-adverb "markedly")
+(define-adverb "mathematically")
+(define-adverb "maximally")
+(define-adverb "meaningfully")
 (define-adverb "medically")
 (define-adverb "merely") ;;
 (define-adverb "metabolically")
 (define-adverb "metaphorically")
+(define-adverb "minimally")
 (define-adverb "mitotically")
-(define-adverb "moderately")
+(define-adverb "moderately") ;;degree?
 (define-adverb "modestly")
+(define-adverb "morbidly")
 (define-adverb "mutually")
+(define-adverb "naturally")
 (define-adverb "necessarily")
 (define-adverb "newly")
 (define-adverb "nicely")
+(define-adverb "nominally")
 (define-adverb "normally")
 (define-adverb "notably")
+(define-adverb "noticeably")
 (define-adverb "occasionally")
 (define-adverb "oddly")
 (define-adverb "openly")
@@ -415,8 +476,10 @@
 (define-adverb "osmotically")
 (define-adverb "painstakingly")
 (define-adverb "passively")
+(define-adverb "perfectly")
 (define-adverb "permanently")
 (define-adverb "perpendicularly")
+(define-adverb "persistently") ;; want to be an event-frequency?
 (define-adverb "perversely")
 (define-adverb "physically")
 (define-adverb "physiologically")
@@ -426,8 +489,8 @@
 (define-adverb "potentially")
 (define-adverb "potently")
 (define-adverb "powerfully")
+(define-adverb "practically")
 (define-adverb "precipitously")
-(define-adverb "precisely")
 (define-adverb "predictably")
 (define-adverb "predominantly")
 (define-adverb "preferentially")
@@ -436,12 +499,17 @@
 (define-adverb "privately")
 (define-adverb "properly")
 (define-adverb "publicly")
+(define-adverb "purely")
+(define-adverb "quickly")
 (define-adverb "radially")
 (define-adverb "radically")
 (define-adverb "randomly")
+(define-adverb "rapidly")
 (define-adverb "readily")
+(define-adverb "realistically")
 (define-adverb "really") ;; not really (ha!)
 (define-adverb "reasonably")
+(define-adverb "reciprocally")
 (define-adverb "regularly")
 (define-adverb "reliably")
 (define-adverb "remarkably")
@@ -486,22 +554,28 @@
 (define-adverb "symptomatically")
 (define-adverb "technically")
 (define-adverb "technologically")
-(define-adverb "temporarily")
+(define-adverb "temporarily") ;;
 (define-adverb "terminally")
 (define-adverb "thermodynamically")
 (define-adverb "thoroughly")
 (define-adverb "tightly")
 (define-adverb "together") ;;
+(define-adverb "topically")
 (define-adverb "totally") ;;
 (define-adverb "traditionally")
 (define-adverb "tremendously")
+(define-adverb "truly")
 (define-adverb "typically")
+(define-adverb "uncharacteristically")
 (define-adverb "undeniably")
 (define-adverb "understandably")
 (define-adverb "unexpectedly")
 (define-adverb "unfortunately")
 (define-adverb "ungainly")
+(define-adverb "unintentionally")
 (define-adverb "unlikely") ;;move to likelihood?
+(define-adverb "unnaturally")
+(define-adverb "unrealistically")
 (define-adverb "unsurprisingly")
 (define-adverb "unusually")
 (define-adverb "variously")
@@ -513,6 +587,10 @@
 ;;; adjectives
 ;;;------
 
+
+;;(define-adjective "daily")
 (define-adjective "known")
 
 
+
+;;respectively (each?)
