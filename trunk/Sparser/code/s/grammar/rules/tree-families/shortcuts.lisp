@@ -21,9 +21,124 @@
 ;; case. 8/19/13 Added head-noun as first of possibly many short-cuts
 ;; for already defined categories. 1/30/14 Started cleaning them up. 
 ;; 5/28/14 Pulled the rule-adders to uniform place. 6/4/14 added vo. 
+;; 6/6/14 Worked out a set of macros to make shortcuts more consistent
+;; and compact. 6/9/14 Starting make over, including removing shortcuts
+;; that are only used in sl/checkpoint/vocabulary.lisp
 
 (in-package :sparser)
 
+#| We need models for single words (like countries), for words
+that are head of relations (like "increase"), and for some combinations
+(like adjective+adverb). In every case we are creating a category
+based on the word, with a superclass and the set of slots (variables) 
+they require. All of that can be specified, or else a reasonable set
+of defaults will be used. There is also the possibility of mixins, 
+overriding the rule label, distinguishing the category name, and
+broadly speaking doing for you all the things you might do by hand.
+
+|#
+
+;;;--------
+;;; macros
+;;;--------
+;; Simplify how slots, etc. are handled by sharing the parts
+;; as a set of wrappers
+
+;; Shared decoder
+(defun decode-shortcut-var-spec (spec type)
+  "A shortcut variable specification can be a single symbol or
+ a list of as many as three symbols. If the specification is 
+ a symbol it is interpreted as the label (or more generally
+ the value restriction) for the semantic grammar built by
+ the tree family. If the specification is a list, the the
+ first element is the label for the semantic grammar.
+ The second element (if there is one), is the value restriction
+ on the slot that's to be bound. The third element specifies
+ the name of the slot, replacing the default."
+  (flet ((default-value-restriction (type)
+          (case type
+            (:subject 'individual)
+            (:complement 'event)
+            (otherwise (error "Unknown v/r default: ~a" type))))
+         (default-slot-name (type)
+           (case type
+             (:subject 'individual)
+             (:complement 'complement)
+             (otherwise (error "Unknown slot default: ~a" type)))))
+    (let ( v/r var-v/r slot )
+      (typecase spec
+        (symbol (setq v/r spec))
+        (cons
+         (cond
+          ((null (cdr spec))
+           (setq v/r (car spec)))
+          ((null (cddr spec))
+           (setq v/r (car spec)
+                 var-v/r (cadr spec)))
+          ((= 3 (length spec))
+           (setq v/r (car spec)
+                 var-v/r (cadr spec)
+                 slot (caddr spec)))))
+        (otherwise
+         (push-debug `(,spec ,type))
+         (error "Badly formed var spec: ~a" spec)))
+
+      (values v/r
+              (or var-v/r
+                  (default-value-restriction type))
+              (or slot
+                  (default-slot-name type))))))
+
+(defmacro with-name-and-superc (string super-category pos &body body)
+  `(let ((name (name-to-use-for-category ,string))
+         (superc (or ,super-category
+                     (super-category-for-POS ,pos))))
+     ,@body))
+
+
+(defmacro with-subject (subj-spec &body body)
+  `(multiple-value-bind (subj-v/r subj-var subj-slot)
+                        (decode-shortcut-var-spec ,subj-spec :subject)
+       ,@body))
+
+(defmacro with-complement (comp-spec &body body)
+  `(multiple-value-bind (comp-v/r comp-var comp-slot)
+                        (decode-shortcut-var-spec ,comp-spec :complement)
+     ,@body))
+
+
+(defmacro svcomp (verb super-category &key subject complement)
+  `(svcomp/expr ,verb ',super-category 
+                :subject ',subject :complement ',complement))
+
+(defun svcomp/expr (verb super-category &key subject complement)
+  (with-name-and-superc verb super-category :verb
+    (with-subject subject
+      (with-complement complement
+        (let ((form
+               `(define-category ,name
+                  :instantiates :self
+                  :specializes ,superc
+                  ;; :restrict  :mixins  :rule-label
+                  :binds ((,subj-slot ,subj-var)
+                          (,comp-slot ,comp-var))
+                  :realization
+                    (:tree-family that-complement
+                     :mapping ((result . :self)
+                               (agent . ,subj-slot)
+                               (theme . ,comp-slot)
+                               (s . :self)
+                               (np . ,subj-v/r)
+                               (vp . :self)
+                               (vg . :self)
+                               (s/that-comp . ,comp-v/r))
+                     :main-verb ,verb))))
+          (eval form))))))
+    
+
+;;;--------------
+;;; single words
+;;;--------------
 
 ;;--- Synonyms
 
@@ -79,124 +194,65 @@
 
 ;;--- NP patterns
 
-(defmacro head-noun (string category &optional referent)
-  "Like np-head, but we already have the category/referent and
-   just want to assign the word to it."
-  `(head-noun/expr ',string ',category ',referent))
-
-(defun head-noun/expr (string category referent)
-  (typecase category
-    (referential-category)
-    (symbol 
-     (setq category (category-named category :break-if-missing)))
-    (otherwise 
-     (push-debug `(,string ,category ,referent))
-     (error "Unexpected type for the category argument: ~a~%~a"
-            (type-of category) category)))
-  (unless referent
-    (setq referent category))
-  ;; Idea is to follow pattern in setup-common-noun
-  (let ((word (resolve string)))
-    (make-cn-rules word category referent)))
-  
-
 (defun np-head (string-for-noun &key super)
   ;; "trunk", "car", ...
-  (unless (stringp string-for-noun)
-    (error "Argument must be a string providing the base noun"))
-  (unless super
-    (setq super 'individual))
-  (let* ((name (intern string-for-noun
-		       (find-package :sparser)))
-         (form
-          `(define-category ,name
-             :instantiates :self
-             :specializes ,super
-             :binds ((modifier))
-             :realization
-             (:common-noun ,string-for-noun))))
-    (eval form)))
+  (with-name-and-superc string-for-noun super :noun
+    (let ((form
+           `(define-category ,name
+              :instantiates :self
+              :specializes ,superc
+              :realization
+                 (:common-noun ,string-for-noun))))
+      (eval form))))
 
 
 (defun np-head/of (string-for-noun &key super of)
-  ;; "trunk", "car", ...
-  (unless (stringp string-for-noun)
-    (error "Argument must be a string providing the base noun"))
-  (unless super
-    (setq super 'individual))
-  (let* ((name (intern string-for-noun
-		       (find-package :sparser)))
-         (of-restriction (or of 'individual))
-         (form
-          `(define-category ,name
-             :instantiates :self
-             :specializes ,super
-             :binds ((on . ,of-restriction))
-             :realization (:tree-family group-of-type
-                           :mapping ((type . on)
-                                     (np . :self)
-                                     (group . :self)
-                                     (complement . ,of-restriction))
-                           :common-noun ,string-for-noun))))
-    (eval form)))
+  ;;  (amino acid residue) of protein
+  (with-name-and-superc string-for-noun super :noun
+    (let* ((of-restriction (or of 'individual)) ;;//// macro-ify when next used
+           (form
+             `(define-category ,name
+                :instantiates :self
+                :specializes ,superc
+                :binds ((on . ,of-restriction))
+                :realization (:tree-family group-of-type
+                              :mapping ((type . on)
+                                        (np . :self)
+                                        (group . :self)
+                                        (complement . ,of-restriction))
+                              :common-noun ,string-for-noun))))
+      (eval form))))
 
 
-
-;;--- Modifier patterns
-
-(defun ignorable-np-modifier (string-for-adj)
-  (let* ((name (category-name-from-string-arg string-for-adj))
-         (rule-form ;; /// what other np head forms?
-          `(def-form-rule (,string-for-adj common-noun)
-	         :form np
-             :new-category individual
-             :referent (:daughter right-edge))))
-    (declare (ignore name)) ;; until we do something interesting w/ it
-    (eval rule-form)))
-
-
-(defun adverbial (string-for-adverb)
-  (let* ((name (category-name-from-string-arg string-for-adverb))
-	 (form
-	  `(define-category ,name
-	     :instantiates :self
-	     :realization
-	       (:tree-family pre-verb-adverb
-	         :mapping ((adverb . :self))
-             :adverb ,string-for-adverb))))
-    (eval form)))
-
-(defun sentence-adverbial (string-for-adverb)
-  (let* ((name (category-name-from-string-arg string-for-adverb))
-	 (form
-	  `(define-category ,name
-	     :instantiates :self
-         :binds ((modifier))
-	     :realization
-	       (:tree-family sentence-adverb
-	        :mapping ((adverb . :self))
-            :adverb ,string-for-adverb))))
-    (eval form)))
+;;--- Interjection
 
 (defun sentential-interjection (string-for-interjection)
-  (let* ((name (category-name-from-string-arg string-for-interjection))
+  ;; "ok" "goodbye"  All instances right now are in checkpoint/vocabulary.lisp
+  (let* ((name (name-to-use-for-category string-for-interjection))
          (form
           `(define-category ,name
-	         :instantiates :self
+	     :instantiates :self
              :binds ((modifier))
              :realization
-             (:tree-family sentence-interjection
-              :mapping ((interjection . :self)
-                        (modifier . modifier))
-              :interjection ,string-for-interjection))))
+               (:tree-family sentence-interjection
+                :mapping ((interjection . :self)
+                          (modifier . modifier))
+               :interjection ,string-for-interjection))))
     (eval form)))
+
+
+;;--- Adjective/adverb pairs
+
+;(defun adj/adv (adjective adverb &key super-category)
+;(with-name-and-superc adjective super-category :adjective
+    
 
 
 ;;--- verb patterns
 
 ;; original 
 (defun sv (string-for-verb)
-  (let* ((name (category-name-from-string-arg string-for-verb))
+  (let* ((name (name-to-use-for-category string-for-verb))
          (form
           `(define-category ,name
 	     :instantiates :self ;; place for generalization
@@ -217,7 +273,7 @@
 |#
 ;; envisioned -- needs the customized rspec to be designed
 #+ignore(defun sv (verb &optional super-category &key instantiates subject)
-  (let* ((category-name (category-name-from-string-arg verb))
+  (let* ((category-name (name-to-use-for-category verb))
          (subject-restriction (or subject 'individual))
          (specializes (or super-category 'event))
          (category-instantiated (or instantiates :self))
@@ -231,7 +287,7 @@
       category)))
              
 (defun svo (string-for-verb)
-  (let* ((name (category-name-from-string-arg string-for-verb))
+  (let* ((name (name-to-use-for-category string-for-verb))
          (form
           `(define-category ,name
 	      :instantiates :self ;; place for generalization
@@ -270,7 +326,7 @@
   "Intransitive with an associated preposition, e.g. 'move along'"
   (unless (and (stringp verb) (stringp preposition))
     (error "Arguments must be string giving the base for of words"))
-  (let* ((name (category-name-from-string-arg 
+  (let* ((name (name-to-use-for-category 
 		(string-append verb "/" preposition)))
          (form
           `(define-category ,name
@@ -293,7 +349,7 @@
 ;;//// Illustrative case. Probably wouldn't do it this way.
 ;; look at the ETF
 (defun sv-location (string-for-verb)
-  (let* ((name (category-name-from-string-arg string-for-verb))
+  (let* ((name (name-to-use-for-category string-for-verb))
 	 (form
 	  `(define-category ,name
          :instantiates :self ;; place for generalization
@@ -329,7 +385,7 @@
         (obj-v/r (car object))
         (obj-var (cadr object)))
 
-  (let* ((name (category-name-from-string-arg verb))
+  (let* ((name (name-to-use-for-category verb))
          (form
           `(define-category ,name
              :instantiates :self
@@ -356,7 +412,7 @@
   ;;// rule-for, restrict, mixin
   ;; Based on verb+direct-object, the variable for the object
   ;; is 'theme' by a convention out of c3.
-  (let ((name (category-name-from-string-arg verb)))
+  (let ((name (name-to-use-for-category verb)))
     (multiple-value-bind
         (binding-vr parsing-vr)
         (typecase object
@@ -384,7 +440,7 @@
 (defun sv-prep-marked-o (verb preposition)
   (unless (and (stringp verb) (stringp preposition))
     (error "Arguments must be string giving the base for of words"))
-  (let* ((name (category-name-from-string-arg 
+  (let* ((name (name-to-use-for-category 
 		(string-append verb "/" preposition)))
          (form
           `(define-category ,name
@@ -421,7 +477,7 @@
 (defun svo/nominal (verb nominalization &key subject theme)
   (let ((subject-restriction (or subject 'individual))
         (theme-restriction (or theme 'individual)))
-    (let* ((name (category-name-from-string-arg nominalization))
+    (let* ((name (name-to-use-for-category nominalization))
            (form
             `(define-category ,name
               :instantiates self
@@ -454,7 +510,7 @@
                               &key subject theme)
   (let ((subject-restriction (or subject 'individual))
         (theme-restriction (or theme 'individual)))
-    (let* ((name (category-name-from-string-arg nominalization))
+    (let* ((name (name-to-use-for-category nominalization))
            (form
             `(define-category ,name
               :instantiates self
@@ -489,39 +545,11 @@
 
 
 
-;;--- go'fers
-
-;; Compare code in name-to-use-for-category
-
-(defun category-name-from-string-arg (string-arg)
-  ;; Could actually be a cons to cover irregulars
-  (typecase string-arg
-    (string
-     (intern string-arg (find-package :sparser)))
-    (cons
-     ;;/// a good place to check for valid keywords for the irregulars
-     (unless (stringp (car string-arg))
-       (error "Arguments must be string giving the base for of words"))
-     (do ((keyword (first (cdr string-arg)) (car rest))
-          (string (second (cdr string-arg)) (cadr rest))
-          (rest (cdddr string-arg) (cddr rest)))
-         ((null keyword))
-       ;;(break "keyword = ~a  string = ~a" keyword string)
-       (unless (keywordp keyword)
-         (error "Looks like a badly formed irregulars list:~%~a" string-arg))
-       (unless (memq keyword *valid-keywords-for-irregular-word-forms*)
-         (error "Keyword for marking an irregular form, ~a, isn't one ~
-                  of these:~%  ~a" keyword
-                  *valid-keywords-for-irregular-word-forms*))
-       (unless (stringp string)
-         (error "Words have to be given as strings. ~a isn't:~%~a"
-                string string-arg)))       
-     (let ((base (car string-arg)))
-       (intern base (find-package :sparser))))))
 
 
 
 
+;;;
 
 (defmacro define-type-category-constructor (name-of-type-category) ;; symbol
   (let ((type-category (category-named name-of-type-category)))
