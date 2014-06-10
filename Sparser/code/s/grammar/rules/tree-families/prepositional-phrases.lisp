@@ -12,7 +12,10 @@
 
 
 (define-exploded-tree-family   transparent-pp
-  :description "A preposition followed by a noun phrase complement where the function of the preposition is only to mark the phrase's role. The referent of complement becomes the referent of the phrase as a whole. E.g. 'by-company', 'after-time'." 
+  :description "A preposition followed by a noun phrase complement  
+     where the function of the preposition is only to mark the phrase's role. 
+     The referent of complement becomes the referent of the phrase as a whole. 
+      E.g. 'by-company', 'after-time'." 
   :binding-parameters ()
   :labels ( pp preposition complement )
   :cases
@@ -21,7 +24,11 @@
             :daughter right-edge))))
 
 (define-exploded-tree-family   content-pp
-  :description "A preposition followed by a noun phrase complement where the combination creates an individual involving both terms. The preposition is mapped to an 'articulator' variable that puts the complement, the 'item', into a particular 'type' of relation (instantiated category)."
+  :description "A preposition followed by a noun phrase complement  
+     where the combination creates an individual involving both terms. 
+     The preposition is mapped to an 'articulator' variable that puts the 
+     complement, the 'item', into a particular 'type' of relation 
+     (instantiated category)."
   :binding-parameters ( type articulator item )
   :labels ( pp preposition complement )
   :cases
@@ -33,7 +40,9 @@
 
 
 (define-exploded-tree-family   computed-pp
-  :description "A preposition and associated noun phrase complement where a method is triggered to determine the referent. The method dispatches over the class of the preposition and referent of the np."
+  :description "A preposition and associated noun phrase complement 
+     where the method analyze-pp is triggered to determine the referent. 
+     The method dispatches over the class of the preposition and referent of the np."
   :labels ( pp preposition complement )
   :cases
     ((:pp (pp (preposition complement)
