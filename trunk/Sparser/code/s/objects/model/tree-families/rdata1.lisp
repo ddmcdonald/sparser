@@ -51,7 +51,8 @@
 ;;     (12/26/13) Tweeked decode-rdata-mapping to notice an explicit category
 ;;      as the equivalent of :self. (2/1/14) Finished retrieve-word-constructor for
 ;;      use in abbreviation code.
-;;     (5/12/14) Fixed error message in decode-rdata-mapping. 
+;;     (5/12/14) Fixed error message in decode-rdata-mapping. 6/11/14 Added call
+;;      in record ETF to the categories that use them inside dereference-rdata.
 
 (in-package :sparser)
 
@@ -360,7 +361,7 @@
   "Does the symbols to objects converstion for realization data. 
    Returns the arguments to feed into make-rules-for-realization-data."
 
-  ;; called from Setup-rdata using 'apply'
+  ;; called from setup-rdata using 'apply'
 
   (setq *schematic?* nil)  ;; initialize the flag
   (let ((head-word
@@ -410,6 +411,7 @@
       (unless tf
         (error "There is no tree family named ~A~
                 ~% category = ~A" tf-name category))
+      (record-use-of-tf-by tf category)
       (setq decoded-mapping
             (decode-rdata-mapping mapping category tf)))
 
