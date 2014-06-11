@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2012-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2012-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.2 January 2013
+;;;  version:  1.2 June 2014
 
 ;; initiated 8/4/92. Added accumulator list and description field 2/22/95.
 ;; Added type field 3/7.  Tweeked def routine 4/27
@@ -14,6 +14,8 @@
 ;; 1.1 (6/17/09) added 'form' field to schematic-rule structure
 ;;     (11/13/12) added pretty-schr-as-string. 
 ;; 1.2 (1/28/13) Added form-rule field to schematic rule
+;;     (6/11/14) added record-use-of-tf-by to tracks the users of the
+;;      tree families. 
 
 (in-package :sparser)
 
@@ -157,3 +159,30 @@
   (with-output-to-string (stream)
     (pretty-print-schr schr stream)))
   
+
+;;;---------------------------------------------
+;;; linking ETF to the categories that use them
+;;;---------------------------------------------
+
+(defvar *etf-to-categories* (make-hash-table)
+  "Table from an etf to a list of referential categories")
+
+(defmethod categories-using-etf ((name symbol))
+  (let ((etf (exploded-tree-family-named name)))
+    (unless etf
+      (error "There is no tree family named ~a" etf))
+    (categories-using-etf etf)))
+
+(defmethod categories-using-etf ((etf exploded-tree-family))
+  (gethash etf *etf-to-categories*))
+
+(defun record-use-of-tf-by (etf category)
+  ;; called from dereference-rdata when there's a tree family 
+  ;; in the rdata. 
+  (let* ((entry (categories-using-etf etf))
+         (new-entry (if entry
+                      (cons category entry)
+                      `(,category))))
+    (setf (gethash etf *etf-to-categories*) new-entry)))
+
+
