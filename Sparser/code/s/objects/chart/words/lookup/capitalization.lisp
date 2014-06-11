@@ -116,6 +116,7 @@
              (case actual-state
                (:initial-letter-capitalized nil)
                (:mixed-case (return word))
+               (:single-capitalized-letter (return word))
                (otherwise
                 (break "new case for :all-caps ~a" actual-state))))
 
