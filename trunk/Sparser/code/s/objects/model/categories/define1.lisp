@@ -41,6 +41,8 @@
 ;;     (5/12/14) Added mixin to define-subtype-derived-category
 ;;     (5/29/14) Moved in add-rules-to-category from diverse other files
 ;;      and generalized a little. 
+;;     (6/9/14) Allow bindings on categories to consult the mixins for
+;;      the variables.
 
 (in-package :sparser)
 
@@ -153,7 +155,8 @@
                 ~%  ~A is not." (cat-symbol category)))
       (attach-bindings-to-category category
                                    bindings
-                                   specialized-category))
+                                   specialized-category
+                                   mixin-categories))
 
     (setf (cat-lattice-position category)
           (initialize-top-lattice-point 
@@ -224,7 +227,8 @@
 ;;; bindings on categories
 ;;;------------------------
 
-(defun attach-bindings-to-category (category bindings-plist parent)
+(defun attach-bindings-to-category (category bindings-plist 
+                                    parent mixins)
   ;; the values in the bindings plist will be expressions that
   ;; we have to eval.  Once we've done that we have to vet the
   ;; resulting value that it's valid given the variable involved.
@@ -232,18 +236,28 @@
   ;; would do for us if we already had values, so we're unbundling
   ;; it's effects.
   (let ( bindings  variable  value  real-value  binding )
-    (do ((var (first bindings-plist) (first remainder))
+    (do ((var-name (first bindings-plist) (first remainder))
          (value-exp (second bindings-plist) (second remainder))
          (remainder (cddr bindings-plist) (cddr remainder)))
-        ((null var))
+        ((null var-name))
 
-      (unless (symbolp var)
+      (unless (symbolp var-name)
         (break "Variable designators in the bindings field of categories ~
-                must be ~%categories. You passed in ~A" var))
-      (setq variable (find-variable-in-category/named var parent))
+                must be ~%categories. You passed in ~A" var-name))
+      (setq variable (find-variable-in-category/named var-name parent))
       (unless variable
-        (error "There is no variable named ~a~
-               ~%in the category ~a" var parent))
+        (if mixins
+          (let ( var )
+            (dolist (m mixins)
+              (setq var (find-variable-in-category/named var-name m))
+              (when var
+                (setq variable var)
+                (return)))
+            (unless variable
+              (error "There is no variable named ~a~
+                    ~%in the category ~a or mixins ~a" var-name parent mixins)))
+          (error "There is no variable named ~a~
+                ~%in the category ~a" var-name parent)))
 
       (setq value (eval value-exp))
 
