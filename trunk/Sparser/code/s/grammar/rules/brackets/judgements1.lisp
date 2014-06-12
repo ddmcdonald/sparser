@@ -353,11 +353,16 @@
              (eq (first *bracket-opening-segment*) .[modal ))
          nil )
 
-        ((eq bracket-opening-segment .[article ) nil)
-        ;; e.g. "the sounds" -- where "sounds" can be a verb.
-        ;; A word that is noun/verb ambiguous will lay down
-        ;; brackets for a verb -- this is a case where we can
-        ;; know definitively that the noun sense is the right one.
+        ((eq bracket-opening-segment .[article )
+         (if (> word-count 1)
+           ;; there's an interveening word
+           t
+           (else
+            ;; e.g. "the sounds" -- where "sounds" can be a verb.
+            ;; A word that is noun/verb ambiguous will lay down
+            ;; brackets for a verb -- this is a case where we can
+            ;; know definitively that the noun sense is the right one.
+            nil)))
 
         ((or (eq bracket-opening-segment .[np )
              (eq bracket-opening-segment .[np-vp )
