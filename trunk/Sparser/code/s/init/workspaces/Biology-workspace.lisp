@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "Biology-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  May 2014
+;;;  version:  June 2014
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
@@ -18,6 +18,19 @@
   (remove-paragraph-marker)
   (bio-setting)
   (ignore-comlex))
+
+;; 6/9/14
+; (just-bracketing-setting)
+; (setq *permit-extra-open-parens* t)
+; (just-bracketing-with-comlex-setting)
+;? (f "/Users/ddm/ws/Sparser local/corpus/LarryHunterBioBook/BeingAlive.textsource")
+; Have gotten well into chapter 3 (not using comlex) and breaking on
+; the 6 in "Fructose-1,6-bisphosphate", though not "glucose-6-phosphate" so it's
+; the assumptions of the comma.
+
+; (f "/Users/ddm/sift/nlp/corpus/biology/hallmarks.txt")
+;; Breaks early on an one-em dash. Need to force uft-8
+
 
 ;; 2/27/14
 ; The greek characters are in -- entry-for-out-of-band-character --
