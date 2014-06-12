@@ -80,7 +80,7 @@
         (setq sequencer (define-individual 'sequencer
                             :name word))
 
-        (assign-brackets/expr word (list ].phrase  phrase.[ ))
+        (assign-brackets/expr word (list  ].preposition preposition]. preposition.[ ))
         sequencer ))))
 
 
