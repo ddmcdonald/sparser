@@ -16,7 +16,8 @@
 ;;--- Intransitive
 
 (define-exploded-tree-family intransitive-with-preposition
-  :description "Instranitive verb that takes a preposition that is essential to its meaning but does not contribute an argument. 'move along'"
+  :description "Instranitive verb that takes a preposition that is essential to 
+     its meaning but does not contribute an argument. 'move along'"
   :binding-parameters ( agent )
   :labels ( s vp vg np/subject prep )
   :cases

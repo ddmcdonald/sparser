@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "transitive"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.3 May 2014
+;;;  version:  0.3 June 2014
 
 ;; initiated 8/5/92 v2.3, added passives 8/24
 ;; 0.1 (10/13) reorganized (in)transitive to fit the paper
@@ -18,6 +18,7 @@
 ;;     (7/31/13) Added passive for "martyered" which is never active
 ;;     (5/12/14) Adding subj/verb+np because C3 is parsing from the left
 ;;      and composed "suv + enter" before it see's the new location np.
+;;     (6/10/14) Added passive/with-by-phrase for "regulated by"
 
 (in-package :sparser)
 
@@ -36,7 +37,9 @@
 
 
 (define-exploded-tree-family  transitive
-  :description "A verb that requires a subject and a direct object to have a complete sentence. This category is intended for verbs that -never- appear in the passive; their subjects will always be agents and their objects themes."
+  :description "A verb that requires a subject and a direct object to have 
+     a complete sentence. This category is intended for verbs that -never- appear 
+     in the passive; their subjects will always be agents and their objects themes."
   :binding-parameters ( agent patient )
   :labels ( s vp vg np/subject np/object )
   :cases
@@ -50,12 +53,10 @@
       ))
 
 
-;; The type that runs up the headline after the first composition with
-;; the verb is different from that of the verb  (e.g. the verb might be
-;; 'be').
 
 (define-exploded-tree-family  transitive/new-head
-  :description ""
+  :description "The type that runs up the headline after the first composition with
+     the verb is different from that of the verb, e.g. the verb might be 'be'."
   :binding-parameters ( agent patient )
   :labels ( s vp vg np/subject np/object result-type )
   :cases
@@ -94,6 +95,24 @@
                        :binds (patient left-edge)))
       ))
 
+
+(define-exploded-tree-family  passive/with-by-phrase
+  :description "Standard inverted logical argument passive, with a parameter
+      for what the complement of the by-phrase is bound to. The preposed patient
+      argument is required, and its presence instantiates the result-type."
+  :binding-parameters ( agent patient )
+  :labels ( s vp vg np/patient np/agent by-pp result-type )
+  :cases 
+     ((:subject (s  (np/patient vp/+ed)
+                  :instantiate-individual result-type
+                  :binds (patient left-edge)
+                  :head right-edge))
+      (:by-phrase (by-pp ("by" np/agent)
+                    :head right-edge
+                    :daughter right-edge))
+      (:passive-with-by (s (s by-pp)
+                         :head left-edge
+                         :binds (agent right-edge)))))
 
 
 ;; Was in checkpoint/vocabulary, but surely doesn't belong there
