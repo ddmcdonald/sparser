@@ -56,20 +56,26 @@ broadly speaking doing for you all the things you might do by hand.
  on the slot that's to be bound. The third element specifies
  the name of the slot, replacing the default."
   (flet ((default-value-restriction (type)
-          (case type
-            (:subject 'individual)
-            (:complement 'event)
+           (case type
+             ((or :subject :theme :agent :patient)
+              'individual)
+             (:complement 'event)
             (otherwise (error "Unknown v/r default: ~a" type))))
          (default-slot-name (type)
            (case type
-             (:subject 'individual)
+             (:subject 'subject)
+             (:agent 'agent)
+             (:patient 'patient)
+             (:theme 'theme)
              (:complement 'complement)
              (otherwise (error "Unknown slot default: ~a" type)))))
     (let ( v/r var-v/r slot )
+      ;; decode the spec into the semantic grammar label: v/r,
+      ;; the category of slot (variable): var-v/r,
+      ;; and the name of the variable itself: slot
       (typecase spec
         (symbol (setq v/r spec))
-        (cons
-         (cond
+        (cons (cond
           ((null (cdr spec))
            (setq v/r (car spec)))
           ((null (cddr spec))
@@ -82,7 +88,6 @@ broadly speaking doing for you all the things you might do by hand.
         (otherwise
          (push-debug `(,spec ,type))
          (error "Badly formed var spec: ~a" spec)))
-
       (values v/r
               (or var-v/r
                   (default-value-restriction type))
@@ -97,8 +102,14 @@ broadly speaking doing for you all the things you might do by hand.
 
 
 (defmacro with-subject (subj-spec &body body)
+  ;; Identical in use with subject, but clearer to set up in passives
   `(multiple-value-bind (subj-v/r subj-var subj-slot)
                         (decode-shortcut-var-spec ,subj-spec :subject)
+       ,@body))
+
+(defmacro with-agent (agent-spec &body body)
+  `(multiple-value-bind (agent-v/r agent-var agent-slot)
+                        (decode-shortcut-var-spec ,agent-spec :agent)
        ,@body))
 
 (defmacro with-complement (comp-spec &body body)
@@ -106,35 +117,16 @@ broadly speaking doing for you all the things you might do by hand.
                         (decode-shortcut-var-spec ,comp-spec :complement)
      ,@body))
 
+(defmacro with-theme (theme-spec &body body)
+  `(multiple-value-bind (theme-v/r theme-var theme-slot)
+                        (decode-shortcut-var-spec ,theme-spec :theme)
+     ,@body))
 
-(defmacro svcomp (verb super-category &key subject complement)
-  `(svcomp/expr ,verb ',super-category 
-                :subject ',subject :complement ',complement))
+(defmacro with-patient (patient-spec &body body)
+  `(multiple-value-bind (patient-v/r patient-var patient-slot)
+                        (decode-shortcut-var-spec ,patient-spec :patient)
+     ,@body))
 
-(defun svcomp/expr (verb super-category &key subject complement)
-  (with-name-and-superc verb super-category :verb
-    (with-subject subject
-      (with-complement complement
-        (let ((form
-               `(define-category ,name
-                  :instantiates :self
-                  :specializes ,superc
-                  ;; :restrict  :mixins  :rule-label
-                  :binds ((,subj-slot ,subj-var)
-                          (,comp-slot ,comp-var))
-                  :realization
-                    (:tree-family that-complement
-                     :mapping ((result . :self)
-                               (agent . ,subj-slot)
-                               (theme . ,comp-slot)
-                               (s . :self)
-                               (np . ,subj-v/r)
-                               (vp . :self)
-                               (vg . :self)
-                               (s/that-comp . ,comp-v/r))
-                     :main-verb ,verb))))
-          (eval form))))))
-    
 
 ;;;--------------
 ;;; single words
@@ -243,9 +235,27 @@ broadly speaking doing for you all the things you might do by hand.
 
 ;;--- Adjective/adverb pairs
 
-;(defun adj/adv (adjective adverb &key super-category)
-;(with-name-and-superc adjective super-category :adjective
-    
+(defun adj/adv (adjective adverb &key super-category)
+  (unless super-category
+    (error "You must supply a super category for any multi part-~
+            of-speech def form~%adjective/adverb: ~a ~a"
+           adjective adverb))
+  (with-name-and-superc adjective super-category :dummy
+    (let ((adj (resolve/make adjective))
+          (adv (resolve/make adverb)))
+      (let* ((form
+              `(define-category ,name
+                 :instantiates :self
+                 :specializes ,superc
+                 :mixins (adjective-adverb)
+                 :bindings (adjective ,adj adverb ,adv)))
+             (category (eval form)))
+        ;; Parameters to these two are (word category referent)
+        ;; and they do the bracket assignment. 
+        (make-rules-for-adjectives adj category category)
+        (make-rules-for-adverbs adv category category)
+        category))))
+
 
 
 ;;--- verb patterns
@@ -437,6 +447,7 @@ broadly speaking doing for you all the things you might do by hand.
         (eval form)))))
 
 
+;; Used in checkpoint vocabulary for 'open up'
 (defun sv-prep-marked-o (verb preposition)
   (unless (and (stringp verb) (stringp preposition))
     (error "Arguments must be string giving the base for of words"))
@@ -474,35 +485,101 @@ broadly speaking doing for you all the things you might do by hand.
         (error "v+p-rule is missing")))))
 
 
-(defun svo/nominal (verb nominalization &key subject theme)
-  (let ((subject-restriction (or subject 'individual))
-        (theme-restriction (or theme 'individual)))
-    (let* ((name (name-to-use-for-category nominalization))
-           (form
-            `(define-category ,name
-              :instantiates self
-              :specializes  event
-              :binds ((subject person)
-                      (theme person))
-               :index (:key theme) ;; ought to suffice
-               :realization
-                  ((:tree-family transitive
-                    :mapping ((agent . subject)
-                              (patient . theme)
+(defmacro svcomp (verb super-category &key subject complement)
+  `(svcomp/expr ,verb ',super-category 
+                :subject ',subject :complement ',complement))
+(defun svcomp/expr (verb super-category &key subject complement)
+  (with-name-and-superc verb super-category :verb
+    (with-subject subject
+      (with-complement complement
+        (let ((form
+               `(define-category ,name
+                  :instantiates :self
+                  :specializes ,superc
+                  ;; :restrict  :mixins  :rule-label
+                  :binds ((,subj-slot ,subj-var)
+                          (,comp-slot ,comp-var))
+                  :realization
+                    (:tree-family that-complement
+                     :mapping ((result . :self)
+                               (agent . ,subj-slot)
+                               (theme . ,comp-slot)
+                               (s . :self)
+                               (np . ,subj-v/r)
+                               (vp . :self)
+                               (vg . :self)
+                               (s/that-comp . ,comp-v/r))
+                     :main-verb ,verb))))
+          (eval form))))))
+
+
+(defmacro svo/passive/nominal (verb nominalization
+                               &key super-category agent patient)
+  `(svo/passive/nominal/expr ,verb ,nominalization
+     :super-category ',super-category :agent ',agent :patient ',patient))
+(defun svo/passive/nominal/expr (verb nominalization
+                                 &key super-category agent patient)
+  ;; pattern orginated with "assassinate"
+  (with-name-and-superc verb super-category :verb
+    (with-agent agent
+      (with-patient patient
+        (let ((form
+               `(define-category ,name
+                  :instantiates :self
+                  :specializes ,superc
+                  ;; :restrict  :mixins  :rule-label
+                  :binds ((,agent-slot ,agent-var)
+                          (,patient-slot ,patient-var))
+                  :realization
+                   ((:tree-family passive/with-by-phrase
+                     :mapping ((agent . ,agent-slot)
+                               (patient . ,patient-slot)
+                               (s . :self)
+                               (vp . :self)
+                               (vg . :self)
+                               (np/agent . ,agent-v/r)
+                               (np/patient . ,patient-v/r))
+                     :main-verb ,verb)
+                    (:tree-family empty-head-of-complement
+                     :mapping ((result-type . :self)
+                               (of-item . ,agent-slot)
+                               (base-np . :self)
+                               (complement . ,agent-v/r)
+                               (np . :self))
+                     :common-noun ,nominalization)))))
+          (eval form))))))
+
+  
+
+(defun svo/nominal (verb nominalization &key super-category subject theme)
+  (with-name-and-superc verb super-category :verb
+    (with-subject subject subject
+      (with-theme theme
+        (let ((form
+               `(define-category ,name
+                  :instantiates self
+                  :specializes ,superc
+                  :binds ((,subj-slot ,subj-var) 
+                          (,theme-slot ,theme-var))
+                  :index (:key theme) ;; ought to suffice
+                  :realization
+                    ((:tree-family transitive
+                    :mapping ((agent . ,subj-slot)
+                              (patient . ,theme-slot)
                               (s . :self)
                               (vp . :self)
                               (vg . :self)
-                              (np/subject . ,subject-restriction)
-                              (np/object . ,theme-restriction))
+                              (np/subject . ,subj-v/r)
+                              (np/object . ,theme-v/r))
                     :main-verb ,verb)
                   (:tree-family empty-head-of-complement
                    :mapping ((result-type . :self)
-                             (of-item . theme)
+                             (of-item . ,theme-slot)
                              (base-np . :self)
-                             (complement . ,theme-restriction)
+                             (complement . ,theme-v/r)
                              (np . :self))
                    :common-noun ,nominalization)))))
-      (eval form))))
+          (eval form))))))
 
 
 
