@@ -68,6 +68,9 @@
         (category::adjective)
         (category::adverb)
         (category::preposition)
+        (category::spatial-preposition)
+        (category::spatio-temporal-preposition)
+        
 
         (category::s)
         (category::vp)
