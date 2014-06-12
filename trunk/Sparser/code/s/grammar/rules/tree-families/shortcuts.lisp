@@ -514,17 +514,32 @@ broadly speaking doing for you all the things you might do by hand.
 
 
 (defmacro svo/passive/nominal (verb nominalization
-                               &key super-category agent patient)
+                               &key super-category agent patient by-category)
   `(svo/passive/nominal/expr ,verb ,nominalization
-     :super-category ',super-category :agent ',agent :patient ',patient))
+     :super-category ',super-category :agent ',agent :patient ',patient
+     :by-category ',by-category))
 (defun svo/passive/nominal/expr (verb nominalization
-                                 &key super-category agent patient)
+                                 &key super-category agent patient by-category
+                                )
   ;; pattern orginated with "assassinate"
   (with-name-and-superc verb super-category :verb
     (with-agent agent
       (with-patient patient
-        (let ((form
-               `(define-category ,name
+        (let ((by-cat 
+                (if by-category
+                  (category-named by-category :break-if-missing)
+                  (let* ((agent-name (etypecase agent
+                                       (symbol agent)
+                                       (cons (car agent))))
+                         (by-cat-name (name-to-use-for-category
+                                       (string-append ':by- agent-name))))
+                    ;; This is what the define-category macro opens up as
+                    ;; for a trivial category like this
+                    (cat-symbol
+                     (find-or-make-category-object by-cat-name :define-category))))))
+          
+          (let ((form
+                 `(define-category ,name
                   :instantiates :self
                   :specializes ,superc
                   ;; :restrict  :mixins  :rule-label
@@ -538,7 +553,9 @@ broadly speaking doing for you all the things you might do by hand.
                                (vp . :self)
                                (vg . :self)
                                (np/agent . ,agent-v/r)
-                               (np/patient . ,patient-v/r))
+                               (np/patient . ,patient-v/r)
+                               (by-pp . ,by-cat)
+                               (result-type . :self))
                      :main-verb ,verb)
                     (:tree-family empty-head-of-complement
                      :mapping ((result-type . :self)
@@ -547,7 +564,7 @@ broadly speaking doing for you all the things you might do by hand.
                                (complement . ,agent-v/r)
                                (np . :self))
                      :common-noun ,nominalization)))))
-          (eval form))))))
+            (eval form)))))))
 
   
 
