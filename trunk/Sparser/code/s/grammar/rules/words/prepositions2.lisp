@@ -133,7 +133,7 @@
 (define-preposition "devoid of")
 (define-preposition "down"  ) ;; as in, 'down the street' ?
 (define-preposition "due to")
-(define-preposition "during"  )
+;; (define-preposition "during"  ) defined as sequencer/prep in modifiers
 (define-preposition "except")
 (define-preposition "except for") 
 (define-preposition "exclusive of")
