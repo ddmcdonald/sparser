@@ -53,7 +53,11 @@
 
 (defun ie (number-of-edge) (d (edge# number-of-edge)))
 (defun ip (number-of-position) (d (position# number-of-position)))
-(defun iw (string-for-word) (d (word-named string-for-word)))
+(defun iw (string-for-word)
+  (let ((word (word-named string-for-word)))
+    (if word
+      (d word)
+      (format t "\"~a\" is not a known word" string-for-word))))
 (defun ir (number-of-rule)
   (let ((rule (psr# number-of-rule)))
     (d rule)))
