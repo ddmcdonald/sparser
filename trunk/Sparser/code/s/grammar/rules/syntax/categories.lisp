@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 May 2014
+;;;  Version:  0.8 June 2014
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -48,6 +48,7 @@
 ;; 0.8 (5/17/14) Modified ignorable-category? to move number into modifier-category?.
 ;;     (5/21/14) Added mark-as-form-category so you can make a referential category
 ;;      e.g. number, look like a form category when you want it to.
+;;     (6/9/14) Added mixin adjective-adverb here as nothing else seemed better
 
 (in-package :sparser)
 
@@ -82,7 +83,6 @@
   ;; form category on its right side.  ///Perhaps they should
   ;; be their own object type ?
   `(define-form-category/expr ',symbol))
-
 
 (defun define-form-category/expr (symbol)
   (let ((c (def-category/expr symbol :source :form)))
@@ -367,6 +367,21 @@
 ;;;------------------------------------
 ;;; bracket introduction by form rules
 ;;;------------------------------------
+
+
+
+
+;;;------------------------------------------------------------
+;;; Mixins to provide places to stash words in bindings fields
+;;;------------------------------------------------------------
+;; Like the use of the name variable in function words
+
+;; Seemed like it should specialize a form category, but some time
+;; back in pre-history corners were cut in setting up the lattice point
+;; for form-category, so can't do that until that's fixed.
+(define-mixin-category adjective-adverb
+  :binds ((adjective :primitive word)
+          (adverb :primitive word)))
 
 
 
