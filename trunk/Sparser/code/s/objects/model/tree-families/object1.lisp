@@ -170,7 +170,7 @@
 (defmethod categories-using-etf ((name symbol))
   (let ((etf (exploded-tree-family-named name)))
     (unless etf
-      (error "There is no tree family named ~a" etf))
+      (error "There is no tree family named ~a" name))
     (categories-using-etf etf)))
 
 (defmethod categories-using-etf ((etf exploded-tree-family))
