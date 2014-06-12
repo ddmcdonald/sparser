@@ -283,7 +283,7 @@
 (define-individual 'relative-time-adverb :name "previously") ;;maybe
 (define-individual 'relative-time-adverb :name "recently")
 (define-individual 'relative-time-adverb :name "soon")
-(define-individual 'relative-time-adverb :name "still") ;; not just for time, though "still others"
+(define-individual 'relative-time-adverb :name "still") ;; not just for time, though "still others" "standing still"
 (define-individual 'relative-time-adverb :name "yet") 
 
 
@@ -397,6 +397,7 @@
 (define-adverb "especially")
 (define-adverb "essentially")
 (define-adverb "ethically")
+(define-adverb "evenly")
 (define-adverb "evidently")
 (define-adverb "evocatively")
 (define-adverb "evolutionarily")
@@ -412,6 +413,7 @@
 (define-adverb "federally")
 (define-adverb "figuratively")
 (define-adverb "finely")
+(define-adverb "firmly")
 (define-adverb "for example")
 (define-adverb "forcefully")
 (define-adverb "formally")
@@ -434,6 +436,7 @@
 (define-adverb "heartedly")
 (define-adverb "highly") ;; might move to approx. 
 (define-adverb "historically")
+(define-adverb "hitherto")
 (define-adverb "homeostatically")
 (define-adverb "hugely")
 (define-adverb "hypothetically")
@@ -468,6 +471,8 @@
 (define-adverb "interestingly")
 (define-adverb "internally")
 (define-adverb "intimately")
+(define-adverb "intrinsically")
+(define-adverb "invariably")
 (define-adverb "invasively")
 (define-adverb "ionically")
 (define-adverb "irreparably")
@@ -520,6 +525,7 @@
 (define-adverb "painstakingly")
 (define-adverb "paradoxically")
 (define-adverb "partially")
+(define-adverb "particularly")
 (define-adverb "partly") ;; "in part" ;; 
 (define-adverb "passively")
 (define-adverb "perfectly")
@@ -572,6 +578,7 @@
 (define-adverb "respectively") ;; <---- keep an eye out for this one
 (define-adverb "reversibly")
 (define-adverb "rhythmically")
+(define-adverb "robustly")
 (define-adverb "sadly") 
 (define-adverb "safely")
 (define-adverb "schematically")
@@ -589,6 +596,7 @@
 (define-adverb "singly")
 (define-adverb "slightly")
 (define-adverb "slowly")
+(define-adverb "so far") ;;hm
 (define-adverb "socially")
 (define-adverb "solely")
 (define-adverb "sparingly")
@@ -615,6 +623,7 @@
 (define-adverb "superfluously")
 (define-adverb "swiftly")
 (define-adverb "symptomatically")
+(define-adverb "synthetically")
 (define-adverb "technically")
 (define-adverb "technologically")
 (define-adverb "temporally")
@@ -625,12 +634,14 @@
 (define-adverb "thermodynamically")
 (define-adverb "thinly")
 (define-adverb "thoroughly")
+(define-adverb "thus far")
 (define-adverb "tightly") ;; "tightly controlled" from nfkappab ..hmm.
 (define-adverb "together") ;;
 (define-adverb "topically")
 (define-adverb "totally") ;;
 (define-adverb "traditionally")
-(define-advebr "transitively")
+(define-adverb "transiently")
+(define-adverb "transitively")
 (define-adverb "tremendously")
 (define-adverb "truly")
 (define-adverb "typically")
@@ -648,10 +659,10 @@
 (define-adverb "unrealistically")
 (define-adverb "unsurprisingly")
 (define-adverb "unusually")
-(define-adverb "usually")
 (define-adverb "vaguely")
 (define-adverb "variously")
 (define-adverb "visually")
+(define-adverb "weakly")
 (define-adverb "widely")
 (define-adverb "wonderfully")
 
@@ -666,6 +677,8 @@
 ;;(define-adjective "daily")
 ;; "given" as in "For a given cell, ..."
 ;; certain; different
+(define-adjective "detailed")
+(define-adjective "given")
 (define-adjective "known")
 
 
