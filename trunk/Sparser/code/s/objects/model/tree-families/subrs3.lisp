@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998.2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "subrs"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  3.0 July 2009
+;;;  version:  3.0 June 2014
 
 ;; initiated 8/4/92 v2.3. Fleshed out 8/28
 ;; 0.1 (6/6/93) Added decoding of symbolic specializations like vg/+ed
@@ -23,6 +22,7 @@
 ;; 3.0 (7/24/09) Now that variables are lexicalized we have to pass the category
 ;;      down to the interpretation of the mapping to ensure that the correct,
 ;;      category-specific variables are used. 
+;;     (6/11/14) Added a few debugging statements and a little reformatting.
 
 (in-package :sparser)
 
@@ -31,7 +31,7 @@
 ;;;--------
 
 (defun replace-from-mapping (label mapping category allow-literals?)
-  ;; Called by instantiate-rule-schema.
+  ;; Called by instantiate-rule-schema 
   ;; The label is a symbol from the parameter or labels list of
   ;; an exploded tree family.  This returns the corresponding
   ;; object from the alist implementing the mapping.
@@ -112,11 +112,11 @@
                 (construct-composite-label/2-elements 
                  prior-string following-string)))))
 
-
          ((setq target (category-named label))
-          target )       
+          target )   
 
          (t
+          (push-debug `(,label ,category ,mapping))
           (error "The rule schema term ~A is undefined.~
                   ~%There is no mapping entry or actual category ~
                   with that name" label)))
@@ -185,25 +185,27 @@
 
   (let* ((pname (symbol-name label-with-slash))
          (index (position #\/ pname)))
-
     (unless index
       (when need-not-have-a-slash
-        ;; e.g. for call from Strip-specializing-slash where the assumption
+        ;; e.g. for call from strip-specializing-slash where the assumption
         ;; is that the symbol in front of the slash identifies the form
         ;; category. 
         (return-from decode-slashed-label
           (values nil label-with-slash)))
-      (break "Data check: Argument was supposed to contain a slash:~
-              ~%   ~A" label-with-slash))
+      (else
+       (push-debug `(label-with-slash mapping))
+       (break "Data check: Argument was supposed to contain a slash:~
+             ~%   ~A" label-with-slash)))
 
     (let ((before (subseq pname 0 index))
           (after (subseq pname (1+ index)))
           side  label  added-string )
 
       (cond
-       ((setq label  ;; "possessive/-s"
-              (car (assoc before
-                          mapping :key #'symbol-name :test #'equal)))
+       ((setq label  ;; e.g. "possessive/-s"
+              (car (assoc before mapping 
+                          :key #'symbol-name :test #'equal)))
+        ;; The left side of the slash is in the mapping
 
         (if (assoc after mapping :key #'symbol-name :test #'equal)
           ;; Both sides are in the mapping, so we have a composite.
@@ -217,25 +219,20 @@
                       ~%but one or both of them do not appear to correspond ~
                       ~%to any of the labels in the mapping.~
                       ~%  ~A~%  ~A~%~%" label  mapping before after))
-
             (setq side :composite
                   before first
                   after second))
 
           ;; only the left side of the slash corresponds to a symbol
-          (setq side :left   ;; which side of the slash is the label
+          (setq side :left ;; the side of the slash that is the label
                 added-string after)))
-
-
 
        ;; if not the left or both, then maybe the right.
        ((setq label  ;; "of-/complement", "of-/np/after-of"
-              (car (assoc after
-                          mapping :key #'symbol-name :test #'equal)))
+              (car (assoc after mapping 
+                          :key #'symbol-name :test #'equal)))
         (setq side :right
               added-string before))
-
-
 
        ;; neither side by itself, but if there is more than one slash
        ;; in the label, then maybe we should ignore the item to the left
@@ -246,27 +243,26 @@
                (first-string (subseq after 0 inner-index))
                (second-string (subseq after (1+ inner-index))))
 
-          (let ((first (cdr (assoc first-string
-                                   mapping :key #'symbol-name :test #'equal)))
-                (second (cdr (assoc second-string
-                                    mapping :key #'symbol-name :test #'equal))))
-
+          (let ((first (cdr (assoc first-string mapping 
+                                   :key #'symbol-name :test #'equal)))
+                (second (cdr (assoc second-string mapping 
+                                    :key #'symbol-name :test #'equal))))
             (unless (and first second)
+              (push-debug `(label-with-slash mapping))
               (break "The pattern of slashes in the symbol ~A~
                       ~%Indicate that it should be a composite of two labels,~
                       ~%but one or both of them do not appear to correspond ~
                       ~%to any of the labels in the mapping.~
                       ~%  ~A~%  ~A~%~%" first-string second-string))
-
             (setq side :composite
                   before first
                   after second))))
 
-
-       (t (break "Neither side of the slash in the constructed label:~
+       (t (push-debug `(label-with-slash mapping))
+          (break "Neither side of the slash in the constructed label:~
                   ~%~A~%corresponds to one of the labels in the mapping ~
                   for~%this realization data:~%~A~%"
-                 label-with-slash mapping)))
+                 label-with-slash mapping))) ;; end of the cond
 
       #| ?? How could this catch anything given the way the label
             is defined ??
@@ -281,7 +277,7 @@
           (setq side :ending)))
 
       (ecase side
-        ;; values pattern: prior-string base-label following-string ending
+        ;; values pattern: prior-string, base-label, following-string, ending
         (:left
          (values "" label after nil))
         (:right
