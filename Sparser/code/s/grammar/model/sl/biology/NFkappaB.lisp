@@ -144,6 +144,12 @@ unless we go all the way out to 'regulated by' and 'popular to'
 and pull in an agent and a <what?>
 |#
 
+; Modeling it like "assassinate"
+(svo/passive/nominal "regulate" "regulation"
+  :super-category bio-process
+  :patient bio-process  ;; regulation of <process>
+  :agent bio-entity)    ;; by <entity>
+
 
 
 ;;------------ s2 (kappa-2)
@@ -153,8 +159,19 @@ and pull in an agent and a <what?>
 (svcomp "demonstrate" nil 
   :subject person :complement processs)
 
-;(adj/adv "positive" "positively") 
-;; :super-categpry ?? some sort of scalar-quality ? Related to up and down?
+;;-- <event, bio-process> is regulated positively by <bio-entity>
+
+(adj/adv "positive" "positively" :super-category 'scalar-quality)
+;;/// refine the supercategory - Related to up and down?
+
+(define-category positive-regulation
+  :super-category regulate
+  ;; How do you index something that has no variables?
+  ;; Maybe that's an argument for a better analysis
+  :realization (:tree-family 
+                :mapping 
+
+
 
 
 ;;------------ s3 (kappa-3)

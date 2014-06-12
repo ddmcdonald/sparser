@@ -24,6 +24,12 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+(define-category bio-process
+  :specializes event
+  :documentation "No content by itself, provides a common paraent
+    for 'processing', 'ubiquitization', etc. that may be the basis
+    of the grammar patterns.")
+
 
 (define-individual 'bio-type
   :name "molecule")
