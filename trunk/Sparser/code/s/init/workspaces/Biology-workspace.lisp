@@ -20,6 +20,7 @@
   (ignore-comlex))
 
 ;; 6/9/14
+
 ; (just-bracketing-setting)
 ; (setq *permit-extra-open-parens* t)
 ; (just-bracketing-with-comlex-setting)
@@ -28,8 +29,21 @@
 ; the 6 in "Fructose-1,6-bisphosphate", though not "glucose-6-phosphate" so it's
 ; the assumptions of the comma.
 
+; (word-frequency-setting)
+; (setq *stem-words-for-frequency-counts* nil)
+; (initialize-word-frequency-data)
 ; (f "/Users/ddm/sift/nlp/corpus/biology/hallmarks.txt")
-;; Breaks early on an one-em dash. Need to force uft-8
+;; Added fair number of characters to analyzers/tokenizer/alphabet.lisp
+;; 2,902 unique words in 23,973 words
+#|
+took 74,471 microseconds (0.074471 seconds) to run.
+      2,917 microseconds (0.002917 seconds, 3.92%) of which was spent in GC.
+During that period, and with 8 available CPU cores,
+     79,797 microseconds (0.079797 seconds) were spent in user mode
+      1,607 microseconds (0.001607 seconds) were spent in system mode
+ 2,284,960 bytes of memory allocated.
+
+|#
 
 
 ;; 2/27/14
