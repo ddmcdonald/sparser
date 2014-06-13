@@ -28,8 +28,11 @@
 
 (defun open-character-source/file (pathname)
   (setq *open-stream-of-source-characters*
-        (open pathname
-              :direction :input)))
+        #+openmcl (open pathname
+                        :external-format :UTF-8
+                        :direction :input)
+        #-openmcl (open pathname
+                        :direction :input)))
 
 
 ;;;-----------------------
