@@ -1,10 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.  -- all rights reserved
 ;;; copyright (c) 1992  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "open/close"
 ;;;   Module:  "interface;file ops:"
-;;;  Version:  0.0  July 1990
+;;;  Version:  June 2014
+
+;; First version circa July 1990. 6/13/14 Added CCL-specific requirement
+;; on the open that it use UTF-8
 
 (in-package :sparser)
 
