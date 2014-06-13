@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  0.3 February 2014
+;;;  Version:  0.3 June 2014
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
@@ -14,6 +14,7 @@
 ;; 0.3 (2/3/14) Added entry-for-out-of-band-character and friends to
 ;;      accommodate characters above that. 
 ;;     (2/27/14) Added lowercase greek up to lambda
+;;     (6/12/14) added em-dash. Refined the error message.
 
 (in-package :sparser)
 
@@ -26,31 +27,44 @@
 (defun announce-out-of-range-character ()
   (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
          (code (char-code character)))
+    (push-debug `(,character ,code))
 
     (break "~%The input stream contains the character \"~A\", whose character code~
             ~%is ~A.  That character is not part of the ascii character set~
             ~%(0 to 127), and has not yet been entered into either Sparser's ~
-            ~$extended character array (128 to 255) or its table of 'out of bound'~
+            ~%extended character array (128 to 255) or its table of 'out of bound'~
             ~%characters. Note that above ascii the character encoding is~
             ~%expected to be unicode, UTF-8.~
-            ~%~
+
             ~%   If the character shouldn't have been in the stream, then you~
-            ~%can just remove it and restart. If it does belong there, then ~
-            ~%you can extend the character set by executing this form:~
-            ~%~
-            ~%   (setf (elt *character-dispatch-array* <code>)~
-            ~%         `(:alphabetical~
-            ~%            . (:lowercase . ,#\<char number> )))~
-            ~%~
-            ~%Consult the examples in analyzers/tokenizer/alphabet.lisp for~
-            ~%examples and details~%"
+            ~%should just remove it and try again. If it does belong there, then ~
+            ~%you can extend the character set. If you meta-. on this function~
+            ~%that will take you to the file analyzers/tokenizer/alphabet.lisp~
+            ~%where you can see examples to copy and read more details.~
+            ~%"
            character code (length *character-dispatch-array*))))
+
+#| When you get that error it's likely because the text you're running
+has a UTF-8 character that we don't have an entry for yet. The error message
+showed you what the character was visually, and identified the code point
+that has to be added to the *entries-for-out-of-band-characters* alist at
+the bottom of this file. Your job, is to figure out what "normal" character
+that corresponds to (e.g. a unicode left-single-quotation-mark corresponds
+to an ascii single quote), as least for the purpose of telling the token fsa
+how to handle it -- the original character won't be replaced in the token.
+
+This will usually entail a web search. There are lots of unicode web pages.
+This is a reasonable choice http://www.fileformat.info/info/unicode/char/search.htm
+
+|#
          
 
 #+:apple ;; old character set, hopefully OBE
 (setf (elt *character-dispatch-array* 138)  ;; #\212  "a" with an umlaut
       `(:alphabetical
         . (:lowercase . ,#\212 )))
+
+
 #|
 Entries are decoded by continue-token which uses the car to determine
 the character type (for token boundaries), then the cdr is accumulated
@@ -609,6 +623,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (defparameter *entries-for-out-of-band-characters*
   `((353  ;; #\Latin_Small_Letter_S_With_Caron
      (:alphabetical . (:lowercase . #\s)))
+
+    (769  ;; #\Combining_Acute_Accent
+     (:punctuation . ,(punctuation-named #\' )))
+    (776  ;; #\Combining_Diaeresis
+     (:punctuation . ,(punctuation-named #\' )))
     ;; 03B1
     (945 ;; #\Greek_Small_Letter_Alpha
      (:alphabetical . (:lowercase . ,(code-char 945))))
@@ -632,6 +651,16 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:alphabetical . (:lowercase . ,(code-char 954))))
     (955 ;; #\Greek_Small_Letter_Lambda
      (:alphabetical . (:lowercase . ,(code-char 955))))
+
+    (8211  ;; en dash
+     (:punctuation . ,(punctuation-named #\- )))
+    (8212  ;; em dash, html: &mdash;
+     ;; Doesn't appear to have a symbolic form in ccl
+     (:punctuation . ,(punctuation-named #\- )))
+    (8216 ;; left single quote
+     (:punctuation . ,(punctuation-named #\' )))
+    (8217 ;; right single quote
+     (:punctuation . ,(punctuation-named #\' )))
     )
   "If it's not a defparameter, CCL won't let us extend it 
    in a running lisp.")
