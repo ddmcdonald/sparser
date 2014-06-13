@@ -519,8 +519,7 @@ broadly speaking doing for you all the things you might do by hand.
      :super-category ',super-category :agent ',agent :patient ',patient
      :by-category ',by-category))
 (defun svo/passive/nominal/expr (verb nominalization
-                                 &key super-category agent patient by-category
-                                )
+                                 &key super-category agent patient by-category)
   ;; pattern orginated with "assassinate"
   (with-name-and-superc verb super-category :verb
     (with-agent agent
