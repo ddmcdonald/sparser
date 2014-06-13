@@ -53,24 +53,11 @@
       
       (announce-out-of-range-character))))
 
-#+ignore
-  (let ((char-code (char-code (elt *character-buffer-in-use*
-                                   (incf *index-of-next-character*)))))
-    (let ((next-entry
-           (cond 
-            ((< char-code 128) ;; this range is completely filled in
-             (elt *character-dispatch-array* char-code))
-            ((< char-code 256) ;; length of *character-dispatch-array*
-             ;; but sparsely populated. Empty code points return 0.
-             (elt *character-dispatch-array* char-code))
-            (t ;; consult a table -- the escape for the rest of Unicode
-             (entry-for-out-of-band-character char-code)))))
-      ))
 
 (defun continue-token (accumulated-entries length char-type)
   (let ((next-entry
          (character-entry (elt *character-buffer-in-use*
-                                   (incf *index-of-next-character*)))))
+                               (incf *index-of-next-character*)))))
 
     (when (and (numberp next-entry) (= next-entry 0))
       ;; Presumably a character in the Latin-1 range that we don't
