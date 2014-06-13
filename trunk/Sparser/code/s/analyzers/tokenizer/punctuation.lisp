@@ -1,15 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation"
 ;;;   Module:  "tokenizer;"
-;;;  Version:  0.2 April 1993
+;;;  Version:  0.3 June 2014
 
 ;; initated 9/28/92 v2.3
 ;; 0.1 (11/2) changed the value of the capitalization global in the case
 ;;      of spaces as a signal to Write-current-token-to-article-stream
 ;; 0.2 (4/7/93) Fixed a glitch, pulled references to word package, installed
 ;;      *break-on-meaningless-characters* flag.
+;; 0.3 (6/12/14) accumulate-spaces wasn't updated when we started using
+;;      selected characters in UTF-8
 
 (in-package :sparser)
 
@@ -22,7 +24,7 @@
 
 
 (defun do-punctuation (entry)
-  ;; called from Run-token-fsa when the encapsulating keyword
+  ;; called from run-token-fsa when the encapsulating keyword
   ;; indicates that the character is non-alphabetic and non-numeric.
   ;; At this point the encapsulation has been stripped off, and
   ;; the entry is either a word, in which case it is returned,
@@ -90,10 +92,11 @@
 
 (defun accumulate-spaces (number-of-spaces-so-far)
   (let ((next-entry
-         (elt *character-dispatch-array*
-              (char-code
-               (elt *character-buffer-in-use*
-                    (incf *index-of-next-character*))))))
+         (character-entry 
+          (elt *character-buffer-in-use*
+               (incf *index-of-next-character*)))))
+    (unless next-entry
+      (announce-out-of-range-character))
 
     (if (eq (car next-entry) :punctuation)
       (if (eq (cdr next-entry) :space)
