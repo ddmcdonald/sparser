@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   2.4 May 2014
+;;;   Version:   2.4 June 2014
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -36,14 +36,14 @@
 ;;     (5/24/13) "against" (4/30/14) "onto"
 ;;     (5/29/14) many added from Comlex; added code for synonyms
 ;;       Noticed some duplications in modifiers. Commented them out with a note.
+;;     (6/14/14) put in the brackets global replacing literal list. 
 
 (in-package :sparser)
 
 
 (defun define-preposition (string &key brackets form super-category synonyms)
   (unless brackets  ;; v.s. ].treetop  treetop.[ 
-    ;; Keep set in assign-brackets-to-preposition in sync
-    (setq brackets (list  ].preposition preposition]. preposition.[ )))
+    (setq brackets *preposition-brackets*))
   (unless form
     (setq form 'preposition))
   (unless super-category
