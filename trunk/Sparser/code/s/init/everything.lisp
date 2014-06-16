@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
-;;; copyright (c) 1989-2005,2010-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1989-2005,2010-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   October 2013
+;;;   Version:   June 2014
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -86,6 +86,8 @@
 ;; at the very end since workspace items were being reclaimed. 9/16/13 Added *c3*.
 ;; 10/21/13 Switch the grammar config for fire to be the full grammar. 
 ;; 10/25/13 specialized the name of the C3 grammar configuration file.
+;; 6/15/14 Changed the default on *incorporate-generic-lexicon* to T so we always
+;; prime Comlex. With fire as the default switch setting we were doing that anyway.
 
 (in-package :cl-user)
 
@@ -761,7 +763,7 @@ or for loading the newer of the compiled or source files.
      coordinating code will be able to load."))
 
 (unless (boundp 'sparser::*incorporate-generic-lexicon*)
-  (defparameter sparser::*incorporate-generic-lexicon* nil
+  (defparameter sparser::*incorporate-generic-lexicon* t
     "When non-nil, we finish off the loading of the grammar by including
      almost purely lexical knowledge about a horde of words."))
 
