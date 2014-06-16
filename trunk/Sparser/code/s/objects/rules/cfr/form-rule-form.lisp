@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2012-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form-rule form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.7 September 2013
+;;;   Version:   0.7 June 2014
 
 ;; initiated 9/3/92 v2.3, 
 ;; 0.1 (10/12) formulated better now that it's getting used
@@ -22,7 +22,8 @@
 ;;      to provide a new third argument. (1/29/13) Wrote define-form-rule-from-schema
 ;; 0.7 (7/29/13) Reworked def-form-rule/resolved to handle the head edge
 ;;      better. Corrects problem with possessive+title having the wrong head.
-;;      (9/18/13) Added option of an explicit schema. 
+;;      (9/18/13) Added option of an explicit schema.  6/15/14 Added way to
+;;      note them against their grammar-module. 
 
 (in-package :sparser)
 
@@ -263,7 +264,7 @@
     (setf (cfr-completion cfr) edge)
 
     (note-file-location cfr)
-    ;;// hack source (note-grammar-module cfr :source //// )
+    (note-grammar-module cfr :source :def-form-rule)
 
     (knit-form-rule-into-psg-tables cfr)
 
