@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  May 2014
+;;;  Version:  June 2014
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -11,9 +11,43 @@
 ;; and to trap constructed categories that have the same name as
 ;; one that already exists to cut down of weird definition changes.
 ;; 2/28/13 included primitive way to tell the provinance of the
-;; categories we make here. 
+;; categories we make here. 6/14/14 Broke out the backet lists as
+;; independent parameters that the assign functions map over. 
 
 (in-package :sparser)
+
+;;;---------------
+;;; Bracket lists
+;;;---------------
+
+(defparameter *main-verb-brackets*
+  (list ].verb  .[verb   mvb].  mvb.[ ))
+
+(defparameter *common-noun-brackets*
+  (list ].np .[np ))
+
+(defparameter *proper-noun-brackets*
+  (list ].proper-noun proper-noun.[ ))
+
+(defparameter *adverb-brackets*
+  (list ].adverb .[adverb ))
+
+(defparameter *adjective-brackets*
+  (list ].adjective .[adjective .[np ))
+
+(defparameter *preposition-brackets*
+  (list  ].preposition preposition]. preposition.[ ))
+
+(defparameter *default-determiner-brackets*
+  (list  ].phrase .[article )
+  "See words/determiners where certain ones get other brackets")
+
+(defparameter *interjection-brackets*
+  (list ].treetop  treetop.[ ))
+
+(defparameter *standalone-brackets*
+  (list ].phrase phrase.[ ))
+
 
 ;;;-------------------
 ;;; Unambiguous words
@@ -22,51 +56,36 @@
 ;; morphology1
 
 (defun assign-brackets-as-a-main-verb (word)
-  (assign-bracket/expr word ].verb )
-  (assign-bracket/expr word .[verb )
-  (assign-bracket/expr word mvb]. )
-  (assign-bracket/expr word mvb.[ )
-  word )
-
+  (assign-brackets/expr word *main-verb-brackets*))
 
 (defun assign-brackets-as-a-common-noun (word)
   ;;(assign-bracket/expr word np].)
   ;;  a noun can be a classifier as well as a head, so we have
   ;;  them indicate np starts, but they shouldn't force np ends.
-  (assign-brackets/expr word (list ].np .[np))
-  word)
+  (assign-brackets/expr word *common-noun-brackets*))
 
 (defun assign-brackets-to-proper-noun (word)
-  (assign-brackets/expr word (list ].proper-noun proper-noun.[ )))
+  (assign-brackets/expr word *proper-noun-brackets*))
  
-
-
 (defun assign-brackets-to-adverb (word)
   ;; rules/words/adverbs1 has a lot of individual cases that 
   ;; are different. Often with just ].adverb because they
   ;; bind to their left and terminate ongoing segments
-  ;; See define-adverb in words/adverbs1
-  (assign-brackets/expr word (list ].adverb .[adverb )))
-
+  ;; See define-adverb in words/adverbs2
+  (assign-brackets/expr word *adverb-brackets*))
 
 (defun assign-brackets-to-adjective (word)
-  ;; in morphology1, the brackets were ].adjective .[adjective,
-  ;; but when I inadvertantly reinvented this in the Comlex
-  ;; unpacking, I made them this, with the .[np
-  (assign-brackets/expr word (list ].adjective .[np )))
-
+  (assign-brackets/expr word *adjective-brackets*))
 
 (defun assign-brackets-to-preposition (word)
   ;; See define-preposition in words/prepositions2
-  (assign-brackets/expr word (list ].preposition preposition]. preposition.[ )))
-
+  (assign-brackets/expr word *preposition-brackets*))
 
 (defun assign-brackets-to-interjection (word)
-  (assign-brackets/expr word (list ].treetop  treetop.[ )))
-
+  (assign-brackets/expr word *interjection-brackets*))
 
 (defun assign-brackets-to-standalone-word (word)
-  (assign-brackets/expr word (list ].phrase phrase.[ )))
+  (assign-brackets/expr word *standalone-brackets*))
 
 
 ;;;------------------------
