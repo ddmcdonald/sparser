@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "postprocessing"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  0.3 February 1998
+;;;   version:  0.3 June 2014
 
 #| Goes through the grammar modules after all the grammar has been loaded
    into an image and organizes them for display.  |#
@@ -17,6 +17,8 @@
 ;;     (2/22/95) added postprocessing of tree families
 ;;     (6/21) added call to hack relationships among the categories
 ;;     (8/16/97) added some gates
+;;     (6/15/14) Added listing of words and rules count like the one in
+;;      workout-the-relationships-among-the-categories for categories.
 
 (in-package :sparser)
 
@@ -33,6 +35,8 @@
         *objects-defined*       (sort-categories *objects-defined*)
         *cfrs-defined* (sort-cfrs *cfrs-defined*)
         *csrs-defined* (sort-csrs *csrs-defined*)
+        ;;//// need sort routines for *form-rules-defined* 
+        ;; and *syntax-rules-defined*
         *context-free-rules-defined*
            (sort-cf&cs-rules-together *context-free-rules-defined*))
   (when *tree-families*
@@ -53,7 +57,29 @@
         *grammar-modules-in-image* (nreverse *grammar-modules-in-image*)
         *toplevel-grammar-modules* (nreverse *toplevel-grammar-modules*))
 
+  (report-word-and-rules-count)
+
   :grammar-is-postprocessed )
+
+(defun report-word-and-rules-count ()
+  (format t "~% ~a~5,2T Words~
+             ~% ~a~5,2T Polywords~
+             ~% ~a~5,2T Context free rules~
+             ~% ~a~5,2T Context sensitive rules~
+             ~% ~a~5,2T Form rules~
+             ~% ~a~5,2T Syntax rules~
+             ~% ~a~5,2T ETF tree schema~
+             ~% ~a~5,2T Grammar modules loaded~
+             ~%-------------------------------------------
+             ~&"
+          (length *words-defined*)
+          (length *polywords-defined*)
+          (length *cfrs-defined*)
+          (length *csrs-defined*)
+          (length *form-rules-defined*)
+          (length *syntax-rules-defined*)
+          (length *tree-families-defined*)
+          (length *grammar-modules-in-image*)))
 
 
 
