@@ -1,16 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "pathogen"
 ;;;    Module:   "sl;disease:"
-;;;   version:   December 2013
+;;;   version:   June 2014
 
 ;;category to represent named dieases, like bird flu.
 ;;I conspicuously decide not to name this file disease
 ;;in order to avoid confusion with the sl directory name
 ;;we can use this category to build up a representation for disease outbreaks in diease:spread
-
+;; 6/14/14 Turned off the HxNy generator. Better to analyze that as a category
+;; and recognize it while walking the contiguous word sequence
 
 (in-package :sparser)
 
@@ -55,15 +56,16 @@
 
 ;;function that iterates over all possible combinations of bird flu
 ;;x, y <= 9
-(defun define-hXnY ()
+#+ignore(defun define-hXnY ()
   (loop for i from 1 below 10 do
     (loop for j from 1 below 10 do
       (define-pathogen (concatenate 'string "h" (write-to-string i) "n" (write-to-string j))))))
+;(define-hXnY)
 
 ;;from Saudia Arabia article - MERS is Middle Eastern Respiratory Syndrome
 (define-pathogen "MERS")
 
-(define-hXnY)
+
 ;;;------------
 ;;; cfrs
 ;;;------------
