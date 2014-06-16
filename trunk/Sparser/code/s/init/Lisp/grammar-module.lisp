@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "grammar-module"
 ;;;    Module:  "init;Lisp:"
-;;;   version:  1.6 August 2013
+;;;   version:  1.6 June 2014
 
 ;; initiated 2/9/92 v2.2, finished 2/10
 ;; 1.1 (2/20 v2.2) Added a notion of "source" to Note-grammar-module
@@ -22,7 +22,8 @@
 ;; 1.5 (9/12) added 'dossier/s' field.   (11/9) flushed a call to 'then'.
 ;; 1.6 (10/3/97) added *loading-public-grammar-module* flag as part of
 ;;      Gate-grammar.  (2/17/05) Added another case to note-grammar-module
-;;     (8/19/13) added citations field.
+;;     (8/19/13) added citations field. 6/15/14 Added syntax and form
+;;      rules to the tally. 
 
 (in-package :sparser)
 
@@ -45,6 +46,8 @@
   files
   cf-rules
   cs-rules
+  form-rules
+  syntax-rules
   words
   polywords
   non-terminals  ;; actually a category
@@ -273,6 +276,16 @@
   "Accumulates cfr objects that are actually context-sensitive rules.
    Partitions the list kept in *context-free-rules-defined*. ")
 
+(defvar *form-rules-defined* nil
+  "Accumulates cfr objects that are form rules.")
+
+(defvar *syntax-rules-defined* nil
+  "Accumulates cfr objects that are syntax rules.")
+
+(defparameter *count-internal-rules* t
+  "If this switch is set, we include cfrs that are defined in the
+   process of defining something else (e.g. a category) in the
+   list of cfrs")
 
 (defun note-grammar-module (obj
                             &key multiple-definition-is-ok
@@ -302,17 +315,34 @@
                            :grammar-module)))
 
       (etypecase obj
-        (cfr ;; all kinds of rules fall under this one type, so they
-             ;; have to be distinguished explicitly.  Current assumption
-             ;; is that any rule done with a "define" form is internal to
-             ;; an object and shouldn't be counted.
-         (ecase source
+        (cfr 
+         ;; all kinds of rules fall under this one type, so they
+         ;; have to be distinguished explicitly.  Current assumption
+         ;; is that any rule done with a "define" form is internal to
+         ;; an object and shouldn't be counted, unless the parameter
+         ;; is set. 
+         (case source
            (:def-cfr (push obj (gmod-cf-rules gm))
                      (push obj *cfrs-defined*))
-           (:define-cfr )
+           (:define-cfr
+               (when *count-internal-rules*
+                 (push obj (gmod-cf-rules gm))
+                 (push obj *cfrs-defined*)))
            (:def-csr (push obj (gmod-cs-rules gm))
                      (push obj *csrs-defined*))
-           (:define-csr )))
+           (:define-csr
+               (when *count-internal-rules*
+                 (push obj (gmod-cs-rules gm))
+                 (push obj *cfrs-defined*)))
+           (:def-form-rule
+               (push obj (gmod-form-rules gm)) ;;
+               (push obj *form-rules-defined*))
+           (:def-syntax-rule
+               (push obj (gmod-syntax-rules gm))
+               (push obj *syntax-rules-defined*))
+           (otherwise
+            (push-debug `(,source obj))
+            (error "Unexpected source: ~a" source))))
 
         ((or category referential-category mixin-category)
          (ecase source
