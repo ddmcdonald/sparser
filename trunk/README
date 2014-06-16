@@ -11,7 +11,7 @@ Installation & Setup
 ====================
 
 1. Install the root directory "sparser" wherever you like.
-We recommend (and the default configuration assumes)
+We recommend (and the default configuration assumes) that
 you keep it in your home directory, e.g., as ~/sparser/.
 
 When you checkout the trunk of the svn distribution to
@@ -33,12 +33,14 @@ Testing Sparser
 You need to have a modern implementation of Common Lisp
 already installed. Sparser has been primarily tested on 
 Intel-based Mac OS X using Clozure (www.clozure.com) and
-Allegro (www.franz.com). 
+Allegro (www.franz.com). It will not (yet) run under
+SBCL. What happens with other Lisps is not known.
 
 We recommend Clozure because it automatically compiles 
-functions as it loads them. If you use Allegro you will
+functions as it loads them. If you use Allegro, you will
 need to explicitly compile the core of Sparser to avoid
-blowing out the stack on text longer than about 30 words.
+blowing out the stack on text longer than about 30 words,
+see sparser/Sparser/init/scripts/compile-everything.lisp.
 
 1. Start Lisp.
 
