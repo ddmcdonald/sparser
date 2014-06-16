@@ -116,7 +116,7 @@
     (setf (cfr-plist cfr) (list :syntax-rule))
 
     (note-file-location cfr)
-    ;;// hack source (note-grammar-module cfr :source //// )
+    (note-grammar-module cfr :source :def-syntax-rule)
 
     (knit-form-rule-into-psg-tables cfr)
 
