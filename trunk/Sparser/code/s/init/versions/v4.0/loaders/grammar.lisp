@@ -51,7 +51,8 @@
 ;; so that file could be broken into more useful pieces. 4/16/14 moved it just below
 ;; collections so plural realizations would work. 5/25/14 added a call to make temporal
 ;; sequences among the final operations after dossiers are loaded. 6/1/14 added
-;; more temporal bits that late. 6/4/14 Removed NIH, 
+;; more temporal bits that late. 6/4/14 Removed NIH. 6/15/14 Adding more grammar
+;; module gates so we get a better tally of who many words, etc. we have.
 
 
 (in-package :sparser)
@@ -87,9 +88,10 @@
     ;; the bracket definitions reference syntactic categories
     (gload "brackets;loader"))
 
-  (gload "words;loader1")
+  (gate-grammar *general-words*
+    (gload "words;loader1")
     ;; the function words make reference to bracket types
-  (gload "words;whitespace assignments")
+    (gload "words;whitespace assignments"))
 
   (gate-grammar *tree-families*
     ;; This should come after any of the modules whose categories
@@ -105,7 +107,8 @@
       (gload "collections;loader1")
       (gload "collections;loader")))
 
-  (gload "kinds;1st-loader") ;; defines individual and such 
+  (gate-grammar *kinds*
+    (gload "kinds;1st-loader")) ;; defines individual and such 
 
   (gate-grammar *kinds*
     (gload "kinds;loader"))
@@ -124,7 +127,8 @@
      ;; be & have (etc) reference tree-families
     (gload "syntax;loader3"))
 
-  (gload "words;loader-part2")
+  (gate-grammar *general-words*
+    (gload "words;loader-part2"))
 
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
@@ -219,9 +223,9 @@
     (gload "banking;loader"))
 
   ;(when *c3*
-    (gate-grammar *ISR*
-      (gload "isr;loader"))
-    (gload "sit-rules;loader") ;)
+  (gate-grammar *ISR*
+    (gload "isr;loader")
+    (gload "sit-rules;loader"))
 
 
   (gate-grammar *waypoints*
@@ -304,9 +308,9 @@
   (when *load-dossiers-into-image*
     (gload "dossiers;loader")
     (gate-grammar *whos-news*
-     (whos-news-post-dossiers-loader)))
+      (whos-news-post-dossiers-loader)))
 
-  (when *time*
+  (gate-grammar *time*
     (late-time-files)
     (make-temporal-sequences))
 
