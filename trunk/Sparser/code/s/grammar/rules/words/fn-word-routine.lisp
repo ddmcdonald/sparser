@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.9 May 2014
+;;;   Version:   0.9 June 2014
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -21,7 +21,8 @@
 ;;      that correctly build individuals and categories for meaning-bearing
 ;;      function words. (5/28/14) Smidgen of doc and clean-up. 
 ;; 0.9 (5/30/14) Adding more options to define-function-term to allow more
-;;      tailoring of the results. 
+;;      tailoring of the results. 6/14/14 Replaced literal listing of POS
+;;      bracket choices with new lists of them from rules/brackets/assignments
 
 (in-package :sparser)
 
@@ -108,10 +109,10 @@
   (unless brackets
     (setq brackets
           (case form ;; match with values in rules/brackeets/assignments (!!)
-            (adverb (list  ].adverb .[adverb))
-            (adjective (list ].adjective .[np ))
-            (det (list  ].phrase .[article ))
-            (standalone (list  ].phrase phrase.[ ))
+            (adverb *adverb-brackets*)
+            (adjective *adjective-brackets*)
+            (det *default-determiner-brackets*)
+            (standalone *standalone-brackets*)
             (otherwise
              (break "Need brackets for another syntactic form: ~a" form)))))
   (unless super-category
