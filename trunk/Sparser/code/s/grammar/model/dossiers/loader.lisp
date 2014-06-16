@@ -109,7 +109,7 @@
 
 (gate-grammar *standard-adjuncts*
   (gload "dossiers;modifiers"))
-#|
+#| ;; all these moved to modifiers
   (gate-grammar *approximators*
     (gload "dossiers;approximations")
     (gload "dossiers;approximator rules"))
