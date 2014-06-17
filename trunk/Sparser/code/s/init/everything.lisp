@@ -88,6 +88,7 @@
 ;; 10/25/13 specialized the name of the C3 grammar configuration file.
 ;; 6/15/14 Changed the default on *incorporate-generic-lexicon* to T so we always
 ;; prime Comlex. With fire as the default switch setting we were doing that anyway.
+;; Also added *big-mechanism* as a grammar-load directing flag. 
 
 (in-package :cl-user)
 
@@ -803,6 +804,10 @@ or for loading the newer of the compiled or source files.
     "Uses minimal built-in grammar. Has its own protocol over the chart,
      and uses a set of document structures to maintain a 'situation' construct."))
 
+(unless (boundp 'sparser::*big-mechanism*)
+  (defparameter sparser::*big-mechanism* nil
+    "Uses a tailored version of the full grammar to remove grammar modules
+     whose rules get in the way"))
 
 (unless (boundp 'sparser::*checkpoint-operations*) ;; in mothballs
   (defparameter sparser::*checkpoint-operations* nil))
@@ -938,6 +943,9 @@ or for loading the newer of the compiled or source files.
       (sparser::*just-bracketing*
        (sparser::lload "grammar-configurations;just-bracketing"))
 
+      (sparser::*big-mechanism*
+       (sparser::lload "grammar-configurations;bio-grammar"))
+
       (sparser::*grok*
        (setq *do-not-use-psi* t)
        (sparser::lload "grammar-configurations;grok"))
@@ -956,6 +964,8 @@ or for loading the newer of the compiled or source files.
       (sparser::*da*
        (sparser::lload "grammar-configurations;Debris analysis"))
 
+   #| No longer supported configurations unless you go back to
+      significantly earlier versions of Sparser
       (sparser::*assetnet*
        (sparser::lload "grammar-configurations;AssetNet"))
 
@@ -978,7 +988,7 @@ or for loading the newer of the compiled or source files.
        (sparser::lload "grammar-configurations;public grammar"))
 
       (sparser::*academic-grammar*
-       (sparser::lload "grammar-configurations;academic grammar"))
+       (sparser::lload "grammar-configurations;academic grammar"))  |#
 
       (sparser::*grammar-configuration*
        (let ((file (concatenate 'string
