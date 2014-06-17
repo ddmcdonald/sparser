@@ -10,14 +10,15 @@
 
 (in-package :sparser)
 
+; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
 
 ; (setup-bio)
 (defun setup-bio ()
-  (gload "bio;loader")
   (remove-paragraph-marker)
   (bio-setting)
-  (ignore-comlex))
+  (ignore-comlex)
+  (gload "bio;loader"))
 
 ;; 6/9/14
 
@@ -77,6 +78,7 @@ These data also provide the first evidence for explaining why overexpression of 
   (p "The processing of the nfkappab2 gene product p100 to generate p52 is a regulated event, which is important for the instrumental function of NF-kappaB."))
 (defun kappa-2 ()
   (p "We previously demonstrated that this tightly controlled event is regulated positively by NF-kappaB-inducing kinase (NIK) and its downstream kinase, IkappaB kinase alpha (IKKalpha)."))
+;; (delete-cfr remain-in-job ("remain"))  -- don't include *job-events* or *isr*
 (defun kappa-3 ()
   (p "However, the precise mechanisms by which NIK and IKKalpha induce p100 processing remain unclear."))
 (defun kappa-4 ()
