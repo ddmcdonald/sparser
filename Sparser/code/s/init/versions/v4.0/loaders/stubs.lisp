@@ -1,16 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;versions:v2.3:loaders:"
-;;;  version:  January 2013
+;;;  version:  June 2014
 
 ;; 4/3/97 added a case for dm&p. 8/17/97 added lots of cases as part of preparing
 ;; a license with the segmenter but not the model.  2/22/10 added construct-
 ;; temporary-number to support :just-bracketing mode. Added bunch more 4/1/12.
-;; Fixed ill-formed declare 1/28/13.
+;; Fixed ill-formed declare 1/28/13. More for omitting grammar modules 6/16/14.
 
 (in-package :sparser)
 
@@ -23,7 +22,19 @@
 (unless *c3*
   (defun create-wakil ())
   (defun create-ford-motor-company ())
+  (defun activate-initial-indexical (edge peg)
+    (declare (ignore edge peg)))
+  (defun indexical-for-state (new-state)
+    (declare (ignore new-state)))
+  (defun add-referent-to-peg (referent peg)
+    (declare (ignore referent peg)))
 )
+
+(unless *checkpoint-operations*
+  (defun checkpoint-call-and-postprocessing (string)
+    (declare (ignore string)))
+)
+
 
 (when *nothing-Mac-specific*
   (defun launch-sparser-menus ())
