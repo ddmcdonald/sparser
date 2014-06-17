@@ -84,8 +84,8 @@ e25   SOMEONE-REPORTS         10 "brigadier general massoud jazzayeri said monda
 
 ;;---- Patch up ordinary words
 ;; see note and list in middle eastern named-entities
-(mapcar #'standalone-lexicon-unpacker  ;; n.b. can't run until after Comlex is loaded
-        *words-from-names-that-need-unpacking*)
+;(mapcar #'standalone-lexicon-unpacker  ;; n.b. can't run until after Comlex is loaded
+;        *words-from-names-that-need-unpacking*)
 
 
 ;; ddm's hard pathnames. Replace with a logical or computed form
