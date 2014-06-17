@@ -42,7 +42,7 @@
 
 ;;----------- S1  (kappa-1)
 ;;--- "p100 processing" "the processing of p100"
-;;/// abstract and add to shortcuts
+;;/// abstract the rspec and add to shortcuts
 (define-category protein-processing ;; GO:0016485	
   :specializes event
   ;; could mix in has-UID, but might be simpler to do it
@@ -99,8 +99,9 @@
 
 ;;--- "to generate p52"
 
-(vo "generate" 'event ;;/// as a vp it's not 'event'
+(vo "generate" 'bio-process ;;/// as a vp it's not 'event'
   :object 'bio-entity)
+
 
 ;;//// should be a new file in rules/syntax/ for infinitives and these
 (def-form-category to-vp) ;;/// to categories.lisp 
@@ -163,18 +164,26 @@ and pull in an agent and a <what?>
 
 (adj/adv "positive" "positively" :super-category 'scalar-quality)
 ;;/// refine the supercategory - Related to up and down?
+#|? (p "is regulated positively by")
+[is regulated][ positively]
+
+                                 source-start
+e3    REGULATE+ED             1 "is regulated" 3
+e4    POSITIVE                3 "positively" 4
+e5 e6                            "by" :: by, BY |#
 
 (define-category positive-regulation
-  :super-category regulate
-  ;; How do you index something that has no variables?
-  ;; Maybe that's an argument for a better analysis
-  :realization (:tree-family 
-                :mapping 
+  :specializes regulate)
+(define-category negative-regulation
+  :specializes regulate)
+
+
 
 
 
 
 ;;------------ s3 (kappa-3)
+;; (delete-cfr remain-in-job ("remain")) /// remove *job-events*
 
 (define-adjective "precise") ;;/// "precisely"
 
@@ -194,6 +203,8 @@ and pull in an agent and a <what?>
 
 
 ;;------------ s4, (kappa-4)
+;; Here, we show that, besides activating IKKalpha, 
+;; NIK also serves as a docking molecule recruiting IKKalpha to p100.
 
 (svo/nominal "activate" "activation"
    :subject 'bio-entity
