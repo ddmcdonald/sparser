@@ -12,6 +12,8 @@
 
 
 (defun initialize-document-element-resources ()
+  (declare (special *recognize-sections-within-articles*
+                    *note-text-relations*))
   (when *recognize-sections-within-articles*
     (initialize-article-resource)
     (initialize-section-resource)
