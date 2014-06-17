@@ -46,7 +46,7 @@
     (declare (special *shadows-to-individuals*))
     (funcall #'realization-for-triple body-shadow var-shadow value)))
 
-#|  Kills load until waypoint module is integrated in regular load |#
+#|  Kills load until waypoint module is integrated in regular load 
 (def-k-method realization-for-triple ((wp waypoint) 
                                       (v (variable nname)) (value t))
   (push-debug `(,wp ,v ,value)) ;;(break "name triple")
@@ -56,7 +56,6 @@
   ;; Taps into the realization class for named attributes (hight, color, ...)
   ;; But start simply
   (mumble::predicated-attribute-value :value value :of wp))
- 
+|#
     
-
 
