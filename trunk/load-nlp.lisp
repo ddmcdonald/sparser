@@ -102,6 +102,7 @@
         ;; extend, modify as appropriate when you have a new load script
         (case script
           (:fire "scripts/fire")
+          (:biology "scripts/bio-script")
           (:grok "scripts/grok")
           (:c3 "scripts/C3-script")
           (:no-grammar "scripts/no-grammar")
@@ -112,12 +113,13 @@
                  ~%which is not one of the anticipated values:~
                  ~%  :fire, :grok, :no-grammar, :just-dm&pm or :default"
                   script)))))
+  (format t "~&Using the ~a loading script~%" sparser-load-script)
 
   (load (concatenate 'string 
                      (namestring *nlp-home*)
                      init-location
                      sparser-load-script
-                     ".lisp")))
+                     ".lisp")  :verbose t))
 
 
 ;; #7 load the files from Mumble that reference types in Sparser
