@@ -35,7 +35,7 @@
 (define-category  event
   ;; A very odd notion that cross-cuts the usual decomposition
   ;; as would an actorless 'action'
-  :instantiates nil
+  :instantiates self
   :specializes  perdurant
   :binds ((time)
           (location)

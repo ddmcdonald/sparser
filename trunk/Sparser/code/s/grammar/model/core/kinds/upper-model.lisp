@@ -25,6 +25,7 @@
 ;;     (8/19/13) Trying a stand-alone definition for "relation" to go with
 ;;      the class. 12/17/13 added scalar-quality and state. 6/9/14
 ;;      pulled the standalone definition. It was a one-off. 
+;; 0.3 (6/16/14) Trying to insert more organization.
 
 (in-package :sparser)
 
@@ -50,38 +51,63 @@
 ;;;-----------------------------------------------------------------
 ;;;     'real' categories -- the effective top of the hierarchy
 ;;;-----------------------------------------------------------------
-
-;;--- expressible-type
-
-; This is the category that dominates almost everything in the model.
-; These are the things that the world is comprised of - things, actions, 
-; properties -- unicorns, raising money, being -really- good.  
-;
-; You have to think very carefully if you want to introduce something
-; into the ontology that isn't a subcategory (doesn't inherit from)
-; expressive type. 
-; 
-; If we ignoring the capabilities provided by language and interpersonal
-; talk, everything that you model will get a single category (or a base
-; category and some mixins). But people have more options and can express
-; the same state of affairs from different perspectives -- the canonical
-; example is 'making a decision' and 'deciding', where you shift between
-; a thing and an action. These differences correspond here to differences
-; in the choice of expressive type and could be made for tactical reasons
-; within the text planner.
-;
-(define-category expressible-type
-  :instantiates nil
-  :specializes top)
-
-; This is the natural choice for a value restriction that can accept 'anything'.
-; All the categories for the things we can mention/talk about in language
-; fall under this category. 
-
+;; The other 'tops' are in the files kinds/processes.lisp and
 
 (define-category  quality
-  :instantiates top
-  :specializes  nil)
+  :instantiates nil
+  :specializes  top
+  :realization (:common-noun "quality")
+  :documentation 
+"Qualities are attributes of / inhere in other entities, such as
+ color location, size, severity, saturation, anger Their 'range', so
+ to speak, is top.  If the entity goes away, so do its
+ qualities. I.e. these are dependent properties ontologically
+ speaking. A rose has a color that's the color of that particular
+ rose. If you don't keep its water fresh then the rose's color quality
+ will change to brown. Nothing happens to the points in color space
+ that the rose's color quality refers to: they are independent
+ abstract entities.")
+
+;;; possible subclasses: SensoryQuality (color, sound), SocialQuality
+;;; (angry), units of measure
+
+(define-category abstract
+  :instantiates nil
+  :specializes top
+  :realization (:common-noun "abstract")
+  :documentation
+ "Independent stuff that is not anchored in space or time or by
+ association with something that is: Units of measure, regions of the
+ color space, numbers, propositions, intentions and intensional
+ descriptions, structures assembled out of symbols..")
+
+
+
+; We need an unmarked, equally weighted 'relation' for what holds
+; among things like the members of a collection or between categories
+; taken generically. Don't want to assume a standard arity 
+; or a directionality (for that we'd use operator and predication). 
+;
+(define-category relation
+  :specializes abstract
+  :realization (:common-noun "relation")
+  :documentation
+  "A relation designates a relationship between some number (arity) of
+ entities. It is intended as the super class of more specifc types
+ of relations such as meronomyms, kinship, or change over time.
+   As a piece of logic, a relation is the equivalent of a function
+ symbol, i.e. the name of a possible relationship rather than an
+ instance of the relationship. Attributes of the relation acrue here,
+ such as arity, type-restrictions, and (for unary relationships)
+ meta-properties if we were to get serious about following Guarino &
+ Welty's distinctions in their 'A Formal Ontology of Properties' paper
+ from 2000.")
+
+
+
+;;;-----------------
+;;; Next layer down
+;;;-----------------
 
 (define-category scalar-quality
   :instantiates nil
@@ -165,21 +191,41 @@
 
 
 
-
-; We also need an unmarked, equally weighted 'relation' for what holds
-; among things like the members of a collection or between categories
-; taken generically. Don't want to assume a standard arity 
-; or a directionality (for that we'd use operator and predication). 
-
-(define-category relation
-  :specializes top
-  :realization (:common-noun "relation"))
-
 (define-category modifies
   :specializes relation
   :instantiates :self
   :binds ((modifier . modifier)
           (modified)))
+
+
+
+
+;;--- expressible-type  (more of a generation-centric notion)
+
+; This is the category that dominates almost everything in the model.
+; These are the things that the world is comprised of - things, actions, 
+; properties -- unicorns, raising money, being -really- good.  
+;
+; You have to think very carefully if you want to introduce something
+; into the ontology that isn't a subcategory (doesn't inherit from)
+; expressive type. 
+; 
+; If we ignoring the capabilities provided by language and interpersonal
+; talk, everything that you model will get a single category (or a base
+; category and some mixins). But people have more options and can express
+; the same state of affairs from different perspectives -- the canonical
+; example is 'making a decision' and 'deciding', where you shift between
+; a thing and an action. These differences correspond here to differences
+; in the choice of expressive type and could be made for tactical reasons
+; within the text planner.
+;
+(define-category expressible-type
+  :instantiates nil
+  :specializes top)
+
+; This is the natural choice for a value restriction that can accept 'anything'.
+; All the categories for the things we can mention/talk about in language
+; fall under this category. 
 
 
 ;;---------------- nothing live beyond here ------------------
