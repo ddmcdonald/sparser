@@ -183,7 +183,8 @@ e5 e6                            "by" :: by, BY |#
 
 
 ;;------------ s3 (kappa-3)
-;; (delete-cfr remain-in-job ("remain")) /// remove *job-events*
+;; However, the precise mechanisms by which NIK and IKKalpha 
+;; induce p100 processing remain unclear.
 
 (define-adjective "precise") ;;/// "precisely"
 
@@ -214,8 +215,9 @@ e5 e6                            "by" :: by, BY |#
 
 
 ;;------------ s5, (kappa-5)
-
-;; two specific amino acid residues, serine 866 and serine 870, of p100
+;; This novel function of NIK requires two specific amino acid residues,
+;; serine 866 and serine 870, of p100 
+;; that are known to be essential for inducible processing of p100.
 
 ;(np-head "residue" :super 'molecule) ;; odd interaction with next.
 ;; but it's more like a 'residue of' than a thing in itself
@@ -236,6 +238,10 @@ e5 e6                            "by" :: by, BY |#
 
 
 ;;------------ s6 (kappa-6)
+;; We also show that, after being recruited into p100 complex, 
+;; activated IKKalpha phosphorylates specific serines 
+;; located in both N- and C-terminal regions of p100 
+;; (serines 99, 108, 115, 123, and 872).
 
 ;;--- phosphorylation
 ;; GO:0016310	
@@ -245,5 +251,23 @@ e5 e6                            "by" :: by, BY |#
 (svo/nominal "phosphorylate" "phosphorylation" 
              :subject 'bio-entity :theme 'bio-entity)
 
+
+;;------------ s7 (kappa-7)
+;; The phosphorylation of these specific serines is 
+;; the prerequisite for ubiquitination and 
+;; subsequent processing of p100 mediated by the beta-TrCP ubiquitin ligase 
+;; and 26 S proteasome, respectively.
+
+
+;;------------ s8 (kappa-8)
+;; These results highlight the critical but different roles of 
+;; NIK and IKKalpha in regulating p100 processing 
+;; and shed light on the mechanisms mediating 
+;; the tight control of p100 processing.
+
+;;------------ s9 (kappa-9)
+;; These data also provide the first evidence for explaining 
+;; why overexpression of IKKalpha or its activation by many other stimuli 
+;; such as tumor necrosis factor and mitogens fails to induce p100 processing.
 
 
