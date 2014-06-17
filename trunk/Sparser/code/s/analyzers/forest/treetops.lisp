@@ -186,7 +186,8 @@
         (return))
       (incf count)
       (multiple-value-setq (tt next-pos)
-        (next-treetop/rightward next-pos)))
+        (next-treetop/rightward next-pos))
+      tt ) ;; quiet the compiler
     count ))
 
 
