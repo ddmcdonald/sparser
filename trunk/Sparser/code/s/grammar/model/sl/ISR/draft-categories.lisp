@@ -4,10 +4,10 @@
 ;;;
 ;;;     File:  "draft-categories"
 ;;;   Module:  "grammar/sl/ISR/
-;;;  version:  October 2013
+;;;  version:  June 2014
 
 ;; Initiated 10/9/13 to hold the more general categories that
-;; we're only trying out for C3. 
+;; we're only trying out for C3. Pulling out parts through 6/14. 
 
 (in-package :sparser)
 
@@ -33,18 +33,6 @@
 
 ;;--- thin thread to handle the 1st NP
 
-
-(define-category has-name
-  :specializes nil ;; Endurant maybe? 
-  :binds ((name :primitive word))
-  ;; /// v/r should be 'name' from model/core/names/object.lisp
-  ;; but that doesn't itself have a 'name' slot, as the decoder
-  ;; wants (see def. of wakil) and if it did, it wouldn't know
-  ;; what to do with a simple one word string.
-  ;;
-  ;; Can hang lots of realizations here
-  ;; 'known as', 'called', ...
-  :realization (:proper-noun name)) ;; Wakil
 
 
 (define-category named-type
