@@ -72,7 +72,7 @@
 
 (define-category feature
   :specializes physical
-  realization (:common-noun "feature"))
+  :realization (:common-noun "feature")
   :documentation
   "These are things like stains, holes, boundaries, or surfaces that are
  dependent on some other PhysicalObject as the 'host'. Other examples would
