@@ -247,7 +247,7 @@ e5 e6                            "by" :: by, BY |#
 ;; GO:0016310	
 ;  "activated IKKα phosphorylates specific serines"
 ;  "The phosphorylation of these specific serines"
-
+;
 (svo/nominal "phosphorylate" "phosphorylation" 
              :subject 'bio-entity :theme 'bio-entity)
 
@@ -255,7 +255,8 @@ e5 e6                            "by" :: by, BY |#
 ;;------------ s7 (kappa-7)
 ;; The phosphorylation of these specific serines is 
 ;; the prerequisite for ubiquitination and 
-;; subsequent processing of p100 mediated by the beta-TrCP ubiquitin ligase 
+;; subsequent processing of p100 
+;; mediated by the beta-TrCP ubiquitin ligase 
 ;; and 26 S proteasome, respectively.
 
 
