@@ -207,7 +207,9 @@
                   prenominal-adjective
                   pre-verb-adverb 
                   post-verb-adverb 
-                  sentence-adverb))
+                  sentence-adverb
+                  pre-adj-adverb
+                  pre-adv-adverb))
     (error "Haven't yet vetted this ETF for form rules: ~a" etf))
   (car (etf-labels etf)))
 
