@@ -54,6 +54,6 @@
     :rule-label rule-label
     :discriminator discriminator
     :tree-families (if sentential?
-                     '(pre-verb-adverb post-verb-adverb sentence-adverb)
-                     '(pre-verb-adverb post-verb-adverb))))
+                     '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb sentence-adverb)
+                     '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb))))
 
