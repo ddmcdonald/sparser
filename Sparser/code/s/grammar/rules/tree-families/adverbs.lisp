@@ -115,7 +115,7 @@
 
 
 (define-exploded-tree-family pre-adv-adverb
-  :description "For adverbs preceding adverbs, e.g. 'fairly slowly' "
+  :description "For adverbs preceding adverbs, e.g. 'relatively slowly' "
   :binding-parameters ( )
   :labels ( adv )
   :cases
