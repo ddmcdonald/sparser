@@ -21,6 +21,8 @@
      pre-verb-adverb ------------ "today announced"
      post-verb-adverb ----------- "announced today"
      sentence-adverb ------------ pre/post S & VP
+     pre-adj-adverb ------------- "incredibly useful"
+     pre-adv-adverb ------------- "very slowly"
 |#
 
 ;; The cases in these tree families all produce form rules, where the
@@ -88,5 +90,42 @@
                   :head left-edge
                   :method (modified right-edge left-edge)))))
 
+
+(define-exploded-tree-family pre-adj-adverb
+  :description "For adverbs preceding adjectives, e.g. 'substantially flavorful coffee' "
+  :binding-parameters ( )
+  :labels ( adverb )
+  :cases
+    ((:modifier (adjective (adverb adjective)
+                  :head right-edge
+                  :method (modified left-edge right-edge)))
+     
+     ;; maybe?
+     (:modifier (adjp (adverb adjp)
+                  :head right-edge
+                  :method (modified left-edge right-edge)))
+     ;; numbers? "exactly/roughly nine" ..not quite adverbs, where else can those go though?
+
+     
+     ;; comparatives.. "truly easier than..."
+     (:modifier (comparative (adverb comparative)
+                  :head right-edge
+                  :method (modified left-edge right-edge)))))
+
+
+
+(define-exploded-tree-family pre-adv-adverb
+  :description "For adverbs preceding adverbs, e.g. 'fairly slowly' "
+  :binding-parameters ( )
+  :labels ( adv )
+  :cases
+    ((:modifier (adverb (adv adverb)
+                  :head right-edge
+                  :method (modified left-edge right-edge)))
+     
+     ;; maybe?
+     (:modifier (advp (adv advp)
+                  :head right-edge
+                  :method (modified left-edge right-edge)))))
 
 
