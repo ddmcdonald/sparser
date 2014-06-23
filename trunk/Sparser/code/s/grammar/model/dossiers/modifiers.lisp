@@ -835,4 +835,4 @@
 (define-adjective "versatile")
 (define-adjective "widespread")
 
-(adj/adv "derp" "derp" :super-category 'modifier)
+(adj/adv "aa" "aa" :super-category 'modifier)
