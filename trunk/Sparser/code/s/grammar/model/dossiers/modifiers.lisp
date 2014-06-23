@@ -40,17 +40,18 @@
 (define-approximator/determiner "barely")
 (define-approximator/determiner "exactly") ;; not just a determiner..
 (define-approximator/determiner "just")
-(define-approximator/determiner "less than")
-(define-approximator/determiner "more than")
+;(define-approximator/determiner "less than") comparatives..
+;(define-approximator/determiner "more than")
 (define-approximator/determiner "nearly") ;; could also be approx/adverbial. what to do for this type of "generic" modifier that can go before preps, adjs too?
 (define-approximator/determiner "precisely") ;;
+(define-approximator/determiner "roughly")
 (define-approximator/determiner "somewhat")
 
 (define-approximator/adverbial  "fairly")
 (define-approximator/adverbial "hardly") ;; can go before adjectives, right?
 (define-approximator/adverbial "mostly")
 (define-approximator/adverbial  "only") ;; "only two" "this can only occur if.."
-(define-approximator/adverbial "roughly") ;; "roughly {four, translated, equally}"
+
 
 
 
@@ -194,12 +195,19 @@
 
 ;;;---------- intensifier
 
+(define-adverb "immensely")
+(define-adverb "too") ;what about sense of "also" ?
+
+(define-function-term "very" 'adverb
+  :tree-families '(pre-adj-adverb pre-adv-adverb))
+
+;; OLD CODE:
 ;; Since these don't start verb groups, they can't be marked 'adverb'
 ;; They can modify adverbs and comparatives at least
 
-(define-function-word "too"   :brackets '( ].adverb .[adverb ))
-(define-function-word "very"  :brackets '( ].adverb .[adverb ))
-;;immensely?
+;;(define-function-word "too"   :brackets '( ].adverb .[adverb ))
+;;(define-function-word "very"  :brackets '( ].adverb .[adverb ))
+
 
 
 
@@ -207,9 +215,10 @@
 
 (define-adverb "probably")
 (define-adverb "definitely")
+(define-adjective "likely") ;could be either adj or adv
 (define-adverb "possibly") 
 (define-adverb "potentially")
-(define-adverb "unlikely")
+(define-adverb "unlikely") ; not really an adverb? 
 
 
 
@@ -298,12 +307,18 @@
 ;;; adverbs
 ;;;--------
 
+;;;---------- directional adverbs
+(define-adverb "diagonally")
+
+;;;---------- adverbs
+
+
 (define-adverb "abnormally")
 (define-adverb "absolutely")
 (define-adverb "accordingly")
 (define-adverb "accurately")
 (define-adverb "actively")
-(define-adverb "actually")
+(define-adverb "actually" :sentential? T)
 (define-adverb "acutely")
 (define-adverb "additionally")
 (define-adverb "adequately")
@@ -313,7 +328,7 @@
 (define-adverb "alarmingly")
 (define-adverb "alternatively")
 (define-adverb "amply")
-(define-adverb "anatomically") ;; not a manner..hmm
+(define-adverb "anatomically")
 (define-adverb "analytically")
 (define-adverb "apparently")
 (define-adverb "appropriately")
@@ -336,6 +351,7 @@
 (define-adverb "carefully")
 (define-adverb "casually")
 (define-adverb "categorically")
+(define-adverb "causally")
 (define-adverb "centrally")
 (define-adverb "certainly")
 (define-adverb "characteristically")
@@ -343,6 +359,7 @@
 (define-adverb "chemically")
 (define-adverb "chronologically")
 (define-adverb "circularly")
+(define-adverb "clearly")
 (define-adverb "clinically")
 (define-adverb "closely")
 (define-adverb "collectively")
@@ -355,6 +372,7 @@
 (define-adverb "computationally")
 (define-adverb "conceptually")
 (define-adverb "conclusively")
+(define-adverb "concomitantly")
 (define-adverb "conditionally")
 (define-adverb "confidently")
 (define-adverb "consequently")
@@ -380,6 +398,7 @@
 (define-adverb "discretely")
 (define-adverb "distributionally")
 (define-adverb "dramatically")
+(define-adverb "drastically")
 (define-adverb "dynamically")
 (define-adverb "e.g.")
 (define-adverb "easily")
@@ -418,6 +437,7 @@
 (define-adverb "forcefully")
 (define-adverb "formally")
 (define-adverb "fortunately")
+(define-adverb "frankly")
 (define-adverb "freely")
 (define-adverb "frustratingly")
 (define-adverb "fully") ;;
@@ -431,9 +451,11 @@
 (define-adverb "geographically")
 (define-adverb "geologically")
 (define-adverb "globally")
+(define-adverb "gradually")
 (define-adverb "graphically")
 (define-adverb "greatly")
 (define-adverb "heartedly")
+(define-adverb "heavily")
 (define-adverb "highly") ;; might move to approx. 
 (define-adverb "historically")
 (define-adverb "hitherto")
@@ -445,6 +467,7 @@
 (define-adverb "illustratively")
 (define-adverb "implicitly")
 (define-adverb "importantly")
+(define-adverb "in contrast")
 (define-adverb "in fact")
 (define-adverb "in general")
 (define-adverb "inaccurately")
@@ -453,10 +476,12 @@
 (define-adverb "incompletely")
 (define-adverb "incorrectly")
 (define-adverb "increasingly")
+(define-adverb "incrementally")
 (define-adverb "indeed")
 (define-adverb "independently")
 (define-adverb "indirectly")
 (define-adverb "individually")
+(define-adverb "indoors")
 (define-adverb "industrially")
 (define-adverb "inevitably")
 (define-adverb "inexpensively")
@@ -526,7 +551,7 @@
 (define-adverb "paradoxically")
 (define-adverb "partially")
 (define-adverb "particularly")
-(define-adverb "partly") ;; "in part" ;; 
+(define-adverb "partly") ;; "in part" 
 (define-adverb "passively")
 (define-adverb "perfectly")
 (define-adverb "permanently")
@@ -558,6 +583,7 @@
 (define-adverb "quantitatively")
 (define-adverb "questionably")
 (define-adverb "quickly")
+(define-adverb "quiescently")
 (define-adverb "quietly")
 (define-adverb "radially")
 (define-adverb "radically")
@@ -579,6 +605,7 @@
 (define-adverb "reversibly")
 (define-adverb "rhythmically")
 (define-adverb "robustly")
+(define-adverb "routinely")
 (define-adverb "sadly") 
 (define-adverb "safely")
 (define-adverb "schematically")
@@ -591,6 +618,7 @@
 (define-adverb "sharply")
 (define-adverb "shortly")
 (define-adverb "significantly")
+(define-adverb "similarly")
 (define-adverb "simply")
 (define-adverb "simultaneously")
 (define-adverb "singly")
@@ -605,6 +633,8 @@
 (define-adverb "specially")
 (define-adverb "specifically")
 (define-adverb "spontaneously")
+(define-adverb "stably")
+(define-adverb "starkly")
 (define-adverb "statistically")
 (define-adverb "steadily")
 (define-adverb "stochastically")
@@ -640,6 +670,7 @@
 (define-adverb "topically")
 (define-adverb "totally") ;;
 (define-adverb "traditionally")
+(define-adverb "transcriptionally") ; <-- MIGHT want to associate w/ noun 'transcription', adj;
 (define-adverb "transiently")
 (define-adverb "transitively")
 (define-adverb "tremendously")
@@ -663,8 +694,11 @@
 (define-adverb "variously")
 (define-adverb "visually")
 (define-adverb "weakly")
+(define-adverb "well")
 (define-adverb "widely")
 (define-adverb "wonderfully")
+
+;; orthongonally, diagonally -- incorporate direction?
 
 
 ;;;------
@@ -674,12 +708,131 @@
 
 ;;should there be a rule for past participles --> adjectives
 
+;; multiple (counts?)
+;; complex (also a noun)
+;; consistent WITH..
+;; key
+;; subsequent (part of sequence)
+;; various (counts)
+
 ;;(define-adjective "daily")
 ;; "given" as in "For a given cell, ..."
 ;; certain; different
+(define-adjective "able") ; want to give "to" tree family? "able to do x" .. or no.
+(define-adjective "abundant")
+(define-adjective "active")
+(define-adjective "adaptive")
+(define-adjective "adjacent") ;place
+(define-adjective "aforementioned") ; discourse, heh
+(define-adjective "analogous")
+(define-adjective "ancillary")
+(define-adjective "apoptotic")
+(define-adjective "beneficial")
+(define-adjective "biological")
+(define-adjective "bona fide")
+(define-adjective "canonical")
+(define-adjective "certain")
+(define-adjective "chimeric")
+(define-adjective "chronic")
+(define-adjective "common")
+(define-adjective "complementary")
+(define-adjective "conceptual")
+(define-adjective "constitutive")
+(define-adjective "continuous") ; process-y
+(define-adjective "critical")
+(define-adjective "crucial")
+(define-adjective "defective")
 (define-adjective "detailed")
+(define-adjective "difficult")
+(define-adjective "distinct")
+(define-adjective "distinctive")
+(define-adjective "diverse")
+(define-adjective "embryonic")
+(define-adjective "endothelial") ; endothelium is noun
+(define-adjective "environmental")
+(define-adjective "experimental")
+(define-adjective "extracellular") ; <--location
+(define-adjective "extreme")
+(define-adjective "free") ;<--- "free of..."
+(define-adjective "frequent")
+(define-adjective "functional")
+(define-adjective "fundamental")
+(define-adjective "genetic")
+(define-adjective "genomic")
+(define-adjective "genuine")
 (define-adjective "given")
+(define-adjective "gradual")
+(define-adjective "heritable")
+(define-adjective "heterotypic")
+(define-adjective "homeostatic")
+(define-adjective "hybrid")
+(define-adjective "ill")
+(define-adjective "implicit")
+(define-adjective "important")
+(define-adjective "inappropriate")
+(define-adjective "incipient")
+(define-adjective "innocuous")
+(define-adjective "insular")
+(define-adjective "intact")
+(define-adjective "integral")
+(define-adjective "intracellular") ; <---- location!!!!
+(define-adjective "intrinsic")
+(define-adjective "irreparable")
 (define-adjective "known")
+(define-adjective "local")
+(define-adjective "logical")
+(define-adjective "malignant")
+(define-adjective "maximal")
+(define-adjective "mechanistic")
+(define-adjective "metastatic")
+(define-adjective "mitogenic")
+(define-adjective "morphological")
+(define-adjective "multicellular")
+(define-adjective "multistep")
+(define-adjective "neoplastic")
+(define-adjective "new")
+(define-adjective "normal")
+(define-adjective "obscure")
+(define-adjective "oncogenic")
+(define-adjective "original")
+(define-adjective "paradoxical")
+(define-adjective "particular")
+(define-adjective "passive")
+(define-adjective "pericellular") ;<--place
+(define-adjective "persistent")
+(define-adjective "pituitary")
+(define-adjective "powerful")
+; (define-adjective "precise") in nfkb
+(define-adjective "preeminent")
+(define-adjective "prevalent")
+(define-adjective "proliferative") ;opposite: "antiproliferative" or "nonproliferative"
+(define-adjective "proper")
+(define-adjective "prospective")
+(define-adjective "prototypical")
+(define-adjective "quiescent")
+(define-adjective "raw")
+(define-adjective "recent") ;<--- time!
+(define-adjective "recessive")
+(define-adjective "redundant")
+(define-adjective "regulatory")
+(define-adjective "remarkable")
+(define-adjective "solid")
+(define-adjective "somatic")
+(define-adjective "specific")
+(define-adjective "structural")
+(define-adjective "suboptimal")
+(define-adjective "sufficient")
+(define-adjective "susceptible")
+(define-adjective "systematic")
+(define-adjective "therapeutic")
+(define-adjective "tractable")
+(define-adjective "transitive")
+(define-adjective "transitory")
+(define-adjective "tumorigenic")
+(define-adjective "useable")
+(define-adjective "useful")
+(define-adjective "vast")
+(define-adjective "versatile")
+(define-adjective "widespread")
 
-
-
+(adj/adv "derp" "derp" :super-category 'modifier)
