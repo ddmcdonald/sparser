@@ -166,19 +166,19 @@
 (define-event-frequency "always")
 (define-event-frequency "chronically")
 (define-event-frequency "constantly")
-(define-event-frequency "daily")
+(define-event-frequency "daily") ;can also be an adjective.
 (define-event-frequency "ever")
 (define-event-frequency "forever") ;; is this more of a duration? does it matter?
-(define-event-frequency "frequently")
-(define-event-frequency "hourly")
+(define-event-frequency "frequently") ; what about 'frequent'
+(define-event-frequency "hourly") ;+adj
 (define-event-frequency "indefinitely")
-(define-event-frequency "monthly")
+(define-event-frequency "monthly") ;+adj
 (define-event-frequency "never")
 (define-event-frequency "often")
 (define-event-frequency "rarely")
 (define-event-frequency "seldom")
 (define-event-frequency "usually")
-(define-event-frequency "yearly")
+(define-event-frequency "yearly") ;+adj
 
 
 
@@ -245,7 +245,9 @@
     Quantities distribute exactly like numbers, including their composition
     to form measurements and their capacity as determiners.  |#
 
+(define-quantity "multiple")
 (define-quantity  "several")
+(define-quantity "various")
 
 
 
@@ -318,7 +320,7 @@
 (define-adverb "accordingly")
 (define-adverb "accurately")
 (define-adverb "actively")
-(define-adverb "actually" :sentential? T)
+(define-adverb "actually")
 (define-adverb "acutely")
 (define-adverb "additionally")
 (define-adverb "adequately")
@@ -556,7 +558,7 @@
 (define-adverb "perfectly")
 (define-adverb "permanently")
 (define-adverb "perpendicularly")
-(define-adverb "persistently") ;; want to be an event-frequency?
+(define-adverb "persistently")
 (define-adverb "pervasively")
 (define-adverb "perversely")
 (define-adverb "physically")
@@ -708,21 +710,18 @@
 
 ;;should there be a rule for past participles --> adjectives
 
-;; multiple (counts?)
 ;; complex (also a noun)
 ;; consistent WITH..
-;; key
 ;; subsequent (part of sequence)
-;; various (counts)
 
-;;(define-adjective "daily")
+
 ;; "given" as in "For a given cell, ..."
 ;; certain; different
 (define-adjective "able") ; want to give "to" tree family? "able to do x" .. or no.
 (define-adjective "abundant")
 (define-adjective "active")
 (define-adjective "adaptive")
-(define-adjective "adjacent") ;place
+(define-adjective "adjacent" :form 'spatial-adjective) 
 (define-adjective "aforementioned") ; discourse, heh
 (define-adjective "analogous")
 (define-adjective "ancillary")
@@ -751,10 +750,10 @@
 (define-adjective "endothelial") ; endothelium is noun
 (define-adjective "environmental")
 (define-adjective "experimental")
-(define-adjective "extracellular") ; <--location
+(define-adjective "extracellular" :form 'spatial-adjective)
 (define-adjective "extreme")
 (define-adjective "free") ;<--- "free of..."
-(define-adjective "frequent")
+(define-adjective "frequent") ;
 (define-adjective "functional")
 (define-adjective "fundamental")
 (define-adjective "genetic")
@@ -771,13 +770,15 @@
 (define-adjective "important")
 (define-adjective "inappropriate")
 (define-adjective "incipient")
+(define-adjective "inner" :form 'spatial-adjective)
 (define-adjective "innocuous")
 (define-adjective "insular")
 (define-adjective "intact")
 (define-adjective "integral")
-(define-adjective "intracellular") ; <---- location!!!!
+(define-adjective "intracellular" :form 'spatial-adjective)
 (define-adjective "intrinsic")
 (define-adjective "irreparable")
+(define-adjective "key")
 (define-adjective "known")
 (define-adjective "local")
 (define-adjective "logical")
@@ -785,6 +786,7 @@
 (define-adjective "maximal")
 (define-adjective "mechanistic")
 (define-adjective "metastatic")
+(define-adjective "mitochondrial")
 (define-adjective "mitogenic")
 (define-adjective "morphological")
 (define-adjective "multicellular")
@@ -795,10 +797,11 @@
 (define-adjective "obscure")
 (define-adjective "oncogenic")
 (define-adjective "original")
+(define-adjective "outer" :form 'spatial-adjective)
 (define-adjective "paradoxical")
 (define-adjective "particular")
 (define-adjective "passive")
-(define-adjective "pericellular") ;<--place
+(define-adjective "pericellular" :form 'spatial-adjective)
 (define-adjective "persistent")
 (define-adjective "pituitary")
 (define-adjective "powerful")
@@ -811,7 +814,7 @@
 (define-adjective "prototypical")
 (define-adjective "quiescent")
 (define-adjective "raw")
-(define-adjective "recent") ;<--- time!
+(define-adjective "recent" :form 'temporal-adjective)
 (define-adjective "recessive")
 (define-adjective "redundant")
 (define-adjective "regulatory")
@@ -835,4 +838,4 @@
 (define-adjective "versatile")
 (define-adjective "widespread")
 
-(adj/adv "aa" "aa" :super-category 'modifier)
+
