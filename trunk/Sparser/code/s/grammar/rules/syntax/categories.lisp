@@ -220,6 +220,8 @@
 (def-form-category  adjective)
 (def-form-category  proper-adjective)
 (def-form-category  comparative)
+(def-form-category  spatial-adjective)
+(def-form-category  temporal-adjective)
 
 (def-form-category  deictic-time-word)
 
