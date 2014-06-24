@@ -13,8 +13,9 @@
 
 (defun define-adjective (string
                          &key form super-category rule-label discriminator)
-  (define-function-term string 'adjective
-    :form form
+  (unless form
+    (setq form 'adjective))
+  (define-function-term string form
     :super-category (or super-category 
                         (super-category-for-POS :adjective))
     :rule-label (or rule-label
