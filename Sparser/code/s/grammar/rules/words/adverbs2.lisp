@@ -39,21 +39,16 @@
 ;; For list of adverbs of diverse sorts see dossiers/modifiers.lisp
 ;; For the method used by adverbs see rules/syntax/adverbs1.lisp
 
-(defun define-adverb (string &key super-category sentential?
+(defun define-adverb (string &key super-category
                                   rule-label discriminator)
   "The string can be a single word or a polyword. The super-category
    defaults to adverbia. If you supply a value is should be the symbols
    that names the category, not the actual category, and note that this
-   is a function, not a macro so all areguments are evaluated.
-   Sentential is a boolean, it defaults to nil implying that the
-   adverb only occurs in proximity to a verb. If you set it to T, 
-   we include the tree family for sentence-adverb."
+   is a function, not a macro so all areguments are evaluated."
   (define-function-term string 'adverb
     :super-category (or super-category
                         (super-category-for-POS :adverb))
     :rule-label rule-label
     :discriminator discriminator
-    :tree-families (if sentential?
-                     '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb sentence-adverb)
-                     '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb))))
+    :tree-families   '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb sentence-adverb)))
 
