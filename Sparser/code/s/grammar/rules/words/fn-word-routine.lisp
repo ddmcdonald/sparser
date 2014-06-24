@@ -110,7 +110,7 @@
     (setq brackets
           (case form ;; match with values in rules/brackeets/assignments (!!)
             (adverb *adverb-brackets*)
-            (adjective *adjective-brackets*)
+            ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
             (det *default-determiner-brackets*)
             (standalone *standalone-brackets*)
             (otherwise
