@@ -66,6 +66,8 @@
         (category::possessive)
         (category::quantifier)
         (category::adjective)
+        (category::spatial-adjective)
+        (category::temporal-adjective)
         (category::adverb)
         (category::preposition)
         (category::spatial-preposition)
