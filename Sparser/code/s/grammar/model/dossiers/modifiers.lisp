@@ -779,7 +779,6 @@
 (define-adjective "clear")
 (define-adjective "clonal")
 (define-adjective "common")
-(define-adjective "comparative")
 (define-adjective "complementary")
 (define-adjective "complete")
 (define-adjective "complex") ;also noun
@@ -882,6 +881,7 @@
 (define-adjective "neighboring" :form 'spatial-adjective)
 (define-adjective "neoplastic")
 (define-adjective "new")
+(define-adjective "nominal")
 (define-adjective "non-neoplastic")
 (define-adjective "nonclonal")
 (define-adjective "nonmutational")
@@ -901,7 +901,6 @@
 (define-adjective "pericellular" :form 'spatial-adjective)
 (define-adjective "perpendicular" :form 'spatial-adjective)
 (define-adjective "persistent")
-;(define-adjective "physical") conflicts with 'checkpoint'
 (define-adjective "physiologic")
 (define-adjective "pituitary")
 (define-adjective "potent")
@@ -972,6 +971,7 @@
 (define-adjective "upper" :form 'spatial-adjective)
 (define-adjective "useable")
 (define-adjective "useful")
+(define-adjective "variable")
 (define-adjective "vast")
 (define-adjective "versatile")
 (define-adjective "viable")
