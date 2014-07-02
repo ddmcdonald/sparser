@@ -9,6 +9,8 @@
 
 (in-package :sparser)
 
+(define-adjective "physical")
+
 ;;;------------------------------------------
 ;;; work-a-day categories already in Sparser
 ;;;------------------------------------------
