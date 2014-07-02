@@ -13,6 +13,7 @@
  adjective phrases which then start nps -- but that's subtler than
  we need since modals are being glossed as starting vg's etc.  |#
 
+(define-adjective "comparative")
 
 (define-category  comparative
   :instantiates nil
