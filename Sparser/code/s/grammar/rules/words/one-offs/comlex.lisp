@@ -236,7 +236,8 @@ non-words 26
   (is-in-comlex? (word-pname w)))
 
 (defmethod is-in-comlex? ((s string))
-  (is-in-comlex? (intern s (find-package :sparser))))
+  (let ((upcased (string-upcase s)))
+    (is-in-comlex? (intern upcased (find-package :sparser)))))
 		   
 (defmethod is-in-comlex? ((s symbol))
   ;; interesting words will fit many parts of speech, 
