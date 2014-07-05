@@ -78,6 +78,21 @@
         *ending-that-was-stripped-off* ))))
 
 
+(defun affix-checker (string candidate-affixes)
+  (let ((length (length string)))
+    (when (> length 3)
+      (let ((n (aref string (- length 1)))
+            (n-1 (aref string (- length 2)))
+            (n-2 (aref string (- length 3))))
+        (dolist (affix candidate-affixes)
+          (let ((index (1- (length affix))))
+            (when (eq n (aref affix index))
+              (when (eq n-1 (aref affix (- index 1)))
+                (when (eq n-2 (aref affix (- index 2)))
+                  ;;/// how to go longer in an elegant way
+                  (return-from affix-checker 7))))))))))
+                
+
 
 
 ;;----- "ed"
