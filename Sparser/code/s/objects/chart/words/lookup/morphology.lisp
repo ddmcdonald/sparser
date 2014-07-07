@@ -155,3 +155,6 @@
       :ends-in-s
       nil)))
 
+
+;; ADJ == adjective, N == noun, V == verb
+('(able ADJ) '(al ADJ) '(ar ADJ) '(ary ADJ) '(ible ADJ) '(ic ADJ) '(ics N) '(ify V) '(ion N) '(ist N) '(ity N) '(ive ADJ) '(ment N) '(or N) '(ory ADJ) '(ous ADJ))
