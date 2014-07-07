@@ -169,6 +169,7 @@
   ;;;---------------------------
   (cond
     (*grok* (grok-setting))
+    (*big-mechanism* (bio-setting))
     (*bbn*  (all-edges-setting))
     (*fire* (fire-setting))
     (*c3* (c3-setting))
