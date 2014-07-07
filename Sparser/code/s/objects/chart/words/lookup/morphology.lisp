@@ -153,8 +153,16 @@
   (let ((char (char/wb index-of-last-char)))
     (if (eq char #\s)
       :ends-in-s
-      nil)))
+      nil))) 
 
-
+;; SUFFIXES
 ;; ADJ == adjective, N == noun, V == verb
-('(able ADJ) '(al ADJ) '(ar ADJ) '(ary ADJ) '(ible ADJ) '(ic ADJ) '(ics N) '(ify V) '(ion N) '(ist N) '(ity N) '(ive ADJ) '(ment N) '(or N) '(ory ADJ) '(ous ADJ))
+;; X-able/-ible: 'capable of X' OR 'able to be Xed'
+;; X-al/-ar/-ary/-ic/-ous: 'of or pertaining to X' 
+;;     e.g. 'epithelial' 'vascular' 'enzymatic' 'cancerous'
+;; -ics: e.g. 'energetics'
+;; -ize, -yze: 'undergo process' OR 'cause to undergo process' 
+;;     e.g. 'metastasize' 'catalyze'
+('(able ADJ) '(al ADJ) '(ar ADJ) '(ary ADJ) '(ible ADJ) '(ic ADJ) '(ics N) '(ify V) '(ion N) '(ist N) '(ity N) '(ive ADJ) '(ize V) '(ment N) '(or N) '(ory ADJ) '(ous ADJ) '(yze V))
+
+
