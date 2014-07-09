@@ -9,6 +9,11 @@
 
 ;;; ===PHRASES===
 
+;;; "novel" 
+;;;  consistently shows up in abstracts. 
+;;; 'The data demonstrate that Pax2 is a new target for the JNK signaling module and point 
+;;; to a *novel* mechanism for mediating Pax-dependent transcription regulation.
+
 ;;; from Hallmarks of Cancer
 
 ;;; "recent results"
