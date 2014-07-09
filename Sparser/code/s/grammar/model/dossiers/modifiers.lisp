@@ -213,13 +213,14 @@
 
 ;;;---------- likelihood
 
+(define-adjective "likely") ;could be either adj or adv
+(define-adjective "unlikely") 
+
+
 (define-adverb "probably")
 (define-adverb "definitely")
-(define-adjective "likely") ;could be either adj or adv
 (define-adverb "possibly") 
 (define-adverb "potentially")
-(define-adverb "unlikely") ; not really an adverb? 
-
 
 
 ;;;---------------------------
@@ -261,14 +262,12 @@
 
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
-
 (define-sequencer/determiner "next")
 (define-sequencer/determiner "subsequent")
 (define-sequencer/determiner "following")
 
 (define-sequencer/preposition "after")
 (define-sequencer/preposition "before")
-
 (define-sequencer/preposition "during")
 
 
@@ -313,6 +312,8 @@
 ;;; adjectives / adverbs
 ;;;---------
 (adj/adv "obvious" "obviously" :super-category 'modifier)
+(adj/adv "operational" "operationally" :super-category 'modifier)
+(adj/adv "severe" "severely" :super-category 'modifier)
 
 ;;;---------
 ;;; adverbs
@@ -338,6 +339,7 @@
 (define-adverb "adequately")
 (define-adverb "admirably")
 (define-adverb "admittedly")
+(define-adverb "again") ;; <--- could be part of a sequence?
 (define-adverb "agriculturally")
 (define-adverb "alarmingly")
 (define-adverb "all the way")
@@ -488,7 +490,8 @@
 (define-adverb "illustratively")
 (define-adverb "implicitly")
 (define-adverb "importantly")
-(define-adverb "in contrast")
+(define-adverb "in contrast") ; sometimes modified: "in stark contrast"
+(define-adverb "in stark contrast")
 (define-adverb "in fact")
 (define-adverb "in general")
 (define-adverb "in large part")
@@ -561,6 +564,7 @@
 (define-adverb "newly")
 (define-adverb "nicely")
 (define-adverb "nominally")
+(define-adverb "noninvasively")
 (define-adverb "normally")
 (define-adverb "notably")
 (define-adverb "noticeably")
@@ -615,6 +619,7 @@
 (define-adverb "radically")
 (define-adverb "randomly")
 (define-adverb "rapidly")
+(define-adverb "rather")
 (define-adverb "readily")
 (define-adverb "realistically")
 (define-adverb "really") ;; not really (ha!)
@@ -639,7 +644,6 @@
 (define-adverb "seemingly")
 (define-adverb "selectively")
 (define-adverb "seriously")
-(define-adverb "severely")
 (define-adverb "sexually")
 (define-adverb "sharply")
 (define-adverb "shortly")
@@ -746,6 +750,7 @@
 ;;; bulk of adjectives
 ;;;-----
 
+(define-adjective "aberrant")
 (define-adjective "able") ; want to give "to" tree family? "able to do x" .. or no.
 (define-adjective "abnormal")
 (define-adjective "abundant")
@@ -771,6 +776,7 @@
 (define-adjective "bioactive")
 (define-adjective "biological")
 (define-adjective "bona fide")
+(define-adjective "broad")
 (define-adjective "cancerous")
 (define-adjective "canonical")
 (define-adjective "capable") ;of
@@ -799,6 +805,7 @@
 (define-adjective "critical")
 (define-adjective "crucial")
 (define-adjective "cytotoxic")
+(define-adjective "decisive")
 (define-adjective "defective")
 (define-adjective "deficient")
 (define-adjective "deleterious")
@@ -808,12 +815,15 @@
 (define-adjective "different") ;interesting
 (define-adjective "differential")
 (define-adjective "difficult")
+(define-adjective "direct")
+(define-adjective "distant" :form 'spatial-adjective)
 (define-adjective "distinct")
 (define-adjective "distinctive")
 (define-adjective "diverse")
 (define-adjective "dominant")
 (define-adjective "dormant")
 (define-adjective "druggable")
+(define-adjective "dynamic")
 (define-adjective "dysfunctional")
 (define-adjective "economical")
 (define-adjective "efficient")
@@ -824,6 +834,7 @@
 (define-adjective "environmental")
 (define-adjective "epigenetic")
 (define-adjective "epithelial")
+(define-adjective "evasive")
 (define-adjective "eventual" :form 'temporal-adjective)
 (define-adjective "excessive")
 (define-adjective "experimental")
@@ -834,6 +845,7 @@
 (define-adjective "extrinsic")
 (define-adjective "familiar")
 (define-adjective "fascinating")
+(define-adjective "foreign")
 (define-adjective "free") ;<--- "free of..."
 (define-adjective "frequent") ;
 (define-adjective "full-blown")
@@ -843,9 +855,12 @@
 (define-adjective "genomic") ;genome
 (define-adjective "genuine")
 (define-adjective "given")
+(define-adjective "good")
 (define-adjective "gradual")
+(define-adjective "hematopoietic")
 (define-adjective "heritable")
 (define-adjective "heterotypic")
+(define-adjective "histopathological"
 (define-adjective "homeostatic")
 (define-adjective "hybrid")
 (define-adjective "hyperactive")
@@ -870,15 +885,18 @@
 (define-adjective "insular")
 (define-adjective "intact")
 (define-adjective "integral")
+(define-adjective "interconnected")
 (define-adjective "intracellular" :form 'spatial-adjective)
 (define-adjective "intratumoral" :form 'spatial-adjective)
 (define-adjective "intrinsic")
 (define-adjective "invisible")
 (define-adjective "irreparable")
+(define-adjective "irreversible")
 (define-adjective "karyotypic")
 (define-adjective "key") ;also noun
 (define-adjective "known")
 (define-adjective "large")
+(define-adjective "latent")
 (define-adjective "lineal")
 (define-adjective "local")
 (define-adjective "logical")
@@ -900,6 +918,7 @@
 (define-adjective "national")
 (define-adjective "natural")
 (define-adjective "nearby" :form 'spatial-adjective)
+(define-adjective "necessary")
 (define-adjective "necrotic")
 (define-adjective "neighboring" :form 'spatial-adjective)
 (define-adjective "neoplastic")
@@ -910,6 +929,7 @@
 (define-adjective "nonmutational")
 (define-adjective "normal")
 (define-adjective "notable")
+(define-adjective "null")
 (define-adjective "obscure")
 (define-adjective "oncogenic")
 (define-adjective "ongoing")
@@ -923,6 +943,7 @@
 (define-adjective "passive")
 (define-adjective "pericellular" :form 'spatial-adjective)
 (define-adjective "peritumoral" :form 'spatial-adjective)
+(define-adjective "permissive")
 (define-adjective "perpendicular" :form 'spatial-adjective)
 (define-adjective "persistent")
 (define-adjective "physiologic")
@@ -955,15 +976,18 @@
 (define-adjective "recent" :form 'temporal-adjective)
 (define-adjective "receptive")
 (define-adjective "recessive")
+(define-adjective "reciprocal")
 (define-adjective "redundant")
 (define-adjective "regulatory")
 (define-adjective "related")
 (define-adjective "remarkable")
+(define-adjective "renal") ;kidney
 (define-adjective "replicative") 
 (define-adjective "resistant")
 (define-adjective "reversible")
 (define-adjective "selective")
 (define-adjective "senescent")
+(define-adjective "short")
 (define-adjective "significant")
 (define-adjective "similar") ;relation
 (define-adjective "simple")
@@ -978,6 +1002,7 @@
 (define-adjective "substantial")
 (define-adjective "successive") ;;!!!
 (define-adjective "sufficient")
+(define-adjective "supportive")
 (define-adjective "susceptible")
 (define-adjective "systematic")
 (define-adjective "telomeric") ;telomere
@@ -987,7 +1012,7 @@
 (define-adjective "transitive")
 (define-adjective "transitory")
 (define-adjective "transmembrane")
-(define-adjective "tumorigenic")
+(define-adjective "tumorigenic") ;tumorigenesis
 (define-adjective "two-dimensional") ;synonym "2D", is this spatial?
 (define-adjective "unanticipated")
 (define-adjective "unbalanced")
@@ -1003,6 +1028,7 @@
 (define-adjective "vast")
 (define-adjective "versatile")
 (define-adjective "viable")
+(define-adjective "vigorous")
 (define-adjective "widespread")
 
 
