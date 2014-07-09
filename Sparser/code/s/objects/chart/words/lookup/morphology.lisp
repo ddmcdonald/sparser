@@ -144,6 +144,7 @@
 ;; X-al/-ar/-ary/-ic/-ous: 'of or pertaining to X' 
 ;;     e.g. 'epithelial' 'vascular' 'enzymatic' 'cancerous' (but "chemical" can also be noun)
 ;; -ase: naming convention for enzymes
+;; -blast/-cyte: denoting (types of) cell
 ;; -ence/-ency: 'process/characteristic' e.g. 'senescence' 'potency'
 ;; -ent: e.g. 'quiescent'
 ;; X-genesis: 'process of creating X' e.g. 'angiogenesis' 'embryogenesis'
@@ -152,12 +153,15 @@
 ;; -ive: e.g. 'reactive'
 ;; -ize, -yze: 'undergo process' OR 'cause to undergo process' 
 ;;     e.g. 'metastasize' 'catalyze'
+;; -oma: denoting a tumor
 (defparameter *suffix-pos-table*
   '(("able" ADJ)
     ("al" ADJ)
     ("ar" ADJ)
     ("ary" ADJ)
     ("ase" N)
+    ("blast" N)
+    ("cyte" N)
     ("ence" N)
     ("ency" N)
     ("ent" ADJ)
@@ -173,6 +177,7 @@
     ("ive" ADJ)
     ("ize" V)
     ("ment" N)
+    ("oma" N)
     ("or" N)
     ("ory" ADJ)
     ("ous" ADJ)
