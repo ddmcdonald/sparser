@@ -159,10 +159,16 @@
 ;; ADJ == adjective, N == noun, V == verb
 ;; X-able/-ible: 'capable of X' OR 'able to be Xed'
 ;; X-al/-ar/-ary/-ic/-ous: 'of or pertaining to X' 
-;;     e.g. 'epithelial' 'vascular' 'enzymatic' 'cancerous'
+;;     e.g. 'epithelial' 'vascular' 'enzymatic' 'cancerous' (but "chemical" can also be noun)
+;; -ase: naming convention for enzymes
+;; -ence/-ency: 'process/characteristic' e.g. 'senescence' 'potency'
+;; -ent: e.g. 'quiescent'
+;; X-genesis: 'process of creating X' e.g. 'angiogenesis' 'embryogenesis'
+;; -ian: e.g. 'mammalian'
 ;; -ics: e.g. 'energetics'
+;; -ive: e.g. 'reactive'
 ;; -ize, -yze: 'undergo process' OR 'cause to undergo process' 
 ;;     e.g. 'metastasize' 'catalyze'
-('(able ADJ) '(al ADJ) '(ar ADJ) '(ary ADJ) '(ible ADJ) '(ic ADJ) '(ics N) '(ify V) '(ion N) '(ist N) '(ity N) '(ive ADJ) '(ize V) '(ment N) '(or N) '(ory ADJ) '(ous ADJ) '(yze V))
+('(able ADJ) '(al ADJ) '(ar ADJ) '(ary ADJ) '(ase N) '(ence N) '(ency N) '(ent ADJ) '(genesis N) '(ian ADJ) '(ible ADJ) '(ic ADJ) '(ics N) '(ify V) '(ion N) '(ist N) '(ity N) '(ive ADJ) '(ize V) '(ment N) '(or N) '(ory ADJ) '(ous ADJ) '(yze V))
 
 
