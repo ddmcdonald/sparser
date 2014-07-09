@@ -78,23 +78,6 @@
         *ending-that-was-stripped-off* ))))
 
 
-(defun affix-checker (string candidate-affixes)
-  (let ((length (length string)))
-    (when (> length 3)
-      (let ((n (aref string (- length 1)))
-            (n-1 (aref string (- length 2)))
-            (n-2 (aref string (- length 3))))
-        (dolist (affix candidate-affixes)
-          (let ((index (1- (length affix))))
-            (when (eq n (aref affix index))
-              (when (eq n-1 (aref affix (- index 1)))
-                (when (eq n-2 (aref affix (- index 2)))
-                  ;;/// how to go longer in an elegant way
-                  (return-from affix-checker 7))))))))))
-                
-
-
-
 ;;----- "ed"
 
 (defun try-to-strip-off-ED/wb (index-of-last-char)
@@ -169,6 +152,44 @@
 ;; -ive: e.g. 'reactive'
 ;; -ize, -yze: 'undergo process' OR 'cause to undergo process' 
 ;;     e.g. 'metastasize' 'catalyze'
-('(able ADJ) '(al ADJ) '(ar ADJ) '(ary ADJ) '(ase N) '(ence N) '(ency N) '(ent ADJ) '(genesis N) '(ian ADJ) '(ible ADJ) '(ic ADJ) '(ics N) '(ify V) '(ion N) '(ist N) '(ity N) '(ive ADJ) '(ize V) '(ment N) '(or N) '(ory ADJ) '(ous ADJ) '(yze V))
+(defparameter *suffix-pos-table*
+  '(("able" ADJ)
+    ("al" ADJ)
+    ("ar" ADJ)
+    ("ary" ADJ)
+    ("ase" N)
+    ("ence" N)
+    ("ency" N)
+    ("ent" ADJ)
+    ("genesis" N)
+    ("ian" ADJ)
+    ("ible" ADJ)
+    ("ic" ADJ)
+    ("ics" N)
+    ("ify" V)
+    ("ion" N)
+    ("ist" N)
+    ("ity" N)
+    ("ive" ADJ)
+    ("ize" V)
+    ("ment" N)
+    ("or" N)
+    ("ory" ADJ)
+    ("ous" ADJ)
+    ("yze" V)))
 
 
+(defun affix-checker (string candidate-affixes)
+  (let ((length (length string)))
+    (when (> length 3)
+      (let ((n (aref string (- length 1)))
+            (n-1 (aref string (- length 2)))
+            (n-2 (aref string (- length 3))))
+        (dolist (affix candidate-affixes)
+          (let ((index (1- (length affix))))
+            (when (eq n (aref affix index))
+              (when (eq n-1 (aref affix (- index 1)))
+                (when (eq n-2 (aref affix (- index 2)))
+                  ;;/// how to go longer in an elegant way
+                  (return-from affix-checker 7))))))))))
+                
