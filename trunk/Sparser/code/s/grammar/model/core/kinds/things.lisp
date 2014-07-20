@@ -3,13 +3,14 @@
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  March 2014
+;;;  version:  July 2014
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
+;; 7/20/14 Added lemmas and realizations as needed to hold the
+;; words for categories whose names are ordinary words. 
 
 (in-package :sparser)
 
-(define-adjective "physical")
 
 ;;;------------------------------------------
 ;;; work-a-day categories already in Sparser
@@ -17,11 +18,13 @@
 
 (define-category  kind
   :instantiates :self
+  :lemma (common-noun "kind")
   :binds ((name :primitive word)))
 
 (define-category  individual ;; purely a placeholder like "kind"
   ;; This is the default nominal restriction 
   ;; on circa-2009 abbreviations
+  :realization (:common-noun "individual")
   :binds ((modifier)))
 
 
@@ -38,6 +41,7 @@
 
 (define-category physical
   :specializes endurant
+  :lemma (adjective "physical")
   :binds ((location)) ;; c3-location?
   :documentation
   "Common parent to the physical subclasses.This is the level at
@@ -52,6 +56,7 @@
 
 (define-category object 
   :specializes physical-object
+  :realization (:common-noun "object")
   :documentation
   "Conventional physical objects: chairs, amoeba, mountains, breaths of air.")
 
@@ -83,6 +88,7 @@
 
 (define-category aggregate 
   :specializes physical
+  :realization (:common-noun "aggregate")
   :documentation
   "Aggregates have no unity. They aren't wholes. They don't have good
   connection relations among their parts or a sensible notion of their
