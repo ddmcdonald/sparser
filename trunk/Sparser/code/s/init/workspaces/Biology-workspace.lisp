@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "Biology-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  June 2014
+;;;  version:  July 2014
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
@@ -20,8 +20,13 @@
   (ignore-comlex)
   (gload "bio;loader"))
 
-;; 6/9/14
+;; 7/9/14
+; (p “Phosphorylated Ser1507 on APC can prime a phosphorylation of Ser1503 by GSK-3. This scheme accounts for the presence of the six phosphates found in the mass spectroscopic analysis of in vitro-phosphorylated R3.”)
+; (p “Phosphorylated Ser1507 on APC can prime a phosphorylation of Ser1503 by GSK-3.")
+; (p "This scheme accounts for the presence of the six phosphates found in the mass spectroscopic analysis of in vitro-phosphorylated R3.”)
 
+
+;; 6/9/14
 ; (just-bracketing-setting)
 ; (setq *permit-extra-open-parens* t)
 ; (just-bracketing-with-comlex-setting)
