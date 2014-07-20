@@ -860,7 +860,7 @@
 (define-adjective "hematopoietic")
 (define-adjective "heritable")
 (define-adjective "heterotypic")
-(define-adjective "histopathological"
+(define-adjective "histopathological")
 (define-adjective "homeostatic")
 (define-adjective "hybrid")
 (define-adjective "hyperactive")
