@@ -218,7 +218,21 @@
 
 
 
-;;--- Check for legal keywords in realization field of category
+
+
+
+
+;;--- Check for legal keywords in realization field of a category
+
+(defparameter *legal-word-rdata-keywords*
+  '(:main-verb :common-noun :proper-noun
+    :quantifier :adjective :interjection
+    :adverb :preposition :word :standalone-word))
+
+(defparameter *legal-rdata-keywords*
+  `(:tree-family :mapping :special-case-head :additional-rules
+    ,@*legal-word-rdata-keywords*))
+
 
 (defun vet-rdata-keywords (category rdata)
   (do ((key (car rdata) (car rest))
@@ -230,14 +244,7 @@
               ~%    which is in a keyword position but isn't a keyword"
              category key))
 
-    (unless (member key
-                    '(:tree-family :mapping
-                      :main-verb :common-noun :proper-noun
-                      :quantifier :adjective :interjection
-                      :adverb :preposition :word :standalone-word
-                      :special-case-head
-                      :additional-rules )
-
+    (unless (member key *legal-rdata-keywords*
                     :test #'eq)
       (error "In the realization data for ~A~
               ~%there is the key ~A~
@@ -329,6 +336,39 @@
 ;; :modal and :number ore on defined-type-of-single-word 
 ;; but not head-word-rule-construction-dispatch, which has
 ;; standalone-word just itself
+
+
+;;--- The word case just by itself
+
+(defun setup-category-lemma (category word-expr)
+  "Used when the name of a category is the same as some word,
+   e.g. 'comparative', and the realization field is used
+   to provide the rspec for the words of instances of the category."
+  ;;/// look at apply-realization-schema-to-individual for part of
+  ;; the old approach to this problem
+  (unless (and (listp word-expr)
+               (= 2 (length word-expr)))
+    (push-debug `(,category ,word-expr))
+    (error "The lemma value for ~a is ot a list of two items:~
+          ~%  ~a" category word-expr))
+  (let ((keyword (car word-expr))
+        (string (cadr word-expr)))
+    (unless (keywordp keyword) ;; friendly DWIM
+      (setq keyword (intern (symbol-name keyword) (find-package :keyword))))
+    (unless (memq keyword *legal-word-rdata-keywords*)
+      (error "Unexpected keyword in lemma for ~a:~%~a"
+             category keyword))
+    (unless (stringp string)
+      (error "Word argument in lemma for ~a is not a string" string))
+
+    (let* ((head-word (deref-rdata-word string category))
+           (word-arg `(,keyword ,head-word))
+           (rules (head-word-rule-construction-dispatch
+                   word-arg category category)))
+      (add-rules-to-category category rules))))
+
+
+
 
 
   
