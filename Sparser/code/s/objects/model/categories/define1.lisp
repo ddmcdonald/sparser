@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.4 May 2014
+;;;  version:  1.5 July 2014
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -43,6 +43,8 @@
 ;;      and generalized a little. 
 ;;     (6/9/14) Allow bindings on categories to consult the mixins for
 ;;      the variables.
+;; 1.5 (7/17/14) Added :lemma option to categories for the word that corresponds
+;;      to the name of the category. 
 
 (in-package :sparser)
 
@@ -113,6 +115,7 @@
                                             bindings
                                             ((:restrict restrictions))
                                             ((:realization rdata))
+                                            lemma
                                             index )
 
   (let ((specialized-category
@@ -171,6 +174,9 @@
 
     (when rdata
       (setup-rdata category rdata))
+
+    (when lemma
+      (setup-category-lemma category lemma))
 
     (when *CLOS*
       (setup-backing-clos-class category mixins :referential))
