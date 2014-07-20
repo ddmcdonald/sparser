@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "comparatives"
 ;;;    Module:   "grammar;rules:syntax:"
-;;;   Version:   October 1994
+;;;   Version:   July 2014
 
-;; initiated 7/29/94. 10/24 added defdata
+;; initiated 7/29/94. 10/24/94 added defdata
+;; 7/20/14 Added a lemma for "comparative"
 
 (in-package :sparser)
 
@@ -13,13 +14,12 @@
  adjective phrases which then start nps -- but that's subtler than
  we need since modals are being glossed as starting vg's etc.  |#
 
-(define-adjective "comparative")
-
 (define-category  comparative
   :instantiates nil
   :specializes nil
   :binds ((word  :primitive word))   ;; just a stand-in
   :index (:permanent :key word)
+  :lemma (:adjective "comparative")
   :realization (:word word))
 
 
