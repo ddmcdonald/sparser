@@ -43,6 +43,10 @@
   :form np
   :referent (:daughter right-edge))
 
+(def-cfr frequency-of-event ("every" amount-of-time)
+  :form adverb
+  :referent (:daughter right-edge))
+
 ;;deleted the cfr #<PSR544  amount ->  number time>
 ;;otherwise, it parses things like "June 26 2010" as [June]_TIME [26 2010]_AMOUNT
 ;;(delete/cfr# 544)
