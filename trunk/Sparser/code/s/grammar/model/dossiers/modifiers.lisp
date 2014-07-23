@@ -48,7 +48,7 @@
 (define-approximator/determiner "somewhat")
 
 (define-approximator/adverbial  "fairly")
-(define-approximator/adverbial "hardly") ;; can go before adjectives, right?
+(define-approximator/adverbial "hardly")
 (define-approximator/adverbial "mostly")
 (define-approximator/adverbial  "only") ;; "only two" "this can only occur if.."
 
@@ -91,7 +91,8 @@
 ;;
 (define-comparative "fewer"     :brackets '( ].phrase  .[np ))
 (define-comparative "less"      :brackets '( ].phrase  .[np ))
-(define-comparative "more"      :brackets '( ].phrase  .[np ))
+;(define-comparative "more"      :brackets '( ].phrase  .[np .[adj))
+;(define-comparative "aa"      :brackets *adverb-brackets*)
 (define-comparative "most"      :brackets '( ].phrase  .[np ))
 
 
@@ -213,13 +214,14 @@
 
 ;;;---------- likelihood
 
+(adj/adv "possible" "possibly" :super-category 'modifier)
+
 (define-adjective "likely") ;could be either adj or adv
 (define-adjective "unlikely") 
 
 
 (define-adverb "probably")
-(define-adverb "definitely")
-(define-adverb "possibly") 
+(define-adverb "definitely") 
 (define-adverb "potentially")
 
 
@@ -248,7 +250,7 @@
 
 (define-quantity "multiple")
 (define-quantity "numerous")
-(define-quantity  "several")
+(define-quantity "several")
 (define-quantity "unlimited")
 (define-quantity "various")
 
@@ -397,6 +399,7 @@
 (define-adverb "conditionally")
 (define-adverb "confidently")
 (define-adverb "consequently")
+(define-adverb "considerably")
 (define-adverb "consistently")
 (define-adverb "continuously")
 (define-adverb "conventionally")
@@ -490,11 +493,12 @@
 (define-adverb "illustratively")
 (define-adverb "implicitly")
 (define-adverb "importantly")
-(define-adverb "in contrast") ; sometimes modified: "in stark contrast"
+(define-adverb "in contrast")
 (define-adverb "in stark contrast")
 (define-adverb "in fact")
 (define-adverb "in general")
 (define-adverb "in large part")
+(define-adverb "in one way or another")
 (define-adverb "in turn") ;; sequential?
 (define-adverb "inaccurately")
 (define-adverb "inadvertently")
@@ -657,6 +661,7 @@
 (define-adverb "so far") ;;hm
 (define-adverb "socially")
 (define-adverb "solely")
+(define-adverb "somehow")
 (define-adverb "sparingly")
 (define-adverb "sparsely")
 (define-adverb "spatially")
@@ -729,8 +734,6 @@
 (define-adverb "widely")
 (define-adverb "wonderfully")
 
-
-
 ;;;------
 ;;; adjectives
 ;;;------
@@ -769,6 +772,7 @@
 (define-adjective "antiapoptotic")
 (define-adjective "antitumoral")
 (define-adjective "apoptotic")
+(define-adjective "appropriate")
 (define-adjective "autocrine")
 (define-adjective "avian")
 (define-adjective "basal")
@@ -800,6 +804,7 @@
 (define-adjective "confluent")
 (define-adjective "consistent") ;with
 (define-adjective "constitutive")
+(define-adjective "continual")
 (define-adjective "continuous") ; process-y
 (define-adjective "counterintuitive")
 (define-adjective "critical")
@@ -810,12 +815,14 @@
 (define-adjective "deficient")
 (define-adjective "deleterious")
 (define-adjective "demonstrable")
+(define-adjective "derivative")
 (define-adjective "detailed")
 (define-adjective "dichotomous")
 (define-adjective "different") ;interesting
 (define-adjective "differential")
 (define-adjective "difficult")
 (define-adjective "direct")
+(define-adjective "discrete")
 (define-adjective "distant" :form 'spatial-adjective)
 (define-adjective "distinct")
 (define-adjective "distinctive")
@@ -845,6 +852,7 @@
 (define-adjective "extrinsic")
 (define-adjective "familiar")
 (define-adjective "fascinating")
+(define-adjective "feasible")
 (define-adjective "foreign")
 (define-adjective "free") ;<--- "free of..."
 (define-adjective "frequent") ;
@@ -857,6 +865,9 @@
 (define-adjective "given")
 (define-adjective "good")
 (define-adjective "gradual")
+(define-adjective "gross")
+(define-adjective "harmful")
+(define-adjective "heavy")
 (define-adjective "hematopoietic")
 (define-adjective "heritable")
 (define-adjective "heterotypic")
@@ -865,11 +876,13 @@
 (define-adjective "hybrid")
 (define-adjective "hyperactive")
 (define-adjective "hyperresponsive")
+(define-adjective "hypoxic") ;low-oxygen
 (define-adjective "ill")
 (define-adjective "immune")
 (define-adjective "immunosuppressive")
 (define-adjective "implicit")
 (define-adjective "important")
+(define-adjective "impressive")
 (define-adjective "inactivated")
 (define-adjective "inadequate")
 (define-adjective "inappropriate")
@@ -877,6 +890,7 @@
 (define-adjective "incomplete")
 (define-adjective "independent")
 (define-adjective "inflammatory") 
+(define-adjective "informative")
 (define-adjective "innate")
 (define-adjective "inner" :form 'spatial-adjective)
 (define-adjective "innocuous")
@@ -938,6 +952,7 @@
 (define-adjective "orthogonal")
 (define-adjective "outer" :form 'spatial-adjective)
 (define-adjective "overt")
+(define-adjective "own")
 (define-adjective "paradoxical")
 (define-adjective "particular")
 (define-adjective "passive")
@@ -989,18 +1004,21 @@
 (define-adjective "senescent")
 (define-adjective "short")
 (define-adjective "significant")
+(define-adjective "silent") ;in terms of mutation: no resultant change in phenotype
 (define-adjective "similar") ;relation
 (define-adjective "simple")
 (define-adjective "solid")
 (define-adjective "somatic")
 (define-adjective "specific")
 (define-adjective "spontaneous")
+(define-adjective "stable")
 (define-adjective "stromal") ;stroma
 (define-adjective "structural")
 (define-adjective "subcritical")
 (define-adjective "suboptimal")
 (define-adjective "substantial")
-(define-adjective "successive") ;;!!!
+(define-adjective "successful")
+(define-adjective "successive") ;!!!
 (define-adjective "sufficient")
 (define-adjective "supportive")
 (define-adjective "susceptible")
@@ -1008,6 +1026,7 @@
 (define-adjective "telomeric") ;telomere
 (define-adjective "therapeutic") ;related to therapy
 (define-adjective "tractable")
+(define-adjective "transcriptional") ;transcription: process
 (define-adjective "transformative")
 (define-adjective "transitive")
 (define-adjective "transitory")
@@ -1030,5 +1049,5 @@
 (define-adjective "viable")
 (define-adjective "vigorous")
 (define-adjective "widespread")
-
+(define-adjective "wrong")
 
