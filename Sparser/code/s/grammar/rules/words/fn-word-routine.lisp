@@ -100,6 +100,9 @@
 ;; set that involve a single label and lead to form-rules.
 ;; See etf-form-substitution-label for the list. 
 
+;; (setq *name* T)
+(defparameter *ignore-redefine-warning* nil)
+
 (defun define-function-term (string form 
                              &key  brackets super-category
                                    rule-label discriminator
@@ -133,8 +136,10 @@
                       (find-package :sparser))
               base-name)))
       (when (category-named category-name)
+        (unless (*ignore-redefine-warning*) 
         (cerror "Ignore and keep going"
-                "We're about to redefine the category ~a" category-name))
+                "We're about to redefine the category ~a" category-name)))
+    
 
       (let ((category ;; for the function word
              (define-category/expr category-name  ;; e.g. 'only'
