@@ -99,6 +99,10 @@
     ((:modifier (adjective (adverb adjective)
                   :head right-edge
                   :method (modified left-edge right-edge)))
+    
+     (:modifier (temporal-adjective (adverb temporal-adjective)
+                  :head right-edge
+                  :method (modified left-edge right-edge)))
      
      ;; maybe?
      (:modifier (adjp (adverb adjp)
