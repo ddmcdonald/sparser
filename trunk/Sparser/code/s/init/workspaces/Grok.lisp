@@ -63,8 +63,6 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 ;; (grok-setting)  -- for meta-.
 
-;; (setq  *forest-level-protocol* 'parse-forest-and-do-treetops/referents-too)
-;; (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
 
 ;;--- Alternative post-parsing segment handlers
 ;  (do-normal-segment-finished-options)  ;; built-in default
@@ -76,7 +74,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 
 (defun syn-test (&optional (text *iraqi-girl*))
-  (setq *forest-level-protocol* 'parse-forest-and-do-treetops)
+  (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
   (setq *do-forest-level* t)
   (setq *allow-pure-syntax-rules* t)
   (setq *new-segment-coverage* :trivial) ;; which version of strong DM
@@ -112,7 +110,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (f "/Users/ddm/Sparser/Sparser/code/s/drivers/timing/Bankruptcy/Eastern/just-body.lisp")
 
 ;; (p *iraqi-girl*)
-;; (p "in Iraq. H5N1 has killed at least 91 people,")
+;; (p "in Iraq, H5N1 has killed at least 91 people,")
 
 ;; (grok-pass-three-setup)
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/1 Aljazeera_Jan-18.txt")
@@ -143,111 +141,9 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
 
 
-;;;--------
-;;; Traces
-;;;--------
-
-;; *trace-set-status*
-
-(defun trace-segmentation ()
-  (trace-brackets)
-  (trace-segment-completion)
-  (trace-segments)
-  (trace-network)
-  (trace-network-flow)
-  (trace-status-history))
-
-(defun untrace-segmentation ()
-  (untrace-brackets)
-  (untrace-segment-completion)
-  (untrace-segments)
-  (untrace-network)
-  (untrace-network-flow)
-  (untrace-status-history))
-
-;; (trace-forest-edges) ;; like trace-edges but over treetops
-
-;; (trace-pnf)  ;; when proper names / capitalized sequences are implicated
-
-;; (no-Sparser-traces)  ;; turn the traces off
-
-;; (brackets-on <string for a word>)  ;; usually always lowercase
-;; (brackets-on <number of a position>)
-
-
-;; (trace-fsas)
-;; (trace-jfp-sections)
-
-;; ;; objects/traces/psp1
-;; (trace-network) ;; for low-level scan
-;; (trace-network-flow) ;; lower, e.g. bracket introduction and changes
-;; (trace-brackets)
-
-;; (trace-pnf)
-;; (trace-segments)
-
-;; (trace-sdm&p)
-;; (trace-ns-sequences)
-;; (trace-edges) ;; = *parse-edges* + (trace-edge-creation) + (trace-edge-check)
-;; (trace-scan-patterns)
-
-;; (trace-conjunction)
-;; (trace-parentheses)
-
-;; (trace-psi)
-;; (trace-psi-construction)
-;; (trace-referent-creation)
-;; (trace-bind-open-var)
-
-(defun trace-forest ()
-  (trace-treetops)
-  (trace-da-hook)
-  (trace-da)
-  (trace-extension))
-(defun untrace-forest ()
-  (untrace-treetops)
-  (untrace-da-hook)
-  (untrace-da)
-  (untrace-extension))
-
-
-
-
-;; (no-traces)
-(defun no-traces ()
-  (untrace-fsas)
-  (untrace-pnf)
-  ;(untrace-jfp-sections)
-  (untrace-network)
-  (untrace-network-flow)
-  (untrace-status-history)
-  (untrace-brackets)
-  (untrace-segments)
-  (untrace-segment-completion)
-  (untrace-treetops)
-  (untrace-da-hook)
-  (untrace-da)
-  (untrace-extension)
-  (untrace-edges)
-  (untrace-edge-multiplication)
-  (untrace-treetops)
-  (unTrace-forest-edges)
-  (untrace-scan-patterns)
-  (untrace-sdm&p)
-  (untrace-ns-sequences)
-  (untrace-conjunction)
-  (untrace-parentheses)
-  (untrace-psi)
-  (untrace-psi-construction)
-  (untrace-referent-creation)
-  (untrace-bind-open-var)
-  (setq *readout-segments* nil)
-  (setq *trace-edge-creation* nil)
-  (setq *trace-paired-punctuation* nil)
-  (setq *trace-completion-hook* nil))
-
-
+;;;------------
 ;;; for meta-.
+;;;------------
 
 ;; abbrev:  ier 
 ;;  tts  print-treetops
