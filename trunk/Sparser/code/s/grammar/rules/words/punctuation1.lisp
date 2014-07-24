@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.2 October 1994
+;;;   Version:   1.2 July 2014
 
 ;; 1.0  (9/21/92 v2.3) added everything else, in ascii order
 ;; 1.1  (4/9/93) moved newline to required
 ;; 1.2  (9/26/94) added some globals for quick reference to some of these
-;;      (10/19) added another one, 10/24 ditto
+;;      (10/19) added another one, 10/24/94 ditto
+;;      (7/20/14) Added a parameter for hyphen
 
 (in-package :sparser)
 
@@ -67,6 +68,8 @@
 (defparameter *the-punctuation-colon* (punctuation-named #\:))
 
 (defparameter *the-punctuation-open-angle-bracket* (punctuation-named #\<))
+
+(defparameter *the-punctuation-hyphen* (punctuation-named #\-))
 
 
 
