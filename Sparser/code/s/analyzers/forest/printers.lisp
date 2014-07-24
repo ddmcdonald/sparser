@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   0.7 Januaey 2014
+;;;   Version:   0.7 July 2014
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -30,6 +30,7 @@
 ;;      *where-print-segment-left-off*. 3/14 added print-treetop-labels-in-segment
 ;;      3/18 added tts-form and tts-ref. 8/16/13 Added display-bracketing
 ;;      1/27/14 added undisplay-bracketing
+;;     (7/24/14) added print-flat-forest as another tool for looking at debris
 
 (in-package :sparser)
 
@@ -71,11 +72,13 @@
 (defun display-bracketing ()
   ;; Interleave the segment markers with
   ;; the running text.
+  (declare (special *record-bracketing-progress*))
   (setq *display-word-stream* nil)
   (setq *readout-segments-inline-with-text* t)
   (setq *record-bracketing-progress* t))
 
 (defun undisplay-bracketing ()
+  (declare (special *record-bracketing-progress*))
   (setq *display-word-stream* t)
   (setq *readout-segments-inline-with-text* nil)
   (setq *record-bracketing-progress* nil))
@@ -397,14 +400,7 @@ there were ever to be any.  ///hook into final actions ??  |#
                                                    (stream *standard-output*))
   (let* ((tt (right-treetop-at starting-position))
          (ending-position
-          (etypecase tt
-            (edge (ev-position (edge-ends-at tt)))
-            (word (chart-position-after starting-position))
-            (symbol
-             (if (eq tt :multiple-initial-edges)
-               (chart-position-after starting-position)
-               (break/debug "Treetop is an unexpected symbol: ~A" tt)))
-            )))
+          (where-tt-ends tt starting-position)))
 
     (print-treetop tt starting-position stream)
 
@@ -419,6 +415,64 @@ there were ever to be any.  ///hook into final actions ??  |#
                        stream)
         :done-printing )
       (sucessive-tts/end-of-chart/print ending-position stop-pos stream))))
+
+
+(defun where-tt-ends (tt starting-position)
+  (typecase tt
+    (edge (ev-position (edge-ends-at tt)))
+    (word (chart-position-after starting-position))
+    (symbol
+     (if (eq tt :multiple-initial-edges)
+       (chart-position-after starting-position)
+       (break/debug "Treetop is an unexpected symbol: ~A" tt)))
+    (otherwise
+     (error "Unexpected type of tt: ~a~%~a"
+            (type-of tt) tt))))
+
+
+
+;;;-----------------------------------
+;;; The whole forest, but on one line
+;;;-----------------------------------
+
+(defun print-flat-forest (&optional
+                          (stream *standard-output*)
+                          (start-pos (if (still-in-the-chart 0)
+                                       (chart-position 1)
+                                       (chart-position (+ 2 *first-chart-position*))))
+                          stop-pos )
+  (let* ((tt (right-treetop-at start-pos))
+         (next-pos (where-tt-ends tt start-pos)))
+    (loop
+      ;; Would be nice to reuse print-treetop, but it's got the
+      ;; indentation thoughly laced through the its code and
+      ;; it's subroutines'
+      (typecase tt
+        (edge 
+         (format stream "~a " (cat-symbol (edge-category tt))))
+        (polyword
+         (format stream "\"~a\" " (pw-pname tt)))
+        (word 
+         (format stream "\"~a\" " (word-pname tt)))
+        (symbol
+         (if (eq tt :multiple-initial-edges)
+           (then (push-debug `(,tt))
+                 (break "stub: print mulitple initial edges"))
+           (error "Treetop is an unexpected symbol: ~a" tt)))
+        (otherwise
+         (error "Unexpected type of tt: ~a~%~a"
+                (type-of tt) tt)))
+
+      ;; straight copy from sucessive-tts/end-of-chart/print
+      (when (or (eq next-pos stop-pos) ;; specified stop-pos
+                (eq (pos-terminal next-pos) ;; end of the text
+                    word::end-of-source)
+                (null (pos-terminal next-pos))) ;; scan's not gotten that far
+        (return :done))
+
+      (setq tt (right-treetop-at next-pos)
+            next-pos (where-tt-ends tt next-pos)))))
+         
 
 
 
@@ -452,14 +506,14 @@ there were ever to be any.  ///hook into final actions ??  |#
         (print-word-as-category-and-text-segment tt stream))))
     (symbol
      (when tt
-     (if (eq tt :multiple-initial-edges)
-       (ecase *treetop-edge/style-for-printing*
-         (:structure
-          (break "First case of using :structure print option ~
-                  with muliple-edge design"))
-         (:category-and-text-segment
-          (print-multiple-edges-tt stream starting-position)))
-       (break/debug "Treetop is an unexpected symbol: ~A" tt)))))
+       (if 
+         (ecase *treetop-edge/style-for-printing*
+           (:structure
+            (break "First case of using :structure print option ~
+                    with muliple-edge design"))
+           (:category-and-text-segment
+            (print-multiple-edges-tt stream starting-position)))
+         (break/debug "Treetop is an unexpected symbol: ~A" tt)))))
   :done-printing)
 
 
