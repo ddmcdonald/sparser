@@ -36,7 +36,7 @@
     (declare (special *do-forest-level* *allow-pure-syntax-rules*
                       *new-segment-coverage* *do-heuristic-segment-analysis*
                       *note-text-relations*))
-    (setq  *forest-level-protocol* 'parse-forest-and-do-treetops) ;; bindable?    
+    (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
     (do-note-text-relations-in-segment)
     (analyze-document-stream document-stream)
     (collect-relations-from-articles)
@@ -46,18 +46,18 @@
 
 
 (defun grok-pass-three (document-stream)
-  (let ((*forest-level-protocol* 'parse-forest-and-do-treetops) ;; semantic rules burned in
-        (*do-forest-level* t)
+  (let ((*do-forest-level* t)
         (*allow-pure-syntax-rules* t)
         (*new-segment-coverage* :trivial)
         (*do-heuristic-segment-analysis* t)
         (*profligate-creation-of-individuals* t)
         (*note-text-relations* nil)) ;; don't overwrite the merged contents on (doc-set)
     ;; The relations noted on this pass will be straight off bindings
-    (declare (special *forest-level-protocol* *do-forest-level*
+    (declare (special *do-forest-level*
                       *allow-pure-syntax-rules* *new-segment-coverage*
                       *do-heuristic-segment-analysis* *note-text-relations*
                       *profligate-creation-of-individuals*))
+    (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
     (do-note-text-relations-in-segment)
     (do-strong-domain-modeling)
     (analyze-document-stream document-stream)
