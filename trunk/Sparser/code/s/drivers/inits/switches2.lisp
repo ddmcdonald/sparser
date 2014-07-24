@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.22 May 2014
+;;;  Version:  2.23 July 2014
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -68,6 +68,8 @@
 ;;       fire-setting so we cover the segments. 3/3/14 added bio-setting. 
 ;;       3/18/14 tweak to the c3 setting. 5/7/14 Completion actions were still
 ;;       running in just-bracketing setting. 5/19/14 Tuned bio-setting.
+;; 2.23 (7/24/14) Converted direct setting of *forest-level-protocol* to 
+;;       calling what-to-do-at-the-forest-level
 
 (in-package :sparser)
 
@@ -114,7 +116,7 @@
           *do-domain-modeling-and-population*)
   (format stream "~%                       do new DM&P? ~A"
 	  *new-dm&p*)
-  (format stream "~%         do strong domain modeling? ~A"
+  (format stream "~%         do simple domain modeling? ~A"
 	  *do-strong-domain-modeling*)
   (format stream "~%    do general actions on treetops? ~A"
           *do-general-actions-on-treetops*)
@@ -258,7 +260,7 @@
   (setq *use-segment-edges-as-segment-defaults* nil)
   (ignore-unknown-words)
   (setq *make-edges-over-new-digit-sequences* t)
-  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
+  (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
   (setq *segment-scan/forest-level-transition-protocol*
         :move-when-segment-can-never-extend-rightwards)
   (setq *do-debris-analysis* nil)
@@ -457,7 +459,7 @@
 (defun checkpoint-ops-setting ()
   (top-edges-setting)
   ;; maybe (setq *do-forest-level* nil) 
-  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops) ;; otherwise
+  (what-to-do-at-the-forest-level :parse-forest-and-do-treetops) ;; otherwise
   (setq *annotate-realizations* nil)
   ;;(setq *keep-number-sequence-raw* t) ??
   (setq *speech* t)
@@ -465,7 +467,7 @@
 
 (defun poirot-interface-setting ()
   (top-edges-setting)
-  (setq  *forest-level-protocol* 'parse-forest-and-do-treetops)
+  (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
   (setq *annotate-realizations* nil)
   (setq *speech* nil)
 ;  (establish-pnf-routine :scan-classify-record) ;; for real names
@@ -480,7 +482,7 @@
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
   (setq *make-edges-for-unknown-words-from-their-suffixes* t)
   (setq *use-segment-edges-as-segment-defaults* t)
-  (setq *forest-level-protocol* 'DA-forest-level)
+  (what-to-do-at-the-forest-level DA-forest-level)
   (setq *do-debris-analysis* t)
   (setq *switch-setting* :debris-analysis))
 
@@ -488,7 +490,7 @@
 (defun dm&p-setting ()
   (debris-analysis-setting)
   (use-unknown-words)
-  (setq *forest-level-protocol* 'dm&p-forest-level)
+  (what-to-do-at-the-forest-level :dm&p-forest-level)
   (setq *dm&p-forest-protocol* 'parse-forest-and-do-treetops)
   (setq *segment-scan/forest-level-transition-protocol*
         :move-only-at-significant-boundary)
