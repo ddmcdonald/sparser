@@ -3,36 +3,69 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: June 2014
+;;; version: July 2014
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
-;; 6/9/14 Pulled types out from regular kinds. 
+;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
 
 (in-package :sparser)
 
+;;;---------------------------
+;;; Taxonomy and simple types
+;;;---------------------------
+
 (define-category has-UID
+  :specializes relation
   :binds ((uid)))
 
-(define-category bio-entity ;; an endurant, though actually a prototype
-  :mixins (has-UID has-name)
-  :binds ((long-form :primitive polyword))
-  :index (:permanent :key name))
-
-(define-category bio-type ;; the name for a class of endurants
-  :specializes bio-entity
-  :mixins (has-UID has-name)
-  :index (:permanent :key name)
-  :realization (:common-noun name))
 
 (define-category bio-process
-  :specializes event
+  :specializes perdurant
+  :mixins (has-UID has-name)
   :documentation "No content by itself, provides a common paraent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
 
+
+;;--- referents for type kinds, v.s. the particulars
+
+#| Gets an 'Inconsistent superclasses' error making
+   it's clos shadow class. Have to look up the problem
+
+ has-name is a relation, as it has-UID, so the def-class
+ superc list is (abstract relation relation) 
+ Relation is a subclass of abstract, so it's (super sub sub)
+
+
+(define-category bio-type
+  :specializes abstract
+  :mixins (has-UID has-name)
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
 (define-individual 'bio-type
   :name "molecule")
+
+(define-individual 'bio-type
+  :name "amino acid")
+
+(define-individual 'bio-type
+  :name "protein")
+
+(define-individual 'bio-type
+  :name "kinase")
+|#
+
+
+;;--- categories of referents for particulars (see def-bio below)
+
+(define-category bio-entity 
+  :specializes endurant  ;; sweeps a lot under the rug
+  :mixins (has-UID has-name)
+  :binds ((long-form :primitive polyword))
+  :index (:permanent :key name))
+
 
 (define-category molecule  ;; CHEBI:36357
   ;; makes more sense for ATP than H20, but not worrying about whether
@@ -40,75 +73,88 @@
   :specializes bio-entity
   :instantiates :self
   :index (:permanent :key name)
+  :lemma (:common-noun "molecule")
   :realization (:common-noun name))
 
-
-(define-individual 'bio-type
-  :name "amino acid")
 
 (define-category amino-acid
   :specializes molecule
   :instantiates :self
   :index (:permanent :key name)
+  ;;  :lemma (:common-noun "amino-acid") /// optionally-hyphenated pw
   :realization (:common-noun name)) ;; need hypenated version
 
-
-(define-individual 'bio-type
-  :name "protein")
 
 (define-category protein
   :specializes molecule
   :instantiates :self
   :rule-label bio-entity
   :index (:permanent :key name)
+  :lemma (:common-noun "protein")
   :realization (:common-noun name))
   
-
-(define-individual 'bio-type
-  :name "kinase")
 
 (define-category kinase  ;; GO:0016301
   :specializes protein
   :instantiates :self
   :rule-label bio-entity
   :index (:permanent :key name)
+  :lemma (:common-noun "kinase")
   :realization (:common-noun name))
 
 
-(defun def-bio (short long kind &key greek identifier synonyms)
+;;--- macro for defining individual particulars
+
+(defmacro def-bio (short kind &key greek identifier long synonyms)
   ;; short = "NIK", long = "NF-κB-inducing kinase"
   ;; kind = kinase, greek = "alpha"
   ;; Makes individuals (particulars), that are instances of 
   ;; a specific kind. Staying vague about what they might denote.
-  (unless (and kind (symbolp kind))
-    (error "A symbol giving kind (category) of ~a is required." short))
+  (unless (and (stringp short) (symbolp kind))
+    (error "Malformed definition: short form must be a string,~
+          ~%and the kind must be a symbol"))
+  (when greek
+    (typecase greek
+      (string)
+      (cons
+       (unless (every #'stringp greek)
+         (error "The Greek letters in a set of them must all be strings")))
+      (otherwise
+       (error "Spelled out Greek letter must be a string"))))
+  (when identifier
+    (unless (stringp identifier)
+      (error "OBO identifier must be a string")))
+  (when long
+    (unless (stringp long)
+      (error "Long form of name must be a string")))
+  (when synonyms
+    (unless (and (listp synonyms)
+                 (every #'stringp synonyms))
+      (error "The synonyms must be a list of strings")))
+  `(def-bio/expr ,short ',kind 
+     :greek ',greek :identifier ',identifier 
+     :long ,long :synonyms ',synonyms))
+
+(defun def-bio/expr (short kind &key greek identifier long synonyms)
   (let* ((word (resolve/make short))
          (category (category-named kind :break-if-undefined))
          (label (or (override-label category) category))
-         (form (category-named 'common-noun)) ;;/// presumably
-         (i (find-or-make-individual category :name word))
-         rules  )
+         (form (category-named 'common-noun))
+         (*inihibit-constructing-plural*  t)
+         rules  i )
+    (declare (special *inihibit-constructing-plural*))
+
+    (setq i (find-or-make-individual category :name word))
     ;; The find-or-make call will set up a rule for the short form
     ;; as a common noun that has this individual as its referent.
-    ;;///// Except that it isn't because it doesn't know what
-    ;; variable goes into the word-position in, e.g.
-    ;; (:schema ((:common-noun . #<word "protein">) nil nil nil)
-    ;; So we'll do it by hand
-    ;;//////////////// brackets???
-    ;;???? identical to head-noun  ????
-    #+ignore(let ((hack-rule
-           (define-cfr label `(,word)
-             :form category::common-noun
-             :referent i)))
-      (push hack-rule rules))
-
+   
     (when identifier
       (bind-variable 'uid identifier i))
 
     (when synonyms ;; quoted list of strings
       (dolist (syn synonyms)
         (push (define-cfr label `(,(resolve/make syn))
-                :form category::common-noun
+                :form form
                 :referent i)
               rules)))
 
@@ -127,8 +173,11 @@
               short long greek label form i)))
         (setq rules (nconc additional-rules rules))))
 
-    (push-onto-plist i rules :rules)
+    (when rules
+      (push-onto-plist i rules :rules))
+
     i))
+
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
   (unless *greek-character-map*
@@ -169,7 +218,4 @@
         (push rule rules)))
 
     rules))
-
-
-
 

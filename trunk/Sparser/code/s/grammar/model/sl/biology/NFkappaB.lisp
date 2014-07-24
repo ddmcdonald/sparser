@@ -13,29 +13,6 @@
 ;;; entities
 ;;;----------
 
-(def-bio "nfkappab2" nil 'protein ;; transcription factor ???
-  :identifier "PR:000011178" 
-  :greek "kappa")
-
-(def-bio "NF-kappab" nil 'protein 
-  :identifier "GO:0071159" 
-  :greek "kappa")
-
-(def-bio "p100" nil 'protein :identifier "PR:000011178")
-
-(def-bio "p52" nil 'protein)  ;; :identifier ??
-
-(def-bio "NIK" "NF-kappaB-inducing kinase" 'kinase
-  :identifier "GO:0004704"
-  :greek "kappa")
-
-;; its downstream kinase, IkappaB kinase alpha (IKKalpha).
-(def-bio "IKKalpha" "IkappaB kinase alpha" 'kinase
-  :identifier "PR:000001775"
-  :greek '("kappa" "alpha"))
-
-
-
 ;;;-------------------------
 ;;; relations and processes
 ;;;-------------------------
@@ -145,12 +122,6 @@ unless we go all the way out to 'regulated by' and 'popular to'
 and pull in an agent and a <what?>
 |#
 
-; Modeling it like "assassinate"
-(svo/passive/nominal "regulate" "regulation"
-  :super-category bio-process
-  :patient bio-process  ;; regulation of <process>
-  :agent bio-entity)    ;; by <entity>
-
 
 
 ;;------------ s2 (kappa-2)
@@ -198,20 +169,6 @@ e5 e6                            "by" :: by, BY |#
 ;  "for inducible processing of p100"
 ;  "overexpression of IKKα ... fails to induce p100 processing"
 
-(svo/nominal/adjective "induce" "induction" "inducible"
-                       :subject 'bio-entity :theme 'event) ;; processing of p100
-;;/// want subtypes, want to understand the syntax of "-inducing"
-
-
-;;------------ s4, (kappa-4)
-;; Here, we show that, besides activating IKKalpha, 
-;; NIK also serves as a docking molecule recruiting IKKalpha to p100.
-
-(svo/nominal "activate" "activation"
-   :subject 'bio-entity
-   :theme 'bio-entity)
-
-
 
 
 ;;------------ s5, (kappa-5)
@@ -244,13 +201,7 @@ e5 e6                            "by" :: by, BY |#
 ;; (serines 99, 108, 115, 123, and 872).
 
 ;;--- phosphorylation
-;; GO:0016310	
-;  "activated IKKα phosphorylates specific serines"
-;  "The phosphorylation of these specific serines"
 ;
-(svo/nominal "phosphorylate" "phosphorylation" 
-             :subject 'bio-entity :theme 'bio-entity)
-
 
 ;;------------ s7 (kappa-7)
 ;; The phosphorylation of these specific serines is 

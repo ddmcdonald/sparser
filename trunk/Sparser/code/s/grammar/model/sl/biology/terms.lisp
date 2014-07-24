@@ -1,0 +1,49 @@
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
+;;;
+;;;    File: "terms"
+;;;  Module: "grammar/model/sl/biology/
+;;; version: July 2014
+
+;; Initiated 7/23/14 by lifting proteins from NFkappaB experiment.
+
+(in-package :sparser)
+
+;;;--------------------------------------------
+;;; for (some of) the abstract in the proposal
+;;;--------------------------------------------
+
+(def-bio "nfkappab2" protein 
+  :identifier "PR:000011178" 
+  :greek "kappa")
+
+(def-bio "NF-kappab" protein 
+  :identifier "GO:0071159" 
+  :greek "kappa")
+
+(def-bio "p100" protein :identifier "PR:000011178")
+
+(def-bio "p52" protein)  ;; :identifier ??
+
+(def-bio "NIK" kinase 
+  :long "NF-kappaB-inducing kinase" 
+  :identifier "GO:0004704"
+  :greek "kappa")
+
+(def-bio "IKKalpha" kinase 
+  :long "IkappaB kinase alpha" 
+  :identifier "PR:000001775"
+  :greek ("kappa" "alpha"))
+
+
+;;;-----------------------------------
+;;; for an example in the starter kit
+;;;-----------------------------------
+
+(def-bio "APC" protein) 
+;; n.b. could be mouse APC for all we know w/o context
+
+(def-bio "GSK-3" protein)
+
+(def-bio "serine" amino-acid :synonyms ("SER"))
+
