@@ -108,6 +108,7 @@
 
 (defun terminate-scan-pattern-search (state)
   ;; common subroutine of Try-to-extend-scan-pattern
+  (declare (special *prior-acceptable-states*))
   (if (state-is-an-accept-state? state)
     (then
       (throw :accepted-scan-pattern/s state))

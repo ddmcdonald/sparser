@@ -39,6 +39,7 @@
 	       word-after)))
 
 (deftrace :ns-first-word-is-bracket-punct (word-before position)
+  (declare (ignore position))
   (when *trace-ns-sequences*
     (trace-msg "[ns] aborting because first word, ~a, is bracket punctuation"
 	       word-before)))

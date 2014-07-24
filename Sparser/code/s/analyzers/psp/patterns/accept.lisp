@@ -31,7 +31,7 @@
 (defun process-accepted-scan-pattern (state)
   (let* ((pattern (state-is-an-accept-state? state))
          (accept-function (sp-accept-function pattern)))
-
+    (push-debug `(,accept-function)) (break "accepted")
 
     *last-scan-pattern-element*
 
@@ -49,6 +49,8 @@
               :category category
               :form (category-named 'proper-noun) ;;/// stand-in
               :rule-name :no-space-pattern-scan )))
+
+        (push-debug `(,edge))
 
         ;;// it definitely needs a referent even if it doesn't get one
         ;; from the accept function -- otherwise it won't have what's

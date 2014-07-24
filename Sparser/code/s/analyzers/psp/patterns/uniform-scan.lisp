@@ -107,7 +107,7 @@
 
       ;; remove terminal punctuation, unless it's hyphen
       (when (eq (pos-capitalization position) :punctuation)
-        (unless (eq (pos-terminal position) word::hyphen)
+        (unless (eq (pos-terminal position) *the-punctuation-hyphen*)
           (pop words)))
 
       (setq words (nreverse words))
@@ -172,7 +172,7 @@
               next-position
               category
               :rule rule
-              :form category::proper-name
+              :form (category-named 'proper-name)
               :referent referent
               :words words)))
         edge)))
