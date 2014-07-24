@@ -9,6 +9,17 @@
 
 (in-package :sparser)
 
+
+;;;------------------------------------------
+;;; keeping track of earlier accepted states
+;;;------------------------------------------
+
+(defvar *prior-acceptable-states* (cons nil nil)
+  "Holds a list of accepted states and the position that was
+   reached at the point when they occurred.")
+
+
+
 ;;;-----------------
 ;;; initializations
 ;;;-----------------
@@ -78,17 +89,6 @@
         (tr :scan-pattern-extension-failed word)
         nil ))))
     
-
-
-
-;;;------------------------------------------
-;;; keeping track of earlier accepted states
-;;;------------------------------------------
-
-(defvar *prior-acceptable-states* (cons nil nil)
-  "Holds a list of accepted states and the position that was
-   reached at the point when they occurred.")
-
 
 
 
