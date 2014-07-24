@@ -96,7 +96,7 @@
         (let ((edge (make-edge-over-long-span
                      pos-before-open
                      pos-after-close
-                     category::angle-brackets
+                     (category-named 'angle-brackets)
                      :rule  :traversal/angle-brackets)))
           edge)))))
 
