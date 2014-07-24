@@ -1,13 +1,119 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991,1992  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1992,2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "init;versions:<current version>:workspace"
-;;;  version:  June 1992
+;;;  version:  July 2014
 
-;; initialized 10/30/91, added to 6/18/92 v2.2
+;; initialized 10/30/91, added to 6/18/92 v2.2. 7/21/14 added some
+;; predefined packages of traces developed for Grok. 
 
 (in-package :sparser)
+
+;;;------------------
+;;; sets of settings
+;;;------------------
+
+(defun trace-segmentation ()
+  (trace-brackets)
+  (trace-segment-completion)
+  (trace-segments)
+  (trace-network)
+  (trace-network-flow)
+  (trace-status-history))
+
+(defun untrace-segmentation ()
+  (untrace-brackets)
+  (untrace-segment-completion)
+  (untrace-segments)
+  (untrace-network)
+  (untrace-network-flow)
+  (untrace-status-history))
+
+
+(defun trace-forest ()
+  (trace-treetops)
+  (trace-da-hook)
+  (trace-da)
+  (trace-extension))
+(defun untrace-forest ()
+  (untrace-treetops)
+  (untrace-da-hook)
+  (untrace-da)
+  (untrace-extension))
+
+
+;; (no-traces)
+(defun no-traces ()
+  (untrace-fsas)
+  (untrace-pnf)
+  ;(untrace-jfp-sections)
+  (untrace-network)
+  (untrace-network-flow)
+  (untrace-status-history)
+  (untrace-brackets)
+  (untrace-segments)
+  (untrace-segment-completion)
+  (untrace-treetops)
+  (untrace-da-hook)
+  (untrace-da)
+  (untrace-extension)
+  (untrace-edges)
+  (untrace-edge-multiplication)
+  (untrace-treetops)
+  (unTrace-forest-edges)
+  (untrace-scan-patterns)
+  (untrace-sdm&p)
+  (untrace-ns-sequences)
+  (untrace-conjunction)
+  (untrace-parentheses)
+  (untrace-psi)
+  (untrace-psi-construction)
+  (untrace-referent-creation)
+  (untrace-bind-open-var)
+  (setq *readout-segments* nil)
+  (setq *trace-edge-creation* nil)
+  (setq *trace-paired-punctuation* nil)
+  (setq *trace-completion-hook* nil))
+
+
+;;--- single trace calls that were convenient in Grok
+
+;; *trace-set-status*
+
+;; (trace-forest-edges) ;; like trace-edges but over treetops
+
+;; (trace-pnf)  ;; when proper names / capitalized sequences are implicated
+
+;; (no-Sparser-traces)  ;; turn the traces off
+
+;; (brackets-on <string for a word>)  ;; usually always lowercase
+;; (brackets-on <number of a position>)
+
+
+;; (trace-fsas)
+;; (trace-jfp-sections)
+
+;; ;; objects/traces/psp1
+;; (trace-network) ;; for low-level scan
+;; (trace-network-flow) ;; lower, e.g. bracket introduction and changes
+;; (trace-brackets)
+
+;; (trace-pnf)
+;; (trace-segments)
+
+;; (trace-sdm&p)
+;; (trace-ns-sequences)
+;; (trace-edges) ;; = *parse-edges* + (trace-edge-creation) + (trace-edge-check)
+;; (trace-scan-patterns)
+
+;; (trace-conjunction)
+;; (trace-parentheses)
+
+;; (trace-psi)
+;; (trace-psi-construction)
+;; (trace-referent-creation)
+;; (trace-bind-open-var)
 
 
 ;;;----------------------
