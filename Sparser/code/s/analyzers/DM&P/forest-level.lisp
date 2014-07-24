@@ -20,7 +20,7 @@
 ;;; dispatch
 ;;;----------
 
-(defun dm&p-Forest-Level (rightmost-position)
+(defun dm&p-forest-Level (rightmost-position)
   (unless *dm&p-forest-protocol*
     (break "*dm&p-forest-protocol* isn't set"))
   (funcall *dm&p-forest-protocol* rightmost-position))
