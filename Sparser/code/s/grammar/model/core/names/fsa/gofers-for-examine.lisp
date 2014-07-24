@@ -1,8 +1,8 @@
-;;; Copyright (c) 2013 David D. McDonald all rights reserved
+;;; Copyright (c) 2013-2014 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: September 2013
+;;;   Version: July 2014
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
@@ -14,7 +14,9 @@
 ;;      work. (7/25/13) Added silent NW for #\'
 ;;     (9/9/13) Finished shorter-from-longer-name, which complements the
 ;;      recent hack on 'of' add-longer-name-to-entity when the names share
-;;      a prefix.
+;;      a prefix.  (7/21/14) commented out direct reference to military-rank
+;;      which needs to somehow be conditionalized to the available grammar
+;;      modules. 
 
 (in-package :sparser)
 
@@ -309,7 +311,8 @@
               ;;,category::country
               ;;  "American Foreign Relations Council"
               ;;/// Need to be more deliberate about this
-              ,category::military-rank))))
+              ;;   ,category::military-rank
+              ))))
 
 (defun title-elements-in-items (item-edges)
   ;; Called from examine-capitalized-sequence
