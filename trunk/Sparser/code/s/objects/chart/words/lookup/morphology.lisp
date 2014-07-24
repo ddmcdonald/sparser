@@ -1,12 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "morphology"
-;;;   Module:  "objects;words:lookup:"
-;;;  Version:  0.3 August 2010
+;;;   Module:  "objects;chart:words:lookup:"
+;;;  Version:  0.4 July 2014
 
 ;; initiated June 1990
 ;; 0.1 (7/22/91 v1.8.6) Added an error check in Start-affix-stripper/
@@ -15,6 +14,7 @@
 ;;     (5/14) changed the size of the smallest decomposible word to 3
 ;;     (3/26/10) Accommodating the change to mixed case
 ;; 0.3 (8/8/10) Adding more cases
+;; 0.4 (7/14) Folded in a larger-scale suffix recognizer
 
 ;; N.b. There is a slightly older version of virtually identical code
 ;; (no 1993 additions) in /grammar/rules/FSAs/morphology.lisp but it
@@ -183,18 +183,25 @@
     ("ous" ADJ)
     ("yze" V)))
 
-
-(defun affix-checker (string candidate-affixes)
+#|
+(defun affix-checker (string)
   (let ((length (length string)))
-    (when (> length 3)
+    (when (> length 5) ;; larger because of the complex bases
       (let ((n (aref string (- length 1)))
             (n-1 (aref string (- length 2)))
             (n-2 (aref string (- length 3))))
-        (dolist (affix candidate-affixes)
-          (let ((index (1- (length affix))))
+        (dolist (affix-pair *suffix-pos-table*)
+          (let* ((affix (car affix-pair))
+                 (affix-length (length affix))
+                 (index (1- affix-length)))
             (when (eq n (aref affix index))
               (when (eq n-1 (aref affix (- index 1)))
-                (when (eq n-2 (aref affix (- index 2)))
-                  ;;/// how to go longer in an elegant way
-                  (return-from affix-checker 7))))))))))
-                
+                (cond
+                 ((= affix-length 2)
+                  (return-from affix-checker affix-pair))
+                 ((> affix-length 2)
+                  (when (eq n-2 (aref affix (- index 2)))
+                    
+)
+                  nil)))))))))
+                |#

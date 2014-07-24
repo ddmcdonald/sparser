@@ -23,7 +23,7 @@
   (declare (special *unknown-word-policy*))
   ;(unless *the-constant-unknown-word*
   ;  (create-the-unknown-word))
-  (ecase keyword
+  (case keyword
     (:ignore
      (setf (symbol-function 'establish-unknown-word)
            (symbol-function 'constant-unknown-word)))

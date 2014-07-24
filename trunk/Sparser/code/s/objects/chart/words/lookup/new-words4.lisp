@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  4.4 March 2012
+;;;  Version:  4.5 July 2014
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -13,6 +13,7 @@
 ;; 4.4 (7/29/11) added new option that looks for primed knowledge
 ;;      about the word. 8/1 broke out make-word-from-lookup-buffer
 ;;     (3/1/12) quiet compiler
+;; 4.5 (7/10/14) Added hook to affix-checker inside make-word/all-properties
 
 (in-package :sparser)
 
@@ -46,6 +47,9 @@
              *capitalization-of-current-token*)
 
        (let ((morph-keyword (calculate-morphology-of-word/in-buffer)))
+         (when nil ;;/// needs debugging
+           (unless morph-keyword ;;/// merge when all works well
+             (setq morph-keyword (affix-checker (word-pname word)))))
          (setf (word-morphology word) morph-keyword)
          (when *introduce-brackets-for-unknown-words-from-their-suffixes*
            (when morph-keyword
