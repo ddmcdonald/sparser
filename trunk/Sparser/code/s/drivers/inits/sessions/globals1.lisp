@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  July 2013
+;;;  Version:  July 2014
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -29,7 +29,8 @@
 ;; 3/8/13 added *break-on-multiple-single-term-completions*.
 ;; 3/9/13 added *note-text-relations*. Moved over *initialize-with-each-unit
 ;; -of-analysis* 3/1413. 7/1/13 added *reify-implicit-individuals* and similar
-;; in-file flages from Grok work. Added *dbg-print*. 
+;; in-file flages from Grok work. Added *dbg-print*. 4/24/14 updated definition
+;; of *forest-level-protocol*. 
 
 (in-package :sparser)
 
@@ -120,8 +121,9 @@
    as a gate on that whole phase of the analysis")
 
 (defparameter *forest-level-protocol* nil
-  "Must be the name of a function. Set as part of the switch settings, 
-   read by Move-to-forest-level and dispatched against")
+  "Must be the a keyword naming the protocol and recognized
+   in what-to-do-at-the-forest-level where the do-forest-level 
+   function is set. Set as part of the switch settings.")
 
 (defparameter *do-debris-analysis* nil
   "Set as part of the switch settings, read within HA code and in
