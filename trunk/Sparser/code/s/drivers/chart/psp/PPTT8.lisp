@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "PPTT"                ;; "parse pending tree tops"
 ;;;    Module:   "drivers:chart:psp:"
@@ -25,42 +24,49 @@
 ;;      (3/7) Trying to fix infinite loop in parse-between-boundaries.
 ;; 8.5 (3/18/13) Adding wrapper policy to permit combining referents:
 ;;      parse-forest-and-do-treetops/referents-too
+;; 8.6 (7/24/14) Converted the funcall of the protocol function to the
+;;      setf symbol-function style. Should be transparent but may fix stuborn
+;;      sticky stack frame. 
 
 (in-package :sparser)
+
+
+;;; Choice of forest-level processor
+
+(defun do-forest-level (rightmost-position)
+  (declare (ignore rightmost-position))
+   (error "Switch that determines what protocol to use for the forest ~
+           has not been set"))
+
+(defun what-to-do-at-the-forest-level (keyword)
+  (case keyword
+    (:parse-forest-and-do-treetops
+     (setf (symbol-function 'do-forest-level)
+           (symbol-function 'parse-forest-and-do-treetops)))
+    (:dm&p-forest-level
+     (setf (symbol-function 'do-forest-level)
+           (symbol-function 'dm&p-forest-Level)))
+    (otherwise
+     (error "Unknown forest-level protocol: ~a" keyword)))
+  (setq *forest-level-protocol* keyword))
+
 
 ;;;---------------------------------------------
 ;;; transition from segment-level  --  dispatch
 ;;;---------------------------------------------
 
 (defun move-to-forest-level (rightmost-position reason)
-  ;; called from segment-finished
-  (tr :moved-to-forest-level rightmost-position) ;; network-flow
-  (tr :moving-to-forest-level rightmost-position reason) ;; network/forest-level
-
+  ;; called shortly after segment-finished is called
   (if *do-forest-level*
-    (let ((protocol *forest-level-protocol*))
-      (unless protocol
-        (break "*forest-level-protocol* hasn't been set"))
-      (setq *forest-level* t)
-      (funcall protocol rightmost-position))      
-
+    (then
+     (tr :moved-to-forest-level rightmost-position) ;; network-flow
+     (tr :moving-to-forest-level rightmost-position reason) ;; network/forest-level
+     (setq *forest-level* t)
+     (do-forest-level rightmost-position))
     (else
       ;; go right back if this level has been turned off
       (tr :forest-level-turned-off)
       (scan-next-segment *where-the-last-segment-ended*))))
-
-
-;;;--------------------
-;;; wrapping protocols
-;;;--------------------
-
-;;  Don't do it this way, This frame gets left on the stack.
-;;  Instead integrate the binding of the globals inside the
-;;  regular (thoroughly debugged) protocoal
-;(defun parse-forest-and-do-treetops/referents-too (rightmost-position)
-;  (let ((*edges-from-referent-categories* t))
-;    (declare (special *edges-from-referent-categories*))
-;    (parse-forest-and-do-treetops rightmost-position)))
 
 
 ;;;--------------------------------
@@ -70,7 +76,7 @@
 (defun parse-forest-and-do-treetops (rightmost-position)
 
   ;; check whether there is something to parse at this level and
-  ;; so call PPTT, otherwise resume the scan.
+  ;; if so call PPTT, otherwise resume the scan.
 
   ;; Actions that can perturb the march across the treetop, such as
   ;; conjunctions, will get back to the TT level through this route
@@ -295,4 +301,12 @@
                        topnode-field)))
       
       (setq position (chart-position-before position)))))
+
+
+
+
+
+
+
+
 
