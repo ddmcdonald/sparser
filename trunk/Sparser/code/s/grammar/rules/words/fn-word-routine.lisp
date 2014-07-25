@@ -136,7 +136,7 @@
                       (find-package :sparser))
               base-name)))
       (when (category-named category-name)
-        (unless (*ignore-redefine-warning*) 
+        (unless *ignore-redefine-warning*
         (cerror "Ignore and keep going"
                 "We're about to redefine the category ~a" category-name)))
     
