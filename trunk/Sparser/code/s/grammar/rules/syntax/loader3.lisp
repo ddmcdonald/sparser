@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  3.8 January 2013
+;;;  Version:  3.7 July 2014
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -21,6 +21,7 @@
 ;;     (9/19/11) Bumped [adverbs]. (9/30/11) added [prepositions]
 ;; 3.8 (1/18/13) Moved relatives after WH since it references them. 
 ;;     (1/22/13) Added [adjectives]
+;; 3.9 (7/25/14) Bumped affix-rules to 1.
 
 (in-package :sparser)
 
@@ -32,7 +33,7 @@
   )
 
 (gate-grammar *heuristics-from-morphology*
-  (gload "syntax-morph;affix rules"))
+  (gload "syntax-morph;affix-rules1"))
 
 (gate-grammar *default-semantics-for-vg*
   (gload "syntax-vg;tense")
