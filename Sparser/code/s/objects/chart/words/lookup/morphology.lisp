@@ -164,7 +164,8 @@
     ("cyte" N)
     ("ence" N)
     ("ency" N)
-    ("ent" ADJ)
+    ("ment" N)   ;; longer forms must precede
+    ("ent" ADJ)  ;; their shorter forms
     ("genesis" N)
     ("ian" ADJ)
     ("ible" ADJ)
@@ -176,21 +177,25 @@
     ("ity" N)
     ("ive" ADJ)
     ("ize" V)
-    ("ment" N)
     ("oma" N)
     ("or" N)
     ("ory" ADJ)
     ("ous" ADJ)
     ("yze" V)))
 
-#|
+;; If we ever add ADV to this list, add it to
+;; assign-morph-brackets-to-unknown-word and its friends
+
+
 (defun affix-checker (string)
   (let ((length (length string)))
     (when (> length 5) ;; larger because of the complex bases
-      (let ((n (aref string (- length 1)))
+      (let ((n (aref string   (- length 1)))  ;; final letter
             (n-1 (aref string (- length 2)))
-            (n-2 (aref string (- length 3))))
+            (n-2 (aref string (- length 3)))
+            (n-3 (aref string (- length 4))))
         (dolist (affix-pair *suffix-pos-table*)
+          ;; e.g. ("ment" N)
           (let* ((affix (car affix-pair))
                  (affix-length (length affix))
                  (index (1- affix-length)))
@@ -198,10 +203,26 @@
               (when (eq n-1 (aref affix (- index 1)))
                 (cond
                  ((= affix-length 2)
+                  ;; (affix-checker "1234ar")
                   (return-from affix-checker affix-pair))
                  ((> affix-length 2)
                   (when (eq n-2 (aref affix (- index 2)))
-                    
-)
-                  nil)))))))))
-                |#
+                    (if (= affix-length 3)
+                      ;; (affix-checker "1234ary")
+                      (return-from affix-checker affix-pair)
+                      (when (> affix-length 3)
+                        (when (eq n-3 (aref affix (- index 3)))
+                          (cond
+                           ((= affix-length 4)
+                            ;; (affix-checker "1234genesis")
+                            (return-from affix-checker affix-pair))
+                           ((and (> affix-length 4)
+                                 (> length affix-length))
+                            (when (string= ;; presumes lower case
+                                   affix
+                                   (subseq string 
+                                           (- length affix-length)
+                                           length))
+                              (return-from affix-checker affix-pair))))))))))))))))))
+
+

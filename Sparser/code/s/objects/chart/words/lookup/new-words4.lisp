@@ -45,21 +45,21 @@
       (:alphabetical
        (setf (word-capitalization word)
              *capitalization-of-current-token*)
-
        (let ((morph-keyword (calculate-morphology-of-word/in-buffer)))
-         (when nil ;;/// needs debugging
-           (unless morph-keyword ;;/// merge when all works well
+         (when t ;; lets us easily turn it off
+           (unless morph-keyword
+             ;; n.b. returns a list of the affix and its POS
              (setq morph-keyword (affix-checker (word-pname word)))))
          (setf (word-morphology word) morph-keyword)
          (when *introduce-brackets-for-unknown-words-from-their-suffixes*
            (when morph-keyword
-             (introduce-morph-brackets-from-unknown-word
+             (assign-morph-brackets-to-unknown-word
               word morph-keyword))))))
 
     (catalog/word word symbol)
     word ))
 
-;(what-to-do-with-unknown-words :capitalization-digits-&-morphology)
+; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
 
 ;; Move?
 (defun make-word-from-lookup-buffer ()
