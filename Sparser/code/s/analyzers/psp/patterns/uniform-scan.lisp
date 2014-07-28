@@ -4,12 +4,13 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  0.4 February 2014
+;;;  version:  0.5 July 2014
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
 ;; of it and reconstruing these results as names. 
 ;; 0.4 2/25/14 Modified to retain the interior punctuation.
+;; 0.5 7/28/14 Turned parse-between-boundaries back on for "Ser1507"
 
 (in-package :sparser)
 
@@ -31,6 +32,13 @@
   ;; called from check-for/initiate-scan-patterns when the gate is true
   ;; and no pattern-driven scan applied.
   (declare (special *source-exhausted* *source-start*))
+
+  (when (= (pos-token-index position) 1)
+    ;; There is no space between the marker word source-start 
+    ;; at p0 and the first 'real' word at p1, but it looks that
+    ;; way to the code that calls this
+    (return-from collect-no-space-sequence-into-word nil))
+
   (tr :no-space-sequence-started-at (chart-position-before position))
   ;; There is no space recorded on this position, so the word just
   ;; before it and the word on it have no whitespace between them
@@ -43,6 +51,7 @@
       (tr :ns-first-word-is-bracket-punct word-before position)
       (return-from collect-no-space-sequence-into-word
 	nil))
+
 
 #|  ;; What is the point? Forgot the use-case
     (when (polyword-ends-here position)
@@ -65,6 +74,13 @@
          (break "NS -- new assessment case. position = ~a" position))))
     (tr :ns-considering-sequence-starting-with word-before word-after)
 
+    (unless (has-been-status? ::preterminals-installed position)
+      ;; pos-before = p2 (serine)
+      ;; position = p3 (107)
+      ;; unlikely, but better safe than sorry
+      ;;//// test on something that would parse and has 3+ words
+      (install-terminal-edges word-after position next-position))
+
     (when (second-word-not-in-ns-sequence word-after next-position)
       ;; e.g. sentence punctuation or EOS
       (tr :ns-second-word-not-in-ns-sequence word-after)
@@ -80,6 +96,7 @@
       (loop
         (unless (pos-terminal next-position)
           (scan-next-position))
+        (unless 
         (when *source-exhausted*
           (tr :ns-source-exhausted)
           (return))
@@ -96,6 +113,7 @@
               (return))
             
             (push word words)
+            (break "pos of word")
             (tr :ns-adding-word word)
             
             (setq next-position (chart-position-after next-position))
@@ -103,7 +121,7 @@
             (when (eq (pos-terminal next-position)
                       *end-of-source*)
               (tr :ns-reached-eos-at next-position)
-              (return)))))
+              (return))))))
 
       ;; remove terminal punctuation, unless it's hyphen
       (when (eq (pos-capitalization position) :punctuation)
@@ -125,36 +143,38 @@
 
       (tr :ns-parsing-between pos-before next-position)
       
-#|    ;; This is what it used to do. But (why?) the Grok load
-      ;; doesn't include parse-between-boundaries, not that I recall
-      ;; what we wanted to do that.
-      (let ((layout (parse-between-boundaries pos-before next-position)))
+   
+      (let ((layout (parse-between-boundaries pos-before next-position))) ; 
         (tr :ns-layout layout)
         (case layout
           ((or :no-edges
                :contiguous-edges
-               :has-unknown-words)
-           (package-ns-words-as-compound-word words pos-before next-position))
+               ;; perhaps there's something interesting to do
+               ;; by adapting some segment-level operation,
+               ;; but for now drop through and reify the words
+               :has-unknown-words))           
           (:span-is-longer-than-segment
            (break "no-space-sequence: bad positions somehow.~
-         ~%   Parsed span goes beyond presumed boundaries.~
-         ~%   start = ~a  end = ~a" pos-before next-position))
+                 ~%   Parsed span goes beyond presumed boundaries.~
+                 ~%   start = ~a  end = ~a" pos-before next-position))
+          (:single-span) ;; the words composed
           (otherwise
-           (break "New ns layout: ~a" layout)))  |#
+           (break "New no-space layout: ~a" layout)))
 
-      ;; The cleanest conceptualization of things like M1A1 or
-      ;; H1N1 is that they are names. So we take the words that
-      ;; we've collected and make them the elemeents of the
-      ;; sequence that defines the name, and we make the
-      ;; corresponding egdge, reifying the identity of the name
-      ;; in the model qua name, we would know what it names
-      ;; if we understand the context.
+        ;; The cleanest conceptualization of things like M1A1 or
+        ;; H1N1 is that they are names. So we take the words that
+        ;; we've collected and make them the elemeents of the
+        ;; sequence that defines the name, and we make the
+        ;; corresponding egdge, reifying the identity of the name
+        ;; in the model qua name, we would know what it names
+        ;; if we understand the context.
 
-      ;; This reifies the name and makes the edge
-      (reify-ns-name-and-make-edge words pos-before next-position)
+        (unless (eq layout :single-span)
+          ;; This reifies the name and makes the edge
+          (reify-ns-name-and-make-edge words pos-before next-position))
 
-      (tr :ns-returning-position next-position)
-      next-position)))
+        (tr :ns-returning-position next-position)
+        next-position))))
 
 
 ;; New scheme
