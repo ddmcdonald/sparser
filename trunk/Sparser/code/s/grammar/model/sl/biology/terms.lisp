@@ -45,5 +45,26 @@
 
 (def-bio "GSK-3" protein)
 
-(def-bio "serine" amino-acid :synonyms ("SER"))
+(def-bio "serine" amino-acid :synonyms ("ser"))
+;; Capitalization variants aren't needed
+
+; (p "before Ser1507)
+
+;; numbered-residue -- counting from the N terminus
+(define-category residue-on-protein   
+  :specializes bio-entity ;; same as protein
+  :binds ((amino-acid . amino-acid)
+          (position :primitive integer)
+          (on-protein . protein))
+  ;; Throwaway treatment just to play with the parsing
+  :index (:sequential-keys amino-acid position))
+
+(def-cfr residue-on-protein (amino-acid digit-sequence)
+  :form proper-noun
+  :referent (:head left-edge
+             :instantiate-individual residue-on-protein
+             :with (amino-acid left-edge
+                    position right-edge)))
+
+
 
