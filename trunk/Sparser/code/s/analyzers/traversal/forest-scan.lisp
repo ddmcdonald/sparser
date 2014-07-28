@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: forest-scan.lisp 354 2010-03-15 13:47:53Z dmcdonal $
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  0.2 March 2007
+;;;  Version:  0.2 July 2014
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
 ;; 0.2 (12/5) debugged it on :multiple-initial-edges.  Fleshed out a stub 2/2/95
 ;;     (3/7/07) Added debugging information - left scan can get into a loop
+;;     (7/28/14) experimented with alternatives, but didn't change anything
 
 (in-package :sparser)
 
@@ -28,7 +28,9 @@
 
 
 (defun parse-from-to/topmost (left-bound right-pos)
+  
   (let ((right-edge (find-rightmost-edge right-pos left-bound)))
+                    ;(left-treetop-at right-pos)))
     ;; returns an edge or an edge-vector
     (if (and right-edge
 	     (edge-thing-is-to-the-right-of-pos right-edge left-bound))
