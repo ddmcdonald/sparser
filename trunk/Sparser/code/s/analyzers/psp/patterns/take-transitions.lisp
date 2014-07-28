@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-1996  David D. McDonald  -- all rights reserved
+;;/Users/ddm/sparser/Sparser/code/s/analyzers/psp/patterns/take-transitions.lisp; copyright (c) 1995-1996  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "take transitions"
 ;;;   Module:  "analysers;psp:patterns:"
