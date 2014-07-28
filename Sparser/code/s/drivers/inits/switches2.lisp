@@ -363,9 +363,10 @@
   (turn-off-c3)
   (tuned-grok)
   ;; Except, for now back off a bit
-    (setq *new-segment-coverage* :trivial) ;; vs. :full or :none
+  (setq *new-segment-coverage* :trivial) ;; vs. :full or :none
   (ignore-comlex)
   (period-hook-off)
+  (setq *ignore-capitalization* t) ;; turns off PNF
   (setq *uniformly-scan-all-no-space-token-sequences* t)
   (setq *switch-setting* :biology))
 
