@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1996,2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "states"
 ;;;   Module:  "objects;rules:scan-patterns:"
-;;;  version:  September 1996
+;;;  version:  July 2-14
 
 ;; initiated 9/21/95. Added deletion routines 7/17/96.  Fixed duplication
-;; problem in Mark-as-sp-pattern-accept-state 9/11.
+;; problem in Mark-as-sp-pattern-accept-state 9/11. Quieted the trace
+;; burned into define-scan-pattern-state 7/28/14.
 
 (in-package :sparser)
 
@@ -95,7 +96,7 @@
     (let ((id# (next-right-looking-id)))
       (setf (state-id obj) id#)
 
-      (format t "~&Making ~A, id = ~A~%" obj id#)
+      ;; (format t "~&Making ~A, id = ~A~%" obj id#)
       obj )))
 
 
