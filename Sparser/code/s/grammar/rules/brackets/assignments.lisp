@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  June 2014
+;;;  Version:  July 2014
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -13,6 +13,7 @@
 ;; 2/28/13 included primitive way to tell the provinance of the
 ;; categories we make here. 6/14/14 Broke out the backet lists as
 ;; independent parameters that the assign functions map over. 
+;; 7/27/14 Slightly factored the set-xx routines to use with affix morph.
 
 (in-package :sparser)
 
@@ -163,9 +164,10 @@
 ;; so we can be free with the factoring. Final actions by
 ;; the code in morphology just as its used by ETF.
 
-(defun setup-common-noun (word comlex-clause 
-                          &optional ambiguous?)
-  (let ((marked-plural (explicit-plurals comlex-clause))
+(defun setup-common-noun (word &optional comlex-clause ambiguous?)
+  (let ((marked-plural
+         (when comlex-clause
+           (explicit-plurals comlex-clause)))
         (category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :noun)))
     (when ambiguous?
@@ -190,9 +192,10 @@
       category)))
 
 
-(defun setup-verb (word comlex-clause &optional ambiguous?)
+(defun setup-verb (word &optional comlex-clause  ambiguous?)
   (let ((special-cases
-         (lift-special-case-form-from-comlex-clause comlex-clause))
+         (when comlex-clause
+           (lift-special-case-form-from-comlex-clause comlex-clause)))
         (category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :verb)))
     (when ambiguous?
@@ -217,7 +220,7 @@
     
 
 
-(defun setup-adjective (word comlex-clause &optional ambiguous?)
+(defun setup-adjective (word &optional comlex-clause ambiguous?)
   ;; /// pull stuff out of the clause
   ;; Comlex has a 'gradable' feature on adjectives, with 
   ;; a flag for er-est. See adjectives in sl/checkpoint/
