@@ -24,7 +24,7 @@
 (define-category  individual ;; purely a placeholder like "kind"
   ;; This is the default nominal restriction 
   ;; on circa-2009 abbreviations
-  :realization (:common-noun "individual")
+  :lemma (common-noun "individual")
   :binds ((modifier)))
 
 
@@ -56,7 +56,7 @@
 
 (define-category object 
   :specializes physical-object
-  :realization (:common-noun "object")
+  :lemma (common-noun "object")
   :documentation
   "Conventional physical objects: chairs, amoeba, mountains, breaths of air.")
 
@@ -74,12 +74,12 @@
    Agentive objects are usually constituted of (are made out of) regular
  Object's. People have bodies. Robots are assembled out of engines and
  sensors and such (Legos). "
-  :realization (:common-noun "agent")) ;; n.b. "Mossad agent"
+  :lemma (common-noun "agent")) ;; n.b. "Mossad agent"
 
 
 (define-category feature
   :specializes physical
-  :realization (:common-noun "feature")
+  :lemma (common-noun "feature")
   :documentation
   "These are things like stains, holes, boundaries, or surfaces that are
  dependent on some other PhysicalObject as the 'host'. Other examples would
@@ -88,7 +88,7 @@
 
 (define-category aggregate 
   :specializes physical
-  :realization (:common-noun "aggregate")
+  :lemma (common-noun "aggregate")
   :documentation
   "Aggregates have no unity. They aren't wholes. They don't have good
   connection relations among their parts or a sensible notion of their
