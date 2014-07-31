@@ -3,10 +3,11 @@
 ;;; 
 ;;;     File:  "adjectives"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  June 2014
+;;;  Version:  July 2014
 
 ;; Initiated 1/22/13 to provides a place for the generic method for premodifiers.
 ;; 6/1/14 added traces. 
+;; 7/31/14 added form rules
 
 (in-package :sparser)
 
@@ -32,3 +33,24 @@
   (declare (ignore modifier))
   (tr :modifier+noun_modifier+t)
   (dereference-shadow-individual head))
+
+
+(def-form-rule (modifier noun)
+  :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule (modifier common-noun)
+  :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule (modifier common-noun/plural)
+  :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule (modifier n-bar)
+  :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule (modifier np)
+  :form np
+  :referent (:daughter right-edge))
