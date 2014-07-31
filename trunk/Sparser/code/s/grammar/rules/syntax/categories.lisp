@@ -211,7 +211,7 @@
 (def-form-category  classifier)
 (def-form-category  quantifier)
 
-(def-form-category  modifier)      ;; "red"
+
 (def-form-category  definite-modifier)   ;; "last (year)"
 (def-form-category  possessive)
 (def-form-category  possessive/pronoun) ;; e.g "mine"
