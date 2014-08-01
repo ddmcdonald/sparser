@@ -85,23 +85,25 @@
     (keyword 
      (case morph-keyword
        (:ends-in-s) ;; always ambiguous?
-       ;; put in both ??      
+       ;;/// put in both ??      
        (:ends-in-ed
-        (if *edge-for-unknown-words*
-          (setup-verb word)
-          (assign-brackets-as-a-main-verb word)))
+        (let ((lemma (stem-form word)))
+          (if *edge-for-unknown-words*
+            (setup-verb lemma)
+            (assign-brackets-as-a-main-verb lemma))))
        (:ends-in-ing
+        (let ((lemma (stem-form word)))
+          (if *edge-for-unknown-words*
+            (setup-verb lemma)
+            (assign-brackets-as-a-main-verb lemma))))
+       (:ends-in-ly
         (if *edge-for-unknown-words*
-          (setup-verb word)
-          (assign-brackets-as-a-main-verb word)))
-      (:ends-in-ly
-       (if *edge-for-unknown-words*
-         (setup-adverb word)
-         (assign-brackets-to-adverb word)))
-      (otherwise
-       (push-debug `(,word ,morph-keyword))
-       (error "Unexpected affix keyword: ~A"
-                    (word-morphology word)))))
+          (setup-adverb word)
+          (assign-brackets-to-adverb word)))
+       (otherwise
+        (push-debug `(,word ,morph-keyword))
+        (error "Unexpected affix keyword: ~A"
+               (word-morphology word)))))
     (cons
      ;; e.g. ("ible" ADJ)
      (case (cadr morph-keyword)
