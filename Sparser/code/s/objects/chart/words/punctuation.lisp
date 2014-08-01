@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013-2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation"
 ;;;   Module:  "objects;words:"
-;;;  Version:  0.3 March 2013
+;;;  Version:  0.4 July 2014
 
 ;; originally written in June 1990
 ;; 0.0 (4/23/91 v1.8.4)  Minor tweek to make sure it doesn't overrun an
@@ -14,6 +14,7 @@
 ;; 0.3 (9/25/93) added data-check to def. routine
 ;;     (7/19/94) added Punctuation? 3/15/13 Putting a guard on it since
 ;;      it's going to be used more broadly and not just passed words
+;; 0.4 (7/30/14) Simplified definition of punctuation?
 
 (in-package :sparser)
 
@@ -34,12 +35,14 @@
 
 (defun punctuation? (word)
   ;; type predicate
+  (memq :punctuation (word-plist word)))
+
+#|  Older version that must predate the current version of the definition
   (when (word-p word)
     (let ((pname (word-pname word)))
       (when (= 1 (length pname))
         ;; this test reads from the table so its always accurate
-        (punctuation-char? (elt pname 0))))))
-    
+        (punctuation-char? (elt pname 0))))))  |#
 
 ;;;--------------
 ;;; the def form
