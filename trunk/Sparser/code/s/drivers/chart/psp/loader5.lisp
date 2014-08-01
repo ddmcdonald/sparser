@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1995,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2012-2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.10 September 2013
+;;;  Version:  5.10 July 2014
 
 ;; initiated summer 1990
 ;;  3.0  (9/2/92) bumped to 3 and moved in the newly rationalized set
@@ -26,6 +26,7 @@
 ;;  5.9 (10/4/95) bumped [scan] to 2, added [initiate pattern scan]
 ;;  5.10 (12/4/12) bumped [adjudicators] to 2. 
 ;;       (9/18/13) added [c3-protocol], [tuck-right]
+;;       (7/30/14) added [no-brackets-protocol]
 
 (in-package :sparser)
 
@@ -42,3 +43,4 @@
 (lload "psp-drivers;trigger5")
 
 (lload "psp-drivers;c3-protocol")
+(lload "psp-drivers;no-brackets-protocol")
