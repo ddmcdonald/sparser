@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "polyword form"
 ;;;   Module:  "objects;words:"
-;;;  Version:  1.3 March 2012
+;;;  Version:  1.4 July 2014
 
 (in-package :sparser)
 
@@ -23,15 +22,18 @@
 ;;      (12/16) added define-polyword/from-words
 ;;  1.3 (6/2/08) Fan-out for *force-case-shift* ("United States")
 ;;      (3/1/12) quiet compiler
-
+;;  1.4 (7/30/14) Made an exception to the 'must be different character
+;;       type check for the case of punctionation. Word-around for two
+;;       single quotes being used for double quote in uniform-scan.
 
 (defun define-polyword/expr (multi-word-string)
   (declare (special *break-on-pattern-outside-coverage?*))
   (unless (not-all-same-character-type multi-word-string)
-    (error "The characters in the string \"~A\"~
+    (unless (all-punctuation-chars? multi-word-string)
+      (error "The characters in the string \"~A\"~
             ~%are all of the same, type making it a word rather than ~
-            a polyword" multi-word-string))
-  (when *force-case-shift*
+              a polyword" multi-word-string)))
+  (when *force-case-shift* multi-word-string
     (setq multi-word-string (force-case-of-word-string multi-word-string)))
   (let* ((symbol (or (find-symbol multi-word-string *polyword-package*)
                      (intern multi-word-string *polyword-package*)))
