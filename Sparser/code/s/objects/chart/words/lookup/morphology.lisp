@@ -160,7 +160,6 @@
     ("ar" ADJ)
     ("ary" ADJ)
     ("ase" N)
-    ("ation" N)
     ("blast" N)
     ("cyte" N)
     ("ence" N)
@@ -175,7 +174,6 @@
     ("ify" V)
     ("ion" N)
     ("ist" N)
-    ("ition" N)
     ("ity" N)
     ("ive" ADJ)
     ("ize" V)
@@ -183,6 +181,7 @@
     ("or" N)
     ("ory" ADJ)
     ("ous" ADJ)
+    ("tion" N)
     ("yze" V)))
 
 ;; If we ever add ADV to this list, add it to
