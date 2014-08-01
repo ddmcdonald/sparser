@@ -474,11 +474,7 @@
 ;;; stripping suffixes
 ;;;--------------------
 
-;; Used in DM&P mine-term and friends.
-;;//// This is no longer being maintained but is should be
 (defun word-stem (word)
-  ;; /// change choice of tag to be more generic, or patch in a
-  ;; domain-specific override capacity 
   (cadr (member :stem (unit-plist word))))
 
 (defmethod stem-form ((s symbol))
@@ -497,56 +493,59 @@
 	;; time it is defined. 
 	(if morphology
 	  (let* ((putative-stem (construct-stem-form word morphology))
-		 (stem (test-against-comlex-if-possible putative-stem)))
-	    (setf (unit-plist word)
-		  `(:stem ,stem ,@(unit-plist word)))
-	    stem)	    
-	  word))))
-
-
-;;--- test harness
-
-(defun test-stemmer (pname)
-  (let ((word (word-named pname)))
-    (if word
-      (let* ((plist (unit-plist word))
-	     (stem-sublist (member :stem plist)))
-	(when stem-sublist
-	  (if (eq (car plist) :stem)
-	    (setf (unit-plist word) (cddr plist))
-	    (break "stem marker is in the middle of the plist")))
-	word)
-      (setq word (define-word/expr pname)))
-    (stem-form word)))
-
+                 ;; If Comlex says the reduced form is in its ~50k
+                 ;; word dictionary then we accept it as the lemma
+                 ;; form of the word and store it as the stem
+		 (stem (test-against-comlex putative-stem morphology)))
+            (if stem
+              (then
+               (setf (unit-plist word)
+                     `(:stem ,stem ,@(unit-plist word)))
+               stem)
+              word))
+          word))))
 
 ;;--- cases
 
-(defun construct-stem-form (word morphology-keyword)
+(defun construct-stem-form (word morphology)
   ;; subroutine of stem-form and stem-form-of-word
-  (case morphology-keyword
-    (:ends-in-s (form-stem/strip-s word))
-    (:ends-in-ed (form-stem/strip-ed word))
-    (:ends-in-ing (form-stem/strip-ing word))
-    (:ends-in-ly (form-stem/strip-ly word))
+  (typecase morphology
+    (symbol
+     (case morphology
+       (:ends-in-s (form-stem/strip-s word))
+       (:ends-in-ed (form-stem/strip-ed word))
+       (:ends-in-ing (form-stem/strip-ing word))
+       (:ends-in-ly (form-stem/strip-ly word))
+       (otherwise
+        (push-debug `(,word ,morphology))
+        (break "Unexpected morphology keyword ~a~%on ~a"
+               morphology word))))
+    (cons
+     ;; e.g. ("ible" ADJ)
+     )
     (otherwise
-     (push-debug `(,word ,morphology-keyword))
-     (break "Unexpected morphology keyword ~a~%on ~a"
-	    morphology-keyword word))))
+     (push-debug `(,word ,morphology))
+     (error "Unexpected type of morph keyword: ~a~%~a"
+            (type-of morphology) morphology))))
 
 
-(defun test-against-comlex-if-possible (putative-stem)
+(defun test-against-comlex (putative-stem morphology)
+  (declare (ignore morphology)) ;; if we want more educated extensions
   (if *comlex-word-lists-loaded* ;; do (load-comlex)
     (or (and (is-in-comlex? putative-stem)
 	     putative-stem)
+        ;; If this form isn't in Comlex, maybe a small variant
+        ;; of it is -- adding something back to the reduced
+        ;; form and rechecking. Otherwise it returns nil, indicating
+        ;; either that the word really isn't in Comlex
+        ;; (so we don't know whether we have a lemma form or
+        ;; not), or we need to extend this. 
 	(let ((pname-with-an-e (pname-with-an-e putative-stem)))
 	  (when (is-in-comlex? pname-with-an-e)
 	    (define-word/expr pname-with-an-e)))
 	(let ((pname-with-a-d (pname-with-a-d putative-stem)))
 	  (when (is-in-comlex? pname-with-a-d)
-	    (define-word/expr pname-with-a-d)))
-	;; fall through -- really might not be in comlex
-	putative-stem)
+	    (define-word/expr pname-with-a-d))))
     putative-stem))
 
 (defun pname-with-an-e (stem)
@@ -693,6 +692,24 @@
   ;; part of speech from an adverb to (most of the time) an adjective.
   ;; This is a placeholder. 
   word)
+
+
+;;--- test harness
+
+(defun test-stemmer (pname)
+  (let ((word (word-named pname)))
+    (if word
+      (let* ((plist (unit-plist word))
+	     (stem-sublist (member :stem plist)))
+	(when stem-sublist
+	  (if (eq (car plist) :stem)
+	    (setf (unit-plist word) (cddr plist))
+	    (break "stem marker is in the middle of the plist")))
+	word)
+      (setq word (define-word/expr pname)))
+    (stem-form word)))
+
+
 
 
 
