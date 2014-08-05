@@ -167,6 +167,7 @@
     ("ment" N)   ;; longer forms must precede
     ("ent" ADJ)  ;; their shorter forms
     ("genesis" N)
+    ("gram" N)
     ("ian" ADJ)
     ("ible" ADJ)
     ("ic" ADJ)
