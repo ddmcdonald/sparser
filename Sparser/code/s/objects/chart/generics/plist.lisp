@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2011-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "plist"
 ;;;    Module:   "objects;chart:generics:"
-;;;   Version:   0.1 September 2011
+;;;   Version:   0.2 August 2014
 
 ;; (2/10/92 v2.2) added cases for cfr's.
 ;; (9/2 v2.3) added cases for referential-categories
@@ -14,6 +14,7 @@
 ;;     (9/26/11) Added change-plist-value and added lattice-points
 ;;      to plist-for
 ;; 0.2 (6/3/13) converted the push to a pushnew. 
+;;     ((8/6/14) added has-tag? as sugar for memq
 
 (in-package :sparser)
 
@@ -58,6 +59,11 @@
   (let ((plist (plist-for obj)))
     (when plist
       (member tag plist :test #'eq))))
+
+(defun has-tag? (tag object)
+  ;; renaming when used as memq
+  (get-tags-cell tag object))
+  
 
 ;;;--------------
 ;;; excise entry
