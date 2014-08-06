@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "PPTT"                ;; "parse pending tree tops"
 ;;;    Module:   "drivers:chart:psp:"
-;;;   Version:   8.4 February 2007
+;;;   Version:   8.6 August 2014
 
 ;; 7.0 (5/11/92 v2.3) bumped the version to accomodate the changes to
 ;;      the scan routine
@@ -27,6 +27,7 @@
 ;; 8.6 (7/24/14) Converted the funcall of the protocol function to the
 ;;      setf symbol-function style. Should be transparent but may fix stuborn
 ;;      sticky stack frame. 
+;;     (8/4/14) Plugged in new-forest-driver as a treetop option. 
 
 (in-package :sparser)
 
@@ -46,6 +47,9 @@
     (:dm&p-forest-level
      (setf (symbol-function 'do-forest-level)
            (symbol-function 'dm&p-forest-Level)))
+    (:new-forest-protocol
+     (setf (symbol-function 'do-forest-level)
+           (symbol-function 'new-forest-driver)))
     (otherwise
      (error "Unknown forest-level protocol: ~a" keyword)))
   (setq *forest-level-protocol* keyword))
