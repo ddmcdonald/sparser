@@ -35,7 +35,7 @@
 
 (defun punctuation? (word)
   ;; type predicate
-  (has-tag? :punctuation (word-plist word)))
+  (has-tag? :punctuation word))
 
 #|  Older version that must predate the current version of the definition
   (when (word-p word)
