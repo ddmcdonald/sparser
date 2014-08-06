@@ -103,6 +103,7 @@
 
 (define-category transition
   :specializes perdurant
+  :lemma (common-noun "transition")
   :documentation
   "A transition is a process that culminates in a change of state,
  often an opposition: open, give, build. 'Lia is walking' is a
