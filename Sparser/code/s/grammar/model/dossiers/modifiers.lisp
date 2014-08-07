@@ -91,8 +91,7 @@
 ;;
 (define-comparative "fewer"     :brackets '( ].phrase  .[np ))
 (define-comparative "less"      :brackets '( ].phrase  .[np ))
-;(define-comparative "more"      :brackets '( ].phrase  .[np .[adj))
-;(define-comparative "aa"      :brackets *adverb-brackets*)
+(define-comparative "more"      :brackets '( ].phrase  .[np ))
 (define-comparative "most"      :brackets '( ].phrase  .[np ))
 
 
@@ -839,6 +838,7 @@
 (define-adjective "endothelial") ; endothelium is noun
 (define-adjective "entire")
 (define-adjective "environmental")
+(define-adjective "epidermal")
 (define-adjective "epigenetic")
 (define-adjective "epithelial")
 (define-adjective "evasive")
@@ -889,6 +889,7 @@
 (define-adjective "incipient")
 (define-adjective "incomplete")
 (define-adjective "independent")
+(define-adjective "individual")
 (define-adjective "inflammatory") 
 (define-adjective "informative")
 (define-adjective "innate")
@@ -914,6 +915,7 @@
 (define-adjective "lineal")
 (define-adjective "local")
 (define-adjective "logical")
+(define-adjective "lower")
 (define-adjective "major")
 (define-adjective "malignant")
 (define-adjective "maximal")
@@ -985,6 +987,7 @@
 (define-adjective "prototypical")
 (define-adjective "quiescent")
 (define-adjective "random")
+(define-adjective "rapid")
 (define-adjective "rare")
 (define-adjective "raw")
 (define-adjective "reactive")
@@ -993,6 +996,7 @@
 (define-adjective "recessive")
 (define-adjective "reciprocal")
 (define-adjective "redundant")
+(define-adjective "regular")
 (define-adjective "regulatory")
 (define-adjective "related")
 (define-adjective "remarkable")
@@ -1007,6 +1011,7 @@
 (define-adjective "silent") ;in terms of mutation: no resultant change in phenotype
 (define-adjective "similar") ;relation
 (define-adjective "simple")
+(define-adjective "small")
 (define-adjective "solid")
 (define-adjective "somatic")
 (define-adjective "specific")
