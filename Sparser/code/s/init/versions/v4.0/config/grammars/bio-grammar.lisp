@@ -3,10 +3,11 @@
 ;;;
 ;;;      File:  "bio-grammar"
 ;;;    Module:  "init;versions:v2.7:config:grammars:"
-;;;   version:  June 2014
+;;;   version:  August 2014
 
 ;; Split off from June 2014 version of full-grammar. Start by
-;; removing the obviously irrelevant sublanguages.
+;; removing the obviously irrelevant sublanguages. 8/6/14 removed
+;; companies and titles. 
 
 (in-package :sparser)
 
@@ -130,14 +131,14 @@
 (include-grammar-module  *proper-names*)
 (include-grammar-module  *people*)
 
-(include-grammar-module  *companies*)
+#|(include-grammar-module  *companies*)
   (include-grammar-module  *company-core*)
   (include-grammar-module  *kinds-of-companies*)
   (include-grammar-module  *company-generalization-words*)
   (include-grammar-module  *company-activity-words*)
   (include-grammar-module  *generic-company-words*)
   (include-grammar-module  *company-activity-nominals*)
-  (include-grammar-module  *subsidiaries*)
+  (include-grammar-module  *subsidiaries*) |#
 
 (include-grammar-module  *numbers*)
 (include-grammar-module  *digits-fsa*)
@@ -147,13 +148,13 @@
 ;; (include-grammar-module  *money*)
 ;; (include-grammar-module  *finance*)
 
-;; ??
+#|
 (include-grammar-module  *titles*)
   (include-grammar-module *titles-core*)
   (include-grammar-module *full-titles*)
   (include-grammar-module *title-heads*)
   (include-grammar-module *title-modifiers*)
-  (include-grammar-module *title-qualifiers*)
+  (include-grammar-module *title-qualifiers*) |#
 
 (include-grammar-module  *location*)
  (include-grammar-module  *countries*)
@@ -212,7 +213,7 @@
 
 (include-grammar-module  *sublanguages*)
 
-(include-grammar-module  *pct*)
+;; (include-grammar-module  *pct*)
 
 ;; (include-grammar-module  *whos-news*)
 ;; (include-grammar-module  *whos-news/core*)
