@@ -49,6 +49,9 @@
 (defparameter *standalone-brackets*
   (list ].phrase phrase.[ ))
 
+(defparameter *comparative-brackets*
+  (list ].phrase .[np ))
+
 
 ;;;-------------------
 ;;; Unambiguous words
