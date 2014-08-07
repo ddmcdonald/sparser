@@ -311,6 +311,7 @@
         (setq *previous-sentence* last)))
     ;; 1st sentence in a section (= paragraph) is has the
     ;; section as its parent
+    (tr :starting-sentence pos)
     (setq *current-sentence* s)))
 
 (defmethod display-contents  ((s sentence)
