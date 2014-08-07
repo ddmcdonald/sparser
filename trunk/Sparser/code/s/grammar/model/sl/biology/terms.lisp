@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+ ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "terms"
@@ -45,6 +45,8 @@
 
 (def-bio "GSK-3" protein)
 
+;;; amino acids
+
 (def-bio "serine" amino-acid :synonyms ("ser"))
 ;; Capitalization variants aren't needed
 
@@ -65,6 +67,18 @@
              :instantiate-individual residue-on-protein
              :with (amino-acid left-edge
                     position right-edge)))
+
+
+
+;;; for the August 15th set
+
+#| This switch mechanism is common to a wide variety of GTP-binding
+proteins and is mediated by a conserved structure called the G-domain
+that consists of five conserved G boxes. |#
+
+(np-head "switch") ;; and the verb
+(np-head "mechanism")
+
 
 
 

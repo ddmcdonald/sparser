@@ -27,6 +27,11 @@
 ;;/// want subtypes, want to understand the syntax of "-inducing"
 
 
+;;--- "mutation"
+;; "mutated oncogenes"
+;; "oncogenic mutations"
+;; "in BRAF mutant thyroid cell"
+
 ;;--- "phosphorylate"
 ;; GO:0016310	
 ;; "activated IKKα phosphorylates specific serines"
