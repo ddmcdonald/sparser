@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2013
+;;;  Version:  August 2014
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
 ;; because they preempt relative clause interpretation. 1/30/13 Added 
-;; the+proper-name. 
+;; the+proper-name. 8/7/14 Added the other definite determiners, don't
+;; remember what the problem might hae been
 
 (in-package :sparser)
 
@@ -43,16 +43,19 @@
   "Holds list of all the indefinite article words")
 (defvar *definite-determiners* nil
   "Holds list of all the definite article words")
+
 (defun populate-in/definite-articles ()
   (setq *indefinite-determiners*
         (mapcar #'word-named '("a" "an")))
   (setq *definite-determiners*
-        ;; the other candiates are somewhat problematic
-        (mapcar #'word-named '("the"))))
+        ;;/// Can we tell when "that" is being used as
+        ;; a determiner vs. as a relative conjunction ?
+        (mapcar #'word-named '("the" "this" "these" "those"))))
 
 (defun definite-determiner? (word)
   (unless *indefinite-determiners* (populate-in/definite-articles))
   (memq word *definite-determiners*))
+
 (defun indefinite-determiner? (word)
   (unless *indefinite-determiners* (populate-in/definite-articles))
   (memq word *indefinite-determiners*))
