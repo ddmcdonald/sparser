@@ -1260,7 +1260,6 @@
     (trace-msg "[scan] moved-to-forest-level: p~A"
                (pos-token-index p))))
 
-
 (deftrace :moving-to-forest-level/conj/edge (edge)
   (when (or *trace-network-flow*
 	    *trace-conjunction-algorithm*)
@@ -1274,6 +1273,13 @@
               ~%    without having conjoined anything.~
               ~%    Rightmost position is p~a"
 	       (pos-token-index rightmost-pos))))
+
+(deftrace :new-forest-driver (rightmost-pos)
+  (when *trace-network-flow*
+    (trace-msg "[scan] moved-to-forest-level~
+              ~%   Rightmost position is p~a"
+               (pos-token-index rightmost-pos))))
+
 
 
 
