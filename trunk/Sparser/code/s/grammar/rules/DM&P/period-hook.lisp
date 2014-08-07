@@ -41,7 +41,9 @@
 
 (defun period-hook (the-word-period position-before position-after)
   ;; position-before is the one with the period on it. After picks out
-  ;; the word following the period. 
+  ;; the word following the period.  The stack at this point starts
+  ;; with word-level-actions-except-terminals > complete-word/hugen >
+  ;; carry-out-actions
   ;;(setq position-before (cadr *) position-after (caddr *))
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
