@@ -4,13 +4,16 @@
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: 1.0 May 2014
+;;;   Version: 1.0 August 2014
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
 ;; 7/17/13 Fixed bug in propoagate-suffix-to-segment. 9/18/13 Reified
 ;; the continuation code so it's easier to maintain. 5/19/14 put
-;; guards around missing cases in analyze-segment. 
+;; guards around missing cases in analyze-segment. 8/7/14 Added possibility
+;; of breaking in :trivial when there's no edge over the head or
+;; no edge at all
+
 
 (in-package :sparser)
 
@@ -82,22 +85,28 @@ to make any semantic or form edges that the grammar dictates.
       :discontinuous-edges 
       :some-adjacent-edges)
      (if (no-edge-over-segment-head) ;; ignore these for now
-       (when *dbg-print*
-        (format t "~&Ignoring segment without an edge over its head:")
-        (format-words-in-segment)
-        (print-treetop-labels-in-current-segment)
-        (terpri))
+       (cond 
+        (*debug-segment-handling*
+         (break "No edge over segment head.~
+               ~%Coverate = ~a" coverage)) 
+        (*dbg-print*
+         (format t "~&Ignoring segment without an edge over its head:")
+         (format-words-in-segment)
+         (print-treetop-labels-in-current-segment)
+         (terpri)))
        (else
-        (let ((edge (propoagate-suffix-to-segment)))
+        (let ((edge (propagate-suffix-to-segment)))
           (generalize-segment-edge-form-if-needed edge)
           (convert-referent-to-individual edge)
           (record-any-determiner edge)))))
-
     (:no-edges ;; "burnt" or any other word not in Comlex
-     (when *dbg-print*
+     (cond
+      (*debug-segment-handling*
+       (break "Coverate is :no-edges"))
+      (*dbg-print*
        (format t "~&Ignoring segment with no edges:")
        (format-words-in-segment)
-       (terpri)))
+       (terpri))))
     (otherwise
      (when *debug-segment-handling*
        (break "Unanticipated value for segment coverage: ~A"
@@ -107,7 +116,7 @@ to make any semantic or form edges that the grammar dictates.
   (continue-from-sdm/analyze-segment coverage))
 
 
-(defun propoagate-suffix-to-segment ()
+(defun propagate-suffix-to-segment ()
   ;; Look up the edge on the suffix, use its data to
   ;; create an edge over the whole segment
   (let* ((suffix (edge-over-segment-suffix))
@@ -121,7 +130,6 @@ to make any semantic or form edges that the grammar dictates.
                  :form suffix-form
                  :referent suffix-referent
                  :rule 'sdm-span-segment)))
-
       (tr :sdm-span-segment edge)
       edge)))
 
@@ -140,7 +148,6 @@ to make any semantic or form edges that the grammar dictates.
            (setf (edge-referent edge)
                  (make-individual-for-dm&p (or super
                                                referent))))))
-      
       ;; These cases are original from 2009 and 
       ;; not reconsidered yet.
       (mixin-category
