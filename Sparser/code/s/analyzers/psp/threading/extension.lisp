@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "extension"
 ;;;    Module:   "analyzers;psp:threading:"
-;;;   Version:   0.1 March 2005
+;;;   Version:   0.2 July 2014
 
 ;; initiated 6/11/93 v2.3
 ;; 7/19 aded tt-extends?, which was stranded from [tt manager] when
@@ -11,6 +11,7 @@
 ;; 0.1 (9/26/94) reworked the basic call as a protocol-dispatch
 ;;  (10/19) added the case of a sentence-terminating colon followed by markup.
 ;;  (3/17/05) fixed typo.
+;; 0.2 (7/30/14) Added new case: next-word-is-not-sentence-final-period
 
 (in-package :sparser)
 
@@ -21,19 +22,38 @@
 
 
 (defun scan-another-segment? (right-boundary)
-   ;; called from the subroutines spawned from Segment-finished
+  ;; called from the subroutines spawned from segment-finished
   ;; These routines return non-nil if the there is some reason to
   ;; continue scanning segments rather than move to the forest level
+  ;; Returns nil if we should stop scanning, non-nil if we should
+  ;; scan another segment. 
   (ecase *segment-scan/forest-level-transition-protocol*
     (:move-when-segment-can-never-extend-rightwards
      (can-segment-ever-extend right-boundary))
     (:move-only-at-significant-boundary
-     (next-word-does-not-indicate-a-significant-boundary right-boundary))))
+     (next-word-does-not-indicate-a-significant-boundary right-boundary))
+    (:stop-on-sentence-end
+     (not (next-word-is-not-sentence-final-period right-boundary)))))
 
 
-;;;-------------------------------------------------------
-;;; algorithm that waits for sentence boundaries and such
-;;;-------------------------------------------------------
+;;;-----------------------------------
+;;; check for sentence-ending period
+;;;-----------------------------------
+
+(defun next-word-is-not-sentence-final-period (pos-before)
+  ;; Return nil unless the next word is a period that ends a sentence.
+  ;; Uses the test that the period-hook uses. 
+  ;; Wrapped in a not in call from scan-another-segment?
+  (declare (special *the-punctuation-period*))
+  (let ((next-word (pos-terminal pos-before))
+        (position-after (chart-position-after pos-before)))
+    (when (eq next-word *the-punctuation-period*)
+      (tr :pts/period-seen pos-before)
+      (period-marks-sentence-end? position-after))))
+
+;;;-------------------------------------------
+;;; algorithm that waits for major boundaries 
+;;;-------------------------------------------
 
 (defun next-word-does-not-indicate-a-significant-boundary (pos-before)
   ;; note the double negative -- we return nil if the word does not
