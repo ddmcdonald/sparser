@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "alphabet fns"
 ;;;   Module:  "analyzers;tokenizer:"
-;;;  Version:  0.3 March 2014
+;;;  Version:  0.3 July 2014
 
 ;; initiated 9/21/92 v2.3
 ;; (4/20/93) added Set-tokenizer-table-entry
@@ -13,9 +13,10 @@
 ;;     (6/9/94) added character-type predicates.
 ;; 0.2 (5/31/96) Increased the size of the array to 256.
 ;;     (2/3/13) added doc that its value is burned in.
-;; 0.3 (3/2/13) Added character-entry to be the common access point
+;; 0.3 (3/2/14) Added character-entry to be the common access point
 ;;      for all ranges of character codes.
-;;     (3/18/13) Moved in the setup code for Greek characters
+;;     (3/18/14) Moved in the setup code for Greek characters
+;;     (7/30/14) added all-punctuation-chars?
 
 (in-package :sparser)
 
@@ -99,6 +100,9 @@
       (unless (eq (cdr entry) :meaningless)
         (unless (reserved-char? c)
           entry)))))
+
+(defun all-punctuation-chars? (string)
+  (every #'punctuation-char? string))
 
 (defun reserved-char? (c)
   (when (or (eql c #\^A)
