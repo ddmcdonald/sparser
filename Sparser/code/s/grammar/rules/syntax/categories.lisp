@@ -282,8 +282,12 @@
 (defmethod verb-category? ((c referential-category))
   (verb-category? (cat-symbol c)))
 (defmethod verb-category? ((name symbol))
-  (memq name '(category::verb category::verb+present category::verb+s
-               category::verb+ed category::verb+ing)))
+  (memq name '(category::verb
+               category::verb+present
+               category::verb+s               
+               category::verb+ed
+               category::verb+ing
+               category::vg)))
 
 (defmethod participle? ((s string))
   (participle? (word-named s)))
