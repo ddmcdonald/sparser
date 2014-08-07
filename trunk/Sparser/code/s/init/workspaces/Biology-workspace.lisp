@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "Biology-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  July 2014
+;;;  version:  August 2014
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
@@ -20,20 +20,31 @@
   (ignore-comlex)
   (gload "bio;loader"))
 
+;;8/7/14 debugging the new forest level's loops
+; (setq *break-on-next-sentence* t)
+; (trace-network-flow)
+; (trace-paragraphs) ;; period-hook
+; (trace-sections) ;; sentence creation
+; (trace-ns-sequences)  (p "Sunday R1. Tuesday R2.")
+;;  Getting the segment abbreviation correctr
+; (setq *dbg-print* t)  (setq *debug-segment-handling* t)
+
 ;; 7/9/14
-; (p “Phosphorylated Ser1507 on APC can prime a phosphorylation of Ser1503 by GSK-3. This scheme accounts for the presence of the six phosphates found in the mass spectroscopic analysis of in vitro-phosphorylated R3.”)
-; (p “Phosphorylated Ser1507 on APC can prime a phosphorylation of Ser1503 by GSK-3.")
-; (p "This scheme accounts for the presence of the six phosphates found in the mass spectroscopic analysis of in vitro-phosphorylated R3.”)
+; (p "Phosphorylated Ser1507 on APC can prime a phosphorylation of Ser1503 by GSK-3. This scheme accounts for the presence of the six phosphates found in the mass spectroscopic analysis of in vitro-phosphorylated R3.")
+; (p "Phosphorylated Ser1507 on APC can prime a phosphorylation of Ser1503 by GSK-3.")
+; (p "This scheme accounts for the presence of the six phosphates found in the mass spectroscopic analysis of in vitro-phosphorylated R3.")
 
 
 ;; 6/9/14
 ; (just-bracketing-setting)
-; (setq *permit-extra-open-parens* t)
 ; (just-bracketing-with-comlex-setting)
+; (setq *break-on-new-bracket-situations* nil)
+; (setq *edge-for-unknown-words* nil)
+; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+
+; (setq *permit-extra-open-parens* t)
 ;? (f "/Users/ddm/ws/Sparser local/corpus/LarryHunterBioBook/BeingAlive.textsource")
-; Have gotten well into chapter 3 (not using comlex) and breaking on
-; the 6 in "Fructose-1,6-bisphosphate", though not "glucose-6-phosphate" so it's
-; the assumptions of the comma.
+
 
 ; (word-frequency-setting)
 ; (setq *stem-words-for-frequency-counts* nil)
