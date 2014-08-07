@@ -76,7 +76,7 @@
    presumably structured accumulation, long-distance parse state
    or (the motive for all this) a situation.")
 
-(defun make-sentence-container (sentence)
+(defun make-sentence-container 
   ;; called from start-sentence
   (declare (ignore sentence))
   (error "No version of make-sentence-container has been specified"))
@@ -85,7 +85,10 @@
   (setf (symbol-function 'make-sentence-container)
         (ecase keyword
           (:simple (symbol-function 'make-sentence-container/simple))
-          (:situation (symbol-function 'make-sentence-container/situation)))))
+          (:situation (symbol-function 'make-sentence-container/situation))
+          (:complex (symbol-function 'make-sentence-content-container
+
+)))
 
 ;; (designate-sentence-container :simple)  => switch setting
 (defun make-sentence-container/simple (sentence)
