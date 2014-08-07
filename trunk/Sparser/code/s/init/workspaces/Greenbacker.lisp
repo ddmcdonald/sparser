@@ -73,7 +73,8 @@ Medical device giant Medtronic (MDT), the leader in defibrillators and pacemaker
 
 #| GRAMMAR |#
 
-(define-company "Medtronic" :aliases '("MDT")) ;; actually it the stock ticker symbol
+(when *companies*
+  (define-company "Medtronic" :aliases '("MDT"))) ;; actually it the stock ticker symbol
 
 #|
 ;; stock ticker symbol
@@ -217,6 +218,7 @@ company's ticker symbol.
 ;; two (or more) cases. Need a new sort of mechanism for this -- one that
 ;; can be quickly recognized and dispatch off to all the individual cases
 
+#|
 (define-category stock-price-change
   :specializes event
   :binds ((mode)
@@ -238,7 +240,7 @@ company's ticker symbol.
 (def-cfr slump ("slumped")
   :form verb+ed
   :referent (:instantiate-individual slump))
-
+|#
 ;; Replaced with simple schema version in /model/core/finance/stock.lisp
 ;; (def-cfr stock-symbol ("stock")
 ;;   :form noun
