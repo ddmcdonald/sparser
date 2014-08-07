@@ -118,6 +118,11 @@
 ;;;-------------------
 ;;; document elements
 ;;;-------------------
+
+(deftrace :starting-sentence (pos)
+  (when *trace-sections*
+    (trace-msg "Starting a sentence at p~a"
+               (pos-token-index pos))))
   
 
 
