@@ -4,24 +4,30 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  0.5 July 2014
+;;;  version:  0.5 August 2014
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
 ;; of it and reconstruing these results as names. 
 ;; 0.4 2/25/14 Modified to retain the interior punctuation.
 ;; 0.5 7/28/14 Turned parse-between-boundaries back on for "Ser1507"
+;;     8/7/14 Debugged edge case (EOS) in sentence-final-punctuation-pattern?
 
 (in-package :sparser)
 
-;;;---------------
-;;; gating global
-;;;---------------
+;;;----------------
+;;; gating globals
+;;;----------------
 
 (unless (boundp '*uniformly-scan-all-no-space-token-sequences*)
   (defparameter *uniformly-scan-all-no-space-token-sequences* nil
     "Gates this simpler alternative / complement to the pattern-driven
     scheme. Sort of a generic 'super' tokenizer"))
+
+(unless (boundp '*parser-interior-of-no-space-token-sequence*)
+  (defparameter *parser-interior-of-no-space-token-sequence* nil
+    "Controls whether we try to parse the edges of the words
+     inside the span."))
    
 
 ;;;---------------------------------------------------
@@ -107,13 +113,13 @@
           
           (let ((word (pos-terminal next-position)))
             (when (and (punctuation? word)
-                       (punctuation-terminates-no-space-sequence
+                       (punctuation-terminates-no-space-sequence ; 
                         word next-position))
               (tr :ns-terminating-punctuation word)
               (return))
             
             (push word words)
-            (break "pos of word")
+            ;(break "pos of word")
             (tr :ns-adding-word word)
             
             (setq next-position (chart-position-after next-position))
@@ -144,22 +150,25 @@
       (tr :ns-parsing-between pos-before next-position)
       
    
-      (let ((layout (parse-between-boundaries pos-before next-position))) ; 
+      (let ((layout 
+             (when *parser-interior-of-no-space-token-sequence*
+               (parse-between-boundaries pos-before next-position))))
         (tr :ns-layout layout)
-        (case layout
-          ((or :no-edges
-               :contiguous-edges
-               ;; perhaps there's something interesting to do
-               ;; by adapting some segment-level operation,
-               ;; but for now drop through and reify the words
-               :has-unknown-words))           
-          (:span-is-longer-than-segment
-           (break "no-space-sequence: bad positions somehow.~
-                 ~%   Parsed span goes beyond presumed boundaries.~
-                 ~%   start = ~a  end = ~a" pos-before next-position))
-          (:single-span) ;; the words composed
-          (otherwise
-           (break "New no-space layout: ~a" layout)))
+        (when layout
+          (case layout
+            ((or :no-edges
+                 :contiguous-edges
+                 ;; perhaps there's something interesting to do
+                 ;; by adapting some segment-level operation,
+                 ;; but for now drop through and reify the words
+                 :has-unknown-words))           
+            (:span-is-longer-than-segment
+             (break "no-space-sequence: bad positions somehow.~
+                   ~%   Parsed span goes beyond presumed boundaries.~
+                   ~%   start = ~a  end = ~a" pos-before next-position))
+            (:single-span) ;; the words composed
+            (otherwise
+             (break "New no-space layout: ~a" layout))))
 
         ;; The cleanest conceptualization of things like M1A1 or
         ;; H1N1 is that they are names. So we take the words that
@@ -234,7 +243,7 @@
      ;; it's punctuation, otherwise it's part of the compound
      ;; terminal.
      (sentence-final-punctuation-pattern?
-      word (chart-position-after position)))
+      (chart-position-after position)))
     ((or (eq word  (punctuation-named #\-))
 	 (eq word  (punctuation-named #\@)))
      nil)
@@ -243,15 +252,21 @@
     (t t)))
 
 
-(defun sentence-final-punctuation-pattern? (word position)
-  (declare (special *source-exhausted*) (ignore word))
-  (if *source-exhausted*
-    t
+(defun sentence-final-punctuation-pattern? (position)
+  (declare (special *source-exhausted*))
+  (unless (pos-terminal position)
+    (scan-next-position))
+  (cond
+   (*source-exhausted* t)
+   ((eq (pos-terminal position) *end-of-source*) t)
+   (t
     (let ((pos-after (chart-position-after position)))
+      (unless (pos-terminal pos-after)
+        (scan-next-position))
       (if (or (no-space-before-word? pos-after) ;; e.g. a URL
 	      (not *source-exhausted*))
 	  nil
-	  t))))
+	  t)))))
 
 
 (defun first-word-is-bracket-punct (word1)
