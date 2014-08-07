@@ -111,8 +111,9 @@
     (setq form 'standalone)) ;; seems safest
   (unless brackets
     (setq brackets
-          (case form ;; match with values in rules/brackeets/assignments (!!)
+          (case form ;; match with values in rules/brackets/assignments (!!)
             (adverb *adverb-brackets*)
+            (comparative *comparative-brackets*)
             ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
             (det *default-determiner-brackets*)
             (standalone *standalone-brackets*)
