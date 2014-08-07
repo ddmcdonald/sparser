@@ -75,12 +75,13 @@
 (define-reflection-on "regardless of")
 
 
-
+(define-comparative "more")
+(define-comparative "bigger")
 
 ;;;--------------
 ;;; Comparatives
 ;;;--------------
-
+#|
 ;; initiated 7/29/94. Added some polywords 9/10/09.
 ;; 0.1 (2/17/10) added "rather than", which isn't at all the same thing, but
 ;;  since it's just going for a parse, rather than an interpretation, that's
@@ -116,13 +117,14 @@
 ;; comparative-adjective
 (define-comparative "smaller") ;; small smallest
 
+|#
 
 (define-function-word "than" )
 
 
 
 ;;/// Goes somewhere else when we get serious about meaning
-(define-comparative "rather than" :brackets '( ].phrase  .[np ))
+;(define-comparative "rather than" :brackets '( ].phrase  .[np ))
 
 
 #|  ;; From former rules-comparatives  ;; initiated 7/29/94
@@ -1026,6 +1028,7 @@
 (define-adjective "successive") ;!!!
 (define-adjective "sufficient")
 (define-adjective "supportive")
+(define-adjective "surgical")
 (define-adjective "susceptible")
 (define-adjective "systematic")
 (define-adjective "telomeric") ;telomere
