@@ -522,7 +522,16 @@
                morphology word))))
     (cons
      ;; e.g. ("ible" ADJ)
-     )
+     (let ((suffix (first morphology)))
+       (cond
+        ((string= suffix "ed")
+         (form-stem/strip-ed word))
+        ((string= suffix "ing")
+         (form-stem/strip-ing word))
+        
+         ((push-debug `(,word ,morphology))
+         (break "Unexpected morphology keyword ~a~%on ~a"
+               morphology word)))))
     (otherwise
      (push-debug `(,word ,morphology))
      (error "Unexpected type of morph keyword: ~a~%~a"
@@ -681,6 +690,7 @@
 		(> (length stem-pname) 3)) ;; "cell" "add"
 	   (setq stem-pname (subseq pname 0 (- length 4)))))
 	(define-word/expr stem-pname)))))
+
 
 
 ;(form-stem/strip-ing (define-word "setting"))
