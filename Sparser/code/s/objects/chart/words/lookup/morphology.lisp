@@ -80,6 +80,24 @@
 
 ;;----- "ed"
 
+
+
+
+
+(defun try-to-strip-off-ED/wb (index-of-last-char)
+  (let ((char (char/wb index-of-last-char)))
+    (if (char-equal char #\d)
+      (having-stripped-D-try-for-E (1- index-of-last-char))
+      nil)))
+
+(defun having-stripped-D-try-for-E (index-of-2d-to-last-char)
+  (let ((char (char/wb index-of-2d-to-last-char)))
+    (if (char-equal char #\e)
+      :ends-in-ed
+      nil)))
+
+
+#|
 (defun try-to-strip-off-ED/wb (index-of-last-char)
   (let ((char (char/wb index-of-last-char)))
     (if (eq char #\d)
@@ -92,7 +110,7 @@
       :ends-in-ed
       nil)))
 
-
+|#
 ;;----- "ly"
 
 (defun try-to-strip-off-LY/wb (index-of-last-char)
@@ -113,6 +131,27 @@
 
 (defun try-to-strip-off-ING/wb (index-of-last-char)
   (let ((char (char/wb index-of-last-char)))
+    (if (char-equal char #\g)
+      (having-stripped-G-try-for-N (1- index-of-last-char))
+      nil)))
+
+(defun having-stripped-G-try-for-N (index-of-2d-to-last-char)
+  (let ((char (char/wb index-of-2d-to-last-char)))
+    (if (char-equal char #\n)
+      (having-stripped-NG-try-for-I (1- index-of-2d-to-last-char))
+      nil)))
+
+(defun having-stripped-NG-try-for-I (index-of-3d-to-last-char)
+  (let ((char (char/wb index-of-3d-to-last-char)))
+    (if (char-equal char #\i)
+      :ends-in-ing
+      nil)))
+
+
+
+#|
+(defun try-to-strip-off-ING/wb (index-of-last-char)
+  (let ((char (char/wb index-of-last-char)))
     (if (eq char #\g)
       (having-stripped-G-try-for-N (1- index-of-last-char))
       nil)))
@@ -128,7 +167,7 @@
     (if (eq char #\i)
       :ends-in-ing
       nil)))
-
+|#
 
 ;;----- "s"
 
@@ -137,6 +176,8 @@
     (if (eq char #\s)
       :ends-in-s
       nil))) 
+
+
 
 ;; SUFFIXES
 ;; ADJ == adjective, N == noun, V == verb
