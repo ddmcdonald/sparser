@@ -22,7 +22,7 @@
   :lemma (:adjective "comparative")
   :realization (:word word))
 
-
+#|
 (defun define-comparative (string &key (brackets
                                         (list ].phrase
                                               .[np )))
@@ -32,6 +32,17 @@
     (let ((cmp (define-individual 'comparative
                  :word word)))
       cmp )))
+
+|#
+
+
+(defun define-comparative (string &key rule-label discriminator)
+  (define-function-term string 'comparative
+    :rule-label rule-label
+    :discriminator discriminator
+    :tree-families '(pre-adv-adverb)))
+                     
+
 
 
 
