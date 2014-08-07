@@ -73,7 +73,6 @@
         (category::preposition)
         (category::spatial-preposition)
         (category::spatio-temporal-preposition)
-        
 
         (category::s)
         (category::vp)
@@ -95,14 +94,14 @@
           category::verb+ing 
           category::verb+present
           category::verb+passive
-          category::modal
-          )
+          category::modal)
 	 (setf (edge-form edge) (category-named 'vg)))
 
 	(otherwise
 	 (unless *cfg-flag*
            (push-debug `(,edge))
-	   (break "New case of form category of edge over segment: ~a"
+	   (break "New case of form category of edge over segment: ~a~
+                 ~%Add it to generalize-segment-edge-form-if-needed"
 		  (edge-form edge))))))))
 
 
