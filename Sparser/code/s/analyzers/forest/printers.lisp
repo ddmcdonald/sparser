@@ -31,6 +31,7 @@
 ;;      3/18 added tts-form and tts-ref. 8/16/13 Added display-bracketing
 ;;      1/27/14 added undisplay-bracketing
 ;;     (7/24/14) added print-flat-forest as another tool for looking at debris
+;;      7/30/14 tweaked some to use edge-vectors for the :multiple-edges case.
 
 (in-package :sparser)
 
@@ -78,6 +79,7 @@
   (setq *record-bracketing-progress* t))
 
 (defun undisplay-bracketing ()
+  ;; Turns the immediate, word at a time display back on. 
   (declare (special *record-bracketing-progress*))
   (setq *display-word-stream* t)
   (setq *readout-segments-inline-with-text* nil)
@@ -456,8 +458,8 @@ there were ever to be any.  ///hook into final actions ??  |#
          (format stream "\"~a\" " (word-pname tt)))
         (symbol
          (if (eq tt :multiple-initial-edges)
-           (then (push-debug `(,tt))
-                 (break "stub: print mulitple initial edges"))
+           (format stream "~a "
+                   (string-for-multiple-edges-tt start-pos))
            (error "Treetop is an unexpected symbol: ~a" tt)))
         (otherwise
          (error "Unexpected type of tt: ~a~%~a"
@@ -471,8 +473,17 @@ there were ever to be any.  ///hook into final actions ??  |#
         (return :done))
 
       (setq tt (right-treetop-at next-pos)
+            start-pos next-pos
             next-pos (where-tt-ends tt next-pos)))))
-         
+
+(defun string-for-multiple-edges-tt (position)
+  ;; Caller does the display
+  (let* ((edges (all-edges-on (pos-starts-here position)))
+         (numbers (mapcar #'edge-position-in-resource-array edges))
+         (word (word-pname (pos-terminal position))))
+    (format nil "[M:~a ~s]"
+            (length numbers) ;; a iterator would be better
+            word)))
 
 
 
@@ -642,6 +653,7 @@ there were ever to be any.  ///hook into final actions ??  |#
   (let ((tts (treetops-in-segment starting-position ending-position))
          labels  )
     (dolist (tt tts)
+      ;; accumulate labels, then print them out at the end
       (typecase tt
         (word (push (format nil "\"~a\"" (word-pname tt)) labels))
         (polyword (push (format nil "\"~a\"" (pw-pname tt)) labels))
@@ -653,11 +665,19 @@ there were ever to be any.  ///hook into final actions ??  |#
                   (else 
                    (push-debug `(,tt ,tts .starting-position ,ending-position))
                    (break "New case: ~a" category)))))
+        (edge-vector ;; corresponds to multiple initial edges
+         (let* ((pos (ev-position tt))
+                (pos# (pos-token-index pos))
+                (pname (word-pname (pos-terminal pos)))
+                (label (format nil "[p~a ~s]" pos# pname)))
+           (push label labels)))           
         (otherwise
          (push-debug `(,tt ,starting-position ,ending-position))
          (error "New type of treetop: ~a" (type-of tt)))))
+
     (setq labels (nreverse labels))
     (format stream "~&~{~a ~}~%" labels)))
+
 
 
 (defun treetops-in-segment (starting-position ending-position)
@@ -670,7 +690,8 @@ there were ever to be any.  ///hook into final actions ??  |#
           (multiple-value-bind (tt end multiple?)
                                (next-treetop/rightward start)
             (if multiple?
-              (push (pos-terminal start) tts)
+              ;;(push (pos-terminal start) tts)
+              (push (pos-starts-here start) tts) ;; the edge vector
               (push tt tts))
 
             (cond ((eq end ending-position)
