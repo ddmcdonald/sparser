@@ -33,7 +33,7 @@
   word )
 
 
-(defun un-Catalog/word (object symbol-for-word)
+(defun un-catalog/word (object symbol-for-word)
   (setq *words-defined*
         (delete object *words-defined*))
   (makunbound symbol-for-word)
@@ -45,7 +45,14 @@
 ;;; packaged deletion routines
 ;;;----------------------------
 
-(defun delete/word (word)
+(defmethod delete/word ((string-for-word string))
+  (let ((word (word-named string-for-word)))
+     (if word
+       (delete/word word)
+       (format t "\"~a\" is not a known word" string-for-word))))
+
+
+(defmethod delete/word ((word word))
   (un-catalog/word word (word-symbol word)))
 
 
