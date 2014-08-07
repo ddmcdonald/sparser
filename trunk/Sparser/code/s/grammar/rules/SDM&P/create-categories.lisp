@@ -63,6 +63,7 @@
           ))
         (category::subordinate-conjunction)
 	(category::adjunct)
+        (category::comparative)
         (category::possessive)
         (category::quantifier)
         (category::adjective)
