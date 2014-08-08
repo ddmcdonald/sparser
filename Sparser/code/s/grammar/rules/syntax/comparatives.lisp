@@ -40,7 +40,7 @@
   (define-function-term string 'comparative
     :rule-label rule-label
     :discriminator discriminator
-    :tree-families '(pre-adv-adverb)))
+    :tree-families '(pre-adv-adverb pre-adj-adverb)))
                      
 
 
