@@ -113,7 +113,7 @@
           
           (let ((word (pos-terminal next-position)))
             (when (and (punctuation? word)
-                       (punctuation-terminates-no-space-sequence ; 
+                       (punctuation-terminates-no-space-sequence
                         word next-position))
               (tr :ns-terminating-punctuation word)
               (return))
@@ -179,7 +179,7 @@
         ;; if we understand the context.
 
         (unless (eq layout :single-span)
-          ;; This reifies the name and makes the edge
+          ;; This reifies the name and makes the edge if rules didn't do it
           (reify-ns-name-and-make-edge words pos-before next-position))
 
         (tr :ns-returning-position next-position)
@@ -194,7 +194,9 @@
   ;; form is 'proper-name'.  Something makes me think this could
   ;; be problem down the line, but we can deal with it when it emerges.
   (multiple-value-bind (category rule referent)
-                       (reify-spelled-name words)
+                       (if *big-mechanism*
+                         (reify-ns-name-as-bio-entity words)
+                         (reify-spelled-name words))
       (let ((edge
              (make-edge-over-long-span
               pos-before
