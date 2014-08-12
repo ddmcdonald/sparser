@@ -9,7 +9,8 @@
 ;; 4/3/97 added a case for dm&p. 8/17/97 added lots of cases as part of preparing
 ;; a license with the segmenter but not the model.  2/22/10 added construct-
 ;; temporary-number to support :just-bracketing mode. Added bunch more 4/1/12.
-;; Fixed ill-formed declare 1/28/13. More for omitting grammar modules 6/16/14.
+;; Fixed ill-formed declare 1/28/13. More for omitting grammar modules 6/16/14
+;; and more 8/10/14
 
 (in-package :sparser)
 
@@ -18,6 +19,28 @@
     This routine defines dummies for them so as to avoid the messages
     as the end of the load and thereby give any messages that do occur
     real significance.   |#
+
+(unless *companies*
+  (defun establish-companies-as-part-of-the-background (list)
+    (declare (ignore list)))
+  (defun filter-out-background-companies/dh (list)
+    (declare (ignore list)))
+  (defun make-company-name-from-items
+         (items &key &-sign ordinal inc-term? of and the generic-co koc?)
+    (declare (ignore items &-sign ordinal inc-term? of and the generic-co koc?)))
+  (defun make-company-name-as-simple-sequence (items)
+    (declare (ignore items)))
+  (defun index-company-name-to-company (longer-name entity)
+    (declare (ignore longer-name entity)))
+  (defun find/company-with-name (name)
+    (declare (ignore name)))
+  (defun make/company-with-name (name)
+    (declare (ignore name)))
+  (defun make-company-name-as-simple-sequence (original-items)
+    (declare (ignore original-items)))
+  (defun consider-converting-title-to-person (convering-edge)
+    (declare (ignore convering-edge))))
+
 
 (unless *c3*
   (defun create-wakil ())
