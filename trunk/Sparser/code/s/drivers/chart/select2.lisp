@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "select"
 ;;;   Module:  "drivers;chart:"
-;;;  Version:  2.4 September 2013
+;;;  Version:  2.4 August 2014
 
 ;; 2.0 (9/12/92) moved up to chart level from psp
 ;; 2.1 (4/7/93) commented out the wsj-headers option
@@ -11,7 +11,8 @@
 ;; 2.3 (9/8) cleaned out the cases that aren't defined any more
 ;; 2.4 (1/24/95) Added another kind :test-protocol, with call (initiate-test-protocol)
 ;;     (1/9/96) added :scan-for-closing-markup-tag
-;;     (9/16/13) added :c3-protocol
+;;     (9/16/13) added :c3-protocol.
+;;     (8/11/14) added :r3-entity-sweep
 
 (in-package :sparser)
 
@@ -71,6 +72,8 @@
          (initiate-c3-protocol))
         (:just-do-terminals
          (look-at-all-terminals))
+        (:r3-entity-sweep
+         (initiate-R3-entity-pass))
         (:scan-for-closing-markup-tag
          (initiate-scan-for-closing-markup-tag))
         ;(:test-protocol  ;; ?? where's the definition?
