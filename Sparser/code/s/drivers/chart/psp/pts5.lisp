@@ -61,6 +61,7 @@
 (in-package :sparser)
 
 (defparameter *no-segment-level-operations* nil
+  ;;//// still a work in progress
   "Used for testing backeting without any parsing above the single word")
 
 (defun pts ( &optional boundary-from-edge? )
