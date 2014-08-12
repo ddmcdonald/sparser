@@ -64,7 +64,8 @@
   :specializes endurant  ;; sweeps a lot under the rug
   :mixins (has-UID has-name)
   :binds ((long-form :primitive polyword))
-  :index (:permanent :key name))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
 
 
 (define-category molecule  ;; CHEBI:36357
