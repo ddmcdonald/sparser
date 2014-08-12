@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  2.2 June 2013
+;;;  version:  2.2 August 2013
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -62,7 +62,7 @@
 ;;      bug in it (C&S).
 ;; 2.2 (4/3/13) Installed check for Chomsky adjunction in the inner loop.
 ;;     (6/13/13) Fixed case of :self as a variable in decode-binding. Flagged it
-;;      as illegal.
+;;      as illegal. (8/12/14) added retrieve-single-rule-from-individual
 
 (in-package :sparser)
 
@@ -230,6 +230,18 @@
           rules )))))
 
 
+(defun retrieve-single-rule-from-individual (i)
+  ;; Applies when only a head is supplied
+  (let ((rule-field (get-tag-for :rules i)))
+    (unless rule-field
+      (push-debug `(,i))
+      (error "No rules recorded for ~a" i))
+    (unless (null (cdr rule-field))
+      (push-debug `(,i ,rule-field))
+      (error "More than one rule recorded for ~a~
+            ~%Don't know which to use.~%~a"
+             i rule-field))
+    (car rule-field)))
 
 ;;;-----------------
 ;;; the real driver
