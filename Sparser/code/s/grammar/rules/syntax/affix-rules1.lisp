@@ -31,7 +31,7 @@
   (typecase morph-keyword
     (keyword 
      (case morph-keyword
-       (:ends-in-s) ;; always ambiguous?
+       ;;(:ends-in-s) ;; always ambiguous?
        ;;/// put in both ??      
        (:ends-in-ed
         (let ((lemma (stem-form word)))
