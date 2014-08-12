@@ -1126,7 +1126,7 @@ code has already executed so these are a duplication.
   
   (unless (or sparser::*just-note-changed-files*
               sparser::*copy-file*)
-    (format *standard-output* "~A" sparser::*salutation-string*))
+    (format *standard-output* "~&~%~a" sparser::*salutation-string*))
   
   #+:apple
   (defun trivial-save (month day)
