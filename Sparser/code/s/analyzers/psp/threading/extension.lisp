@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "extension"
 ;;;    Module:   "analyzers;psp:threading:"
-;;;   Version:   0.2 July 2014
+;;;   Version:   0.2 August 2014
 
 ;; initiated 6/11/93 v2.3
 ;; 7/19 aded tt-extends?, which was stranded from [tt manager] when
@@ -11,7 +11,9 @@
 ;; 0.1 (9/26/94) reworked the basic call as a protocol-dispatch
 ;;  (10/19) added the case of a sentence-terminating colon followed by markup.
 ;;  (3/17/05) fixed typo.
-;; 0.2 (7/30/14) Added new case: next-word-is-not-sentence-final-period
+;; 0.2 (7/30/14) Added new case: next-word-is-not-sentence-final-period.
+;;   (8/8/14) Added traces and slightly rearranged things to make it
+;;    easier to see what's happening.
 
 (in-package :sparser)
 
@@ -27,13 +29,17 @@
   ;; continue scanning segments rather than move to the forest level
   ;; Returns nil if we should stop scanning, non-nil if we should
   ;; scan another segment. 
-  (ecase *segment-scan/forest-level-transition-protocol*
-    (:move-when-segment-can-never-extend-rightwards
-     (can-segment-ever-extend right-boundary))
-    (:move-only-at-significant-boundary
-     (next-word-does-not-indicate-a-significant-boundary right-boundary))
-    (:stop-on-sentence-end
-     (not (next-word-is-not-sentence-final-period right-boundary)))))
+  (tr :pts/checking-seg-extension right-boundary)
+  (let ((value
+         (ecase *segment-scan/forest-level-transition-protocol*
+           (:move-when-segment-can-never-extend-rightwards
+            (can-segment-ever-extend right-boundary))
+           (:move-only-at-significant-boundary
+            (next-word-does-not-indicate-a-significant-boundary right-boundary))
+           (:stop-on-sentence-end
+            (not (next-word-is-not-sentence-final-period right-boundary))))))
+    (tr :pts/check-extension-value value)
+    value))
 
 
 ;;;-----------------------------------
@@ -47,6 +53,7 @@
   (declare (special *the-punctuation-period*))
   (let ((next-word (pos-terminal pos-before))
         (position-after (chart-position-after pos-before)))
+    ;;(push-debug `(,pos-before ,next-word ,position-after))
     (when (eq next-word *the-punctuation-period*)
       (tr :pts/period-seen pos-before)
       (period-marks-sentence-end? position-after))))
@@ -83,7 +90,6 @@
 
 
 
-
 ;;;--------------------------------------------
 ;;; standard algorithm in sublanguage analysis
 ;;;--------------------------------------------
@@ -117,12 +123,10 @@
       nil ))))
 
 
-
 (defun tt-extends? (edge)
   ;; variation called when one has an edge rather than a position
   ;; in hand.
   (label-combines-to-its-right (edge-category edge)))
-
 
 (defun label-combines-to-its-right (label)
   (let* ((label-rs (rule-set-for label)))
