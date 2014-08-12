@@ -20,16 +20,19 @@
     :documentation "backpointer to the document object that it's part of"))
   (:documentation "Common super class for all container-like things"))
 
-
-(defclass simple-container (container)
+(defclass accumulate-items ()
   ((list :initform nil :accessor items
     :documentation "Simple list. Items are just pushed onto it
-      making them in reverse cronological order.")
-   )
+      making them in reverse cronological order."))
   (:documentation "Maintains a simple list. Up to the reader of
-     the list to sort it into various kinds of things."))
+     the list to sort it into various kinds of things.
+     Intended as a mixin for other containers."))
 
-(defmethod print-object ((c simple-container) stream)
+(defclass simple-container (container accumulate-items)
+  ())
+  
+
+(defmethod print-object ((c accumulate-items) stream)
   (print-unreadable-object (c stream :type t)
     (let ((items (items c))
           (doc-object (bkptr c)))
@@ -76,7 +79,7 @@
    presumably structured accumulation, long-distance parse state
    or (the motive for all this) a situation.")
 
-(defun make-sentence-container 
+(defun make-sentence-container (sentence)
   ;; called from start-sentence
   (declare (ignore sentence))
   (error "No version of make-sentence-container has been specified"))
@@ -86,9 +89,7 @@
         (ecase keyword
           (:simple (symbol-function 'make-sentence-container/simple))
           (:situation (symbol-function 'make-sentence-container/situation))
-          (:complex (symbol-function 'make-sentence-content-container
-
-)))
+          (:complex (symbol-function 'make-sentence-content-container)))))
 
 ;; (designate-sentence-container :simple)  => switch setting
 (defun make-sentence-container/simple (sentence)
