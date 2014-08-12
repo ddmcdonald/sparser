@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "driver"
 ;;;   Module:  "grammar;rules:HA:"
-;;;  Version:  0.2 March 1996
+;;;  Version:  0.2 August 2014
 
 ;; initiated 6/13/93
 ;; 0.1 (3/15/94) revised calls to edge accessors to appreciate mulitple initial edges
@@ -11,6 +11,8 @@
 ;;       heuristic is operating.   Added traces 12/12
 ;; 0.2 (3/13/96) added a treatment of multiple heads/prefixes (heads tested) and
 ;;       slightly remodularized things.
+;;     (8/11/14) Blocking application of the determiner heuristic under
+;;       Big Mechanism. We'll let the post-parsing segment handlers deal with it.
 
 (in-package :sparser)
 
@@ -66,7 +68,8 @@
    (prefix
     (tr :ha-prefix-only prefix)
     (when *pending-determiner-heuristic*
-      (determiner-completion-heuristic prefix right-end)))
+      (unless *big-mechanism*
+        (determiner-completion-heuristic prefix right-end))))
    
    (t 
     (tr :ha-neither-prefix-nor-head)
