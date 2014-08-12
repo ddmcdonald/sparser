@@ -13,7 +13,7 @@
 ;;; mixins
 
 (defclass parsing-status ()
-  ((level-completed :initarg level :accessor level-completed
+  ((level-completed :initarg :level :accessor level-completed
     :documentation "The parsing is tiered into successive levels
       of analysis. Which one have we completed for this level of
       document structure?
@@ -27,7 +27,7 @@
 
 ;;; class
 
-(defclass sentence-content (container parsing-status ordered)
+(defclass sentence-content (container parsing-status accumulate-items ordered)
   ()
   (:documentation "From container we get :in to point back to the
     sentence. From ordered we get previous and next so we can link
@@ -48,4 +48,6 @@
 (defun make-sentence-content-container (sentence)
   (make-instance 'sentence-content
     :in sentence
-    :level :initial
+    :level :initial))
+
+
