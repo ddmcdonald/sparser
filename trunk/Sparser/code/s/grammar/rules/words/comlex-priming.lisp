@@ -1,14 +1,21 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2013 David D. McDonald
+;;; Copyright (c) 2010-2014 David D. McDonald
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  August 2013
+;;;  Version:  0.2 August 2014
 
 ;; Extracted from one-offs/comlex 12/3/12.
 ;; 0.1 (8/12/13) Wrapped the eval of the def-word expression in an
 ;;      ignore-errors because the mlisp load in my ACL 8.2 was choking
 ;;      on unicode characters in French words.
+;; 0.2 (8/7/14) Rewrote prime-word-from-comlex to do away with the
+;;      original notion that we did not prime a word if (word-named string)
+;;      wasn't nil. That's already stronger than the check in unknown-word? 
+;;      which looks for a rule set. Now we want the subcategorization
+;;      information for all the words, 'known' or not, so we need to prime
+;;      them all even though we will often not be using that scheme in
+;;      the word lookup and object creation. 
 
 (in-package :sparser)
 
@@ -57,6 +64,7 @@
          (eval entry))))))
 
 
+
 ;; This is the expansion of a macro, so any change to it requires an
 ;; update of its integration site
 ;;   (establish-version-of-def-word :comlex)
@@ -66,29 +74,31 @@
   ;; that the same spelling form can be part of muliple Comlex entries,
   ;; usually with quite different parts of speech. We have to merge them
   ;; as we see them. 
-  (let ((known? (word-named string)))
-    (unless known?
-      (unless (null (cdr entries))
-        (push-debug `(,string ,entries))
-        (error "Expected just one item in an entry"))
-      (let ((entry (car entries)))
-        (unless (eq (car entry) :comlex)
-          (error "Entry doesn't begin with :comlex~%  ~a" entry))
-        (let* ((clauses (cdr entry))
-               (variants (collect-strings-from-comlex-entry string clauses))
-               (all-words (pushnew string variants :test #'string-equal)))
- ;;(break "check for verb variants")
-          (let* ((prior-entry ;;/// only ever one? Need to test for this !
-                  (gethash string *primed-words*))
-                 (entry-to-store
-                  (if prior-entry
-                    (merge-comlex-entries prior-entry clauses)
-                    `(:comlex ,string ;; lemma form
-                              ,@(cdr entry)))))
-            (dolist (string all-words)
-              ;;(format t "~&priming \"~a\"~%" string)
-              (setf (gethash string *primed-words*) entry-to-store))
-            all-words))))))
+
+  ;; Data checks
+  (unless (null (cdr entries))
+    (push-debug `(,string ,entries))
+    (error "Expected just one item in an entry"))
+  (let ((entry (car entries)))
+    (unless (eq (car entry) :comlex)
+      (error "Entry doesn't begin with :comlex~%  ~a" entry))
+
+    (let* ((clauses (cdr entry))
+           (variants (collect-strings-from-comlex-entry string clauses))
+           (all-words (pushnew string variants :test #'string-equal)))
+
+      ;;(break "check for verb variants")
+      (let* ((prior-entry ;;/// only ever one? Need to test for this !
+              (gethash string *primed-words*))
+             (entry-to-store
+              (if prior-entry
+                (merge-comlex-entries prior-entry clauses)
+                `(:comlex ,string ;; lemma form
+                          ,@(cdr entry)))))
+        (dolist (string all-words)
+          ;;(format t "~&priming \"~a\"~%" string)
+          (setf (gethash string *primed-words*) entry-to-store))
+        all-words))))
 
 (defun merge-comlex-entries (prior-entry current-clauses)
   (let* ((pname (cadr prior-entry))
@@ -187,7 +197,38 @@
       (t ;; Nothing unusual, so use the built-in machinery
        (let ((plural (plural-version lemma)))
          `(,plural))))))
-           
+
+
+
+;;;-------------------------------
+;;; subcategorization information
+;;;-------------------------------
+#|
+(:comlex "common" 
+  (noun (:features ((countable :pval ("in")))))
+  (adjective 
+    (:subc ((adj-pp :pval ("for" "to"))
+            (extrap-adj-for-to-inf))
+     :features ((gradable))))) |#
+
+(defun add-specific-subcategorization-facts (category word pos)
+  ;; Called from define-function-term, where 'pos' is :adjective
+  ;; and we're looking for bound prepositions for, e.g. "common"
+  (when *comlex-words-primed*
+    (let ((entry (gethash (word-pname word) *primed-words*)))
+      (when entry
+        (let* ((pos-alist (cddr entry))
+               (pos-entry (assq pos pos-alist)))
+          (when pos-entry
+            ;; this part of speech specific entry can have many
+            ;; subentries, as described in the Comlex manual.
+            ;; Here we're just looking a subcategorization
+            (let ((subcat (cadr (assq :subc (cdr pos-entry)))))
+              (when subcat
+                (apply-subcat-info category word subcat)))))))))
+
+(defun apply-subcat-info (category word subcat)
+  (push-debug `(,category ,word ,subcat)) (break "apply"))
 
 
 ;;;--------
