@@ -76,8 +76,9 @@
 proteins and is mediated by a conserved structure called the G-domain
 that consists of five conserved G boxes. |#
 
-(np-head "switch") ;; and the verb
+(np-head "switch") ;;/// trivial standin
 (np-head "mechanism")
+
 
 
 
