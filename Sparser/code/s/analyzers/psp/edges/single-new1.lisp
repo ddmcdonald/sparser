@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "single-new"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.2 September 1994
+;;;   Version:   1.3 August 2014
 
 ;; 1.0 (9/7/92 v2.3) flushed out of date field references
 ;;     (11/3) fixed typo
@@ -13,6 +13,9 @@
 ;;     (5/24/94) added trace
 ;; 1.2 (9/6/95) hacked Make-completed-unary-edge to allow calls where the 'rule'
 ;;      is a keyword rather than a cfr
+;; 1.3 (8/11/14) Added the optionals of make-completed-unary-edge to
+;;      install-preterminal-edge so code could call it and not have to
+;;      think about edge vectors.
 
 (in-package :sparser)
 
@@ -21,14 +24,18 @@
 ;;;---------
 
 (defun install-preterminal-edge (cfr word
-                                 position next-position)
+                                 position next-position
+                                 &optional  
+                                   category form referent)
 
   ;; called from Preterminals/word
   (let ((edge
          (make-completed-unary-edge (pos-starts-here position)
                                     (pos-ends-here next-position)
                                     cfr
-                                    word )))
+                                    word 
+                                    category form referent
+)))
     (tr :making-single-term-edge edge)
     edge ))
 
