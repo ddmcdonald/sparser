@@ -3,10 +3,11 @@
 ;;;
 ;;;     File:  "adjectives"
 ;;;   Module:  "grammar;rules:words:"
-;;;  version:  June 2014
+;;;  version:  August 2014
 
 ;; initiated in 1/9/95. Redone in terms of fn words 4/12/95,
 ;; Rewritten from scratch 6/4/14. Added the other options 6/9/14
+;; 8/8/14 Added parameter to check subcategorization info. 
 
 (in-package :sparser)
 
@@ -21,5 +22,6 @@
     :rule-label (or rule-label
                     'modifier)
     :discriminator discriminator
-    :tree-families '(prenominal-adjective)))
+    :tree-families '(prenominal-adjective)
+    :subcat-info 'adjective))
 
