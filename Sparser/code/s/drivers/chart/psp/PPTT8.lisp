@@ -60,7 +60,12 @@
 ;;;---------------------------------------------
 
 (defun move-to-forest-level (rightmost-position reason)
-  ;; called shortly after segment-finished is called
+  ;; called shortly after segment-finished is called. 
+  ;; The possibilities and reasons are:
+  ;;  sf-action/spanned-segment1 -- :full-segment-scanned
+  ;;  sf-action/some-adjacent-edges/no-more-heuristics -- :segment-spanned-by-default
+  ;;  sf-action/discont-edges/no-more-heuristics -- :empty-segment-scanned
+  ;;  sf-action/no-edges -- :empty-segment-scanned
   (if *do-forest-level*
     (then
      (tr :moved-to-forest-level rightmost-position) ;; network-flow
