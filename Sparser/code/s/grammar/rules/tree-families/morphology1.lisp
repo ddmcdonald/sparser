@@ -1,3 +1,4 @@
+
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1992-2005,2010-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
@@ -86,6 +87,8 @@
 ;;       special case plural is still a string and not a word. 
 ;; 1.12 (11/27/13) Modified it further to factor out the plural creator and
 ;;       allow it to be blocked. (6/9/14) Added check-for-correct-irregular-word-markers
+;; 1.13 (8/12/14) Reorganized make-cn-rules/aux so overriding plurals wouldn't
+;;       block returning the singular rule.
 
 (in-package :sparser)
 
@@ -915,16 +918,18 @@
              :referent referent)))
       (setf (cfr-schema singular-rule) schematic-rule)
       (assign-brackets-as-a-common-noun word)
-      
-      (if (member :punctuation (etypecase word
-                                 (word (word-plist word))
-                                 (polyword (pw-plist word))))
-        ;; so we don't pluralize it
-        (list singular-rule)
 
-        (unless *inihibit-constructing-plural*
-          (make-cn-rules/aux/plural
-           word special-cases category referent singular-rule schematic-rule))))))
+      (cond
+       ((member :punctuation (etypecase word
+                               (word (word-plist word))
+                               (polyword (pw-plist word))))
+        ;; so we don't pluralize it
+        (list singular-rule))
+       (*inihibit-constructing-plural*
+        (list singular-rule))
+       (t
+        (make-cn-rules/aux/plural
+         word special-cases category referent singular-rule schematic-rule))))))
 
 (defun make-cn-rules/aux/plural (word special-cases category referent
                                  singular-rule schematic-rule)
@@ -954,7 +959,7 @@
 
       (record-inflections `(,plural) word :noun)
       (record-lemma plural word :noun)
-            
+
       (assign-brackets-as-a-common-noun plural)
       (setf (cfr-schema plural-rule) schematic-rule)
       (list singular-rule
