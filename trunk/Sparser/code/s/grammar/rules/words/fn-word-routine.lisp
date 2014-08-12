@@ -100,13 +100,21 @@
 ;; set that involve a single label and lead to form-rules.
 ;; See etf-form-substitution-label for the list. 
 
-;; (setq *name* T)
-(defparameter *ignore-redefine-warning* nil)
+(defparameter *ignore-redefine-warning* nil
+  "When you are deliberately reloading a set of function terms,
+   you can set this flag to t and it will quiet the complaint
+   about redefining an already known category.")
 
 (defun define-function-term (string form 
                              &key  brackets super-category
                                    rule-label discriminator
-                                   tree-families)
+                                   tree-families subcat-info)
+  "Does for deliberately defined modifiers the same thing as is done for
+   Comlex or morphologically identified nouns or verbs in 
+
+:subcat-info  
+   Legal values are noun, verb, adjective, and adverb
+"
   (unless form
     (setq form 'standalone)) ;; seems safest
   (unless brackets
@@ -138,8 +146,8 @@
               base-name)))
       (when (category-named category-name)
         (when *ignore-redefine-warning*
-        (cerror "Ignore and keep going"
-                "We're about to redefine the category ~a" category-name)))
+          (cerror "Ignore and keep going"
+                  "We're about to redefine the category ~a" category-name)))
     
 
       (let ((category ;; for the function word
@@ -158,17 +166,25 @@
                            (list word)
                  :form (category-named form)
                  :referent category)))
-          (push-onto-plist category rule :rule)
+          (add-rule-to-category rule category)
 
           (when tree-families
-            ;; Now knit the category into the right set of form rules
+            ;; Now knit the category into the correct set of form rules
             (unless rule-label
               ;; But if there's a specified rule-label, e.g. specifying
-              ;; sequencer for "next" instead of using the category
-              ;; for "next" that we just created, then any other,
-              ;; e.g., sequencer/determiner would make those same
-              ;; form rules and we'd get a clash.
+              ;; 'sequencer' for "next" instead of using the category
+              ;; for "next" that we just created, then some other routine
+              ;; e.g., sequencer/determiner is responsible for making those 
+              ;; form rules and we'd get a clash if we did them here. 
               (apply-function-term-etf category tree-families)))
+
+          (when subcat-info
+            ;; Look up the Comlex subcategorization information for
+            ;; this word. If there is any, and if it is of the specified
+            ;; sort, add any rules that would apply.
+            ;; Adjectives are the model case
+            (add-specific-subcategorization-facts
+             category word subcat-info))
  
           (values category
                   rule))))))
@@ -179,7 +195,7 @@
   "We recreate rdata expressions where the mapping is just one
    label, which we replace with category, then we apply a farily
    deep entry point inside model/tree-tamilies/driver to create
-   the rule."
+   the rule/s. Rules created here are stored on the category."
   (let ( tree-family-pairs )
     (dolist (raw raw-tree-family-data)
       (cond
