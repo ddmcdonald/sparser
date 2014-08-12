@@ -351,8 +351,10 @@
   (setq *switch-setting* :strider))
 
 (defun fire-setting ()
-  ;; Now (10/21/13) the setting we get when we 
+  ;; Now (10/21/13) the setting we get when we don't specify a special load
+  (declare (special *tts-after-each-section*))
   (strider-setting)
+  (setq *tts-after-each-section* nil) ;; turn off Strider default
   (setq *new-segment-coverage* :trivial)
   (setq *after-action-on-segments* 'sdm/analyze-segment)
   ;; Have to set after-action explicitly to be sure it takes
@@ -362,12 +364,30 @@
 (defun bio-setting ()
   (turn-off-c3)
   (tuned-grok)
-  ;; Except, for now back off a bit
-  (setq *new-segment-coverage* :trivial) ;; vs. :full or :none
-  (ignore-comlex)
-  (period-hook-off)
+
+  (include-comlex)
+  ;; Get everything primed, but don't use it on the unknown words
+  ;; at least not yet. 
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
+
+  ;; Set the full set of switches to control what 'after action'
+  ;; segment actions we do
+  (setq *do-strong-domain-modeling* t
+        *new-segment-coverage* :trivial ;; vs. :full or :none
+        *profligate-creation-of-individuals* t
+        ;;*reify-implicit-individuals* t
+        *note-text-relations* t)
+  ;; Specify where we start (needed as switch settings change
+  (do-strong-domain-modeling)
+
+  (setq *do-forest-level* t)
+  (setq *segment-scan/forest-level-transition-protocol*
+        :stop-on-sentence-end)
+  (what-to-do-at-the-forest-level :new-forest-protocol)
+  
   (setq *ignore-capitalization* t) ;; turns off PNF
   (setq *uniformly-scan-all-no-space-token-sequences* t)
+  (designate-sentence-container :complex)
   (setq *switch-setting* :biology))
 
 
