@@ -66,9 +66,7 @@
 ;;;---------------
 
 (defun initialize-discourse-history ()
-  (setq  *objects-in-the-discourse*
-         (make-hash-table :test #'eq)))
-
+  (clrhash *objects-in-the-discourse*))
  #| Attempting to deallocate the kconses is leading to circularities
     in the kcons resource, so for the moment just flushing the whole
     table and leaving it to GC to handle
@@ -125,7 +123,7 @@
   (unless (or (referential-category-p c)
               (mixin-category-p c)
               (category-p c))
-    (break "~A is not a category or of the expected specialization" c))
+    (error "~A is not a category or of the expected specialization" c))
   (symbol-name (cat-symbol c)))
 
 
@@ -240,6 +238,7 @@
   ;; called from Add-subsuming-object-to-discourse-history.
   ;; Looks up the entry for instances of this category and
   ;; adds (or extends) the discourse history accordingly
+  (declare (special *trace-discourse-history*))
   (if (consp category)
     ;; then it is marked to be indexed under several categories  
     ;; not just one
@@ -300,7 +299,7 @@
 (defun create-entry-in-discourse-history (category individual
                                           start-pos end-pos)
   (unless (referential-category-p category)
-    (break "Key is not a referential category:~%    ~A" category))
+    (error "Key is not a referential category:~%    ~A" category))
 
   ;; This is the first time there has been an individual of this
   ;; category in the discourse.  We set up the alist of individuals
@@ -651,6 +650,7 @@
 
 
 (defun earliest-in-the-discourse (i1 i2)
+  (declare (special *break-on-unexpected-cases*))
   (if (not (and (individual-p i1) (individual-p i2)))
     (then
       (when *break-on-unexpected-cases*
@@ -663,7 +663,7 @@
 
       (let ((1st-instance1 (car (last entry1)))
             (1st-instance2 (car (last entry2))))
-
+        (push-debug `(,1st-instance1 ,1st-instance2))
         (break "Stub: check that the '1st instance' computation is ~
                 correct and then finish this routine")))))
           
