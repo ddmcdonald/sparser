@@ -16,17 +16,21 @@
 ; (setup-bio)
 (defun setup-bio ()
   (remove-paragraph-marker)
-  (bio-setting)
-  (ignore-comlex)
+  (setq *tts-after-each-section* nil)
   (gload "bio;loader"))
 
 ;;8/7/14 debugging the new forest level's loops
-; (setq *break-on-next-sentence* t)
-; (trace-network-flow)
+; (setq *break-on-next-sentence* t) ;; inside period-hook
+; (trace-network-flow)  (trace-forest-level) 
+; (trace-extension) ;; the decision
 ; (trace-paragraphs) ;; period-hook
 ; (trace-sections) ;; sentence creation
+; (trace-network) ;; pretty through trace
+;   
 ; (trace-ns-sequences)  (p "Sunday R1. Tuesday R2.")
-;;  Getting the segment abbreviation correctr
+;;  The final period is correctly omitted from the no-space name,
+;;  but the interior period is being swallowed. 
+
 ; (setq *dbg-print* t)  (setq *debug-segment-handling* t)
 
 ;; 7/9/14
