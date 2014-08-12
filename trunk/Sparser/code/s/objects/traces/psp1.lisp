@@ -436,6 +436,18 @@
 
 ;;;---------- extension decision
 
+(deftrace :pts/checking-seg-extension (boundary-pos)
+  ;; Called from scan-another-segment?
+  (when (or *trace-network* *trace-extension-decision*)
+    (trace-msg "Checking whether to scan another segment at p~a"
+               (pos-token-index boundary-pos))))
+
+(deftrace :pts/check-extension-value (value)
+  ;; Called from scan-another-segment?
+  (when (or *trace-network* *trace-extension-decision*)
+    (trace-msg "scan-another-segment? will Returning ~a" value)))
+
+
 (deftrace :pts/seg-extends (boundary-pos)
   ;; called from Can-segment-ever-extend
   (when (or *trace-network* *trace-extension-decision*)
@@ -465,6 +477,7 @@
 
 (deftrace :pts/period-seen (pos-before)
   ;; called from Next-word-does-not-indicate-a-significant-boundary
+  ;; and next-word-is-not-sentence-final-period
   (when (or *trace-network* *trace-extension-decision*)
     (trace-msg "There is a period at p~A. Moving to forest level~
                 ~%   after the segment \"~A\""
