@@ -23,10 +23,13 @@
   ;; analysis of the segment (given its prefix) so that we can impose
   ;; a semantic analysis on the segment's head and classifiers.
 
-  (let ((head (word-before right-end-pos))
-        (middle? nil)) ;;/////
+  (let ((head (word-before right-end-pos)))
+        ;;(middle? nil)) ;;/////
 
-    ;;///
+    (push-debug `(,label ,prefix-edge ,right-end-pos ,head))
+    (break "About to apply the prefex-determnier DA heuristic.~
+          ~%Double check why this happening and improve the label !
+            and referent")
 
     (let ((edge (make-chart-edge      ;;//unchanged from HA routine
                  :starting-position (pos-edge-starts-at prefix-edge)
