@@ -11,6 +11,8 @@
 
 
 (defun edge-introduces-brackets (edge)
+  (declare (special *left-segment-boundary*
+                    *right-segment-boundary*))
   (let* ((label (edge-category edge))
          (rs (rule-set-for label))
          (assignments (when rs (rs-phrase-boundary rs)))
@@ -137,6 +139,7 @@
 (defun introduce-inter-segment-boundary (bracket position)
   ;; just mark the boundary. leave the continuation to the
   ;; caller: Accomodate-segment-parse-to-new-boundaries
+  (declare (special *right-segment-boundary*))
   (declare (ignore bracket))
   (tr :inter-segment-boundary position)
   (when *prescanned-segment-pending*
@@ -150,6 +153,7 @@
 (defun resume-prescanned-segment (position)
   ;; called from Scan-next-segment when the flag
   ;; *prescanned-segment-pending* is up.
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (tr :Resume-prescanned-segment position)
   (setq *left-segment-boundary* position
         *right-segment-boundary* *prescanned-segment-pending*)
