@@ -4,10 +4,11 @@
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  February 2014
+;;;   version:  August 2014
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
+;; 8/8/14 Fixed edge case in period-marks-sentence-end? .
 
 (in-package :sparser)
 
@@ -64,6 +65,8 @@
   ;; Does the amount of space between the words matter?
   ;;   (pos-preceding-whitespace position-after)
   ;; This is enough to correctly ignore "11.4" and "p. 200"
+  (unless (has-been-status? :scanned position-after)
+    (scan-next-position))
   (or (eq (pos-terminal position-after) *end-of-source*)
       (eq (pos-capitalization position-after)
           :initial-letter-capitalized)))
