@@ -28,6 +28,7 @@
 
   ;; Called from make-word/all-properties, which is itself called
   ;; on the way back from the tokenizer. 
+  (tr :defining-unknown-word-from-morph word morph-keyword)
   (typecase morph-keyword
     (keyword 
      (case morph-keyword
@@ -35,15 +36,18 @@
        ;;/// put in both ??      
        (:ends-in-ed
         (let ((lemma (stem-form word)))
+          (tr :defining-lemma-as-given-morph lemma 'verb)
           (if *edge-for-unknown-words*
             (setup-verb lemma)
             (assign-brackets-as-a-main-verb lemma))))
        (:ends-in-ing
         (let ((lemma (stem-form word)))
+          (tr :defining-lemma-as-given-morph lemma 'verb)
           (if *edge-for-unknown-words*
             (setup-verb lemma)
             (assign-brackets-as-a-main-verb lemma))))
        (:ends-in-ly
+        (tr :defining-as-given-morph 'adverb)
         (if *edge-for-unknown-words*
           (setup-adverb word)
           (assign-brackets-to-adverb word)))
@@ -53,23 +57,27 @@
                (word-morphology word)))))
     (cons
      ;; e.g. ("ible" ADJ)
-     (case (cadr morph-keyword)
-       (n
-        (if *edge-for-unknown-words*
-          (setup-common-noun word)
-          (assign-brackets-as-a-common-noun word)))
-       (adj
-        (if *edge-for-unknown-words*
-          (setup-adjective word)
-          (assign-brackets-to-adjective word)))
-       (v
-        (if *edge-for-unknown-words*
-          (setup-verb word)
-          (assign-brackets-as-a-main-verb word)))        
-       (otherwise
-        (push-debug `(,word ,morph-keyword))
-        (error "Unexpected cons affix keyword: ~A"
-               (word-morphology word)))))
+     (let ((morph-key (cadr morph-keyword)))
+       (case morph-key
+         (n
+          (tr :defining-as-given-morph 'noun)
+          (if *edge-for-unknown-words*
+            (setup-common-noun word)
+            (assign-brackets-as-a-common-noun word)))
+         (adj
+          (tr :defining-as-given-morph 'adjective)
+          (if *edge-for-unknown-words*
+            (setup-adjective word)
+            (assign-brackets-to-adjective word)))
+         (v
+          (tr :defining-as-given-morph 'verb)
+          (if *edge-for-unknown-words*
+            (setup-verb word)
+            (assign-brackets-as-a-main-verb word)))        
+         (otherwise
+          (push-debug `(,word ,morph-keyword))
+          (error "Unexpected cons affix keyword: ~A"
+                 (word-morphology word))))))
     (otherwise
      (push-debug `(,word ,morph-keyword))
      (error "Unexpected type of morph keyword: ~a~%~a"
