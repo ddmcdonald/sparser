@@ -757,6 +757,7 @@
 
 (deftrace :forest-parse-returned (right-pos)
   ;; called from Setup-returns-from-PPTT-&-run
+  ;; and from new-forest-driver
   (when (or *trace-forest-transitions* *trace-network*)
     (trace-msg "Finished the forest-level parsing from p~A"
                (pos-token-index right-pos))))
@@ -1233,9 +1234,6 @@
   (when *trace-network-flow*
     (trace-msg "[scan] resume-after-error")))
 #|
-(deftrace : ()
-  (when *trace-network-flow*
-    (trace-msg "[scan] ")))
 
 (deftrace : ()
   (when *trace-network-flow*
@@ -1274,12 +1272,14 @@
                (pos-token-index p))))
 
 (deftrace :moving-to-forest-level/conj/edge (edge)
+  ;; called from check-out-possible-conjunction
   (when (or *trace-network-flow*
 	    *trace-conjunction-algorithm*)
     (trace-msg "[scan] moved-to-forest-level from Conjunction~
               ~%    with edge ~a" edge)))
 
 (deftrace :moving-to-forest-level/conj/no-edge (rightmost-pos)
+  ;; called from check-out-possible-conjunction
   (when (or *trace-network-flow*
 	    *trace-conjunction-algorithm*)
     (trace-msg "[scan] moved-to-forest-level from Conjunction~
@@ -1287,13 +1287,13 @@
               ~%    Rightmost position is p~a"
 	       (pos-token-index rightmost-pos))))
 
+
 (deftrace :new-forest-driver (rightmost-pos)
+  ;; called from new-forest-driver
   (when *trace-network-flow*
     (trace-msg "[scan] moved-to-forest-level~
               ~%   Rightmost position is p~a"
                (pos-token-index rightmost-pos))))
-
-
 
 
 (deftrace :PPTT ()

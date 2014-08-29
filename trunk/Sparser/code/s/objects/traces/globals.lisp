@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  February 2013
+;;;  Version:  August 2014
 
 ;; initiated 8/18/93 v2.3, added found when loading 8/24.
 ;; 3/28/94 added *trace-DM&P*.  5/5 added *trace-network-flow.
@@ -12,7 +12,7 @@
 ;; 7/21 added *step-DM&P*  8/11 added *trace-term-introduction*
 ;; 9/26 moved in globals for treetops  2/13/95 added *trace-realization-patterns*
 ;; 10/6 added *trace-scan-patterns*  2/29/08 added *trace-the-trace-calls*
-;; 2/10/13 added *trace-status-history*
+;; 2/10/13 added *trace-status-history*  8/12/14 Added *trace-morphology*
 
 (in-package :sparser)
 
@@ -44,8 +44,9 @@
 (defparameter *trace-segment-summary* nil
   "may be obsolete -- checked in :segment-delimited")
 
-;;---- new ones
-;;
+
+(defparameter *trace-morphology* nil
+  "For any lowlevel actions driven by a word's morphology or Comlex")
 
 (defparameter *trace-network-flow* nil
   "Very lowlevel trace naming the functions in the file psp;scan that
