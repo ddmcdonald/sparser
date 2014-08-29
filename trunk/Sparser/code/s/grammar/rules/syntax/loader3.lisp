@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  3.7 July 2014
+;;;  Version:  3.9 August 2014
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -21,7 +21,7 @@
 ;;     (9/19/11) Bumped [adverbs]. (9/30/11) added [prepositions]
 ;; 3.8 (1/18/13) Moved relatives after WH since it references them. 
 ;;     (1/22/13) Added [adjectives]
-;; 3.9 (7/25/14) Bumped affix-rules to 1.
+;; 3.9 (7/25/14) Bumped affix-rules to 1. (8/27/14) bumped conjuction to 8
 
 (in-package :sparser)
 
@@ -49,7 +49,7 @@
   (gload "syntax-art;prepositions"))
 
 (gate-grammar *conjunction*
-  (gload "syntax-conj;conjunction7"))
+  (gload "syntax-conj;conjunction8"))
 
 (gate-grammar *possessive*
   (gload "syntax-poss;possessive"))
