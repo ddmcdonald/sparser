@@ -19,13 +19,46 @@
   (setq *tts-after-each-section* nil)
   (gload "bio;loader"))
 
+;; 8/29/14
+; (bio-traps)
+(defun bio-traps ()
+  ;; switch settings to facilitate 'getting through'
+  (setq *note-text-relations* nil))  ;; plist-for passed :uncalculated noting "[1-3]"
+  
+; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+
 ;;8/7/14 debugging the new forest level's loops
-; (setq *break-on-next-sentence* t) ;; inside period-hook
+; (bio-setting)
 ; (trace-network-flow)  (trace-forest-level) 
+; (trace-forest-transitions)
 ; (trace-extension) ;; the decision
 ; (trace-paragraphs) ;; period-hook
+; (setq *break-on-next-sentence* t) ;; inside period-hook
 ; (trace-sections) ;; sentence creation
-; (trace-network) ;; pretty through trace
+; (trace-network) ;; pretty thorough trace
+
+
+;; 8/12/14 Figuring out the affix weirdness
+;  define-word/expr  lookup/make-word-symbol define-main-verb
+;  assign-morph-brackets-to-unknown-word setup-verb
+; (trace-morphology)
+;  8/22/14 -- "increase" is automatically defined as a noun because
+; of its suffix, which blocks the possibility of defining it as
+; a verb when you see "increasing"
+
+;  8/11/14 Sweep through everything and scoop up all the bio-entities
+; (setq *kind-of-chart-processing-to-do* :r3-entity-sweep)
+; (read-file-for-entities "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+;;  8/22/14 Need to tweak ordering so the full caps hack doesn't do
+;  the PIK of PIK3CA before the no-space can get it. 
+;  Also, full-caps doesn't look for the set already having been defined
+;   and caps is wrong on no-space cases, e.g. pik3ca
+;  Also doesn't see cases like GTPase, and gets false positives from
+;  the references "1-7" and the apostostrophe before off in 'off'
+
+;; 8/27/14
+; *peek-rightward* is t. Presumably from Strider. Used in segment-finished
+; do we want it in general?
 ;   
 ; (trace-ns-sequences)  (p "Sunday R1. Tuesday R2.")
 ;;  The final period is correctly omitted from the no-space name,
@@ -42,8 +75,12 @@
 ;; 6/9/14
 ; (just-bracketing-setting)
 ; (just-bracketing-with-comlex-setting)
-; (setq *break-on-new-bracket-situations* nil)
+; (setq *break-on-new-bracket-situations* nil)  ;; get some early on
+; punted on split over buffers in actual-characters-of-word
 ; (setq *edge-for-unknown-words* nil)
+; (setq *do-forest-level* nil) ;; not noticing all the periods because the return
+;    and such aren't well-enough debugged.
+; (bio-setting)
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 
 ; (setq *permit-extra-open-parens* t)
