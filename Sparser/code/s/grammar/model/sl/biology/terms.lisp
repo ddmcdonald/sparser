@@ -69,8 +69,33 @@
                     position right-edge)))
 
 
-
+;;;-------------------------
 ;;; for the August 15th set
+;;;-------------------------
+
+(def-bio "KRAS" gene)
+(def-bio "PIK3CA" gene)
+(def-bio "BRAF" gene)
+
+#| Importantly the signaling enzymes encoded by PIK3CA and BRAF are, in part,
+regulated by direct binding to activated forms of the Ras proteins
+suggesting that dysregulation of this key step in signaling is
+critical for tumor formation. |#
+
+;; "importantly"
+;; An attribute of the entire fact, not the eventuallity
+;; in it. All the rhetorical/status markers should go
+;; in the same place. A field in the container will suffice
+
+;; "signalling enzyme" 
+;; A particular kind of enzyme specified by its function
+;; See mechanics file for a hacked up version
+
+
+
+
+
+
 
 #| This switch mechanism is common to a wide variety of GTP-binding
 proteins and is mediated by a conserved structure called the G-domain
@@ -80,6 +105,25 @@ that consists of five conserved G boxes. |#
 (np-head "mechanism")
 
 
+#| 8. Growth factors can turn on Ras by activating Guanine nucleotide
+Exchange Factors (GEFs) or by inhibiting the GTPase Activating
+Proteins (GAPs) or by both mechanisms. |#
+; (p "Growth factors can turn on Ras by activating Guanine nucleotide Exchange Factors (GEFs) or by inhibiting the GTPase Activating Proteins (GAPs) or by both mechanisms.")
 
+(def-bio "ras" protein ;; to accomodate all the variant capitalization
+  :identifier "GO:0003930"
+  :long "GTPase" ;; RAS small monomeric GTPase activity
+  ;; Are we going to see that in texts?
+  )
 
+(def-bio "GEF" small-molecule :synonyms ("Guanine nucleotide Exchange Factors"))
+(def-bio "GAP" small-molecule :synonyms ("GTPase Activating Proteins"))
+;; compositional version of the long forms would be better
+;;/// are these small molecules like GDP or are the larger? -- protein
+;; And these are families of particulars, not the particulars that are
+;;  actually doing participating in the reactions
+
+;; http://en.wikipedia.org/wiki/Growth_factor
+;; Again, it's a family, not a particular
+(def-bio "growth factor" protein)
 

@@ -29,6 +29,9 @@
 
 
 ;;--- referents for type kinds, v.s. the particulars
+;;/// Need these if we want bio-type as a label in the
+;; grammar. Otherwise lemmas on categories can carry
+;; the burden
 
 #| Gets an 'Inconsistent superclasses' error making
    it's clos shadow class. Have to look up the problem
@@ -68,13 +71,26 @@
   :realization (:common-noun name))
 
 
-(define-category molecule  ;; CHEBI:36357
+(define-category molecule
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry.
   :specializes bio-entity
   :instantiates :self
+  :bindings (uid "CHEBI:36357")
   :index (:permanent :key name)
   :lemma (:common-noun "molecule")
+  :realization (:common-noun name))
+
+;; 'small molecule' should be done with a def-subtype
+;;/// Start with define-sybtype-derived-category
+(define-category small-molecule
+  ;; makes more sense for ATP than H20, but not worrying about whether
+  ;; we're doing organic or inorganic chemistry.
+  :specializes molecule
+  :instantiates :self
+  ;; :bindings (uid "")
+  :index (:permanent :key name)
+  :lemma (:common-noun "small molecule")
   :realization (:common-noun name))
 
 
@@ -93,16 +109,46 @@
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
+
+
+;;/// will have a substantial model, so deserves its own
+;; file. This is just to ground "encode"
+(define-category gene
+  :specializes bio-entity ;;// case in point
+  :instantiates :self
+  :rule-label bio-entity ;; probably
+  :binds ((:expresses . protein))
+  :index (:permanent :key name)
+  :lemma (:common-noun "gene")
+  :realization (:common-noun name))
   
 
-(define-category kinase  ;; GO:0016301
+(define-category kinase
   :specializes protein
   :instantiates :self
+  :bindings (uid "GO:0016301")
   :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "kinase")
   :realization (:common-noun name))
 
+(define-category enzyme ;; what's the relationship to kinase?
+  :specializes protein
+  :instantiates :self
+  :rule-label bio-entity
+  :lemma (:common-noun "enzyme")
+  :realization (:common-noun name))
+
+(define-category signalling-enzyme
+  :specializes enzyme
+  ;; This buries the notion of 'signaling' in the name.
+  ;; Better treatment would resurect the subtyping machinery
+  ;; with the addition that we're making this subtype of
+  ;; enzyme from the perspective of identitying its function.
+  :instantiates :self
+  :rule-label bio-entity
+  :lemma (:common-noun "signalling enzyme")
+  :realization (:common-noun name))
 
 ;;--- macro for defining individual particulars
 
