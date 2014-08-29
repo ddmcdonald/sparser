@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  1.1 May 2013
+;;;  version:  1.1 August 2014
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -13,6 +13,7 @@
 ;;     to quiet compiler
 ;; 1.1 (8/16/13) Make sequences permanent to avoid odd bugs due to reclamation
 ;;     (5/27/14) Added mixins sequential, cyclic
+;;     (8/24/14) Added lemmas
 
 (in-package :sparser)
 
@@ -27,6 +28,7 @@
 (define-category  collection
   :instantiates self
   :specializes nil
+  :lemma (:common-noun "collection")
   :binds ((items :primitive list)
           (type)
           (number :primitive integer))
@@ -48,6 +50,7 @@
 (define-category  sequence
   :instantiates collection
   :specializes collection
+  :lemma (:common-noun "sequence")
   :index (:permanent :key items)
   :binds ((items :primitive list)   ;;/// ought to do inheritance
           (item)   ;; i.e. each individual item
@@ -63,9 +66,11 @@
   ;; Doesn't directly model the 'cycle' or 'spiral' aspect
   ;; of the calendar ("what month comes after December?"
   ;; but it's a start.
+  :lemma (:adjective "sequential")
   :binds ((sequence . sequence)))
 
 (define-mixin-category cyclic
+  :lemma (:adjective "cyclic")
   :binds ((cycle-length :primitive number)))
 
 
