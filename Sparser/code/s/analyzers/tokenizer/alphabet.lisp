@@ -661,6 +661,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named #\' )))
     (8217 ;; right single quote
      (:punctuation . ,(punctuation-named #\' )))
+    (8220 ;; left double quote
+     (:punctuation . ,(punctuation-named #\" )))
+    (8221 ;; right double quote
+     (:punctuation . ,(punctuation-named #\" )))
     )
   "If it's not a defparameter, CCL won't let us extend it 
    in a running lisp.")
