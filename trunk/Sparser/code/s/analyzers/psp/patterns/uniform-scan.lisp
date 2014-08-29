@@ -195,7 +195,8 @@
   ;; be problem down the line, but we can deal with it when it emerges.
   (multiple-value-bind (category rule referent)
                        (if *big-mechanism*
-                         (reify-ns-name-as-bio-entity words)
+                         (reify-ns-name-as-bio-entity 
+                          words pos-before next-position)
                          (reify-spelled-name words))
       (let ((edge
              (make-edge-over-long-span
