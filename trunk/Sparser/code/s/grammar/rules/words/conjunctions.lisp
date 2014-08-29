@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "conjunctions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.2 December 2012
+;;;   Version:   0.2 August 2014
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/11/94
 ;; added conjunction.] to "and" and "or" 3/17
@@ -15,7 +14,7 @@
 ;; 0.2 (11/22/12) reorganized the list under a simpler scheme of passing
 ;;      it through one function and added in a bunch from Comlex (particulary
 ;;      the multi-word ones). 12/4/12 Removed "only" in favor of its reading
-;;      as an approximator.
+;;      as an approximator. 8/28/14 Added "whereas"
 
 (in-package :sparser)
 
@@ -79,7 +78,8 @@
           "such that"
           "though"
           "till"
-          "thus"   
+          "thus"  
+          "whereas"
           "while"   
           "unless"  
           "until"   
