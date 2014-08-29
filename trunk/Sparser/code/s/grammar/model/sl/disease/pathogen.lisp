@@ -65,6 +65,9 @@
 ;;from Saudia Arabia article - MERS is Middle Eastern Respiratory Syndrome
 (define-pathogen "MERS")
 
+;;from various disease based articles from New York Times -
+(define-pathogen "ebola")
+
 
 ;;;------------
 ;;; cfrs
