@@ -76,6 +76,7 @@
 
         (category::s)
         (category::vp)
+        (category::vg)
         (category::pp)
 
         ;; cases where we want to generalize
