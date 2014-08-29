@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.9 April 2014
+;;;  Version:  1.11 August 2014
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -52,6 +52,8 @@
 ;;       the global like the other paths through the code do.
 ;;      (1/21/14) Adjusting rule for proper-nouns given C3 cases.
 ;;      Misc. small tweaks through 4/30/14. 
+;; 1.11 (8/28/14) Trying to figure out in-line the null starting-bracket problem.
+;;      Small fixes. 
 
 (in-package :sparser)
 
@@ -242,22 +244,31 @@
   ;; NPs can occur several in a row (e.g. "the seven ...").  
   ;; Only the first of these legitimately ends a segment.
 
-  (unless *bracket-opening-segment*
-    (push-debug `(,] ,position))
-    (error "Something has set *bracket-opening-segment* ~
-            to NIL, somewhere around p~a" 
-           (pos-token-index position)))
-
   (tr :bracket-ends-the-segment? ] )
   (tr ::opening-bracket-at-p position *bracket-opening-segment*)
 
-  (let* ((bracket-opening-segment (first *bracket-opening-segment*))
-         (segment-start-pos *left-segment-boundary*)
-         (word-count (- (pos-token-index position)
-                        (pos-token-index *left-segment-boundary*)))
-         (previous-word (word-before position))
-         (next-word (pos-terminal position))
-         ends-the-segment? )
+  (let ((previous-word (word-before position))
+        (next-word (pos-terminal position)))
+
+    (unless *bracket-opening-segment*
+      (cond 
+       ((or (eq previous-word word::period)
+            (eq next-word *end-of-source*))
+        (return-from bracket-ends-the-segment? t))
+       (t
+        (push-debug `(,] ,position))
+        (error "Something has set *bracket-opening-segment* ~
+                to NIL, somewhere around p~a" 
+               (pos-token-index position)))))
+
+
+    (let* ((bracket-opening-segment (first *bracket-opening-segment*))
+           (segment-start-pos *left-segment-boundary*)
+           (word-count (- (pos-token-index position)
+                          (pos-token-index *left-segment-boundary*)))
+           ends-the-segment? )
+
+
 
     ;; 2/26/14 Debugging segmentation, so just setting this up
     ;; for all cases. 
@@ -380,6 +391,8 @@
          t)
         ((eq (first *bracket-opening-segment*) phrase.[) ;; refine the case?
          t)  ;; example was "Rainya is " PNF should be more definitive?
+        ((eq bracket-opening-segment conjunction.[)
+         t)
         (t (if *break-on-new-bracket-situations*
              (then
               (push-debug `(,position ,bracket-opening-segment
@@ -436,7 +449,8 @@
            ((eq ] ].adjective)
             (cond 
              ((or (eq bracket-opening-segment mvb.[) 
-                  (eq bracket-opening-segment .[|that|)) 
+                  (eq bracket-opening-segment .[|that|)
+                  (eq bracket-opening-segment conjunction.[))
               t)
              ((or (eq bracket-opening-segment preposition.[)
                   (eq bracket-opening-segment .[np-vp)
@@ -699,7 +713,7 @@
       (else
        (tr :segment-does-not-end ] position)))
 
-    ends-the-segment? ))
+    ends-the-segment? )))
 
 
 
