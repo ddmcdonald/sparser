@@ -3,12 +3,13 @@
 ;;;
 ;;;      File:  "resource"
 ;;;    Module:   "tools:basics"
-;;;   Version:   March 2014
+;;;   Version:   August 2014
 
 ;; initiated 7/15/13 to provide a general facility for automating
 ;; the construction and management of resources. 9/17/13 Got it to
 ;; turn over and do useful things, but still has loose ends.
 ;; 3/24/14 Added a facility for automatic the find-or-make setup.
+;; 8/28/14 Implemented the resource incrementer.
 
 ;;;-----------------------------------
 ;;; Resource of recyclable data types 
@@ -40,6 +41,9 @@
      to use")
    (counter :initform -1 :accessor instance-counter
     :documentation "")
+   (delta :initarg :delta :accessor delta
+    :documentation "The number of additional instances to add to
+      the store when we run out.")
    )
   (:documentation ""))
 
@@ -69,7 +73,7 @@ make them according to the spec given in the class instance
   (let* ((index (incf (instance-counter r)))
          (i (nth index (resource-store r))))
     (unless i
-      (error "Ran out of ~a. Implement the resource incrementer" r))
+      (setq i (increment-resource r)))
     i))
 
 (defun initialize-resource (r) ;; ditto
@@ -117,11 +121,13 @@ make them according to the spec given in the class instance
     (error "The first argument must be a symbol naming the class"))
   (let ((key (intern (symbol-name class-name)
                      (find-package :keyword)))
-        (r (make-instance 'resource :name class-name)))
+        (r (make-instance 'resource 
+             :name class-name
+             :delta delta)))
     (setf (gethash key *classname-to-resource*) r)
     (let ((instances
            ;; These are recycled so can use a conventional
-           ;; list otherwise look at allocate-a-rasher-of-psi
+           ;; list. Otherwise look at allocate-a-rasher-of-psi
            (loop for i from 1 to count
              collect (make-instance class-name :index i))))
       (setf (resource-store r) instances) 
@@ -129,6 +135,18 @@ make them according to the spec given in the class instance
       (setf (next-instance r) (car instances))
       r)))
 
+
+(defun increment-resource (r)
+  (let ((number-to-add (delta r))
+        (existing-instances (resource-store r))
+        (class-name (resource-class-name r)))
+    (let* ((new-instances
+            (loop for i from 1 to number-to-add
+              collect (make-instance class-name :index i)))
+           (first-new-one (car new-instances)))
+      (setf (resource-store r)
+            (nconc existing-instances new-instances))
+      first-new-one)))
 
 (defgeneric clear (object)
   (:documentation "Reinitialize the slots of the object and
