@@ -54,6 +54,9 @@ the position. (N.b. there's an incremental trace hook in there.) |#
          (position-after (or where-pw-ended
                              ;;(scan-next-position)
                              (chart-position-after position-before))))
+    ;; We need to look for polywords if only because a term like
+    ;; "p100" is reified as a polyword when we define it as a bio-entity,
+    ;; so we need to recognize it when it occurs the again.
     (when where-pw-ended
       (setq position-before where-pw-ended)
       (unless (includes-state where-pw-ended :scanned)
@@ -98,7 +101,9 @@ the position. (N.b. there's an incremental trace hook in there.) |#
     uniform-pos-reached))
       
 (defun check-for-full-caps-hack (position-before word)
-  (when (eq (pos-capitalization position-before) :all-caps)
+  (when (memq (pos-capitalization position-before)
+              ;; but not :initial-letter-capitalized
+              '(:all-caps :mixed-case))
     (when *big-mechanism*
       (reify-fullcaps-as-bio-entity position-before word))))
 
@@ -148,34 +153,45 @@ the position. (N.b. there's an incremental trace hook in there.) |#
          ;; use a new type that's intentially indeterminate?
          (kind (cat-symbol category)))
     (let ((form `(def-bio ,name ,kind)))
-      (save-reified-bio-entity-to-file form)
-      (pprint form)
-      (push-debug `(,name ,kind ,form))
+      (save-reified-bio-entity-to-file name kind)
       (let ((i (eval form)))
         i))))
 
 
+(defparameter *fullcaps-to-bio-entities* nil ;; an alist
+  "It's overkill to introduce edge checking into r3-entity-pass-loop
+   so just caching the ones we find here to avoid duplicates")
+
 (defun reify-fullcaps-as-bio-entity (position-before word)
-  (let* ((short (string-upcase (word-pname word)))
-         (i (reify-bio-entity short)))
+  ;; Called from check-for-full-caps-hack, but on mixed case
+  ;; as well as full caps
+  (push-debug `(,position-before ,word)) ;(break "caps")
+  (let* ((position-after (chart-position-after position-before))
+         (chars (actual-characters-of-word 
+                 position-before position-after `(,word)))
+         (i (cdr (assoc chars *fullcaps-to-bio-entities*
+                        :test #'string=))))
+    (unless i
+      (setq i (reify-bio-entity chars))
+      (push `(,chars . ,i) *fullcaps-to-bio-entities*))
     (let* ((cfr (retrieve-single-rule-from-individual i))
-           (form (cfr-form cfr))
-           (position-after (chart-position-after position-before)))
+           (form (cfr-form cfr)))
       (let ((edge (install-preterminal-edge
                    cfr word position-before position-after
                    (bio-category-for-reifying) form i)))
         edge))))
 
-(defun reify-ns-name-as-bio-entity (words)
+(defun reify-ns-name-as-bio-entity (words pos-before pos-after)
   ;; called from reify-ns-name-and-make-edge when *big-mechanism*
   ;; flag is up. Responsible for returning the category to use,
   ;; the rule, and the referent so that the caller can make an edge
-  (push-debug `(,words))
-  (let* ((words-string (apply #'string-append (mapcar #'word-pname words)))
-         ;(polyword (define-polyword words-string))
+  (let* ((words-string 
+          ;;(apply #'string-append (mapcar #'word-pname words))
+          (actual-characters-of-word pos-before pos-after words))
+         ;; Def-bio/expr will make the polyword
          (i (reify-bio-entity words-string))
          (cfr (retrieve-single-rule-from-individual i)))
-    (values (category-named 'bio-entity)
+    (values (bio-category-for-reifying)
             cfr
             i)))
 
@@ -196,8 +212,11 @@ the position. (N.b. there's an incremental trace hook in there.) |#
       (declare (special bio-entities-out))
       (f filename))))
 
-(defun save-reified-bio-entity-to-file (form)
+(defvar bio-entities-out nil)
+
+(defun save-reified-bio-entity-to-file (string kind-symbol)
   (declare (special bio-entities-out))
   (when bio-entities-out
-    (format bio-entities-out "~&~a~%~%" form)))
+    (format bio-entities-out "~&(def-bio ~s ~a)%~%"
+            string kind-symbol)))
 
