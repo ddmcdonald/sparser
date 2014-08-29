@@ -1,14 +1,16 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013 David D. McDonald all rights reserved
+;;; Copyright (c) 2013-2014 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "gofers"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: September 2013
+;;;   Version: August 2014
 
 ;; Broken out of scan1 2/28/13. 3/13/13 added word-to-left-of-head,
 ;; edge-to-left-of-head. Coping with polyword at end of segment 3/14.
 ;; Generalizing that notion 3/28/13. Fixed edge-over-segment-prefix
-;; to notice multiple-edges case. 9/21/13 trivial doc, checks 
+;; to notice multiple-edges case. 9/21/13 trivial doc, checks.
+;; 8/28/14 Made head-word-of-segment correctly return the positions
+;; as well as the word. 
 
 (in-package :sparser)
 
@@ -93,22 +95,26 @@
                 *right-segment-boundary*))
 
 (defun head-word-of-segment ()
-  (if (segment-ends-in-multi-word-edge?)
-    (let* ((ev (pos-starts-here *segment-position-just-left-of-head*))
-           (vector (ev-edge-vector ev))
-           (lowest-edge (aref vector 0))
-           (label (edge-category lowest-edge)))
-      (cond
-       ((segment-ends-with-appostrope-s?)
-        (let ((p1 (pos-edge-starts-at lowest-edge)))
-          (word-before p1)))
-       ((or (polyword-p label)
-            (word-p label))
-        label)
-       (t (when *debug-segment-handling*
-            (push-debug `(,label ,vector ,*segment-position-just-left-of-head*))
-            (error "Assumptions violated")))))
-    (pos-terminal *segment-position-just-left-of-head*)))
+  (let ((word
+         (if (segment-ends-in-multi-word-edge?)
+           (let* ((ev (pos-starts-here *segment-position-just-left-of-head*))
+                  (vector (ev-edge-vector ev))
+                  (lowest-edge (aref vector 0))
+                  (label (edge-category lowest-edge)))
+             (cond
+              ((segment-ends-with-appostrope-s?)
+               (let ((p1 (pos-edge-starts-at lowest-edge)))
+                 (word-before p1)))
+              ((or (polyword-p label)
+                   (word-p label))
+               label)
+              (t (when *debug-segment-handling*
+                   (push-debug `(,label ,vector ,*segment-position-just-left-of-head*))
+                   (error "Assumptions violated")))))
+           (pos-terminal *segment-position-just-left-of-head*))))
+    (values word
+            *segment-position-just-left-of-head*
+            *right-segment-boundary*)))
 
 (defun edge-starts-at-left-boundary? (edge)
   (eq (pos-edge-starts-at edge)

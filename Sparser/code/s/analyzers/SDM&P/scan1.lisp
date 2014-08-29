@@ -84,21 +84,15 @@ to make any semantic or form edges that the grammar dictates.
     ((:all-contiguous-edges
       :discontinuous-edges 
       :some-adjacent-edges)
-     (if (no-edge-over-segment-head) ;; ignore these for now
-       (cond 
-        (*debug-segment-handling*
-         (break "No edge over segment head.~
-               ~%Coverate = ~a" coverage)) 
-        (*dbg-print*
-         (format t "~&Ignoring segment without an edge over its head:")
-         (format-words-in-segment)
-         (print-treetop-labels-in-current-segment)
-         (terpri)))
-       (else
-        (let ((edge (propagate-suffix-to-segment)))
-          (generalize-segment-edge-form-if-needed edge)
-          (convert-referent-to-individual edge)
-          (record-any-determiner edge)))))
+     (when (no-edge-over-segment-head)
+       (reify-segment-head-as-a-category))
+     ;; That makes an individual referent. Ok?
+     ;; /// And it doesn't set up the noun as such.
+     (let ((edge (propagate-suffix-to-segment)))
+       (generalize-segment-edge-form-if-needed edge)
+       (convert-referent-to-individual edge)
+       (record-any-determiner edge)))
+
     (:no-edges ;; "burnt" or any other word not in Comlex
      (cond
       (*debug-segment-handling*
@@ -107,6 +101,7 @@ to make any semantic or form edges that the grammar dictates.
        (format t "~&Ignoring segment with no edges:")
        (format-words-in-segment)
        (terpri))))
+
     (otherwise
      (when *debug-segment-handling*
        (break "Unanticipated value for segment coverage: ~A"
