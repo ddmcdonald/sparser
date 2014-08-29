@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "adjudicators"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  2.2 February 2014
+;;;  Version:  2.2 August 2014
 
 ;; broken out from [scan] 5/13/94 v2.3.  5/16,17,18 working out details
 ;; 5/24 updated args.  6/14 added a case in fsa.
@@ -34,6 +34,7 @@
 ;;     (1/22/14) Added a workable version of resume-after-error
 ;; 2.2 (2/26/14) Extended adjudicate-result-of-word-fsa to handle the case
 ;;      where the end-position hadn't been scanned. 
+;;     (8/28/14) Added adjudicate-after-new-forest-protocol. 
 
 (in-package :sparser)
 
@@ -343,6 +344,19 @@
 		  status position-returned)))
 
       (scan-next-pos (scan-next-position)))))
+
+
+
+(defun adjudicate-after-new-forest-protocol (rightmost-position)
+  ;; called from new-forest-protocol? at the end. 
+#| We are always
+
+|#
+  ;;(break "Adjudicate forest return at ~a" (pos-token-index rightmost-position))
+  (word-level-actions-except-terminals *the-punctuation-period*
+                                           rightmost-position
+                                           ))
+
 
 
 
