@@ -8,6 +8,8 @@
 
 (in-package :sparser)
 
+(defun new-forest-protocol? ()
+  (eq *forest-level-protocol* :new-forest-protocol))
 
 ; (what-to-do-at-the-forest-level :new-forest-protocol) ;; eval with each edit
 ;
@@ -22,8 +24,9 @@
 
     (let ((start-pos (starts-at-pos sentence))
           (stop-pos (ends-at-pos sentence)))
-      (unless stop-pos ;; normal situation
-        (setf (ends-at-pos sentence) pos-before))
+      (unless stop-pos ;; the normal situation
+        (setq stop-pos
+              (setf (ends-at-pos sentence) pos-before)))
 
       (format t "~&~%")
       (print-flat-forest t start-pos stop-pos)
@@ -31,8 +34,8 @@
 
       ;; Part of the normal closing cadence to resume scanning
       (setq *rightmost-quiescent-position* rightmost-position)
-      (word-level-actions-except-terminals *the-punctuation-period*
-                                           pos-before))))
+      (tr :forest-parse-returned rightmost-position)
+      (adjudicate-after-new-forest-protocol rightmost-position))))
 
 #| Note on what call to make to leave this level.
 
