@@ -349,13 +349,16 @@
 
 (defun adjudicate-after-new-forest-protocol (rightmost-position)
   ;; called from new-forest-protocol? at the end. 
-#| We are always
+#| In the normal case we are returning from having seen the period
+that initiated the forest processing. We can take advantage of that
+as long as we make allowance for tiny test cases without periods.
 
 |#
   ;;(break "Adjudicate forest return at ~a" (pos-token-index rightmost-position))
-  (word-level-actions-except-terminals *the-punctuation-period*
-                                           rightmost-position
-                                           ))
+  (if *source-exhausted*
+    (terminate-chart-level-process)
+    (word-level-actions-except-terminals *the-punctuation-period*
+                                         rightmost-position)))
 
 
 
