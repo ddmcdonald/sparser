@@ -9,6 +9,7 @@
 ;; 0.3 (8/16) gated CA to facilitate parser-only version
 ;; 0.4 (4/27/95) bumped [ca] to 4
 ;;     (8/4/14) added [new-forest-protocol] 8/6/14 [parsing-containers]
+;;     (8/30/14) added [sweep], [forest-gophers], and [island-driving]
 
 (in-package :sparser)
 
@@ -19,5 +20,7 @@
 (lload "forest-drivers;trap2")
 
 (lload "forest-drivers;parsing-containers")
+(lload "forest-drivers;forest-gophers")
+(lload "forest-drivers;sweep")
 (lload "forest-drivers;new-forest-protocol")
-
+(lload "forest-drivers;island-driving")

@@ -5,16 +5,17 @@
 ;;;  Version:  August 2014
 
 ;; Initiated 8/4/14. 8/9/14 Simple display version working.
+;; Starting on sweeper 8/30/14
 
 (in-package :sparser)
 
 (defun new-forest-protocol? ()
   (eq *forest-level-protocol* :new-forest-protocol))
 
-; (what-to-do-at-the-forest-level :new-forest-protocol) ;; eval with each edit
+;; re-eval with each edit
+; (what-to-do-at-the-forest-level :new-forest-protocol)
 ;
 (defun new-forest-driver (rightmost-position)
-  ;; Just a dummy that prints the treetops at each sentence. 
   (tr :new-forest-driver rightmost-position)
   ;;(break "got to the forest")
   (let ((sentence (sentence))
@@ -23,13 +24,18 @@
       (error "Why isn't (sentence) returning one? Check settings."))
 
     (let ((start-pos (starts-at-pos sentence))
-          (stop-pos (ends-at-pos sentence)))
-      (unless stop-pos ;; the normal situation
-        (setq stop-pos
+          (end-pos (ends-at-pos sentence)))
+      (unless end-pos ;; the normal situation
+        (setq end-pos
               (setf (ends-at-pos sentence) pos-before)))
+      (when *sweep-sentence-treetops*
+        (let ((layout
+               (sweep-sentence-treetops sentence start-pos end-pos)))
+          (when *island-driving*
+            (island-driven-forest-parse layout))))
 
       (format t "~&~%")
-      (print-flat-forest t start-pos stop-pos)
+      (print-flat-forest t start-pos end-pos)
       (format t "~&~%~%")
 
       ;; Part of the normal closing cadence to resume scanning
