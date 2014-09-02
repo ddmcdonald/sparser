@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2012-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  3.5 July 2013
+;;;  Version:  3.5 August 2014
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -30,6 +30,7 @@
 ;;     (1/23/13) added continuous-edges-between (7/30/13) added edges-higher-than
 ;;     (9/19/13) moved find/edge-with-category to edge-vectors/peek to consolidate
 ;;      the operation down to one function.
+;;     (8/30/14) added adjacent-edges?
 
 (in-package :sparser)
 
@@ -438,6 +439,9 @@
            t)
           (t nil))))
 
+(defun adjacent-edges? (left-edge right-edge)
+  (eq (pos-edge-ends-at left-edge)
+      (pos-edge-starts-at right-edge)))
 
 
 (defun edge-subsumes-edge? (higher-edge lower-edge)
