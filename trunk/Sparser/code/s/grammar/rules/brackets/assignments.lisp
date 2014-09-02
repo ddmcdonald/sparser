@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  July 2014
+;;;  Version:  August 2014
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -14,6 +14,7 @@
 ;; categories we make here. 6/14/14 Broke out the backet lists as
 ;; independent parameters that the assign functions map over. 
 ;; 7/27/14 Slightly factored the set-xx routines to use with affix morph.
+;; 8/29/14 Made the errors for already defined categories into cerrors
 
 (in-package :sparser)
 
@@ -179,7 +180,8 @@
              category-name super-category)))
     (when (category-named category-name)
       (push-debug `(,category-name ,word ,comlex-clause))
-      (error "Setup: The category named ~a already exists."
+      (cerror "Maybe you can blow that one away?"
+              "Setup: The category named ~a already exists."
              category-name))
     (let* ((category (define-category/expr category-name
                         `(:specializes ,super-category
@@ -207,7 +209,8 @@
              category-name super-category)))
     (when (category-named category-name)
       (push-debug `(,category-name ,word ,comlex-clause))
-      (error "Setup: The category named ~a already exists."
+      (cerror "Maybe you can blow that one away?"
+              "Setup: The category named ~a already exists."
              category-name))
     (let ((category (define-category/expr category-name
                        `(:specializes ,super-category
@@ -235,7 +238,8 @@
              category-name super-category)))
     (when (category-named category-name)
       (push-debug `(,category-name ,word ,comlex-clause))
-      (error "Setup: The category named ~a already exists."
+      (cerror "Maybe you can blow that one away?"
+              "Setup: The category named ~a already exists."
              category-name))
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
@@ -264,7 +268,8 @@
              category-name super-category)))
     (when (category-named category-name)
       (push-debug `(,category-name ,word))
-      (error "Setup: The category named ~a already exists."
+      (cerror "Maybe you can blow that one away?"
+              "Setup: The category named ~a already exists."
              category-name))
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
