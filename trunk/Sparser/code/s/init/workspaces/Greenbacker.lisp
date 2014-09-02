@@ -280,7 +280,7 @@ company's ticker symbol.
 ;;                            (result-type . :self)
 ;;                            (np-item . target)
 ;;                            (of-item . value)))))
-
+#|
 ;; "she expects a 12-month target of 60"
 (define-category expect-target
     ;; N.b. "expect" has a much richer set of complements
@@ -356,7 +356,7 @@ company's ticker symbol.
 ;; In "the medical device giant"
 ;; psi trace says that the head var of giant is being bound to nil,
 ;; which probably portends an issue that will trip things up.
-
+|#
 #|
    The determiner bound to the first np, not the larger enclosing
  NP (and therefore this edge has the form n-bar rather than NP).
