@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2011-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  7.1 March 2013
+;;;  Version:  8.2 August 2014
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -29,6 +29,10 @@
 ;; 8.1 (8/27/14) Completely reworked the continuation criteria to use
 ;;      the scan-another-segment? abstraction rather than burn in the usual
 ;;      case by hand.
+;; 8.2 (8/31/14) Now that there's an edge over a conjunction for the benefit
+;;      of the new forest protocol, there's a bug (of sort) in the scanner
+;;      that keeps the words from being passed to complete/hugin so added
+;;      equivalents based on the edge label
 
 (in-package :sparser)
 
@@ -40,8 +44,27 @@
 (define-completion-action word::|and|
   :mark-event  'mark-instance-of-AND)
 
+=
 (define-completion-action word::|or|
   :mark-event  'mark-instance-of-AND)
+
+#|
+(define-completion-action category::and
+  :mark-event  'mark-instance-of-category-AND)
+
+(defun mark-instance-of-category-AND (edge)
+  (mark-instance-of-AND (pos-edge-starts-at edge)
+                        (word-named "and")
+                        (pos-edge-ends-at edge)))
+
+(define-completion-action category::or
+  :mark-event  'mark-instance-of-category-OR)
+
+(defun mark-instance-of-category-OR (edge)
+  (mark-instance-of-AND (pos-edge-starts-at edge)
+                        (word-named "or")
+                        (pos-edge-ends-at edge)))
+|#
 
 (defun mark-instance-of-AND (and-word position-before position-after)
   (declare (ignore and-word position-after))
