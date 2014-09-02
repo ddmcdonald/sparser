@@ -173,8 +173,7 @@
 
    ;(defun do-generic-actions-off-treetop (tt)
    ;  (declare (ignore tt)))
-   (defun do-conceptual-analysis-off-new-treetop (tt)
-     (declare (ignore tt)))
+   (defun do-conceptual-analysis-off-new-treetop (tt))
 
    (defun make-mixin-category (&key symbol)
      (declare (ignore symbol)))
