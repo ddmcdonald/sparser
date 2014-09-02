@@ -30,16 +30,14 @@
                (word-pname word) morph-keyword)))
 
 
-(deftrace :defining-as-given-morph (pos-term morph-term)
+(deftrace :defining-as-given-morph (pos-term)
   ;; called from assign-morph-brackets-to-unknown-word
   (when *trace-morphology*
-    (trace-msg "[Morphology] defining as a ~a because of ~a"
-               pos-term morph-term)))
+    (trace-msg "[Morphology] defining as a ~a" pos-term )))
 
-(deftrace :defining-lemma-as-given-morph (lemma pos-term morph-term)
+(deftrace :defining-lemma-as-given-morph (lemma pos-term)
 ;; called from assign-morph-brackets-to-unknown-word
   (when *trace-morphology*
-    (trace-msg "[Morphology] defining lemmaa ~s as a ~a because of ~a"
-               (word-pname lemma)
-               pos-term morph-term)))
+    (trace-msg "[Morphology] defining lemma ~s as a ~a"
+               (word-pname lemma) pos-term)))
 

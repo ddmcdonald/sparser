@@ -13,6 +13,8 @@
 ;; 9/26 moved in globals for treetops  2/13/95 added *trace-realization-patterns*
 ;; 10/6 added *trace-scan-patterns*  2/29/08 added *trace-the-trace-calls*
 ;; 2/10/13 added *trace-status-history*  8/12/14 Added *trace-morphology*
+;; 8/31/14 added *trace-treetops-sweep* and *trace-island-driving* t))
+
 
 (in-package :sparser)
 
@@ -95,6 +97,17 @@
 (defparameter *trace-treetop-hits* nil
   "Signals there being a treetop routine, as opposed to just
    the treetop being checked.")
+
+(defparameter *trace-forest-marching-flow* nil)
+
+(defparameter *trace-treetops-sweep* nil
+  "For the 'new' forest protocol tracks the treetops that are
+   swept up and how they are characterized.")
+
+(defparameter *trace-island-driving* nil
+  "For the 'new' forest protocol tracks what checks are made in
+   the jumping around compositions from island of certainty to
+   next island.")
 
 (def-trace-parameter *trace-check-edges*   "edges check"
   "traces the process of checking whether edges can combine")

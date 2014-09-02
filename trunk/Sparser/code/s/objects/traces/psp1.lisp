@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 May 2014
+;;;  Version:  1.4 August 2014
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -26,7 +26,7 @@
 ;;     (12/14/10) fixed capitalization bugs  (11/2/12) added PNF-resetting-open-bracket
 ;;      Continued adding and tweaking through 12/5/12. 
 ;;     (2/10/13) added trace-status-history. Bracket variant 4.1.13
-;;     (5/12/14) Bunch of C3 traces
+;;     (5/12/14) Bunch of C3 traces. 8/31/14 Moved forest traces out to forest.
 
 (in-package :sparser)
 
@@ -63,19 +63,6 @@
 (defun untrace-segments ()
   (setq *trace-segments* nil))
 
-
-(defun trace-treetops ()
-  (setq *trace-treetops* t))
-
-(defun untrace-treetops ()
-  (setq *trace-treetops* nil))
-
-
-(defun trace-extension ()
-  (setq *trace-extension-decision* t))
-
-(defun untrace-extension ()
-  (setq *trace-extension-decision* nil))
 
 
 (defun trace-status-history ()
@@ -388,23 +375,6 @@
     (trace-msg "Chart-level processing terminated")))
 
 
-;;;---------- Complete
-
-(deftrace :completing (obj pos)
-  ;; called from complete/hugin
-  (when *trace-network*
-    (if pos
-      (trace-msg "Completing ~A at ~A" obj (pos-token-index pos))
-      (trace-msg "Completing ~A" obj))))
-
-(deftrace :carrying-out (tag function)
-  ;; called from carry-out-actions
-  (when *trace-network*
-    (trace-msg "Carrying out a ~A action~%  with ~A"
-               tag function)))
-
-
-
 
 
 ;;;---------- pts
@@ -431,80 +401,6 @@
   (when (or *trace-network* *trace-network-flow*)
     (trace-msg "Returning to the word level at p~A from a ~
                 null span" (pos-token-index p))))
-
-
-
-;;;---------- extension decision
-
-(deftrace :pts/checking-seg-extension (boundary-pos)
-  ;; Called from scan-another-segment?
-  (when (or *trace-network* *trace-extension-decision*)
-    (trace-msg "Checking whether to scan another segment at p~a"
-               (pos-token-index boundary-pos))))
-
-(deftrace :pts/check-extension-value (value)
-  ;; Called from scan-another-segment?
-  (when (or *trace-network* *trace-extension-decision*)
-    (trace-msg "scan-another-segment? will Returning ~a" value)))
-
-
-(deftrace :pts/seg-extends (boundary-pos)
-  ;; called from Can-segment-ever-extend
-  (when (or *trace-network* *trace-extension-decision*)
-    (trace-msg "Segment \"~A\" extends, scanning the next segment starting ~
-                at p~A" (string-of-words-between *left-segment-boundary*
-                                                 *right-segment-boundary*)
-               (pos-token-index boundary-pos))))
-
-(deftrace :pts/seg-doesnt-extend (boundary-pos)
-  ;; called from Can-segment-ever-extend
-  (when (or *trace-network* *trace-extension-decision*)
-    (trace-msg "Segment \"~A\" does not extend.~
-                ~%   Moving to the forest-level at p~A"
-               (string-of-words-between *left-segment-boundary*
-                                        *right-segment-boundary*)
-               (pos-token-index boundary-pos))))
-
-(deftrace :pts/no-final-edge (boundary-pos)
-  ;; called from Can-segment-ever-extend
-  (when (or *trace-network* *trace-extension-decision*)
-    (trace-msg "Segment \"~A\" does not extend~
-                ~%    No edge ending at p~A"
-               (string-of-words-between *left-segment-boundary*
-                                        *right-segment-boundary*)
-               (pos-token-index boundary-pos))))
-
-
-(deftrace :pts/period-seen (pos-before)
-  ;; called from Next-word-does-not-indicate-a-significant-boundary
-  ;; and next-word-is-not-sentence-final-period
-  (when (or *trace-network* *trace-extension-decision*)
-    (trace-msg "There is a period at p~A. Moving to forest level~
-                ~%   after the segment \"~A\""
-               (pos-token-index pos-before)
-               (string-of-words-between *left-segment-boundary*
-                                        *right-segment-boundary*))))
-
-(deftrace :pts/angle-bracket-seen (pos-before)
-  ;; called from Next-word-does-not-indicate-a-significant-boundary
-  (when (or *trace-network* *trace-extension-decision*)
-    (trace-msg "There is a '<' at p~A. Moving to forest level~
-                ~%   after the segment \"~A\""
-               (pos-token-index pos-before)
-               (string-of-words-between *left-segment-boundary*
-                                        *right-segment-boundary*))))
-
-(deftrace :pts/word-isnt-a-significant-boundary (pos-before word)
-  ;; called from Next-word-does-not-indicate-a-significant-boundary
-  (when (or *trace-network* *trace-extension-decision*)
-    (trace-msg "The segment \"~A\"~
-                ~%   is followed at p~A by \"~A\"~
-                ~%   so we continue and scan the next segment"
-               (string-of-words-between *left-segment-boundary*
-                                        *right-segment-boundary*)
-               (pos-token-index pos-before)
-               word)))
-
 
 
 ;;;---------- installing edges 
@@ -602,181 +498,6 @@
                (pos-token-index *right-segment-boundary*))))
 
 
-;;;--------------
-;;; forest level
-;;;--------------
-
-(defun trace-forest-level ()
-  (setq *trace-forest-level* t))
-
-(defun unTrace-forest-level ()
-  (setq *trace-forest-level* nil))
-
-
-(deftrace :moving-to-forest-level (pos reason)
-  ;; called from Move-to-forest-level
-  (when (or *trace-network* *trace-forest-level*)
-    (trace-msg "Moving to the forest-level starting back from p~A ~
-                - ~A" (pos-token-index pos) reason)))
-
-(deftrace :forest-level-turned-off ()
-  (when (or *trace-network* *trace-forest-level*)
-    (trace-msg "    but *do-forest-level* is off")))
-
-
-(deftrace :PPTT/no-edges ()
-  ;; called from Move-to-forest-level
-  (when (or *trace-network* *trace-forest-level*)
-    (trace-msg "   but there's nothing to parse")))
-
-(deftrace :PPTT/edge-at-quiessence (edge/ev)
-  ;; called from Move-to-forest-level
-  (when (or *trace-network* *trace-forest-level*)
-    (trace-msg "   but the rightmost edge (ev) in the forest ~
-             ~%    is already~%at the quiessent position: ~A" edge/ev)))
-
-
-(deftrace :PPTT/starting (edge/ev)
-  ;; called from PPTT
-  (when (or *trace-network* *trace-forest-level*)
-    (trace-msg "Parsing treetops starting at/with ~A~
-                ~%   and going back as far as p~A"
-               (etypecase edge/ev
-                 (edge edge/ev)
-                 (edge-vector
-                  (format nil "p~A" (pos-token-index
-                                     (ev-position edge/ev)))))
-               (pos-token-index *rightmost-quiescent-position*))))
-
-
-(deftrace :PPTT/quiessence-reached (pos)
-  ;; called from after-quiescence
-  (when (or *trace-network* *trace-forest-level*)
-    (trace-msg "Forest level parsing is quiescent as far right ~
-                as p~A" (pos-token-index pos))))
-
-
-(deftrace :moving-quescence-ptr-before-edge (edge)
-  ;; called from Edge-interaction-with-quiescence-check
-  (when (or *trace-network* *trace-forest-level*)
-    (trace-msg "Quescence pointer at p~A has been covered by an edge:~
-                ~%    ~A~%    Moving it to the start of the edge."
-               (pos-token-index *rightmost-quiescent-position*) edge)))
-
-
-
-
-;;;----------
-;;; treetops
-;;;----------
-
-(deftrace :tt/checking (tt)
-  ;; called from do-treetop-triggers
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "Checking treetop: ~A" tt)))
-
-(deftrace :tt/action (fn-name)
-  ;; called from Do-generic-actions-off-treetop
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "   it runs the function ~A" fn-name)))
-
-(deftrace :tt/action/form (label fn-name)
-  ;; called from Do-generic-actions-off-treetop
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "   its form label ~A~
-              ~%      runs the function ~A" label fn-name)))
-
-(deftrace :tt/no-action ()
-  ;; called from Do-generic-actions-off-treetop
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "   it has no generic action")))
-
-(deftrace :tt/continuing ()
-  ;; called from do-treetop-triggers
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "Moving rightwards to the next treetop")))
-
-(deftrace :tt/caught-up ()
-  ;; called from do-treetop-triggers
-  (when (or *trace-treetops* *trace-forest-transitions* *trace-network*)
-    (trace-msg "Treetop walk caught up with the right boundary ~
-                of the forest-level parse~%  at p~A"
-               (pos-token-index *rightmost-quiescent-position*))))
-
-(deftrace :tt/resume-forest-parse (new-tt-boundary forest-right-boundary)
-  ;; called from do-treetop-triggers
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "Resuming the forest parse from TT level~
-              ~%    left-bound: p~A   right-bound: p~A"
-               (pos-token-index new-tt-boundary)
-               (pos-token-index forest-right-boundary))))
-
-(deftrace :tt/resume-forest-parse-from-DA (edge)
-  (when (or *trace-treetops* *trace-network* *trace-DA-check*)
-    (trace-msg "Resuming the forest parse from DA level to deal with~
-              ~%    ~A" edge)))
-
-
-;;--- interaction of treetops and new edges
-
-(deftrace :impact/checking-edge (e)
-  ;; called from Check-impact-on-quiescence-pointer
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "Completed ~A~
-              ~%     checking its impact on quiescence" e)))
-
-(deftrace :impact/moving-quiescence (start-pos)
-  ;; called from Check-impact-on-quiescence-pointer
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "  It moves the quiescence pointer back to p~A"
-               (pos-token-index start-pos))))
-
-(deftrace :impact/moving-tt-boundary (start-pos)
-  ;; called from Check-impact-on-quiescence-pointer
-  (when (or *trace-treetops* *trace-network*)
-    (trace-msg "  It moves the Treetop left boundary back to p~A"
-               (pos-token-index start-pos))))
-               
-
-;;;------------------------------------------------
-;;; transitions between stages of the forest level
-;;;------------------------------------------------
-
-(defvar *trace-forest-transitions* nil)
-
-(defun trace-forest-transitions ()
-  (setq *trace-forest-transitions* t))
-(defun unTrace-forest-transitions ()
-  (setq *trace-forest-transitions* nil))
-
-(deftrace :setup-PPTT (right-pos)
-  ;; called from Setup-returns-from-PPTT-&-run
-  (when (or *trace-forest-transitions* *trace-network*)
-    (trace-msg "Commencing forest-level parsing from p~A"
-               (pos-token-index right-pos))))
-
-(deftrace :forest-parse-returned (right-pos)
-  ;; called from Setup-returns-from-PPTT-&-run
-  ;; and from new-forest-driver
-  (when (or *trace-forest-transitions* *trace-network*)
-    (trace-msg "Finished the forest-level parsing from p~A"
-               (pos-token-index right-pos))))
-
-(deftrace :beginning-DA (start-pos)
-  ;; called from Consider-debris-analysis
-  (when (or *trace-forest-transitions* *trace-network*
-            *trace-DA-check* *trace-da*)
-    (trace-msg "~%-- Commencing Debris Analysis from p~A"
-               (pos-token-index start-pos))))
-
-
-(deftrace :moving-to-do-treetops ()
-  ;; called from Walk-pending-treetops-for-debris-analysis
-  (when (or *trace-forest-transitions* *trace-network*
-            *trace-DA-check*)
-    (trace-msg "Moving to Do-treetops")))
-
-
 
 ;;;-----------------
 ;;; debris analysis
@@ -788,9 +509,6 @@
     (trace-msg "Looking for analyzable debris between p~A and p~A"
                (pos-token-index start-pos)
                (pos-token-index end-pos))))
-
-
-
 
 
 
@@ -1265,65 +983,6 @@
 |#
 
 
-
-(deftrace :moved-to-forest-level (p)
-  (when *trace-network-flow*
-    (trace-msg "[scan] moved-to-forest-level: p~A"
-               (pos-token-index p))))
-
-(deftrace :moving-to-forest-level/conj/edge (edge)
-  ;; called from check-out-possible-conjunction
-  (when (or *trace-network-flow*
-	    *trace-conjunction-algorithm*)
-    (trace-msg "[scan] moved-to-forest-level from Conjunction~
-              ~%    with edge ~a" edge)))
-
-(deftrace :moving-to-forest-level/conj/no-edge (rightmost-pos)
-  ;; called from check-out-possible-conjunction
-  (when (or *trace-network-flow*
-	    *trace-conjunction-algorithm*)
-    (trace-msg "[scan] moved-to-forest-level from Conjunction~
-              ~%    without having conjoined anything.~
-              ~%    Rightmost position is p~a"
-	       (pos-token-index rightmost-pos))))
-
-
-(deftrace :new-forest-driver (rightmost-pos)
-  ;; called from new-forest-driver
-  (when *trace-network-flow*
-    (trace-msg "[scan] moved-to-forest-level~
-              ~%   Rightmost position is p~a"
-               (pos-token-index rightmost-pos))))
-
-
-(deftrace :PPTT ()
-  (when *trace-network-flow*
-    (trace-msg "[forest] PPTT")))
-
-(deftrace :forest-needs-scan ()
-  (when *trace-network-flow*
-    (trace-msg "[forest] returning from forest-level parsing to ~
-                scan the next segment")))
-
-(deftrace :after-quiescence (p)
-  (when *trace-network-flow*
-    (trace-msg "[forest] after-quiescence: p~A"
-               (pos-token-index p))))
-
-(deftrace :do-treetop-triggers ()
-  (when *trace-network-flow*
-    (trace-msg "[forest] do-treetop-triggers")))
-
-(deftrace :do-treetop-loop (tt)
-  (when *trace-network-flow*
-    (trace-msg "[forest] do-treetop-loop - ~A" tt)))
-
-
-
-(deftrace :check-if-word-starts-segment (pos-before word)
-  (when *trace-network-flow*
-    (trace-msg "[c3] does ~a just after p~a start a segment?"
-               (word-pname word) (pos-token-index pos-before))))
 
 
 ;;;--------------
