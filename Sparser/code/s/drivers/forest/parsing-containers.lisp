@@ -23,6 +23,42 @@
 "))
   (:documentation ""))
 
+(defclass sentence-layout (container) 
+  ;;/// mixin, but trying standalone at first while sorting out
+  ;; what goes where
+  ((subject :initform nil :accessor subject
+    :documentation "The first NP in the clause")
+   (main-verb  :initform nil :accessor main-verb
+    :documentation "The tensed VG in the clause")
+   (post-mvb-verbs :initform nil :accessor post-mvb-verbs
+    :documentation "Any verbs (VG) that have been seen
+     after the main verb is seen.")
+   (pre-mvb-verbs :initform nil :accessor pre-mvb-verbs
+    :documentation "Any pariticipial form of verb that
+      appears before the main (tensed) verb is seen.")
+   (conjunctions :initform nil :accessor conjunctions
+    :documentation "The locations of every conjunct,
+      rightmost first")
+   (prepositions :initform nil :accessor prepositions
+    :documentation "The locations of every preposition,
+      rightmost first")
+   (parentheses :initform nil :accessor parentheses
+    :documentation "The edges spanning any parenthesised
+      portions of text.")
+)
+  (:documentation ""))
+
+(defvar *current-sentence-layout* nil)
+(defun layout ()
+  *current-sentence-layout*)
+;;////// hook into the resource scheme
+(defun make-sentence-layout (sentence)
+  (let ((l (make-instance 'sentence-layout
+             :in sentence)))
+    (setq *current-sentence-layout* l)
+    l))
+
+  
 
 
 ;;; class
