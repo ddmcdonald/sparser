@@ -23,9 +23,13 @@
 ; (bio-traps)
 (defun bio-traps ()
   ;; switch settings to facilitate 'getting through'
-  (setq *note-text-relations* nil))  ;; plist-for passed :uncalculated noting "[1-3]"
-  
+  (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
+  (setq *sweep-sentence-treetops* nil) ;; easing these in gradually
+   (setq *island-driving* nil))
+
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+;    (setq *sweep-sentence-treetops* t)
+;    (setq *island-driving* t)
 
 ;;8/7/14 debugging the new forest level's loops
 ; (bio-setting)
