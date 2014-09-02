@@ -90,7 +90,7 @@
   :agent bio-entity)    ;; by <entity>
 
 
-
+(svo "target")
 
 
 ;;--- "turn on" (off)

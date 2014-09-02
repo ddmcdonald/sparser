@@ -108,7 +108,12 @@ that consists of five conserved G boxes. |#
 #| 8. Growth factors can turn on Ras by activating Guanine nucleotide
 Exchange Factors (GEFs) or by inhibiting the GTPase Activating
 Proteins (GAPs) or by both mechanisms. |#
-; (p "Growth factors can turn on Ras by activating Guanine nucleotide Exchange Factors (GEFs) or by inhibiting the GTPase Activating Proteins (GAPs) or by both mechanisms.")
+; (p "Growth factors can activate Ras by activating Guanine nucleotide Exchange Factors (GEFs) or by inhibiting the GTPase Activating Proteins (GAPs) or by both mechanisms.")
+;; /// substitute "activate" for "turn on" so can develop the
+;; island forest parser without having to fix the problems with the
+;; present verb+prep treatment first.
+; (p "Growth factors can activate Ras by activating Guanine nucleotide Exchange Factors or by inhibiting the GTPase Activating Proteins or by both mechanisms.")
+;; /// pull out the parentheses because something is inhibiting their interior's analysis
 
 (def-bio "ras" protein ;; to accomodate all the variant capitalization
   :identifier "GO:0003930"
@@ -116,8 +121,8 @@ Proteins (GAPs) or by both mechanisms. |#
   ;; Are we going to see that in texts?
   )
 
-(def-bio "GEF" small-molecule :synonyms ("Guanine nucleotide Exchange Factors"))
-(def-bio "GAP" small-molecule :synonyms ("GTPase Activating Proteins"))
+(def-bio "GEF" protein :synonyms ("Guanine nucleotide Exchange Factors" "GEFs"))
+(def-bio "GAP" protein :synonyms ("GTPase Activating Proteins" "GAPs"))
 ;; compositional version of the long forms would be better
 ;;/// are these small molecules like GDP or are the larger? -- protein
 ;; And these are families of particulars, not the particulars that are
@@ -125,5 +130,5 @@ Proteins (GAPs) or by both mechanisms. |#
 
 ;; http://en.wikipedia.org/wiki/Growth_factor
 ;; Again, it's a family, not a particular
-(def-bio "growth factor" protein)
+(def-bio "growth factors" protein) ;;//// fix automatic plurals in polywords
 
