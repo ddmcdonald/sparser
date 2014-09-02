@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.23 July 2014
+;;;  Version:  2.23 August 2014
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -69,7 +69,8 @@
 ;;       3/18/14 tweak to the c3 setting. 5/7/14 Completion actions were still
 ;;       running in just-bracketing setting. 5/19/14 Tuned bio-setting.
 ;; 2.23 (7/24/14) Converted direct setting of *forest-level-protocol* to 
-;;       calling what-to-do-at-the-forest-level
+;;       calling what-to-do-at-the-forest-level. 8/30/14 added in more
+;;       of these parameters to bio-setting. 
 
 (in-package :sparser)
 
@@ -384,6 +385,8 @@
   (setq *segment-scan/forest-level-transition-protocol*
         :stop-on-sentence-end)
   (what-to-do-at-the-forest-level :new-forest-protocol)
+  (setq *sweep-sentence-treetops* t)
+  (setq *island-driving* t)
   
   (setq *ignore-capitalization* t) ;; turns off PNF
   (setq *uniformly-scan-all-no-space-token-sequences* t)
