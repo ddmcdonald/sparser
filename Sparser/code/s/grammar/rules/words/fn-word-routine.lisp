@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.9 June 2014
+;;;   Version:   0.9 August 2014
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -22,7 +22,8 @@
 ;;      function words. (5/28/14) Smidgen of doc and clean-up. 
 ;; 0.9 (5/30/14) Adding more options to define-function-term to allow more
 ;;      tailoring of the results. 6/14/14 Replaced literal listing of POS
-;;      bracket choices with new lists of them from rules/brackets/assignments
+;;      bracket choices with new lists of them from rules/brackets/assignments.
+;;     (8/31/14) Moved in define-isolated-function-word which fits better here.
 
 (in-package :sparser)
 
@@ -58,6 +59,17 @@
     (assign-brackets-to-word word bracket-symbols)
 
     word ))
+
+
+(defun define-isolated-function-word (string &key form)
+  ;; Had been used for the conjunctions
+  (unless form
+    (setq form 'subordinate-conjunction))
+  (define-function-word string
+    ;; Keep brackets here and in assign-brackets-to-standalone-word
+    ;; in sync.
+    :brackets '( ].phrase  phrase.[ )
+    :form form))
 
 
 (defun make-minimal-word-form-rule (word form-label)
