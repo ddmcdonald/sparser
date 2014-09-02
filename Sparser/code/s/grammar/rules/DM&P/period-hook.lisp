@@ -8,7 +8,9 @@
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
-;; 8/8/14 Fixed edge case in period-marks-sentence-end? .
+;; 8/8/14 Fixed edge case in period-marks-sentence-end?
+;; 8/31/14 Moved the shift to the new forest into here. It's to fix
+;; something that used to happen, but it will do. 
 
 (in-package :sparser)
 
@@ -41,6 +43,7 @@
   "Flag to cut in when we want to see something")
 
 (defun period-hook (the-word-period position-before position-after)
+  (declare (ignore the-word-period))
   ;; position-before is the one with the period on it. After picks out
   ;; the word following the period.  The stack at this point starts
   ;; with word-level-actions-except-terminals > complete-word/hugen >
@@ -49,6 +52,8 @@
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
   (when (period-marks-sentence-end? position-after)
+    (when (new-forest-protocol?)
+      (new-forest-driver position-before))
     (let* ((pos-after-period (chart-position-after position-before))
            (s (start-sentence pos-after-period)))
       (tr :period-hook)
