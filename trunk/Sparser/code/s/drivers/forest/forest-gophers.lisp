@@ -96,7 +96,10 @@
       ;; which have their own category labels
       (category-named 'conjunction)))
 
+;; move to analyzers/forest/extract
 
+;(defmethod span-to-the-right-of ((e edge))
+;  (span
          
 
 

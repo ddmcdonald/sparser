@@ -11,6 +11,7 @@
 (in-package :sparser)
 
 (defun island-driven-forest-parse (layout)
+  (tr :island-driven-forest-parse) ;;//// add sentence-span
   (push-debug `(,layout))
 
   ;; short things in parentheses bind to the left
@@ -18,6 +19,7 @@
   (try-simple-subj+verb)
 
   ;;/// conjunctions inside two words? 
+
   (when (there-are-loose-nps?)
     (look-for-np-extensions))
 
@@ -27,7 +29,8 @@
   (when (there-are-prepositions?)
     (try-simple-pps))
 
-  ;; conjunctions across larger spans
+  (when (there-are-conjunctions?)
+    (try-spanning-conjunctions))
 )
 
 
@@ -35,8 +38,7 @@
   (let* ((layout (layout))
          (subject-edge (subject layout))
          (verb-group-edge (main-verb layout)))
-    (when (and subject-edge verb-group-edge)
-      (push-debug `(,subject-edge ,verb-group-edge))
+    (if (and subject-edge verb-group-edge)
       (when (adjacent-edges? subject-edge verb-group-edge)
         ;; multiply-edges returns the rule, and is sensitive
         ;; to *edges-from-referent-categories* and
@@ -48,7 +50,8 @@
         (let ((edge (check-one-one subject-edge verb-group-edge)))
           ;; good spot for a trace
           ;; set form to subj+vg or whatever that is.
-          edge)))))
+          edge))
+      (tr :no-subject-or-verb-edges))))
 
 (defun look-for-np-extensions ()
   ;; if there's an edge to the righ of each 'loose' np,
@@ -106,25 +109,6 @@
     ;; n.b. it's a push list, so we're going right to left
     (look-for-bounded-np-after-prep prep-edge)))
 
-;;/// collect these in one place
-;;/// makes for a counter-intutive edge since the preposition
-;; is its label
-(def-syntax-rule (preposition np)
-                 :head :left-edge
-  :form pp
-  ;; I suppose we need a generic relationship here for
-  ;; a proper referent
-  :referent (:head right-edge))
-
-;;/// This should be stated over vp+ing or vg+ing
-;; (which need to be created and managed), then we
-;; could have a form rule that announced that it was
-;; a manner adjunct
-(def-syntax-rule (preposition vp)
-                 :head :left-edge
-  :form pp
-  ;; again, neeed a moere interesting referent.
-  :referent (:head right-edge))
 
 
 (defun look-for-bounded-np-after-prep (prep-edge)
@@ -141,5 +125,20 @@
         ;; then it safe to make the pp
         (let ((edge (check-one-one prep-edge right-neighbor)))
           edge)))))
+
+
+(defun try-spanning-conjunctions ()
+  ;; For now do the easy thing of looking only for the same
+  ;; labels to either side
+  (let* ((conjuncts (conjunctions (layout)))
+         (count (length conjuncts)))
+    (push-debug `(,count ,conjuncts)) (break "work out conjunctions")))
+#|    (when (= count 2)
+      ;; The question is how to determine what patterns of
+      ;; conjunction we have within this sentence. 
+      (let ((c1 (car conjuncts))
+            (c2 (cadr conjuncts)))
+        (let ((edge-to-the-right-of-c1
+  |#
         
     
