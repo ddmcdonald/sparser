@@ -36,6 +36,9 @@
    (pre-mvb-verbs :initform nil :accessor pre-mvb-verbs
     :documentation "Any pariticipial form of verb that
       appears before the main (tensed) verb is seen.")
+   (loose-nps :initform nil :accessor loose-nps
+    :documentation "NPs that don't fall into an immediately
+      obvious syntactic relationship to the clause.")
    (conjunctions :initform nil :accessor conjunctions
     :documentation "The locations of every conjunct,
       rightmost first")
@@ -44,9 +47,12 @@
       rightmost first")
    (parentheses :initform nil :accessor parentheses
     :documentation "The edges spanning any parenthesised
-      portions of text.")
-)
-  (:documentation ""))
+      portions of text."))
+  (:documentation "Provides a view of salient reference
+    points in a sentence. Populated by sweep-sentence-treetops
+    and read by island-driven-forest-parse which is allowed
+    to edit this if that helps control what to do. This is
+    strictly scafolding information with no long term value."))
 
 (defvar *current-sentence-layout* nil)
 (defun layout ()
