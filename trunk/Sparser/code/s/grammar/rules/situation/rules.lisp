@@ -4,11 +4,11 @@
 ;;;
 ;;;     File:  "rules"
 ;;;            grammar/rules/situation/
-;;;  version:  May 2014
+;;;  version:  September 2014
 
 ;; Initiated 3/20/14 to collect all the cases, the grammar, from the
 ;; individual files into one place. Incremental extensions through
-;; 5/12/14. 
+;; 5/12/14. Moved the syntax rules to one place 9/7/14
 
 (in-package :sparser)
 
@@ -138,35 +138,6 @@
 
 (define-state :initial-sentence-state sentence
   ((np :subject-seen)))
-
-
-;;;------------------
-;;; Additional rules
-;;;------------------
-
-;;---- Syntactic rules
-;; These can't be allowed out 'into the wild' except under
-;; very controlled cirumstances since they can overgenerate
-;; and introduce ambiguity.
-
-;; All the good stuff is in the compose methods
-
-(def-syntax-rule (proper-noun proper-noun) ;; "ford suv"
-                 :head :right-edge ; 
-  :form n-bar ;; requires a determiner 
-  :referent (:head right-edge)) ;; modifer ??  classifier ??
-  
-
-(def-syntax-rule (adjective n-bar) ;; "black suv"
-                 :head :right-edge
-  :form np ;;/// cutting corners
-  :referent (:head right-edge))
-
-
-(def-syntax-rule (np vg)
-                 :head :right-edge
-  :form subj+verb
-  :referent (:head right-edge))
 
 
 ;;;---------
