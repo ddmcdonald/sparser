@@ -44,7 +44,7 @@
 (define-completion-action word::|and|
   :mark-event  'mark-instance-of-AND)
 
-=
+
 (define-completion-action word::|or|
   :mark-event  'mark-instance-of-AND)
 
