@@ -491,21 +491,15 @@
     (trace-msg "   which has no edges")))
 
 
-;;;-----------------------
-;;; "new" forest protocol
-;;;-----------------------
+;;;-----------------------------------
+;;; "new" forest protocol -- sweeping
+;;;-----------------------------------
 
 (defun trace-treetops-sweep ()
   (setq *trace-treetops-sweep* t))
 
 (defun untrace-treetops-sweep ()
   (setq *trace-treetops-sweep* nil))
-
-(defun trace-island-driving ()
-  (setq *trace-island-driving* t))
-
-(defun untrace-island-driving ()
-  (setq *trace-island-driving* nil))
 
 (deftrace :new-forest-driver (rightmost-pos)
   ;; called from new-forest-driver
@@ -527,6 +521,29 @@
   (when *trace-treetops-sweep*
     (trace-msg "[sweep] Next tt is ~a ending at p~a"
                tt (pos-token-index pos-after))))
+
+
+;;;------------------------------------------
+;;; "new" forest protocol --  Island Driving
+;;;------------------------------------------
+
+(defun trace-island-driving ()
+  (setq *trace-island-driving* t))
+
+(defun untrace-island-driving ()
+  (setq *trace-island-driving* nil))
+
+
+(deftrace :island-driven-forest-parse ()
+  ;; called from island-driven-forest-parse
+  (when (or *trace-network-flow *trace-island-driving*)
+    (trace-msg "Doing island-driving")))
+
+
+(deftrace :no-subject-or-verb-edges ()
+  ;; called from try-simple-subj+verb
+  (when *trace-island-driving*
+    (trace-msg "[islands] no subject or no main verb")))
 
 
 
