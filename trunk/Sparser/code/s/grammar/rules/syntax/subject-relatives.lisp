@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "subject relatives"
 ;;;   Module:  "model;rules:syntax:"
-;;;  version:  April 2013
+;;;  version:  September 2014
 
 ;; initiated 6/18/93 v2.3
 ;; (8/9/07) Well something else can go in this file, but just now this
@@ -16,7 +15,8 @@
 ;;  function of a specific prounoun is relative or interogative.
 ;; 0.2 (4/9/13) Throwing that over in favor of a completion rule
 ;; 0.3 (7/24/13) Moving in the syntax rules for subject relatives
-;;  from rules-over-referents for consolidation
+;;  from rules-over-referents for consolidation.
+;;  (9/7/14) Moved the syntax rules to one place. 
 
 (in-package :sparser)
 
@@ -34,24 +34,6 @@
   'who-subject-relative-clause-operation)
 
 (inhibit-completion-when-subsumes category::who)
-
-
-;;--- syntactic rule treatment (appears to work)
-
-(def-syntax-rule (wh-pronoun s) ;; also vp ?
-                 :head :right-edge
-  :form relative-clause
-  :referent (:function compose-wh-with-vp left-edge right-edge))
-
-(def-syntax-rule (wh-pronoun vp) ;; also vp ?
-                 :head :right-edge
-  :form relative-clause
-  :referent (:function compose-wh-with-vp left-edge right-edge))
-
-(def-syntax-rule (np relative-clause)
-                 :head :left-edge
-  :form np
-  :referent (:function assimilate-appositive left-edge right-edge))
 
 
 ;;--- support fns

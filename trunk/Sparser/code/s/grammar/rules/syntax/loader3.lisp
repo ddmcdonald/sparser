@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  3.9 August 2014
+;;;  Version:  3.9 September 2014
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -22,6 +22,7 @@
 ;; 3.8 (1/18/13) Moved relatives after WH since it references them. 
 ;;     (1/22/13) Added [adjectives]
 ;; 3.9 (7/25/14) Bumped affix-rules to 1. (8/27/14) bumped conjuction to 8
+;;     (9/7/14) added [syntactic rules]
 
 (in-package :sparser)
 
@@ -30,7 +31,7 @@
   ;;  but it needs to be loaded before bracket definitions that
   ;;  reference these categories, so it's been moved into the
   ;;  master loader
-  )
+  (gload "syntax;syntactic rules"))
 
 (gate-grammar *heuristics-from-morphology*
   (gload "syntax-morph;affix-rules1"))
