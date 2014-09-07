@@ -3,9 +3,10 @@
 ;;;
 ;;;    File: "NFkappaB"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: June 2014
+;;; version: September 2014
 
-;; Initiated 3/2/14, adding items through 3/5/14, then through 6/9/14
+;; Initiated 3/2/14, adding items through 3/5/14, then through 6/9/14.
+;; 9/7/14 Removed ugly syntactic rule in consolidation sweep.
 
 (in-package :sparser)
 
@@ -87,25 +88,6 @@
 (def-form-rule ("to" vp)
   :form to-vp
   :referent (:daughter right-edge))
-
-;; syntactic rule?  np + to-vp
-#+ignore(def-cfr event (event generate)
-  :form np
-  :referent (:daughter left-edge))
-
-;;//// Yeuch
-(define-category do-for-a-purpose
-  :binds ((what)
-          (why)))
-;; This does the composition, but can't get the scope right.
-;; It binds the to-vp low to the first np to its left.
-;; Clear demonstration of the benefit of semantic rules
-(def-syntax-rule (np to-vp)
-  :head :left-edge
-  :form np
-  :referent (:instantiate-individual do-for-a-purpose
-             :with (what left-edge
-                    why right-edge)))
 
 
 ;;----- Regulation & event
