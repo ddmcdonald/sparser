@@ -30,14 +30,6 @@
 
 ;;--- subject relative clauses ( rules/syntax/subject-relatives.lisp )
 
-;;--- direct object
-
-(def-syntax-rule (vg np)
-                 :head :left-edge
-  :form vp
-  :referent (:head left-edge
-             :bind (participant right-edge)))
-
 ;;--- for dates
 ;;should we add these patterns to date-pattern in tree-families?
 
