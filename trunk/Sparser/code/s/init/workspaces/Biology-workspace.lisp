@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "Biology-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  August 2014
+;;;  version:  September 2014
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
@@ -12,24 +12,42 @@
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
-
 ; (setup-bio)
+; (bio-traps)
+
+;    (setq *sweep-sentence-treetops* t)
+;    (setq *island-driving* t)
+; (trace-treetops-sweep)
+; (trace-island-driving)
+
+;; 9/8/14
+;; (p "The purified MEK2 protein stimulated threonine and tyrosine phosphorylation on ERK1 and concomitantly activated ERK1 kinase activity more than 100-fold.")
+
+;; 8/30/14
+#| 8. Growth factors can turn on Ras by activating Guanine nucleotide
+Exchange Factors (GEFs) or by inhibiting the GTPase Activating
+Proteins (GAPs) or by both mechanisms. |#
+; (p "Growth factors can activate Ras by activating Guanine nucleotide Exchange Factors (GEFs) or by inhibiting the GTPase Activating Proteins (GAPs) or by both mechanisms.")
+;; /// substitute "activate" for "turn on" so can develop the
+;; island forest parser without having to fix the problems with the
+;; present verb+prep treatment first.
+; (p "Growth factors can activate Ras by activating Guanine nucleotide Exchange Factors or by inhibiting the GTPase Activating Proteins or by both mechanisms.")
+;; /// pull out the parentheses because something is inhibiting their interior's analysis
+
+
+
 (defun setup-bio ()
   (remove-paragraph-marker)
   (setq *tts-after-each-section* nil)
   (gload "bio;loader"))
 
-;; 8/29/14
-; (bio-traps)
 (defun bio-traps ()
   ;; switch settings to facilitate 'getting through'
   (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
   (setq *sweep-sentence-treetops* nil) ;; easing these in gradually
-   (setq *island-driving* nil))
+  (setq *island-driving* nil))
 
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
-;    (setq *sweep-sentence-treetops* t)
-;    (setq *island-driving* t)
 
 ;;8/7/14 debugging the new forest level's loops
 ; (bio-setting)
