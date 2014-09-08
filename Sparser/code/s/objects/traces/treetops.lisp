@@ -539,11 +539,154 @@
   (when (or *trace-network-flow *trace-island-driving*)
     (trace-msg "Doing island-driving")))
 
+;;--- subject & verb group
+
+(deftrace :subject+verb (edge subject-edge verb-group-edge)
+  ;; called from try-simple-subj+verb
+  (when *trace-island-driving*
+    (trace-msg "[islands] Composed the subject e~a and verb e~a ~
+                to form e~a"
+               (edge-position-in-resource-array subject-edge)
+               (edge-position-in-resource-array verb-group-edge)
+               (edge-position-in-resource-array edge))))
+
+(deftrace :subject-not-adjacent ()
+  ;; called from try-simple-subj+verb
+  (when *trace-island-driving*
+    (trace-msg "[islands] the subject is not adjacent to the main verb")))
 
 (deftrace :no-subject-or-verb-edges ()
   ;; called from try-simple-subj+verb
   (when *trace-island-driving*
     (trace-msg "[islands] no subject or no main verb")))
+
+
+;;--- NPs
+
+(deftrace :np-extends-rightwards? (np-edge)
+  ;; called from look-for-np-extensions
+  (when *trace-island-driving*
+    (trace-msg "[islands] Looking at NP e~a"
+               (edge-position-in-resource-array np-edge))))
+
+(deftrace :np-check-right-expansion (edge-to-the-right)
+  ;; called from look-for-np-extensions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   Does it compose with e~a to its right?"
+               (edge-position-in-resource-array edge-to-the-right))))
+
+(deftrace :np-extended-rightward (edge)
+  ;; called from look-for-np-extensions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   Yes. Creating e~a"
+               (edge-position-in-resource-array edge))))
+               
+(deftrace :np-did-not-extend-rightward ()
+  ;; called from look-for-np-extensions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   No.")))
+
+(deftrace :looking-leftward-from-np-at (base-edge edge-to-the-left)
+  ;; called from look-for-np-extensions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   Looking leftward from e~a at the ~a e~a"
+               (edge-position-in-resource-array base-edge)
+               (cat-symbol (edge-form edge-to-the-left))
+               (edge-position-in-resource-array edge-to-the-left))))
+
+(deftrace :np-leftwards-composed (new-edge)
+  ;; called from look-for-np-extensions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   They composed to form e~a"
+               (edge-position-in-resource-array new-edge))))
+
+(deftrace :np-leftwards-did-not-compose ()
+  ;; called from look-for-np-extensions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   They did not compose.")))
+
+
+;;--- verb extension
+
+(deftrace :looking-for-bounded-np-after (vg-edge)
+  ;; called from try-simple-vps
+  (when *trace-island-driving*
+    (trace-msg "[islands] Looking for a bounded np to the right ~
+                of the verb group e~a"
+               (edge-position-in-resource-array vg-edge))))
+
+(deftrace :looking-at-edge-after-verb (form right-neighbor)
+  ;; called from try-simple-vps
+  (when *trace-island-driving*
+    (trace-msg "[islands]   The ~a e~a is to its right"
+               (cat-symbol form)
+               (edge-position-in-resource-array right-neighbor))))
+
+(deftrace :np-not-right-bounded ()
+  ;; called from try-simple-vps
+  (when *trace-island-driving*
+    (trace-msg "[islands]   It is not right-bounded")))
+
+(deftrace :verb-composed-with-np (edge)
+  ;; called from try-simple-vps
+  (when *trace-island-driving*
+    (trace-msg "[islands]   They composed to form e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :verb-did-not-compose-with-np (vg-edge right-neighbor)
+  ;; called from try-simple-vps
+  (when *trace-island-driving*
+    (trace-msg "[islands]   e~a and e~a do not compose"
+               (edge-position-in-resource-array vg-edge)
+               (edge-position-in-resource-array right-neighbor))))
+
+
+;;--- general
+
+(deftrace :no-edge-to-the-right-of (edge)
+  ;; called from try-simple-pps
+  (when *trace-island-driving*
+    (trace-msg "[islands]   There is no edge to the right of e~a"
+                (edge-position-in-resource-array edge))))
+
+(deftrace :no-edge-to-the-left-of (edge)
+  (when *trace-island-driving*
+    (trace-msg "[islands]   There is no edge to the left of e~a"
+                (edge-position-in-resource-array edge))))
+
+
+
+
+;;--- PPs
+
+(deftrace :trying-the-preposition (prep-edge)
+  ;; called from try-simple-pps
+  (when *trace-island-driving*
+    (trace-msg "[islands] Looking for composition with the preposition e~a"
+               (edge-position-in-resource-array prep-edge))))
+
+(deftrace :prep-followed-by (form right-neighbor)
+  ;; called from try-simple-pps
+  (when *trace-island-driving*
+    (trace-msg "[islands]   It is followed by the ~a e~a"
+               (cat-symbol form)
+               (edge-position-in-resource-array right-neighbor))))
+
+(deftrace :prep-composes-to-form (edge)
+  ;; called from try-simple-pps
+  (when *trace-island-driving*
+    (trace-msg "[islands]   They composed to form e~a"
+                (edge-position-in-resource-array edge))))
+
+(deftrace :does-not-compose-with (prep-edge right-neighbor)
+  ;; called from try-simple-pps
+  (when *trace-island-driving*
+    (trace-msg "[islands]  e~a and e~a do not compose"
+               (edge-position-in-resource-array prep-edge)
+               (edge-position-in-resource-array right-neighbor))))
+
+
+
 
 
 
