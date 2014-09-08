@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991,1992,1993,1994,1995,1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "treetops"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   1.5 January 1995
+;;;   Version:   1.5 September 2014
 
 ;; 1.1  (2/8/91 v1.8.1) added Final-tt/category
 ;; 1.2  (2/13 v1.8.1) Modified ...-treetop-at to both return words if there
@@ -15,6 +15,7 @@
 ;; 1.5  (9/28) fixed bug in left-treetop-at/edge. (10/26) added doc.
 ;;      (12/1) added Treetops-between
 ;;      (1/2/96) added a variation that only returns edges
+;;      (9/8/14) Converted a few functions to methods taking edges.
 
 (in-package :sparser)
 
@@ -36,8 +37,10 @@
 
 ;;;--- variants on those with different return values
 
+(defmethod next-treetop/rightward ((e edge))
+  (next-treetop/rightward (pos-edge-ends-at e)))
 
-(defun next-treetop/rightward (p)
+(defmethod next-treetop/rightward ((p position))
 
   ;; Used by Do-treetop-triggers to scan successive treetops.
   ;; Returns as many as three values: (1) the treetop that starts
@@ -62,7 +65,10 @@
                    (chart-position-after p))))))
 
 
-(defun next-treetop/leftward (p)
+(defmethod next-treetop/leftward ((e edge))
+  (next-treetop/leftward (pos-edge-starts-at e)))
+
+(defmethod next-treetop/leftward ((p position))
   ;; analogous routine for a leftward walk
   (let* ((vector (pos-ends-here p))
          (topnode-field (ev-top-node vector))
@@ -87,7 +93,10 @@
 ;;;-------- still another variant that takes the highest edge when there
 ;;;         are multiples
 
-(defun right-treetop-at/edge (position)
+(defmethod right-treetop-at/edge ((e edge))
+  (right-treetop-at/edge (pos-edge-ends-at e)))
+
+(defmethod right-treetop-at/edge ((position position))
   (let* ((ev (pos-starts-here position))
          (top-node (ev-top-node ev)))
     (cond ((eq top-node :multiple-initial-edges)
@@ -97,7 +106,10 @@
           (t (pos-terminal position)))))
 
 
-(defun left-treetop-at/edge (position)
+(defmethod left-treetop-at/edge ((e edge))
+  (left-treetop-at/edge (pos-edge-starts-at e)))
+
+(defmethod left-treetop-at/edge ((position position))
   (let* ((ev (pos-ends-here position))
          (top-node (ev-top-node ev)))
     (cond ((eq top-node :multiple-initial-edges)
