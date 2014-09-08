@@ -34,12 +34,14 @@
 )
 
 
+;;--- subject + verb group
+
 (defun try-simple-subj+verb ()
   (let* ((layout (layout))
          (subject-edge (subject layout))
          (verb-group-edge (main-verb layout)))
     (if (and subject-edge verb-group-edge)
-      (when (adjacent-edges? subject-edge verb-group-edge)
+      (if (adjacent-edges? subject-edge verb-group-edge)
         ;; multiply-edges returns the rule, and is sensitive
         ;; to *edges-from-referent-categories* and
         ;; *allow-pure-syntax-rules*
@@ -50,33 +52,52 @@
         (let ((edge (check-one-one subject-edge verb-group-edge)))
           ;; good spot for a trace
           ;; set form to subj+vg or whatever that is.
-          edge))
+          (tr :subject+verb edge subject-edge verb-group-edge)
+          edge)
+        (tr :subject-not-adjacent))
       (tr :no-subject-or-verb-edges))))
+
+
+;;--- extending out from NPs
 
 (defun look-for-np-extensions ()
   ;; if there's an edge to the righ of each 'loose' np,
-  ;; see if the two compose. Depends a lot on timing I suspect
+  ;; see if the two compose. Depends a lot on timing I suspect so that
+  ;; we get the best edge to the right (i.e. has it expanded too)
   (dolist (np-edge (loose-nps (layout)))
+    (tr :np-extends-rightwards? np-edge)
     (let* ((pos-after-np (pos-edge-ends-at np-edge))
-           (edge-to-the-right (right-treetop-at/edge pos-after-np)))
-      (if (edge-p edge-to-the-right)
-        (when (multiply-edges np-edge edge-to-the-right)
-          ;; Redundant, but makes the point.
-          ;; 1. How to we know this is the longest version
-          ;; of the NP? We're coming from the right which makes
-          ;; me /think/ that's the case, but how do we Know?
-          ;; 2. Should we now look left like the else clause
-          ;; does? How to we keep this NP in play going forward.
-          (check-one-one np-edge edge-to-the-right))
-        (else
-         ;; it doesn't compose to the right. Is an np like this
-         ;; a good anchor? Should we look to the left while
-         ;; we're here? Or wait?
-         (let* ((pos-before-np (pos-edge-starts-at np-edge))
-                (edge-to-the-left (left-treetop-at/edge pos-before-np)))
-           (when edge-to-the-left
-             (check-one-one edge-to-the-left pos-before-np))))))))
+           (edge-to-the-right (right-treetop-at/edge pos-after-np))
+           edge  )
+      (when (edge-p edge-to-the-right)
+        (tr :np-check-right-expansion edge-to-the-right)
+        (setq edge (check-one-one np-edge edge-to-the-right))
+        ;; 1. How to we know this is the longest version
+        ;; of the NP? We're coming from the right which makes
+        ;; me /think/ that's the case, but how do we Know?
+        ;; 2. Should we now look left like the else clause
+        ;; does? How to we keep this NP in play going forward.
+        (if edge
+          (tr :np-extended-rightward edge)
+          (tr :np-did-not-extend-rightward)))
 
+      ;; Is an np like this a good anchor? 
+      ;;Should we look to the left while
+      ;; we're here? Or wait?
+      (let* ((base-edge (or edge np-edge))
+             (pos-before-np (pos-edge-starts-at base-edge))
+             (edge-to-the-left (left-treetop-at/edge pos-before-np)))
+        (if edge-to-the-left
+          (then
+           (tr :looking-leftward-from-np-at base-edge edge-to-the-left)
+           (let ((new-edge (check-one-one edge-to-the-left base-edge)))
+             (if new-edge
+               (tr :np-leftwards-composed new-edge)
+               (tr :np-leftwards-did-not-compose))))
+          (tr :no-edge-to-the-left-of base-edge))))))
+
+
+;;--- expanding out from verbs
 
 (defun try-simple-vps ()
   ;; Go through the verbs. There is probably an np following
@@ -87,16 +108,24 @@
     (look-for-bounded-np-after-verb vg-edge)))
 
 (defun look-for-bounded-np-after-verb (vg-edge)
+  (tr :looking-for-bounded-np-after vg-edge)
   (let* ((right-neighbor (right-treetop-at/edge 
                           (pos-edge-ends-at vg-edge)))
          (form (when (edge-p right-neighbor)
                  (edge-form right-neighbor))))
-    (when (and form
-               (eq form category::np))
-      (when (right-bounded-np? right-neighbor)
-        (let ((edge (check-one-one vg-edge right-neighbor)))
-          edge)))))
+    (when form ;; therefore there's an edge
+      (tr :looking-at-edge-after-verb form right-neighbor)
+      (when (and form
+                 (eq form category::np))
+        (if (right-bounded-np? right-neighbor)
+          (let ((edge (check-one-one vg-edge right-neighbor)))
+            (if edge
+              (tr :verb-composed-with-np edge)
+              (tr :verb-did-not-compose-with-np vg-edge right-neighbor)))
+          (tr :np-not-right-bounded))))))
 
+
+;;--- trying to form prepositional phrases: np or vp complements
 
 (defun try-simple-pps ()
   ;; go through the list of prepositions.
@@ -104,14 +133,15 @@
   ;; before this
   ;; If there's a 'bounded' np to the right of the preposition
   ;; compose them. 
+  ;; Also look for a vp, which should be a participle, but need
+  ;; to modify some verb-creation rules to endure that. 
   ;;////  what's the fall back if that condition isn't satisfied?
   (dolist (prep-edge (prepositions (layout)))
     ;; n.b. it's a push list, so we're going right to left
-    (look-for-bounded-np-after-prep prep-edge)))
+    (tr :trying-the-preposition prep-edge)
+    (look-for-bounded-constituent-after-prep prep-edge)))
 
-
-
-(defun look-for-bounded-np-after-prep (prep-edge)
+(defun look-for-bounded-constituent-after-prep (prep-edge)
   (let* ((pos-after-prep (pos-edge-ends-at prep-edge))
          (right-neighbor (right-treetop-at/edge pos-after-prep))
          (form (when (edge-p right-neighbor)
@@ -119,26 +149,58 @@
     ;;/// prepositions can end sentences. What do we make of that?
     ;; e.g. the form could be nil because we're up against a period or EOS
     ;; Probably make that another sister 'try' routine.
-    (when (and form
-               (eq form category::np))
-      (when (right-bounded-np? right-neighbor)
-        ;; then it safe to make the pp
-        (let ((edge (check-one-one prep-edge right-neighbor)))
-          edge)))))
+    (if form
+      (then
+       (tr :prep-followed-by form right-neighbor)
+       (cond 
+        ((eq form category::np)
+         (when (right-bounded-np? right-neighbor)
+           ;; then it safe to make the pp
+           (let ((edge (check-one-one prep-edge right-neighbor)))
+             (if edge
+               (tr :prep-composes-to-form edge)
+               (tr :does-not-compose-with prep-edge right-neighbor)))))
+        ((eq form category::vp)
+         (let ((edge (check-one-one prep-edge right-neighbor)))
+           (if edge
+             (tr :prep-composes-to-form edge)
+             (tr :does-not-compose-with prep-edge right-neighbor))))))
+      (tr :no-edge-to-the-right-of prep-edge))))
 
+
+;;--- conjunction
 
 (defun try-spanning-conjunctions ()
   ;; For now do the easy thing of looking only for the same
   ;; labels to either side
   (let* ((conjuncts (conjunctions (layout)))
          (count (length conjuncts)))
-    (push-debug `(,count ,conjuncts)) (break "work out conjunctions")))
-#|    (when (= count 2)
+    (push-debug `(,count ,conjuncts)) (break "work out conjunctions")
+    (when (= count 2)
       ;; The question is how to determine what patterns of
       ;; conjunction we have within this sentence. 
       (let ((c1 (car conjuncts))
             (c2 (cadr conjuncts)))
-        (let ((edge-to-the-right-of-c1
-  |#
+        (let ((edge-to-the-right-of-c1 (next-treetop/rightward c1))
+              (edge-to-the-left-of-c1 (next-treetop/leftward c1))
+              (edge-to-the-right-of-c2 (next-treetop/rightward c2))
+              (edge-to-the-left-of-c2 (next-treetop/leftward c2)))
+          (push-debug `(,edge-to-the-left-of-c1 ,edge-to-the-left-of-c2
+                        ,edge-to-the-right-of-c1 ,edge-to-the-right-of-c2))
+          (cond
+           ((eq edge-to-the-left-of-c1 edge-to-the-right-of-c2)
+            ;; we have a sequence of conjoinable elements
+            (let ((h1 (conjunction-heuristics edge-to-the-left-of-c1
+                                              edge-to-the-right-of-c1))
+                  (h2 (conjunction-heuristics edge-to-the-left-of-c2
+                                              edge-to-the-right-of-c2)))
+              (if (and h1 h2)
+                (then
+                 (conjoin-multiple-edges ;;/// pre-build for comma-delimited list
+                  `(,edge-to-the-left-of-c2
+                    ,edge-to-the-left-of-c1
+                    ,edge-to-the-right-of-c1)))
+                (break "conjunts not consistent"))))
+           (t (break "different conjunction pattern"))))))))
         
     
