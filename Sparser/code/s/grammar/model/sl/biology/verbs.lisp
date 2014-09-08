@@ -75,6 +75,10 @@
 (svo/nominal "phosphorylate" "phosphorylation" 
              :subject 'bio-entity :theme 'bio-entity)
 
+(svo/passive/nominal "stimulate" "stimulation"
+  :super-category bio-process
+  :patient bio-process  ;; inhibiton of <process>
+  :agent bio-entity)
 
 (svo/passive/nominal "suggest" "suggestion"
   :super-category bio-process

@@ -3,156 +3,20 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: July 2014
+;;; version: September 2014
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 ;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
+;; 9/8/14 lifted taxonomy out to its own file, added keyword to
+;; inhibit plurals, defaults to allow plurals
 
 (in-package :sparser)
 
-;;;---------------------------
-;;; Taxonomy and simple types
-;;;---------------------------
+;;;-------------------------------------------
+;;; macro for defining individual particulars
+;;;-------------------------------------------
 
-(define-category has-UID
-  :specializes relation
-  :binds ((uid)))
-
-
-(define-category bio-process
-  :specializes perdurant
-  :mixins (has-UID has-name)
-  :documentation "No content by itself, provides a common paraent
-    for 'processing', 'ubiquitization', etc. that may be the basis
-    of the grammar patterns.")
-
-
-
-;;--- referents for type kinds, v.s. the particulars
-;;/// Need these if we want bio-type as a label in the
-;; grammar. Otherwise lemmas on categories can carry
-;; the burden
-
-#| Gets an 'Inconsistent superclasses' error making
-   it's clos shadow class. Have to look up the problem
-
- has-name is a relation, as it has-UID, so the def-class
- superc list is (abstract relation relation) 
- Relation is a subclass of abstract, so it's (super sub sub)
-
-
-(define-category bio-type
-  :specializes abstract
-  :mixins (has-UID has-name)
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(define-individual 'bio-type
-  :name "molecule")
-
-(define-individual 'bio-type
-  :name "amino acid")
-
-(define-individual 'bio-type
-  :name "protein")
-
-(define-individual 'bio-type
-  :name "kinase")
-|#
-
-
-;;--- categories of referents for particulars (see def-bio below)
-
-(define-category bio-entity 
-  :specializes endurant  ;; sweeps a lot under the rug
-  :mixins (has-UID has-name)
-  :binds ((long-form :primitive polyword))
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-
-(define-category molecule
-  ;; makes more sense for ATP than H20, but not worrying about whether
-  ;; we're doing organic or inorganic chemistry.
-  :specializes bio-entity
-  :instantiates :self
-  :bindings (uid "CHEBI:36357")
-  :index (:permanent :key name)
-  :lemma (:common-noun "molecule")
-  :realization (:common-noun name))
-
-;; 'small molecule' should be done with a def-subtype
-;;/// Start with define-sybtype-derived-category
-(define-category small-molecule
-  ;; makes more sense for ATP than H20, but not worrying about whether
-  ;; we're doing organic or inorganic chemistry.
-  :specializes molecule
-  :instantiates :self
-  ;; :bindings (uid "")
-  :index (:permanent :key name)
-  :lemma (:common-noun "small molecule")
-  :realization (:common-noun name))
-
-
-(define-category amino-acid
-  :specializes molecule
-  :instantiates :self
-  :index (:permanent :key name)
-  ;;  :lemma (:common-noun "amino-acid") /// optionally-hyphenated pw
-  :realization (:common-noun name)) ;; need hypenated version
-
-
-(define-category protein
-  :specializes molecule
-  :instantiates :self
-  :rule-label bio-entity
-  :index (:permanent :key name)
-  :lemma (:common-noun "protein")
-  :realization (:common-noun name))
-
-
-;;/// will have a substantial model, so deserves its own
-;; file. This is just to ground "encode"
-(define-category gene
-  :specializes bio-entity ;;// case in point
-  :instantiates :self
-  :rule-label bio-entity ;; probably
-  :binds ((:expresses . protein))
-  :index (:permanent :key name)
-  :lemma (:common-noun "gene")
-  :realization (:common-noun name))
-  
-
-(define-category kinase
-  :specializes protein
-  :instantiates :self
-  :bindings (uid "GO:0016301")
-  :rule-label bio-entity
-  :index (:permanent :key name)
-  :lemma (:common-noun "kinase")
-  :realization (:common-noun name))
-
-(define-category enzyme ;; what's the relationship to kinase?
-  :specializes protein
-  :instantiates :self
-  :rule-label bio-entity
-  :lemma (:common-noun "enzyme")
-  :realization (:common-noun name))
-
-(define-category signalling-enzyme
-  :specializes enzyme
-  ;; This buries the notion of 'signaling' in the name.
-  ;; Better treatment would resurect the subtyping machinery
-  ;; with the addition that we're making this subtype of
-  ;; enzyme from the perspective of identitying its function.
-  :instantiates :self
-  :rule-label bio-entity
-  :lemma (:common-noun "signalling enzyme")
-  :realization (:common-noun name))
-
-;;--- macro for defining individual particulars
-
-(defmacro def-bio (short kind &key greek identifier long synonyms)
+(defmacro def-bio (short kind &key greek identifier long synonyms takes-plurals)
   ;; short = "NIK", long = "NF-κB-inducing kinase"
   ;; kind = kinase, greek = "alpha"
   ;; Makes individuals (particulars), that are instances of 
@@ -178,17 +42,21 @@
     (unless (and (listp synonyms)
                  (every #'stringp synonyms))
       (error "The synonyms must be a list of strings")))
+  (unless takes-plurals
+    (setq takes-plurals t))
+
   `(def-bio/expr ,short ',kind 
      :greek ',greek :identifier ',identifier 
-     :long ,long :synonyms ',synonyms))
+     :long ,long :synonyms ',synonyms :takes-plurals ,takes-plurals))
 
-(defun def-bio/expr (short kind &key greek identifier long synonyms)
+
+(defun def-bio/expr (short kind &key greek identifier long synonyms takes-plurals)
   (let* ((word (resolve/make short))
          (lowercase-word (resolve/make (string-downcase short)))
          (category (category-named kind :break-if-undefined))
          (label (or (override-label category) category))
          (form (category-named 'common-noun))
-         (*inihibit-constructing-plural*  t)
+         (*inihibit-constructing-plural* (not takes-plurals))
          rules  i )
     (declare (special *inihibit-constructing-plural*))
 
