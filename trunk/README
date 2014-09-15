@@ -39,20 +39,19 @@ SBCL. What happens with other Lisps is not known.
 We recommend Clozure because it automatically compiles 
 functions as it loads them. If you use Allegro, you will
 need to explicitly compile the core of Sparser to avoid
-blowing out the stack on text longer than about 30 words,
+blowing out the stack on a text longer than about 30 words,
 see sparser/Sparser/init/scripts/compile-everything.lisp.
 
 1. Start Lisp.
 
-2. Load the "sparser/load-nlp.lisp" file. If running
-Allegro CL with a default installation, you can do this
-with ":ld ~/sparser/load-nlp.lisp".
+2. Load the "sparser/load-nlp.lisp" file, e.g. run
+  (load "/Users/<your home dir>/sparser/load-nlp.lisp").
 
 3. Switch over to the Sparser namespace by executing
-"(in-package :sparser)".
+  (in-package :sparser).
 
 4. Test that Sparser is working properly & that it can
-parse a simple phrase. Execute "(p "10 days")".
+parse a simple phrase. Execute (p "10 days").
 
 Your output should look something like this:
 ====================
