@@ -55,6 +55,9 @@
 (def-bio "PIK3CA" gene)
 (def-bio "BRAF" gene)
 
+(def-bio "GTP" small-molecule)
+(def-bio "GDP" small-molecule)
+
 
 (def-bio "GEF" protein :synonyms ("Guanine nucleotide Exchange Factors" "GEFs"))
 (def-bio "GAP" protein :synonyms ("GTPase Activating Proteins" "GAPs"))
@@ -82,6 +85,19 @@
 appreciates they are all of a kind, that numbers and other
 filligre may be used to distinguish them, etc.
 |#
+;; These can be ripped out of pro.obo once we figure out
+;; the simplest mechanism 
+
+(def-bio "ERK" protein) ;; general term not obviously in an OBO
+
+(def-bio "ERK1" protein :synonyms ("ERK1 kinase"))
+;; it's 'extracellular signal' related kinase but tactically it's
+;; better to hack the first part as a polyword rather than compositionally
+
+(def-bio "MAP" protein)
+
+(def-bio "MEK" protein)
+
+(def-bio "MEK1" protein)
 
 (def-bio "MEK2" protein)
-(def-bio "ERK1" protein)
