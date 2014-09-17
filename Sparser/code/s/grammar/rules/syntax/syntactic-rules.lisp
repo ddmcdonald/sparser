@@ -17,6 +17,16 @@
   :referent (:head right-edge))
 
 
+;;--- predicate adjective
+
+;; For 'be' there's the form rule psr235
+(def-syntax-rule (vg adjective) ;;/// adjp
+                 :head :left-edge
+  :form vp
+  ;; referent should try to geneate a predicate
+  :referent (:head right-edge))
+
+
 ;;--- direct object
 
 (def-syntax-rule (vg np)
@@ -24,6 +34,13 @@
   :form vp
   :referent (:head left-edge
              :bind (participant right-edge)))
+
+
+;;--- bound prepositions (stricltly temporary fallback)
+(def-syntax-rule (vg preposition)
+                 :head :left-edge
+  :form vp
+  :referent (:daughter left-edge))
 
 
 ;;--- NPs
@@ -54,6 +71,13 @@
 ;;/// makes for a counter-intutive edge since the preposition
 ;; is its label
 (def-syntax-rule (preposition np)
+                 :head :left-edge
+  :form pp
+  ;; I suppose we need a generic relationship here for
+  ;; a proper referent
+  :referent (:head right-edge))
+
+(def-syntax-rule (spatial-preposition np) ;;//// get rid of spatial-preposition!
                  :head :left-edge
   :form pp
   ;; I suppose we need a generic relationship here for

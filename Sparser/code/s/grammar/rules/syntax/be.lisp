@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 August 2013
+;;;  Version:  0.2 September 2014
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -21,6 +20,7 @@
 ;;     which is just wrong.
 ;;    (8/24/13) Modified lookup-passive-counterpart to use #:ed for forming
 ;;     the passive symbol. 
+;;    (9/15/14) fixed from on be+adjective
 
 (in-package :sparser)
 
@@ -95,7 +95,7 @@
 ;;;----------------------------
 
 (def-form-rule (be adjective)
-  :form adjective
+  :form vp
   :referent (:head right-edge))
 
 
