@@ -3,12 +3,13 @@
 ;;;
 ;;;     File: "predicates"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  May 2014
+;;;  Version:  September 2014
 
 ;; initiated 12/5/12 to collect tests and other operations that are cluttering
 ;; the judgements file. Added only-aux-or-modal-to-left 4/2/13. Removed
 ;; proper-noun from definitively ends segment and added word-is-a-proper-noun
-;; 1/21/14. Occasional tweaks through 5/17/14
+;; 1/21/14. Occasional tweaks through 5/17/14. Couple more single-word
+;; predicates 9/14/14.
 
 (in-package :sparser)
 
@@ -80,6 +81,16 @@
       (or (memq ].quantifier brackets)
           (memq .[np brackets)
           (memq .[adjective brackets)))))
+
+
+
+(defun word-is-a-noun (word)
+  (with-word-brackets word
+    (memq .[np brackets)))
+
+(defun word-is-an-article (word)
+  (with-word-brackets word
+    (memq .[article brackets)))
 
 (defun word-is-a-proper-noun (word)
   (with-word-brackets word
