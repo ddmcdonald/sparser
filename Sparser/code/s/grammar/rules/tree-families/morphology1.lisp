@@ -89,6 +89,8 @@
 ;;       allow it to be blocked. (6/9/14) Added check-for-correct-irregular-word-markers
 ;; 1.13 (8/12/14) Reorganized make-cn-rules/aux so overriding plurals wouldn't
 ;;       block returning the singular rule.
+;;      (9/15/14) fixed design flaw in stem-form that insisted that the stem be
+;;       in Comlex before it trusted the stem that is constructed.
 
 (in-package :sparser)
 
@@ -484,13 +486,13 @@
   (stem-form (symbol-name s)))
   
 (defmethod stem-form ((s string))
-  (let ((word (define-word/expr s)))
+  (let ((word (resolve/make s)))
     (stem-form word)))
 
 (defmethod stem-form ((word word))
   ;; Redundant with stem-form-of-verb but adds more cases and
   ;; will do a Comlex check. Stores the stem once it finds it.
-  (or (cadr (member :stem (unit-plist word)))
+  (or (word-stem word)
       (let ((morphology (word-morphology word)))
 	;; the word-morphology field of a word is filled at the
 	;; time it is defined. 
@@ -499,14 +501,31 @@
                  ;; If Comlex says the reduced form is in its ~50k
                  ;; word dictionary then we accept it as the lemma
                  ;; form of the word and store it as the stem
-		 (stem (test-against-comlex putative-stem morphology)))
-            (if stem
-              (then
-               (setf (unit-plist word)
-                     `(:stem ,stem ,@(unit-plist word)))
-               stem)
-              word))
+		 (attested-stem (test-against-comlex putative-stem morphology)))
+            (let ((stem
+                   ;; Some words are not in Comlex, especially in biology,
+                   ;; in these cases we'll take the stem that we construct.
+                   (or attested-stem
+                       putative-stem)))
+              (if stem
+                (then
+                 (setf (unit-plist word)
+                       `(:stem ,stem ,@(unit-plist word)))
+                 stem)
+                ;; otherwise return the original word
+                word)))
+          ;; without morphology information we can't stem
           word))))
+
+
+(defun stem-form-of-verb (word)
+  ;; Called from introduce-morph-brackets-from-unknown-word, which (8/8/10) is
+  ;; very conservative about what it tries to stem
+  (let ((morphology (word-morphology word)))
+    (if morphology ;;/// mistakenly stems "this",
+      ;; and "species" => "specy", "during" => "dur"
+      (construct-stem-form word morphology)
+      word)))
 
 ;;--- cases
 
@@ -596,15 +615,6 @@
 
 
 ;;--- Verbs ("s", "ed", "ing")
-
-(defun stem-form-of-verb (word)
-  ;; Called from introduce-morph-brackets-from-unknown-word, which (8/8/10) is
-  ;; very conservative about what it tries to stem
-  (let ((morphology (word-morphology word)))
-    (if morphology ;;/// mistakenly stems "this",
-      ;; and "species" => "specy", "during" => "dur"
-      (construct-stem-form word morphology)
-      word)))
 
 (defun form-stem/strip-s (word)
   ;; the word ends in 's'

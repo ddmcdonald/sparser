@@ -9,6 +9,28 @@
 
 (in-package :sparser)
 
+(defmacro define-realization-scheme (name etf-name mapping-scheme)
+  `(define-realization-scheme/expr ',name ',etf-name ',mapping-scheme))
+
+(defun define-realization-scheme/expr (name etf-name mapping-scheme)
+  (push-debug `(,name ,etf-name ,mapping-scheme))
+  (break " stub"))
+#|
+(define-realization-scheme svo-passive passive/with-by-phrase
+  ((agent . agent-slot)
+   (patient . patient-slot)
+   (s . :self)
+   (vp . :self)
+   (vg . :self)
+   (np/agent . agent-v/r)
+   (np/patient . patient-v/r)
+   (by-pp . by-cat)
+   (result-type . :self)))
+      |#                     
+
+
+
+
 ;;;-----------
 ;;; structure
 ;;;-----------

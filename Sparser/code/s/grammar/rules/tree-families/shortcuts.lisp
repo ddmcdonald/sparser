@@ -4,7 +4,8 @@
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  June 2014
+;;;  version:  September 2014
+
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
 ;; 7/16/09: added modifier to np-head Modified 7/21/09: replaced
@@ -23,7 +24,8 @@
 ;; 5/28/14 Pulled the rule-adders to uniform place. 6/4/14 added vo. 
 ;; 6/6/14 Worked out a set of macros to make shortcuts more consistent
 ;; and compact. 6/9/14 Starting make over, including removing shortcuts
-;; that are only used in sl/checkpoint/vocabulary.lisp
+;; that are only used in sl/checkpoint/vocabulary.lisp. 9/14/14 pulled
+;; out the macros to their own file.
 
 (in-package :sparser)
 
@@ -37,97 +39,6 @@ overriding the rule label, distinguishing the category name, and
 broadly speaking doing for you all the things you might do by hand.
 
 |#
-
-;;;--------
-;;; macros
-;;;--------
-;; Simplify how slots, etc. are handled by sharing the parts
-;; as a set of wrappers
-
-;; Shared decoder
-(defun decode-shortcut-var-spec (spec type)
-  "A shortcut variable specification can be a single symbol or
- a list of as many as three symbols. If the specification is 
- a symbol it is interpreted as the label (or more generally
- the value restriction) for the semantic grammar built by
- the tree family. If the specification is a list, the the
- first element is the label for the semantic grammar.
- The second element (if there is one), is the value restriction
- on the slot that's to be bound. The third element specifies
- the name of the slot, replacing the default."
-  (flet ((default-value-restriction (type)
-           (case type
-             ((or :subject :theme :agent :patient)
-              'individual)
-             (:complement 'event)
-            (otherwise (error "Unknown v/r default: ~a" type))))
-         (default-slot-name (type)
-           (case type
-             (:subject 'subject)
-             (:agent 'agent)
-             (:patient 'patient)
-             (:theme 'theme)
-             (:complement 'complement)
-             (otherwise (error "Unknown slot default: ~a" type)))))
-    (let ( v/r var-v/r slot )
-      ;; decode the spec into the semantic grammar label: v/r,
-      ;; the category of slot (variable): var-v/r,
-      ;; and the name of the variable itself: slot
-      (typecase spec
-        (symbol (setq v/r spec))
-        (cons (cond
-          ((null (cdr spec))
-           (setq v/r (car spec)))
-          ((null (cddr spec))
-           (setq v/r (car spec)
-                 var-v/r (cadr spec)))
-          ((= 3 (length spec))
-           (setq v/r (car spec)
-                 var-v/r (cadr spec)
-                 slot (caddr spec)))))
-        (otherwise
-         (push-debug `(,spec ,type))
-         (error "Badly formed var spec: ~a" spec)))
-      (values v/r
-              (or var-v/r
-                  (default-value-restriction type))
-              (or slot
-                  (default-slot-name type))))))
-
-(defmacro with-name-and-superc (string super-category pos &body body)
-  `(let ((name (name-to-use-for-category ,string))
-         (superc (or ,super-category
-                     (super-category-for-POS ,pos))))
-     ,@body))
-
-
-(defmacro with-subject (subj-spec &body body)
-  ;; Identical in use with subject, but clearer to set up in passives
-  `(multiple-value-bind (subj-v/r subj-var subj-slot)
-                        (decode-shortcut-var-spec ,subj-spec :subject)
-       ,@body))
-
-(defmacro with-agent (agent-spec &body body)
-  `(multiple-value-bind (agent-v/r agent-var agent-slot)
-                        (decode-shortcut-var-spec ,agent-spec :agent)
-       ,@body))
-
-(defmacro with-complement (comp-spec &body body)
-  `(multiple-value-bind (comp-v/r comp-var comp-slot)
-                        (decode-shortcut-var-spec ,comp-spec :complement)
-     ,@body))
-
-(defmacro with-theme (theme-spec &body body)
-  `(multiple-value-bind (theme-v/r theme-var theme-slot)
-                        (decode-shortcut-var-spec ,theme-spec :theme)
-     ,@body))
-
-(defmacro with-patient (patient-spec &body body)
-  `(multiple-value-bind (patient-v/r patient-var patient-slot)
-                        (decode-shortcut-var-spec ,patient-spec :patient)
-     ,@body))
-
-
 ;;;--------------
 ;;; single words
 ;;;--------------
@@ -216,21 +127,15 @@ broadly speaking doing for you all the things you might do by hand.
       (eval form))))
 
 
-;;--- Interjection
 
-(defun sentential-interjection (string-for-interjection)
-  ;; "ok" "goodbye"  All instances right now are in checkpoint/vocabulary.lisp
-  (let* ((name (name-to-use-for-category string-for-interjection))
-         (form
-          `(define-category ,name
-	     :instantiates :self
-             :binds ((modifier))
-             :realization
-               (:tree-family sentence-interjection
-                :mapping ((interjection . :self)
-                          (modifier . modifier))
-               :interjection ,string-for-interjection))))
-    (eval form)))
+(defun adj (adjective &key super)
+  (with-name-and-superc adjective super :adjective
+    (let ((form
+           `(define-category ,name
+              :instantiates :self
+              :specializes ,superc
+              :realization (:adjective ,adjective))))
+      (eval form))))
 
 
 ;;--- Adjective/adverb pairs
@@ -255,6 +160,24 @@ broadly speaking doing for you all the things you might do by hand.
         (make-rules-for-adjectives adj category category)
         (make-rules-for-adverbs adv category category)
         category))))
+
+
+
+;;--- Interjection
+
+(defun sentential-interjection (string-for-interjection)
+  ;; "ok" "goodbye"  All instances right now are in checkpoint/vocabulary.lisp
+  (let* ((name (name-to-use-for-category string-for-interjection))
+         (form
+          `(define-category ,name
+	     :instantiates :self
+             :binds ((modifier))
+             :realization
+               (:tree-family sentence-interjection
+                :mapping ((interjection . :self)
+                          (modifier . modifier))
+               :interjection ,string-for-interjection))))
+    (eval form)))
 
 
 
@@ -332,6 +255,12 @@ broadly speaking doing for you all the things you might do by hand.
       (add-rule-to-category rule category)
       name)))
 
+
+
+
+;;//// 9/14/14 This scheme doesn't work. The bracket judgements
+;; completely close off the verb on an mvb, which hides it from
+;; the check on occurances prepositions
 (defun sv-prep (verb preposition)
   "Intransitive with an associated preposition, e.g. 'move along'"
   (unless (and (stringp verb) (stringp preposition))

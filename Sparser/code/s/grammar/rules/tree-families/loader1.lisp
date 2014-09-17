@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.2 February 2014
+;;;  version:  1.3 September 2014
 
 ;; initiated 8/5/92 v2.3, added NP & morphology 8/31, added [that comp] 10/22/93
 ;; 10/7/94 added [group of type],  10/14 added [of genitive]
@@ -23,7 +23,9 @@
 ;;     (3/27/09) Added [shortcuts]. (7/23/09) Added interjections.
 ;; 1.2 (10/5/09) Added [correspondences]. 8/4/11 Added vp-adjuncts
 ;;     (12/26/13) Moved vp's after clauses so "be" is defined.
-;;     (2/6/14) Added [families]. [abbreviation]
+;;     (2/6/14) Added [families]. [abbreviation].
+;; 1.3 (9/14/14) added [shortcut-mechanics] and [shortcut-master] as probably
+;;      replacement for the February scheme. 
 
 (in-package :sparser)
 
@@ -59,5 +61,7 @@
 
 (gload "tree-families;abbreviation")
 (gload "tree-families;families")
+(gload "tree-families;shortcut-mechanics")
+(gload "tree-families;shortcut-master")
 (gload "tree-families;shortcuts")
 
