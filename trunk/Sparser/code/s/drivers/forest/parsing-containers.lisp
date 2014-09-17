@@ -39,12 +39,21 @@
    (loose-nps :initform nil :accessor loose-nps
     :documentation "NPs that don't fall into an immediately
       obvious syntactic relationship to the clause.")
+   (loose-adjectives :initform nil :accessor loose-adjectives
+    :documentation "Adjectives that appear outside of
+      a segment. Potential apposative or reduced relatives.")
    (conjunctions :initform nil :accessor conjunctions
     :documentation "The locations of every conjunct,
       rightmost first")
    (prepositions :initform nil :accessor prepositions
     :documentation "The locations of every preposition,
       rightmost first")
+   (of-mentions :initform nil :accessor of-mentions
+    :documentation "Instances of the preposition 'of'.
+      It has a different island status than other prepositions.")
+   (starts-with-preposition :initform nil :accessor starts-with-prep
+    :documentation "Flags sentences with leading prepositional
+      phrases, which changes the usual criteria for the subject.")
    (parentheses :initform nil :accessor parentheses
     :documentation "The edges spanning any parenthesised
       portions of text."))

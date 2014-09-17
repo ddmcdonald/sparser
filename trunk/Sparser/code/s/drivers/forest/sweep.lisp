@@ -22,55 +22,85 @@
   (clear-sweep-sentence-tt-state-vars)
   (let ((rightmost-pos start-pos)
         (layout (make-sentence-layout sentence))
+        (sentence-initial? t)
         form  pos-after  multiple?  )
+
     (loop
       (multiple-value-setq (tt pos-after multiple?)
         (next-treetop/rightward rightmost-pos))
+
+      (unless (pos-assessed? pos-after)
+        ;; catches bugs in the termination conditions
+        (error "Walked beyond the bounds of the sentence"))
+
+      (when (and (word-p tt)
+                 (eq tt *the-punctuation-period*))
+        (tr :terminated-sweep-at pos-after)
+        (return))
+
+      (tr :next-tt-swept tt pos-after)
+
       (when multiple?
         (setq tt (elt (ev-edge-vector tt)
                       (1- (ev-number-of-edges tt)))))
-      (tr :next-tt-swept tt pos-after)
 
       (when (edge-p tt)
         (setq form (edge-form tt)))
+
+      ;; Periods can get edges over them by accidentally
+      ;; being given as a literal in a rule.
+      ;;/// ought to figure out a way to trap that.
+      ;; This check also catches all kinds of punctuation
       (unless form
-        (if (eq (edge-category tt) 
-                *the-punctuation-period*)
-          ;; we're done
-          (return)
-          (else (push-debug `(,tt ,pos-after))
-                (error "No form value on ~a" tt))))
+        (cond
+         ((eq (edge-category tt) 
+              *the-punctuation-period*)  ;; we're done
+          (return))
+         ((edge-over-comma? tt)) ;; flag it?          
+         (t (push-debug `(,tt ,pos-after))
+            (error "No form value on ~a" tt))))
 
-      (case (cat-symbol form)
-        ;; this is a gross control structure, but it lets
-        ;; us play while sorting out what will be better
-        ((category::np
-          category::common-noun) ;; over guanie... ///not elevated
-         (cond ((null prior-tt)
-                (set-subject tt))
-               (main-verb-seen?
-                (push-loose-np tt))))
-        (category::vg
-         (if main-verb-seen?
-           ;;/// need to modify verb builder and set of form categories
-           ;; to retain the participlial nature of, e.g. "inhibiting"
-           (push-post-mvs-verbs tt)
-           (set-main-verb tt)))
-        (category::preposition
-         (push-preposition tt))
-        (category::conjunction
-         (push-conjunction tt))
-
-        (otherwise
-         (push-debug `(,tt ,form))
-         (break "Next case in sweep.~
-               ~% tt = ~a~
-               ~% form = ~a"
-                tt form)))
+      (when form
+        (case (cat-symbol form)
+          ;; this is a gross control structure, but it lets
+          ;; us play while sorting out what will be better
+          ((category::np
+            category::common-noun) ;; ///not elevated
+           (cond ((null prior-tt)
+                  (set-subject tt))
+                 (main-verb-seen?
+                  (push-loose-np tt))
+                 (t (push-loose-np tt))))
+          (category::vg
+           (if main-verb-seen?
+             ;;/// need to modify verb builder and set of form categories
+             ;; to retain the participlial nature of, e.g. "inhibiting"
+             (push-post-mvs-verbs tt)
+             (set-main-verb tt))) ;;/// won't do preposed participles
+          (category::adjective
+           (push-loose-adjective tt))
+          ((category::preposition
+            category::spatial-preposition) ;; under
+           (when sentence-initial?
+             (setf (starts-with-prep (layout)) tt))
+           (let ((prep (edge-left-daughter tt)))
+             (if (eq prep word::|of|)
+               (push-of tt)
+               (push-preposition tt))))
+          (category::conjunction
+           (push-conjunction tt))
+          (otherwise
+           (push-debug `(,tt ,form))
+           (break "New case in sweep.~
+                ~% tt = ~a~
+                ~% form = ~a"
+                  tt form))))
 
       (when (eq pos-after end-pos)
         (return)) ;; leave the loop
 
+      (when sentence-initial?
+        (setq sentence-initial? nil))
       (setq rightmost-pos pos-after)
       (setq prior-tt tt))
 
