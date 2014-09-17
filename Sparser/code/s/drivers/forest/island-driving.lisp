@@ -16,9 +16,21 @@
 
   ;; short things in parentheses bind to the left
 
+  ;; preposed adjuncts
+  (when (starts-with-prep?)
+    (try-parsing-leading-pp))
+
   (try-simple-subj+verb)
 
   ;;/// conjunctions inside two words? 
+  ;; though the regular conjunction routine seems to get these
+  ;; in-line if they're really simple: "GDP or GTP"
+
+  (when (there-are-prepositions?)
+    (look-for-prep-binders))
+
+  (when (there-are-of-mentions?)
+    (try-to-compose-of-complements))
 
   (when (there-are-loose-nps?)
     (look-for-np-extensions))
@@ -108,21 +120,77 @@
     (look-for-bounded-np-after-verb vg-edge)))
 
 (defun look-for-bounded-np-after-verb (vg-edge)
-  (tr :looking-for-bounded-np-after vg-edge)
   (let* ((right-neighbor (right-treetop-at/edge 
                           (pos-edge-ends-at vg-edge)))
          (form (when (edge-p right-neighbor)
                  (edge-form right-neighbor))))
     (when form ;; therefore there's an edge
       (tr :looking-at-edge-after-verb form right-neighbor)
-      (when (and form
-                 (eq form category::np))
+      (cond
+       ((eq form category::np)
+        (tr :looking-for-bounded-np-after vg-edge)
         (if (right-bounded-np? right-neighbor)
           (let ((edge (check-one-one vg-edge right-neighbor)))
             (if edge
               (tr :verb-composed-with-np edge)
               (tr :verb-did-not-compose-with-np vg-edge right-neighbor)))
-          (tr :np-not-right-bounded))))))
+          (tr :np-not-right-bounded right-neighbor)))
+       ((multiply-edges vg-edge right-neighbor)
+        ;; Does a syntax rule apply?
+        ;; Example at hand is "is slow"
+        (let ((edge (check-one-one vg-edge right-neighbor)))
+          (if edge
+            (tr :verb-composed-with-neighbor right-neighbor edge)
+            (tr :verb-did-not-compose-with-np vg-edge right-neighbor))))))))
+
+
+;;--- looking for prepositions that are extensions of the predicate
+
+(defun look-for-prep-binders ()
+  (dolist (prep-edge (prepositions (layout)))
+    (unless (edge-used-in prep-edge)
+      (let ((preposition (edge-left-daughter prep-edge))
+            (left-neighbor (next-treetop/leftward prep-edge)))
+        (when left-neighbor ;; could be sentence-initial
+          (let ((head-word (find-head-word left-neighbor)))
+            (unless head-word
+              (error "can't find head word in ~a" left-neighbor))
+            (push-debug `(,prep-edge ,left-neighbor
+                          ,preposition ,head-word))
+            ;; (setq prep-edge (car *) left-neighbor (cadr *) preposition (caddr *) head-word (cadddr *))
+            (if (takes-preposition? head-word preposition)
+              (let ((edge (check-one-one left-neighbor prep-edge)))
+                ;; New master shortcuts will make a rule for vg+prep
+                ;; that's specific to the case and allows for 
+                ;; recategorizing. For now we cheat with a syntactic rule
+                (if edge
+                  (tr :took-preposition left-neighbor preposition edge)
+                  (tr :does-not-take-preposition left-neighbor preposition)))
+              (tr :does-not-take-preposition left-neighbor preposition))))))))
+
+
+;;---- leading prepositional adjunct, possible comma
+
+(defun try-parsing-leading-pp ()
+  (let ((prep-tt (starts-with-prep (layout))))
+    (look-for-bounded-constituent-after-prep prep-tt)
+    (let ((edge (edge-used-in prep-tt)))
+      ;; We succeeded. Could also have the look for return it's
+      ;; edge. //// Now what do we do? This is a property of
+      ;; the whole rest of the clause (which we don't have yet)
+      ;; and we need to establish that.
+      (when edge
+        ;;///// to do: swallow any comma that's there
+        ))))
+        
+    
+;;--- of
+
+(defun try-to-compose-of-complements ()
+  (dolist (of-edge (of-mentions (layout)))
+    (push-debug `(,of-edge))
+    (break :stub)))
+
 
 
 ;;--- trying to form prepositional phrases: np or vp complements
@@ -154,12 +222,13 @@
        (tr :prep-followed-by form right-neighbor)
        (cond 
         ((eq form category::np)
-         (when (right-bounded-np? right-neighbor)
+         (if (right-bounded-np? right-neighbor)
            ;; then it safe to make the pp
            (let ((edge (check-one-one prep-edge right-neighbor)))
              (if edge
                (tr :prep-composes-to-form edge)
-               (tr :does-not-compose-with prep-edge right-neighbor)))))
+               (tr :does-not-compose-with prep-edge right-neighbor)))
+           (tr :np-not-right-bounded right-neighbor)))
         ((eq form category::vp)
          (let ((edge (check-one-one prep-edge right-neighbor)))
            (if edge

@@ -38,6 +38,7 @@
 
 (defun set-subject (tt)
   ;; Sugar to make the main line easier to read
+  (tr :setting-subject-to tt)
   (setf (subject (layout)) tt)
   (setq subject-seen? t))
 
@@ -57,11 +58,27 @@
 (defun there-are-loose-nps? ()
   (loose-nps (layout)))
 
+(defun push-loose-adjective (tt)
+  (push tt (loose-adjectives (layout))))
+
+(defun there-are-loose-adjectives? ()
+  (loose-adjectives (layout)))
+
+
 (defun push-preposition (tt)
   (push tt (prepositions (layout))))
 
 (defun there-are-prepositions? ()
   (prepositions (layout)))
+
+(defun push-of (tt)
+  (push tt (of-mentions (layout))))
+
+(defun there-are-of-mentions? ()
+   (of-mentions (layout)))
+
+(defun starts-with-prep? ()
+  (starts-with-prep (layout)))
 
 
 (defun push-conjunction (tt)
@@ -71,6 +88,22 @@
   (conjunctions (layout)))
 
 
+(defun edge-over-comma? (tt)
+  (eq (edge-category tt) word::|,|))
+
+
+(defun find-head-word (tt)
+  "Walk down the head line (not so obvious) and return
+   the word at the bottom, e.g. the verb."
+  (if (eq (edge-right-daughter tt) :single-term)
+    (edge-left-daughter tt)
+    (else
+     (push-debug `(,tt))
+     (break "New case for finding the head word: ~a" tt))))
+
+
+;;--- tests
+
 (defun right-bounded-np? (np-edge)
   (let* ((pos-after-np (pos-edge-ends-at np-edge))
          (right-edge
@@ -78,7 +111,12 @@
     (typecase right-edge
       (edge
        (if (or (edge-over-conjunct? right-edge)
-               (edge-over-period? right-edge))
+               (edge-over-period? right-edge)
+               (edge-over-comma? right-edge)
+               ;(eq (edge-form right-edge) category::vg)
+               ;; more like copula or tensed
+               ;(eq (edge-form right-edge) category::vp)
+               )
          t
          nil))
       (otherwise
