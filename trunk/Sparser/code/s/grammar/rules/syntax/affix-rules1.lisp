@@ -25,10 +25,10 @@
 ;;;------------------------------------------
 
 (defun assign-morph-brackets-to-unknown-word (word morph-keyword)
-
   ;; Called from make-word/all-properties, which is itself called
   ;; on the way back from the tokenizer. 
   (tr :defining-unknown-word-from-morph word morph-keyword)
+  ;; (push-debug `(,word ,morph-keyword)) (break "fix stemming")
   (typecase morph-keyword
     (keyword 
      (case morph-keyword

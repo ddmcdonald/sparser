@@ -22,7 +22,7 @@
 ;; 3.8 (1/18/13) Moved relatives after WH since it references them. 
 ;;     (1/22/13) Added [adjectives]
 ;; 3.9 (7/25/14) Bumped affix-rules to 1. (8/27/14) bumped conjuction to 8
-;;     (9/7/14) added [syntactic rules]
+;;     (9/7/14) added [syntactic rules]. 9/11/14 added [subcategorization]
 
 (in-package :sparser)
 
@@ -31,6 +31,7 @@
   ;;  but it needs to be loaded before bracket definitions that
   ;;  reference these categories, so it's been moved into the
   ;;  master loader
+  (gload "syntax;subcategorization")
   (gload "syntax;syntactic rules"))
 
 (gate-grammar *heuristics-from-morphology*
