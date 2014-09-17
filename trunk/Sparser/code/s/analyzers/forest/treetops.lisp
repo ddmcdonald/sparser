@@ -29,6 +29,9 @@
         (pos-terminal position))))
 
 (defun left-treetop-at (position)
+  "From this position, look leftwards. If there are edges
+   return the topmost one, other return the word just to
+   the left of this position."
   (let ((vector (pos-ends-here position)))
     (or (ev-top-node vector)
         (pos-terminal (chart-position-before position)))))
