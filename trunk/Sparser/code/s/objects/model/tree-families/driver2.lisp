@@ -63,6 +63,8 @@
 ;; 2.2 (4/3/13) Installed check for Chomsky adjunction in the inner loop.
 ;;     (6/13/13) Fixed case of :self as a variable in decode-binding. Flagged it
 ;;      as illegal. (8/12/14) added retrieve-single-rule-from-individual
+;;     (9/9/14) retrieve-single-rule-from-individual got a case where there were
+;;      two rules (independent bug?) so changed it's error to a cerror. 
 
 (in-package :sparser)
 
@@ -238,7 +240,8 @@
       (error "No rules recorded for ~a" i))
     (unless (null (cdr rule-field))
       (push-debug `(,i ,rule-field))
-      (error "More than one rule recorded for ~a~
+      (cerror "take the first one"
+              "More than one rule recorded for ~a~
             ~%Don't know which to use.~%~a"
              i rule-field))
     (car rule-field)))
