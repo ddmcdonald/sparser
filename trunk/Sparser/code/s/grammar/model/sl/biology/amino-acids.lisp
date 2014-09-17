@@ -68,9 +68,10 @@ therefore we have the special cases:
   glutamine/glutamic acid - glx - Z
 |#
 
-;;;-------------------
-;;; numbered residues
-;;;-------------------
+;;;----------------------------------------------------
+;;; numbered residues:  "point mutations" (variations)
+;;;----------------------------------------------------
+;; see the sequence ontology
 ;; ; (p "before Ser1507)
 
 (define-category residue-on-protein   
