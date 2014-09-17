@@ -5,7 +5,7 @@
 ;;; 
 ;;;     File:  "morphology"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.4 July 2014
+;;;  Version:  0.4 September 2014
 
 ;; initiated June 1990
 ;; 0.1 (7/22/91 v1.8.6) Added an error check in Start-affix-stripper/
@@ -14,7 +14,7 @@
 ;;     (5/14) changed the size of the smallest decomposible word to 3
 ;;     (3/26/10) Accommodating the change to mixed case
 ;; 0.3 (8/8/10) Adding more cases
-;; 0.4 (7/14) Folded in a larger-scale suffix recognizer
+;; 0.4 (7/14) Folded in a larger-scale suffix recognizer. 9/15/14 "sis"
 
 ;; N.b. There is a slightly older version of virtually identical code
 ;; (no 1993 additions) in /grammar/rules/FSAs/morphology.lisp but it
@@ -223,6 +223,7 @@
     ("or" N)
     ("ory" ADJ)
     ("ous" ADJ)
+    ("sis" N)
     ("tion" N)
     ("yze" V)))
 
