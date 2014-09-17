@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  0.2 August 2014
+;;;  Version:  0.2 September 2014
 
 ;; Extracted from one-offs/comlex 12/3/12.
 ;; 0.1 (8/12/13) Wrapped the eval of the def-word expression in an
@@ -16,6 +16,7 @@
 ;;      information for all the words, 'known' or not, so we need to prime
 ;;      them all even though we will often not be using that scheme in
 ;;      the word lookup and object creation. 
+;;     (9/11/14) moved out the subcategorization stub. 
 
 (in-package :sparser)
 
@@ -198,37 +199,6 @@
        (let ((plural (plural-version lemma)))
          `(,plural))))))
 
-
-
-;;;-------------------------------
-;;; subcategorization information
-;;;-------------------------------
-#|
-(:comlex "common" 
-  (noun (:features ((countable :pval ("in")))))
-  (adjective 
-    (:subc ((adj-pp :pval ("for" "to"))
-            (extrap-adj-for-to-inf))
-     :features ((gradable))))) |#
-
-(defun add-specific-subcategorization-facts (category word pos)
-  ;; Called from define-function-term, where 'pos' is :adjective
-  ;; and we're looking for bound prepositions for, e.g. "common"
-  (when *comlex-words-primed*
-    (let ((entry (gethash (word-pname word) *primed-words*)))
-      (when entry
-        (let* ((pos-alist (cddr entry))
-               (pos-entry (assq pos pos-alist)))
-          (when pos-entry
-            ;; this part of speech specific entry can have many
-            ;; subentries, as described in the Comlex manual.
-            ;; Here we're just looking a subcategorization
-            (let ((subcat (cadr (assq :subc (cdr pos-entry)))))
-              (when subcat
-                (apply-subcat-info category word subcat)))))))))
-
-(defun apply-subcat-info (category word subcat)
-  (push-debug `(,category ,word ,subcat)) (break "apply"))
 
 
 ;;;--------
