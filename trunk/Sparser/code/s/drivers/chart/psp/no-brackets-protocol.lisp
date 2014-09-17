@@ -152,7 +152,7 @@ the position. (N.b. there's an incremental trace hook in there.) |#
   (let* ((category (bio-category-for-reifying))
          ;; use a new type that's intentially indeterminate?
          (kind (cat-symbol category)))
-    (let ((form `(def-bio ,name ,kind)))
+    (let ((form `(def-bio ,name ,kind :takes-plurals nil)))
       (save-reified-bio-entity-to-file name kind)
       (let ((i (eval form)))
         i))))
