@@ -362,6 +362,7 @@
   ;;  when switching modes a lot. 
   (setq *switch-setting* :fire))
 
+
 (defun bio-setting ()
   (turn-off-c3)
   (tuned-grok)
@@ -390,6 +391,7 @@
   
   (setq *ignore-capitalization* t) ;; turns off PNF
   (setq *uniformly-scan-all-no-space-token-sequences* t)
+  (setq *parser-interior-of-no-space-token-sequence* t)
   (designate-sentence-container :complex)
   (setq *switch-setting* :biology))
 
