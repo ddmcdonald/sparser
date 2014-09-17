@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
-;;;     File:  "driver"
+;;;     File:  "traces"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  0.3 February 2013
+;;;  version:  August 2013
 
-;; Broken out from driver 2/5/13.
+;; Broken out from driver 2/5/13. Added more cases 9/11/14
 
 (in-package :sparser)
 
@@ -58,10 +58,22 @@
     (trace-msg "[ns] dropping out of the loop: whitespace before ~a"
 	       next-position)))
 
+(deftrace :ns-scanned-punctuation (p)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] loop: scanned ~s" [)))
+
 (deftrace :ns-terminating-punctuation (word)
   (when *trace-ns-sequences*
     (trace-msg "[ns] dropping out of the loop: ~a is terminating punctuation"
 	       word)))
+
+(deftrace :ns-scanned-word (word)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] loop: scanned ~a" word)))
+
+(deftrace :ns-installing-terminal-edges  (word)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] installing any edges on ~a" word)))
 
 (deftrace :ns-adding-word (word)
   (when *trace-ns-sequences*

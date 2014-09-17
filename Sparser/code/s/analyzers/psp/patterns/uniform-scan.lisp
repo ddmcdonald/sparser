@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  0.5 August 2014
+;;;  version:  0.6 September 2014
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -12,6 +12,7 @@
 ;; 0.4 2/25/14 Modified to retain the interior punctuation.
 ;; 0.5 7/28/14 Turned parse-between-boundaries back on for "Ser1507"
 ;;     8/7/14 Debugged edge case (EOS) in sentence-final-punctuation-pattern?
+;; 0.6 9/9/14 refactoring to make management simpler
 
 (in-package :sparser)
 
@@ -51,7 +52,8 @@
   (let* ((pos-before (chart-position-before position))
 	 (word-before (pos-terminal pos-before))
 	 (word-after (pos-terminal position))
-	 (next-position (chart-position-after position)))
+	 (next-position (chart-position-after position))
+         hyphen?  slash?  )
 
     (when (first-word-is-bracket-punct word-before)
       (tr :ns-first-word-is-bracket-punct word-before position)
@@ -80,11 +82,22 @@
          (break "NS -- new assessment case. position = ~a" position))))
     (tr :ns-considering-sequence-starting-with word-before word-after)
 
+    (when (eq word-before *the-punctuation-hyphen*)
+      (push pos-before hyphen?))
+    (when (eq word-after *the-punctuation-hyphen*)
+      (push position hyphen?))
+    (when (eq word-before (punctuation-named #\/))
+      (push pos-before slash?))
+    (when (eq word-after (punctuation-named #\/))
+      (push position slash?))
+
+
     (unless (has-been-status? ::preterminals-installed position)
       ;; pos-before = p2 (serine)
       ;; position = p3 (107)
       ;; unlikely, but better safe than sorry
       ;;//// test on something that would parse and has 3+ words
+      (tr :ns-installing-terminal-edges word-after)
       (install-terminal-edges word-after position next-position))
 
     (when (second-word-not-in-ns-sequence word-after next-position)
@@ -98,36 +111,54 @@
       (return-from collect-no-space-sequence-into-word
 	nil))
 
+    ;; The first two words were just collected. 
+    ;; This loop collects the rest.
     (let ((words `(,word-after ,word-before))) ;; reversed
+      (setq position next-position)
       (loop
         (unless (pos-terminal next-position)
-          (scan-next-position))
-        (unless 
-        (when *source-exhausted*
-          (tr :ns-source-exhausted)
-          (return))
-        (if (pos-preceding-whitespace next-position)
-          (then
-           (tr :ns-whitespace next-position)
-           (return)) ;; we're done
+          (scan-next-position)
+          (tr :ns-scanned-word (pos-terminal next-position)))
+        (unless (when *source-exhausted*
+                  (tr :ns-source-exhausted)
+                  (return))
+          (if (pos-preceding-whitespace next-position)
+            (then
+             (tr :ns-whitespace next-position)
+             (return)) ;; we're done
           
-          (let ((word (pos-terminal next-position)))
-            (when (and (punctuation? word)
-                       (punctuation-terminates-no-space-sequence
-                        word next-position))
-              (tr :ns-terminating-punctuation word)
-              (return))
+            (let ((word (pos-terminal next-position)))
+              (when (punctuation? word)
+                (tr :ns-scanned-punctuation word)
+                (cond
+                 ((eq word *the-punctuation-hyphen*)
+                  (push next-position hyphen?)
+                  (push word words))
+                 ((eq word (punctuation-named #\/))
+                  (push next-position slash?)
+                  (push word words))
+                 (t
+                  (when (punctuation-terminates-no-space-sequence
+                         word next-position)
+                    (tr :ns-terminating-punctuation word)
+                    (return)))))
+             
+              (push word words) ;(break "pos of word")
+              (tr :ns-adding-word word)
+
+              (unless (has-been-status? ::preterminals-installed position)
+                (tr :ns-installing-terminal-edges word)
+                (push-debug `(,word ,position ,next-position)) ;;(break "foo!")
+                (install-terminal-edges word next-position
+                                        (chart-position-after next-position)))
             
-            (push word words)
-            ;(break "pos of word")
-            (tr :ns-adding-word word)
+              (setq position next-position
+                    next-position (chart-position-after next-position))
             
-            (setq next-position (chart-position-after next-position))
-            
-            (when (eq (pos-terminal next-position)
-                      *end-of-source*)
-              (tr :ns-reached-eos-at next-position)
-              (return))))))
+              (when (eq (pos-terminal next-position)
+                        *end-of-source*)
+                (tr :ns-reached-eos-at next-position)
+                (return))))))
 
       ;; remove terminal punctuation, unless it's hyphen
       (when (eq (pos-capitalization position) :punctuation)
@@ -148,42 +179,60 @@
         (return-from collect-no-space-sequence-into-word nil))
 
       (tr :ns-parsing-between pos-before next-position)
-      
-   
+
+      ;; see if there's as parse of the whole thing already defined
       (let ((layout 
              (when *parser-interior-of-no-space-token-sequence*
                (parse-between-boundaries pos-before next-position))))
-        (tr :ns-layout layout)
-        (when layout
-          (case layout
-            ((or :no-edges
-                 :contiguous-edges
-                 ;; perhaps there's something interesting to do
-                 ;; by adapting some segment-level operation,
-                 ;; but for now drop through and reify the words
-                 :has-unknown-words))           
-            (:span-is-longer-than-segment
-             (break "no-space-sequence: bad positions somehow.~
-                   ~%   Parsed span goes beyond presumed boundaries.~
-                   ~%   start = ~a  end = ~a" pos-before next-position))
-            (:single-span) ;; the words composed
-            (otherwise
-             (break "New no-space layout: ~a" layout))))
+        (cond
+         ((eq layout :single-span)) ;; Do nothing. It's already known
+         (hyphen?
+          (nospace-hyphen-specialist hyphen? pos-before next-position))
+         (slash?
+          (nospace-slash-specialist slash? pos-before next-position))
+         (t 
+          (parse-and-reify-ns-sequence layout words pos-before next-position))))
+      
+      (tr :ns-returning-position next-position)
+      next-position)))
 
-        ;; The cleanest conceptualization of things like M1A1 or
-        ;; H1N1 is that they are names. So we take the words that
-        ;; we've collected and make them the elemeents of the
-        ;; sequence that defines the name, and we make the
-        ;; corresponding egdge, reifying the identity of the name
-        ;; in the model qua name, we would know what it names
-        ;; if we understand the context.
 
-        (unless (eq layout :single-span)
-          ;; This reifies the name and makes the edge if rules didn't do it
-          (reify-ns-name-and-make-edge words pos-before next-position))
+(defun parse-and-reify-ns-sequence (layout words pos-before next-position)   
+  (let ((layout 
+         (or layout
+             (when *parser-interior-of-no-space-token-sequence*
+               (parse-between-boundaries pos-before next-position)))))
+    ;; (setq words (car *) pos-before (cadr *) next-position (caddr *))
+    ;; (print-flat-forest t pos-before next-position)
+    (push-debug `(,words ,pos-before ,next-position)) (break "layout = ~a" layout)
+    (tr :ns-layout layout)
+    (when layout
+      (case layout
+        ((or :no-edges
+             :contiguous-edges
+             ;; perhaps there's something interesting to do
+             ;; by adapting some segment-level operation,
+             ;; but for now drop through and reify the words
+             :has-unknown-words))           
+        (:span-is-longer-than-segment
+         (break "no-space-sequence: bad positions somehow.~
+         ~%   Parsed span goes beyond presumed boundaries.~
+         ~%   start = ~a  end = ~a" pos-before next-position))
+        (:single-span) ;; the words composed
+        (otherwise
+         (break "New no-space layout: ~a" layout))))
 
-        (tr :ns-returning-position next-position)
-        next-position))))
+    ;; The cleanest conceptualization of things like M1A1 or
+    ;; H1N1 is that they are names. So we take the words that
+    ;; we've collected and make them the elemeents of the
+    ;; sequence that defines the name, and we make the
+    ;; corresponding egdge, reifying the identity of the name
+    ;; in the model qua name, we would know what it names
+    ;; if we understand the context.
+
+    (unless (eq layout :single-span)
+      ;; This reifies the name and makes the edge if rules didn't do it
+      (reify-ns-name-and-make-edge words pos-before next-position))))
 
 
 ;; New scheme
@@ -230,8 +279,8 @@
 	 (scan-next-position))
        (or (eq (pos-terminal next-position) *end-of-source*)
 	   (pos-preceding-whitespace next-position)))
-      ((eq word (punctuation-named #\/))
-       t)
+;;      ((eq word (punctuation-named #\/)) ;; cascades in signal pathways
+;;       t)
       (t nil))))
       
 
@@ -248,10 +297,9 @@
      (sentence-final-punctuation-pattern?
       (chart-position-after position)))
     ((or (eq word  (punctuation-named #\-))
-	 (eq word  (punctuation-named #\@)))
+	 (eq word (punctuation-named #\/))
+         (eq word  (punctuation-named #\@)))
      nil)
-    ((eq word (punctuation-named #\/))
-       t)
     (t t)))
 
 
