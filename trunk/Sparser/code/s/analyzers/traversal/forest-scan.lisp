@@ -4,13 +4,17 @@
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  0.2 July 2014
+;;;  Version:  0.3 September 2014
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
 ;; 0.2 (12/5) debugged it on :multiple-initial-edges.  Fleshed out a stub 2/2/95
 ;;     (3/7/07) Added debugging information - left scan can get into a loop
-;;     (7/28/14) experimented with alternatives, but didn't change anything
+;;     (7/28/14) experimented with alternatives, but didn't change anything.
+;; 0.3 (9/10/14) Parser had been ignoring words, so it misses rules with 
+;;     literals in them like measurement -> number + "fold". 9/11/14 ripped out
+;;     some of that because the actual problem was upstream and kept edges
+;;     from being put over the literals. 
 
 (in-package :sparser)
 
@@ -19,6 +23,7 @@
   ;; the caller has determined that there the two positions aren't
   ;; the same and that there's some chance of there being an edge
   ;; across the whole span, e.g. Evaluate-angle-bracket-interior
+  (push-debug `(,left-bound ,right-bound)) ;(break "parse-between")
   (catch :done-parsing-region
     (parse-from-to/topmost left-bound right-bound))
   (analyze-segment-layout
@@ -28,31 +33,30 @@
 
 
 (defun parse-from-to/topmost (left-bound right-pos)
-  
-  (let ((right-edge (find-rightmost-edge right-pos left-bound)))
-                    ;(left-treetop-at right-pos)))
-    ;; returns an edge or an edge-vector
-    (if (and right-edge
-	     (edge-thing-is-to-the-right-of-pos right-edge left-bound))
-      (try-combination-to-the-left/bounded left-bound right-edge)
+  "Called recursively to march leftwards"
+  (let ((right-edge (left-treetop-at right-pos)))
+    ;; Returns the topmost edge if there is one, 
+    ;; otherwise returns the word that ends there.
+    ;; N.b. This ignores multiple edges over a single word,
+    ;; so another alternative is adapting find-rightmost-edge
+    ;; to also return words . 
+    (if right-edge
+      (let ((left-pos-of-right-edge
+             (etypecase right-edge
+               (edge (pos-token-index
+                      (pos-edge-starts-at right-edge)))
+               (word (pos-token-index
+                      (chart-position-before right-pos))))))
+        ;; is there something to parse? If not then throw back
+        ;; to the top (parse-between-boundaries). 
+        (if (> left-pos-of-right-edge
+               (pos-token-index left-bound))
+          (try-combination-to-the-left/bounded left-bound right-edge)
+          (throw :done-parsing-region nil)))
       (throw :done-parsing-region nil))))
 
-(defun edge-thing-is-to-the-right-of-pos (edge-etc position)
-  (let ((edge-pos-index
-	 (typecase edge-etc
-	   (edge
-	    (pos-token-index (ev-position (edge-starts-at edge-etc))))
-	   (edge-vector
-	    (pos-token-index (ev-position edge-etc)))
-	   (otherwise
-	    (break "New type: ~a~%~a"
-		   (type-of edge-etc) edge-etc)))))
-    (> edge-pos-index
-       (pos-token-index position))))
 
-
-
-(defun try-combination-to-the-left/bounded (left-bound right-edge) ;; (break)
+(defun try-combination-to-the-left/bounded (left-bound right-edge)
   (let* ( multiple-on-right?
          (middle-pos
           (etypecase right-edge
@@ -80,7 +84,6 @@
     (let ((new-edge
            (etypecase left-item
              (edge (check-one-one left-item right-edge))
-             (word )
              (edge-vector
               (check-many-one left-item ;;(pos-ends-here middle-pos)
                               right-edge)))))
