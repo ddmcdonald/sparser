@@ -43,13 +43,13 @@
 (defun category-ids (edge direction field)
   ;; Every access goes through here. For debugging it can be called
   ;; with a category rather than an edge. 
-  (let ((label (if (category-p edge)
-		 edge
-		 (case field
-		   (:category (edge-category edge))
-		   (:form (edge-form edge))
-		   (otherwise
-		    (error "wrong spelling for the field argument: ~a" field))))))
+  (let ((label (cond
+                ((category-p edge) edge)
+                (t (case field
+                     (:category (edge-category edge))
+                     (:form (edge-form edge))
+                     (otherwise
+                      (error "wrong spelling for the field argument: ~a" field)))))))
     (when (and label
 	       (not (symbolp label)))
       (let ((rs (rule-set-for label)))
