@@ -522,6 +522,17 @@
     (trace-msg "[sweep] Next tt is ~a ending at p~a"
                tt (pos-token-index pos-after))))
 
+(deftrace :terminated-sweep-at (pos-after)
+  ;; called from sweep-sentence-treetops
+  (when *trace-treetops-sweep*
+    (trace-msg "[sweep] ending sweep at p~a"
+               (pos-token-index pos-after))))
+
+(deftrace :setting-subject-to (tt)
+  ;; called from set-subject
+  (when *trace-treetops-sweep*
+    (trace-msg "[sweep] setting the subjec to ~a" tt)))
+
 
 ;;;------------------------------------------
 ;;; "new" forest protocol --  Island Driving
@@ -536,7 +547,7 @@
 
 (deftrace :island-driven-forest-parse ()
   ;; called from island-driven-forest-parse
-  (when (or *trace-network-flow *trace-island-driving*)
+  (when (or *trace-network-flow* *trace-island-driving*)
     (trace-msg "Doing island-driving")))
 
 ;;--- subject & verb group
@@ -622,10 +633,11 @@
                (cat-symbol form)
                (edge-position-in-resource-array right-neighbor))))
 
-(deftrace :np-not-right-bounded ()
+(deftrace :np-not-right-bounded (tt)
   ;; called from try-simple-vps
   (when *trace-island-driving*
-    (trace-msg "[islands]   It is not right-bounded")))
+    (trace-msg "[islands]   e~a is not right-bounded"
+               (edge-position-in-resource-array tt))))
 
 (deftrace :verb-composed-with-np (edge)
   ;; called from try-simple-vps
@@ -639,6 +651,13 @@
     (trace-msg "[islands]   e~a and e~a do not compose"
                (edge-position-in-resource-array vg-edge)
                (edge-position-in-resource-array right-neighbor))))
+
+(deftrace :verb-composed-with-neighbor (right-neighbor edge)
+  ;; called from try-simple-vps
+  (when *trace-island-driving*
+    (trace-msg "[islands]  It composed with a ~a to form e~a"
+               (edge-form right-neighbor)
+               (edge-position-in-resource-array edge))))
 
 
 ;;--- general
@@ -655,6 +674,19 @@
                 (edge-position-in-resource-array edge))))
 
 
+;;--- bound prepositions
+
+(deftrace :took-preposition (left-neighbor preposition edge)
+  (when *trace-island-driving*
+    (trace-msg "[islands] The preposition ~s combined with e~a to form e~a"
+               (word-pname preposition)
+               (edge-position-in-resource-array left-neighbor)
+               (edge-position-in-resource-array edge))))
+
+(deftrace :does-not-take-preposition (left-neighbor preposition)
+  (when *trace-island-driving*
+    (trace-msg "[islands] ~a does not subcategorize for ~s"
+               left-neighbor (word-pname preposition))))
 
 
 ;;--- PPs
@@ -685,9 +717,19 @@
                (edge-position-in-resource-array prep-edge)
                (edge-position-in-resource-array right-neighbor))))
 
+;;--- conjunction
 
+(deftrace :no-heuristics-for (left right)
+  ;; called from try-spanning-conjunctions
+  (when *trace-island-driving*
+    (trace-msg "[islands] no heuristic for composing e~a and e~a"
+               (edge-position-in-resource-array left)
+               (edge-position-in-resource-array right))))
 
-
+(deftrace :new-conjunction-pattern ()
+    ;; called from try-spanning-conjunctions
+  (when *trace-island-driving*
+    (trace-msg "[islands] new arrangement of conjuncts")))
 
 
 
