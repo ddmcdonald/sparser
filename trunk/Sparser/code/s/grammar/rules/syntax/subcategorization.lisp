@@ -131,7 +131,7 @@
     (assign-preposition word prep)))
 
 (defmethod assign-preposition ((verb word) (prep word))
-  (assign-subcat/expr verb category::verb :prep prep))
+  (assign-subcat/expr verb category::verb `(:prep ,prep)))
 
 
 (defmethod takes-preposition? ((word word) (prep word))
