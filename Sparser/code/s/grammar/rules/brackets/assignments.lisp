@@ -198,6 +198,8 @@
 
 
 (defun setup-verb (word &optional comlex-clause  ambiguous?)
+  (when (stringp word)
+    (setq word (resolve/make word)))
   (let ((special-cases
          (when comlex-clause
            (lift-special-case-form-from-comlex-clause comlex-clause)))
