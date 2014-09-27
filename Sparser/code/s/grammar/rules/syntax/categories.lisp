@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 June 2014
+;;;  Version:  0.8 September 2014
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -49,6 +49,7 @@
 ;;     (5/21/14) Added mark-as-form-category so you can make a referential category
 ;;      e.g. number, look like a form category when you want it to.
 ;;     (6/9/14) Added mixin adjective-adverb here as nothing else seemed better
+;;     (9/26/14) added vp-category?
 
 (in-package :sparser)
 
@@ -299,6 +300,26 @@
       (otherwise nil))))
 
 
+(defparameter *vp-categories*
+  `(,category::s ;; convenient for find-verb
+    ,category::vg 
+    ,category::vp
+    ,category::subj+verb
+    ,category::verb+object
+    ,category::v-bar
+    ,category::relative-clause
+    ,category::vp/passive
+    ,category::vg/passive
+    ,category::participle)
+  "All the form categories that cover verbs")
+
+(defmethod vp-category? ((c category))
+  ;; motivated by find-verb
+  (memq c *vp-categories*))
+(defmethod vp-category? ((ignore t))
+  nil)
+
+
 
 (defgeneric aux/modal-category? (label)
   (:documentation "modals, auxiliary forms of have and be, do"))
@@ -367,6 +388,22 @@
                   "have" "has" "had"
                   "not"))))
 
+
+;; Large-scale distinctions
+
+(defparameter *major-categories*
+  `(,category::s
+    ,category::vp))
+
+(defparameter *minor-categories*
+  `(,category::np
+    ,category::pp))
+
+(defmethod category-status ((c category))
+  (cond
+   ((memq c *major-categories*) :major)
+   ((memq c *minor-categories*) :minor)
+   (t (break "Unclassified category: ~a" c))))
 
 
 

@@ -16,6 +16,26 @@
   :form subj+verb
   :referent (:head right-edge))
 
+#| This is too potent to use in a leftward sweep
+   because it catches things early
+(def-syntax-rule (np vp)
+                 :head :right-edge
+  :form s
+  ;;/// what sort of relationships are possible
+  ;; between these. The VP could be a reduced
+  ;; relative so would need to look at its form.
+  :referent (:daughter right-edge))
+|#
+
+;;--- vg's
+
+;; The treatment of modals was being revamped in May 2013
+;; but composition rules weren't finished thinking there should be
+;; a schema. Can't wait for that
+(def-syntax-rule (modal verb)
+                 :head :right-edge
+  :form vg
+  :referent (:head right-edge)) ;;//// plus subtype
 
 ;;--- predicate adjective
 
@@ -41,6 +61,11 @@
                  :head :left-edge
   :form vp
   :referent (:daughter left-edge))
+
+(def-syntax-rule (vg pp)
+                 :head :left-edge
+  :form vp
+  :referent (:daughter left-edge)) ;;/// method that looks for relationship
 
 
 ;;--- NPs
@@ -94,6 +119,15 @@
   ;; again, neeed a moere interesting referent.
   :referent (:head right-edge))
 
+(def-syntax-rule (preposition vg) ;; J3 hydrolysis maybe elevate?
+                 :head :left-edge
+  :form pp
+  :referent (:head right-edge))
+
+(def-syntax-rule (preposition subj+verb) ;;//// "GTP loading"
+                 :head :left-edge
+  :form pp
+  :referent (:head right-edge))
 
 ;;--- Relative clauses
 
@@ -102,7 +136,7 @@
   :form relative-clause
   :referent (:function compose-wh-with-vp left-edge right-edge))
 
-(def-syntax-rule (wh-pronoun vp) ;; also vp ?
+(def-syntax-rule (wh-pronoun vp)
                  :head :right-edge
   :form relative-clause
   :referent (:function compose-wh-with-vp left-edge right-edge))

@@ -16,7 +16,7 @@
 ;; 0.2 (4/9/13) Throwing that over in favor of a completion rule
 ;; 0.3 (7/24/13) Moving in the syntax rules for subject relatives
 ;;  from rules-over-referents for consolidation.
-;;  (9/7/14) Moved the syntax rules to one place. 
+;;  (9/7/14) Moved out the syntax rules to one place. 
 
 (in-package :sparser)
 
@@ -127,5 +127,14 @@
   ;; referent of the combination is the np's referent
   np)
 
+
+;;;----------------------
+;;; Hobbsian connectives
+;;;----------------------
+
+;(define-lambda-variable 
+
+(defun unspecified-adjunction (e1 e2)
+  (push-debug `(,e1 ,e2)) (break "stub"))
 
 
