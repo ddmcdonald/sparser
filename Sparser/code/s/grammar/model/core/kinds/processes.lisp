@@ -3,40 +3,21 @@
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  March 2014
+;;;  version:  September 2014
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
+;; 9/24/14 Moved event above perdurant as a hack to ensure that
+;; we get the variables presently on event without (yet) saying
+;; something about perdurants -- that will take some more thought
+;; and engender more changes later. Cleaned up some wording too.
 
 (in-package :sparser)
-
-(define-category  perdurant
-  :instantiates nil
-  :specializes  top
-  :binds ((participant))
-  :documentation
-  "Perdurants could otherwise be called events, processes, or phenomena,
- but those terms are heavily burdened by prior work and lose their
- intuitive value.  There's a lot of literature and KIF behind the term
- Perdurant, but look to the subclasses for more content/distinctions,
- which are largely drawn from the linguists' vocabulary for
- classifying verbs.
-    The next level decomposition is derived from Pustejovsky's 1991 Cognition
- paper 'The syntax of event structure' in opp. It leaves out the 'stative'
- category in Dolce that dominated state and process, and it collapses
- Vendler's 'accomplishment' and 'achievement' into 'Transition' (though
- we may find them useful as subclasses of that).
-   Perdurants have more more properties than simply what objects
- participate in them. They have temporal extents (duration), temporal
- bounds (begin, end), and usually a spatial extent (the region in
- which they happen). These properties are defined in those ontologies
- so we can load this one without presuming too much." )
-
 
 (define-category  event
   ;; A very odd notion that cross-cuts the usual decomposition
   ;; as would an actorless 'action'
   :instantiates self
-  :specializes  perdurant
+  :specializes  top
   :binds ((time)
           (location)
           (purpose)
@@ -45,17 +26,40 @@
   :realization (:common-noun "event")
   :documentation
  "This was the original (circa '89) superclass of all clausal verbs.
-")
+  It's threaded into a substantial part of the model, requiring too
+  much time now (9/14) to rework.")
+
+
+(define-category  perdurant
+  :instantiates nil
+  :specializes  event
+  :binds ((participant))
+  :documentation
+  "Perdurants could otherwise be called events, processes, or phenomena,
+ but those terms are heavily burdened by prior work and lose their
+ intuitive value.  There's a lot of literature and KIF behind the term
+ perdurant, but the subclasses for more content/distinctions, which are 
+ largely drawn from the linguists' vocabulary for  classifying verbs.
+    The next level decomposition is derived from Pustejovsky's 1991 Cognition
+ paper 'The syntax of event structure'. It leaves out the 'stative'
+ category in Dolce that dominated state and process, and it collapses
+ Vendler's 'accomplishment' and 'achievement' into 'Transition' (though
+ we may find them useful as subclasses of that).
+   Perdurants have more more properties than simply what objects
+ participate in them. They have temporal extents (duration), temporal
+ bounds (begin, end), and usually a spatial extent (the region in
+ which they happen)." )
+
 
 
 (define-category state
   :specializes perdurant
-  :binds ((theme)) ;; one salient value /// track down what's using this
+  :binds ((theme)) ;; one salient value 
   :documentation 
   "A state is a period during which some some condition remains constant.
  An event analysis (Dowty, Bach, Pustejovsky) would say that it is
  a single event. Nothing happens in a State. It does not cause anything
- to change state (as in FSA 'state').
+ to change state (as in the 'state' of an FSA).
    All of the temporal parts of the state can be be described by the
  same expression (in some meta-language like English). For example:
  'my house is green' is a value of the color quality on the object
@@ -72,8 +76,8 @@
  model could cut along different lines, such as having the state
  be 'be sick' with a participant for the patient and one for the illness.
    The state is /not/ 'being sick', however. You can't have an actual
- state unless it's particular individual or similar entity that (in
- this case) is sick. To represent what the quality or other phenomenon
+ state unless it's particular individual or similar entity that (person 
+ in this case) is sick. To represent what the quality or other phenomenon
  is without also incorporating the participants to which it applies
  requires creating a derived type. A type related to 'state' but not
  actually a state. Lambda abstraction would do this nicely, especially
@@ -82,6 +86,7 @@
 
 (define-category process
   :specializes perdurant
+  :lemma (common-noun "process") ;; used phrasally in prepositions
   :documentation
   "A process involves a change over time. It will decompose into a
  sequence of smaller events that that can be given the same
@@ -123,13 +128,5 @@
   :documentation
   "A transition that occurs instantly. At one point we're in one
  state and the next moment we're in another ('summiting Everest')")
-
-
-
-
-
-
-
-
 
 
