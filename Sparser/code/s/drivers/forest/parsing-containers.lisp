@@ -1,11 +1,13 @@
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "parsing-containers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  August 2014
+;;;  Version:  September 2014
 
 ;; Initiated 8/6/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
+;; Extended with new cases through 9/26/14
 
 (in-package :sparser)
 
@@ -28,6 +30,9 @@
   ;; what goes where
   ((subject :initform nil :accessor subject
     :documentation "The first NP in the clause")
+   (clauses :initform nil :accessor clauses
+    :documentation "The edges over clauses, toplevel or
+     subordinated. Like only relevant in second pass.")
    (main-verb  :initform nil :accessor main-verb
     :documentation "The tensed VG in the clause")
    (post-mvb-verbs :initform nil :accessor post-mvb-verbs
@@ -36,6 +41,9 @@
    (pre-mvb-verbs :initform nil :accessor pre-mvb-verbs
     :documentation "Any pariticipial form of verb that
       appears before the main (tensed) verb is seen.")
+   (vps :initform nil :accessor verb-phrases
+    :documentation "The edges over verb phrases,
+      normally only makes sense on a second pass.")
    (loose-nps :initform nil :accessor loose-nps
     :documentation "NPs that don't fall into an immediately
       obvious syntactic relationship to the clause.")
@@ -45,18 +53,35 @@
    (conjunctions :initform nil :accessor conjunctions
     :documentation "The locations of every conjunct,
       rightmost first")
+   (includes-that :initform nil :accessor includes-that
+    :documentation "The locations of edges over the word
+      'that'. Could expand to other s-comp supordinating
+      conjunctions that partition the parse.")
    (prepositions :initform nil :accessor prepositions
     :documentation "The locations of every preposition,
       rightmost first")
+   (pps :initform nil :accessor prepositional-phrases
+    :documentation "The edges over of any prepositional phrases,
+      normally only makes sense on a second pass.")
    (of-mentions :initform nil :accessor of-mentions
     :documentation "Instances of the preposition 'of'.
       It has a different island status than other prepositions.")
    (starts-with-preposition :initform nil :accessor starts-with-prep
     :documentation "Flags sentences with leading prepositional
       phrases, which changes the usual criteria for the subject.")
+   (starts-with-adverb :initform nil :accessor starts-with-adverb
+    :documentation "Flags sentences that start with an adverb.
+      Perhaps it will grow into an adverbial phrase, but it will
+      always scope the sentence as a whole.")
+   (loose-adverbs :initform nil :accessor loose-adverbs
+    :documentation "These are unlikely given the segment rules,
+      but we need to allow for them.")
    (parentheses :initform nil :accessor parentheses
     :documentation "The edges spanning any parenthesised
-      portions of text."))
+      portions of text.")
+   (known-subcategorization :initform nil :accessor known-subcat-pattern
+    :documentation "Any treetops whose category label has a
+      subcategorization pattern associated with it."))
   (:documentation "Provides a view of salient reference
     points in a sentence. Populated by sweep-sentence-treetops
     and read by island-driven-forest-parse which is allowed
