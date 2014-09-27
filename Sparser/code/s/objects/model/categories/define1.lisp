@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.5 July 2014
+;;;  version:  1.5 September 2014
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -45,6 +45,8 @@
 ;;      the variables.
 ;; 1.5 (7/17/14) Added :lemma option to categories for the word that corresponds
 ;;      to the name of the category. 
+;;     (9/19/14) added add-rule(s)-to-individual overloading the category
+;;      loading routines. 
 
 (in-package :sparser)
 
@@ -368,8 +370,16 @@
     will change because it's so weird"))
 (defmethod get-rules ((name symbol))
   (get-rules (category-named name :break-if-none)))
+
 (defmethod get-rules ((category model-category))
   (cadr (member :rules (cat-realization category))))
+
+(defmethod get-rules ((i individual))
+  (get-tag-for :rules i))
+
+
+(defun add-rules-to-individual (i rules)
+  (add-rules-to-category i rules))
 
 (defun add-rules-to-category (category rules)
   (let* ((existing-rules (get-rules category))
@@ -378,6 +388,9 @@
                         rules)))  
     (push-onto-plist category total-rules :rules)))
 
+
+(defun add-rule-to-individual (rule i)
+  (add-rule-to-category rule i))
 
 (defun add-rule-to-category (rule category)
   (let ((rule-list (get-rules category)))
