@@ -37,13 +37,11 @@
                  (eq tt *the-punctuation-period*))
         (tr :terminated-sweep-at pos-after)
         (return))
-
       (tr :next-tt-swept tt pos-after)
 
       (when multiple?
         (setq tt (elt (ev-edge-vector tt)
                       (1- (ev-number-of-edges tt)))))
-
       (when (edge-p tt)
         (setq form (edge-form tt)))
 
@@ -56,7 +54,7 @@
          ((eq (edge-category tt) 
               *the-punctuation-period*)  ;; we're done
           (return))
-         ((edge-over-comma? tt)) ;; flag it?          
+         ((edge-over-punctuation? tt)) ;; flag it?          
          (t (push-debug `(,tt ,pos-after))
             (error "No form value on ~a" tt))))
 
@@ -66,19 +64,35 @@
           ;; us play while sorting out what will be better
           ((category::np
             category::common-noun) ;; ///not elevated
-           (cond ((null prior-tt)
+           (cond ((np-over-that? tt)
+                  (push-that tt))
+                 ((null prior-tt)
                   (set-subject tt))
                  (main-verb-seen?
                   (push-loose-np tt))
                  (t (push-loose-np tt))))
+
           (category::vg
            (if main-verb-seen?
              ;;/// need to modify verb builder and set of form categories
              ;; to retain the participlial nature of, e.g. "inhibiting"
              (push-post-mvs-verbs tt)
-             (set-main-verb tt))) ;;/// won't do preposed participles
+             (set-main-verb tt))) ;;/// won't work for preposed participles
+
+          (category::vp
+           (push-verb-phrase tt))
+
           (category::adjective
            (push-loose-adjective tt))
+
+          (category::s
+           (push-loose-clauses tt))
+
+          (category::adverb
+           (if sentence-initial?
+             (setf (starts-with-adverb (layout)) tt)
+             (push-loose-adverb tt)))
+
           ((category::preposition
             category::spatial-preposition) ;; under
            (when sentence-initial?
@@ -87,14 +101,25 @@
              (if (eq prep word::|of|)
                (push-of tt)
                (push-preposition tt))))
+
+          (category::pp
+           (push-prepositional-phrase tt))
+
           (category::conjunction
            (push-conjunction tt))
+
+          (category::parentheses
+           (push-parentheses tt))
+
           (otherwise
            (push-debug `(,tt ,form))
            (break "New case in sweep.~
                 ~% tt = ~a~
                 ~% form = ~a"
                   tt form))))
+
+      (when (known-subcategorization? tt)
+        (push-subcat tt))
 
       (when (eq pos-after end-pos)
         (return)) ;; leave the loop

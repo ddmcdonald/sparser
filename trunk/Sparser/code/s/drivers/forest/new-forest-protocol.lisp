@@ -1,11 +1,13 @@
-;;; copyright (c) 2014  David D. McDonald  -- all rights reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new-forest-protocol"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  August 2014
+;;;  Version:  September 2014
 
 ;; Initiated 8/4/14. 8/9/14 Simple display version working.
-;; Starting on sweeper 8/30/14
+;; Starting on sweeper 8/30/14. New arguments to island driver
+;; 9/26/14 to let it do multiple passes. 
 
 (in-package :sparser)
 
@@ -32,11 +34,11 @@
         (let ((layout
                (sweep-sentence-treetops sentence start-pos end-pos)))
           (when *island-driving*
-            (island-driven-forest-parse layout))))
+            (island-driven-forest-parse sentence layout start-pos end-pos))))
 
       (format t "~&~%")
       (print-flat-forest t start-pos end-pos)
-      (format t "~&~%~%")
+      (format t "~&")
 
       ;; Part of the normal closing cadence to resume scanning
       (setq *rightmost-quiescent-position* rightmost-position)
