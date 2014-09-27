@@ -64,14 +64,20 @@
 ;; These are used in (at least) Could-be-the-start-of-a-sentence
 
 (defparameter *the-punctuation-period* (punctuation-named #\.))
-
+(defparameter *the-punctuation-comma* (punctuation-named #\,))
 (defparameter *the-punctuation-colon* (punctuation-named #\:))
 
 (defparameter *the-punctuation-open-angle-bracket* (punctuation-named #\<))
 
 (defparameter *the-punctuation-hyphen* (punctuation-named #\-))
 
-
-
 (defparameter *the-punctuation-open-parenthesis* (punctuation-named #\())
 (defparameter *the-punctuation-close-parenthesis* (punctuation-named #\)))
+
+
+(defparameter *punctuation-words*
+  `(,*the-punctuation-period* ,*the-punctuation-comma*
+    ,*the-punctuation-colon*))
+
+(defun edge-over-punctuation? (edge)
+  (memq (edge-category edge) *punctuation-words*))
