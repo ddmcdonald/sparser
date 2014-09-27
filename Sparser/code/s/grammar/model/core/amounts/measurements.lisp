@@ -3,13 +3,16 @@
 ;;;
 ;;;     File:  "measurements"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  May 2014
+;;;  Version:  September 2014
 
 ;; original version initiated 10/2/91
 ;; completely made over 9/18/93 in new semantics.  10/24/93 gave it rdata
 ;; 9/7/00 Added relative measurements. 12/22/00 tweaked realization.
 ;; Added rate of change.
 ;; 5/6/14 Pulled in categories, etc. from /sl/waypoints/xtensions-to-core
+;; 9/24/14 Wrote an ugly (not general enough) set of rules to handle
+;; the notion of the value of a qualitative rate. Probably needs a
+;; custom schema if we see anything else like it. 
 
 (in-package :sparser)
 
@@ -131,6 +134,10 @@ and the word can stand by itself "that distance"
   :binds ((units . unit-of-rate-of-change)
           (quantity . number)) ;;  :or quantity number)
   :index (:permanent :sequential-keys units quantity)
+  :documentation "Models a rate of change independently of the thing
+    that is changing, e.g. '10 mph' is a rate as this defines it
+    without saying what it is whose 'speed' as '10 mph'. That link
+    is developed a bit in core/qualities/attribute.lisp."
   :realization ((:common-noun "rate")
                 (:tree-family  quantity+kind
                 :mapping ((quantity . quantity)
@@ -139,6 +146,63 @@ and the word can stand by itself "that distance"
                           (np-head . unit-of-rate-of-change)
                           (modifier . (number quantity))
                           (result-type . :self)))))
+
+(define-category qualitative-rate
+  :specializes rate
+  :mixins (has-name)
+  :index (:permanent :key name)
+  :documentation "The category of any word that describes the rate
+    at which something happens without giving it a precise value
+    (for which we use 'rate'), e.g. 'fast', 'slow'. This could
+    evalove when we get a better handle on attributes and their 
+    values more generally. These terms are scalar: 'fast' is
+    'more' than 'slow', and they can be refined with a set of
+    pretty standard modifiers: '(go) a little bit faster'. 
+    Like other qualitative measures of attributes they are always
+    relative to the thematic participant of the process that they're
+    describing: 'fast for a snail', cf. 'big for a mouse' vs. for
+    an elephant."
+  :realization (:adjective name))
+
+(define-category rate-of-process
+  :specializes measurement
+  :binds ((process . process)
+          (value . rate))
+  ;;:index (:sequential-keys process value)
+  :documentation "Gives the rate at which some process in taking place.
+    only makes sense when there's a particlar process. Could have
+    several of these about the same process, some with qualitative 
+    measures and some with quantitative."
+) #|
+  :realization ((:tree-family empty-head-of-complement
+                 :mapping ((of-item . process)
+                           (np . :self)
+                           (base-np . "rate")
+ I want the of construction to combine with a copula that will
+ supply the value and don't see the obvious way to do it yet
+ and a rube goldburg scheme will be confusing
+|#
+;;  Use these ugly things instead for now.
+(def-cfr rate-of-process-of (rate of) ;; the spanned 'of', not literal
+  :form np ;;/// ugh
+  :referent (:head left-edge
+             :instantiate-individual rate-of-process))
+
+(def-cfr rate-of-process (rate-of-process-of process)
+  :form np
+  :referent (:head left-edge
+             :bind (process right-edge)))
+
+(find-or-make-value-categories 'qualitative-rate)
+;;  =>  is-qualitative-rate
+
+(def-cfr rate-of-process (rate-of-process is-qualitative-rate)
+  :form s
+  :referent (:head left-edge
+             :bind (value right-edge)))
+
+
+
 
 
 
