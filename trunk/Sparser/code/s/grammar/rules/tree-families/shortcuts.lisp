@@ -128,14 +128,16 @@ broadly speaking doing for you all the things you might do by hand.
 
 
 
-(defun adj (adjective &key super)
+(defun adj (adjective &key super preposition)
   (with-name-and-superc adjective super :adjective
     (let ((form
            `(define-category ,name
               :instantiates :self
               :specializes ,superc
               :realization (:adjective ,adjective))))
-      (eval form))))
+      (let ((category (eval form)))
+        (apply-preposition-if-any adjective preposition category)
+        category))))
 
 
 ;;--- Adjective/adverb pairs

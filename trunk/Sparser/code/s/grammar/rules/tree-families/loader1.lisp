@@ -25,7 +25,8 @@
 ;;     (12/26/13) Moved vp's after clauses so "be" is defined.
 ;;     (2/6/14) Added [families]. [abbreviation].
 ;; 1.3 (9/14/14) added [shortcut-mechanics] and [shortcut-master] as probably
-;;      replacement for the February scheme. 
+;;      replacement for the February scheme. 9/21/14 pulling [shortcut-expansion]
+;;      out of shortcut-master.
 
 (in-package :sparser)
 
@@ -62,6 +63,7 @@
 (gload "tree-families;abbreviation")
 (gload "tree-families;families")
 (gload "tree-families;shortcut-mechanics")
+(gload "tree-families;shortcut-expansion")
 (gload "tree-families;shortcut-master")
 (gload "tree-families;shortcuts")
 
