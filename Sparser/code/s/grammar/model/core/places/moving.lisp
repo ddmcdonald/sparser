@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "moving"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2014
+;;;  version:  September 2014
 
 ;; Intended for modeling movement in direction or w.r.t. some
 ;; spatial feature.
@@ -11,7 +11,9 @@
 ;; initated 8/4/11. 9/5/11 added path-type adjunct. 9/12 Added some more.
 ;; 9/26 "immediately". More bits through 10/4/11. 11/3 added DA rule to
 ;; convert a name. 4/14/14 Excised the old version of the 'move' category
-;; in favor of the new one in kinds/movement. 
+;; in favor of the new one in kinds/movement. 9/26/14 commented out
+;; def of 'turn' which is now neigher flesh nor fowl from point of view
+;; of an edge former that can compose with auxiliaries. 
 
 (in-package :sparser)
 
@@ -111,7 +113,8 @@
 
 (define-movement-verb "travel")
 
-(define-movement-verb "turn")
+;; (define-movement-verb "turn")
+;; See sl/biology/verbs.lisp
 
 
 
