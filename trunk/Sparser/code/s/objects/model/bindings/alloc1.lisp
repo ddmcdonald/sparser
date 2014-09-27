@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2014 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "alloc"
 ;;;   Module:  "objects;model:bindings:"
@@ -11,7 +10,7 @@
 ;; 1.0 (7/17/92 v2.3) revised the definition.
 ;;     (8/8/94) drastic extension. Tweeking ...9/15. Added a case to
 ;;      Clean-up-non-individual-value 5/30/96.  3/9/07 added another
-;;      case. 
+;;      case. 9/23/14 qnd another. 
 
 (in-package :sparser)       ;; //// rename file "initialize"
 
@@ -110,6 +109,8 @@
     ;; case
 
     (symbol )
+
+    (string ) ;; get these from OBO identifiers
 
     (otherwise
      (break "New type of non-individual value to clean up: ~a~%~a"
