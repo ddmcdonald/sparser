@@ -84,44 +84,56 @@
     (format stream "~s" (word-pname (for-word sc)))))
 
 
-(defparameter *words-to-their-subcategorization* (make-hash-table)
-  "From words to subcategorization objects")
+;;;------------------------
+;;; assignments and access
+;;;------------------------
 
-(defun get-subcategorization (word &optional facet)
-  (let ((entry (gethash word *words-to-their-subcategorization*)))
+(defparameter *labels-to-their-subcategorization* (make-hash-table)
+  "From words or categories to subcategorization objects")
+
+(defun get-subcategorization (label &optional facet)
+  (let ((entry (gethash label *labels-to-their-subcategorization*)))
     (when entry
       (if facet
         (funcall facet entry)
         entry))))
 
-(defmacro assign-subcat (word form &rest parameter-plist) ;; :verb+prep)
-  (let ((w (etypecase word
-             (word word)
-             (string (word-named word)))))
+(defmacro assign-subcat (label form category &rest parameter-plist) ;; :verb+prep)
+  (let ((l (etypecase label
+             (word label)
+             (category label)
+             (string (word-named label)))))
     ;;/// typecheck form
-    `(assign-subcat/expr ,w ',form ',parameter-plist)))
+    `(assign-subcat/expr ,l ',form ',category ',parameter-plist)))
 
-(defun assign-subcat/expr (word form parameter-plist)
+(defun assign-subcat/expr (word form category parameter-plist)
+  "Form to find or make the appropriate subcategorization frame
+   and then call the decoder to parse it."
   (let ((sf (get-subcategorization word)))
     (unless sf
       (setq sf (make-instance 'subcategorization-frame
                  :word word
                  :form form))
-      (setf (gethash word *words-to-their-subcategorization*) sf))
-    (apply #'decode-subcategorization-parameter-list sf parameter-plist)))
+      (setf (gethash word *labels-to-their-subcategorization*) sf)
+      (setf (gethash category *labels-to-their-subcategorization*) sf))
+    (apply #'decode-subcategorization-parameter-list sf category parameter-plist)))
 
-(defun decode-subcategorization-parameter-list (sf &key prep
-                                                        pattern)
-                                                
+
+(defun decode-subcategorization-parameter-list (sf category &key prep pattern)
+  "Parse the content and stash it in the sf structure."
   (when prep
     (setf (bound-prepositions sf) `(,prep)))
   (when pattern ;;//// vs. patterns
     ;; The provision is for a set of different patterns
     ;;/// will need processing to fit how its going to be deployed
-    (setf (subcat-patterns sf) `(,pattern)))
+    (let ((subcat (assemble-subcategorization-structure category pattern)))
+      (setf (subcat-patterns sf) `(,subcat))))
   sf)
 
-;;--- cases
+
+;;;--------------
+;;; prepositions
+;;;--------------
 
 ; (assign-preposition "responsible" "for")
 (defmethod assign-preposition ((word-pname string) (prep-pname string))
@@ -131,14 +143,66 @@
     (assign-preposition word prep)))
 
 (defmethod assign-preposition ((verb word) (prep word))
-  (assign-subcat/expr verb category::verb `(:prep ,prep)))
+  (assign-subcat/expr verb category::verb nil `(:prep ,prep)))
 
+
+(defmethod takes-preposition? ((e edge) (prep word))
+  (let* ((label (edge-category e))
+         (sc (get-subcategorization label)))
+    (when sc
+      (takes-preposition? sc prep))))
 
 (defmethod takes-preposition? ((word word) (prep word))
   (let ((sc (get-subcategorization word)))
     (when sc
-      (let ((preps (bound-prepositions sc)))
-        (when preps
-          (memq prep preps))))))
+      (takes-preposition? sc prep))))
+
+(defmethod takes-preposition? ((sc subcategorization-frame) (prep word))
+  (let ((preps (bound-prepositions sc)))
+    (when preps
+      (memq prep preps))))
+
+
+;;;---------------------------------------------
+;;; real subcategorization: sequences of labels
+;;;---------------------------------------------
+
+(defun assemble-subcategorization-structure (category pattern)
+  ;; ( <sequence of words, form categories>
+  ;;   <sequence of variables> )  => dereferenced equivalent
+  ;; Caller stores the return value
+  (let ((tt-sequence (car pattern))
+        (var-sequence (cadr pattern)))
+    (let ( deref-tt  deref-var )
+      (dolist (item tt-sequence)
+        (etypecase item
+          (string (push (resolve item) deref-tt))
+          (symbol (push (category-named item :break)
+                        deref-tt))))
+      (dolist (name var-sequence)
+        (let ((var (find-variable-for-category name category)))
+          (unless var
+            (error "No binding (variable) named ~a in ~a" 
+                   name category))
+          (push var deref-var)))
+      `(,(nreverse deref-tt)
+        ,(nreverse deref-var)))))
+
+(defmethod known-subcategorization? ((e edge))
+  (known-subcategorization? (edge-category e)))
+
+(defmethod known-subcategorization? ((c category))
+  (let ((sc (get-subcategorization c)))
+    (when sc
+      (subcat-patterns sc))))
+
+(defmethod known-subcategorization? ((w word))
+   (let ((sc (get-subcategorization w)))
+    (when sc
+      (subcat-patterns sc))))
+
+
+  
+ 
 
 

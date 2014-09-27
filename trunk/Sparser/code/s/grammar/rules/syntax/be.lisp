@@ -47,6 +47,9 @@
 ;                )
   )
 
+(defparameter *the-category-to-be* (category-named 'be)
+  "For use by code that's loaded before the grammar is")
+
 (defun string/be (i)
   "be")
 

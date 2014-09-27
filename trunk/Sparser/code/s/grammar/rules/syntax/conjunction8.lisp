@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  8.2 August 2014
+;;;  Version:  8.3 September 2014
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -33,6 +33,9 @@
 ;;      of the new forest protocol, there's a bug (of sort) in the scanner
 ;;      that keeps the words from being passed to complete/hugin so added
 ;;      equivalents based on the edge label
+;; 8.3 (9/22/14) added heuristic based on identical form, with the flag
+;;      *allow-form-conjunction-heuristic* to govern when its used. It's
+;;      off by default and dynamically bound when wanted. 
 
 (in-package :sparser)
 
@@ -332,6 +335,13 @@
 ;;; conjunction heuristics
 ;;;------------------------
 
+(defparameter *allow-form-conjunction-heuristic* nil
+  "A switch to determine whether we allow two edges to conjoin 
+  based on having the same form category. This is overly
+  agressive when running inline (in after actions of PTS)
+  but valuable when there's more perspective in which cases
+  it will be shallow bound.")
+
 (defun conjunction-heuristics (edge-before edge-after)
 
   ;; This is the actual check that says whether we should conjoin
@@ -340,10 +350,14 @@
 
   (let ((label-before (edge-category edge-before))
         (label-after (edge-category edge-after)))
-
-    (cond ((eq label-before label-after)
-           :conjunction/identical-adjacent-labels)
-          (t nil))))
+    (if (eq label-before label-after)
+      :conjunction/identical-adjacent-labels
+      (when *allow-form-conjunction-heuristic*
+        (let ((form-before (edge-form edge-before))
+              (form-after (edge-form edge-after)))
+          (if (eq form-before form-after)
+            :conjuncton/identical-form-labels
+            nil))))))
 
 
 
