@@ -3,34 +3,113 @@
 ;;;
 ;;;     File:  "families"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  February 2014
+;;;  version:  September 2014
 
 ;; Initiated 2/6/14. Augment the realization options of shortcuts
+;; 9/19/14 Supplanted original notion with a new one that seems
+;; simpler, since it's based on copying existing mapping.
 
 (in-package :sparser)
 
-(defmacro define-realization-scheme (name etf-name mapping-scheme)
-  `(define-realization-scheme/expr ',name ',etf-name ',mapping-scheme))
+;;;-------------------
+;;; September version
+;;;-------------------
 
-(defun define-realization-scheme/expr (name etf-name mapping-scheme)
-  (push-debug `(,name ,etf-name ,mapping-scheme))
-  (break " stub"))
-#|
-(define-realization-scheme svo-passive passive/with-by-phrase
-  ((agent . agent-slot)
-   (patient . patient-slot)
-   (s . :self)
-   (vp . :self)
-   (vg . :self)
-   (np/agent . agent-v/r)
-   (np/patient . patient-v/r)
-   (by-pp . by-cat)
-   (result-type . :self)))
-      |#                     
+(defclass realization-scheme (named-object)
+  ((etf :accessor etf-for-schema
+    :documentation "The exploded tree family that's used.
+      We need its schema as the basis of the rules we make.")
+   (head-keyword :accessor schema-head-keyword
+    :documentation "The keyword used with the actual word
+      in the call to head-word-rule-construction-dispatch ")
+   (subst-args :accessor schema-substitution-args
+    :documentation "a list of symbols from the cdr's of the
+      mapping that we substitute real values for when we
+      assemble the mapping.")
+   (schematic-mapping :accessor schema-mapping
+    :documentation "a regular etf mapping of dotted pairs
+      in the form it has when used directly in the realization
+      field of a category definition."))
+  (:documentation
+   "Holds the content of a realization scheme for 'activation'
+    by apply-realization-scheme, which makes retail calls to
+    the operations make-rules-for-rdata does wholesale."))
+
+
+(defparameter *name-symbols-to-realization-schema* (make-hash-table))
+
+(defun get-realization-scheme (name)
+  (gethash name *name-symbols-to-realization-schema*))
+
+
+(defmacro define-realization-scheme (name etf-name 
+                                     &key args head mapping)
+  `(define-realization-scheme/expr ',name ',etf-name 
+     :args ',args :head ',head :mapping ',mapping))
+
+(defun define-realization-scheme/expr (name etf-name 
+                                       &key args head mapping)
+  (push-debug `(,name ,etf-name ,mapping ,args ,head))
+  (let ((s (get-realization-scheme name)))
+    (unless s
+      (setq s (make-instance 'realization-scheme
+                :name name))
+      (setf  (gethash name *name-symbols-to-realization-schema*) s))
+    (let ((etf (exploded-tree-family-named etf-name)))
+      (unless etf
+        (error "There is no exploded tree family named ~a" etf-name))
+      (setf (etf-for-schema s) etf)
+      (setf (schema-head-keyword s) head)
+      (setf (schema-substitution-args s) args)
+      (setf (schema-mapping s) mapping)
+      s)))
+
+
+(define-realization-scheme sv intransitive
+  :head :verb
+  :mapping ((agent . subj-slot)
+            (s . :self)
+            (vp . :self)
+            (vg . :self)
+            (np/subject . subj-v/r)))
+
+(define-realization-scheme svo-passive transitive/passive
+  :args (agent-slot agent-v/r patient-slot patient-v/r)
+  :head :verb
+  :mapping ((agent . agent-slot)
+            (patient . patient-slot)
+            (s . :self)
+            (vp . :self)
+            (vg . :self)
+            (np/subject . agent-v/r)
+            (np/object . patient-v/r)
+            (result-type . :self)))
+
+(define-realization-scheme svo transitive
+  :head :verb
+  :mapping ((agent . subj-slot)
+            (patient . theme-slot)
+            (s . :self)
+            (vp . :self)
+            (vg . :self)
+            (np/subject . subj-v/r)
+            (np/object . theme-v/r)))
+
+(define-realization-scheme of-nominal empty-head-of-complement
+  ;; used in old svo/nominal
+  :head :common-noun
+  :mapping ((result-type . :self)
+            (of-item . theme-slot)
+            (base-np . :self)
+            (complement . theme-v/r)
+            (np . :self)))
+                        
 
 
 
 
+;;------------------ February version never adequately 
+;;                   thought through. Here to the end
 ;;;-----------
 ;;; structure
 ;;;-----------

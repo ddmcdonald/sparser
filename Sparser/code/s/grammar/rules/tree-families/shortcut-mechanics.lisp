@@ -28,8 +28,8 @@
  the name of the slot, replacing the default."
   (flet ((default-value-restriction (type)
            (case type
-             ((or :subject :theme :agent :patient)
-              'individual)
+             ((or :subject :theme :agent :patient :goal)
+              'endurant)
              (:complement 'event)
             (otherwise (error "Unknown v/r default: ~a" type))))
          (default-slot-name (type)
@@ -38,6 +38,7 @@
              (:agent 'agent)
              (:patient 'patient)
              (:theme 'theme)
+             (:goal 'goal)
              (:complement 'complement)
              (otherwise (error "Unknown slot default: ~a" type)))))
     (let ( v/r var-v/r slot )
@@ -96,6 +97,11 @@
 (defmacro with-patient (patient-spec &body body)
   `(multiple-value-bind (patient-v/r patient-var patient-slot)
                         (decode-shortcut-var-spec ,patient-spec :patient)
+     ,@body))
+
+(defmacro with-goal (goal-spec &body body)
+  `(multiple-value-bind (goal-v/r goal-var goal-slot)
+                        (decode-shortcut-var-spec ,goal-spec :goal)
      ,@body))
 
 
