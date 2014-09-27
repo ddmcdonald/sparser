@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "cases"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:  1.8 May 2012
+;;;   Version:  1.8 September 2014
 
 ;; (2/27/92 v2.2) fixed a bug in Ref/composite where it was offset
 ;;   by one when extracting a literal from the rule's referent field
@@ -25,6 +25,7 @@
 ;; 1.8 (5/17/11) Putting it back. 5/26/12 it needs an additional
 ;;      lattice-point argument now, but blocked case of keywords that
 ;;      indicate no value, so postposing looking it up.
+;;     (9/25/14) Better error msg if ref-form is bad in ref/daughter
 
 (in-package :sparser)
 
@@ -34,13 +35,16 @@
 
 (defun ref/daughter (edge-designator left-referent right-referent)
   (multiple-value-bind (ref head arg)
-      (ecase edge-designator
+      (case edge-designator
         (left-referent (values left-referent 
                                *left-edge-into-reference*
                                *right-edge-into-reference*))
         (right-referent (values right-referent
                                *right-edge-into-reference*
-                               *left-edge-into-reference*)))
+                               *left-edge-into-reference*))
+        (otherwise
+         (push-debug `(,edge-designator ,left-referent ,right-referent))
+         (error "ref/daughter - somehow the edge-designator isn't valid")))
     (annotate-daughter ref *rule-being-interpreted* head arg)
     ref))
 
