@@ -318,6 +318,7 @@
         *note-text-relations* t)
   (setq *profligate-creation-of-individuals* t)
   (setq *allow-pure-syntax-rules* t)
+  (setq *edges-from-referent-categories* t)
   (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
 
