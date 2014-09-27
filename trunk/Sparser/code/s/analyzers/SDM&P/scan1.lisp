@@ -99,6 +99,7 @@ to make any semantic or form edges that the grammar dictates.
        (break "Coverate is :no-edges"))
       (*make-edges-for-unknown-words-from-their-properties*
        ;; This licenses us to make an edge here. 
+       ;; (words-in-segment)
        (break "no edges"))
       (*dbg-print*
        (format t "~&Ignoring segment with no edges:")
