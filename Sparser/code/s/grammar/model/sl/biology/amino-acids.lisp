@@ -30,11 +30,22 @@ codes can probably be free-standing words, but the one letter
 ones are gratuitously ambiguous with capitalized initials.
 |#
 
+(defparameter *single-letters-to-amino-acids* (make-hash-table))
+(defun single-letter-is-amino-acid (one-letter-word)
+  (gethash one-letter-word *single-letters-to-amino-acids*))
+
 (defun def-amino-acid (long three one)
-  (declare (ignore three one)) ;;/// until we integrate with no-spaces
   (let* ((long-word (resolve/make long))
          (i (find-or-make-individual 'amino-acid :name long-word)))
-    i))
+    (let* ((three-letter-word (resolve/make three))
+           (one-letter-word (resolve/make one))
+           (3-letter-rule
+            (define-cfr category::amino-acid `(,three-letter-word)
+              :form category::common-noun
+              :referent i)))
+      (add-rule-to-individual 3-letter-rule i)
+      (setf (gethash one-letter-word *single-letters-to-amino-acids*) i)
+      i)))
     
 
  

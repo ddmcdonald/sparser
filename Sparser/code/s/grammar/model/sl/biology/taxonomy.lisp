@@ -5,7 +5,7 @@
 ;;;  Module: "grammar/model/sl/biology/
 ;;; version: September 2014
 
-;; Lifted from mechanics 9/8/14
+;; Lifted from mechanics 9/8/14. Tweaks through 9/23/14.
 
 (in-package :sparser)
 
@@ -19,8 +19,9 @@
 
 
 (define-category bio-process
-  :specializes perdurant
+  :specializes process
   :mixins (has-UID has-name)
+  :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common paraent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
@@ -93,7 +94,7 @@
   :realization (:common-noun name))
 
 
-(define-category protein
+(define-category protein ;; "CHEBI:36080"
   :specializes molecule
   :instantiates :self
   :rule-label bio-entity
@@ -113,7 +114,6 @@
   :lemma (:common-noun "gene")
   :realization (:common-noun name))
   
-
 (define-category kinase
   :specializes protein
   :instantiates :self
@@ -130,14 +130,4 @@
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
 
-(define-category signalling-enzyme
-  :specializes enzyme
-  ;; This buries the notion of 'signaling' in the name.
-  ;; Better treatment would resurect the subtyping machinery
-  ;; with the addition that we're making this subtype of
-  ;; enzyme from the perspective of identitying its function.
-  :instantiates :self
-  :rule-label bio-entity
-  :lemma (:common-noun "signalling enzyme")
-  :realization (:common-noun name))
 
