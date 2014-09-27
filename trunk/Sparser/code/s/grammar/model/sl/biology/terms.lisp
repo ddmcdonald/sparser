@@ -23,8 +23,9 @@
 
 (np-head "cancer")
 
-(adj "responsible") ;; adj/noun "resposibility"
-(assign-preposition "responsible" "for")
+(adj "responsible" ;; adj/noun "resposibility"
+     :preposition "for")
+;;(assign-preposition "responsible" "for")
 
 (np-head "human") ;;/// check people code
 (np-head "mortality") ;;/// relationship to "mortal" ??
@@ -43,18 +44,29 @@ critical for tumor formation. |#
 ;; in the same place. A field in the container will suffice
 
 ;; "signalling enzyme" 
-;; A particular kind of enzyme specified by its function
-;; See mechanics file for a hacked up version
 
+(def-bio "signaling" bio-process ;; makes common nouns 
+  :identifier "GO:0023052")       ;; reasonable stand-in
+
+(np-head "enzyme")
+
+(define-adverb "in part")
+
+
+;;--- J3
+(define-adjective "molecular")
+;; It's realated to molecule, but how exactly?
+;; Seems wrong to jump to "is made of molecules"
 
 #| This switch mechanism is common to a wide variety of GTP-binding
 proteins and is mediated by a conserved structure called the G-domain
 that consists of five conserved G boxes. |#
 
 (np-head "switch") ;;/// trivial standin
-(np-head "mechanism")
 
-(define-adverb "in part")
+
+
+(np-head "mechanism")
 
 ;; activated forms of the Ras proteins
 ;; Needs a whole model
@@ -69,14 +81,56 @@ that consists of five conserved G boxes. |#
 (np-head "condition")
 
 (np-head "G-domain")
-(define-adjective "slow")
+
+(def-cfr rate-of-process (rate-of-process-of release)
+  ;;//// The semantic-composition based on 'release' being 
+  ;; a subtype of 'process' is not working. This is an
+  ;; expedient in the meantime. 
+  ;; See rules in measurements.lisp that want to be in 
+  ;; a fancy ETF.
+  :form np
+  :referent (:head left-edge
+             :bind (process right-edge)))
+
+(find-or-make-individual 'qualitative-rate :name "slow")
+
+;;--- j6
+
+;; cellular "GO:0005623"
+
+;;--- j8
+
+(def-bio "RasGEF" protein) ;; family
+;;/// hypenated and separated. 
+(def-bio "RasGAP" protein) ;; ditto
+
+;; cytosolic "GO:0005829"
+
+;; "GTP, whereas RasGAPs ... end of the sentence" GO:0006184
+
+(define-lambda-variable 'trailing-parenthetical
+  'parentheses ;; value restriction
+  category::expressible-type) ;; overly high type bound to.
+;; used by knit-parens-into-neighbor 
+
+;;--- j9
+
+(define-adjective "prevalent")
+
+;; G1 (box) "PR:000003866"
+
+;; G3 (box) "PR:000004651"
 
 
+;;--- j10
+
+;; G5 "PR:000004652"
 
 ;;;-------------------------------------------------------
 ;;; Hacked up to 'get through' the 9/4/14 target abstract
 ;;;-------------------------------------------------------
 
+#+ignore
 (define-category signal-transduction ;;// same flaw as small molecute
   :specializes bio-process
   :lemma (common-noun "signal transduction"))

@@ -51,14 +51,24 @@
 ;;; for the August 15th set
 ;;;-------------------------
 
-(def-bio "KRAS" gene) ;;/// gene/product/generalization
-(def-bio "PIK3CA" gene)
-(def-bio "BRAF" gene)
+;;/// gene/product/generalizations, UCD uses PR identifier
+(def-bio "KRAS" gene
+  :identifier "PR:000009442")
+(def-bio "PIK3CA" gene
+  :identifier "PR:000012719")
+(def-bio "BRAF" gene
+  :identifier "PR:000004801")
 
-(def-bio "GTP" small-molecule)
-(def-bio "GDP" small-molecule)
+(def-bio "GTP" small-molecule
+  :identifier "CHEBI:15996")
+(def-bio "GDP" small-molecule
+  :identifier "CHEBI:17552")
 
+;; "GO:0006184" "GTP loading and deactivated upon hydrolysis" ?????
+;;  or "GTP hydrolysis"
 
+;; Guanine "CHEBI:16235"
+;; nucleotide ""CHEBI:36976"
 (def-bio "GEF" protein :synonyms ("Guanine nucleotide Exchange Factors" "GEFs"))
 (def-bio "GAP" protein :synonyms ("GTPase Activating Proteins" "GAPs"))
 ;; compositional version of the long forms would be better
@@ -75,6 +85,8 @@
   :long "GTPase" ;; RAS small monomeric GTPase activity
   ;; Are we going to see that in texts?
   )
+;; GTPase "GO:0003924"
+;; "GTPase activity"  "GO0003924"
 
 
 ;;;----------------------------------------------------
