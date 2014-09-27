@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   May 2014
+;;;   Version:   September 2014
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -12,6 +12,8 @@
 ;; (1/18/13) put in define-position-in-process. 5/22 added "no longer"
 ;; (5/30/13) added in earlier, sooner as adverbs and function words
 ;; 5/6/14 Moved in the quantities from its own file
+;; Commenting out some word for collision with stronger forms in bio
+;; through 9/26/14.
 
 (in-package :sparser)
 
@@ -500,7 +502,7 @@
 (define-adverb "in general")
 (define-adverb "in large part")
 (define-adverb "in one way or another")
-(define-adverb "in turn") ;; sequential?
+;;(define-adverb "in turn") ;; sequential?  /// should be compositional
 (define-adverb "inaccurately")
 (define-adverb "inadvertently")
 (define-adverb "incidentally")
@@ -917,7 +919,8 @@
 (define-adjective "lineal")
 (define-adjective "local")
 (define-adjective "logical")
-(define-adjective "lower")
+;; (define-adjective "lower") ;;/// ambig w/ verb reading
+;;    delaying until after current crunch 9/19/14.
 (define-adjective "major")
 (define-adjective "malignant")
 (define-adjective "maximal")
