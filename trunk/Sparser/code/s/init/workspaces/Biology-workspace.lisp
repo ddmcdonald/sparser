@@ -12,8 +12,9 @@
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
-; (setup-bio)
-; (bio-traps)
+; (setup-bio) ;; load the bio model etc.
+; (bio-traps) ;; turn off forest level parsing and a presently problematic parameter
+;    (setq *note-text-relations* nil)
 
 (defun bf-on () ;; bio forest
   (setq *sweep-sentence-treetops* t)
@@ -36,53 +37,60 @@
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 (defun j1 ()
   (p "The most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are KRAS, PIK3CA and BRAF."))
-#|  9/14/14
+#|  
 e7    ONCOGENE                1 "the most frequently mutated oncogenes" 6
-e8 e9                            "in" :: in, IN
-e13   CANCER                  7 "the deadliest cancers" 10
-e14   RESPONSIBLE             10 "responsible" 11
-e15 e16                          "for" :: for, FOR
-e19   MORTALITY               12 "human mortality" 14
-e20   BE                      14 "are" 15
-e28   BIO-ENTITY              15 "kras , pik 3 ca and braf" 22 |#
+e32   IN                      6 "in the deadliest cancers" 10
+e31   RESPONSIBLE             10 "responsible for human mortality" 14
+e30   BE                      14 "are kras , pik 3 ca and braf" 22
+                                 period
+ |#
 
 (defun j2 ()
   (p "Importantly the signaling enzymes encoded by PIK3CA and BRAF are, in part, regulated by direct binding to activated forms of the Ras proteins suggesting that dysregulation of this key step in signaling is critical for tumor formation. "))
-#| ---- wants the prepositions handled.  And some way to not separate "activated" and "forms"
-[importantly][ the signaling enzymes][ encoded] by [ pik3ca] and [ braf][ are], in part, 
-[ regulated] by [ direct binding] to [ activated][ forms] of [ the ras proteins]
-[ suggesting][ that][ dysregulation] of [ this key step] in [ signaling][ is][ critical] for [ tumor formation]
-
+#|  Needs work
 importantly bio-entity encode [M:2 "by"] bio-entity be comma in part comma 
 regulate [M:2 "by"] binding [M:2 "to"] activate form [M:2 "of"] bio-entity 
 suggest that dysregulation [M:2 "of"] step [M:2 "in"] "signaling" be modifier [M:2 "for"] formation "." |#
 
 (defun j3 ()
   (p "Ras acts as a molecular switch that is activated upon GTP loading and deactivated upon hydrolysis of GTP to GDP."))
+#|  Needs to see the two vps
+e31   ACT                     1 "ras acts as a molecular switch" 7
+e9                               "that"
+e33   ACTIVATE                8 "is activated upon" 11
+e30   LOAD                    11 "gtp loading" 13
+e16 e17                          "and" :: and, AND
+e32   DEACTIVATE              14 "deactivated upon" 16
+e28   HYDROLYSIS              16 "hydrolysis of gtp to gdp" 21
+|#
 (defun j4 ()
   (p "This switch mechanism is common to a wide variety of GTP-binding proteins and is mediated by a conserved structure called the G-domain that consists of five conserved G boxes."))
+
 (defun j5 ()
   (p "Under physiological conditions, the rate of GDP or GTP release from the G-domain is slow."))
-#|  Most parts compose properly. Question is ordering around "release" since the complement of "of" goes all the
-    way to the copula
-e0    UNDER                   1 "under" 2
-e3    CONDITION               2 "physiological conditions" 4
+#|  
+e24   UNDER                   1 "under physiological conditions" 4
 e4                               "COMMA"
-e7    RATE                    5 "the rate" 7
-e8 e9                            "of" :: of, OF
-e14   SMALL-MOLECULE          8 "gdp or gtp" 11
-e15   RELEASE                 11 "release" 12
-e16 e17                          "from" :: from, FROM
-e21   G-DOMAIN                13 "the g - domain" 17
-e22   BE                      17 "is" 18
-e23   MODIFIER                18 "slow" 19 |#
+e30   RATE-OF-PROCESS         5 "the rate of gdp or gtp release from the g - domain is slow" 19
+                                 period  |#
 
 (defun j6 ()
   (p "As a consequence the GDP produced by GTP hydrolysis on Ras is trapped and the bulk of cellular Ras accumulates in the GDP-bound ‘off’ state, despite the high GTP/GDP ratio in the cytosol (1–3)."))
+#|  Needs the hypen and slash specialists done. Also something for the scare quotes and the reference in parenthese
+|#
+
 (defun j7 ()
   (p "Growth factors can turn on Ras by activating Guanine nucleotide Exchange Factors (GEFs) or by inhibiting the GTPase Activating Proteins (GAPs) or by both mechanisms."))
+#| 
+e41   TURN    1 "growth factors can turn on ras" 7
+e46   BY      7 "by activating guanine nucleotide exchange factors ( gefs ) or by inhibiting the gtpase activating proteins ( gaps ) or by both mechanisms" 30
+e35                              "PERIOD" |#
+
 (defun j8 ()
   (p "RasGEFs bind to Ras and lower the transition energy for the nucleotide exchange of the bound GDP for the more abundant cytosolic GTP, whereas RasGAPs bind to Ras and catalyze GTP hydrolysis. "))
+#|  needs lots of ordinarly / semi-biological vocabulary
+|#
+
 (defun j9 ()
   (p "The most prevalent oncogenic mutations in Ras (Gly12 and Gly13 in the G1 box, and Gln61 in the G3 box) preserve the GTP bound state by inhibiting intrinsic GTPase activity and by interfering with the ability of GAPs. "))
 (defun j10 ()
