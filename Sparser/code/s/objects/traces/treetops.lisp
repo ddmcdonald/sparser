@@ -545,10 +545,79 @@
   (setq *trace-island-driving* nil))
 
 
-(deftrace :island-driven-forest-parse ()
+(deftrace :island-driven-forest-parse (start-pos end-pos)
   ;; called from island-driven-forest-parse
   (when (or *trace-network-flow* *trace-island-driving*)
-    (trace-msg "Doing island-driving")))
+    (trace-msg "Doing island-driving between p~a and p~a"
+               (pos-token-index start-pos)
+               (pos-token-index end-pos))))
+
+(deftrace :island-driver-forest-pass-2 ()
+  ;; called from run-island-checks-pass-two
+  (when (or *trace-network-flow* *trace-island-driving*)
+    (trace-msg "Doing 2d pass of island-driving")))
+
+;;--- toplevel traces
+
+(deftrace :try-parsing-leading-pp ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Trying to parse an initial PP")))
+
+(deftrace :handle-parentheses ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Going to handle parentheses")))
+
+(deftrace :try-simple-subj+verb ()
+  ;; called from :try-simple-subj+verb
+  (when *trace-island-driving*
+    (trace-msg "~%Trying for simple subject + verb")))
+
+(deftrace :there-are-known-subcat-patterns ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Following out subcategorization patterns")))
+
+(deftrace :trying-for-short-extension-leftward (edge)
+  ;; called from look-for-short-leftward-extension
+  (when *trace-island-driving*
+    (trace-msg "~%Trying to extend ~a leftwards" edge)))
+
+(deftrace :look-for-prep-binders ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Looking for binders of prepositions")))
+
+(deftrace :try-to-compose-instances-of-of ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Trying compositions over 'of'")))
+
+(deftrace :try-to-extend-loose-nps ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Trying to extend loose NPs")))
+
+(deftrace :trying-to-form-simple-pps ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Trying to compose prepositions into PPs")))
+
+(deftrace :try-simple-vps ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Trying to take loose verbs into VPs")))
+
+(deftrace :try-spanning-conjunctions ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "~%Seeing if we can handle the conjunctions")))
+
+
+
+
+
 
 ;;--- subject & verb group
 
@@ -600,9 +669,8 @@
 (deftrace :looking-leftward-from-np-at (base-edge edge-to-the-left)
   ;; called from look-for-np-extensions
   (when *trace-island-driving*
-    (trace-msg "[islands]   Looking leftward from e~a at the ~a e~a"
+    (trace-msg "[islands]   Looking leftward from e~a at e~a"
                (edge-position-in-resource-array base-edge)
-               (cat-symbol (edge-form edge-to-the-left))
                (edge-position-in-resource-array edge-to-the-left))))
 
 (deftrace :np-leftwards-composed (new-edge)
@@ -619,19 +687,28 @@
 
 ;;--- verb extension
 
-(deftrace :looking-for-bounded-np-after (vg-edge)
-  ;; called from try-simple-vps
+(deftrace :trying-to-extend-vg (vg-edge)
+  ;; called from look-for-bounded-np-after-verb
   (when *trace-island-driving*
-    (trace-msg "[islands] Looking for a bounded np to the right ~
-                of the verb group e~a"
-               (edge-position-in-resource-array vg-edge))))
+    (trace-msg "[islands] Trying to extend vg ~a" vg-edge)))
 
 (deftrace :looking-at-edge-after-verb (form right-neighbor)
-  ;; called from try-simple-vps
+  ;; called from look-for-bounded-np-after-verb
   (when *trace-island-driving*
     (trace-msg "[islands]   The ~a e~a is to its right"
                (cat-symbol form)
                (edge-position-in-resource-array right-neighbor))))
+
+#+ignore(deftrace :looking-for-bounded-np-after ()
+  ;; called from look-for-bounded-np-after-verb
+  (when *trace-island-driving*
+    (trace-msg "[islands]    Looking for a bounded np to the right")))
+
+(deftrace :edge-after-np-is-a-boundary ()
+  ;; called from look-for-bounded-np-after-verb
+  (when *trace-island-driving*
+    (trace-msg "[islands]   It is bounded.")))
+
 
 (deftrace :np-not-right-bounded (tt)
   ;; called from try-simple-vps
@@ -717,6 +794,111 @@
                (edge-position-in-resource-array prep-edge)
                (edge-position-in-resource-array right-neighbor))))
 
+(deftrace :parse-leading-pp (edge)
+  ;; called from try-parsing-leading-pp
+  (when *trace-island-driving*
+    (trace-msg "[islands]  parsed leading PP e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :could-not-parse-leading-pp (edge)
+  ;; called from try-parsing-leading-pp
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Did not find an np to compose with ~
+                initial preposition")))
+
+
+;;--- "of"
+
+(deftrace :of-mention (of-edge)
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands] Looking at 'of' edge e~a"
+               (edge-position-in-resource-array of-edge))))
+
+(deftrace :left-right-of-of (leftward-edge rightward-edge)
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]    The edge to the left is ~a~
+              ~%            to the right is ~a"
+               leftward-edge rightward-edge)))
+
+(deftrace :of-left-composition (left-composition)
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Composed to the left forming e~a"
+               (edge-position-in-resource-array left-composition))))
+
+(deftrace :of-left-failed ()
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Could not compose to the left")))
+
+(deftrace :of-right-composition (right-composition)
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Composed 'of' to the right forming e~a"
+                (edge-position-in-resource-array right-composition))))
+
+(deftrace :of-right-failed ()
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Could not compose to the right")))
+
+(deftrace :trying-to-compose (left right)
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Trying to compose e~a and e~a"
+               (edge-position-in-resource-array left)
+               (edge-position-in-resource-array right))))
+
+(deftrace :composition-failed ()
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]    it failed")))
+
+(deftrace :composition-succeeded (edge)
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]    it succeeded, creating ~a"
+               (edge-position-in-resource-array edge))))
+
+
+;;--- subcagtegorization
+
+(deftrace :trying-subcat-pattern (tt tt-sequence)
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Trying subcategorization of ~a~
+             ~%     ~a" tt tt-sequence)))
+
+(deftrace :subcat-pattern-succeeded (edge)
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]    succeeded, forming e~a"
+                (edge-position-in-resource-array edge))))
+
+(deftrace :subcat-pattern-failed ()
+  ;; called from try-to-compose-of-complements
+  (when *trace-island-driving*
+    (trace-msg "[islands]    failed")))
+
+
+;;--- parentheses
+
+(deftrace :parens-after (left-neighbor paren-edge)
+  ;; called from knit-parens-into-neighbor
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Looking at parentheses e~a after e~a"
+                (edge-position-in-resource-array left-neighbor)
+                (edge-position-in-resource-array paren-edge))))
+
+(deftrace :new-edge-incorporating-parens (edge)
+  ;; called from knit-parens-into-neighbor
+  (when *trace-island-driving*
+    (trace-msg "[islands]    spanned them with e~a"
+               (edge-position-in-resource-array edge))))
+
+
 ;;--- conjunction
 
 (deftrace :no-heuristics-for (left right)
@@ -730,6 +912,48 @@
     ;; called from try-spanning-conjunctions
   (when *trace-island-driving*
     (trace-msg "[islands] new arrangement of conjuncts")))
+
+
+;;--- Short leftward extension (roll up from the right)
+
+(deftrace :short-leftward-neighbor (edge)
+  ;; called from look-for-short-leftward-extension
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Left neighbor is ~a" edge)))
+
+(deftrace :short-leftward-composition (edge)
+  ;; called from look-for-short-leftward-extension
+  (when *trace-island-driving*
+    (trace-msg "[islands]    It composed to form e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :short-leftward-did-not-compose ()
+  ;; called from look-for-short-leftward-extension
+  (when *trace-island-driving*
+    (trace-msg "[islands]    It did not compose")))
+
+(deftrace :short-leftward-neighbor-is-boundary ()
+  ;; called from look-for-short-leftward-extension
+  (when *trace-island-driving*
+    (trace-msg "[islands]    It is an expansion boundary")))
+
+
+;;--- 2d pass
+
+(deftrace :smash-together (e1 e2 e1-status e2-status)
+  ;; called from smash-together-two-tt-islands
+  (when *trace-island-driving*
+    (trace-msg "[islands]  Smashing together e~a (~a) and ~
+                e~a (~a)"
+               (edge-position-in-resource-array e1)
+               e1-status
+               (edge-position-in-resource-array e2)
+               e2-status)))
+
+(deftrace :smashed-together-edge (edge)
+  ; called from smash-together-two-tt-islands
+  (when *trace-island-driving*
+    (trace-msg "[islands]     created ~a" edge)))
 
 
 
