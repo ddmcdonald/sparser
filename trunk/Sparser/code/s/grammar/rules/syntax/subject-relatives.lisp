@@ -16,7 +16,9 @@
 ;; 0.2 (4/9/13) Throwing that over in favor of a completion rule
 ;; 0.3 (7/24/13) Moving in the syntax rules for subject relatives
 ;;  from rules-over-referents for consolidation.
-;;  (9/7/14) Moved out the syntax rules to one place. 
+;;  (9/7/14) Moved out the syntax rules to one place. 9/27/14 started
+;;  adding variables and code for generic relationships in the style
+;;  that Jerry Hobbs uses. 
 
 (in-package :sparser)
 
@@ -132,9 +134,24 @@
 ;;; Hobbsian connectives
 ;;;----------------------
 
-;(define-lambda-variable 
+(define-lambda-variable 'unspecified-adjunct nil
+  ;; Event already has slots for time, location, purpose,
+  ;; modifiers, and aspect (used by tense). This adds another one
+  (category-named 'event))
 
-(defun unspecified-adjunction (e1 e2)
-  (push-debug `(,e1 ,e2)) (break "stub"))
+(defun unspecified-adjunction (e1 e2) ;; head, adjunct
+  ;; returns the referent for the pair. 
+  ;;//// distribute conjuncts
+  ;;/// look up type of e2 in case we missed a rule that
+  ;; would have set one of event's established adjuncts
+  (let ((r1 (edge-referent e1))
+        (r2 (edge-referent e2)))
+    ;; Type check r1 that it's actually an event.
+    (bind-variable 'unspecified-adjunct r2 r1 category::event)
+    r1))
+
+(define-lambda-variable 'reduced-relative nil
+  (category-named 'kind)) ;;/// change when super-category-for-POS
+;; is and the top is rethreaded.
 
 
