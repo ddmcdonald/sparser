@@ -13,7 +13,7 @@
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
 ; (setup-bio) ;; load the bio model etc.
-; (bio-traps) ;; turn off forest level parsing and a presently problematic parameter
+; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
 ;    (setq *note-text-relations* nil)
 
 (defun bf-on () ;; bio forest
@@ -38,11 +38,8 @@
 (defun j1 ()
   (p "The most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are KRAS, PIK3CA and BRAF."))
 #|  
-e7    ONCOGENE                1 "the most frequently mutated oncogenes" 6
-e32   IN                      6 "in the deadliest cancers" 10
-e31   RESPONSIBLE             10 "responsible for human mortality" 14
-e30   BE                      14 "are kras , pik 3 ca and braf" 22
-                                 period
+e35   BE   1 "the most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are kras , pik 3 ca and braf" 22
+           period
  |#
 
 (defun j2 ()
@@ -81,10 +78,10 @@ e30   RATE-OF-PROCESS         5 "the rate of gdp or gtp release from the g - dom
 
 (defun j7 ()
   (p "Growth factors can turn on Ras by activating Guanine nucleotide Exchange Factors (GEFs) or by inhibiting the GTPase Activating Proteins (GAPs) or by both mechanisms."))
-#| 
-e41   TURN    1 "growth factors can turn on ras" 7
-e46   BY      7 "by activating guanine nucleotide exchange factors ( gefs ) or by inhibiting the gtpase activating proteins ( gaps ) or by both mechanisms" 30
-e35                              "PERIOD" |#
+#|  Fix comma-delimited-list to write a better edge so it will print nicely. 
+    Make 'both' active
+e46   TURN                    1 "growth factors can turn on ras by activating guanine nucleotide exchange factors ( gefs ) or by inhibiting the gtpase activating proteins ( gaps ) or by both mechanisms" 30
+e34                              "PERIOD" |#
 
 (defun j8 ()
   (p "RasGEFs bind to Ras and lower the transition energy for the nucleotide exchange of the bound GDP for the more abundant cytosolic GTP, whereas RasGAPs bind to Ras and catalyze GTP hydrolysis. "))
