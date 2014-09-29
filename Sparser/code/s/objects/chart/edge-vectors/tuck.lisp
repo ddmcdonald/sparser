@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "tuck"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  September 2013
+;;;  Version:  September 2014
 
 ;; Initiated 9/19/13 from code formerly in DA. 9/22/13 modifying it
-;; to work in either direction. 
+;; to work in either direction. 9/29/14 fixed tuck-in-just-above to
+;; work in both directions, not just leftwards
 
 (in-package :sparser)
 
@@ -19,7 +20,7 @@
   ;; Now we have to reconstruct pointers so that the edge that
   ;; had dominated the subsumed one dominates the new pair.
   (push-debug `(,subsumed-edge ,new-edge ,dominating-edge ,direction))
-  ;; (setq subsumed-edge (car *) new-edge (cadr *) dominating-edge (caddr *))
+  ;; (setq subsumed-edge (car *) new-edge (cadr *) dominating-edge (caddr *))  (break "tucking 1")
 
   ;; Cleanup the used-in of the subsumed-edge
   (setf (edge-used-in subsumed-edge) new-edge)
@@ -41,7 +42,7 @@
            (:right (edge-ends-at new-edge))
            (:left (edge-starts-at new-edge)))))
     (push-debug `(,dominating-edge-ev ,new-edge-ev))
-    ;; (setq dominating-ev (car *) new-ev (cadr *))
+    ;; (setq dominating-edge-ev (car *) new-ev (cadr *)) (break "tucking 2")
 
     ;; Remove the dominating edge from its ends/start-at vector
     (if (eq dominating-edge (highest-edge dominating-edge-ev))
@@ -71,6 +72,7 @@
                                     old-edge-vector new-edge-vector
                                     direction)
   (push-debug `(,above-this-one ,old-edge-vector ,new-edge-vector))
+  
   (let* ((index (index-of-edge-in-vector above-this-one old-edge-vector)))
     (break "index = ~a" index)
     (let ((edges-to-move (edges-higher-than old-edge-vector index)))
@@ -89,12 +91,16 @@
   ;; We add the edge-above (dominating-edge) just above it
   ;; in the vector and adjust things accordingly. 
   (push-debug `(,ev ,edge-below ,edge-above))
-  (unless (eq direction :left)
-    (break "Stub: no code for tuck-in just above when it's ~
-            from the right."))
-  (let ((below-starts-at (edge-starts-at edge-below)))
-    (setf (edge-starts-at edge-above) below-starts-at)
-    (knit-edge-into-position edge-above below-starts-at)))
+  ;;  (setq ev (car *) edge-below (cadr *) edge-above (caddr *))
+  (ecase direction
+    (:left
+     (let ((below-starts-at (edge-starts-at edge-below)))
+       (setf (edge-starts-at edge-above) below-starts-at)
+       (knit-edge-into-position edge-above below-starts-at)))
+    (:right
+     (let ((below-ends-at (edge-ends-at edge-below)))
+       (setf (edge-ends-at edge-above) ev)
+       (knit-edge-into-position edge-above below-ends-at)))))
 
 (defun pop-topmost-edge (ev)
   "Remove the topmost edge from this vector and adjust
