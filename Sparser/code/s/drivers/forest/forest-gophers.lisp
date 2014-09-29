@@ -314,6 +314,82 @@
   ;; ends up in the NP form case.
   (and (word-p (edge-left-daughter tt))
        (eq (edge-left-daughter tt) (word-named "that"))))
-         
+
+(defun includes-tt-over-comma (treetops)
+  (loop for tt in treetops
+    when (eq (edge-category tt) *the-punctuation-comma*)
+    return tt))
+
+
+;;// move to utilities ??
+(defun list-initial (item list)
+  (eq item (car list)))
+
+(defun list-final (item list)
+  (eq item (car (last list))))
+
+
+;;---- obviously needs to be generalized
+(defun attached-reduced-relative-to-np-of-pp (parent-pp np reduced-relative)
+  (push-debug `(,parent-pp ,np ,reduced-relative))
+  ;; See note in syntactic-rules that letting np+vp loose
+  ;; in the first pass is too greedy, so making the edge
+  ;; ad-hoc. Also, the regular edge-making function
+  ;; do their own knitting. 
+  (let ((new-edge (compose-as-reduced-relative np reduced-relative)))
+    ;;(break "before tucking")
+    (tuck-new-edge-under-already-knit
+     np ;; subsumed-edge
+     new-edge
+     parent-pp ;; dominating-edge
+     :right) ;; direction
+    ;;(break "tucked")
+    parent-pp))
+
+(defun compose-as-reduced-relative (np reduced-relative)
+  (let* ((ref (referent-for-reduced-relative np reduced-relative))
+         (new-edge
+          (make-binary-edge/explicit-rule-components
+           np reduced-relative
+           :category (edge-category np)
+           :form (edge-form np)
+           :rule-name :attached-reduced-relative-to-np-of-pp
+           :referent ref)))
+    ;;/// trace
+    new-edge))
+
+
+(defun referent-for-reduced-relative (np reduced-relative)
+  (let ((np-ref (edge-referent np))
+        (rr-ref (edge-referent reduced-relative)))
+    ;;/// J1: 'responsible' is weakly defined as just an adjective
+    ;; so there's no way notion of a variable in it for 'what' is
+    ;; responsible 'for' its complement. For that matter right now
+    ;; (9/28/14) 'cancer' is just an np head
+    (bind-variable 'reduced-relative rr-ref np-ref)
+    np-ref))
+
+
+(defun ad-hoc-subj+copula-rule (subject copula)
+  ;; goes in rules/syntax/be.lisp
+  (let* ((subj-ref (edge-referent subject))
+         (cop-ref (edge-referent copula)) ;; #<be)
+         ;; cheat -- knowing that the copula of J1 was built
+         ;; from a particular syntactic rule we know what
+         ;; to lift from it. ///duh -- make coherent
+         (np-ref (value-of 'participant cop-ref)))
+    (let ((i (find-or-make-individual *the-category-to-be*)))
+      (bind-variable 'theme subj-ref i)
+      ;;/// for J1, the np-ref is more specific, so the roles
+      ;; should be reversed, but how to do know that?
+      ;; this order is what the rspec on be would have done
+      (bind-variable 'description np-ref i)
+      (make-binary-edge/explicit-rule-components
+       subject copula
+       :category (edge-category copula) ;; right-headed
+       :form (category-named 's)
+       :rule-name :ad-hoc-subj+copula-rule
+       :referent i))))
+
 
 

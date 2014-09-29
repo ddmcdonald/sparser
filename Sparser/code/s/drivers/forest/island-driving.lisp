@@ -30,6 +30,8 @@
           (when t
             (run-island-checks-pass-two new-layout start-pos end-pos)))))))
 
+;(defparameter *
+
 (defun run-island-checks-pass-two (layout start-pos end-pos)
   ;;/// for J1 none of the regular checks are going to apply
   ;; but would be best if we actually checked that. Trivially done
@@ -52,12 +54,106 @@
      ((= tt-count 2)
       (smash-together-two-tt-islands treetops))
      ((= tt-count 3)
-      (break "3"))
+      (look-for-patterns treetops) t)
+     ((and subject-edge copula)
+      (fill-in-between-subject-and-final-verb subject-edge copula treetops tt-count))
+
+     (t (push-debug `(,clauses ,vps ,other-vps ,pps))
+        (when nil
+          (break "other"))))))
 
 
-     (t (push-debug `(,clauses ,subject-edge ,vps
-                      ,copula ,other-vps ,pps))
-        (break "other")))))
+(defun fill-in-between-subject-and-final-verb (subject copula treetops tt-count)
+  (push-debug `(,subject ,copula ,treetops))
+  ;; (setq subject (car *) copula (cadr *) treetops (caddr *))
+  (when (list-final copula treetops)
+    (when (list-initial subject treetops)
+      (unless (> tt-count 4)
+        ;; only two constituents between the subject and what we can
+        ;; heuristically presume is the main verb of the sentence,
+        ;; so there must be a way to fit the two together and treat
+        ;; the result as a 
+        (let ((middle-edges (subseq (cdr treetops) ;; leave off subject
+                                     0 2))) ;; '2' because there are only four tt.
+          (let ((middle-edge
+                 (try-to-carefully-compose-two-edges middle-edges)))
+            (push-debug `(,middle-edge)) ;;   (break "middle edge = ~a" edge)
+            (let ((extended-subject
+                   (compose-as-reduced-relative subject middle-edge)))
+              (push-debug `(,extended-subject)) ;;(break "extended")
+              (ad-hoc-subj+copula-rule extended-subject copula))))))))
+
+(defun look-for-patterns (treetops)
+  ;; with just three treetops, there's probably a pattern over them
+  ;; that's easy to state. 
+  (push-debug `(,treetops))
+  ;;/// See if DA patterns machinery do this better -- especially the setup
+  (let ((comma-edge (includes-tt-over-comma treetops))) ;; or 'that', etc.
+    (when comma-edge
+      ;; Try a stranded initial pp -- J5
+      (when (match-treetop-pattern `(,category::pp
+                                     ,*the-punctuation-comma*
+                                     ,category::s)
+                                   treetops)
+        ;;/// should let the preposition dictate the relationship
+        (let* ((clause (third treetops)) ;; drops the comma
+               (pp (first treetops))   ;; rather than folding into pp
+               (ref (unspecified-adjunction clause pp))
+               (edge (make-binary-edge/explicit-rule-components
+                      pp clause
+                      :category (edge-category clause)
+                      :form (edge-form clause)
+                      :rule-name :look-for-patterns
+                      :referent ref)))
+          ;;/// trace goes here
+          edge)))))
+
+                               
+(defun match-treetop-pattern (sequence treetops)
+  ;; This should be factored to combine it with follow-out-pattern which
+  ;; is looking through the raw set of treetops (pass 1) whereas here
+  ;; we have a fixed sequence and a specified pattern
+  (push-debug `(,sequence ,treetops))
+  (let ( tt )
+    (dolist (item sequence t)
+      (setq tt (pop treetops))
+      ;; (break "item = ~a~%tt = ~a~%" item tt)
+      (when (null tt) (return-from match-treetop-pattern t))
+      (typecase item
+        (category ;; a form category
+         (unless (eq item (edge-form tt))
+           (return-from match-treetop-pattern nil)))
+        (word ;; presumably punctuation
+         (unless (eq item (edge-category tt))
+           (return-from match-treetop-pattern nil)))
+        (otherwise
+         (error "Unexpected type of item in the pattern: ~a~%~a"
+                (type-of item) item))))))
+
+
+(defun try-to-carefully-compose-two-edges (two-edges)
+  (let* ((left (car two-edges))
+         (left-form (edge-form left))
+         (right (cadr two-edges))
+         (right-form (edge-form right)))
+    (push-debug `(,left ,right))
+    ;; These didn't naturally compose in phase 1, Lets assume
+    ;; it was because the timing of the different things we tried
+    ;; rather than a gap in the grammar. 
+          
+    (when (eq left-form category::pp)
+      (when (vp-category? right-form)
+        (let ((buried-np (edge-right-daughter left)))
+         ;; The situation that applies in J1 is that the pp of the
+          ;; first edge has covered the np that the vp of the second
+          ;; VP edge, which is a reduced relative
+          (let ((new-pp
+                 (attached-reduced-relative-to-np-of-pp
+                  left buried-np right)))
+            ;;// trace goes here
+            new-pp))))))
+
+
 
 (defun smash-together-two-tt-islands (treetops)
   (push-debug `(,treetops))
@@ -69,7 +165,7 @@
          (e1-status (category-status e1-form))
          (e2-status (category-status e2-form)))
     (tr :smash-together e1 e2 e1-status e2-status)
-    (break "e1: ~a  e2: ~a" e1-status e2-status)
+    ;;(break "e1: ~a  e2: ~a" e1-status e2-status)
     (cond
      ((eq e1-status :major)
       ;; lets take the other edge as an adjunct regardless
@@ -83,9 +179,14 @@
                     :referent ref)))
         (tr :smashed-together-edge edge)
         edge))
-     (t 
-      (break "not major: ~a" e1)))))
+     (t (when nil
+          (break "not major: ~a" e1))))))
 
+
+
+;;;------------
+;;; first pass
+;;;------------
 
 (defun run-island-checks (layout)
   (push-debug `(,layout))
