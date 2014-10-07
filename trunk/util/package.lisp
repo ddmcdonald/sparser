@@ -1,8 +1,8 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
-;;; Copyright (c) 2011 David D. McDonald All Rights Reserved
-;;; $Id$
+;;; Copyright (c) 2011-2014 David D. McDonald All Rights Reserved
 
-;; initiated 3/8/11.
+;; initiated 3/8/11. Pulled in file-local exports 10/6/14 in effort
+;; to accommodate changes in MCL 10.0
 
 (in-package :cl-user)
 
@@ -11,6 +11,16 @@
           #+ccl :ccl)
     (:export #:d 
              #:string-append #:concat
+
+             ;; from push-debug
+             #:push-debug
+             #:pop-debug
+             #:peek-debug
+             #:clear-debug
+
+             ;; from then-and-else
+             #:then
+             #:else
 
 	  ;; n.b. there are other MISC.LISP lispm-era utils not yet
 	  ;; checked out and carried forward
