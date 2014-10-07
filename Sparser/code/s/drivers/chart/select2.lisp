@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "select"
 ;;;   Module:  "drivers;chart:"
-;;;  Version:  2.4 August 2014
+;;;  Version:  2.4 October 2014
 
 ;; 2.0 (9/12/92) moved up to chart level from psp
 ;; 2.1 (4/7/93) commented out the wsj-headers option
@@ -13,6 +13,7 @@
 ;;     (1/9/96) added :scan-for-closing-markup-tag
 ;;     (9/16/13) added :c3-protocol.
 ;;     (8/11/14) added :r3-entity-sweep
+;;     (10/6/14) added :successive-sweeps
 
 (in-package :sparser)
 
@@ -72,6 +73,8 @@
          (initiate-c3-protocol))
         (:just-do-terminals
          (look-at-all-terminals))
+        (:successive-sweeps
+         (initiate-successive-sweeps))
         (:r3-entity-sweep
          (initiate-R3-entity-pass))
         (:scan-for-closing-markup-tag
