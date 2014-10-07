@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "treetops"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   1.5 September 2014
+;;;   Version:   1.5 October 2014
 
 ;; 1.1  (2/8/91 v1.8.1) added Final-tt/category
 ;; 1.2  (2/13 v1.8.1) Modified ...-treetop-at to both return words if there
@@ -16,6 +16,7 @@
 ;;      (12/1) added Treetops-between
 ;;      (1/2/96) added a variation that only returns edges
 ;;      (9/8/14) Converted a few functions to methods taking edges.
+;;      (10/7/14) reorderd and notice redundancies to flush at some point
 
 (in-package :sparser)
 
@@ -38,20 +39,73 @@
 
 
 
+;;;-------- still another variant that takes the highest edge when there
+;;;         are multiples
+
+(defmethod right-treetop-at/edge ((e edge))
+  (right-treetop-at/edge (pos-edge-ends-at e)))
+
+(defmethod right-treetop-at/edge ((position position))
+  (let* ((ev (pos-starts-here position))
+         (top-node (ev-top-node ev)))
+    (cond ((eq top-node :multiple-initial-edges)
+           (elt (ev-edge-vector ev)
+                (1- (ev-number-of-edges ev))))
+          (top-node top-node)
+          (t (pos-terminal position)))))
+
+;;//// these are redundant with the ones just below
+;;  grep for them and change one or the other
+
+(defmethod left-treetop-at/edge ((e edge))
+  (left-treetop-at/edge (pos-edge-starts-at e)))
+
+(defmethod left-treetop-at/edge ((position position))
+  (let* ((ev (pos-ends-here position))
+         (top-node (ev-top-node ev)))
+    (cond ((eq top-node :multiple-initial-edges)
+           (elt (ev-edge-vector ev)
+                (1- (ev-number-of-edges ev))))
+          (top-node top-node)
+          (t (pos-terminal (chart-position-before position))))))
+
+
+
+;;;--- variants that handle multiple-initial-edges for you
+
+(defun right-treetop-at/only-edges (position)
+  (let* ((ev (pos-starts-here position))
+         (top-node (ev-top-node ev)))
+    (cond ((eq top-node :multiple-initial-edges)
+           (elt (ev-edge-vector ev)
+                (1- (ev-number-of-edges ev))))
+          (top-node top-node)
+          (t nil))))
+
+
+(defun left-treetop-at/only-edges (position)
+  (let* ((ev (pos-ends-here position))
+         (top-node (ev-top-node ev)))
+    (cond ((eq top-node :multiple-initial-edges)
+           (elt (ev-edge-vector ev)
+                (1- (ev-number-of-edges ev))))
+          (top-node top-node)
+          (t nil))))
+
+
+
 ;;;--- variants on those with different return values
 
 (defmethod next-treetop/rightward ((e edge))
   (next-treetop/rightward (pos-edge-ends-at e)))
 
 (defmethod next-treetop/rightward ((p position))
-
   ;; Used by Do-treetop-triggers to scan successive treetops.
   ;; Returns as many as three values: (1) the treetop that starts
   ;; at the position (either an edge or a word), (2) the position
   ;; just after that where the treetop scan should resume, and
   ;; (3) a boolean to indicate whether the treetop being returned
   ;; is a word with multiple interpretations.
-
   (let ((topnode-field (ev-top-node (pos-starts-here p))))
 
     (cond ((eq topnode-field :multiple-initial-edges)
@@ -89,59 +143,6 @@
           (t
            (values (pos-terminal next-position)
                    next-position)))))
-
-
-
-
-;;;-------- still another variant that takes the highest edge when there
-;;;         are multiples
-
-(defmethod right-treetop-at/edge ((e edge))
-  (right-treetop-at/edge (pos-edge-ends-at e)))
-
-(defmethod right-treetop-at/edge ((position position))
-  (let* ((ev (pos-starts-here position))
-         (top-node (ev-top-node ev)))
-    (cond ((eq top-node :multiple-initial-edges)
-           (elt (ev-edge-vector ev)
-                (1- (ev-number-of-edges ev))))
-          (top-node top-node)
-          (t (pos-terminal position)))))
-
-
-(defmethod left-treetop-at/edge ((e edge))
-  (left-treetop-at/edge (pos-edge-starts-at e)))
-
-(defmethod left-treetop-at/edge ((position position))
-  (let* ((ev (pos-ends-here position))
-         (top-node (ev-top-node ev)))
-    (cond ((eq top-node :multiple-initial-edges)
-           (elt (ev-edge-vector ev)
-                (1- (ev-number-of-edges ev))))
-          (top-node top-node)
-          (t (pos-terminal (chart-position-before position))))))
-
-
-;;;-------- These insist on edges and return nil on words
-
-(defun right-treetop-at/only-edges (position)
-  (let* ((ev (pos-starts-here position))
-         (top-node (ev-top-node ev)))
-    (cond ((eq top-node :multiple-initial-edges)
-           (elt (ev-edge-vector ev)
-                (1- (ev-number-of-edges ev))))
-          (top-node top-node)
-          (t nil))))
-
-
-(defun left-treetop-at/only-edges (position)
-  (let* ((ev (pos-ends-here position))
-         (top-node (ev-top-node ev)))
-    (cond ((eq top-node :multiple-initial-edges)
-           (elt (ev-edge-vector ev)
-                (1- (ev-number-of-edges ev))))
-          (top-node top-node)
-          (t nil))))
 
 
 
