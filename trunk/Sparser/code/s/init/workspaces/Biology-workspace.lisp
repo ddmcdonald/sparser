@@ -16,6 +16,11 @@
 ; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
 ;    (setq *note-text-relations* nil)
 
+; (setq *kind-of-chart-processing-to-do* :successive-sweeps)
+; (bio-setting)
+
+; (setq *do-islands-2d-pass* nil)
+
 (defun bf-on () ;; bio forest
   (setq *sweep-sentence-treetops* t)
   (setq *island-driving* t))
@@ -62,6 +67,21 @@ e28   HYDROLYSIS              16 "hydrolysis of gtp to gdp" 21
 |#
 (defun j4 ()
   (p "This switch mechanism is common to a wide variety of GTP-binding proteins and is mediated by a conserved structure called the G-domain that consists of five conserved G boxes."))
+#| [this switch mechanism][ is][ common] to [ a wide variety] of [ gtp-binding proteins] 
+   and [ is mediated] by [ a conserved structure][ called][ the g-domain][ that consists] of 
+   [ five conserved g boxes]
+Hits new cases in the second pass, but before that we got:
+e45   BE                      1 "this switch mechanism is" 5
+e6 e7                            "common" :: common, MODIFIER
+e51   TO                      6 "to a wide variety" 10
+e47   OF                      10 "of gtp - binding proteins" 15
+e21 e22                          "and" :: and, AND
+e50   MEDIATE+ED              16 "is mediated by a conserved structure" 22
+e48   CALL                    22 "called the g - domain" 27
+e36                              "that"
+e37   CONSISTS                28 "consists" 29
+e46   OF                      29 "of five conserved g boxes" 34
+                                period|#
 
 (defun j5 ()
   (p "Under physiological conditions, the rate of GDP or GTP release from the G-domain is slow."))
