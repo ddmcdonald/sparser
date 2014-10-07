@@ -53,6 +53,15 @@
       collect edge)))
 
 
+(defun push-loose-subj+verb (tt)
+  (push tt (subj+verb (layout))))
+
+(defun there-are-subj+verbs ()
+  (let ((original-list (subj+verb (layout))))
+    (loop for edge in original-list
+      unless (edge-used-in edge)
+      collect edge)))
+
 (defun set-main-verb (tt)
   (setf (main-verb (layout)) tt)
   (setq main-verb-seen? t))
