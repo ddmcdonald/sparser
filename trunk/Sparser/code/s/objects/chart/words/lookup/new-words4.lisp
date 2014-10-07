@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  4.5 July 2014
+;;;  Version:  4.6 October 2014
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -14,6 +14,10 @@
 ;;      about the word. 8/1 broke out make-word-from-lookup-buffer
 ;;     (3/1/12) quiet compiler
 ;; 4.5 (7/10/14) Added hook to affix-checker inside make-word/all-properties
+;; 4.6 (10/7/14) moved the call to catalog before the operations
+;;      that can set up all the other words that go with, e.g. a verb.
+;;      That fixed bug where the new forms didn't see the original oblique
+;;      form of the lemma and build a new one. 
 
 (in-package :sparser)
 
@@ -40,6 +44,8 @@
          (word (make-word :symbol symbol
                           :pname  (symbol-name symbol))))
 
+    (catalog/word word symbol)
+
     (ecase character-type
       (:number (establish-properties-of-new-digit-sequence word))
       (:alphabetical
@@ -55,8 +61,6 @@
            (when morph-keyword
              (assign-morph-brackets-to-unknown-word
               word morph-keyword))))))
-
-    (catalog/word word symbol)
     word ))
 
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
