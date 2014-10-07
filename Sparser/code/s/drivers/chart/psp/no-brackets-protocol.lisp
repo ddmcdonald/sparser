@@ -47,7 +47,7 @@ the position. (N.b. there's an incremental trace hook in it.) |#
 
 (defun scan-terminals-loop (position-before word)
   (when t
-    (format t "~&Terminals loop: p~a ~s"
+    (format t "~&p~a ~s"
             (pos-token-index position-before) (word-pname word)))
   (simple-eos-check position-before word)
 
@@ -72,39 +72,51 @@ the position. (N.b. there's an incremental trace hook in it.) |#
              (pos-token-index position-before)
              (pos-token-index position-after)))
 
+    ;; (trace-traversal-hook) (trace-traversal-hits)
+    (word-traversal-hook word position-before position-after)
+    ;; Traversal actions are managed by a hash table from the word
+    ;; qua label (i.e. could be applied to edges as well) to a function
+    ;; that takes these same arguments. This is used for bracket pairs
+    ;; such as parentheses, double quotes, etc. Check with a call to
+    ;; (list-hash-table *traversal-routine-table*)
+    ;;    The action is always on the matching close. The open
+    ;; notes its oposition so the close knows what span to operate
+    ;; over. We check for traversal hits before the no-space check
+    ;; because the ns is greedy and moves the position, which can
+    ;; cause the open to be missed. 
+
+
     (when (no-space-before-word? position-before)
       ;; As with PW, if it succeeds we need to restart the loop
       ;; where it leaves off. 
       (let ((where-ns-ended (do-no-space-collection position-before)))
         (when where-ns-ended ;; which will have been scanned
           (setq position-before where-ns-ended
-                position-after (chart-position-after position-before)))))
+                position-after (chart-position-after position-before)
+                word (pos-terminal position-before)))))
     (unless (includes-state position-after :scanned)
       (scan-next-position))
 
+    ;;///
+    ;; (trace-parentheses)
+    (word-traversal-hook word
+                         position-before
+                         position-after)
 
-#| These are the core of word-level-actions in the standard scan
- in order. When correctly coded, none of the operations triggered
- by these checks is permitted to move the position. |#
+
     (complete-word/hugin word position-before position-after)
-;; The function check-for-completion-actions/word looks on the
-;; rule-set of the word for a completion action or actions and
-;; runs carry-out-actions to execute (funcall) them. 
-;;   The significant case is the period-hook (in rules/DM&P/period-hook)
-;; because it is responsible for managing the succession of sentences.
-;; That requires some tweaking because normally the period hook signals
-;; the progression to the forest level and here we need to notice
-;; the period (in order to stop this pass and start the next), but
-;; be more selective in what happens. 
-;;    Another important case is conjunction. Both "and" and "or"
-;; set the *pending-conjunction* flag. 
+    ;; The function check-for-completion-actions/word looks on the
+    ;; rule-set of the word for a completion action or actions and
+    ;; runs carry-out-actions to execute (funcall) them. 
+    ;;   The significant case is the period-hook (in rules/DM&P/period-hook)
+    ;; because it is responsible for managing the succession of sentences.
+    ;; That requires some tweaking because normally the period hook signals
+    ;; the progression to the forest level and here we need to notice
+    ;; the period (in order to stop this pass and start the next), but
+    ;; be more selective in what happens. 
+    ;;    Another important case is conjunction. Both "and" and "or"
+    ;; set the *pending-conjunction* flag. 
 
-    (word-traversal-hook word position-before position-after)
-;; Traversal actions are managed by a hash table from the word
-;; qua label (i.e. could be applied to edges as well) to a function
-;; that takes these same arguments. This is used for bracket pairs
-;; such as parentheses, double quotes, etc. Check with a call to
-;; (list-hash-table *traversal-routine-table*)
 
     (do-just-terminal-edges word position-before position-after)
 
