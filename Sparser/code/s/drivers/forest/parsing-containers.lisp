@@ -51,6 +51,9 @@
    (clauses :initform nil :accessor clauses
     :documentation "The edges over clauses, toplevel or
      subordinated. Like only relevant in second pass.")
+   (subj+verb-phrases :initform nil :accessor subj+verb
+    :documentation "In the first pass we formed one or
+     more constituents labeled subj+verb.")
    (main-verb  :initform nil :accessor main-verb
     :documentation "The tensed VG in the clause")
    (post-mvb-verbs :initform nil :accessor post-mvb-verbs

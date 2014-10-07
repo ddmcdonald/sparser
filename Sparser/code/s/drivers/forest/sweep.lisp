@@ -88,6 +88,9 @@
           (category::s
            (push-loose-clauses tt))
 
+          (category::subj+verb
+           (push-loose-subj+verb tt))
+
           (category::adverb
            (if sentence-initial?
              (setf (starts-with-adverb (layout)) tt)

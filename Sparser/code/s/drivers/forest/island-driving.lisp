@@ -11,6 +11,8 @@
 
 (in-package :sparser)
 
+(defparameter *do-islands-2d-pass* t)
+
 (defun island-driven-forest-parse (sentence layout start-pos end-pos)
   (declare (special *allow-pure-syntax-rules*
                     *edges-from-referent-categories*))
@@ -27,10 +29,10 @@
         (let ((new-layout
                (sweep-sentence-treetops sentence start-pos end-pos)))
           (push-debug `(,new-layout)) ;;(break "new layout")
-          (when t
+          (when *do-islands-2d-pass*
             (run-island-checks-pass-two new-layout start-pos end-pos)))))))
 
-;(defparameter *
+
 
 (defun run-island-checks-pass-two (layout start-pos end-pos)
   ;;/// for J1 none of the regular checks are going to apply
