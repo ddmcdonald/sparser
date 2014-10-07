@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.11 August 2014
+;;;  Version:  1.11 October 2014
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -53,7 +53,8 @@
 ;;      (1/21/14) Adjusting rule for proper-nouns given C3 cases.
 ;;      Misc. small tweaks through 4/30/14. 
 ;; 1.11 (8/28/14) Trying to figure out in-line the null starting-bracket problem.
-;;      Small fixes. 
+;;      Small fixes. 10/3/14 fixed silly omission in adjective
+
 
 (in-package :sparser)
 
@@ -447,7 +448,9 @@
 
 
            ((eq ] ].adjective)
-            (cond 
+            (cond
+             ((eq bracket-opening-segment .[np)
+              nil)
              ((or (eq bracket-opening-segment mvb.[) 
                   (eq bracket-opening-segment .[|that|)
                   (eq bracket-opening-segment conjunction.[))
