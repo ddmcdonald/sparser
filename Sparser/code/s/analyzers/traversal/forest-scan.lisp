@@ -34,7 +34,7 @@
 
 (defun parse-from-to/topmost (left-bound right-pos)
   "Called recursively to march leftwards"
-  (let ((right-edge (left-treetop-at right-pos)))
+  (let ((right-edge (left-treetop-at/edge right-pos)))
     ;; Returns the topmost edge if there is one, 
     ;; otherwise returns the word that ends there.
     ;; N.b. This ignores multiple edges over a single word,
