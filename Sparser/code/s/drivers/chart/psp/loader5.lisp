@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.10 July 2014
+;;;  Version:  5.10 October 2014
 
 ;; initiated summer 1990
 ;;  3.0  (9/2/92) bumped to 3 and moved in the newly rationalized set
@@ -27,6 +27,9 @@
 ;;  5.10 (12/4/12) bumped [adjudicators] to 2. 
 ;;       (9/18/13) added [c3-protocol], [tuck-right]
 ;;       (7/30/14) added [no-brackets-protocol]
+;;       (10/5/14) added [bio-entity-scan] to hold the code that
+;;       I wrote into no-brackets-protocol so that file can now
+;;       have the intended code.
 
 (in-package :sparser)
 
@@ -43,4 +46,5 @@
 (lload "psp-drivers;trigger5")
 
 (lload "psp-drivers;c3-protocol")
+(lload "psp-drivers;bio-entity-scan")
 (lload "psp-drivers;no-brackets-protocol")
