@@ -4,13 +4,15 @@
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  August 2014
+;;;   version:  October 2014
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
 ;; 8/8/14 Fixed edge case in period-marks-sentence-end?
 ;; 8/31/14 Moved the shift to the new forest into here. It's to fix
 ;; something that used to happen, but it will do. 
+;; 10/6/14) First modification to accommodate successive scans operation.
+
 
 (in-package :sparser)
 
@@ -52,8 +54,18 @@
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
   (when (period-marks-sentence-end? position-after)
-    (when (new-forest-protocol?)
-      (new-forest-driver position-before))
+    (cond
+     ;; If neither of these are triggered we're just going to
+     ;; keep giong
+     ((sucessive-sweeps?)
+      ;; applies when we're doing a whole sentence at a time
+      ;;/// should we have some sort of status display?
+      (set-sentence-status (sentence) :scanned))
+     ((new-forest-protocol?)
+      ;; goes with the incremental protocol when waiting
+      ;; for an entire sentence to be chunked before
+      ;; rolling any of them up.
+      (new-forest-driver position-before)))
     (let* ((pos-after-period (chart-position-after position-before))
            (s (start-sentence pos-after-period)))
       (tr :period-hook)
