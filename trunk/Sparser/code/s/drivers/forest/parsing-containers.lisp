@@ -3,11 +3,12 @@
 ;;; 
 ;;;     File:  "parsing-containers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  September 2014
+;;;  Version:  October 2014
 
 ;; Initiated 8/6/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
-;; Extended with new cases through 9/26/14
+;; Extended with new cases through 9/26/14. 10/6/14 Added methods to
+;; query and set parsing status. 
 
 (in-package :sparser)
 
@@ -22,8 +23,25 @@
       Possible values:
         :initial  -- we're at the start of the sentence and
                    haven't scanned any part of it.
+        :scanned -- we've run scan-terminals-loop over it
+        :chunked -- we've run the phrase delimiter over it
 "))
   (:documentation ""))
+
+(defmethod set-sentence-status ((s sentence) (keyword symbol))
+  (let ((c (contents s))) ;; for debugging
+    (set-sentence-status c keyword)))
+
+(defmethod set-sentence-status ((s parsing-status) (keyword symbol))
+  (setf (level-completed s) keyword))
+
+(defmethod parsing-status ((s sentence))
+  (parsing-status (contents s)))
+
+(defmethod parsing-status ((s parsing-status))
+  (level-completed s))
+
+
 
 (defclass sentence-layout (container) 
   ;;/// mixin, but trying standalone at first while sorting out
