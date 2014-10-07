@@ -336,8 +336,8 @@
       (let ((edge (look-for-bounded-np-after-verb vg-edge)))
         ;; if we now have a vp, lets see if we can extend it
         ;; to the left
-        (look-for-short-leftward-extension edge)))))
-        
+        (when edge
+          (look-for-short-leftward-extension edge))))))
 
 (defun look-for-bounded-np-after-verb (vg-edge)
   (tr :trying-to-extend-vg vg-edge)
