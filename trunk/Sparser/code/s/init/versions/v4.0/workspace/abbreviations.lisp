@@ -47,6 +47,9 @@
                        :from from :to to
                        :ends-rather-than-starts? t))
 
+;; ev/s, ev/e take position numbers and return the edge-vector
+;;   objec that starts/ends at that position. 
+
 (defun chart ()
   (display-chart :style :just-terminals))
 
