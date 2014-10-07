@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  8.3 September 2014
+;;;  Version:  8.3 October 2014
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -36,6 +36,8 @@
 ;; 8.3 (9/22/14) added heuristic based on identical form, with the flag
 ;;      *allow-form-conjunction-heuristic* to govern when its used. It's
 ;;      off by default and dynamically bound when wanted. 
+;;     (10/6/14) Fanout from successive-scans to guard against unhandled
+;;      *pending-conjunction* flag in the completion routine.
 
 (in-package :sparser)
 
@@ -72,17 +74,22 @@
 (defun mark-instance-of-AND (and-word position-before position-after)
   (declare (ignore and-word position-after))
   (if *pending-conjunction*
-    (then
+    (cond
+     (*speech*
       ;; In speech, words can be inadvertantly repeated, so in the
       ;; DAARCAT corpus we have "let's go ahead and and go and".
       ;; The result is that we hit two conjunctions in a row without
       ;; clearing the flag. 
-      (if *speech*
-    	(then ;; clear the flag, since this is most likely the "and then"
-          ;; version of "and"
-          (tr :conj-flag-still-up-in-speech)
-          (setq *pending-conjunction* nil))
-        (break "stub -- two 'and's in a row but it's not speech")))
+      ;; Clear the flag, since this is most likely the "and then"
+      ;; version of "and"
+      (tr :conj-flag-still-up-in-speech)
+      (setq *pending-conjunction* nil))
+     ((sucessive-sweeps?)
+      ;;/// ignore it completely?
+      ;; or take note of it's location?
+      )
+     (t
+      (break "stub -- two 'and's in a row")))
     (else
       (tr :setting-conjunction-pos-before position-before)
       (setq *pending-conjunction* position-before))))
