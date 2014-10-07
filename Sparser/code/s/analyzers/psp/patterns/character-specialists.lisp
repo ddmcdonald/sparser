@@ -1,4 +1,4 @@
-;; ;-*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;;-*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "character-specialists"
@@ -10,6 +10,9 @@
 
 (in-package :sparser)
 
+;;;----------
+;;; hyphens
+;;;----------
 
 (defun nospace-hyphen-specialist (hyphen-position/s pos-before next-position)
   (push-debug `(,hyphen-position/s ,pos-before ,next-position))
@@ -21,8 +24,8 @@
      ((and (= hyphen-count 1)
            (= phrase-length 3))
       (let* ((hyphen-pos (car hyphen-position/s))
-             (left-edge (left-treetop-at hyphen-pos))
-             (right-edge (right-treetop-at
+             (left-edge (left-treetop-at/edge hyphen-pos))
+             (right-edge (right-treetop-at/edge
                           (chart-position-after hyphen-pos))))
         (let ((rule
                (or
@@ -38,15 +41,67 @@
             (make-completed-binary-edge left-edge right-edge rule)
             (else ;; make a structure if all else fails
              ;; but first alert to anticipated cases not working
-             (push-debug `(,left-edge ,right-edge))
-             (break "Stub -- no association between hyphenated edges ~
-                    e~a and e~a" 
-                    (edge-position-in-resource-array left-edge)
-                    (edge-position-in-resource-array right-edge)))))))
+             (make-hypenated-structure left-edge right-edge))))))
      (t
       (break "New case for hyphens~%  hyphen count = ~a~
             ~%  phrase-length = " hyphen-count phrase-length)))))
 
+
+
+;;;---------
+;;; slashes
+;;;---------
+
 (defun nospace-slash-specialist (slash-position/s pos-before next-position)
-  (push-debug `(,slash-position/s ,pos-before ,next-position))
-  (break "slash stub"))
+  (when (cdr slash-position/s)
+    (push-debug `(,slash-position/s ,pos-before ,next-position))
+    (break "stub: more than one slash"))
+  (let ((left-edge (right-treetop-at/edge pos-before))
+        (right-edge (left-treetop-at next-position)))
+    (let ((i (find-or-make-individual 'slashed-pair
+               :left (edge-referent left-edge)
+               :right (edge-referent right-edge))))
+      (when (eq (edge-category left-edge)
+                (edge-category right-edge))
+        (bind-variable 'type (edge-category left-edge)
+                       i category::sequence))
+      (let ((edge (make-edge-over-long-span
+                   pos-before
+                   next-position
+                   category::slashed-pair
+                   :rule 'nospace-slash-specialist
+                   :form category::common-noun
+                   :referent i
+                   :constituents `(,left-edge ,right-edge))))
+        ;;(break "look at edge")
+        ;;/// trace goe here
+        edge))))
+
+
+;;;-----------------------
+;;; single 'scare' quotes
+;;;-----------------------
+
+(defun scare-quote-specialist (leading-quote-pos words pos-before next-position)
+  ;; It's reasonably clear what to do with scare quotes. At a minimum we move
+  ;; the boundaries of the edge over word being quoted so it swallows the
+  ;; single quote marks. Better than that would be recording the rhetorical
+  ;; effect of do in this (which I don't know how to do). If the layout
+  ;; is something different than that we just leave it for a debris collector
+  (push-debug `(,leading-quote-pos ,words ,pos-before ,next-position))
+  (when (and (eq leading-quote-pos pos-before)
+             (eq (first words) (car (last words))))
+    (when (= (length words) 3) ;; only one word
+      (let* ((word-edge (left-treetop-at/only-edges next-position))
+             (edge (make-edge-over-long-span
+                    pos-before
+                    (chart-position-after next-position)
+                    (edge-category word-edge)
+                    :rule 'scare-quote-specialist
+                    :form (edge-form word-edge)
+                    :referent (edge-referent word-edge)
+                    :constituents words)))
+        ;;/// trace goes here
+        edge))))
+              
+

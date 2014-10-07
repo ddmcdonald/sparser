@@ -60,7 +60,7 @@
 
 (deftrace :ns-scanned-punctuation (p)
   (when *trace-ns-sequences*
-    (trace-msg "[ns] loop: scanned ~s" [)))
+    (trace-msg "[ns] loop: scanned ~s" p)))
 
 (deftrace :ns-terminating-punctuation (word)
   (when *trace-ns-sequences*

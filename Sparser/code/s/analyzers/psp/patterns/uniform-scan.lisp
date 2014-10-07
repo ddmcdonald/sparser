@@ -53,7 +53,7 @@
 	 (word-before (pos-terminal pos-before))
 	 (word-after (pos-terminal position))
 	 (next-position (chart-position-after position))
-         hyphen?  slash?  )
+         hyphen?  slash?  leading-quote?  )
 
     (when (first-word-is-bracket-punct word-before)
       (tr :ns-first-word-is-bracket-punct word-before position)
@@ -90,7 +90,9 @@
       (push pos-before slash?))
     (when (eq word-after (punctuation-named #\/))
       (push position slash?))
-
+    (when (eq word-before (punctuation-named #\'))
+      ;; single, potential "scare" quote
+      (setq leading-quote? pos-before))
 
     (unless (has-been-status? ::preterminals-installed position)
       ;; pos-before = p2 (serine)
@@ -137,6 +139,10 @@
                  ((eq word (punctuation-named #\/))
                   (push next-position slash?)
                   (push word words))
+                 ((eq word (punctuation-named #\'))
+                  (when leading-quote?
+                    (push word words))
+                  (return))                   
                  (t
                   (when (punctuation-terminates-no-space-sequence
                          word next-position)
@@ -160,9 +166,10 @@
                 (tr :ns-reached-eos-at next-position)
                 (return))))))
 
-      ;; remove terminal punctuation, unless it's hyphen
+      ;; remove terminal punctuation, unless it's hyphen or matching
       (when (eq (pos-capitalization position) :punctuation)
-        (unless (eq (pos-terminal position) *the-punctuation-hyphen*)
+        (unless (or (eq (pos-terminal position) *the-punctuation-hyphen*)
+                    leading-quote?)
           (pop words)))
 
       (setq words (nreverse words))
@@ -181,15 +188,18 @@
       (tr :ns-parsing-between pos-before next-position)
 
       ;; see if there's as parse of the whole thing already defined
-      (let ((layout 
-             (when *parser-interior-of-no-space-token-sequence*
-               (parse-between-boundaries pos-before next-position))))
+      (let ((layout
+             (unless leading-quote? ;; could fix treetop walk and avoid this
+               (when *parser-interior-of-no-space-token-sequence*
+                 (parse-between-boundaries pos-before next-position)))))
         (cond
          ((eq layout :single-span)) ;; Do nothing. It's already known
          (hyphen?
           (nospace-hyphen-specialist hyphen? pos-before next-position))
          (slash?
           (nospace-slash-specialist slash? pos-before next-position))
+         (leading-quote?
+          (scare-quote-specialist leading-quote? words pos-before next-position))
          (t 
           (parse-and-reify-ns-sequence layout words pos-before next-position))))
       
@@ -204,21 +214,22 @@
                (parse-between-boundaries pos-before next-position)))))
     ;; (setq words (car *) pos-before (cadr *) next-position (caddr *))
     ;; (print-flat-forest t pos-before next-position)
-    (push-debug `(,words ,pos-before ,next-position)) (break "layout = ~a" layout)
+    ;;(push-debug `(,words ,pos-before ,next-position)) (break "layout = ~a" layout)
     (tr :ns-layout layout)
     (when layout
       (case layout
+        (:single-span) ;; the words already composed
+        (:contiguous-edges) ;; let it fall through
+
         ((or :no-edges
-             :contiguous-edges
              ;; perhaps there's something interesting to do
              ;; by adapting some segment-level operation,
              ;; but for now drop through and reify the words
-             :has-unknown-words))           
+             :has-unknown-words))         
         (:span-is-longer-than-segment
          (break "no-space-sequence: bad positions somehow.~
          ~%   Parsed span goes beyond presumed boundaries.~
          ~%   start = ~a  end = ~a" pos-before next-position))
-        (:single-span) ;; the words composed
         (otherwise
          (break "New no-space layout: ~a" layout))))
 
@@ -353,8 +364,10 @@
       (eq word2 (punctuation-named #\} ))
       (eq word2 (punctuation-named #\> ))
 
-      (eq word1 (punctuation-named #\/ ))
-      (eq word2 (punctuation-named #\/ ))))
+      ;; 10/7/14 slashes have dedicated treatment
+      ;;(eq word1 (punctuation-named #\/ ))
+      ;;(eq word2 (punctuation-named #\/ ))
+      ))
 
 
 
