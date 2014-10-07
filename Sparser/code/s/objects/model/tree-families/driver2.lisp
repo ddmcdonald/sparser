@@ -239,11 +239,12 @@
       (push-debug `(,i))
       (error "No rules recorded for ~a" i))
     (unless (null (cdr rule-field))
-      (push-debug `(,i ,rule-field))
-      (cerror "take the first one"
+      (push-debug `(,i ,rule-field)))
+    ;; The extra rule is invariably a plural.
+      #+ignore(cerror "take the first one"
               "More than one rule recorded for ~a~
             ~%Don't know which to use.~%~a"
-             i rule-field))
+             i rule-field)
     (car rule-field)))
 
 ;;;-----------------
