@@ -55,17 +55,28 @@
     (setq *position-before-last-period* (position# 0)))
   (when (period-marks-sentence-end? position-after)
     (cond
-     ;; If neither of these are triggered we're just going to
-     ;; keep giong
+     ;; First dispatch is by 'mode' -- either we going sentence
+     ;; by sentence at the lower levels (sweeps) or we're scanning
+     ;; phrases incrementally and then going to the forest level 
+     ;; at the sentence boundary (new-forest-level
      ((sucessive-sweeps?)
-      ;; applies when we're doing a whole sentence at a time
-      ;;/// should we have some sort of status display?
-      (set-sentence-status (sentence) :scanned))
+      (case (parsing-status (sentence))
+        ;; this is the sentence that we're finishing
+        (:initial
+         (set-sentence-status (sentence) :scanned)
+         (throw :end-of-sentence :finished-scanning))
+        (:scanned
+         (set-sentence-status (sentence) :chunked)
+         (throw :end-of-sentence :finished-chunking))
+        (otherwise
+         (break "Next case in period-hook"))))
+
      ((new-forest-protocol?)
       ;; goes with the incremental protocol when waiting
       ;; for an entire sentence to be chunked before
       ;; rolling any of them up.
       (new-forest-driver position-before)))
+
     (let* ((pos-after-period (chart-position-after position-before))
            (s (start-sentence pos-after-period)))
       (tr :period-hook)
