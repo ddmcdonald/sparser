@@ -29,7 +29,7 @@
 ;;       (7/30/14) added [no-brackets-protocol]
 ;;       (10/5/14) added [bio-entity-scan] to hold the code that
 ;;       I wrote into no-brackets-protocol so that file can now
-;;       have the intended code.
+;;       have the intended code. (10/8/14) Added [chunker]
 
 (in-package :sparser)
 
@@ -48,3 +48,4 @@
 (lload "psp-drivers;c3-protocol")
 (lload "psp-drivers;bio-entity-scan")
 (lload "psp-drivers;no-brackets-protocol")
+(lload "psp-drivers;chunker")
