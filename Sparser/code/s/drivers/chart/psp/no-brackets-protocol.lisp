@@ -23,22 +23,36 @@
 ; (setq *kind-of-chart-processing-to-do* :successive-sweeps)
 ; (bio-setting)  ;; revert to 'normal'
 
-(defun sucessive-sweeps? ()
-  ;; syntactic sugar for a mode detector. Cf. new-forest-protocol?
-  (eq *kind-of-chart-processing-to-do* :successive-sweeps))
-
 
 (defun initiate-successive-sweeps ()
-  ;; Copied from inititate-c3-protocol which is already stipped down
+  ;; Copied from inititate-c3-protocol which is already stripped down
   ;; from the normal inititate-top-edges-protocol driver. 
   ;; Called from lookup-the-kind-of-chart-processing-to-do which
   ;; is the content of analysis-core after it finishes initializing.
-  (let* ((p0 (scan-next-position)) ;; status => :scanned
-         (ss (pos-terminal p0))    ;; #<word SOURCE-START>
-         (p1 (scan-next-position)) ;; adds 1st real word
-         (word1 (pos-terminal p1)))
-    (declare (ignore ss))
-    (scan-terminals-loop p1 word1)))
+  ;; N.b. The initialization routines created a sentence already
+  (scan-next-position) ;; pull the source-start word into the chart
+  (scan-next-position) ;; adds 1st real word into the chart
+  (sentence-sweep-loop))
+
+(defun sentence-sweep-loop ()
+  (let ((sentence (sentence)))
+    (loop
+      (let* ((start-pos (starts-at-pos sentence))
+             (first-word (pos-terminal start-pos)))
+        (catch :end-of-sentence
+          (case (parsing-status sentence)
+            (:initial
+             (scan-terminals-loop start-pos first-word))
+            (:scanned
+             (identify-chunks sentence))
+            (:chunked )
+            (otherwise
+             (error "'~a' is not a parsing-status for ~a"
+                    (parsing-status sentence) sentence))))
+        (break "after") ;; just to be sure we do fall through.
+        ;; EOS throws to a higher catch.
+        (setq sentence (next sentence))))))
+
 
 #| scan-next-position:
 Bumps the chart indexes. Does an add-terminal-to-chart if
@@ -97,7 +111,11 @@ the position. (N.b. there's an incremental trace hook in it.) |#
     (unless (includes-state position-after :scanned)
       (scan-next-position))
 
-    ;;///
+    ;;/// if we noted whether no-space had completed we could
+    ;; conditionalize this 'addional' check. But we do need it
+    ;; for the cases where the earlier traversal check picked up
+    ;; the open and the no-space has moved us ahead so that we're
+    ;; about to see the close. 
     ;; (trace-parentheses)
     (word-traversal-hook word
                          position-before
@@ -183,5 +201,9 @@ the position. (N.b. there's an incremental trace hook in it.) |#
     (terminate-chart-level-process)))
 
 
+
+(defun sucessive-sweeps? ()
+  ;; syntactic sugar for a mode detector. Cf. new-forest-protocol?
+  (eq *kind-of-chart-processing-to-do* :successive-sweeps))
 
 
