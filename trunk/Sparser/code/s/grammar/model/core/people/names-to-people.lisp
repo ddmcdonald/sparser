@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "names to people"
 ;;;   Module:  "model;core:people:"
-;;;  version:  0.3 July 2013
+;;;  version:  0.3 October 2014
 
 ;; copied over material from [random and hacks] 4/12/95
 ;; 0.1 (4/25) redid Interpret-name-as-person as a dispatch on itype to handle
@@ -14,7 +14,7 @@
 ;;  3/5/13 Moved in the country+person method, Exposed 4/3/13
 ;; 0.3 (5/26/13) Reworking the interpret-as-name code to fit current scheme,
 ;;  and pulled in csr's for name and position. Extended 6/6/13.
-;;  debugged 7/15/13
+;;  debugged 7/15/13. 
 
 (in-package :sparser)
 
@@ -147,10 +147,9 @@
     ))
 
 
-
-;;;-----------------------
-;;; relation to countries
-;;;-----------------------
+;;;-------------------------------------
+;;; relationship of people to countries
+;;;-------------------------------------
 
 (define-category nationality
   :specializes associated-with-country
