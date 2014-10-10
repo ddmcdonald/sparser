@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2012-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relation"
 ;;;   Module:  "model;core:places:countries:"
-;;;  version:  April 2013
+;;;  version:  October 2014
 
 ;; initiated 8/6/07. Moved out the generic routine 9/4. Changed one of
 ;; the form rules from np-head to common-noun since that's what we
@@ -12,7 +12,7 @@
 ;; 0.1 (3/4/13) Substantially reworking it. Using an ETF. Fixed the
 ;;  method 3/8.  Blocking it 3/9  because the set of rules that
 ;;  actually get created is bogus. Put it back 4/3 when Chomnsky-adjunction
-;;  put into the rule creator
+;;  put into the rule creator. 
 
 (in-package :sparser)
 	
@@ -54,6 +54,7 @@ should use a category and use methods for the composition
     (define-or-find-individual 'associated-with-country
         :country country :item item)
     item))
+
 
 
 
