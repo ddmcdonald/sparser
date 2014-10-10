@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "bio-grammar"
 ;;;    Module:  "init;versions:v2.7:config:grammars:"
-;;;   version:  August 2014
+;;;   version:  October 2014
 
 ;; Split off from June 2014 version of full-grammar. Start by
 ;; removing the obviously irrelevant sublanguages. 8/6/14 removed
