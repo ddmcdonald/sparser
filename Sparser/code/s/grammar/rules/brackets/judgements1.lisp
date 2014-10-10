@@ -464,6 +464,8 @@
                ((word-is-an-adverb previous-word) nil) ;; adj can follow adv in np
                ((word-is-a-noun previous-word) t) ;; no adjectives after the head
                ((word-is-an-article previous-word) nil) ;; no head yet
+               ((eq (pos-capitalization position) :digits) ;; it's a number
+                nil)
                (t (break  "new case of adjective after np-start"))))
              ((segment-started-as-vg?)
               t)
