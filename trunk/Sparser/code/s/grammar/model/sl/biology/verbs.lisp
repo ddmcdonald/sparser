@@ -210,11 +210,8 @@
 ;;--- "lower"  ("raise")
 ;;/// N.b. the adjective variant is commented out in the modifiers dossier
 ;; "(RasGEFs) lower the transition energy for ..."
-#|(defterm "lower" verb (svo)
-  :subject bio-entity
-  :theme  --- what's "energy"  ???
-|#
+(svo/bio "lower")
 
-;;(svo ("know" :
+
 
 
