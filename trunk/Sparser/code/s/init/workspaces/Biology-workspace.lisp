@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "Biology-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  September 2014
+;;;  version:  October 2014
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
@@ -11,7 +11,6 @@
 (in-package :sparser)
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
-; (load "/Users/ddm/sparser/load-nlp.lisp")
 ; (setup-bio) ;; load the bio model etc.
 ; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
 ;    (setq *note-text-relations* nil)
