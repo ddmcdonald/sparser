@@ -462,17 +462,22 @@ as long as we make allowance for tiny test cases without periods.
   (tr :adjudicate-after-successfur-pattern-scan pos-before pos-after)
   (let ((edge ;;(edge-between pos-before pos-after)
 	 (top-edge-at/ending pos-after)))
-    (if edge
-      (then
+    (cond
+     ((and edge ;; the return value might be a word
+           (edge-p edge))
 	(cleanup-segment-boundaries-after-pattern-edge edge)
 	(when (not (eq (pos-edge-ends-at edge) pos-before))
 	  ;; edge is longer than normal - extends further leftwards
 	  (setq pos-before (pos-edge-ends-at edge)))
 	(check-fsa-edge-for-brackets pos-before edge pos-after))
 
+     ((null edge)
       ;; This is where we were going to go in Check-for/initiate-scan-patterns
       ;; if the no-space scan hadn't completed
-      (check-word-level-fsa-trigger word pos-before))))
+      (check-word-level-fsa-trigger word pos-before))
+     ((and edge (word-p edge))
+      (push-debug `(,pos-before ,word ,pos-after))
+      (break "where to next")))))
 
 (defun cleanup-segment-boundaries-after-pattern-edge (edge)
   ;; The boundary could have been set just before we started the
