@@ -98,3 +98,26 @@
   (when *trace-ns-sequences*
     (trace-msg "[ns] finished at position ~a" next-position)))
 
+(deftrace :hyphen-specialist (left-edge right-edge)
+  ;; called from nospace-hyphen-specialist
+  (when *trace-ns-sequences*
+    (trace-msg "[ns hyphen] looking for relationship between e~a and e~a"
+               (edge-position-in-resource-array left-edge)
+               (edge-position-in-resource-array right-edge))))
+
+(deftrace :scare-quotes-creating-edge-around (word)
+  ;; called from scare-quote-specialist
+  (when *trace-ns-sequences*
+    (trace-msg "[ns quotes] looking at single quotes around ~s"
+               (word-pname word))))
+
+(deftrace :scare-quotes-wrong-number-of-words (n)
+  ;; called from scare-quote-specialist
+  (when *trace-ns-sequences*
+    (trace-msg "[ns quotes]  A scare quote involves 3 'word'. Got ~a" n)))
+
+(deftrace :made-edge (edge)
+  (when *trace-ns-sequences* ;;//// lots more cases probably
+    (trace-msg "[ns]   made edge ~a" edge)))
+
+
