@@ -3,11 +3,12 @@
 ;;;
 ;;;     File:  "Grok"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  June 2014
+;;;  version:  October 2014
 
 ;; Initiated 10/30/12 to take over from the Fire workspace. Tweeked through
 ;; 3/9/13. Pulling stuff out of it and rearranging through 7/1/13.
 ;; 6/9/14 pulled the loading of sl/disease now that it's in the main line. 
+;; Moved a lot out 10/9/14. 
 
 ;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
@@ -31,9 +32,6 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;--- For feeding into grak-pass-one, etc, which are now in
 ;;  analyzers/SDM&P/document-handling.lisp and take document-streams as input
 
-(setq cl-user::location-of-text-corpora
- "Users:ddm:sift:nlp:corpus:")
-;; Note the pathname is given in ancient Mac syntax. 
 
 (def-logical-pathname "corpus;" cl-user::location-of-text-corpora)
 (def-logical-pathname "bird-flu;" "corpus;bird-flu:")
@@ -57,12 +55,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 (setq *annotate-realizations* nil) ;; Will be t, but not ready yet
 
-;;-- For Comlex shakeout
-;; (trace-lexicon-unpacking)
-;; (word-frequency-setting)
-;; (just-bracketing-setting) -- largely supplanted by Grok since we want some rules
 ;; (grok-setting)  -- for meta-.
-
 
 ;;--- Alternative post-parsing segment handlers
 ;  (do-normal-segment-finished-options)  ;; built-in default
@@ -96,8 +89,7 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 
 ;; Comlex doesn't have "burnt"
 ;;;(setup-verb (resolve/make "burnt") nil)
-;;/// do workspaces load twice? in ACL "burnt" is category whose
-;; file location is config/launch.lisp
+
 
 
 ;;;------------------
@@ -139,132 +131,4 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;; (p "the World Health Organization (WHO)")
 ;;  This article has all the pieces:
 ;; (f "/Users/ddm/sift/nlp/Grok/corpus/bird-flu/4 bbc_Jan-31.txt")
-
-
-;;;------------
-;;; for meta-.
-;;;------------
-
-;; abbrev:  ier 
-;;  tts  print-treetops
-
-;; pronoun reference:  seek-person-for-pronoun dereference-proper-noun
-
-;; analysis-core    pts   analysis-core-return-value
-;; terminate-section  => section objects
-;; scan-next-segment  ==> inner loop of controller
-;; do-the-last-things-in-an-analysis
-
-;; Segment level operations:  reify-implicit-individuals-in-segment
-;;   sdm/analyze-segment
-
-;; Tokenizer level:   scan-next-position  add-terminal-to-chart  next-terminal 
-;;  next-token (= run-token-fsa )
-
-
-;; treetops: move-to-forest-level (protocol dispatch)
-;;   parse-forest-and-do-treetops (standard protocol)
-;;   When it wants to punt with nothing to do:  consider-debris-analysis
-;;   driver: PPTT
-;;   first call (recursive?) try-parsing-tt in drivers/chart/psp/march-forest
-;; do-treetop -> do-conceptual-analysis-off-new-treetop 
-;;               do-generic-actions-off-treetop
-;; do-treetop-triggers is inside consider-debris-analysis 
-;;    and called if *do-debris-analysis* is nil 
-;;  right-treetop-at  march-back-from-the-right/forest
-;;  word-before
-
-;; execute-da-trie
-
-;; For age if it proves problematic
-;;  On the definition of person in model/core/people/object.lisp - make/person-with-name 
-;;    ad-hoc in file that isn't loaded: core/people/people+age  -- has cs rules
-;;    and in core/time/age1.lisp  - category age interpret-number-as-years-of-age
-
-;; edge-vector
-
-#|
-
-Fixing segmentation:  brackets-on  adjudicate-new-open-bracket
-  bracket-ends-the-segment?
-
-
-Collection/WHO problem:  collection  create-collection  string/sequence
-   acronym-is-alternative-for-name
-
-  initialize-discourse-history  
-  define-city  -- dossiers/cities
-
-relationship-to-country 
- give-kind-its-name
-
-hyphens and PNF -- trace-ns-sequences  hyphen-ca-hook
-  collect-no-space-sequence-into-word
-
-  named-object  ;; clos classes
-
-  prime-word-from-comlex
- 
-time:  relative-time
-
-  comparative  ;; "bigger"
-  die  girl
-  define-function-term  
-
-  traces:  trace-edges
-
-  infering-categories: bind-open-var
-
-  reclaimation issues:  declare-all-existing-individuals-permanent
-     index/permanent-individual
-
- scan-pattern-starting-pair
- check-many-many
-
- names:  examine-capitalized-sequence
-    link-named-object-to-name-word
-    cap-seq-continues-from-here?
-  trace-pnf
-
-document-set  do-document-as-stream-of-files
-
-Heuristics:  determiner-completion-heuristic
-
-free variable bindings:
-  mark-instance-indefinite  (definite indefinite)
-
-In progress:  
-  assimilate-appositive  -- for add-subject-relation
-  have
-
-text relations:   trace-sdm&p
-  make-text-relation-instance  text-relation  def-text-relation
-  The cases are in grammar;rules:SDM&P:text-relations.lisp
-  sdm/analyze-segment
-  note-text-relations-in-segment  note-what-the-head-is
-  collect-relations-from-articles (needs sort, thresholds, calls to realize)
-  edge-over-segment  text-relation-contents
-  reify-text-relation
-  bind-category-of-instance
-
-  binding-hook: bind-variable/expr when-binding-hook  with-bindings
-
-  allow-invisible-markup  setup-context-for-this-run
-
-schema on form rules:  def-form-rule/expr
-
-Mumble:  parameter-arg-list-from-dtn
-
-|#
-
-;; loading  load-the-grammar  categorize-and-form-name  the-Master-loader
-
-
-
-
-
-
-
-
-
 
