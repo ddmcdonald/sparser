@@ -121,7 +121,8 @@
       (assign-bracket/expr w bracket)))
   (let ((rs (rule-set-for label-object))
         assignment )
-
+    (when (eq label-object word::single-quote)
+      (break "single quote smoking gun"))
     (unless rs
       (setq rs (establish-rule-set-for label-object)))
     (setq assignment
