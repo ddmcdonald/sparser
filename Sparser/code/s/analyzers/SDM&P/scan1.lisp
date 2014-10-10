@@ -72,6 +72,8 @@ to make any semantic or form edges that the grammar dictates.
 ;; just make sure it's all covered with one edge, propagating the
 ;; edge information from its suffix.
 
+(defparameter *require-known-words-in-order-to-cover-a-segment* nil)
+
 (defun just-cover-segment (coverage)
   (case coverage
     (:one-edge-over-entire-segment
@@ -97,10 +99,11 @@ to make any semantic or form edges that the grammar dictates.
      (cond
       (*debug-segment-handling*
        (break "Coverate is :no-edges"))
-      (*make-edges-for-unknown-words-from-their-properties*
-       ;; This licenses us to make an edge here. 
+      (*require-known-words-in-order-to-cover-a-segment*
+       ;; We didn't get the word 
        ;; (words-in-segment)
-       (break "no edges"))
+       (break "no edges in the segment between ~a and ~a"
+              *left-segment-boundary* *right-segment-boundary*))
       (*dbg-print*
        (format t "~&Ignoring segment with no edges:")
        (format-words-in-segment)
