@@ -3,10 +3,10 @@
 ;;; 
 ;;;     File:  "character-specialists"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  September 2014
+;;;  version:  October 2014
 
 ;; Initiated 9/9/14 to hold specialists dispatched from the no-space
-;; scan 
+;; scan. Tweaking through 10/9/14
 
 (in-package :sparser)
 
@@ -27,6 +27,7 @@
              (left-edge (left-treetop-at/edge hyphen-pos))
              (right-edge (right-treetop-at/edge
                           (chart-position-after hyphen-pos))))
+        (tr :hyphen-specialist left-edge right-edge)
         (let ((rule
                (or
                 ;; Can we look and know which edge -should- be the
@@ -89,19 +90,24 @@
   ;; effect of do in this (which I don't know how to do). If the layout
   ;; is something different than that we just leave it for a debris collector
   (push-debug `(,leading-quote-pos ,words ,pos-before ,next-position))
+  ;;  (setq leading-quote-pos (car *) words (cadr *) pos-before (caddr *) next-position (cadddr *))
   (when (and (eq leading-quote-pos pos-before)
              (eq (first words) (car (last words))))
-    (when (= (length words) 3) ;; only one word
-      (let* ((word-edge (left-treetop-at/only-edges next-position))
-             (edge (make-edge-over-long-span
-                    pos-before
-                    (chart-position-after next-position)
-                    (edge-category word-edge)
-                    :rule 'scare-quote-specialist
-                    :form (edge-form word-edge)
-                    :referent (edge-referent word-edge)
-                    :constituents words)))
-        ;;/// trace goes here
-        edge))))
+    (if (= (length words) 3) ;; only one word
+      (then
+        (tr :scare-quotes-creating-edge-around (second words))
+        (let* ((word-edge (left-treetop-at/only-edges 
+                           (chart-position-before next-position)))
+               (edge (make-edge-over-long-span
+                      pos-before
+                      next-position
+                      (edge-category word-edge)
+                      :rule 'scare-quote-specialist
+                      :form (edge-form word-edge)
+                      :referent (edge-referent word-edge)
+                      :constituents words)))
+          (tr :made-edge edge)
+          edge))
+      (tr :scare-quotes-wrong-number-of-words (length words)))))
               
 

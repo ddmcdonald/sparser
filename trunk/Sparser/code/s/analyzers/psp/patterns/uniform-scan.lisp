@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  0.6 September 2014
+;;;  version:  0.7 October 2014
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -12,7 +12,8 @@
 ;; 0.4 2/25/14 Modified to retain the interior punctuation.
 ;; 0.5 7/28/14 Turned parse-between-boundaries back on for "Ser1507"
 ;;     8/7/14 Debugged edge case (EOS) in sentence-final-punctuation-pattern?
-;; 0.6 9/9/14 refactoring to make management simpler
+;; 0.6 9/9/14 refactoring to make management simpler.
+;; 0.7 10/9/14 Added scare quotes, debugged edge cases. 
 
 (in-package :sparser)
 
@@ -140,9 +141,8 @@
                   (push next-position slash?)
                   (push word words))
                  ((eq word (punctuation-named #\'))
-                  (when leading-quote?
-                    (push word words))
-                  (return))                   
+                  (unless leading-quote?
+                    (return)))            
                  (t
                   (when (punctuation-terminates-no-space-sequence
                          word next-position)
@@ -166,7 +166,7 @@
                 (tr :ns-reached-eos-at next-position)
                 (return))))))
 
-      ;; remove terminal punctuation, unless it's hyphen or matching
+      ;; remove terminal punctuation, unless it's hyphen or matching quote
       (when (eq (pos-capitalization position) :punctuation)
         (unless (or (eq (pos-terminal position) *the-punctuation-hyphen*)
                     leading-quote?)
@@ -185,12 +185,11 @@
       (unless (> (length words) 1) ;; false alarm
         (return-from collect-no-space-sequence-into-word nil))
 
-      (tr :ns-parsing-between pos-before next-position)
-
       ;; see if there's as parse of the whole thing already defined
       (let ((layout
              (unless leading-quote? ;; could fix treetop walk and avoid this
                (when *parser-interior-of-no-space-token-sequence*
+                 (tr :ns-parsing-between pos-before next-position)
                  (parse-between-boundaries pos-before next-position)))))
         (cond
          ((eq layout :single-span)) ;; Do nothing. It's already known
@@ -202,7 +201,7 @@
           (scare-quote-specialist leading-quote? words pos-before next-position))
          (t 
           (parse-and-reify-ns-sequence layout words pos-before next-position))))
-      
+
       (tr :ns-returning-position next-position)
       next-position)))
 
@@ -227,7 +226,7 @@
              ;; but for now drop through and reify the words
              :has-unknown-words))         
         (:span-is-longer-than-segment
-         (break "no-space-sequence: bad positions somehow.~
+         (error "no-space-sequence: bad positions somehow.~
          ~%   Parsed span goes beyond presumed boundaries.~
          ~%   start = ~a  end = ~a" pos-before next-position))
         (otherwise
