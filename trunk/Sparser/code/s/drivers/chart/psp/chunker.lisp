@@ -9,6 +9,9 @@
 
 (in-package :sparser)
 
+;;;-------------------------------------
+;;; data structure to represent a chunk
+;;;-------------------------------------
 
 (defclass chunk ()
   ((start :initarg :start :accessor chunk-start-pos
@@ -27,6 +30,23 @@
     any auxiliaries through the main verb including any adverbs
     that are known to associate with verbs."))
 
+(defun parse-chunk-interior (chunk)
+  ;; Use the standard machinery is PTS to parse the interior
+  ;; of the chunk and introduce a corresponding edge into
+  ;; the chart. Run pts in a mode that will make it run
+  ;; to completion and return rather than makinig a tail
+  ;; recursive call back to the scan level
+  (declare (special *left-segment-boundary*
+                    *right-segment-boundary*))
+  (setq *left-segment-boundary* (chunk-start-pos chunk)
+        *right-segment-boundary* (chunk-end-pos chunk))
+  (let ((*return-after-doing-segment* t))
+    (pts)))
+
+
+;;;--------
+;;; driver 
+;;;--------
 
 (defun identify-chunks (sentence)
   ;; Get the position bounds from the sentence instance
