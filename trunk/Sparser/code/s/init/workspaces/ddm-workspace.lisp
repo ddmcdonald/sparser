@@ -19,6 +19,7 @@
 
 ; (setq *kind-of-chart-processing-to-do* :successive-sweeps)
 ; (bio-setting)
+; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 
 ; (setq *do-islands-2d-pass* nil)
 
@@ -35,14 +36,32 @@
 (defun ddm-ed (string)
   (ed (string-append "/Users/ddm/sparser/Sparser/code/s/"
                      string)))
-#|
-  (ddm-ed "init/workspaces/reference-points")
+(defun load-ddm-ws ()
+  (ddm-ed "init/workspaces/reference-points.lisp")
+  (ddm-ed "init/workspaces/traces.lisp")
+  (ddm-ed "init/workspaces/Biology-workspace.lisp"))
+; (load "/Users/ddm/ws/Sparser local/workspaces/fire.lisp")
 
-  (ddm-ed "grammar/model/sl/biology/verbs.lisp")
-
-  (ddm-ed "grammar/rules/words/punctation-bracketing.lisp")
+;  (ddm-ed "grammar/model/sl/biology/verbs.lisp")
+;  (ddm-ed "grammar/rules/words/punctation-bracketing.lisp")
   
-|#
+(defun ddm-new-parsing-ws ()
+  (ddm-ed "drivers/forest/parsing-containers.lisp")
+  (ddm-ed "drivers/forest/sweep.lisp")
+  (ddm-ed "drivers/chart/psp/pts5.lisp")
+  (ddm-ed "drivers/chart/psp/chunker.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
+
+(defun ddm-vg-elevation ()
+  (ddm-ed "grammar/rules/syntax/categories.lisp")
+  ;; propagate-suffix-to-segment 
+  (ddm-ed "grammar/rules/SDM&P/create-categories.lisp"))
+
+; uniform-scan
+;(ddm-ed "analysers/psp/patterns/uniform-scan.lisp")
+;(ddm-ed "analysers/psp/patterns/traces.lisp")
+
+
 
 (defun ddm-corpus-location ()
   ;; Note the pathname is given in ancient Mac syntax. 

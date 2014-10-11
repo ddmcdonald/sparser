@@ -38,7 +38,7 @@
 
 
 ;; "J" for Julie
-; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+
 (defun j1 ()
   (p "The most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are KRAS, PIK3CA and BRAF."))
 #|  
