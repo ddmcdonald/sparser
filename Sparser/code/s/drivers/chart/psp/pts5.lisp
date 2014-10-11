@@ -57,12 +57,10 @@
 ;;       the segment. 
 ;; 5.16 (6/4/14) Added *no-segment-level-operations* to skip on to scan the
 ;;       next segment if it's up. Motivated by just-brackets testing. 
+;; 5.17 (10/10/14) Found another way to do that, so ripped out that incomplete
+;;       attempt.
 
 (in-package :sparser)
-
-(defparameter *no-segment-level-operations* nil
-  ;;//// still a work in progress
-  "Used for testing backeting without any parsing above the single word")
 
 (defun pts ( &optional boundary-from-edge? )
   ;; called once the boundary to the segment has been
@@ -92,10 +90,6 @@
     (tr :pts-coverage coverage)
 
     (cond
-     #+ignore(*no-segment-level-operations* ;; nope. Not right yet
-      (tidy-up-segment-globals coverage)    ;; Leaves things in inconsistent state
-      (no-further-action-on-segment)
-      (scan-next-segment *right-segment-boundary*))
      (coverage
       (ecase coverage
         (:null-span
@@ -122,6 +116,7 @@
       ;; Segment-coverage returned nil, indicating that the left-boundary
       ;; hadn't been set and we're at a spurious segment end at the
       ;; very beginning of the text
+      ;//// (return-to-scanning-level *right-segment-boundary*)
       (scan-next-segment *right-segment-boundary*)))))
 
 
@@ -148,6 +143,7 @@
     ;; just happened, we can be very specific about where to drop into
     ;; the word-level fsa rather than just call scan-next-segment.
     (then
+      ;//// (return-to-scanning-level *right-segment-boundary*)
       (return-to-scan-level-from-null-span
        *where-the-last-segment-ended*))
     (else ;; (p "Roshan's driver Reza Qashqaei")
@@ -210,7 +206,7 @@ have to be tail recursion to the next thing to do.
   ;; it call the text relation noter, and so one. 
 
 
-  ;;   If we change this order for some reason, we need to
+  ;; If we change this order for some reason, we need to
   ;; change the order of the conditionals in these operations
   ;; to match.
   (defparameter *after-action-on-segments* 
@@ -360,6 +356,7 @@ have to be tail recursion to the next thing to do.
     (error "Threading bug somewhere upstream in the master control ~
             FSA~%There is no value for *right-segment-boundary*"))
   (let ((right-boundary *right-segment-boundary*))
+    ;//// (return-to-scanning-level *right-segment-boundary*)
     (if (scan-another-segment? right-boundary)
       ;; call to No-further-action-on-segment has to be delayed
       ;; until after the extension check to not lose the globals
@@ -452,6 +449,7 @@ have to be tail recursion to the next thing to do.
   (trivially-span-current-segment)
   (let ((right-boundary *right-segment-boundary*))
     (if (scan-another-segment? right-boundary)
+      ;//// (return-to-scanning-level *right-segment-boundary*)
       (then (no-further-action-on-segment)
             (scan-next-segment right-boundary))
       (else
@@ -487,6 +485,7 @@ have to be tail recursion to the next thing to do.
     (setq *pending-conjunction* nil))
   (let ((right-boundary *right-segment-boundary*))
     (if (scan-another-segment? right-boundary)
+      ;//// (return-to-scanning-level *right-segment-boundary*)
       (then (trivially-span-current-segment)
             (no-further-action-on-segment)
             (scan-next-segment right-boundary))
@@ -514,6 +513,7 @@ have to be tail recursion to the next thing to do.
   (trivially-span-current-segment)
 
   (let ((right-boundary *right-segment-boundary*))
+    ;//// (return-to-scanning-level *right-segment-boundary*)
     (if (scan-another-segment? right-boundary)
       (then (no-further-action-on-segment)
             (scan-next-segment right-boundary))
