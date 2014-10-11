@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "conjunctions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.3 August 2014
+;;;   Version:   0.3 October 2014
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/11/94
 ;; added conjunction.] to "and" and "or" 3/17
@@ -120,6 +120,7 @@
           "such that"
           "though"
           "till"
+          "thereby"
           "thus"  
           "whereas"
           "while"   
