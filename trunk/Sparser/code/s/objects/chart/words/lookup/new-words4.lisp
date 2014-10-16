@@ -18,6 +18,7 @@
 ;;      that can set up all the other words that go with, e.g. a verb.
 ;;      That fixed bug where the new forms didn't see the original oblique
 ;;      form of the lemma and build a new one. 
+;;     (10/14/14) added make-word/all-properties/or-primed
 
 (in-package :sparser)
 
@@ -76,6 +77,46 @@
                           :pname  (symbol-name symbol))))
     (catalog/word word symbol)
     word ))
+
+
+
+(defun make-word/all-properties/or-primed (character-type)
+  (declare (special *capitalization-of-current-token*
+                    *introduce-brackets-for-unknown-words-from-their-suffixes*))
+  ;; Motivated by biomedical text. When dealing with unknown words,
+  ;; morphologically-derived word are preferred to extraction from Comlex
+  ;; because they don't have its predilection for POS ambiguity. However
+  ;; some definition is much preferred to none. 
+
+  (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
+         (word (make-word :symbol symbol
+                          :pname  (symbol-name symbol))))
+
+    (catalog/word word symbol)
+
+    (ecase character-type
+      (:number (establish-properties-of-new-digit-sequence word))
+      (:alphabetical
+       (setf (word-capitalization word)
+             *capitalization-of-current-token*)
+       (let ((morph-keyword (calculate-morphology-of-word/in-buffer))
+             (entry (gethash (symbol-name symbol) *primed-words*)))
+         (unless morph-keyword ;; n.b. returns a list of the affix and its POS
+           (setq morph-keyword (affix-checker (word-pname word))))
+         (setf (word-morphology word) morph-keyword)
+         (if *introduce-brackets-for-unknown-words-from-their-suffixes*
+           (if morph-keyword
+             (assign-morph-brackets-to-unknown-word
+              word morph-keyword)
+             (when entry
+               (unpack-primed-word symbol entry)))
+           (when entry
+             (unpack-primed-word symbol entry))))))
+    word ))
+
+; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
+
+
 
 (defun look-for-primed-word-else-all-properties (character-type)
   (declare (special *capitalization-of-current-token* *primed-words*))
