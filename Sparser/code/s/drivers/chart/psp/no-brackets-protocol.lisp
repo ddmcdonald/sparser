@@ -39,16 +39,17 @@
     (loop
       (let* ((start-pos (starts-at-pos sentence))
              (first-word (pos-terminal start-pos)))
+ 
+        ;; 1st scan the text into minimal terminal edges.
+        ;; The thow is from period-hook, which will also advance
+        ;; the value returned by (sentence) to be the next sentence
+        ;; after this one that we're working on. 
         (catch :end-of-sentence
-          (case (parsing-status sentence)
-            (:initial
-             (scan-terminals-loop start-pos first-word))
-            (:scanned
-             (identify-chunks sentence))
-            (:chunked )
-            (otherwise
-             (error "'~a' is not a parsing-status for ~a"
-                    (parsing-status sentence) sentence))))
+          (scan-terminals-loop start-pos first-word))
+        ;;(break "look at tts")
+
+        (identify-chunks sentence) ;; calls PTS too
+
         (break "after") ;; just to be sure we do fall through.
         ;; EOS throws to a higher catch.
         (setq sentence (next sentence))))))
