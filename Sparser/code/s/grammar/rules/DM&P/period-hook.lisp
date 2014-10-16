@@ -12,6 +12,8 @@
 ;; 8/31/14 Moved the shift to the new forest into here. It's to fix
 ;; something that used to happen, but it will do. 
 ;; 10/6/14) First modification to accommodate successive scans operation.
+;; Tweeked that 10/15/14 so that the next sentence would be available
+;; when we moved back to the sweep loop. 
 
 
 (in-package :sparser)
@@ -53,36 +55,42 @@
   ;;(setq position-before (cadr *) position-after (caddr *))
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
+
   (when (period-marks-sentence-end? position-after)
-    (cond
-     ;; First dispatch is by 'mode' -- either we going sentence
-     ;; by sentence at the lower levels (sweeps) or we're scanning
-     ;; phrases incrementally and then going to the forest level 
-     ;; at the sentence boundary (new-forest-level
-     ((sucessive-sweeps?)
-      (case (parsing-status (sentence))
-        ;; this is the sentence that we're finishing
-        (:initial
-         (set-sentence-status (sentence) :scanned)
-         (throw :end-of-sentence :finished-scanning))
-        (:scanned
-         (set-sentence-status (sentence) :chunked)
-         (throw :end-of-sentence :finished-chunking))
-        (otherwise
-         (break "Next case in period-hook"))))
-
-     ((new-forest-protocol?)
-      ;; goes with the incremental protocol when waiting
-      ;; for an entire sentence to be chunked before
-      ;; rolling any of them up.
-      (new-forest-driver position-before)))
-
-    (let* ((pos-after-period (chart-position-after position-before))
-           (s (start-sentence pos-after-period)))
+    (let* ((s (sentence))
+           (pos-after-period (chart-position-after position-before))
+           (next (start-sentence pos-after-period)))
       (tr :period-hook)
       (when *break-on-next-sentence*
         (push-debug `(,s))
-        (break "sentence: ~a" s))))
+        (break "sentence: ~a" s))
+
+      (cond
+       ;; First dispatch is by 'mode' -- either we going sentence
+       ;; by sentence at the lower levels (sweeps) or we're scanning
+       ;; phrases incrementally and then going to the forest level 
+       ;; at the sentence boundary (new-forest-level
+       ((sucessive-sweeps?)
+        (case (parsing-status s)
+          ;; this is the sentence that we're finishing
+          (:initial
+           ;; This is the first moment when we know the length
+           ;; of the sentence. 'position-before' is the one that
+           ;; has the period as the value of its terminal slot.
+           (set-sentence-endpoints position-before s)
+           (set-sentence-status s :scanned)
+           (throw :end-of-sentence :finished-scanning))
+          (otherwise
+           (push-debug `(,next ,s))
+           (break "Period-hook did not expect the status ~a~
+                   on ~a" (parsing-status s) s))))
+
+       ((new-forest-protocol?)
+        ;; goes with the incremental protocol when waiting
+        ;; for an entire sentence to be chunked before
+        ;; rolling any of them up.
+        (new-forest-driver position-before)))))
+
   (setq *position-before-last-period* position-before))
 
 
@@ -100,6 +108,10 @@
           :initial-letter-capitalized)))
 
 
+(defun set-sentence-endpoints (period-pos sentence)
+  (setf (ends-at-pos sentence) period-pos)
+  (setf (ends-at-char sentence) (1+ (pos-character-index period-pos)))
+  sentence)
 
 
 
