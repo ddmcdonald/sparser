@@ -142,12 +142,13 @@
 ;;; phrase level
 ;;;--------------
 
-(def-form-category  np)
+(def-form-category  np)  ;; for consistency with adjg and vg 
 (def-form-category  vp)
 (def-form-category  vg)
 (def-form-category  pp)
 (def-form-category  advp)
 (def-form-category  adjp)
+(def-form-category  adjg) ;; for consistency with ng and vg -- could have been adj-bar?
 (def-form-category  qp)
 (def-form-category  proper-name)
 
@@ -221,6 +222,7 @@
 (def-form-category  adjective)
 (def-form-category  proper-adjective)
 (def-form-category  comparative)
+(def-form-category  superlative)
 (def-form-category  spatial-adjective)
 (def-form-category  temporal-adjective)
 
@@ -259,6 +261,177 @@
 ;;;--------------------------------------------------------------------------
 ;;; methods for testing whether a form category is one of a particular group
 ;;;--------------------------------------------------------------------------
+
+(defvar *ng-start-categories*
+  '(CATEGORY::DET 
+    CATEGORY::QUANTIFIER 
+    CATEGORY::ADVERB 
+    CATEGORY::ADJECTIVE
+    CATEGORY::PROPER-ADJECTIVE
+    CATEGORY::COMPARATIVE
+    CATEGORY::SUPERLATIVE
+    CATEGORY::SPATIAL-ADJECTIVE
+    CATEGORY::TEMPORAL-ADJECTIVE
+    CATEGORY::VERB+ED
+    CATEGORY::VERB+ING
+    CATEGORY::COMMON-NOUN/PLURAL
+    CATEGORY::NOUN/VERB-AMBIGUOUS
+    CATEGORY::COMMON-NOUN
+    CATEGORY::PROPER-NOUN
+    CATEGORY::PRONOUN
+    CATEGORY::POSSESSIVE-PRONOUN))
+
+(defvar *ng-internal-categories*
+  '(CATEGORY::QUANTIFIER 
+    CATEGORY::ADVERB 
+    CATEGORY::ADJECTIVE
+    CATEGORY::PROPER-ADJECTIVE
+    CATEGORY::COMPARATIVE
+    CATEGORY::SUPERLATIVE
+    CATEGORY::SPATIAL-ADJECTIVE
+    CATEGORY::TEMPORAL-ADJECTIVE
+    CATEGORY::VERB+ED
+    CATEGORY::VERB+ING
+    CATEGORY::COMMON-NOUN/PLURAL
+    CATEGORY::NOUN/VERB-AMBIGUOUS
+    CATEGORY::COMMON-NOUN
+    CATEGORY::PROPER-NOUN))
+
+
+(defvar *ng-head-categories*
+  '(CATEGORY::VERB+ING
+    CATEGORY::COMMON-NOUN/PLURAL
+    CATEGORY::NOUN/VERB-AMBIGUOUS
+    CATEGORY::COMMON-NOUN
+    CATEGORY::PROPER-NOUN
+    CATEGORY::PRONOUN
+    ;; not sure about these -- think of "the largest" as an NP
+    CATEGORY::COMPARATIVE
+    CATEGORY::SUPERLATIVE
+    ))
+
+
+(defgeneric ng-compatible? (label)
+  (:documentation "Is a category which can occur inside a NG"))
+(defmethod ng-compatible? ((w word))
+  t)
+(defmethod ng-compatible? ((e edge))
+  (ng-compatible? (edge-form e)))
+(defmethod ng-compatible? ((c referential-category))
+  (ng-compatible? (cat-symbol c)))
+(defmethod ng-compatible? ((name symbol))
+  (memq name *ng-internal-categories*))
+
+(defgeneric ng-start? (label)
+  (:documentation "Is a category which can occur inside a NG"))
+(defmethod ng-start? ((w word))
+  t)
+(defmethod ng-start? ((e edge))
+  (ng-start? (edge-form e)))
+(defmethod ng-start? ((c referential-category))
+  (ng-start? (cat-symbol c)))
+(defmethod ng-start? ((name symbol))
+  (memq name *ng-start-categories*))
+
+(defgeneric ng-head? (label)
+  (:documentation "Is a category which can occur as the head of an NG"))
+(defmethod ng-head? ((w word))
+  t)
+(defmethod ng-head? ((e edge))
+  (or
+   (ng-head? (edge-form e))
+   (and
+    (eq category::det (edge-form e))
+    (memq (word-symbol (edge-referent e))
+          '(WORD::|that|)))))
+
+(defmethod ng-head? ((c referential-category))
+  (ng-head? (cat-symbol c)))
+(defmethod ng-head? ((name symbol))
+  (memq name *ng-head-categories*))
+
+(defvar *vg-word-categories*
+  '(CATEGORY::ADVERB 
+    CATEGORY::MODAL
+    CATEGORY::VERB
+    CATEGORY::VERB+S
+    CATEGORY::VERB+ED
+    CATEGORY::VERB+ING
+    CATEGORY::VERB+PRESENT
+    CATEGORY::VERB+PASSIVE
+    CATEGORY::NOUN/VERB-AMBIGUOUS))
+
+(defvar *vg-head-categories*
+  '(CATEGORY::VERB
+    CATEGORY::VERB+S
+    CATEGORY::VERB+ED
+    CATEGORY::VERB+ING
+    CATEGORY::VERB+PRESENT
+    CATEGORY::VERB+PASSIVE
+    CATEGORY::NOUN/VERB-AMBIGUOUS))
+
+(defgeneric vg-compatible? (label)
+  (:documentation "Is a category which can occur inside a VG"))
+(defmethod vg-compatible? ((w word))
+  t)
+(defmethod vg-compatible? ((e edge))
+  (vg-compatible? (edge-form e)))
+(defmethod vg-compatible? ((c referential-category))
+  (vg-compatible? (cat-symbol c)))
+(defmethod vg-compatible? ((name symbol))
+  (memq name *vg-word-categories*))
+
+(defgeneric vg-head? (label)
+  (:documentation "Is a category which can occur as the head of a VG"))
+(defmethod vg-head? ((w word))
+  t)
+(defmethod vg-head? ((e edge))
+  (vg-head? (edge-form e)))
+(defmethod vg-head? ((c referential-category))
+  (vg-head? (cat-symbol c)))
+(defmethod vg-head? ((name symbol))
+  (memq name *vg-head-categories*))
+
+
+(defvar *adjg-word-categories*
+  '(CATEGORY::ADVERB 
+    CATEGORY::ADJECTIVE
+    CATEGORY::PROPER-ADJECTIVE
+    CATEGORY::COMPARATIVE
+    CATEGORY::SUPERLATIVE
+    CATEGORY::SPATIAL-ADJECTIVE
+    CATEGORY::TEMPORAL-ADJECTIVE))
+
+(defvar *adjg-head-categories*
+  '(CATEGORY::ADJECTIVE
+    CATEGORY::PROPER-ADJECTIVE
+    CATEGORY::COMPARATIVE
+    CATEGORY::SUPERLATIVE
+    CATEGORY::SPATIAL-ADJECTIVE
+    CATEGORY::TEMPORAL-ADJECTIVE))
+
+(defgeneric adjg-compatible? (label)
+  (:documentation "Is a category which can occur inside an ADJG"))
+(defmethod adjg-compatible? ((w word))
+  t)
+(defmethod adjg-compatible? ((e edge))
+  (adjg-compatible? (edge-form e)))
+(defmethod adjg-compatible? ((c referential-category))
+  (adjg-compatible? (cat-symbol c)))
+(defmethod adjg-compatible? ((name symbol))
+  (memq name *adjg-word-categories*))
+
+(defgeneric adjg-head? (label)
+  (:documentation "Is a category which can occur as the head of an ADJG"))
+(defmethod adjg-head? ((w word))
+  t)
+(defmethod adjg-head? ((e edge))
+  (vg-head? (edge-form e)))
+(defmethod adjg-head? ((c referential-category))
+  (vg-head? (cat-symbol c)))
+(defmethod adjg-head? ((name symbol))
+  (memq name *adjg-head-categories*))
+
 
 (defgeneric noun-category? (label)
   (:documentation "Nouns and their variants. Should be a single word"))
