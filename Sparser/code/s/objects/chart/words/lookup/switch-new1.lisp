@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "switch new"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:   1.0 March 2012
+;;;  Version:   1.0 October 2014
 
 ;; 1.0 (2/6/92 v2.2) Pulled the original version of Make-new... and
 ;;      replaced it with two more specific cases
 ;;     (12/12/94 v2.3) added the :no-properties case
 ;;     (3/1/12) quiet compiler
+;;     (10/14/14) added :capitalization-digits-&-morphology/or-primed
 
 (in-package :sparser)
 
@@ -36,6 +37,9 @@
     (:capitalization-digits-&-morphology
      (setf (symbol-function 'establish-unknown-word)
            (symbol-function 'make-word/all-properties)))
+    (:capitalization-digits-&-morphology/or-primed
+     (setf (symbol-function 'establish-unknown-word)
+           (symbol-function 'make-word/all-properties/or-primed)))
     (:check-for-primed
      (setf (symbol-function 'establish-unknown-word)
            (symbol-function 'look-for-primed-word-else-all-properties)))
