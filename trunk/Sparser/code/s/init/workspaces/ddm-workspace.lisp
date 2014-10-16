@@ -21,6 +21,15 @@
 ; (bio-setting)
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 
+;; 10/14/14
+; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
+; (trace-lexicon-unpacking)
+; (trace-morphology)
+
+
+;; 10/14/14
+; (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
+
 ; (setq *do-islands-2d-pass* nil)
 
 #| 10/9/14 noun brackets are being added to word::single-quote
@@ -44,13 +53,18 @@
 
 ;  (ddm-ed "grammar/model/sl/biology/verbs.lisp")
 ;  (ddm-ed "grammar/rules/words/punctation-bracketing.lisp")
+
+;  (ddm-ed "grammar/model/dossiers/modifiers.lisp")
   
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/forest/parsing-containers.lisp")
   (ddm-ed "drivers/forest/sweep.lisp")
   (ddm-ed "drivers/chart/psp/pts5.lisp")
   (ddm-ed "drivers/chart/psp/chunker.lisp")
+  (ddm-ed "drivers/forest/new-forest-protocol.lisp")
+  (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
+
 
 (defun ddm-vg-elevation ()
   (ddm-ed "grammar/rules/syntax/categories.lisp")
