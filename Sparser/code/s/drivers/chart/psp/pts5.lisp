@@ -58,7 +58,7 @@
 ;; 5.16 (6/4/14) Added *no-segment-level-operations* to skip on to scan the
 ;;       next segment if it's up. Motivated by just-brackets testing. 
 ;; 5.17 (10/10/14) Found another way to do that, so ripped out that incomplete
-;;       attempt.
+;;       attempt.	
 
 (in-package :sparser)
 
@@ -116,8 +116,23 @@
       ;; Segment-coverage returned nil, indicating that the left-boundary
       ;; hadn't been set and we're at a spurious segment end at the
       ;; very beginning of the text
-      ;//// (return-to-scanning-level *right-segment-boundary*)
-      (scan-next-segment *right-segment-boundary*)))))
+      ;;(scan-next-segment *right-segment-boundary*)
+      (return-to-scanning-level *right-segment-boundary*)))))
+
+
+
+(defparameter *return-after-doing-segment* nil
+  "Governs whether the phrase-interior parsing done by PTS and its
+   subroutines should re-enter the scanning level of processing
+   by directly making a tail-recursive call to one of the functions 
+   at that level (or at the forest level) -- nil. Or should instead
+   return to its caller -- t. ")
+
+(defun return-to-scanning-level (boundary-pos)
+  (declare (special *return-after-doing-segment*))
+  (unless *return-after-doing-segment*
+    (scan-next-segment boundary-pos)))
+
 
 
 (defun segment-parsed1 ()
@@ -143,15 +158,14 @@
     ;; just happened, we can be very specific about where to drop into
     ;; the word-level fsa rather than just call scan-next-segment.
     (then
-      ;//// (return-to-scanning-level *right-segment-boundary*)
-      (return-to-scan-level-from-null-span
-       *where-the-last-segment-ended*))
+      ;;(return-to-scan-level-from-null-span *where-the-last-segment-ended*)
+      (return-to-scanning-level *right-segment-boundary*)
+)
     (else ;; (p "Roshan's driver Reza Qashqaei")
      (when *peek-rightward*
        (unless (eq coverage :one-edge-over-entire-segment)
          (march-peeking-rightward coverage)))
      (after-action-on-segments (segment-coverage)))))
-
 
 
 (defun tidy-up-segment-globals (coverage)
@@ -351,23 +365,24 @@ have to be tail recursion to the next thing to do.
         (consider-converting-title-to-person convering-edge)))))
 
 (defun sf-action/spanned-segment1 ()
+  (declare (special *return-after-doing-segment*))
   (tr :sf-action/spanned-segment1)
   (unless *right-segment-boundary*
     (error "Threading bug somewhere upstream in the master control ~
             FSA~%There is no value for *right-segment-boundary*"))
   (let ((right-boundary *right-segment-boundary*))
-    ;//// (return-to-scanning-level *right-segment-boundary*)
-    (if (scan-another-segment? right-boundary)
-      ;; call to No-further-action-on-segment has to be delayed
-      ;; until after the extension check to not lose the globals
-      ;; used by its traces
-      (then (no-further-action-on-segment)
-            (scan-next-segment right-boundary))
-      (else
-        (no-further-action-on-segment)
-        (move-to-forest-level right-boundary
-                              :full-segment-scanned)))))
-
+    ;; open-coding of return-to-scanning-level
+    (unless *return-after-doing-segment*
+      (if (scan-another-segment? right-boundary)
+        ;; call to No-further-action-on-segment has to be delayed
+        ;; until after the extension check to not lose the globals
+        ;; used by its traces
+        (then (no-further-action-on-segment)
+          (scan-next-segment right-boundary))
+        (else
+         (no-further-action-on-segment)
+         (move-to-forest-level right-boundary
+                               :full-segment-scanned))))))
 
 
 (defun sf-action/all-contiguous-edges ()
@@ -442,21 +457,22 @@ have to be tail recursion to the next thing to do.
         (sf-action/some-adjacent-edges/no-more-heuristics)))))
 
 (defun sf-action/some-adjacent-edges/no-more-heuristics ()
+  (declare (special *return-after-doing-segment*))
   (tr :sf-action/some-adjacent-edges/no-more-heuristics)
   (when *pending-conjunction*
     (tr ::turning-off-conj-flag-w/o-any-action)
     (setq *pending-conjunction* nil))
   (trivially-span-current-segment)
   (let ((right-boundary *right-segment-boundary*))
-    (if (scan-another-segment? right-boundary)
-      ;//// (return-to-scanning-level *right-segment-boundary*)
-      (then (no-further-action-on-segment)
-            (scan-next-segment right-boundary))
-      (else
-        (no-further-action-on-segment)
-        (move-to-forest-level right-boundary  ;; *where-the-last-segment-ended*
-                              :segment-spanned-by-default)))))
-
+    (unless *return-after-doing-segment*
+      ;; open-coded return-to-scanning-level
+      (if (scan-another-segment? right-boundary)
+        (then (no-further-action-on-segment)
+          (scan-next-segment right-boundary))
+        (else
+         (no-further-action-on-segment)
+         (move-to-forest-level right-boundary  ;; *where-the-last-segment-ended*
+                               :segment-spanned-by-default))))))
 
 
 
@@ -479,21 +495,23 @@ have to be tail recursion to the next thing to do.
         (sf-action/discont-edges/no-more-heuristics)))))
 
 (defun sf-action/discont-edges/no-more-heuristics ()
+  (declare (special *return-after-doing-segment*))
   (tr :discontinuous/no-more-heuristics)
   (when *pending-conjunction*
     (tr ::turning-off-conj-flag-w/o-any-action)
     (setq *pending-conjunction* nil))
   (let ((right-boundary *right-segment-boundary*))
-    (if (scan-another-segment? right-boundary)
-      ;//// (return-to-scanning-level *right-segment-boundary*)
-      (then (trivially-span-current-segment)
-            (no-further-action-on-segment)
-            (scan-next-segment right-boundary))
-      (else
-        (trivially-span-current-segment)
-        (no-further-action-on-segment)
-        (move-to-forest-level right-boundary    ;;*left-segment-boundary*
-                              :empty-segment-scanned)))))
+    (unless *return-after-doing-segment*
+      ;; open-coded return-to-scanning-level
+      (if (scan-another-segment? right-boundary)
+        (then (trivially-span-current-segment)
+          (no-further-action-on-segment)
+          (scan-next-segment right-boundary))
+        (else
+         (trivially-span-current-segment)
+         (no-further-action-on-segment)
+         (move-to-forest-level right-boundary    ;;*left-segment-boundary*
+                               :empty-segment-scanned))))))
 
 
 
@@ -503,6 +521,7 @@ have to be tail recursion to the next thing to do.
   ;; no information about the segment except that it is one, so
   ;; give it a trivial span just so we don't have to crawl through
   ;; this region later
+  (declare (special *return-after-doing-segment*))
   (tr :no-edges)
   (when *pending-conjunction*
     ;; could happen when cruising through text that's not in
@@ -513,25 +532,24 @@ have to be tail recursion to the next thing to do.
   (trivially-span-current-segment)
 
   (let ((right-boundary *right-segment-boundary*))
-    ;//// (return-to-scanning-level *right-segment-boundary*)
-    (if (scan-another-segment? right-boundary)
-      (then (no-further-action-on-segment)
-            (scan-next-segment right-boundary))
+    ;; open-coded return-to-scanning-level
+    (unless *return-after-doing-segment*
+      (if (scan-another-segment? right-boundary)
+        (then (no-further-action-on-segment)
+          (scan-next-segment right-boundary))
 
-      (else
-        ;; had made the position where forest parsing should start be the
-        ;; "left" boundary on the grounds that there would never be a combination
-        ;; with this trivially spanned segment, but that led to an infinite
-        ;; loop on the string "--" (when they were just punctuation with no
-        ;; rules).  It's a matter of making sure that the quiescence pointer
-        ;; keeps up with the segment scan so that when we get to eos they
-        ;; arrive at the same position (that of the eos) with just one last
-        ;; call to the forest level.
-        (no-further-action-on-segment)
-        (move-to-forest-level right-boundary
-                              :empty-segment-scanned)))))
-
-
+        (else
+         ;; had made the position where forest parsing should start be the
+         ;; "left" boundary on the grounds that there would never be a combination
+         ;; with this trivially spanned segment, but that led to an infinite
+         ;; loop on the string "--" (when they were just punctuation with no
+         ;; rules).  It's a matter of making sure that the quiescence pointer
+         ;; keeps up with the segment scan so that when we get to eos they
+         ;; arrive at the same position (that of the eos) with just one last
+         ;; call to the forest level.
+         (no-further-action-on-segment)
+         (move-to-forest-level right-boundary
+                               :empty-segment-scanned))))))
 
 (defun trivially-span-current-segment ()
   (when *use-segment-edges-as-segment-defaults*
