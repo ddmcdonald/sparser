@@ -28,10 +28,14 @@ The main line:
   analysis-core  inititate-top-edges-protocol  pts  PPTT
 
 
-tts  print-treetops
+tts  print-treetops  right-treetop-at/edge
 
 pronoun reference:  seek-person-for-pronoun dereference-proper-noun
 
+Document structure: chart-region  document-region
+  has-parent  has-children 
+  ordered  indexed
+  has-content-model
      
 analysis-core-return-value
 terminate-section  => section objects
