@@ -19,7 +19,7 @@
   ((storage-type
     :initform :recycled-list
     :initarg :storage-type :accessor storage-type
-    :documentation "Determines indexing, access, ... methods")
+    :documentation "Determines indexing, access, etc. methods")
    (access-type
     :documentation "Supplies a way to get one of these by accessing
       the resource itself.")
@@ -91,6 +91,9 @@ make them according to the spec given in the class instance
       (intern pname (find-package :sparser)))))
   
 
+;;;-------------------------------------------
+;;; Indexing resource instances for retrieval
+;;;-------------------------------------------
 
 (defvar *classname-to-resource* (make-hash-table)
   "Holds the resource information for the class: from a keyword
@@ -115,6 +118,9 @@ make them according to the spec given in the class instance
   `(define-resource/expr ',class-name ,count ,delta))
 
 (defun define-resource/expr (class-name count delta)
+  "What class are we storing instances of, how many to start 
+   with (count), and how many should additional instances 
+   should we add when needed (delta)."
   (unless count (setq count 100))
   (unless delta (setq delta 50))
   (unless (symbolp class-name)
@@ -137,6 +143,7 @@ make them according to the spec given in the class instance
 
 
 (defun increment-resource (r)
+  "Add the indicated number of new instances of this resource."
   (let ((number-to-add (delta r))
         (existing-instances (resource-store r))
         (class-name (resource-class-name r)))
