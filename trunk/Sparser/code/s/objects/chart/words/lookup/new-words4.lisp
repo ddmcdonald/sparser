@@ -66,19 +66,6 @@
 
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
 
-;; Move?
-(defun make-word-from-lookup-buffer ()
-  "Reifies a the standard operations to fully create a word from
-   the lookup-buffer. Open-coded in the all the routines except
-   the prime-check because it doesn't want to make the word here
-   but as part of the entry unpacking."
-  (let* ((symbol (make-word-symbol))
-         (word (make-word :symbol symbol
-                          :pname  (symbol-name symbol))))
-    (catalog/word word symbol)
-    word ))
-
-
 
 (defun make-word/all-properties/or-primed (character-type)
   (declare (special *capitalization-of-current-token*
@@ -91,7 +78,6 @@
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (make-word :symbol symbol
                           :pname  (symbol-name symbol))))
-
     (catalog/word word symbol)
 
     (ecase character-type
@@ -109,9 +95,9 @@
              (assign-morph-brackets-to-unknown-word
               word morph-keyword)
              (when entry
-               (unpack-primed-word symbol entry)))
+               (unpack-primed-word word symbol entry)))
            (when entry
-             (unpack-primed-word symbol entry))))))
+             (unpack-primed-word word symbol entry))))))
     word ))
 
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
@@ -120,24 +106,27 @@
 
 (defun look-for-primed-word-else-all-properties (character-type)
   (declare (special *capitalization-of-current-token* *primed-words*))
-  (ecase character-type
-    (:number
-     (let ((word (make-word-from-lookup-buffer)))
-       (establish-properties-of-new-digit-sequence word)
-       word))
-    (:alphabetical
-     (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
-            (entry (gethash (symbol-name symbol) *primed-words*)))
-       (when (and (null entry)
-                  (eq *capitalization-of-current-token*
-                      :initial-letter-capitalized))
-         ;; Sentence-inital capitalization check
-         (let ((cap (string-capitalize (symbol-name symbol))))
-           (setq entry (gethash cap *primed-words*))))
+  (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
+         (word (make-word :symbol symbol
+                          :pname  (symbol-name symbol))))
+    (catalog/word word symbol)
+
+    (ecase character-type
+      (:number
+       (establish-properties-of-new-digit-sequence word))
+      (:alphabetical
+       (let ((entry (gethash (symbol-name symbol) *primed-words*)))
+         (when (and (null entry)
+                    (eq *capitalization-of-current-token*
+                        :initial-letter-capitalized))
+           ;; Sentence-inital capitalization check
+           (let ((cap (string-capitalize (symbol-name symbol))))
+             (setq entry (gethash cap *primed-words*))))
            
-       (if entry
-         (unpack-primed-word symbol entry)
-         (make-word/all-properties character-type))))))
+         (if entry
+             (unpack-primed-word word symbol entry)
+             (make-word/all-properties character-type)))))
+    word))
 
 ;(what-to-do-with-unknown-words :check-for-primed)
 
@@ -151,14 +140,14 @@
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (make-word :symbol symbol
                           :pname  (symbol-name symbol))))
+    (catalog/word word symbol)
 
     (ecase character-type
-      (:number (establish-properties-of-new-digit-sequence   word))
+      (:number (establish-properties-of-new-digit-sequence word))
       (:alphabetical 
        (setf (word-capitalization word)
              *capitalization-of-current-token*)))
 
-    (catalog/word word symbol)
     word ))
 
 ;(what-to-do-with-unknown-words :capitalization-&-digits)
