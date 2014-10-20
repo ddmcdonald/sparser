@@ -48,6 +48,7 @@
           (scan-terminals-loop start-pos first-word))
         ;;(break "look at tts")
 
+        (push-debug `(,sentence))
         (identify-chunks sentence) ;; calls PTS too
 
         (break "after") ;; just to be sure we do fall through.
