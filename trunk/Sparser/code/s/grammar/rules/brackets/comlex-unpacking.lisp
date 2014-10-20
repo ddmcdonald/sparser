@@ -64,7 +64,7 @@ places. ]]
 ;; look-for-primed-word-else-all-properties (in objects/chart/
 ;; words/lookup/new-words4).
 
-(defun unpack-primed-word (symbol entry)
+(defun unpack-primed-word (word symbol entry)
   ;; Called from look-for-primed-word-else-all-properties when
   ;; what-to-do-with-unknown-words is set to :check-for-primed.
   ;; The lookup is (gethash (symbol-name symbol) *primed-words*)
@@ -78,9 +78,7 @@ places. ]]
   ;; entire set (simpler that way). The 'instance' is what
   ;; we've just seen, and the 'lemma' is the head word of
   ;; the entry.
-
-  (let ((instance-word (make-word-from-lookup-buffer)))
-    (continue-unpacking-lexical-entry instance-word entry)))
+  (continue-unpacking-lexical-entry word entry))
 
 (defun continue-unpacking-lexical-entry (instance-word entry)
   (let* ((instance-string (word-pname instance-word))
