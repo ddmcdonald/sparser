@@ -12,23 +12,27 @@
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
-; (setup-bio) ;; load the bio model etc.
-; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
-;    (setq *note-text-relations* nil)
-; (bf-off)
+(defun ddm-standard () ;; (ddm-standard)
+  (setup-bio) ;; load the bio model etc.
+  ;; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
+  (setq *note-text-relations* nil)
+  (bf-off)
+  (setq *kind-of-chart-processing-to-do* :successive-sweeps)
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed))
 
-; (setq *kind-of-chart-processing-to-do* :successive-sweeps)
 ; (bio-setting)
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 
 ;; 10/14/14
-; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
+;
 ; (trace-lexicon-unpacking)
 ; (trace-morphology)
 
 
-;; 10/14/14
+;; 10/14,19/14
 ; (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
+; (ddm-ed "grammar/rules/syntax/affix-rules1.lisp")
+; (ddm-ed "grammar/rules/brackets/comlex-unpacking.lisp")
 
 ; (setq *do-islands-2d-pass* nil)
 
@@ -43,8 +47,9 @@
 |#
 
 (defun ddm-ed (string)
-  (ed (string-append "/Users/ddm/sparser/Sparser/code/s/"
-                     string)))
+  (ed (concatenate 'string
+                   "/Users/ddm/sparser/Sparser/code/s/"
+                   string)))
 (defun load-ddm-ws ()
   (ddm-ed "init/workspaces/reference-points.lisp")
   (ddm-ed "init/workspaces/traces.lisp")
