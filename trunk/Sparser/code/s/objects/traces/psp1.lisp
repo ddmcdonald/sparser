@@ -1106,12 +1106,48 @@
                (var-name variable)
                i value)))
 
-(deftrace ::adding-entity-to-situation (i)
+(deftrace :adding-entity-to-situation (i)
   ;; called from add-entity
   (when *trace-c3*
     (trace-msg "[c3] Adding ~a to the situation" i)))
 
 
+;;;------------------------------------------------------------------
+;;; Traces for the new (9/14) handling of segmentation and scannning
+;;;------------------------------------------------------------------
 
+(deftrace :scanning-terminals-of (sentence)
+  ;; called from sentence-sweep-loop
+  (when (or *trace-network* *trace-segments*)
+    (trace-msg "Scanning all the terminals of ~a" sentence)))
+
+(deftrace :identifying-chunks-in (sentence)
+  ;; called from sentence-sweep-loop
+  (when (or *trace-network* *trace-segments*)
+    (trace-msg "Identifying the chunks in ~a" sentence)))
+
+(deftrace :parsing-chunk-interior-of (chunk)
+  ;; called from identify-chunks
+  (when (or *trace-network* *trace-segments*)
+    (trace-msg "Abount to parse interior of ~a" chunk)))
+               
+
+;;--- details of the chunker's operation
+
+(defparameter *trace-chunker* nil)
+(defun trace-chunker () (setq *trace-chunker* t))
+(defun untrace-chunker () (setq *trace-chunker* nil))
+
+(deftrace :chunk-loop-next-edge (edge)
+  (when *trace-chunker*
+    (trace-msg "Next edge in the loop: ~a" edge)))
+
+(deftrace :delimited-chunk (chunk)
+  (when (or *trace-chunker* *trace-segments*)
+    (trace-msg "Delimited chunk: ~a" chunk)))
+
+(deftrace :delimited-ill-formed-chunk (chunk)
+  (when (or *trace-chunker* *trace-segments*)
+    (trace-msg "Delimited chunk without a head: ~a" chunk)))
 
 
