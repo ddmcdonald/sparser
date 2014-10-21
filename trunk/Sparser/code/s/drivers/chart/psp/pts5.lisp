@@ -146,7 +146,11 @@
 ;;;------------------------
 ;;; decide what to do next
 ;;;------------------------
-(defparameter *peek-rightward* t) ;; stopgap while debuggign
+
+(defparameter *peek-rightward* t ;; stopgap while debugging
+  "After a segment is completely finished and the coverage
+  is incomplete, should we use march-peeking-rightward to
+  look for compositions that the leftward march may have missed")
 
 (defun segment-finished (coverage)
   (tr :segment-finished coverage)
@@ -159,8 +163,7 @@
     ;; the word-level fsa rather than just call scan-next-segment.
     (then
       ;;(return-to-scan-level-from-null-span *where-the-last-segment-ended*)
-      (return-to-scanning-level *right-segment-boundary*)
-)
+      (return-to-scanning-level *right-segment-boundary*))
     (else ;; (p "Roshan's driver Reza Qashqaei")
      (when *peek-rightward*
        (unless (eq coverage :one-edge-over-entire-segment)
@@ -347,7 +350,9 @@ have to be tail recursion to the next thing to do.
   (check-segment-finished-hook)
   (if *pending-conjunction*
     (if *do-heuristic-segment-analysis*
-      (check-out-possible-conjunction *left-segment-boundary*)
+      (if (sucessive-sweeps?)
+         (sf-action/spanned-segment1)
+         (check-out-possible-conjunction *left-segment-boundary*))
       (else
         (tr ::turning-off-conj-flag-w/o-any-action)
         (setq *pending-conjunction* nil)
