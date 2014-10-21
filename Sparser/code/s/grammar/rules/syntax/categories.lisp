@@ -299,7 +299,7 @@
 
 
 (defvar *ng-head-categories*
-  '(CATEGORY::VERB+ING
+  '(
     CATEGORY::COMMON-NOUN/PLURAL
     CATEGORY::NOUN/VERB-AMBIGUOUS
     CATEGORY::COMMON-NOUN
@@ -338,12 +338,24 @@
 (defmethod ng-head? ((w word))
   t)
 (defmethod ng-head? ((e edge))
-  (or
-   (ng-head? (edge-form e))
-   (and
-    (eq category::det (edge-form e))
-    (memq (word-symbol (edge-referent e))
-          '(WORD::|that|)))))
+  (cond
+   ((eq (edge-form e) CATEGORY::VERB+ING)
+    (and
+     (not (eq category::det 
+              (edge-form
+               (right-treetop-at/edge
+                (pos-edge-ends-at e)))))
+     (not
+      (memq 
+       (word-symbol (edge-referent
+                     (right-treetop-at/edge
+                      (pos-edge-ends-at e))))      
+       '(WORD::|that| WORD::|which| WORD::|whose|)))))
+   ((ng-head? (edge-form e)) t)
+   ((and
+     (eq category::det (edge-form e))
+     (memq (word-symbol (edge-referent e))
+           '(WORD::|that|))))))
 
 (defmethod ng-head? ((c referential-category))
   (ng-head? (cat-symbol c)))
@@ -426,9 +438,9 @@
 (defmethod adjg-head? ((w word))
   t)
 (defmethod adjg-head? ((e edge))
-  (vg-head? (edge-form e)))
+  (adjg-head? (edge-form e)))
 (defmethod adjg-head? ((c referential-category))
-  (vg-head? (cat-symbol c)))
+  (adjg-head? (cat-symbol c)))
 (defmethod adjg-head? ((name symbol))
   (memq name *adjg-head-categories*))
 
