@@ -140,11 +140,6 @@ schema on form rules:  def-form-rule/expr
 Mumble:  parameter-arg-list-from-dtn
 
 
-;; checked in segment-finished
-*peek-rightward* t
 
-(defparameter *debug-segment-handling* t
-  "Guards errors and breaks within the segment handling code that traps
-   new cases or violations of standing assumptions.")
 
 |#

@@ -1,5 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2014 SIFT LLC  -- all rights reserved
+;;; See toplevel file LICENSE
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "init;workspaces:"
@@ -21,6 +22,8 @@
 ;  (trace-brackets)
 ;; Summary information on segment creation
 ;  (trace-segments)
+;; details of the new chunker
+;  (trace-chunker)
 
 ;; what the no-spaces-between words routine is doing
 ;  (trace-ns-sequences)

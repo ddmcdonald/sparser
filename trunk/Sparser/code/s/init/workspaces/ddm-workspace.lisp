@@ -17,22 +17,23 @@
   ;; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
   (setq *note-text-relations* nil)
   (bf-off)
+  (trace-lexicon-unpacking) (trace-morphology)
+  (trace-chunker)
   (setq *kind-of-chart-processing-to-do* :successive-sweeps)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed))
 
 ; (bio-setting)
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 
-;; 10/14/14
-;
-; (trace-lexicon-unpacking)
-; (trace-morphology)
-
+; (setq *parse-chunk-interior-online* t)
+; (progn (trace-chunker) (trace-segments))
+; (progn (untrace-chunker) (untrace-segments))
 
 ;; 10/14,19/14
 ; (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
 ; (ddm-ed "grammar/rules/syntax/affix-rules1.lisp")
 ; (ddm-ed "grammar/rules/brackets/comlex-unpacking.lisp")
+; (ddm-ed "grammar/rules/words/one-offs/comlex-def-forms.lisp")
 
 ; (setq *do-islands-2d-pass* nil)
 
@@ -68,7 +69,12 @@
   (ddm-ed "drivers/chart/psp/chunker.lisp")
   (ddm-ed "drivers/forest/new-forest-protocol.lisp")
   (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
+  (ddm-ed "objects/traces/psp1.lisp"))
+
+; (ddm-ed "objects/doc/object1.lisp")  -- document structure
+; (ddm-ed "tools/basics/resource.lisp)  -- auto recycling
+; (ddm-ed "objects/doc/classes.lisp") -- what is this doing ????
 
 
 (defun ddm-vg-elevation ()
