@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2014 David D. McDonald
+;;; Copyright (c) 2010-2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  0.2 September 2014
+;;;  Version:  0.23October 2014
 
 ;; Extracted from one-offs/comlex 12/3/12.
 ;; 0.1 (8/12/13) Wrapped the eval of the def-word expression in an
@@ -17,6 +17,8 @@
 ;;      them all even though we will often not be using that scheme in
 ;;      the word lookup and object creation. 
 ;;     (9/11/14) moved out the subcategorization stub. 
+;; 8.3 (10/20/14) removed the ignore-errors that was wrapped around
+;;      the eval's of the def-word forms. 
 
 (in-package :sparser)
 
@@ -61,8 +63,11 @@
         (unless (eq (car entry) 'def-word)
           (error "Comlex entry based on something other than ~
                 def-word:~%  ~a" entry))
-        (ignore-errors 
-         (eval entry))))))
+        ;;(ignore-errors 
+        ;; We need to detect any problems within the Comlex
+        ;; forms. Problems with accent characters have blocked
+        ;; large swaths of the entries from loading.
+        (eval entry)))))
 
 
 
