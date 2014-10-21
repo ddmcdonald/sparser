@@ -35,8 +35,12 @@ to the value of the viable after-action flag for segments.
   ;;(format t "coverage = ~a~%" coverage)
   (case coverage
     (:one-edge-over-entire-segment
-     (let* ((edge (edge-over-segment))
-            (form (edge-form edge)))
+     (let ((edge (edge-over-segment))
+           form )
+       (when edge
+         ;; if chunks and actual segments don't align, then
+         ;; edge-over-segment will return nil
+         (setq form (edge-form edge)))
        (when form ;; no form on puctuation edges
          (unless (typep (edge-referent edge) 'individual)
            (let* ((prefix (segment-minimal-prefix))
