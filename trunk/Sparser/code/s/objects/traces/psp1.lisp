@@ -1130,6 +1130,12 @@
   ;; called from identify-chunks
   (when (or *trace-network* *trace-segments*)
     (trace-msg "Abount to parse interior of ~a" chunk)))
+
+(defparameter *trace-sweep* nil)
+(defun trace-terminals-sweep ()
+  (setq *trace-sweep* t))
+(defun untrace-terminals-sweep ()
+  (setq *trace-sweep* nil)
                
 
 ;;--- details of the chunker's operation
