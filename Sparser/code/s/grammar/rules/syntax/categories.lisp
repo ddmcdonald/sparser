@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 September 2014
+;;;  Version:  0.8 October 2014
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -50,6 +50,8 @@
 ;;      e.g. number, look like a form category when you want it to.
 ;;     (6/9/14) Added mixin adjective-adverb here as nothing else seemed better
 ;;     (9/26/14) added vp-category?
+;;     (10/22/14) Extended the np 'start' (etc.) lists with number and converted them
+;;      to defparameter's so they could be updated. 
 
 (in-package :sparser)
 
@@ -262,9 +264,10 @@
 ;;; methods for testing whether a form category is one of a particular group
 ;;;--------------------------------------------------------------------------
 
-(defvar *ng-start-categories*
+(defparameter *ng-start-categories*
   '(CATEGORY::DET 
     CATEGORY::QUANTIFIER 
+    category::number
     CATEGORY::ADVERB 
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
@@ -281,8 +284,9 @@
     CATEGORY::PRONOUN
     CATEGORY::POSSESSIVE-PRONOUN))
 
-(defvar *ng-internal-categories*
+(defparameter *ng-internal-categories*
   '(CATEGORY::QUANTIFIER 
+    category::number
     CATEGORY::ADVERB 
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
@@ -298,7 +302,7 @@
     CATEGORY::PROPER-NOUN))
 
 
-(defvar *ng-head-categories*
+(defparameter *ng-head-categories*
   '(
     CATEGORY::COMMON-NOUN/PLURAL
     CATEGORY::NOUN/VERB-AMBIGUOUS
@@ -308,6 +312,7 @@
     ;; not sure about these -- think of "the largest" as an NP
     CATEGORY::COMPARATIVE
     CATEGORY::SUPERLATIVE
+    category::number ;; 'How many do you want? I want 3'
     ))
 
 
