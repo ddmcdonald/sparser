@@ -34,25 +34,36 @@
   (scan-next-position) ;; adds 1st real word into the chart
   (sentence-sweep-loop))
 
+(deftrace :entering-sentence-sweep-loop ()
+  ;; called from sentence-sweep-loop
+  (when *trace-network-flow*
+    (trace-msg "Entering sentence-sweep-loop")))
+
 (defun sentence-sweep-loop ()
+  (tr :entering-sentence-sweep-loop)
   (let ((sentence (sentence)))
     (loop
       (let* ((start-pos (starts-at-pos sentence))
              (first-word (pos-terminal start-pos)))
+        (push-debug `(,sentence))
  
         ;; 1st scan the text into minimal terminal edges.
         ;; The thow is from period-hook, which will also advance
         ;; the value returned by (sentence) to be the next sentence
         ;; after this one that we're working on. 
+        (tr :scanning-terminals-of sentence)
         (catch :end-of-sentence
           (scan-terminals-loop start-pos first-word))
-        ;;(break "look at tts")
+        (break "look at tts")
 
-        (push-debug `(,sentence))
+        (tr :identifying-chunks-in sentence)
         (identify-chunks sentence) ;; calls PTS too
 
-        (break "after") ;; just to be sure we do fall through.
-        ;; EOS throws to a higher catch.
+        ;(break "after handling ~a" sentence) 
+        ;; EOS throws to a higher catch. If the next sentence
+        ;; is empty we will hit the end of source as we
+        ;; start scanning terminals and it will throw
+        ;; beyond this point. 
         (setq sentence (next sentence))))))
 
 
@@ -62,7 +73,7 @@ there is not already a word at this 'next' position. Returns
 the position. (N.b. there's an incremental trace hook in it.) |#
 
 (defun scan-terminals-loop (position-before word)
-  (when t
+  (when *trace-sweep*
     (format t "~&p~a ~s"
             (pos-token-index position-before) (word-pname word)))
   (simple-eos-check position-before word)
@@ -169,25 +180,41 @@ the position. (N.b. there's an incremental trace hook in it.) |#
   ;; that it ends at. Returns either that position or nil. 
   (tr :check-for-polywords word position-before)
   (set-status :polywords-check position-before)
-  (when (word-rules word)
-    ;; When check-for-polywords refers to 'position-before' it is
-    ;; wrong since it really means the position /after/ the word.
-    ;; This is reinforced by capitalized-correspondent, which figures
-    ;; out what's the (real) position before since it's been
-    ;; passed in the (real) position-after. The upshot is that
-    ;; unless we do it like this (or propagate the correct labeling)
-    ;; we won't be able to get from the lower case word in our
-    ;; hands and the capitalized version of the word that's the
-    ;; one with the PW defined on it, e.g. "G-domain"
-    (let ((pw-cfr (initiates-polyword 
-                   word (chart-position-after position-before))))
-      (when pw-cfr
-        (let ((position-reached
-               (do-polyword-fsa word pw-cfr position-before)))
-          (push-debug `(,position-reached))
-          ;; Check the status -- cf. adjudicate-result-of-word-fsa
-          ;(break "Polyword succeeded at ~a" position-reached)
-          position-reached)))))
+  (let ((pw-cfr (initiates-polyword1 word position-before)))
+    ;; This "1" variant calls a "1" variant of capitalized-correspondent
+    ;; which use the position information correctly
+    (when pw-cfr
+      (tr :word-initiates-polyword word position-before)
+      (let ((position-reached
+             (do-polyword-fsa word pw-cfr position-before)))
+        (if position-reached
+          (tr :pw-was-found position-before position-reached)
+          (tr :pw-not-found word position-before))
+        (push-debug `(,position-reached))
+        ;; Check the status -- cf. adjudicate-result-of-word-fsa
+        ;(break "Polyword succeeded at ~a" position-reached)
+        position-reached))))
+
+(deftrace :word-initiates-polyword (word position-before)
+  ;; Called from polyword-check
+  (when *trace-sweep*
+    (trace-msg "[pw] ~s at p~a initiates polywords"
+               (word-pname word) (pos-token-index position-before))))
+
+(deftrace :pw-was-found (position-before position-reached)
+  ;; Called from polyword-check
+  (when *trace-sweep*
+    (trace-msg "[pw] polyword found between p~a and p~a"
+               (pos-token-index position-before)
+               (pos-token-index position-reached))))
+
+(deftrace :pw-not-found (word position-before)
+  ;; Called from polyword-check
+  (when *trace-sweep*
+    (trace-msg "[pw] The potential polyword for ~s at p~a did ~
+                not complete" (word-pname word) 
+                (pos-token-index position-before))))
+
 
 
 (defun simple-eos-check (position-before word)
