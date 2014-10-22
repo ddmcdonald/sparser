@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: words2.lisp 207 2009-06-18 20:59:16Z cgreenba $
+
 ;;; 
 ;;;     File:  "words"
 ;;;   Module:  "analyzers;FSA:"
-;;;  Version:  2.2 February 2013
+;;;  Version:  2.4 October 2014
 
 ;; 5/5/93 v2.3, typed in hard copy of 11/24/92 that had been lost in
 ;;  disk crash
@@ -29,6 +29,9 @@
 ;;      polyword is found we'll never look for it at that position with
 ;;      this code. (2/15/13) Fixed the polyword lookup to appreciate the option
 ;;      of the rule being on a capitalized variant of the word.
+;; 2.4 (10/22/14) Added initiates-polyword1 which differs only in that it
+;;      calls capitalized-correspondent1, which gets the choice of position
+;;      correct. Start of changing it all over.
 
 (in-package :sparser)
 
@@ -232,6 +235,21 @@
     (let ((rules-field (word-rules word)))
       (or (polyword-rule rules-field)
           (let ((caps-word (capitalized-correspondent word position-before)))
+            (when caps-word
+              (let ((caps-rules-field (word-rules caps-word)))
+                (polyword-rule caps-rules-field))))))))
+
+(defun initiates-polyword1 (word position-before)
+  ;; Returns the rule that marks the polyword
+  (flet ((polyword-rule (rules-field)
+           (when rules-field
+             (let ((fsa-field (rs-fsa rules-field)))
+               (loop for item in fsa-field
+                 when (typep item 'cfr)
+                 return item)))))
+    (let ((rules-field (word-rules word)))
+      (or (polyword-rule rules-field)
+          (let ((caps-word (capitalized-correspondent1 position-before word)))
             (when caps-word
               (let ((caps-rules-field (word-rules caps-word)))
                 (polyword-rule caps-rules-field))))))))
