@@ -1,9 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990-1996,2012-2014 David D. McDonald  -- all rights reserved
+
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.4 June 2014
+;;;  Version:  0.5 October 2014
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -23,6 +24,9 @@
 ;; 0.4 (11/7/13) Fixed bad assumption about what position the capitalization 
 ;;      was on  when source is ] after. (6/3/14) fixed case in capitalized-correspondent
 ;;      where the 'word' was actually a category.
+;; 0.5 (10/22/14) Added capitalized-correspondent1, which gets the choice of 
+;;       position correct. Start of changing it all over, see list of references
+;;       next to the function.
 
 (in-package :sparser)
 
@@ -61,6 +65,33 @@
     (let* ((position-before (chart-position-before position-after-word))
            (capitalization (pos-capitalization position-before)))
       (capitalized-version lc-word capitalization))))
+
+
+(defun capitalized-correspondent1 (position-before lc-word)
+  ;; This switching positions is brain dead. Below is the list of
+  ;; of references, many of them in the brackets operations. Don't
+  ;; want to disturb them right now, so making this alternative
+  ;; which we switch all the way over to once the conversion is complete
+  (unless (category-p lc-word)
+    ;; When we get here from [-on-position-because-of-word? when
+    ;; it's looking for brackets associated with the form label
+    ;; on an edge, we get a category for this parameter rather than
+    ;; a word, so of course this doesn't make sense.
+    (let ((capitalization (pos-capitalization position-before)))
+      (capitalized-version lc-word capitalization))))
+
+#|
+analyzers/FSA/words2.lisp:          (let ((caps-word (capitalized-correspondent word position-before)))
+analyzers/HA/look.lisp:         (variant (capitalized-correspondent word p)))
+analyzers/HA/look.lisp:                    (capitalized-correspondent word p))))
+analyzers/HA/place-brackets1.lisp:      (let ((v (capitalized-correspondent label position-after)))
+analyzers/HA/place-brackets1.lisp:      (let ((v (capitalized-correspondent label position-before)))
+drivers/chart/psp/no-brackets-protocol.lisp:    ;; This is reinforced by capitalized-correspondent, which figures
+grammar/rules/FSAs/abbreviations2.lisp:;;      that it passed to capitalized-correspondent was causing failures.
+grammar/rules/FSAs/abbreviations2.lisp:         (caps-variant? (capitalized-correspondent
+objects/chart/words/lookup/capitalization.lisp:;;      was on  when source is ] after. (6/3/14) fixed case in capitalized-correspondent
+objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent (lc-word position-after-word)
+|#
 
 
 (defun capitalized-version (lc-word caps-type)
