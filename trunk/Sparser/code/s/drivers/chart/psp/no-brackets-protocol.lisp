@@ -54,12 +54,17 @@
         (tr :scanning-terminals-of sentence)
         (catch :end-of-sentence
           (scan-terminals-loop start-pos first-word))
-        (break "look at tts")
+        ;;(break "look at tts")
 
         (tr :identifying-chunks-in sentence)
         (identify-chunks sentence) ;; calls PTS too
 
         ;(break "after handling ~a" sentence) 
+
+        (let ((*return-after-doing-forest-level* t))
+          (declare (special *return-after-doing-forest-level*))
+          (new-forest-driver sentence))
+
         ;; EOS throws to a higher catch. If the next sentence
         ;; is empty we will hit the end of source as we
         ;; start scanning terminals and it will throw
@@ -99,40 +104,43 @@ the position. (N.b. there's an incremental trace hook in it.) |#
              (pos-token-index position-before)
              (pos-token-index position-after)))
 
-    ;; (trace-traversal-hook) (trace-traversal-hits)
-    (word-traversal-hook word position-before position-after)
-    ;; Traversal actions are managed by a hash table from the word
-    ;; qua label (i.e. could be applied to edges as well) to a function
-    ;; that takes these same arguments. This is used for bracket pairs
-    ;; such as parentheses, double quotes, etc. Check with a call to
-    ;; (list-hash-table *traversal-routine-table*)
-    ;;    The action is always on the matching close. The open
-    ;; notes its oposition so the close knows what span to operate
-    ;; over. We check for traversal hits before the no-space check
-    ;; because the ns is greedy and moves the position, which can
-    ;; cause the open to be missed. 
+    (let ((traversal-checked position-before))
+      ;; (trace-traversal-hook) (trace-traversal-hits)
+      (word-traversal-hook word position-before position-after)
+      ;; Traversal actions are managed by a hash table from the word
+      ;; qua label (i.e. could be applied to edges as well) to a function
+      ;; that takes these same arguments. This is used for bracket pairs
+      ;; such as parentheses, double quotes, etc. Check with a call to
+      ;; (list-hash-table *traversal-routine-table*)
+      ;;    The action is always on the matching close. The open
+      ;; notes its oposition so the close knows what span to operate
+      ;; over. We check for traversal hits before the no-space check
+      ;; because the ns is greedy and moves the position, which can
+      ;; cause the open to be missed. 
 
 
-    (when (no-space-before-word? position-before)
-      ;; As with PW, if it succeeds we need to restart the loop
-      ;; where it leaves off. 
-      (let ((where-ns-ended (do-no-space-collection position-before)))
-        (when where-ns-ended ;; which will have been scanned
-          (setq position-before where-ns-ended
-                position-after (chart-position-after position-before)
-                word (pos-terminal position-before)))))
-    (unless (includes-state position-after :scanned)
-      (scan-next-position))
+      (when (no-space-before-word? position-before)
+        ;; As with PW, if it succeeds we need to restart the loop
+        ;; where it leaves off. 
+        (let ((where-ns-ended (do-no-space-collection position-before)))
+          (when where-ns-ended ;; which will have been scanned
+            (setq position-before where-ns-ended
+                  position-after (chart-position-after position-before)
+                  word (pos-terminal position-before)))))
+      (unless (includes-state position-after :scanned)
+        (scan-next-position))
 
-    ;;/// if we noted whether no-space had completed we could
-    ;; conditionalize this 'addional' check. But we do need it
-    ;; for the cases where the earlier traversal check picked up
-    ;; the open and the no-space has moved us ahead so that we're
-    ;; about to see the close. 
-    ;; (trace-parentheses)
-    (word-traversal-hook word
-                         position-before
-                         position-after)
+
+      (unless (eq traversal-checked position-before)
+        ;;/// if we noted whether no-space had completed we could
+        ;; conditionalize this 'addional' check. But we do need it
+        ;; for the cases where the earlier traversal check picked up
+        ;; the open and the no-space has moved us ahead so that we're
+        ;; about to see the close. 
+        ;; (trace-parentheses)
+        (word-traversal-hook word
+                             position-before
+                             position-after)))
 
 
     (complete-word/hugin word position-before position-after)
@@ -194,26 +202,6 @@ the position. (N.b. there's an incremental trace hook in it.) |#
         ;; Check the status -- cf. adjudicate-result-of-word-fsa
         ;(break "Polyword succeeded at ~a" position-reached)
         position-reached))))
-
-(deftrace :word-initiates-polyword (word position-before)
-  ;; Called from polyword-check
-  (when *trace-sweep*
-    (trace-msg "[pw] ~s at p~a initiates polywords"
-               (word-pname word) (pos-token-index position-before))))
-
-(deftrace :pw-was-found (position-before position-reached)
-  ;; Called from polyword-check
-  (when *trace-sweep*
-    (trace-msg "[pw] polyword found between p~a and p~a"
-               (pos-token-index position-before)
-               (pos-token-index position-reached))))
-
-(deftrace :pw-not-found (word position-before)
-  ;; Called from polyword-check
-  (when *trace-sweep*
-    (trace-msg "[pw] The potential polyword for ~s at p~a did ~
-                not complete" (word-pname word) 
-                (pos-token-index position-before))))
 
 
 
