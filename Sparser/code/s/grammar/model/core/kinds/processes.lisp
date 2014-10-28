@@ -3,13 +3,14 @@
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  September 2014
+;;;  version:  October 2014
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
 ;; we get the variables presently on event without (yet) saying
 ;; something about perdurants -- that will take some more thought
 ;; and engender more changes later. Cleaned up some wording too.
+;; 10/27/14 added circumstance to event variables
 
 (in-package :sparser)
 
@@ -21,6 +22,7 @@
   :binds ((time)
           (location)
           (purpose)
+          (circumstance)
           (modifier)
           (aspect . tense/aspect)) ;; see rules/tense
   :realization (:common-noun "event")
