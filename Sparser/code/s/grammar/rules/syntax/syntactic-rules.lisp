@@ -1,11 +1,12 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  September 2014
+;;;  Version:  October 2014
 
-;; Initiated 9/7/14 to collect the rules into one place.
+;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
+;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
 
 (in-package :sparser)
 
@@ -47,6 +48,13 @@
   :referent (:head right-edge))
 
 
+;;--- PP complement
+(def-syntax-rule (vg pp)
+                 :head :left-edge
+  :form vp
+  :referent (:function adjoin-pp-to-vg left-edge right-edge))
+
+
 ;;--- direct object
 
 (def-syntax-rule (vg np)
@@ -54,18 +62,6 @@
   :form vp
   :referent (:head left-edge
              :bind (participant right-edge)))
-
-
-;;--- bound prepositions (stricltly temporary fallback)
-(def-syntax-rule (vg preposition)
-                 :head :left-edge
-  :form vp
-  :referent (:daughter left-edge))
-
-(def-syntax-rule (vg pp)
-                 :head :left-edge
-  :form vp
-  :referent (:daughter left-edge)) ;;/// method that looks for relationship
 
 
 ;;--- NPs
@@ -117,17 +113,17 @@
                  :head :left-edge
   :form pp
   ;; again, neeed a moere interesting referent.
-  :referent (:head right-edge))
+  :referent (:function apply-preposition-to-complement left-edge right-edge))
 
 (def-syntax-rule (preposition vg) ;; J3 hydrolysis maybe elevate?
                  :head :left-edge
   :form pp
-  :referent (:head right-edge))
+  :referent (:function apply-preposition-to-complement left-edge right-edge))
 
-(def-syntax-rule (preposition subj+verb) ;;//// "GTP loading"
+(def-syntax-rule (preposition s) ;;//// "GTP loading" or subj+verb
                  :head :left-edge
   :form pp
-  :referent (:head right-edge))
+  :referent (:function apply-preposition-to-complement left-edge right-edge))
 
 ;;--- Relative clauses
 

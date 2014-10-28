@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  3.9 September 2014
+;;;  Version:  3.9 October 2014
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -23,6 +23,7 @@
 ;;     (1/22/13) Added [adjectives]
 ;; 3.9 (7/25/14) Bumped affix-rules to 1. (8/27/14) bumped conjuction to 8
 ;;     (9/7/14) added [syntactic rules]. 9/11/14 added [subcategorization]
+;;     (10/27/14) added [syntax functions]
 
 (in-package :sparser)
 
@@ -32,6 +33,7 @@
   ;;  reference these categories, so it's been moved into the
   ;;  master loader
   (gload "syntax;subcategorization")
+  (gload "syntax;syntax-functions")
   (gload "syntax;syntactic rules"))
 
 (gate-grammar *heuristics-from-morphology*

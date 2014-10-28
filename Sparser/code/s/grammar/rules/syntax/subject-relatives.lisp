@@ -3,8 +3,8 @@
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "subject relatives"
-;;;   Module:  "model;rules:syntax:"
-;;;  version:  September 2014
+;;;   Module:  "grammar;rules:syntax:"
+;;;  version:  October 2014
 
 ;; initiated 6/18/93 v2.3
 ;; (8/9/07) Well something else can go in this file, but just now this
@@ -129,6 +129,27 @@
   ;; referent of the combination is the np's referent
   np)
 
+
+;;;-----------------
+;;; Really doing it
+;;;-----------------
+;;/// 10/27/14 This ought to be a method
+
+(defun apply-upstairs-np-to-subject-relative (np-ref subj-rel-ref)
+  ;; look for empty variables to fill
+  (push-debug `(,np-ref ,subj-rel-ref))
+  (if (itypep subj-rel-ref 'collection)
+    (let ((items (value-of 'items subj-rel-ref)))
+      (dolist (vp-ref items)
+        (apply-upstairs-np-to-subject-relative np-ref vp-ref)))
+    (cond
+     ((open-in subj-rel-ref 'subject) ;; J3 hydrolysis
+      ;; trace
+      (bind-variable 'subject np-ref subj-rel-ref))
+     ((open-in subj-rel-ref 'theme)
+      (bind-variable 'theme np-ref subj-rel-ref))
+     (t
+      (unspecified-adjunction np-ref subj-rel-ref)))))
 
 ;;;----------------------
 ;;; Hobbsian connectives
