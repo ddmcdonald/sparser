@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  2.3 August 2013
+;;;  version:  2.3 October 2014
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -38,6 +38,7 @@
 ;;      that it's used correctly.
 ;; 2.3 (8/26/13) Refactored value of bindings search a bit. Added bound-in-value-of
 ;;      as direct analog of value-of
+;;     (10/27/14) added open-in method
 
 (in-package :sparser)
 
@@ -429,6 +430,23 @@
     `(let* ((obj-pointer ,object)
            ,@let-bindings)
        ,@body)))
+
+
+(defgeneric open-in (individual variable)
+  (:documentation "Does this the category(ies) of this individual
+    include the variable, and if so is it still unbound in this
+    individual?"))
+
+(defmethod open-in ((i individual) (var-name symbol))
+  (let ((var (find-variable-in-category var-name i)))
+    (open-in i var)))
+
+(defmethod open-in ((i individual) (var lambda-variable))
+  (when (null (value-of var i))
+    ;; it's bound or doesn't apply
+    (let ((category (itype-of i))) ;; assumes multiple categories don't matter
+      ;;/// needs a proper sweep like super-categories-of might return
+      (memq var (cat-slots category)))))
 
 
 
