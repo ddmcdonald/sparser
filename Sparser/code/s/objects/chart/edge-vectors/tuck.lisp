@@ -74,10 +74,10 @@
   (push-debug `(,above-this-one ,old-edge-vector ,new-edge-vector))
   
   (let* ((index (index-of-edge-in-vector above-this-one old-edge-vector)))
-    (break "index = ~a" index)
+    ;;(break "index = ~a" index)
     (let ((edges-to-move (edges-higher-than old-edge-vector index)))
       (push-debug `(,edges-to-move))
-      (break "edges-to-move")
+      ;;(break "edges-to-move")
       (dolist (edge edges-to-move)
         (ecase direction
           (:left (setf (edge-starts-at edge) new-edge-vector))
