@@ -59,7 +59,7 @@
         (tr :identifying-chunks-in sentence)
         (identify-chunks sentence) ;; calls PTS too
 
-        ;(break "after handling ~a" sentence) 
+        ;;(break "after chunking ~a" sentence) 
 
         (let ((*return-after-doing-forest-level* t))
           (declare (special *return-after-doing-forest-level*))
