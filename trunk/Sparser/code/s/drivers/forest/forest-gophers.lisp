@@ -252,12 +252,28 @@
           (find-verb left))
          ((eq left-form (category-named 'adjective)) ;; "responsible"
           left)
-         ((eq right-form (category-named 'verb))
+         ((verb-category? right) ;; "is activated"
           right)
          (t (push-debug `(,left ,right ,left-form ,right-form))
             (break "find-verb: new case")))))))
 
 
+
+(defun rightmost-np-under-s (tt)
+  ;; Assumes we're starting at s, so add a check
+  (let ((right-daughter (edge-right-daughter tt)))
+    (when right-daughter
+      (typecase right-daughter
+        (word nil)
+        (symbol nil)
+        (edge
+         (if (eq (edge-form right-daughter) (category-named 'np))
+           right-daughter
+           (rightmost-np-under-s right-daughter)))
+        (otherwise
+         (push-debug `(,tt ,right-daughter))
+         (error "Unexpected type of right daughter: ~a~%  ~a"
+                (type-of right-daughter) right-daughter))))))
 
 
 ;;;-------
