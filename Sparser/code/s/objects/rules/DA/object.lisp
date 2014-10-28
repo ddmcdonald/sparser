@@ -33,6 +33,11 @@
 
 (defparameter *debris-analysis-rules* (make-hash-table :test #'eq))
 
+(defun list-da-actions ()
+  (maphash #'(lambda (key value)
+	       (format t "~&key: ~a  value: ~a" key value))
+	   *debris-analysis-rules*))
+
 (defun da-rule-named (symbol)
   (gethash symbol *debris-analysis-rules*))
 
