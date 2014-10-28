@@ -41,22 +41,16 @@
                (chunk-start-pos chunk)
                (pos-edge-starts-at
                 (left-treetop-at/edge (chunk-end-pos chunk))))
-         stream)
-)
+         stream))
 
+:+ignore
 (defmethod print-object ((chunk chunk) stream)
   (print (list 'chunk (chunk-forms chunk) 
                (chunk-start-pos chunk)
                (pos-edge-starts-at
                 (left-treetop-at/edge (chunk-end-pos chunk))))
-         stream)
-)
+         stream))
 
-;; Blew up on the chunk tht comes after 'activated forms' in the
-;; list of chunks in J2 -- really bad index somewhere
-;;  ===> chunk over the "the" on positin 25 has the same end index
-;;    as it's start index, which weirded out the routine that
-;;    lifts out the words
 (defmethod print-object ((chunk chunk) stream)
   (print-unreadable-object (chunk stream :type t)
     (let ((start (chunk-start-pos chunk))
@@ -64,26 +58,9 @@
       (format stream "~a p~a ~s p~a"
               (chunk-forms chunk)
               (pos-token-index start)
-              (string-of-words-between start end)
+              (if (eq start end) "" (string-of-words-between start end)) ;; has happened
               (pos-token-index end)))))
 
-
-;;; This is now obsolete -- discussions with David suggest that the original bracket
-;;;  information is not safely useful
-(defun introduce-brackets-on-sentence-positions (&optional (sentence (sentence)))
-  (let*
-      ((start (starts-at-pos sentence))
-       (pos-before start))
-    (until
-        (eq (right-treetop-at/edge pos-before)
-            *end-of-source*)
-        sentence
-      (let*
-          ((edge (right-treetop-at/edge pos-before))
-           (label (edge-form edge))
-           (pos-after (pos-edge-ends-at edge)))
-        (introduce-brackets label pos-before pos-after)
-        (setq pos-before pos-after)))))
 
 (defun pos-loop (fn &optional (sentence (sentence)))
   (let*
@@ -95,7 +72,6 @@
         sentence
       (let*
           ((edge (right-treetop-at/edge pos-before))
-           (label (edge-form edge))
            (pos-after (pos-edge-ends-at edge)))
         (funcall fn pos-before)
         (setq pos-before pos-after)))))
@@ -106,14 +82,23 @@
 ;;; driver 
 ;;;--------
 
+(defparameter *parse-chunk-interior-online* nil
+  "Gates the option to parse the interior of a chunk
+   just after the chunk is created. Referenced in
+   identify-chunks")
+;; Turn this on when the PTS return is debugged
+
 (defun identify-chunks (sentence)
   (let ((chunks (find-chunks sentence)))
-;; Turn this on when the PTS return is debugged
-;    (dolist (chunk chunks) ;; easier to add traces than in a loop call
-;      (parse-chunk-interior chunk))
+    (push-debug `(,sentence ,chunks)) ;;(break "~a chunks" (length chunks))
+    ;;(pop-debug) (setq sentence (car *) chunks (cadr *))
+    (when *parse-chunk-interior-online*
+      (dolist (chunk chunks)
+        (push-debug `(,chunk))
+        (tr :parsing-chunk-interior-of chunk)
+        (parse-chunk-interior chunk)))
     (set-sentence-status sentence :chunked)
     chunks))
-
 
 (defun parse-chunk-interior (chunk)
   ;; Use the standard machinery is PTS to parse the interior
@@ -129,50 +114,10 @@
     (declare (special *return-after-doing-segment*))
     (pts)))
 
-
-
-(defun unique-edge? (edge)
-   (if
-     (eq edge :multiple-initial-edges)
-     ;; nasty ambiguity -- what do we do here
-     (break)
-     edge)
-  )
-
-(defun unique-next-edge (pos)
-  (unique-edge? (ev-top-node (pos-starts-here pos)))
-  )
-
-(defun unique-prev-edge (pos)
- (unique-edge? (ev-top-node (pos-ends-here pos)))
-  )
-    
-(defun unique-next-pos (pos)
-    ;; find next meaningful pos -- assuming that the chart has been filled in
-    ;; and all polywords, etc. have been filled in, then the next place to look is the
-    ;; pos at the end of the primary edge -- DAVID -- I need a consultation here
-  (pos-edge-ends-at (unique-next-edge pos))
-  )
-
-;; Rusty: these obviously belong in a different file, but just now
-;; I though you might find this educational -- in lieu of the proper
-;; note documentation that I've not yet done. This is the standard pattern
-(defparameter *trace-chunker* nil)
-(defun trace-chunker () (setq *trace-chunker* t))
-(defun untrace-chunker () (setq *trace-chunker* nil))
-
-(deftrace :finding-chunks-in (sentence)
-  (when *trace-chunker*
-    (trace-msg "Looking for phrasal chunks in ~a" sentence)))
-
-(deftrace :chunk-loop-next-edge (edge)
-  (when *trace-chunker*
-    (trace-msg "Next edge in the loop: ~a" edge)))
-
+;; Rusty -- traces moved to objects/traces/psp1.lisp
 
 (defun find-chunks (&optional (sentence (sentence)))
-  (declare (special *chunks* *next-chunk*))
-  (tr :finding-chunks-in sentence)
+  ;(declare (special *chunks* *next-chunk*))
   (setq *next-chunk* nil)
   (setq *chunks* nil)
   (let ((pos (starts-at-pos sentence))
@@ -196,27 +141,20 @@
 
 
 
-(deftrace :delimited-chunk (chunk)
-  (when *trace-chunker*
-    (trace-msg "Delimited chunk: ~a" chunk)))
-
-(deftrace :delimited-ill-formed-chunk (chunk)
-  (when *trace-chunker*
-    (trace-msg "Delimited chunk without a head: ~a" chunk)))
-
-
 (defun delimit-next-chunk (edge)
   ;; know that the edge immediately after start is consistent with some
   ;;  chunk type (maybe more than one)
   ;;  Goal is to create the longest chunk possible from this point
+  ;(declare (special edge))
   (let* ((start (pos-edge-starts-at edge))
-         ;;(edge (right-treetop-at/edge start))  ddm: we already had it
+         ;;(edge (right-treetop-at/edge start))  ;; ddm: we already had it
          ;;(edge-is-word (eq edge (pos-terminal start))) appears to be fixed
          (forms (starting-forms edge *chunk-forms*)) ;; already have this too
          (chunk (make-instance 'chunk :forms forms :start start :end nil))
          (pos start)
          possible-heads)
-    (declare (special forms pos possible-heads edge last-head chunk pos edge-is-word))
+;    (declare (special forms pos possible-heads ;; edge
+;                      last-head chunk pos edge-is-word))
  
     (until
         (or (chunk-end-pos chunk)
@@ -231,7 +169,8 @@
         ;;  thus, chunk must end at or before this pos-before
         (let
             ((head (best-head (chunk-forms chunk) possible-heads)))
-          (declare (special head))
+;         (declare (special head))
+          ;;(break "chunk")
           (cond
            (head
            ;; the chunk has a head for at least one of the consistent forms
@@ -248,10 +187,8 @@
         (setq pos (pos-edge-ends-at edge))
         (loop for ch in (compatible-heads forms edge pos) 
           do (push ch possible-heads))
-        ;;(break "eos?")
         (setq edge (right-treetop-at/edge pos))
         (tr :chunk-loop-next-edge edge)
-        ;;(setq edge-is-word (eq edge (pos-terminal pos))) ;; DAVID -- WE NEED TO TALK
         (setq forms (remaining-forms edge (chunk-forms chunk)))
         )))))
 
@@ -275,14 +212,8 @@
     collect
     (list form next-pos)))
 
-(defun start-chunk-here? (pos)
-  (let
-      ((forms (remaining-forms *chunk-forms* (edge-form (right-treetop-at/edge pos)))))
-    (when
-        forms
-      (make-instance chunk :forms forms :start-pos pos))))
 
-
+:+ignore
 (defun test-remaining-forms ()
   (let
       ((forms *chunk-forms*))
