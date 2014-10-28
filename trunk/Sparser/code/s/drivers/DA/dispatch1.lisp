@@ -1,20 +1,37 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2011-2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "dispatch"
 ;;;   Module:  "drivers;DA:"
-;;;  Version:  July 2013
+;;;  Version:  October 2014
 
 ;; initiated 10/27/94 v2.3.  Moved it and gave it some flesh 5/5/95
 ;; 1.0 (5/19) redid them as tail recursion and removed an interveening layer.
 ;;     (11/7/11) replaced the etypecase. 7/29/13 Figured out strange bug
 ;;      caused by bad return value from successful DA function.
+;;    (10/24/14) Lifting out the pertinent parts of execute-da-trie
+;;      into standalone-da-execution so that it is not imbedded in the
+;;      tail recursion. 
 
 (in-package :sparser)
 
 ;;;-------------------------
 ;;; interface to the driver 
 ;;;-------------------------
+
+(defun standalone-da-execution (1st-vertex tt)
+  ;; run and return rather than thread back into 
+  (let ((pos-before (pos-edge-starts-at tt))
+        (pos-after  (pos-edge-ends-at tt)))
+    (initialize-da-search)
+    (initialize-da-action-globals tt pos-before pos-after)
+    (let ((result
+           (catch :da-pattern-matched
+             (catch :no-da-pattern-matched
+               (check-for-extension-from-vertex 1st-vertex tt)))))
+      result)))
+
+
 
 (defun execute-da-trie (1st-vertex tt pos-before pos-after)
 
