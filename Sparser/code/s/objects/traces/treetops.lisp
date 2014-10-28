@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013-2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "treetops"
 ;;;   Module:  "objects;traces:"
-;;;  Version:   March 2013
+;;;  Version:   October 2014
 
 ;; Stubbed with parameters 10/1990. Moved in the traces from
-;; drivers/chart/psp/march-forest 3/8/13.
+;; drivers/chart/psp/march-forest 3/8/13. 
+;; Adding patterns for the new forest design through 10/23/14.
 
 (in-package :sparser)
 
@@ -553,9 +554,19 @@
                (pos-token-index end-pos))))
 
 (deftrace :island-driver-forest-pass-2 ()
-  ;; called from run-island-checks-pass-two
+  ;; called from island-driven-forest-parse
   (when (or *trace-network-flow* *trace-island-driving*)
-    (trace-msg "Doing 2d pass of island-driving")))
+    (trace-msg "~&~%~%Doing 2d pass of island-driving")))
+
+(deftrace :islands-pass-2 (tt-count)
+  ;; called from run-island-checks-pass-two
+  (when *trace-island-driving*
+    (trace-msg " Looking for patterns over ~a treetops" tt-count)))
+
+(deftrace :no-established-pass-2-patterns-applied ()
+  ;; called from run-island-checks-pass-two
+  (when *trace-island-driving*
+    (trace-msg "   No established patterns applied")))
 
 ;;--- toplevel traces
 
@@ -616,6 +627,20 @@
 
 
 
+
+
+;;--- general
+
+(deftrace :no-edge-to-the-right-of (edge)
+  ;; called from try-simple-pps
+  (when *trace-island-driving*
+    (trace-msg "[islands]   There is no edge to the right of e~a"
+                (edge-position-in-resource-array edge))))
+
+(deftrace :no-edge-to-the-left-of (edge)
+  (when *trace-island-driving*
+    (trace-msg "[islands]   There is no edge to the left of e~a"
+                (edge-position-in-resource-array edge))))
 
 
 
@@ -735,20 +760,6 @@
     (trace-msg "[islands]  It composed with a ~a to form e~a"
                (edge-form right-neighbor)
                (edge-position-in-resource-array edge))))
-
-
-;;--- general
-
-(deftrace :no-edge-to-the-right-of (edge)
-  ;; called from try-simple-pps
-  (when *trace-island-driving*
-    (trace-msg "[islands]   There is no edge to the right of e~a"
-                (edge-position-in-resource-array edge))))
-
-(deftrace :no-edge-to-the-left-of (edge)
-  (when *trace-island-driving*
-    (trace-msg "[islands]   There is no edge to the left of e~a"
-                (edge-position-in-resource-array edge))))
 
 
 ;;--- bound prepositions
@@ -909,10 +920,27 @@
                (edge-position-in-resource-array right))))
 
 (deftrace :new-conjunction-pattern ()
-    ;; called from try-spanning-conjunctions
+  ;; called from try-spanning-conjunctions
   (when *trace-island-driving*
     (trace-msg "[islands] new arrangement of conjuncts")))
 
+(deftrace :trying-to-conjoin (e1 e2)
+  ;; called from try-spanning-conjunctions
+  (when *trace-island-driving*
+    (trace-msg "[islands] Trying to conjoin  e~a and e~a"
+               (edge-position-in-resource-array e1)
+               (edge-position-in-resource-array e2))))
+
+(deftrace :conjoined-edge (edge)
+  ;; called from try-spanning-conjunctions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   They onjoined to form e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :no-conjunction-heuristics-applied ()
+  ;; called from try-spanning-conjunctions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   No conjunction heuristics applied")))
 
 ;;--- Short leftward extension (roll up from the right)
 
@@ -940,10 +968,56 @@
 
 ;;--- 2d pass
 
+
+(deftrace :filling-in-between-subj-and-verb (subject copula tt-count)
+  ;; called from fill-in-between-subject-and-final-verb
+  (when *trace-island-driving*
+    (trace-msg "[islands] trying to makes sense of the region ~
+                between the subject e~a and the copula e~a~
+              ~%    ~a treetops"
+               (edge-position-in-resource-array subject)
+               (edge-position-in-resource-array copula)
+               tt-count)))
+
+(deftrace :pattern-over-three-tt (tt1 tt2 tt3)
+  ;; called from look-for-length-three-patterns
+  (when *trace-island-driving*
+    (trace-msg "[islands] Looking for a pattern over the three treetops ~
+                e~a, e~a, and e~a"
+               (edge-position-in-resource-array tt1)
+               (edge-position-in-resource-array tt2)
+               (edge-position-in-resource-array tt3))))
+
+(deftrace :comma-3tt-pattern (edge)
+  ;; called from look-for-length-three-patterns
+  (when *trace-island-driving*
+    (trace-msg "[islands]   comma pattern succeeded to create e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :no-3tt-da-pattern ()
+  ;; called from look-for-length-three-patterns
+  (when *trace-island-driving*
+    (trace-msg "[islands]   no debris analysis pattern found")))
+
+
+(deftrace :carefully-compose (tt1 tt2)
+  ;; called from try-to-carefully-compose-two-edges
+  (when *trace-island-driving*
+    (trace-msg "[islands] Trying to carefully compose e~a and e~a"
+               (edge-position-in-resource-array tt1)
+               (edge-position-in-resource-array tt2))))
+
+(deftrace :np-buried-under-vp (edge)
+  ;; called from try-to-carefully-compose-two-edges
+  (when *trace-island-driving*
+    (trace-msg "[islands]   Found and np buried under a vp and formed e~a"
+               (edge-position-in-resource-array edge))))
+
+
 (deftrace :smash-together (e1 e2 e1-status e2-status)
   ;; called from smash-together-two-tt-islands
   (when *trace-island-driving*
-    (trace-msg "[islands]  Smashing together e~a (~a) and ~
+    (trace-msg "[islands]  Trying to smashing together e~a (~a) and ~
                 e~a (~a)"
                (edge-position-in-resource-array e1)
                e1-status
@@ -951,9 +1025,15 @@
                e2-status)))
 
 (deftrace :smashed-together-edge (edge)
-  ; called from smash-together-two-tt-islands
+  ;; called from smash-together-two-tt-islands
   (when *trace-island-driving*
     (trace-msg "[islands]     created ~a" edge)))
+
+(deftrace :no-smashing-tt1-not-major (tt)
+  ;; called from smash-together-two-tt-islands
+  (when *trace-island-driving*
+    (trace-msg "[islands]     Unknown pattern: e~a not major"
+               (edge-position-in-resource-array tt))))
 
 
 

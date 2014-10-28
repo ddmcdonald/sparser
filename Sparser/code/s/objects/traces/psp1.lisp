@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 August 2014
+;;;  Version:  1.4 October 2014
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -27,6 +27,7 @@
 ;;      Continued adding and tweaking through 12/5/12. 
 ;;     (2/10/13) added trace-status-history. Bracket variant 4.1.13
 ;;     (5/12/14) Bunch of C3 traces. 8/31/14 Moved forest traces out to forest.
+;;     Adding traces for the new code through 10/22/14
 
 (in-package :sparser)
 
@@ -1135,7 +1136,29 @@
 (defun trace-terminals-sweep ()
   (setq *trace-sweep* t))
 (defun untrace-terminals-sweep ()
-  (setq *trace-sweep* nil)
+  (setq *trace-sweep* nil))
+
+
+(deftrace :word-initiates-polyword (word position-before)
+  ;; Called from polyword-check
+  (when *trace-sweep*
+    (trace-msg "[pw] ~s at p~a initiates polywords"
+               (word-pname word) (pos-token-index position-before))))
+
+(deftrace :pw-was-found (position-before position-reached)
+  ;; Called from polyword-check
+  (when *trace-sweep*
+    (trace-msg "[pw] polyword found between p~a and p~a"
+               (pos-token-index position-before)
+               (pos-token-index position-reached))))
+
+(deftrace :pw-not-found (word position-before)
+  ;; Called from polyword-check
+  (when *trace-sweep*
+    (trace-msg "[pw] The potential polyword for ~s at p~a did ~
+                not complete" (word-pname word) 
+                (pos-token-index position-before))))
+
                
 
 ;;--- details of the chunker's operation
