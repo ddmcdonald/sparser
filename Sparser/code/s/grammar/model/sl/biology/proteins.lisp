@@ -69,8 +69,8 @@
 
 ;; Guanine "CHEBI:16235"
 ;; nucleotide ""CHEBI:36976"
-(def-bio "GEF" protein :synonyms ("Guanine nucleotide Exchange Factors" "GEFs"))
-(def-bio "GAP" protein :synonyms ("GTPase Activating Proteins" "GAPs"))
+(def-bio "GEF" protein :synonyms ("guanine nucleotide exchange factors" "GEFs"))
+(def-bio "GAP" protein :synonyms ("GTPase activating proteins" "GAPs"))
 ;; compositional version of the long forms would be better
 ;;/// are these small molecules like GDP or are the larger? -- protein
 ;; And these are families of particulars, not the particulars that are
