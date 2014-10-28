@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "binary"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.0 September 1994
+;;;   Version:   1.1 October 2004
 
 ;; initiated in August 1990
 ;; 0.1 (3/5/91  v1.8.1)  Changed the return value of Make-default-binary-edge
@@ -13,6 +13,7 @@
 ;;      the chart wrapped and we're consuming edges still in use.
 ;; 0.3 (5/15) pulled the capacity for the reference calculation to abort the edge
 ;; 1.0 (9/6/94) put it back in
+;; 1.1 (10/25/14) added edge-form-adjustment
 
 (in-package :sparser)
 
@@ -47,7 +48,10 @@
     (setf (edge-left-daughter  edge) left-edge)
     (setf (edge-right-daughter edge) right-edge)
    
-    (setf (edge-form edge)     (cfr-form rule))
+    (setf (edge-form edge)
+          (or (edge-form-adjustment left-edge right-edge
+                                    (cfr-form rule))
+               (cfr-form rule)))
 
     (let ((referent (catch :abort-edge
                       (referent-from-rule left-edge
