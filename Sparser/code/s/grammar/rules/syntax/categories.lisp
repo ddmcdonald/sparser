@@ -52,6 +52,8 @@
 ;;     (9/26/14) added vp-category?
 ;;     (10/22/14) Extended the np 'start' (etc.) lists with number and converted them
 ;;      to defparameter's so they could be updated. 
+;;     (10/23/14) Removed vg from verb-category? for the benefit of find-verb
+;;     (10/25/14) Added edge-form-adjustment
 
 (in-package :sparser)
 
@@ -477,8 +479,7 @@
                category::verb+present
                category::verb+s               
                category::verb+ed
-               category::verb+ing
-               category::vg)))
+               category::verb+ing)))
 
 (defmethod participle? ((s string))
   (participle? (word-named s)))
@@ -616,6 +617,25 @@
   :binds ((adjective :primitive word)
           (adverb :primitive word)))
 
+
+;;;---------------------------------------------
+;;; baby-step towards form + form => form rules
+;;;---------------------------------------------
+
+(defun edge-form-adjustment (left-edge right-edge rule-form)
+  ;; called from make-default-binary-edge and should migrate to others.
+  ;; The point is to not let the form 'decrease' through composition.
+  ;; Compare with segment spanning adjustments
+  ;; If we return nil then the form on the rule will be used. 
+  (unless (eq rule-form category::s) ;; top of phrase hierarchy
+    (let ((left-form (edge-form left-edge))
+          (right-form (edge-form right-edge)))
+      (when (and left-form right-form)
+        ;; Some sort of gradation of the categories could reduce this
+        ;; to arithmetic. 
+        (when (or (eq left-form category::s)
+                  (eq right-form category::s))
+          category::s)))))
 
 
 ;;;----------------------------------------
