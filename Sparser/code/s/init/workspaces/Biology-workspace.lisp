@@ -27,14 +27,6 @@
   (setq *sweep-sentence-treetops* nil)
   (setq *island-driving* nil))
 
-(defun bf-trace ()
-  (trace-treetops-sweep)
-  (trace-island-driving)
-  (trace-morphology))
-(defun bf-untrace ()
-  (untrace-treetops-sweep)
-  (untrace-island-driving)
-  (untrace-morphology))
 
 
 ;; "J" for Julie
@@ -135,7 +127,7 @@ e34                              "PERIOD" |#
   (p "However, the recombinant MEK2 can be activated by serum-stimulated cell extract in vitro."))
 (defun d11 ()
   (p "MEKs, in a manner similar to ERKs, are likely to consist of a family of related proteins playing critical roles in signal transduction."))
-;; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
+
 
 ;; 8/30/14
 #| 8. Growth factors can turn on Ras by activating Guanine nucleotide
@@ -162,28 +154,10 @@ Proteins (GAPs) or by both mechanisms. |#
   (setq *island-driving* nil))
 
 
-;;8/7/14 debugging the new forest level's loops
-; (bio-setting)
-; (trace-network-flow)  (trace-forest-level) 
-; (trace-forest-transitions)
-; (trace-extension) ;; the decision
-; (trace-paragraphs) ;; period-hook
-; (setq *break-on-next-sentence* t) ;; inside period-hook
-; (trace-sections) ;; sentence creation
-; (trace-network) ;; pretty thorough trace
-
-
-;; 8/12/14 Figuring out the affix weirdness
-;  define-word/expr  lookup/make-word-symbol define-main-verb
-;  assign-morph-brackets-to-unknown-word setup-verb
-; (trace-morphology)
-;  8/22/14 -- "increase" is automatically defined as a noun because
-; of its suffix, which blocks the possibility of defining it as
-; a verb when you see "increasing"
 
 ;  8/11/14 Sweep through everything and scoop up all the bio-entities
 ; (setq *kind-of-chart-processing-to-do* :r3-entity-sweep)
-; (read-file-for-entities "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+
 ;;  8/22/14 Need to tweak ordering so the full caps hack doesn't do
 ;  the PIK of PIK3CA before the no-space can get it. 
 ;  Also, full-caps doesn't look for the set already having been defined
@@ -215,8 +189,7 @@ Proteins (GAPs) or by both mechanisms. |#
 ; (setq *edge-for-unknown-words* nil)
 ; (setq *do-forest-level* nil) ;; not noticing all the periods because the return
 ;    and such aren't well-enough debugged.
-; (bio-setting)
-; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+
 
 ; (setq *permit-extra-open-parens* t)
 ;? (f "/Users/ddm/ws/Sparser local/corpus/LarryHunterBioBook/BeingAlive.textsource")
