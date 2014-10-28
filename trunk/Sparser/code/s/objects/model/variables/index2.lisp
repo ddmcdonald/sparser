@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  2.2 March 2014
+;;;  version:  2.2 October 2014
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -23,6 +23,7 @@
 ;;   (10/31/13) added find-variable-in-mixins to the mix.
 ;;   (11/13/13) Finished var name registration that lets you get a single
 ;;    variable from the name if that's the case. 
+;;   (10/27/14) Added find-variable-in-category method that takes an individual
 
 (in-package :sparser)
 
@@ -53,6 +54,15 @@
 (defun find-variable-from-individual (variable-name i)
   (find-variable-for-category variable-name (first (indiv-type i))))
 
+
+
+(defmethod find-variable-in-category (symbol (i individual))
+  (let ((type (indiv-type i)))
+    (if (null (cadr type))
+      (find-variable-in-category symbol (car type))
+      (else
+        (push-debug `(,symbol ,i ,type))
+        (error "New case: multi-valued type")))))
 
 (defmethod find-variable-in-category (symbol (category model-category))
   (let ((variables (cat-slots category)))
