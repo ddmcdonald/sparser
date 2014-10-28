@@ -40,3 +40,25 @@
 (setq *trace-paired-punctuation* t)
 (setq *trace-completion-hook* t)     |#
 
+; (trace-parentheses)
+
+(defun bf-trace () ;; "Biology Forest"
+  (trace-treetops-sweep)
+  (trace-island-driving)
+  (trace-morphology))
+(defun bf-untrace ()
+  (untrace-treetops-sweep)
+  (untrace-island-driving)
+  (untrace-morphology))
+
+
+;; Debugging the new forest level's loops
+; (bio-setting)
+; (trace-network-flow)  (trace-forest-level) 
+; (trace-forest-transitions)
+; (trace-extension) ;; the decision
+; (trace-paragraphs) ;; period-hook
+; (setq *break-on-next-sentence* t) ;; inside period-hook
+; (trace-sections) ;; sentence creation
+; (trace-network) ;; pretty thorough trace
+

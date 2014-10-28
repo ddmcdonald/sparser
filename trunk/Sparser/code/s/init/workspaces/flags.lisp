@@ -30,4 +30,25 @@
   "Gates the option to parse the interior of a chunk
    just after the chunk is created. Referenced in
    identify-chunks")
+
+*ignore-parentheses*
+*permit-extra-open-parens*
+
+*allow-form-conjunction-heuristic*
+
+*do-islands-2d-pass*
+
+
+(unless (boundp 'sparser::*edges-from-referent-categories*)
+  (defparameter sparser::*edges-from-referent-categories* nil
+    "If non-nil, we look for edge label combinations off the labels provided
+     by the referent (often more general than the category) including
+     composite referents."))
+
+(unless (boundp 'sparser::*allow-pure-syntax-rules*)
+  (defparameter sparser::*allow-pure-syntax-rules* nil
+    "Permits looking for combinations off the form labels of the two edges.
+     Obviously this is dangerous, so the policy is to locally bind this
+     flag inside treetop functions with clear dynamic scopes."))
+
 |#
