@@ -1,6 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2011-2013  David D. McDonald  -- all rights reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "prepositions"
 ;;;   Module:  "grammar;rules:syntax:"
@@ -27,3 +26,22 @@
   (tr :analyze-pp_t+t)
   (dereference-shadow-individual complement))
   
+
+(defun apply-preposition-to-complement (prep comp)
+  ;; Used by preposition+s or +vg
+  ;; Poor man's ad-hoc version of analyze-pp since I don't want
+  ;; to take the time to properly situation the method call.
+  ;; Returns the referent of the whole edge, see ref/function 
+  (push-debug `(,prep ,comp))
+  (cond
+   ((eq prep (category-named 'upon))
+    (find-or-make-individual 'upon-condition :condition comp))
+   (t ;; equivalent of daughter
+    comp)))
+
+;; Consumed as 'circumstance' at event level by adjoint-pp-to-vp
+(define-category upon-condition
+  :instantiates :self
+  ;; supercategory is a contingency or 'when' or some such
+  :binds ((condition))
+  :index (:key condition))
