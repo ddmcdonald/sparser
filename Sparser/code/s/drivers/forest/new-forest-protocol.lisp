@@ -3,11 +3,12 @@
 ;;; 
 ;;;     File:  "new-forest-protocol"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  September 2014
+;;;  Version:  October 2014
 
 ;; Initiated 8/4/14. 8/9/14 Simple display version working.
 ;; Starting on sweeper 8/30/14. New arguments to island driver
-;; 9/26/14 to let it do multiple passes. 
+;; 9/26/14 to let it do multiple passes. 10/22/14 Convert to a
+;; method so can either call with a position or a sentence
 
 (in-package :sparser)
 
@@ -17,33 +18,47 @@
 ;; re-eval with each edit
 ; (what-to-do-at-the-forest-level :new-forest-protocol)
 ;
-(defun new-forest-driver (rightmost-position)
+(defmethod new-forest-driver ((rightmost-position position))
   (tr :new-forest-driver rightmost-position)
-  ;;(break "got to the forest")
   (let ((sentence (sentence))
         (pos-before (chart-position-before rightmost-position)))
+    (unless (ends-at-pos sentence) ;; the normal situation
+      (setf (ends-at-pos sentence) pos-before))
     (unless sentence
       (error "Why isn't (sentence) returning one? Check settings."))
+    (new-forest-driver sentence)))
 
-    (let ((start-pos (starts-at-pos sentence))
-          (end-pos (ends-at-pos sentence)))
-      (unless end-pos ;; the normal situation
-        (setq end-pos
-              (setf (ends-at-pos sentence) pos-before)))
-      (when *sweep-sentence-treetops*
-        (let ((layout
-               (sweep-sentence-treetops sentence start-pos end-pos)))
-          (when *island-driving*
-            (island-driven-forest-parse sentence layout start-pos end-pos))))
+(defparameter *return-after-doing-forest-level* nil
+  "Governs whether the forest driver should make a call into the
+   scanning level when it's finished or simply return. The call
+   is appropriate when running incrementally, the return is for
+   the alternative where all the earlier operations were done 
+   an entire sentences at a time. Compare to the equivalent
+   parameter *return-after-doing-segment* usef for PTS. Probably
+   should merge them.")
 
-      (format t "~&~%")
-      (print-flat-forest t start-pos end-pos)
-      (format t "~&")
 
+(defmethod new-forest-driver ((sentence sentence))
+  (declare (special *return-after-doing-forest-level*))
+  (let ((start-pos (starts-at-pos sentence))
+        (end-pos (ends-at-pos sentence)))
+    (when *sweep-sentence-treetops*
+      (let ((layout
+             (sweep-sentence-treetops sentence start-pos end-pos)))
+        (when *island-driving*
+          (island-driven-forest-parse sentence layout start-pos end-pos))))
+    
+    (format t "~&~%")
+    (print-flat-forest t start-pos end-pos)
+    (format t "~&")
+
+    (let ((rightmost-position (chart-position-after end-pos)))
+      ;; That's just after the period
       ;; Part of the normal closing cadence to resume scanning
-      (setq *rightmost-quiescent-position* rightmost-position)
       (tr :forest-parse-returned rightmost-position)
-      (adjudicate-after-new-forest-protocol rightmost-position))))
+      (unless *return-after-doing-forest-level*
+        (setq *rightmost-quiescent-position* rightmost-position)
+        (adjudicate-after-new-forest-protocol rightmost-position)))))
 
 #| Note on what call to make to leave this level.
 
