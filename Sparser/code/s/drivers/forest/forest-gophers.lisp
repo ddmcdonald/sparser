@@ -204,7 +204,10 @@
        ((eq daughter :long-span)
         (let ((constituents (edge-constituents edge)))
           (unless constituents (error "no constituents on long span ~a" edge))
-          (car (last constituents))))
+          (let ((last-constituent (car (last constituents))))
+            (if (eq (edge-right-daughter last-constituent) :single-term)
+              last-constituent
+              (walk-down-right-headline last-constituent)))))
        (t (push-debug `(,edge ,daughter))
           (error "Unexpected symbol in headline walk: ~a" daughter))))
      (t (push-debug `(,edge ,daughter))

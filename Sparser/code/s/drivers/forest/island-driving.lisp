@@ -12,8 +12,6 @@
 
 (in-package :sparser)
 
-(defparameter *do-islands-2d-pass* t)
-
 
 (defun island-driven-forest-parse (sentence layout start-pos end-pos)
   (declare (special *allow-pure-syntax-rules*
@@ -31,11 +29,10 @@
         (let ((new-layout
                (sweep-sentence-treetops sentence start-pos end-pos)))
           (push-debug `(,new-layout)) ;;(break "new layout")
-          (when *do-islands-2d-pass*
+          (when t
             (tr :island-driver-forest-pass-2)
             (when *trace-island-driving* (tts))
             (run-island-checks-pass-two new-layout start-pos end-pos)))))))
-
 
 
 ;;;------------
