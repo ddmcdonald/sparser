@@ -65,10 +65,10 @@
 (defun pos-loop (fn &optional (sentence (sentence)))
   (let*
       ((start (starts-at-pos sentence))
+       (end (ends-at-pos sentence))
        (pos-before start))
     (until
-        (eq (right-treetop-at/edge pos-before)
-            *end-of-source*)
+        (eq pos-before end)
         sentence
       (let*
           ((edge (right-treetop-at/edge pos-before))
@@ -81,12 +81,6 @@
 ;;;--------
 ;;; driver 
 ;;;--------
-
-(defparameter *parse-chunk-interior-online* nil
-  "Gates the option to parse the interior of a chunk
-   just after the chunk is created. Referenced in
-   identify-chunks")
-;; Turn this on when the PTS return is debugged
 
 (defun identify-chunks (sentence)
   (let ((chunks (find-chunks sentence)))
@@ -116,17 +110,18 @@
 
 ;; Rusty -- traces moved to objects/traces/psp1.lisp
 
+(defvar *next-chunk* nil)
+(defvar *chunks* nil)
+
 (defun find-chunks (&optional (sentence (sentence)))
-  ;(declare (special *chunks* *next-chunk*))
+  (declare (special *chunks* *next-chunk*))
   (setq *next-chunk* nil)
   (setq *chunks* nil)
   (let ((pos (starts-at-pos sentence))
+        (end (ends-at-pos sentence))
         edge )
     (until
-        (eq (right-treetop-at/edge pos) *end-of-source*)
-        ;; Rusty -- this won't fly beyond this testing phrase
-        ;; of course. Need to detect the periods. 
-
+        (eq pos end)
         (reverse *chunks*) ;; this is the return value
 
       (setq edge (right-treetop-at/edge pos))
