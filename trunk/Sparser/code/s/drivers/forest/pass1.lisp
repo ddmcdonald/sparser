@@ -313,14 +313,15 @@
                   `(,edge-to-the-left-of-c2
                     ,edge-to-the-left-of-c1
                     ,edge-to-the-right-of-c1)))
-                (break "conjuncts not consistent"))))
-           (t (break "different conjunction pattern"))))))
+                (tr :two-conjuncts-not-consistent))))
+           (t (tr :different-two-conjunction-pattern)
+)))))
     ;; really need to refactor the three-in-a-row pattern to reuse its parts
     (when (= count 1)
       ;; if the little ones are handled on the fly then this is a large one
       (let* ((c (car conjuncts))
-             (edge-to-the-left (next-treetop/leftward c))
-             (edge-to-the-right (next-treetop/rightward c)))
+             (edge-to-the-left (left-treetop-at/edge c)) ;; next-treetop/leftward
+             (edge-to-the-right (right-treetop-at/edge c))) ;; next-treetop/rightward
         (tr :trying-to-conjoin  edge-to-the-left edge-to-the-right)
         (push-debug `(,edge-to-the-left ,edge-to-the-right))
         ;; (setq edge-to-the-left (car *) edge-to-the-right (cadr *))
