@@ -6,6 +6,8 @@
 ;;;  version:  October 2014
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
+;; 10/29/14 added flags to turn off various steps so lower ones
+;; could be independently tested
 
 (in-package :sparser)
 
@@ -23,6 +25,9 @@
 ; (setq *kind-of-chart-processing-to-do* :successive-sweeps)
 ; (bio-setting)  ;; revert to 'normal'
 
+;;;--------
+;;; Driver
+;;;--------
 
 (defun initiate-successive-sweeps ()
   ;; Copied from inititate-c3-protocol which is already stripped down
@@ -34,10 +39,6 @@
   (scan-next-position) ;; adds 1st real word into the chart
   (sentence-sweep-loop))
 
-(deftrace :entering-sentence-sweep-loop ()
-  ;; called from sentence-sweep-loop
-  (when *trace-network-flow*
-    (trace-msg "Entering sentence-sweep-loop")))
 
 (defun sentence-sweep-loop ()
   (tr :entering-sentence-sweep-loop)
@@ -54,22 +55,24 @@
         (tr :scanning-terminals-of sentence)
         (catch :end-of-sentence
           (scan-terminals-loop start-pos first-word))
-        ;;(break "look at tts")
+        (when *trace-island-driving* (tts))
 
-        (tr :identifying-chunks-in sentence)
-        (identify-chunks sentence) ;; calls PTS too
+        (when *chunk-sentence-into-phrases*
+          (tr :identifying-chunks-in sentence)
+          (identify-chunks sentence) ;; calls PTS too
 
-        ;;(break "after chunking ~a" sentence) 
+          ;;(break "after chunking ~a" sentence) 
 
-        (let ((*return-after-doing-forest-level* t))
-          (declare (special *return-after-doing-forest-level*))
-          (new-forest-driver sentence))
+          (when *parse-chunked-treetop-forest*
+            (let ((*return-after-doing-forest-level* t))
+              (declare (special *return-after-doing-forest-level*))
+              (new-forest-driver sentence))
 
-        ;; EOS throws to a higher catch. If the next sentence
-        ;; is empty we will hit the end of source as we
-        ;; start scanning terminals and it will throw
-        ;; beyond this point. 
-        (setq sentence (next sentence))))))
+            ;; EOS throws to a higher catch. If the next sentence
+            ;; is empty we will hit the end of source as we
+            ;; start scanning terminals and it will throw
+            ;; beyond this point. 
+            (setq sentence (next sentence))))))))
 
 
 #| scan-next-position:
@@ -144,6 +147,7 @@ the position. (N.b. there's an incremental trace hook in it.) |#
 
 
     (complete-word/hugin word position-before position-after)
+    ;; (setq *trace-completion-hook* t)
     ;; The function check-for-completion-actions/word looks on the
     ;; rule-set of the word for a completion action or actions and
     ;; runs carry-out-actions to execute (funcall) them. 
