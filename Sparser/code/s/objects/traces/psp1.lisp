@@ -1117,6 +1117,11 @@
 ;;; Traces for the new (9/14) handling of segmentation and scannning
 ;;;------------------------------------------------------------------
 
+(deftrace :entering-sentence-sweep-loop ()
+  ;; called from sentence-sweep-loop
+  (when *trace-network-flow*
+    (trace-msg "Entering sentence-sweep-loop")))
+
 (deftrace :scanning-terminals-of (sentence)
   ;; called from sentence-sweep-loop
   (when (or *trace-network* *trace-segments*)

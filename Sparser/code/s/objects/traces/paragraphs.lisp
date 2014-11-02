@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "paragraphs"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  September 2013
+;;;  Version:  November 2014
 
 ;; initiated 1/5/94 v2.3. Added untrace fn. 5/20
 ;; (3/12/10) Added more traces to track the FSA
-;; (9/18/13) Started sentence traces.
+;; (9/18/13) Started sentence traces. (11/2/14) elaborated
+;; the trace on period-hook 
 
 (in-package :sparser)
 
@@ -55,10 +56,21 @@
 
 ;;---- sentences
 
-(deftrace :period-hook ()
+(deftrace :period-hook (pos)
   ;; Called from period-hook
   (when *trace-paragraphs*
-    (trace-msg "[S] finished ~a" (previous-sentence))))
+    (trace-msg "[S] finished ~a at p~a" 
+               (previous-sentence)
+               (pos-token-index pos))))
+
+(deftrace :period-at-p-not-eos (pos)
+  ;; Called from period-hook
+  (when *trace-paragraphs*
+    (trace-msg "[S] period at p~a does not end sentence"
+               (pos-token-index pos))))
+
+
+
 
 ;;---- sentence containers
 
