@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   September 2014
+;;;   Version:   October 2014
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -13,7 +13,8 @@
 ;; (5/30/13) added in earlier, sooner as adverbs and function words
 ;; 5/6/14 Moved in the quantities from its own file
 ;; Commenting out some word for collision with stronger forms in bio
-;; through 9/26/14.
+;; through 9/26/14. 10/29/14 exposed the comparatives. Forgot why they
+;; had been commented out. 
 
 (in-package :sparser)
 
@@ -83,7 +84,7 @@
 ;;;--------------
 ;;; Comparatives
 ;;;--------------
-#|
+
 ;; initiated 7/29/94. Added some polywords 9/10/09.
 ;; 0.1 (2/17/10) added "rather than", which isn't at all the same thing, but
 ;;  since it's just going for a parse, rather than an interpretation, that's
@@ -92,10 +93,10 @@
 
 ;; These don't combine with adverbs
 ;;
-(define-comparative "fewer"     :brackets '( ].phrase  .[np ))
-(define-comparative "less"      :brackets '( ].phrase  .[np ))
-(define-comparative "more"      :brackets '( ].phrase  .[np ))
-(define-comparative "most"      :brackets '( ].phrase  .[np ))
+(define-comparative "fewer")
+(define-comparative "less")
+(define-comparative "more")
+(define-comparative "most")
 
 
 ;; Strictly speaking, the "than" cases have different grammatical properties
@@ -103,23 +104,23 @@
 ;; a preceding determiner. Given the bracket algebra for NPs though, I think
 ;; this will come out in the wash (ddm 9/10/09)
 
-(define-comparative "fewer than"    :brackets '( ].phrase  .[np ))
-(define-comparative "greater than"  :brackets '( ].phrase  .[np ))
-(define-comparative "less than" :brackets '( ].phrase  .[np ))
-(define-comparative "more than" :brackets '( ].phrase  .[np ))
+(define-comparative "fewer than")
+(define-comparative "greater than")
+(define-comparative "less than")
+(define-comparative "more than")
 
 
-(define-comparative "better"       :brackets '( ].phrase  .[np ))
-(define-comparative "worse"        :brackets '( ].phrase  .[np ))
-(define-comparative "better than"  :brackets '( ].phrase  .[np ))
-(define-comparative "worse than"   :brackets '( ].phrase  .[np ))
+(define-comparative "better")
+(define-comparative "worse")
+(define-comparative "better than")
+(define-comparative "worse than")
 
 ;; 10/24/94
 (define-comparative "bigger") ;; better best
 ;; comparative-adjective
 (define-comparative "smaller") ;; small smallest
 
-|#
+
 
 (define-function-word "than" )
 
@@ -699,7 +700,7 @@
 (define-adverb "temporarily") ;;
 (define-adverb "terminally")
 (define-adverb "theoretically")
-(define-adverb "thereby") ;;
+;; (define-adverb "thereby") ;; moved to subord. conjunctions
 (define-adverb "thermodynamically")
 (define-adverb "thinly")
 (define-adverb "thoroughly")
