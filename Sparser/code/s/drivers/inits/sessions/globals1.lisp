@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  August 2014
+;;;  Version:  October 2014
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -31,7 +31,7 @@
 ;; -of-analysis* 3/1413. 7/1/13 added *reify-implicit-individuals* and similar
 ;; in-file flages from Grok work. Added *dbg-print*. 4/24/14 updated definition
 ;; of *forest-level-protocol*. 8/30/14 added flags to enable the new
-;; forest level protocol. 
+;; forest level protocol. 10/29/14 added more flags to control its lower levels.
 
 (in-package :sparser)
 
@@ -126,12 +126,27 @@
    in what-to-do-at-the-forest-level where the do-forest-level 
    function is set. Set as part of the switch settings.")
 
-(defparameter *sweep-sentence-treetops* nil
+(defparameter *chunk-sentence-into-phrases* t
+  "Controls whether we proceed to chunk the sentence after we 
+   have used sentence-sweep-loop to form its terminal edges.")
+
+(defparameter *parse-chunk-interior-online* t
+  "Gates the option to parse the interior of a chunk
+   just after the chunk is created. Referenced in
+   identify-chunks")
+
+(defparameter *parse-chunked-treetop-forest* t
+  "Dependent on chunking, gates the option to go on and
+   complete the analysis by doing the forest level.
+   This is also dependent on new-forest-protocol? 
+   returning non-nil")
+
+(defparameter *sweep-sentence-treetops* t
   "Goes with the new-forest-driver (8/14) and must be on for 
    anything to happen. Gates the treetop sweep to determine
    the layout.")
 
-(defparameter *island-driving* nil
+(defparameter *island-driving* t
   "The set that follows the sweep in the new forest protocol.
    Won't be seen if sweep flag is down. Gates the actual
    parsing of treetops.")
