@@ -3,10 +3,10 @@
 ;;;
 ;;;    File: "verbs"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2014
+;;; version: October 2014
 
 ;; Initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
-;; through 9/22/14. 
+;; through 10/29/14. 
 
 (in-package :sparser)
 
@@ -63,8 +63,10 @@
 
 (svo/passive/nominal "enhance" "enhancement"
   :super-category bio-process
-  :patient bio-process  ;; inhibiton of <process>
+  :patient bio-entity
   :agent bio-entity)
+
+;; exchange
 
 
 ;; formation "GO:0009058"
