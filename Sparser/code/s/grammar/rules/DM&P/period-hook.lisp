@@ -56,11 +56,11 @@
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
 
-  (when (period-marks-sentence-end? position-after)
+  (if (period-marks-sentence-end? position-after)
     (let* ((s (sentence))
            (pos-after-period (chart-position-after position-before))
            (next (start-sentence pos-after-period)))
-      (tr :period-hook)
+      (tr :period-hook position-after)
       (when *break-on-next-sentence*
         (push-debug `(,s))
         (break "sentence: ~a" s))
@@ -84,12 +84,13 @@
            (push-debug `(,next ,s))
            (break "Period-hook did not expect the status ~a~
                    on ~a" (parsing-status s) s))))
-
        ((new-forest-protocol?)
         ;; goes with the incremental protocol when waiting
         ;; for an entire sentence to be chunked before
         ;; rolling any of them up.
-        (new-forest-driver position-before)))))
+        (new-forest-driver position-before))))
+
+    (tr :period-at-p-not-eos position-after))
 
   (setq *position-before-last-period* position-before))
 
