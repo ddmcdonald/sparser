@@ -89,22 +89,6 @@
 ;; Could adapt this from the workbench printing routines,
 ;; but they're entangled with visual elements.
 
-;; Same as pretty-print-individual but it will recurse on
-;; the individuals in bindings in-line (print-binding) 
-(defmethod pp-individual ((i individual) stream)
-  (format stream "~&")
-  (let ((category (car (indiv-type i)))
-        (id (indiv-id i)))
-    (format stream "~a ~a" (cat-symbol category) id))
-  (let ((binds (indiv-binds[ i)))
-    (when binds
-      (dolist (b binds)
-        (princ-binding b stream 4))))
-  (let ((bound-in (indiv-bound-in i)))
-    (when bound-in
-      (dolist (b bound-in)
-        (princ-bound-in b stream 4)))))
-
 (defmethod walk-model ((i individual) stream)
   (let ((*individuals* (list i))
          *printed*  i )
