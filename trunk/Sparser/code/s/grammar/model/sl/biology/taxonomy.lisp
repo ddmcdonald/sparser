@@ -3,9 +3,9 @@
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2014
+;;; version: October 2014
 
-;; Lifted from mechanics 9/8/14. Tweaks through 9/23/14.
+;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 
 (in-package :sparser)
 
@@ -93,10 +93,13 @@
   :lemma (:common-noun "small molecule")
   :realization (:common-noun name))
 
+;;/// what is the relationship to nucleotide ?
 
-(define-category protein ;; "CHEBI:36080"
+
+(define-category protein
   :specializes molecule
   :instantiates :self
+  :bindings (uid "CHEBI:36080")
   :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
