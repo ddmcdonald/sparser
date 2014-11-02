@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.23 August 2014
+;;;  Version:  2.24 October 2014
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -71,6 +71,8 @@
 ;; 2.23 (7/24/14) Converted direct setting of *forest-level-protocol* to 
 ;;       calling what-to-do-at-the-forest-level. 8/30/14 added in more
 ;;       of these parameters to bio-setting. 
+;; 2.24 (10/29/14) Took the plunge and moved bio-setting over to the new way
+;;       of doing thigns. Former settings preserved as old-bio-setting.
 
 (in-package :sparser)
 
@@ -364,7 +366,7 @@
   (setq *switch-setting* :fire))
 
 
-(defun bio-setting ()
+(defun old-bio-setting ()
   (turn-off-c3)
   (tuned-grok)
 
@@ -380,7 +382,7 @@
         *profligate-creation-of-individuals* t
         ;;*reify-implicit-individuals* t
         *note-text-relations* t)
-  ;; Specify where we start (needed as switch settings change
+  ;; Specify where we start (needed as switch settings change)
   (do-strong-domain-modeling)
 
   (setq *do-forest-level* t)
@@ -395,6 +397,38 @@
   (setq *parser-interior-of-no-space-token-sequence* t)
   (designate-sentence-container :complex)
   (setq *switch-setting* :biology))
+
+(defun bio-setting () ;; copy & specialize of back-named old-bio-setting
+  (turn-off-c3)
+  (tuned-grok)
+
+  (include-comlex)
+  ;; Get everything primed, but don't use it on the unknown words
+  ;; at least not yet. 
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
+
+  (what-to-do-at-the-forest-level :new-forest-protocol)
+  (setq *sweep-sentence-treetops* t
+        *chunk-sentence-into-phrases* t
+        *parse-chunk-interior-online* t
+        *parse-chunked-treetop-forest* t
+        *sweep-sentence-treetops* t
+        *island-driving* t)
+
+  ;; Set the full set of switches to control what 'after action'
+  ;; segment actions we do
+  (setq *do-strong-domain-modeling* t
+        *new-segment-coverage* :trivial ;; vs. :full or :none
+        *profligate-creation-of-individuals* t
+        ;;*reify-implicit-individuals* t
+        *note-text-relations* t)
+  ;; Specify where we start (needed as switch settings change)
+  (do-strong-domain-modeling)
+
+  (designate-sentence-container :complex)
+  (setq *switch-setting* :biology))
+
+
 
 
 ;;--- C3, and now for something completely different
