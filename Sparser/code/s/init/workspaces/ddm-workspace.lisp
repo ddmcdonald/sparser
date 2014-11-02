@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
@@ -27,22 +27,21 @@
   (bf-on)
   (trace-island-driving))
 
-; (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
-; (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
-; (ddm-ed "grammar/rules/syntax/prepositions.lisp")
-; (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
-; (ddm-ed "grammar/rules/syntax/conjunction8.lisp")
-; (ddm-ed "objects/chart/edge-vectors/tuck.lisp)
-; (ddm-ed "objects/chart/edge-vectors/peek.lisp)
+; (trace-paragraphs) ;; for sentences and periods
+; (trace-edges) ;; edge over period as a literal?
+
+; (trace-island-driving)  (untrace-island-driving) 
+; (progn (trace-chunker) (trace-segments))
+; (trace-terminals-sweep) ;; pw, etc.
+; (progn (untrace-chunker) (untrace-segments) (untrace-terminals-sweep)  (untrace-island-driving))
+
+; (setq *do-islands-2d-pass* nil)
 
 
 ; (bio-setting)
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
-; (trace-island-driving)  (untrace-island-driving) 
-; (progn (trace-chunker) (trace-segments))
-; (progn (untrace-chunker) (untrace-segments))
-; (trace-terminals-sweep) ;; pw, etc.
+
 
 (defun load-ddm-ws ()
   (ddm-ed "init/workspaces/reference-points.lisp")
@@ -51,10 +50,6 @@
   (ddm-ed "init/workspaces/Biology-workspace.lisp"))
 ; (load "/Users/ddm/ws/Sparser local/workspaces/fire.lisp")
 
-;  (ddm-ed "grammar/rules/words/punctation-bracketing.lisp")
-
-;  (ddm-ed "grammar/model/dossiers/modifiers.lisp")
-  
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/forest/parsing-containers.lisp")
   (ddm-ed "drivers/forest/sweep.lisp")
@@ -67,11 +62,43 @@
   (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
   (ddm-ed "grammar/rules/syntax/syntactic-rules.lisp")
+  (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
   (ddm-ed "objects/traces/psp1.lisp")
   (ddm-ed "objects/traces/DA.lisp")
   (ddm-ed "objects/traces/treetops.lisp"))
 
+(defun ddm-bio ()
+  (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
+  (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
+  (ddm-ed "grammar/model/sl/biology/proteins.lisp")
+  (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
+  (ddm-ed "grammar/model/sl/biology/terms.lisp")
+  (ddm-ed "grammar/model/sl/biology/verbs.lisp"))
+;;  molecules and NGkappB not loaded
 
+;; Set up actions associated with binding
+; (ddm-ed "objects/model/bindings/hooks.lisp")
+
+;; Clean up the display at the end of the load, document the globals
+; (ddm-ed "interface/grammar/postprocessing.lisp")
+
+; (ddm-ed "grammar/model/dossiers/modifiers.lisp")
+; (ddm-ed "grammar/rules/syntax/conjunction8.lisp")
+
+
+; (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
+; (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
+; (ddm-ed "grammar/rules/syntax/prepositions.lisp")
+; (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
+; (ddm-ed "grammar/rules/syntax/conjunction8.lisp")
+; (ddm-ed "objects/chart/edge-vectors/tuck.lisp)
+; (ddm-ed "objects/chart/edge-vectors/peek.lisp)
+
+;; 10/14,19/14
+; (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
+; (ddm-ed "grammar/rules/syntax/affix-rules1.lisp")
+; (ddm-ed "grammar/rules/brackets/comlex-unpacking.lisp")
+; (ddm-ed "grammar/rules/words/one-offs/comlex-def-forms.lisp")
 
 
 (defun ddm-shortcuts ()
@@ -113,15 +140,8 @@
   (ddm-ed "drivers/chart/psp/trigger5.lisp")
   (ddm-ed "drivers/forest/trap2.lisp"))
 
-;; 10/14,19/14
-; (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
-; (ddm-ed "grammar/rules/syntax/affix-rules1.lisp")
-; (ddm-ed "grammar/rules/brackets/comlex-unpacking.lisp")
-; (ddm-ed "grammar/rules/words/one-offs/comlex-def-forms.lisp")
-
-; (setq *do-islands-2d-pass* nil)
-
 #| 10/9/14 noun brackets are being added to word::single-quote
+(ddm-ed "grammar/rules/words/punctation-bracketing.lisp")
 (br-off)
 (brackets-on (punctuation-named #\'))
 (assign-bracket single-quote ].phrase) 
@@ -130,8 +150,6 @@
   adjudicate-after-scan-pattern-has-succeeded (trace-ns-sequences)
 (p "in the ‘off’ state") 
 |#
-
-; (ddm-ed "grammar/rules/syntax/conjunction8.lisp")
 
 ; (ddm-ed "objects/doc/object1.lisp")  -- document structure
 ; (ddm-ed "tools/basics/resource.lisp)  -- auto recycling
@@ -146,16 +164,6 @@
 ; uniform-scan
 ;(ddm-ed "analysers/psp/patterns/uniform-scan.lisp")
 ;(ddm-ed "analysers/psp/patterns/traces.lisp")
-
-(defun ddm-bio ()
-  (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
-  (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
-  (ddm-ed "grammar/model/sl/biology/proteins.lisp")
-  (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
-  (ddm-ed "grammar/model/sl/biology/terms.lisp")
-  (ddm-ed "grammar/model/sl/biology/verbs.lisp"))
-;;  molecules and NGkappB not loaded
-
 
 
 
