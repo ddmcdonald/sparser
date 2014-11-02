@@ -942,6 +942,17 @@
   (when *trace-island-driving*
     (trace-msg "[islands]   No conjunction heuristics applied")))
 
+(deftrace :two-conjuncts-not-consistent ()
+  ;; called from try-spanning-conjunctions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   The two aligned conjuncts aren't consistent")))
+
+(deftrace :different-two-conjunction-pattern ()
+  ;; called from try-spanning-conjunctions
+  (when *trace-island-driving*
+    (trace-msg "[islands]   New pattern of two conjunctions")))
+
+
 ;;--- Short leftward extension (roll up from the right)
 
 (deftrace :short-leftward-neighbor (edge)
