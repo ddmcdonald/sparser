@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  1.0 August 2014
+;;;  Version:  1.0 November 2014
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -17,8 +17,30 @@
 ;;      right now, which simplifies the action by making it just as
 ;;      though the word had been predefined. Making the words denote categories
 ;;      using same flag and code as Comlex.
+;;     (11/6/14) Added setup-unknown-word-by-default
 
 (in-package :sparser)
+
+;;;-------------------------------------------
+;;; default assumptions about an unknown word
+;;;-------------------------------------------
+; This is used when we need to have a category & rule setup for
+; a word but have no information about it that might help us,
+; e.g. no known suffix and no entry in Comlex. If we had information
+; from some educated source for a particular sublanguage then
+; we would be able to make a better decision. And we might be
+; able to do this from the lexical context that its part of,
+; but this is a fallback. Called by make-word/all-properties/or-primed
+; when the *introduce-brackets-for-unknown-words-from-their-suffixes*
+; flag is up. 
+
+(defun setup-unknown-word-by-default (word)
+  (tr :unknown-word-defaulted-to-noun word)
+  (if *edge-for-unknown-words*
+    (setup-common-noun word)
+    (assign-brackets-as-a-common-noun word)))
+
+
 
 ;;;------------------------------------------
 ;;; Assigning brackets and making categories
