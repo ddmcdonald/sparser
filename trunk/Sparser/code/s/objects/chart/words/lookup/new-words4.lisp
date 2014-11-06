@@ -19,6 +19,7 @@
 ;;      That fixed bug where the new forms didn't see the original oblique
 ;;      form of the lemma and build a new one. 
 ;;     (10/14/14) added make-word/all-properties/or-primed
+;;     (11/6/14) e
 
 (in-package :sparser)
 
@@ -91,11 +92,14 @@
            (setq morph-keyword (affix-checker (word-pname word))))
          (setf (word-morphology word) morph-keyword)
          (if *introduce-brackets-for-unknown-words-from-their-suffixes*
-           (if morph-keyword
+           (cond
+            (morph-keyword
              (assign-morph-brackets-to-unknown-word
-              word morph-keyword)
-             (when entry
-               (unpack-primed-word word symbol entry)))
+              word morph-keyword))
+            (entry
+             (unpack-primed-word word symbol entry))
+            (t
+             (setup-unknown-word-by-default word)))
            (when entry
              (unpack-primed-word word symbol entry))))))
     word ))
