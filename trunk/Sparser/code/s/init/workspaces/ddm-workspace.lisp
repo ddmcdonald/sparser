@@ -165,8 +165,18 @@
 ;(ddm-ed "analysers/psp/patterns/uniform-scan.lisp")
 ;(ddm-ed "analysers/psp/patterns/traces.lisp")
 
+(defun ddm-subtyping ()
+  (ddm-ed "objects/model/lattice-points/specialize.lisp")
+  (ddm-ed "objects/model/lattice-points/structure1.lisp")
+  (ddm-ed "objects/model/categories/structure.lisp"))
+
+(defun ddm-ontology ()
+  (ddm-ed "grammar/model/core/kinds/processes.lisp"))
 
 
+
+; (load "/Users/ddm/ws/R3/trunk/code/obo2lisp/obo2lisp.lisp")
+; (transcribe-obo-file "/Users/ddm/ws/R3/trunk/ontologies/pro-test-file.obo")
 
 ;;--- Other hard filenames
 
@@ -177,7 +187,7 @@
 
 (defun ddm-ed (string)
   (ed (concatenate 'string
-                   "/Users/ddm/sparser/Sparser/code/s/"
+                   "~/sparser/Sparser/code/s/"
                    string)))
 
 
