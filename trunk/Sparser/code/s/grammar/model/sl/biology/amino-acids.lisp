@@ -9,20 +9,10 @@
 
 (in-package :sparser)
 
-;;;-------
-;;; class
-;;;-------
-
-(define-category amino-acid
-  :specializes molecule
-  :instantiates :self
-  :binds ((three-letter-code :primitive word)
-          (one-letter-code :primitive word))
-  :index (:permanent :key name)
-  :lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
-  :realization (:common-noun name))
-
-;;//// point mutation goes here
+;;;-------------
+;;; amino acids
+;;;-------------
+;; Class in in taxonomy.lisp
 
 #| To make sense of a mutation identifier we need to be able to
 decipher the three-letter and one-letter codes. The three letter
@@ -79,6 +69,12 @@ therefore we have the special cases:
   glutamine/glutamic acid - glx - Z
 |#
 
+;;;-------------
+;;; nucleotides
+;;;-------------
+
+
+
 ;;;----------------------------------------------------
 ;;; numbered residues:  "point mutations" (variations)
 ;;;----------------------------------------------------
@@ -99,4 +95,8 @@ therefore we have the special cases:
              :instantiate-individual residue-on-protein
              :with (amino-acid left-edge
                     position right-edge)))
+
+
+;;//// point mutation goes here
+
 
