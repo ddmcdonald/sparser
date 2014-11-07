@@ -66,13 +66,13 @@
           (when *parse-chunked-treetop-forest*
             (let ((*return-after-doing-forest-level* t))
               (declare (special *return-after-doing-forest-level*))
-              (new-forest-driver sentence))
+              (new-forest-driver sentence))))
 
-            ;; EOS throws to a higher catch. If the next sentence
-            ;; is empty we will hit the end of source as we
-            ;; start scanning terminals and it will throw
-            ;; beyond this point. 
-            (setq sentence (next sentence))))))))
+        ;; EOS throws to a higher catch. If the next sentence
+        ;; is empty we will hit the end of source as we
+        ;; start scanning terminals and it will throw
+        ;; beyond this point. 
+        (setq sentence (next sentence))))))
 
 
 #| scan-next-position:
