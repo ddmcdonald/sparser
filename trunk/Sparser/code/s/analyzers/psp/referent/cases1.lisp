@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "cases"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:  1.8 September 2014
+;;;   Version:  1.9 November 2014
 
 ;; (2/27/92 v2.2) fixed a bug in Ref/composite where it was offset
 ;;   by one when extracting a literal from the rule's referent field
@@ -26,6 +26,7 @@
 ;;      lattice-point argument now, but blocked case of keywords that
 ;;      indicate no value, so postposing looking it up.
 ;;     (9/25/14) Better error msg if ref-form is bad in ref/daughter
+;; 1.9 (11/7/14) let ref/function take three arguments. 
 
 (in-package :sparser)
 
@@ -63,7 +64,7 @@
       (else
         ;; it's binary
         (let ((value
-               (ecase (length rule-field)
+               (case (length rule-field)
                  (1
                   (funcall (first rule-field)))
                  (2
@@ -84,7 +85,25 @@
                              (left-referent  left-referent)
                              (right-referent right-referent)
                              (first  left-referent)
-                             (second right-referent)))))))
+                             (second right-referent))))
+                 (4
+                   (funcall (first rule-field)
+                           (ecase (second rule-field)
+                             (left-referent  left-referent)
+                             (right-referent right-referent)
+                             (first  left-referent)
+                             (second right-referent))
+                           (ecase (third rule-field)
+                             (left-referent  left-referent)
+                             (right-referent right-referent)
+                             (first  left-referent)
+                             (second right-referent))
+                           (fourth rule-field))) ;; goes through uninterpreted
+                 (otherwise
+                  (push-debug `(,rule-field))
+                  (error "No provison yet for a function with 4 terms~
+                       ~%Figure out what it means an edit ref/function ~
+                         accordingly.")))))
 
           ;; Annotating a ref/function is funny business because we don't
           ;; know what it's going to do when it executes. However we do
