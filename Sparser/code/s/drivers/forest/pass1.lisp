@@ -282,6 +282,25 @@
 ;;; conjunction
 ;;;-------------
 
+(defun look-for-short-obvious-conjunctions ()
+  ;;/// first just one conjunct cases
+  (let ((conjuncts (conjunctions (layout))))
+    (when (null (cdr conjuncts))
+      (let* ((c1 (car conjuncts))
+             (left-edge (next-treetop/leftward c1))
+             (right-edge  (next-treetop/rightward c1)))
+        (push-debug `(,left-edge ,right-edge ,c1))
+        (tr :trying-to-conjoin left-edge right-edge)
+        ;; this isn't "short" so much as "what would have worked
+        ;; before", which certainly counts. This code is
+        ;; in conjunction8
+        (let ((heuristic (conjunction-heuristics left-edge right-edge)))
+          (if heuristic
+            (let ((edge (conjoin/2 left-edge right-edge heuristic)))
+              (tr :conjoined-edge edge)
+              edge)
+            (tr :no-heuristics-for left-edge right-edge)))))))
+
 (defun try-spanning-conjunctions ()
   ;; For now do the easy thing of looking only for the same
   ;; labels to either side

@@ -51,6 +51,10 @@
     (tr :handle-parentheses)
     (handle-parentheses))
 
+  (when (there-are-conjunctions?)
+    (tr :looking-for-short-conjuncts)
+    (look-for-short-obvious-conjunctions))
+
   (when (there-are-prepositions?)
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
