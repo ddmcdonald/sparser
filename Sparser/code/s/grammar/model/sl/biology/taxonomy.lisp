@@ -93,8 +93,21 @@
   :lemma (:common-noun "small molecule")
   :realization (:common-noun name))
 
-;;/// what is the relationship to nucleotide ?
+(define-category amino-acid
+  :specializes molecule
+  :instantiates :self
+  :binds ((three-letter-code :primitive word)
+          (one-letter-code :primitive word))
+  :index (:permanent :key name)
+  :lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
+  :realization (:common-noun name))
 
+(define-category nucleotide
+  :specializes molecule
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "nucleotide")
+  :realization (:common-noun name))
 
 (define-category protein
   :specializes molecule
@@ -120,7 +133,7 @@
 (define-category kinase
   :specializes protein
   :instantiates :self
-  :bindings (uid "GO:0016301")
+  :bindings (uid "GO:0016301") ;; "kinase activity"
   :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "kinase")
