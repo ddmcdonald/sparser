@@ -3,10 +3,10 @@
 ;;;
 ;;;    File: "verbs"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: October 2014
+;;; version: November 2014
 
 ;; Initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
-;; through 10/29/14. 
+;; through 11/7/14. 
 
 (in-package :sparser)
 
@@ -143,6 +143,10 @@
 ;; "mutated oncogenes"
 ;; "oncogenic mutations"
 ;; "in BRAF mutant thyroid cell"
+(svo/passive/nominal "mutate" "mutation"
+  :super-category bio-process
+  :agent bio-process
+  :patient gene)
 
 ;;--- "phosphorylate"
 ;; GO:0016310	
