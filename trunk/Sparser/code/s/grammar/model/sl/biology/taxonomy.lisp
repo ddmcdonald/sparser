@@ -124,11 +124,17 @@
 (define-category gene
   :specializes bio-entity ;;// case in point
   :instantiates :self
-  :rule-label bio-entity ;; probably
   :binds ((:expresses . protein))
   :index (:permanent :key name)
   :lemma (:common-noun "gene")
   :realization (:common-noun name))
+
+(define-category oncogene
+  :specializes gene 
+  :instantiates :self
+  :lemma (:common-noun "oncogene")
+  :realization (:common-noun name)
+)        
   
 (define-category kinase
   :specializes protein
