@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "subrs"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  3.0 June 2014
+;;;  version:  3.1 November 2014
 
 ;; initiated 8/4/92 v2.3. Fleshed out 8/28
 ;; 0.1 (6/6/93) Added decoding of symbolic specializations like vg/+ed
@@ -23,6 +23,9 @@
 ;;      down to the interpretation of the mapping to ensure that the correct,
 ;;      category-specific variables are used. 
 ;;     (6/11/14) Added a few debugging statements and a little reformatting.
+;; 3.1 (11/7/14) Added the possibility using :self as label where we substitute
+;;      the category for it. Came up in a standalone rule where there are
+;;      no mappings. 
 
 (in-package :sparser)
 
@@ -113,7 +116,11 @@
                  prior-string following-string)))))
 
          ((setq target (category-named label))
-          target )   
+          target )
+
+         ((and (symbolp label)
+               (eq label :self))
+          category)
 
          (t
           (push-debug `(,label ,category ,mapping))
