@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.24 October 2014
+;;;  Version:  2.24 November 2014
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -73,6 +73,7 @@
 ;;       of these parameters to bio-setting. 
 ;; 2.24 (10/29/14) Took the plunge and moved bio-setting over to the new way
 ;;       of doing thigns. Former settings preserved as old-bio-setting.
+;;       11/7/14 debugged it. 
 
 (in-package :sparser)
 
@@ -407,6 +408,7 @@
   ;; at least not yet. 
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
 
+  (setq *kind-of-chart-processing-to-do* :successive-sweeps)
   (what-to-do-at-the-forest-level :new-forest-protocol)
   (setq *sweep-sentence-treetops* t
         *chunk-sentence-into-phrases* t
