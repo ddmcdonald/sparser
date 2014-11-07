@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  September 2014
+;;;  version:  November 2014
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -25,7 +25,8 @@
 ;; 6/6/14 Worked out a set of macros to make shortcuts more consistent
 ;; and compact. 6/9/14 Starting make over, including removing shortcuts
 ;; that are only used in sl/checkpoint/vocabulary.lisp. 9/14/14 pulled
-;; out the macros to their own file.
+;; out the macros to their own file. 11/7/14 added a :prehead-modifier
+;; standalone rule to svo/passive/nominal. 
 
 (in-package :sparser)
 
@@ -493,8 +494,18 @@ broadly speaking doing for you all the things you might do by hand.
                                (base-np . :self)
                                (complement . ,agent-v/r)
                                (np . :self))
-                     :common-noun ,nominalization)))))
+                     :common-noun ,nominalization
+                     :additional-rules
+                       ((:prehead-modifier
+                         (,patient-v/r (:self ,patient-v/r)
+                               :head right-referent
+                               :function (passive-premodifier
+                                          left-referent right-referent ,patient-slot)))))))))
+                    
             (eval form)))))))
+
+(defun passive-premodifier (verb noun slot)
+  (push-debug `(,verb ,noun ,slot)) (break "got to passive premod"))
 
   
 
