@@ -580,6 +580,11 @@
   (when *trace-island-driving*
     (trace-msg "~%Going to handle parentheses")))
 
+(deftrace :looking-for-short-conjuncts ()
+  ;; called from island-driven-forest-parse
+  (when *trace-island-driving*
+    (trace-msg "Looking for conjunctions over short terms")))
+
 (deftrace :try-simple-subj+verb ()
   ;; called from :try-simple-subj+verb
   (when *trace-island-driving*
