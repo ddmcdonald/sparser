@@ -113,7 +113,7 @@
   :specializes molecule
   :instantiates :self
   :bindings (uid "CHEBI:36080")
-  :rule-label bio-entity
+;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
@@ -140,7 +140,7 @@
   :specializes protein
   :instantiates :self
   :bindings (uid "GO:0016301") ;; "kinase activity"
-  :rule-label bio-entity
+;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "kinase")
   :realization (:common-noun name))
@@ -148,7 +148,7 @@
 (define-category enzyme ;; what's the relationship to kinase?
   :specializes protein
   :instantiates :self
-  :rule-label bio-entity
+;; :rule-label bio-entity
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
 
