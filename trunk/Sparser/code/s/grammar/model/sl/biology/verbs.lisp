@@ -7,6 +7,7 @@
 
 ;; Initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 11/7/14. 
+;; dsefine verbs (svo/passive/nominal encode, mutate and make some verbs more specific (enhancement enhances a bio-process)
 
 (in-package :sparser)
 
@@ -59,11 +60,14 @@
 
 ;;--- "encode"
 ;; <enzyme> encoded by <gene>
-(svo/bio "encode")  ;;/// wrong -- placeholder
+(svo/passive/nominal "encode" "encoding"
+  :super-category bio-process
+  :patient protein
+  :agent gene)  
 
 (svo/passive/nominal "enhance" "enhancement"
   :super-category bio-process
-  :patient bio-entity
+  :patient bio-process
   :agent bio-entity)
 
 ;; exchange
@@ -137,6 +141,11 @@
   :super-category bio-process
   :patient bio-process  ;; inhibiton of <process>
   :agent bio-process)
+
+(svo/passive/nominal "mutate" "mutation"
+  :super-category bio-process
+  :patient gene  ;; mutation of gene
+  :agent bio-process)                
 
 
 ;;--- "mutation"
