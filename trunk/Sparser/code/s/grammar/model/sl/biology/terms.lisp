@@ -7,6 +7,11 @@
 
 ;; Initiated 7/23/14 by lifting proteins from NFkappaB experiment.
 ;; Moved proteins out to their own file 9/8/14
+;;; temporary home for rules
+;;; gene  --> mutate gene
+;;; enzyme --> bio-process enzyme
+;;; move out oncoogene to taxonomy, and mutate to be a verb (so mutated is a past participle)
+
 
 (in-package :sparser)
 
@@ -14,9 +19,9 @@
 
 ;; These presumably have OBO indexes, but that's for a second pass.
 
-(np-head "oncogene")
+;; (np-head "oncogene")
 
-(adj "mutated")
+;; (adj "mutated")
 
 (adj "deadliest") ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
@@ -136,5 +141,11 @@ that consists of five conserved G boxes. |#
   :lemma (common-noun "signal transduction"))
 
 
+(def-cfr gene (mutate gene)
+  :form n-bar
+  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
 
+(def-cfr enzyme (bio-process enzyme)
+  :form n-bar
+  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
 
