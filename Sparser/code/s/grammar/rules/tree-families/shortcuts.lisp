@@ -27,6 +27,7 @@
 ;; that are only used in sl/checkpoint/vocabulary.lisp. 9/14/14 pulled
 ;; out the macros to their own file. 11/7/14 added a :prehead-modifier
 ;; standalone rule to svo/passive/nominal. 
+;; remove broken new rule for vo/passive/nominal/expr
 
 (in-package :sparser)
 
@@ -495,17 +496,23 @@ broadly speaking doing for you all the things you might do by hand.
                                (complement . ,agent-v/r)
                                (np . :self))
                      :common-noun ,nominalization
-                     :additional-rules
-                       ((:prehead-modifier
-                         (,patient-v/r (:self ,patient-v/r)
-                               :head right-referent
-                               :function (passive-premodifier
-                                          left-referent right-referent ,patient-slot)))))))))
+;;                     :additional-rules
+;;                     ((:prehead-modifier
+;;                         (,patient-v/r (:self ,patient-v/r)
+;;                               :head right-referent
+;;                               :function (passive-premodifier
+;;                                          left-referent right-referent ,patient-slot))))
+                       )))))
                     
             (eval form)))))))
 
+
 (defun passive-premodifier (verb noun slot)
-  (push-debug `(,verb ,noun ,slot)) (break "got to passive premod"))
+  (push-debug `(,verb ,noun ,slot)) 
+  (if
+   nil
+   (break "got to passive premod")
+   noun))
 
   
 
