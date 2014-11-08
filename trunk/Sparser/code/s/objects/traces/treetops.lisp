@@ -9,6 +9,7 @@
 ;; Stubbed with parameters 10/1990. Moved in the traces from
 ;; drivers/chart/psp/march-forest 3/8/13. 
 ;; Adding patterns for the new forest design through 10/23/14.
+;; FIxed typo in printout -- "subjec" --> "subject"
 
 (in-package :sparser)
 
@@ -532,7 +533,7 @@
 (deftrace :setting-subject-to (tt)
   ;; called from set-subject
   (when *trace-treetops-sweep*
-    (trace-msg "[sweep] setting the subjec to ~a" tt)))
+    (trace-msg "[sweep] setting the subject to ~a" tt)))
 
 
 ;;;------------------------------------------
