@@ -88,7 +88,7 @@
             (:print-function print-subtype-category-structures))
   ;; Besides the slots from referential and model structures
   ;; we have to remember that we've got symbol and rule-set
-  ;; slots from label by way of thevanilla category struct.
+  ;; slots from label by way of the vanilla category struct.
   ;; We use the inherited mix-in slot to hold the specializer
   ;; and the lattice-position now holds a subtype-lattice-point.
 
