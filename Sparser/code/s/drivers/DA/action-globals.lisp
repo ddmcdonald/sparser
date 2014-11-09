@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "action globals"
 ;;;   Module:  "drivers;DA:"
-;;;  Version:  May 1995
+;;;  Version:  November 2014
 
-;; initiated 5/5/95. Tweeked 5/18
+;; initiated 5/5/95. Tweeked 5/18. 11/9/14 Added edge-within-DA-record 
+;; to decode record over words with multiple edges.
 
 (in-package :sparser)
 
@@ -72,6 +73,21 @@
        ;; e.g. :end-of-source
        tt )))))
 
+(defun edge-within-DA-record (sexp)
+  ;; Called from refactor-s-for-buried-relative to undue the operation
+  ;; of record-of-tt when there are multiple edges over a word.
+  ;; We return just the edge. ///Should reconsider what to record
+  ;; in the first place.
+  (push-debug `(,sexp))
+  (let ((tt-record (car sexp)))
+    (cond
+     ((edge-p tt-record) tt-record)
+     ((consp tt-record)
+      (let ((first (car tt-record)))
+        (if (edge-p first)
+          first
+          (error "incorrect assumption about car of DA record"))))
+     (t (error "DA record has unexpected structure")))))
 
 
 (defun lookup-matched-tt (lookup-term)
