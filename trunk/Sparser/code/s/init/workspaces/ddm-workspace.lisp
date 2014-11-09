@@ -16,7 +16,7 @@
   (setup-bio) ;; load the bio model etc.
   ;; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
   (setq *note-text-relations* nil)
-  (bf-off)
+  ;;(bf-off)
   (trace-lexicon-unpacking) (trace-morphology)
   (setq *kind-of-chart-processing-to-do* :successive-sweeps)
   (setq *parse-chunk-interior-online* t)
@@ -36,11 +36,14 @@
 ; (progn (untrace-chunker) (untrace-segments) (untrace-terminals-sweep)  (untrace-island-driving))
 
 ; (setq *do-islands-2d-pass* nil)
-
+; exploded-tree-family-named
 
 ; (bio-setting)
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
+
+;; 11/6/14 -- collect-no-space-sequence-into-word  
+;  (p "For example, SHOC2/Sur-8 bridges Ras and Raf")
 
 
 (defun load-ddm-ws ()
@@ -82,8 +85,16 @@
 ;; Clean up the display at the end of the load, document the globals
 ; (ddm-ed "interface/grammar/postprocessing.lisp")
 
+
+(defun ddm-tree-families ()
+  (ddm-ed "objects/model/tree-families/rdata1.lisp")
+  (ddm-ed "objects/model/tree-families/driver2.lisp")
+  (ddm-ed "objects/model/tree-families/subrs3.lisp")
+  (ddm-ed "grammar/rules/tree-families/np-adjuncts.lisp"))
+
+
+
 ; (ddm-ed "grammar/model/dossiers/modifiers.lisp")
-; (ddm-ed "grammar/rules/syntax/conjunction8.lisp")
 
 
 ; (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
@@ -95,10 +106,12 @@
 ; (ddm-ed "objects/chart/edge-vectors/peek.lisp)
 
 ;; 10/14,19/14
-; (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
-; (ddm-ed "grammar/rules/syntax/affix-rules1.lisp")
-; (ddm-ed "grammar/rules/brackets/comlex-unpacking.lisp")
-; (ddm-ed "grammar/rules/words/one-offs/comlex-def-forms.lisp")
+(defun ddm-word-lookup ()
+  (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
+  (ddm-ed "grammar/rules/syntax/affix-rules1.lisp")
+  (ddm-ed "grammar/rules/brackets/comlex-unpacking.lisp")
+  (ddm-ed "grammar/rules/words/one-offs/comlex-def-forms.lisp")
+  (ddm-ed "objects/traces/tokenizer.lisp"))
 
 
 (defun ddm-shortcuts ()
@@ -177,6 +190,10 @@
 
 ; (load "/Users/ddm/ws/R3/trunk/code/obo2lisp/obo2lisp.lisp")
 ; (transcribe-obo-file "/Users/ddm/ws/R3/trunk/ontologies/pro-test-file.obo")
+(defun translate-obos ()  ;; (translate-obos)
+ (cl-user::translate-obo-files 
+  '("/Users/ddm/ws/R3/trunk/ontologies/ro.obo") 
+  "~/ws/R3/ws/obo-terms.lisp"))
 
 ;;--- Other hard filenames
 
