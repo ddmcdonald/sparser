@@ -550,7 +550,7 @@
 (deftrace :island-driven-forest-parse (start-pos end-pos)
   ;; called from island-driven-forest-parse
   (when (or *trace-network-flow* *trace-island-driving*)
-    (trace-msg "Doing island-driving between p~a and p~a"
+    (trace-msg "~%~%Doing island-driving between p~a and p~a"
                (pos-token-index start-pos)
                (pos-token-index end-pos))))
 
@@ -661,10 +661,13 @@
                (edge-position-in-resource-array verb-group-edge)
                (edge-position-in-resource-array edge))))
 
-(deftrace :subject-not-adjacent ()
+(deftrace :subject-not-adjacent (subj-edge verb-edge)
   ;; called from try-simple-subj+verb
   (when *trace-island-driving*
-    (trace-msg "[islands] the subject is not adjacent to the main verb")))
+    (trace-msg "[islands] the subject e~a is not adjacent to ~
+                the main verb e~a"
+               (edge-position-in-resource-array subj-edge)
+               (edge-position-in-resource-array verb-edge))))
 
 (deftrace :no-subject-or-verb-edges ()
   ;; called from try-simple-subj+verb
