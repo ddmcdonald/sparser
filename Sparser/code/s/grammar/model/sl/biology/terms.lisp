@@ -1,4 +1,4 @@
- ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "terms"
@@ -11,6 +11,7 @@
 ;;; gene  --> mutate gene
 ;;; enzyme --> bio-process enzyme
 ;;; move out oncoogene to taxonomy, and mutate to be a verb (so mutated is a past participle)
+;; 11/9/14 hack for ', in part,' and terms for g1,...,g5, 'as a consequence' and .exchange' as a bio-process
 
 
 (in-package :sparser)
@@ -21,16 +22,15 @@
 (adj "deadliest") ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
 
-(np-head "cancer")
-
+;;(np-head "cancer")
 
 (adj "responsible" ;; adj/noun "resposibility"
   :subject 'bio-entity
   :theme 'bio-entity
   :subcategorization '((for np) (theme)))
 
-
-(np-head "human") ;;/// check people code
+;;(np-head "human") ;;/// check people code
+(def-bio "human" species)
 (np-head "mortality") ;;/// relationship to "mortal" ??
 
 
@@ -51,10 +51,11 @@ critical for tumor formation. |#
 (def-bio "signaling" bio-process ;; makes common nouns 
   :identifier "GO:0023052")       ;; reasonable stand-in
 
-(np-head "enzyme")
+;;(np-head "enzyme")
 
 (define-adverb "in part")
-
+(define-adverb ", in part,") ;; ugly but simple way to handle sentential adverbs that can be set off by commas...
+(define-adverb "as a consequence")
 
 ;;--- J3
 (define-adjective "molecular")
@@ -107,6 +108,8 @@ that consists of five conserved G boxes. |#
 ;;/// hypenated and separated. 
 (def-bio "RasGAP" protein) ;; ditto
 
+(def-bio "exchange" bio-process)
+
 ;; cytosolic "GO:0005829"
 
 ;; "GTP, whereas RasGAPs ... end of the sentence" GO:0006184
@@ -119,6 +122,12 @@ that consists of five conserved G boxes. |#
 ;;--- j9
 
 (define-adjective "prevalent")
+
+(def-bio "g1" bio-entity)
+(def-bio "g2" bio-entity)
+(def-bio "g3" bio-entity)
+(def-bio "g4" bio-entity)
+(def-bio "g5" bio-entity)
 
 ;; G1 (box) "PR:000003866"
 
