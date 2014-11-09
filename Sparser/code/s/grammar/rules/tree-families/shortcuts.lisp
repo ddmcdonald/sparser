@@ -130,15 +130,35 @@ broadly speaking doing for you all the things you might do by hand.
 
 
 
-(defun adj (adjective &key super preposition)
+(defun adj (adjective &key super preposition subcategorization
+                           subject theme)
+  ;;/// given subject/theme its a short step to going whole hog
+  ;; with create-category-for-a-term
   (with-name-and-superc adjective super :adjective
+    (when (or subject theme)
+      (unless (and subject theme)
+        (error "The subject or theme argument was supplied but not both")))
     (let ((form
-           `(define-category ,name
-              :instantiates :self
-              :specializes ,superc
-              :realization (:adjective ,adjective))))
+           (if subject
+             (with-subject subject
+               (with-theme theme
+                 ;;/// theme-v/r and subj-v/r are not used, could
+                 ;; come up with a rclass that could soak them up
+                 `(define-category ,name
+                    :instantiates :self
+                    :specializes ,superc
+                    :binds ((,theme-slot . ,theme-var)
+                            (,subj-slot . ,subj-var))
+                    :realization (:adjective ,adjective))))
+             `(define-category ,name
+                :instantiates :self
+                :specializes ,superc
+                :realization (:adjective ,adjective)))))
       (let ((category (eval form)))
-        (apply-preposition-if-any adjective preposition category)
+        (when subcategorization
+          (apply-subcat-if-any subcategorization category adjective))
+        (when preposition
+          (apply-preposition-if-any adjective preposition category))
         category))))
 
 
@@ -495,15 +515,11 @@ broadly speaking doing for you all the things you might do by hand.
                                (base-np . :self)
                                (complement . ,agent-v/r)
                                (np . :self))
-                     :common-noun ,nominalization
-;;                     :additional-rules
-;;                     ((:prehead-modifier
-;;                         (,patient-v/r (:self ,patient-v/r)
-;;                               :head right-referent
-;;                               :function (passive-premodifier
-;;                                          left-referent right-referent ,patient-slot))))
-                       )))))
-                    
+                     :common-noun ,nominalization)
+                    #+ignore(:tree-family 
+                     :mapping 
+                     :common-noun ,nominalization)))))
+
             (eval form)))))))
 
 
