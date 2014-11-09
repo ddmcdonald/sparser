@@ -3,10 +3,11 @@
 ;;; 
 ;;;     File:  "sentence-fragments"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  October 2014
+;;;  Version:  November 2014
 
 ;; Iniated 10/25/14 to hold rules used to stitch together patterns
 ;; that weren't seen with binary rules or were easier this way.
+;; 11/9/14 DA for single word is different, so added decoder.
 
 (in-package :sparser)
 
@@ -30,6 +31,8 @@
             :rule-name :compose-that
             :referent (edge-referent vp-edge))))
     (push-debug `(,clause ,that ,reduced-relative))
+    (when (consp that) ;; multiple edges
+      (setq that (edge-within-DA-record that)))
     (let ((np (rightmost-np-under-s clause)))
       (push-debug `(,np)) ;; J3 e26
       (let* ((rc-edge (compose-that that reduced-relative))
