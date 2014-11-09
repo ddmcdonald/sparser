@@ -154,7 +154,10 @@
   (push tt (conjunctions (layout))))
 
 (defun there-are-conjunctions? ()
-  (conjunctions (layout)))
+  (let ((original-list (conjunctions (layout))))
+    (loop for edge in original-list
+      unless (edge-used-in edge)
+      collect edge)))
 
 
 (defun push-parentheses (tt)
