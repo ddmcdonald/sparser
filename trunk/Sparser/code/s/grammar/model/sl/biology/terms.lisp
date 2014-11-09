@@ -12,6 +12,7 @@
 ;;; enzyme --> bio-process enzyme
 ;;; move out oncoogene to taxonomy, and mutate to be a verb (so mutated is a past participle)
 ;; 11/9/14 hack for ', in part,' and terms for g1,...,g5, 'as a consequence' and .exchange' as a bio-process
+;; added critical, common, "tumor formation", first stab at "form", revised "condition", revised "G-domain"
 
 
 (in-package :sparser)
@@ -28,6 +29,19 @@
   :subject 'bio-entity
   :theme 'bio-entity
   :subcategorization '((for np) (theme)))
+
+(adj "critical" ;; adj/noun "resposibility"
+  :subject 'bio-entity
+  :theme 'bio-entity
+  :subcategorization '((for bio-process) (theme)))
+
+(adj "common" ;; adj/noun "resposibility"
+  :subject 'bio-entity
+  :theme 'bio-entity
+  :subcategorization '((to bio-entity) (theme)))
+
+
+(def-bio "tumor formation" bio-process)
 
 ;;(np-head "human") ;;/// check people code
 (def-bio "human" species)
@@ -74,17 +88,17 @@ that consists of five conserved G boxes. |#
 
 ;; activated forms of the Ras proteins
 ;; Needs a whole model
-(np-head "form")
+(def-bio "form" bio-variant)
 
 (np-head "tumor")
-(np-head "formation")
-
+;;(np-head "formation")
+(def-bio "tumor formation" bio-process)
 
 ;;--- j5 
 (define-adjective "physiological")
-(np-head "condition")
+(def-bio "condition" bio-condition)
 
-(np-head "G-domain")
+(np-head "G-domain" :super 'protein-segment) ;; somehow (def-bio "G-domain" protein-segment) di not work
 
 (def-cfr rate-of-process (rate-of-process-of release)
   ;;//// The semantic-composition based on 'release' being 
