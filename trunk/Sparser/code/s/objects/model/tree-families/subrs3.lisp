@@ -39,7 +39,7 @@
   ;; an exploded tree family.  This returns the corresponding
   ;; object from the alist implementing the mapping.
 
-  (declare (ignore category allow-literals?))
+  (declare (ignore allow-literals?))
   ;; 10/17 if we allow a category like 'apostrophe-s' on the same
   ;; principle as allowing literal words, then there's nothing
   ;; to distinguish the regular case from the case of Additional-cases
@@ -119,7 +119,7 @@
           target )
 
          ((and (symbolp label)
-               (eq label :self))
+               (eq label :self)) ;(break "self")
           category)
 
          (t
