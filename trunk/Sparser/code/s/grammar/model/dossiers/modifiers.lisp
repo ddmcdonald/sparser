@@ -15,6 +15,7 @@
 ;; Commenting out some word for collision with stronger forms in bio
 ;; through 9/26/14. 10/29/14 exposed the comparatives. Forgot why they
 ;; had been commented out. 
+;; THIS FILE NEEDS TO BE REVISITED SINCE IT CONFLICTS WITH WHAT IS NEEDED IN R3 -- look at the handling of "critical"
 
 (in-package :sparser)
 
@@ -811,7 +812,7 @@
 (define-adjective "continual")
 (define-adjective "continuous") ; process-y
 (define-adjective "counterintuitive")
-(define-adjective "critical")
+;;(define-adjective "critical") conflicts with needed definition in biology 
 (define-adjective "crucial")
 (define-adjective "cytotoxic")
 (define-adjective "decisive")
