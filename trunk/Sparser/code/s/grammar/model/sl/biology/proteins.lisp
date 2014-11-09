@@ -6,6 +6,7 @@
 ;;; version: September 2014
 
 ;; initiated 9/8/14 lifting from other files
+;; made some of the proteins lowere case, becasue both capitalized and lower case versions occur
 
 (in-package :sparser)
 
@@ -52,16 +53,18 @@
 ;;;-------------------------
 
 ;;/// gene/product/generalizations, UCD uses PR identifier
-(def-bio "KRAS" gene
+
+(def-bio "kras" gene ;; to accomodate all the variant capitalization
   :identifier "PR:000009442")
 (def-bio "PIK3CA" gene
   :identifier "PR:000012719")
-(def-bio "BRAF" gene
+(def-bio "braf" gene ;; to accomodate all the variant capitalization
   :identifier "PR:000004801")
 
-(def-bio "GTP" small-molecule
+
+(def-bio "gtp" small-molecule ;; to accomodate all the variant capitalization
   :identifier "CHEBI:15996")
-(def-bio "GDP" small-molecule
+(def-bio "gdp" small-molecule ;; to accomodate all the variant capitalization
   :identifier "CHEBI:17552")
 
 ;; "GO:0006184" "GTP loading and deactivated upon hydrolysis" ?????
