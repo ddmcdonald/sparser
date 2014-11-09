@@ -6,7 +6,7 @@
 ;;; version: October 2014
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
-
+;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, bio-conditions, bio-locations, species
 (in-package :sparser)
 
 ;;;---------------------------
@@ -152,4 +152,78 @@
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
 
+(define-category bio-condition
+  :specializes bio-entity
+  :instantiates self
+  :index (:permanent :key name))
 
+(define-category disease 
+  :specializes bio-condition
+  :instantiates self
+  :index (:permanent :key name)
+  :lemma (:common-noun "disease")
+  :realization (:common-noun name))
+
+(define-category cancer 
+  :specializes disease
+  :instantiates self
+  :index (:permanent :key name)
+  :lemma (:common-noun "cancer")
+  :realization (:common-noun name))
+
+(define-category melananoma 
+  :specializes cancer
+  :instantiates self
+  :index (:permanent :key name)
+  :lemma (:common-noun "cancer")
+  :realization (:common-noun name))
+
+
+(define-category  in-bio-condition  ;; "in cancer, in physiological conditions"
+  :instantiates self
+  :specializes location
+  :binds ((place)
+          (functor :primitive word)) ;;  
+  :realization (:tree-family content-pp
+                 :mapping ((type . :self)
+                           (articulator . functor)
+                           (item . place)
+                           (pp . :self)
+                           (preposition . ("in" "under"))
+                           (complement . bio-condition))))
+
+(define-category bio-location 
+  :specializes bio-entity
+  :instantiates self
+  :index (:permanent :key name))
+
+(define-category  in-bio-location  ;; "in humans, in epithelial cells, in the plasma membrane"
+  :instantiates self
+  :specializes location
+  :binds ((place)
+          (functor :primitive word)) ;;  may not be too relevant
+  :realization (:tree-family content-pp
+                 :mapping ((type . :self)
+                           (articulator . functor)
+                           (item . place)
+                           (pp . :self)
+                           (preposition . ("in" "within" "on")) ;; what else is imortant?
+                           (complement . bio-location))))
+
+
+(define-category species
+  :instantiates self
+  :specializes bio-location
+  :index (:permanent :key name)
+  :lemma (:common-noun "species")
+  :realization (:common-noun name))
+  
+
+#+ignore
+(define-additional-realization bio-entity
+  ;; category defined in places/relational)
+  (:tree-family simple-in-complement
+   :mapping ((np-item . functor)
+             (of-item . place)
+             (np . location)
+             (complement . location))))
