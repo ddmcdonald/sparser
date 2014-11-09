@@ -144,7 +144,9 @@
 
 
 (define-exploded-tree-family  pp-after-np
-  :description "A combination of a noun phrase and a following prepositional phrase, where the pp adds a property to the object the np refers to."
+  :description "A combination of a noun phrase and a following 
+      prepositional phrase, where the pp adds a property to 
+      the object the np refers to."
   :binding-parameters ( pp-head-field )
   :labels ( np  pp  prep  prep-head )
   :cases
