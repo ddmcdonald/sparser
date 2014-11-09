@@ -17,20 +17,18 @@
 
 ;;---- j1
 
-;; These presumably have OBO indexes, but that's for a second pass.
-
-;; (np-head "oncogene")
-
-;; (adj "mutated")
 
 (adj "deadliest") ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
 
 (np-head "cancer")
 
+
 (adj "responsible" ;; adj/noun "resposibility"
-     :preposition "for")
-;;(assign-preposition "responsible" "for")
+  :subject 'bio-entity
+  :theme 'bio-entity
+  :subcategorization '((for np) (theme)))
+
 
 (np-head "human") ;;/// check people code
 (np-head "mortality") ;;/// relationship to "mortal" ??
