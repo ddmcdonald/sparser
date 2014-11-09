@@ -32,7 +32,7 @@
           ;; set form to subj+vg or whatever that is.
           (tr :subject+verb edge subject-edge verb-group-edge)
           edge)
-        (tr :subject-not-adjacent))
+        (tr :subject-not-adjacent subject-edge verb-group-edge))
       (tr :no-subject-or-verb-edges))))
  
      
@@ -284,7 +284,7 @@
 
 (defun look-for-short-obvious-conjunctions ()
   ;;/// first just one conjunct cases
-  (let ((conjuncts (conjunctions (layout))))
+  (let ((conjuncts (there-are-conjunctions?)))
     (when (null (cdr conjuncts))
       (let* ((c1 (car conjuncts))
              (left-edge (next-treetop/leftward c1))
@@ -305,7 +305,7 @@
   ;; For now do the easy thing of looking only for the same
   ;; labels to either side
   ;;  *allow-form-conjunction-heuristic*
-  (let* ((conjuncts (conjunctions (layout)))
+  (let* ((conjuncts (there-are-conjunctions?))
          (count (length conjuncts)))
     (push-debug `(,count ,conjuncts)) ;;(break "work out conjunctions")
     (when (= count 2)
@@ -333,8 +333,7 @@
                     ,edge-to-the-left-of-c1
                     ,edge-to-the-right-of-c1)))
                 (tr :two-conjuncts-not-consistent))))
-           (t (tr :different-two-conjunction-pattern)
-)))))
+           (t (tr :different-two-conjunction-pattern))))))
     ;; really need to refactor the three-in-a-row pattern to reuse its parts
     (when (= count 1)
       ;; if the little ones are handled on the fly then this is a large one
@@ -468,6 +467,7 @@
                            :constituents tts)))
                 (tr :subcat-pattern-succeeded edge)
                 (setq new-edge edge)
+                (elevate-form-given-subcat new-edge edge pattern)
                 (return))) ;; drop out of the loop
             (tr :subcat-pattern-failed)))))
     new-edge))
