@@ -20,6 +20,10 @@
 
 (in-package :sparser)
 
+;;;--------------------------
+;;; Generalizing form labels
+;;;--------------------------
+
 (defun elevate-head-edge-form-if-needed (edge)
   (let* ((form-category (edge-form edge))
 	 (symbol (when form-category
@@ -106,7 +110,24 @@
 		  (edge-form edge))))))))
 
 
+(defun elevate-form-given-subcat (new-edge edge pattern)
+  ;; called from apply-subcat-patterns when the pattern has succeeded
+  ;; and created the new edge. ///Ought to specifiy this explicitly,
+  ;; but this move of elevating
+  (let ((head-form ;; assumes that the subcat terms go to the right
+         (edge-form edge)))
+    (case (cat-symbol head-form)
+      (category::vg (setf (edge-form new-edge) category::vp))
+      (category::adjective (edge-form new-edge) category::adjp)
+      (otherwise
+       (push-debug `(,new-edge ,edge ,pattern))
+       (break "New case of head edge needing elevation: ~a" head-form)))))
 
+
+
+;;;-----------------------
+;;; operations over heads
+;;;-----------------------
 
 (defun reify-segment-head-if-needed ()
   ;; Runs for side-effects within the routines of sdm/analyze-segment
@@ -124,7 +145,6 @@
 	      (word) ;; "."
 	      (otherwise
 	       (break "New case: ~a~%~a" (type-of referent) referent))))))
-
       (reify-segment-head-as-a-category))))
 
     
