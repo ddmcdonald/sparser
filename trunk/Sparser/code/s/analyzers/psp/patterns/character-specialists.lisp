@@ -39,7 +39,8 @@
                 ;; just to get something (as better than nothing)
                 (multiply-edges left-edge right-edge))))
           (if rule
-            (make-completed-binary-edge left-edge right-edge rule)
+            (make-edge-into-adjective
+             (make-completed-binary-edge left-edge right-edge rule))
             (else ;; make a structure if all else fails
              ;; but first alert to anticipated cases not working
              (make-hypenated-structure left-edge right-edge))))))
@@ -47,7 +48,9 @@
       (break "New case for hyphens~%  hyphen count = ~a~
             ~%  phrase-length = " hyphen-count phrase-length)))))
 
-
+(defun make-edge-into-adjective (edge)
+  (setf (edge-form edge) category::adjective)
+  edge)
 
 ;;;---------
 ;;; slashes
