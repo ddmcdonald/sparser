@@ -30,15 +30,17 @@
   :theme 'bio-entity
   :subcategorization '((for np) (theme)))
 
-(adj "critical" ;; adj/noun "resposibility"
+(adj "critical" 
   :subject 'bio-entity
   :theme 'bio-entity
-  :subcategorization '((for bio-process) (theme)))
+  ;;DAVID -- this didn't work when I supbstitued a semantic category for np -- WHY?
+  :subcategorization '((for np) (theme)))
 
-(adj "common" ;; adj/noun "resposibility"
+(adj "common"
   :subject 'bio-entity
   :theme 'bio-entity
-  :subcategorization '((to bio-entity) (theme)))
+  ;;DAVID -- this didn't work when I supbstitued a semantic category for np -- WHY?
+  :subcategorization '((to np) (theme)))
 
 
 (def-bio "tumor formation" bio-process)
@@ -88,7 +90,8 @@ that consists of five conserved G boxes. |#
 
 ;; activated forms of the Ras proteins
 ;; Needs a whole model
-(def-bio "form" bio-variant)
+(np-head "form" :super 'bio-variant)
+(np-head "variety" :super 'bio-variant)
 
 (np-head "tumor")
 ;;(np-head "formation")
