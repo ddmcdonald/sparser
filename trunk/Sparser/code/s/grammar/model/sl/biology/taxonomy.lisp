@@ -23,7 +23,7 @@
   :specializes process
   :mixins (has-UID has-name)
   :realization (:common-noun name) ;; for nominal forms
-  :documentation "No content by itself, provides a common paraent
+  :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
