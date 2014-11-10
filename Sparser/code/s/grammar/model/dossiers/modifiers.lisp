@@ -15,7 +15,7 @@
 ;; Commenting out some word for collision with stronger forms in bio
 ;; through 9/26/14. 10/29/14 exposed the comparatives. Forgot why they
 ;; had been commented out. 
-;; THIS FILE NEEDS TO BE REVISITED SINCE IT CONFLICTS WITH WHAT IS NEEDED IN R3 -- look at the handling of "critical"
+;; THIS FILE NEEDS TO BE REVISITED SINCE IT CONFLICTS WITH WHAT IS NEEDED IN R3 -- look at the handling of "critical", "common"
 
 (in-package :sparser)
 
@@ -801,7 +801,7 @@
 (define-adjective "clear")
 (define-adjective "clinical")
 (define-adjective "clonal")
-(define-adjective "common")
+;;(define-adjective "common")
 (define-adjective "complementary")
 (define-adjective "complete")
 (define-adjective "complex") ;also noun
