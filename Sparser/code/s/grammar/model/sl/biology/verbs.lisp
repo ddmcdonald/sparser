@@ -58,6 +58,13 @@
 
 (svo/bio "call")
 
+(def-term "catalyze" verb (svo-passive
+                           of-nominal) ;;/// "catalyysis of phosphorylation by MEK"
+  :nominalization "catalysis"
+  :super-category bio-process
+  :patient bio-process 
+  :agent bio-entity)
+
 ;;--- "encode"
 ;; <enzyme> encoded by <gene>
 (svo/passive/nominal "encode" "encoding"
@@ -114,10 +121,18 @@
 
 ;;--- inhibit
 ;; "by inhibiting <p>"
-(svo/passive/nominal "inhibit" "inhibition"
+
+;;(svo/passive/nominal "inhibit" "inhibition"
+;;  :super-category bio-process
+;;  :patient bio-process  ;; inhibiton of <process>
+;;  :agent bio-entity)
+
+
+(def-term "inhibit" verb  (svo of-nominal)
   :super-category bio-process
-  :patient bio-process  ;; inhibiton of <process>
-  :agent bio-entity)
+  :nominalization "inhibition"
+  :subject bio-entity
+  :theme bio-process)
 
 
 ;;--- "load" -- "GTP loading"
