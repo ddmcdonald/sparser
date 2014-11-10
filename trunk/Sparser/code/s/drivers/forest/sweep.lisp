@@ -108,7 +108,8 @@
           (category::pp
            (push-prepositional-phrase tt))
 
-          (category::conjunction
+          ((category::conjunction
+            category::subordinate-conjunction)
            (push-conjunction tt))
 
           (category::parentheses
