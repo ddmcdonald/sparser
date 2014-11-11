@@ -39,18 +39,40 @@
                 ;; just to get something (as better than nothing)
                 (multiply-edges left-edge right-edge))))
           (if rule
-            (make-edge-into-adjective
-             (make-completed-binary-edge left-edge right-edge rule))
+            (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
+              ;;//// trace goes here
+              (revise-form-of-nospace-edge-if-necessary edge))
             (else ;; make a structure if all else fails
              ;; but first alert to anticipated cases not working
              (make-hypenated-structure left-edge right-edge))))))
      (t
       (break "New case for hyphens~%  hyphen count = ~a~
-            ~%  phrase-length = " hyphen-count phrase-length)))))
+            ~%  phrase-length = ~a" hyphen-count phrase-length)))))
 
 (defun make-edge-into-adjective (edge)
   (setf (edge-form edge) category::adjective)
   edge)
+
+<<<<<<< .mine
+;;;---------------------------
+;;; both a hyphen and a slash
+;;;---------------------------
+;; e.g. SHOC2/Sur-8
+
+=======
+>>>>>>> .r2015
+(defun nospace-slash-and-hyphen-specialist (hyphen-position/s slash-position/s
+                                            pos-before next-position)
+  (push-debug `(,hyphen-position/s ,slash-position/s ,pos-before ,next-position))
+  (break "both hyphen and slash")) #|
+  ;; Assume that hyphens have priority over slash
+  (unless (null (cdr hyphen-position/s))
+    (break "Stub: more than one hyphen in combination with slash"))
+  (let* ((hyphen-pos (car hyphen-position/s))
+         (rightward-word/edge (right-treetop-at (chart-position-after hyphen-pos)) |#
+
+
+
 
 ;;;---------
 ;;; slashes
