@@ -135,11 +135,11 @@
                 (tr :ns-scanned-punctuation word)
                 (cond
                  ((eq word *the-punctuation-hyphen*)
-                  (push next-position hyphen?)
-                  (push word words))
+                  ;(push word words)
+                  (push next-position hyphen?))
                  ((eq word (punctuation-named #\/))
-                  (push next-position slash?)
-                  (push word words))
+                  ;(push word words)
+                  (push next-position slash?))
                  ((eq word (punctuation-named #\'))
                   (unless leading-quote?
                     (return)))            
@@ -193,6 +193,9 @@
                  (parse-between-boundaries pos-before next-position)))))
         (cond
          ((eq layout :single-span)) ;; Do nothing. It's already known
+         ((and hyphen? slash?)
+          (nospace-slash-and-hyphen-specialist 
+           hyphen? slash? pos-before next-position))
          (hyphen?
           (nospace-hyphen-specialist hyphen? pos-before next-position))
          (slash?
