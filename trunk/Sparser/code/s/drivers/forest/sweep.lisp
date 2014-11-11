@@ -63,6 +63,7 @@
           ;; this is a gross control structure, but it lets
           ;; us play while sorting out what will be better
           ((category::np
+            category::n-bar
             category::common-noun) ;; ///not elevated
            (cond ((np-over-that? tt)
                   (push-that tt))
