@@ -124,6 +124,15 @@
        (break "New case of head edge needing elevation: ~a" head-form)))))
 
 
+(defun revise-form-of-nospace-edge-if-necessary (edge)
+  ;; They should all be some part of an np
+  (let ((current-form (edge-form edge)))
+    (unless (or (noun-category? current-form)
+                (eq current-form category::n-bar))
+      (setf (edge-form edge) category::n-bar))))
+
+
+
 
 ;;;-----------------------
 ;;; operations over heads
