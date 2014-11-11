@@ -39,7 +39,7 @@
                    (pos-edge-ends-at right-edge)
                    category::hyphenated-pair
                    :rule 'nospace-hyphen-specialist
-                   :form category::common-noun
+                   :form category::n-bar
                    :referent i
                    :constituents `(,left-edge ,right-edge))))
         ;;(break "look at edge")
