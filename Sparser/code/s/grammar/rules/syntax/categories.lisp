@@ -504,7 +504,8 @@
     ,category::relative-clause
     ,category::vp/passive
     ,category::vg/passive
-    ,category::participle)
+    ,category::participle
+    ,category::verb+ed)
   "All the form categories that cover verbs")
 
 (defmethod vp-category? ((c category))
