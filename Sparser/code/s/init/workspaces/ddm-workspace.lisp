@@ -79,7 +79,7 @@
   (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "grammar/rules/SD&P/create-categories.lisp")
-  (ddm-ed "grammar/rules/syntax/categories.lisp")
+  (ddm-ed "grammar/rules/syntax/categories.lisp"))
 
 (defun ddm-bio ()
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
@@ -95,6 +95,9 @@
 
 ;; Clean up the display at the end of the load, document the globals
 ; (ddm-ed "interface/grammar/postprocessing.lisp")
+
+;; Walk the model and such
+; (ddm-ed "interface/grammar/printing.lisp")
 
 
 (defun ddm-tree-families ()
