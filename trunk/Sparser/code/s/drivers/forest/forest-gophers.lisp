@@ -231,8 +231,9 @@
   ;; The main verb under this edge is a form of the verb
   ;; 'to be' or its equivalent (seems, appears, ...)
   (let ((verb-edge (find-verb edge)))
-    (when (eq (edge-category verb-edge) *the-category-to-be*)
-      verb-edge)))
+    (when verb-edge
+      (when (eq (edge-category verb-edge) *the-category-to-be*)
+        verb-edge))))
 
 
 (defun find-verb (edge)
@@ -260,6 +261,7 @@
           left)
          ((verb-category? right) ;; "is activated"
           right)
+
          (t (push-debug `(,left ,right ,left-form ,right-form))
             (break "find-verb: new case")))))))
 
@@ -333,6 +335,10 @@
       ;; more like copula or tensed
       ;(eq (edge-form edge) category::vp)
       ))
+
+(defmethod is-a-boundary? ((word word))
+  ;; pesumably punctuation, so lets say yes.
+  t)
 
 
 
