@@ -3,9 +3,10 @@
 ;;;
 ;;;     File:  "shortcut-master"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  September 2014
+;;;  version:  November 2014
 
-;; Initiated 9/14/14 to make more flexible, complete shortcuts
+;; Initiated 9/14/14 to make more flexible, complete shortcuts.
+;; 11/11/14 added keyword for obo-id
 
 (in-package :sparser)
 
@@ -19,7 +20,7 @@
 
 (defun decode-def-term-call (pname pos tree-families 
                              &key nominalization adjective preposition
-                                  super-category 
+                                  super-category obo-id
                                   mixin restrict rule-label
                                   subject theme goal complement 
                                   subcategorization
@@ -28,27 +29,31 @@
   (unless (keywordp pos)
     (setq pos (intern (symbol-name pos) (find-package :keyword))))
   ;; Look at the pattern of parameters that have values and dispatch
-  (cond ((and subject theme goal) ;; hydrolysis
-         (def-subj-theme-goal-term pname pos
-           tree-families super-category
-           mixin restrict rule-label
-           subject theme goal preposition 
-           nominalization subcategorization))
-        ((and subject theme) 
-         (def-subj-theme-term pname pos
-           tree-families super-category
-           mixin restrict rule-label
-           subject theme preposition
-           nominalization subcategorization))
-        ((and agent patient) ;; passive 
-         (def-agent-patient-term pname pos
-           tree-families super-category 
-           mixin restrict rule-label
-           agent patient preposition
-           nominalization subcategorization))
-        (t
-         (push-debug `( ,adjective ,complement ,by-category))
-         (break "New pattern"))))
+  (let ((category
+         (cond ((and subject theme goal) ;; hydrolysis
+                (def-subj-theme-goal-term pname pos
+                  tree-families super-category
+                  mixin restrict rule-label
+                  subject theme goal preposition 
+                  nominalization subcategorization))
+               ((and subject theme) 
+                (def-subj-theme-term pname pos
+                  tree-families super-category
+                  mixin restrict rule-label
+                  subject theme preposition
+                  nominalization subcategorization))
+               ((and agent patient) ;; passive 
+                (def-agent-patient-term pname pos
+                  tree-families super-category 
+                  mixin restrict rule-label
+                  agent patient preposition
+                  nominalization subcategorization))
+               (t
+                (push-debug `( ,adjective ,complement ,by-category))
+                (break "New pattern")))))
+    (when obo-id
+      (bind-variable 'uid obo-id category))
+    category))
 
 (defun def-subj-theme-goal-term (pname pos
                                  tree-families super-category
