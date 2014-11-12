@@ -53,14 +53,12 @@
   (setf (edge-form edge) category::adjective)
   edge)
 
-<<<<<<< .mine
+
 ;;;---------------------------
 ;;; both a hyphen and a slash
 ;;;---------------------------
 ;; e.g. SHOC2/Sur-8
 
-=======
->>>>>>> .r2015
 (defun nospace-slash-and-hyphen-specialist (hyphen-position/s slash-position/s
                                             pos-before next-position)
   (push-debug `(,hyphen-position/s ,slash-position/s ,pos-before ,next-position))
