@@ -178,12 +178,16 @@ the position. (N.b. there's an incremental trace hook in it.) |#
   ;; scan. 
   (install-terminal-edges word position-before position-after))
 
+(defparameter *integrate-no-space-patterns* nil)
+
 (defun do-no-space-collection (position-before)
   ; lifted from check-for-uniform-no-space-sequence
   (tr :check-for-uniform-no-space-sequence position-before)
-  (let ((uniform-pos-reached
-         (collect-no-space-sequence-into-word position-before)))
-    uniform-pos-reached))
+  (if *integrate-no-space-patterns*
+    (break "ns-pattern stub ~a" position-before)
+    (let ((uniform-pos-reached
+           (collect-no-space-sequence-into-word position-before)))
+      uniform-pos-reached)))
    
 
 (defun polyword-check (position-before word)
