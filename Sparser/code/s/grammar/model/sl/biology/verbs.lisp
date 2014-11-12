@@ -50,7 +50,7 @@
 (def-term "bind" verb (svo-passive
                        of-nominal) ;;/// "bound by"
   :nominalization "bound"
-  ;; "GO:0005488"
+  :obo-id "GO:0005488"
   :super-category bio-process
   :preposition "to"
   :patient bio-entity 
@@ -69,8 +69,8 @@
 ;; <enzyme> encoded by <gene>
 (svo/passive/nominal "encode" "encoding"
   :super-category bio-process
-  :patient protein
-  :agent gene)  
+  :agent gene
+  :patient protein)
 
 (svo/passive/nominal "enhance" "enhancement"
   :super-category bio-process
