@@ -4,7 +4,7 @@
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: 1.0 August 2014
+;;;   Version: 1.1 November 2014
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
@@ -12,7 +12,10 @@
 ;; the continuation code so it's easier to maintain. 5/19/14 put
 ;; guards around missing cases in analyze-segment. 8/7/14 Added possibility
 ;; of breaking in :trivial when there's no edge over the head or
-;; no edge at all
+;; no edge at all.
+;; 1.1 (11/11/14) Reduced propagate-suffix-to-segment to a call to
+;;  sdm-span-segment since the did the same thing and sdm-span-segment
+;;  didn't blindly take the right suffix's form. 
 
 
 (in-package :sparser)
@@ -121,19 +124,51 @@ to make any semantic or form edges that the grammar dictates.
 (defun propagate-suffix-to-segment ()
   ;; Look up the edge on the suffix, use its data to
   ;; create an edge over the whole segment
-  (let* ((suffix (edge-over-segment-suffix))
-         (suffix-label (edge-category suffix))
-         (suffix-form (edge-form suffix))
-         (suffix-referent (edge-referent suffix)))
-    (let ((edge (make-edge-over-long-span
-                 *left-segment-boundary*
-                 *right-segment-boundary*
-                 suffix-label
-                 :form suffix-form
-                 :referent suffix-referent
-                 :rule 'sdm-span-segment)))
+  (sdm-span-segment))
+
+(defun sdm-span-segment (&optional start-at)
+  ;; Make an edge over the whole segment based largely on the
+  ;; properties of its suffix. The edge is presumed to be an NP
+  ;; though nothing looks carefully at that.
+  (let ((start-pos (or start-at
+		       *left-segment-boundary*))
+	(label (category-of-right-suffix))
+	(referent (referent-of-right-suffix)))
+    (let ((edge
+	   (make-edge-over-long-span
+	    start-pos
+	    *right-segment-boundary*
+	    label
+	    :form (cond
+		    ((eq start-pos *left-segment-boundary*)
+		     (category-named 'np))
+		    ((= 1 (number-of-terminals-between 
+			   start-pos *right-segment-boundary*))
+		     (category-named 'np-head))
+		    (t
+		     (category-named 'n-bar)))
+	    :rule 'sdm-span-segment
+	    :referent
+	       (typecase referent
+		 (referential-category
+		  (instantiate-reified-segment-category referent))
+		 (mixin-category
+		  referent) ;; "can"
+		 (individual
+		  referent)
+		 (word ;; #<word HYPHEN>
+		  referent)
+		 (polyword  ;; "M1A1"
+		  referent)
+		 (symbol ;; :uncalculated -- for a number
+		  referent)
+		 (otherwise
+		  (break "New type of object as referent of right-suffix: ~a~%~a"
+			 (type-of referent) referent))))))
+
       (tr :sdm-span-segment edge)
       edge)))
+   
 
 
 (defun convert-referent-to-individual (edge)
@@ -325,43 +360,3 @@ to make any semantic or form edges that the grammar dictates.
 (defun sdm-span-segment/prefix ()
   (sdm-span-segment (where-prefix-edge-ends)))
 
-(defun sdm-span-segment (&optional start-at)
-  (let ((start-pos (or start-at
-		       *left-segment-boundary*))
-	(label (category-of-right-suffix))
-	(referent (referent-of-right-suffix)))
-    (let ((edge
-	   (make-edge-over-long-span
-	    start-pos
-	    *right-segment-boundary*
-	    label
-	    :form (cond
-		    ((eq start-pos *left-segment-boundary*)
-		     (category-named 'np))
-		    ((= 1 (number-of-terminals-between 
-			   start-pos *right-segment-boundary*))
-		     (category-named 'np-head))
-		    (t
-		     (category-named 'n-bar)))
-	    :rule 'sdm-span-segment
-	    :referent
-	       (typecase referent
-		 (referential-category
-		  (instantiate-reified-segment-category referent))
-		 (mixin-category
-		  referent) ;; "can"
-		 (individual
-		  referent)
-		 (word ;; #<word HYPHEN>
-		  referent)
-		 (polyword  ;; "M1A1"
-		  referent)
-		 (symbol ;; :uncalculated -- for a number
-		  referent)
-		 (otherwise
-		  (break "New type of object as referent of right-suffix: ~a~%~a"
-			 (type-of referent) referent))))))
-
-      (tr :sdm-span-segment edge)
-      edge)))
-   
