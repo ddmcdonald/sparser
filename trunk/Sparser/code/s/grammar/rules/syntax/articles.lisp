@@ -129,6 +129,26 @@
   :referent (:daughter right-edge))
 
 
+(def-form-rule (the common-noun)
+  :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule (the np-head)
+  :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule (the n-bar)
+  :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule (the np)
+  :form np
+  :referent (:daughter right-edge))
+
+(def-form-rule (the proper-name)
+  :form proper-name
+  :referent (:daughter right-edge))
+
 ;;--- this
 
 (def-form-rule ("this" common-noun)
