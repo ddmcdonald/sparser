@@ -204,6 +204,8 @@
       (cond
        ((eq daughter :single-term)
         edge)
+       ((eq daughter :literal-in-a-rule)
+        edge)
        ((eq daughter :long-span)
         (let ((constituents (edge-constituents edge)))
           (unless constituents (error "no constituents on long span ~a" edge))
