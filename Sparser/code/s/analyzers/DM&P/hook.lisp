@@ -18,8 +18,12 @@
 (in-package :sparser)
 
 
-(defun dm/Analyze-segment (coverage)
+(defun dm/analyze-segment (coverage)
   ;; called from Segment-finished when the segment is non-trivial
+
+  (declare (special *left-segment-boundary* *right-segment-boundary*
+                    *stream-for-segment-trace*))
+
   (let ((starts-at *left-segment-boundary*)
         (ends-at *right-segment-boundary*))
 

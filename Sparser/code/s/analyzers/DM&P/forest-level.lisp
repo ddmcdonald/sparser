@@ -31,6 +31,8 @@
 ;;(setg *dm&p-forest-protocol* 'no-forest-level-operations)
 ;;
 (defun no-forest-level-operations (rightmost-position)
+  (declare (special *where-the-last-segment-ended*
+                    *rightmost-quiescent-position*))
   (tr :forest-level-turned-off)
   (setq *rightmost-quiescent-position* rightmost-position)
   (scan-next-segment *where-the-last-segment-ended*))
