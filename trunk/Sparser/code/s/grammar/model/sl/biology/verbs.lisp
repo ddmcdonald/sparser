@@ -92,7 +92,8 @@
   :subject bio-entity
   :theme bio-entity ;; what we're taking the phosphate from
   :goal bio-entity ;; what we get afterwards
-  :subcategorization (("of" np "to" np) (theme goal)))
+  :subcategorization (("of" np "to" np "on" np) (theme goal)))
+;;  "gtp hydrolysis on ras"
 ;; "GO:0019514"
 
 
@@ -132,7 +133,7 @@
   :super-category bio-process
   :nominalization "inhibition"
   :subject bio-entity
-  :theme bio-process)
+  :theme bio-entity)
 
 
 ;;--- "load" -- "GTP loading"
