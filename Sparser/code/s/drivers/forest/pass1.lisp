@@ -31,6 +31,7 @@
           ;; good spot for a trace
           ;; set form to subj+vg or whatever that is.
           (tr :subject+verb edge subject-edge verb-group-edge)
+          (setf (edge-form edge) (category-named 'subj+verb))
           edge)
         (tr :subject-not-adjacent subject-edge verb-group-edge))
       (tr :no-subject-or-verb-edges))))
@@ -284,7 +285,6 @@
 ;;;-------------
 
 (defun look-for-short-obvious-conjunctions ()
-  ;;/// first just one conjunct cases
   (let ((conjuncts (there-are-conjunctions?)))
     (when (null (cdr conjuncts))
       (let* ((c1 (car conjuncts))
@@ -297,6 +297,7 @@
         ;; in conjunction8
         (let ((heuristic (conjunction-heuristics left-edge right-edge)))
           (if heuristic
+            ;; conjoin/2 looks for leftwards
             (let ((edge (conjoin/2 left-edge right-edge heuristic)))
               (tr :conjoined-edge edge)
               edge)
