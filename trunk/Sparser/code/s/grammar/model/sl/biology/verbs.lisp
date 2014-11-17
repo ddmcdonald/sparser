@@ -192,7 +192,7 @@
   :agent bio-entity)    ;; by <entity>
 
 
-(svo/passive/nominal "dysregulate" "disregulation"
+(svo/passive/nominal "dysregulate" "dysregulation"
   :super-category bio-process
   :patient bio-process  ;; regulation of <process>
   :agent bio-entity)
