@@ -189,7 +189,7 @@
   :specializes cancer
   :instantiates self
   :index (:permanent :key name)
-  :lemma (:common-noun "cancer")
+  :lemma (:common-noun "melanoma")
   :realization (:common-noun name))
 
 
