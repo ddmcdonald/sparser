@@ -237,6 +237,94 @@
 
         edge ))))
 
+(defun display-edge-as-tree/syntax (edge
+                             &optional (offset 0)
+                                       (s *standard-output*))
+
+  ;; a tree-on-its-side, just characters
+  (let ((index (edge-position-in-resource-array edge))
+        (label (edge-category edge))
+        (form (edge-form edge))
+        (start (pos-token-index (ev-position (edge-starts-at edge))))
+        (end   (pos-token-index (ev-position (edge-ends-at edge))))
+        (rule (edge-rule edge))
+        (left-daughter  (edge-left-daughter  edge))
+        (right-daughter (edge-right-daughter edge))
+        (constituents (edge-constituents edge)))
+    
+    (let ((indentation-space (string-of-N-spaces offset))
+          (label-string (typecase label
+                          ((or category referential-category mixin-category)
+                           (format nil
+                                   "~A/~A"
+                                   (cat-symbol label)
+                                   (cat-symbol form)))
+                          (word 
+                           (concatenate
+                            'string "\"" (word-pname label) "\"" ))
+                          (polyword
+                           (concatenate
+                            'string "\"" (pw-pname label) "\"" ))
+			  (otherwise
+			   (break "New case of label: ~a~%~a" 
+				  (type-of label) label))))
+          (rule-name
+           (if rule
+             (etypecase rule
+               (cfr (concatenate 'string
+                      "rule " (subseq (symbol-name (cfr-symbol rule)) 3)))
+               (list (if (eq right-daughter :literal-in-a-rule)
+                       "literal"
+                       (format nil "~A" rule)))
+               (symbol (string-downcase (symbol-name rule))))
+             "terminal")))
+      
+      (format s "~&~AE~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
+              indentation-space
+              index
+              label-string
+              start
+              end
+              rule-name)
+
+      (flet ((display (item)
+               (typecase item
+                 (edge (display-edge-as-tree/syntax item (+ offset 2) s))
+                 (word (display-word-in-tree item (+ offset 2) s))
+                 (polyword (display-pw-in-tree item (+ offset 2) s))
+                 (list (dolist (sub-item item)
+                         (display-edge-as-tree sub-item (+ offset 2) s)))
+                 (symbol )
+                 (otherwise
+                  (push-debug `(,item ,edge ,offset))
+                  (error "Unexpected type of object in edge display: ~a~%~a"
+                         (type-of item) item)))))
+
+        (if (and (symbolp right-daughter) ;; e.g. :proper-name
+                 (not (null right-daughter)))
+          (cond
+           ;; We've hit the bottom. If there are constituents
+           ;; display them. Otherwise ??
+           (constituents
+            (loop for c in constituents do (display c)))
+           ((word-p left-daughter)
+            (display left-daughter))
+           ((or (eq right-daughter :single-term)
+                (eq right-daughter :context-sensitive)
+                (eq right-daughter :digit-based-number)
+                (eq right-daughter :number-fsa))
+            (display left-daughter))
+           (t 
+            (break "New case in tree display")))
+
+          (else
+           (when left-daughter
+             (display left-daughter))
+           (when right-daughter
+             (display right-daughter))))
+
+        edge ))))
+
 
 (defun display-word-in-tree (word offset s)
   (format s "~&~A\"~A\"" 
@@ -254,3 +342,5 @@
 (defun tree (n)
   (display-edge-as-tree (edge# n)))
 
+(defun stree (n)
+  (display-edge-as-tree/syntax (edge# n)))
