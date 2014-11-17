@@ -39,6 +39,7 @@
 ;;;---------------------
 
 (defun scan-treetops/fn-word-prefixed (s starts-at ends-at)
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let ((fn-word (pos-terminal starts-at)))
     (multiple-value-bind (segment-category status)
                          (analyze-segment-prefix/word fn-word)
@@ -67,6 +68,7 @@
 
 
 (defun scan-treetops/prefixed (s prefix-edge starts-at ends-at)
+  (declare (special *break-on-pattern-outside-coverage?*))
   (tr :scan-treetops/prefixed prefix-edge)
   (multiple-value-bind (segment-category status)
                        (analyze-segment-prefix prefix-edge starts-at)
@@ -116,6 +118,7 @@
 (defun do-prefixed-segment (s informative-category
                             prefix-edge
                             prefix-start body-start ends-at)
+  (declare (ignore prefix-edge))
   (tr :prefix-is-informative informative-category)
   (let ((items (mine-treetops
                 body-start ends-at s

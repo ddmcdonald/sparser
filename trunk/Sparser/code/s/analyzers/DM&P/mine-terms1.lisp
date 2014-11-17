@@ -177,6 +177,7 @@
 
 
 (defun mine-as-adverb (word pos-before pos-after segment)
+  (declare (ignore segment))
   (let ((term (define-individual-for-term/span
                 word pos-before pos-after
                 :form category::adverb)))
@@ -189,6 +190,7 @@
   ;; add the word to the model and make a rule and edge for it,
   ;; mark the edge as the head of an np,
   ;; associate the new individual with this segment
+  (declare (ignore segment))
   (let ((word (pos-terminal pos-before))
         stem )
 
@@ -252,6 +254,7 @@
 
 
 (defun mine-classifier (pos-after head segment)
+  (declare (ignore segment head))
   (let* ((pos-before (chart-position-before pos-after))
          (word (pos-terminal pos-before)))
     (tr :mining-classifier word)
@@ -327,6 +330,7 @@
 (defun note-instance (edge name-of-variable segment)
   ;; this should be an instance of a content term, not one
   ;; of the close-class (pre-defined) terms
+  (declare (ignore segment))
   (let ((unit (edge-referent edge)))
     (tr :noting-instance unit name-of-variable)
     (tr :noticed-term unit edge name-of-variable)

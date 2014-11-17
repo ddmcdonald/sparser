@@ -32,6 +32,7 @@
   ;; to form a new edge over the segment from the set of segment-edge
   ;; categories. 
 
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let* ((edge (edge-between starts-at ends-at))
          (referent (edge-referent edge)))
 

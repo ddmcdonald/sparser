@@ -208,10 +208,10 @@
   (let ((label (edge-category edge)))
     (typecase label
       (word label)  ;; e.g. "the", "a"
-      (category
-       (break "Stub: what's an analyzable record for a vanila category?"))
       ((or referential-category mixin-category)
        (edge-referent edge))
+      (category
+       (break "Stub: what's an analyzable record for a vanila category?"))
       (otherwise
        (break "New kind of label: ~a" label)))))
 

@@ -80,7 +80,9 @@
   ;; called from Scan-treetops/prefixed when there is a prefix edge
   ;; and its form is one of the possibilities that's mapped to 'verb'
   ;; by Determinant-segment-prefix.
-  (declare (ignore segment starts-at))
+  (declare (ignore segment starts-at)
+           (special *break-on-pattern-outside-coverage?*
+                    *later-part-of-segment-needs-reanalysis*))
 
   (let* ((after-prefix (pos-edge-ends-at prefix-edge))
          (label (edge-category prefix-edge))
@@ -170,7 +172,8 @@
   ;; be extended is if prefix itself is the word "be" and the verb
   ;; is passive.  Otherwise the prefix is actually the main verb 
   ;; and the rest of the segment doesn't belong there.
-  (declare (ignore ends-at))
+  (declare (ignore ends-at)
+           (special *break-on-pattern-outside-coverage?*))
   (if (eq (edge-category prefix-edge)
           (category-named 'be))
     (then ;; it's legit
@@ -286,6 +289,7 @@
 ;;;----------------------------
 
 (defun mvg/Post-Head-unless-Aux (prefix-edge after-prefix ends-at)
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let ((prefix-label
          (edge-category prefix-edge)))
     (if (or (eq prefix-label (category-named 'be))
@@ -327,6 +331,7 @@
   ;; a mvb. It is the way we do 'scans' inside the vg's content words.
   (multiple-value-bind (next-tt next-pos)
                        (next-treetop/rightward first-pos)
+    (declare (ignore next-pos))
     (tr :mine-vg/next-tt next-tt)
     (etypecase next-tt
       (word
@@ -362,6 +367,7 @@
   ;; then make it an adverb and look beyond it for the main verb,
   ;; otherwise take the word as the main verb.
   ;; Called from MVG/any-aux-or-verb
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let ((word (pos-terminal first-pos))
         (next-pos (chart-position-after first-pos)))
     (tr :mine-vg/adverb-check word)
@@ -465,6 +471,8 @@
   ;; Given the prior context, we expected this edge to be the
   ;; main verb, but there are more words in the segment after it.
   ;; We look for rationales for re-analyzing the pattern here.
+  (declare (special start-of-prefixed-verb-group*)
+           (ignore edge))
   (let ((p (pattern-satisfied-by-vg-segment
             *start-of-prefixed-verb-group* end-pos)))
     (if p
@@ -666,6 +674,7 @@
   ;; edge so that next time it will start out the right way
   ;; and we change this instance as well (///) to facilitate
   ;; any later parsing within the analyzed segment
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let ((cfr (edge-rule edge))
         (word (edge-left-daughter edge))
         adverb? )
@@ -780,6 +789,7 @@
   ;; as a sequence. This gives us something to react to later when more
   ;; information about the internal grouping becomes available by inference.
 
+  (declare (special *pnf-has-control*))
   (let ((treetops (successive-treetops :from starts-at :to ends-at))
         (next-pos starts-at)
         tt  term  items )
@@ -1111,8 +1121,9 @@
   ;;   If we're doing PNF then any word is legitimate as a term,
   ;; including punctuation and we make a silent Name-word for it.
   ;; Otherwise we have to complain at punctuation or function words.
-  (declare (ignore edge))
-  (if *PNF-has-control*
+  (declare (ignore edge) 
+           (special *pnf-has-control* *break-on-pattern-outside-coverage?*))
+  (if *pnf-has-control*
     (or (name-word-for-word word)
         (make-name-word-for/silent word))
     (cond
