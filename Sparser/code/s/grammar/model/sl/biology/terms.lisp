@@ -70,7 +70,10 @@ critical for tumor formation. |#
 ;;(np-head "enzyme")
 
 (define-adverb "in part")
-(define-adverb ", in part,") ;; ugly but simple way to handle sentential adverbs that can be set off by commas...
+(define-debris-analysis-rule comma-adverb-comma
+  :pattern ( "," adverb "," )
+  :action (:function respan-edge-around-one-word second first third))
+
 (define-adverb "as a consequence")
 
 ;;--- J3
@@ -118,6 +121,49 @@ that consists of five conserved G boxes. |#
 ;;--- j6
 
 ;; cellular "GO:0005623"
+
+;; (p "in the 'off' state.")
+(define-no-space-pattern scare-quotes
+  :acceptance-function cover-scare-quotes
+  :transition-net ((:initial + "'" -> :single-quote-seen)
+                   (:single-quote-seen + word -> :single-quote-word)
+                   (:single-quote-word + "'" -> :both-scare-quotes-seen))
+  :accept-states ( :both-scare-quotes-seen ))
+
+(defun cover-scare-quotes (start-pos end-pos q1 word q2)
+  ;; The start-pos is just before the left quote. The end-pos is
+  ;; just after it. The q's are the word quote. 
+  (push-debug `(,start-pos ,end-pos ,q1 ,word ,q2))
+  ;; The search was over words. Now have to look for 
+  ;; the strongest edge over the word.
+  (let* ((word-pos (chart-position-after start-pos))
+         (ev (pos-starts-here word-pos))
+         (edge (highest-edge ev)))
+    (respan-edge-around-one-word edge q1 q2)))
+
+
+;;/// move somewhere else
+(defun respan-edge-around-one-word (word-edge left-term right-term)
+  (let ((word-category (edge-category word-edge))
+        (word-form (edge-form word-edge))
+        (word-referent (edge-referent word-edge))
+        (new-start-pos (chart-position-before (pos-edge-starts-at word-edge)))
+        (new-end-pos (chart-position-after (pos-edge-ends-at word-edge))))
+    (let ((edge (make-completed-unary-edge
+                 ;; We're ignoring the commas in the edge structure
+                 ;;/// this is usually an interjection, how could we
+                 ;; indicate that
+                 (pos-starts-here new-start-pos) ;; the edge vector
+                 (pos-ends-here new-end-pos)
+                 :respan-edge-around-one-word ;; rule
+                 word-edge ;; daughter
+                 word-category 
+                 word-form
+                 word-referent)))
+      (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
+      ;; (push-debug `(,edge)) (break "look at edge")
+      edge)))
+
 
 ;;--- j8
 
