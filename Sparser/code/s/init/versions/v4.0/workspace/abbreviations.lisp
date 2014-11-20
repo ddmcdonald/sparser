@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;versions:v2.3:workspace:"
-;;;  version:  October 2013
+;;;  version:  November 2014
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -15,7 +15,8 @@
 ;; pp to the new file /grammar/model/sl/checkpoing/post-processing.lisp
 ;; 3/15/13 Added p/art to simulate running a document stream.
 ;; 4/14 added ier for edge referents and binds for their bindings.
-;; 10/9/13 added ietf. 10/17/13 augmented ic to get mixins.
+;; 10/9/13 added ietf. 10/17/13 augmented ic to get mixins. 11/18/14 added
+;; drs for describe rule set, over words or categories.
 
 (in-package :sparser)
 
@@ -53,14 +54,18 @@
 (defun chart ()
   (display-chart :style :just-terminals))
 
+;;--- inspectors
 
 (defun ie (number-of-edge) (d (edge# number-of-edge)))
+
 (defun ip (number-of-position) (d (position# number-of-position)))
+
 (defun iw (string-for-word)
   (let ((word (word-named string-for-word)))
     (if word
       (d word)
       (format t "\"~a\" is not a known word" string-for-word))))
+
 (defun ir (number-of-rule)
   (let ((rule (psr# number-of-rule)))
     (d rule)))
@@ -79,7 +84,6 @@
 ;    (
 
 
-
 (defun ier (number-of-edge) ;; inspect edge referent
   (d (edge-referent (edge# number-of-edge))))
 
@@ -90,6 +94,28 @@
       (else
        (format t "~&~a is not an individual~%" i)
        i))))
+
+
+(defmethod drs ((pname string)) ;; Desribe rule set
+  (let ((word (resolve pname)))
+    (if word (drs word)
+        (format nil "~s is not a known word" pname))))
+(defmethod drs ((word word))
+  (let ((rs (rule-set-for word)))
+    (if rs (d rs)
+        (format nil "~a does not have a rule set"
+                (word-pname word)))))
+(defmethod drs ((name symbol))
+  (let ((category (category-named name)))
+    (if category (drs category)
+        (format nil "\"~a\" does not name a category" name))))
+(defmethod drs ((c category))
+  (let ((rs (rule-set-for c)))
+    (if rs (d rs)
+        (format nil "~a does not have a rule set" c))))
+
+
+;;--- accessors
 
 (defun psr# (n)
   (let ((symbol (intern (string-append "PSR" (format nil "~a" n))
