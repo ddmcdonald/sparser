@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2014
+;;; version: November 2014
 
 ;; Initiated 11/5/13. 3/3/14 Added mechanics and NFkappaB while
 ;; commenting out the original molecules and verbs as OBE and requiring
@@ -12,7 +12,7 @@
 ;; of NFkappaB since it's worth rethinking those fast an loose treatements.
 ;; Moved likely resuseable parts to terms and verbs.
 ;; 9/8/14 added [amino-acids], [proteins], and [taxonomy] to improve 
-;; searching through these
+;; searching through these. 11/12/14 added [switches]
 
 (in-package :sparser)
 
@@ -22,6 +22,7 @@
 (gload "bio;amino-acids")
 (gload "bio;terms")
 (gload "bio;verbs")
+(gload "bio;switches")
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules") 
