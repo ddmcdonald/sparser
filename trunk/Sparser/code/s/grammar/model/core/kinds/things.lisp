@@ -3,30 +3,14 @@
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  July 2014
+;;;  version:  November 2014
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
-;; words for categories whose names are ordinary words. 
+;; words for categories whose names are ordinary words. 11/20/14
+;; rationalizing the very top. 
 
 (in-package :sparser)
-
-
-;;;------------------------------------------
-;;; work-a-day categories already in Sparser
-;;;------------------------------------------
-
-(define-category  kind
-  :instantiates :self
-  :lemma (common-noun "kind")
-  :binds ((name :primitive word)))
-
-(define-category  individual ;; purely a placeholder like "kind"
-  ;; This is the default nominal restriction 
-  ;; on circa-2009 abbreviations
-  :lemma (common-noun "individual")
-  :binds ((modifier)))
-
 
 ;;;------------------------------------------------
 ;;; categories for C3 from Dolce by way of Stratus
@@ -34,10 +18,31 @@
 
 (define-category endurant 
   :specializes top
+  :binds ((modifier)) ;;/// what else is this general ?
   :documentation
   "Endurants (aka objects, things) have an identity that doesn't depend
  on the identity of their parts, see axe handles and greek ships. The
  split below Endurant is physical vs. non-physical.")
+
+
+#| kind and individual predate the move with C3 to have a proper
+   taxonomy. In an earlier design, instances or subclasses of kind
+   were intended as np heads, but that's been supplanted by using
+   categories there. These should fade away as there's a reason 
+   to rewrite that portion of the code. |#
+(define-category  kind
+  :instantiates :self
+  :specializes endurant
+  :lemma (common-noun "kind")
+  :binds ((name :primitive word)))
+
+(define-category  individual ;; purely a placeholder like "kind"
+  ;; This is the default nominal restriction 
+  ;; on circa-2009 abbreviations
+  :specializes endurant
+  :lemma (common-noun "individual"))
+
+
 
 (define-category physical
   :specializes endurant
