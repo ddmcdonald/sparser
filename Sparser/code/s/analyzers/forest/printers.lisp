@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   0.7 July 2014
+;;;   Version:   0.7 November 2014
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -32,6 +32,8 @@
 ;;      1/27/14 added undisplay-bracketing
 ;;     (7/24/14) added print-flat-forest as another tool for looking at debris
 ;;      7/30/14 tweaked some to use edge-vectors for the :multiple-edges case.
+;;     (11/17/14) shrank the separation in tts from 30 to 20. 15 doesn't look
+;;      to bad. 
 
 (in-package :sparser)
 
@@ -478,12 +480,11 @@ there were ever to be any.  ///hook into final actions ??  |#
 
 (defun string-for-multiple-edges-tt (position)
   ;; Caller does the display
-  (let* ((edges (all-edges-on (pos-starts-here position)))
-         (numbers (mapcar #'edge-position-in-resource-array edges))
+  (let* (;;(edges (all-edges-on (pos-starts-here position)))
+         ;;(numbers (mapcar #'edge-position-in-resource-array edges))
          (word (word-pname (pos-terminal position))))
-    (format nil "[M:~a ~s]"
-            (length numbers) ;; a iterator would be better
-            word)))
+    ;;/// the number of edges is interesting if it's greater than 2
+    (format nil "[~s]" word)))
 
 
 
@@ -543,7 +544,7 @@ there were ever to be any.  ///hook into final actions ??  |#
     (etypecase word-or-category
       ((or category referential-category mixin-category
            individual)
-       (format stream "~&e~A ~6,2t~A~30,2T~A ~S ~A~%"
+       (format stream "~&e~A ~6,2t~A~20,2T~A ~S ~A~%" ;; tab had been 30
                (edge-position-in-resource-array tt)
                (pname-for word-or-category)
                (pos-token-index (pos-edge-starts-at tt))
@@ -551,14 +552,14 @@ there were ever to be any.  ///hook into final actions ??  |#
                                                 (pos-edge-ends-at tt))
                (pos-token-index (pos-edge-ends-at tt))))
       (word
-       (format stream "~&e~A~33,2T~S~%"
+       (format stream "~&e~A~20,2T~S~%"  ;; had been 33
                (edge-position-in-resource-array tt)
                (if (member :use-symbol-name-when-printing
                            (word-plist word-or-category))
                  (symbol-name (word-symbol word-or-category))
                  (word-pname word-or-category))))
       (polyword
-       (format stream "~&e~A~33,2T~S~%"
+       (format stream "~&e~A~20,2T~S~%"  ;; had been 33
                (edge-position-in-resource-array tt)
                (pw-pname word-or-category))))))
 
@@ -587,7 +588,7 @@ there were ever to be any.  ///hook into final actions ??  |#
       (setq edge-label-string
             (concatenate 'string edge-label-string ", " string)))
 
-    (format stream "~&~A~33,2T~S :: ~A~%"
+    (format stream "~&~A~20,2T~S :: ~A~%"  ;; had been 33
             edge-name-string
             (if (member :use-symbol-name-when-printing
                         (word-plist word))
@@ -598,7 +599,7 @@ there were ever to be any.  ///hook into final actions ??  |#
 
 
 (defun print-word-as-category-and-text-segment (tt stream)
-  (format stream "~&~32,2T ")
+  (format stream "~&~19,2T ")  ;; had been 32
   (princ-word tt stream)
   (format stream "~%"))
 
