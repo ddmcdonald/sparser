@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.10 October 2014
+;;;  Version:  5.11 November 2014
 
 ;; initiated summer 1990
 ;;  3.0  (9/2/92) bumped to 3 and moved in the newly rationalized set
@@ -30,6 +30,8 @@
 ;;       (10/5/14) added [bio-entity-scan] to hold the code that
 ;;       I wrote into no-brackets-protocol so that file can now
 ;;       have the intended code. (10/8/14) Added [chunker]
+;;  5.11 (11/17/14) Broke [multi-scan] out of [no-brackets-protocol]
+;;        as part of breaking that pass down into smaller parts.
 
 (in-package :sparser)
 
@@ -48,4 +50,5 @@
 (lload "psp-drivers;c3-protocol")
 (lload "psp-drivers;bio-entity-scan")
 (lload "psp-drivers;no-brackets-protocol")
+(lload "psp-drivers;multi-scan")
 (lload "psp-drivers;chunker")
