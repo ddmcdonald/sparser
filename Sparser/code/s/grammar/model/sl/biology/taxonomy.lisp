@@ -71,7 +71,7 @@
 ;;--- categories of referents for particulars (see def-bio below)
 
 (define-category bio-entity 
-  :specializes endurant  ;; sweeps a lot under the rug
+  :specializes physical-object  ;; sweeps a lot under the rug
   :mixins (has-UID has-name)
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
