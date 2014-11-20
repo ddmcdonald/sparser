@@ -89,10 +89,12 @@
 ;;  and GDP (di-phosphate) is the result.
 (def-term "hydrolysis" verb (sv) ;; and of-nominal ??
   :super-category bio-process
-  :subject bio-entity
+  :subject bio-entity ;; the substrate holding the nucleotide
   :theme bio-entity ;; what we're taking the phosphate from
   :goal bio-entity ;; what we get afterwards
-  :subcategorization (("of" np "to" np "on" np) (theme goal)))
+  :subcategorization ( (("of" np "to" np) (theme goal))
+                       (("on" np) (subject))
+                       (("of" np) (theme)) ))
 ;;  "gtp hydrolysis on ras"
 ;; "GO:0019514"
 
