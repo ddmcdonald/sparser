@@ -18,6 +18,10 @@
   (setq *note-text-relations* nil)
   ;;(bf-off)
   (trace-lexicon-unpacking) (trace-morphology)
+  ;;(trace-terminals-sweep) ;; for hacking the sweep rebuilding
+  ;; (trace-chunker)
+  ;;(setq *chunk-sentence-into-phrases* nil) ;; ditto 
+  ;;(trace-island-driving)
   (setq *kind-of-chart-processing-to-do* :successive-sweeps)
   (setq *parse-chunk-interior-online* t)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed))
@@ -31,6 +35,7 @@
 ; (trace-edges) ;; edge over period as a literal?
 
 ; (trace-island-driving)  (untrace-island-driving) 
+; (trace-treetops-sweep)
 ; (progn (trace-chunker) (trace-segments))
 ; (trace-terminals-sweep) ;; pw, etc.
 ; (progn (untrace-chunker) (untrace-segments) (untrace-terminals-sweep)  (untrace-island-driving))
@@ -68,9 +73,11 @@
   (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
   (ddm-ed "grammar/rules/syntax/syntactic-rules.lisp")
+  (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
   (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
   (ddm-ed "objects/traces/psp1.lisp")
   (ddm-ed "objects/traces/DA.lisp")
+  (ddm-ed "objects/traces/scan-patterns.lisp")
   (ddm-ed "objects/traces/treetops.lisp"))
 
 (defun ddm-no-spaces ()
@@ -104,7 +111,8 @@
   (ddm-ed "objects/model/tree-families/rdata1.lisp")
   (ddm-ed "objects/model/tree-families/driver2.lisp")
   (ddm-ed "objects/model/tree-families/subrs3.lisp")
-  (ddm-ed "grammar/rules/tree-families/np-adjuncts.lisp"))
+  (ddm-ed "grammar/rules/tree-families/np-adjuncts.lisp")
+  (ddm-ed "grammar/rules/tree-families/vp-adjuncts.lisp"))
 
 
 
@@ -134,6 +142,24 @@
   (ddm-ed "grammar/rules/tree-families/shortcut-mechanics.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcuts.lisp")
   (ddm-ed "grammar/rules/tree-families/families.lisp"))
+
+
+(defun ddm-patterns ()
+  (ddm-ed "objects/rules/scan-patterns/start.lisp") ;; empty
+  (ddm-ed "objects/rules/scan-patterns/forms.lisp")
+  (ddm-ed "objects/rules/scan-patterns/pattern-elements.lisp")
+  (ddm-ed "objects/rules/scan-patterns/transitions.lisp")
+  (ddm-ed "objects/rules/scan-patterns/patterns.lisp")
+  (ddm-ed "objects/rules/scan-patterns/states.lisp")
+  (ddm-ed "analyzers/psp/patterns/take-transitions.lisp")
+  (ddm-ed "analyzers/psp/patterns/follow-out.lisp")
+  (ddm-ed "analyzers/psp/patterns/accept.lisp")
+  (ddm-ed "analyzers/psp/patterns/driver.lisp")
+  (ddm-ed "analyzers/psp/patterns/initiate-pattern-scan.lisp")
+  (ddm-ed "analyzers/psp/patterns/accept.lisp")
+  (ddm-ed "analyzers/psp/patterns/traces.lisp"))
+
+  
 
 ; 1st  (list-da-actions) ;; from Grok era to hack titles and odd things
 (defun ddm-da-files ()
@@ -198,7 +224,17 @@
   (ddm-ed "objects/model/categories/structure.lisp"))
 
 (defun ddm-ontology ()
-  (ddm-ed "grammar/model/core/kinds/processes.lisp"))
+  (ddm-ed "grammar/model/core/kinds/upper-model.lisp") ;; top & misc.
+  (ddm-ed "grammar/model/core/kinds/processes.lisp")
+  (ddm-ed "grammar/model/core/kinds/things.lisp"))
+
+(defun ddm-location ()
+  (ddm-ed "grammar/model/core/places/moving.lisp")
+  (ddm-ed "grammar/model/core/places/paths.lisp") ;; on-path marker cat.
+  (ddm-ed "grammar/model/core/places/configurations.lisp")
+  (ddm-ed "grammar/model/core/places/rules2.lisp") ;; in-country commented out
+  (ddm-ed "grammar/model/core/places/direction-rules.lisp")) ;; "the" literal
+
 
 
 

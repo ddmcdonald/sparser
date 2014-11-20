@@ -19,6 +19,9 @@
   "Guards errors and breaks within the segment handling code that traps
    new cases or violations of standing assumptions.")
 
+*break-on-pattern-outside-coverage?*
+*later-part-of-segment-needs-reanalysis*
+
 ;; checked in segment-finished
 (defparameter *peek-rightward* t ;; stopgap while debugging
   "After a segment is completely finished and the coverage
