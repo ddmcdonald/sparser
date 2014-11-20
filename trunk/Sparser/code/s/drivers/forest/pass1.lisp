@@ -439,40 +439,49 @@
 
 (defun apply-subcat-patterns ()
   (let ((edges (known-subcat-pattern (layout))) ;; right to left
-        new-edge  )
+        new-edges )
     ;; When we have several alternative patterns, 
     ;; we'll try them until one of them succeeds.
     (dolist (tt edges)
-      (let* ((pattern (car (known-subcategorization? tt)))
-             ;;/// there could obviously be more than one, but just now
-             ;; for the cases in hand there's just one.
-             (tt-sequence (car pattern))
-             (variables (cadr pattern)))
-        (tr :trying-subcat-pattern tt tt-sequence)
-        (multiple-value-bind (tts-to-bind tts)
-                             (follow-out-pattern 
-                              (pos-edge-ends-at tt) tt-sequence)
-          ;; if this returns nil, that would be reason
-          ;; to either try another pattern in the frame
-          ;; or just fail to make a parse this way
-          (if tts-to-bind
-            (let ((referent (edge-referent tt))
-                  (last-tt (car (last tts))))
-              (follow-out-binding-pattern referent variables tts-to-bind)
-              (let ((edge (make-edge-over-long-span 
-                           (pos-edge-starts-at tt)
-                           (pos-edge-ends-at last-tt)
-                           (edge-category tt)
-                           :rule pattern
-                           :form (edge-form tt) ;;/// This will be vg. Needs to becomes vp.
-                           :referent referent
-                           :constituents tts)))
-                (tr :subcat-pattern-succeeded edge)
-                (setq new-edge edge)
-                (elevate-form-given-subcat new-edge edge pattern)
-                (return))) ;; drop out of the loop
-            (tr :subcat-pattern-failed)))))
-    new-edge))
+      ;; for each treetop that have subcategorization information
+      (let ((patterns (known-subcategorization? tt)))
+        (dolist (pattern patterns)
+          ;; for each of the alternative patterns it has
+          (let ((edge (check-subcat-pattern pattern tt)))
+            (when edge ;; this pattern succeeded
+              ;; so don't look at any more alternative, move on
+              ;; tp the next treetop.
+              (push edge new-edges)
+              (return))))))
+    new-edges))
+
+
+(defun check-subcat-pattern (pattern head-edge)
+  (let ((tt-sequence (car pattern))
+        (variables (cadr pattern)))
+    (tr :trying-subcat-pattern tt tt-sequence)
+    (multiple-value-bind (tts-to-bind tts)
+                         (follow-out-pattern 
+                          (pos-edge-ends-at tt) tt-sequence)
+      (if tts-to-bind
+        (let ((referent (edge-referent tt))
+              (last-tt (car (last tts))))
+          (follow-out-binding-pattern referent variables tts-to-bind)
+          (let ((edge (make-edge-over-long-span 
+                       (pos-edge-starts-at tt)
+                       (pos-edge-ends-at last-tt)
+                       (edge-category tt)
+                       :rule pattern
+                       :form (edge-form tt) ;;/// This will be vg. Needs to becomes vp.
+                       :referent referent
+                       :constituents tts)))
+            (tr :subcat-pattern-succeeded edge)
+            (elevate-form-given-subcat edge head-edge pattern)
+            edge))
+        (else
+         (tr :subcat-pattern-failed)
+         nil)))))
+
 
 (defun follow-out-binding-pattern (referent variables tts-to-bind)
   (do ((next-var (car variables) (car other-vars))
