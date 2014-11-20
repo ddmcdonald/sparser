@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "subcategorization"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2014
+;;;  Version:  November 2014
 
 ;; Initiated 9/11/14 to organize information about subcategorization patterns
-;; Working on it through 9/15/14
+;; Working on it through 9/15/14. 11/20/14 hacked up a treatment of multiple
+;; subcat patterns based on hydrolysis. 
 
 (in-package :sparser)
 
@@ -123,11 +124,22 @@
   "Parse the content and stash it in the sf structure."
   (when prep
     (setf (bound-prepositions sf) `(,prep)))
-  (when pattern ;;//// vs. patterns
-    ;; The provision is for a set of different patterns
-    ;;/// will need processing to fit how its going to be deployed
-    (let ((subcat (assemble-subcategorization-structure category pattern)))
-      (setf (subcat-patterns sf) `(,subcat))))
+
+  (when pattern
+    ;; The s-exp form is pretty lame, but no point in naming them
+    ;; until we're getting broader use and have figured it out.
+#| from hydrolysis
+  :subcategorization ( (("of" np "to" np) (theme goal))
+                       (("on" np) (subject))
+                       (("of" np) (theme)) ))  |#
+    (push-debug `(,pattern ,sf))
+    (let (  patterns  )
+      (dolist (form pattern)
+        (let ((processed 
+               (assemble-subcategorization-structure category form)))
+          (push processed patterns)))
+      (setf (subcat-patterns sf)
+            (nreverse patterns)))) ;; preserve order
   sf)
 
 
