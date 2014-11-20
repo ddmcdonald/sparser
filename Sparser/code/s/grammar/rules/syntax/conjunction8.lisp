@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  8.3 October 2014
+;;;  Version:  8.4 November2014
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -37,7 +37,8 @@
 ;;      *allow-form-conjunction-heuristic* to govern when its used. It's
 ;;      off by default and dynamically bound when wanted. 
 ;;     (10/6/14) Fanout from successive-scans to guard against unhandled
-;;      *pending-conjunction* flag in the completion routine.
+;;      *pending-conjunction* flag in the completion routine. 
+;; 8.4 (11/17/14) Revised that to have them push onto the flag symbol.
 
 (in-package :sparser)
 
@@ -72,7 +73,6 @@
 |#
 
 (defun mark-instance-of-AND (and-word position-before position-after)
-  (declare (ignore and-word position-after))
   (if *pending-conjunction*
     (cond
      (*speech*
@@ -84,15 +84,21 @@
       ;; version of "and"
       (tr :conj-flag-still-up-in-speech)
       (setq *pending-conjunction* nil))
+
      ((sucessive-sweeps?)
-      ;;/// ignore it completely?
-      ;; or take note of it's location?
-      )
+      ;; Incremental handling of conjunctions by PTS post-routines
+      ;; is turned off in this mode. Instead we the state global
+      ;; into a push-stack of positions and handle them in a
+      ;; later pass.
+      (push position-before *pending-conjunction*))
      (t
-      (break "stub -- two 'and's in a row")))
-    (else
+      (push-debug `(,and-word ,position-before ,position-after))
+      (break "stub -- unhandled case of two 'and's in a row")))
+    (else ; 
       (tr :setting-conjunction-pos-before position-before)
-      (setq *pending-conjunction* position-before))))
+      (if (sucessive-sweeps?)
+        (push position-before *pending-conjunction*)
+        (setq *pending-conjunction* position-before)))))
 
 
 ;;--- Treetop hook
@@ -442,8 +448,8 @@
   (let ((edge-list
          (get-another-comma-chain-conj
           (list left-edge right-edge)
-          left-edge (chart-position-before
-                     (pos-edge-starts-at left-edge)))))
+          left-edge 
+          (chart-position-before (pos-edge-starts-at left-edge)))))
     (when edge-list
       (conjoin-multiple-edges edge-list))))
 
