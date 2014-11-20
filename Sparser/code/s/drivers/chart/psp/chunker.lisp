@@ -114,7 +114,6 @@
 (defvar *chunks* nil)
 
 (defun find-chunks (&optional (sentence (sentence)))
-  (declare (special *chunks* *next-chunk*))
   (setq *next-chunk* nil)
   (setq *chunks* nil)
   (let ((pos (starts-at-pos sentence))
@@ -128,33 +127,30 @@
       (tr :chunk-loop-next-edge edge)
       (cond
        ((starting-forms edge *chunk-forms*)
-        (setq *next-chunk* (delimit-next-chunk edge))
+        (setq *next-chunk* (delimit-next-chunk edge end))
         (push *next-chunk* *chunks*)
+        (when (null (chunk-end-pos *next-chunk*))
+          ;;(break "pos = ~a  end = ~a" pos end)
+          (setf (chunk-end-pos *next-chunk*) end))
         (setq pos (chunk-end-pos *next-chunk*)))
        (t
         (setq pos (pos-edge-ends-at edge)))))))
 
 
 
-(defun delimit-next-chunk (edge)
+(defun delimit-next-chunk (edge sentence-end)
   ;; know that the edge immediately after start is consistent with some
   ;;  chunk type (maybe more than one)
   ;;  Goal is to create the longest chunk possible from this point
-  ;(declare (special edge))
   (let* ((start (pos-edge-starts-at edge))
-         ;;(edge (right-treetop-at/edge start))  ;; ddm: we already had it
-         ;;(edge-is-word (eq edge (pos-terminal start))) appears to be fixed
-         (forms (starting-forms edge *chunk-forms*)) ;; already have this too
+         (forms (starting-forms edge *chunk-forms*))
          (chunk (make-instance 'chunk :forms forms :start start :end nil))
          (pos start)
          possible-heads)
-;    (declare (special forms pos possible-heads ;; edge
-;                      last-head chunk pos edge-is-word))
  
     (until
         (or (chunk-end-pos chunk)
-            (eq (right-treetop-at/edge pos) *end-of-source*))
-         
+            (eq pos sentence-end))
         chunk
 
       (cond
@@ -179,13 +175,18 @@
            (tr :delimited-ill-formed-chunk chunk)))))
        (t
         (setf (chunk-forms chunk) forms)
-        (setq pos (pos-edge-ends-at edge))
+
+        (if (word-p edge)
+          (then
+           (push-debug `(,forms ,chunk ,edge))
+           (break "edge is a word: ~a  pos = ~a" edge pos))
+          (setq pos (pos-edge-ends-at edge)))
+
         (loop for ch in (compatible-heads forms edge pos) 
           do (push ch possible-heads))
         (setq edge (right-treetop-at/edge pos))
         (tr :chunk-loop-next-edge edge)
-        (setq forms (remaining-forms edge (chunk-forms chunk)))
-        )))))
+        (setq forms (remaining-forms edge (chunk-forms chunk))))))))
 
 
 (defun best-head (forms possible-heads)
