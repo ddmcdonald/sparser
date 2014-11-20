@@ -1,16 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form rules"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  0.3 August 1994
+;;;  Version:  0.4 November 2014
 
 ;; initiated 10/12/92 v2.3
 ;; 0.1 (6/4/93) allowed a default if the rule doesn't specify the form
 ;;      of the new edge
 ;; 0.2 (6/16) added variation for explicitly specified lhs.
 ;;     (3/30/94) fixed missing arg in break stmt.
-;; 0.3 (8/5) for the '..explicit-lhs' case made a subr for the passive calculation
+;; 0.3 (8/5/94) for the '..explicit-lhs' case made a subr for the passive calculation
+;; 0.4 (11/20/14) Added option for the referent calculation to abort the
+;;      edge (keep it from being knit into the chart) following pattern in
+;;      make-default-binary-edge
 
 (in-package :sparser)
 
@@ -29,36 +32,50 @@
              (edge-category right-edge))))
          (edge (next-edge-from-resource)))
 
-    (knit-edge-into-positions edge
-                              (edge-starts-at left-edge)
-                              (edge-ends-at right-edge))
     (setf (edge-starts-at edge) (edge-starts-at left-edge))
     (setf (edge-ends-at edge)   (edge-ends-at right-edge))
 
     (setf (edge-category edge) promulgated-label)
     (setf (edge-form     edge) (or (cfr-form rule)
                                    (edge-form head-edge)))
-    (setf (edge-referent edge)
-          (referent-from-rule left-edge right-edge
-                              edge rule))
-    (setf (edge-rule edge) rule)
 
-    (set-used-by left-edge edge)
-    (set-used-by right-edge edge)
-    (setf (edge-left-daughter edge) left-edge)
-    (setf (edge-right-daughter edge) right-edge)
+    (let ((referent (catch :abort-edge
+                      (referent-from-rule left-edge right-edge
+                                          edge rule))))
+      (if (eq referent :abort-edge)
+        (then
+          ;; This function feeds its value to a check routine like
+          ;; Check-one-one, which in turn returns the edge as its
+          ;; value. If we return nil from here, then that nil will
+          ;; be passed through as the value of the call to the
+          ;; check routine, which should suffice for the parsing
+          ;; routines not to see an edge here even though the
+          ;; rule went through
+          nil )
 
-    (complete edge)
+        (else
+         (setf (edge-referent edge) referent)
+         (setf (edge-rule edge) rule)
 
-    (when *trace-edge-creation*
-      (format t "~&~%creating ~A from ~A~
-                 ~%    rule: ~A"
-              edge
-              (edge-position-in-resource-array edge)
-              rule))
+         (knit-edge-into-positions edge
+                                   (edge-starts-at left-edge)
+                                   (edge-ends-at right-edge))
+         (set-used-by left-edge edge)
+         (set-used-by right-edge edge)
+         (setf (edge-left-daughter edge) left-edge)
+         (setf (edge-right-daughter edge) right-edge)
 
-    (assess-edge-label promulgated-label edge)
-    edge ))
+         (complete edge)
+
+         (when *trace-edge-creation*
+           (format t "~&~%creating ~A from ~A~
+                        ~%    rule: ~A"
+                   edge
+                   (edge-position-in-resource-array edge)
+                   rule))
+         
+         (assess-edge-label promulgated-label edge)
+         edge )))))
 
 
 
