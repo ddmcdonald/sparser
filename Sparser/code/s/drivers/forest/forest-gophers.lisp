@@ -125,6 +125,24 @@
       unless (edge-used-in edge)
       collect edge)))
 
+(defun find-preposition (edge)
+  ;; usually the preposition is a literal, but the scare quotes
+  ;; around 'off' in J6 complicate the matter. See cover-scare-quotes
+  ;; and the scare-quote no-space pattern. 
+  (cond
+   ((one-word-long? edge)
+    (edge-left-daughter edge))
+   ((eq (edge-rule edge) :respan-edge-around-one-word)
+    ;; then we know what form it has
+    (let ((prep-edge (edge-left-daughter edge)))
+      (edge-left-daughter prep-edge)))
+   ((edge-p (edge-left-daughter edge))
+    ;; from a polyword. J10 has "such as" from words/conjunctions.lisp
+    (edge-category (edge-left-daughter edge)))
+   (t (push-debug `(,edge))
+      (error "Don't know how to find the preposition in~a" edge))))
+  
+
 
 (defun push-of (tt)
   (push tt (of-mentions (layout))))
