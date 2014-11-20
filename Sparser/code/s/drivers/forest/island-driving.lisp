@@ -69,14 +69,19 @@
 
   (when (there-are-known-subcat-patterns?)
     (tr :there-are-known-subcat-patterns)
-    (let ((edge (apply-subcat-patterns)))
-      (when edge
+    (let ((edges (apply-subcat-patterns)))
+      ;; Assuming the patterns match, there will be 
+      ;; an edge for every treetop that had a subcategorization
+      ;; pattern
+      (when edges
         ;; The subcategorizations are particularly solid,
         ;; and they're usually the equivalent of VPs or
         ;; complements. Gingerly look for leftward compositions. 
-        (look-for-short-leftward-extension edge))
+        (dolist (edge edges)
+          (look-for-short-leftward-extension edge)))
       (when *trace-island-driving* (tts))))
-  ;;(break "extension boundary")
+
+  ;;//// good place to update the layout
 
   (when (there-are-of-mentions?)
     (tr :try-to-compose-instances-of-of)
