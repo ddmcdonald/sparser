@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014 David D. McDonald  /Users/ddm/ws/R3/trunk/opp/ISI/amr_eng_align.pdf-- all rights reserved
 ;;; 
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
@@ -22,4 +22,21 @@
     (bind-variable 'modifier pp vg)))
   vg)
      
+
+; left-edge-for-referent
+; right-edge-for-referent
+; parent-edge-for-referent
     
+(defun interpret-pp-adjunct-to-np (np pp)
+  (push-debug `(,np ,pp))
+  (or (call-compose np pp)
+      (let* ((pp-edge (right-edge-for-referent))
+             (prep-edge (edge-left-daughter pp-edge))
+             (prep-word (edge-left-daughter prep-edge)))
+        ;;/// ought to use the referent of the prep but just doing
+        ;; this one case for now
+        (if (eq prep-word (word-named "in"))
+          (bind-variable 'location pp ;; daughter rule
+                         np)
+          (bind-variable 'modifier pp np))
+        np)))

@@ -2,7 +2,7 @@
 ;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
-;;;   Module:  "drivers;forest:"
+;;;   Module:  grammar/rules/syntax/
 ;;;  Version:  October 2014
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
@@ -78,6 +78,12 @@
   :referent (:head right-edge))
 
 
+(def-syntax-rule (np pp)
+                 :head :left-edge
+  :form np
+  :referent (:function interpret-pp-adjunct-to-np left-edge right-edge))
+
+
 
 ;;--- adverbs
 
@@ -124,6 +130,7 @@
                  :head :left-edge
   :form pp
   :referent (:function apply-preposition-to-complement left-edge right-edge))
+
 
 ;;--- Relative clauses
 
