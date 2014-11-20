@@ -139,7 +139,7 @@
 (defun look-for-prep-binders ()
   (dolist (prep-edge (prepositions (layout)))
     (unless (edge-used-in prep-edge)
-      (let ((preposition (edge-left-daughter prep-edge))
+      (let ((preposition (find-preposition prep-edge))
             (left-neighbor (left-treetop-at/edge prep-edge)))
         (when left-neighbor ;; could be sentence-initial
           (let ((head-word (find-head-word left-neighbor)))
@@ -161,7 +161,7 @@
 
 
 ;;;-----------------------------------------------
-;;; leading prepositional adjunct, possible comma
+;;; leading prepositional adjunct, p ossible comma
 ;;;-----------------------------------------------
 
 (defun try-parsing-leading-pp ()
