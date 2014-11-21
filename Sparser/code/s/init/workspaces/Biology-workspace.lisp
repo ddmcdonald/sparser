@@ -145,7 +145,8 @@ Proteins (GAPs) or by both mechanisms. |#
 (defun setup-bio ()
   (remove-paragraph-marker)
   (setq *tts-after-each-section* nil)
-  (gload "bio;loader"))
+  (gload "bio;loader")
+  (declare-all-existing-individuals-permanent))
 
 (defun bio-traps ()
   ;; switch settings to facilitate 'getting through'
