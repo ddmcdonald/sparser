@@ -133,6 +133,8 @@
                        (("on" np) (subject))
                        (("of" np) (theme)) ))  |#
     (push-debug `(,pattern ,sf))
+    (unless (consp (caar pattern))
+      (setq pattern (list pattern)))
     (let (  patterns  )
       (dolist (form pattern)
         (let ((processed 
