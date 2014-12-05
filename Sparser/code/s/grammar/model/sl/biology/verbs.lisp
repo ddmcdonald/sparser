@@ -12,6 +12,12 @@
 (in-package :sparser)
 
 
+;; According to Sketch Engine on the Mitre corpus,
+;; "act" by itself roughly means "do" or "behave" and can
+;; take "on" and "in" as well as "to".
+;; "act as" is always the equivalent of "is". 
+;; There's also the full caps ACT, which stands for
+;; "adoptive cell therapy"
 (def-term "act" verb (svo)
   :super-category be
   :preposition "as"
@@ -47,10 +53,14 @@
   :theme bio-entity)
 
 ;; "GTP-binding" "GO:00055525
-(def-term "bind" verb (svo-passive
-                       of-nominal) ;;/// "bound by"
-  :nominalization "bound"
-  :obo-id "GO:0005488"
+;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
+;; "interacting selectively and non-covalently with GTP"
+;;
+(def-term "bind" verb (svo-passive)
+                      ;;of-nominal) ;;/// "the binding of" ??
+  :irregular (:past-tense "bound")
+  ;;:nominalization "bound"
+  :obo-id "GO:0005488"  ;; not used in annotations
   :super-category bio-process
   :preposition "to"
   :patient bio-entity 
@@ -65,17 +75,24 @@
   :patient bio-process 
   :agent bio-entity)
 
+;; "consist" (of)
+;; ? (comlex-entry "consist")
+;; ((verb (:subc ((p-ing-sc :pval ("in" "of")) (pp :pval ("of" "in"))))))
+
+
 ;;--- "encode"
 ;; <enzyme> encoded by <gene>
-(svo/passive/nominal "encode" "encoding"
+(def-term "encode" verb (svo-passive of-nominal)
+  :nominalization "encoding"
   :super-category bio-process
   :agent gene
   :patient protein)
 
-(svo/passive/nominal "enhance" "enhancement"
+(def-term "enhance" verb (svo-passive of-nominal)
+  :nominalization"enhancement"
   :super-category bio-process
-  :patient bio-process
-  :agent bio-entity)
+  :agent bio-entity
+  :patient bio-process)
 
 ;; exchange
 
@@ -192,13 +209,13 @@
 (svo/passive/nominal "regulate" "regulation"
   :super-category bio-process
   :patient bio-process  ;; regulation of <process>
-  :agent bio-entity)    ;; by <entity>
+  :agent bio-process)    ;; by <entity>
 
 
 (svo/passive/nominal "dysregulate" "dysregulation"
   :super-category bio-process
   :patient bio-process  ;; regulation of <process>
-  :agent bio-entity)
+  :agent bio-process)
 
 
 ;;--- "release"  "GO:0023061"
@@ -219,10 +236,14 @@
   :patient bio-process  ;; inhibiton of <process>
   :agent bio-entity)
 
-(svo/passive/nominal "suggest" "suggestion"
+
+
+(def-term "suggest" verb (svcomp np-by)
+  :nominalization "suggestion"
   :super-category bio-process
-  :patient bio-process 
-  :agent bio-entity)
+  :subject bio-entity ;; the one making the suggestion
+  :complement bio-process) ;; the content of the suggestion
+
 
 
 (svo/nominal "transduce" "transduction" 
