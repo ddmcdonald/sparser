@@ -121,9 +121,9 @@
   (let ((start-index (pos-character-index pos-before))
         (end-index (pos-character-index pos-after))
         (ws-after (pos-preceding-whitespace pos-after)))
-    (when (< end-index start-index)
-      (break "Stub. Extend actual-characters-of-word to ~
-              wrap around character bufferes"))
+;    (when (< end-index start-index)
+;      (break "Stub. Extend actual-characters-of-word to ~
+;              wrap around character bufferes"))
     ;;/// There's also an edge case when the whitespace after
     ;; is just over the edge
 
