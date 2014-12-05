@@ -37,6 +37,10 @@
 *ignore-parentheses*
 *permit-extra-open-parens*
 
+(defparameter *break-on-illegal-duplicate-rules* nil
+    "Faciliate debugging and clean up by stopping the load / rule-execution 
+     when an illegal duplicate has been found.")
+
 *allow-form-conjunction-heuristic*
 
 *do-islands-2d-pass*

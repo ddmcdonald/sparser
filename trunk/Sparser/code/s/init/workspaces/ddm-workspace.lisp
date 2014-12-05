@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  October 2014
+;;;  version:  November 2014
 
 ;; Initiated 10/9/14 for personalized settings and recording what 
 ;; I'm doing -- ddm.
@@ -12,19 +12,18 @@
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
-(defun ddm-standard () ;; (ddm-standard)
+; (setq *break-on-illegal-duplicate-rules* t)
+
+(defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   ;; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
   (setq *note-text-relations* nil)
-  ;;(bf-off)
-  (trace-lexicon-unpacking) (trace-morphology)
+  ;;(bf-off)  (bio-setting)
+  (trace-lexicon-unpacking) (trace-morphology))
   ;;(trace-terminals-sweep) ;; for hacking the sweep rebuilding
   ;; (trace-chunker)
-  ;;(setq *chunk-sentence-into-phrases* nil) ;; ditto 
-  ;;(trace-island-driving)
-  (setq *kind-of-chart-processing-to-do* :successive-sweeps)
-  (setq *parse-chunk-interior-online* t)
-  (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed))
+  ;; (setq *chunk-sentence-into-phrases* nil) ;; ditto 
+  ;;( trace-island-driving)
 
 ;; 10/27/14  J3
 (defun setup-j3 ()
@@ -51,12 +50,14 @@
 ;  (p "For example, SHOC2/Sur-8 bridges Ras and Raf")
 
 
-(defun load-ddm-ws ()
-  (ddm-ed "init/workspaces/reference-points.lisp")
-  (ddm-ed "init/workspaces/traces.lisp")
-  (ddm-ed "init/workspaces/flags.lisp")
-  (ddm-ed "init/workspaces/Biology-workspace.lisp"))
-; (load "/Users/ddm/ws/Sparser local/workspaces/fire.lisp")
+(defun ddm-bio ()
+  (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
+  (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
+  (ddm-ed "grammar/model/sl/biology/proteins.lisp")
+  (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
+  (ddm-ed "grammar/model/sl/biology/terms.lisp")
+  (ddm-ed "grammar/model/sl/biology/verbs.lisp"))
+;;  molecules and NGkappB not loaded
 
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/forest/new-forest-protocol.lisp")
@@ -82,20 +83,11 @@
 
 (defun ddm-no-spaces ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
-  (ddm-ed "analyzers/psp/patterns/uniform-scan.lisp")
+  (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp")
   (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "grammar/rules/SD&P/create-categories.lisp")
   (ddm-ed "grammar/rules/syntax/categories.lisp"))
-
-(defun ddm-bio ()
-  (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
-  (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
-  (ddm-ed "grammar/model/sl/biology/proteins.lisp")
-  (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
-  (ddm-ed "grammar/model/sl/biology/terms.lisp")
-  (ddm-ed "grammar/model/sl/biology/verbs.lisp"))
-;;  molecules and NGkappB not loaded
 
 ;; Set up actions associated with binding
 ; (ddm-ed "objects/model/bindings/hooks.lisp")
@@ -106,42 +98,45 @@
 ;; Walk the model and such
 ; (ddm-ed "interface/grammar/printing.lisp")
 
+;  (ddm-ed "objects/model/tree-families/rdata1.lisp")
+
+;  (ddm-ed "objects/model/tree-families/driver2.lisp")
+;; Works on the rdata of category definitions to instantiate the schema
+;; of the ETFs in their mappings to make rules. 
+;;    make-rules-for-rdata  instantiate-rule-schema 
+
+;  (ddm-ed "objects/model/tree-families/subrs3.lisp")
+
 
 (defun ddm-tree-families ()
-  (ddm-ed "objects/model/tree-families/rdata1.lisp")
-  (ddm-ed "objects/model/tree-families/driver2.lisp")
-  (ddm-ed "objects/model/tree-families/subrs3.lisp")
+  (ddm-ed "grammar/rules/tree-families/of.lisp")
   (ddm-ed "grammar/rules/tree-families/np-adjuncts.lisp")
-  (ddm-ed "grammar/rules/tree-families/vp-adjuncts.lisp"))
+  (ddm-ed "grammar/rules/tree-families/vp-adjuncts.lisp")
+  (ddm-ed "grammar/rules/tree-families/verbs-taking-pps.lisp")
+  (ddm-ed "grammar/rules/tree-families/that-comp.lisp")
+  (ddm-ed "grammar/rules/tree-families/transitive.lisp"))
 
 
+(defun ddm-grammar ()
+  (ddm-ed "grammar/model/dossiers/modifiers.lisp")
+ (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
+ (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
+ (ddm-ed "grammar/rules/syntax/prepositions.lisp")
+ (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
+ (ddm-ed "grammar/rules/syntax/conjunction8.lisp"))
 
-; (ddm-ed "grammar/model/dossiers/modifiers.lisp")
-
-
-; (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
-; (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
-; (ddm-ed "grammar/rules/syntax/prepositions.lisp")
-; (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
-; (ddm-ed "grammar/rules/syntax/conjunction8.lisp")
 ; (ddm-ed "objects/chart/edge-vectors/tuck.lisp)
-; (ddm-ed "objects/chart/edge-vectors/peek.lisp)
-
-;; 10/14,19/14
-(defun ddm-word-lookup ()
-  (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
-  (ddm-ed "grammar/rules/syntax/affix-rules1.lisp")
-  (ddm-ed "grammar/rules/brackets/comlex-unpacking.lisp")
-  (ddm-ed "grammar/rules/words/one-offs/comlex-def-forms.lisp")
-  (ddm-ed "objects/traces/tokenizer.lisp"))
+;(ddm-ed "objects/chart/edge-vectors/peek.lisp)
 
 
 (defun ddm-shortcuts ()
   (ddm-ed "grammar/rules/tree-families/shortcut-master.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-expansion.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-mechanics.lisp")
+  (ddm-ed "grammar/rules/tree-families/families.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcuts.lisp")
-  (ddm-ed "grammar/rules/tree-families/families.lisp"))
+  (ddm-ed "grammar/rules/tree-families/families.lisp")
+  (ddm-ed "grammar/rules/syntax/subcategorization.lisp"))
 
 
 (defun ddm-patterns ()
@@ -160,38 +155,6 @@
   (ddm-ed "analyzers/psp/patterns/traces.lisp"))
 
   
-
-; 1st  (list-da-actions) ;; from Grok era to hack titles and odd things
-(defun ddm-da-files ()
-  (ddm-ed "objects/rules/DA/object.lisp") ;; da-rule-named
-  (ddm-ed "objects/rules/DA/define.lisp") ;; define-da-rule
-  (ddm-ed "objects/rules/DA/decode-patterns.lisp")
-  (ddm-ed "analyzers/DA/index.lisp") ;; (trie-for-1st-item tt)
-  (ddm-ed "drivers/DA/setup-action.lisp")
-  (ddm-ed "drivers/DA/action-globals.lisp")
-  (ddm-ed "drivers/DA/fsa-globals.lisp")
-  (ddm-ed "drivers/DA/dispatch1.lisp") ;; standalone-da-action
-  (ddm-ed "drivers/DA/driver1.lisp")
-  (ddm-ed "drivers/DA/fsa.lisp")
-  (ddm-ed "grammar/rules/DA/aux+morph.lisp")
-  (ddm-ed "grammar/model/core/titles/of-titles.lisp"))
-
-; 2d   (list-ca-actions) ;; very old heuristic searches
-(defun ddm-ca-actions ()
-  (ddm-ed "grammar/rules/CA/stranded-VP1.lisp")
-  (ddm-ed "drivers/forest/CA/CA4.lisp")
-  (ddm-ed "analyzers/CA/actions.lisp")
-  (ddm-ed "analyzers/CA/search2.lisp")
-  (ddm-ed "analyzers/CA/scanners1.lisp"));; (comma-just-to-its-left edge)
-
-; 3d   (list-generic-treetop-actions) ;; for stranded "of", "and", hyphen
-(defun ddm-generic-tt-actions ()
-  (ddm-ed "drivers/forest/actions1.lisp"))
-
-(defun ddm-original-forest ()
-  (ddm-ed "drivers/chart/psp/PPTT8.lisp")
-  (ddm-ed "drivers/chart/psp/trigger5.lisp")
-  (ddm-ed "drivers/forest/trap2.lisp"))
 
 #| 10/9/14 noun brackets are being added to word::single-quote
 (ddm-ed "grammar/rules/words/punctation-bracketing.lisp")
@@ -237,17 +200,90 @@
 
 
 
+;; 10/14,19/14
+(defun ddm-word-lookup ()
+  (ddm-ed "objects/chart/words/lookup/new-words4.lisp")
+  (ddm-ed "grammar/rules/syntax/affix-rules1.lisp")
+  (ddm-ed "grammar/rules/brackets/comlex-unpacking.lisp")
+  (ddm-ed "grammar/rules/words/one-offs/comlex-def-forms.lisp")
+  (ddm-ed "objects/traces/tokenizer.lisp"))
 
+
+; 1st  (list-da-actions) ;; from Grok era to hack titles and odd things
+(defun ddm-da-files ()
+  (ddm-ed "objects/rules/DA/object.lisp") ;; da-rule-named
+  (ddm-ed "objects/rules/DA/define.lisp") ;; define-da-rule
+  (ddm-ed "objects/rules/DA/decode-patterns.lisp")
+  (ddm-ed "analyzers/DA/index.lisp") ;; (trie-for-1st-item tt)
+  (ddm-ed "drivers/DA/setup-action.lisp")
+  (ddm-ed "drivers/DA/action-globals.lisp")
+  (ddm-ed "drivers/DA/fsa-globals.lisp")
+  (ddm-ed "drivers/DA/dispatch1.lisp") ;; standalone-da-action
+  (ddm-ed "drivers/DA/driver1.lisp")
+  (ddm-ed "drivers/DA/fsa.lisp")
+  (ddm-ed "grammar/rules/DA/aux+morph.lisp")
+  (ddm-ed "grammar/model/core/titles/of-titles.lisp"))
+
+; 2d   (list-ca-actions) ;; very old heuristic searches
+(defun ddm-ca-actions ()
+  (ddm-ed "grammar/rules/CA/stranded-VP1.lisp")
+  (ddm-ed "drivers/forest/CA/CA4.lisp")
+  (ddm-ed "analyzers/CA/actions.lisp")
+  (ddm-ed "analyzers/CA/search2.lisp")
+  (ddm-ed "analyzers/CA/scanners1.lisp"));; (comma-just-to-its-left edge)
+
+; 3d   (list-generic-treetop-actions) ;; for stranded "of", "and", hyphen
+(defun ddm-generic-tt-actions ()
+  (ddm-ed "drivers/forest/actions1.lisp"))
+
+(defun ddm-original-forest ()
+  (ddm-ed "drivers/chart/psp/PPTT8.lisp")
+  (ddm-ed "drivers/chart/psp/trigger5.lisp")
+  (ddm-ed "drivers/forest/trap2.lisp"))
+
+
+(defun load-ddm-ws ()
+  (ddm-ed "init/workspaces/reference-points.lisp")
+  (ddm-ed "init/workspaces/traces.lisp")
+  (ddm-ed "init/workspaces/flags.lisp")
+  (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
+  (ddm-ed "init/workspaces/Biology-workspace.lisp"))
+; (ed "/Users/ddm/ws/Sparser local/workspaces/fire.lisp")
+
+
+;;------- working with OBOs
+
+;;--- 1st generate the output file
 ; (load "/Users/ddm/ws/R3/trunk/code/obo2lisp/obo2lisp.lisp")
 ; (transcribe-obo-file "/Users/ddm/ws/R3/trunk/ontologies/pro-test-file.obo")
 (defun translate-obos ()  ;; (translate-obos)
  (cl-user::translate-obo-files 
-  '("/Users/ddm/ws/R3/trunk/ontologies/ro.obo") 
+  '("/Users/ddm/ws/R3/trunk/ontologies/bfo.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/ro.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/go-plus.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/pro.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/chebi.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/cl.obo")
+;"/Users/ddm/ws/R3/trunk/ontologies/"
   "~/ws/R3/ws/obo-terms.lisp"))
 
-;;--- Other hard filenames
+(defun cl-user::translate-obo-files ()
+  (error "load the real one -- this just quiets the compiler"))
 
-(defun ddm-corpus-location ()
+;;--- 2d work over the result
+; (ddm-ed "grammar/rules/words/one-offs/obo-reader.lisp")
+; (read-obo-term-file "/Users/ddm/ws/R3/ws/obo-terms.lisp")
+
+
+;;;------------------
+;;;  Hard filenames
+;;;------------------
+
+;;--- Peter Clark's string function utilities
+(ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
+
+(defun ddm-corpus-location (in-list out-file)
+  (declare (ignore in-list out-file))
   ;; Note the pathname is given in ancient Mac syntax. 
   (setq cl-user::location-of-text-corpora
         "Users:ddm:sift:nlp:corpus:"))

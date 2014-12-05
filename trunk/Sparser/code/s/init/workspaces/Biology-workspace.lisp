@@ -28,6 +28,11 @@
   (setq *island-driving* nil))
 
 
+;;----- phrases from the 12/3/14 Darpa trainng data
+;
+; (p "at Lys residues 104 and 147 of K-Ras, and Lys residues 117, 147 and 170 for H-Ras.")
+
+
 
 ;; "J" for Julie
 
@@ -145,12 +150,12 @@ Proteins (GAPs) or by both mechanisms. |#
 (defun setup-bio ()
   (remove-paragraph-marker)
   (setq *tts-after-each-section* nil)
+  (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
   (gload "bio;loader")
   (declare-all-existing-individuals-permanent))
 
 (defun bio-traps ()
   ;; switch settings to facilitate 'getting through'
-  (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
   (setq *sweep-sentence-treetops* nil) ;; easing these in gradually
   (setq *island-driving* nil))
 

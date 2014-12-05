@@ -21,12 +21,20 @@ collect-no-space-sequence-into-word  nospace-hyphen-specialist
 
 initiate-R3-entity-pass
 
+bio-setting
+
 
 ;;--- Older, no particular order
 
 The main line:  
   analysis-core  inititate-top-edges-protocol  pts  PPTT
 
+define-category => define-category/expr => decode-category-parameter-list
+
+redefinition-of-rule
+
+named-object
+   indexed  has-children  ordered
 
 tts  print-treetops  right-treetop-at/edge
 
