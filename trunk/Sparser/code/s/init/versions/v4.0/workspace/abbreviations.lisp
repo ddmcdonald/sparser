@@ -142,8 +142,15 @@
       (d etf)
       (format nil "No exploded tree family is named ~a" name))))
 
+;; categories-using-etf <name>
 
-(defmacro ml (label-name1 label-name2)
+
+(defun multiply (n1 n2)
+  (let ((e1 (edge# n1))
+        (e2 (edge# n2)))
+    (multiply-edges e1 e2)))
+
+(defmacro ml (label-name1 label-name2) ;; only semantic labels
   `(multiply-labels ,(resolve label-name1)
                     ,(resolve label-name2)))
 
