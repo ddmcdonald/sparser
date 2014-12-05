@@ -65,6 +65,18 @@
       s)))
 
 
+(defun includes-a-form-of-passive? (tree-family-names)
+  ;; Are any of the tree families to be used with
+  ;; this term versions of the passive with a by-phrase?
+  (dolist (symbol tree-family-names nil)
+    (when (memq symbol '(svo-passive np-by))
+      (return t))))
+
+#| In these mappings, the labels on the left come from
+the ETF and the ones on the right from the mapping in
+the short cuts. 
+|#
+
 (define-realization-scheme sv intransitive
   :head :verb
   :mapping ((agent . subj-slot)
@@ -73,7 +85,7 @@
             (vg . :self)
             (np/subject . subj-v/r)))
 
-(define-realization-scheme svo-passive transitive/passive
+(define-realization-scheme svo-passive passive/with-by-phrase
   :args (agent-slot agent-v/r patient-slot patient-v/r)
   :head :verb
   :mapping ((agent . agent-slot)
@@ -81,9 +93,18 @@
             (s . :self)
             (vp . :self)
             (vg . :self)
-            (np/subject . agent-v/r)
-            (np/object . patient-v/r)
+            (np/agent . agent-v/r)
+            (np/patient . patient-v/r)
+            (by-pp . by-v/r)
             (result-type . :self)))
+
+(define-realization-scheme np-by np-with-by-phrase
+  :head :common-noun
+  :mapping ((agent . subj-slot)
+            (np/subject . subj-v/r) ;; by-subj
+            (np . :self)
+            (by-pp . by-v/r)))
+            
 
 (define-realization-scheme svo transitive
   :head :verb
@@ -95,6 +116,18 @@
             (np/subject . subj-v/r)
             (np/object . theme-v/r)))
 
+(define-realization-scheme svcomp that-complement
+  :head :verb
+  :mapping ((s . :self)
+            (np .  subj-v/r)
+            (vg . :self)
+            (vp . :self)
+            (s/that-comp . comp-v/r)
+            (result . :self)
+            (agent . subj-slot)
+            (theme . comp-slot)))
+
+
 (define-realization-scheme of-nominal empty-head-of-complement
   ;; used in old svo/nominal
   :head :common-noun
@@ -103,6 +136,7 @@
             (base-np . :self)
             (complement . theme-v/r)
             (np . :self)))
+
                         
 
 

@@ -81,7 +81,7 @@
 ;;   e.g. "all of the cake", "half of the morning", "530 tons of liquid nitrogen",  
 ;;        "a lot of people", "few of the inhabitants"  [Q/G/L/S sect. 4.25]
 #|
-(define-exploded-tree-family   quantify-of-stuff
+(define-exploded-tree-family   quantity-of-stuff
   :binding-parameters ( quantity  stuff )
   :labels ( np  quantifier  np/after-of )
   :cases
@@ -197,7 +197,7 @@
                          :head left-edge
                          :binds (item left-edge
                                  value right-edge)))
-          (:of-phrase (of-/complement ("of" complement)
+          (:of-phrase (of-/complement ("of" complement)     
                         :head right-edge))))
 
 ;; includes a result-type -- don't want to mess with anything that's
