@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1999  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1999.2014 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "digits"
 ;;;   Module:  "grammar;rules:edges:"
-;;;  Version:  1.11 July 1999
+;;;  Version:  1.12 December 2014
 
 ;;1.1  (1/3/91 v1.6) Moved to this file the routine that's called from
 ;;     assessing unknown digit sequences.
@@ -26,6 +26,8 @@
 ;; 1.11 (7/18/99) Changed the arguments that Make-edge-over-unknown-digit-sequence
 ;;       passes to construct-temporary-number so we won't have forgotten the
 ;;       word that we created -- modivated by nlg.
+;; 1.12 (12/4/15) Giving digit sequence edges the form category 'number' so
+;;       that the chunker can deal with them. 
 
 (in-package :sparser)
 
@@ -54,7 +56,7 @@
             (find-or-make-category-object 'number :referential)
             category::number))
 
-    (setf (edge-form edge) nil)
+    (setf (edge-form edge) (category-named 'number))
 
     (setq daughter-edges
           (if (eq ending-position 
@@ -95,7 +97,7 @@
           (if *include-model-facilities*
             (find-or-make-category-object 'number :referential)
             category::number))
-    (setf (edge-form     edge) nil)
+    (setf (edge-form     edge) (category-named 'number))
     (setf (edge-referent edge) number)
 
     (if (eq ending-position (chart-position-after starting-position))
@@ -136,7 +138,7 @@
       (setf (edge-right-daughter edge) :single-digit-sequence)
 
       (setf (edge-category edge) *the-category-of-digit-sequences*)
-      (setf (edge-form edge) nil)
+      (setf (edge-form edge) (category-named 'number))
       (setf (edge-referent edge) number)
 
       ;; we don't activate these edges because they are processed by
