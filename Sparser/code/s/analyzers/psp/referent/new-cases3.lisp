@@ -198,6 +198,12 @@
          (binding-exp/s (cddr rule-field))
          return-value  )
 
+    ;;/// problem is in the refererent creator
+    (when (consp head)
+      (if (category-p (car head))
+        (setq head (car head))
+        (error "head is a cons. New case: ~a" head)))
+
     (if *do-not-use-psi*
       (then 
        (let ((lp (cat-lattice-position head))
