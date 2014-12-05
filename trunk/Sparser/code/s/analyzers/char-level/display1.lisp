@@ -121,13 +121,10 @@
   (let ((start-index (pos-character-index pos-before))
         (end-index (pos-character-index pos-after))
         (ws-after (pos-preceding-whitespace pos-after)))
-;    (when (< end-index start-index)
-;      (break "Stub. Extend actual-characters-of-word to ~
-;              wrap around character bufferes"))
-    ;;/// There's also an edge case when the whitespace after
-    ;; is just over the edge
 
     ;; Subtract for the whitespace after the word
+    ;;/// There's an edge case when the whitespace after
+    ;; is just over the edge into the next buffer
     (let ((adjusted-end
            (cond 
             ((null ws-after) end-index)
@@ -141,20 +138,16 @@
                      computing actual-characters-of-word ~%~a"
                     ws-after)))))
 
+      (when *buffers-in-transition*
+        (push-debug `(,pos-before ,pos-after ,words))
+        (break "Stub. Extend actual-characters-of-word to ~
+                wrap around character bufferes"))
       (if *buffers-in-transition*
-        ;; we have to piece it together
         (cond
-         (nil ;;/////////// debug this
-          (let* ((word-lengths
-                  (mapcar #'(lambda (w) (length (word-pname w)))
-                          words))
-                 (length (apply #'+ word-lengths)))
-            (push-debug `(,pos-before ,pos-after ,words))
-            (push-debug `(,start-index ,adjusted-end ,length))
-            (break "fix the split computation")
-            (multiple-value-bind (old-part new-part)
-                                 (compute-split-token adjusted-end length)
-              (string-append old-part new-part))))
+         (nil
+          ;; fall through to the version that will lose the
+          ;; capitalization
+          (try-reconsituting-split-tokens words start-index adjusted-end))
          (t
           (let ((pnames (mapcar #'word-pname words)))
             (apply #'string-append pnames))))
@@ -165,8 +158,6 @@
                       *length-accumulated-from-prior-buffers*)))
           (subseq *character-buffer-in-use* start end))))))
 
-
-                  
 
 ;;;----------------------------
 ;;; actually doing the writing
@@ -189,6 +180,17 @@
       (if *display-text-to-special-window*
         (write-to-text-window string position)
         (write-string string stream)))))
+
+(defun try-reconsituting-split-tokens (words start-index adjusted-end)
+  (let* ((word-lengths
+          (mapcar #'(lambda (w) (length (word-pname w)))
+                  words))
+         (length (apply #'+ word-lengths)))
+    (push-debug `(,start-index ,adjusted-end ,length))
+    (break "fix the split computation")
+    (multiple-value-bind (old-part new-part)
+                         (compute-split-token adjusted-end length)
+      (string-append old-part new-part))))
 
 #| When the calculation of 'end' involves subtracting some value
 from the point reached by the the tokenizer (*index-of-next-character*)
