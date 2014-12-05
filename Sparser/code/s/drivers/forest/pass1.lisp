@@ -143,21 +143,20 @@
             (left-neighbor (left-treetop-at/edge prep-edge)))
         (when left-neighbor ;; could be sentence-initial
           (let ((head-word (find-head-word left-neighbor)))
-            (unless head-word
-              (error "can't find head word in ~a" left-neighbor))
-            (push-debug `(,prep-edge ,left-neighbor
-                          ,preposition ,head-word))
-            ;; (setq prep-edge (car *) left-neighbor (cadr *) preposition (caddr *) head-word (cadddr *))
-            ;(when (eq preposition (word-named "as")) ;; J3
-            ;  (break "binder"))
-            (unless (punctuation? head-word) ;; comma before "such as")
-              (if (or (takes-preposition? head-word preposition)
-                      (takes-preposition? left-neighbor preposition))
-                (let ((edge (check-one-one left-neighbor prep-edge)))
-                  (if edge
-                    (tr :took-preposition left-neighbor preposition edge)
-                    (tr :does-not-take-preposition left-neighbor preposition)))
-                (tr :does-not-take-preposition left-neighbor preposition)))))))))
+            (when head-word
+              (push-debug `(,prep-edge ,left-neighbor
+                            ,preposition ,head-word))
+              ;; (setq prep-edge (car *) left-neighbor (cadr *) preposition (caddr *) head-word (cadddr *))
+              ;(when (eq preposition (word-named "as")) ;; J3
+              ;  (break "binder"))
+              (unless (punctuation? head-word) ;; comma before "such as")
+                (if (or (takes-preposition? head-word preposition)
+                        (takes-preposition? left-neighbor preposition))
+                  (let ((edge (check-one-one left-neighbor prep-edge)))
+                    (if edge
+                      (tr :took-preposition left-neighbor preposition edge)
+                      (tr :does-not-take-preposition left-neighbor preposition)))
+                  (tr :does-not-take-preposition left-neighbor preposition))))))))))
 
 
 ;;;-----------------------------------------------
