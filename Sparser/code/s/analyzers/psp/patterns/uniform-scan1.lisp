@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  1.0 November 2014
+;;;  version:  1.0 December 2014
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -15,7 +15,7 @@
 ;; 0.6 9/9/14 refactoring to make management simpler.
 ;; 0.7 10/9/14 Added scare quotes, debugged edge cases. 
 ;; 1.0 11/18/14 Bumped number to permit major revamp to fit into multi-
-;;   pass scanning. 
+;;   pass scanning. 12/4/14 moved out the patterns to their own file.
 
 (in-package :sparser)
 
@@ -29,7 +29,7 @@
     scheme. Sort of a generic 'super' tokenizer"))
 
 (unless (boundp '*parser-interior-of-no-space-token-sequence*)
-  (defparameter *parser-interior-of-no-space-token-sequence* nil
+  (defparameter *parser-interior-of-no-space-token-sequence* t
     "Controls whether we try to parse the edges of the words
      inside the span."))
    
@@ -70,6 +70,10 @@
         (else
          (push-debug `(,position))
          (break "NS -- new assessment case. position = ~a" position))))
+
+    (when (eq word-after *end-of-source*) ;; ". <eos>"
+      (return-from collect-no-space-sequence-into-word nil))
+
     (tr :ns-considering-sequence-starting-with word-before word-after)
 
     (unless (has-been-status? ::preterminals-installed position)
@@ -165,39 +169,44 @@
 (defun post-accumulator-ns-handler (words pattern
                                     pos-before next-position
                                     hyphen? slash?)
-  (or (resolve-ns-pattern pattern words pos-before next-position)
 
-      (let ((layout
-             (when *parser-interior-of-no-space-token-sequence*
-               (tr :ns-parsing-between pos-before next-position)
-               (parse-between-boundaries pos-before next-position))))
-        (tr :ns-layout layout)
-        ;;(push-debug `(,words ,pos-before ,next-position)) (break "layout = ~a" layout)
-        ;; (setq words (car *) pos-before (cadr *) next-position (caddr *))
-        ;; (print-flat-forest t pos-before next-position)
+  (let ((layout
+         (when *parser-interior-of-no-space-token-sequence*
+           (tr :ns-parsing-between pos-before next-position)
+           (parse-between-boundaries pos-before next-position))))
+    (tr :ns-layout layout)
+    ;;(push-debug `(,words ,pos-before ,next-position)) (break "layout = ~a" layout)
+    ;; (setq words (car *) pos-before (cadr *) next-position (caddr *))
+    ;; (print-flat-forest t pos-before next-position)
 
-        (cond
-         ((eq layout :single-span)) ;; Do nothing. It's already known
-         ((eq layout :span-is-longer-than-segment)
-          (error "no-space-sequence: bad positions somehow.~
-                ~%   Parsed span goes beyond presumed boundaries.~
-                ~%   start = ~a  end = ~a" pos-before next-position))
-         ((and hyphen? slash?)
-          (nospace-slash-and-hyphen-specialist 
-           hyphen? slash? pos-before next-position))
-         (hyphen?
-          (nospace-hyphen-specialist hyphen? pos-before next-position))
-         (slash?
-          (nospace-slash-specialist slash? pos-before next-position))
-         (t 
-          ;; The cleanest conceptualization of things like M1A1 or
-          ;; H1N1 is that they are names. So we take the words that
-          ;; we've collected and make them the elemeents of the
-          ;; sequence that defines the name, and we make the
-          ;; corresponding egdge, reifying the identity of the name
-          ;; in the model qua name, we would know what it names
-          ;; if we understand the context.
-          (reify-ns-name-and-make-edge words pos-before next-position))))))
+    (unless (eq layout :single-span) ;; Do nothing. It's already known
+
+      (or (resolve-ns-pattern pattern words slash? pos-before next-position)
+
+          (cond
+           ;; This is the older, specialist-based scheme that was 
+           ;; beginning to get too complicated: SHOC2/Sur-8", which
+           ;; prompted writing a stronger pattern matcher
+           ((eq layout :span-is-longer-than-segment)
+            (error "no-space-sequence: bad positions somehow.~
+                  ~%   Parsed span goes beyond presumed boundaries.~
+                  ~%   start = ~a  end = ~a" pos-before next-position))
+           ((and hyphen? slash?)
+            (nospace-slash-and-hyphen-specialist 
+             hyphen? slash? pos-before next-position))
+           (hyphen?
+            (nospace-hyphen-specialist hyphen? pos-before next-position))
+           (slash?
+            (nospace-slash-specialist slash? pos-before next-position))
+           (t 
+            ;; The cleanest conceptualization of things like M1A1 or
+            ;; H1N1 is that they are names. So we take the words that
+            ;; we've collected and make them the elemeents of the
+            ;; sequence that defines the name, and we make the
+            ;; corresponding egdge, reifying the identity of the name
+            ;; in the model qua name, we would know what it names
+            ;; if we understand the context.
+            (reify-ns-name-and-make-edge words pos-before next-position)))))))
 
 
 ;; New scheme
@@ -224,78 +233,6 @@
         edge)))
 
 
-
-;;;------------------------------------------------
-;;; recognizing patterns in the character sequence
-;;;------------------------------------------------
-
-(defun characterize-word-type (position word)
-  ;; return a indicator read by resolve-ns-pattern to identify
-  ;; a general pattern with an established interpretation. 
-  (let* ((caps (pos-capitalization position))
-         (start-ev (pos-starts-here position))
-         (top-edge (ev-top-node start-ev)))
-    ;;(break "For ~s caps = ~a, top-edge = ~a" (word-pname word) caps top-edge)
-    (case caps
-      (:digits
-       (if (= 1 (length (word-pname word)))
-        :single-digit
-        :digits))
-      (:initial-letter-capitalized
-      :capitalized) ;; "Gly", "Ras"
-      (:single-capitalized-letter
-       :single-cap)
-      (:all-caps
-       :full)
-      (:mixed-case
-       :mixed ) ;;(characterize-type-for-mixed-case word))
-      (:lower-case
-       :lower)
-      (:punctuation
-       (keyword-for-word word))
-      (otherwise (break "~a is a new case to characterize for p~a and ~s~
-                       ~%under ~a"
-                        caps
-                        (pos-token-index position) 
-                        (word-pname word)
-                        top-edge)))))
-;;/// move
-(defun keyword-for-word (word)
-  (let ((symbol-in-word-package (word-symbol word)))
-    (intern (symbol-name symbol-in-word-package)
-            (find-package :keyword))))
-
-(defparameter *work-on-ns-patterns* nil
-  "Forces resolve-ns-pattern to return nil rather than complain
-   that it's got an uncharacterized pattern.")
-;; "the TGF-b pathway"  "PLX4032"
-;; "MEK1 (also known as MAP2K1)"
-;; "the Bcl-2/Bcl-xL proteins"  "SHOC2/Sur-8"
-;; "EGFR-positive cells (EGFRhi)" "EGFR-hi"
-;; "regulatory factors, such as IL-1a"
-;; "BRAF(V600E)" "short hairpin RNA (shRNA)" "region Y-box 10 (SOX10)"
-(defun resolve-ns-pattern (pattern words pos-before next-position)
-  (push-debug `(,pattern ,words)) ;; (break "resolve pattern")
-  (cond ;;/// turn into a macro, or interpret a structured list / structure
-   ((equal pattern '(:full :single-digit)) ;; AF6
-    (reify-ns-name-and-make-edge words pos-before next-position))
-   (*work-on-ns-patterns*
-    (push-debug `(,pattern ,words))
-    (break "New pattern to resolve: ~a" pattern))
-   (t nil))) ;; fall through
-
-
-
-(defun characterize-type-for-mixed-case (word)
-  (let* ((pname (word-pname word))
-         (length (length pname))
-         ends-in-s?    )
-    (setq ends-in-s?
-          (eql #\s (aref pname (1- length))))
-
-    (when ends-in-s?
-      ;; is the remainder a known word?
-      )))
 
           
 
