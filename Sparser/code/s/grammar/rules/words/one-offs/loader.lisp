@@ -1,5 +1,4 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; $Id$
 ;;; Copyright 2010-2011 David D. McDonald, all rights reserved
 ;;;
 ;;;     File: "loader"
@@ -7,7 +6,7 @@
 ;;;  Version:  July 2011
 
 ;; initiated 8/13/10. Added treebank-reader 11/1. 7/27/11 added
-;; def-word
+;; def-word. 11/26/14 added obo-reader.
 
 (in-package :sparser)
 
@@ -20,7 +19,7 @@
 (gload "one-offs;comlex-function-words") ;; !!! disperse
 (gload "one-offs;ERG")
 (gload "one-offs;treebank-reader")
-;(gload "one-offs;")
+(gload "one-offs;obo-reader")
 ;(gload "one-offs;")
 ;(gload "one-offs;")
 
