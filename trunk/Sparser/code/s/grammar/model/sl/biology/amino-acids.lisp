@@ -86,15 +86,34 @@ therefore we have the special cases:
   :binds ((amino-acid . amino-acid)
           (position :primitive integer) ;; counting from the N terminus
           (on-protein . protein))
-  ;; Throwaway treatment just to play with the parsing
+  :lemma (common-noun "residue")
   :index (:sequential-keys amino-acid position))
 
+; These are bare rules that could be converted to an ETF
+; (or several) that captures these composition possibilities
+; for a complex noun-headed phrase. 
+
+;; Gly33
 (def-cfr residue-on-protein (amino-acid digit-sequence)
   :form proper-noun
   :referent (:head left-edge
              :instantiate-individual residue-on-protein
              :with (amino-acid left-edge
                     position right-edge)))
+
+;; "Lys residues"
+(def-cfr redidue-on-protein (amino-acid residue-on-protein)
+  :form n-bar
+  :referent (:head right-edge
+             :bind (amino-acid left-edge)))
+
+;; residues 104 and 147
+(def-cfr redidue-on-protein (redidue-on-protein digit-sequence)
+  :form n-bar
+  :referent (:head left-edge
+             :bind (position right-edge)))
+
+
 
 
 ;;//// point mutation goes here
