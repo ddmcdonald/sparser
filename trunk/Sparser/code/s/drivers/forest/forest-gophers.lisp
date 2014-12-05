@@ -202,39 +202,43 @@
 (defun find-head-word (tt)
   "Walk down the head line (not so obvious) and return
    the word at the bottom, e.g. the verb."
-  (let* ((head-edge (walk-down-right-headline tt))
-         (left-daughter (edge-left-daughter head-edge)))
-    (unless (word-p left-daughter)
-      (push-debug `(,tt ,head-edge))
-      (error "right headline does not terminate in a word: ~a"
-             head-edge))
-    left-daughter))
+  (let ((head-edge (walk-down-right-headline tt)))
+    (when head-edge
+      (let ((left-daughter (edge-left-daughter head-edge)))
+        (unless (word-p left-daughter)
+          (push-debug `(,tt ,head-edge))
+          (error "right headline does not terminate in a word: ~a"
+                 head-edge))
+        left-daughter))))
 
 (defun walk-down-right-headline (edge)
   "Given an edge, presumed to be the result of a binary composition,
    walk down its right-daughter chain until you reach a edge that
    single term, which we return."
   (let ((daughter (edge-right-daughter edge)))
-    (cond
-     ((edge-p daughter)
-      (walk-down-right-headline daughter))
-     ((symbolp daughter)
+    (when daughter
+      ;; Digit sequences don't have daughter or heads in any
+      ;; usable sense
       (cond
-       ((eq daughter :single-term)
-        edge)
-       ((eq daughter :literal-in-a-rule)
-        edge)
-       ((eq daughter :long-span)
-        (let ((constituents (edge-constituents edge)))
-          (unless constituents (error "no constituents on long span ~a" edge))
-          (let ((last-constituent (car (last constituents))))
-            (if (eq (edge-right-daughter last-constituent) :single-term)
-              last-constituent
-              (walk-down-right-headline last-constituent)))))
-       (t (push-debug `(,edge ,daughter))
-          (error "Unexpected symbol in headline walk: ~a" daughter))))
-     (t (push-debug `(,edge ,daughter))
-        (error "Unexpected case in headline walk: ~a" daughter)))))
+       ((edge-p daughter)
+        (walk-down-right-headline daughter))
+       ((symbolp daughter)
+        (cond
+         ((eq daughter :single-term)
+          edge)
+         ((eq daughter :literal-in-a-rule)
+          edge)
+         ((eq daughter :long-span)
+          (let ((constituents (edge-constituents edge)))
+            (unless constituents (error "no constituents on long span ~a" edge))
+            (let ((last-constituent (car (last constituents))))
+              (if (eq (edge-right-daughter last-constituent) :single-term)
+                  last-constituent
+                  (walk-down-right-headline last-constituent)))))
+         (t (push-debug `(,edge ,daughter))
+            (error "Unexpected symbol in headline walk: ~a" daughter))))
+       (t (push-debug `(,edge ,daughterq))
+          (error "Unexpected case in headline walk: ~a" daughter))))))
 
 
 (defun find-copular-vp (vp-edges)
