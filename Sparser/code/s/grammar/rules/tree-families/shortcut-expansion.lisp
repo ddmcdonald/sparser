@@ -16,7 +16,7 @@
                                    mixins restrict rule-label
                                    slot1 slot1-var ;; agent, subject
                                    &optional
-                                   slot2 slot2-var ;; patient, theme
+                                   slot2 slot2-var ;; patient, theme, complement
                                    slot3 slot3-var) ;; goal
   (let ((bindings
          (cond ((and slot1 slot2 slot3)
@@ -38,6 +38,19 @@
               ;; index ??
               :binds ,bindings)))
       (eval form))))
+
+
+(defun formulate-by-category (base)
+  ;; the base is one of the slot-forming expressions 
+  (let* ((base-name (etypecase base
+                      (symbol base)
+                      (cons (car base))))
+         (by-cat-name (name-to-use-for-category
+                       (string-append ':by- base-name))))
+    ;; This is what the define-category macro opens up as
+    ;; for a trivial category like this
+    (cat-symbol
+     (find-or-make-category-object by-cat-name :define-category))))
 
 
 (defun apply-subcat-if-any (subcategorization category pname)
@@ -109,12 +122,15 @@
          (head-keyword (schema-head-keyword scheme))
          (mapping (assemble-scheme-form scheme args etf category))
          (head-word-pname (cdr (assq head-keyword word-keys)))
-         (head-word (resolve/make head-word-pname)))
-    (push-debug `(,etf ,head-keyword ,head-word ,mapping)) ;; (break "1")
+         (head-word (resolve/make head-word-pname))
+         (irregulars (cdr (assq :irregulars word-keys))))
+    ;;(push-debug `(,etf ,head-keyword ,head-word ,mapping)) (break "1")
     (unless head-word
       (push-debug `(,scheme ,word-keys))
       (error "The word-keys don't have an entry for ~a" head-keyword))
-    (let* ((head-form `(,head-keyword . ,head-word))
+    (let* ((head-form (if irregulars
+                        `(,head-keyword ,head-word ,@irregulars)
+                        `(,head-keyword . ,head-word)))
            (rules (head-word-rule-construction-dispatch
                    head-form
                    category
@@ -134,8 +150,8 @@
   "Rebuild the schematic mapping into a real mapping according to the
    category-specific substitution arguments. Does much of the same job
    as decode-binding in interpreting symbols and strings."
-  (push-debug `(,schema ,args-to-substitute ,etf ,category)) ;(break "pop")
-  ;; (setq schema (car *) args-to-substitute (cadr *) etc (caddr *) category (cadddr *))
+  (push-debug `(,schema ,args-to-substitute ,etf ,category)) ;; (break "pop")
+  ;; (setq schema (car *) args-to-substitute (cadr *) etf (caddr *) category (cadddr *))
   (let (;;(parameter-symbols (etf-parameters etf))
         (mapping-form (schema-mapping schema))
         new-mapping  car-value  cdr-value)

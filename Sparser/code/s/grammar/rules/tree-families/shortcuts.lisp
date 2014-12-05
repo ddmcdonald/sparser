@@ -480,15 +480,7 @@ broadly speaking doing for you all the things you might do by hand.
         (let ((by-cat 
                 (if by-category
                   (category-named by-category :break-if-missing)
-                  (let* ((agent-name (etypecase agent
-                                       (symbol agent)
-                                       (cons (car agent))))
-                         (by-cat-name (name-to-use-for-category
-                                       (string-append ':by- agent-name))))
-                    ;; This is what the define-category macro opens up as
-                    ;; for a trivial category like this
-                    (cat-symbol
-                     (find-or-make-category-object by-cat-name :define-category))))))
+                  (formulate-by-category agent))))
           
           (let ((form
                  `(define-category ,name

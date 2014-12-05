@@ -359,7 +359,7 @@
         (third-plural (cadr (member :third-plural special-cases)))
         (past-participle (cadr (member :past-participle special-cases)))
         (nominalization (cadr (member :nominalization special-cases))))
-
+ 
     ;; we break it all out this far so that the second routine
     ;; can be an entry point by itself for when we're not going
     ;; via an rdata route

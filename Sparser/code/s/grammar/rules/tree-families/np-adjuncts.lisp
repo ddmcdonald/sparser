@@ -15,6 +15,7 @@
 ;;   np-participle. 4/1 Modified pp-after-np to include the preposition in a simplistic
 ;;   way. 4/4/11 Added np-and-postmodifier 9/26 reordered cases to make postprocessing happy
 ;; (3/3/13) Added modifier-adds-head-dependent-property
+;; (11/24/14) added np-with-by-phrase
 
 (in-package :sparser)
 
@@ -132,7 +133,8 @@
 
 
 (define-exploded-tree-family  np-participle
-  :description ""
+  :description "Adjoins a participle to a noun phrase assigning the referent
+      of the participle to a particular field on the np's referent. "
   :binding-parameters ( participle-field )
   :labels ( np participle )
   :cases
@@ -140,6 +142,19 @@
                     :head left-edge
                     :binds (participle-field right-edge)))))
 
+
+(define-exploded-tree-family  np-with-by-phrase
+  :description "Like np-participle, this adds the referent of the by-phrase
+      to a designated field of the np. This is intended for passivized verbs
+      in nominal form."
+  :binding-parameters ( agent )
+  :labels ( np by-pp np/subject )
+  :cases ((:by-phrase (by-pp ("by" np/subject)
+                        :head right-edge
+                        :daughter right-edge))
+          (:pp-modifier (np (np by-pp)
+               :head left-edge
+               :binds (agent right-edge)))))
 
 
 
