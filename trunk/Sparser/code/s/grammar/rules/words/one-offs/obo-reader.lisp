@@ -258,6 +258,16 @@ and could be dropped from the active set we do lookup from
   (when *obo-terms-incorporated*
     (gethash string *synonyms-to-obo-terms*)))
 
+(defun assemble-category-rule-and-referent-for-an-obo (obo)
+  ;; called from reify-ns-name-as-bio-entity which itself
+  ;; is called by reify-ns-name-and-make-edge with the task
+  ;; of returning as multiple-values the category, rule,
+  ;; and referent to be used in the edge being constructed.
+  ;; (The form is assumed to always be proper-name.)
+  ;;/// should also do the whole setup, which is probably
+  ;; some sort of call to def-bio -- see reify-bio-entity
+  (push-debug `(,obo)) (break "stub: obo setup"))
+
 
 
 
