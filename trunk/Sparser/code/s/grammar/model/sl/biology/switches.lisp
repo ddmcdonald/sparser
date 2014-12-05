@@ -10,3 +10,6 @@
 (in-package :sparser)
 
 ;; a switch has (usuall) two states
+
+
+(np-head "switch") ;;/// trivial standin

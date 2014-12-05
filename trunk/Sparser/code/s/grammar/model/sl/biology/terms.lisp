@@ -81,20 +81,21 @@ critical for tumor formation. |#
 ;; It's realated to molecule, but how exactly?
 ;; Seems wrong to jump to "is made of molecules"
 
+
+;;--- J4
 #| This switch mechanism is common to a wide variety of GTP-binding
 proteins and is mediated by a conserved structure called the G-domain
 that consists of five conserved G boxes. |#
-
-(np-head "switch") ;;/// trivial standin
-
-
 
 (np-head "mechanism")
 
 ;; activated forms of the Ras proteins
 ;; Needs a whole model
 (np-head "form" :super 'bio-variant)
+
 (np-head "variety" :super 'bio-variant)
+;; "variety" is an "of quantifier" like "many" or "some"
+; a {wide, large, extensive, big} variety of ..
 
 (np-head "tumor")
 ;;(np-head "formation")
