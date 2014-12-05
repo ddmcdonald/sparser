@@ -157,6 +157,10 @@
                  (setq position-after where-uniform-ns-ended))))))
         (else
          (look-for-DA-pattern treetop)))
+      
+      ;; The pattern could have taken us just past the period
+      (when (position-precedes end-pos position-after)
+        (return))
         
       (setq position-before position-after))))
 
