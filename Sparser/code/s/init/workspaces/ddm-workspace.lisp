@@ -19,11 +19,12 @@
   ;; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
   (setq *note-text-relations* nil)
   ;;(bf-off)  (bio-setting)
-  (trace-lexicon-unpacking) (trace-morphology))
+  (trace-lexicon-unpacking) (trace-morphology)
   ;;(trace-terminals-sweep) ;; for hacking the sweep rebuilding
   ;; (trace-chunker)
   ;; (setq *chunk-sentence-into-phrases* nil) ;; ditto 
   ;;( trace-island-driving)
+  (incorporate-obo-terms))
 
 ;; 10/27/14  J3
 (defun setup-j3 ()
@@ -83,6 +84,7 @@
 
 (defun ddm-no-spaces ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
+  (ddm-ed "analyzers/psp/patterns/patterns.lisp")
   (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp")
   (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
@@ -119,11 +121,11 @@
 
 (defun ddm-grammar ()
   (ddm-ed "grammar/model/dossiers/modifiers.lisp")
- (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
- (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
- (ddm-ed "grammar/rules/syntax/prepositions.lisp")
- (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
- (ddm-ed "grammar/rules/syntax/conjunction8.lisp"))
+  (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
+  (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
+  (ddm-ed "grammar/rules/syntax/prepositions.lisp")
+  (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
+  (ddm-ed "grammar/rules/syntax/conjunction8.lisp"))
 
 ; (ddm-ed "objects/chart/edge-vectors/tuck.lisp)
 ;(ddm-ed "objects/chart/edge-vectors/peek.lisp)
@@ -267,7 +269,8 @@
 ;"/Users/ddm/ws/R3/trunk/ontologies/"
   "~/ws/R3/ws/obo-terms.lisp"))
 
-(defun cl-user::translate-obo-files ()
+(defun cl-user::translate-obo-files (in-files out-file)
+  (declare (ignore in-files out-file))
   (error "load the real one -- this just quiets the compiler"))
 
 ;;--- 2d work over the result
@@ -280,7 +283,7 @@
 ;;;------------------
 
 ;;--- Peter Clark's string function utilities
-(ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
+; (ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
 
 (defun ddm-corpus-location (in-list out-file)
   (declare (ignore in-list out-file))
