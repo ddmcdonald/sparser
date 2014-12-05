@@ -209,7 +209,8 @@
             (reify-ns-name-and-make-edge words pos-before next-position)))))))
 
 
-;; New scheme
+;; n.b. there's an OBO lookup inside reify-ns-name-as-bio-entity
+;;
 (defun reify-ns-name-and-make-edge (words pos-before next-position)
   ;; We make an instance of a spelled name with the words as its sequence.
   ;; We make a rule that treats the pnames of the words as a polyword,

@@ -25,27 +25,40 @@
 ;; "mono- and di- ubiquitinated K-Ras"
 
 
-(defun resolve-ns-pattern (pattern words slash? pos-before next-position)
+(defun resolve-ns-pattern (pattern words slash? pos-before pos-after)
   ;; called by post-accumulator-ns-handler from an 'or' so has to
   ;; return non-nil when it succeeds. 
   (push-debug `(,pattern ,words)) ;; (break "resolve pattern")
 
   (if slash?
-    ()
+    (divide-and-recombine-ns-pattern-with-slash
+     words slash? pos-before pos-after)
 
-  ;;/// turn this cond into a macro, or interpret a structured list / structure
-  ;; once it clear how best to use it. 
-  (cond
-   ((equal pattern '(:full :single-digit)) ;; AF6
-    (reify-ns-name-and-make-edge words pos-before next-position))
+    ;;/// turn this cond into a macro, or interpret a structured list / structure
+    ;; once it clear how best to use it. 
+    (cond
+     ((equal pattern '(:full :single-digit)) ;; AF6
+      (reify-ns-name-and-make-edge words pos-before pos-after))
 
-   ((equal pattern '(:full :hyphen :lower))
-    (resolve-hyphen-between-two-words pattern words pos-before next-position))
+     ((equal pattern '(:full :hyphen :lower))
+      (resolve-hyphen-between-two-words pattern words pos-before pos-after))
 
-   (*work-on-ns-patterns*
-    (push-debug `(,pattern ,words))
-    (break "New pattern to resolve: ~a" pattern))
-   (t nil)))) ;; fall through
+     (*work-on-ns-patterns*
+      (push-debug `(,pattern ,words))
+      (break "New pattern to resolve: ~a" pattern))
+
+     ;; fall through
+     (t nil))))
+
+;; "SHOC2/Sur-8"  (p "the Raf/MEK/ERK pathway.") "PI3K/AKT signaling"
+(defun divide-and-recombine-ns-pattern-with-slash (words slash? 
+                                                   pos-before pos-after)
+  ;; Assumes that slash has precedence over any other punctuation,
+  ;; so it does a resolve-pattern of each of the segements between
+  ;; slashes and then recombines them into a slash-structure along the
+  ;; lines of make-hypenated-structure and such.
+  (push-debug `(,words ,slash? ,pos-before ,pos-after))
+  (break "slash"))
 
 
 ;;;-------
@@ -63,29 +76,15 @@
     ;; lifted from nospace-hyphen-specialist
     (let ((rule (or (multiply-edges left-edge right-edge)
                     (multiply-edges right-edge left-edge))))
-      (push-debug `(,left-edge ,right-edge)) (break "???")
+      ;; "GTP-bound"
+      ;;(push-debug `(,left-edge ,right-edge)) (break "???")
       (if rule
         (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
           ;;//// trace goes here
           (revise-form-of-nospace-edge-if-necessary edge))
-
-        (let* ((string (actual-characters-of-word pos-before pos-after words))
-               (obo (corresponding-obo string)))
-          (if obo
-            (make-edge-over-retrieved-obo obo pos-before pos-after)
-        
-            (else ;; make a structure if all else fails
+        (else ;; make a structure if all else fails
              ;; but first alert to anticipated cases not working
-             (make-hypenated-structure left-edge right-edge))))))))
-
-(defun string-from-nospace-words (words)
-  ;;/// something like this ought to exist already, but where?
-  (let ((pnames (loop for w in words collect (word-pname w))))
-    (apply #'string-append pnames)))
-
-(defun make-edge-over-retrieved-obo (obo pos-before pos-after)
-  (push-debug `(,obo ,pos-before ,pos-after)) (break "stub: obo edge"))
-
+             (make-hypenated-structure left-edge right-edge))))))
 
 
 
