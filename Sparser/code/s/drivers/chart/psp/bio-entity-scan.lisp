@@ -182,19 +182,21 @@ the position. (N.b. there's an incremental trace hook in there.) |#
                    (bio-category-for-reifying) form i)))
         edge))))
 
+
 (defun reify-ns-name-as-bio-entity (words pos-before pos-after)
   ;; called from reify-ns-name-and-make-edge when *big-mechanism*
   ;; flag is up. Responsible for returning the category to use,
   ;; the rule, and the referent so that the caller can make an edge
   (let* ((words-string 
-          ;;(apply #'string-append (mapcar #'word-pname words))
           (actual-characters-of-word pos-before pos-after words))
-         ;; Def-bio/expr will make the polyword
-         (i (reify-bio-entity words-string))
-         (cfr (retrieve-single-rule-from-individual i)))
-    (values (bio-category-for-reifying)
-            cfr
-            i)))
+         (obo (corresponding-obo words-string)))
+    (if obo
+      (assemble-category-rule-and-referent-for-an-obo obo)
+      (let* ((i (reify-bio-entity words-string))
+             (cfr (retrieve-single-rule-from-individual i)))
+        (values (bio-category-for-reifying)
+                cfr
+                i)))))
 
 
 ;;;-------------
