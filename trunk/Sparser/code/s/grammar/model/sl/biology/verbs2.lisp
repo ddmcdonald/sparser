@@ -7,95 +7,93 @@
 
 ;; Initiated 12/3/14 by lifting verbs from verbs.lisp
 ;; define verbs (svo/passive/nominal encode, mutate and make some verbs more specific (enhancement enhances a bio-process)
+;; NOTE TO DAVID --  of-nominal should be implied for the present participle of every verb
+;; it may also be the case that :of-nominal should be the default for every verb with a specified noun form
+;; and by-subject should be implied for the past participle of every svo=passive
+
+;; DAVID -- note that binding and release can be described as happening onto or from either sites, domains or molecules as a whole -- this smacks of metonymy
+
+;; almost all of these verbs optionally take adjunctive pp modifiers of the category "bio-context" in the form "in-bio-location" and "in-bio-condition"
 
 (in-package :sparser)
 
-
-(def-term "act" verb (svo)
-  :super-category be
-  :preposition "as"
-  :subject bio-entity
-  :theme bio-process) ;; better choice is complement 
-;; and the etf thing-is-description
 (define-category bio-act
   :specializes bio-process
   :binds ((actor bio-entity)
-          (recipient bio-entity))
+          (patient bio-entity))
   :documentation "")
 
-(def-realization
-  bio-act
+(def-realization bio-act
   :verb "act"
   :etf sv
   :s actor
-  :on theme)
+  :on patient)
     
 (define-category bio-activate
   :specializes bio-process
-  :binds ((activator bio-entity)
-          (activated bio-entity)))
+  :binds ((activator bio-entity) (activated molecule)))
 
-(def-realization
-  bio-activate
-  :verb "activate"
-  :noun "activation"
-  :etf (svo of-nominal)
+(def-realization bio-activate
+  :verb "activate" :noun "activation"
+  :etf (svo-passive of-nominal)
   :s activator
   :o activated)
 
+;; AFTER THIS POINT I ASSUME THAT THE :realization keyword on define-category is extended to handle the arguments of 
+;; (define-realization ...)
+
 (define-category bio-deactivate
   :specializes bio-process
-  :binds ((deactivator bio-entity)
-          (deactivated bio-entity)))
-
-(def-realization
-  bio-deactivate
-  :verb "deactivate"
-  :noun "deactivation"
-  :etf (svo of-nominal)
-  :s deactivator
-  :o deactivated)
+  :binds ((deactivator bio-entity) (deactivated molecule))
+  :realization 
+   (:verb "deactivate" :noun "deactivation"
+    :etf (svo-passive of-nominal)
+    :s deactivator
+    :o deactivated))
 
 ;; "GTP-binding" "GO:00055525
-(define-category
-  bio-bind
+(define-category bio-bind
   :specializes bio-process
   :obo-id "GO:0005488"
-  :binds ((participant1 bio-entity)
-          (participant2 bio-entity)))
+  :binds ((participant molecule)))
+  :realization
+  (:verb ("bind" :ed-form "bound")
+   :etf (svo-passive) ;;/// "bound by"
+   :s participant 
+   :o participant
+   :to participant))
 
-(def-realization
-  bio-bind
-  :verb "bind"  
-  :noun "bound"
-  :etf (svo-passive of-nominal) ;;/// "bound by"
-
-  :super-category bio-process
-  :preposition "to"
-  :patient bio-entity 
-  :agent bio-entity)
-
+;;;*********DEFINE THIS ********* nned examples
 (svo/bio "call")
 
-(def-term "catalyze" verb (svo-passive
-                           of-nominal) ;;/// "catalyysis of phosphorylation by MEK"
-  :nominalization "catalysis"
-  :super-category bio-process
-  :patient bio-process 
-  :agent bio-entity)
+(define-category catalyze
+  :specializes bio-process
+  :binds ((catalyst enzyme) (process bio-process))
+  :realization
+  (:verb "catalyze" :noun "catalysis"
+   :etf (svo-passive)
+   :s catalyst
+   :o process))
 
 ;;--- "encode"
 ;; <enzyme> encoded by <gene>
-(svo/passive/nominal "encode" "encoding"
-  :super-category bio-process
-  :agent gene
-  :patient protein)
+(define-category encode
+  :specializes bio-process
+  :binds ((encoder gene) (encoded protein)) ;; should be protein-or-transcript??
+  :realization
+  (:verb "encode"
+   :etf (svo-passive) 
+   :s encoder
+   :o encoded))
 
-(svo/passive/nominal "enhance" "enhancement"
-  :super-category bio-process
-  :patient bio-process
-  :agent bio-entity)
-
+(define-category bio-enhance
+  :specializes bio-process
+  :binds ((agent bio-entity) (process bio-process))
+  :realization 
+  (:verb "enhance" :noun "enhancement"
+   :s agent
+   :o process))
+ 
 ;; exchange
 
 
@@ -106,15 +104,20 @@
 ;; j3  "upon hydrolysis of GTP to GDP"
 ;;  The phosphate is removed/cleaved from the GTP (ATP)
 ;;  and GDP (di-phosphate) is the result.
-(def-term "hydrolyze" verb (sv) ;; and of-nominal ??
-  :nominalization "hydrolysis"
-  :super-category bio-process
-  :subject bio-entity ;; the substrate holding the nucleotide
-  :theme bio-entity ;; what we're taking the phosphate from
-  :goal bio-entity ;; what we get afterwards
-  :subcategorization ( (("of" np "to" np) (theme goal))
-                       (("on" np) (subject))
-                       (("of" np) (theme)) ))
+(define-category hydrolyze
+  :specializes bio-process
+  :binds ((agent molecule) ;; the agent which cause or scatalyzes the hydrolysis
+          (patient molecule) ;; the chemical that gets hydrolyzed
+          (goal molecule) ;; the resulting chemical
+          (substrate molecule)) ;;the context in which the hydrolysis occurs
+  :realization            
+  (:verb "hydrolyze" :noun "hydrolysis"
+   :etf (svo-passive) 
+   :s agent 
+   :o patient 
+   :to goal
+   :on substrate))
+
 ;;  "gtp hydrolysis on ras"
 ;; "GO:0019514"
 
@@ -132,13 +135,28 @@
 ;; abandoned between directions and directions1
 (svo/bio "increase")
 
+(define-category bio-increase
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient bio-scalar))
+  :realization
+  (:verb increase :noun increase
+   :etf (svo-passive)
+   :s agent
+   :o patient))
+
+
+
 ;;--- "induce"
 ;; "which induce transcription of the p53 gene"
 ;; "induce processing of p100"
-
-(svo/nominal/adjective "induce" "induction" "inducible"
-   :subject 'bio-entity 
-   :theme 'event)
+(define-category induce
+  :specializes bio-process
+  :binds ((agent bio-entity) (patient bio-process))
+  :realization 
+  (:verb "induce" :noun "induction" :adj "inducible"
+   :etf (svo-passive)
+   :s agent
+   :o patient))
 ;;/// want subtypes, want to understand the syntax of "-inducing"
 
 
@@ -151,11 +169,14 @@
 ;;  :agent bio-entity)
 
 
-(def-term "inhibit" verb  (svo of-nominal)
-  :super-category bio-process
-  :nominalization "inhibition"
-  :subject bio-entity
-  :theme bio-entity)
+(define-category inhibit
+  :specializes bio-process
+  :binds ((agent bio-entity) (patient bio-process))
+  :realization 
+  (:verb "inhibit" :noun "inhibition"
+   :etf (svo-passive)
+   :s agent
+   :o patient))
 
 
 ;;--- "load" -- "GTP loading"
@@ -169,85 +190,131 @@
 ;; "enhanced GTP loading"
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
-(svo/bio "load") ;; leads to rule bio-entity + load, 
+(define-category molecule-load
+ :specializes bio-process
+ :binds ((agent bio-entity)(patient molecule)(substrate molecule))
+ :realization
+ (:verb "load"
+  :etf (svo-passive)
+  :s agent
+  :o patient
+  :onto substrate))
+
+;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
 
-
-
-
-(svo/passive/nominal "mediate" "mediation"
-  :super-category bio-process
-  :patient bio-process  ;; inhibiton of <process>
-  :agent bio-process)
-
-(svo/passive/nominal "mutate" "mutation"
-  :super-category bio-process
-  :patient gene  ;; mutation of gene
-  :agent bio-process)                
-
+(define-category mediate
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient bio-process))
+  :realization
+  (:verb   "mediate" :noun "mediation"
+   :etf (svo-passive)
+   :s agent
+   :o patient))
 
 ;;--- "mutation"
 ;; "mutated oncogenes"
 ;; "oncogenic mutations"
 ;; "in BRAF mutant thyroid cell"
-(svo/passive/nominal "mutate" "mutation"
+(define-category motate
   :super-category bio-process
-  :agent bio-process
-  :patient gene)
+  :binds ((agent bio-entity)(patient gene))  ;; mutation of gene
+  :realization
+  (:verb "mutate" :noun "mutation"
+   :etf (svo-passive)
+   :s agent
+   :o patient))
 
 ;;--- "phosphorylate"
 ;; GO:0016310	
 ;; "activated IKKα phosphorylates specific serines"
 ;;  "The phosphorylation of these specific serines"
 
-(svo/nominal "phosphorylate" "phosphorylation" 
-             :subject 'bio-entity :theme 'bio-entity)
+(define-category phosphorylate
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient molecule)) 
+  :realization
+  (:verb "phosphorylate" :noun "phosphorylation"
+   :etf (svo-passive)
+   :s agent
+   :o patient))
 
-(svo/nominal "dephosphorylate" "dephosphorylation" 
-             :subject 'bio-entity :theme 'bio-entity)
-
+(define-category dephosphorylate
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient molecule)) 
+  :realization
+  (:verb "dephosphorylate" :noun "dephosphorylation"
+   :etf (svo-passive)
+   :s agent
+   :o patient))
 
 ;;--- "regulate"
 ;;
-(svo/passive/nominal "regulate" "regulation"
-  :super-category bio-process
-  :patient bio-process  ;; regulation of <process>
-  :agent bio-entity)    ;; by <entity>
+(define-category regulate
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient bio-process))
+  :realization
+  (:verb   "regulate" :noun "regulation"
+   :etf (svo-passive)
+   :o patient  ;; regulation of <process>
+   :s agent))    ;; by <entity>
 
 
-(svo/passive/nominal "dysregulate" "dysregulation"
-  :super-category bio-process
-  :patient bio-process  ;; regulation of <process>
-  :agent bio-entity)
-
+(define-category dysregulate
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient bio-process))
+  :realization
+  (:verb   "dysregulate" :noun "dysregulation"
+   :etf (svo-passive)
+   :o patient  ;; dysregulation of <process>
+   :s agent))    ;; by <entity>
 
 ;;--- "release"  "GO:0023061"
 ;; the rate of GDP or GTP release from the G-domain is slow
 
-(def-term "release" verb (svo)
-  :super-category bio-process
-  :subcategorization (("from" np)(theme))
+(define-category molecule-release
+ :specializes bio-process
+ :binds ((agent bio-entity)(patient molecule)(substrate molecule))
+ :realization
+ (:verb "release" :noun "release"
+  :etf (svo-passive)
+  :s agent
+  :o patient
   ;; Comlex: (np-pp :pval ("in" "into" "from" "to"))
   ;;  and a lot of others
-  :subject bio-entity
-  :theme bio-entity)
+  :from substrate))
 
+(define-category stimulate
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient bio-process))
+  :realization
+  (:verb   "stimulate" :noun "stimulation"
+   :etf (svo-passive)
+   :o patient  ;; stimulation of <process>
+   :s agent))    ;; by <entity>
 
+(define-category suggest
+  :specializes rhetorical-process
+  :binds ((agent bio-process) (theme bio-process))  ;;<<---------------------- doing this right is hard -- we punt here
+  :realization
+  (:verb "suggest" :noun "suggestion"
+   :etf (svo-passive)
+   :s agent
+   :o patient))
 
-(svo/passive/nominal "stimulate" "stimulation"
-  :super-category bio-process
-  :patient bio-process  ;; inhibiton of <process>
-  :agent bio-entity)
-
-(svo/passive/nominal "suggest" "suggestion"
-  :super-category bio-process
-  :patient bio-process 
-  :agent bio-entity)
-
+(define-category signal
+  :specializes bio-process
+  :binds ((agent protein)(patient bio-process))
+  :realization
+  (:verb   "signal"
+   :etf (svo-passive)
+   :o patient  ;; signaling of <process>
+   :s agent))    ;; by <entity>
 
 (svo/nominal "transduce" "transduction" 
              :subject 'bio-entity :theme 'bio-entity)
 
+;;DAVID -- I left this alone because I was not sure about how to handle the preposition -- I also think that this is a particle ("turn RAS on" and "turn on RAS")
 ;;--- "turn on" (off)
 ;; "Growth factors can turn on Ras"
 (def-term "turn" verb (svo)
