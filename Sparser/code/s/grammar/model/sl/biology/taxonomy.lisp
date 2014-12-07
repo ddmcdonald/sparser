@@ -192,10 +192,11 @@
   :lemma (:common-noun "melanoma")
   :realization (:common-noun name))
 
+(define-category bio-context)
 
 (define-category  in-bio-condition  ;; "in cancer, in physiological conditions"
   :instantiates self
-  :specializes location
+  :specializes bio-context
   :binds ((place)
           (functor :primitive word)) ;;  
   :realization (:tree-family content-pp
@@ -213,7 +214,7 @@
 
 (define-category  in-bio-location  ;; "in humans, in epithelial cells, in the plasma membrane"
   :instantiates self
-  :specializes location
+  :specializes bio-context
   :binds ((place)
           (functor :primitive word)) ;;  may not be too relevant
   :realization (:tree-family content-pp
@@ -232,6 +233,18 @@
   :lemma (:common-noun "species")
   :realization (:common-noun name))
   
+(define-category bio-scalar
+  :specilaizes bio-entity
+  :documentation "No content by itself, but provides a common superconcept for measurable things that can be increased or decreased.")
+
+(define-category process-rate
+  :specializes bio-scalar
+)
+
+(define-category bio-concentration
+  :specializes bio-scalar
+)
+
 
 #+ignore
 (define-additional-realization bio-entity
