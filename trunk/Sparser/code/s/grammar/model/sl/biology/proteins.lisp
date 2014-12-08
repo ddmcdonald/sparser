@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "proteins"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2014
+;;; version: December 2014
 
 ;; initiated 9/8/14 lifting from other files
 ;; made some of the proteins lowere case, becasue both capitalized and lower case versions occur
@@ -54,12 +54,32 @@
 
 ;;/// gene/product/generalizations, UCD uses PR identifier
 
-(def-bio "kras" gene ;; to accomodate all the variant capitalization
-  :identifier "PR:000009442")
-(def-bio "PIK3CA" gene
-  :identifier "PR:000012719")
-(def-bio "braf" gene ;; to accomodate all the variant capitalization
+(def-bio "ras" protein ;; lowercase to accomodate all the variant capitalization
+  :identifier "GO:0003930"
+  :long "GTPase" ;; RAS small monomeric GTPase activity
+  ;; Are we going to see that in texts?
+  )
+;; GTPase "GO:0003924"
+;; "GTPase activity"  "GO0003924"
+
+(def-bio "kras" protein 
+  :synonyms ("k-ras")
+  :identifier "PR:0000009442") ;; gene is "PR:P01116" 
+
+(def-bio "hras" protein
+  :synonyms ("h-ras")
+  :identifier "PR:000029705") ;; gene is "PR:P01112")
+
+(def-bio "nras" protein
+  :synonyms ("n-ras")
+  :identifier "PR:000011416") ;; gene is "PR:P01111"
+
+
+(def-bio "braf" protein 
   :identifier "PR:000004801")
+
+(def-bio "PIK3CA" protein
+  :identifier "PR:000012719")
 
 
 (def-bio "gtp" small-molecule ;; to accomodate all the variant capitalization
@@ -82,14 +102,6 @@
 ;; http://en.wikipedia.org/wiki/Growth_factor
 ;; Again, it's a family, not a particular
 (def-bio "growth factors" protein)
-
-(def-bio "ras" protein ;; to accomodate all the variant capitalization
-  :identifier "GO:0003930"
-  :long "GTPase" ;; RAS small monomeric GTPase activity
-  ;; Are we going to see that in texts?
-  )
-;; GTPase "GO:0003924"
-;; "GTPase activity"  "GO0003924"
 
 
 ;;;----------------------------------------------------
