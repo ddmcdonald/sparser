@@ -113,7 +113,14 @@ therefore we have the special cases:
   :referent (:head left-edge
              :bind (position right-edge)))
 
+(def-cfr of-protein (of protein)
+  :form pp
+  :referent (:daughter right-edge))
 
+(def-cfr redidue-on-protein (redidue-on-protein of-protein)
+  :form n-bar
+  :referent (:head left-edge
+             :bind (on-protein right-edge)))
 
 
 ;;//// point mutation goes here
