@@ -125,11 +125,13 @@
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
 
-(define-category bio-variant ;; not sure this is the correct term, but intended for things like "forms of ras"
+(define-category bio-variant 
+  ;; not sure this is the correct term, but intended for things like "forms of ras"
   :specializes bio-entity
   :instantiates :self)
 
-(define-category protein-segment ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain
+(define-category protein-segment 
+  ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain
   :specializes bio-entity
   :instantiates :self)
 
@@ -147,8 +149,7 @@
   :specializes gene 
   :instantiates :self
   :lemma (:common-noun "oncogene")
-  :realization (:common-noun name)
-)        
+  :realization (:common-noun name))        
   
 (define-category kinase
   :specializes protein
@@ -192,7 +193,11 @@
   :lemma (:common-noun "melanoma")
   :realization (:common-noun name))
 
-(define-category bio-context)
+(define-category bio-context
+  :specializes abstract)
+;; Rusty: if you define a category with -no- parameters
+;; you get a simple category data structure that, e.g., you can't
+;; inherit from. Most form categories are "simple".
 
 (define-category  in-bio-condition  ;; "in cancer, in physiological conditions"
   :instantiates self
@@ -234,8 +239,9 @@
   :realization (:common-noun name))
   
 (define-category bio-scalar
-  :specilaizes bio-entity
-  :documentation "No content by itself, but provides a common superconcept for measurable things that can be increased or decreased.")
+  :specializes bio-entity
+  :documentation "No content by itself, but provides a common superconcept 
+     for measurable things that can be increased or decreased.")
 
 (define-category process-rate
   :specializes bio-scalar
