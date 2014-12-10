@@ -26,12 +26,18 @@
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
-
+(define-category pathway
+  :specializes bio-process
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "pathway")
+  :realization (:common-noun name))
 
 (define-category step
   :specializes bio-process
   :instantiates :self
   :index (:permanent :key name)
+  :binds ((pathway pathway))
   :lemma (:common-noun "step")
   :realization (:common-noun name))
 
@@ -125,13 +131,11 @@
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
 
-(define-category bio-variant 
-  ;; not sure this is the correct term, but intended for things like "forms of ras"
+(define-category bio-variant ;; not sure this is the correct term, but intended for things like "forms of ras"
   :specializes bio-entity
   :instantiates :self)
 
-(define-category protein-segment 
-  ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain
+(define-category protein-segment ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain
   :specializes bio-entity
   :instantiates :self)
 
@@ -151,20 +155,20 @@
   :lemma (:common-noun "oncogene")
   :realization (:common-noun name))        
   
-(define-category kinase
-  :specializes protein
-  :instantiates :self
-  :bindings (uid "GO:0016301") ;; "kinase activity"
-;;  :rule-label bio-entity
-  :index (:permanent :key name)
-  :lemma (:common-noun "kinase")
-  :realization (:common-noun name))
-
 (define-category enzyme ;; what's the relationship to kinase?
   :specializes protein
   :instantiates :self
 ;; :rule-label bio-entity
   :lemma (:common-noun "enzyme")
+  :realization (:common-noun name))
+
+(define-category kinase
+  :specializes enzyme
+  :instantiates :self
+  :bindings (uid "GO:0016301") ;; "kinase activity"
+;;  :rule-label bio-entity
+  :index (:permanent :key name)
+  :lemma (:common-noun "kinase")
   :realization (:common-noun name))
 
 (define-category bio-condition
