@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2014  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edge-vectors:"
-;;;  Version:  2.5 September 2013
+;;;  Version:  2.6 December 2014
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;;     (5/5/93) Added Preterminal-edges
@@ -21,6 +21,8 @@
 ;;     (9/6) added Edge-vector-contains-edge? (2/22/07) added longest-edge-starting-at
 ;;     (10/18/11) added search-ev-for-edge. (3/28/13) added lowest-edge.
 ;;     (9/19/13) moved search-ev-for-edge to peek.
+;; 2.6 (12/10/14) revised span-covered-by-one-edge? to return an edges
+;;     when the span is over multiple-initial-edges. 
 
 (in-package :sparser)
 
@@ -106,7 +108,11 @@
           (end-top (ev-top-node end-vector)))
 
       (when start-top
+        (when (eq start-top :multiple-initial-edges)
+          (setq start-top (highest-edge start-vector)))
         (when end-top
+          (when (eq end-top :multiple-initial-edges)
+            (setq end-top (highest-edge end-vector)))
           (if (eq start-top end-top)
             start-top
             (let ( start-edge end-edge )
