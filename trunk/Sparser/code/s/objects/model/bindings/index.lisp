@@ -325,9 +325,9 @@
               (*print-short* t))
           (declare (special *print-short*))
           (unless instances-alist
-            (push-debug `(,b ,variable ,value))
-            (cerror "ignore it and continue"
-                    "Expected ~A to have an index" variable)
+;            (push-debug `(,b ,variable ,value))
+;            (cerror "ignore it and continue"
+;                    "Expected ~A to have an index" variable)
             (return-from unindex-binding))
         
           (let ((bindings-entry (assoc value instances-alist
@@ -348,10 +348,10 @@
                  instances-alist variable value b)
                 (else
                  (push-debug `(,value ,variable))
-                 (cerror "ignore it and continue"
-                         "Expected the index for~% value = ~A~
-                      ~% variable = ~A~%to have some listed bindings"
-                        value variable)
+;                 (cerror "ignore it and continue"
+;                         "Expected the index for~% value = ~A~
+;                      ~% variable = ~A~%to have some listed bindings"
+;                        value variable)
                  (return-from unindex-binding))))))))))
 
 
@@ -403,7 +403,7 @@
            (next-binding (car next-cell)))
       (loop
         (when (null next-binding)
-          (break "Couldn't find the binding~%  ~A~%" b)
+          ;;(break "Couldn't find the binding~%  ~A~%" b)
           (return))
         (when (eq next-binding b)
           (rplacd prior-cell
