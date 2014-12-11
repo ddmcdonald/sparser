@@ -651,6 +651,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:alphabetical . (:lowercase . ,(code-char 954))))
     (955 ;; #\Greek_Small_Letter_Lambda
      (:alphabetical . (:lowercase . ,(code-char 955))))
+    (956 ;; #\Greek_Small_Letter_Mu
+     (:alphabetical . (:lowercase . ,(code-char 956))))
+
 
     (8211  ;; en dash
      (:punctuation . ,(punctuation-named #\- )))
