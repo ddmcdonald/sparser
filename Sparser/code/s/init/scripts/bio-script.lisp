@@ -26,7 +26,7 @@
 (defparameter *big-mechanism* t
   "Drives specializations in everthing and well beyond")
 
-
+; (setq *break-on-illegal-duplicate-rules* t)
 
 ;;;-----------------
 ;;; call the loader
