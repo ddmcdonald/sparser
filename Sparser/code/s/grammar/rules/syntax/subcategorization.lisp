@@ -159,6 +159,9 @@
 (defmethod assign-preposition ((verb word) (prep word))
   (assign-subcat/expr verb category::verb nil `(:prep ,prep)))
 
+(defmethod assign-preposition ((verb word) (prep polyword))
+  (assign-subcat/expr verb category::verb nil `(:prep ,prep)))
+
 
 (defmethod takes-preposition? ((e edge) (prep word))
   (let* ((label (edge-category e))
@@ -166,7 +169,18 @@
     (when sc
       (takes-preposition? sc prep))))
 
+(defmethod takes-preposition? ((e edge) (prep polyword))
+  (let* ((label (edge-category e))
+         (sc (get-subcategorization label)))
+    (when sc
+      (takes-preposition? sc prep))))
+
 (defmethod takes-preposition? ((word word) (prep word))
+  (let ((sc (get-subcategorization word)))
+    (when sc
+      (takes-preposition? sc prep))))
+
+(defmethod takes-preposition? ((word word) (prep polyword))
   (let ((sc (get-subcategorization word)))
     (when sc
       (takes-preposition? sc prep))))
