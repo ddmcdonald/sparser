@@ -3,11 +3,12 @@
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  October 2014
+;;;  Version:  December 2014
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
-;; the categories they refer to aren't yet loaded
+;; the categories they refer to aren't yet loaded. 12/10/14 added
+;; slashed-sequence setup. 
 
 (in-package :sparser)
 
@@ -66,3 +67,31 @@
   ;; the sequence of the items follows the sequence of the slashes
   :instantiates :self
   :index (:permanent :key items))
+
+(defun package-slashed-sequence (edges words start-pos end-pos)
+  (push-debug `(,edges ,words ,start-pos ,end-pos))
+  (let* ((elements (loop for edge in edges
+                     collect (edge-referent edge)))
+         (i (find-or-make-individual 'slashed-sequence
+                                     :items elements))
+         (common-category
+          (when (eq (edge-category (first edges))
+                    (edge-category (second edges))) ;; makes a trend
+            (edge-category (first edges)))))
+
+    (when common-category
+      (bind-variable 'type (edge-category (first edges)) i
+                     category::slashed-sequence))
+    (let ((edge (make-edge-over-long-span
+                 start-pos
+                 end-pos
+                 (or common-category
+                     category::slashed-sequence)
+                 :rule 'package-slashed-sequence
+                 :form category::proper-noun
+                 :referent i
+                 :constituents edges)))
+      ;;/// trace
+      edge)))
+
+
