@@ -87,7 +87,7 @@ therefore we have the special cases:
           (position :primitive integer) ;; counting from the N terminus
           (on-protein . protein))
   :lemma (common-noun "residue")
-  :index (:sequential-keys amino-acid position))
+  :index (:permanent :sequential-keys amino-acid position))
 
 ; These are bare rules that could be converted to an ETF
 ; (or several) that captures these composition possibilities
@@ -123,6 +123,15 @@ therefore we have the special cases:
              :bind (on-protein right-edge)))
 
 
-;;//// point mutation goes here
+;;;-----------------
+;;; point mutations
+;;;-----------------
 
+(define-category point-mutation
+  :specializes residue-on-protein 
+  ;; if we had 'mutation' that might be better
+  ;; but these do involve a particular residue
+  :binds ((new-amino-acid . amino-acid))
+  :lemma (common-noun "point mutation")
+  :index (:permanent :sequential-keys new-amino-acid position))
 
