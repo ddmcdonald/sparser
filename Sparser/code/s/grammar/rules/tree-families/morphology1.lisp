@@ -5,7 +5,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.12 June 2014
+;;;  version:  1.12 December 2014
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -91,6 +91,8 @@
 ;;       block returning the singular rule.
 ;;      (9/15/14) fixed design flaw in stem-form that insisted that the stem be
 ;;       in Comlex before it trusted the stem that is constructed.
+;;      (12/10/14) Added a check in creation of plurals that the category 'collection'
+;;       is aleady defined. 
 
 (in-package :sparser)
 
@@ -938,8 +940,13 @@
        (*inihibit-constructing-plural*
         (list singular-rule))
        (t
+
         (make-cn-rules/aux/plural
          word special-cases category referent singular-rule schematic-rule))))))
+
+(defvar *deferred-collection-plurals* nil
+  "An alist of word and category for all the plurals created before the
+   category 'collection' was defined, mostly lemmas in the upper model.")
 
 (defun make-cn-rules/aux/plural (word special-cases category referent
                                  singular-rule schematic-rule)
@@ -961,11 +968,18 @@
            (define-cfr category (list plural)
              :form  category::common-noun/plural
              :referent 
-             (if *external-referents*
-               referent
-               (resolve-referent-expression
-                `(:head ,referent
-                  :subtype ,(category-named 'collection)))))))
+               (cond
+                (*external-referents*
+                 referent)
+                ((category-named 'collection)
+                 (resolve-referent-expression
+                  `(:head ,referent
+                    :subtype ,(category-named 'collection))))
+                (t
+                 (push `(,plural . ,referent)
+                       *deferred-collection-plurals*)
+                 (resolve-referent-expression
+                  `(:head ,referent)))))))
 
       (record-inflections `(,plural) word :noun)
       (record-lemma plural word :noun)
