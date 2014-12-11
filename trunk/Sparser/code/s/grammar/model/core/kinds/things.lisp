@@ -18,7 +18,6 @@
 
 (define-category endurant 
   :specializes top
-  :binds ((modifier)) ;;/// what else is this general ?
   :documentation
   "Endurants (aka objects, things) have an identity that doesn't depend
  on the identity of their parts, see axe handles and greek ships. The
