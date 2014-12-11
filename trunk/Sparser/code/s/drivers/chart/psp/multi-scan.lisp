@@ -150,14 +150,17 @@
          (let ((where-pattern-scan-ended
                 (check-for-pattern position-after)))
            (if where-pattern-scan-ended
-             (setq position-after where-pattern-scan-ended)
+             (then
+               (setq position-after where-pattern-scan-ended)
+               (when (edge-p position-after) 
+                 (break "PS position-after = ~a" position-after)))
              (let ((where-uniform-ns-ended
                     (do-no-space-collection position-after)))
                (when where-uniform-ns-ended
                  (setq position-after where-uniform-ns-ended))))))
         (else
          (look-for-DA-pattern treetop)))
-      
+
       ;; The pattern could have taken us just past the period
       (when (position-precedes end-pos position-after)
         (return))
@@ -176,6 +179,11 @@
       (let ((pos-reached
              (initiate-scan-pattern-driver state/s position-after)))
         ;;/// trace (if pos-reached ...
+        (when (edge-p pos-reached)
+          ;; In some instances, the pattern scan is intended to 
+          ;; return an edge. For purposes of moving the pattern
+          ;; sweep along we need a position
+          (setq pos-reached (pos-edge-ends-at pos-reached)))
         pos-reached))))
         
 
