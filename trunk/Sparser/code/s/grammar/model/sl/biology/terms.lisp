@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2014
+;;; version: December 2014
 
 ;; Initiated 7/23/14 by lifting proteins from NFkappaB experiment.
 ;; Moved proteins out to their own file 9/8/14
@@ -13,12 +13,52 @@
 ;;; move out oncoogene to taxonomy, and mutate to be a verb (so mutated is a past participle)
 ;; 11/9/14 hack for ', in part,' and terms for g1,...,g5, 'as a consequence' and .exchange' as a bio-process
 ;; added critical, common, "tumor formation", first stab at "form", revised "condition", revised "G-domain"
-
+;; 12/8/14 Starting cell lines and drugs
 
 (in-package :sparser)
 
-;;---- j1
 
+
+;;--- Cell lines
+; were expressed in HEK293T cells
+; BRAF mutant thyroid cell lines
+; HER2-amplified breast cancer cell lines
+; breast carcinoma cell lines
+; all six BRAF-mutant thyroid cancer cell lines
+; increased basal HER3 in 8505C cells
+; confirmed in a second cell line
+; our panel of cancer cell lines (Figure 6A).
+; the HCC827 NSCLC cell line
+
+
+;;--- Drugs
+; MAPK pathway inhibitors. MAPK pathway inhibition, MAPK inhibitors
+; PLX4032 treatment
+; potentiated the effects of PLX4032
+; following treatment with the MEK inhibitor AZD6244
+; retaining transcriptional response to vemurafenib and AZD6244
+
+;;--- other things with clear markers
+; the ZFN217 transcription factor
+; and CtBP1/CtBP2 corepressors, CtBPs
+; the HER3 promoter
+; expression of HER3
+; inhibition of HER3 transcription
+
+
+;;--- Pathways
+; diverse signaling pathways
+; specific effector pathways
+; specific effector pathway(s)
+; the Raf/MEK/ERK pathway
+; MAPK pathway inhibitors / inhibition
+
+
+;;;---------------------------------------------------
+;;; Definitions to simplify doing the Julie sentences
+;;;---------------------------------------------------
+
+;;---- j1
 
 (adj "deadliest") ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
@@ -141,7 +181,7 @@ that consists of five conserved G boxes. |#
          (ev (pos-starts-here word-pos))
          (edge (highest-edge ev)))
     (respan-edge-around-one-word edge q1 q2)))
-
+     
 
 ;;/// move somewhere else
 (defun respan-edge-around-one-word (word-edge left-term right-term)
