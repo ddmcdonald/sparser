@@ -372,7 +372,7 @@
              (next-entry (car next-cell)))
         (loop
           (when (null next-entry)
-            (break "value: Couldn't find the entry for ~A" value)
+;            (break "value: Couldn't find the entry for ~A" value)
             (return))
           (when (eq value (car next-entry))
             (rplacd prior-cell
