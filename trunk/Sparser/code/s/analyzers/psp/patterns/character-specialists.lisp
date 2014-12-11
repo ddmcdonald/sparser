@@ -3,10 +3,11 @@
 ;;; 
 ;;;     File:  "character-specialists"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  October 2014
+;;;  version:  December 2014
 
 ;; Initiated 9/9/14 to hold specialists dispatched from the no-space
-;; scan. Tweaking through 10/9/14
+;; scan. Tweaking through 10/9/14. Removed slash routines 12/10/14 as
+;; obsolete. 
 
 (in-package :sparser)
 
@@ -53,53 +54,6 @@
   (setf (edge-form edge) category::adjective)
   edge)
 
-
-;;;---------------------------
-;;; both a hyphen and a slash
-;;;---------------------------
-;; e.g. SHOC2/Sur-8
-
-(defun nospace-slash-and-hyphen-specialist (hyphen-position/s slash-position/s
-                                            pos-before next-position)
-  (push-debug `(,hyphen-position/s ,slash-position/s ,pos-before ,next-position))
-  (break "both hyphen and slash")) #|
-  ;; Assume that hyphens have priority over slash
-  (unless (null (cdr hyphen-position/s))
-    (break "Stub: more than one hyphen in combination with slash"))
-  (let* ((hyphen-pos (car hyphen-position/s))
-         (rightward-word/edge (right-treetop-at (chart-position-after hyphen-pos)) |#
-
-
-
-
-;;;---------
-;;; slashes
-;;;---------
-
-(defun nospace-slash-specialist (slash-position/s pos-before next-position)
-  (when (cdr slash-position/s)
-    (push-debug `(,slash-position/s ,pos-before ,next-position))
-    (break "stub: more than one slash"))
-  (let ((left-edge (right-treetop-at/edge pos-before))
-        (right-edge (left-treetop-at next-position)))
-    (let ((i (find-or-make-individual 'slashed-pair
-               :left (edge-referent left-edge)
-               :right (edge-referent right-edge))))
-      (when (eq (edge-category left-edge)
-                (edge-category right-edge))
-        (bind-variable 'type (edge-category left-edge)
-                       i category::sequence))
-      (let ((edge (make-edge-over-long-span
-                   pos-before
-                   next-position
-                   category::slashed-pair
-                   :rule 'nospace-slash-specialist
-                   :form category::common-noun
-                   :referent i
-                   :constituents `(,left-edge ,right-edge))))
-        ;;(break "look at edge")
-        ;;/// trace goe here
-        edge))))
 
 
 ;;;-----------------------

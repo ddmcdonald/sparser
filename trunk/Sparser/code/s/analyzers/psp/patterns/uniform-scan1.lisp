@@ -96,74 +96,86 @@
 	nil))
 
 
-    (when (eq word-before *the-punctuation-hyphen*)
-      (push pos-before hyphen?))
-    (when (eq word-before (punctuation-named #\/))
-      (push pos-before slash?))
-    (push (characterize-word-type pos-before word-before) pattern)
+    (flet ((record-word-pattern (position word)
+             (let ((pattern-elememt
+                    (characterize-word-type position word)))
+               #+ignore(format t "~&at p~a for ~s, element = ~a~%"
+                       (pos-token-index position) (word-pname word)
+                       pattern-elememt)
+               (push pattern-elememt pattern))))
 
-    (when (eq word-after *the-punctuation-hyphen*)
-      (push position hyphen?))
-    (when (eq word-after (punctuation-named #\/))
-      (push position slash?))
-    (push (characterize-word-type position word-after) pattern)
+      (when (eq word-before *the-punctuation-hyphen*)
+        (push pos-before hyphen?))
+      (when (eq word-before (punctuation-named #\/))
+        (push pos-before slash?))
+      (record-word-pattern pos-before word-before)
 
-    ;; The first two words were just collected. 
-    ;; This loop collects the rest.
-    (let ((words `(,word-after ,word-before))) ;; n.b. reversed
-      (setq position next-position)
-      (loop
-        (unless (pos-terminal next-position)
-          (scan-next-position)
-          (tr :ns-scanned-word (pos-terminal next-position)))
+      (when (eq word-after *the-punctuation-hyphen*)
+        (push position hyphen?))
+      (when (eq word-after (punctuation-named #\/))
+        (push position slash?))
+      (record-word-pattern position word-after)
 
-        (when (pos-preceding-whitespace next-position)
-          (tr :ns-whitespace next-position)
-          (return)) ;; we're done
+      ;; The first two words were just collected. 
+      ;; This loop collects the rest.
+      (let ((words `(,word-after ,word-before))) ;; n.b. reversed
+        (setq position next-position)
+        (loop
+          (unless (pos-terminal next-position)
+            (scan-next-position)
+            (tr :ns-scanned-word (pos-terminal next-position)))
+
+          (when (pos-preceding-whitespace next-position)
+            (tr :ns-whitespace next-position)
+            (return)) ;; we're done
           
-        (let ((word (pos-terminal next-position)))
-          (when (punctuation? word)
-            (tr :ns-scanned-punctuation word)
-            (cond
-             ((eq word *the-punctuation-hyphen*)
-              (push next-position hyphen?))
-             ((eq word (punctuation-named #\/))
-              (push next-position slash?))            
-             (t
-              (when (punctuation-terminates-no-space-sequence
-                     word next-position)
-                (tr :ns-terminating-punctuation word)
-                (return)))))
+          (let ((word (pos-terminal next-position)))
+            (when (punctuation? word)
+              (tr :ns-scanned-punctuation word)
+              (cond
+               ((eq word *the-punctuation-hyphen*)
+                (push next-position hyphen?))
+               ((eq word (punctuation-named #\/))
+                (push next-position slash?))            
+               (t
+                (when (punctuation-terminates-no-space-sequence
+                       word next-position)
+                  (tr :ns-terminating-punctuation word)
+                  (return)))))
              
-          (push word words) ;(break "pos of word")
-          (push (characterize-word-type position word) pattern)
-          (tr :ns-adding-word word)
+            (push word words) ;(break "pos of word")
+            (record-word-pattern next-position word)
+            (tr :ns-adding-word word)
 
-          (unless (has-been-status? ::preterminals-installed position)
-            (tr :ns-installing-terminal-edges word)
-            (install-terminal-edges word next-position
-                                    (chart-position-after next-position)))
+            (unless (has-been-status? ::preterminals-installed position)
+              (tr :ns-installing-terminal-edges word)
+              (install-terminal-edges word next-position
+                                      (chart-position-after next-position)))
             
-          (setq position next-position
-                next-position (chart-position-after next-position))
+            (setq position next-position
+                  next-position (chart-position-after next-position))
             
-          (when (eq (pos-terminal next-position)
-                    *end-of-source*)
-            (tr :ns-reached-eos-at next-position)
-            (return))))
+            (when (eq (pos-terminal next-position)
+                      *end-of-source*)
+              (tr :ns-reached-eos-at next-position)
+              (return))))
+        ;;(break "pattern = ~a" pattern)
 
-      ;; remove terminal punctuation, unless it's a hyphen
-      (when (eq (pos-capitalization position) :punctuation)
-        (unless (eq (pos-terminal position) *the-punctuation-hyphen*)
-          (pop words)))
+        ;; remove terminal punctuation, unless it's a hyphen
+        (when (eq (pos-capitalization position) :punctuation)
+          (unless (eq (pos-terminal position) *the-punctuation-hyphen*)
+            (pop words)))
 
-      (setq words (nreverse words))
+        (setq words (nreverse words)
+              pattern (nreverse pattern))
+        (when slash?
+          (setq slash? (nreverse slash?)))
 
-      (post-accumulator-ns-handler
-       words (nreverse pattern) pos-before next-position hyphen? slash?)
+        (post-accumulator-ns-handler
+         words pattern pos-before next-position hyphen? slash?)
 
-      (tr :ns-returning-position next-position)
-      next-position)))
+        (tr :ns-returning-position next-position)
+        next-position))))
 
 
 (defun post-accumulator-ns-handler (words pattern
@@ -191,13 +203,8 @@
             (error "no-space-sequence: bad positions somehow.~
                   ~%   Parsed span goes beyond presumed boundaries.~
                   ~%   start = ~a  end = ~a" pos-before next-position))
-           ((and hyphen? slash?)
-            (nospace-slash-and-hyphen-specialist 
-             hyphen? slash? pos-before next-position))
            (hyphen?
             (nospace-hyphen-specialist hyphen? pos-before next-position))
-           (slash?
-            (nospace-slash-specialist slash? pos-before next-position))
            (t 
             ;; The cleanest conceptualization of things like M1A1 or
             ;; H1N1 is that they are names. So we take the words that
