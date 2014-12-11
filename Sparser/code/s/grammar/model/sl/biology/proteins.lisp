@@ -75,13 +75,6 @@
   :identifier "PR:000011416") ;; gene is "PR:P01111"
 
 
-(def-bio "braf" protein 
-  :identifier "PR:000004801")
-
-(def-bio "PIK3CA" protein
-  :identifier "PR:000012719")
-
-
 (def-bio "gtp" small-molecule ;; to accomodate all the variant capitalization
   :identifier "CHEBI:15996")
 (def-bio "gdp" small-molecule ;; to accomodate all the variant capitalization
@@ -104,6 +97,15 @@
 (def-bio "growth factors" protein)
 
 
+
+(def-bio "braf" protein 
+  :identifier "PR:000004801")
+
+(def-bio "PIK3CA" protein
+  :identifier "PR:000012719")
+
+
+
 ;;;----------------------------------------------------
 ;;; for the September 4th Reactome supporting abstract
 ;;;----------------------------------------------------
@@ -115,9 +117,17 @@ filligre may be used to distinguish them, etc.
 ;; These can be ripped out of pro.obo once we figure out
 ;; the simplest mechanism 
 
+(def-bio "raf" protein) ;; denotes a family
+
+(def-bio "braf" protein 
+  :identifier "PR:000004801")
+
+
 (def-bio "ERK" protein) ;; general term not obviously in an OBO
 
-(def-bio "ERK1" protein :synonyms ("ERK1 kinase"))
+(def-bio "ERK1" protein 
+  :identifier "PR:000000104"
+  :synonyms ("ERK1 kinase"))
 ;; it's 'extracellular signal' related kinase but tactically it's
 ;; better to hack the first part as a polyword rather than compositionally
 
