@@ -93,6 +93,9 @@
          (setf (word-morphology word) morph-keyword)
          (if *introduce-brackets-for-unknown-words-from-their-suffixes*
            (cond
+            ((and *big-mechanism*
+                  (suitable-for-and-in-OBO word))
+             (setup-word-denoting-an-OBO word))
             (morph-keyword
              (assign-morph-brackets-to-unknown-word
               word morph-keyword))
