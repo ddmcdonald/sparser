@@ -14,20 +14,25 @@
 
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
-  ;; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
   (setq *note-text-relations* nil)
-  ;;(bf-off)  (bio-setting)
   (trace-lexicon-unpacking) (trace-morphology)
-  ;;(trace-terminals-sweep) ;; for hacking the sweep rebuilding
-  ;; (trace-chunker)
-  ;; (setq *chunk-sentence-into-phrases* nil) ;; ditto 
-  ;;( trace-island-driving)
   (incorporate-obo-terms))
 
-;; 10/27/14  J3
-(defun setup-j3 ()
-  (bf-on)
-  (trace-island-driving))
+;; 11/6/14 -- collect-no-space-sequence-into-word  
+;  (p "For example, SHOC2/Sur-8 bridges Ras and Raf")
+
+; (bio-setting)
+; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/all passages combinded.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 2.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 3.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 1.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 2.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 3.txt")
+
+
 
 ; (trace-paragraphs) ;; for sentences and periods
 ; (trace-edges) ;; edge over period as a literal?
@@ -40,13 +45,6 @@
 
 ; (setq *do-islands-2d-pass* nil)
 ; exploded-tree-family-named
-
-; (bio-setting)
-; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
-; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
-
-;; 11/6/14 -- collect-no-space-sequence-into-word  
-;  (p "For example, SHOC2/Sur-8 bridges Ras and Raf")
 
 
 (defun ddm-bio ()
@@ -118,6 +116,8 @@
 
 
 (defun ddm-grammar ()
+  (ddm-ed "grammar/rules/tree-families/morphology1.lisp") ;; word rules
+  (ddm-ed "grammar/rules/syntax/categories.lisp") ;; and morph tables
   (ddm-ed "grammar/model/dossiers/modifiers.lisp")
   (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
   (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
@@ -240,6 +240,11 @@
   (ddm-ed "drivers/chart/psp/PPTT8.lisp")
   (ddm-ed "drivers/chart/psp/trigger5.lisp")
   (ddm-ed "drivers/forest/trap2.lisp"))
+
+(defun ddm-character-level ()
+  (ddm-ed "analyzers/char-level/testing1.lisp")
+  (ddm-ed "analyzers/char-level/state2.lisp")
+  (ddm-ed "analyzers/char-level/setup-file3.lisp"))
 
 
 (defun load-ddm-ws ()
