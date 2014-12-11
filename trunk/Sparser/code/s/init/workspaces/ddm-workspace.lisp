@@ -3,16 +3,14 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  November 2014
+;;;  version:  December 2014
 
-;; Initiated 10/9/14 for personalized settings and recording what 
-;; I'm doing -- ddm.
+;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
-; (setq *break-on-illegal-duplicate-rules* t)
 
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
