@@ -147,6 +147,7 @@
 (define-preposition "in" )
 (define-preposition "including")
 (define-preposition "in accordance with")
+(define-preposition "in addition")
 (define-preposition "in addition to")
 (define-preposition "in aid of")
 (define-preposition "in back of")
