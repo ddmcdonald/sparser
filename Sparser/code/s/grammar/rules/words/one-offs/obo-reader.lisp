@@ -254,11 +254,32 @@ and could be dropped from the active set we do lookup from
 
 ; "protein sur-8 homolog"
 
+(defun suitable-for-and-in-OBO (word)
+  ;; called from make-word/all-properties/or-primed when the
+  ;; big-mechanism flag is up. First checks the pname of the
+  ;; word for capitalization then looks up the word based on
+  ;; that string
+  (when (memq (word-capitalization word)
+              '(:initial-letter-capitalized 
+                :all-caps
+                :mixed-case))
+    (corresponding-obo (word-pname word))))
+                 
+
 (defun corresponding-obo (string)
   (when *obo-terms-incorporated*
     (gethash string *synonyms-to-obo-terms*)))
 
-(defun assemble-category-rule-and-referent-for-an-obo (obo)
+(defun setup-word-denoting-an-OBO (word)
+  ;; called from make-word/all-properties/or-primed if we've
+  ;; already established that there is an obo for the pname
+  ;; of this word. 
+  (let ((obo (corresponding-obo (word-pname word))))
+    (tr :word-corresponds-to-obo word obo)
+    (assemble-category-rule-and-referent-for-an-obo obo word)))
+    
+
+(defun assemble-category-rule-and-referent-for-an-obo (obo word)
   ;; called from reify-ns-name-as-bio-entity which itself
   ;; is called by reify-ns-name-and-make-edge with the task
   ;; of returning as multiple-values the category, rule,
@@ -266,7 +287,15 @@ and could be dropped from the active set we do lookup from
   ;; (The form is assumed to always be proper-name.)
   ;;/// should also do the whole setup, which is probably
   ;; some sort of call to def-bio -- see reify-bio-entity
-  (push-debug `(,obo)) (break "stub: obo setup"))
+  ;; (push-debug `(,obo ,word)) (break "stub: obo setup")
+  (let* ((kind 'protein) ;;/// get from OBO somehow
+         (i (def-bio/expr word kind))
+         (cfr (retrieve-single-rule-from-individual i)))
+    (values (category-named kind :break-if-not-defined)
+            cfr
+            i)))
+
+
 
 
 
