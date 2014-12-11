@@ -88,25 +88,37 @@
       (pop-up-to-slash pattern))
 
     (dolist (slash-pos slash-positions)
-      (push (resolve-slash-segment segment-pattern segment-start slash-pos)
-            segments)
-      (setq segment-start (chart-position-after slash-pos))
-      (multiple-value-setq (segment-pattern remainder)
-        (pop-up-to-slash remainder)))
+      (let ((resolution (resolve-slash-segment 
+                         segment-pattern segment-start slash-pos)))
+        (unless resolution
+          (push-debug `(,segment-pattern ,segment-start ,slash-pos))
+          (break "resolver returned nil"))
+        (push resolution segments)
+        (setq segment-start (chart-position-after slash-pos))
+        (multiple-value-setq (segment-pattern remainder)
+          (pop-up-to-slash remainder))))
+
     (push (resolve-slash-segment segment-pattern segment-start pos-after)
           segments)
+
     (package-slashed-sequence
      (nreverse segments) words pos-before pos-after)))
 
 
-(defun resolve-slash-segment (segment-pattern segment-start slash-pos)
-  (let ((single-edge (span-covered-by-one-edge? segment-start slash-pos)))
+(defun resolve-slash-segment (segment-pattern start-pos end-pos)
+  (format t "~&Looking at slash segment from p~a to p~a~
+           ~%  pattern = ~a~
+           ~%  words = ~s~%"
+          (pos-token-index start-pos)
+          (pos-token-index end-pos)
+          segment-pattern (string-of-words-between start-pos end-pos))
+  (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
     ;; is there one edge between the start of this portion and
     ;; the position of the slash? Then we're done
     (or single-edge
-        (let ((words (words-between segment-start slash-pos)))
+        (let ((words (words-between start-pos end-pos)))
           (resolve-ns-pattern segment-pattern words nil
-                              segment-start slash-pos)))))
+                              start-pos end-pos)))))
 
 (defun pop-up-to-slash (pattern)
   ;; Subroutine of divide-and-recombine-ns-pattern-with-slash but might

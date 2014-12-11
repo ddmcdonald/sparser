@@ -42,7 +42,9 @@
 
 (defun collect-no-space-sequence-into-word (position)
   ;; called from check-for/initiate-scan-patterns when the gate is true
-  ;; and no pattern-driven scan applied.
+  ;; and no pattern-driven scan applied. Note that 'position' is
+  ;; the one that does not record any space between it's word
+  ;; and the previous word.
   (declare (special *source-exhausted* *source-start*))
 
   (when (= (pos-token-index position) 1) ;; spurious: source-start
@@ -170,6 +172,8 @@
               pattern (nreverse pattern))
         (when slash?
           (setq slash? (nreverse slash?)))
+
+        
 
         (post-accumulator-ns-handler
          words pattern pos-before next-position hyphen? slash?)
