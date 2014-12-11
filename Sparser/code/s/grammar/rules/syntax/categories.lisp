@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 October 2014
+;;;  Version:  0.8 December 2014
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -285,7 +285,8 @@
     CATEGORY::PROPER-NOUN
     CATEGORY::PRONOUN
     category::n-bar
-    CATEGORY::POSSESSIVE-PRONOUN))
+    CATEGORY::POSSESSIVE-PRONOUN
+    CATEGORY::POSSESSIVE))
 
 (defparameter *ng-internal-categories*
   '(CATEGORY::QUANTIFIER 
