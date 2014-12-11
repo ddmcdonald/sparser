@@ -108,7 +108,7 @@ therefore we have the special cases:
              :bind (amino-acid left-edge)))
 
 ;; residues 104 and 147
-(def-cfr redidue-on-protein (redidue-on-protein digit-sequence)
+(def-cfr redidue-on-protein (residue-on-protein digit-sequence)
   :form n-bar
   :referent (:head left-edge
              :bind (position right-edge)))
@@ -117,7 +117,7 @@ therefore we have the special cases:
   :form pp
   :referent (:daughter right-edge))
 
-(def-cfr redidue-on-protein (redidue-on-protein of-protein)
+(def-cfr redidue-on-protein (residue-on-protein of-protein)
   :form n-bar
   :referent (:head left-edge
              :bind (on-protein right-edge)))
