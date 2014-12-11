@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  0.3 September 2014
+;;;  Version:  0.4 December 2014
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
@@ -15,6 +15,8 @@
 ;;     literals in them like measurement -> number + "fold". 9/11/14 ripped out
 ;;     some of that because the actual problem was upstream and kept edges
 ;;     from being put over the literals. 
+;; 0.4 (12/10/14) Made try-combination-to-the-left/bounded throw if it
+;;     encountered a word. 
 
 (in-package :sparser)
 
@@ -63,7 +65,11 @@
             (edge (pos-edge-starts-at right-edge))
             (edge-vector
              (setq multiple-on-right? t)
-             (chart-position-before (ev-position right-edge))))))
+             (chart-position-before (ev-position right-edge)))
+            (word
+             ;; if there's not a pretermal edge over this word
+             ;; then we're not going to get a parse, so bail now.
+             (throw :done-parsing-region nil)))))
 
     (when (eq middle-pos left-bound)
       (throw :done-parsing-region right-edge))
@@ -86,7 +92,8 @@
              (edge (check-one-one left-item right-edge))
              (edge-vector
               (check-many-one left-item ;;(pos-ends-here middle-pos)
-                              right-edge)))))
+                              right-edge))
+             (word nil))))
       (if new-edge
         (try-combination-to-the-left/bounded left-bound new-edge)
         ;(break "Stub: no edge formed")
@@ -101,7 +108,7 @@
     (let ((new-edge
            (etypecase left-item
              (edge (check-one-many left-item right-vector))
-             (word )
+             (word nil)
              (edge-vector
               (check-many-many left-item
                                right-vector)))))
