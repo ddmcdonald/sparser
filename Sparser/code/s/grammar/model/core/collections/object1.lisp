@@ -27,7 +27,7 @@
 
 (define-category  collection
   :instantiates self
-  :specializes nil
+  :specializes abstract
   :lemma (:common-noun "collection")
   :binds ((items :primitive list)
           (type)
