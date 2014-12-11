@@ -52,7 +52,7 @@
 
 (defun def-bio/expr (short kind &key greek identifier long synonyms takes-plurals)
   ;; use find-individual with their names to retrieve these. 
-  (let* ((word (resolve/make short))
+  (let* ((word (if (word-p short) short (resolve/make short)))
          (lowercase-word (resolve/make (string-downcase short)))
          (category (category-named kind :break-if-undefined))
          (label (or (override-label category) category))
