@@ -24,6 +24,7 @@
     (cond
      ((and (= hyphen-count 1)
            (= phrase-length 3))
+      ;; Canonical case. "GTP-bound"
       (let* ((hyphen-pos (car hyphen-position/s))
              (left-edge (left-treetop-at/edge hyphen-pos))
              (right-edge (right-treetop-at/edge
@@ -46,6 +47,13 @@
             (else ;; make a structure if all else fails
              ;; but first alert to anticipated cases not working
              (make-hypenated-structure left-edge right-edge))))))
+     ((= hyphen-count 1)
+      ;; E.g. "Figures S1A–S1D"
+      ;; split down the middle, run the two parts through the 
+      ;; pattern reifier, then combine them. 
+      (break "S1A–S1D")
+
+      )
      (t
       (break "New case for hyphens~%  hyphen count = ~a~
             ~%  phrase-length = ~a" hyphen-count phrase-length)))))
