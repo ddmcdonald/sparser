@@ -4,12 +4,12 @@
 ;;; 
 ;;;     File:  "tokenizer"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  November 2014
+;;;  Version:  December 2014
 
 ;; Initiated 11/90 (v1.5)
 ;; 11/12/14 Adding traces for giving unknown words light content because of
 ;; their morphology and such. More 8/22/14 to cover individual cases
-;; Adding as needed through 11/6/14
+;; Adding as needed through 12/9/14
 
 (in-package :sparser)
 
@@ -47,4 +47,10 @@
   (when *trace-morphology*
     (trace-msg "Defining the unknown word ~s as a noun by default"
                (word-pname word))))
+
+(deftrace :word-corresponds-to-obo (word obo)
+  ;; called from setup-unknown-word-by-default
+  (when *trace-morphology*
+    (trace-msg "Assignnig unknown word ~s to the OBO term ~a"
+               (word-pname word) obo)))
 
