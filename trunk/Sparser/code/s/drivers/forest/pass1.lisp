@@ -141,7 +141,12 @@
     (unless (edge-used-in prep-edge)
       (let ((preposition (find-preposition prep-edge))
             (left-neighbor (left-treetop-at/edge prep-edge)))
-        (when left-neighbor ;; could be sentence-initial
+        (when (and left-neighbor ;; could be sentence-initial
+                   (not (word-p left-neighbor)))
+          ;; The 'not' is for when the actually is no left-neighbor
+          ;; because this preposition is at the beginning of the
+          ;; sentence.
+          ;;/// that deserves an independent check
           (let ((head-word (find-head-word left-neighbor)))
             (when head-word
               (push-debug `(,prep-edge ,left-neighbor
@@ -169,7 +174,7 @@
     (let ((edge (edge-used-in prep-tt)))
       (if edge
         (tr :parse-leading-pp edge)
-        (tr :could-not-parse-leading-pp))
+        (tr :could-not-parse-leading-pp edge))
       (when edge
         ;; //// Now what do we do? This is a property of
         ;; the whole rest of the clause (which we don't have yet)

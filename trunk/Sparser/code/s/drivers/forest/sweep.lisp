@@ -117,6 +117,10 @@
           (category::parentheses
            (push-parentheses tt))
 
+          (category::quantifier
+           ;; drop it on the floor for now: "each of"
+           )
+
           (otherwise
            (push-debug `(,tt ,form))
            (break "New case in sweep.~
