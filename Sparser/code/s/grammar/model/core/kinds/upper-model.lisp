@@ -43,7 +43,8 @@
   ;; Need these empty values to ensure that a shadow CLOS clase
   ;; is creates for it, i.e. to make it a non-trivial class.
   :instantiates nil
-  :specializes nil)
+  :specializes nil
+  :binds ((modifier))) ;; is anything else this general?
 
 (defparameter *top-of-category-tree* (category-named 'top))
 
