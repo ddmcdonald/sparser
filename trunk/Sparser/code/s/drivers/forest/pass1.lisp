@@ -534,11 +534,13 @@
   (tr :trying-for-short-extension-leftward edge)
   (let ((left-neighbor (left-treetop-at/edge edge)))
     (tr :short-leftward-neighbor left-neighbor)
-    (if (expansion-boundary? left-neighbor)
+    (if (or (word-p left-neighbor) ;; a period
+            (expansion-boundary? left-neighbor))
       (tr :short-leftward-neighbor-is-boundary)
       (let ((new-edge (check-one-one left-neighbor edge)))
         (if new-edge
-          (then 
-           (tr :short-leftward-composition new-edge)
-           (look-for-short-leftward-extension new-edge))
-          (tr :short-leftward-did-not-compose))))))
+            (then 
+              (tr :short-leftward-composition new-edge)
+              (look-for-short-leftward-extension new-edge))
+            (tr :short-leftward-did-not-compose))))))
+
