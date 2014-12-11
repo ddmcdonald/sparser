@@ -238,7 +238,9 @@
               (let ((edge (conjoin/2 left-edge right-edge heuristic)))
                 (tr :conjoined-edge edge)
                 edge)
-              (tr :no-heuristics-for left-edge right-edge))))))))
+              (tr :no-heuristics-for left-edge right-edge))))))
+    ;; zero it to avoid confusing the pass through a later sentence
+    (setq *pending-conjunction* nil)))
 
 
 
