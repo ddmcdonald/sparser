@@ -139,12 +139,25 @@
                     ws-after)))))
 
       (when *buffers-in-transition*
-        (push-debug `(,pos-before ,pos-after ,words))
-        (break "Stub. Extend actual-characters-of-word to ~
-                wrap around character bufferes"))
+        ;; We recently swapped buffers and might have a token
+        ;; that strattles them, but alternatively have we moved 
+        ;; completely into the current buffer, in which case
+        ;; we turn this flag off.
+        (push-debug `(,start-index ,end-index ,adjusted-end ,words))
+        ;; (setq start-index (car *) end-index (cadr *) adjusted-end (caddr *) words (cadddr *))
+        ;;(break "Check whether we're completely on the current buffer")
+        (let ((usable-buffer-length
+               (+ *length-accumulated-from-prior-buffers*
+                  *usable-amount-of-character-buffer*)))
+          (push-debug `(,usable-buffer-length))
+          (if (< start-index ;; it's in the other buffer
+                 *length-accumulated-from-prior-buffers*)
+            (break "word is split across buffers: ~a" words)
+            (setq *buffers-in-transition* nil))))
+
       (if *buffers-in-transition*
         (cond
-         (nil
+         (t 
           ;; fall through to the version that will lose the
           ;; capitalization
           (try-reconsituting-split-tokens words start-index adjusted-end))
