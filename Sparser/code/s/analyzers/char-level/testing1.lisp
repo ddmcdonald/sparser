@@ -13,6 +13,7 @@
 
 (in-package :sparser)
 
+;; INTERNAL-TIME-UNITS-PER-SECOND added 12/11/14 as note to fix these
 
 ;;;---------------
 ;;; the test loop
