@@ -287,9 +287,9 @@ and could be dropped from the active set we do lookup from
   ;; (The form is assumed to always be proper-name.)
   ;;/// should also do the whole setup, which is probably
   ;; some sort of call to def-bio -- see reify-bio-entity
-  ;; (push-debug `(,obo ,word)) (break "stub: obo setup")
+  (push-debug `(,obo ,word)) ;;(break "stub: obo setup")  
   (let* ((kind 'protein) ;;/// get from OBO somehow
-         (i (def-bio/expr word kind))
+         (i (define-bio word kind))
          (cfr (retrieve-single-rule-from-individual i)))
     (values (category-named kind :break-if-not-defined)
             cfr
