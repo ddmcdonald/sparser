@@ -52,28 +52,30 @@
 
 (defun def-bio/expr (short kind &key greek identifier long synonyms takes-plurals)
   ;; use find-individual with their names to retrieve these. 
-  (let* ((word (if (word-p short) short (resolve/make short)))
-         (lowercase-word (resolve/make (string-downcase short)))
-         (category (category-named kind :break-if-undefined))
-         (label (or (override-label category) category))
-         (form (category-named 'common-noun))
-         (*inihibit-constructing-plural* (not takes-plurals))
-         rules  i )
-    (declare (special *inihibit-constructing-plural*))
+  (let* ((word (resolve/make short))
+         (category (category-named kind :break-if-undefined)))
+    (make-typed-bio-entity word category
+                          greek identifier
+                          long synonyms takes-plurals)))
+ 
+
+(defun define-bio (word category-name)
+  (let ((category (category-named category-name :break-if-undefined)))
+    (make-typed-bio-entity word category)))
+
+
+(defun make-typed-bio-entity (word category &optional greek identifier long synonyms takes-plurals)
+  (declare (special *inihibit-constructing-plural*))
+  (let ((label (or (override-label category) category))
+        (form (category-named 'common-noun))
+        (*inihibit-constructing-plural* (not takes-plurals))
+        rules  i )
 
     (setq i (find-or-make-individual category :name word))
     ;; The find-or-make call will set up a rule for the short form
     ;; as a common noun that has this individual as its referent.
 
-    ;; But since the tokenizer automatically downcases everything
-    ;; (since usually capitalization is either a proper name marker
-    ;; or sentence initial), we need to ensure that the common noun
-    ;; brackets are on the lowercase form that is actually going to
-    ;; be encountered.
-    ;;/// the better treatment is to search for brackets on the
-    ;; capitalized variant. This extra word has the potential to be
-    ;; problematic
-    (assign-brackets-as-a-common-noun lowercase-word)
+    ;; ignoring brackets since this runs with the new chunker
    
     (when identifier
       (bind-variable 'uid identifier i))
@@ -97,7 +99,7 @@
     (when greek
       (let ((additional-rules
              (rules-with-greek-chars-substituted
-              short long greek label form i)))
+              (word-pname word) long greek label form i)))
         (setq rules (nconc additional-rules rules))))
 
     (when rules
