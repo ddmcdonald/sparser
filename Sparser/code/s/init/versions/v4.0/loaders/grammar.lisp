@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  June 2014
+;;;   version:  December 2014
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -52,7 +52,9 @@
 ;; collections so plural realizations would work. 5/25/14 added a call to make temporal
 ;; sequences among the final operations after dossiers are loaded. 6/1/14 added
 ;; more temporal bits that late. 6/4/14 Removed NIH. 6/15/14 Adding more grammar
-;; module gates so we get a better tally of who many words, etc. we have.
+;; module gates so we get a better tally of who many words, etc. we have. 12/10/14
+;; moved 1st-kinds in front of collections, which led to adjustments in the construction
+;; of plurals for the lemmas in 1st-kinds. 
 
 
 (in-package :sparser)
@@ -100,15 +102,15 @@
       (gload "tree-families;loader1")
       (gload "tree-families;loader")))
 
+  (gate-grammar *kinds*
+    (gload "kinds;1st-loader")) ;; defines individual and such 
+
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
     ;; the loading of amounts
     (if *lattice-points*
       (gload "collections;loader1")
       (gload "collections;loader")))
-
-  (gate-grammar *kinds*
-    (gload "kinds;1st-loader")) ;; defines individual and such 
 
   (gate-grammar *kinds*
     (gload "kinds;loader"))
