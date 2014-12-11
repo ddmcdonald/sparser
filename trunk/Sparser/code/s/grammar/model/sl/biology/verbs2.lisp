@@ -18,9 +18,14 @@
 (in-package :sparser)
 
 (define-category bio-act
+; "bio-" implies that there's an unmarked "act" as well, and it's a bit cumbersome
   :specializes bio-process
   :binds ((actor bio-entity)
           (patient bio-entity))
+; The interpreter for define-category presumes that the binding will be dotted
+; pairs. That's the kind of syntactic nit that the shortcut is suppose to hide.
+; Of course the interpreter could be modified, but for something this simple
+; I think the def-term shortcut with the slots as keywords is simpler to use
   :documentation "")
 
 (def-realization bio-act
@@ -28,10 +33,18 @@
   :etf sv
   :s actor
   :on patient)
+
+; Then "act as" is a different verb. Yes? We need to think about that as well as
+; about synonyms, and perhaps on-the-fly specialization such as moving from the
+; unmarked "act" to the copular "act as" when the prepositino is seen. 
     
 (define-category bio-activate
   :specializes bio-process
   :binds ((activator bio-entity) (activated molecule)))
+
+; We could have shortcuts that are biology-specific. That would let us supress
+; the specialization to a bio-process as a default of the shortcut. With the
+; option to add a :specializes parameter when we don't want the default
 
 (def-realization bio-activate
   :verb "activate" :noun "activation"
@@ -42,6 +55,8 @@
 ;; AFTER THIS POINT I ASSUME THAT THE :realization keyword on define-category is extended to handle the arguments of 
 ;; (define-realization ...)
 
+; Yes, but we need the separate form to handle synonyms at least
+
 (define-category bio-deactivate
   :specializes bio-process
   :binds ((deactivator bio-entity) (deactivated molecule))
@@ -50,6 +65,19 @@
     :etf (svo-passive of-nominal)
     :s deactivator
     :o deactivated))
+#|
+The variable names of the bindings can be folded in in the existing shortcuts
+
+(def-bio-term deactivate ;; just made up that form -- could specialize the name of the category
+  :verb "deactivate" :noun "deactivation"
+  :etf (svo-passive)
+  :s deactivator)
+; The ":s" parameter establishes the variable as the subject and adds it to the
+; variables that the category binds if it's not already one that
+; the category interits
+  
+
+|#
 
 ;; "GTP-binding" "GO:00055525
 (define-category bio-bind
@@ -62,6 +90,9 @@
    :s participant 
    :o participant
    :to participant))
+; Would we want to distinguish who's doing what to whom?
+; I guess we need a lot of examples to see if there's a pattern
+; in the biology that we should reflect in result of the parse
 
 ;;;*********DEFINE THIS ********* nned examples
 (svo/bio "call")
