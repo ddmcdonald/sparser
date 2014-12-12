@@ -270,6 +270,7 @@
   '(CATEGORY::DET 
     CATEGORY::QUANTIFIER 
     category::number
+    category::ordinal
     CATEGORY::ADVERB 
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
@@ -291,6 +292,7 @@
 (defparameter *ng-internal-categories*
   '(CATEGORY::QUANTIFIER 
     category::number
+    category::ordinal
     CATEGORY::ADVERB 
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
@@ -320,6 +322,7 @@
     CATEGORY::COMPARATIVE
     CATEGORY::SUPERLATIVE
     category::number ;; 'How many do you want? I want 3'
+    category::ordinal ;; But only for roman numerals
     ))
 
 
@@ -590,6 +593,7 @@
 
 (defparameter *major-categories*
   `(,category::s
+    ,category::subj+verb
     ,category::vp))
 
 (defparameter *minor-categories*
@@ -597,6 +601,8 @@
     ,category::pp))
 
 (defmethod category-status ((c category))
+  ;; used by smash-together-two-tt-islands to decide
+  ;; which of two constituents is the head
   (cond
    ((memq c *major-categories*) :major)
    ((memq c *minor-categories*) :minor)
