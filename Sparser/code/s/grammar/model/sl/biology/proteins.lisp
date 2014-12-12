@@ -101,6 +101,9 @@
 (def-bio "braf" protein 
   :identifier "PR:000004801")
 
+(def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
+  )
+
 (def-bio "PIK3CA" protein
   :identifier "PR:000012719")
 
