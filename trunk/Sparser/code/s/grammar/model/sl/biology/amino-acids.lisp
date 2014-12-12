@@ -135,3 +135,15 @@ therefore we have the special cases:
   :lemma (common-noun "point mutation")
   :index (:permanent :sequential-keys new-amino-acid position))
 
+(defun reify-point-mutation-and-make-edge (words pos-before pos-after)
+  ;; Called from resolve-ns-pattern when the pattern is a word
+  ;; on either side of a digits span
+  ;;//// look at the edges
+  (push-debug `(,words ,pos-before ,pos-after))
+  (break "look at edges re point mutation"))
+
+(defun make-point-mutation (original replacement residue-number)
+  (push-debug `(,original ,replacement ,residue-number))
+  (break "stub"))
+
+
