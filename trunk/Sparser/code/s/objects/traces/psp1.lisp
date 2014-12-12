@@ -1150,10 +1150,11 @@
     (trace-msg "[pw] ~s at p~a initiates polywords"
                (word-pname word) (pos-token-index position-before))))
 
-(deftrace :pw-was-found (position-before position-reached)
+(deftrace :pw-was-found (position-before position-reached edge)
   ;; Called from polyword-check
   (when *trace-sweep*
-    (trace-msg "[pw] polyword found between p~a and p~a"
+    (trace-msg "[pw] polyword e~a found between p~a and p~a"
+               (edge-position-in-resource-array edge)
                (pos-token-index position-before)
                (pos-token-index position-reached))))
 
