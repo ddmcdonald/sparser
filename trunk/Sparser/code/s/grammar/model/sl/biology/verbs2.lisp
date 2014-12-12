@@ -200,7 +200,7 @@ The variable names of the bindings can be folded in in the existing shortcuts
 ;;  :agent bio-entity)
 
 
-(define-category inhibit
+(define-category inhibit-process
   :specializes bio-process
   :binds ((agent bio-entity) (patient bio-process))
   :realization 
@@ -208,6 +208,17 @@ The variable names of the bindings can be folded in in the existing shortcuts
    :etf (svo-passive)
    :s agent
    :o patient))
+
+(define-category drug-inhibits
+  :specializes bio-process
+  :binds ((agent drug) (patient bio-entity))
+  :realization 
+  (:verb "inhibit" :noun "inhibition"
+   :etf (svo-passive)
+   :s agent
+   :o patient
+   :at measurement))
+
 
 
 ;;--- "load" -- "GTP loading"
@@ -333,14 +344,6 @@ The variable names of the bindings can be folded in in the existing shortcuts
    :s agent
    :o patient))
 
-(define-category signal
-  :specializes bio-process
-  :binds ((agent protein)(patient bio-process))
-  :realization
-  (:verb   "signal"
-   :etf (svo-passive)
-   :o patient  ;; signaling of <process>
-   :s agent))    ;; by <entity>
 
 (svo/nominal "transduce" "transduction" 
              :subject 'bio-entity :theme 'bio-entity)
