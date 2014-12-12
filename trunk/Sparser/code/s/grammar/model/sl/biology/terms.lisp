@@ -31,12 +31,6 @@
 ; the HCC827 NSCLC cell line
 
 
-;;--- Drugs
-; MAPK pathway inhibitors. MAPK pathway inhibition, MAPK inhibitors
-; PLX4032 treatment
-; potentiated the effects of PLX4032
-; following treatment with the MEK inhibitor AZD6244
-; retaining transcriptional response to vemurafenib and AZD6244
 
 ;;--- other things with clear markers
 ; the ZFN217 transcription factor
@@ -82,6 +76,12 @@
   ;;DAVID -- this didn't work when I supbstitued a semantic category for np -- WHY?
   :subcategorization '((to np) (theme)))
 
+(adj "selective"
+  :subject 'bio-entity
+  :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
+  :subcategorization '((for np) (theme)))
+
+(adj "close")
 
 (def-bio "tumor formation" bio-process)
 
@@ -259,4 +259,21 @@ that consists of five conserved G boxes. |#
 (def-cfr enzyme (bio-process enzyme)
   :form n-bar
   :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
+
+
+(define-unit-of-measure "nM")
+(define-unit-of-measure "nm")
+(define-unit-of-measure "cm")
+(define-unit-of-measure "mm")
+;;(define-unit-of-measure "µm") this fails
+(define-unit-of-measure "mL")
+(define-unit-of-measure "ml")
+(define-unit-of-measure "kb")
+(define-unit-of-measure "dalton")
+
+(define-ordinal "I" 1)
+(define-ordinal "II" 2)
+(define-ordinal "III" 3)
+(define-ordinal "IV" 4)
+
 
