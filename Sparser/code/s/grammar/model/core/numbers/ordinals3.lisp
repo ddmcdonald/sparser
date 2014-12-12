@@ -89,7 +89,8 @@
       (break "When defining an ordinal, the corresponding number object ~
               ~%must be defined first. The number for ~A isn't" lisp-number))
 
-    (let ((ordinal (find-individual 'ordinal :number number)))
+    (let ((ordinal (find-individual 'ordinal :number number))
+          rules )
       (or ordinal
           (let ((word (resolve/make string))
                 (roman (when roman-numeral (resolve/make roman-numeral))))
@@ -99,12 +100,11 @@
                     :word word))
 
             (when roman-numeral
-              (bind-variable 'roman-numeral roman ordinal))
-              ;; not reversible yet
-              ;  (push (define-cfr category::ordinal `(,roman)
-              ;          :form category::adjective
-              ;          :referent  ordinal )
-              ;        rules)
+              (bind-variable 'roman-numeral roman ordinal)
+              (push (define-cfr category::ordinal `(,roman)
+                        :form category::ordinal
+                        :referent  ordinal )
+                      rules))
 
             ordinal )))))
 
