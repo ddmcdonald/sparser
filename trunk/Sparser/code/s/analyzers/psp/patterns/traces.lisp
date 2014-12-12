@@ -120,4 +120,46 @@
   (when *trace-ns-sequences* ;;//// lots more cases probably
     (trace-msg "[ns]   made edge ~a" edge)))
 
+(deftrace :trying-to-resolve-ns-pattern (pattern)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Checking pattern: ~a" pattern)))
+
+(deftrace :no-ns-pattern-matched ()
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns]   No pattern matched")))
+
+(deftrace :slash-ns-pattern (pos-before pos-after)
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns] Looking at ns-sequence with a slash between p~a and p~a"
+               (pos-token-index pos-before)
+               (pos-token-index pos-after))))
+
+(deftrace :resolve-slash-segment (segment-pattern start-pos end-pos)
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns] Looking at slash segment from p~a to p~a~
+              ~%   pattern = ~a~
+              ~%   words = ~s"
+          (pos-token-index start-pos)
+          (pos-token-index end-pos)
+          segment-pattern (string-of-words-between start-pos end-pos))))
+
+(deftrace :slash-segment-covered (edge)
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns]  The segment is already covered by e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :slash-recursive-resolution ()
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns]   The segment has to be analyzed")))
+
+(deftrace :reified-ns-name (referent start-pos end-pos)
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns] The referent ~a~
+              ~%   was created for the ns span ~s~
+              ~%   between p~a and p~a"
+               referent 
+               (string-of-words-between start-pos end-pos)
+               (pos-token-index start-pos)
+               (pos-token-index end-pos))))
+               
 

@@ -173,13 +173,29 @@
         (when slash?
           (setq slash? (nreverse slash?)))
 
-        
+        (when (polywords-in-region pos-before next-position)
+          (push-debug `(,words ,pattern ,slash?))
+          (break "Need to consider PW within no-space region ~
+                  from p~a to p~a"
+                 (pos-token-index pos-before)
+                 (pos-token-index next-position)))
 
         (post-accumulator-ns-handler
          words pattern pos-before next-position hyphen? slash?)
 
         (tr :ns-returning-position next-position)
         next-position))))
+
+;;//// move
+(defun polywords-in-region (start-pos end-pos)
+  ;; if all of the edges between these positions are just over
+  ;; single words return nil, otherwise return the first
+  ;; longer edge.
+  (let ((edges (edges-between start-pos end-pos)))
+    (dolist (edge edges nil)
+      (unless (one-word-long? edge)
+        (return-from polywords-in-region edge)))))
+  
 
 
 (defun post-accumulator-ns-handler (words pattern
@@ -233,16 +249,18 @@
                          (reify-ns-name-as-bio-entity 
                           words pos-before next-position)
                          (reify-spelled-name words))
-      (let ((edge
-             (make-edge-over-long-span
-              pos-before
-              next-position
-              category
-              :rule rule
-              :form (category-named 'proper-name)
-              :referent referent
-              :words words)))
-        edge)))
+    (tr :reified-ns-name referent pos-before next-position)
+    (let ((edge
+           (make-edge-over-long-span
+            pos-before
+            next-position
+            category
+            :rule rule
+            :form (category-named 'proper-name)
+            :referent referent
+            :words words)))
+      (tr :made-edge edge)
+      edge)))
 
 
 
