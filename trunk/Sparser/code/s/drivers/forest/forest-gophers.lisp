@@ -205,11 +205,12 @@
   (let ((head-edge (walk-down-right-headline tt)))
     (when head-edge
       (let ((left-daughter (edge-left-daughter head-edge)))
-        (unless (word-p left-daughter)
-          (push-debug `(,tt ,head-edge))
-          (error "right headline does not terminate in a word: ~a"
-                 head-edge))
-        left-daughter))))
+        ;; There was a complaint here if the walk didn't
+        ;; return an edge whose left-daughter was not a word.
+        ;; Removed it 12/12/14 in favor or returning nil
+        ;; in that case.
+        (when (word-p left-daughter)
+          left-daughter)))))
 
 (defun walk-down-right-headline (edge)
   "Given an edge, presumed to be the result of a binary composition,
