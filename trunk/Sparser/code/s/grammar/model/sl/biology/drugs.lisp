@@ -17,7 +17,7 @@
 (define-category drug
     :specializes molecule)
 (defun define-drug (drug-name)
-  (eval `(def-bio ,drug-name drug)))
+  (eval `(np-head ,drug-name :super 'drug)))
 
 
 (define-drug "abciximab")
