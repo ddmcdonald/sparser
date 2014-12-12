@@ -23,6 +23,7 @@
 (gload "bio;terms")
 (gload "bio;verbs")
 (gload "bio;switches")
+(gload "bio;drugs")
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules") 
