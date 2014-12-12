@@ -75,6 +75,7 @@
   (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
   (ddm-ed "objects/traces/psp1.lisp")
   (ddm-ed "objects/traces/DA.lisp")
+  (ddm-ed "analyzers/psp/patterns/traces.lisp")
   (ddm-ed "objects/traces/scan-patterns.lisp")
   (ddm-ed "objects/traces/treetops.lisp"))
 
@@ -170,6 +171,11 @@
 ; (ddm-ed "objects/doc/object1.lisp")  -- document structure
 ; (ddm-ed "tools/basics/resource.lisp)  -- auto recycling
 ; (ddm-ed "objects/doc/classes.lisp") -- what is this doing ????
+
+(defun ddm-edge-mechanics ()
+  (ddm-ed "objects/chart/edge-vectors/object2.lisp")
+  (ddm-ed "objects/chart/edges/object3.lisp")
+  (ddm-ed "objects/chart/positions/positions1.lisp"))
 
 
 (defun ddm-vg-elevation ()
