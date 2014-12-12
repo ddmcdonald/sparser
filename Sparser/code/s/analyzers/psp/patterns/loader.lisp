@@ -8,13 +8,14 @@
 ;; initiated 9/21/95. Moved over [take transitions] 10/5.
 ;; 2/5/2013 broke out the traces and the uniform scan as their own files
 ;; 9/9/14 added [character-specialists]. 11/18/14 bumped uniform-
-;; scan to 1. 12/4/14 added [patterns].
+;; scan to 1. 12/4/14 added [patterns]. [pattern-gophers] 12/11/12.
 
 (in-package :sparser)
 
 (lload "scan-patterns;traces")
 
 (lload "scan-patterns;character-specialists")
+(lload "scan-patterns;pattern-gophers")
 (lload "scan-patterns;patterns")
 (lload "scan-patterns;uniform-scan1")
 
