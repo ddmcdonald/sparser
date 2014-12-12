@@ -83,7 +83,7 @@
 
 (adj "close")
 
-(def-bio "tumor formation" bio-process)
+ "tumor formation" bio-process)
 
 ;;(np-head "human") ;;/// check people code
 (def-bio "human" species)
