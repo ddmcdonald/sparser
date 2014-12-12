@@ -11,6 +11,8 @@
 
 (in-package :sparser)
 
+;; (trace-terminals-sweep)
+
 ;;;---------------------------------------------------
 ;;; 1st pass -- polywords, completion, terminal edges
 ;;;---------------------------------------------------
@@ -53,9 +55,7 @@
     ;;    Another important case is conjunction. Both "and" and "or"
     ;; set the *pending-conjunction* flag. 
 
-
     (do-just-terminal-edges word position-before position-after)
-
 
     (let ((next-word (pos-terminal position-after)))
       (when nil
@@ -93,9 +93,11 @@
       (let ((position-reached
              (do-polyword-fsa word pw-cfr position-before)))
         (if position-reached
-          (tr :pw-was-found position-before position-reached)
+          (let ((pw-edge (edge-spanning position-before position-reached)))
+            (unless pw-edge (break "wrong span search"))
+            (tr :pw-was-found position-before position-reached pw-edge))
           (tr :pw-not-found word position-before))
-        (push-debug `(,position-reached))
+        ;;(push-debug `(,position-reached))
         ;; Check the status -- cf. adjudicate-result-of-word-fsa
         ;(break "Polyword succeeded at ~a" position-reached)
         position-reached))))
@@ -151,9 +153,7 @@
                 (check-for-pattern position-after)))
            (if where-pattern-scan-ended
              (then
-               (setq position-after where-pattern-scan-ended)
-               (when (edge-p position-after) 
-                 (break "PS position-after = ~a" position-after)))
+               (setq position-after where-pattern-scan-ended))
              (let ((where-uniform-ns-ended
                     (do-no-space-collection position-after)))
                (when where-uniform-ns-ended
