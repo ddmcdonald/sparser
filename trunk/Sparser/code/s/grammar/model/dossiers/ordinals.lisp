@@ -1,26 +1,27 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994.1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  May 1995
+;;;  version:  December 2014
 
 ;; broken out of [numbers;ordinals] 1/7/94. 5/13/95 added 'permanent' wrapper
+;; Added a few more Roman numerals 12/12/14. 
 
 (in-package :sparser)
 
 (define-with-all-instances-permanent
-  (define-ordinal "first"  1)
+  (define-ordinal "first"  1  :roman-numeral "I") ;; note ambiguity with pronoun
   (define-ordinal "second" 2  :roman-numeral "II")
   (define-ordinal "third"  3  :roman-numeral "III")
-  (define-ordinal "fourth" 4)   ;;predictable from morph. decomp. ???
-  (define-ordinal "fifth"  5)   ;; ditto
-  (define-ordinal "sixth"  6)   ;; ditto
-  (define-ordinal "seventh" 7)  ;; ditto
-  (define-ordinal "eighth" 8)   ;; ditto
-  (define-ordinal "ninth"  9)   ;; ditto if you drop the "e"
-  (define-ordinal "tenth" 10)    ;; ditto
-  (define-ordinal "eleventh" 11) ;; ditto
+  (define-ordinal "fourth" 4  :roman-numeral "IV")
+  (define-ordinal "fifth"  5)
+  (define-ordinal "sixth"  6)
+  (define-ordinal "seventh" 7) 
+  (define-ordinal "eighth" 8)  
+  (define-ordinal "ninth"  9)  
+  (define-ordinal "tenth" 10)  
+  (define-ordinal "eleventh" 11)
   (define-ordinal "twelfth" 12)
   (define-ordinal "thirteenth" 13)
   (define-ordinal "fourteenth" 14)
