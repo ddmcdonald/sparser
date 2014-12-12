@@ -260,7 +260,7 @@ that consists of five conserved G boxes. |#
   :form n-bar
   :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
 
-
+;;-- see model/dossiers/units-of-measure.lisp for more forms.
 (define-unit-of-measure "nM")
 (define-unit-of-measure "nm")
 (define-unit-of-measure "cm")
@@ -270,10 +270,4 @@ that consists of five conserved G boxes. |#
 (define-unit-of-measure "ml")
 (define-unit-of-measure "kb")
 (define-unit-of-measure "dalton")
-
-(define-ordinal "I" 1)
-(define-ordinal "II" 2)
-(define-ordinal "III" 3)
-(define-ordinal "IV" 4)
-
 
