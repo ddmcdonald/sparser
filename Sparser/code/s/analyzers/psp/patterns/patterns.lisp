@@ -31,6 +31,7 @@
   ;; called by post-accumulator-ns-handler from an 'or' so has to
   ;; return non-nil when it succeeds. 
   (push-debug `(,pattern ,words)) ;; (break "resolve pattern")
+  (tr :trying-to-resolve-ns-pattern pattern)
 
   (if slash?
     (divide-and-recombine-ns-pattern-with-slash
@@ -57,6 +58,13 @@
      ((equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
       (reify-ns-name-and-make-edge words pos-before pos-after))
 
+     ((or (equal pattern '(:single-cap :digits :single-cap))
+          (equal pattern '(:single-lower :digits :single-lower)))
+      ;;/// and a bunch more
+      (or (reify-point-mutation-and-make-edge words pos-before pos-after)
+          (reify-ns-name-and-make-edge words pos-before pos-after)))
+          
+
 ;     ((equal pattern '(:capitalized)) ;; a segment within a sequence
 
      (*work-on-ns-patterns*
@@ -64,97 +72,8 @@
       (break "New pattern to resolve: ~a" pattern))
 
      ;; fall through
-     (t nil))))
-
-;; "SHOC2/Sur-8"  (p "the Raf/MEK/ERK pathway.") "PI3K/AKT signaling"
-(defun divide-and-recombine-ns-pattern-with-slash (pattern words slash-positions
-                                                   pos-before pos-after)
-  ;; Assumes that slash has precedence over any other punctuation,
-  ;; so it does a resolve-pattern of each of the segements between
-  ;; slashes and then recombines them into a slash-structure along the
-  ;; lines of make-hypenated-structure and such.
-  ;;//// slashes often indicate two proteins that differ in just
-  ;; their suffix. What's that pattern?
-  ;; At this point the terminals are covered by edges. They probably
-  ;; have what we want. A second time around they certainly will.
-  (push-debug `(,slash-positions ,pos-before ,pos-after ,words ,pattern))
-  (when (eq (first slash-positions) pos-before)
-    (break "Slash is initial term in no-space region between p~a and p~a"
-           (pos-token-index pos-before) (pos-token-index pos-after)))
-
-  (let* ((segment-start pos-before)
-         segment-pattern  segments  remainder )
-    (multiple-value-setq (segment-pattern remainder)
-      (pop-up-to-slash pattern))
-
-    (dolist (slash-pos slash-positions)
-      (let ((resolution (resolve-slash-segment 
-                         segment-pattern segment-start slash-pos)))
-        (unless resolution
-          (push-debug `(,segment-pattern ,segment-start ,slash-pos))
-          (break "resolver returned nil"))
-        (push resolution segments)
-        (setq segment-start (chart-position-after slash-pos))
-        (multiple-value-setq (segment-pattern remainder)
-          (pop-up-to-slash remainder))))
-
-    (push (resolve-slash-segment segment-pattern segment-start pos-after)
-          segments)
-
-    (package-slashed-sequence
-     (nreverse segments) words pos-before pos-after)))
-
-
-(defun resolve-slash-segment (segment-pattern start-pos end-pos)
-  (format t "~&Looking at slash segment from p~a to p~a~
-           ~%  pattern = ~a~
-           ~%  words = ~s~%"
-          (pos-token-index start-pos)
-          (pos-token-index end-pos)
-          segment-pattern (string-of-words-between start-pos end-pos))
-  (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
-    ;; is there one edge between the start of this portion and
-    ;; the position of the slash? Then we're done
-    (or single-edge
-        (let ((words (words-between start-pos end-pos)))
-          (resolve-ns-pattern segment-pattern words nil
-                              start-pos end-pos)))))
-
-(defun pop-up-to-slash (pattern)
-  ;; Subroutine of divide-and-recombine-ns-pattern-with-slash but might
-  ;; make a useful utility with a bit of abstraction
-  (let ((slash-index (position :forward-slash pattern)))
-    (if slash-index
-      (values (subseq pattern 0 slash-index)
-              (subseq pattern (1+ slash-index)))
-      (values pattern nil))))
-
-
-
-;;;-------
-;;; cases
-;;;-------
-
-(defun resolve-hyphen-between-two-words (pattern words
-                                         pos-before pos-after)
-  ;; Have to distinguish between anticipated cases where the edges would
-  ;; compose except for the hypen between the words and cases 
-  ;; like "Sur-8" where it's the name of a protein
-  (push-debug `(,pos-before ,pos-after ,pattern))
-  (let ((left-edge (right-treetop-at/edge pos-before))
-        (right-edge (left-treetop-at/edge pos-after)))
-    ;; lifted from nospace-hyphen-specialist
-    (let ((rule (or (multiply-edges left-edge right-edge)
-                    (multiply-edges right-edge left-edge))))
-      ;; "GTP-bound"
-      ;;(push-debug `(,left-edge ,right-edge)) (break "???")
-      (if rule
-        (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
-          ;;//// trace goes here
-          (revise-form-of-nospace-edge-if-necessary edge))
-        (else ;; make a structure if all else fails
-         ;; but first alert to anticipated cases not working
-         (make-hypenated-structure left-edge right-edge))))))
+     (t (tr :no-ns-pattern-matched)
+        nil))))
 
 
 
@@ -195,6 +114,21 @@
                         (pos-token-index position) 
                         (word-pname word)
                         top-edge)))))
+
+(defun characterize-words-in-region  (start-pos end-pos)
+  ;; Returns a pattern. Presumes that the whole region has been scanned.
+  (let ((position start-pos)
+        (word (pos-terminal start-pos))
+        pattern-elements  element )
+    (loop
+      (setq element (characterize-word-type position word))
+      (push element pattern-elements)
+      (setq position (chart-position-after position))
+      (when (eq position end-pos)
+        (return))
+      (setq word (pos-terminal position)))
+    (nreverse pattern-elements)))
+
 
 (defun characterize-type-for-mixed-case (word)
   (let* ((pname (word-pname word))
