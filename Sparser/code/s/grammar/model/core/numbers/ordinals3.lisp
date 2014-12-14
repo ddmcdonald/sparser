@@ -23,6 +23,9 @@
 ;;      bottom with nil since it's unclear how they work: /// need a no-space
 ;;      criteria added to them, then we get "23rd" with some assurance. 
 ;;      Added ordinal+common-noun form rule - flow of referents needs work
+;;RJB 12/13/2014 
+;;     create new category post-ordinal for Roman numeral ordinals like I, II, III and IV
+;;     these can occur after the head, and do not become the head, while the previous ordinals like first, second etc. are prenominal
 
 (in-package :sparser)
 
@@ -45,6 +48,14 @@
           (word  :primitive word)
           (roman-numeral :primitive word))
   :realization (:quantifier word))
+
+(define-category  post-ordinal
+  :instantiates self
+  :specializes number
+  :binds ((number number)
+          (word  :primitive word)
+          (roman-numeral :primitive word))
+  )
 
 (defun string/ordinal (category)
   ;; see special check in String-for that gets us here
@@ -75,6 +86,19 @@
              :with (number left-edge
                     item right-edge)))
 
+;; New rule for post ordinals
+(def-form-rule (common-noun post-ordinal)
+  ;; possible ETF: designated-instance-of-set ("class II")
+  ;;  or modifier-creates-definite-individual ("last year")
+  ;; The point is to create the position-in-a-sequence while
+  ;; leaving the common-noun as the head.  
+  :form n-bar
+  :head :left-edge
+  :referent (:head left-edge
+             :instantiate-individual position-in-a-sequence
+             :with (number right-edge
+                           item left-edge)))
+
 
 ;;;------
 ;;; form
@@ -101,9 +125,9 @@
 
             (when roman-numeral
               (bind-variable 'roman-numeral roman ordinal)
-              (push (define-cfr category::ordinal `(,roman)
-                        :form category::ordinal
-                        :referent  ordinal )
+              (push (define-cfr category::post-ordinal `(,roman)
+                        :form category::post-ordinal
+                        :referent  category::post-ordinal )
                       rules))
 
             ordinal )))))

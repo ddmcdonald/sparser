@@ -14,6 +14,9 @@
 ;; 11/9/14 hack for ', in part,' and terms for g1,...,g5, 'as a consequence' and .exchange' as a bio-process
 ;; added critical, common, "tumor formation", first stab at "form", revised "condition", revised "G-domain"
 ;; 12/8/14 Starting cell lines and drugs
+;; RJB 12/13/2014 ugly handling of variety, form and analog <<DAVID-- we have to talk about this>>
+;; also ugly handling of "et al." to start making it a signal for references, 
+;; and get rid of the interpretation of "al." as a bio-entity (couldn't even find where that cam from)
 
 (in-package :sparser)
 
@@ -81,6 +84,12 @@
   :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
   :subcategorization '((for np) (theme)))
 
+(adj "potent"
+  :subject 'bio-entity
+  :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
+  :subcategorization '((for np) (theme)))
+
+
 (adj "close")
 
 (def-bio "tumor formation" bio-process)
@@ -115,7 +124,7 @@ critical for tumor formation. |#
   :action (:function respan-edge-around-one-word second first third))
 
 (define-adverb "as a consequence")
-
+(define-adverb "as expected") ;; not very common, but avoids a break
 ;;--- J3
 (define-adjective "molecular")
 ;; It's realated to molecule, but how exactly?
@@ -134,6 +143,9 @@ that consists of five conserved G boxes. |#
 (np-head "form" :super 'bio-variant)
 
 (np-head "variety" :super 'bio-variant)
+
+(np-head "analog" :super 'bio-variant)
+
 ;; "variety" is an "of quantifier" like "many" or "some"
 ; a {wide, large, extensive, big} variety of ..
 
@@ -143,6 +155,7 @@ that consists of five conserved G boxes. |#
 
 ;;--- j5 
 (define-adjective "physiological")
+(def-bio "activity" bio-process)
 (def-bio "condition" bio-condition)
 
 (np-head "G-domain" :super 'protein-segment) ;; somehow (def-bio "G-domain" protein-segment) di not work
@@ -271,3 +284,8 @@ that consists of five conserved G boxes. |#
 (define-unit-of-measure "kb")
 (define-unit-of-measure "dalton")
 
+
+;; Not quite right -- DAVID -- how do I make "et al." be a word that is the head of a bibliographic reference
+(define-category bib-reference 
+  :specializes abstract)
+(np-head "et al." :super 'bib-reference)

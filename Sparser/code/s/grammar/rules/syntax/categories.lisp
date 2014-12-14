@@ -54,7 +54,14 @@
 ;;      to defparameter's so they could be updated. 
 ;;     (10/23/14) Removed vg from verb-category? for the benefit of find-verb
 ;;     (10/25/14) Added edge-form-adjustment
-
+;; RJB 12/13/2014 added entries for category::post-ordinal in np chunking tables
+;;     added parenthetical as an item that can occur in an NP
+;; RJB 12/13/2014 more subtle handling of NP chunking to deal with verb+ed cases
+;; contrast "direct binding to activated forms of RAS" where "activated" is likely to be a prenominal modifier
+;; with "these drugs blocked ERK activity" where "blocked" is the main verb.
+;; the key is to end a NG when you hit a verb+ed immediatelyu preceded by a noun, and to prevent that verb+ed from
+;; starting another NG (so that it becomes a VG on its own)
+ 
 (in-package :sparser)
 
 
@@ -267,18 +274,18 @@
 ;;;--------------------------------------------------------------------------
 
 (defparameter *ng-start-categories*
-  '(CATEGORY::DET 
-    CATEGORY::QUANTIFIER 
+  '(CATEGORY::DET
+    CATEGORY::QUANTIFIER
     category::number
     category::ordinal
-    CATEGORY::ADVERB 
+    CATEGORY::ADVERB
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
     CATEGORY::COMPARATIVE
     CATEGORY::SUPERLATIVE
     CATEGORY::SPATIAL-ADJECTIVE
     CATEGORY::TEMPORAL-ADJECTIVE
-    CATEGORY::VERB+ED
+    ;;CATEGORY::VERB+ED
     CATEGORY::VERB+ING
     CATEGORY::COMMON-NOUN/PLURAL
     CATEGORY::NOUN/VERB-AMBIGUOUS
@@ -290,10 +297,10 @@
     CATEGORY::POSSESSIVE))
 
 (defparameter *ng-internal-categories*
-  '(CATEGORY::QUANTIFIER 
+  '(CATEGORY::QUANTIFIER
     category::number
     category::ordinal
-    CATEGORY::ADVERB 
+    CATEGORY::ADVERB
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
     CATEGORY::COMPARATIVE
@@ -307,7 +314,9 @@
     CATEGORY::COMMON-NOUN
     CATEGORY::PROPER-NOUN
     category::n-bar
-    CATEGORY::PROPER-NOUN))
+    CATEGORY::PROPER-NOUN
+    category::post-ordinal
+    category::parentheses))
 
 
 (defparameter *ng-head-categories*
@@ -322,14 +331,14 @@
     CATEGORY::COMPARATIVE
     CATEGORY::SUPERLATIVE
     category::number ;; 'How many do you want? I want 3'
-    category::ordinal ;; But only for roman numerals
+    category::post-ordinal ;; But only for roman numerals
     ))
 
 
 (defgeneric ng-compatible? (label)
   (:documentation "Is a category which can occur inside a NG"))
 (defmethod ng-compatible? ((w word))
-  t)
+  nil)
 (defmethod ng-compatible? ((e edge))
   (ng-compatible? (edge-form e)))
 (defmethod ng-compatible? ((c referential-category))
@@ -340,9 +349,22 @@
 (defgeneric ng-start? (label)
   (:documentation "Is a category which can occur inside a NG"))
 (defmethod ng-start? ((w word))
-  t)
+  nil)
 (defmethod ng-start? ((e edge))
-  (ng-start? (edge-form e)))
+  (declare (special e))
+  (or
+   (ng-start? (edge-form e))
+   (and (eq category::verb+ed (edge-form e))
+        ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
+        ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
+        ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
+        ;; as opposed to "direct binding to activated forms of RAS"
+        (not (and
+              (car *chunks*)
+              (member 'ng (chunk-forms (car *chunks*)))
+              (eq (chunk-end-pos (car *chunks*))
+                  (pos-edge-starts-at e)))))))
+
 (defmethod ng-start? ((c referential-category))
   (ng-start? (cat-symbol c)))
 (defmethod ng-start? ((name symbol))
@@ -351,10 +373,10 @@
 (defgeneric ng-head? (label)
   (:documentation "Is a category which can occur as the head of an NG"))
 (defmethod ng-head? ((w word))
-  t)
+  nil)
 (defmethod ng-head? ((e edge))
   (cond
-   ((eq (edge-form e) CATEGORY::VERB+ING)
+   ((eq (edge-form e) CATEGORY::VERB+ING) ; 
     (and
      (not (eq category::det 
               (edge-form
