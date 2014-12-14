@@ -11,7 +11,9 @@
 ;; to notice multiple-edges case. 9/21/13 trivial doc, checks.
 ;; 8/28/14 Made head-word-of-segment correctly return the positions
 ;; as well as the word. 
-
+;;RJB 12/13/2014 fixed edge-over-segment-suffix to handle case where last edge is a parenthetical -- which has no
+;; referent at the moment, and probably should not act like the head of the segment created by sdm-span-segment
+;; in any case
 (in-package :sparser)
 
 ;;;-------
@@ -182,7 +184,16 @@
     (when (eq top-node :multiple-initial-edges)
       ;; arbitrarily take the most recent edge
       (setq top-node (highest-edge right-ev)))
-    top-node))
+    (if
+     (null (edge-referent top-node)) ;; happens when the top=node is a parenthetical expression
+     (let*
+         ((prev-edges (pos-ends-here (ev-position (edge-starts-at top-node)))))
+       (if (eq (ev-top-node prev-edges) :multiple-initial-edges)
+           (highest-edge (pos-ends-here (ev-position (edge-starts-at top-node))))
+           (ev-top-node prev-edges)))
+     top-node)))
+
+
 
 (defun first-word-in-segment ()
   (values (pos-terminal *left-segment-boundary*)
