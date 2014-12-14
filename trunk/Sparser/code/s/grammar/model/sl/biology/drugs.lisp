@@ -7,6 +7,9 @@
 
 ;; Define drugs based on results gleaned from the cureRAS corpus with SketchEngine
 ;; NOTE: there are a number of mis-spelling here -- neeed to figure out how to deal with them
+;; RJB 12/13/2014 make "drug" and "inhibitor" drugs -- not sure about this, but they are treated like that for the annotation
+;; added a couple of new drugs 885-A and sb590885
+
 (in-package :sparser)
 ;;--- Drugs
 ; MAPK pathway inhibitors. MAPK pathway inhibition, MAPK inhibitors
@@ -16,10 +19,13 @@
 ; retaining transcriptional response to vemurafenib and AZD6244
 (define-category drug
     :specializes molecule)
+
 (defun define-drug (drug-name)
   (eval `(np-head ,drug-name :super 'drug)))
+;;(define-drug "drug")
+;;(define-drug "inhibitor")
 
-
+(define-drug "885-A")
 (define-drug "abciximab")
 (define-drug "abl-ib")
 (define-drug "activity-dasatinib")
@@ -355,6 +361,7 @@
 (define-drug "saha")
 (define-drug "salirasib")
 (define-drug "saracatinib")
+(define-drug "sb590885")
 (define-drug "scrib")
 (define-drug "secukinumab")
 (define-drug "seliciclib")

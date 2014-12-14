@@ -8,6 +8,12 @@
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
 ;; words not covered by edges. Added traces.
+;; RJB 12/13/2014 changes to method "remaining-forms" and to code in categories.lisp
+;; to provide more subtle handling of NP chunking to deal with verb+ed cases
+;; contrast "direct binding to activated forms of RAS" where "activated" is likely to be a pre-nominal modifier (from j2)
+;; with "these drugs blocked ERK activity" where "blocked" is the main verb.
+;; the key is to end a NG when you hit a verb+ed immediately preceded by a noun, and to prevent that verb+ed from
+;; starting another NG (so that it becomes a VG on its own) 
 
 (in-package :sparser)
 
@@ -25,6 +31,9 @@
    (end :initarg :end :accessor chunk-end-pos
     :documentation "The position object that the chunk
       ends at.")
+   (edge-list :initarg :edge-list  :accessor chunk-edge-list
+              :documentation "The edges initially considered in the chunk")
+    
    (forms :initarg :forms :initform *chunk-forms*
     :accessor chunk-forms
     :documentation "This is the set of possible syntactic forms for this chunk. Starts out as a list of 
@@ -139,14 +148,16 @@
 
 
 (defun delimit-next-chunk (edge sentence-end)
+  (declare (special edge))
   ;; know that the edge immediately after start is consistent with some
   ;;  chunk type (maybe more than one)
   ;;  Goal is to create the longest chunk possible from this point
   (let* ((start (pos-edge-starts-at edge))
          (forms (starting-forms edge *chunk-forms*))
-         (chunk (make-instance 'chunk :forms forms :start start :end nil))
+         (chunk (make-instance 'chunk :forms forms :start start :end nil :edge-list nil))
          (pos start)
          possible-heads)
+   ;; (declare (special start forms chunk pos possible-heads))
  
     (until
         (or (chunk-end-pos chunk)
@@ -160,8 +171,8 @@
         ;;  thus, chunk must end at or before this pos-before
         (let
             ((head (best-head (chunk-forms chunk) possible-heads)))
-;         (declare (special head))
-          ;;(break "chunk")
+         ;; (declare (special head))
+         ;; (break "chunk")
           (cond
            (head
            ;; the chunk has a head for at least one of the consistent forms
@@ -175,6 +186,7 @@
            (tr :delimited-ill-formed-chunk chunk)))))
        (t
         (setf (chunk-forms chunk) forms)
+        (push edge (chunk-edge-list chunk))
 
         (if (word-p edge)
           (then
@@ -186,7 +198,7 @@
           do (push ch possible-heads))
         (setq edge (right-treetop-at/edge pos))
         (tr :chunk-loop-next-edge edge)
-        (setq forms (remaining-forms edge (chunk-forms chunk))))))))
+        (setq forms (remaining-forms edge chunk)))))))
 
 
 (defun best-head (forms possible-heads)
@@ -209,7 +221,7 @@
     (list form next-pos)))
 
 
-:+ignore
+:+ignore ;; definition of remaining-forms has changed
 (defun test-remaining-forms ()
   (let
       ((forms *chunk-forms*))
@@ -221,13 +233,22 @@
                    (remaining-forms (right-treetop-at/edge pos) *chunk-forms*)))
          (print (list pos forms))))))
 
-(defun remaining-forms (edge &optional (forms *chunk-forms*))
+(defun remaining-forms (edge chunk);; &optional (forms *chunk-forms*))
+  (let
+      ((forms (chunk-forms chunk))
+       (edges (chunk-edge-list chunk)))
   (loop for form in forms
     when (or
-          (and (eq form 'ng) (ng-compatible? edge))
+          (and (eq form 'ng) 
+               (ng-compatible? edge)
+               ;; new code -- don't accept a past participle immediately following a noun -- most likely to be a main verb or a reduced relative in this case
+               (not (and
+                     (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge)))
+                     (memq (cat-symbol (edge-form (car edges)))
+                           '(category::COMMON-NOUN category::COMMON-NOUN/PLURAL)))))
           (and (eq form 'vg) (vg-compatible? edge))
           (and (eq form 'adjg) (adjg-compatible? edge)))
-    collect form))
+    collect form)))
 
 (defun starting-forms (edge &optional (forms *chunk-forms*))
   (loop for form in forms
