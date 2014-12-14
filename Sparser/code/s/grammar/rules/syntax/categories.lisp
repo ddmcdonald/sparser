@@ -61,6 +61,7 @@
 ;; with "these drugs blocked ERK activity" where "blocked" is the main verb.
 ;; the key is to end a NG when you hit a verb+ed immediatelyu preceded by a noun, and to prevent that verb+ed from
 ;; starting another NG (so that it becomes a VG on its own)
+;; RJB 12/14/2014 Similar fix for verb+ing as the start of a NG
  
 (in-package :sparser)
 
@@ -286,7 +287,7 @@
     CATEGORY::SPATIAL-ADJECTIVE
     CATEGORY::TEMPORAL-ADJECTIVE
     ;;CATEGORY::VERB+ED
-    CATEGORY::VERB+ING
+    ;;CATEGORY::VERB+ING
     CATEGORY::COMMON-NOUN/PLURAL
     CATEGORY::NOUN/VERB-AMBIGUOUS
     CATEGORY::COMMON-NOUN
@@ -354,16 +355,23 @@
   (declare (special e))
   (or
    (ng-start? (edge-form e))
-   (and (eq category::verb+ed (edge-form e))
+   (cond
+    ((eq category::verb+ed (edge-form e))
         ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
         ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
         ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
         ;; as opposed to "direct binding to activated forms of RAS"
-        (not (and
-              (car *chunks*)
-              (member 'ng (chunk-forms (car *chunks*)))
-              (eq (chunk-end-pos (car *chunks*))
-                  (pos-edge-starts-at e)))))))
+     (not (and
+           (car *chunks*)
+           (member 'ng (chunk-forms (car *chunks*)))
+           (eq (chunk-end-pos (car *chunks*))
+               (pos-edge-starts-at e)))))
+    ((eq category::verb+ing (edge-form e))
+        ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
+        ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
+      (not
+       (eq category::preposition (edge-form (edge-just-to-left-of e))))))))
+
 
 (defmethod ng-start? ((c referential-category))
   (ng-start? (cat-symbol c)))

@@ -97,7 +97,7 @@
 ;;(np-head "human") ;;/// check people code
 (def-bio "human" species)
 (np-head "mortality") ;;/// relationship to "mortal" ??
-
+(np-head "drug" :super 'molecule) 
 
 ;;--- j2
 
