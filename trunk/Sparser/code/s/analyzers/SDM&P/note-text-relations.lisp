@@ -8,7 +8,8 @@
 ;; Initiated 3/9/13. Elaborated through 3/28/13. 7/15/13 Added gate
 ;; on new cases. Occasional fixes to edge cases through 9/16/13.
 ;; 10/2/13 Provided read content to note-country and its friends.
-
+;;RJB 12/13/2014 fix edge-denotes-interesting-object -- for the moment parenthetical segments are uninteresting
+;; parentheticals should be handled better <<DAVID>>
 (in-package :sparser)
 
 ;;;--------
@@ -167,10 +168,12 @@
     (cond
      ;; these are uninteresting
      ((derived-from-text-relation? label) nil)
-     ((or (pronoun-category? form)
-          (verb-category? form)
-          (ignorable-category? form)
-          (punctuation? referent))
+     ((or 
+       (eq label category::parentheses) ;; for the moment parenthetical segments are uninteresting
+       (pronoun-category? form)
+       (verb-category? form)
+       (ignorable-category? form)
+       (punctuation? referent))
       nil)
      (t
       ;; It's iteresting.
