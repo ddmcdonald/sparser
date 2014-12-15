@@ -7,6 +7,7 @@
 
 ;; Initiated 8/30/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
+;; RJB 12/14/2014 simple (hack) fix to allow pronouns in simple subject verb construction moified categories in sweep-sentence-treetops
 
 (in-package :sparser)
 
@@ -16,7 +17,7 @@
 
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
   "Scan the treetops left to right"
-  (declare (special tt prior-tt))
+  (declare (special tt prior-tt form))
   (tr :sweep-sentence-treetops start-pos end-pos)
   (push-debug `(,sentence ,start-pos ,end-pos))
   (clear-sweep-sentence-tt-state-vars)
@@ -65,7 +66,10 @@
           ((category::np
             category::proper-name
             category::n-bar
-            category::common-noun) ;; ///not elevated
+            category::common-noun
+            category::pronoun
+            category::WH-PRONOUN
+            ) ;; ///not elevated
            (cond ((np-over-that? tt)
                   (push-that tt))
                  ((null prior-tt)
