@@ -57,7 +57,7 @@
 (define-category  quality
   :instantiates nil
   :specializes  top
-  :realization (:common-noun "quality")
+  :lemma (:common-noun "quality")
   :documentation 
 "Qualities are attributes of / inhere in other entities, such as
  color location, size, severity, saturation, anger Their 'range', so
@@ -75,7 +75,7 @@
 (define-category abstract
   :instantiates nil
   :specializes top
-  :realization (:common-noun "abstract")
+  :lemma (:common-noun "abstract")
   :documentation
  "Independent stuff that is not anchored in space or time or by
  association with something that is: Units of measure, regions of the
@@ -91,7 +91,7 @@
 ;
 (define-category relation
   :specializes abstract
-  :realization (:common-noun "relation")
+  :lemma (:common-noun "relation")
   :documentation
   "A relation designates a relationship between some number (arity) of
  entities. It is intended as the super class of more specifc types

@@ -329,7 +329,7 @@
     CATEGORY::PROPER-NOUN
     CATEGORY::PRONOUN
     ;; not sure about these -- think of "the largest" as an NP
-    CATEGORY::COMPARATIVE
+    ;; CATEGORY::COMPARATIVE -- this causes problems with MORE
     CATEGORY::SUPERLATIVE
     category::number ;; 'How many do you want? I want 3'
     category::post-ordinal ;; But only for roman numerals

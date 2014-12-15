@@ -24,24 +24,6 @@
  split below Endurant is physical vs. non-physical.")
 
 
-#| kind and individual predate the move with C3 to have a proper
-   taxonomy. In an earlier design, instances or subclasses of kind
-   were intended as np heads, but that's been supplanted by using
-   categories there. These should fade away as there's a reason 
-   to rewrite that portion of the code. |#
-(define-category  kind
-  :instantiates :self
-  :specializes endurant
-  :lemma (common-noun "kind")
-  :binds ((name :primitive word)))
-
-(define-category  individual ;; purely a placeholder like "kind"
-  ;; This is the default nominal restriction 
-  ;; on circa-2009 abbreviations
-  :specializes endurant
-  :lemma (common-noun "individual"))
-
-
 
 (define-category physical
   :specializes endurant
@@ -50,6 +32,27 @@
   :documentation
   "Common parent to the physical subclasses.This is the level at
  which to state that every physical object has a real location.")
+
+
+
+#| kind and individual predate the move with C3 to have a proper
+   taxonomy. In an earlier design, instances or subclasses of kind
+   were intended as np heads, but that's been supplanted by using
+   categories there. These should fade away as there's a reason 
+   to rewrite that portion of the code. |#
+(define-category  kind
+  :instantiates :self
+  :specializes physical
+  :lemma (common-noun "kind")
+  :binds ((name :primitive word)))
+
+(define-category  individual ;; purely a placeholder like "kind"
+  ;; This is the default nominal restriction 
+  ;; on circa-2009 abbreviations
+  :specializes physical
+  :lemma (common-noun "individual"))
+
+
 
 (define-category physical-object 
   :specializes physical

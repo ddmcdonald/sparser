@@ -25,7 +25,7 @@
           (circumstance)
           (modifier)
           (aspect . tense/aspect)) ;; see rules/tense
-  :realization (:common-noun "event")
+  :lemma (:common-noun "event")
   :documentation
  "This was the original (circa '89) superclass of all clausal verbs.
   It's threaded into a substantial part of the model, requiring too
