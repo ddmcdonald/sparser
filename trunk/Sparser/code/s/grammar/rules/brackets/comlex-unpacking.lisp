@@ -64,6 +64,9 @@ places. ]]
 ;; look-for-primed-word-else-all-properties (in objects/chart/
 ;; words/lookup/new-words4).
 
+
+(defparameter *comlex-primed-words* nil)
+
 (defun unpack-primed-word (word symbol entry)
   ;; Called from look-for-primed-word-else-all-properties when
   ;; what-to-do-with-unknown-words is set to :check-for-primed.
@@ -98,6 +101,7 @@ places. ]]
        ;; this irregular form /// or maybe not
        ;;(or (look-for-and-decode-comlex-irregular instance-string clauses)
        (ambiguous-comlex-primed-decoder lemma-word clauses)))
+    (push instance-word *comlex-primed-words*)
     instance-word ))
 
 
