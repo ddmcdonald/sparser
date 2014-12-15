@@ -17,6 +17,7 @@
 ;; RJB 12/13/2014 ugly handling of variety, form and analog <<DAVID-- we have to talk about this>>
 ;; also ugly handling of "et al." to start making it a signal for references, 
 ;; and get rid of the interpretation of "al." as a bio-entity (couldn't even find where that cam from)
+;; RJB 12/14/2014 Added a bunchof stand-in definitions for words that were primed by COMLEX, added cell-line definitions (some) -- need help from <<DAVID>>
 
 (in-package :sparser)
 
@@ -89,8 +90,13 @@
   :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
   :subcategorization '((for np) (theme)))
 
+(adj "downstream"
+  :subject 'bio-entity
+  :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
+  :subcategorization '((for np) (theme))) ;; also from and of
 
 (adj "close")
+(adj "low")
 
 (def-bio "tumor formation" bio-process)
 
@@ -125,6 +131,9 @@ critical for tumor formation. |#
 
 (define-adverb "as a consequence")
 (define-adverb "as expected") ;; not very common, but avoids a break
+(define-adverb "nevertheless")
+(define-adverb "therefore")
+
 ;;--- J3
 (define-adjective "molecular")
 ;; It's realated to molecule, but how exactly?
@@ -145,6 +154,8 @@ that consists of five conserved G boxes. |#
 (np-head "variety" :super 'bio-variant)
 
 (np-head "analog" :super 'bio-variant)
+
+(np-head "class" :super 'bio-variant)
 
 ;; "variety" is an "of quantifier" like "many" or "some"
 ; a {wide, large, extensive, big} variety of ..
@@ -289,3 +300,50 @@ that consists of five conserved G boxes. |#
 (define-category bib-reference 
   :specializes abstract)
 (np-head "et al." :super 'bib-reference)
+
+(define-category article-figure
+  :specializes abstract)
+(np-head "figure" :super 'article-figure)
+(define-category article-table
+  :specializes abstract)
+(np-head "table" :super 'article-table)
+
+(def-bio "cell" cell-line)
+(def-bio "lines" cell-line)
+(def-bio "cell line" cell-line)
+(def-bio "D04" cell-line)
+(def-bio "MM415" cell-line)
+(def-bio "MM485" cell-line)
+(def-bio "WM852" cell-line)
+
+ 
+;;; new words to be defined -- were primed bhy COMLEX
+;; we need better semantics for these <<DAVID>>
+(def-bio "data" bio-entity) ;; need something better
+(def-bio "means" bio-process) ;; by chemical or genetic means
+(def-bio "finding" bio-entity) ;; like data
+(def-bio "study" bio-entity) ;;
+(def-bio "paradigm" bio-entity)
+(def-bio "paradox" bio-entity)
+
+;; nouns
+"partner"
+"panel"
+"range"
+"low"
+"binder"
+"auto"
+
+
+;; verbs
+"keep"
+"require"
+"show"
+"express"
+"maintain"
+"posit"
+"occur"
+"propose"
+"describe"
+
+
