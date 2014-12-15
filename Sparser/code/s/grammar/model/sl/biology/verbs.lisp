@@ -8,6 +8,7 @@
 ;; Initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 11/7/14. 
 ;; dsefine verbs (svo/passive/nominal encode, mutate and make some verbs more specific (enhancement enhances a bio-process)
+;; RJB 12/14/2014 added verb for block -- avoid comlex priming
 
 (in-package :sparser)
 
@@ -154,6 +155,11 @@
   :subject bio-entity
   :theme bio-entity)
 
+(def-term "block" verb  (svo of-nominal)
+  :super-category bio-process
+  :nominalization "blocking"
+  :subject bio-entity
+  :theme bio-process)
 
 ;;--- "load" -- "GTP loading"
 ;; "activated upon GTP loading"
