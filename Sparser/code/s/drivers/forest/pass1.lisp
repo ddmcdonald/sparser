@@ -6,6 +6,7 @@
 ;;;  Version:  Octoberr 2014
 
 ;; Broken out of island-driving 10/23/14.
+;; RJB 12/14/2014 -- simple fix to prevent failure in simple-subject-verb when subject is a pronoun -- need to treat pronouns better <<DAVID>>
 
 (in-package :sparser)
       
@@ -30,9 +31,12 @@
         (let ((edge (check-one-one subject-edge verb-group-edge)))
           ;; good spot for a trace
           ;; set form to subj+vg or whatever that is.
-          (tr :subject+verb edge subject-edge verb-group-edge)
-          (setf (edge-form edge) (category-named 'subj+verb))
-          edge)
+          (if edge
+              (then 
+                (tr :subject+verb edge subject-edge verb-group-edge)
+                (setf (edge-form edge) (category-named 'subj+verb))
+                edge)
+              (tr :no-subject-or-verb-edges)))
         (tr :subject-not-adjacent subject-edge verb-group-edge))
       (tr :no-subject-or-verb-edges))))
  
