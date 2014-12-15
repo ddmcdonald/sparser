@@ -8,6 +8,7 @@
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 ;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, bio-conditions, bio-locations, species
 ;; added step for biology (was defined in comlex), bio-variant for "form of <protein>", protein-segment for "G-dommain" and G1-box
+;; RJB 12/14/2014 add cell-line (need to deal with this better)
 (in-package :sparser)
 
 ;;;---------------------------
@@ -220,6 +221,12 @@
   :specializes bio-entity
   :instantiates self
   :index (:permanent :key name))
+
+(define-category cell-line
+  :specializes bio-location
+  :instantiates self
+  :index (:permanent :key name))
+
 
 (define-category  in-bio-location  ;; "in humans, in epithelial cells, in the plasma membrane"
   :instantiates self
