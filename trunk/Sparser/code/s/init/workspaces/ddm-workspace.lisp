@@ -70,6 +70,7 @@
   (ddm-ed "drivers/forest/sweep.lisp")
   (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
+  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "grammar/rules/syntax/syntactic-rules.lisp")
   (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
   (ddm-ed "grammar/rules/DM&P/period-hook.lisp")
@@ -81,8 +82,10 @@
 
 (defun ddm-no-spaces ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
-  (ddm-ed "analyzers/psp/patterns/patterns.lisp")
+  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp")
+  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
+  (ddm-ed "analyzers/psp/patterns/patterns.lisp")
   (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "grammar/rules/SD&P/create-categories.lisp")
@@ -117,12 +120,16 @@
 
 
 (defun ddm-grammar ()
+  (ddm-ed "init/versons/v4.0/loaders/grammar.lisp")
   (ddm-ed "grammar/rules/tree-families/morphology1.lisp") ;; word rules
   (ddm-ed "grammar/rules/syntax/categories.lisp") ;; and morph tables
   (ddm-ed "grammar/model/dossiers/modifiers.lisp")
   (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
+  (ddm-ed "grammar/rules/syntax/syntactic-rules.lisp")
   (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
   (ddm-ed "grammar/rules/syntax/prepositions.lisp")
+  (ddm-ed "grammar/rules/syntax/articles.lisp")
+  (ddm-ed "grammar/rules/syntax/be.lisp")
   (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
   (ddm-ed "grammar/rules/syntax/conjunction8.lisp"))
 
