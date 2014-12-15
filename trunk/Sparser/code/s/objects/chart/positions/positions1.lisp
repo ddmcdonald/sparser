@@ -170,13 +170,15 @@
 ;;;------------------------
 
 (defun words-between (start-pos end-pos)
-  (let ((pos start-pos)
-        words )
-    (loop
-      (when (eq pos end-pos) (return))
-      (push (pos-terminal pos) words)
-      (setq pos (chart-position-after pos)))
-    (nreverse words)))
+  (if (null end-pos)
+      nil
+      (let ((pos start-pos)
+            words )
+        (loop
+          (when (eq pos end-pos) (return))
+          (push (pos-terminal pos) words)
+          (setq pos (chart-position-after pos)))
+        (nreverse words))))
 
 
 (defun string-of-words-between (p1 p2)

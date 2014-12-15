@@ -44,7 +44,8 @@
   ;; the base is one of the slot-forming expressions 
   (let* ((base-name (etypecase base
                       (symbol base)
-                      (cons (car base))))
+                      (cons (car base))
+                      (category (cat-symbol base))))
          (by-cat-name (name-to-use-for-category
                        (string-append ':by- base-name))))
     ;; This is what the define-category macro opens up as
@@ -64,25 +65,21 @@
 
 (defun apply-preposition-if-any (pname preposition category)
   "The pname is the base form of the word being defined.
-   The preposition is the string for the preposition we're assigning.
-   The category is the label that will be on all the edges with
-   that word as their head."
+   The preposition is the string for the preposition we're assigning."
   (when preposition
     (when (consp preposition)
       (break "stub: consp prep")) ;; change category
-    (let* ((prep (resolve/make preposition))
-           (prep-label (single-rewrite-label-over prep)) ;; fails if none
-           ;(category-name (cat-symbol category))
-            (rule (define-cfr category `(,category ,prep-label)
-                   :form category::vg
-                   :referent '(:daughter left-referent))))
-      (add-rule-to-category rule category)
-      (let ((verb (resolve pname)))
-        ;;(push-debug `(,prep ,verb ,category))
-        ;;(break "applying prep ~s" preposition)
-        (assign-subcat/expr verb 'verb category `(:prep ,prep))
-        ;;(break "After applying prep ~s" preposition)
-))))
+    (apply-preposition pname preposition category)))
+
+(defun apply-preposition (pname preposition category)
+  (let* ((prep (resolve/make preposition))
+         (prep-label (single-rewrite-label-over prep)) ;; fails if none
+         (rule (define-cfr category `(,category ,prep-label)
+                 :form category::vg
+                 :referent '(:daughter left-referent))))
+    (add-rule-to-category rule category)
+    (let ((verb (resolve pname)))
+      (assign-subcat/expr verb 'verb category `(:prep ,prep)))))
 
 ;;//// move where it can be found
 (defmethod single-rewrite-label-over ((pname string))
@@ -122,7 +119,9 @@
          (head-keyword (schema-head-keyword scheme))
          (mapping (assemble-scheme-form scheme args etf category))
          (head-word-pname (cdr (assq head-keyword word-keys)))
-         (head-word (resolve/make head-word-pname))
+         (head-word (if (consp head-word-pname)
+                      (resolve/make (car head-word-pname))
+                      (resolve/make head-word-pname)))
          (irregulars (cdr (assq :irregulars word-keys))))
     ;;(push-debug `(,etf ,head-keyword ,head-word ,mapping)) (break "1")
     (unless head-word
@@ -169,6 +168,48 @@
           (unless subst-value
             (error "No value for ~a among the substitution args"
                    cdr-value))
+          (let ((decoded-value
+                 (typecase subst-value
+                   (lambda-variable subst-value)
+                   (category subst-value)
+                   (symbol
+                    (or (category-named subst-value)
+                        (find-variable-in-category subst-value category)))
+                   (otherwise
+                    (error "Unexpected type of subst-value: ~a~%~a"
+                           (type-of subst-value) subst-value)))))
+            (unless decoded-value
+              (error "Could not decode the substitution value ~a"
+                     subst-value))
+
+            (push `(,car-value . ,decoded-value)
+                  new-mapping))))))
+    (nreverse new-mapping)))
+
+#+ignore  ;; original
+(defun assemble-scheme-form (schema args-to-substitute etf category)
+  "Rebuild the schematic mapping into a real mapping according to the
+   category-specific substitution arguments. Does much of the same job
+   as decode-binding in interpreting symbols and strings."
+  (push-debug `(,schema ,args-to-substitute ,etf ,category)) ;; (break "pop")
+  ;; (setq schema (car *) args-to-substitute (cadr *) etf (caddr *) category (cadddr *))
+  (let (;;(parameter-symbols (etf-parameters etf))
+        (mapping-form (schema-mapping schema))
+        new-mapping  car-value  cdr-value)
+    (dolist (pair mapping-form)
+      (setq car-value (car pair)
+            cdr-value (cdr pair))
+      (cond
+       ((eq cdr-value :self)
+        (push `(,car-value ,category) new-mapping))
+       ((stringp cdr-value)
+        (let ((word (resolve/make cdr-value)))
+          (push `(,car-value ,word) new-mapping)))
+       (t
+        (let ((subst-value (cdr (assq cdr-value args-to-substitute))))
+          (unless subst-value
+            (error "No value for ~a among the substitution args"
+                   cdr-value))
           (push-debug `(,subst-value))
           (unless (symbolp subst-value)
             (error "Unexpected type of value naming a slot: ~a~%~a"
@@ -185,11 +226,8 @@
               (error "There is no binding (variable) named ~a~
                     ~%in the category ~a nor is there a category ~
                       with that name." subst-value category))
-
-
             (push `(,car-value . ,(or variable category))
                   new-mapping))))))
     (nreverse new-mapping)))
-
 
              

@@ -80,6 +80,10 @@
   ;;DAVID -- this didn't work when I supbstitued a semantic category for np -- WHY?
   :subcategorization '((to np) (theme)))
 
+(adj "initial"
+  :subject 'bio-entity
+  :theme 'bio-entity)
+
 (adj "selective"
   :subject 'bio-entity
   :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
@@ -90,6 +94,10 @@
   :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
   :subcategorization '((for np) (theme)))
 
+(adj "prior"
+  :subject 'bio-entity
+  :theme 'bio-entity) ;; NOT SURE WHAT THEME is in this case
+
 (adj "downstream"
   :subject 'bio-entity
   :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
@@ -97,6 +105,7 @@
 
 (adj "close")
 (adj "low")
+(adj "de novo")
 
 (def-bio "tumor formation" bio-process)
 
@@ -308,23 +317,24 @@ that consists of five conserved G boxes. |#
   :specializes abstract)
 (np-head "table" :super 'article-table)
 
-(def-bio "cell" cell-line)
-(def-bio "lines" cell-line)
-(def-bio "cell line" cell-line)
-(def-bio "D04" cell-line)
-(def-bio "MM415" cell-line)
-(def-bio "MM485" cell-line)
-(def-bio "WM852" cell-line)
+;;tried to get these to work as (def-bio terms --) but got errors like Error: No form value on #<edge17 14 "lines" 15>
+(np-head "cell" :super 'cell-line)
+(np-head "line" :super 'cell-line)
+(np-head "cell line" :super 'cell-line)
+(np-head "D04" :super 'cell-line)
+(np-head "MM415" :super 'cell-line)
+(np-head "MM485" :super 'cell-line)
+(np-head "WM852" :super 'cell-line)
+(def-bio "open reading frame" bio-entity)
 
  
 ;;; new words to be defined -- were primed bhy COMLEX
 ;; we need better semantics for these <<DAVID>>
-(def-bio "data" bio-entity) ;; need something better
-(def-bio "means" bio-process) ;; by chemical or genetic means
-(def-bio "finding" bio-entity) ;; like data
-(def-bio "study" bio-entity) ;;
-(def-bio "paradigm" bio-entity)
-(def-bio "paradox" bio-entity)
+(np-head "data" :super 'bio-entity) ;; need something better
+(np-head "means" :super 'bio-process) ;; by chemical or genetic means
+(np-head "finding" :super 'bio-entity) ;; like data(np-head "paradigm" :super 'bio-entity)
+(np-head "paradox" :super 'bio-entity)
+(np-head "setting" :super 'bio-entity)
 
 ;; nouns
 "partner"

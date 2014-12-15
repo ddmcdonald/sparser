@@ -123,7 +123,7 @@
 
 
 
-(define-function-word "than" )
+(define-function-word "than" :form 'conjunction)
 
 
 

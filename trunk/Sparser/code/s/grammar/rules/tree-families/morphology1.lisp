@@ -210,6 +210,8 @@
 
   (etypecase word
     (word (make-verb-rules/aux word category referent))
+    (polyword (make-verb-rules/aux word category referent))
+
     (list
      ;; its either multiple (synomymous) words or the specification
      ;; of special cases in the morphology or both

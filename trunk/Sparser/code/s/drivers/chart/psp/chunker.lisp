@@ -56,19 +56,22 @@
 (defmethod print-object ((chunk chunk) stream)
   (print (list 'chunk (chunk-forms chunk) 
                (chunk-start-pos chunk)
-               (pos-edge-starts-at
-                (left-treetop-at/edge (chunk-end-pos chunk))))
+               )
          stream))
 
 (defmethod print-object ((chunk chunk) stream)
   (print-unreadable-object (chunk stream :type t)
     (let ((start (chunk-start-pos chunk))
           (end (chunk-end-pos chunk)))
-      (format stream "~a p~a ~s p~a"
-              (chunk-forms chunk)
-              (pos-token-index start)
-              (if (eq start end) "" (string-of-words-between start end)) ;; has happened
-              (pos-token-index end)))))
+      (if
+       (null end)
+       "chunk with null end"
+       (format stream "~a p~a ~s p~a"
+               (chunk-forms chunk)
+               (pos-token-index start)
+               (if (eq start end)
+                   "" (string-of-words-between start end)) ;; has happened
+               (pos-token-index end))))))
 
 
 (defun pos-loop (fn &optional (sentence (sentence)))

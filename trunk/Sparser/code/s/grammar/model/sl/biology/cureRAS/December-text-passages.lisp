@@ -26,18 +26,17 @@
     (p "Critically, we posit that because it is inhibited, BRAF does not directly phosphorylate MEK, but rather it acts as a scaffold whose function is to enhance CRAF activation, thereby allowing CRAF to hyperactivate the pathway (Figure 7B).")
     (p "We do not know the stoichiometry of the components in these complexes, but since BRAF and CRAF must both bind to RAS for complex formation, it seems likely that at least two RAS proteins are needed to stimulate formation of the complex (Figure 7B).")
     (p " Next, we tested whether overexpression of these genes was sufficient to activate the MAPK pathway.")
-    (p "At baseline, COT expression increased ERK phosphorylation in a manner comparable to MEK1DD, consistent with MAP kinase pathway activation (Fig.")
-    (p "2a and Supplementary Fig. 6).")
+    (p "At baseline, COT expression increased ERK phosphorylation in a manner comparable to MEK1DD, consistent with MAP kinase pathway activation (Fig. 2a and Supplementary Fig. 6).")
     (p "Overexpression of wild-type COT or C-RAF resulted in constitutive phosphorylation of ERK and MEK in the presence of PLX4720, whereas kinase-dead derivatives had no effect (Fig. 2a, Supplementary Fig. 7).")
     (p "Based on these results, we hypothesized that COT and C-RAF drive resistance to RAF inhibition predominantly through re-activation of MAPK signaling.")
     (p "Notably, of the nine candidate ORFs from our initial screen, a subset")
     (p "(3) did not show persistent ERK/MEK phosphorylation following RAF")
     (p "inhibition, suggesting MAPK pathway-independent alteration of drug sensitivity (Supplementary Fig. 8).")
-    (p " Several groups have shown that C-RAF activation and heterodimerization with B-RAF constitute critical components of the cellular response to B-RAF inhibition15–18.")
+    (p "Several groups have shown that C-RAF activation and heterodimerization with B-RAF constitute critical components of the cellular response to B-RAF inhibition.");; fixed typo with 18-20 at end of sentence
     (p "In A375 cells, endogenous C-RAF: B-RAF heterodimers were measurable and inducible following treatment with PLX4720 (Supplementary Fig. 9).")
     (p "However, endogenous C-RAF phosphorylation at S338—an event required for C-RAF activation—remained low (Supplementary Fig. 9).")
     (p "In contrast, ectopically expressed C-RAF was phosphorylated on S338 (Supplementary Fig. 9) and its PLX4720 resistance phenotype was associated with sustained MEK/ERK activation (Fig. 2a, Supplementary Fig. 9).")
-    (p "Moreover, ectopic expression of a high-activity C-RAF truncation mutant (C-RAF(W22) was more effective than wild-type C-RAF in mediating PLX4720 resistance and ERK activation (Supplementary Fig. 10), further indicating that elevated C-RAF activity may direct resistance to this agent.")
+    (p "Moreover, ectopic expression of a high-activity C-RAF truncation mutant (C-RAF W22) was more effective than wild-type C-RAF in mediating PLX4720 resistance and ERK activation (Supplementary Fig. 10), further indicating that elevated C-RAF activity may direct resistance to this agent.");;fixed typo with unbalanced paren
     (p "Consistent with this model, oncogenic alleles of NRAS and KRAS conferred PLX4720 resistance in A375 cells (Fig. 2b) and yielded sustained C-RAF(S338) and ERK phosphorylation in the context of drug treatment (Fig. 2c).")
     (p "Thus, although genetic alterations that engender C-RAF activation (e.g., oncogenic RAS mutations) tend to show mutual exclusivity with B-RAFV600E mutation, such co-occurring events [19, 20] might be favored in the context of acquired resistance to B-RAF inhibition.")
     (p " We then considered whether COT-expressing cancer cells remain sensitive to MAPK pathway inhibition at a target downstream of COT or RAF.")
@@ -63,5 +62,16 @@
 (defun dectest(n)
   (let ((test  (nth (- n 1) *dec-tests*)))
     (print (list n test))
-    (eval test)))
+    (if (member n *known-breaks*)
+        (print "skipping because of known problems")
+        (eval test))))
+
+(setq *known-breaks* nil)
+(setq *tested* '(0))
+(defun retest () (loop for i from (+ 1 (car *tested*)) to 100 do (push i *tested*) (dectest i)))
+(defun bad () (push (car *tested*) *known-breaks*) (retest))
+
+
+
+
 	 

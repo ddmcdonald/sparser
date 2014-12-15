@@ -75,11 +75,35 @@
      (setup-rdata (category-named ',category) ',rdata)
      (break "There is no category named ~a" ',category)))
 
-
+#| Taking over the name for (mostly) biology verbs 12/11/14
 (defmacro define-realization
           (category-name tree-family-name mapping-expression)
   `(define-realization/expr
      ',category-name ',tree-family-name ',mapping-expression))
+
+ddm$ grep "(define-realization "  **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+interface/workbench/define-rule1.lisp:           ~%(define-realization ~A~
+grammar/model/dossiers/change-in-amount-verbs.lisp:(define-realization to-money
+grammar/model/dossiers/co-rules.lisp:(define-realization at-company
+grammar/model/dossiers/co-rules.lisp:(define-realization comma-company-descriptor
+grammar/model/dossiers/co-rules.lisp:(define-realization company
+grammar/model/dossiers/location-descriptions.lisp:(define-realization location-phrase
+grammar/model/dossiers/new-rules.lisp:(define-realization position-at-co
+grammar/model/dossiers/new-rules.lisp:(define-realization company
+grammar/model/dossiers/new-rules.lisp:(define-realization for-company-activity
+grammar/model/dossiers/new-rules.lisp:(define-realization at-company
+grammar/model/dossiers/new-rules.lisp:(define-realization for-company-activity
+grammar/model/dossiers/new-rules.lisp:(define-realization in-financial-data
+grammar/model/dossiers/new-rules.lisp:(define-realization company
+grammar/model/dossiers/new-rules.lisp:(define-realization title
+grammar/model/dossiers/new-rules.lisp:(define-realization company
+grammar/model/dossiers/new-rules.lisp:(define-realization company
+interface/workbench/def-rule/save.lisp:          "~%(define-realization ~A~
+interface/workbench/def-rule/save1.lisp:          "~%(define-realization ~A~
+grammar/model/core/time/anaphors1.lisp:;(define-realization calculated-day pre-verb-adverb
+grammar/model/sl/ISR/draft-lexicon.lisp:(define-realization 
+grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
+
 
 (defun define-realization/expr (category-name
                                 tree-family-name

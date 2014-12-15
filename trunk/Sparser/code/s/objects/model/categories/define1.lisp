@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.5 September 2014
+;;;  version:  1.5 December 2014
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -47,6 +47,8 @@
 ;;      to the name of the category. 
 ;;     (9/19/14) added add-rule(s)-to-individual overloading the category
 ;;      loading routines. 
+;;     (12/11/14) folded in option to use the new, much shorter version
+;;      for rdata.
 
 (in-package :sparser)
 
@@ -175,7 +177,8 @@
       (handle-variable-restrictions category restrictions))
 
     (when rdata
-      (setup-rdata category rdata))
+      (or (setup-shortcut-rdata category rdata)
+          (setup-rdata category rdata)))
 
     (when lemma
       (setup-category-lemma category lemma))
