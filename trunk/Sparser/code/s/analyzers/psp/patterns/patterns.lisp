@@ -34,8 +34,13 @@
   (tr :trying-to-resolve-ns-pattern pattern)
 
   (if slash?
-    (divide-and-recombine-ns-pattern-with-slash
-     pattern words slash? pos-before pos-after)
+    (then ;; look for some special cases, then hand it to the general routine
+     (break "pattern = ~a" pattern)
+     (cond
+      ;;((equal
+      (t
+       (divide-and-recombine-ns-pattern-with-slash
+        pattern words slash? pos-before pos-after))))
 
     ;;/// turn this cond into a macro, or interpret a structured list / structure
     ;; once it clear how best to use it. 
@@ -55,7 +60,12 @@
       ;;(break "stub :single-cap :hyphen :lower")
       (reify-ns-name-and-make-edge words pos-before pos-after))
 
-     ((equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
+
+     ((or (equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
+          (equal pattern '(:full :digits)))
+      (reify-ns-name-and-make-edge words pos-before pos-after))
+
+     ((equal pattern '(:single-cap :single-digit :single-cap))
       (reify-ns-name-and-make-edge words pos-before pos-after))
 
      ((or (equal pattern '(:single-cap :digits :single-cap))

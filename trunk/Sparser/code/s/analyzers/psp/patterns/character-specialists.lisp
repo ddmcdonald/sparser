@@ -50,13 +50,33 @@
      ((= hyphen-count 1)
       ;; E.g. "Figures S1A–S1D"
       ;; split down the middle, run the two parts through the 
-      ;; pattern reifier, then combine them. 
-      (break "S1A–S1D")
-
-      )
+      ;; pattern reifier, then combine them.
+      (let* ((hyphen-pos (car hyphen-position/s))
+             (first-half (resolve-hyphen-segment 
+                           pos-before hyphen-pos))
+             (second-half (resolve-hyphen-segment 
+                           (chart-position-after hyphen-pos) next-position)))
+        (push-debug `(,first-half ,second-half))    
+        (break "look at halfs")
+        (make-hypenated-structure first-half second-half)))
      (t
       (break "New case for hyphens~%  hyphen count = ~a~
             ~%  phrase-length = ~a" hyphen-count phrase-length)))))
+
+;;/// This is surely the same a resolve-slash-segment so they should mergw
+(defun resolve-hyphen-segment (start-pos end-pos)
+  (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
+    (or single-edge
+        (let ((words (words-between start-pos end-pos))
+              (pattern (characterize-words-in-region start-pos end-pos)))
+          (let ((*work-on-ns-patterns* t))
+            (declare (special *work-on-ns-patterns*))
+            (let ((result (resolve-ns-pattern pattern words nil start-pos end-pos)))
+              (unless result 
+                (push-debug `(,pattern ,words ,start-pos ,end-pos))
+                ;; (setq pattern (car *) words (cadr *) start-pos (caddr *) end-pos (cadddr *))
+                (break "no result"))
+              result))))))
 
 (defun make-edge-into-adjective (edge)
   (setf (edge-form edge) category::adjective)

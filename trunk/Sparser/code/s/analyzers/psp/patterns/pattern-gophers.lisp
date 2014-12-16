@@ -44,7 +44,8 @@
                          segment-pattern segment-start slash-pos)))
         (unless resolution
           (push-debug `(,segment-pattern ,segment-start ,slash-pos))
-          (break "resolver returned nil"))
+          (break "pattern resolver called by slash returned nil ~
+                  on ~a" segment-pattern))
         (push resolution segments)
         (setq segment-start (chart-position-after slash-pos))
         (multiple-value-setq (segment-pattern remainder)
