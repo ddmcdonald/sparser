@@ -804,7 +804,7 @@
 ;;(define-adjective "common")
 (define-adjective "complementary")
 (define-adjective "complete")
-(define-adjective "complex") ;also noun
+;; (define-adjective "complex") ;also noun // need noun for biology
 (define-adjective "conceptual")
 (define-adjective "confluent")
 (define-adjective "consistent") ;with
