@@ -444,7 +444,7 @@
 
 
 
-
+#|
 ;; verb nominals
 "alteration" ;; keyword: (ion N) 
 "expression" ;; keyword: (ion N) 
@@ -506,3 +506,4 @@
 "underly" ;; keyword: ENDS-IN-ING 
 "validate" ;; keyword: ENDS-IN-ED 
 "yield" ;; keyword: ENDS-IN-ED 
+|#
