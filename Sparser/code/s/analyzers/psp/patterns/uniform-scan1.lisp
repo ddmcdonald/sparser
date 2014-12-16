@@ -219,7 +219,7 @@
            ;; This is the older, specialist-based scheme that was 
            ;; beginning to get too complicated: SHOC2/Sur-8", which
            ;; prompted writing a stronger pattern matcher
-           ((eq layout :span-is-longer-than-segment)
+           #+ignore((eq layout :span-is-longer-than-segment)
             (error "no-space-sequence: bad positions somehow.~
                   ~%   Parsed span goes beyond presumed boundaries.~
                   ~%   start = ~a  end = ~a" pos-before next-position))
