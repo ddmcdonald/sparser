@@ -28,6 +28,7 @@
 ; parent-edge-for-referent
     
 (defun interpret-pp-adjunct-to-np (np pp)
+  (push-debug `(,np ,pp))
   (or (call-compose np pp)
       (let* ((pp-edge (right-edge-for-referent))
              (prep-edge (edge-left-daughter pp-edge))
@@ -35,7 +36,8 @@
         ;;/// ought to use the referent of the prep but just doing
         ;; this one case for now
         (when (eq prep-word (word-named "in"))
-          (when (itypep np 'physical)
+          (when (and (itypep np 'physical)
+                     (itypep pp 'location))
             ;; otherwise we don't know what to do with it.
             (bind-variable 'location pp  np)))
         ;; Leaving this be while waiting on subcat. fixes
