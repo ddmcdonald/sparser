@@ -80,9 +80,9 @@
                       (find-variable-for-category var/name category))))
     (unless variable
       (if category
-        (break "Check spelling: there is no variable named ~A~
+        (break "There is no variable named ~A~
                 ~%associated with the category ~A" var/name category)
-        (break "Check spelling: there is no variable named ~A~
+        (break "There is no variable named ~A~
                 ~%associated with the category of the individual ~A"
                var/name individual)))
     (bind-variable/expr variable value individual)))
