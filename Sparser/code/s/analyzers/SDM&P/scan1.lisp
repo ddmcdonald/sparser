@@ -151,7 +151,13 @@ to make any semantic or form edges that the grammar dictates.
 	    :referent
 	       (typecase referent
 		 (referential-category
-		  (instantiate-reified-segment-category referent))
+                  ;; When the category is one like 'protein' that expects
+                  ;; its individuals to be named, then the empty binding
+                  ;; instructions will lead to an error downstream
+		  ;;(instantiate-reified-segment-category referent)
+                  ;; This call creates an individual (stored on the
+                  ;; category that might provide the basis for a subtype.
+                  (make-category-indexed-individual referent))
 		 (mixin-category
 		  referent) ;; "can"
 		 (individual
