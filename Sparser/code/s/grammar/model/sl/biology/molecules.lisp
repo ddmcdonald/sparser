@@ -23,3 +23,7 @@
 (find-or-make-individual 'small-named-molecule :name "cAMP")
 (find-or-make-individual 'small-named-molecule :name "GTP")
 (find-or-make-individual 'small-named-molecule :name "GDP")
+
+
+
+            

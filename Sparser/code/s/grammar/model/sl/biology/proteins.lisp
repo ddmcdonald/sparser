@@ -120,7 +120,8 @@ filligre may be used to distinguish them, etc.
 ;; These can be ripped out of pro.obo once we figure out
 ;; the simplest mechanism 
 
-(def-bio "raf" protein) ;; denotes a family
+(def-bio "raf" protein
+  :identifier "RAF") ;; denotes a family -- not sure there is a formal identifier (need help from UCD)
 
 (def-bio "braf" protein 
   :identifier "PR:000004801")
