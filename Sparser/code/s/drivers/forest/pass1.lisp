@@ -216,8 +216,8 @@
               (tr :of-right-failed))
 
             (setq result-edge
-               (if left-composition
-                 (then 
+               (cond
+                (left-composition
                   (tr :trying-to-compose left-composition rightward-edge)
                   (let ((new-edge
                          (check-one-one left-composition rightward-edge)))
@@ -225,16 +225,16 @@
                       (tr :composition-succeeded new-edge)
                       (tr :composition-failed))
                     new-edge))
-                 (else
+                 (right-composition
                   (tr :trying-to-compose leftward-edge right-composition)
                   (let ((new-edge
                          (check-one-one leftward-edge right-composition)))
                     (if new-edge
                       (tr :composition-succeeded new-edge)
                       (tr :composition-failed))
-                    new-edge)))))
+                    new-edge))))))
           ;;(break "of")
-          result-edge)))))
+          result-edge))))
 
 
 
