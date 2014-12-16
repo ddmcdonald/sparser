@@ -103,9 +103,11 @@
   :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
   :subcategorization '((for np) (theme))) ;; also from and of
 
-(adj "close")
-(adj "low")
-(adj "de novo")
+(adj "close" :super 'modifier)
+(adj "low" :super 'modifier)
+(adj "de novo" :super 'modifier)
+(adj "in vitro" :super 'modifier)
+
 
 (def-bio "tumor formation" bio-process)
 
@@ -154,7 +156,7 @@ critical for tumor formation. |#
 proteins and is mediated by a conserved structure called the G-domain
 that consists of five conserved G boxes. |#
 
-(np-head "mechanism")
+(np-head "mechanism" :super 'bio-process)
 
 ;; activated forms of the Ras proteins
 ;; Needs a whole model
@@ -336,25 +338,11 @@ that consists of five conserved G boxes. |#
 (np-head "paradox" :super 'bio-entity)
 (np-head "setting" :super 'bio-entity)
 
-;; nouns
-"partner"
-"panel"
-"range"
-"low"
-"binder"
-"auto"
+
 
 
 ;; verbs
-"keep"
-"require"
-"show"
-"express"
-"maintain"
-"posit"
-"occur"
-"propose"
-"describe"
+
 
 ;; all remaining (including overlap with the nouns and verbs abov)
 "approaches" 
@@ -426,3 +414,93 @@ that consists of five conserved G boxes. |#
 "trials" 
 "type"  
 "wild" 
+
+;;adjective
+(adj "chemical" :super 'modifier) ;; keyword: (al ADJ) 
+(adj "combinatorial" :super 'modifier) ;; keyword: (al ADJ) 
+(adj "comparable" :super 'modifier) ;; keyword: (able ADJ) 
+(adj "dependent" :super 'modifier) ;; keyword: (ent ADJ) 
+(adj "ectopic" :super 'modifier) ;; keyword: (ic ADJ) 
+(adj "effective" :super 'modifier) ;; keyword: (ive ADJ) 
+(adj "endogenous" :super 'modifier) ;; keyword: (ous ADJ) 
+(adj "inactive" :super 'modifier) ;; keyword: (ive ADJ) 
+(adj "inducible" :super 'modifier) ;; keyword: (ible ADJ) 
+(adj "ineffective" :super 'modifier) ;; keyword: (ive ADJ) 
+(adj "integrative" :super 'modifier) ;; keyword: (ive ADJ) 
+(adj "measurable" :super 'modifier) ;; keyword: (able ADJ) 
+(adj "mekindependent" :super 'modifier) ;; keyword: (ent ADJ) 
+(adj "mutual" :super 'modifier) ;; keyword: (al ADJ) 
+(adj "pharmacological" :super 'modifier) ;; keyword: (al ADJ) 
+(adj "present" :super 'modifier) ;; keyword: (ent ADJ) 
+(adj "refractory" :super 'modifier) ;; keyword: (ory ADJ) 
+(adj "sensitive" :super 'modifier) ;; keyword: (ive ADJ) 
+(adj "supplementary" :super 'modifier) ;; keyword: (ary ADJ) 
+(adj "intriguing" :super 'modifier) ;; keyword: ENDS-IN-ING 
+
+;;adverb
+(define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
+(define-adverb "primarily") ;; keyword: ENDS-IN-LY 
+
+;;noun
+(np-head "agonist") ;; keyword: (ist N) 
+(np-head "auto")
+(np-head "binder")
+(np-head "exclusivity") ;; keyword: (ity N) 
+(np-head "factor") ;; keyword: (or N) 
+(np-head "panel")
+(np-head "partner")
+
+(np-head "presence") ;; keyword: (ence N) 
+(np-head "range")
+(np-head "sensitivity") ;; keyword: (ity N) 
+(np-head "therapeutics") ;; keyword: (ics N) 
+(np-head "treatment") ;; keyword: (ment N) 
+
+;;need prep cases
+(np-head "conformation") ;; keyword: (ion N) 
+(np-head "dependency") ;; keyword: (ency N) 
+(np-head "depletion") ;; keyword: (ion N) 
+(np-head "development") ;; keyword: (ment N) 
+(np-head "heterodimerization") ;; keyword: (ion N) 
+(np-head "hyperactivation") ;; keyword: (ion N) 
+(np-head "identification") ;; keyword: (ion N) 
+(np-head "possibility") ;; keyword: (ity N) 
+(np-head "inhibitor") ;; keyword: (or N) 
+
+;;;POTENTIAL AMBIGUITIES TO BE SUPPRESSED
+"express";;ambiguous between (ADJECTIVE ADVERB NOUN VERB)
+"show";;ambiguous between (NOUN VERB)
+"describe"
+"paradigm"
+"maintain"
+"keep";;ambiguous between (NOUN VERB)
+"approach";;ambiguous between (NOUN VERB)
+"elucidate"
+"escape";;ambiguous between (NOUN VERB)
+"fate";;ambiguous between (NOUN VERB)
+"membrane"
+"complex";;ambiguous between (ADJECTIVE NOUN)
+"scaffold"
+"know";;ambiguous between (NOUN VERB)
+"component";;ambiguous between (ADJECTIVE NOUN)
+"wild";;ambiguous between (ADJECTIVE ADVERB)
+"type";;ambiguous between (NOUN VERB)
+"dead";;ambiguous between (ADJECTIVE ADVERB)
+"derivative";;ambiguous between (ADJECTIVE NOUN)
+"effect";;ambiguous between (NOUN VERB)
+"resistance"
+"candidate"
+"screen";;ambiguous between (NOUN VERB)
+"group";;ambiguous between (NOUN VERB)
+"constitute"
+"response"
+"high";;ambiguous between (ADJECTIVE ADVERB)
+"model";;ambiguous between (NOUN VERB)
+"engender"
+"target";;ambiguous between (NOUN VERB)
+"observation"
+"assay";;ambiguous between (NOUN VERB)
+
+
+
+
