@@ -115,6 +115,10 @@
 (def-bio "human" species)
 (np-head "mortality") ;;/// relationship to "mortal" ??
 (np-head "drug" :super 'molecule) 
+(np-head "rna" :super 'molecule)
+(np-head "rnai" :super 'bio-process)
+
+
 
 ;;--- j2
 
@@ -466,6 +470,8 @@ that consists of five conserved G boxes. |#
 (np-head "identification") ;; keyword: (ion N) 
 (np-head "possibility") ;; keyword: (ity N) 
 (np-head "inhibitor") ;; keyword: (or N) 
+(np-head "mass spectrometry" :super 'bio-process)
+
 
 ;;;POTENTIAL AMBIGUITIES TO BE SUPPRESSED
 "express";;ambiguous between (ADJECTIVE ADVERB NOUN VERB)
