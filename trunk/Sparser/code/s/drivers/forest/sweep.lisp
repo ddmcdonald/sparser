@@ -67,8 +67,9 @@
             category::proper-name
             category::n-bar
             category::common-noun
-            category::pronoun
-            category::WH-PRONOUN
+            category::pronoun    ;;//// keep track of these for
+            category::WH-PRONOUN ;; a dereferencing pass.
+            category::reflexive/pronoun
             ) ;; ///not elevated
            (cond ((np-over-that? tt)
                   (push-that tt))
@@ -124,8 +125,6 @@
           (category::quantifier
            ;; drop it on the floor for now: "each of"
            )
-          ((category::pronoun
-            category::wh-pronoun))
 
           (otherwise
            (push-debug `(,tt ,form))
