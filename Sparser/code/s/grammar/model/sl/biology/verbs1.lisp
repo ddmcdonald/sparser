@@ -445,3 +445,64 @@
 
 
 
+;; verb nominals
+"alteration" ;; keyword: (ion N) 
+"expression" ;; keyword: (ion N) 
+"function" ;; keyword: (ion N) 
+"hypothesis" ;; keyword: (sis N) 
+"inhibition" ;; keyword: (ion N) 
+"interference" ;; keyword: (ence N) 
+"overexpression" ;; keyword: (ion N) 
+"proliferation" ;; keyword: (ion N) 
+"truncation" ;; keyword: (ion N)
+
+
+;;verb 
+"acquire" ;; keyword: ENDS-IN-ED 
+"allow" ;; keyword: ENDS-IN-ING 
+"associate" ;; keyword: ENDS-IN-ED 
+"base" ;; keyword: ENDS-IN-ED 
+"bind" ;; keyword: ENDS-IN-ING 
+"cause" ;; keyword: ENDS-IN-ED 
+"confer" ;; keyword: ENDS-IN-ED 
+"confound" ;; keyword: ENDS-IN-ED 
+"consider" ;; keyword: ENDS-IN-ED 
+"culture" ;; keyword: ENDS-IN-ED 
+"demonstrate" ;; keyword: ENDS-IN-ED 
+"describe"
+"display" ;; keyword: ENDS-IN-ED 
+"elevate" ;; keyword: ENDS-IN-ED 
+"express"
+"favor" ;; keyword: ENDS-IN-ED 
+"hypothesize" ;; keyword: ENDS-IN-ED 
+"identify" ;; keyword: ENDS-IN-ED 
+"indicate" ;; keyword: ENDS-IN-ING 
+"inhibit" ;; keyword: ENDS-IN-ED 
+"involve" ;; keyword: ENDS-IN-ING 
+"keep"
+"lead" ;; keyword: ENDS-IN-ING 
+"maintain"
+"neede" ;; keyword: ENDS-IN-ED 
+"observe" ;; keyword: ENDS-IN-ED 
+"obtain" ;; keyword: ENDS-IN-ED 
+"occur"
+"perform" ;; keyword: ENDS-IN-ED 
+"posit"
+"propose"
+"query" ;; keyword: ENDS-IN-ED 
+"raise" ;; keyword: ENDS-IN-ED 
+"recruit" ;; keyword: ENDS-IN-ED 
+"reduce" ;; keyword: ENDS-IN-ING 
+"relapse" ;; keyword: ENDS-IN-ING 
+"remain" ;; keyword: ENDS-IN-ED 
+"require"
+"result" ;; keyword: ENDS-IN-ED 
+"select" ;; keyword: ENDS-IN-ED 
+"show"
+"suppress" ;; keyword: ENDS-IN-ED 
+"sustain" ;; keyword: ENDS-IN-ED 
+"target" ;; keyword: ENDS-IN-ED 
+"test" ;; keyword: ENDS-IN-ED 
+"underly" ;; keyword: ENDS-IN-ING 
+"validate" ;; keyword: ENDS-IN-ED 
+"yield" ;; keyword: ENDS-IN-ED 
