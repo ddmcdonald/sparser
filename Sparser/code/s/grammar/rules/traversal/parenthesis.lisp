@@ -60,6 +60,7 @@
 
 
 (defun span-parentheses (start-pos end-pos)
+  (declare (special hide-parentheses))
   (unless *ignore-parentheses*
     (tr :close-paren-seen start-pos)
     
@@ -88,9 +89,29 @@
         ;; this will be the edge produced by the paired-punct hook
 	
         (edge-interaction-with-quiescence-check edge)
-	
+
+        (when hide-parentheses
+          ;;/// should also record the position of the parentheses
+          ;; in case a second pass considers them.
+          (hide-parenthesis-edge-at-pos edge open-pos))
         (tr :parenthesis-edge edge)
         edge ))))
+
+(defun hide-parenthesis-edge-at-pos (paren-edge open-pos)
+  ;; Edge spans from the open paren to the close inclusive.
+  ;; Open-pos is the position between that edge and the word/edge
+  ;; to its left.
+  (push-debug `(,paren-edge ,open-pos))
+  (let ((edge-to-immediate-left (left-treetop-at/edge open-pos)))
+    (unless edge-to-immediate-left
+      (error "hide parenthesis: new situation, no edge to the left"))
+    (let ((paren-ends-at (edge-ends-at paren-edge)))
+          ;;(neighbor-ends-at (edge-ends-at edge-to-immediate-left)))
+      (setf (edge-ends-at edge-to-immediate-left) paren-ends-at)
+      (knit-edge-into-position edge-to-immediate-left paren-ends-at)
+      (push-debug `(,edge-to-immediate-left)) 
+      ;;(break "is the edge hidden?")
+)))
 
 
 
