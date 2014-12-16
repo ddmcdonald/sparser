@@ -1,4 +1,4 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "verbs"
@@ -60,7 +60,7 @@
 (define-category bio-deactivate
   :specializes bio-process
   :binds ((deactivator bio-entity) (deactivated molecule))
-  :realization 
+  :realized-as
    (:verb "deactivate" :noun "deactivation"
     :etf (svo-passive of-nominal)
     :s deactivator
