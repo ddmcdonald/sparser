@@ -31,22 +31,28 @@
                           (chart-position-after hyphen-pos))))
         (tr :hyphen-specialist left-edge right-edge)
         (let ((rule
-               (or
-                ;; Can we look and know which edge -should- be the
-                ;; head? If we just assume its the right-edge and
-                ;; the left-edge is the theme then we will prefer
-                ;; a direct-object reading:
-                (multiply-edges right-edge left-edge)
-                ;; but it that doesn't work lets try the other order
-                ;; just to get something (as better than nothing)
-                (multiply-edges left-edge right-edge))))
+               (when (and (edge-p left-edge)
+                          (edge-p right-edge))
+                 ;; otherwise we just have unknown words without
+                 ;; preterminal edges so they're not going to compose.
+                 (or
+                  ;; Can we look and know which edge -should- be the
+                  ;; head? If we just assume its the right-edge and
+                  ;; the left-edge is the theme then we will prefer
+                  ;; a direct-object reading:
+                  (multiply-edges right-edge left-edge)
+                  ;; but it that doesn't work lets try the other order
+                  ;; just to get something (as better than nothing)
+                  (multiply-edges left-edge right-edge)))))
           (if rule
             (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
               ;;//// trace goes here
               (revise-form-of-nospace-edge-if-necessary edge))
             (else ;; make a structure if all else fails
-             ;; but first alert to anticipated cases not working
-             (make-hypenated-structure left-edge right-edge))))))
+              ;; but first alert to anticipated cases not working
+              (unless (or (word-p left-edge) (word-p right-edge))
+                ;; hyphenated structure assumes it has edges to work with
+                (make-hypenated-structure left-edge right-edge)))))))
      ((= hyphen-count 1)
       ;; E.g. "Figures S1A–S1D"
       ;; split down the middle, run the two parts through the 
