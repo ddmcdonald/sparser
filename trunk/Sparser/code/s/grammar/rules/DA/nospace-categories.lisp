@@ -38,7 +38,9 @@
     (let ((edge (make-edge-over-long-span
                    (pos-edge-starts-at left-edge)
                    (pos-edge-ends-at right-edge)
-                   category::hyphenated-pair
+                   (if *big-mechanism*
+                     (bio-category-for-reifying)
+                     category::hyphenated-pair)
                    :rule 'nospace-hyphen-specialist
                    :form category::n-bar
                    :referent i
