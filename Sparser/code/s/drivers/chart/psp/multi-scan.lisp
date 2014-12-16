@@ -12,6 +12,7 @@
 (in-package :sparser)
 
 ;; (trace-terminals-sweep)
+;; (trace-network)
 
 ;;;---------------------------------------------------
 ;;; 1st pass -- polywords, completion, terminal edges
@@ -248,6 +249,13 @@
 ;;; 4th pass -- parentheses
 ;;;-------------------------
 
+;; (trace-parentheses)
+
+(defparameter *hide-parentheses* nil
+  "Provides an adequate way to remove text within parentheses to be
+   removed from the parser's attention by burying within the prior
+   edge.")
+
 (defun sweep-to-span-parentheses (sentence)
   ;; (trace-traversal-hook) (trace-traversal-hits)
   ;; Given the sweeps that have preceded this, there will be
@@ -272,8 +280,10 @@
       (when (word-p treetop)
         (when (eq tt *the-punctuation-period*)
           (tr :terminated-sweep-at position-after)
-          (return))
+          (return)))
 
+      (let ((hide-parentheses *hide-parentheses*))
+        (declare (special hide-parentheses))
         (word-traversal-hook treetop position-before position-after))
         ;; Traversal actions are managed by a hash table from the word
         ;; qua label (i.e. could be applied to edges as well) to a function
@@ -285,6 +295,7 @@
         ;; over. We check for traversal hits before the no-space check
         ;; because the ns is greedy and moves the position, which can
         ;; cause the open to be missed. 
+      
 
       (when (eq position-after end-pos)
         (return))
