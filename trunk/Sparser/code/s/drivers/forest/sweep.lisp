@@ -124,6 +124,8 @@
           (category::quantifier
            ;; drop it on the floor for now: "each of"
            )
+          ((category::pronoun
+            category::wh-pronoun))
 
           (otherwise
            (push-debug `(,tt ,form))
