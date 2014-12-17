@@ -3,7 +3,7 @@
 ;;(setq *RECORD-XREF-INFO* t)
 (in-package :COMMON-LISP-USER)
 
-
+#|
 
 ;;(with-xref
 
@@ -194,4 +194,5 @@
   (setq parsed-bracket-chart (parse-segments bchart))
   (setq forest-chart (process-forest parsed-bracket-chart)))
 
+|#
 
