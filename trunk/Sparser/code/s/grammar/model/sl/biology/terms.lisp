@@ -413,6 +413,7 @@ that consists of five conserved G boxes. |#
 (def-bio "strategy" bio-process)
 (def-bio "target" bio-entity)
 (np-head "agonist") ;; keyword: (ist N) 
+(np-head "approach" :super 'bio-process)
 (np-head "auto")
 (np-head "binder" :super 'bio-entity)
 (np-head "component" :super 'abstract)
@@ -427,6 +428,7 @@ that consists of five conserved G boxes. |#
 (np-head "group" :super 'abstract)
 (np-head "manner" :super 'bio-process) ;; by chemical or genetic means
 (np-head "means" :super 'bio-process) ;; by chemical or genetic means
+(np-head "method" :super 'bio-process)
 (np-head "model" :super 'abstract)
 (np-head "mutant" :super 'bio-entity)
 (np-head "panel" :super 'bio-process)
