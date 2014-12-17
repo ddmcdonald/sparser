@@ -35,34 +35,56 @@
 
 
 
-
-(defun collected-no-space-edges-into-word (leftmost-edge position-just-after)
+(defun collect-no-space-segment-into-word (position-just-after)
   ;; entry point if the edge is more than one word long, e.g. "SHOC2" after it's
   ;; been given its definition as a polyword. 
-  (let ((start-pos (if leftmost-edge
-                     (pos-edge-starts-at leftmost-edge)
-                     (chart-position-before position-just-after))))
-    (multiple-value-bind (end-pos hyphen-positions slash-positions)
-                         (sweep-to-end-of-ns-regions position-just-after)
-      (push-debug `(,start-pos ,end-pos))
-      (let ((pattern (characterize-words-in-region start-pos end-pos))
-            ;(edges (edges-between start-pos end-pos))
-            (words (words-between start-pos end-pos)))
-        ;; Open coding post-accumulator-ns-handler
-        (let ((layout
-               (parse-between-boundaries start-pos end-pos)))
-          (unless (eq layout :single-span) ;; Do nothing. It's already known
-            (cond
-             (slash-positions
-              (divide-and-recombine-ns-pattern-with-slash 
-               pattern words slash-positions hyphen-positions start-pos end-pos))
-             (hyphen-positions
-              (resolve-hyphen-pattern 
-               pattern words hyphen-positions start-pos end-pos))
-             (t 
-              (or (resolve-ns-pattern pattern words start-pos end-pos)
-                  (reify-ns-name-and-make-edge words start-pos end-pos))))))
-        end-pos))))
+  (when nil (tts))
+
+  (let ((leftmost-edge (left-treetop-at/edge position-just-after)))
+        ;; but that 'edge' could be a word, e.g. "... (Figure ..."
+    (when (word-p leftmost-edge)
+      (when (first-word-is-bracket-punct leftmost-edge)
+        (return-from collect-no-space-segment-into-word nil)))
+
+    (let ((start-pos (if (edge-p leftmost-edge) 
+                       (pos-edge-starts-at leftmost-edge)
+                       (chart-position-before position-just-after))))
+
+      (push-debug `(,leftmost-edge ,position-just-after)) 
+      (when nil (break "sanity"))
+
+      (when (or (word-is-bracket-punct (pos-terminal start-pos))               
+                (word-is-bracket-punct (pos-terminal position-just-after))
+                (word-never-in-ns-sequence (pos-terminal position-just-after)))
+        (return-from collect-no-space-segment-into-word nil))
+
+      (multiple-value-bind (end-pos hyphen-positions slash-positions)
+                           (sweep-to-end-of-ns-regions position-just-after)
+        (push-debug `(,start-pos ,end-pos))
+
+        (when t
+          (format t "~&Looking at the segment ~s~%"
+                  (string-of-words-between start-pos end-pos)))
+
+
+        (let ((pattern (characterize-words-in-region start-pos end-pos))
+              ;(edges (edges-between start-pos end-pos))
+              (words (words-between start-pos end-pos)))
+          ;; Open coding post-accumulator-ns-handler
+          (let ((layout
+                 (parse-between-boundaries start-pos end-pos)))
+            (unless (eq layout :single-span) ;; Do nothing. It's already known
+              (cond
+               (slash-positions
+                (divide-and-recombine-ns-pattern-with-slash 
+                 pattern words slash-positions hyphen-positions start-pos end-pos))
+               (hyphen-positions
+                (resolve-hyphen-pattern 
+                 pattern words hyphen-positions start-pos end-pos))
+               (t 
+                (or (resolve-ns-pattern pattern words start-pos end-pos)
+                    (reify-ns-name-and-make-edge words start-pos end-pos))))))
+          end-pos)))))
 
 
 (defun sweep-to-end-of-ns-regions (position)
@@ -336,6 +358,15 @@
 ;;; reasons to abort or get out of the loop
 ;;;-----------------------------------------
 
+(defun word-never-in-ns-sequence (word)
+  (declare (special *the-punctuation-period* *the-punctuation-colon*))
+  (when (punctuation? word)
+    (or (eq word *the-punctuation-period*)
+        (eq word (punctuation-named #\,))
+        (eq word *the-punctuation-colon*)
+        (eq word (punctuation-named #\;)))))
+
+
 (defun second-word-not-in-ns-sequence (word next-position)
   (declare (special *the-punctuation-period* *the-punctuation-colon*))
   (when (punctuation? word)
@@ -392,6 +423,9 @@
 
 
 (defun first-word-is-bracket-punct (word1)
+  (word-is-bracket-punct word1))
+
+(defun word-is-bracket-punct (word1)
   (or (eq word1 (punctuation-named #\( ))
       (eq word1 (punctuation-named #\[ ))
       (eq word1 (punctuation-named #\{ ))
