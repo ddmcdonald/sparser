@@ -27,63 +27,69 @@
 ;; shRNA
 
 
-(defun resolve-ns-pattern (pattern words slash? pos-before pos-after)
-  ;; called by post-accumulator-ns-handler from an 'or' so has to
-  ;; return non-nil when it succeeds. 
-  (push-debug `(,pattern ,words)) ;; (break "resolve pattern")
+(defun resolve-hyphen-pattern (pattern words hyphen-positions start-pos end-pos)
+  (cond
+   ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
+        (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
+        (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
+        (equal pattern '(:full :hyphen :single-digit :single-digit))) ;;/// IL-1a -bug somewhere
+    ;; We accept these as terms that won't deccompose or involve
+    ;; a rule. Experience may show that to be false, but it's a start
+    (reify-ns-name-and-make-edge words start-pos end-pos))
+
+   ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
+    (resolve-hyphen-between-two-words pattern words start-pos end-pos))
+
+   ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
+    ;;(break "stub :single-cap :hyphen :lower")
+    (reify-ns-name-and-make-edge words start-pos end-pos))
+
+   ((and *work-on-ns-patterns*
+         (memq :hyphen pattern))
+    (push-debug `(,pattern ,start-pos ,end-pos))
+    (break "New hyphen pattern to resolve: ~a" pattern))
+
+   (t (nospace-hyphen-specialist hyphen-positions start-pos end-pos))))
+
+
+(defun resolve-ns-pattern (pattern words start-pos end-pos)
+  (cond
+   ((or (equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
+        (equal pattern '(:full :digits)))
+    (reify-ns-name-and-make-edge words start-pos end-pos))
+
+   ((equal pattern '(:single-cap :single-digit :single-cap))
+    (reify-ns-name-and-make-edge words start-pos end-pos))
+
+   ((or (equal pattern '(:single-cap :digits :single-cap))
+        (equal pattern '(:single-lower :digits :single-lower)))
+    ;;/// and a bunch more
+    (or (reify-point-mutation-and-make-edge words start-pos end-pos)
+        (reify-ns-name-and-make-edge words start-pos end-pos)))
+
+   (*work-on-ns-patterns*
+    (push-debug `(,pattern ,start-pos ,end-pos ,words))
+    (break "New pattern to resolve: ~a" pattern))
+
+   ;; fall through
+   (t (tr :no-ns-pattern-matched)
+      nil)))
+
+
+(defun resolve-non-slash-ns-pattern (pattern words hyphen-positions
+                                     pos-before pos-after) 
   (tr :trying-to-resolve-ns-pattern pattern)
-
-  (if slash?
-    (then ;; look for some special cases, then hand it to the general routine
-     (break "pattern = ~a" pattern)
-     (cond
-      ;;((equal
-      (t
-       (divide-and-recombine-ns-pattern-with-slash
-        pattern words slash? pos-before pos-after))))
-
-    ;;/// turn this cond into a macro, or interpret a structured list / structure
-    ;; once it clear how best to use it. 
-    (cond
-     ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
-          (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
-          (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
-          (equal pattern '(:full :hyphen :single-digit :single-digit))) ;;/// IL-1a -bug somewhere
-      ;; We accept these as terms that won't deccompose or involve
-      ;; a rule. Experience may show that to be false, but it's a start
-      (reify-ns-name-and-make-edge words pos-before pos-after))
-
-     ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
-      (resolve-hyphen-between-two-words pattern words pos-before pos-after))
-
-     ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
-      ;;(break "stub :single-cap :hyphen :lower")
-      (reify-ns-name-and-make-edge words pos-before pos-after))
-
-
-     ((or (equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
-          (equal pattern '(:full :digits)))
-      (reify-ns-name-and-make-edge words pos-before pos-after))
-
-     ((equal pattern '(:single-cap :single-digit :single-cap))
-      (reify-ns-name-and-make-edge words pos-before pos-after))
-
-     ((or (equal pattern '(:single-cap :digits :single-cap))
-          (equal pattern '(:single-lower :digits :single-lower)))
-      ;;/// and a bunch more
-      (or (reify-point-mutation-and-make-edge words pos-before pos-after)
-          (reify-ns-name-and-make-edge words pos-before pos-after)))
-          
-
-;     ((equal pattern '(:capitalized)) ;; a segment within a sequence
-
-     (*work-on-ns-patterns*
-      (push-debug `(,pattern ,words))
-      (break "New pattern to resolve: ~a" pattern))
-
-     ;; fall through
-     (t (tr :no-ns-pattern-matched)
-        nil))))
+  (let ((relevant-hyphen-positions
+         (when hyphen-positions 
+           (loop for pos in hyphen-positions 
+             when (position-is-between pos pos-before pos-after)
+             collect pos))))
+  
+    (or (when relevant-hyphen-positions
+          (resolve-hyphen-pattern 
+           pattern words relevant-hyphen-positions pos-before pos-after))
+        (resolve-ns-pattern pattern words pos-before pos-after)
+        (reify-ns-name-and-make-edge words pos-before pos-after))))
 
 
 

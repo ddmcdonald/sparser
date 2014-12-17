@@ -16,7 +16,8 @@
 ;; (p "the Raf/MEK/ERK pathway.") 
 ;;  (p "For example, SHOC2/Sur-8 bridges.")
 ;; "PI3K/AKT signaling"
-(defun divide-and-recombine-ns-pattern-with-slash (pattern words slash-positions
+(defun divide-and-recombine-ns-pattern-with-slash (pattern words 
+                                                   slash-positions hyphen-positions 
                                                    pos-before pos-after)
   ;; Assumes that slash has precedence over any other punctuation,
   ;; so it does a resolve-pattern of each of the segements between
@@ -31,7 +32,7 @@
   (tr :slash-ns-pattern pos-before pos-after)
 
   (when (eq (first slash-positions) pos-before)
-    (break "Slash is initial term in no-space region between p~a and p~a"
+    (break "New case: Slash is initial term in no-space region between p~a and p~a"
            (pos-token-index pos-before) (pos-token-index pos-after)))
 
   (let* ((segment-start pos-before)
@@ -41,7 +42,7 @@
 
     (dolist (slash-pos slash-positions)
       (let ((resolution (resolve-slash-segment 
-                         segment-pattern segment-start slash-pos)))
+                         segment-pattern hyphen-positions segment-start slash-pos)))
         (unless resolution
           (push-debug `(,segment-pattern ,segment-start ,slash-pos))
           (break "pattern resolver called by slash returned nil ~
@@ -51,14 +52,14 @@
         (multiple-value-setq (segment-pattern remainder)
           (pop-up-to-slash remainder))))
 
-    (push (resolve-slash-segment segment-pattern segment-start pos-after)
+    (push (resolve-slash-segment segment-pattern hyphen-positions segment-start pos-after)
           segments)
 
     (package-slashed-sequence
      (nreverse segments) words pos-before pos-after)))
 
 
-(defun resolve-slash-segment (segment-pattern start-pos end-pos)
+(defun resolve-slash-segment (segment-pattern hyphen-positions start-pos end-pos)
   (tr :resolve-slash-segment segment-pattern start-pos end-pos)
   (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
     ;; is there one edge between the start of this portion and
@@ -70,8 +71,8 @@
      (t
       (tr :slash-recursive-resolution)
       (let ((words (words-between start-pos end-pos)))
-        (resolve-ns-pattern segment-pattern words nil
-                            start-pos end-pos))))))
+        (resolve-non-slash-ns-pattern 
+         segment-pattern words hyphen-positions start-pos end-pos))))))
 
 (defun pop-up-to-slash (pattern)
   ;; Subroutine of divide-and-recombine-ns-pattern-with-slash but might

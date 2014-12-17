@@ -32,6 +32,71 @@
   (defparameter *parser-interior-of-no-space-token-sequence* t
     "Controls whether we try to parse the edges of the words
      inside the span."))
+
+
+
+
+(defun collected-no-space-edges-into-word (leftmost-edge position-just-after)
+  ;; entry point if the edge is more than one word long, e.g. "SHOC2" after it's
+  ;; been given its definition as a polyword. 
+  (let ((start-pos (if leftmost-edge
+                     (pos-edge-starts-at leftmost-edge)
+                     (chart-position-before position-just-after))))
+    (multiple-value-bind (end-pos hyphen-positions slash-positions)
+                         (sweep-to-end-of-ns-regions position-just-after)
+      (push-debug `(,start-pos ,end-pos))
+      (let ((pattern (characterize-words-in-region start-pos end-pos))
+            ;(edges (edges-between start-pos end-pos))
+            (words (words-between start-pos end-pos)))
+        ;; Open coding post-accumulator-ns-handler
+        (let ((layout
+               (parse-between-boundaries start-pos end-pos)))
+          (unless (eq layout :single-span) ;; Do nothing. It's already known
+            (cond
+             (slash-positions
+              (divide-and-recombine-ns-pattern-with-slash 
+               pattern words slash-positions hyphen-positions start-pos end-pos))
+             (hyphen-positions
+              (resolve-hyphen-pattern 
+               pattern words hyphen-positions start-pos end-pos))
+             (t 
+              (or (resolve-ns-pattern pattern words start-pos end-pos)
+                  (reify-ns-name-and-make-edge words start-pos end-pos))))))
+        end-pos))))
+
+
+(defun sweep-to-end-of-ns-regions (position)
+  ;; From this position, which is marked as having not space between its
+  ;; word and the previous word. Look at the positions to the right until
+  ;; you reach one that is marked for an interveening space and return it. 
+  ;; Because we're working sentence by sentence we will not normally
+  ;; need an EOS check 
+  (let ((next-pos (chart-position-after position))
+        word  hyphens  slashes )
+    (loop
+      ;; we enter the loop looking for a reason to stop
+      (setq word (pos-terminal next-pos))
+      (when (first-word-is-bracket-punct word)
+        (return))
+      (when (pos-preceding-whitespace next-pos)
+        (return))
+      (when (eq word *the-punctuation-hyphen*) (push next-pos hyphens))
+      (when (eq word (punctuation-named #\/)) (push next-pos slashes))
+      (setq next-pos (chart-position-after next-pos)))
+    (values next-pos
+            hyphens
+            slashes)))
+
+
+
+
+
+
+
+
+
+
+
    
 
 ;;;---------------------------------------------------

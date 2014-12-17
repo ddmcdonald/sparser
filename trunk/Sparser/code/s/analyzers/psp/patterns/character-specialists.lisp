@@ -63,11 +63,17 @@
              (second-half (resolve-hyphen-segment 
                            (chart-position-after hyphen-pos) next-position)))
         (push-debug `(,first-half ,second-half))    
-        (break "look at halfs")
+        (unless (and first-half second-half)
+          (break "One of the patterns to either side of a hyphen ~
+                 did not resolve."))
         (make-hypenated-structure first-half second-half)))
      (t
-      (break "New case for hyphens~%  hyphen count = ~a~
-            ~%  phrase-length = ~a" hyphen-count phrase-length)))))
+      (when *work-on-ns-patterns*
+        (break "New case for hyphens~%  hyphen count = ~a~
+              ~%  phrase-length = ~a" hyphen-count phrase-length))
+      (reify-ns-name-and-make-edge 
+       (words-between pos-before next-position) pos-before next-position)))))
+
 
 ;;/// This is surely the same a resolve-slash-segment so they should mergw
 (defun resolve-hyphen-segment (start-pos end-pos)
@@ -77,11 +83,11 @@
               (pattern (characterize-words-in-region start-pos end-pos)))
           (let ((*work-on-ns-patterns* t))
             (declare (special *work-on-ns-patterns*))
-            (let ((result (resolve-ns-pattern pattern words nil start-pos end-pos)))
+            (let ((result (resolve-ns-pattern pattern words start-pos end-pos)))
               (unless result 
                 (push-debug `(,pattern ,words ,start-pos ,end-pos))
                 ;; (setq pattern (car *) words (cadr *) start-pos (caddr *) end-pos (cadddr *))
-                (break "no result"))
+                (break "no result on hyphen segment pattern: ~a" pattern))
               result))))))
 
 (defun make-edge-into-adjective (edge)
@@ -120,5 +126,11 @@
           (tr :made-edge edge)
           edge))
       (tr :scare-quotes-wrong-number-of-words (length words)))))
-              
+
+
+
+
+
+
+
 
