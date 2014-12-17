@@ -222,6 +222,11 @@
   :instantiates self
   :index (:permanent :key name))
 
+(define-category cellular-location 
+  :specializes bio-location
+  :instantiates self
+  :index (:permanent :key name))
+
 (define-category cell-line
   :specializes bio-location
   :instantiates self

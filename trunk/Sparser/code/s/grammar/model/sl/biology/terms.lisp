@@ -148,6 +148,7 @@ critical for tumor formation. |#
 (define-adverb "as expected") ;; not very common, but avoids a break
 (define-adverb "nevertheless")
 (define-adverb "therefore")
+(define-adverb "also")
 
 ;;--- J3
 (define-adjective "molecular")
@@ -161,6 +162,7 @@ proteins and is mediated by a conserved structure called the G-domain
 that consists of five conserved G boxes. |#
 
 (np-head "mechanism" :super 'bio-process)
+(np-head "function" :super 'bio-process)
 
 ;; activated forms of the Ras proteins
 ;; Needs a whole model
@@ -304,6 +306,7 @@ that consists of five conserved G boxes. |#
 (define-unit-of-measure "nm")
 (define-unit-of-measure "cm")
 (define-unit-of-measure "mm")
+(define-unit-of-measure "μm")
 ;;(define-unit-of-measure "µm") this fails
 (define-unit-of-measure "mL")
 (define-unit-of-measure "ml")
@@ -327,138 +330,120 @@ that consists of five conserved G boxes. |#
 (np-head "cell" :super 'cell-line)
 (np-head "line" :super 'cell-line)
 (np-head "cell line" :super 'cell-line)
+(np-head "A375" :super 'cell-line)
 (np-head "D04" :super 'cell-line)
+(np-head "D25" :super 'cell-line)
 (np-head "MM415" :super 'cell-line)
 (np-head "MM485" :super 'cell-line)
+(np-head "OUMS-23" :super 'cell-line)
+(np-head "RPMI-7951" :super 'cell-line)
+(np-head "SkMel24" :super 'cell-line)
+(np-head "SkMel28" :super 'cell-line)
+(np-head "WM266.4" :super 'cell-line)
 (np-head "WM852" :super 'cell-line)
+
 (def-bio "open reading frame" bio-entity)
+(def-bio "ORF" bio-entity) ;; same as above -- need to figure out how to get the category spelling right
 
- 
-;;; new words to be defined -- were primed bhy COMLEX
-;; we need better semantics for these <<DAVID>>
-(np-head "data" :super 'bio-entity) ;; need something better
-(np-head "means" :super 'bio-process) ;; by chemical or genetic means
-(np-head "finding" :super 'bio-entity) ;; like data(np-head "paradigm" :super 'bio-entity)
-(np-head "paradox" :super 'bio-entity)
-(np-head "setting" :super 'bio-entity)
-
-
-
-
-;; verbs
 
 
 ;; all remaining (including overlap with the nouns and verbs abov)
-"approaches" 
+ 
 "articulate" 
 "assay" 
 "auto" 
 "binder"
-"candidate" 
-"cascade" 
-"complexes" 
-"components" 
-"constitute" 
-"context" 
-"cot" 
-"dead" 
-"derivatives" 
-"describe" 
 "effect" 
-"elucidate" 
-"engender" 
-"escapes" 
-"express" 
 "fate" 
 "fig" 
-"found" 
-"further" 
 "groups" 
-"high" 
-"inform" 
 "insights" 
-"interrogate" 
-"keeps" 
-"knockdown" 
-"know" 
-"long" 
-"maintains" 
 "manner" 
-"membrane" 
-"model" 
-"moreover" 
-"observations" 
-"occurs" 
-"panel" 
-"paradigm" 
-"parallel" 
-"partner" 
-"patients" 
-"plasma" 
-"posit" 
-"predicts" 
-"propose" 
-"provide" 
-"range" 
-"recombinant" 
-"requires" 
-"resistance" 
-"response" 
-"scaffold" 
-"screen" 
-"seems" 
-"show" 
-"strategies" 
-"success" 
-"target" 
-"tend" 
-"term" 
-"throughput" 
-"tissue" 
 "trials" 
-"type"  
-"wild" 
 
 ;;adjective
+(adj "anticancer")
+(adj "candidate" )
 (adj "chemical" :super 'modifier) ;; keyword: (al ADJ) 
 (adj "combinatorial" :super 'modifier) ;; keyword: (al ADJ) 
 (adj "comparable" :super 'modifier) ;; keyword: (able ADJ) 
+(adj "dead")
 (adj "dependent" :super 'modifier) ;; keyword: (ent ADJ) 
 (adj "ectopic" :super 'modifier) ;; keyword: (ic ADJ) 
 (adj "effective" :super 'modifier) ;; keyword: (ive ADJ) 
 (adj "endogenous" :super 'modifier) ;; keyword: (ous ADJ) 
+(adj "further")
+(adj "high")
 (adj "inactive" :super 'modifier) ;; keyword: (ive ADJ) 
 (adj "inducible" :super 'modifier) ;; keyword: (ible ADJ) 
 (adj "ineffective" :super 'modifier) ;; keyword: (ive ADJ) 
 (adj "integrative" :super 'modifier) ;; keyword: (ive ADJ) 
+(adj "intriguing" :super 'modifier) ;; keyword: ENDS-IN-ING 
+(adj "knockdown" )
+(adj "lon-term")
+(adj "long")
 (adj "measurable" :super 'modifier) ;; keyword: (able ADJ) 
 (adj "mekindependent" :super 'modifier) ;; keyword: (ent ADJ) 
 (adj "mutual" :super 'modifier) ;; keyword: (al ADJ) 
+(adj "parallel")
 (adj "pharmacological" :super 'modifier) ;; keyword: (al ADJ) 
 (adj "present" :super 'modifier) ;; keyword: (ent ADJ) 
+(adj "recombinant" )
 (adj "refractory" :super 'modifier) ;; keyword: (ory ADJ) 
 (adj "sensitive" :super 'modifier) ;; keyword: (ive ADJ) 
 (adj "supplementary" :super 'modifier) ;; keyword: (ary ADJ) 
-(adj "intriguing" :super 'modifier) ;; keyword: ENDS-IN-ING 
-
-;;adverb
-(define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
-(define-adverb "primarily") ;; keyword: ENDS-IN-LY 
+(adj "wild-type")
 
 ;;noun
+;;; new words to be defined -- were primed bhy COMLEX
+;; we need better semantics for these <<DAVID>>
+(def-bio "assay" bio-process)
+(def-bio "baseline"  bio-process)
+(def-bio "cascade" bio-process)
+(def-bio "complex" molecule)
+(def-bio "derivative" molecule)
+(def-bio "mitogen" molecule)
+(def-bio "heterodimer" molecule)
+(def-bio "membrane" cellular-location)
+(def-bio "panel" bio-process)
+(def-bio "patient" bio-entity)
+(def-bio "plasma" cellular-location)
+(def-bio "scaffold" protein) 
+(def-bio "screen"  bio-process)
+(def-bio "strategy" bio-process)
+(def-bio "target" bio-entity)
 (np-head "agonist") ;; keyword: (ist N) 
 (np-head "auto")
-(np-head "binder")
+(np-head "binder" :super 'bio-entity)
+(np-head "component" :super 'abstract)
+(np-head "context" :super 'bio-context) 
+(np-head "data" :super 'bio-entity) ;; need something better
+(np-head "effect" :super 'abstract)
 (np-head "exclusivity") ;; keyword: (ity N) 
 (np-head "factor") ;; keyword: (or N) 
-(np-head "panel")
-(np-head "partner")
-
+(np-head "fate" :super 'abstract)
+(np-head "fig" :super 'article-figure) 
+(np-head "finding" :super 'bio-entity) ;; like data(np-head "paradigm" :super 'bio-entity)
+(np-head "group" :super 'abstract)
+(np-head "manner" :super 'bio-process) ;; by chemical or genetic means
+(np-head "means" :super 'bio-process) ;; by chemical or genetic means
+(np-head "model" :super 'abstract)
+(np-head "mutant" :super 'bio-entity)
+(np-head "panel" :super 'bio-process)
+(np-head "paradigm" :super 'abstract)
+(np-head "paradox" :super 'bio-entity)
+(np-head "partner" :super 'abstract)
 (np-head "presence") ;; keyword: (ence N) 
-(np-head "range")
+(np-head "range" :super 'measurement)
+(np-head "stoichiometry" :super 'abstract)
 (np-head "sensitivity") ;; keyword: (ity N) 
+(np-head "setting" :super 'bio-entity)
+(np-head "success" :super 'abstract)
 (np-head "therapeutics") ;; keyword: (ics N) 
+(np-head "throughput" :super 'measurement)
+(np-head "tissue" :super 'bio-context)
 (np-head "treatment") ;; keyword: (ment N) 
+(np-head "trial" :super 'abstract)
 
 ;;need prep cases
 (np-head "conformation") ;; keyword: (ion N) 
@@ -471,6 +456,18 @@ that consists of five conserved G boxes. |#
 (np-head "possibility") ;; keyword: (ity N) 
 (np-head "inhibitor") ;; keyword: (or N) 
 (np-head "mass spectrometry" :super 'bio-process)
+
+;;adverb
+(define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
+(define-adverb "moreover")
+(define-adverb "primarily") ;; keyword: ENDS-IN-LY 
+
+
+(def-bio "phenotype" bio-entity)
+(def-bio "alleles" bio-entity)
+
+
+
 
 
 ;;;POTENTIAL AMBIGUITIES TO BE SUPPRESSED
@@ -506,6 +503,7 @@ that consists of five conserved G boxes. |#
 "target";;ambiguous between (NOUN VERB)
 "observation"
 "assay";;ambiguous between (NOUN VERB)
+
 
 
 

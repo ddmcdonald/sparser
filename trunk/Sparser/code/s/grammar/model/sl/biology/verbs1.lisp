@@ -89,6 +89,7 @@
      :s activator
      :o activated))
 
+
 ;; bio-deactivate conflicts with bio-activate
 ;; so need to redesign the by-phrase to be uniform
 ;; and stated over the value restriction rather than
@@ -219,6 +220,15 @@
    :to goal
    :on substrate))
 
+(define-category bio-activate
+  :specializes bio-process
+  :binds ((activator bio-entity) (activated molecule))
+  :realization
+    (:verb "hyperactivate" 
+     :noun "hyperactivation"
+     :etf (svo-passive of-nominal)
+     :s activator
+     :o activated))
 
 ;;--- "induce"
 ;; "which induce transcription of the p53 gene"
@@ -249,7 +259,7 @@
   :specializes bio-process
   :binds ((agent bio-entity) (patient bio-process))
   :realization 
-  (:verb ("inhibit" :ed-form "inhibited")
+  (:verb ("inhibit" :ed-form "inhibited" :ing-form "inhibiting")
    :noun "inhibition"
    :etf (svo-passive)
    :s agent
@@ -260,7 +270,7 @@
   :specializes bio-process
   :binds ((agent drug) (patient bio-entity))
   :realization 
-  (:verb ("inhibit" :ed-form "inhibited")
+  (:verb ("inhibit" :ed-form "inhibited" :ing-form "inhibiting" )
    :noun "inhibition"
    :etf (svo-passive)
    :s agent
@@ -445,16 +455,39 @@
 
 
 ;; verb nominals
-"alteration" ;; keyword: (ion N) 
-"expression" ;; keyword: (ion N) 
-"function" ;; keyword: (ion N) 
-"hypothesis" ;; keyword: (sis N) 
-"inhibition" ;; keyword: (ion N) 
-"interference" ;; keyword: (ence N) 
-"overexpression" ;; keyword: (ion N) 
-"proliferation" ;; keyword: (ion N) 
-"truncation" ;; keyword: (ion N)
+"" ;; keyword: (ion N) 
+(define-category alter
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "alter"
+	   :noun "alteration"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient
+	   ))
 
+(define-category proliferate
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "proliferate"
+	   :noun "proliferation"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient
+	   ))
+
+(define-category truncate
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "truncate"
+	   :noun "truncation"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient
+	   )) 
 
 ;;verb 
 (define-category acquire
@@ -474,6 +507,26 @@
     :realization
     (:verb "allow" ;; keyword: ENDS-IN-ING 
 	   :noun "allowance"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
+(define-category approach
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "approach" 
+	   :noun "approach"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
+(define-category articulate
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "articulate" ;; keyword: ENDS-IN-ED 
+	   :noun "articulation"
 	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
@@ -546,6 +599,15 @@
 	   :s agent
 	   :o patient))
 
+(define-category constitute
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "constitute" ;; keyword: ENDS-IN-ED 
+	   :etf (svo)
+	   :s agent
+	   :o patient))
+
 (define-category culture
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
@@ -595,6 +657,36 @@
 	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
+(define-category elucidate
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "elucidate" ;; keyword: ENDS-IN-ED 
+	   :noun "elucidation"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
+
+(define-category engender
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "engender"
+	   :etf (svo-passive)
+	   :s agent
+	   :o patient))
+
+(define-category escape
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "escape"
+	   :noun "escape"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
 
 (define-category express
     :specializes bio-process
@@ -612,6 +704,17 @@
     :realization
     (:verb "favor" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
+	   :s agent
+	   :o patient))
+
+
+(define-category find
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb ("find" :ed-form "found")
+	   :noun "finding"
+	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
 
@@ -645,16 +748,14 @@
 	   :s agent
 	   :o patient))
 
-(define-category inhibit
+(define-category inform
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb "inhibit" ;; keyword: ENDS-IN-ED 
-	   :noun "inhibition"
-	   :etf (svo-passive of-nominal)
+    (:verb "inform" ;; keyword: ENDS-IN-ING 
+	   :etf (svo-passive)
 	   :s agent
 	   :o patient))
-
 
 (define-category interfere
     :specializes bio-process
@@ -662,6 +763,16 @@
     :realization
     (:verb "interfere" ;; keyword: ENDS-IN-ING 
 	   :noun "interference"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
+(define-category interrogate
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "interrogate" ;; keyword: ENDS-IN-ING 
+	   :noun "interrogation"
 	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
@@ -684,6 +795,17 @@
 	   :s agent
 	   :o patient))
 
+(define-category know
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "know"
+	   :noun "knowledge" 
+
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
 (define-category lead
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
@@ -703,12 +825,13 @@
 	   :s agent
 	   :o patient))
 
-(define-category neede
+(define-category need
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb "neede" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)
+    (:verb "need" ;; keyword: ENDS-IN-ED 
+	   :noun "need"
+	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
 
@@ -735,9 +858,19 @@
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb "occur"
-	   :noun "occurance"
+    (:verb ("occur" :ing-form "occurring" :ed-form "occurred")
+	   :noun "occurrence"
 	   :etf (sv)
+	   :s agent
+	   :o patient))
+
+(define-category overexpress
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "overexpress"
+	   :noun "overexpression"
+	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
 
@@ -760,12 +893,42 @@
 	   :s agent
 	   :o patient))
 
+(define-category potentiate
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "potentiate" ;; keyword: ENDS-IN-ED 
+	   :noun "potentiation"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
+(define-category predict
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "predict"
+	   :noun "prediction"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
 (define-category propose
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
     (:verb "propose"
 	   :noun "proposal"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
+(define-category provide
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "provide"
+	   :noun "provision"
 	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
@@ -837,6 +1000,26 @@
 	   :s agent
 	   :o patient))
 
+(define-category resist
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "require"
+	   :noun "resistance"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
+(define-category respond
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "respond"
+	   :noun "response"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
 (define-category result
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
@@ -857,11 +1040,20 @@
 	   :s agent
 	   :o patient))
 
+(define-category seem
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "seem"
+	   :etf (svo)
+	   :s agent
+	   :o patient))
+
 (define-category show
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb "show"
+    (:verb ("show" :v-ed "shown")
 	   :etf (svo-passive)
 	   :s agent
 	   :o patient))
@@ -890,10 +1082,20 @@
     :binds ((agent bio-entity)(patient bio-process))
     :realization
     (:verb "target" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)
+	   :noun "target"
+	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
 
+(define-category tend
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "tend" ;; keyword: ENDS-IN-ED 
+	   :noun "tendency"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient)) 
 (define-category test
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
