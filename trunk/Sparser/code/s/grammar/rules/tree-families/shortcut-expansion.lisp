@@ -122,7 +122,9 @@
          (head-word (if (consp head-word-pname)
                       (resolve/make (car head-word-pname))
                       (resolve/make head-word-pname)))
-         (irregulars (cdr (assq :irregulars word-keys))))
+         (irregulars (if (consp head-word-pname)
+                       (cdr head-word-pname)
+                       (cdr (assq :irregulars word-keys)))))
     ;;(push-debug `(,etf ,head-keyword ,head-word ,mapping)) (break "1")
     (unless head-word
       (push-debug `(,scheme ,word-keys))
