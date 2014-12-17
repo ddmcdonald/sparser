@@ -593,7 +593,7 @@
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb "consider" ;; keyword: ENDS-IN-ED 
+    (:verb ("consider"  :past-tense "considered") ;; keyword: ENDS-IN-ED 
 	   :noun "consideration"
 	   :etf (svo-passive of-nominal)
 	   :s agent
@@ -702,7 +702,7 @@
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb "favor" ;; keyword: ENDS-IN-ED 
+    (:verb ("favor" :past-tense "favored") ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
 	   :o patient))

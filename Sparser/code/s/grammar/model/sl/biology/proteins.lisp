@@ -62,17 +62,6 @@
 ;; GTPase "GO:0003924"
 ;; "GTPase activity"  "GO0003924"
 
-(def-bio "kras" protein 
-  :synonyms ("k-ras")
-  :identifier "PR:0000009442") ;; gene is "PR:P01116" 
-
-(def-bio "hras" protein
-  :synonyms ("h-ras")
-  :identifier "PR:000029705") ;; gene is "PR:P01112")
-
-(def-bio "nras" protein
-  :synonyms ("n-ras")
-  :identifier "PR:000011416") ;; gene is "PR:P01111"
 
 
 (def-bio "gtp" small-molecule ;; to accomodate all the variant capitalization
@@ -98,16 +87,11 @@
 
 
 
-(def-bio "braf" protein 
-  :identifier "PR:000004801")
 
-(def-bio "craf" protein)
 (def-bio "mapk" protein)
 (def-bio "mek1dd" protein)
 (def-bio "brafv" protein)
 
-(def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
-  :synonyms ("B-RAFV600E" "V600EB-RAF"))
 
 (def-bio "PIK3CA" protein
   :identifier "PR:000012719")
@@ -148,3 +132,26 @@ filligre may be used to distinguish them, etc.
 (def-bio "MEK1" protein)
 
 (def-bio "MEK2" protein)
+
+(def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
+  :synonyms ("B-RAFV600E" "V600EB-RAF"))
+
+(def-bio "kras" protein 
+  :synonyms ("k-ras")
+  :identifier "PR:0000009442") ;; gene is "PR:P01116" 
+
+(def-bio "hras" protein
+  :synonyms ("h-ras")
+  :identifier "PR:000029705") ;; gene is "PR:P01112")
+
+(def-bio "nras" protein
+  :synonyms ("n-ras")
+  :identifier "PR:000011416") ;; gene is "PR:P01111"
+
+(def-bio "braf" protein 
+  :identifier "PR:000004801"
+  :synonyms ("b-raf"))
+
+(def-bio "craf" protein
+  :synonyms ("b-raf"))
+
