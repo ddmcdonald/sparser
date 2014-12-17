@@ -9,6 +9,7 @@
 ;; NOTE: there are a number of mis-spelling here -- neeed to figure out how to deal with them
 ;; RJB 12/13/2014 make "drug" and "inhibitor" drugs -- not sure about this, but they are treated like that for the annotation
 ;; added a couple of new drugs 885-A and sb590885
+;; RJB 12/16/2014 added drugs starting with CI- and others found during that search
 
 (in-package :sparser)
 ;;--- Drugs
@@ -68,6 +69,7 @@
 (define-drug "azd9291")
 (define-drug "barasertib")
 (define-drug "basiliximab")
+(define-drug "bay61-3606")
 (define-drug "bevacizumab")
 (define-drug "bevasizumab")
 (define-drug "bib")
@@ -80,6 +82,9 @@
 (define-drug "c-abl-ib")
 (define-drug "cabozantinib")
 (define-drug "calfizomib")
+(define-drug "ci-1040")
+(define-drug "ci-994")
+(define-drug "ci-1033")
 (define-drug "canertinib")
 (define-drug "capecitabine")
 (define-drug "carfilzomib")
@@ -116,6 +121,7 @@
 (define-drug "docetaxel")
 (define-drug "dovitinib")
 (define-drug "dtic-ipilimumab")
+(define-drug "e6201")
 (define-drug "eculizumab")
 (define-drug "efalizumab")
 (define-drug "erlotinib")
