@@ -111,7 +111,7 @@
 (def-term bio-bind  bio-process
   :obo-id "GO:0005488"
   :binds ((participant molecule))
-  :verb ("bind" :ed-form "bound")
+  :verb ("bind" :past-tense "bound")
   :etf (svo) ;;-passive) -- avoid by-phrase problem
   :s participant 
   :o participant
@@ -259,7 +259,7 @@
   :specializes bio-process
   :binds ((agent bio-entity) (patient bio-process))
   :realization 
-  (:verb ("inhibit" :ed-form "inhibited" :ing-form "inhibiting")
+  (:verb ("inhibit" :past-tense "inhibited" :present-participle "inhibiting")
    :noun "inhibition"
    :etf (svo-passive)
    :s agent
@@ -270,7 +270,7 @@
   :specializes bio-process
   :binds ((agent drug) (patient bio-entity))
   :realization 
-  (:verb ("inhibit" :ed-form "inhibited" :ing-form "inhibiting" )
+  (:verb ("inhibit" :past-tense "inhibited" :present-participle "inhibiting" )
    :noun "inhibition"
    :etf (svo-passive)
    :s agent
@@ -712,7 +712,7 @@
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb ("find" :ed-form "found")
+    (:verb ("find" :past-tense "found")
 	   :noun "finding"
 	   :etf (svo-passive of-nominal)
 	   :s agent
@@ -858,7 +858,7 @@
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb ("occur" :ing-form "occurring" :ed-form "occurred")
+    (:verb ("occur" :present-participle "occurring" :past-tense "occurred")
 	   :noun "occurrence"
 	   :etf (sv)
 	   :s agent
@@ -1053,7 +1053,7 @@
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb ("show" :v-ed "shown")
+    (:verb ("show" :past-tense "shown")
 	   :etf (svo-passive)
 	   :s agent
 	   :o patient))
