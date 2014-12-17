@@ -159,9 +159,10 @@
     (unless string
       (error "irregular marking keyword ~a is not followed by a string"
              keyword))
-    (unless (stringp string)
-      (error "Words have to be given as strings. ~a isn't:~%~a"
-             string plist))))
+    (unless (word-p string)
+      (unless (stringp string)
+        (error "Words have to be given as strings. ~a isn't:~%~a"
+               string plist)))))
   
 
 
