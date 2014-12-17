@@ -156,7 +156,7 @@
              (then
                (setq position-after where-pattern-scan-ended))
              (let ((where-uniform-ns-ended
-                    (do-no-space-collection position-after)))
+                    (do-no-space-collection position-after tt)))
                (when where-uniform-ns-ended
                  (setq position-after where-uniform-ns-ended))))))
         (else
@@ -174,7 +174,7 @@
 (defun check-for-pattern (position-after)  ;; (trace-scan-patterns)
   (let* ((word (pos-terminal position-after))
          (state/s (scan-pattern-starting-pair position-after word)))
-    ;; This routine returns nil if there is no no-space scan-pattern
+    ;; This routine returns nil if there is not a no-space scan-pattern
     ;; that starts with the word before this position and this word.
     (when state/s
       (let ((pos-reached
@@ -188,11 +188,15 @@
         pos-reached))))
         
 
-(defun do-no-space-collection (position-after)
-  ; lifted from check-for-uniform-no-space-sequence
-  (tr :check-for-uniform-no-space-sequence position-after)
-  (let ((uniform-pos-reached
-         (collect-no-space-sequence-into-word position-after)))
+(defun do-no-space-collection (position tt)
+  ;; lifted from check-for-uniform-no-space-sequence
+  ;; There is no whitespace between the word at this position 
+  ;; and the previous word. 
+  (tr :check-for-uniform-no-space-sequence position)
+  (let* ((uniform-pos-reached
+          (if t ;;long?
+            (collected-no-space-edges-into-word tt position)
+            (collect-no-space-sequence-into-word position))))
     ;;/// trace
     uniform-pos-reached))
 
