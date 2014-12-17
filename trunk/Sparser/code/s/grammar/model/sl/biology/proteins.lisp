@@ -153,5 +153,5 @@ filligre may be used to distinguish them, etc.
   :synonyms ("b-raf"))
 
 (def-bio "craf" protein
-  :synonyms ("b-raf"))
+  :synonyms ("c-raf"))
 

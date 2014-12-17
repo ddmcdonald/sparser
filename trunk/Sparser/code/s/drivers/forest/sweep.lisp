@@ -119,7 +119,8 @@
             category::subordinate-conjunction)
            (push-conjunction tt))
 
-          (category::parentheses
+          ((category::parentheses
+            category::square-brackets)
            (push-parentheses tt))
 
           (category::quantifier
