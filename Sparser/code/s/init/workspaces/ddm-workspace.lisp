@@ -53,7 +53,7 @@
   (ddm-ed "grammar/model/sl/biology/proteins.lisp")
   (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
   (ddm-ed "grammar/model/sl/biology/terms.lisp")
-  (ddm-ed "grammar/model/sl/biology/verbs.lisp"))
+  (ddm-ed "grammar/model/sl/biology/verbs1.lisp"))
 ;;  molecules and NGkappB not loaded
 
 (defun ddm-new-parsing-ws ()
@@ -181,6 +181,7 @@
 
 (defun ddm-edge-mechanics ()
   (ddm-ed "objects/chart/edge-vectors/object2.lisp")
+  (ddm-ed "objects/chart/edge-vectors/vectors2.lisp") ;; has knit routine
   (ddm-ed "objects/chart/edges/object3.lisp")
   (ddm-ed "objects/chart/positions/positions1.lisp"))
 
