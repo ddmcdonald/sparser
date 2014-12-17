@@ -19,10 +19,10 @@
 ; following treatment with the MEK inhibitor AZD6244
 ; retaining transcriptional response to vemurafenib and AZD6244
 (define-category drug
-    :specializes molecule)
+  :specializes molecule)
 
 (defun define-drug (drug-name)
-  (eval `(np-head ,drug-name :super 'drug)))
+  (eval `(np-head ,drug-name :super 'drug :rule-label 'drug)))
 ;;(define-drug "drug")
 ;;(define-drug "inhibitor")
 
