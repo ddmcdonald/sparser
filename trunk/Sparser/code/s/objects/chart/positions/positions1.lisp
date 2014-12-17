@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2011-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "positions"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  1.5 May 2013
+;;;  Version:  1.5 December 2014
 
 ;; 1.1 (2/11 v1.8.1)  Added Position-precedes
 ;;     (5/12/93 v2.3) commented out an unfinished fn.
@@ -22,6 +22,7 @@
 ;;      a type for position in its foreign function module. Got around it
 ;;      by shadowing the symbol and calling the cl:position function via
 ;;      a macro. In the process made the without-package-locks superfluous.
+;;     (12/17/14) added position-is-between
 
 (in-package :sparser)
 
@@ -165,6 +166,12 @@
   (- (pos-token-index p2)
      (pos-token-index p1)))
 
+(defun position-is-between (position start-pos end-pos)
+  (and (> (pos-token-index position)
+          (pos-token-index start-pos))
+       (< (pos-token-index position)
+          (pos-token-index end-pos))))
+ 
 ;;;------------------------
 ;;; construction functions
 ;;;------------------------
