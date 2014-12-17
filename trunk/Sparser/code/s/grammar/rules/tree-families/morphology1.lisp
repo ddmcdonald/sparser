@@ -108,6 +108,9 @@
                               override-category
                                category))
                            category)))
+    (when (and (consp (cdr head-word)) ;; not (:adjective . #<word "black">)
+               (cddr head-word))
+      (check-for-correct-irregular-word-markers  (cddr head-word)))
     (ecase (car head-word)
       (:verb (make-verb-rules
               (cdr head-word) lhs-category referent))
