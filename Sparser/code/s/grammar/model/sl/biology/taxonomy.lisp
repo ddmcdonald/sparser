@@ -42,6 +42,12 @@
   :lemma (:common-noun "step")
   :realization (:common-noun name))
 
+(define-category study-bio-process
+  :specializes bio-process
+  :instantiates :self
+  :lemma (:common-noun "study")
+  :realization (:common-noun name))
+
 ;;--- referents for type kinds, v.s. the particulars
 ;;/// Need these if we want bio-type as a label in the
 ;; grammar. Otherwise lemmas on categories can carry

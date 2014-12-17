@@ -397,6 +397,7 @@
   ;;  and a lot of others
   :from substrate))
 
+#+ignore
 (define-category study-bio-process
  :specializes bio-process
  :binds ((agent bio-entity)(patient bio-process))
