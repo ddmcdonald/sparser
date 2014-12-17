@@ -273,9 +273,14 @@
                    cfr word position-scanned next-position)
                   single-term-edges)))))
 
-    (if edge-for-literal
-      (cons edge-for-literal single-term-edges)
-      single-term-edges )))
+    (cond
+     ((and edge-for-literal single-term-edges)
+      (tail-cons edge-for-literal single-term-edges))
+     (edge-for-literal
+      (list edge-for-literal))
+     (single-term-edges
+      single-term-edges)
+     (t nil))))
 
 
 
