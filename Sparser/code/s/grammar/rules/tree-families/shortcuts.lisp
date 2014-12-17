@@ -99,13 +99,14 @@ broadly speaking doing for you all the things you might do by hand.
 
 ;;--- NP patterns
 
-(defun np-head (string-for-noun &key super)
+(defun np-head (string-for-noun &key super rule-label)
   ;; "trunk", "car", ...
   (with-name-and-superc string-for-noun super :noun
     (let ((form
            `(define-category ,name
               :instantiates :self
               :specializes ,superc
+              :rule-label ,rule-label
               :realization
                  (:common-noun ,string-for-noun))))
       (eval form))))
