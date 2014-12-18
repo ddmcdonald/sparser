@@ -17,7 +17,18 @@
   (setq *note-text-relations* nil)
   (trace-lexicon-unpacking) (trace-morphology)
   (incorporate-obo-terms))
+#|
+(def-bio "dtp" small-molecule)
+(def-bio "etp" small-molecule)
+(setq dtp-rs (rule-set-for (word-named "dtp")))
+(setq etp-rs (rule-set-for (word-named "etp")))
+;; They show the single-term rules at this point.
+(p "The DDP produced by GTP hydrolysis on Ras is trapped and Ras accumulates in the dtp-bound ‘off’ state, despite the high dtp/edp ratio.")
 
+The modification is on the capitalized BTP word, which indeed did not have a rule set. 
+It wasn't even recognized as a word. It was created from the pname that's read out of
+the word buffer. Doesn't explain the lowercase effects.
+|#
 ;; 11/6/14 -- collect-no-space-sequence-into-word  
 ;  (p "For example, SHOC2/Sur-8 bridges Ras and Raf")
 
@@ -138,7 +149,7 @@
 
 
 (defun ddm-shortcuts ()
-  (ddm-ed "grammar/rules/tree-families/shortcut-master.lisp")
+  (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-expansion.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-mechanics.lisp")
   (ddm-ed "grammar/rules/tree-families/families.lisp")
