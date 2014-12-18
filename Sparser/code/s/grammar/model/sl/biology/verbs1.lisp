@@ -217,6 +217,7 @@
    :etf (svo-passive) 
    :s agent 
    :o patient 
+   :of patient
    :to goal
    :on substrate))
 
@@ -268,9 +269,12 @@
 
 (define-category drug-inhibits
   :specializes bio-process
-  :binds ((agent drug) (patient bio-entity))
+  :binds ((agent drug) 
+          (patient bio-entity)
+          (measurement measurement))
   :realization 
-  (:verb ("inhibit" :past-tense "inhibited" :present-participle "inhibiting" )
+  (:verb ("inhibit" :past-tense "inhibited" 
+                    :present-participle "inhibiting" )
    :noun "inhibition"
    :etf (svo-passive)
    :s agent
@@ -636,7 +640,7 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o patient
-	   :in bio-context))
+	  ))  ;; :in bio-context))  <--------------- not in scope
 ;; mostly passive -- "... are found ..."
 (define-category find
     :specializes bio-process
