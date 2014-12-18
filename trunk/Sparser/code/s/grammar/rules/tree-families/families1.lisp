@@ -98,6 +98,16 @@ the short cuts.
             (vg . :self)
             (np/subject . subj-v/r)))
 
+(define-realization-scheme svo transitive
+  :head :verb
+  :mapping ((agent . subj-slot)
+            (patient . theme-slot)
+            (s . :self)
+            (vp . :self)
+            (vg . :self)
+            (np/subject . subj-v/r)
+            (np/object . theme-v/r)))
+
 (define-realization-scheme svo-passive passive/with-by-phrase
   :args (agent-slot agent-v/r patient-slot patient-v/r)
   :head :verb
@@ -106,8 +116,10 @@ the short cuts.
             (s . :self)
             (vp . :self)
             (vg . :self)
-            (np/agent . subj-v/r)
+            (np/subject . subj-v/r) ;; from transitive
+            (np/agent . subj-v/r)   ;; from passive/with-by-phrase
             (np/patient . theme-v/r)
+            (np/object . theme-v/r)
             (by-pp . by-v/r)
             (result-type . :self)))
 
@@ -118,16 +130,6 @@ the short cuts.
             (np . :self)
             (by-pp . by-v/r)))
             
-
-(define-realization-scheme svo transitive
-  :head :verb
-  :mapping ((agent . subj-slot)
-            (patient . theme-slot)
-            (s . :self)
-            (vp . :self)
-            (vg . :self)
-            (np/subject . subj-v/r)
-            (np/object . theme-v/r)))
 
 (define-realization-scheme svcomp that-complement
   :head :verb
