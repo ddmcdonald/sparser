@@ -256,6 +256,7 @@
 ;;--- inhibit
 ;; "by inhibiting <p>"
 
+#+ignore  ;;current walker does not handle such ambiguities properly
 (define-category inhibit-process
   :specializes bio-process
   :binds ((agent bio-entity) (patient bio-process))
