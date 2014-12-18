@@ -254,7 +254,7 @@
 
 ;; (trace-parentheses)
 
-(defparameter *hide-parentheses* nil
+(defparameter *hide-parentheses* t
   "Provides an adequate way to remove text within parentheses to be
    removed from the parser's attention by burying within the prior
    edge.")
