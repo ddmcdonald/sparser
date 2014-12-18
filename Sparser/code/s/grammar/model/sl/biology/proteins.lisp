@@ -104,6 +104,7 @@ filligre may be used to distinguish them, etc.
 
 (def-bio "ras" protein ;; lowercase to accomodate all the variant capitalization
   :identifier "GO:0003930"
+  :synonyms ("RAS")
   :long "GTPase" ;; RAS small monomeric GTPase activity
   ;; Are we going to see that in texts?
   )
