@@ -77,7 +77,8 @@
 
 (defparameter *punctuation-words*
   `(,*the-punctuation-period* ,*the-punctuation-comma*
-    ,*the-punctuation-colon*))
+    ,*the-punctuation-colon* 
+    ,*the-punctuation-hyphen* ))
 
 (defun edge-over-punctuation? (edge)
   (memq (edge-category edge) *punctuation-words*))
