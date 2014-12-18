@@ -89,6 +89,12 @@ therefore we have the special cases:
   :lemma (common-noun "residue")
   :index (:permanent :sequential-keys amino-acid position))
 
+(defun reify-residue-and-make-edge (words start-pos end-pos)
+  ;; called from the no-space pattern machinery when the
+  ;; pattern is (:single-cap :digits) and it's possible that
+  ;; that first word is the short form af an amino acid.
+  (push-debug `(,words ,start-pos ,end-pos)))
+
 ; These are bare rules that could be converted to an ETF
 ; (or several) that captures these composition possibilities
 ; for a complex noun-headed phrase. 
