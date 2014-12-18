@@ -40,6 +40,12 @@
 
 (in-package :sparser)
 
+(defun word-is-a-preposition? (word)
+  ;; depends on the define-function-word setting this up
+  (let ((pos (get-tag-for :function-word word)))
+    (when pos
+      (or (eq pos category::preposition)
+          (eq pos category::spatial-preposition)))))
 
 (defun define-preposition (string &key brackets form super-category synonyms)
   (unless brackets  ;; v.s. ].treetop  treetop.[ 
