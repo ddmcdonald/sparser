@@ -100,6 +100,7 @@
   :description "Standard inverted logical argument passive, with a parameter
       for what the complement of the by-phrase is bound to. The preposed patient
       argument is required, and its presence instantiates the result-type."
+  :incorporates transitive
   :binding-parameters ( agent patient )
   :labels ( s vp vg np/patient np/agent by-pp result-type )
   :cases 
