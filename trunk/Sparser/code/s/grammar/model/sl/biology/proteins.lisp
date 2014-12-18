@@ -52,21 +52,9 @@
 ;;; for the August 15th set
 ;;;-------------------------
 
-;;/// gene/product/generalizations, UCD uses PR identifier
-
-(def-bio "ras" protein ;; lowercase to accomodate all the variant capitalization
-  :identifier "GO:0003930"
-  :long "GTPase" ;; RAS small monomeric GTPase activity
-  ;; Are we going to see that in texts?
-  )
-;; GTPase "GO:0003924"
-;; "GTPase activity"  "GO0003924"
-
-
-
-(def-bio "gtp" small-molecule ;; to accomodate all the variant capitalization
+(def-bio "GTP" small-molecule
   :identifier "CHEBI:15996")
-(def-bio "gdp" small-molecule ;; to accomodate all the variant capitalization
+(def-bio "GDP" small-molecule 
   :identifier "CHEBI:17552")
 
 ;; "GO:0006184" "GTP loading and deactivated upon hydrolysis" ?????
@@ -110,11 +98,38 @@ filligre may be used to distinguish them, etc.
 ;; These can be ripped out of pro.obo once we figure out
 ;; the simplest mechanism 
 
+
+;;/// gene/product/generalizations, UCD uses PR identifier
+
+(def-bio "ras" protein ;; lowercase to accomodate all the variant capitalization
+  :identifier "GO:0003930"
+  :long "GTPase" ;; RAS small monomeric GTPase activity
+  ;; Are we going to see that in texts?
+  )
+
+(def-bio "kras" protein 
+  :synonyms ("k-ras")
+  :identifier "PR:0000009442") ;; gene is "PR:P01116" 
+
+(def-bio "hras" protein
+  :synonyms ("h-ras")
+  :identifier "PR:000029705") ;; gene is "PR:P01112")
+
+(def-bio "nras" protein
+  :synonyms ("n-ras")
+  :identifier "PR:000011416") ;; gene is "PR:P01111"
+
+
+
 (def-bio "raf" protein
   :identifier "RAF") ;; denotes a family -- not sure there is a formal identifier (need help from UCD)
 
 (def-bio "braf" protein 
-  :identifier "PR:000004801")
+  :identifier "PR:000004801"
+  :synonyms ("b-raf"))
+
+(def-bio "craf" protein
+  :synonyms ("c-raf"))
 
 
 (def-bio "ERK" protein) ;; general term not obviously in an OBO
@@ -135,23 +150,4 @@ filligre may be used to distinguish them, etc.
 
 (def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
   :synonyms ("B-RAFV600E" "V600EB-RAF"))
-
-(def-bio "kras" protein 
-  :synonyms ("k-ras")
-  :identifier "PR:0000009442") ;; gene is "PR:P01116" 
-
-(def-bio "hras" protein
-  :synonyms ("h-ras")
-  :identifier "PR:000029705") ;; gene is "PR:P01112")
-
-(def-bio "nras" protein
-  :synonyms ("n-ras")
-  :identifier "PR:000011416") ;; gene is "PR:P01111"
-
-(def-bio "braf" protein 
-  :identifier "PR:000004801"
-  :synonyms ("b-raf"))
-
-(def-bio "craf" protein
-  :synonyms ("c-raf"))
 
