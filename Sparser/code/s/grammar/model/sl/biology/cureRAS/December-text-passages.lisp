@@ -1,4 +1,4 @@
-(in-package :sparser) ; 
+(in-package :sparser) 
 (defparameter *dec-tests*
   '((p "We selected four drugs for our studies (Figures S1A–S1D).")
     (p "Sorafenib is a class II (inactive conformation binder) drug (Wan et al., 2004) that inhibits V600EBRAF at 40 nM, CRAF at 13 nM, and several other kinases in the low nM range (Wilhelm et al., 2004).")
@@ -34,7 +34,7 @@
     (p "inhibition, suggesting MAPK pathway-independent alteration of drug sensitivity (Supplementary Fig. 8).")
     (p "Several groups have shown that C-RAF activation and heterodimerization with B-RAF constitute critical components of the cellular response to B-RAF inhibition.");; fixed typo with 18-20 at end of sentence
     (p "In A375 cells, endogenous C-RAF: B-RAF heterodimers were measurable and inducible following treatment with PLX4720 (Supplementary Fig. 9).")
-    (p "However, endogenous C-RAF phosphorylation at S338—an event required for C-RAF activation—remained low (Supplementary Fig. 9).")
+    (p "However, endogenous C-RAF phosphorylation at S338, an event required for C-RAF activation, remained low (Supplementary Fig. 9).")
     (p "In contrast, ectopically expressed C-RAF was phosphorylated on S338 (Supplementary Fig. 9) and its PLX4720 resistance phenotype was associated with sustained MEK/ERK activation (Fig. 2a, Supplementary Fig. 9).")
     (p "Moreover, ectopic expression of a high-activity C-RAF truncation mutant (C-RAF W22) was more effective than wild-type C-RAF in mediating PLX4720 resistance and ERK activation (Supplementary Fig. 10), further indicating that elevated C-RAF activity may direct resistance to this agent.");;fixed typo with unbalanced paren
     (p "Consistent with this model, oncogenic alleles of NRAS and KRAS conferred PLX4720 resistance in A375 cells (Fig. 2b) and yielded sustained C-RAF(S338) and ERK phosphorylation in the context of drug treatment (Fig. 2c).")
@@ -48,8 +48,8 @@
     (p "To test this hypothesis directly, we performed an in vitro kinase assay using recombinant COT and ERK1.")
     (p "Indeed, recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1")
     (p "in vitro (Supplementary Fig.  18) suggesting that in certain contexts, COT expression may potentiate ERK activation in a MEK-independent manner.")
-    (p " Oncogenic mutations in the serine/threonine kinase B-RAF are found in 50–70% of malignant melanomas1.")
-    (p "Pre-clinical studies have demonstrated that the B-RAFV600E mutation predicts a dependency on the mitogen activated protein kinase (MAPK) signaling cascade in melanoma [1–5] —an observation that has been validated by the success of RAF and MEK inhibitors in clinical trials6–8.")
+    (p " Oncogenic mutations in the serine/threonine kinase B-RAF are found in 50–70% of malignant melanomas 1.")
+    (p "Pre-clinical studies have demonstrated that the B-RAFV600E mutation predicts a dependency on the mitogen activated protein kinase (MAPK) signaling cascade in melanoma [1–5] —an observation that has been validated by the success of RAF and MEK inhibitors in clinical trials 6–8.")
     (p "However, clinical responses to targeted anticancer therapeutics are frequently confounded by de novo or acquired resistance [9–11].")
     (p "Identification of resistance mechanisms in a manner that elucidates alternative ‘druggable’ targets may inform effective long-term treatment strategies [12].")
     (p "Here, we expressed ~600 kinase and kinase-related open reading frames (ORFs) in parallel to functionally interrogate resistance to a selective RAF kinase inhibitor.")
