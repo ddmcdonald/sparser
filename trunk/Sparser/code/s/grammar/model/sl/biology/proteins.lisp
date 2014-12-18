@@ -84,7 +84,8 @@
 (def-bio "PIK3CA" protein
   :identifier "PR:000012719")
 
-(def-bio "cot" protein)
+(def-bio "cot" protein
+  :synonyms ("COT"))
 
 
 ;;;----------------------------------------------------
@@ -108,28 +109,29 @@ filligre may be used to distinguish them, etc.
   )
 
 (def-bio "kras" protein 
-  :synonyms ("k-ras")
+  :synonyms ("k-ras" "K-RAS")
   :identifier "PR:0000009442") ;; gene is "PR:P01116" 
 
 (def-bio "hras" protein
-  :synonyms ("h-ras")
+  :synonyms ("h-ras" "H-RAS")
   :identifier "PR:000029705") ;; gene is "PR:P01112")
 
 (def-bio "nras" protein
-  :synonyms ("n-ras")
+  :synonyms ("n-ras" "N-RAS")
   :identifier "PR:000011416") ;; gene is "PR:P01111"
 
 
 
 (def-bio "raf" protein
-  :identifier "RAF") ;; denotes a family -- not sure there is a formal identifier (need help from UCD)
+  :identifier "RAF" ;; denotes a family -- not sure there is a formal identifier (need help from UCD)
+  :synonyms ("RAF"))
 
 (def-bio "braf" protein 
   :identifier "PR:000004801"
-  :synonyms ("b-raf"))
+  :synonyms ("b-raf" "B-RAF"))
 
 (def-bio "craf" protein
-  :synonyms ("c-raf"))
+  :synonyms ("c-raf" "C-RAF"))
 
 
 (def-bio "ERK" protein) ;; general term not obviously in an OBO
