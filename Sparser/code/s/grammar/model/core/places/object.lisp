@@ -52,7 +52,7 @@
   :specializes   location
   :binds ((name :primitive word))
   :index (:permanent :key name)
-  :realization (:proper-noun name))
+  :realization (:common-noun name))
 
 (define-individual 'deictic-location :name "over there")
 
