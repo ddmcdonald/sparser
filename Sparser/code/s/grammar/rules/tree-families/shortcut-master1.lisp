@@ -205,17 +205,29 @@
             (push `(comp-slot . ,var) substitution-map)
             (push `(comp-v/r . ,v/r) substitution-map)))
 
-        
-        (when on ;; and all the other prepositions
-          ;; assemble the subcategorization form an apply it.
-          )
-        (when to) (when at) (when of) (when from)
+        (when at
+           (subcategorize-for-preposition category "at" at))
+        (when from
+           (subcategorize-for-preposition category "from" from))
+        (when in
+           (subcategorize-for-preposition category "in" in))
+        (when of  
+           (subcategorize-for-preposition category "of" of))
+        (when on 
+          (subcategorize-for-preposition category "on" on))
+        (when to
+          (subcategorize-for-preposition category "to" to))
 
         (when prep ;; preposition 'owned' by the verb, appears
           ;; immediately after the verb.
           ;; effectively a compound verb name 
           (apply-preposition verb prep category)))) ;; end dolist
 
+    (when noun ;; a noun can just expect to get all the pp's w/o an etf
+      (unless (assq :common-noun word-map)
+        ;; if it's on the map then the realization machinery will expand it
+        (let ((word (resolve/make noun)))
+          (make-cn-rules/aux word category category))))
     (when adj)
 
     (push-debug `(,category ,etf ,substitution-map ,word-map))
