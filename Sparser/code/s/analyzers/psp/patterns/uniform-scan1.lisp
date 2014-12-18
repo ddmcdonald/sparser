@@ -50,6 +50,10 @@
                        (pos-edge-starts-at leftmost-edge)
                        (chart-position-before position-just-after))))
 
+      (when (stringp start-pos) ;; see discussion below, though this
+        ;; one is weirder
+        (return-from collect-no-space-segment-into-word nil))
+
       (push-debug `(,leftmost-edge ,position-just-after)) 
       (when nil (break "sanity"))
 
@@ -60,7 +64,22 @@
 
       (multiple-value-bind (end-pos hyphen-positions slash-positions)
                            (sweep-to-end-of-ns-regions position-just-after)
+
         (push-debug `(,start-pos ,end-pos))
+
+        ;; on this sentence: (p "Pre-clinical studies have demonstrated that the B-RAFV600E mutation predicts a dependency on the mitogen activated protein kinase (MAPK) signaling cascade in melanoma [1–5] —an observation that has been validated by the success of RAF and MEK inhibitors in clinical trials 6–8.")
+        ;; and perhaps others, the sweep to the end routine returns a string
+        ;; as the value of end-pos, e.g. "6 - 8. "
+        ;; Rather than figure it out just now (12/18/14) I'm just dropping it
+        ;; on the floor.
+        (when (stringp end-pos) ;; may be bad display in backtrace
+          (return-from collect-no-space-segment-into-word nil))
+
+        (when (stringp start-pos) ;; This one is weirder
+          (return-from collect-no-space-segment-into-word nil))
+
+        (unless (position-precedes start-pos end-pos) ;; bug may actually be this
+          (return-from collect-no-space-segment-into-word nil))
 
         (when t
           (format t "~&Looking at the segment ~s~%"
