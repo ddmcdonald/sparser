@@ -64,6 +64,9 @@
 (defclass subcategorization-frame ()
   ((word :initarg :word :accessor for-word
     :documentation "Backpointer to the word this applies to")
+   (category :initarg :cat :accessor for-category
+    :documentation "Alternatively, this frame may apply
+     to a category rather than a word.")
    (form :initarg :form :accessor applies-to
     :documentation "The part of speech (form category) that 
       this frame applies to.")
@@ -215,6 +218,31 @@
           (push var deref-var)))
       `(,(nreverse deref-tt)
         ,(nreverse deref-var)))))
+
+(defun assign-prepositional-subcategorization (category prep 
+                                               v/r variable)
+  (push-debug `(,category ,prep ,v/r ,variable))
+  (let ((sf (get-subcategorization category)))
+    (unless sf
+      (setq sf (make-instance 'subcategorization-frame
+                 :cat category))
+      (setf (gethash category *labels-to-their-subcategorization*) sf))
+    (let ((entry (subcat-patterns sf))
+          (new-case `(,prep ,v/r ,variable)))
+      (setf (subcat-patterns sf)
+            (if entry
+              (cons new-case entry)
+              (list new-case)))
+      (push-debug `(,sf ,new-case))
+      new-case)))
+
+(defun subcat-restriction (entry)
+  (cadr entry))
+(defun subcat-variable (entry)
+  (caddr entry))
+
+
+
 
 (defmethod known-subcategorization? ((e edge))
   (known-subcategorization? (edge-category e)))
