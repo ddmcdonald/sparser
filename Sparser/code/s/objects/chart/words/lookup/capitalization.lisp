@@ -140,6 +140,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                ;; (Knowledge) FACTory -> "Factory"
                (:initial-letter-capitalized (return word))
                (:single-capitalized-letter nil)
+               (:all-caps (return word)) ;; "SKMEL" -> "SkMei"
                (otherwise
                 (break "new case for :mixed-case: ~a" actual-state))))
 
