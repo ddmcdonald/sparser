@@ -117,8 +117,11 @@
   (let ((head-form ;; assumes that the subcat terms go to the right
          (edge-form edge)))
     (case (cat-symbol head-form)
-      (category::vg (setf (edge-form new-edge) category::vp))
-      (category::adjective (edge-form new-edge) category::adjp)
+      (category::vg
+       (setf (edge-form new-edge) category::vp))
+      (category::adjective 
+       (setf (edge-form new-edge) category::adjp))
+      (category::np)
       (otherwise
        (push-debug `(,new-edge ,edge ,pattern))
        (break "New case of head edge needing elevation: ~a" head-form)))))
