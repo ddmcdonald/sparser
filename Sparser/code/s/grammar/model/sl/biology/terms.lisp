@@ -453,7 +453,6 @@ that consists of five conserved G boxes. |#
 (np-head "depletion") ;; keyword: (ion N) 
 (np-head "development") ;; keyword: (ment N) 
 (np-head "heterodimerization") ;; keyword: (ion N) 
-(np-head "hyperactivation") ;; keyword: (ion N) 
 (np-head "identification") ;; keyword: (ion N) 
 (np-head "possibility") ;; keyword: (ity N) 
 (np-head "inhibitor") ;; keyword: (or N) 
