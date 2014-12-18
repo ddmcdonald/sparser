@@ -61,6 +61,10 @@
    ((equal pattern '(:single-cap :single-digit :single-cap))
     (reify-ns-name-and-make-edge words start-pos end-pos))
 
+   ((equal pattern '(:single-cap :digits))
+    (or (reify-residue-and-make-edge words start-pos end-pos)
+        (reify-ns-name-and-make-edge words start-pos end-pos)))
+
    ((or (equal pattern '(:single-cap :digits :single-cap))
         (equal pattern '(:single-lower :digits :single-lower)))
     ;;/// and a bunch more
