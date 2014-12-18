@@ -62,6 +62,20 @@
                           category 
                           `(:pattern ,subcategorization)))))
 
+(defun subcategorize-for-preposition (category pname var-name)
+  (push-debug `(,category ,pname ,var-name))
+  (let ((variable (variable/category var-name category))
+        (preposition (resolve pname)))
+    (unless variable
+      (error "No variable named ~a associated with ~a"
+             var-name category))
+    (unless (word-is-a-preposition? preposition)
+      (error "~s does not appear to be a preposition." pname))
+    (let ((v/r (var-value-restriction variable)))
+      (assign-prepositional-subcategorization
+       category preposition v/r variable))))
+
+
 
 (defun apply-preposition-if-any (pname preposition category)
   "The pname is the base form of the word being defined.
