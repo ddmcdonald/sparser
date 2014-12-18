@@ -452,54 +452,49 @@
     ;; we'll try them until one of them succeeds.
     (dolist (tt edges)
       ;; for each treetop that have subcategorization information
-      (let ((patterns (known-subcategorization? tt)))
-        (dolist (pattern patterns)
-          ;; for each of the alternative patterns it has
-          (let ((edge (check-subcat-pattern pattern tt)))
-            (when edge ;; this pattern succeeded
-              ;; so don't look at any more alternative, move on
-              ;; tp the next treetop.
-              (push edge new-edges)
-              (return))))))
+      (let ((prep-entries (known-subcategorization? tt)))
+        (when prep-entries
+          (let ((edge (check-for-subcatorized-pps tt prep-entries)))
+            (when edge
+              (push edge new-edges))))))
+              ;;/// having completed one, look for another
     new-edges))
 
+(defun check-for-subcatorized-pps (head-tt prep-entries)
+  (push-debug `(,head-tt ,prep-entries))
+  (let* ((next-position (pos-edge-ends-at head-tt))
+         (next-tt (right-treetop-at/edge next-position))
+         ;; end of sentence boudary check re. pied-piping
+         (word (edge-left-daughter next-tt))
+         (following-tt (right-treetop-at/edge next-tt)))
 
-(defun check-subcat-pattern (pattern head-edge)
-  (let ((tt-sequence (car pattern))
-        (variables (cadr pattern)))
-    (tr :trying-subcat-pattern tt tt-sequence)
-    (multiple-value-bind (tts-to-bind tts)
-                         (follow-out-pattern 
-                          (pos-edge-ends-at tt) tt-sequence)
-      (if tts-to-bind
-        (let ((referent (edge-referent tt))
-              (last-tt (car (last tts))))
-          (follow-out-binding-pattern referent variables tts-to-bind)
-          (let ((edge (make-edge-over-long-span 
-                       (pos-edge-starts-at tt)
-                       (pos-edge-ends-at last-tt)
-                       (edge-category tt)
-                       :rule pattern
-                       :form (edge-form tt) ;;/// This will be vg. Needs to becomes vp.
-                       :referent referent
-                       :constituents tts)))
-            (tr :subcat-pattern-succeeded edge)
-            (elevate-form-given-subcat edge head-edge pattern)
-            edge))
-        (else
-         (tr :subcat-pattern-failed)
-         nil)))))
+    (when (and word (word-p word))
+      (let ((subcat (assq word prep-entries)))
+        (when subcat
+          (let ((v/r (subcat-restriction subcat))
+                (np-ref (when following-tt (edge-referent following-tt))))
 
+            (if (and np-ref (itypep np-ref v/r))
+              (let ((head-ref (edge-referent head-tt))
+                    (variable (subcat-variable subcat)))
+                (bind-variable variable np-ref head-ref)
+                (let ((edge (make-edge-over-long-span 
+                        (pos-edge-starts-at head-tt)
+                        (pos-edge-ends-at following-tt)
+                        (edge-category head-tt)
+                        :rule subcat
+                        :form (edge-form head-tt) ;;/// This will be vg. Needs to becomes vp.
+                        :referent head-ref
+                        :constituents `(,head-tt ,next-tt ,following-tt))))
+                  (tr :subcat-pattern-succeeded edge)
+                  (elevate-form-given-subcat edge head-tt subcat)
+                  edge))
+              (else
+               (push-debug `(,np-ref ,v/r ,following-tt))
+               (break "Subcat of ~s: ~a is not a ~a Should that change?"
+                      (word-pname word) np-ref v/r)))))))))
 
-(defun follow-out-binding-pattern (referent variables tts-to-bind)
-  (do ((next-var (car variables) (car other-vars))
-       (next-tt (car tts-to-bind) (car other-tts))
-       (other-vars (cdr variables) (cdr other-vars))
-       (other-tts (cdr tts-to-bind) (cdr other-tts)))
-      ((null next-var))
-    (bind-variable next-var (edge-referent next-tt) referent))
-  referent)
-
+#+ignore
 (defun follow-out-pattern (start-pos tt-sequence)
   (let ( nps-seen  tts )
     (do* ((next-position start-pos
@@ -527,6 +522,43 @@
              (return-from follow-out-pattern nil))))))
     (values (nreverse nps-seen)
             (nreverse tts))))
+
+#+ignore
+(defun follow-out-binding-pattern (referent variables tts-to-bind)
+  (do ((next-var (car variables) (car other-vars))
+       (next-tt (car tts-to-bind) (car other-tts))
+       (other-vars (cdr variables) (cdr other-vars))
+       (other-tts (cdr tts-to-bind) (cdr other-tts)))
+      ((null next-var))
+    (bind-variable next-var (edge-referent next-tt) referent))
+  referent)
+
+#+ignore
+(defun check-subcat-pattern (pattern head-edge)
+  (let ((tt-sequence (car pattern))
+        (variables (cadr pattern)))
+    (tr :trying-subcat-pattern tt tt-sequence)
+    (multiple-value-bind (tts-to-bind tts)
+                         (follow-out-pattern 
+                          (pos-edge-ends-at tt) tt-sequence)
+      (if tts-to-bind
+        (let ((referent (edge-referent tt))
+              (last-tt (car (last tts))))
+          (follow-out-binding-pattern referent variables tts-to-bind)
+          (let ((edge (make-edge-over-long-span 
+                       (pos-edge-starts-at tt)
+                       (pos-edge-ends-at last-tt)
+                       (edge-category tt)
+                       :rule pattern
+                       :form (edge-form tt) ;;/// This will be vg. Needs to becomes vp.
+                       :referent referent
+                       :constituents tts)))
+            (tr :subcat-pattern-succeeded edge)
+            (elevate-form-given-subcat edge head-edge pattern)
+            edge))
+        (else
+         (tr :subcat-pattern-failed)
+         nil)))))
   
 
 
