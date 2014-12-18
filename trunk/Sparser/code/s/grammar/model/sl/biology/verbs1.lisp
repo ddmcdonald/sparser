@@ -221,7 +221,7 @@
    :to goal
    :on substrate))
 
-(define-category bio-activate
+(define-category bio-hyperactivate
   :specializes bio-process
   :binds ((activator bio-entity) (activated molecule))
   :realization
@@ -992,7 +992,7 @@
 ;; really want to have the form "CRAF allows CRAF to hyperactivate the pathway"  -- want the clausal modiffer
 (define-category allow
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent bio-entity)(patient molecule))
     :realization
     (:verb "allow" ;; keyword: ENDS-IN-ING 
 	   :noun "allowance"
