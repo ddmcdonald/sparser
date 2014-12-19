@@ -187,6 +187,7 @@
                  (v/r (var-value-restriction var)))
             (push `(subj-slot . ,var) substitution-map)
             (push `(subj-v/r . ,v/r) substitution-map)
+            (register-variable category var :subject-variable)
 
             (when (is-a-form-of-passive? schema-name)
               (let ((by-v/r (or by;; already determined
@@ -197,13 +198,15 @@
           (let* ((var (variable/category o category))
                  (v/r (var-value-restriction var)))
             (push `(theme-slot . ,var) substitution-map)
-            (push `(theme-v/r . ,v/r) substitution-map)))
+            (push `(theme-v/r . ,v/r) substitution-map)
+            (register-variable category var :object-variable)))
 
         (when c  ;; complement, e.g. "reported that ..."
           (let* ((var (variable/category c category))
                  (v/r (var-value-restriction var)))
             (push `(comp-slot . ,var) substitution-map)
-            (push `(comp-v/r . ,v/r) substitution-map)))
+            (push `(comp-v/r . ,v/r) substitution-map)
+            (register-variable category var :omplement-variable)))
 
         (when at
            (subcategorize-for-preposition category "at" at))
@@ -235,7 +238,21 @@
     (apply-rdata-mappings category etf
                           :args substitution-map 
                           :word-keys word-map)))
-   
+
+
+(defun register-variable (category variable grammatical-relation)
+  (push-onto-plist category variable grammatical-relation))
+
+(defmethod subject-variable ((c category))
+  (get-tag-for :subject-variable c))
+
+(defmethod object-variable ((c category))
+  (get-tag-for :object-variable c))
+
+(defmethod complement-variable ((c category))
+  (get-tag-for :complement-variable c))
+
+
         
 #| The target is a call to apply-realization-scheme or an open-coded equivalent.
 The key part is the mapping, which is constructed by assemble-scheme-form which
