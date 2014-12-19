@@ -151,6 +151,10 @@
    Won't be seen if sweep flag is down. Gates the actual
    parsing of treetops.")
 
+(defparameter *readout-relations* nil
+  "Gates whether to export or display the relations that were
+   found in the sentence.")
+
 (defparameter *do-debris-analysis* nil
   "Set as part of the switch settings, read within HA code and in
    special DA drivers")
