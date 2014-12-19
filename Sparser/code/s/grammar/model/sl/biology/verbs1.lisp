@@ -99,7 +99,6 @@
      :s activator
      :o activated))
 
-
 ;; bio-deactivate conflicts with bio-activate
 ;; so need to redesign the by-phrase to be uniform
 ;; and stated over the value restriction rather than
@@ -112,6 +111,16 @@
     :etf (svo-passive of-nominal)
     :s deactivator
     :o deactivated))
+
+
+;;--- activity
+;; "ERK activity in BRAF mutant A375 melanoma cells" #8
+;;  conjectured:  "activity of ERK"
+#|(def-term activity-of-protein
+  :super-category bio-process
+  :noun "activity"
+  -- pooh. we need a couple of NP ETF
+|#
 
 ;; "GTP-binding" "GO:00055525
 ;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
