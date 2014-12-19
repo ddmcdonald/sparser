@@ -9,6 +9,7 @@
 ;; new 'whole sentence at a time, start anywhere' protocol.
 ;; Incrementally extending through 9/24/14. Broke out the routines
 ;; 10/25/14 leaving the drivers. 
+;; RJB 12/19/2014 remove adverbs and commas from islands before attempting second pass
 
 (in-package :sparser)
 
@@ -112,8 +113,15 @@
 ;;; second pass
 ;;;-------------
 
+(defun clean-treetops (treetops)
+  (loop for edge in treetops
+    unless (or 
+            (memq (edge-category edge) `(,word::comma))
+            (memq (edge-form edge) `(,category::adverb)))
+    collect edge))
+
 (defun run-island-checks-pass-two (layout start-pos end-pos)
-  (let* ((treetops (successive-treetops :from start-pos :to end-pos))
+  (let* ((treetops (clean-treetops (successive-treetops :from start-pos :to end-pos)))
          (tt-count (length treetops))
          (clauses (there-are-loose-clauses))
          (subject-edge (subject layout))
@@ -121,8 +129,9 @@
          (copula (when vps (find-copular-vp vps)))
          (other-vps (when vps (find-non-copular-vps vps)))
          (pps (there-are-prepositional-phrases)))
+    ;;(declare (special treetops tt-count clauses subject-edge vps copula))
     (tr :islands-pass-2 tt-count)
-
+    ;;(break "foo")
     (cond
      ((= tt-count 2)
       (smash-together-two-tt-islands treetops))
