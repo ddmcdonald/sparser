@@ -152,7 +152,7 @@ the word buffer. Doesn't explain the lowercase effects.
   (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-expansion.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-mechanics.lisp")
-  (ddm-ed "grammar/rules/tree-families/families.lisp")
+  (ddm-ed "grammar/rules/tree-families/families1.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcuts.lisp")
   (ddm-ed "grammar/rules/tree-families/families.lisp")
   (ddm-ed "grammar/rules/syntax/subcategorization.lisp"))
