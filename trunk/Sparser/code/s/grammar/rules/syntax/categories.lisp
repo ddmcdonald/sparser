@@ -63,6 +63,7 @@
 ;; starting another NG (so that it becomes a VG on its own)
 ;; RJB 12/14/2014 Similar fix for verb+ing as the start of a NG
 ;; added     ,category::pronoun as a minor-category -- not sure
+;; 12/19/2014     ;; partitive construction e.g. "all of these lines"
  
 (in-package :sparser)
 
@@ -278,6 +279,7 @@
 (defparameter *ng-start-categories*
   '(CATEGORY::DET
     CATEGORY::QUANTIFIER
+    CATEGORY::QUANTIFIER-OF
     category::number
     category::ordinal
     CATEGORY::ADVERB
@@ -337,16 +339,22 @@
     ))
 
 
-(defgeneric ng-compatible? (label)
+(defgeneric ng-compatible? (label chunk)
   (:documentation "Is a category which can occur inside a NG"))
-(defmethod ng-compatible? ((w word))
+(defmethod ng-compatible? ((w word) chunk)
   nil)
-(defmethod ng-compatible? ((e edge))
-  (ng-compatible? (edge-form e)))
-(defmethod ng-compatible? ((c referential-category))
-  (ng-compatible? (cat-symbol c)))
-(defmethod ng-compatible? ((name symbol))
-  (memq name *ng-internal-categories*))
+(defmethod ng-compatible? ((e edge) chunk)
+  (ng-compatible? (edge-form e) chunk))
+(defmethod ng-compatible? ((c referential-category) chunk)
+  (ng-compatible? (cat-symbol c) chunk)
+(defmethod ng-compatible? ((name symbol) chunk)
+  (declare (special chunk name))
+  (or
+   (memq name *ng-internal-categories*)
+   (and
+    ;; partitive construction e.g. "all of these lines"
+    (eq (edge-category (car (chunk-edge-list chunk))) category::quantifier-of)
+    (eq name 'category::det))))
 
 (defgeneric ng-start? (label)
   (:documentation "Is a category which can occur inside a NG"))

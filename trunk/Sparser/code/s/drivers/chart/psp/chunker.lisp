@@ -14,6 +14,7 @@
 ;; with "these drugs blocked ERK activity" where "blocked" is the main verb.
 ;; the key is to end a NG when you hit a verb+ed immediately preceded by a noun, and to prevent that verb+ed from
 ;; starting another NG (so that it becomes a VG on its own) 
+;; RJB 12/19/2014     ;; partitive construction e.g. "all of these lines"
 
 (in-package :sparser)
 
@@ -243,7 +244,7 @@
   (loop for form in forms
     when (or
           (and (eq form 'ng) 
-               (ng-compatible? edge)
+               (ng-compatible? edge chunk)
                ;; new code -- don't accept a past participle immediately following a noun -- most likely to be a main verb or a reduced relative in this case
                (not (and
                      (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge)))
