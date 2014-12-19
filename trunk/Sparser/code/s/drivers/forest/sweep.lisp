@@ -77,6 +77,10 @@
                   (set-subject tt))
                  (main-verb-seen?
                   (push-loose-np tt))
+                 ((and prior-tt
+                       (memq (cat-symbol (edge-category prior-tt))
+                             '(word::comma category::pp category::adverb)))
+                  (set-subject tt))
                  (t (push-loose-np tt))))
 
           (category::vg
@@ -126,6 +130,17 @@
           (category::quantifier
            ;; drop it on the floor for now: "each of"
            )
+          (category::det
+           (if
+            (eq (edge-category tt) category::that)
+            (then
+              (print "IGNORING LIKELY THATCOMP IN SWEEP"))
+            (else
+              (push-debug `(,tt ,form))
+              (break "New case in sweep.~
+              ~% tt = ~a~
+              ~% form = ~a"
+                     tt form))))
 
           (otherwise
            (push-debug `(,tt ,form))

@@ -345,6 +345,7 @@
    :s agent
    :o patient))
 
+
 (define-category dephosphorylate
   :specializes bio-process
   :binds ((agent bio-entity)(patient molecule)) 
@@ -581,6 +582,17 @@
 	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
+
+(define-category decrease
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient molecule)) 
+  :realization
+  (:verb "decrease" :noun "decrease"
+   :etf (svo-passive of-nominal)
+   :s agent
+   :o patient))
+
+
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display
     :specializes bio-process

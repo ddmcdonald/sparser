@@ -255,6 +255,7 @@
 (defun copular-vp (edge)
   ;; The main verb under this edge is a form of the verb
   ;; 'to be' or its equivalent (seems, appears, ...)
+  (setq *edge* edge)
   (let ((verb-edge (find-verb edge)))
     (when verb-edge
       (when (eq (edge-category verb-edge) *the-category-to-be*)
@@ -288,7 +289,9 @@
           right)
 
          (t (push-debug `(,left ,right ,left-form ,right-form))
-            (break "find-verb: new case")))))))
+            (print `(can't find verb on edge ,edge)) ;;(break "find-verb: new case")
+            nil
+            ))))))
 
 
 
