@@ -50,10 +50,6 @@
                        (pos-edge-starts-at leftmost-edge)
                        (chart-position-before position-just-after))))
 
-      (when (stringp start-pos) ;; see discussion below, though this
-        ;; one is weirder
-        (return-from collect-no-space-segment-into-word nil))
-
       (push-debug `(,leftmost-edge ,position-just-after)) 
       (when nil (break "sanity"))
 
@@ -81,7 +77,7 @@
         (unless (position-precedes start-pos end-pos) ;; bug may actually be this
           (return-from collect-no-space-segment-into-word nil))
 
-        (when t
+        (when nil
           (format t "~&Looking at the segment ~s~%"
                   (string-of-words-between start-pos end-pos)))
 
