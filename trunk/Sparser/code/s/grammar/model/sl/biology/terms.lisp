@@ -455,14 +455,14 @@ that consists of five conserved G boxes. |#
 (np-head "trial" :super 'abstract)
 
 ;;need prep cases
-(np-head "conformation") ;; keyword: (ion N) 
+(np-head "conformation" :super 'bio-entity) ;; keyword: (ion N) 
 (np-head "dependency") ;; keyword: (ency N) 
 (np-head "depletion") ;; keyword: (ion N) 
 (np-head "development") ;; keyword: (ment N) 
 (np-head "heterodimerization") ;; keyword: (ion N) 
 (np-head "identification") ;; keyword: (ion N) 
 (np-head "possibility") ;; keyword: (ity N) 
-(np-head "inhibitor") ;; keyword: (or N) 
+(np-head "inhibitor" :super 'bio-entity) ;; keyword: (or N) 
 (np-head "mass spectrometry" :super 'bio-process)
 
 ;;adverb
