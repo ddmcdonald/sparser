@@ -117,6 +117,7 @@
   (let ((head-form ;; assumes that the subcat terms go to the right
          (edge-form edge)))
     (case (cat-symbol head-form)
+      (category::s)
       (category::vg
        (setf (edge-form new-edge) category::vp))
       (category::adjective 
