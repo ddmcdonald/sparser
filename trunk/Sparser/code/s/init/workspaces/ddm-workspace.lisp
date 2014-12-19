@@ -16,7 +16,8 @@
   (setup-bio) ;; load the bio model etc.
   (setq *note-text-relations* nil)
   (trace-lexicon-unpacking) (trace-morphology)
-  (incorporate-obo-terms))
+  (incorporate-obo-terms)
+  (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/December-text-passages.lisp"))
 #|
 (def-bio "dtp" small-molecule)
 (def-bio "etp" small-molecule)
@@ -101,6 +102,14 @@ the word buffer. Doesn't explain the lowercase effects.
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "grammar/rules/SD&P/create-categories.lisp")
   (ddm-ed "grammar/rules/syntax/categories.lisp"))
+
+(defun ddm-polyword-conundrum ()
+  (ddm-ed "objects/rules/cfr/dotted5.lisp")
+  (ddm-ed "objects/rules/cfr/knit-in3.lisp")
+  (ddm-ed "objects/rules/cfr/polywords1.lisp")
+  (ddm-ed "objects/chart/words/polyword-form1.lisp")
+  (ddm-ed "analyzers/psp/assess/terminal-edges2.lisp"))
+
 
 ;; Set up actions associated with binding
 ; (ddm-ed "objects/model/bindings/hooks.lisp")
