@@ -106,7 +106,12 @@
          (end-pos (ends-at-pos sentence))
          (rightmost-pos start-pos)
          entities  relations  tt-contents
-         treetop  referent  pos-after    ) 
+         treetop  referent  pos-after    )
+    (when t
+      ;; add a space to separate these traces from the
+      ;; summary that was just printed
+      (format t "~%"))
+
     ;; modeled on sweep-sentence-treetops
     (loop
       (multiple-value-setq (treetop pos-after) ;; multiple?
