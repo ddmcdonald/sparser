@@ -117,15 +117,15 @@
 ;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
 ;; "interacting selectively and non-covalently with GTP"
 ;;
-#+ignore ;; this doesn't feel distinguishing enough
-(def-term bio-bind  bio-process
+(def-term bio-bind  
+  :super-category bio-process
   :obo-id "GO:0005488"
-  :binds ((participant molecule))
+  ;; "<binder> binds to <binde>" the subject moves
   :verb ("bind" :past-tense "bound")
-  :etf (svo) ;;-passive) -- avoid by-phrase problem
-  :s participant 
-  :o participant
-  :to participant)  ;; def-additional-realization  ??
+  :etf (svo-passive) 
+  :s (binder molecule) 
+  :o  (bindee molecule)
+  :to bindee)  ;; def-additional-realization  ??
 
 (def-term block
   :etf (svo of-nominal)
