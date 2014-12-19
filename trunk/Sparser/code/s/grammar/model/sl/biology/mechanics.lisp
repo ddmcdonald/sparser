@@ -74,8 +74,19 @@
     (setq i (find-or-make-individual category :name word))
     ;; The find-or-make call will set up a rule for the short form
     ;; as a common noun that has this individual as its referent.
+    ;; Ignoring brackets since this runs with the new chunker
 
-    ;; ignoring brackets since this runs with the new chunker
+    (let* ((pname (etypecase word 
+                    (word (word-pname word))
+                    (polyword (pw-pname word))))
+           (downcased-pname (string-downcase pname)))
+      (unless synonyms ;; probably done there
+        (unless (string= downcased-pname pname) ;; case-sensitive
+          (let ((lowercase-word (resolve/make downcased-pname)))
+            (push (define-cfr label `(,lowercase-word)
+                    :form form
+                    :referent i)
+                  rules)))))
    
     (when identifier
       (bind-variable 'uid identifier i))
