@@ -8,6 +8,7 @@
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
 ;; four passes finished 11/19/14.
+;; RJB 12/18/2014   handle case of A, B, and C (i.e. comma before conjunction)
 
 (in-package :sparser)
 
@@ -228,10 +229,16 @@
     ;; something is putting on two copies
     (dolist (position (remove-duplicates *pending-conjunction*))
       ;; lifted from look-for-short-obvious-conjunctions which will
-      ;; go away if this is effective
       (let ((left-edge (next-treetop/leftward position))
             (right-edge  (next-treetop/rightward 
                           (chart-position-after position))))
+        ;; handle case of A, B, and C (i.e. comma before conjunction)
+        (if (eq word::comma (edge-category left-edge))
+            (then
+              (setq left-edge
+                    (next-treetop/leftward left-edge))))
+               
+
         (unless (or (word-p left-edge)
                     (word-p right-edge)
                     (edge-vector-p left-edge)
