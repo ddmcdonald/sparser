@@ -346,7 +346,7 @@
 (defmethod ng-compatible? ((e edge) chunk)
   (ng-compatible? (edge-form e) chunk))
 (defmethod ng-compatible? ((c referential-category) chunk)
-  (ng-compatible? (cat-symbol c) chunk)
+  (ng-compatible? (cat-symbol c) chunk))
 (defmethod ng-compatible? ((name symbol) chunk)
   (declare (special chunk name))
   (or
