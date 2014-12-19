@@ -121,6 +121,21 @@
     (values relations
             entities)))
 
+(defmethod collect-model ((n number))
+  (let ((edge (edge# n)))
+    (unless edge (error "The number ~a does not retrieve an edge" n))
+    (collect-model edge)))
+
+(defmethod collect-model ((e edge))
+  (let ((referent (edge-referent e)))
+    (when referent
+      (collect-model referent))))
+
+(defmethod collect-model ((w word)) w)
+(defmethod collect-model ((pw polyword)) pw)
+(defmethod collect-model ((c category)) c)
+;; anything else?
+
 (defmethod collect-model ((i individual))
   (let ((type (car (indiv-type i)))
         (bindings (indiv-binds i))
@@ -129,15 +144,28 @@
     ;; a grammatical relation. If it is, then we recurse.
     (if (subject-variable type)
       (let ( embedded-objects )
-        (dolist (b bindings)
-          (let ((var (binding-variable b))
-                 (value (binding-value b)))
-            (let ((objects (collect-model value)))
-              (break "lower obj")
-              (loop for obj in objects
-                do (push `(,var ,obj) embedded-objects)))))
-        (break "what goes where?"))
-
+       ;; Walk through the bindings. 
+       ;; Push the pair that records the variable that bound 
+       ;; the value onto objects.
+       ;; Recurse on the values and stash the result on 
+       ;; embedded-objects.After the loop elevate all of 
+       ;; them to objects's list. /// may not be a good order
+       (dolist (b bindings)
+         (let ((var (binding-variable b))
+               (value (binding-value b)))
+           (unless (eq (var-name var) 'category)
+             (push `(,var ,value) objects)
+             (let ((objects (collect-model value)))
+               (typecase objects
+                 (category)
+                 (cons
+                  (loop for obj in objects
+                  do (push `(,var ,obj) embedded-objects)))
+                 (otherwise 
+                  (error "Unexpected return type from collect-~
+                          model: ~a~%  ~a"
+                         (type-of objects) objects)))))))
+        (push i objects))
       (else
        (push i objects)))
     objects ))
