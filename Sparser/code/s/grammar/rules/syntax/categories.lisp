@@ -353,25 +353,52 @@
   nil)
 (defmethod ng-start? ((e edge))
   (declare (special e))
-  (or
-   (ng-start? (edge-form e))
-   (cond
-    ((eq category::verb+ed (edge-form e))
-        ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
-        ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
-        ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
-        ;; as opposed to "direct binding to activated forms of RAS"
-     (not (and
-           (car *chunks*)
-           (member 'ng (chunk-forms (car *chunks*)))
-           (eq (chunk-end-pos (car *chunks*))
-               (pos-edge-starts-at e)))))
-    ((eq category::verb+ing (edge-form e))
-        ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
-        ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
-      (not
-       (eq category::preposition (edge-form (edge-just-to-left-of e))))))))
+  (cond
+   ((eq category::that (edge-category e))
+    (not
+     (and
+      (car *chunks*)
+      (member 'vg (chunk-forms (car *chunks*)))
+      (thatcomp-verb (car (chunk-edge-list (car *chunks*)))))))
+   ((ng-start? (edge-form e))
+    t)
+   ((eq category::verb+ed (edge-form e))
+    ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
+    ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
+    ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
+    ;; as opposed to "direct binding to activated forms of RAS"
+    (not (and
+          (car *chunks*)
+          (member 'ng (chunk-forms (car *chunks*)))
+          (eq (chunk-end-pos (car *chunks*))
+              (pos-edge-starts-at e)))))
+   
+   ((eq category::verb+ing (edge-form e))
+    ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
+    ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
+    (not
+     (eq category::preposition (edge-form (edge-just-to-left-of e)))))))
 
+
+(defun thatcomp-verb (edge)
+  (declare (special edge))
+  ;; is this a verb that takes a that complement, like SHOW -- we should be checking the 
+  ;;  rules for the verb
+
+  (cond
+   ((memq (cat-symbol (edge-category edge))
+          '(category::demonstrate          
+            category::hypothesize 
+            category::posit 
+            category::propose
+            category::report-verb
+            category::show 
+            category::suggest))
+    t)
+   (t
+    (print `(checking thatcomp status for ,(edge-category edge) ,edge))
+    (break "THATCOMP?")
+    nil)))
 
 (defmethod ng-start? ((c referential-category))
   (ng-start? (cat-symbol c)))

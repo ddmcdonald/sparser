@@ -139,7 +139,7 @@
          (irregulars (if (consp head-word-pname)
                        (cdr head-word-pname)
                        (cdr (assq :irregulars word-keys)))))
-    ;;(push-debug `(,etf ,head-keyword ,head-word ,mapping)) (break "1")
+    (push-debug `(,etf ,head-keyword ,head-word ,mapping));; (break "1")
     (unless head-word
       (push-debug `(,scheme ,word-keys))
       (error "The word-keys don't have an entry for ~a" head-keyword))
