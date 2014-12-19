@@ -62,6 +62,7 @@
 ;; the key is to end a NG when you hit a verb+ed immediatelyu preceded by a noun, and to prevent that verb+ed from
 ;; starting another NG (so that it becomes a VG on its own)
 ;; RJB 12/14/2014 Similar fix for verb+ing as the start of a NG
+;; added     ,category::pronoun as a minor-category -- not sure
  
 (in-package :sparser)
 
@@ -655,6 +656,7 @@
 
 (defparameter *minor-categories*
   `(,category::np
+    ,category::pronoun
     ,category::pp))
 
 (defmethod category-status ((c category))
