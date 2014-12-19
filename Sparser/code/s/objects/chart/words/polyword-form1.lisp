@@ -3,7 +3,7 @@
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "polyword form"
-;;;   Module:  "objects;words:"
+;;;   Module:  "objects/chart/words:"
 ;;;  Version:  1.4 July 2014
 
 (in-package :sparser)
