@@ -9,6 +9,7 @@
 ;; original single-pass sweep into a succession of passes. Drafts of
 ;; four passes finished 11/19/14.
 ;; RJB 12/18/2014   handle case of A, B, and C (i.e. comma before conjunction)
+;;  use correct function right-treetop-at/edge in short-conjunctions-sweep -- handle case of PD198u7 and sorafenib.
 
 (in-package :sparser)
 
@@ -230,19 +231,18 @@
     (dolist (position (remove-duplicates *pending-conjunction*))
       ;; lifted from look-for-short-obvious-conjunctions which will
       (let ((left-edge (next-treetop/leftward position))
-            (right-edge  (next-treetop/rightward 
+            (right-edge  (right-treetop-at/edge 
                           (chart-position-after position))))
         ;; handle case of A, B, and C (i.e. comma before conjunction)
         (if (eq word::comma (edge-category left-edge))
             (then
               (setq left-edge
                     (next-treetop/leftward left-edge))))
-               
-
         (unless (or (word-p left-edge)
                     (word-p right-edge)
                     (edge-vector-p left-edge)
                     (edge-vector-p right-edge))
+
           (let ((heuristic (conjunction-heuristics left-edge right-edge)))
             (if heuristic
               ;; conjoin/2 looks for leftwards
