@@ -660,7 +660,10 @@
 (defparameter *major-categories*
   `(,category::s
     ,category::subj+verb
-    ,category::vp))
+    ,category::vp
+    ;; again, not sure if adjective should be a major cateogry or a minor one
+    ;; example "BRAF is (not) active."
+    ,category::adjective))
 
 (defparameter *minor-categories*
   `(,category::np
