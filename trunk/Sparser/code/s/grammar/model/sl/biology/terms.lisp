@@ -507,6 +507,7 @@ that consists of five conserved G boxes. |#
 "assay";;ambiguous between (NOUN VERB)
 
 
-
+;;--- ddm 12/18/14 hacked phrases to 'get through' more text
+(adj "least-selective")
 
 
