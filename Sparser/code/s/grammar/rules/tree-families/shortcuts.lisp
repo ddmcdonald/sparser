@@ -99,6 +99,13 @@ broadly speaking doing for you all the things you might do by hand.
 
 ;;--- NP patterns
 
+(defun compound-np-head (category left-category right-category referent)
+  ;; if this were a macro we'd get symbols (except for the referent)
+  ;; and have to dereference them. Let's assume we have real categories here
+  (define-cfr category `(,left-category ,right-category)
+    :form category::n-bar
+    :referent referent))
+
 (defun np-head (string-for-noun &key super rule-label)
   ;; "trunk", "car", ...
   (with-name-and-superc string-for-noun super :noun
