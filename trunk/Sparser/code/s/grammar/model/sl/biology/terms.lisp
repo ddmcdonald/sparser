@@ -343,7 +343,13 @@ that consists of five conserved G boxes. |#
 (np-head "WM266.4" :super 'cell-line :rule-label 'cell-line)
 (np-head "WM852" :super 'cell-line :rule-label 'cell-line)
 
+
+;; Def-bio doesn't appreciate part of speech, so hacked the
+;; presenting plural version here. #52
 (def-bio "open reading frame" bio-entity)
+(def-bio "open reading frames" bio-entity)
+
+
 (def-bio "ORF" bio-entity) ;; same as above -- need to figure out how to get the category spelling right
 
 
