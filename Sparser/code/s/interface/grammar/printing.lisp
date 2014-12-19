@@ -151,3 +151,65 @@
             (format stream "~%")))))))
 
 
+
+;;;--------------------------------------------------
+;;; Printing for tab-delimited human-readable output
+;;;--------------------------------------------------
+
+
+
+(defmethod print-readably ((i individual) stream)
+  (let ((type (car (indiv-type i)))
+        (binds (indiv-binds i)))
+    (let ((mitre-ordered-bindings
+           (mitre-order-bindings binds)))
+      (format stream "~&~a~{~T~a~}~%" ;; does ~T insert a cntrl-J ??
+              (mitre-string type)
+              mitre-ordered-bindings))))
+
+(defun mitre-order-bindings (bindings)
+  (let ( vars var-value-pairs )
+    ;; first filter for category and collect info
+    (dolist (b bindings)
+      (let* ((var (binding-variable b))
+             (var-name (var-name var))
+             (value (binding-value b)))
+        (unless (eq var-name 'category)
+          (push var-name vars)
+          (push `(,var-name ,value)
+                var-value-pairs))))
+    (push-debug `(,vars ,var-value-pairs))
+    ;; (setq vars (car *) var-binding-pairs (cadr *))
+    (cond
+     ((=  1 (length vars))
+      (list (mitre-string (cadr (car var-value-pairs)))))
+     ((and (memq 'agent vars)
+           (memq 'patient vars))
+      (let ((agent-value (cadr (assq 'agent var-value-pairs)))
+            (patient-value (cadr (assq 'patient var-value-pairs))))
+        (push-debug `(,agent-value ,patient-value))
+        (list (mitre-string agent-value)
+              (mitre-string patient-value))))
+        
+
+     (t (break "new configuration: vars = ~a" vars)))))
+
+(defmethod mitre-string ((c category))
+  (format nil "~a" (cat-symbol c)))
+
+(defmethod mitre-string ((i individual))
+  (let ((word (value-of 'name i)))
+    (unless word
+      (push-debug `(,i))
+      (break "No name field on ~a" i))
+    (typecase word
+      (word (word-pname word))
+      (polyword (pw-pname word))
+      (otherwise
+       (push-debug `(,i ,word))
+       (break "Unexpected value for name: ~a~%~a"
+              (type-of word) word)))))
+
+
+
+
