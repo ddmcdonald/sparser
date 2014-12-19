@@ -93,7 +93,35 @@ therefore we have the special cases:
   ;; called from the no-space pattern machinery when the
   ;; pattern is (:single-cap :digits) and it's possible that
   ;; that first word is the short form af an amino acid.
-  (push-debug `(,words ,start-pos ,end-pos)))
+  ;; Return nil if this doesn't work out
+  (push-debug `(,words ,start-pos ,end-pos))
+  ;; (setq words (car *) start-pos (cadr *) end-pos (caddr *))
+  (let* ((single-letter (car words))
+         (variants (word-capitalization-variants single-letter))
+         ;; given this pattern, there will only be one if there is one
+         (capitalized-letter (when variants (car variants))))
+    (when capitalized-letter
+      (let ((amino-acid (single-letter-is-amino-acid capitalized-letter)))
+        (when amino-acid
+          (let* ((digit-word (cadr words))
+                 (number (get-tag-for :numerical-value digit-word))
+                 (residue
+                  (find-or-make-individual 'residue-on-protein
+                    :amino-acid amino-acid
+                    :position number)))
+            ;;(break "residue = ~a" residue)
+            (let* ((left-edge (top-edge-at/starting start-pos))
+                   (right-edge (top-edge-at/ending end-pos))
+                   (edge (make-chart-edge
+                         :left-edge left-edge
+                         :right-edge right-edge
+                         :starting-position (pos-edge-starts-at left-edge)
+                         :ending-position (pos-edge-ends-at right-edge)
+                         :category category::residue-on-protein
+                         :form category::np
+                         :rule-name :reify-residue
+                         :referent residue)))
+              edge)))))))
 
 ; These are bare rules that could be converted to an ETF
 ; (or several) that captures these composition possibilities
