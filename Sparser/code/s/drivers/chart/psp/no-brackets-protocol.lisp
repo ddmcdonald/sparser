@@ -3,12 +3,12 @@
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  November 2014
+;;;  version:  December 2014
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
 ;; could be independently tested. 11/18/14 Reflecting the decomposition
-;; of the sweep into a succession of sweeps. 
+;; of the sweep into a succession of sweeps. 12/18/
 
 (in-package :sparser)
 
@@ -76,10 +76,71 @@
           (when *parse-chunked-treetop-forest*
             (let ((*return-after-doing-forest-level* t))
               (declare (special *return-after-doing-forest-level*))
-              (new-forest-driver sentence))))
+              (new-forest-driver sentence)))
+
+          (when *readout-relations*
+            (let ((relations (identify-relations sentence)))
+              (readout-relations relations))))
 
         ;; EOS throws to a higher catch. If the next sentence
         ;; is empty we will hit the end of source as we
         ;; start scanning terminals and it will throw
         ;; beyond this point. 
         (setq sentence (next sentence))))))
+
+
+;;/// move somewhere
+(defun identify-relations (sentence)
+  ;; sweep over every treetop in the sentence and look at
+  ;; their referents. For all sensible cases recursively
+  ;; examine the object and tally the entities and relations.
+  ;;/// when we do discourrse add these to the sentence object
+  (let* ((start-pos (starts-at-pos sentence))
+         (end-pos (ends-at-pos sentence))
+         (rightmost-pos start-pos)
+         entities  relations  tt-contents
+         treetop  referent  pos-after  multiple?  )
+    ;; modeled on sweep-sentence-treetops
+    (loop
+      (multiple-value-setq (treetop pos-after multiple?)
+        (next-treetop/rightward rightmost-pos))
+      (when (edge-p treetop)
+        (setq referent (edge-referent treetop))
+
+        ;; we sweep over pronouns here
+        (when (individual-p referent)
+          (setq tt-contents (collect-model referent)))
+
+        ;; somehow divide entities from relations
+        ;; but now just update
+        (loop for item in tt-contents
+          do (pushnew item relations)))
+
+      (when (eq pos-after end-pos)
+        (return)))
+    (values relations
+            entities)))
+
+(defmethod collect-model ((i individual))
+  (let ((type (car (indiv-type i)))
+        (bindings (indiv-binds i))
+        objects )
+    ;; It's a relation if one of its variables supports
+    ;; a grammatical relation. If it is, then we recurse.
+    (if (subject-variable type)
+      (let ( embedded-objects )
+        (dolist (b bindings)
+          (let ((var (binding-variable b))
+                 (value (binding-value b)))
+            (let ((objects (collect-model value)))
+              (break "lower obj")
+              (loop for obj in objects
+                do (push `(,var ,obj) embedded-objects)))))
+        (break "what goes where?"))
+
+      (else
+       (push i objects)))
+    objects ))
+
+
+
