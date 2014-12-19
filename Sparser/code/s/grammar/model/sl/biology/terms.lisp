@@ -331,17 +331,22 @@ that consists of five conserved G boxes. |#
 (np-head "line" :super 'cell-line)
 (np-head "cell line" :super 'cell-line)
 
-(np-head "A375" :super 'cell-line :rule-label 'cell-line)
-(np-head "D04" :super 'cell-line :rule-label 'cell-line)
-(np-head "D25" :super 'cell-line :rule-label 'cell-line)
-(np-head "MM415" :super 'cell-line :rule-label 'cell-line)
-(np-head "MM485" :super 'cell-line :rule-label 'cell-line)
-(np-head "OUMS-23" :super 'cell-line :rule-label 'cell-line)
-(np-head "RPMI-7951" :super 'cell-line :rule-label 'cell-line)
-(np-head "SkMel24" :super 'cell-line :rule-label 'cell-line)
-(np-head "SkMel28" :super 'cell-line :rule-label 'cell-line)
-(np-head "WM266.4" :super 'cell-line :rule-label 'cell-line)
-(np-head "WM852" :super 'cell-line :rule-label 'cell-line)
+(defun def-cell-line (line)
+  (def-bio/expr line 'cell-line :takes-plurals nil)
+  #+ignore
+  (eval `(np-head ,line :super 'cell-line)))
+
+(def-cell-line "A375")
+(def-cell-line "D04")
+(def-cell-line "D25")
+(def-cell-line "MM415")
+(def-cell-line "MM485")
+(def-cell-line "OUMS-23")
+(def-cell-line "RPMI-7951")
+(def-cell-line "SkMel24")
+(def-cell-line "SkMel28")
+(def-cell-line "WM266.4")
+(def-cell-line "WM852")
 
 
 ;; Def-bio doesn't appreciate part of speech, so hacked the
