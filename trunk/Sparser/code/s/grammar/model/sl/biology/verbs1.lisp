@@ -812,6 +812,15 @@
 	   :s agent
 	   :o patient))
 
+(define-category present
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "present"
+	   :noun "presentation"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
 
 (define-category provide
     :specializes bio-process
