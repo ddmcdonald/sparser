@@ -602,7 +602,7 @@
    :s agent
    :o patient))
 
-(define-category depletion
+(define-category deplete
   :specializes bio-process
   :binds ((agent bio-entity)(patient bio-entity)) 
   :realization
