@@ -236,6 +236,7 @@
 (define-category cell-line
   :specializes bio-location
   :instantiates self
+  :realization (:common-noun name)
   :index (:permanent :key name))
 
 
