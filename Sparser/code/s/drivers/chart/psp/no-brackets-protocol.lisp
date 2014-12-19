@@ -47,14 +47,17 @@
   (sentence-sweep-loop))
 
 
+(defvar *sentence* nil)
+
 (defun sentence-sweep-loop ()
   (tr :entering-sentence-sweep-loop)
   (let ((sentence (sentence)))
+    (setq *sentence* sentence) ;; if we wait it will be the next sentence
+
     (loop
       (let* ((start-pos (starts-at-pos sentence))
              (first-word (pos-terminal start-pos)))
-        (push-debug `(,sentence))
- 
+
         ;; 1st scan the text into minimal terminal edges.
         ;; The thow is from period-hook, which will also advance
         ;; the value returned by (sentence) to be the next sentence
@@ -88,8 +91,9 @@
         ;; beyond this point. 
         (setq sentence (next sentence))))))
 
+;; (setq *readout-relations* nil)
+;; (identify-relations *sentence*)
 
-;;/// move somewhere
 (defun identify-relations (sentence)
   ;; sweep over every treetop in the sentence and look at
   ;; their referents. For all sensible cases recursively
@@ -99,27 +103,36 @@
          (end-pos (ends-at-pos sentence))
          (rightmost-pos start-pos)
          entities  relations  tt-contents
-         treetop  referent  pos-after  multiple?  )
+         treetop  referent  pos-after    ) 
     ;; modeled on sweep-sentence-treetops
     (loop
-      (multiple-value-setq (treetop pos-after multiple?)
+      (multiple-value-setq (treetop pos-after) ;; multiple?
         (next-treetop/rightward rightmost-pos))
+
+      (when t
+        (format t "~&[relations] tt = ~a~%" treetop))
+
       (when (edge-p treetop)
         (setq referent (edge-referent treetop))
 
-        ;; we sweep over pronouns here
-        (when (individual-p referent)
-          (setq tt-contents (collect-model referent)))
+        (setq tt-contents (collect-model referent))
 
-        ;; somehow divide entities from relations
-        ;; but now just update
         (loop for item in tt-contents
-          do (pushnew item relations)))
+          do (if (subject-variable item)
+               (push item relations)
+               (pushnew item entities))))
 
       (when (eq pos-after end-pos)
-        (return)))
+        (return))
+      (when (position-precedes end-pos pos-after)
+        ;; we overshot somehow
+        (return))
+
+      (setq rightmost-pos pos-after))
+
     (values relations
             entities)))
+
 
 (defmethod collect-model ((n number))
   (let ((edge (edge# n)))
@@ -131,9 +144,9 @@
     (when referent
       (collect-model referent))))
 
-(defmethod collect-model ((w word)) w)
-(defmethod collect-model ((pw polyword)) pw)
-(defmethod collect-model ((c category)) c)
+(defmethod collect-model ((w word)) `(,w))
+(defmethod collect-model ((pw polyword)) `(,pw)) ; 
+(defmethod collect-model ((c category)) `(,c))
 ;; anything else?
 
 (defmethod collect-model ((i individual))
@@ -169,6 +182,72 @@
       (else
        (push i objects)))
     objects ))
+
+
+(defvar *relations* nil)
+
+(defun readout-relations (relations 
+                          &optional (stream *standard-output*))
+  (when (null relations)
+    (format stream "~&~%No relations identified~%~%"))
+  (dolist (r relations)
+    (print-readably r stream))
+  (setq *relations* relations)
+  (length *relations*))
+
+
+(defmethod print-readably ((i individual) stream)
+  (let ((type (car (indiv-type i)))
+        (binds (indiv-binds i)))
+    (let ((mitre-ordered-bindings
+           (mitre-order-bindings binds)))
+      (format stream "~&~a~{~T~a~}~%" ;; does ~T insert a cntrl-J ??
+              (mitre-string type)
+              mitre-ordered-bindings))))
+
+(defun mitre-order-bindings (bindings)
+  (let ( vars var-value-pairs )
+    ;; first filter for category and collect info
+    (dolist (b bindings)
+      (let* ((var (binding-variable b))
+             (var-name (var-name var))
+             (value (binding-value b)))
+        (unless (eq var-name 'category)
+          (push var-name vars)
+          (push `(,var-name ,value)
+                var-value-pairs))))
+    (push-debug `(,vars ,var-value-pairs))
+    ;; (setq vars (car *) var-binding-pairs (cadr *))
+    (cond
+     ((=  1 (length vars))
+      (list (mitre-string (cadr (car var-value-pairs)))))
+     ((and (memq 'agent vars)
+           (memq 'patient vars))
+      (let ((agent-value (cadr (assq 'agent var-value-pairs)))
+            (patient-value (cadr (assq 'patient var-value-pairs))))
+        (push-debug `(,agent-value ,patient-value))
+        (list (mitre-string agent-value)
+              (mitre-string patient-value))))
+        
+
+     (t (break "new configuration: vars = ~a" vars)))))
+
+(defmethod mitre-string ((c category))
+  (format nil "~a" (cat-symbol c)))
+
+(defmethod mitre-string ((i individual))
+  (let ((word (value-of 'name i)))
+    (unless word
+      (push-debug `(,i))
+      (break "No name field on ~a" i))
+    (typecase word
+      (word (word-pname word))
+      (polyword (pw-pname word))
+      (otherwise
+       (push-debug `(,i ,word))
+       (break "Unexpected value for name: ~a~%~a"
+              (type-of word) word)))))
+
 
 
 
