@@ -89,6 +89,16 @@
      :s activator
      :o activated))
 
+(define-category drug-activate
+  :specializes bio-process
+  :binds ((activator drug) (activated molecule))
+  :realization
+    (:verb "activate" 
+     :noun "activation"
+     :etf (svo-passive of-nominal)
+     :s activator
+     :o activated))
+
 
 ;; bio-deactivate conflicts with bio-activate
 ;; so need to redesign the by-phrase to be uniform
@@ -588,6 +598,15 @@
   :binds ((agent bio-entity)(patient molecule)) 
   :realization
   (:verb "decrease" :noun "decrease"
+   :etf (svo-passive of-nominal)
+   :s agent
+   :o patient))
+
+(define-category depletion
+  :specializes bio-process
+  :binds ((agent bio-entity)(patient bio-entity)) 
+  :realization
+  (:verb "deplete" :noun "depletion"
    :etf (svo-passive of-nominal)
    :s agent
    :o patient))
@@ -1183,3 +1202,10 @@
 	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
+
+(def-cfr IS-BIO-ENTITY (be bio-entity)
+  :form vg
+  :referent (:head left-edge))
+
+
+
