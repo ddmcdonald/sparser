@@ -162,12 +162,14 @@
   (let ((type (car (indiv-type i)))
         (binds (indiv-binds i)))
     (let ((mitre-ordered-bindings
-           (mitre-order-bindings binds)))
+           (mitre-order-bindings binds i)))
       (format stream "~&~a~{~T~a~}~%" ;; does ~T insert a cntrl-J ??
               (mitre-string type)
               mitre-ordered-bindings))))
 
-(defun mitre-order-bindings (bindings)
+(defparameter *debug-order-of-bindings* nil)
+
+(defun mitre-order-bindings (bindings i)
   (let ( vars var-value-pairs )
     ;; first filter for category and collect info
     (dolist (b bindings)
@@ -181,7 +183,7 @@
     (push-debug `(,vars ,var-value-pairs))
     ;; (setq vars (car *) var-binding-pairs (cadr *))
     (cond
-     ((=  1 (length vars))
+     ((= 1 (length vars))
       (list (mitre-string (cadr (car var-value-pairs)))))
      ((and (memq 'agent vars)
            (memq 'patient vars))
@@ -190,9 +192,16 @@
         (push-debug `(,agent-value ,patient-value))
         (list (mitre-string agent-value)
               (mitre-string patient-value))))
-        
-
-     (t (break "new configuration: vars = ~a" vars)))))
+     (*debug-order-of-bindings*
+      (push-debug `(,i))
+      (break "new configuration of bindings for ~a:~%vars = ~a" i vars))
+     (t ;; print them in the order given, with a note
+      (let ( strings )
+        (dolist (pair var-value-pairs)
+          (let ((value (cadr pair)))
+            (push-debug `(,value))
+            (push (mitre-string value) strings)))
+        (list (nreverse strings)))))))
 
 (defmethod mitre-string ((c category))
   (format nil "~a" (cat-symbol c)))
