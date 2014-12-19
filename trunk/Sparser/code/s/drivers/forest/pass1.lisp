@@ -463,10 +463,13 @@
 (defun check-for-subcatorized-pps (head-tt prep-entries)
   (push-debug `(,head-tt ,prep-entries))
   (let* ((next-position (pos-edge-ends-at head-tt))
-         (next-tt (right-treetop-at/edge next-position))
-         ;; end of sentence boudary check re. pied-piping
-         (word (edge-left-daughter next-tt))
-         (following-tt (right-treetop-at/edge next-tt)))
+         (next-tt (right-treetop-at/edge next-position)))
+    (when (eq next-tt *the-punctuation-period*)
+      ;; nothing beyond here. Don't look
+      (return-from check-for-subcatorized-pps nil))
+
+    (let ((word (edge-left-daughter next-tt))
+          (following-tt (right-treetop-at/edge next-tt)))
 
     (when (and word (word-p word))
       (let ((subcat (assq word prep-entries)))
@@ -492,7 +495,7 @@
               (else
                (push-debug `(,np-ref ,v/r ,following-tt))
                (break "Subcat of ~s: ~a is not a ~a Should that change?"
-                      (word-pname word) np-ref v/r)))))))))
+                      (word-pname word) np-ref v/r))))))))))
 
 #+ignore
 (defun follow-out-pattern (start-pos tt-sequence)
