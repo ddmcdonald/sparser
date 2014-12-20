@@ -287,7 +287,7 @@
    :o patient))
 
 
-(define-category drug-inhibits
+(define-category inhibit ;; was drug-inhibit but inhibit fits answer key
   :specializes bio-process
   :binds ((agent drug) 
           (patient bio-entity)
