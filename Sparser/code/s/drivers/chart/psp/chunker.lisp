@@ -249,7 +249,16 @@
                (not (and
                      (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge)))
                      (memq (cat-symbol (edge-form (car edges)))
-                           '(category::COMMON-NOUN category::COMMON-NOUN/PLURAL)))))
+                           '(category::COMMON-NOUN category::COMMON-NOUN/PLURAL))
+                     ;; removed these, which were a potential fix for
+                     ;; #49 "mitogen activated protein cascade" breaking at thw "activated"
+                     #+ignore
+                     (edge-p (edge-just-to-right-of edge))
+                     #+ignore
+                     (not
+                      (memq (cat-symbol (edge-form (edge-just-to-right-of edge)))
+                           '(category::COMMON-NOUN category::COMMON-NOUN/PLURAL)))
+                     )))
           (and (eq form 'vg) (vg-compatible? edge))
           (and (eq form 'adjg) (adjg-compatible? edge)))
     collect form)))
