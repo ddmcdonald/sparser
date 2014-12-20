@@ -31,9 +31,9 @@
 
 (define-category  be
   :instantiates  self
-  :specializes   event
-  :binds ((theme)
-          (description))
+  :specializes   state
+  :binds ((subject)
+          (predication))
   :index (:temporary :list)
 ;  :realization (:tree-family transitive
 ;                :mapping ((agent . theme)
@@ -46,6 +46,11 @@
 ;                :special-case-head t
 ;                )
   )
+
+(register-variable 
+ category::be 
+ (find-variable-in-category 'subject 'be)
+ :subject-variable)
 
 (defparameter *the-category-to-be* (category-named 'be)
   "For use by code that's loaded before the grammar is")
@@ -99,7 +104,8 @@
 
 (def-form-rule (be adjective)
   :form vp
-  :referent (:head right-edge))
+  :referent (:head left-edge
+             :bind (predication right-edge)))
 
 
 ;;;----------------------------
