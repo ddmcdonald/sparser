@@ -156,7 +156,7 @@
 ;;; Printing for tab-delimited human-readable output
 ;;;--------------------------------------------------
 
-
+;; c.f. (ddm-ed "drivers/sinks/export.lisp")
 
 (defmethod print-readably ((i individual) stream)
   (let ((type (car (indiv-type i)))
@@ -182,6 +182,10 @@
                 var-value-pairs))))
     (push-debug `(,vars ,var-value-pairs))
     ;; (setq vars (car *) var-binding-pairs (cadr *))
+
+    ;; Now see whether there is a recognized set of variables
+    ;; so we can order them correctly, i.e. subject before object
+    ;; followed by everything else. 
     (cond
      ((= 1 (length vars))
       (list (mitre-string (cadr (car var-value-pairs)))))
@@ -208,16 +212,27 @@
 
 (defmethod mitre-string ((i individual))
   (let ((word (value-of 'name i)))
-    (unless word
-      (push-debug `(,i))
-      (break "No name field on ~a" i))
-    (typecase word
-      (word (word-pname word))
-      (polyword (pw-pname word))
-      (otherwise
-       (push-debug `(,i ,word))
-       (break "Unexpected value for name: ~a~%~a"
-              (type-of word) word)))))
+    (if word
+      (typecase word
+        (word (word-pname word))
+        (polyword (pw-pname word))
+        (otherwise
+         (push-debug `(,i ,word))
+         (break "Unexpected value for name: ~a~%~a"
+                (type-of word) word)))
+      (else
+       ;; If the value (i) is an individual created trivially
+       ;; from a chunk that had a category for its head,
+       ;; then we need an alternative way to refer to it,
+       ;; This uses the name of the category
+       (let ((category (value-of 'category i)))
+         (unless category
+           (push-debug `(,i))
+           (break "Need a new way to get a name for ~a" i))
+         (mitre-string category))))))
+
+
+    
 
 
 
