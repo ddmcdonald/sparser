@@ -150,6 +150,17 @@
         (setq top-node (highest-edge (pos-ends-here start-pos))))
       top-node)))
 
+(defun edge-just-to-right-of (edge)
+  "Return the edge that is adjacent to the left of argument edge.
+   Caller should check that it exists, e.g. note-in-segment-adgacences"
+  (let* ((start-pos (pos-edge-ends-at edge))
+         (top-node (top-edge-at/starting start-pos)))
+    (when top-node
+      (when (eql top-node :multiple-initial-edges)
+        (setq top-node (highest-edge (pos-starts-here start-pos))))
+      top-node)))
+
+
 (defun word-just-to-the-left (edge)
   (let* ((p1 (pos-edge-starts-at edge))
          ;;//// ignoring the possibility that the edge spans
