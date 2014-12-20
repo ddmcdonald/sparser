@@ -178,8 +178,11 @@
   :lemma (:common-noun "kinase")
   :realization (:common-noun name))
 
+(define-category bio-context
+  :specializes bio-entity)
+
 (define-category bio-condition
-  :specializes bio-entity
+  :specializes bio-context
   :instantiates self
   :index (:permanent :key name))
 
@@ -204,12 +207,12 @@
   :lemma (:common-noun "melanoma")
   :realization (:common-noun name))
 
-(define-category bio-context
-  :specializes abstract)
+
 ;; Rusty: if you define a category with -no- parameters
 ;; you get a simple category data structure that, e.g., you can't
 ;; inherit from. Most form categories are "simple".
 
+                 
 (define-category  in-bio-condition  ;; "in cancer, in physiological conditions"
   :instantiates self
   :specializes bio-context
