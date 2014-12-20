@@ -18,6 +18,7 @@
 ;; also ugly handling of "et al." to start making it a signal for references, 
 ;; and get rid of the interpretation of "al." as a bio-entity (couldn't even find where that cam from)
 ;; RJB 12/14/2014 Added a bunchof stand-in definitions for words that were primed by COMLEX, added cell-line definitions (some) -- need help from <<DAVID>>
+;; add MEK/ERK and ERK/MEK as pathway designators, try to define S338 as a residue
 
 (in-package :sparser)
 
@@ -522,3 +523,11 @@ that consists of five conserved G boxes. |#
 (adj "least-selective")
 (adj "long-term") ;; #51 "effective long-term treatment strategies"
 
+(def-bio "MEK/ERK" pathway)
+(def-bio "ERK/MEK" pathway)
+
+(defun define-residue (residue-name)
+  (def-bio/expr residue-name 'residue-on-protein :takes-plurals nil))
+
+;;(define-residue "S338")
+(np-head "S338" :super 'residue-on-protein)
