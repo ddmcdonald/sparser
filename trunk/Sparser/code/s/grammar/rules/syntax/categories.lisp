@@ -452,7 +452,8 @@
     CATEGORY::VERB+ING
     CATEGORY::VERB+PRESENT
     CATEGORY::VERB+PASSIVE
-    CATEGORY::NOUN/VERB-AMBIGUOUS))
+    CATEGORY::NOUN/VERB-AMBIGUOUS
+    CATEGORY::NOT))
 
 (defvar *vg-head-categories*
   '(CATEGORY::VERB
@@ -468,7 +469,10 @@
 (defmethod vg-compatible? ((w word))
   t)
 (defmethod vg-compatible? ((e edge))
-  (vg-compatible? (edge-form e)))
+  (or
+   (vg-compatible? (edge-form e))
+   (eq category::not (edge-category e))))
+
 (defmethod vg-compatible? ((c referential-category))
   (vg-compatible? (cat-symbol c)))
 (defmethod vg-compatible? ((name symbol))
@@ -508,7 +512,10 @@
 (defmethod adjg-compatible? ((w word))
   t)
 (defmethod adjg-compatible? ((e edge))
-  (adjg-compatible? (edge-form e)))
+  (or
+   (adjg-compatible? (edge-form e))
+   (eq category::not (edge-category e))))
+
 (defmethod adjg-compatible? ((c referential-category))
   (adjg-compatible? (cat-symbol c)))
 (defmethod adjg-compatible? ((name symbol))
