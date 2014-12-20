@@ -13,7 +13,9 @@
 ;;
 ;; verbs1 initiated 12/11/14 as the file to load with everything converted
 ;; to the new design.
-
+;; RJB 12/20/2014 corrected bad entry for resist -- had verb as "require"
+;; RJB added note for :at modifier for inhibit
+;;  add :on and :at modifiers for phosphorylate
 (in-package :sparser)
 
 ;;;---------------------------
@@ -299,7 +301,9 @@
    :etf (svo-passive)
    :s agent
    :o patient
-   :at measurement))
+   :at measurement
+   ;; :at bio-location ;; e.g. "at a downstream target ..."
+   ))
 
 
 ;;--- "load" -- "GTP loading"
@@ -357,12 +361,14 @@
 
 (define-category phosphorylate
   :specializes bio-process
-  :binds ((agent bio-entity)(patient molecule)) 
+  :binds ((agent bio-entity)(patient molecule)(site residue-on-protein) )
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
    :etf (svo-passive of-nominal)
    :s agent
-   :o patient))
+   :o patient
+   :on site
+   :at site))
 
 
 (define-category dephosphorylate
@@ -912,7 +918,7 @@
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb "require"
+    (:verb "resist"
 	   :noun "resistance"
 	   :etf (svo-passive of-nominal)
 	   :s agent
