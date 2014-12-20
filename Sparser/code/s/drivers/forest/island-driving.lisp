@@ -131,7 +131,7 @@
          (pps (there-are-prepositional-phrases)))
     ;;(declare (special treetops tt-count clauses subject-edge vps copula))
     (tr :islands-pass-2 tt-count)
-    ;;(break "foo")
+
     (cond
      ((= tt-count 2)
       (smash-together-two-tt-islands treetops))
@@ -139,7 +139,8 @@
       (look-for-length-three-patterns treetops) t)
      ((and subject-edge copula)
       (fill-in-between-subject-and-final-verb subject-edge copula treetops tt-count))
-
+     ((there-is-a-that?)
+      (try-to-make-that-relative-clause))
      (t (push-debug `(,clauses ,vps ,other-vps ,pps))
         (tr :no-established-pass-2-patterns-applied)
         (when nil
