@@ -135,21 +135,33 @@
 ;;;-----------------
 ;;/// 10/27/14 This ought to be a method
 
-(defun apply-upstairs-np-to-subject-relative (np-ref subj-rel-ref)
-  ;; look for empty variables to fill
-  (push-debug `(,np-ref ,subj-rel-ref))
-  (if (itypep subj-rel-ref 'collection)
-    (let ((items (value-of 'items subj-rel-ref)))
-      (dolist (vp-ref items)
-        (apply-upstairs-np-to-subject-relative np-ref vp-ref)))
-    (cond
-     ((open-in subj-rel-ref 'subject) ;; J3 hydrolysis
-      ;; trace
-      (bind-variable 'subject np-ref subj-rel-ref))
-     ((open-in subj-rel-ref 'theme)
-      (bind-variable 'theme np-ref subj-rel-ref))
-     (t
-      (unspecified-adjunction np-ref subj-rel-ref)))))
+(defun apply-upstairs-np-to-subject-relative (np-ref vp-ref)
+  ;; used by refactor-s-for-buried-relative which is tied to
+  ;; a debris analysis pattern. Purpose is to compute and 
+  ;; return the referent. Pattern is ( s "that" vp )
+  (if (itypep vp-ref 'collection)
+    (let ((items (value-of 'items vp-ref)))
+      (dolist (item-vp-ref items)
+        (apply-upstairs-np-to-subject-relative np-ref item-vp-ref)))
+
+    (let ((subject-var (subject-variable vp-ref)))
+      (unless subject-var
+        (push-debug `(,np-ref ,vp-ref))
+        (break "Can not find subject var in ~a" vp-ref))
+      
+      ;; copy down the upstairs subject
+      ;; Should we check if it was already bound to something?
+      (bind-variable subject-var np-ref vp-ref)
+
+      ;; link the rc to the np
+      (bind-variable 'modifier vp-ref np-ref)
+
+      ;; referent of the combination is the np
+      np-ref)))
+
+;;    (unspecified-adjunction np-ref vp-ref)
+
+
 
 ;;;----------------------
 ;;; Hobbsian connectives
