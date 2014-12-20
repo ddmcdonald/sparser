@@ -29,8 +29,8 @@
     (p "At baseline, COT expression increased ERK phosphorylation in a manner comparable to MEK1DD, consistent with MAP kinase pathway activation (Fig. 2a and Supplementary Fig. 6).")
     (p "Overexpression of wild-type COT or C-RAF resulted in constitutive phosphorylation of ERK and MEK in the presence of PLX4720, whereas kinase-dead derivatives had no effect (Fig. 2a, Supplementary Fig. 7).")
     (p "Based on these results, we hypothesized that COT and C-RAF drive resistance to RAF inhibition predominantly through re-activation of MAPK signaling.")
-    (p "Notably, of the nine candidate ORFs from our initial screen, a subset")
-    (p "(3) did not show persistent ERK/MEK phosphorylation following RAF")
+    (p "Notably, of the nine candidate ORFs from our initial screen, a subset (3) did not show persistent ERK/MEK phosphorylation following RAF")
+    (p "This is a dummy sentence.")
     (p "inhibition, suggesting MAPK pathway-independent alteration of drug sensitivity (Supplementary Fig. 8).")
     (p "Several groups have shown that C-RAF activation and heterodimerization with B-RAF constitute critical components of the cellular response to B-RAF inhibition.");; fixed typo with 18-20 at end of sentence
     (p "In A375 cells, endogenous C-RAF: B-RAF heterodimers were measurable and inducible following treatment with PLX4720 (Supplementary Fig. 9).")
