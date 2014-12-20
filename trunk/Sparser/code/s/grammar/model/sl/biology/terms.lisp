@@ -520,5 +520,5 @@ that consists of five conserved G boxes. |#
 
 ;;--- ddm 12/18/14 hacked phrases to 'get through' more text
 (adj "least-selective")
-
+(adj "long-term") ;; #51 "effective long-term treatment strategies"
 
