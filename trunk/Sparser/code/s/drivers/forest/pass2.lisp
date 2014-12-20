@@ -3,11 +3,35 @@
 ;;; 
 ;;;     File:  "pass2"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  October 2014
+;;;  Version:  December 2014
 
-;; Broken out of island-driving 10/23/14.
+;; Broken out of island-driving 10/23/14. Added relative clause check
+;; 12/19/14
 
 (in-package :sparser)
+
+(defun try-to-make-that-relative-clause ()
+  (let ((that-edge/s (there-is-a-that?)))
+    (when (cdr that-edge/s)
+      (break "Need to extent relative clause forming routine ~
+             because there is more than one 'that' edge: ~a"
+             that-edge/s))
+    (let* ((that-edge (car that-edge/s))
+           (edge-to-left (left-treetop-at/edge that-edge))
+           (edge-to-right (right-treetop-at/edge that-edge)))
+      (tr :trying-to-make-that-rc that-edge)
+      (cond
+       ((and (eq (edge-form edge-to-left) category::np)
+             (eq (edge-form edge-to-right) category::vp))
+        ;; reduced relative clause
+        (let ((edge (compose-as-relative-clause
+                     edge-to-left that-edge edge-to-right)))
+          (tr :relative-clause-succeeded edge)
+          edge))
+       (t
+        (tr :not-rc-pattern)
+        nil)))))
+      
 
 (defun smash-together-two-tt-islands (treetops)
   ;; Called from run-island-checks-pass-two when there are only
