@@ -154,3 +154,5 @@ filligre may be used to distinguish them, etc.
 (def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
   :synonyms ("B-RAFV600E" "V600EB-RAF"))
 
+(def-bio "growth factor" protein)
+(def-bio "mitogen activated protein kinase" protein)
