@@ -8,6 +8,8 @@
 ;; Initiated 9/11/14 to organize information about subcategorization patterns
 ;; Working on it through 9/15/14. 11/20/14 hacked up a treatment of multiple
 ;; subcat patterns based on hydrolysis. 
+;; fixed print method for subcategorization-frame to handle cases without bound word or category slots...
+
 
 (in-package :sparser)
 
@@ -85,7 +87,19 @@
 
 (defmethod print-object ((sc subcategorization-frame) stream)
   (print-unreadable-object (sc stream :type t)
-    (format stream "~s" (word-pname (for-word sc)))))
+    (setq *sc* sc)
+    (format stream "~s" 
+            (cond
+             ((and 
+               (slot-boundp sc 'word)
+               (for-word sc))
+              (word-pname (for-word sc)))
+             ((slot-boundp sc 'category)
+              (for-category sc))
+             ((slot-boundp sc 'form)
+              `(for the form , (applies-to sc)))
+             (t
+              "unknown sub-categorization source")))))
 
 
 ;;;------------------------
