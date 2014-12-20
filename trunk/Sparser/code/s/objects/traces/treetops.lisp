@@ -1033,6 +1033,22 @@
     (trace-msg "[islands]   Found and np buried under a vp and formed e~a"
                (edge-position-in-resource-array edge))))
 
+(deftrace :trying-to-make-that-rc (edge)
+  ;; called from try-to-make-that-relative-clause
+  (when *trace-island-driving*
+    (trace-msg "[islands] 'that' edge e~a might be a relative clause"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :relative-clause-succeeded (edge)
+  ;; called from try-to-make-that-relative-clause
+  (when *trace-island-driving*
+    (trace-msg "[islands]    Composed relative forming e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :not-rc-pattern ()
+  ;; called from try-to-make-that-relative-clause
+  (when *trace-island-driving*
+    (trace-msg "[islands]    No recognized pattern for relative clause")))
 
 (deftrace :smash-together (e1 e2 e1-status e2-status)
   ;; called from smash-together-two-tt-islands
