@@ -18,20 +18,6 @@
   (trace-lexicon-unpacking) (trace-morphology)
   (incorporate-obo-terms)
   (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/December-text-passages.lisp"))
-#|
-(def-bio "dtp" small-molecule)
-(def-bio "etp" small-molecule)
-(setq dtp-rs (rule-set-for (word-named "dtp")))
-(setq etp-rs (rule-set-for (word-named "etp")))
-;; They show the single-term rules at this point.
-(p "The DDP produced by GTP hydrolysis on Ras is trapped and Ras accumulates in the dtp-bound ‘off’ state, despite the high dtp/edp ratio.")
-
-The modification is on the capitalized BTP word, which indeed did not have a rule set. 
-It wasn't even recognized as a word. It was created from the pname that's read out of
-the word buffer. Doesn't explain the lowercase effects.
-|#
-;; 11/6/14 -- collect-no-space-sequence-into-word  
-;  (p "For example, SHOC2/Sur-8 bridges Ras and Raf")
 
 ; (bio-setting)
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
