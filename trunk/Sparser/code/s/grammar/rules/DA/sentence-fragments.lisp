@@ -12,7 +12,7 @@
 (in-package :sparser)
 
 
-(define-debris-analysis-rule foo1 ;;covered-relative-clause
+(define-debris-analysis-rule covered-relative-clause
   :pattern ( s "that" vp )
   :action (:function refactor-s-for-buried-relative
                      first second third))
@@ -21,6 +21,22 @@
   ;; The np that this relative attaches to is buried, we find it
   ;; and hook on the relative clause, then knit things back up correctly.
   ;; N.b. the arguments are all edges
+  (when (consp that) ;; multiple edges
+    (setq that (edge-within-DA-record that)))
+  (let ((np (rightmost-np-under-s clause)))
+    (push-debug `(,np)) ;; J3 e26
+    (let ((parent (edge-used-in np))
+          (extended-np-edge
+           (compose-as-relative-clause np that reduced-relative)))
+      (tuck-new-edge-under-already-knit
+       np ;; subsumed
+       extended-np-edge ;; new
+       parent ;; dominating
+       :right)
+      extended-np-edge)))
+
+ 
+(defun compose-as-relative-clause (np-edge that-edge vp-edge)
   (flet ((compose-that (that-edge vp-edge)
            ;; this should be a rule, question is when to run it
            ;; to ensure the correct, longest VP
@@ -30,38 +46,24 @@
             :form (category-named 'relative-clause)
             :rule-name :compose-that
             :referent (edge-referent vp-edge))))
-    (push-debug `(,clause ,that ,reduced-relative))
-    (when (consp that) ;; multiple edges
-      (setq that (edge-within-DA-record that)))
-    (let ((np (rightmost-np-under-s clause)))
-      (push-debug `(,np)) ;; J3 e26
-      (let* ((rc-edge (compose-that that reduced-relative))
-             (rc-referent (edge-referent rc-edge))
-             (np-referent (edge-referent np)))
-        (push-debug `(,np-referent ,rc-referent))
-        (let ((new-np-referent
-               (apply-upstairs-np-to-subject-relative
-                np-referent rc-referent))
-              (end-of-rr (edge-ends-at reduced-relative)))
-          (setf (edge-referent np) new-np-referent)
-          (push-debug `(,end-of-rr ,np ,rc-edge))
-          ;; (setq end-of-rr (car *) np (cadr *) rc-edge (caddr *))
-          ;;/// write a rule for np + relative-clause so we can
-          ;; at least reference it here
-          (let ((parent (edge-used-in np))
-                (extended-np-edge
-                 (make-binary-edge/explicit-rule-components
-                  np reduced-relative ;; left, right
-                  :category (edge-category np)
-                  :form (edge-form np)
-                  :rule-name :refactor-s-for-buried-relative
-                  :referent new-np-referent)))
-            (tuck-new-edge-under-already-knit
-             np ;; subsumed
-             extended-np-edge ;; new
-             parent ;; dominating
-             :right)
-            extended-np-edge ))))))
+
+    (let* ((rc-edge (compose-that that-edge vp-edge))
+           (vp-referent (edge-referent rc-edge))
+           (np-referent (edge-referent np-edge)))
+
+      (let ((new-np-referent
+             (apply-upstairs-np-to-subject-relative
+              np-referent vp-referent)))
+
+        (let ((extended-np-edge
+               (make-binary-edge/explicit-rule-components
+                np-edge rc-edge ;; left, right
+                :category (edge-category np-edge)
+                :form (edge-form np-edge)
+                :rule-name :compose-as-relative-clause
+                :referent new-np-referent)))
+
+          extended-np-edge )))))
 
 
     
