@@ -16,6 +16,7 @@
 ;; RJB 12/20/2014 corrected bad entry for resist -- had verb as "require"
 ;; RJB added note for :at modifier for inhibit
 ;;  add :on and :at modifiers for phosphorylate
+;; improved definition for increase as a noun and verb
 (in-package :sparser)
 
 ;;;---------------------------
@@ -265,14 +266,15 @@
    :o patient))
 ;;/// want subtypes, want to understand the syntax of "-inducing"
 
-(def-term increase
-  :super-category bio-process
-  :verb "increase"
-  :etf (svo-passive
-        of-nominal) 
-  :noun "increase"
-  :s (agent enzyme)
-  :o (patient bio-entity))
+(define-category increase
+  :specializes bio-process
+  :binds ((agent biological) (patient biological))
+  :realization
+  (:verb "increase" :noun "increase"
+         :etf (svo-passive of-nominal) 
+         :s agent
+         :o patient
+         :in patient))
 
 ;;--- inhibit
 ;; "by inhibiting <p>"
@@ -428,12 +430,13 @@
   ;;  and a lot of others
   :from substrate))
 
-#+ignore
 (define-category study-bio-process
  :specializes bio-process
  :binds ((agent bio-entity)(patient bio-process))
  :realization
- (:verb "study" :noun "study"
+ (:verb ("study" :past-tense "studied" 
+         :present-participle "studying")
+        :noun "study"
   :etf (svo-passive)
   :s agent
   :o patient))
