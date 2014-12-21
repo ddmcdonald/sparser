@@ -110,7 +110,7 @@
 (adj "low" :super 'modifier)
 (adj "de novo" :super 'modifier)
 (adj "in vitro" :super 'modifier)
-
+(adj "kinase-dead" :super 'modifier)
 
 (def-bio "tumor formation" bio-process)
 
@@ -143,6 +143,7 @@ critical for tumor formation. |#
 ;;(np-head "enzyme")
 
 (define-adverb "in part")
+(define-adverb "at baseline")
 (define-debris-analysis-rule comma-adverb-comma
   :pattern ( "," adverb "," )
   :action (:function respan-edge-around-one-word second first third))
@@ -152,6 +153,16 @@ critical for tumor formation. |#
 (define-adverb "nevertheless")
 (define-adverb "therefore")
 (define-adverb "also")
+;; these adverbs are added to make the simple subj+verb test succeed in the island-driving phase
+(define-adverb "notably")
+(define-adverb "next")
+(define-adverb "critically")
+(define-adverb "nevertheless")
+(define-adverb "surprisingly")
+(define-adverb "similarly")
+(define-adverb "finally")
+
+
 
 ;;--- J3
 (define-adjective "molecular")
