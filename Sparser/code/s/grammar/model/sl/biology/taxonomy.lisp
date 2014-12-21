@@ -142,12 +142,33 @@
   :realization (:common-noun name))
 
 (define-category bio-variant ;; not sure this is the correct term, but intended for things like "forms of ras"
-  :specializes bio-entity
+  :specializes molecule
   :instantiates :self)
 
 (define-category protein-segment ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain
   :specializes bio-entity
   :instantiates :self)
+
+
+(define-category complex
+  :specializes molecule
+  :instantiates :self
+  :lemma (:common-noun "complex"))
+
+(define-category dimer
+  :specializes complex
+  :instantiates :self
+  :lemma (:common-noun "dimer"))   
+
+(define-category heterodimer
+  :specializes dimer
+  :instantiates :self
+  :lemma (:common-noun "heterodimer"))  
+
+(define-category heterodimerization
+  :specializes bio-process
+  :instantiates :self
+  :lemma (:common-noun "heterodimerization"))
 
 ;;/// will have a substantial model, so deserves its own
 ;; file. This is just to ground "encode"
