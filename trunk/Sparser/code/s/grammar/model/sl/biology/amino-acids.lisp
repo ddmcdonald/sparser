@@ -6,6 +6,8 @@
 ;;; version: September 2014
 
 ;; initiated 9/8/14
+;; RJB -- added hacks for problems with NS word finding of"S338" and "pThr202/Tyr204"
+
 
 (in-package :sparser)
 
@@ -179,5 +181,14 @@ therefore we have the special cases:
 (defun make-point-mutation (original replacement residue-number)
   (push-debug `(,original ,replacement ,residue-number))
   (break "stub"))
+
+;; this is a hack patch for S338
+
+(defun define-residue (residue-name)
+  (def-bio/expr residue-name 'residue-on-protein :takes-plurals nil))
+
+;;(define-residue "S338")
+(np-head "S338" :super 'residue-on-protein)
+(np-head "pThr202/Tyr204" :super 'residue-on-protein)
 
 
