@@ -28,6 +28,16 @@
       (else
         nil ))))
 
+(defun one-one/just-check-edges (left-edge right-edge)
+  (let ((rule 
+         (multiply-edges left-edge right-edge)))
+    (when (consp rule)
+      (break "Unexpected condition: dotted-rule lookahead hit a ~
+              case where there are multiple-completions:~
+              ~%   left-edge: ~A~
+              ~%  right-edge: ~A" left-label right-label))
+    rule ))
+
 
 (defun one-one/just-check-labels (left-label right-label)
   (let ((rule 
