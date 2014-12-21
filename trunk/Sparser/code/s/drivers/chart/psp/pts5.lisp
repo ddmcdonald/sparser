@@ -62,7 +62,9 @@
 
 (in-package :sparser)
 
-(defun pts ( &optional boundary-from-edge? )
+(defparameter *current-chunk* nil)
+
+(defun pts ( &optional boundary-from-edge? *current-chunk*)
   ;; called once the boundary to the segment has been
   ;; determined and the scan stopped.  Computes a quick description
   ;; of how covered (with edges) the segment is and dispatches
