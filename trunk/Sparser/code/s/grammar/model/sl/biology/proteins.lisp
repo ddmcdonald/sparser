@@ -150,9 +150,12 @@ filligre may be used to distinguish them, etc.
 (def-bio "MEK1" protein)
 
 (def-bio "MEK2" protein)
+(def-bio "MEK1/2" protein)
 
 (def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
-  :synonyms ("B-RAFV600E" "V600EB-RAF"))
+  :synonyms ("B-RAFV600E" "V600EB-RAF" "BRAFV600E"))
+
+(def-bio "COT/TPL2" protein) ;; see if defining this leads to sentence 53 working consistently when run twice.
 
 (def-bio "growth factor" protein)
 (def-bio "mitogen activated protein kinase" protein)

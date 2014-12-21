@@ -912,7 +912,8 @@
 	   :noun "requirement"
 	   :etf (svo-passive of-nominal)
 	   :s agent
-	   :o patient))
+	   :o patient
+           :for patient))
 
 (define-category resist
     :specializes bio-process
@@ -922,7 +923,8 @@
 	   :noun "resistance"
 	   :etf (svo-passive of-nominal)
 	   :s agent
-	   :o patient))
+	   :o patient
+           :to patient))
 
 (define-category respond
     :specializes bio-process
@@ -996,7 +998,7 @@
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
     :realization
-    (:verb "target" ;; keyword: ENDS-IN-ED 
+    (:verb ("target" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
 	   :noun "target"
 	   :etf (svo-passive of-nominal)
 	   :s agent
@@ -1146,7 +1148,8 @@
 	   :noun "identification"
 	   :etf (svo-passive of-nominal)
 	   :s agent
-	   :o patient))
+	   :o patient
+           :as agent))
 
 (define-category know
     :specializes bio-process
@@ -1171,12 +1174,13 @@
 
 (define-category obtain
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent bio-entity)(patient bio-process)(source bio-entity))
     :realization
     (:verb "obtain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
-	   :o patient))
+	   :o patient
+           :from source))
 
 (define-category perform
     :specializes bio-process
