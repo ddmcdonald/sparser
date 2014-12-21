@@ -32,6 +32,7 @@
 
 
 (defun make-default-binary-edge (left-edge right-edge rule)
+  (declare (special right-edge))
   (let ((edge (next-edge-from-resource))
         (category (cfr-category rule)))
 
@@ -49,9 +50,24 @@
     (setf (edge-right-daughter edge) right-edge)
    
     (setf (edge-form edge)
-          (or (edge-form-adjustment left-edge right-edge
-                                    (cfr-form rule))
-               (cfr-form rule)))
+          (cond
+           ((and
+             *current-chunk*
+             (eq (chunk-end-pos *current-chunk*)
+                 (pos-edge-ends-at right-edge))
+             (eq (car (chunk-forms *current-chunk*))
+                 'NG))
+            ;;(break "make-default-binary-edge")
+            category::n-bar
+              
+              
+            ;; adjust form based on chunk being created
+            ;;  if the right edge is at the head end of the *current-chunk*, then use the category of the *current-chunk*
+            
+            )
+           ((edge-form-adjustment left-edge right-edge
+                                    (cfr-form rule)))
+           (t (cfr-form rule))))
 
     (let ((referent (catch :abort-edge
                       (referent-from-rule left-edge
