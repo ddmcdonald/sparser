@@ -64,6 +64,7 @@
 ;; RJB 12/14/2014 Similar fix for verb+ing as the start of a NG
 ;; added     ,category::pronoun as a minor-category -- not sure
 ;; 12/19/2014     ;; partitive construction e.g. "all of these lines"
+;; 12/20/2014 add thatcomp for nouns 
  
 (in-package :sparser)
 
@@ -364,11 +365,17 @@
   (declare (special e))
   (cond
    ((eq category::that (edge-category e))
-    (not
-     (and
-      (car *chunks*)
-      (member 'vg (chunk-forms (car *chunks*)))
-      (thatcomp-verb (car (chunk-edge-list (car *chunks*)))))))
+    (and
+     (not
+      (and
+       (car *chunks*)
+       (member 'vg (chunk-forms (car *chunks*)))
+       (thatcomp-verb (car (chunk-edge-list (car *chunks*))))))
+     (not
+      (and
+       (car *chunks*)
+       (member 'ng (chunk-forms (car *chunks*)))
+       (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
    ((ng-start? (edge-form e))
     t)
    ((eq category::verb+ed (edge-form e))
@@ -398,6 +405,7 @@
    ((memq (cat-symbol (edge-category edge))
           '(category::demonstrate          
             category::hypothesize 
+            category::observe
             category::posit 
             category::propose
             category::report-verb
@@ -407,6 +415,20 @@
    (t
     (print `(checking thatcomp status for ,(edge-category edge) ,edge))
     (break "THATCOMP?")
+    nil)))
+
+(defun thatcomp-noun (edge)
+  (declare (special edge))
+  ;; is this a verb that takes a that complement, like SHOW -- we should be checking the 
+  ;;  rules for the verb
+
+  (cond
+   ((memq (cat-symbol (edge-category edge))
+          '(category::possibility category::likelihood category::observe))
+    t)
+   (t
+    (print `(checking thatcomp status for ,(edge-category edge) ,edge))
+   ;; (break "THATCOMP?")
     nil)))
 
 (defmethod ng-start? ((c referential-category))
