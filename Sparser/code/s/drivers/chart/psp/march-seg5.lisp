@@ -15,6 +15,7 @@
 ;;; initiator
 ;;;-----------
 
+
 (defun parse-at-the-segment-level (segment-end-pos)
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
@@ -106,6 +107,7 @@
 (defun do-multiple-initial/left (right-ending-vector)
   (let ((starting-position
          (chart-position-before (ev-position right-ending-vector))))
+   ;;(break "do-multiple-initial/left")
     (when *trace-do-edge*
       (format t "~&Looking leftwards from the multiple edges ending at ~
                  p~A for edges ending at p~A~%"
@@ -160,6 +162,8 @@
   ;; check.
   (let ((start-vector (edge-starts-at edge))
         new-edge  boundaries )
+    (declare (special start-vector new-edge boundaries))
+
     (if (eq (ev-position start-vector) *left-segment-boundary*)
       (then
         (tr :edge-starts-at-seg-boundary edge)
@@ -167,7 +171,9 @@
 
       (let* ((adjacent-position (ev-position start-vector))
              (adjacent-end-vector (pos-ends-here adjacent-position))
-             (topnode-field (ev-top-node adjacent-end-vector)))
+             (topnode-field (ev-top-node adjacent-end-vector))
+             (rule nil))
+        (declare (special adjacent-position adjacent-end-vector topnode-field rule))
         (tr :looking-right-for-adjacent-edge adjacent-position edge)
 
         (cond
@@ -182,6 +188,12 @@
 
          (topnode-field
           (tr :seg-march/single-ends-at topnode-field)
+          #+ignore
+          (when
+              (and
+               *current-chunk*
+               (setq rule (one-one/just-check-edges topnode-field edge))
+               ))
           (if (setq new-edge
                     (check-one-one topnode-field edge))
             (if (setq boundaries

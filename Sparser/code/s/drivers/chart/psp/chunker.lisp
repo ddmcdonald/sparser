@@ -119,7 +119,7 @@
         *right-segment-boundary* (chunk-end-pos chunk))
   (let ((*return-after-doing-segment* t))
     (declare (special *return-after-doing-segment*))
-    (pts)))
+    (pts nil chunk)))
 
 ;; Rusty -- traces moved to objects/traces/psp1.lisp
 
