@@ -62,6 +62,8 @@
 (adj "deadliest") ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
 
+(adj "cultured")
+
 ;;(np-head "cancer")
 
 (adj "responsible" ;; adj/noun "resposibility"
@@ -377,7 +379,8 @@ that consists of five conserved G boxes. |#
 ;;adjective
 (adj "anticancer")
 (adj "candidate" )
-(adj "chemical" :super 'modifier) ;; keyword: (al ADJ) 
+(define-adjective "chemical") ;; keyword: (al ADJ) 
+(define-adjective "genetic") ;; keyword: (al ADJ) 
 (adj "combinatorial" :super 'modifier) ;; keyword: (al ADJ) 
 (adj "comparable" :super 'modifier) ;; keyword: (able ADJ) 
 (adj "dead")
@@ -388,14 +391,13 @@ that consists of five conserved G boxes. |#
 (adj "further")
 (adj "high")
 (adj "inactive" :super 'modifier) ;; keyword: (ive ADJ) 
-(adj "inducible" :super 'modifier) ;; keyword: (ible ADJ) 
+(define-adjective "inducible") ;; keyword: (ible ADJ) 
 (adj "ineffective" :super 'modifier) ;; keyword: (ive ADJ) 
 (adj "integrative" :super 'modifier) ;; keyword: (ive ADJ) 
 (adj "intriguing" :super 'modifier) ;; keyword: ENDS-IN-ING 
-(adj "knockdown" )
 (adj "lon-term")
 (adj "long")
-(adj "measurable" :super 'modifier) ;; keyword: (able ADJ) 
+(define-adjective "measurable") ;; keyword: (able ADJ) 
 (adj "mekindependent" :super 'modifier) ;; keyword: (ent ADJ) 
 (adj "mutual" :super 'modifier) ;; keyword: (al ADJ) 
 (adj "parallel")
@@ -415,6 +417,7 @@ that consists of five conserved G boxes. |#
 (def-bio "cascade" bio-process)
 (def-bio "complex" molecule)
 (def-bio "derivative" molecule)
+(def-bio "knockdown" bio-process)
 (def-bio "mitogen" molecule)
 (def-bio "heterodimer" molecule)
 (np-head "membrane" :super 'cellular-location)
@@ -426,6 +429,7 @@ that consists of five conserved G boxes. |#
 (def-bio "strategy" bio-process)
 (def-bio "target" bio-entity)
 (np-head "agonist") ;; keyword: (ist N) 
+(np-head "agent" :super 'bio-entity)
 (np-head "approach" :super 'bio-process)
 (np-head "auto")
 (np-head "binder" :super 'bio-entity)
@@ -465,7 +469,6 @@ that consists of five conserved G boxes. |#
 (np-head "dependency") ;; keyword: (ency N) 
 (np-head "depletion") ;; keyword: (ion N) 
 (np-head "development") ;; keyword: (ment N) 
-(np-head "heterodimerization") ;; keyword: (ion N) 
 (np-head "identification") ;; keyword: (ion N) 
 (np-head "possibility") ;; keyword: (ity N) 
 (np-head "inhibitor" :super 'bio-entity) ;; keyword: (or N) 
@@ -525,9 +528,8 @@ that consists of five conserved G boxes. |#
 
 (def-bio "MEK/ERK" pathway)
 (def-bio "ERK/MEK" pathway)
+(adj "serine/threonine") ;; want to get NG from "the serine/threonine kinase"
+(np-head "C-RAF:B-RAF" :super 'heterodimer)
+;;(def-bio "CRAF:BRAF" heterodimer)
 
-(defun define-residue (residue-name)
-  (def-bio/expr residue-name 'residue-on-protein :takes-plurals nil))
 
-;;(define-residue "S338")
-(np-head "S338" :super 'residue-on-protein)
