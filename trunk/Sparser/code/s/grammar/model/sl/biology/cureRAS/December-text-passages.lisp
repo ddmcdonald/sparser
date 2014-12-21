@@ -33,7 +33,7 @@
     (p "This is a dummy sentence.")
     (p "inhibition, suggesting MAPK pathway-independent alteration of drug sensitivity (Supplementary Fig. 8).")
     (p "Several groups have shown that C-RAF activation and heterodimerization with B-RAF constitute critical components of the cellular response to B-RAF inhibition.");; fixed typo with 18-20 at end of sentence
-    (p "In A375 cells, endogenous C-RAF: B-RAF heterodimers were measurable and inducible following treatment with PLX4720 (Supplementary Fig. 9).")
+    (p "In A375 cells, endogenous C-RAF:B-RAF heterodimers were measurable and inducible following treatment with PLX4720 (Supplementary Fig. 9).")
     (p "However, endogenous C-RAF phosphorylation at S338, an event required for C-RAF activation, remained low (Supplementary Fig. 9).")
     (p "In contrast, ectopically expressed C-RAF was phosphorylated on S338 (Supplementary Fig. 9) and its PLX4720 resistance phenotype was associated with sustained MEK/ERK activation (Fig. 2a, Supplementary Fig. 9).")
     (p "Moreover, ectopic expression of a high-activity C-RAF truncation mutant (C-RAF W22) was more effective than wild-type C-RAF in mediating PLX4720 resistance and ERK activation (Supplementary Fig. 10), further indicating that elevated C-RAF activity may direct resistance to this agent.");;fixed typo with unbalanced paren
@@ -44,10 +44,10 @@
     (p "Interestingly, both cell lines were refractory to MEK inhibition (Fig. 4a) and displayed sustained ERK phosphorylation even at 1 μM CI-1040 (Fig. 4b).")
     (p "Ectopic COT expression in A375 and SKMEL28 cells also conferred decreased sensitivity to the MEK inhibitors CI-1040 and AZD6244, suggesting that COT expression alone was sufficient to induce this phenotype (Fig. 4c, 4d, Supplementary Fig. 17).")
     (p "Similar to results observed with pharmacological MEK inhibitors, MEK1/2 knockdown only modestly suppressed COT–mediated ERK phosphorylation in A375 cells (Supplementary Fig. 18).")
-    (p "In accordance with prior observations24, these data raised the possibility that COT may activate ERK through MEKindependent and MEK-dependent mechanisms.")
+    (p "In accordance with prior observations24, these data raised the possibility that COT may activate ERK through MEK-independent and MEK-dependent mechanisms.")
     (p "To test this hypothesis directly, we performed an in vitro kinase assay using recombinant COT and ERK1.")
-    (p "Indeed, recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1")
-    (p "in vitro (Supplementary Fig.  18) suggesting that in certain contexts, COT expression may potentiate ERK activation in a MEK-independent manner.")
+    (p "Indeed, recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 in vitro (Supplementary Fig.  18) suggesting that in certain contexts, COT expression may potentiate ERK activation in a MEK-independent manner.")
+    (p "This is another sentence.")
     (p " Oncogenic mutations in the serine/threonine kinase B-RAF are found in 50–70% of malignant melanomas 1.")
     (p "Pre-clinical studies have demonstrated that the B-RAFV600E mutation predicts a dependency on the mitogen activated protein kinase (MAPK) signaling cascade in melanoma [1–5] —an observation that has been validated by the success of RAF and MEK inhibitors in clinical trials 6–8.")
     (p "However, clinical responses to targeted anticancer therapeutics are frequently confounded by de novo or acquired resistance [9–11].")
