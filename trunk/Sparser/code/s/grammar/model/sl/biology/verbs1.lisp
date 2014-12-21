@@ -83,7 +83,7 @@
 
 (define-category bio-activate
   :specializes bio-process
-  :binds ((activator bio-entity) (activated molecule))
+  :binds ((activator biological) (activated molecule))
   :realization
     (:verb "activate" 
      :noun "activation"
@@ -280,7 +280,7 @@
 #+ignore  ;;current walker does not handle such ambiguities properly
 (define-category inhibit-process
   :specializes bio-process
-  :binds ((agent bio-entity) (patient bio-process))
+  :binds ((agent bio-entity) (patient biological))
   :realization 
   (:verb ("inhibit" :past-tense "inhibited" :present-participle "inhibiting")
    :noun "inhibition"
@@ -292,7 +292,7 @@
 (define-category inhibit ;; was drug-inhibit but inhibit fits answer key
   :specializes bio-process
   :binds ((agent drug) 
-          (patient bio-entity)
+          (patient biological)
           (measurement measurement))
   :realization 
   (:verb ("inhibit" :past-tense "inhibited" 
@@ -361,7 +361,7 @@
 
 (define-category phosphorylate
   :specializes bio-process
-  :binds ((agent bio-entity)(patient molecule)(site residue-on-protein) )
+  :binds ((agent biological)(patient molecule)(site residue-on-protein) )
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
    :etf (svo-passive of-nominal)
@@ -373,7 +373,7 @@
 
 (define-category dephosphorylate
   :specializes bio-process
-  :binds ((agent bio-entity)(patient molecule)) 
+  :binds ((agent biological)(patient molecule)) 
   :realization
   (:verb "dephosphorylate" :noun "dephosphorylation"
    :etf (svo-passive of-nominal)
@@ -394,7 +394,7 @@
 ;;
 (define-category regulate
   :specializes bio-process
-  :binds ((agent bio-entity)(patient bio-process))
+  :binds ((agent bio-entity)(patient biological))
   :realization
   (:verb   "regulate" :noun "regulation"
    :etf (svo-passive of-nominal)
@@ -404,7 +404,7 @@
 
 (define-category dysregulate
   :specializes bio-process
-  :binds ((agent bio-entity)(patient bio-process))
+  :binds ((agent bio-entity)(patient biological))
   :realization
   (:verb   "dysregulate" :noun "dysregulation"
    :etf (svo-passive of-nominal)
@@ -440,7 +440,7 @@
 
 (define-category stimulate
   :specializes bio-process
-  :binds ((agent bio-entity)(patient bio-process))
+  :binds ((agent bio-entity)(patient biological))
   :realization
   (:verb "stimulate" :noun "stimulation"
    :etf (svo-passive of-nominal)
@@ -906,7 +906,7 @@
 
 (define-category require
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent bio-entity)(patient biological))
     :realization
     (:verb "require"
 	   :noun "requirement"
@@ -917,7 +917,7 @@
 
 (define-category resist
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent bio-entity)(patient biological))
     :realization
     (:verb "resist"
 	   :noun "resistance"
@@ -942,13 +942,14 @@
     :realization
     (:verb "result" ;; keyword: ENDS-IN-ED 
 	   :noun "result"
-	   :etf (svo-passive of-nominal)
+	   :etf (svo of-nominal)
 	   :s agent
-	   :o patient))
+           :o patient
+	   :in patient))
 
 (define-category select
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent biological)(patient biological))
     :realization
     (:verb "select" ;; keyword: ENDS-IN-ED 
 	   :noun "selection"
@@ -1142,7 +1143,7 @@
 
 (define-category identify
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent biological)(patient bio-process))
     :realization
     (:verb "identify" ;; keyword: ENDS-IN-ED 
 	   :noun "identification"
@@ -1174,7 +1175,7 @@
 
 (define-category obtain
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process)(source bio-entity))
+    :binds ((agent bio-entity)(patient bio-process)(source biological))
     :realization
     (:verb "obtain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
