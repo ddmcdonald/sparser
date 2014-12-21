@@ -543,4 +543,5 @@ that consists of five conserved G boxes. |#
 (np-head "C-RAF:B-RAF" :super 'heterodimer)
 ;;(def-bio "CRAF:BRAF" heterodimer)
 
-
+;; UGLY -- but avoids a break
+(adj "our")
