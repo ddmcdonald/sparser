@@ -19,7 +19,7 @@
 (defparameter *def-realization-keywords*
   '(:verb :noun :etf :s :o :c
     :prep :by
-    :at :from :in :of :on :to))
+    :as :at :for :from :in :of :on :to))
 
 (defun check-for-valid-def-realization-keywords (key-value-pairs)
   key-value-pairs)
@@ -67,7 +67,7 @@
                                   etf verb noun adj
                                   s o c
                                   prep by
-                                  at from in of on to )
+                                  as at for from in of on to )
   ;; Make the category, then use the independent realization
   ;; machinery to finish it. 
   (labels 
@@ -141,7 +141,7 @@
           :o obj-slot
           :c c
           :prep prep  :by by
-          :at at :from from :in in :of of :on on :to to )
+          :as at :at at :for for :from from :in in :of of :on on :to to )
 
         (when obo-id
           (bind-variable 'uid obo-id category))
@@ -153,7 +153,7 @@
                                                s o c ;; arguments
                                                prep ;; owned preposition
                                                by ;; for passive
-                                               at from in of on to ;; prepositions
+                                               as at for from in of on to ;; prepositions
                                                )
   (unless etf
     (error "You must specifiy a realization schema/s using the keyword ':etf'"))
@@ -208,8 +208,12 @@
             (push `(comp-v/r . ,v/r) substitution-map)
             (register-variable category var :omplement-variable)))
 
+        (when as
+           (subcategorize-for-preposition category "as" as))
         (when at
            (subcategorize-for-preposition category "at" at))
+         (when for
+           (subcategorize-for-preposition category "for" for))
         (when from
            (subcategorize-for-preposition category "from" from))
         (when in
