@@ -145,14 +145,16 @@
         (apply-upstairs-np-to-subject-relative np-ref item-vp-ref)))
 
     (let ((subject-var (subject-variable vp-ref)))
-      (unless subject-var
-        (push-debug `(,np-ref ,vp-ref))
-        (break "Can not find subject var in ~a" vp-ref))
+      (if subject-var
+        ;; copy down the upstairs subject
+        ;; Should we check if it was already bound to something?
+        (bind-variable subject-var np-ref vp-ref)
+        (else
+         ;; (push-debug `(,np-ref ,vp-ref))
+         ;; (break "Can not find subject var in ~a" vp-ref)
+         (format t "~&~%No subject variable recorded on ~a~%~%"
+                 vp-ref)))      
       
-      ;; copy down the upstairs subject
-      ;; Should we check if it was already bound to something?
-      (bind-variable subject-var np-ref vp-ref)
-
       ;; link the rc to the np
       (bind-variable 'modifier vp-ref np-ref)
 
