@@ -19,10 +19,13 @@
   :specializes relation
   :binds ((uid)))
 
+(define-category biological
+  :lemma (:adjective "biological")
+  :documentation "Strictly speaking this a mixin")
 
 (define-category bio-process
   :specializes process
-  :mixins (has-UID has-name)
+  :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
@@ -85,7 +88,7 @@
 
 (define-category bio-entity 
   :specializes physical-object  ;; sweeps a lot under the rug
-  :mixins (has-UID has-name)
+  :mixins (has-UID has-name biological)
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
   :realization (:common-noun name))
