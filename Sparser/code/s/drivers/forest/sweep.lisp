@@ -142,7 +142,7 @@
               ~% form = ~a"
                      tt form))))
 
-          (otherwise
+          #+otherwise(otherwise
            (push-debug `(,tt ,form))
            (break "New case in sweep.~
                 ~% tt = ~a~
