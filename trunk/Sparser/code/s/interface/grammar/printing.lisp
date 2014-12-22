@@ -233,10 +233,12 @@
        ;; then we need an alternative way to refer to it,
        ;; This uses the name of the category
        (let ((category (value-of 'category i)))
-         (unless category
+         #+ignore(unless category
            (push-debug `(,i))
            (break "Need a new way to get a name for ~a" i))
-         (mitre-string category))))))
+         (if category
+           (mitre-string category)
+           (format nil "nil")))))))
 
 
     
