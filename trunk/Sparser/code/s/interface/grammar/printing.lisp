@@ -212,15 +212,22 @@
 
 (defmethod mitre-string ((i individual))
   (let ((word (value-of 'name i)))
-    (if word
+    (cond
+     (word
       (typecase word
         (word (word-pname word))
         (polyword (pw-pname word))
         (otherwise
          (push-debug `(,i ,word))
          (break "Unexpected value for name: ~a~%~a"
-                (type-of word) word)))
-      (else
+                (type-of word) word))))
+      ((itypep i 'collection)
+       (let ((items (value-of 'items i))
+             strings )
+         (loop for item in items do
+           (push (mitre-string item) strings))
+         (format nil "<collection collection ~{~a~^~}>" strings)))
+      (t
        ;; If the value (i) is an individual created trivially
        ;; from a chunk that had a category for its head,
        ;; then we need an alternative way to refer to it,
