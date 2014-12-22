@@ -494,8 +494,9 @@
                   edge))
               (else
                (push-debug `(,np-ref ,v/r ,following-tt))
-               (break "Subcat of ~s: ~a is not a ~a Should that change?"
-                      (word-pname word) np-ref v/r))))))))))
+               #+ignore(break "Subcat of ~s: ~a is not a ~a Should that change?"
+                      (word-pname word) np-ref v/r)
+)))))))))
 
 #+ignore
 (defun follow-out-pattern (start-pos tt-sequence)
