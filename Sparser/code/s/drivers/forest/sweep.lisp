@@ -137,6 +137,7 @@
               (print "IGNORING LIKELY THATCOMP IN SWEEP"))
             (else
               (push-debug `(,tt ,form))
+              #+ignore
               (break "New case in sweep.~
               ~% tt = ~a~
               ~% form = ~a"
@@ -144,6 +145,7 @@
 
           #+otherwise(otherwise
            (push-debug `(,tt ,form))
+           #+ignore
            (break "New case in sweep.~
                 ~% tt = ~a~
                 ~% form = ~a"
