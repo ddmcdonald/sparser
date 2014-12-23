@@ -350,6 +350,7 @@
 (define-adverb "agriculturally")
 (define-adverb "alarmingly")
 (define-adverb "all the way")
+(define-adverb "alone")
 (define-adverb "alternatively")
 (define-adverb "amply")
 (define-adverb "anatomically")
