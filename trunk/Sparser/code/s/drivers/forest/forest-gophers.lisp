@@ -8,6 +8,9 @@
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
 ;; place to put the local state variables.
+;; RJB 12/21/2014 Updated there-are-loose-nps?
+;; since we run the check for NP extension with OF before this method is called,
+;;  the original set of loose NPs may have been extended and you have to use the extended NP
 
 (in-package :sparser)
 
@@ -92,8 +95,15 @@
 (defun there-are-loose-nps? ()
   (let ((original-list (loose-nps (layout))))
     (loop for edge in original-list
-      unless (edge-used-in edge)
-      collect edge)))
+      unless (and
+              (edge-used-in edge)
+              ;; since we run the check for NP extension with OF before this point,
+              ;;  the original set of loose NPs may have edges that are 
+              (not (eq category::np (edge-form (edge-used-in edge)))))
+      collect 
+      (or
+       (edge-used-in edge)
+       edge))))
 
 
 (defun push-loose-adjective (tt)
