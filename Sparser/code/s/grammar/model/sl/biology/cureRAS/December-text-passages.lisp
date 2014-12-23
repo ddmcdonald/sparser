@@ -59,6 +59,12 @@
     (p "We further identify combinatorial MAPK pathway inhibition or targeting of COT kinase activity as possible therapeutic strategies for reducing MAPK pathway activation in this setting.")
     (p "Together, these results provide new insights into resistance mechanisms involving the MAPK pathway and articulate an integrative approach through which high-throughput functional screens may inform the development of novel therapeutic strategies.")))
 
+
+(defvar *known-breaks* nil)
+(defvar *tested* '(0))
+(defun reset-dectest ()
+  (setq *tested* '(0)))
+
 (defun dectest(n)
   (let ((test  (nth (- n 1) *dec-tests*)))
     (print (list n test))
@@ -66,10 +72,13 @@
         (print "skipping because of known problems")
         (eval test))))
 
-(setq *known-breaks* nil)
-(setq *tested* '(0))
-(defun retest () (loop for i from (+ 1 (car *tested*)) to 100 do (push i *tested*) (dectest i)))
-(defun bad () (push (car *tested*) *known-breaks*) (retest))
+(defun retest () 
+  (loop for i from (+ 1 (car *tested*)) to 100 do 
+    (push i *tested*) (dectest i)))
+
+(defun bad () 
+  (push (car *tested*) *known-breaks*) 
+  (retest))
 
 
 
