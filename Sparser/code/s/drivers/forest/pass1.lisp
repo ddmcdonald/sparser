@@ -232,7 +232,10 @@
                     (if new-edge
                       (tr :composition-succeeded new-edge)
                       (tr :composition-failed))
-                    new-edge))))))
+                    new-edge))))
+            ;;(setf (edge-form result-edge) category::np)
+            ;; This should be looked at
+            ))
           ;;(break "of")
           result-edge))))
 
