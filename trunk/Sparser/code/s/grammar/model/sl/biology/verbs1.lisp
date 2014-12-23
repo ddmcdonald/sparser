@@ -1003,7 +1003,7 @@
     :binds ((agent bio-entity)(patient bio-process))
     :realization
     (:verb ("target" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
-	   :noun "target"
+	   :noun "targeting"
 	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
@@ -1235,7 +1235,7 @@
 	   :s agent
 	   :o patient))
 
-(def-cfr IS-BIO-ENTITY (be bio-entity)
+(def-cfr IS-BIO-ENTITY (be biological)
   :form vg
   :referent (:head left-edge))
 
