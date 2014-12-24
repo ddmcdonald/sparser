@@ -52,6 +52,11 @@
  (find-variable-in-category 'subject 'be)
  :subject-variable)
 
+(register-variable 
+ category::be 
+ (find-variable-in-category 'object 'be)
+ :subject-variable)
+
 (defparameter *the-category-to-be* (category-named 'be)
   "For use by code that's loaded before the grammar is")
 
