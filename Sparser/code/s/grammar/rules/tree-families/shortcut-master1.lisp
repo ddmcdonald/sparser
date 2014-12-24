@@ -256,6 +256,9 @@
 
 (defmethod object-variable ((c category))
   (get-tag-for :object-variable c))
+(defmethod object-variable ((i individual))
+  (get-tag-for :object-variable (car (indiv-type i))))
+(defmethod object-variable ((ignore t)) nil)
 
 (defmethod complement-variable ((c category))
   (get-tag-for :complement-variable c))
