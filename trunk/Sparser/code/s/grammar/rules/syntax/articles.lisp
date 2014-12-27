@@ -4,13 +4,14 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2014
+;;;  Version:  December 2014
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
 ;; because they preempt relative clause interpretation. 1/30/13 Added 
 ;; the+proper-name. 8/7/14 Added the other definite determiners, don't
-;; remember what the problem might hae been
+;; remember what the problem might hae been. Added defNP dereference to
+;; "these".
 
 (in-package :sparser)
 
@@ -166,6 +167,29 @@
 (def-form-rule ("this" np)
   :form np
   :referent (:daughter right-edge))
+
+;;--- "these"
+
+(def-form-rule ("these" common-noun/plural)
+  :form np
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
+
+(def-form-rule ("these" np-head)
+  :form np
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
+
+(def-form-rule ("these" n-bar)
+  :form np
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
+
+(def-form-rule ("these" np)
+  :form np
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
+
 
 
 ;;--- that
