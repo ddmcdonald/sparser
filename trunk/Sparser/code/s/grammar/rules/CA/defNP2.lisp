@@ -1,15 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2011 David D. McDonald -- all rights reserved
+;;; copyright (c) 1993-1995,2011-2014 David D. McDonald -- all rights reserved
 ;;; 
 ;;;     File:  "defNP"
 ;;;   Module:  "grammar;rules:CA:"
-;;;  Version:  0.1 October 2011
+;;;  Version:  0.1 December 2014
 
 ;; initiated 6/13/93 v2.3.  3/30/94 set the ignore flag to t as the default
 ;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category 
 ;;      since none of the routines that would use it exist yet and it makes
 ;;      the printing odd sometimes: "the Army". 9/13/11 fixed out of date
-;;      function call. Two more instances 9/26. Added PSI to typecase
+;;      function call. Two more instances 9/26. Added PSI to typecase.
+;;     (12/26/14) Stubbed an approach to selecting the referent when working
+;;      sentence by sentence. 
 
 (in-package :sparser)
 
@@ -40,14 +42,26 @@
 
     (let ((discourse-entry (discourse-entry category-to-look-for)))
       (if discourse-entry
+        (if (sucessive-sweeps?)
+          ;; Because completion will have run a different points
+          ;; the first entry may be subsumed by the one we're doing
+          (then
+           (push-debug `(,discourse-entry))
+           ;; (parent-edge-for-referent)
+           ;; But pushing that off for just now
+           (when (cdr discourse-entry)
+             (let* ((second-entry (cadr discourse-entry))
+                    (ref (car second-entry)))
+               ref)))
 
-        (if (> (length discourse-entry) 1)
-          (if *ignore-out-of-pattern-dereferencing*
-            (car (first discourse-entry))
-            (break "More than one possible antecedant of type ~A~
+          ;; Earlier ("normal") assuptions
+          (if (> (length discourse-entry) 1)
+            (if *ignore-out-of-pattern-dereferencing*
+              (car (first discourse-entry))
+              (break "More than one possible antecedant of type ~A~
                     ~%in this discourse already.~% -- extend the rules --"
-                   category-to-look-for))
-          (car (first discourse-entry)))
+                     category-to-look-for))
+            (car (first discourse-entry))))
 
         (make-default-descriptive-individual category-of-head)))))
 
