@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  1.7 April 2013
+;;;  version:  1.8 December 2014
 
 ;; initiated 11/30/91 v2.1
 ;; 1.1 (7/20/92 v2.3) revised to fit new regime
@@ -21,7 +21,9 @@
 ;;     (5/18) adjusted that tweak to return the resulting new psi.
 ;;     (3/4/05) Added optional to make/binding so it only indexes the value
 ;;     (6/19/09) fan-out from psi changes. Capitalization tweaks.
-;; 1.7 (4/5/13) Redesigned the when-binding hook
+;; 1.7 (4/5/13) Redesigned the when-binding hook.
+;; 1.8 (12/28/14) Added a trap so you can't add bindings to categories.
+;;      Which is debatable, but such bindings should at least be reclaimable.
 
 (in-package :sparser)
 
@@ -56,6 +58,14 @@
   (when (typep individual 'psi)
     (let ((new-psi (bind-v+v var/name value individual category)))
       (return-from bind-variable new-psi)))
+
+  (when (typep individual 'category)
+    ;;/// this is debatable in principle, but it would be very
+    ;; permanent, so it's probably something to be crept up on
+    ;; slowly (e.g. like reclaiming bindings would be a good
+    ;; initial step.
+    (error "It doesn't make sense to add a binding to the ~
+            category ~a" individual))
 
   ;; individual case
   (unless category
