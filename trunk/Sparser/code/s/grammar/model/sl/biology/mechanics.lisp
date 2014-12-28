@@ -67,7 +67,11 @@
 (defun make-typed-bio-entity (word category &optional greek identifier long synonyms takes-plurals)
   (declare (special *inihibit-constructing-plural*))
   (let ((label (or (override-label category) category))
-        (form (category-named 'common-noun))
+        (form (category-named 'proper-noun))
+        ;; proper noun makes sense for named protiens and such
+        ;; but the marker may actually be the capitalization
+        ;; of the word, which would have to be caught upstream
+        ;; and passed through in a parameter. 
         (*inihibit-constructing-plural* (not takes-plurals))
         rules  i )
 
@@ -75,6 +79,13 @@
     ;; The find-or-make call will set up a rule for the short form
     ;; as a common noun that has this individual as its referent.
     ;; Ignoring brackets since this runs with the new chunker
+
+    ;;(push-debug `(,i ,word)) (break "find base rule")
+    ;; This is packaged up some place, but no time to see where
+    (let* ((rules (get-tag-for :rules i))
+           (rule (when rules (car rules))))
+      (when rule
+        (setf (edge-form rule) category::proper-noun)))
 
     (let* ((pname (etypecase word 
                     (word (word-pname word))
