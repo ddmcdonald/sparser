@@ -45,7 +45,8 @@
                  :head :left-edge
   :form vp
   ;; referent should try to geneate a predicate
-  :referent (:head right-edge))
+  :referent (:head left-edge
+             :function vg-plus-adjective left-edge right-edge))
 
 
 ;;--- PP complement
@@ -76,6 +77,12 @@
                  :head :right-edge
   :form np ;;/// cutting corners
   :referent (:head right-edge))
+
+(def-syntax-rule (common-noun common-noun)
+                 :head :right-edge
+  :form n-bar
+  :referent (:function noun-noun-compound
+                       left-edge right-edge))
 
 
 (def-syntax-rule (np pp)
