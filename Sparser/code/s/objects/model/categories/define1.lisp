@@ -238,6 +238,14 @@
 ;;; bindings on categories
 ;;;------------------------
 
+(defparameter *legal-to-add-bindings-to-categories* nil
+  "See note in bind-variable because unless we can determine the
+   circumstances carefully we don't want to add bindings to
+   categories. The issue is between-run reclaimation, since bindings
+   are precisely the sort of thing we want to reclaim given
+   the textual specificity of what they're usually encoding on
+   an individual. More so on a category.")
+
 (defun attach-bindings-to-category (category bindings-plist 
                                     parent mixins)
   ;; the values in the bindings plist will be expressions that
@@ -246,7 +254,10 @@
   ;; This is what decode-category-specific-binding-instr-exps
   ;; would do for us if we already had values, so we're unbundling
   ;; it's effects.
-  (let ( bindings  variable  value  real-value  binding )
+  (let ((*legal-to-add-bindings-to-categories* t)
+        bindings  variable  value  real-value  binding )
+    (declare (special *legal-to-add-bindings-to-categories*))
+
     (do ((var-name (first bindings-plist) (first remainder))
          (value-exp (second bindings-plist) (second remainder))
          (remainder (cddr bindings-plist) (cddr remainder)))
