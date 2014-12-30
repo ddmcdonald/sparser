@@ -238,7 +238,7 @@
 ;;; bindings on categories
 ;;;------------------------
 
-(defparameter *legal-to-add-bindings-to-categories* nil
+(defparameter *legal-to-add-bindings-to-categories* t
   "See note in bind-variable because unless we can determine the
    circumstances carefully we don't want to add bindings to
    categories. The issue is between-run reclaimation, since bindings
