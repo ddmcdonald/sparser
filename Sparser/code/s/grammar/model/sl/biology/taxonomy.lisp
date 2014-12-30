@@ -119,6 +119,34 @@
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
 
+
+
+(define-category bio-family
+  :instantiates :self
+  :documentation "Familes of proteins are abstractions based
+    on common properties, especially the function, of the
+    members. They're talked about just like specific proteins
+    are, hence making them entities"
+  :specializes bio-entity
+  :binds ((type bio-entity) ;; a family of what?
+          (species species) ;; human? mouse?
+          (members collection))
+  :index (:permanent :key name)
+  :lemma (:common-noun "family")
+  :realization (:common-noun name))
+
+(define-category protein-family
+  :specializes bio-family
+  ;;/// something needs fixing in the bindings decoder
+  ;; since these should be simpler to write
+  :bindings (type (category-named 'protein)))
+
+(define-category human-protein-family
+  :specializes protein-family
+  :bindings (species (find-individual 'species :name "human")))
+
+
+
 (define-category bio-variant ;; not sure this is the correct term, but intended for things like "forms of ras"
   :specializes molecule
   :instantiates :self)
@@ -147,6 +175,10 @@
   :specializes bio-process
   :instantiates :self
   :lemma (:common-noun "heterodimerization"))
+
+
+
+
 
 ;;/// will have a substantial model, so deserves its own
 ;; file. This is just to ground "encode"
