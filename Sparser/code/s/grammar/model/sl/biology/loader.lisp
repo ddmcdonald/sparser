@@ -13,7 +13,7 @@
 ;; Moved likely resuseable parts to terms and verbs.
 ;; 9/8/14 added [amino-acids], [proteins], and [taxonomy] to improve 
 ;; searching through these. 11/12/14 added [switches]. Bumped verbs
-;; to 1, 12/11/14,
+;; to 1, 12/11/14. 12/28/14 added [phenomena]
 
 (in-package :sparser)
 
@@ -22,6 +22,7 @@
 (gload "bio;proteins")
 (gload "bio;amino-acids")
 (gload "bio;terms")
+(gload "bio;phenomena")
 (gload "bio;verbs1")
 (gload "bio;switches")
 (gload "bio;drugs")
