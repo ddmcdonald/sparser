@@ -45,31 +45,67 @@
 ; inhibition of HER3 transcription
 
 
-;;--- Pathways
-; diverse signaling pathways
-; specific effector pathways
-; specific effector pathway(s)
-; the Raf/MEK/ERK pathway
-; MAPK pathway inhibitors / inhibition
+;;;-------
+;;; rules
+;;;-------
+
+(define-lambda-variable 'trailing-parenthetical
+  'parentheses ;; value restriction
+  category::expressible-type) ;; overly high type bound to.
+;; used by knit-parens-into-neighbor 
 
 
-;;;---------------------------------------------------
-;;; Definitions to simplify doing the Julie sentences
-;;;---------------------------------------------------
+(define-debris-analysis-rule comma-adverb-comma
+  :pattern ( "," adverb "," )
+  :action (:function respan-edge-around-one-word second first third))
 
-;;---- j1
+;; (p "in the 'off' state.")
+(define-no-space-pattern scare-quotes
+  :acceptance-function cover-scare-quotes
+  :transition-net ((:initial + "'" -> :single-quote-seen)
+                   (:single-quote-seen + word -> :single-quote-word)
+                   (:single-quote-word + "'" -> :both-scare-quotes-seen))
+  :accept-states ( :both-scare-quotes-seen ))
 
-(adj "deadliest") ;;//// no -- define shortcut, morphology extensions
-;; to define the whole comparative paradigm
+(defun cover-scare-quotes (start-pos end-pos q1 word q2)
+  ;; The start-pos is just before the left quote. The end-pos is
+  ;; just after it. The q's are the word quote. 
+  (push-debug `(,start-pos ,end-pos ,q1 ,word ,q2))
+  ;; The search was over words. Now have to look for 
+  ;; the strongest edge over the word.
+  (let* ((word-pos (chart-position-after start-pos))
+         (ev (pos-starts-here word-pos))
+         (edge (highest-edge ev)))
+    (respan-edge-around-one-word edge q1 q2)))
+  
+;;/// move somewhere else
+(defun respan-edge-around-one-word (word-edge left-term right-term)
+  (let ((word-category (edge-category word-edge))
+        (word-form (edge-form word-edge))
+        (word-referent (edge-referent word-edge))
+        (new-start-pos (chart-position-before (pos-edge-starts-at word-edge)))
+        (new-end-pos (chart-position-after (pos-edge-ends-at word-edge))))
+    (let ((edge (make-completed-unary-edge
+                 ;; We're ignoring the commas in the edge structure
+                 ;;/// this is usually an interjection, how could we
+                 ;; indicate that
+                 (pos-starts-here new-start-pos) ;; the edge vector
+                 (pos-ends-here new-end-pos)
+                 :respan-edge-around-one-word ;; rule
+                 word-edge ;; daughter
+                 word-category 
+                 word-form
+                 word-referent)))
+      (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
+      ;; (push-debug `(,edge)) (break "look at edge")
+      edge)))
 
-(adj "cultured")
+
+;;;------------
+;;; adjectives
+;;;------------
 
 ;;(np-head "cancer")
-
-(adj "responsible" ;; adj/noun "resposibility"
-  :subject 'bio-entity
-  :theme 'bio-entity
-  :subcategorization '((for np) (theme)))
 
 (adj "critical" 
   :subject 'bio-entity
@@ -83,9 +119,28 @@
   ;;DAVID -- this didn't work when I supbstitued a semantic category for np -- WHY?
   :subcategorization '((to np) (theme)))
 
+(adj "cultured")
+
+(adj "deadliest") ;;//// no -- define shortcut, morphology extensions
+;; to define the whole comparative paradigm
+
 (adj "initial"
   :subject 'bio-entity
   :theme 'bio-entity)
+
+(define-adjective "molecular")
+;; It's realated to molecule, but how exactly?
+;; Seems wrong to jump to "is made of molecules"
+
+
+(adj "prior"
+  :subject 'bio-entity
+  :theme 'bio-entity) ;; NOT SURE WHAT THEME is in this case
+
+(adj "responsible" ;; adj/noun "resposibility"
+  :subject 'bio-entity
+  :theme 'bio-entity
+  :subcategorization '((for np) (theme)))
 
 (adj "selective"
   :subject 'bio-entity
@@ -97,14 +152,13 @@
   :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
   :subcategorization '((for np) (theme)))
 
-(adj "prior"
-  :subject 'bio-entity
-  :theme 'bio-entity) ;; NOT SURE WHAT THEME is in this case
-
 (adj "downstream"
   :subject 'bio-entity
   :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
   :subcategorization '((for np) (theme))) ;; also from and of
+
+
+
 
 (adj "close" :super 'modifier)
 (adj "low" :super 'modifier)
@@ -123,30 +177,12 @@
 
 
 
-;;--- j2
-
-#| Importantly the signaling enzymes encoded by PIK3CA and BRAF are, in part,
-regulated by direct binding to activated forms of the Ras proteins
-suggesting that dysregulation of this key step in signaling is
-critical for tumor formation. |#
-
-;; "importantly"
-;; An attribute of the entire fact, not the eventuallity
-;; in it. All the rhetorical/status markers should go
-;; in the same place. A field in the container will suffice
-
-;; "signalling enzyme" 
 
 (def-bio "signaling" bio-process ;; makes common nouns 
   :identifier "GO:0023052")       ;; reasonable stand-in
 
-;;(np-head "enzyme")
-
 (define-adverb "in part")
 (define-adverb "at baseline")
-(define-debris-analysis-rule comma-adverb-comma
-  :pattern ( "," adverb "," )
-  :action (:function respan-edge-around-one-word second first third))
 
 (define-adverb "as a consequence")
 (define-adverb "as expected") ;; not very common, but avoids a break
@@ -164,16 +200,7 @@ critical for tumor formation. |#
 
 
 
-;;--- J3
-(define-adjective "molecular")
-;; It's realated to molecule, but how exactly?
-;; Seems wrong to jump to "is made of molecules"
 
-
-;;--- J4
-#| This switch mechanism is common to a wide variety of GTP-binding
-proteins and is mediated by a conserved structure called the G-domain
-that consists of five conserved G boxes. |#
 
 (np-head "mechanism" :super 'bio-process)
 (np-head "function" :super 'bio-process)
@@ -217,48 +244,7 @@ that consists of five conserved G boxes. |#
 ;;--- j6
 
 ;; cellular "GO:0005623"
-
-;; (p "in the 'off' state.")
-(define-no-space-pattern scare-quotes
-  :acceptance-function cover-scare-quotes
-  :transition-net ((:initial + "'" -> :single-quote-seen)
-                   (:single-quote-seen + word -> :single-quote-word)
-                   (:single-quote-word + "'" -> :both-scare-quotes-seen))
-  :accept-states ( :both-scare-quotes-seen ))
-
-(defun cover-scare-quotes (start-pos end-pos q1 word q2)
-  ;; The start-pos is just before the left quote. The end-pos is
-  ;; just after it. The q's are the word quote. 
-  (push-debug `(,start-pos ,end-pos ,q1 ,word ,q2))
-  ;; The search was over words. Now have to look for 
-  ;; the strongest edge over the word.
-  (let* ((word-pos (chart-position-after start-pos))
-         (ev (pos-starts-here word-pos))
-         (edge (highest-edge ev)))
-    (respan-edge-around-one-word edge q1 q2)))
-     
-
-;;/// move somewhere else
-(defun respan-edge-around-one-word (word-edge left-term right-term)
-  (let ((word-category (edge-category word-edge))
-        (word-form (edge-form word-edge))
-        (word-referent (edge-referent word-edge))
-        (new-start-pos (chart-position-before (pos-edge-starts-at word-edge)))
-        (new-end-pos (chart-position-after (pos-edge-ends-at word-edge))))
-    (let ((edge (make-completed-unary-edge
-                 ;; We're ignoring the commas in the edge structure
-                 ;;/// this is usually an interjection, how could we
-                 ;; indicate that
-                 (pos-starts-here new-start-pos) ;; the edge vector
-                 (pos-ends-here new-end-pos)
-                 :respan-edge-around-one-word ;; rule
-                 word-edge ;; daughter
-                 word-category 
-                 word-form
-                 word-referent)))
-      (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
-      ;; (push-debug `(,edge)) (break "look at edge")
-      edge)))
+   
 
 
 ;;--- j8
@@ -272,11 +258,6 @@ that consists of five conserved G boxes. |#
 ;; cytosolic "GO:0005829"
 
 ;; "GTP, whereas RasGAPs ... end of the sentence" GO:0006184
-
-(define-lambda-variable 'trailing-parenthetical
-  'parentheses ;; value restriction
-  category::expressible-type) ;; overly high type bound to.
-;; used by knit-parens-into-neighbor 
 
 ;;--- j9
 
@@ -536,9 +517,6 @@ that consists of five conserved G boxes. |#
 ;;--- ddm 12/18/14 hacked phrases to 'get through' more text
 (adj "least-selective")
 (adj "long-term") ;; #51 "effective long-term treatment strategies"
-
-(def-bio "MEK/ERK" pathway)
-(def-bio "ERK/MEK" pathway)
 (adj "serine/threonine") ;; want to get NG from "the serine/threonine kinase"
 (np-head "C-RAF:B-RAF" :super 'heterodimer)
 ;;(def-bio "CRAF:BRAF" heterodimer)
