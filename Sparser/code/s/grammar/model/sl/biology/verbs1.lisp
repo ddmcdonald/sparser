@@ -354,6 +354,13 @@
    :etf (svo-passive)
    :s agent
    :o patient))
+;; These two were in terms and need to be integrated with
+;; this category
+(np-head "mutant" :super 'bio-entity)
+(def-cfr gene (mutate gene)
+  :form n-bar
+  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
+
 
 
 ;;--- "phosphorylate"
