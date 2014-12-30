@@ -23,28 +23,6 @@
 (in-package :sparser)
 
 
-
-;;--- Cell lines
-; were expressed in HEK293T cells
-; BRAF mutant thyroid cell lines
-; HER2-amplified breast cancer cell lines
-; breast carcinoma cell lines
-; all six BRAF-mutant thyroid cancer cell lines
-; increased basal HER3 in 8505C cells
-; confirmed in a second cell line
-; our panel of cancer cell lines (Figure 6A).
-; the HCC827 NSCLC cell line
-
-
-
-;;--- other things with clear markers
-; the ZFN217 transcription factor
-; and CtBP1/CtBP2 corepressors, CtBPs
-; the HER3 promoter
-; expression of HER3
-; inhibition of HER3 transcription
-
-
 ;;;-------
 ;;; rules
 ;;;-------
@@ -99,6 +77,21 @@
       (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
       ;; (push-debug `(,edge)) (break "look at edge")
       edge)))
+
+(def-k-method compose ((i bio-entity) (marker type-marker))
+  ;; So far triggered from noun-noun-compound with a phrase
+  ;; like "the Ras protein"
+  (push-debug`(,i ,marker)) (break "type-marker compose")
+  (let ((category (itype-of marker)))
+    (or (itypep i category)
+        (case (cat-symbol category)
+          ;(pathway
+          ; (
+          (otherwise
+           (push-debug `(,i ,marker ,category ,(parent-edge-for-referent)))
+           (error "Haven't defined a constructor for the ~
+                   type-marker ~a" category))))
+    i))
 
 
 ;;;------------
@@ -227,8 +220,6 @@
 (def-bio "activity" bio-process)
 (def-bio "condition" bio-condition)
 
-(np-head "G-domain" :super 'protein-segment) ;; somehow (def-bio "G-domain" protein-segment) di not work
-
 (def-cfr rate-of-process (rate-of-process-of release)
   ;;//// The semantic-composition based on 'release' being 
   ;; a subtype of 'process' is not working. This is an
@@ -249,34 +240,13 @@
 
 ;;--- j8
 
-(def-bio "RasGEF" protein) ;; family
-;;/// hypenated and separated. 
-(def-bio "RasGAP" protein) ;; ditto
-
 (def-bio "exchange" bio-process)
 
 ;; cytosolic "GO:0005829"
 
-;; "GTP, whereas RasGAPs ... end of the sentence" GO:0006184
-
-;;--- j9
 
 (define-adjective "prevalent")
 
-(def-bio "g1" bio-entity)
-(def-bio "g2" bio-entity)
-(def-bio "g3" bio-entity)
-(def-bio "g4" bio-entity)
-(def-bio "g5" bio-entity)
-
-;; G1 (box) "PR:000003866"
-
-;; G3 (box) "PR:000004651"
-
-
-;;--- j10
-
-;; G5 "PR:000004652"
 
 ;;;-------------------------------------------------------
 ;;; Hacked up to 'get through' the 9/4/14 target abstract
@@ -287,26 +257,9 @@
   :specializes bio-process
   :lemma (common-noun "signal transduction"))
 
-
-(def-cfr gene (mutate gene)
-  :form n-bar
-  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
-
 (def-cfr enzyme (bio-process enzyme)
   :form n-bar
   :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
-
-;;-- see model/dossiers/units-of-measure.lisp for more forms.
-(define-unit-of-measure "nM")
-(define-unit-of-measure "nm")
-(define-unit-of-measure "cm")
-(define-unit-of-measure "mm")
-(define-unit-of-measure "μm")
-;;(define-unit-of-measure "µm") this fails
-(define-unit-of-measure "mL")
-(define-unit-of-measure "ml")
-(define-unit-of-measure "kb")
-(define-unit-of-measure "dalton")
 
 
 ;; Not quite right -- DAVID -- how do I make "et al." be a word that is the head of a bibliographic reference
@@ -321,34 +274,11 @@
   :specializes abstract)
 (np-head "table" :super 'article-table)
 
-;;tried to get these to work as (def-bio terms --) but got errors like Error: No form value on #<edge17 14 "lines" 15>
-(np-head "cell" :super 'cell-line)
-(np-head "line" :super 'cell-line)
-(np-head "cell line" :super 'cell-line)
-
-(defun def-cell-line (line)
-  (def-bio/expr line 'cell-line :takes-plurals nil)
-  #+ignore
-  (eval `(np-head ,line :super 'cell-line)))
-
-(def-cell-line "A375")
-(def-cell-line "D04")
-(def-cell-line "D25")
-(def-cell-line "MM415")
-(def-cell-line "MM485")
-(def-cell-line "OUMS-23")
-(def-cell-line "RPMI-7951")
-(def-cell-line "SkMel24")
-(def-cell-line "SkMel28")
-(def-cell-line "WM266.4")
-(def-cell-line "WM852")
-
 
 ;; Def-bio doesn't appreciate part of speech, so hacked the
 ;; presenting plural version here. #52
 (def-bio "open reading frame" bio-entity)
 (def-bio "open reading frames" bio-entity)
-
 
 (def-bio "ORF" bio-entity) ;; same as above -- need to figure out how to get the category spelling right
 
@@ -439,7 +369,6 @@
 (np-head "means" :super 'bio-process) ;; by chemical or genetic means
 (np-head "method" :super 'bio-process)
 (np-head "model" :super 'abstract)
-(np-head "mutant" :super 'bio-entity)
 (np-head "panel" :super 'bio-process)
 (np-head "paradigm" :super 'abstract)
 (np-head "paradox" :super 'bio-entity)
@@ -523,3 +452,73 @@
 
 ;; UGLY -- but avoids a break
 (adj "our")
+
+
+(np-head "G-domain" :super 'protein-segment) ;; somehow (def-bio "G-domain" protein-segment) di not work
+
+(def-bio "g1" bio-entity)
+(def-bio "g2" bio-entity)
+(def-bio "g3" bio-entity)
+(def-bio "g4" bio-entity)
+(def-bio "g5" bio-entity)
+
+
+
+
+(np-head "mutant" :super 'bio-entity)
+
+
+(def-cfr gene (mutate gene)
+  :form n-bar
+  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
+
+
+;;;------------
+;;; cell lines
+;;;------------
+; were expressed in HEK293T cells
+; BRAF mutant thyroid cell lines
+; HER2-amplified breast cancer cell lines
+; breast carcinoma cell lines
+; all six BRAF-mutant thyroid cancer cell lines
+; increased basal HER3 in 8505C cells
+; confirmed in a second cell line
+; our panel of cancer cell lines (Figure 6A).
+; the HCC827 NSCLC cell line
+
+(np-head "cell" :super 'cell-line)
+(np-head "line" :super 'cell-line)
+(np-head "cell line" :super 'cell-line)
+
+(defun def-cell-line (line)
+  (def-bio/expr line 'cell-line :takes-plurals nil))
+
+(def-cell-line "A375")
+(def-cell-line "D04")
+(def-cell-line "D25")
+(def-cell-line "MM415")
+(def-cell-line "MM485")
+(def-cell-line "OUMS-23")
+(def-cell-line "RPMI-7951")
+(def-cell-line "SkMel24")
+(def-cell-line "SkMel28")
+(def-cell-line "WM266.4")
+(def-cell-line "WM852")
+
+
+;;;------------------
+;;; Units of measure
+;;;------------------
+
+;;-- see model/dossiers/units-of-measure.lisp for more forms.
+(define-unit-of-measure "nM")
+(define-unit-of-measure "nm")
+(define-unit-of-measure "cm")
+(define-unit-of-measure "mm")
+(define-unit-of-measure "μm")
+;;(define-unit-of-measure "µm") this fails
+(define-unit-of-measure "mL")
+(define-unit-of-measure "ml")
+(define-unit-of-measure "kb")
+(define-unit-of-measure "dalton")
+
