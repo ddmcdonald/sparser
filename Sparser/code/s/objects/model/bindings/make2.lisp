@@ -54,6 +54,7 @@
 
 (defun bind-variable (var/name value individual
                       &optional category)
+  (declare (special *legal-to-add-bindings-to-categories*))
   ;; psi case
   (when (typep individual 'psi)
     (let ((new-psi (bind-v+v var/name value individual category)))
@@ -64,8 +65,9 @@
     ;; permanent, so it's probably something to be crept up on
     ;; slowly (e.g. like reclaiming bindings would be a good
     ;; initial step.
-    (error "It doesn't make sense to add a binding to the ~
-            category ~a" individual))
+    (unless *legal-to-add-bindings-to-categories*
+      (error "It doesn't make sense to add a binding to the ~
+             category ~a" individual)))
 
   ;; individual case
   (unless category
