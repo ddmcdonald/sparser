@@ -3,10 +3,10 @@
 ;;;
 ;;;     File:  "sequences"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  May 2014
+;;;  version:  December 2014
 
 ;; initiated 5/25/14 to create real sequences out of months, years,
-;; days, etc.
+;; days, etc. 12/30/14 Fanout from binding restriction. 
 
 (in-package :sparser)
 
@@ -15,9 +15,11 @@
 ;;;-----------------
 
 (defun make-temporal-sequences ()
-  (make-months-sequence)
-  (make-weekdays-sequence)
-  (today)) ;; makes a temporal-index
+  (let ((*legal-to-add-bindings-to-categories* t))
+    (declare (special *legal-to-add-bindings-to-categories*))
+    (make-months-sequence)
+    (make-weekdays-sequence)
+    (today))) ;; makes a temporal-index
 
 
 ;;;--------
