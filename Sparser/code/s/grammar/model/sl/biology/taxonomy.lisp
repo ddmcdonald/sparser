@@ -3,25 +3,47 @@
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: October 2014
+;;; version: December 2014
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
-;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, bio-conditions, bio-locations, species
-;; added step for biology (was defined in comlex), bio-variant for "form of <protein>", protein-segment for "G-dommain" and G1-box
+;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, 
+;;bio-conditions, bio-locations, species
+;; added step for biology (was defined in comlex), 
+;; bio-variant for "form of <protein>", protein-segment for "G-dommain" and G1-box
 ;; RJB 12/14/2014 add cell-line (need to deal with this better)
+;; 12/30/14 Reorganized to readability. Moved pathway to phenomena.lisp
+
 (in-package :sparser)
 
-;;;---------------------------
-;;; Taxonomy and simple types
-;;;---------------------------
+;;;--------
+;;; mixins
+;;;--------
 
-(define-category has-UID
+(define-mixin-category has-UID
   :specializes relation
   :binds ((uid)))
 
-(define-category biological
+(define-mixin-category type-marker
+  :documentation "This is mixed into selected classes
+   like 'protein' or 'pathway or 'cell line' so that their
+   lemmas can trigger a specific compose method
+   in noun noun compounds.")
+
+(define-mixin-category biological
   :lemma (:adjective "biological")
   :documentation "Strictly speaking this a mixin")
+
+
+;;;---------------------------------
+;;; top of the biological hierarchy
+;;;---------------------------------
+
+(define-category bio-entity 
+  :specializes physical-object  ;; sweeps a lot under the rug
+  :mixins (has-UID has-name biological)
+  :binds ((long-form :primitive polyword))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
 
 (define-category bio-process
   :specializes process
@@ -30,20 +52,10 @@
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
-(define-category pathway
-  :specializes bio-process
-  :instantiates :self
-  :index (:permanent :key name)
-  :lemma (:common-noun "pathway")
-  :realization (:common-noun name))
 
-(define-category step
-  :specializes bio-process
-  :instantiates :self
-  :index (:permanent :key name)
-  :binds ((pathway pathway))
-  :lemma (:common-noun "step")
-  :realization (:common-noun name))
+
+
+
 
 (define-category study-bio-process
   :specializes bio-process
@@ -56,43 +68,9 @@
 ;; grammar. Otherwise lemmas on categories can carry
 ;; the burden
 
-#| Gets an 'Inconsistent superclasses' error making
-   it's clos shadow class. Have to look up the problem
-
- has-name is a relation, as it has-UID, so the def-class
- superc list is (abstract relation relation) 
- Relation is a subclass of abstract, so it's (super sub sub)
-
-
-(define-category bio-type
-  :specializes abstract
-  :mixins (has-UID has-name)
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(define-individual 'bio-type
-  :name "molecule")
-
-(define-individual 'bio-type
-  :name "amino acid")
-
-(define-individual 'bio-type
-  :name "protein")
-
-(define-individual 'bio-type
-  :name "kinase")
-|#
-
-
-;;--- categories of referents for particulars (see def-bio below)
-
-(define-category bio-entity 
-  :specializes physical-object  ;; sweeps a lot under the rug
-  :mixins (has-UID has-name biological)
-  :binds ((long-form :primitive polyword))
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
+;;;----------------------------------------------------
+;;; categories of referents for particulars (entities)
+;;;----------------------------------------------------
 
 (define-category molecule
   ;; makes more sense for ATP than H20, but not worrying about whether
@@ -202,6 +180,11 @@
   :lemma (:common-noun "kinase")
   :realization (:common-noun name))
 
+
+
+;;/// these ext aren't really entities. Consider a new
+;; toplevel bio category. 
+
 (define-category bio-context
   :specializes bio-entity)
 
@@ -250,6 +233,9 @@
                            (preposition . ("in" "under"))
                            (complement . bio-condition))))
 
+
+;;--- location ///maybe it's not a bio-entity?
+
 (define-category bio-location 
   :specializes bio-entity
   :instantiates self
@@ -265,7 +251,6 @@
   :instantiates self
   :realization (:common-noun name)
   :index (:permanent :key name))
-
 
 (define-category  in-bio-location  ;; "in humans, in epithelial cells, in the plasma membrane"
   :instantiates self
@@ -288,6 +273,11 @@
   :lemma (:common-noun "species")
   :realization (:common-noun name))
   
+
+
+
+;;//// are these even "bio" at all?
+
 (define-category bio-scalar
   :specializes bio-entity
   :documentation "No content by itself, but provides a common superconcept 
@@ -302,11 +292,31 @@
 )
 
 
-#+ignore
-(define-additional-realization bio-entity
-  ;; category defined in places/relational)
-  (:tree-family simple-in-complement
-   :mapping ((np-item . functor)
-             (of-item . place)
-             (np . location)
-             (complement . location))))
+
+
+#| bio-type gets an 'Inconsistent superclasses' error making
+   it's clos shadow class. Have to look up the problem
+
+ has-name is a relation, as it has-UID, so the def-class
+ superc list is (abstract relation relation) 
+ Relation is a subclass of abstract, so it's (super sub sub)
+
+(define-category bio-type
+  :specializes abstract
+  :mixins (has-UID has-name)
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(define-individual 'bio-type
+  :name "molecule")
+
+(define-individual 'bio-type
+  :name "amino acid")
+
+(define-individual 'bio-type
+  :name "protein")
+
+(define-individual 'bio-type
+  :name "kinase")
+|#
+
