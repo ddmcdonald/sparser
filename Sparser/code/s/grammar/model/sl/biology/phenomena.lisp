@@ -9,6 +9,8 @@
 ;; like cell line and mutation. Conformation and isoform and such
 ;; would go here. Reorganizes some items in terms. 
 
+(in-package :sparser)
+
 ;;;----------
 ;;; Pathways
 ;;;----------
@@ -18,8 +20,43 @@
 ; the Raf/MEK/ERK pathway
 ; MAPK pathway inhibitors / inhibition
 
+(define-category  pathway
+  :specializes bio-entity
+  :instantiates :self
+  :mixins (type-marker)
+  :binds ((protein-sequence sequence))
+  :index (:permanent :key name)
+  :lemma (:common-noun "pathway")
+  :realization (:common-noun name)
+  :documentation "Pathways are inhibited and activated
+   which makes them more like entities than processes.
+   They are named according to the sequence of proteins
+   (protein families) in the causal chain.")
+
+
+;(defmethod define-pathway ((proteins cons))
+;  (let ((sequence (create-sequence 
+
+
+(define-category step
+  :specializes bio-process
+  :instantiates :self
+  :index (:permanent :key name)
+  :binds ((pathway pathway))
+  :lemma (:common-noun "step")
+  :realization (:common-noun name))
 
 (def-bio "MEK/ERK" pathway)
 (def-bio "ERK/MEK" pathway)
+
+
+;;;-------------------------------
+;;; transcription and its control
+;;;-------------------------------
+; the ZFN217 transcription factor
+; and CtBP1/CtBP2 corepressors, CtBPs
+; the HER3 promoter
+; expression of HER3
+; inhibition of HER3 transcription
 
 

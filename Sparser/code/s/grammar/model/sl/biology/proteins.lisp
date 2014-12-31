@@ -6,9 +6,62 @@
 ;;; version: December 2014
 
 ;; initiated 9/8/14 lifting from other files
-;; made some of the proteins lowere case, becasue both capitalized and lower case versions occur
+;; Made some of the proteins lower case, becasue both 
+;; capitalized and lower case versions occur
 
 (in-package :sparser)
+
+;;--- Convience accesor
+
+(defmethod get-protein ((pname string))
+  ;; conventient syntactic sugar. Motivated by explicitly
+  ;; constructed pathways. 
+  (let ((word (resolve pname)))
+    (unless word "The word ~a isn't defined, so it can't ~
+                  name a protein." pname)
+    (get-protein word)))
+
+(defmethod get-protein ((name word))
+  (find-individual 'protein :name name))
+
+(defmethod get-protein ((name polyword))
+  (find-individual 'protein :name name))
+
+
+;;--- Families
+
+(defmacro def-family (name &key type species members ;; for family
+                           long identifier synonyms) ;; for def-bio
+                           
+  (unless (stringp name) (error "Name argument should be a string"))
+  `(define-family 
+     ,name :type ',type :species ',species :members ',members
+     :long ',long :identifier ',identifier :synonyms ',synonyms))
+
+(defun define-family (name &key type species members
+                           long identifier synonyms)
+  (unless members 
+    (error "It doesn't make sense to define a family without members"))
+  (unless type
+    (setq type (category-named 'protein)))
+  (unless species
+    (setq species (find-individual 'species :name "human")))
+  (let ((i (def-bio/expr name 'human-protein-family
+             :long long :identifier identifier :synonyms synonyms))
+        proteins )
+    (dolist (name members)
+      (let ((protein (get-protein name)))
+        (unless protein
+          (break "Can't retrieve protein from the name ~s" name))
+        (push protein proteins)))
+    (let ((set-of-proteins (create-collection proteins 'protein))
+          (count (find-number (length members))))
+      (bind-variable 'members set-of-proteins i)
+      (bind-variable 'count count i)
+       ;; If we didn't use such a speciic category these would matter.
+      i)))
+
+
 
 ;;;--------------------------------------------
 ;;; for (some of) the abstract in the proposal
@@ -47,10 +100,9 @@
 (def-bio "GSK-3" protein)
 
 
-
-;;;-------------------------
-;;; for the August 15th set
-;;;-------------------------
+;;;------------------------
+;;; GTP, GDP, GEFs & GAPs
+;;;------------------------
 
 (def-bio "GTP" small-molecule
   :identifier "CHEBI:15996")
@@ -69,23 +121,15 @@
 ;; And these are families of particulars, not the particulars that are
 ;;  actually doing participating in the reactions
 
-;; http://en.wikipedia.org/wiki/Growth_factor
-;; Again, it's a family, not a particular
-(def-bio "growth factors" protein)
+
+;; These two are families, but haven't read about particular members
+(def-bio "RasGEF" protein
+  :synonyms ("Ras-GEF" "Ras GEF")) ;; should do that automagically
+ 
+(def-bio "RasGAP" protein
+  :synonyms ("Ras-GAP" "Ras GAP") );; ditto, or beef up morphology
 
 
-
-
-(def-bio "mapk" protein)
-(def-bio "mek1dd" protein)
-(def-bio "brafv" protein)
-
-
-(def-bio "PIK3CA" protein
-  :identifier "PR:000012719")
-
-(def-bio "cot" protein
-  :synonyms ("COT"))
 
 
 ;;;----------------------------------------------------
@@ -96,18 +140,8 @@
 appreciates they are all of a kind, that numbers and other
 filligre may be used to distinguish them, etc.
 |#
-;; These can be ripped out of pro.obo once we figure out
-;; the simplest mechanism 
 
-
-;;/// gene/product/generalizations, UCD uses PR identifier
-
-(def-bio "ras" protein ;; lowercase to accomodate all the variant capitalization
-  :identifier "GO:0003930"
-  :synonyms ("RAS")
-  :long "GTPase" ;; RAS small monomeric GTPase activity
-  ;; Are we going to see that in texts?
-  )
+;;--- the Ras family
 
 (def-bio "kras" protein 
   :synonyms ("k-ras" "K-RAS")
@@ -121,11 +155,14 @@ filligre may be used to distinguish them, etc.
   :synonyms ("n-ras" "N-RAS")
   :identifier "PR:000011416") ;; gene is "PR:P01111"
 
+(def-family "Ras" ;;//// need capitalization hacks
+  :members ("kras" "hras" "nras")
+  :identifier "GO:0003930"
+  :synonyms ("RAS")
+  :long "GTPase") ;; RAS small monomeric GTPase activity
 
 
-(def-bio "raf" protein
-  :identifier "RAF" ;; denotes a family -- not sure there is a formal identifier (need help from UCD)
-  :synonyms ("RAF"))
+;;--- the RAF family
 
 (def-bio "braf" protein 
   :identifier "PR:000004801"
@@ -134,28 +171,76 @@ filligre may be used to distinguish them, etc.
 (def-bio "craf" protein
   :synonyms ("c-raf" "C-RAF"))
 
+(def-family "raf" 
+  :members ("braf" "craf")
+  :identifier "RAF" ;; denotes a family -- not sure there is a formal identifier (need help from UCD)
+  :synonyms ("RAF"))
 
-(def-bio "ERK" protein) ;; general term not obviously in an OBO
+
+;;--- the MAPK family
+;; These are specific to serine, threonine, and tyrosine
+;; says the Wikipedia
 
 (def-bio "ERK1" protein 
   :identifier "PR:000000104"
-  :synonyms ("ERK1 kinase"))
-;; it's 'extracellular signal' related kinase but tactically it's
-;; better to hack the first part as a polyword rather than compositionally
+  :synonyms ("ERK1 kinase" "MAPK3"
+             "erk1" "mapk3"))
 
-(def-bio "MAP" protein)
+(def-bio "ERK2" protein
+  :synonyms ("erk2" "MAPK1" "mapk1"))
 
-(def-bio "MEK" protein)
+;; and many more: ERK3 (MAPK6) and ERK4 (MAPK4), etc.
+;; I don't understand the Wikipedia write up well enough
+
+(def-family "MAPK"
+  :members ("ERK1" "ERK2")
+  :long "mitogen activated protein kinase" 
+  :synonyms ("ERK" "extracellular signal-regulated kinase"
+             "mapk" "erk"))
+
+
+;;--- The MEK family
 
 (def-bio "MEK1" protein)
 
 (def-bio "MEK2" protein)
-(def-bio "MEK1/2" protein)
+
+;;/// Is this a reference to both of them? We could have
+;; it denote a collection without too much work, especially
+;; if we had a second case
+;(def-bio "MEK1/2" protein)
+
+(def-family "MEK" 
+  :members ("MEK1" "MEK2"))
+
+
 
 (def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
   :synonyms ("B-RAFV600E" "V600EB-RAF" "BRAFV600E"))
 
+
+;;------------- From here on down it's miscelany that
+;;  I don't know how to codify
+
+(def-bio "MAP" protein)
+
+
 (def-bio "COT/TPL2" protein) ;; see if defining this leads to sentence 53 working consistently when run twice.
+(def-bio "cot" protein
+  :synonyms ("COT"))
 
 (def-bio "growth factor" protein)
-(def-bio "mitogen activated protein kinase" protein)
+
+
+(def-bio "mek1dd" protein)
+(def-bio "brafv" protein)
+
+
+(def-bio "PIK3CA" protein
+  :identifier "PR:000012719")
+
+
+;; http://en.wikipedia.org/wiki/Growth_factor
+;; Again, it's a family, not a particular
+(def-bio "growth factors" protein)
+

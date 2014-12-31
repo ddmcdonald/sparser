@@ -119,31 +119,37 @@
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
 
-
-
-(define-category bio-family
+;;/// will have a substantial model, so deserves its own
+;; file. This is just to ground "encode"
+(define-category gene
+  :specializes bio-entity ;;// case in point
   :instantiates :self
-  :documentation "Familes of proteins are abstractions based
-    on common properties, especially the function, of the
-    members. They're talked about just like specific proteins
-    are, hence making them entities"
-  :specializes bio-entity
-  :binds ((type bio-entity) ;; a family of what?
-          (species species) ;; human? mouse?
-          (members collection))
+  :binds ((:expresses . protein))
   :index (:permanent :key name)
-  :lemma (:common-noun "family")
+  :lemma (:common-noun "gene")
   :realization (:common-noun name))
 
-(define-category protein-family
-  :specializes bio-family
-  ;;/// something needs fixing in the bindings decoder
-  ;; since these should be simpler to write
-  :bindings (type (category-named 'protein)))
+(define-category oncogene
+  :specializes gene 
+  :instantiates :self
+  :lemma (:common-noun "oncogene")
+  :realization (:common-noun name))        
+  
+(define-category enzyme ;; what's the relationship to kinase?
+  :specializes protein
+  :instantiates :self
+;; :rule-label bio-entity
+  :lemma (:common-noun "enzyme")
+  :realization (:common-noun name))
 
-(define-category human-protein-family
-  :specializes protein-family
-  :bindings (species (find-individual 'species :name "human")))
+(define-category kinase
+  :specializes enzyme
+  :instantiates :self
+  :bindings (uid "GO:0016301") ;; "kinase activity"
+;;  :rule-label bio-entity
+  :index (:permanent :key name)
+  :lemma (:common-noun "kinase")
+  :realization (:common-noun name))
 
 
 
@@ -178,39 +184,6 @@
 
 
 
-
-
-;;/// will have a substantial model, so deserves its own
-;; file. This is just to ground "encode"
-(define-category gene
-  :specializes bio-entity ;;// case in point
-  :instantiates :self
-  :binds ((:expresses . protein))
-  :index (:permanent :key name)
-  :lemma (:common-noun "gene")
-  :realization (:common-noun name))
-
-(define-category oncogene
-  :specializes gene 
-  :instantiates :self
-  :lemma (:common-noun "oncogene")
-  :realization (:common-noun name))        
-  
-(define-category enzyme ;; what's the relationship to kinase?
-  :specializes protein
-  :instantiates :self
-;; :rule-label bio-entity
-  :lemma (:common-noun "enzyme")
-  :realization (:common-noun name))
-
-(define-category kinase
-  :specializes enzyme
-  :instantiates :self
-  :bindings (uid "GO:0016301") ;; "kinase activity"
-;;  :rule-label bio-entity
-  :index (:permanent :key name)
-  :lemma (:common-noun "kinase")
-  :realization (:common-noun name))
 
 
 
@@ -305,6 +278,33 @@
   :lemma (:common-noun "species")
   :realization (:common-noun name))
   
+
+
+(define-category bio-family
+  :instantiates :self
+  :documentation "Familes of proteins are abstractions based
+    on common properties, especially the function, of the
+    members. They're talked about just like specific proteins
+    are, hence making them entities"
+  :specializes bio-entity
+  :binds ((type bio-entity) ;; a family of what?
+          (species species) ;; human? mouse?
+          (members collection)
+          (count number))
+  :index (:permanent :key name)
+  :lemma (:common-noun "family")
+  :realization (:common-noun name))
+
+(define-category protein-family
+  :specializes bio-family
+  ;;/// something needs fixing in the bindings decoder
+  ;; since these should be simpler to write
+  :bindings (type (category-named 'protein)))
+
+(define-category human-protein-family
+  :specializes protein-family
+  :bindings (species (find-individual 'species :name "human")))
+
 
 
 

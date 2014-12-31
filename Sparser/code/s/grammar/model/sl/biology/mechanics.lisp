@@ -73,61 +73,73 @@
         ;; of the word, which would have to be caught upstream
         ;; and passed through in a parameter. 
         (*inihibit-constructing-plural* (not takes-plurals))
-        rules  i )
+        rules  i   )
 
-    (setq i (find-or-make-individual category :name word))
-    ;; The find-or-make call will set up a rule for the short form
-    ;; as a common noun that has this individual as its referent.
-    ;; Ignoring brackets since this runs with the new chunker
+    ;; There is a bug that I can't sort out with the available evidence
+    ;; when redefining a def-bio entity involving a list of rules being 
+    ;; expected to be a structure. Until there's time to creep up on
+    ;; that bug and kill it, I've separated the find from the make and
+    ;; not looking for the possibility that a redefinition actually
+    ;; added or changed something substantive. ddm - 12/30/14
+    (setq i (find-individual category :name word))
+    (when i
+      (return-from make-typed-bio-entity i))
+    (setq i (define-individual category :name word))
 
-    ;;(push-debug `(,i ,word)) (break "find base rule")
-    ;; This is packaged up some place, but no time to see where
-    (let* ((rules (get-tag-for :rules i))
-           (rule (when rules (car rules))))
-      (when rule
-        (setf (edge-form rule) category::proper-noun)))
+      ;; The real form to use
+      ;;     (setq i (find-or-make-individual category :name word))
+      ;; The find-or-make call will set up a rule for the short form
+      ;; as a common noun that has this individual as its referent.
+      ;; Ignoring brackets since this runs with the new chunker
 
-    (let* ((pname (etypecase word 
-                    (word (word-pname word))
-                    (polyword (pw-pname word))))
-           (downcased-pname (string-downcase pname)))
-      (unless synonyms ;; probably done there
-        (unless (string= downcased-pname pname) ;; case-sensitive
-          (let ((lowercase-word (resolve/make downcased-pname)))
-            (push (define-cfr label `(,lowercase-word)
-                    :form form
-                    :referent i)
-                  rules)))))
+      ;;(push-debug `(,i ,word)) (break "find base rule")
+      ;; This is packaged up some place, but no time to see where
+      (let* ((rules (get-tag-for :rules i))
+             (rule (when rules (car rules))))
+        (when rule
+          (setf (edge-form rule) category::proper-noun)))
+
+      (let* ((pname (etypecase word 
+                      (word (word-pname word))
+                      (polyword (pw-pname word))))
+             (downcased-pname (string-downcase pname)))
+        (unless synonyms ;; probably done there
+          (unless (string= downcased-pname pname) ;; case-sensitive
+            (let ((lowercase-word (resolve/make downcased-pname)))
+              (push (define-cfr label `(,lowercase-word)
+                      :form form
+                      :referent i)
+                    rules)))))
    
-    (when identifier
-      (bind-variable 'uid identifier i))
+      (when identifier
+        (bind-variable 'uid identifier i))
 
-    (when synonyms ;; quoted list of strings
-      (dolist (syn synonyms)
-        (push (define-cfr label `(,(resolve/make syn))
-                :form form
-                :referent i)
-              rules)))
+      (when synonyms ;; quoted list of strings
+        (dolist (syn synonyms)
+          (push (define-cfr label `(,(resolve/make syn))
+                  :form form
+                  :referent i)
+                rules)))
 
-    ;; Now we do that by-hand for the long-form. If the long form needs
-    ;; to have a variant with a greek letter in it we'll make two rules.
-    (when long
-      (let* ((pw (resolve/make long)) ;; pw = polyword = multiword
-             (cfr (define-cfr label `(,pw)
-                    :form form
-                    :referent i)))
-        (push cfr rules)))
+      ;; Now we do that by-hand for the long-form. If the long form needs
+      ;; to have a variant with a greek letter in it we'll make two rules.
+      (when long
+        (let* ((pw (resolve/make long)) ;; pw = polyword = multiword
+               (cfr (define-cfr label `(,pw)
+                      :form form
+                      :referent i)))
+          (push cfr rules)))
 
-    (when greek
-      (let ((additional-rules
-             (rules-with-greek-chars-substituted
-              (word-pname word) long greek label form i)))
-        (setq rules (nconc additional-rules rules))))
+      (when greek
+        (let ((additional-rules
+               (rules-with-greek-chars-substituted
+                (word-pname word) long greek label form i)))
+          (setq rules (nconc additional-rules rules))))
 
-    (when rules
-      (push-onto-plist i rules :rules))
+      (when rules
+        (push-onto-plist i rules :rules))
 
-    i))
+      i))
 
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
