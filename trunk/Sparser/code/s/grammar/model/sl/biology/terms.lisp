@@ -464,15 +464,6 @@
 
 
 
-
-(np-head "mutant" :super 'bio-entity)
-
-
-(def-cfr gene (mutate gene)
-  :form n-bar
-  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
-
-
 ;;;------------
 ;;; cell lines
 ;;;------------
