@@ -134,7 +134,7 @@
 (define-drug "etaracizumab")
 (define-drug "etrolizumab")
 (define-drug "everolimus")
-(define-drug "fcγriib")
+#+ccl(define-drug "fcγriib")
 (define-drug "ficlatuzumab")
 (define-drug "figitumumab")
 (define-drug "fitc-adalimumab")
