@@ -1,7 +1,6 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER
-;;; copyright (c) 1995-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "new rules"
 ;;;   module:  "dossiers;"
@@ -14,7 +13,8 @@
 
 ;; 4/8/05 Accommodated change to pp-after-np schema
 ;; 7/5/07 Gated the title realization. 3/20/13 Blocked it for fanout from
-;; redesign of titles. 
+;; redesign of titles. 12/31/14 Commented them all out because the new
+;; shortcuts have pre-empted the define-realization function.
 
 (in-package :sparser)
 
@@ -30,7 +30,7 @@
           (classifier . (COMPANY SUBSIDIARY-TYPE))
           (base . (TITLE QUALIFIED-TITLE))))        |#
 
-
+#|
 
 ;; 6/14/95
 ;; company-activity-word ->  kind-of-subsidiary company-activity-word
@@ -163,4 +163,4 @@
          appositive
          ((appositive . company-descriptor)
           (np . company)
-          (appositive-field . (description be))))
+          (appositive-field . (description be))))    |#
