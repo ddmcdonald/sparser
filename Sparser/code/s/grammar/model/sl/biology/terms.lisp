@@ -506,7 +506,7 @@
 (define-unit-of-measure "nm")
 (define-unit-of-measure "cm")
 (define-unit-of-measure "mm")
-(define-unit-of-measure "μm")
+#+ccl (define-unit-of-measure "μm")
 ;;(define-unit-of-measure "µm") this fails
 (define-unit-of-measure "mL")
 (define-unit-of-measure "ml")
