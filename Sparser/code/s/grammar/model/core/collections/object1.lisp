@@ -29,6 +29,7 @@
   :instantiates self
   :specializes abstract
   :lemma (:common-noun "collection")
+  :index (:permanent :key items)
   :binds ((items :primitive list)
           (type)
           (number :primitive integer))
