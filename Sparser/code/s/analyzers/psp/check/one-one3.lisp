@@ -13,6 +13,7 @@
 ;;      that pretty much gutted the routine.
 ;; 2.0 (3/15/94) Added dotted-rule hack
 ;; 3.0 (4/29/00) Incorporating composite referents
+;; 1/1/2015 support for whack-a-rule -- separate out exe3cute-one-one-rule from check-one-one
 
 (in-package :sparser)
 
