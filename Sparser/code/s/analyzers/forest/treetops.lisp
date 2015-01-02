@@ -220,6 +220,63 @@
       (nreverse tts))))
     
       
+(defun adjacent-tts ()
+  (loop for edges on (cdr (all-tts)) 
+    while (cdr edges) 
+    when (and 
+          (edge-p (car edges)) 
+          (edge-p (second edges))
+          (adjacent-edges? (car edges)(second edges)))
+    collect
+    (list (car edges)(second edges))))
+
+
+(defun all-tts (&optional 
+                (starting-position
+                 (if (still-in-the-chart 0)
+                     (chart-position 0)
+                     (chart-position (+ 2 *first-chart-position*))))
+                stop-pos)
+  (let* ((tt (right-treetop-edge-at starting-position))
+         (ending-position
+          (where-tt-ends tt starting-position)))
+    
+    (cons
+     tt
+     (unless
+         (or (eq ending-position stop-pos)
+             (eq (pos-terminal ending-position)
+                 word::end-of-source)
+             (null (pos-terminal ending-position)))
+       
+       (then 
+        (all-tts ending-position stop-pos))))))
+
+(defun right-treetop-edge-at (position)
+  (let* ((vector (pos-starts-here position))
+         (top-node (ev-top-node vector)))
+    (cond
+     (top-node
+      (if
+       (eq top-node :multiple-initial-edges)
+       (highest-edge vector)
+       top-node))
+     (t
+      (pos-terminal position)))))
+
+
+
+(defun possible-treetop-rules ()
+  (let
+      (rule rules)
+    (loop for pair in (adjacent-tts) 
+      when (setq rule (multiply-edges (car pair)(second pair)))
+      do
+      (push
+       (cons rule pair)
+       rules))
+    rules))
+
 
 (defun treetop-does-not-end-the-chart (tt)
   (let* ((ends-at (ev-position (edge-ends-at tt)))
