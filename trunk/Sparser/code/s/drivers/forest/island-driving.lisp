@@ -10,9 +10,13 @@
 ;; Incrementally extending through 9/24/14. Broke out the routines
 ;; 10/25/14 leaving the drivers. 
 ;; RJB 12/19/2014 remove adverbs and commas from islands before attempting second pass
+;; 1/1/2015 New, flag-controlled, alternative to last part of run-island-checks, repeatedly doing application of rightmost applicable rule.
 
 (in-package :sparser)
 
+(defparameter *whack-a-rule* nil) ;; this forces application of all applicable rules from the right to the left, after initial priority rules
+(defun whack-a-rule (&optional (yes? t))
+  (setq *whack-a-rule* yes?))
 
 (defun island-driven-forest-parse (sentence layout start-pos end-pos)
   (declare (special *allow-pure-syntax-rules*
@@ -60,9 +64,12 @@
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
 
-  (try-simple-subj+verb)
+  (when (there-are-prepositions?)
+    (tr :trying-to-form-simple-pps)
+    (try-simple-pps)
+    (when *trace-island-driving* (tts)))
 
-  (when *trace-island-driving* (tts))
+
 
   ;;/// conjunctions over two words
   ;; though the regular conjunction routine in pts seems to get these
@@ -82,33 +89,73 @@
           (look-for-short-leftward-extension edge)))
       (when *trace-island-driving* (tts))))
 
-  ;;//// good place to update the layout
 
-  (when (there-are-of-mentions?)
-    (tr :try-to-compose-instances-of-of)
-    (try-to-compose-of-complements)
-    (when *trace-island-driving* (tts)))
-
-  (when (there-are-loose-nps?)
-    (tr :try-to-extend-loose-nps)
-    (look-for-np-extensions)
-    (when *trace-island-driving* (tts)))
-
-  (when (there-are-prepositions?)
-    (tr :trying-to-form-simple-pps)
-    (try-simple-pps)
-    (when *trace-island-driving* (tts)))
-
-  (when (there-are-post-mvb-verbs?)
-    (tr :try-simple-vps)
-    (try-simple-vps)
-    (when *trace-island-driving* (tts)))
-
+  (setq *possible1* (possible-treetop-rules))
+  ;;(break "*possible*")
+  (cond
+   (*whack-a-rule*
+    (let ((rule-edges (copula-rule? (possible-treetop-rules))))
+      (loop while rule-edges 
+        do 
+        (progn
+          (execute-one-one-rule 
+           (car rule-edges)
+           (second rule-edges)(third rule-edges))
+          (setq rule-edges  (car (possible-treetop-rules))))))
+    (when (there-are-conjunctions?)
+      (tr :try-spanning-conjunctions)
+      (try-spanning-conjunctions))
+    (let ((rule-edges (car (possible-treetop-rules))))
+      (loop while rule-edges 
+        do 
+        (progn
+          (execute-one-one-rule 
+           (car rule-edges)
+           (second rule-edges)(third rule-edges))
+          ;;(break)
+          (setq rule-edges  (car (possible-treetop-rules)))))))
+   (t
+    (try-simple-subj+verb)
+    (setq *possible2* (possible-treetop-rules))
+    (when *trace-island-driving* (tts))
+    ;;//// good place to update the layout
+    
+    (when (there-are-of-mentions?)
+      (tr :try-to-compose-instances-of-of)
+      (try-to-compose-of-complements)
+      (when *trace-island-driving* (tts)))
+    
+    (when (there-are-loose-nps?)
+      (tr :try-to-extend-loose-nps)
+      (look-for-np-extensions)
+      (when *trace-island-driving* (tts)))
+    
+    (when (there-are-prepositions?)
+      (tr :trying-to-form-simple-pps)
+      (try-simple-pps)
+      (when *trace-island-driving* (tts)))
+    
+    (when (there-are-post-mvb-verbs?)
+      (tr :try-simple-vps)
+      (try-simple-vps)
+      (when *trace-island-driving* (tts)))))
+  
   (when (there-are-conjunctions?)
     (tr :try-spanning-conjunctions)
     (try-spanning-conjunctions)))
 
         
+(defun copula-rule? (rule-trips)
+  (let
+      ((rule? nil))
+    (loop for r in rule-trips
+      until
+      (setq rule? (and (eq (car (cfr-rhs (car r))) category::be)
+                      (eq (second (cfr-rhs (car r))) category::adjective)
+                      r))
+      do (progn t))
+    rule?))
+    
 ;;;-------------
 ;;; second pass
 ;;;-------------
