@@ -17,6 +17,8 @@
 ;; RJB added note for :at modifier for inhibit
 ;;  add :on and :at modifiers for phosphorylate
 ;; improved definition for increase as a noun and verb
+;; remove unlikely definition of "study" as a verb -- we need to handle ambiguity better
+
 (in-package :sparser)
 
 ;;;---------------------------
@@ -437,12 +439,12 @@
   ;;  and a lot of others
   :from substrate))
 
+#+ignore ;; study is rarely used as a verb
 (define-category study-bio-process
  :specializes bio-process
  :binds ((agent bio-entity)(patient bio-process))
  :realization
- (:verb ("study" :past-tense "studied" 
-         :present-participle "studying")
+ (:verb ("study" :past-tense "studied" :present-participle "studying")
         :noun "study"
   :etf (svo-passive)
   :s agent
