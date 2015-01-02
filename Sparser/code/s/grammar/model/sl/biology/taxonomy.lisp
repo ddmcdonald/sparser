@@ -12,6 +12,7 @@
 ;; bio-variant for "form of <protein>", protein-segment for "G-dommain" and G1-box
 ;; RJB 12/14/2014 add cell-line (need to deal with this better)
 ;; 12/30/14 Reorganized to readability. Moved pathway to phenomena.lisp
+;; 1/1/2015 fix (?) taxonomy above protein-family, to make it a sub-category of molecule
 
 (in-package :sparser)
 
@@ -286,7 +287,10 @@
     on common properties, especially the function, of the
     members. They're talked about just like specific proteins
     are, hence making them entities"
-  :specializes bio-entity
+  ;; They should be either a sub-category of protein or molecule to allow for
+  ;;  selectional restrictions on PPs
+  ;; as in "binds to RAS" where RAS is a family
+  :specializes molecule
   :binds ((type bio-entity) ;; a family of what?
           (species species) ;; human? mouse?
           (members collection)
