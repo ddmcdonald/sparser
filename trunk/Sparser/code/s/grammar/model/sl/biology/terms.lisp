@@ -19,7 +19,7 @@
 ;; and get rid of the interpretation of "al." as a bio-entity (couldn't even find where that cam from)
 ;; RJB 12/14/2014 Added a bunchof stand-in definitions for words that were primed by COMLEX, added cell-line definitions (some) -- need help from <<DAVID>>
 ;; add MEK/ERK and ERK/MEK as pathway designators, try to define S338 as a residue
-
+;; add form rule for relative-clause --> (that vp)
 (in-package :sparser)
 
 
@@ -513,3 +513,10 @@
 (define-unit-of-measure "kb")
 (define-unit-of-measure "dalton")
 
+(def-form-rule (that vg)
+  :form relative-clause
+  :referent (:daughter right-edge))
+
+(def-form-rule (that vp)
+  :form relative-clause
+  :referent (:daughter right-edge))
