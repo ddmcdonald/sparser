@@ -396,10 +396,9 @@
   (add-rules-to-category i rules))
 
 (defun add-rules-to-category (category rules)
-  (let* ((existing-rules (get-rules category))
-         (total-rules (if existing-rules
-                        (append rules existing-rules)
-                        rules)))  
+  (let ((total-rules (get-rules category)))
+    (dolist (rule rules)
+      (setq total-rules (tail-cons rule total-rules)))
     (push-onto-plist category total-rules :rules)))
 
 
