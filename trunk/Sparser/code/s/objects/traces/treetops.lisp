@@ -10,6 +10,8 @@
 ;; drivers/chart/psp/march-forest 3/8/13. 
 ;; Adding patterns for the new forest design through 10/23/14.
 ;; FIxed typo in printout -- "subjec" --> "subject"
+;;1/1/2015 support for whack-a-rule -- find all adjacent treetops
+;;  which can be spanned by a rule
 
 (in-package :sparser)
 
