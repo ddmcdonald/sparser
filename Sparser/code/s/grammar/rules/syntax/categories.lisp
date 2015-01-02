@@ -65,7 +65,8 @@
 ;; added     ,category::pronoun as a minor-category -- not sure
 ;; 12/19/2014     ;; partitive construction e.g. "all of these lines"
 ;; 12/20/2014 add thatcomp for nouns 
- 
+;; 1/1/2015 fix ng-head? to allow "that" as the head of an NG (used mostly for that relative clauses)
+;; 1/1/2015 block inclusion of initial adjective/modifier when the previous chunk was a copula verb (just check for BE at this time)
 (in-package :sparser)
 
 
@@ -337,6 +338,7 @@
     CATEGORY::SUPERLATIVE
     category::number ;; 'How many do you want? I want 3'
     category::post-ordinal ;; But only for roman numerals
+    category::that
     ))
 
 
@@ -364,6 +366,17 @@
 (defmethod ng-start? ((e edge))
   (declare (special e))
   (cond
+   ((or
+     (eq category::modifier (edge-category e))
+     (eq category::adjective (edge-form e)))
+    ;;when the previous chunk was a copula verb (just check for BE at this time)
+    ;; and this is an adjective
+    (not
+     (and
+      (car *chunks*)
+      (member 'vg (chunk-forms (car *chunks*)))
+      (eq category::be (edge-category (car (chunk-edge-list (car *chunks*))))))))
+
    ((eq category::that (edge-category e))
     (and
      (not
@@ -413,7 +426,7 @@
             category::suggest))
     t)
    (t
-    (print `(checking thatcomp status for ,(edge-category edge) ,edge))
+    ;;(print `(checking thatcomp status for ,(edge-category edge) ,edge))
     (break "THATCOMP?")
     nil)))
 
@@ -427,7 +440,7 @@
           '(category::possibility category::likelihood category::observe))
     t)
    (t
-    (print `(checking thatcomp status for ,(edge-category edge) ,edge))
+    ;;(print `(checking thatcomp status for ,(edge-category edge) ,edge))
    ;; (break "THATCOMP?")
     nil)))
 
@@ -457,8 +470,12 @@
    ((ng-head? (edge-form e)) t)
    ((and
      (eq category::det (edge-form e))
-     (memq (word-symbol (edge-referent e))
-           '(WORD::|that|))))))
+     (eq category::that (edge-category e))
+     ;;(memq (word-symbol (edge-referent e)) '(WORD::|that|))
+     )
+    ;;(break "that")
+    )
+   ))
 
 (defmethod ng-head? ((c referential-category))
   (ng-head? (cat-symbol c)))
@@ -697,6 +714,7 @@
 (defparameter *minor-categories*
   `(,category::np
     ,category::pronoun
+    ,category::proper-noun
     ,category::pp))
 
 (defmethod category-status ((c category))
