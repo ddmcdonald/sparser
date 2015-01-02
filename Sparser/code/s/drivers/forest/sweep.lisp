@@ -8,12 +8,16 @@
 ;; Initiated 8/30/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
 ;; RJB 12/14/2014 simple (hack) fix to allow pronouns in simple subject verb construction moified categories in sweep-sentence-treetops
-
+;; add parameter *no-error-on-no-form*, set to nil when you want to see which edges have no forms during sweep,
+;; This is a work-around for the problems with defining MEK and MAPK...
+ 
 (in-package :sparser)
 
 ;;;--------
 ;;; driver
 ;;;--------
+;; set to nil when you want to see which edges have no forms at the end
+(defparameter *no-error-on-no-form* t)
 
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
   "Scan the treetops left to right"
@@ -57,7 +61,9 @@
           (return))
          ((edge-over-punctuation? tt)) ;; flag it?          
          (t (push-debug `(,tt ,pos-after))
-            (error "No form value on ~a" tt))))
+            (unless
+                *no-error-on-no-form*
+              (error "No form value on ~a" tt)))))
 
       (when form
         (case (cat-symbol form)
