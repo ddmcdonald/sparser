@@ -71,11 +71,11 @@
 ;;   in Mumble's code.
 
 (unless (find-package :sparser)
-  (make-package :sparser
-                :use '(common-lisp
-                       ddm-util
-                       #+apple ccl
-                       #+openmcl :ccl)))
+  (defpackage :sparser
+    (:use common-lisp
+          ddm-util
+          #+apple ccl
+          #+openmcl :ccl)))
 
 ;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, this invocatation of
 ;; make-package does not include ddm-util in the result. Works just fine
