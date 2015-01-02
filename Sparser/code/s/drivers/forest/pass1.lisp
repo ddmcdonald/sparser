@@ -7,6 +7,8 @@
 
 ;; Broken out of island-driving 10/23/14.
 ;; RJB 12/14/2014 -- simple fix to prevent failure in simple-subject-verb when subject is a pronoun -- need to treat pronouns better <<DAVID>>
+;; 1/1/2015 fix bug in check-for-subcatorized-pps -- result of a push-debug passed through as the value of a the function in case when the break
+;;  was #+ignored
 
 (in-package :sparser)
       
@@ -497,9 +499,12 @@
                   edge))
               (else
                (push-debug `(,np-ref ,v/r ,following-tt))
-               #+ignore(break "Subcat of ~s: ~a is not a ~a Should that change?"
+                #+ignore
+                (break "Subcat of ~s: ~a is not a ~a Should that change?"
                       (word-pname word) np-ref v/r)
-)))))))))
+                (print `(!!! subcat of , (word-pname word) ":" ,np-ref is not a ,v/r Should that change))
+                ;; MUST RETURN A NIL, and not the result of the push-debug
+                nil)))))))))
 
 #+ignore
 (defun follow-out-pattern (start-pos tt-sequence)
