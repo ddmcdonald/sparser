@@ -8,6 +8,10 @@
 ;; initiated 9/8/14 lifting from other files
 ;; Made some of the proteins lower case, becasue both 
 ;; capitalized and lower case versions occur
+;; 1/1/2015 attempt to fix problem with MEK not being defined as a word
+;;  -- allow for members to be added to family after family is defined
+;; attempt to get around order dependency for MEK1 and MEK -- BUT THAT WAS NOT THE BUG
+;; OVER TO YOU, <<DAVID>>
 
 (in-package :sparser)
 
@@ -47,21 +51,26 @@
   (unless species
     (setq species (find-individual 'species :name "human")))
   (let ((i (def-bio/expr name 'human-protein-family
-             :long long :identifier identifier :synonyms synonyms))
-        proteins )
+             :long long :identifier identifier :synonyms synonyms)) )
+    (if
+     (consp members)
+     (set-family-members i members))))
+
+(defun set-family-members (i members) 
+  ;;(print `(the individual which has added members is ,i))
+  (let
+      (proteins)
     (dolist (name members)
       (let ((protein (get-protein name)))
         (unless protein
           (break "Can't retrieve protein from the name ~s" name))
         (push protein proteins)))
     (let ((set-of-proteins (create-collection proteins 'protein))
-          (count (find-number (length members))))
+        (count (find-number (length members))))
       (bind-variable 'members set-of-proteins i)
       (bind-variable 'count count i)
-       ;; If we didn't use such a speciic category these would matter.
+      ;; If we didn't use such a speciic category these would matter.
       i)))
-
-
 
 ;;;--------------------------------------------
 ;;; for (some of) the abstract in the proposal
@@ -200,6 +209,11 @@ filligre may be used to distinguish them, etc.
 
 
 ;;--- The MEK family
+;; This is part of an attempt to get a word rule attached to the string "MEK"
+;; define the family before the conflicting lexical items MEK1 and MEK2 are defined
+;;  and then add them as family members later
+(def-family "MEK" 
+  :members "Dummy")
 
 (def-bio "MEK1" protein)
 
@@ -210,10 +224,11 @@ filligre may be used to distinguish them, etc.
 ;; if we had a second case
 ;(def-bio "MEK1/2" protein)
 
-(def-family "MEK" 
-  :members ("MEK1" "MEK2"))
-
-
+;; This is part of an attempt to get a word rule attached to the string "MEK"
+;; but it still leaves "MEK" with out a form value
+(set-family-members
+ (find-individual 'human-protein-family :name "MEK")
+ '("MEK1" "MEK2"))
 
 (def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
   :synonyms ("B-RAFV600E" "V600EB-RAF" "BRAFV600E"))
