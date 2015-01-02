@@ -15,6 +15,8 @@
 ;; the key is to end a NG when you hit a verb+ed immediately preceded by a noun, and to prevent that verb+ed from
 ;; starting another NG (so that it becomes a VG on its own) 
 ;; RJB 12/19/2014     ;; partitive construction e.g. "all of these lines"
+;; 1/1/2015 break out adjective/modifier from start of NG if the preceding chunk was a copula
+;; and fix handling of chunks terminated by the end of the sentence
 
 (in-package :sparser)
 
@@ -152,7 +154,7 @@
 
 
 (defun delimit-next-chunk (edge sentence-end)
-  (declare (special edge))
+  (declare (special edge sentence-end))
   ;; know that the edge immediately after start is consistent with some
   ;;  chunk type (maybe more than one)
   ;;  Goal is to create the longest chunk possible from this point
@@ -161,12 +163,12 @@
          (chunk (make-instance 'chunk :forms forms :start start :end nil :edge-list nil))
          (pos start)
          possible-heads)
-   ;; (declare (special start forms chunk pos possible-heads))
+    (declare (special start forms chunk pos possible-heads))
  
     (until
         (or (chunk-end-pos chunk)
             (eq pos sentence-end))
-        chunk
+          chunk
 
       (cond
        ((null forms) 
@@ -185,6 +187,7 @@
            (setf (chunk-forms chunk) (list (first head)))
            (tr :delimited-chunk chunk))
           (t
+           ;;(break "HUH1")
            (setf (chunk-end-pos chunk) pos)
            (setf (chunk-forms chunk) nil)
            (tr :delimited-ill-formed-chunk chunk)))))
@@ -197,12 +200,31 @@
            (push-debug `(,forms ,chunk ,edge))
            (break "edge is a word: ~a  pos = ~a" edge pos))
           (setq pos (pos-edge-ends-at edge)))
-
         (loop for ch in (compatible-heads forms edge pos) 
           do (push ch possible-heads))
-        (setq edge (right-treetop-at/edge pos))
-        (tr :chunk-loop-next-edge edge)
-        (setq forms (remaining-forms edge chunk)))))))
+        (cond
+         ((eq pos sentence-end)
+          (let
+              ((head (best-head (chunk-forms chunk) possible-heads)))
+            ;; (declare (special head))
+            ;; (break "chunk")
+            (cond
+             (head
+              ;; the chunk has a head for at least one of the consistent forms
+              ;; complete this chunk -- signaling end of until loop
+              (setf (chunk-end-pos chunk) (second head))
+              (setf (chunk-forms chunk) (list (first head)))
+              (tr :delimited-chunk chunk))
+             (t
+              ;;(break "HUH2")
+              (setf (chunk-end-pos chunk) pos)
+              (setf (chunk-forms chunk) nil)
+              (tr :delimited-ill-formed-chunk chunk)))))
+         (t      
+          (setq edge (right-treetop-at/edge pos))
+          (tr :chunk-loop-next-edge edge)
+          (setq forms (remaining-forms edge chunk))))))
+        )))
 
 
 (defun best-head (forms possible-heads)
