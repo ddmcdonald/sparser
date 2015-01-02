@@ -148,7 +148,7 @@ Proteins (GAPs) or by both mechanisms. |#
 
 
 (defun setup-bio ()
-  (remove-paragraph-marker)
+  (remove-paragraph-marker) ;; #<PSR1155  sgml-label ->  "p"> interfers with "p100"
   (setq *tts-after-each-section* nil)
   (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
   (gload "bio;loader")
