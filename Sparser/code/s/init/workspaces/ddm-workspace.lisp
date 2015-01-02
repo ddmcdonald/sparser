@@ -55,6 +55,7 @@
   (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
   (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
   (ddm-ed "grammar/model/sl/biology/terms.lisp")
+  (ddm-ed "grammar/model/sl/biology/drugs.lisp")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp"))
 ;;  molecules and NGkappB not loaded
 
