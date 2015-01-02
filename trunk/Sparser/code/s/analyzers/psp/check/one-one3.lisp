@@ -18,15 +18,21 @@
 
 
 (defun check-one-one (left-edge right-edge)
-  (let ((rule (multiply-edges left-edge right-edge)))
-    (if rule
-      (if (consp rule)
-        (dotted-rule-hack rule left-edge right-edge)
-        (let ((edge (make-completed-binary-edge
-                     left-edge right-edge rule)))
-          edge ))
-      (else
-        nil ))))
+  (execute-one-one-rule
+   (multiply-edges left-edge right-edge)
+   left-edge
+   right-edge))
+
+(defun execute-one-one-rule (rule left-edge right-edge)
+  (cond
+   ((consp rule)
+    (dotted-rule-hack rule left-edge right-edge))
+   (rule
+    (let ((edge (make-completed-binary-edge
+                       left-edge right-edge rule)))
+      edge ))
+   (t nil)))
+
 
 (defun one-one/just-check-edges (left-edge right-edge)
   (let ((rule 
