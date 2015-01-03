@@ -32,6 +32,7 @@
 ;;     (10/10/13) Added final hook to incorporate the referent into the situation. 
 ;;     (3/31/14) Put real call for the c3 case. (4/7/14) Letting the result of
 ;;      the C3 call (which wraps a call to compose) override the referent.
+;; 1/2/2015 change referent-from-rule to refurn :abort-edge when the referent computation fails, so that failed sub-categorization frames are not applied
 
 
 (in-package :sparser)
@@ -149,8 +150,10 @@
             (when result
               (unless (eq result *referent*)
                 (setq *referent* result)))))
-
-        *referent* ))))
+        (if
+         (null *referent*)
+         :abort-edge
+         *referent* )))))
 
 
 ;;;---------------------------------
