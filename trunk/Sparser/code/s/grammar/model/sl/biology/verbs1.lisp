@@ -18,6 +18,8 @@
 ;;  add :on and :at modifiers for phosphorylate
 ;; improved definition for increase as a noun and verb
 ;; remove unlikely definition of "study" as a verb -- we need to handle ambiguity better
+;; 1/2/2015 minor fixes -- mostly to get verbs with subject WE parsing -- this needs to be fixed, since the category used is the pronoun category, rather than a mixin for human
+
 
 (in-package :sparser)
 
@@ -442,7 +444,7 @@
 #+ignore ;; study is rarely used as a verb
 (define-category study-bio-process
  :specializes bio-process
- :binds ((agent bio-entity)(patient bio-process))
+ :binds ((agent pronoun/first/plural)(patient bio-process))
  :realization
  (:verb ("study" :past-tense "studied" :present-participle "studying")
         :noun "study"
@@ -961,13 +963,14 @@
 
 (define-category select
     :specializes bio-process
-    :binds ((agent biological)(patient biological))
+    :binds ((agent pronoun/first/plural)(patient biological)(study study-bio-process))
     :realization
     (:verb "select" ;; keyword: ENDS-IN-ED 
 	   :noun "selection"
 	   :etf (svo-passive of-nominal)
 	   :s agent
-	   :o patient))
+	   :o patient
+           :for study))
 
 (define-category seem
     :specializes bio-process
@@ -981,9 +984,18 @@
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient bio-process))
     :realization
     (:verb ("show" :past-tense "shown")
+	   :etf (svo-passive)
+	   :s agent
+	   :o patient))
+
+(define-category report
+    :specializes bio-process
+    :binds ((agent pronoun/first/plural)(patient bio-process))
+    :realization
+    (:verb ("report" :past-tense "reported")
 	   :etf (svo-passive)
 	   :s agent
 	   :o patient))
@@ -1105,7 +1117,7 @@
 
 (define-category consider
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient bio-process))
     :realization
     (:verb ("consider"  :past-tense "considered") ;; keyword: ENDS-IN-ED 
 	   :noun "consideration"
@@ -1125,7 +1137,7 @@
 
 (define-category describe
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient bio-process))
     :realization
     (:verb "describe"
 	   :noun "description"
@@ -1145,7 +1157,7 @@
 
 (define-category hypothesize
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient bio-process))
     :realization
     (:verb "hypothesize" ;; keyword: ENDS-IN-ED 
 	   :noun "hypothesis"
@@ -1155,7 +1167,7 @@
 
 (define-category identify
     :specializes bio-process
-    :binds ((agent biological)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient biological))
     :realization
     (:verb "identify" ;; keyword: ENDS-IN-ED 
 	   :noun "identification"
@@ -1197,7 +1209,7 @@
 
 (define-category perform
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient bio-process))
     :realization
     (:verb "perform" ;; keyword: ENDS-IN-ED 
 	   :noun "performance"
@@ -1207,7 +1219,7 @@
 
 (define-category posit
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient bio-process))
     :realization
     (:verb "posit"
 	   :etf (svo-passive)
@@ -1216,7 +1228,7 @@
 
 (define-category propose
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient bio-process))
     :realization
     (:verb "propose"
 	   :noun "proposal"
@@ -1226,12 +1238,22 @@
 
 (define-category test
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient bio-process))
     :realization
     (:verb "test" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
 	   :o patient))
+
+(define-category use
+    :specializes bio-process
+    :binds ((agent pronoun/first/plural)(patient bio-process))
+    :realization
+    (:verb "use" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)
+	   :s agent
+	   :o patient))
+
 
 
 (define-category validate
