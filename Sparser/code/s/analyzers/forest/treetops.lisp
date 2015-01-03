@@ -17,6 +17,8 @@
 ;;      (1/2/96) added a variation that only returns edges
 ;;      (9/8/14) Converted a few functions to methods taking edges.
 ;;      (10/7/14) reorderd and notice redundancies to flush at some point
+;;      (1/2/2015) key component of whack-a-rule control structure -- find all applicable rules across adjacent treetops
+;;       called repeatedly, getting different rules each time as the tretops change by application of rules
 
 (in-package :sparser)
 
@@ -269,8 +271,28 @@
 (defun possible-treetop-rules ()
   (let
       (rule rules)
+    (declare (special rule))
     (loop for pair in (adjacent-tts) 
-      when (setq rule (multiply-edges (car pair)(second pair)))
+      when 
+      (and
+       (setq rule (multiply-edges (car pair)(second pair)))
+       ;;(print rule)
+       (cond
+        ((not (consp (cfr-referent rule))))
+        ((eq :funcall (car (cfr-referent rule)))
+         (let*
+             ((left-referent (edge-referent (car pair)))
+              (right-referent (edge-referent (second pair)))
+              (*rule-being-interpreted* rule)
+              (*right-edge-into-reference* (second pair)))
+           (declare (special left-referent right-referent *rule-being-interpreted* *right-edge-into-reference*))
+           (ref/function (cdr (cfr-referent rule)))
+           ;;(break "rulecheck")
+           ))
+        (t 
+         ;; most rules have referent slots which are cons cells, but which are not :funcalls
+         ;; (#<PSR12615  select ->  select biological> ((:HEAD LEFT-REFERENT) (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
+         t)))
       do
       (push
        (cons rule pair)
