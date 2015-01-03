@@ -30,7 +30,7 @@
     (p "Overexpression of wild-type COT or C-RAF resulted in constitutive phosphorylation of ERK and MEK in the presence of PLX4720, whereas kinase-dead derivatives had no effect (Fig. 2a, Supplementary Fig. 7).")
     (p "Based on these results, we hypothesized that COT and C-RAF drive resistance to RAF inhibition predominantly through re-activation of MAPK signaling.")
     (p "Notably, of the nine candidate ORFs from our initial screen, a subset (3) did not show persistent ERK/MEK phosphorylation following RAF")
-    (p "This is a dummy sentence.")
+    (p "a dummy sentence.")
     (p "inhibition, suggesting MAPK pathway-independent alteration of drug sensitivity (Supplementary Fig. 8).")
     (p "Several groups have shown that C-RAF activation and heterodimerization with B-RAF constitute critical components of the cellular response to B-RAF inhibition.");; fixed typo with 18-20 at end of sentence
     (p "In A375 cells, endogenous C-RAF:B-RAF heterodimers were measurable and inducible following treatment with PLX4720 (Supplementary Fig. 9).")
@@ -47,7 +47,7 @@
     (p "In accordance with prior observations24, these data raised the possibility that COT may activate ERK through MEK-independent and MEK-dependent mechanisms.")
     (p "To test this hypothesis directly, we performed an in vitro kinase assay using recombinant COT and ERK1.")
     (p "Indeed, recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 in vitro (Supplementary Fig.  18) suggesting that in certain contexts, COT expression may potentiate ERK activation in a MEK-independent manner.")
-    (p "This is another sentence.")
+    (p "another dummy sentence.")
     (p " Oncogenic mutations in the serine/threonine kinase B-RAF are found in 50–70% of malignant melanomas 1.")
     (p "Pre-clinical studies have demonstrated that the B-RAFV600E mutation predicts a dependency on the mitogen activated protein kinase (MAPK) signaling cascade in melanoma [1–5] —an observation that has been validated by the success of RAF and MEK inhibitors in clinical trials 6–8.")
     (p "However, clinical responses to targeted anticancer therapeutics are frequently confounded by de novo or acquired resistance [9–11].")
