@@ -11,10 +11,11 @@
 ;; 10/25/14 leaving the drivers. 
 ;; RJB 12/19/2014 remove adverbs and commas from islands before attempting second pass
 ;; 1/1/2015 New, flag-controlled, alternative to last part of run-island-checks, repeatedly doing application of rightmost applicable rule.
+;; now turned ON by default
 
 (in-package :sparser)
 
-(defparameter *whack-a-rule* nil) ;; this forces application of all applicable rules from the right to the left, after initial priority rules
+(defparameter *whack-a-rule* t) ;; this forces application of all applicable rules from the right to the left, after initial priority rules
 (defun whack-a-rule (&optional (yes? t))
   (setq *whack-a-rule* yes?))
 
@@ -77,6 +78,7 @@
 
   (when (there-are-known-subcat-patterns?)
     (tr :there-are-known-subcat-patterns)
+    ;;(break "subcat")
     (let ((edges (apply-subcat-patterns)))
       ;; Assuming the patterns match, there will be 
       ;; an edge for every treetop that had a subcategorization
