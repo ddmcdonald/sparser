@@ -232,9 +232,15 @@
           (push var deref-var)))
       `(,(nreverse deref-tt)
         ,(nreverse deref-var)))))
+;; That was the old treatment
 
+;; This is the new
 (defun assign-prepositional-subcategorization (category prep 
                                                v/r variable)
+  ;; called from subcategorize-for-preposition (in shortcut
+  ;; processing) to take the information and install it for
+  ;; use at runtime. Note that the value restriction has to
+  ;; be satisfied
   (push-debug `(,category ,prep ,v/r ,variable))
   (let ((sf (get-subcategorization category)))
     (unless sf
@@ -250,6 +256,8 @@
       (push-debug `(,sf ,new-case))
       new-case)))
 
+(defun subcat-preposition (entry)
+  (car entry))
 (defun subcat-restriction (entry)
   (cadr entry))
 (defun subcat-variable (entry)
@@ -257,9 +265,11 @@
 
 
 
-
 (defmethod known-subcategorization? ((e edge))
   (known-subcategorization? (edge-category e)))
+
+(defmethod known-subcategorization? ((i individual))
+  (known-subcategorization? (itype-of i)))
 
 (defmethod known-subcategorization? ((c category))
   (let ((sc (get-subcategorization c)))

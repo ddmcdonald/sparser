@@ -67,65 +67,71 @@
 
 (defun adjoin-pp-to-vg (vg pp)
   (push-debug `(,vg ,pp))
-  (let
-      ((subcats nil))
-    (cond
-     ((setq subcats (subcategorized-pp? vg pp))
-      (break "apply subcat"))
-     ((itypep pp 'upon-condition)
-      ;; trace
-      (bind-variable 'circumstance pp vg))
-     (t 
-      (bind-variable 'modifier pp vg)))
+  ;; The VG is the head. We ask whether it subcategorizes for
+  ;; the preposition in this PP and if so whether the complement
+  ;; of the preposition satisfies the specified value restriction.
+  ;; Otherwise we check for some anticipated cases and then
+  ;; default to binding modifier. 
+  (let ((subcat-patterns (known-subcategorization? vg)))
+    (or (when subcat-patterns
+          (subcategorized-pp subcat-patterns vg pp))
+        (when (itypep pp 'upon-condition)
+          ;; trace
+          (bind-variable 'circumstance pp vg))
+        (else
+         ;; trace
+         (bind-variable 'modifier pp vg)))
     vg))
-     
+
+(defun subcategorized-pp (subcat-patterns head pp)
+  ;; Look up the preposition on the pp and see if it is
+  ;; included in the subcategorization patterns of the head.
+  ;; If so, check the value restriction and if it's satisfied
+  ;; make the specified binding
+  (let* ((pp-edge (right-edge-for-referent))
+         (prep-edge (edge-left-daughter pp-edge))
+         (prep-word (edge-left-daughter prep-edge)))
+    (unless prep-word
+      (push-debug `(,pp-edge ,prep-edge))
+      (error "Unexpected configuration of PP edges"))
+    (let ( pattern )
+      (dolist (entry subcat-patterns)
+        (when (eq prep-word (subcat-preposition entry))
+          (setq pattern entry)
+          (return)))
+      (when pattern
+        (when (itypep pp (subcat-restriction pattern))
+          (bind-variable (subcat-variable pattern) pp head))))))
+
+
 
 ;;;---------
 ;;; NP + PP
 ;;;---------
     
 (defun interpret-pp-adjunct-to-np (np pp)
-  (declare (special np pp))
   (push-debug `(,np ,pp))
   (or (call-compose np pp)
-      (let* ((pp-edge (right-edge-for-referent))
-             (prep-edge (edge-left-daughter pp-edge))
-             (prep-word (edge-left-daughter prep-edge))
-             (subcats nil))
-        (declare (special pp-edge prep-edge prep-word subcats))
+      (let ((subcat-patterns (known-subcategorization? np)))
+        (or (when subcat-patterns
+              (subcategorized-pp subcat-patterns np pp))
 
-        ;;/// ought to use the referent of the prep but just doing
-        ;; this one case for now
-        (cond
-         ((setq subcats (subcategorized-pp? np pp))
-          (break "apply subcat")
-          nil)
-         ((eq prep-word (word-named "in"))
-          (cond
-           ((and (itypep np 'physical)
-                 (itypep pp 'location))
-            ;; otherwise we don't know what to do with it.
-            (bind-variable 'location pp  np))
-           ((and (itypep np 'bio-entity)
-                 (itypep pp 'bio-context))
-            (bind-variable 'bio-context pp np))
-           (t
-            (bind-variable 'modifier pp np))
-           )
-          np)
+            (let* ((pp-edge (right-edge-for-referent))
+                   (prep-edge (edge-left-daughter pp-edge))
+                   (prep-word (edge-left-daughter prep-edge)))
+              (cond
+               ((eq prep-word (word-named "in"))
+                (cond
+                 ((and (itypep np 'physical)
+                       (itypep pp 'location))
+                  ;; otherwise we don't know what to do with it.
+                  (bind-variable 'location pp  np))
+                 ((and (itypep np 'bio-entity)
+                       (itypep pp 'bio-context))
+                  (bind-variable 'bio-context pp np))
+                 (t
+                  (bind-variable 'modifier pp np)))))
+              np)))))
 
-         (t ;;///////// subcat should revise this!
-          ;; Look for a subcategorized preposition on the np
-          ;;(bind-variable 'modifier pp np)))
-          nil)))))
 
-(defun subcategorized-pp? (np pp)
-  (declare (special np pp))
-  (let*
-      ((category (edge-category np))
-       (subcats (get-subcategorization category)))
-    (declare (special category subcats))
-    (and
-     subcats
-     (break "subcategorized-pp?"))
-    nil))
+
