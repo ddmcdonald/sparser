@@ -126,6 +126,13 @@
    in what-to-do-at-the-forest-level where the do-forest-level 
    function is set. Set as part of the switch settings.")
 
+(defparameter *sweep-for-patterns* t
+  "Checked in sentence-sweep-loop to determine whether we continue
+   the analysis after the terminals of a sentence have been entered
+   into the chart. Setting this to nil and turning on the traces for
+   unknown words is a good way to identify the unknown words in a
+   new corpus.")
+
 (defparameter *chunk-sentence-into-phrases* t
   "Controls whether we proceed to chunk the sentence after we 
    have used sentence-sweep-loop to form its terminal edges.")
