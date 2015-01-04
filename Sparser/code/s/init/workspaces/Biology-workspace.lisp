@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 SIFT LLC  -- all rights reserved
+;;; copyright (c) 2013-2015 SIFT LLC  -- all rights reserved
 ;;;
 ;;;     File:  "Biology-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  October 2014
+;;;  version:  December 2014
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
@@ -17,6 +17,14 @@
 
 ; (setq *kind-of-chart-processing-to-do* :successive-sweeps)
 ; (bio-setting)
+
+; To extract only the new vocabulary from a text corpus, turn on
+; these traces:
+;   (trace-lexicon-unpacking)
+;   (trace-morphology)
+; And set this flag to nil to turn off all the processing beyond
+; populating the chart
+;   (setq *sweep-for-patterns* nil)
 
 ; (setq *do-islands-2d-pass* nil)
 
