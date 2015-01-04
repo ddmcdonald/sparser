@@ -63,6 +63,7 @@
                           `(:pattern ,subcategorization)))))
 
 (defun subcategorize-for-preposition (category pname var-name)
+  ;; called from decode-realization-parameter-list in the shortcuts.
   (push-debug `(,category ,pname ,var-name))
   (let ((variable (variable/category var-name category))
         (preposition (resolve pname)))
