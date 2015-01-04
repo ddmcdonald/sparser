@@ -31,47 +31,6 @@
 (defmethod get-protein ((name polyword))
   (find-individual 'protein :name name))
 
-
-;;--- Families
-
-(defmacro def-family (name &key type species members ;; for family
-                           long identifier synonyms) ;; for def-bio
-                           
-  (unless (stringp name) (error "Name argument should be a string"))
-  `(define-family 
-     ,name :type ',type :species ',species :members ',members
-     :long ',long :identifier ',identifier :synonyms ',synonyms))
-
-(defun define-family (name &key type species members
-                           long identifier synonyms)
-  (unless members 
-    (error "It doesn't make sense to define a family without members"))
-  (unless type
-    (setq type (category-named 'protein)))
-  (unless species
-    (setq species (find-individual 'species :name "human")))
-  (let ((i (def-bio/expr name 'human-protein-family
-             :long long :identifier identifier :synonyms synonyms)) )
-    (if
-     (consp members)
-     (set-family-members i members))))
-
-(defun set-family-members (i members) 
-  ;;(print `(the individual which has added members is ,i))
-  (let
-      (proteins)
-    (dolist (name members)
-      (let ((protein (get-protein name)))
-        (unless protein
-          (break "Can't retrieve protein from the name ~s" name))
-        (push protein proteins)))
-    (let ((set-of-proteins (create-collection proteins 'protein))
-        (count (find-number (length members))))
-      (bind-variable 'members set-of-proteins i)
-      (bind-variable 'count count i)
-      ;; If we didn't use such a speciic category these would matter.
-      i)))
-
 ;;;--------------------------------------------
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
@@ -123,8 +82,8 @@
 
 ;; Guanine "CHEBI:16235"
 ;; nucleotide ""CHEBI:36976"
-(def-bio "GEF" protein :synonyms ("guanine nucleotide exchange factors" "GEFs"))
-(def-bio "GAP" protein :synonyms ("GTPase activating proteins" "GAPs"))
+(def-bio "GEF" protein :synonyms ("guanine nucleotide exchange factors"))
+(def-bio "GAP" protein :synonyms ("GTPase activating proteins"))
 ;; compositional version of the long forms would be better
 ;;/// are these small molecules like GDP or are the larger? -- protein
 ;; And these are families of particulars, not the particulars that are
@@ -152,20 +111,20 @@ filligre may be used to distinguish them, etc.
 
 ;;--- the Ras family
 
-(def-bio "kras" protein 
+(def-bio "KRas" protein 
   :synonyms ("k-ras" "K-RAS")
   :identifier "PR:0000009442") ;; gene is "PR:P01116" 
 
-(def-bio "hras" protein
+(def-bio "HRas" protein
   :synonyms ("h-ras" "H-RAS")
   :identifier "PR:000029705") ;; gene is "PR:P01112")
 
-(def-bio "nras" protein
+(def-bio "NRas" protein
   :synonyms ("n-ras" "N-RAS")
   :identifier "PR:000011416") ;; gene is "PR:P01111"
 
 (def-family "Ras" ;;//// need capitalization hacks
-  :members ("kras" "hras" "nras")
+  :members ("KRas" "HRas" "NRas")
   :identifier "GO:0003930"
   :synonyms ("RAS")
   :long "GTPase") ;; RAS small monomeric GTPase activity
@@ -173,16 +132,16 @@ filligre may be used to distinguish them, etc.
 
 ;;--- the RAF family
 
-(def-bio "braf" protein 
+(def-bio "BRaf" protein 
   :identifier "PR:000004801"
   :synonyms ("b-raf" "B-RAF"))
 
-(def-bio "craf" protein
+(def-bio "CRaf" protein
   :synonyms ("c-raf" "C-RAF"))
 
-(def-family "raf" 
-  :members ("braf" "craf")
-  :identifier "RAF" ;; denotes a family -- not sure there is a formal identifier (need help from UCD)
+(def-family "Raf" 
+  :members ("BRaf" "CRaf")
+  :identifier "RAF" ;;/// maybe use the Mitre choice?
   :synonyms ("RAF"))
 
 
@@ -205,30 +164,22 @@ filligre may be used to distinguish them, etc.
   :members ("ERK1" "ERK2")
   :long "mitogen activated protein kinase" 
   :synonyms ("ERK" "extracellular signal-regulated kinase"
-             "mapk" "erk"))
+             "erk"))
 
 
 ;;--- The MEK family
 ;; This is part of an attempt to get a word rule attached to the string "MEK"
 ;; define the family before the conflicting lexical items MEK1 and MEK2 are defined
 ;;  and then add them as family members later
-(def-family "MEK" 
-  :members "Dummy")
 
 (def-bio "MEK1" protein)
 
 (def-bio "MEK2" protein)
 
-;;/// Is this a reference to both of them? We could have
-;; it denote a collection without too much work, especially
-;; if we had a second case
-;(def-bio "MEK1/2" protein)
+(def-family "MEK" 
+  :members ("MEK1" "MEK2")
+  :synonyms ("MEK1/2"))
 
-;; This is part of an attempt to get a word rule attached to the string "MEK"
-;; but it still leaves "MEK" with out a form value
-(set-family-members
- (find-individual 'human-protein-family :name "MEK")
- '("MEK1" "MEK2"))
 
 (def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
   :synonyms ("B-RAFV600E" "V600EB-RAF" "BRAFV600E"))

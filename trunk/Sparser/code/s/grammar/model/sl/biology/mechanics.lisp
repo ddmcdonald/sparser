@@ -64,7 +64,8 @@
     (make-typed-bio-entity word category)))
 
 
-(defun make-typed-bio-entity (word category &optional greek identifier long synonyms takes-plurals)
+(defun make-typed-bio-entity (word category 
+                              &optional greek identifier long synonyms takes-plurals)
   (declare (special *inihibit-constructing-plural*))
   (let ((label (or (override-label category) category))
         (form (category-named 'proper-noun))
@@ -81,36 +82,42 @@
     ;; that bug and kill it, I've separated the find from the make and
     ;; not looking for the possibility that a redefinition actually
     ;; added or changed something substantive. ddm - 12/30/14
-    (setq i (find-individual category :name word))
-    (when i
-      (return-from make-typed-bio-entity i))
-    (setq i (define-individual category :name word))
-
+    (cond
+     (nil
+      (setq i (find-individual category :name word))
+      (when i
+        (return-from make-typed-bio-entity i))
+      (setq i (define-individual category :name word)))
+     (t 
+      (setq i (find-or-make-individual category :name word))))
       ;; The real form to use
       ;;     (setq i (find-or-make-individual category :name word))
       ;; The find-or-make call will set up a rule for the short form
       ;; as a common noun that has this individual as its referent.
       ;; Ignoring brackets since this runs with the new chunker
 
-      ;;(push-debug `(,i ,word)) (break "find base rule")
+      (push-debug `(,i ,word)) ;;(break "find base rule")
       ;; This is packaged up some place, but no time to see where
-      (let* ((rules (get-tag-for :rules i))
-             (rule (when rules (car rules))))
-        (when rule
-          (setf (edge-form rule) category::proper-noun)))
+      (let* ((retrieved-rules (get-rules i))
+             (r (when retrieved-rules (car retrieved-rules))))
+        (unless (and r (cfr-p r))
+          (push-debug `(,i ,word))
+          (error "something badly formed about rules field"))
+        (when r
+          ;;(push-debug `(,r)) (break " set rule form?")
+          (setf (cfr-form r) category::proper-noun)))
 
       (let* ((pname (etypecase word 
                       (word (word-pname word))
                       (polyword (pw-pname word))))
              (downcased-pname (string-downcase pname)))
-        (unless synonyms ;; probably done there
-          (unless (string= downcased-pname pname) ;; case-sensitive
-            (let ((lowercase-word (resolve/make downcased-pname)))
-              (push (define-cfr label `(,lowercase-word)
-                      :form form
-                      :referent i)
-                    rules)))))
-   
+        (unless (string= downcased-pname pname) ;; case-sensitive
+          (let ((lowercase-word (resolve/make downcased-pname)))
+            (push (define-cfr label `(,lowercase-word)
+                    :form form
+                    :referent i)
+                  rules))))
+ 
       (when identifier
         (bind-variable 'uid identifier i))
 
@@ -137,7 +144,7 @@
           (setq rules (nconc additional-rules rules))))
 
       (when rules
-        (push-onto-plist i rules :rules))
+        (add-rules-to-individual i rules))
 
       i))
 
@@ -181,4 +188,47 @@
         (push rule rules)))
 
     rules))
+
+
+;;--- Families
+
+(defmacro def-family (name &key type species members ;; for family
+                           long identifier synonyms) ;; for def-bio
+                           
+  (unless (stringp name) (error "Name argument should be a string"))
+  `(define-family 
+     ,name :type ',type :species ',species :members ',members
+     :long ',long :identifier ',identifier :synonyms ',synonyms))
+
+(defun define-family (name &key type species members
+                           long identifier synonyms)
+  (unless members 
+    (error "It doesn't make sense to define a family without members"))
+  (unless type
+    (setq type (category-named 'protein)))
+  (unless species
+    (setq species (find-individual 'species :name "human")))
+  (let ((i (def-bio/expr name 'bio-family
+             ;;////// should it be protein ??
+             :long long :identifier identifier :synonyms synonyms)) )
+    (when (consp members)
+     (set-family-members i members))
+    i))
+
+(defun set-family-members (i members) 
+  ;;(print `(the individual which has added members is ,i))
+  (let ( proteins )
+    (dolist (name members)
+      (let ((protein (get-protein name)))
+        (unless protein
+          (break "Can't retrieve protein from the name ~s" name))
+        (push protein proteins)))
+    (let ((set-of-proteins (create-collection proteins 'protein))
+          (count (find-number (length members))))
+      (bind-variable 'members set-of-proteins i)
+      (bind-variable 'count count i)
+      ;; If we didn't use such a speciic category these would matter.
+      i)))
+
+
 
