@@ -23,6 +23,7 @@
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
 
 ; (bio-setting)
+; (f "/Users/ddm/ws/R3/r3/trunk/darpa/Dec13-TestMaterials/DeepTest/training-passages.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/all passages combinded.txt")
