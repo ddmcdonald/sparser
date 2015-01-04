@@ -197,7 +197,9 @@
 (define-category bio-condition
   :specializes bio-context
   :instantiates self
-  :index (:permanent :key name))
+  :index (:permanent :key name)
+  :lemma (:common-noun "condition")
+  :realization (:common-noun name))
 
 (define-category disease 
   :specializes bio-condition
@@ -303,11 +305,14 @@
   :specializes bio-family
   ;;/// something needs fixing in the bindings decoder
   ;; since these should be simpler to write
-  :bindings (type (category-named 'protein)))
+  :bindings (type (category-named 'protein))
+  :realization (:common-noun name))
 
 (define-category human-protein-family
   :specializes protein-family
-  :bindings (species (find-individual 'species :name "human")))
+  :rule-label protein
+  :bindings (species (find-individual 'species :name "human"))
+  :realization (:common-noun name))
 
 
 
