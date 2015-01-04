@@ -21,7 +21,7 @@
 ;;;--------
 
 (define-category  measurement  ;; "10 yards"
-  :specializes nil
+  :specializes abstract
   :instantiates self
   :binds ((units . unit-of-measure)
           (quantity  :or quantity number))
