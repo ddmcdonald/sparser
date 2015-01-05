@@ -65,28 +65,30 @@
         (tr :scanning-terminals-of sentence)
         (catch :end-of-sentence
           (scan-terminals-loop start-pos first-word))
-        (pattern-sweep sentence)
-        (short-conjunctions-sweep sentence) ;; precede parens
-        (sweep-to-span-parentheses sentence)
-        (when *trace-island-driving* (tts))
 
-        (when *chunk-sentence-into-phrases*
-          (tr :identifying-chunks-in sentence)
-          (identify-chunks sentence) ;; calls PTS too
+        (when *sweep-for-patterns*
+          (pattern-sweep sentence)
+          (short-conjunctions-sweep sentence) ;; precede parens
+          (sweep-to-span-parentheses sentence)
+          (when *trace-island-driving* (tts))
 
-          ;;(break "after chunking ~a" sentence) 
+          (when *chunk-sentence-into-phrases*
+            (tr :identifying-chunks-in sentence)
+            (identify-chunks sentence) ;; calls PTS too
 
-          (when *parse-chunked-treetop-forest*
-            (let ((*return-after-doing-forest-level* t))
-              (declare (special *return-after-doing-forest-level*))
-              (new-forest-driver sentence)))
+            ;;(break "after chunking ~a" sentence) 
 
-          (when *readout-relations*
-            (multiple-value-bind (relations entities)
-                                 (identify-relations sentence)
-              (push-debug `(,relations ,entities))
-              ;; Anything to do if there are no relations?
-              (readout-relations relations)))) 
+            (when *parse-chunked-treetop-forest*
+              (let ((*return-after-doing-forest-level* t))
+                (declare (special *return-after-doing-forest-level*))
+                (new-forest-driver sentence)))
+
+            (when *readout-relations*
+              (multiple-value-bind (relations entities)
+                                   (identify-relations sentence)
+                (push-debug `(,relations ,entities))
+                ;; Anything to do if there are no relations?
+                (readout-relations relations)))))
 
         ;; EOS throws to a higher catch. If the next sentence
         ;; is empty we will hit the end of source as we
