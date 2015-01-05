@@ -10,7 +10,7 @@
 ;; RJB 12/20/2014 tentative fix to allow interpret-pp-adjunct-to-np 
 ;; to handle bio-context. 
 ;; 1/2/2015 put hooks in adjoin-pp-to-vg and interpret-pp-adjunct-to-np to allow for subcategorization frames
-;; THIS IS INCOMPLETE
+;; 1/5/2015 refactor code that David wrote for adjoin-pp-to-vg and interpret-pp-adjunct-to-np to allow them to be used as predicates as well as actions
 
 (in-package :sparser)
 
@@ -18,6 +18,10 @@
 ; (left-edge-for-referent)
 ; (right-edge-for-referent)
 ; (parent-edge-for-referent)
+
+(defparameter *force-modifiers* nil) ;; set to T when you want to accept all PP modifiers to NPs and VPs 
+(defparameter *subcat-test* nil) ;; set to T when we are executing the referent function as a predicate, not as part of 
+;;interpretation of an NP or VP
 
 ;;;-------------------
 ;;; noun premodifiers
@@ -66,43 +70,72 @@
 ;;;---------
 
 (defun adjoin-pp-to-vg (vg pp)
+  (declare (special vg pp))
   (push-debug `(,vg ,pp))
   ;; The VG is the head. We ask whether it subcategorizes for
   ;; the preposition in this PP and if so whether the complement
   ;; of the preposition satisfies the specified value restriction.
   ;; Otherwise we check for some anticipated cases and then
   ;; default to binding modifier. 
-  (let ((subcat-patterns (known-subcategorization? vg)))
-    (or (when subcat-patterns
-          (subcategorized-pp subcat-patterns vg pp))
-        (when (itypep pp 'upon-condition)
-          ;; trace
-          (bind-variable 'circumstance pp vg))
-        (else
-         ;; trace
-         (bind-variable 'modifier pp vg)))
-    vg))
+  (let* ((subcat-patterns (known-subcategorization? vg))
+         (pp-edge (right-edge-for-referent))
+         (prep-edge (edge-left-daughter pp-edge))
+         (prep-word (edge-left-daughter prep-edge))
+         (pobj-edge (edge-right-daughter pp-edge))
+         (variable-to-bind
+          ;; test if there is a known interpretation of the VG/PP combination
+          (or
+           (and
+            subcat-patterns
+            (subcategorized-pp-variable subcat-patterns vg pp))
+           (and
+            (eq prep-word (word-named "in"))
+            ;;(break "in")
+            (cond
+             ((and (itypep vg 'physical)
+                   (itypep (edge-referent pobj-edge) 'location))
+              'location)
+             ((and (itypep vg 'biological)
+                   (itypep (edge-referent pobj-edge)  'bio-context))
+              'bio-context)))
+           (and
+            (itypep pp 'upon-condition)
+            ;; trace
+            'circumstance)
+           ;; or if we are making a last ditch effore
+           (and *force-modifiers* (bind-variable 'modifier pp vg)))))
+    (declare (special pobj-edge))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (t
+      (bind-variable variable-to-bind pp VG)
+      vg))))
 
-(defun subcategorized-pp (subcat-patterns head pp)
+(defun subcategorized-pp-variable (subcat-patterns head pp)
   ;; Look up the preposition on the pp and see if it is
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
+  (declare (special subcat-patterns))
   (let* ((pp-edge (right-edge-for-referent))
          (prep-edge (edge-left-daughter pp-edge))
-         (prep-word (edge-left-daughter prep-edge)))
+         (prep-word (edge-left-daughter prep-edge))
+         (pobj-edge (edge-right-daughter pp-edge))
+         variable)
+    (declare (special prep-word prep-edge pobj-edge variable))
     (unless prep-word
       (push-debug `(,pp-edge ,prep-edge))
       (error "Unexpected configuration of PP edges"))
-    (let ( pattern )
+    (when  subcat-patterns
       (dolist (entry subcat-patterns)
-        (when (eq prep-word (subcat-preposition entry))
-          (setq pattern entry)
+        (when 
+            (and
+             (eq prep-word (subcat-preposition entry))
+             (itypep (edge-referent pobj-edge) (subcat-restriction entry)))
+          (setq variable (subcat-variable entry))
           (return)))
-      (when pattern
-        (when (itypep pp (subcat-restriction pattern))
-          (bind-variable (subcat-variable pattern) pp head))))))
-
+      ;;(break "testing subcats")
+      variable)))
 
 
 ;;;---------
@@ -111,27 +144,35 @@
     
 (defun interpret-pp-adjunct-to-np (np pp)
   (push-debug `(,np ,pp))
-  (or (call-compose np pp)
-      (let ((subcat-patterns (known-subcategorization? np)))
-        (or (when subcat-patterns
-              (subcategorized-pp subcat-patterns np pp))
-
-            (let* ((pp-edge (right-edge-for-referent))
-                   (prep-edge (edge-left-daughter pp-edge))
-                   (prep-word (edge-left-daughter prep-edge)))
-              (cond
-               ((eq prep-word (word-named "in"))
+  (or (call-compose np pp) ;; DAVID -- why is this called?!
+      (let* ((subcat-patterns (known-subcategorization? np))
+             (pp-edge (right-edge-for-referent))
+             (prep-edge (edge-left-daughter pp-edge))
+             (prep-word (edge-left-daughter prep-edge))
+             (variable-to-bind
+              ;; test if there is a known interpretation of the NP/PP combination
+              (or
+               (and
+                subcat-patterns
+                (subcategorized-pp-variable subcat-patterns np pp))
+               (and
+                (eq prep-word (word-named "in"))
                 (cond
                  ((and (itypep np 'physical)
                        (itypep pp 'location))
-                  ;; otherwise we don't know what to do with it.
-                  (bind-variable 'location pp  np))
-                 ((and (itypep np 'bio-entity)
+                  'location)
+                 ((and (itypep np 'biological)
                        (itypep pp 'bio-context))
-                  (bind-variable 'bio-context pp np))
-                 (t
-                  (bind-variable 'modifier pp np)))))
-              np)))))
+                  'bio-context)))
+               ;; or if we are making a last ditch effore
+               (and *force-modifiers* 'modifier)
+               ;; if not, then return NIL
+               )))
+        (cond
+         (*subcat-test* variable-to-bind)
+         (t
+          (bind-variable variable-to-bind pp np)
+          np)))))
 
 
 
