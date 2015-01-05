@@ -13,6 +13,7 @@
 ;; RJB 12/14/2014 add cell-line (need to deal with this better)
 ;; 12/30/14 Reorganized to readability. Moved pathway to phenomena.lisp
 ;; 1/1/2015 fix (?) taxonomy above protein-family, to make it a sub-category of molecule
+;; 1/1/2015 give biological a variable bio-context, and make bio-location be a bio-context
 
 (in-package :sparser)
 
@@ -32,6 +33,7 @@
 
 (define-mixin-category biological
   :lemma (:adjective "biological")
+  :binds ((bio-context bio-context)) 
   :documentation "Strictly speaking this a mixin")
 
 
@@ -245,7 +247,7 @@
 ;;--- location ///maybe it's not a bio-entity?
 
 (define-category bio-location 
-  :specializes bio-entity
+  :specializes bio-context
   :instantiates self
   :index (:permanent :key name))
 
