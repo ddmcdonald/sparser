@@ -19,6 +19,7 @@
 ;;      (10/7/14) reorderd and notice redundancies to flush at some point
 ;;      (1/2/2015) key component of whack-a-rule control structure -- find all applicable rules across adjacent treetops
 ;;       called repeatedly, getting different rules each time as the tretops change by application of rules
+;; 1/4/2015 add flag and bind the special *left-edge-into-reference* in possible-treetop-=rules so that ref/function can work as a predicate
 
 (in-package :sparser)
 
@@ -284,11 +285,14 @@
              ((left-referent (edge-referent (car pair)))
               (right-referent (edge-referent (second pair)))
               (*rule-being-interpreted* rule)
+              (*left-edge-into-reference* (second pair))
               (*right-edge-into-reference* (second pair)))
            (declare (special left-referent right-referent *rule-being-interpreted* *right-edge-into-reference*))
-           (ref/function (cdr (cfr-referent rule)))
-           ;;(break "rulecheck")
-           ))
+           (let
+               ((*subcat-test* t) applicable)
+             (declare (special *subcat-test* applicable))
+             ;; use ref/function as a predicate!!
+             (ref/function (cdr (cfr-referent rule))))))
         (t 
          ;; most rules have referent slots which are cons cells, but which are not :funcalls
          ;; (#<PSR12615  select ->  select biological> ((:HEAD LEFT-REFERENT) (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
