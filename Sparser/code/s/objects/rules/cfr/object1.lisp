@@ -11,6 +11,7 @@
 ;; 1.4  (2/16/98) added 'schema' field to cfrs.
 ;;      (2/7/05) added Unary-rule?
 ;;      (9/16/13) added category-to-apply
+;; 1/5/2015 MAJOR CHANGE -- added new field rhs-forms to cfrs, and fill it from the ETF schema -- used to check syntactic plausibility of rule applications
 
 (in-package :sparser)
 
@@ -20,6 +21,7 @@
   symbol
   category    ;; the lhs ("parent")
   rhs         ;; ordered list of categories or words
+  rhs-forms   ;; orderd list of forms for the rhs (first start on syntax)
   completion  ;; a specialized expression or structure
   form        ;; the form category of the parent
   relation    ;; the grammatical relation this rule reflects
