@@ -18,7 +18,7 @@
 ;;;------------------
 
 (defparameter *def-realization-keywords*
-  '(:verb :noun :adj :etf :s :o :c
+  '(:verb :noun :adj :etf :s :o :c :m
     :binds :realization
     :prep :by
     :as :at :for :from :in :of :on :to :through))
@@ -79,7 +79,7 @@
                                   mixin restrict rule-label 
                                   obo-id 
                                   etf verb noun adj
-                                  s o c
+                                  s o c m
                                   prep by
                                   as at for from in of on through to)
   ;; Make the category, then use the independent realization
@@ -153,6 +153,7 @@
           :s subj-slot  
           :o obj-slot
           :c c
+          :m m
           :prep prep  :by by
           :as as :at at :for for :from from :in in :of of :on on :through through :to to)
 
@@ -163,7 +164,7 @@
 
 (defun decode-realization-parameter-list (category
                                           &key etf verb noun adj
-                                               s o c ;; arguments
+                                               s o c m ;; arguments
                                                prep ;; owned preposition
                                                by ;; for passive
                                                as at for from in of on through to ;; prepositions
@@ -221,6 +222,14 @@
             (push `(comp-slot . ,var) substitution-map)
             (push `(comp-v/r . ,v/r) substitution-map)
             (register-variable category var :omplement-variable)))
+
+        (when m ;; modifier, normally to a head noun
+          (let* ((var (variable/category m category))
+                 (v/r (when var (var-value-restriction var))))
+            (unless var (error "No ~a variable associated with ~a"
+                               m category))
+            (push `(modifier-slot . ,var) substitution-map)
+            (push `(modifier-v/r . ,v/r) substitution-map)))
 
         (handle-prepositions category as at for from in of on to through)
 
