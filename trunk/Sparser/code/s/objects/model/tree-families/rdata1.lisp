@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.5 July 2014
+;;;  version:  1.5 January 2015
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -53,6 +53,7 @@
 ;;      use in abbreviation code.
 ;;     (5/12/14) Fixed error message in decode-rdata-mapping. 6/11/14 Added call
 ;;      in record ETF to the categories that use them inside dereference-rdata.
+;;     (1/6/15) Modified setup-category-lemma to allow multiple words
 
 (in-package :sparser)
 
@@ -370,26 +371,32 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
    to provide the rspec for the words of instances of the category."
   ;;/// look at apply-realization-schema-to-individual for part of
   ;; the old approach to this problem
-  (unless (and (listp word-expr)
-               (= 2 (length word-expr)))
-    (push-debug `(,category ,word-expr))
-    (error "The lemma value for ~a is ot a list of two items:~
-          ~%  ~a" category word-expr))
-  (let ((keyword (car word-expr))
-        (string (cadr word-expr)))
-    (unless (keywordp keyword) ;; friendly DWIM
-      (setq keyword (intern (symbol-name keyword) (find-package :keyword))))
-    (unless (memq keyword *legal-word-rdata-keywords*)
-      (error "Unexpected keyword in lemma for ~a:~%~a"
-             category keyword))
-    (unless (stringp string)
-      (error "Word argument in lemma for ~a is not a string" string))
+  (cond
+   ((consp (car word-expr)) ;; multiple definitions 
+    ;;//// worry about irregulars?
+    (dolist (expr word-expr)
+      (setup-category-lemma category expr)))
+   (t
+    (unless (and (listp word-expr)
+                 (= 2 (length word-expr)))
+      (push-debug `(,category ,word-expr))
+      (error "The lemma value for ~a is ot a list of two items:~
+            ~%  ~a" category word-expr))
+    (let ((keyword (car word-expr))
+          (string (cadr word-expr)))
+      (unless (keywordp keyword) ;; friendly DWIM
+        (setq keyword (intern (symbol-name keyword) (find-package :keyword))))
+      (unless (memq keyword *legal-word-rdata-keywords*)
+        (error "Unexpected keyword in lemma for ~a:~%~a"
+               category keyword))
+      (unless (stringp string)
+        (error "Word argument in lemma for ~a is not a string" string))
 
-    (let* ((head-word (deref-rdata-word string category))
-           (word-arg `(,keyword ,head-word))
-           (rules (head-word-rule-construction-dispatch
-                   word-arg category category)))
-      (add-rules-to-category category rules))))
+      (let* ((head-word (deref-rdata-word string category))
+             (word-arg `(,keyword ,head-word))
+             (rules (head-word-rule-construction-dispatch
+                     word-arg category category)))
+        (add-rules-to-category category rules))))))
 
 
 
