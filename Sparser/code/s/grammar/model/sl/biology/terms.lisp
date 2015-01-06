@@ -97,74 +97,70 @@
 ;;;------------
 ;;; adjectives
 ;;;------------
-
-;;(np-head "cancer")
+(adj "close" :super modifier)
 
 (adj "critical" 
-  :subject 'bio-entity
-  :theme 'bio-entity
-  ;;DAVID -- this didn't work when I supbstitued a semantic category for np -- WHY?
-  :subcategorization '((for np) (theme)))
+  :binds ((theme bio-entity))
+  :realization (:for theme))
+
 
 (adj "common"
-  :subject 'bio-entity
-  :theme 'bio-entity
-  ;;DAVID -- this didn't work when I supbstitued a semantic category for np -- WHY?
-  :subcategorization '((to np) (theme)))
+  :binds ((theme bio-entity))
+  :realization (:to theme))
 
 (adj "cultured")
 
 (adj "deadliest") ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
 
-(adj "initial"
-  :subject 'bio-entity
-  :theme 'bio-entity)
 
-(define-adjective "molecular")
+(adj "downstream"
+  :binds ((theme bio-entity))
+  :realization (:for theme
+                :from theme
+                :of theme))
+
+(adj "enzymatic")
+
+(adj "initial")
+
+(adj "low" :super modifier)
+
+(adj "molecular")
 ;; It's realated to molecule, but how exactly?
 ;; Seems wrong to jump to "is made of molecules"
 
 
 (adj "prior"
-  :subject 'bio-entity
-  :theme 'bio-entity) ;; NOT SURE WHAT THEME is in this case
+  :binds ((event . bio-process))
+  :realization (:to event))
 
 (adj "responsible" ;; adj/noun "resposibility"
-  :subject 'bio-entity
-  :theme 'bio-entity
-  :subcategorization '((for np) (theme)))
+  :binds ((theme bio-entity))
+  :realization (:for theme))
 
 (adj "selective"
-  :subject 'bio-entity
-  :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
-  :subcategorization '((for np) (theme)))
+  :binds ((theme bio-entity))
+  :realization (:for theme))
 
 (adj "potent"
-  :subject 'bio-entity
-  :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
-  :subcategorization '((for np) (theme)))
-
-(adj "downstream"
-  :subject 'bio-entity
-  :theme 'bio-entity ;; NOT SURE WHAT THEME is in this case
-  :subcategorization '((for np) (theme))) ;; also from and of
+  :binds ((theme bio-entity))
+  :realization (:for theme))
 
 
+;;------- /// stopped alpabetizing here
+
+(adj "de novo" :super modifier)
+(adj "in vitro" :super modifier)
+(adj "kinase-dead" :super modifier)
+
+(noun "tumor formation" :super bio-process)
 
 
-(adj "close" :super 'modifier)
-(adj "low" :super 'modifier)
-(adj "de novo" :super 'modifier)
-(adj "in vitro" :super 'modifier)
-(adj "kinase-dead" :super 'modifier)
+(noun "human" :super species)
 
-(def-bio "tumor formation" bio-process)
-
-;;(np-head "human") ;;/// check people code
-(def-bio "human" species)
 (np-head "mortality") ;;/// relationship to "mortal" ??
-(np-head "drug" :super 'molecule) 
+
 (np-head "rna" :super 'molecule)
 (np-head "rnai" :super 'bio-process)
 
@@ -301,34 +297,34 @@
 ;;adjective
 (adj "anticancer")
 (adj "candidate" )
-(define-adjective "chemical") ;; keyword: (al ADJ) 
-(define-adjective "genetic") ;; keyword: (al ADJ) 
-(adj "combinatorial" :super 'modifier) ;; keyword: (al ADJ) 
-(adj "comparable" :super 'modifier) ;; keyword: (able ADJ) 
+(adj "chemical") ;; keyword: (al ADJ) 
+(adj "genetic") ;; keyword: (al ADJ) 
+(adj "combinatorial" :super modifier) ;; keyword: (al ADJ) 
+(adj "comparable" :super modifier) ;; keyword: (able ADJ) 
 (adj "dead")
-(adj "dependent" :super 'modifier) ;; keyword: (ent ADJ) 
-(adj "ectopic" :super 'modifier) ;; keyword: (ic ADJ) 
-(adj "effective" :super 'modifier) ;; keyword: (ive ADJ) 
-(adj "endogenous" :super 'modifier) ;; keyword: (ous ADJ) 
+(adj "dependent" :super modifier) ;; keyword: (ent ADJ) 
+(adj "ectopic" :super modifier) ;; keyword: (ic ADJ) 
+(adj "effective" :super modifier) ;; keyword: (ive ADJ) 
+(adj "endogenous" :super modifier) ;; keyword: (ous ADJ) 
 (adj "further")
 (adj "high")
-(adj "inactive" :super 'modifier) ;; keyword: (ive ADJ) 
-(define-adjective "inducible") ;; keyword: (ible ADJ) 
-(adj "ineffective" :super 'modifier) ;; keyword: (ive ADJ) 
-(adj "integrative" :super 'modifier) ;; keyword: (ive ADJ) 
-(adj "intriguing" :super 'modifier) ;; keyword: ENDS-IN-ING 
+(adj "inactive" :super modifier) ;; keyword: (ive ADJ) 
+(adj "inducible") ;; keyword: (ible ADJ) 
+(adj "ineffective" :super modifier) ;; keyword: (ive ADJ) 
+(adj "integrative" :super modifier) ;; keyword: (ive ADJ) 
+(adj "intriguing" :super modifier) ;; keyword: ENDS-IN-ING 
 (adj "lon-term")
 (adj "long")
-(define-adjective "measurable") ;; keyword: (able ADJ) 
-(adj "mekindependent" :super 'modifier) ;; keyword: (ent ADJ) 
-(adj "mutual" :super 'modifier) ;; keyword: (al ADJ) 
+(adj "measurable") ;; keyword: (able ADJ) 
+(adj "mekindependent" :super modifier) ;; keyword: (ent ADJ) 
+(adj "mutual" :super modifier) ;; keyword: (al ADJ) 
 (adj "parallel")
-(adj "pharmacological" :super 'modifier) ;; keyword: (al ADJ) 
-(adj "present" :super 'modifier) ;; keyword: (ent ADJ) 
+(adj "pharmacological" :super modifier) ;; keyword: (al ADJ) 
+(adj "present" :super modifier) ;; keyword: (ent ADJ) 
 (adj "recombinant" )
-(adj "refractory" :super 'modifier) ;; keyword: (ory ADJ) 
-(adj "sensitive" :super 'modifier) ;; keyword: (ive ADJ) 
-(adj "supplementary" :super 'modifier) ;; keyword: (ary ADJ) 
+(adj "refractory" :super modifier) ;; keyword: (ory ADJ) 
+(adj "sensitive" :super modifier) ;; keyword: (ive ADJ) 
+(adj "supplementary" :super modifier) ;; keyword: (ary ADJ) 
 (adj "wild-type")
 
 ;;noun
