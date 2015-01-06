@@ -172,6 +172,16 @@
   :s (creator bio-entity)
   :o (creation bio-entity))
 
+(define-category bio-drive
+  :specializes bio-process
+  :binds ((driver biological)(driven biological)(mechanism biological))
+  :realization 
+  (:verb "drive"
+   :etf (svo-passive) 
+   :s driver
+   :o driven
+   :through mechanism))
+
 ;; "consist" (of)
 ;; ? (comlex-entry "consist")
 ;; ((verb (:subc ((p-ing-sc :pval ("in" "of")) (pp :pval ("of" "in"))))))
@@ -297,14 +307,14 @@
 
 (define-category inhibit ;; was drug-inhibit but inhibit fits answer key
   :specializes bio-process
-  :binds ((agent drug) 
+  :binds ((agent biological) 
           (patient biological)
           (measurement measurement))
   :realization 
   (:verb ("inhibit" :past-tense "inhibited" 
                     :present-participle "inhibiting" )
    :noun "inhibition"
-   :etf (svo-passive)
+   :etf (svo-passive of-nominal)
    :s agent
    :o patient
    :at measurement
@@ -633,7 +643,7 @@
 
 (define-category deplete
   :specializes bio-process
-  :binds ((agent bio-entity)(patient bio-entity)) 
+  :binds ((agent biological)(patient bio-entity)) 
   :realization
   (:verb "deplete" :noun "depletion"
    :etf (svo-passive of-nominal)
@@ -1266,9 +1276,20 @@
 	   :s agent
 	   :o patient))
 
+(define-category is-bio-entity
+  :specializes be  
+  :binds ((entity biological)(predication biological)))
+
 (def-cfr IS-BIO-ENTITY (be biological)
-  :form vg
-  :referent (:head left-edge))
+  :form vp
+  :referent (:instantiate-individual is-bio-entity
+                :with (predication right-edge)))
+
+(def-cfr is-bio-entity (biological is-bio-entity)
+  :form s
+  :referent (:head right-edge))
+
+
 
 
 
