@@ -21,7 +21,7 @@
   '(:verb :noun :adj :etf :s :o :c
     :binds :realization
     :prep :by
-    :as :at :for :from :in :of :on :to))
+    :as :at :for :from :in :of :on :to :through))
 
 (defun includes-def-realization-keyword (rdata)
   ;; used in decode-category-parameter-list to decide whether
@@ -81,7 +81,7 @@
                                   etf verb noun adj
                                   s o c
                                   prep by
-                                  as at for from in of on to )
+                                  as at for from in of on through to)
   ;; Make the category, then use the independent realization
   ;; machinery to finish it. 
   (labels 
@@ -154,7 +154,7 @@
           :o obj-slot
           :c c
           :prep prep  :by by
-          :as as :at at :for for :from from :in in :of of :on on :to to )
+          :as as :at at :for for :from from :in in :of of :on on :through through :to to)
 
         (when obo-id
           (bind-variable 'uid obo-id category))
@@ -166,7 +166,7 @@
                                                s o c ;; arguments
                                                prep ;; owned preposition
                                                by ;; for passive
-                                               as at for from in of on to ;; prepositions
+                                               as at for from in of on through to ;; prepositions
                                                )
   (if etf
     (typecase etf
@@ -222,7 +222,7 @@
             (push `(comp-v/r . ,v/r) substitution-map)
             (register-variable category var :omplement-variable)))
 
-        (handle-prepositions category as at for from in of on to)
+        (handle-prepositions category as at for from in of on to through)
 
         (when prep ;; preposition 'owned' by the verb, appears
           ;; immediately after the verb.
@@ -235,13 +235,13 @@
         (let ((word (resolve/make noun)))
           (make-cn-rules/aux word category category)))
       (unless etf
-        (handle-prepositions category as at for from in of on to)))
+        (handle-prepositions category as at for from in of on to through)))
     (when adj
       (unless (assq :adjective word-map)
         (let ((word (resolve/make adj)))
           (make-rules-for-adjectives word category category)))
       (unless etf
-        (handle-prepositions category as at for from in of on to)))
+        (handle-prepositions category as at for from in of on to through)))
 
     (push-debug `(,category ,etf ,substitution-map ,word-map))
     ;; (break "look at inputs")
@@ -253,7 +253,7 @@
 
 
 
-(defun handle-prepositions (category &optional as at for from in of on to)
+(defun handle-prepositions (category &optional as at for from in of on to through)
   (when as
     (subcategorize-for-preposition category "as" as))
   (when at
@@ -269,7 +269,9 @@
   (when on 
     (subcategorize-for-preposition category "on" on))
   (when to
-    (subcategorize-for-preposition category "to" to)))
+    (subcategorize-for-preposition category "to" to))
+  (when through
+    (subcategorize-for-preposition category "through" through)))
 
 
 (defun register-variable (category variable grammatical-relation)
