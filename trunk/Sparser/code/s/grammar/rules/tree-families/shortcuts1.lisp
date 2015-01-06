@@ -139,6 +139,9 @@ broadly speaking doing for you all the things you might do by hand.
                      binds realization
                      instantiates mixin restrict rule-label 
                      obo-id)
+  (when (stringp name) ;; (np-head "S338" :super 'residue-on-protein)
+    (setq noun name) ;; preserve it
+    (setq name (name-to-use-for-category name)))
   (noun/expr name
          :noun noun
          :super super :specializes specializes :index index
@@ -164,7 +167,7 @@ broadly speaking doing for you all the things you might do by hand.
     (unless binds
       (error "A realization was specificed but no variables")))
 
-  (unless index
+  #+ignore(unless index
     (setq index '(:temporary)))
     
   (let ( category )
@@ -182,7 +185,7 @@ broadly speaking doing for you all the things you might do by hand.
                :specializes ,(or super specializes)
                :rule-label ,rule-label
                :binds ,binds
-               :index ,index
+               ;;:index ,index
                :restrict ,restrict
                :mixins ,mixin
                :realization ,realization)))
