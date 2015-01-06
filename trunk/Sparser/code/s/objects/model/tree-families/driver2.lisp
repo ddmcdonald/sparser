@@ -64,7 +64,8 @@
 ;;     (6/13/13) Fixed case of :self as a variable in decode-binding. Flagged it
 ;;      as illegal. (8/12/14) added retrieve-single-rule-from-individual
 ;;     (9/9/14) retrieve-single-rule-from-individual got a case where there were
-;;      two rules (independent bug?) so changed it's error to a cerror. 
+;;      two rules (independent bug?) so changed it's error to a cerror.
+;; 1/5/2015 MAJOR CHANGE -- added new field rhs-forms to cfrs, and fill it from the ETF schema -- used to check syntactic plausibility of rule applications
 
 (in-package :sparser)
 
@@ -333,6 +334,9 @@
 
          (*schema-being-instantiated* schema)
          (*Chomsky-adjunction-applies* (memq schematic-lhs schematic-rhs)))
+
+    ;;RUSTY-RHS
+    ;;(print (list schema schematic-rhs))
  
     (setq lhs (replace-from-mapping
                schematic-lhs mapping category category-of-locals)
@@ -376,11 +380,14 @@
     ;; Pass the realization schema through to each rule
     (if (consp *cfrs*)
       (dolist (cfr *cfrs*)
-        (setf (cfr-schema cfr) schema))
-      (setf (cfr-schema *cfrs*) schema))
+        (set-schema-and-rhs-forms cfr schema schematic-rhs))
+      (progn
+        (set-schema-and-rhs-forms *cfrs* schema schematic-rhs)))
     *cfrs* ))
 
-
+(defun set-schema-and-rhs-forms (cfr schema rhs-forms)
+        (setf (cfr-schema cfr) schema)
+        (setf (cfr-rhs-forms cfr) rhs-forms))
 
 (defun i/r/s-make-the-rule (lhs rhs form referent relation)
   ;; Used when there are no multiple terms in either the left
