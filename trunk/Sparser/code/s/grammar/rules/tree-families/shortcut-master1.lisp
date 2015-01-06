@@ -8,7 +8,8 @@
 ;; Initiated 9/14/14 to make more flexible, complete shortcuts.
 ;; 11/11/14 added keyword for obo-id.
 ;; 1.0 (12/13/14) totally made over to simplify everything down
-;;   to one two routines. 
+;;  to one two routines. 1/5/15 Refactored a bit to handle
+;;  nouns and adjectives without ETF. 
 
 (in-package :sparser)
 
@@ -17,12 +18,25 @@
 ;;;------------------
 
 (defparameter *def-realization-keywords*
-  '(:verb :noun :etf :s :o :c
+  '(:verb :noun :adj :etf :s :o :c
+    :binds :realization
     :prep :by
     :as :at :for :from :in :of :on :to))
 
+(defun includes-def-realization-keyword (rdata)
+  ;; used in decode-category-parameter-list to decide whether
+  ;; this is shortcut-style rdata or ordinary. 
+  (dolist (symbol rdata nil)
+    (when (keywordp symbol)
+      (when (memq symbol *def-realization-keywords*)
+        (return t)))))
+
 (defun check-for-valid-def-realization-keywords (key-value-pairs)
-  key-value-pairs)
+  (dolist (symbol key-value-pairs)
+    (when (keywordp symbol)
+      (unless (memq symbol *def-realization-keywords*)
+        (error "The keyword :~a is not a known option for ~
+               define-realization" symbol)))))
 
 
 ;;;--------------
@@ -48,13 +62,13 @@
     category))
 
 (defun setup-shortcut-rdata (category key-value-pairs)
-  ;; called from decode-category-parameter-list in an 'or' with
-  ;; the normal call to setup-rdata. Return nil if this doesn't
-  ;; look like the shortcut form of rdata.
-  (when (memq :etf key-value-pairs)
-    ;;(break "category - check restriction: ~a" category)
-    (apply #'decode-realization-parameter-list category key-value-pairs)
-    category))
+  ;; called from decode-category-parameter-list when the rdata
+  ;; satisfies includes-def-realization-keyword, which works
+  ;; because an ordinary rdata only includes :tree-family, :binding
+  ;; and possibly a word specifier.
+  (check-for-valid-def-realization-keywords key-value-pairs)
+  (apply #'decode-realization-parameter-list category key-value-pairs)
+  category)
 
 ;;;------------------------------------
 ;;; decoders that actually do the work
@@ -77,7 +91,7 @@
           (noun (super-category-for-POS :noun))
           (adj (super-category-for-POS :adjective))
           (t ;; also :adverb
-           (error "Cannot computer super-category: neither ~
+           (error "Cannot compute super-category: neither ~
                    :verb, :noun, or :adj supplied."))))
        (default-value-restriction (param)
          (case param
@@ -117,8 +131,7 @@
       If the value lis a list it should contain just two symbols.
       The first one is the name of the variable, the second one
       is the category of its value restriction. At the moment
-      there is a provision for up to three variables
-|#
+      there is a provision for up to three variables. |#
       (multiple-value-setq (subj-slot subj-var)
         (decode-slot-value s :s))
       (when o
@@ -141,7 +154,7 @@
           :o obj-slot
           :c c
           :prep prep  :by by
-          :as at :at at :for for :from from :in in :of of :on on :to to )
+          :as as :at at :for for :from from :in in :of of :on on :to to )
 
         (when obo-id
           (bind-variable 'uid obo-id category))
@@ -155,12 +168,13 @@
                                                by ;; for passive
                                                as at for from in of on to ;; prepositions
                                                )
-  (unless etf
-    (error "You must specifiy a realization schema/s using the keyword ':etf'"))
-  (typecase etf
-    (cons)
-    (symbol (setq etf (list etf)))
-    (otherwise (error "The :etf parameter must be a symbol or a list")))
+  (if etf
+    (typecase etf
+      (cons)
+      (symbol (setq etf (list etf)))
+      (otherwise (error "The :etf parameter must be a symbol or a list")))
+    (unless (or adj noun)
+      (error "You must specifiy a realization schema/s using the keyword ':etf'")))
 
   (let ( substitution-map  word-map )
     (dolist (schema-name etf)
@@ -208,22 +222,7 @@
             (push `(comp-v/r . ,v/r) substitution-map)
             (register-variable category var :omplement-variable)))
 
-        (when as
-           (subcategorize-for-preposition category "as" as))
-        (when at
-           (subcategorize-for-preposition category "at" at))
-         (when for
-           (subcategorize-for-preposition category "for" for))
-        (when from
-           (subcategorize-for-preposition category "from" from))
-        (when in
-           (subcategorize-for-preposition category "in" in))
-        (when of  
-           (subcategorize-for-preposition category "of" of))
-        (when on 
-          (subcategorize-for-preposition category "on" on))
-        (when to
-          (subcategorize-for-preposition category "to" to))
+        (handle-prepositions category as at for from in of on to)
 
         (when prep ;; preposition 'owned' by the verb, appears
           ;; immediately after the verb.
@@ -234,14 +233,43 @@
       (unless (assq :common-noun word-map)
         ;; if it's on the map then the realization machinery will expand it
         (let ((word (resolve/make noun)))
-          (make-cn-rules/aux word category category))))
-    (when adj)
+          (make-cn-rules/aux word category category)))
+      (unless etf
+        (handle-prepositions category as at for from in of on to)))
+    (when adj
+      (unless (assq :adjective word-map)
+        (let ((word (resolve/make adj)))
+          (make-rules-for-adjectives word category category)))
+      (unless etf
+        (handle-prepositions category as at for from in of on to)))
 
     (push-debug `(,category ,etf ,substitution-map ,word-map))
     ;; (break "look at inputs")
     (apply-rdata-mappings category etf
                           :args substitution-map 
-                          :word-keys word-map)))
+                          :word-keys word-map)
+
+    category))
+
+
+
+(defun handle-prepositions (category &optional as at for from in of on to)
+  (when as
+    (subcategorize-for-preposition category "as" as))
+  (when at
+    (subcategorize-for-preposition category "at" at))
+  (when for
+    (subcategorize-for-preposition category "for" for))
+  (when from
+    (subcategorize-for-preposition category "from" from))
+  (when in
+    (subcategorize-for-preposition category "in" in))
+  (when of  
+    (subcategorize-for-preposition category "of" of))
+  (when on 
+    (subcategorize-for-preposition category "on" on))
+  (when to
+    (subcategorize-for-preposition category "to" to)))
 
 
 (defun register-variable (category variable grammatical-relation)

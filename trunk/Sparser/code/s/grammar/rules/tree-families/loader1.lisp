@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.3 December 2014
+;;;  version:  1.3 January 20145
 
 ;; initiated 8/5/92 v2.3, added NP & morphology 8/31, added [that comp] 10/22/93
 ;; 10/7/94 added [group of type],  10/14 added [of genitive]
@@ -27,7 +27,7 @@
 ;; 1.3 (9/14/14) added [shortcut-mechanics] and [shortcut-master] as probably
 ;;      replacement for the February scheme. 9/21/14 pulling [shortcut-expansion]
 ;;      out of shortcut-master. 12/11/14 Bumping families and short-
-;;      master to 1.
+;;      master to 1. 1/5/15 Bumping [shortcuts] to 1. 
 
 (in-package :sparser)
 
@@ -66,5 +66,5 @@
 (gload "tree-families;shortcut-mechanics")
 (gload "tree-families;shortcut-expansion")
 (gload "tree-families;shortcut-master1")
-(gload "tree-families;shortcuts")
+(gload "tree-families;shortcuts1")
 
