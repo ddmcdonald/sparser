@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.5 December 2014
+;;;  version:  1.5 January 2014
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -48,7 +48,8 @@
 ;;     (9/19/14) added add-rule(s)-to-individual overloading the category
 ;;      loading routines. 
 ;;     (12/11/14) folded in option to use the new, much shorter version
-;;      for rdata.
+;;      for rdata. 1/5/15 made that a positive test not just a matter
+;;      of falling through. 
 
 (in-package :sparser)
 
@@ -177,8 +178,10 @@
       (handle-variable-restrictions category restrictions))
 
     (when rdata
-      (or (setup-shortcut-rdata category rdata)
-          (setup-rdata category rdata)))
+      (cond
+       ((includes-def-realization-keyword rdata)
+        (setup-shortcut-rdata category rdata))
+       (t (setup-rdata category rdata))))
 
     (when lemma
       (setup-category-lemma category lemma))
