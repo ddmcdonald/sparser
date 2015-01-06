@@ -22,10 +22,10 @@
 (gload "bio;proteins")
 (gload "bio;amino-acids")
 (gload "bio;terms")
+(gload "bio;drugs") ;; needed by verbs
 (gload "bio;phenomena")
 (gload "bio;verbs1")
 (gload "bio;switches")
-(gload "bio;drugs")
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules") 
