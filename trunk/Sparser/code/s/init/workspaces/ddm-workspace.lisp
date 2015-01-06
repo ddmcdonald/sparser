@@ -16,8 +16,10 @@
   (setup-bio) ;; load the bio model etc.
   (setq *note-text-relations* nil)
   (trace-lexicon-unpacking) (trace-morphology)
+  (setq *check-forms* t)
   (incorporate-obo-terms)
-  (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/December-text-passages.lisp"))
+  (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp"))
 
 ; #13 (p "BRAF is inactive in NRAS mutant cells.")
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
@@ -47,6 +49,9 @@
 
 ; (setq *do-islands-2d-pass* nil)
 ; exploded-tree-family-named
+
+; Redo indiviual ids based on their UID
+; (ddm-ed "objects/model/individuals/resource1.lisp")
 
 
 (defun ddm-bio ()
@@ -93,6 +98,15 @@
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "grammar/rules/SD&P/create-categories.lisp")
   (ddm-ed "grammar/rules/syntax/categories.lisp"))
+
+(defun ddm-anaphora ()  ;;doc -- note on anaphora
+  (ddm-ed "analyzers/CA/anaphora3.lisp")
+  (ddm-ed "grammar/rules/CA/defNP2.lisp")
+  (ddm-ed "grammar/model/core/pronouns/object1.lisp")
+  (ddm-ed "grammar/model/core/pronouns/cases1.lisp")
+  (ddm-ed "grammar/model/core/pronouns/ref4.lisp")
+  (ddm-ed "grammar/rules/syntax/articles.lisp")
+  (ddm-ed "grammar/rules/words/pronouns.lisp"))
 
 (defun ddm-polyword-conundrum ()
   (ddm-ed "objects/rules/cfr/dotted5.lisp")
@@ -153,7 +167,7 @@
   (ddm-ed "grammar/rules/tree-families/shortcut-expansion.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-mechanics.lisp")
   (ddm-ed "grammar/rules/tree-families/families1.lisp")
-  (ddm-ed "grammar/rules/tree-families/shortcuts.lisp")
+  (ddm-ed "grammar/rules/tree-families/shortcuts1.lisp")
   (ddm-ed "grammar/rules/tree-families/families.lisp")
   (ddm-ed "grammar/rules/syntax/subcategorization.lisp"))
 
