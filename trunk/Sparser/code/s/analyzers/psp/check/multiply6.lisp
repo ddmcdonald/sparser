@@ -33,8 +33,15 @@
 ;;      a dotted intermediary. Probably need to do something more interesting for
 ;;      these edges at segment boundarier or certainly once we've moved to the
 ;;      forest level.
+;; 1/5/2015 MAJOR CHANGE -- off by default (se variable *check-forms*), but works well
+;; ensure that all rules are only applied to compatible syntactic forms
 
 (in-package :sparser)
+
+(defparameter *check-forms* nil) ;; when this is T, ensure that all rules are only applied to compatible syntactic forms
+(defparameter *collect-forms* nil)
+(defparameter *collected-forms* nil)
+
 
 ;;;------------------
 ;;; access functions
@@ -96,22 +103,65 @@
   ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
   
   (if (edge-of-dotted-intermediary right-edge)
-    ;; dotted rules only combine to their right, never to their left
-    (then (tr :right-edge-is-dotted right-edge)
-          ;; "   but the right edge, e~A, is dotted and can't possibly combine"
-          nil)
-    
-    (let ((left-category-ids (category-ids/rightward left-edge))
-	   (right-category-ids (category-ids/leftward right-edge)))
+      ;; dotted rules only combine to their right, never to their left
+      (then (tr :right-edge-is-dotted right-edge)
+        ;; "   but the right edge, e~A, is dotted and can't possibly combine"
+        nil)
       
-      (or (multiply-categories left-category-ids right-category-ids
-			       left-edge right-edge)
-      
-          (when *edges-from-referent-categories*
-            (multiply-referents left-edge right-edge))
+      (let* ((left-category-ids (category-ids/rightward left-edge))
+             (right-category-ids (category-ids/leftward right-edge))
+             (rule
+              (or (multiply-categories left-category-ids right-category-ids
+                                       left-edge right-edge)
+                  
+                  (when *edges-from-referent-categories*
+                    (multiply-referents left-edge right-edge))
+                  
+                  (when *allow-pure-syntax-rules*
+                    (check-form-form left-edge right-edge)))))
+        (when *collect-forms*
+          (let
+              ((rf (rule-forms rule)))
+            (when rf
+              (pushnew
+               (list rf
+                     (list (cat-name (edge-form left-edge))
+                           (cat-name (edge-form right-edge))))
+               *collected-forms*))))
+        (cond
+         (*check-forms*
+          (let
+              ((rf (rule-forms rule)))
+            (cond
+             ((and
+               (compatible-form (car rf) left-edge)
+               (compatible-form (second rf) right-edge))
+              rule)
+             (t
+              (let
+                  ((*rule* rule)
+                   (*left-edge* left-edge)
+                   (*right-edge* right-edge))
+                (declare (special *rule* *left-edge* *right-edge*))
+                (print `(***------>> blocking  
+                          ,*rule* ,(rule-forms *rule*) 
+                          applied to 
+                          (,(cat-name (edge-form *left-edge*)) ,*left-edge*)
+                          (,(cat-name (edge-form *right-edge*)),*right-edge*)))
+                ;;(break "incompatible-forms")
+                nil)))))
+         (t  rule)))))
 
-          (when *allow-pure-syntax-rules*
-            (check-form-form left-edge right-edge))))))
+(defun rule-forms (rule)
+  (and (cfr-p rule)
+       (or (cfr-rhs-forms rule) 
+           (loop for c in (cfr-rhs rule) collect (cat-name c)))))
+       
+(defun cat-name (cat)
+  (and
+   cat ;; words don't have edge-forms
+   (intern (symbol-name (cat-symbol cat)) :sparser)))
+
 
 
 ;;;-----------------------------------
@@ -471,3 +521,64 @@
           (tr :no-form-label-on-left-edge right-edge)
           nil))))
       nil ))
+
+
+(defparameter *form-maps*
+  '(
+    (ADJECTIVE (ADJECTIVE)) 
+    (ADVERB (COMPARATIVE ADVERB)) 
+    (BIO-PROCESS (NP)) ;; not  VG
+    (BIOLOGICAL (PROPER-NOUN NP)) ;; not S PP VG
+    (COMMON-NOUN (COMMON-NOUN)) 
+    (COMMON-NOUN/PLURAL (COMMON-NOUN/PLURAL)) 
+    (ENZYME (NP)) ;; NOT PP
+    (IS-BIO-ENTITY (VP)) ;;  not PP VG RELATIVE-CLAUSE S VG 
+    (MODAL (MODAL)) 
+    (MODIFIER (ADJECTIVE  NUMBER))  ;; not VP
+    (N-BAR (N-BAR)) 
+    (NP (NP)) 
+    (NP-HEAD (COMMON-NOUN)) 
+    (NP/OBJECT ( N-BAR  PROPER-NOUN NP VERB+ED COMMON-NOUN  COMMON-NOUN/PLURAL))  ;; not VG PP RELATIVE-CLAUSE  S VP
+    (NP/SUBJECT (PRONOUN COMMON-NOUN  NP COMMON-NOUN/PLURAL PROPER-NAME PROPER-NOUN)) ;; not VERB+ED VP  VG
+    (NUMBER (NUMBER)) 
+    (POST-ORDINAL (POST-ORDINAL)) 
+    (PP (PP)) 
+    (PREPOSITION (PREPOSITION)) 
+    (PROPER-NOUN (PROPER-NOUN)) 
+    (PROTEIN (NP PROPER-NOUN)) 
+    (RELATIVE-CLAUSE (RELATIVE-CLAUSE)) 
+    (S (S)) 
+    (SEQUENCER (DET)) 
+    (SPATIAL-PREPOSITION (SPATIAL-PREPOSITION)) 
+    (VERB (VERB)) 
+    (VERB+ED (VERB+ED)) 
+    (VERB+ING (VERB+ING)) 
+    (VERB+PRESENT (VERB+PRESENT)) 
+    (VG (VERB+ING VP VERB+ED  VG )) ;; not COMMON-NOUN
+    (VP (VERB+ING  VG  S VP VERB+ED)) ;; not N-BAR COMMON-NOUN COMMON-NOUN/PLURAL PP NP RELATIVE-CLAUSE
+    (WH-PRONOUN (WH-PRONOUN)) 
+    ;;(BE (VERB VG VP VERB+ED)) 
+    ;;(COMMA (NIL)) 
+    ;;(DO (VERB)) 
+    ;;(HAVE (VERB VERB+S)) 
+    ;;(OF (PREPOSITION)) 
+    ;;(THAT (NP DET)) 
+    ;;(THE (DET)) 
+    ;;(YEAR (COMMON-NOUN)) 
+    ;;(\a (DET)) 
+    ;;(|an| (DET)) 
+    ;;(|not| (QUANTIFIER)) 
+    ;;(|these| (DET)) 
+    ;;(|the| (DET)) 
+    ;;(|this| (DET)) 
+    ))
+
+(defun compatible-form (rule-form edge)
+  (let
+      ((compatible-forms (second (assq rule-form *form-maps*))))
+    (or (null compatible-forms) ;; the rule-form is not taken to constrain anything
+        (memq (cat-name (edge-form edge)) compatible-forms))))
+
+
+  
+  
