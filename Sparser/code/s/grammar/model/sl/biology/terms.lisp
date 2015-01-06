@@ -167,9 +167,6 @@
 
 
 
-(def-bio "signaling" bio-process ;; makes common nouns 
-  :identifier "GO:0023052")       ;; reasonable stand-in
-
 (define-adverb "in part")
 (define-adverb "at baseline")
 
@@ -178,6 +175,7 @@
 (define-adverb "nevertheless")
 (define-adverb "therefore")
 (define-adverb "also")
+
 ;; these adverbs are added to make the simple subj+verb test succeed in the island-driving phase
 (define-adverb "notably")
 (define-adverb "next")
