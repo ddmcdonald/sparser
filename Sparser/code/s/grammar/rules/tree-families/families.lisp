@@ -77,6 +77,10 @@ the ETF and the ones on the right from the mapping in
 the short cuts. 
 |#
 
+#| Use (categories-using-etf <name>) to get examples
+when contemplating using a new tree family
+|# 
+
 (define-realization-scheme sv intransitive
   :head :verb
   :mapping ((agent . subj-slot)
@@ -137,9 +141,54 @@ the short cuts.
             (complement . theme-v/r)
             (np . :self)))
 
-                        
+(define-realization-scheme pre-mod premodifier-adds-property 
+  ;; used in quarter -- as are a number of other np patterns
+  :head :common-noun
+  :mapping ((property . modifier-slot)
+            (np-head . :self)
+            (modifier . modifier-v/r)))
 
+#|  Mine this
+(define-category  quarter
+  :specializes time
+  :instantiates self  ;; ?? generalization to all these fiscal accounting periods?
+  :binds ((year . year)
+          (position-in-year . ordinal)
+          (end-date . end-date)
+          (company . company))
+  :realization ((:tree-family designated-instance-of-set   ;; "first quarter"
+                 :mapping ((designator . position-in-year)
+                           (np-head . :self)
+                           (qualifier . ordinal)
+                           (np . :self))
+                 :common-noun "quarter")
 
+                (:tree-family  member-of ;; "___ of 1998"
+                 :mapping ((identifier . year)
+                           (complement . year)
+                           (np . :self)))
+
+                (:tree-family  modifier-creates-subtype  ;; "fiscal ___"
+                 :mapping ((n-bar . :self)
+                           (subtyping-modifier . fiscal)
+                           (np-head . :self)))
+
+                (:tree-family  np-participle  ;; "___ ending June 26, 2004"
+                 :mapping ((np . :self)
+                           (participle . end-date)
+                           (participle-field . end-date)))
+
+                (:tree-family  premodifier-adds-property  ;; "2004 ___"
+                 :mapping ((modifier . year)
+                           (np-head . :self)
+                           (property . year)))
+
+                (:tree-family  possessive/bind-slot   ;; "its ___"
+                 :mapping ((pos-slot . company)
+                           (np . :self)
+                           (possessive . company-s)
+                           (np-head . :self)))))
+|#
 
 
 ;;------------------ February version never adequately 

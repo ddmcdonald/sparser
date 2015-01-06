@@ -119,27 +119,15 @@ broadly speaking doing for you all the things you might do by hand.
       (eval form))))
 
 
- 
-
 (defmacro noun (name
                 &key noun 
-                     super specializes
+                     super specializes index
                      binds realization
                      instantiates mixin restrict rule-label 
                      obo-id)
-  (typecase name
-    (string ;; name is taken from the string
-     (unless noun ;; is there a good reason for them to be different?
-       (setq noun name))
-     (setq name (name-to-use-for-category name)))
-    (symbol 
-     (unless noun
-       (error "You have to specify the word for the noun (:noun)")))
-    (otherwise
-     (error "Bad type for 'name'. It should be a string or a symbol")))
   `(noun/expr ',name
          :noun ',noun
-         :super ',super :specializes ',specializes
+         :super ',super :specializes ',specializes :index ',index
          :binds ',binds :realization ',realization
          :instantiates ',instantiates :mixin ',mixin 
          :restrict ',restrict :rule-label ',rule-label
@@ -147,23 +135,13 @@ broadly speaking doing for you all the things you might do by hand.
 
 ;;/// carbon copy of noun, but a function rather than a macro
 (defun np-head (name 
-                &key noun super specializes
+                &key noun super specializes index
                      binds realization
                      instantiates mixin restrict rule-label 
                      obo-id)
- (typecase name
-    (string ;; name is taken from the string
-     (unless noun ;; is there a good reason for them to be different?
-       (setq noun name))
-     (setq name (name-to-use-for-category name)))
-    (symbol 
-     (unless noun
-       (error "You have to specify the word for the noun (:noun)")))
-    (otherwise
-     (error "Bad type for 'name'. It should be a string or a symbol")))
   (noun/expr name
          :noun noun
-         :super super :specializes specializes
+         :super super :specializes specializes :index index
          :binds binds :realization realization
          :instantiates instantiates :mixin mixin 
          :restrict restrict :rule-label rule-label
@@ -172,7 +150,7 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defun noun/expr (name
                   &key noun
-                       super specializes 
+                       super specializes index
                        binds realization
                        instantiates mixin 
                        restrict rule-label obo-id)
@@ -185,6 +163,9 @@ broadly speaking doing for you all the things you might do by hand.
   (when realization
     (unless binds
       (error "A realization was specificed but no variables")))
+
+  (unless index
+    (setq index '(:temporary)))
     
   (let ( category )
     (cond
@@ -201,6 +182,7 @@ broadly speaking doing for you all the things you might do by hand.
                :specializes ,(or super specializes)
                :rule-label ,rule-label
                :binds ,binds
+               :index ,index
                :restrict ,restrict
                :mixins ,mixin
                :realization ,realization)))
@@ -213,6 +195,7 @@ broadly speaking doing for you all the things you might do by hand.
                 :instantiates ,(or instantiates :self)
                 :specializes ,(or super specializes)
                 :rule-label ,rule-label
+                :index ,index
                 :restrict ,restrict
                 :mixins ,mixin
                 :realization
