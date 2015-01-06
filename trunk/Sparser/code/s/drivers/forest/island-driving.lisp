@@ -12,6 +12,7 @@
 ;; RJB 12/19/2014 remove adverbs and commas from islands before attempting second pass
 ;; 1/1/2015 New, flag-controlled, alternative to last part of run-island-checks, repeatedly doing application of rightmost applicable rule.
 ;; now turned ON by default
+;; 1/5/2015 improve whack-a-rule by moving functionally duplicative code into alternative path
 
 (in-package :sparser)
 
@@ -47,11 +48,7 @@
 
 (defun run-island-checks (layout)
   (push-debug `(,layout))
-
   ;; preposed adjuncts
-  (when (starts-with-prep?)
-    (tr :try-parsing-leading-pp)
-    (try-parsing-leading-pp))
 
   (when (there-are-parentheses?)
     (tr :handle-parentheses)
@@ -64,32 +61,6 @@
   (when (there-are-prepositions?)
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
-
-  (when (there-are-prepositions?)
-    (tr :trying-to-form-simple-pps)
-    (try-simple-pps)
-    (when *trace-island-driving* (tts)))
-
-
-
-  ;;/// conjunctions over two words
-  ;; though the regular conjunction routine in pts seems to get these
-  ;; in-line if they're really simple: "GDP or GTP"
-
-  (when (there-are-known-subcat-patterns?)
-    (tr :there-are-known-subcat-patterns)
-    ;;(break "subcat")
-    (let ((edges (apply-subcat-patterns)))
-      ;; Assuming the patterns match, there will be 
-      ;; an edge for every treetop that had a subcategorization
-      ;; pattern
-      (when edges
-        ;; The subcategorizations are particularly solid,
-        ;; and they're usually the equivalent of VPs or
-        ;; complements. Gingerly look for leftward compositions. 
-        (dolist (edge edges)
-          (look-for-short-leftward-extension edge)))
-      (when *trace-island-driving* (tts))))
 
 
   (setq *possible1* (possible-treetop-rules))
@@ -117,6 +88,37 @@
           ;;(break)
           (setq rule-edges  (car (possible-treetop-rules)))))))
    (t
+    (when (starts-with-prep?)
+      (tr :try-parsing-leading-pp)
+      (try-parsing-leading-pp))
+
+    (when  (there-are-prepositions?)
+      (tr :trying-to-form-simple-pps)
+      (try-simple-pps)
+      (when *trace-island-driving* (tts)))
+    
+    
+    ;;/// conjunctions over two words
+    ;; though the regular conjunction routine in pts seems to get these
+    ;; in-line if they're really simple: "GDP or GTP"
+    
+    (when  (there-are-known-subcat-patterns?)
+      (tr :there-are-known-subcat-patterns)
+      ;;(break "subcat")
+      (let ((edges (apply-subcat-patterns)))
+        ;; Assuming the patterns match, there will be 
+        ;; an edge for every treetop that had a subcategorization
+        ;; pattern
+        (when edges
+          ;; The subcategorizations are particularly solid,
+          ;; and they're usually the equivalent of VPs or
+          ;; complements. Gingerly look for leftward compositions. 
+          (dolist (edge edges)
+            (look-for-short-leftward-extension edge)))
+        (when *trace-island-driving* (tts))))
+    
+
+    
     (try-simple-subj+verb)
     (setq *possible2* (possible-treetop-rules))
     (when *trace-island-driving* (tts))
