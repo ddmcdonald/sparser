@@ -422,14 +422,19 @@
 
   (cond
    ((memq (cat-symbol (edge-category edge))
-          '(category::demonstrate          
+          '(
+            category::demonstrate          
             category::hypothesize 
+            category::indicate
             category::observe
             category::posit 
             category::propose
             category::report-verb
+            category::reveal
             category::show 
-            category::suggest))
+            category::suggest
+            category::verify
+            ))
     t)
    (t
     ;;(print `(checking thatcomp status for ,(edge-category edge) ,edge))
