@@ -75,6 +75,12 @@
 ;;; categories of referents for particulars (entities)
 ;;;----------------------------------------------------
 
+(define-category bio-agent
+  :specializes bio-entity
+  :binds ((dummy biological))
+  :realization
+  (:noun "agent"))
+
 (define-category molecule
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry.
@@ -362,4 +368,13 @@
 (define-individual 'bio-type
   :name "kinase")
 |#
+
+(define-category bib-reference
+   :specializes abstract) ;; to allow "et al." to be easily ignored
+
+(define-category article-figure
+   :specializes abstract) ;; to allow "et al." to be easily ignored
+
+(define-category article-table
+   :specializes abstract) ;; to allow "et al." to be easily ignored
 
