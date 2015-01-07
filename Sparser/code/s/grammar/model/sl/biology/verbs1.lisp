@@ -160,6 +160,7 @@
   :etf (svo-passive
         of-nominal) 
   :noun "catalysis"
+  :adj "catalytic"
   :s (catalyst enzyme)
   :o (process bio-process))
 
@@ -250,9 +251,10 @@
           (substrate molecule)) ;;the context in which the hydrolysis occurs
   :realization            
   (:verb "hydrolyze" :noun "hydrolysis"
-   :etf (svo-passive) 
+   :etf (svo-passive pre-mod) 
    :s agent 
    :o patient 
+   :m patient
    :of patient
    :to goal
    :on substrate))
@@ -282,7 +284,7 @@
 
 (define-category increase
   :specializes bio-process
-  :binds ((agent biological) (patient biological))
+  :binds ((agent biological) (patient bio-scalar)) ;; increase in rate vs increase in RAS activity
   :realization
   (:verb "increase" :noun "increase"
          :etf (svo-passive of-nominal) 
@@ -643,7 +645,7 @@
 
 (define-category decrease
   :specializes bio-process
-  :binds ((agent bio-entity)(patient molecule)) 
+  :binds ((agent biological)(patient bio-scalar)) 
   :realization
   (:verb "decrease" :noun "decrease"
    :etf (svo-passive of-nominal)
@@ -1217,7 +1219,7 @@
 
 (define-category observe
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
+    :binds ((agent pronoun/first/plural)(patient biological))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
 	   :noun "observation"
@@ -1311,22 +1313,23 @@
 
 ;;__________ verbs from January set
 (define-category contain :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "contain"  :etf (svo-passive) :s agent :o patient)) 
-(define-category model :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o patient)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING definiing lemma as a 
+;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o patient)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING definiing lemma as a 
 (define-category signal :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "signal"  :etf (svo-passive) :s agent :o patient)) ;;VERB unknown word "signalling" keyword: ENDS-IN-ING definiing lemma as a 
 
 (define-category abrogate :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "abrogate" :noun "abrogation" :etf (svo-passive) :s agent :o patient)) 
 (define-category advance :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "advance" :noun "advancement" :etf (svo-passive) :s agent :o patient)) 
 (define-category affect :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "affect" :etf (svo-passive) :s agent :o patient)) 
+;;FIX THIS DAVID(define-category analyze :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "analyze" :noun ("analysis" :plural "analyses") :etf (svo-passive) :s agent :o patient))
 (define-category analyze :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "analyze" :noun "analysis" :etf (svo-passive) :s agent :o patient))
 (define-category compare :specializes bio-process 
   :binds ((agent pronoun/first/plural)
           (patient biological)
-          (conditions biological))
+          (context bio-context))
   :realization 
   (:verb "compare" :noun "comparison"
          :etf (svo-passive of-nominal)
          :s agent :o patient
-         :for conditions))
+         :in context))
 (define-category conserve :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "conserve" :noun "conservation" :etf (svo-passive) :s agent :o patient) )
 (define-category dissect :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "dissect" :noun "dissection" :etf (svo-passive) :s agent :o patient)) 
 (define-category dominate :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "dominate" :noun "domination" :etf (svo-passive) :s agent :o patient)) 

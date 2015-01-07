@@ -197,6 +197,7 @@
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
 (define-adverb "finally")
 (define-adverb "in part")
+(define-adverb "likely")
 (define-adverb "moreover")
 (define-adverb "nevertheless")
 (define-adverb "nevertheless")
@@ -212,47 +213,76 @@
 (noun "activity" :super bio-process)
 ;;(def-bio "agent" bio-entity)
 (noun "agonist":super bio-entity) ;; keyword: (ist N) 
-(noun "allele" :super bio-entity)
-(noun "analog" :super bio-variant)
+(noun "allele" :super bio-variant
+      :binds ((basis bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:noun "allele"
+             :of basis))
+(noun "analog" :super bio-variant
+      :binds ((basis bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:noun "analog"
+             :of basis))
 (noun "approach" :super bio-process)
 (noun "assay" :super bio-process)
 (noun "baseline" :super  bio-process)
 (noun "binder" :super bio-entity)
 (noun "cascade" :super bio-process)
-(noun "class" :super bio-variant)
+(noun "class" :super bio-variant  ;;NOT SURE THIS IS RIGHT
+      :binds ((basis bio-entity)) 
+      :realization
+      (:noun "class"
+             :of basis))
 (noun "complex" :super molecule)
 (noun "condition" :super bio-condition)
 (noun "context" :super bio-context) 
 ;;(noun "data" :super bio-entity)
+(noun "cytosol" :super cellular-location)
 (def-bio "data" bio-entity) ;; need something better
 (noun "derivative" :super molecule)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
+(noun "domain" :super bio-location)
 (noun "et al." :super bib-reference)
+(noun "effector" :super protein) ;; NOT SURE WHAT THE RIGHT SUPER is
 (noun "exchange" :super bio-process)
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
 (noun "fig" :super article-figure) 
 (noun "figure" :super article-figure)
 (noun "finding" :super bio-entity) ;; like data(noun "paradigm" :super bio-entity)
-(noun "form" :super bio-variant)
+(noun "form" :super bio-variant
+      :binds ((basis bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:noun "form"
+             :of basis))
 (noun "function" :super bio-process)
 (noun "heterodimer" :super molecule)
 (noun "human" :super species)
 (noun "inhibitor" :super bio-entity) ;; keyword: (or N) 
-(noun "isoform" :super bio-variant)
+(noun "isoform" :super bio-variant
+      :binds ((basis bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:noun "isoform"
+             :of basis))
 (noun "knockdown" :super bio-process)
 (noun "manner" :super bio-process) ;; by chemical or genetic means
 (noun "mass spectrometry" :super bio-process)
 (noun "means" :super bio-process) ;; by chemical or genetic means
 (noun "mechanism" :super bio-process)
 (noun "membrane" :super cellular-location)
-(noun "cytosol" :super cellular-location)
+(noun "NMR" :super bio-process)
+
 (noun "nucleus" :super cellular-location)
-(noun "site" :super bio-location)
 (noun "method" :super bio-process)
 (noun "mitogen" :super molecule)
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super bio-entity)
-(noun "panel" :super bio-process)
+;;(noun ("order of magnitude" :plural "orders of magnitude") :super abstract)
+(noun "order of magnitude" :super abstract)
+(noun "panel" :super bio-process
+      :binds ((component molecule)) ;; this should be for genes and proteins
+      :realization
+      (:noun "panel"
+             :of component))
 (noun "panel" :super bio-process)
 (noun "paradox" :super bio-entity)
 (noun "patient" :super bio-entity)
@@ -266,13 +296,17 @@
              :of process ; 
              :for components))
 (noun "ratio" :super measurement)
+(noun "region" :super bio-location)
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
-(noun "signaling" :super bio-process)
 (noun "scaffold" :super protein) 
 (noun "screen" :super  bio-process)
 (noun "setting" :super bio-entity)
+(noun "signalling" :super bio-process)  ;; this is an alternate spelling for "signaling"
+(noun "site" :super bio-location)
+(noun "state" :super bio-entity)
 (noun "strategy" :super bio-process)
+(noun "surface area" :super bio-location)
 (noun "table" :super article-table)
 (noun "target" :super bio-entity)
 (noun "throughput" :super measurement)
@@ -280,7 +314,11 @@
 (noun "tumor formation" :super bio-process)
 (noun "tumor formation" :super bio-process)
 (noun "tumor" :super bio-location)
-(noun "variety" :super bio-variant)
+(noun "variety" :super bio-variant
+      :binds ((basis bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:noun "allele"
+             :of basis))
 
 ;;; using 'abstract' here as a standin for a better taxonomic treatment
 (noun "component" :super abstract)
@@ -293,12 +331,17 @@
 (noun "exclusivity" :super abstract) ;; keyword: (ity N) 
 (noun "fate" :super abstract)
 (noun "group" :super abstract)
-(noun "model" :super abstract)
+(noun "model" :super biological) ;; almost never used as a verb
+(noun "modeling" :super biological) ;; but modeling is a nominal that is used
 (noun "mortality" :super abstract) ;;/// relationship to "mortal" ??
 (noun "paradigm" :super abstract)
 (noun "partner" :super abstract)
 (noun "possibility" :super abstract) ;; keyword: (ity N) 
-(noun "presence" :super abstract) ;; keyword: (ence N) 
+(noun "presence" :super bio-context
+      :binds ((context biological))
+      :realization 
+      (:noun "presence" 
+             :of context)) ;; keyword: (ence N) 
 (noun "sensitivity" :super abstract) ;; keyword: (ity N) 
 (noun "stoichiometry" :super abstract)
 (noun "success" :super abstract)
@@ -412,6 +455,10 @@
   :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
 
 
+(def-cfr adverb (adverb comma)
+  :form adverb
+  :referent (:head left-edge))
+
 ;; Not quite right -- DAVID -- how do I make "et al." be a word that is the head of a bibliographic reference
 (define-category bib-reference 
   :specializes abstract)
@@ -510,5 +557,5 @@
 (noun "proportion" :super measurement)
 (noun "population" :super bio-entity)
 
-
-(noun "signalling" :super bio-process) ;; this is an alternate spelling for "signaling"
+(noun ("analysis" :plural "analyses")
+  :super bio-process)
