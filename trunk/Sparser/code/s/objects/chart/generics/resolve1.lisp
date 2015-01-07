@@ -59,7 +59,7 @@
              (else
                (def-category/expr arg :source source)))))
         (otherwise
-         (error "Expected the argument to resolve/make to be a symbol or a sting ~
+         (error "Expected the argument to resolve/make to be a symbol or a string ~
                   but got a ~a: ~a" (type-of arg) arg))))))
 
 
