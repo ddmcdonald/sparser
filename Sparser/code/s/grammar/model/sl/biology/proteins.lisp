@@ -281,6 +281,10 @@ filligre may be used to distinguish them, etc.
 ;; in the text, but not Matt's list
 (def-bio "ASSP1" protein)
 
+(def-family "ASPP"
+  :members ("ASSP1" "ASPP2"))
+
+
 (def-bio "ATG5" protein
   :mitre-link "Uniprot:Q9H1Y0")	
 
@@ -414,9 +418,9 @@ filligre may be used to distinguish them, etc.
 (def-bio "growth factors" protein)
 (def-bio "growth factor" protein)
 
-(def-bio "ubiquitin" protein)
+
 (noun "hormone" :super protein)
 (noun "histone" :super protein)
 
-(def-bio "mUbRAS" protein) ;; mono-ubiquinated RAS
+
 (def-bio "SAPK" protein) ;; class of stress activated proteins
