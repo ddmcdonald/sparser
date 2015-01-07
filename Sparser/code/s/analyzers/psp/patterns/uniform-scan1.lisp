@@ -33,7 +33,7 @@
     "Controls whether we try to parse the edges of the words
      inside the span."))
 
-
+;; (trace-scan-patterns)
 
 (defun collect-no-space-segment-into-word (position-just-after)
   ;; entry point if the edge is more than one word long, e.g. "SHOC2" after it's
@@ -49,6 +49,7 @@
     (let ((start-pos (if (edge-p leftmost-edge) 
                        (pos-edge-starts-at leftmost-edge)
                        (chart-position-before position-just-after))))
+      (tr :no-space-sequence-started-at start-pos)
 
       (push-debug `(,leftmost-edge ,position-just-after)) 
       (when nil (break "sanity"))
@@ -77,26 +78,29 @@
         (unless (position-precedes start-pos end-pos) ;; bug may actually be this
           (return-from collect-no-space-segment-into-word nil))
 
-        (when nil
-          (format t "~&Looking at the segment ~s~%"
-                  (string-of-words-between start-pos end-pos)))
-
-
+        (tr :looking-at-ns-segment start-pos end-pos)
+ 
         (let ((pattern (characterize-words-in-region start-pos end-pos))
               ;(edges (edges-between start-pos end-pos))
               (words (words-between start-pos end-pos)))
+          (tr :segment-ns-pattern pattern)
+
           ;; Open coding post-accumulator-ns-handler
           (let ((layout
                  (parse-between-boundaries start-pos end-pos)))
+            (tr :ns-segment-layout layout)
             (unless (eq layout :single-span) ;; Do nothing. It's already known
               (cond
-               (slash-positions
+               ((memq :slash pattern)
+                (tr :ns-looking-at-slash-patterns)
                 (divide-and-recombine-ns-pattern-with-slash 
                  pattern words slash-positions hyphen-positions start-pos end-pos))
-               (hyphen-positions
+               ((memq :hyphen pattern)
+                (tr :ns-looking-at-hypen-patterns)
                 (resolve-hyphen-pattern 
                  pattern words hyphen-positions start-pos end-pos))
                (t 
+                (tr :ns-taking-default)
                 (or (resolve-ns-pattern pattern words start-pos end-pos)
                     (reify-ns-name-and-make-edge words start-pos end-pos))))))
           end-pos)))))
@@ -137,205 +141,12 @@
    
 
 ;;;---------------------------------------------------
-;;; entry point from check-for/initiate-scan-patterns
+;;; old code
 ;;;---------------------------------------------------
 
 ;; (trace-ns-sequences)
 
-(defun collect-no-space-sequence-into-word (position)
-  ;; called from check-for/initiate-scan-patterns when the gate is true
-  ;; and no pattern-driven scan applied. Note that 'position' is
-  ;; the one that does not record any space between it's word
-  ;; and the previous word.
-  (declare (special *source-exhausted* *source-start*))
 
-  (when (= (pos-token-index position) 1) ;; spurious: source-start
-    (return-from collect-no-space-sequence-into-word nil))
-
-  (tr :no-space-sequence-started-at (chart-position-before position))
-  ;; There is no space recorded on this position, so the word just
-  ;; before it and the word on it have no whitespace between them
-  (let* ((pos-before (chart-position-before position))
-	 (word-before (pos-terminal pos-before))
-	 (word-after (pos-terminal position))
-	 (next-position (chart-position-after position))
-         pattern  hyphen?  slash?  )
-
-    (when (first-word-is-bracket-punct word-before) ;; ( [ { <
-      (tr :ns-first-word-is-bracket-punct word-before position)
-      (return-from collect-no-space-sequence-into-word
-	nil))
-
-    (unless word-after
-      (if (null (pos-assessed? position))
-	(then
-	  (scan-next-position)
-	  (setq word-after (pos-terminal position)))
-        (else
-         (push-debug `(,position))
-         (break "NS -- new assessment case. position = ~a" position))))
-
-    (when (eq word-after *end-of-source*) ;; ". <eos>"
-      (return-from collect-no-space-sequence-into-word nil))
-
-    (tr :ns-considering-sequence-starting-with word-before word-after)
-
-    (unless (has-been-status? ::preterminals-installed position)
-      ;; pos-before = p2 (serine)
-      ;; position = p3 (107)
-      ;; unlikely, but better safe than sorry
-      ;;//// test on something that would parse and has 3+ words
-      (tr :ns-installing-terminal-edges word-after)
-      (install-terminal-edges word-after position next-position))
-
-    (when (second-word-not-in-ns-sequence word-after next-position)
-      ;; e.g. sentence punctuation or EOS
-      (tr :ns-second-word-not-in-ns-sequence word-after)
-      (return-from collect-no-space-sequence-into-word
-	nil))
-    
-    (when (first-or-second-word-is-bracket-punct word-before word-after)
-      (tr :first-or-second-is-bracket-punct word-before word-after)
-      (return-from collect-no-space-sequence-into-word
-	nil))
-
-
-    (flet ((record-word-pattern (position word)
-             (let ((pattern-elememt
-                    (characterize-word-type position word)))
-               #+ignore(format t "~&at p~a for ~s, element = ~a~%"
-                       (pos-token-index position) (word-pname word)
-                       pattern-elememt)
-               (push pattern-elememt pattern))))
-
-      (when (eq word-before *the-punctuation-hyphen*)
-        (push pos-before hyphen?))
-      (when (eq word-before (punctuation-named #\/))
-        (push pos-before slash?))
-      (record-word-pattern pos-before word-before)
-
-      (when (eq word-after *the-punctuation-hyphen*)
-        (push position hyphen?))
-      (when (eq word-after (punctuation-named #\/))
-        (push position slash?))
-      (record-word-pattern position word-after)
-
-      ;; The first two words were just collected. 
-      ;; This loop collects the rest.
-      (let ((words `(,word-after ,word-before))) ;; n.b. reversed
-        (setq position next-position)
-        (loop
-          (unless (pos-terminal next-position)
-            (scan-next-position)
-            (tr :ns-scanned-word (pos-terminal next-position)))
-
-          (when (pos-preceding-whitespace next-position)
-            (tr :ns-whitespace next-position)
-            (return)) ;; we're done
-          
-          (let ((word (pos-terminal next-position)))
-            (when (punctuation? word)
-              (tr :ns-scanned-punctuation word)
-              (cond
-               ((eq word *the-punctuation-hyphen*)
-                (push next-position hyphen?))
-               ((eq word (punctuation-named #\/))
-                (push next-position slash?))            
-               (t
-                (when (punctuation-terminates-no-space-sequence
-                       word next-position)
-                  (tr :ns-terminating-punctuation word)
-                  (return)))))
-             
-            (push word words) ;(break "pos of word")
-            (record-word-pattern next-position word)
-            (tr :ns-adding-word word)
-
-            (unless (has-been-status? ::preterminals-installed position)
-              (tr :ns-installing-terminal-edges word)
-              (install-terminal-edges word next-position
-                                      (chart-position-after next-position)))
-            
-            (setq position next-position
-                  next-position (chart-position-after next-position))
-            
-            (when (eq (pos-terminal next-position)
-                      *end-of-source*)
-              (tr :ns-reached-eos-at next-position)
-              (return))))
-        ;;(break "pattern = ~a" pattern)
-
-        ;; remove terminal punctuation, unless it's a hyphen
-        (when (eq (pos-capitalization position) :punctuation)
-          (unless (eq (pos-terminal position) *the-punctuation-hyphen*)
-            (pop words)))
-
-        (setq words (nreverse words)
-              pattern (nreverse pattern))
-        (when slash?
-          (setq slash? (nreverse slash?)))
-
-        (when (polywords-in-region pos-before next-position)
-          (push-debug `(,words ,pattern ,slash?))
-          (break "Need to consider PW within no-space region ~
-                  from p~a to p~a"
-                 (pos-token-index pos-before)
-                 (pos-token-index next-position)))
-
-        (post-accumulator-ns-handler
-         words pattern pos-before next-position hyphen? slash?)
-
-        (tr :ns-returning-position next-position)
-        next-position))))
-
-;;//// move
-(defun polywords-in-region (start-pos end-pos)
-  ;; if all of the edges between these positions are just over
-  ;; single words return nil, otherwise return the first
-  ;; longer edge.
-  (let ((edges (edges-between start-pos end-pos)))
-    (dolist (edge edges nil)
-      (unless (one-word-long? edge)
-        (return-from polywords-in-region edge)))))
-  
-
-
-(defun post-accumulator-ns-handler (words pattern
-                                    pos-before next-position
-                                    hyphen? slash?)
-
-  (let ((layout
-         (when *parser-interior-of-no-space-token-sequence*
-           (tr :ns-parsing-between pos-before next-position)
-           (parse-between-boundaries pos-before next-position))))
-    (tr :ns-layout layout)
-    ;;(push-debug `(,words ,pos-before ,next-position)) (break "layout = ~a" layout)
-    ;; (setq words (car *) pos-before (cadr *) next-position (caddr *))
-    ;; (print-flat-forest t pos-before next-position)
-
-    (unless (eq layout :single-span) ;; Do nothing. It's already known
-
-      (or (resolve-ns-pattern pattern words slash? pos-before next-position)
-
-          (cond
-           ;; This is the older, specialist-based scheme that was 
-           ;; beginning to get too complicated: SHOC2/Sur-8", which
-           ;; prompted writing a stronger pattern matcher
-           #+ignore((eq layout :span-is-longer-than-segment)
-            (error "no-space-sequence: bad positions somehow.~
-                  ~%   Parsed span goes beyond presumed boundaries.~
-                  ~%   start = ~a  end = ~a" pos-before next-position))
-           (hyphen?
-            (nospace-hyphen-specialist hyphen? pos-before next-position))
-           (t 
-            ;; The cleanest conceptualization of things like M1A1 or
-            ;; H1N1 is that they are names. So we take the words that
-            ;; we've collected and make them the elemeents of the
-            ;; sequence that defines the name, and we make the
-            ;; corresponding egdge, reifying the identity of the name
-            ;; in the model qua name, we would know what it names
-            ;; if we understand the context.
-            (reify-ns-name-and-make-edge words pos-before next-position)))))))
 
 
 ;; n.b. there's an OBO lookup inside reify-ns-name-as-bio-entity
