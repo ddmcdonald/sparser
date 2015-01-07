@@ -28,6 +28,8 @@
 
 
 (defun resolve-hyphen-pattern (pattern words hyphen-positions start-pos end-pos)
+  ;; (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
+  ;; (break "starting hyphen pattern: ~a" pattern)
   (cond
    ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
         (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
@@ -43,6 +45,11 @@
    ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
     ;;(break "stub :single-cap :hyphen :lower")
     (reify-ns-name-and-make-edge words start-pos end-pos))
+
+   ((equal pattern '(:lower :hyphen :lower)) ;; "high-activity"
+    (let ((*inhibit-big-mech-interpretation* t))
+      (declare (special *inhibit-big-mech-interpretation*))
+      (resolve-hyphen-between-two-words pattern words start-pos end-pos)))
 
    ((and *work-on-ns-patterns*
          (memq :hyphen pattern))
