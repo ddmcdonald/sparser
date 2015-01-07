@@ -3,20 +3,54 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2014
+;;; version: January 2015
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 ;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
 ;; 9/8/14 lifted taxonomy out to its own file, added keyword to
-;; inhibit plurals, defaults to allow plurals
+;; inhibit plurals, defaults to allow plurals. Working on nits
+;; to make the parser happy through 1/6/15
 
 (in-package :sparser)
+
+;;;------------------
+;;; Useful accessors
+;;;------------------
+
+(defmethod get-protein ((pname string))
+  ;; conventient syntactic sugar. Motivated by explicitly
+  ;; constructed pathways. 
+  (flet ((lookup (word)
+           (or (get-protein word)
+               (get-family word))))
+    (let ((word (resolve pname))
+          protein )
+      (unless word
+        (error "The word ~a isn't defined, so it can't ~
+                name a protein." pname))
+      ;; iterate spelling variations
+      (setq protein (lookup word)))))
+
+(defmethod get-protein ((name word))
+  (find-individual 'protein :name name))
+
+(defmethod get-protein ((name polyword))
+  (find-individual 'protein :name name))
+
+(defmethod get-family ((name word))
+  (find-individual 'bio-family :name name))
+
+(defmethod get-family ((name polyword))
+  (find-individual 'bio-family :name name))
+
 
 ;;;-------------------------------------------
 ;;; macro for defining individual particulars
 ;;;-------------------------------------------
 
-(defmacro def-bio (short kind &key greek identifier long synonyms takes-plurals)
+(defmacro def-bio (short kind
+                   &key greek identifier long synonyms takes-plurals
+                        mitre-link )
   ;; short = "NIK", long = "NF-κB-inducing kinase"
   ;; kind = kinase, greek = "alpha"
   ;; Makes individuals (particulars), that are instances of 
@@ -46,16 +80,18 @@
     (setq takes-plurals t))
 
   `(def-bio/expr ,short ',kind 
-     :greek ',greek :identifier ',identifier 
+     :greek ',greek :identifier ',identifier :mitre-link ,mitre-link
      :long ,long :synonyms ',synonyms :takes-plurals ,takes-plurals))
 
 
-(defun def-bio/expr (short kind &key greek identifier long synonyms takes-plurals)
+(defun def-bio/expr (short kind 
+                     &key greek identifier mitre-link
+                          long synonyms takes-plurals)
   ;; use find-individual with their names to retrieve these. 
   (let* ((word (resolve/make short))
          (category (category-named kind :break-if-undefined)))
     (make-typed-bio-entity word category
-                          greek identifier
+                          greek identifier mitre-link
                           long synonyms takes-plurals)))
  
 
@@ -65,7 +101,8 @@
 
 
 (defun make-typed-bio-entity (word category 
-                              &optional greek identifier long synonyms takes-plurals)
+                              &optional greek identifier mitre-link 
+                                        long synonyms takes-plurals)
   (declare (special *inihibit-constructing-plural*))
   (let ((label (or (override-label category) category))
         (form (category-named 'proper-noun))
@@ -96,58 +133,65 @@
       ;; as a common noun that has this individual as its referent.
       ;; Ignoring brackets since this runs with the new chunker
 
-      (push-debug `(,i ,word)) ;;(break "find base rule")
-      ;; This is packaged up some place, but no time to see where
-      (let* ((retrieved-rules (get-rules i))
-             (r (when retrieved-rules (car retrieved-rules))))
-        (unless (and r (cfr-p r))
-          (push-debug `(,i ,word))
-          (error "something badly formed about rules field"))
-        (when r
-          ;;(push-debug `(,r)) (break " set rule form?")
-          (setf (cfr-form r) category::proper-noun)))
+    (push-debug `(,i ,word)) ;;(break "find base rule")
 
-      (let* ((pname (etypecase word 
-                      (word (word-pname word))
-                      (polyword (pw-pname word))))
-             (downcased-pname (string-downcase pname)))
-        (unless (string= downcased-pname pname) ;; case-sensitive
-          (let ((lowercase-word (resolve/make downcased-pname)))
-            (push (define-cfr label `(,lowercase-word)
-                    :form form
-                    :referent i)
-                  rules))))
- 
-      (when identifier
-        (bind-variable 'uid identifier i))
+    ;; This is packaged up some place, but no time to see where
+    (let* ((retrieved-rules (get-rules i))
+           (r (when retrieved-rules (car retrieved-rules))))
+      (unless (and r (cfr-p r))
+        (push-debug `(,i ,word))
+        (error "something badly formed about rules field"))
+      (when r
+        ;;(push-debug `(,r)) (break " set rule form?")
+        (setf (cfr-form r) category::proper-noun)))
 
-      (when synonyms ;; quoted list of strings
-        (dolist (syn synonyms)
-          (push (define-cfr label `(,(resolve/make syn))
+    (let* ((pname (etypecase word 
+                    (word (word-pname word))
+                    (polyword (pw-pname word))))
+           (downcased-pname (string-downcase pname)))
+      (unless (string= downcased-pname pname) ;; case-sensitive
+        (let ((lowercase-word (resolve/make downcased-pname)))
+          (push (define-cfr label `(,lowercase-word)
                   :form form
                   :referent i)
-                rules)))
+                rules))))
+ 
+    (when identifier
+      (bind-variable 'uid identifier i))
+    (when mitre-link
+      (handle-mitre-link i mitre-link))
 
-      ;; Now we do that by-hand for the long-form. If the long form needs
-      ;; to have a variant with a greek letter in it we'll make two rules.
-      (when long
-        (let* ((pw (resolve/make long)) ;; pw = polyword = multiword
-               (cfr (define-cfr label `(,pw)
-                      :form form
-                      :referent i)))
-          (push cfr rules)))
+    (when synonyms ;; quoted list of strings
+      (dolist (syn synonyms)
+        (push (define-cfr label `(,(resolve/make syn))
+                :form form
+                :referent i)
+              rules)))
 
-      (when greek
-        (let ((additional-rules
-               (rules-with-greek-chars-substituted
-                (word-pname word) long greek label form i)))
-          (setq rules (nconc additional-rules rules))))
+    ;; Now we do that by-hand for the long-form. If the long form needs
+    ;; to have a variant with a greek letter in it we'll make two rules.
+    (when long
+      (let* ((pw (resolve/make long)) ;; pw = polyword = multiword
+             (cfr (define-cfr label `(,pw)
+                    :form form
+                    :referent i)))
+        (push cfr rules)))
 
-      (when rules
-        (add-rules-to-individual i rules))
+    (when greek
+      (let ((additional-rules
+             (rules-with-greek-chars-substituted
+              (word-pname word) long greek label form i)))
+        (setq rules (nconc additional-rules rules))))
 
-      i))
+    (when rules
+      (add-rules-to-individual i rules))
 
+    i))
+
+(defun handle-mitre-link (i mitre-link)
+  ;; for the moment drop it on the floor. 
+  ;; Set up a two-way links between this id and the object
+  (push-debug `(,i ,mitre-link)))
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
   (unless *greek-character-map*
@@ -189,8 +233,9 @@
 
     rules))
 
-
-;;--- Families
+;;;----------
+;;; Families
+;;;----------
 
 (defmacro def-family (name &key type species members ;; for family
                            long identifier synonyms) ;; for def-bio

@@ -24,7 +24,7 @@
 ;;(gload "bio;terms")
 (gload "bio;terms1")
 (gload "bio;drugs") ;; needed by verbs
-(gload "bio;phenomena")
+(gload "bio;phenomena") ;; after proteins
 (gload "bio;verbs1")
 (gload "bio;switches")
 
