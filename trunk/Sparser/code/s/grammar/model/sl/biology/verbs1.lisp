@@ -641,6 +641,15 @@
    :s agent
    :o patient))
 
+(define-category depend
+  :specializes bio-process
+  :binds ((agent biological)(theme biological)) 
+  :realization
+  (:verb "depend" :noun "dependency"
+   :etf (sv)
+   :s agent
+   :on theme))
+
 (define-category deplete
   :specializes bio-process
   :binds ((agent biological)(patient bio-entity)) 
