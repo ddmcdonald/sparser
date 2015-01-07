@@ -24,6 +24,15 @@
 ; #13 (p "BRAF is inactive in NRAS mutant cells.")
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
 
+;
+
+;;--- 1/6/14
+; The short cut realization handler, decode-realization-parameter-list
+; does the wrong thing (redundant thing) when there are multiple etf.
+; It only has to apply the word rules once, and then apply the rule
+; schema for each of the etf.  That will call for refactoring the
+; downstream applier:  apply-rdata-mappings
+
 ; (bio-setting)
 ; (f "/Users/ddm/ws/R3/r3/trunk/darpa/Dec14-TestMaterials/DeepTest/training-passages.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
@@ -37,17 +46,13 @@
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 3.txt")
 
 
-
 ; (trace-paragraphs) ;; for sentences and periods
 ; (trace-edges) ;; edge over period as a literal?
-
 ; (trace-island-driving)  (untrace-island-driving) 
-; (trace-treetops-sweep)
 ; (progn (trace-chunker) (trace-segments))
 ; (trace-terminals-sweep) ;; pw, etc.
 ; (progn (untrace-chunker) (untrace-segments) (untrace-terminals-sweep)  (untrace-island-driving))
 
-; (setq *do-islands-2d-pass* nil)
 ; exploded-tree-family-named
 
 ; Redo indiviual ids based on their UID
@@ -88,32 +93,17 @@
   (ddm-ed "objects/traces/scan-patterns.lisp")
   (ddm-ed "objects/traces/treetops.lisp"))
 
+; (setq *work-on-ns-patterns* t)
 (defun ddm-no-spaces ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
-  (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp")
+  (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp") ;; driver
   (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
   (ddm-ed "analyzers/psp/patterns/patterns.lisp")
   (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "grammar/rules/SD&P/create-categories.lisp")
   (ddm-ed "grammar/rules/syntax/categories.lisp"))
-
-(defun ddm-anaphora ()  ;;doc -- note on anaphora
-  (ddm-ed "analyzers/CA/anaphora3.lisp")
-  (ddm-ed "grammar/rules/CA/defNP2.lisp")
-  (ddm-ed "grammar/model/core/pronouns/object1.lisp")
-  (ddm-ed "grammar/model/core/pronouns/cases1.lisp")
-  (ddm-ed "grammar/model/core/pronouns/ref4.lisp")
-  (ddm-ed "grammar/rules/syntax/articles.lisp")
-  (ddm-ed "grammar/rules/words/pronouns.lisp"))
-
-(defun ddm-polyword-conundrum ()
-  (ddm-ed "objects/rules/cfr/dotted5.lisp")
-  (ddm-ed "objects/rules/cfr/knit-in3.lisp")
-  (ddm-ed "objects/rules/cfr/polywords1.lisp")
-  (ddm-ed "objects/chart/words/polyword-form1.lisp")
-  (ddm-ed "analyzers/psp/assess/terminal-edges2.lisp"))
 
 
 ;; Set up actions associated with binding
@@ -133,6 +123,16 @@
 ;;    make-rules-for-rdata  instantiate-rule-schema 
 
 ;  (ddm-ed "objects/model/tree-families/subrs3.lisp")
+
+
+(defun ddm-shortcuts ()
+  (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
+  (ddm-ed "grammar/rules/tree-families/shortcut-expansion.lisp")
+  (ddm-ed "grammar/rules/tree-families/shortcut-mechanics.lisp")
+  (ddm-ed "grammar/rules/tree-families/families1.lisp")
+  (ddm-ed "grammar/rules/tree-families/shortcuts1.lisp")
+  (ddm-ed "grammar/rules/tree-families/families.lisp")
+  (ddm-ed "grammar/rules/syntax/subcategorization.lisp"))
 
 
 (defun ddm-tree-families ()
@@ -161,15 +161,22 @@
 ; (ddm-ed "objects/chart/edge-vectors/tuck.lisp)
 ;(ddm-ed "objects/chart/edge-vectors/peek.lisp)
 
+(defun ddm-anaphora ()  ;;doc -- note on anaphora
+  (ddm-ed "analyzers/CA/anaphora3.lisp")
+  (ddm-ed "grammar/rules/CA/defNP2.lisp")
+  (ddm-ed "grammar/model/core/pronouns/object1.lisp")
+  (ddm-ed "grammar/model/core/pronouns/cases1.lisp")
+  (ddm-ed "grammar/model/core/pronouns/ref4.lisp")
+  (ddm-ed "grammar/rules/syntax/articles.lisp")
+  (ddm-ed "grammar/rules/words/pronouns.lisp"))
 
-(defun ddm-shortcuts ()
-  (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
-  (ddm-ed "grammar/rules/tree-families/shortcut-expansion.lisp")
-  (ddm-ed "grammar/rules/tree-families/shortcut-mechanics.lisp")
-  (ddm-ed "grammar/rules/tree-families/families1.lisp")
-  (ddm-ed "grammar/rules/tree-families/shortcuts1.lisp")
-  (ddm-ed "grammar/rules/tree-families/families.lisp")
-  (ddm-ed "grammar/rules/syntax/subcategorization.lisp"))
+(defun ddm-polyword-conundrum ()
+  (ddm-ed "objects/rules/cfr/dotted5.lisp")
+  (ddm-ed "objects/rules/cfr/knit-in3.lisp")
+  (ddm-ed "objects/rules/cfr/polywords1.lisp")
+  (ddm-ed "objects/chart/words/polyword-form1.lisp")
+  (ddm-ed "analyzers/psp/assess/terminal-edges2.lisp"))
+
 
 
 (defun ddm-patterns ()
