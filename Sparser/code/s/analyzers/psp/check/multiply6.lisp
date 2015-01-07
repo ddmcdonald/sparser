@@ -35,12 +35,14 @@
 ;;      forest level.
 ;; 1/5/2015 MAJOR CHANGE -- off by default (se variable *check-forms*), but works well
 ;; ensure that all rules are only applied to compatible syntactic forms
+;; 1/6/2015 parameter *report-form-check-blocks* to reduce printouts
 
 (in-package :sparser)
 
 (defparameter *check-forms* t) ;; when this is T, ensure that all rules are only applied to compatible syntactic forms
 (defparameter *collect-forms* nil)
 (defparameter *collected-forms* nil)
+(defparameter *report-form-check-blocks* nil)
 
 
 ;;;------------------
@@ -143,11 +145,13 @@
                    (*left-edge* left-edge)
                    (*right-edge* right-edge))
                 (declare (special *rule* *left-edge* *right-edge*))
-                (print `(***------>> blocking  
-                          ,*rule* ,(rule-forms *rule*) 
-                          applied to 
-                          (,(cat-name (edge-form *left-edge*)) ,*left-edge*)
-                          (,(cat-name (edge-form *right-edge*)),*right-edge*)))
+                (when
+                    *report-form-check-blocks*
+                  (print `(***------>> blocking  
+                                       ,*rule* ,(rule-forms *rule*) 
+                                       applied to 
+                                       (,(cat-name (edge-form *left-edge*)) ,*left-edge*)
+                                       (,(cat-name (edge-form *right-edge*)),*right-edge*))))
                 ;;(break "incompatible-forms")
                 nil)))))
          (t  rule)))))
