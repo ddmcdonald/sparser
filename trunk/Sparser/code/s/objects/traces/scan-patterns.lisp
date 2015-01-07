@@ -157,4 +157,30 @@
   (when (or *trace-scan-patterns*)
     (trace-msg "[ns] made edge ~a" edge)))
 
+(deftrace :looking-at-ns-segment (start-pos end-pos)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking at the segment ~s"
+               (string-of-words-between start-pos end-pos))))
+
+(deftrace :segment-ns-pattern (pattern)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] The pattern is ~a" pattern)))
+
+(deftrace :ns-segment-layout (layout)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] After parsing the layout is ~a" layout)))
+
+(deftrace :ns-looking-at-slash-patterns ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking for a matching slash pattern")))
+
+(deftrace :ns-looking-at-hypen-patterns ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking for a matching hyphen pattern")))
+
+(deftrace :ns-taking-default ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking at default patterns")))
+
+
 
