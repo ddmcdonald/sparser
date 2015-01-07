@@ -348,7 +348,7 @@
 ;;; conjunction heuristics
 ;;;------------------------
 
-(defparameter *allow-form-conjunction-heuristic* nil
+(defparameter *allow-form-conjunction-heuristic* t
   "A switch to determine whether we allow two edges to conjoin 
   based on having the same form category. This is overly
   agressive when running inline (in after actions of PTS)
