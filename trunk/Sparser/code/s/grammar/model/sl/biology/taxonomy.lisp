@@ -31,10 +31,30 @@
    lemmas can trigger a specific compose method
    in noun noun compounds.")
 
+(define-mixin-category bio-scalar
+     :documentation "No content by itself, but provides a common superconcept 
+     for measurable things that can be increased or decreased.")
+
 (define-mixin-category biological
+  :specializes bio-scalar
   :lemma (:adjective "biological")
   :binds ((bio-context bio-context)) 
   :documentation "Strictly speaking this a mixin")
+
+;; redefine to make this a bio-scalar
+#+ignore
+(define-category  measurement  ;; "10 yards"
+  :specializes bio-scalar
+  :instantiates self
+  :binds ((units . unit-of-measure)
+          (quantity  :or quantity number))
+  :realization (:tree-family  quantity+kind
+                :mapping ((quantity . quantity)
+                          (base . units)
+                          (np . :self)
+                          (np-head . unit-of-measure)
+                          (modifier . (number quantity))
+                          (result-type . :self))))
 
 
 ;;;---------------------------------
@@ -326,11 +346,6 @@
 
 
 ;;//// are these even "bio" at all?
-
-(define-category bio-scalar
-  :specializes bio-entity
-  :documentation "No content by itself, but provides a common superconcept 
-     for measurable things that can be increased or decreased.")
 
 (define-category process-rate
   :specializes bio-scalar
