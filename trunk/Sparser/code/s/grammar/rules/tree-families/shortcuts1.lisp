@@ -125,7 +125,22 @@ broadly speaking doing for you all the things you might do by hand.
                      binds realization
                      instantiates mixin restrict rule-label 
                      obo-id)
-  (when (stringp name) ;; (np-head "S338" :super 'residue-on-protein)
+  (typecase name
+    (symbol)
+    (string  ;; (np-head "S338" :super 'residue-on-protein)
+     (setq noun name) ;; preserve it
+     (setq name (name-to-use-for-category name)))
+    (cons
+     (if (stringp (car name))
+       (then
+        (setq noun name)
+        (setq name (name-to-use-for-category (car name))))
+       (error "name parameter is a list of unexpected form: ~a" name)))
+    (otherwise
+     (error "Unexected type for name parameter in noun shortcut: ~a~%~a"
+            (type-of name) name)))
+
+  (when (stringp name)
     (setq noun name) ;; preserve it
     (setq name (name-to-use-for-category name)))
 
