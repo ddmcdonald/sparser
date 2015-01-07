@@ -119,6 +119,15 @@
   ;; it makes a PP acceptable as a direct object
   :referent (:head left-edge)) ;; (:head right-edge))
 
+(def-syntax-rule (preposition proper-noun)
+                 :head :left-edge
+  :form pp
+  ;; I suppose we need a generic relationship here for
+  ;; a proper referent
+  ;; THIS SHOULD NOT BE THE REFERENT OF THE NP --
+  ;; it makes a PP acceptable as a direct object
+  :referent (:head left-edge)) ;; (:head right-edge))
+
 
 (def-syntax-rule (spatial-preposition np) ;;//// get rid of spatial-preposition!
                  :head :left-edge
