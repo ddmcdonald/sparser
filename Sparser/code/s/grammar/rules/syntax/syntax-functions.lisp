@@ -117,20 +117,22 @@
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
   (declare (special subcat-patterns))
-  (let* ((pp-edge (right-edge-for-referent))
-         (prep-edge (edge-left-daughter pp-edge))
-         (prep-word (edge-left-daughter prep-edge))
-         (pobj-edge (edge-right-daughter pp-edge))
-         variable)
-    (declare (special prep-word prep-edge pobj-edge variable))
-    (unless prep-word
-      (push-debug `(,pp-edge ,prep-edge))
-      (error "Unexpected configuration of PP edges"))
-    (when  subcat-patterns
+  (when  subcat-patterns
+    (let* ((pp-edge (right-edge-for-referent))
+           (prep-edge (edge-left-daughter pp-edge))
+           (prep-word (edge-left-daughter prep-edge))
+           (pobj-edge (edge-right-daughter pp-edge))
+           variable)
+      (declare (special prep-word prep-edge pobj-edge variable))
+      (unless prep-word
+        (push-debug `(,pp-edge ,prep-edge))
+        (error "Unexpected configuration of PP edges"))
+      
       (dolist (entry subcat-patterns)
         (when 
             (and
              (eq prep-word (subcat-preposition entry))
+             ;;(print (list (edge-referent pobj-edge) (subcat-restriction entry)))
              (itypep (edge-referent pobj-edge) (subcat-restriction entry)))
           (setq variable (subcat-variable entry))
           (return)))
