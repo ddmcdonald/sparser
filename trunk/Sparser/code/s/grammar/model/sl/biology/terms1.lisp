@@ -155,6 +155,7 @@
 (adj "chemical") ;; keyword: (al ADJ) 
 (adj "combinatorial" :super modifier) ;; keyword: (al ADJ) 
 (adj "comparable" :super modifier) ;; keyword: (able ADJ) 
+(adj "conserved" :super modifier) ;; virtually never used as a verb
 (adj "de novo" :super modifier)
 (adj "dead")
 (adj "dependent" :super modifier) ;; keyword: (ent ADJ) 
@@ -237,12 +238,16 @@
 (noun "heterodimer" :super molecule)
 (noun "human" :super species)
 (noun "inhibitor" :super bio-entity) ;; keyword: (or N) 
+(noun "isoform" :super bio-variant)
 (noun "knockdown" :super bio-process)
 (noun "manner" :super bio-process) ;; by chemical or genetic means
 (noun "mass spectrometry" :super bio-process)
 (noun "means" :super bio-process) ;; by chemical or genetic means
 (noun "mechanism" :super bio-process)
 (noun "membrane" :super cellular-location)
+(noun "cytosol" :super cellular-location)
+(noun "nucleus" :super cellular-location)
+(noun "site" :super bio-location)
 (noun "method" :super bio-process)
 (noun "mitogen" :super molecule)
 (noun "open reading frame" :super bio-entity)
@@ -254,6 +259,12 @@
 (noun "phenotype" :super bio-entity)
 (noun "plasma" :super cellular-location)
 (noun "range" :super measurement)
+(noun "rate" :super measurement
+      :binds ((process bio-process) (components biological))
+      :realization 
+      (:noun "rate"
+             :of process ; 
+             :for components))
 (noun "ratio" :super measurement)
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
@@ -273,7 +284,12 @@
 
 ;;; using 'abstract' here as a standin for a better taxonomic treatment
 (noun "component" :super abstract)
-(noun "effect" :super abstract)
+(noun "effect" :super bio-process
+      :binds ((effector biological)(effectee biological))
+      :realization
+      (:noun "effect" 
+             :of effector
+             :on effectee))
 (noun "exclusivity" :super abstract) ;; keyword: (ity N) 
 (noun "fate" :super abstract)
 (noun "group" :super abstract)
@@ -343,6 +359,7 @@
 (def-cell-line "SkMel28")
 (def-cell-line "WM266.4")
 (def-cell-line "WM852")
+(def-cell-line "HEK293T")
 
 
 ;;;------------------
@@ -469,3 +486,29 @@
 "target";;ambiguous between (NOUN VERB)
 "observation"
 "assay";;ambiguous between (NOUN VERB)
+
+
+;; nouns and adjectives from January test
+(adj "biophysical" :super modifier)
+(adj "identical" :super modifier)
+(adj "insensitive" :super modifier)
+(adj "kinetic" :super modifier)
+(adj "native" :super modifier)
+(adj "putative" :super modifier)
+(adj "relative" :super modifier)
+(adj "suitable" :super modifier)
+(adj "unclear" :super modifier)
+(adj "unmodified" :super modifier)
+ 
+(adj "ability" :super abstract)
+(noun "absence" :super abstract)
+(noun "analysis" :super bio-process) 
+(noun "fragment" :super bio-entity)
+(noun "position" :super bio-location)
+(noun "tumorigenesis" :super bio-process)
+(noun "influence" :super bio-process)
+(noun "proportion" :super measurement)
+(noun "population" :super bio-entity)
+
+
+(noun "signalling" :super bio-process) ;; this is an alternate spelling for "signaling"
