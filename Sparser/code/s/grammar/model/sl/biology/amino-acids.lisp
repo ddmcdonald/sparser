@@ -188,7 +188,7 @@ therefore we have the special cases:
   (def-bio/expr residue-name 'residue-on-protein :takes-plurals nil))
 
 ;;(define-residue "S338")
-(np-head "S338" :super 'residue-on-protein)
-(np-head "pThr202/Tyr204" :super 'residue-on-protein)
+(noun "S338" :super residue-on-protein)
+(noun "pThr202/Tyr204" :super residue-on-protein)
 
 
