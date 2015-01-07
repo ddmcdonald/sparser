@@ -181,7 +181,9 @@
     (dolist (schema-name etf)
       ;; Iterate through the etf, adding to the substituions and word list
       (let* ((rschema (get-realization-scheme schema-name))
-             (lexical-class (schema-head-keyword rschema)))
+             (lexical-class (when rschema (schema-head-keyword rschema))))
+        (unless rschema
+          (error "There is no realization scheme named ~a" schema-name))
          
         ;; set up the word map
         (case lexical-class

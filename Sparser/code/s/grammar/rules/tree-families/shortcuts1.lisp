@@ -157,7 +157,9 @@ broadly speaking doing for you all the things you might do by hand.
                        binds realization
                        instantiates mixin 
                        restrict rule-label obo-id)
-
+  (when (stringp name)
+    (setq noun name)
+    (setq name (name-to-use-for-category name)))
   (unless (or super specializes)
     (setq  specializes (super-category-for-POS :noun)))
   (when binds
@@ -169,6 +171,9 @@ broadly speaking doing for you all the things you might do by hand.
 
   #+ignore(unless index
     (setq index '(:temporary)))
+; > Error: No data in index field, (temporary)
+; >        from which to establish operations
+; > While executing: decode-for-find-&-index
     
   (let ( category )
     (cond

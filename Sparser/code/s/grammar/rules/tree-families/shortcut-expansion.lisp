@@ -134,13 +134,26 @@
          (head-keyword (schema-head-keyword scheme))
          (mapping (assemble-scheme-form scheme args etf category))
          (head-word-pname (cdr (assq head-keyword word-keys)))
-         (head-word (if (consp head-word-pname)
-                      (resolve/make (car head-word-pname))
-                      (resolve/make head-word-pname)))
-         (irregulars (if (consp head-word-pname)
-                       (cdr head-word-pname)
-                       (cdr (assq :irregulars word-keys)))))
-    (push-debug `(,etf ,head-keyword ,head-word ,mapping));; (break "1")
+         head-word  irregulars )
+    (cond
+     ((consp head-word-pname)
+      ;; two cases, multiple words and a single word with irregularities
+      ;; See, e.g., make-verb-rules for how this is sorted out later.
+      (cond
+       ((some #'keywordp head-word-pname)
+        (setq head-word (resolve/make (car head-word-pname))
+              irregulars (cdr head-word-pname)))
+       ((every #'stringp head-word-pname)
+        (setq head-word (loop for string in head-word-pname
+                          collect (resolve/make string))))
+       (t 
+        (push-debug `(,head-word-pname ,category))
+        (error "Oddly formed head-word pname: ~a" head-word-pname))))
+     (t
+      (setq head-word (resolve/make head-word-pname)
+            irregulars (cdr (assq :irregulars word-keys)))))
+
+    (push-debug `(,etf ,head-keyword ,head-word ,mapping)) ;(break "1")
     (unless head-word
       (push-debug `(,scheme ,word-keys))
       (error "The word-keys don't have an entry for ~a" head-keyword))
