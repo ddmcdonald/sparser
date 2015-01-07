@@ -65,7 +65,16 @@
 (defun reset-dectest ()
   (setq *tested* '(0)))
 
-(defun dectest(n &optional (sentences *dec-tests*))
+(defparameter *sentences* *dec-tests*)
+(defun test-jan ()
+  (setq *sentences* *jan-dry-run*)
+  nil)
+
+(defun test-dec ()
+  (setq *sentences* *dec-tests*)
+  nil)
+
+(defun dectest(n &optional (sentences *sentences*))
   (let ((test  (nth (- n 1) sentences)))
     (print (list n test))
     (if (member n *known-breaks*)
@@ -79,7 +88,6 @@
 (defun bad () 
   (push (car *tested*) *known-breaks*) 
   (retest))
-
 
 
 
