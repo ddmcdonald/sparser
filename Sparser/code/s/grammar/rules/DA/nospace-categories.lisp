@@ -24,13 +24,22 @@
           (right))
   :index (:sequential-keys left right))
 
-;;/// Could this stay back there?
+
+(defparameter *inhibit-big-mech-interpretation* nil
+  "Localy bount to t when the context knows it's inappropriate")
+
 (defun make-hypenated-structure (left-edge right-edge)
   ;; called from nospace-hyphen-specialist
   (push-debug `(,left-edge ,right-edge))
   (let ((i (find-or-make-individual 'hyphenated-pair
              :left (edge-referent left-edge)
-             :right (edge-referent right-edge))))
+             :right (edge-referent right-edge)))
+        (category 
+         (if (and *big-mechanism*
+                  (null *inhibit-big-mech-interpretation*))
+           (bio-category-for-reifying)
+           category::hyphenated-pair)))
+
     (when (eq (edge-category left-edge)
               (edge-category right-edge))
       (bind-variable 'type (edge-category left-edge)
@@ -38,9 +47,7 @@
     (let ((edge (make-edge-over-long-span
                    (pos-edge-starts-at left-edge)
                    (pos-edge-ends-at right-edge)
-                   (if *big-mechanism*
-                     (bio-category-for-reifying)
-                     category::hyphenated-pair)
+                   category
                    :rule 'nospace-hyphen-specialist
                    :form category::n-bar
                    :referent i
