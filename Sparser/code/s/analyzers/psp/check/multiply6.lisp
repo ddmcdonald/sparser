@@ -38,7 +38,7 @@
 
 (in-package :sparser)
 
-(defparameter *check-forms* nil) ;; when this is T, ensure that all rules are only applied to compatible syntactic forms
+(defparameter *check-forms* t) ;; when this is T, ensure that all rules are only applied to compatible syntactic forms
 (defparameter *collect-forms* nil)
 (defparameter *collected-forms* nil)
 
