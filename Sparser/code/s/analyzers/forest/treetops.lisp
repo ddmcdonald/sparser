@@ -20,6 +20,7 @@
 ;;      (1/2/2015) key component of whack-a-rule control structure -- find all applicable rules across adjacent treetops
 ;;       called repeatedly, getting different rules each time as the tretops change by application of rules
 ;; 1/4/2015 add flag and bind the special *left-edge-into-reference* in possible-treetop-=rules so that ref/function can work as a predicate
+;; 1/6/2015 new mechanism in whack-a-rule to prioritize PP creation and attachemnt above subject+verb binding
 
 (in-package :sparser)
 
@@ -301,7 +302,26 @@
       (push
        (cons rule pair)
        rules))
-    rules))
+    (filter-rules-by-local-competition rules)))
+
+(defun filter-rules-by-local-competition (rules)
+  (loop for tail on rules
+    unless (losing-competition? (car tail) (second tail))
+    collect (car tail)))
+
+(defun losing-competition? (rule1 rule2)
+  (declare (special rule1 rule2))
+  (cond
+      ((and (eq (second rule1)(third rule2))
+            (eq category::preposition (car (cfr-rhs (car rule2))))
+            (eq category::vg (second (cfr-rhs (car rule1)))))
+       ;; goal here is to put off subject attachment until the subject is a large as possible
+       ;;  don't do right-to-left activation for the subj+verb rules
+       ;(break "competing")
+       (print `(dropping rule ,rule1))
+       t)
+      (t nil)))
+
 
 
 (defun treetop-does-not-end-the-chart (tt)
