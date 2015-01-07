@@ -1,11 +1,11 @@
 
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.12 December 2014
+;;;  version:  1.12 January 2015
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -93,6 +93,8 @@
 ;;       in Comlex before it trusted the stem that is constructed.
 ;;      (12/10/14) Added a check in creation of plurals that the category 'collection'
 ;;       is aleady defined. 
+;;      (1/6/15) Fixed over-zealous application of irregulars check that was
+;;       blocking simple case of multiple words with the same definition.
 
 (in-package :sparser)
 
@@ -108,9 +110,20 @@
                               override-category
                                category))
                            category)))
-    (when (and (consp (cdr head-word)) ;; not (:adjective . #<word "black">)
+    (when (and (consp (cdr head-word)) ;; not (:adjective . #<word "black">
                (cddr head-word))
-      (check-for-correct-irregular-word-markers  (cddr head-word)))
+      ;; Two cases, multiple words and a single word with irregularities
+      ;; We assume if they know to specify irregulars at all they
+      ;; will use a keyword. Otherwise we assume it's multiple words
+      (when (some #'keywordp (cdr head-word))
+        ;; (<word> <plist of irregulars>
+        (check-for-correct-irregular-word-markers (cddr head-word))))
+
+;    (when (and (consp (cdr head-word)) ;; not (:adjective . #<word "black">
+;               (cddr head-word))
+;      (check-for-correct-irregular-word-markers  (cddr head-word)))
+
+
     (ecase (car head-word)
       (:verb (make-verb-rules
               (cdr head-word) lhs-category referent))

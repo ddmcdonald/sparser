@@ -132,6 +132,13 @@ when contemplating using a new tree family
             (theme . comp-slot)))
 
 
+(define-realization-scheme pre-mod premodifier-adds-property 
+  ;; used in quarter -- as are a number of other np patterns
+  :head :common-noun
+  :mapping ((property . modifier-slot)
+            (np-head . :self)
+            (modifier . modifier-v/r)))
+
 (define-realization-scheme of-nominal empty-head-of-complement
   ;; used in old svo/nominal
   :head :common-noun
@@ -140,13 +147,6 @@ when contemplating using a new tree family
             (base-np . :self)
             (complement . theme-v/r)
             (np . :self)))
-
-(define-realization-scheme pre-mod premodifier-adds-property 
-  ;; used in quarter -- as are a number of other np patterns
-  :head :common-noun
-  :mapping ((property . modifier-slot)
-            (np-head . :self)
-            (modifier . modifier-v/r)))
 
 #|  Mine this
 (define-category  quarter
