@@ -125,6 +125,10 @@ broadly speaking doing for you all the things you might do by hand.
                      binds realization
                      instantiates mixin restrict rule-label 
                      obo-id)
+  (when (stringp name) ;; (np-head "S338" :super 'residue-on-protein)
+    (setq noun name) ;; preserve it
+    (setq name (name-to-use-for-category name)))
+
   `(noun/expr ',name
          :noun ',noun
          :super ',super :specializes ',specializes :index ',index
