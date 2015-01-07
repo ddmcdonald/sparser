@@ -65,6 +65,9 @@
 (defun reset-dectest ()
   (setq *tested* '(0)))
 
+(defun reset-test ()
+  (setq *tested* '(0)))
+
 (defparameter *sentences* *dec-tests*)
 (defun test-jan ()
   (setq *sentences* *jan-dry-run*)

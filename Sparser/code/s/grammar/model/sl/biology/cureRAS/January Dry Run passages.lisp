@@ -11,7 +11,7 @@ the intrinsic rate of GTP hydrolysis.")
     (p "No increase in the rate of GTP hydrolysis was observed for mUbRas in
 the presence of the same GAP–to Ras ratio.")
     (p "Therefore, mUbRas is insensitive to GAP–mediated regulation, similar
-to an oncogenic RasG12V mutation9.")
+to an oncogenic RasG12V mutation (9).") ;; FIX THE BFOOTNOTE INDICATOR (9) which was mutation9
     (p "We obtained similar results using K–Ras, indicating that the effects
 of monoubiquitination on Ras are not isoform–specific.")
 
