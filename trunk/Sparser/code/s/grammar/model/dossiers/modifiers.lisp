@@ -221,7 +221,7 @@
 
 (adj/adv "possible" "possibly" :super-category 'modifier)
 
-(define-adjective "likely") ;could be either adj or adv
+;;(define-adjective "likely") ;could be either adj or adv -- this conflicts with adverb use in biology
 (define-adjective "unlikely") 
 
 
