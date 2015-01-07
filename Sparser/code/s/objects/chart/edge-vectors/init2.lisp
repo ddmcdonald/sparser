@@ -3,11 +3,12 @@
 ;;; 
 ;;;     File:  "init"
 ;;;   Module:  "objects;chart:edge vectors:"
-;;;  Version:  2.2 May 1994
+;;;  Version:  2.3 January 2015
 
 ;; 2.0 (11/26/92 v2.3) bumped on general principles anticipating changes.
 ;; 2.1 (4/6/93) Moved some code around and put in switch for kcons vs. vector
 ;; 2.2 (5/23/94) added more fields to init. fn.
+;; 1/6/2015 Make the number of possible edges larger -- biology has deep right recursions
 
 (in-package :sparser)
 
@@ -38,7 +39,7 @@
 ;;;------------------------
 
 (or (boundp '*maximum-number-of-edges-in-an-edge-vector*)
-    (defparameter *maximum-number-of-edges-in-an-edge-vector* 13))
+    (defparameter *maximum-number-of-edges-in-an-edge-vector* 20))
 
 
 (defun make-edge-vector-array ()
