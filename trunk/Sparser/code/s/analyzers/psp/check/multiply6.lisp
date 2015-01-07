@@ -534,7 +534,7 @@
     (ENZYME (NP)) ;; NOT PP
     (IS-BIO-ENTITY (VP)) ;;  not PP VG RELATIVE-CLAUSE S VG 
     (MODAL (MODAL)) 
-    (MODIFIER (ADJECTIVE  NUMBER))  ;; not VP
+    (MODIFIER (ADJECTIVE NUMBER PROPER-NOUN NP COMMON-NOUN  COMMON-NOUN/PLURAL))  ;; not VP -- this is for the pre-mod rule
     (N-BAR (N-BAR)) 
     (NP (NP)) 
     (NP-HEAD (COMMON-NOUN)) 
