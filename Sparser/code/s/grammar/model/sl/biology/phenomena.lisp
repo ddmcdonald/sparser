@@ -33,6 +33,12 @@
    They are named according to the sequence of proteins
    (protein families) in the causal chain.")
 
+(define-category signaling-pathway
+   :specializes pathway
+   :instantiates :self
+   :realization
+  (:noun "signaling pathway"))
+
 
 ;(defmethod define-pathway ((proteins cons))
 ;  (let ((sequence (create-sequence 
