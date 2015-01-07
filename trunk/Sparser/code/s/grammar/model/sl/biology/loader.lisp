@@ -21,7 +21,8 @@
 (gload "bio;taxonomy")
 (gload "bio;proteins")
 (gload "bio;amino-acids")
-(gload "bio;terms")
+;;(gload "bio;terms")
+(gload "bio;terms1")
 (gload "bio;drugs") ;; needed by verbs
 (gload "bio;phenomena")
 (gload "bio;verbs1")
