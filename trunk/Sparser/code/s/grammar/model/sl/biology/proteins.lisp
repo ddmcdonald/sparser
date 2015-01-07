@@ -12,6 +12,7 @@
 ;;  -- allow for members to be added to family after family is defined
 ;; attempt to get around order dependency for MEK1 and MEK -- BUT THAT WAS NOT THE BUG
 ;; OVER TO YOU, <<DAVID>>
+;; 1/7/2015 added new "proteins" -- ubiquitin, hormone and histone, and stubs for mUbRAS and SAPK
 
 (in-package :sparser)
 
@@ -385,7 +386,8 @@ filligre may be used to distinguish them, etc.
 (def-bio "V600EBRAF" protein ;; need to figure out how to represent this variant in the ontology
   :synonyms ("B-RAFV600E" "V600EB-RAF" "BRAFV600E"))
 
-
+(def-bio "RasG12V" protein ;; this is a variant
+  )
 
 ;;------------- From here on down it's miscelany that
 ;;  I don't know how to codify
@@ -412,4 +414,9 @@ filligre may be used to distinguish them, etc.
 (def-bio "growth factors" protein)
 (def-bio "growth factor" protein)
 
+(def-bio "ubiquitin" protein)
+(noun "hormone" :super protein)
+(noun "histone" :super protein)
 
+(def-bio "mUbRAS" protein) ;; mono-ubiquinated RAS
+(def-bio "SAPK" protein) ;; class of stress activated proteins
