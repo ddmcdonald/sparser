@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;versions:v2.3:workspace:"
-;;;  version:  November 2014
+;;;  version:  January 2015
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -16,7 +16,8 @@
 ;; 3/15/13 Added p/art to simulate running a document stream.
 ;; 4/14 added ier for edge referents and binds for their bindings.
 ;; 10/9/13 added ietf. 10/17/13 augmented ic to get mixins. 11/18/14 added
-;; drs for describe rule set, over words or categories.
+;; drs for describe rule set, over words or categories. 1/7/15 Added
+;; the names of the plist generics
 
 (in-package :sparser)
 
@@ -28,7 +29,18 @@
   (load "SysAp:Applications:MCL 2.0.1:Interface Tools:make-ift.lisp")
   (format t "~&~%do (ift::load-ift)~%~%"))
 
+;;;--------------------
+;;; the plist generics
+;;;--------------------
 
+#| 
+  plist-for (obj)  
+  get-tag-for (obj plist)  
+  has-tag? (tag object)
+  remove-property-from (obj tag)
+  change-plist-value (obj property new-value)
+  push-onto-plist (obj item tag)
+|#
 
 ;;;-----------------------------------------------------
 ;;;     abbreviations of frequently called routines
