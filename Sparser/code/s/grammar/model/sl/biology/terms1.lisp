@@ -216,6 +216,7 @@
 (define-adverb "similarly")
 (define-adverb "surprisingly")
 (define-adverb "therefore")
+(define-adverb "until now")
 
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
 (noun "ORF" :super bio-entity) ;; same as above -- need to figure out how to get the category spelling right
@@ -250,7 +251,12 @@
 (def-bio "data" bio-entity) ;; need something better
 (noun "derivative" :super molecule)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
-(noun "domain" :super bio-location)
+(noun "domain" :super bio-location
+      :binds ((substrate bio-entity))
+      :realization 
+      (:noun "domain"
+             :of substrate))
+                          
 (noun "et al." :super bib-reference)
 (noun "effector" :super protein) ;; NOT SURE WHAT THE RIGHT SUPER is
 (noun "exchange" :super bio-process)
@@ -263,7 +269,11 @@
       :realization
       (:noun "form"
              :of basis))
-(noun "function" :super bio-process)
+(noun "function" :super bio-process
+      :binds ((functional bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:noun "function"
+       :of functional))
 (noun "heterodimer" :super molecule)
 (noun "human" :super species)
 (noun "inhibitor" :super bio-entity) ;; keyword: (or N) 
