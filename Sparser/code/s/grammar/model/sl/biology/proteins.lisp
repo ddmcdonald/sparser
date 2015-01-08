@@ -241,6 +241,12 @@ filligre may be used to distinguish them, etc.
   :long "mitogen activated protein kinase" 
   :synonyms ("ERK" "extracellular signal-regulated kinase"
              "erk"))
+;;/// one of these needs refinement
+(def-family "ERK"
+  :members ("ERK1" "ERK2")
+  :long "mitogen activated protein kinase" 
+  :synonyms ("ERK" "extracellular signal-regulated kinase"
+             "erk"))
 
 
 ;;--- The MEK family
