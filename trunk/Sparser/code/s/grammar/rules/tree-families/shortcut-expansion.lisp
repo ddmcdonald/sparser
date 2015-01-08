@@ -142,7 +142,13 @@
       (cond
        ((some #'keywordp head-word-pname)
         (setq head-word (resolve/make (car head-word-pname))
-              irregulars (cdr head-word-pname)))
+              irregulars (cdr head-word-pname))
+        (when irregulars
+          (push-debug `(,irregulars ,head-word))
+          (setq irregulars 
+                (loop for item in irregulars
+                  when (keywordp item) collect item
+                  when (stringp item) collect (resolve/make item)))))
        ((every #'stringp head-word-pname)
         (setq head-word (loop for string in head-word-pname
                           collect (resolve/make string))))
