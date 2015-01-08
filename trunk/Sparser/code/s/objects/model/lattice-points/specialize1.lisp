@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "specialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 May 2014
+;;;  version:  1.0 January 2015
 
 ;; initiated 11/29/97. Given some content 1/2/01 though punting on the issue of
 ;; cross-indexing all the different paths down to a subtype that is a specialization
@@ -20,6 +20,8 @@
 ;;   name-of-individual.
 ;; 1.0 (5/9/14) Thorough make-over to simplify the operations and tune them
 ;;   to CLOS and shadows. 
+;;   (1/7/15) Wrote one-off-specialization to expedite an issue in
+;;   conjunctions. 
 
 
 (in-package :sparser)
@@ -56,6 +58,15 @@
            (new-shadow (make-instance sclass)))
       (setf (indiv-shadow i) new-shadow) ;; does all the work
       i )))
+
+(defmethod one-off-specialization ((i individual) (mixin category))
+  ;; Used with conjunctions - referent-of-two-conjoined-edges 
+  ;; If we want to drive methods off of these then we need to
+  ;; use specialize-object and have the class and shadow
+  ;; created. This one is used strictly for comparison
+  (let ((present-type-field (indiv-type i)))
+    (setf (indiv-type i) (cons mixin present-type-field))
+    i))
 
 
 
