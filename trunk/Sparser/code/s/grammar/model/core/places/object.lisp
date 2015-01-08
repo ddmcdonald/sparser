@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.3 November 2011
+;;;  version:  0.4 January 2015
 
 ;; initiated in 10/12/92 v2.3. Added 'kind of location' 1/17/94.  Added location-
 ;; phrase 11/16/95. Added relative-location 11/99. 11/25 Moved in spatial-
@@ -21,6 +20,9 @@
 ;;   and location-description to [descriptive]. 8/14 Added name variable.
 ;;   and an index off of it. 9/12/11 added a bunch of named pp's. 11/1 added
 ;;   at-location.
+;; 0.4 (1/7/15) Finally gave location a specialization of abstract. N.b. that
+;;   this still needs to be coordinated with kinds/space and the other C3
+;;   treatments. 
 
 (in-package :sparser)
 
@@ -30,7 +32,7 @@
 
 (define-category  location
   :instantiates  self
-  :specializes   nil ;; wrong
+  :specializes   abstract
   :binds ((name . name-of-location)
           (type-name :primitive word)) ;; see define-type-category-constructor
               ;; this should go way farther up in the hierarchy
