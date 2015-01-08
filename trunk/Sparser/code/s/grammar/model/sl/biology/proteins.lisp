@@ -179,11 +179,11 @@ filligre may be used to distinguish them, etc.
 	
 (def-bio "BRaf" protein 
   :identifier "PR:000004801"
-  :synonyms ("b-raf" "B-RAF")
+  :synonyms ("B-Raf" "B-RAF")
   :mitre-link "Uniprot:P15056")
 
 (def-bio "CRaf" protein
-  :synonyms ("c-raf" "C-RAF")
+  :synonyms ("C-Raf" "C-RAF")
   :mitre-link "Uniprot:P04049")
 
 (def-family "Raf" 
@@ -230,6 +230,8 @@ filligre may be used to distinguish them, etc.
 (def-bio "ERK2" protein
   :synonyms ("erk2" "MAPK1" "mapk1")
   :mitre-link "Uniprot:P28482")
+
+(def-bio "p38 SAPK" protein)
 
 ;; and many more: ERK3 (MAPK6) and ERK4 (MAPK4), etc.
 ;; I don't understand the Wikipedia write up well enough
