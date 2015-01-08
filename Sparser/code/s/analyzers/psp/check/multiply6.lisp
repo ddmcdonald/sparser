@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "multiply"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  6.0 August 2013
+;;;  Version:  6.1 January 2015
 
 ;; 0.0 (9/4/92 v2.3) initiated.
 ;; 0.1 (10/12) pulled multiply-ids back to [chart;edges:multiplication],
@@ -33,8 +33,11 @@
 ;;      a dotted intermediary. Probably need to do something more interesting for
 ;;      these edges at segment boundarier or certainly once we've moved to the
 ;;      forest level.
-;; 1/5/2015 MAJOR CHANGE -- off by default (se variable *check-forms*), but works well
-;; ensure that all rules are only applied to compatible syntactic forms
+;; 6.1 (1/5/2015) MAJOR CHANGE -- off by default (se variable *check-forms*), 
+;;      but works well ensure that all rules are only applied to compatible 
+;;      syntactic forms
+;;     (1/7/15) Patched multiple-referent-categories for case of two categories
+;;      in the type, but that's a band-aid and can be done better. 
 ;; 1/6/2015 parameter *report-form-check-blocks* to reduce printouts
 
 (in-package :sparser)
@@ -211,7 +214,7 @@
 (defun multiple-referent-categories (referent)
   ;; Consult the supercategory links to return a list of the categories
   ;; to which the referent belongs, from the most specific to the
-  ;; most general
+  ;; most general. Feeds this list to multiply-referents
   (let ((base-category
          (typecase referent
            (psi (all-categories-in-psi referent))
@@ -220,12 +223,28 @@
            (otherwise
             (push-debug `(,referent))
             (error "Unexpected type: ~a" (type-of referent))))))
-    (when (consp base-category)
-      (if (null (cdr base-category))
+    (cond
+     ((category-p base-category)
+      (super-categories-of base-category))
+     ((consp base-category)
+      (cond
+       ((null (cdr base-category))
         (setq base-category (car base-category))
-        (else (push-debug `(,base-category ,referent))
-              (break "stub - more than one category"))))
-    (super-categories-of base-category)))
+        (super-categories-of base-category))
+
+       ((= 2 (length base-category)) ;; (#<model> ##<collection>)
+        (let* ((base (car base-category))
+               (mixin (cadr base-category))
+               (base-cats (super-categories-of base))
+               (mixin-cats (super-categories-of mixin)))
+          (let ((total (append base-cats mixin-cats)))
+            (remove-duplicates total :test #'eq))))
+
+       (t ;; Look at supercategory collection scheme as another
+        ;; way to approach this
+        (push-debug `(,base-category ,referent))
+        (break "stub - more than two categories: ~a.~%This would be ~
+                a good time to start using subtype." base-category)))))))
 
 
 (defun multiply-referent-categories (left-edge left-category 
