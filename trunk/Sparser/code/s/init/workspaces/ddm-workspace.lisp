@@ -19,7 +19,9 @@
   (setq *check-forms* t)
   (incorporate-obo-terms)
   (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
-  (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp"))
+  (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (ed "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (test-jan))
 
 ; #13 (p "BRAF is inactive in NRAS mutant cells.")
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
@@ -65,7 +67,7 @@
   (ddm-ed "grammar/model/sl/biology/proteins.lisp")
   (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
   (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
-  (ddm-ed "grammar/model/sl/biology/terms.lisp")
+  (ddm-ed "grammar/model/sl/biology/terms1.lisp")
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp"))
 ;;  molecules and NGkappB not loaded
