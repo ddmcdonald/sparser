@@ -133,8 +133,8 @@
 ;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
 ;; "interacting selectively and non-covalently with GTP"
 ;;
-(define-category bio-bind  :super bio-process
-  :obo-id "GO:0005488"
+(define-category bio-bind  :specializes bio-process
+  ;;:obo-id "GO:0005488"
   ;; "<binder> binds to <binde>" the subject moves
   :binds ((binder molecule)(bindee molecule)(site bio-location))
   :realization 
