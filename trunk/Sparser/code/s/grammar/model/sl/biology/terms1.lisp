@@ -549,7 +549,8 @@
  
 (adj "ability" :super abstract)
 (noun "absence" :super abstract)
-(noun "analysis" :super bio-process) 
+(noun ("analysis" :plural "analyses")
+  :super bio-process) 
 (noun "fragment" :super bio-entity)
 (noun "position" :super bio-location)
 (noun "tumorigenesis" :super bio-process)
