@@ -29,7 +29,12 @@
         (error "The word ~a isn't defined, so it can't ~
                 name a protein." pname))
       ;; iterate spelling variations
-      (setq protein (lookup word)))))
+      (setq protein (lookup word))
+      (unless protein
+        (let* ((capitalized (string-capitalize pname))
+               (cap-word (resolve capitalized)))
+          (setq protein (lookup cap-word))))
+      protein)))
 
 (defmethod get-protein ((name word))
   (find-individual 'protein :name name))
