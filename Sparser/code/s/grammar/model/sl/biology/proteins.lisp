@@ -150,17 +150,17 @@ filligre may be used to distinguish them, etc.
 ;;--- the Ras family
 
 (def-bio "KRas" protein 
-  :synonyms ("k-ras" "K-RAS")
+  :synonyms ("K-Ras" "K-RAS")
   :identifier "PR:0000009442" ;; gene is "PR:P01116" 
   :mitre-link "Uniprot:P01116")
 
 (def-bio "HRas" protein
-  :synonyms ("h-ras" "H-RAS")
+  :synonyms ("H-Ras" "H-RAS")
   :identifier "PR:000029705" ;; gene is "PR:P01112")
   :mitre-link "Uniprot:P01112:")
 
 (def-bio "NRas" protein
-  :synonyms ("n-ras" "N-RAS")
+  :synonyms ("N-Ras" "N-RAS")
   :identifier "PR:000011416" ;; gene is "PR:P01111"
   :mitre-link "Uniprot:P01111")
 
