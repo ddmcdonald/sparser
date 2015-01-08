@@ -113,8 +113,12 @@
 (define-category protein-terminus
   :specializes bio-location
   :instantiates :self
+  :binds ((protein protein))
   :lemma ((:common-noun "terminal")
-          (:common-noun "terminus")))
+          (:common-noun "terminus"))
+  :realization
+  (:noun "terminal"
+         :of protein))
 
 ;; not clear that we need a proper handling
 ;; of the molecule configuration, etc. that
