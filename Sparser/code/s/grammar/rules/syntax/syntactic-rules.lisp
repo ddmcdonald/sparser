@@ -115,6 +115,12 @@
   :form infinitive
   :referent (:daughter right-edge))
 
+#+ignore
+(def-syntax-rule (adverb comma)
+   :head :left-edge
+  :form vg
+  :referent (:daughter left-edge))
+
 
 ;;--- prepositional phrases
 
