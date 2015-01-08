@@ -186,7 +186,9 @@ it is created from N-terminus to C-terminus.|#
     (dolist (name strings-naming-proteins)
       (let ((protein (get-protein name)))
         (unless protein
-          (error "Cannot identify a protein named ~s" name))
+          (error "Cannot identify a protein named ~s~
+                ~%Maybe extend get-protein to an additional ~
+                  caps variant?" name))
         (push protein proteins)))
     (setq proteins (nreverse proteins))
     (let ((sequence (create-sequence proteins))
@@ -207,8 +209,9 @@ it is created from N-terminus to C-terminus.|#
         (push "/" list)))
     (apply #'string-append (nreverse list))))
 
-;(def-pathway "RAS" "Raf" "MAPK")
-;(def-pathway "MEK" "ERK")
+(def-pathway "RAS" "Raf" "MAPK")
+
+(def-pathway "MEK" "ERK")
 
 
 
