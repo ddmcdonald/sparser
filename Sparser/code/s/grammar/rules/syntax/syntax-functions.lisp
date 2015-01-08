@@ -35,6 +35,7 @@
           ~%       head = ~a" qualifier head))
 
   (or (call-compose qualifier head)
+      ;; This case is to benefit marker-categories
 
       (else
        (when (category-p head)
