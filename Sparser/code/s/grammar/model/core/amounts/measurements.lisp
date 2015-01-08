@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2000,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2000,2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "measurements"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  September 2014
+;;;  Version:  January 2015
 
 ;; original version initiated 10/2/91
 ;; completely made over 9/18/93 in new semantics.  10/24/93 gave it rdata
@@ -12,7 +12,8 @@
 ;; 5/6/14 Pulled in categories, etc. from /sl/waypoints/xtensions-to-core
 ;; 9/24/14 Wrote an ugly (not general enough) set of rules to handle
 ;; the notion of the value of a qualitative rate. Probably needs a
-;; custom schema if we see anything else like it. 
+;; custom schema if we see anything else like it. 1/8/15 Commented that
+;; out as too much complexity for its value. 
 
 (in-package :sparser)
 
@@ -182,6 +183,9 @@ and the word can stand by itself "that distance"
  supply the value and don't see the obvious way to do it yet
  and a rube goldburg scheme will be confusing
 |#
+
+#| 1/8/15 The rule spanning "of" is now beyond the pale because
+   it adds such complexity to Wack-a-Rule processing
 ;;  Use these ugly things instead for now.
 (def-cfr rate-of-process-of (rate of) ;; the spanned 'of', not literal
   :form np ;;/// ugh
@@ -200,6 +204,7 @@ and the word can stand by itself "that distance"
   :form s
   :referent (:head left-edge
              :bind (value right-edge)))
+|#
 
 
 
