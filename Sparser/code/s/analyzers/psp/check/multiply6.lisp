@@ -39,6 +39,8 @@
 ;;     (1/7/15) Patched multiple-referent-categories for case of two categories
 ;;      in the type, but that's a band-aid and can be done better. 
 ;; 1/6/2015 parameter *report-form-check-blocks* to reduce printouts
+;; 1/8/2015 refactor/cleanup forms checking, and check forms in all cases and make multiply-referents
+;;  include the edge-category for both edges, so that passives work correctly (#4 on January test)
 
 (in-package :sparser)
 
@@ -116,54 +118,60 @@
       (let* ((left-category-ids (category-ids/rightward left-edge))
              (right-category-ids (category-ids/leftward right-edge))
              (rule
-              (or (multiply-categories left-category-ids right-category-ids
-                                       left-edge right-edge)
+              (or (check-rule-form
+                   (multiply-categories left-category-ids right-category-ids
+                                        left-edge right-edge)
+                   left-edge right-edge)
                   
                   (when *edges-from-referent-categories*
                     (multiply-referents left-edge right-edge))
                   
                   (when *allow-pure-syntax-rules*
                     (check-form-form left-edge right-edge)))))
-        (when *collect-forms*
-          (let
-              ((rf (rule-forms rule)))
-            (when rf
-              (pushnew
-               (list rf
-                     (list (cat-name (edge-form left-edge))
-                           (cat-name (edge-form right-edge))))
-               *collected-forms*))))
-        (cond
-         (*check-forms*
-          (let
-              ((rf (rule-forms rule)))
-            (cond
-             ((and
-               (compatible-form (car rf) left-edge)
-               (compatible-form (second rf) right-edge))
-              rule)
-             (t
-              (let
-                  ((*rule* rule)
-                   (*left-edge* left-edge)
-                   (*right-edge* right-edge))
-                (declare (special *rule* *left-edge* *right-edge*))
-                (when
-                    *report-form-check-blocks*
-                  (print `(***------>> blocking  
-                                       ,*rule* ,(rule-forms *rule*) 
-                                       applied to 
-                                       (,(cat-name (edge-form *left-edge*)) ,*left-edge*)
-                                       (,(cat-name (edge-form *right-edge*)),*right-edge*))))
-                ;;(break "incompatible-forms")
-                nil)))))
-         (t  rule)))))
+        (when *collect-forms* (record-forms rule left-edge right-edge))
+        rule)))
+
+(defun record-forms (rule left-edge right-edge)
+  (let
+      ((rf (rule-forms rule)))
+    (when rf
+      (pushnew
+       (list rf
+             (list (cat-name (edge-form left-edge))
+                   (cat-name (edge-form right-edge))))
+       *collected-forms*))))
 
 (defun rule-forms (rule)
   (and (cfr-p rule)
        (or (cfr-rhs-forms rule) 
            (loop for c in (cfr-rhs rule) collect (cat-name c)))))
        
+(defun check-rule-form (rule left-edge right-edge) 
+  (if (not *check-forms*)
+      rule
+      (let
+          ((rf (rule-forms rule)))
+        (cond
+         ((and
+           (compatible-form (car rf) left-edge)
+           (compatible-form (second rf) right-edge))
+          rule)
+         (t
+          (let
+              ((*rule* rule)
+               (*left-edge* left-edge)
+               (*right-edge* right-edge))
+            (declare (special *rule* *left-edge* *right-edge*))
+            (when
+                *report-form-check-blocks*
+              (print `(***------>> blocking  
+                                   ,*rule* ,(rule-forms *rule*) 
+                                   applied to 
+                                   (,(cat-name (edge-form *left-edge*)) ,*left-edge*)
+                                   (,(cat-name (edge-form *right-edge*)),*right-edge*))))
+            ;;(break "incompatible-forms")
+            nil))))))
+
 (defun cat-name (cat)
   (and
    cat ;; words don't have edge-forms
@@ -187,8 +195,12 @@
     (if (and left-referent right-referent
              (legal-type-for-multiplying-referents left-referent)
              (legal-type-for-multiplying-referents right-referent))
-      (let ((left-categories (multiple-referent-categories left-referent))
-            (right-categories (multiple-referent-categories right-referent)))
+      (let ((left-categories 
+             (cons (edge-category left-edge)
+                   (multiple-referent-categories left-referent)))
+            (right-categories 
+             (cons (edge-category right-edge)
+                   (multiple-referent-categories right-referent))))
         (tr :referent-categories-to-check left-categories right-categories)
 
         (dolist (right-category right-categories)
@@ -197,7 +209,9 @@
             ;; suffice?
             (let ((rule (multiply-referent-categories left-edge left-category 
                                                       right-edge right-category)))
-              (when rule
+              (when (and
+                     rule
+                     (check-rule-form rule left-edge right-edge))
                 (return-from multiply-referents rule))))))
 
       (else (tr :referents-unsuitable-for-multiplying
