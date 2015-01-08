@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.2 July 2014
+;;;   Version:   1.2 January 2015
 
 ;; 1.0  (9/21/92 v2.3) added everything else, in ascii order
 ;; 1.1  (4/9/93) moved newline to required
 ;; 1.2  (9/26/94) added some globals for quick reference to some of these
 ;;      (10/19) added another one, 10/24/94 ditto
-;;      (7/20/14) Added a parameter for hyphen
+;;      (7/20/14) Added a parameter for hyphen\
+;;      (1/8/15) constant for semicolon
 
 (in-package :sparser)
 
@@ -63,21 +64,22 @@
 
 ;; These are used in (at least) Could-be-the-start-of-a-sentence
 
-(defparameter *the-punctuation-period* (punctuation-named #\.))
-(defparameter *the-punctuation-comma* (punctuation-named #\,))
-(defparameter *the-punctuation-colon* (punctuation-named #\:))
+(defconstant *the-punctuation-period* (punctuation-named #\.))
+(defconstant *the-punctuation-comma* (punctuation-named #\,))
+(defconstant *the-punctuation-colon* (punctuation-named #\:))
+(defconstant *the-punctuation-semicolon* (punctuation-named #\;))
 
-(defparameter *the-punctuation-open-angle-bracket* (punctuation-named #\<))
+(defconstant *the-punctuation-hyphen* (punctuation-named #\-))
 
-(defparameter *the-punctuation-hyphen* (punctuation-named #\-))
+(defconstant *the-punctuation-open-angle-bracket* (punctuation-named #\<))
 
-(defparameter *the-punctuation-open-parenthesis* (punctuation-named #\())
-(defparameter *the-punctuation-close-parenthesis* (punctuation-named #\)))
+(defconstant *the-punctuation-open-parenthesis* (punctuation-named #\())
+(defconstant *the-punctuation-close-parenthesis* (punctuation-named #\)))
 
 
 (defparameter *punctuation-words*
   `(,*the-punctuation-period* ,*the-punctuation-comma*
-    ,*the-punctuation-colon* 
+    ,*the-punctuation-colon* ,*the-punctuation-semicolon*
     ,*the-punctuation-hyphen* ))
 
 (defun edge-over-punctuation? (edge)
