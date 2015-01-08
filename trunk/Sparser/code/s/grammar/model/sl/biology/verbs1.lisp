@@ -1356,7 +1356,7 @@
 (define-category purify :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "purify" :noun "purification" :etf (svo-passive) :s agent :o patient)) 
 (define-category reconstitute :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "reconstitute" :noun "reconstitution" :etf (svo-passive) :s agent :o patient))
 (define-category reveal :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "reveal" :noun "revelation" :etf (svo-passive) :s agent :o patient))
-(define-category stabilize :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "stabilize" :noun "stabilization" :etf (svo-passive) :s agent :o patient)) 
+(define-category stabilize :specializes bio-process :binds ((agent biological)(patient bio-process)) :realization (:verb "stabilize" :noun "stabilization" :etf (svo-passive) :s agent :o patient))
 (define-category transcribe :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "transcribe" :noun "transcription" :etf (svo-passive) :s agent :o patient))
 (define-category translocation :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "translocate" :noun "translocation" :etf (svo-passive) :s agent :o patient)) 
 
