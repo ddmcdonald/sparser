@@ -760,7 +760,7 @@
 ;;;-----
 
 (define-adjective "aberrant")
-(define-adjective "able") ; want to give "to" tree family? "able to do x" .. or no.
+;;(define-adjective "able") ; want to give "to" tree family? [yes - in biology] "able to do x" .. or no.
 (define-adjective "abnormal")
 (define-adjective "abundant")
 (define-adjective "accurate")
