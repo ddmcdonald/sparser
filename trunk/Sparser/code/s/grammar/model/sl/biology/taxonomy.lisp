@@ -42,7 +42,6 @@
   :documentation "Strictly speaking this a mixin")
 
 ;; redefine to make this a bio-scalar
-#+ignore
 (define-category  measurement  ;; "10 yards"
   :specializes bio-scalar
   :instantiates self
