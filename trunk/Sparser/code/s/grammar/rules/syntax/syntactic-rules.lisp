@@ -105,6 +105,16 @@
   :form infinitive
   :referent (:daughter right-edge))
 
+(def-syntax-rule  (vg adverb)
+  :head :left-edge
+  :form vg
+  :referent (:daughter left-edge))
+
+(def-syntax-rule  (adverb vg)
+  :head :right-edge
+  :form infinitive
+  :referent (:daughter right-edge))
+
 
 ;;--- prepositional phrases
 
