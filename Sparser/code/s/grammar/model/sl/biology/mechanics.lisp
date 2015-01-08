@@ -33,7 +33,8 @@
       (unless protein
         (let* ((capitalized (string-capitalize pname))
                (cap-word (resolve capitalized)))
-          (setq protein (lookup cap-word))))
+          (when cap-word 
+            (setq protein (lookup cap-word)))))
       protein)))
 
 (defmethod get-protein ((name word))
