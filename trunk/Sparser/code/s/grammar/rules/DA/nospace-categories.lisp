@@ -20,13 +20,19 @@
   :specializes sequence
   ;; inherits items, item, type, number
   :instantiates :self
-  :binds ((left) ;; of the slash
+  :binds ((left) ;; of the hyphen
           (right))
   :index (:sequential-keys left right))
 
 
 (defparameter *inhibit-big-mech-interpretation* nil
   "Localy bount to t when the context knows it's inappropriate")
+
+(defun ns-category-for-reifying (default-category)
+  (if (and *big-mechanism*
+                  (null *inhibit-big-mech-interpretation*))
+    (bio-category-for-reifying)
+    default-category))
 
 (defun make-hypenated-structure (left-edge right-edge)
   ;; called from nospace-hyphen-specialist
@@ -35,10 +41,7 @@
              :left (edge-referent left-edge)
              :right (edge-referent right-edge)))
         (category 
-         (if (and *big-mechanism*
-                  (null *inhibit-big-mech-interpretation*))
-           (bio-category-for-reifying)
-           category::hyphenated-pair)))
+         (ns-category-for-reifying category::hyphenated-pair)))
 
     (when (eq (edge-category left-edge)
               (edge-category right-edge))
@@ -53,8 +56,38 @@
                    :referent i
                    :constituents `(,left-edge ,right-edge))))
         ;;(break "look at edge")
-        ;;/// trace goe here
+        ;;/// trace goes here
         edge)))
+
+
+(define-category hyphenated-triple
+  :specializes sequence
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((left)
+          (middle)
+          (right))
+  :index (:sequential-keys middle left right))
+
+(defun make-hyphenated-triple (left-edge middle-edge right-edge)
+  (let ((i (find-or-make-individual 'hyphenated-triple
+             :left (edge-referent left-edge)
+             :middle (edge-referent middle-edge)
+             :right (edge-referent right-edge)))
+        (category
+         (ns-category-for-reifying category::hyphenated-triple)))
+     (let ((edge (make-edge-over-long-span
+                   (pos-edge-starts-at left-edge)
+                   (pos-edge-ends-at right-edge)
+                   category
+                   :rule 'nospace-hyphen-triple-specialist
+                   :form category::n-bar
+                   :referent i
+                   :constituents `(,left-edge ,middle-edge ,right-edge))))
+        ;;(break "look at edge")
+        ;;/// trace goes here
+        edge)))
+                                    
 
 
 ;;;---------
