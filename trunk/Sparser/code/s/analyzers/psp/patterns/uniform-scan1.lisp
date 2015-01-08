@@ -33,6 +33,11 @@
     "Controls whether we try to parse the edges of the words
      inside the span."))
 
+
+;;;------------
+;;; new driver
+;;;------------
+
 ;; (trace-scan-patterns)
 
 (defun collect-no-space-segment-into-word (position-just-after)
@@ -121,6 +126,8 @@
         (return))
       (when (pos-preceding-whitespace next-pos)
         (return))
+      (when (punctuation-terminates-no-space-sequence word next-pos)
+        (return))
       (when (eq word *the-punctuation-hyphen*) (push next-pos hyphens))
       (when (eq word (punctuation-named #\/)) (push next-pos slashes))
       (setq next-pos (chart-position-after next-pos)))
@@ -144,13 +151,7 @@
 ;;; old code
 ;;;---------------------------------------------------
 
-;; (trace-ns-sequences)
-
-
-
-
-;; n.b. there's an OBO lookup inside reify-ns-name-as-bio-entity
-;;
+;;--- original reifier
 (defun reify-ns-name-and-make-edge (words pos-before next-position)
   ;; We make an instance of a spelled name with the words as its sequence.
   ;; We make a rule that treats the pnames of the words as a polyword,
@@ -213,11 +214,12 @@
       
 
 (defun punctuation-terminates-no-space-sequence (word position)
-  (declare (special *the-punctuation-period* *the-punctuation-colon*))
+  (declare (special *the-punctuation-period* *the-punctuation-colon*
+                    *the-punctuation-colon* *the-punctuation-semicolon*))
   (cond
     ((or (eq word *the-punctuation-period*)
-	 (eq word (punctuation-named #\,))
-	 (eq word (punctuation-named #\;))
+	 (eq word *the-punctuation-comma*)
+	 (eq word *the-punctuation-semicolon*)
 	 (eq word *the-punctuation-colon*))
      ;; if there's a space after this character, we assume that
      ;; it's punctuation, otherwise it's part of the compound

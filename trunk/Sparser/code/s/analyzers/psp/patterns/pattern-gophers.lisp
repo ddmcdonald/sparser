@@ -74,6 +74,22 @@
         (resolve-non-slash-ns-pattern 
          segment-pattern words hyphen-positions start-pos end-pos))))))
 
+
+(defun resolve-non-slash-ns-pattern (pattern words hyphen-positions
+                                     pos-before pos-after) 
+  (tr :trying-to-resolve-ns-pattern pattern)
+  (let ((relevant-hyphen-positions
+         (when hyphen-positions 
+           (loop for pos in hyphen-positions 
+             when (position-is-between pos pos-before pos-after)
+             collect pos))))
+  
+    (or (when relevant-hyphen-positions
+          (resolve-hyphen-pattern 
+           pattern words relevant-hyphen-positions pos-before pos-after))
+        (resolve-ns-pattern pattern words pos-before pos-after)
+        (reify-ns-name-and-make-edge words pos-before pos-after))))
+
 (defun pop-up-to-slash (pattern)
   ;; Subroutine of divide-and-recombine-ns-pattern-with-slash but might
   ;; make a useful utility with a bit of abstraction
@@ -108,4 +124,19 @@
         (else ;; make a structure if all else fails
          ;; but first alert to anticipated cases not working
          (make-hypenated-structure left-edge right-edge))))))
+
+(defun resolve-hyphen-between-three-words (pattern words
+                                           pos-before pos-after)
+  ;; Should look for standard patterns, especially on the
+  ;; middle word. ///Postponing that effort so we can make some
+  ;; progress. 
+  (declare (ignore pattern words))
+  (let ((left-edge (right-treetop-at/edge pos-before))
+        (right-edge (left-treetop-at/edge pos-after))
+        (middle-edge (right-treetop-at/edge 
+                      (chart-position-after 
+                       (chart-position-after pos-before)))))
+    (make-hyphenated-triple left-edge middle-edge right-edge)))
+
+    
 
