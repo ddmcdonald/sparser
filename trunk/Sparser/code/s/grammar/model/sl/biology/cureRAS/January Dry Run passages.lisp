@@ -99,10 +99,19 @@ ASPP2 fragment in vitro.")
 conditions, ASPP2 (693-1128) fragment phosphorylated by p38 SAPK had
 very low levels of incorporated 32P, indicating that p38 SAPK is not
 an efficient kinase for ASPP2 phosphorylation.")
+    (p "The phosphorylated ASPP2 fragment by MAPK1 was digested by trypsin and
+fractioned on a high performance liquid chromatography (HPLC). 
+Each eluted fraction was measured for its radioactivity content.
+The fractions representing these radioactive peaks were
+analysed by mass spectrometry.")
+    (p "Of the two radioactive peaks, one represented the linker region
+between the GST and our ASPP2 fragment and the other corresponded to a
+fragment of the same mass as that containing the second putative
+phosphorylation site, serine 827.")
+    (p "Hence ASPP2 can be phosphorylated at serine 827 by MAPK1 in vitro.")
 
     (p "We and others have recently shown that ASPP2 can potentiate RAS
 signaling by binding directly via the ASPP2 N-terminus.")
-
     (p "Moreover, the RAS-ASPP interaction enhances the transcription function
 of p53 in cancer cells.")
     (p "Until now, it has been unclear how RAS could affect ASPP2 to enhance
