@@ -237,6 +237,8 @@
         (cond
          ((eq daughter :single-term)
           edge)
+         ((eq daughter :single-digit-sequence)
+          edge)
          ((eq daughter :literal-in-a-rule)
           edge)
          ((eq daughter :long-span)
@@ -248,7 +250,7 @@
                   (walk-down-right-headline last-constituent)))))
          (t (push-debug `(,edge ,daughter))
             (error "Unexpected symbol in headline walk: ~a" daughter))))
-       (t (push-debug `(,edge ,daughterq))
+       (t (push-debug `(,edge ,daughter))
           (error "Unexpected case in headline walk: ~a" daughter))))))
 
 
