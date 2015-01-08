@@ -21,6 +21,7 @@
 ;;       called repeatedly, getting different rules each time as the tretops change by application of rules
 ;; 1/4/2015 add flag and bind the special *left-edge-into-reference* in possible-treetop-=rules so that ref/function can work as a predicate
 ;; 1/6/2015 new mechanism in whack-a-rule to prioritize PP creation and attachemnt above subject+verb binding
+;; 1/8/2015 refactor possible-treetop-rules to make it easier to trace and understand
 
 (in-package :sparser)
 
@@ -275,39 +276,50 @@
       (rule rules)
     (declare (special rule))
     (loop for pair in (adjacent-tts) 
-      when 
-      (and
-       (setq rule (multiply-edges (car pair)(second pair)))
-       ;;(print rule)
-       (cond
-        ((not (consp (cfr-referent rule))))
-        ((eq :funcall (car (cfr-referent rule)))
-         (let*
-             ((left-referent (edge-referent (car pair)))
-              (right-referent (edge-referent (second pair)))
-              (*rule-being-interpreted* rule)
-              (*left-edge-into-reference* (second pair))
-              (*right-edge-into-reference* (second pair)))
-           (declare (special left-referent right-referent *rule-being-interpreted* *right-edge-into-reference*))
-           (let
-               ((*subcat-test* t) applicable)
-             (declare (special *subcat-test* applicable))
-             ;; use ref/function as a predicate!!
-             (ref/function (cdr (cfr-referent rule))))))
-        (t 
-         ;; most rules have referent slots which are cons cells, but which are not :funcalls
-         ;; (#<PSR12615  select ->  select biological> ((:HEAD LEFT-REFERENT) (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
-         t)))
+      when (setq rule (rule-for-edge-pair pair))
       do
       (push
        (cons rule pair)
        rules))
     (filter-rules-by-local-competition rules)))
 
+(defun rule-for-edge-pair (pair)
+  (let
+      ((rule (multiply-edges (car pair)(second pair))))
+    (when
+        (and rule
+             (cond
+              ((not (consp (cfr-referent rule))))
+              ((eq :funcall (car (cfr-referent rule)))
+               (test-subcat-rule pair rule))
+              (t ;; most rules have referent slots which are cons cells, but which are not :funcalls
+               ;; (#<PSR12615  select ->  select biological> ((:HEAD LEFT-REFERENT) (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
+               t)))
+      rule)))
+
+
+(defun test-subcat-rule (pair rule)
+  (let*
+      ((left-referent (edge-referent (car pair)))
+       (right-referent (edge-referent (second pair)))
+       (*rule-being-interpreted* rule)
+       (*left-edge-into-reference* (second pair))
+       (*right-edge-into-reference* (second pair)))
+    (declare (special left-referent right-referent *rule-being-interpreted* *right-edge-into-reference*))
+    (let
+        ((*subcat-test* t) applicable)
+      (declare (special *subcat-test* applicable))
+      ;; use ref/function as a predicate!!
+      (ref/function (cdr (cfr-referent rule))))))
+
 (defun filter-rules-by-local-competition (rules)
-  (loop for tail on rules
-    unless (losing-competition? (car tail) (second tail))
-    collect (car tail)))
+  (let
+      ((rules
+        (loop for tail on rules
+          unless (losing-competition? (car tail) (second tail))
+          collect (car tail))))
+    (when rules
+      (list (car rules)))))
 
 (defun losing-competition? (rule1 rule2)
   (declare (special rule1 rule2))
