@@ -99,11 +99,17 @@
 ;; (setq *readout-relations* nil)
 ;; (identify-relations *sentence*)
 
+
+(defvar *relations* nil)
+(defvar *entities* nil)
+
 (defun identify-relations (sentence)
   ;; sweep over every treetop in the sentence and look at
   ;; their referents. For all sensible cases recursively
   ;; examine the object and tally the entities and relations.
   ;;/// when we do discourrse add these to the sentence object
+  (setq *relations* nil
+        *entities* nil)
   (let* ((start-pos (starts-at-pos sentence))
          (end-pos (ends-at-pos sentence))
          (rightmost-pos start-pos)
@@ -138,6 +144,8 @@
         ;; we overshot somehow
         (return))
       (setq rightmost-pos pos-after))
+    (setq *relations* relations
+          *entities* entities)
     (values relations
             entities)))
 
@@ -190,9 +198,6 @@
       (else
        (push i objects)))
     objects ))
-
-
-(defvar *relations* nil)
 
 ;; (readout-relations *relations*)
 (defun readout-relations (relations 
