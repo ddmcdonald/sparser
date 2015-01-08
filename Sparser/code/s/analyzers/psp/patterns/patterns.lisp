@@ -26,10 +26,26 @@
 ;; phospho-ERBB3, T677A mutant HER2, ERK-mediated 
 ;; shRNA
 
+;;;-------------------------------------
+;;; patterns for sequences with hyphens
+;;;-------------------------------------
 
 (defun resolve-hyphen-pattern (pattern words hyphen-positions start-pos end-pos)
   ;; (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
   ;; (break "starting hyphen pattern: ~a" pattern)
+  (let ((count 0))
+    (dolist (item pattern)
+      (when (eq item :hyphen ) (incf count)))
+    (case count
+      (1 (one-hyphen-ns-patterns
+          pattern words hyphen-positions start-pos end-pos))
+      (2 (two-hyphen-ns-patterns
+          pattern words hyphen-positions start-pos end-pos))
+      (otherwise
+       (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
+       (error "Write the code for ~a hyphens in a no-space sequence" count)))))
+
+(defun one-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
   (cond
    ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
         (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
@@ -58,6 +74,26 @@
 
    (t (nospace-hyphen-specialist hyphen-positions start-pos end-pos))))
 
+(defun two-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
+  ;; Just enough to form some sort of constituent and not beak
+  (declare (ignore hyphen-positions))
+  (cond
+   ((or (equal pattern '(:full :hyphen :lower :hyphen :capitalized)) ;; GAP–to–Ras
+        (equal pattern '(:full :hyphen :lower :hyphen :full)))
+    (cond
+     ((eq (third words) (word-named "to"))
+      ;;//// needs a specialization to appreciate what's going on
+      (resolve-hyphen-between-three-words pattern words start-pos end-pos))
+     (t
+      (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
+   (t  
+    (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
+
+
+
+;;;----------------------------------
+;;; patterns with no slash or hyphen
+;;;----------------------------------
 
 (defun resolve-ns-pattern (pattern words start-pos end-pos)
   (cond
@@ -78,6 +114,9 @@
     (or (reify-point-mutation-and-make-edge words start-pos end-pos)
         (reify-ns-name-and-make-edge words start-pos end-pos)))
 
+   ((equal pattern '(:digit :colon :digits))
+    (break "stub: ratio pattern"))
+
    (*work-on-ns-patterns*
     (push-debug `(,pattern ,start-pos ,end-pos ,words))
     (break "New pattern to resolve: ~a" pattern))
@@ -86,27 +125,14 @@
    (t (tr :no-ns-pattern-matched)
       nil)))
 
-
-(defun resolve-non-slash-ns-pattern (pattern words hyphen-positions
-                                     pos-before pos-after) 
-  (tr :trying-to-resolve-ns-pattern pattern)
-  (let ((relevant-hyphen-positions
-         (when hyphen-positions 
-           (loop for pos in hyphen-positions 
-             when (position-is-between pos pos-before pos-after)
-             collect pos))))
-  
-    (or (when relevant-hyphen-positions
-          (resolve-hyphen-pattern 
-           pattern words relevant-hyphen-positions pos-before pos-after))
-        (resolve-ns-pattern pattern words pos-before pos-after)
-        (reify-ns-name-and-make-edge words pos-before pos-after))))
+; (setq *work-on-ns-patterns* t)
+; (setq *work-on-ns-patterns* nil)
 
 
 
 
 ;;;------------------------------------------------
-;;; recognizing patterns in the character sequence
+;;; characterizing terms in the character sequence
 ;;;------------------------------------------------
 
 (defun characterize-word-type (position word)
