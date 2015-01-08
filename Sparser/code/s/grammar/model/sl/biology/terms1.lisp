@@ -298,7 +298,7 @@
 (noun "phenotype" :super bio-entity)
 (noun "plasma" :super cellular-location)
 (noun "range" :super measurement)
-(noun "rate" :super measurement
+(noun "rate" :super bio-scalar
       :binds ((process bio-process) (components biological))
       :realization 
       (:noun "rate"
