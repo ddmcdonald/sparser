@@ -97,6 +97,11 @@
 ;;;------------
 ;;; adjectives
 ;;;------------
+
+(adj "able" ;; #33  -- but not working. Timing???
+  :binds ((enabled bio-process))
+  :realization (:to enabled))
+
 (adj "close" :super modifier)
 
 (adj "critical" 
@@ -446,7 +451,7 @@
 ;;;-------------------------------------------------------
 
 #+ignore
-(define-category signal-transduction ;;// same flaw as small molecute
+(define-category signal-transduction ;;// same flaw as small molecule
   :specializes bio-process
   :lemma (common-noun "signal transduction"))
 
@@ -463,7 +468,14 @@
 (define-category bib-reference 
   :specializes abstract)
 
-;; all remaining (including overlap with the nouns and verbs abov)
+(def-cfr semicolon (";")
+  :form punctuation)
+
+
+
+;;;------------------------------------------------------------------
+;;; all remaining (including overlap with the nouns and verbs above)
+;;;------------------------------------------------------------------
  
 "articulate" 
 "assay" 
