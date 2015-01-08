@@ -29,25 +29,33 @@
 
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule 
-  (when (category-p head)
-    (setq head (make-individual-for-dm&p head)))
-  (push-debug `(,qualifier ,head)) ;;(break "check")
+  (when nil
+    (push-debug `(,qualifier ,head)) 
+    (break "check: qualifier = ~a~
+          ~%       head = ~a" qualifier head))
+
   (or (call-compose qualifier head)
-      (progn
-        (if (itypep head 'process) ;; poor man's standing for verb?
-          (then
-           (let ((variable (object-variable head)))
-             (if variable ;; really should check for passivizing
-               (bind-variable variable qualifier head)
-               ;; otherwise it's not obvious what to bind
-               (else 
-                (bind-variable 'modifier qualifier head)))))
-          (else
-           ;; what's the right relationship? Systemics would say 
-           ;; they are qualifiers, so perhaps subtype? 
-           (bind-variable 'modifier qualifier head))) ;; safe
-        head)
-      head))
+
+      (else
+       (when (category-p head)
+         (setq head (make-individual-for-dm&p head)))
+       (call-compose qualifier head))
+
+      (if (itypep head 'process) ;; poor man's standing for verb?
+        (then
+         (let ((variable (object-variable head)))
+           (if variable ;; really should check for passivizing
+             (bind-variable variable qualifier head)
+             ;; otherwise it's not obvious what to bind
+             (else 
+              (bind-variable 'modifier qualifier head)))
+           head))
+        (else
+         ;; what's the right relationship? Systemics would say 
+         ;; they are qualifiers, so perhaps subtype? 
+         (bind-variable 'modifier qualifier head) ;; safe
+         head))))
+
 
 
 
