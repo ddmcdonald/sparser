@@ -78,19 +78,23 @@
       ;; (push-debug `(,edge)) (break "look at edge")
       edge)))
 
+
+(defparameter *trap-needed-extensions-to-type-marker* nil)
+
 (def-k-method compose ((i bio-entity) (marker type-marker))
   ;; So far triggered from noun-noun-compound with a phrase
   ;; like "the Ras protein"
-  (push-debug`(,i ,marker)) (break "type-marker compose")
+  (push-debug`(,i ,marker)) ;;(break "type-marker compose")
   (let ((category (itype-of marker)))
     (or (itypep i category)
         (case (cat-symbol category)
           ;(pathway
           ; (
           (otherwise
-           (push-debug `(,i ,marker ,category ,(parent-edge-for-referent)))
-           (error "Haven't defined a constructor for the ~
-                   type-marker ~a" category))))
+           (unless *trap-needed-extensions-to-type-marker*
+             (push-debug `(,i ,marker ,category ,(parent-edge-for-referent)))
+             (error "Haven't defined a constructor for the ~
+                     type-marker ~a" category)))))
     i))
 
 
