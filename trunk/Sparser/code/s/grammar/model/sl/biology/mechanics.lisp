@@ -44,6 +44,25 @@
   (find-individual 'bio-family :name name))
 
 
+;;;---------------------------------
+;;; protein (bio-entity) ID mapping
+;;;---------------------------------
+
+(defparameter *krisp-object-to-Mitre-ID* (make-hash-table)
+  "Uses the Mitre-link information to connect proteins to
+   the IDs that Mitre is using.")
+
+(defparameter *Mitre-ID-to-krisp-object* (make-hash-table)
+  "From the ID to the protein")
+
+
+(defun handle-mitre-link (i mitre-link)
+  ;; Called from def-bio when a mitre-link is supplied
+  (setf (gethash i *krisp-object-to-Mitre-ID*) mitre-link)
+  (setf (gethash mitre-link *Mitre-ID-to-krisp-object*) i))
+
+
+
 ;;;-------------------------------------------
 ;;; macro for defining individual particulars
 ;;;-------------------------------------------
@@ -187,11 +206,6 @@
       (add-rules-to-individual i rules))
 
     i))
-
-(defun handle-mitre-link (i mitre-link)
-  ;; for the moment drop it on the floor. 
-  ;; Set up a two-way links between this id and the object
-  (push-debug `(,i ,mitre-link)))
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
   (unless *greek-character-map*
