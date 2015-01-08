@@ -133,15 +133,17 @@
 ;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
 ;; "interacting selectively and non-covalently with GTP"
 ;;
-(def-term bio-bind  
-  :super-category bio-process
+(define-category bio-bind  :super bio-process
   :obo-id "GO:0005488"
   ;; "<binder> binds to <binde>" the subject moves
-  :verb ("bind" :past-tense "bound")
-  :etf (svo-passive) 
-  :s (binder molecule) 
-  :o  (bindee molecule)
-  :to bindee)  ;; def-additional-realization  ??
+  :binds ((binder molecule)(bindee molecule)(site bio-location))
+  :realization 
+  (:verb ("bind" :past-tense "bound")
+         :etf (svo-passive) 
+         :s binder
+         :o  bindee
+         :to bindee
+         :via site))  ;; def-additional-realization  ??
 
 (def-term block
   :etf (svo of-nominal)
