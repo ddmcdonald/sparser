@@ -18,6 +18,8 @@
   :mapping ((property . modifier-slot)
             (np-head . :self)
             (modifier . modifier-v/r)))
+;///// This is here because it was "forgotten" by the time we needed
+; to use it (e.g. in signaling. Maybe the symbol was overwritten ?
 
 ;;---------- signalling 
 ;; "RAS signalling"
@@ -31,6 +33,68 @@
     (:etf pre-mod
      :noun "signaling"
      :m agent))
+
+
+
+;;; ubiqutin 
+
+
+; monoubiquitination increases the population 
+;;  this process has this effect
+
+; the enzymatic and chemical ubiquitination linkers 
+; the monoubiquitinated and unmodified fractions of Ras
+; the sensitivity of mUbRas
+; our ability to easily generate mUbRas
+
+; the c–terminus of Ubiquitin (Ubiquitin C77)
+; Ras ligated to Ubiquitin C77
+; ligated to Ubiquitin G76C. <--- point mutation
+
+(def-bio "ubiquitin" protein)
+;; not strictly true, but a reasonable approximation. 
+
+
+
+(define-category modified-protein
+  :specializes protein
+  :instantiates protein
+  :rule-label protein
+  :documentation "Intended as representation of proteins
+    with one or more post-translational modifications."
+  :binds ((protein protein)
+          (modification protein))) ;; hack for this case
+
+
+
+(def-bio "mUbRAS" protein) ;; mono-ubiquinated RAS
+
+
+; ... effect of Ras monoubiquitination on ...
+;; Resulting version of Ras after adding one ubiquitin. 
+
+(define-category monoubiquitinate 
+  :specializes bio-process 
+  :binds ((agent bio-entity)
+          (patient bio-process)) 
+  :realization 
+    (:verb "monoubiquitinate" 
+     :noun "monoubiquitination" 
+     :etf (svo-passive) 
+     :s agent 
+     :o patient))
+
+(define-category ubiquitinate 
+ :specializes bio-process 
+ :binds ((agent bio-entity)
+         (patient bio-process)) 
+  :realization 
+    (:verb "ubiquitinate" 
+     :noun "ubiquitination" 
+     :etf (svo-passive) 
+     :s agent 
+     :o patient))
+
 
 ;;;-------------------
 ;;; protein terminals
