@@ -509,7 +509,8 @@
                :number 2
                :type type)))
         ;;(push-debug `(,collection ,type))
-        (one-off-specialization collection (car type))
+        (when type
+          (one-off-specialization collection (car type)))
         collection ))))
 
 
