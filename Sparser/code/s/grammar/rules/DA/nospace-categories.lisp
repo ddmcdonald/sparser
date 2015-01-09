@@ -56,7 +56,7 @@
                    :referent i
                    :constituents `(,left-edge ,right-edge))))
         (revise-form-of-nospace-edge-if-necessary edge)
-        ;;/// trace goes here
+        (tr :two-hyphen-default-edge edge)
         edge)))
 
 
@@ -85,7 +85,7 @@
                    :referent i
                    :constituents `(,left-edge ,middle-edge ,right-edge))))
         (revise-form-of-nospace-edge-if-necessary edge)
-        ;;/// trace goes here
+        (tr :three-hyphen-default-edge edge)
         edge)))
                                     
 
