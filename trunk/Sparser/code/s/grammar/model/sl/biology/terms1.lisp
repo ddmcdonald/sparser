@@ -443,7 +443,7 @@
       :realization 
       (:noun "presence" 
              :of context)) ;; keyword: (ence N) 
-(noun "sensitivity" :super abstract
+(noun "sensitivity" :super bio-scalar
       :binds ((item biological)(agent biological))
       :realization
       (:noun "sensitivity"
@@ -453,19 +453,19 @@
 (adj "sensitive" :super modifier
       :binds ((item biological)(agent biological))
       :realization
-      (:noun "sensitivity"
+      (:adj "sensitive"
              :s item
              :to agent))
- (noun "insensitivity" :super abstract
+(noun "insensitivity" :super bio-scalar
       :binds ((item biological)(agent biological))
       :realization
-      (:noun "sensitivity"
+      (:noun "insensitivity"
              :of item
              :to agent))
 (adj "insensitive" :super modifier
       :binds ((item biological)(agent biological))
       :realization
-      (:noun "sensitivity"
+      (:adj "insensitive"
              :s item
              :to agent))
 
@@ -685,7 +685,6 @@
 (noun "fragment" :super bio-entity)
 (noun "position" :super residue-on-protein)
 (noun "tumorigenesis" :super bio-process)
-(noun "influence" :super bio-process)
 (noun "proportion" :super measurement)
 (noun "population" :super bio-entity)
 
