@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  1.0 December 2014
+;;;  version:  1.0 January 2015
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -16,6 +16,7 @@
 ;; 0.7 10/9/14 Added scare quotes, debugged edge cases. 
 ;; 1.0 11/18/14 Bumped number to permit major revamp to fit into multi-
 ;;   pass scanning. 12/4/14 moved out the patterns to their own file.
+;;   Tweeking through 1/9/15
 
 (in-package :sparser)
 
@@ -91,24 +92,26 @@
           (tr :segment-ns-pattern pattern)
 
           ;; Open coding post-accumulator-ns-handler
-          (let ((layout
-                 (parse-between-boundaries start-pos end-pos)))
+          (multiple-value-bind (layout edge)
+                               (parse-between-boundaries start-pos end-pos)
             (tr :ns-segment-layout layout)
-            (unless (eq layout :single-span) ;; Do nothing. It's already known
-              (cond
-               ((memq :slash pattern)
-                (tr :ns-looking-at-slash-patterns)
-                (divide-and-recombine-ns-pattern-with-slash 
-                 pattern words slash-positions hyphen-positions start-pos end-pos))
-               ((memq :hyphen pattern)
-                (tr :ns-looking-at-hypen-patterns)
-                (resolve-hyphen-pattern 
-                 pattern words hyphen-positions start-pos end-pos))
-               (t 
-                (tr :ns-taking-default)
-                (or (resolve-ns-pattern pattern words start-pos end-pos)
-                    (reify-ns-name-and-make-edge words start-pos end-pos))))))
-          end-pos)))))
+            (cond
+             ((eq layout :single-span)  ;; Do nothing. It's already known
+              ;;(break "integrated ~a ??" edge)
+)
+             ((memq :slash pattern)
+              (tr :ns-looking-at-slash-patterns)
+              (divide-and-recombine-ns-pattern-with-slash 
+               pattern words slash-positions hyphen-positions start-pos end-pos))
+             ((memq :hyphen pattern)
+              (tr :ns-looking-at-hypen-patterns)
+              (resolve-hyphen-pattern 
+               pattern words hyphen-positions start-pos end-pos))
+             (t 
+              (tr :ns-taking-default)
+              (or (resolve-ns-pattern pattern words start-pos end-pos)
+                  (reify-ns-name-and-make-edge words start-pos end-pos))))))
+          end-pos))))
 
 
 (defun sweep-to-end-of-ns-regions (position)
@@ -127,6 +130,8 @@
       (when (pos-preceding-whitespace next-pos)
         (return))
       (when (punctuation-terminates-no-space-sequence word next-pos)
+        ;; We looked ahead, so reflect that in the stopping position
+        (setq next-pos (chart-position-after next-pos))
         (return))
       (when (eq word *the-punctuation-hyphen*) (push next-pos hyphens))
       (when (eq word (punctuation-named #\/)) (push next-pos slashes))
@@ -173,6 +178,7 @@
             :form (category-named 'proper-name)
             :referent referent
             :words words)))
+      (revise-form-of-nospace-edge-if-necessary edge)
       (tr :made-edge edge)
       edge)))
 
