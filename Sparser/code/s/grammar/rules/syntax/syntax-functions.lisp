@@ -58,7 +58,15 @@
          head))))
 
 
-
+;;;----------------
+;;; Prepositional phrase
+;;;;_______________
+(defun make-pp (prep pobj)
+  (let ((pp (make-category-indexed-individual 
+             category::prepositional-phrase)))
+    (bind-variable 'prep prep pp)
+    (bind-variable 'pobj pobj pp)
+    pp))
 
 
 
