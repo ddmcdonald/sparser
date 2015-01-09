@@ -68,6 +68,7 @@
 ;; 1/1/2015 fix ng-head? to allow "that" as the head of an NG (used mostly for that relative clauses)
 ;; 1/1/2015 block inclusion of initial adjective/modifier when the previous chunk was a copula verb (just check for BE at this time)
 ;; 1/2/2015 NG chunks that start with a pronoun end with that pronoun -- this needs to by fixed to account for possesive pronouns, of course
+;; 1/8/2015 the word HAD cannot occur inside an NP, even though is is HAVE+ED
 (in-package :sparser)
 
 
@@ -348,16 +349,21 @@
 (defmethod ng-compatible? ((w word) chunk)
   nil)
 (defmethod ng-compatible? ((e edge) chunk)
-  (ng-compatible? (edge-form e) chunk))
+  (cond
+   ((eq category::verb+ed (edge-form e))
+    (not (eq (edge-category e) category::have)) ;; "had" is not an NP constituent
+    )
+   (t
+    (ng-compatible? (edge-form e) chunk))))
+
 (defmethod ng-compatible? ((c referential-category) chunk)
   (ng-compatible? (cat-symbol c) chunk))
 (defmethod ng-compatible? ((name symbol) chunk)
   (declare (special chunk name))
   (or
    (and
-    (or
-     (memq name *ng-internal-categories*)
-     (eq name 'CATEGORY::VERB+ED)) ;;in fact nothing should follow a pronoun (except a possessive pronoun)
+    (memq name *ng-internal-categories*)
+    ;;in fact nothing should follow a pronoun (except a possessive pronoun)
     (not (and (chunk-edge-list chunk)
               (eq category::pronoun (edge-form (car (chunk-edge-list chunk)))))))
    (and
