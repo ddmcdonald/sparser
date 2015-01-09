@@ -313,8 +313,8 @@
   :specializes bio-process
   :binds ((agent biological) (patient bio-scalar)) ;; increase in rate vs increase in RAS activity
   :realization
-  (:verb "increase" :noun "increase"
-         :etf (svo-passive of-nominal) 
+  (:verb "increase" ;; :noun "increase"
+         :etf (svo-passive) ;;  of-nominal) 
          :s agent
          :o patient
          :in patient))
@@ -659,13 +659,13 @@
 	   :etf (svo)
 	   :s agent
 	   :o patient))
-#+ignore
+
 (define-category correspond
     :specializes abstract
     :binds ((item1 biological)(item2 biological))
     :realization
   (:verb "correspond" :noun "correspondence"
-         :etf (svo)
+         :etf (sv)
          :s item1
          :of item1
          :to item2
@@ -687,8 +687,8 @@
   :specializes bio-process
   :binds ((agent biological)(patient bio-scalar)) 
   :realization
-  (:verb "decrease" :noun "decrease"
-   :etf (svo-passive of-nominal)
+  (:verb "decrease" ;; :noun "decrease"
+   :etf (svo-passive) ;;  of-nominal)
    :s agent
    :o patient))
 
@@ -1406,7 +1406,7 @@
   :binds ((agent biological)(patient bio-process)(interactor biological)) 
   :realization 
   (:verb "interact" :noun"interaction" 
-         :etf (svo-passive of-nominal) 
+         :etf (sv of-nominal) 
          :s agent 
          :o patient ;; THIS IS BOGUS -- NEED HELP WITH SV verbs
          :with interactor))
@@ -1449,3 +1449,12 @@
          :to destination))
 
 (define-category verify :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "verify" :noun "verification" :etf (svo-passive) :s agent :o patient)) 
+
+#+ignore
+(def-realization have
+  :binds ((owner biological)(measure bio-scalar))
+  :realization
+  (:verb "have"
+         :etf (svo)
+         :s owner
+         :o measure))
