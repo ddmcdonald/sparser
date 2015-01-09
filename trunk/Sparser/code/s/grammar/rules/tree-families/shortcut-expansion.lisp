@@ -172,6 +172,8 @@
                    category))) ;; 'referent' -- in other cases an individual
       (let* ((rule-schemas (etf-cases etf))
              rule/s-from-schema )
+        (when *big-mechanism*
+          (setq rule-schemas (filter-out-big-mech-bad-schemas rule-schemas)))
         (dolist (schema rule-schemas)
           (setq rule/s-from-schema
                 (instantiate-rule-schema schema mapping category))
@@ -222,48 +224,18 @@
                   new-mapping))))))
     (nreverse new-mapping)))
 
-#+ignore  ;; original
-(defun assemble-scheme-form (schema args-to-substitute etf category)
-  "Rebuild the schematic mapping into a real mapping according to the
-   category-specific substitution arguments. Does much of the same job
-   as decode-binding in interpreting symbols and strings."
-  (push-debug `(,schema ,args-to-substitute ,etf ,category)) ;; (break "pop")
-  ;; (setq schema (car *) args-to-substitute (cadr *) etf (caddr *) category (cadddr *))
-  (let (;;(parameter-symbols (etf-parameters etf))
-        (mapping-form (schema-mapping schema))
-        new-mapping  car-value  cdr-value)
-    (dolist (pair mapping-form)
-      (setq car-value (car pair)
-            cdr-value (cdr pair))
-      (cond
-       ((eq cdr-value :self)
-        (push `(,car-value ,category) new-mapping))
-       ((stringp cdr-value)
-        (let ((word (resolve/make cdr-value)))
-          (push `(,car-value ,word) new-mapping)))
-       (t
-        (let ((subst-value (cdr (assq cdr-value args-to-substitute))))
-          (unless subst-value
-            (error "No value for ~a among the substitution args"
-                   cdr-value))
-          (push-debug `(,subst-value))
-          (unless (symbolp subst-value)
-            (error "Unexpected type of value naming a slot: ~a~%~a"
-                   (type-of subst-value) subst-value))
-          ;; These are either the names of slots, where we use the 
-          ;; variable from the category, or they are the names of
-          ;; categories that are value-restrictions. 
-          ;; If all the parameter names matched up, we could use
-          ;; the ETF's parameters as a guide, but they don't and
-          ;; shouldn't when the category specializes them. 
-          (let ((variable (find-variable-in-category subst-value category))
-                (category (category-named subst-value)))
-            (unless (or variable category)
-              (error "There is no binding (variable) named ~a~
-                    ~%in the category ~a nor is there a category ~
-                      with that name." subst-value category))
-            (push `(,car-value . ,(or variable category))
-                  new-mapping))))))
-    (nreverse new-mapping)))
+
+;;;-------------------------------------------------------------
+;;; hack to avoid the burned-in pp's created by the passive ETF
+;;;-------------------------------------------------------------
+
+(defparameter *big-mech-bad-schemas*
+  '(:passive-with-by :by-phrase))
+
+(defun filter-out-big-mech-bad-schemas (rule-schemas)
+  (loop for schema in rule-schemas
+    unless (memq (schr-relation schema) *big-mech-bad-schemas*)
+    collect schema))
+
 
              

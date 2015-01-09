@@ -209,7 +209,9 @@
             (when (is-a-form-of-passive? schema-name)
               (let ((by-v/r (or by;; already determined
                                 (formulate-by-category v/r))))
-                (push `(by-v/r . ,by-v/r) substitution-map)))))
+                (push `(by-v/r . ,by-v/r) substitution-map)
+                (when *big-mechanism*
+                  (subcategorize-for-preposition category "by" s))))))
 
         (when o  ;; direct object
           (let* ((var (variable/category o category))
