@@ -96,15 +96,16 @@
      :s activator
      :o activated))
 
-(define-category drug-activate
+(define-category bio-activate
   :specializes bio-process
-  :binds ((activator drug) (activated molecule))
+  :binds ((activator biological) (activated biological)(mechanism biological))
   :realization
     (:verb "activate" 
      :noun "activation"
      :etf (svo-passive of-nominal)
      :s activator
-     :o activated))
+     :o activated
+     :via mechanism))
 
 ;; bio-deactivate conflicts with bio-activate
 ;; so need to redesign the by-phrase to be uniform
@@ -144,7 +145,21 @@
          :o  bindee
          :to bindee
          :via site
-         :with bindee))  ;; def-additional-realization  ??
+         :with bindee))
+
+(define-category bio-associate  :specializes bio-process ;; MAYBE THIS IS LIKE BIND
+  ;;:obo-id "GO:0005488"
+  ;; "<binder> binds to <binde>" the subject moves
+  :binds ((binder molecule)(bindee molecule)(site bio-location))
+  :realization 
+  (:verb "associate"
+         :noun "association"
+         :etf (svo-passive of-nominal) 
+         :s binder
+         :o  bindee
+         :to bindee
+         :via site
+         :with bindee))
 
 (def-term block
   :etf (svo of-nominal)
@@ -205,13 +220,14 @@
 
 (define-category bio-enhance
   :specializes bio-process
-  :binds ((agent biological) (process bio-process))
+  :binds ((agent biological) (process bio-process)(mechanism biological))
   :realization 
   (:verb "enhance" :noun "enhancement"
    :etf (svo  ;;-passive 
          of-nominal)
    :s agent
-   :o process))
+   :o process
+   :via mechanism))
  
 (def-term form
   :super-category bio-process
@@ -222,7 +238,15 @@
   :s (creator bio-entity)
   :o (creation bio-entity))
 
-
+(define-category fraction :specializes bio-variant
+      :binds ((agent pronoun/first/plural) (basis bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:verb "fraction" ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
+             :noun "fraction"
+             :etf (svo-passive of-nominal)
+             :s agent
+             :o basis
+             :of basis))
 ;; exchange
 
 
@@ -431,7 +455,7 @@
 ;;
 (define-category regulate
   :specializes bio-process
-  :binds ((agent bio-entity)(patient biological))
+  :binds ((agent biological)(patient biological))
   :realization
   (:verb   "regulate" :noun "regulation"
    :etf (svo-passive of-nominal)
@@ -528,7 +552,7 @@
 "" ;; keyword: (ion N) 
 (define-category alter
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-entity))
+    :binds ((agent biological)(patient biological))
     :realization
     (:verb "alter"
 	   :noun "alteration"
@@ -635,6 +659,19 @@
 	   :etf (svo)
 	   :s agent
 	   :o patient))
+#+ignore
+(define-category correspond
+    :specializes abstract
+    :binds ((item1 biological)(item2 biological))
+    :realization
+  (:verb "correspond" :noun "correspondence"
+         :etf (svo)
+         :s item1
+         :of item1
+         :to item2
+         :with item2))
+  
+  
 
 (define-category culture
     :specializes bio-process
@@ -766,6 +803,17 @@
 	   :s agent
 	   :o patient))
 
+(define-category influence
+    :specializes bio-process
+    :binds ((agent biological)(patient biological)(mechanism biological))
+    :realization
+  (:verb "influence" ;; keyword: ENDS-IN-ING 
+         :noun "influence"
+         :etf (svo-passive of-nominal)
+         :s agent
+         :o patient
+         :via mechanism))
+
 (define-category interfere
     :specializes bio-process
     :binds ((agent bio-entity)(patient bio-process))
@@ -774,7 +822,8 @@
 	   :noun "interference"
 	   :etf (svo-passive of-nominal)
 	   :s agent
-	   :o patient))
+	   :o patient
+           :with patient))
 
 (define-category interrogate
     :specializes bio-process
@@ -1353,7 +1402,14 @@
          :etf (svo-passive of-nominal)
          :s agent
          :o patient)) 
-(define-category interact :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "interact" :noun"interaction" :etf (svo-passive) :s agent :o patient))
+(define-category interact :specializes bio-process 
+  :binds ((agent biological)(patient bio-process)(interactor biological)) 
+  :realization 
+  (:verb "interact" :noun"interaction" 
+         :etf (svo-passive of-nominal) 
+         :s agent 
+         :o patient ;; THIS IS BOGUS -- NEED HELP WITH SV verbs
+         :with interactor))
 (define-category investigate :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "investigate" :noun "investigation" :etf (svo-passive) :s agent :o patient)) 
 (define-category lead :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "lead" :etf (svo-passive) :s agent :o patient)) 
 (define-category ligate :specializes bio-process 

@@ -153,9 +153,10 @@
   :realization (:for theme))
 
 (adj "similar"
-  :binds ((compared-to biological))
+  :binds ((item biological)(compared-to biological))
   :realization 
-  (:for compared-to))
+  (:s item
+      :to compared-to))
 
 (adj "potent"
   :binds ((theme bio-entity))
@@ -202,7 +203,6 @@
 (adj "present" :super modifier) ;; keyword: (ent ADJ) 
 (adj "recombinant" )
 (adj "refractory" :super modifier) ;; keyword: (ory ADJ) 
-(adj "sensitive" :super modifier) ;; keyword: (ive ADJ) 
 (adj "supplementary" :super modifier) ;; keyword: (ary ADJ) 
 (adj "wild-type")
 
@@ -227,12 +227,27 @@
 (define-adverb "similarly")
 (define-adverb "surprisingly")
 (define-adverb "therefore")
+(define-adverb "thereby")
 (define-adverb "to this end")
 (define-adverb "until now")
 
-(noun "conformation" :super bio-entity) ;; keyword: (ion N) 
-(noun "ORF" :super bio-entity) ;; same as above -- need to figure out how to get the category spelling right
-(noun "activity" :super bio-process)
+
+(noun "ability" :super abstract
+      :binds ((result biological)(agent biological))
+      :realization
+      (:noun "ability"
+             :to result
+             :of agent))
+(noun "absence" :super abstract
+      :binds ((absent biological)) 
+      :realization
+      (:noun "absence"
+             :of absent))
+(noun "activity" :super bio-process
+      :binds ((agent bio-entity))
+      :realization
+      (:noun "activity"
+             :of agent))
 ;;(def-bio "agent" bio-entity)
 (noun "agonist":super bio-entity) ;; keyword: (ist N) 
 (noun "allele" :super bio-variant
@@ -245,6 +260,8 @@
       :realization
       (:noun "analog"
              :of basis))
+(noun ("analysis" :plural "analyses")
+  :super bio-process)
 (noun "approach" :super bio-process)
 (noun "assay" :super bio-process)
 (noun "baseline" :super  bio-process)
@@ -257,6 +274,7 @@
              :of basis))
 (noun "complex" :super molecule)
 (noun "condition" :super bio-condition)
+(noun "conformation" :super bio-entity) ;; keyword: (ion N) 
 (noun "context" :super bio-context) 
 ;;(noun "data" :super bio-entity)
 (noun "cytosol" :super cellular-location)
@@ -286,6 +304,7 @@
       :realization
       (:noun "form"
              :of basis))
+
 (noun "function" :super bio-process
       :binds ((functional bio-entity)) ;; this should be for genes and proteins
       :realization
@@ -308,15 +327,21 @@
 (noun "manner" :super bio-process) ;; by chemical or genetic means
 (noun "mass spectrometry" :super bio-process)
 (noun "means" :super bio-process) ;; by chemical or genetic means
-(noun "mechanism" :super bio-process)
+(noun "mechanism" :super bio-process
+      :binds ((process bio-process))
+      :realization
+      (:noun "mechanism"
+             :of process))
 (noun "membrane" :super cellular-location)
 (noun "NMR" :super bio-process)
 
 (noun "nucleus" :super cellular-location)
 (noun "method" :super bio-process)
 (noun "mitogen" :super molecule)
+;; These three want to be synonyms
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super bio-entity)
+(noun "ORF" :super bio-entity) ;; same as above -- need to figure out how to get the category spelling right
 ;;(noun ("order of magnitude" :plural "orders of magnitude") :super abstract)
 (noun "order of magnitude" :super abstract)
 (noun "panel" :super bio-process
@@ -330,6 +355,12 @@
 (noun "phenotype" :super bio-entity)
 (noun "plasma" :super cellular-location)
 (noun "plasma membrane" :super cellular-location)
+(noun "proportion" :super bio-variant
+      :binds ((basis bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:noun "proportion"
+             :of basis))
+
 (noun "range" :super measurement)
 (noun "rate" :super bio-scalar
       :binds ((process bio-process) (components biological))
@@ -366,11 +397,24 @@
 (noun "tumor formation" :super bio-process)
 (noun "tumor formation" :super bio-process)
 (noun "tumor" :super bio-location)
+(noun "upstream" :super bio-context
+      :binds ((relative-to biological))
+      :realization
+      (:noun "upstream"
+             :of relative-to))
+       
+      
 (noun "variety" :super bio-variant
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
       :realization
-      (:noun "allele"
+      (:noun "variety"
              :of basis))
+(noun "variation" :super bio-variant
+      :binds ((basis bio-entity)) ;; this should be for genes and proteins
+      :realization
+      (:noun "variation"
+             :of basis
+             :in basis))
 
 ;;; using 'abstract' here as a standin for a better taxonomic treatment
 (noun "component" :super abstract)
@@ -383,6 +427,11 @@
 (noun "exclusivity" :super abstract) ;; keyword: (ity N) 
 (noun "fate" :super abstract)
 (noun "group" :super abstract)
+(noun "mode" :super bio-process
+      :binds ((process bio-process))
+      :realization
+      (:noun "mode"
+             :of process))
 (noun "model" :super biological) ;; almost never used as a verb
 (noun "modeling" :super biological) ;; but modeling is a nominal that is used
 (noun "mortality" :super abstract) ;;/// relationship to "mortal" ??
@@ -400,6 +449,26 @@
       (:noun "sensitivity"
              :of item
              :to agent)) ;; keyword: (ity N) 
+
+(adj "sensitive" :super modifier
+      :binds ((item biological)(agent biological))
+      :realization
+      (:noun "sensitivity"
+             :s item
+             :to agent))
+ (noun "insensitivity" :super abstract
+      :binds ((item biological)(agent biological))
+      :realization
+      (:noun "sensitivity"
+             :of item
+             :to agent))
+(adj "insensitive" :super modifier
+      :binds ((item biological)(agent biological))
+      :realization
+      (:noun "sensitivity"
+             :s item
+             :to agent))
+
 (noun "stoichiometry" :super abstract)
 (noun "success" :super abstract)
 (noun "therapeutics" :super abstract) ;; keyword: (ics N) 
@@ -592,7 +661,6 @@
 "constitute"
 "response"
 "high";;ambiguous between (ADJECTIVE ADVERB)
-"model";;ambiguous between (NOUN VERB)
 "engender"
 "target";;ambiguous between (NOUN VERB)
 "observation"
@@ -602,21 +670,20 @@
 ;; nouns and adjectives from January test
 (adj "biophysical" :super modifier)
 (adj "identical" :super modifier)
-(adj "insensitive" :super modifier)
 (adj "kinetic" :super modifier)
 (adj "native" :super modifier)
 (adj "putative" :super modifier)
-(adj "relative" :super modifier)
+(adj "relative" :super modifier
+     :binds ((comparator biological))
+     :realization
+     (:to comparator))
 (adj "suitable" :super modifier)
 (adj "unclear" :super modifier)
 (adj "unmodified" :super modifier)
  
-(adj "ability" :super abstract)
-(noun "absence" :super abstract)
-(noun ("analysis" :plural "analyses")
-  :super bio-process) 
+
 (noun "fragment" :super bio-entity)
-(noun "position" :super bio-location)
+(noun "position" :super residue-on-protein)
 (noun "tumorigenesis" :super bio-process)
 (noun "influence" :super bio-process)
 (noun "proportion" :super measurement)
