@@ -130,7 +130,7 @@
   :index (:permanent :key protein)
   :realization
     (:etf (pre-mod of-nominal)
-     :noun ("n-terminal" "n-terminus")
+     :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus")
      :o protein
      :m protein))
 
@@ -140,7 +140,7 @@
   :index (:permanent :key protein)
   :realization
     (:etf (pre-mod of-nominal)
-     :noun ("c-terminal" "c-terminus")
+     :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus") ; 
      :o protein
      :m protein))
 
