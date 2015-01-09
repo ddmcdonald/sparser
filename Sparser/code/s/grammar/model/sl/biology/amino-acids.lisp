@@ -88,7 +88,11 @@ therefore we have the special cases:
   :binds ((amino-acid . amino-acid)
           (position :primitive integer) ;; counting from the N terminus
           (on-protein . protein))
-  :lemma (common-noun "residue")
+  :realization
+  (:noun "residue"
+         :of on-protein
+         :on on-protein
+         )
   :index (:permanent :sequential-keys amino-acid position))
 
 (defun reify-residue-and-make-edge (words start-pos end-pos)
@@ -148,11 +152,12 @@ therefore we have the special cases:
   :form n-bar
   :referent (:head left-edge
              :bind (position right-edge)))
-
+#+ignore
 (def-cfr of-protein (of protein)
   :form pp
   :referent (:daughter right-edge))
 
+#+ignore
 (def-cfr redidue-on-protein (residue-on-protein of-protein)
   :form n-bar
   :referent (:head left-edge
