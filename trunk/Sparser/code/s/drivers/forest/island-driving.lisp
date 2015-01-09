@@ -13,6 +13,7 @@
 ;; 1/1/2015 New, flag-controlled, alternative to last part of run-island-checks, repeatedly doing application of rightmost applicable rule.
 ;; now turned ON by default
 ;; 1/5/2015 improve whack-a-rule by moving functionally duplicative code into alternative path
+;; 1/8/2015 refactoring to make use of best-treetop-rule and copula-rule? refactoring
 
 (in-package :sparser)
 
@@ -49,49 +50,38 @@
 (defun run-island-checks (layout)
   (push-debug `(,layout))
   ;; preposed adjuncts
-
+  
   (when (there-are-parentheses?)
     (tr :handle-parentheses)
     (handle-parentheses))
-
+  
   (when (there-are-conjunctions?)
     (tr :looking-for-short-conjuncts)
     (look-for-short-obvious-conjunctions))
-
+  
   (when (there-are-prepositions?)
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
+  
 
-
-  (setq *possible1* (possible-treetop-rules))
-  ;;(break "*possible*")
   (cond
    (*whack-a-rule*
-    (let ((rule-edges (copula-rule? (possible-treetop-rules))))
-      (loop while rule-edges 
-        do 
-        (progn
-          (execute-one-one-rule 
-           (car rule-edges)
-           (second rule-edges)(third rule-edges))
-          (setq rule-edges  (car (possible-treetop-rules))))))
+    (let (copula)
+      (loop while (setq copula (copula-rule?))
+        do
+        (execute-triple copula)))
     (when (there-are-conjunctions?)
       (tr :try-spanning-conjunctions)
       (try-spanning-conjunctions))
-    (let ((rule-edges (car (possible-treetop-rules))))
-      (loop while rule-edges 
-        do 
-        (progn
-          (execute-one-one-rule 
-           (car rule-edges)
-           (second rule-edges)(third rule-edges))
-          ;;(break)
-          (setq rule-edges  (car (possible-treetop-rules)))))))
+    (let (rule-and-edges)
+      (loop while (setq rule-and-edges (best-treetop-rule)
+                        do 
+                        (execute-triple rule-and-edges)))))
    (t
     (when (starts-with-prep?)
       (tr :try-parsing-leading-pp)
       (try-parsing-leading-pp))
-
+    
     (when  (there-are-prepositions?)
       (tr :trying-to-form-simple-pps)
       (try-simple-pps)
@@ -117,10 +107,9 @@
             (look-for-short-leftward-extension edge)))
         (when *trace-island-driving* (tts))))
     
-
+    
     
     (try-simple-subj+verb)
-    (setq *possible2* (possible-treetop-rules))
     (when *trace-island-driving* (tts))
     ;;//// good place to update the layout
     
@@ -148,17 +137,11 @@
     (tr :try-spanning-conjunctions)
     (try-spanning-conjunctions)))
 
+(defun execute-triple (triple)
+  (execute-one-one-rule (car triple)(second triple)(third triple)))
+
         
-(defun copula-rule? (rule-trips)
-  (let
-      ((rule? nil))
-    (loop for r in rule-trips
-      until
-      (setq rule? (and (eq (car (cfr-rhs (car r))) category::be)
-                      (eq (second (cfr-rhs (car r))) category::adjective)
-                      r))
-      do (progn t))
-    rule?))
+
     
 ;;;-------------
 ;;; second pass
