@@ -82,11 +82,26 @@
     (print (list n test))
     (if (member n *known-breaks*)
         (print "skipping because of known problems")
-        (eval test))))
+        (progn
+          (eval test)
+          (terpri) 
+          (terpri)
+          (print "SEMANTIC FOREST ------------------------------------")
+          (pprint
+           (tts-semantics))
+          (print "___________________________________________")
+          (terpri)
+          (terpri)
+          (terpri)
+          ))))
 
 (defun retest () 
-  (loop for i from (+ 1 (car *tested*)) to 100 do 
+  (loop for i from (+ 1 (car *tested*)) to 100 
+    when (<= i (length *sentences*))
+    do 
     (push i *tested*) (dectest i)))
+
+
 
 (defun bad () 
   (push (car *tested*) *known-breaks*) 
