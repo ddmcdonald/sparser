@@ -342,7 +342,11 @@
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super bio-entity)
 (noun "ORF" :super bio-entity) ;; same as above -- need to figure out how to get the category spelling right
-;;(noun ("order of magnitude" :plural "orders of magnitude") :super abstract)
+#+ignore
+(define-category order-of-magnitude :super bio-scalar
+  :binds ((dummy biological))
+  :realization
+  (:noun "order of magnitude"))
 (noun "order of magnitude" :super abstract)
 (noun "panel" :super bio-process
       :binds ((component molecule)) ;; this should be for genes and proteins
