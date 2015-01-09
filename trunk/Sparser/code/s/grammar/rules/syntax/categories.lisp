@@ -299,6 +299,7 @@
     CATEGORY::NOUN/VERB-AMBIGUOUS
     CATEGORY::COMMON-NOUN
     CATEGORY::PROPER-NOUN
+    CATEGORY::PROPER-NAME
     CATEGORY::PRONOUN
     category::n-bar
     CATEGORY::POSSESSIVE-PRONOUN
@@ -321,6 +322,7 @@
     CATEGORY::NOUN/VERB-AMBIGUOUS
     CATEGORY::COMMON-NOUN
     CATEGORY::PROPER-NOUN
+    CATEGORY::PROPER-NAME
     category::n-bar
     CATEGORY::PROPER-NOUN
     category::post-ordinal
@@ -334,6 +336,7 @@
     category::n-bar
     CATEGORY::COMMON-NOUN
     CATEGORY::PROPER-NOUN
+    CATEGORY::PROPER-NAME
     CATEGORY::PRONOUN
     ;; not sure about these -- think of "the largest" as an NP
     ;; CATEGORY::COMPARATIVE -- this causes problems with MORE
