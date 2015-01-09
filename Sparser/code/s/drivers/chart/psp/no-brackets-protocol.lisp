@@ -77,7 +77,6 @@
             (identify-chunks sentence) ;; calls PTS too
 
             ;;(break "after chunking ~a" sentence) 
-
             (when *parse-chunked-treetop-forest*
               (let ((*return-after-doing-forest-level* t))
                 (declare (special *return-after-doing-forest-level*))
@@ -88,7 +87,8 @@
                                    (identify-relations sentence)
                 (push-debug `(,relations ,entities))
                 ;; Anything to do if there are no relations?
-                (readout-relations relations)))))
+                (readout-relations relations)
+                (readout-entities entities)))))
 
         ;; EOS throws to a higher catch. If the next sentence
         ;; is empty we will hit the end of source as we
@@ -96,9 +96,13 @@
         ;; beyond this point. 
         (setq sentence (next sentence))))))
 
+
+;;;-----------------------
+;;; identifying relations
+;;;-----------------------
+
 ;; (setq *readout-relations* nil)
 ;; (identify-relations *sentence*)
-
 
 (defvar *relations* nil)
 (defvar *entities* nil)
@@ -131,12 +135,13 @@
       (when (edge-p treetop)
         (setq referent (edge-referent treetop))
 
-        (setq tt-contents (collect-model referent))
+        (when referent
+          (setq tt-contents (collect-model referent))
 
-        (loop for item in tt-contents
-          do (if (subject-variable item)
-               (push item relations)
-               (pushnew item entities))))
+          (loop for item in tt-contents
+            do (if (subject-variable item)
+                 (push item relations)
+                 (pushnew item entities)))))
 
       (when (eq pos-after end-pos)
         (return))
@@ -151,6 +156,7 @@
 
 
 (defmethod collect-model ((n number))
+  ;; For debugging
   (let ((edge (edge# n)))
     (unless edge (error "The number ~a does not retrieve an edge" n))
     (collect-model edge)))
@@ -160,44 +166,51 @@
     (when referent
       (collect-model referent))))
 
-(defmethod collect-model ((w word)) `(,w))
-(defmethod collect-model ((pw polyword)) `(,pw)) ; 
-(defmethod collect-model ((c category)) `(,c))
+(defmethod collect-model ((w word)) nil) ;;`(,w))
+(defmethod collect-model ((pw polyword)) nil) ;;`(,pw)) ; 
+(defmethod collect-model ((c category)) nil) ;;`(,c))
 ;; anything else?
 
 (defmethod collect-model ((i individual))
-  (let ((type (car (indiv-type i)))
+  (let (;;(type (car (indiv-type i)))
         (bindings (indiv-binds i))
         objects )
-    ;; It's a relation if one of its variables supports
-    ;; a grammatical relation. If it is, then we recurse.
-    (if (subject-variable type)
-      (let ( embedded-objects )
-       ;; Walk through the bindings. 
-       ;; Push the pair that records the variable that bound 
-       ;; the value onto objects.
-       ;; Recurse on the values and stash the result on 
-       ;; embedded-objects.After the loop elevate all of 
-       ;; them to objects's list. /// may not be a good order
-       (dolist (b bindings)
-         (let ((var (binding-variable b))
-               (value (binding-value b)))
-           (unless (eq (var-name var) 'category)
-             (push `(,var ,value) objects)
-             (let ((objects (collect-model value)))
-               (typecase objects
-                 (category)
-                 (cons
-                  (loop for obj in objects
-                  do (push `(,var ,obj) embedded-objects)))
-                 (otherwise 
-                  (error "Unexpected return type from collect-~
-                          model: ~a~%  ~a"
-                         (type-of objects) objects)))))))
-        (push i objects))
-      (else
-       (push i objects)))
-    objects ))
+    ;; Had been restricting the recursion to types with
+    ;; a subject variable: (subject-variable type), 
+    ;; but that's missing interesting noun phrase referents.
+    (push i objects)
+
+    ;; Walk through the bindings. 
+    ;; Push the pair that records the variable that bound 
+    ;; the value onto objects.
+    ;; Recurse on the values and stash the result on 
+    ;; embedded-objects.After the loop elevate all of 
+    ;; them to objects's list. /// may not be a good order
+    (dolist (b bindings)
+      (let ((var (binding-variable b))
+            (value (binding-value b)))
+        (unless (or (eq (var-name var) 'category)
+                    (typep value 'mixin-category))) ;; has-determiner
+        (typecase value
+          (individual 
+           (let ((embedded-objects (collect-model value)))
+             (loop for obj in embedded-objects
+               when (individual-p obj)
+               do (push obj objects))
+             (push value objects)))
+          (word)
+          (polyword)
+          (category)
+          (otherwise
+           (push-debug `(,value ,b ,i))
+           (break "Unexpected type of value of a binding: ~a" value)))))
+  
+      objects ))
+
+
+;;;---------------------------------------------
+;;; reading out identified relations / entities
+;;;---------------------------------------------
 
 ;; (readout-relations *relations*)
 (defun readout-relations (relations 
@@ -205,10 +218,16 @@
   (when (null relations)
     (format stream "~&~%No relations identified~%~%"))
   (dolist (r relations)
-    (print-readably r stream))
+    (print r)) ;;(print-readably r stream))
   (setq *relations* relations)
   (length *relations*))
 
-
+(defun readout-entities (entities 
+                         &optional (stream *standard-output*))
+  (when (null entities)
+    (format stream "~&~%No entities identified~%~%"))
+  (dolist (e entities)
+    (print e) ;;(print-readably r stream))
+))
 
 
