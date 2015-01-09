@@ -1384,7 +1384,7 @@
 (define-category stabilize :specializes bio-process :binds ((agent biological)(patient bio-process)) :realization (:verb "stabilize" :noun "stabilization" :etf (svo-passive) :s agent :o patient))
 (define-category transcribe :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "transcribe" :noun "transcription" :etf (svo-passive) :s agent :o patient))
 (define-category translocation :specializes bio-process 
-  :binds ((agent bio-entity)(patient bio-process)(source bio-location)(destination biological)) 
+  :binds ((agent bio-entity)(patient bio-process)(source biological)(destination biological)) 
   :realization 
   (:verb "translocate" :noun "translocation" 
          :etf (svo-passive) 
