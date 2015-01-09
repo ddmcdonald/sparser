@@ -9,6 +9,7 @@
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
 ;; 1/2/2015 added syntactic rule for sub-categorization rule vp --> (vp pp)
 ;; made the default referent for a prepositional phrase be the preposition -- otherwise the prepositional phrase can be interpreted as a direct object!
+;; 1/8/2015 added (def-syntax-rule (preposition proper-name)for PP
 
 (in-package :sparser)
 
@@ -143,6 +144,17 @@
   ;; THIS SHOULD NOT BE THE REFERENT OF THE NP --
   ;; it makes a PP acceptable as a direct object
   :referent (:head left-edge)) ;; (:head right-edge))
+
+(def-syntax-rule (preposition proper-name)
+                 :head :left-edge
+  :form pp
+  ;; I suppose we need a generic relationship here for
+  ;; a proper referent
+  ;; THIS SHOULD NOT BE THE REFERENT OF THE NP --
+  ;; it makes a PP acceptable as a direct object
+  :referent (:head left-edge)) ;; (:head right-edge))
+
+
 
 
 (def-syntax-rule (spatial-preposition np) ;;//// get rid of spatial-preposition!
