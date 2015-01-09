@@ -84,7 +84,7 @@ therefore we have the special cases:
 ;; ; (p "before Ser1507)
 
 (define-category residue-on-protein   
-  :specializes bio-entity ;; same as protein
+  :specializes bio-location ;; NOT same as protein, it is the location, not the amino acid
   :binds ((amino-acid . amino-acid)
           (position :primitive integer) ;; counting from the N terminus
           (on-protein . protein))
