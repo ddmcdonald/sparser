@@ -103,8 +103,10 @@
 ;;;------------
 
 (adj "able" ;; #33  -- but not working. Timing???
-  :binds ((enabled bio-process))
-  :realization (:to enabled))
+  :binds ((enabled biological)(result biological))
+  :realization 
+  (:to result
+       :s enabled))
 
 (adj "close" :super modifier)
 
@@ -150,6 +152,11 @@
   :binds ((theme bio-entity))
   :realization (:for theme))
 
+(adj "similar"
+  :binds ((compared-to biological))
+  :realization 
+  (:for compared-to))
+
 (adj "potent"
   :binds ((theme bio-entity))
   :realization (:for theme))
@@ -158,7 +165,11 @@
 ;;------- /// stopped alpabetizing here
 
 
-  
+(adj "active" :super molecule-state
+     :binds ((molecule molecule))
+     :realization 
+     (:adj "active"
+           :s molecule))
 (adj "anticancer")
 (adj "candidate" )
 (adj "chemical") ;; keyword: (al ADJ) 
@@ -216,6 +227,7 @@
 (define-adverb "similarly")
 (define-adverb "surprisingly")
 (define-adverb "therefore")
+(define-adverb "to this end")
 (define-adverb "until now")
 
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
@@ -251,6 +263,11 @@
 (def-bio "data" bio-entity) ;; need something better
 (noun "derivative" :super molecule)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
+(noun "difference" :super abstract
+      :binds ((compared biological))
+      :realization
+      (:noun "difference"
+             :between compared))
 (noun "domain" :super bio-location
       :binds ((substrate bio-entity))
       :realization 
@@ -283,6 +300,11 @@
       (:noun "isoform"
              :of basis))
 (noun "knockdown" :super bio-process)
+(noun "level" :super bio-scalar
+      :binds ((measurable bio-scalar))
+      :realization 
+      (:noun "level"
+             :of measurable))
 (noun "manner" :super bio-process) ;; by chemical or genetic means
 (noun "mass spectrometry" :super bio-process)
 (noun "means" :super bio-process) ;; by chemical or genetic means
@@ -307,15 +329,26 @@
 (noun "patient" :super bio-entity)
 (noun "phenotype" :super bio-entity)
 (noun "plasma" :super cellular-location)
+(noun "plasma membrane" :super cellular-location)
 (noun "range" :super measurement)
 (noun "rate" :super bio-scalar
       :binds ((process bio-process) (components biological))
       :realization 
       (:noun "rate"
-             :of process ; 
+             :of process
              :for components))
+
+
 (noun "ratio" :super measurement)
 (noun "region" :super bio-location)
+(noun response :super bio-process
+    :binds ((beneficiary biological)(agent biological))
+    :realization
+    (;; :verb "respond" cant get the right :etf for verbs
+     :noun "response"
+     :of beneficiary
+     :to agent))
+
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
 (noun "scaffold" :super protein) 
@@ -361,7 +394,12 @@
       :realization 
       (:noun "presence" 
              :of context)) ;; keyword: (ence N) 
-(noun "sensitivity" :super abstract) ;; keyword: (ity N) 
+(noun "sensitivity" :super abstract
+      :binds ((item biological)(agent biological))
+      :realization
+      (:noun "sensitivity"
+             :of item
+             :to agent)) ;; keyword: (ity N) 
 (noun "stoichiometry" :super abstract)
 (noun "success" :super abstract)
 (noun "therapeutics" :super abstract) ;; keyword: (ics N) 
@@ -586,3 +624,6 @@
 
 (noun ("analysis" :plural "analyses")
   :super bio-process)
+
+
+(noun "32P" :super molecule) ;; actually an isotope -- need to adjust taxonomy 
