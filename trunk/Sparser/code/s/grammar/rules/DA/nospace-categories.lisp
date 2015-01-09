@@ -55,7 +55,7 @@
                    :form category::n-bar
                    :referent i
                    :constituents `(,left-edge ,right-edge))))
-        ;;(break "look at edge")
+        (revise-form-of-nospace-edge-if-necessary edge)
         ;;/// trace goes here
         edge)))
 
@@ -84,7 +84,7 @@
                    :form category::n-bar
                    :referent i
                    :constituents `(,left-edge ,middle-edge ,right-edge))))
-        ;;(break "look at edge")
+        (revise-form-of-nospace-edge-if-necessary edge)
         ;;/// trace goes here
         edge)))
                                     
@@ -133,6 +133,7 @@
                  :form category::proper-noun
                  :referent i
                  :constituents edges)))
+      (revise-form-of-nospace-edge-if-necessary edge)
       ;;/// trace
       edge)))
 
