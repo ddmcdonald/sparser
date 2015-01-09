@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2014-2015  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  0.4 December 2014
+;;;  Version:  0.5 January 2015
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
@@ -17,6 +17,7 @@
 ;;     from being put over the literals. 
 ;; 0.4 (12/10/14) Made try-combination-to-the-left/bounded throw if it
 ;;     encountered a word. 
+;; 0.5 (1/9/15) Changed the return value to include the edge as well as the layout
 
 (in-package :sparser)
 
@@ -26,12 +27,14 @@
   ;; the same and that there's some chance of there being an edge
   ;; across the whole span, e.g. Evaluate-angle-bracket-interior
   (push-debug `(,left-bound ,right-bound)) ;(break "parse-between")
-  (catch :done-parsing-region
-    (parse-from-to/topmost left-bound right-bound))
-  (analyze-segment-layout
-   ;; /// it ought to be possible to keep a running model of this
-   ;; rather than have to recalculate it here
-   left-bound right-bound))
+  (let ((edge (catch :done-parsing-region
+                (parse-from-to/topmost left-bound right-bound))))
+    (let ((layout (analyze-segment-layout
+                   ;; /// it ought to be possible to keep a running model of this
+                   ;; rather than have to recalculate it here
+                   left-bound right-bound)))
+      (values layout
+              edge))))
 
 
 (defun parse-from-to/topmost (left-bound right-pos)
@@ -75,7 +78,7 @@
       (throw :done-parsing-region right-edge))
     (when (< (pos-token-index middle-pos)
 	     (pos-token-index left-bound))
-      (break "Bad threading - middle-pos (~a) is the left of the left-bound (~a)"
+      (error "Bad threading - middle-pos (~a) is the left of the left-bound (~a)"
 	     middle-pos left-bound))
 
     (if multiple-on-right?
