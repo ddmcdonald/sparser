@@ -9,7 +9,7 @@ and p120GAP(GAP–334).")
 increase in the rate of GTP hydrolysis for unmodified Ras relative to
 the intrinsic rate of GTP hydrolysis.")
     (p "No increase in the rate of GTP hydrolysis was observed for mUbRas in
-the presence of the same GAP–to Ras ratio.")
+the presence of the same GAP-to-Ras ratio.")
     (p "Therefore, mUbRas is insensitive to GAP–mediated regulation, similar
 to an oncogenic RasG12V mutation (9).") ;; FIX THE BFOOTNOTE INDICATOR (9) which was mutation9
     (p "We obtained similar results using K–Ras, indicating that the effects
@@ -144,11 +144,26 @@ protein, although the underlying mechanism remains to be investigated.")))
     (print (list n test))
     (if (member n *known-breaks*)
         (print "skipping because of known problems")
-        (eval test))))
+        (progn
+          (eval test)
+          (terpri) 
+          (terpri)
+          (print "SEMANTIC FOREST ------------------------------------")
+          (pprint
+           (tts-semantics))
+          (print "___________________________________________")
+          (terpri)
+          (terpri)
+          (terpri)
+          ))))
 
 (defun retest () 
-  (loop for i from (+ 1 (car *tested*)) to 100 do 
+  (loop for i from (+ 1 (car *tested*)) to 100 
+    when (<= i (length *sentences*))
+    do 
     (push i *tested*) (dectest i)))
+
+
 
 (defun bad () 
   (push (car *tested*) *known-breaks*) 
