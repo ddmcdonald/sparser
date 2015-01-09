@@ -41,6 +41,15 @@
   :binds ((bio-context bio-context)) 
   :documentation "Strictly speaking this a mixin")
 
+(define-mixin-category molecule-state
+  :specializes biological
+  :lemma (:adjective "XXXstate")
+  :binds ((bio-context bio-context)) 
+  :documentation "Strictly speaking this a mixin")
+
+
+
+
 ;; redefine to make this a bio-scalar
 (define-category  measurement  ;; "10 yards"
   :specializes bio-scalar
