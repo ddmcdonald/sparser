@@ -22,6 +22,7 @@
 ;; 1/4/2015 add flag and bind the special *left-edge-into-reference* in possible-treetop-=rules so that ref/function can work as a predicate
 ;; 1/6/2015 new mechanism in whack-a-rule to prioritize PP creation and attachemnt above subject+verb binding
 ;; 1/8/2015 refactor possible-treetop-rules to make it easier to trace and understand
+;; 1/8/2015 rename to best-treetop-rule and make it return one rule only
 
 (in-package :sparser)
 
