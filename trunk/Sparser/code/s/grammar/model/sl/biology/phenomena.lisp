@@ -9,6 +9,7 @@
 ;; like cell line and mutation. Conformation and isoform and such
 ;; would go here. Reorganizes some items in terms. Incremental
 ;; extensions through 1/6/15
+;; 1/9/2015 give ubiquitinate a site variable, and define "pro-apoptotic" as a subclass of "apoptotoic"
 
 (in-package :sparser)
 
@@ -75,25 +76,29 @@
 
 (define-category monoubiquitinate 
   :specializes bio-process 
-  :binds ((agent bio-entity)
-          (patient bio-process)) 
+  :binds ((agent biological)
+          (patient biological)
+          (site residue-on-protein)) 
   :realization 
     (:verb "monoubiquitinate" 
      :noun "monoubiquitination" 
      :etf (svo-passive) 
      :s agent 
-     :o patient))
+     :o patient
+     :at site))
 
 (define-category ubiquitinate 
  :specializes bio-process 
- :binds ((agent bio-entity)
-         (patient bio-process)) 
+ :binds ((agent biological)
+         (patient biological)
+         (site residue-on-protein) )
   :realization 
     (:verb "ubiquitinate" 
      :noun "ubiquitination" 
      :etf (svo-passive) 
      :s agent 
-     :o patient))
+     :o patient
+     :at site))
 
 
 ;;;-------------------
@@ -256,3 +261,5 @@ it is created from N-terminus to C-terminus.|#
   :realization
   ((:common-noun "apoptosis")
    (:adjective "apoptotic")))
+
+(adj "pro-apoptotic" :super apoptosis)
