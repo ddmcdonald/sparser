@@ -124,37 +124,25 @@
 
 
 ;;--- prepositional phrases
+(define-category prepositional-phrase :specializes abstract
+  :binds ((prep)(pobj)))
 
 ;;/// makes for a counter-intutive edge since the preposition
 ;; is its label
 (def-syntax-rule (preposition np)
                  :head :left-edge
   :form pp
-  ;; I suppose we need a generic relationship here for
-  ;; a proper referent
-  ;; THIS SHOULD NOT BE THE REFERENT OF THE NP --
-  ;; it makes a PP acceptable as a direct object
-  :referent (:head left-edge)) ;; (:head right-edge))
+  :referent (:function make-pp left-referent right-referent))
 
 (def-syntax-rule (preposition proper-noun)
                  :head :left-edge
   :form pp
-  ;; I suppose we need a generic relationship here for
-  ;; a proper referent
-  ;; THIS SHOULD NOT BE THE REFERENT OF THE NP --
-  ;; it makes a PP acceptable as a direct object
-  :referent (:head left-edge)) ;; (:head right-edge))
+  :referent (:function make-pp left-referent right-referent))
 
 (def-syntax-rule (preposition proper-name)
                  :head :left-edge
   :form pp
-  ;; I suppose we need a generic relationship here for
-  ;; a proper referent
-  ;; THIS SHOULD NOT BE THE REFERENT OF THE NP --
-  ;; it makes a PP acceptable as a direct object
-  :referent (:head left-edge)) ;; (:head right-edge))
-
-
+  :referent (:function make-pp left-referent right-referent))
 
 
 (def-syntax-rule (spatial-preposition np) ;;//// get rid of spatial-preposition!
