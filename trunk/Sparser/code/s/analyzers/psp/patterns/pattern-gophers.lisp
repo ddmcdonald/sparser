@@ -110,6 +110,7 @@
   ;; compose except for the hypen between the words and cases 
   ;; like "Sur-8" where it's the name of a protein
   (push-debug `(,pos-before ,pos-after ,pattern))
+  (tr :resolve-hyphen-between-two-words words)
   (let ((left-edge (right-treetop-at/edge pos-before))
         (right-edge (left-treetop-at/edge pos-after)))
     ;; lifted from nospace-hyphen-specialist
@@ -119,10 +120,11 @@
       ;;(push-debug `(,left-edge ,right-edge)) (break "???")
       (if rule
         (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
-          ;;//// trace goes here
-          (revise-form-of-nospace-edge-if-necessary edge))
+          (revise-form-of-nospace-edge-if-necessary edge)
+          (tr :two-word-hyphen-edge edge))
         (else ;; make a structure if all else fails
          ;; but first alert to anticipated cases not working
+         (tr :defaulting-two-word-hyphen)
          (make-hypenated-structure left-edge right-edge))))))
 
 (defun resolve-hyphen-between-three-words (pattern words
@@ -130,7 +132,8 @@
   ;; Should look for standard patterns, especially on the
   ;; middle word. ///Postponing that effort so we can make some
   ;; progress. 
-  (declare (ignore pattern words))
+  (declare (ignore pattern))
+  (tr :resolve-hyphens-between-three-words words)
   (let ((left-edge (right-treetop-at/edge pos-before))
         (right-edge (left-treetop-at/edge pos-after))
         (middle-edge (right-treetop-at/edge 

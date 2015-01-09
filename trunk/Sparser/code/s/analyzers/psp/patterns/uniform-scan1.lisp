@@ -62,6 +62,7 @@
 
       (when (or (word-is-bracket-punct (pos-terminal start-pos))               
                 (word-is-bracket-punct (pos-terminal position-just-after))
+                (word-never-in-ns-sequence (pos-terminal start-pos))
                 (word-never-in-ns-sequence (pos-terminal position-just-after)))
         (return-from collect-no-space-segment-into-word nil))
 
@@ -97,8 +98,7 @@
             (tr :ns-segment-layout layout)
             (cond
              ((eq layout :single-span)  ;; Do nothing. It's already known
-              ;;(break "integrated ~a ??" edge)
-)
+              (break "integrated ~a ??" edge))
              ((memq :slash pattern)
               (tr :ns-looking-at-slash-patterns)
               (divide-and-recombine-ns-pattern-with-slash 
