@@ -271,10 +271,9 @@
 
 
 
-(defun possible-treetop-rules ()
+(defun best-treetop-rule ()
   (let
       (rule rules)
-    (declare (special rule))
     (loop for pair in (adjacent-tts) 
       when (setq rule (rule-for-edge-pair pair))
       do
@@ -282,6 +281,18 @@
        (cons rule pair)
        rules))
     (filter-rules-by-local-competition rules)))
+
+(defun copula-rule? ()
+  (let
+      (rule)
+    (loop for pair in (adjacent-tts) 
+      when 
+      (and
+       (setq rule (rule-for-edge-pair pair))
+       (and (eq (car (cfr-rhs rule)) category::be)
+            (eq (second (cfr-rhs rule)) category::adjective)))
+      do
+      (return (cons rule pair)))))
 
 (defun rule-for-edge-pair (pair)
   (let
@@ -313,13 +324,9 @@
       (ref/function (cdr (cfr-referent rule))))))
 
 (defun filter-rules-by-local-competition (rules)
-  (let
-      ((rules
-        (loop for tail on rules
-          unless (losing-competition? (car tail) (second tail))
-          collect (car tail))))
-    (when rules
-      (list (car rules)))))
+  (loop for tail on rules
+    unless (losing-competition? (car tail) (second tail))
+    do (return (car tail))))
 
 (defun losing-competition? (rule1 rule2)
   (declare (special rule1 rule2))
@@ -330,7 +337,7 @@
        ;; goal here is to put off subject attachment until the subject is a large as possible
        ;;  don't do right-to-left activation for the subj+verb rules
        ;(break "competing")
-       (print `(dropping rule ,rule1))
+       ;;(print `(dropping rule ,rule1))
        t)
       (t nil)))
 
