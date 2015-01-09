@@ -169,7 +169,7 @@ therefore we have the special cases:
 ;;;-----------------
 
 (define-category point-mutation
-  :specializes residue-on-protein 
+  :specializes residue-on-protein ;; amino-acid position on-protein
   ;; if we had 'mutation' that might be better
   ;; but these do involve a particular residue
   :binds ((new-amino-acid . amino-acid))
@@ -182,14 +182,60 @@ therefore we have the special cases:
   ;; on either side of a digits span
   ;;//// look at the edges
   (push-debug `(,words ,pos-before ,pos-after))
-  (break "look at edges re point mutation")
-  (revise-form-of-nospace-edge-if-necessary edge))
+  (let ((edges (treetops-between pos-before pos-after)))
+    (unless (= 3 (length edges))
+      (error "Should be three edges for a point mutation but there are ~a" (length edges)))
+    (let* ((edge1 (car edges))
+           (ref1 (edge-referent edge1))
+           (edge2 (cadr edges))
+           (ref2 (edge-referent edge2))
+           (edge3 (caddr edges))
+           (ref3 (edge-referent edge2)))
+      ;;(break "look at edges re point mutation")
+      (let ((aa1 (single-letter-is-amino-acid ref1))
+            (aa2 (single-letter-is-amino-acid ref3)))
+        ;;/// do we have enough args to go somewhere else if these are amino acid?
+        (when (and aa1 aa2)
+          (let ((number ;;(find-or-make-number ref2) change residue
+                 (get-tag-for :numerical-value ref2)))
+            (let* ((i (make-point-mutation aa1 aa2 ;; or is it the other order??
+                                          number))
+                   (edge
+                    (make-edge-over-long-span
+                     pos-before
+                     pos-after
+                     category::point-mutation
+                     :rule :reify-point-mutation-and-make-edge
+                     :form category::np
+                     :referent i
+                     :constituents `(,edge1 ,edge2 ,edge3))))
+              ;;/// trace
+              edge)))))))
+              
 
 (defun make-point-mutation (original replacement residue-number)
-  (push-debug `(,original ,replacement ,residue-number))
-  (break "stub"))
+  (find-or-make-individual 'point-mutation
+    :amino-acid original
+    :new-amino-acid replacement
+    :position residue-number))
 
-;; this is a hack patch for S338
+;; (get-tag-for :numerical-value digit-word))
+
+;;/// see model/core/number/form2.lisp  -- but move the all
+(defmethod find-or-make-number ((word word))
+  (find-or-make-number (word-pname word)))
+(defmethod find-or-make-number ((pname string))
+  (let ((lisp-number (read-from-string pname)))
+    (find-or-make-number lisp-number)))
+
+
+
+
+
+
+;;;-------------------------------
+;;; this is a hack patch for S338
+;;;-------------------------------
 
 (defun define-residue (residue-name)
   (def-bio/expr residue-name 'residue-on-protein :takes-plurals nil))
