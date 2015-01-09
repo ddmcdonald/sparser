@@ -182,5 +182,32 @@
   (when *trace-scan-patterns*
     (trace-msg "[ns] Looking at default patterns")))
 
+(deftrace :resolve-hyphen-between-two-words (words)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Resolving hyphen between two words: ~s" words)))
+
+(deftrace :two-word-hyphen-edge (edge)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns]   resolved to e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :defaulting-two-word-hyphen ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns]   Using the default")))
+
+(deftrace :two-hyphen-default-edge (edge)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns]   Defaulted to e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :resolve-hyphens-between-three-words (words)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Resolving hyphen between three words: ~s" words)))
+
+(deftrace :three-hyphen-default-edge (edge)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns]   Defaulted to e~a"
+               (edge-position-in-resource-array edge))))
+
 
 
