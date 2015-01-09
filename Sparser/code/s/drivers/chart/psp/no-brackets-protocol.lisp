@@ -9,6 +9,7 @@
 ;; 10/29/14 added flags to turn off various steps so lower ones
 ;; could be independently tested. 11/18/14 Reflecting the decomposition
 ;; of the sweep into a succession of sweeps. 12/18/
+;; code to create trees of semantics for treetops -- collect-model-description and semantic-tts
 
 (in-package :sparser)
 
@@ -171,6 +172,8 @@
 (defmethod collect-model ((c category)) nil) ;;`(,c))
 ;; anything else?
 
+
+
 (defmethod collect-model ((i individual))
   (let (;;(type (car (indiv-type i)))
         (bindings (indiv-binds i))
@@ -206,6 +209,62 @@
            (break "Unexpected type of value of a binding: ~a" value)))))
   
       objects ))
+
+
+(defun tts-semantics ()
+  (loop for edge in (cdr (all-tts)) 
+    when (individual-p (edge-referent edge))
+    collect
+    (collect-model-description (edge-referent edge))))
+
+(defmethod collect-model-description ((cat category))
+  (list cat))
+
+(defmethod collect-model-description ((cat cons))
+  `(collection :members (,@(loop for l in ll collect (collect-model-description l)))))
+
+
+(defmethod collect-model-description ((i individual))
+  (setq *input* i)
+  (let (;;(type (car (indiv-type i)))
+        (bindings (indiv-binds i))
+        objects 
+        (desc (list i)))
+    ;; Had been restricting the recursion to types with
+    ;; a subject variable: (subject-variable type), 
+    ;; but that's missing interesting noun phrase referents.
+    (dolist (b bindings)
+      (let ((var (binding-variable b))
+            (value (binding-value b)))
+        (unless (or (eq (var-name var) 'category)
+                    (typep value 'mixin-category))) ;; has-determiner
+        (cond
+         ((or
+           (numberp value)
+           (symbolp value)
+           (stringp value))
+          (list value))
+         (t
+          (typecase value
+            (individual 
+             (if
+              (itypep value 'prepositional-phrase)
+              (dolist (bb (indiv-binds value))
+                (when
+                    (eq (var-name (binding-variable bb)) 'pobj)
+                  (push (list (var-name var) (collect-model-description (binding-value bb))) desc)))
+              (push (list (var-name var) (collect-model-description value)) desc)))
+            (word)
+            (polyword)
+            (category)
+            (cons
+             `(collection :members (,@(loop for item in value collect (collect-model-description item)))))
+            (otherwise
+             (push-debug `(,value ,b ,i))
+             (break "Unexpected type of value of a binding: ~a" value)))))))
+  
+    (reverse desc)))
+
 
 
 ;;;---------------------------------------------
