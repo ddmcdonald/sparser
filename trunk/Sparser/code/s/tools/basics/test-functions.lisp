@@ -1,14 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2010-2015  Rusty Bobrow  -- all rights reserved
+;;; copyright (c) 2015  Rusty Bobrow  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
-;;;      File:  "loader"
+;;;      File:   "test-functions"
 ;;;    Module:   "tools:basics"
-;;;   Version:   October 2013
+;;;   Version:   January 2015
 
 ;; utilities for testing in R3
-
-
 
 (in-package :sparser)
 
@@ -84,7 +82,7 @@
   (format stream "~(~S~)" 
           (if (individual-p item)
               `(,(intern (symbol-name (cat-symbol (car (indiv-type item)))))
-                ,(indiv-id item))
+                ,(indiv-uid item))
               item)))
    
 
