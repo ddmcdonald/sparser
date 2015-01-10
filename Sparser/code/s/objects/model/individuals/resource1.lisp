@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "resource"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.0 June 2013
+;;;  version:  1.0 January 2015
 
 ;; initiated 7/20/92 v2.3. 8/10/94 redid definition of re-initialization
 ;; 10/3 added return-from a failure break
@@ -11,6 +11,7 @@
 ;;      list and isn't recycled.  2/7/05 Added permanent-individual? and a value
 ;;      for the :permanent property
 ;;     (6/3/13) Moved in the other general {+,-}permanent code and added doc.
+;;     (1/10/15) made indiv-uid more robust since it's about to be used more
 
 (in-package :sparser)
 
@@ -212,4 +213,9 @@ uses the two-lists on the plist conception of how things are done.
 
 
 (defun indiv-uid (i)
-  (cadr (member :uid (unit-plist i))))
+  (let ((plist (unit-plist i)))
+    (when plist
+      (let ((uid (cadr (member :uid plist))))
+        uid))))
+
+
