@@ -38,14 +38,12 @@
 (define-mixin-category biological
   :specializes bio-scalar
   :lemma (:adjective "biological")
-  :binds ((bio-context bio-context)) 
-  :documentation "Strictly speaking this a mixin")
+  :binds ((bio-context bio-context)))
 
 (define-mixin-category molecule-state
   :specializes biological
   :lemma (:adjective "XXXstate")
-  :binds ((bio-context bio-context)) 
-  :documentation "Strictly speaking this a mixin")
+  :binds ((bio-context bio-context)))
 
 
 
@@ -135,7 +133,7 @@
   :specializes molecule
   :instantiates :self
   :binds ((three-letter-code :primitive word)
-          (one-letter-code :primitive word))
+          (one-letter-code single-capitalized-letter))
   :index (:permanent :key name)
   :lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
   :realization (:common-noun name))
