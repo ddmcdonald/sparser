@@ -20,7 +20,7 @@
 ;;     which is just wrong.
 ;;    (8/24/13) Modified lookup-passive-counterpart to use #:ed for forming
 ;;     the passive symbol. 
-;;    (9/15/14) fixed from on be+adjective
+;;    (9/15/14) fixed form on be+adjective
 
 (in-package :sparser)
 
@@ -83,20 +83,17 @@
 (def-cfr be ("was")
   :form verb
   :referent (:head be
-             ;;:subtype past
-                   ))
+             :subtype past))
 
 (def-cfr be ("were")
   :form verb
   :referent (:head be
-             ;;:subtype past
-                   ))
+             :subtype past))
 
 (def-cfr be ("been")
   :form verb+ed
   :referent (:head be
-             ;;:subtype past
-                   ))
+             :subtype past))
 
 (def-cfr be ("being")
   :form verb+ing
@@ -123,8 +120,7 @@
 (def-form-rule (be verb+ing)
   :form verb
   :referent (:head right-edge
-             ;;:subtype progressive
-                   ))
+             :subtype progressive))
 
 
 ;;---- tns + not
@@ -132,8 +128,7 @@
 (def-cfr be (be "not")
   :form verb
   :referent (:head left-edge
-             ;;:subtype negative
-                   ))
+             :subtype negative))
 
 
 ;;---- "be" + "en" (passive)
