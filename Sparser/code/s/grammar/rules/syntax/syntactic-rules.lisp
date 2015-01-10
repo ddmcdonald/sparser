@@ -77,19 +77,26 @@
 (def-syntax-rule (proper-noun proper-noun) ;; "ford suv"
                  :head :right-edge ; 
   :form n-bar ;; requires a determiner 
-  :referent (:head right-edge)) ;; modifer ??  classifier ??
-  
-
-(def-syntax-rule (adjective n-bar) ;; "black suv"
-                 :head :right-edge
-  :form np ;;/// cutting corners
-  :referent (:head right-edge))
+  :referent (:function noun-noun-compound
+                       left-edge right-edge))
 
 (def-syntax-rule (common-noun common-noun)
                  :head :right-edge
   :form n-bar
   :referent (:function noun-noun-compound
                        left-edge right-edge))
+
+(def-syntax-rule (proper-noun common-noun)
+                 :head :right-edge
+  :form n-bar
+  :referent (:function noun-noun-compound
+                       left-edge right-edge))
+
+
+(def-syntax-rule (adjective n-bar) ;; "black suv"
+                 :head :right-edge
+  :form np ;;/// cutting corners
+  :referent (:head right-edge))
 
 
 (def-syntax-rule (np pp)
