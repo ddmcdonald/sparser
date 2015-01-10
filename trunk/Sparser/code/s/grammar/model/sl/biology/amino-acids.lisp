@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "amino-acids"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2014
+;;; version: January 2015
 
 ;; initiated 9/8/14
 ;; RJB -- added hacks for problems with NS word finding of"S338" and "pThr202/Tyr204"
-
+;; 1/9/15 finished point mutation with fanout into single character amino
+;; acids
 
 (in-package :sparser)
 
@@ -31,12 +32,18 @@ ones are gratuitously ambiguous with capitalized initials.
          (i (find-or-make-individual 'amino-acid :name long-word)))
     (let* ((three-letter-word (resolve/make three))
            (one-letter-word (resolve/make one))
+           (one-letter-object
+            (find-individual 'single-capitalized-letter 
+              :letter one-letter-word))                            
            (3-letter-rule
             (define-cfr category::amino-acid `(,three-letter-word)
               :form category::common-noun
               :referent i)))
+      (unless one-letter-object
+        (push-debug `(,one-letter-word))
+        (break "could not retrieve capitalized-letter"))
       (add-rule-to-individual 3-letter-rule i)
-      (setf (gethash one-letter-word *single-letters-to-amino-acids*) i)
+      (setf (gethash one-letter-object *single-letters-to-amino-acids*) i)
       i)))
     
 
@@ -190,11 +197,14 @@ therefore we have the special cases:
            (edge2 (cadr edges))
            (ref2 (edge-referent edge2))
            (edge3 (caddr edges))
-           (ref3 (edge-referent edge2)))
+           (ref3 (edge-referent edge3)))
       ;;(break "look at edges re point mutation")
       (let ((aa1 (single-letter-is-amino-acid ref1))
             (aa2 (single-letter-is-amino-acid ref3)))
         ;;/// do we have enough args to go somewhere else if these are amino acid?
+        (unless (and aa1 aa2)
+          (push-debug `(,ref1 ,ref3))
+          (break "Couldn't find the amino acids"))
         (when (and aa1 aa2)
           (let ((number ;;(find-or-make-number ref2) change residue
                  (get-tag-for :numerical-value ref2)))
@@ -218,16 +228,6 @@ therefore we have the special cases:
     :amino-acid original
     :new-amino-acid replacement
     :position residue-number))
-
-;; (get-tag-for :numerical-value digit-word))
-
-;;/// see model/core/number/form2.lisp  -- but move the all
-(defmethod find-or-make-number ((word word))
-  (find-or-make-number (word-pname word)))
-(defmethod find-or-make-number ((pname string))
-  (let ((lisp-number (read-from-string pname)))
-    (find-or-make-number lisp-number)))
-
 
 
 
