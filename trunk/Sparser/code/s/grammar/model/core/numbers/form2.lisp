@@ -234,11 +234,3 @@
         :word-object-for-digits word 
         :temporary? t))))
 
-
-
-(defmethod find-or-make-number ((lisp-number number))
-  (define-or-find-individual 'number 'value lisp-number))
-
-(defun find-number (lisp-number)
-  (find-individual 'number :value lisp-number))
-

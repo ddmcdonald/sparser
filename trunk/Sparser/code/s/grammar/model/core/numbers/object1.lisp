@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  1.3 May 2014
+;;;  Version:  1.3 January 2015
 
 ;; 1.2 (7/19/92 v2.3) made over as "real" category. 8/4/94 finished princ routine
 ;;     (10/3) improved the printer.  11/15/95 added a sort routine.
 ;; 1.3 (6/12/99) Added referential category for multiplier. 6/25 Added a realization
 ;;      for number. (9/20) moved over set-illion-distribution since it makes more
 ;;      sense here along with its category.
+;;     (1/10/15) consolidated find-or-make routines here
 
 (in-package :sparser)
 
@@ -179,6 +180,29 @@
     (setf (unit-plist number)
           (cons :multiplicand (cons word (unit-plist number))))
     (setf (unit-plist number) `(:multiplicand ,word))))
+
+
+;;;--------------
+;;; find-or-make
+;;;--------------
+;; Intended for instances where a function has something
+;; in its hand and wants the corresponding number
+
+(defun find-number (lisp-number)
+  (find-individual 'number :value lisp-number))
+
+;; (get-tag-for :numerical-value digit-word))
+
+(defmethod find-or-make-number ((word word))
+  (find-or-make-number (word-pname word)))
+
+(defmethod find-or-make-number ((pname string))
+  (let ((lisp-number (read-from-string pname)))
+    (find-or-make-number lisp-number)))
+
+(defmethod find-or-make-number ((lisp-number number))
+  (define-or-find-individual 'number 'value lisp-number))
+
 
 
 
