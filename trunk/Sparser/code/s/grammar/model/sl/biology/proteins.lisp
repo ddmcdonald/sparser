@@ -82,7 +82,8 @@
 
 
 
-(def-bio "GAP" protein :synonyms ("GTPase activating proteins"))
+(def-bio "GAP" protein :synonyms ("GTPase activating pproteins"))
+;; "pproteins" to avoid a literal on "proteins"
 
 ;; compositional version of the long forms would be better
 ;;/// are these small molecules like GDP or are the larger? -- protein
@@ -273,7 +274,9 @@ filligre may be used to distinguish them, etc.
 ;;  know anything about them
 
 (def-bio "ASPP2" protein
-  :long "Apoptosis-stimulating of p53 protein 2"
+  ;;  :long "Apoptosis-stimulating of p53 protein 2"
+  ;; This will form a literal on "protein" that blocks its
+  ;; proper run for reason frustrating but as yet undiagnozed
   :synonyms ("Bbp" ;; Bcl2-binding protein
              "p53BP2") ;; tumor suppressor p53-binding protein 2
   ;; gene is TP53BP2
