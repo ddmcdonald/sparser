@@ -124,49 +124,5 @@ explanation of how RAS can activate p53 pro-apoptotic functions.")
 protein, although the underlying mechanism remains to be investigated.")))
 
 
-(defvar *known-breaks* nil)
-(defvar *tested* '(0))
-(defun reset-dectest ()
-  (setq *tested* '(0)))
-
-(defparameter *sentences* *dec-tests*)
-(defun test-jan ()
-  (setq *sentences* *jan-dry-run*)
-  nil)
-
-(defun test-dec ()
-  (setq *sentences* *dec-tests*)
-  nil)
-
-
-(defun dectest(n &optional (sentences *sentences*))
-  (let ((test  (nth (- n 1) sentences)))
-    (print (list n test))
-    (if (member n *known-breaks*)
-        (print "skipping because of known problems")
-        (progn
-          (eval test)
-          (terpri) 
-          (terpri)
-          (print "SEMANTIC FOREST ------------------------------------")
-          (pprint
-           (tts-semantics))
-          (print "___________________________________________")
-          (terpri)
-          (terpri)
-          (terpri)
-          ))))
-
-(defun retest () 
-  (loop for i from (+ 1 (car *tested*)) to 100 
-    when (<= i (length *sentences*))
-    do 
-    (push i *tested*) (dectest i)))
-
-
-
-(defun bad () 
-  (push (car *tested*) *known-breaks*) 
-  (retest))
 
 
