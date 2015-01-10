@@ -41,9 +41,11 @@
           (terpri)
           (format t "SEMANTIC FOREST ------------------------------------~&")
           
-          (loop for tree in
-            (tts-semantics)
-            do (print-tree tree))
+          (loop for edge-tree in
+            (tts-edge-semantics)
+            do
+            (format t "-----~&~S~&~&" (car edge-tree))
+            (print-tree (second edge-tree)))
           (format t "~&___________________________________________~&~&")
           ))))
 
@@ -63,18 +65,28 @@
 (defun print-tree (tree &optional (last nil) (indent 0) (stream t))
   (nspaces indent stream)
   (cond
-    ((consp tree)
-     (format stream "(~S"  (car tree))
-     (when
-	 (cdr tree)
-       (terpri)
-       (loop for items on (cdr tree) do (print-tree (car items) (null (cdr items))(+ indent 3) stream)))
-     (format stream ")"))
-    (t
-     (format stream "~S" tree)))
+   ((consp tree)
+    (format stream "(")
+    (format-item (car tree) stream)
+    (when
+        (cdr tree)
+      (terpri)
+      (loop for items on (cdr tree) do 
+        (print-tree (car items) (null (cdr items))(+ indent 3) stream)))
+    (format stream ")"))
+   (t
+    (format-item tree stream)))  
   (if
    (not last)
    (terpri stream)))
+
+(defun format-item (item stream)
+  (format stream "~(~S~)" 
+          (if (individual-p item)
+              `(,(intern (symbol-name (cat-symbol (car (indiv-type item)))))
+                ,(indiv-id item))
+              item)))
+   
 
 (defun nspaces (n stream)
   (when (> n 0)

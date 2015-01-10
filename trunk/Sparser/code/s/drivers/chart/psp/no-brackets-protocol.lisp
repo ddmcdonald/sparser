@@ -215,15 +215,32 @@
   (loop for edge in (cdr (all-tts)) 
     when (individual-p (edge-referent edge))
     collect
-    (collect-model-description (edge-referent edge))))
+    (semtree (edge-referent edge))))
+
+(defun tts-edge-semantics ()
+  (loop for edge in (cdr (all-tts)) 
+    when (individual-p (edge-referent edge))
+    collect
+    (list
+     edge
+     (semtree (edge-referent edge)))))
+
+
+
+(defmethod semtree ((n number))
+  (semtree (e# n)))
+
+(defmethod semtree ((e edge))
+  (semtree (edge-referent e)))
+
+(defmethod semtree ((i individual))
+  (collect-model-description i))
 
 (defmethod collect-model-description ((cat category))
   (list cat))
 
 (defmethod collect-model-description ((cat cons))
   `(collection :members (,@(loop for l in ll collect (collect-model-description l)))))
-
-
 (defmethod collect-model-description ((i individual))
   (setq *input* i)
   (let (;;(type (car (indiv-type i)))
