@@ -171,7 +171,8 @@ to make any semantic or form edges that the grammar dictates.
 		 (otherwise
 		  (break "New type of object as referent of right-suffix: ~a~%~a"
 			 (type-of referent) referent))))))
-
+      (when *big-mechanism*
+        (format t "~&sdm-span-segment: ~a" edge))
       (tr :sdm-span-segment edge)
       edge)))
    
