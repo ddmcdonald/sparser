@@ -6,7 +6,7 @@
 ;;;    Module:   "tools:basics"
 ;;;   Version:   January 2015
 
-;; utilities for testing in R3
+;; utilities for testing in R3. Made format-item prettier 1/10/15
 
 (in-package :sparser)
 
@@ -78,12 +78,32 @@
    (not last)
    (terpri stream)))
 
-(defun format-item (item stream)
+#+ignore(defun format-item (item stream)
   (format stream "~(~S~)" 
           (if (individual-p item)
+            (let ((name (name-of-individual item)))
               `(,(intern (symbol-name (cat-symbol (car (indiv-type item)))))
-                ,(indiv-uid item))
-              item)))
+                ,(indiv-uid item)))
+            item)))
+
+(defun format-item (item stream)
+  (if (individual-p item)
+    (let* ((name (name-of-individual item))
+           (pname (when name (typecase name
+                               (word (word-pname name))
+                               (polyword (pw-pname name))
+                               (otherwise "")))))
+      (if name
+        (format stream "~((~a ~s ~a)~)"
+                (cat-symbol (car (indiv-type item)))
+                pname
+                (indiv-uid item))
+        (format stream "~((~a ~a)~)"
+                (cat-symbol (car (indiv-type item)))
+                (indiv-uid item))))
+
+    (format stream "~(~S~)" 
+            item)))
    
 
 (defun nspaces (n stream)
