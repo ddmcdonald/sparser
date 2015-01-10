@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.7 February 2014
+;;;  version:  0.8 January 2015
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -33,6 +33,7 @@
 ;;      a name object rather than a word value. 6/7/13 More rationalizing.
 ;; 0.7 (2/6/14) Refactored print-individual-with-name to get around it's
 ;;      presumtion that a 'name' variable always holds a word.
+;; 0.8 (1/10/15) Modifying printers to use the uid number.
 
 (in-package :sparser)
 
@@ -73,7 +74,7 @@
                       (princ-category category stream)
                       (write-string "type-not-handled" stream))
                     (write-string " " stream))
-                  (format stream "~A>" (indiv-id indiv))))))))
+                  (format stream "~A>" (indiv-uid indiv))))))))
         (else
           ;; a freshly allocated individual has no type
           (write-string "#<empty individual>" stream))))))
@@ -86,7 +87,8 @@
 
 (defun princ-individual (i stream)
   (princ-category (car (indiv-type i)) stream)
-  (princ (indiv-id i) stream))
+  (write-string "-" stream)
+  (princ (indiv-uid i) stream))
 
 
 
@@ -149,7 +151,7 @@
          (princ-category category stream)
          (write-string " " stream))))
 
-    (format stream " ~A" (indiv-id i))
+    (format stream " ~A" (indiv-uid i))
     (write-string ">" stream)))
 
 
