@@ -100,25 +100,6 @@ broadly speaking doing for you all the things you might do by hand.
 
 ;;--- NP patterns
 
-;;//// in biology/NFkappaB only
-(defun np-head/of (string-for-noun &key super of)
-  ;;  (amino acid residue) of protein
-  (with-name-and-superc string-for-noun super :noun
-    (let* ((of-restriction (or of 'individual)) ;;//// macro-ify when next used
-           (form
-             `(define-category ,name
-                :instantiates :self
-                :specializes ,superc
-                :binds ((on . ,of-restriction))
-                :realization (:tree-family group-of-type
-                              :mapping ((type . on)
-                                        (np . :self)
-                                        (group . :self)
-                                        (complement . ,of-restriction))
-                              :common-noun ,string-for-noun))))
-      (eval form))))
-
-
 (defmacro noun (name
                 &key noun 
                      super specializes index
