@@ -37,6 +37,9 @@
         (print "skipping because of known problems")
         (progn
           (eval test)
+          (if *save-chunk-edges*
+              ;;make the list of chunk edges show their sentence origin
+              (push (cons n (cdr test)) *all-chunk-edges*))
           (terpri) 
           (format t "SEMANTIC FOREST ------------------------------------~&")
           
