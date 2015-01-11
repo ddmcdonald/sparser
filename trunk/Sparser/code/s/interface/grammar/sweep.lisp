@@ -38,9 +38,10 @@
     ;; but that's missing interesting noun phrase referents.
     (push i objects)
     (dolist (b bindings)
-      (let ((var (binding-variable b))
-            (value (binding-value b)))
-        (unless (or (eq (var-name var) 'category)
+      (let* ((var (binding-variable b))
+             (var-name (var-name var))
+             (value (binding-value b)))
+        (unless (or (eq var-name 'category)
                     (typep value 'mixin-category)) ;; has-determiner
           (typecase value
             (number)
