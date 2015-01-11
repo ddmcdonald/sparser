@@ -69,6 +69,7 @@
 ;; 1/1/2015 block inclusion of initial adjective/modifier when the previous chunk was a copula verb (just check for BE at this time)
 ;; 1/2/2015 NG chunks that start with a pronoun end with that pronoun -- this needs to by fixed to account for possesive pronouns, of course
 ;; 1/8/2015 the word HAD cannot occur inside an NP, even though is is HAVE+ED
+;; 1/10/2015 revise handling of THAT in ng-start? -- it is almost never the case that THAT is a determiner, it is usually a relative clause marker or a thatcomp marker
 (in-package :sparser)
 
 
@@ -352,12 +353,20 @@
 (defmethod ng-compatible? ((w word) chunk)
   nil)
 (defmethod ng-compatible? ((e edge) chunk)
-  (cond
-   ((eq category::verb+ed (edge-form e))
-    (not (eq (edge-category e) category::have)) ;; "had" is not an NP constituent
-    )
-   (t
-    (ng-compatible? (edge-form e) chunk))))
+  (and
+   ;;in fact nothing should follow a pronoun (except a possessive pronoun)
+   (not (and (chunk-edge-list chunk)
+             (eq category::pronoun (edge-form (car (chunk-edge-list chunk))))))
+   (cond
+    ((eq category::verb+ed (edge-form e))
+     (not (eq (edge-category e) category::have)) ;; "had" is not an NP constituent
+     )
+    ((eq category::verb+ing (edge-form e))
+     (or
+      (null (chunk-edge-list chunk))
+      (not (ng-head? (car (chunk-edge-list chunk))))))
+    (t
+     (ng-compatible? (edge-form e) chunk)))))
 
 (defmethod ng-compatible? ((c referential-category) chunk)
   (ng-compatible? (cat-symbol c) chunk))
@@ -394,6 +403,7 @@
 
    ((eq category::that (edge-category e))
     (and
+     (not *big-mechanism*) ;; it is almost never the case that THAT is a determiner, it is usually a relative clause marker or a thatcomp marker
      (not
       (and
        (car *chunks*)
@@ -416,12 +426,15 @@
           (member 'ng (chunk-forms (car *chunks*)))
           (eq (chunk-end-pos (car *chunks*))
               (pos-edge-starts-at e)))))
-   
    ((eq category::verb+ing (edge-form e))
     ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
     ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
-    (not
-     (eq category::preposition (edge-form (edge-just-to-left-of e)))))))
+    (let
+        ((prev-edge (edge-just-to-left-of e)))
+      (not
+       (or
+        (eq category::preposition (edge-form prev-edge))
+        (ng-head? prev-edge)))))))
 
 
 (defun thatcomp-verb (edge)
