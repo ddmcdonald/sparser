@@ -27,9 +27,12 @@
   (setq *sentences* *dec-tests*)
   nil)
 
+
+
 (defun dectest (n &optional (sentences *sentences*))
-  (let ((test  (nth (- n 1) sentences)))
+  (let ((test (nth (- n 1) sentences)))
     (print (list n test))
+    (terpri)
     (if (member n *known-breaks*)
         (print "skipping because of known problems")
         (progn
@@ -45,12 +48,31 @@
             (print-tree (second edge-tree)))
           (format t "~&___________________________________________~&~&")
           ))))
+;;/// these two should be merged. Perhaps with a switch
+;;  to determine what to show
+(defun jantest (n &optional (sentences *sentences*))
+  (let ((test (nth (- n 1) sentences)))
+    (print (list n test))
+    (terpri)
+    (if (member n *known-breaks*)
+      (print "skipping because of known problems")
+      (let ((*readout-relations* t)
+            s-expressions )
+        (declare (special *readout-relations*))
+        (eval test)
+        (format t "~&~%Relations:~%")
+        (loop for r in *relations*
+          do (let ((sexp (collect-model r)))
+               (push sexp s-expressions)
+               (pprint sexp)))
+        (terpri)
+        (reverse s-expressions)))))
+
 
 (defun retest () 
   (loop for i from (+ 1 (car *tested*)) to 100 
     when (<= i (length *sentences*))
-    do 
-    (push i *tested*) (dectest i)))
+    do (push i *tested*) (dectest i)))
 
 
 
