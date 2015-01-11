@@ -35,6 +35,11 @@
   (eq *kind-of-chart-processing-to-do* :successive-sweeps))
 
 
+(defvar *relations* nil
+  "Holds the relations for the last sentence when *readout-relations* is up")
+(defvar *entities* nil
+  "Holds the entities for the last sentence when *readout-relations* is up")
+
 ;;;--------
 ;;; Driver
 ;;;--------
@@ -89,11 +94,10 @@
             (when *readout-relations*
               (multiple-value-bind (relations entities)
                                    (identify-relations sentence)
-                (push-debug `(,relations ,entities))
-                ;; Anything to do if there are no relations?
-                (readout-relations relations)
-                (readout-entities entities)))))
-
+                ;;/// better to stash these on sentence contents
+                (setq *relations* relations ;; (readout-relations relations)
+                      *entities* entities)))))  ;;(readout-entities entities)
+                
         ;; EOS throws to a higher catch. If the next sentence
         ;; is empty we will hit the end of source as we
         ;; start scanning terminals and it will throw
@@ -108,9 +112,6 @@
 ;; (setq *readout-relations* nil)
 ;; (identify-relations *sentence*)
 
-(defvar *relations* nil)
-(defvar *entities* nil)
-
 (defun identify-relations (sentence)
   ;; sweep over every treetop in the sentence and look at
   ;; their referents. For all sensible cases recursively
@@ -123,7 +124,7 @@
          (rightmost-pos start-pos)
          entities  relations  tt-contents
          treetop  referent  pos-after    )
-    (when t
+    (when nil
       ;; add a space to separate these traces from the
       ;; summary that was just printed
       (format t "~%"))
@@ -133,7 +134,7 @@
       (multiple-value-setq (treetop pos-after) ;; multiple?
         (next-treetop/rightward rightmost-pos))
 
-      (when t
+      (when nil
         (format t "~&[relations] tt = ~a~%" treetop))
 
       (when (edge-p treetop)
@@ -153,8 +154,7 @@
         ;; we overshot somehow
         (return))
       (setq rightmost-pos pos-after))
-    (setq *relations* relations
-          *entities* entities)
+
     (values relations
             entities)))
 
