@@ -38,6 +38,9 @@
    should merge them.")
 
 
+(defparameter *print-forest-after-doing-forest* nil
+  "Gates the printing in new-forest-driver")
+
 (defmethod new-forest-driver ((sentence sentence))
   (declare (special *return-after-doing-forest-level*))
   (let ((start-pos (starts-at-pos sentence))
@@ -48,9 +51,10 @@
         (when *island-driving*
           (island-driven-forest-parse sentence layout start-pos end-pos))))
     
-    (format t "~&~%")
-    (print-flat-forest t start-pos end-pos)
-    (format t "~&")
+    (when *print-forest-after-doing-forest*
+      (format t "~&~%")
+      (print-flat-forest t start-pos end-pos)
+      (format t "~&"))
 
     (let ((rightmost-position (chart-position-after end-pos)))
       ;; That's just after the period
