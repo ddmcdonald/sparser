@@ -80,6 +80,7 @@
   :referent (:function noun-noun-compound
                        left-edge right-edge))
 
+
 (def-syntax-rule (common-noun common-noun)
                  :head :right-edge
   :form n-bar
@@ -92,8 +93,31 @@
   :referent (:function noun-noun-compound
                        left-edge right-edge))
 
+
 (def-syntax-rule (proper-noun common-noun)
                  :head :right-edge
+  :form n-bar
+  :referent (:function noun-noun-compound
+                       left-edge right-edge))
+
+(def-syntax-rule (proper-noun common-noun/plural)
+                 :head :right-edge
+  :form n-bar
+  :referent (:function noun-noun-compound
+                       left-edge right-edge))
+
+(def-syntax-rule (n-bar n-bar)  ;; "GAP–mediated GTP hydrolysis"
+                 :head :right-edge
+  ;;////// Changes to the leading n-bar because of change to
+  ;; form of stuff like "GAP-mediated" goes here. ddd/rjb
+  :form n-bar
+  :referent (:function noun-noun-compound
+                       left-edge right-edge))
+;; GAP–mediated hydrolysis.
+(def-syntax-rule (n-bar common-noun)  ;; "GAP–mediated GTP hydrolysis"
+                 :head :right-edge
+  ;;////// Changes to the leading n-bar because of change to
+  ;; form of stuff like "GAP-mediated" goes here. ddd/rjb
   :form n-bar
   :referent (:function noun-noun-compound
                        left-edge right-edge))
@@ -104,6 +128,9 @@
   :form np ;;/// cutting corners
   :referent (:head right-edge))
 
+
+
+;;--- NP + PP
 
 (def-syntax-rule (np pp)
                  :head :left-edge
