@@ -295,6 +295,13 @@
       do
       (return (cons rule pair)))))
 
+
+
+
+(defparameter *david-says-ok* t
+  "This use of ref/function is unorthodox to say the least.
+   It's seriously messing up my tests on short function-based rules.")
+
 (defun rule-for-edge-pair (pair)
   (let
       ((rule (multiply-edges (car pair)(second pair))))
@@ -303,12 +310,15 @@
              (cond
               ((not (consp (cfr-referent rule))))
               ((eq :funcall (car (cfr-referent rule)))
-               (test-subcat-rule pair rule))
+               ;; Really? Look at the identity of the function before
+               ;; you do this -- ddm
+               (if *david-says-ok*
+                 (test-subcat-rule pair rule)
+                 t))
               (t ;; most rules have referent slots which are cons cells, but which are not :funcalls
                ;; (#<PSR12615  select ->  select biological> ((:HEAD LEFT-REFERENT) (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
                t)))
       rule)))
-
 
 (defun test-subcat-rule (pair rule)
   (let*
