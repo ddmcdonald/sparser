@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "new cases"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  3.2 June 2014
+;;;   Version:  3.2 January 2015
 
 ;; broken out from cases 8/24/93 v2.3.  (3/10/94) fixed typo. Added error
 ;; msg to Ref/head 6/14.  (7/15) patched in mixin-category  (7/19) rearranged
@@ -36,7 +36,10 @@
 ;;      unindexed until a better idea comes up, wrapped in make-individual-for-dm&p
 ;;      (4/4/13).  5/9/14 Changed the call that ref/subtype makes. 5/19/14 added
 ;;      another case to ref/binding where null referents are ok. 6/4/14 added
-;;      one-edge-instantiate-individual-with-binding.
+;;      one-edge-instantiate-individual-with-binding. 1/10/15 Revised
+;;      ref/instantiate-individual-with-binding to look and see whether the
+;;      head it's building on is already an individual of the type it's
+;;      supposed to use. 
 
 (in-package :sparser)
 
@@ -180,6 +183,9 @@
 (defun ref/instantiate-individual-with-binding
        (rule-field left-referent right-referent right-edge)
   (declare (ignore right-edge))
+  ;;(push-debug `(,rule-field ,left-referent ,right-referent ,right-edge))
+  ;;(break "~a + ~a" left-referent right-referent)
+
   (let* (  head-edge  arg-edge  type-of-head  edge
            variable  value  
          (head (case (second rule-field)
@@ -235,7 +241,16 @@
          ;(setq bindings-plist (nreverse bindings-plist))
          ;;(push-debug `(,head ,bindings-plist)) (break "f or m")
 
-         (let ((i (find-or-make/individual head bindings-plist)))
+         (let ((i (if (itypep (edge-referent head-edge) head)
+                    (then
+                     ;; the head category that we're supposed to 
+                     ;; instantiate is the same as the head we've got
+                     ;; so we use the head individual rather than 
+                     ;; make a new individual.
+                     (edge-referent head-edge))
+                    (else 
+                     (find-or-make/individual head bindings-plist)))))
+
            (annotate-realization/base-case lp i)
            (setq type-of-head head)
            (dolist (annotation annotation-list)
