@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  October 2014
+;;;  Version:  January 2015
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -86,6 +86,12 @@
   :referent (:function noun-noun-compound
                        left-edge right-edge))
 
+(def-syntax-rule (common-noun common-noun/plural)
+                 :head :right-edge
+  :form n-bar
+  :referent (:function noun-noun-compound
+                       left-edge right-edge))
+
 (def-syntax-rule (proper-noun common-noun)
                  :head :right-edge
   :form n-bar
@@ -108,26 +114,21 @@
 
 ;;--- adverbs
 
-(def-syntax-rule  (adverb infinitive)
+(def-syntax-rule  (adverb infinitive) ;;??? what's the test example?
   :head :right-edge
   :form infinitive
-  :referent (:daughter right-edge))
+  :referent (:function interpret-adverb+verb left-edge right-edge))
 
 (def-syntax-rule  (vg adverb)
   :head :left-edge
   :form vg
-  :referent (:daughter left-edge))
+  :referent (:function interpret-adverb+verb right-edge left-edge))
 
 (def-syntax-rule  (adverb vg)
   :head :right-edge
   :form infinitive
-  :referent (:daughter right-edge))
+  :referent(:function interpret-adverb+verb left-edge right-edge))
 
-#+ignore
-(def-syntax-rule (adverb comma)
-   :head :left-edge
-  :form vg
-  :referent (:daughter left-edge))
 
 
 ;;--- prepositional phrases
