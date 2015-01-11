@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "printing"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  April 1994
+;;;   version:  January 2014
 
 ;; initiated 2/10/92 v2.2, adjusted 2/20 to changes in field names
 ;; (4/6/94) Added Describe-gmod.
+;; December 2014 through 1/11/15 adding print routines for referents.
 
 (in-package :sparser)
 
@@ -239,6 +240,29 @@
          (if category
            (mitre-string category)
            (format nil "nil")))))))
+
+
+;;;---------------------------------------------
+;;; reading out identified relations / entities
+;;;---------------------------------------------
+
+;; (readout-relations *relations*)
+(defun readout-relations (relations 
+                          &optional (stream *standard-output*))
+  (when (null relations)
+    (format stream "~&~%No relations identified~%~%"))
+  (dolist (r relations)
+    (print r)) ;;(print-readably r stream))
+  (setq *relations* relations)
+  (length *relations*))
+
+(defun readout-entities (entities 
+                         &optional (stream *standard-output*))
+  (when (null entities)
+    (format stream "~&~%No entities identified~%~%"))
+  (dolist (e entities)
+    (print e) ;;(print-readably r stream))
+))
 
 
     
