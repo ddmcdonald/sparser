@@ -12,7 +12,7 @@
 
 (defparameter *save-chunk-edges* nil) ;; only turn on to review NG chunking
 (defun show-chunk-edges (&optional (ces *all-chunk-edges*))
-  (loop for c in  ces do (format t "~&___________________~&")(np c)))
+  (loop for c in  (reverse ces) do (format t "~&___________________~&")(np c)))
 
 (defun verb-chunks ()
   (loop for c in *all-chunk-edges*
