@@ -1,6 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2015  Rusty Bobrow  -- all rights reserved
-;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "test-functions"
 ;;;    Module:   "tools:basics"
@@ -28,7 +27,7 @@
   (setq *sentences* *dec-tests*)
   nil)
 
-(defun dectest(n &optional (sentences *sentences*))
+(defun dectest (n &optional (sentences *sentences*))
   (let ((test  (nth (- n 1) sentences)))
     (print (list n test))
     (if (member n *known-breaks*)
@@ -66,16 +65,17 @@
    ((consp tree)
     (format stream "(")
     (format-item (car tree) stream)
-    (when
-        (cdr tree)
+    (when (cdr tree)
       (terpri)
       (loop for items on (cdr tree) do 
-        (print-tree (car items) (null (cdr items))(+ indent 3) stream)))
+        (print-tree (car items) 
+                    (null (cdr items))
+                    (+ indent 3) 
+                    stream)))
     (format stream ")"))
    (t
-    (format-item tree stream)))  
-  (if
-   (not last)
+    (format-item tree stream)))
+  (when (not last)
    (terpri stream)))
 
 #+ignore(defun format-item (item stream)
