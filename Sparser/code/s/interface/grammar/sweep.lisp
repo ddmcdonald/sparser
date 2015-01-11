@@ -69,22 +69,3 @@
   
       (reverse objects)))
 
-
-(dolist (b bindings)
-      (let ((var (binding-variable b))
-            (value (binding-value b)))
-        (unless (or (eq (var-name var) 'category)
-                    (typep value 'mixin-category)) ;; has-determiner
-        (typecase value
-          (individual 
-           (let ((embedded-objects (collect-model value)))
-             (loop for obj in embedded-objects
-               when (individual-p obj)
-               do (push obj objects))
-             (push value objects)))
-          (word)
-          (polyword)
-          (category)
-          (otherwise
-           (push-debug `(,value ,b ,i))
-           (break "Unexpected type of value of a binding: ~a" value))))))
