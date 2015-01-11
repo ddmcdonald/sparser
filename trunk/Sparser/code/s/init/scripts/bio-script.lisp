@@ -26,6 +26,8 @@
 (defparameter *big-mechanism* t
   "Drives specializations in everthing and well beyond")
 
+(defparameter *show-edge-string* nil) ;; if T then print the entire string spanned by the edge 
+
 ; (setq *break-on-illegal-duplicate-rules* t)
 
 ;;;-----------------
