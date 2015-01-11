@@ -38,7 +38,6 @@
         (progn
           (eval test)
           (terpri) 
-          (terpri)
           (format t "SEMANTIC FOREST ------------------------------------~&")
           
           (loop for edge-tree in
