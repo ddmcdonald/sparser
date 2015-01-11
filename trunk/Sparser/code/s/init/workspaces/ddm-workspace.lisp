@@ -20,32 +20,11 @@
   (incorporate-obo-terms)
   (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (ed "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  ;;(ed "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
   (test-jan))
 
 ; #13 (p "BRAF is inactive in NRAS mutant cells.")
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
-
-;
-
-;;--- 1/6/14
-; The short cut realization handler, decode-realization-parameter-list
-; does the wrong thing (redundant thing) when there are multiple etf.
-; It only has to apply the word rules once, and then apply the rule
-; schema for each of the etf.  That will call for refactoring the
-; downstream applier:  apply-rdata-mappings
-
-; (bio-setting)
-; (f "/Users/ddm/ws/R3/r3/trunk/darpa/Dec14-TestMaterials/DeepTest/training-passages.txt")
-; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
-; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
-; (f "/Users/ddm/ws/R3/ws/Mitre December texts/all passages combinded.txt")
-; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
-; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 2.txt")
-; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 3.txt")
-; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 1.txt")
-; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 2.txt")
-; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 3.txt")
 
 
 ; (trace-paragraphs) ;; for sentences and periods
@@ -65,11 +44,12 @@
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
   (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
   (ddm-ed "grammar/model/sl/biology/proteins.lisp")
-  (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
   (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
   (ddm-ed "grammar/model/sl/biology/terms1.lisp")
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
-  (ddm-ed "grammar/model/sl/biology/verbs1.lisp"))
+  (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
+  (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
+  (ddm-ed "grammar/model/sl/biology/switches.lisp"))
 ;;  molecules and NGkappB not loaded
 
 (defun ddm-new-parsing-ws ()
@@ -77,6 +57,7 @@
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "drivers/chart/psp/chunker.lisp")
   (ddm-ed "drivers/chart/psp/pts5.lisp")
+  (ddm-ed "analyzers/SDM&P/scan1.lisp")
   (ddm-ed "drivers/forest/new-forest-protocol.lisp")
   (ddm-ed "drivers/forest/sweep.lisp")
   (ddm-ed "drivers/forest/island-driving.lisp")
@@ -106,6 +87,9 @@
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "grammar/rules/SD&P/create-categories.lisp")
   (ddm-ed "grammar/rules/syntax/categories.lisp"))
+
+; uniform-scandal
+;(ddm-ed "analysers/psp/patterns/traces.lisp")
 
 
 ;; Set up actions associated with binding
@@ -150,13 +134,13 @@
   (ddm-ed "init/versons/v4.0/loaders/grammar.lisp")
   (ddm-ed "grammar/rules/tree-families/morphology1.lisp") ;; word rules
   (ddm-ed "grammar/rules/syntax/categories.lisp") ;; and morph tables
+  (ddm-ed "grammar/rules/syntax/articles.lisp")
+  (ddm-ed "grammar/rules/syntax/be.lisp")
+  (ddm-ed "grammar/rules/syntax/prepositions.lisp")
   (ddm-ed "grammar/model/dossiers/modifiers.lisp")
   (ddm-ed "grammar/rules/DA/sentence-fragments.lisp")
   (ddm-ed "grammar/rules/syntax/syntactic-rules.lisp")
   (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
-  (ddm-ed "grammar/rules/syntax/prepositions.lisp")
-  (ddm-ed "grammar/rules/syntax/articles.lisp")
-  (ddm-ed "grammar/rules/syntax/be.lisp")
   (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
   (ddm-ed "grammar/rules/syntax/conjunction8.lisp"))
 
@@ -198,6 +182,27 @@
 
   
 
+
+;;--- 1/6/14
+; The short cut realization handler, decode-realization-parameter-list
+; does the wrong thing (redundant thing) when there are multiple etf.
+; It only has to apply the word rules once, and then apply the rule
+; schema for each of the etf.  That will call for refactoring the
+; downstream applier:  apply-rdata-mappings
+
+; (bio-setting)
+; (f "/Users/ddm/ws/R3/r3/trunk/darpa/Dec14-TestMaterials/DeepTest/training-passages.txt")
+; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
+; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/all passages combinded.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 2.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 3.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 1.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 2.txt")
+; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 3.txt")
+
+
 #| 10/9/14 noun brackets are being added to word::single-quote
 (ddm-ed "grammar/rules/words/punctation-bracketing.lisp")
 (br-off)
@@ -224,10 +229,6 @@
   (ddm-ed "grammar/rules/syntax/categories.lisp")
   (ddm-ed "analyzers/SDM&P/scan1.lisp")
   (ddm-ed "grammar/rules/SDM&P/create-categories.lisp"))
-
-; uniform-scan
-;(ddm-ed "analysers/psp/patterns/uniform-scan.lisp")
-;(ddm-ed "analysers/psp/patterns/traces.lisp")
 
 (defun ddm-subtyping ()
   (ddm-ed "objects/model/lattice-points/specialize.lisp")
