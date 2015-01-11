@@ -1,15 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  December 2014
+;;;  version:  January 2015
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
 ;; could be independently tested. 11/18/14 Reflecting the decomposition
-;; of the sweep into a succession of sweeps. 12/18/
-;; code to create trees of semantics for treetops -- collect-model-description and semantic-tts
+;; of the sweep into a succession of sweeps. 12/18/15 code to create trees 
+;; of semantics for treetops -- collect-model-description and semantic-tts.
+;; 1/11/15 Moving that code out to interface/grammar/sweep and refining 
+;; how it's used. 
 
 (in-package :sparser)
 
@@ -157,76 +159,18 @@
             entities)))
 
 
-(defmethod collect-model ((n number))
-  ;; For debugging
-  (let ((edge (edge# n)))
-    (unless edge (error "The number ~a does not retrieve an edge" n))
-    (collect-model edge)))
-
-(defmethod collect-model ((e edge))
-  (let ((referent (edge-referent e)))
-    (when referent
-      (collect-model referent))))
-
-(defmethod collect-model ((w word)) nil) ;;`(,w))
-(defmethod collect-model ((pw polyword)) nil) ;;`(,pw)) ; 
-(defmethod collect-model ((c category)) nil) ;;`(,c))
-;; anything else?
-
-
-
-(defmethod collect-model ((i individual))
-  (let (;;(type (car (indiv-type i)))
-        (bindings (indiv-binds i))
-        objects )
-    ;; Had been restricting the recursion to types with
-    ;; a subject variable: (subject-variable type), 
-    ;; but that's missing interesting noun phrase referents.
-    (push i objects)
-
-    ;; Walk through the bindings. 
-    ;; Push the pair that records the variable that bound 
-    ;; the value onto objects.
-    ;; Recurse on the values and stash the result on 
-    ;; embedded-objects.After the loop elevate all of 
-    ;; them to objects's list. /// may not be a good order
-    (dolist (b bindings)
-      (let ((var (binding-variable b))
-            (value (binding-value b)))
-        (unless (or (eq (var-name var) 'category)
-                    (typep value 'mixin-category))) ;; has-determiner
-        (typecase value
-          (individual 
-           (let ((embedded-objects (collect-model value)))
-             (loop for obj in embedded-objects
-               when (individual-p obj)
-               do (push obj objects))
-             (push value objects)))
-          (word)
-          (polyword)
-          (category)
-          (otherwise
-           (push-debug `(,value ,b ,i))
-           (break "Unexpected type of value of a binding: ~a" value)))))
-  
-      objects ))
 
 
 (defun tts-semantics ()
   (loop for edge in (cdr (all-tts)) 
     when (individual-p (edge-referent edge))
-    collect
-    (semtree (edge-referent edge))))
+    collect (semtree (edge-referent edge))))
 
 (defun tts-edge-semantics ()
   (loop for edge in (cdr (all-tts)) 
     when (individual-p (edge-referent edge))
-    collect
-    (list
-     edge
-     (semtree (edge-referent edge)))))
-
-
+    collect (list edge
+                  (semtree (edge-referent edge)))))
 
 (defmethod semtree ((n number))
   (semtree (e# n)))
@@ -240,13 +184,13 @@
 (defmethod collect-model-description ((cat category))
   (list cat))
 
-(defmethod collect-model-description ((cat cons))
-  `(collection :members (,@(loop for l in ll collect (collect-model-description l)))))
+(defmethod collect-model-description ((cal cons))
+  `(collection :members 
+               (,@(loop for l in cal 
+                    collect (collect-model-description l)))))
+
 (defmethod collect-model-description ((i individual))
-  (setq *input* i)
-  (let (;;(type (car (indiv-type i)))
-        (bindings (indiv-binds i))
-        objects 
+  (let ((bindings (indiv-binds i))
         (desc (list i)))
     ;; Had been restricting the recursion to types with
     ;; a subject variable: (subject-variable type), 
@@ -255,56 +199,36 @@
       (let ((var (binding-variable b))
             (value (binding-value b)))
         (unless (or (eq (var-name var) 'category)
-                    (typep value 'mixin-category))) ;; has-determiner
-        (cond
-         ((or
-           (numberp value)
-           (symbolp value)
-           (stringp value))
-          (list value))
-         (t
-          (typecase value
-            (individual 
-             (if
-              (itypep value 'prepositional-phrase)
-              (dolist (bb (indiv-binds value))
-                (when
-                    (eq (var-name (binding-variable bb)) 'pobj)
-                  (push (list (var-name var) (collect-model-description (binding-value bb))) desc)))
-              (push (list (var-name var) (collect-model-description value)) desc)))
-            (word)
-            (polyword)
-            (category)
-            (cons
-             `(collection :members (,@(loop for item in value collect (collect-model-description item)))))
-            (otherwise
-             (push-debug `(,value ,b ,i))
-             (break "Unexpected type of value of a binding: ~a" value)))))))
+                    (typep value 'mixin-category)) ;; has-determiner
+          (cond
+           ((or (numberp value)
+                (symbolp value)
+                (stringp value))
+            (list value))
+           (t
+            (typecase value
+              (individual 
+               (if (itypep value 'prepositional-phrase)
+                 (dolist (bb (indiv-binds value))
+                   (when (eq (var-name (binding-variable bb)) 'pobj)
+                     (push (list (var-name var)
+                                 (collect-model-description (binding-value bb)))
+                           desc)))
+                 (push (list (var-name var)
+                             (collect-model-description value))
+                       desc)))
+              (word)
+              (polyword)
+              (category)
+              (cons
+               `(collection :members 
+                            (,@(loop for item in value 
+                                 collect (collect-model-description item)))))
+              (otherwise
+               (push-debug `(,value ,b ,i))
+               (break "Unexpected type of value of a binding: ~a" value))))))))
   
     (reverse desc)))
 
-
-
-;;;---------------------------------------------
-;;; reading out identified relations / entities
-;;;---------------------------------------------
-
-;; (readout-relations *relations*)
-(defun readout-relations (relations 
-                          &optional (stream *standard-output*))
-  (when (null relations)
-    (format stream "~&~%No relations identified~%~%"))
-  (dolist (r relations)
-    (print r)) ;;(print-readably r stream))
-  (setq *relations* relations)
-  (length *relations*))
-
-(defun readout-entities (entities 
-                         &optional (stream *standard-output*))
-  (when (null entities)
-    (format stream "~&~%No entities identified~%~%"))
-  (dolist (e entities)
-    (print e) ;;(print-readably r stream))
-))
 
 
