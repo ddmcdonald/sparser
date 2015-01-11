@@ -19,10 +19,13 @@
 ; (right-edge-for-referent)
 ; (parent-edge-for-referent)
 
-(defparameter *force-modifiers* nil) ;; set to T when you want to accept all PP modifiers to NPs and VPs 
-(defparameter *subcat-test* nil) ;; set to T when we are executing the referent function as a predicate, not as part of 
-;;interpretation of an NP or VP
+(defparameter *force-modifiers* nil 
+  "Set to T when you want to accept all PP modifiers 
+  to NPs and VPs")
 
+(defparameter *subcat-test* nil
+  "Set to T when we are executing the referent function 
+   as a predicate, not as part of interpretation of an NP or VP")
 ;;;-------------------
 ;;; noun premodifiers
 ;;;-------------------
@@ -61,6 +64,7 @@
 ;;;----------------
 ;;; Prepositional phrase
 ;;;;_______________
+
 (defun make-pp (prep pobj)
   (let ((pp (make-category-indexed-individual 
              category::prepositional-phrase)))
@@ -88,7 +92,6 @@
 
 (defun adjoin-pp-to-vg (vg pp)
   (declare (special vg pp))
-  (push-debug `(,vg ,pp))
   ;; The VG is the head. We ask whether it subcategorizes for
   ;; the preposition in this PP and if so whether the complement
   ;; of the preposition satisfies the specified value restriction.
@@ -99,33 +102,34 @@
          (prep-edge (edge-left-daughter pp-edge))
          (prep-word (edge-left-daughter prep-edge))
          (pobj-edge (edge-right-daughter pp-edge))
+         (pobj-referent (edge-referent pobj-edge))
          (variable-to-bind
           ;; test if there is a known interpretation of the VG/PP combination
-          (or
-           (and
-            subcat-patterns
-            (subcategorized-pp-variable subcat-patterns vg pp))
-           (and
-            (eq prep-word (word-named "in"))
-            ;;(break "in")
-            (cond
-             ((and (itypep vg 'physical)
-                   (itypep (edge-referent pobj-edge) 'location))
-              'location)
-             ((and (itypep vg 'biological)
-                   (itypep (edge-referent pobj-edge)  'bio-context))
-              'bio-context)))
-           (and
-            (itypep pp 'upon-condition)
-            ;; trace
-            'circumstance)
-           ;; or if we are making a last ditch effore
-           (and *force-modifiers* (bind-variable 'modifier pp vg)))))
-    (declare (special pobj-edge))
+          (or (and subcat-patterns
+                   (subcategorized-pp-variable subcat-patterns vg pp))
+              (and (eq prep-word (word-named "in"))
+                   (cond
+                    ((and (itypep vg 'physical)
+                          (itypep pobj-referent 'location))
+                     'location)
+                    ((and (itypep vg 'biological)
+                          (itypep pobj-referent 'bio-context))
+                     'bio-context)))
+              (and (itypep pp 'upon-condition)
+                   'circumstance)
+              ;; or if we are making a last ditch effore
+              (and *force-modifiers* 
+                   'modifier))))
+    (unless variable-to-bind
+      (push-debug `(,pobj-referent ,vg ,pp ,prep-word))
+      (error "Why is there no variable to combine ~a and ~a ?" vg pp))
+    (when nil
+      (break "var = ~a~
+            ~%vp = ~a" variable-to-bind vg))
     (cond
      (*subcat-test* variable-to-bind)
      (t
-      (bind-variable variable-to-bind pp VG)
+      (bind-variable variable-to-bind pp vg)
       vg))))
 
 (defun subcategorized-pp-variable (subcat-patterns head pp)
