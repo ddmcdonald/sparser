@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald -- all rights reserved
 ;;; 
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  December 2014
+;;;  Version:  January 2015
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -26,6 +26,7 @@
 (defparameter *subcat-test* nil
   "Set to T when we are executing the referent function 
    as a predicate, not as part of interpretation of an NP or VP")
+
 ;;;-------------------
 ;;; noun premodifiers
 ;;;-------------------
@@ -84,6 +85,21 @@
       (bind-variable var adj vg)
       (bind-variable 'participant adj vg))
     vg))
+
+
+;;;-------------
+;;; VG + Adverb
+;;;-------------
+
+(defun interpret-adverb+verb (adverb vg)
+  ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
+  ;; "direct binding" has a specitif meaning
+  ;;/// so there should be a compose method to deal with that
+  
+  ;; default
+  (bind-variable 'manner adverb vg)
+  vg)
+
 
 
 ;;;---------
