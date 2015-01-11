@@ -14,12 +14,6 @@
 
 ;; utils
 
-(defun de (edge)
-  (d (e# edge)))
-
-(defun der (edge)
-  (d (edge-referent (e# edge))))
-
 (defun med-full ()
   (p "Will Medtronic's pulse quicken?
 
