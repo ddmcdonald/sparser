@@ -34,6 +34,7 @@
 ;;      7/30/14 tweaked some to use edge-vectors for the :multiple-edges case.
 ;;     (11/17/14) shrank the separation in tts from 30 to 20. 15 doesn't look
 ;;      to bad. 
+;; 1/10/2015 method (edge-string ...) possibly redundant, for getting a string with  the edge numer, category and input string covered by and edge
 
 (in-package :sparser)
 
@@ -528,6 +529,11 @@ there were ever to be any.  ///hook into final actions ??  |#
          (break/debug "Treetop is an unexpected symbol: ~A" tt)))))
   :done-printing)
 
+(defun edge-string (edge)
+  (let
+      ((str (make-string-output-stream)))
+    (print-edge-as-category-and-text-segment edge str)
+    (get-output-stream-string str)))
 
 (defun print-edge-as-category-and-text-segment (tt stream)
   (let ((word-or-category
