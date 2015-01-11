@@ -68,8 +68,6 @@
 
 ;;--- inspectors
 
-(defun ie (number-of-edge) (d (edge# number-of-edge)))
-
 (defun ip (number-of-position) (d (position# number-of-position)))
 
 (defun iw (string-for-word)
@@ -94,6 +92,16 @@
 ;(defun iv (variable-name)
 ;  (let ((v (find-variable variable-name)))
 ;    (
+
+(defun ie (number-of-edge) (d (edge# number-of-edge)))
+
+(defun de (number-of-edge) ;; customized
+  (let ((e (e# number-of-edge)))
+    (format t "~&category: ~a~
+               ~%form: ~a~
+               ~%referent: ~a~%"
+            (edge-category e) (edge-form e) (edge-referent e))
+    e))
 
 
 (defun ier (number-of-edge) ;; inspect edge referent
