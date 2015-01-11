@@ -57,6 +57,9 @@
                  (when (eq (var-name (binding-variable bb)) 'pobj)
                    (push (list var-name (collect-model (binding-value bb)))
                          objects))))
+              ((itypep value 'bio-family)
+               (push (list var-name value)
+                     objects))
               (t
                (push (list var-name (collect-model value))
                      objects))))
