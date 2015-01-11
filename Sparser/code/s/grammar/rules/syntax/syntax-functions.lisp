@@ -120,9 +120,10 @@
               ;; or if we are making a last ditch effore
               (and *force-modifiers* 
                    'modifier))))
-    (unless variable-to-bind
-      (push-debug `(,pobj-referent ,vg ,pp ,prep-word))
-      (error "Why is there no variable to combine ~a and ~a ?" vg pp))
+    (when nil
+      (unless variable-to-bind
+        (push-debug `(,pobj-referent ,vg ,pp ,prep-word))
+        (error "Why is there no variable to combine ~a and ~a ?" vg pp)))
     (when nil
       (break "var = ~a~
             ~%vp = ~a" variable-to-bind vg))
