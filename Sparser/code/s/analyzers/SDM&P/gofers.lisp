@@ -172,8 +172,16 @@
 
 (defun treetops-in-current-segment ()
   ;; see code in forest/printers
-  (treetops-in-segment *left-segment-boundary*
-                       *right-segment-boundary*))
+  (loop for ev in
+    (treetops-in-segment *left-segment-boundary*
+                         *right-segment-boundary*)
+    collect
+    (cond
+     ((edge-p ev)
+      ev)
+     ((edge-vector-p ev)
+      (elt (ev-edge-vector ev)
+           (1- (ev-number-of-edges ev)))))))
 
 (defun print-treetop-labels-in-current-segment (&optional (stream *standard-output*))
   (print-treetop-labels-in-segment stream
