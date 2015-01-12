@@ -163,23 +163,13 @@
   (ddm-ed "objects/chart/words/polyword-form1.lisp")
   (ddm-ed "analyzers/psp/assess/terminal-edges2.lisp"))
 
-
-
-(defun ddm-patterns ()
-  (ddm-ed "objects/rules/scan-patterns/start.lisp") ;; empty
-  (ddm-ed "objects/rules/scan-patterns/forms.lisp")
-  (ddm-ed "objects/rules/scan-patterns/pattern-elements.lisp")
-  (ddm-ed "objects/rules/scan-patterns/transitions.lisp")
-  (ddm-ed "objects/rules/scan-patterns/patterns.lisp")
-  (ddm-ed "objects/rules/scan-patterns/states.lisp")
-  (ddm-ed "analyzers/psp/patterns/take-transitions.lisp")
-  (ddm-ed "analyzers/psp/patterns/follow-out.lisp")
-  (ddm-ed "analyzers/psp/patterns/accept.lisp")
-  (ddm-ed "analyzers/psp/patterns/driver.lisp")
-  (ddm-ed "analyzers/psp/patterns/initiate-pattern-scan.lisp")
-  (ddm-ed "analyzers/psp/patterns/accept.lisp")
-  (ddm-ed "analyzers/psp/patterns/traces.lisp"))
-
+(defun ddm-method-mess ()
+  (ddm-ed "objects/model/categories/clos-backing.lisp")
+  (ddm-ed "analyzers/psp/referent/ref-method.lisp")
+  (ddm-ed "grammar/rules/tree-families/adverbs.lisp")
+  (ddm-ed "grammar/rules/tree-families/adjective-phrases.lisp")
+  (ddm-ed "grammar/rules/syntax/adjectives.lisp")
+  (ddm-ed "grammar/rules/situation/rules.lisp"))
   
 
 
@@ -284,6 +274,22 @@
 ; 3d   (list-generic-treetop-actions) ;; for stranded "of", "and", hyphen
 (defun ddm-generic-tt-actions ()
   (ddm-ed "drivers/forest/actions1.lisp"))
+
+(defun ddm-patterns ()
+  (ddm-ed "objects/rules/scan-patterns/start.lisp") ;; empty
+  (ddm-ed "objects/rules/scan-patterns/forms.lisp")
+  (ddm-ed "objects/rules/scan-patterns/pattern-elements.lisp")
+  (ddm-ed "objects/rules/scan-patterns/transitions.lisp")
+  (ddm-ed "objects/rules/scan-patterns/patterns.lisp")
+  (ddm-ed "objects/rules/scan-patterns/states.lisp")
+  (ddm-ed "analyzers/psp/patterns/take-transitions.lisp")
+  (ddm-ed "analyzers/psp/patterns/follow-out.lisp")
+  (ddm-ed "analyzers/psp/patterns/accept.lisp")
+  (ddm-ed "analyzers/psp/patterns/driver.lisp")
+  (ddm-ed "analyzers/psp/patterns/initiate-pattern-scan.lisp")
+  (ddm-ed "analyzers/psp/patterns/accept.lisp")
+  (ddm-ed "analyzers/psp/patterns/traces.lisp"))
+
 
 (defun ddm-original-forest ()
   (ddm-ed "drivers/chart/psp/PPTT8.lisp")
