@@ -125,8 +125,9 @@
   :form n-bar
   :referent (:function noun-noun-compound
                        left-edge right-edge))
-|#
+
 ;; GAP–mediated hydrolysis.
+
 (def-syntax-rule (n-bar common-noun)  ;; "GAP–mediated GTP hydrolysis"
                  :head :right-edge
   ;;////// Changes to the leading n-bar because of change to
@@ -134,14 +135,22 @@
   :form n-bar
   :referent (:function noun-noun-compound
                        left-edge right-edge))
+|#
 
-
-(def-syntax-rule (adjective n-bar) ;; "black suv"
-                 :head :right-edge
-  :form n-bar ;;/// cutting corners
-  :referent (:head right-edge))
-
-
+(loop for nb in *n-bar-categories*
+  do
+  (eval 
+   `(def-syntax-rule (adjective ,nb) ;; "black suv"
+                     :head :right-edge
+      :form n-bar ;;/// cutting corners
+      :referent (:function adj-noun-compound
+                           left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (verb+ed ,nb) ;; "black suv"
+                      :head :right-edge
+       :form n-bar ;;/// cutting corners
+       :referent (:function verb-noun-compound
+                            left-edge right-edge))))
 
 
 ;;--- NP + PP

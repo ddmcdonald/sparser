@@ -61,6 +61,53 @@
          (bind-variable 'modifier qualifier head) ;; safe
          head))))
 
+(defun adj-noun-compound (qualifier head)
+  (declare (special qualifier head))
+  ;; (break "adj-noun-compound")
+  ;; goes with (adjective n-bar-type) syntactic rule 
+  (when nil
+    (push-debug `(,qualifier ,head)) 
+    (break "check: qualifier = ~a~
+          ~%       head = ~a" qualifier head))
+  
+  (cond ((call-compose qualifier head));; This case is to benefit marker-categories     
+        ((category-p head)
+         (setq head (make-individual-for-dm&p head))
+         (or
+          (call-compose qualifier head)
+          (progn (bind-variable 'modifier qualifier head) 
+            head)))
+        (t
+         (bind-variable 'modifier qualifier head) ;; safe
+         head)))
+
+
+(defun verb-noun-compound (qualifier head)
+  (declare (special qualifier head))
+  ;;(break "verb-noun-compound")
+  ;; goes with (verb+ed n-bar-type) syntactic rule 
+  (when nil
+    (push-debug `(,qualifier ,head)) 
+    (break "check: qualifier = ~a~
+          ~%       head = ~a" qualifier head))
+
+  (or (call-compose qualifier head)
+      ;; This case is to benefit marker-categories
+      (when (category-p head)
+        (setq head (make-individual-for-dm&p head))
+        (or
+         (call-compose qualifier head)
+         (link-in-verb qualifier head)))
+      (link-in-verb qualifier head)))
+
+(defun link-in-verb (qualifier head)
+  (declare (special qualifier head))
+  ;;(break "link-in-verb")
+  (let ((object (object-variable qualifier)))
+    (if object ;; really should check for passivizing
+        (bind-variable object head qualifier))
+    (bind-variable 'modifier qualifier head)
+    head))
 
 ;;;----------------
 ;;; Prepositional phrase
