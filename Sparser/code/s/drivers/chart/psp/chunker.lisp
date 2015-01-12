@@ -17,6 +17,7 @@
 ;; RJB 12/19/2014     ;; partitive construction e.g. "all of these lines"
 ;; 1/1/2015 break out adjective/modifier from start of NG if the preceding chunk was a copula
 ;; and fix handling of chunks terminated by the end of the sentence
+;; 1/12/2015 Start (stub) on new NG interpreter parse-ng-interior
 
 (in-package :sparser)
 
@@ -25,6 +26,7 @@
 ;;;-------------------------------------
 
 (defvar *chunk-forms* '(ng vg adjg))
+(defparameter *new-chunk-parse* t)
 
 
 (defclass chunk ()
@@ -121,7 +123,15 @@
         *right-segment-boundary* (chunk-end-pos chunk))
   (let ((*return-after-doing-segment* t))
     (declare (special *return-after-doing-segment*))
-    (pts nil chunk)))
+    (if 
+     (and 
+      *new-chunk-parse*
+      (eq (car (chunk-forms chunk)) 'ng))
+     (parse-ng-interior chunk)
+    (pts nil chunk))))
+
+(defun parse-ng-interior (chunk)
+  (pts nil chunk))
 
 ;; Rusty -- traces moved to objects/traces/psp1.lisp
 
