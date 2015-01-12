@@ -104,6 +104,9 @@
   (declare (special qualifier head))
   ;;(break "link-in-verb")
   (let ((object (object-variable qualifier)))
+    (when
+        (category-p qualifier)
+      (setq qualifier (make-individual-for-dm&p qualifier)))
     (if object ;; really should check for passivizing
         (bind-variable object head qualifier))
     (bind-variable 'modifier qualifier head)
