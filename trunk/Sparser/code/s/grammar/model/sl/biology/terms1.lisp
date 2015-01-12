@@ -218,6 +218,7 @@
 (define-adverb "finally")
 (define-adverb "in part")
 (define-adverb "likely")
+(define-adverb "mechanistically")
 (define-adverb "moreover")
 (define-adverb "nevertheless")
 (define-adverb "nevertheless")
@@ -230,7 +231,6 @@
 (define-adverb "thereby")
 (define-adverb "to this end")
 (define-adverb "until now")
-
 
 (noun "ability" :super abstract
       :binds ((result biological)(agent biological))
@@ -673,10 +673,16 @@
 
 ;; nouns and adjectives from January test
 (adj "biophysical" :super modifier)
+(noun "dynamics" :super abstract)
 (adj "identical" :super modifier)
 (adj "kinetic" :super modifier)
 (adj "native" :super modifier)
 (adj "putative" :super modifier)
+(noun "radioactivity" :super abstract
+      :binds ((material molecule))
+      :realization
+      (:noun "radioactivity" :adj "radioactivity"
+             :of material))
 (adj "relative" :super modifier
      :binds ((comparator biological))
      :realization
