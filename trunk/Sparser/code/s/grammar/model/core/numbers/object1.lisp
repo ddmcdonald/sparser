@@ -20,7 +20,7 @@
 
 (define-category  number
   :instantiates  self
-  :specializes   nil
+  :specializes   abstract
   :binds  ((value :primitive number))
   :index (:key value))
 (mark-as-form-category 'number)
