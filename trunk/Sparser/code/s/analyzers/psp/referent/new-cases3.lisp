@@ -39,7 +39,7 @@
 ;;      one-edge-instantiate-individual-with-binding. 1/10/15 Revised
 ;;      ref/instantiate-individual-with-binding to look and see whether the
 ;;      head it's building on is already an individual of the type it's
-;;      supposed to use. 
+;;      supposed to use. 1/12/15 fixed but in that.
 
 (in-package :sparser)
 
@@ -240,17 +240,17 @@
 
          ;(setq bindings-plist (nreverse bindings-plist))
          ;;(push-debug `(,head ,bindings-plist)) (break "f or m")
-
-         (let ((i (if (itypep (edge-referent head-edge) head)
-                    (then
-                     ;; the head category that we're supposed to 
-                     ;; instantiate is the same as the head we've got
-                     ;; so we use the head individual rather than 
-                     ;; make a new individual.
-                     (edge-referent head-edge))
-                    (else 
-                     (find-or-make/individual head bindings-plist)))))
-
+         (push-debug `(,(edge-referent head-edge) ,bindings-plist))
+         (let* ((reused? (itypep (edge-referent head-edge) head))
+                ;; the head category that we're supposed to 
+                ;; instantiate is the same as the head we've got
+                ;; so we use the head individual rather than 
+                ;; make a new individual.
+                (i (if reused?
+                     (edge-referent head-edge)
+                     (find-or-make/individual head bindings-plist))))
+           (when reused?
+             (apply-bindings i bindings-plist))
            (annotate-realization/base-case lp i)
            (setq type-of-head head)
            (dolist (annotation annotation-list)
