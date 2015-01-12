@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "adverbs"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  1.1 January 2013
+;;;  Version:  1.1 January 2015
 
 ;; initiated 5/16/93 v2.3, added form rules 6/6
 ;; 0.1 (10/13/95) worded out a real analysis and moved in the def form for
@@ -16,6 +15,9 @@
 ;;      method and abstract one using revived modified category.
 ;; 1.1 (1/18/13) Moved everything else out except for the method
 ;;      that is used by the adverb tree families. 
+;;     (1/12/15) Converted the general method to bind the adverb
+;;      to the modified variable on the head rather than drop it
+;;      on the floor. 
 
 (in-package :sparser)
 
@@ -36,6 +38,7 @@
  head. Specific cases (by the category of the specific adverb)
  could be more ambitious."))
 
+#+ignore
 (defmethod modified ((adv sh::modifier) (head t))
   (let ((real-adv (dereference-shadow-individual adv))
         (real-head (dereference-shadow-individual head)))
@@ -44,4 +47,11 @@
       :modifier real-adv
       :modified real-head)
     head))
+
+(defmethod modified ((adv sh::modifier) (head t))
+  (let ((real-adv (dereference-shadow-individual adv))
+        (real-head (dereference-shadow-individual head)))
+    (tr :modified_modifier+t)
+    (bind-variable 'modifier real-adv real-head)
+    real-head))
 

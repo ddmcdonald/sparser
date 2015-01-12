@@ -757,6 +757,7 @@
   `(,category::np
     ,category::pronoun
     ,category::proper-noun
+    ,category::quantifier
     ,category::pp))
 
 (defmethod category-status ((c category))
