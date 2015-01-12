@@ -1,66 +1,62 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "march/seg"             ;; march back, parsing edges
 ;;;   Module:  "drivers;chart:psp:"    ;;  in a segment
-;;;  Version:  5.0 May 1994
+;;;  Version:  5.3 January 2015
 
 ;; 4.0 (5/7/93 v2.3) Bringing into sinc with the new word-level driver
 ;; 5.0 (3/15/94) Added dotted-rule hack
-;; 5.1 (5/6) added new initiating call to get a good trace
-;; 1/10/2015 record all NG chunks for analysis when *save-chunk-edges* is T
-
-(defparameter *save-chunk-edges* nil) ;; only turn on to review NG chunking
-(defun show-chunk-edges (&optional (ces *all-chunk-edges*))
-  (loop for c in  (reverse ces) do (format t "~&___________________~&")(np c)))
-
-(defun verb-chunks ()
-  (loop for c in *all-chunk-edges*
-    when
-    (loop for e in c thereis (memq (car e) '(verb+ed verb+ing)))
-    collect
-    c))
+;; 5.1 (5/6/94) added new initiating call to get a good trace
+;; 5.2 (1/10/15) record all NG chunks for analysis when *save-chunk-edges* is T
+;; 5.3 (1/12/15) Option for specialized np parser.
 
 (in-package :sparser)
-(defparameter *big-mechanism-ngs* t) ;; use new interpreter for interior of NGs (only called for NGs without a spanning edge)
+
 ;;;-----------
 ;;; initiator
 ;;;-----------
 
-
 (defun parse-at-the-segment-level (segment-end-pos)
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
-  (if
-   (and
-    *big-mechanism-ngs*
-    (eq 'NG (car (chunk-forms *current-chunk*)))
-    (let
-        ((edges (treetops-in-current-segment)))
-      (and
-       (cdr edges) ;; more than one edge -- should not have one edge here    (let
-       (or
-        (cddr edges)
-        (not
-         (or
-          (eq (edge-form (car edges)) category::det)
-          (eq (edge-form (car edges)) category::quantifier)))))))
-   (interp-big-mech-ng *current-chunk*)
-   (march-back-from-the-right/segment)))
+  (if (use-specialized-np-parser?)
+    (interp-big-mech-ng *current-chunk*)
+    (march-back-from-the-right/segment)))
 
-(defparameter *chunk-edges* nil)
+
+;;;------------------------
+;;; specialized NP parsing
+;;;------------------------
+
+(defparameter *big-mechanism-ngs* t 
+  "use new interpreter for interior of NGs (only called for 
+   NGs without a spanning edge")
+
+(defparameter *save-chunk-edges* nil
+  "only turn on to review NG chunking")
+
+(defun use-specialized-np-parser? ()
+  (declare (special *big-mechanism-ngs* *current-chunk*))
+  (and *big-mechanism-ngs*
+       (eq 'NG (car (chunk-forms *current-chunk*)))
+       (let ((edges (treetops-in-current-segment)))
+         (and (cdr edges) ;; more than one edge
+              (or (cddr edges)
+                  (not
+                   (or (eq (edge-form (car edges)) category::det)
+                       (eq (edge-form (car edges)) category::quantifier))))))))
+
+(defvar *chunk-edges* nil)
 (defvar *all-chunk-edges* nil)
 
 (defun interp-big-mech-ng (*current-chunk*)
-  (let
-      ((*chunk-edges* (treetops-in-current-segment)))
-    (when
-        *save-chunk-edges*
+  (let ((*chunk-edges* (treetops-in-current-segment)))
+    (when *save-chunk-edges*
       (push (loop for edge in *chunk-edges* 
               collect 
               (list (intern (symbol-name (cat-symbol (edge-form edge))))
-                    (let
-                        ((str (edge-string edge)))
+                    (let ((str (edge-string edge)))
                       (subseq str 0 (- (length str) 1)))))
             *all-chunk-edges*))
     (march-back-from-the-right/segment)

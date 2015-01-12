@@ -49,21 +49,6 @@
     any auxiliaries through the main verb including any adverbs
     that are known to associate with verbs."))
 
-:+ignore
-(defmethod print-object ((chunk chunk) stream)
-  (print (list 'chunk (chunk-forms chunk) 
-               (chunk-start-pos chunk)
-               (pos-edge-starts-at
-                (left-treetop-at/edge (chunk-end-pos chunk))))
-         stream))
-
-:+ignore
-(defmethod print-object ((chunk chunk) stream)
-  (print (list 'chunk (chunk-forms chunk) 
-               (chunk-start-pos chunk)
-               )
-         stream))
-
 (defmethod print-object ((chunk chunk) stream)
   (print-unreadable-object (chunk stream :type t)
     (let ((start (chunk-start-pos chunk))
@@ -92,7 +77,6 @@
            (pos-after (pos-edge-ends-at edge)))
         (funcall fn pos-before)
         (setq pos-before pos-after)))))
-
 
             
 ;;;--------
@@ -123,17 +107,29 @@
         *right-segment-boundary* (chunk-end-pos chunk))
   (let ((*return-after-doing-segment* t))
     (declare (special *return-after-doing-segment*))
-    (if 
-     (and 
-      *new-chunk-parse*
-      (eq (car (chunk-forms chunk)) 'ng))
-     (parse-ng-interior chunk)
-    (pts nil chunk))))
+    (if (and *new-chunk-parse*
+             (eq (car (chunk-forms chunk)) 'ng))
+      (parse-ng-interior chunk)
+      (pts nil chunk))))
 
 (defun parse-ng-interior (chunk)
   (pts nil chunk))
 
-;; Rusty -- traces moved to objects/traces/psp1.lisp
+(defun show-chunk-edges (&optional (ces *all-chunk-edges*))
+  (loop for c in (reverse ces)
+    do (format t "~&___________________~&")
+    (np c)))
+
+(defun verb-chunks ()
+  (loop for c in *all-chunk-edges*
+    when (loop for e in c 
+           thereis (memq (car e) '(verb+ed verb+ing)))
+    collect c))
+
+
+;;;-------------
+;;; chunk finder
+;;;-------------
 
 (defvar *next-chunk* nil)
 (defvar *chunks* nil)
