@@ -353,7 +353,7 @@
       :realization
       (:noun "panel"
              :of component))
-(noun "panel" :super bio-process)
+
 (noun "paradox" :super bio-entity)
 (noun "patient" :super bio-entity)
 (noun "phenotype" :super bio-entity)
@@ -366,7 +366,7 @@
              :of basis))
 
 (noun "range" :super measurement)
-(noun "rate" :super bio-scalar
+(noun "rate" :super measurement
       :binds ((process bio-process) (components biological))
       :realization 
       (:noun "rate"
@@ -447,7 +447,7 @@
       :realization 
       (:noun "presence" 
              :of context)) ;; keyword: (ence N) 
-(noun "sensitivity" :super bio-scalar
+(noun "sensitivity" :super quality
       :binds ((item biological)(agent biological))
       :realization
       (:noun "sensitivity"
@@ -460,7 +460,7 @@
       (:adj "sensitive"
              :s item
              :to agent))
-(noun "insensitivity" :super bio-scalar
+(noun "insensitivity" :super quality
       :binds ((item biological)(agent biological))
       :realization
       (:noun "insensitivity"
