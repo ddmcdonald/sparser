@@ -442,6 +442,7 @@
    :s agent))
 
 
+
 (define-category downregulate
   :specializes bio-process
   :binds ((agent bio-entity)(patient biological))
@@ -710,6 +711,15 @@
    :s agent
    :o patient))
 
+(define-category digest ;; as in a chemical process for breaking down proteins
+  :specializes bio-process
+  :binds ((agent biological)(patient biological))
+  :realization
+  (:verb   "digest" :noun "digestion"
+   :etf (svo-passive of-nominal)
+   :o patient  ;; regulation of <process>
+   :s agent))
+
 
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display
@@ -718,6 +728,16 @@
     :realization
     (:verb "display" ;; keyword: ENDS-IN-ED 
 	   :noun "display"
+	   :etf (svo-passive of-nominal)
+	   :s agent
+	   :o patient))
+
+(define-category elute
+    :specializes bio-process
+    :binds ((agent bio-entity)(patient bio-process))
+    :realization
+    (:verb "elute" ;; keyword: ENDS-IN-ED 
+	   :noun "elution"
 	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
@@ -997,6 +1017,15 @@
     :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
+	   :s agent
+	   :o patient))
+
+(define-category represent
+    :specializes bio-process
+    :binds ((agent biological)(patient bio-process))
+    :realization
+    (:verb "represent" :noun "representation"
+	   :etf (svo-passive of-nominal)
 	   :s agent
 	   :o patient))
 
