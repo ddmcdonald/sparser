@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2011-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "plist"
 ;;;    Module:   "objects;chart:generics:"
-;;;   Version:   0.2 August 2014
+;;;   Version:   0.2 January 2015
 
 ;; (2/10/92 v2.2) added cases for cfr's.
 ;; (9/2 v2.3) added cases for referential-categories
@@ -14,7 +14,8 @@
 ;;     (9/26/11) Added change-plist-value and added lattice-points
 ;;      to plist-for
 ;; 0.2 (6/3/13) converted the push to a pushnew. 
-;;     ((8/6/14) added has-tag? as sugar for memq
+;;     (8/6/14) added has-tag? as sugar for memq
+;;     (1/12/15) removed a break from remove
 
 (in-package :sparser)
 
@@ -78,8 +79,6 @@
              (next-tag (car next-cell)))
         (loop
           (when (null next-cell)
-            (break "No instance of the tag ~A~
-                    ~%on the plist of ~A" tag obj)
             (return-from remove-property-from))
           (when (eq next-tag tag)
             (rplacd last-cell (cddr next-cell)))
