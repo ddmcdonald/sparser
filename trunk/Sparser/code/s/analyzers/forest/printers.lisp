@@ -530,8 +530,7 @@ there were ever to be any.  ///hook into final actions ??  |#
   :done-printing)
 
 (defun edge-string (edge)
-  (let
-      ((str (make-string-output-stream)))
+  (let ((str (make-string-output-stream)))
     (print-edge-as-category-and-text-segment edge str)
     (get-output-stream-string str)))
 
