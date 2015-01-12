@@ -30,25 +30,31 @@
    like 'protein' or 'pathway or 'cell line' so that their
    lemmas can trigger a specific compose method
    in noun noun compounds.")
+ 
 
-(define-mixin-category bio-scalar
-     :documentation "No content by itself, but provides a common superconcept 
-     for measurable things that can be increased or decreased.")
+;;;-----------------
+;;; generalizations
+;;;-----------------
 
-(define-mixin-category biological
-  :specializes bio-scalar
+(define-category biological
+  :specializes abstract
   :lemma (:adjective "biological")
-  :binds ((bio-context bio-context)))
+  :binds ((bio-context bio-context))
+  :documentation "Provides a generalization over bio entities
+   and processes by being mixed into those categories")
 
-(define-mixin-category molecule-state
+(define-category bio-scalar
+  :specializes scalar-quality
+  :mixins (biological)
+  :documentation "Provides a generalization over biological and scalar")
+ 
+(define-category molecule-state
   :specializes biological
-  :lemma (:adjective "XXXstate")
   :binds ((bio-context bio-context)))
 
 
 
 
-;; redefine to make this a bio-scalar
 (define-category  measurement  ;; "10 yards"
   :specializes bio-scalar
   :instantiates self
@@ -360,6 +366,9 @@
 (define-category bio-concentration
   :specializes bio-scalar
 )
+
+
+
 
 
 
