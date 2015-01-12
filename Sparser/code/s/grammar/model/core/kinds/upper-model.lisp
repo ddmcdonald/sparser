@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2014 David D. McDonald 
+;;; Copyright (c) 2010-2015 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.2 June 2014
+;;;  version:  0.2 January 2015
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -26,6 +26,7 @@
 ;;      the class. 12/17/13 added scalar-quality and state. 6/9/14
 ;;      pulled the standalone definition. It was a one-off. 
 ;; 0.3 (6/16/14) Trying to insert more organization.
+;;     (1/12/15) Filled in missing super-types. 
 
 (in-package :sparser)
 
@@ -44,7 +45,13 @@
   ;; is creates for it, i.e. to make it a non-trivial class.
   :instantiates nil
   :specializes nil
-  :binds ((modifier))) ;; is anything else this general?
+  :binds ((modifier));; is anything else this general?
+  :documentation
+  "This is a formal top. Nothing should take 'top' as its value restriction
+   (except for mechanical defaults). Its functional role is to provide a place 
+   for searches up the AKO tree to stop, and to provide an upper-most class
+   to anchor the CLOS shadow classes. Any variable bound here must be
+   applicable to anything.")
 
 (defparameter *top-of-category-tree* (category-named 'top))
 
@@ -90,6 +97,7 @@
 ; or a directionality (for that we'd use operator and predication). 
 ;
 (define-category relation
+  :instantiates nil
   :specializes abstract
   :lemma (:common-noun "relation")
   :documentation
@@ -116,7 +124,7 @@
 
 
 (define-category dependent-substrate
-   :specializes nil ;; it's a relation
+   :specializes relation
    ;; See dependent-of ETF and paths (exit-turnpike)
    :binds ((dependent)
            (substrate)))
@@ -148,7 +156,7 @@
 ; are always grammatically optional.
 
 (define-category operator
-  :specializes nil
+  :specializes relation
   :binds ((name :primitive word)))
 
 ; Atributes or predicates some property of something.
@@ -167,7 +175,7 @@
 ; something already available for it in the model.
 ;
 (define-category predication
-  :specializes nil
+  :specializes relation
   :binds ((term)
           (operator . operator)))
 
