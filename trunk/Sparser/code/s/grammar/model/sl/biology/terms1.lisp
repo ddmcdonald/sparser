@@ -91,7 +91,7 @@
           ;(pathway
           ; (
           (otherwise
-           (unless *trap-needed-extensions-to-type-marker*
+           (when *trap-needed-extensions-to-type-marker*
              (push-debug `(,i ,marker ,category ,(parent-edge-for-referent)))
              (error "Haven't defined a constructor for the ~
                      type-marker ~a" category)))))
