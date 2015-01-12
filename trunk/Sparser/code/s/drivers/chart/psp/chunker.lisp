@@ -17,7 +17,7 @@
 ;; RJB 12/19/2014     ;; partitive construction e.g. "all of these lines"
 ;; 1/1/2015 break out adjective/modifier from start of NG if the preceding chunk was a copula
 ;; and fix handling of chunks terminated by the end of the sentence
-;; 1/12/2015 Start (stub) on new NG interpreter parse-ng-interior
+;; 1/12/2015 Start on new NG interpreter parse-ng-interior -- works modestly well
 
 (in-package :sparser)
 
@@ -107,13 +107,39 @@
         *right-segment-boundary* (chunk-end-pos chunk))
   (let ((*return-after-doing-segment* t))
     (declare (special *return-after-doing-segment*))
-    (if (and *new-chunk-parse*
-             (eq (car (chunk-forms chunk)) 'ng))
-      (parse-ng-interior chunk)
-      (pts nil chunk))))
+    (if 
+     (and 
+      *new-chunk-parse*
+      (eq (car (chunk-forms chunk)) 'ng))
+     (parse-ng-interior chunk)
+    (pts nil chunk))))
 
 (defun parse-ng-interior (chunk)
+  (declare (special chunk))
+  (let*
+      ((edges (reverse (treetops-in-current-segment)))
+       (left (ng-edge (second edges)))
+       (right (ng-edge (first edges)))
+       rule)
+    (declare (special edges rule left right))
+    (loop while
+      (and (cdr edges)
+           (setq rule (check-form-form left right)))
+      do
+      ;;(break "parse-ng-interior")
+      (execute-one-one-rule rule left right)
+      (setq edges (reverse (treetops-in-segment (chunk-start-pos chunk)(chunk-end-pos chunk))))
+      (setq left (ng-edge (second edges)))
+      (setq right (ng-edge (car edges)))
+      (print edges)))
   (pts nil chunk))
+
+(defun ng-edge (tt)
+  (cond
+   ((null tt) nil)
+   ((edge-p tt) tt) ;; the edge for the treetop was unambiguous
+   ((edge-vector-p tt)(highest-edge tt))
+   (t (break "what type of treetop is this?"))))
 
 (defun show-chunk-edges (&optional (ces *all-chunk-edges*))
   (loop for c in (reverse ces)
