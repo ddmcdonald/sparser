@@ -131,7 +131,8 @@
       (setq edges (reverse (treetops-in-segment (chunk-start-pos chunk)(chunk-end-pos chunk))))
       (setq left (ng-edge (second edges)))
       (setq right (ng-edge (car edges)))
-      (print edges)))
+      ;;(print edges)
+      ))
   (pts nil chunk))
 
 (defun ng-edge (tt)
