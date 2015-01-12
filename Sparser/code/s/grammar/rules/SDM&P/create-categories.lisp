@@ -131,9 +131,13 @@
 (defun revise-form-of-nospace-edge-if-necessary (edge)
   ;; They should all be some part of an np
   (let ((current-form (edge-form edge)))
-    (unless (or (noun-category? current-form)
-                (eq current-form category::n-bar))
-      (setf (edge-form edge) category::n-bar))))
+    (cond
+     ((eq current-form category::np)
+      (setf (edge-form edge) category::n-bar))
+     ((or (noun-category? current-form)
+          (eq current-form category::n-bar)))
+     (t ;; usually it's a verbal category
+      (setf (edge-form edge) category::n-bar)))))
 
 
 
