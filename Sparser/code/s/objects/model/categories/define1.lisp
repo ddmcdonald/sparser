@@ -132,6 +132,8 @@
            (loop for symbol in mixins
              collect (category-named symbol :break-if-missing)))))
 
+    (remove-property-from category :super-categories) ;; clear the cache
+
     (when specializes
       (unless specialized-category
         (break "~A is supposed to be a specialization of ~A~
