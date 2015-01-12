@@ -334,7 +334,7 @@
   '(
     CATEGORY::COMMON-NOUN/PLURAL
     CATEGORY::NOUN/VERB-AMBIGUOUS
-    category::n-bar
+    CATEGORY::N-BAR
     CATEGORY::COMMON-NOUN
     CATEGORY::PROPER-NOUN
     CATEGORY::PROPER-NAME
@@ -342,10 +342,18 @@
     ;; not sure about these -- think of "the largest" as an NP
     ;; CATEGORY::COMPARATIVE -- this causes problems with MORE
     CATEGORY::SUPERLATIVE
-    category::number ;; 'How many do you want? I want 3'
-    category::post-ordinal ;; But only for roman numerals
-    category::that
+    CATEGORY::NUMBER ;; 'HOW many do you want? I want 3'
+    CATEGORY::POST-ORDINAL ;; But only for roman numerals
+    CATEGORY::THAT
     ))
+
+(defparameter *n-bar-categories*
+   '(CATEGORY::COMMON-NOUN/PLURAL
+    CATEGORY::NOUN/VERB-AMBIGUOUS
+    CATEGORY::N-BAR
+    CATEGORY::COMMON-NOUN
+    CATEGORY::PROPER-NOUN
+    CATEGORY::PROPER-NAME))
 
 
 (defgeneric ng-compatible? (label chunk)

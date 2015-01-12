@@ -74,6 +74,18 @@
 
 ;;--- NPs
 
+;; This generalizes all the commented out def-syntax-rules
+(loop for left in *n-bar-categories*
+  do
+  (loop for right in *n-bar-categories*
+    do
+    (eval 
+     `(def-syntax-rule (,left ,right) 
+        :head :right-edge 
+        :form n-bar ;; requires a determiner 
+        :referent (:function noun-noun-compound
+                       left-edge right-edge)))))
+#|
 (def-syntax-rule (proper-noun proper-noun) ;; "ford suv"
                  :head :right-edge ; 
   :form n-bar ;; requires a determiner 
@@ -113,6 +125,7 @@
   :form n-bar
   :referent (:function noun-noun-compound
                        left-edge right-edge))
+|#
 ;; GAP–mediated hydrolysis.
 (def-syntax-rule (n-bar common-noun)  ;; "GAP–mediated GTP hydrolysis"
                  :head :right-edge
@@ -125,8 +138,9 @@
 
 (def-syntax-rule (adjective n-bar) ;; "black suv"
                  :head :right-edge
-  :form np ;;/// cutting corners
+  :form n-bar ;;/// cutting corners
   :referent (:head right-edge))
+
 
 
 
