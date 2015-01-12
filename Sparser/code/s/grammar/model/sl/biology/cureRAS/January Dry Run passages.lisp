@@ -89,7 +89,7 @@ sites in ASPP1 and ASPP2.")
 at residues 698 and 827.")
     (p "We thus tested whether RAS activation may regulate ASPP2
 phosphorylation.")
-    (p "An in vitro phophorylation assay was performed with a purified
+    (p "An in vitro phosphorylation assay was performed with a purified
 C-terminus fragment of ASPP2 (693-1128) containing both MAPK putative
 phosphorylation sites.")
     (p "When compared to p38 SAPK, MAPK1 was clearly able to phosphorylate the
