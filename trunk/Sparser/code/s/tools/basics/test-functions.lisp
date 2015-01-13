@@ -40,14 +40,16 @@
           (if *save-chunk-edges*
               ;;make the list of chunk edges show their sentence origin
               (push (cons n (cdr test)) *all-chunk-edges*))
-          (terpri) 
-          (format t "SEMANTIC FOREST ------------------------------------~&")
+          (when t
+            (terpri) 
+            (format t "SEMANTIC FOREST ------------------------------------~&")
           
-          (loop for edge-tree in
-            (tts-edge-semantics)
-            do
-            (format t "-----~&~S~&~&" (car edge-tree))
-            (print-tree (second edge-tree)))
+            (loop for edge-tree in
+              (tts-edge-semantics)
+              do
+              (format t "-----~&~S~&~&" (car edge-tree))
+              (print-tree (second edge-tree))))
+
           (format t "~&___________________________________________~&~&")
           ))))
 ;;/// these two should be merged. Perhaps with a switch
