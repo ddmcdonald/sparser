@@ -52,6 +52,7 @@
   (let ((real-adv (dereference-shadow-individual adv))
         (real-head (dereference-shadow-individual head)))
     (tr :modified_modifier+t)
-    (bind-variable 'modifier real-adv real-head)
+    (when (individual-p head)
+      (bind-variable 'modifier real-adv real-head))
     real-head))
 
