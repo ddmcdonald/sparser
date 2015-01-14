@@ -496,10 +496,10 @@
     ;; but no referent. 
 
     (let* ((left-type (etypecase left-ref
-                        (individual (indiv-type left-ref))
+                        (individual (car (indiv-type left-ref)))
                         (category left-ref)))
            (right-type (etypecase right-ref
-                        (individual (indiv-type right-ref))
+                        (individual (car (indiv-type right-ref)))
                         (category right-ref)))
            (type left-type))
 
@@ -514,7 +514,7 @@
                :type type)))
         ;;(push-debug `(,collection ,type))
         (when type
-          (one-off-specialization collection (car type)))
+          (one-off-specialization collection type))
         collection ))))
 
 
