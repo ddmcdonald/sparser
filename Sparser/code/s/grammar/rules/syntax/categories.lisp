@@ -70,6 +70,8 @@
 ;; 1/2/2015 NG chunks that start with a pronoun end with that pronoun -- this needs to by fixed to account for possesive pronouns, of course
 ;; 1/8/2015 the word HAD cannot occur inside an NP, even though is is HAVE+ED
 ;; 1/10/2015 revise handling of THAT in ng-start? -- it is almost never the case that THAT is a determiner, it is usually a relative clause marker or a thatcomp marker
+;; add relative-clause to *minor-categories* to avoid break in final sweep
+
 (in-package :sparser)
 
 
@@ -758,7 +760,8 @@
     ,category::pronoun
     ,category::proper-noun
     ,category::quantifier
-    ,category::pp))
+    ,category::pp
+    ,category::relative-clause))
 
 (defmethod category-status ((c category))
   ;; used by smash-together-two-tt-islands to decide
