@@ -227,8 +227,8 @@
       (nreverse tts))))
     
       
-(defun adjacent-tts ()
-  (loop for edges on (cdr (all-tts)) 
+(defun adjacent-tts (&optional (all-edges (all-tts)))
+  (loop for edges on (cdr all-edges) 
     while (cdr edges) 
     when (and 
           (edge-p (car edges)) 
@@ -236,7 +236,6 @@
           (adjacent-edges? (car edges)(second edges)))
     collect
     (list (car edges)(second edges))))
-
 
 (defun all-tts (&optional 
                 (starting-position
