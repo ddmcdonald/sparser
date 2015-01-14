@@ -11,23 +11,36 @@
 
 
 (defvar *known-breaks* nil)
+
 (defvar *tested* '(0))
+
 (defun reset-dectest ()
   (setq *tested* '(0)))
 
-(defun reset-test ()
-  (setq *tested* '(0)))
-
 (defparameter *sentences* nil)
+
 (defun test-jan ()
+  (declare (special *jan-dry-run*))
   (setq *sentences* *jan-dry-run*)
   nil)
 
 (defun test-dec ()
+  (declare (special *dec-tests*))
   (setq *sentences* *dec-tests*)
   nil)
 
 
+(defun reset-test ()
+  (setq *tested* '(0)))
+
+(defun retest () 
+  (loop for i from (+ 1 (car *tested*)) to 100 
+    when (<= i (length *sentences*))
+    do (push i *tested*) (dectest i)))
+
+(defun bad () 
+  (push (car *tested*) *known-breaks*) 
+  (retest))
 
 (defun dectest (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences)))
@@ -73,17 +86,6 @@
         (reverse s-expressions)))))
 
 
-(defun retest () 
-  (loop for i from (+ 1 (car *tested*)) to 100 
-    when (<= i (length *sentences*))
-    do (push i *tested*) (dectest i)))
-
-
-
-(defun bad () 
-  (push (car *tested*) *known-breaks*) 
-  (retest))
-
 
 (defun print-tree (tree &optional (last nil) (indent 0) (stream t))
   (nspaces indent stream)
@@ -104,32 +106,28 @@
   (when (not last)
    (terpri stream)))
 
-#+ignore(defun format-item (item stream)
-  (format stream "~(~S~)" 
-          (if (individual-p item)
-            (let ((name (name-of-individual item)))
-              `(,(intern (symbol-name (cat-symbol (car (indiv-type item)))))
-                ,(indiv-uid item)))
-            item)))
-
 (defun format-item (item stream)
-  (if (individual-p item)
-    (let* ((name (name-of-individual item))
-           (pname (when name (typecase name
-                               (word (word-pname name))
-                               (polyword (pw-pname name))
-                               (otherwise "")))))
-      (if name
-        (format stream "~((~a ~s ~a)~)"
-                (cat-symbol (car (indiv-type item)))
-                pname
-                (indiv-uid item))
-        (format stream "~((~a ~a)~)"
-                (cat-symbol (car (indiv-type item)))
-                (indiv-uid item))))
+  (typecase item
+    (psi (push-debug `(,item))
+         (error "Something gerated a PSI and it shouldn't have: ~a" item))
+    (individual
+     (let* ((name (name-of-individual item))
+            (pname (when name (typecase name
+                                (word (word-pname name))
+                                (polyword (pw-pname name))
+                                (otherwise "")))))
+       (if name
+          (format stream "~((~a ~s ~a)~)"
+                  (cat-symbol (car (indiv-type item)))
+                  pname
+                  (indiv-uid item))
+          (format stream "~((~a ~a)~)"
+                  (cat-symbol (car (indiv-type item)))
+                  (indiv-uid item)))))
 
-    (format stream "~(~S~)" 
-            item)))
+    (otherwise
+     (format stream "~(~S~)" 
+             item))))
    
 
 (defun nspaces (n stream)
