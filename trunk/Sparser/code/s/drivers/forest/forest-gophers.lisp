@@ -187,6 +187,15 @@
       unless (edge-used-in edge)
       collect edge)))
 
+(defun push-subordinate-conjunction (tt)
+  (push tt (subord-conj (layout))))
+
+(defun there-are-subordinate-conjunctions? ()
+  (let ((original-list (subord-conj (layout))))
+    (loop for edge in original-list
+      unless (edge-used-in edge)
+      collect edge)))
+
 
 (defun push-parentheses (tt)
   (push tt (parentheses (layout))))

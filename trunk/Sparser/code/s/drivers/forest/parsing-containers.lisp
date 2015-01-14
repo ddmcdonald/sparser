@@ -74,6 +74,9 @@
    (conjunctions :initform nil :accessor conjunctions
     :documentation "The locations of every conjunct,
       rightmost first")
+   (subordinate-conjunctions :initform nil :accessor subord-conj
+    :documentation "The locations of every subordinate conjunction,
+      rightmost first")
    (includes-that :initform nil :accessor includes-that
     :documentation "The locations of edges over the word
       'that'. Could expand to other s-comp supordinating
