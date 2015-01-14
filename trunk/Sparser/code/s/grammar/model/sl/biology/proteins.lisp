@@ -13,6 +13,7 @@
 ;; attempt to get around order dependency for MEK1 and MEK -- BUT THAT WAS NOT THE BUG
 ;; OVER TO YOU, <<DAVID>>
 ;; 1/7/2015 added new "proteins" -- ubiquitin, hormone and histone, and stubs for mUbRAS and SAPK
+;; new rule for protein --> (protein point-mutation) for "ubiquitin C77G"
 
 (in-package :sparser)
 
@@ -438,3 +439,8 @@ filligre may be used to distinguish them, etc.
 
 
 (def-bio "SAPK" protein) ;; class of stress activated proteins
+(def-cfr protein (protein point-mutation)
+  :form NP
+  :referent (:head left-edge
+                   :bind (:mutation right-edge)))
+                   
