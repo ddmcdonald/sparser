@@ -308,13 +308,15 @@
         ;; this isn't "short" so much as "what would have worked
         ;; before", which certainly counts. This code is
         ;; in conjunction8
-        (let ((heuristic (conjunction-heuristics left-edge right-edge)))
-          (if heuristic
-            ;; conjoin/2 looks for leftwards
-            (let ((edge (conjoin/2 left-edge right-edge heuristic)))
-              (tr :conjoined-edge edge)
-              edge)
-            (tr :no-heuristics-for left-edge right-edge)))))))
+        (unless (or (literal-edge? left-edge) ;; comma
+                    (literal-edge? right-edge))
+          (let ((heuristic (conjunction-heuristics left-edge right-edge)))
+            (if heuristic
+              ;; conjoin/2 looks for leftwards
+              (let ((edge (conjoin/2 left-edge right-edge heuristic)))
+                (tr :conjoined-edge edge)
+                edge)
+              (tr :no-heuristics-for left-edge right-edge))))))))
 
 (defun try-spanning-conjunctions ()
   ;; For now do the easy thing of looking only for the same
@@ -355,23 +357,25 @@
       (let* ((c (car conjuncts))
              (edge-to-the-left (left-treetop-at/edge c)) ;; next-treetop/leftward
              (edge-to-the-right (right-treetop-at/edge c))) ;; next-treetop/rightward
-        (tr :trying-to-conjoin  edge-to-the-left edge-to-the-right)
-        (push-debug `(,edge-to-the-left ,edge-to-the-right))
-        ;; (setq edge-to-the-left (car *) edge-to-the-right (cadr *))
+       (unless (or (literal-edge? edge-to-the-left) ;; comma
+                   (literal-edge? edge-to-the-right))
+         (tr :trying-to-conjoin  edge-to-the-left edge-to-the-right)
+         (push-debug `(,edge-to-the-left ,edge-to-the-right))
+         ;; (setq edge-to-the-left (car *) edge-to-the-right (cadr *))
 
-        ;; J3 requires *allow-form-conjunction-heuristic* to succeed
-        (let ((*allow-form-conjunction-heuristic* t)) ;;/// where do we get in trouble?
-          (declare (special *allow-form-conjunction-heuristic*))
-          (let ((heuristic (conjunction-heuristics edge-to-the-left 
-                                                   edge-to-the-right)))
-            (if heuristic
-              (let ((edge 
-                     (conjoin-two-edges edge-to-the-left edge-to-the-right heuristic)))
-                (tr :conjoined-edge edge)
-                edge)
-              (else
-               (tr :no-conjunction-heuristics-applied)
-               nil))))))))
+         ;; J3 requires *allow-form-conjunction-heuristic* to succeed
+         (let ((*allow-form-conjunction-heuristic* t)) ;;/// where do we get in trouble?
+           (declare (special *allow-form-conjunction-heuristic*))
+           (let ((heuristic (conjunction-heuristics edge-to-the-left 
+                                                    edge-to-the-right)))
+             (if heuristic
+                (let ((edge 
+                       (conjoin-two-edges edge-to-the-left edge-to-the-right heuristic)))
+                  (tr :conjoined-edge edge)
+                  edge)
+                (else
+                 (tr :no-conjunction-heuristics-applied)
+                 nil)))))))))
  
 
 ;;;-------------

@@ -125,9 +125,11 @@
           (category::pp
            (push-prepositional-phrase tt))
 
-          ((category::conjunction
-            category::subordinate-conjunction)
+          (category::conjunction
            (push-conjunction tt))
+
+          (category::subordinate-conjunction
+           (push-subordinate-conjunction tt))
 
           ((category::parentheses
             category::square-brackets)
