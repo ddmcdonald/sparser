@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1998,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1998,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.6 March 2013
+;;;  Version:  0.7 January 2015
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -19,39 +19,41 @@
 ;; 0.6 (3/28/13) Removed indexing from anonymous-agentive-action as a stop-
 ;;      gap action in lieu of taking the time to rework the meaning of "do"
 ;;      properly -- the word by itself does not  have an agent linked to it.
+;; 0.7 (1/14/15) Converting mixins to regular categories because they're
+;;      somehow getting interpretations as psi, which is presently outlawed.
 
 (in-package :sparser)
 
 
-(define-mixin-category  tense/aspect
+(define-category  tense/aspect
   :instantiates nil
-  :specializes  nil
+  :specializes  abstract
   :binds nil )
 
 
-(define-mixin-category  negative
+(define-category  negative
   :instantiates nil
   :specializes  tense/aspect )
 
 
-(define-mixin-category  future
+(define-category  future
   :instantiates nil
   :specializes  tense/aspect
   :binds ((occurs-at-future-moment . nil)))
 
 
-(define-mixin-category  past
+(define-category  past
   :instantiates nil
   :specializes  tense/aspect
   :binds ((occurs-at-earlier-moment . nil)))
 
 
-(define-mixin-category  progressive    ;; be + ing
+(define-category  progressive    ;; be + ing
   :instantiates nil
   :specializes  tense/aspect )
 
 
-(define-mixin-category  perfect   ;; have + en
+(define-category  perfect   ;; have + en
   :instantiates nil
   :specializes  tense/aspect )
 
