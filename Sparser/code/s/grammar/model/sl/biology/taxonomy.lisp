@@ -14,7 +14,7 @@
 ;; 12/30/14 Reorganized to readability. Moved pathway to phenomena.lisp
 ;; 1/1/2015 fix (?) taxonomy above protein-family, to make it a sub-category of molecule
 ;; 1/1/2015 give biological a variable bio-context, and make bio-location be a bio-context
-
+;; added variable mutation to protein to allow new rule for protein --> (protein point-mutation) for "ubiquitin C77G"
 (in-package :sparser)
 
 ;;;--------
@@ -154,6 +154,7 @@
 (define-category protein
   :specializes molecule
   :instantiates :self
+  :binds ((mutation point-mutation))
   :bindings (uid "CHEBI:36080")
 ;;  :rule-label bio-entity
   :index (:permanent :key name)
