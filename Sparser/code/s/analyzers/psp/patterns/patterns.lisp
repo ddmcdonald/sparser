@@ -67,6 +67,9 @@
       (declare (special *inhibit-big-mech-interpretation*))
       (resolve-hyphen-between-two-words pattern words start-pos end-pos)))
 
+   ((equal pattern '(:lower :hyphen)) ;; "mono- "
+    (resolve-stranded-hypen pattern words start-pos end-pos))
+
    ((and *work-on-ns-patterns*
          (memq :hyphen pattern))
     (push-debug `(,pattern ,start-pos ,end-pos))

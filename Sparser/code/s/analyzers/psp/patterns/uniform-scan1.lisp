@@ -39,6 +39,11 @@
 ;;; new driver
 ;;;------------
 
+(defun collect-no-space-sequence-into-word (position-before) ;; scan3
+  (break "Call to find a no-space sequences at ~a~
+        ~%Change your code to use collect-no-space-segment-into-word"
+         position-before))
+
 ;; (trace-scan-patterns)
 
 (defun collect-no-space-segment-into-word (position-just-after)
@@ -98,7 +103,7 @@
             (tr :ns-segment-layout layout)
             (cond
              ((eq layout :single-span)  ;; Do nothing. It's already known
-              (break "integrated ~a ??" edge))
+              (revise-form-of-nospace-edge-if-necessary edge))
              ((memq :slash pattern)
               (tr :ns-looking-at-slash-patterns)
               (divide-and-recombine-ns-pattern-with-slash 
