@@ -12,6 +12,16 @@
 
 (in-package :sparser)
 
+
+(defparameter *inhibit-big-mech-interpretation* nil
+  "Localy bount to t when the context knows it's inappropriate")
+
+(defun ns-category-for-reifying (default-category)
+  (if (and *big-mechanism*
+                  (null *inhibit-big-mech-interpretation*))
+    (bio-category-for-reifying)
+    default-category))
+
 ;;;----------
 ;;; hyphens
 ;;;----------
@@ -23,16 +33,6 @@
   :binds ((left) ;; of the hyphen
           (right))
   :index (:sequential-keys left right))
-
-
-(defparameter *inhibit-big-mech-interpretation* nil
-  "Localy bount to t when the context knows it's inappropriate")
-
-(defun ns-category-for-reifying (default-category)
-  (if (and *big-mechanism*
-                  (null *inhibit-big-mech-interpretation*))
-    (bio-category-for-reifying)
-    default-category))
 
 (defun make-hypenated-structure (left-edge right-edge)
   ;; called from nospace-hyphen-specialist
@@ -87,8 +87,48 @@
         (revise-form-of-nospace-edge-if-necessary edge)
         (tr :three-hyphen-default-edge edge)
         edge)))
-                                    
+                             
 
+(defparameter *salient-hyphenated-literals*
+  `(,(resolve/make "re") ;; "re-activate"
+    ,(resolve/make "mono")
+    ,(resolve/make "di")
+    ,(resolve/make "co") ;; co-occurring
+    ))
+
+(defun compose-salient-hyphenated-literals (pattern words
+                                            pos-before pos-after)
+  (push-debug `(,words ,pattern)) ;;(break "salient")
+  (when (= 3 (length words))
+    (let ((word1 (car words))
+          (word2 (caddr words))
+          left  right  )
+      (when (or (prog1 (memq word1 *salient-hyphenated-literals*)
+                  (setq left t))
+                (prog1 (memq word2 *salient-hyphenated-literals*)
+                  (setq right t)))
+        ;; do something clever, but for now just tie off
+        (let* ((edge (or (and left
+                               (left-treetop-at/edge pos-after))
+                         (and right
+                              (right-treetop-at/edge pos-before)))))
+          ;; dropping the literal on the floor
+          ;;/// "re" in Dec 28 is just a word at this point, so the
+          ;; other paths won't do.
+          (let ((new-edge
+                 (make-edge-over-long-span
+                   pos-before
+                   pos-after
+                   (edge-category edge)
+                   :rule 'compose-salient-hyphenated-literals
+                   :form (edge-form edge)
+                   :referent (edge-referent edge)
+                   :words words)))
+            new-edge))))))
+
+(defun resolve-stranded-hypen (pattern words start-pos end-pos)
+  (push-debug `(,pattern ,words ,start-pos ,end-pos))
+  (break "Stub: stranded hyphen"))
 
 ;;;---------
 ;;; slashes
