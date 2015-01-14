@@ -164,10 +164,10 @@ broadly speaking doing for you all the things you might do by hand.
     (setq  specializes (super-category-for-POS :noun)))
   (when binds
     (unless realization
-      (error "Variables were specificed (:binds) but not a realization")))
+      (error "Variables were specified (:binds) but not a realization")))
   (when realization
     (unless binds
-      (error "A realization was specificed but no variables")))
+      (error "A realization was specified but no variables")))
 
   #+ignore(unless index
     (setq index '(:temporary)))
@@ -252,10 +252,10 @@ broadly speaking doing for you all the things you might do by hand.
     (setq  specializes (super-category-for-POS :adjective)))
   (when binds
     (unless realization
-      (error "Variables were specificed (:binds) but not a realization")))
+      (error "Variables were specified (:binds) but not a realization")))
   (when realization
     (unless binds
-      (error "A realization was specificed but no variables"))
+      (error "A realization was specified but no variables"))
     (setq realization
           (cons :adj (cons adj realization))))
     
