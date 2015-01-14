@@ -19,7 +19,7 @@
 ;; improved definition for increase as a noun and verb
 ;; remove unlikely definition of "study" as a verb -- we need to handle ambiguity better
 ;; 1/2/2015 minor fixes -- mostly to get verbs with subject WE parsing -- this needs to be fixed, since the category used is the pronoun category, rather than a mixin for human
-
+;; 1/14/2015 minor vocabulary hacking to address problems pointed out by David
 
 (in-package :sparser)
 
@@ -394,7 +394,7 @@
   :binds ((agent bio-entity)(patient gene))  ;; mutation of gene
   :realization
   (:verb "mutate" :noun "mutation"
-   :etf (svo-passive)
+   :etf (svo-passive of-nominal)
    :s agent
    :o patient))
 ;; These two were in terms and need to be integrated with
@@ -1301,7 +1301,7 @@
 
 (define-category obtain
     :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process)(source biological))
+    :binds ((agent pronoun/first/plural)(patient bio-process)(source biological))
     :realization
     (:verb "obtain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1391,7 +1391,11 @@
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o patient)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING definiing lemma as a 
 (define-category signal :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "signal"  :etf (svo-passive) :s agent :o patient)) ;;VERB unknown word "signalling" keyword: ENDS-IN-ING definiing lemma as a 
 
-(define-category abrogate :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "abrogate" :noun "abrogation" :etf (svo-passive) :s agent :o patient)) 
+(define-category abrogate :specializes bio-process 
+  :binds ((agent biological)(patient bio-process)) 
+  :realization
+  (:verb "abrogate" :noun "abrogation" 
+         :etf (svo-passive) :s agent :o patient))
 (define-category advance :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "advance" :noun "advancement" :etf (svo-passive) :s agent :o patient)) 
 (define-category affect :specializes bio-process 
   :binds ((agent biological)(patient biological)(result biological)) 
@@ -1422,7 +1426,14 @@
 (define-category examine :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "examine" :noun "examination" :etf (svo-passive) :s agent :o patient)) 
 (define-category explanation :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "explain" :noun "explanation" :etf (svo-passive) :s agent :o patient)) 
 (define-category generate :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "generate" :noun "generation" :etf (svo-passive) :s agent :o patient)) 
-(define-category immunoprecipitate :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "immunoprecipitate" :noun "immunoprecipitation" :etf (svo-passive) :s agent :o patient)) 
+(define-category immunoprecipitate :specializes bio-process
+  :binds ((agent pronoun/first/plural)(patient bio-entity)(origin bio-location))
+  :realization 
+  (:verb "immunoprecipitate" :noun "immunoprecipitation"
+         :etf (svo-passive) 
+         :s agent 
+         :o patient
+         :from origin))
 (define-category impair :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "impair" :noun "impairment" :etf (svo-passive) :s agent :o patient)) 
 (define-category incorporate :specializes bio-process 
   :binds ((agent biological)(patient biological))
@@ -1450,11 +1461,17 @@
          :o patient
          :to substrate))
 (define-category ligate :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "ligate" :noun "ligation" :etf (svo-passive) :s agent :o patient)) 
-(define-category measure :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "measure" :noun "measurement" :etf (svo-passive) :s agent :o patient)) 
-(define-category modify :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "modify" :noun "modification" :etf (svo-passive) :s agent :o patient)) 
+(define-category measure :specializes bio-process
+  :binds ((agent pronoun/first/plural)(patient bio-process)) 
+  :realization (:verb "measure" :noun "measurement" :etf (svo-passive) :s agent :o patient)) 
+(define-category modify :specializes bio-process
+  :binds ((agent bio-entity)(patient bio-process))
+  :realization 
+  (:verb "modify" :noun "modification"
+         :etf (svo-passive) :s agent :o patient))
 
 (define-category place :specializes bio-process
-  :binds ((agent bio-entity)(patient bio-process)(location bio-location))
+  :binds ((agent pronoun/first/plural)(patient bio-process)(location bio-location))
   :realization 
   (:verb "place" 
          :noun "placement" 
