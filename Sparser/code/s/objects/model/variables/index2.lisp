@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2010-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2010-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  2.2 October 2014
+;;;  version:  2.2 January 2015
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -46,6 +46,10 @@
     ;; Happens when coming in from find-individual
     (setq variable-name (intern (symbol-name variable-name)
 				(find-package :sparser))))
+  (unless (category-p category)
+    (error "Category parameter is a ~a instead of a category.~
+          ~%Upstream function call passed down the wrong thing."
+           (type-of category)))
   (or (find-variable-in-category variable-name category)
       (super-category-has-variable-named variable-name category)
       (find-variable-in-mixins variable-name category)))
