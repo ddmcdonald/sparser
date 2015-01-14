@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "modals"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2013
+;;;  Version:  January 20145
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3. Populated w/o semantics 1/11/94
 ;; Given a mix-in interpretation 7/11.  8/2 pulled the check for whether 'modal'
@@ -19,6 +18,9 @@
 ;;  and generating them for each modal. Incomplete because 
 ;;   (1) need to implement the case of multiple terms in a rhs
 ;;   (2) Aux hopping needs to be reformulated and pushed into a schema
+;; 1/13/15 Redid be-able-to and conditional. It seems ti be implicated
+;;  somehow in the creation of a PSI through some backdoor since lately
+;;  they've been turned off. 
 
 (in-package :sparser)
 
@@ -26,11 +28,11 @@
 ;;; categories
 ;;;------------
 
-(define-mixin-category  be-able-to
+(define-category  be-able-to
   :instantiates nil
   :specializes modal )
   
-(define-mixin-category  conditional
+(define-category  conditional
   :instantiates nil
   :specializes modal
   :binds ((condition)))
