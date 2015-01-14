@@ -24,11 +24,23 @@
 
 (in-package :sparser)
 
-
+#+ignore
 (define-category  tense/aspect
   :instantiates nil
   :specializes  abstract
   :binds nil )
+
+(define-category  tense/aspect
+  :instantiates nil
+  :specializes  abstract
+  :binds ((negative)
+          (occurs-at-moment) ;; future, past
+          (modal)
+          (present)
+          (past)
+          (progressive)
+          (perfect)))
+          
 
 
 (define-category  negative
@@ -38,14 +50,12 @@
 
 (define-category  future
   :instantiates nil
-  :specializes  tense/aspect
-  :binds ((occurs-at-future-moment . nil)))
+  :specializes  tense/aspect)
 
 
 (define-category  past
   :instantiates nil
-  :specializes  tense/aspect
-  :binds ((occurs-at-earlier-moment . nil)))
+  :specializes  tense/aspect)
 
 
 (define-category  progressive    ;; be + ing
@@ -110,7 +120,7 @@
 
 ;;--- negatives
 
-(def-cfr do (do "not")
+(def-cfr do (do not)
   :form verb
   :referent (:head anonymous-agentive-action
              :subtype negative ))
@@ -135,4 +145,4 @@
 
 (def-form-rule (do verb)
   :form verb
-  :referent (:daughter right-edge))
+  :referent (:function absorb-auxiliary left-edge right-edge))

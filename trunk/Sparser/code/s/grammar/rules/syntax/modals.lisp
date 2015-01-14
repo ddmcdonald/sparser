@@ -167,16 +167,15 @@
 
 (def-form-rule (modal have)
   :form verb
-  :referent (:head right-edge
-             ;;:subtype left-edge
-             ))
+  :referent (:function absorb-auxiliary left-edge right-edge))
 
 
 (def-form-rule (modal be)
   :form verb
-  :referent (:head right-edge
-             ;;:subtype left-edge
-                   ))
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
+
+
 
 #|
 
@@ -232,7 +231,7 @@ They might well work as straight-up cfr rules, and that's a case
   :referent (:head right-edge
              ;;:subtype might
                    ))
-
+|#
 
 
 ;;--- modal + verb+ed
@@ -240,6 +239,13 @@ They might well work as straight-up cfr rules, and that's a case
 ;; is mis-labeled as a past tense then we'll get here gratuitously
 ;; e.g. LS: "set"
 
+(def-syntax-rule (modal verb+ed)
+                :head :right-edge
+  :form vg
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
+
+#|
 (def-form-rule (will verb+ed)
   :form vg
   :referent (:head right-edge
@@ -281,10 +287,16 @@ They might well work as straight-up cfr rules, and that's a case
   :referent (:head right-edge
              ;;:subtype might
                    ))
-
+|#
 
 ;;--- modal + verb
 
+(def-syntax-rule (modal verb)
+                :head :right-edge
+  :form vg
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
+#|
 (def-form-rule (will verb)
   :form vg
   :referent (:head right-edge
@@ -371,11 +383,17 @@ They might well work as straight-up cfr rules, and that's a case
   :referent (:head right-edge
              ;;:subtype might
                    ))
-
+|#
 
 
 ;;--- modal + verb+passive
 
+(def-syntax-rule (modal verb+passive)
+                :head :right-edge
+  :form vg
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
+#|
 (def-form-rule (will verb+passive)
   :form vg
   :referent (:head right-edge
