@@ -20,6 +20,8 @@
 ;; RJB 12/14/2014 Added a bunchof stand-in definitions for words that were primed by COMLEX, added cell-line definitions (some) -- need help from <<DAVID>>
 ;; add MEK/ERK and ERK/MEK as pathway designators, try to define S338 as a residue
 ;; add form rule for relative-clause --> (that vp)
+;; diverse vocabulary hacking
+
 (in-package :sparser)
 
 
@@ -215,7 +217,9 @@
 (define-adverb "at baseline")
 (define-adverb "critically")
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
+(define-adverb "even")
 (define-adverb "finally")
+(define-adverb "furthermore")
 (define-adverb "in part")
 (define-adverb "likely")
 (define-adverb "mechanistically")
@@ -229,6 +233,7 @@
 (define-adverb "surprisingly")
 (define-adverb "therefore")
 (define-adverb "thereby")
+(define-adverb "thus")
 (define-adverb "to this end")
 (define-adverb "until now")
 
@@ -244,7 +249,7 @@
       (:noun "absence"
              :of absent))
 (noun "activity" :super bio-process
-      :binds ((agent bio-entity))
+      :binds ((agent biological))
       :realization
       (:noun "activity"
              :of agent))
@@ -281,7 +286,8 @@
 (def-bio "data" bio-entity) ;; need something better
 (noun "derivative" :super molecule)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
-(noun "difference" :super abstract
+(noun "difference" :super biological ;;THIS IS DONE SIMPLY TO ALLOW THE VERB ALTER TO TAKE DIFFERENCE AS A SUBJECT
+      ;; see sentence 7 of January test "...the differences between the enzymatic and chemical ubiquitination linkers (seven bonds and five bonds, respectively) do not alter GAP–responsiveness..."
       :binds ((compared biological))
       :realization
       (:noun "difference"
@@ -324,6 +330,7 @@
       :realization 
       (:noun "level"
              :of measurable))
+(noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "manner" :super bio-process) ;; by chemical or genetic means
 (noun "mass spectrometry" :super bio-process)
 (noun "means" :super bio-process) ;; by chemical or genetic means
@@ -390,7 +397,11 @@
 (noun "screen" :super  bio-process)
 (noun "setting" :super bio-entity)
 (noun "signalling" :super bio-process)  ;; this is an alternate spelling for "signaling"
-(noun "site" :super bio-location)
+(noun "site" :super bio-location
+      :binds ((process bio-process))
+      :realization
+      (:noun "site"
+             :of process))
 (noun "state" :super bio-entity)
 (noun "strategy" :super bio-process)
 (noun "surface area" :super bio-location)
@@ -414,7 +425,7 @@
       (:noun "variety"
              :of basis))
 (noun "variation" :super bio-variant
-      :binds ((basis bio-entity)) ;; this should be for genes and proteins
+      :binds ((basis biological)) ;; this should be for genes and proteins
       :realization
       (:noun "variation"
              :of basis
@@ -674,7 +685,13 @@
 ;; nouns and adjectives from January test
 (adj "biophysical" :super modifier)
 (noun "dynamics" :super abstract)
-(adj "identical" :super modifier)
+(adj "identical" :super modifier
+     :binds ((basis biological)
+             (comparator biological))
+     :realization
+     (:adj "identical"
+           :s basis
+           :to comparator))
 (adj "kinetic" :super modifier)
 (adj "native" :super modifier)
 (adj "putative" :super modifier)
@@ -687,6 +704,11 @@
      :binds ((comparator biological))
      :realization
      (:to comparator))
+(adj "specific" :super abstract
+     :binds ((situation biological))
+     :realization
+     (:adj "specific"
+           :to situation))
 (adj "suitable" :super modifier)
 (adj "unclear" :super modifier)
 (adj "unmodified" :super modifier)
@@ -696,7 +718,12 @@
 (noun "position" :super residue-on-protein)
 (noun "tumorigenesis" :super bio-process)
 (noun "proportion" :super measurement)
-(noun "population" :super bio-entity)
+(noun "population" :super bio-entity
+      :binds ((element biological))
+      :realization
+      (:noun "population"
+             :of element))
+
 
 (noun ("analysis" :plural "analyses")
   :super bio-process)
