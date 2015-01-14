@@ -21,6 +21,7 @@
 ;;    (8/24/13) Modified lookup-passive-counterpart to use #:ed for forming
 ;;     the passive symbol. 
 ;;    (9/15/14) fixed form on be+adjective
+;; 1/14/2015 correct the head for BO+AJD to be the ADJ
 
 (in-package :sparser)
 
@@ -106,7 +107,7 @@
 
 (def-form-rule (be adjective)
   :form vp
-  :referent (:head left-edge
+  :referent (:head right-edge
              :bind (predication right-edge)))
 
 
