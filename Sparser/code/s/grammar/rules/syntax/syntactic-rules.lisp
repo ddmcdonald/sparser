@@ -36,10 +36,7 @@
 ;; The treatment of modals was being revamped in May 2013
 ;; but composition rules weren't finished thinking there should be
 ;; a schema. Can't wait for that
-(def-syntax-rule (modal verb)
-                 :head :right-edge
-  :form vg
-  :referent (:head right-edge)) ;;//// plus subtype
+
 
 ;;--- predicate adjective
 

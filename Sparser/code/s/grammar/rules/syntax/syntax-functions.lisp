@@ -125,6 +125,13 @@
 
 
 
+;;; Verb + Auxiliary
+
+(defun absorb-auxiliary (aux vg)
+  (push-debug `(,aux ,vg)) (break "aux"))
+
+
+
 ;;;-----------------
 ;;; VG + Complement
 ;;;-----------------
