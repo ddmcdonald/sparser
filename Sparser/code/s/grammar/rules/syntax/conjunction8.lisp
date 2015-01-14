@@ -495,8 +495,12 @@
     ;; when doing DA there can be cases where there's a categorization
     ;; but no referent. 
 
-    (let* ((left-type (indiv-type left-ref))
-           (right-type (indiv-type right-ref))
+    (let* ((left-type (etypecase left-ref
+                        (individual (indiv-type left-ref))
+                        (category left-ref)))
+           (right-type (etypecase right-ref
+                        (individual (indiv-type right-ref))
+                        (category right-ref)))
            (type left-type))
 
       (unless (eq left-type right-type)
