@@ -118,14 +118,19 @@
                     (multiply-edges right-edge left-edge))))
       ;; "GTP-bound"
       ;;(push-debug `(,left-edge ,right-edge)) (break "???")
-      (if rule
+      (cond
+       (rule
         (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
           (revise-form-of-nospace-edge-if-necessary edge)
-          (tr :two-word-hyphen-edge edge))
-        (else ;; make a structure if all else fails
-         ;; but first alert to anticipated cases not working
-         (tr :defaulting-two-word-hyphen)
-         (make-hypenated-structure left-edge right-edge))))))
+          (tr :two-word-hyphen-edge edge)))
+       ((compose-salient-hyphenated-literals ;; "re-activate"
+         pattern words pos-before pos-after))
+       (t
+        ;; make a structure if all else fails
+        ;; but first alert to anticipated cases not working
+        (tr :defaulting-two-word-hyphen)
+        (make-hypenated-structure left-edge right-edge))))))
+
 
 (defun resolve-hyphen-between-three-words (pattern words
                                            pos-before pos-after)

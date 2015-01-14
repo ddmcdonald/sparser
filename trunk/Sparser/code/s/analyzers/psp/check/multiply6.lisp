@@ -108,6 +108,11 @@
   ;; Returns a rule or nil to indicate the edges don't combine.
   (tr :multiply-edges left-edge right-edge)
   ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
+
+  (when (or (word-p left-edge)
+            (word-p right-edge))
+    ;;/// trace  We don't multiply words, only edges
+    (return-from multiply-edges nil))
   
   (if (edge-of-dotted-intermediary right-edge)
       ;; dotted rules only combine to their right, never to their left
@@ -118,7 +123,8 @@
       (let* ((left-category-ids (category-ids/rightward left-edge))
              (right-category-ids (category-ids/leftward right-edge))
              (rule
-              (or (check-rule-form
+              (or (check-rule-form ;; only accept rules that are compatible with their context
+                   ;; 1st check category and form rules
                    (multiply-categories left-category-ids right-category-ids
                                         left-edge right-edge)
                    left-edge right-edge)
@@ -128,12 +134,13 @@
                   
                   (when *allow-pure-syntax-rules*
                     (check-form-form left-edge right-edge)))))
+
         (when *collect-forms* (record-forms rule left-edge right-edge))
         rule)))
 
+
 (defun record-forms (rule left-edge right-edge)
-  (let
-      ((rf (rule-forms rule)))
+  (let ((rf (rule-forms rule)))
     (when rf
       (pushnew
        (list rf
@@ -148,29 +155,25 @@
        
 (defun check-rule-form (rule left-edge right-edge) 
   (if (not *check-forms*)
-      rule
-      (let
-          ((rf (rule-forms rule)))
-        (cond
-         ((and
-           (compatible-form (car rf) left-edge)
-           (compatible-form (second rf) right-edge))
-          rule)
-         (t
-          (let
-              ((*rule* rule)
-               (*left-edge* left-edge)
-               (*right-edge* right-edge))
-            (declare (special *rule* *left-edge* *right-edge*))
-            (when
-                *report-form-check-blocks*
-              (print `(***------>> blocking  
-                                   ,*rule* ,(rule-forms *rule*) 
-                                   applied to 
-                                   (,(cat-name (edge-form *left-edge*)) ,*left-edge*)
-                                   (,(cat-name (edge-form *right-edge*)),*right-edge*))))
-            ;;(break "incompatible-forms")
-            nil))))))
+    rule
+    (let ((rf (rule-forms rule)))
+      (cond
+       ((and (compatible-form (car rf) left-edge)
+             (compatible-form (second rf) right-edge))
+        rule)
+       (t
+        (let ((*rule* rule)
+              (*left-edge* left-edge)
+              (*right-edge* right-edge))
+          (declare (special *rule* *left-edge* *right-edge*))
+          (when *report-form-check-blocks*
+            (print `(***------>> blocking  
+                     ,*rule* ,(rule-forms *rule*) 
+                     applied to 
+                     (,(cat-name (edge-form *left-edge*)) ,*left-edge*)
+                     (,(cat-name (edge-form *right-edge*)) ,*right-edge*))))
+          ;;(break "incompatible-forms")
+          nil))))))
 
 (defun cat-name (cat)
   (and
