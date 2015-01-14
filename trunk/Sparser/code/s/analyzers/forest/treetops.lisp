@@ -23,6 +23,7 @@
 ;; 1/6/2015 new mechanism in whack-a-rule to prioritize PP creation and attachemnt above subject+verb binding
 ;; 1/8/2015 refactor possible-treetop-rules to make it easier to trace and understand
 ;; 1/8/2015 rename to best-treetop-rule and make it return one rule only
+;; 1/14/2015 revise losing-competition? to account for more general form of subject rule, looking at cfr-rule-forms
 
 (in-package :sparser)
 
@@ -343,8 +344,11 @@
   (declare (special rule1 rule2))
   (cond
       ((and (eq (second rule1)(third rule2))
-            (eq category::preposition (car (cfr-rhs (car rule2))))
-            (eq category::vg (second (cfr-rhs (car rule1)))))
+            (or (eq category::preposition (car (cfr-rhs (car rule2))))
+                (eq category::spatial-preposition (car (cfr-rhs (car rule2)))))
+            (or
+             (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car rule1)))
+             (eq category::vg (second (cfr-rhs (car rule1))))))
        ;; goal here is to put off subject attachment until the subject is a large as possible
        ;;  don't do right-to-left activation for the subj+verb rules
        ;(break "competing")
