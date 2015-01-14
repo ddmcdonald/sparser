@@ -10,6 +10,7 @@
 ;; 5.1 (5/6/94) added new initiating call to get a good trace
 ;; 5.2 (1/10/15) record all NG chunks for analysis when *save-chunk-edges* is T
 ;; 5.3 (1/12/15) Option for specialized np parser.
+;; 1/14/2015 specialized chunk parser for NG and VG
 
 (in-package :sparser)
 
@@ -21,7 +22,7 @@
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
   (if (use-specialized-np-parser?)
-    (interp-big-mech-ng *current-chunk*)
+    (interp-big-mech-chunk *current-chunk*)
     (march-back-from-the-right/segment)))
 
 
@@ -39,7 +40,9 @@
 (defun use-specialized-np-parser? ()
   (declare (special *big-mechanism-ngs* *current-chunk*))
   (and *big-mechanism-ngs*
-       (eq 'NG (car (chunk-forms *current-chunk*)))
+       (or
+        (eq 'NG (car (chunk-forms *current-chunk*)))
+        (eq 'VG (car (chunk-forms *current-chunk*))))
        (let ((edges (treetops-in-current-segment)))
          (and (cdr edges) ;; more than one edge
               (or (cddr edges)
@@ -50,7 +53,7 @@
 (defvar *chunk-edges* nil)
 (defvar *all-chunk-edges* nil)
 
-(defun interp-big-mech-ng (*current-chunk*)
+(defun interp-big-mech-chunk (*current-chunk*)
   (let ((*chunk-edges* (treetops-in-current-segment)))
     (when *save-chunk-edges*
       (push (loop for edge in *chunk-edges* 
@@ -59,10 +62,36 @@
                     (let ((str (edge-string edge)))
                       (subseq str 0 (- (length str) 1)))))
             *all-chunk-edges*))
+
+    (let (rule-and-edges)
+      (loop while (setq rule-and-edges (best-segment-rule *chunk-edges*)
+                        do 
+                        (execute-triple rule-and-edges))))
     (march-back-from-the-right/segment)
-    ;;(break "interp-big-mech-ng")
+    ;;(break "interp-big-mech-chunk")
     ))
 
+(defun best-segment-rule (rules)
+  (let
+      (rule rules)
+    (loop for pair in (adjacent-tts (reverse rules) )
+      when (setq rule (rule-for-edge-pair pair))
+      do
+      (push
+       (cons rule pair)
+       rules))
+    rules))
+
+
+(defun adjacent-segment-tts ()
+  (loop for edges on (cdr *chunk-edges*) 
+    while (cdr edges) 
+    when (and 
+          (edge-p (car edges)) 
+          (edge-p (second edges))
+          (adjacent-edges? (car edges)(second edges)))
+    collect
+    (list (car edges)(second edges))))
 
 ;;;--------
 ;;; driver
