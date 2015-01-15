@@ -10,6 +10,7 @@
 ;; would go here. Reorganizes some items in terms. Incremental
 ;; extensions through 1/6/15
 ;; 1/9/2015 give ubiquitinate a site variable, and define "pro-apoptotic" as a subclass of "apoptotoic"
+;; 1/14/2015 tweaks on N and C-terminus
 
 (in-package :sparser)
 
@@ -134,20 +135,22 @@
   :binds ((protein protein))
   :index (:permanent :key protein)
   :realization
-    (:etf (pre-mod of-nominal)
+    (:etf (pre-mod)
      :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus")
-     :o protein
-     :m protein))
+     ;;:o protein
+     :m protein
+     :of protein))
 
 (define-category C-terminal ;; carboxyl-terminus
   :specializes protein-terminus
   :binds ((protein protein))
   :index (:permanent :key protein)
   :realization
-    (:etf (pre-mod of-nominal)
+    (:etf (pre-mod)
      :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus") ; 
-     :o protein
-     :m protein))
+     ;;:o protein
+     :m protein
+     :of protein))
 
 
 #|The convention for writing peptide sequences is 
