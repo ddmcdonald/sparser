@@ -141,10 +141,11 @@
 (defun absorb-auxiliary (aux vg)
   (when (category-p vg)
     (setq vg (make-individual-for-dm&p vg)))
-  (push-debug `(,aux ,vg))
   
   ;; otherwise the variable is unavailable
-  (let ((aux-type (itype-of aux))
+  (let ((aux-type (etypecase aux
+                    (individual (itype-of aux))
+                    (category aux)))
         (i (find-or-make-aspect-vector vg)))
 
     ;; Check for negation
@@ -153,13 +154,14 @@
       (bind-variable 'negation (value-of 'negation aux) i))
 
     ;; Propagate the auxiliary
-    (case (cat-name aux-type)
+    (case (cat-symbol aux-type)
       ((category::be-able-to  ;; see modals.lisp
         category::future
         category::conditional)
        (bind-variable 'modal aux i))
       (anonymous-agentive-action) ;; do
       (otherwise
+       (push-debug `(,aux ,vg))
        (error "Assimilate the auxiliary category ~a~%  ~a"
               aux-type aux)))
     ;;(push-debug `(,i)) (break "look at i")
