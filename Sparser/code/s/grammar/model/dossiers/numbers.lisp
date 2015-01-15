@@ -19,7 +19,9 @@
 (define-with-all-instances-permanent 
   (define-number "1"  :ones "one")
 
-  (define-individual 'multiplier :name "fraction")
+  (unless
+      (eq COMMON-LISP-USER::script :biology)
+      (define-individual 'multiplier :name "fraction"))
   (define-individual 'multiplier :name "one")
   
   (define-number "100" :multiplicand "hundred")
