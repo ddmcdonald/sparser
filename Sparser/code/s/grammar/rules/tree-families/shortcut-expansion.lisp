@@ -7,6 +7,7 @@
 
 ;; Broken out of shortcut-master 9/21/14 to allow both files to be
 ;; seen at once now that the cases have gotten intricate.
+;;1/14/2015 Changes to put :subject and :object selectional restrictions in the subcat frame
 
 (in-package :sparser)
 
@@ -62,6 +63,8 @@
                           category 
                           `(:pattern ,subcategorization)))))
 
+
+;;should be renamed -- general subcategorization for syntactic relations including thatcomp
 (defun subcategorize-for-preposition (category pname var-name)
   ;; called from decode-realization-parameter-list in the shortcuts.
   (push-debug `(,category ,pname ,var-name))
@@ -70,7 +73,9 @@
     (unless variable
       (error "No variable named ~a associated with ~a"
              var-name category))
-    (unless (word-is-a-preposition? preposition)
+    (unless (or (eq category::thatcomp preposition)
+                (memq preposition '(:subject :object))
+                (word-is-a-preposition? preposition))
       (error "~s does not appear to be a preposition." pname))
     (let ((v/r (var-value-restriction variable)))
       (assign-prepositional-subcategorization

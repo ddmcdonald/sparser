@@ -9,7 +9,7 @@
 ;; Working on it through 9/15/14. 11/20/14 hacked up a treatment of multiple
 ;; subcat patterns based on hydrolysis. 
 ;; fixed print method for subcategorization-frame to handle cases without bound word or category slots...
-
+;; 1/14/2015 Changes to put :subject and :object selectional restrictions in the subcat frame
 
 (in-package :sparser)
 
@@ -116,6 +116,22 @@
         (funcall facet entry)
         entry))))
 
+(defun fom-subcategorization (label &key form category)
+  (let
+      ((sf (get-subcategorization label)))
+    (unless sf
+      (setq sf 
+            (if form
+                (make-instance 'subcategorization-frame
+                  :word label
+                  :form form)
+                (make-instance 'subcategorization-frame
+                  :cat category)))
+      (setf (gethash label *labels-to-their-subcategorization*) sf)
+      (if category
+          (setf (gethash category *labels-to-their-subcategorization*) sf)))
+    sf))
+
 (defmacro assign-subcat (label form category &rest parameter-plist) ;; :verb+prep)
   (let ((l (etypecase label
              (word label)
@@ -127,13 +143,7 @@
 (defun assign-subcat/expr (word form category parameter-plist)
   "Form to find or make the appropriate subcategorization frame
    and then call the decoder to parse it."
-  (let ((sf (get-subcategorization word)))
-    (unless sf
-      (setq sf (make-instance 'subcategorization-frame
-                 :word word
-                 :form form))
-      (setf (gethash word *labels-to-their-subcategorization*) sf)
-      (setf (gethash category *labels-to-their-subcategorization*) sf))
+  (let ((sf (fom-subcategorization word :form form)))
     (apply #'decode-subcategorization-parameter-list sf category parameter-plist)))
 
 
@@ -242,21 +252,22 @@
   ;; use at runtime. Note that the value restriction has to
   ;; be satisfied
   (push-debug `(,category ,prep ,v/r ,variable))
-  (let ((sf (get-subcategorization category)))
-    (unless sf
-      (setq sf (make-instance 'subcategorization-frame
-                 :cat category))
-      (setf (gethash category *labels-to-their-subcategorization*) sf))
+  (let ((sf (fom-subcategorization category :category category)))
     (let ((entry (subcat-patterns sf))
           (new-case `(,prep ,v/r ,variable)))
-      (setf (subcat-patterns sf)
-            (if entry
-              (cons new-case entry)
-              (list new-case)))
+      (unless
+       (member new-case entry :test #'equal)
+        (setf (subcat-patterns sf) (cons new-case entry)))
       (push-debug `(,sf ,new-case))
       new-case)))
 
-(defun subcat-preposition (entry)
+(defun assign-subject (category v/r variable)
+  (assign-prepositional-subcategorization category :subject v/r variable))
+
+(defun assign-object (category v/r variable)
+  (assign-prepositional-subcategorization category :object v/r variable))
+
+(defun subcat-label (entry)
   (car entry))
 (defun subcat-restriction (entry)
   (cadr entry))
