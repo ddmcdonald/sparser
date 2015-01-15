@@ -59,7 +59,6 @@
 (def-bio "GSK-3" protein)
 
 
-;(def-bio "PI3K"
 
 
 ;;;------------------------
@@ -116,10 +115,10 @@
   :mitre-link "Uniprot:Q8TEU7")
 
 
-	
-
 (def-bio "RasGAP" protein
   :synonyms ("Ras-GAP" "Ras GAP") );; ditto, or beef up morphology
+
+
 
 (def-bio "RAPGEFL1" protein
   :mitre-link "Uniprot:Q9UHV5")
@@ -159,7 +158,7 @@ filligre may be used to distinguish them, etc.
   :identifier "PR:0000009442" ;; gene is "PR:P01116" 
   :mitre-link "Uniprot:P01116")
 
-(def-bio "HRas" protein
+(def-bio "HRas" protein      ;; Harvey Ras
   :synonyms ("H-Ras" "H-RAS")
   :identifier "PR:000029705" ;; gene is "PR:P01112")
   :mitre-link "Uniprot:P01112:")
@@ -423,6 +422,10 @@ filligre may be used to distinguish them, etc.
 (def-bio "mek1dd" protein)
 (def-bio "brafv" protein)
 
+
+
+(def-bio "PI3K" protein
+  :synonyms ("PI3 kinase"))
 
 (def-bio "PIK3CA" protein
   :identifier "PR:000012719")
