@@ -134,3 +134,8 @@
   (when (> n 0)
       (princ " " stream)
       (nspaces (- n 1) stream)))
+
+(defun np (l)
+  (if (consp l)
+      (loop for item in l do (print item))
+      (print l)))
