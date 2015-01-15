@@ -231,6 +231,11 @@
 (adj "supplementary" :super modifier) ;; keyword: (ary ADJ)
 (adj "unclear" :super modifier)
 (adj "unmodified" :super modifier)
+(adj "useful" :super modifier
+     :binds ((purpose bio-process))
+     :realization
+     (:adj "useful"
+           :for purpose))
 (adj "wild-type")
 
 
@@ -337,7 +342,11 @@
       :realization
       (:noun "form"
              :of basis))
-(noun "fragment" :super bio-entity)
+(noun "fragment" :super bio-entity
+      :binds ((whole bio-entity))
+      :realization
+      (:noun "fragment"
+             :of whole))
 (noun "function" :super bio-process
       :binds ((functional bio-entity)) ;; this should be for genes and proteins
       :realization
