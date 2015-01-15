@@ -10,6 +10,7 @@
 ;; 1/2/2015 added syntactic rule for sub-categorization rule vp --> (vp pp)
 ;; made the default referent for a prepositional phrase be the preposition -- otherwise the prepositional phrase can be interpreted as a direct object!
 ;; 1/8/2015 added (def-syntax-rule (preposition proper-name)for PP
+;; 1/1/4/2015 support for thatcomp
 
 (in-package :sparser)
 
@@ -245,4 +246,6 @@
   :form np
   :referent (:function assimilate-appositive left-edge right-edge))
 
-
+(def-form-rule (that s)
+  :form thatcomp
+  :referent (:head right-edge))
