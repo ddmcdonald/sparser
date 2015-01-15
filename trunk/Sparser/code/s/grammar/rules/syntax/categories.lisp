@@ -71,6 +71,7 @@
 ;; 1/8/2015 the word HAD cannot occur inside an NP, even though is is HAVE+ED
 ;; 1/10/2015 revise handling of THAT in ng-start? -- it is almost never the case that THAT is a determiner, it is usually a relative clause marker or a thatcomp marker
 ;; add relative-clause to *minor-categories* to avoid break in final sweep
+;; 1/14/2015 support for thatcomp
 
 (in-package :sparser)
 
@@ -155,6 +156,7 @@
 (def-form-category adjunct-to-s)
 
 (def-form-category relative-clause)
+(def-form-category thatcomp)
 
 
 
@@ -761,7 +763,8 @@
     ,category::proper-noun
     ,category::quantifier
     ,category::pp
-    ,category::relative-clause))
+    ,category::relative-clause
+    ,category::thatcomp))
 
 (defmethod category-status ((c category))
   ;; used by smash-together-two-tt-islands to decide
