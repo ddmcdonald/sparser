@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 September 2014
+;;;  Version:  0.2 January 2015
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -21,7 +21,8 @@
 ;;    (8/24/13) Modified lookup-passive-counterpart to use #:ed for forming
 ;;     the passive symbol. 
 ;;    (9/15/14) fixed form on be+adjective
-;; 1/14/2015 correct the head for BO+AJD to be the ADJ
+;;  1/14/2015 correct the head for BO+AJD to be the ADJ
+;;  (1/15/15) Substantial make over of rules for tense/aspect
 
 (in-package :sparser)
 
@@ -32,31 +33,20 @@
 
 (define-category  be
   :instantiates  self
-  :specializes   state
+  :specializes event
   :binds ((subject)
           (predication))
-  :index (:temporary :list)
-;  :realization (:tree-family transitive
-;                :mapping ((agent . theme)
-;                          (patient . description)
-;                          (s . state)
-;                          (np/subject . np)
-;                          (vp . be-something)
-;                          (np/object . np)
-;                          (vg . :self))
-;                :special-case-head t
-;                )
-  )
+  :mixins (takes-neg)
+  :index (:temporary :list))
 
-(register-variable 
- category::be 
+(register-variable category::be 
  (find-variable-in-category 'subject 'be)
  :subject-variable)
 
-(register-variable 
- category::be 
+(register-variable category::be 
  (find-variable-in-category 'object 'be)
- :subject-variable)
+ :object-variable)
+
 
 (defparameter *the-category-to-be* (category-named 'be)
   "For use by code that's loaded before the grammar is")
@@ -116,20 +106,20 @@
 ;;;----------------------------
 
 
-;;---- "be" + "ing"
+;;---- "be" + "ing"  progressive
 
 (def-form-rule (be verb+ing)
   :form verb
   :referent (:head right-edge
-             :subtype progressive))
+             :function add-tense/aspect left-edge right-edge))
 
 
 ;;---- tns + not
 
-(def-cfr be (be "not")
+(def-cfr be (be not)
   :form verb
   :referent (:head left-edge
-             :subtype negative))
+             :bind (negation right-edge)))
 
 
 ;;---- "be" + "en" (passive)

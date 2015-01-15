@@ -128,36 +128,63 @@
 ;;; Verb + Auxiliary
 ;;;------------------
 
+(defun find-or-make-aspect-vector (vg)
+  (unless (itypep vg 'event)
+    (error "tense/aspect only applies to individuals that ~
+            inherit from event."))
+  (or (value-of 'aspect vg)
+      (let ((i (make/individual 
+                (category-named 'tense/aspect-vector) nil)))
+        (bind-variable 'aspect i vg)
+        i)))
+
 (defun absorb-auxiliary (aux vg)
   (when (category-p vg)
     (setq vg (make-individual-for-dm&p vg)))
   (push-debug `(,aux ,vg))
-  (when (itypep vg 'event)
-    ;; otherwise the variable is unavailable
-    (let ((aux-type (itype-of aux))
-          (i (value-of 'aspect vg)))
-      (unless i
-        (setq i (make/individual 
-                 (category-named 'tense/aspect-vector) nil))
-        (bind-variable 'aspect i vg))
+  
+  ;; otherwise the variable is unavailable
+  (let ((aux-type (itype-of aux))
+        (i (find-or-make-aspect-vector vg)))
 
-      ;; Check for negation
-      (when (value-of 'negation aux)
-        ;;/// RJB has negation on event too -- sort that out
-        (bind-variable 'negation (value-of 'negation aux) i))
+    ;; Check for negation
+    (when (value-of 'negation aux)
+      ;;/// RJB has negation on event too -- sort that out
+      (bind-variable 'negation (value-of 'negation aux) i))
 
-      ;; Propagate the auxiliary
-      (case (cat-name aux-type)
-        ((be-able-to  ;; see modals.lisp
-          future
-          conditional)
-         (bind-variable 'modal aux i))
-        (anonymous-agentive-action) ;; do
-        (otherwise
-         (error "Assimilate the auxiliary category ~a~%  ~a"
-                aux-type aux)))
-      ;;(push-debug `(,i)) (break "look at i")
-      vg)))
+    ;; Propagate the auxiliary
+    (case (cat-name aux-type)
+      ((category::be-able-to  ;; see modals.lisp
+        category::future
+        category::conditional)
+       (bind-variable 'modal aux i))
+      (anonymous-agentive-action) ;; do
+      (otherwise
+       (error "Assimilate the auxiliary category ~a~%  ~a"
+              aux-type aux)))
+    ;;(push-debug `(,i)) (break "look at i")
+    vg))
+
+
+
+(defmethod add-tense/aspect ((aux category) (vg category))
+  (add-tense/aspect aux (make-individual-for-dm&p vg)))
+
+(defmethod add-tense/aspect ((aux category) (vg individual))
+  (push-debug `(,aux ,vg)) ;;(break "is this right?")
+  (let ((i (find-or-make-aspect-vector vg)))
+    (case (cat-symbol aux)
+      (category::be  ;; be + ing
+       (bind-variable 'progressive aux i))
+      (category::have  ;; have + en
+       (bind-variable 'perfect aux i))
+      (category::past
+       (bind-variable 'past t i))
+      (otherwise
+       (push-debug `(,aux ,vg))
+       (error "Extend add-tense/aspect to handle ~a" aux)))
+    ;;(push-debug `(,i)) (break "look at i")
+    vg))
       
 
 
