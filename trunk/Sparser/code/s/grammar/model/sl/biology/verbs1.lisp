@@ -139,12 +139,13 @@
   ;; "<binder> binds to <binde>" the subject moves
   :binds ((binder molecule)(bindee molecule)(site bio-location))
   :realization 
-  (:verb ("bind" :past-tense "bound")
+  (:verb ("bind" :past-tense "bound") :noun "binding"
          :etf (svo-passive) 
          :s binder
          :o  bindee
          :to bindee
          :via site
+         :at site
          :with bindee))
 
 (define-category bio-associate  :specializes bio-process ;; MAYBE THIS IS LIKE BIND
@@ -624,15 +625,7 @@
 	   :s agent
 	   :o patient))
 
-(define-category bind
-    :specializes bio-process
-    :binds ((agent bio-entity)(patient bio-process))
-    :realization
-    (:verb "bind" ;; keyword: ENDS-IN-ING 
-	   :noun "binding"
-	   :etf (svo-passive of-nominal)
-	   :s agent
-	   :o patient))
+
 
 (define-category confer
     :specializes bio-process
