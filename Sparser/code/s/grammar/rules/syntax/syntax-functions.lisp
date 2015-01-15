@@ -159,7 +159,7 @@
         category::future
         category::conditional)
        (bind-variable 'modal aux i))
-      (anonymous-agentive-action) ;; do
+      (category::anonymous-agentive-action) ;; do
       (otherwise
        (push-debug `(,aux ,vg))
        (error "Assimilate the auxiliary category ~a~%  ~a"
