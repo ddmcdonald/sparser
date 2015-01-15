@@ -149,6 +149,8 @@
     do (format t "~&___________________~&")
     (np c)))
 
+(defun np (l)(loop for ll in l do (print ll)))
+
 (defun verb-chunks ()
   (loop for c in *all-chunk-edges*
     when (loop for e in c 
