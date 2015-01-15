@@ -243,5 +243,4 @@ therefore we have the special cases:
 ;;(define-residue "S338")
 (noun "S338" :super residue-on-protein)
 (noun "pThr202/Tyr204" :super residue-on-protein)
-
-
+(noun "position" :super residue-on-protein)

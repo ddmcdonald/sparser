@@ -88,6 +88,13 @@
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
+(define-category bio-method
+  :specializes process
+  :mixins (has-UID has-name biological)
+  :realization (:common-noun name) ;; for nominal forms
+  :documentation "No content by itself, provides a common parent
+    for 'liquid chromatography', etc. that may be the basis
+    of the grammar patterns.")
 
 
 
