@@ -270,7 +270,7 @@
       (:noun "ability"
              :to result
              :of agent))
-(noun "absence" :super abstract
+(noun "absence" :super bio-condition
       :binds ((absent biological)) 
       :realization
       (:noun "absence"
@@ -353,11 +353,12 @@
       (:noun "isoform"
              :of basis))
 (noun "knockdown" :super bio-method)
+(noun "length" :super bio-scalar)
 (noun "level" :super bio-scalar
-      :binds ((measurable bio-scalar))
+      :binds ((measurable biological))
       :realization 
       (:noun "level"
-             :of measurable))
+             :of measurable)) ;;levels of incorporated 32P (January sentence 34)
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "liquid chromatography" :super bio-method)
 (noun "manner" :super bio-process) ;; by chemical or genetic means
@@ -428,6 +429,7 @@
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
 (noun "scaffold" :super protein) 
+(noun "scale" :super bio-scalar)     
 (noun "screen" :super  bio-process)
 (noun "setting" :super bio-entity)
 (noun "signalling" :super bio-process)  ;; this is an alternate spelling for "signaling"
@@ -492,7 +494,7 @@
       :realization 
       (:noun "presence" 
              :of context)) ;; keyword: (ence N) 
-(noun "sensitivity" :super quality
+(noun "sensitivity" :super bio-scalar
       :binds ((item biological)(agent biological))
       :realization
       (:noun "sensitivity"
@@ -505,7 +507,7 @@
       (:adj "sensitive"
              :s item
              :to agent))
-(noun "insensitivity" :super quality
+(noun "insensitivity" :super bio-scalar
       :binds ((item biological)(agent biological))
       :realization
       (:noun "insensitivity"
