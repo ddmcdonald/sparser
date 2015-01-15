@@ -239,7 +239,7 @@
       (dolist (entry subcat-patterns)
         (when 
             (and
-             (eq prep-word (subcat-preposition entry))
+             (eq prep-word (subcat-label entry))
              ;;(print (list (edge-referent pobj-edge) (subcat-restriction entry)))
              (itypep (edge-referent pobj-edge) (subcat-restriction entry)))
           (setq variable (subcat-variable entry))
@@ -284,5 +284,40 @@
           (bind-variable variable-to-bind pp np)
           np)))))
 
+(defun assimilate-subject (subj vp)
+  (declare (special np vp))
+  ;; The vp is the head. We ask whether it subcategorizes for
+  ;; the preposition in this PP and if so whether the complement
+  ;; of the preposition satisfies the specified value restriction.
+  ;; Otherwise we check for some anticipated cases and then
+  ;; default to binding modifier. 
+  (let* ((subcat-patterns (known-subcategorization? vp))
+          (variable-to-bind
+          ;; test if there is a known interpretation of the NP+VP combination
+           (subcategorized-subj-variable subcat-patterns subj)))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (t
+      (bind-variable variable-to-bind subj vp)
+      vp))))
 
+
+(defun subcategorized-subj-variable (subcat-patterns subj)
+  ;; Look up the preposition on the pp and see if it is
+  ;; included in the subcategorization patterns of the head.
+  ;; If so, check the value restriction and if it's satisfied
+  ;; make the specified binding
+  (declare (special subcat-patterns))
+  (when  subcat-patterns
+    (let* (variable)
+      (declare (special prep-word prep-edge pobj-edge variable))      
+      (dolist (entry subcat-patterns)
+        (when 
+            (and
+             (eq :subject (subcat-label entry))
+             (itypep subj (subcat-restriction entry)))
+          (setq variable (subcat-variable entry))
+          (return)))
+      ;;(break "testing subcats")
+      variable)))
 

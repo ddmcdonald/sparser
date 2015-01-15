@@ -10,6 +10,8 @@
 ;; 1.0 (12/13/14) totally made over to simplify everything down
 ;;  to one two routines. 1/5/15 Refactored a bit to handle
 ;;  nouns and adjectives without ETF. 
+;;1/14/2015 Changes to put :subject and :object selectional restrictions in the subcat frame
+;; also, initial subcat for THATCOMP -- not used yet
 
 (in-package :sparser)
 
@@ -21,7 +23,7 @@
   '(:verb :noun :adj :etf :s :o :c :m
     :binds :realization
     :prep :by
-    :as :at :between :for :from :in :of :on :through :to :via :with))
+    :as :at :between :for :from :in :of :on :to :thatcomp :through :via :with))
 
 (defun includes-def-realization-keyword (rdata)
   ;; used in decode-category-parameter-list to decide whether
@@ -42,7 +44,7 @@
 ;;;--------------
 ;;; entry points
 ;;;--------------
-
+ 
 (defmacro def-term (name &rest parameter-plist)
   ;;/// simplest data checks on the minimal args
   `(def-term/expr ',name ',parameter-plist))
@@ -81,7 +83,7 @@
                                   etf verb noun adj
                                   s o c m
                                   prep by
-                                  as at between for from in of on through to via with)
+                                  as at between for from in of on to thatcomp  through via with)
   ;; Make the category, then use the independent realization
   ;; machinery to finish it. 
   (labels 
@@ -155,7 +157,7 @@
           :c c
           :m m
           :prep prep  :by by
-          :as as :at at :between between :for for :from from :in in :of of :on on :through through :to to :via via :with with)
+          :as as :at at :between between :for for :from from :in in :of of :on on :to to :thatcomp thatcomp  :through through :via via :with with)
 
         (when obo-id
           (bind-variable 'uid obo-id category))
@@ -167,7 +169,7 @@
                                                s o c m ;; arguments
                                                prep ;; owned preposition
                                                by ;; for passive
-                                               as at between for from in of on through to via with ;; prepositions
+                                               as at between for from in of on  to thatcomp through via with ;; prepositions
                                                )
   (if etf
     (typecase etf
@@ -205,8 +207,8 @@
             (push `(subj-slot . ,var) substitution-map)
             (push `(subj-v/r . ,v/r) substitution-map)
             (register-variable category var :subject-variable)
-
-            (when (is-a-form-of-passive? schema-name)
+            (assign-subject category v/r var)
+          (when (is-a-form-of-passive? schema-name)
               (let ((by-v/r (or by;; already determined
                                 (formulate-by-category v/r))))
                 (push `(by-v/r . ,by-v/r) substitution-map)
@@ -218,6 +220,7 @@
                  (v/r (var-value-restriction var)))
             (push `(theme-slot . ,var) substitution-map)
             (push `(theme-v/r . ,v/r) substitution-map)
+            (assign-object category v/r var)
             (register-variable category var :object-variable)))
 
         (when c  ;; complement, e.g. "reported that ..."
@@ -235,7 +238,7 @@
             (push `(modifier-slot . ,var) substitution-map)
             (push `(modifier-v/r . ,v/r) substitution-map)))
 
-        (handle-prepositions category as at between for from in of on to through via with)
+        (handle-prepositions category as at between for from in of on to thatcomp through via with)
 
         (when prep ;; preposition 'owned' by the verb, appears
           ;; immediately after the verb.
@@ -248,13 +251,22 @@
         (let ((word (resolve/make noun)))
           (make-cn-rules/aux word category category)))
       (unless etf
-        (handle-prepositions category as at between for from in of on to through via with)))
+        (handle-prepositions category as at between for from in of on to thatcomp through via with)))
     (when adj
       (unless (assq :adjective word-map)
         (let ((word (resolve/make adj)))
           (make-rules-for-adjectives word category category)))
+      (when s  ;; subject
+        (let* ((var (variable/category s category))
+               (v/r (var-value-restriction var)))
+          (assign-subject category v/r var)))
+      (when o  ;; object
+        (let* ((var (variable/category o category))
+               (v/r (var-value-restriction var)))
+          (assign-object category v/r var)))
+      
       (unless etf
-        (handle-prepositions category as at between for from in of on to through via with)))
+        (handle-prepositions category as at between for from in of on to thatcomp through via with)))
 
     (push-debug `(,category ,etf ,substitution-map ,word-map))
     ;; (break "look at inputs")
@@ -266,7 +278,7 @@
 
 
 
-(defun handle-prepositions (category &optional as at between for from in of on to through via with)
+(defun handle-prepositions (category &optional as at between for from in of on to thatcomp through via with)
   (when as
     (subcategorize-for-preposition category "as" as))
   (when at
@@ -287,6 +299,8 @@
     (subcategorize-for-preposition category "to" to))
   (when through
     (subcategorize-for-preposition category "through" through))
+  (when thatcomp
+    (subcategorize-for-preposition category "thatcomp" thatcomp))
   (when via
     (subcategorize-for-preposition category "via" via))
   (when with

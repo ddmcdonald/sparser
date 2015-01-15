@@ -246,6 +246,16 @@
   :form np
   :referent (:function assimilate-appositive left-edge right-edge))
 
+(def-syntax-rule (np vp)
+  :head :right-edge
+  :form s
+  :referent (:function assimilate-subject left-edge right-edge))
+
+(def-syntax-rule (proper-noun vp)
+  :head :right-edge
+  :form s
+  :referent (:function assimilate-subject left-edge right-edge))
+
 (def-form-rule (that s)
   :form thatcomp
   :referent (:head right-edge))
