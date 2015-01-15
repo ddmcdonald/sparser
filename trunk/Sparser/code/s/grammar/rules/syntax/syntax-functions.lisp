@@ -124,25 +124,39 @@
     pp))
 
 
-
+;;;------------------
 ;;; Verb + Auxiliary
+;;;------------------
 
 (defun absorb-auxiliary (aux vg)
-  (cond
-   ((first (indiv-type aux)) 
-    (let
-        ((negation (binding-of-individual 'negation aux)))
-      (if
-       negation
-       (bind-variable 'negation  negation vg))
-      (push-debug `(,aux ,vg)) 
-      ;;(break "aux")
-      vg
-      ))
-   (t
-    (print `(absorb-auxiliary got an aux (,aux) without an indiv-type -- punting))
-    vg)))
+  (when (category-p vg)
+    (setq vg (make-individual-for-dm&p vg)))
+  (push-debug `(,aux ,vg))
+  (when (itypep vg 'event)
+    ;; otherwise the variable is unavailable
+    (let ((aux-type (itype-of aux))
+          (i (value-of 'aspect vg)))
+      (unless i
+        (setq i (make/individual (category-named 'tense/aspect) nil))
+        (bind-variable 'aspect i vg))
 
+      ;; Check for negation
+      (when (value-of 'negation aux)  (break "aux 2")
+        ;;/// RJB has negation on event too -- sort that out
+        (bind-variable 'negation (value-of 'negation aux) i))
+
+      ;; Propagate the auxiliary
+      (case (cat-name aux-type)
+        ((be-able-to  ;; see modals.lisp
+          future
+          conditional)
+         (bind-variable 'modal aux i))
+        (otherwise
+         (error "Assimilate the auxiliary category ~a~%  ~a"
+                aux-type aux)))
+      ;;(push-debug `(,i)) (break "look at i")
+      vg)))
+      
 
 
 ;;;-----------------
