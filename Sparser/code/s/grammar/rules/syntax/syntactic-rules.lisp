@@ -11,6 +11,7 @@
 ;; made the default referent for a prepositional phrase be the preposition -- otherwise the prepositional phrase can be interpreted as a direct object!
 ;; 1/8/2015 added (def-syntax-rule (preposition proper-name)for PP
 ;; 1/1/4/2015 support for thatcomp
+;; 1/15/2015 add (adjective pp) rule for cases of bare adjective
 
 (in-package :sparser)
 
@@ -57,6 +58,19 @@
   :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
 (def-syntax-rule (vp pp)
+                 :head :left-edge
+  :form vp
+  :referent (:function adjoin-pp-to-vg left-edge right-edge))
+
+
+#| normally copular adjectives become VPs, but in 
+(5 (P "Therefore, mUbRas is insensitive to GAP–mediated regulation, similar
+to an oncogenic RasG12V mutation (9).")) 
+
+"similar" is just an adjective
+|#
+
+(def-syntax-rule (adjective pp)
                  :head :left-edge
   :form vp
   :referent (:function adjoin-pp-to-vg left-edge right-edge))
