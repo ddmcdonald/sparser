@@ -31,7 +31,8 @@
 
 
 (defun reset-test ()
-  (setq *tested* '(0)))
+  (setq *tested* '(0))
+  (setq *known-breaks* nil))
 
 (defun retest () 
   (loop for i from (+ 1 (car *tested*)) to 100 
