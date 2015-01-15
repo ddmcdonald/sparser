@@ -391,12 +391,13 @@
 ;; "in BRAF mutant thyroid cell"
 (define-category mutate
   :specializes bio-process
-  :binds ((agent bio-entity)(patient gene))  ;; mutation of gene
+  :binds ((agent biological)(patient biological))  ;; mutation of gene
   :realization
   (:verb "mutate" :noun "mutation"
    :etf (svo-passive of-nominal)
    :s agent
-   :o patient))
+   :o patient
+   :of patient))
 ;; These two were in terms and need to be integrated with
 ;; this category
 (np-head "mutant" :super 'bio-entity)
@@ -1434,7 +1435,13 @@
          :s agent 
          :o patient
          :from origin))
-(define-category impair :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "impair" :noun "impairment" :etf (svo-passive) :s agent :o patient)) 
+(define-category impair :specializes bio-process
+  :binds ((agent biological)(patient biological)) 
+  :realization 
+  (:verb "impair" :noun "impairment"
+         :etf (svo-passive)
+         :s agent
+         :o patient))
 (define-category incorporate :specializes bio-process 
   :binds ((agent biological)(patient biological))
   :realization 
