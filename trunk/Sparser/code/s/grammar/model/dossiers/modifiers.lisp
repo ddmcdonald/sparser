@@ -221,7 +221,10 @@
 
 (adj/adv "possible" "possibly" :super-category 'modifier)
 
-;;(define-adjective "likely") ;could be either adj or adv -- this conflicts with adverb use in biology
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "likely") ;could be either adj or adv -- this conflicts with adverb use in biology
+ )
 (define-adjective "unlikely") 
 
 
@@ -760,7 +763,9 @@
 ;;;-----
 
 (define-adjective "aberrant")
-;;(define-adjective "able") ; want to give "to" tree family? [yes - in biology] "able to do x" .. or no.
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "able")) ; want to give "to" tree family? [yes - in biology] "able to do x" .. or no.
 (define-adjective "abnormal")
 (define-adjective "abundant")
 (define-adjective "accurate")
@@ -805,7 +810,9 @@
 ;;(define-adjective "common")
 (define-adjective "complementary")
 (define-adjective "complete")
-;; (define-adjective "complex") ;also noun // need noun for biology
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "complex")) ;also noun // need noun for biology
 (define-adjective "conceptual")
 (define-adjective "confluent")
 (define-adjective "consistent") ;with
@@ -813,7 +820,9 @@
 (define-adjective "continual")
 (define-adjective "continuous") ; process-y
 (define-adjective "counterintuitive")
-;;(define-adjective "critical") conflicts with needed definition in biology 
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "critical"));; conflicts with needed definition in biology 
 (define-adjective "crucial")
 (define-adjective "cytotoxic")
 (define-adjective "decisive")
@@ -1017,7 +1026,9 @@
 (define-adjective "short")
 (define-adjective "significant")
 (define-adjective "silent") ;in terms of mutation: no resultant change in phenotype
-(define-adjective "similar") ;relation
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "similar"));relation
 (define-adjective "simple")
 (define-adjective "small")
 (define-adjective "solid")
@@ -1056,7 +1067,9 @@
 (define-adjective "unstable")
 (define-adjective "upper" :form 'spatial-adjective)
 (define-adjective "useable")
-(define-adjective "useful")
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "useful"))
 (define-adjective "variable")
 (define-adjective "vast")
 (define-adjective "versatile")
