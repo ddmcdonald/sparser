@@ -39,6 +39,7 @@
 ;;     (10/6/14) Fanout from successive-scans to guard against unhandled
 ;;      *pending-conjunction* flag in the completion routine. 
 ;; 8.4 (11/17/14) Revised that to have them push onto the flag symbol.
+;; 1/15/2015 allow verb+ed and adjective to combine in early phase
 
 (in-package :sparser)
 
@@ -355,6 +356,8 @@
   but valuable when there's more perspective in which cases
   it will be shallow bound.")
 
+(defparameter *premod-forms* `(,category::verb+ed ,category::adjective))
+
 (defun conjunction-heuristics (edge-before edge-after)
 
   ;; This is the actual check that says whether we should conjoin
@@ -368,7 +371,12 @@
       (when *allow-form-conjunction-heuristic*
         (let ((form-before (edge-form edge-before))
               (form-after (edge-form edge-after)))
-          (if (eq form-before form-after)
+          (declare (special form-before form-after))
+          (if (or
+               (eq form-before form-after)
+               (and
+                (memq form-before *premod-forms*)
+                (memq form-after *premod-forms*)))
             :conjuncton/identical-form-labels
             nil))))))
 
