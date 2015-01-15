@@ -18,6 +18,7 @@
 ;; 1/1/2015 break out adjective/modifier from start of NG if the preceding chunk was a copula
 ;; and fix handling of chunks terminated by the end of the sentence
 ;; 1/12/2015 Start on new NG interpreter parse-ng-interior -- works modestly well
+;; 1/14/2015 New whack-a-rule type interpreter for NG and VG chunks
 
 (in-package :sparser)
 
@@ -110,11 +111,12 @@
     (if 
      (and 
       *new-chunk-parse*
-      (eq (car (chunk-forms chunk)) 'ng))
-     (parse-ng-interior chunk)
+      (or
+       (memq (car (chunk-forms chunk)) '(ng vg))))
+     (parse-ng-or-vg-interior chunk)
     (pts nil chunk))))
 
-(defun parse-ng-interior (chunk)
+(defun parse-ng-or-vg-interior (chunk)
   (declare (special chunk))
   (let*
       ((edges (reverse (treetops-in-current-segment)))
