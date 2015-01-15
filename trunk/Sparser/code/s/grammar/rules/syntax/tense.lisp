@@ -21,6 +21,7 @@
 ;;      properly -- the word by itself does not  have an agent linked to it.
 ;; 0.7 (1/14/15) Converting mixins to regular categories because they're
 ;;      somehow getting interpretations as psi, which is presently outlawed.
+;; 1/14/2015 support for negation and (eventually) other tense/aspect features
 
 (in-package :sparser)
 
@@ -36,6 +37,7 @@
   :binds ((negative)
           (occurs-at-moment) ;; future, past
           (modal)
+          (negation)
           (present)
           (past)
           (progressive)
@@ -86,7 +88,8 @@
 (define-category  anonymous-agentive-action
   :specializes event
   :instantiates self
-  :binds ((agent . anything))
+  :binds ((agent . anything)
+          (negation . anything))
 ;;  :index (:temporary :key agent)
   ;; This is unreasonable as a referent for 'do' because it presumes
   ;; we have our hands on the agent, which when just spanning that
@@ -123,23 +126,22 @@
 (def-cfr do (do not)
   :form verb
   :referent (:head anonymous-agentive-action
-             :subtype negative ))
+             :bind (negation right-edge)))
 
 (def-cfr do ("doesn" apostrophe-t)
   :form verb
   :referent (:head anonymous-agentive-action
-             :subtype negative ))
+              :bind (negation right-edge)))
 
 (def-cfr do ("don" apostrophe-t)
   :form verb
   :referent (:head anonymous-agentive-action
-             :subtype negative ))
+             :bind (negation right-edge)))
 
 (def-cfr do ("didn" apostrophe-t)
   :form verb
   :referent (:head anonymous-agentive-action
-             :subtype negative ))
-
+             :bind (negation right-edge)))
 
 ;;--- intensifier
 
