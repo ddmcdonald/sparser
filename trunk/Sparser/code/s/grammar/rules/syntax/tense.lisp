@@ -25,29 +25,36 @@
 
 (in-package :sparser)
 
-#+ignore
-(define-category  tense/aspect
-  :instantiates nil
-  :specializes  abstract
-  :binds nil )
+;;--- negation
 
-(define-category  tense/aspect
+(define-category  negative
+  :instantiates nil
+  :specializes  quantifier )
+;; "no" and "not" are quantifiers in words/quantifiers1
+
+(define-mixin-category takes-neg
+  :binds ((negation)))
+
+
+;;--- tense & aspect 
+
+;; Needs a better name
+(define-category  tense/aspect-vector
   :instantiates nil
   :specializes  abstract
   :binds ((negative)
           (occurs-at-moment) ;; future, past
           (modal)
-          (negation)
           (present)
           (past)
           (progressive)
-          (perfect)))
-          
+          (perfect))
+  :mixins (takes-neg))
 
 
-(define-category  negative
+(define-category  tense/aspect
   :instantiates nil
-  :specializes  tense/aspect )
+  :specializes  abstract)
 
 
 (define-category  future
@@ -88,13 +95,8 @@
 (define-category  anonymous-agentive-action
   :specializes event
   :instantiates self
-  :binds ((agent . anything)
-          (negation . anything))
-;;  :index (:temporary :key agent)
-  ;; This is unreasonable as a referent for 'do' because it presumes
-  ;; we have our hands on the agent, which when just spanning that
-  ;; single word we do not.
-  )
+  :mixins (takes-neg))
+;; Has sort of an anaphoric feel sometimes, 
 
 
 (def-cfr do ("do")

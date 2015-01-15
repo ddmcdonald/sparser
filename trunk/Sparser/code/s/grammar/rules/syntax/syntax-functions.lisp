@@ -137,11 +137,12 @@
     (let ((aux-type (itype-of aux))
           (i (value-of 'aspect vg)))
       (unless i
-        (setq i (make/individual (category-named 'tense/aspect) nil))
+        (setq i (make/individual 
+                 (category-named 'tense/aspect-vector) nil))
         (bind-variable 'aspect i vg))
 
       ;; Check for negation
-      (when (value-of 'negation aux)  (break "aux 2")
+      (when (value-of 'negation aux)
         ;;/// RJB has negation on event too -- sort that out
         (bind-variable 'negation (value-of 'negation aux) i))
 
@@ -151,6 +152,7 @@
           future
           conditional)
          (bind-variable 'modal aux i))
+        (anonymous-agentive-action) ;; do
         (otherwise
          (error "Assimilate the auxiliary category ~a~%  ~a"
                 aux-type aux)))
