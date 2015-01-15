@@ -11,7 +11,7 @@
 ;; to handle bio-context. 
 ;; 1/2/2015 put hooks in adjoin-pp-to-vg and interpret-pp-adjunct-to-np to allow for subcategorization frames
 ;; 1/5/2015 refactor code that David wrote for adjoin-pp-to-vg and interpret-pp-adjunct-to-np to allow them to be used as predicates as well as actions
-
+;; 1/14/2015 support for negation and (eventually) other tense/aspect features
 (in-package :sparser)
 
 
@@ -128,7 +128,20 @@
 ;;; Verb + Auxiliary
 
 (defun absorb-auxiliary (aux vg)
-  (push-debug `(,aux ,vg)) (break "aux"))
+  (cond
+   ((first (indiv-type aux)) 
+    (let
+        ((negation (binding-of-individual 'negation aux)))
+      (if
+       negation
+       (bind-variable 'negation  negation vg))
+      (push-debug `(,aux ,vg)) 
+      ;;(break "aux")
+      vg
+      ))
+   (t
+    (print `(absorb-auxiliary got an aux (,aux) without an indiv-type -- punting))
+    vg)))
 
 
 
