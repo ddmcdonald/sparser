@@ -177,6 +177,18 @@
   :form infinitive
   :referent(:function interpret-adverb+verb left-edge right-edge))
 
+#|
+WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETORICAL ADVERBS
+(def-syntax-rule  (adverb vp)
+  :head :right-edge
+  :form vp
+  :referent(:function interpret-adverb+verb left-edge right-edge))
+
+(def-syntax-rule  (adverb s)
+  :head :right-edge
+  :form s
+  :referent(:function interpret-adverb+verb left-edge right-edge))
+|#
 
 
 ;;--- prepositional phrases
