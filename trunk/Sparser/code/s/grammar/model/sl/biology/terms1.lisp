@@ -174,6 +174,8 @@
      (:adj "active"
            :s molecule))
 (adj "anticancer")
+(adj "biophysical" :super modifier)
+
 (adj "candidate" )
 (adj "chemical") ;; keyword: (al ADJ) 
 (adj "combinatorial" :super modifier) ;; keyword: (al ADJ) 
@@ -188,6 +190,14 @@
 (adj "further")
 (adj "genetic") ;; keyword: (al ADJ) 
 (adj "high")
+(adj "identical" :super modifier
+     :binds ((basis biological)
+             (comparator biological))
+     :realization
+     (:adj "identical"
+           :s basis
+           :to comparator))
+
 (adj "in vitro" :super modifier)
 (adj "inactive" :super modifier) ;; keyword: (ive ADJ) 
 (adj "inducible") ;; keyword: (ible ADJ) 
@@ -195,18 +205,34 @@
 (adj "integrative" :super modifier) ;; keyword: (ive ADJ) 
 (adj "intriguing" :super modifier) ;; keyword: ENDS-IN-ING 
 (adj "kinase-dead" :super modifier)
-(adj "lon-term")
+(adj "kinetic" :super modifier)
 (adj "long")
+(adj "lon-term")
 (adj "measurable") ;; keyword: (able ADJ) 
 (adj "mekindependent" :super modifier) ;; keyword: (ent ADJ) 
 (adj "mutual" :super modifier) ;; keyword: (al ADJ) 
+(adj "native" :super modifier)
 (adj "parallel")
 (adj "pharmacological" :super modifier) ;; keyword: (al ADJ) 
 (adj "present" :super modifier) ;; keyword: (ent ADJ) 
+(adj "putative" :super modifier)
 (adj "recombinant" )
+(adj "relative" :super modifier
+     :binds ((comparator biological))
+     :realization
+     (:to comparator))
 (adj "refractory" :super modifier) ;; keyword: (ory ADJ) 
-(adj "supplementary" :super modifier) ;; keyword: (ary ADJ) 
+(adj "specific" :super abstract
+     :binds ((situation biological))
+     :realization
+     (:adj "specific"
+           :to situation))
+(adj "suitable" :super modifier)
+(adj "supplementary" :super modifier) ;; keyword: (ary ADJ)
+(adj "unclear" :super modifier)
+(adj "unmodified" :super modifier)
 (adj "wild-type")
+
 
 (define-adjective "physiological")
 (define-adjective "prevalent")
@@ -237,6 +263,7 @@
 (define-adverb "to this end")
 (define-adverb "until now")
 
+(noun "32P" :super molecule) ;; actually an isotope -- need to adjust taxonomy 
 (noun "ability" :super abstract
       :binds ((result biological)(agent biological))
       :realization
@@ -297,7 +324,7 @@
       :realization 
       (:noun "domain"
              :of substrate))
-                          
+(noun "dynamics" :super abstract)                      
 (noun "et al." :super bib-reference)
 (noun "effector" :super protein) ;; NOT SURE WHAT THE RIGHT SUPER is
 (noun "exchange" :super bio-process)
@@ -310,13 +337,14 @@
       :realization
       (:noun "form"
              :of basis))
-
+(noun "fragment" :super bio-entity)
 (noun "function" :super bio-process
       :binds ((functional bio-entity)) ;; this should be for genes and proteins
       :realization
       (:noun "function"
        :of functional))
 (noun "heterodimer" :super molecule)
+(noun "high performance liquid chromatography" :super bio-method)
 (noun "human" :super species)
 (noun "inhibitor" :super bio-entity) ;; keyword: (or N) 
 (noun "isoform" :super bio-variant
@@ -324,15 +352,16 @@
       :realization
       (:noun "isoform"
              :of basis))
-(noun "knockdown" :super bio-process)
+(noun "knockdown" :super bio-method)
 (noun "level" :super bio-scalar
       :binds ((measurable bio-scalar))
       :realization 
       (:noun "level"
              :of measurable))
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
+(noun "liquid chromatography" :super bio-method)
 (noun "manner" :super bio-process) ;; by chemical or genetic means
-(noun "mass spectrometry" :super bio-process)
+(noun "mass spectrometry" :super bio-method)
 (noun "means" :super bio-process) ;; by chemical or genetic means
 (noun "mechanism" :super bio-process
       :binds ((process bio-process))
@@ -340,7 +369,7 @@
       (:noun "mechanism"
              :of process))
 (noun "membrane" :super cellular-location)
-(noun "NMR" :super bio-process)
+(noun "NMR" :super bio-method)
 
 (noun "nucleus" :super cellular-location)
 (noun "method" :super bio-process)
@@ -360,28 +389,34 @@
       :realization
       (:noun "panel"
              :of component))
-
 (noun "paradox" :super bio-entity)
 (noun "patient" :super bio-entity)
 (noun "phenotype" :super bio-entity)
 (noun "plasma" :super cellular-location)
 (noun "plasma membrane" :super cellular-location)
-(noun "proportion" :super bio-variant
+(noun "proportion" :super bio-scalar
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
       :realization
       (:noun "proportion"
              :of basis))
-
-(noun "range" :super measurement)
-(noun "rate" :super measurement
+(noun "population" :super bio-entity
+      :binds ((element biological))
+      :realization
+      (:noun "population"
+             :of element))  
+(noun "radioactivity" :super abstract
+      :binds ((material molecule))
+      :realization
+      (:noun "radioactivity" :adj "radioactive"
+             :of material))
+(noun "range" :super bio-scalar)
+(noun "rate" :super bio-scalar
       :binds ((process bio-process) (components biological))
       :realization 
       (:noun "rate"
              :of process
              :for components))
-
-
-(noun "ratio" :super measurement)
+(noun "ratio" :super bio-scalar)
 (noun "region" :super bio-location)
 (noun response :super bio-process
     :binds ((beneficiary biological)(agent biological))
@@ -390,7 +425,6 @@
      :noun "response"
      :of beneficiary
      :to agent))
-
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
 (noun "scaffold" :super protein) 
@@ -489,6 +523,7 @@
 (noun "therapeutics" :super abstract) ;; keyword: (ics N) 
 (noun "treatment":super abstract) ;; keyword: (ment N) 
 (noun "trial" :super abstract)
+(noun "tumorigenesis" :super bio-process)
 
 
 ;;--- ddm 12/18/14 hacked phrases to 'get through' more text
@@ -683,50 +718,10 @@
 
 
 ;; nouns and adjectives from January test
-(adj "biophysical" :super modifier)
-(noun "dynamics" :super abstract)
-(adj "identical" :super modifier
-     :binds ((basis biological)
-             (comparator biological))
-     :realization
-     (:adj "identical"
-           :s basis
-           :to comparator))
-(adj "kinetic" :super modifier)
-(adj "native" :super modifier)
-(adj "putative" :super modifier)
-(noun "radioactivity" :super abstract
-      :binds ((material molecule))
-      :realization
-      (:noun "radioactivity" :adj "radioactivity"
-             :of material))
-(adj "relative" :super modifier
-     :binds ((comparator biological))
-     :realization
-     (:to comparator))
-(adj "specific" :super abstract
-     :binds ((situation biological))
-     :realization
-     (:adj "specific"
-           :to situation))
-(adj "suitable" :super modifier)
-(adj "unclear" :super modifier)
-(adj "unmodified" :super modifier)
+
+
  
 
-(noun "fragment" :super bio-entity)
-(noun "position" :super residue-on-protein)
-(noun "tumorigenesis" :super bio-process)
-(noun "proportion" :super measurement)
-(noun "population" :super bio-entity
-      :binds ((element biological))
-      :realization
-      (:noun "population"
-             :of element))
 
 
-(noun ("analysis" :plural "analyses")
-  :super bio-process)
 
-
-(noun "32P" :super molecule) ;; actually an isotope -- need to adjust taxonomy 

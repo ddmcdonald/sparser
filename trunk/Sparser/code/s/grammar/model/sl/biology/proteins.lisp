@@ -416,6 +416,7 @@ filligre may be used to distinguish them, etc.
 (def-bio "COT/TPL2" protein) ;; see if defining this leads to sentence 53 working consistently when run twice.
 (def-bio "cot" protein
   :synonyms ("COT"))
+(def-bio "trypsin" protein)
 
 
 
