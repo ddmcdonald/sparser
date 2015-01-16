@@ -35,9 +35,10 @@
   (setq *known-breaks* nil))
 
 (defun retest () 
-  (loop for i from (+ 1 (car *tested*)) to 100 
-    when (<= i (length *sentences*))
-    do (push i *tested*) (dectest i)))
+  (loop for i from (+ 1 (car *tested*)) to (length *sentences*) 
+    do 
+    (push i *tested*) 
+    (dectest i)))
 
 (defun bad () 
   (push (car *tested*) *known-breaks*) 
@@ -56,16 +57,23 @@
               (push (cons n (cdr test)) *all-chunk-edges*))
           (when t
             (terpri) 
-            (format t "SEMANTIC FOREST ------------------------------------~&")
-          
+            (format t "---SEMANTIC FOREST---")
+            
             (loop for edge-tree in
               (tts-edge-semantics)
               do
-              (format t "-----~&~S~&~&" (car edge-tree))
-              (print-tree (second edge-tree))))
+              (terpri)
+              (if (small? (second edge-tree))
+                  (then
+                    (format t "~&~s" (car edge-tree))
+                    (print-tree (second edge-tree) t 0 t t))
+                  (else
+                    (format t "-----~&~s" (car edge-tree))
+                    (print-tree (second edge-tree))))
+              
+              ;;(format t "~&___________________________________________~&~&")
+              ))))))
 
-          (format t "~&___________________________________________~&~&")
-          ))))
 ;;/// these two should be merged. Perhaps with a switch
 ;;  to determine what to show
 (defun jantest (n &optional (sentences *sentences*))
@@ -86,25 +94,38 @@
         (terpri)
         (reverse s-expressions)))))
 
+(defun tree-size (tree)
+  (cond
+   ((not (consp tree)) 1)
+   (t
+    (loop for elt in tree sum (tree-size elt)))))
 
+(defun small? (tree)
+  (< (tree-size tree) 5))
 
-(defun print-tree (tree &optional (last nil) (indent 0) (stream t))
-  (nspaces indent stream)
+(defun print-tree (tree &optional (last nil) (indent 0) (stream t)(tight nil))
+  (if
+   tight
+   (nspaces 1 stream)
+   (else
+     (terpri)
+     (nspaces indent stream)))
   (cond
    ((consp tree)
     (format stream "(")
     (format-item (car tree) stream)
     (when (cdr tree)
-      (terpri)
+      (setq tight  (small? tree))
       (loop for items on (cdr tree) do 
         (print-tree (car items) 
                     (null (cdr items))
                     (+ indent 3) 
-                    stream)))
+                    stream
+                    tight)))
     (format stream ")"))
    (t
     (format-item tree stream)))
-  (when (not last)
+  (when (and (not last) (not tight))
    (terpri stream)))
 
 (defun format-item (item stream)
@@ -118,17 +139,16 @@
                                 (polyword (pw-pname name))
                                 (otherwise "")))))
        (if name
-          (format stream "~((~a ~s ~a)~)"
+          (format stream "~(~a-~a ~s~)"
                   (cat-symbol (car (indiv-type item)))
-                  pname
-                  (indiv-uid item))
-          (format stream "~((~a ~a)~)"
+                  (indiv-uid item)
+                  pname)
+          (format stream "~(~a-~a~)"
                   (cat-symbol (car (indiv-type item)))
                   (indiv-uid item)))))
 
     (otherwise
-     (format stream "~(~S~)" 
-             item))))
+     (format stream "~(~S~)" item))))
    
 
 (defun nspaces (n stream)
