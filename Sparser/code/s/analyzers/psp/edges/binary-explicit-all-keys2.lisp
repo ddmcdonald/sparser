@@ -2,7 +2,7 @@
 ;;; copyright (c) 1992-1995,2011 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "binary/explicit all keys"
-;;;    Module:   "objects;chart:psp:edges:"
+;;;    Module:   "analyzers:psp:edges:"
 ;;;   Version:   2.9 October 2011
 
 ;; 2.0 (11/10/92 v2.3) Simplified the name, added :form
