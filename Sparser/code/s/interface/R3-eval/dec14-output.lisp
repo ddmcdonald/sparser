@@ -5,6 +5,8 @@
 (defparameter *event-index* 0)
 (defparameter *ev-map* nil)
 
+(defparameter *ignored-sentences* '(30 38 39))
+
 ;; other cases?
 (defun wd-pname (wd)
   (case (type-of wd)
@@ -94,13 +96,16 @@
 ;; if ent-position t then show the name of the action, else ref the 
 (defun entity-string (ent &optional (ent-position nil))
   (cond ((null ent) nil)
+        ;; not sure ref-category should be a subject, but...
+        ((typep ent 'referential-category)
+         (format nil "cat:~a" (cat-symbol ent)))
         ((is-event-p ent)
          (if ent-position 
              (format nil "~a" (type-name ent))
            (format nil "(~d) ~a" (i-uid ent) (type-name ent))))
         ((itypep ent 'collection)
-         (format nil "<collection ~{~A~^, ~}>" 
-                 (mapcar #'entity-string (value-of 'items en))))
+         (format nil "<collection ~{~A~^ ~}>" 
+                 (mapcar #'entity-string (value-of 'items ent))))
          
         (t ;; entity 
          (format nil "~a~@[:~a~]" (type-name ent) (ent-pname ent)))))
@@ -115,6 +120,16 @@
         ((consp lst) (mapcar fn lst))
         (t (funcall fn lst))))
 
+;; for now replace . and , with ;
+(defun remove-separators (string)
+  (let ((newstr (copy-seq string)))
+    (loop for i from 0 to (1- (length string))
+      for char = (elt newstr i)
+      when (member char '(#\, #\.))
+      do (setf (elt newstr i) #\;))
+    newstr
+    ))
+
 (defun output-relation (event sent-num sent)
   (declare (special *ev-map*))
   (let* ((evno (i-uid event))
@@ -126,10 +141,15 @@
          )
     (format t "~%Relation: ~a subj: ~a obj ~a" event subj pat)
     (push (cons evno event) *ev-map*)
-    (list sent-num evno subj-strings ev-string obj-strings nil nil sent)))
+    (list sent-num evno subj-strings ev-string obj-strings nil nil 
+          (remove-separators sent))))
 
 (defun reset-rows ()
   (setq *output-rows* nil *event-index* 0 *ev-map* nil))
+
+;;; vars are *relations* *entities* and *events*
+
+
 
 ;; output relations for one sentence
 (defun output-relations (&optional (sent-num 0) sent (stream t))
@@ -147,7 +167,7 @@
 
 ;(setf *known-breaks* '(1))
 (defun dtst (&optional n to-file)
-  (declare (special *known-breaks* *dec-tests*))
+  (declare (special  *dec-tests*))
   (if (numberp n)
       (let ((tst  (nth (- n 1) *dec-tests*)))
         (dtst1 n tst t))
@@ -161,7 +181,7 @@
 (defun dtst1 (n test stream)
   (declare (special *known-breaks*))
     (print (list n test))
-    (cond ((member n *known-breaks*) (format t "~%Skipping sentence ~d because of known problems" n))
+    (cond ((member n *ignored-sentences*) (format t "~%Skipping sentence ~d because of known problems" n))
           (t 
            (let ((tested nil))
 ;             (handler-case 
@@ -173,8 +193,9 @@
                  (format t "~%Sentence ~d caused an error" n))
            ))))
 
+;;; (identify-relations *sentence*) returns (values relations entities)
 
 (defun write-csv-output (&optional (file "dec-out.csv"))
-  (with-open-file (s file :direction :output :if-exists :supercede)
+  (with-open-file (s file :direction :output :if-exists :supersede)
     (loop for tst in *dec-tests* for n from 1 do (dtst1 n tst s))))
 
