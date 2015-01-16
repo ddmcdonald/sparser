@@ -265,7 +265,6 @@ and could be dropped from the active set we do lookup from
                 :mixed-case))
     (corresponding-obo (word-pname word))))
                  
-
 (defun corresponding-obo (string)
   (when *obo-terms-incorporated*
     (gethash string *synonyms-to-obo-terms*)))
@@ -274,6 +273,7 @@ and could be dropped from the active set we do lookup from
   ;; called from make-word/all-properties/or-primed if we've
   ;; already established that there is an obo for the pname
   ;; of this word. 
+  (add-new-word-to-catalog word :obo)
   (let ((obo (corresponding-obo (word-pname word))))
     (tr :word-corresponds-to-obo word obo)
     (assemble-category-rule-and-referent-for-an-obo obo word)))
