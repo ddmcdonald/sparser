@@ -39,7 +39,9 @@
 (define-category biological
   :specializes abstract
   :lemma (:adjective "biological")
-  :binds ((bio-context bio-context))
+  :binds ((context bio-context)
+          (location bio-location)
+          (quantifier))
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
 
@@ -49,8 +51,7 @@
   :documentation "Provides a generalization over biological and scalar")
  
 (define-category molecule-state
-  :specializes biological
-  :binds ((bio-context bio-context)))
+  :specializes biological)
 
 
 
