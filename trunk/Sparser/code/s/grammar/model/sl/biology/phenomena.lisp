@@ -79,27 +79,27 @@
 (define-category monoubiquitinate 
   :specializes bio-process 
   :binds ((agent biological)
-          (patient biological)
+          (object biological)
           (site residue-on-protein)) 
   :realization 
     (:verb "monoubiquitinate" 
      :noun "monoubiquitination" 
      :etf (svo-passive) 
      :s agent 
-     :o patient
+     :o object
      :at site))
 
 (define-category ubiquitinate 
  :specializes bio-process 
  :binds ((agent biological)
-         (patient biological)
+         (object biological)
          (site residue-on-protein) )
   :realization 
     (:verb "ubiquitinate" 
      :noun "ubiquitination" 
      :etf (svo-passive) 
      :s agent 
-     :o patient
+     :o object
      :at site))
 
 
