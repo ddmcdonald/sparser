@@ -9,6 +9,7 @@
 ;; RJB -- added hacks for problems with NS word finding of"S338" and "pThr202/Tyr204"
 ;; 1/9/15 finished point mutation with fanout into single character amino
 ;; acids
+;; 1152015 put both words and single-capitalized-letters as keys in amino acid table (to correctly handle C77), also added rule for "ubiquitin C77"
 
 (in-package :sparser)
 
@@ -44,6 +45,7 @@ ones are gratuitously ambiguous with capitalized initials.
         (break "could not retrieve capitalized-letter"))
       (add-rule-to-individual 3-letter-rule i)
       (setf (gethash one-letter-object *single-letters-to-amino-acids*) i)
+      (setf (gethash one-letter-word *single-letters-to-amino-acids*) i)
       i)))
     
 
@@ -159,6 +161,13 @@ therefore we have the special cases:
   :form n-bar
   :referent (:head left-edge
              :bind (position right-edge)))
+
+(def-cfr residue-on-protein (protein residue-on-protein)
+  :form np
+  :referent 
+  (:head right-edge           
+         :bind (on-protein right-edge)))
+
 #+ignore
 (def-cfr of-protein (of protein)
   :form pp
