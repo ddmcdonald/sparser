@@ -210,6 +210,12 @@
       :realization
       (:noun "activity"
              :of agent))
+(noun :advance: :super bio-process
+      :binds ((advancement bio-process))
+      :realization 
+      (:noun "advancement" 
+             :in advancement))
+
 ;;(def-bio "agent" bio-entity)
 (noun "agonist":super bio-entity) ;; keyword: (ist N) 
 (noun "allele" :super bio-variant
@@ -267,6 +273,12 @@
       :realization
       (:noun "form"
              :of basis))
+(noun fraction :super bio-variant
+  :binds ((basis bio-entity)) ;; this should be for genes and proteins
+  :realization
+  (:noun "fraction"
+         :of basis))
+
 (noun "fragment" :super bio-entity
       :binds ((whole bio-entity))
       :realization
