@@ -133,6 +133,11 @@
    unknown words is a good way to identify the unknown words in a
    new corpus.")
 
+(defparameter *sweep-for-sentences* nil
+  "Alternative to parsing that is applied to large texts where
+   we identify what new vocabularly the text may have and optionally
+   chop it into sentences saved to a file.")
+
 (defparameter *chunk-sentence-into-phrases* t
   "Controls whether we proceed to chunk the sentence after we 
    have used sentence-sweep-loop to form its terminal edges.")
