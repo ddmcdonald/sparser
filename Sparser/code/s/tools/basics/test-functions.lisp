@@ -140,3 +140,56 @@
   (if (consp l)
       (loop for item in l do (print item))
       (print l)))
+
+(defun is-pp? (edge)
+  (and
+   (edge-p edge)
+   (eq 'pp 
+       (and (edge-form edge)
+            (cat-sym (edge-form edge))))))
+
+(defun case-pp-search ()
+  (let
+      ((res nil))
+    (loop for res in
+      (loop for i from 1 to (length *sentences* )
+      when (setq res (case-pps i))
+      collect res)
+      do        
+      (print "___________MISSING SUBCATS?_____________________________________________") 
+      (np res))))
+
+(defun case-pps (i)
+  (progn (dectest i)
+    (let
+        ((res (loop for pair in (adjacent-tts) 
+                when (eq 'pp (car (edge-rep (second pair))))
+                collect (loop for edge in pair collect (edge-rep edge)))))
+      (and 
+       res
+       (cons
+        (list i (nth (- i 1) *sentences*))
+        res)))))
+
+(defun cat-sym (cat)
+  (if
+   (word-p cat)
+   (intern
+    (symbol-name
+     (word-symbol cat)))
+   (intern
+    (symbol-name
+     (cat-symbol cat)))))
+
+(defun edge-rep (edge)
+  (cons (and (edge-form edge) 
+             (cat-sym (edge-form edge)))
+        (cons
+         (and (edge-category edge)
+              (cat-sym (edge-category edge)))
+         (and (is-pp? edge)
+              (list
+               (cat-sym 
+                (edge-category 
+                 (edge-right-daughter edge))))))))
+  
