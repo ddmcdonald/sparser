@@ -138,47 +138,6 @@ therefore we have the special cases:
                          :referent residue)))
               edge)))))))
 
-; These are bare rules that could be converted to an ETF
-; (or several) that captures these composition possibilities
-; for a complex noun-headed phrase. 
-
-;; Gly33
-(def-cfr residue-on-protein (amino-acid digit-sequence)
-  :form proper-noun
-  :referent (:head left-edge
-             :instantiate-individual residue-on-protein
-             :with (amino-acid left-edge
-                    position right-edge)))
-
-;; "Lys residues"
-(def-cfr redidue-on-protein (amino-acid residue-on-protein)
-  :form n-bar
-  :referent (:head right-edge
-             :bind (amino-acid left-edge)))
-
-;; residues 104 and 147
-(def-cfr redidue-on-protein (residue-on-protein digit-sequence)
-  :form n-bar
-  :referent (:head left-edge
-             :bind (position right-edge)))
-
-(def-cfr residue-on-protein (protein residue-on-protein)
-  :form np
-  :referent 
-  (:head right-edge           
-         :bind (on-protein right-edge)))
-
-#+ignore
-(def-cfr of-protein (of protein)
-  :form pp
-  :referent (:daughter right-edge))
-
-#+ignore
-(def-cfr redidue-on-protein (residue-on-protein of-protein)
-  :form n-bar
-  :referent (:head left-edge
-             :bind (on-protein right-edge)))
-
 
 ;;;-----------------
 ;;; point mutations
@@ -237,8 +196,6 @@ therefore we have the special cases:
     :amino-acid original
     :new-amino-acid replacement
     :position residue-number))
-
-
 
 
 

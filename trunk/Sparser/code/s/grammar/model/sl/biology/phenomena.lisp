@@ -64,6 +64,7 @@
   :rule-label protein
   :documentation "Intended as representation of proteins
     with one or more post-translational modifications."
+  :index (:temporary :sequential-keys protein modification)
   :binds ((protein protein)
           (modification protein))) ;; hack for this case
 

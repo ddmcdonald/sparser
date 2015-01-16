@@ -443,8 +443,4 @@ filligre may be used to distinguish them, etc.
 
 
 (def-bio "SAPK" protein) ;; class of stress activated proteins
-(def-cfr protein (protein point-mutation)
-  :form NP
-  :referent (:head left-edge
-                   :bind (:mutation right-edge)))
                    
