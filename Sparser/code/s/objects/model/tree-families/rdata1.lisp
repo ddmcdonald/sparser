@@ -146,13 +146,15 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 (defmacro define-additional-realization (category &body rdata)
   `(define-additional-realization/expr ',category ',rdata))
 
-(defmethod define-additional-realization/expr ((category referential-category) rdata)
-  (setup-rdata category rdata nil)) ;; nil overrides delete?
-
 (defmethod define-additional-realization/expr ((category symbol) rdata)
   (if (category-named category)
-    (setup-rdata (category-named category) rdata nil) ;; nil overrides delete?
-    (break "There is no category named ~a" category)))
+    (define-additional-realization/expr (category-named category) rdata) ;; nil overrides delete?
+    (break "There is no category named ~a" category))) ;; nil overrides delete?
+
+(defmethod define-additional-realization/expr ((category referential-category) rdata)
+  (if (includes-def-realization-keyword rdata)
+    (break "Stub -- get David to finish it")
+    (setup-rdata category rdata nil)))
 
 
 ;;;-----------------------------------------------------------
