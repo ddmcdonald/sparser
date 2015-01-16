@@ -45,6 +45,8 @@
                     (typep value 'mixin-category)) ;; has-determiner
           (typecase value
             (number)
+            (list (push (list var-name (list :list value))
+                         objects))
             (symbol)
             (string)
             (word)
