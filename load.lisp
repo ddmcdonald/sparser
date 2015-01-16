@@ -27,10 +27,18 @@
 ;  (trace-morphology)
 ;  (incorporate-obo-terms)
 ;  (sparser-load "./Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (s-load "interface/R3-eval/jan-sents.lisp")
-  (s-load "interface/R3-eval/jan15-output.lisp")
-  (setf *readout-relations* t)
+
+(s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+(s-load "interface/R3-eval/dec14-output.lisp")
+(s-load "interface/R3-eval/jan-sents.lisp")
+(s-load "interface/R3-eval/jan15-output.lisp")
+(setf *readout-relations* t)
 
 (ccl::cd (s-path "interface/R3-eval/"))
 
-(setf *package* (find-package :sparser))
+; doesnt work.
+; (setf *package* (find-package :sparser))
+
+(defun pk (&optional (pkg :sparser))
+  (declare (special *package*))
+  (setf *package* (find-package pkg)))
