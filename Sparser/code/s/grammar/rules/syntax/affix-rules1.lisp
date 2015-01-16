@@ -36,6 +36,7 @@
 
 (defun setup-unknown-word-by-default (word)
   (tr :unknown-word-defaulted-to-noun word)
+  (add-new-word-to-catalog word :default)
   (if *edge-for-unknown-words*
     (setup-common-noun word)
     (assign-brackets-as-a-common-noun word)))
@@ -51,6 +52,8 @@
   ;; on the way back from the tokenizer. 
   (tr :defining-unknown-word-from-morph word morph-keyword)
   ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
+  (add-new-word-to-catalog word morph-keyword)
+
   (typecase morph-keyword
     (keyword 
      (case morph-keyword
