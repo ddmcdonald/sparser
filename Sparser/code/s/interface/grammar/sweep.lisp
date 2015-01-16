@@ -54,6 +54,7 @@
             (category)
             (individual 
              (cond
+              ((itypep value 'unclear) nil)
               ((itypep value 'prepositional-phrase)
                (dolist (bb (indiv-binds value))
                  (when (eq (var-name (binding-variable bb)) 'pobj)
