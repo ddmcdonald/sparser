@@ -76,6 +76,8 @@ places. ]]
   (unless (and (listp entry) (eq (car entry) :comlex))
     (push-debug `(,symbol ,entry))
     (error "Ill-formed entry:~%  ~a" entry))
+  (add-new-word-to-catalog word :comlex)
+  
   ;; All of the morphological variants of the lemma get the
   ;; same entry. If we see any one of them we fire up the
   ;; entire set (simpler that way). The 'instance' is what
