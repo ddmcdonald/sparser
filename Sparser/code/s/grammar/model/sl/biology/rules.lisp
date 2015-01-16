@@ -195,7 +195,7 @@
   :head :left-edge
   :referent
   (:head left-edge
-         :bind (bio-context right-edge)))
+         :bind (context right-edge)))
 
 
 (def-form-rule (VP category::in\ vitro)
@@ -203,13 +203,19 @@
   :head :left-edge
   :referent
   (:head left-edge
-         :bind (bio-context right-edge)))
+         :bind (context right-edge)))
 
 (def-form-rule (time verb+ed) ;; to support "have recently shown"
   :form verb+ed
   :head :right-edge
   :referent (:head right-edge :bind (modifier left-edge)))
   
+(def-form-rule (quantifier biological) 
+               :head :right-edge 
+  :form n-bar ;; requires a determiner 
+  :referent 
+  (:head right-edge :bind (quantifier left-edge)))
+                   
 
 
 
