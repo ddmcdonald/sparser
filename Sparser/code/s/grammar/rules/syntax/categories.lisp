@@ -289,8 +289,8 @@
   '(CATEGORY::DET
     CATEGORY::QUANTIFIER
     CATEGORY::QUANTIFIER-OF
-    category::number
-    category::ordinal
+    CATEGORY::NUMBER
+    CATEGORY::ORDINAL
     CATEGORY::ADVERB
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
@@ -306,14 +306,15 @@
     CATEGORY::PROPER-NOUN
     CATEGORY::PROPER-NAME
     CATEGORY::PRONOUN
-    category::n-bar
+    CATEGORY::N-BAR
     CATEGORY::POSSESSIVE-PRONOUN
-    CATEGORY::POSSESSIVE))
+    CATEGORY::POSSESSIVE
+    CATEGORY::NP))
 
-(defparameter *ng-internal-categories*
+(DEFPARAMETER *NG-INTERNAL-CATEGORIES*
   '(CATEGORY::QUANTIFIER
-    category::number
-    category::ordinal
+    CATEGORY::NUMBER
+    CATEGORY::ORDINAL
     CATEGORY::ADVERB
     CATEGORY::ADJECTIVE
     CATEGORY::PROPER-ADJECTIVE
@@ -328,10 +329,11 @@
     CATEGORY::COMMON-NOUN
     CATEGORY::PROPER-NOUN
     CATEGORY::PROPER-NAME
-    category::n-bar
+    CATEGORY::N-BAR
     CATEGORY::PROPER-NOUN
-    category::post-ordinal
-    category::parentheses))
+    CATEGORY::POST-ORDINAL
+    CATEGORY::PARENTHESES
+    CATEGORY::NP))
 
 
 (defparameter *ng-head-categories*
@@ -349,6 +351,7 @@
     CATEGORY::NUMBER ;; 'HOW many do you want? I want 3'
     CATEGORY::POST-ORDINAL ;; But only for roman numerals
     CATEGORY::THAT
+    CATEGORY::NP
     ))
 
 (defparameter *n-bar-categories*
