@@ -26,6 +26,31 @@
 ; #13 (p "BRAF is inactive in NRAS mutant cells.")
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
 
+(defun ddm-tense-neg ()
+  (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
+  (ddm-ed "grammar/rules/syntax/tense.lisp")
+  (ddm-ed "grammar/rules/syntax/be.lisp")
+  (ddm-ed "grammar/rules/syntax/have.lisp")  
+  (ddm-ed "grammar/rules/syntax/modals.lisp")
+  (ddm-ed "grammar/model/core/kinds/processes.lisp"))
+
+(defun ddm-better-be+adj ()
+  (ddm-ed "grammar/rules/tree-families/vp.lisp")
+  (ddm-ed "grammar/rules/tree-families/copula-patterns.lisp")
+  (ddm-ed "grammar/model/sl/biology/verbs1.lisp"))
+
+(defun ddm-write-additional-realization ()
+  (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
+  (ddm-ed "objects/model/tree-families/rdata1.lisp"))
+
+(defun ddm-trap-new-words-write-sentence ()
+  (ddm-ed "interface/grammar/sweep.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
+
+(defun ddm-generalize-test ()
+  (ddm-ed "tools/basics/test-functions.lisp")
+  (ddm-ed "analyzers/forst/treetops.lisp")
+  (ddm-ed "drivers/chart/psp/no-bracket-protocol.lisp"))
 
 ; (trace-paragraphs) ;; for sentences and periods
 ; (trace-edges) ;; edge over period as a literal?
@@ -75,6 +100,8 @@
   (ddm-ed "analyzers/psp/patterns/traces.lisp")
   (ddm-ed "objects/traces/scan-patterns.lisp")
   (ddm-ed "objects/traces/treetops.lisp"))
+
+
 
 ; (setq *work-on-ns-patterns* t)
 (defun ddm-no-spaces ()
