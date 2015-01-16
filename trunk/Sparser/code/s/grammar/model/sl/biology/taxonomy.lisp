@@ -102,8 +102,10 @@
 (define-category study-bio-process
   :specializes bio-process
   :instantiates :self
-  :lemma (:common-noun "study")
-  :realization (:common-noun name))
+  :binds ((subject biological))
+  :realization 
+  (:noun "study"
+         :of subject))
 
 ;;--- referents for type kinds, v.s. the particulars
 ;;/// Need these if we want bio-type as a label in the
@@ -200,6 +202,15 @@
   :lemma (:common-noun "kinase")
   :realization (:common-noun name))
 
+#+ignore ;; want to give kinase a FOR case
+(define-category kinase
+  :specializes enzyme
+  :instantiates :self
+  :bindings (uid "GO:0016301") ;; "kinase activity"
+  :binds ((process bio-process))
+  :realization
+  (:noun "kinase"
+         :for process))
 
 
 (define-category bio-variant ;; not sure this is the correct term, but intended for things like "forms of ras"
