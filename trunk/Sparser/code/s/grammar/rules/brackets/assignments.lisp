@@ -209,14 +209,24 @@
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    (when (category-named category-name)
+    #+ignore
+    (when
       (push-debug `(,category-name ,word ,comlex-clause))
-      (cerror "Maybe you can blow that one away?"
-              "Setup: The category named ~a already exists."
-             category-name))
-    (let ((category (define-category/expr category-name
-                       `(:specializes ,super-category
-                        :instantiates :self))))
+      (cerror t "Maybe you can blow that one away?"
+                      "Setup: The category named ~a already exists."
+                      category-name))
+    (let ((category 
+           (if
+            (category-named category-name)
+            (then 
+              (format t "Maybe you can blow that one away?"
+                      "Setup: The category named ~a already exists."
+                      category-name)
+              (category-named category-name))
+            
+            (define-category/expr category-name
+                                  `(:specializes ,super-category
+                                                 :instantiates :self)))))
       ;; Adds the rule to the category itself
       (apply #'define-main-verb (cat-symbol category)
              :infinitive (word-pname word)
