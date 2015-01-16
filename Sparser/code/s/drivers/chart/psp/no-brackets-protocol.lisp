@@ -75,35 +75,43 @@
         (catch :end-of-sentence
           (scan-terminals-loop start-pos first-word))
 
-        (when *sweep-for-patterns*
-          (pattern-sweep sentence)
-          (short-conjunctions-sweep sentence) ;; precede parens
-          (sweep-to-span-parentheses sentence)
-          (when *trace-island-driving* (tts))
+        (if *sweep-for-sentences*
+          (sentence-sweep sentence)
 
-          (when *chunk-sentence-into-phrases*
-            (tr :identifying-chunks-in sentence)
-            (identify-chunks sentence) ;; calls PTS too
+          (when *sweep-for-patterns*
+            (pattern-sweep sentence)
+            (short-conjunctions-sweep sentence) ;; precede parens
+            (sweep-to-span-parentheses sentence)
+            (when *trace-island-driving* (tts))
 
-            ;;(break "after chunking ~a" sentence) 
-            (when *parse-chunked-treetop-forest*
-              (terpri) ;; start the segment display on a new line
-              (let ((*return-after-doing-forest-level* t))
-                (declare (special *return-after-doing-forest-level*))
-                (new-forest-driver sentence)))
+            (when *chunk-sentence-into-phrases*
+              (tr :identifying-chunks-in sentence)
+              (identify-chunks sentence) ;; calls PTS too
 
-            (when *readout-relations*
-              (multiple-value-bind (relations entities)
-                                   (identify-relations sentence)
-                ;;/// better to stash these on sentence contents
-                (setq *relations* relations ;; (readout-relations relations)
-                      *entities* entities)))))  ;;(readout-entities entities)
+              ;;(break "after chunking ~a" sentence) 
+              (when *parse-chunked-treetop-forest*
+                (terpri) ;; start the segment display on a new line
+                (let ((*return-after-doing-forest-level* t))
+                  (declare (special *return-after-doing-forest-level*))
+                  (new-forest-driver sentence))
+
+                (when *readout-relations*
+                  (multiple-value-bind (relations entities)
+                                       (identify-relations sentence)
+                    ;;/// better to stash these on sentence contents
+                    (setq *relations* relations ;; (readout-relations relations)
+                          *entities* entities)))))))  ;;(readout-entities entities)
                 
         ;; EOS throws to a higher catch. If the next sentence
         ;; is empty we will hit the end of source as we
         ;; start scanning terminals and it will throw
         ;; beyond this point. 
         (setq sentence (next sentence))))))
+
+
+;;; Reading for vocabulary and cutting passages into sentences
+
+
 
 
 ;;;-----------------------
