@@ -108,7 +108,7 @@
    tight
    (nspaces 1 stream)
    (else
-     (terpri)
+     (terpri stream)
      (nspaces indent stream)))
   (cond
    ((consp tree)
@@ -126,8 +126,13 @@
    (t
     (format-item tree stream)))
   (when (and (not last) (not tight))
-   (terpri stream)))
+   (terpri stream))
+  tree)
 
+(defun psemtree (x)
+  (print-tree (semtree x)))
+
+    
 (defun format-item (item stream)
   (typecase item
     (psi (push-debug `(,item))
