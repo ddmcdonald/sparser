@@ -19,6 +19,7 @@
 
 (defparameter *sentences* nil)
 
+
 (defun test-jan ()
   (declare (special *jan-dry-run*))
   (setq *sentences* *jan-dry-run*)
@@ -44,7 +45,23 @@
   (push (car *tested*) *known-breaks*) 
   (retest))
 
-(defun dectest (n &optional (sentences *sentences*))
+(defun dectest (n &optional (sentences *dec-tests*))
+  (run-test n sentences))
+
+(defun dectests (&optional (start 1))
+  (loop for i from start to (length *dec-tests*) do (dectest i)))
+
+
+(defun jantest (n &optional (sentences *jan-dry-run*))
+  (run-test n sentences))
+
+(defun jantests (&optional (start 1))
+  (loop for i from start to (length *jan-dry-run*) do (dectest i)))
+
+(defmacro test (n)
+  `(run-test ,n))
+
+(defun run-test (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences)))
     (print (list n test))
     (terpri)
@@ -76,7 +93,7 @@
 
 ;;/// these two should be merged. Perhaps with a switch
 ;;  to determine what to show
-(defun jantest (n &optional (sentences *sentences*))
+(defun jantest (n &optional (sentences *jan-dry-run*))
   (let ((test (nth (- n 1) sentences)))
     (print (list n test))
     (terpri)
