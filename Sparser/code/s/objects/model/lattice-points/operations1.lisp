@@ -258,6 +258,7 @@
   top-out with a super-category of nil since the network has multiple
   roots, c.f. model/core/kinds/upper-model.lisp. When a category has
   mixins those are traversed independently."
+  (when (null category) (error "Illegal null category."))
   (if (eq category reference-category)
     t
 
