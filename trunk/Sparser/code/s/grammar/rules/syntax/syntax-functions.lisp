@@ -245,7 +245,7 @@
                      'location)
                     ((and (itypep vg 'biological)
                           (itypep pobj-referent 'bio-context))
-                     'bio-context)))
+                     'context)))
               (and (itypep pp 'upon-condition)
                    'circumstance)
               ;; or if we are making a last ditch effore
