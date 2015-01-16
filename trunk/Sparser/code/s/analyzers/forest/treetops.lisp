@@ -342,18 +342,29 @@
 (defun losing-competition? (rule1 rule2)
   (declare (special rule1 rule2))
   (cond
-      ((and (eq (second rule1)(third rule2))
-            (or (eq category::preposition (car (cfr-rhs (car rule2))))
-                (eq category::spatial-preposition (car (cfr-rhs (car rule2)))))
+   ((and (eq (second rule1)(third rule2))
+         (or (eq category::preposition (car (cfr-rhs (car rule2))))
+             (eq category::spatial-preposition (car (cfr-rhs (car rule2)))))
+         (or
+          (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car rule1)))
+          (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car rule1)))
+          (memq (cat-symbol (second (cfr-rhs (car rule1))))
+                '(category::vg category::vp)))
+         ;; there must be a competing rule
+         (let
+             ((preceding-edge (edge-just-to-left-of (second rule2))))
+           (and
+            preceding-edge
             (or
-             (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car rule1)))
-             (eq category::vg (second (cfr-rhs (car rule1))))))
-       ;; goal here is to put off subject attachment until the subject is a large as possible
-       ;;  don't do right-to-left activation for the subj+verb rules
-       ;(break "competing")
-       ;;(print `(dropping rule ,rule1))
-       t)
-      (t nil)))
+             (member (cat-symbol (edge-form preceding-edge)) *ng-head-categories*)
+             (member (cat-symbol (edge-form preceding-edge)) *vg-head-categories*)
+             (eq (cat-symbol (edge-form preceding-edge)) 'category::vg)))))
+    ;; goal here is to put off subject attachment until the subject is a large as possible
+    ;;  don't do right-to-left activation for the subj+verb rules
+    ;(break "competing")
+    ;;(print `(dropping rule ,rule1))
+    t)
+   (t nil)))
 
 
 
