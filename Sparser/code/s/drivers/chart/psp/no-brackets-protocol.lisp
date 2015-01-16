@@ -211,7 +211,9 @@
             ((or (numberp value)
                  (symbolp value)
                  (stringp value))
-             (list value))
+             (push
+              (list (var-name var) value)
+              desc))
             (t
              (typecase value
                (individual 
