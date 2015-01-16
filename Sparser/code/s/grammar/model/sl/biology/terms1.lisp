@@ -617,28 +617,6 @@
 
 ;; nouns and adjectives from January test
 
-
-(def-form-rule (S category::in\ vitro)
-  :form s
-  :head :left-edge
-  :referent
-  (:head left-edge
-         :bind (bio-context right-edge)))
-
-
-(def-form-rule (VP category::in\ vitro)
-  :form VP
-  :head :left-edge
-  :referent
-  (:head left-edge
-         :bind (bio-context right-edge)))
-
-(def-form-rule (time verb+ed) ;; to support "have recently shown"
-  :form verb+ed
-  :head :right-edge
-  :referent (:head right-edge :bind (modifier left-edge)))
-  
-
  
 
 
