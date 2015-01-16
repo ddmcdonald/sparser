@@ -86,15 +86,6 @@
      :s theme
      :o description))
 
-(define-category bio-activate
-  :specializes bio-process
-  :binds ((activator biological) (activated molecule))
-  :realization
-    (:verb "activate" 
-     :noun "activation"
-     :etf (svo-passive of-nominal)
-     :s activator
-     :o activated))
 
 (define-category bio-activate
   :specializes bio-process
@@ -102,10 +93,11 @@
   :realization
     (:verb "activate" 
      :noun "activation"
-     :etf (svo-passive of-nominal)
+     :etf (svo-passive)
      :s activator
      :o activated
-     :via mechanism))
+     :via mechanism
+     :of activated))
 
 ;; bio-deactivate conflicts with bio-activate
 ;; so need to redesign the by-phrase to be uniform
@@ -116,9 +108,10 @@
   :binds ((deactivator bio-entity) (deactivated molecule))
   ::realization
    (:verb "deactivate" :noun "deactivation"
-    :etf (svo-passive of-nominal)
+    :etf (svo-passive)
     :s deactivator
-    :o deactivated))
+    :o deactivated
+    :of deactivated))
 
 
 ;;--- activity
@@ -155,42 +148,49 @@
   :realization 
   (:verb "associate"
          :noun "association"
-         :etf (svo-passive of-nominal) 
+         :etf (svo-passive) 
          :s binder
          :o  bindee
          :to bindee
          :via site
-         :with bindee))
+         :with bindee
+         :of bindee))
 
-(def-term block
-  :etf (svo of-nominal)
-  :verb "block"
-  :noun "blocking"
-  :super-category bio-process
-  :s (blocker bio-entity)
-  :o (blocked bio-process))
+(define-category block
+                 :specializes bio-process
+  :binds ((blocker bio-entity)(blocked biological))
+  :realization
+  (:verb "block"
+         :noun "blocking"
+         :etf (svo-passive)
+         :s blocker
+         :o blocked
+         :of blocked))
 
 ;; "call"  assigns a name in passive "X is called N"
 
 ;;/// "catalyysis of phosphorylation by MEK"
-(def-term catalyze
-  :super-category bio-process
-  :verb "catalyze"
-  :etf (svo-passive
-        of-nominal) 
-  :noun "catalysis"
-  :adj "catalytic"
-  :s (catalyst enzyme)
-  :o (process bio-process))
+(define-category catalyze
+  :specializes bio-process
+  :binds ((catalyst enzyme)(process bio-process))
+  :realization
+  (:verb "catalyze" :noun "catalysis" :adj "catalytic"
+         :etf (svo-passive) 
+         :s catalyst
+         :o process
+         :of process))
 
-(def-term create
-  :super-category bio-process
-  :verb "create"
-  :etf (svo-passive
-        of-nominal) 
-  :noun "creation"
-  :s (creator bio-entity)
-  :o (creation bio-entity))
+
+(define-category create
+  :specializes bio-process
+  :binds ((creator biological)(creation biological))
+  :realization
+  (:verb "create"
+         :noun "creation"
+         :etf (svo-passive) 
+         :s creator
+         :o creation
+         :of creation))
 
 (define-category bio-drive
   :specializes bio-process
@@ -214,40 +214,41 @@
   :realization
   (:verb "encode"
    :noun "encoding"
-   :etf (svo ;;-passive
-        of-nominal)
+   :etf (svo-passive)
    :s encoder
-   :o encoded))
+   :o encoded
+   :of encoded))
 
 (define-category bio-enhance
   :specializes bio-process
   :binds ((agent biological) (process bio-process)(mechanism biological))
   :realization 
   (:verb "enhance" :noun "enhancement"
-   :etf (svo  ;;-passive 
-         of-nominal)
+   :etf (svo-passive)
    :s agent
    :o process
-   :via mechanism))
+   :via mechanism
+   :of process))
  
-(def-term form
-  :super-category bio-process
-  :verb "form"
-  :etf (svo-passive
-        of-nominal) 
-  :noun "formation"
-  :s (creator bio-entity)
-  :o (creation bio-entity))
+(define-category form
+  :specializes bio-process
+  :binds ((creator biological)(creation biological))
+  :realization
+  (:verb "form" :noun "formation"
+  :etf (svo-passive) 
+  :s creator
+  :o creation
+  :of creation))
 
 (define-category fraction :specializes bio-variant
-      :binds ((agent pronoun/first/plural) (basis bio-entity)) ;; this should be for genes and proteins
-      :realization
-      (:verb "fraction" ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
-             :noun "fraction"
-             :etf (svo-passive of-nominal)
-             :s agent
-             :o basis
-             :of basis))
+  :binds ((agent pronoun/first/plural) (basis bio-entity)) ;; this should be for genes and proteins
+  :realization
+  (:verb "fraction" ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
+         :noun "fraction"
+         :etf (svo-passive)
+         :s agent
+         :o basis
+         :of basis))
 ;; exchange
 
 
@@ -293,9 +294,10 @@
   :realization
     (:verb "hyperactivate" 
      :noun "hyperactivation"
-     :etf (svo-passive of-nominal)
+     :etf (svo-passive)
      :s activator
-     :o activated))
+     :o activated
+     :of activated))
 
 ;;--- "induce"
 ;; "which induce transcription of the p53 gene"
@@ -312,13 +314,14 @@
 
 (define-category increase
   :specializes bio-process
-  :binds ((agent biological) (patient bio-scalar)) ;; increase in rate vs increase in RAS activity
+  :binds ((agent biological) (patient bio-scalar)(theme biological)) ;; increase in rate vs increase in RAS activity
   :realization
   (:verb "increase" ;; :noun "increase"
          :etf (svo-passive) ;;  of-nominal) 
          :s agent
          :o patient
-         :in patient))
+         :in patient
+         :for theme))
 
 ;;--- inhibit
 ;; "by inhibiting <p>"
@@ -344,10 +347,11 @@
   (:verb ("inhibit" :past-tense "inhibited" 
                     :present-participle "inhibiting" )
    :noun "inhibition"
-   :etf (svo-passive of-nominal)
+   :etf (svo-passive)
    :s agent
    :o patient
    :at measurement
+   :of patient
    ;; :at bio-location ;; e.g. "at a downstream target ..."
    ))
 
@@ -395,7 +399,7 @@
   :binds ((agent biological)(patient biological))  ;; mutation of gene
   :realization
   (:verb "mutate" :noun "mutation"
-   :etf (svo-passive of-nominal)
+   :etf (svo-passive)
    :s agent
    :o patient
    :of patient))
@@ -418,9 +422,10 @@
   :binds ((agent biological)(patient molecule)(site residue-on-protein) )
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
-   :etf (svo-passive of-nominal)
+   :etf (svo-passive)
    :s agent
    :o patient
+   :of patient
    :on site
    :at site))
 
@@ -430,9 +435,10 @@
   :binds ((agent biological)(patient molecule)) 
   :realization
   (:verb "dephosphorylate" :noun "dephosphorylation"
-   :etf (svo-passive of-nominal)
+   :etf (svo-passive)
    :s agent
-   :o patient))
+   :o patient
+   :of patient))
 
 #+ignore
 (define-category auto-phosphorylate
@@ -450,9 +456,10 @@
   :binds ((agent bio-entity)(patient biological))
   :realization
   (:verb   "downregulate" :noun "downregulation"
-   :etf (svo-passive of-nominal)
+   :etf (svo-passive)
    :o patient  ;; regulation of <process>
-   :s agent))
+   :s agent
+   :of patient))
 
 ;;--- "regulate"
 ;;
@@ -461,9 +468,10 @@
   :binds ((agent biological)(patient biological))
   :realization
   (:verb   "regulate" :noun "regulation"
-   :etf (svo-passive of-nominal)
+   :etf (svo-passive)
    :o patient  ;; regulation of <process>
-   :s agent))    ;; by <entity>
+   :s agent
+   :of patient))    ;; by <entity>
 
 
 (define-category dysregulate
@@ -471,9 +479,10 @@
   :binds ((agent bio-entity)(patient biological))
   :realization
   (:verb   "dysregulate" :noun "dysregulation"
-   :etf (svo-passive of-nominal)
+   :etf (svo-passive)
    :o patient  ;; dysregulation of <process>
-   :s agent))    ;; by <entity>
+   :s agent
+   :of patient))    ;; by <entity>
 
 
 
@@ -503,6 +512,8 @@
   :s agent
   :o patient))
 
+
+
 (define-category stimulate
   :specializes bio-process
   :binds ((agent bio-entity)(patient biological))
@@ -522,13 +533,15 @@
    :s agent
    :c theme))
 
-(def-term transduce
-  :super-category bio-process
-  :verb "transduce"
-  :noun "transduction" 
-  :etf (svo-passive of-nominal)
-  :s (agent bio-entity)
-  :o (patient bio-entity))
+(define-category transduce
+  :specializes  bio-process
+  :binds ((agent bio-entity)(patient bio-entity))
+  :realization
+  (:verb "transduce" :noun "transduction" 
+  :etf (svo-passive)
+  :s agent
+  :o patient
+  :of patient))
 
 
 ;; "Growth factors can turn on Ras"
@@ -1285,13 +1298,14 @@
 
 (define-category observe
     :specializes bio-process
-    :binds ((agent pronoun/first/plural)(patient biological))
+    :binds ((agent pronoun/first/plural)(patient biological)(focused-on biological))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
 	   :noun "observation"
 	   :etf (svo-passive of-nominal)
 	   :s agent
-	   :o patient))
+	   :o patient
+           :for focused-on))
 
 (define-category obtain
     :specializes bio-process
@@ -1453,7 +1467,8 @@
 (define-category investigate :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "investigate" :noun "investigation" :etf (svo-passive) :s agent :o patient)) 
 (define-category lead :specializes bio-process :binds ((agent bio-entity)(patient bio-process)) :realization (:verb "lead" :etf (svo-passive) :s agent :o patient)) 
 (define-category ligate :specializes bio-process 
-  :binds ((agent bio-entity)(patient bio-process)(substrate molecule)) 
+  :binds ((agent bio-entity)(patient bio-process)(substrate bio-entity) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+          ) 
   :realization 
   (:verb "ligate" :noun "ligation" 
          :etf (svo-passive of-nominal)
