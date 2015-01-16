@@ -204,48 +204,54 @@
   (if
    (gethash i *semtree-seen-individuals*)
    (list (list "!recursion!" i))
-   (let ((bindings (indiv-binds i))
-         (desc (list i)))
-     (setf (gethash i *semtree-seen-individuals*) t)
-     ;; Had been restricting the recursion to types with
-     ;; a subject variable: (subject-variable type), 
-     ;; but that's missing interesting noun phrase referents.
-     (dolist (b bindings)
-       (let ((var (binding-variable b))
-             (value (binding-value b)))
-         (unless (or (eq (var-name var) 'category)
-                     (typep value 'mixin-category)) ;; has-determiner
-           (cond
-            ((or (numberp value)
-                 (symbolp value)
-                 (stringp value))
-             (push
-              (list (var-name var) value)
-              desc))
-            (t
-             (typecase value
-               (individual 
-                (if (itypep value 'prepositional-phrase)
-                    (dolist (bb (indiv-binds value))
-                      (when (eq (var-name (binding-variable bb)) 'pobj)
+   (if (itypep i 'number)
+       (loop for b in (indiv-binds i)
+         when (eq 'value (var-name (binding-variable b)))
+         do
+         (return (binding-value b)))
+       
+       (let ((bindings (indiv-binds i))
+             (desc (list i)))
+         (setf (gethash i *semtree-seen-individuals*) t)
+         ;; Had been restricting the recursion to types with
+         ;; a subject variable: (subject-variable type), 
+         ;; but that's missing interesting noun phrase referents.
+         (dolist (b bindings)
+           (let ((var (binding-variable b))
+                 (value (binding-value b)))
+             (unless (or (eq (var-name var) 'category)
+                         (typep value 'mixin-category)) ;; has-determiner
+               (cond
+                ((or (numberp value)
+                     (symbolp value)
+                     (stringp value))
+                 (push
+                  (list (var-name var) value)
+                  desc))
+                (t
+                 (typecase value
+                   (individual 
+                    (if (itypep value 'prepositional-phrase)
+                        (dolist (bb (indiv-binds value))
+                          (when (eq (var-name (binding-variable bb)) 'pobj)
+                            (push (list (var-name var)
+                                        (collect-model-description (binding-value bb)))
+                                  desc)))
                         (push (list (var-name var)
-                                    (collect-model-description (binding-value bb)))
+                                    (collect-model-description value))
                               desc)))
-                    (push (list (var-name var)
-                                (collect-model-description value))
-                          desc)))
-               (word)
-               (polyword)
-               (category)
-               (cons
-                `(collection :members 
-                             (,@(loop for item in value 
-                                  collect (collect-model-description item)))))
-               (otherwise
-                (push-debug `(,value ,b ,i))
-                (break "Unexpected type of value of a binding: ~a" value))))))))
-     
-     (reverse desc))))
+                   (word)
+                   (polyword)
+                   (category)
+                   (cons
+                    `(collection :members 
+                                 (,@(loop for item in value 
+                                      collect (collect-model-description item)))))
+                   (otherwise
+                    (push-debug `(,value ,b ,i))
+                    (break "Unexpected type of value of a binding: ~a" value))))))))
+         
+         (reverse desc)))))
 
 
 
