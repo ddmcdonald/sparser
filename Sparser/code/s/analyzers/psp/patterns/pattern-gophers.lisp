@@ -121,7 +121,8 @@
       (cond
        (rule
         (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
-          (revise-form-of-nospace-edge-if-necessary edge)
+          (push-debug `(,right-edge ,edge))
+          (revise-form-of-nospace-edge-if-necessary edge right-edge)
           (tr :two-word-hyphen-edge edge)))
        ((compose-salient-hyphenated-literals ;; "re-activate"
          pattern words pos-before pos-after))
