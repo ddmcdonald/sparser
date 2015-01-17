@@ -39,7 +39,7 @@
   (loop for i from (+ 1 (car *tested*)) to (length *sentences*) 
     do 
     (push i *tested*) 
-    (dectest i)))
+    (run-test i)))
 
 (defun bad () 
   (push (car *tested*) *known-breaks*) 
@@ -202,7 +202,7 @@
       (np res))))
 
 (defun case-pps (i)
-  (progn (dectest i)
+  (progn (run-test i)
     (let
         ((res (loop for pair in (adjacent-tts) 
                 when (eq 'pp (car (edge-rep (second pair))))
