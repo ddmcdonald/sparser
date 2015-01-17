@@ -128,16 +128,27 @@
        (break "New case of head edge needing elevation: ~a" head-form)))))
 
 
-(defun revise-form-of-nospace-edge-if-necessary (edge)
+(defun revise-form-of-nospace-edge-if-necessary (edge right-edge)
+  (when (eq right-edge :find-it)
+    (setq right-edge (edge-right-daughter edge)))
+
   ;; They should all be some part of an np
-  (let ((current-form (edge-form edge)))
+  (let ((current-form (edge-form edge))
+        (form-of-last-edge (edge-form right-edge)))
+    
     (cond
      ((eq current-form category::np)
       (setf (edge-form edge) category::n-bar))
      ((or (noun-category? current-form)
           (eq current-form category::n-bar)))
      (t ;; usually it's a verbal category
-      (setf (edge-form edge) category::n-bar)))))
+      (setf (edge-form edge) category::n-bar)))
+
+    ;; But we might want to overrule that if the left edge
+    ;; of the pair carries more information
+    (when (eq form-of-last-edge category::adjective)
+      ;; and what others?  any modifier-category?
+      (setf (edge-form edge) category::adjective))))
 
 
 
