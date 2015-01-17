@@ -150,6 +150,7 @@
         (setq referent (edge-referent treetop))
 
         (when referent
+          (initalize-model-collection)
           (setq tt-contents (collect-model referent))
 
           (loop for item in tt-contents
@@ -201,17 +202,17 @@
                     collect (collect-model-description l)))))
 
 (defmethod collect-model-description ((i individual))
-  (if
-   (gethash i *semtree-seen-individuals*)
+  (if (gethash i *semtree-seen-individuals*)
    (list (list "!recursion!" i))
    (if (itypep i 'number)
-       (loop for b in (indiv-binds i)
-         when (eq 'value (var-name (binding-variable b)))
-         do
-         (return (binding-value b)))
+     (value-of 'value i)
+;     (loop for b in (indiv-binds i)
+;         when (eq 'value (var-name (binding-variable b)))
+;         do
+;         (return (binding-value b)))
        
-       (let ((bindings (indiv-binds i))
-             (desc (list i)))
+     (let ((bindings (indiv-binds i))
+           (desc (list i)))
          (setf (gethash i *semtree-seen-individuals*) t)
          ;; Had been restricting the recursion to types with
          ;; a subject variable: (subject-variable type), 
