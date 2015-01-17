@@ -359,7 +359,11 @@
              :of process
              :for components))
 (noun "ratio" :super bio-scalar)
-(noun "region" :super bio-location)
+(noun "region" :super bio-location
+      :binds ((bounds biological))
+      :realization
+      (:noun "region"
+             :between bounds))
 (noun response :super bio-process
     :binds ((beneficiary biological)(agent biological))
     :realization
