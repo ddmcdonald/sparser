@@ -198,25 +198,45 @@
     (if (and left-referent right-referent
              (legal-type-for-multiplying-referents left-referent)
              (legal-type-for-multiplying-referents right-referent))
-      (let ((left-categories 
-             (cons (edge-category left-edge)
-                   (multiple-referent-categories left-referent)))
-            (right-categories 
-             (cons (edge-category right-edge)
-                   (multiple-referent-categories right-referent))))
-        (tr :referent-categories-to-check left-categories right-categories)
-
-        (dolist (right-category right-categories)
-          (dolist (left-category left-categories)
-            ;; Add traces for these cases, or do the regular trace-edges ones
-            ;; suffice?
-            (let ((rule (multiply-referent-categories left-edge left-category 
+        ;; modified to allow for form rules to work with inherited categories of the referents
+        (let ((left-categories 
+               (cons (edge-category left-edge)
+                     (multiple-referent-categories left-referent))
+               ;;(edge-form left-edge)
+               )
+              (right-categories 
+               (cons
+                (edge-category right-edge)
+                (multiple-referent-categories right-referent))
+               ;;,(edge-form right-edge)
+               ))
+          (tr :referent-categories-to-check left-categories right-categories)
+          ;; try all semantic rules first
+          (dolist (right-category right-categories)
+            (dolist (left-category left-categories)
+              ;; Add traces for these cases, or do the regular trace-edges ones
+              ;; suffice?
+              (let ((rule (multiply-referent-categories left-edge left-category 
+                                                        right-edge right-category)))
+                (when (and
+                       rule
+                       (check-rule-form rule left-edge right-edge))
+                  (return-from multiply-referents rule)))))
+          (dolist (right-category right-categories)
+            (let ((rule (multiply-referent-categories left-edge (edge-form left-edge)
                                                       right-edge right-category)))
               (when (and
                      rule
                      (check-rule-form rule left-edge right-edge))
-                (return-from multiply-referents rule))))))
-
+                (return-from multiply-referents rule))))
+          (dolist (left-category left-categories)
+            (let ((rule (multiply-referent-categories left-edge left-category
+                                                      right-edge (edge-form right-edge))))
+              (when (and
+                     rule
+                     (check-rule-form rule left-edge right-edge))
+                (return-from multiply-referents rule))))
+          )
       (else (tr :referents-unsuitable-for-multiplying
                 left-edge right-edge left-referent right-referent)
             nil))))
