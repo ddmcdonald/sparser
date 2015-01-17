@@ -103,7 +103,7 @@
             (tr :ns-segment-layout layout)
             (cond
              ((eq layout :single-span)  ;; Do nothing. It's already known
-              (revise-form-of-nospace-edge-if-necessary edge))
+              (revise-form-of-nospace-edge-if-necessary edge :find-it))
              ((memq :slash pattern)
               (tr :ns-looking-at-slash-patterns)
               (divide-and-recombine-ns-pattern-with-slash 
@@ -183,7 +183,6 @@
             :form (category-named 'proper-name)
             :referent referent
             :words words)))
-      (revise-form-of-nospace-edge-if-necessary edge)
       (tr :made-edge edge)
       edge)))
 

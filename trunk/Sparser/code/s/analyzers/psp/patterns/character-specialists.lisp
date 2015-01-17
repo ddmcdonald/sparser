@@ -47,7 +47,7 @@
           (if rule
             (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
               ;;//// trace goes here
-              (revise-form-of-nospace-edge-if-necessary edge))
+              (revise-form-of-nospace-edge-if-necessary edge right-edge))
             (else ;; make a structure if all else fails
               ;; but first alert to anticipated cases not working
               (unless (or (word-p left-edge) (word-p right-edge))
