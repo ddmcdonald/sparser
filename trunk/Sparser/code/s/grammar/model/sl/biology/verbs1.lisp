@@ -315,15 +315,32 @@
 
 (define-category increase
   :specializes bio-process
-  :binds ((agent biological) (object bio-scalar)(theme biological)) ;; increase in rate vs increase in RAS activity
+
+  :binds ((agent biological) 
+          (object bio-scalar)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+
   :realization
   (:verb "increase" ;; :noun "increase"
          :etf (svo-passive) ;;  of-nominal) 
          :s agent
          :o object
-         :in object
+ ;;        :in object
          :for theme))
 
+;; January
+; "observed an order of magnitude increase in the rate of GTP hydrolysis"
+; "No increase in the rate of GTP hydrolysis"
+; "monoubiquitination increases the population of active, GTP–bound Ras"
+; monoubiquitination increases the proportion of Ras ...
+;  monoubiquitination decreases ..
+; #41 "leads to its increased translocation to the cytosol/nucleus and increased binding to p53"
+#|
+;;//// look at change in amount for how to do measures
+(def-synonym increase
+  (:noun "increase"
+   :in object))
+|#
 ;;--- inhibit
 ;; "by inhibiting <p>"
 
