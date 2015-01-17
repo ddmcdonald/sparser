@@ -216,6 +216,10 @@
   :referent 
   (:head right-edge :bind (quantifier left-edge)))
                    
-
-
+(def-form-rule (quantifier protein) 
+               :head :right-edge 
+  :form n-bar ;; requires a determiner 
+  :referent 
+  (:head right-edge :bind (quantifier left-edge)))
+                   
 
