@@ -16,6 +16,7 @@
 ;;  elevation of segment edge of verb cases to vg from VP. 
 ;;  (1/23/12) cleaned up. Trying to find duplication. 4/1/13 found it.
 ;;  (4/14/14) Added case to generalize-segment-edge 
+;; 1/17/2015 make the segment edge for "GTP-mediated" a verb+ed
 
 
 (in-package :sparser)
@@ -137,6 +138,9 @@
         (form-of-last-edge (edge-form right-edge)))
     
     (cond
+     ((verb-category? form-of-last-edge)
+      ;; as in January sentnece 1 "GAP–mediated hydrolysis"
+      (setf (edge-form edge) form-of-last-edge))
      ((eq current-form category::np)
       (setf (edge-form edge) category::n-bar))
      ((or (noun-category? current-form)
