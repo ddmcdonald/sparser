@@ -55,7 +55,7 @@
                    :form category::n-bar
                    :referent i
                    :constituents `(,left-edge ,right-edge))))
-        (revise-form-of-nospace-edge-if-necessary edge)
+        (revise-form-of-nospace-edge-if-necessary edge right-edge)
         (tr :two-hyphen-default-edge edge)
         edge)))
 
@@ -84,7 +84,7 @@
                    :form category::n-bar
                    :referent i
                    :constituents `(,left-edge ,middle-edge ,right-edge))))
-        (revise-form-of-nospace-edge-if-necessary edge)
+        (revise-form-of-nospace-edge-if-necessary edge hright-edge)
         (tr :three-hyphen-default-edge edge)
         edge)))
                              
@@ -154,16 +154,15 @@
   (push-debug `(,edges ,words ,start-pos ,end-pos))
   (let* ((elements (loop for edge in edges
                      collect (edge-referent edge)))
-         (i (find-or-make-individual 'slashed-sequence
-                                     :items elements))
+         (i (find-or-make-individual 'slashed-sequence :items elements))
          (common-category
           (when (eq (edge-category (first edges))
                     (edge-category (second edges))) ;; makes a trend
             (edge-category (first edges)))))
-
     (when common-category
       (bind-variable 'type (edge-category (first edges)) i
                      category::slashed-sequence))
+
     (let ((edge (make-edge-over-long-span
                  start-pos
                  end-pos
@@ -173,7 +172,7 @@
                  :form category::proper-noun
                  :referent i
                  :constituents edges)))
-      (revise-form-of-nospace-edge-if-necessary edge)
+      (revise-form-of-nospace-edge-if-necessary edge (third edges))
       ;;/// trace
       edge)))
 
