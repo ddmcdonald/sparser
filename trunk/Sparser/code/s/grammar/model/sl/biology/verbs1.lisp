@@ -854,10 +854,16 @@
     :realization
   (:verb "influence" ;; keyword: ENDS-IN-ING 
          :noun "influence"
-         :etf (svo-passive of-nominal)
+         :etf (svo-passive)
          :s agent
          :o object
          :via mechanism))
+#+ignore
+(define-synonym influence
+     :realization
+  (:noun "influence"
+         :of agent
+         :on object))
 
 (define-category interfere
     :specializes bio-process
