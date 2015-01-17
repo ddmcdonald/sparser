@@ -45,6 +45,7 @@
 
 (defun ddm-trap-new-words-write-sentence ()
   (ddm-ed "interface/grammar/sweep.lisp")
+  (ddm-ed "analyzers/char-level/display1.lisp")
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
 
 (defun ddm-generalize-test ()
