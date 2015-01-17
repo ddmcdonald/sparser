@@ -146,6 +146,9 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 (defmacro define-additional-realization (category &body rdata)
   `(define-additional-realization/expr ',category ',rdata))
 
+(defmacro def-synonym (category &body rdata)
+  `(define-additional-realization/expr ',category ',rdata))
+
 (defmethod define-additional-realization/expr ((category symbol) rdata)
   (if (category-named category)
     (define-additional-realization/expr (category-named category) rdata) ;; nil overrides delete?
@@ -153,7 +156,7 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 (defmethod define-additional-realization/expr ((category referential-category) rdata)
   (if (includes-def-realization-keyword rdata)
-    (break "Stub -- get David to finish it")
+    (apply #'decode-realization-parameter-list category rdata)
     (setup-rdata category rdata nil)))
 
 
