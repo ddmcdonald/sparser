@@ -74,7 +74,9 @@
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
   (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
-  (ddm-ed "grammar/model/sl/biology/switches.lisp"))
+  (ddm-ed "grammar/model/sl/biology/switches.lisp")
+  (ddm-ed "grammar/model/sl/biology/rules.lisp")
+)
 ;;  molecules and NGkappB not loaded
 
 (defun ddm-new-parsing-ws ()
@@ -199,6 +201,11 @@
   (ddm-ed "grammar/rules/situation/rules.lisp"))
   
 
+;; promulgate being able to abort edges and form-form
+;; updates to all edge creators
+(defun ddm-edge-makers ()
+  (ddm-ed "analyzers/psp/edges/binary-explicit-all-keys2.lisp")
+)
 
 ;;--- 1/6/14
 ; The short cut realization handler, decode-realization-parameter-list
