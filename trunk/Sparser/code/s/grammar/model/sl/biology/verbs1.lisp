@@ -335,12 +335,13 @@
 ; monoubiquitination increases the proportion of Ras ...
 ;  monoubiquitination decreases ..
 ; #41 "leads to its increased translocation to the cytosol/nucleus and increased binding to p53"
-#|
+
 ;;//// look at change in amount for how to do measures
 (def-synonym increase
   (:noun "increase"
    :in object))
-|#
+
+
 ;;--- inhibit
 ;; "by inhibiting <p>"
 
