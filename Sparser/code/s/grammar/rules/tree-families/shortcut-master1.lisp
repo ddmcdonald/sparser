@@ -169,7 +169,8 @@
                                                s o c m ;; arguments
                                                prep ;; owned preposition
                                                by ;; for passive
-                                               as at between for from in of on  to thatcomp through via with ;; prepositions
+                                               as at between for from in of on  to ;; prepositions
+                                               thatcomp through via with 
                                                )
   (if etf
     (typecase etf
@@ -248,15 +249,17 @@
     (when noun ;; a noun can just expect to get all the pp's w/o an etf
       (unless (assq :common-noun word-map)
         ;; if it's on the map then the realization machinery will expand it
-        (let ((word (resolve/make noun)))
-          (make-cn-rules/aux word category category)))
+        (let* ((word (resolve/make noun))
+               (cn-rules (make-cn-rules/aux word category category)))
+          (add-rules-to-category category cn-rules)))
       (unless etf ;; where they were already handled
         (handle-prepositions category as at between for from in of on to thatcomp through via with)))
 
     (when adj
       (unless (assq :adjective word-map)
-        (let ((word (resolve/make adj)))
-          (make-rules-for-adjectives word category category)))
+        (let* ((word (resolve/make adj))
+               (adj-rules (make-rules-for-adjectives word category category)))
+          (add-rules-to-category category adj-rules)))
       (when s  ;; subject
         (let* ((var (variable/category s category))
                (v/r (var-value-restriction var)))
@@ -269,9 +272,9 @@
         (handle-prepositions category as at between for from in of on 
                              to thatcomp through via with)))
 
-    (push-debug `(,category ,etf ,substitution-map ,word-map))
 
     (when (or etf substitution-map word-map)
+      (push-debug `(,category ,etf ,substitution-map ,word-map))
       ;; if we go in here for just a noun or an adjective, 
       ;; there may be nothing for this call to do
       (apply-rdata-mappings category etf
