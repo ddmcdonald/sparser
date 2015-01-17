@@ -250,8 +250,9 @@
         ;; if it's on the map then the realization machinery will expand it
         (let ((word (resolve/make noun)))
           (make-cn-rules/aux word category category)))
-      (unless etf
+      (unless etf ;; where they were already handled
         (handle-prepositions category as at between for from in of on to thatcomp through via with)))
+
     (when adj
       (unless (assq :adjective word-map)
         (let ((word (resolve/make adj)))
@@ -264,21 +265,25 @@
         (let* ((var (variable/category o category))
                (v/r (var-value-restriction var)))
           (assign-object category v/r var)))
-      
       (unless etf
-        (handle-prepositions category as at between for from in of on to thatcomp through via with)))
+        (handle-prepositions category as at between for from in of on 
+                             to thatcomp through via with)))
 
     (push-debug `(,category ,etf ,substitution-map ,word-map))
-    ;; (break "look at inputs")
-    (apply-rdata-mappings category etf
-                          :args substitution-map 
-                          :word-keys word-map)
+
+    (when (or etf substitution-map word-map)
+      ;; if we go in here for just a noun or an adjective, 
+      ;; there may be nothing for this call to do
+      (apply-rdata-mappings category etf
+                            :args substitution-map 
+                            :word-keys word-map))
 
     category))
 
 
 
-(defun handle-prepositions (category &optional as at between for from in of on to thatcomp through via with)
+(defun handle-prepositions (category &optional as at between for from in 
+                                     of on to thatcomp through via with)
   (when as
     (subcategorize-for-preposition category "as" as))
   (when at
