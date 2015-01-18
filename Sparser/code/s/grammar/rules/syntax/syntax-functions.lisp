@@ -36,30 +36,27 @@
   (when nil
     (push-debug `(,qualifier ,head)) 
     (break "check: qualifier = ~a~
-          ~%       head = ~a" qualifier head))
-
+   ~%       head = ~a" qualifier head))
+  (if (category-p head)
+      (setq head (make-individual-for-dm&p head))
+      (setq head (copy-individual head)))
   (or (call-compose qualifier head)
-      ;; This case is to benefit marker-categories
-
-      (else
-       (when (category-p head)
-         (setq head (make-individual-for-dm&p head)))
-       (call-compose qualifier head))
-
+      ;; This case is to benefit marker-categories 
       (if (itypep head 'process) ;; poor man's standing for verb?
-        (then
-         (let ((variable (object-variable head)))
-           (if variable ;; really should check for passivizing
-             (bind-variable variable qualifier head)
-             ;; otherwise it's not obvious what to bind
-             (else 
-              (bind-variable 'modifier qualifier head)))
-           head))
-        (else
-         ;; what's the right relationship? Systemics would say 
-         ;; they are qualifiers, so perhaps subtype? 
-         (bind-variable 'modifier qualifier head) ;; safe
-         head))))
+          (then
+            
+            (let ((variable (object-variable head)))
+              (if variable ;; really should check for passivizing
+                  (bind-variable variable qualifier head)
+                  ;; otherwise it's not obvious what to bind
+                  (else 
+                    (bind-variable 'modifier qualifier head)))
+              head))
+          (else
+            ;; what's the right relationship? Systemics would say 
+            ;; they are qualifiers, so perhaps subtype? 
+            (bind-variable 'modifier qualifier head) ;; safe
+            head))))
 
 (defun adj-noun-compound (qualifier head)
   (declare (special qualifier head))
@@ -68,16 +65,17 @@
   (when nil
     (push-debug `(,qualifier ,head)) 
     (break "check: qualifier = ~a~
-          ~%       head = ~a" qualifier head))
+   ~%       head = ~a" qualifier head))
   
   (cond ((call-compose qualifier head));; This case is to benefit marker-categories     
         ((category-p head)
          (setq head (make-individual-for-dm&p head))
          (or
           (call-compose qualifier head)
-          (progn (bind-variable 'modifier qualifier head) 
-            head)))
+          (bind-variable 'modifier qualifier head))
+         head)
         (t
+         (setq head (copy-individual head))
          (bind-variable 'modifier qualifier head) ;; safe
          head)))
 
@@ -89,24 +87,29 @@
   (when nil
     (push-debug `(,qualifier ,head)) 
     (break "check: qualifier = ~a~
-          ~%       head = ~a" qualifier head))
-
+   ~%       head = ~a" qualifier head))
+  
   (or (call-compose qualifier head)
       ;; This case is to benefit marker-categories
-      (when (category-p head)
+      (cond
+       ((category-p head)
         (setq head (make-individual-for-dm&p head))
         (or
          (call-compose qualifier head)
          (link-in-verb qualifier head)))
-      (link-in-verb qualifier head)))
+       (t
+        (setq head (copy-individual head))
+        (link-in-verb qualifier head)))))
 
 (defun link-in-verb (qualifier head)
+  ;;head is already copied
   (declare (special qualifier head))
   ;;(break "link-in-verb")
   (let ((object (object-variable qualifier)))
-    (when
+    (if
         (category-p qualifier)
-      (setq qualifier (make-individual-for-dm&p qualifier)))
+      (setq qualifier (make-individual-for-dm&p qualifier))
+      (setq qualifier (copy-individual qualifier)))
     (if object ;; really should check for passivizing
         (bind-variable object head qualifier))
     (bind-variable 'modifier qualifier head)
@@ -135,6 +138,7 @@
   (or (value-of 'aspect vg)
       (let ((i (make/individual 
                 (category-named 'tense/aspect-vector) nil)))
+        (setq vg (copy-individual vg))
         (bind-variable 'aspect i vg)
         i)))
 
@@ -195,6 +199,7 @@
 ;;;-----------------
 
 (defun vg-plus-adjective (vg adj)
+  (setq vg (copy-individual vg))
   (let ((var (object-variable vg)))
     (if var
       (bind-variable var adj vg)
@@ -212,6 +217,7 @@
   ;;/// so there should be a compose method to deal with that
   
   ;; default
+  (setq vg (copy-individual vg))
   (bind-variable 'manner adverb vg)
   vg)
 
@@ -261,6 +267,7 @@
     (cond
      (*subcat-test* variable-to-bind)
      (t
+      (setq vg (copy-individual vg))
       (bind-variable variable-to-bind pp vg)
       vg))))
 
@@ -326,6 +333,7 @@
         (cond
          (*subcat-test* variable-to-bind)
          (t
+          (setq np (copy-individual np))
           (bind-variable variable-to-bind pp np)
           np)))))
 
@@ -343,6 +351,7 @@
     (cond
      (*subcat-test* variable-to-bind)
      (t
+      (setq vp (copy-individual vp))
       (bind-variable variable-to-bind subj vp)
       vp))))
 
