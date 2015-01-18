@@ -267,10 +267,16 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :form relative-clause
   :referent (:function compose-wh-with-vp left-edge right-edge))
 
+#+ignore
 (def-syntax-rule (np relative-clause)
                  :head :left-edge
   :form np
   :referent (:function assimilate-appositive left-edge right-edge))
+
+(def-syntax-rule (np relative-clause)
+                 :head :left-edge
+  :form np
+  :referent (:function apply-subject-relative-clause left-edge right-edge))
 
 (def-syntax-rule (np vp)
   :head :right-edge
