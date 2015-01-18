@@ -292,18 +292,24 @@
     collect form))
 
 (defun compatible-edge-form? (edge form ev-list)
+  (declare (special edge form ev-list))
   (case
       form 
     (ng
      (and
-      (ng-compatible? edge ev-list)
+      (ng-compatible? edge ev-list)      
       (or
-       (not (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge))))
+       (not 
+        (and (edge-form edge) ;; COMMA has no edge-form
+             (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge)))))
        ;; new code -- don't accept a past participle immediately following a noun 
        ;; -- most likely to be a main verb or a reduced relative in this case
-       (loop for e in (ev-edges (car ev-list))
+       (not 
+        (loop for e in (ev-edges (car ev-list))
          thereis
-         (memq (cat-symbol (edge-form e)) *N-BAR-CATEGORIES*)))))
+          (and
+           (edge-form e)
+           (memq (cat-symbol (edge-form e)) *N-BAR-CATEGORIES*)))))))
     (vg (vg-compatible? edge))
     (adjg (adjg-compatible? edge))))
 
@@ -337,6 +343,10 @@
         thereis
         (eq category::pronoun (edge-form edge))))
      (cond
+      ((eq word::comma (edge-category e))
+       ;;comma can come in the middle of an NP chunk
+       ;; as in "active, GTP-bound Ras"
+       (not (null evlist)))
       ((eq category::verb+ed (edge-form e))
        (not (eq (edge-category e) category::have))) ;; "had" is not an NP constituent
       ((eq category::verb+ing (edge-form e))
