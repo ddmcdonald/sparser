@@ -174,7 +174,7 @@
     (progn 
       (reset-rows)
       (if to-file
-          (write-csv-output)
+          (write-dec-csv-output)
         (dolist (tst *dec-tests*) (dtst1 n tst t))
         ))))
 
@@ -183,19 +183,32 @@
     (print (list n test))
     (cond ((member n *ignored-sentences*) (format t "~%Skipping sentence ~d because of known problems" n))
           (t 
-           (let ((tested nil))
-;             (handler-case 
-                 (progn (eval test)
-                   (setq tested t))
-;               (condition (condition) (values nil condition))
-;                )
-             (if tested (output-relations n (second test) stream)
-                 (format t "~%Sentence ~d caused an error" n))
+           (let ((tested nil)
+                 (*readout-relations* t))
+             (declare (special *readout-relations*))
+             (eval test)
+             (output-relations n (second test) stream)
            ))))
 
 ;;; (identify-relations *sentence*) returns (values relations entities)
 
-(defun write-csv-output (&optional (file "dec-out.csv"))
+(defun now-string ()
+    (multiple-value-bind (second minute hour date month year ) ;day-of-week dst-p tz
+      (get-decoded-time)
+      (format nil "~2,'0d-~2,'0d-~2,'0d-~2,'0d~2,'0d" month date (mod year 100) hour minute)))
+
+(defun test-file-with-time (&optional (name "dec-out") (ext "csv"))
+  (declare (special cl-user::*nlp-home*))
+  (merge-pathnames (format nil "Sparser/code/s/interface/R3-eval/~a-~a.~a" name (now-string) ext)
+                   cl-user::*nlp-home*))
+
+
+(defun write-dec-csv-output (&optional (file (test-file-with-time "dec-out" "csv")))
   (with-open-file (s file :direction :output :if-exists :supersede)
     (loop for tst in *dec-tests* for n from 1 do (dtst1 n tst s))))
+
+
+
+
+
 
