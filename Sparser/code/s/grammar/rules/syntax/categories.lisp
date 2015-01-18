@@ -514,6 +514,7 @@
 (defmethod adjg-compatible? ((e edge))
   (or
    (adjg-compatible? (edge-form e))
+   (eq category::be (edge-category e))
    (eq category::not (edge-category e))))
 
 (defmethod adjg-compatible? ((c referential-category))
