@@ -66,6 +66,7 @@
 ;;;---------------
 
 (defun initialize-discourse-history ()
+  (setq *lifo-instance-list* nil)
   (clrhash *objects-in-the-discourse*))
  #| Attempting to deallocate the kconses is leading to circularities
     in the kcons resource, so for the moment just flushing the whole
@@ -205,7 +206,8 @@
                (when category
                  ;; there's a Nil in the list sometimes
                  (update-categorys-discourse-history 
-                  category obj start-pos end-pos))))))
+                  category obj start-pos end-pos)))
+             (record-instance-within-sequence obj edge))))
 
         (referential-category )
         (mixin-category )
@@ -262,6 +264,67 @@
            category instance start-pos end-pos))
         
         category ))))
+
+
+;;;-----------------------------
+;;; sequential list of DH items
+;;;-----------------------------
+; Can be stored on the sentence and cleared between them.
+; Provides structure to walk for itentifying unsaturated individuals
+; and organizing the search for their missing terms
+
+(defvar *lifo-instance-list* nil
+  "Holds individuals in right-to-left order")
+
+(defun record-instance-within-sequence (i edge)
+  ;; called from add-subsuming-object-to-discourse-history 
+  (flet ((store-on-lifo (i edge)
+           (when t
+             (format t "~&Storing ~a" i))
+           (push `(,i ,edge) *lifo-instance-list*)))
+    (let ((prior-mention (assq i *lifo-instance-list*)))
+      (if prior-mention
+        (unless (new-mention-subsumes-old? prior-mention edge)
+          (store-on-lifo i edge))
+        (store-on-lifo i edge)))))
+
+(defun new-mention-subsumes-old? (prior-mention edge)
+  ;; used by record-instance-within-sequence to do what
+  ;; extend-entry-in-discourse-history does without an edge
+  (let ((prior-edge (cadr prior-mention)))
+    (when (edge-subsumes-edge? edge prior-edge)
+      (rplaca (cdr prior-mention)
+               edge)
+      t)))
+
+;;--- sweep over list look for something unsaturated
+#| There's a reasonable model of saturation in terms of bound
+and free variables on the lattice point of a psi. The function
+saturated? is a good entry point. |#
+
+; (setq *scan-for-unsaturated-individuals* t)
+
+(defun sweep-for-unsaturated-individuals (sentence)
+  (push-debug `(,sentence)) ;;/// extend containers to hold this
+  (dolist (pair *lifo-instance-list*)
+    (let ((open-variables (unsaturated? (car pair))))
+      
+)))
+
+
+(defun unsaturated? (i)
+  (let* ((category (itype-of i))
+         (variables (cat-slots category))
+         (bindings (indiv-binds i)))
+    (when variables
+      (let* ((bound (loop for b in bindings
+                      collect (binding-variable b)))
+             (open (loop for v in variables
+                     unless (memq v bound)
+                     collect v)))
+        open))))
+
+
 
 
 ;;;--------
@@ -385,8 +448,6 @@
           (t ;; a new object of this type
            (new-object-of-established-category
             category entry individual start-pos end-pos)))))
-
-
 
 
 ;;;--------------------
