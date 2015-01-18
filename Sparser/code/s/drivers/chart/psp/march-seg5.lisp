@@ -58,7 +58,9 @@
     (when *save-chunk-edges*
       (push (loop for edge in *chunk-edges* 
               collect 
-              (list (intern (symbol-name (cat-symbol (edge-form edge))))
+              (list (and
+                     (edge-form edge)
+                     (intern (symbol-name (cat-symbol (edge-form edge)))))
                     (let ((str (edge-string edge)))
                       (subseq str 0 (- (length str) 1)))))
             *all-chunk-edges*))
