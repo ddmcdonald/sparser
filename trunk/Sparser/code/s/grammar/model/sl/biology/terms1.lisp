@@ -28,64 +28,66 @@
 ;;;------------
 ;;; adjectives
 ;;;------------
+(define-category predicate :specializes modifier
+  :binds ((negation)))
 
-(adj "able" ;; #33  -- but not working. Timing???
+(adj "able" :super predicate ;; #33  -- but not working. Timing???
   :binds ((enabled biological)(result biological))
   :realization 
   (:to result
        :s enabled))
 
-(adj "close" :super modifier)
+(adj "close" :super predicate)
 
-(adj "critical" 
+(adj "critical" :super predicate
   :binds ((theme bio-entity))
   :realization (:for theme))
 
 
-(adj "common"
+(adj "common" :super predicate
   :binds ((theme bio-entity))
   :realization (:to theme))
 
-(adj "cultured")
+(adj "cultured" :super predicate)
 
 (adj "deadliest") ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
 
 
-(adj "downstream"
+(adj "downstream" :super predicate
   :binds ((theme bio-entity))
   :realization (:for theme
                 :from theme
                 :of theme))
 
-(adj "enzymatic")
+(adj "enzymatic" :super predicate)
 
-(adj "initial")
+(adj "initial" :super predicate)
 
-(adj "low" :super modifier)
+(adj "low" :super predicate)
 
-(adj "molecular") ;; It's realated to molecule, but how exactly? Seems wrong to jump to "is made of molecules"
+(adj "molecular" :super predicate) ;; It's realated to molecule, but how exactly? Seems wrong to jump to "is made of molecules"
 
 
-(adj "prior"
+(adj "prior" :super predicate
   :binds ((event . bio-process))
   :realization (:to event))
 
-(adj "responsible" ;; adj/noun "resposibility"
+(adj "responsible" :super predicate ;; adj/noun "resposibility"
   :binds ((theme bio-entity))
   :realization (:for theme))
 
-(adj "selective"
+(adj "selective" :super predicate
   :binds ((theme bio-entity))
   :realization (:for theme))
 
-(adj "similar"
+(adj "similar" :super predicate
   :binds ((item biological)(compared-to biological))
   :realization 
   (:s item
       :to compared-to))
 
-(adj "potent"
+(adj "potent" :super predicate
   :binds ((theme bio-entity))
   :realization (:for theme))
 
@@ -98,24 +100,24 @@
      :realization 
      (:adj "active"
            :s molecule))
-(adj "anticancer")
-(adj "biophysical" :super modifier)
+(adj "anticancer" :super predicate)
+(adj "biophysical" :super predicate)
 
-(adj "candidate" )
-(adj "chemical") ;; keyword: (al ADJ) 
-(adj "combinatorial" :super modifier) ;; keyword: (al ADJ) 
-(adj "comparable" :super modifier) ;; keyword: (able ADJ) 
-(adj "conserved" :super modifier) ;; virtually never used as a verb
-(adj "de novo" :super modifier)
-(adj "dead")
-(adj "dependent" :super modifier) ;; keyword: (ent ADJ) 
-(adj "ectopic" :super modifier) ;; keyword: (ic ADJ) 
-(adj "effective" :super modifier) ;; keyword: (ive ADJ) 
-(adj "endogenous" :super modifier) ;; keyword: (ous ADJ) 
-(adj "further")
-(adj "genetic") ;; keyword: (al ADJ) 
-(adj "high")
-(adj "identical" :super modifier
+(adj "candidate" :super predicate )
+(adj "chemical" :super predicate) ;; keyword: (al ADJ) 
+(adj "combinatorial" :super predicate) ;; keyword: (al ADJ) 
+(adj "comparable" :super predicate) ;; keyword: (able ADJ) 
+(adj "conserved" :super predicate) ;; virtually never used as a verb
+(adj "de novo" :super predicate)
+(adj "dead" :super predicate)
+(adj "dependent" :super predicate) ;; keyword: (ent ADJ) 
+(adj "ectopic" :super predicate) ;; keyword: (ic ADJ) 
+(adj "effective" :super predicate) ;; keyword: (ive ADJ) 
+(adj "endogenous" :super predicate) ;; keyword: (ous ADJ) 
+(adj "further" :super predicate)
+(adj "genetic" :super predicate) ;; keyword: (al ADJ) 
+(adj "high" :super predicate)
+(adj "identical" :super predicate
      :binds ((basis biological)
              (comparator biological))
      :realization
@@ -123,45 +125,49 @@
            :s basis
            :to comparator))
 
-(adj "in vitro" :super modifier)
-(adj "inactive" :super modifier) ;; keyword: (ive ADJ) 
-(adj "inducible") ;; keyword: (ible ADJ) 
-(adj "ineffective" :super modifier) ;; keyword: (ive ADJ) 
-(adj "integrative" :super modifier) ;; keyword: (ive ADJ) 
-(adj "intriguing" :super modifier) ;; keyword: ENDS-IN-ING 
-(adj "kinase-dead" :super modifier)
-(adj "kinetic" :super modifier)
-(adj "long")
-(adj "lon-term")
-(adj "measurable") ;; keyword: (able ADJ) 
-(adj "mekindependent" :super modifier) ;; keyword: (ent ADJ) 
-(adj "mutual" :super modifier) ;; keyword: (al ADJ) 
-(adj "native" :super modifier)
-(adj "parallel")
-(adj "pharmacological" :super modifier) ;; keyword: (al ADJ) 
-(adj "present" :super modifier) ;; keyword: (ent ADJ) 
-(adj "putative" :super modifier)
-(adj "recombinant" )
-(adj "relative" :super modifier
+(adj "in vitro" :super predicate)
+(adj "inactive" :super molecule-state
+     :binds ((molecule molecule))
+     :realization 
+     (:adj "inactive"
+           :s molecule))
+(adj "inducible" :super predicate) ;; keyword: (ible ADJ) 
+(adj "ineffective" :super predicate) ;; keyword: (ive ADJ) 
+(adj "integrative" :super predicate) ;; keyword: (ive ADJ) 
+(adj "intriguing" :super predicate) ;; keyword: ENDS-IN-ING 
+(adj "kinase-dead" :super predicate)
+(adj "kinetic" :super predicate)
+(adj "long" :super predicate)
+(adj "lon-term" :super predicate)
+(adj "measurable" :super predicate) ;; keyword: (able ADJ) 
+(adj "mekindependent" :super predicate) ;; keyword: (ent ADJ) 
+(adj "mutual" :super predicate) ;; keyword: (al ADJ) 
+(adj "native" :super predicate)
+(adj "parallel" :super predicate)
+(adj "pharmacological" :super predicate) ;; keyword: (al ADJ) 
+(adj "present" :super predicate) ;; keyword: (ent ADJ) 
+(adj "putative" :super predicate)
+(adj "recombinant" :super predicate )
+(adj "relative" :super predicate
      :binds ((comparator biological))
      :realization
      (:to comparator))
-(adj "refractory" :super modifier) ;; keyword: (ory ADJ) 
-(adj "specific" :super abstract
+(adj "refractory" :super predicate) ;; keyword: (ory ADJ) 
+(adj "specific" :super predicate :super abstract
      :binds ((situation biological))
      :realization
      (:adj "specific"
            :to situation))
-(adj "suitable" :super modifier)
-(adj "supplementary" :super modifier) ;; keyword: (ary ADJ)
-(adj "unclear" :super modifier)
-(adj "unmodified" :super modifier)
-(adj "useful" :super modifier
+(adj "suitable" :super predicate)
+(adj "supplementary" :super predicate) ;; keyword: (ary ADJ)
+(adj "unclear" :super predicate)
+(adj "unmodified" :super predicate)
+(adj "useful" :super predicate
      :binds ((purpose bio-process))
      :realization
      (:adj "useful"
            :for purpose))
-(adj "wild-type")
+(adj "wild-type" :super predicate)
 
 
 (define-adjective "physiological")
@@ -247,6 +253,11 @@
 ;;(noun "data" :super bio-entity)
 (noun "cytosol" :super cellular-location)
 (def-bio "data" bio-entity) ;; need something better
+(noun "defect" :super predicate
+      :binds ((defective biological))
+      :realization 
+      (:NOUN "defect"
+             :in defective))
 (noun "derivative" :super molecule)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
 (noun "difference" :super biological ;;THIS IS DONE SIMPLY TO ALLOW THE VERB ALTER TO TAKE DIFFERENCE AS A SUBJECT
@@ -446,7 +457,7 @@
              :of item
              :to agent)) ;; keyword: (ity N) 
 
-(adj "sensitive" :super modifier
+(adj "sensitive" :super predicate
       :binds ((item biological)(agent biological))
       :realization
       (:adj "sensitive"
@@ -458,7 +469,7 @@
       (:noun "insensitivity"
              :of item
              :to agent))
-(adj "insensitive" :super modifier
+(adj "insensitive" :super predicate
       :binds ((item biological)(agent biological))
       :realization
       (:adj "insensitive"
@@ -474,14 +485,14 @@
 
 
 ;;--- ddm 12/18/14 hacked phrases to 'get through' more text
-(adj "least-selective")
-(adj "long-term") ;; #51 "effective long-term treatment strategies"
+(adj "least-selective" :super predicate)
+(adj "long-term" :super predicate) ;; #51 "effective long-term treatment strategies"
 (noun "serine/threonine") ;; want to get NG from "the serine/threonine kinase"
 ;; not sure of this -- was def-bio, but that now fails
 (noun "C-RAF:B-RAF" :super heterodimer)
 
 ;; UGLY -- but avoids a break
-(adj "our")
+(adj "our" :super predicate)
 
 
 (noun "G-domain" :super protein-segment) ;; somehow (def-bio "G-domain" protein-segment) did not work
@@ -598,7 +609,7 @@
 ;;need prep cases
 ;;noun
 ;;;POTENTIAL AMBIGUITIES TO BE SUPPRESSED
-"express";;ambiguous between (ADJECTIVE ADVERB NOUN VERB)
+"express";;ambiguous between (ADJECTIVE :super predicate ADVERB NOUN VERB)
 "show";;ambiguous between (NOUN VERB)
 "describe"
 "paradigm"
@@ -609,7 +620,7 @@
 "escape";;ambiguous between (NOUN VERB)
 "fate";;ambiguous between (NOUN VERB)
 "membrane"
-"complex";;ambiguous between (ADJECTIVE NOUN)
+"complex";;ambiguous between (ADJECTIVE :super predicate NOUN)
 "scaffold"
 "know";;ambiguous between (NOUN VERB)
 "component";;ambiguous between (ADJECTIVE NOUN)
