@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2011-2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "construct"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   1.5 March 2012
+;;;   Version:   1.6 January 2015
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 1.0 (10/23) promulgated the fact that the rules for polywords are
@@ -23,6 +23,8 @@
 ;;      (which is set when working from an ETF).
 ;; 1.5 (11/22/11) Letting a stipulated schema pass through the parameters.
 ;;     (3/16/12) quiet the compiler
+;; 1.6 (1/17/15) Modified changes-to-known-rule to react to a parametr
+;;      and define a new rule rather than modifining the old one. 
 
 
 (in-package :sparser)
@@ -50,9 +52,14 @@
     cfr ))
 
 
+(defparameter *deliberate-duplication* nil
+  "There are words such as 'increase' that have both noun and verb
+   readings for the same spelling form. In these cases the lhs and
+   rhs will be the same (redefinition-of-rule) but we want the new
+   rule to be created nevertheless.")
 
 
-(defun changes-to-known-rule (cfr lhs form referent
+(defun changes-to-known-rule (cfr lhs rhs form referent source
                               &optional schema-to-use)
 
   ;; Called from def-cfr/expr and define-cfr when the righthand side
@@ -65,7 +72,8 @@
   ;; duplications.
   ;;    So when the cfr is a list we have to locate and work on
   ;; the rule with the appropriate lhs.
-  (declare (special *schema-being-instantiated*))
+  (declare (special *schema-being-instantiated*
+                    *deliberate-duplication*))
   (when (listp cfr)
     (let ((list-of-cfrs cfr))
       (setq cfr (car (member lhs list-of-cfrs
@@ -73,16 +81,19 @@
       (unless cfr
         (break "No cfr with the indicated lhs ~A~
                 ~%has been found in the list of rules:~%~A"
-               lhs list-of-cfrs))))      
+               lhs list-of-cfrs))))
+  (if *deliberate-duplication*
+    (construct-cfr lhs rhs form referent source)
 
-  ;; Check that we're putting the changes on the right object
-  (when (member :n-ary (cfr-plist cfr))
-    (setq cfr 
-          (first (second (cadr (member :n-ary (cfr-plist cfr)))))))
+    (else
+     ;; Check that we're putting the changes on the right object
+     (when (member :n-ary (cfr-plist cfr))
+       (setq cfr 
+             (first (second (cadr (member :n-ary (cfr-plist cfr)))))))
 
-  (setf (cfr-form cfr) form)
-  (setf (cfr-referent cfr) referent)
-  (setf (cfr-schema cfr) (or schema-to-use
-                             *schema-being-instantiated*))
-  cfr )
+     (setf (cfr-form cfr) form)
+     (setf (cfr-referent cfr) referent)
+     (setf (cfr-schema cfr) (or schema-to-use
+                                *schema-being-instantiated*))
+     cfr )))
 
