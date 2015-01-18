@@ -39,7 +39,7 @@
 ;;;------------------------
 
 (or (boundp '*maximum-number-of-edges-in-an-edge-vector*)
-    (defparameter *maximum-number-of-edges-in-an-edge-vector* 20))
+    (defparameter *maximum-number-of-edges-in-an-edge-vector* 40))
 
 
 (defun make-edge-vector-array ()
