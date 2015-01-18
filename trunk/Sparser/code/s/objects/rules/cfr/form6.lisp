@@ -66,9 +66,10 @@
          ;; pick out the rule with the matching lhs (when multiple
          ;; lhs are allowed) and replace its form and referent
          (changes-to-known-rule existing-cfr
-                                lhs
+                                lhs rhs
                                 form-object
-                                decoded-referent-exp))
+                                decoded-referent-exp
+                                nil)) ;; source
         (duplication-check
          ;; its a new lhs for the rhs so check that it's allowed
          existing-cfr lhs rhs form-object decoded-referent-exp :def-cfr))
