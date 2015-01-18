@@ -167,6 +167,11 @@
   "Gates whether to export or display the relations that were
    found in the sentence.")
 
+(defparameter *scan-for-unsaturated-individuals* nil
+  "Gates a process that runs after all of the analysis is finished
+   that looks for individuals that are missing a logically
+   necessary variable and tries to fill them in.")
+
 (defparameter *do-debris-analysis* nil
   "Set as part of the switch settings, read within HA code and in
    special DA drivers")
