@@ -346,7 +346,9 @@
       ((eq word::comma (edge-category e))
        ;;comma can come in the middle of an NP chunk
        ;; as in "active, GTP-bound Ras"
-       (not (null evlist)))
+       ;; BUT THIS IS NOT AS COMMON AS OTHER USES OF COMMA -- DROP IT FOR NOW
+       ;(not (null evlist))
+       nil)
       ((eq category::verb+ed (edge-form e))
        (not (eq (edge-category e) category::have))) ;; "had" is not an NP constituent
       ((eq category::verb+ing (edge-form e))
