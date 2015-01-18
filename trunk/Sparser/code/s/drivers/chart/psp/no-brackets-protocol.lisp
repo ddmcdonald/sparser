@@ -96,6 +96,9 @@
                   (declare (special *return-after-doing-forest-level*))
                   (new-forest-driver sentence))
 
+                (when *scan-for-unsaturated-individuals*
+                  (sweep-for-unsaturated-individuals sentence))
+
                 (when *readout-relations*
                   (multiple-value-bind (relations entities)
                                        (identify-relations sentence)
