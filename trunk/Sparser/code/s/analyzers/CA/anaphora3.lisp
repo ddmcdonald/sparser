@@ -276,10 +276,12 @@
 (defvar *lifo-instance-list* nil
   "Holds individuals in right-to-left order")
 
+(defparameter *trace-instance-recording* nil)
+
 (defun record-instance-within-sequence (i edge)
   ;; called from add-subsuming-object-to-discourse-history 
   (flet ((store-on-lifo (i edge)
-           (when t
+           (when *trace-instance-recording*
              (format t "~&Storing ~a" i))
            (push `(,i ,edge) *lifo-instance-list*)))
     (let ((prior-mention (assq i *lifo-instance-list*)))
