@@ -28,8 +28,7 @@
 ;;;------------
 ;;; adjectives
 ;;;------------
-(define-category predicate :specializes modifier
-  :binds ((negation)))
+
 
 (adj "able" :super predicate ;; #33  -- but not working. Timing???
   :binds ((enabled biological)(result biological))
