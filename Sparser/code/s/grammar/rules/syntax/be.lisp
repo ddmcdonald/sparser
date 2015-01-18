@@ -97,8 +97,8 @@
 
 (def-form-rule (be adjective)
   :form vp
-  :referent (:head right-edge
-             :bind (predication right-edge)))
+  :referent (:head right-edge ;; :bind (predication right-edge)
+))
 
 
 ;;;----------------------------
