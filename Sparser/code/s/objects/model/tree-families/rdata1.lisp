@@ -156,9 +156,11 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 (defmethod define-additional-realization/expr ((category referential-category) rdata)
   ;;(push-debug `(,rdata ,category)) (break "check")
-  (if (includes-def-realization-keyword rdata)
-    (apply #'decode-realization-parameter-list category rdata)
-    (setup-rdata category rdata nil)))
+  (let ((*deliberate-duplication* t))
+    (declare (special *deliberate-duplication*))
+    (if (includes-def-realization-keyword rdata)
+      (apply #'decode-realization-parameter-list category rdata)
+      (setup-rdata category rdata nil))))
 
 
 ;;;-----------------------------------------------------------
