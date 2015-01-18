@@ -154,7 +154,9 @@
 
 (define-quantifier "no" :brackets '( ].quantifier  .[np )) 
 
-(define-quantifier "not"  :brackets '( ].verb .[modal ))
+;; this interferes with the use of NOT as negation on adjectives "is not sensitive"
+;; I don't know why "NOT" was ever a quantifier
+;;(define-quantifier "not"  :brackets '( ].verb .[modal ))
   ;; had been '( ].quantifier ))  
   ;; which gets you out of a problem with "...be careful not to..."
   ;; where without this there's a break before "to"
