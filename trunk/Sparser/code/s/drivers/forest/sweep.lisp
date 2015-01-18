@@ -17,6 +17,8 @@
 ;;; driver
 ;;;--------
 ;; set to nil when you want to see which edges have no forms at the end
+
+(defparameter *show-thatcomps* nil) ;; don't print annyoihng thatcomp messages
 (defparameter *no-error-on-no-form* t)
 
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
@@ -142,7 +144,8 @@
            (if
             (eq (edge-category tt) category::that)
             (then
-              (print "IGNORING LIKELY THATCOMP IN SWEEP"))
+              (if *show-thatcomps* 
+                  (print "IGNORING LIKELY THATCOMP IN SWEEP")))
             (else
               (push-debug `(,tt ,form))
               #+ignore
