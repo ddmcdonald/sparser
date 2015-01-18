@@ -52,3 +52,4 @@
     :discriminator discriminator
     :tree-families   '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb sentence-adverb)))
 
+(define-adverb "not")
