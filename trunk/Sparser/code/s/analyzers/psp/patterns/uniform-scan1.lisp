@@ -16,7 +16,7 @@
 ;; 0.7 10/9/14 Added scare quotes, debugged edge cases. 
 ;; 1.0 11/18/14 Bumped number to permit major revamp to fit into multi-
 ;;   pass scanning. 12/4/14 moved out the patterns to their own file.
-;;   Tweeking through 1/9/15
+;;   Tweeking through 1/18/15
 
 (in-package :sparser)
 
@@ -39,7 +39,8 @@
 ;;; new driver
 ;;;------------
 
-(defun collect-no-space-sequence-into-word (position-before) ;; scan3
+;; scan3's call
+(defun collect-no-space-sequence-into-word (position-before) 
   (break "Call to find a no-space sequences at ~a~
         ~%Change your code to use collect-no-space-segment-into-word"
          position-before))
@@ -62,7 +63,7 @@
                        (chart-position-before position-just-after))))
       (tr :no-space-sequence-started-at start-pos)
 
-      (push-debug `(,leftmost-edge ,position-just-after)) 
+      ;;(push-debug `(,leftmost-edge ,position-just-after)) 
       (when nil (break "sanity"))
 
       (when (or (word-is-bracket-punct (pos-terminal start-pos))               
@@ -74,8 +75,7 @@
       (multiple-value-bind (end-pos hyphen-positions slash-positions)
                            (sweep-to-end-of-ns-regions position-just-after)
 
-        (push-debug `(,start-pos ,end-pos))
-
+        ;;(push-debug `(,start-pos ,end-pos))
         ;; on this sentence: (p "Pre-clinical studies have demonstrated that the B-RAFV600E mutation predicts a dependency on the mitogen activated protein kinase (MAPK) signaling cascade in melanoma [1–5] —an observation that has been validated by the success of RAF and MEK inhibitors in clinical trials 6–8.")
         ;; and perhaps others, the sweep to the end routine returns a string
         ;; as the value of end-pos, e.g. "6 - 8. "
@@ -119,49 +119,7 @@
           end-pos))))
 
 
-(defun sweep-to-end-of-ns-regions (position)
-  ;; From this position, which is marked as having not space between its
-  ;; word and the previous word. Look at the positions to the right until
-  ;; you reach one that is marked for an interveening space and return it. 
-  ;; Because we're working sentence by sentence we will not normally
-  ;; need an EOS check 
-  (let ((next-pos (chart-position-after position))
-        word  hyphens  slashes )
-    (loop
-      ;; we enter the loop looking for a reason to stop
-      (setq word (pos-terminal next-pos))
-      (when (first-word-is-bracket-punct word)
-        (return))
-      (when (pos-preceding-whitespace next-pos)
-        (return))
-      (when (punctuation-terminates-no-space-sequence word next-pos)
-        ;; We looked ahead, so reflect that in the stopping position
-        (setq next-pos (chart-position-after next-pos))
-        (return))
-      (when (eq word *the-punctuation-hyphen*) (push next-pos hyphens))
-      (when (eq word (punctuation-named #\/)) (push next-pos slashes))
-      (setq next-pos (chart-position-after next-pos)))
-    (values next-pos
-            hyphens
-            slashes)))
 
-
-
-
-
-
-
-
-
-
-
-   
-
-;;;---------------------------------------------------
-;;; old code
-;;;---------------------------------------------------
-
-;;--- original reifier
 (defun reify-ns-name-and-make-edge (words pos-before next-position)
   ;; We make an instance of a spelled name with the words as its sequence.
   ;; We make a rule that treats the pnames of the words as a polyword,
@@ -188,7 +146,35 @@
 
 
 
-          
+;;;------------------------------
+;;; delimiting the no-space span
+;;;------------------------------
+
+(defun sweep-to-end-of-ns-regions (position)
+  ;; From this position, which is marked as having not space between its
+  ;; word and the previous word. Look at the positions to the right until
+  ;; you reach one that is marked for an interveening space and return it. 
+  ;; Because we're working sentence by sentence we will not normally
+  ;; need an EOS check 
+  (let ((next-pos (chart-position-after position))
+        word  hyphens  slashes ) 
+    (loop
+      ;; we enter the loop looking for a reason to stop
+      (setq word (pos-terminal next-pos))
+      (when (first-word-is-bracket-punct word)
+        (return))
+      (when (pos-preceding-whitespace next-pos)
+        (return))
+      (when (punctuation-terminates-no-space-sequence word next-pos)
+        ;; We looked ahead, so reflect that in the stopping position
+        (setq next-pos (chart-position-after next-pos))
+        (return))
+      (when (eq word *the-punctuation-hyphen*) (push next-pos hyphens))
+      (when (eq word (punctuation-named #\/)) (push next-pos slashes))
+      (setq next-pos (chart-position-after next-pos)))
+    (values next-pos
+            hyphens
+            slashes)))
 
 
 ;;;-----------------------------------------
@@ -200,7 +186,6 @@
   (when (punctuation? word)
     (or (eq word *the-punctuation-period*)
         (eq word (punctuation-named #\,))
-        (eq word *the-punctuation-colon*)
         (eq word (punctuation-named #\;)))))
 
 
@@ -210,7 +195,6 @@
     (cond
       ((or (eq word *the-punctuation-period*)
 	   (eq word (punctuation-named #\,))
-	   (eq word *the-punctuation-colon*)
 	   (eq word (punctuation-named #\;)))
        ;; more general than "." probably, but this is the canonical
        ;; case
@@ -229,17 +213,20 @@
   (cond
     ((or (eq word *the-punctuation-period*)
 	 (eq word *the-punctuation-comma*)
-	 (eq word *the-punctuation-semicolon*)
-	 (eq word *the-punctuation-colon*))
+	 (eq word *the-punctuation-semicolon*))
      ;; if there's a space after this character, we assume that
      ;; it's punctuation, otherwise it's part of the compound
      ;; terminal.
-     (sentence-final-punctuation-pattern?
-      (chart-position-after position)))
+     (sentence-final-punctuation-pattern? (chart-position-after position)))
+
+    ((eq word *the-punctuation-colon*)
+     (if (next-word-is-digit? position) nil t))
+
     ((or (eq word  (punctuation-named #\-))
 	 (eq word (punctuation-named #\/))
          (eq word  (punctuation-named #\@)))
      nil)
+
     (t t)))
 
 
@@ -258,6 +245,9 @@
 	      (not *source-exhausted*))
 	  nil
 	  t)))))
+
+(defun next-word-is-digit? (position)
+  (break "Stub: check for digit at ~a" position))
 
 
 (defun first-word-is-bracket-punct (word1)
