@@ -315,11 +315,9 @@
 
 (define-category increase
   :specializes bio-process
-
   :binds ((agent biological) 
           (object bio-scalar)
           (theme biological)) ;; increase in rate vs increase in RAS activity
-
   :realization
   (:verb "increase" ;; :noun "increase"
          :etf (svo-passive) ;;  of-nominal) 
