@@ -123,21 +123,32 @@
       (let* ((left-category-ids (category-ids/rightward left-edge))
              (right-category-ids (category-ids/leftward right-edge))
              (rule
-              (or (check-rule-form ;; only accept rules that are compatible with their context
-                   ;; 1st check category and form rules
+              (or (check-rule-form ;; only accept rules that are compatible 
+                   ;; with their context
+                   ;; 1st check both category label and then try
+                   ;; the category label of one against the form label of the other
                    (multiply-categories left-category-ids right-category-ids
                                         left-edge right-edge)
                    left-edge right-edge)
                   
+                  ;; then look for a rule in the cross-product 
+                  ;; of the categories their category labels inherit from
                   (when *edges-from-referent-categories*
                     (multiply-referents left-edge right-edge))
                   
+                  ;; then look for a rule mentioning the form label
+                  ;; on the two rules
                   (when *allow-pure-syntax-rules*
                     (check-form-form left-edge right-edge)))))
 
         (when *collect-forms* (record-forms rule left-edge right-edge))
         rule)))
 
+
+
+;;;--------------------------------------------------
+;;; restrict rule application to compatible contexts
+;;;--------------------------------------------------
 
 (defun record-forms (rule left-edge right-edge)
   (let ((rf (rule-forms rule)))
