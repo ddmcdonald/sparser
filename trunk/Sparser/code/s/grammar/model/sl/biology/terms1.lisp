@@ -111,7 +111,11 @@
 (adj "dead" :super predicate)
 (adj "dependent" :super predicate) ;; keyword: (ent ADJ) 
 (adj "ectopic" :super predicate) ;; keyword: (ic ADJ) 
-(adj "effective" :super predicate) ;; keyword: (ive ADJ) 
+(adj "effective" :super predicate
+     :binds ((against biological))
+     :realization 
+     (:adj "effective"
+           :against against)) ;; keyword: (ive ADJ) 
 (adj "endogenous" :super predicate) ;; keyword: (ous ADJ) 
 (adj "further" :super predicate)
 (adj "genetic" :super predicate) ;; keyword: (al ADJ) 
@@ -131,7 +135,11 @@
      (:adj "inactive"
            :s molecule))
 (adj "inducible" :super predicate) ;; keyword: (ible ADJ) 
-(adj "ineffective" :super predicate) ;; keyword: (ive ADJ) 
+(adj "ineffective" :super predicate
+     :binds ((against biological))
+     :realization 
+     (:adj "ineffective"
+           :against against)) ;; keyword: (ive ADJ) 
 (adj "integrative" :super predicate) ;; keyword: (ive ADJ) 
 (adj "intriguing" :super predicate) ;; keyword: ENDS-IN-ING 
 (adj "kinase-dead" :super predicate)
