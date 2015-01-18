@@ -50,8 +50,12 @@
   :mixins (biological)
   :documentation "Provides a generalization over biological and scalar")
  
+(define-category predicate :specializes modifier
+  :mixins (biological)
+  :binds ((negation)))
+
 (define-category molecule-state
-  :specializes biological)
+  :specializes predicate)
 
 
 
