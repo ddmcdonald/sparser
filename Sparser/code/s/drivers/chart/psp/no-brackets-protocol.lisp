@@ -197,6 +197,11 @@
   (clrhash *semtree-seen-individuals*)
   (collect-model-description i))
 
+(defmethod semtree ((i referential-category))
+  (clrhash *semtree-seen-individuals*)
+  (collect-model-description i))
+
+
 (defmethod collect-model-description ((cat category))
   (list cat))
 
