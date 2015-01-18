@@ -91,6 +91,19 @@
               ;;(format t "~&___________________________________________~&~&")
               ))))))
 
+(defun sem-test (n &optional (sentences *sentences*))
+  (let ((test (nth (- n 1) sentences)))
+    (print (list n test))
+    (terpri)
+    (if (member n *known-breaks*)
+        (print "skipping because of known problems")
+        (then
+          (eval `(pp ,(second test)))
+          (show-semantics)))))
+          
+                
+
+
 ;;/// these two should be merged. Perhaps with a switch
 ;;  to determine what to show
 (defun jantest (n &optional (sentences *jan-dry-run*))
