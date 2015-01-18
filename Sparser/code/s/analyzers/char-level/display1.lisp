@@ -172,6 +172,33 @@
           (subseq *character-buffer-in-use* start end))))))
 
 
+
+(defun extract-string-from-char-buffers (start end)
+  (let ((accumulated *length-accumulated-from-prior-buffers*))
+    (cond
+     (*buffers-in-transition*
+      (cond
+       ((> start accumulated)
+        ;; it's all in the new buffer
+        (let ((offset-start (- start accumulated))
+              (offset-end (- end accumulated)))
+          (subseq *character-buffer-in-use* offset-start offset-end)))
+       (t ;; but if it's not, then it's split across them
+        ;; The amount in the other buffer
+        (let ((offset-start (- start accumulated))
+              (end-current-buffer (- end accumulated)))
+          (break "sensible numbers?")
+          (let ((prefix (subseq *the-next-character-buffer* offset-start))
+                (suffix
+                 (subseq *character-buffer-in-use*
+                         0 end-current-buffer)))
+
+            ;;(break "~s~%~s" prefix suffix)
+            ;;(setq *buffers-in-transition* nil)
+            (string-append prefix suffix))))))
+     (t    
+      (subseq *character-buffer-in-use* start end)))))
+
 ;;;----------------------------
 ;;; actually doing the writing
 ;;;----------------------------
