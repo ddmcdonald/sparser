@@ -204,7 +204,9 @@
 
 
 (defun write-dec-csv-output (&optional (file (test-file-with-time "dec-out" "csv")))
+  (format t "~2%Writing result to ~a" file)
   (with-open-file (s file :direction :output :if-exists :supersede)
+    (format s "~%Sent#, Event#, Subject, Event, Object, Site(s), Context, Sentence")
     (loop for tst in *dec-tests* for n from 1 do (dtst1 n tst s))))
 
 
