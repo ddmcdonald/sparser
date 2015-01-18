@@ -134,6 +134,23 @@
 ;;; Really doing it
 ;;;-----------------
 ;;/// 10/27/14 This ought to be a method
+(defun apply-subject-relative-clause (np-ref vp-ref)
+  (let ((subject-var (subject-variable vp-ref)))
+      (if subject-var
+        ;; copy down the upstairs subject
+        ;; Should we check if it was already bound to something?
+        (bind-variable subject-var np-ref vp-ref)
+        (else
+         ;; (push-debug `(,np-ref ,vp-ref))
+         ;; (break "Can not find subject var in ~a" vp-ref)
+         (format t "~&~%No subject variable recorded on ~a~%~%"
+                 vp-ref)))      
+      
+      ;; link the rc to the np
+      (bind-variable 'modifier vp-ref np-ref)
+
+      ;; referent of the combination is the np
+      np-ref))
 
 (defun apply-upstairs-np-to-subject-relative (np-ref vp-ref)
   ;; used by refactor-s-for-buried-relative which is tied to
