@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  December 2014
+;;;  version:  January 5
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
@@ -12,59 +12,30 @@
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
 
+; sentence-sweep-loop  decode-realization-parameter-list
+
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   (setq *note-text-relations* nil)
   (trace-lexicon-unpacking) (trace-morphology)
-  (setq *check-forms* t)
+  (setq *check-forms* t) ;; allow rule filtering by schema patern
+  (setq *trace-instance-recording* t
+        *scan-for-unsaturated-individuals* t)
   (incorporate-obo-terms)
   (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
   ;;(ed "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (test-jan))
+  (load "/Users/ddm/sparser/Sparser/code/s/interface/R3-eval/dec14-output.lisp")
+  (test-jan)) ;; (test-dec)
 
 ; #13 (p "BRAF is inactive in NRAS mutant cells.")
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
 
-(defun ddm-tense-neg ()
-  (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
-  (ddm-ed "grammar/rules/syntax/tense.lisp")
-  (ddm-ed "grammar/rules/syntax/be.lisp")
-  (ddm-ed "grammar/rules/syntax/have.lisp")  
-  (ddm-ed "grammar/rules/syntax/modals.lisp")
-  (ddm-ed "grammar/model/core/kinds/processes.lisp"))
+;; Are we making the right references in the history?
+;    decode-category-parameter-list decode-index-field
 
-(defun ddm-better-be+adj ()
-  (ddm-ed "grammar/rules/tree-families/vp.lisp")
-  (ddm-ed "grammar/rules/tree-families/copula-patterns.lisp")
-  (ddm-ed "grammar/model/sl/biology/verbs1.lisp"))
-
-(defun ddm-write-additional-realization ()
-  (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
-  (ddm-ed "objects/model/tree-families/rdata1.lisp"))
-
-(defun ddm-trap-new-words-write-sentence ()
-  (ddm-ed "interface/grammar/sweep.lisp")
-  (ddm-ed "analyzers/char-level/display1.lisp")
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
-
-(defun ddm-generalize-test ()
-  (ddm-ed "tools/basics/test-functions.lisp")
-  (ddm-ed "analyzers/forst/treetops.lisp")
-  (ddm-ed "drivers/chart/psp/no-bracket-protocol.lisp"))
-
-; (trace-paragraphs) ;; for sentences and periods
-; (trace-edges) ;; edge over period as a literal?
-; (trace-island-driving)  (untrace-island-driving) 
-; (progn (trace-chunker) (trace-segments))
-; (trace-terminals-sweep) ;; pw, etc.
-; (progn (untrace-chunker) (untrace-segments) (untrace-terminals-sweep)  (untrace-island-driving))
-
-; exploded-tree-family-named
-
-; Redo indiviual ids based on their UID
-; (ddm-ed "objects/model/individuals/resource1.lisp")
-
+;; Sentence sweep (dies on 2d wrap)
+;   sentence-sweep  extract-string-from-char-buffers 
 
 (defun ddm-bio ()
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
@@ -105,7 +76,6 @@
   (ddm-ed "objects/traces/treetops.lisp"))
 
 
-
 ; (setq *work-on-ns-patterns* t)
 (defun ddm-no-spaces ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
@@ -115,8 +85,57 @@
   (ddm-ed "analyzers/psp/patterns/patterns.lisp")
   (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
-  (ddm-ed "grammar/rules/SD&P/create-categories.lisp")
+  (ddm-ed "grammar/rules/SDM&P/create-categories.lisp")
   (ddm-ed "grammar/rules/syntax/categories.lisp"))
+
+
+(defun ddm-tense-neg ()
+  (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
+  (ddm-ed "grammar/rules/syntax/tense.lisp")
+  (ddm-ed "grammar/rules/syntax/be.lisp")
+  (ddm-ed "grammar/rules/syntax/have.lisp")  
+  (ddm-ed "grammar/rules/syntax/modals.lisp")
+  (ddm-ed "grammar/model/core/kinds/processes.lisp"))
+
+(defun ddm-better-be+adj ()
+  (ddm-ed "grammar/rules/tree-families/vp.lisp")
+  (ddm-ed "grammar/rules/tree-families/copula-patterns.lisp")
+  (ddm-ed "grammar/model/sl/biology/verbs1.lisp"))
+
+(defun ddm-write-additional-realization ()
+  (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
+  (ddm-ed "objects/model/tree-families/rdata1.lisp"))
+
+(defun ddm-trap-new-words-write-sentence ()
+  (ddm-ed "interface/grammar/sweep.lisp")
+  (ddm-ed "analyzers/char-level/display1.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
+
+(defun ddm-generalize-test ()
+  (ddm-ed "tools/basics/test-functions.lisp")
+  (ddm-ed "analyzers/forst/treetops.lisp")
+  (ddm-ed "drivers/chart/psp/no-bracket-protocol.lisp"))
+
+;; Is this ordered right, walking through the edges?
+; (ddm-ed "analyzers/psp/check/one-many1.lisp)
+
+; (trace-paragraphs) ;; for sentences and periods
+; (trace-edges) ;; edge over period as a literal?
+; (trace-island-driving)  (untrace-island-driving) 
+; (progn (trace-chunker) (trace-segments))
+; (trace-terminals-sweep) ;; pw, etc.
+; (progn (untrace-chunker) (untrace-segments) (untrace-terminals-sweep)  (untrace-island-driving))
+
+; exploded-tree-family-named
+
+(defun ddm-binding () ;; reclaim when on permanent individuals?
+  (ddm-ed "object/model/bindings/structure.lisp")
+  (ddm-ed "object/model/bindings/object2.lisp")
+  (ddm-ed "object/model/bindings/alloc1.lisp")
+  (ddm-ed "object/model/bindings/make2.lisp")
+  (ddm-ed "object/model/bindings/hooks.lisp")
+  (ddm-ed "object/model/bindings/resourse.lisp"))
+
 
 ; uniform-scandal
 ;(ddm-ed "analysers/psp/patterns/traces.lisp")
