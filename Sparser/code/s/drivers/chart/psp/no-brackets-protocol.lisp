@@ -13,6 +13,7 @@
 ;; 1/11/15 Moving that code out to interface/grammar/sweep and refining 
 ;; how it's used. 
 ;; 1/12/2015 Handle circular structures in seemtree -- needed for verb+ed premodifiers, among others
+;; 1.18.2015 fix collection of description of individuals when modifiers referents are categories and not individuals as in "catalytic domains"
 
 (in-package :sparser)
 
@@ -243,7 +244,10 @@
                               desc)))
                    (word)
                    (polyword)
-                   (category)
+                   (category
+                    (push (list (var-name var)
+                                (collect-model-description value))
+                          desc))
                    (cons
                     `(collection :members 
                                  (,@(loop for item in value 
