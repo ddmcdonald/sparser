@@ -350,7 +350,54 @@ for every category.
     new))
   
 
+;;**************** So that David can test this new functionality ***********
+;; copy-individual is called from many methods in syntax-functions, to avoid smashing the bindings of basic vocabulary like Ras
+;;  which is defined to create an individual
 
+(defparameter *dont-copy-individuals* t)
+
+(defun copy-individual (i &optional subs)
+  (declare (special i))
+  (if
+   (or
+    *dont-copy-individuals*
+    (not (individual-p i)))
+   ;; don't copy things other than individuals
+   i
+   (or
+    (second (assq i subs))
+    (let* ((established-type (indiv-type i))
+           (new (make-unindexed-individual (car established-type)))
+           (subs (cons (list i new) subs))) ;; includes shadow
+      (declare (special established-type new subs))
+      (when (cdr established-type) ;; carry over any mix-ins
+        (setf (indiv-type  new) established-type))
+      (loop for binding in (indiv-binds i)
+        do
+        (bind-variable/expr (binding-variable binding)
+                            (binding-value binding)
+                            new))
+        #|
+        since the variable was bound in the source, don't bother doing the check -- somehow "the effect" binds the variable determiner,
+        but has a category which does not have a determiner 
+        (if
+         (eq 'category (var-name (binding-variable binding)))
+         ;; don't check that CATEGORY is a binding variable
+         
+         (bind-variable (var-name (binding-variable binding))
+                        (copy-individual
+                         (binding-value binding)
+                         subs)
+                        new)))
+        |#
+      ;; The 'binds' bindings are probably intrinsic to the nature of
+      ;; the object we're starting from and wouldn't make sense on
+      ;; the new object since the whole point was to change the type.
+      ;; But the 'bound-in' are relationships from other objects to
+      ;; the one we're cloning, so they will (ought to) continue to be
+      ;; relevant.  ///first case doesn't fall out that neatly, which
+      ;; suggests a knowledge-based, case by case cloning. 
+      new))))
 
 ;;;---------------------------
 ;;; Vacuous concept instances
