@@ -291,11 +291,6 @@
       :realization
       (:noun "form"
              :of basis))
-(noun fraction :super bio-variant
-  :binds ((basis bio-entity)) ;; this should be for genes and proteins
-  :realization
-  (:noun "fraction"
-         :of basis))
 
 (noun "fragment" :super bio-entity
       :binds ((whole bio-entity))
@@ -650,6 +645,12 @@
 
 
 ;; nouns and adjectives from January test
+
+;; This should be made more general
+(adj "class I" :super predicate)
+(adj "class II" :super predicate)
+
+
 
  
 
