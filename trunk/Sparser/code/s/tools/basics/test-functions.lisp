@@ -215,11 +215,14 @@
       (np res))))
 
 (defun case-pps (i)
-  (progn (run-test i)
+  (progn 
+    (format t "~&~&~&**************************************************************~&")
+    (sem-test i)
     (let
         ((res (loop for pair in (adjacent-tts) 
                 when (eq 'pp (car (edge-rep (second pair))))
                 collect (loop for edge in pair collect (edge-rep edge)))))
+      (np res)
       (and 
        res
        (cons
