@@ -110,6 +110,7 @@
         ;; is empty we will hit the end of source as we
         ;; start scanning terminals and it will throw
         ;; beyond this point. 
+        (end-of-sentence-processing-cleanup sentence)
         (setq sentence (next sentence))))))
 
 
@@ -267,4 +268,16 @@
          (reverse desc)))))
 
 
+;;;------------------------------------------------------------
+;;; final operations on sentence before moving to the next one
+;;;------------------------------------------------------------
 
+(defun end-of-sentence-processing-cleanup (sentence)
+  (declare (ignore sentence))
+  ;; Should save a bunch of stuff on a tailored structure in the
+  ;; content slot of the sentence.
+
+  ;; we could do a tts 
+  (format t "~&--------------------------~%~%")
+
+  (setq *lifo-instance-list* nil))
