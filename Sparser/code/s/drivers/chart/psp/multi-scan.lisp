@@ -261,7 +261,7 @@
 
 ;; (trace-parentheses)
 
-(defparameter *hide-parentheses* t
+(defparameter *hide-parentheses* nil
   "Provides an adequate way to remove text within parentheses to be
    removed from the parser's attention by burying within the prior
    edge.")
@@ -277,7 +277,7 @@
         (end-pos (ends-at-pos sentence))
         treetop  position-after    )
 
-    (push-debug `(,sentence ,position-before ,end-pos))
+    ;; (push-debug `(,sentence ,position-before ,end-pos))
     (loop
       ;; copied from the pattern sweep. 
       (multiple-value-setq (treetop position-after)
