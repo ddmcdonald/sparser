@@ -6,6 +6,7 @@
 ;;; version: January 2015
 
 ;; Initiated 1/16/15 by lifting from other files.
+;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
 
 (in-package :sparser)
 
@@ -222,4 +223,8 @@
   :referent 
   (:head right-edge :bind (quantifier left-edge)))
                    
-
+(def-form-rule (not adjective) 
+  :head :right-edge 
+  :form adjective
+  :referent 
+  (:head right-edge :bind (negation left-edge)))
