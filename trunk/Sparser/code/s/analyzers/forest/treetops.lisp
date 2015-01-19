@@ -24,7 +24,7 @@
 ;; 1/8/2015 refactor possible-treetop-rules to make it easier to trace and understand
 ;; 1/8/2015 rename to best-treetop-rule and make it return one rule only
 ;; 1/14/2015 revise losing-competition? to account for more general form of subject rule, looking at cfr-rule-forms
-
+;; 1/18/2015 fix typo in test-subcat-rule
 (in-package :sparser)
 
 ;;;--------------------------------
@@ -325,7 +325,7 @@
       ((left-referent (edge-referent (car pair)))
        (right-referent (edge-referent (second pair)))
        (*rule-being-interpreted* rule)
-       (*left-edge-into-reference* (second pair))
+       (*left-edge-into-reference* (car pair))
        (*right-edge-into-reference* (second pair)))
     (declare (special left-referent right-referent *rule-being-interpreted* *right-edge-into-reference*))
     (let
