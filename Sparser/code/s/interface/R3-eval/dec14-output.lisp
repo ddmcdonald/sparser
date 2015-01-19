@@ -76,7 +76,7 @@
       encoder))
 
 (defparameter *obj-props*
-    '(; object ;; not used in verbs1
+    '(object ;; not used in verbs1
       patient 
       activated 
       deactivated 
@@ -91,7 +91,7 @@
 (defun act-rel (action prop)
   (case prop 
     (:agent (some-i-prop action *subj-props*))
-    (:patient (some-i-prop action *obj-props*))))
+    (:object (some-i-prop action *obj-props*))))
     
 ;; if ent-position t then show the name of the action, else ref the 
 (defun entity-string (ent &optional (ent-position nil))
@@ -134,7 +134,7 @@
   (declare (special *ev-map*))
   (let* ((evno (i-uid event))
          (subj (act-rel event :agent))
-         (pat (act-rel event :patient))
+         (pat (act-rel event :object))
          (ev-string (entity-string event t))
          (subj-strings (call-or-map #'entity-string subj))
          (obj-strings (call-or-map #'entity-string pat))
@@ -156,8 +156,9 @@
   (declare (special *dec-tests* *relations*))
   (format t "~%Relations for sent ~d: ~s~%~a~%" sent-num sent *relations*)
   (let ((rows 
-         (loop for rel in *relations*
-             collecting (output-relation rel sent-num sent))))
+         (loop for rel in (all-relations) ;; *relations*
+           when (individual-p (car rel))
+             collecting (output-relation (car rel) sent-num sent))))
     (push (list sent-num rows) *output-rows*)
     (if (eq stream t)
         (format t "~2%~d: ~a~:{~%~d, ~d, ~s, ~s, ~s~}" sent-num sent rows)
