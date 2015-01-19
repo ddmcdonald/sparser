@@ -330,9 +330,12 @@
                              (collect-model-description value))
                        desc))
                 (cons
-                 `(collection :members 
+                 (push
+                  (list (var-name var)
+                        `(collection :members 
                               (,@(loop for item in value 
                                    collect (collect-model-description item)))))
+                  desc))
                 (otherwise
                  (push-debug `(,value ,b ,i))
                  (break "Unexpected type of value of a binding: ~a" value))))))))
