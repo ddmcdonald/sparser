@@ -54,24 +54,21 @@
 (defvar *all-chunk-edges* nil)
 
 (defun interp-big-mech-chunk (*current-chunk*)
+  ;; (push-debug `(,*current-chunk*))
+  ;; (break "interp chunk: ~a" *current-chunk*)
   (let ((*chunk-edges* (treetops-in-current-segment)))
     (when *save-chunk-edges*
       (push (loop for edge in *chunk-edges* 
               collect 
-              (list (and
-                     (edge-form edge)
-                     (intern (symbol-name (cat-symbol (edge-form edge)))))
+              (list (and (edge-form edge)
+                         (intern (symbol-name (cat-symbol (edge-form edge)))))
                     (let ((str (edge-string edge)))
                       (subseq str 0 (- (length str) 1)))))
             *all-chunk-edges*))
-
     (let (rule-and-edges)
-      (loop while (setq rule-and-edges (best-segment-rule *chunk-edges*)
-                        do 
-                        (execute-triple rule-and-edges))))
-    (march-back-from-the-right/segment)
-    ;;(break "interp-big-mech-chunk")
-    ))
+      (loop while (setq rule-and-edges (best-segment-rule *chunk-edges*))
+        do (execute-triple rule-and-edges))))
+  (march-back-from-the-right/segment))
 
 (defun best-segment-rule (rules)
   (let
