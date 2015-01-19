@@ -191,7 +191,7 @@
                   (semtree (edge-referent edge)))))
 
 (defun all-entities ()
-    (loop for st in (semtrees)
+    (loop for st in (tts-semantics)
     append
     (entities-in st)))
 
@@ -212,6 +212,11 @@
                (entities-in (second binding))
                entities))))
     entities))
+
+(defun all-relations ()
+    (loop for st in (tts-semantics)
+    append
+    (relations-in st)))
 
 (defun relations-in (tree)
   (let
