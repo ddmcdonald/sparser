@@ -14,6 +14,7 @@
 ;; how it's used. 
 ;; 1/12/2015 Handle circular structures in seemtree -- needed for verb+ed premodifiers, among others
 ;; 1.18.2015 fix collection of description of individuals when modifiers referents are categories and not individuals as in "catalytic domains"
+;; 1/18/2015 code (a bit sketchy) to extract all entities and all relations after parsing a sentence -- entities-in and relations-in
 
 (in-package :sparser)
 
@@ -178,14 +179,82 @@
 
 (defun tts-semantics ()
   (loop for edge in (cdr (all-tts)) 
-    when (individual-p (edge-referent edge))
+    when (and (edge-p edge) 
+              (not (word-p (edge-referent edge))))
     collect (semtree (edge-referent edge))))
 
 (defun tts-edge-semantics ()
   (loop for edge in (cdr (all-tts)) 
-    when (individual-p (edge-referent edge))
+    when (and (edge-p edge) 
+              (not (word-p (edge-referent edge))))
     collect (list edge
                   (semtree (edge-referent edge)))))
+
+(defun all-entities ()
+    (loop for st in (semtrees)
+    append
+    (entities-in st)))
+
+(defun entities-in (tree)
+  (let
+      (entities)
+    (when
+        (consp tree)
+      (if
+       (and
+        (not (consp (car tree)))
+        (entity-p (car tree)))
+       (push (car tree) entities))
+      (loop for binding in (cdr tree)
+        do
+        (setq entities 
+              (append 
+               (entities-in (second binding))
+               entities))))
+    entities))
+
+(defun relations-in (tree)
+  (let
+      (relations)
+    (when
+        (consp tree)
+      (if
+       (and
+        (not (consp (car tree)))
+        (not (entity-p (car tree))))
+       (push (extract-relation tree) relations))
+      (loop for binding in (cdr tree)
+        do
+        (setq relations
+              (append 
+               (relations-in (second binding))
+               relations))))
+    relations))
+
+(defun extract-relation (rel)
+  `(,(car rel)
+    .,(loop for binding in (cdr rel) 
+        collect 
+        `(,(car binding) 
+          ,(if (consp (second binding)) 
+              (if
+               (consp (car (second binding)))
+               (second (car (second binding)))
+               (car (second binding)))
+              (second binding))))))
+
+
+;; THIS NEEDS TO BE REFINED
+(defun entity-p (e)
+  (and
+   (individual-p e)
+   (not (itypep e 'bio-process))))
+
+(defmethod semtree ((x null))
+  nil)
+
+(defmethod semtree ((w word))
+  nil)
 
 (defmethod semtree ((n number))
   (semtree (e# n)))
@@ -212,60 +281,58 @@
                     collect (collect-model-description l)))))
 
 (defmethod collect-model-description ((i individual))
-  (if (gethash i *semtree-seen-individuals*)
-   (list (list "!recursion!" i))
-   (if (itypep i 'number)
-     (value-of 'value i)
-;     (loop for b in (indiv-binds i)
-;         when (eq 'value (var-name (binding-variable b)))
-;         do
-;         (return (binding-value b)))
-       
-     (let ((bindings (indiv-binds i))
-           (desc (list i)))
-         (setf (gethash i *semtree-seen-individuals*) t)
-         ;; Had been restricting the recursion to types with
-         ;; a subject variable: (subject-variable type), 
-         ;; but that's missing interesting noun phrase referents.
-         (dolist (b bindings)
-           (let ((var (binding-variable b))
-                 (value (binding-value b)))
-             (unless (or (eq (var-name var) 'category)
-                         (typep value 'mixin-category)) ;; has-determiner
-               (cond
-                ((or (numberp value)
-                     (symbolp value)
-                     (stringp value))
-                 (push
-                  (list (var-name var) value)
-                  desc))
-                (t
-                 (typecase value
-                   (individual 
-                    (if (itypep value 'prepositional-phrase)
-                        (dolist (bb (indiv-binds value))
-                          (when (eq (var-name (binding-variable bb)) 'pobj)
-                            (push (list (var-name var)
-                                        (collect-model-description (binding-value bb)))
-                                  desc)))
-                        (push (list (var-name var)
-                                    (collect-model-description value))
-                              desc)))
-                   (word)
-                   (polyword)
-                   (category
-                    (push (list (var-name var)
-                                (collect-model-description value))
-                          desc))
-                   (cons
-                    `(collection :members 
-                                 (,@(loop for item in value 
-                                      collect (collect-model-description item)))))
-                   (otherwise
-                    (push-debug `(,value ,b ,i))
-                    (break "Unexpected type of value of a binding: ~a" value))))))))
-         
-         (reverse desc)))))
+  (cond
+   ((gethash i *semtree-seen-individuals*)
+    (list (list "!recursion!" i)))
+   ((itypep i 'number)
+    (value-of 'value i))
+   ((itypep i 'bio-family)
+    `(,i))
+   (t  
+    (let ((bindings (indiv-binds i))
+          (desc (list i)))
+      (setf (gethash i *semtree-seen-individuals*) t)
+      ;; Had been restricting the recursion to types with
+      ;; a subject variable: (subject-variable type), 
+      ;; but that's missing interesting noun phrase referents.
+      (dolist (b bindings)
+        (let ((var (binding-variable b))
+              (value (binding-value b)))
+          (unless (or (eq (var-name var) 'category)
+                      (typep value 'mixin-category)) ;; has-determiner
+            (cond
+             ((or (numberp value)
+                  (symbolp value)
+                  (stringp value))
+              (push (list (var-name var) value) desc))
+             (t
+              (typecase value
+                (individual 
+                 (if
+                  (itypep value 'prepositional-phrase)
+                  (dolist (bb (indiv-binds value))
+                    (when (eq (var-name (binding-variable bb)) 'pobj)
+                      (push (list (var-name var)
+                                  (collect-model-description (binding-value bb)))
+                            desc)))
+                  (push (list (var-name var)
+                              (collect-model-description value))
+                        desc)))
+                (word)
+                (polyword)
+                (category
+                 (push (list (var-name var)
+                             (collect-model-description value))
+                       desc))
+                (cons
+                 `(collection :members 
+                              (,@(loop for item in value 
+                                   collect (collect-model-description item)))))
+                (otherwise
+                 (push-debug `(,value ,b ,i))
+                 (break "Unexpected type of value of a binding: ~a" value))))))))
+      
+      (reverse desc)))))
 
 
 ;;;------------------------------------------------------------
