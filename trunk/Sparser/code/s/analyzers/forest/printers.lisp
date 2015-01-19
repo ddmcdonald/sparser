@@ -568,6 +568,79 @@ there were ever to be any.  ///hook into final actions ??  |#
                (edge-position-in-resource-array tt)
                (pw-pname word-or-category))))))
 
+(defun print-treetop-tight (tt starting-position
+                      &optional (stream *standard-output*))
+  (etypecase tt
+    (edge
+     (ecase *treetop-edge/style-for-printing*
+       (:structure
+        (format stream "~&~A~%" tt))
+       (:category-and-text-segment
+        (print-edge-category-and-text-one-line tt stream))))
+    (word
+     (ecase *treetop-edge/style-for-printing*
+       (:structure
+        (format stream "~& ~A ~A ~A"
+                (pos-token-index starting-position)
+                tt
+                (1+ (pos-token-index starting-position))))
+       (:category-and-text-segment
+        (print-word-as-category-and-text-segment tt stream))))
+    (symbol
+     (when tt
+       (if 
+         (ecase *treetop-edge/style-for-printing*
+           (:structure
+            (break "First case of using :structure print option ~
+                    with muliple-edge design"))
+           (:category-and-text-segment
+            (print-multiple-edges-tt stream starting-position)))
+         (break/debug "Treetop is an unexpected symbol: ~A" tt)))))
+  :done-printing)
+
+(defun print-edge-category-and-text-one-line (tt stream)
+  (let ((word-or-category
+         (case *treetop-label-to-use* ;;:referent ;; :form
+           (:form (edge-form tt))
+           (:referent (edge-referent tt))
+           (:category (edge-category tt))
+           (otherwise
+            (push-debug `(,tt))
+            (error "Unexpected value for *treetop-label-to-use*: ~a"
+                   *treetop-label-to-use*)))))
+    (unless word-or-category
+      (setq word-or-category (edge-category tt)))
+    (etypecase word-or-category
+      ((or category referential-category mixin-category
+           individual)
+       (format stream "~&e~A ~6,2t~A~20,2T~A ~S ~A" ;; tab had been 30
+               (edge-position-in-resource-array tt)
+               (pname-for word-or-category)
+               (pos-token-index (pos-edge-starts-at tt))
+               (terminals-in-segment/one-string (pos-edge-starts-at tt)
+                                                (pos-edge-ends-at tt))
+               (pos-token-index (pos-edge-ends-at tt))))
+      (word
+       (format stream "~&e~A~20,2T~S"  ;; had been 33
+               (edge-position-in-resource-array tt)
+               (if (member :use-symbol-name-when-printing
+                           (word-plist word-or-category))
+                 (symbol-name (word-symbol word-or-category))
+                 (word-pname word-or-category))))
+      (polyword
+       (format stream "~&e~A~20,2T~S"  ;; had been 33
+               (edge-position-in-resource-array tt)
+               (pw-pname word-or-category))))))
+
+(defun show-semantics()
+  (loop for tt in (all-tts)
+    do (when (and (edge-p tt) (not (word-p (edge-category tt))))
+         (format t "~&_____________________________~&")
+         (print-treetop-tight tt (pos-edge-starts-at tt))
+         (psemtree tt))))
+                                                                                                                                                                     
+
+
 
 (defun print-multiple-edges-tt (stream starting-position)
   ;; used when the top-edge on the vector reads ":multiple-initial-edges",
