@@ -254,7 +254,8 @@
           (let ((constituents (edge-constituents edge)))
             (unless constituents (error "no constituents on long span ~a" edge))            
             (let ((last-constituent (car (last constituents))))
-              (when (word-p last-constituent)
+              (when (and (word-p last-constituent)
+                         (not (punctuation? last-constituent)))
                 (if (eq (edge-right-daughter last-constituent) :single-term)
                   last-constituent
                   (walk-down-right-headline last-constituent))))))
