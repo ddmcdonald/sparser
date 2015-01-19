@@ -10,6 +10,7 @@
 ;; four passes finished 11/19/14.
 ;; RJB 12/18/2014   handle case of A, B, and C (i.e. comma before conjunction)
 ;;  use correct function right-treetop-at/edge in short-conjunctions-sweep -- handle case of PD198u7 and sorafenib.
+;; 1/18/2015 Allow conjunctions of an ambiguous word and another word (or ambiguous word)
 
 (in-package :sparser)
 
@@ -233,23 +234,28 @@
       (let ((left-edge (next-treetop/leftward position))
             (right-edge  (right-treetop-at/edge 
                           (chart-position-after position))))
+        (declare (special left-edge right-edge))
+        ;;(break "short-conjunctions")
         ;; handle case of A, B, and C (i.e. comma before conjunction)
         (if (eq word::comma (edge-category left-edge))
             (then
               (setq left-edge
                     (next-treetop/leftward left-edge))))
         (unless (or (word-p left-edge)
-                    (word-p right-edge)
-                    (edge-vector-p left-edge)
-                    (edge-vector-p right-edge))
-
-          (let ((heuristic (conjunction-heuristics left-edge right-edge)))
-            (if heuristic
-              ;; conjoin/2 looks for leftwards
-              (let ((edge (conjoin/2 left-edge right-edge heuristic)))
-                (tr :conjoined-edge edge)
-                edge)
-              (tr :no-heuristics-for left-edge right-edge))))))
+                    (word-p right-edge))
+          (dolist (left (if (edge-vector-p left-edge) 
+                                (ev-edges left-edge)
+                                (list left-edge)))
+            (dolist (right (if (edge-vector-p right-edge) 
+                               (ev-edges right-edge)
+                               (list right-edge)))
+              (let ((heuristic (conjunction-heuristics left right)))
+                (if heuristic
+                    ;; conjoin/2 looks for leftwards
+                    (let ((edge (conjoin/2 left right heuristic)))
+                      (tr :conjoined-edge edge)
+                      edge)
+                    (tr :no-heuristics-for left-edge right-edge))))))))
     ;; zero it to avoid confusing the pass through a later sentence
     (setq *pending-conjunction* nil)))
 
