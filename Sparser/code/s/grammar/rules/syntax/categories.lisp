@@ -677,6 +677,7 @@
   `(,category::np
     ,category::pronoun
     ,category::proper-noun
+    ,category::proper-name
     ,category::quantifier
     ,category::pp
     ,category::relative-clause
