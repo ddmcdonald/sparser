@@ -693,6 +693,15 @@
 
 
 
+(defparameter *category-hierarchy*
+  `(,category::s
+    ,category::subj+verb
+    ,category::vp
+    ,category::np
+    ,category::relative-clause
+    ,category::thatcomp
+    ,category::pp))
+
 ;;;------------------------------------
 ;;; bracket introduction by form rules
 ;;;------------------------------------
