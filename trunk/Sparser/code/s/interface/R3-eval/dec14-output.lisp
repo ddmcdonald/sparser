@@ -145,14 +145,23 @@
   (let* ((evno (i-uid event))
          (subj (act-rel event :agent))
          (pat (act-rel event :object))
-         (ev-string (name-rewrite (entity-string event t)))
-         (subj-strings (name-rewrite (call-or-map #'entity-string subj)))
-         (obj-strings (name-rewrite (call-or-map #'entity-string pat)))
-         )
+         (ev-string (name-rewrite event))
+         (subj-strings (arg-strings subj))
+         (obj-strings (arg-strings pat)))
     (format t "~%Relation: ~a subj: ~a obj ~a" event subj pat)
     (push (cons evno event) *ev-map*)
     (list sent-num evno subj-strings ev-string obj-strings nil nil 
           (remove-separators sent))))
+
+(defun arg-strings (arg)
+  (if
+   (or
+    (null arg)
+    (and
+     (individual-p arg)
+     (entity-p arg)))
+   (name-rewrite (call-or-map #'entity-string arg))
+   (format nil "EVENT-~S" (i-uid arg))))
 
 (defun reset-rows ()
   (setq *output-rows* nil *event-index* 0 *ev-map* nil))
@@ -182,6 +191,7 @@
            when 
            (and
             (individual-p (car rel))
+            (not (equalp "WE" (name-rewrite (act-rel (car rel) :agent))))
             (or
              ;; don't output empty relatiosn
              (act-rel (car rel) :agent)
@@ -207,7 +217,8 @@
       (if to-file
           (write-dec-csv-output)
         (dolist (tst *dec-tests*) (dtst1 n tst t))
-        ))))
+        )
+      nil)))
 
 (defun dtst1 (n test stream)
   (declare (special *known-breaks*))
@@ -245,7 +256,7 @@
 
     (let ((res nil))
       (format s "~%Sent#, Event#, Subject, Event, Object, Site(s), Context, Sentence")
-      (setsq res (loop for tst in *dec-tests* for n from 1 collect (dtst1 n tst s)))
+      (setq res (loop for tst in *dec-tests* for n from 1 collect (dtst1 n tst s)))
       (format t "~%wrote file ~a" file)
       res)
   ))
