@@ -297,7 +297,9 @@
     (list (list "!recursion!" i)))
    ((itypep i 'number)
     (value-of 'value i))
-   ((itypep i 'bio-family)
+   ((and
+     (itypep i 'bio-family)
+     (not (itypep i 'collection)))
     `(,i))
    (t  
     (let ((bindings (indiv-binds i))
