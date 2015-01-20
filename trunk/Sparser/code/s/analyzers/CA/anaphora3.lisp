@@ -274,7 +274,11 @@
 ; and organizing the search for their missing terms
 
 (defvar *lifo-instance-list* nil
-  "Holds individuals in right-to-left order")
+  "Holds individuals in right-to-left order.
+   Has to be cleared regularly or else the new-mention operation
+   will start looking at recycled edges.")
+
+;; (setq *scan-for-unsaturated-individuals* t)
 
 (defparameter *trace-instance-recording* nil)
 
@@ -289,6 +293,73 @@
         (unless (new-mention-subsumes-old? prior-mention edge)
           (store-on-lifo i edge))
         (store-on-lifo i edge)))))
+
+(defun local-recorded-instances (category)
+  (loop for pair in *lifo-instance-list*
+    when (itypep (car pair) category)
+    collect pair))
+
+
+(defun find-best-recent (category)
+  ;; look in the recent discourse history, preferably the local
+  ;; sentence, for an individual of this category. If there is
+  ;; more than one, the select the one that appears to be most
+  ;; prominant within the syntactic context, e.g. subjects are
+  ;; nearly always the right choice. 
+  (let ((candidates 
+         ;; that's the standard retrieval, returns the individuals
+         ;; and the positions to either side
+         ;;(discourse-entry categpry)
+         (local-recorded-instances category)))
+    (when candidates
+      (cond
+       ((null (cdr candidates))
+        (car (car candidates)))
+       (t
+        (let ((best-so-far (car candidates)))
+          (dolist (pair (cdr candidates))
+            (when (better pair best-so-far)
+              (setq best-so-far pair)))
+          ;;(push-debug `(,best-so-far)) (break "look")
+          (car best-so-far)))))))
+
+;;/// move to categories
+(defparameter *category-hierarchy*
+  `(,category::s
+    ,category::subj+verb
+    ,category::vp
+    ,category::np
+    ,category::relative-clause
+    ,category::thatcomp
+    ,category::pp))
+
+(defun better (new-pair reigning-pair)
+  (let ((new-parent (edge-used-in (cadr new-pair)))
+        (reigning-parent (edge-used-in (cadr reigning-pair))))
+    (unless new-parent
+      (error "There is no used-in value for ~a" (cadr new-pair)))
+    (unless reigning-parent
+      (error "There is no used-in value for ~a" (cadr reigning-pair)))
+    (let* ((new-form (edge-form new-parent))
+           (new-position (memq new-form *category-hierarchy*))
+           (reigning-form (edge-form reigning-parent))
+           (reigning-position (memq reigning-form *category-hierarchy*)))
+      (unless new-position
+        (error "The category ~a is not in the hierarchy" new-form))
+      (unless reigning-position
+        (error "The category ~a is not in the hierarchy" reigning-form))
+      ;; if the new pair is better they will have a longer length
+      ;; returned by the memq
+      (let ((new-count (length new-position))
+            (reigning-count (length reigning-position)))
+        (when (= new-count reigning-count)
+          (error "New case: Both ~a and ~a are dominated by a ~a"
+                 (car new-pair) (car reigning-pair) new-form))
+        (> new-count
+           reigning-count)))))
+
+
+
 
 (defun new-mention-subsumes-old? (prior-mention edge)
   ;; used by record-instance-within-sequence to do what
@@ -309,9 +380,19 @@ saturated? is a good entry point. |#
 (defun sweep-for-unsaturated-individuals (sentence)
   (push-debug `(,sentence)) ;;/// extend containers to hold this
   (dolist (pair *lifo-instance-list*)
-    (let ((open-variables (unsaturated? (car pair))))
-      
-)))
+    (let* ((i (car pair)) ;; edge is (cadr pair)
+           (open-variables (unsaturated? i)))
+      (when (and open-variables
+                 (null (cdr open-variables)))
+        ;; lets start with just one. January #37
+        (let* ((var (car open-variables))
+               (v/r (var-value-restriction var)))
+          (when v/r
+            ;; if there's no value restriction then we can't
+            ;; constrain the search
+            (let ((candidate (find-best-recent v/r)))
+              (when candidate
+                (bind-variable var candidate i)))))))))
 
 
 (defun unsaturated? (i)
@@ -325,8 +406,6 @@ saturated? is a good entry point. |#
                      unless (memq v bound)
                      collect v)))
         open))))
-
-
 
 
 ;;;--------
