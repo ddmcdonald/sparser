@@ -294,6 +294,29 @@
           (unless (new-mention-subsumes-old? prior-mention edge)
             (store-on-lifo i edge))
           (store-on-lifo i edge))))))
+#| The guard is needed so ordinary parts don't trip over
+cases that you have been filtered out anyway.
+January: (13 (p "These data support our in vitro findings that monoubiquitination
+increases the population of active, GTP–bound Ras through a defect in
+sensitivity to GAP–mediated regulation.")) 
+Storing #<these 95>
+Storing #<pronoun/first/plural "our" 299>
+Storing #<finding 1638>
+Storing #<that 91>
+Storing #<the 100>
+Storing #<small-molecule "GTP" 877>
+Storing #<bio-family "Ras" 896>
+Storing #<a 98>
+Storing #<protein "GAP" 880>[these data support our in vitro findings]
+Storing #<support-kind 1634> that [ monoubiquitination
+increases][ the population] of [ active], [ gtp-bound ras] through [ a defect] in
+[sensitivity] to [ gap-mediated regulation]
+Storing #<sensitivity 1630>
+Storing #<defect 1631>
+> Error: There is no used-in value for #<edge61 20 through 30>
+> While executing: better
+    It's searching for a Biological to fill in sensitivity
+|#
 
 (defun local-recorded-instances (category)
   (loop for pair in *lifo-instance-list*
@@ -325,18 +348,12 @@
           (car best-so-far)))))))
 
 ;;/// move to categories
-(defparameter *category-hierarchy*
-  `(,category::s
-    ,category::subj+verb
-    ,category::vp
-    ,category::np
-    ,category::relative-clause
-    ,category::thatcomp
-    ,category::pp))
+
 
 (defun better (new-pair reigning-pair)
   (let ((new-parent (edge-used-in (cadr new-pair)))
         (reigning-parent (edge-used-in (cadr reigning-pair))))
+    ( new-parent
     (unless new-parent
       (error "There is no used-in value for ~a" (cadr new-pair)))
     (unless reigning-parent
