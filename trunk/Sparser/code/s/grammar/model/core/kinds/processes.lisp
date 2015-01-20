@@ -12,7 +12,7 @@
 ;; and engender more changes later. Cleaned up some wording too.
 ;; 10/27/14 added circumstance to event variables. 1/11/15 added
 ;; manner to event.
-;; 1/14/2015 added slot for negation
+;; 1/14/2015 added slot for negation. Move to top 1/20/15
 
 (in-package :sparser)
 
@@ -26,7 +26,6 @@
           (purpose)
           (circumstance)
           (manner)
-          (negation)
           (aspect . tense/aspect)) ;; see rules/tense
   :lemma (:common-noun "event")
   :documentation

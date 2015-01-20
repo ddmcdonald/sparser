@@ -26,7 +26,8 @@
 ;;      the class. 12/17/13 added scalar-quality and state. 6/9/14
 ;;      pulled the standalone definition. It was a one-off. 
 ;; 0.3 (6/16/14) Trying to insert more organization.
-;;     (1/12/15) Filled in missing super-types. 
+;;     (1/12/15) Filled in missing super-types.  1/20/15 added negation
+;;      to top. Worth seeing what a good ontologist would do though. 
 
 (in-package :sparser)
 
@@ -45,7 +46,9 @@
   ;; is creates for it, i.e. to make it a non-trivial class.
   :instantiates nil
   :specializes nil
-  :binds ((modifier));; is anything else this general?
+  :binds ((modifier)
+          (negation)) ;; applies to both endurants and perdurants
+            ;; an c.f. negative on tense/modal -- need coordination
   :documentation
   "This is a formal top. Nothing should take 'top' as its value restriction
    (except for mechanical defaults). Its functional role is to provide a place 
