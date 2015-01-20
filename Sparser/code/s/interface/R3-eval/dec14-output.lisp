@@ -69,6 +69,7 @@
       agent 
       activator
       deactivator
+      entity ;; from is-bio-entity
       binder
       blocker
       catalyst
@@ -77,6 +78,7 @@
 
 (defparameter *obj-props*
     '(object ;; not used in verbs1
+      predication ;; from is-bio-entity
       patient 
       activated 
       deactivated 
@@ -89,9 +91,17 @@
 
 ;;; explicit case so we can add other properties as variants of these slots if necess. 
 (defun act-rel (action prop)
-  (case prop 
-    (:agent (some-i-prop action *subj-props*))
-    (:object (some-i-prop action *obj-props*))))
+  (let
+      ((obj
+        (case prop 
+          (:agent (some-i-prop action *subj-props*))
+          (:object (some-i-prop action *obj-props*)))))
+    (if
+     (and
+      (individual-p obj)
+      (itypep obj 'prepositional-phrase))
+     (setq obj (value-of 'pobj obj)))
+    obj))
     
 ;; if ent-position t then show the name of the action, else ref the 
 (defun entity-string (ent &optional (ent-position nil))
@@ -135,9 +145,9 @@
   (let* ((evno (i-uid event))
          (subj (act-rel event :agent))
          (pat (act-rel event :object))
-         (ev-string (entity-string event t))
-         (subj-strings (call-or-map #'entity-string subj))
-         (obj-strings (call-or-map #'entity-string pat))
+         (ev-string (name-rewrite (entity-string event t)))
+         (subj-strings (name-rewrite (call-or-map #'entity-string subj)))
+         (obj-strings (name-rewrite (call-or-map #'entity-string pat)))
          )
     (format t "~%Relation: ~a subj: ~a obj ~a" event subj pat)
     (push (cons evno event) *ev-map*)
@@ -150,20 +160,40 @@
 ;;; vars are *relations* *entities* and *events*
 
 
+(defparameter *rel-name-rewrite*
+  '(("IS-BIO-ENTITY" "BE")
+    ("PRONOUN/FIRST/PLURAL" "WE")))
+
+(defun name-rewrite (rel-name)
+  (cond
+   ((assoc rel-name *rel-name-rewrite* :test #'equalp)
+    (second (assoc rel-name *rel-name-rewrite* :test #'equalp)))
+   ((and (stringp rel-name)
+         (eql 0 (search "BIO-" rel-name)))
+    (subseq rel-name (+ 4 (search "BIO-" rel-name))))
+   (t
+    rel-name)))
 
 ;; output relations for one sentence
 (defun output-relations (&optional (sent-num 0) sent (stream t))
-  (declare (special *dec-tests* *relations*))
   (format t "~%Relations for sent ~d: ~s~%~a~%" sent-num sent *relations*)
   (let ((rows 
          (loop for rel in (all-relations) ;; *relations*
-           when (individual-p (car rel))
-             collecting (output-relation (car rel) sent-num sent))))
+           when 
+           (and
+            (individual-p (car rel))
+            (or
+             ;; don't output empty relatiosn
+             (act-rel (car rel) :agent)
+             (act-rel (car rel) :object)))
+           collecting (output-relation (car rel) sent-num sent))))
     (push (list sent-num rows) *output-rows*)
     (if (eq stream t)
         (format t "~2%~d: ~a~:{~%~d, ~d, ~s, ~s, ~s~}" sent-num sent rows)
       (format stream "~:{~d, ~d, ~s, ~s, ~s, ~s, ~s, ~s~%~}" rows))
     *output-rows*))
+
+
 
 
 ;(setf *known-breaks* '(1))
@@ -190,6 +220,11 @@
              (output-relations n (second test) stream)
            ))))
 
+(defun rdtst (n)
+  (setq *output-rows* nil)
+  (run-test n)
+  (output-relations n (nth (- n 1) *sentences*) t)
+  nil)
 ;;; (identify-relations *sentence*) returns (values relations entities)
 
 (defun now-string ()
