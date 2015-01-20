@@ -107,7 +107,8 @@
     ;; or in this case make a collection
     (setq head (make-individual-for-dm&p head))
     (setq head (copy-individual head)))
-  (bind-variable 'number number head)
+  (when (itypep head 'endurant) ;; J34: "Histone 2B"
+    (bind-variable 'number number head))
   head)
 
 
