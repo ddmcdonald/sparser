@@ -134,12 +134,16 @@
                   ;; then look for a rule in the cross-product 
                   ;; of the categories their category labels inherit from
                   (when *edges-from-referent-categories*
-                    (multiply-referents left-edge right-edge))
+                    (check-rule-form
+                     (multiply-referents left-edge right-edge)
+                     left-edge right-edge))
                   
                   ;; then look for a rule mentioning the form label
                   ;; on the two rules
                   (when *allow-pure-syntax-rules*
-                    (check-form-form left-edge right-edge)))))
+                    (check-rule-form
+                     (check-form-form left-edge right-edge)
+                     left-edge right-edge)))))
 
         (when *collect-forms* (record-forms rule left-edge right-edge))
         rule)))
