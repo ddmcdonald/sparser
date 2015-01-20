@@ -353,7 +353,6 @@ Storing #<defect 1631>
 (defun better (new-pair reigning-pair)
   (let ((new-parent (edge-used-in (cadr new-pair)))
         (reigning-parent (edge-used-in (cadr reigning-pair))))
-    ( new-parent
     (unless new-parent
       (error "There is no used-in value for ~a" (cadr new-pair)))
     (unless reigning-parent
