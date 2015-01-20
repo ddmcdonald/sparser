@@ -11,6 +11,8 @@
 ;; 5.2 (1/10/15) record all NG chunks for analysis when *save-chunk-edges* is T
 ;; 5.3 (1/12/15) Option for specialized np parser.
 ;; 1/14/2015 specialized chunk parser for NG and VG
+;; D1/19/2015 ebugged the new chunk parsing algorithm
+;; made the selection of rules for NG and VG different, to account for how verb+ing modifies NG
 
 (in-package :sparser)
 
@@ -56,30 +58,39 @@
 (defun interp-big-mech-chunk (*current-chunk*)
   ;; (push-debug `(,*current-chunk*))
   ;; (break "interp chunk: ~a" *current-chunk*)
-  (let ((*chunk-edges* (treetops-in-current-segment)))
-    (when *save-chunk-edges*
-      (push (loop for edge in *chunk-edges* 
-              collect 
-              (list (and (edge-form edge)
-                         (intern (symbol-name (cat-symbol (edge-form edge)))))
-                    (let ((str (edge-string edge)))
-                      (subseq str 0 (- (length str) 1)))))
-            *all-chunk-edges*))
-    (let (rule-and-edges)
-      (loop while (setq rule-and-edges (best-segment-rule *chunk-edges*))
-        do (execute-triple rule-and-edges))))
+  (when *save-chunk-edges*
+    (push (loop for edge in (treetops-in-current-segment)
+            collect 
+            (list (and (edge-form edge)
+                       (intern (symbol-name (cat-symbol (edge-form edge)))))
+                  (let ((str (edge-string edge)))
+                    (subseq str 0 (- (length str) 1)))))
+          *all-chunk-edges*))
+  (let (rule-and-edges)
+    (loop while (setq rule-and-edges (best-segment-rule (treetops-in-current-segment)))
+      do (execute-triple rule-and-edges)))
   (march-back-from-the-right/segment))
 
-(defun best-segment-rule (rules)
+(defun best-segment-rule (edges)
+  (declare (special edges))
   (let
       (rule rules)
-    (loop for pair in (adjacent-tts (reverse rules) )
-      when (setq rule (rule-for-edge-pair pair))
+    (declare (special rule))
+    (loop for pair in (reverse (adjacent-tts edges))
+      when (setq rule 
+                 (case
+                     (car (chunk-forms *current-chunk*))
+                   (ng 
+                    (check-form-form (car pair)(second pair)))
+                   (vg (rule-for-edge-pair pair))
+                   (adjg (rule-for-edge-pair pair))))
+                   
+
       do
       (push
        (cons rule pair)
        rules))
-    rules))
+    (car rules)))
 
 
 (defun adjacent-segment-tts ()
