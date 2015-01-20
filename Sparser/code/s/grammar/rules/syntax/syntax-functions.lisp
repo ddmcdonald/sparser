@@ -12,6 +12,7 @@
 ;; 1/2/2015 put hooks in adjoin-pp-to-vg and interpret-pp-adjunct-to-np to allow for subcategorization frames
 ;; 1/5/2015 refactor code that David wrote for adjoin-pp-to-vg and interpret-pp-adjunct-to-np to allow them to be used as predicates as well as actions
 ;; 1/14/2015 support for negation and (eventually) other tense/aspect features
+;; methods for assimilating object using sub-categorization frame, and for handling verb_ing premodifiers
 (in-package :sparser)
 
 
@@ -79,6 +80,43 @@
          (bind-variable 'modifier qualifier head) ;; safe
          head)))
 
+
+
+
+(defun verb+ing-noun-compound (qualifier head)
+  (declare (special qualifier head))
+  ;;(break "verb-noun-compound")
+  ;; goes with (verb+ed n-bar-type) syntactic rule 
+  (when nil
+    (push-debug `(,qualifier ,head)) 
+    (break "check: qualifier = ~a~
+   ~%       head = ~a" qualifier head))
+  
+  (or (call-compose qualifier head)
+      ;; This case is to benefit marker-categories
+      (cond
+       ((category-p head)
+        (setq head (make-individual-for-dm&p head))
+        (or
+         (call-compose qualifier head)
+         (link-in-verb+ing qualifier head)))
+       (t
+        (setq head (copy-individual head))
+        (link-in-verb+ing qualifier head)))))
+
+(defun link-in-verb+ing (qualifier head)
+  ;;head is already copied
+  (declare (special qualifier head))
+  ;;(break "link-in-verb")
+  (let ((subject (subject-variable qualifier)))
+    (if
+        (category-p qualifier)
+      (setq qualifier (make-individual-for-dm&p qualifier))
+      (setq qualifier (copy-individual qualifier)))
+    (if subject ;; really should check for passivizing
+        (bind-variable subject head qualifier))
+    (bind-variable 'modifier qualifier head)
+    head))
 
 (defun verb-noun-compound (qualifier head)
   (declare (special qualifier head))
@@ -347,7 +385,7 @@
   (let* ((subcat-patterns (known-subcategorization? vp))
           (variable-to-bind
           ;; test if there is a known interpretation of the NP+VP combination
-           (subcategorized-subj-variable subcat-patterns subj)))
+           (subcategorized-subject-variable subcat-patterns subj)))
     (cond
      (*subcat-test* variable-to-bind)
      (t
@@ -355,8 +393,43 @@
       (bind-variable variable-to-bind subj vp)
       vp))))
 
+(defun assimilate-object (vg obj)
+  (declare (special np vg))
+  ;; The vg is the head. We ask whether it subcategorizes for
+  ;; the preposition in this PP and if so whether the complement
+  ;; of the preposition satisfies the specified value restriction.
+  ;; Otherwise we check for some anticipated cases and then
+  ;; default to binding modifier. 
+  (let* ((subcat-patterns (known-subcategorization? vg))
+          (variable-to-bind
+          ;; test if there is a known interpretation of the NP+VP combination
+           (subcategorized-object-variable subcat-patterns obj)))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (t
+      (setq vg (copy-individual vg))
+      (bind-variable variable-to-bind obj vg)
+      vg))))
 
-(defun subcategorized-subj-variable (subcat-patterns subj)
+(defun subcategorized-object-variable (subcat-patterns subj)
+  ;; included in the subcategorization patterns of the head.
+  ;; If so, check the value restriction and if it's satisfied
+  ;; make the specified binding
+  (declare (special subcat-patterns))
+  (when  subcat-patterns
+    (let* (variable)
+      (declare (special prep-word prep-edge pobj-edge variable))      
+      (dolist (entry subcat-patterns)
+        (when 
+            (and
+             (eq :object (subcat-label entry))
+             (itypep subj (subcat-restriction entry)))
+          (setq variable (subcat-variable entry))
+          (return)))
+      ;;(break "testing subcats")
+      variable)))
+
+(defun subcategorized-subject-variable (subcat-patterns subj)
   ;; Look up the preposition on the pp and see if it is
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
