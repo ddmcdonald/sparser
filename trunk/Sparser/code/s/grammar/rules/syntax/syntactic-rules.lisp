@@ -12,15 +12,11 @@
 ;; 1/8/2015 added (def-syntax-rule (preposition proper-name)for PP
 ;; 1/1/4/2015 support for thatcomp
 ;; 1/15/2015 add (adjective pp) rule for cases of bare adjective
+;; i1/18/2015 nserted correct rules for direct objects and premodifying verb+ing
 
 (in-package :sparser)
 
-;;--- subject + verb
 
-(def-syntax-rule (np vg)
-                 :head :right-edge
-  :form subj+verb
-  :referent (:head right-edge))
 
 #| This is too potent to use in a leftward sweep
    because it catches things early
@@ -75,28 +71,8 @@ to an oncogenic RasG12V mutation (9)."))
   :form vp
   :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
-;;--- direct object
-
-(def-syntax-rule (vg np)
-                 :head :left-edge
-  :form vp
-  :referent (:head left-edge
-             :bind (participant right-edge)))
 
 
-;;--- NPs
-
-;; This generalizes all the commented out def-syntax-rules
-(loop for left in *n-bar-categories*
-  do
-  (loop for right in *n-bar-categories*
-    do
-    (eval 
-     `(def-syntax-rule (,left ,right) 
-        :head :right-edge 
-        :form n-bar ;; requires a determiner 
-        :referent (:function noun-noun-compound
-                       left-edge right-edge)))))
 #|
 (def-syntax-rule (proper-noun proper-noun) ;; "ford suv"
                  :head :right-edge ; 
@@ -159,10 +135,24 @@ to an oncogenic RasG12V mutation (9)."))
                            left-edge right-edge)))
   (eval
    `(def-syntax-rule (verb+ed ,nb) ;; "black suv"
-                      :head :right-edge
-       :form n-bar ;;/// cutting corners
-       :referent (:function verb-noun-compound
-                            left-edge right-edge))))
+                     :head :right-edge
+      :form n-bar ;;/// cutting corners
+      :referent (:function verb-noun-compound
+                           left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (verb+ing ,nb) ;; "black suv"
+                     :head :right-edge
+      :form n-bar ;;/// cutting corners
+      :referent (:function verb+ing-noun-compound
+                           left-edge right-edge)))
+  (loop for nbmod in *n-bar-categories*
+    do   
+    (eval
+     `(def-syntax-rule (,nbmod ,nb) ;; "black suv"
+                       :head :right-edge
+        :form n-bar ;;/// cutting corners
+        :referent (:function noun-noun-compound
+                             left-edge right-edge)))))
 
 
 ;;--- NP + PP
@@ -277,6 +267,26 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
                  :head :left-edge
   :form np
   :referent (:function apply-subject-relative-clause left-edge right-edge))
+
+
+
+;;--- direct object
+(loop for nb in (cons category::np *n-bar-categories*)
+  do
+  (eval 
+   `(def-syntax-rule (vg ,nb)
+                     :head :left-edge
+      :form vp
+      :referent (:function assimilate-object left-edge right-edge))))
+
+
+;; subject 
+;;--- subject + verb
+
+(def-syntax-rule (np vg)
+                 :head :right-edge
+  :form subj+verb
+  :referent (:function assimilate-subject left-edge right-edge))
 
 (def-syntax-rule (np vp)
   :head :right-edge
