@@ -186,9 +186,13 @@
 
 ;; output relations for one sentence
 (defun output-relations (&optional (sent-num 0) sent (stream t))
-  (format t "~%Relations for sent ~d: ~s~%~a~%" sent-num sent *relations*)
+  (format t "~%Relations for sent ~d: ~s~%~a~%" sent-num sent (all-relations))
+  (print-relations sent-num sent stream)
+  *output-rows*)
+
+(defun print-relations (&optional (sent-num 0) sent (stream t))
   (let ((rows 
-         (loop for rel in (all-relations) ;; *relations*
+         (loop for rel in (all-relations)
            when 
            (and
             (individual-p (car rel))
@@ -201,10 +205,7 @@
     (push (list sent-num rows) *output-rows*)
     (if (eq stream t)
         (format t "~2%~d: ~a~:{~%~d, ~d, ~s, ~s, ~s~}" sent-num sent rows)
-      (format stream "~:{~d, ~d, ~a, ~a, ~a, ~s, ~s, ~s~%~}" rows))
-    *output-rows*))
-
-
+        (format stream "~:{~d, ~d, ~a, ~a, ~a, ~s, ~s, ~s~%~}" rows))))
 
 
 ;(setf *known-breaks* '(1))
