@@ -15,6 +15,7 @@
 ;; 1/12/2015 Handle circular structures in seemtree -- needed for verb+ed premodifiers, among others
 ;; 1.18.2015 fix collection of description of individuals when modifiers referents are categories and not individuals as in "catalytic domains"
 ;; 1/18/2015 code (a bit sketchy) to extract all entities and all relations after parsing a sentence -- entities-in and relations-in
+;; tweaks to all-entities and all-relations
 
 (in-package :sparser)
 
@@ -222,7 +223,10 @@
   (let
       (relations)
     (when
-        (consp tree)
+        (and 
+         (consp tree)
+         (not (eq 'collection (car tree))))
+      
       (if
        (and
         (not (consp (car tree)))
@@ -253,7 +257,9 @@
 (defun entity-p (e)
   (and
    (individual-p e)
-   (not (itypep e 'bio-process))))
+   (not (subject-variable e))
+   (not (itypep e 'bio-process))
+   (not (itypep e 'is-bio-entity))))
 
 (defmethod semtree ((x null))
   nil)
