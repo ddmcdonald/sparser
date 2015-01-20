@@ -104,6 +104,7 @@
 
 (adj "candidate" :super predicate )
 (adj "chemical" :super predicate) ;; keyword: (al ADJ) 
+(adj "cognate" :super predicate)
 (adj "combinatorial" :super predicate) ;; keyword: (al ADJ) 
 (adj "comparable" :super predicate) ;; keyword: (able ADJ) 
 (adj "conserved" :super predicate) ;; virtually never used as a verb
@@ -321,6 +322,7 @@
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "liquid chromatography" :super bio-method)
 (noun "manner" :super bio-process) ;; by chemical or genetic means
+(noun "mass" :super measurement)
 (noun "mass spectrometry" :super bio-method)
 (noun "means" :super bio-process) ;; by chemical or genetic means
 (noun "mechanism" :super bio-process
