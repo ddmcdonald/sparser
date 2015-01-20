@@ -29,7 +29,7 @@
 
 
 (unless (boundp '*length-of-character-input-buffer*)
-  (defparameter *length-of-character-input-buffer*  1000
+  (defparameter *length-of-character-input-buffer*  50000 ;; 1000
     "A performance variable.  Should be adjusted to tradeoff between
      the size of the stored image and the overhead of sucessively
      opening the source to fill it."))
