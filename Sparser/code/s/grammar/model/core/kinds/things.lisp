@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  November 2014
+;;;  version:  January 2015
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
 ;; words for categories whose names are ordinary words. 11/20/14
-;; rationalizing the very top. 
+;; rationalizing the very top. 1/20/15 tentatively added number
+;; and quantifier to endurant.
 
 (in-package :sparser)
 
@@ -18,10 +19,15 @@
 
 (define-category endurant 
   :specializes top
+  :binds ((number)
+          (quantifier))
   :documentation
   "Endurants (aka objects, things) have an identity that doesn't depend
  on the identity of their parts, see axe handles and greek ships. The
- split below Endurant is physical vs. non-physical.")
+ split below Endurant is physical vs. non-physical. 
+   Number is bound here possibly as an expediency since actual instances
+ ('three swans', 'four drugs') should almost certainly be analyzed as
+ collections.")
 
 
 
@@ -110,7 +116,7 @@
 (define-category non-physical 
   :specializes endurant
   :documentation
-  "Non-physical objects have no location. They often dependent in some way
+  "Non-physical objects have no location. They often depend in some way
  on physical objects")
 
 (define-category mental-object 
