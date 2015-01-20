@@ -306,7 +306,7 @@
      (*subcat-test* variable-to-bind)
      (t
       (setq vg (copy-individual vg))
-      (bind-variable variable-to-bind pp vg)
+      (bind-variable variable-to-bind pobj-referent vg)
       vg))))
 
 (defun subcategorized-pp-variable (subcat-patterns head pp)
