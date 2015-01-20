@@ -39,8 +39,8 @@
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
   (if (category-p head)
-      (setq head (make-individual-for-dm&p head))
-      (setq head (copy-individual head)))
+    (setq head (make-individual-for-dm&p head))
+    (setq head (copy-individual head)))
   (or (call-compose qualifier head)
       ;; This case is to benefit marker-categories 
       (if (itypep head 'process) ;; poor man's standing for verb?
@@ -80,7 +80,35 @@
          (bind-variable 'modifier qualifier head) ;; safe
          head)))
 
+(defun quantifier-noun-compound (quantifier head)
+  ;; Not all quantifiers are equivalent. We want to idenify
+  ;; cases of negation ("no increase") and eventually probably
+  ;; float them up to the main verb, //// which will require
+  ;; making a note somewhere on the sentence structure reminding
+  ;; us to do that after the analysis dust has settled.
+  ;; Before doing quantifiers seriously find copy of Kurt vanLehn's
+  ;; MS thesis and think about generalized quantifiers.
+  (if (category-p head) ;;//// need to reclaim bindings !!!!!!
+    (setq head (make-individual-for-dm&p head))
+    (setq head (copy-individual head)))
+  (if (eq quantifier (word-named "no")) ;; Jan#4 "no increase"
+      ;; in Jan#4 it's a literal
+    (let ((no (find-individual 'quantifier :word "no")))
+      (bind-variable 'negation no head)) ;; on top
+    (bind-variable 'quantifier quantifier head)) ;; on endurant
+  head)
 
+(defun number-noun-compound (number head)
+  ;;/// for the moment there is a number variable on
+  ;; endurant we can bind. Going forward we should automatically
+  ;; make a composite individual using a collection.
+  ;; See notes on forming plurals in morphology1
+  (if (category-p head) ;;//// need to reclaim bindings !!!!!!
+    ;; or in this case make a collection
+    (setq head (make-individual-for-dm&p head))
+    (setq head (copy-individual head)))
+  (bind-variable 'number number head)
+  head)
 
 
 (defun verb+ing-noun-compound (qualifier head)

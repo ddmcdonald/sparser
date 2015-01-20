@@ -12,7 +12,8 @@
 ;; 1/8/2015 added (def-syntax-rule (preposition proper-name)for PP
 ;; 1/1/4/2015 support for thatcomp
 ;; 1/15/2015 add (adjective pp) rule for cases of bare adjective
-;; i1/18/2015 nserted correct rules for direct objects and premodifying verb+ing
+;; 1/18/2015 inserted correct rules for direct objects and premodifying verb+ing
+;; 1/20/15 Added number and quantifier np rules
 
 (in-package :sparser)
 
@@ -71,6 +72,9 @@ to an oncogenic RasG12V mutation (9)."))
   :form vp
   :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
+
+
+;;---- Nouns's and their pre-modifiers
 
 
 #|
@@ -145,6 +149,19 @@ to an oncogenic RasG12V mutation (9)."))
       :form n-bar ;;/// cutting corners
       :referent (:function verb+ing-noun-compound
                            left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (quantifier ,nb)
+                     :head :right-edge
+      :form n-bar ;;/// cutting corners
+      :referent (:function quantifier-noun-compound
+                           left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (number ,nb)
+                     :head :right-edge
+      :form n-bar ;;/// cutting corners
+      :referent (:function number-noun-compound
+                           left-edge right-edge)))
+
   (loop for nbmod in *n-bar-categories*
     do   
     (eval
