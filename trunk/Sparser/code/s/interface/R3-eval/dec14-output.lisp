@@ -229,7 +229,8 @@
 
 (defun now-string ()
     (multiple-value-bind (second minute hour date month year ) ;day-of-week dst-p tz
-      (get-decoded-time)
+                         (get-decoded-time)
+      (declare (ignore second))
       (format nil "~2,'0d-~2,'0d-~2,'0d-~2,'0d~2,'0d" month date (mod year 100) hour minute)))
 
 (defun test-file-with-time (&optional (name "dec-out") (ext "csv"))
