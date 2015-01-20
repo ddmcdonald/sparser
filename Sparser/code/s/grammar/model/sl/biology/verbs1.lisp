@@ -132,7 +132,7 @@
 (define-category bio-bind  :specializes bio-process
   ;;:obo-id "GO:0005488"
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder molecule)(bindee molecule)(site bio-location))
+  :binds ((binder molecule)(bindee bio-entity)(site bio-location))
   :realization 
   (:verb ("bind" :past-tense "bound") :noun "binding"
          :etf (svo-passive) 
@@ -1603,7 +1603,13 @@
 (define-category purify :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "purify" :noun "purification" :etf (svo-passive) :s agent :o object)) 
 (define-category reconstitute :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "reconstitute" :noun "reconstitution" :etf (svo-passive) :s agent :o object))
 (define-category reveal :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "reveal" :noun "revelation" :etf (svo-passive) :s agent :o object))
-(define-category stabilize :specializes bio-process :binds ((agent biological)(object bio-process)) :realization (:verb "stabilize" :noun "stabilization" :etf (svo-passive) :s agent :o object))
+(define-category stabilize :specializes bio-process
+  :binds ((agent biological)(object biological))
+ :realization
+  (:verb "stabilize" :noun "stabilization"
+         :etf (svo-passive) 
+         :s agent :o object
+         :of object))
 (define-category transcribe :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "transcribe" :noun "transcription" :etf (svo-passive) :s agent :o object))
 (define-category translocation :specializes bio-process 
   :binds ((agent bio-entity)(object bio-process)(source biological)(destination biological)) 
