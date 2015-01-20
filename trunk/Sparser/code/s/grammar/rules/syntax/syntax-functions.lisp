@@ -95,7 +95,8 @@
       ;; in Jan#4 it's a literal
     (let ((no (find-individual 'quantifier :word "no")))
       (bind-variable 'negation no head)) ;; on top
-    (bind-variable 'quantifier quantifier head)) ;; on endurant
+    (when (itypep head 'endurant)
+      (bind-variable 'quantifier quantifier head))) ;; on endurant
   head)
 
 (defun number-noun-compound (number head)
