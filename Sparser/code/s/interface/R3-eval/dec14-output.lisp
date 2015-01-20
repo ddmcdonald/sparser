@@ -105,7 +105,7 @@
     
 ;; if ent-position t then show the name of the action, else ref the 
 (defun entity-string (ent &optional (ent-position nil))
-  (cond ((null ent) nil)
+  (cond ((null ent) "")
         ;; not sure ref-category should be a subject, but...
         ((typep ent 'referential-category)
          (format nil "cat:~a" (cat-symbol ent)))
@@ -145,7 +145,7 @@
   (let* ((evno (i-uid event))
          (subj (act-rel event :agent))
          (pat (act-rel event :object))
-         (ev-string (name-rewrite event))
+         (ev-string (name-rewrite (format nil "~a" (type-name event))))
          (subj-strings (arg-strings subj))
          (obj-strings (arg-strings pat)))
     (format t "~%Relation: ~a subj: ~a obj ~a" event subj pat)
@@ -154,14 +154,15 @@
           (remove-separators sent))))
 
 (defun arg-strings (arg)
-  (if
-   (or
-    (null arg)
-    (and
+  (cond
+   ((null arg)
+    "")
+   ((and
      (individual-p arg)
-     (entity-p arg)))
-   (name-rewrite (call-or-map #'entity-string arg))
-   (format nil "EVENT-~S" (i-uid arg))))
+     (entity-p arg))
+    (name-rewrite (call-or-map #'entity-string arg)))
+   (t
+    (format nil "EVENT-~S" (i-uid arg)))))
 
 (defun reset-rows ()
   (setq *output-rows* nil *event-index* 0 *ev-map* nil))
