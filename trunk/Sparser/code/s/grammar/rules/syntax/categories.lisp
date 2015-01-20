@@ -235,6 +235,7 @@
 (def-form-category  np-head)
 (def-form-category  classifier)
 (def-form-category  quantifier)
+(def-form-category  number)
 
 
 (def-form-category  definite-modifier)   ;; "last (year)"
