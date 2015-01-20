@@ -192,7 +192,7 @@
            when 
            (and
             (individual-p (car rel))
-            (not (equalp "WE" (name-rewrite (act-rel (car rel) :agent))))
+            (not (equalp "WE" (name-rewrite (entity-string (act-rel (car rel) :agent)))))
             (or
              ;; don't output empty relatiosn
              (act-rel (car rel) :agent)
@@ -201,7 +201,7 @@
     (push (list sent-num rows) *output-rows*)
     (if (eq stream t)
         (format t "~2%~d: ~a~:{~%~d, ~d, ~s, ~s, ~s~}" sent-num sent rows)
-      (format stream "~:{~d, ~d, ~s, ~s, ~s, ~s, ~s, ~s~%~}" rows))
+      (format stream "~:{~d, ~d, ~a, ~a, ~a, ~s, ~s, ~s~%~}" rows))
     *output-rows*))
 
 
