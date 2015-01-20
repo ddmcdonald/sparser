@@ -104,9 +104,8 @@
                 
 
 
-;;/// these two should be merged. Perhaps with a switch
-;;  to determine what to show
-(defun jantest (n &optional (sentences *jan-dry-run*))
+
+(defun stest (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences)))
     (print (list n test))
     (terpri)
