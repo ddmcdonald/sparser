@@ -284,15 +284,16 @@
 
 (defun record-instance-within-sequence (i edge)
   ;; called from add-subsuming-object-to-discourse-history 
-  (flet ((store-on-lifo (i edge)
-           (when *trace-instance-recording*
-             (format t "~&Storing ~a" i))
-           (push `(,i ,edge) *lifo-instance-list*)))
-    (let ((prior-mention (assq i *lifo-instance-list*)))
-      (if prior-mention
-        (unless (new-mention-subsumes-old? prior-mention edge)
-          (store-on-lifo i edge))
-        (store-on-lifo i edge)))))
+  (when *scan-for-unsaturated-individuals*
+    (flet ((store-on-lifo (i edge)
+             (when *trace-instance-recording*
+               (format t "~&Storing ~a" i))
+             (push `(,i ,edge) *lifo-instance-list*)))
+      (let ((prior-mention (assq i *lifo-instance-list*)))
+        (if prior-mention
+          (unless (new-mention-subsumes-old? prior-mention edge)
+            (store-on-lifo i edge))
+          (store-on-lifo i edge))))))
 
 (defun local-recorded-instances (category)
   (loop for pair in *lifo-instance-list*
