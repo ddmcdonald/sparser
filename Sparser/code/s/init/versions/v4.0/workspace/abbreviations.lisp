@@ -115,6 +115,10 @@
        (format t "~&~a is not an individual~%" i)
        i))))
 
+;; edge vectors
+(defun dev/s (position#) (d (ev/s position#)))
+(defun dev/e (position#) (d (ev/e position#)))
+
 
 (defmethod drs ((pname string)) ;; Desribe rule set
   (let ((word (resolve pname)))
