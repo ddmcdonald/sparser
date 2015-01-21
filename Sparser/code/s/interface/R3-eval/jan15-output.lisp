@@ -51,8 +51,12 @@
   (let ((newstr (copy-seq string)))
     (loop for i from 0 to (1- (length string))
       for char = (elt newstr i)
-      when (member char '(#\, #\.))
-      do (setf (elt newstr i) #\;))
+      do
+      (cond
+       ((member char '(#\, #\.))
+        (setf (elt newstr i) #\;))
+       ((member char '(#\Newline))
+        (setf (elt newstr i) #\space))))
     newstr
     ))
 
@@ -72,7 +76,7 @@
     (loop for (i pasg new ents descrip rep sent) in results 
       for entities = (unique-ent-names ents)
       do 
-      (format stream "~a, ~a, ~a, ~a, ~a, ~a, ~s~%" i pasg new entities descrip rep sent))))
+      (format stream "~a, ~a, ~a, ~a, ~a, ~s~%" pasg new entities descrip rep sent))))
 
 ;; (write-jan-csv-output)
 
