@@ -161,7 +161,7 @@
      :realization
      (:to comparator))
 (adj "refractory" :super predicate) ;; keyword: (ory ADJ) 
-(adj "specific" :super predicate :super abstract
+(adj "specific" :super predicate :super bio-abstract
      :binds ((situation biological))
      :realization
      (:adj "specific"
@@ -208,7 +208,7 @@
 (define-adverb "until now")
 
 (noun "32P" :super molecule) ;; actually an isotope -- need to adjust taxonomy 
-(noun "ability" :super abstract
+(noun "ability" :super bio-abstract
       :binds ((result biological)(agent biological))
       :realization
       (:noun "ability"
@@ -279,7 +279,7 @@
       :realization 
       (:noun "domain"
              :of substrate))
-(noun "dynamics" :super abstract)                      
+(noun "dynamics" :super bio-abstract)                      
 (noun "et al." :super bib-reference)
 (noun "effector" :super protein) ;; NOT SURE WHAT THE RIGHT SUPER is
 (noun "exchange" :super bio-process)
@@ -340,7 +340,7 @@
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super bio-entity)
 (noun "ORF" :super bio-entity) ;; same as above -- need to figure out how to get the category spelling right
-(noun "order of magnitude" :super abstract)
+(noun "order of magnitude" :super bio-abstract)
 (noun "panel" :super bio-process
       :binds ((component molecule)) ;; this should be for genes and proteins
       :realization
@@ -361,7 +361,7 @@
       :realization
       (:noun "population"
              :of element))  
-(noun "radioactivity" :super abstract
+(noun "radioactivity" :super bio-abstract
       :binds ((material molecule))
       :realization
       (:noun "radioactivity" :adj "radioactive"
@@ -427,17 +427,17 @@
              :of basis
              :in basis))
 
-;;; using 'abstract' here as a standin for a better taxonomic treatment
-(noun "component" :super abstract)
+;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
+(noun "component" :super bio-abstract)
 (noun "effect" :super bio-process
       :binds ((effector biological)(effectee biological))
       :realization
       (:noun "effect" 
              :of effector
              :on effectee))
-(noun "exclusivity" :super abstract) ;; keyword: (ity N) 
-(noun "fate" :super abstract)
-(noun "group" :super abstract)
+(noun "exclusivity" :super bio-abstract) ;; keyword: (ity N) 
+(noun "fate" :super bio-abstract)
+(noun "group" :super bio-abstract)
 (noun "mode" :super bio-process
       :binds ((process bio-process))
       :realization
@@ -445,10 +445,10 @@
              :of process))
 (noun "model" :super biological) ;; almost never used as a verb
 (noun "modeling" :super biological) ;; but modeling is a nominal that is used
-(noun "mortality" :super abstract) ;;/// relationship to "mortal" ??
-(noun "paradigm" :super abstract)
-(noun "partner" :super abstract)
-(noun "possibility" :super abstract) ;; keyword: (ity N) 
+(noun "mortality" :super bio-abstract) ;;/// relationship to "mortal" ??
+(noun "paradigm" :super bio-abstract)
+(noun "partner" :super bio-abstract)
+(noun "possibility" :super bio-abstract) ;; keyword: (ity N) 
 (noun "presence" :super bio-context
       :binds ((context biological))
       :realization 
@@ -480,11 +480,11 @@
              :s item
              :to agent))
 
-(noun "stoichiometry" :super abstract)
-(noun "success" :super abstract)
-(noun "therapeutics" :super abstract) ;; keyword: (ics N) 
-(noun "treatment":super abstract) ;; keyword: (ment N) 
-(noun "trial" :super abstract)
+(noun "stoichiometry" :super bio-abstract)
+(noun "success" :super bio-abstract)
+(noun "therapeutics" :super bio-abstract) ;; keyword: (ics N) 
+(noun "treatment":super bio-abstract) ;; keyword: (ment N) 
+(noun "trial" :super bio-abstract)
 (noun "tumorigenesis" :super bio-process)
 
 
@@ -569,7 +569,7 @@
 
 ;; Not quite right -- DAVID -- how do I make "et al." be a word that is the head of a bibliographic reference
 (define-category bib-reference 
-  :specializes abstract)
+  :specializes bio-abstract)
 
 
 
@@ -590,9 +590,9 @@
 "trials" 
 
 (define-category article-figure
-  :specializes abstract)
+  :specializes bio-abstract)
 (define-category article-table
-  :specializes abstract)
+  :specializes bio-abstract)
 
 ; a {wide, large, extensive, big} variety of ..
 ;; "variety" is an "of quantifier" like "many" or "some"
