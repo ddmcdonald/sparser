@@ -12,30 +12,29 @@
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
 
-; sentence-sweep-loop  decode-realization-parameter-list
-
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   (setq *note-text-relations* nil)
   (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
-  (setq *trace-instance-recording* t
-        *scan-for-unsaturated-individuals* t)
+;  (setq *trace-instance-recording* t
+;        *scan-for-unsaturated-individuals* t)
   (incorporate-obo-terms)
-  (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
-  (load "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
   ;;(ed "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (load "/Users/ddm/sparser/Sparser/code/s/interface/R3-eval/dec14-output.lisp")
-  (test-jan)) ;; (test-dec)
+  (ddm-load "interface/R3-eval/dec14-output.lisp")
+  (test-jan)) ;; (test-dec)  (dtst nil t)
 
-; #13 (p "BRAF is inactive in NRAS mutant cells.")
-; #13 (p "NRAS or CRAF depletion by RNA interference.")
+;; local anaphora, getting categories right
+; sentence-sweep-loop  decode-realization-parameter-list
 
 ;; Are we making the right references in the history?
 ;    decode-category-parameter-list decode-index-field
 
 ;; Sentence sweep (dies on 2d wrap)
 ;   sentence-sweep  extract-string-from-char-buffers 
+;   *length-of-character-input-buffer*  -- goosed to 50k
 
 (defun ddm-bio ()
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
@@ -47,9 +46,9 @@
   (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
   (ddm-ed "grammar/model/sl/biology/switches.lisp")
-  (ddm-ed "grammar/model/sl/biology/rules.lisp")
-)
+  (ddm-ed "grammar/model/sl/biology/rules.lisp"))
 ;;  molecules and NGkappB not loaded
+;; cf. model/sl/NIH/site.lisp
 
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
@@ -168,6 +167,8 @@
   (ddm-ed "grammar/rules/tree-families/shortcuts1.lisp")
   (ddm-ed "grammar/rules/tree-families/families.lisp")
   (ddm-ed "grammar/rules/syntax/subcategorization.lisp"))
+; (ddm-ed "grammar/model/core/qualities/attribute.lisp")
+; (ddm-ed "grammar/model/sl/waypoints/attributes.lisp") ; ex.
 
 
 (defun ddm-tree-families ()
@@ -191,7 +192,8 @@
   (ddm-ed "grammar/rules/syntax/syntactic-rules.lisp")
   (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
   (ddm-ed "grammar/rules/syntax/subject-relatives.lisp")
-  (ddm-ed "grammar/rules/syntax/conjunction8.lisp"))
+  (ddm-ed "grammar/rules/syntax/conjunction8.lisp")
+  (ddm-ed "grammar/rules/syntax/possessive.lisp"))
 
 ; (ddm-ed "objects/chart/edge-vectors/tuck.lisp)
 ;(ddm-ed "objects/chart/edge-vectors/peek.lisp)
@@ -245,6 +247,9 @@
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 1.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 2.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 3.txt")
+
+; #13 (p "BRAF is inactive in NRAS mutant cells.")
+; #13 (p "NRAS or CRAF depletion by RNA interference.")
 
 
 #| 10/9/14 noun brackets are being added to word::single-quote
@@ -407,6 +412,11 @@
   (ed (concatenate 'string
                    "~/sparser/Sparser/code/s/"
                    string)))
+
+(defun ddm-load (string)
+  (load (concatenate 'string
+                     "~/sparser/Sparser/code/s/"
+                     string)))
 
 
 
