@@ -83,22 +83,24 @@
 ;;; needs to return (tree entities relations)
 (defun jtest-results-from-sentence (sentence)
 ;  (print (list 'jtst-analyzing sentence))
-  (let* ((trees (parse-to-tree sentence))
-         (entities (loop for tr in trees appending (extract-entities tr)))
-         (relations (remove nil (mapcar #'extract-relations trees))))
-    (list trees entities relations)))
+  (p sentence)
+  (let* ((trees (tts-semantics))
+         (entities (loop for e in (all-entities trees) when (and (entity-p e)(individual-p e)(itypep e 'biological)) collect e))
+         (relations (loop for rel in (all-relations trees) when (r3-relation rel) collect rel)))
+    (list (tts-semantics) entities relations)))
 
 (defun parse-to-tree (sentence)
   (declare (special *readout-relations* *relations))
-  (setf *readout-relations* t)
+  ;;(setf *readout-relations* t)
   (p sentence)
   (format t "~&~%Relations:~%")
-  (loop for r in *relations*
-      for sexp = (collect-model r)
+  (loop for r in (all-tts)
+      for sexp = (semtree r)
       do (pprint sexp)
       collect sexp into s-expressions
       finally (terpri) (return s-expressions)))
 
+#+ignore
 (defun extract-entities (tree &optional (res nil))
   (if (consp tree)
              (let ((hd (car tree))
@@ -119,6 +121,7 @@
         (pushnew tree res)
         res)))
 
+#+ignore
 (defun extract-relations (tree )
   (if (consp tree)
       (let ((hd (car tree))
@@ -205,6 +208,7 @@
 
 ;;; for some reason protein is a Relation??
 
+#|
 (defun is-event-p (ind)
   (let ((evtype (car (indiv-type ind))))
     (some-sub-type evtype '(category::EVENT ))))
@@ -230,7 +234,7 @@
       process
       creation
       encoded))
-      
+  
 
 ;;; explicit case so we can add other properties as variants of these slots if necess. 
 (defun act-rel (action prop)
@@ -264,7 +268,7 @@
   (cond ((null lst) nil)
         ((consp lst) (mapcar fn lst))
         (t (funcall fn lst))))
-
+|#
 ;; for now replace . and , with ;
 (defun remove-separators (string)
   (let ((newstr (copy-seq string)))
@@ -275,6 +279,7 @@
     newstr
     ))
 
+#+ignore
 (defun output-relation (event sent-num sent)
   (declare (special *ev-map*))
   (let* ((evno (i-uid event))
@@ -298,6 +303,7 @@
 
 
 ;; output relations for one sentence
+#+ignore
 (defun output-relations (&optional (sent-num 0) sent (stream t))
   (declare (special *dec-tests* *relations*))
   (format t "~%Relations for sent ~d: ~s~%~a~%" sent-num sent *relations*)

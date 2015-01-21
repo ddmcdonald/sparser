@@ -193,20 +193,22 @@
 (defun print-relations (&optional (sent-num 0) sent (stream t))
   (let ((rows 
          (loop for rel in (all-relations)
-           when 
-           (and
-            (individual-p (car rel))
-            (not (equalp "WE" (name-rewrite (entity-string (act-rel (car rel) :agent)))))
-            (or
-             ;; don't output empty relatiosn
-             (act-rel (car rel) :agent)
-             (act-rel (car rel) :object)))
+           when (r3-relation rel)
            collecting (output-relation (car rel) sent-num sent))))
     (push (list sent-num rows) *output-rows*)
     (if (eq stream t)
         (format t "~2%~d: ~a~:{~%~d, ~d, ~s, ~s, ~s~}" sent-num sent rows)
         (format stream "~:{~d, ~d, ~a, ~a, ~a, ~s, ~s, ~s~%~}" rows))))
 
+(defun r3-relation (rel)
+  (and
+   (individual-p (car rel))
+   (not (equalp "WE" (name-rewrite (entity-string (act-rel (car rel) :agent)))))
+   (or
+    ;; don't output empty relatiosn
+    (act-rel (car rel) :agent)
+    (act-rel (car rel) :object)))
+  )
 
 ;(setf *known-breaks* '(1))
 (defun dtst (&optional n to-file)
