@@ -36,12 +36,21 @@
 ;;; generalizations
 ;;;-----------------
 
-(define-category biological
+(define-category with-quantifier
   :specializes abstract
+  :binds ((quantifier)))
+
+(define-category biological
+  :specializes with-quantifier
   :lemma (:adjective "biological")
   :binds ((context bio-context)
           (location bio-location)
           (quantifier))
+  :documentation "Provides a generalization over bio entities
+   and processes by being mixed into those categories")
+
+(define-category bio-abstract
+  :specializes with-quantifier
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
 
