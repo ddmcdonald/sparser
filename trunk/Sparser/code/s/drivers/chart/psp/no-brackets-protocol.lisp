@@ -191,8 +191,8 @@
     collect (list edge
                   (semtree (edge-referent edge)))))
 
-(defun all-entities ()
-    (loop for st in (tts-semantics)
+(defun all-entities (&optional (trees (tts-semantics)))
+    (loop for st in trees
     append
     (entities-in st)))
 
@@ -214,8 +214,8 @@
                entities))))
     entities))
 
-(defun all-relations ()
-    (loop for st in (tts-semantics)
+(defun all-relations (&optional (trees (tts-semantics)))
+    (loop for st in trees
     append
     (relations-in st)))
 
@@ -340,9 +340,9 @@
                 (cons
                  (push
                   (list (var-name var)
-                        `(collection :members 
+                        `(collection (:members 
                               (,@(loop for item in value 
-                                   collect (collect-model-description item)))))
+                                   collect (collect-model-description item))))))
                   desc))
                 (otherwise
                  (push-debug `(,value ,b ,i))
