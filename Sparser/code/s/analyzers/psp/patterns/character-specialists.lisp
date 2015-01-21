@@ -81,7 +81,7 @@
     (or single-edge
         (let ((words (words-between start-pos end-pos))
               (pattern (characterize-words-in-region start-pos end-pos)))
-          (let ((*work-on-ns-patterns* t))
+          (let ((*work-on-ns-patterns* nil)) ;; t))
             (declare (special *work-on-ns-patterns*))
             (let ((result (resolve-ns-pattern pattern words start-pos end-pos)))
               (unless result 
