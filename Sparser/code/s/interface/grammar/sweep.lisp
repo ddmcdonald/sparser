@@ -104,7 +104,9 @@
 ; (setq *sweep-for-sentences* t)
 ; (setq *sweep-for-sentences* nil)
 
-(defun sentence-sweep (sentence &optional (stream *standard-output*))
+(defvar *sentence-sweep-stream* *standard-output*)
+
+(defun sentence-sweep (sentence &optional (stream *sentence-sweep-stream*))
   (declare (ignore stream))
   (let* ((start-pos (starts-at-pos sentence))
          (end-pos (ends-at-pos sentence))
@@ -114,4 +116,20 @@
     (let ((string
            (extract-string-from-char-buffers start-char end-char)))
       (print string stream))))
+
+
+
+(defun write-swept-sentence-to-file (in-filename out-filename)
+  (with-open-file (out-stream
+                   out-filename
+                   :direction :output
+                   :if-does-not-exist :create
+                   :if-exists :overwrite)
+    (let ((*trace-lexicon-unpacking* nil)
+          (*trace-morphology* nil)
+          (*sweep-for-sentences* t)
+          (*sentence-sweep-stream* out-stream))
+      (declare (special *trace-lexicon-unpacking* *trace-morphology*
+                        *sweep-for-sentences*))
+      (funcall #'f in-filename))))
 
