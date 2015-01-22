@@ -162,10 +162,11 @@
      (:to comparator))
 (adj "refractory" :super predicate) ;; keyword: (ory ADJ) 
 (adj "specific" :super predicate :super bio-abstract
-     :binds ((situation biological))
+     :binds ((situation biological)(beneficiary biological))
      :realization
      (:adj "specific"
-           :to situation))
+           :to situation
+           :for beneficiary))
 (adj "suitable" :super predicate)
 (adj "supplementary" :super predicate) ;; keyword: (ary ADJ)
 (adj "unclear" :super predicate)
@@ -541,6 +542,9 @@
 (def-cell-line "WM266.4")
 (def-cell-line "WM852")
 (def-cell-line "HEK293T")
+(def-cell-line "HKe3 ER:HRASV12")
+(def-cell-line "HKe3")
+(def-cell-line "Saos2")
 
 
 ;;;------------------
@@ -652,10 +656,79 @@
 (adj "class I" :super predicate)
 (adj "class II" :super predicate)
 
+;; overnight
+(adj "short-lived" :super predicate)
+(define-category affinity :specializes bio-process
+     :binds ((object bio-entity))
+     :realization
+     (:noun "affinity"
+            :for object))
 
+(define-category complementation :specializes bio-process
+  :binds ((complement bio-entity))
+  :realization
+  (:noun "complementation"
+         :for complement))
 
- 
+(define-category fluorescence :specializes bio-process
+  :realization
+  (:noun "fluorescence"))
 
+(define-category action :specializes bio-process
+  :realization
+  (:noun "action"))
 
+(define-category in-vivo :specializes bio-context
+  :realization
+  (:noun "in vivo"))
 
+(define-category evidence :specializes bio-abstract
+  :binds ((fact biological))
+  :realization
+  (:noun "evidence"
+         :for fact))
 
+  
+(noun "concentration" :super bio-scalar
+      :binds ((measurable biological))
+      :realization 
+      (:noun "concentration"
+             :of measurable)) ;;levels of incorporated 32P (January sentence 34)
+
+(adj "current" :super predicate)
+(adj "synthetic" :super predicate)
+(adj "transient" :super predicate)
+(adj "background" :super predicate)
+
+(define-adverb "constitutively")
+(noun "RBD" :super protein-segment
+      :binds ((substrate bio-entity))
+      :realization 
+      (:noun "RBD"
+             :of substrate)) ;; somehow (def-bio "G-domain" protein-segment) did not work
+
+(noun "fetal calf serum" :super bio-entity)
+(noun "FCS"  :super bio-entity)
+(noun "serum" :super bio-entity)
+(noun "EGF" :super protein)
+(adj "polyclonal" :super predicate)
+(noun "substrate" :super bio-entity)
+(define-category efficacy :specializes predicate
+  :binds ((item biological))
+  :realization
+  (:noun "efficacy"
+         :of item))
+(noun "bifc" :super bio-process)
+(define-category antibody :specializes protein
+  :binds ((antigen molecule))
+  :realization
+  (:noun "antibody"
+         :to antigen
+         :for antigen))
+
+(define-category knockdown :specializes bio-process
+  :binds ((antigen molecule))
+  :realization
+  (:noun "knockdown"
+         :to antigen
+         :for antigen))
