@@ -179,22 +179,6 @@
 (defun bdg-varname (b)
   (var-name (binding-variable b)))
 
-(defun i-prop (ind prop)
-  (let* ((bdgs (indiv-binds ind))
-         (bnd (find prop bdgs :key #'bdg-varname)))
-    (when bnd 
-      (or (binding-value bnd)
-          (caar (var-instances bnd))))))
-
-(defun some-i-prop (ind props)
-  (let* ((bdgs (indiv-binds ind))
-         (bnd (loop for b in bdgs
-                  when (member (bdg-varname b) props)
-                  return b)))
-    (when bnd 
-      (or (binding-value bnd)
-          (caar (var-instances bnd))))))
-
 (defun entity-name (ind)
   (ent-pname ind))
 
