@@ -181,6 +181,11 @@
 ;;    (unspecified-adjunction np-ref vp-ref)
 
 
+(def-form-rule (comma relative-clause)
+               :head :(sright-edge
+  :form relative-clause
+  :referent (:daughter right-edge))
+
 
 ;;;----------------------
 ;;; Hobbsian connectives
