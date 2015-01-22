@@ -682,7 +682,8 @@
     ,category::quantifier
     ,category::pp
     ,category::relative-clause
-    ,category::thatcomp))
+    ,category::thatcomp
+    ,category::subordinate-conjunction))
 
 (defmethod category-status ((c category))
   ;; used by smash-together-two-tt-islands to decide
