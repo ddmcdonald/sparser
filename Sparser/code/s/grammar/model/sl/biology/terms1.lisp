@@ -129,7 +129,7 @@
            :s basis
            :to comparator))
 
-(adj "in vitro" :super predicate)
+
 (adj "inactive" :super molecule-state
      :binds ((molecule molecule))
      :realization 
@@ -162,9 +162,10 @@
      (:to comparator))
 (adj "refractory" :super predicate) ;; keyword: (ory ADJ) 
 (adj "specific" :super predicate :super bio-abstract
-     :binds ((situation biological)(beneficiary biological))
+     :binds ((theme biological)(situation biological)(beneficiary biological))
      :realization
      (:adj "specific"
+           :s theme
            :to situation
            :for beneficiary))
 (adj "suitable" :super predicate)
@@ -675,12 +676,13 @@
   (:noun "fluorescence"))
 
 (define-category action :specializes bio-process
+  :binds ((actor biological))
   :realization
-  (:noun "action"))
+  (:noun "action"
+         :of actor))
 
-(define-category in-vivo :specializes bio-context
-  :realization
-  (:noun "in vivo"))
+(adj "in vivo" :super bio-context)
+(adj "in vitro" :super bio-context)
 
 (define-category evidence :specializes bio-abstract
   :binds ((fact biological))
@@ -732,3 +734,5 @@
   (:noun "knockdown"
          :to antigen
          :for antigen))
+
+
