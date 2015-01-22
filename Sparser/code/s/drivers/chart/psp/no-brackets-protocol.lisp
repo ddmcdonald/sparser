@@ -215,9 +215,46 @@
     entities))
 
 (defun all-relations (&optional (trees (tts-semantics)))
-    (loop for st in trees
+  (extend-relations
+   (loop for rel in (all-rels trees)   
+     when (cdr rel)
+     collect rel)))
+
+(defun all-rels (&optional (trees (tts-semantics)))
+  (loop for st in trees
     append
-    (relations-in st)))
+    (loop for rel in 
+      (relations-in st)
+      when (cdr rel)
+      collect rel)))
+
+(defun extend-relations (relations)
+  (let
+      ((alist1
+        (loop for r in relations 
+          when (is-bio-entity? r)
+          collect
+          `(cons (second (second r)) (second (third r)))))
+       (alist2
+        (loop for r in relations 
+          when (is-bio-entity? r)
+          collect
+          (cons (second (third r)) (second (second r))))))
+    
+    (remove-duplicates
+     (append relations
+             (sublis 
+              alist1
+              (loop for r in relations unless (is-bio-entity? r) collect r ))
+             (sublis 
+              alist2
+              (loop for r in relations unless (is-bio-entity? r) collect r )))
+     :test #'equalp)))
+
+(defun is-bio-entity? (r)
+  (and (individual-p (car r))
+       (itypep (car r) 'is-bio-entity)
+       (cddr r)))
 
 (defun relations-in (tree)
   (let
@@ -259,6 +296,7 @@
    (individual-p e)
    (not (subject-variable e))
    (not (itypep e 'bio-process))
+   (not (itypep e 'predicate))
    (not (itypep e 'is-bio-entity))))
 
 (defmethod semtree ((x null))
