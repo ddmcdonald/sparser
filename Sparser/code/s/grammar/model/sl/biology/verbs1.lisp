@@ -160,7 +160,7 @@
 
 (define-category block
                  :specializes bio-process
-  :binds ((blocker bio-entity)(blocked biological))
+  :binds ((blocker biological)(blocked biological)) ;; dec sentence 13 "depletion blocks ..."
   :realization
   (:verb "block"
          :noun "blocking"
@@ -308,7 +308,7 @@
 (define-category increase
   :specializes bio-process
   :binds ((agent biological) 
-          (object bio-scalar)
+          (object bio-process)
           (theme biological)) ;; increase in rate vs increase in RAS activity
   :realization
   (:verb "increase" 
@@ -352,7 +352,7 @@
   :specializes bio-process
   :binds ((agent biological) 
           (object biological)
-          (measurement measurement))
+          (measurement unit-of-measure)) ;; FIX THIS -- for the moment the rule number-noun-rule makes 2nM a unit of measure, not a measurement))
   :realization 
   (:verb ("inhibit" :past-tense "inhibited" 
                     :present-participle "inhibiting" )
