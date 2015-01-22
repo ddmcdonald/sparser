@@ -435,3 +435,10 @@
 (define-drug "yetrib")
 (define-drug "zalutumumab")
 (define-drug "zerbib")
+
+;; overnight
+(define-drug "4-hydroxytamoxifen")
+(define-drug "NGH.S4")
+(define-drug "4-OHT")
+(define-drug "ES1")
+
