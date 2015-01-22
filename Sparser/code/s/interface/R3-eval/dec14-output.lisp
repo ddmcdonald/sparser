@@ -89,6 +89,7 @@
       process
       creation
       encoded
+      result
       modifier ;; BOGUS, but gets the ERK in "ERK activation"
 ))
       
@@ -166,7 +167,7 @@
       (if mod-name
           (format nil "<~a of ~a>"  (type-name ent) mod-name)
           (format nil "~A" (type-name ent))))
-    (format nil "<~a ~a>"   (type-name (value-of 'modifier ent))(type-name ent)))
+    (format nil "<~a ~a>"   (type-name (value-of 'modifier ent))(ent-pname ent)))
    (format nil "~a~@[:~a~]" (type-name ent) (ent-pname ent))))
 
 
@@ -204,7 +205,8 @@
            (format nil "NOT ~A" evs)
            evs)))           
          (subj-strings (arg-strings subj))
-         (obj-strings (arg-strings pat)))
+         (obj-strings (arg-strings pat))
+         (neg (value-of 'negation ind-event)))
     (declare (special ind-event evno subj pat ev-string sub-strings obj=strings))
     (format t "~%Relation: ~a subj: ~a obj ~a" ind-event subj pat)
     ;;(push (cons evno event) *ev-map*)
@@ -218,7 +220,7 @@
         (declare (special items))
         (loop for item in items 
           collect
-          (list sent-num evno (arg-strings item) ev-string obj-strings nil nil 
+          (list sent-num evno (arg-strings item) ev-string obj-strings nil neg 
                 (remove-separators sent)))))
      
      (if
