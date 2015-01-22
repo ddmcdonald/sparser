@@ -17,6 +17,8 @@
 
 (in-package :sparser)
 
+(defparameter *rusty-says-no* t) ;; don't call smash-together-two-tt-islands
+
 (defparameter *whack-a-rule* t) ;; this forces application of all applicable rules from the right to the left, after initial priority rules
 (defun whack-a-rule (&optional (yes? t))
   (setq *whack-a-rule* yes?))
@@ -168,7 +170,10 @@
 
     (cond
      ((= tt-count 2)
-      (smash-together-two-tt-islands treetops))
+      (unless
+       *rusty-says-no*
+       ;; leads to bad combinations
+       (smash-together-two-tt-islands treetops)))
      ((= tt-count 3)
       (look-for-length-three-patterns treetops) t)
      ((and subject-edge copula)
