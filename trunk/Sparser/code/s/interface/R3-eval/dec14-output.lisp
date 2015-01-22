@@ -189,7 +189,7 @@
     newstr
     ))
 
-(defun expand-output-relation (event sent-num sent)
+(defun expand-output-relation (event &optional (sent-num -1)(sent "Dummy sentence"))
   (declare (special *ev-map* event sent-num sent))
   
   (let* ((ind-event (if (consp event) (car event) event))
@@ -246,6 +246,8 @@
    ((and
      (individual-p arg)
      (entity-p arg))
+    (name-rewrite (call-or-map #'entity-string arg)))
+   ((category-p arg)
     (name-rewrite (call-or-map #'entity-string arg)))
    (t
     (format nil "EVENT-~S" (i-uid arg)))))
