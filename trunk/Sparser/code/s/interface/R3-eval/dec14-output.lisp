@@ -74,7 +74,9 @@
       blocker
       catalyst
       creator
-      encoder))
+      encoder
+      molecule ;; is active
+      ))
 
 (defparameter *obj-props*
     '(object ;; not used in verbs1
@@ -86,7 +88,9 @@
       blocked
       process
       creation
-      encoded))
+      encoded
+      modifier ;; BOGUS, but gets the ERK in "ERK activation"
+))
       
 
 ;;; explicit case so we can add other properties as variants of these slots if necess. 
@@ -102,6 +106,34 @@
       (itypep obj 'prepositional-phrase))
      (setq obj (value-of 'pobj obj)))
     obj))
+
+(defun i-prop (ind prop)
+  (if 
+   (consp ind)
+   (let* ((bdgs (cdr ind))
+          (bnd (find prop bdgs :key #'car)))
+     (when bnd (second bnd)))
+   (let* ((bdgs (indiv-binds ind))
+          (bnd (find prop bdgs :key #'bdg-varname)))
+     (when bnd 
+       (or (binding-value bnd)
+           (caar (var-instances bnd)))))))
+
+(defun some-i-prop (ind props)
+  (if
+   (consp ind)
+   (let* ((bdgs (cdr ind))
+          (bnd (loop for b in bdgs
+                 when (member (car b) props)
+                 return b)))
+     (when bnd (second bnd)))
+   (let* ((bdgs (indiv-binds ind))
+          (bnd (loop for b in bdgs
+                 when (member (bdg-varname b) props)
+                 return b)))
+     (when bnd 
+       (or (binding-value bnd)
+           (caar (var-instances bnd)))))))
     
 ;; if ent-position t then show the name of the action, else ref the 
 (defun entity-string (ent &optional (ent-position nil))
@@ -112,13 +144,30 @@
         ((is-event-p ent)
          (if ent-position 
              (format nil "~a" (type-name ent))
-           (format nil "(~d) ~a" (i-uid ent) (type-name ent))))
+             (format nil "(~d) ~a" (i-uid ent) (type-name ent))))
         ((itypep ent 'collection)
-         (format nil "<collection ~{~A~^ ~}>" 
+         (format nil "<collection ~{~A~^ ~}>"
                  (mapcar #'entity-string (value-of 'items ent))))
-         
+        ((symbolp ent)
+         (format nil "~A" ent))        
         (t ;; entity 
-         (format nil "~a~@[:~a~]" (type-name ent) (ent-pname ent)))))
+         (indiv-printstring ent))))
+
+(defun indiv-printstring (ent)
+  (if
+   (and
+    (individual-p ent)
+    (value-of 'modifier ent))
+   (if
+    (individual-p (value-of 'modifier ent))
+    (let
+        ((mod-name 
+          (ent-pname (value-of 'modifier ent))))
+      (if mod-name
+          (format nil "<~a of ~a>"  (type-name ent) mod-name)
+          (format nil "~A" (type-name ent))))
+    (format nil "<~a ~a>"   (type-name (value-of 'modifier ent))(type-name ent)))
+   (format nil "~a~@[:~a~]" (type-name ent) (ent-pname ent))))
 
 
 ;;; Sent # , Event #, Arg1, Predicate, Arg2, Site,  Context (optional)	Sentence
@@ -140,18 +189,55 @@
     newstr
     ))
 
-(defun output-relation (event sent-num sent)
-  (declare (special *ev-map*))
-  (let* ((evno (i-uid event))
+(defun expand-output-relation (event sent-num sent)
+  (declare (special *ev-map* event sent-num sent))
+  
+  (let* ((ind-event (if (consp event) (car event) event))
+         (evno (i-uid ind-event))
          (subj (act-rel event :agent))
          (pat (act-rel event :object))
-         (ev-string (name-rewrite (format nil "~a" (type-name event))))
+         (ev-string 
+          (let
+              ((evs (format nil (name-rewrite (format nil "~a" (type-name ind-event))))))
+          (if
+           (value-of 'negation ind-event)
+           (format nil "NOT ~A" evs)
+           evs)))           
          (subj-strings (arg-strings subj))
          (obj-strings (arg-strings pat)))
-    (format t "~%Relation: ~a subj: ~a obj ~a" event subj pat)
-    (push (cons evno event) *ev-map*)
-    (list sent-num evno subj-strings ev-string obj-strings nil nil 
-          (remove-separators sent))))
+    (declare (special ind-event evno subj pat ev-string sub-strings obj=strings))
+    (format t "~%Relation: ~a subj: ~a obj ~a" ind-event subj pat)
+    ;;(push (cons evno event) *ev-map*)
+    (append
+     (if
+      (and
+       (individual-p subj)
+       (itypep subj 'collection))
+      (let
+          ((items (value-of 'items subj)))
+        (declare (special items))
+        (loop for item in items 
+          collect
+          (list sent-num evno (arg-strings item) ev-string obj-strings nil nil 
+                (remove-separators sent)))))
+     
+     (if
+      (and
+       (individual-p pat)
+       (itypep pat 'collection))
+      (let
+          ((items (value-of 'items pat)))
+        (declare (special items))
+        (loop for item in items 
+          collect
+          (list sent-num evno subj-strings ev-string (arg-strings item) nil nil 
+                (remove-separators sent)))))
+     
+     (list
+      (list sent-num evno subj-strings ev-string obj-strings nil nil 
+            (remove-separators sent))))))
+ 
+   
 
 (defun arg-strings (arg)
   (cond
@@ -194,16 +280,20 @@
   (let ((rows 
          (loop for rel in (all-relations)
            when (r3-relation rel)
-           collecting (output-relation (car rel) sent-num sent))))
+           appending 
+           (expand-output-relation rel sent-num sent))))
     (push (list sent-num rows) *output-rows*)
     (if (eq stream t)
         (format t "~2%~d: ~a~:{~%~d, ~d, ~s, ~s, ~s~}" sent-num sent rows)
         (format stream "~:{~d, ~d, ~a, ~a, ~a, ~s, ~s, ~s~%~}" rows))))
 
 (defun r3-relation (rel)
+  (declare (special rel))
   (and
    (individual-p (car rel))
    (not (equalp "WE" (name-rewrite (entity-string (act-rel (car rel) :agent)))))
+   (not (search "ENTITY-NIL" (name-rewrite (entity-string (act-rel (car rel) :object)))))
+   (not (search "EVENT-NIL" (name-rewrite (entity-string (act-rel (car rel) :object)))))
    (or
     ;; don't output empty relatiosn
     (act-rel (car rel) :agent)
