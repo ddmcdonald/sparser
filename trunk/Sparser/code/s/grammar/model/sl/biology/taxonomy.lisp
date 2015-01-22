@@ -184,6 +184,14 @@
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
 
+(define-category peptide
+  :specializes molecule
+  :instantiates :self
+;;  :rule-label bio-entity
+  :index (:permanent :key name)
+  :lemma (:common-noun "peptide")
+  :realization (:common-noun name))
+
 ;;/// will have a substantial model, so deserves its own
 ;; file. This is just to ground "encode"
 (define-category gene
@@ -215,6 +223,16 @@
   :index (:permanent :key name)
   :lemma (:common-noun "kinase")
   :realization (:common-noun name))
+
+(define-category GTPase
+  :specializes enzyme
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "GTPase")
+  :realization (:common-noun name))
+
+(def-synonym GTPase
+   (:noun "gtpase"))
 
 #+ignore ;; want to give kinase a FOR case
 (define-category kinase
