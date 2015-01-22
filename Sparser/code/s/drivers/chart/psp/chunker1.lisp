@@ -335,12 +335,19 @@
 (defmethod ng-compatible? ((w word) evlist)
   nil)
 (defmethod ng-compatible? ((e edge) evlist)
+  (declare (special e evlist))
   (let
       ((edges (ev-edges (car evlist))))
+    (declare (special edges))
+    ;;(break "ngc")
+  
     (and
      ;;in fact nothing should follow a pronoun (except a possessive pronoun)
+     ;;(not (eq category::time-unit (edge-category e))) WHY WAS THIS HERE? WE NEED TO HANDLE "3 HOURS"
      (not
-      (eq category::time-unit (edge-category e)))
+      (and
+       (eq category::number (edge-form e))
+       evlist))
      (not 
       (loop for edge in edges
         thereis
