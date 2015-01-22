@@ -373,7 +373,9 @@
               (form-after (edge-form edge-after)))
           (declare (special form-before form-after))
           (if (or
-               (eq form-before form-after)
+               (and
+                (eq form-before form-after)
+                (not (eq form-before category::s))) ;; don't conjoin Ss (get bad semantics right now)
                (and
                 (memq form-before *premod-forms*)
                 (memq form-after *premod-forms*)))
