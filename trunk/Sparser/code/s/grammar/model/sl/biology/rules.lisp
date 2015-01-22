@@ -206,6 +206,21 @@
   (:head left-edge
          :bind (context right-edge)))
 
+(def-form-rule (S category::in\ vivo)
+  :form s
+  :head :left-edge
+  :referent
+  (:head left-edge
+         :bind (context right-edge)))
+
+
+(def-form-rule (VP category::in\ vivo)
+  :form VP
+  :head :left-edge
+  :referent
+  (:head left-edge
+         :bind (context right-edge)))
+
 (def-form-rule (time verb+ed) ;; to support "have recently shown"
   :form verb+ed
   :head :right-edge
