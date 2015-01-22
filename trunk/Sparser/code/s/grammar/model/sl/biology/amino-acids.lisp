@@ -211,3 +211,6 @@ therefore we have the special cases:
 (noun "S338" :super residue-on-protein)
 (noun "pThr202/Tyr204" :super residue-on-protein)
 (noun "position" :super residue-on-protein)
+
+;;need a bunch of phospho variants
+(noun "phosphoserine" :super amino-acid)
