@@ -30,11 +30,7 @@
 ;;;------------
 
 
-(adj "able" :super predicate ;; #33  -- but not working. Timing???
-  :binds ((enabled biological)(result biological))
-  :realization 
-  (:to result
-       :s enabled))
+
 
 (adj "close" :super predicate)
 
@@ -210,12 +206,14 @@
 (define-adverb "until now")
 
 (noun "32P" :super molecule) ;; actually an isotope -- need to adjust taxonomy 
-(noun "ability" :super bio-abstract
-      :binds ((result biological)(agent biological))
+(noun "ability" :super bio-process
+      :binds ((agent biological)(result biological))
       :realization
-      (:noun "ability"
+      (:noun "ability" :adj "able"
+             :s agent
              :to result
              :of agent))
+
 (noun "absence" :super bio-condition
       :binds ((absent biological)) 
       :realization
@@ -734,5 +732,17 @@
   (:noun "knockdown"
          :to antigen
          :for antigen))
+
+(define-category stable :specializes bio-abstract
+     :binds ((agent biological)(context bio-context))
+     :realization
+     (:adj "stable" 
+           :s agent
+           :in context))
+
+(def-bio "guanine" nucleotide)
+(def-bio "cytosine" nucleotide)
+(def-bio "adenine" nucleotide)
+
 
 

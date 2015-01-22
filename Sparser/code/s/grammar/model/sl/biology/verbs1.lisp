@@ -384,7 +384,7 @@
  :specializes bio-process
  :binds ((agent bio-entity) ;; causes the action
          (object molecule) ;; the nucleotyde that moves
-         (substrate molecule))
+         (substrate biological))
  :realization
  (:verb "load"
   :etf (svo-passive)
