@@ -349,6 +349,14 @@
        ;; BUT THIS IS NOT AS COMMON AS OTHER USES OF COMMA -- DROP IT FOR NOW
        ;(not (null evlist))
        nil)
+      ((and
+        (or
+         (eq category::verb+ed (edge-form e))
+         (eq category::verb+ing (edge-form e)))
+        ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
+        ;;"RNA interference (RNAi) blocked MEK/ERK activation."
+        (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
+       nil)
       ((eq category::verb+ed (edge-form e))
        (not (eq (edge-category e) category::have))) ;; "had" is not an NP constituent
       ((eq category::verb+ing (edge-form e))
@@ -414,17 +422,29 @@
     ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
     ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
     ;; as opposed to "direct binding to activated forms of RAS"
-    (not (and
-          (car *chunks*)
-          (member 'ng (chunk-forms (car *chunks*)))
-          (eq (chunk-end-pos (car *chunks*))
-              (pos-edge-starts-at e)))))
+    (let
+        ((prev-edge (edge-just-to-left-of e)))
+      (and
+       (not
+        (and
+         (edge-p prev-edge)
+         (eq category::parentheses (edge-category prev-edge))))
+       (not (and
+             (car *chunks*)
+             (member 'ng (chunk-forms (car *chunks*)))
+             (eq (chunk-end-pos (car *chunks*))
+                 (pos-edge-starts-at e)))))))
    ((eq category::verb+ing (edge-form e))
     ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
     ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
     (let
         ((prev-edge (edge-just-to-left-of e)))
-      (not
-       (or
-        (eq category::preposition (edge-form prev-edge))
-        (ng-head? prev-edge)))))))
+      (and
+       (not
+        (and
+         (edge-p prev-edge)
+         (eq category::parentheses (edge-category prev-edge))))
+       (not
+        (or
+         (eq category::preposition (edge-form prev-edge))
+         (ng-head? prev-edge))))))))
