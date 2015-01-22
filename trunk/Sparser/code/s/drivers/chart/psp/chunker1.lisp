@@ -172,6 +172,7 @@
         (end (ends-at-pos sentence))
         forms
         ev)
+    (declare (special pos end forms ev))
     (until
         (eq pos end)
         (reverse *chunks*) ;; this is the return value
@@ -338,6 +339,8 @@
       ((edges (ev-edges (car evlist))))
     (and
      ;;in fact nothing should follow a pronoun (except a possessive pronoun)
+     (not
+      (eq category::time-unit (edge-category e)))
      (not 
       (loop for edge in edges
         thereis
