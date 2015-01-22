@@ -132,7 +132,7 @@
 (define-category bio-bind  :specializes bio-process
   ;;:obo-id "GO:0005488"
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder molecule)(bindee bio-entity)(site bio-location))
+  :binds ((binder biological)(bindee biological)(site bio-location))
   :realization 
   (:verb ("bind" :past-tense "bound") :noun "binding"
          :etf (svo-passive) 
@@ -390,7 +390,8 @@
   :etf (svo-passive)
   :s agent
   :o object
-  :of substrate))
+  :of object
+  :onto substrate))
 ;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
 
@@ -1726,4 +1727,20 @@
   :to to
   :between path))
 
+(define-category dissociate :specializes bio-process
+  :binds ((agent biological)(object complex)(into biological))
+  :realization
+  (:verb "dissociate" :noun "dissociation"
+         :etf (svo-passive)
+         :s agent
+         :o object
+         ))
 
+(define-category addition :specializes bio-process
+  :binds ((agent biological) (base biological)(added biological))
+  :realization
+  (:verb "add" :noun "addition"
+         :etf (svo-passive)
+         :s agent
+         :o base
+         :to added))
