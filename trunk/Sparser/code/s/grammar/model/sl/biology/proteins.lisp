@@ -82,7 +82,7 @@
 
 
 
-(def-bio "GAP" protein :synonyms ("GTPase activating pproteins"))
+(def-bio "GAP" protein :synonyms ("GTPase activating proteins"))
 ;; "pproteins" to avoid a literal on "proteins"
 
 ;; compositional version of the long forms would be better
@@ -443,4 +443,12 @@ filligre may be used to distinguish them, etc.
 
 
 (def-bio "SAPK" protein) ;; class of stress activated proteins
+(def-bio "ASPP2" protein)
+(def-bio "GST-ASPP2" protein)
+(def-bio "phospho-ASPP2" protein)
+(def-bio "PI3KC2β" protein)
+(def-bio "Ras17N" protein)
+
+
+
                    
