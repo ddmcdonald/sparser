@@ -161,13 +161,22 @@
     (value-of 'modifier ent))
    (if
     (individual-p (value-of 'modifier ent))
-    (let
-        ((mod-name 
-          (ent-pname (value-of 'modifier ent))))
-      (if mod-name
-          (format nil "<~a of ~a>"  (type-name ent) mod-name)
-          (format nil "~A" (type-name ent))))
-    (format nil "<~a ~a>"   (type-name (value-of 'modifier ent))(ent-pname ent)))
+    (let*
+        ((mod (value-of 'modifier ent))
+         (mod-name 
+          (or
+           (ent-pname mod)
+           (type-name mod))))
+      (declare (special mod))
+      ;;(break "mod")
+      (if 
+       (value-of 'modifier mod)
+       (setq mod-name (indiv-printstring mod)))
+      (format nil "<~a ~a>"   mod-name 
+              (cond
+               ((ent-pname ent))
+               ((type-name ent)))))
+    (format nil "~a~@[:~a~]" (type-name ent) (ent-pname ent)))
    (format nil "~a~@[:~a~]" (type-name ent) (ent-pname ent))))
 
 
@@ -207,7 +216,7 @@
          (subj-strings (arg-strings subj))
          (obj-strings (arg-strings pat))
          (neg (value-of 'negation ind-event)))
-    (declare (special ind-event evno subj pat ev-string sub-strings obj=strings))
+    (declare (special ind-event evno subj pat ev-string sub-strings obj-strings))
     (format t "~%Relation: ~a subj: ~a obj ~a" ind-event subj pat)
     ;;(push (cons evno event) *ev-map*)
     (append
