@@ -73,8 +73,10 @@
   :realization (:for theme))
 
 (adj "selective" :super predicate
-  :binds ((theme bio-entity))
-  :realization (:for theme))
+  :binds ((agent biological)(theme bio-entity))
+  :realization
+  (:s agent
+      :for theme))
 
 (adj "similar" :super predicate
   :binds ((item biological)(compared-to biological))
