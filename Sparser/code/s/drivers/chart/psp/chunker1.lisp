@@ -339,7 +339,6 @@
   (let
       ((edges (ev-edges (car evlist))))
     (declare (special edges))
-    ;;(break "ngc")
   
     (and
      ;;in fact nothing should follow a pronoun (except a possessive pronoun)
@@ -371,6 +370,9 @@
        (not (eq (edge-category e) category::have))) ;; "had" is not an NP constituent
       ((eq category::verb+ing (edge-form e))
        (not (loop for edge in edges thereis (ng-head? edge))))
+      ((eq category::ordinal (edge-category e))
+       ;;WORKAROUND -- DAVID
+       t)
       (t
        (ng-compatible? (edge-form e) edges))))))
 
