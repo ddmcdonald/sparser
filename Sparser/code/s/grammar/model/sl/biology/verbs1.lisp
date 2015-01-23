@@ -1743,4 +1743,5 @@
          :etf (svo-passive)
          :s agent
          :o base
-         :to added))
+         :to added
+         :of base))
