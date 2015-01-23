@@ -239,7 +239,14 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :form pp
   ;; I suppose we need a generic relationship here for
   ;; a proper referent
-  :referent (:head right-edge))
+  :referent (:function make-pp left-referent right-referent))
+
+(def-syntax-rule (spatial-preposition proper-noun) ;;//// get rid of spatial-preposition!
+                 :head :left-edge
+  :form pp
+  ;; I suppose we need a generic relationship here for
+  ;; a proper referent
+  :referent (:function make-pp left-referent right-referent))
 
 ;;/// This should be stated over vp+ing or vg+ing
 ;; (which need to be created and managed), then we
