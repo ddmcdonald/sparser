@@ -23,11 +23,30 @@
  generic-np-premodifier or modifier-creates-definite-individual ETF is used.
  Determines the referent of the edge that combines these two elements."))
 
-(defmethod modifier+noun ((modifier t) (head t)) ;; Kurdish city - name-word city
-  (declare (ignore modifier))
+(defmethod modifier+noun ((modifier t) (head t)) ;; Kurdish city - name-word city(l
+  ;; Look at "nucleotide-free"
+  (declare (special modifier head))
   (tr :modifier+noun_t+t)
-  (dereference-shadow-individual head))
+  (let ((real-modifier 
+         (if (is-shadow modifier)
+             (dereference-shadow-individual modifier)
+             modifier))
+        (real-head 
+         (if (is-shadow head)
+             (dereference-shadow-individual head)
+             head)))
+    (declare (special real-modifier real-head))
+    (if
+     (category-p real-head)
+     (setq real-head (make-individual-for-dm&p real-head)))
+    (if
+     (category-p real-modifier)
+     (setq real-modifier (make-individual-for-dm&p real-modifier)))
+    (bind-variable 'modifier real-modifier real-head)
+    real-head))
 
+(defun is-shadow (i)
+  (assoc i *shadows-to-individuals*))
 
 #| This form isn't working -- a shadow object ends up where
    a Krisp object is expected: "not of the expected type STRUCTURE"
