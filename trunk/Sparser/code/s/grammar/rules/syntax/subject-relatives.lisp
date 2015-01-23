@@ -182,7 +182,7 @@
 
 
 (def-form-rule (comma relative-clause)
-               :head :(sright-edge
+               :head :right-edge
   :form relative-clause
   :referent (:daughter right-edge))
 
