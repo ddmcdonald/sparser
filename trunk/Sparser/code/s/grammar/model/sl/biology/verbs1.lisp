@@ -146,17 +146,17 @@
 (define-category bio-associate  :specializes bio-process ;; MAYBE THIS IS LIKE BIND
   ;;:obo-id "GO:0005488"
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder molecule)(bindee molecule)(site bio-location))
+  :binds ((agent biological)(object biological)(site bio-location))
   :realization 
   (:verb "associate"
          :noun "association"
          :etf (svo-passive) 
-         :s binder
-         :o  bindee
-         :to bindee
+         :s agent
+         :o  object
+         :to object
          :via site
-         :with bindee
-         :of bindee))
+         :with object
+         :of object))
 
 (define-category block
                  :specializes bio-process
@@ -1662,13 +1662,14 @@
            :by biological))
 
 (define-category prevent :specializes bio-process 
-  :binds ((agent biological)(object bio-process)) 
+  :binds ((agent biological)(object biological)) 
   :realization
   (:verb "prevent" :noun "prevention" 
          :etf (svo-passive) 
          :s agent 
          :o object
          :of object))
+
 (define-category disrupt :specializes bio-process 
   :binds ((agent biological)(object bio-process)) 
   :realization
