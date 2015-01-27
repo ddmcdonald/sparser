@@ -171,7 +171,9 @@ to make any semantic or form edges that the grammar dictates.
 		 (otherwise
 		  (break "New type of object as referent of right-suffix: ~a~%~a"
 			 (type-of referent) referent))))))
-      (when *big-mechanism*
+      (when (and *big-mechanism*
+                 ;; makes it quiet when other things are quiet
+                 *readout-segments-inline-with-text*)
         (format t "~&sdm-span-segment: ~a~%" (if *show-edge-string* (edge-string edge) edge)))
       (tr :sdm-span-segment edge)
       edge)))
