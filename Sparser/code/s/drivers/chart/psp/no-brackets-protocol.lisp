@@ -93,7 +93,6 @@
 
               ;;(break "after chunking ~a" sentence) 
               (when *parse-chunked-treetop-forest*
-                (terpri) ;; start the segment display on a new line
                 (let ((*return-after-doing-forest-level* t))
                   (declare (special *return-after-doing-forest-level*))
                   (new-forest-driver sentence))
@@ -399,6 +398,7 @@
   ;; content slot of the sentence.
 
   ;; we could do a tts 
-  (format t "~&--------------------------~%~%")
+  (when *readout-segments-inline-with-text* ;; be quiet when others are
+    (format t "~&--------------------------~%~%"))
 
   (setq *lifo-instance-list* nil))
