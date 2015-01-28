@@ -192,7 +192,7 @@
 (defun p (string)
   (pp string)
   (unless *workshop-window*
-    (format t "~%~%")
+    (format t "~&~%")
     (tts)))
 
 (defun p/e (string)  (pp string) (e))
