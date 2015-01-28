@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.6 May 2014
+;;;  Version:  0.6 January 2015
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -23,6 +23,8 @@
 ;; 0.6 (7/15/13) Bumped [object] to 1 to start adjustments for greater uniformity
 ;;      in accumulators and operations. Added [classes]. (9/18/13) added
 ;;      [situation]. 10/3/13 moved out [situation].
+;;     (1/26/15) added [sentence-corpora]
+
 (in-package :sparser)
 
 ;; package to distinguish text-relations
@@ -51,6 +53,7 @@
 (lload "doc;object1")
 (lload "doc;doc-set")
 (lload "doc;doc stream")
+(lload "doc;sentence-corpora")
 (lload "doc;context")
 (lload "doc;content")
 (lload "doc;initialization")
