@@ -64,8 +64,9 @@
                            (chart-position-after hyphen-pos) next-position)))
         (push-debug `(,first-half ,second-half))    
         (unless (and first-half second-half)
-          (break "One of the patterns to either side of a hyphen ~
-                 did not resolve."))
+          (when *work-on-ns-patterns*
+            (break "One of the patterns to either side of a hyphen ~
+                   did not resolve.")))
         (make-hypenated-structure first-half second-half)))
      (t
       (when *work-on-ns-patterns*
@@ -87,7 +88,8 @@
               (unless result 
                 (push-debug `(,pattern ,words ,start-pos ,end-pos))
                 ;; (setq pattern (car *) words (cadr *) start-pos (caddr *) end-pos (cadddr *))
-                (break "no result on hyphen segment pattern: ~a" pattern))
+                (when *work-on-ns-patterns*
+                  (break "no result on hyphen segment pattern: ~a" pattern)))
               result))))))
 
 (defun make-edge-into-adjective (edge)
