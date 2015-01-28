@@ -22,9 +22,10 @@
   (incorporate-obo-terms)
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  ;;(ed "/Users/ddm/sparser/Sparser/code/s/grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  ;;(ddm-ed "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
   (ddm-load "interface/R3-eval/dec14-output.lisp")
-  (test-jan)) ;; (test-dec)  (dtst nil t)
+  (test-jan) ;; (test-dec)  (dtst nil t)
+  (ddm-load "interface/R3-eval/overnight-sents.lisp"))
 
 ;; local anaphora, getting categories right
 ; sentence-sweep-loop  decode-realization-parameter-list
