@@ -38,16 +38,6 @@
  head. Specific cases (by the category of the specific adverb)
  could be more ambitious."))
 
-#+ignore
-(defmethod modified ((adv sh::modifier) (head t))
-  (let ((real-adv (dereference-shadow-individual adv))
-        (real-head (dereference-shadow-individual head)))
-    (tr :modified_modifier+t)
-    (define-individual 'modifies
-      :modifier real-adv
-      :modified real-head)
-    head))
-
 (defmethod modified ((adv sh::modifier) (head t))
   (let ((real-adv (dereference-shadow-individual adv))
         (real-head (dereference-shadow-individual head)))
