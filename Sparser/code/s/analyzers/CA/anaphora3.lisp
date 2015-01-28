@@ -218,6 +218,7 @@
         (polyword )
         (fixnum )
         (float )
+        (cons ) ;; "-fold" 
         (otherwise
          (unless *external-referents*
            (error "Unexpected type of object being added to ~
