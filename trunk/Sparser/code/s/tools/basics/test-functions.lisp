@@ -63,6 +63,7 @@
 
 (defun run-test (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences)))
+    (format t "~&___________________________________________~&~&")
     (print (list n test))
     (terpri)
     (if (member n *known-breaks*)
@@ -85,11 +86,8 @@
                     (format t "~&~s" (car edge-tree))
                     (print-tree (second edge-tree) t 0 t t))
                   (else
-                    (format t "-----~&~s" (car edge-tree))
-                    (print-tree (second edge-tree))))
-              
-              ;;(format t "~&___________________________________________~&~&")
-              ))))))
+                    (format t "-----  ~s" (car edge-tree))
+                    (print-tree (second edge-tree))))))))))
 
 (defun sem-test (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences)))
