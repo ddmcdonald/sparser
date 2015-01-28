@@ -312,9 +312,9 @@
           right)
 
          (t (push-debug `(,left ,right ,left-form ,right-form))
-            (print `(can't find verb on edge ,edge)) ;;(break "find-verb: new case")
-            nil
-            ))))))
+            ;;(print `(can't find verb on edge ,edge)) 
+            (break "find-verb: new case")
+            nil))))))
 
 
 
