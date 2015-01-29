@@ -225,7 +225,7 @@
       :realization
       (:noun "activity"
              :of agent))
-(noun :advance: :super bio-process
+(noun :advance :super bio-process
       :binds ((advancement bio-process))
       :realization 
       (:noun "advancement" 
