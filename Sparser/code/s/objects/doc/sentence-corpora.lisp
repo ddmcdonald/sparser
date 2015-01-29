@@ -237,35 +237,3 @@ quiet
    (t semtree)))
 
 
-
-(defun string-for-individual (i s)
-  ;; a 'special-routine' that is used with individuals that
-  ;; have a name field, which we assume is bound to a word. 
-  ;; This routine is put on the ops-printer field of the category
-  ;; at the time the category is defined.
-  (declare (special *print-short*))
-  (let* ((name (name-of-individual i))
-         (word-binding
-          (unless name
-            (find 'word (indiv-binds i)
-                  :key #'(lambda (b)
-                           (var-name (binding-variable b))))))
-         (word
-          (cond (name name)
-                (word-binding (binding-value word-binding)))))
-    (if
-     word 
-     (format s "<~A ~A>" 
-             (cat-name (car (indiv-type i)))
-             (let
-                 ((ss (make-string-output-stream)))
-               (typecase word
-                 (word 
-                  (princ-word word ss))
-                 (polyword
-                  (princ-polyword word ss))
-                 (individual
-                  (princ-name word ss)))
-               (get-output-stream-string ss)))
-     (format s "<~A>" (cat-name (car (indiv-type i)))))))
-
