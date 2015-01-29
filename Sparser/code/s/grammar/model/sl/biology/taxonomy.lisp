@@ -15,6 +15,9 @@
 ;; 1/1/2015 fix (?) taxonomy above protein-family, to make it a sub-category of molecule
 ;; 1/1/2015 give biological a variable bio-context, and make bio-location be a bio-context
 ;; added variable mutation to protein to allow new rule for protein --> (protein point-mutation) for "ubiquitin C77G"
+;; /22/2015 added variables for adverb and manner to category::predicate, bi0-process
+;; added process-rate and redefined the noun meaning of rate -- over-ride old meaning
+
 (in-package :sparser)
 
 ;;;--------
@@ -61,7 +64,9 @@
  
 (define-category predicate :specializes modifier
   :mixins (biological)
-  :binds ((negation)))
+  :binds ((negation)
+          (adverb)
+          (manner)))
 
 (define-category molecule-state
   :specializes predicate)
@@ -98,6 +103,7 @@
   :specializes process
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
+  :binds ((adverb)(manner))
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
@@ -292,6 +298,11 @@
   :lemma (:common-noun "condition")
   :realization (:common-noun name))
 
+(define-category experimental-system
+  :specializes bio-context
+  :realization
+  (:noun "system"))
+
 (define-category disease 
   :specializes bio-condition
   :instantiates self
@@ -410,9 +421,13 @@
 
 ;;//// are these even "bio" at all?
 
-(define-category process-rate
+(define-category process-rate ;;(noun "rate" :super bio-scalar
   :specializes bio-scalar
-)
+  :binds ((process bio-process) (components biological))
+  :realization 
+  (:noun "rate"
+         :of process
+         :for components))
 
 (define-category bio-concentration
   :specializes bio-scalar
