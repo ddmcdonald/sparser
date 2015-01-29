@@ -10,7 +10,8 @@
 ;; 1.2  (9/26/94) added some globals for quick reference to some of these
 ;;      (10/19) added another one, 10/24/94 ditto
 ;;      (7/20/14) Added a parameter for hyphen\
-;;      (1/8/15) constant for semicolon
+;;      (1/8/15) constant for semicolon.
+;; 1.3  (1/29/15) moved out the constants to their own file
 
 (in-package :sparser)
 
@@ -57,30 +58,3 @@
 (define-punctuation  tilda               #\~ )   ;; 126
 
 
-
-;;;------------------------------------------------------
-;;; global pointers to frequently referred to characters
-;;;------------------------------------------------------
-
-;; These are used in (at least) Could-be-the-start-of-a-sentence
-
-(defconstant *the-punctuation-period* (punctuation-named #\.))
-(defconstant *the-punctuation-comma* (punctuation-named #\,))
-(defconstant *the-punctuation-colon* (punctuation-named #\:))
-(defconstant *the-punctuation-semicolon* (punctuation-named #\;))
-
-(defconstant *the-punctuation-hyphen* (punctuation-named #\-))
-
-(defconstant *the-punctuation-open-angle-bracket* (punctuation-named #\<))
-
-(defconstant *the-punctuation-open-parenthesis* (punctuation-named #\())
-(defconstant *the-punctuation-close-parenthesis* (punctuation-named #\)))
-
-
-(defparameter *punctuation-words*
-  `(,*the-punctuation-period* ,*the-punctuation-comma*
-    ,*the-punctuation-colon* ,*the-punctuation-semicolon*
-    ,*the-punctuation-hyphen* ))
-
-(defun edge-over-punctuation? (edge)
-  (memq (edge-category edge) *punctuation-words*))
