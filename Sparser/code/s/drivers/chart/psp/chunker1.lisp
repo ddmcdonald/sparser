@@ -20,6 +20,7 @@
 ;; 1/12/2015 Start on new NG interpreter parse-ng-interior -- works modestly well
 ;; 1/14/2015 New whack-a-rule type interpreter for NG and VG chunks
 ;; 1/17/2015 NEW VERSION -- should handle ambiguities in base edges
+;; 1.28.2015 better handling of VG chunks -- don't allow two finite verbs in the chunk (excpet for BE, HAVE and modals)
 
 (in-package :sparser)
 
@@ -311,7 +312,15 @@
           (and
            (edge-form e)
            (memq (cat-symbol (edge-form e)) *N-BAR-CATEGORIES*)))))))
-    (vg (vg-compatible? edge))
+    (vg (and
+         (vg-compatible? edge)
+         (not (loop for ev in ev-list
+                thereis
+                (loop for edge in (ev-edges ev)
+                  thereis (and
+                           (vg-head? edge)
+                           (not (member (cat-symbol (edge-category edge)) 
+                                        '(category::be category::have category::do category::modal)))))))))
     (adjg (adjg-compatible? edge))))
 
 
