@@ -310,7 +310,7 @@
 (define-category increase
   :specializes bio-process
   :binds ((agent biological) 
-          (object bio-process)
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
           (theme biological)) ;; increase in rate vs increase in RAS activity
   :realization
   (:verb "increase" 
@@ -648,18 +648,6 @@
 	   :o object
            :of object))
 
-;; need to look at this -- what is the patterning for "X was associated with Y" -- what is the subject?
-(define-category associate
-    :specializes bio-process
-    :binds ((agent bio-entity)(object bio-entity))
-    :realization
-    (:verb "associate" ;; keyword: ENDS-IN-ED 
-	   :noun "association"
-	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :of object))
-
 
 
 (define-category confer
@@ -855,7 +843,7 @@
 
 (define-category indicate
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent biological)(object bio-process))
     :realization
     (:verb "indicate" ;; keyword: ENDS-IN-ING 
 	   :noun "indication"
@@ -1446,7 +1434,7 @@
 
 (define-category test
     :specializes bio-process
-    :binds ((agent pronoun/first/plural)(object bio-process))
+    :binds ((agent pronoun/first/plural)(object biological))
     :realization
     (:verb "test" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1462,7 +1450,8 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :to result))
+           :to result
+           :of object))
 
 
 
@@ -1518,7 +1507,7 @@
           (camparator biological)
           (context bio-context))
   :realization 
-  (:verb "compare" :noun "comparison"
+  (:verb "compare" :noun "comparison" :adj "comparable"
          :etf (svo-passive)
          :s agent 
          :o object
@@ -1579,21 +1568,22 @@
          :to substrate
          :of object))
 (define-category measure :specializes bio-process
-  :binds ((agent pronoun/first/plural)(object bio-process)) 
+  :binds ((agent pronoun/first/plural)(object biological)) ;; object can be a bio-scalar, bio-entity or bio-process 
   :realization 
   (:verb "measure" :noun "measurement"
          :etf (svo-passive)
          :s agent
          :o object
-         :of object)) 
+         :of object))
 (define-category modify :specializes bio-process
-  :binds ((agent bio-entity)(object bio-process))
+  :binds ((agent bio-entity)(object bio-process)(location bio-location))
   :realization 
   (:verb "modify" :noun "modification"
          :etf (svo-passive) 
          :s agent
          :o object
-         :of object))
+         :of object
+         :at location))
 
 (define-category place :specializes bio-process
   :binds ((agent pronoun/first/plural)(object bio-process)(location bio-location))
