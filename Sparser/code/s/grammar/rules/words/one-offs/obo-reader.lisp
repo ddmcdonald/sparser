@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright 2014 SIFT LLC., all rights reserved
+;;; Copyright 2014-2015 SIFT LLC., all rights reserved
 ;;;
 ;;;     File: "obo-reader"
 ;;;   Module: "grammar;rules:words:one-offs:"
-;;;  Version:  December 2014
+;;;  Version:  January 2015
 
 ;; initiated 11/25/14 to read in entries created by translate-obo-files 
 ;; that are stashed in a designated file. 
@@ -22,9 +22,10 @@
    obo terms have / have not been loaded and processed.")
 
 
-(defun incorporate-obo-terms (&optional 
-                              (hard-filename 
-                               "/Users/ddm/ws/R3/ws/obo-terms.lisp"))
+(defun incorporate-obo-terms (hard-filename)
+  (unless (probe-file hard-filename)
+    (error "Trying to incorporate the OBO terms but the file ~a ~
+            does not exist" hard-filename))
   (read-obo-term-file hard-filename)
   (extract-obo-table-to-list)
   (record-obo-names)
