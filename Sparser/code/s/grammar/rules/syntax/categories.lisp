@@ -72,6 +72,7 @@
 ;; 1/10/2015 revise handling of THAT in ng-start? -- it is almost never the case that THAT is a determiner, it is usually a relative clause marker or a thatcomp marker
 ;; add relative-clause to *minor-categories* to avoid break in final sweep
 ;; 1/14/2015 support for thatcomp
+;; 1/28/2015 update *vp-categories*, since the verb BE is covered by an edge which isjust category::verb
 
 (in-package :sparser)
 
@@ -588,7 +589,9 @@
     ,category::vp/passive
     ,category::vg/passive
     ,category::participle
-    ,category::verb+ed)
+    ,category::verb+ed
+    ,category::verb ;; this covers BE!
+    )
   "All the form categories that cover verbs")
 
 (defmethod vp-category? ((c category))
