@@ -19,6 +19,24 @@ in the analysis of a particular sentence and compares it to
 previous records of treetop-counts. 
 |#
 
+
+;;--- useful macro -- but what file should it really be in?
+
+(defmacro with-total-quiet (&body body)
+  `(let ((*readout-relations* nil)
+         (*readout-segments* nil)
+         (*readout-segments-inline-with-text* nil) ;; quiet
+         (*display-word-stream* nil)
+         (*trace-lexicon-unpacking* nil)
+         (*trace-morphology* nil)
+         (*workshop-window* t)) ;; block tts in p
+     (declare (special *readout-relations* *readout-segments*
+                       *readout-segments-inline-with-text*
+                       *display-word-stream*
+                       *trace-lexicon-unpacking* *trace-morphology*
+                       *workshop-window*))
+     ,@body))
+
 ;;;---------
 ;;; classes
 ;;;---------
@@ -102,7 +120,7 @@ previous records of treetop-counts.
             (push `(,index . ,count) pairs))))
       (nreverse pairs))))
       
-
+quiet
 ;;--- package runs into snapshots
 
 (defmethod make-treetop-snapshot ((name symbol))
@@ -191,21 +209,15 @@ previous records of treetop-counts.
     (push snapshot (snapshots corpus))
     snapshot))
 
-;;; functions for extended regression test
+
+;;--- functions for extended regression test
+
 (defun sem-result (sent)
-  (let ((*readout-relations* nil)
-        (*readout-segments* nil)
-        (*readout-segments-inline-with-text* nil) ;; quiet
-        (*display-word-stream* nil)
-        (*trace-lexicon-unpacking* nil)
-        (*trace-morphology* nil)
-        (*workshop-window* t) ;; block tts in p
-        (index 0) pairs )
-    (pp sent)
+  (with-total-quiet
+     (pp sent)
     `(,sent
       ',(loop for edge in (tts-semantics)
-          collect
-          (simple-sem edge)))))
+          collect (simple-sem edge)))))
   
 
 (defun simple-sem (semtree)
