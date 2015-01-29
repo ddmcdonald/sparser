@@ -104,7 +104,6 @@
 (adj "chemical" :super predicate) ;; keyword: (al ADJ) 
 (adj "cognate" :super predicate)
 (adj "combinatorial" :super predicate) ;; keyword: (al ADJ) 
-(adj "comparable" :super predicate) ;; keyword: (able ADJ) 
 (adj "conserved" :super predicate) ;; virtually never used as a verb
 (adj "de novo" :super predicate)
 (adj "dead" :super predicate)
@@ -369,12 +368,8 @@
       (:noun "radioactivity" :adj "radioactive"
              :of material))
 (noun "range" :super bio-scalar)
-(noun "rate" :super bio-scalar
-      :binds ((process bio-process) (components biological))
-      :realization 
-      (:noun "rate"
-             :of process
-             :for components))
+
+
 (noun "ratio" :super bio-scalar)
 (noun "region" :super bio-location
       :binds ((bounds biological))
@@ -388,6 +383,7 @@
      :noun "response"
      :of beneficiary
      :to agent))
+(noun "responsiveness" :super bio-scalar)
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
 (noun "scaffold" :super protein) 
@@ -423,11 +419,12 @@
       (:noun "variety"
              :of basis))
 (noun "variation" :super bio-variant
-      :binds ((basis biological)) ;; this should be for genes and proteins
+      :binds ((basis biological)(scale bio-scalar)) ;; this should be for genes and proteins
       :realization
       (:noun "variation"
              :of basis
-             :in basis))
+             :in basis
+             :on scale))
 
 ;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
 (noun "component" :super bio-abstract)
@@ -457,30 +454,30 @@
       (:noun "presence" 
              :of context)) ;; keyword: (ence N) 
 (noun "sensitivity" :super bio-scalar
-      :binds ((item biological)(agent biological))
+      :binds ((subject biological)(cause biological))
       :realization
       (:noun "sensitivity"
-             :of item
-             :to agent)) ;; keyword: (ity N) 
+             :of subject
+             :to cause)) ;; keyword: (ity N) 
 
 (adj "sensitive" :super predicate
-      :binds ((item biological)(agent biological))
+      :binds ((subject biological)(cause biological))
       :realization
       (:adj "sensitive"
-             :s item
-             :to agent))
+             :s subject
+             :to cause))
 (noun "insensitivity" :super bio-scalar
-      :binds ((item biological)(agent biological))
+      :binds ((subject biological)(cause biological))
       :realization
       (:noun "insensitivity"
-             :of item
-             :to agent))
+             :of subject
+             :to cause))
 (adj "insensitive" :super predicate
-      :binds ((item biological)(agent biological))
+      :binds ((subject biological)(cause biological))
       :realization
       (:adj "insensitive"
-             :s item
-             :to agent))
+             :s subject
+             :to cause))
 
 (noun "stoichiometry" :super bio-abstract)
 (noun "success" :super bio-abstract)
