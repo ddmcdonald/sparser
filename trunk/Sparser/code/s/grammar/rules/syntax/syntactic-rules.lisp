@@ -14,6 +14,7 @@
 ;; 1/15/2015 add (adjective pp) rule for cases of bare adjective
 ;; 1/18/2015 inserted correct rules for direct objects and premodifying verb+ing
 ;; 1/20/15 Added number and quantifier np rules
+;; added more adverb rules
 
 (in-package :sparser)
 
@@ -193,9 +194,25 @@ to an oncogenic RasG12V mutation (9)."))
   :form vg
   :referent (:function interpret-adverb+verb right-edge left-edge))
 
+(def-syntax-rule  (adverb verb+ed)
+  :head :right-edge
+  :form vg
+  :referent(:function interpret-adverb+verb left-edge right-edge))
+
+
 (def-syntax-rule  (adverb vg)
   :head :right-edge
-  :form infinitive
+  :form vg
+  :referent(:function interpret-adverb+verb left-edge right-edge))
+
+(def-syntax-rule  (adverb vp)
+  :head :right-edge
+  :form vp
+  :referent(:function interpret-adverb+verb left-edge right-edge))
+
+(def-syntax-rule  (adverb s)
+  :head :right-edge
+  :form s
   :referent(:function interpret-adverb+verb left-edge right-edge))
 
 #|
