@@ -68,29 +68,31 @@
     '(actor
       agent 
       activator
-      deactivator
-      entity ;; from is-bio-entity
       binder
       blocker
       catalyst
       creator
+      deactivator
       encoder
+      entity ;; from is-bio-entity
       molecule ;; is active
+      subject
       ))
 
 (defparameter *obj-props*
     '(object ;; not used in verbs1
-      predication ;; from is-bio-entity
-      patient 
       activated 
-      deactivated 
       bindee 
       blocked
-      process
+      cause
       creation
+      deactivated 
       encoded
-      result
       modifier ;; BOGUS, but gets the ERK in "ERK activation"
+      patient 
+      predication ;; from is-bio-entity
+      process
+      result
 ))
       
 
@@ -362,7 +364,7 @@
   (with-open-file (s file :direction :output :if-exists :supersede)
 
     (let ((res nil))
-      (format s "~%Sent#, Event#, Subject, Event, Object, Site(s), Context, Sentence")
+      (format s "~%Sent#, Event#, Subject, Event, Object, Site(s), Context, Sentence~&")
       (setq res (loop for tst in *dec-tests* for n from 1 collect (dtst1 n tst s)))
       (format t "~%wrote file ~a" file)
       res)
