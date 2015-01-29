@@ -286,7 +286,15 @@
   
   ;; default
   (setq vg (copy-individual vg))
-  (bind-variable 'manner adverb vg)
+  #|need to diagnose among (time)
+          (location)
+          (purpose)
+          (circumstance)
+          (manner)
+          (aspect . tense/aspect)
+ BUT UNTIL THEN, JUST BIND THE ADVERB
+|#
+  (bind-variable 'adverb adverb vg)
   vg)
 
 
