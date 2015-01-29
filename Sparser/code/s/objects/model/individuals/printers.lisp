@@ -155,6 +155,33 @@
     (write-string ">" stream)))
 
 
+(defun string-for-individual (i s)
+  ;; used by simple-sem to make an even simpler individual
+  ;;/// would be nice to factor these two closer
+  (let* ((name (name-of-individual i))
+         (word-binding
+          (unless name
+            (find 'word (indiv-binds i)
+                  :key #'(lambda (b)
+                           (var-name (binding-variable b))))))
+         (word
+          (cond (name name)
+                (word-binding (binding-value word-binding)))))
+    (if word 
+     (format s "<~A ~A>" 
+             (cat-name (car (indiv-type i)))
+             (let ((ss (make-string-output-stream)))
+               (typecase word
+                 (word 
+                  (princ-word word ss))
+                 (polyword
+                  (princ-polyword word ss))
+                 (individual
+                  (princ-name word ss)))
+               (get-output-stream-string ss)))
+     (format s "<~A>" (cat-name (car (indiv-type i)))))))
+
+
 
 ;;;--------------------------------------------------
 ;;; facility for defining category-specific printers
