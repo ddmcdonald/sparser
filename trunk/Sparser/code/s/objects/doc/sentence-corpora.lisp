@@ -137,7 +137,7 @@ previous records of treetop-counts.
 
 (defmethod save-treetop-snapshot ((corpus sentence-corpus)
                                   &optional (file *file-for-treetop-snapshots*))
-  (let ((snapshot (construct-treetop-snapshot corpus)))
+  (let ((snapshot (make-treetop-snapshot corpus)))
     (with-open-file (stream file
                      :direction :output
                      :if-exists :append
