@@ -6,6 +6,8 @@
 ;;;  version:  January 2015
 
 ;; initiated 1/25/15
+;; 1/28/2015 added methods to for building a regression test for sentence semantics
+;;  (one stepp beyond just the number of treetops)
 
 (in-package :sparser)
 
@@ -188,4 +190,70 @@ previous records of treetop-counts.
     (setf (snapshot-pairs snapshot) pairs)
     (push snapshot (snapshots corpus))
     snapshot))
+
+;;; functions for extended regression test
+(defun sem-result (sent)
+  (let ((*readout-relations* nil)
+        (*readout-segments* nil)
+        (*readout-segments-inline-with-text* nil) ;; quiet
+        (*display-word-stream* nil)
+        (*trace-lexicon-unpacking* nil)
+        (*trace-morphology* nil)
+        (*workshop-window* t) ;; block tts in p
+        (index 0) pairs )
+    (pp sent)
+    `(,sent
+      ',(loop for edge in (tts-semantics)
+          collect
+          (simple-sem edge)))))
+  
+
+(defun simple-sem (semtree)
+  (cond
+   ((consp semtree)
+    (cond
+     ((individual-p (car semtree))
+      (cons
+       (let ((s (make-string-output-stream)))
+         (string-for-individual (car semtree) s)
+         (intern(get-output-stream-string s)))
+       (loop for binding in (cdr semtree)
+         when (second binding)
+         collect
+         (list (car binding)
+               (simple-sem (second binding))))))))
+   (t semtree)))
+
+
+
+(defun string-for-individual (i s)
+  ;; a 'special-routine' that is used with individuals that
+  ;; have a name field, which we assume is bound to a word. 
+  ;; This routine is put on the ops-printer field of the category
+  ;; at the time the category is defined.
+  (declare (special *print-short*))
+  (let* ((name (name-of-individual i))
+         (word-binding
+          (unless name
+            (find 'word (indiv-binds i)
+                  :key #'(lambda (b)
+                           (var-name (binding-variable b))))))
+         (word
+          (cond (name name)
+                (word-binding (binding-value word-binding)))))
+    (if
+     word 
+     (format s "<~A ~A>" 
+             (cat-name (car (indiv-type i)))
+             (let
+                 ((ss (make-string-output-stream)))
+               (typecase word
+                 (word 
+                  (princ-word word ss))
+                 (polyword
+                  (princ-polyword word ss))
+                 (individual
+                  (princ-name word ss)))
+               (get-output-stream-string ss)))
+     (format s "<~A>" (cat-name (car (indiv-type i)))))))
 
