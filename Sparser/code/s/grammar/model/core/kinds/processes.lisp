@@ -13,6 +13,10 @@
 ;; 10/27/14 added circumstance to event variables. 1/11/15 added
 ;; manner to event.
 ;; 1/14/2015 added slot for negation. Move to top 1/20/15
+;; 1/28/2015 added variable for general adverb
+;; interpret-adverb+verb needs to be improved to diagnose the type of adverb
+;; but until then, we need to have this variable or something equivalent
+
 
 (in-package :sparser)
 
@@ -26,7 +30,11 @@
           (purpose)
           (circumstance)
           (manner)
-          (aspect . tense/aspect)) ;; see rules/tense
+          (aspect . tense/aspect)
+          ;; interpret-adverb+verb needs to be improved to diagnose the type of adverb
+          ;; but until then, we need to have this variable or something equivalent
+          (adverb) ;; general adverb catcher -- for now
+          ) ;; see rules/tense
   :lemma (:common-noun "event")
   :documentation
  "This was the original (circa '89) superclass of all clausal verbs.
