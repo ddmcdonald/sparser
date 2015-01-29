@@ -66,6 +66,7 @@
 ;;;---------------
 
 (defun initialize-discourse-history ()
+  (declare (special *lifo-instance-list*))
   (setq *lifo-instance-list* nil)
   (clrhash *objects-in-the-discourse*))
  #| Attempting to deallocate the kconses is leading to circularities
