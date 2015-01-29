@@ -19,6 +19,10 @@
 
 (defparameter *sentences* nil)
 
+(defun test-overnight ()
+  (declare (special *overnight-sentences*))
+  (setq *sentences* *overnight-sentences*)
+  nil)
 
 (defun test-jan ()
   (declare (special *jan-dry-run*))
