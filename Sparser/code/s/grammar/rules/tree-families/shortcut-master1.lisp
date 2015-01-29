@@ -12,6 +12,7 @@
 ;;  nouns and adjectives without ETF. 
 ;;1/14/2015 Changes to put :subject and :object selectional restrictions in the subcat frame
 ;; also, initial subcat for THATCOMP -- not used yet
+;; delete old noun definitions when redefining a noun (but don't delete old verb definitions
 
 (in-package :sparser)
 
@@ -180,6 +181,10 @@
     (unless (or adj noun)
       (error "You must specifiy a realization schema/s using the keyword ':etf'")))
 
+  ;;RUSTY added this -- get rid of old definition for noun if you are redefining noun
+  (if (and noun (not (consp noun))) ;; CONSP is synonymn case, like (n-terminal n-terminus N-terminal N-terminus)
+      (delete-noun-cfr (resolve/make noun)))
+
   (let ( substitution-map  word-map )
     (dolist (schema-name etf)
       ;; Iterate through the etf, adding to the substituions and word list
@@ -283,6 +288,20 @@
 
     category))
 
+(defun delete-noun-cfr (wd)
+  (let*
+      ((noun-cfr (find-noun-cfr wd)))
+    (if
+     noun-cfr
+     (delete/cfr noun-cfr))))
+
+(defun find-noun-cfr (wd)
+  (when (rule-set-p (rule-set-for wd))
+    (loop for cfr in (rs-single-term-rewrites (rule-set-for wd))
+      when
+      (eq category::common-noun (cfr-form cfr))
+      do
+      (return cfr))))
 
 
 (defun handle-prepositions (category &optional against as at between for from in 
