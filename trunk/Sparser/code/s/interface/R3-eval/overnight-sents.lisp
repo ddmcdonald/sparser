@@ -29,6 +29,29 @@
 
 (defparameter *sentences* *overnight-sentences*)
 
+(defun test-overnight()
+  (setq *sentinces* *overnight-sentences*))
+
+(defun otst1 (n test stream)
+  (print (list n test))
+  (let ((*readout-relations* t))
+    (declare (special *readout-relations*))
+    (pp (second test))
+    (output-relations n (second test) stream)
+    ))
+
+(defun write-overnight-csv-output (&optional (file (test-file-with-time "overnight-test" "csv")))
+  (format t "~2%Writing result to ~a" file)
+  (with-open-file (s file :direction :output :if-exists :supersede)
+
+    (let ((res nil))
+      (format s "~%Sent#, Event#, Subject, Event, Object, Site(s), Context, Sentence~&")
+      (setq res (loop for tst in *overnight-sentences* for n from 1 collect (otst1 n tst s)))
+      (format t "~%wrote file ~a" file)
+      nil)
+  ))
+
+
 
 #||
 Passage 1 (From PMC3441633)
@@ -71,3 +94,4 @@ stimulation phosphorylated ASPP2 was barely detectable. Moreover, with another d
       (2-11 "All these demonstrate that ASPP2 is a novel substrate of MAPK and Ser827 of ASPP2 can be phosphorylated by RAS/MAPK pathway.")
       )
       )
+
