@@ -23,12 +23,21 @@
 
 (defvar *results* nil)
 
-(defun jtst (&key (nums *good-sents*) (sentences *jan-sents*) (to-file t))
-  (declare (special  *jan-sents* *good-sents))
+;;; it turned out this was the incorrect format anyway. They want article# sentence#
+(defun just-good-sentences ((nums *good-sents*) (sentences *jan-sents*))
+  (declare (special  *jan-sents* *good-sents*))
+  (loop for  i in nums
+      for (art# para sent# sentence) = (nth (1- i) sentences)
+      for ref = (format nil "~a-~a-~a" art# para sent#)
+                collect (list ref sentence)))
+
+(defun jan-deep-tst ()
+  (deep-tst :ss (just-good-sentences)))
+
+
+(defun deep-tst (&key ss  (to-file t)) 
   (let ((results
-         (loop for i in nums
-             for (art# para sent# sentence) = (nth (1- i) sentences)
-             for ref = (format nil "~a-~a-~a" art# para sent#)
+         (loop for (s# sentence) in ss
            for ignore = (print (list 'analyzing i ref sentence))
              for (trees entities relations) = (jtest-results-from-sentence sentence)
            do (setf entities (remove nil entities))
@@ -36,8 +45,9 @@
            do (pprint (cons 'entities entities))
            do (pprint (cons 'relations relations))
 ;             for model-ref = (find-relation-to-model tree)
-             collecting (list i 
-                              ref :new 
+             collecting (list s# 
+                              ref 
+                              :new-relationship 
                               entities ; (mapcar #'indiv-name entities)
                               nil 
                               relations 
@@ -73,7 +83,7 @@
 (defun write-jan-csv-output (&optional (results *results*)(file "~/sparser/jan-out.csv"))
   (with-open-file (stream file :direction :output :if-exists :supersede)
     (format stream "PassID, Relationship, ModelLink, Descrip., Representation, SourceText~%" )
-    (loop for (i pasg new ents descrip rep sent) in results 
+    (loop for (pasg new ents descrip rep sent) in results 
       for entities = (unique-ent-names ents)
       do 
       (format stream "~a, ~a, ~a, ~a, ~a, ~s~%" pasg new entities descrip rep sent))))
@@ -248,7 +258,7 @@
          (format nil "~a~@[:~a~]" (itype-name ent) (ent-pname ent)))))
 
 
-;;; Sent # , Event #, Arg1, Predicate, Arg2, Site,  Context (optional)	Sentence
+;;; Sent # , Event #, Arg1, Predicate, Arg2, Site,  Context (optional)  Sentence
 ;;; Site is for protein modifications, Context is optional,
 ;;; Sentence is the original text (or text span?)
 
