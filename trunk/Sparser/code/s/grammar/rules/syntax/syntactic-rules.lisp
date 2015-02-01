@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
@@ -15,6 +15,7 @@
 ;; 1/18/2015 inserted correct rules for direct objects and premodifying verb+ing
 ;; 1/20/15 Added number and quantifier np rules
 ;; added more adverb rules
+;; allow PP modifiers for proper-noun (which is how Ser877 is treated, as a residue-on-protein
 
 (in-package :sparser)
 
@@ -180,6 +181,13 @@ to an oncogenic RasG12V mutation (9)."))
   :form np
   :referent (:function interpret-pp-adjunct-to-np left-edge right-edge))
 
+(loop for nb in *n-bar-categories*
+  do
+  (eval 
+   `(def-syntax-rule (,nb pp)
+                     :head :left-edge
+      :form np
+      :referent (:function interpret-pp-adjunct-to-np left-edge right-edge))))
 
 
 ;;--- adverbs
