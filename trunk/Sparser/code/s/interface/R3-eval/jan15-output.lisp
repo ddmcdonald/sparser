@@ -24,7 +24,7 @@
 (defvar *results* nil)
 
 ;;; it turned out this was the incorrect format anyway. They want article# sentence#
-(defun just-good-sentences ((nums *good-sents*) (sentences *jan-sents*))
+(defun just-good-sentences (&optional (nums *good-sents*) (sentences *jan-sents*))
   (declare (special  *jan-sents* *good-sents*))
   (loop for  i in nums
       for (art# para sent# sentence) = (nth (1- i) sentences)
