@@ -38,7 +38,7 @@
 (defun deep-tst (&key ss  (to-file t)) 
   (let ((results
          (loop for (s# sentence) in ss
-           for ignore = (print (list 'analyzing i ref sentence))
+           for ignore = (print (list 'analyzing s# sentence))
              for (trees entities relations) = (jtest-results-from-sentence sentence)
            do (setf entities (remove nil entities))
            do (pprint (cons 'trees trees))
@@ -46,7 +46,6 @@
            do (pprint (cons 'relations relations))
 ;             for model-ref = (find-relation-to-model tree)
              collecting (list s# 
-                              ref 
                               :new-relationship 
                               entities ; (mapcar #'indiv-name entities)
                               nil 
