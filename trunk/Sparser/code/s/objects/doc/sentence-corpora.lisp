@@ -120,7 +120,6 @@ previous records of treetop-counts.
             (push `(,index . ,count) pairs))))
       (nreverse pairs))))
       
-quiet
 ;;--- package runs into snapshots
 
 (defmethod make-treetop-snapshot ((name symbol))
