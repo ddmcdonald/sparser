@@ -200,6 +200,11 @@
     (trace-msg "[ns]   Defaulted to e~a"
                (edge-position-in-resource-array edge))))
 
+(deftrace :number-colon-number-default-edge (edge)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns]   Defaulted to e~a"
+               (edge-position-in-resource-array edge))))
+
 (deftrace :resolve-hyphens-between-three-words (words)
   (when *trace-scan-patterns*
     (trace-msg "[ns] Resolving hyphen between three words: ~s" words)))
