@@ -61,7 +61,7 @@
 
 
 (defun test-overnight()
-  (setq *sentinces* *overnight-sentences*))
+  (setq *sentences* *overnight-sentences*))
 
 (defun otst1 (n test stream)
   (print (list n test))
