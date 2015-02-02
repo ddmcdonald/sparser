@@ -369,8 +369,6 @@
              :of material))
 (noun "range" :super bio-scalar)
 
-
-(noun "ratio" :super bio-scalar)
 (noun "region" :super bio-location
       :binds ((bounds biological))
       :realization
