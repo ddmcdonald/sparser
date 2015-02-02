@@ -52,7 +52,7 @@
               ;; but first alert to anticipated cases not working
               (unless (or (word-p left-edge) (word-p right-edge))
                 ;; hyphenated structure assumes it has edges to work with
-                (make-hypenated-structure left-edge right-edge)))))))
+                (make-hyphenated-structure left-edge right-edge)))))))
      ((= hyphen-count 1)
       ;; E.g. "Figures S1A–S1D"
       ;; split down the middle, run the two parts through the 
@@ -67,7 +67,7 @@
           (when *work-on-ns-patterns*
             (break "One of the patterns to either side of a hyphen ~
                    did not resolve.")))
-        (make-hypenated-structure first-half second-half)))
+        (make-hyphenated-structure first-half second-half)))
      (t
       (when *work-on-ns-patterns*
         (break "New case for hyphens~%  hyphen count = ~a~
