@@ -22,7 +22,7 @@
   ;; Assumes that slash has precedence over any other punctuation,
   ;; so it does a resolve-pattern of each of the segements between
   ;; slashes and then recombines them into a slash-structure along the
-  ;; lines of make-hypenated-structure and such.
+  ;; lines of make-hyphenated-structure and such.
   ;;//// slashes often indicate two proteins that differ in just
   ;; their suffix. What's that pattern?
   ;; At this point the terminals are covered by edges. They probably
