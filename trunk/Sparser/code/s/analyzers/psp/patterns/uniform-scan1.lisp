@@ -72,7 +72,7 @@
                 (word-never-in-ns-sequence (pos-terminal position-just-after)))
         (return-from collect-no-space-segment-into-word nil))
 
-      (multiple-value-bind (end-pos hyphen-positions slash-positions)
+      (multiple-value-bind (end-pos hyphen-positions slash-positions colon-positions)
                            (sweep-to-end-of-ns-regions position-just-after)
 
         ;;(push-debug `(,start-pos ,end-pos))
@@ -112,6 +112,8 @@
               (tr :ns-looking-at-hypen-patterns)
               (resolve-hyphen-pattern 
                pattern words hyphen-positions start-pos end-pos))
+             ((memq :colon pattern)
+              (resolve-colon-pattern pattern words colon-positions start-pos end-pos))
              (t 
               (tr :ns-taking-default)
               (or (resolve-ns-pattern pattern words start-pos end-pos)
@@ -157,7 +159,7 @@
   ;; Because we're working sentence by sentence we will not normally
   ;; need an EOS check 
   (let ((next-pos (chart-position-after position))
-        word  hyphens  slashes ) 
+        word  hyphens  slashes colons) 
     (loop
       ;; we enter the loop looking for a reason to stop
       (setq word (pos-terminal next-pos))
@@ -171,10 +173,12 @@
         (return))
       (when (eq word *the-punctuation-hyphen*) (push next-pos hyphens))
       (when (eq word (punctuation-named #\/)) (push next-pos slashes))
+      (when (eq word (punctuation-named #\:)) (push next-pos colons))
       (setq next-pos (chart-position-after next-pos)))
     (values next-pos
             hyphens
-            slashes)))
+            slashes
+            colons)))
 
 
 ;;;-----------------------------------------
