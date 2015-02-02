@@ -130,7 +130,7 @@
         ;; make a structure if all else fails
         ;; but first alert to anticipated cases not working
         (tr :defaulting-two-word-hyphen)
-        (make-hypenated-structure left-edge right-edge))))))
+        (make-hyphenated-structure left-edge right-edge))))))
 
 
 (defun resolve-hyphen-between-three-words (pattern words
