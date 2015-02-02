@@ -6,6 +6,7 @@
 ;;;  version:  December 2014
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
+;; 2/2/2015 added initial patterns for colons, such as the ratio 1:500
 
 (in-package :sparser)
 
@@ -92,8 +93,36 @@
    (t  
     (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
 
+;;;----------------------------------
+;;; patterns with a colon (only ratios for now)
+;;;----------------------------------
 
 
+(defun resolve-colon-pattern (pattern words colon-positions start-pos end-pos)
+  ;; (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
+  ;; (break "starting hyphen pattern: ~a" pattern)
+  (let ((count 0))
+    (dolist (item pattern)
+      (when (eq item :colon ) (incf count)))
+    (case count
+      (1 (one-colon-ns-patterns
+          pattern words colon-positions start-pos end-pos))
+      (otherwise
+       (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
+       (error "Write the code for ~a colons in a no-space sequence" count)))))
+
+(defun one-colon-ns-patterns (pattern words colon-positions start-pos end-pos)
+  (cond
+   ((or
+     (equal pattern '(:single-digit :colon :single-digit))
+     (equal pattern '(:single-digit :colon :digits))
+     (equal pattern '(:digits :colon :single-digit))
+     (equal pattern '(:digits :colon :digits)))
+    (make-number-colon-number-structure 
+     (right-treetop-at/edge start-pos) 
+     (left-treetop-at/edge end-pos)))
+   (t (break "unknown NS pattern with colon"))))
+  
 ;;;----------------------------------
 ;;; patterns with no slash or hyphen
 ;;;----------------------------------
