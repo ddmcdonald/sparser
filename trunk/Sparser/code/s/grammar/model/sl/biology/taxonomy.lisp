@@ -61,6 +61,13 @@
   :specializes scalar-quality
   :mixins (biological)
   :documentation "Provides a generalization over biological and scalar")
+
+(define-category ratio 
+  :specializes bio-scalar
+  :binds ((name)(value ratio))
+  :realization
+  (:noun "ratio"
+        :of value))
  
 (define-category predicate :specializes modifier
   :mixins (biological)
