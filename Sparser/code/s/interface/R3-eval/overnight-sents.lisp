@@ -8,7 +8,7 @@
   (p "The transition from the inactive to active state requires formation of 
      nucleotide-free Ras through the action of exchange factors. ") ; 2
   (p "This state is considered to be a short-lived transition state intermediate 
-     in vivo [36] based on the relatively high GTP: GDP ratio in vivo [37], 
+     in vivo [36] based on the relatively high GTP:GDP ratio in vivo [37], 
      the ability of GTP to dissociate the GEF-Ras complex in vitro [31], 
      and the assumption that there are no proteins in vivo that might stabilize 
      nucleotide-free Ras and prevent GTP loading. ") ; 3
@@ -61,7 +61,9 @@
 
 
 (defun test-overnight()
-  (setq *sentences* *overnight-sentences*))
+  (setq *sentences* *overnight-sentences*)
+  nil)
+
 
 (defun otst1 (n test stream)
   (print (list n test))
