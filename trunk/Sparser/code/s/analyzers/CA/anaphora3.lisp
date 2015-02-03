@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.4 September 2013
+;;;  Version:  3.6 January 2013
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -43,6 +43,11 @@
 ;; 3.5 (9/16/13) Fixing long-term-ify/edge-referents/at et al. As well as redesigning
 ;;      most-recently-mentioned since it looks through all of an individual's history
 ;;      and only has to take the first entry.
+;;     (1/6/15) Added a facility for keeping a list of the etities in a sentence
+;;      along with their edges to supply context. 
+;; 3.6 (1/30/15) Added a filter to keep function words and such out of the history.
+;;      The shift in modeling style to permit CLOS methods added an entire new
+;;      set of types of individuals.
 
 (in-package :sparser)
 
@@ -59,6 +64,9 @@
 ;;;----------
 
 (defparameter *objects-in-the-discourse* (make-hash-table :test #'eq))
+
+(defparameter *debug-anaphora* nil
+  "Flag around the 'unexpected situation' error/break calls")
 
 
 ;;;---------------
@@ -199,16 +207,17 @@
                  (when operations
                    (cat-ops-instantiate operations))))
 
-           (when instantiates
-             (update-discourse-history instantiates
-                                       obj
-                                       start-pos end-pos)
-             (dolist (category other-categories)
-               (when category
-                 ;; there's a Nil in the list sometimes
-                 (update-categorys-discourse-history 
-                  category obj start-pos end-pos)))
-             (record-instance-within-sequence obj edge))))
+           (unless (irrelevant-category-for-dh primary-category obj)
+             (when instantiates
+               (update-discourse-history instantiates
+                                         obj
+                                         start-pos end-pos)
+               (dolist (category other-categories)
+                 (when category
+                   ;; there's a Nil in the list sometimes
+                   (update-categorys-discourse-history 
+                    category obj start-pos end-pos)))
+               (record-instance-within-sequence obj edge)))))
 
         (referential-category )
         (mixin-category )
@@ -268,6 +277,27 @@
         category ))))
 
 
+;;;-----------------------------------
+;;; filter out grammatical categories
+;;;-----------------------------------
+
+(defun irrelevant-category-for-dh (category i)
+  ;; Return non-nil for any category that should not be recored
+  ;; in the discourse history. 
+  (declare (special *irrelevant-to-discourse-history*))
+  (unless *irrelevant-to-discourse-history*
+    (populate-irrelevant-to-discourse-history))
+  (let ((supers (super-categories-of category)))
+    ;(push-debug `(,category ,i))
+    ;(break "category = ~a~
+    ;      ~%supers = ~a" category supers)))
+    (loop for c in *irrelevant-to-discourse-history*
+      when (memq c supers)
+      do (when t (format t "~&Ignoring ~a~%" i))
+      (return-from irrelevant-category-for-dh t))
+    nil))
+
+
 ;;;-----------------------------
 ;;; sequential list of DH items
 ;;;-----------------------------
@@ -281,7 +311,6 @@
    will start looking at recycled edges.")
 
 ;; (setq *scan-for-unsaturated-individuals* t)
-
 (defparameter *trace-instance-recording* nil)
 
 (defun record-instance-within-sequence (i edge)
@@ -296,34 +325,60 @@
           (unless (new-mention-subsumes-old? prior-mention edge)
             (store-on-lifo i edge))
           (store-on-lifo i edge))))))
-#| The guard is needed so ordinary parts don't trip over
-cases that you have been filtered out anyway.
-January: (13 (p "These data support our in vitro findings that monoubiquitination
-increases the population of active, GTP–bound Ras through a defect in
-sensitivity to GAP–mediated regulation.")) 
-Storing #<these 95>
-Storing #<pronoun/first/plural "our" 299>
-Storing #<finding 1638>
-Storing #<that 91>
-Storing #<the 100>
-Storing #<small-molecule "GTP" 877>
-Storing #<bio-family "Ras" 896>
-Storing #<a 98>
-Storing #<protein "GAP" 880>[these data support our in vitro findings]
-Storing #<support-kind 1634> that [ monoubiquitination
-increases][ the population] of [ active], [ gtp-bound ras] through [ a defect] in
-[sensitivity] to [ gap-mediated regulation]
-Storing #<sensitivity 1630>
-Storing #<defect 1631>
-> Error: There is no used-in value for #<edge61 20 through 30>
-> While executing: better
-    It's searching for a Biological to fill in sensitivity
-|#
 
-(defun local-recorded-instances (category)
-  (loop for pair in *lifo-instance-list*
-    when (itypep (car pair) category)
-    collect pair))
+
+(defun cleanup-lifo-instance-list ()
+  ;; called from end-of-sentence-processing-cleanup
+  (let ( individuals )
+    (dolist (pair *lifo-instance-list*)
+      (push (car pair) individuals)) ;; reverses the list
+    (setq *lifo-instance-list* nil)
+    individuals))
+
+
+
+;;--- sweep over list look for something unsaturated
+
+; (setq *scan-for-unsaturated-individuals* t)
+
+(defun sweep-for-unsaturated-individuals (sentence)
+  ;; Are any of the individuals we've seen within this sentence
+  ;; unsaturated? If so, can we use one of the other entities
+  ;; to bind the open variables
+  (declare (ignore sentence)) ;; later look through previous sentences
+  (dolist (pair *lifo-instance-list*)
+    (let* ((i (car pair)) ;; edge is (cadr pair)
+           (open-variables (unsaturated? i)))
+      (when (and open-variables
+                 (null (cdr open-variables)))
+        ;; lets start with just one. January #37
+        (let* ((var (car open-variables))
+               (v/r (var-value-restriction var)))
+          (unless (memq (var-name var)
+                        '(subject))
+            ;; those are unrealistic to find in the local history
+            (when v/r
+              ;; if there's no value restriction then we can't
+              ;; constrain the search
+              (let ((candidate (find-best-recent v/r)))
+                (when candidate
+                  (bind-variable var candidate i))))))))))
+
+#| There's a reasonable model of saturation in terms of bound
+and free variables on the lattice point of a psi. The function
+saturated? is a good entry point. |#
+(defun unsaturated? (i)
+  (let* ((category (itype-of i))
+         (variables (cat-slots category)) ;; n.b. local to category
+         (bindings (indiv-binds i)))
+    (when variables
+      (let* ((bound (loop for b in bindings
+                      collect (binding-variable b)))
+             (open (loop for v in variables
+                     unless (memq v bound)
+                     collect v)))
+        open))))
+
 
 
 (defun find-best-recent (category)
@@ -349,16 +404,33 @@ Storing #<defect 1631>
           ;;(push-debug `(,best-so-far)) (break "look")
           (car best-so-far)))))))
 
-;;/// move to categories
-
+(defun local-recorded-instances (category)
+  (loop for pair in *lifo-instance-list*
+    when (itypep (car pair) category)
+    collect pair))
 
 (defun better (new-pair reigning-pair)
+  ;; Given two edges, look at the form of the edge that dominates
+  ;; them (used-in). The edge whose category is the highest in
+  ;; the hierarchy should be more salient in the text and is
+  ;; preferred. 
   (let ((new-parent (edge-used-in (cadr new-pair)))
         (reigning-parent (edge-used-in (cadr reigning-pair))))
     (unless new-parent
-      (error "There is no used-in value for ~a" (cadr new-pair)))
+      (if *debug-anaphora*
+        (error "There is no used-in value for ~a" (cadr new-pair))
+        (if reigning-parent
+          (return-from better reigning-parent)
+          (error "Figure out why there is no used-in value for ~a ~
+               or set *scan-for-unsaturated-individuals* to nil" new-parent))))
     (unless reigning-parent
-      (error "There is no used-in value for ~a" (cadr reigning-pair)))
+      (if *debug-anaphora*
+        (error "There is no used-in value for ~a" (cadr reigning-pair))
+        (if new-parent
+          (return-from better new-parent)
+          (error "Figure out why there is no used-in value for ~a ~
+               or set *scan-for-unsaturated-individuals* to nil" reigning-parent))))
+
     (let* ((new-form (edge-form new-parent))
            (new-position (memq new-form *category-hierarchy*))
            (reigning-form (edge-form reigning-parent))
@@ -377,9 +449,6 @@ Storing #<defect 1631>
         (> new-count
            reigning-count)))))
 
-
-
-
 (defun new-mention-subsumes-old? (prior-mention edge)
   ;; used by record-instance-within-sequence to do what
   ;; extend-entry-in-discourse-history does without an edge
@@ -389,42 +458,6 @@ Storing #<defect 1631>
                edge)
       t)))
 
-;;--- sweep over list look for something unsaturated
-#| There's a reasonable model of saturation in terms of bound
-and free variables on the lattice point of a psi. The function
-saturated? is a good entry point. |#
-
-; (setq *scan-for-unsaturated-individuals* t)
-
-(defun sweep-for-unsaturated-individuals (sentence)
-  (push-debug `(,sentence)) ;;/// extend containers to hold this
-  (dolist (pair *lifo-instance-list*)
-    (let* ((i (car pair)) ;; edge is (cadr pair)
-           (open-variables (unsaturated? i)))
-      (when (and open-variables
-                 (null (cdr open-variables)))
-        ;; lets start with just one. January #37
-        (let* ((var (car open-variables))
-               (v/r (var-value-restriction var)))
-          (when v/r
-            ;; if there's no value restriction then we can't
-            ;; constrain the search
-            (let ((candidate (find-best-recent v/r)))
-              (when candidate
-                (bind-variable var candidate i)))))))))
-
-
-(defun unsaturated? (i)
-  (let* ((category (itype-of i))
-         (variables (cat-slots category))
-         (bindings (indiv-binds i)))
-    (when variables
-      (let* ((bound (loop for b in bindings
-                      collect (binding-variable b)))
-             (open (loop for v in variables
-                     unless (memq v bound)
-                     collect v)))
-        open))))
 
 
 ;;;--------
