@@ -39,11 +39,6 @@
   (eq *kind-of-chart-processing-to-do* :successive-sweeps))
 
 
-(defvar *relations* nil
-  "Holds the relations for the last sentence when *readout-relations* is up")
-(defvar *entities* nil
-  "Holds the entities for the last sentence when *readout-relations* is up")
-
 ;;;--------
 ;;; Driver
 ;;;--------
@@ -91,21 +86,12 @@
               (tr :identifying-chunks-in sentence)
               (identify-chunks sentence) ;; calls PTS too
 
-              ;;(break "after chunking ~a" sentence) 
               (when *parse-chunked-treetop-forest*
                 (let ((*return-after-doing-forest-level* t))
                   (declare (special *return-after-doing-forest-level*))
                   (new-forest-driver sentence))
 
-                (when *scan-for-unsaturated-individuals*
-                  (sweep-for-unsaturated-individuals sentence))
-
-                (when *readout-relations*
-                  (multiple-value-bind (relations entities)
-                                       (identify-relations sentence)
-                    ;;/// better to stash these on sentence contents
-                    (setq *relations* relations ;; (readout-relations relations)
-                          *entities* entities)))))))  ;;(readout-entities entities)
+                (post-analysis-operations sentence)))))
                 
         ;; EOS throws to a higher catch. If the next sentence
         ;; is empty we will hit the end of source as we
@@ -115,9 +101,42 @@
         (setq sentence (next sentence))))))
 
 
-;;; Reading for vocabulary and cutting passages into sentences
+;;;----------------------------------------------------
+;;; operations after the regular analysis has finished
+;;;----------------------------------------------------
+
+(defvar *relations* nil
+  "Holds the relations for the last sentence when *readout-relations* is up")
+(defvar *entities* nil
+  "Holds the entities for the last sentence when *readout-relations* is up")
+
+(defun post-analysis-operations (sentence)
+  (when *scan-for-unsaturated-individuals*
+    (sweep-for-unsaturated-individuals sentence))
+  (identify-salient-text-structure sentence)
+  ;; pronoun dereferencing goes here, before the relations are read out.
+  (when *readout-relations*
+    (multiple-value-bind (relations entities)
+                         (identify-relations sentence)
+      (set-entities sentence entities)
+      (set-relations sentence relations)
+      (setq *relations* relations  ; (readout-relations relations)
+            *entities* entities))) ; (readout-entities entities)
+)
 
 
+;;;------------------------------------------------------------
+;;; final operations on sentence before moving to the next one
+;;;------------------------------------------------------------
+
+(defun end-of-sentence-processing-cleanup (sentence)
+  (set-discourse-history sentence (cleanup-lifo-instance-list))
+
+  ;; we could do a tts 
+  (when *readout-segments-inline-with-text* ;; be quiet when others are
+    (format t "~&--------------------------~%~%")))
+
+  
 
 
 ;;;-----------------------
@@ -387,18 +406,3 @@
       
       (reverse desc)))))
 
-
-;;;------------------------------------------------------------
-;;; final operations on sentence before moving to the next one
-;;;------------------------------------------------------------
-
-(defun end-of-sentence-processing-cleanup (sentence)
-  (declare (ignore sentence))
-  ;; Should save a bunch of stuff on a tailored structure in the
-  ;; content slot of the sentence.
-
-  ;; we could do a tts 
-  (when *readout-segments-inline-with-text* ;; be quiet when others are
-    (format t "~&--------------------------~%~%"))
-
-  (setq *lifo-instance-list* nil))
