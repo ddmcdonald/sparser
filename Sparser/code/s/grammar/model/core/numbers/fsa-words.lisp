@@ -230,7 +230,7 @@
     ;; fit these assumptions
     (when (eq (edge-category number-word-edge) category::multiplier)
       (let* ((result (* integer multiplier-value))
-             (referent (construct-temporary-number result)))
+             (referent (construct-temporary-number nil nil result)))
 
         (make-chart-edge :left-edge number-edge
                          :right-edge number-word-edge
