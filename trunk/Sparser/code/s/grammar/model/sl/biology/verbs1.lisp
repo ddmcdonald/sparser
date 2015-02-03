@@ -1467,7 +1467,7 @@
            :of object))
 
 (define-category is-bio-entity
-  :specializes be  
+  :specializes predicate  
   :binds ((entity biological)(predication biological)))
 
 (def-cfr IS-BIO-ENTITY (be biological)
