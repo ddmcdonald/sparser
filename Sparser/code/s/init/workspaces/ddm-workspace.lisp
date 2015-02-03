@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  January 5
+;;;  version:  January 5=2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
@@ -19,12 +19,17 @@
   (setq *check-forms* t) ;; allow rule filtering by schema patern
 ;  (setq *trace-instance-recording* t
 ;        *scan-for-unsaturated-individuals* t)
-  (incorporate-obo-terms)
+;  (setq *scan-for-unsaturated-individuals* t)
+;  (setq *debug-anaphora* t)
+  (incorporate-obo-terms
+   "/Users/ddm/ws/R3/r3/trunk/corpus/obo-terms.lisp")
+  (ddm-load-corpora)
+  (ddm-load "interface/R3-eval/dec14-output.lisp")
+  (test-jan)) ;; (test-dec)  (dtst nil t) (reset-dectest)
+
+(defun ddm-load-corpora ()
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  ;;(ddm-ed "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (ddm-load "interface/R3-eval/dec14-output.lisp")
-  (test-jan) ;; (test-dec)  (dtst nil t)
   (ddm-load "interface/R3-eval/overnight-sents.lisp"))
 
 ;; local anaphora, getting categories right
@@ -237,7 +242,7 @@
 ; schema for each of the etf.  That will call for refactoring the
 ; downstream applier:  apply-rdata-mappings
 
-; (bio-setting)
+; (bio-setting)  //// needs many more switches set. 
 ; (f "/Users/ddm/ws/R3/r3/trunk/darpa/Dec14-TestMaterials/DeepTest/training-passages.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
@@ -374,7 +379,7 @@
 ;;------- working with OBOs
 
 ;;--- 1st generate the output file
-; (load "/Users/ddm/ws/R3/trunk/code/obo2lisp/obo2lisp.lisp")
+; (load "/Users/ddm/ws/R3/r3/trunk/code/obo2lisp/obo2lisp.lisp")
 ; (transcribe-obo-file "/Users/ddm/ws/R3/trunk/ontologies/pro-test-file.obo")
 (defun translate-obos ()  ;; (translate-obos)
  (cl-user::translate-obo-files 
@@ -385,7 +390,7 @@
     "/Users/ddm/ws/R3/trunk/ontologies/chebi.obo"
     "/Users/ddm/ws/R3/trunk/ontologies/cl.obo")
 ;"/Users/ddm/ws/R3/trunk/ontologies/"
-  "~/ws/R3/ws/obo-terms.lisp"))
+  "~/ws/R3/rs/trunk/corpus/obo-terms.lisp"))
 
 (defun cl-user::translate-obo-files (in-files out-file)
   (declare (ignore in-files out-file))
