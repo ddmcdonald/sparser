@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  August 2014
+;;;  Version:  January 2015
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -11,6 +11,7 @@
 ;; RJB 12/21/2014 Updated there-are-loose-nps?
 ;; since we run the check for NP extension with OF before this method is called,
 ;;  the original set of loose NPs may have been extended and you have to use the extended NP
+;; 1/30/15 Moved tt and prior-tt to be local
 
 (in-package :sparser)
 
@@ -18,26 +19,16 @@
 ;;; state variables
 ;;;-----------------
 
-(defvar tt nil
-  "The next item to look at in the sentence sweep. Could be an
-   edge or a word (or multiword).")
-
-(defvar prior-tt nil
-  "Holds the treetop that was just looked at. Begins as nil
-   since nothing as been sweep yet.")
-
 (defvar subject-seen? nil)
 (defvar main-verb-seen? nil)
 
 (defun clear-sweep-sentence-tt-state-vars ()
-  (setq tt nil
-        prior-tt nil
-        subject-seen? nil
-        main-verb-seen? nil
-))
+  (setq subject-seen? nil
+        main-verb-seen? nil))
 
-
+;;;---------
 ;;; go-fers
+;;;---------
 
 (defun set-subject (tt)
   ;; Sugar to make the main line easier to read
