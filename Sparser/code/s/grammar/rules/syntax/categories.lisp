@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 December 2014
+;;;  Version:  0.8 January 2015
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -73,6 +73,7 @@
 ;; add relative-clause to *minor-categories* to avoid break in final sweep
 ;; 1/14/2015 support for thatcomp
 ;; 1/28/2015 update *vp-categories*, since the verb BE is covered by an edge which isjust category::verb
+;; 1/28/15 added *irrelevant-to-discourse-history*.
 
 (in-package :sparser)
 
@@ -706,6 +707,7 @@
     ,category::subj+verb
     ,category::vp
     ,category::np
+    ,category::n-bar
     ,category::relative-clause
     ,category::thatcomp
     ,category::pp))
@@ -749,6 +751,23 @@
                   (eq right-form category::s))
           category::s)))))
 
+
+
+;;;--------------------------------------------------------------
+;;; Basis of filter in add-subsuming-object-to-discourse-history
+;;;--------------------------------------------------------------
+
+(defparameter *irrelevant-to-discourse-history* nil
+  "Populated by call from irrelevant-category-for-dh")
+
+(defun populate-irrelevant-to-discourse-history ()
+  (setq *irrelevant-to-discourse-history*
+        `(,(category-named 'determiner)
+          ,(category-named 'prepositionial-phrase)
+          ,(category-named 'preposition)
+          ,(category-named 'spatial-preposition)
+          ,(category-named 'pronoun)
+          )))
 
 ;;;----------------------------------------
 ;;; instances of part-of-speech categories
