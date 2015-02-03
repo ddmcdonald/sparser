@@ -413,6 +413,10 @@
           (bind-variable variable-to-bind pp np)
           np)))))
 
+;;;-----------------
+;;; NP + VP
+;;;-----------------
+
 (defun assimilate-subject (subj vp)
   (declare (special np vp))
   ;; The vp is the head. We ask whether it subcategorizes for
@@ -486,3 +490,22 @@
       ;;(break "testing subcats")
       variable)))
 
+;;;-----------------
+;;; There + BE
+;;;-----------------
+
+(defun make-pp (prep pobj)
+  (let ((pp (make-category-indexed-individual 
+             category::prepositional-phrase)))
+    (bind-variable 'prep prep pp)
+    (bind-variable 'pobj pobj pp)
+    pp))
+
+(defun make-there-exists (there-edge be-edge)
+  (let ((exists (make-unindexed-individual category::there-exists)))
+    exists))
+
+(defun make-exist-claim (left-edge right-edge)
+  (let ((exists (make-unindexed-individual category::there-exists)))
+    (bind-variable 'object (edge-referent right-edge) exists)
+    exists))

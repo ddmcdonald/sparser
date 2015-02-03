@@ -176,9 +176,22 @@
 (def-csr apostrophe-s  "is"
   :left-context "there" )
 
-(def-cfr there-is ("there" be)
-  :form subj+verb )
+(define-category syntactic-there :specializes abstract
+  :realization
+  (:noun "there"))
 
+(define-category there-exists :specializes abstract
+  :binds ((object)(context))
+  )
+
+(def-cfr there-exists (syntactic-there BE)
+  :form vg
+  :referent (:function make-there-exists left-edge right-edge))
+
+(def-form-rule (there-exists np)
+  :form s
+  :referent (:head left-edge
+                   :function make-exist-claim left-edge right-edge))
 
 ;;--- "it"
 
