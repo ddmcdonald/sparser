@@ -1,36 +1,48 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "sweep"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  August 2014
+;;;  Version:  January 2015
 
 ;; Initiated 8/30/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
 ;; RJB 12/14/2014 simple (hack) fix to allow pronouns in simple subject verb construction moified categories in sweep-sentence-treetops
 ;; add parameter *no-error-on-no-form*, set to nil when you want to see which edges have no forms during sweep,
 ;; This is a work-around for the problems with defining MEK and MAPK...
- 
+;; 1/30/15 Cleaning up, added another flag to control whether we bother
+;; to break on new cases. 
+
 (in-package :sparser)
+
+;;;-------
+;;; flags
+;;;-------
+
+(defparameter *show-thatcomps* nil
+  "Don't print thatcomp messages")
+
+(defparameter *no-error-on-no-form* t
+  "Set to nil when you want to see which edges have no forms")
+
+(defparameter *break-on-new-tt-sweep-cases* nil
+  "Used controls whether we look at new cases")
+
 
 ;;;--------
 ;;; driver
 ;;;--------
-;; set to nil when you want to see which edges have no forms at the end
-
-(defparameter *show-thatcomps* nil) ;; don't print annyoihng thatcomp messages
-(defparameter *no-error-on-no-form* t)
 
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
   "Scan the treetops left to right"
-  (declare (special tt prior-tt form))
+  (declare (special tt prior-tt))
   (tr :sweep-sentence-treetops start-pos end-pos)
   (push-debug `(,sentence ,start-pos ,end-pos))
   (clear-sweep-sentence-tt-state-vars)
   (let ((rightmost-pos start-pos)
         (layout (make-sentence-layout sentence))
         (sentence-initial? t)
-        form  pos-after  multiple?  )
+        tt  prior-tt  form  pos-after  multiple?  )
 
     (loop
       (multiple-value-setq (tt pos-after multiple?)
@@ -47,6 +59,8 @@
       (tr :next-tt-swept tt pos-after)
 
       (when multiple?
+        ;; Presume that we want the topmost edge. 
+        ;; This ignores real ambiguities 
         (setq tt (elt (ev-edge-vector tt)
                       (1- (ev-number-of-edges tt)))))
       (when (edge-p tt)
@@ -62,10 +76,10 @@
               *the-punctuation-period*)  ;; we're done
           (return))
          ((edge-over-punctuation? tt)) ;; flag it?          
-         (t (push-debug `(,tt ,pos-after))
-            (unless
-                *no-error-on-no-form*
-              (error "No form value on ~a" tt)))))
+         (t 
+          (unless *no-error-on-no-form*
+            (push-debug `(,tt ,pos-after))
+            (error "No form value on ~a" tt)))))
 
       (when form
         (case (cat-symbol form)
@@ -73,12 +87,14 @@
           ;; us play while sorting out what will be better
           ((category::np
             category::proper-name
+            category::proper-noun
             category::n-bar
             category::common-noun
             category::pronoun    ;;//// keep track of these for
             category::WH-PRONOUN ;; a dereferencing pass.
             category::reflexive/pronoun
-            ) ;; ///not elevated
+            category::possessive/pronoun) 
+
            (cond ((np-over-that? tt)
                   (push-that tt))
                  ((null prior-tt)
@@ -141,26 +157,25 @@
            ;; drop it on the floor for now: "each of"
            )
           (category::det
-           (if
-            (eq (edge-category tt) category::that)
-            (then
-              (if *show-thatcomps* 
-                  (print "IGNORING LIKELY THATCOMP IN SWEEP")))
-            (else
-              (push-debug `(,tt ,form))
-              #+ignore
-              (break "New case in sweep.~
-              ~% tt = ~a~
-              ~% form = ~a"
-                     tt form))))
+           (if (eq (edge-category tt) category::that)
+             (then
+              (when *show-thatcomps* 
+               (print "IGNORING LIKELY THATCOMP IN SWEEP")))
+             (else
+              (when *break-on-new-tt-sweep-cases*
+                (push-debug `(,tt ,form))
+                (break "deal with determiner that's not 'that'.~
+                      ~% tt = ~a~
+                      ~% form = ~a"
+                       tt form)))))
 
-          #+otherwise(otherwise
-           (push-debug `(,tt ,form))
-           #+ignore
-           (break "New case in sweep.~
-                ~% tt = ~a~
-                ~% form = ~a"
-                  tt form))))
+         (otherwise
+          (when *break-on-new-tt-sweep-cases*
+            (push-debug `(,tt ,form))
+            (break "New case in sweep.~
+                  ~% tt = ~a~
+                  ~% form = ~a"
+                   tt form)))))
 
       (when (known-subcategorization? tt)
         (push-subcat tt))
