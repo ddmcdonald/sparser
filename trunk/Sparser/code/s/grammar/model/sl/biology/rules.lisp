@@ -205,6 +205,13 @@
   :referent
   (:head left-edge
          :bind (context right-edge)))
+#+ignore
+(def-form-rule (NP category::in\ vitro)
+  :form NP
+  :head :left-edge
+  :referent
+  (:head left-edge
+         :bind (context right-edge)))
 
 (def-form-rule (S category::in\ vivo)
   :form s
@@ -216,6 +223,21 @@
 
 (def-form-rule (VP category::in\ vivo)
   :form VP
+  :head :left-edge
+  :referent
+  (:head left-edge
+         :bind (context right-edge)))
+
+
+;;evidence that "in vivo" can modify an NP is from sentence 3 of the overnight test
+;; "there are no proteins in vivo that might stabilize ..."
+;; the relative clause is clearly part of the NP, and so the "in vivo" is likey to be
+
+;; Unfortunately, there is no obvious way to restrict the applicability of this rule to 
+;; NPs which have a "context" variable!
+#+ignore
+(def-form-rule (NP category::in\ vivo)
+  :form NP
   :head :left-edge
   :referent
   (:head left-edge
