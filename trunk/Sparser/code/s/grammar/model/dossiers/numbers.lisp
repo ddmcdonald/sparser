@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000, 2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000, 2011-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "numbers"
 ;;;   Module:  "model:dossiers:"
-;;;  Version:  August 2000
+;;;  Version:  0.2 February 2015
 
 ;; Moved out of [numbers;] 1/7/94 v2.3
 ;; 7/19/94 added zero.  5/13/95 added 'permanent' wrapper
@@ -13,15 +13,19 @@
 ;;     (8/24) reordered again so that the number one could be defined first
 ;;      and referenced in the construction of the multipliers.
 ;;     (2/5/11) Added "dozen" as multiplicand argument on 12.
+;; 0.2 (2/2/15) Ugly work around to suppress the multiplier reading of 
+;;      fraction.
 
 (in-package :sparser)
 
 (define-with-all-instances-permanent 
-  (define-number "1"  :ones "one")
 
-  (unless
-      (eq COMMON-LISP-USER::script :biology)
-      (define-individual 'multiplier :name "fraction"))
+  (define-number "1"  :ones "one") 
+    ;; goes here because 100 needs it. 
+
+  (unless (eq COMMON-LISP-USER::script :biology)
+    (define-individual 'multiplier :name "fraction"))
+
   (define-individual 'multiplier :name "one")
   
   (define-number "100" :multiplicand "hundred")
@@ -31,7 +35,6 @@
   (define-number "1000000000000" :multiplicand "trillion")
 
   (define-number "0"  :ones "zero")
-  
   (define-number "2"  :ones "two")
   (define-number "3"  :ones "three")
   (define-number "4"  :ones "four")
