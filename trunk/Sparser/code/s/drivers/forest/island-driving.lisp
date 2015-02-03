@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  Ovtober 2014
+;;;  Version:  January 2015
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -14,31 +14,47 @@
 ;; now turned ON by default
 ;; 1/5/2015 improve whack-a-rule by moving functionally duplicative code into alternative path
 ;; 1/8/2015 refactoring to make use of best-treetop-rule and copula-rule? refactoring
+;; 1/20/15 rewrote it a little to be easier to read
 
 (in-package :sparser)
 
-(defparameter *rusty-says-no* t) ;; don't call smash-together-two-tt-islands
+;;;--------------------
+;;; control parameters
+;;;--------------------
 
-(defparameter *whack-a-rule* t) ;; this forces application of all applicable rules from the right to the left, after initial priority rules
+(defparameter *rusty-says-no* t 
+  "Don't call smash-together-two-tt-islands")
+
+(defparameter *whack-a-rule* t
+  "This forces application of all applicable rules from 
+   the right to the left, after initial priority rules.")
+
 (defun whack-a-rule (&optional (yes? t))
   (setq *whack-a-rule* yes?))
 
+;;;-------------
+;;; entry point
+;;;-------------
+
 (defun island-driven-forest-parse (sentence layout start-pos end-pos)
+  ;; called from new-forest-driver after it has called 
+  ;; sweep-sentence-treetops to create the layout
   (declare (special *allow-pure-syntax-rules*
                     *edges-from-referent-categories*))
   (tr :island-driven-forest-parse start-pos end-pos)
   (let ((*allow-pure-syntax-rules* t)
         (*edges-from-referent-categories* t))
     (run-island-checks layout)
-    (push-debug `(,start-pos ,end-pos))
     ;;  (successive-treetops :from start-pos :to end-pos)
     (let ((coverage (coverage-over-region start-pos end-pos)))
       (unless (eq coverage :one-edge-over-entire-segment)
-        ;; make one more pass with a new layout
-        ;; /// vast amount of room for more sophistication here
+        ;; make one more pass with a new layout. Notice that 
+        ;; this layout is local. We want to keep it that way
+        ;; so as not to lose the base layout that we got
+        ;; after chunking. It has useful information in it.
         (let ((new-layout
                (sweep-sentence-treetops sentence start-pos end-pos)))
-          (push-debug `(,new-layout)) ;;(break "new layout")
+          ;; (push-debug `(,new-layout)) (break "new layout")
           (when t
             (tr :island-driver-forest-pass-2)
             (when *trace-island-driving* (tts))
@@ -65,82 +81,85 @@
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
   
+  (if *whack-a-rule*
+    (whack-a-rule-cycle)
+    (older-island-driving-pass-one))
 
-  (cond
-   (*whack-a-rule*
-    (let (copula)
-      (loop while (setq copula (copula-rule?))
-        do
-        (execute-triple copula)))
-    (when (there-are-conjunctions?)
-      (tr :try-spanning-conjunctions)
-      (try-spanning-conjunctions))
-    (let (rule-and-edges)
-      (loop while (setq rule-and-edges (best-treetop-rule)
-                        do 
-                        (execute-triple rule-and-edges)))))
-   (t
-    (when (starts-with-prep?)
-      (tr :try-parsing-leading-pp)
-      (try-parsing-leading-pp))
-    
-    (when  (there-are-prepositions?)
-      (tr :trying-to-form-simple-pps)
-      (try-simple-pps)
-      (when *trace-island-driving* (tts)))
-    
-    
-    ;;/// conjunctions over two words
-    ;; though the regular conjunction routine in pts seems to get these
-    ;; in-line if they're really simple: "GDP or GTP"
-    
-    (when  (there-are-known-subcat-patterns?)
-      (tr :there-are-known-subcat-patterns)
-      ;;(break "subcat")
-      (let ((edges (apply-subcat-patterns)))
-        ;; Assuming the patterns match, there will be 
-        ;; an edge for every treetop that had a subcategorization
-        ;; pattern
-        (when edges
-          ;; The subcategorizations are particularly solid,
-          ;; and they're usually the equivalent of VPs or
-          ;; complements. Gingerly look for leftward compositions. 
-          (dolist (edge edges)
-            (look-for-short-leftward-extension edge)))
-        (when *trace-island-driving* (tts))))
-    
-    
-    
-    (try-simple-subj+verb)
-    (when *trace-island-driving* (tts))
-    ;;//// good place to update the layout
-    
-    (when (there-are-of-mentions?)
-      (tr :try-to-compose-instances-of-of)
-      (try-to-compose-of-complements)
-      (when *trace-island-driving* (tts)))
-    
-    (when (there-are-loose-nps?)
-      (tr :try-to-extend-loose-nps)
-      (look-for-np-extensions)
-      (when *trace-island-driving* (tts)))
-    
-    (when (there-are-prepositions?)
-      (tr :trying-to-form-simple-pps)
-      (try-simple-pps)
-      (when *trace-island-driving* (tts)))
-    
-    (when (there-are-post-mvb-verbs?)
-      (tr :try-simple-vps)
-      (try-simple-vps)
-      (when *trace-island-driving* (tts)))))
-  
   (when (there-are-conjunctions?)
     (tr :try-spanning-conjunctions)
     (try-spanning-conjunctions)))
 
+
+
+(defun whack-a-rule-cycle ()
+  (let ( copula )
+    (loop while (setq copula (copula-rule?))
+      do (execute-triple copula)))
+  (when (there-are-conjunctions?)
+    (tr :try-spanning-conjunctions)
+    (try-spanning-conjunctions))
+  (let ( rule-and-edges )
+    (loop while (setq rule-and-edges (best-treetop-rule))
+      do (execute-triple rule-and-edges))))
+
 (defun execute-triple (triple)
-  (execute-one-one-rule (car triple)(second triple)(third triple)))
+  (execute-one-one-rule (car triple)
+                        (second triple)
+                        (third triple)))
+
+
+(defun older-island-driving-rest-of-pass-one ()
+  (when (starts-with-prep?)
+    (tr :try-parsing-leading-pp)
+    (try-parsing-leading-pp))
+    
+  (when  (there-are-prepositions?)
+    (tr :trying-to-form-simple-pps)
+    (try-simple-pps)
+    (when *trace-island-driving* (tts)))
+    
+  ;;/// conjunctions over two words
+  ;; though the regular conjunction routine in pts seems to get these
+  ;; in-line if they're really simple: "GDP or GTP"
+    
+  (when  (there-are-known-subcat-patterns?)
+    (tr :there-are-known-subcat-patterns)
+    ;;(break "subcat")
+    (let ((edges (apply-subcat-patterns)))
+      ;; Assuming the patterns match, there will be 
+      ;; an edge for every treetop that had a subcategorization
+      ;; pattern
+      (when edges
+        ;; The subcategorizations are particularly solid,
+        ;; and they're usually the equivalent of VPs or
+        ;; complements. Gingerly look for leftward compositions. 
+        (dolist (edge edges)
+          (look-for-short-leftward-extension edge)))
+      (when *trace-island-driving* (tts))))
+    
+  (try-simple-subj+verb)
+  (when *trace-island-driving* (tts))
+  ;;//// good place to update the layout
+    
+  (when (there-are-of-mentions?)
+    (tr :try-to-compose-instances-of-of)
+    (try-to-compose-of-complements)
+    (when *trace-island-driving* (tts)))
+    
+  (when (there-are-loose-nps?)
+    (tr :try-to-extend-loose-nps)
+    (look-for-np-extensions)
+    (when *trace-island-driving* (tts)))
+    
+  (when (there-are-prepositions?)
+    (tr :trying-to-form-simple-pps)
+    (try-simple-pps)
+    (when *trace-island-driving* (tts)))
+    
+  (when (there-are-post-mvb-verbs?)
+    (tr :try-simple-vps)
+    (try-simple-vps)
+    (when *trace-island-driving* (tts))))
 
         
 
@@ -170,9 +189,7 @@
 
     (cond
      ((= tt-count 2)
-      (unless
-       *rusty-says-no*
-       ;; leads to bad combinations
+      (unless *rusty-says-no* ;; leads to bad combinations
        (smash-together-two-tt-islands treetops)))
      ((= tt-count 3)
       (look-for-length-three-patterns treetops) t)
