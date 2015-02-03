@@ -1,127 +1,128 @@
 (in-package :sparser) 
 (defparameter *jan-dry-run*
   `((p "We next considered the effect of Ras monoubiquitination on
-GAP–mediated hydrolysis.")
+GAP–mediated hydrolysis.") ; 1
     (p "To this end we compared the rate of GTP hydrolysis for Ras and mUbRas
 in the presence of the catalytic domains of two GAPs, NF1 (NF1 333)
-and p120GAP(GAP–334).")
+and p120GAP(GAP–334).") ; 2
     (p "At a GAP–to–Ras ratio of 1:500, we observed an order of magnitude
 increase in the rate of GTP hydrolysis for unmodified Ras relative to
-the intrinsic rate of GTP hydrolysis.")
+the intrinsic rate of GTP hydrolysis.") ;3
     (p "No increase in the rate of GTP hydrolysis was observed for mUbRas in
-the presence of the same GAP-to-Ras ratio.")
+the presence of the same GAP-to-Ras ratio.") ; 4
     (p "Therefore, mUbRas is insensitive to GAP–mediated regulation, similar
-to an oncogenic RasG12V mutation (9).") ;; FIX THE BFOOTNOTE INDICATOR (9) which was mutation9
+to an oncogenic RasG12V mutation (9).") ; 5 ;; FIX THE BFOOTNOTE INDICATOR (9) which was mutation9
     (p "We obtained similar results using K–Ras, indicating that the effects
-of monoubiquitination on Ras are not isoform–specific.")
+of monoubiquitination on Ras are not isoform–specific.") ; 6
 
     (p "To verify that the differences between the enzymatic and chemical
 ubiquitination linkers (seven bonds and five bonds, respectively) do
 not alter GAP–responsiveness, we placed an additional cysteine at the
 c–terminus of Ubiquitin (Ubiquitin C77), thereby creating a linker one
-bond longer than the native linker. ")
+bond longer than the native linker. ") ; 7
     (p "We measured the rate of GAP–mediated GTP hydrolysis and observed that
 the response of Ras ligated to Ubiquitin C77 was identical to Ras
-ligated to Ubiquitin G76C.")
+ligated to Ubiquitin G76C.") ; 8
     (p "These results indicate that variations in the linker length on this
 scale (1–2 bonds) do not influence the sensitivity of mUbRas to GAP
-downregulation.")
+downregulation.") ; 9
 
     (p "To validate the use of an in vitro system to dissect the mechanism of
 Ras regulation, we measured the sensitivity of mUbRas to GAP–mediated
-hydrolysis in a cellular reconstitution system.")
+hydrolysis in a cellular reconstitution system.") ; 10
     (p "We immunoprecipitated Ras from HEK293T cells and compared the
 sensitivity of the monoubiquitinated and unmodified fractions of Ras
-to regulation by GAP.")
+to regulation by GAP.") ; 11
     (p "Monoubiquitinated K–Ras is less sensitive than the unmodified protein
-to GAP–mediated GTP hydrolysis.")
+to GAP–mediated GTP hydrolysis.") ; 12
     (p "These data support our in vitro findings that monoubiquitination
 increases the population of active, GTP–bound Ras through a defect in
-sensitivity to GAP–mediated regulation.")
+sensitivity to GAP–mediated regulation.") ; 13
 
 
     (p "It was established recently that monoubiquitination increases the
 proportion of Ras that is in the activated (GTP–bound) state, that
 monoubiquitination enhances association with the downstream effectors
 Raf and PI3–Kinase, and that mutation of the primary site of
-monoubiquitination impairs oncogenic Ras–mediated tumorigenesis.")
+monoubiquitination impairs oncogenic Ras–mediated tumorigenesis.") ; 14
     (p "Here we show that monoubiquitination decreases the sensitivity of Ras
-to GAP–mediated hydrolysis.")
+to GAP–mediated hydrolysis.") ; 15
     (p "A major advance was our ability to easily generate mUbRas, modified at
-a single site, in a form suitable for detailed biophysical studies.")
+a single site, in a form suitable for detailed biophysical studies.") ; 16
     (p "This chemical ligation strategy will likely be useful for the study of
-other monoubiquitinated proteins.")
+other monoubiquitinated proteins.") ; 17
     (p "Surprisingly, monoubiquitination did not alter the intrinsic activity
-of Ras, despite the size of the modification.")
+of Ras, despite the size of the modification.") ; 18
     (p "Our modeling and NMR analyses indicated that Ubiquitin dynamically
 samples a broad surface area of Ras that alters switch region
-dynamics.")
+dynamics.") ; 19
     (p "These results led us to examine the effect of monoubiquitination on
 the interaction of Ras with its cognate GEF and GAPs, which also
-target the switch domains.")
+target the switch domains.") ; 20
     (p "The analysis revealed that monoubiquitination abrogates GAP–mediated
-GTP hydrolysis.")
+GTP hydrolysis.") ; 21
     (p "All other activities, including the ability to bind regulators, were
 largely preserved and our kinetic modeling suggests that the GAP
-defect will dominate.")
+defect will dominate.") ; 22
     (p "Furthermore, this outcome was specific to monoubiquitination at
-position 147.")
+position 147.") ; 23
     (p "Thus our work establishes an entirely new mode of Ras activation in
 which signaling is sustained even in the absence of hormone stimulus
-or oncogene mutation.")
+or oncogene mutation.") ; 24
 
 
 
-
+;; Second passage 
 
     (p "It has recently been shown that oncogenic RAS can enhance the
-apoptotic function of p53 via ASPP1 and ASPP2.")
+apoptotic function of p53 via ASPP1 and ASPP2.") ; 25
     (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS
-signalling to enhance p53 mediated apoptosis.")
+signalling to enhance p53 mediated apoptosis.") ; 26
     (p "As RAS is upstream of several signalling cascades, we queried whether
 the activity of ASPP2 is regulated by the activation of a RAS-mediated
-signalling pathway.")
+signalling pathway.") ; 27
     (p "One of the most studied downstream pathways of RAS signalling is the
-Raf-MAPK pathway.")
+Raf-MAPK pathway.") ; 28
     (p "Interestingly, we observed two conserved putative MAPK phosphorylation
-sites in ASPP1 and ASPP2.")
+sites in ASPP1 and ASPP2.") ; 29
     (p "The ASPP1 sites are at residues 671 and 746, and the ASPP2 sites are
-at residues 698 and 827.")
+at residues 698 and 827.") ; 30
     (p "We thus tested whether RAS activation may regulate ASPP2
-phosphorylation.")
+phosphorylation.") ; 31
     (p "An in vitro phosphorylation assay was performed with a purified
 C-terminus fragment of ASPP2 (693-1128) containing both MAPK putative
-phosphorylation sites.")
+phosphorylation sites.") ; 32
     (p "When compared to p38 SAPK, MAPK1 was clearly able to phosphorylate the
-ASPP2 fragment in vitro.")
+ASPP2 fragment in vitro.") ; 33
     (p "Histone 2B phosphorylated by p38 SAPK had high levels of incorporated
 32P, suggesting that p38 SAPK was active; while under the same
 conditions, ASPP2 (693-1128) fragment phosphorylated by p38 SAPK had
 very low levels of incorporated 32P, indicating that p38 SAPK is not
-an efficient kinase for ASPP2 phosphorylation.")
+an efficient kinase for ASPP2 phosphorylation.") ; 34
     (p "The phosphorylated ASPP2 fragment by MAPK1 was digested by trypsin and
 fractioned on a high performance liquid chromatography (HPLC). 
 Each eluted fraction was measured for its radioactivity content.
 The fractions representing these radioactive peaks were
-analysed by mass spectrometry.")
+analysed by mass spectrometry.") ; 35
     (p "Of the two radioactive peaks, one represented the linker region
 between the GST and our ASPP2 fragment and the other corresponded to a
 fragment of the same mass as that containing the second putative
-phosphorylation site, serine 827.")
-    (p "Hence ASPP2 can be phosphorylated at serine 827 by MAPK1 in vitro.")
+phosphorylation site, serine 827.") ; 36
+    (p "Hence ASPP2 can be phosphorylated at serine 827 by MAPK1 in vitro.") ; 37
 
     (p "We and others have recently shown that ASPP2 can potentiate RAS
-signaling by binding directly via the ASPP2 N-terminus.")
+signaling by binding directly via the ASPP2 N-terminus.") ; 38
     (p "Moreover, the RAS-ASPP interaction enhances the transcription function
-of p53 in cancer cells.")
+of p53 in cancer cells.") ; 39
     (p "Until now, it has been unclear how RAS could affect ASPP2 to enhance
-p53 function.")
+p53 function.") ; 40
     (p "We show here that ASPP2 is phosphorylated by the RAS/Raf/MAPK pathway
 and that this phosphorylation leads to its increased translocation to
 the cytosol/nucleus and increased binding to p53, providing an
-explanation of how RAS can activate p53 pro-apoptotic functions.")
+explanation of how RAS can activate p53 pro-apoptotic functions.") ; 41
     (p "Additionally, RAS/Raf/MAPK pathway activation stabilizes ASPP2
-protein, although the underlying mechanism remains to be investigated.")))
+protein, although the underlying mechanism remains to be investigated.") ; 42
+))
 
 
 
