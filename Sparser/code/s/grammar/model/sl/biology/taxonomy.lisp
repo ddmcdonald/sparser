@@ -62,13 +62,21 @@
   :mixins (biological)
   :documentation "Provides a generalization over biological and scalar")
 
+
+;; Rusty -- where are we supposed to put the two numbers
+;; or two molecules?  Need example. 
 (define-category ratio 
   :specializes bio-scalar
   :binds ((name)(value ratio))
   :realization
   (:noun "ratio"
         :of value))
- 
+
+;; Rusty -- This is a strikingly bad choice of name for this
+;; category. Look before you leap (model/core/kinds/*
+;; Worse is that you have no examples of this being used
+;; in some text so I could figure out your intention and
+;; suggest an alternative. 
 (define-category predicate :specializes modifier
   :mixins (biological)
   :binds ((negation)
