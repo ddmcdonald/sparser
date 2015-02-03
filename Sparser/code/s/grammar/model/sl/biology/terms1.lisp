@@ -492,9 +492,6 @@
 ;; not sure of this -- was def-bio, but that now fails
 (noun "C-RAF:B-RAF" :super heterodimer)
 
-;; UGLY -- but avoids a break
-(adj "our" :super predicate)
-
 
 (noun "G-domain" :super protein-segment) ;; somehow (def-bio "G-domain" protein-segment) did not work
 
