@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2000,2010-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2000,2010-2015  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  December 2014
+;;;   version:  January 2015
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -54,7 +54,8 @@
 ;; more temporal bits that late. 6/4/14 Removed NIH. 6/15/14 Adding more grammar
 ;; module gates so we get a better tally of who many words, etc. we have. 12/10/14
 ;; moved 1st-kinds in front of collections, which led to adjustments in the construction
-;; of plurals for the lemmas in 1st-kinds. 
+;; of plurals for the lemmas in 1st-kinds. 1/30/15 had to change conditionalization
+;; on situation to get text structure to load.
 
 
 (in-package :sparser)
@@ -224,9 +225,11 @@
   (gate-grammar *Banking*
     (gload "banking;loader"))
 
-  ;(when *c3*
   (gate-grammar *ISR*
-    (gload "isr;loader")
+    (gload "isr;loader"))
+
+  (gate-grammar *biology* ;; or *c3* or *ISR*, gate-grammar
+    ;; uses this argument to determine where to store the rules
     (gload "sit-rules;loader"))
 
 
