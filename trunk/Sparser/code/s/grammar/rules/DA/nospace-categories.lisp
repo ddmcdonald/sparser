@@ -11,6 +11,7 @@
 ;; slashed-sequence setup. 
 ;; 2/2//2015 add new no-space default category number-colon-number and method for creating an edge spanning things like "1:500" 
 ;;  this is done so that a later context sensitive rule can determine if this is a ratio or something else
+;; added code for similar GAP:Ras structure
 
 (in-package :sparser)
 
@@ -37,6 +38,14 @@
   :index (:sequential-keys left right))
 
 (define-category number-colon-number
+  :specializes sequence
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((left) ;; of the hyphen
+          (right))
+  :index (:sequential-keys left right))
+
+(define-category word-colon-word
   :specializes sequence
   ;; inherits items, item, type, number
   :instantiates :self
@@ -92,6 +101,31 @@
         (revise-form-of-nospace-edge-if-necessary edge right-edge)
         (tr :number-colon-number-default-edge edge)
         edge)))
+
+(defun make-word-colon-word-structure (left-edge right-edge)
+  ;; called from nospace-colon-specialist
+  (push-debug `(,left-edge ,right-edge))
+  (let ((i (find-or-make-individual 'word-colon-word
+             :left (edge-referent left-edge)
+             :right (edge-referent right-edge)))
+        (category category::word-colon-word))
+
+    (when (eq (edge-category left-edge)
+              (edge-category right-edge))
+      (bind-variable 'type (edge-category left-edge)
+                     i category::sequence))
+    (let ((edge (make-edge-over-long-span
+                   (pos-edge-starts-at left-edge)
+                   (pos-edge-ends-at right-edge)
+                   category
+                   :rule 'nospace-colon-specialist
+                   :form category::n-bar
+                   :referent i
+                   :constituents `(,left-edge ,right-edge))))
+        (revise-form-of-nospace-edge-if-necessary edge right-edge)
+        (tr :word-colon-word-default-edge edge)
+      edge)))
+
 
 
 

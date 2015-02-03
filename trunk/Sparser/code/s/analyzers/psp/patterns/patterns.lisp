@@ -7,6 +7,7 @@
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
 ;; 2/2/2015 added initial patterns for colons, such as the ratio 1:500
+;;  added pattern for GAP:Ras and similar
 
 (in-package :sparser)
 
@@ -121,6 +122,20 @@
     (make-number-colon-number-structure 
      (right-treetop-at/edge start-pos) 
      (left-treetop-at/edge end-pos)))
+   ((or
+     (equal pattern '(:full :colon))
+     (equal pattern '(:lower :colon))
+     (equal pattern '(:lower :colon :full))
+     (equal pattern '(:lower :colon :lower))
+     (equal pattern '(:full :colon :full))
+     (equal pattetn '(:full :colon :lower)))
+    
+    
+    (equal pattern '(:lower :colon))
+    (make-word-colon-word-structure 
+     (right-treetop-at/edge start-pos) 
+     (left-treetop-at/edge end-pos)))
+   
    (t (break "unknown NS pattern with colon"))))
   
 ;;;----------------------------------
