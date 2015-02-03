@@ -84,6 +84,7 @@
   (declare (ignore sentence))
   (error "No version of make-sentence-container has been specified"))
 
+
 (defun designate-sentence-container (&optional (keyword *container-for-sentence*))
   (setf (symbol-function 'make-sentence-container)
         (ecase keyword
