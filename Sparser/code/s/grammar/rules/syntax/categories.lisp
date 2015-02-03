@@ -503,7 +503,8 @@
     CATEGORY::SUPERLATIVE
     CATEGORY::SPATIAL-ADJECTIVE
     CATEGORY::TEMPORAL-ADJECTIVE
-    CATEGORY::QUANTIFIER))
+    ;;CATEGORY::QUANTIFIER don't think this is right -- it accepts "NO"
+    ))
 
 (defvar *adjg-head-categories*
   '(CATEGORY::ADJECTIVE
