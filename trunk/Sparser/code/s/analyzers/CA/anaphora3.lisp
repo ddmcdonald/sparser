@@ -293,7 +293,7 @@
     ;      ~%supers = ~a" category supers)))
     (loop for c in *irrelevant-to-discourse-history*
       when (memq c supers)
-      do (when t (format t "~&Ignoring ~a~%" i))
+      do (when nil (format t "~&Ignoring ~a~%" i))
       (return-from irrelevant-category-for-dh t))
     nil))
 
