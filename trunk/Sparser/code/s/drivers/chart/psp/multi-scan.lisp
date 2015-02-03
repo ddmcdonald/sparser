@@ -121,7 +121,7 @@
 (defun pattern-sweep (sentence)  ;; (trace-terminals-sweep)
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
-        treetop  position-after  multiple?  )
+        tt  treetop  position-after  multiple?  )
 
     (push-debug `(,sentence ,position-before ,end-pos))
     (loop
@@ -294,7 +294,7 @@
                 (pos-token-index position-before) treetop))
  
       (when (word-p treetop)
-        (when (eq tt *the-punctuation-period*)
+        (when (eq treetop *the-punctuation-period*)
           (tr :terminated-sweep-at position-after)
           (return)))
 
