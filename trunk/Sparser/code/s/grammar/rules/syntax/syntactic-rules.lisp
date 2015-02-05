@@ -181,7 +181,7 @@ to an oncogenic RasG12V mutation (9)."))
   :form np
   :referent (:function interpret-pp-adjunct-to-np left-edge right-edge))
 
-(loop for nb in *n-bar-categories*
+(loop for nb in (append '(category::NP) *n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (,nb pp)
@@ -312,10 +312,13 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :form np
   :referent (:function assimilate-appositive left-edge right-edge))
 
-(def-syntax-rule (np relative-clause)
-                 :head :left-edge
-  :form np
-  :referent (:function apply-subject-relative-clause left-edge right-edge))
+(loop for nb in (append '(category::np) *n-bar-categories*)
+  do
+  (eval 
+   `(def-syntax-rule (,nb relative-clause)
+                     :head :left-edge
+      :form np
+      :referent (:function apply-subject-relative-clause left-edge right-edge))))
 
 
 
@@ -346,7 +349,25 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :head :right-edge
   :form s
   :referent (:function assimilate-subject left-edge right-edge))
+              
 
 (def-form-rule (that s)
   :form thatcomp
   :referent (:head right-edge))
+
+(def-syntax-rule (vp thatcomp)
+  :head :left-edge
+  :form vp
+  :referent (:function assimilate-thatcomp left-edge right-edge))
+
+(def-syntax-rule (vg thatcomp)
+  :head :left-edge
+  :form vp
+  :referent (:function assimilate-thatcomp left-edge right-edge))
+
+(loop for nb in (cons category::np *n-bar-categories*)
+  do
+  (eval 
+   `(def-form-rule (,nb copular-pp)
+                   :form s
+      :referent (:function apply-copular-pp left-edge right-edge))))
