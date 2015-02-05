@@ -539,15 +539,14 @@
    :s agent
    :of object))    ;; by <entity>
 
-(define-category suggest
+(define-category suggest :specializes bio-thatcomp
   ;; :specializes rhetorical-process <----- find the right name
-  :binds ((agent bio-process) 
-          (theme bio-process)) ;;/// really a propositin
+  :binds ((agent bio-process)) ;;/// really a propositin
   :realization
   (:verb "suggest" :noun "suggestion"
-   :etf (svcomp)
+   :etf (sv)
    :s agent
-   :c theme))
+   :thatcomp statement))
 
 (define-category transduce
   :specializes  bio-process
@@ -842,7 +841,7 @@
 
 
 (define-category indicate
-    :specializes bio-process
+    :specializes bio-thatcomp
     :binds ((agent biological)(object bio-process))
     :realization
     (:verb "indicate" ;; keyword: ENDS-IN-ING 
@@ -850,7 +849,8 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :of object
+           :thatcomp statement))
 
 (define-category inform
     :specializes bio-process
@@ -1151,22 +1151,24 @@
 
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show
-    :specializes bio-process
+    :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb ("show" :past-tense "shown")
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :thatcomp statement))
 
 (define-category report
-    :specializes bio-process
+    :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb ("report" :past-tense "reported")
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :thatcomp statement))
 
 (define-category suppress
     :specializes bio-process
@@ -1310,7 +1312,7 @@
            :of object))
 
 (define-category demonstrate
-    :specializes bio-process
+    :specializes bio-thatcomp
     :binds ((agent bio-entity)(object bio-process))
     :realization
     (:verb "demonstrate" ;; keyword: ENDS-IN-ED 
@@ -1318,7 +1320,8 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :of object
+           :thatcomp statement))
 
 (define-category describe
     :specializes bio-process
@@ -1343,7 +1346,7 @@
            :of object))
 
 (define-category hypothesize
-    :specializes bio-process
+    :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb "hypothesize" ;; keyword: ENDS-IN-ED 
@@ -1351,6 +1354,7 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :thatcomp statement
            ))
 
 (define-category identify
@@ -1377,7 +1381,7 @@
            :of object))
 
 (define-category observe
-    :specializes bio-process
+    :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)(object biological)(focused-on biological))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
@@ -1386,7 +1390,8 @@
 	   :s agent
 	   :o object
            :for focused-on
-           :of object))
+           :of object
+           :thatcomp statement))
 
 (define-category obtain
     :specializes bio-process
@@ -1413,16 +1418,17 @@
            :on beneficiary))
 
 (define-category posit
-    :specializes bio-process
+    :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb "posit"
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :thatcomp statement))
 
 (define-category propose
-    :specializes bio-process
+    :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb "propose"
@@ -1430,7 +1436,8 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :of object
+           :thatcomp statement))
 
 (define-category test
     :specializes bio-process
@@ -1597,7 +1604,14 @@
 (define-category preserve :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "preserve" :noun "preservation" :etf (svo-passive) :s agent :o object)) 
 (define-category purify :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "purify" :noun "purification" :etf (svo-passive) :s agent :o object)) 
 (define-category reconstitute :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "reconstitute" :noun "reconstitution" :etf (svo-passive) :s agent :o object))
-(define-category reveal :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "reveal" :noun "revelation" :etf (svo-passive) :s agent :o object))
+(define-category reveal :specializes bio-thatcomp
+  :binds ((agent bio-entity)(object bio-process))
+  :realization
+  (:verb "reveal" :noun "revelation" 
+         :etf (svo-passive)
+         :s agent 
+         :o object
+         :thatcomp statement))
 (define-category stabilize :specializes bio-process
   :binds ((agent biological)(object biological))
  :realization
@@ -1615,7 +1629,14 @@
          :o object
          :to destination))
 
-(define-category verify :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "verify" :noun "verification" :etf (svo-passive) :s agent :o object)) 
+(define-category verify :specializes bio-thatcomp
+  :binds ((agent bio-entity)(object bio-process))
+  :realization 
+  (:verb "verify" :noun "verification"
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :thatcomp statement))
 
 #+ignore
 (def-realization have
