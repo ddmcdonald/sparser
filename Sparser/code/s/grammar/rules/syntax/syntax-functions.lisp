@@ -310,36 +310,19 @@
   ;; of the preposition satisfies the specified value restriction.
   ;; Otherwise we check for some anticipated cases and then
   ;; default to binding modifier. 
-  (let* ((subcat-patterns (known-subcategorization? vg))
-         (pp-edge (right-edge-for-referent))
+  (let* ((pp-edge (right-edge-for-referent))
          (prep-edge (edge-left-daughter pp-edge))
          (prep-word (edge-left-daughter prep-edge))
          (pobj-edge (edge-right-daughter pp-edge))
          (pobj-referent (edge-referent pobj-edge))
          (variable-to-bind
           ;; test if there is a known interpretation of the VG/PP combination
-          (or (and subcat-patterns
-                   (subcategorized-pp-variable subcat-patterns vg pp))
-              (and (eq prep-word (word-named "in"))
-                   (cond
-                    ((and (itypep vg 'physical)
-                          (itypep pobj-referent 'location))
-                     'location)
-                    ((and (itypep vg 'biological)
-                          (itypep pobj-referent 'bio-context))
-                     'context)))
+          (or (subcategorized-variable vg prep-word pobj-referent)
               (and (itypep pp 'upon-condition)
                    'circumstance)
               ;; or if we are making a last ditch effore
               (and *force-modifiers* 
                    'modifier))))
-    (when nil
-      (unless variable-to-bind
-        (push-debug `(,pobj-referent ,vg ,pp ,prep-word))
-        (error "Why is there no variable to combine ~a and ~a ?" vg pp)))
-    (when nil
-      (break "var = ~a~
-            ~%vp = ~a" variable-to-bind vg))
     (cond
      (*subcat-test* variable-to-bind)
      (t
@@ -347,33 +330,8 @@
       (bind-variable variable-to-bind pobj-referent vg)
       vg))))
 
-(defun subcategorized-pp-variable (subcat-patterns head pp)
-  ;; Look up the preposition on the pp and see if it is
-  ;; included in the subcategorization patterns of the head.
-  ;; If so, check the value restriction and if it's satisfied
-  ;; make the specified binding
-  (declare (special subcat-patterns))
-  (when  subcat-patterns
-    (let* ((pp-edge (right-edge-for-referent))
-           (prep-edge (edge-left-daughter pp-edge))
-           (prep-word (edge-left-daughter prep-edge))
-           (pobj-edge (edge-right-daughter pp-edge))
-           variable)
-      (declare (special prep-word prep-edge pobj-edge variable))
-      (unless prep-word
-        (push-debug `(,pp-edge ,prep-edge))
-        (error "Unexpected configuration of PP edges"))
-      
-      (dolist (entry subcat-patterns)
-        (when 
-            (and
-             (eq prep-word (subcat-label entry))
-             ;;(print (list (edge-referent pobj-edge) (subcat-restriction entry)))
-             (itypep (edge-referent pobj-edge) (subcat-restriction entry)))
-          (setq variable (subcat-variable entry))
-          (return)))
-      ;;(break "testing subcats")
-      variable)))
+
+
 
 
 ;;;---------
@@ -383,25 +341,15 @@
 (defun interpret-pp-adjunct-to-np (np pp)
   (push-debug `(,np ,pp))
   (or (call-compose np pp) ;; DAVID -- why is this called?!
-      (let* ((subcat-patterns (known-subcategorization? np))
-             (pp-edge (right-edge-for-referent))
+      (let* ((pp-edge (right-edge-for-referent))
              (prep-edge (edge-left-daughter pp-edge))
              (prep-word (edge-left-daughter prep-edge))
              (variable-to-bind
               ;; test if there is a known interpretation of the NP/PP combination
               (or
-               (and
-                subcat-patterns
-                (subcategorized-pp-variable subcat-patterns np pp))
-               (and
-                (eq prep-word (word-named "in"))
-                (cond
-                 ((and (itypep np 'physical)
-                       (itypep pp 'location))
-                  'location)
-                 ((and (itypep np 'biological)
-                       (itypep pp 'bio-context))
-                  'bio-context)))
+               (subcategorized-variable 
+                np prep-word 
+                (edge-referent (edge-right-daughter pp-edge)))
                ;; or if we are making a last ditch effore
                (and *force-modifiers* 'modifier)
                ;; if not, then return NIL
@@ -413,99 +361,114 @@
           (bind-variable variable-to-bind pp np)
           np)))))
 
+
 ;;;-----------------
 ;;; NP + VP
 ;;;-----------------
 
-(defun assimilate-subject (subj vp)
-  (declare (special np vp))
-  ;; The vp is the head. We ask whether it subcategorizes for
-  ;; the preposition in this PP and if so whether the complement
-  ;; of the preposition satisfies the specified value restriction.
-  ;; Otherwise we check for some anticipated cases and then
-  ;; default to binding modifier. 
-  (let* ((subcat-patterns (known-subcategorization? vp))
-          (variable-to-bind
+(defun assimilate-subcat (head subcat-label item)
+  (let* ((variable-to-bind
           ;; test if there is a known interpretation of the NP+VP combination
-           (subcategorized-subject-variable subcat-patterns subj)))
+           (subcategorized-variable head subcat-label item)))
     (cond
      (*subcat-test* variable-to-bind)
      (t
-      (setq vp (copy-individual vp))
-      (bind-variable variable-to-bind subj vp)
-      vp))))
+      (setq head (copy-individual head))
+      (bind-variable variable-to-bind item head)
+      head))))
+
+(defun subcategorized-variable (head label item)
+  ;; included in the subcategorization patterns of the head.
+  ;; If so, check the value restriction and if it's satisfied
+  ;; make the specified binding
+  (let
+      ((subcat-patterns (known-subcategorization? head)))
+    (declare (special subcat-patterns))
+    (when  subcat-patterns
+      (let* (variable)
+        (declare (special prep-word prep-edge pobj-edge variable))      
+        (dolist (entry subcat-patterns)
+          (when 
+              (and
+               (eq label (subcat-label entry))
+               (itypep item (subcat-restriction entry)))
+            (setq variable (subcat-variable entry))
+            (return)))
+        ;;(break "testing subcats")
+        (or
+         variable
+         (and (eq label (word-named "in"))
+              (cond
+               ((and (itypep head 'physical)
+                     (itypep item 'location))
+                'location)
+               ((and (itypep head 'biological)
+                     (itypep item 'bio-context))
+                'context)))
+         )))))
+
+
+(defun assimilate-subject (subj vp)
+  (assimilate-subcat vp :subject subj))
 
 (defun assimilate-object (vg obj)
-  (declare (special np vg))
-  ;; The vg is the head. We ask whether it subcategorizes for
-  ;; the preposition in this PP and if so whether the complement
-  ;; of the preposition satisfies the specified value restriction.
-  ;; Otherwise we check for some anticipated cases and then
-  ;; default to binding modifier. 
-  (let* ((subcat-patterns (known-subcategorization? vg))
-          (variable-to-bind
-          ;; test if there is a known interpretation of the NP+VP combination
-           (subcategorized-object-variable subcat-patterns obj)))
-    (cond
-     (*subcat-test* variable-to-bind)
-     (t
-      (setq vg (copy-individual vg))
-      (bind-variable variable-to-bind obj vg)
-      vg))))
+  (assimilate-subcat vg :object obj))
 
-(defun subcategorized-object-variable (subcat-patterns subj)
-  ;; included in the subcategorization patterns of the head.
-  ;; If so, check the value restriction and if it's satisfied
-  ;; make the specified binding
-  (declare (special subcat-patterns))
-  (when  subcat-patterns
-    (let* (variable)
-      (declare (special prep-word prep-edge pobj-edge variable))      
-      (dolist (entry subcat-patterns)
-        (when 
-            (and
-             (eq :object (subcat-label entry))
-             (itypep subj (subcat-restriction entry)))
-          (setq variable (subcat-variable entry))
-          (return)))
-      ;;(break "testing subcats")
-      variable)))
+(defun assimilate-thatcomp (vg thatcomp)
+  (assimilate-subcat vg category::thatcomp thatcomp))
 
-(defun subcategorized-subject-variable (subcat-patterns subj)
-  ;; Look up the preposition on the pp and see if it is
-  ;; included in the subcategorization patterns of the head.
-  ;; If so, check the value restriction and if it's satisfied
-  ;; make the specified binding
-  (declare (special subcat-patterns))
-  (when  subcat-patterns
-    (let* (variable)
-      (declare (special prep-word prep-edge pobj-edge variable))      
-      (dolist (entry subcat-patterns)
-        (when 
-            (and
-             (eq :subject (subcat-label entry))
-             (itypep subj (subcat-restriction entry)))
-          (setq variable (subcat-variable entry))
-          (return)))
-      ;;(break "testing subcats")
-      variable)))
+(defun assimilate-pp-subcat (head prep pobj)
+  (assimilate-subcat head 
+                     (subcategorized-variable head prep pobj)
+                     pobj))
+
 
 ;;;-----------------
 ;;; There + BE
 ;;;-----------------
 
-(defun make-pp (prep pobj)
-  (let ((pp (make-category-indexed-individual 
-             category::prepositional-phrase)))
-    (bind-variable 'prep prep pp)
-    (bind-variable 'pobj pobj pp)
-    pp))
 
 (defun make-there-exists (there-edge be-edge)
+  (declare (ignore there-edge be-edge))
   (let ((exists (make-unindexed-individual category::there-exists)))
     exists))
 
 (defun make-exist-claim (left-edge right-edge)
+  (declare (ignore left-edge))
   (let ((exists (make-unindexed-individual category::there-exists)))
     (bind-variable 'object (edge-referent right-edge) exists)
     exists))
+
+(defun make-copular-pp (be-ref pp-ref)
+  (declare (special be-ref pp-ref))
+  (let*
+      ((cpp (make-unindexed-individual category::copular-pp))
+       prep-ref pobj-ref)
+    (declare (special cpp prep-ref pobj-ref))
+    (dolist (bb (indiv-binds pp-ref))
+      (cond
+       ((eq (var-name (binding-variable bb)) 'pobj)
+        (setq pobj-ref (binding-value bb)))
+       ((eq (var-name (binding-variable bb)) 'prep)
+        (setq prep-ref (binding-value bb)))))
+    (bind-variable 'prep prep-ref cpp)
+    (bind-variable 'pobj pobj-ref cpp)
+    (bind-variable 'copula be-ref cpp)
+    cpp))
+
+(defun apply-copular-pp (np copular-pp)
+  (declare (special np copular-pp))
+  (let
+      ((prep (value-of 'prep copular-pp))
+       (pobj (value-of 'pobj copular-pp))
+       new-np)
+    (declare (special prep pobj new-np))
+    (cond
+     (*subcat-test* 
+      (subcategorized-variable np prep pobj))
+     (t
+      (setq new-np (assimilate-pp-subcat np prep pobj))
+      (break "copular-pp")
+      (bind-variable 'result new-np copular-pp)
+      copular-pp))))
+
