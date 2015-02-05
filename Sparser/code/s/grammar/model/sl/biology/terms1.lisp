@@ -45,7 +45,7 @@
 
 (adj "cultured" :super predicate)
 
-(adj "deadliest") ;;//// no -- define shortcut, morphology extensions
+(adj "deadliest" :super predicate) ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
 
 
@@ -177,8 +177,8 @@
 (adj "wild-type" :super predicate)
 
 
-(define-adjective "physiological")
-(define-adjective "prevalent")
+(adj "physiological" :super predicate)
+(adj "prevalent" :super predicate)
 
 (define-adverb "also")
 (define-adverb "as a consequence")
@@ -255,7 +255,6 @@
       :realization
       (:noun "class"
              :of basis))
-(noun "complex" :super molecule)
 (noun "condition" :super bio-condition)
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
 (noun "context" :super bio-context) 
