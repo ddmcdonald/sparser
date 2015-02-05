@@ -47,6 +47,12 @@
  (find-variable-in-category 'object 'be)
  :object-variable)
 
+(define-category  copular-pp
+  :specializes be
+  :binds ((result)
+          (copula)
+          (prep)
+          (pobj)))
 
 (defparameter *the-category-to-be* (category-named 'be)
   "For use by code that's loaded before the grammar is")
@@ -97,9 +103,13 @@
 
 (def-form-rule (be adjective)
   :form vp
-  :referent (:head right-edge ;; :bind (predication right-edge)
-))
+  :referent (:head right-edge);; :bind (predication right-edge)
+)
 
+(def-form-rule (be pp)
+  :form vp
+  :new-category copular-pp
+  :referent (:function make-copular-pp left-edge right-edge))
 
 ;;;----------------------------
 ;;; form rules for aux-hopping
