@@ -22,16 +22,19 @@
 (defun test-overnight ()
   (declare (special *overnight-sentences*))
   (setq *sentences* *overnight-sentences*)
+  (reset-test)
   nil)
 
 (defun test-jan ()
   (declare (special *jan-dry-run*))
   (setq *sentences* *jan-dry-run*)
+  (reset-test)
   nil)
 
 (defun test-dec ()
   (declare (special *dec-tests*))
   (setq *sentences* *dec-tests*)
+  (reset-test)
   nil)
 
 
@@ -40,6 +43,7 @@
   (setq *known-breaks* nil))
 
 (defun retest () 
+  (reset-test)
   (loop for i from (+ 1 (car *tested*)) to (length *sentences*) 
     do 
     (push i *tested*) 
