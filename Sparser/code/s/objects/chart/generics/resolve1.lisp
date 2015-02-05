@@ -91,7 +91,7 @@
          (else
            (resolve-symbol-to-category arg)))))
     (otherwise
-     (error "Expected the argument to resolve to be a symbol or a sting ~
+     (error "Expected the argument to resolve to be a symbol or a string ~
               but got a ~a: ~a" (type-of arg) arg))))
 
 
