@@ -331,7 +331,7 @@
   (when through
     (subcategorize-for-preposition category "through" through))
   (when thatcomp
-    (subcategorize-for-preposition category "thatcomp" thatcomp))
+    (subcategorize-for-preposition category :thatcomp thatcomp))
   (when via
     (subcategorize-for-preposition category "via" via))
   (when with
