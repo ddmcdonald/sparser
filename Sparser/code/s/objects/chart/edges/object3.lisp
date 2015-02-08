@@ -185,6 +185,8 @@
 (defun edge-between (p1 p2)
   ;; returns just one edge, the topmost edge spanning the two
   ;; positions.  If there is no such edge it returns nil.
+  (when (eq p1 p2)
+    (error "Positions to find the edge-between are identical: ~a" p1))
   (let* ((ev1 (pos-starts-here p1))
          (ev2 (pos-ends-here p2))
          (topmost-at-p1 (ev-top-node ev1)))
