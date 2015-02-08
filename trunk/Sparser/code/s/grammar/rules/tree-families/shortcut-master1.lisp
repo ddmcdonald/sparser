@@ -89,6 +89,9 @@
   ;; machinery to finish it. 
   (labels 
       ((compute-superc-name (verb noun adj)
+         ;; default used if explicit superc isn't supplied.
+         ;; Notice that it makes one choice in order so will be
+         ;; unexpected result if multiple pos supplied
          (cond
           (verb (super-category-for-POS :verb))
           (noun (super-category-for-POS :noun))
@@ -121,7 +124,7 @@
                       (compute-superc-name verb noun adj)))
           subj-slot subj-var
           obj-slot obj-var )
-      #| The category creater need both the variable and
+      #| The category creater needs both the variable and
       its value restriction. The realization routine needs
       just the name of the variable, since it will access
       the rest of what it needs from the information on
@@ -181,9 +184,10 @@
     (unless (or adj noun)
       (error "You must specifiy a realization schema/s using the keyword ':etf'")))
 
+ 
   ;;RUSTY added this -- get rid of old definition for noun if you are redefining noun
-  (if (and noun (not (consp noun))) ;; CONSP is synonymn case, like (n-terminal n-terminus N-terminal N-terminus)
-      (delete-noun-cfr (resolve/make noun)))
+ ; (if (and noun (not (consp noun))) ;; CONSP is synonymn case, like (n-terminal n-terminus N-terminal N-terminus)
+ ;     (delete-noun-cfr (resolve/make noun)))   def-synonym
 
   (let ( substitution-map  word-map )
     (dolist (schema-name etf)
@@ -289,19 +293,15 @@
     category))
 
 (defun delete-noun-cfr (wd)
-  (let*
-      ((noun-cfr (find-noun-cfr wd)))
-    (if
-     noun-cfr
-     (delete/cfr noun-cfr))))
+  (let ((noun-cfr (find-noun-cfr wd)))
+    (when noun-cfr
+      (delete/cfr noun-cfr))))
 
 (defun find-noun-cfr (wd)
   (when (rule-set-p (rule-set-for wd))
     (loop for cfr in (rs-single-term-rewrites (rule-set-for wd))
-      when
-      (eq category::common-noun (cfr-form cfr))
-      do
-      (return cfr))))
+      when (eq category::common-noun (cfr-form cfr))
+      do (return cfr))))
 
 
 (defun handle-prepositions (category &optional against as at between for from in 
