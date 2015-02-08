@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  4.3 August 2013
+;;;  version:  4.4 February 2015
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -19,12 +19,79 @@
 ;;      getting lost. (8/22/13) Added the *debug-pronouns* to guard breaks where
 ;;      the result was unexpected.
 ;; 4.4 (8/28/13) Extended respan with person to look for named-objects. 
+;;     (2/3/15) Adding general search routines to handle 'it' forms in a more
+;;      diverse type set. 
 
 (in-package :sparser)
 
 (defparameter *debug-pronouns* nil
   "Guards breaks like the one in seek-person-for-pronoun where the search
    was expected to return an entity but didn't.")
+
+
+;;;--------------------------------
+;;; directed pronoun dereferencing 
+;;;--------------------------------
+
+;  (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
+
+(defun handle-any-anaphora (sentence)
+  ;; called from post-analysis-operations with the sentence currently being
+  ;; analyzed. 
+  (let ( edge/s )
+    (when (setq edge/s (there-are-pronouns))
+      ;; It's a push list, so we're going to set the rightmost ones first
+      (dolist (edge edge/s)
+        (let ((label (edge-category edge))
+              (form (edge-form edge)))
+          (case (cat-symbol form)
+            (category::pronoun
+             (handle-pronoun label edge sentence))
+            (otherwise
+             (push-debug `(,edge ,form ,label))
+             (break "next pronoun form: ~a" form))))))))
+
+;; (trace-pronouns)
+;; (trace-discourse-structure)
+;; (trace-treetops-sweep)
+;; (trace-paragraphs) ;; period hook
+
+(defparameter *ignore-personal-pronouns* t
+  "Ignore situational deictics like 'I' or 'we' or 'you'.
+   They need a completely different treatment that maps
+   them to specific entities. There are drafts of this
+   in grammar/rules/.")
+
+
+(defun handle-pronoun (label edge sentence)
+  (push-debug `(,label ,edge ,sentence))
+  ;; (setq label (car *) edge (cadr *) sentence (caddr *))
+  (unless (and *ignore-personal-pronouns*
+               (memq (cat-symbol label)
+                     '(category::pronoun/first/plural 
+                       category::pronoun/first/singular
+                       category::pronoun/second)))
+    (let ((layout (base-layout (contents sentence))))
+      (cond
+       ;; are we the subject? 
+       ((eq edge (subject layout))
+        (let ((previous-subject
+               (get-sentence-subject (previous sentence))))
+          (when (and previous-subject
+                     (edge-p previous-subject))
+            (let ((category (edge-category previous-subject))
+                  (form (edge-form previous-subject))
+                  (referent (edge-referent previous-subject)))
+              (tr :subverting-pn-edge edge category referent)
+              (setf (edge-category edge) category)
+              (setf (edge-form edge) form)
+              (setf (edge-referent edge) referent)))))
+       (t
+        (when *debug-pronouns*
+          (break "pronoun is not the subject")))))))
+
+
+
 
 
 ;;;-----------
