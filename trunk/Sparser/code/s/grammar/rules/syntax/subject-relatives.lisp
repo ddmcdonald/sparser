@@ -143,8 +143,9 @@
         (else
          ;; (push-debug `(,np-ref ,vp-ref))
          ;; (break "Can not find subject var in ~a" vp-ref)
-         (format t "~&~%No subject variable recorded on ~a~%~%"
-                 vp-ref)))      
+         (when nil
+           (format t "~&~%No subject variable recorded on ~a~%~%"
+                   vp-ref)))      )
       
       ;; link the rc to the np
       (bind-variable 'modifier vp-ref np-ref)
@@ -169,8 +170,9 @@
         (else
          ;; (push-debug `(,np-ref ,vp-ref))
          ;; (break "Can not find subject var in ~a" vp-ref)
-         (format t "~&~%No subject variable recorded on ~a~%~%"
-                 vp-ref)))      
+         (when nil
+           (format t "~&~%No subject variable recorded on ~a~%~%"
+                   vp-ref)))      )
       
       ;; link the rc to the np
       (bind-variable 'modifier vp-ref np-ref)
