@@ -38,6 +38,8 @@
 
 
 
+
+
 ;;; ubiqutin 
 
 
@@ -55,18 +57,6 @@
 
 (def-bio "ubiquitin" protein)
 ;; not strictly true, but a reasonable approximation. 
-
-
-
-(define-category modified-protein
-  :specializes protein
-  :instantiates protein
-  :rule-label protein
-  :documentation "Intended as representation of proteins
-    with one or more post-translational modifications."
-  :index (:temporary :sequential-keys protein modification)
-  :binds ((protein protein)
-          (modification protein))) ;; hack for this case
 
 
 
@@ -267,3 +257,37 @@ it is created from N-terminus to C-terminus.|#
    (:adjective "apoptotic")))
 
 (adj "pro-apoptotic" :super apoptosis)
+
+
+;;;--------------
+;;; aggregations
+;;;--------------
+
+(define-category bio-aggregate 
+  :specializes aggregate
+  ;; can drop the 'bio-', but it lets us play with the
+  ;; notion before we promote that behavior to the upper str.
+  :mixins (sequence))
+#| This would be a good level at which to site a method that
+meditated whether or not we distributed the components of
+the aggregate across the predicate it's in. |#
+
+(define-category bio-pair
+  :specializes bio-aggregate 
+  :binds ((left)
+          (right))
+  :index (:sequential-keys left right))
+
+(define-category protein-pair
+  :specializes bio-pair
+  :binds ((left (:or protein bio-family))
+          (right (:or protein bio-family)))
+  :index (:sequential-keys left right))
+
+(define-category amino-acid-pair
+  :specializes bio-pair
+  :binds ((left amino-acid)
+          (right amino-acid))
+  :index (:sequential-keys left right))
+
+

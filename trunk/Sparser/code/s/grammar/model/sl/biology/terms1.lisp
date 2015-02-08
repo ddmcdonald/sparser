@@ -397,7 +397,7 @@
 (noun "strategy" :super bio-process)
 (noun "surface area" :super bio-location)
 (noun "table" :super article-table)
-(noun "target" :super bio-entity)
+
 (noun "throughput" :super measurement)
 (noun "tissue" :super bio-context)
 (noun "tumor formation" :super bio-process)

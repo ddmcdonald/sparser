@@ -410,7 +410,8 @@
 ;; "in BRAF mutant thyroid cell"
 (define-category mutate
   :specializes bio-process
-  :binds ((agent biological)(object biological))  ;; mutation of gene
+  :binds ((agent biological)
+          (object biological))  ;; mutation of gene
   :realization
   (:verb "mutate" :noun "mutation"
    :etf (svo-passive)
@@ -1195,7 +1196,7 @@
     :binds ((agent bio-entity)(object bio-process))
     :realization
     (:verb ("target" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
-	   :noun "targeting"
+	   :noun "target"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
