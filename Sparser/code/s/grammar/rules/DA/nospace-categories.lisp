@@ -1,27 +1,29 @@
 ;;;-*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  December 2014
+;;;  Version:  February 2015
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
 ;; the categories they refer to aren't yet loaded. 12/10/14 added
 ;; slashed-sequence setup. 
-;; 2/2//2015 add new no-space default category number-colon-number and method for creating an edge spanning things like "1:500" 
-;;  this is done so that a later context sensitive rule can determine if this is a ratio or something else
+;; 2/2//2015 add new no-space default category number-colon-number 
+;;  and method for creating an edge spanning things like "1:500" 
+;;  this is done so that a later context sensitive rule can determine 
+;;  if this is a ratio or something else
 ;; added code for similar GAP:Ras structure
 
 (in-package :sparser)
 
 
 (defparameter *inhibit-big-mech-interpretation* nil
-  "Localy bount to t when the context knows it's inappropriate")
+  "Localy bound to t when the context knows it's inappropriate")
 
 (defun ns-category-for-reifying (default-category)
   (if (and *big-mechanism*
-                  (null *inhibit-big-mech-interpretation*))
+           (null *inhibit-big-mech-interpretation*))
     (bio-category-for-reifying)
     default-category))
 
@@ -30,22 +32,6 @@
 ;;;----------
 
 (define-category hyphenated-pair
-  :specializes sequence
-  ;; inherits items, item, type, number
-  :instantiates :self
-  :binds ((left) ;; of the hyphen
-          (right))
-  :index (:sequential-keys left right))
-
-(define-category number-colon-number
-  :specializes sequence
-  ;; inherits items, item, type, number
-  :instantiates :self
-  :binds ((left) ;; of the hyphen
-          (right))
-  :index (:sequential-keys left right))
-
-(define-category word-colon-word
   :specializes sequence
   ;; inherits items, item, type, number
   :instantiates :self
@@ -78,54 +64,48 @@
         (tr :two-hyphen-default-edge edge)
         edge)))
 
-(defun make-number-colon-number-structure (left-edge right-edge)
-  ;; called from nospace-colon-specialist
-  (push-debug `(,left-edge ,right-edge))
-  (let ((i (find-or-make-individual 'number-colon-number
-             :left (edge-referent left-edge)
-             :right (edge-referent right-edge)))
-        (category category::number-colon-number))
 
-    (when (eq (edge-category left-edge)
-              (edge-category right-edge))
-      (bind-variable 'type (edge-category left-edge)
-                     i category::sequence))
+(defun make-protein-pair (left-ref right-ref words
+                         left-edge right-edge
+                          pos-before pos-after)
+  (make-hyphenated-pair 'protein-pair left-ref right-ref 
+                        left-edge right-edge
+                        words pos-before pos-after))
+
+(defun make-amino-acid-pair (left-ref right-ref words
+                             left-edge right-edge
+                             pos-before pos-after)
+  (make-hyphenated-pair 'amino-acid-pair left-ref right-ref 
+                        left-edge right-edge
+                         words pos-before pos-after))
+
+(defun make-bio-pair (left-ref right-ref words
+                      left-edge right-edge
+                      pos-before pos-after)
+  (make-hyphenated-pair 'bio-pair left-ref right-ref 
+                        left-edge right-edge
+                        words pos-before pos-after))
+
+(defun make-hyphenated-pair (cat-name left-ref right-ref
+                             left-edge right-edge
+                             words pos-before pos-after)
+  ;; dropping the sequence aspect on the floor because
+  ;; there's not a nice factoring of its f-or-m as a mixin
+  (let* ((category (category-named cat-name :break-if-none))
+         (i (find-or-make-individual category 
+                                     :left left-ref
+                                     :right right-ref)))
     (let ((edge (make-edge-over-long-span
-                   (pos-edge-starts-at left-edge)
-                   (pos-edge-ends-at right-edge)
-                   category
-                   :rule 'nospace-colon-specialist
-                   :form category::n-bar
-                   :referent i
-                   :constituents `(,left-edge ,right-edge))))
-        (revise-form-of-nospace-edge-if-necessary edge right-edge)
-        (tr :number-colon-number-default-edge edge)
-        edge)))
-
-(defun make-word-colon-word-structure (left-edge right-edge)
-  ;; called from nospace-colon-specialist
-  (push-debug `(,left-edge ,right-edge))
-  (let ((i (find-or-make-individual 'word-colon-word
-             :left (edge-referent left-edge)
-             :right (edge-referent right-edge)))
-        (category category::word-colon-word))
-
-    (when (eq (edge-category left-edge)
-              (edge-category right-edge))
-      (bind-variable 'type (edge-category left-edge)
-                     i category::sequence))
-    (let ((edge (make-edge-over-long-span
-                   (pos-edge-starts-at left-edge)
-                   (pos-edge-ends-at right-edge)
-                   category
-                   :rule 'nospace-colon-specialist
-                   :form category::n-bar
-                   :referent i
-                   :constituents `(,left-edge ,right-edge))))
-        (revise-form-of-nospace-edge-if-necessary edge right-edge)
-        (tr :word-colon-word-default-edge edge)
+                 pos-before 
+                 pos-after
+                 category
+                 :form category::n-bar
+                 :rule 'make-hyphenated-pair
+                 :referent i
+                 :constituents `(,left-edge ,right-edge)
+                 :words words)))
+      ;; trace
       edge)))
-
 
 
 
@@ -153,7 +133,7 @@
                    :form category::n-bar
                    :referent i
                    :constituents `(,left-edge ,middle-edge ,right-edge))))
-        (revise-form-of-nospace-edge-if-necessary edge hright-edge)
+        (revise-form-of-nospace-edge-if-necessary edge right-edge)
         (tr :three-hyphen-default-edge edge)
         edge)))
                              
@@ -198,6 +178,56 @@
 (defun resolve-stranded-hypen (pattern words start-pos end-pos)
   (push-debug `(,pattern ,words ,start-pos ,end-pos))
   (break "Stub: stranded hyphen"))
+
+
+;;;--------
+;;; colons
+;;;--------
+
+(define-category number-colon-number
+  :specializes sequence
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((left) ;; of the colon
+          (right))
+  :index (:sequential-keys left right))
+
+(define-category word-colon-word
+  :specializes sequence
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((left) ;; of the colon
+          (right))
+  :index (:sequential-keys left right))
+
+(defun make-word-colon-word-structure (left-edge right-edge)
+  ;; called from nospace-colon-specialist
+  (push-debug `(,left-edge ,right-edge))
+  (let ((i (find-or-make-individual 'word-colon-word
+             :left (edge-referent left-edge)
+             :right (edge-referent right-edge)))
+        (category category::word-colon-word))
+
+    (when (eq (edge-category left-edge)
+              (edge-category right-edge))
+      (bind-variable 'type (edge-category left-edge)
+                     i category::sequence))
+    (let ((edge (make-edge-over-long-span
+                   (pos-edge-starts-at left-edge)
+                   (pos-edge-ends-at right-edge)
+                   category
+                   :rule 'nospace-colon-specialist
+                   :form category::n-bar
+                   :referent i
+                   :constituents `(,left-edge ,right-edge))))
+        (revise-form-of-nospace-edge-if-necessary edge right-edge)
+        (tr :word-colon-word-default-edge edge)
+      edge)))
+
+;;/// abstract out the constructor
+(defun make-number-colon-number-structure (left-edge right-edge)
+  (make-word-colon-word-structure left-edge right-edge))
+
 
 ;;;---------
 ;;; slashes
