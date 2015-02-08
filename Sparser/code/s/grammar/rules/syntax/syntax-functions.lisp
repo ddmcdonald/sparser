@@ -174,12 +174,11 @@
   (declare (special qualifier head))
   ;;(break "link-in-verb")
   (let ((object (object-variable qualifier)))
-    (if
-        (category-p qualifier)
+    (if (category-p qualifier)
       (setq qualifier (make-individual-for-dm&p qualifier))
       (setq qualifier (copy-individual qualifier)))
-    (if object ;; really should check for passivizing
-        (bind-variable object head qualifier))
+    (when object ;; really should check for passivizing
+      (bind-variable object head qualifier))
     (bind-variable 'modifier qualifier head)
     head))
 
@@ -341,6 +340,11 @@
 (defun interpret-pp-adjunct-to-np (np pp)
   (push-debug `(,np ,pp))
   (or (call-compose np pp) ;; DAVID -- why is this called?!
+      ;; Rusty - this is the hook that allows for a custom interpretation
+      ;; of the meaning of this pair. If you look up at verb-noun-compound
+      ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
+      ;; In general it's a hook for any knowledge we have about particular
+      ;; cases / co-composition
       (let* ((pp-edge (right-edge-for-referent))
              (prep-edge (edge-left-daughter pp-edge))
              (prep-word (edge-left-daughter prep-edge))
