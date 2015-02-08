@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: December 2014
+;;; version: February 2015
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 ;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, 
@@ -17,6 +17,7 @@
 ;; added variable mutation to protein to allow new rule for protein --> (protein point-mutation) for "ubiquitin C77G"
 ;; /22/2015 added variables for adverb and manner to category::predicate, bi0-process
 ;; added process-rate and redefined the noun meaning of rate -- over-ride old meaning
+;; 2/5/15 Removed mutant from the variables on protein
 
 (in-package :sparser)
 
@@ -208,12 +209,30 @@
 (define-category protein
   :specializes molecule
   :instantiates :self
-  :binds ((mutation point-mutation))
   :bindings (uid "CHEBI:36080")
 ;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
+
+(define-category modified-protein
+  :specializes protein
+  :instantiates protein
+  :rule-label protein
+  :documentation "Intended as representation of proteins
+    with one or more post-translational modifications."
+  :index (:temporary :sequential-keys protein modification)
+  :binds ((protein protein)
+          (modification protein))) ;; hack for mUbRas
+
+(define-category mutated-protein
+  :specializes modified-protein
+  :instantiates protein
+  :rule-label protein
+  :index (:temporary :sequential-keys protein modification)
+  :binds ((protein protein)
+          (mutation point-mutation)))
+
 
 (define-category peptide
   :specializes molecule

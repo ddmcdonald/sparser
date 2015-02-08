@@ -142,11 +142,14 @@
 
 
 ;;--- mutation
-
+; "EGFR T669A"
+; "the EGFR T669A mutant"
 (def-cfr protein (protein point-mutation)
   :form NP
-  :referent (:head left-edge
-                   :bind (:mutation right-edge)))
+  :referent (:instantiate-individual mutated-protein
+             :with (protein left-edge
+                    mutation right-edge)))
+
 
 
 
@@ -265,3 +268,5 @@
   :form adjective
   :referent 
   (:head right-edge :bind (negation left-edge)))
+
+
