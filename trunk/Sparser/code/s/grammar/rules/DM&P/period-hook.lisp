@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  October 2014
+;;;   version:  February 2015
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -13,7 +13,8 @@
 ;; something that used to happen, but it will do. 
 ;; 10/6/14) First modification to accommodate successive scans operation.
 ;; Tweeked that 10/15/14 so that the next sentence would be available
-;; when we moved back to the sweep loop. 
+;; when we moved back to the sweep loop. 2/4/15 Added full-caps to the
+;; options for capitalization of the word after the period.
 
 
 (in-package :sparser)
@@ -105,8 +106,10 @@
   (unless (has-been-status? :scanned position-after)
     (scan-next-position))
   (or (eq (pos-terminal position-after) *end-of-source*)
-      (eq (pos-capitalization position-after)
-          :initial-letter-capitalized)))
+      (memq (pos-capitalization position-after)
+            '(:initial-letter-capitalized
+              :all-caps))))
+
 
 
 (defun set-sentence-endpoints (period-pos sentence)
