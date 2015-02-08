@@ -186,6 +186,10 @@
   (when *trace-scan-patterns*
     (trace-msg "[ns] Resolving hyphen between two words: ~s" words)))
 
+(deftrace :resolve-hyphen-between-two-terms (words)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Resolving hyphen between two terms: ~s" words)))
+
 (deftrace :two-word-hyphen-edge (edge)
   (when *trace-scan-patterns*
     (trace-msg "[ns]   resolved to e~a"
