@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 January 2015
+;;;  Version:  0.8 February 2015
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -74,6 +74,7 @@
 ;; 1/14/2015 support for thatcomp
 ;; 1/28/2015 update *vp-categories*, since the verb BE is covered by an edge which isjust category::verb
 ;; 1/28/15 added *irrelevant-to-discourse-history*.
+;; 2/3/15 removed outliers from pronoun-category?
 
 (in-package :sparser)
 
@@ -622,10 +623,11 @@
 (defmethod pronoun-category? ((c referential-category))
   (pronoun-category? (cat-symbol c)))
 (defmethod pronoun-category? ((name symbol))
-  (memq name '(category::pronoun category::wh-pronoun
-               category::possessive ;; /// probably overkill
-               category::possessive/pronoun category::reflexive/pronoun
-               category::det ;; for isolated "that"
+  (memq name '(category::pronoun 
+               category::wh-pronoun
+               category::possessive/pronoun
+               category::reflexive/pronoun
+               ;;category::det ;; for isolated "that"
                )))
 
 (defgeneric modifier-category? (label)
