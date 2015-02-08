@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  January 5=2015
+;;;  version:  February 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
@@ -20,12 +20,17 @@
 ;  (setq *trace-instance-recording* t
 ;        *scan-for-unsaturated-individuals* t)
 ;  (setq *scan-for-unsaturated-individuals* t)
-;  (setq *debug-anaphora* t)
+;  (setq *debug-anaphora* t) 
+;  (setq *do-anaphora* nil)
+;  (setq *debug-pronouns* t)
+;  (setq *work-on-ns-patterns* t)
   (incorporate-obo-terms
    "/Users/ddm/ws/R3/r3/trunk/corpus/obo-terms.lisp")
   (ddm-load-corpora)
   (ddm-load "interface/R3-eval/dec14-output.lisp")
-  (test-jan)) ;; (test-dec)  (dtst nil t) (reset-dectest)
+  ;; (test-dec)  (dtst nil t) (reset-dectest)
+  ;; (test-overnight)
+  (test-jan))
 
 (defun ddm-load-corpora ()
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
@@ -121,6 +126,13 @@
   (ddm-ed "analyzers/forst/treetops.lisp")
   (ddm-ed "drivers/chart/psp/no-bracket-protocol.lisp"))
 
+(defun ddm-simpler-compiling ()
+  (ed "/Users/ddm/sparser/README")
+  (ed "/Users/ddm/sparser/load-nlp.lisp")
+  (ddm-ed "init/everything.lisp")
+  (ddm-ed "init/Lisp/lload.lisp")
+  (ddm-ed "init/scripts/compile-everything.lisp"))
+
 ;; Is this ordered right, walking through the edges?
 ; (ddm-ed "analyzers/psp/check/one-many1.lisp)
 
@@ -207,11 +219,14 @@
 (defun ddm-anaphora ()  ;;doc -- note on anaphora
   (ddm-ed "analyzers/CA/anaphora3.lisp")
   (ddm-ed "grammar/rules/CA/defNP2.lisp")
+  (ddm-ed "grammar/rules/situation/text-structure.lisp")
   (ddm-ed "grammar/model/core/pronouns/object1.lisp")
   (ddm-ed "grammar/model/core/pronouns/cases1.lisp")
   (ddm-ed "grammar/model/core/pronouns/ref4.lisp")
   (ddm-ed "grammar/rules/syntax/articles.lisp")
-  (ddm-ed "grammar/rules/words/pronouns.lisp"))
+  (ddm-ed "grammar/rules/words/pronouns.lisp")
+  (ddm-ed "objects/traces/pronouns.lisp")
+  (ddm-ed "objects/traces/discourse.lisp"))
 
 (defun ddm-polyword-conundrum ()
   (ddm-ed "objects/rules/cfr/dotted5.lisp")
@@ -243,9 +258,9 @@
 ; downstream applier:  apply-rdata-mappings
 
 ; (bio-setting)  //// needs many more switches set. 
-; (f "/Users/ddm/ws/R3/r3/trunk/darpa/Dec14-TestMaterials/DeepTest/training-passages.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
+; (f "/Users/ddm/ws/R3/r3/trunk/darpa/Dec14-TestMaterials/DeepTest/training-passages.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/all passages combinded.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 2.txt")
@@ -253,6 +268,8 @@
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 1.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 2.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 3.txt")
+; (f "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials/test-passages.txt")
+; (f "/Users/ddm/ws/R3/r3/trunk/darpa/January22-TestMaterials/passage.txt")
 
 ; #13 (p "BRAF is inactive in NRAS mutant cells.")
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
