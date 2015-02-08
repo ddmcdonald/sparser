@@ -18,6 +18,15 @@
 (defun untrace-pronouns ()
   (setq *tracing-pronouns* nil))
 
+;;--- pronouns at large (vs. via completion)
+
+(deftrace :noticed-pronoun (edge)
+  ;; called from sweep-sentence-treetops
+  (when *tracing-pronouns*
+    (trace-msg "e~a is a ~a pronoun"
+               (edge-position-in-resource-array edge)
+               (edge-category edge))))
+
 
 ;;--- completion actions
 

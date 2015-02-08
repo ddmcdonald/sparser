@@ -1,14 +1,38 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "discourse"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  May 1994
+;;;  Version:  February 2015
 
 ;; initiated 7/92.  5/5/94 started removing flags to real files of TR traces.
+;; 2/3/15 adding tr traces. 
 
 (in-package :sparser)
 
+;;;---------------------
+;;; discourse-structure
+;;;---------------------
+
+(defparameter *trace-discourse-structure* nil)
+
+(defun trace-discourse-structure ()
+  (setq *trace-discourse-structure* t))
+
+(defun untrace-discourse-structure ()
+  (setq *trace-discourse-structure* nil))
+
+(deftrace :set-sentence-subject (edge sentence)
+  ;; called from identify-salient-text-structure
+  (when *trace-discourse-structure*
+    (trace-msg "Setting e~a as the subject of ~a"
+               (edge-position-in-resource-array edge)
+               sentence)))
+
+
+;;;-------------------
+;;; flags set by hand
+;;;-------------------
 
 (defparameter *trace-discourse-heuristics* nil
   "Miscelaneous lag read in several spots within the grammar.")

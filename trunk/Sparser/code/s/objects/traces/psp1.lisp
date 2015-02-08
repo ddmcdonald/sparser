@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2010-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2015  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 October 2014
+;;;  Version:  1.4 February 2015
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -28,6 +28,7 @@
 ;;     (2/10/13) added trace-status-history. Bracket variant 4.1.13
 ;;     (5/12/14) Bunch of C3 traces. 8/31/14 Moved forest traces out to forest.
 ;;     Adding traces for the new code through 10/22/14
+;;     (2/8/15) traces for trace-terminals-loop
 
 (in-package :sparser)
 
@@ -1142,6 +1143,57 @@
   (setq *trace-sweep* t))
 (defun untrace-terminals-sweep ()
   (setq *trace-sweep* nil))
+
+(defparameter *trace-terminals-loop* nil)
+(defun trace-terminals-loop ()
+  (setq *trace-terminals-loop* t))
+(defun untrace-terminals-loop ()
+  (setq *trace-terminals-loop* nil))
+
+(deftrace :terminal-position (position-before word)
+  ;; called from scan-terminals-loop
+  (when *trace-terminals-loop*
+    (trace-msg "[s] At p~a ~s" 
+               (pos-token-index position-before) (word-pname word))))
+
+(deftrace :next-terminal-to-scan (position-after next-word)
+  ;; called from scan-terminals-loop
+  (when *trace-terminals-loop*
+    (trace-msg "[s] Next step: p~a ~s"
+               (pos-token-index position-after) (word-pname next-word))))
+
+(deftrace :scanned-pw-ended-at (word p)
+  ;; called from scan-terminals-loop
+  (when *trace-terminals-loop*
+    (trace-msg "[s] Polyword initiated by ~s ended a p~a"
+               (word-pname word) (pos-token-index p))))
+
+(deftrace :word-fsa-ended-at (word p)
+  ;; called from scan-terminals-loop
+  (when *trace-terminals-loop*
+    (trace-msg "[s] Word-fsa initated by ~s ended at p~a"
+               (word-pname word) (pos-token-index p))))
+
+(deftrace :scan-completing (word position-before position-after)
+  ;; called from scan-terminals-loop
+  (when *trace-terminals-loop*
+    (trace-msg "[s] About to complete ~s between p~a and p~a"
+               (word-pname word)
+               (pos-token-index position-before)
+               (pos-token-index position-after))))
+
+(deftrace :scanned-terminal-edges (edges position-before position-after)
+  ;; called from scan-terminals-loop
+  (when *trace-terminals-loop*
+    (trace-msg "[s] call to do-just-terminal-edges (p~a p~a)~
+              ~%  returned ~a"
+               (pos-token-index position-before)
+               (pos-token-index position-after) edges)))
+
+(deftrace :edge-fsa-ended-at (word p)
+  (when *trace-terminals-loop*
+    (trace-msg "[s] Edge-fsa initated by ~s ended at p~a"
+               (word-pname word) (pos-token-index p))))
 
 
 (deftrace :word-initiates-polyword (word position-before)
