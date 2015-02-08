@@ -14,11 +14,33 @@
   ;; The layout sweep may have identified the subject,
   ;; if not have to decide how hard we want to work to
   ;; infer it. 
-  (let* ((layout (layout)) ;; the one after chunking
+  (let* ((layout (base-layout (contents sentence)))
+         ;; the one after chunking
          (subj-edge (subject layout)))
-    (when subj-edge
+    (cond
+     (subj-edge
+      (tr :set-sentence-subject subj-edge sentence)
       (set-sentence-subject subj-edge sentence))
-  
-    ;; Inital phrases indicating function
+     (t
+      (when *debug-pronouns*
+        (let ((deep-subj-edge
+               (find-sentence-subject sentence layout)))
+          (if deep-subj-edge
+            (then
+             (tr :set-sentence-subject deep-subj-edge sentence)
+             (set-sentence-subject deep-subj-edge sentence))
+            (else ;; put nil in the field
+             (setf (sentence-subject (contents sentence))
+                   nil)))))))
 
+    ;; Inital phrases indicating rhetorical function
 ))
+
+(defun find-sentence-subject (sentence layout)
+  (push-debug `(,sentence ,layout))
+  ;; if the layout points to a first-person plural pronoun
+  ;; ("we") then it's the subject.
+  ;; Otherwise we have to either walk down the tree or
+  ;; on the other end, allow for preposed terms within
+  ;; the sweep that creates the layout.
+  nil)
