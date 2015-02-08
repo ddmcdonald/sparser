@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015  Rusty Bobrow  -- all rights reserved
+;;; copyright (c) 2015 Rusty Bobrow  -- all rights reserved
 ;;;
 ;;;      File:   "test-functions"
 ;;;    Module:   "tools:basics"
-;;;   Version:   January 2015
+;;;   Version:   February 2015
 
-;; utilities for testing in R3. Made format-item prettier 1/10/15
+;; utilities for testing in R3. Made format-item prettier 1/10/15.
+;; 2/8/15 Turning off anaphora on sentence calls. 
 
 (in-package :sparser)
 
@@ -70,8 +71,10 @@
   `(run-test ,n))
 
 (defun run-test (n &optional (sentences *sentences*))
-  (let ((test (nth (- n 1) sentences)))
-    (format t "~&___________________________________________~&~&")
+  (let ((test (nth (- n 1) sentences))
+        (*do-anaphora* nil))
+    (declare (special *do-anaphora*))
+    (format t "~&___________________________________________~%~%")
     (print (list n test))
     (terpri)
     (if (member n *known-breaks*)
@@ -84,7 +87,6 @@
           (when t
             (terpri) 
             (format t "---SEMANTIC FOREST---")
-            
             (loop for edge-tree in
               (tts-edge-semantics)
               do
@@ -98,21 +100,26 @@
                     (print-tree (second edge-tree))))))))))
 
 (defun sem-test (n &optional (sentences *sentences*))
-  (let ((test (nth (- n 1) sentences)))
+  (let ((test (nth (- n 1) sentences))
+        (*do-anaphora* nil))
+    (declare (special *do-anaphora*))
     (print (list n test))
     (terpri)
     (if (member n *known-breaks*)
-        (print "skipping because of known problems")
-        (then
-          (eval `(pp ,(second test)))
-          (show-semantics)))))
+      (print "skipping because of known problems")
+      (else
+       (pp (second test))
+       (show-semantics)))))
           
                 
 
 
 
 (defun stest (n &optional (sentences *sentences*))
-  (let ((test (nth (- n 1) sentences)))
+  (let ((test (nth (- n 1) sentences))
+        (*do-anaphora* nil))
+    (declare (special *do-anaphora*))
+    (format t "~&~%___________________________________________~%")
     (print (list n test))
     (terpri)
     (let ((*readout-relations* t)
@@ -126,8 +133,8 @@
              (push sexp s-expressions)
              (pprint sexp)))
       (terpri)
-      (reverse s-expressions)))
-  (format t "~&___________________________________________~&~&"))
+      (reverse s-expressions))))
+
 
 (defun tree-size (tree)
   (cond
