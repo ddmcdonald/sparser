@@ -27,19 +27,15 @@
                                  position next-position
                                  &optional  
                                    category form referent)
-
   ;; called from Preterminals/word
   (let ((edge
          (make-completed-unary-edge (pos-starts-here position)
                                     (pos-ends-here next-position)
                                     cfr
                                     word 
-                                    category form referent
-)))
+                                    category form referent)))
     (tr :making-single-term-edge edge)
     edge ))
-
-
 
 
 
@@ -47,33 +43,28 @@
                                         starting-vector
                                         ending-vector
                                         daughter)
-
   ;; called from assess-edge-label/top
-
   (dolist (rule (rs-single-term-rewrites rule-set))
     (make-completed-unary-edge
      starting-vector ending-vector rule daughter)))
 
 
 ;;;-----------
-;;; workhorse
+;;; work horse
 ;;;-----------
 
 (defun make-completed-unary-edge (starting-vector
                                   ending-vector
                                   rule
                                   daughter
-
-                                  ;; These are used when the call is directly from
-                                  ;; code and the 'rule' isn't a cfr so we have to
+                                  ;; These optionals are used when the call is directly 
+                                  ;; from code and the 'rule' isn't a cfr so we have to
                                   ;; explicitly provide the information that would
                                   ;; have come from it
                                   &optional  category
                                              form
                                              referent )
-  (let ((edge
-         (next-edge-from-resource)))
-
+  (let ((edge (next-edge-from-resource)))
     (knit-edge-into-positions edge
                               starting-vector
                               ending-vector)
@@ -98,8 +89,8 @@
     (complete edge)
     
     (when *trace-edge-creation*
-      (format t "~&~%creating ~A from ~A~
-                   ~%    rule: ~A" edge
+      (format t "~&creating ~A from ~A~
+                   ~%    rule: ~A~%" edge
               (etypecase daughter
                 (word daughter)
                 (polyword daughter)

@@ -13,6 +13,8 @@
 ;;     (5/24/94) added trace
 ;; 2.0 (8/30/95) moved the used-in after complete
 
+;; OBSOLETE !!   REMOVE FROM REPO IN FAVOR OF single-new1
+
 (in-package :sparser)
 
 ;;;---------

@@ -15,6 +15,8 @@
 ;; 1.0 (9/6/94) put it back in
 ;; 2.0 (8/30/95) moved the used-in after complete
 
+;; OBSOLETE !!  REMOVE FROM REPO. Use binary1 instead
+
 (in-package :sparser)
 
 

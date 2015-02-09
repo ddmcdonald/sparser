@@ -8,6 +8,8 @@
 ;; 2.0 (11/10/92 v2.3) Simplified the name. ///contemplating flushing it.
 ;; 3.0 (8/30/95) moved the used-in after complete
 
+;; OBOSLETE  REMOVE FROM REPO
+
 (in-package :sparser)
 
 
