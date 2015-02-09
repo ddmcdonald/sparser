@@ -132,6 +132,30 @@
         (tr :defaulting-two-word-hyphen)
         (make-hyphenated-structure left-edge right-edge))))))
 
+(defun resolve-hyphen-between-two-terms (pattern words
+                                         pos-before pos-after)
+  ;; It's likely that the two connected words are names,
+  ;; so we won't assume that they might be connected by rules
+  ;; but more like some generalized meaning between the two. 
+  (declare (ignore pattern))
+  (tr :resolve-hyphen-between-two-terms words)
+  (let* ((left-edge (right-treetop-at/edge pos-before))
+         (right-edge (left-treetop-at/edge pos-after))
+         (left-ref (edge-referent left-edge))
+         (right-ref (edge-referent right-edge)))
+    (cond
+     ((itypep left-ref 'protein)
+      (make-protein-pair left-ref right-ref words
+                         left-edge right-edge
+                         pos-before pos-after))
+     ((itypep left-ref 'amino-acid)
+      (make-amino-acid-pair left-ref right-ref words
+                            left-edge right-edge
+                            pos-before pos-after))
+     (t (make-bio-pair left-ref right-ref words
+                       left-edge right-edge
+                       pos-before pos-after)))))
+
 
 (defun resolve-hyphen-between-three-words (pattern words
                                            pos-before pos-after)

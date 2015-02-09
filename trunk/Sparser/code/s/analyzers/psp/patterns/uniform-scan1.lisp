@@ -158,16 +158,20 @@
   ;; you reach one that is marked for an interveening space and return it. 
   ;; Because we're working sentence by sentence we will not normally
   ;; need an EOS check 
+  ;;  (push-debug `(,position)) (break "sweep to end from ~a" position)
   (let ((next-pos (chart-position-after position))
         word  hyphens  slashes colons) 
     (loop
       ;; we enter the loop looking for a reason to stop
       (setq word (pos-terminal next-pos))
-      (when (first-word-is-bracket-punct word)
-        (return))
       (when (pos-preceding-whitespace next-pos)
         (return))
-      (when (punctuation-terminates-no-space-sequence word next-pos)
+      (when (first-word-is-bracket-punct word)
+        (return))
+      (when (word-never-in-ns-sequence word)
+        (return))
+      (when (and (punctuation? word)
+                 (punctuation-terminates-no-space-sequence word next-pos))
         ;; We looked ahead, so reflect that in the stopping position
         (setq next-pos (chart-position-after next-pos))
         (return))
@@ -189,8 +193,8 @@
   (declare (special *the-punctuation-period* *the-punctuation-colon*))
   (when (punctuation? word)
     (or (eq word *the-punctuation-period*)
-        (eq word (punctuation-named #\,))
-        (eq word (punctuation-named #\;)))))
+        (eq word *the-punctuation-comma*)
+        (eq word *the-punctuation-semicolon*))))
 
 
 (defun second-word-not-in-ns-sequence (word next-position)
