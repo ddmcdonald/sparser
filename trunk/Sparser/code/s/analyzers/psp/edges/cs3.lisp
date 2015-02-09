@@ -14,6 +14,8 @@
 
 (in-package :sparser)
 
+;; OBSOLETE   REMOVE FROM REPO   use cs2.lisp
+
 
 ;;;---------------------------
 ;;; non-nil completion fields
