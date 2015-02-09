@@ -113,8 +113,12 @@
 (defun post-analysis-operations (sentence)
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
+
   (identify-salient-text-structure sentence)
-  ;; pronoun dereferencing goes here, before the relations are read out.
+
+  (when *do-anaphora*
+    (handle-any-anaphora sentence))
+
   (when *readout-relations*
     (multiple-value-bind (relations entities)
                          (identify-relations sentence)
@@ -131,9 +135,8 @@
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (set-discourse-history sentence (cleanup-lifo-instance-list))
-
   ;; we could do a tts 
-  (when *readout-segments-inline-with-text* ;; be quiet when others are
+  #+ignore(when *readout-segments-inline-with-text* ;; be quiet when others are
     (format t "~&--------------------------~%~%")))
 
   
