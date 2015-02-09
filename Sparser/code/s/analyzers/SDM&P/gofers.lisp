@@ -72,6 +72,10 @@
     (when edge
       (eq (edge-category edge) category::apostrophe-s))))
 
+(defun segment-ends-with-single-quote ()
+  (let ((p (chart-position-before *right-segment-boundary*)))
+    (eq (pos-terminal p) word::single-quote)))
+
 (defun segment-spanned-by-multi-word-edge? ()
   (let ((start-pos (position-before-segment-final-multi-word-edge)))
     (when start-pos
@@ -83,7 +87,8 @@
 ;;--- about the end of the segment
 
 (defun edge-over-last-word-of-segment ()
-  (if (segment-ends-with-appostrope-s?)
+  (if (or (segment-ends-with-single-quote)
+          (segment-ends-with-appostrope-s?))
     ;; take the edge just to the left
     (top-edge-at/ending *segment-position-just-left-of-head*)
     (edge-between *segment-position-just-left-of-head*
