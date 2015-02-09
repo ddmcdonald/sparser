@@ -32,6 +32,9 @@
 ;;; patterns for sequences with hyphens
 ;;;-------------------------------------
 
+;; (trace-scan-patterns)
+;; (setq *work-on-ns-patterns* t)
+
 (defun resolve-hyphen-pattern (pattern words hyphen-positions start-pos end-pos)
   ;; (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
   ;; (break "starting hyphen pattern: ~a" pattern)
@@ -57,6 +60,11 @@
     ;; a rule. Experience may show that to be false, but it's a start
     (reify-ns-name-and-make-edge words start-pos end-pos))
 
+   ((or (equal pattern '(:full :hyphen :full))  ;; RAS-ASSP
+        (equal pattern '(:capitalized :hyphen :full))
+        (equal pattern '(:full :hyphen :capitalized)))
+    (resolve-hyphen-between-two-terms pattern words start-pos end-pos))
+
    ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
     (resolve-hyphen-between-two-words pattern words start-pos end-pos))
 
@@ -68,6 +76,9 @@
     (let ((*inhibit-big-mech-interpretation* t))
       (declare (special *inhibit-big-mech-interpretation*))
       (resolve-hyphen-between-two-words pattern words start-pos end-pos)))
+
+   ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
+    (break "digit hyphen digit on ~a" words))
 
    ((equal pattern '(:lower :hyphen)) ;; "mono- "
     (resolve-stranded-hypen pattern words start-pos end-pos))
@@ -113,6 +124,7 @@
        (error "Write the code for ~a colons in a no-space sequence" count)))))
 
 (defun one-colon-ns-patterns (pattern words colon-positions start-pos end-pos)
+  (declare (ignore words colon-positions))
   (cond
    ((or
      (equal pattern '(:single-digit :colon :single-digit))
@@ -128,15 +140,12 @@
      (equal pattern '(:lower :colon :full))
      (equal pattern '(:lower :colon :lower))
      (equal pattern '(:full :colon :full))
-     (equal pattetn '(:full :colon :lower)))
-    
-    
-    (equal pattern '(:lower :colon))
+     (equal pattern '(:full :colon :lower)))
     (make-word-colon-word-structure 
      (right-treetop-at/edge start-pos) 
      (left-treetop-at/edge end-pos)))
    
-   (t (break "unknown NS pattern with colon"))))
+   (t (break "unknown NS pattern with colon:~%  ~a" pattern))))
   
 ;;;----------------------------------
 ;;; patterns with no slash or hyphen
