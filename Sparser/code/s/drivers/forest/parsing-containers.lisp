@@ -3,13 +3,13 @@
 ;;; 
 ;;;     File:  "parsing-containers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2015
+;;;  Version:  February 2015
 
 ;; Initiated 8/6/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
 ;; Extended with new cases through 9/26/14. 10/6/14 Added methods to
 ;; query and set parsing status. 
-;; 1/28/15 adding more mixins.
+;; 1/28/15 adding more mixins. 2/3/15 added pronouns to layout
 
 (in-package :sparser)
 
@@ -78,7 +78,7 @@
 ;;--- functionally salient aspects of the sentence
 
 (defclass sentence-text-structure ()
-  ((subject :accessor sentence-subject
+  ((subject :initform nil :accessor sentence-subject
     :documentation "The subject of the sentence if we
      were able to identify it."))
   (:documentation
@@ -87,42 +87,12 @@
     Alusion to the NLG notion of text structure."))
 
 (defmethod set-sentence-subject ((e edge) (s sentence))
-  (let ((referent (edge-referent e)))
+  ;; (let ((referent (edge-referent e)))
     ;;/// should it be an individual ?
-    (setf (sentence-subject (contents s)) referent)))
+    (setf (sentence-subject (contents s)) e)) ;;referent)))
 
-
-;;;-----------
-;;; the class
-;;;-----------
-
-(defclass sentence-content (container parsing-status 
-                            entities-and-relations
-                            sentence-discourse-history
-                            sentence-text-structure
-                            accumulate-items ordered)
-  ()
-  (:documentation "From container we get :in to point back to the
-    sentence. From ordered we get previous and next so we can link
-    the directly without having to go to the sentence objects."))
-
-(defmethod print-object ((c sentence-content) stream)
-  (print-unreadable-object (c stream :type t)
-    (let ((sentence (bkptr c)))
-      (format stream "p~a -- "
-              (pos-token-index (starts-at-pos sentence)))
-      (if (and (slot-boundp sentence 'ends-at-pos)
-               (ends-at-pos sentence))
-        (format stream "p~a" (pos-token-index (ends-at-pos sentence)))
-        (format stream "?")))))
-
-
-; (designate-sentence-container :complex)  ;; run with every change
-;
-(defun make-sentence-content-container (sentence)
-  (make-instance 'sentence-content
-    :in sentence
-    :level :initial))
+(defmethod get-sentence-subject ((s sentence))
+  (sentence-subject (contents s)))
 
 
 
@@ -173,6 +143,8 @@
     :documentation "The locations of edges over the word
       'that'. Could expand to other s-comp supordinating
       conjunctions that partition the parse.")
+   (pronouns :initform nil :accessor included-pronouns
+    :documentation "The edge over any pronoun of any sort.")
    (prepositions :initform nil :accessor prepositions
     :documentation "The locations of every preposition,
       rightmost first")
@@ -204,10 +176,25 @@
     to edit this if that helps control what to do. This is
     strictly scafolding information with no long term value."))
 
+
+(defclass local-layout ()
+  ((base-layout :accessor base-layout
+    :documentation "The layout object created just after 
+      a sentence has been chunked into phrases"))
+  (:documentation
+   "There are many reasons to compute a layout at different
+    stages in an analysis. The base is formed in terms of edges
+    so it must be reaped at regular intervales since the edge
+    will loose their validity when they recycle."))
+
+
+
+
 (defvar *current-sentence-layout* nil)
+
 (defun layout ()
   *current-sentence-layout*)
-;;////// hook into the resource scheme
+
 (defun make-sentence-layout (sentence)
   (let ((l (make-instance 'sentence-layout
              :in sentence)))
@@ -215,5 +202,38 @@
     l))
 
   
+;;;-----------
+;;; the class
+;;;-----------
 
+(defclass sentence-content (container parsing-status 
+                            local-layout
+                            entities-and-relations
+                            sentence-discourse-history
+                            sentence-text-structure
+                            accumulate-items ordered)
+  ()
+  (:documentation "From container we get :in to point back to the
+    sentence. From ordered we get previous and next so we can link
+    the directly without having to go to the sentence objects."))
+
+(defmethod print-object ((c sentence-content) stream)
+  (print-unreadable-object (c stream :type t)
+    (let ((sentence (bkptr c)))
+      (format stream "p~a -- "
+              (pos-token-index (starts-at-pos sentence)))
+      (if (and (slot-boundp sentence 'ends-at-pos)
+               (ends-at-pos sentence))
+        (format stream "p~a" (pos-token-index (ends-at-pos sentence)))
+        (format stream "?")))))
+
+
+;;---- Making it the container that's used with sentences
+
+; (designate-sentence-container :complex)  ;; run with every change
+;
+(defun make-sentence-content-container (sentence)
+  (make-instance 'sentence-content
+    :in sentence
+    :level :initial))
 

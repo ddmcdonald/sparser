@@ -83,7 +83,7 @@
   
   (if *whack-a-rule*
     (whack-a-rule-cycle)
-    (older-island-driving-pass-one))
+    (older-island-driving-rest-of-pass-one))
 
   (when (there-are-conjunctions?)
     (tr :try-spanning-conjunctions)

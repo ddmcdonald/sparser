@@ -48,6 +48,7 @@
     (when *sweep-sentence-treetops*
       (let ((layout
              (sweep-sentence-treetops sentence start-pos end-pos)))
+        (setf (base-layout (contents sentence)) layout)
         (when *island-driving*
           (island-driven-forest-parse sentence layout start-pos end-pos))))
     

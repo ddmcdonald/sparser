@@ -26,9 +26,9 @@
   (setq subject-seen? nil
         main-verb-seen? nil))
 
-;;;---------
-;;; go-fers
-;;;---------
+;;;----------------------------------------
+;;; setting and getting fields of a layout
+;;;----------------------------------------
 
 (defun set-subject (tt)
   ;; Sugar to make the main line easier to read
@@ -95,6 +95,13 @@
       (or
        (edge-used-in edge)
        edge))))
+
+
+(defun push-pronoun (tt)
+  (push tt (included-pronouns (layout))))
+
+(defun there-are-pronouns ()
+  (included-pronouns (layout)))
 
 
 (defun push-loose-adjective (tt)
@@ -209,6 +216,10 @@
   (known-subcat-pattern (layout)))
 
 
+;;;--------------
+;;; tree walkers
+;;;--------------
+
 (defun find-head-word (tt)
   "Walk down the head line (not so obvious) and return
    the word at the bottom, e.g. the verb."
@@ -228,13 +239,12 @@
    single term, which we return."
   (let ((daughter (edge-right-daughter edge)))
     (when daughter
-      ;; Digit sequences don't have daughter or heads in any
-      ;; usable sense
       (cond
        ((edge-p daughter)
         (walk-down-right-headline daughter))
        ((symbolp daughter)
         (cond
+         ((eq daughter :digit-based-number) nil)
          ((eq daughter :single-term)
           edge)
          ((eq daughter :single-digit-sequence)

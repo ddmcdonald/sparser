@@ -42,11 +42,13 @@
   (let ((rightmost-pos start-pos)
         (layout (make-sentence-layout sentence))
         (sentence-initial? t)
+        (count 0) ;; how many treetops have been scanned
         tt  prior-tt  form  pos-after  multiple?  )
 
     (loop
       (multiple-value-setq (tt pos-after multiple?)
         (next-treetop/rightward rightmost-pos))
+      (incf count)
 
       (unless (pos-assessed? pos-after)
         ;; catches bugs in the termination conditions
@@ -90,22 +92,25 @@
             category::proper-noun
             category::n-bar
             category::common-noun
-            category::pronoun    ;;//// keep track of these for
-            category::WH-PRONOUN ;; a dereferencing pass.
+            category::pronoun
+            category::WH-PRONOUN
             category::reflexive/pronoun
             category::possessive/pronoun) 
-
            (cond ((np-over-that? tt)
                   (push-that tt))
                  ((null prior-tt)
                   (set-subject tt))
-                 (main-verb-seen?
-                  (push-loose-np tt))
                  ((and prior-tt
+                       (< count 3) ;; <adv> , <np>
                        (memq (cat-symbol (edge-category prior-tt))
                              '(word::comma category::pp category::adverb)))
                   (set-subject tt))
-                 (t (push-loose-np tt))))
+                 (main-verb-seen?
+                  (push-loose-np tt))
+                 (t (push-loose-np tt)))
+           (when (pronoun-category? form)
+             (tr :noticed-pronoun tt)
+             (push-pronoun tt)))
 
           (category::vg
            (if main-verb-seen?
