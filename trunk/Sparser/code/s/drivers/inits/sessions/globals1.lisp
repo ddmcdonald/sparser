@@ -172,6 +172,15 @@
    that looks for individuals that are missing a logically
    necessary variable and tries to fill them in.")
 
+(defparameter *do-anaphora* t
+  "Generally speaking, we always want to lookup the referents of
+   pronouns, definite NPs, and the like. However when we are
+   working on single sentences that have been lifted out of a
+   paragraph the pronouns in them are unlikely to have referents
+   and we just get silly errors. In such cases, dynamically
+   binding this flag to nil will block looking for referents
+   when we're in successive-sweeps mode.")
+
 (defparameter *do-debris-analysis* nil
   "Set as part of the switch settings, read within HA code and in
    special DA drivers")
