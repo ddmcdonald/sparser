@@ -20,7 +20,9 @@
                           argument 
                           position-before
                           position-after)
-
+  (when *trace-completion-hook*
+    (format t "~&  Completion actions on ~a~
+               ~%    are ~a~%" argument rule-set-action-field))
   (do ((tag (car rule-set-action-field)
             (car remaining-rule-set-actions))
        (function (cadr rule-set-action-field)
@@ -55,7 +57,14 @@
       (otherwise
        (etypecase argument
          (word
+          (when *trace-completion-hook*
+            (format t "~&  Calling ~a on ~s ot p~a~%"
+                    function (word-pname argument) 
+                    (pos-token-index position-before)))
           (funcall function argument position-before position-after))
          (edge
+          (when *trace-completion-hook*
+            (format t "~&  Calling ~a on ~a~%"
+                    function argument))
           (funcall function argument)))))))
 
