@@ -1,9 +1,9 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  November 2014
+;;;  version:  February 2015
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -11,6 +11,7 @@
 ;; RJB 12/18/2014   handle case of A, B, and C (i.e. comma before conjunction)
 ;;  use correct function right-treetop-at/edge in short-conjunctions-sweep -- handle case of PD198u7 and sorafenib.
 ;; 1/18/2015 Allow conjunctions of an ambiguous word and another word (or ambiguous word)
+;; 2/5/15 Introduced fsa's on edges and words. 2/8/15 fixed bug in them
 
 (in-package :sparser)
 
@@ -21,11 +22,11 @@
 ;;; 1st pass -- polywords, completion, terminal edges
 ;;;---------------------------------------------------
 
-(defun scan-terminals-loop (position-before word)
+;; (trace-terminals-loop)
 
-  (when *trace-sweep*
-    (format t "~&p~a ~s"
-            (pos-token-index position-before) (word-pname word)))
+(defun scan-terminals-loop (position-before word)
+  (tr :terminal-position position-before word)
+            
   (simple-eos-check position-before word)
 
   ;; Polyword check
@@ -33,6 +34,7 @@
          (position-after (or where-pw-ended
                              (chart-position-after position-before))))
     (when where-pw-ended
+      (tr :scanned-pw-ended-at word where-pw-ended)
       (setq position-before where-pw-ended)
       (unless (includes-state where-pw-ended :scanned)
         ;; PW can complete without thinking about the
@@ -43,8 +45,19 @@
     (unless (includes-state position-after :scanned)
       (scan-next-position))
 
-    ;;////////////////// FSAs -- e.g. for digit sequences
+    ;; FSA's calls lifted from check-word-level-fsa-trigger 
+    ;; and cwlft-cont
+    (tr :check-word-level-fsa-trigger position-before)
+    (let ((where-fsa-ended (do-word-level-fsas word position-before)))
+      (when where-fsa-ended
+        (tr :word-fsa-ended-at word where-fsa-ended)
+        (setq position-after where-fsa-ended
+              position-before (chart-position-before position-after))
+        (unless (includes-state where-fsa-ended :scanned)
+          (scan-next-position))
+        (setq word (pos-terminal where-fsa-ended))))
 
+    (tr :scan-completing word position-before position-after)
     (complete-word/hugin word position-before position-after)
     ;; (setq *trace-completion-hook* t)
     ;; The function check-for-completion-actions/word looks on the
@@ -59,13 +72,25 @@
     ;;    Another important case is conjunction. Both "and" and "or"
     ;; set the *pending-conjunction* flag. 
 
-    (do-just-terminal-edges word position-before position-after)
+    (let ((edges
+           (do-just-terminal-edges word position-before position-after)))
+      (tr :scanned-terminal-edges edges position-before position-after)
+      ;; from check-preterminal-edges
+      (when edges ;; e.g. digit-sequence
+        (let ((where-fsa-ended
+               (do-any-category-fsas edges position-before)))
+          (when where-fsa-ended
+            (tr :edge-fsa-ended-at word where-fsa-ended)
+            (setq position-before where-fsa-ended
+              position-before (chart-position-before position-after))
+            (unless (includes-state where-fsa-ended :scanned)
+              (scan-next-position))
+            (setq word (pos-terminal where-fsa-ended))))))
 
     (let ((next-word (pos-terminal position-after)))
-      (when nil
-        (format t "~&Next step: p~a ~a"
-               (pos-token-index position-after) (word-pname next-word)))
+      (tr :next-terminal-to-scan position-after next-word)
       (scan-terminals-loop position-after next-word))))
+
 
 
 ;;--- 1st pass subroutines
@@ -81,7 +106,6 @@
   (when (eq word *end-of-source*)
     ;; This just does the throw up to chart-based-analysis
     (terminate-chart-level-process)))
-
 
 (defun polyword-check (position-before word)
   ;; lifted from check-for-polywords where all we want is
@@ -107,11 +131,17 @@
         position-reached))))
 
 
+;; (trace-network)
 (defun do-just-terminal-edges (word position-before position-after)
   ;; modeled on introduce-terminal-edges but returns after the
   ;; edges are created rather than continuing in the incremental
   ;; scan. 
   (install-terminal-edges word position-before position-after))
+
+(defun do-any-category-fsas (edges position-before)
+  (do-edge-level-fsas edges position-before))
+
+
 
 
 ;;;------------------------------
