@@ -14,6 +14,7 @@
 ;; 1.4 (8/12) Reworked how the number-words fsa is added so that it doesn't
 ;;      overwrite any rule information that already exists, presently the case
 ;;      for multiplier.
+;;     (2/5/15) put some cntent on hyphenated-number
 
 (in-package :sparser)
 
@@ -59,7 +60,11 @@
 ;;; other categories
 ;;;------------------
 
-(define-category hyphenated-number)
+(define-category hyphenated-number
+  :specializes number
+  :binds ((left number)
+          (right number))
+  :index (:sequential-keys left right))
 
 (define-category slashed-sequence-of-numbers)
 
