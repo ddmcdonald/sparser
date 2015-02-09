@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2003,2011-2015 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  6.9 June 2014
+;;;  Version:  6.10 February 2015
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -45,6 +45,7 @@
 ;;     (6/3/14) In continue-digit-sequence-after-period got a case where there
 ;;       were multiple edges over "3", apparently because it's appeared as
 ;;       a literal somewhere. 
+;; 6.10 (2/5/15) Computed a referent for hypenated-numbers
 
 (in-package :sparser)
 
@@ -160,13 +161,19 @@ the fsa would be identified at the word level rather than the category level.
                              ending-position
                              number-of-segments
                              *digit-position-array*)
+         (let* ((left-edge (aref *digit-position-array* 0))
+                (left-ref (edge-referent left-edge))
+                (right-edge (aref *digit-position-array* 1))
+                (right-ref (edge-referent right-edge))
+                (i (find-or-make-individual 'hyphenated-number
+                      :left left-ref :right right-ref)))
 
-         (make-chart-edge :starting-position starting-position
-                          :ending-position ending-position
-                          :category category::hyphenated-number
-                          :form category::number
-                          :referent  :uncalculated
-                          :rule 'digit-fsa))))
+           (make-chart-edge :starting-position starting-position
+                            :ending-position ending-position
+                            :category category::hyphenated-number
+                            :form category::number
+                            :referent  i
+                            :rule 'digit-fsa)))))
     
     ending-position ))
 
