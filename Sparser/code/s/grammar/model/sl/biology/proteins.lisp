@@ -296,7 +296,7 @@ filligre may be used to distinguish them, etc.
 (def-bio "ASPP1" protein)
 
 (def-family "ASPP"
-  :members ("ASSP1" "ASPP2"))
+  :members ("ASPP1" "ASPP2"))
 
 
 (def-bio "ATG5" protein
