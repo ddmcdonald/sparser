@@ -65,11 +65,11 @@
 ;;; GTP, GDP, GEFs & GAPs
 ;;;------------------------
 
-(def-bio "GTP" small-molecule
+(def-bio "GTP" nucleotide
   :identifier "CHEBI:15996"
   :mitre-link "PubChem:6830")
 
-(def-bio "GDP" small-molecule 
+(def-bio "GDP" nucleotide 
   :identifier "CHEBI:17552"
   :mitre-link "PubChem:8977")
 
@@ -293,7 +293,7 @@ filligre may be used to distinguish them, etc.
 ;; ASPP2 induces apoptosis but no cell cycle arrest.
 
 ;; in the text, but not Matt's list
-(def-bio "ASSP1" protein)
+(def-bio "ASPP1" protein)
 
 (def-family "ASPP"
   :members ("ASSP1" "ASPP2"))
