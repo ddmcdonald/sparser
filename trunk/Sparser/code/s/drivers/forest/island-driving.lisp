@@ -42,6 +42,7 @@
   (declare (special *allow-pure-syntax-rules*
                     *edges-from-referent-categories*))
   (tr :island-driven-forest-parse start-pos end-pos)
+  (when *trace-island-driving* (tts))
   (let ((*allow-pure-syntax-rules* t)
         (*edges-from-referent-categories* t))
     (run-island-checks layout)
@@ -98,14 +99,23 @@
   (when (there-are-conjunctions?)
     (tr :try-spanning-conjunctions)
     (try-spanning-conjunctions))
-  (let ( rule-and-edges )
-    (loop while (setq rule-and-edges (best-treetop-rule))
-      do (execute-triple rule-and-edges))))
+  (let ( rule-and-edges  edge )
+;    (loop while (setq rule-and-edges (best-treetop-rule))
+;      do (execute-triple rule-and-edges))
+; Reformulated to insert trace
+    (loop
+      (setq rule-and-edges (best-treetop-rule))
+      (when (null rule-and-edges)
+        (return))
+      (setq edge (execute-triple rule-and-edges))
+      (tr :wacking-triple rule-and-edges edge))))
 
 (defun execute-triple (triple)
+  ;; triple = rule, left-edge, right-edge
   (execute-one-one-rule (car triple)
                         (second triple)
                         (third triple)))
+
 
 
 (defun older-island-driving-rest-of-pass-one ()
