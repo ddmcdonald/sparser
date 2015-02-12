@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form rules"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  0.4 November 2014
+;;;  Version:  0.4 February 2015
 
 ;; initiated 10/12/92 v2.3
 ;; 0.1 (6/4/93) allowed a default if the rule doesn't specify the form
@@ -13,7 +13,8 @@
 ;; 0.3 (8/5/94) for the '..explicit-lhs' case made a subr for the passive calculation
 ;; 0.4 (11/20/14) Added option for the referent calculation to abort the
 ;;      edge (keep it from being knit into the chart) following pattern in
-;;      make-default-binary-edge
+;;      make-default-binary-edge. 2/12/15 Removed ~% from edge trace
+;;      and added a break to notice referent failures. 
 
 (in-package :sparser)
 
@@ -44,6 +45,9 @@
                                           edge rule))))
       (if (eq referent :abort-edge)
         (then
+         (push-debug `(,edge ,rule ,left-edge ,right-edge))
+         (break "Why did this referent computation fail~%  ~a" 
+                (cfr-referent rule))
           ;; This function feeds its value to a check routine like
           ;; Check-one-one, which in turn returns the edge as its
           ;; value. If we return nil from here, then that nil will
@@ -68,7 +72,7 @@
          (complete edge)
 
          (when *trace-edge-creation*
-           (format t "~&~%creating ~A from ~A~
+           (format t "~%creating ~A from ~A~
                         ~%    rule: ~A"
                    edge
                    (edge-position-in-resource-array edge)
@@ -139,7 +143,7 @@
     (complete edge)
 
     (when *trace-edge-creation*
-      (format t "~&~%creating ~A from ~A~
+      (format t "~%creating ~A from ~A~
                  ~%    rule: ~A"
               edge
               (edge-position-in-resource-array edge)
