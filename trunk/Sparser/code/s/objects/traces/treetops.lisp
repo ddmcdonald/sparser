@@ -573,6 +573,19 @@
 
 ;;--- toplevel traces
 
+(deftrace :wacking-triple (rule-and-edges edge)
+  ;; called from whack-a-rule-cycle
+  (when *trace-island-driving*
+    (let ((rule (car rule-and-edges))
+          (left-edge (cadr rule-and-edges))
+          (right-edge (caddr rule-and-edges)))          
+      (trace-msg "[wack] Appled ~a to compose e~a and e~a to form e~a"
+                 (rule-number-string rule)
+                 (edge-position-in-resource-array left-edge)
+                 (edge-position-in-resource-array right-edge)
+                 (edge-position-in-resource-array edge)))))
+
+
 (deftrace :try-parsing-leading-pp ()
   ;; called from island-driven-forest-parse
   (when *trace-island-driving*
