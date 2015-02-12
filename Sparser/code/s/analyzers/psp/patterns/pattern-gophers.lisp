@@ -144,7 +144,10 @@
          (left-ref (edge-referent left-edge))
          (right-ref (edge-referent right-edge)))
     (cond
-     ((itypep left-ref 'protein)
+     ((or (itypep left-ref 'protein)
+          (itypep left-ref 'bio-family) ;; RAS-GTP
+          (itypep left-ref 'small-molecule) ;; GTP-GDP ???
+          (itypep left-ref 'nucleotide))
       (make-protein-pair left-ref right-ref words
                          left-edge right-edge
                          pos-before pos-after))
