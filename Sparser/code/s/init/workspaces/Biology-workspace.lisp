@@ -36,6 +36,16 @@
   (setq *island-driving* nil))
 
 
+(defun figure-7 ()
+  ;; of Turke et al. "MKE inhibition leads ..."
+  ;; Caption of figure seven  on page 20 minus the portion in bold
+  (p "In untreated cells EGFR is phosphorylated at T669 by MEK/ERK, 
+which inhibits activation of EGFR and ERBB3. In the presence of AZD6244, 
+ERK is inhibited and T669 phosphorylation is blocked, increasing 
+EGFR and ERBB3 tyrosine phosphorylation and up-regulating downstream signaling."))
+
+
+
 ;;----- phrases from the 12/3/14 Darpa trainng data
 ;
 ; (p "at Lys residues 104 and 147 of K-Ras, and Lys residues 117, 147 and 170 for H-Ras.")
