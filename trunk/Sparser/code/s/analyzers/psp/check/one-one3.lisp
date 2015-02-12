@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 199202000 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2000,2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "one-one"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  3.0 April 2000
+;;;  Version:  3.1 February 2015
 
 ;; 0.0 (9/4/92 v2.3) broken out from drivers;chart:psp
 ;; 0.1 (9/13) revamped traces to new trace regime
@@ -13,16 +13,18 @@
 ;;      that pretty much gutted the routine.
 ;; 2.0 (3/15/94) Added dotted-rule hack
 ;; 3.0 (4/29/00) Incorporating composite referents
-;; 1/1/2015 support for whack-a-rule -- separate out exe3cute-one-one-rule from check-one-one
+;; 3.1 (1/1/2015) support for whack-a-rule -- separate out 
+;;      execute-one-one-rule from check-one-one so it can be used independently
 
 (in-package :sparser)
 
 
 (defun check-one-one (left-edge right-edge)
-  (execute-one-one-rule
-   (multiply-edges left-edge right-edge)
-   left-edge
-   right-edge))
+  (let ((rule (multiply-edges left-edge right-edge)))
+    (when rule
+      (execute-one-one-rule rule
+                            left-edge
+                            right-edge))))
 
 (defun execute-one-one-rule (rule left-edge right-edge)
   (cond
@@ -30,9 +32,10 @@
     (dotted-rule-hack rule left-edge right-edge))
    (rule
     (let ((edge (make-completed-binary-edge
-                       left-edge right-edge rule)))
+                 left-edge right-edge rule)))
       edge ))
-   (t nil)))
+   (t (error "No rule provided, for ~a ~a"
+             left-edge right-edge))))
 
 
 (defun one-one/just-check-edges (left-edge right-edge)
