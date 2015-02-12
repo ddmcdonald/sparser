@@ -440,8 +440,12 @@
 (def-trace-parameter *parse-edges*   "phrase structure parsing"
   "traces the process walking through the chart")
 
-;(setq *parse-edges* t)
-;(setq *parse-edges* nil)
+;;/// Thought the parameter definer was supposed to
+;; create these
+(defun trace-parse-edges ()
+  (setq *parse-edges* t))
+(defun untrace-parse-edges ()
+  (setq *parse-edges* nil))
 
 
 (deftrace :left-boundary-reached ()
@@ -493,6 +497,46 @@
                 adjacent to e~A"
                (pos-token-index position)
                (edge-position-in-resource-array edge))))
+
+
+;;;-------------------------------
+;;; in the best-edge calculations
+;;;-------------------------------
+
+(deftrace :find-rule-for-edge-pair (left right)
+  ;; called from 
+  (when *parse-edges*
+    (trace-msg "Checking for rule composing e~a and e~a"
+               (edge-position-in-resource-array left)
+               (edge-position-in-resource-array right))))
+
+(deftrace :found-rule-for-pair (rule)
+  (when *parse-edges*
+    (trace-msg "  found ~a" rule)))
+
+(deftrace :no-rule-for-pair ()
+  (when *parse-edges*
+    (trace-msg "  no rule found")))
+
+(deftrace :n-triples-apply (n)
+  (when *parse-edges*
+    (trace-msg "There are ~a triples to choose from" n)))
+
+(deftrace :selected-best-triple (triple)
+  (when *parse-edges*
+    (let ((rule (car triple))
+          (left (cadr triple))
+          (right (caddr triple)))
+    (trace-msg "Applying ~a to compose e~a and e~a"
+               (rule-number-string rule)
+               (edge-position-in-resource-array left)
+               (edge-position-in-resource-array right)))))
+
+(deftrace :triple-led-to-edge (edge)
+  (when *parse-edges*
+    (trace-msg "  creating ~a" edge)))
+
+
 
 
 
