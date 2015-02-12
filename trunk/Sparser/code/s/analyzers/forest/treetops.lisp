@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1996,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "treetops"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   1.5 October 2014
+;;;   Version:   1.5 December 2015
 
 ;; 1.1  (2/8/91 v1.8.1) added Final-tt/category
 ;; 1.2  (2/13 v1.8.1) Modified ...-treetop-at to both return words if there
@@ -25,6 +25,9 @@
 ;; 1/8/2015 rename to best-treetop-rule and make it return one rule only
 ;; 1/14/2015 revise losing-competition? to account for more general form of subject rule, looking at cfr-rule-forms
 ;; 1/18/2015 fix typo in test-subcat-rule
+;; 2/10/15 cleaned up / reformatted a bit so I could figure out what's
+;;  going on in the code that supports wack-a-rule
+
 (in-package :sparser)
 
 ;;;--------------------------------
@@ -233,21 +236,27 @@
     when (and 
           (edge-p (car edges)) 
           (edge-p (second edges))
-          (adjacent-edges? (car edges)(second edges)))
+          (adjacent-edges? (car edges) (second edges)))
     collect
-    (list (car edges)(second edges))))
+    (list (car edges) (second edges))))
 
 (defun all-tts (&optional 
                 (starting-position
                  (if (still-in-the-chart 0)
-                     (chart-position 0)
-                     (chart-position (+ 2 *first-chart-position*))))
+                   (chart-position 0)
+                   (chart-position (+ 2 *first-chart-position*))))
                 stop-pos)
   (let* ((tt (right-treetop-edge-at starting-position))
          (ending-position
           (where-tt-ends tt starting-position)))
-    
-    (cons
+    (cons tt
+          (unless (or (eq ending-position stop-pos)
+                      (eq (pos-terminal ending-position)
+                          word::end-of-source)
+                      (null (pos-terminal ending-position)))
+            (all-tts ending-position stop-pos)))))
+#+ignore
+ (cons ;; original layout
      tt
      (unless
          (or (eq ending-position stop-pos)
@@ -256,15 +265,14 @@
              (null (pos-terminal ending-position)))
        
        (then 
-        (all-tts ending-position stop-pos))))))
+        (all-tts ending-position stop-pos))))
 
 (defun right-treetop-edge-at (position)
   (let* ((vector (pos-starts-here position))
          (top-node (ev-top-node vector)))
     (cond
      (top-node
-      (if
-       (eq top-node :multiple-initial-edges)
+      (if (eq top-node :multiple-initial-edges)
        (highest-edge vector)
        top-node))
      (t
@@ -273,14 +281,15 @@
 
 
 (defun best-treetop-rule ()
-  (let
-      (rule rules)
+  ;; feeder routine in whack-a-rule-cycle that identifies
+  ;; all of the treetop edges that are pairwise adjacent
+  ;; using adjacent-tts and winnows that list down using
+  ;; filter-rules-by-local-competition
+  (let ( rule  rules )
     (loop for pair in (adjacent-tts) 
       when (setq rule (rule-for-edge-pair pair))
-      do
-      (push
-       (cons rule pair)
-       rules))
+      do (push (cons rule pair)
+               rules))
     (filter-rules-by-local-competition rules)))
 
 (defun copula-rule? ()
@@ -303,33 +312,39 @@
    It's seriously messing up my tests on short function-based rules.")
 
 (defun rule-for-edge-pair (pair)
-  (let
-      ((rule (multiply-edges (car pair)(second pair))))
-    (when
-        (and rule
-             (cond
-              ((not (consp (cfr-referent rule))))
-              ((eq :funcall (car (cfr-referent rule)))
-               ;; Really? Look at the identity of the function before
-               ;; you do this -- ddm
-               (if *david-says-ok*
-                 (test-subcat-rule pair rule)
-                 t))
-              (t ;; most rules have referent slots which are cons cells, but which are not :funcalls
-               ;; (#<PSR12615  select ->  select biological> ((:HEAD LEFT-REFERENT) (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
-               t)))
-      rule)))
+  (let ((rule (multiply-edges (car pair) (second pair))))
+    (when rule
+      (when (cond
+             ((not (consp (cfr-referent rule))))
+             ((eq :funcall (car (cfr-referent rule)))
+              ;; Really? Look at the identity of the function before
+              ;; you do this -- ddm
+              (if *david-says-ok*
+                (test-subcat-rule pair rule)
+                t))
+             (t ;; most rules have referent slots which are cons cells, 
+              ;; but which are not :funcalls, e.g.
+              ;; (#<PSR12615  select ->  select biological>
+              ;;   ((:HEAD LEFT-REFERENT) 
+              ;;    (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
+              t))
+        rule))))
 
 (defun test-subcat-rule (pair rule)
-  (let*
-      ((left-referent (edge-referent (car pair)))
-       (right-referent (edge-referent (second pair)))
-       (*rule-being-interpreted* rule)
-       (*left-edge-into-reference* (car pair))
-       (*right-edge-into-reference* (second pair)))
-    (declare (special left-referent right-referent *rule-being-interpreted* *right-edge-into-reference*))
-    (let
-        ((*subcat-test* t) applicable)
+  ;; This simulates the context above normal rule-driven calls to
+  ;; ref/function so that it's value can be used as test on
+  ;; whether there is a subcategorization relationship between
+  ;; two adjacent edges. 
+  (let* ((left-referent (edge-referent (car pair)))
+         (right-referent (edge-referent (second pair)))
+         (*rule-being-interpreted* rule)
+         (*left-edge-into-reference* (car pair))
+         (*right-edge-into-reference* (second pair)))
+    (declare (special left-referent right-referent 
+                      *rule-being-interpreted* 
+                      *right-edge-into-reference*))
+    (let ((*subcat-test* t) 
+          applicable )
       (declare (special *subcat-test* applicable))
       ;; use ref/function as a predicate!!
       (ref/function (cdr (cfr-referent rule))))))
@@ -343,9 +358,10 @@
   (declare (special rule1 rule2))
   (cond
    ((and 
-     (eq (second rule1)(third rule2)) ;; there is an edge which is being competed for
-     (or
-      ;; competing against a "there BE"
+     (eq (second rule1) (third rule2))
+     ;; there is an edge which is being competed for
+
+     (or ;; competing against a "there BE"
       (eq category::syntactic-there (car (cfr-rhs (car rule2))))
       (and
        (or (eq category::preposition (car (cfr-rhs (car rule2))))
@@ -355,17 +371,18 @@
         (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car rule1)))
         (memq (cat-symbol (second (cfr-rhs (car rule1))))
               '(category::vg category::vp)))
+
        ;; there must be a competing rule
-       (let
-           ((preceding-edge (edge-just-to-left-of (second rule2))))
+       (let ((preceding-edge (edge-just-to-left-of (second rule2))))
          (and
           preceding-edge
           (or
            (member (cat-symbol (edge-form preceding-edge)) *ng-head-categories*)
            (member (cat-symbol (edge-form preceding-edge)) *vg-head-categories*)
            (eq (cat-symbol (edge-form preceding-edge)) 'category::vg)))))))
-    ;; goal here is to put off subject attachment until the subject is a large as possible
-    ;;  don't do right-to-left activation for the subj+verb rules
+    ;; goal here is to put off subject attachment until the subject 
+    ;; is as large as possible.
+    ;; Don't do right-to-left activation for the subj+verb rules
     ;(break "competing")
     ;;(print `(dropping rule ,rule1))
     t)
