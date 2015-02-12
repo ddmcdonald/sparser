@@ -72,6 +72,7 @@
                                           rule))))
       (if (eq referent :abort-edge)
         (then
+         (break "Rule aborted")
           ;; This function feeds its value to a check routine like
           ;; Check-one-one, which in turn returns the edge as its
           ;; value. If we return nil from here, then that nil will
