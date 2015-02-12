@@ -31,6 +31,7 @@
 (defvar *chunk-forms* '(ng vg adjg))
 (defparameter *new-chunk-parse* t)
 
+(defvar *current-chunk* nil)
 
 (defclass chunk ()
   ((start :initarg :start :accessor chunk-start-pos
@@ -87,7 +88,7 @@
 
 (defun identify-chunks (sentence)
   (let ((chunks (find-chunks sentence)))
-    (push-debug `(,sentence ,chunks)) ;;(break "~a chunks" (length chunks))
+    ;;(push-debug `(,sentence ,chunks)) (break "~a chunks" (length chunks))
     ;;(pop-debug) (setq sentence (car *) chunks (cadr *))
     (when *parse-chunk-interior-online*
       (dolist (chunk chunks)
@@ -107,35 +108,30 @@
                     *right-segment-boundary*))
   (setq *left-segment-boundary* (chunk-start-pos chunk)
         *right-segment-boundary* (chunk-end-pos chunk))
-  (let ((*return-after-doing-segment* t))
-    (declare (special *return-after-doing-segment*))
-    (if 
-     (and 
-      *new-chunk-parse*
-      (or
-       (memq (car (chunk-forms chunk)) '(ng vg))))
-     (parse-ng-or-vg-interior chunk)
-    (pts nil chunk))))
+  (let ((*return-after-doing-segment* t)
+        (*current-chunk* chunk))
+    (declare (special *return-after-doing-segment*
+                      *current-chunk*))
+    (pts)))
 
+#| Inter-segment parsing done under direction of PTS
+starting at parse-at-the-segment-level where we let
+all sorts of rules apply and not simply form rules. 
+   
 (defun parse-ng-or-vg-interior (chunk)
-  (declare (special chunk))
-  (let*
-      ((edges (reverse (treetops-in-current-segment)))
-       (left (ng-edge (second edges)))
-       (right (ng-edge (first edges)))
-       rule)
-    (declare (special edges rule left right))
-    (loop while
-      (and (cdr edges)
-           (setq rule (check-form-form left right)))
+  (let* ((edges (reverse (treetops-in-current-segment)))
+         (left (ng-edge (second edges)))
+         (right (ng-edge (first edges)))
+         rule)
+    (loop while (and (cdr edges)
+                     (setq rule (check-form-form left right)))
       do
-      ;;(break "parse-ng-interior")
       (execute-one-one-rule rule left right)
-      (setq edges (reverse (treetops-in-segment (chunk-start-pos chunk)(chunk-end-pos chunk))))
+      (setq edges (reverse (treetops-in-segment 
+                            (chunk-start-pos chunk)
+                            (chunk-end-pos chunk))))
       (setq left (ng-edge (second edges)))
-      (setq right (ng-edge (car edges)))
-      ;;(print edges)
-      ))
+      (setq right (ng-edge (car edges)))))
   (pts nil chunk))
 
 (defun ng-edge (tt)
@@ -145,6 +141,12 @@
    ((edge-vector-p tt)(highest-edge tt))
    (t (break "what type of treetop is this?"))))
 
+(defun verb-chunks ()
+  (loop for c in *all-chunk-edges*
+    when (loop for e in c 
+           thereis (memq (car e) '(verb+ed verb+ing)))
+    collect c))  |#
+
 (defun show-chunk-edges (&optional (ces *all-chunk-edges*))
   (loop for c in (reverse ces)
     do (format t "~&___________________~&")
@@ -152,11 +154,6 @@
 
 (defun np (l)(loop for ll in l do (print ll)))
 
-(defun verb-chunks ()
-  (loop for c in *all-chunk-edges*
-    when (loop for e in c 
-           thereis (memq (car e) '(verb+ed verb+ing)))
-    collect c))
 
 
 ;;;-------------
