@@ -3,16 +3,21 @@
 ;;; 
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  January 2015
+;;;  Version:  February 2015
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
 ;; RJB 12/20/2014 tentative fix to allow interpret-pp-adjunct-to-np 
-;; to handle bio-context. 
-;; 1/2/2015 put hooks in adjoin-pp-to-vg and interpret-pp-adjunct-to-np to allow for subcategorization frames
-;; 1/5/2015 refactor code that David wrote for adjoin-pp-to-vg and interpret-pp-adjunct-to-np to allow them to be used as predicates as well as actions
+;;   to handle bio-context. 
+;; 1/2/2015 put hooks in adjoin-pp-to-vg and interpret-pp-adjunct-to-np 
+;;   to allow for subcategorization frames
+;; 1/5/2015 refactor code that David wrote for adjoin-pp-to-vg and 
+;;   interpret-pp-adjunct-to-np to allow them to be used as predicates as well as actions
 ;; 1/14/2015 support for negation and (eventually) other tense/aspect features
-;; methods for assimilating object using sub-categorization frame, and for handling verb_ing premodifiers
+;;   methods for assimilating object using sub-categorization frame, 
+;;   and for handling verb_ing premodifiers
+;; (2/12/15) Fixed return value for adj-noun-compound.
+
 (in-package :sparser)
 
 
@@ -67,17 +72,19 @@
     (push-debug `(,qualifier ,head)) 
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-  
   (cond ((call-compose qualifier head));; This case is to benefit marker-categories     
         ((category-p head)
          (setq head (make-individual-for-dm&p head))
-         (or
-          (call-compose qualifier head)
-          (bind-variable 'modifier qualifier head))
-         head)
-        (t
+         (or (call-compose qualifier head)
+             (else
+              (when (itypep head 'endurant)
+                (bind-variable 'modifier qualifier head))
+              head)))
+        (t ;; Dec#2 has "low nM" which requires coercing 'low'
+         ;; into a number. Right now just falls through
          (setq head (copy-individual head))
-         (bind-variable 'modifier qualifier head) ;; safe
+         (when (itypep head 'endurant)
+           (bind-variable 'modifier qualifier head))
          head)))
 
 (defun quantifier-noun-compound (quantifier head)
