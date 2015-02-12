@@ -85,6 +85,7 @@
             (when *chunk-sentence-into-phrases*
               (tr :identifying-chunks-in sentence)
               (identify-chunks sentence) ;; calls PTS too
+              (when *trace-island-driving* (tts))
 
               (when *parse-chunked-treetop-forest*
                 (let ((*return-after-doing-forest-level* t))

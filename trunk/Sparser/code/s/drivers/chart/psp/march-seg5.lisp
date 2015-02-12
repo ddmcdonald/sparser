@@ -3,16 +3,21 @@
 ;;; 
 ;;;     File:  "march/seg"             ;; march back, parsing edges
 ;;;   Module:  "drivers;chart:psp:"    ;;  in a segment
-;;;  Version:  5.3 January 2015
+;;;  Version:  5.5 February 2015
 
 ;; 4.0 (5/7/93 v2.3) Bringing into sinc with the new word-level driver
 ;; 5.0 (3/15/94) Added dotted-rule hack
 ;; 5.1 (5/6/94) added new initiating call to get a good trace
 ;; 5.2 (1/10/15) record all NG chunks for analysis when *save-chunk-edges* is T
 ;; 5.3 (1/12/15) Option for specialized np parser.
-;; 1/14/2015 specialized chunk parser for NG and VG
-;; D1/19/2015 ebugged the new chunk parsing algorithm
-;; made the selection of rules for NG and VG different, to account for how verb+ing modifies NG
+;; 5.4 (1/14/2015 specialized chunk parser for NG and VG
+;;  D1/19/2015 ebugged the new chunk parsing algorithm
+;;  and made the selection of rules for NG and VG different,
+;;  to account for how verb+ing modifies NG
+;; 5.5 (2/11/15) After finding this algorithm copies in the chunker
+;;  proper and making what runs here moot, removed the copy and
+;;  rewrote this version to take the bast of that one and integrate
+;;  a real 'choose the best' locus, presently a trivial default
 
 (in-package :sparser)
 
@@ -20,7 +25,10 @@
 ;;; initiator
 ;;;-----------
 
+;; (trace-parse-edges)
+
 (defun parse-at-the-segment-level (segment-end-pos)
+  (declare (special *current-chunk*))
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
   (if (use-specialized-np-parser?)
@@ -34,12 +42,17 @@
 
 (defparameter *big-mechanism-ngs* t 
   "use new interpreter for interior of NGs (only called for 
-   NGs without a spanning edge")
+   NGs without a spanning edge)")
 
 (defparameter *save-chunk-edges* nil
   "only turn on to review NG chunking")
 
+(defvar *chunk-edges* nil)
+(defvar *all-chunk-edges* nil)
+
 (defun use-specialized-np-parser? ()
+  ;; Predicate used by parse-at-the-segment-level to determine
+  ;; whether to use the specialized big-mech segment parser
   (declare (special *big-mechanism-ngs* *current-chunk*))
   (and *big-mechanism-ngs*
        (or
@@ -47,61 +60,141 @@
         (eq 'VG (car (chunk-forms *current-chunk*))))
        (let ((edges (treetops-in-current-segment)))
          (and (cdr edges) ;; more than one edge
-              (or (cddr edges)
+              (or (cddr edges) ;; more than two
                   (not
                    (or (eq (edge-form (car edges)) category::det)
                        (eq (edge-form (car edges)) category::quantifier))))))))
 
-(defvar *chunk-edges* nil)
-(defvar *all-chunk-edges* nil)
-
-(defun interp-big-mech-chunk (*current-chunk*)
-  ;; (push-debug `(,*current-chunk*))
-  ;; (break "interp chunk: ~a" *current-chunk*)
+(defun interp-big-mech-chunk (chunk)
+  (push-debug `(,chunk)) ;;(break "interp chunk: ~a" chunk)
   (when *save-chunk-edges*
-    (push (loop for edge in (treetops-in-current-segment)
-            collect 
-            (list (and (edge-form edge)
-                       (intern (symbol-name (cat-symbol (edge-form edge)))))
-                  (let ((str (edge-string edge)))
-                    (subseq str 0 (- (length str) 1)))))
-          *all-chunk-edges*))
-  (let (rule-and-edges)
-    (loop while (setq rule-and-edges (best-segment-rule (treetops-in-current-segment)))
-      do (execute-triple rule-and-edges)))
-  (march-back-from-the-right/segment))
+    (add-chunk-edges-snapshot))
+  ;; 1st look at all pairwise combinations
+  ;; 1. collect all rule-left-right triples
+  ;; 2. select the best one
+  ;; 3. spply it
+  ;; 4. repeat
+  (let ( triple  edge )
+    (loop
+      (setq triple (select-best-triple
+                    (collect-triples-in-segment)))
+      (unless triple
+        (return))
+      (setq edge (execute-triple triple))
+      (unless edge 
+        (push-debug `(,triple))
+        (error "triple did not produce an edge"))
+      (tr :triple-led-to-edge edge))
 
-(defun best-segment-rule (edges)
-  (declare (special edges))
-  (let
-      (rule rules)
-    (declare (special rule))
-    (loop for pair in (reverse (adjacent-tts edges))
-      when (setq rule 
-                 (case
-                     (car (chunk-forms *current-chunk*))
-                   (ng 
-                    (check-form-form (car pair)(second pair)))
-                   (vg (rule-for-edge-pair pair))
-                   (adjg (rule-for-edge-pair pair))))
-                   
-
-      do
-      (push
-       (cons rule pair)
-       rules))
-    (car rules)))
+    ;; Then mop up anything else that that couldn't
+    (march-back-from-the-right/segment)))
 
 
-(defun adjacent-segment-tts ()
-  (loop for edges on (cdr *chunk-edges*) 
+(defun select-best-triple (triples)
+  ;; decision-making goes here, e.g. the types of edges involved,
+  ;; their position within the segment, their probablility of
+  ;; being correct given priors, the kind of rule being used.
+  (when triples
+    (tr :n-triples-apply (length triples))
+    ;; this default amounts to selecting the rightmost pair
+    ;; that has a rule
+    (tr :selected-best-triple (car triples))
+    ;;(push-debug `(,(car triples))) (break "triple")
+    (car triples)))
+
+
+;; VGs may want a different order of pairs than NGs
+;; "will have been being phosphorylated"
+
+(defun collect-triples-in-segment ()
+  ;; Executed multiple times because it's recalculated with
+  ;; every rule execution
+  (let ((pairs (adjacent-segment-tts (treetops-in-current-segment)))
+        rule )
+    ;;(push-debug `(,pairs)) (break "pairs = ~a" pairs)
+    (loop for pair in pairs
+      when (setq rule (segment-rule-check pair))
+      collect (cons rule pair))))
+
+
+(defun segment-rule-check (pair)
+  ;; syntactic sugar and tracing for the choice of rule test
+  ;; to make. Could start with just simple rules and then
+  ;; extend to semantic and then syntactic on successive passes
+  (let ((left-edge (car pair))
+        (right-edge (cadr pair)))
+    (tr :find-rule-for-edge-pair left-edge right-edge)
+    (let ((rule (multiply-edges left-edge right-edge)))
+      (if rule
+        (tr :found-rule-for-pair rule)
+        (tr :no-rule-for-pair))
+      rule)))
+  
+(defun adjacent-segment-tts (edges)
+  ;; Walk over all of the treetops in the segment, working from the left,
+  ;; and collect every pair of adjacent edges.
+  (loop for edges on edges 
     while (cdr edges) 
     when (and 
           (edge-p (car edges)) 
           (edge-p (second edges))
-          (adjacent-edges? (car edges)(second edges)))
+          (adjacent-edges? (car edges) (second edges)))
     collect
     (list (car edges)(second edges))))
+
+#|  What was here, plus my first rewrite of it
+    before backing off to work from first principles
+#+ignore
+(defun best-segment-rule (edges chunk)
+  (let ((pairs (reverse (adjacent-segment-tts edges)))
+        (chunk-type (car (chunk-forms chunk)))
+        pair  rule  rules )
+    (declare (ignore chunk-type)) 
+    ;; chunk-type is for using different criteria for NP vs VP ...
+    (loop
+      (setq pair (car pairs)
+            pairs (cdr pairs))
+      (tr :find-rule-for-edge-pair pair)
+      (setq rule (multiply-edges (car pair) (second pair)))
+      (if rule
+        (then (tr :found-rule-for-pair rule)
+              (push (cons rule pair) rules))
+        (else (tr :no-rule-for-pair)))
+      (when (null pairs)
+        (return)))
+     (car rules)))
+
+#+ignore ;; former best-segment-rule loop
+(defun best-segment-rule (edges chunk)
+  (let ((pairs (reverse (adjacent-segment-tts edges)))
+        (chunk-type (car (chunk-forms chunk)))
+        rule  rules )
+    (let ( rule  rules )
+      (loop for pair in (reverse (adjacent-segment-tts edges))
+        when (setq rule 
+                   (case (car (chunk-forms chunk))
+                     (ng 
+                      ;;(check-form-form (car pair) (second pair))
+                      (multiply-edges (car pair) (second pair)))
+                     (vg 
+                      ;;(rule-for-edge-pair pair) ;; subcat doesnt apply
+                      (multiply-edges (car pair) (second pair)))
+                     (adjg 
+                      ;;(rule-for-edge-pair pair)
+                      (multiply-edges (car pair) (second pair)))))
+        do (push (cons rule pair)
+                 rules))
+      (car rules))))  |#
+
+(defun add-chunk-edges-snapshot ()
+  (push (loop for edge in (treetops-in-current-segment)
+          collect 
+          (list (and (edge-form edge)
+                     (intern (symbol-name (cat-symbol (edge-form edge)))))
+                (let ((str (edge-string edge)))
+                  (subseq str 0 (- (length str) 1)))))
+        *all-chunk-edges*))
+
 
 ;;;--------
 ;;; driver
