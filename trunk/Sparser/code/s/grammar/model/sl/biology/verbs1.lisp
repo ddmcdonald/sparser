@@ -67,13 +67,6 @@
 ;; "act as" is always the equivalent of "is". 
 ;; There's also the full caps ACT, which stands for
 ;; "adoptive cell therapy"
-#+ignore
-(def-term "act" verb (svo)
-  :super-category be
-  :preposition "as"
-  :subject bio-entity
-  :theme bio-process) ;; better choice is complement 
-;; and the etf thing-is-description
 (define-category bio-act-as
   :specializes be
   ;;/// this was supposed to be a restrict on 'the
@@ -338,18 +331,6 @@
 ;;--- inhibit
 ;; "by inhibiting <p>"
 
-#+ignore  ;;current walker does not handle such ambiguities properly
-(define-category inhibit-process
-  :specializes bio-process
-  :binds ((agent bio-entity) (object biological))
-  :realization 
-  (:verb ("inhibit" :past-tense "inhibited" :present-participle "inhibiting")
-   :noun "inhibition"
-   :etf (svo-passive)
-   :s agent
-   :o object))
-
-
 (define-category inhibit ;; was drug-inhibit but inhibit fits answer key
   :specializes bio-process
   :binds ((agent biological) 
@@ -387,9 +368,11 @@
          (substrate biological))
  :realization
  (:verb "load"
-  :etf (svo-passive)
+  :noun "loading" ;; needed by pre-mod
+  :etf (svo-passive pre-mod)
   :s agent
   :o object
+  :m object
   :of object
   :onto substrate))
 ;; leads to rule bio-entity + load, 
@@ -430,22 +413,33 @@
 ;;--- "phosphorylate"
 ;; GO:0016310	
 ;; "activated IKKα phosphorylates specific serines"
-;;  "The phosphorylation of these specific serines"
+;; Jan#33 "able to phosphorylate the ASPP2 fragment"
+;; #34 "for ASPP2 phosphorylation."
+;; #38 "The phosphorylated ASPP2 fragment by MAPK1"
 
 (define-category phosphorylate
   :specializes bio-process
-  :binds ((agent biological)(object molecule)(site residue-on-protein) )
+  :binds ((agent biological) ;; provides the phosphate
+          (object molecule) ;; receives it
+          (site residue-on-protein) )
   :realization
-  (:verb "phosphorylate" :noun "phosphorylation"
+  (:verb "phosphorylate" 
    :etf (svo-passive)
    :s agent
    :o object
-   :of object
    :on site
    :at site))
 
+;; "The phosphorylation of these specific serines"
+;; #34 "for ASPP2 phosphorylation."
+(def-synonym phosphorylate
+  (:noun "phosphorylation"
+   :etf (pre-mod)
+   :m object
+   :of object))
 
-(define-category dephosphorylate
+
+(Define-category dephosphorylate
   :specializes bio-process
   :binds ((agent biological)(object molecule)) 
   :realization
