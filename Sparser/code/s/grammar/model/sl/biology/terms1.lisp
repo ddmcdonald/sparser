@@ -387,12 +387,20 @@
 (noun "scale" :super bio-scalar)     
 (noun "screen" :super  bio-process)
 (noun "setting" :super bio-entity)
-(noun "signalling" :super bio-process)  ;; this is an alternate spelling for "signaling"
-(noun "site" :super bio-location
-      :binds ((process bio-process))
-      :realization
-      (:noun "site"
-             :of process))
+
+
+;; Jan#29 "MAPK phosphorylation sites in ASPP1 and ASPP2."
+;; #39 "The ASPP1 sites are at residues 671 and 746," ...
+;; #36 "the second putative phosphorylation site, serine 827."
+(noun "site" 
+  :super bio-location
+  :binds ((process bio-process))
+  :realization
+    (:noun "site"
+     :etf (pre-mod)
+     :m process
+     :of process))
+
 (noun "state" :super bio-entity)
 (noun "strategy" :super bio-process)
 (noun "surface area" :super bio-location)
