@@ -95,12 +95,30 @@
   ;; their position within the segment, their probablility of
   ;; being correct given priors, the kind of rule being used.
   (when triples
-    (tr :n-triples-apply (length triples))
-    ;; this default amounts to selecting the rightmost pair
-    ;; that has a rule
-    (tr :selected-best-triple (car triples))
-    ;;(push-debug `(,(car triples))) (break "triple")
-    (car triples)))
+    ;;(push-debug `(,triples)) (break "triple")
+    
+    ;(tr :n-triples-apply triples)
+    
+    (let ((non-syntactic-triples
+           (loop for triple in triples
+             as rule = (car triple)
+             unless (syntactic-rule? rule)
+             collect triple)))
+      ;(break "non-syntactic-triples = ~a" non-syntactic-triples)
+      (cond
+       (non-syntactic-triples
+        (let ((selected
+               (if (cdr non-syntactic-triples)
+                 (car (last non-syntactic-triples)) ;; rightmost
+                 (car non-syntactic-triples))))
+          (tr :selected-best-triple selected)
+          selected))
+       (t
+        ;; this default amounts to selecting the rightmost pair
+        ;; that has a rule
+        (let ((rightmost (car (last triples))))
+          (tr :selected-best-triple rightmost)
+          rightmost))))))
 
 
 ;; VGs may want a different order of pairs than NGs
