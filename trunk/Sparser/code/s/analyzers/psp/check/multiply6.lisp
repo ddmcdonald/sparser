@@ -39,12 +39,21 @@
 ;;     (1/7/15) Patched multiple-referent-categories for case of two categories
 ;;      in the type, but that's a band-aid and can be done better. 
 ;; 1/6/2015 parameter *report-form-check-blocks* to reduce printouts
-;; 1/8/2015 refactor/cleanup forms checking, and check forms in all cases and make multiply-referents
-;;  include the edge-category for both edges, so that passives work correctly (#4 on January test)
+;; 1/8/2015 refactor/cleanup forms checking, and check forms in all cases 
+;;  and make multiply-referents include the edge-category for both edges, 
+;;  so that passives work correctly (#4 on January test)
 
 (in-package :sparser)
 
-(defparameter *check-forms* t) ;; when this is T, ensure that all rules are only applied to compatible syntactic forms
+(defparameter *check-forms* t
+  "When this is T, ensure that all rules are only applied to 
+   compatible syntactic forms")
+
+(defparameter *only-check-schema-forms* t
+  "Read in rule-forms to control whether we also try to compute
+   the form information of a rule that wasn't derived from an 
+   ETF's schema.")
+
 (defparameter *collect-forms* nil)
 (defparameter *collected-forms* nil)
 (defparameter *report-form-check-blocks* nil)
@@ -116,34 +125,33 @@
   
   (if (edge-of-dotted-intermediary right-edge)
       ;; dotted rules only combine to their right, never to their left
-      (then (tr :right-edge-is-dotted right-edge)
-        ;; "   but the right edge, e~A, is dotted and can't possibly combine"
-        nil)
+    (then (tr :right-edge-is-dotted right-edge)
+          ;; "   but the right edge, e~A, is dotted and can't possibly combine"
+          nil)
       
-      (let* ((left-category-ids (category-ids/rightward left-edge))
-             (right-category-ids (category-ids/leftward right-edge))
-             (rule
-              (or (check-rule-form ;; only accept rules that are compatible 
-                   ;; with their context
-                   ;; 1st check both category label and then try
-                   ;; the category label of one against the form label of the other
-                   (multiply-categories left-category-ids right-category-ids
-                                        left-edge right-edge)
-                   left-edge right-edge)
+    (let* ((left-category-ids (category-ids/rightward left-edge))
+           (right-category-ids (category-ids/leftward right-edge))
+           (rule
+            (or (let ((rule 
+                       (multiply-categories left-category-ids right-category-ids
+                                            left-edge right-edge)))
+                  (when rule
+                    (when (check-rule-form rule left-edge right-edge)
+                      rule)))
                   
-                  ;; then look for a rule in the cross-product 
-                  ;; of the categories their category labels inherit from
-                  (when *edges-from-referent-categories*
-                    (check-rule-form
-                     (multiply-referents left-edge right-edge)
-                     left-edge right-edge))
+                ;; then look for a rule in the cross-product 
+                ;; of the categories their category labels inherit from
+                (when *edges-from-referent-categories*
+                  (check-rule-form
+                   (multiply-referents left-edge right-edge)
+                   left-edge right-edge))
                   
-                  ;; then look for a rule mentioning the form label
-                  ;; on the two rules
-                  (when *allow-pure-syntax-rules*
-                    (check-rule-form
-                     (check-form-form left-edge right-edge)
-                     left-edge right-edge)))))
+                ;; then look for a rule mentioning the form label
+                ;; on the two rules
+                (when *allow-pure-syntax-rules*
+                  (check-rule-form
+                   (check-form-form left-edge right-edge)
+                   left-edge right-edge)))))
 
         (when *collect-forms* (record-forms rule left-edge right-edge))
         rule)))
@@ -164,12 +172,15 @@
        *collected-forms*))))
 
 (defun rule-forms (rule)
-  (and (cfr-p rule)
-       (or (cfr-rhs-forms rule) 
-           (loop for c in (cfr-rhs rule) collect (cat-name c)))))
+  (when (cfr-p rule)
+    (if *only-check-schema-forms*
+      (cfr-rhs-forms rule)
+      (or (cfr-rhs-forms rule) 
+          (loop for c in (cfr-rhs rule) collect (cat-name c))))))
        
 (defun check-rule-form (rule left-edge right-edge) 
-  (if (not *check-forms*)
+  ;; only accept rules that are compatible with their context
+  (if (not *check-forms*) ;; controlling switch
     rule
     (let ((rf (rule-forms rule)))
       (cond
@@ -615,7 +626,7 @@
     (NP-HEAD (COMMON-NOUN)) 
     (NP/OBJECT ( N-BAR  PROPER-NOUN NP VERB+ED COMMON-NOUN  COMMON-NOUN/PLURAL))  ;; not VG PP RELATIVE-CLAUSE  S VP
     (NP/SUBJECT (PRONOUN COMMON-NOUN  NP COMMON-NOUN/PLURAL PROPER-NAME PROPER-NOUN)) ;; not VERB+ED VP  VG
-    (NUMBER (NUMBER)) 
+    (NUMBER (NUMBER NP)) 
     (POST-ORDINAL (POST-ORDINAL)) 
     (PP (PP)) 
     (PREPOSITION (PREPOSITION)) 
@@ -649,8 +660,7 @@
     ))
 
 (defun compatible-form (rule-form edge)
-  (let
-      ((compatible-forms (second (assq rule-form *form-maps*))))
+  (let ((compatible-forms (second (assq rule-form *form-maps*))))
     (or (null compatible-forms) ;; the rule-form is not taken to constrain anything
         (memq (cat-name (edge-form edge)) compatible-forms))))
 
