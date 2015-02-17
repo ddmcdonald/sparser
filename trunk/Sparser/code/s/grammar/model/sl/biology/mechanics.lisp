@@ -44,10 +44,14 @@
   (find-individual 'protein :name name))
 
 (defmethod get-family ((name word))
-  (find-individual 'bio-family :name name))
+  (or (find-individual 'human-protein-family :name name)
+      (find-individual 'protein-family :name name)
+      (find-individual 'bio-family :name name)))
 
 (defmethod get-family ((name polyword))
-  (find-individual 'bio-family :name name))
+  (or (find-individual 'human-protein-family :name name)
+      (find-individual 'protein-family :name name)
+      (find-individual 'bio-family :name name)))
 
 
 ;;;---------------------------------
@@ -273,9 +277,16 @@
     (setq type (category-named 'protein)))
   (unless species
     (setq species (find-individual 'species :name "human")))
-  (let ((i (def-bio/expr name 'bio-family
-             ;;////// should it be protein ??
-             :long long :identifier identifier :synonyms synonyms)) )
+  (let* ((category-name 
+          (cond
+           ((and (eq species (find-individual 'species :name "human"))
+                 (eq type (category-named 'protein)))
+            'human-protein-family)
+           ((eq type (category-named 'protein))
+            'protein-family)
+           (t 'bio-family)))
+         (i (def-bio/expr name category-name
+             :long long :identifier identifier :synonyms synonyms)))
     (when (consp members)
      (set-family-members i members))
     i))
