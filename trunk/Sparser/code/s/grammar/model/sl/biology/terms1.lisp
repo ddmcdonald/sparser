@@ -29,9 +29,6 @@
 ;;; adjectives
 ;;;------------
 
-
-
-
 (adj "close" :super predicate)
 
 (adj "critical" :super predicate
@@ -97,6 +94,8 @@
      :realization 
      (:adj "active"
            :s molecule))
+
+
 (adj "anticancer" :super predicate)
 (adj "biophysical" :super predicate)
 
@@ -109,15 +108,21 @@
 (adj "dead" :super predicate)
 (adj "dependent" :super predicate) ;; keyword: (ent ADJ) 
 (adj "ectopic" :super predicate) ;; keyword: (ic ADJ) 
+
+
 (adj "effective" :super predicate
      :binds ((against biological))
      :realization 
      (:adj "effective"
            :against against)) ;; keyword: (ive ADJ) 
+
+
 (adj "endogenous" :super predicate) ;; keyword: (ous ADJ) 
 (adj "further" :super predicate)
 (adj "genetic" :super predicate) ;; keyword: (al ADJ) 
 (adj "high" :super predicate)
+
+
 (adj "identical" :super predicate
      :binds ((basis biological)
              (comparator biological))
@@ -143,7 +148,7 @@
 (adj "kinase-dead" :super predicate)
 (adj "kinetic" :super predicate)
 (adj "long" :super predicate)
-(adj "lon-term" :super predicate)
+(adj "long-term" :super predicate)
 (adj "measurable" :super predicate) ;; keyword: (able ADJ) 
 (adj "mekindependent" :super predicate) ;; keyword: (ent ADJ) 
 (adj "mutual" :super predicate) ;; keyword: (al ADJ) 
@@ -158,6 +163,8 @@
      :realization
      (:to comparator))
 (adj "refractory" :super predicate) ;; keyword: (ory ADJ) 
+
+
 (adj "specific" :super predicate :super bio-abstract
      :binds ((theme biological)(situation biological)(beneficiary biological))
      :realization
@@ -165,6 +172,8 @@
            :s theme
            :to situation
            :for beneficiary))
+
+
 (adj "suitable" :super predicate)
 (adj "supplementary" :super predicate) ;; keyword: (ary ADJ)
 (adj "unclear" :super predicate)
@@ -394,12 +403,15 @@
 ;; #36 "the second putative phosphorylation site, serine 827."
 (noun "site" 
   :super bio-location
-  :binds ((process bio-process))
+  :binds ((process bio-process)
+          (substrate (:or protein bio-family))
+          (location residue))
   :realization
     (:noun "site"
      :etf (pre-mod)
      :m process
-     :of process))
+     :of process
+     :at location))
 
 (noun "state" :super bio-entity)
 (noun "strategy" :super bio-process)
