@@ -153,10 +153,7 @@
   (:noun "study"
          :of subject))
 
-;;--- referents for type kinds, v.s. the particulars
-;;/// Need these if we want bio-type as a label in the
-;; grammar. Otherwise lemmas on categories can carry
-;; the burden
+
 
 ;;;----------------------------------------------------
 ;;; categories of referents for particulars (entities)
@@ -206,8 +203,23 @@
   :lemma (:common-noun "nucleotide")
   :realization (:common-noun name))
 
-(define-category protein
+(define-category peptide
   :specializes molecule
+  :instantiates :self
+;;  :rule-label bio-entity
+  :index (:permanent :key name)
+  :lemma (:common-noun "peptide")
+  :realization (:common-noun name))
+
+
+(define-mixin-category protein-like
+  :documentation "Intended to provide a indicator that,
+    e.g., a protein-family is just like a protein in
+    all the ways that matter.")
+
+(define-category protein
+  :specializes peptide
+  :mixins (protein-like)
   :instantiates :self
   :bindings (uid "CHEBI:36080")
 ;;  :rule-label bio-entity
@@ -222,7 +234,7 @@
   :documentation "Intended as representation of proteins
     with one or more post-translational modifications."
   :index (:temporary :sequential-keys protein modification)
-  :binds ((protein protein)
+  :binds ((protein protein-like) ;;(:or protein bio-family))
           (modification protein))) ;; hack for mUbRas
 
 (define-category mutated-protein
@@ -233,14 +245,6 @@
   :binds ((protein protein)
           (mutation point-mutation)))
 
-
-(define-category peptide
-  :specializes molecule
-  :instantiates :self
-;;  :rule-label bio-entity
-  :index (:permanent :key name)
-  :lemma (:common-noun "peptide")
-  :realization (:common-noun name))
 
 ;;/// will have a substantial model, so deserves its own
 ;; file. This is just to ground "encode"
@@ -273,6 +277,19 @@
   :index (:permanent :key name)
   :lemma (:common-noun "kinase")
   :realization (:common-noun name))
+#+ignore ;; want to give kinase a FOR case
+;; but how to do it and still define instances
+;; (individuals) that are kinases using def-bio
+;; which assigns a neme. 
+(define-category kinase
+  :specializes enzyme
+  :instantiates :self
+  :bindings (uid "GO:0016301") ;; "kinase activity"
+  :binds ((process bio-process))
+  :realization
+  (:noun "kinase"
+         :for process))
+
 
 (define-category GTPase
   :specializes enzyme
@@ -284,16 +301,6 @@
 (def-synonym GTPase
    (:noun "gtpase"))
 
-#+ignore ;; want to give kinase a FOR case
-(define-category kinase
-  :specializes enzyme
-  :instantiates :self
-  :bindings (uid "GO:0016301") ;; "kinase activity"
-  :binds ((process bio-process))
-  :realization
-  (:noun "kinase"
-         :for process))
-
 
 (define-category bio-variant ;; not sure this is the correct term, but intended for things like "forms of ras"
   :specializes molecule
@@ -303,6 +310,8 @@
   :specializes bio-entity
   :instantiates :self)
 
+
+;;----- complexes
 
 (define-category complex
   :specializes molecule
@@ -329,7 +338,7 @@
 
 
 
-;;/// these ext aren't really entities. Consider a new
+;;/// these next aren't really entities. Consider a new
 ;; toplevel bio category. 
 
 (define-category bio-context
@@ -420,14 +429,15 @@
                            (complement . bio-location))))
 
 
+
 (define-category species
   :instantiates self
   :specializes bio-location
   :index (:permanent :key name)
   :lemma (:common-noun "species")
   :realization (:common-noun name))
-  
 
+;;---- family
 
 (define-category bio-family
   :instantiates :self
@@ -439,6 +449,7 @@
   ;;  selectional restrictions on PPs
   ;; as in "binds to RAS" where RAS is a family
   :specializes molecule
+  :mixins (protein-like)
   :binds ((type bio-entity) ;; a family of what?
           (species species) ;; human? mouse?
           (members collection)
@@ -451,6 +462,7 @@
   :specializes bio-family
   ;;/// something needs fixing in the bindings decoder
   ;; since these should be simpler to write
+  :rule-label protein
   :bindings (type (category-named 'protein))
   :realization (:common-noun name))
 
@@ -474,8 +486,7 @@
          :for components))
 
 (define-category bio-concentration
-  :specializes bio-scalar
-)
+  :specializes bio-scalar)
 
 
 
@@ -483,6 +494,10 @@
 
 
 
+;;--- referents for type kinds, v.s. the particulars
+;;/// Need these if we want bio-type as a label in the
+;; grammar. Otherwise lemmas on categories can carry
+;; the burden
 #| bio-type gets an 'Inconsistent superclasses' error making
    it's clos shadow class. Have to look up the problem
 
