@@ -417,6 +417,8 @@
         *sweep-sentence-treetops* t
         *island-driving* t)
 
+; *check-forms* t
+
   ;; Set the full set of switches to control what 'after action'
   ;; segment actions we do
   (setq *do-strong-domain-modeling* t
