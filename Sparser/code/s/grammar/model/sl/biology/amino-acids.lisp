@@ -3,13 +3,16 @@
 ;;;
 ;;;    File: "amino-acids"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2015
+;;; version: February 2015
 
 ;; initiated 9/8/14
 ;; RJB -- added hacks for problems with NS word finding of"S338" and "pThr202/Tyr204"
 ;; 1/9/15 finished point mutation with fanout into single character amino
 ;; acids
-;; 1152015 put both words and single-capitalized-letters as keys in amino acid table (to correctly handle C77), also added rule for "ubiquitin C77"
+;; 1/15/2015 put both words and single-capitalized-letters as keys in amino acid 
+;;    table (to correctly handle C77), also added rule for "ubiquitin C77"
+;; 2/15/15 Defined phosphorylated amino acids. Needs the hyphen variants.
+
 
 (in-package :sparser)
 
@@ -32,6 +35,7 @@ ones are gratuitously ambiguous with capitalized initials.
   (let* ((long-word (resolve/make long))
          (i (find-or-make-individual 'amino-acid :name long-word)))
     (let* ((three-letter-word (resolve/make three))
+           (caps-three-letter-word (resolve/make (string-capitalize three)))
            (one-letter-word (resolve/make one))
            (one-letter-object
             (find-individual 'single-capitalized-letter 
@@ -39,11 +43,16 @@ ones are gratuitously ambiguous with capitalized initials.
            (3-letter-rule
             (define-cfr category::amino-acid `(,three-letter-word)
               :form category::common-noun
+              :referent i))
+           (caps-3-letter-rule
+            (define-cfr category::amino-acid `(,caps-three-letter-word)
+              :form category::common-noun
               :referent i)))
       (unless one-letter-object
         (push-debug `(,one-letter-word))
         (break "could not retrieve capitalized-letter"))
       (add-rule-to-individual 3-letter-rule i)
+       (add-rule-to-individual caps-3-letter-rule i)
       (setf (gethash one-letter-object *single-letters-to-amino-acids*) i)
       (setf (gethash one-letter-word *single-letters-to-amino-acids*) i)
       i)))
@@ -99,10 +108,9 @@ therefore we have the special cases:
           (position :primitive integer) ;; counting from the N terminus
           (on-protein . protein))
   :realization
-  (:noun "residue"
-         :of on-protein
-         :on on-protein
-         )
+   (:noun "residue"
+   :of on-protein
+   :on on-protein)
   :index (:permanent :sequential-keys amino-acid position))
 
 (defun reify-residue-and-make-edge (words start-pos end-pos)
@@ -138,6 +146,57 @@ therefore we have the special cases:
                          :rule-name :reify-residue
                          :referent residue)))
               edge)))))))
+
+
+
+(noun "position" :super residue-on-protein)
+
+
+;;;----------------------------
+;;; phosphoeylated amino acids
+;;;-----------------------------
+
+;;  "pThr202/Tyr204"  ;; December 46
+
+(define-category phosphorylated-amino-acid
+  :specializes amino-acid
+  :rule-label amino-acid
+  :binds ((amino-acid amino-acid))
+  :index (:permanent :key name))
+
+(defmacro def-phospho-amino-acid (acid &rest names)
+  `(def-phospho-amino-acid/expr ,acid ',names))
+(defun def-phospho-amino-acid/expr (name-of-aa p-names)
+  (let ((aa (find-individual 'amino-acid :name name-of-aa))
+        (first-name (car p-names))
+        rules )
+    (unless aa
+      (error "Can't retrieve an amino acid named ~a" name-of-aa))
+    (let* ((first-name (resolve/make first-name))
+           (i (find-or-make-individual 'phosphorylated-amino-acid
+                 :name first-name))) 
+      ;;(push-debug `(,i ,aa)) (break "rule on i?")
+      (bind-variable 'amino-acid aa i)
+      (dolist (string p-names)
+        (let* ((word (resolve/make string))
+               (rule (define-cfr category::amino-acid
+                                 `(,word)
+                       :form category::common-noun
+                       :referent i)))
+          (push rule rules)))
+      (when rules
+        (add-rules-to-individual i rules))
+      i)))
+    
+;; Wikipedia's phosphorylation entry says just these
+(def-phospho-amino-acid "histidine" "phosphohistidine"
+  "pHis" "phospho-histidine")     
+(def-phospho-amino-acid "serine" "phosphoserine" 
+  "pSer" "phospho-serine")
+(def-phospho-amino-acid "threonine" "phosphothreonine"
+  "pThr" "phospho-threonine")
+(def-phospho-amino-acid "tyrosine" "phosphotyrosine"
+  "pTyr" "phospho-threonine")
 
 
 ;;;-----------------
@@ -199,18 +258,3 @@ therefore we have the special cases:
     :position residue-number))
 
 
-
-;;;-------------------------------
-;;; this is a hack patch for S338
-;;;-------------------------------
-
-(defun define-residue (residue-name)
-  (def-bio/expr residue-name 'residue-on-protein :takes-plurals nil))
-
-;;(define-residue "S338")
-(noun "S338" :super residue-on-protein)
-(noun "pThr202/Tyr204" :super residue-on-protein)
-(noun "position" :super residue-on-protein)
-
-;;need a bunch of phospho variants
-(noun "phosphoserine" :super amino-acid)
