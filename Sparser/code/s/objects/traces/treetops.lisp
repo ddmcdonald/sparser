@@ -585,6 +585,28 @@
                  (edge-position-in-resource-array right-edge)
                  (edge-position-in-resource-array edge)))))
 
+(deftrace :pairs-to-consider-wacking (pairs)
+  (when *trace-island-driving*
+    (trace-msg "[wack] ~a pairs:~%~a
+
+;;~[~& ~a~%~}" ;<<<<<<<<<<<<<<<<<
+               (length pairs) pairs)))
+
+(deftrace :can-we-wack-pair (pair)
+  (when *trace-island-driving*
+    (trace-msg "[wack] Is there a rule to compose e~a and e~a ?"
+               (edge-position-in-resource-array (car pair))
+               (edge-position-in-resource-array (cadr pair)))))
+
+(deftrace :wack-pair-with-rule (rule)
+  (when *trace-island-driving*
+    (trace-msg "[wack]   yes: ~a" rule)))
+
+(deftrace :no-rule-to-wack-pair ()
+  (when *trace-island-driving*
+    (trace-msg "[wack]   no")))
+               
+
 
 (deftrace :try-parsing-leading-pp ()
   ;; called from island-driven-forest-parse
