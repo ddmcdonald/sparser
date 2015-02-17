@@ -12,18 +12,22 @@
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
 
+; test "Gly 34"  "Gly34" 
+; (setq *check-forms*  nil)
+
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   (setq *note-text-relations* nil)
   (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
+  (setq *report-form-check-blocks* t)
 ;  (setq *trace-instance-recording* t
 ;        *scan-for-unsaturated-individuals* t)
 ;  (setq *scan-for-unsaturated-individuals* t)
 ;  (setq *debug-anaphora* t) 
-;  (setq *do-anaphora* nil)
-;  (setq *debug-pronouns* t)
-;  (setq *work-on-ns-patterns* t)
+;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
+;  (setq *work-on-ns-patterns* t) 
+;  (trace-parse-edges) (trace-island-driving)
   (incorporate-obo-terms
    "/Users/ddm/ws/R3/r3/trunk/corpus/obo-terms.lisp")
   (ddm-load-corpora)
@@ -66,6 +70,7 @@
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "drivers/chart/psp/chunker.lisp")
   (ddm-ed "drivers/chart/psp/pts5.lisp")
+  (ddm-ed "drivers/chart/psp/march-seg5.lisp")
   (ddm-ed "analyzers/SDM&P/scan1.lisp")
   (ddm-ed "drivers/forest/new-forest-protocol.lisp")
   (ddm-ed "drivers/forest/sweep.lisp")
