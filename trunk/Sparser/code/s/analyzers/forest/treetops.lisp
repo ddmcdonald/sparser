@@ -194,6 +194,16 @@
 (defun treetop? (edge)
   (null (edge-used-in edge)))
 
+(defun treetop-does-not-end-the-chart (tt)
+  (let* ((ends-at (ev-position (edge-ends-at tt)))
+         (terminal (pos-terminal ends-at)))
+    (not (eq terminal word::end-of-source))))
+
+(defun final-tt/category (list-of-tts category)
+  ;; checks wheter the last edge in the list has the indicated category
+  (eq (edge-category (car (last list-of-tts)))
+      category))
+
 
 (defun treetop-between (start end)
   (let ((treetop-at-start (right-treetop-at/edge start))
@@ -201,7 +211,6 @@
 
     (when (eq treetop-at-start treetop-at-end)
       treetop-at-start )))
-
 
 (defun number-of-treetops-between (start end)
   (let ((next-pos start)
@@ -216,7 +225,6 @@
       tt ) ;; quiet the compiler
     count ))
 
-
 (defun treetops-between (start end)
   (unless (eq start end)
     (let ((next-pos start)
@@ -229,6 +237,10 @@
         (push tt tts))
       (nreverse tts))))
     
+
+;;;---------------------------
+;;; machinery for wack-a-rule
+;;;---------------------------
       
 (defun adjacent-tts (&optional (all-edges (all-tts)))
   (loop for edges on (cdr all-edges) 
@@ -285,8 +297,11 @@
   ;; all of the treetop edges that are pairwise adjacent
   ;; using adjacent-tts and winnows that list down using
   ;; filter-rules-by-local-competition
-  (let ( rule  rules )
-    (loop for pair in (adjacent-tts) 
+  (let ((pairs (adjacent-tts))
+        rule  rules )
+    ;;(push-debug `(,pairs)) (break "pairs = ~a" pairs)
+    ;(tr :pairs-to-consider-wacking pairs)
+    (loop for pair in pairs 
       when (setq rule (rule-for-edge-pair pair))
       do (push (cons rule pair)
                rules))
@@ -312,8 +327,10 @@
    It's seriously messing up my tests on short function-based rules.")
 
 (defun rule-for-edge-pair (pair)
+  (tr :can-we-wack-pair pair)
   (let ((rule (multiply-edges (car pair) (second pair))))
-    (when rule
+    (when rule (tr :wack-pair-with-rule rule))
+    (if rule
       (when (cond
              ((not (consp (cfr-referent rule))))
              ((eq :funcall (car (cfr-referent rule)))
@@ -328,7 +345,10 @@
               ;;   ((:HEAD LEFT-REFERENT) 
               ;;    (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
               t))
-        rule))))
+        rule)
+      (else
+       (tr :no-rule-to-wack-pair)
+       nil))))
 
 (defun test-subcat-rule (pair rule)
   ;; This simulates the context above normal rule-driven calls to
@@ -388,16 +408,4 @@
     t)
    (t nil)))
 
-
-
-(defun treetop-does-not-end-the-chart (tt)
-  (let* ((ends-at (ev-position (edge-ends-at tt)))
-         (terminal (pos-terminal ends-at)))
-    (not (eq terminal word::end-of-source))))
-
-
-(defun final-tt/category (list-of-tts category)
-  ;; checks wheter the last edge in the list has the indicated category
-  (eq (edge-category (car (last list-of-tts)))
-      category))
 
