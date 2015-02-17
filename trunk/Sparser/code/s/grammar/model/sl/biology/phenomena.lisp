@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "phenomena"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2015
+;;; version: February 2015
 
 ;; Initiated 12/28/14 to handle moderately complicated notions
 ;; like cell line and mutation. Conformation and isoform and such
@@ -11,6 +11,7 @@
 ;; extensions through 1/6/15
 ;; 1/9/2015 give ubiquitinate a site variable, and define "pro-apoptotic" as a subclass of "apoptotoic"
 ;; 1/14/2015 tweaks on N and C-terminus
+;; 2/15/15 trying to make some headway with ubiquitination
 
 (in-package :sparser)
 
@@ -36,12 +37,15 @@
      :noun "signaling"
      :m agent))
 
+(def-synonym signaling ;; Jan.#26
+  (:noun "signalling" ;;///// do something else - rule dup.
+   :etf pre-mod
+   :m agent))
 
 
-
-
+;;;----------
 ;;; ubiqutin 
-
+;;;----------
 
 ; monoubiquitination increases the population 
 ;;  this process has this effect
@@ -59,38 +63,64 @@
 ;; not strictly true, but a reasonable approximation. 
 
 
-
-(def-bio "mUbRAS" protein) ;; mono-ubiquinated RAS
-
-
 ; ... effect of Ras monoubiquitination on ...
 ;; Resulting version of Ras after adding one ubiquitin. 
 
+(define-category ubiquitinate 
+ :specializes bio-process 
+ :binds ((agent biological) ;; what causes it to happen
+         (substrate protein-like) ;; which protein now has ubiquitin on it
+         (site residue-on-protein)) ;; which is attached here
+  :realization 
+    (:verb "ubiquitinate" 
+     :etf (svo-passive) 
+     :s agent 
+     :o substrate
+     :at site))
+
 (define-category monoubiquitinate 
-  :specializes bio-process 
+  :specializes ubiquitinate 
   :binds ((agent biological)
-          (object biological)
+          (substrate protein-like)
           (site residue-on-protein)) 
   :realization 
     (:verb "monoubiquitinate" 
-     :noun "monoubiquitination" 
-     :etf (svo-passive) 
+     :etf (svo-passive)
      :s agent 
-     :o object
+     :o substrate
      :at site))
 
-(define-category ubiquitinate 
- :specializes bio-process 
- :binds ((agent biological)
-         (object biological)
-         (site residue-on-protein) )
-  :realization 
-    (:verb "ubiquitinate" 
-     :noun "ubiquitination" 
-     :etf (svo-passive) 
-     :s agent 
-     :o object
-     :at site))
+(def-synonym monoubiquitinate
+  (:noun "monoubiquitination"
+   :etf (pre-mod)
+   :m substrate ;; Ras monoubiquitination
+   :on substrate)) ;; the effects of monoubiquitination on Ras are ...
+
+(define-category  monoubiquitinated-protein
+  :specializes modified-protein
+  :bindings (modification (get-protein "ubiquitin"))
+  :index (:permanent :key protein))
+
+;; If mUbRas is to be done via a synonym then
+;; upbiq. Ras has to be a category. (I think)
+
+;; Jan #1 "the effect of Ras monoubiquitination on ...
+(defun define-mUbRas ()
+  (let* ((ras (get-protein "Ras"))
+         (i (find-or-make-individual 'monoubiquitinated-protein
+               :protein ras)))
+    i))
+
+;; (define-mUbRas)
+
+;; In Baker et al.
+;; "we did not separate monoubiquitinated Ras (mUbRas) from ..."
+;(def-cfr 
+  
+
+
+;; (def-bio "mUbRAS" protein) ;; mono-ubiquinated RAS
+
 
 
 ;;;-------------------
@@ -212,7 +242,7 @@ it is created from N-terminus to C-terminus.|#
         (push "/" list)))
     (apply #'string-append (nreverse list))))
 
-(def-pathway "RAS" "Raf" "MAPK")
+(def-pathway "Ras" "Raf" "MAPK")
 
 (def-pathway "MEK" "ERK")
 
@@ -280,8 +310,8 @@ the aggregate across the predicate it's in. |#
 
 (define-category protein-pair
   :specializes bio-pair
-  :binds ((left (:or protein bio-family))
-          (right (:or protein bio-family)))
+  :binds ((left (:or protein bio-family nucleotide))
+          (right (:or protein bio-family nucleotide)))
   :index (:sequential-keys left right))
 
 (define-category amino-acid-pair
