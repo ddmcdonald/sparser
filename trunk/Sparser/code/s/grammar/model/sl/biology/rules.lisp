@@ -103,7 +103,7 @@
 ; for a complex noun-headed phrase. 
 
 ;; Gly33
-(def-cfr residue-on-protein (amino-acid digit-sequence)
+(def-cfr residue-on-protein (amino-acid number)
   :form proper-noun
   :referent (:head left-edge
              :instantiate-individual residue-on-protein
@@ -117,7 +117,7 @@
              :bind (amino-acid left-edge)))
 
 ;; residues 104 and 147
-(def-cfr redidue-on-protein (residue-on-protein digit-sequence)
+(def-cfr redidue-on-protein (residue-on-protein number)
   :form n-bar
   :referent (:head left-edge
              :bind (position right-edge)))
