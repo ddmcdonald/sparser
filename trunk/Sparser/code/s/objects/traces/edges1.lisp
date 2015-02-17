@@ -518,9 +518,13 @@
   (when *parse-edges*
     (trace-msg "  no rule found")))
 
-(deftrace :n-triples-apply (n)
+(deftrace :n-triples-apply (triples)
   (when *parse-edges*
-    (trace-msg "There are ~a triples to choose from" n)))
+    (trace-msg "There are ~a triples to choose from:~
+             ~%
+" (length triples)
+triples
+)))
 
 (deftrace :selected-best-triple (triple)
   (when *parse-edges*
