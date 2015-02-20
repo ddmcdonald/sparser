@@ -520,11 +520,8 @@
 
 (deftrace :n-triples-apply (triples)
   (when *parse-edges*
-    (trace-msg "There are ~a triples to choose from:~
-             ~%
-" (length triples)
-triples
-)))
+    (trace-msg "There are ~a triples to choose from:~{~&  ~a~}"
+               (length triples) triples)))
 
 (deftrace :selected-best-triple (triple)
   (when *parse-edges*
