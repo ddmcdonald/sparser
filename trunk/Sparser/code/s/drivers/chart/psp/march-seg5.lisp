@@ -66,7 +66,7 @@
                        (eq (edge-form (car edges)) category::quantifier))))))))
 
 (defun interp-big-mech-chunk (chunk)
-  (push-debug `(,chunk)) ;;(break "interp chunk: ~a" chunk)
+  ;; (push-debug `(,chunk)) (break "interp chunk: ~a" chunk)
   (when *save-chunk-edges*
     (add-chunk-edges-snapshot))
   ;; 1st look at all pairwise combinations
@@ -96,8 +96,7 @@
   ;; being correct given priors, the kind of rule being used.
   (when triples
     ;;(push-debug `(,triples)) (break "triple")
-    
-    ;(tr :n-triples-apply triples)
+    (tr :n-triples-apply triples)
     
     (let ((non-syntactic-triples
            (loop for triple in triples
