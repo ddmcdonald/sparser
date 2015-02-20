@@ -464,7 +464,7 @@
 (noun "serum" :super bio-entity) 
 (noun "setting" :super bio-entity)
 (adj "short-lived" :super predicate)
-(noun "signalling" :super bio-process)  ;; this is an alternate spelling for "signaling"
+
 (adj "similar" :super predicate
   :binds ((item biological)(compared-to biological))
   :realization 
@@ -472,11 +472,17 @@
       :to compared-to))
 (define-adverb "similarly")
  
+;; Jan 29 "two MAPK phosphorylation sites in ASPP1 and ASPP2."
+;; Jan 14 "mutation of the primary site of monoubiquitination"
+;; 16 "mUbRas, modified at a single site, "
 (noun "site" :super bio-location
-      :binds ((process bio-process))
-      :realization
-      (:noun "site"
-             :of process))
+  :binds ((process bio-process))
+  :realization
+     (:noun "site"
+      :etf pre-mod
+      :m process
+      :of process))
+
 (find-or-make-individual 'qualitative-rate :name "slow")
 (adj "specific" :super predicate :super bio-abstract
      :binds ((theme biological)(situation biological)(beneficiary biological))
