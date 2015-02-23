@@ -10,9 +10,11 @@
 ;; 1.0 (12/13/14) totally made over to simplify everything down
 ;;  to one two routines. 1/5/15 Refactored a bit to handle
 ;;  nouns and adjectives without ETF. 
-;;1/14/2015 Changes to put :subject and :object selectional restrictions in the subcat frame
-;; also, initial subcat for THATCOMP -- not used yet
-;; delete old noun definitions when redefining a noun (but don't delete old verb definitions
+;;1/14/2015 Changes to put :subject and :object selectional 
+;;   restrictions in the subcat frame
+;;   also, initial subcat for THATCOMP -- not used yet
+;;   Delete old noun definitions when redefining a noun (but 
+;;     don't delete old verb definitions)
 
 (in-package :sparser)
 
@@ -45,9 +47,11 @@
 ;;;--------------
 ;;; entry points
 ;;;--------------
+
+;;--- toplevel macros
  
 (defmacro def-term (name &rest parameter-plist)
-  ;;/// simplest data checks on the minimal args
+  ;;/// add the simplest data checks on the minimal args
   `(def-term/expr ',name ',parameter-plist))
 
 (defun def-term/expr (name parameter-plist)
@@ -58,11 +62,13 @@
   `(define-realization ',category-name ',key-value-pairs))
 
 (defun define-realization (category-name key-value-pairs)
-  (push-debug `(,category-name ,key-value-pairs))
   (let ((category (category-named category-name :break-if-undefined)))
     (check-for-valid-def-realization-keywords key-value-pairs)
     (apply #'decode-realization-parameter-list category key-value-pairs)
     category))
+
+
+;;--- call rerouted from define-category
 
 (defun setup-shortcut-rdata (category key-value-pairs)
   ;; called from decode-category-parameter-list when the rdata
@@ -72,6 +78,10 @@
   (check-for-valid-def-realization-keywords key-value-pairs)
   (apply #'decode-realization-parameter-list category key-value-pairs)
   category)
+
+;; N.b. def-synonym, aka define-additional-realization goes straight
+;; to decode-realization-parameter-list with the *deliberate-duplication*
+;; flag dynamically bound. 
 
 ;;;------------------------------------
 ;;; decoders that actually do the work
@@ -85,6 +95,7 @@
                                   s o c m
                                   prep by
                                   against as at between for from in of on onto to thatcomp  through via with)
+  ;; Decoder for def-term
   ;; Make the category, then use the independent realization
   ;; machinery to finish it. 
   (labels 
@@ -176,6 +187,9 @@
                                                against as at between for from in of on onto to ;; prepositions
                                                thatcomp through via with 
                                                )
+  ;; Decoder for the realization part of def-term, for the rdata of
+  ;; define-category when it fits this new pattern, and for def-synonym,
+  ;; though in that case the *deliberate-duplication* flag will be up.
   (if etf
     (typecase etf
       (cons)
@@ -185,9 +199,12 @@
       (error "You must specifiy a realization schema/s using the keyword ':etf'")))
 
  
-  ;;RUSTY added this -- get rid of old definition for noun if you are redefining noun
- ; (if (and noun (not (consp noun))) ;; CONSP is synonymn case, like (n-terminal n-terminus N-terminal N-terminus)
- ;     (delete-noun-cfr (resolve/make noun)))   def-synonym
+  ;;RUSTY added this -- get rid of old definition for noun if you are 
+  ;; redefining noun
+  #+ignore  ;;/// sort out relationship to synonyms
+  (when (and noun (not (consp noun)))
+    ;; CONSP is synonymn case, like (n-terminal n-terminus N-terminal N-terminus)
+    (delete-noun-cfr (resolve/make noun)))
 
   (let ( substitution-map  word-map )
     (dolist (schema-name etf)
@@ -251,8 +268,8 @@
         (handle-prepositions category against as at between for from in of on onto to thatcomp through via with)
 
         (when prep ;; preposition 'owned' by the verb, appears
-          ;; immediately after the verb.
-          ;; effectively a compound verb name 
+          ;; immediately after the verb, making it effectively 
+          ;; a compound verb name 
           (apply-preposition verb prep category)))) ;; end dolist
 
     (when noun ;; a noun can just expect to get all the pp's w/o an etf
