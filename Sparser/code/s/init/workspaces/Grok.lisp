@@ -32,16 +32,16 @@ grep XX **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**
 ;;--- For feeding into grak-pass-one, etc, which are now in
 ;;  analyzers/SDM&P/document-handling.lisp and take document-streams as input
 
-
+#| Presumes a value for corpus;
 (def-logical-pathname "corpus;" cl-user::location-of-text-corpora)
 (def-logical-pathname "bird-flu;" "corpus;bird-flu:")
-(def-logical-pathname "bird-flu-2009;" "bird-flu;iraq-2006:")
+(def-logical-pathname "bird-flu-2009;" "bird-flu;iraq-2006:")  
 
 (defvar bird-flu
   (define-document-stream '|Bird flu in Iraq 2006|
     :style-name 'hand-typed/no-headers ;; accurate actually!
     :directory "bird-flu-2009;"
-    :unified t))
+    :unified t))  |#
 #|
  (grok-pass-one bird-flu)
  (grok-pass-two bird-flu)
