@@ -15,8 +15,18 @@
   prepositional phrases and possibly other things. We use this
   to avoid an infinite loop while collecting.")
 
-(defmethod collect-model ((n number))
-  ;; For debugging
+(defun initalize-model-collection ()
+  (clrhash *individuals-seen*))
+
+(defgeneric collect-model (object)
+  (:documentation "Called from identify-relations after all
+   other operatiosn on a sentence have been done, provided
+   that the *readout-relations* flag is set. Returns a list
+   of (variable-name, value) pairs based on a recursive
+   sweep through the bindings on individuals. Called on
+   the referent of every treetop edge."))
+
+(defmethod collect-model ((n number)) ;; For debugging
   (let ((edge (edge# n)))
     (unless edge (error "The number ~a does not retrieve an edge" n))
     (collect-model edge)))
@@ -29,10 +39,7 @@
 (defmethod collect-model ((w word)) nil) ;;`(,w))
 (defmethod collect-model ((pw polyword)) nil) ;;`(,pw)) ; 
 (defmethod collect-model ((c category)) nil) ;;`(,c))
-;; anything else?
-
-(defun initalize-model-collection ()
-  (clrhash *individuals-seen*))
+;; anything else to be dropped on the floor?
 
 
 (defmethod collect-model ((i individual))
