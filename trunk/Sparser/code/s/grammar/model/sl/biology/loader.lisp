@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2015
+;;; version: February 2015
 
 ;; Initiated 11/5/13. 3/3/14 Added mechanics and NFkappaB while
 ;; commenting out the original molecules and verbs as OBE and requiring
@@ -14,7 +14,7 @@
 ;; 9/8/14 added [amino-acids], [proteins], and [taxonomy] to improve 
 ;; searching through these. 11/12/14 added [switches]. Bumped verbs
 ;; to 1, 12/11/14. 12/28/14 added [phenomena]. 1/16/15 added 
-;; [rules]. 
+;; [rules]. 2/20/15 added doc-structure
 
 (in-package :sparser)
 
@@ -22,11 +22,11 @@
 (gload "bio;taxonomy")
 (gload "bio;proteins")
 (gload "bio;amino-acids")
-;;(gload "bio;terms")
 (gload "bio;terms1")
 (gload "bio;drugs") ;; needed by verbs
 (gload "bio;phenomena") ;; after proteins
 (gload "bio;verbs1")
+(gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")
 
