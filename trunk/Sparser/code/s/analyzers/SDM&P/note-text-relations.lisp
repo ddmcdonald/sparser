@@ -180,6 +180,9 @@
       (when *edge-delivery-function*
         (funcall *edge-delivery-function* edge))
       (cond ;; these are, and are noted
+       ((and *biology*
+             (itypep referent 'biological))
+        (note-biological referent))
        ((eq label category::name-word)) ;; ???? "Sulaimaniya" 1st pass
        ((eq label category::name)
         (note-name referent))
