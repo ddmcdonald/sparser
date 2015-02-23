@@ -189,6 +189,8 @@ States standup indexicals: grammar/rules/situation/variables.lisp
 
 |#
 
+
+#|
 (setq cl-user::location-of-text-corpora ;; copied from Grok
  "Users:ddm:sift:nlp:corpus:")          ;;/// Needs one location  !!
 ;; Note the pathname is given in ancient Mac syntax. 
@@ -201,7 +203,7 @@ States standup indexicals: grammar/rules/situation/variables.lisp
     :style-name 'hand-typed/no-headers
     :directory "gboss;"
     :unified t))
-
+|#
 ;; Text that breaks -- for Alex
 ;; (p "Saudi Arabia has confirmed six new infections from the potentially fatal MERS virus, the World Health Organization reported Friday, raising the total number of cases worldwide to 136. Most of the cases, which have resulted in 58 deaths, have been in Saudi Arabia. The latest cases, the W.H.O. said in a statement, afflicted three men and three women, all from the Riyadh region. MERS stands for Middle East Respiratory Syndrome. It is believed to be spread by bats and possibly camels. The concentration of MERS cases in Saudi Arabia has raised concern about the possible spread of the infection during the annual pilgrimage to Mecca and Medina later this month, when millions of Muslims from around the world visit the kingdom.")
 

@@ -15,6 +15,11 @@
 ; test "Gly 34"  "Gly34" 
 ; (setq *check-forms*  nil)
 
+; (noun "serine/threonine") ;; want to get NG from "the serine/threonine kinase"
+; ;; not sure of this -- was def-bio, but that now fails
+; (noun "C-RAF:B-RAF" :super heterodimer)
+
+
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   (setq *note-text-relations* nil)
@@ -40,16 +45,6 @@
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
   (ddm-load "interface/R3-eval/overnight-sents.lisp"))
-
-;; local anaphora, getting categories right
-; sentence-sweep-loop  decode-realization-parameter-list
-
-;; Are we making the right references in the history?
-;    decode-category-parameter-list decode-index-field
-
-;; Sentence sweep (dies on 2d wrap)
-;   sentence-sweep  extract-string-from-char-buffers 
-;   *length-of-character-input-buffer*  -- goosed to 50k
 
 (defun ddm-bio ()
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
@@ -91,7 +86,31 @@
   (ddm-ed "objects/traces/treetops.lisp"))
 
 
+;; local anaphora, getting categories right
+; sentence-sweep-loop  decode-realization-parameter-list
+
+;; Are we making the right references in the history?
+;    decode-category-parameter-list decode-index-field
+
+;; Sentence sweep (dies on 2d wrap)
+;   sentence-sweep  extract-string-from-char-buffers 
+;   *length-of-character-input-buffer*  -- goosed to 50k
+
 ; (setq *work-on-ns-patterns* t)
+
+
+(defun ddm-note-doc-structure ()
+  (ddm-ed "grammar/model/sl/biology/doc-structure.lisp")
+  (ddm-ed "analyzers/SD&P/note-text-relations.lisp")
+  (ddm-ed "analyzers/SD&P/text-relations.lisp")
+  (ddm-ed "analyzers/SD&P/text-relation-class.lisp")
+  (ddm-ed "objects/doc/content.lisp")
+  (ddm-ed "drivers/forest/parsing-containers.lisp")
+  (ddm-ed "object/doc/doc-stream.lisp")
+  (ddm-ed "objects/doc/object1.lisp")  -- document structure
+  (ddm-ed "tools/basics/resource.lisp")  -- auto recycling
+  (ddm-ed "objects/doc/classes.lisp"))
+
 (defun ddm-no-spaces ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
@@ -102,6 +121,7 @@
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "grammar/rules/SDM&P/create-categories.lisp")
   (ddm-ed "grammar/rules/syntax/categories.lisp"))
+
 
 
 (defun ddm-tense-neg ()
@@ -162,6 +182,10 @@
 ; uniform-scandal
 ;(ddm-ed "analysers/psp/patterns/traces.lisp")
 
+;; Is there a version of supertype checking that
+;; doesn't use the cache ???
+; itypep  indiv-typep  category-inherits-type?
+; super-categories-of1
 
 ;; Set up actions associated with binding
 ; (ddm-ed "objects/model/bindings/hooks.lisp")
@@ -290,10 +314,6 @@
   adjudicate-after-scan-pattern-has-succeeded (trace-ns-sequences)
 (p "in the ‘off’ state") 
 |#
-
-; (ddm-ed "objects/doc/object1.lisp")  -- document structure
-; (ddm-ed "tools/basics/resource.lisp)  -- auto recycling
-; (ddm-ed "objects/doc/classes.lisp") -- what is this doing ????
 
 (defun ddm-edge-mechanics ()
   (ddm-ed "objects/chart/edge-vectors/object2.lisp")
