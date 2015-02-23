@@ -55,7 +55,8 @@
   ((entities :accessor entities-in-sentence)
    (relations :accessor relations-in-sentence))
   (:documentation "Copies the output of identify-relations
-     from the post-analysis-operations function."))
+     from the post-analysis-operations function. Note that
+     this is dependent on the *readout-relations* flag."))
 
 (defmethod set-entities ((s sentence) (list list))
   (setf (entities-in-sentence (contents s)) list))
