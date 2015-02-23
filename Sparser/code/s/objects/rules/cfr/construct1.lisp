@@ -23,7 +23,7 @@
 ;;      (which is set when working from an ETF).
 ;; 1.5 (11/22/11) Letting a stipulated schema pass through the parameters.
 ;;     (3/16/12) quiet the compiler
-;; 1.6 (1/17/15) Modified changes-to-known-rule to react to a parametr
+;; 1.6 (1/17/15) Modified changes-to-known-rule to react to a parameter
 ;;      and define a new rule rather than modifining the old one. 
 
 
