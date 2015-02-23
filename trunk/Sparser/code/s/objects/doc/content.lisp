@@ -70,8 +70,9 @@
 
 
 
-
-;;--- sentences
+;;;---------------------
+;;; sentence containers
+;;;---------------------
 
 (defparameter *container-for-sentence* :simple ;; :situation
   "Switch parameter for the kind of container we make for 
@@ -84,7 +85,6 @@
   (declare (ignore sentence))
   (error "No version of make-sentence-container has been specified"))
 
-
 (defun designate-sentence-container (&optional (keyword *container-for-sentence*))
   (setf (symbol-function 'make-sentence-container)
         (ecase keyword
@@ -95,6 +95,7 @@
 ;; (designate-sentence-container :simple)  => switch setting
 (defun make-sentence-container/simple (sentence)
   (make-instance 'simple-container :in sentence))
+
 
 
 
