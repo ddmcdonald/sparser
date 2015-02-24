@@ -248,6 +248,7 @@
 (noun "heterodimer" :super molecule)
 (adj "high" :super predicate)
 (noun "high performance liquid chromatography" :super bio-method)
+(define-adverb "however")
 (noun "human" :super species)
 (adj "identical" :super predicate
      :binds ((basis biological)
