@@ -129,7 +129,7 @@
 
 (include-grammar-module  *collections*)
 (include-grammar-module  *proper-names*)
-(include-grammar-module  *people*)
+;;(include-grammar-module  *people*)
 
 #|(include-grammar-module  *companies*)
   (include-grammar-module  *company-core*)
@@ -157,11 +157,13 @@
   (include-grammar-module *title-qualifiers*) |#
 
 (include-grammar-module  *location*)
+#|
  (include-grammar-module  *countries*)
  (include-grammar-module  *US-States*)
  (include-grammar-module  *cities*)
  (include-grammar-module  *other-locations*)
  (include-grammar-module  *locations-core*)
+|#
 
 
 
