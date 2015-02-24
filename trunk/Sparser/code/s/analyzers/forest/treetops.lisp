@@ -396,6 +396,7 @@
        (let ((preceding-edge (edge-just-to-left-of (second rule2))))
          (and
           preceding-edge
+          (edge-form preceding-edge) ;; got a case with COMMA as a literal edge
           (or
            (member (cat-symbol (edge-form preceding-edge)) *ng-head-categories*)
            (member (cat-symbol (edge-form preceding-edge)) *vg-head-categories*)
