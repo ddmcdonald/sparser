@@ -17,6 +17,9 @@
 ;;   methods for assimilating object using sub-categorization frame, 
 ;;   and for handling verb_ing premodifiers
 ;; (2/12/15) Fixed return value for adj-noun-compound.
+;; 2/23/2015 allow pronouns to be subjects using the submit mechanism, and 
+;; this file contains the mechanisms for creating an edge over the pronoun edge to include the semantic constraint from the verb
+
 
 (in-package :sparser)
 
@@ -385,10 +388,46 @@
      (*subcat-test* variable-to-bind)
      (t
       (setq head (copy-individual head))
+      (when
+       (is-anaphoric? item)
+       (setq item 
+             (create-anaphoric-edge-and-referent 
+              (cond
+               ((eq item (edge-referent (left-edge-for-referent)))
+                  (left-edge-for-referent))
+               ((eq item (edge-referent (right-edge-for-referent)))
+                  (right-edge-for-referent)))
+              variable-to-bind)))
+       
       (bind-variable variable-to-bind item head)
       head))))
 
+(defun is-anaphoric? (item)
+  (itypep item category::pronoun))
+
+(defun create-anaphoric-edge-and-referent (old-edge variable)
+  (declare (special old-edge variable))
+  (let*
+      ((vr (var-value-restriction variable))
+       (new-item (make-individual-for-dm&p vr))
+       (new-edge
+        (make-completed-unary-edge
+         (edge-starts-at old-edge)
+         (edge-ends-at old-edge)
+         'create-anaphoric-edge-and-referent
+         old-edge
+         vr
+         category::np
+         new-item)))
+    (declare (special vr new-item new-edge))
+    (setf
+     (edge-used-in old-edge)
+     (list new-edge))
+   ;; (break "caer")
+    new-item))
+
 (defun subcategorized-variable (head label item)
+  (declare (special head label item))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
@@ -399,12 +438,23 @@
       (let* (variable)
         (declare (special prep-word prep-edge pobj-edge variable))      
         (dolist (entry subcat-patterns)
-          (when 
-              (and
-               (eq label (subcat-label entry))
-               (itypep item (subcat-restriction entry)))
-            (setq variable (subcat-variable entry))
-            (return)))
+          (declare (special entry))
+          (let
+              ((scr (subcat-restriction entry)))
+            (declare (special scr))
+            (when 
+                (and
+                 (eq label (subcat-label entry))
+                 (or
+                  (itypep item category::pronoun/inanimate)
+                  (if
+                   (and
+                    (consp scr)
+                    (eq (car scr) :or))
+                   (loop for type in (cdr scr) thereis (itypep item type))
+                   (itypep item scr))))
+              (setq variable (subcat-variable entry))
+              (return))))
         ;;(break "testing subcats")
         (or
          variable
