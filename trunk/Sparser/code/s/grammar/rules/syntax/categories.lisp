@@ -217,6 +217,7 @@
 (def-form-category  verb+ing)
 (def-form-category  verb+present)
 (def-form-category  infinitive)
+(def-form-category  infinitive-marker) ;; for "to" from Quirk, et al.
 (def-form-category  verb+passive)
 
 (define-category  mvb)
