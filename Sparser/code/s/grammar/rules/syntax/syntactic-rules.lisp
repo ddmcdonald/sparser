@@ -16,6 +16,7 @@
 ;; 1/20/15 Added number and quantifier np rules
 ;; added more adverb rules
 ;; allow PP modifiers for proper-noun (which is how Ser877 is treated, as a residue-on-protein
+;; allow PRONOUN to be a subject -- so we can parse "it inhibits BRAF"
 
 (in-package :sparser)
 
@@ -280,7 +281,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 (def-syntax-rule (preposition vp)
                  :head :left-edge
   :form pp
-  ;; again, neeed a moere interesting referent.
+  ;; again, need a more interesting referent.
   :referent (:function apply-preposition-to-complement left-edge right-edge))
 
 (def-syntax-rule (preposition vg) ;; J3 hydrolysis maybe elevate?
@@ -335,6 +336,20 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 ;; subject 
 ;;--- subject + verb
 
+(loop for n in '(np pronoun)
+  do
+  (loop for v in '(vp vg)
+    do
+    (eval
+     `(def-syntax-rule (,n ,v)
+                       :head :right-edge
+        :form subj+verb
+        :referent (:function assimilate-subject left-edge right-edge))
+     )))
+
+#|
+
+
 (def-syntax-rule (np vg)
                  :head :right-edge
   :form subj+verb
@@ -349,6 +364,9 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :head :right-edge
   :form s
   :referent (:function assimilate-subject left-edge right-edge))
+
+|#
+                 
               
 
 (def-form-rule (that s)
