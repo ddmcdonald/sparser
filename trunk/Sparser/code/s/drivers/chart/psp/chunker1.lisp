@@ -21,6 +21,7 @@
 ;; 1/14/2015 New whack-a-rule type interpreter for NG and VG chunks
 ;; 1/17/2015 NEW VERSION -- should handle ambiguities in base edges
 ;; 1.28.2015 better handling of VG chunks -- don't allow two finite verbs in the chunk (excpet for BE, HAVE and modals)
+;; 2/24/2015 allow determiner and quantifier before number in an NG (used to be that we didn't allow "all three drugs"
 
 (in-package :sparser)
 
@@ -352,7 +353,13 @@ all sorts of rules apply and not simply form rules.
      (not
       (and
        (eq category::number (edge-form e))
-       evlist))
+       (loop for ev in evlist
+         thereis
+          (loop for edge in (ev-edges ev)
+            thereis
+            (not (memq (edge-form edge) 
+                       `(,category::quantifier ,category::det)))
+            ))))
      (not 
       (loop for edge in edges
         thereis
