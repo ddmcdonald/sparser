@@ -40,12 +40,15 @@
   ;; called from new-forest-driver after it has called 
   ;; sweep-sentence-treetops to create the layout
   (declare (special *allow-pure-syntax-rules*
-                    *edges-from-referent-categories*))
+                    *edges-from-referent-categories*)
+           (ignore layout))
   (tr :island-driven-forest-parse start-pos end-pos)
-  (when *trace-island-driving* (tts))
+  (when (or *trace-island-driving* 
+            *parse-edges*)
+    (tts))
   (let ((*allow-pure-syntax-rules* t)
         (*edges-from-referent-categories* t))
-    (run-island-checks layout)
+    (run-island-checks sentence) ;;layout)
     ;;  (successive-treetops :from start-pos :to end-pos)
     (let ((coverage (coverage-over-region start-pos end-pos)))
       (unless (eq coverage :one-edge-over-entire-segment)
@@ -66,8 +69,8 @@
 ;;; first pass
 ;;;------------
 
-(defun run-island-checks (layout)
-  (push-debug `(,layout))
+(defun run-island-checks (sentence) ;;layout)
+  ;;(push-debug `(,layout))
   ;; preposed adjuncts
   
   (when (there-are-parentheses?)
@@ -76,27 +79,30 @@
   
   (when (there-are-conjunctions?)
     (tr :looking-for-short-conjuncts)
-    (look-for-short-obvious-conjunctions))
+    (let ((*allow-form-conjunction-heuristic* nil))
+      (declare (special *allow-form-conjunction-heuristic*))
+      (look-for-short-obvious-conjunctions)))
   
   (when (there-are-prepositions?)
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
   
   (if *whack-a-rule*
-    (whack-a-rule-cycle)
+    (whack-a-rule-cycle sentence)
     (older-island-driving-rest-of-pass-one))
 
-  (when (there-are-conjunctions?)
+  #+ignore(when (there-are-conjunctions?) ;; J3 doesn't parse
     (tr :try-spanning-conjunctions)
-    (try-spanning-conjunctions)))
+    (try-spanning-conjunctions))
+  )
 
 
 
-(defun whack-a-rule-cycle ()
+(defun whack-a-rule-cycle (sentence)
   (let ( copula )
     (loop while (setq copula (copula-rule?))
       do (execute-triple copula)))
-  (when (there-are-conjunctions?)
+  #+ignore(when (there-are-conjunctions?)
     (tr :try-spanning-conjunctions)
     (try-spanning-conjunctions))
   (let ( rule-and-edges  edge )
@@ -104,7 +110,7 @@
 ;      do (execute-triple rule-and-edges))
 ; Reformulated to insert trace
     (loop
-      (setq rule-and-edges (best-treetop-rule))
+      (setq rule-and-edges (best-treetop-rule sentence))
       (when (null rule-and-edges)
         (return))
       (setq edge (execute-triple rule-and-edges))
