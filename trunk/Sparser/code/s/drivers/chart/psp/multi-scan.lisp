@@ -258,19 +258,18 @@
     ;; set by complete calling mark-instance-of-AND during the
     ;; scan-terminals-loop pass.
     ;;/// The flag gets initialized, but mark-instance-of-AND or
-    ;; something is putting on two copies
+    ;; something is putting on two copies.
     (dolist (position (remove-duplicates *pending-conjunction*))
       ;; lifted from look-for-short-obvious-conjunctions which will
       (let ((left-edge (next-treetop/leftward position))
             (right-edge  (right-treetop-at/edge 
-                          (chart-position-after position))))
-        (declare (special left-edge right-edge))
+                          (chart-position-after position)))
+            (*allow-form-conjunction-heuristic* nil))
+        (declare (special *allow-form-conjunction-heuristic*))
         ;;(break "short-conjunctions")
         ;; handle case of A, B, and C (i.e. comma before conjunction)
-        (if (eq word::comma (edge-category left-edge))
-            (then
-              (setq left-edge
-                    (next-treetop/leftward left-edge))))
+        (when (eq word::comma (edge-category left-edge))
+          (setq left-edge (next-treetop/leftward left-edge)))
         (unless (or (word-p left-edge)
                     (word-p right-edge))
           (dolist (left (if (edge-vector-p left-edge) 
