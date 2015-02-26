@@ -112,7 +112,7 @@
 
 (defun resolve-colon-pattern (pattern words colon-positions start-pos end-pos)
   ;; (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
-  ;; (break "starting hyphen pattern: ~a" pattern)
+  ;; (break "starting colon pattern: ~a" pattern)
   (let ((count 0))
     (dolist (item pattern)
       (when (eq item :colon ) (incf count)))
