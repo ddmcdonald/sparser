@@ -22,10 +22,9 @@
 
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
-  (setq *note-text-relations* nil)
   (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
-  (setq *report-form-check-blocks* t)
+  (setq *report-form-check-blocks* nil)
 ;  (setq *trace-instance-recording* t
 ;        *scan-for-unsaturated-individuals* t)
 ;  (setq *scan-for-unsaturated-individuals* t)
