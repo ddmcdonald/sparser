@@ -47,6 +47,8 @@
 (defparameter *break-on-next-sentence* nil
   "Flag to cut in when we want to see something")
 
+;; (trace-paragraphs)
+
 (defun period-hook (the-word-period position-before position-after)
   (declare (ignore the-word-period))
   ;; position-before is the one with the period on it. After picks out
