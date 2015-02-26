@@ -88,6 +88,12 @@
   :form infinitive
   :referent (:daughter right-edge))
 
+;; We need this version of the rule because the
+;; usual chunking is, e.g. to [ phosphorylate]
+;; with the "to" stranded. 
+(def-form-rule ("to" vg)
+  :form infinitive
+  :referent (:daughter right-edge))
 
 
 ;;;------------------------------------
