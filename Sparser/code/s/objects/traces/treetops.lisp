@@ -575,36 +575,44 @@
 
 (deftrace :wacking-triple (rule-and-edges edge)
   ;; called from whack-a-rule-cycle
-  (when *trace-island-driving*
+  (when (or *trace-island-driving* *parse-edges*)
     (let ((rule (car rule-and-edges))
           (left-edge (cadr rule-and-edges))
-          (right-edge (caddr rule-and-edges)))          
-      (trace-msg "[wack] Appled ~a to compose e~a and e~a to form e~a"
-                 (rule-number-string rule)
-                 (edge-position-in-resource-array left-edge)
-                 (edge-position-in-resource-array right-edge)
+          (right-edge (caddr rule-and-edges)))
+      (declare (ignore rule left-edge right-edge))
+      (trace-msg "[wack] Appled triple to form e~a"
                  (edge-position-in-resource-array edge)))))
 
 (deftrace :pairs-to-consider-wacking (pairs)
-  (when *trace-island-driving*
-    (trace-msg "[wack] ~a pairs:~%~a
-
-;;~[~& ~a~%~}" ;<<<<<<<<<<<<<<<<<
+  (when (or *trace-island-driving* *parse-edges*)
+    (trace-msg "~%[wack] ~a pairs: ~{~& ~a~}" 
                (length pairs) pairs)))
 
 (deftrace :can-we-wack-pair (pair)
-  (when *trace-island-driving*
+  (when (or *trace-island-driving* *parse-edges*)
     (trace-msg "[wack] Is there a rule to compose e~a and e~a ?"
                (edge-position-in-resource-array (car pair))
                (edge-position-in-resource-array (cadr pair)))))
 
 (deftrace :wack-pair-with-rule (rule)
-  (when *trace-island-driving*
+  (when (or *trace-island-driving* *parse-edges*)
     (trace-msg "[wack]   yes: ~a" rule)))
 
 (deftrace :no-rule-to-wack-pair ()
-  (when *trace-island-driving*
+  (when (or *trace-island-driving* *parse-edges*)
     (trace-msg "[wack]   no")))
+
+(deftrace :filter-selected-triple (triple)
+  (when (or *trace-island-driving* *parse-edges*)
+    (if triple
+      (let ((rule (car triple))
+            (left-edge (cadr triple))
+            (right-edge (caddr triple)))
+        (trace-msg "[wack] best choice is rule ~a on  e~a and e~a"
+                   (rule-number-string rule)
+                   (edge-position-in-resource-array left-edge)
+                   (edge-position-in-resource-array right-edge)))
+      (trace-msg "[wack] no pair had a rule"))))
                
 
 
