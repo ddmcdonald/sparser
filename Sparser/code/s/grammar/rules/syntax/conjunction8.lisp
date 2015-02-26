@@ -369,6 +369,7 @@
     (if (eq label-before label-after)
       :conjunction/identical-adjacent-labels
       (when *allow-form-conjunction-heuristic*
+        ;;(break "form heuristics allowed. Check backtrace")
         (let ((form-before (edge-form edge-before))
               (form-after (edge-form edge-after)))
           (declare (special form-before form-after))
