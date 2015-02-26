@@ -95,6 +95,14 @@
     (loop for i from 0 upto (1- (ev-number-of-edges ev))
       collect (aref vector i))))
 
+(defun tt-edges-starting-at (start-ev)
+  ;; Special purpose lookup for wack-a-rule.
+  ;; Called from adjacent-tt-pairs where we want to
+  ;; include literal rules in the case of multiple-initial-edges
+  (let* ((edge (ev-top-node start-ev)))
+    (if (eq edge :multiple-initial-edges) 
+      (all-edges-on start-ev) 
+      `(,edge))))
 
 
 (defun span-covered-by-one-edge? (start end)
