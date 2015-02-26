@@ -266,18 +266,7 @@
                       (eq (pos-terminal ending-position)
                           word::end-of-source)
                       (null (pos-terminal ending-position)))
-            (all-tts ending-position stop-pos)))))
-#+ignore
- (cons ;; original layout
-     tt
-     (unless
-         (or (eq ending-position stop-pos)
-             (eq (pos-terminal ending-position)
-                 word::end-of-source)
-             (null (pos-terminal ending-position)))
-       
-       (then 
-        (all-tts ending-position stop-pos))))
+            (all-tts ending-position stop-pos))))) 
 
 (defun right-treetop-edge-at (position)
   (let* ((vector (pos-starts-here position))
@@ -290,22 +279,57 @@
      (t
       (pos-terminal position)))))
 
+(defun adjacent-tt-pairs (sentence)
+  ;;(push-debug `(,sentence)) (break "tt")
+  (let* ((start-pos (starts-at-pos sentence))
+         (start-ev (pos-starts-here start-pos))
+         (start-edges (tt-edges-starting-at start-ev))
+         (end-pos (ends-at-pos sentence)))
+    (adjacent-tt-pairs1 start-edges
+                        end-pos)))
 
+(defun adjacent-tt-pairs1 (edges-to-left end-pos)
+  (let* ((random-left-edge (car edges-to-left))
+         (left-ev (edge-ends-at random-left-edge))
+         (left-end-position (ev-position left-ev)))
+    (unless (eq left-end-position end-pos)
+      (let* ((next-ev (pos-starts-here left-end-position))
+             (edges-to-right (tt-edges-starting-at next-ev))
+             pairs )
+        (setq pairs (form-all-pairs edges-to-left
+                                    edges-to-right))
+        (let ((recursive-pairs 
+               (adjacent-tt-pairs1 edges-to-right end-pos)))
+          (let ((retun-value
+                 (if recursive-pairs
+                   (nconc pairs recursive-pairs)
+                   pairs)))
+            retun-value))))))
 
-(defun best-treetop-rule ()
+(defun form-all-pairs (left-list right-list)
+  (let ( pairs )
+    (loop for left in left-list
+      do (loop for right in right-list
+           do (push (list left right) pairs)))
+    pairs))
+     
+         
+
+(defun best-treetop-rule (sentence)
   ;; feeder routine in whack-a-rule-cycle that identifies
   ;; all of the treetop edges that are pairwise adjacent
   ;; using adjacent-tts and winnows that list down using
   ;; filter-rules-by-local-competition
-  (let ((pairs (adjacent-tts))
+  (let ((pairs (adjacent-tt-pairs sentence)) ;; adjacent-tts))
         rule  rules )
-    ;;(push-debug `(,pairs)) (break "pairs = ~a" pairs)
-    ;(tr :pairs-to-consider-wacking pairs)
+    (tr :pairs-to-consider-wacking pairs)
     (loop for pair in pairs 
       when (setq rule (rule-for-edge-pair pair))
       do (push (cons rule pair)
                rules))
-    (filter-rules-by-local-competition rules)))
+    (let ((triple (filter-rules-by-local-competition rules)))
+      (tr :filter-selected-triple triple)
+      triple)))
 
 (defun copula-rule? ()
   (let
@@ -329,7 +353,6 @@
 (defun rule-for-edge-pair (pair)
   (tr :can-we-wack-pair pair)
   (let ((rule (multiply-edges (car pair) (second pair))))
-    (when rule (tr :wack-pair-with-rule rule))
     (if rule
       (when (cond
              ((not (consp (cfr-referent rule))))
@@ -345,6 +368,7 @@
               ;;   ((:HEAD LEFT-REFERENT) 
               ;;    (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
               t))
+        (tr :wack-pair-with-rule rule)
         rule)
       (else
        (tr :no-rule-to-wack-pair)
@@ -369,31 +393,35 @@
       ;; use ref/function as a predicate!!
       (ref/function (cdr (cfr-referent rule))))))
 
-(defun filter-rules-by-local-competition (rules)
-  (loop for tail on rules
-    unless (losing-competition? (car tail) (second tail))
+(defun filter-rules-by-local-competition (tiples)
+  (loop for tail on tiples
+    ;; Go through every pair of triples. Establish whether
+    ;; they are competing over an edges that they have
+    ;; in common, and apply heuristics to determine
+    ;; which one to permit to win.
+    unless (losing-competition? (car tail) (cadr tail))
     do (return (car tail))))
 
-(defun losing-competition? (rule1 rule2)
-  (declare (special rule1 rule2))
+(defun losing-competition? (tiple1 triple2)
+  (declare (special tiple1 rule2))
   (cond
    ((and 
-     (eq (second rule1) (third rule2))
+     (eq (second tiple1) (third triple2))
      ;; there is an edge which is being competed for
 
      (or ;; competing against a "there BE"
-      (eq category::syntactic-there (car (cfr-rhs (car rule2))))
+      (eq category::syntactic-there (car (cfr-rhs (car triple2))))
       (and
-       (or (eq category::preposition (car (cfr-rhs (car rule2))))
-           (eq category::spatial-preposition (car (cfr-rhs (car rule2)))))
+       (or (eq category::preposition (car (cfr-rhs (car triple2))))
+           (eq category::spatial-preposition (car (cfr-rhs (car triple2)))))
        (or
-        (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car rule1)))
-        (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car rule1)))
-        (memq (cat-symbol (second (cfr-rhs (car rule1))))
+        (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car tiple1)))
+        (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car tiple1)))
+        (memq (cat-symbol (second (cfr-rhs (car tiple1))))
               '(category::vg category::vp)))
 
        ;; there must be a competing rule
-       (let ((preceding-edge (edge-just-to-left-of (second rule2))))
+       (let ((preceding-edge (edge-just-to-left-of (second triple2))))
          (and
           preceding-edge
           (edge-form preceding-edge) ;; got a case with COMMA as a literal edge
@@ -405,7 +433,7 @@
     ;; is as large as possible.
     ;; Don't do right-to-left activation for the subj+verb rules
     ;(break "competing")
-    ;;(print `(dropping rule ,rule1))
+    ;;(print `(dropping rule ,tiple1))
     t)
    (t nil)))
 
