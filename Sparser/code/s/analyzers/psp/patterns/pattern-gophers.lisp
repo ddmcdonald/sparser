@@ -59,6 +59,20 @@
      (nreverse segments) words pos-before pos-after)))
 
 
+;; endogenous C-RAF:B-RAF heterodimers
+(defun divide-and-recombine-ns-pattern-with-colon (pattern words 
+                                                   colon-positions hyphen-positions 
+                                                   pos-before pos-after)
+  (push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
+  (let ((treetops (treetops-between pos-before pos-after)))
+    (if (= (length treetops) 3)
+      ;; nothing to do, there's already a parse of the consituents to either 
+      ;; side of the colon
+      (make-word-colon-word-structure (first treetops) (third treetops))
+      (else
+       (push-debug `(,treetops))
+       (break "colon+hyphen stub: have to construct one of the constituents")))))
+
 (defun resolve-slash-segment (segment-pattern hyphen-positions start-pos end-pos)
   (tr :resolve-slash-segment segment-pattern start-pos end-pos)
   (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))

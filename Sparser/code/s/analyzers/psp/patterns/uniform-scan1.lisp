@@ -108,11 +108,16 @@
               (tr :ns-looking-at-slash-patterns)
               (divide-and-recombine-ns-pattern-with-slash 
                pattern words slash-positions hyphen-positions start-pos end-pos))
+             ((and (memq :hyphen pattern)
+                   (memq :colon pattern))
+              (divide-and-recombine-ns-pattern-with-colon
+               pattern words colon-positions hyphen-positions start-pos end-pos))
              ((memq :hyphen pattern)
               (tr :ns-looking-at-hypen-patterns)
               (resolve-hyphen-pattern 
                pattern words hyphen-positions start-pos end-pos))
              ((memq :colon pattern)
+              (tr :ns-looking-at-colon-patterns)
               (resolve-colon-pattern pattern words colon-positions start-pos end-pos))
              (t 
               (tr :ns-taking-default)
@@ -160,10 +165,11 @@
   ;; need an EOS check 
   ;;  (push-debug `(,position)) (break "sweep to end from ~a" position)
   (let ((next-pos (chart-position-after position))
-        word  hyphens  slashes colons) 
+        word  hyphens  slashes  colons ) 
     (loop
       ;; we enter the loop looking for a reason to stop
       (setq word (pos-terminal next-pos))
+      (tr :ns-word-sweep word)
       (when (pos-preceding-whitespace next-pos)
         (return))
       (when (first-word-is-bracket-punct word)
