@@ -193,6 +193,14 @@
               (*right-edge* right-edge))
           (declare (special *rule* *left-edge* *right-edge*))
           (when *report-form-check-blocks*
+            (format t "~&***------>> blocking ~a~
+                     ~%   ~a applied to~
+                     ~%   (~a, ~a)~
+                     ~%   (~a, ~a)~%"
+                    rule (rule-forms *rule*)
+                    (edge-form *left-edge*) *left-edge*
+                    (edge-form *right-edge*) *right-edge*)
+            #+ignore
             (print `(***------>> blocking  
                      ,*rule* ,(rule-forms *rule*) 
                      applied to 
