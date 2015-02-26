@@ -149,6 +149,11 @@
     (trace-msg "[ns] simple-scheme started at p~a"
 	       (pos-token-index p))))
 
+(deftrace :ns-word-sweep (word)
+  ;; called from sweep-to-end-of-ns-regions
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] swept over ~s" (word-pname word))))
+
 (deftrace :no-space-sequence-made-word (word)
   (when (or *trace-scan-patterns*)
     (trace-msg "[ns] made word ~a" word)))
@@ -177,6 +182,10 @@
 (deftrace :ns-looking-at-hypen-patterns ()
   (when *trace-scan-patterns*
     (trace-msg "[ns] Looking for a matching hyphen pattern")))
+
+(deftrace :ns-looking-at-colon-patterns ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking for a matching colon pattern")))
 
 (deftrace :ns-taking-default ()
   (when *trace-scan-patterns*
