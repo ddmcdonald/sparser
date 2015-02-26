@@ -78,7 +78,7 @@
                 (word-is-a-preposition? preposition))
       (error "~s does not appear to be a preposition." pname))
     (let ((v/r (var-value-restriction variable)))
-      (assign-prepositional-subcategorization
+      (assign-subcategorization 
        category preposition v/r variable))))
 
 
