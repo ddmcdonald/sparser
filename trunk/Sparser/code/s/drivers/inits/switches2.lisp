@@ -418,6 +418,7 @@
         *island-driving* t)
 
   (period-hook-on)
+  
 
 ; *check-forms* t
 
