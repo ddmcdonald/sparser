@@ -24,7 +24,14 @@
         (left-vector (ev-edge-vector     left-ending-vector))
         (right-count  (ev-number-of-edges right-ending-vector))
         (right-vector (ev-edge-vector     right-ending-vector))
-        left-edge  right-edge  rule  single-edge  already-have-a-rule )
+        left-edge  right-edge  rule  single-edge  
+        already-have-a-rule  #|prefered-rule|#  )
+
+    (flet ((make-the-edge (rule)
+             (let ((edge (make-completed-binary-edge
+                         left-edge right-edge rule)))
+              (setq already-have-a-rule rule)
+              (setq single-edge edge))))
 
     (dotimes (left-index left-count)
       (setq left-edge (aref left-vector left-index))
@@ -40,16 +47,25 @@
 
               (else
                 (tr :multiple-completions already-have-a-rule rule)
-                (when *break-on-unexpected-cases*
-                  ;; /// should we pick one as the default ??
-                  (break "stub -- multiple toplevel completions"))))
+                #+ignore(setq prefered-rule (select-between-two-rules 
+                                     already-have-a-rule rule))
+                ;; We could think about it, but if we just go with
+                ;; the 'next' offered rule then we're working
+                ;; from early edges to late ones, which is usually
+                ;; a good thing, but it's only a heuristic
+                (make-the-edge rule)))
 
-            (let ((edge (make-completed-binary-edge
-                         left-edge right-edge rule)))
-              (setq already-have-a-rule rule)
-              (setq single-edge edge))))))
+            ;; The first time we find a rule we make the
+            ;; corresponding edge
+            (make-the-edge rule)))))
+    single-edge )))
 
-    single-edge ))
+;; hook to actually apply some smarts
+(defun select-between-two-rules (earlier later)
+  (declare (ignore earlier later))
+  (when *break-on-unexpected-cases*
+    ;; /// should we pick one as the default ??
+    (break "stub -- multiple toplevel completions")))
 
 
 
