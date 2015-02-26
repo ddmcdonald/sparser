@@ -15,6 +15,28 @@
 ; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
 ;    (setq *note-text-relations* nil)
 
+(defun setup-bio ()
+  (bio-setting)
+  (remove-paragraph-marker) ;; #<PSR1155  sgml-label ->  "p"> interfers with "p100"
+  (setq *tts-after-each-section* nil)
+  (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
+  (gload "bio;loader")
+  (ddm-load-corpora)
+  (declare-all-existing-individuals-permanent))
+
+(defun bio-traps ()
+  ;; switch settings to facilitate 'getting through'
+  (setq *sweep-sentence-treetops* nil) ;; easing these in gradually
+  (setq *island-driving* nil))
+
+(defun bf-on () ;; bio forest
+  (setq *sweep-sentence-treetops* t)
+  (setq *island-driving* t))
+(defun bf-off ()
+  (setq *sweep-sentence-treetops* nil)
+  (setq *island-driving* nil))
+
+
 ; (setq *kind-of-chart-processing-to-do* :successive-sweeps)
 ; (bio-setting)
 
@@ -28,18 +50,11 @@
 
 ; (setq *do-islands-2d-pass* nil)
 
-(defun bf-on () ;; bio forest
-  (setq *sweep-sentence-treetops* t)
-  (setq *island-driving* t))
-(defun bf-off ()
-  (setq *sweep-sentence-treetops* nil)
-  (setq *island-driving* nil))
-
 
 (defun figure-7 ()
   ;; of Turke et al. "MKE inhibition leads ..."
   ;; Caption of figure seven  on page 20 minus the portion in bold
-  (p "In untreated cells EGFR is phosphorylated at T669 by MEK/ERK, 
+  (p "In untreated cells, EGFR is phosphorylated at T669 by MEK/ERK, 
 which inhibits activation of EGFR and ERBB3. In the presence of AZD6244, 
 ERK is inhibited and T669 phosphorylation is blocked, increasing 
 EGFR and ERBB3 tyrosine phosphorylation and up-regulating downstream signaling."))
@@ -163,19 +178,6 @@ Proteins (GAPs) or by both mechanisms. |#
 ; (p "Growth factors can activate Ras by activating Guanine nucleotide Exchange Factors or by inhibiting the GTPase Activating Proteins or by both mechanisms.")
 ;; /// pull out the parentheses because something is inhibiting their interior's analysis
 
-
-
-(defun setup-bio ()
-  (remove-paragraph-marker) ;; #<PSR1155  sgml-label ->  "p"> interfers with "p100"
-  (setq *tts-after-each-section* nil)
-  (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
-  (gload "bio;loader")
-  (declare-all-existing-individuals-permanent))
-
-(defun bio-traps ()
-  ;; switch settings to facilitate 'getting through'
-  (setq *sweep-sentence-treetops* nil) ;; easing these in gradually
-  (setq *island-driving* nil))
 
 
 
