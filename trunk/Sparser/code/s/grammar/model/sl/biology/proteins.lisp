@@ -38,6 +38,12 @@
 (def-bio "p53" protein
   :mitre-link "Uniprot:P04637")
 
+(def-bio "EGFR" kinase)
+;;(def-bio "ERBB1" kinase) synonym for EGFR
+(def-bio "ERBB2" kinase)
+(def-bio "ERBB3" kinase)
+
+
 (def-bio "NIK" kinase 
   :long "NF-kappaB-inducing kinase" 
   :identifier "GO:0004704"
