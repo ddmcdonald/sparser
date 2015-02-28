@@ -419,7 +419,7 @@
 
   (period-hook-on)
   
-
+; *whack-a-rule* t
 ; *check-forms* t
 
   ;; Set the full set of switches to control what 'after action'
