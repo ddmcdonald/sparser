@@ -138,6 +138,11 @@
     (if rs (d rs)
         (format nil "~a does not have a rule set" c))))
 
+(defun dcr (category-name) ;; "Describe category's rules"
+  (display-rules category-name)
+  (display-subcategorization category-name)
+  (category-named category-name))
+
 
 ;;--- accessors
 
