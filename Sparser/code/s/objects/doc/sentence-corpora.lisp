@@ -8,6 +8,7 @@
 ;; initiated 1/25/15
 ;; 1/28/2015 added methods to for building a regression test for sentence semantics
 ;;  (one stepp beyond just the number of treetops)
+;; completed methods for semantic regression -- seems to work -- no comparison as yet
 
 (in-package :sparser)
 
@@ -148,6 +149,14 @@ previous records of treetop-counts.
   "This file is in the loader for citations so it will always be
    included in a load of Sparser")
 
+(defparameter *file-for-treetop-semantic-snapshots*
+  (concatenate 'string
+               "~/sparser/Sparser/code/s/"
+               "grammar/tests/citations/code/"
+               "treetop-semantic-records.lisp")
+  "This file is in the loader for citations so it will always be
+   included in a load of Sparser")
+
 (defmethod save-treetop-snapshot ((name symbol) 
                                   &optional (file *file-for-treetop-snapshots*))
   (let ((corpus (get-sentence-corpus name)))
@@ -227,7 +236,10 @@ previous records of treetop-counts.
      ((individual-p (car semtree))
       (cons
        (let ((s (make-string-output-stream)))
+         ;; this next form side effects the value of s
+         ;; making it contain the simplified string for the individual
          (string-for-individual (car semtree) s)
+         ;; we use the revised value of s to produce the output
          (intern(get-output-stream-string s)))
        (loop for binding in (cdr semtree)
          when (second binding)
@@ -236,4 +248,94 @@ previous records of treetop-counts.
                (simple-sem (second binding))))))))
    (t semtree)))
 
+
+
+(defclass treetop-semantic-snapshot ()
+  ((corpus :initarg :corpus :accessor snapshot-corpus
+    :documentation "Backpointer")
+   (timestamp :accessor snapshot-timestamp
+    :documentation "Readable for for organizing file")
+   (semantic-pairs :accessor sem-pairs
+    :documentation "Dotted pair of sentence number and treetop simplified semantics")))
+
+(defmethod print-object ((ts treetop-semantic-snapshot) stream)
+  (print-unreadable-object (ts stream :type t)
+    (format stream "~a ~a" 
+            (name (snapshot-corpus ts))
+            (snapshot-timestamp ts))))
+
+(defmethod run-treetop-semantic-snapshot ((name symbol))
+  (let ((corpus (get-sentence-corpus name)))
+    (unless corpus
+      (error "No sentence corpus has been defined with the name ~a" name))
+    (run-treetop-semantic-snapshot corpus)))
+
+(defmethod run-treetop-semantic-snapshot ((corpus sentence-corpus))
+  (let ((variable (corpus-bound-variable corpus)))
+    (unless variable
+      (error "Corpus not set up with a variable"))
+    (let ((*readout-relations* nil)
+          (*readout-segments* nil)
+          (*readout-segments-inline-with-text* nil) ;; quiet
+          (*display-word-stream* nil)
+          (*trace-lexicon-unpacking* nil)
+          (*trace-morphology* nil)
+          (*workshop-window* t) ;; block tts in p
+          (index 0) pairs )
+      (declare (special *readout-relations* *readout-segments*
+                        *readout-segments-inline-with-text*
+                        *display-word-stream*
+                        *trace-lexicon-unpacking* *trace-morphology*
+                        *workshop-window*)) 
+      (dolist (exp (eval variable)) ;; (p "...")
+        (incf index)
+        (push
+         (sem-result (second exp))
+         pairs))
+      (nreverse pairs))))
+
+(defmethod make-treetop-semantic-snapshot ((name symbol))
+  (let ((corpus (get-sentence-corpus name)))
+    (unless corpus
+      (error "No sentence corpus has been defined with the name ~a" name))
+    (make-treetop-semantic-snapshot corpus)))
+      
+(defmethod make-treetop-semantic-snapshot ((corpus sentence-corpus))
+  (let ((pairs (run-treetop-semantic-snapshot corpus)))
+    (let ((snapshot (make-instance 'treetop-snapshot :corpus corpus)))
+      (setf (snapshot-timestamp snapshot)
+            (date-&-time-as-formatted-string))
+      (setf (snapshot-pairs snapshot) pairs)
+      snapshot)))
+
+
+(defmethod save-treetop-semantic-snapshot ((name symbol) 
+                                  &optional (file *file-for-treetop-semantic-snapshots*))
+  (let ((corpus (get-sentence-corpus name)))
+    (unless corpus
+      (error "No sentence corpus has been defined with the name ~a" name))
+    (save-treetop-semantic-snapshot corpus file)))
+
+(defmethod save-treetop-semantic-snapshot ((corpus sentence-corpus)
+                                  &optional (file *file-for-treetop-semantic-snapshots*))
+  (let ((snapshot (make-treetop-semantic-snapshot corpus)))
+    (with-open-file (stream file
+                     :direction :output
+                     :if-exists :append
+                     :if-does-not-exist :error)
+        (write-treetop-semantic-snapshot snapshot stream))))
+
+(defun write-treetop-semantic-snapshot (snapshot stream)
+  (let ((corpus (snapshot-corpus snapshot)))
+    (format stream "~&(define-treetop-semantic-snapshot ~a ~s"
+            (name corpus)
+            (snapshot-timestamp snapshot))
+    (format stream "~&'(~%")
+    (loop for pair in (snapshot-pairs snapshot)
+      do 
+      (format stream " (~s" (car pair))
+      (pprint (cdr pair) stream)
+      (format stream ")~%~%"))
+    (format stream "))~%")))
+        
 
