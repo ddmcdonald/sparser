@@ -20,7 +20,9 @@
 
 (in-package :sparser)
 
+;;--- S
 
+;(def
 
 #| This is too potent to use in a leftward sweep
    because it catches things early
