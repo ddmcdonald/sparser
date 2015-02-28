@@ -102,16 +102,33 @@
   (display-subcategorization (category-named category-name :break)))
 
 (defmethod display-subcategorization ((c category))
-  (let ((sf (get-subcategorization category)))
-    (unless sf
-      (error "there is no subcategorization-frame associated ~
-              the category ~a" c))
-    (display-subcategorization sf)))
-#|
+  (let ((sf (get-subcategorization c)))
+    (if sf
+      (display-subcategorization sf)
+      (format t "The category ~a has no subcategorizations"
+              (cat-symbol c)))))
+
 (defmethod display-subcategorization ((sf subcategorization-frame))
   (let ((category (for-category sf))
-(patterns 
-|#
+        (patterns (subcat-patterns sf)))
+    (format t "Subcategorization options for ~a"
+            (cat-symbol category))
+    (push-debug `(,patterns)) ;;(break "patterns")
+    (do* ((subcat-list (car patterns) (car rest))
+          (trigger (car subcat-list) (car subcat-list))
+          (v/r (cadr subcat-list) (cadr subcat-list))
+          (var (caddr subcat-list) (caddr subcat-list))
+          (rest (cdr patterns) (cdr rest)))
+         ((null subcat-list))
+      (cond
+       ((keywordp trigger)
+        (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
+                trigger (cat-symbol v/r) (var-name var)))
+       ((word-p trigger)
+        (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
+                (word-pname trigger) (cat-symbol v/r) (var-name var)))
+       (t (error "Unanticipated type of trigger in ~a" subcat-list))))))
+
 
 ;;;------------------------
 ;;; assignments and access
@@ -158,29 +175,10 @@
     (apply #'decode-subcategorization-parameter-list sf category parameter-plist)))
 
 
-(defun decode-subcategorization-parameter-list (sf category &key prep) ;; pattern)
+(defun decode-subcategorization-parameter-list (sf category &key prep)
   "Parse the content and stash it in the sf structure."
   (when prep
     (setf (bound-prepositions sf) `(,prep)))
-
-#+ignore
-  (when pattern
-    ;; The s-exp form is pretty lame, but no point in naming them
-    ;; until we're getting broader use and have figured it out.
-#| from hydrolysis
-  :subcategorization ( (("of" np "to" np) (theme goal))
-                       (("on" np) (subject))
-                       (("of" np) (theme)) ))  |#
-    (push-debug `(,pattern ,sf))
-    (unless (consp (caar pattern))
-      (setq pattern (list pattern)))
-    (let (  patterns  )
-      (dolist (form pattern)
-        (let ((processed 
-               (assemble-subcategorization-structure category form)))
-          (push processed patterns)))
-      (setf (subcat-patterns sf)
-            (nreverse patterns)))) ;; preserve order
   sf)
 
 
@@ -189,6 +187,8 @@
 ;;;------------------------------------------------
 ;; These are just part of the verb, e.g. "act as".
 ;; They don't mark arguments
+
+;;--- create the record
 
 ; (assign-preposition "responsible" "for")
 (defmethod assign-preposition ((word-pname string) (prep-pname string))
@@ -203,6 +203,8 @@
 (defmethod assign-preposition ((verb word) (prep polyword))
   (assign-subcat/expr verb category::verb nil `(:prep ,prep)))
 
+
+;;--- query the record
 
 (defmethod takes-preposition? ((e edge) (prep word))
   (let* ((label (edge-category e))
@@ -232,29 +234,28 @@
       (memq prep preps))))
 
 
-;;;-------------------
-;;; subcategorization 
-;;;-------------------
+;;;---------------------------------------------------
+;;; subcategorization of marked or unmarked arguments
+;;;--------------------------------------------------
 
-(defun assign-subcategorization (category marker 
-                                               v/r variable)
+(defun assign-subcategorization (category marker v/r variable)
   ;; called from subcategorize-for-preposition (in shortcut
   ;; processing) to take the information and install it for
   ;; use at runtime. Note that the value restriction has to
   ;; be satisfied
-  (push-debug `(,category ,marker ,v/r ,variable))
   (let ((sf (fom-subcategorization category :category category)))
     (let ((entry (subcat-patterns sf))
           (new-case `(,marker ,v/r ,variable)))
       (unless (member new-case entry :test #'equal)
         (setf (subcat-patterns sf) (cons new-case entry)))
-      (push-debug `(,sf ,new-case))
       new-case)))
 
 (defun assign-subject (category v/r variable)
+  ;; called from decode-realization-parameter-list
   (assign-subcategorization category :subject v/r variable))
 
 (defun assign-object (category v/r variable)
+  ;; called from decode-realization-parameter-list
   (assign-subcategorization category :object v/r variable))
 
 
