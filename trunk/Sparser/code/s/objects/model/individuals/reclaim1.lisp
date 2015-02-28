@@ -148,7 +148,7 @@
       ;; this individual is the only instance in this category so
       ;; there's not much to do.
       (setf (unit-plist category)
-            `( :1st-permanent-individual
+            `(:1st-permanent-individual
               ,individual
               :permanent-individuals
               ,(list individual)
@@ -158,12 +158,14 @@
      ((null cell/1st-permanent)
       ;; none of the instances on the list are permanent
       (break "look around and confirm assumptions")
+      (push-debug `(,plist ,cell/instances ,instances))
       ;; The other instances are temporary, so the permanent marker
       ;; and this instance go below them -- see reclaimation code
-      (when (eq individual (car instances)) ;; trust but verify
-        (setq instances (cdr instances)))
-      (let* ((instances-cell
-              (member instances plist :test #'eq))
+      (if (eq individual (car instances)) ;; trust but verify
+        (setq instances (cdr instances))
+        (break "violated assumption. Instance being marked not ~
+                first on the list"))
+      (let* ((instances-cell (member :instances plist :test #'eq))
              (rest-of-the-plist (cddr instances-cell)))
         ;; replace its list of instances with the shorter list
         (rplacd instances-cell
@@ -176,7 +178,7 @@
                  :permanent-individuals
                  ,(list individual)
                 ,@plist))
-        (break "still look right?")))          
+        (break "still look right?")))        
    
 
 
