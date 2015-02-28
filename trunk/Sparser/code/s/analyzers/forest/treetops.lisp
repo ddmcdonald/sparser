@@ -472,8 +472,8 @@
       ;; use ref/function as a predicate!!
       (ref/function (cdr (cfr-referent rule))))))
 
-(defun filter-rules-by-local-competition (tiples)
-  (loop for tail on tiples
+(defun filter-rules-by-local-competition (triples)
+  (loop for tail on triples
     ;; Go through every pair of triples. Establish whether
     ;; they are competing over an edges that they have
     ;; in common, and apply heuristics to determine
@@ -481,11 +481,11 @@
     unless (losing-competition? (car tail) (cadr tail))
     do (return (car tail))))
 
-(defun losing-competition? (tiple1 triple2)
-  (declare (special tiple1 rule2))
+(defun losing-competition? (triple1 triple2)
+  (declare (special triple1 rule2))
   (cond
    ((and 
-     (eq (second tiple1) (third triple2))
+     (eq (second triple1) (third triple2))
      ;; there is an edge which is being competed for
 
      (or ;; competing against a "there BE"
@@ -494,9 +494,9 @@
        (or (eq category::preposition (car (cfr-rhs (car triple2))))
            (eq category::spatial-preposition (car (cfr-rhs (car triple2)))))
        (or
-        (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car tiple1)))
-        (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car tiple1)))
-        (memq (cat-symbol (second (cfr-rhs (car tiple1))))
+        (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car triple1)))
+        (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car triple1)))
+        (memq (cat-symbol (second (cfr-rhs (car triple1))))
               '(category::vg category::vp)))
 
        ;; there must be a competing rule
@@ -512,7 +512,7 @@
     ;; is as large as possible.
     ;; Don't do right-to-left activation for the subj+verb rules
     ;(break "competing")
-    ;;(print `(dropping rule ,tiple1))
+    ;;(print `(dropping rule ,triple1))
     t)
    (t nil)))
 
