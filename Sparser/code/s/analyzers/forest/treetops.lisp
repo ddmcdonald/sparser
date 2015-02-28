@@ -314,32 +314,111 @@
     pairs))
      
          
+(defparameter *use-boader-set-of-tts* nil)
 
 (defun best-treetop-rule (sentence)
   ;; feeder routine in whack-a-rule-cycle that identifies
   ;; all of the treetop edges that are pairwise adjacent
   ;; using adjacent-tts and winnows that list down using
   ;; filter-rules-by-local-competition
-  (let ((pairs (adjacent-tt-pairs sentence)) ;; adjacent-tts))
-        rule  rules )
+  (let ((pairs (if *use-boader-set-of-tts*
+                 (adjacent-tt-pairs sentence)
+                 (adjacent-tts)))
+        rule  triples )
+    (push-debug `(,pairs))
     (tr :pairs-to-consider-wacking pairs)
     (loop for pair in pairs 
       when (setq rule (rule-for-edge-pair pair))
       do (push (cons rule pair)
-               rules))
-    (let ((triple (filter-rules-by-local-competition rules)))
+               triples))
+    (setq triples ; 
+          (if *use-boader-set-of-tts*
+            (let ((original-triples (copy-list triples))) ;; for trace
+              (push-debug `(,original-triples))
+              (remove-surplus-literal-compositions triples))
+            triples))
+
+    (let ((triple (filter-rules-by-local-competition triples)))
       (tr :filter-selected-triple triple)
       triple)))
 
+;; seriously consider a resource of thse
+(defun triple-rule (triple) (car triple))
+(defun left-edge-of-triple (triple) (cadr triple))
+(defun right-edge-of-triple (triple) (caddr triple))
+
+;;/// move
+(defun literal-edge? (edge) ;;/// not the best name
+  (word-p (edge-category edge)))
+
+(defun remove-surplus-literal-compositions (triples)
+  ;; Is there is pair involving an edge based on a literal
+  ;; and another pair, employing the same rule, that applies
+  ;; to a semantic label (e.g. "to" and TO), prefer the one
+  ;; with the regular label. Happens with prepositional phrases.
+  (if (cdr triples) ;; more than one
+    (let ((edges-over-one-word
+           (collect-triples-with-edges-over-one-word triples)))
+      (push-debug `(,edges-over-one-word))
+      (if edges-over-one-word               
+        (if (cdr edges-over-one-word) ;; more than one?
+          (let ((triples-minus-redundant-literals
+                 (remove-redundant-literal-triples edges-over-one-word)))
+            triples-minus-redundant-literals)          
+          triples) ;; only one edge over a single word
+        triples)) ;; none over just one word
+    triples)) ;; only one triple
+
+(defun remove-redundant-literal-triples (records)
+  (push-debug `(,records))
+  (let ( edge  word  words  word+records  )
+            ;; over the same word?            
+            (dolist (record records)
+              (setq edge (second record))
+              (setq word (edge-left-daughter edge))
+              (if (memq word words) ;; already seen?
+                (let ((w+r (assq word word+records)))
+                  (unless w+r 
+                    (push-debug `(,word+records ,word ,words))
+                    ;; (setq word+records (car *) word (cadr *) words (caddr *))
+                    (break "where's the record for ~s?"
+                           (word-pname word)))
+                  (rplacd w+r (cons record (cdr w+r))))
+                (else ;; it's new
+                  (setq word+records `((,word ,record)))
+                  (push word words))))
+            (when (cdr words)
+              (push-debug `(,words ,word+records)) 
+              (break "stub in surplus literals: more than one word"))
+            ;; The word+records at this point all have a unary
+            ;; edge that spans the same word. We're discounting
+            ;; the possibility that this word is duplicated at
+            ;; several places in the text. 
+            (loop for record in (cdr (car word+records))
+              as edge = (ecase (car record)
+                          (:left (left-edge-of-triple (third record)))
+                          (:right (right-edge-of-triple (third record))))
+              unless (literal-edge? edge)
+              collect edge)))
+
+(defun collect-triples-with-edges-over-one-word (triples)
+  (loop for triple in triples
+    as left-edge = (left-edge-of-triple triple)
+    as right-edge = (right-edge-of-triple triple)
+    when (= 1 (edge-length left-edge))
+    collect `(:left ,left-edge ,triple) ;; these are 'records'
+    when (= 1 (edge-length right-edge))
+    collect `(:right ,right-edge ,triple)))
+  
+
+
 (defun copula-rule? ()
-  (let
-      (rule)
+  (let ( rule )
     (loop for pair in (adjacent-tts) 
-      when 
-      (and
-       (setq rule (rule-for-edge-pair pair))
-       (and (eq (car (cfr-rhs rule)) category::be)
-            (eq (second (cfr-rhs rule)) category::adjective)))
+      when (and
+            (setq rule (rule-for-edge-pair pair))
+            (and (eq (car (cfr-rhs rule)) category::be)
+                 (eq (second (cfr-rhs rule)) category::adjective)))
       do
       (return (cons rule pair)))))
 
