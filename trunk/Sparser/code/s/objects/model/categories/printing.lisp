@@ -60,3 +60,36 @@
   (write-string "#<operations for " stream)
   (princ-category (cat-ops-category obj) stream)
   (write-string ">" stream))
+
+;;;-----------------------------------------------
+;;; printing the rules associated with a category
+;;;-----------------------------------------------
+
+(defmethod display-rules ((category-name symbol)
+                          &optional (stream *standard-output*))
+  (display-rules (category-named category-name :break) stream))
+
+(defmethod display-rules ((category category)
+                          &optional (stream *standard-output*))
+  (let ((rules (collect-rules category)))
+    (when rules
+      (format stream "~&The phrase-structure rules for ~a are~%"
+              (cat-symbol category))
+      (format stream "~{~&   ~a~%~}" rules))))
+
+
+(defmethod collect-rules ((i individual))
+  (scrape-rules-out-of-property-list (indiv-plist i)))
+
+(defmethod collect-rules ((c category))
+  (scrape-rules-out-of-property-list (cat-plist c)))
+
+(defun scrape-rules-out-of-property-list (plist)
+  (let ((rule-blocks (loop for element on plist
+                       as tag = (car element)
+                       as value = (cadr element)
+                       when (eq tag :rules)
+                       collect value)))
+    (apply #'append rule-blocks)))
+
+
