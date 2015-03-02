@@ -264,7 +264,7 @@
       (let ((left-edge (next-treetop/leftward position))
             (right-edge  (right-treetop-at/edge 
                           (chart-position-after position)))
-            (*allow-form-conjunction-heuristic* nil))
+            (*allow-form-conjunction-heuristic* t))
         (declare (special *allow-form-conjunction-heuristic*))
         ;;(break "short-conjunctions")
         ;; handle case of A, B, and C (i.e. comma before conjunction)
