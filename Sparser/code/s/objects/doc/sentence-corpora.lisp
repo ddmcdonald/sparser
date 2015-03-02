@@ -1,14 +1,16 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "sentence-corpora"
 ;;;   Module:  "objects/doc/"
-;;;  version:  January 2015
+;;;  version:  March 2015
 
 ;; initiated 1/25/15
 ;; 1/28/2015 added methods to for building a regression test for sentence semantics
 ;;  (one stepp beyond just the number of treetops)
-;; completed methods for semantic regression -- seems to work -- no comparison as yet
+;; completed methods for semantic regression -- seems to work -- 
+;; no comparison as yet.
+;; 3/2/15 Finished compare-to-snapshot. 
 
 (in-package :sparser)
 
@@ -104,12 +106,13 @@ previous records of treetop-counts.
           (*trace-lexicon-unpacking* nil)
           (*trace-morphology* nil)
           (*workshop-window* t) ;; block tts in p
+          (*do-anaphora* nil) ;; no anaphora on single sentences
           (index 0) pairs )
       (declare (special *readout-relations* *readout-segments*
                         *readout-segments-inline-with-text*
                         *display-word-stream*
                         *trace-lexicon-unpacking* *trace-morphology*
-                        *workshop-window*)) 
+                        *workshop-window* *do-anaphora*)) 
       (dolist (exp (eval variable)) ;; (p "...")
         (incf index)
         (eval exp)
@@ -120,6 +123,35 @@ previous records of treetop-counts.
                                 (ends-at-pos sentence)))))
             (push `(,index . ,count) pairs))))
       (nreverse pairs))))
+
+
+;;--- compare current performance to a snapshot
+
+(defmethod compare-to-snapshot ((name symbol))
+  (let ((corpus (get-sentence-corpus name)))
+    (unless corpus
+      (error "No sentence corpus has been defined with the name ~a" name))
+    (compare-to-snapshot corpus)))
+
+(defmethod compare-to-snapshot  ((corpus sentence-corpus))
+  ;;/// consider a way to designate which snapshot to compare against
+  (let* ((current-pairs (run-treetop-snapshot corpus))
+         (snapshot (car (snapshots corpus)))
+         (reference-pairs (snapshot-pairs snapshot)))
+    (push-debug `(,current-pairs ,reference-pairs))
+    ;; (setq current-pairs (car *) reference-pairs (cadr *))
+    (let ( better worse )
+      (loop for ref-pair in reference-pairs
+        as pair in current-pairs
+        when (> (cdr pair) (cdr ref-pair)) ;; more treetops
+        do (push (car pair) worse)
+        when (< (cdr pair) (cdr ref-pair)) ;; fewer
+        do (push (car pair) better))
+      (format t "~&Better: ~a~
+                 ~%Worse: ~a" better worse)
+      current-pairs)))
+
+  
       
 
 ;;--- package runs into snapshots
