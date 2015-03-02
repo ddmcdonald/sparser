@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2012-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;versions:v2.3:loaders:"
-;;;  version:  June 2014
+;;;  version:  March 2015
 
 ;; 4/3/97 added a case for dm&p. 8/17/97 added lots of cases as part of preparing
 ;; a license with the segmenter but not the model.  2/22/10 added construct-
 ;; temporary-number to support :just-bracketing mode. Added bunch more 4/1/12.
 ;; Fixed ill-formed declare 1/28/13. More for omitting grammar modules 6/16/14
-;; and more 8/10/14
+;; and more 8/10/14. And again 3/2/15
 
 (in-package :sparser)
 
@@ -40,6 +40,26 @@
     (declare (ignore original-items)))
   (defun consider-converting-title-to-person (convering-edge)
     (declare (ignore convering-edge))))
+
+(unless *people*
+  (defun find/person-with-name (name)
+    (declare (ignore name)))
+  (defun interpret-name-as-person(name)
+    (declare (ignore name)))
+  (defun make-location-name (items location-head)
+    (declare (ignore items location-head)))
+  (defun make-person-name-from-items (items &key version)
+    (declare (ignore items version)))
+  (defun make-a-collection-of-person-names (items and person-version)
+    (declare (ignore items and person-version)))
+  (defun find/person-with-name (name)
+    (declare (ignore name)))
+  (defun find/location-with-name (name)
+    (declare (ignore name)))
+  (defun make/person-with-name (name)
+    (declare (ignore name)))
+  (defun make/location-with-name (name)
+    (declare (ignore name))))
 
 
 (unless *c3*
@@ -173,7 +193,8 @@
 
    ;(defun do-generic-actions-off-treetop (tt)
    ;  (declare (ignore tt)))
-   (defun do-conceptual-analysis-off-new-treetop (tt))
+   (defun do-conceptual-analysis-off-new-treetop (tt)
+     (declare (ignore tt)))
 
    (defun make-mixin-category (&key symbol)
      (declare (ignore symbol)))
