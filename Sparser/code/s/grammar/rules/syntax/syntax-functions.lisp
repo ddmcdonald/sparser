@@ -431,28 +431,24 @@
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
-  (let
-      ((subcat-patterns (known-subcategorization? head)))
+  (let ((subcat-patterns (known-subcategorization? head)))
     (declare (special subcat-patterns))
-    (when  subcat-patterns
-      (let* (variable)
+    (when subcat-patterns
+      (let ( variable )
         (declare (special prep-word prep-edge pobj-edge variable))      
         (dolist (entry subcat-patterns)
           (declare (special entry))
-          (let
-              ((scr (subcat-restriction entry)))
+          (let ((scr (subcat-restriction entry)))
             (declare (special scr))
-            (when 
-                (and
-                 (eq label (subcat-label entry))
-                 (or
-                  (itypep item category::pronoun/inanimate)
-                  (if
-                   (and
-                    (consp scr)
-                    (eq (car scr) :or))
-                   (loop for type in (cdr scr) thereis (itypep item type))
-                   (itypep item scr))))
+            (when (and
+                   (eq label (subcat-label entry))
+                   (or
+                    (itypep item category::pronoun/inanimate)
+                    (if (and (consp scr)
+                             (eq (car scr) :or))
+                      (loop for type in (cdr scr) 
+                        thereis (itypep item type))
+                      (itypep item scr))))
               (setq variable (subcat-variable entry))
               (return))))
         ;;(break "testing subcats")
@@ -465,8 +461,7 @@
                 'location)
                ((and (itypep head 'biological)
                      (itypep item 'bio-context))
-                'context)))
-         )))))
+                'context))))))))
 
 
 (defun assimilate-subject (subj vp)
