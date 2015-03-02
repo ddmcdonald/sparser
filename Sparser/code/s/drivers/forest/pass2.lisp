@@ -117,11 +117,12 @@
                                      0 2))) ;; '2' because there are only four tt.
           (let ((middle-edge
                  (try-to-carefully-compose-two-edges middle-edges)))
-            (push-debug `(,middle-edge)) ;;   (break "middle edge = ~a" edge)
-            (let ((extended-subject
-                   (compose-as-reduced-relative subject middle-edge)))
-              (push-debug `(,extended-subject)) ;;(break "extended")
-              (ad-hoc-subj+copula-rule extended-subject copula))))))))
+            (when middle-edge
+              (push-debug `(,middle-edge)) ;;   (break "middle edge = ~a" edge)
+              (let ((extended-subject
+                     (compose-as-reduced-relative subject middle-edge)))
+                (push-debug `(,extended-subject)) ;;(break "extended")
+                (ad-hoc-subj+copula-rule extended-subject copula)))))))))
 
 
                                
