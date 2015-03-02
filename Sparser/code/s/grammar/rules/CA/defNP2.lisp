@@ -34,7 +34,8 @@
           (etypecase head
             (psi (base-category-of-psi head))
             (individual (first (indiv-type head)))
-            (referential-category head)))
+            (referential-category head)
+            (mixin-category head))) ;; "this agent" -- meaning drug
          (category-to-look-for
           (case (cat-symbol category-of-head)
             (category::generic-co-word  category::company)
