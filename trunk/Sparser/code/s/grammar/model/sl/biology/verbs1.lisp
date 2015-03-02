@@ -478,7 +478,7 @@
 
 (define-category demonstrate
     :specializes bio-thatcomp
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent biological)(object bio-process))
     :realization
     (:verb "demonstrate" ;; keyword: ENDS-IN-ED 
 	   :noun "demonstration"
