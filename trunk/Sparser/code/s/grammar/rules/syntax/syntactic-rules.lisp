@@ -338,7 +338,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 ;; subject 
 ;;--- subject + verb
 
-(loop for n in '(np pronoun)
+(loop for n in (append '(np pronoun) *n-bar-categories*)
   do
   (loop for v in '(vp vg)
     do
