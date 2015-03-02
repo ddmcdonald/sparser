@@ -322,7 +322,8 @@
       (:noun "mechanism"
              :of process))
 (define-adverb "mechanistically")
-(adj "mekindependent" :super predicate) ;; keyword: (ent ADJ) 
+(delete-adj-cfr (resolve/make "independent"))
+(adj "independent" :super predicate) ;; keyword: (ent ADJ) 
 (noun "membrane" :super cellular-location)
 (noun "method" :super bio-process)
 (noun "mitogen" :super molecule)
@@ -415,7 +416,11 @@
       (:noun "RBD"
              :of substrate)) ;; somehow (def-bio "G-domain" protein-segment) did not work
 (adj "recombinant" :super predicate)
-(adj "refractory" :super predicate) ;; keyword: (ory ADJ)
+(adj "refractory" :super predicate
+     :binds ((treatment bio-process))
+     :realization
+     (:to treatment))
+     ;; keyword: (ory ADJ)
 (noun "region" :super bio-location
       :binds ((bounds biological))
       :realization
