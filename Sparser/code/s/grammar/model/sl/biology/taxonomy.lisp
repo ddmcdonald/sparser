@@ -159,8 +159,12 @@
 ;;; categories of referents for particulars (entities)
 ;;;----------------------------------------------------
 
+
+(delete-noun-cfr (resolve/make "agent"))
+(delete-noun-cfr (resolve/make "agents"))
+
 (define-category bio-agent
-  :specializes bio-entity
+  :specializes biological
   :binds ((dummy biological))
   :realization
   (:noun "agent"))
@@ -168,7 +172,7 @@
 (define-category molecule
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry.
-  :specializes bio-entity
+  :specializes bio-entity`
   :instantiates :self
   :bindings (uid "CHEBI:36357")
   :index (:permanent :key name)
