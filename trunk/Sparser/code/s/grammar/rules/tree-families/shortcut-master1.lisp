@@ -15,6 +15,7 @@
 ;;   also, initial subcat for THATCOMP -- not used yet
 ;;   Delete old noun definitions when redefining a noun (but 
 ;;     don't delete old verb definitions)
+;; add new method delete-adj-cfr (like delete-noun-cfr) to handle cases where core definitions conflict with new definitions
 
 (in-package :sparser)
 
@@ -310,15 +311,21 @@
     category))
 
 (defun delete-noun-cfr (wd)
-  (let ((noun-cfr (find-noun-cfr wd)))
+  (let ((noun-cfr (find-form-cfr wd category::common-noun)))
     (when noun-cfr
       (delete/cfr noun-cfr))))
 
-(defun find-noun-cfr (wd)
+(defun find-form-cfr (wd form)
   (when (rule-set-p (rule-set-for wd))
     (loop for cfr in (rs-single-term-rewrites (rule-set-for wd))
-      when (eq category::common-noun (cfr-form cfr))
+      when (eq form (cfr-form cfr))
       do (return cfr))))
+
+
+(defun delete-adj-cfr (wd)
+  (let ((adj-cfr (find-form-cfr wd category::adjective)))
+    (when adj-cfr
+      (delete/cfr adj-cfr))))
 
 
 (defun handle-prepositions (category &optional against as at between for from in 
