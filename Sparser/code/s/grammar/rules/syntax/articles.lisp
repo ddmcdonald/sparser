@@ -1,17 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2012-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2014
+;;;  Version:  March 2015
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
 ;; because they preempt relative clause interpretation. 1/30/13 Added 
 ;; the+proper-name. 8/7/14 Added the other definite determiners, don't
 ;; remember what the problem might hae been. Added defNP dereference to
-;; "these".
+;; "these". 3/2/15 Converted 'this' cases to defNP
 
 (in-package :sparser)
 
@@ -158,19 +158,23 @@
 
 (def-form-rule ("this" common-noun)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
 
 (def-form-rule ("this" np-head)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
 
 (def-form-rule ("this" n-bar)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
 
 (def-form-rule ("this" np)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
 
 ;;--- "these"
 
