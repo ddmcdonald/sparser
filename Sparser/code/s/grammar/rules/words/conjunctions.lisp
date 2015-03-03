@@ -78,6 +78,10 @@
 (define-conjunction "or"  :form 'conjunction
   :brackets '( ].conjunction conjunction.[ ))
 
+(define-conjunction "but not"  :form 'conjunction
+  )
+
+
 
 ;;------- paired coordinators
 ;;/// How do we represent their paired-ness ?
@@ -101,7 +105,7 @@
           "as though"
           "because"
           "besides"
-          "but"    
+          "but"  
           "even"
           "except"
           "except that"
