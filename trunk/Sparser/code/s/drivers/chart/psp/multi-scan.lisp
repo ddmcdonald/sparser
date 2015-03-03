@@ -251,7 +251,9 @@
 ;;; 3d pass -- conjunctions
 ;;;-------------------------
 
-(defparameter *form-conjunctions* nil)
+(defparameter *use-form-heuristic-in-conj-sweep* t
+  "Controls whether we also look at the form of edges in doing 
+   conjunction during this early sweep")
 
 ;;  (p "by PIK3CA and BRAF are.")
 (defun short-conjunctions-sweep (sentence)
@@ -266,7 +268,8 @@
       (let ((left-edge (next-treetop/leftward position))
             (right-edge  (right-treetop-at/edge 
                           (chart-position-after position)))
-            (*allow-form-conjunction-heuristic* t))
+            (*allow-form-conjunction-heuristic* 
+             *use-form-heuristic-in-conj-sweep*))
         (declare (special *allow-form-conjunction-heuristic*))
         ;;(break "short-conjunctions")
         ;; handle case of A, B, and C (i.e. comma before conjunction)
@@ -281,18 +284,8 @@
                                (ev-edges right-edge)
                                (list right-edge)))
               (let ((heuristic (conjunction-heuristics left right)))
-                #+ignore
-                (when
-                    (and (null heuristic)
-                         (let
-                             ((*allow-form-conjunction-heuristic* t))
-                           (declare (special *allow-form-conjunction-heuristic*))
-                           (conjunction-heuristics left right)))
-                  (push
-                   (terminals-in-segment/one-string 
-                    (pos-edge-starts-at left)
-                    (pos-edge-ends-at right))
-                   *form-conjunctions*))
+                (when nil
+                  (collect-possible-form-conjunction heuristic left right))
                 (if heuristic
                     ;; conjoin/2 looks for leftwards
                     (let ((edge (conjoin/2 left right heuristic)))
