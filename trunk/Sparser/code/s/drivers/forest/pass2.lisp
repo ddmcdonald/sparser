@@ -1,12 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pass2"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  December 2014
+;;;  Version:  March 2015
 
 ;; Broken out of island-driving 10/23/14. Added relative clause check
-;; 12/19/14
+;; 12/19/14. 
+;; 3/3/15 Ignoring the smash-togeter function as too agressive, changed
+;;   the comma-edge case in look-for-length-three-patterns to lookup the
+;;   subcategorization on the preposition.
 
 (in-package :sparser)
 
@@ -33,6 +36,10 @@
         nil)))))
       
 
+;; Rusty determined that this model of an unspecified 
+;; adjunction between a major and a minor constituent
+;; led to bad combinations, so shelving it baring a re-think
+#+ignore
 (defun smash-together-two-tt-islands (treetops)
   ;; Called from run-island-checks-pass-two when there are only
   ;; two treetops
@@ -78,18 +85,29 @@
                                      ,*the-punctuation-comma*
                                      ,category::s)
                                    treetops)
-        ;;/// should let the preposition dictate the relationship
         (let* ((clause (third treetops)) ;; drops the comma
-               (pp (first treetops))   ;; rather than folding into pp
-               (ref (unspecified-adjunction clause pp))
-               (edge (make-binary-edge/explicit-rule-components
-                      pp clause
-                      :category (edge-category clause)
-                      :form (edge-form clause)
-                      :rule-name :look-for-patterns
-                      :referent ref)))
-          (tr :comma-3tt-pattern edge)
-          edge))))
+               (pp (first treetops))   ;; rather than folding it into pp
+
+               ;; For working determining the correct variable
+               (clause-referent (edge-referent clause))
+               (pobj-edge (edge-right-daughter pp))
+               (pobj-referent (edge-referent pobj-edge))
+               (prep-edge (edge-left-daughter pp))
+               (prep-word (edge-left-daughter prep-edge)))
+          (let ((var-name
+                 (or (subcategorized-variable clause-referent
+                                              prep-word
+                                              pobj-referent)
+                     'modifier)))
+            (bind-variable var-name pobj-referent clause-referent)
+            (let ((edge (make-binary-edge/explicit-rule-components
+                          pp clause
+                          :category (edge-category clause)
+                          :form (edge-form clause)
+                          :rule-name :look-for-patterns
+                          :referent clause-referent)))
+              (tr :comma-3tt-pattern edge)
+              edge))))))
   (let* ((first-tt (car treetops))
          ;;(ca-action (conceptual-analysis-action first-tt))
          (da-node (trie-for-1st-item first-tt)))
