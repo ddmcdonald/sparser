@@ -251,6 +251,8 @@
 ;;; 3d pass -- conjunctions
 ;;;-------------------------
 
+(defparameter *form-conjunctions* nil)
+
 ;;  (p "by PIK3CA and BRAF are.")
 (defun short-conjunctions-sweep (sentence)
   (declare (ignore sentence))
@@ -279,6 +281,18 @@
                                (ev-edges right-edge)
                                (list right-edge)))
               (let ((heuristic (conjunction-heuristics left right)))
+                #+ignore
+                (when
+                    (and (null heuristic)
+                         (let
+                             ((*allow-form-conjunction-heuristic* t))
+                           (declare (special *allow-form-conjunction-heuristic*))
+                           (conjunction-heuristics left right)))
+                  (push
+                   (terminals-in-segment/one-string 
+                    (pos-edge-starts-at left)
+                    (pos-edge-ends-at right))
+                   *form-conjunctions*))
                 (if heuristic
                     ;; conjoin/2 looks for leftwards
                     (let ((edge (conjoin/2 left right heuristic)))
