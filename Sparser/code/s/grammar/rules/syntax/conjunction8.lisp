@@ -380,7 +380,7 @@
                (and
                 (memq form-before *premod-forms*)
                 (memq form-after *premod-forms*)))
-            :conjuncton/identical-form-labels
+            :conjunction/identical-form-labels
             nil))))))
 
 
