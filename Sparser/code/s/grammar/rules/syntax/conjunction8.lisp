@@ -356,14 +356,14 @@
   but valuable when there's more perspective in which cases
   it will be shallow bound.")
 
-(defparameter *premod-forms* `(,category::verb+ed ,category::adjective))
+(defparameter *premod-forms* `(,category::verb+ed ,category::adjective)
+  "Heuristic criteria to encourage form-based conjunction")
+
 
 (defun conjunction-heuristics (edge-before edge-after)
-
   ;; This is the actual check that says whether we should conjoin
   ;; or not. More heuristic judgements go here as they are
   ;; developed
-
   (let ((label-before (edge-category edge-before))
         (label-after (edge-category edge-after)))
     (if (eq label-before label-after)
@@ -373,15 +373,29 @@
         (let ((form-before (edge-form edge-before))
               (form-after (edge-form edge-after)))
           (declare (special form-before form-after))
-          (if (or
-               (and
-                (eq form-before form-after)
-                (not (eq form-before category::s))) ;; don't conjoin Ss (get bad semantics right now)
-               (and
-                (memq form-before *premod-forms*)
-                (memq form-after *premod-forms*)))
+          (if (or (and (eq form-before form-after)
+                       ;; don't conjoin Ss (get bad semantics right now)
+                       (not (eq form-before category::s))) 
+                  (and (memq form-before *premod-forms*)
+                       (memq form-after *premod-forms*)))
             :conjunction/identical-form-labels
             nil))))))
+
+
+
+(defparameter *form-conjunctions* nil
+  "Accumulator for collecting instances where form motivates
+   conjunction")
+
+(defun collect-possible-form-conjunction (heuristic left right)
+  (unless heuristic
+    (when (let ((*allow-form-conjunction-heuristic* t))
+            (declare (special *allow-form-conjunction-heuristic*))
+            (conjunction-heuristics left right))
+      (push
+       (terminals-in-segment/one-string (pos-edge-starts-at left)
+                                        (pos-edge-ends-at right))
+       *form-conjunctions*))))
 
 
 
