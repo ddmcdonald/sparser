@@ -417,9 +417,10 @@
              :of substrate)) ;; somehow (def-bio "G-domain" protein-segment) did not work
 (adj "recombinant" :super predicate)
 (adj "refractory" :super predicate
-     :binds ((treatment bio-process))
+     :binds ((theme biological) (treatment bio-process))
      :realization
-     (:to treatment))
+     (:s theme
+         :to treatment))
      ;; keyword: (ory ADJ)
 (noun "region" :super bio-location
       :binds ((bounds biological))
@@ -497,20 +498,28 @@
            :s theme
            :to situation
            :for beneficiary))
-
-
+(delete-adj-cfr (resolve/make "sufficient"))
+(adj "sufficient" :super predicate :super bio-abstract
+     :binds ((theme biological)(result biological))
+     :realization
+     (:adj "sufficient"
+           :s theme
+           :to situation))
 (noun "state" :super bio-entity)
-
 (noun "stoichiometry" :super bio-abstract)
 (noun "strategy" :super bio-process)
 (noun "substrate" :super bio-entity)
 (noun "success" :super bio-abstract)
+
 (adj "suitable" :super predicate)
 (adj "supplementary" :super predicate) ;; keyword: (ary ADJ)
 (noun "surface area" :super bio-location)
 (define-adverb "surprisingly")
 (adj "synthetic" :super predicate)
 (noun "table" :super article-table)
+(noun "target" :super bio-entity)
+(adj "targeted" :super predicate)
+(noun "targeting" :super bio-process)
 (noun "therapeutics" :super bio-abstract) ;; keyword: (ics N) 
 (define-adverb "therefore")
 (define-adverb "thereby")
