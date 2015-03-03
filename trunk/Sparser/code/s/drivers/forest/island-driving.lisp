@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2015
+;;;  Version:  March 2015
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -14,7 +14,9 @@
 ;; now turned ON by default
 ;; 1/5/2015 improve whack-a-rule by moving functionally duplicative code into alternative path
 ;; 1/8/2015 refactoring to make use of best-treetop-rule and copula-rule? refactoring
-;; 1/20/15 rewrote it a little to be easier to read
+;; 1/20/15 rewrote it a little to be easier to read.
+;; 3/3/15 Dropped the case Rusty doesn't like. Sort of backed out of the
+;;  cleaning tts to let run-island-checks-pass-two see the [pp , s] pattern.
 
 (in-package :sparser)
 
@@ -22,8 +24,8 @@
 ;;; control parameters
 ;;;--------------------
 
-(defparameter *rusty-says-no* t 
-  "Don't call smash-together-two-tt-islands")
+;(defparameter *rusty-says-no* t 
+;  "Don't call smash-together-two-tt-islands")
 
 (defparameter *whack-a-rule* t
   "This forces application of all applicable rules from 
@@ -77,6 +79,7 @@
     (tr :handle-parentheses)
     (handle-parentheses))
   
+  #+ignore ;; These have already been done
   (when (there-are-conjunctions?)
     (tr :looking-for-short-conjuncts)
     (let ((*allow-form-conjunction-heuristic* nil))
@@ -91,10 +94,11 @@
     (whack-a-rule-cycle sentence)
     (older-island-driving-rest-of-pass-one))
 
-  #+ignore(when (there-are-conjunctions?) ;; J3 doesn't parse
+  (when (there-are-conjunctions?) ;; J3 doesn't parse
     (tr :try-spanning-conjunctions)
-    (try-spanning-conjunctions))
-  )
+    (let ((*allow-form-conjunction-heuristic* t))
+      (declare (special *allow-form-conjunction-heuristic*))
+      (try-spanning-conjunctions))))
 
 
 
@@ -192,7 +196,8 @@
     collect edge))
 
 (defun run-island-checks-pass-two (layout start-pos end-pos)
-  (let* ((treetops (clean-treetops (successive-treetops :from start-pos :to end-pos)))
+  (let* ((actual-treetops (successive-treetops :from start-pos :to end-pos))
+         (treetops (clean-treetops actual-treetops))
          (tt-count (length treetops))
          (clauses (there-are-loose-clauses))
          (subject-edge (subject layout))
@@ -202,13 +207,15 @@
          (pps (there-are-prepositional-phrases)))
     ;;(declare (special treetops tt-count clauses subject-edge vps copula))
     (tr :islands-pass-2 tt-count)
+    ;;(push-debug `(,start-pos ,end-pos ,treetops)) (break "pass2")
 
     (cond
-     ((= tt-count 2)
-      (unless *rusty-says-no* ;; leads to bad combinations
-       (smash-together-two-tt-islands treetops)))
+     ((and (not (= tt-count (length actual-treetops)))
+           ;; a comma or an adverb was dropped out
+           (= 3 (length actual-treetops)))
+      (look-for-length-three-patterns actual-treetops))
      ((= tt-count 3)
-      (look-for-length-three-patterns treetops) t)
+      (look-for-length-three-patterns treetops)) ;; t)
      ((and subject-edge copula)
       (fill-in-between-subject-and-final-verb subject-edge copula treetops tt-count))
      ((there-is-a-that?)
