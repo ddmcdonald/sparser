@@ -504,7 +504,7 @@
      :realization
      (:adj "sufficient"
            :s theme
-           :to situation))
+           :to result))
 (noun "state" :super bio-entity)
 (noun "stoichiometry" :super bio-abstract)
 (noun "strategy" :super bio-process)
