@@ -900,14 +900,14 @@
          :etf (svo-passive)
          :s agent
          :o object
-         :of object)) 
+         :of object))
 
 ;;--- "induce"
 ;; "which induce transcription of the p53 gene"
 ;; "induce processing of p100"
 (define-category induce
   :specializes bio-process
-  :binds ((agent bio-entity) (object bio-process))
+  :binds ((agent bio-entity) (object biological)) ;; we have "induce this phenotype"
   :realization 
   (:verb "induce" :noun "induction" :adj "inducible"
    :etf (svo-passive)
@@ -998,7 +998,7 @@
   :specializes bio-process
   :binds ((agent biological) 
           (object biological)
-          (measurement unit-of-measure)) ;; FIX THIS -- for the moment the rule number-noun-rule makes 2nM a unit of measure, not a measurement))
+          (measurement measurement)) ;; FIX THIS -- for the moment the rule number-noun-rule makes 2nM a unit of measure, not a measurement))
   :realization 
   (:verb ("inhibit" :past-tense "inhibited" 
                     :present-participle "inhibiting" )
@@ -1661,6 +1661,7 @@
 	   :s agent
 	   :o object))
 
+#+ignore
 (define-category target
     :specializes bio-process
     :binds ((agent bio-entity)(object bio-process))
