@@ -380,7 +380,10 @@ all sorts of rules apply and not simply form rules.
         (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
        nil)
       ((eq category::verb+ed (edge-form e))
-       (not (eq (edge-category e) category::have))) ;; "had" is not an NP constituent
+       (not 
+        (or
+         (eq (edge-category e) category::have) ;; "had" is not an NP constituent
+         (loop for edge in edges thereis (ng-head? edge)))))
       ((eq category::verb+ing (edge-form e))
        (not (loop for edge in edges thereis (ng-head? edge))))
       ((eq category::ordinal (edge-category e))
