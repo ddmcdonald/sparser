@@ -22,8 +22,15 @@
 ;; 1/14/2015 minor vocabulary hacking to address problems pointed out by David
 ;; 1/19.2015 remove all instances of "of-nominal" ETFs and replace by use of ":of object",
 ;; use def-synonym where needed to get noun and verb readings
-
+;; 3/4/2015 replace definition of pseudo-verb is-bio-entity with use of sbucategorization frame -- much faster
 (in-package :sparser)
+
+
+;;; NEEDS REVIEW -- this is how we get BE to have a case frame to replace the
+;;; definition of is-bio-entity
+
+(assign-subject category::be category::biological (variable/category 'subject category::be))
+(assign-object category::be category::biological (variable/category 'predication category::be))
 
 ;;;---------------------------
 ;;; macros for standard cases
