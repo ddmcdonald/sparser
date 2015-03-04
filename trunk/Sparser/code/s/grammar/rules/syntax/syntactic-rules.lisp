@@ -17,6 +17,7 @@
 ;; added more adverb rules
 ;; allow PP modifiers for proper-noun (which is how Ser877 is treated, as a residue-on-protein
 ;; allow PRONOUN to be a subject -- so we can parse "it inhibits BRAF"
+;; 3/4/2015 rules should produce form as S and not subj+verb
 
 (in-package :sparser)
 
@@ -345,7 +346,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
     (eval
      `(def-syntax-rule (,n ,v)
                        :head :right-edge
-        :form subj+verb
+        :form S
         :referent (:function assimilate-subject left-edge right-edge))
      )))
 
