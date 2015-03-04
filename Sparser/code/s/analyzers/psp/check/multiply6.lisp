@@ -42,6 +42,12 @@
 ;; 1/8/2015 refactor/cleanup forms checking, and check forms in all cases 
 ;;  and make multiply-referents include the edge-category for both edges, 
 ;;  so that passives work correctly (#4 on January test)
+;; 2/2/2015 RJB put in a new filter mechanism in a new function multiply-edges-for-chunk 
+;;  (copied from multiply-edges) in multiply-edges to be used within a chunk 
+;;  (and currently only within NG chunks). This filters out bad semantic rules that turn 
+;;   NPs into VPs (or at least make past participles into the head of the NP)
+;;  This has the desired effect -- but DAVID should review the code (with me if possible) and
+;;   make sure it is properly structured, etc.
 
 (in-package :sparser)
 
@@ -156,8 +162,80 @@
         (when *collect-forms* (record-forms rule left-edge right-edge))
         rule)))
 
+(defun multiply-edges-for-chunk (left-edge right-edge chunk)
+  ;; Called from the check routines, e.g. check-one-one
+  ;; Looks for any possibility of composition for these edges first,
+  ;; i.e. whether there are the right direction indexes for these,
+  ;; and then whether there is a category combination or, barring
+  ;; that, a form combination.
+  ;; Returns a rule or nil to indicate the edges don't combine.
+  (tr :multiply-edges left-edge right-edge)
+  ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
+
+  (when (or (word-p left-edge)
+            (word-p right-edge))
+    ;;/// trace  We don't multiply words, only edges
+    (return-from multiply-edges-for-chunk nil))
+  
+  (if (edge-of-dotted-intermediary right-edge)
+      ;; dotted rules only combine to their right, never to their left
+    (then (tr :right-edge-is-dotted right-edge)
+          ;; "   but the right edge, e~A, is dotted and can't possibly combine"
+          nil)
+      
+    (let* ((left-category-ids (category-ids/rightward left-edge))
+           (right-category-ids (category-ids/leftward right-edge))
+           (rule
+            (or (valid-rule?
+                 (multiply-categories left-category-ids 
+                                      right-category-ids
+                                      left-edge right-edge)
+                 left-edge right-edge chunk)
+                  
+                  
+                ;; then look for a rule in the cross-product 
+                ;; of the categories their category labels inherit from
+                (when *edges-from-referent-categories*
+                  (valid-rule? (multiply-referents left-edge right-edge)
+                               left-edge right-edge chunk))
+                    
+                ;; then look for a rule mentioning the form label
+                ;; on the two rules
+                (when *allow-pure-syntax-rules*
+                  (valid-rule?
+                   (check-form-form left-edge right-edge)
+                   left-edge right-edge chunk)))))
+        (when *collect-forms* (record-forms rule left-edge right-edge))
+        rule)))
+
+(defun valid-rule? (rule left-edge right-edge chunk)
+  (when rule
+    (when 
+        (and
+         (check-rule-form rule left-edge right-edge)
+         (check-rule-result-form-against-chunk rule right-edge chunk))
+      rule)))
 
 
+(defun check-rule-result-form-against-chunk (rule right-edge chunk)
+  (cond
+   ((chunk-head? right-edge chunk)
+    (case
+        (car (chunk-forms chunk))
+      (NG
+       (memq 
+        (rule-lhs-form rule)
+        '(N-BAR NG COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN)))
+      (VG
+       t)
+      (ADJG t)))
+   (t t))
+  )
+
+(defun chunk-head? (edge chunk)
+  (eq
+   (chunk-end-pos chunk)
+   (pos-edge-ends-at edge)))
 ;;;--------------------------------------------------
 ;;; restrict rule application to compatible contexts
 ;;;--------------------------------------------------
@@ -177,6 +255,10 @@
       (cfr-rhs-forms rule)
       (or (cfr-rhs-forms rule) 
           (loop for c in (cfr-rhs rule) collect (cat-name c))))))
+
+(defun rule-lhs-form (rule)
+  (when (cfr-p rule)
+    (cat-name (cfr-form rule))))
        
 (defun check-rule-form (rule left-edge right-edge) 
   ;; only accept rules that are compatible with their context
@@ -632,8 +714,8 @@
     (N-BAR (N-BAR)) 
     (NP (NP)) 
     (NP-HEAD (COMMON-NOUN common-noun/plural)) 
-    (NP/OBJECT ( N-BAR  PROPER-NOUN NP VERB+ED COMMON-NOUN  COMMON-NOUN/PLURAL))  ;; not VG PP RELATIVE-CLAUSE  S VP
-    (NP/SUBJECT (PRONOUN COMMON-NOUN  NP COMMON-NOUN/PLURAL PROPER-NAME PROPER-NOUN)) ;; not VERB+ED VP  VG
+    (NP/OBJECT  (N-BAR COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN))  ;; not VG PP RELATIVE-CLAUSE  S VP VERB+ED
+    (NP/SUBJECT (N-BAR COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN)) ;; not VERB+ED VP  VG
     (NUMBER (NUMBER NP)) 
     (POST-ORDINAL (POST-ORDINAL)) 
     (PP (PP)) 
