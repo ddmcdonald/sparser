@@ -18,6 +18,7 @@
 ;;  proper and making what runs here moot, removed the copy and
 ;;  rewrote this version to take the bast of that one and integrate
 ;;  a real 'choose the best' locus, presently a trivial default
+;; 2/4/2015 cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
 
 (in-package :sparser)
 
@@ -75,6 +76,7 @@
   ;; 3. spply it
   ;; 4. repeat
   (let ( triple  edge )
+    (clrhash *rules-for-pairs*)
     (loop
       (setq triple (select-best-triple
                     (collect-triples-in-segment chunk)))
@@ -141,11 +143,18 @@
   (let ((left-edge (car pair))
         (right-edge (cadr pair)))
     (tr :find-rule-for-edge-pair left-edge right-edge)
-    (let ((rule (multiply-edges-for-chunk left-edge right-edge chunk)))
-      (if rule
-        (tr :found-rule-for-pair rule)
-        (tr :no-rule-for-pair))
-      rule)))
+    (multiple-value-bind (cached-rule pair-seen)
+                         (gethash pair *rules-for-pairs*)
+      (let ((rule 
+             (if
+              pair-seen
+              cached-rule
+              (setf (gethash pair *rules-for-pairs*)
+                    (multiply-edges left-edge right-edge chunk)))))
+        (if rule
+            (tr :found-rule-for-pair rule)
+            (tr :no-rule-for-pair))
+        rule))))
   
 (defun adjacent-segment-tts (edges)
   ;; Walk over all of the treetops in the segment, working from the left,
