@@ -354,7 +354,7 @@ for every category.
 ;; copy-individual is called from many methods in syntax-functions, to avoid smashing the bindings of basic vocabulary like Ras
 ;;  which is defined to create an individual
 
-(defparameter *dont-copy-individuals* t)
+(defparameter *dont-copy-individuals* nil)
 
 (defun copy-individual (i &optional subs)
   (declare (special i))
