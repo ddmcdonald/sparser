@@ -17,8 +17,12 @@
 ;; 1/20/15 rewrote it a little to be easier to read.
 ;; 3/3/15 Dropped the case Rusty doesn't like. Sort of backed out of the
 ;;  cleaning tts to let run-island-checks-pass-two see the [pp , s] pattern.
+;; 3/4/2015 cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
+;;  turn off *edges-from-referent-categories*  -- no longer seems to be needed -- this speeds up the system by a factor of 3!
 
 (in-package :sparser)
+(defparameter *island-driven-efrc* nil) ;; controls *edges-from-referent-categories* inside island-driven-forest-parse -- 
+;; when set to nil will speed up the system by a factor of 3!
 
 ;;;--------------------
 ;;; control parameters
@@ -49,7 +53,7 @@
             *parse-edges*)
     (tts))
   (let ((*allow-pure-syntax-rules* t)
-        (*edges-from-referent-categories* t))
+        (*edges-from-referent-categories* *island-driven-efrc*))
     (run-island-checks sentence) ;;layout)
     ;;  (successive-treetops :from start-pos :to end-pos)
     (let ((coverage (coverage-over-region start-pos end-pos)))
@@ -100,7 +104,7 @@
       (declare (special *allow-form-conjunction-heuristic*))
       (try-spanning-conjunctions))))
 
-
+(defparameter *rules-for-pairs* (make-hash-table :test #'equal :size 200))
 
 (defun whack-a-rule-cycle (sentence)
   (let ( copula )
@@ -109,10 +113,11 @@
   #+ignore(when (there-are-conjunctions?)
     (tr :try-spanning-conjunctions)
     (try-spanning-conjunctions))
-  (let ( rule-and-edges  edge )
+  (let ( rule-and-edges  edge)
 ;    (loop while (setq rule-and-edges (best-treetop-rule))
 ;      do (execute-triple rule-and-edges))
 ; Reformulated to insert trace
+    (clrhash *rules-for-pairs*)
     (loop
       (setq rule-and-edges (best-treetop-rule sentence))
       (when (null rule-and-edges)
