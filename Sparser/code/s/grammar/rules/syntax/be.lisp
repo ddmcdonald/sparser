@@ -23,6 +23,7 @@
 ;;    (9/15/14) fixed form on be+adjective
 ;;  1/14/2015 correct the head for BO+AJD to be the ADJ
 ;;  (1/15/15) Substantial make over of rules for tense/aspect
+;; 3/4/2015 make the rules that should produce VGs do so (such as (def-form-rule (be verb+ing) ...)
 
 (in-package :sparser)
 
@@ -119,7 +120,7 @@
 ;;---- "be" + "ing"  progressive
 
 (def-form-rule (be verb+ing)
-  :form verb
+  :form vg
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
 
@@ -127,7 +128,7 @@
 ;;---- tns + not
 
 (def-cfr be (be not)
-  :form verb
+  :form vg
   :referent (:head left-edge
              :bind (negation right-edge)))
 
@@ -136,7 +137,7 @@
 
 (def-form-rule (be verb+ed)
   :new-category  :passive
-  :form verb
+  :form vg
   :referent (:head right-edge))
 
 
