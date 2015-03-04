@@ -50,6 +50,9 @@
 ;;   make sure it is properly structured, etc.
 
 (in-package :sparser)
+(defparameter *check-chunk-forms* t
+  "This enables checking the form of the result of a semantic rule, as well as the form of the RHS, to reduce the mis-use
+ of ETF derived rules for clauses that are applied when a participle modifies an NG")
 
 (defparameter *check-forms* t
   "When this is T, ensure that all rules are only applied to 
@@ -169,6 +172,11 @@
   ;; and then whether there is a category combination or, barring
   ;; that, a form combination.
   ;; Returns a rule or nil to indicate the edges don't combine.
+  (when
+      (not *check-chunk-forms*)
+    (return-from multiply-edges-for-chunk
+      (multiply-edges left-edge right-edge)))
+    
   (tr :multiply-edges left-edge right-edge)
   ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
 
