@@ -123,7 +123,7 @@
       (when (null rule-and-edges)
         (return))
       (setq edge (execute-triple rule-and-edges))
-      (tr :wacking-triple rule-and-edges edge))))
+      (tr :whacking-triple rule-and-edges edge))))
 
 (defun execute-triple (triple)
   ;; triple = rule, left-edge, right-edge

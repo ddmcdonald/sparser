@@ -185,7 +185,7 @@ and the word can stand by itself "that distance"
 |#
 
 #| 1/8/15 The rule spanning "of" is now beyond the pale because
-   it adds such complexity to Wack-a-Rule processing
+   it adds such complexity to Whack-a-Rule processing
 ;;  Use these ugly things instead for now.
 (def-cfr rate-of-process-of (rate of) ;; the spanned 'of', not literal
   :form np ;;/// ugh

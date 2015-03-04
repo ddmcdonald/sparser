@@ -96,7 +96,7 @@
       collect (aref vector i))))
 
 (defun tt-edges-starting-at (start-ev)
-  ;; Special purpose lookup for wack-a-rule.
+  ;; Special purpose lookup for whack-a-rule.
   ;; Called from adjacent-tt-pairs where we want to
   ;; include literal rules in the case of multiple-initial-edges
   (let* ((edge (ev-top-node start-ev)))
