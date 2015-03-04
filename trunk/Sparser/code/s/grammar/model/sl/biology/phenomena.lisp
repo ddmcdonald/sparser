@@ -282,9 +282,11 @@ it is created from N-terminus to C-terminus.|#
 
 (define-category apoptosis ;; aka cell death
   :specializes bio-process
+  :binds ((process bio-process))
   :realization
-  ((:common-noun "apoptosis")
-   (:adjective "apoptotic")))
+  (:etf pre-mod
+        :noun "apoptosis" :adj "apoptotic"
+        :m process))
 
 (adj "pro-apoptotic" :super apoptosis)
 
@@ -297,7 +299,7 @@ it is created from N-terminus to C-terminus.|#
   :specializes aggregate
   ;; can drop the 'bio-', but it lets us play with the
   ;; notion before we promote that behavior to the upper str.
-  :mixins (sequence))
+  :mixins (sequence biological))
 #| This would be a good level at which to site a method that
 meditated whether or not we distributed the components of
 the aggregate across the predicate it's in. |#
