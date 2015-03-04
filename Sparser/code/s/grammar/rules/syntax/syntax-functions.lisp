@@ -386,7 +386,7 @@
            (subcategorized-variable head subcat-label item)))
     (cond
      (*subcat-test* variable-to-bind)
-     (t
+     (variable-to-bind
       (setq head (copy-individual head))
       (when
        (is-anaphoric? item)
