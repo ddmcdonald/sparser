@@ -48,6 +48,7 @@
 ;;   NPs into VPs (or at least make past participles into the head of the NP)
 ;;  This has the desired effect -- but DAVID should review the code (with me if possible) and
 ;;   make sure it is properly structured, etc.
+;; 3/4/2015 merge definition of multiply-edges-for-chunk into multiply-edges-for-chunk, using a new flag *check-chunk-forms*
 
 (in-package :sparser)
 (defparameter *check-chunk-forms* t
@@ -117,8 +118,8 @@
 ;;; call from the check routines
 ;;;------------------------------
 
-(defun multiply-edges (left-edge right-edge)
-  ;; Called from the check routines, e.g. check-one-one
+(defun multiply-edges (left-edge right-edge &optional chunk)
+   ;; Called from the check routines, e.g. check-one-one
   ;; Looks for any possibility of composition for these edges first,
   ;; i.e. whether there are the right direction indexes for these,
   ;; and then whether there is a category combination or, barring
@@ -131,59 +132,6 @@
             (word-p right-edge))
     ;;/// trace  We don't multiply words, only edges
     (return-from multiply-edges nil))
-  
-  (if (edge-of-dotted-intermediary right-edge)
-      ;; dotted rules only combine to their right, never to their left
-    (then (tr :right-edge-is-dotted right-edge)
-          ;; "   but the right edge, e~A, is dotted and can't possibly combine"
-          nil)
-      
-    (let* ((left-category-ids (category-ids/rightward left-edge))
-           (right-category-ids (category-ids/leftward right-edge))
-           (rule
-            (or (let ((rule 
-                       (multiply-categories left-category-ids right-category-ids
-                                            left-edge right-edge)))
-                  (when rule
-                    (when (check-rule-form rule left-edge right-edge)
-                      rule)))
-                  
-                ;; then look for a rule in the cross-product 
-                ;; of the categories their category labels inherit from
-                (when *edges-from-referent-categories*
-                  (check-rule-form
-                   (multiply-referents left-edge right-edge)
-                   left-edge right-edge))
-                  
-                ;; then look for a rule mentioning the form label
-                ;; on the two rules
-                (when *allow-pure-syntax-rules*
-                  (check-rule-form
-                   (check-form-form left-edge right-edge)
-                   left-edge right-edge)))))
-
-        (when *collect-forms* (record-forms rule left-edge right-edge))
-        rule)))
-
-(defun multiply-edges-for-chunk (left-edge right-edge chunk)
-  ;; Called from the check routines, e.g. check-one-one
-  ;; Looks for any possibility of composition for these edges first,
-  ;; i.e. whether there are the right direction indexes for these,
-  ;; and then whether there is a category combination or, barring
-  ;; that, a form combination.
-  ;; Returns a rule or nil to indicate the edges don't combine.
-  (when
-      (not *check-chunk-forms*)
-    (return-from multiply-edges-for-chunk
-      (multiply-edges left-edge right-edge)))
-    
-  (tr :multiply-edges left-edge right-edge)
-  ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
-
-  (when (or (word-p left-edge)
-            (word-p right-edge))
-    ;;/// trace  We don't multiply words, only edges
-    (return-from multiply-edges-for-chunk nil))
   
   (if (edge-of-dotted-intermediary right-edge)
       ;; dotted rules only combine to their right, never to their left
@@ -221,7 +169,10 @@
     (when 
         (and
          (check-rule-form rule left-edge right-edge)
-         (check-rule-result-form-against-chunk rule right-edge chunk))
+         (or
+          (null chunk)
+          (not *check-chunk-forms*)
+          (check-rule-result-form-against-chunk rule right-edge chunk)))
       rule)))
 
 
