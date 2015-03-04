@@ -27,7 +27,7 @@
 ;; 1/18/2015 fix typo in test-subcat-rule
 ;; 2/10/15 cleaned up / reformatted a bit so I could figure out what's
 ;;  going on in the code that supports whack-a-rule
-;; correct spelling of *use-broader-set-of-tts*, and replace "wack" with "whack"
+;; 3/4/2015 correct spelling of *use-broader-set-of-tts*, and replace "wack" with "whack"
 ;; cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
 
 
