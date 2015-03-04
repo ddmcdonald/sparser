@@ -19,6 +19,8 @@
 ;; (2/12/15) Fixed return value for adj-noun-compound.
 ;; 2/23/2015 allow pronouns to be subjects using the submit mechanism, and 
 ;; this file contains the mechanisms for creating an edge over the pronoun edge to include the semantic constraint from the verb
+;; 3/4/2015 make subcategorization frame respect passives (maps surface subject to object)
+;;  don't allow a copular-pp on an instance of BE+NP
 
 
 (in-package :sparser)
@@ -389,7 +391,9 @@
      (variable-to-bind
       (setq head (copy-individual head))
       (when
-       (is-anaphoric? item)
+       (and
+        (is-anaphoric? item)
+        (var-value-restriction variable-to-bind)) ;; this fails when we have BE -- needs to be fixed...
        (setq item 
              (create-anaphoric-edge-and-referent 
               (cond
@@ -465,7 +469,22 @@
 
 
 (defun assimilate-subject (subj vp)
-  (assimilate-subcat vp :subject subj))
+  (declare (special subj vp))
+  (if
+   (is-passive? vp)
+   (assimilate-subcat vp :object subj)
+   (assimilate-subcat vp :subject subj)))
+
+(defun is-passive? (vp)
+  (let
+      ((cat-string
+        (symbol-name 
+         (cat-name
+          (edge-category (right-edge-for-referent))))))
+    (declare (special cat-string))
+    (and
+     (> (length cat-string) 3)
+     (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
 
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
@@ -497,20 +516,22 @@
 
 (defun make-copular-pp (be-ref pp-ref)
   (declare (special be-ref pp-ref))
-  (let*
-      ((cpp (make-unindexed-individual category::copular-pp))
-       prep-ref pobj-ref)
-    (declare (special cpp prep-ref pobj-ref))
-    (dolist (bb (indiv-binds pp-ref))
-      (cond
-       ((eq (var-name (binding-variable bb)) 'pobj)
-        (setq pobj-ref (binding-value bb)))
-       ((eq (var-name (binding-variable bb)) 'prep)
-        (setq prep-ref (binding-value bb)))))
-    (bind-variable 'prep prep-ref cpp)
-    (bind-variable 'pobj pobj-ref cpp)
-    (bind-variable 'copula be-ref cpp)
-    cpp))
+  (when
+      (null (value-of 'predication be-ref)) ;; this is not already a predicate copula ("is a drug")
+    (let*
+        ((cpp (make-unindexed-individual category::copular-pp))
+         prep-ref pobj-ref)
+      (declare (special cpp prep-ref pobj-ref))
+      (dolist (bb (indiv-binds pp-ref))
+        (cond
+         ((eq (var-name (binding-variable bb)) 'pobj)
+          (setq pobj-ref (binding-value bb)))
+         ((eq (var-name (binding-variable bb)) 'prep)
+          (setq prep-ref (binding-value bb)))))
+      (bind-variable 'prep prep-ref cpp)
+      (bind-variable 'pobj pobj-ref cpp)
+      (bind-variable 'copula be-ref cpp)
+      cpp)))
 
 (defun apply-copular-pp (np copular-pp)
   (declare (special np copular-pp))
