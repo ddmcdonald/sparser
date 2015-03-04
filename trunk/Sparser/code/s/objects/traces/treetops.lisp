@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "treetops"
 ;;;   Module:  "objects;traces:"
-;;;  Version:   October 2014
+;;;  Version:   October 2014que
 
 ;; Stubbed with parameters 10/1990. Moved in the traces from
 ;; drivers/chart/psp/march-forest 3/8/13. 
@@ -573,34 +573,34 @@
 
 ;;--- toplevel traces
 
-(deftrace :wacking-triple (rule-and-edges edge)
+(deftrace :whacking-triple (rule-and-edges edge)
   ;; called from whack-a-rule-cycle
   (when (or *trace-island-driving* *parse-edges*)
     (let ((rule (car rule-and-edges))
           (left-edge (cadr rule-and-edges))
           (right-edge (caddr rule-and-edges)))
       (declare (ignore rule left-edge right-edge))
-      (trace-msg "[wack] Appled triple to form e~a"
+      (trace-msg "[whack] Appled triple to form e~a"
                  (edge-position-in-resource-array edge)))))
 
-(deftrace :pairs-to-consider-wacking (pairs)
+(deftrace :pairs-to-consider-whacking (pairs)
   (when (or *trace-island-driving* *parse-edges*)
-    (trace-msg "~%[wack] ~a pairs: ~{~& ~a~}" 
+    (trace-msg "~%[whack] ~a pairs: ~{~& ~a~}" 
                (length pairs) pairs)))
 
-(deftrace :can-we-wack-pair (pair)
+(deftrace :can-we-whack-pair (pair)
   (when (or *trace-island-driving* *parse-edges*)
-    (trace-msg "[wack] Is there a rule to compose e~a and e~a ?"
+    (trace-msg "[whack] Is there a rule to compose e~a and e~a ?"
                (edge-position-in-resource-array (car pair))
                (edge-position-in-resource-array (cadr pair)))))
 
-(deftrace :wack-pair-with-rule (rule)
+(deftrace :whack-pair-with-rule (rule)
   (when (or *trace-island-driving* *parse-edges*)
-    (trace-msg "[wack]   yes: ~a" rule)))
+    (trace-msg "[whack]   yes: ~a" rule)))
 
-(deftrace :no-rule-to-wack-pair ()
+(deftrace :no-rule-to-whack-pair ()
   (when (or *trace-island-driving* *parse-edges*)
-    (trace-msg "[wack]   no")))
+    (trace-msg "[whack]   no")))
 
 (deftrace :filter-selected-triple (triple)
   (when (or *trace-island-driving* *parse-edges*)
@@ -608,11 +608,11 @@
       (let ((rule (car triple))
             (left-edge (cadr triple))
             (right-edge (caddr triple)))
-        (trace-msg "[wack] best choice is rule ~a on  e~a and e~a"
+        (trace-msg "[whack] best choice is rule ~a on  e~a and e~a"
                    (rule-number-string rule)
                    (edge-position-in-resource-array left-edge)
                    (edge-position-in-resource-array right-edge)))
-      (trace-msg "[wack] no pair had a rule"))))
+      (trace-msg "[whack] no pair had a rule"))))
                
 
 
