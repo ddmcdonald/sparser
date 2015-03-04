@@ -650,7 +650,8 @@
 
 (define-category elucidate
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)(object biological)) 
+     ;; change object to biological, since we have December 51, "in a manner that elucidates ... targets"
     :realization
     (:verb "elucidate" ;; keyword: ENDS-IN-ED 
 	   :noun "elucidation"
@@ -1076,7 +1077,7 @@
 
 (define-category lead
     :specializes bio-process
-    :binds ((agent biological)(object bio-process))
+    :binds ((agent biological)(object biological))
     :realization
     (:verb "lead" ;; keyword: ENDS-IN-ING 
 	   :etf (sv)
