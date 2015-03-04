@@ -77,7 +77,7 @@
   (let ( triple  edge )
     (loop
       (setq triple (select-best-triple
-                    (collect-triples-in-segment)))
+                    (collect-triples-in-segment chunk)))
       (unless triple
         (return))
       (setq edge (execute-triple triple))
@@ -123,25 +123,25 @@
 ;; VGs may want a different order of pairs than NGs
 ;; "will have been being phosphorylated"
 
-(defun collect-triples-in-segment ()
+(defun collect-triples-in-segment (chunk)
   ;; Executed multiple times because it's recalculated with
   ;; every rule execution
   (let ((pairs (adjacent-segment-tts (treetops-in-current-segment)))
         rule )
     ;;(push-debug `(,pairs)) (break "pairs = ~a" pairs)
     (loop for pair in pairs
-      when (setq rule (segment-rule-check pair))
+      when (setq rule (segment-rule-check pair chunk))
       collect (cons rule pair))))
 
 
-(defun segment-rule-check (pair)
+(defun segment-rule-check (pair chunk)
   ;; syntactic sugar and tracing for the choice of rule test
   ;; to make. Could start with just simple rules and then
   ;; extend to semantic and then syntactic on successive passes
   (let ((left-edge (car pair))
         (right-edge (cadr pair)))
     (tr :find-rule-for-edge-pair left-edge right-edge)
-    (let ((rule (multiply-edges left-edge right-edge)))
+    (let ((rule (multiply-edges-for-chunk left-edge right-edge chunk)))
       (if rule
         (tr :found-rule-for-pair rule)
         (tr :no-rule-for-pair))
