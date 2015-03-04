@@ -26,7 +26,10 @@
 ;; 1/14/2015 revise losing-competition? to account for more general form of subject rule, looking at cfr-rule-forms
 ;; 1/18/2015 fix typo in test-subcat-rule
 ;; 2/10/15 cleaned up / reformatted a bit so I could figure out what's
-;;  going on in the code that supports wack-a-rule
+;;  going on in the code that supports whack-a-rule
+;; correct spelling of *use-broader-set-of-tts*, and replace "wack" with "whack"
+;; cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
+
 
 (in-package :sparser)
 
@@ -239,7 +242,7 @@
     
 
 ;;;---------------------------
-;;; machinery for wack-a-rule
+;;; machinery for whack-a-rule
 ;;;---------------------------
       
 (defun adjacent-tts (&optional (all-edges (all-tts)))
@@ -314,25 +317,25 @@
     pairs))
      
          
-(defparameter *use-boader-set-of-tts* nil)
+(defparameter *use-broader-set-of-tts* nil)
 
 (defun best-treetop-rule (sentence)
   ;; feeder routine in whack-a-rule-cycle that identifies
   ;; all of the treetop edges that are pairwise adjacent
   ;; using adjacent-tts and winnows that list down using
   ;; filter-rules-by-local-competition
-  (let ((pairs (if *use-boader-set-of-tts*
+  (let ((pairs (if *use-broader-set-of-tts*
                  (adjacent-tt-pairs sentence)
                  (adjacent-tts)))
         rule  triples )
     (push-debug `(,pairs))
-    (tr :pairs-to-consider-wacking pairs)
+    (tr :pairs-to-consider-whacking pairs)
     (loop for pair in pairs 
       when (setq rule (rule-for-edge-pair pair))
       do (push (cons rule pair)
                triples))
     (setq triples ; 
-          (if *use-boader-set-of-tts*
+          (if *use-broader-set-of-tts*
             (let ((original-triples (copy-list triples))) ;; for trace
               (push-debug `(,original-triples))
               (remove-surplus-literal-compositions triples))
@@ -430,28 +433,34 @@
    It's seriously messing up my tests on short function-based rules.")
 
 (defun rule-for-edge-pair (pair)
-  (tr :can-we-wack-pair pair)
-  (let ((rule (multiply-edges (car pair) (second pair))))
-    (if rule
-      (when (cond
-             ((not (consp (cfr-referent rule))))
-             ((eq :funcall (car (cfr-referent rule)))
-              ;; Really? Look at the identity of the function before
-              ;; you do this -- ddm
-              (if *david-says-ok*
-                (test-subcat-rule pair rule)
-                t))
-             (t ;; most rules have referent slots which are cons cells, 
-              ;; but which are not :funcalls, e.g.
-              ;; (#<PSR12615  select ->  select biological>
-              ;;   ((:HEAD LEFT-REFERENT) 
-              ;;    (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
-              t))
-        (tr :wack-pair-with-rule rule)
-        rule)
-      (else
-       (tr :no-rule-to-wack-pair)
-       nil))))
+  (tr :can-we-whack-pair pair)
+  (multiple-value-bind (cached-rule pair-seen)
+                       (gethash pair *rules-for-pairs*)
+    (let ((rule 
+           (if
+            pair-seen 
+            cached-rule ;; don't recompute the rule for the pair, saves a lot of time, particularly for pairs with no rules
+            (setf (gethash pair *rules-for-pairs*) (multiply-edges (car pair) (second pair))))))
+      (if rule
+          (when (cond
+                 ((not (consp (cfr-referent rule))))
+                 ((eq :funcall (car (cfr-referent rule)))
+                  ;; Really? Look at the identity of the function before
+                  ;; you do this -- ddm
+                  (if *david-says-ok*
+                      (test-subcat-rule pair rule)
+                      t))
+                 (t ;; most rules have referent slots which are cons cells, 
+                  ;; but which are not :funcalls, e.g.
+                  ;; (#<PSR12615  select ->  select biological>
+                  ;;   ((:HEAD LEFT-REFERENT) 
+                  ;;    (:BINDING (#<variable PATIENT> . RIGHT-REFERENT)))) 
+                  t))
+            (tr :whack-pair-with-rule rule)
+            rule)
+          (else
+            (tr :no-rule-to-whack-pair)
+            nil)))))
 
 (defun test-subcat-rule (pair rule)
   ;; This simulates the context above normal rule-driven calls to
