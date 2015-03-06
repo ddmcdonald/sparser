@@ -24,6 +24,11 @@
 ;;; gating globals
 ;;;----------------
 
+(defvar *THE-PUNCTUATION-HYPHEN*)
+(defvar *THE-PUNCTUATION-COMMA*)
+(defvar *THE-PUNCTUATION-SEMICOLON*)
+(defvar *THE-PUNCTUATION-COMMA*)
+
 (unless (boundp '*uniformly-scan-all-no-space-token-sequences*)
   (defparameter *uniformly-scan-all-no-space-token-sequences* nil
     "Gates this simpler alternative / complement to the pattern-driven

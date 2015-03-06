@@ -10,6 +10,7 @@
 ;; obsolete. 
 
 (in-package :sparser)
+(defvar *WORK-ON-NS-PATTERNS*)
 
 ;;;----------
 ;;; hyphens

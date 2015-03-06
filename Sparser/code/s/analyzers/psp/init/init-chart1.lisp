@@ -14,6 +14,7 @@
 
 (in-package :sparser)
 
+(defvar *bracketing-progress*)
 
 (defvar *first-significant-position* nil)
 

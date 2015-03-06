@@ -17,7 +17,8 @@
 ;;      execute-one-one-rule from check-one-one so it can be used independently
 
 (in-package :sparser)
-
+(defvar left-label)
+(defvar right-label)
 
 (defun check-one-one (left-edge right-edge)
   (let ((rule (multiply-edges left-edge right-edge)))
