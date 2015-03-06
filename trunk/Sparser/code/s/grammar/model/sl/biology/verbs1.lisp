@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "verbs1"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: December 2014
+;;; version: March 2015
 
 ;; verbs initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 12/3/14.
@@ -17,12 +17,19 @@
 ;; RJB added note for :at modifier for inhibit
 ;;  add :on and :at modifiers for phosphorylate
 ;; improved definition for increase as a noun and verb
-;; remove unlikely definition of "study" as a verb -- we need to handle ambiguity better
-;; 1/2/2015 minor fixes -- mostly to get verbs with subject WE parsing -- this needs to be fixed, since the category used is the pronoun category, rather than a mixin for human
+;; remove unlikely definition of "study" as a verb 
+;;    -- we need to handle ambiguity better
+;; 1/2/2015 minor fixes -- mostly to get verbs with subject WE parsing 
+;;     -- this needs to be fixed, since the category used is the pronoun category,
+;;         rather than a mixin for human
 ;; 1/14/2015 minor vocabulary hacking to address problems pointed out by David
 ;; 1/19.2015 remove all instances of "of-nominal" ETFs and replace by use of ":of object",
 ;; use def-synonym where needed to get noun and verb readings
-;; 3/4/2015 replace definition of pseudo-verb is-bio-entity with use of sbucategorization frame -- much faster
+;; 2/23/15 Aphabetized
+
+;; 3/4/2015 replace definition of pseudo-verb is-bio-entity with use of 
+;;   subcategorization frame -- much faster
+
 (in-package :sparser)
 
 
@@ -74,6 +81,13 @@
 	   ))
 
 
+;; According to Sketch Engine on the Mitre corpus,
+;; "act" by itself roughly means "do" or "behave" and can
+;; take "on" and "in" as well as "to".
+;; "act as" is always the equivalent of "is". 
+;; There's also the full caps ACT, which stands for
+;; "adoptive cell therapy"
+
 (define-category bio-act
   ;; N.b. "bio-" implies that there's an unmarked "act" as well, and it's a bit cumbersome
   :specializes bio-process
@@ -87,19 +101,7 @@
   :s actor
   :on object)
 
-
-;; According to Sketch Engine on the Mitre corpus,
-;; "act" by itself roughly means "do" or "behave" and can
-;; take "on" and "in" as well as "to".
-;; "act as" is always the equivalent of "is". 
-;; There's also the full caps ACT, which stands for
-;; "adoptive cell therapy"
-#+ignore
-(def-term "act" verb (svo)
-  :super-category be
-  :preposition "as"
-  :subject bio-entity
-  :theme bio-process) ;; better choice is complement 
+;; better choice for 'theme' is complement 
 ;; and the etf thing-is-description
 (define-category bio-act-as
   :specializes be
@@ -110,7 +112,7 @@
           (description . bio-process))
   :realization
     (:verb "act"
-     :prep "as"  ;; <<<<<<<<<<<
+     :prep "as"  ;; <<<<<<<<<<<  J3
      :etf svo
      :s theme
      :o description))
