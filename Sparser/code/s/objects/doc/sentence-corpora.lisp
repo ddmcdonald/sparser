@@ -194,7 +194,7 @@ previous records of treetop-counts.
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
-    (save-treetop-snapshot corpus)))
+    (save-treetop-snapshot corpus file)))
 
 (defmethod save-treetop-snapshot ((corpus sentence-corpus)
                                   &optional (file *file-for-treetop-snapshots*))
