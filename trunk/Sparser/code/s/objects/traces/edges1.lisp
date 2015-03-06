@@ -24,7 +24,7 @@
 ;;      traces to traces/treetops
 
 (in-package :sparser)
-
+(defvar *PARSE-EDGES*)
 
 (defun trace-edges ()             ;; for meta-point
   (setq *trace-check-edges* t

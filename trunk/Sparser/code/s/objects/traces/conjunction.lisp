@@ -12,6 +12,8 @@
 ;; 11/8/12 Started set for the submered check
 
 (in-package :sparser)
+(defvar *TRACE-CONJUNCTION-ALGORITHM*)
+(defvar *TRACE-CONJUNCTION-HOOK*)
 
 
 
