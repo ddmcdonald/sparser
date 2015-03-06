@@ -10,6 +10,7 @@
 ;; Modified 9/26/09
 
 (in-package :sparser)
+(defvar *WHERE-THE-LAST-SEGMENT-ENDED*)
 
 ;;;---------
 ;;; globals
