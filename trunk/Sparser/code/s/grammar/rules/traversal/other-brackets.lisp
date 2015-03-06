@@ -29,7 +29,6 @@
 ;;;-------------------
 
 (defun mark-open-curly-bracket (start-pos end-pos)
-  (declare (ignore end-pos))
   (setq *pending-open-curly-bracket* start-pos))
 
 
@@ -62,7 +61,6 @@
 ;;;-------------------
 
 (defun mark-open-square-bracket (start-pos end-pos)
-  (declare (ignore end-pos))
   (setq *pending-open-square-bracket* start-pos))
 
 

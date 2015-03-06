@@ -40,7 +40,6 @@
 (defparameter *permit-extra-open-parens* nil)
 
 (defun mark-open-paren (start-pos end-pos)
-  (declare (ignore end-pos))
   (unless *ignore-parentheses*
     (if *position-of-pending-open-paren*
       ;; Then we're already inside an open parenthesis
