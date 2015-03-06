@@ -568,9 +568,6 @@
 ;;--- ddm 12/18/14 hacked phrases to 'get through' more text
 (adj "least-selective" :super predicate)
 (adj "long-term" :super predicate) ;; #51 "effective long-term treatment strategies"
-(noun "serine/threonine") ;; want to get NG from "the serine/threonine kinase"
-;; not sure of this -- was def-bio, but that now fails
-(noun "C-RAF:B-RAF" :super heterodimer)
 
 
 
@@ -691,7 +688,6 @@
 "escape";;ambiguous between (NOUN VERB)
 "fate";;ambiguous between (NOUN VERB)
 "membrane"
-"complex";;ambiguous between (ADJECTIVE :super predicate NOUN)
 "scaffold"
 "know";;ambiguous between (NOUN VERB)
 "component";;ambiguous between (ADJECTIVE NOUN)
