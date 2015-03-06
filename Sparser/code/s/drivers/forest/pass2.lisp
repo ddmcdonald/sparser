@@ -12,6 +12,10 @@
 ;;   subcategorization on the preposition.
 
 (in-package :sparser)
+(defvar CATEGORY::VP)
+(defvar CATEGORY::PP)
+(defvar CATEGORY::S)
+(defvar CATEGORY::PP)
 
 (defun try-to-make-that-relative-clause ()
   (let ((that-edge/s (there-is-a-that?)))

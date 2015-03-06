@@ -37,6 +37,7 @@
 ;;     (8/28/14) Added adjudicate-after-new-forest-protocol. 
 
 (in-package :sparser)
+(defvar *THE-PUNCTUATION-PERIOD*)
 
 ;;;--------------
 ;;; General case

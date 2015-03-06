@@ -12,6 +12,11 @@
 
 (in-package :sparser)
       
+(defvar CATEGORY::VP)
+(defvar CATEGORY::SUBJ+VERB)
+(defvar CATEGORY::S)
+(defvar PAREN-REFERENT)
+(defvar *THE-PUNCTUATION-PERIOD*)
 ;;;----------------------
 ;;; subject + verb group
 ;;;----------------------
@@ -399,6 +404,7 @@
         (knit-parens-into-neighbor left-neighbor paren-edge)))))
 
 (defun knit-parens-into-neighbor (left-neighbor paren-edge)
+  (declare (special left-neighbor paren-edge))
   (tr :parens-after left-neighbor paren-edge)
   (let* ((referent (edge-referent left-neighbor))
          (constituents (edge-constituents paren-edge))
@@ -412,6 +418,7 @@
     (push-debug `(,left-neighbor ,paren-edge))
     (unless (individual-p referent)
       (error "Referent of left-neighbor to parentheses is not an individual"))
+    #+ignore
     (bind-variable (lambda-variable-named 'trailing-parenthetical) ;; in terms
                    paren-referent
                    referent)
