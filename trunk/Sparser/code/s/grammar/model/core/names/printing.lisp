@@ -15,6 +15,8 @@
 ;;      string-for routine. 
 
 (in-package :sparser)
+(defvar CATEGORY::NAME-OF-LOCATION)
+
 
 (defun string-for/name (n)
   ;; Called from String-for as a generic catch for any individual
