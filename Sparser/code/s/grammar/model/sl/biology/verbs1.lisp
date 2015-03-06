@@ -29,6 +29,9 @@
 
 ;; 3/4/2015 replace definition of pseudo-verb is-bio-entity with use of 
 ;;   subcategorization frame -- much faster
+;; delete core definition oof "report" as verb -- use new method delete-verb-cfr
+;; correct object restriction on "express"
+;; add definition of upregulate and up-regulate
 
 (in-package :sparser)
 
@@ -744,7 +747,7 @@
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
 (define-category gene-transcript-express
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)(object protein))
     :realization
     (:verb "express"
 	   :noun "expression"
@@ -1508,6 +1511,8 @@
 	   :o object
            :of object))
 
+(delete-verb-cfr (resolve/make "report"))
+
 (define-category report
     :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)(object bio-process))
@@ -1771,6 +1776,20 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object))
+
+(define-category upregulate
+  :specializes bio-process
+  :binds ((agent bio-entity)(object biological))
+  :realization
+  (:verb   "upregulate" :noun "upregulation"
+   :etf (svo-passive)
+   :o object  ;; regulation of <process>
+   :s agent
+   :of object))
+
+(def-synonym upregulate
+   (:verb "up-regulate" :noun "up-regulatiion"))
+
 
 (define-category use
     :specializes bio-process
