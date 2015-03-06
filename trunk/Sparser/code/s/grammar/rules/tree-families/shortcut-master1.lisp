@@ -327,6 +327,10 @@
     (when adj-cfr
       (delete/cfr adj-cfr))))
 
+(defun delete-verb-cfr (wd)
+  (let ((verb-cfr (find-form-cfr wd category::verb)))
+    (when verb-cfr
+      (delete/cfr verb-cfr))))
 
 (defun handle-prepositions (category &optional against as at between for from in 
                                      of on onto to thatcomp through via with)
