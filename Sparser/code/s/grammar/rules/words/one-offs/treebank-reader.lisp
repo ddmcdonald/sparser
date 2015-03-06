@@ -16,6 +16,7 @@
 (in-package :sparser)
 
 (defvar *CONSTITUENT-PATTERNS*)
+(defvar *MERGE-NUMBERS*)
 (defvar *NONTERMINAL-TAG-COUNT*)
 (defvar *NT-TAGS-TO-PATTERNS*)
 (defvar *POS-TAG-COUNT*)

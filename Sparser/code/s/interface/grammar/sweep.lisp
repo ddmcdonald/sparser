@@ -114,7 +114,6 @@
 (defvar *sentence-sweep-stream* *standard-output*)
 
 (defun sentence-sweep (sentence &optional (stream *sentence-sweep-stream*))
-  (declare (ignore stream))
   (let* ((start-pos (starts-at-pos sentence))
          (end-pos (ends-at-pos sentence))
          (start-char (pos-character-index start-pos))

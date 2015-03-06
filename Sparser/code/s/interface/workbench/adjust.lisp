@@ -14,7 +14,7 @@
 ;;      as a defaulted keyword argument
 
 (in-package :sparser)
-
+(defvar *TEXT-VIEW-LINE-LENGTH*)
 ;;;--------
 ;;; global
 ;;;--------
