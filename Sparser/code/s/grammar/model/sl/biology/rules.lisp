@@ -92,6 +92,13 @@
                      type-marker ~a" category)))))
     i))
 
+;;--- a type rule
+
+(def-cfr enzyme (bio-process enzyme)
+  :form n-bar
+  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
+
+
 
 
 
@@ -150,14 +157,6 @@
              :with (protein left-edge
                     mutation right-edge)))
 
-
-
-
-;;--- a type rule
-
-(def-cfr enzyme (bio-process enzyme)
-  :form n-bar
-  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
 
 
 ;;--- expediency
