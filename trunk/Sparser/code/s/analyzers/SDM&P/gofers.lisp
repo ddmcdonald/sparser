@@ -19,6 +19,11 @@
 ;;;-------
 ;;; state
 ;;;-------
+;; Need documentation here -- DAVID
+(defvar *left-segment-boundary*)
+(defvar *right-segment-boundary*)
+(defvar CATEGORY::APOSTROPHE-S)
+(defvar *DEBUG-SEGMENT-HANDLING*)
 
 (defvar *segment-position-just-left-of-head* nil
   "Points to the chart-position-before the right-segment-boundary

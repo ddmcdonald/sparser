@@ -20,6 +20,13 @@
 
 (in-package :sparser)
 
+(defvar CATEGORY::DEFINITE)
+(defvar CATEGORY::INDEFINITE)
+(defvar CATEGORY::DET)
+(defvar *DEBUG-SEGMENT-HANDLING*)
+(defvar *PARSE-FROM-CONTINUOUS-EDGES-IN-PROGRESS*)
+(defvar *DEBUG-SEGMENT-HANDLING*)
+
 #|  
   The point of this body of code is to heuristically fill in
 anything inside a segment that the parser doesn't. It's also

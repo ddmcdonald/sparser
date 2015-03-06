@@ -12,6 +12,18 @@
 ;; parentheticals should be handled better <<DAVID>>
 (in-package :sparser)
 
+(defvar *DEBUG-SEGMENT-HANDLING*)
+(defvar CATEGORY::PARENTHESES)
+(defvar CATEGORY::NAME-WORD)
+(defvar CATEGORY::NAME)
+(defvar CATEGORY::DATE)
+(defvar CATEGORY::WEEKDAY)
+(defvar CATEGORY::TIME)
+(defvar CATEGORY::COUNTRY)
+(defvar CATEGORY::COMPANY)
+(defvar CATEGORY::PERSON)
+(defvar CATEGORY::TITLE)
+
 ;;;--------
 ;;; driver
 ;;;--------

@@ -10,6 +10,8 @@
 ;;      from sdm/analyze-segment
 
 (in-package :sparser)
+(defvar CATEGORY::DET)
+(defvar CATEGORY::QUANTIFIER)
 
 #| This designed for use with a setup like Grok where we are incorporating
 otherwise unknown (unconceptualized) words from some lexical store 
