@@ -48,6 +48,7 @@
 ;; 6.10 (2/5/15) Computed a referent for hypenated-numbers
 
 (in-package :sparser)
+(defvar CATEGORY::HYPHENATED-NUMBER)
 
 #|
 

@@ -68,7 +68,7 @@
                     as a symbol.~%The value used is a ~A"
                    (type-of fn-name)))
            ((not (fboundp fn-name))
-            (format t "The function ~A is undefined."))
+            (format t "The function ~A is undefined." fn-name))
            (t
             (setf (symbol-function 'look-at-terminal)
                   (symbol-function fn-name))))))

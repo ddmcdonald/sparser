@@ -44,6 +44,8 @@
 ;;      against continuing over "of"
 
 (in-package :sparser)
+(defvar *OF-APPEARS-WITHIN-PNF-SCAN*)
+(defvar *LC-PERSON-WORDS*)
 
 ;;;---------
 ;;; the FSA

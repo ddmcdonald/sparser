@@ -32,6 +32,8 @@
 ;;      as a name-word, so generalized the predicates plist functions.
 
 (in-package :sparser)
+(defvar *BREAK-ON-PATTERN-OUTSIDE-COVERAGE?*)
+
 
 ;;;--------
 ;;; object

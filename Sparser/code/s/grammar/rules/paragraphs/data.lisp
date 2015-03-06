@@ -13,6 +13,7 @@
 ;;      so it would be available under simpler licenses.
 
 (in-package :sparser)
+(defvar *DOCUMENTS-LINES*)
 
 
 ;;;----------------------------------------------------
