@@ -16,6 +16,7 @@
 
 (in-package :sparser)
 
+(defvar *BREAK-ON-UNEXPECTED-CASES*)
 
 (defun check-many-many (left-ending-vector right-ending-vector)
   (declare (special *break-on-unexpected-cases*))

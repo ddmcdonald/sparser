@@ -17,6 +17,8 @@
 
 (in-package :sparser)
 
+(defvar *CURRENT-CHUNK*)
+(defvar category::n-bar)
 
 (defun make-completed-binary-edge (left-edge
                                    right-edge
