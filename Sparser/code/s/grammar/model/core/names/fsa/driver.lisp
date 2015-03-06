@@ -29,6 +29,7 @@
 ;;;---------
 ;;; globals
 ;;;---------
+(defvar *POS-POSSIBLE-NEXT-LETTER*)
 
 (defparameter *debug-pnf* t
   "Flag used to control whether we go into a breakpoint on oddities

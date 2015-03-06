@@ -49,7 +49,8 @@
 ;;    not simply a name. 7/3/13 name -> named-object for label on uncharacterized names.
 
 (in-package :sparser)
-
+(defvar *OF-APPEARS-WITHIN-PNF-SCAN*)
+(defvar CATEGORY::LOCATION)
 
 ;;;----------------------
 ;;; debugging parameters

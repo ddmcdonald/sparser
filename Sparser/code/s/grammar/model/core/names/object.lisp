@@ -20,6 +20,7 @@
 ;;  (6/17/14) Folded in the has-name from C3. 
 
 (in-package :sparser)
+(defvar *PNF-SCAN-STARTS-HERE*)
 
 ;;;-----------------------------------------------------
 ;;; The simple version of a name as symbolic identifier

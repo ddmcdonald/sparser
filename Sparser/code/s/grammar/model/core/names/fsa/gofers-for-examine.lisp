@@ -19,6 +19,13 @@
 ;;      modules. 
 
 (in-package :sparser)
+(defvar CATEGORY::GENERIC-CO-WORD)
+(defvar CATEGORY::INC-TERM)
+(defvar CATEGORY::COMPANY-NAME)
+(defvar END-POS)
+(defvar START-POS)
+(defvar CATEGORY::TITLE-MODIFIER)
+(defvar CATEGORY::PHASE-OF-DAY)
 
 
 ;;;--------------------------------------------------------------

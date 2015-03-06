@@ -75,6 +75,7 @@
 ;;       to the edge section. ////There must be others -- check.
 
 (in-package :sparser)
+(defvar CATEGORY::PERSON-NAME)
 
 ;;;-------------------------
 ;;; flag for error checking
