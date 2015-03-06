@@ -10,6 +10,12 @@
 
 (in-package :sparser)
 
+(defvar *dec-tests*)
+(defvar *jan-dry-run*)
+(defvar *save-chunk-edges*)
+(defvar *all-chunk-edges*)
+(defvar *relations*)
+
 
 (defvar *known-breaks* nil)
 
