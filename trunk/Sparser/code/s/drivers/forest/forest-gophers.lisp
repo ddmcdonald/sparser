@@ -21,6 +21,8 @@
 
 (defvar subject-seen? nil)
 (defvar main-verb-seen? nil)
+(defvar *edge*)
+(defvar *THE-CATEGORY-TO-BE*)
 
 (defun clear-sweep-sentence-tt-state-vars ()
   (setq subject-seen? nil

@@ -8,6 +8,7 @@
 ;; initiated 6/15/94 v2.3
 
 (in-package :sparser)
+(defvar *PRETERMINALS-ON-CURRENT-WORD*)
 
 ;;;----------------------------------------------------------
 ;;; routine called by next-terminal for invisible annotation

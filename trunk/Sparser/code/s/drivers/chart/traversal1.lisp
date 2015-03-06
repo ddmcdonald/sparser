@@ -8,6 +8,8 @@
 ;; 1.0 (12/6/92 v2.3) Simplified it all considerably
 
 (in-package :sparser)
+(defvar *TRACE-TRAVERSAL-HITS*)
+(defvar *TRACE-TRAVERSAL-HOOK*)
 
 ;;;------------
 ;;; new driver

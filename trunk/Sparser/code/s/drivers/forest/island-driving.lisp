@@ -21,6 +21,7 @@
 ;;  turn off *edges-from-referent-categories*  -- no longer seems to be needed -- this speeds up the system by a factor of 3!
 
 (in-package :sparser)
+(defvar *parse-edges*)
 (defparameter *island-driven-efrc* nil) ;; controls *edges-from-referent-categories* inside island-driven-forest-parse -- 
 ;; when set to nil will speed up the system by a factor of 3!
 

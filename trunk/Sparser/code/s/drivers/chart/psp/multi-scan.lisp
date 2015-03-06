@@ -18,6 +18,11 @@
 ;; (trace-terminals-sweep)
 ;; (trace-network)
 
+(defvar *THE-PUNCTUATION-PERIOD*)
+(defvar *TRACE-SWEEP*)
+
+;Compiler warnings for "/Users/rusty/sparser/Sparser/code/s/drivers/chart/psp/multi-scan.lisp" :
+;   In SWEEP-TO-SPAN-PARENTHESES: Undeclared free variable *THE-PUNCTUATION-PERIOD*
 ;;;---------------------------------------------------
 ;;; 1st pass -- polywords, completion, terminal edges
 ;;;---------------------------------------------------

@@ -8,6 +8,10 @@
 ;; initiated 5/18/95
 
 (in-package :sparser)
+(defvar *DA-NEXT-POSITION/LEFTWARDS*)
+(defvar *DA-NEXT-POSITION*)
+(defvar *ARC*)
+
 
 (defparameter *da-search-is-going-leftwards* nil
   "Flag read in Follow-out-matched-arc")
