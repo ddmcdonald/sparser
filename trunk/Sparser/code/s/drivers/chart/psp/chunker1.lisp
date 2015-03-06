@@ -404,16 +404,16 @@ all sorts of rules apply and not simply form rules.
 
 (defmethod ng-compatible? ((c referential-category) evlist)
   (ng-compatible? (cat-symbol c) evlist))
-(defmethod ng-compatible? ((name symbol) evlist)
-  (declare (special chunk name)(ignore evlist))
+(defmethod ng-compatible? ((name symbol) edges)
+  (declare (special chunk name))
   (or
    (and
     (memq name *ng-internal-categories*)
     ;;in fact nothing should follow a pronoun (except a possessive pronoun)
     (not
-     (loop for edge in edges
-      thereis
-      (eq category::pronoun (edge-form edge)))))
+       (loop for edge in edges
+         thereis
+         (eq category::pronoun (edge-form edge)))))
    (and
     ;; partitive construction e.g. "all of these lines"
     (loop for edge in edges

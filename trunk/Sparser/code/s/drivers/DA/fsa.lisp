@@ -8,7 +8,7 @@
 ;; initiated 5/5/95. 7/29/13 Added in-line doc and better stubs
 
 (in-package :sparser)
-
+(defvar *DA-NEXT-POSITION*)
 
 (defun follow-out-matched-arc (arc)
   (if *da-search-is-going-leftwards*

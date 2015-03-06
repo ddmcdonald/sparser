@@ -8,6 +8,7 @@
 ;; initiated 1/5/95
 
 (in-package :sparser)
+(defvar WORD::|tx|)
 
 ;;;----------------------------------------------
 ;;; stack of positions at the beginning of lines

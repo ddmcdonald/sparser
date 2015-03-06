@@ -8,7 +8,7 @@
 ;; initiated 6/6/96. Synchronized with Adjustment protocol 6/18.
 
 (in-package :sparser)
-
+(defvar *SENTENCE-BOUNDARY*)
 
 #| The source consists of a massive body of text without any markup and
    without any blank lines, indentation, or other explicit indicators of

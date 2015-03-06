@@ -12,7 +12,7 @@
 ;; to turn off. 
 
 (in-package :sparser)
-
+(defvar *TIME-AT-CHART-LEVEL*)
 
 ;;--- Wrapper to minimize other operations
 

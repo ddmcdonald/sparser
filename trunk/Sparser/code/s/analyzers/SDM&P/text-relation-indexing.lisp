@@ -15,7 +15,7 @@
 
 (defun make-text-relation-instance (tr args)
   ;; make the instance, store it in the table
-  (let* ((class-name (tr-class-name tr))/Users/ddm/sparser/Sparser/code/s/analyzers/SDM&P/text-relations.lisp
+  (let* ((class-name (tr-class-name tr))
          (parameters (tr-slot-names tr))
          (arglist (loop for arg in args
                     as p in parameters

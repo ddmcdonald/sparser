@@ -23,6 +23,7 @@
 ;;      diverse type set. 
 
 (in-package :sparser)
+(defvar *BACKGROUND-COMPANIES*)
 
 (defparameter *debug-pronouns* nil
   "Guards breaks like the one in seek-person-for-pronoun where the search

@@ -14,7 +14,7 @@
 ;; to break on new cases. 
 
 (in-package :sparser)
-
+(defvar WORD::|of|)
 ;;;-------
 ;;; flags
 ;;;-------
