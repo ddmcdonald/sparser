@@ -16,7 +16,8 @@
 ;;     (1/9) added Span-region-with-section-marker-edge
 
 (in-package :sparser)
-
+(defvar CATEGORY::SECTION-MARKER)
+(defvar *PNF-HAS-CONTROL*)
 
 ;;;--------------------------
 ;;; generic creation routine

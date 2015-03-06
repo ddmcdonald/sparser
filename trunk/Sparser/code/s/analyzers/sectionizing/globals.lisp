@@ -11,7 +11,7 @@
 ;;     (8/29) added Cleanup-root-section-object
 
 (in-package :sparser)
-
+(defvar *CAPITALIZATION-IS-UNINFORMATIVE*)
 
 ;;;---------
 ;;; globals
