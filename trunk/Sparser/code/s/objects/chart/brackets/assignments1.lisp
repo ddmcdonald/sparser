@@ -18,6 +18,7 @@
 
 (in-package :sparser)
 
+(defvar word::single-quote)
 ;;;--------
 ;;; object
 ;;;--------

@@ -20,6 +20,15 @@
 ;;;--------
 ;;; Comlex
 ;;;--------
+(defvar *COMLEX-ADJECTIVES-LIST*)
+(defvar *COMLEX-NOUNS-LIST*)
+(defvar *COMLEX-VERBS-LIST*)
+(defvar *IS-A-FUNCTION-WORD-IN-COMLEX*)
+(defvar *IS-A-NOUN-IN-COMLEX*)
+(defvar *IS-A-VERB-IN-COMLEX*)
+(defvar *IS-AN-ADJECTIVE-IN-COMLEX*)
+(defvar *IS-AN-ADVERB-IN-COMLEX*)
+
 
 #| Given the full Comlex file from the LDC, read it in and stash
  its contents into tables by the POS type that Comlex assigned.
