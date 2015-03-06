@@ -11,6 +11,8 @@
 ;;      breakpoint in looking-for-end and fixed the value it returns
 
 (in-package :sparser)
+(defvar WORD::OPEN-ANGLE-BRACKET)
+(defvar WORD::CLOSE-ANGLE-BRACKET)
 
 ;;;--------------------------
 ;;; routine to connect it up
