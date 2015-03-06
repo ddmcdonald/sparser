@@ -31,7 +31,15 @@
 
 (defvar *chunk-forms* '(ng vg adjg))
 (defparameter *new-chunk-parse* t)
-
+(defvar *N-BAR-CATEGORIES*)
+(defvar CATEGORY::ORDINAL)
+(defvar CATEGORY::PRONOUN)
+(defvar CATEGORY::QUANTIFIER)
+(defvar CATEGORY::QUANTIFIER-OF)
+(defvar CATEGORY::PRONOUN)
+(defvar *NG-INTERNAL-CATEGORIES*)
+(defvar CATEGORY::THAT)
+(defvar CATEGORY::MODIFIER)
 (defvar *current-chunk* nil)
 
 (defclass chunk ()
@@ -325,7 +333,8 @@ all sorts of rules apply and not simply form rules.
 (defun starting-forms (ev &optional (forms *chunk-forms*))
   (loop for form in forms
     when 
-    (loop for edge in (ev-edges ev) thereis (can-start? form  edge))
+    (loop for edge in (ev-edges ev) thereis 
+      (can-start? form  edge))
     collect form))
 
 (defun can-start? (form edge)
@@ -340,6 +349,7 @@ all sorts of rules apply and not simply form rules.
 (defgeneric ng-compatible? (label evlist)
   (:documentation "Is a category which can occur inside a NG"))
 (defmethod ng-compatible? ((w word) evlist)
+  (declare (ignore w evlist))
   nil)
 (defmethod ng-compatible? ((e edge) evlist)
   (declare (special e evlist))
@@ -392,10 +402,10 @@ all sorts of rules apply and not simply form rules.
       (t
        (ng-compatible? (edge-form e) edges))))))
 
-(defmethod ng-compatible? ((c referential-category) edges)
-  (ng-compatible? (cat-symbol c) edges))
-(defmethod ng-compatible? ((name symbol) edges)
-  (declare (special chunk name))
+(defmethod ng-compatible? ((c referential-category) evlist)
+  (ng-compatible? (cat-symbol c) evlist))
+(defmethod ng-compatible? ((name symbol) evlist)
+  (declare (special chunk name)(ignore evlist))
   (or
    (and
     (memq name *ng-internal-categories*)
@@ -414,6 +424,8 @@ all sorts of rules apply and not simply form rules.
 (defgeneric ng-start? (label)
   (:documentation "Is a category which can occur inside a NG"))
 (defmethod ng-start? ((w word))
+  nil)
+(defmethod ng-start? ((s symbol))
   nil)
 (defmethod ng-start? ((e edge))
   (declare (special e))
