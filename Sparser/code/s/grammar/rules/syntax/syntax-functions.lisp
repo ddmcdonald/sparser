@@ -24,6 +24,10 @@
 
 
 (in-package :sparser)
+(defvar CATEGORY::PREPOSITIONAL-PHRASE)
+(defvar CATEGORY::PRONOUN/INANIMATE)
+(defvar CATEGORY::THERE-EXISTS)
+(defvar CATEGORY::COPULAR-PP)
 
 
 ; (left-edge-for-referent)

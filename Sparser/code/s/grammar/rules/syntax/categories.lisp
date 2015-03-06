@@ -77,6 +77,7 @@
 ;; 2/3/15 removed outliers from pronoun-category?
 
 (in-package :sparser)
+(defvar CATEGORY::NOT)
 
 
 ;;;----------------------------
