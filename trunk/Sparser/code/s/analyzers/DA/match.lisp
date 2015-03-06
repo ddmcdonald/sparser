@@ -10,7 +10,8 @@
 ;; 9/19/13 Moed out look-under code to objects/chart/edge-vectors/peek.
 
 (in-package :sparser)
-
+(defvar *TRACE-DA*)
+(defvar *DA-SEARCH-IS-GOING-LEFTWARDS*)
 
 (defparameter *edge-tt* nil)
 (defparameter *word-tt* nil)

@@ -8,7 +8,7 @@
 ;; initiated 7/8/93 v2.3. Smidge of capitalization and cleanup 8/16/11
 
 (in-package :sparser)
-
+(defvar CATEGORY::NP-SEGMENT)
 
 (defun da/prefix-dispatch/determiner (label prefix-edge right-end-pos)
 

@@ -36,6 +36,20 @@
 
 (in-package :sparser)
 
+
+(defvar CATEGORY::BE)
+(defvar CATEGORY::HAVE)
+(defvar CATEGORY::ADVERB)
+(defvar CATEGORY::VERB+ING)
+(defvar CATEGORY::VERB+ED)
+(defvar *START-OF-PREFIXED-VERB-GROUP*)
+(defvar CATEGORY::VERB)
+(defvar CATEGORY::VERB+S)
+(defvar CATEGORY::VERB+ED)
+(defvar CATEGORY::VERB+ING)
+(defvar CATEGORY::ADVERB)
+(defvar CATEGORY::VERB)
+(defvar CATEGORY::CAPITALIZED-WORD)
 ;;;--------
 ;;; driver
 ;;;--------

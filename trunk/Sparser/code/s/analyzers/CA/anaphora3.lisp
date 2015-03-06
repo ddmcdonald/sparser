@@ -64,6 +64,7 @@
 ;;;----------
 
 (defparameter *objects-in-the-discourse* (make-hash-table :test #'eq))
+(defvar *CATEGORY-HIERARCHY*)
 
 (defparameter *debug-anaphora* nil
   "Flag around the 'unexpected situation' error/break calls")
@@ -282,6 +283,7 @@
 ;;;-----------------------------------
 
 (defun irrelevant-category-for-dh (category i)
+  (declare (ignore i))
   ;; Return non-nil for any category that should not be recored
   ;; in the discourse history. 
   (declare (special *irrelevant-to-discourse-history*))
