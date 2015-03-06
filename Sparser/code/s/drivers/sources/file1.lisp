@@ -12,6 +12,7 @@
 ;; 0.1 (10/3/13) Reorganized the initialization.
 
 (in-package :sparser)
+(defvar *OPEN-STREAM-OF-SOURCE-CHARACTERS*)
 
 (export 'analyze-text-from-file)
 

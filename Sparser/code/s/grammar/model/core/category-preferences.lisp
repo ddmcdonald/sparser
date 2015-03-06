@@ -9,8 +9,15 @@
 ;; Commented out stranded function 4/1/12
 
 (in-package :sparser)
-
-
+(defvar CATEGORY::COMPANY-HEAD)
+(defvar CATEGORY::COMPANY-HEAD/S)
+(defvar CATEGORY::COMPANY-POSSESSIVE)
+(defvar CATEGORY::PERSON-POSSESSIVE)
+(defvar CATEGORY::RESPONSIBILITY)
+(defvar CATEGORY::STATUS-OF-A-POSITION)
+(defvar CATEGORY::SUBSIDIARY-HEAD)
+(defvar CATEGORY::TEMPORAL-ADVERB)
+(defvar CATEGORY::TITLE/PLURAL)
 
 (defun sort-out-which-category-of-treetop-edge-to-prefer (list-of-edges)
   (let (category

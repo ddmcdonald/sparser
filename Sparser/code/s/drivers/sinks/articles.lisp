@@ -7,6 +7,7 @@
 ;;;  Version:  June 1991
 
 (in-package :sparser)
+(defvar *VETTED-RECORDS-IN-ARTICLE*)
 
 
 (defparameter *articles-with-records* nil)

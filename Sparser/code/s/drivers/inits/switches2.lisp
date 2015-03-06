@@ -76,6 +76,18 @@
 ;;       11/7/14 debugged it. 
 
 (in-package :sparser)
+(defvar *PNF-ROUTINE*)
+(defvar *TREAT-SINGLE-CAPITALIZED-WORDS-AS-NAMES*)
+(defvar *CHARACTER-TRANSLATION-PROTOCOL*)
+(defvar *KEEP-NUMBER-SEQUENCE-RAW*)
+(defvar *NO-SEGMENT-LEVEL-OPERATIONS*)
+(defvar *COMLEX-WORD-LISTS-LOADED*)
+(defvar *COMLEX-WORDS-PRIMED*)
+(defvar *BREAK-ON-NEW-BRACKET-SITUATIONS*)
+(defvar *ARABIC-NAMES*)
+(defvar *THE-CATEGORY-OF-DIGIT-SEQUENCES*)
+(defvar DA-FOREST-LEVEL)
+(defvar *CAP-SEQ-EDGE-DATA-ROUTINE*)
 
 
 (defvar *switch-setting* nil
