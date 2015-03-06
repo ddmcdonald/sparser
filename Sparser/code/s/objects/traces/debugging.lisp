@@ -11,6 +11,14 @@
 ;; 8/22/13 added *debug-pronouns*.
 
 (in-package :sparser)
+(defvar *ANNOUNCE-MISSING-SORT-ROUTINES*)
+(defvar *DEBUG-PRONOUNS*)
+(defvar *DEBUG-PNF*)
+(defvar *BREAK-ON-NEW-CATEGORIES-IN-CAP-SEQ*)
+(defvar *BREAK-ON-NEW-NAME-CONVERTER-CASES*)
+(defvar *BREAK-ON-NEW-BRACKET-SITUATIONS*)
+(defvar *ANNOUNCE-MISSING-SORT-ROUTINES*)
+(defvar *DEBUG-PRONOUNS*)
 
 
 (defparameter *break-on-new-cases* t

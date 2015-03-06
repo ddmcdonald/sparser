@@ -14,6 +14,9 @@
 ;;  which can be spanned by a rule
 
 (in-package :sparser)
+(defvar *TRACE-FOREST-TRANSITIONS*)
+(defvar *TRACE-DA-CHECK*)
+(defvar *TRACE-DA*)
 
 
 (defun trace-forest-level ()
