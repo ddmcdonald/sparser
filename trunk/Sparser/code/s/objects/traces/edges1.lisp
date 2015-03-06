@@ -479,7 +479,6 @@
 
 (deftrace :seg-march/single-ends-at (edge)
   ;; called from March-back/segment/2
-  (declare (ignore position))
   (when *parse-edges*
     (trace-msg "[March]     ~A ends there."
                edge)))
