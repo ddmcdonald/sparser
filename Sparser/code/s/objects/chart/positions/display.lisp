@@ -16,6 +16,8 @@
 ;;      large chart
 ;;     (5/18/09) Added mixin-category to display-edge-as-tree
 ;;     (3/4/12) quiet compiler (1/27/14) another case in display-edge-as-tree
+;; 3/4/2015 edge-form can be :DOTTED-INTERMEDIATE
+
 
 (in-package :sparser)
 
@@ -258,7 +260,9 @@
                            (format nil
                                    "~A/~A"
                                    (cat-symbol label)
-                                   (cat-symbol form)))
+                                   (if (symbolp form)
+                                       form ;; as in :DOTTED-INTERMEDIATE
+                                       (cat-symbol form))))
                           (word 
                            (concatenate
                             'string "\"" (word-pname label) "\"" ))
