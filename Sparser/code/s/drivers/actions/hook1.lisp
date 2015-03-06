@@ -14,6 +14,7 @@
 ;; 1.5 (5/20/94) changed args to default case to dispatch on edge vs. position
 
 (in-package :sparser)
+(defvar *trace-completion-hook*)
 
 
 (defun carry-out-actions (rule-set-action-field

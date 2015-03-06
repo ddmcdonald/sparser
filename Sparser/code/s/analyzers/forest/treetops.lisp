@@ -33,6 +33,15 @@
 
 (in-package :sparser)
 
+(defvar CATEGORY::BE)
+(defvar CATEGORY::ADJECTIVE)
+(defvar *RULES-FOR-PAIRS*)
+(defvar CATEGORY::SYNTACTIC-THERE)
+(defvar CATEGORY::PREPOSITION)
+(defvar CATEGORY::SPATIAL-PREPOSITION)
+(defvar *NG-HEAD-CATEGORIES*)
+(defvar *VG-HEAD-CATEGORIES*)
+
 ;;;--------------------------------
 ;;; basic navigation over treetops
 ;;;--------------------------------
