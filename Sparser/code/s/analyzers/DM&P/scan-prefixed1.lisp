@@ -16,7 +16,7 @@
 ;;     (1/23) specialized prefix parser for vgs
 
 (in-package :sparser)
-
+(defvar CATEGORY::CONTENT-WORD)
 ;;;-------------
 ;;; entry point
 ;;;-------------

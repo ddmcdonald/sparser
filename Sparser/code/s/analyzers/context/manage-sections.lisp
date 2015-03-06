@@ -19,6 +19,19 @@
 
 (in-package :sparser)
 
+(defvar *ONGOING-SECTION-OBJECT*)
+(defvar *ROOT-SECTION-OBJECT*)
+(defvar *ONGOING-SECTION-OBJECT*)
+(defvar *ROOT-SECTION-OBJECT*)
+(defvar *ONGOING-SECTION-OBJECT*)
+(defvar *ROOT-SECTION-OBJECT*)
+(defvar *ONGOING-SECTION-OBJECT*)
+(defvar *ROOT-SECTION-OBJECT*)
+(defvar *ONGOING-SECTION-OBJECT*)
+(defvar *ROOT-SECTION-OBJECT*)
+(defvar *ONGOING-SECTION-OBJECT*)
+(defvar *ROOT-SECTION-OBJECT*)
+(defvar *ONGOING-SECTION-OBJECT*)
 ;;;---------------------------------------------
 ;;; Driver -- unpaired markup section start/end
 ;;;---------------------------------------------

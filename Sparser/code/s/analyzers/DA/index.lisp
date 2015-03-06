@@ -9,7 +9,7 @@
 ;; 7/18/13 Patched around case of getting a list of edges.
 
 (in-package :sparser)
-
+(defvar *TT-ALIST*)
 
 ;;;--------
 ;;; driver

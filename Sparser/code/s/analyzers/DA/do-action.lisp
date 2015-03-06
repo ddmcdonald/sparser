@@ -11,6 +11,9 @@
 
 (in-package :sparser)
 
+(defvar *DA-STARTING-POSITION*)
+(defvar *DA-ENDING-POSITION*)
+(defvar *MATCHED-DA-RULE*)
 
 (defun execute-da-action (rule)
   ;; called from Accept-pattern

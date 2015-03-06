@@ -13,6 +13,8 @@
 ;;      (4/27/95) added Preceded-by-comma-and-an-edge
 
 (in-package :sparser)
+(defvar WORD::COMMA)
+(defvar WORD::|and|)
 
 ;;;----------------------------
 ;;; looking for specific cases

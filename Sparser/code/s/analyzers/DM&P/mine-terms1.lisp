@@ -17,6 +17,8 @@
 
 (in-package :sparser)
 
+(defvar CATEGORY::ADVERB)
+(defvar CATEGORY::NOUN)
 
 #|  These routines process single words (or polywords).  If the word
  hasn't been seen before they have a term created for it with as
