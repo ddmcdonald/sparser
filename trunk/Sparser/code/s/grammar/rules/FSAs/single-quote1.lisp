@@ -11,6 +11,13 @@
 ;;     typo 10/24. (4/22/12) Compiler fix.
 
 (in-package :sparser)
+(defvar WORD::\s)
+(defvar WORD::\t)
+(defvar WORD::|re|)
+(defvar WORD::|ve|)
+(defvar WORD::|ll|)
+(defvar WORD::\m)
+
 
 ;;;------------
 ;;; categories

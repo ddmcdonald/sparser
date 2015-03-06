@@ -27,6 +27,7 @@
 ;;      struct to avoid PSI propblems. 4/1/12 Wrong paragraph accessors fixed.
 
 (in-package :sparser)
+(defvar *AFTER-PARAGRAPH-ACTIONS*)
 
 
 ;;;----------------------------------------

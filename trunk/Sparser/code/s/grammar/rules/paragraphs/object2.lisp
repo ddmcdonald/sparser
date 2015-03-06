@@ -21,6 +21,7 @@
 ;;      looking around and replacing this entirely. 
 
 (in-package :sparser)
+(defvar *PARAGRAPH-RESOURCE*)
 
 ;;;----------
 ;;; globals
