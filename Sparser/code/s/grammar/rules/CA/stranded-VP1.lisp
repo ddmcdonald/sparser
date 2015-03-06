@@ -13,7 +13,7 @@
 ;;     (4/7/11) updated it.
 
 (in-package :sparser)
-
+(defvar *TRACE-CA*)
 
 ;;--- active
 

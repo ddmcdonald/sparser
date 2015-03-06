@@ -20,7 +20,9 @@
 ;;      ':or' in v/r
 
 (in-package :sparser)
-
+(defvar *TERMS/DH*)
+(defvar *VERBS/DH*)
+(defvar *NON-VERBS/DH*)
 
 ;;;-------------------------------------------------------
 ;;; the category all the individuals will be instances of
