@@ -22,7 +22,7 @@
 ;;     (11/6/14) e
 
 (in-package :sparser)
-
+(defvar *primed-words*)
 
 (defun unknown-word? (word)
   (null (word-rules word)))

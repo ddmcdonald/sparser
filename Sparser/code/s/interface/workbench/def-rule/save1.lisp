@@ -20,6 +20,16 @@
 ;;     (8/11/11) moved define-realization to objects/model/tree-families/radata1.lisp.
 
 (in-package :sparser)
+(defvar *RDT/MAPPING*)
+(defvar *RDT/SELECTED-SCHEMA*)
+(defvar *SLVD-WINDOW*)
+(defvar *SLVD/SAVE-ROUTINE*)
+(defvar *RDT/DOSSIER-TO-USE*)
+(defvar *DEFAULT-DOSSIER-FILE*)
+(defvar *RDT/LAST-DOSSIER-USED*)
+(defvar *RDT/SELECTED-SCHEMA*)
+(defvar *RDT/MAPPING*)
+(defvar *RDT/REFERENCE-CATEGORY*)
 
 
 ;;;--------------------------------

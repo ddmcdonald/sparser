@@ -15,6 +15,21 @@
 
 (in-package :sparser)
 
+(defvar *CONSTITUENT-PATTERNS*)
+(defvar *NONTERMINAL-TAG-COUNT*)
+(defvar *NT-TAGS-TO-PATTERNS*)
+(defvar *POS-TAG-COUNT*)
+(defvar *TAG-COUNT*)
+(defvar *WORD-COUNT*)
+(defvar *WORD-TOKEN-COUNT*)
+(defvar SYMBOL-TO-NONTERMINAL-TAG)
+(defvar SYMBOL-TO-POS-TAGS)
+(defvar SYMBOLS-TO-TAGS)
+(defvar SYMBOLS-TO-WORDS)
+
+;   In WRITE-WORDS-BY-POS: Unused lexical variable S
+;Compiler warnings for "/Users/rusty/sparser/Sparser/code/s/grammar/rules/words/one-offs/treebank-reader.lisp" :
+
 ;; These solve a problem about populating the chart by hiding
 ;; the multi-type characters of the symbols from Sparser's tokenizer
 ;; The values have to be a single character type so that the tokenizer
