@@ -294,6 +294,8 @@
 ;;; VG + Adverb
 ;;;-------------
 
+(defparameter *adverb+vg* nil)
+
 (defun interpret-adverb+verb (adverb vg)
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   ;; "direct binding" has a specitif meaning
@@ -301,14 +303,19 @@
   
   ;; default
   (setq vg (copy-individual vg))
-  #|need to diagnose among (time)
-          (location)
-          (purpose)
-          (circumstance)
-          (manner)
-          (aspect . tense/aspect)
- BUT UNTIL THEN, JUST BIND THE ADVERB
-|#
+  #|need to diagnose among 
+   (time)
+   (location)
+   (purpose)
+   (circumstance)
+   (manner)
+   (aspect . tense/aspect)
+  BUT UNTIL THEN, JUST BIND THE ADVERB
+  |#
+  #+ignore
+  (push (list (edge-string (left-edge-for-referent))
+              (edge-string (right-edge-for-referent)))
+        *adverb+vg*)
   (bind-variable 'adverb adverb vg)
   vg)
 
@@ -493,8 +500,8 @@
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
 
-(defun assimilate-thatcomp (vg thatcomp)
-  (assimilate-subcat vg category::thatcomp thatcomp))
+(defun assimilate-thatcomp (vg-or-np thatcomp)
+  (assimilate-subcat vg-or-np category::thatcomp thatcomp))
 
 (defun assimilate-pp-subcat (head prep pobj)
   (assimilate-subcat head 
