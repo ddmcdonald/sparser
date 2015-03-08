@@ -18,6 +18,8 @@
 ;; allow PP modifiers for proper-noun (which is how Ser877 is treated, as a residue-on-protein
 ;; allow PRONOUN to be a subject -- so we can parse "it inhibits BRAF"
 ;; 3/4/2015 rules should produce form as S and not subj+verb
+;; 3/8/2015 rulle for NP+thatcomp,
+;; rule for VG+DEICTIC-LOCATION (as in "here" as an adverb)
 
 (in-package :sparser)
 
@@ -84,48 +86,6 @@ to an oncogenic RasG12V mutation (9)."))
 
 
 #|
-(def-syntax-rule (proper-noun proper-noun) ;; "ford suv"
-                 :head :right-edge ; 
-  :form n-bar ;; requires a determiner 
-  :referent (:function noun-noun-compound
-                       left-edge right-edge))
-
-
-(def-syntax-rule (common-noun common-noun)
-                 :head :right-edge
-  :form n-bar
-  :referent (:function noun-noun-compound
-                       left-edge right-edge))
-
-(def-syntax-rule (common-noun common-noun/plural)
-                 :head :right-edge
-  :form n-bar
-  :referent (:function noun-noun-compound
-                       left-edge right-edge))
-
-
-(def-syntax-rule (proper-noun common-noun)
-                 :head :right-edge
-  :form n-bar
-  :referent (:function noun-noun-compound
-                       left-edge right-edge))
-
-(def-syntax-rule (proper-noun common-noun/plural)
-                 :head :right-edge
-  :form n-bar
-  :referent (:function noun-noun-compound
-                       left-edge right-edge))
-
-(def-syntax-rule (n-bar n-bar)  ;; "GAP–mediated GTP hydrolysis"
-                 :head :right-edge
-  ;;////// Changes to the leading n-bar because of change to
-  ;; form of stuff like "GAP-mediated" goes here. ddd/rjb
-  :form n-bar
-  :referent (:function noun-noun-compound
-                       left-edge right-edge))
-
-;; GAP–mediated hydrolysis.
-
 (def-syntax-rule (n-bar common-noun)  ;; "GAP–mediated GTP hydrolysis"
                  :head :right-edge
   ;;////// Changes to the leading n-bar because of change to
@@ -196,36 +156,40 @@ to an oncogenic RasG12V mutation (9)."))
 
 ;;--- adverbs
 
-(def-syntax-rule  (adverb infinitive) ;;??? what's the test example?
-  :head :right-edge
-  :form infinitive
-  :referent (:function interpret-adverb+verb left-edge right-edge))
-
 (def-syntax-rule  (vg adverb)
   :head :left-edge
   :form vg
   :referent (:function interpret-adverb+verb right-edge left-edge))
 
-(def-syntax-rule  (adverb verb+ed)
+#+ignore
+(def-syntax-rule  (adverb infinitive) 
+                  ;;??? what's the test example?
+                  ;; can't find one -- but if this was added recently, it must have 
+                  ;; been for a reason (RJB)
   :head :right-edge
-  :form vg
-  :referent(:function interpret-adverb+verb left-edge right-edge))
+  :form infinitive
+  :referent (:function interpret-adverb+verb left-edge right-edge))
 
-
-(def-syntax-rule  (adverb vg)
-  :head :right-edge
-  :form vg
-  :referent(:function interpret-adverb+verb left-edge right-edge))
-
-(def-syntax-rule  (adverb vp)
-  :head :right-edge
-  :form vp
-  :referent(:function interpret-adverb+verb left-edge right-edge))
-
-(def-syntax-rule  (adverb s)
-  :head :right-edge
-  :form s
-  :referent(:function interpret-adverb+verb left-edge right-edge))
+(loop for v in '(verb+ed vg vp s) 
+  ;; "here" is used adverbially
+  do
+  (eval 
+   `(def-form-rule (deictic-location ,v)
+                   :head :right-edge
+      :form vp
+      :referent(:function interpret-adverb+verb left-edge right-edge)))
+  (eval 
+   `(def-form-rule (,v deictic-location)
+                   :head :left-edge
+      
+      :form vp
+      :referent(:function interpret-adverb+verb right-edge left-edge)))
+  
+  (eval
+   `(def-syntax-rule  (adverb ,v)
+                      :head :right-edge
+      :form vp
+      :referent(:function interpret-adverb+verb left-edge right-edge))))
 
 #|
 WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETORICAL ADVERBS
@@ -384,6 +348,11 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 (def-syntax-rule (vg thatcomp)
   :head :left-edge
   :form vp
+  :referent (:function assimilate-thatcomp left-edge right-edge))
+
+(def-syntax-rule (np thatcomp)
+  :head :left-edge
+  :form np
   :referent (:function assimilate-thatcomp left-edge right-edge))
 
 (loop for nb in (cons category::np *n-bar-categories*)
