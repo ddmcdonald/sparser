@@ -27,7 +27,7 @@
   '(:verb :noun :adj :etf :s :o :c :m
     :binds :realization
     :prep :by
-    :against :as :at :between :for :from :in :of :on :onto :to :thatcomp :through :via :with))
+    :against :as :at :between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with))
 
 (defun includes-def-realization-keyword (rdata)
   ;; used in decode-category-parameter-list to decide whether
@@ -95,7 +95,7 @@
                                   etf verb noun adj
                                   s o c m
                                   prep by
-                                  against as at between for from in of on onto to thatcomp  through via with)
+                                  against as at between for from in into of on onto to thatcomp  through via with)
   ;; Decoder for def-term
   ;; Make the category, then use the independent realization
   ;; machinery to finish it. 
@@ -173,7 +173,8 @@
           :c c
           :m m
           :prep prep  :by by
-          :against against :as as :at at :between between :for for :from from :in in :of of :on on  :onto onto :to to :thatcomp thatcomp  :through through :via via :with with)
+          :against against :as as :at at :between between :for for :from from :in in :into into
+          :of of :on on  :onto onto :to to :thatcomp thatcomp  :through through :via via :with with)
 
         (when obo-id
           (bind-variable 'uid obo-id category))
@@ -185,7 +186,7 @@
                                                s o c m ;; arguments
                                                prep ;; owned preposition
                                                by ;; for passive
-                                               against as at between for from in of on onto to ;; prepositions
+                                               against as at between for from in into of on onto to ;; prepositions
                                                thatcomp through via with 
                                                )
   ;; Decoder for the realization part of def-term, for the rdata of
@@ -266,7 +267,7 @@
             (push `(modifier-slot . ,var) substitution-map)
             (push `(modifier-v/r . ,v/r) substitution-map)))
 
-        (handle-prepositions category against as at between for from in of on onto to thatcomp through via with)
+        (handle-prepositions category against as at between for from in into of on onto to thatcomp through via with)
 
         (when prep ;; preposition 'owned' by the verb, appears
           ;; immediately after the verb, making it effectively 
@@ -280,7 +281,7 @@
                (cn-rules (make-cn-rules/aux word category category)))
           (add-rules-to-category category cn-rules)))
       (unless etf ;; where they were already handled
-        (handle-prepositions category against as at between for from in of on onto to thatcomp through via with)))
+        (handle-prepositions category against as at between for from in into of on onto to thatcomp through via with)))
 
     (when adj
       (unless (assq :adjective word-map)
@@ -296,7 +297,7 @@
                (v/r (var-value-restriction var)))
           (assign-object category v/r var)))
       (unless etf
-        (handle-prepositions category against as at between for from in of on onto
+        (handle-prepositions category against as at between for from in into of on onto
                              to thatcomp through via with)))
 
 
@@ -332,7 +333,7 @@
     (when verb-cfr
       (delete/cfr verb-cfr))))
 
-(defun handle-prepositions (category &optional against as at between for from in 
+(defun handle-prepositions (category &optional against as at between for from in into
                                      of on onto to thatcomp through via with)
   (when against
     (subcategorize-for-preposition category "against" against))
@@ -348,6 +349,8 @@
     (subcategorize-for-preposition category "from" from))
   (when in
     (subcategorize-for-preposition category "in" in))
+  (when into
+    (subcategorize-for-preposition category "into" into))
   (when of  
     (subcategorize-for-preposition category "of" of))
   (when on 
