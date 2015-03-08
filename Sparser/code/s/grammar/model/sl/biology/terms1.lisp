@@ -234,6 +234,7 @@
       (:noun "function"
        :of functional))
 (adj "further" :super predicate)
+(define-adverb "further")
 (define-adverb "furthermore")
 (noun "G-domain" :super protein-segment) ;; somehow (def-bio "G-domain" protein-segment) did not work
 
@@ -288,6 +289,12 @@
       (:noun "insensitivity"
              :of subject
              :to cause))
+(noun "insight" :super abstract
+      :binds ((concept biological))
+      :realization
+      (:noun "insight"
+             :into concept))
+
 (adj "integrative" :super predicate) ;; keyword: (ive ADJ) 
 (adj "intriguing" :super predicate) ;; keyword: ENDS-IN-ING 
 (noun "isoform" :super bio-variant
@@ -310,11 +317,18 @@
 (adj "long" :super predicate)
 (adj "long-term" :super predicate)
 (adj "low" :super predicate)
-(noun "manner" :super bio-process) ;; by chemical or genetic means
+(noun "manner" :super bio-process
+      :binds ((process bio-process))
+      :realization
+      (:noun "manner"
+             :of process))
 (noun "mass" :super measurement)
 (noun "mass spectrometry" :super bio-method)
-(noun "means" :super bio-process) ;; by chemical or genetic means
-
+(noun "means" :super bio-process
+      :binds ((process bio-process))
+      :realization
+      (:noun "means"
+             :of process))
 (adj "measurable" :super predicate) ;; keyword: (able ADJ) 
 (noun "mechanism" :super bio-process
       :binds ((process bio-process))
@@ -382,7 +396,11 @@
       :realization
       (:noun "population"
              :of element))  
-(noun "possibility" :super bio-abstract) ;; keyword: (ity N) 
+(noun "possibility" :super bio-abstract
+      :binds ((assertion biological))
+      :realization
+      (:noun "possibility"
+             :thatcomp assertion)) ;; keyword: (ity N) 
 (adj "potent" :super predicate
   :binds ((theme bio-entity))
   :realization (:for theme))
@@ -469,7 +487,7 @@
              :of subject
              :to cause)) ;; keyword: (ity N)
 (noun "serum" :super bio-entity) 
-(noun "setting" :super bio-entity)
+(noun "setting" :super bio-context)
 (adj "short-lived" :super predicate)
 
 (adj "similar" :super predicate
@@ -507,9 +525,13 @@
            :to result))
 (noun "state" :super bio-entity)
 (noun "stoichiometry" :super bio-abstract)
-(noun "strategy" :super bio-process)
+(noun "strategy" :super bio-process
+      :binds ((goal bio-process))
+      :realization
+      (:noun "strategy"
+             :for goal))
 (noun "substrate" :super bio-entity)
-(noun "success" :super bio-abstract)
+;;(noun "success" :super bio-abstract) -- make a verb
 
 (adj "suitable" :super predicate)
 (adj "supplementary" :super predicate) ;; keyword: (ary ADJ)
@@ -520,7 +542,7 @@
 (noun "target" :super bio-entity)
 (adj "targeted" :super predicate)
 (noun "targeting" :super bio-process)
-(noun "therapeutics" :super bio-abstract) ;; keyword: (ics N) 
+
 (define-adverb "therefore")
 (define-adverb "thereby")
 (noun "throughput" :super measurement)
@@ -528,8 +550,7 @@
 (noun "tissue" :super bio-context)
 (define-adverb "to this end")
 (adj "transient" :super predicate)
-(noun "treatment":super bio-abstract) ;; keyword: (ment N) 
-(noun "trial" :super bio-abstract)
+(noun "trial" :super bio-context)
 (noun "tumor" :super bio-location)
 (noun "tumor formation" :super bio-process)
 (noun "tumorigenesis" :super bio-process)
@@ -649,8 +670,6 @@
 "fate" 
 "fig" 
 "groups" 
-"insights" 
-"manner" 
 "trials" 
 
 (define-category article-figure
