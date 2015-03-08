@@ -131,6 +131,7 @@
      :s activator
      :o activated
      :via mechanism
+     :through mechanism
      :of activated))
 
 (define-category addition :specializes bio-process
@@ -362,7 +363,8 @@
 ;; like inhibit "therapeutics are confounded by acquired resistance"
 (define-category confound
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent biological)(object bio-process)) 
+  ;; changed agent to biological, since it can include bio-process such as resistnace
     :realization
     (:verb "confound" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -743,6 +745,14 @@
 (define-category examine :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "examine" :noun "examination" :etf (svo-passive) :s agent :o object)) 
 (define-category explanation :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "explain" :noun "explanation" :etf (svo-passive) :s agent :o object))
 
+(define-category follow
+    :specializes bio-process
+  :binds ((initial bio-process)(subsequent bio-process))
+  :realization
+  (:verb "follow"
+         :etf (svo)
+         :s initial
+         :o subsequent))
 
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
 (define-category gene-transcript-express
@@ -878,14 +888,14 @@
 
 (define-category identify
     :specializes bio-process
-    :binds ((agent pronoun/first/plural)(object biological))
+    :binds ((agent pronoun/first/plural)(object biological)(predicate biological))
     :realization
     (:verb "identify" ;; keyword: ENDS-IN-ED 
 	   :noun "identification"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :as agent
+           :as predicate
            :of object))
 
 (define-category immunoprecipitate :specializes bio-process
@@ -1087,6 +1097,7 @@
 	   :o object
            :of object))
 
+(delete-noun-cfr (resolve/make "lead"))
 (define-category lead
     :specializes bio-process
     :binds ((agent biological)(object biological))
@@ -1203,7 +1214,8 @@
    :etf (svo-passive)
    :s agent
    :o object
-   :of object))
+   :of object
+   :in object))
 ;; These two were in terms and need to be integrated with
 ;; this category
 (np-head "mutant" :super 'bio-entity)
@@ -1327,24 +1339,27 @@
 
 (define-category potentiate
     :specializes bio-process
-    :binds ((agent biological)(object bio-process))
+    :binds ((agent biological)(object bio-process)(manner bio-process))
     :realization
     (:verb "potentiate" ;; keyword: ENDS-IN-ED 
 	   :noun "potentiation"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :of object
+           :in manner))
 
 (define-category predict
-    :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :specializes bio-thatcomp
+    :binds ((agent biological)(object bio-process))
+  ;; agent can be a process, like "mutation"
     :realization
     (:verb "predict"
 	   :noun "prediction"
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :thatcomp statement))
 
 (define-category present
     :specializes bio-process
@@ -1460,14 +1475,13 @@
 
 (define-category relapse
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)(object bio-entity))
     :realization
     (:verb "relapse" ;; keyword: ENDS-IN-ING 
 	   :noun "relapse"
 	   :etf (svo-passive)
 	   :s agent
-	   :o object
-           ))
+	   :o object))
 
 (def-synonym relapse
   (:noun "relapse"
@@ -1646,6 +1660,16 @@
    :s agent
    :of object))    ;; by <entity>
 
+(define-category succeed
+  :specializes bio-process
+  :binds ((agent biological)(goal biological))
+  :realization
+  (:verb "succeed" :noun "success"
+   :etf (sv)
+   :s agent
+   :of agent
+   :in goal))
+
 (define-category suggest :specializes bio-thatcomp
   ;; :specializes rhetorical-process <----- find the right name
   :binds ((agent bio-process)) ;;/// really a propositin
@@ -1744,6 +1768,16 @@
          :o object
          :to destination))
 
+(define-category treat
+  :binds ((agent pronoun/first/plural) (patient biological) (treatment biological))
+  :realization
+  (:verb "treat" ;; :noun "treatment"
+         :etf (svo-passive)
+         :s agent
+         :o patient
+         :with treatment))
+
+
 ;;This is almost never used as a verb -- only as "truncating...mutation" and "...truncation of ..."
 (define-category truncate
     :specializes bio-process
@@ -1807,7 +1841,8 @@
 
 (define-category validate
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent biological)(object bio-process))
+  ;; validated by the success of MEK inhibition
     :realization
     (:verb "validate" ;; keyword: ENDS-IN-ED 
 	   :noun "validation"
