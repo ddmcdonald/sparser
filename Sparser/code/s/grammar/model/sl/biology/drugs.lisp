@@ -23,6 +23,8 @@
   :lemma (:common-noun "drug")
   :realization (:common-noun name))
 
+(noun "therapeutics" :super drug) ;; keyword: (ics N) 
+
 #+ignore
 (defun define-drug (drug-name)
   (eval `(np-head ,drug-name :super 'drug :rule-label 'drug)))
