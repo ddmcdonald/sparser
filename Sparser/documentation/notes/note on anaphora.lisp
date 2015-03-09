@@ -48,6 +48,14 @@ concern ourselves with number concord.
 
 The function dereference-DefNP can be called directly but is the
 reference function in the ETF np-common-noun/defnp where it takes
-the right edge, the np head as its argument. The NP schema aren't
+the right edge -- the np head -- as its argument. The NP schema aren't
 well enough developed, so another 'launching point' is part of the
-referent function on form rules.
+referent function on form rules. Here is the base definition of 
+"these" (in grammar/rules/syntax/articles.lisp).
+
+(def-form-rule ("these" common-noun/plural)
+  :form np
+  :referent (:head right-edge
+             :function dereference-DefNP right-edge))
+
+
