@@ -1627,7 +1627,7 @@
 	   :o object
            :thatcomp statement))
 
-(define-category signal :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "signal"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "signalling" keyword: ENDS-IN-ING definiing lemma as a
+
 
 (define-category stabilize :specializes bio-process
   :binds ((agent biological)(object biological))
