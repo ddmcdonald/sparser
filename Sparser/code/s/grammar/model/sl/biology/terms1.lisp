@@ -40,6 +40,11 @@
       (:noun "absence"
              :of absent))
 
+(define-category action :specializes bio-process
+  :binds ((actor biological))
+  :realization
+  (:noun "action"
+   :of actor))
 
 (adj "active" :super molecule-state
      :binds ((molecule molecule))
@@ -61,12 +66,19 @@
 
 ;;(def-bio "agent" bio-entity)
 (noun "agonist":super bio-entity) ;; keyword: (ist N) 
+(define-category affinity :specializes bio-process
+     :binds ((object bio-entity))
+     :realization
+     (:noun "affinity"
+            :for object))
 (noun "allele" :super bio-variant
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
       :realization
       (:noun "allele"
              :of basis))
+
 (define-adverb "also")
+
 (noun "analog" :super bio-variant
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
       :realization
@@ -75,6 +87,12 @@
 (noun ("analysis" :plural "analyses")
   :super bio-process)
 
+(define-category antibody :specializes protein
+  :binds ((antigen molecule))
+  :realization
+  (:noun "antibody"
+         :to antigen
+         :for antigen))
 
 (adj "anticancer" :super predicate)
 
@@ -113,6 +131,12 @@
 (adj "cognate" :super predicate)
 
 (adj "combinatorial" :super predicate) ;; keyword: (al ADJ) 
+
+(define-category complementation :specializes bio-process
+  :binds ((complement bio-entity))
+  :realization
+  (:noun "complementation"
+         :for complement))
 
 (adj "common" :super predicate
   :binds ((theme bio-entity))
@@ -198,24 +222,44 @@
            :against against)) ;; keyword: (ive ADJ) 
 
 (noun "effector" :super protein) ;; NOT SURE WHAT THE RIGHT SUPER is
+
+(define-category efficacy :specializes predicate
+  :binds ((item biological))
+  :realization
+  (:noun "efficacy"
+         :of item))
+
 (noun "EGF" :super protein)
 (adj "endogenous" :super predicate) ;; keyword: (ous ADJ) 
 
 
 (adj "enzymatic" :super predicate)
-(noun "et al." :super bib-reference)
+
+
 (define-adverb "even")
+
+(define-category evidence :specializes bio-abstract
+  :binds ((fact biological))
+  :realization
+  (:noun "evidence"
+         :for fact))
+
 (noun "exchange" :super bio-process)
 (noun "exclusivity" :super bio-abstract) ;; keyword: (ity N)
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
 (noun "fate" :super bio-abstract)
 (noun "FCS"  :super bio-entity)
 (noun "fetal calf serum" :super bio-entity)
-(noun "fig" :super article-figure) 
-(noun "figure" :super article-figure)
+
 
 (define-adverb "finally")
+
 (noun "finding" :super bio-entity) ;; like data(noun "paradigm" :super bio-entity)
+
+(define-category fluorescence :specializes bio-process
+  :realization
+  (:noun "fluorescence"))
+
 (noun "form" :super bio-variant
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
       :realization
@@ -304,7 +348,14 @@
              :of basis))
 (adj "kinase-dead" :super predicate)
 (adj "kinetic" :super predicate)
-(noun "knockdown" :super bio-method)
+
+(define-category knockdown :specializes bio-process
+  :binds ((antigen molecule))
+  :realization
+  (:noun "knockdown"
+         :to antigen
+         :for antigen))
+
 (noun "length" :super bio-scalar)
 (noun "level" :super bio-scalar
       :binds ((measurable biological))
@@ -509,6 +560,8 @@
       :of process))
 
 (find-or-make-individual 'qualitative-rate :name "slow")
+
+
 (adj "specific" :super predicate :super bio-abstract
      :binds ((theme biological)(situation biological)(beneficiary biological))
      :realization
@@ -516,13 +569,14 @@
            :s theme
            :to situation
            :for beneficiary))
-(delete-adj-cfr (resolve/make "sufficient"))
-(adj "sufficient" :super predicate :super bio-abstract
-     :binds ((theme biological)(result biological))
+
+(define-category stable :specializes bio-abstract
+     :binds ((agent biological)(context bio-context))
      :realization
-     (:adj "sufficient"
-           :s theme
-           :to result))
+     (:adj "stable" 
+           :s agent
+           :in context))
+
 (noun "state" :super bio-entity)
 (noun "stoichiometry" :super bio-abstract)
 (noun "strategy" :super bio-process
@@ -534,6 +588,17 @@
 ;;(noun "success" :super bio-abstract) -- make a verb
 
 (adj "suitable" :super predicate)
+
+
+(delete-adj-cfr (resolve/make "sufficient"))
+(adj "sufficient" :super predicate :super bio-abstract
+     :binds ((theme biological)(result biological))
+     :realization
+     (:adj "sufficient"
+           :s theme
+           :to result))
+
+
 (adj "supplementary" :super predicate) ;; keyword: (ary ADJ)
 (noun "surface area" :super bio-location)
 (define-adverb "surprisingly")
@@ -656,12 +721,23 @@
 (define-category bib-reference 
   :specializes bio-abstract)
 
+(noun "et al." :super bib-reference)
+
+
+(define-category article-figure
+  :specializes bio-abstract)
+(define-category article-table
+  :specializes bio-abstract)
+
+(noun "fig" :super article-figure) 
+(noun "figure" :super article-figure)
 
 
 ;;;------------------------------------------------------------------
 ;;; all remaining (including overlap with the nouns and verbs above)
 ;;;------------------------------------------------------------------
  
+
 "articulate" 
 "assay" 
 "auto" 
@@ -671,12 +747,6 @@
 "fig" 
 "groups" 
 "trials" 
-
-(define-category article-figure
-  :specializes bio-abstract)
-(define-category article-table
-  :specializes bio-abstract)
-
 ; a {wide, large, extensive, big} variety of ..
 ;; "variety" is an "of quantifier" like "many" or "some"
 ;; Def-bio doesn't appreciate part of speech, so hacked the
@@ -728,74 +798,10 @@
 "assay";;ambiguous between (NOUN VERB)
 
 
-;; nouns and adjectives from January test
-
-
-
-;; overnight
-
-(define-category affinity :specializes bio-process
-     :binds ((object bio-entity))
-     :realization
-     (:noun "affinity"
-            :for object))
-
-(define-category complementation :specializes bio-process
-  :binds ((complement bio-entity))
-  :realization
-  (:noun "complementation"
-         :for complement))
-
-(define-category fluorescence :specializes bio-process
-  :realization
-  (:noun "fluorescence"))
-
-(define-category action :specializes bio-process
-  :binds ((actor biological))
-  :realization
-  (:noun "action"
-         :of actor))
-
-
-(define-category evidence :specializes bio-abstract
-  :binds ((fact biological))
-  :realization
-  (:noun "evidence"
-         :for fact))
-
   
 
 
 
-
-
-
-(define-category efficacy :specializes predicate
-  :binds ((item biological))
-  :realization
-  (:noun "efficacy"
-         :of item))
-
-(define-category antibody :specializes protein
-  :binds ((antigen molecule))
-  :realization
-  (:noun "antibody"
-         :to antigen
-         :for antigen))
-
-(define-category knockdown :specializes bio-process
-  :binds ((antigen molecule))
-  :realization
-  (:noun "knockdown"
-         :to antigen
-         :for antigen))
-
-(define-category stable :specializes bio-abstract
-     :binds ((agent biological)(context bio-context))
-     :realization
-     (:adj "stable" 
-           :s agent
-           :in context))
 
 
 
