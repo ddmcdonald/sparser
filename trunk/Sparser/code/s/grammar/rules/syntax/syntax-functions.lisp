@@ -21,6 +21,8 @@
 ;; this file contains the mechanisms for creating an edge over the pronoun edge to include the semantic constraint from the verb
 ;; 3/4/2015 make subcategorization frame respect passives (maps surface subject to object)
 ;;  don't allow a copular-pp on an instance of BE+NP
+;; 3/10/2015 for clarity, rename copy-individual to maybe-copy-individual
+;; methods to save sucat instances
 
 
 (in-package :sparser)
@@ -28,6 +30,8 @@
 (defvar CATEGORY::PRONOUN/INANIMATE)
 (defvar CATEGORY::THERE-EXISTS)
 (defvar CATEGORY::COPULAR-PP)
+(defparameter *collect-subcat-info* nil)
+(defparameter *subcat-info* nil)
 
 
 ; (left-edge-for-referent)
@@ -54,7 +58,7 @@
    ~%       head = ~a" qualifier head))
   (if (category-p head)
     (setq head (make-individual-for-dm&p head))
-    (setq head (copy-individual head)))
+    (setq head (maybe-copy-individual head)))
   (or (call-compose qualifier head)
       ;; This case is to benefit marker-categories 
       (if (itypep head 'process) ;; poor man's standing for verb?
@@ -91,7 +95,7 @@
               head)))
         (t ;; Dec#2 has "low nM" which requires coercing 'low'
          ;; into a number. Right now just falls through
-         (setq head (copy-individual head))
+         (setq head (maybe-copy-individual head))
          (when (itypep head 'endurant)
            (bind-variable 'modifier qualifier head))
          head)))
@@ -106,7 +110,7 @@
   ;; MS thesis and think about generalized quantifiers.
   (if (category-p head) ;;//// need to reclaim bindings !!!!!!
     (setq head (make-individual-for-dm&p head))
-    (setq head (copy-individual head)))
+    (setq head (maybe-copy-individual head)))
   (if (eq quantifier (word-named "no")) ;; Jan#4 "no increase"
       ;; in Jan#4 it's a literal
     (let ((no (find-individual 'quantifier :word "no")))
@@ -123,7 +127,7 @@
   (if (category-p head) ;;//// need to reclaim bindings !!!!!!
     ;; or in this case make a collection
     (setq head (make-individual-for-dm&p head))
-    (setq head (copy-individual head)))
+    (setq head (maybe-copy-individual head)))
   (when (itypep head 'endurant) ;; J34: "Histone 2B"
     (bind-variable 'number number head))
   head)
@@ -147,7 +151,7 @@
          (call-compose qualifier head)
          (link-in-verb+ing qualifier head)))
        (t
-        (setq head (copy-individual head))
+        (setq head (maybe-copy-individual head))
         (link-in-verb+ing qualifier head)))))
 
 (defun link-in-verb+ing (qualifier head)
@@ -158,7 +162,7 @@
     (if
         (category-p qualifier)
       (setq qualifier (make-individual-for-dm&p qualifier))
-      (setq qualifier (copy-individual qualifier)))
+      (setq qualifier (maybe-copy-individual qualifier)))
     (if subject ;; really should check for passivizing
         (bind-variable subject head qualifier))
     (bind-variable 'modifier qualifier head)
@@ -182,7 +186,7 @@
          (call-compose qualifier head)
          (link-in-verb qualifier head)))
        (t
-        (setq head (copy-individual head))
+        (setq head (maybe-copy-individual head))
         (link-in-verb qualifier head)))))
 
 (defun link-in-verb (qualifier head)
@@ -192,7 +196,7 @@
   (let ((object (object-variable qualifier)))
     (if (category-p qualifier)
       (setq qualifier (make-individual-for-dm&p qualifier))
-      (setq qualifier (copy-individual qualifier)))
+      (setq qualifier (maybe-copy-individual qualifier)))
     (when object ;; really should check for passivizing
       (bind-variable object head qualifier))
     (bind-variable 'modifier qualifier head)
@@ -221,7 +225,7 @@
   (or (value-of 'aspect vg)
       (let ((i (make/individual 
                 (category-named 'tense/aspect-vector) nil)))
-        (setq vg (copy-individual vg))
+        (setq vg (maybe-copy-individual vg))
         (bind-variable 'aspect i vg)
         i)))
 
@@ -282,7 +286,7 @@
 ;;;-----------------
 
 (defun vg-plus-adjective (vg adj)
-  (setq vg (copy-individual vg))
+  (setq vg (maybe-copy-individual vg))
   (let ((var (object-variable vg)))
     (if var
       (bind-variable var adj vg)
@@ -302,7 +306,7 @@
   ;;/// so there should be a compose method to deal with that
   
   ;; default
-  (setq vg (copy-individual vg))
+  (setq vg (maybe-copy-individual vg))
   #|need to diagnose among 
    (time)
    (location)
@@ -348,12 +352,13 @@
     (cond
      (*subcat-test* variable-to-bind)
      (t
-      (setq vg (copy-individual vg))
+      (setq vg (maybe-copy-individual vg))
+      (if *collect-subcat-info*
+          (push (subcat-instance vg variable-to-bind 
+                                 pobj-referent)
+                *subcat-info*))
       (bind-variable variable-to-bind pobj-referent vg)
       vg))))
-
-
-
 
 
 ;;;---------
@@ -371,12 +376,14 @@
       (let* ((pp-edge (right-edge-for-referent))
              (prep-edge (edge-left-daughter pp-edge))
              (prep-word (edge-left-daughter prep-edge))
+             (pobj-edge (edge-right-daughter pp-edge))
+             (pobj-referent (edge-referent pobj-edge))
              (variable-to-bind
               ;; test if there is a known interpretation of the NP/PP combination
               (or
                (subcategorized-variable 
                 np prep-word 
-                (edge-referent (edge-right-daughter pp-edge)))
+                pobj-referent)
                ;; or if we are making a last ditch effore
                (and *force-modifiers* 'modifier)
                ;; if not, then return NIL
@@ -384,8 +391,14 @@
         (cond
          (*subcat-test* variable-to-bind)
          (t
-          (setq np (copy-individual np))
+          (setq np (maybe-copy-individual np))
+          (if *collect-subcat-info*
+              (push (subcat-instance np variable-to-bind 
+                                     pobj-referent)
+                    *subcat-info*))
+
           (bind-variable variable-to-bind pp np)
+
           np)))))
 
 
@@ -396,29 +409,57 @@
 (defun assimilate-subcat (head subcat-label item)
   (let* ((variable-to-bind
           ;; test if there is a known interpretation of the NP+VP combination
-           (subcategorized-variable head subcat-label item)))
+           (subcategorized-variable head subcat-label item))
+         (head-edge (edge-for-referent head))
+         (item-edge (edge-for-referent item)))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
-      (setq head (copy-individual head))
+      (setq head (maybe-copy-individual head))
       (when
        (and
         (is-anaphoric? item)
         (var-value-restriction variable-to-bind)) ;; this fails when we have BE -- needs to be fixed...
        (setq item 
              (create-anaphoric-edge-and-referent 
-              (cond
-               ((eq item (edge-referent (left-edge-for-referent)))
-                  (left-edge-for-referent))
-               ((eq item (edge-referent (right-edge-for-referent)))
-                  (right-edge-for-referent)))
+              item-edge
               variable-to-bind)))
-       
+      (if *collect-subcat-info*
+          (push (subcat-instance head variable-to-bind item)
+                *subcat-info*))
+          
       (bind-variable variable-to-bind item head)
       head))))
 
+(defun edge-for-referent (ref)
+  (if (eq ref (edge-referent (left-edge-for-referent)))
+      (left-edge-for-referent)
+      (right-edge-for-referent)))
+
 (defun is-anaphoric? (item)
   (itypep item category::pronoun))
+
+(defun subcat-instance (head var item)
+  (let
+      ((head-cat 
+        (if (individual-p head)
+            (itype-of head)
+            head))
+       (item-cat
+        (if (individual-p item)
+            (itype-of item)
+            item)))
+    
+    (list
+     (cat-name head-cat)
+     (var-name var)
+     (cat-name item-cat)
+     (edge-string (left-edge-for-referent))
+     (edge-string (right-edge-for-referent)))))
+  
+(defun edge-string (edge)
+  (terminals-in-segment/one-string (pos-edge-starts-at edge)
+                                   (pos-edge-ends-at edge)))
 
 (defun create-anaphoric-edge-and-referent (old-edge variable)
   (declare (special old-edge variable))
@@ -473,10 +514,10 @@
               (cond
                ((and (itypep head 'physical)
                      (itypep item 'location))
-                'location)
+                (find-variable-in-category/named 'location category::physical))
                ((and (itypep head 'biological)
                      (itypep item 'bio-context))
-                'context))))))))
+                (find-variable-in-category/named 'context category::biological)))))))))
 
 
 (defun assimilate-subject (subj vp)
