@@ -19,6 +19,7 @@
 ;;  slots and the superc's. 
 ;; 5/29/14 Found bug in k-method call macro, folded in integers,
 ;;  auto-generating the call-xx methods along with the k-methods.
+;; 3/10/2015 for clarity, rename copy-individual to maybe-copy-individual
 
 (in-package :sparser)
 
@@ -356,7 +357,7 @@ for every category.
 
 (defparameter *dont-copy-individuals* nil)
 
-(defun copy-individual (i &optional subs)
+(defun maybe-copy-individual (i &optional subs)
   (declare (special i))
   (if
    (or
@@ -385,7 +386,7 @@ for every category.
          ;; don't check that CATEGORY is a binding variable
          
          (bind-variable (var-name (binding-variable binding))
-                        (copy-individual
+                        (maybe-copy-individual
                          (binding-value binding)
                          subs)
                         new)))
