@@ -1,13 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  December 2014
+;;;  version:  March 2015
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
 ;; 2/2/2015 added initial patterns for colons, such as the ratio 1:500
-;;  added pattern for GAP:Ras and similar
+;;  added pattern for GAP:Ras and similar. Smidgen of doc 3/10/15
 
 (in-package :sparser)
 
@@ -152,6 +152,10 @@
 ;;;----------------------------------
 
 (defun resolve-ns-pattern (pattern words start-pos end-pos)
+  ;; called from collect-no-space-segment-into-word as its last
+  ;; resort. If we return nil we fall through to a call to 
+  ;; reify-ns-name-and-make-edge that will just assume that
+  ;; the span is the name of something. 
   (cond
    ((or (equal pattern '(:full :single-digit)) ;; AF6, MEK1, SHOC2
         (equal pattern '(:full :digits)))
@@ -169,9 +173,6 @@
     ;;/// and a bunch more
     (or (reify-point-mutation-and-make-edge words start-pos end-pos)
         (reify-ns-name-and-make-edge words start-pos end-pos)))
-
-   ((equal pattern '(:digit :colon :digits))
-    (break "stub: ratio pattern"))
 
    (*work-on-ns-patterns*
     (push-debug `(,pattern ,start-pos ,end-pos ,words))
