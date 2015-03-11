@@ -48,7 +48,8 @@
 ;;   NPs into VPs (or at least make past participles into the head of the NP)
 ;;  This has the desired effect -- but DAVID should review the code (with me if possible) and
 ;;   make sure it is properly structured, etc.
-;; 3/4/2015 merge definition of multiply-edges-for-chunk into multiply-edges-for-chunk, using a new flag *check-chunk-forms*
+;; 3/4/2015 merge definition of multiply-edges-for-chunk into
+;;   multiply-edges-for-chunk, using a new flag *check-chunk-forms*
 
 (in-package :sparser)
 (defparameter *check-chunk-forms* t
@@ -114,6 +115,7 @@
 (defun form-multiplier (ids)
   (cdr ids))
 
+
 ;;;------------------------------
 ;;; call from the check routines
 ;;;------------------------------
@@ -149,6 +151,8 @@
                  left-edge right-edge chunk)
                   
                   
+
+
                 ;; then look for a rule in the cross-product 
                 ;; of the categories their category labels inherit from
                 (when *edges-from-referent-categories*
@@ -161,13 +165,18 @@
                   (valid-rule?
                    (check-form-form left-edge right-edge)
                    left-edge right-edge chunk)))))
+
+
+
         (when *collect-forms* (record-forms rule left-edge right-edge))
         rule)))
 
+
+
+
 (defun valid-rule? (rule left-edge right-edge chunk)
   (when rule
-    (when 
-        (and
+    (when (and
          (check-rule-form rule left-edge right-edge)
          (or
           (null chunk)
@@ -179,14 +188,12 @@
 (defun check-rule-result-form-against-chunk (rule right-edge chunk)
   (cond
    ((chunk-head? right-edge chunk)
-    (case
-        (car (chunk-forms chunk))
+    (case (car (chunk-forms chunk))
       (NG
        (memq 
         (rule-lhs-form rule)
         '(N-BAR NG COMMON-NOUN COMMON-NOUN/PLURAL NP PRONOUN PROPER-NAME PROPER-NOUN)))
-      (VG
-       t)
+      (VG t)
       (ADJG t)))
    (t t))
   )
