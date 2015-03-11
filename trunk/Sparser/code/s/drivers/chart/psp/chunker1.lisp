@@ -50,15 +50,14 @@
     :documentation "The position object that the chunk
       ends at.")
    (edge-list :initarg :edge-list  :accessor chunk-edge-list
-              :documentation "The edges initially considered in the chunk")
+    :documentation "The edges initially considered in the chunk")
    (ev-list :initarg :ev-list  :accessor chunk-ev-list
-              :documentation "The edge vectors initially considered in the chunk")
-
-    
+     :documentation "The edge vectors initially considered in the chunk")
    (forms :initarg :forms :initform *chunk-forms*
     :accessor chunk-forms
-    :documentation "This is the set of possible syntactic forms for this chunk. Starts out as a list of 
-      the three possible forms -- NP, VG and ADJP from grammar/rules/syntax/categories.lisp."))
+    :documentation "This is the set of possible syntactic forms 
+      for this chunk. Starts out as a list of the three possible forms:
+      NP, VG and ADJP from grammar/rules/syntax/categories.lisp."))
   (:documentation
    "Provides a representation for a minimal syntactic phrase
     or 'chunk'. Noun phrases up to the head. Verb groups from
@@ -69,8 +68,7 @@
   (print-unreadable-object (chunk stream :type t)
     (let ((start (chunk-start-pos chunk))
           (end (chunk-end-pos chunk)))
-      (if
-       (null end)
+      (if (null end)
        "chunk with null end"
        (format stream "~a p~a ~s p~a"
                (chunk-forms chunk)
