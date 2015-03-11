@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "multiplier"
 ;;;    Module:   "objects;rules:cfr:"
@@ -15,6 +15,7 @@
 ;; 3.4 (4/24/95) the order of args in the call to Duplication-msg was wrong now.
 ;;     (10/25) changed the name of the duplicate dotted rules flag
 ;;     (3/9/13) Added the break-on-duplicates flag.
+;;     (3/10/15) Coverted break in dup check to a cerror
 
 (in-package :sparser)
 
@@ -42,7 +43,8 @@
          (duplication-msg existing-rule/s (cfr-category cfr))
          (when *break-on-illegal-duplicate-rules*
            (push-debug `(,cfr ,existing-rule/s))
-           (break "[estab. multiplier] Look at why there's a duplicate rule~
+           (cerror "Accept the existing rule"
+                   "[estab. multiplier] Look at why there's a duplicate rule~
                   ~%and sort it out.")))))
 
     (let ((target-site (+ left-id right-id)))
