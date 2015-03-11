@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.6 Fwbruary 2014
+;;;  version:  0.7 March 2015
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -35,6 +35,8 @@
 ;;     (1/22/14) category added as a primitive type.
 ;; 0.6 (2/3/13) Reworked treatment of an :or over both categories and
 ;;      a primitive v/r in decode-value-for-var/list
+;; 0.7 (3/9/15) Allowed mixins the same status are referential categories in
+;;      decode/check-value
 
 (in-package :sparser)
 
@@ -114,7 +116,8 @@
          (typecase v/r
            (list (decode-value-for-var/list
                   value-exp variable v/r))
-           (referential-category
+           ((or referential-category
+                mixin-category)
             (decode-exp-as-ref-category value-exp v/r))
 	   (otherwise
 	    (error "New type of v/r: ~a~%~a"
@@ -157,7 +160,8 @@
                          ~%   ~A~%does not match the value restriction ~A"
                         exp category))))
 
-    (referential-category  ;; e.g. 1st
+    ((or referential-category  ;; e.g. 1st
+         mixin-category)
      (if (category-inherits-type? exp category)
        exp
        (v/r-violation "The type of the category given as the value,~
