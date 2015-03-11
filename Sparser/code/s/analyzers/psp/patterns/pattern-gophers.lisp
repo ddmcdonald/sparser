@@ -128,10 +128,10 @@
   (let ((left-edge (right-treetop-at/edge pos-before))
         (right-edge (left-treetop-at/edge pos-after)))
     ;; lifted from nospace-hyphen-specialist
+    (push-debug `(,left-edge ,right-edge)) ;;(break "???")
     (let ((rule (or (multiply-edges left-edge right-edge)
                     (multiply-edges right-edge left-edge))))
       ;; "GTP-bound"
-      ;;(push-debug `(,left-edge ,right-edge)) (break "???")
       (cond
        (rule
         (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
