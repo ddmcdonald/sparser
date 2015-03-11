@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  February 2015
+;;;  version:  March 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
@@ -19,6 +19,8 @@
 ; ;; not sure of this -- was def-bio, but that now fails
 ; (noun "C-RAF:B-RAF" :super heterodimer)
 
+; (trace-parse-edges) ;; extend into march-back-from-the-right/segment
+
 
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
@@ -31,7 +33,7 @@
 ;  (setq *debug-anaphora* t) 
 ;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
 ;  (setq *work-on-ns-patterns* t) 
-;  (trace-parse-edges) (trace-island-driving)
+;  (trace-parse-edges) (trace-rule-source) (trace-island-driving)
   (incorporate-obo-terms
    "/Users/ddm/ws/R3/r3/trunk/corpus/obo-terms.lisp")
   (ddm-load-corpora)
@@ -62,7 +64,7 @@
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
-  (ddm-ed "drivers/chart/psp/chunker.lisp")
+  (ddm-ed "drivers/chart/psp/chunker1.lisp")
   (ddm-ed "drivers/chart/psp/pts5.lisp")
   (ddm-ed "drivers/chart/psp/march-seg5.lisp")
   (ddm-ed "analyzers/SDM&P/scan1.lisp")
@@ -84,6 +86,13 @@
   (ddm-ed "objects/traces/scan-patterns.lisp")
   (ddm-ed "objects/traces/treetops.lisp"))
 
+(defun ddm-maybe-spurious-rule-dupb ()
+  (ddm-ed "objects/rules/cfr/multiplier3.lisp")
+  (ddm-ed "objects/rules/cfr/construct1.lisp")
+  (ddm-ed "objects/rules/cfr/duplicates.lisp")
+  (ddm-ed "objects/rules/cfr/define5.lisp"))
+; i/r/s-make-the-rule
+  
 
 ;; local anaphora, getting categories right
 ; sentence-sweep-loop  decode-realization-parameter-list
@@ -106,8 +115,8 @@
   (ddm-ed "objects/doc/content.lisp")
   (ddm-ed "drivers/forest/parsing-containers.lisp")
   (ddm-ed "object/doc/doc-stream.lisp")
-  (ddm-ed "objects/doc/object1.lisp")  -- document structure
-  (ddm-ed "tools/basics/resource.lisp")  -- auto recycling
+  (ddm-ed "objects/doc/object1.lisp")  ;; document structure
+  (ddm-ed "tools/basics/resource.lisp")  ;; auto recycling
   (ddm-ed "objects/doc/classes.lisp"))
 
 (defun ddm-no-spaces ()
@@ -170,12 +179,12 @@
 ; exploded-tree-family-named
 
 (defun ddm-binding () ;; reclaim when on permanent individuals?
-  (ddm-ed "object/model/bindings/structure.lisp")
-  (ddm-ed "object/model/bindings/object2.lisp")
-  (ddm-ed "object/model/bindings/alloc1.lisp")
-  (ddm-ed "object/model/bindings/make2.lisp")
-  (ddm-ed "object/model/bindings/hooks.lisp")
-  (ddm-ed "object/model/bindings/resourse.lisp"))
+  (ddm-ed "objects/model/bindings/structure.lisp")
+  (ddm-ed "objects/model/bindings/object2.lisp")
+  (ddm-ed "objects/model/bindings/alloc1.lisp")
+  (ddm-ed "objects/model/bindings/make2.lisp")
+  (ddm-ed "objects/model/bindings/hooks.lisp")
+  (ddm-ed "objects/model/bindings/resource.lisp"))
 
 
 ; uniform-scandal
