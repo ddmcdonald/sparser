@@ -76,13 +76,11 @@
 (defun write-overnight-csv-output (&optional (file (test-file-with-time "overnight-test" "csv")))
   (format t "~2%Writing result to ~a" file)
   (with-open-file (s file :direction :output :if-exists :supersede)
+    (format s "~%Sent#, Event#, Subject, Event, Object, Site(s), Context, Sentence~&")
+    (loop for tst in *overnight-sentences* for n from 1 collect (otst1 n tst s)))
+  (format t "~%wrote file ~a" file)
+  nil)
 
-    (let ((res nil))
-      (format s "~%Sent#, Event#, Subject, Event, Object, Site(s), Context, Sentence~&")
-      (setq res (loop for tst in *overnight-sentences* for n from 1 collect (otst1 n tst s)))
-      (format t "~%wrote file ~a" file)
-      nil)
-  ))
 
 
 
