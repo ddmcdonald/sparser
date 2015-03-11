@@ -25,20 +25,31 @@
 ; to use it (e.g. in signaling. Maybe the symbol was overwritten ?
 
 ;;---------- signalling 
+;; (setq *break-on-illegal-duplicate-rules* t)
+; The def-synonym call is creating a rule it should be able
+; to lookup and reuse because the lhs and rhs are eq/equal
+; but the reuse existing rule case isn't being taken and
+; it's instead mis-construed as a duplicate, which should
+; require a different lhs. 
+
 ;; "RAS signalling"
 ;; a new mode of Ras activation in which signaling is sustained ...
-(noun signaling
+(define-category signal
   :specializes bio-process
-  :obo-id "GO:0023052"  ;; reasonable stand-in
-  :binds ((agent bio-entity)) ;; what's doing the signalling
-  :index (:permanent :key agent)
+  ;;//// bind it explicitly? :obo-id "GO:0023052"  ;; reasonable stand-in
+  :binds ((agent protein) ;;bio-entity) ;; what's doing the signalling
+          (object bio-process))  ;; what's being signaled
+  :index (:permanent :key agent) ;; 
   :realization 
-    (:etf pre-mod
+    (:verb "signal"  
      :noun "signaling"
-     :m agent))
+     :etf (svo-passive pre-mod)
+     :m agent
+     :s agent 
+     :o object))
 
-(def-synonym signaling ;; Jan.#26
-  (:noun "signalling" ;;///// do something else - rule dup.
+(def-synonym signal ;; Jan.#26
+  (:noun "signalling" 
    :etf pre-mod
    :m agent))
 
@@ -62,10 +73,6 @@
 (def-bio "ubiquitin" protein)
 ;; not strictly true, but a reasonable approximation. 
 
-
-; ... effect of Ras monoubiquitination on ...
-;; Resulting version of Ras after adding one ubiquitin. 
-
 (define-category ubiquitinate 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
@@ -78,49 +85,76 @@
      :o substrate
      :at site))
 
-(define-category monoubiquitinate 
-  :specializes ubiquitinate 
-  :binds ((agent biological)
-          (substrate protein-like)
-          (site residue-on-protein)) 
-  :realization 
-    (:verb "monoubiquitinate" 
-     :etf (svo-passive)
-     :s agent 
-     :o substrate
-     :at site))
+;;;------------------------------
+;;; mUbRas, monoubitutinated Ras
+;;;------------------------------
 
-(def-synonym monoubiquitinate
-  (:noun "monoubiquitination"
-   :etf (pre-mod)
-   :m substrate ;; Ras monoubiquitination
-   :on substrate)) ;; the effects of monoubiquitination on Ras are ...
+(defun define-mUbRas ()
+  ;; Defines the abbreviated form and creates the individual
+  ;; that the composed form has to resolve to. 
+  (let* ((ras (get-protein "Ras"))
+         (i (find-or-make-individual 'monoubiquitinated-protein
+               :protein ras))
+         (word (resolve/make "mUbRas")))
+
+    ;; want to pattern just like a vanila protein
+    (let ((cfr (define-cfr category::protein `(,word)
+                  :form category::proper-noun
+                  :referent i)))
+      (add-rule-to-individual cfr i)
+      i)))
+
+(eval-when (:load-toplevel)
+  (define-mUbRas))
+
+
+;;///// This is a process/result pattern. This verb results
+;; in a protein that has been ubiquitinated. (Has one or
+;; more ubiquitin molecules attached to it.
+;; Need to do this systematically
+
+;; In Baker et al.
+;; "we did not separate monoubiquitinated Ras (mUbRas) from ..."
+;; Jan #1 "the effect of Ras monoubiquitination on ...
+;; ... effect of Ras monoubiquitination on ...
+;; Resulting version of Ras after adding one ubiquitin. 
 
 (define-category  monoubiquitinated-protein
   :specializes modified-protein
   :bindings (modification (get-protein "ubiquitin"))
-  :index (:permanent :key protein))
+  ;;/// bindings go with a process, so this will need 
+  ;; cleanup / merge when process/result is sorted out syntematically.
+  :binds ((site residue-on-protein)
+          ;; I dont' recall textual evidence for an agent
+          ;; that causes the action (that leads to this result)
+          ;; but the rule schema requires it
+          ;; N.b. this is open in protein
+          (agent biological))
+  :documentation "Strictly speaking this is just a ubiquitinated
+    protein since there no representation of the molecule count.
+    I'd like another countable modification before venturing a
+    conceptualization to use. Note that this is open in
+    its value for the protein"
+  :index (:permanent :key protein)
+  :realization 
+  ;;/// only providing a realization for the result, not the process
+  ;; that leads to the result
+    (:verb "monoubiquitinate" 
+     :noun "monoubiquitination"
+     :etf (svo-passive pre-mod)
+     :s agent 
+     :o protein ;; "monoubiquitinated Ras"
+     :m protein ;; Ras monoubiquitination
+     :on protein ;; the effects of monoubiquitination on Ras are ...
+          ;;/// that 'on' probably goes with 'effect'
+     :at site))
 
-;; If mUbRas is to be done via a synonym then
-;; upbiq. Ras has to be a category. (I think)
 
-;; Jan #1 "the effect of Ras monoubiquitination on ...
-(defun define-mUbRas ()
-  (let* ((ras (get-protein "Ras"))
-         (i (find-or-make-individual 'monoubiquitinated-protein
-               :protein ras)))
-    i))
 
-;; (define-mUbRas)
 
-;; In Baker et al.
-;; "we did not separate monoubiquitinated Ras (mUbRas) from ..."
-;(def-cfr 
+
+
   
-
-
-;; (def-bio "mUbRAS" protein) ;; mono-ubiquinated RAS
-
 
 
 ;;;-------------------
