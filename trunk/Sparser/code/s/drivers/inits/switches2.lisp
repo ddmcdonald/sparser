@@ -74,6 +74,8 @@
 ;; 2.24 (10/29/14) Took the plunge and moved bio-setting over to the new way
 ;;       of doing thigns. Former settings preserved as old-bio-setting.
 ;;       11/7/14 debugged it. 
+;; 3/10/2015 Make bio-setting set *edges-from-referent-categories* to NIL
+;;  result is a faster system with (slightly) more accurate results.
 
 (in-package :sparser)
 (defvar *PNF-ROUTINE*)
@@ -333,6 +335,7 @@
         *note-text-relations* t)
   (setq *profligate-creation-of-individuals* t)
   (setq *allow-pure-syntax-rules* t)
+  ;; NEED TO TURN THIS OFF IN BIO!!
   (setq *edges-from-referent-categories* t)
   (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
@@ -414,6 +417,7 @@
 (defun bio-setting () ;; copy & specialize of back-named old-bio-setting
   (turn-off-c3)
   (tuned-grok)
+  (setq *edges-from-referent-categories* nil) ;; should be off in the bio system!
 
   (include-comlex)
   ;; Get everything primed, but don't use it on the unknown words
