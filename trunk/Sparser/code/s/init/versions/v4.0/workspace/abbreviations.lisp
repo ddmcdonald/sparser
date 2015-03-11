@@ -99,8 +99,10 @@
   (let ((e (e# number-of-edge)))
     (format t "~&category: ~a~
                ~%form: ~a~
+               ~%rule: ~a~
                ~%referent: ~a~%"
-            (edge-category e) (edge-form e) (edge-referent e))
+            (edge-category e) (edge-form e) 
+            (edge-rule e) (edge-referent e))
     e))
 
 
