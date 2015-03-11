@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2011-2014 David D. McDonald -- all rights reserved
+;;; copyright (c) 1993-1995,2011-2015 David D. McDonald -- all rights reserved
 ;;; 
 ;;;     File:  "defNP"
 ;;;   Module:  "grammar;rules:CA:"
-;;;  Version:  0.1 December 2014
+;;;  Version:  0.1 March 2015
 
 ;; initiated 6/13/93 v2.3.  3/30/94 set the ignore flag to t as the default
 ;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category 
@@ -12,6 +12,7 @@
 ;;      function call. Two more instances 9/26. Added PSI to typecase.
 ;;     (12/26/14) Stubbed an approach to selecting the referent when working
 ;;      sentence by sentence. 
+;;     *3/6/15) Added traces. 
 
 (in-package :sparser)
 
@@ -22,6 +23,7 @@
   :specializes nil
   :instantiates self )
 
+;; (trace-pronouns)
 
 (defparameter *ignore-out-of-pattern-dereferencing* t)
 
@@ -29,6 +31,8 @@
 
   ;; called to calculate the referent of an edge that has been built
   ;; with a leading definite determiner
+
+  (tr :decoding-definite-reference-to head)
 
   (let* ((category-of-head
           (etypecase head
@@ -43,6 +47,13 @@
 
     (let ((discourse-entry (discourse-entry category-to-look-for)))
       (if discourse-entry
+        (tr :defnp-category-has-entry)
+        (tr :defnp-no-entry))
+
+      ;; (push-debug `(,head ,category-to-look-for ,discourse-entry))
+      ;; (break "Examine DefNP context")
+
+      (if discourse-entry
         (if (sucessive-sweeps?)
           ;; Because completion will have run a different points
           ;; the first entry may be subsumed by the one we're doing
@@ -53,18 +64,25 @@
            (when (cdr discourse-entry)
              (let* ((second-entry (cadr discourse-entry))
                     (ref (car second-entry)))
+               (tr :defnp-returning ref)
                ref)))
 
           ;; Earlier ("normal") assuptions
-          (if (> (length discourse-entry) 1)
-            (if *ignore-out-of-pattern-dereferencing*
-              (car (first discourse-entry))
-              (break "More than one possible antecedant of type ~A~
-                    ~%in this discourse already.~% -- extend the rules --"
-                     category-to-look-for))
-            (car (first discourse-entry))))
+          (let ((ref
+                 (if (> (length discourse-entry) 1)
+                   (if *ignore-out-of-pattern-dereferencing*
+                     (car (first discourse-entry))
+                     (break "More than one possible antecedant of type ~A~
+                           ~%in this discourse already.~% -- extend the rules --"
+                            category-to-look-for))
+                   (car (first discourse-entry)))))
+            (tr :defnp-returning ref)
+            ref))
 
-        (make-default-descriptive-individual category-of-head)))))
+        (let ((new-indiv 
+               (make-default-descriptive-individual category-of-head)))
+          (tr :defnp-made-new-individual new-indiv)
+          new-indiv)))))
 
 
 
