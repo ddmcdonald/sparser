@@ -433,7 +433,10 @@
         *sweep-sentence-treetops* t
         *island-driving* t)
 
+  ;; make sure we notice periods
   (period-hook-on)
+
+  ;; Flags that control how the parsing is done
   
 ; *whack-a-rule* t
 ; *check-forms* t
