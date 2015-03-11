@@ -14,7 +14,8 @@
 ;; 10/6 added *trace-scan-patterns*  2/29/08 added *trace-the-trace-calls*
 ;; 2/10/13 added *trace-status-history*  8/12/14 Added *trace-morphology*
 ;; 8/31/14 added *trace-treetops-sweep* and *trace-island-driving* t))
-
+;; 3/10/15 added *trace-rules-source-and-validity* and pulled in the
+;;  def for for *parse-edges*
 
 (in-package :sparser)
 
@@ -111,6 +112,15 @@
 
 (def-trace-parameter *trace-check-edges*   "edges check"
   "traces the process of checking whether edges can combine")
+
+(def-trace-parameter *parse-edges*   "phrase structure parsing"
+  "traces the process walking through the chart")
+
+(def-trace-parameter *trace-rules-source-and-validity* "rule source, validity"
+  "Traces in multiply-edges that report what sort of lookup the
+   rule came from (semantic, form, reference, syntax) and is a
+   quick report on the validity check, as compared with turning on
+   *report-form-check-blocks*")
 
 
 ;;--- 'step' flags
