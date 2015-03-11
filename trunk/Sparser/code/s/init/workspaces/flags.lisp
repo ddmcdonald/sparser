@@ -58,4 +58,7 @@
      Obviously this is dangerous, so the policy is to locally bind this
      flag inside treetop functions with clear dynamic scopes."))
 
+;; Anaphora
+(defparameter *ignore-out-of-pattern-dereferencing* t)
+
 |#

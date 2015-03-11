@@ -62,3 +62,6 @@
 ; (trace-sections) ;; sentence creation
 ; (trace-network) ;; pretty thorough trace
 
+;; Anaphora
+;  (trace-pronouns)
+
