@@ -24,7 +24,6 @@
 ;;      traces to traces/treetops
 
 (in-package :sparser)
-(defvar *PARSE-EDGES*)
 
 (defun trace-edges ()             ;; for meta-point
   (setq *trace-check-edges* t
@@ -37,6 +36,17 @@
          *trace-do-edge* nil
         *trace-edge-creation* nil
         *parse-edges* nil))
+
+(defun trace-parse-edges ()
+  (setq *parse-edges* t))
+(defun untrace-parse-edges ()
+  (setq *parse-edges* nil))
+
+(defun trace-rule-source ()
+  (setq *trace-rules-source-and-validity* t))
+(defun untrace-rule-source ()
+  (setq *trace-rules-source-and-validity* nil))
+
 
 
 ;;;-----------------------------------------------------------
@@ -80,7 +90,8 @@
 
 (deftrace :multiply-edges (left-edge right-edge)
   ;; called at the top of Multiply-edges before the check
-  (when *trace-check-edges*
+  (when (or *trace-check-edges*
+            *trace-rules-source-and-validity*)
     (let ((left# (edge-position-in-resource-array left-edge))
           (right# (edge-position-in-resource-array right-edge))
           (left-label (edge-category left-edge))
@@ -437,17 +448,6 @@
 ;;; the Marching operation
 ;;;------------------------
 
-(def-trace-parameter *parse-edges*   "phrase structure parsing"
-  "traces the process walking through the chart")
-
-;;/// Thought the parameter definer was supposed to
-;; create these
-(defun trace-parse-edges ()
-  (setq *parse-edges* t))
-(defun untrace-parse-edges ()
-  (setq *parse-edges* nil))
-
-
 (deftrace :left-boundary-reached ()
   ;; called from March-back-from-the-right/segment
   (when *parse-edges*
@@ -749,4 +749,49 @@
   (when *trace-referent-creation*
     (trace-msg "")))
 |#
+
+;;;-----------------------
+;;; inside multiply-edges
+;;;-----------------------
+
+(deftrace :rule-is-valid ()
+  (when *trace-rules-source-and-validity*
+    (trace-msg "   It's valid")))
+
+(deftrace :rule-is-invalid ()
+  (when *trace-rules-source-and-validity*
+    (trace-msg "   but it's not valid")))
+
+(deftrace :found-semantic-rule (rule)
+  (when *trace-rules-source-and-validity*
+    (trace-msg " Found semantic rule ~a" rule)))
+
+(deftrace :no-semantic-rule ()
+  (when *trace-rules-source-and-validity*
+    (trace-msg " No rule based on semantic labels")))
+
+(deftrace :found-rule-of-form (rule)
+  (when *trace-rules-source-and-validity*
+    (trace-msg "Found form rule ~a" rule)))
+
+(deftrace :no-rule-of-form ()
+  (when *trace-rules-source-and-validity*
+    (trace-msg " No form rule")))
+
+(deftrace :found-rule-from-referent (rule)
+  (when *trace-rules-source-and-validity*
+    (trace-msg " Found referent rule ~a" rule)))
+
+(deftrace :no-rule-from-referent ()
+  (when *trace-rules-source-and-validity*
+    (trace-msg " no referent rule")))
+
+(deftrace :found-syntactic-rule (rule)
+  (when *trace-rules-source-and-validity*
+    (trace-msg " Found syntactic rule ~a" rule)))
+
+(deftrace :no-syntactic-rule ()
+  (when *trace-rules-source-and-validity*
+    (trace-msg " no syntactic rule")))
+
 
