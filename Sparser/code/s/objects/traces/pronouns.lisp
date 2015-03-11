@@ -1,11 +1,11 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pronouns"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  September 2013
+;;;  Version:  March 2015
 
-;; Initiated 9/1/13.
+;; Initiated 9/1/13. Added DefNP cases 3/6/15
 
 (in-package :sparser)
 
@@ -26,6 +26,33 @@
     (trace-msg "e~a is a ~a pronoun"
                (edge-position-in-resource-array edge)
                (edge-category edge))))
+
+;;--- dereference-DefNP
+
+(deftrace :decoding-definite-reference-to (head)
+  ;; called from dereference-DefNP
+  (when *tracing-pronouns*
+    (trace-msg "[defNP] Looking for a ~a" head)))
+
+(deftrace :defnp-category-has-entry ()
+  ;; called from dereference-DefNP
+  (when *tracing-pronouns*
+    (trace-msg "[defNP]   It has an entry in the discourse history")))
+
+(deftrace :defnp-no-entry ()
+  ;; called from dereference-DefNP
+  (when *tracing-pronouns*
+    (trace-msg "[defNP]   No entry in the available discourse history")))
+
+(deftrace :defnp-returning (ref)
+  ;; called from dereference-DefNP
+  (when *tracing-pronouns*
+    (trace-msg "[defNP]   returning ~a" ref)))
+
+(deftrace :defnp-made-new-individual (i)
+  ;; called from dereference-DefNP
+  (when *tracing-pronouns*
+    (trace-msg "[defNP]   returning stand-in individual" i)))
 
 
 ;;--- completion actions
