@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  1.0 January 2015
+;;;  version:  1.0 March 2015
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -16,18 +16,13 @@
 ;; 0.7 10/9/14 Added scare quotes, debugged edge cases. 
 ;; 1.0 11/18/14 Bumped number to permit major revamp to fit into multi-
 ;;   pass scanning. 12/4/14 moved out the patterns to their own file.
-;;   Tweeking through 1/18/15
+;;   Tweeking through 1/18/15. Cleaned up specials for character 3/10/15
 
 (in-package :sparser)
 
 ;;;----------------
 ;;; gating globals
 ;;;----------------
-
-(defvar *THE-PUNCTUATION-HYPHEN*)
-(defvar *THE-PUNCTUATION-COMMA*)
-(defvar *THE-PUNCTUATION-SEMICOLON*)
-(defvar *THE-PUNCTUATION-COMMA*)
 
 (unless (boundp '*uniformly-scan-all-no-space-token-sequences*)
   (defparameter *uniformly-scan-all-no-space-token-sequences* nil
@@ -138,6 +133,7 @@
   ;; and we make a category for that rule with that same spelling,
   ;; form is 'proper-name'.  Something makes me think this could
   ;; be problem down the line, but we can deal with it when it emerges.
+  (declare (special *big-mechanism*))
   (multiple-value-bind (category rule referent)
                        (if *big-mechanism*
                          (reify-ns-name-as-bio-entity 
@@ -169,6 +165,7 @@
   ;; Because we're working sentence by sentence we will not normally
   ;; need an EOS check 
   ;;  (push-debug `(,position)) (break "sweep to end from ~a" position)
+  (declare (special *the-punctuation-hyphen*))
   (let ((next-pos (chart-position-after position))
         word  hyphens  slashes  colons ) 
     (loop
@@ -201,7 +198,8 @@
 ;;;-----------------------------------------
 
 (defun word-never-in-ns-sequence (word)
-  (declare (special *the-punctuation-period* *the-punctuation-colon*))
+  (declare (special *the-punctuation-period* *the-punctuation-colon*
+                    *the-punctuation-semicolon*))
   (when (punctuation? word)
     (or (eq word *the-punctuation-period*)
         (eq word *the-punctuation-comma*)
@@ -209,12 +207,13 @@
 
 
 (defun second-word-not-in-ns-sequence (word next-position)
-  (declare (special *the-punctuation-period* *the-punctuation-colon*))
+  (declare (special *the-punctuation-period* *the-punctuation-comma*
+                    *the-punctuation-semicolon* *end-of-source*))
   (when (punctuation? word)
     (cond
       ((or (eq word *the-punctuation-period*)
-	   (eq word (punctuation-named #\,))
-	   (eq word (punctuation-named #\;)))
+	   (eq word *the-punctuation-comma*)
+	   (eq word *the-punctuation-semicolon*))
        ;; more general than "." probably, but this is the canonical
        ;; case
        (unless (pos-terminal next-position)
@@ -227,7 +226,7 @@
       
 
 (defun punctuation-terminates-no-space-sequence (word position)
-  (declare (special *the-punctuation-period* *the-punctuation-colon*
+  (declare (special *the-punctuation-period* *the-punctuation-comma*
                     *the-punctuation-colon* *the-punctuation-semicolon*))
   (cond
     ((or (eq word *the-punctuation-period*)
@@ -250,7 +249,7 @@
 
 
 (defun sentence-final-punctuation-pattern? (position)
-  (declare (special *source-exhausted*))
+  (declare (special *source-exhausted* *end-of-source*))
   (unless (pos-terminal position)
     (scan-next-position))
   (cond
@@ -309,6 +308,7 @@
       ;;(eq word1 (punctuation-named #\/ ))
       ;;(eq word2 (punctuation-named #\/ ))
       ))
+
 
 
 
