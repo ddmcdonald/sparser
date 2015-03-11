@@ -18,7 +18,6 @@
 ;; (trace-terminals-sweep)
 ;; (trace-network)
 
-(defvar *THE-PUNCTUATION-PERIOD*)
 (defvar *TRACE-SWEEP*)
 
 ;Compiler warnings for "/Users/rusty/sparser/Sparser/code/s/drivers/chart/psp/multi-scan.lisp" :
@@ -154,11 +153,11 @@
 ;;;------------------------------
 
 (defun pattern-sweep (sentence)  ;; (trace-terminals-sweep)
+  (declare (special *the-punctuation-period*))
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
         tt  treetop  position-after  multiple?  )
 
-    (push-debug `(,sentence ,position-before ,end-pos))
     (loop
       ;; modeled on sweep-sentence-treetops
       (multiple-value-setq (treetop position-after multiple?)
@@ -175,6 +174,7 @@
         (tr :terminated-sweep-at position-after)
         (return))
       (when (eq position-after end-pos)
+        (tr :terminated-sweep-at position-after)
         (return))
       (unless (pos-assessed? position-after)
         ;; catches bugs in the termination conditions
@@ -319,6 +319,8 @@
   ;; no edges over the parentheses. (////barring an errant
   ;; mention in a cfr, as happens for "the" or even ".")
   ;; So we walk through looking for words
+
+  (declare (special *the-punctuation-period*))
 
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
