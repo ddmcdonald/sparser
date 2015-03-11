@@ -48,13 +48,6 @@
  (find-variable-in-category 'object 'be)
  :object-variable)
 
-(define-category  copular-pp
-  :specializes be
-  :binds ((result)
-          (copula)
-          (prep)
-          (pobj)))
-
 (defparameter *the-category-to-be* (category-named 'be)
   "For use by code that's loaded before the grammar is")
 
@@ -107,15 +100,28 @@
   :referent (:head right-edge);; :bind (predication right-edge)
 )
 
+
+;;;-------------------------------
+;;; be + prepositional complement
+;;;-------------------------------
+;; "the cat is on the mat"
+
+(define-category  copular-pp
+  :specializes be
+  :binds ((result)
+          (copula)
+          (prep)
+          (pobj)))
+
 (def-form-rule (be pp)
   :form vp
   :new-category copular-pp
   :referent (:function make-copular-pp left-edge right-edge))
 
+
 ;;;----------------------------
 ;;; form rules for aux-hopping
 ;;;----------------------------
-
 
 ;;---- "be" + "ing"  progressive
 
