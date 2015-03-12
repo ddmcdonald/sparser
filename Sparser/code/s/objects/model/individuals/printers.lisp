@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.8 January 2015
+;;;  version:  0.8 March 2015
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -34,6 +34,8 @@
 ;; 0.7 (2/6/14) Refactored print-individual-with-name to get around it's
 ;;      presumtion that a 'name' variable always holds a word.
 ;; 0.8 (1/10/15) Modifying printers to use the uid number.
+;;     (3/12/15) wrote describe-individual as alternative to pretty printer
+;;      which might be OBE because of referent values in bindings
 
 (in-package :sparser)
 
@@ -317,6 +319,37 @@
 
   (format stream "~&~%")
   i )
+
+(defmethod describe-individual ((i individual)
+                                &optional (stream *standard-output*))
+  ;; would have used pretty-print-individual but want something
+  ;; more compact. Also, something has walked out from under
+  ;; pretty-princ-individual (3/15)
+  (let* ((categories (indiv-type i))
+         (category-names (loop for c in categories
+                           collect (cat-symbol c)))
+         (binds-bindings (indiv-binds i))
+         (bound-in-bindings (indiv-bound-in i)))
+
+    (format stream "~&~a  ~a"
+            (indiv-uid i)
+            (if (permanent-individual? i) :permanent :temporary))
+    (format stream "~&  ~{~a ~}" category-names)
+    (when binds-bindings
+      (format stream "~&  binds: ~a"
+              (binding-short-string (car binds-bindings))))
+    (when (cdr binds-bindings)
+      (let ((b-strings (loop for b in (cdr binds-bindings)
+                         collect (binding-short-string b))))
+        (format stream "~{~&         ~a~}" b-strings)))
+    (when bound-in-bindings
+      (let ((b-strings (loop for b in bound-in-bindings
+                         collect (bound-in-short-string b))))
+        (format stream "~&bound in: ~a" (car b-strings))
+        (when (cdr b-strings)
+          (format stream "~{~&            ~a~}" (cdr b-strings)))))
+    i))
+            
 
 
 (defun pretty-princ-individual (i &optional
