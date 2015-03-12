@@ -162,6 +162,13 @@
 (defun i# (n)
   (individual-object# n))
 
+(defun di (n)
+  (let ((i (i# n)))
+    (if i 
+      (describe-individual i)
+      (format nil "No individual with the index ~a" n))))
+          
+
 (defun psi# (n)
   (psi-object# n))
 
