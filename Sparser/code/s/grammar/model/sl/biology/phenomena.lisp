@@ -76,7 +76,7 @@
 (define-category ubiquitinate 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
-         (substrate protein-like) ;; which protein now has ubiquitin on it
+         (substrate protein) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "ubiquitinate" 

@@ -215,15 +215,8 @@
   :lemma (:common-noun "peptide")
   :realization (:common-noun name))
 
-
-(define-mixin-category protein-like
-  :documentation "Intended to provide a indicator that,
-    e.g., a protein-family is just like a protein in
-    all the ways that matter.")
-
 (define-category protein
   :specializes peptide
-  :mixins (protein-like)
   :instantiates :self
   :bindings (uid "CHEBI:36080")
 ;;  :rule-label bio-entity
@@ -238,7 +231,7 @@
   :documentation "Intended as representation of proteins
     with one or more post-translational modifications."
   :index (:temporary :sequential-keys protein modification)
-  :binds ((protein protein-like) ;;(:or protein bio-family))
+  :binds ((protein protein) ;;(:or protein human-protein-family))
           (modification protein))) ;; hack for mUbRas
 
 (define-category mutated-protein
@@ -453,7 +446,7 @@
   ;;  selectional restrictions on PPs
   ;; as in "binds to RAS" where RAS is a family
   :specializes molecule
-  :mixins (protein-like)
+  :rule-label protein
   :binds ((type bio-entity) ;; a family of what?
           (species species) ;; human? mouse?
           (members collection)
