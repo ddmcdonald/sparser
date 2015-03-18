@@ -59,6 +59,12 @@ which inhibits activation of EGFR and ERBB3. In the presence of AZD6244,
 ERK is inhibited and T669 phosphorylation is blocked, increasing 
 EGFR and ERBB3 tyrosine phosphorylation and up-regulating downstream signaling."))
 
+(defun cells-defNP ()
+  ;; from the December passages, sentences 17 and 18
+  (p "BRAF is not active and is not required for MEK/ERK activation 
+in RAS mutant cells. 
+Nevertheless, BRAF inhibitors hyperactivate CRAF and MEK in these cells."))
+
 
 
 ;;----- phrases from the 12/3/14 Darpa trainng data
