@@ -1,17 +1,22 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "shortcut-expansion"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  September 2014
+;;;  version:  March 2015
 
 ;; Broken out of shortcut-master 9/21/14 to allow both files to be
 ;; seen at once now that the cases have gotten intricate.
-;;1/14/2015 Changes to put :subject and :object selectional restrictions in the subcat frame
+;; 1/14/2015 Changes to put :subject and :object selectional restrictions
+;; in the subcat frame. 3/16/15 Small tweeks, lots of renaming to
+;; handle multiple v/r's leading to multiple rules. 
+
 
 (in-package :sparser)
 
-
+;;;----------------------------
+;;; Schematic category-creator
+;;;----------------------------
 
 (defun create-category-for-a-term (name superc 
                                    mixins restrict rule-label
@@ -55,6 +60,10 @@
      (find-or-make-category-object by-cat-name :define-category))))
 
 
+;;;-------------------------------
+;;; manage subcategorization data
+;;;-------------------------------
+
 (defun apply-subcat-if-any (subcategorization category pname)
   (when subcategorization
     (push-debug `(,subcategorization ,category ,pname))
@@ -62,7 +71,6 @@
       (assign-subcat/expr word 'verb ;;/// pass that info in as parameter
                           category 
                           `(:pattern ,subcategorization)))))
-
 
 ;;should be renamed -- general subcategorization for syntactic relations including thatcomp
 (defun subcategorize-for-preposition (category pname var-name)
@@ -82,6 +90,9 @@
        category preposition v/r variable))))
 
 
+;;;-----------------------------
+;;; prepositions owned by verbs
+;;;-----------------------------
 
 (defun apply-preposition-if-any (pname preposition category)
   "The pname is the base form of the word being defined.
@@ -120,24 +131,27 @@
         (cfr-category rule)))))
 
 
+;;;---------------------
+;;; Applying ETF schema
+;;;---------------------
 
-
-
-(defun apply-rdata-mappings (category mapping-keys
-                             &key word-keys args)
-  (push-debug `(,category ,mapping-keys ,word-keys ,args))
-  (dolist (key mapping-keys)
-    (let ((scheme (get-realization-scheme key)))
+(defun apply-rdata-mappings (category etf-names
+                             &key word-keys 
+                                  ((:args substitution-map)))
+  ;; Called from decode-realization-parameter-list
+  (push-debug `(,category ,etf-names ,word-keys ,substitution-map))
+  (dolist (name etf-names)
+    (let ((scheme (get-realization-scheme name)))
       (unless scheme
-        (error "There is no realization scheme named ~a" key))
-      (apply-realization-scheme category scheme args word-keys))))
+        (error "There is no realization scheme named ~a" name))
+      (apply-realization-scheme category scheme substitution-map word-keys))))
 
-(defun apply-realization-scheme (category scheme args word-keys)
+(defun apply-realization-scheme (category scheme substitution-map word-keys)
   ;; This is an open-coding of make-rules-for-rdata
-  (push-debug `(,category ,scheme ,args ,word-keys))
+  (push-debug `(,category ,scheme ,substitution-map ,word-keys))
   (let* ((etf (etf-for-schema scheme))
          (head-keyword (schema-head-keyword scheme))
-         (mapping (assemble-scheme-form scheme args etf category))
+         (mapping (assemble-scheme-form scheme substitution-map etf category))
          (head-word-pname (cdr (assq head-keyword word-keys)))
          head-word  irregulars )
     (cond
@@ -180,6 +194,7 @@
         (when *big-mechanism*
           (setq rule-schemas (filter-out-big-mech-bad-schemas rule-schemas)))
         (dolist (schema rule-schemas)
+          (push-debug `(,schema ,mapping ,category))
           (setq rule/s-from-schema
                 (instantiate-rule-schema schema mapping category))
           (if (consp rule/s-from-schema)
@@ -192,9 +207,9 @@
   "Rebuild the schematic mapping into a real mapping according to the
    category-specific substitution arguments. Does much of the same job
    as decode-binding in interpreting symbols and strings."
-  (push-debug `(,schema ,args-to-substitute ,etf ,category)) ;; (break "pop")
+  ;;(push-debug `(,schema ,args-to-substitute ,etf ,category)) ;; (break "pop")
   ;; (setq schema (car *) args-to-substitute (cadr *) etf (caddr *) category (cadddr *))
-  (let (;;(parameter-symbols (etf-parameters etf))
+  (let ((override-category (override-label category))
         (mapping-form (schema-mapping schema))
         new-mapping  car-value  cdr-value)
     (dolist (pair mapping-form)
@@ -202,7 +217,9 @@
             cdr-value (cdr pair))
       (cond
        ((eq cdr-value :self)
-        (push `(,car-value ,category) new-mapping))
+        (push `(,car-value ,(or override-category
+                                category))
+              new-mapping))
        ((stringp cdr-value)
         (let ((word (resolve/make cdr-value)))
           (push `(,car-value ,word) new-mapping)))
@@ -217,8 +234,24 @@
                    (category subst-value)
                    (symbol
                     (or (category-named subst-value)
-                        (find-variable-in-category subst-value category)))
+                        (find-variable-in-category subst-value category)
+                        (error "The symbol ~a can't be interpreted as ~
+                                a category or a variable." subst-value)))
+                   (cons
+                    (unless (eq (car subst-value) :or)
+                      (push-debug `(,subst-value ,category))
+                      (error "List-valued substitution value doesn't ~
+                              start with ':or'"))
+                    ;; expect this to be a list of categories since
+                    ;; it's pulled right off the variable/s v/r
+                    (unless (every #'category-p (cdr subst-value))
+                      (push-debug `(,subst-value))
+                      (error "':or' list is not all categories: ~a"
+                             subst-value))
+                    ;; drop the :or
+                    (cdr subst-value))
                    (otherwise
+                    (push-debug `(,subst-value ,category))
                     (error "Unexpected type of subst-value: ~a~%~a"
                            (type-of subst-value) subst-value)))))
             (unless decoded-value
