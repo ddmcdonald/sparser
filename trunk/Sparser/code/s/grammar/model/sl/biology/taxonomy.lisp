@@ -224,24 +224,6 @@
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
 
-(define-category modified-protein
-  :specializes protein
-  :instantiates protein
-  :rule-label protein
-  :documentation "Intended as representation of proteins
-    with one or more post-translational modifications."
-  :index (:temporary :sequential-keys protein modification)
-  :binds ((protein protein) ;;(:or protein human-protein-family))
-          (modification protein))) ;; hack for mUbRas
-
-(define-category mutated-protein
-  :specializes modified-protein
-  :instantiates protein
-  :rule-label protein
-  :index (:temporary :sequential-keys protein modification)
-  :binds ((protein protein)
-          (mutation point-mutation)))
-
 
 ;;/// will have a substantial model, so deserves its own
 ;; file. This is just to ground "encode"
