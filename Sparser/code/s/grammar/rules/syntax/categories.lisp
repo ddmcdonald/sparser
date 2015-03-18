@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 February 2015
+;;;  Version:  0.8 March 2015
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -74,7 +74,8 @@
 ;; 1/14/2015 support for thatcomp
 ;; 1/28/2015 update *vp-categories*, since the verb BE is covered by an edge which isjust category::verb
 ;; 1/28/15 added *irrelevant-to-discourse-history*.
-;; 2/3/15 removed outliers from pronoun-category?
+;; 2/3/15 removed outliers from pronoun-category? 3/13/15 added cases to
+;;   *category-hierarchy* along with doc.
 
 (in-package :sparser)
 (defvar CATEGORY::NOT)
@@ -715,7 +716,12 @@
     ,category::n-bar
     ,category::relative-clause
     ,category::thatcomp
-    ,category::pp))
+    ,category::pp
+    ,category::proper-noun
+    )
+  "Used by the anaphoric reference machinery to get
+  a rough assessment of the relative salience of
+  different edge parents (edge-used-in).")
 
 ;;;------------------------------------
 ;;; bracket introduction by form rules
