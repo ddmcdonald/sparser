@@ -1,29 +1,35 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2010-2014 David D. McDonald
+;;; Copyright (c) 2010-2015 David D. McDonald
 ;;;
 ;;;   File:   load-nlp
-;;; Version:  May 2014
+;;; Version:  February 2015
 
-;; This file will load the language understanding system Sparser, the
-;; language generator Mumble, and a shared set of utilities.
+#|
+ This file loads the language understanding system Sparser, the
+ language generator Mumble, and a shared set of utilities.
+ It does -not- compile the code. That step is unnecessary in
+ Clozure Common Lisp (CCL) or other lisps that compile functions
+ as the read them. It is required for lisps like Franz's Allegro
+ which do not. 
 
-;; Part of the system is loaded using ASDF, most is loaded by explicit load
-;; files. The common reference point is the location of this file. We
-;; collect the location of this file using *load-truename* in step 1.
+|#
+;; Part of the system is loaded using ASDF, most is loaded by explicit 
+;; load files. The common reference point is the location of this file. 
+;; We collect the location of this file using *load-truename* in step 1.
 
-;; There are other files however that must be given pathnames in this file.
+;; There are other files however that must be loaded via hard pathnames.
 ;; The values here now assume that you checked out the system to the
 ;; directory "sparser" in your home directory (i.e. ~/sparser). If you put
-;; it somewhere else then you will need to changed those paths
+;; it somewhere else then you will need to change those paths
 
 ;; What this file does:
 ;; 1. Records the location of this file as *nlp-home*
-;; 2. Loads ASDF and pushes two file locations onto its registry
-;; 3. Load the utilities using asdf 
-;; 4. Create the sparser package
-;; 5. Load Mumble
-;; 6. Choose a specializing script and load Sparser
-;; 7. Load the files in Mumble that depend on Sparser.
+;; 2. Loads ASDF and pushes two file locations onto the asdf registry
+;; 3. Loads the utilities using asdf 
+;; 4. Creates the sparser package
+;; 5. Loads Mumble
+;; 6. Chooses a specializing script and load Sparser
+;; 7. Loads the files in Mumble that depend on Sparser.
 
 (in-package :cl-user)
 
@@ -33,7 +39,7 @@
   (make-pathname :directory (pathname-directory *load-truename*)
                  :device (pathname-device *load-truename*)))
 ;; This is only for by-hand debugging if something goes wrong.
-;; Change to fit where you put Sparser
+;; Change this to fit where you put Sparser
 ;; (setq *nlp-home* "/Users/ddm/sparser/")
 
 
@@ -41,7 +47,7 @@
 
 (require :asdf)
 (unless (find-package :asdf)
-  (error "Require did not find an ASDF module~
+  (error "Require did not find an ASDF module.~
         ~%You need to install one. See http://common-lisp.net/project/asdf/"))
 
 (let ((*default-pathname-defaults* cl-user::*nlp-home*))
@@ -55,7 +61,6 @@
 ;; #3 --- Load the utilities. Note that their exported symbols
 ;; are in the package :ddm-util, which is also the name of its asd file
 
-;; Utilities used everywhere 
 #+openmcl(asdf:operate 'asdf:load-op :ddm-util)
 
 ;; Accommodates an undiagnosed issue with Allegro CL
@@ -77,8 +82,8 @@
           #+apple ccl
           #+openmcl :ccl)))
 
-;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, this invocatation of
-;; make-package does not include ddm-util in the result. Works just fine
+;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, that invocatation of
+;; defpackage does not include ddm-util in the result. Works just fine
 ;; in ACL and before installing Lion (for what that's worth).  -- ddm
 #+openmcl (use-package (find-package :ddm-util) (find-package :sparser))
 
@@ -111,7 +116,8 @@
           (otherwise
            (error "The value provided for cl-user::script was ~a~
                  ~%which is not one of the anticipated values:~
-                 ~%  :fire, :grok, :no-grammar, :just-dm&pm or :default"
+                 ~%  :fire, :biology, :grok, :c3, :no-grammar, ~
+                 :just-dm&pm or :default"
                   script)))))
   (format t "~&Using the ~a loading script~%" sparser-load-script)
 
