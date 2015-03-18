@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  2.2 August 2013
+;;;  version:  2.3 March 2015
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -65,7 +65,11 @@
 ;;      as illegal. (8/12/14) added retrieve-single-rule-from-individual
 ;;     (9/9/14) retrieve-single-rule-from-individual got a case where there were
 ;;      two rules (independent bug?) so changed it's error to a cerror.
-;; 1/5/2015 MAJOR CHANGE -- added new field rhs-forms to cfrs, and fill it from the ETF schema -- used to check syntactic plausibility of rule applications
+;;     1/5/2015 MAJOR CHANGE. Added new field rhs-forms to cfrs, and fill it 
+;;       from the ETF schema. Used to check syntactic plausibility of rule applications
+;; 2.3 (3/16/15) Broke i/r/s/-coordinate-chomsky-adjunction into the original case
+;;      when the lhs is multiple (which doesn't handles multiple rhs elements!)
+;;      and a simpler one-lhs case that calls the existing multiple-rhs function. 
 
 (in-package :sparser)
 
@@ -228,6 +232,7 @@
                                      etf mapping local-cases
                                      individual )))
         
+          ;(add-rules-to-individual
           (setf (unit-plist individual)
                 `(:rules ,rules ,@(unit-plist individual)))
           rules )))))
@@ -381,13 +386,57 @@
     (if (consp *cfrs*)
       (dolist (cfr *cfrs*)
         (set-schema-and-rhs-forms cfr schema schematic-rhs))
-      (progn
-        (set-schema-and-rhs-forms *cfrs* schema schematic-rhs)))
+      (set-schema-and-rhs-forms *cfrs* schema schematic-rhs))
     *cfrs* ))
 
-(defun set-schema-and-rhs-forms (cfr schema rhs-forms)
-        (setf (cfr-schema cfr) schema)
-        (setf (cfr-rhs-forms cfr) rhs-forms))
+
+
+(defun i/r/s/-coordinate-chomsky-adjunction (lhs rhs form referent relation)
+  "The pattern of the schema is: foo -> bar foo, with the term for the lhs
+   also appearing on the rhs. When that term is mapped to a list of
+   categories, then we have to coordinate them so that we get coherent
+   rules. Note that the lhs will also have a list value since it was
+   the same term as the one on the right."
+  (push-debug `(,lhs ,rhs ,form ,referent ,relation)) 
+  ;; (setq lhs (car *) rhs (cadr *) form (caddr *) referent (cadddr *) relation (fifth *))
+  (typecase lhs
+    (category 
+     (i/r/s-multiply-through/rhs lhs rhs form referent relation))
+    ((or word polyword)
+     (i/r/s-multiply-through/rhs lhs rhs form referent relation))
+    (cons
+     (if (cdr lhs) ;; more than one
+       (coordinate-chomsky-adjunction-multiple-lhs
+        lhs rhs form referent relation)
+       (else
+        ;; The elaborate coordination isn't necessary, so this
+        ;; probably degrades to a case we already have
+        (i/r/s-multiply-through/rhs (car lhs) rhs form referent relation))))
+    (otherwise
+     (error "Unanticipated type for lhs in rule: ~a~%~a"
+            (type-of lhs) lhs))))
+
+
+(defun coordinate-chomsky-adjunction-multiple-lhs (lhs rhs form referent relation)
+  (flet ((find-list-term (flat-list)
+           (loop for term in flat-list
+             when (listp term) return term))
+         (value-is-first-or-second (value list)
+           (when (> (length list) 2)
+             (error "Test only applies to length 2 lists, not ~a" list))
+           (if (equal (car list) value) :first :second)))             
+    (let* ((list-term (find-list-term rhs))
+           (position (value-is-first-or-second list-term rhs))
+           (other-term (if (eq position :first)
+                         (cadr rhs)
+                         (car rhs))))
+      (dolist (term lhs)
+        (let ((corresponding-rhs
+               (if (eq position :first)
+                 `(,term ,other-term)
+                 `(,other-term ,term))))
+          (i/r/s-make-the-rule
+           term corresponding-rhs form referent relation))))))
 
 (defun i/r/s-make-the-rule (lhs rhs form referent relation)
   ;; Used when there are no multiple terms in either the left
@@ -412,9 +461,9 @@
       ;; Before 2/28/95 this routine ended by 'push'ing the cfr it
       ;; constructs onto the global. That global is itself then pushed
       ;; onto the other rules (e.g. the verb rules) of the object
-      ;; by Make-rules-for-rdata as it loops through accumulating
+      ;; by make-rules-for-rdata as it loops through accumulating
       ;; the values returned by Instantiate-rule-schema.
-      ;;   That caused a bug in Subject-rule as used by Belmoral,
+      ;;   That caused a bug in subject-rule as used by Belmoral,
       ;; which expects the plist :rules field of a category's
       ;; realization field to contain a flat list of cfrs that it
       ;; can loop through. 
@@ -434,9 +483,6 @@
 	    (setq *cfrs* (list *cfrs*)))
 	  (push form-cfr
 		*cfrs*))))))
-    
-
-
 
 (defun i/r/s-multiply-through/lhs (lhs rhs form referent relation)
   ;; the lhs is a list of categories rather than one. Multiply it
@@ -469,37 +515,14 @@
       (i/r/s-make-the-rule 
        lhs (list left right) form referent relation)))))
 
-(defun i/r/s/-coordinate-chomsky-adjunction (lhs rhs form referent relation)
-  "The pattern of the schema is: foo -> bar foo, with the term for the lhs
-   also appearing on the rhs. When that term is mapped to a list of
-   categories, then we have to coordinate them so that we get coherent
-   rules. Note that the lhs will also have a list value since it was
-   the same term as the one on the right."
-  (push-debug `(,lhs ,rhs ,form ,referent ,relation)) 
-  ;; (setq lhs (car *) rhs (cadr *) form (caddr *) referent (cadddr *) relation (fifth *))
-  (flet ((find-list-term (flat-list)
-           (loop for term in flat-list
-             when (listp term) return term))
-         (value-is-first-or-second (value list)
-           (when (> (length list) 2)
-             (error "Test only applies to length 2 lists, not ~a" list))
-           (if (equal (car list) value) :first :second)))             
-    (let* ((list-term (find-list-term rhs))
-           (position (value-is-first-or-second list-term rhs))
-           (other-term (if (eq position :first)
-                         (cadr rhs)
-                         (car rhs))))
-      (dolist (term lhs)
-        (let ((corresponding-rhs
-               (if (eq position :first)
-                 `(,term ,other-term)
-                 `(,other-term ,term))))
-          (i/r/s-make-the-rule
-           term corresponding-rhs form referent relation))))))
+
       
 
+;;--- recording (called from instantiate-rule-schema)
 
-
+(defun set-schema-and-rhs-forms (cfr schema rhs-forms)
+  (setf (cfr-schema cfr) schema)
+  (setf (cfr-rhs-forms cfr) rhs-forms))
 
 ;;;----------------------------
 ;;; determining the form label
