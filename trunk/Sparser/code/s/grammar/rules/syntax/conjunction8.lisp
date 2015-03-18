@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2011-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  8.4 November2014
+;;;  Version:  8.5 March 2015
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -39,7 +39,9 @@
 ;;     (10/6/14) Fanout from successive-scans to guard against unhandled
 ;;      *pending-conjunction* flag in the completion routine. 
 ;; 8.4 (11/17/14) Revised that to have them push onto the flag symbol.
-;; 1/15/2015 allow verb+ed and adjective to combine in early phase
+;;   1/15/2015 allow verb+ed and adjective to combine in early phase
+;; 8.5 (3/13/15) repealed the restriction on combining S's. If it gets
+;;   into trouble semantically we can add more specific checks.
 
 (in-package :sparser)
 
@@ -373,9 +375,7 @@
         (let ((form-before (edge-form edge-before))
               (form-after (edge-form edge-after)))
           (declare (special form-before form-after))
-          (if (or (and (eq form-before form-after)
-                       ;; don't conjoin Ss (get bad semantics right now)
-                       (not (eq form-before category::s))) 
+          (if (or (and (eq form-before form-after))
                   (and (memq form-before *premod-forms*)
                        (memq form-after *premod-forms*)))
             :conjunction/identical-form-labels
