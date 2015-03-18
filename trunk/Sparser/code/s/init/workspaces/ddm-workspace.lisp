@@ -30,7 +30,7 @@
 ;  (setq *trace-instance-recording* t
 ;        *scan-for-unsaturated-individuals* t)
 ;  (setq *scan-for-unsaturated-individuals* t)
-;  (setq *debug-anaphora* t) 
+;  (setq *debug-anaphora* t)  *work-on-ns-patterns*
 ;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
 ;  (setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) (trace-island-driving)
@@ -61,6 +61,13 @@
 ;;  molecules and NGkappB not loaded
 ;; cf. model/sl/NIH/site.lisp
 
+(defun ddm-pending-notes ()
+  (sparser-doc-ed "notes/note on bio control structure.lisp")
+  (sparser-doc-ed "notes/note on anaphora.lisp")
+  (sparser-doc-ed "notes/note on simpler shortcuts.lisp")
+  (sparser-doc-ed "notes/note on traces.lisp")
+  (sparser-doc-ed "notes/note on edges.lisp"))
+
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
@@ -70,6 +77,7 @@
   (ddm-ed "analyzers/SDM&P/scan1.lisp")
   (ddm-ed "drivers/forest/new-forest-protocol.lisp")
   (ddm-ed "drivers/forest/sweep.lisp")
+  (ddm-ed "analyzers/psp/check/multiply7.lisp")
   (ddm-ed "drivers/forest/island-driving.lisp")
   (ddm-ed "drivers/forest/pass1.lisp")
   (ddm-ed "drivers/forest/pass2.lisp")
@@ -297,6 +305,9 @@
 ; (bio-setting)  //// needs many more switches set. 
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Paul-test-cases.txt")
 ; (f "/Users/ddm/sift/nlp/corpus/biology/Denver_9-4-14.txt")
+; (f "/Users/ddm/ws/R3/r3/trunk/darpa/August test cases/processed/PMC3437993.testcase.txt")
+; (f "/Users/ddm/ws/R3/r3/trunk/darpa/August test cases/processed/PMC3515079.testcase.txt")
+; (f "/Users/ddm/ws/R3/r3/trunk/darpa/August test cases/processed/PMC3651738.testcase.txt")
 ; (f "/Users/ddm/ws/R3/r3/trunk/darpa/Dec14-TestMaterials/DeepTest/training-passages.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/all passages combinded.txt")
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
@@ -307,6 +318,7 @@
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/paper2 passage 3.txt")
 ; (f "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials/test-passages.txt")
 ; (f "/Users/ddm/ws/R3/r3/trunk/darpa/January22-TestMaterials/passage.txt")
+; (f "/Users/ddm/ws/R3/r3/trunk/corpus/fontana-good-for-kappa.txt")
 
 ; #13 (p "BRAF is inactive in NRAS mutant cells.")
 ; #13 (p "NRAS or CRAF depletion by RNA interference.")
@@ -473,6 +485,15 @@
   (load (concatenate 'string
                      "~/sparser/Sparser/code/s/"
                      string)))
+
+(defun sparser-doc-ed (string)
+  (let ((load-string
+         (concatenate
+          'string
+          (namestring cl-user::*nlp-home*) ;; e.g. #P"/Users/ddm/sparser/"
+          "Sparser/documentation/"
+          string)))
+    (ed load-string)))
 
 
 
