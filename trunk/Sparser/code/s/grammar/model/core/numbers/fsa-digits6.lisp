@@ -48,7 +48,6 @@
 ;; 6.10 (2/5/15) Computed a referent for hypenated-numbers
 
 (in-package :sparser)
-(defvar CATEGORY::HYPHENATED-NUMBER)
 
 #|
 
@@ -171,7 +170,7 @@ the fsa would be identified at the word level rather than the category level.
 
            (make-chart-edge :starting-position starting-position
                             :ending-position ending-position
-                            :category category::hyphenated-number
+                            :category (category-named 'hyphenated-number)
                             :form category::number
                             :referent  i
                             :rule 'digit-fsa)))))
