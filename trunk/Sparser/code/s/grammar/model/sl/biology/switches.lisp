@@ -13,10 +13,10 @@
 ;; The Ras switch is a two state system / has two alternative states
 ;; Like other two-state systems (a lightbulb), 
 ;;   one of them is 'on', the other is 'off'
-;; a switch has (usuall) two states
+;; A switch has (usually) two states.
 ; in terms:  (noun "state" :super bio-entity) /// of a system
 
-;; Somethis is in this state, e.g. Ras, the traffc light
+;; Something is in this state, e.g. Ras, the traffc light
 
 
 (define-category switch-state
@@ -39,9 +39,13 @@
   :specializes abstract
   :binds ((protein protein)
           (state switch-state)))
+#|
+(specialize-category 
+  :category protein-in-a-state
+  :new-name Ras-in-a-state
+  :bind (protein (get-protein "Ras")))
 
-
-
+|#
 
 (np-head "switch") ;;/// trivial standin
 
