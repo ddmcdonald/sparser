@@ -10,6 +10,10 @@
 
 (in-package :sparser)
 
+;;;----------------------
+;;; collecting the model
+;;;----------------------
+
 (defvar *individuals-seen* (make-hash-table)
   "There are some recursive references in the binding used for
   prepositional phrases and possibly other things. We use this
@@ -93,7 +97,6 @@
 ;;; collecting sentences & new vocabulary automatically from a passage
 ;;;--------------------------------------------------------------------
 
-
 (defvar *newly-found-unknown-words* nil
   "Accumulator for add-new-word-to-catalog")
 
@@ -111,9 +114,25 @@
 ; (setq *sweep-for-sentences* t)
 ; (setq *sweep-for-sentences* nil)
 
-(defvar *sentence-sweep-stream* *standard-output*)
+
+
+(defvar *sentence-sweep-stream* *standard-output*
+  "Bound by write-swept-sentences-to-file to the file that
+   it opens for output. Defaults to the listener for debugging.")
+
+(defvar *swept-sentence-count* 0
+  "Initialized by write-swept-sentences-to-file and bumped
+   by sentence-sweep. Shows up in a comment to help us keep
+   track of which sentence is which by eye.")
+
+
 
 (defun sentence-sweep (sentence &optional (stream *sentence-sweep-stream*))
+  ;; The outer loop is the standard sentence-sweep-loop where this is
+  ;; called as an alternative to the rest of the analysis passes by the
+  ;; flag *sweep-for-sentences* being up. The call is made once per sentence
+  ;; and just after the sentence has been delimited, which does mean that
+  ;; the first pass of analysis has happened.
   (let* ((start-pos (starts-at-pos sentence))
          (end-pos (ends-at-pos sentence))
          (start-char (pos-character-index start-pos))
@@ -121,11 +140,12 @@
                     (pos-character-index end-pos))))
     (let ((string
            (extract-string-from-char-buffers start-char end-char)))
-      (print string stream))))
-
-
+      ;;(print string stream)
+      (format stream "~&~5T(p ~s) ;; ~a"
+              string (incf *swept-sentence-count*)))))
 
 (defun write-swept-sentence-to-file (in-filename out-filename)
+  (setq *swept-sentence-count* 0)
   (with-open-file (out-stream
                    out-filename
                    :direction :output
@@ -138,4 +158,8 @@
       (declare (special *trace-lexicon-unpacking* *trace-morphology*
                         *sweep-for-sentences*))
       (funcall #'f in-filename))))
+
+
+
+
 
