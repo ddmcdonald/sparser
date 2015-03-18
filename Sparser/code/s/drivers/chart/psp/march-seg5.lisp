@@ -32,6 +32,7 @@
   (declare (special *current-chunk*))
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
+  ;;(break "about to parse ~a" *current-chunk*)
   (if (use-specialized-np-parser?)
     (interp-big-mech-chunk *current-chunk*)
     (march-back-from-the-right/segment)))
@@ -67,7 +68,7 @@
                        (eq (edge-form (car edges)) category::quantifier))))))))
 
 (defun interp-big-mech-chunk (chunk)
-  ;; (push-debug `(,chunk)) (break "interp chunk: ~a" chunk)
+  ;;(push-debug `(,chunk)) (break "interp chunk: ~a" chunk)
   (when *save-chunk-edges*
     (add-chunk-edges-snapshot))
   ;; 1st look at all pairwise combinations
