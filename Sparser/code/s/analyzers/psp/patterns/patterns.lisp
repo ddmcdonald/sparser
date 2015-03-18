@@ -7,7 +7,8 @@
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
 ;; 2/2/2015 added initial patterns for colons, such as the ratio 1:500
-;;  added pattern for GAP:Ras and similar. Smidgen of doc 3/10/15
+;;  added pattern for GAP:Ras and similar. Smidgen of doc 3/10/15.
+;; 3/11/15 "~60". 
 
 (in-package :sparser)
 
@@ -173,6 +174,10 @@
     ;;/// and a bunch more
     (or (reify-point-mutation-and-make-edge words start-pos end-pos)
         (reify-ns-name-and-make-edge words start-pos end-pos)))
+
+   ((or (equal pattern `(:tilda :digits))  ;; ~60 in Dec# 52
+        (equal pattern `(:tilda :single-digit)))
+    (package-approximation-number words start-pos end-pos))
 
    (*work-on-ns-patterns*
     (push-debug `(,pattern ,start-pos ,end-pos ,words))
