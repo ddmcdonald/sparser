@@ -400,15 +400,15 @@
 (defun add-rules-to-individual (i rules)
   (add-rules-to-category i rules))
 
+(defun add-rule-to-individual (rule i)
+  (add-rule-to-category rule i))
+
+
 (defun add-rules-to-category (category rules)
   (let ((total-rules (get-rules category)))
     (dolist (rule rules)
       (setq total-rules (tail-cons rule total-rules)))
     (push-onto-plist category total-rules :rules)))
-
-
-(defun add-rule-to-individual (rule i)
-  (add-rule-to-category rule i))
 
 (defun add-rule-to-category (rule category)
   (let ((rule-list (get-rules category)))
