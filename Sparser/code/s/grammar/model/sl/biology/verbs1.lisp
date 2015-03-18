@@ -20,18 +20,18 @@
 ;; remove unlikely definition of "study" as a verb 
 ;;    -- we need to handle ambiguity better
 ;; 1/2/2015 minor fixes -- mostly to get verbs with subject WE parsing 
-;;     -- this needs to be fixed, since the category used is the pronoun category,
-;;         rather than a mixin for human
+;;   This needs to be fixed, since the category used is 
+;;   the pronoun category, rather than a mixin for human
 ;; 1/14/2015 minor vocabulary hacking to address problems pointed out by David
 ;; 1/19.2015 remove all instances of "of-nominal" ETFs and replace by use of ":of object",
 ;; use def-synonym where needed to get noun and verb readings
 ;; 2/23/15 Aphabetized
-
 ;; 3/4/2015 replace definition of pseudo-verb is-bio-entity with use of 
 ;;   subcategorization frame -- much faster
-;; delete core definition oof "report" as verb -- use new method delete-verb-cfr
-;; correct object restriction on "express"
-;; add definition of upregulate and up-regulate
+;;   delete core definition oof "report" as verb. Use new method delete-verb-cfr
+;;   correct object restriction on "express"
+;;   add definition of upregulate and up-regulate
+;; 3/12/15 Added pre-mod to phosphorylate for figure-7 case
 
 (in-package :sparser)
 
@@ -1306,13 +1306,18 @@
 
 (define-category phosphorylate
   :specializes bio-process
-  :binds ((agent biological)(object molecule)(site residue-on-protein) )
+  :instantiates self
+  :binds ((agent protein)
+          (substrate protein)
+          (site residue-on-protein))
+  :index (:temporary :sequential-keys site substrate)
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
-   :etf (svo-passive)
+   :etf (svo-passive pre-mod)
    :s agent
-   :o object
-   :of object
+   :o substrate
+   :m site ;; "T669 phosphorylation" in figure-7
+   :of substrate
    :on site
    :at site))
 
