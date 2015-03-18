@@ -341,10 +341,10 @@
 (list 'realization
   (let ((variable (binding-variable b))
 	(value (binding-value b)))
+    (declare (ignore value))
     (if (word-p value)
 	(car (export-object value))
-	(export-object value)) ))
-)
+	(export-object value)) )))
 
 ;;--- common final path for bindings and V+V
 
