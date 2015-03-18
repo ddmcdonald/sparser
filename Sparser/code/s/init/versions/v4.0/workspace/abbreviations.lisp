@@ -93,7 +93,8 @@
 ;  (let ((v (find-variable variable-name)))
 ;    (
 
-(defun ie (number-of-edge) (d (edge# number-of-edge)))
+(defun ie (number-of-edge) 
+  (d (edge# number-of-edge)))
 
 (defun de (number-of-edge) ;; customized
   (let ((e (e# number-of-edge)))
@@ -116,6 +117,16 @@
       (else
        (format t "~&~a is not an individual~%" i)
        i))))
+
+
+(defmethod di ((n number))
+  (let ((i (i# n)))
+    (if i (di i) (format nil "No individual with the index ~a" n))))
+
+(defmethod di ((i individual))
+  (describe-individual i))
+          
+
 
 ;; edge vectors
 (defun dev/s (position#) (d (ev/s position#)))
@@ -161,13 +172,6 @@
 
 (defun i# (n)
   (individual-object# n))
-
-(defun di (n)
-  (let ((i (i# n)))
-    (if i 
-      (describe-individual i)
-      (format nil "No individual with the index ~a" n))))
-          
 
 (defun psi# (n)
   (psi-object# n))
