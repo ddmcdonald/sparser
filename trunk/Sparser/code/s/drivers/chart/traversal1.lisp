@@ -8,14 +8,14 @@
 ;; 1.0 (12/6/92 v2.3) Simplified it all considerably
 
 (in-package :sparser)
-(defvar *TRACE-TRAVERSAL-HITS*)
-(defvar *TRACE-TRAVERSAL-HOOK*)
 
 ;;;------------
 ;;; new driver
 ;;;------------
 
 (defun word-traversal-hook (word position next-position)
+  (declare (special *trace-traversal-hook*
+                    *trace-traversal-hits*))
   (when *trace-traversal-hook*
     (format t "~&Traversing the word ~A" word))
   (let ((routine (traversal-action word)))
