@@ -24,6 +24,27 @@
 ;///// This is here because it was "forgotten" by the time we needed
 ; to use it (e.g. in signaling. Maybe the symbol was overwritten ?
 
+
+
+(define-category modified-protein
+  :specializes protein
+  :instantiates protein
+  :rule-label protein
+  :documentation "Intended as representation of proteins
+    with one or more post-translational modifications."
+  :index (:temporary :sequential-keys protein modification)
+  :binds ((protein (:or protein human-protein-family))
+          (modification protein))) ;; hack for mUbRas
+
+(define-category mutated-protein
+  :specializes modified-protein
+  :instantiates protein
+  :rule-label protein
+  :index (:temporary :sequential-keys protein modification)
+  :binds ((protein protein)
+          (mutation point-mutation)))
+
+
 ;;---------- signalling 
 ;; (setq *break-on-illegal-duplicate-rules* t)
 ; The def-synonym call is creating a rule it should be able
@@ -88,6 +109,53 @@
 ;;;------------------------------
 ;;; mUbRas, monoubitutinated Ras
 ;;;------------------------------
+;;///// This is a process/result pattern. This verb results
+;; in a protein that has been ubiquitinated. (Has one or
+;; more ubiquitin molecules attached to it.
+;; Need to do this systematically
+
+;; In Baker et al.
+;; "we did not separate monoubiquitinated Ras (mUbRas) from ..."
+;; Jan #1 "the effect of Ras monoubiquitination on ...
+;; ... effect of Ras monoubiquitination on ...
+;; Resulting version of Ras after adding one ubiquitin. 
+
+;; strictly for the rule-label
+(define-category monoubiquitinate 
+ :specializes bio-process )
+
+(define-category  monoubiquitinated-protein
+  :specializes modified-protein
+  :instantiates self
+  :bindings (modification (get-protein "ubiquitin"))
+  ;;/// bindings go with a process, so this will need 
+  ;; cleanup / merge when process/result is sorted out syntematically.
+  :binds ((site residue-on-protein)
+          ;; I dont' recall textual evidence for an agent
+          ;; that causes the action (that leads to this result)
+          ;; but the rule schema requires it
+          ;; N.b. this is open in protein
+          (agent biological))
+  :documentation "Strictly speaking this is just a ubiquitinated
+    protein since there no representation of the molecule count.
+    I'd like another countable modification before venturing a
+    conceptualization to use. Note that this is open in
+    its value for the protein"
+  :index (:permanent :key protein)
+  :rule-label monoubiquitinate
+  :realization 
+  ;;/// only providing a realization for the result, not the process
+  ;; that leads to the result
+    (:verb "monoubiquitinate" 
+     :noun "monoubiquitination"
+     :etf (svo-passive pre-mod)
+     :s agent 
+     :o protein ;; "monoubiquitinated Ras"
+     :m protein ;; Ras monoubiquitination
+     :on protein ;; the effects of monoubiquitination on Ras are ...
+          ;;/// that 'on' probably goes with 'effect'
+     :at site))
+
 
 (defun define-mUbRas ()
   ;; Defines the abbreviated form and creates the individual
@@ -107,47 +175,6 @@
 (eval-when (:load-toplevel)
   (define-mUbRas))
 
-
-;;///// This is a process/result pattern. This verb results
-;; in a protein that has been ubiquitinated. (Has one or
-;; more ubiquitin molecules attached to it.
-;; Need to do this systematically
-
-;; In Baker et al.
-;; "we did not separate monoubiquitinated Ras (mUbRas) from ..."
-;; Jan #1 "the effect of Ras monoubiquitination on ...
-;; ... effect of Ras monoubiquitination on ...
-;; Resulting version of Ras after adding one ubiquitin. 
-
-(define-category  monoubiquitinated-protein
-  :specializes modified-protein
-  :bindings (modification (get-protein "ubiquitin"))
-  ;;/// bindings go with a process, so this will need 
-  ;; cleanup / merge when process/result is sorted out syntematically.
-  :binds ((site residue-on-protein)
-          ;; I dont' recall textual evidence for an agent
-          ;; that causes the action (that leads to this result)
-          ;; but the rule schema requires it
-          ;; N.b. this is open in protein
-          (agent biological))
-  :documentation "Strictly speaking this is just a ubiquitinated
-    protein since there no representation of the molecule count.
-    I'd like another countable modification before venturing a
-    conceptualization to use. Note that this is open in
-    its value for the protein"
-  :index (:permanent :key protein)
-  :realization 
-  ;;/// only providing a realization for the result, not the process
-  ;; that leads to the result
-    (:verb "monoubiquitinate" 
-     :noun "monoubiquitination"
-     :etf (svo-passive pre-mod)
-     :s agent 
-     :o protein ;; "monoubiquitinated Ras"
-     :m protein ;; Ras monoubiquitination
-     :on protein ;; the effects of monoubiquitination on Ras are ...
-          ;;/// that 'on' probably goes with 'effect'
-     :at site))
 
 
 
