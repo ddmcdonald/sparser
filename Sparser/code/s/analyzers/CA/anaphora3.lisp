@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.6 January 2013
+;;;  Version:  3.6 March 2013
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -48,6 +48,7 @@
 ;; 3.6 (1/30/15) Added a filter to keep function words and such out of the history.
 ;;      The shift in modeling style to permit CLOS methods added an entire new
 ;;      set of types of individuals.
+;;     (3/12/15) Fixed error messages in better to be clearer.
 
 (in-package :sparser)
 
@@ -438,9 +439,9 @@ saturated? is a good entry point. |#
            (reigning-form (edge-form reigning-parent))
            (reigning-position (memq reigning-form *category-hierarchy*)))
       (unless new-position
-        (error "The category ~a is not in the hierarchy" new-form))
+        (error "The category ~a is not in *category-hierarchy*" new-form))
       (unless reigning-position
-        (error "The category ~a is not in the hierarchy" reigning-form))
+        (error "The category ~a is not in *category-hierarchy*" reigning-form))
       ;; if the new pair is better they will have a longer length
       ;; returned by the memq
       (let ((new-count (length new-position))
