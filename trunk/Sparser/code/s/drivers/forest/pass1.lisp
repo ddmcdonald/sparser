@@ -1,14 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2-15 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pass1"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  Octoberr 2014
+;;;  Version:  March 2015
 
 ;; Broken out of island-driving 10/23/14.
 ;; RJB 12/14/2014 -- simple fix to prevent failure in simple-subject-verb when subject is a pronoun -- need to treat pronouns better <<DAVID>>
 ;; 1/1/2015 fix bug in check-for-subcatorized-pps -- result of a push-debug passed through as the value of a the function in case when the break
 ;;  was #+ignored
+;; 3/12/15 Rewrote try-spanning-conjunctions to leave out the special cases and not
+;;  worry about how many conjunction edges there are. 
 
 (in-package :sparser)
       
@@ -324,13 +326,38 @@
               (tr :no-heuristics-for left-edge right-edge))))))))
 
 (defun try-spanning-conjunctions ()
-  ;; For now do the easy thing of looking only for the same
-  ;; labels to either side
-  ;;  *allow-form-conjunction-heuristic*
-  (let* ((conjuncts (there-are-conjunctions?))
-         (count (length conjuncts)))
-    (push-debug `(,count ,conjuncts)) ;;(break "work out conjunctions")
-    (when (= count 2)
+  ;; This is the version used in later situations and applying to
+  ;; much larger phrases that may only be composable on the basis
+  ;; of having a common form (both NPs, both clauses, etc.)
+  (let ((conjunction-edges (there-are-conjunctions?)))
+    (when conjunction-edges
+      (dolist (conj-edge conjunction-edges)
+        ;; given how the list was accumulated this moves right to left
+        ;; through the sentence
+        (let ((edge-to-the-left (left-treetop-at/edge conj-edge))
+              (edge-to-the-right (right-treetop-at/edge conj-edge)))
+          (unless (or (literal-edge? edge-to-the-left) ;; comma
+                      (literal-edge? edge-to-the-right))
+            (tr :trying-to-conjoin  edge-to-the-left edge-to-the-right)
+            (push-debug `(,edge-to-the-left ,edge-to-the-right))
+            (let ((*allow-form-conjunction-heuristic* t))
+              (declare (special *allow-form-conjunction-heuristic*))
+              (let ((heuristic (conjunction-heuristics edge-to-the-left 
+                                                       edge-to-the-right)))
+                (if heuristic
+                  (let ((edge 
+                         (conjoin-two-edges edge-to-the-left edge-to-the-right heuristic)))
+                    (tr :conjoined-edge edge)
+                    edge)
+                  (else
+                   (tr :no-conjunction-heuristics-applied)
+                   nil))))))))))
+
+#| This was a special case that came up in the Julie sentences. 
+   It would be better to make this part of the search that conjoin-two-edges
+   already does for comma-separated conjuncts.
+(count (length conjuncts))
+(when (= count 2)
       ;; The question is how to determine what patterns of
       ;; conjunction we have within this sentence. 
       (let ((c1 (car conjuncts))
@@ -355,32 +382,7 @@
                     ,edge-to-the-left-of-c1
                     ,edge-to-the-right-of-c1)))
                 (tr :two-conjuncts-not-consistent))))
-           (t (tr :different-two-conjunction-pattern))))))
-    ;; really need to refactor the three-in-a-row pattern to reuse its parts
-    (when (= count 1)
-      ;; if the little ones are handled on the fly then this is a large one
-      (let* ((c (car conjuncts))
-             (edge-to-the-left (left-treetop-at/edge c)) ;; next-treetop/leftward
-             (edge-to-the-right (right-treetop-at/edge c))) ;; next-treetop/rightward
-       (unless (or (literal-edge? edge-to-the-left) ;; comma
-                   (literal-edge? edge-to-the-right))
-         (tr :trying-to-conjoin  edge-to-the-left edge-to-the-right)
-         (push-debug `(,edge-to-the-left ,edge-to-the-right))
-         ;; (setq edge-to-the-left (car *) edge-to-the-right (cadr *))
-
-         ;; J3 requires *allow-form-conjunction-heuristic* to succeed
-         (let ((*allow-form-conjunction-heuristic* t)) ;;/// where do we get in trouble?
-           (declare (special *allow-form-conjunction-heuristic*))
-           (let ((heuristic (conjunction-heuristics edge-to-the-left 
-                                                    edge-to-the-right)))
-             (if heuristic
-                (let ((edge 
-                       (conjoin-two-edges edge-to-the-left edge-to-the-right heuristic)))
-                  (tr :conjoined-edge edge)
-                  edge)
-                (else
-                 (tr :no-conjunction-heuristics-applied)
-                 nil)))))))))
+           (t (tr :different-two-conjunction-pattern))))))  |#
  
 
 ;;;-------------
