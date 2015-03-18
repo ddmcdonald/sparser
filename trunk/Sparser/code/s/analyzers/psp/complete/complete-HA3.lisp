@@ -70,7 +70,8 @@
     (check-for-completion-actions/category (edge-category edge)
                                            edge))
   (when *include-model-facilities*
-    (when *pronouns*
+    (when (and *pronouns* ;; the module is loaded
+               *do-anaphora*) ;; we've not deliberately turned it off
       (add-subsuming-object-to-discourse-history edge)))
   (check-impact-on-quiescence-pointer edge)
   :complete )
