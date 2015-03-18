@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  February 2015
+;;;  Version:  March 2015
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
@@ -14,6 +14,8 @@
 ;;  this is done so that a later context sensitive rule can determine 
 ;;  if this is a ratio or something else
 ;; added code for similar GAP:Ras structure
+;; 3/18/15 Fleshed out package-approximation-number but without a
+;;  treatment of it being approximate. 
 
 (in-package :sparser)
 
@@ -274,5 +276,34 @@
       (revise-form-of-nospace-edge-if-necessary edge (third edges))
       ;;/// trace
       edge)))
+
+;;;---------------------------------
+;;; tilda + number => approximation
+;;;---------------------------------
+
+(defun package-approximation-number (words start-pos end-pos)
+  (push-debug `(,words ,start-pos ,end-pos))
+  ;; (setq words (car *) start-pos (cadr *) end-pos (caddr *))
+  ;; The matching patterns indicates that it's "~<number>"
+  ;; so just trust that. 
+  (let* ((num-word (second words))
+         (number (find-or-make-number num-word)))
+    ;;///// dropping the approximation on the floor
+    ;; see model/core/adjuncts/approx/object.lisp for where to 
+    ;; start the process of doing it right. 
+    (let ((edge (make-edge-over-long-span
+                 start-pos
+                 end-pos
+                 category::number
+                 :rule 'package-approximation-number
+                 :form category::number
+                 :referent number
+                 :words words)))
+      ;;/// trace
+      edge)))
+
+
+
+
 
 
