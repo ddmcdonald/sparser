@@ -10,15 +10,18 @@
 ;; Incrementally extending through 9/24/14. Broke out the routines
 ;; 10/25/14 leaving the drivers. 
 ;; RJB 12/19/2014 remove adverbs and commas from islands before attempting second pass
-;; 1/1/2015 New, flag-controlled, alternative to last part of run-island-checks, repeatedly doing application of rightmost applicable rule.
+;; 1/1/2015 New, flag-controlled, alternative to last part of run-island-checks, 
+;;   repeatedly doing application of rightmost applicable rule.
 ;; now turned ON by default
 ;; 1/5/2015 improve whack-a-rule by moving functionally duplicative code into alternative path
 ;; 1/8/2015 refactoring to make use of best-treetop-rule and copula-rule? refactoring
 ;; 1/20/15 rewrote it a little to be easier to read.
 ;; 3/3/15 Dropped the case Rusty doesn't like. Sort of backed out of the
 ;;  cleaning tts to let run-island-checks-pass-two see the [pp , s] pattern.
-;; 3/4/2015 cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
-;;  turn off *edges-from-referent-categories*  -- no longer seems to be needed -- this speeds up the system by a factor of 3!
+;; 3/4/2015 cache rules discovered for pairs of edges so that we do not keep 
+;;   calling multiply-edges unnecessarily
+;; turn off *edges-from-referent-categories*  -- no longer seems to be needed -- 
+;;   this speeds up the system by a factor of 3!
 
 (in-package :sparser)
 (defvar *parse-edges*)
@@ -29,15 +32,13 @@
 ;;; control parameters
 ;;;--------------------
 
-;(defparameter *rusty-says-no* t 
-;  "Don't call smash-together-two-tt-islands")
-
 (defparameter *whack-a-rule* t
   "This forces application of all applicable rules from 
    the right to the left, after initial priority rules.")
 
 (defun whack-a-rule (&optional (yes? t))
   (setq *whack-a-rule* yes?))
+
 
 ;;;-------------
 ;;; entry point
@@ -66,6 +67,7 @@
         (let ((new-layout
                (sweep-sentence-treetops sentence start-pos end-pos)))
           ;; (push-debug `(,new-layout)) (break "new layout")
+          ;;(break "before p2")
           (when t
             (tr :island-driver-forest-pass-2)
             (when *trace-island-driving* (tts))
