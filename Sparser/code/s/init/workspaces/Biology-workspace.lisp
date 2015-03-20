@@ -86,7 +86,7 @@ The phosphorylated ERK protein then translocates to the nucleus
 where it regulates gene expression 
 in part by phosphorylating the Elk1 transcription factor. 
 Phospho-Elk then upregulates the gene expression of target genes 
-such as the proto- oncogene c-fos.  
+such as the proto-oncogene c-fos.  
 The entire signaling cascade is terminated by 
 the intrinsic GTPase activity of ras 
 which hydrolyzes the bound GTP into GTP, 
