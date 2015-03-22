@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  4.4 February 2015
+;;;  version:  4.4 March 2015
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -20,7 +20,7 @@
 ;;      the result was unexpected.
 ;; 4.4 (8/28/13) Extended respan with person to look for named-objects. 
 ;;     (2/3/15) Adding general search routines to handle 'it' forms in a more
-;;      diverse type set. 
+;;      diverse type set. Added wh-pronoun to be ignored 3/19/15.
 
 (in-package :sparser)
 (defvar *BACKGROUND-COMPANIES*)
@@ -48,6 +48,7 @@
           (case (cat-symbol form)
             (category::pronoun
              (handle-pronoun label edge sentence))
+            (category::wh-pronoun) ;; ignore -- question or subordinator
             (otherwise
              (push-debug `(,edge ,form ,label))
              (break "next pronoun form: ~a" form))))))))
