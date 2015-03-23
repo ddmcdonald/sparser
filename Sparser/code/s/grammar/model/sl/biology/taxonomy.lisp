@@ -172,7 +172,7 @@
 (define-category molecule
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry.
-  :specializes bio-entity`
+  :specializes bio-entity ;; SBCL caught random backquote here!
   :instantiates :self
   :bindings (uid "CHEBI:36357")
   :index (:permanent :key name)
