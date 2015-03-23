@@ -24,8 +24,11 @@
 ;;     (2/10/12) Moved in pw-specific access code from object3 because (?)
 ;;       Clozure didn't know about it when it compiled that file and so
 ;;       couldn't access it. 3/1/12 Fixed caps bug and quieted compiler
+;; SBCL -- code for printing words and polywords -- moved to after polywords are defined, to reduce warnings in SBCL
+ 
 
 (in-package :sparser)
+(defvar *force-case-shift*)
 
 
 (defstruct  (polyword
@@ -267,4 +270,45 @@
       (else
         (setf (rs-fsa rule-set)
               (list polyword))))))
+
+;;;---------------------------------------------------------------
+;;; code for printing words and polywords -- moved to after polywords are defined, to reduce warnings in SBCL
+;;;---------------------------------------------------------------
+
+(defun princ-word (word  &optional (stream *standard-output*))
+  ;; called by routines that want the word presented as a string
+  ;; rather than as an object.
+  ;; Takes polywords as well as words for the convenience of model routines.
+  (if word
+    (if (member :use-symbol-name-when-printing
+                (etypecase word
+                  (word (word-plist word))
+                  (polyword (pw-plist word))))
+      (then
+        (princ (word-symbol word) stream))
+      (else
+        (write-char #\" stream)
+        (etypecase word
+          (word
+           (write-string (word-pname word) stream))
+          (polyword
+           (write-string (pw-pname word) stream)))
+        (write-char #\" stream)))
+    (write-string "<word>" stream)))
+
+
+(defun word-string (word)
+  ;; copies princ-word, but just returns the string for some other
+  ;; routine to use
+  (when word
+    (if (member :use-symbol-name-when-printing
+                (etypecase word
+                  (word (word-plist word))
+                  (polyword (pw-plist word))))
+      (then
+        (symbol-name (word-symbol word)))
+      (else
+        (etypecase word
+          (word (word-pname word))
+          (polyword (pw-pname word)))))))
 
