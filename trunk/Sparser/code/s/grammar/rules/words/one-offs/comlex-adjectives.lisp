@@ -52,7 +52,7 @@
  apoplectic apostate apostolic appalling apparent appealing appellant
  appellate appetizing applicable applied apposite appreciable
  appreciative apprehensible apprehensive approachable appropriate
- approximate apres-ski apropos après-ski apt aquatic aqueous aquiline
+ approximate apres-ski apropos apt aquatic aqueous aquiline
  arable arbitrary arboreal arcane arch archaeological archaic
  archeological archetypal architectural arctic ardent arduous argent
  arguable argumentative arid aristocratic arithmetical armored armorial
@@ -95,7 +95,7 @@
  biomedical bipartisan |bird's-eye| bisexual bitchy biting bitter
  bitter-sweet bituminous bizarre bizonal black blackguardly blackish
  blackwater blameless blameworthy bland blank blase blasphemous blasted
- blasé blatant blazing bleak bleary bleary-eyed blessed blind blinking
+ blatant blazing bleak bleary bleary-eyed blessed blind blinking
  blissful blithe blithering blithesome bloated blond blonde
  bloodcurdling bloodless bloodshot bloodstained bloodthirsty bloody
  bloody-minded blooming blotto blowzy blue blue-collar bluff bluish
@@ -268,7 +268,7 @@
  drunken dry dry-shod dual dubious ducal duckbilled ductile dud due
  dulcet dull dumb dumpy dun duodecimal duodenal duplex duplicate
  durable dusky dusty duteous dutiable dutiful duty-free dwarfish
- dyed-in-the-wool dynamic dynastic dyslexic dyspeptic décolleté démodé
+ dyed-in-the-wool dynamic dynastic dyslexic dyspeptic
  eager eagle-eyed early early-warning earnest earthen earthly earthy
  east easterly eastern easternmost eastward easy easygoing eatable
  ebony ebullient eccentric ecclesiastical eclectic ecological
@@ -367,7 +367,7 @@
  geometric geometrical geophysical geopolitical geostationary
  geothermal geriatric germane get-at-able ghastly ghostly ghoulish
  gibbous giddy gifted gigantic gilt-edged gimcrack gingerly girlish
- glace glacial glacé glad gladiatorial gladsome glamorous glandular
+ glace glacial glad gladiatorial gladsome glamorous glandular
  glaring glassy glaucous gleeful glib glissando glittering glitzy
  global globular gloomy glorious glossy glottal gloved glowing gluey
  glum glutinous gluttonous gnarled go-as-you-please goalless god-damn
@@ -619,7 +619,7 @@
  mystical mythical mythological naive naked namby-pamby nameless
  narcotic narrow narrow-minded nasal nascent nasty natal national
  nationalist nationalistic nationwide native natty natural naturalistic
- naughty nauseous nautical naval navigable naïve near near-sighted
+ naughty nauseous nautical naval navigable near near-sighted
  nearby neat nebular nebulous necessary necessitous nee needful
  needless needy nefarious negative neglectful negligent negligible
  negotiable neighboring neighborly neighbourly neolithic nerve-racking
@@ -643,7 +643,7 @@
  noxious nubile nuclear nucleic nude nugatory null numb numberless
  numerable numeral numerate numeric numerical numerous numinous nuptial
  nut-brown nutrient nutritional nutritious nutritive nuts nutty
- nymphomaniac née oafish oaken obdurate obedient obese objectionable
+ nymphomaniac oafish oaken obdurate obedient obese objectionable
  objective oblate obligatory obliging oblique oblivious oblong
  obnoxious obscene obscure obsequious observable observant observing
  obsessional obsessive obsolescent obsolete obstetric obstetrical
@@ -670,7 +670,7 @@
  ostentatious other otherworldly otiose out-of-date out-of-door
  out-of-the-way out-of-work outback outboard outbound outcast outcaste
  outdated outdoor outer outermost outgoing outlandish outlying outmoded
- outmost outrageous outre outrigged outright outré outside outsize
+ outmost outrageous outre outrigged outright outside outsize
  outspoken outspread outstanding outstretched outward oval |over with|
  over-ripe overabundant overactive overall overambitious overanxious
  overarm overbearing overblown overbold overbusy overcareful overcast
@@ -696,7 +696,7 @@
  parsimonious part-time parti-colored parti-coloured partial
  participial particular partisan partitive party-spirited paschal
  passable passe passee passing passing-out passionate passionless
- passive passé passée past pastoral pasty patchy patent paternal
+ passive past pastoral pasty patchy patent paternal
  pathetic pathless pathological patient patriarchal patrician
  patrimonial patriotic patronizing patronymic paunchy pawky payable
  pea-green peaceable peaceful peacekeeping peacock-blue peaked peaky
@@ -799,7 +799,7 @@
  razorbacked readable ready ready-made real realigned realistic
  realizable rearmost reasonable reasonless reassigned reassuring
  rebarbative rebellious reborn recalcitrant receivable received recent
- receptive recessional recessive recherche recherché reciprocal
+ receptive recessional recessive recherche reciprocal
  reckless recognizable recombinant reconcilable recondite
  record-breaking recoverable recreant recreational recriminatory rectal
  rectangular rectilinear recumbent recuperative recurrent recusant red
@@ -824,13 +824,13 @@
  restorative restrained restrictive resultant resurgent retaliative
  retaliatory retentive reticent reticulate retinal retired retiring
  retractable retractile retributive retrievable retroactive retrograde
- retrogressive retrospective retrousse retroussé returnable revengeful
+ retrogressive retrospective retrousse returnable revengeful
  reverberant reverend reverent reverential reverse reversible
  reversionary revertible revocable revolting revolutionary rhetorical
  rheumatic rheumatoid rhinal rhomboid rhymed rhythmic rhythmical ribald
  rich rickety riderless ridiculous rife right right-angled right-hand
  right-handed right-minded righteous rightful rightist rightwing rigid
- rigorous riotous rip-roaring riparian ripe risible risky risque risqué
+ rigorous riotous rip-roaring riparian ripe risible risky risque
  ritual ritualistic ritzy roadless roadworthy roan roaring roast
  robotic robust rocky rococo roguish rollicking romantic roofless
  roomed roomy rootless ropey rose-red roseate rosy rotary rotational
@@ -848,7 +848,7 @@
  salubrious salutary same sanctimonious sandalled sandy sane sanguinary
  sanguine sanitary sapient sapless sappy sarcastic sardonic sartorial
  satiable satin satirical satisfactory satisfying saturnine satyric
- saucer-eyed saucy saurian saute sauté savage saving savoury scabby
+ saucer-eyed saucy saurian saute savage saving savoury scabby
  scabrous scaly scandalous scant scanty scarce scarlet scary scathing
  scatterbrained scattered scatty scenic scentless sceptered sceptical
  sceptred schematic schismatic schizoid schizophrenic schmaltzy
@@ -910,7 +910,7 @@
  snuff-colored snuff-colour snuff-coloured snug so-called so-so soapy
  sober sociable social socialist sociological sodden sodding soft
  soft-boiled soft-footed soft-headed soft-hearted soft-spoken
- soft-witted softish soggy soigne soignee soigné solar sole soled
+ soft-witted softish soggy soigne soignee solar sole soled
  solemn solicitous solid solid-state solitary soluble solvable solvent
  somatic somber sombre somnolent sonic sonorous sonsy sooty
  sophisticated soporific sopping soppy sordid sore sorrel sorrowful
@@ -975,7 +975,7 @@
  syllabic syllabled syllogistic sylph-like sylvan symbolic symbolical
  symmetric symmetrical sympathetic symphonic symptomatic symptomless
  synchronous synonymous synoptic syntactic synthetic syphilitic syrupy
- systematic |table d'hote| |table d'hôte| taboo tabular tacit taciturn
+ systematic |table d'hote| taboo tabular tacit taciturn
  tacky tactful tactical tactile tactless tactual tailless tailor-made
  taintless take-home takeaway taking talented talkative tall tallish
  tamable tame tan tangerine tangible tangy tannic tantamount tapestried

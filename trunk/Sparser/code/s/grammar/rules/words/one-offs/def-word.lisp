@@ -40,5 +40,6 @@
      (error "~a is not a known keyword for def-word.~
            ~%Possible values are~
            ~%   :comlex~
-           ~%   :2010-frequency")))
+           ~%   :2010-frequency"
+            keyword)))
   (setq *def-word-definition* keyword))

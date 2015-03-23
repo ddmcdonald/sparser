@@ -25,7 +25,7 @@
  animadvert animate anneal annex annihilate annotate announce annoy
  annualize annul annunciate anoint answer antagonize antedate
  anticipate ape apologize apostrophize appal apparel appeal appear
- appease append appertain applaud applique appliqué apply appoint
+ appease append appertain applaud applique apply appoint
  apportion appraise appreciate apprehend apprentice apprise approach
  appropriate approve approximate aquaplane arbitrate arch argue arise
  arm arouse arraign arrange array arrest arrive arrogate article
