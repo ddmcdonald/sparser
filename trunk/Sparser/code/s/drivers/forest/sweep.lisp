@@ -12,6 +12,9 @@
 ;; This is a work-around for the problems with defining MEK and MAPK...
 ;; 1/30/15 Cleaning up, added another flag to control whether we bother
 ;; to break on new cases. 
+;; 3/21/20015 in sweep-sentence-treetops :SBCL errored on case where edge has a word as its category
+;; (P "As RAS is upstream of..." edge over "As"
+
 
 (in-package :sparser)
 (defvar WORD::|of|)
@@ -102,6 +105,9 @@
                   (set-subject tt))
                  ((and prior-tt
                        (< count 3) ;; <adv> , <np>
+                       (category-p (edge-category prior-tt)) 
+                       ;; :SBCL errored on case where edge has a word as its category
+                       ;; (P "As RAS is upstream of..." edge over "As"
                        (memq (cat-symbol (edge-category prior-tt))
                              '(word::comma category::pp category::adverb)))
                   (set-subject tt))
