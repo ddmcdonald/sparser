@@ -18,6 +18,7 @@
 ;;      variables bleeding into the call to instantiate-rule-schema.
 ;;     (2/8/11) #+ccl => #+mcl to deconflict with Clozure.
 ;;     (8/11/11) moved define-realization to objects/model/tree-families/radata1.lisp.
+;; SBCL corrected writeout-dereferenced-mapping-for-revival -- VERIFY THAT THE FIX WORKS CORRECTLY
 
 (in-package :sparser)
 (defvar *RDT/MAPPING*)
@@ -113,7 +114,7 @@
               (string-downcase (symbol-name symbol)))
       
       (if (stringp value)
-        (format stream "\"~A\"" (word-pname value))
+        (format stream "\"~A\"" value) ;; SBCL flagged (word-pname value))
         
         (format stream "~A)"
                 (etypecase value
