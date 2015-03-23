@@ -403,20 +403,32 @@
 ;;;----------------------
 
 (defun next-id (category)
-  (let ((count (getf (unit-plist category) :count)))
-    (if (null count)
-      (then (setf (getf (unit-plist category) :count) 1)
+  (cond
+   ((category-p category)
+    (incf (cat-id-counter category)))
+   (t
+    (break "what is going on in next id -- not a category")
+    (let ((count (getf (unit-plist category) :count)))
+      (if (null count)
+          (then (setf (getf (unit-plist category) :count) 1)
             1)
-      (incf (getf (unit-plist category) :count)))))
+          (incf (getf (unit-plist category) :count))))
+    )))
+    
 
 
 (defun reset-category-count (category
                              &optional number )
-  (let ((count-cons
-         (member :count (unit-plist category))))
-    (when count-cons
-      (if number
-        (rplacd count-cons
-                `( ,number ,@(cddr count-cons)))
-        (rplacd count-cons
-                `( nil ,@(cddr count-cons)))))))
+  (cond
+   ((category-p category)
+    (setf (cat-id-counter category) (or number 0)))
+   (t
+    (break "what is going on in next id -- not a category")
+    (let ((count-cons
+           (member :count (unit-plist category))))
+      (when count-cons
+        (if number
+            (rplacd count-cons
+                    `( ,number ,@(cddr count-cons)))
+            (rplacd count-cons
+                    `( nil ,@(cddr count-cons)))))))))
