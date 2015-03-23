@@ -10,6 +10,9 @@
 ;; 9/8/14 lifted taxonomy out to its own file, added keyword to
 ;; inhibit plurals, defaults to allow plurals. Working on nits
 ;; to make the parser happy through 1/6/15
+;; 3/21/2015 -- revised make-typed-bio-entity              
+;; SBCL caught fact that some words are actually polywords here...
+
 
 (in-package :sparser)
 
@@ -209,7 +212,11 @@
     (when greek
       (let ((additional-rules
              (rules-with-greek-chars-substituted
-              (word-pname word) long greek label form i)))
+              ;; SBCL caught fact that some words are actually polywords here...
+              (etypecase word 
+                    (word (word-pname word))
+                    (polyword (pw-pname word)))
+              long greek label form i)))
         (setq rules (nconc additional-rules rules))))
 
     (when rules
