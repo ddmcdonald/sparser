@@ -16,6 +16,7 @@
 (defvar CATEGORY::PP)
 (defvar CATEGORY::S)
 (defvar CATEGORY::PP)
+(defvar *THE-PUNCTUATION-COMMA*)
 
 (defun try-to-make-that-relative-clause ()
   (let ((that-edge/s (there-is-a-that?)))
