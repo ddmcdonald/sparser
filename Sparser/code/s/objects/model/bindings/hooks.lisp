@@ -36,7 +36,7 @@
 
 (defun when-binding-hook (variable binder bound &key established new)
   ;; Called by bind-variable/expr just before it returns
-  (push-debug `(,variable ,binder ,bound ,established ,new))
+  ;;SBCL pointed this out as CONS hog (push-debug `(,variable ,binder ,bound ,established ,new))
   (let ((alist (gethash variable *variables-to-alist-of-hook-entries*)))
     alist))
 
