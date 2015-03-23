@@ -15,6 +15,7 @@
 ;;     (7/19/94) added Punctuation? 3/15/13 Putting a guard on it since
 ;;      it's going to be used more broadly and not just passed words
 ;; 0.4 (7/30/14) Simplified definition of punctuation?
+;; 3/21/2015 SBCL caught major time and cons waster -- punctuation-named -- revised so as not to use cons and intern
 
 (in-package :sparser)
 
@@ -22,15 +23,79 @@
 ;;; Lookup
 ;;;--------
 
+(defparameter *punct-table* (make-hash-table))
+
+(defun get-punct-symbol (character)
+  (or
+   (gethash character *punct-table*)
+   (setf (gethash character *punct-table*)
+         (intern
+          (coerce (list character) 'string)
+          *word-package*))))
+#| unnneeded
+(defun add-punct (character)
+  (let* ((string (coerce (list character) 'string))
+	 (symbol (intern string *word-package*)))
+    (setf (gethash character *punct-table*)
+	  (symbol-value symbol))))
+
+(defun add-punctuation-chars ()
+  (add-punct #\!)
+  (add-punct #\")
+  (add-punct #\#)
+  (add-punct #\$)
+  (add-punct #\%)
+  (add-punct #\&)
+  (add-punct #\')
+  (add-punct #\()
+  (add-punct #\))
+  (add-punct #\*)
+  (add-punct #\+)
+  (add-punct #\,)
+  (add-punct #\-)
+  (add-punct #\.)
+  (add-punct #\/)
+  (add-punct #\:)
+  (add-punct #\;)
+  (add-punct #\<)
+  (add-punct #\=)
+  (add-punct #\>)
+  (add-punct #\?)
+  (add-punct #\@)
+  (add-punct #\Linefeed)
+  (add-punct #\Newline)
+  (add-punct #\Page)
+  (add-punct #\Tab)
+  (add-punct #\[)
+  (add-punct #\\)
+  (add-punct #\])
+  (add-punct #\^)
+  (add-punct #\_)
+  (add-punct #\`)
+  (add-punct #\{)
+  (add-punct #\|)
+  (add-punct #\})
+  (add-punct #\~)
+  (add-punct #\^A)
+  (add-punct #\^B))
+|#
+
 (defun punctuation-named (character)
   (unless (characterp character)
     (error "Argument must be a character.~%  ~A is a ~A"
            character (type-of character)))
-
+  
+  #+ignore ;; old slow code
   (let* ((string (coerce (list character) 'string))
          (symbol (intern string *word-package*)))
     (when (boundp symbol)
-      (symbol-value symbol))))
+      (print `(punctuation ,character ,symbol))
+      (symbol-value symbol)))
+  (let* ((symbol (get-punct-symbol character)))    
+    (when (boundp symbol)
+      (symbol-value symbol)))
+  )
+
 
 
 (defun punctuation? (word)
