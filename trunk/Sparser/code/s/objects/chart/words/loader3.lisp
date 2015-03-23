@@ -28,6 +28,8 @@
 ;;      from the master-loader
 ;; 3.2 (10/5) bumped polyword-form having finally found a direct call to it
 ;; 3.3 (6/2/93) bumped [object] to change its definition to inherit from unit
+;; SBCL 3/21/2015  -- revised loader for code for printing words and polywords -- moved to after polywords are defined, to reduce warnings in SBCL
+
 
 (in-package :sparser)
 
@@ -47,6 +49,7 @@
 ;;--- files
 
 (lload "word-obj;object3")
+(lload "word-obj;polywords3")       ;; bumped for loader3
 (lload "word-obj;def form")
 ;(lload "word-obj;lookup3")
 (lload "word-obj;catalog1")
@@ -54,7 +57,6 @@
 ;(lload "word-obj;flush")
 (lload "word-obj;resolve1")         ;; bumped for loader3
 
-(lload "word-obj;polywords3")       ;; bumped for loader3
 (lload "word-obj;polyword form1")   ;; bumped for loader3
 (lload "word-obj;punctuation")
 (lload "word-obj;spaces")
