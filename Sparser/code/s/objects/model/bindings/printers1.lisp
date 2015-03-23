@@ -85,7 +85,8 @@
   (format nil "~s" (word-pname w)))
 
 (defmethod binding-value-short-string ((pw polyword))
-  (format nil "~s" (pw-pname w)))
+  ;; SBCL caught use of w for pw
+  (format nil "~s" (pw-pname pw)))
 
 (defmethod binding-value-short-string ((v T))
   (format nil "~a" v))
