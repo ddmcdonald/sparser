@@ -477,9 +477,12 @@
         "Users:ddm:sift:nlp:corpus:"))
 
 (defun ddm-ed (string)
+  #-sbcl
   (ed (concatenate 'string
                    "~/sparser/Sparser/code/s/"
-                   string)))
+                   string))
+  #+sbcl
+  (print `(**** cant call ed from SBCL yet)))
 
 (defun ddm-load (string)
   (load (concatenate 'string
