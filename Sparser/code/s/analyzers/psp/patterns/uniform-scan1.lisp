@@ -34,7 +34,7 @@
     "Controls whether we try to parse the edges of the words
      inside the span."))
 
-
+(defvar *the-punctuation-comma*) ;; caught by SBCL
 ;;;------------
 ;;; new driver
 ;;;------------
