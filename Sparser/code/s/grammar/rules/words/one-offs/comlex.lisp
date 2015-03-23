@@ -295,7 +295,7 @@ e.g. via DM&P or Fire.
           (otherwise
            (push-debug `(,word ,s ,form-category ,brackets))
            (error "Unexpected type for the word corresponding to ~
-                   the symbol ~a: ~a" symbol (type-of word))))
+                   the symbol ~a: ~a" pname (type-of word))))
 
         (establish-rule-set-for word)
         (loop for b in brackets ;;//// unless those are bracket objects won't work

@@ -57,7 +57,7 @@
  bright brightly brilliantly briskly broadcast broadly broadways
  broadwise brusquely brutally brutishly bump bumptiously buoyantly
  bureaucratically busily but by cagily calmly candidly cannily
- cantankerously cap-a-pie cap-à-pie capably capriciously captiously
+ cantankerously cap-a-pie capably capriciously captiously
  carefully carelessly caressingly carnally casually catastrophically
  categorically caustically cautiously cavalierly ceaselessly
  centennially centrally ceremonially ceremoniously certainly
@@ -428,7 +428,7 @@
  surreptitiously suspiciously sweepingly sweetly swiftly swimmingly
  symbolically symmetrically sympathetically symptomatically
  synchronously synoptically syntactically synthetically systematically
- |table d'hote| |table d'hôte| tacitly taciturnly tactfully tactically
+ |table d'hote| tacitly taciturnly tactfully tactically
  tactlessly tamely tandem tangibly tardily tartly tastefully
  tastelessly tastily tattily tauntingly tautly tawdrily tearfully
  teasingly technically technologically tediously telegraphically
@@ -452,7 +452,7 @@
  tremulously trenchantly trimly trippingly tritely triumphantly
  trivially tropically truculently true truly trustfully trustingly
  truthfully tumultuously tunefully turbulently turgidly tutorially
- twice twofold typically typographically tête-à-tête ultimately ultra
+ twice twofold typically typographically ultimately ultra
  |ultra vires| unacceptably unaccountably unadvisedly unalterably
  unambiguously unanimously unarguably unashamedly unassailably
  unassumingly unattainably unattractively unavoidably unawares
@@ -493,7 +493,7 @@
  vauntingly vehemently venally venomously veraciously verbally verbatim
  verbosely verily vertically very vicariously |vice versa| viciously
  victoriously videlicet vigilantly vigorously vilely vindictively
- violently virtually virtuously virulently vis-a-vis vis-à-vis visibly
+ violently virtually virtuously virulently vis-a-vis visibly
  visually vitally |viva voce| vivace vivaciously vividly vocally
  volubly voluntarily voluptuously voraciously voyeuristically vulgarly
  waggishly waist-deep waist-high wanly wantonly warily warmly
@@ -508,7 +508,7 @@
  wonderingly wondrous wordily worryingly worthily worthlessly
  wrathfully wretchedly wrong wrong-headedly wrongfully wrongly wryly
  yea yearly yearningly yet yieldingly yon yonder youthfully zealously
- zestfully zigzag |à la carte| |à la mode|))
+ zestfully zigzag ))
 
 (defvar *is-an-adverb-in-comlex* (make-hash-table))
 
