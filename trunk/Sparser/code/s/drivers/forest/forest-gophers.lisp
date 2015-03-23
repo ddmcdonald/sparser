@@ -23,6 +23,7 @@
 (defvar main-verb-seen? nil)
 (defvar *edge*)
 (defvar *THE-CATEGORY-TO-BE*)
+(defvar *THE-PUNCTUATION-COMMA*)
 
 (defun clear-sweep-sentence-tt-state-vars ()
   (setq subject-seen? nil
@@ -234,6 +235,7 @@
         ;; in that case.
         (when (word-p left-daughter)
           left-daughter)))))
+
 
 (defun walk-down-right-headline (edge)
   "Given an edge, presumed to be the result of a binary composition,
