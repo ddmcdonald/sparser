@@ -86,6 +86,7 @@
 
 
 (defun the-Master-loader () )  ;; for meta-point
+#+:sbcl(setf SB-IMPL::*DEFAULT-EXTERNAL-FORMAT* :utf-8)
 
 ;;;--------------------
 ;;; extensions to Lisp
@@ -99,9 +100,8 @@
 ;;;---------
 ;;; objects
 ;;;---------
-
-(lload "rule objs;rule-links:object2")
 (lload "chart;units-labels:loader1")
+(lload "rule objs;rule-links:object2")
 (lload "chart;words:loader3")
 (lload "lookup words;loader1")
   ;; includes fsas for [morphology] and [capitalization]
@@ -223,6 +223,8 @@
 
 (gate-grammar *brackets*
   (gload "required-brackets;required"))
+
+(defparameter *try-character-type-fsas* nil)
 
 (unless *copy-file*
   (unless *load-the-grammar*
