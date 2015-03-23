@@ -53,6 +53,7 @@
 ;; 7.0 (3/10/15 Broke out form rules and pretty thoroughly revamped organization 
 ;;   of cases in multiply-edges. Separated form from category rule checks. Added np-head
 ;;   to np-chunk check.
+;; 3/21/2015 speed up suggested by SBCL profiling for cat-name
 
 (in-package :sparser)
 (defparameter *check-chunk-forms* t
@@ -288,9 +289,15 @@
   (when (cfr-p rule)
     (cat-name (cfr-form rule))))
 
+;; speedup pointed out by SBCL profiling
+(defparameter *cat-names* (make-hash-table :size 500))
+
 (defun cat-name (cat)
   (and cat ;; words don't have edge-forms
-       (intern (symbol-name (cat-symbol cat)) :sparser)))
+       (or
+        (gethash cat *cat-names*)
+        (setf (gethash cat *cat-names*)
+              (intern (symbol-name  (cat-symbol cat)) :sparser)))))
 
 
 ;;;-------------------------------------------
