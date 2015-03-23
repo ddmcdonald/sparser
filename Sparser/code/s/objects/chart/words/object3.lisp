@@ -14,6 +14,8 @@
 ;;     (8/2) added null check to Princ-word
 ;;     (10/31/12) Added more simple printers and clean-word
 ;;     (10/9/13) Added word-with-single-edge-rules? for C3's benefit
+;; SBCL 3/21/2015  -- code for printing words and polywords -- moved to after polywords are defined, to reduce warnings in SBCL
+
 
 (in-package :sparser)
 
@@ -131,43 +133,6 @@
           (write-string "\"" stream)))
   (write-string ">" stream))
 
-
-(defun princ-word (word  &optional (stream *standard-output*))
-  ;; called by routines that want the word presented as a string
-  ;; rather than as an object.
-  ;; Takes polywords as well as words for the convenience of model routines.
-  (if word
-    (if (member :use-symbol-name-when-printing
-                (etypecase word
-                  (word (word-plist word))
-                  (polyword (pw-plist word))))
-      (then
-        (princ (word-symbol word) stream))
-      (else
-        (write-char #\" stream)
-        (etypecase word
-          (word
-           (write-string (word-pname word) stream))
-          (polyword
-           (write-string (pw-pname word) stream)))
-        (write-char #\" stream)))
-    (write-string "<word>" stream)))
-
-
-(defun word-string (word)
-  ;; copies princ-word, but just returns the string for some other
-  ;; routine to use
-  (when word
-    (if (member :use-symbol-name-when-printing
-                (etypecase word
-                  (word (word-plist word))
-                  (polyword (pw-plist word))))
-      (then
-        (symbol-name (word-symbol word)))
-      (else
-        (etypecase word
-          (word (word-pname word))
-          (polyword (pw-pname word)))))))
 
 
 
