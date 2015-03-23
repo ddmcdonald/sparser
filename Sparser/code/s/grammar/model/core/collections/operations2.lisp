@@ -262,7 +262,7 @@
   (let ((value (value-of 'sequence category)))
     (unless value
       (push-debug `(,n ,category))
-      (error "No sequence binding on ~a"))
+      (error "No sequence binding on ~a" category))
     (call-nth-item n value)))
 
 (def-k-method nth-item ((n integer) (seq sequence))
