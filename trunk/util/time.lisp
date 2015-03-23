@@ -10,6 +10,7 @@
 ;; Time-as.. having been loaded already.  5/1 added month-day-year
 ;; (3/9/11) Reworked to fit in ddm-util. 8/7/12 minor tweaks, updates. 
 ;; 3/30/13 fixed call to time in date-&-time-as-formatted-string
+;; 3/21/2015 SBCL caught bad arguments
 
 (in-package :ddm-util)
 
@@ -43,8 +44,9 @@
                          (or day 1)
                          (or month 1)
                          (or year 2012)
-                         (or day-of-week 0) ;; Monday
-                         (or daylight-savings-time-p t)
+			 ;; SBCL caught these -- don't use these next two for encode-universal-time
+                         ;;(or day-of-week 0) ;; Monday
+                         ;;(or daylight-savings-time-p t)
                          (or time-zone 5))) ;; Boston
 
 ;;;-----------------------

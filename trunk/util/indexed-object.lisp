@@ -1,6 +1,8 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
 ;;; $Id: indexed-object.lisp 96 2007-06-18 17:27:12Z dmcdonal $
 ;;; Copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
+;; 3/23/2015 SBCL move defparameter early, to avoid SBCL complaint
+
 
 (in-package :ddm-util)
 
@@ -8,6 +10,8 @@
 ;;;   means of getting direct access to objects 
 ;;;   (invaluable given typically lousy debuggers)
 ;;;----------------------------------------------------
+
+(defparameter *index-numbers-to-objects* (make-hash-table))
 
 (defstruct (indexed-object)
   index)
@@ -18,7 +22,7 @@
       (break "There is no object with index number ~a" number))
     obj))
 
-(defparameter *index-numbers-to-objects* (make-hash-table))
+
 (defvar *highest-object-index* 0)
 
 (defun index-object (obj)

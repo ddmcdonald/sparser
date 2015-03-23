@@ -4,6 +4,9 @@
 
 ;; 11/2010 Folding in forgotten functions from original set, i.e. Lisp Machine days
 ;; 3/8/11 Moved out exports. 6/10/13 Tweaked tail-cons.
+;; 3/21/2015 -- SBCL updates -- don't let let-with-dynamic-extent declare variables
+;;  from :CL and :CL-USER (locked packages) special, e.g. don't let it declare *package*
+;;  special
 
 (in-package :ddm-util)
 
@@ -512,12 +515,30 @@
 
 (defmacro let-with-dynamic-extent (bindings &body body)
   `(let ,bindings
-     (declare (special ,@(mapcar #'car bindings)))
+     ,@(progn
+	(setq bindings
+	      (loop for b in bindings
+		 unless
+		   (or
+		    (eq (find-package :cl) (symbol-package (car b)))
+		    (eq (find-package :cl-user) (symbol-package (car b))))
+		 collect (car b)))
+	(when bindings
+	  `((declare (special ,@bindings)))))
      ,@body))
 
 (defmacro let*-with-dynamic-extent (bindings &body body)
   `(let* ,bindings
-     (declare (special ,@(mapcar #'car bindings)))
+     ,@(progn
+	(setq bindings
+	      (loop for b in bindings
+		 unless
+		   (or
+		    (eq (find-package :cl) (symbol-package (car b)))
+		    (eq (find-package :cl-user) (symbol-package (car b))))
+		 collect (car b)))
+	(when bindings
+	  `((declare (special ,@bindings)))))
      ,@body))
 
 (defmacro let-with-dynamic-extent-unless-bound (bindings &body body)

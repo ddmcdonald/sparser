@@ -5,6 +5,7 @@
 
 ;; 3/9/11 Extended string set for Sparser. 4/9/11 fixed bug in string-
 ;; of-N-spaces.
+;; 3/23/2015 SBCL move defparameter early, to avoid SBCL complaint
 
 (in-package :ddm-util)
 
@@ -16,48 +17,6 @@
             get-indentation
             string-of-N-spaces)
           (find-package :ddm-util)))
-
-
-;;;------ small hack for handling the indentation ------
-    
-(defun emit-line (stream string &rest args)
-  (let ((text (apply #'format nil string args)))
-    (format stream "~&~a~a"
-	    (get-indentation) text)))
-
-(defun emit-line-continue (stream string &rest args)
-  (apply #'format stream string args))
-
-(defvar *indentation* 0)
-(defvar *indent-delta* 2)
-
-(defun push-indentation (&optional (delta *indent-delta*))
-  (setq *indentation* (+ *indentation* delta)))
-
-(defun pop-indentation (&optional (delta *indent-delta*))
-  (setq *indentation* (- *indentation* delta))
-  (when (<= *indentation* 0)
-    (setq *indentation* 0)))
-
-(defmacro with-indentation (n &body body)
-  `(progn
-     (push-indentation ,n)
-     ,@body
-     (pop-indentation ,n)))
-
-(defun initialize-indentation ()
-  (setq *indentation* 0))
-
-(defun get-indentation ()
-  (let ((s (cdr (assoc *indentation* *indent-strings*))))
-    (or s "")))
-
-(defun string-of-N-spaces (n)
-  (let ((s (cdr (assoc n *indent-strings*))))
-    (unless s
-      (error "Add more cases, a string of length ~A ~
-              was requested." n))
-    s))
 
 (defparameter *indent-strings*
   `((0 . "")
@@ -111,4 +70,46 @@
     (48 . "                                                ")
     (49 . "                                                 ")
     ))
+
+;;;------ small hack for handling the indentation ------
+    
+(defun emit-line (stream string &rest args)
+  (let ((text (apply #'format nil string args)))
+    (format stream "~&~a~a"
+	    (get-indentation) text)))
+
+(defun emit-line-continue (stream string &rest args)
+  (apply #'format stream string args))
+
+(defvar *indentation* 0)
+(defvar *indent-delta* 2)
+
+(defun push-indentation (&optional (delta *indent-delta*))
+  (setq *indentation* (+ *indentation* delta)))
+
+(defun pop-indentation (&optional (delta *indent-delta*))
+  (setq *indentation* (- *indentation* delta))
+  (when (<= *indentation* 0)
+    (setq *indentation* 0)))
+
+(defmacro with-indentation (n &body body)
+  `(progn
+     (push-indentation ,n)
+     ,@body
+     (pop-indentation ,n)))
+
+(defun initialize-indentation ()
+  (setq *indentation* 0))
+
+(defun get-indentation ()
+  (let ((s (cdr (assoc *indentation* *indent-strings*))))
+    (or s "")))
+
+(defun string-of-N-spaces (n)
+  (let ((s (cdr (assoc n *indent-strings*))))
+    (unless s
+      (error "Add more cases, a string of length ~A ~
+              was requested." n))
+    s))
+
 

@@ -2,6 +2,8 @@
 ;;; $Id$
 ;;; Copyright (c) 2010 David D. McDonald
 
+;; 3/21/2015 SBCL correction on a declare
+
 (in-package :ddm-util)
 
 #|
@@ -173,7 +175,8 @@
 
 (defun Good-unix-char? (c)
   (let ((n (char-code c)))
-    (declare (type n fixnum))
+    ;; SBCL doesn't like (declare (type n fixnum))
+    (declare (fixnum n))
     (if (= n (char-code #\space))
       :space
       (if (and (>= n (char-code #\a))
