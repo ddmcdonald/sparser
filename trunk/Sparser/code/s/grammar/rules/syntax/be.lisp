@@ -24,6 +24,7 @@
 ;;  1/14/2015 correct the head for BO+AJD to be the ADJ
 ;;  (1/15/15) Substantial make over of rules for tense/aspect
 ;; 3/4/2015 make the rules that should produce VGs do so (such as (def-form-rule (be verb+ing) ...)
+;; SBCL suggested speedup on computation of passive label (VERB+ED label created to allow passive rule to work)
 
 (in-package :sparser)
 
@@ -152,6 +153,8 @@
 ;;; passive
 ;;;---------
 
+(defparameter *passive-label* (make-hash-table))
+
 (defun lookup-passive-counterpart (verb-category)
   ;; The passive rule dictates the new-category ':passive'.
   ;; This is a pseudo category that is checked for specifically
@@ -164,11 +167,16 @@
   
   (let* ((stem (symbol-name (cat-symbol verb-category)))
          (name-of-passive-label
-          (intern ;;(concatenate 'string stem "+ED")))
-           (string-append stem '#:+ed)
-           (find-package :sparser)))
+          (or
+           (gethash stem *passive-label*)
+           (setf (gethash stem *passive-label*)
+                 (intern ;;(concatenate 'string stem "+ED")))
+                  (string-append stem '#:+ed)
+                  (find-package :category)))))
          (passive-category
-          (category-named name-of-passive-label)))
+	  (and
+	   (boundp name-of-passive-label)
+	   (category-named/c-symbol name-of-passive-label))))
 
    #| letting the called change the form category instead of complaining
     (unless passive-category
