@@ -6,6 +6,7 @@
 ;;;  version:  May 2013
 
 ;; Initiated 5/20/13 as a work-around if ASDF cannot be appled.
+;; 3/23/2015 Move load of then-and-else to avoidn warnings from SBCL
 
 (in-package :cl-user)
 
@@ -16,11 +17,11 @@
     (load filename)))
 
 (loadd "package")
+(loadd "then-and-else")
 (loadd "alists")
 (loadd "strings")
 (loadd "list-hacking")
 (loadd "predicates")
-(loadd "then-and-else")
 (loadd "time")
 (loadd "util")
 (loadd "walk-directories" )
