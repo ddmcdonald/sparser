@@ -29,6 +29,7 @@
 ;;      I wrote that in 1995 with a good understanding of the whole process
 ;;      and the assumption that it would work but wanted to leave in the
 ;;      note/Stub.
+;; 3/21/2015 SBCL caught a frank error - search for SBCL in code below...
 
 (in-package :sparser)
 
@@ -109,7 +110,9 @@
 
 
 (defun dotted-category (c)
-  (member #\_ (symbol-name (cat-symbol c))))
+  ;; SBCL caught this (member #\_ (symbol-name (cat-symbol c)))
+  (find #\_ (symbol-name (cat-symbol c))))
+  
 
 
 ;;;-------------------
