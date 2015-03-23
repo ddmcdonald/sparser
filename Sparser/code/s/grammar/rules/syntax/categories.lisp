@@ -76,6 +76,7 @@
 ;; 1/28/15 added *irrelevant-to-discourse-history*.
 ;; 2/3/15 removed outliers from pronoun-category? 3/13/15 added cases to
 ;;   *category-hierarchy* along with doc.
+;; 3/21/2015 fixed error in ng-head? caught by SBCL
 
 (in-package :sparser)
 (defvar CATEGORY::NOT)
@@ -433,19 +434,13 @@
                 (pos-edge-ends-at e)))))
      (not
       (memq 
-       (word-symbol (edge-referent
-                     (right-treetop-at/edge
-                      (pos-edge-ends-at e))))      
+       ;; SBCL caught an error here -- led to simplification to use pos-terminal
+       (word-symbol (pos-terminal (pos-edge-ends-at e)))
        '(WORD::|that| WORD::|which| WORD::|whose|)))))
    ((ng-head? (edge-form e)) t)
    ((and
      (eq category::det (edge-form e))
-     (eq category::that (edge-category e))
-     ;;(memq (word-symbol (edge-referent e)) '(WORD::|that|))
-     )
-    ;;(break "that")
-    )
-   ))
+     (eq category::that (edge-category e))))))
 
 (defmethod ng-head? ((c referential-category))
   (ng-head? (cat-symbol c)))
