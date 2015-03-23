@@ -15,7 +15,7 @@
 ;; 3/11/13 Commented out number-of-instances because of conflict with new generic fn
 
 (in-package :sparser)
-
+(defvar *vb/obj-sorted-by-frequency*)
 ;;;--------------
 ;;; quick things
 ;;;--------------
@@ -726,7 +726,7 @@
 
 (defun sort-vb/obj-by-frequency ( &optional (instances *vb-obj/dh*) )
   (let ((copy (copy-list instances)))
-    (setq vb/obj-sorted-by-frequency
+    (setq *vb/obj-sorted-by-frequency*
           (sort copy
                 #'sort-discourse-entries/vb-obj))))
 
