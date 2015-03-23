@@ -17,6 +17,7 @@
 ;; 0.5 (5/3) tweeked def-form to get implicit-close right
 ;; 1.0 (1/9/95) interning function wasn't working. 
 ;;     (6/2/08) Promulgated fan-out from *force-case-shift*
+;; 3/21/2015 SBCL caught bad use of setf on (word-rule-set word) -- corrected to have typecase
 
 (in-package :sparser)
 
@@ -126,50 +127,55 @@
 (defun populate-section-marker (sm
                                 initiate terminate close interior
                                 no-actions?)
-
+  
   (setf (sm-initiation-action sm)  initiate)
   (setf (sm-termination-action sm) terminate)
   (when interior
     (setf (sm-interior-markup sm)
           (setup-interior-markup-data interior)))
   (let ((sm-to-close (if (and close (stringp close))
-                       (section-marker-named close)
-                       close)))
+                         (section-marker-named close)
+                         close)))
     (when close
       (unless sm-to-close
         (break "There is no section marker named ~A" close)))
     (setf (sm-terminates-previous sm) sm-to-close)
-
+    
     (if no-actions?  ;; e.g. SGML is done by a meta routine
-      (setf (sm-plist sm) `(:no-actions))
-      (else
-        ;; Put the initiation action on the action list of the word.
-        ;; The termination action and what it closes will be handled
-        ;; automatically when the action fires.
-        (let* ((word (sm-word sm))
-               (rs (word-rule-set word)))
-          (unless rs
-            (setf (word-rule-set word)
-                  (setq rs (make-rule-set :backpointer word))))
-          (if (rs-completion-actions rs)
-            (if (member :section-marker (rs-completion-actions rs))
-              (then
-                (let ((cell-to-change
-                       (cdr (member :section-marker
-                                     (rs-completion-actions rs)))))
-                  (rplaca cell-to-change
-                          sm)))
-
-              (setf (rs-completion-actions rs)
-                    (cons :section-marker
-                          ;;(cons initiate
-                          ;;      (rs-completion-actions rs))
-                          (cons sm
-                                (rs-completion-actions rs))
-                          )))
-            (setf (rs-completion-actions rs)
-                  ;;`(:section-marker ,initiate)
-                  `(:section-marker ,sm)
-                  )))))
+        (setf (sm-plist sm) `(:no-actions))
+        (else
+          ;; Put the initiation action on the action list of the word.
+          ;; The termination action and what it closes will be handled
+          ;; automatically when the action fires.
+          (let* ((word (sm-word sm))
+                 (rs (rule-set-for word)))
+            (unless rs
+              (setq rs (make-rule-set :backpointer word))
+              (typecase word
+                (word
+                 (setf (rule-set-for word) rs))
+                (polyword (setf (pw-rules word) rs))
+                ((or category referential-category mixin-category)
+                 (setf (cat-rule-set word) rs))))
+            (if (rs-completion-actions rs)
+                (if (member :section-marker (rs-completion-actions rs))
+                    (then
+                      (let ((cell-to-change
+                             (cdr (member :section-marker
+                                          (rs-completion-actions rs)))))
+                        (rplaca cell-to-change
+                                sm)))
+                    
+                    (setf (rs-completion-actions rs)
+                          (cons :section-marker
+                                ;;(cons initiate
+                                ;;      (rs-completion-actions rs))
+                                (cons sm
+                                      (rs-completion-actions rs))
+                                )))
+                (setf (rs-completion-actions rs)
+                      ;;`(:section-marker ,initiate)
+                      `(:section-marker ,sm)
+                      )))))
     sm))
 
