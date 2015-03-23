@@ -31,6 +31,7 @@
 ;;      to brackets/assignments.
 ;; 1.9 (8/14/13) Converted category-named to a method so it could be fed categories
 ;;     (4/16/14) Added the extra arg for mixins in CLOS backing. 
+;; 3/21/2015 SBCL conditionalization to be like MCL on capitalization
 
 ;;;------
 ;;; find
@@ -225,7 +226,7 @@
 (defmethod name-to-use-for-category ((string string))
   "Encapsulates the lisp-specific checks for what case to use."
   (let* ((s #+mlisp string
-            #+(or :ccl :alisp)(string-upcase string))
+            #+(or :ccl :alisp :sbcl)(string-upcase string))
          (symbol (intern s (find-package :sparser))))
     ;; n.b. not the category package. The pname will be interned there
     ;; as part of creating the category
