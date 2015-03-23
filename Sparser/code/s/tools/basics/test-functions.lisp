@@ -7,6 +7,7 @@
 
 ;; utilities for testing in R3. Made format-item prettier 1/10/15.
 ;; 2/8/15 Turning off anaphora on sentence calls. 
+;; 3/21/2015 new functions for saving information about actually occurring sub-categorization cases
 
 (in-package :sparser)
 
@@ -268,4 +269,35 @@
                (cat-sym 
                 (edge-category 
                  (edge-right-daughter edge))))))))
-  
+ 
+(defun save-subcat-info (&optional filename)
+  (if filename
+      (with-open-file (stream filename
+                              :direction :output
+                              :if-exists :overwrite
+                              :if-does-not-exist :create)
+        (subcat-info stream))
+      (subcat-info)))
+    
+(defun subcat-info (&optional (stream t))
+  (setq *collect-subcat-info* t)
+  (clrhash *ref-cat-text*)
+  (compare-to-snapshot 'dec-test)
+  (compare-to-snapshot 'dry-run)
+  (loop for x in *subcat-info*
+    do
+    (print x stream))
+  (let
+      ((cats nil))
+    (maphash #'(lambda (cat strings) (push cat cats)) *ref-cat-text*)
+    (setq cats (sort cats #'string< :key #'(lambda(cat) (cat-name cat))))
+    (loop for cat in cats 
+      do
+      (format stream "~&(~A" cat)
+      (loop for item in (gethash cat *ref-cat-text*)
+        do
+        (format stream "~&   ~S" item))
+      (format stream ")"))
+    ;;(format #'(lambda (cat strings)(pprint (list (cat-name cat) strings))) *ref-cat-text*)
+    ))
+
