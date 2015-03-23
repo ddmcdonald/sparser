@@ -383,11 +383,9 @@
                 (individual 
                  (if
                   (itypep value 'prepositional-phrase)
-                  (dolist (bb (indiv-binds value))
-                    (when (eq (var-name (binding-variable bb)) 'pobj)
-                      (push (list (var-name var)
-                                  (collect-model-description (binding-value bb)))
-                            desc)))
+                  (push (list (var-name var)
+                              (collect-model-description (second (get-prep-pobj value))))
+                            desc)
                   (push (list (var-name var)
                               (collect-model-description value))
                         desc)))
