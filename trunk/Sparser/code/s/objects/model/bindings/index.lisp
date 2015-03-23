@@ -15,6 +15,8 @@
 ;;     (4/1/13) Added checks for the variable being anonymous, which post-dates
 ;;      all this code. Ignored index link to the value
 ;; 3/21/2015 key changes to find/binding based on SBCL profiling
+;; 3/21/2015 FIX OVERZEALOUS correction of find/binding -- some problem in lookup for
+;;  find/binding which caused bad definition in (define-unit-of-measure ...) for "nm"
 
 (in-package :sparser)
 
@@ -298,18 +300,17 @@
 
   ;; SBCL also found another problematic time waster -- searching in the
   ;;  variable index, rather than on the bound-in slot for individuals
-  (if (individual-p individual)
-      (binding-of-individual variable individual)
-      ;;SBCL says that the method below is slow and takes 25% of parse time!
-      (let ((instances-alist (var-instances variable)))
-        (when instances-alist
-          (let ((bindings (cdr (assoc value instances-alist
-                                      :test #'eq))))
-            ;; /// If the individual gets dicy to identify (being arbitrary)
-            ;; the we probably want to shift to v+v objects.
-            (when bindings
-              (find individual bindings :test #'eq
-                    :key #'binding-body)))))))
+  
+  ;;SBCL says that the method below is slow and takes 25% of parse time!
+  (let ((instances-alist (var-instances variable)))
+    (when instances-alist
+      (let ((bindings (cdr (assoc value instances-alist
+                                  :test #'eq))))
+        ;; /// If the individual gets dicy to identify (being arbitrary)
+        ;; the we probably want to shift to v+v objects.
+        (when bindings
+          (find individual bindings :test #'eq
+                :key #'binding-body))))))
 
 
 
