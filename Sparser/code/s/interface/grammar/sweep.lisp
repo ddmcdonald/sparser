@@ -7,6 +7,10 @@
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
+;; 3/21/2015 SBCL pointed out that binding of pobj and prep variables in PP 
+;;  referents was very wasteful
+;;  put in a hash table instead. This means that all cases where we were searching 
+;;  for the bindings of pob must be replaced by use of (get-prep-pobj value)
 
 (in-package :sparser)
 
@@ -66,10 +70,9 @@
                (cond
                 ((itypep value 'unclear) nil)
                 ((itypep value 'prepositional-phrase)
-                 (dolist (bb (indiv-binds value))
-                   (when (eq (var-name (binding-variable bb)) 'pobj)
-                     (push (list var-name (collect-model (binding-value bb)))
-                           objects))))
+                 (push (list var-name
+                             (collect-model-description (second (get-prep-pobj value))))
+                       objects))
                 ((itypep value 'bio-family)
                  (push (list var-name value)
                        objects))
