@@ -583,7 +583,9 @@
 
 (defun test-against-comlex (putative-stem morphology)
   (declare (ignore morphology)) ;; if we want more educated extensions
-  (if *comlex-word-lists-loaded* ;; do (load-comlex)
+  (if (and
+       (boundp '*comlex-word-lists-loaded*)
+       *comlex-word-lists-loaded*) ;; do (load-comlex)
     (or (and (is-in-comlex? putative-stem)
 	     putative-stem)
         ;; If this form isn't in Comlex, maybe a small variant
