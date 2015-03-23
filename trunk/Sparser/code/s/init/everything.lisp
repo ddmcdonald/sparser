@@ -89,6 +89,7 @@
 ;; 6/15/14 Changed the default on *incorporate-generic-lexicon* to T so we always
 ;; prime Comlex. With fire as the default switch setting we were doing that anyway.
 ;; Also added *big-mechanism* as a grammar-load directing flag. 
+;; 3/21/2015 minor reader conditionalization for SBCL, comparable to that for MCL and CCL
 
 (in-package :cl-user)
 
@@ -162,7 +163,7 @@ what files have changed, preparing ftp scripts, etc.
                      Sparser-directory~%and cl-user::location-of-text-~
                      corpora to their namestrings~%and ~
                         continue.~%"))))
-     #+(or :allegro :openmcl)
+     #+(or :allegro :openmcl :sbcl)
      (namestring
       (merge-pathnames 
        ;; truename will be <Sparser-directory>/code/s/init/everything.lisp
@@ -548,6 +549,7 @@ or for loading the newer of the compiled or source files.
       #+apple "f"
       #+openmcl "f"
       #+allegro "f"
+      #+sbcl "f"
       ))
 
 ;; put the binaries in
