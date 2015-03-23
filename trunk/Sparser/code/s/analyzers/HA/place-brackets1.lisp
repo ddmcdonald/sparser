@@ -20,6 +20,7 @@
 ;;      better traces.
 ;; 1.1 (4/1/13) Getting brackets off capitalized variants when lower case doesn't 
 ;;      have a rule set
+;; 3/21/2015 SBCL fix -- change label-rule-set to rule-set-for. in delete-existing-bracket-assignments
 
 (in-package :sparser)
 
@@ -317,7 +318,7 @@
 ;;;--------------
 
 (defun delete-existing-bracket-assignments (label)
-  (let ((rs (label-rule-set label)))
+  (let ((rs (rule-set-for label)))
     (when rs
       (let ((bracket-structure (rs-phrase-boundary rs)))
         (when bracket-structure
