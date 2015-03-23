@@ -25,6 +25,9 @@
 ;; 1.8 (12/28/14) Added a trap so you can't add bindings to categories.
 ;;      Which is debatable, but such bindings should at least be reclaimable.
 ;; investigations using SBCL -- minor tweaks
+;; 3/21/2015 FIX OVERZEALOUS correction of find/binding -- some problem in lookup for
+;;  find/binding which caused bad definition in (define-unit-of-measure ...) for "nm"
+
 
 (in-package :sparser)
 
@@ -105,7 +108,9 @@
 
 (defun bind-variable/expr (variable value individual)
   (let ((established-binding
-         (find/binding variable value individual)))
+         (if (individual-p individual)
+             (binding-of-individual variable individual)
+             (find/binding variable value individual))))
     (if established-binding
       (let ((count-cons
              (member :incidence-count (unit-plist established-binding))))
