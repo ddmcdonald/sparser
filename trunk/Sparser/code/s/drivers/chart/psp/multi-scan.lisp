@@ -12,6 +12,7 @@
 ;;  use correct function right-treetop-at/edge in short-conjunctions-sweep -- handle case of PD198u7 and sorafenib.
 ;; 1/18/2015 Allow conjunctions of an ambiguous word and another word (or ambiguous word)
 ;; 2/5/15 Introduced fsa's on edges and words. 2/8/15 fixed bug in them
+;; SBCL caught type error in short-conjunctions-sweep -- fixed
 
 (in-package :sparser)
 
@@ -278,13 +279,21 @@
         (declare (special *allow-form-conjunction-heuristic*))
         ;;(break "short-conjunctions")
         ;; handle case of A, B, and C (i.e. comma before conjunction)
-        (when (eq word::comma (edge-category left-edge))
-          (setq left-edge (next-treetop/leftward left-edge)))
+        (when (and
+               ;; caught by :SBCL
+               (not (word-p left-edge)) ;; case such as ...cells (Figure 1B and 1C) and we...
+               (eq word::comma 
+                   (edge-category 
+                    (if (edge-vector-p left-edge) 
+                        (lowest-edge left-edge)
+                        left-edge))))
+               (setq left-edge (next-treetop/leftward left-edge)))
+
         (unless (or (word-p left-edge)
                     (word-p right-edge))
           (dolist (left (if (edge-vector-p left-edge) 
-                                (ev-edges left-edge)
-                                (list left-edge)))
+                            (ev-edges left-edge)
+                            (list left-edge)))
             (dolist (right (if (edge-vector-p right-edge) 
                                (ev-edges right-edge)
                                (list right-edge)))
