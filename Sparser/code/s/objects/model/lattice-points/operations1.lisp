@@ -36,6 +36,8 @@
 ;;      started caching superc's on the category's plist.
 ;;     (5/22/14) Wrote display-category-tree and some ancilary routines to print
 ;;      the whole set of categories nicely. 
+;; 3/21/2015 SBCL caught application of lp-super-category to non lattice point --
+;;  form categories are not in a lattice...
 
 (in-package :sparser)
 
@@ -262,9 +264,13 @@
   (if (eq category reference-category)
     t
 
-    (let ((super-category
-           (lp-super-category (cat-lattice-position category)))
-          (mixins (cat-mix-ins category)))
+    (let* ((lp (cat-lattice-position category))
+           (super-category
+            ;; SBCL caught application of lp-super-category to non lattice point --
+            ;;  form categories are not in a lattice...
+            (when (lattice-point-p lp)
+              (lp-super-category lp)))
+           (mixins (cat-mix-ins category)))
 
       (or
        (when super-category
