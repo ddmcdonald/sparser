@@ -21,6 +21,8 @@
 ;; 1.0 (7/22/09) Fan out from simplifying the indexing structure and putting more
 ;;   on the psi. Working on it through 8/6.
 ;; 1.1 (8/26/13) Added setting of subtypes to initialize-top-lattice-point
+;; 3/21/2015 SBCL caught -- (trying to add ,category to subtypes of form-category
+;;  which is not a top-lattice-position)))))
 
 (in-package :sparser)
 
@@ -47,8 +49,12 @@
 
     (when specializes
       (let ((super-lp (cat-lattice-position specializes)))
-        (pushnew `(,category ,lp)
-                 (lp-subtypes super-lp))))
+        (if
+         (top-lattice-point-p super-lp) ;; SBCL caught error here
+         (pushnew `(,category ,lp)
+                  (lp-subtypes super-lp))
+         (print `(trying to add ,category to subtypes of ,(cat-name super-lp)
+                         which is not a top-lattice-position)))))
 
     lp ))
 
