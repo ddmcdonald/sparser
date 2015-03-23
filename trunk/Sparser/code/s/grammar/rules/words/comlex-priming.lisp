@@ -56,7 +56,7 @@
                    :direction :input
                    :if-does-not-exist :error)
     (let ((*package* (find-package :sparser)))
-      (declare (special *package*))
+      #-:sbcl(declare (special *package*))
       (do ((entry (read stream nil :eof)
                   (read stream nil :eof)))
           ((eq entry :eof))
