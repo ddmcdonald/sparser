@@ -31,7 +31,21 @@
 ;; 6. Chooses a specializing script and load Sparser
 ;; 7. Loads the files in Mumble that depend on Sparser.
 
+;; 3/17/2015 Putting in flags to avoid loading Mumble. Trying to be able to use SBCL, and it is a stickler for ANSI standards
+; file: /Users/rusty/sparser/Mumble/types/defining-types.lisp
+; in: DEFUN DO-THE-TYPE-OF-TYPE-BY-HAND
+;     (SPECIAL TYPE)
+; 
+; caught WARNING:
+;   Compile-time package lock violation:
+;     Lock on package COMMON-LISP violated when declaring TYPE special while in
+;     package MUMBLE.
+;   See also:
+;     The SBCL Manual, Node "Package Locks"
+;     The ANSI Standard, Section 11.1.2.1.2
+
 (in-package :cl-user)
+(defparameter *NO-MUMBLE* t) ;; for SBCL compatibility
 
 ;; #1 --- set the base directory
 
@@ -53,8 +67,9 @@
 (let ((*default-pathname-defaults* cl-user::*nlp-home*))
   (pushnew (merge-pathnames (make-pathname :directory '(:relative "util")))
            asdf:*central-registry*)
-  (pushnew (merge-pathnames (make-pathname :directory '(:relative "Mumble" "derivation-trees")))
-           asdf:*central-registry*))
+  (unless *NO-MUMBLE*
+    (pushnew (merge-pathnames (make-pathname :directory '(:relative "Mumble" "derivation-trees")))
+             asdf:*central-registry*)))
 
 
 
@@ -67,7 +82,8 @@
 #-openmcl(let ((*default-pathname-defaults* cl-user::*nlp-home*))
            (load (merge-pathnames 
                   (make-pathname :directory '(:relative "util") 
-                                 :name "loader.lisp"))))
+                                 :name "loader"
+                                 :type "lisp"))))
 
 
 
@@ -89,7 +105,9 @@
 
 
 ;; #5 Load Mumble
-(load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp"))
+(unless
+    *NO-MUMBLE*
+  (load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp")))
 
 
 ;; #6  Use the selected script to pick the desired version of Sparser
@@ -130,6 +148,8 @@
 
 ;; #7 load the files from Mumble that reference types in Sparser
 
-(asdf:operate 'asdf:load-op :mumble-after-sparser)
-(load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
-(load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
+(unless
+    *NO-MUMBLE*
+  (asdf:operate 'asdf:load-op :mumble-after-sparser)
+  (load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
+  (load (concatenate 'string *mumble-location* "grammar/numbers.lisp")))
