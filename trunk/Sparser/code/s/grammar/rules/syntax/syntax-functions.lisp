@@ -23,6 +23,10 @@
 ;;  don't allow a copular-pp on an instance of BE+NP
 ;; 3/10/2015 for clarity, rename copy-individual to maybe-copy-individual
 ;; methods to save sucat instances
+;; many small SBCL fixes
+;; MAJOR SBCL FIX -- added new method get-prep-pobj to allow us to get the prep and pobj from
+;;  the referent of a PP, without having to bind variables
+;;  and create lots of vaariable bindngs to manage and search through
 
 
 (in-package :sparser)
@@ -32,6 +36,7 @@
 (defvar CATEGORY::COPULAR-PP)
 (defparameter *collect-subcat-info* nil)
 (defparameter *subcat-info* nil)
+(defparameter *ref-cat-text* (make-hash-table))
 
 
 ; (left-edge-for-referent)
@@ -64,9 +69,9 @@
       (if (itypep head 'process) ;; poor man's standing for verb?
           (then
             
-            (let ((variable (object-variable head)))
-              (if variable ;; really should check for passivizing
-                  (bind-variable variable qualifier head)
+            (let ((var (object-variable head)))
+              (if var ;; really should check for passivizing
+                  (bind-variable var qualifier head)
                   ;; otherwise it's not obvious what to bind
                   (else 
                     (bind-variable 'modifier qualifier head)))
@@ -78,7 +83,6 @@
             head))))
 
 (defun adj-noun-compound (qualifier head)
-  (declare (special qualifier head))
   ;; (break "adj-noun-compound")
   ;; goes with (adjective n-bar-type) syntactic rule 
   (when nil
@@ -134,7 +138,6 @@
 
 
 (defun verb+ing-noun-compound (qualifier head)
-  (declare (special qualifier head))
   ;;(break "verb-noun-compound")
   ;; goes with (verb+ed n-bar-type) syntactic rule 
   (when nil
@@ -155,9 +158,6 @@
         (link-in-verb+ing qualifier head)))))
 
 (defun link-in-verb+ing (qualifier head)
-  ;;head is already copied
-  (declare (special qualifier head))
-  ;;(break "link-in-verb")
   (let ((subject (subject-variable qualifier)))
     (if
         (category-p qualifier)
@@ -169,7 +169,6 @@
     head))
 
 (defun verb-noun-compound (qualifier head)
-  (declare (special qualifier head))
   ;;(break "verb-noun-compound")
   ;; goes with (verb+ed n-bar-type) syntactic rule 
   (when nil
@@ -190,9 +189,6 @@
         (link-in-verb qualifier head)))))
 
 (defun link-in-verb (qualifier head)
-  ;;head is already copied
-  (declare (special qualifier head))
-  ;;(break "link-in-verb")
   (let ((object (object-variable qualifier)))
     (if (category-p qualifier)
       (setq qualifier (make-individual-for-dm&p qualifier))
@@ -206,11 +202,32 @@
 ;;; Prepositional phrase
 ;;;;_______________
 
+(defparameter *pp-prep-pobj* (make-hash-table :size 1000))
+(defun link-pp-to-prep-and-object (pp prep pobj)
+  #|(bind-variable 'prep prep pp)
+    (bind-variable 'pobj pobj pp)
+  `|#
+  (setf (gethash pp *pp-prep-pobj*) (list prep pobj)))
+
+(defun get-prep-pobj (pp)
+  #|
+  (let
+      (pobj-ref prep-ref)
+    (dolist (bb (indiv-binds pp-ref))
+      (cond
+       ((eq (var-name (binding-variable bb)) 'pobj)
+        (setq pobj-ref (binding-value bb)))
+       ((eq (var-name (binding-variable bb)) 'prep)
+        (setq prep-ref (binding-value bb)))))
+    (list prep-ref pobj-ref))
+  |#
+  (gethash pp *pp-prep-pobj*))
+
+
 (defun make-pp (prep pobj)
   (let ((pp (make-category-indexed-individual 
              category::prepositional-phrase)))
-    (bind-variable 'prep prep pp)
-    (bind-variable 'pobj pobj pp)
+    (link-pp-to-prep-and-object pp prep pobj)
     pp))
 
 
@@ -330,7 +347,6 @@
 ;;;---------
 
 (defun adjoin-pp-to-vg (vg pp)
-  (declare (special vg pp))
   ;; The VG is the head. We ask whether it subcategorizes for
   ;; the preposition in this PP and if so whether the complement
   ;; of the preposition satisfies the specified value restriction.
@@ -349,14 +365,15 @@
               ;; or if we are making a last ditch effore
               (and *force-modifiers* 
                    'modifier))))
+    
     (cond
      (*subcat-test* variable-to-bind)
      (t
-      (setq vg (maybe-copy-individual vg))
       (if *collect-subcat-info*
-          (push (subcat-instance vg variable-to-bind 
-                                 pobj-referent)
+          (push (subcat-instance vg prep-word variable-to-bind 
+                                 pp)
                 *subcat-info*))
+      (setq vg (maybe-copy-individual vg))
       (bind-variable variable-to-bind pobj-referent vg)
       vg))))
 
@@ -391,12 +408,11 @@
         (cond
          (*subcat-test* variable-to-bind)
          (t
-          (setq np (maybe-copy-individual np))
           (if *collect-subcat-info*
-              (push (subcat-instance np variable-to-bind 
-                                     pobj-referent)
+              (push (subcat-instance np prep-word variable-to-bind 
+                                     pp)
                     *subcat-info*))
-
+          (setq np (maybe-copy-individual np))
           (bind-variable variable-to-bind pp np)
 
           np)))))
@@ -410,11 +426,14 @@
   (let* ((variable-to-bind
           ;; test if there is a known interpretation of the NP+VP combination
            (subcategorized-variable head subcat-label item))
-         (head-edge (edge-for-referent head))
+         ;;(head-edge (edge-for-referent head))
          (item-edge (edge-for-referent item)))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
+      (if *collect-subcat-info*
+          (push (subcat-instance head subcat-label variable-to-bind item)
+                *subcat-info*))
       (setq head (maybe-copy-individual head))
       (when
        (and
@@ -423,25 +442,31 @@
        (setq item 
              (create-anaphoric-edge-and-referent 
               item-edge
-              variable-to-bind)))
-      (if *collect-subcat-info*
-          (push (subcat-instance head variable-to-bind item)
-                *subcat-info*))
-          
+              variable-to-bind)))     
       (bind-variable variable-to-bind item head)
       head))))
 
 (defun edge-for-referent (ref)
-  (if (eq ref (edge-referent (left-edge-for-referent)))
-      (left-edge-for-referent)
-      (right-edge-for-referent)))
+  (cond
+   ((eq ref (edge-referent (left-edge-for-referent)))
+    (left-edge-for-referent))
+   ((eq ref (edge-referent(right-edge-for-referent)))
+    (right-edge-for-referent))
+   (t
+    (break"edge-for-referent"))))
 
 (defun is-anaphoric? (item)
   (itypep item category::pronoun))
 
-(defun subcat-instance (head var item)
-  (let
-      ((head-cat 
+(defun subcat-instance (head subcat-label var raw-item)
+  (let*
+      ((raw-item-edge (edge-for-referent raw-item))
+       (item
+        (if (eq (edge-form raw-item-edge) category::pp)
+            (edge-referent 
+             (edge-right-daughter raw-item-edge))
+            raw-item))
+       (head-cat 
         (if (individual-p head)
             (itype-of head)
             head))
@@ -449,20 +474,26 @@
         (if (individual-p item)
             (itype-of item)
             item)))
-    
+    (save-cat-string head-cat 
+     (edge-string (edge-for-referent head)))
+    (save-cat-string item-cat
+     (edge-string (edge-for-referent raw-item)))
     (list
      (cat-name head-cat)
+     subcat-label
      (var-name var)
      (cat-name item-cat)
      (edge-string (left-edge-for-referent))
      (edge-string (right-edge-for-referent)))))
   
+(defun save-cat-string (cat cat-string)
+  (push cat-string (gethash cat *ref-cat-text*)))
+
 (defun edge-string (edge)
   (terminals-in-segment/one-string (pos-edge-starts-at edge)
                                    (pos-edge-ends-at edge)))
 
 (defun create-anaphoric-edge-and-referent (old-edge variable)
-  (declare (special old-edge variable))
   (let*
       ((vr (var-value-restriction variable))
        (new-item (make-individual-for-dm&p vr))
@@ -475,7 +506,6 @@
          vr
          category::np
          new-item)))
-    (declare (special vr new-item new-edge))
     (setf
      (edge-used-in old-edge)
      (list new-edge))
@@ -483,28 +513,23 @@
     new-item))
 
 (defun subcategorized-variable (head label item)
-  (declare (special head label item))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
   (let ((subcat-patterns (known-subcategorization? head)))
-    (declare (special subcat-patterns))
     (when subcat-patterns
       (let ( variable )
-        (declare (special prep-word prep-edge pobj-edge variable))      
         (dolist (entry subcat-patterns)
-          (declare (special entry))
           (let ((scr (subcat-restriction entry)))
-            (declare (special scr))
             (when (and
                    (eq label (subcat-label entry))
                    (or
                     (itypep item category::pronoun/inanimate)
                     (if (and (consp scr)
                              (eq (car scr) :or))
-                      (loop for type in (cdr scr) 
-                        thereis (itypep item type))
-                      (itypep item scr))))
+                        (loop for type in (cdr scr) 
+                          thereis (itypep item type))
+                        (itypep item scr))))
               (setq variable (subcat-variable entry))
               (return))))
         ;;(break "testing subcats")
@@ -517,23 +542,22 @@
                 (find-variable-in-category/named 'location category::physical))
                ((and (itypep head 'biological)
                      (itypep item 'bio-context))
-                (find-variable-in-category/named 'context category::biological)))))))))
+                (find-variable-in-category/named 'context 
+                                                 (category-named 'biological))))))))))
 
 
 (defun assimilate-subject (subj vp)
-  (declare (special subj vp))
   (if
-   (is-passive? vp)
+   (is-passive? (right-edge-for-referent))
    (assimilate-subcat vp :object subj)
    (assimilate-subcat vp :subject subj)))
 
-(defun is-passive? (vp)
+(defun is-passive? (edge)
   (let
       ((cat-string
         (symbol-name 
          (cat-name
-          (edge-category (right-edge-for-referent))))))
-    (declare (special cat-string))
+          (edge-category edge)))))
     (and
      (> (length cat-string) 3)
      (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
@@ -556,42 +580,32 @@
 
 
 (defun make-there-exists (there-edge be-edge)
-  (declare (ignore there-edge be-edge))
   (let ((exists (make-unindexed-individual category::there-exists)))
     exists))
 
 (defun make-exist-claim (left-edge right-edge)
-  (declare (ignore left-edge))
   (let ((exists (make-unindexed-individual category::there-exists)))
     (bind-variable 'object (edge-referent right-edge) exists)
     exists))
 
 (defun make-copular-pp (be-ref pp-ref)
-  (declare (special be-ref pp-ref))
   (when
       (null (value-of 'predication be-ref)) ;; this is not already a predicate copula ("is a drug")
     (let*
         ((cpp (make-unindexed-individual category::copular-pp))
-         prep-ref pobj-ref)
-      (declare (special cpp prep-ref pobj-ref))
-      (dolist (bb (indiv-binds pp-ref))
-        (cond
-         ((eq (var-name (binding-variable bb)) 'pobj)
-          (setq pobj-ref (binding-value bb)))
-         ((eq (var-name (binding-variable bb)) 'prep)
-          (setq prep-ref (binding-value bb)))))
-      (bind-variable 'prep prep-ref cpp)
-      (bind-variable 'pobj pobj-ref cpp)
+         (prep-pobj (get-prep-pobj pp-ref))
+         (prep-ref (car prep-pobj))
+         (pobj-ref (second prep-pobj)))
+      (link-pp-to-prep-and-object cpp prep-ref pobj-ref)
       (bind-variable 'copula be-ref cpp)
       cpp)))
 
 (defun apply-copular-pp (np copular-pp)
-  (declare (special np copular-pp))
-  (let
-      ((prep (value-of 'prep copular-pp))
-       (pobj (value-of 'pobj copular-pp))
+  (let*
+      ((prep-pobj (get-prep-pobj copular-pp))
+       (prep (car prep-pobj))
+       (pobj (second prep-pobj))
        new-np)
-    (declare (special prep pobj new-np))
     (cond
      (*subcat-test* 
       (subcategorized-variable np prep pobj))
