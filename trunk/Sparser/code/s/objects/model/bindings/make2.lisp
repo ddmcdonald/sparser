@@ -24,6 +24,7 @@
 ;; 1.7 (4/5/13) Redesigned the when-binding hook.
 ;; 1.8 (12/28/14) Added a trap so you can't add bindings to categories.
 ;;      Which is debatable, but such bindings should at least be reclaimable.
+;; investigations using SBCL -- minor tweaks
 
 (in-package :sparser)
 
@@ -55,6 +56,8 @@
 (defun bind-variable (var/name value individual
                       &optional category)
   (declare (special *legal-to-add-bindings-to-categories*))
+  ;;try to find out who is binding a varibale nameed category
+  ;;  seems to be make-individual-for-DM&P (when (eq var/name 'category) (break "category variable"))
   ;; psi case
   (when (typep individual 'psi)
     (let ((new-psi (bind-v+v var/name value individual category)))
