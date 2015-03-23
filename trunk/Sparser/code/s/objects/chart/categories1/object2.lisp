@@ -18,6 +18,8 @@
 ;;     (3/2/12) moved accumulators up to here to quiet compiler,
 ;;     (12/15/12) added add-rules-to-category.
 ;;     (5/28/14) Moved it to objects/model/categories/define
+;; 3/21/2015 add id-counter field to category -- speedup based on SBCL profiling
+;;  needed to improve performance of next-id
 
 (in-package :sparser)
 
@@ -26,7 +28,9 @@
 (defstruct (category
             (:include label)
             (:conc-name #:cat-)
-            (:print-function print-category-structures))
+            (:print-function print-category-structures)
+	    )
+  (id-counter 0)
 
   )
 
