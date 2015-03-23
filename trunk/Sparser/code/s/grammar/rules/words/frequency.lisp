@@ -49,6 +49,8 @@
      :punctuation will usually be lumped into the pseud-word
      *punctuation-word*"))
 
+(defvar *sorted-word-entries*)
+
 ;;;-----------------
 ;;; state variables
 ;;;-----------------
@@ -262,7 +264,9 @@
                    :direction :output
                    :if-exists :overwrite
                    :if-does-not-exist :create)
-    (declare (special stream))
+    (declare (special stream)) 
+    ;; SBCL claims this is an error because it declares a varible from the
+    ;; COMMON-LISP package special
     (eval form)))
 
 
