@@ -35,6 +35,7 @@
 ;;     (11/17/14) shrank the separation in tts from 30 to 20. 15 doesn't look
 ;;      to bad. 
 ;; 1/10/2015 method (edge-string ...) possibly redundant, for getting a string with  the edge numer, category and input string covered by and edge
+;; 3/21/2015 fix error caught by SBCL in print-multiple-edges-tt
 
 (in-package :sparser)
 
@@ -653,8 +654,14 @@ there were ever to be any.  ///hook into final actions ??  |#
     (dolist (edge edges)
       (push (format nil "e~A " (edge-position-in-resource-array edge))
             edge-name-list)
+      ;; seems it can be a word, as in "cells, so we" where the ev over "so" has both an edge and a word
       (push (format nil "~A"
-                    (symbol-name (cat-symbol (edge-category edge))))
+                    ;; :SBCL caught this
+                    (cond
+                     ((category-p (edge-category edge))
+                      (symbol-name (cat-symbol (edge-category edge))))
+                     (t
+                      (edge-category edge))))
             edge-label-list))
 
     (setq edge-name-string
