@@ -13,6 +13,12 @@
 ;; 7/1/13 Added generic method for compose. 3/31/14 added a t,t method.
 ;; 4/9/14 Added the wrapper call-compose. 
 
+;; 3/21/2015 IMPORTANT -- need to fix how individuals created in DM&P are indexed -- major speedup
+;;  suggested by SBCL led to change in bind-category-of-instance 
+;; removing (bind-variable 'category category i category::expressible-type)
+
+
+
 (in-package :sparser)
 
 ;;;------------------
@@ -31,7 +37,8 @@
   ;; Syntactic sugar to hide the category from the compiler since
   ;; it's not available yet in make-individual-for-dm&p where
   ;; the binding is done
-  (bind-variable 'category category i category::expressible-type))
+  ;; SBCL (bind-variable 'category category i category::expressible-type)
+)
 
 
 ;;;---------
