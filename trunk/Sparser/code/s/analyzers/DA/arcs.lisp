@@ -123,7 +123,7 @@
             (word-arc
              (format nil "\"~A\"" (word-pname (arc-word obj))))
             (polyword-arc
-             (format nil "\"~A\"" (pw-pname (arc-word obj))))
+             (format nil "\"~A\"" (pw-pname (arc-polyword obj))))
             (unknown-word/s-arc
              (format nil "~A unknown word/s"
                      (arc-number-of-words obj)))
