@@ -15,6 +15,8 @@
 ;;    determined. Motivating case was a form rule.  7/23 added category
 ;;    backpointer.
 ;;   (11/13/13) Added 'shadow' slot for use in methods 
+;; 3/22/2015 speed up access to var-instances by using hash table
+
 
 (in-package :sparser)
 
@@ -29,7 +31,7 @@
 
   name
   value-restriction
-  instances ;; list of bindings -- find/binding
+  (instances (make-hash-table :test #'eq :size 100));; list of bindings -- find/binding
   v+v-table ;; alist of v+v by value
   category  ;; backpointer to the category that (lexically) defines it
   shadow ;; instance for use in k-methods

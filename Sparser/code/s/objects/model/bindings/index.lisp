@@ -17,6 +17,7 @@
 ;; 3/21/2015 key changes to find/binding based on SBCL profiling
 ;; 3/21/2015 FIX OVERZEALOUS correction of find/binding -- some problem in lookup for
 ;;  find/binding which caused bad definition in (define-unit-of-measure ...) for "nm"
+;; 3/22/2015 speed up access to var-instances by using hash table
 
 (in-package :sparser)
 
@@ -230,22 +231,21 @@
 ;;;-------
 ;;; clear
 ;;;-------
-
 (defun clear-instances/variable (v)
-  (setf (var-instances v) nil))
+  (clrhash (var-instances v)))
 
 (defun clear-deallocated-bindings/var (v)
-  (let ( valid-entries  unit  viable-bindings )
-    (dolist (entry (var-instances v))
-      (setq unit (car entry))
-      (dolist (b (cdr entry))
-        (unless (deallocated-binding? b)
-          (push b viable-bindings)))
-      (when viable-bindings
-        (push `(,unit ,@viable-bindings) valid-entries)))
-
-    (setf (var-instances v) valid-entries)
-    ))
+  (let (valid-entries unit viable-bindings
+                      (instances (var-instances v)))
+    (maphash 
+     #'(lambda(unit bindings)
+         (dolist (b bindings)
+           (unless (deallocated-binding? b)
+             (push b viable-bindings)))
+         (if viable-bindings
+             (setf (gethash unit instances) viable-bindings)
+             (remhash unit instances)))
+     instances)))
 
 
 ;;;-------
@@ -264,29 +264,17 @@
   (unless (typep variable 'anonymous-variable)
     ;; These are missing the needed fields. As a rule they should be
     ;; avoided
-    (let ((field (var-instances variable))
+    (let ((ht (var-instances variable))
           (*print-short* t))
-      (declare (special *print-short*))
-      (if (null field)
-        (setf (var-instances variable)
-              `((,value . (,binding))) )
-        
-        (let ((prior-entry (assoc value field :test #'eq)))
-          (if prior-entry
-            (then
-             (when *trace-binding-indexing*
-               (format t "~&Indexing ~A under ~A [prior]~%"
-                       binding variable))
-             (rplacd prior-entry
-                     (kcons binding (cdr prior-entry))))
-            (else
-             (when *trace-binding-indexing*
-               (format t "~&Indexing ~A under ~A [1st]~%"
-                       binding variable))
-             (setf (var-instances variable)
-                   (kcons `(,value . (,binding))
-                          field)))))))
-    variable ))
+      (declare (special *print-short*))        
+      (push binding (gethash value ht))
+      (when *trace-binding-indexing*
+        (if (cdr (gethash value ht))
+            (format t "~&Indexing ~A under ~A [prior]~%"
+                    binding variable))
+        (format t "~&Indexing ~A under ~A [1st]~%"
+                binding variable))
+      variable )))
 
 
 (defun find/binding (variable value individual)
@@ -297,20 +285,18 @@
   ;; SBCL found this time waster (push-debug `(,variable ,value ,individual))
   (when (typep variable 'anonymous-variable)
     (setq variable (dereference-variable variable individual)))
-
+  
   ;; SBCL also found another problematic time waster -- searching in the
   ;;  variable index, rather than on the bound-in slot for individuals
   
   ;;SBCL says that the method below is slow and takes 25% of parse time!
-  (let ((instances-alist (var-instances variable)))
-    (when instances-alist
-      (let ((bindings (cdr (assoc value instances-alist
-                                  :test #'eq))))
-        ;; /// If the individual gets dicy to identify (being arbitrary)
-        ;; the we probably want to shift to v+v objects.
-        (when bindings
-          (find individual bindings :test #'eq
-                :key #'binding-body))))))
+  (let ((instances-ht (var-instances variable)))
+    (let ((bindings (gethash value instances-ht)))
+      ;; /// If the individual gets dicy to identify (being arbitrary)
+      ;; the we probably want to shift to v+v objects.
+      (when bindings
+        (find individual bindings :test #'eq
+              :key #'binding-body)))))
 
 
 
@@ -318,49 +304,44 @@
 (defun unindex-binding (b variable value)
   ;; Using the value as the key, lookup for the binding among
   ;; those indexed by the variable and remove it from the index
-
+  
   (unless (typep variable 'anonymous-variable)
     ;; nothing to remove
-
+    
     (unless (deallocated-binding? b)
       ;; forstalls the same binding being reached from different
       ;; directions during an extensive reclaimation
-
-      (catch :aborted-binding-unindexing
       
-        (let ((instances-alist (var-instances variable))
+      (catch :aborted-binding-unindexing
+        
+        (let ((instances-ht (var-instances variable))
               (*print-short* t))
           (declare (special *print-short*))
-          (unless instances-alist
-;            (push-debug `(,b ,variable ,value))
-;            (cerror "ignore it and continue"
-;                    "Expected ~A to have an index" variable)
-            (return-from unindex-binding))
-        
-          (let ((bindings-entry (assoc value instances-alist
-                                       :test #'equal)))
+          
+          (let ((bindings-entry (gethash value instances-ht)))
             ;; using #'equal because some values are lists
             (if bindings-entry
-              (then
-               (when *trace-binding-indexing*
-                 (format t "~&Unindexing ~A from ~A~%"
-                         b variable))
-               (if (third bindings-entry) ;; there is more than one
-                 (splice-out-binding-from-alist-entry bindings-entry b)
-                 (excise-value-entry instances-alist value variable))
-               b )
-              
-              (if (list-type-variable? variable)
-                (check/unindex-dynamically-extended-list
-                 instances-alist variable value b)
-                (else
-                 (push-debug `(,value ,variable))
-;                 (cerror "ignore it and continue"
-;                         "Expected the index for~% value = ~A~
-;                      ~% variable = ~A~%to have some listed bindings"
-;                        value variable)
-                 (return-from unindex-binding))))))))))
+                (then
+                  (when *trace-binding-indexing*
+                    (format t "~&Unindexing ~A from ~A~%"
+                            b variable))
+                  (setf (gethash value instances-ht)
+                        (delete b bindings-entry))
+                  b )
+                
+                (when (list-type-variable? variable)
+                  (break "what do I do to unindex from a list-type-variable?")
+                  (check/unindex-dynamically-extended-list
+                   instances-alist variable value b)
+                  (else
+                    (push-debug `(,value ,variable))
+                    ;                 (cerror "ignore it and continue"
+                    ;                         "Expected the index for~% value = ~A~
+                    ;                      ~% variable = ~A~%to have some listed bindings"
+                    ;                        value variable)
+                    (return-from unindex-binding))))))))))
 
+#|
 
 (defun excise-value-entry (instances-alist value variable)
   (let ((*print-short* t))
@@ -423,6 +404,7 @@
         (setq prior-cell next-cell
               next-cell (cdr next-cell)
               next-binding (car next-cell))))))
+|#
 
 
 
@@ -481,6 +463,4 @@
   (let ((variable (decode-variable-name var-name)))
     (unless variable
       (error "There is no variable named ~A" var-name))
-    (let ((instances (var-instances variable)))
-      (when instances
-        (cdr (assoc value instances))))))
+    (gethash value (var-instances variable))))
