@@ -6,6 +6,7 @@
 ;;;  Version:  May 1995
 
 ;; initiated 5/5/95. Elaborating ..5/22
+;; 3/25/2015 handle SBCL problem by making form-arc inherit from label-arc, instead of creating a duplicate definition for arc-lable
 
 (in-package :sparser)
 
@@ -62,10 +63,9 @@
 
 
 (defstruct (form-arc
-            (:include da-arc)
+            (:include label-arc)
             (:conc-name #:arc-)
-            (:print-function print-da-arc-structure))
-  label )
+            (:print-function print-da-arc-structure)))
 
 
 (defstruct (morph-arc
