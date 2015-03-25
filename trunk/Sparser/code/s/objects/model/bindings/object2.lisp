@@ -39,6 +39,8 @@
 ;; 2.3 (8/26/13) Refactored value of bindings search a bit. Added bound-in-value-of
 ;;      as direct analog of value-of
 ;;     (10/27/14) added open-in method
+;; 3/22/2015 speed up access to var-instances by using hash table
+
 
 (in-package :sparser)
 
@@ -369,10 +371,8 @@
       (error "There is no category named ~A" category-name))
     (let ((variable
            (decode-variable-name  var-name :category category)))
-      (let ((instances-alist (var-instances variable)))
-        (let ((entry (assoc value instances-alist :test #'eq)))
-          (when entry
-            (cdr entry)))))))
+      (let ((instances-ht (var-instances variable)))
+        (gethash value instances-ht)))))
 
 
 
