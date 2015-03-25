@@ -12,11 +12,10 @@
 
 (defun define-debris-analysis-rule/expr (name pattern action)
   (let ((existing-rule (da-rule-named name)))
-    #-sbcl
     (if existing-rule
         (redefine-da-rule existing-rule pattern action)
         (define-da-rule name pattern action))
-    #+sbcl
+    #+ignore
     (print `(**** blocked attempt to define debris-analysis-rule in SBCL
                   because of definition of start-vertex
                   ,name ,pattern ,action ))

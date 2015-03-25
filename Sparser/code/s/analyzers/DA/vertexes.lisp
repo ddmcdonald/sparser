@@ -62,11 +62,10 @@
 
 
 (defstruct (vertex
-            (:include vertex-base)
+            (:include start-vertex)
             (:conc-name #:vertex-)
             (:print-function print-da-vertex-structure))
 
-  rightward-extensions   ;; list of arcs
   leftward-extensions    ;; list of arcs
   )
 
@@ -83,12 +82,11 @@
 
 
 (defstruct (end-vertex
-            (:include vertex-base)
+            (:include vertex)
             (:conc-name #:vertex-)
             (:print-function print-da-vertex-structure))
 
   rule   ;; a da rule
-  leftward-extensions    ;; list of arcs
   )
 
 (defun make-an-end-vertex (item count rule
