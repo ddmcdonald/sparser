@@ -428,31 +428,25 @@ all sorts of rules apply and not simply form rules.
 (defmethod ng-start? ((e edge))
   (declare (special e))
   (cond
-   ((or
-     (eq category::modifier (edge-category e))
-     (eq category::adjective (edge-form e)))
+   ((or (eq category::modifier (edge-category e))
+        (eq category::adjective (edge-form e)))
     ;;when the previous chunk was a copula verb (just check for BE at this time)
     ;; and this is an adjective
-    (not
-     (and
-      (car *chunks*)
-      (member 'vg (chunk-forms (car *chunks*)))
-      (loop for edge in (ev-edges (car (chunk-ev-list (car *chunks*))))
-        thereis
-        (eq category::be (edge-category edge))))))
+    (not (and (car *chunks*)
+              (member 'vg (chunk-forms (car *chunks*)))
+              (loop for edge in (ev-edges (car (chunk-ev-list (car *chunks*))))
+                thereis
+                (eq category::be (edge-category edge))))))
    ((eq category::that (edge-category e))
-    (and
-     (not *big-mechanism*) ;; it is almost never the case that THAT is a determiner, it is usually a relative clause marker or a thatcomp marker
-     (not
-      (and
-       (car *chunks*)
-       (member 'vg (chunk-forms (car *chunks*)))
-       (thatcomp-verb (car (chunk-edge-list (car *chunks*))))))
-     (not
-      (and
-       (car *chunks*)
-       (member 'ng (chunk-forms (car *chunks*)))
-       (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
+    ;; it is almost never the case that THAT is a determiner, 
+    ;; it is usually a relative clause marker or a thatcomp marker
+    (and (not *big-mechanism*)
+         (not (and (car *chunks*)
+                   (member 'vg (chunk-forms (car *chunks*)))
+                   (thatcomp-verb (car (chunk-edge-list (car *chunks*))))))
+         (not (and (car *chunks*)
+                   (member 'ng (chunk-forms (car *chunks*)))
+                   (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
    ((ng-start? (edge-form e))
     t)
    ((eq category::verb+ed (edge-form e))
@@ -460,13 +454,10 @@ all sorts of rules apply and not simply form rules.
     ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
     ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
     ;; as opposed to "direct binding to activated forms of RAS"
-    (let
-        ((prev-edge (edge-just-to-left-of e)))
-      (and
-       (not
-        (and
-         (edge-p prev-edge)
-         (eq category::parentheses (edge-category prev-edge))))
+    (let ((prev-edge (edge-just-to-left-of e)))
+      (and (not
+            (and (edge-p prev-edge)
+                 (eq category::parentheses (edge-category prev-edge))))
        (not (and
              (car *chunks*)
              (member 'ng (chunk-forms (car *chunks*)))
@@ -475,14 +466,9 @@ all sorts of rules apply and not simply form rules.
    ((eq category::verb+ing (edge-form e))
     ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
     ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
-    (let
-        ((prev-edge (edge-just-to-left-of e)))
-      (and
-       (not
-        (and
-         (edge-p prev-edge)
-         (eq category::parentheses (edge-category prev-edge))))
-       (not
-        (or
-         (eq category::preposition (edge-form prev-edge))
-         (ng-head? prev-edge))))))))
+    (unless (could-be-the-start-of-a-sentence (pos-edge-starts-at e))
+      (let ((prev-edge (edge-just-to-left-of e)))
+        (and (not (and (edge-p prev-edge)
+                       (eq category::parentheses (edge-category prev-edge))))
+             (not (or (eq category::preposition (edge-form prev-edge))
+                      (ng-head? prev-edge)))))))))
