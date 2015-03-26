@@ -172,7 +172,7 @@
       (add-rule-to-individual cfr i)
       i)))
 
-(eval-when (:load-toplevel)
+(eval-when (:compile-toplevel :load-toplevel :execute)
   (define-mUbRas))
 
 
