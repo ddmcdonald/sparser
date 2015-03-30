@@ -29,6 +29,7 @@
 (gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")
+(gload "bio;parse-biopax")
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules") 
