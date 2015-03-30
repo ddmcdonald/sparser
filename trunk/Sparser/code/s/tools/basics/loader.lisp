@@ -27,5 +27,8 @@
 (lload "basic tools;clos-operations")
 (lload "basic tools;resource")
 (lload "basic tools;test-functions")
+(lload "basic tools;xmls")
+(lload "basic tools;xmlrep-helpers")
+
 
 
