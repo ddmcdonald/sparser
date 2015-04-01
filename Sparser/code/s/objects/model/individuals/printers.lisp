@@ -67,9 +67,12 @@
 		  (when operations (cat-ops-print operations))))
             (if special-routine
               (funcall special-routine indiv stream)
-              (if (has-a-name? indiv)
-                (print-individual-with-name indiv stream)
-                (else
+              (cond
+               ((has-a-bp-id? indiv)
+                (print-biopax-entity indiv stream))
+               ((has-a-name? indiv)
+                (print-individual-with-name indiv stream))
+                (t
                   (write-string "#<" stream)
                   (dolist (category (indiv-type indiv))
                     (if (category-p category)
@@ -108,6 +111,43 @@
              (word (if (consp value) (first value) value)))
         word))))
 
+(defun has-a-bp-id? (i)
+  (binds i 'reactome-id))
+
+(defun display-name? (i)
+  (binds i 'reactome-id))
+
+(defun bp-id-of-individual (i)
+  (let ((b (has-a-bp-id? i)))
+    (when b
+      (let* ((value (binding-value b))
+             (word (if (consp value) (first value) value)))
+        word))))
+
+
+(defun print-biopax-entity (i stream)
+  ;; a 'special-routine' that is used with individuals that
+  ;; have a name field, which we assume is bound to a word. 
+  ;; This routine is put on the ops-printer field of the category
+  ;; at the time the category is defined.
+  (declare (special *print-short*))
+  
+  (write-string "#<" stream)
+  (unless *print-short*
+    (dolist (category (indiv-type i))
+      (princ-category category stream)
+      (write-string " " stream)))
+  (format stream "~A ~A ~A>" (or (bp-id-of-individual i) "")
+          (if
+           (name-of-individual i)
+           (format nil "[~A]" 
+                   (or
+                    (display-name i)
+                    (name-of-individual i)))
+           "")
+          (indiv-uid i)))
+
+
 (defun princ-name (name stream)
   (let ((string (string-for/name/individual name)))
     (format stream "~a" string)))
@@ -131,6 +171,7 @@
          (word
           (cond (name name)
                 (word-binding (binding-value word-binding)))))
+    (declare (special name word-binding word))
     (if word
       (then
        (unless *print-short*
@@ -144,6 +185,8 @@
           (princ-polyword word stream))
          (individual
           (princ-name word stream))
+         (string
+          (princ word stream))
          (otherwise
           (push-debug `(,word ,i))
           (error "Unanticipated type of 'word': ~a~%~a"
