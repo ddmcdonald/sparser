@@ -28,7 +28,7 @@
     ("Pathway" ("comment") ("dataSource" "Provenance") ("displayName") ("organism" "BioSource") ("pathwayComponent" "BiochemicalReaction") ("pathwayComponent" "Pathway") ("pathwayOrder" "PathwayStep") ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
     ("PathwayStep" ("nextStep" "PathwayStep") ("stepProcess" "Control") ("stepProcess" "Pathway") ("stepProcess" "Catalysis") ("stepProcess" "BiochemicalReaction")) 
     ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref")) 
-    ("Protein" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref")) 
+    ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref")) 
     ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref")) 
     ("Provenance" ("comment") ("name")) 
     ("PublicationXref" ("author") ("db") ("id") ("source") ("title") ("year")) 
@@ -56,6 +56,7 @@
     ("PathwayStep" ("stepProcess"))
     ("PhysicalEntity" ("displayName") ("cellularLocation") ("xref") )
     ("Protein" ("displayName") ("cellularLocation") ("entityReference") ("feature") );;("name") ("xref") 
+    ("ProteinState" ("displayName") ("cellularLocation") ("entityReference") ("feature") );;("name") ("xref") 
     ("ProteinReference" ("organism") ("name") ) ;;("xref") 
     ("Provenance" ("name"))
     ("PublicationXref" ("id") ("db") ("year")  ("source" "J Biol Chem 270:9809-12"))
@@ -86,6 +87,47 @@ decoding table for referenced OBO terms
 |#
 
 (defparameter *simp-fns* (make-hash-table :test #'equalp))
+;;;;; utility functions
+(defun legal-praxis-char (char)
+  (or (alphanumericp char)
+      (legal-non-alphanumeric? char)))
+
+(defun legal-non-alphanumeric? (char)
+  (member char '(#\_ #\-) :test 'eql))
+(defun CamelCase-string-to-separated (pname &optional (separator #\-))
+  (let ((chars nil) 
+        (len (length pname))
+        (prior-cap? nil))
+    (flet ((next-char (n)
+               (unless (>= n len)
+                 (let ((c (char pname n)))
+                   (unless (legal-praxis-char c)
+                     (push-debug `(,pname ,chars))
+                     (error "Illegal PRAXIS character: ~a" c))
+                   c)))
+           (push-char (c &optional (predash nil))
+             (when predash (push separator chars))
+             (push (char-upcase c) chars)))
+
+      (do ((i 0 (1+ i)))
+          ((>= i (length pname)) nil)
+        (let ((c (next-char i)))
+          (when c
+            (let* ((upc? (upper-case-p c))
+                   (nextc (next-char (1+ i)))
+                   (upcnext? (and nextc (upper-case-p nextc))))
+              (cond ((null nextc) ;; no next char - special case
+                     ;; dash before only if first cap after non-cap
+                     (push-char c (and upc? (not prior-cap?))))
+                    (t
+                     (push-char c (and upc? (> i 0) ;; dont predash if first char or noncap
+                                       (or (not prior-cap?) ;; first upchar
+                                           (and prior-cap? 
+                                                (alpha-char-p nextc) ;; no dash if num or - next
+                                                (not upcnext?)) ;; but yes if or last alpha cap of seq
+                                           )))))
+              (setf prior-cap? upc?)))))
+      (concatenate 'string (nreverse chars)))))
 
 
 
@@ -106,7 +148,10 @@ decoding table for referenced OBO terms
     (xmls:parse s)))
 
 (defun simple-child (child)
-  `(,(xmls:xmlrep-tag child)
+  `(,(if
+       (equalp "Protein" (xmls:xmlrep-tag child))
+       "ProteinState"
+       (xmls:xmlrep-tag child))
     ,(xmls:xmlrep-attrib-value "ID" child)
     ,@(loop for rep in (xmls::xmlrep-attribs child)
         unless
@@ -309,3 +354,100 @@ decoding table for referenced OBO terms
       (loop for item in type-list
         do
         (print item s)))))
+
+
+;;;;;; make Krisp categories and individuals for Reactome objects
+(defun reactome-category (string)
+  (category-named (reactome-symbol string)))
+
+(defun reactome-symbol (string)
+  (intern 
+   (CamelCase-string-to-separated string) 
+   (find-package :sparser)))
+
+
+(defun create-reactome-categories (reactome-categories)
+  (let
+      ((reactome (eval `(define-category Reactome-Category :specializes top))))
+    (loop for rc in reactome-categories
+      do
+      (eval
+       `(define-category
+            ,(reactome-symbol (car rc))
+            :specializes reactome-category)))
+    
+    (loop for rc in reactome-categories
+      do
+      (let
+          (v/r)
+        (define-variables 
+            (loop for binding in 
+              (cons
+                '("ReactomeId")
+                (cdr rc))
+              when (setq v/r (create-v/r (cdr binding)))
+              collect
+              `(,(reactome-symbol (car binding))
+                ,v/r))
+            (reactome-category (car rc)))))))
+
+(defun create-v/r (tail)
+  (if
+   (cdr tail) ;; simple case -- reactome class given as a string
+   (reactome-category (car tail))
+   ;; next case will wait until David tells me how to represent v/r for string or number, if possible
+   (list :primitive 'word)))
+
+(defparameter *reactome-entities* (make-hash-table :test #'equalp))
+
+
+(defun create-reactome-entities (reactome-entities)
+  ;; create all the individual entities, with their REACTOME-IDs bound,
+  ;;  and store entries for them in *reactome-entities* keyed by the
+  ;;  string of their REACTOME-ID
+  (loop for re in reactome-entities
+    do
+    (setf
+     (gethash (second re) *reactome-entities*)
+     (let
+         ((cat (reactome-category (car re))))
+       (make-an-individual cat ))))
+  ;; now that all individual reactome entities have been created,
+  ;;  it is possible to "wire them together" using variable bindings
+  (loop for re in reactome-entities
+    do
+    (let
+        ((ri (resource (second re)))) 
+      (loop for binding in 
+        (cons
+         `("ReactomeId" ,(second re))
+         (cddr re))
+        do
+        (bind-variable (reactome-symbol (car binding))
+                       (eval (second binding))
+                       ri)))))
+
+
+(defun resource (str)
+  (typecase
+      str
+    (string (gethash str *reactome-entities*))
+    (symbol (gethash (symbol-name str) *reactome-entities*))))
+
+(defun bpi (str)
+  (resource str))
+
+(defun create-reactome-kb ()
+  (create-reactome-categories *bp-frames*)
+  (save-ras-raf)
+  (create-reactome-entities *bpi*))
+
+
+
+
+
+
+
+  
+
+  
