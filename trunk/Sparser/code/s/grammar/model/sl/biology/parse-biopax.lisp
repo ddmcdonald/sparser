@@ -10,6 +10,11 @@
 ;; Simple tool to read in the RDF, and a mor complex set of tools to simplify the structure so that 
 ;;  it can be understood by humans
 ;; Goals is to import this all into Krisp in an appropriate fashion
+;; also added a  new mechanism of general Krisp interest
+;; S-expression based creator of individuals in Krisp
+;; example: 
+;; (create-individual 
+;;   '(residue-on-protein (position 437) (amino-acid (amino-acid (name "threonine")))))
 
 (in-package :sparser)
 (defvar *bpi*)
@@ -427,6 +432,32 @@ decoding table for referenced OBO terms
                        (eval (second binding))
                        ri)))))
 
+;; S-expression based creator of individuals in Krisp
+;; example: 
+;; (create-individual 
+;;   '(residue-on-protein (position 437) (amino-acid (amino-acid (name "threonine")))))
+(defun create-individual (desc)
+  (eval
+   `(make-an-individual 
+     ',(car desc)
+     ,@(loop for binding in (cdr desc)
+         append
+         `(',(typecase
+                (car binding)
+              (symbol (car binding))
+              (string 
+               (reactome-symbol (car binding))))
+           ,(typecase (second binding)
+              (cons
+               (case (car (second binding))
+                 (resource (eval (second binding)))
+                 (category (category-named (second (second binding))))
+                 (t
+                  (create-individual (second binding)))))
+              (string (second binding))
+              (number (second binding))
+              (symbol (category-named (second binding)))))))))
+  
 
 (defun resource (str)
   (typecase
