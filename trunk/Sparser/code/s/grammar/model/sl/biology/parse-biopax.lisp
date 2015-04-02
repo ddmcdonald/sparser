@@ -15,6 +15,8 @@
 ;; example: 
 ;; (create-individual 
 ;;   '(residue-on-protein (position 437) (amino-acid (amino-acid (name "threonine")))))
+;; Formatted Bipoax frames to make them a bit more clear...
+;; Added commentary on Brent's story at the end of the file
 
 (in-package :sparser)
 (defvar *bpi*)
@@ -23,15 +25,26 @@
 (defparameter *bp-frames*
   '(
     ("BioSource" ("name") ("xref" "UnificationXref")) 
-    ("BiochemicalReaction" ("comment") ("conversionDirection") ("dataSource" "Provenance") ("displayName") ("eCNumber") ("left" "SmallMolecule") ("left" "Complex") ("left" "Protein") ("participantStoichiometry" "Stoichiometry") ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex") ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
-    ("Catalysis" ("controlType") ("controlled" "BiochemicalReaction") ("controller" "Protein") ("controller" "Complex") ("controller" "PhysicalEntity") ("dataSource" "Provenance") ("xref" "RelationshipXref")) 
+    ("BiochemicalReaction" ("comment") ("conversionDirection") ("dataSource" "Provenance")
+     ("displayName") ("eCNumber")
+     ("left" "SmallMolecule") ("left" "Protein") ("left" "Complex") ("participantStoichiometry" "Stoichiometry")
+     ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex") 
+     ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
+    ("Catalysis" ("controlType") ("controlled" "BiochemicalReaction") 
+     ("controller" "Protein") ("controller" "Complex") ("controller" "PhysicalEntity") 
+     ("dataSource" "Provenance") ("xref" "RelationshipXref")) 
     ("CellularLocationVocabulary" ("term") ("xref" "UnificationXref")) 
     ("Complex" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("component" "Complex") ("component" "SmallMolecule") ("component" "Protein") ("componentStoichiometry" "Stoichiometry") ("dataSource" "Provenance") ("displayName") ("memberPhysicalEntity" "Complex") ("name") ("xref" "UnificationXref")) 
-    ("Control" ("comment") ("controlType") ("controlled" "BiochemicalReaction") ("controller" "Protein") ("controller" "Complex") ("dataSource" "Provenance") ("displayName") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
+    ("Control" ("comment") ("controlType") ("controlled" "BiochemicalReaction") 
+     ("controller" "Protein") ("controller" "Complex") 
+     ("dataSource" "Provenance") ("displayName") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
     ("FragmentFeature" ("featureLocation" "SequenceInterval")) 
     ("ModificationFeature" ("featureLocation" "SequenceSite") ("modificationType" "SequenceModificationVocabulary")) 
-    ("Pathway" ("comment") ("dataSource" "Provenance") ("displayName") ("organism" "BioSource") ("pathwayComponent" "BiochemicalReaction") ("pathwayComponent" "Pathway") ("pathwayOrder" "PathwayStep") ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
-    ("PathwayStep" ("nextStep" "PathwayStep") ("stepProcess" "Control") ("stepProcess" "Pathway") ("stepProcess" "Catalysis") ("stepProcess" "BiochemicalReaction")) 
+    ("Pathway" ("comment") ("dataSource" "Provenance") ("displayName") ("organism" "BioSource") 
+     ("pathwayComponent" "BiochemicalReaction") ("pathwayComponent" "Pathway") 
+     ("pathwayOrder" "PathwayStep") ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
+    ("PathwayStep" ("nextStep" "PathwayStep") 
+     ("stepProcess" "Control") ("stepProcess" "Pathway") ("stepProcess" "Catalysis") ("stepProcess" "BiochemicalReaction")) 
     ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref")) 
     ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref")) 
     ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref")) 
@@ -474,10 +487,34 @@ decoding table for referenced OBO terms
   (create-reactome-entities *bpi*))
 
 
+#|
+Goal is to be able to use the mechanisms of the reactome Biopax3 representation to represet both the 
+model as given in Reactome for RAS/RAF?MEK/ERK and to represent.
+
+What is missing in the Bipoax notation:
+   Some notion of "active" states of proteins. It is not clear to me whether "active" states are necessarily defined with regard to some ability
+     to carry a pathway forward (to cause/modulate/inhibit/increase a desired reaction).
+Brent's story:
+
+Ras is a membrane bound protein. 
+When inactive, it is bound to the small molecule GDP. [[perhaps should be "When it is bound to GTP it is in an inactive state."]
+Upon growth factor stimulation of the cell,  an exchange factor, such as the SOS protein, causes ras to release GDP and and ras will now bind to GTP.
+Binding to GTP causes a conformational change of the ras protein that puts ras into the active state.
+GTP-bound ras binds to the raf protein kinase.
+This binding of raf to ras has the effect of activating the raf kinase and localizing the raf kinase to the cell membrane.
+Activated raf now phosphorylates and activates the Mek1 kinase.
+The Mek1 kinase then phosphorylates the ERK kinase on both threonine and tyrosine residues which activate ERK kinase activity.
+The phosphorylated ERK protein then translocates to the nucleus where it regulates gene expression 
+  in part by phosphorylating the Elk1 transcription factor.
+Phospho-Elk then upregulates the gene expression of target genes such as the proto- oncogene c-fos.
+The entire signaling cascade is terminated by the intrinsic GTPase activity of ras which hydrolyzes the bound GTP into GTP, 
+   thus returning ras to the GDP bound state where it releases bound raf.  
+The GTPase activity of ras is accelerated by interaction with another protein called GAP.
+The oncogenic rasv12 mutant has diminished GTPase activity and therefore stays in the active GTP bound state constitutively.
+Deletion of GAP or the related NF1 genes will also enhance ras activity by slowing the rate of ras-GTP hydrolysis.
 
 
-
-
+|#
 
   
 
