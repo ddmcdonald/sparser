@@ -91,13 +91,14 @@
 #|
 decoding table for referenced OBO terms
 "RelationshipXref1" "GO:0004713")) protein tyrosine kinase activity
-"RelationshipXref11" "GO:0070371")) ERK1 and ERK2 cascade (the ERK pathway in the literature, but involves only ERK1 or ERK2, not other ERK kinases)
-"RelationshipXref12" "GO:0000187")) activation of MAPK activity
-"RelationshipXref13" "GO:0000165")) MAPK cascade. An intracellular protein kinase cascade containing at least a MAPK, a MAPKK and a MAP3K.
 "RelationshipXref3" "GO:0016301")) kinase activity
 "RelationshipXref5" "GO:0000186")) activation of MAPKK activity
 "RelationshipXref6" "GO:0004674")) protein serine/threonine kinase activity
 "RelationshipXref9" "GO:0000189")) MAPK import into nucleus
+"RelationshipXref11" "GO:0070371")) ERK1 and ERK2 cascade (the ERK pathway in the literature, but involves only ERK1 or ERK2, not other ERK kinases)
+"RelationshipXref12" "GO:0000187")) activation of MAPK activity
+"RelationshipXref13" "GO:0000165")) MAPK cascade. An intracellular protein kinase cascade containing at least a MAPK, a MAPKK and a MAP3K.
+
 "UnificationXref1" "GO:0005829")) cytosol
 "UnificationXref121" "GO:0005576")) extracellular region
 "UnificationXref14" "GO:0005886")) plasma membrane
