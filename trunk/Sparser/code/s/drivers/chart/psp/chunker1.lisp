@@ -244,6 +244,7 @@ all sorts of rules apply and not simply form rules.
             (setq forms (remaining-forms ev chunk)))))))
 
 (defun pos-ev-ends-at (ev forms)
+  (declare (ignore forms))
   (pos-edge-ends-at (car (ev-edges ev))))
 
 (defun find-consistent-edges (chunk)
