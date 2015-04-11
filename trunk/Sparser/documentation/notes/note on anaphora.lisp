@@ -4,7 +4,7 @@
 Discourse History
 
 The history is organized by the categories of the individuals
-that have been found or created during a run (a call to p or
+that have been found or created during a run (i.e. a call to p or
 f, etc). It is zeroed at the start of the run. The bulk of the
 relevant code is in analyzers/CA/anaphora3.lisp. Use the function
 print-discourse-history to see what is presently recorded.
