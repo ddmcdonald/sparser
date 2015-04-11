@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.2 August 2013
+;;;  version:  1.3 March 2015
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
@@ -22,7 +22,7 @@
 ;; 1.2 (6/15/13) Fixed tricky bug in making objects permanent exposed by
 ;;      including instances from hashtables.
 ;; 1.3 (8/19/13) Added facility for making later call to make-permanent
-;;      for use at the bottom of everything.
+;;      for use at the bottom of everything. 3/27/15 Minor inline doc.
 
 (in-package :sparser)
 
@@ -350,6 +350,9 @@
 
 
 (defun additional-categories-of-active-individuals (original-list)
+  ;; called from reap-individuals to identify additional categories
+  ;; of individuals that weren't identified from the discourse history
+  ;; e.g. when anaphora is terned off. Returns a list of
   (let ((augmented-list original-list)
         (count 0)
         type )
@@ -360,6 +363,8 @@
                      permanents~%~%" count))
         (return))
       (incf count)
+      (when *trace-reclaimation*
+        (format t "~&Tentatively reclaiming ~a~%" i))
       (setq type (i-type-of i))
       (when type  ;; 7/7/95 a nil is turning up on the last indiv.
         (unless (member type augmented-list :test #'eq)
@@ -419,10 +424,10 @@
     (cond
      ((individuals-of-this-category-are-permanent category)
       (when *trace-reclaimation*
-        (format t "~&~%Retaining instances of ~a" category)))
+        (format t "~&Retaining instances of ~a" category)))
      (t
       (when *trace-reclaimation*
-        (format t "~&~%Zero'ing instances of ~a" category))
+        (format t "~&Zero'ing instances of ~a" category))
       (zero-category-index category 1st-permanent-individual)))
 
     (nconc all-values all-bodies)))
