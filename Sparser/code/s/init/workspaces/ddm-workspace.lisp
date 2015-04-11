@@ -20,7 +20,9 @@
 ; (noun "C-RAF:B-RAF" :super heterodimer)
 
 ; (trace-parse-edges) ;; extend into march-back-from-the-right/segment
+; meta-. parse-at-the-segment-level
 
+; dec #34 -- "an event"
 
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
@@ -462,6 +464,8 @@
 ; (ddm-ed "grammar/rules/words/one-offs/obo-reader.lisp")
 ; (read-obo-term-file "/Users/ddm/ws/R3/ws/obo-terms.lisp")
 
+; (load "/Users/ddm/ws/R3/r3/trunk/code/bel-interpreter/load.lisp")
+
 
 ;;;------------------
 ;;;  Hard filenames
@@ -469,6 +473,7 @@
 
 ;;--- Peter Clark's string function utilities
 ; (ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
+; (bel::read-model )
 
 (defun ddm-corpus-location (in-list out-file)
   (declare (ignore in-list out-file))
