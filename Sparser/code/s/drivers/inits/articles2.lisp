@@ -28,7 +28,7 @@
 ;;      (5/13/95) promulgated a fn renaming.
 ;;      (1/9/96) added check for an interrupted embedded scan.
 ;; 2.15 (7/23/09) Added clear-debug.
-;; 2.16 (2/11/13) Broke out the 'real' per article initializatin so it
+;; 2.16 (2/11/13) Broke out the 'real' per article initialization so it
 ;;       can be called by itself. (2/18/13) broke out the individual and 
 ;;       history cleaner for the same reason. Gating that on the global
 ;;       bound in do-document-as-stream-of-files. 
