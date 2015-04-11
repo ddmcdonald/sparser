@@ -58,6 +58,8 @@
     (declare (ignore name)))
   (defun make/person-with-name (name)
     (declare (ignore name)))
+  (defun string/person-name (name)
+    (declare (ignore name)))
   (defun make/location-with-name (name)
     (declare (ignore name))))
 
