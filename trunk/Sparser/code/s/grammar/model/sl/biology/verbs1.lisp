@@ -281,8 +281,9 @@
 ;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
 ;; "interacting selectively and non-covalently with GTP"
 ;;
-(define-category bio-bind  :specializes bio-process
-  ;;:obo-id "GO:0005488"
+(define-category binding  :specializes molecular-function
+  ;;:obo-id 
+  :bindings (uid "GO:0005488")
   ;; "<binder> binds to <binde>" the subject moves
   :binds ((binder biological)(bindee biological)(site bio-location))
   :realization 
@@ -311,8 +312,9 @@
 ;; "call"  assigns a name in passive "X is called N"
 
 ;;/// "catalysis of phosphorylation by MEK"
-(define-category catalyze
+(define-category catalytic-activity
   :specializes bio-process
+  :bindings (uid "GO:0003824")
   :binds ((catalyst enzyme)(process bio-process))
   :realization
   (:verb "catalyze" :noun "catalysis" :adj "catalytic"
@@ -567,6 +569,12 @@
    :s agent
    :of object))
 
+(define-category dimerize :specializes binding
+  :binds ((monomer protein))
+  :realization
+  (:verb "dimerize" :noun "dimerization"
+         :etf (sv)
+         :s monomer))
 
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display
@@ -1307,7 +1315,7 @@
 (define-category phosphorylate
   :specializes bio-process
   :instantiates self
-  :binds ((agent protein)
+  :binds ((agent biological)
           (substrate protein)
           (site residue-on-protein))
   :index (:temporary :sequential-keys site substrate)

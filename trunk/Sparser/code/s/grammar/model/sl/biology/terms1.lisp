@@ -58,10 +58,10 @@
       (:noun "activity"
              :of agent))
 (def-bio "adenine" nucleotide)
-(noun :advance :super bio-process
+(noun "advance" :super bio-process
       :binds ((advancement bio-process))
       :realization 
-      (:noun "advancement" 
+      (:noun "advance" 
              :in advancement))
 
 ;;(def-bio "agent" bio-entity)
@@ -290,7 +290,6 @@
 (adj "genetic" :super predicate) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
 (def-bio "guanine" nucleotide)
-(noun "heterodimer" :super molecule)
 (adj "high" :super predicate)
 (noun "high performance liquid chromatography" :super bio-method)
 (define-adverb "however")
@@ -414,7 +413,7 @@
 (noun "NMR" :super bio-method)
 
 (define-adverb "notably")
-(noun "nucleus" :super cellular-location)
+
 
 ;; These three want to be synonyms
 (noun "open reading frame" :super bio-entity)

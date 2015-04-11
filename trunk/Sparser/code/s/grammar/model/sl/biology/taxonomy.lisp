@@ -115,6 +115,14 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+(define-category bio-chemical-entity ;; includes all molecules and complexes
+  :specializes bio-entity  ;; sweeps a lot under the rug
+  :mixins (has-UID has-name biological)
+  :binds ((long-form :primitive polyword))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+
 (define-category bio-process
   :specializes process
   :mixins (has-UID has-name biological)
@@ -123,6 +131,14 @@
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
+
+(define-category molecular-function 
+  :specializes bio-process
+  :bindings (uid "GO:0005488"))
+
+(define-category chemical-reaction
+  :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
+  )
 
 (define-category bio-thatcomp
   :specializes bio-process
@@ -216,7 +232,7 @@
   :realization (:common-noun name))
 
 (define-category protein
-  :specializes peptide
+  :specializes peptide  ;; this is not clearly true
   :instantiates :self
   :bindings (uid "CHEBI:36080")
 ;;  :rule-label bio-entity
@@ -242,16 +258,18 @@
   :realization (:common-noun name))        
   
 (define-category enzyme ;; what's the relationship to kinase?
-  :specializes protein
+  :specializes protein  ;; not all enzymes are proteins -- there are RNA enzymes
   :instantiates :self
 ;; :rule-label bio-entity
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
 
-(define-category kinase
+(define-category kinase 
+                 ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
+                 ;;  should be as a "telic" qualia for those molecules which are kinases
   :specializes enzyme
   :instantiates :self
-  :bindings (uid "GO:0016301") ;; "kinase activity"
+  :bindings (uid "GO:0016301") ;; "kinase activity" 
 ;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "kinase")
@@ -292,15 +310,17 @@
 
 ;;----- complexes
 
-(define-category complex
-  :specializes molecule
+(define-category complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
+  :specializes bio-chemical-entity
   :instantiates :self
   :lemma (:common-noun "complex"))
 
 (define-category dimer
   :specializes complex
   :instantiates :self
-  :lemma (:common-noun "dimer"))   
+  :lemma (:common-noun "dimer"))
+
+
 
 (define-category heterodimer
   :specializes dimer
@@ -387,6 +407,16 @@
   :specializes bio-location
   :instantiates self
   :index (:permanent :key name))
+
+(define-category nucleus :specializes cellular-location
+  :realization 
+  (:noun "nucleus" :adj "nuclear"))
+
+(define-category cytosol :specializes cellular-location
+  :realization 
+  (:noun "cytosol"))
+
+
 
 (define-category cell-line
   :specializes bio-location
