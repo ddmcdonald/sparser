@@ -129,4 +129,5 @@
 
 
 (defun initialize-composite-word (w1 w2)
+  (push-debug `(,w1 ,w2))
   (break "stub"))
