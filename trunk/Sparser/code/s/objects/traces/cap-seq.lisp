@@ -288,6 +288,7 @@
 ;;--- in known-sequence
 
 (deftrace :recognized-sequence-as (ne items)
+  (declare (ignore items))
   (when *trace-pnf*
     (trace-msg "SubseqRef: recognized sequence as ~a" ne)))
 

@@ -131,6 +131,7 @@
     (trace-msg "[Multiply]    both labels have category ids")))
 
 (deftrace :only-L/R-has-category-ids (left-category-ids right-category-ids)
+  (declare (ignore right-category-ids))
   ;; called from Multiply-categories
   (when *trace-check-edges*
     (if left-category-ids
