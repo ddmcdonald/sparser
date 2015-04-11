@@ -61,6 +61,7 @@
     (let ((rule (multiply-edges
                  (ev-top-node (pos-starts-here pos-of-slash))
                  (ev-top-node (pos-starts-here tag-pos)))))
+      (push-debug `(,rule))
       (break "rule"))))
 
 
