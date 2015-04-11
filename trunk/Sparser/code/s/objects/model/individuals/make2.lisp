@@ -117,6 +117,7 @@
       (let ((*index-under-permanent-instances* ;;t
              (or *index-under-permanent-instances* ;; for recursive calls
                  (individuals-of-this-category-are-permanent category))))
+        (declare (special *index-under-permanent-instances*))
         (let ((individual
                (find-or-make/individual category binding-instructions)))
 
