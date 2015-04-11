@@ -337,14 +337,14 @@
 |#
 
 (defun export-binding-as-return-value (b)
-;(format t "export-binding-as-return-value b: ~A~%" b)
-(list 'realization
-  (let ((variable (binding-variable b))
-	(value (binding-value b)))
-    (declare (ignore value))
-    (if (word-p value)
-	(car (export-object value))
-	(export-object value)) )))
+  ;(format t "export-binding-as-return-value b: ~A~%" b)
+  (list 'realization
+        (let ((variable (binding-variable b))
+              (value (binding-value b)))
+          (declare (ignore variable))
+          (if (word-p value)
+              (car (export-object value))
+              (export-object value)) )))
 
 ;;--- common final path for bindings and V+V
 
