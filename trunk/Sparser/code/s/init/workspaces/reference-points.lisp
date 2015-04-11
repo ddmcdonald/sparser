@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 SIFT LLC  -- all rights reserved
+;;; copyright (c) 2014-2015 SIFT LLC  -- all rights reserved
 ;;;
 ;;;     File:  "reference-points"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  October 2014
+;;;  version:  March 2015
 
 ;; Initiated 10/9/14 as a place to collect the names of functions
 ;; for use by meta-. 
@@ -27,7 +27,29 @@ bio-setting
 ;;--- Older, no particular order
 
 The main line:  
-  analysis-core  inititate-top-edges-protocol  pts  PPTT
+ analysis-core =>
+   initialize-tokenizer-state  initialize-chart-state
+   per-article-initializations
+   => chart-based-analysis =>   inititate-top-edges-protocol  pts  PPTT
+   after-analysis-actions
+   analysis-core-return-value
+
+Reclaimation of temporary individuals:    (trace-reclaimation)
+  per-article-initializations => clean-out-history-and-temp-objects
+   => reclaim-temporary-individuals
+        *objects-in-the-discourse*
+        additional-categories-of-active-individuals = *active-individuals*
+      => reclaim-all-instances
+      cleanup-bindings-fields
+
+  declare-all-existing-individuals-permanent
+  index/permanent-individual
+
+
+Referent calculation:
+ referent-from-unary-rule => dispatch-on-unary-ref-actions
+ referent-from-rule => dispatch-on-rule-field-keys
+    ref/head  ref/binding
 
 define-category => define-category/expr => decode-category-parameter-list
 
@@ -107,8 +129,6 @@ time:  relative-time
 
   infering-categories: bind-open-var
 
-  reclaimation issues:  declare-all-existing-individuals-permanent
-     index/permanent-individual
 
  scan-pattern-starting-pair
  check-many-many
