@@ -870,6 +870,7 @@
 
 (deftrace :could-not-parse-leading-pp (edge)
   ;; called from try-parsing-leading-pp
+  (declare (ignore edge))
   (when *trace-island-driving*
     (trace-msg "[islands]  Did not find an np to compose with ~
                 initial preposition")))
