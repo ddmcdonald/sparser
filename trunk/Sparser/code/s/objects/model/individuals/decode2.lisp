@@ -379,7 +379,13 @@
                          symbol~%but it is a ~A" value-exp variable
                         (type-of value-exp)))
        (category-named value-exp :break-if-no-category))
-      
+      (string
+       (unless (stringp value-exp)
+         (v/r-violation "The value ~S was passed in to be bound to the ~
+                         variable~%   ~A~%which is restricted to be a ~
+                         symbol~%but it is a ~A" value-exp variable
+                         (type-of value-exp)))
+       value-exp)      
       (otherwise
        (error "New kind of primitive value restriction: ~A"
               v/r)))))
