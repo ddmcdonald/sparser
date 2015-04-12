@@ -24,7 +24,7 @@
   ;;(ddm-ed "objects/traces/DA.lisp")
   (ddm-ed "objects/traces/treetops.lisp")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
-  (ddm-ed "grammar/model/sl/biology/terms.lisp")
+  (ddm-ed "grammar/model/sl/biology/terms1.lisp")
   (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
   (ddm-ed "init/workspaces/Biology-workspace.lisp")
@@ -35,6 +35,9 @@
   (load (concatenate 'string
                    "~/sparser/Sparser/code/s/"
                    "grammar/model/sl/biology/cureRAS/December-text-passages.lisp"))
+  (load (concatenate 'string
+                   "~/sparser/Sparser/code/s/"
+                   "grammar/model/sl/biology/cureRAS/erk-translocation.lisp"))
   (trace-lexicon-unpacking) 
   (trace-morphology)
   (setq *do-anaphora* nil)
