@@ -89,12 +89,16 @@
    value is an article object.")
 (defun article () *current-article*)
 
+;;--- Where everything starts on each analysis run
+;;
 (defun begin-new-article (&key name location date source)
-  ;; called from do-document-as-stream-of-files, or
-  ;; analyze-text-from-string or analyze-text-from-file
-  ;; Responsible for kicking off the initialization 
-  ;; (creation and linking of first instances) of all 
-  ;; the otherdocument elements.
+  ;; Called from per-article-initializations, which is
+  ;; called from analysis-core, which is called from 
+  ;; either analyze-text-from-string or analyze-text-from-file
+  ;; though you can get to per-article-initializions from
+  ;; do-document-as-stream-of-files -- Responsible for 
+  ;; kicking off the initialization (creation and linking 
+  ;; of first instances) of all the other document elements.
   (let ((obj (allocate-article)))
     (setf (name obj) (or name (known-in-context :name)))
     (setf (article-location obj) 
@@ -249,7 +253,11 @@
 ;;;----------
 
 (defclass sentence (document-element)
-  ()
+  ((string :initform "" :accessor sentence-string
+    :documentation "The string from the character buffer 
+      from its first character up to but not including the
+      period. Since it comes from the character buffer it
+      has the original capitalization."))
   (:documentation 
    "Represents the content or other interesting features
     of a sentence within the text. If there is an active section or
@@ -285,16 +293,21 @@
   ;; Called from initialize-paragraphs
   (let ((s1 (start-sentence (position# 1)))
         (p1 *current-paragraph*))
-     (unless p1
+    (unless p1
       (error "Threading bug: no value for *current-paragraph"))
     (setf (children p1) s1)
     (setf (parent s1) p1)
     s1))
 
 (defun start-sentence (pos)
+  ;; Called from initialize-sentences for the first one, then
+  ;; from period-hook -- pos is the position after the period. 
   (let ((s (allocate-sentence)))
     (setf (starts-at-pos s) pos)
-    (setf (starts-at-char s) 1)
+    (setf (starts-at-char s) 
+          (if *current-sentence*
+            (pos-character-index pos)
+            1))
     (setf (contents s) (make-sentence-container s))
     ;; lookup the current section for parent
     (when *current-sentence*
@@ -317,6 +330,24 @@
 (defmethod display-contents  ((s sentence)
                               &optional (stream *standard-output*))
   (display-contents (contents s) stream))
+
+
+(defparameter *copy-text-to-sentence-objects* t
+  "Controls whether we fill the string field of 
+  the sentence object.")
+
+
+(defun set-sentence-endpoints (period-pos sentence)
+  ;; Called from period-hook
+  (setf (ends-at-pos sentence) period-pos)
+  (setf (ends-at-char sentence) (1+ (pos-character-index period-pos)))
+  (let ((substring (extract-string-from-char-buffers 
+                    (starts-at-char sentence)
+                    (ends-at-char sentence))))
+    ;; can remove the extra step when we're guarenteed that
+    ;; the cross-buffer code is robust.
+    (setf (sentence-string sentence) substring)
+    sentence))
 
 
 
