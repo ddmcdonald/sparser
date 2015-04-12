@@ -258,6 +258,8 @@ filligre may be used to distinguish them, etc.
   :synonyms ("ERK" "extracellular signal-regulated kinase"
              "erk"))
 
+(def-bio "ERK1-4" protein) ;; mutated form of ERK
+
 
 ;;--- The MEK family
 ;; This is part of an attempt to get a word rule attached to the string "MEK"
@@ -307,6 +309,12 @@ filligre may be used to distinguish them, etc.
 
 (def-bio "ATG5" protein
   :mitre-link "Uniprot:Q9H1Y0")	
+
+(def-bio "GFP" protein
+  :mitre-link "Uniprot:P42212")	
+
+(def-bio "green fluorescent protein" protein
+  :mitre-link "Uniprot:P42212")	
 
 (def-bio "RapGEF1" protein
   :synonyms ("RAPGEF1")
