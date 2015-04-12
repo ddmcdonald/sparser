@@ -62,10 +62,18 @@ tts  print-treetops  right-treetop-at/edge
 
 pronoun reference:  seek-person-for-pronoun dereference-proper-noun
 
-Document structure: chart-region  document-region
-  has-parent  has-children 
-  ordered  indexed
-  has-content-model
+Document structure:
+  initialize-document-element-resources
+  begin-new-article
+  document-element 
+    ( chart-region  document-region
+      has-parent  has-children 
+      ordered  indexed
+      has-content-model )
+  article -> section -> paragraph -> sentence
+  
+  
+
      
 analysis-core-return-value
 terminate-section  => section objects
@@ -76,7 +84,7 @@ Segment level operations:  reify-implicit-individuals-in-segment
   sdm/analyze-segment  just-cover-segment  edge-over-segment
 
 Tokenizer level:   scan-next-position  add-terminal-to-chart  next-terminal 
-   next-token (= run-token-fsa )
+   next-token (= run-token-fsa )  establish-character-source/string
 
 
 Treetops: move-to-forest-level (protocol dispatch)
