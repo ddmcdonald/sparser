@@ -11,7 +11,7 @@ psp/scan/scan1.lisp.
 
 That leads to calling add-terminal-to-chart (analyzers/psp/fill-chart/add5.lisp)
 which calls next-terminal and adds the word (the struct, not the string)
-to the chart (along with some bookkeeping about whitespace and newlines.
+to the chart (along with some bookkeeping about whitespace and newlines).
 
 The next-terminal function is one of the ones that we parameterize by
 setting its symbol-function. The initializing routine is
