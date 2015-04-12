@@ -574,7 +574,8 @@
   :realization
   (:verb "dimerize" :noun "dimerization"
          :etf (sv)
-         :s monomer))
+         :s monomer
+         :of monomer))
 
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display
@@ -946,17 +947,6 @@
    :o object))
 ;;/// want subtypes, want to understand the syntax of "-inducing"
 
-(define-category increase
-  :specializes bio-process
-  :binds ((agent biological) 
-          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
-  :realization
-  (:verb "increase" 
-         :etf (svo-passive)
-         :s agent
-         :o object
-         :for theme))
 
 ;; January
 ; "observed an order of magnitude increase in the rate of GTP hydrolysis"
@@ -1231,6 +1221,7 @@
   :form n-bar
   :referent (:head right-edge :function passive-premodifier left-edge right-edge object))
 
+(np-head "knock-out" :super 'mutate)
 
 (define-category need
     :specializes bio-process
@@ -1713,6 +1704,17 @@
 	   :s agent
 	   :o object))
 
+(define-category tag
+    :specializes bio-process
+    :binds ((tagged protein)(taggant protein))
+    :realization
+    (:verb "sustain" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)
+	   :s taggant
+	   :o tagged
+           :with taggant))
+
+
 #+ignore
 (define-category target
     :specializes bio-process
@@ -1772,14 +1774,28 @@
 (def-synonym transition
    (:noun "transition"))
 
-(define-category translocation :specializes bio-process 
-  :binds ((agent bio-entity)(object bio-process)(source biological)(destination biological)) 
+(define-category translocation :specializes bio-movement
+  :binds ((agent bio-entity)(object bio-process)
+          (origin bio-location)(destination bio-location)) 
   :realization 
   (:verb "translocate" :noun "translocation" 
          :etf (svo-passive) 
          :s agent
          :o object
-         :to destination))
+         :to destination
+         :from origin))
+
+(define-category enter :specializes bio-movement
+  :binds ((agent bio-entity)(object bio-process)
+          (origin biological)(destination biological)) 
+  :realization 
+  (:verb "enter" :noun "entrance" 
+         :etf (svo-passive) 
+         :s agent
+         :o object
+         :to destination
+         :into destination
+         :from origin))
 
 (define-category treat
   :binds ((agent pronoun/first/plural) (patient biological) (treatment biological))

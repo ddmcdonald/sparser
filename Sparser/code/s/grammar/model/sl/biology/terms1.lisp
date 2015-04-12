@@ -195,6 +195,12 @@
       (:noun "difference"
              :between compared))
 
+(adj "dimerization-deficient" :super molecule-state
+     :binds ((molecule molecule))
+     :realization 
+     (:adj "dimerization-deficient"
+           :s molecule))
+
 
 (noun "domain" :super bio-location
       :binds ((substrate bio-entity))
@@ -259,6 +265,9 @@
 (define-category fluorescence :specializes bio-process
   :realization
   (:noun "fluorescence"))
+
+(noun "fluorescence correlation spectroscopy" :super bio-method)
+(noun "fluorescence microscopy" :super bio-method)
 
 (noun "form" :super bio-variant
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
@@ -374,6 +383,7 @@
              :of process))
 (noun "mass" :super measurement)
 (noun "mass spectrometry" :super bio-method)
+(noun "spectroscopy" :super bio-method)
 (noun "means" :super bio-process
       :binds ((process bio-process))
       :realization
@@ -411,6 +421,7 @@
 (define-unit-of-measure "nM")
 (define-unit-of-measure "nm")
 (noun "NMR" :super bio-method)
+
 
 (define-adverb "notably")
 
@@ -483,6 +494,7 @@
       :realization 
       (:noun "RBD"
              :of substrate)) ;; somehow (def-bio "G-domain" protein-segment) did not work
+(adj "real-time" :super predicate)
 (adj "recombinant" :super predicate)
 (adj "refractory" :super predicate
      :binds ((theme biological) (treatment bio-process))
@@ -677,6 +689,8 @@
 
 (defun def-cell-line (line)
   (def-bio/expr line 'cell-line :takes-plurals nil))
+
+(def-cell-line "fibroplast") ;; not sure this is right -- it is a type of cell, but...
 
 (def-cell-line "A375")
 (def-cell-line "D04")

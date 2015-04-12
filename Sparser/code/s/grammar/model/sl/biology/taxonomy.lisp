@@ -132,6 +132,71 @@
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
+(define-category bio-movement ;; like translocation, entry and "binding to membrane"
+  :specializes bio-process)
+
+(define-category control
+  :specializes bio-process
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "control" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
+
+(define-category regulate
+  :specializes control
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "regulate" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
+
+
+(define-category modulate
+  :specializes control
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "modulate" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
+
+(define-category decrease
+  :specializes bio-process
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "decrease" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
+
+(define-category increase
+  :specializes bio-process
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "increase" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
+
+
 (define-category molecular-function 
   :specializes bio-process
   :bindings (uid "GO:0005488"))
@@ -416,7 +481,8 @@
   :realization 
   (:noun "cytosol"))
 
-
+(def-synonym cytosol
+   (:noun "cytoplasm"))
 
 (define-category cell-line
   :specializes bio-location
@@ -485,7 +551,7 @@
 
 
 ;;//// are these even "bio" at all?
-
+(delete-noun-cfr (resolve/make "rate"))
 (define-category process-rate ;;(noun "rate" :super bio-scalar
   :specializes bio-scalar
   :binds ((process bio-process) (components biological))
