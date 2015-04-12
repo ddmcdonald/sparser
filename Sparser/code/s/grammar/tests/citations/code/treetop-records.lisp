@@ -26,6 +26,10 @@
   :location corpus
   :doc "two short passages distributed at the PI meeting
     January 22d, 2015")
+
+(define-sentence-corpus ERK *ERK-ABSTRACT*
+  :location corpus
+  :doc "material on ERK translocation to the nucleus")
                         
 
 ;;;-----------
@@ -68,3 +72,6 @@ relevant.  |#
  (51 . 2) (52 . 8) (53 . 6) (54 . 2) (55 . 14)
  (56 . 6) (57 . 14))
 
+
+(define-treetop-snapshot erk "4/11/15 17:36:30"  
+  (1 . 3) (2 . 4) (3 . 6) (4 . 4) (5 . 13) (6 . 4) (7 . 17) (8 . 9) (9 . 9) (10 . 13) (11 . 8))
