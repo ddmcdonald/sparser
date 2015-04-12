@@ -47,6 +47,7 @@
 (defun ddm-load-corpora ()
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
   (ddm-load "interface/R3-eval/overnight-sents.lisp"))
 
 (defun ddm-bio ()
