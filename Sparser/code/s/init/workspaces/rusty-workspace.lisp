@@ -32,8 +32,8 @@
  
   ;;  (setq *trace-network-flow* t)
   (bf-on)
-  (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp"))
-  (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp"))
+  (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
   (trace-lexicon-unpacking) 
   (trace-morphology)
   (setq *do-anaphora* nil)
