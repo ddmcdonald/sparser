@@ -12,12 +12,12 @@
 ;; 0.1 (10/3/13) Reorganized the initialization.
 
 (in-package :sparser)
-(defvar *OPEN-STREAM-OF-SOURCE-CHARACTERS*)
 
 (export 'analyze-text-from-file)
 
 
 (defun analyze-text-from-file (file)
+  (declare (special *open-stream-of-source-characters*))
   (when *open-stream-of-source-characters*
     (close-character-source-file))
   (let* ((pathname (decode-file-expression/pathname file))
@@ -31,6 +31,7 @@
 
 ;; N.b. hasn't been run since the early 1990s
 (defun analyze-text-from-file/at-filepos (file file-position)
+  (declare (special *open-stream-of-source-characters*))
   (when *open-stream-of-source-characters*
     (close-character-source-file))
   (let ((pathname (decode-file-expression/pathname file)))
