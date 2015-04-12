@@ -32,18 +32,12 @@
  
   ;;  (setq *trace-network-flow* t)
   (bf-on)
-  (load (concatenate 'string
-                   "~/sparser/Sparser/code/s/"
-                   "grammar/model/sl/biology/cureRAS/December-text-passages.lisp"))
-  (load (concatenate 'string
-                   "~/sparser/Sparser/code/s/"
-                   "grammar/model/sl/biology/cureRAS/erk-translocation.lisp"))
+  (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp"))
+  (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp"))
   (trace-lexicon-unpacking) 
   (trace-morphology)
   (setq *do-anaphora* nil)
   (setq *note-text-relations* nil)
-
-
 )
 
 (defun pos (n)(chart-array-cell n))
