@@ -45,6 +45,11 @@
   (reset-test)
   nil)
 
+(defun test-erk ()
+  (declare (special *erk-abstract*))
+  (setq *sentences* *erk-abstract*)
+  (reset-test)
+  nil)
 
 (defun reset-test ()
   (setq *tested* '(0))
