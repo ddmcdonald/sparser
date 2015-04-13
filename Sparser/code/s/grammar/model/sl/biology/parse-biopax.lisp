@@ -61,8 +61,15 @@
     ("bpSmallMolecule" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "SmallMoleculeReference") ("name") ("xref" "UnificationXref")) 
     ("SmallMoleculeReference" ("name") ("xref" "UnificationXref")) 
     ("bpStoichiometry" ("physicalEntity" "Complex") ("physicalEntity" "SmallMolecule") ("physicalEntity" "Protein") ("stoichiometricCoefficient")) 
-    ("Transport" ("xref") ("standardName") ("right" (RESOURCE "Complex25406")) ("participantStoichiometry" "bpStoichiometry") ("left" "Complex25406") 
-     ("dataSource" "Provenance"))
+    ("Transport"
+     ("comment")("conversionDirection") ("dataSource" "Provenance")
+     ("displayName") ("standardName")("eCNumber")
+     ("left" "SmallMolecule") ("left" "Protein") ("left" "Complex")
+     ("participantStoichiometry" "Stoichiometry")
+     ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex") 
+     ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")
+     ("origin" "CellularLocationVocabulary") ("destination" "CellularLocationVocabulary"))
+
     ("UnificationXref" ("comment") ("db") ("id") ("idVersion"))))
  
 (defparameter *bp-patterns*
@@ -93,7 +100,7 @@
     ("bpSmallMolecule" ("displayName")  ("cellularLocation") ("entityReference") ) ;;("name")("xref")
     ("SmallMoleculeReference" ("name"));("xref"))
     ("bpStoichiometry" ("stoichiometricCoefficient") ("physicalEntity"))
-    ("Transport" ("standardName") ("right") ("participantStoichiometry") ("left") ("dataSource"))
+    ("Transport" ("standardName") ("right") ("participantStoichiometry") ("left") ("dataSource")("origin")("destination"))
     ("UnificationXref" ("db") ("id") ("idVersion"))))
 
 #|
@@ -162,22 +169,21 @@ decoding table for referenced OBO terms
   (setq *bpi*
         (loop for i in
           (cdddr (load-owl file))
-          collect (simple-child i)))
-  #+ignore ;; no longer needed -- done in recursion
-  (loop for item in *bpi*
+          collect (biopax-to-bio-sexpr i)))
+  (loop for bio-sexpr in *bpi*
     do
-    (setf (gethash (second item) *xml-ht*) item)))
+    (setf (gethash (second bio-sexpr) *xml-ht*)
+          (normalize-sexpr-to-biopax3 (gethash (second bio-sexpr) *xml-ht*)))))
 
 (defun load-owl (filename)
   (with-open-file
       (s filename :direction :input)
     (xmls:parse s)))
 
-(defun simple-child (child)
+(defun biopax-to-bio-sexpr (child)
   (declare (special child))
-  ;;(break "simple-child")
   (let* ((tag (xmls:xmlrep-tag child))
-         (simp-xml
+         (bio-sexpr
           `(,(cond
               ;; perhaps temporary -- rename the categories from Biopax/Reactome 
               ;;  away from ones already in R3
@@ -222,10 +228,78 @@ decoding table for referenced OBO terms
                       (t 
                        ;; in this case we have a recursive structure
                        ;; and we are going to simplify and record it in *xml-ht*
-                       (simple-child  (second *rep*))))))))))
-    (setf (gethash (second simp-xml) *xml-ht*)
-          simp-xml)
-    simp-xml))
+                       (biopax-to-bio-sexpr (second *rep*))))))))))
+    (setf (gethash (second bio-sexpr) *xml-ht*)
+          bio-sexpr)
+    bio-sexpr))
+
+(defun find-children (bio-sexpr branch-tag)
+  (loop for child in (cddr bio-sexpr)
+    when (and (consp child)
+              (equalp (car child) branch-tag))
+    collect (second child)))
+
+(defun is-transport? (bio-sexpr)
+  (declare (special bio-sexpr))
+  (let
+      ((lefts (find-children bio-sexpr "left"))
+       (rights (find-children bio-sexpr "right")))
+    (declare (special lefts rights))
+    (and
+     (equalp (length lefts)(length rights)) ;; same number of reactants on both sides
+     (loop for l in lefts
+       always
+       (loop for r in rights
+         thereis (same-biochemical? l r))))))
+
+(defun same-biochemical? (l r)
+  (let
+      ((l (eval l))
+       (r (eval r)))
+  (declare (special l r))
+  (cond
+   ((and
+       (equalp (car l) (car r))
+       ;; a bit of a hack -- the same chemical in two different locations has the same displayName in Reactome
+       (equalp (car (find-children l "displayName"))
+                (car (find-children r "displayName"))))
+    t)
+   (t nil))))
+       
+
+
+(defun normalize-sexpr-to-biopax3 (bio-sexpr)
+  ;; the Reactome data is not in corrrect biopax3 form, in particular it uses BiochemicalReaction for cases like
+  ;;  Transport
+  (cond
+   ((equalp "BiochemicalReaction" (car bio-sexpr))
+    (cond
+     ((is-transport? bio-sexpr)
+      (normalize-to-transport bio-sexpr))
+     (t bio-sexpr)))
+    (t
+     bio-sexpr)))
+
+(defun normalize-to-transport (bio-sexpr)
+  (declare (special bio-sexpr))
+  (let*
+      ((left (eval (car (find-children bio-sexpr "left"))))
+       (right (eval (car (find-children bio-sexpr "right"))))
+       (origin (car 
+                (find-children 
+                (eval (car (find-children left "cellularLocation")))
+                "term")))
+       (destination (car 
+                (find-children 
+                (eval (car (find-children right "cellularLocation")))
+                "term")))
+       (norm
+        `("Transport"
+          ,@(cdr bio-sexpr)
+          ("origin" ,origin)
+          ("destination" ,destination))))
+    (declare (special left right norm))
+    norm))
 
 (defun xml-resource? (ii)
   (and (consp ii) 
@@ -479,9 +553,13 @@ decoding table for referenced OBO terms
   (loop for re in reactome-entities
     do
     (let
-        ((cat (reactome-category (car re)))
+        ((*re* re)
+         (cat (reactome-category (car re)))
          (*index-under-permanent-instances* t))
-      (declare (special *index-under-permanent-instances* cat))
+      (declare (special *re* *index-under-permanent-instances* cat))
+      (if
+       (null cat)
+       (break "null cat"))
       (setf
        (gethash (second re) *reactome-entities*)
        (eval
@@ -537,11 +615,14 @@ decoding table for referenced OBO terms
 (defun xml-resource (str)
   (typecase
       str
-    (string (gethash str *reactome-entities*))
-    (symbol (gethash (symbol-name str) *reactome-entities*))))
+    (string (gethash str *xml-ht*))
+    (symbol (gethash (symbol-name str) *xml-ht*))))
 
 (defun reactome-entity (str)
-  (xml-resource str))
+  (typecase
+      str
+    (string (gethash str *reactome-entities*))
+    (symbol (gethash (symbol-name str) *reactome-entities*))))
 
 
 (defun bpi (str)
