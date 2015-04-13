@@ -115,7 +115,11 @@
   (binds i 'reactome-id))
 
 (defun display-name? (i)
-  (binds i 'reactome-id))
+  (let
+      ((binding (binds i 'reactome-id)))
+    (when
+        binding
+      (binding-value binding))))
 
 (defun bp-id-of-individual (i)
   (let ((b (has-a-bp-id? i)))
@@ -142,7 +146,7 @@
            (name-of-individual i)
            (format nil "[~A]" 
                    (or
-                    (display-name i)
+                    (display-name? i)
                     (name-of-individual i)))
            "")
           (indiv-uid i)))
