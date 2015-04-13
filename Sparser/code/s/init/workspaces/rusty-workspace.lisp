@@ -55,6 +55,7 @@
 	  )))
   )
 
+#+ignore ;; now just use CCL file search
 (defun caller-tree (fn &optional (levels 3) seen)
   (let
       ((callers
@@ -75,6 +76,7 @@
     )
   )
 
+#+ignore ;; for cross-ref -- now just use search through files
 (defun call-tree (fn &optional (levels 3) seen)
   (let
       ((called
@@ -169,7 +171,7 @@
         (rs-right-looking-ids (wrs w))
         (rs-fsa (wrs w)))))
 
-
+#+ignore
 (defun simple-parse (str)
   (setq chart (create-lexical-level-chart str)) ;; includes running FSA and other rewrite rules over the entire chart
   (setq bchart (bracketize chart)) ;; this is a chart with all the right bracket structures inserted
