@@ -563,9 +563,9 @@ decoding table for referenced OBO terms
       (setf
        (gethash (second re) *reactome-entities*)
        (eval
-           `(define-individual ,cat
-                                ',(reactome-symbol "ReactomeId" )
-                                ,(second re))))
+        `(define-individual ,cat
+                            ',(reactome-symbol "ReactomeId" )
+           ,(second re))))
       (gethash (second re) *reactome-entities*)
       ;;(break "create-reactome-entities")
       ))
@@ -574,15 +574,32 @@ decoding table for referenced OBO terms
   (loop for re in reactome-entities
     do
     (let
-        ((ri (reactome-entity (second re)))) 
-      (loop for binding in 
+        ((*re* re)
+         (ri (reactome-entity (second re)))) 
+      (declare (special ri *re*))
+      (loop for b in 
         (cons
          `("ReactomeId" ,(second re))
          (cddr re))
         do
-        (bind-variable (reactome-symbol (car binding))
-                       (eval (second binding))
-                       ri)))))
+        
+        (let
+            ((binding b))
+          (declare (special binding))
+          (bind-variable (reactome-symbol (car binding))
+                         (let
+                             ((val 
+                               (if
+                                (consp (second binding))
+                                (case (car (second binding))
+                                  (xml-resource 
+                                   (reactome-entity
+                                    (second (second binding))))
+                                  (t
+                                   (eval (second binding))))
+                                (second binding))))
+                           val)
+                         ri))))))
 
 ;; S-expression based creator of individuals in Krisp
 ;; example: 
@@ -627,6 +644,13 @@ decoding table for referenced OBO terms
 
 (defun bpi (str)
   (xml-resource str))
+
+(defun dre (e)
+  (d (reactome-entity e)))
+
+
+(defmethod di ((i individual))
+  (describe-individual i))
 
 (defun create-reactome-kb ()
   (create-reactome-categories *bp-frames*)
