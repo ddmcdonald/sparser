@@ -690,7 +690,10 @@
 (defun def-cell-line (line)
   (def-bio/expr line 'cell-line :takes-plurals nil))
 
-(def-cell-line "fibroplast") ;; not sure this is right -- it is a type of cell, but...
+(def-cell-line "mouse embryo fibroblast") ;; not sure this is right -- it is a type of cell, but...
+;;A fibroblast is a type of cell that synthesizes the extracellular matrix and collagen,[1] 
+;; the structural framework (stroma) for animal tissues, and plays a critical role in wound healing. 
+;; Fibroblasts are the most common cells of connective tissue in animals.
 
 (def-cell-line "A375")
 (def-cell-line "D04")
