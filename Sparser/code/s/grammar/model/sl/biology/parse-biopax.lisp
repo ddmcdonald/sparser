@@ -205,7 +205,7 @@ decoding table for referenced OBO terms
                   `(,(xmls::xmlrep-tag *rep*) 
                     ,(cond
                       ((equalp (car *val-type*) "resource")
-                       `(resource 
+                       `(xml-resource 
                          ,(cond
                            ((eql #\# (char (second *val-type*) 0))
                             (subseq (second (car (second rep))) 1))
@@ -227,16 +227,16 @@ decoding table for referenced OBO terms
           simp-xml)
     simp-xml))
 
-(defun resource? (ii)
+(defun xml-resource? (ii)
   (and (consp ii) 
        (cdr ii)
        (consp (second ii))
-       (eq 'resource (car (second ii)))))
+       (eq 'xml-resource (car (second ii)))))
 
 (defun simplify-tree (tree depth)
   (declare (special tree depth))
   (if (< depth 1)
-      `(resource ,(second tree))
+      `(xml-resource ,(second tree))
       (let
           ((pattern 
             (and (consp tree)
@@ -251,17 +251,17 @@ decoding table for referenced OBO terms
                  (assoc (car item) (cdr pattern) :test #'equalp)) ;; find-pattern
                 collect
                 `(,(car item)
-                  ,(simplify-resource item (- depth 1)))))))))
+                  ,(simplify-xml-resource item (- depth 1)))))))))
 
-(defun simplify-resource (item depth)
-  (if (resource? item)
+(defun simplify-xml-resource (item depth)
+  (if (xml-resource? item)
       (let*
-          ((resource (gethash (second (second item)) *xml-ht*))
-           (simp-fn (gethash (car resource) *simp-fns*))
+          ((xml-resource (gethash (second (second item)) *xml-ht*))
+           (simp-fn (gethash (car xml-resource) *simp-fns*))
            (simp (if simp-fn
-               (funcall simp-fn resource)
-               (simplify-tree resource depth))))
-        (subst 'bp 'resource simp))
+               (funcall simp-fn xml-resource)
+               (simplify-tree xml-resource depth))))
+        (subst 'bp 'xml-resource simp))
       (second item)))
 
 (defun simple-bps (depth)
@@ -396,7 +396,7 @@ decoding table for referenced OBO terms
         when (consp v)
         do
         (pushnew `(,(car v) 
-                   ,@(when (resource? v)
+                   ,@(when (xml-resource? v)
                        (list (car (gethash (second (second v)) *xml-ht*)))))
                  (gethash type *bp-type-vars*)
                  :test #'equalp))))
@@ -496,7 +496,7 @@ decoding table for referenced OBO terms
   (loop for re in reactome-entities
     do
     (let
-        ((ri (resource (second re)))) 
+        ((ri (reactome-entity (second re)))) 
       (loop for binding in 
         (cons
          `("ReactomeId" ,(second re))
@@ -524,7 +524,8 @@ decoding table for referenced OBO terms
            ,(typecase (second binding)
               (cons
                (case (car (second binding))
-                 (resource (eval (second binding)))
+                 (xml-resource 
+                  (reactome-entity (second (second binding))))
                  (category (category-named (second (second binding))))
                  (t
                   (create-individual (second binding)))))
@@ -533,14 +534,18 @@ decoding table for referenced OBO terms
               (symbol (category-named (second binding)))))))))
   
 
-(defun resource (str)
+(defun xml-resource (str)
   (typecase
       str
     (string (gethash str *reactome-entities*))
     (symbol (gethash (symbol-name str) *reactome-entities*))))
 
+(defun reactome-entity (str)
+  (xml-resource str))
+
+
 (defun bpi (str)
-  (resource str))
+  (xml-resource str))
 
 (defun create-reactome-kb ()
   (create-reactome-categories *bp-frames*)
