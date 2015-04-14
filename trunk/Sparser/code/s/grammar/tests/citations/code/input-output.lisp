@@ -31,7 +31,8 @@
 ;;; change the location of where citations are written
 
 (defun set-citation-file (relative-name-string)
-)
+  (push-debug `(,relative-name-string))
+  (break "stub"))
 
 
 ;;;--------
