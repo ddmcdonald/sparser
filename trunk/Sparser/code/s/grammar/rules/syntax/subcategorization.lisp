@@ -176,6 +176,7 @@
 
 
 (defun decode-subcategorization-parameter-list (sf category &key prep)
+  (declare (ignore category)) ;; switch category when prep used
   "Parse the content and stash it in the sf structure."
   (when prep
     (setf (bound-prepositions sf) `(,prep)))
