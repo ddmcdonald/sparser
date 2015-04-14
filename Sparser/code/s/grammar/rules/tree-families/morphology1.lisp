@@ -1026,8 +1026,7 @@
   ;; Revised 8/1/11 to draw on Comlex utilties, which says these
   ;; are from the Oxford Advanced Learners Dictionary
   (let ((lastchar (subseq pname (- (length pname) 1)))
-        (last2char (subseq pname (max (- (length pname) 2) 0)))
-         new-pname )
+        (last2char (subseq pname (max (- (length pname) 2) 0))))
     (cond
       ((or (member lastchar '("s" "z" "x") :test #'string-equal)
            (member last2char '("ch" "sh") :test #'string-equal))
