@@ -572,10 +572,12 @@
 (define-category dimerize :specializes binding
   :binds ((monomer protein))
   :realization
-  (:verb "dimerize" :noun "dimerization"
-         :etf (sv)
-         :s monomer
-         :of monomer))
+  (:verb "dimerize" 
+   :noun "dimerization"
+   :etf (sv of-nominal)
+   :s monomer
+   :o monomer
+   :of monomer))
 
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display
