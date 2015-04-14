@@ -79,7 +79,7 @@
          (category-name (cat-symbol category))
          (reference
           (time-current-value index category-name)))
-    (push-debug `(,index ,before/after ,reference))
+    (push-debug `(,index ,before/after ,reference ,cycle-length))
 
     ;; That gives us an individual, e.g., month
     ;; and we need is position in its sequence.
