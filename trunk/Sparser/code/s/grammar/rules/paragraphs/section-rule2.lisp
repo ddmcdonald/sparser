@@ -77,8 +77,7 @@
   ;; is actually an edge, and the other two arguments are omitted
 
   (let* ((number (incf *number-of-paragraphs-so-far*))
-         (new-para (allocate-paragraph))
-         (word-arg-is-an-edge? (edge-p word)))
+         (new-para (allocate-paragraph)))
     (setq *next-paragraph* new-para)
 
     (setf (paragraph-structure-number new-para) number)
