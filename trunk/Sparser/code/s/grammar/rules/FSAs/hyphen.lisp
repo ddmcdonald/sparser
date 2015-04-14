@@ -77,7 +77,7 @@
 
 (defun look-for-hyphenated-sequence (pos-before-hyphen next-pos next-word)
   ;; "the no-questions-asked guarantee"
-  (push-debug `(,pos-before-hyphen ,next-pos ,next-word))
+  ;;(push-debug `(,pos-before-hyphen ,next-pos ,next-word))
   (when *do-unanalyzed-hyphenated-sequences*
     ;; When this flag is up we don't care whether there's any analysis
     ;; of the word before the hyphen. We're in a chunking DM&P mode and
@@ -85,7 +85,7 @@
     ;; heuristicsally treat as an unanlyzed NP.
     (let* ((start-pos (chart-position-before pos-before-hyphen))
            (words-in-sequence (list (pos-terminal start-pos)))
-           hyphen?   count )
+           hyphen? )
       (flet ((finish-hyphenated-sequence ()
                (make-edge-over-hyphenated-sequence 
                 start-pos next-pos
