@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  January 2015
+;;;  version:  April 2015
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -22,6 +22,8 @@
 ;; 1/17/2015 NEW VERSION -- should handle ambiguities in base edges
 ;; 1.28.2015 better handling of VG chunks -- don't allow two finite verbs in the chunk (excpet for BE, HAVE and modals)
 ;; 2/24/2015 allow determiner and quantifier before number in an NG (used to be that we didn't allow "all three drugs"
+;; 4/14/15 Added tts to top of chunking operation when trace-parse-edges
+;;  is running. 
 
 (in-package :sparser)
 
@@ -94,6 +96,9 @@
           (list top)))))
 
 (defun identify-chunks (sentence)
+  ;; Called from sentence-sweep-loop after the short sweeps over 
+  ;; the sentence have fnished.
+  (when *parse-edges* (tts)) 
   (let ((chunks (find-chunks sentence)))
     ;;(push-debug `(,sentence ,chunks)) (break "~a chunks" (length chunks))
     ;;(pop-debug) (setq sentence (car *) chunks (cadr *))
