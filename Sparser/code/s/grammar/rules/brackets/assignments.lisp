@@ -209,17 +209,11 @@
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    #+ignore
-    (when
-      (push-debug `(,category-name ,word ,comlex-clause))
-      (cerror t "Maybe you can blow that one away?"
-                      "Setup: The category named ~a already exists."
-                      category-name))
     (let ((category 
            (if
             (category-named category-name)
             (then 
-              (format t "Maybe you can blow that one away?"
+              (cerror "Maybe you can blow that one away?"
                       "Setup: The category named ~a already exists."
                       category-name)
               (category-named category-name))
