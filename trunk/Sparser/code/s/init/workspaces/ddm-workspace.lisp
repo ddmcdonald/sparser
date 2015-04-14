@@ -22,6 +22,16 @@
 ; (trace-parse-edges) ;; extend into march-back-from-the-right/segment
 ; meta-. parse-at-the-segment-level
 
+; (create-reactome-kb) ;; makes the Krisp model
+; (ddm-ed "grammar/model/sl/biology/reactome/RAF_MEK_ERK_simple.lisp")
+; (d (reactome-entity    "BiochemicalReaction13" "Complex21"
+
+
+;; *do-anaphora* = t  
+;; (setq *scan-for-unsaturated-individuals* t)
+; (figure-7)  (cells-defNP)  (p *brent-story*)
+
+
 ; dec #34 -- "an event"
 
 (defun ddm-standard () ;;    (ddm-standard)
@@ -29,6 +39,7 @@
   (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
+  (setq *readout-relations* t)
 ;  (setq *trace-instance-recording* t
 ;        *scan-for-unsaturated-individuals* t)
 ;  (setq *scan-for-unsaturated-individuals* t)
@@ -466,6 +477,7 @@
 ; (read-obo-term-file "/Users/ddm/ws/R3/ws/obo-terms.lisp")
 
 ; (load "/Users/ddm/ws/R3/r3/trunk/code/bel-interpreter/load.lisp")
+
 
 
 ;;;------------------
