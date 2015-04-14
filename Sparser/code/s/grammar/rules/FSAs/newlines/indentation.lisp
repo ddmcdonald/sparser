@@ -39,6 +39,7 @@
   ;; sort-or-result-of-newline-analysis
   (increment-line-count) ;; for the one that called up
   (let ((state :initial))
+    (declare (ignore state)) ;; ??? 4/14/15 what was supposed to  happen?
     (call-next-terminal-and-dispatch next-position)))
 
 ;; Tried doing this with flet's but the interlocking is too tight
