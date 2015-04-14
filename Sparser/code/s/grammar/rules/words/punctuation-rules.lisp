@@ -17,5 +17,5 @@
 (set-generic-treetop-action (word-named "-") 'hyphen-ca-hook)
 
 (defun hyphen-ca-hook (edge-over-hyphen)
-  ;(break "got here")
-  )
+  (push-debug `(,edge-over-hyphen))
+  (break "hyphen-ca-hook -- stub"))
