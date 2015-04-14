@@ -547,20 +547,14 @@
 
 
 (defun assimilate-subject (subj vp)
-  (if
-   (is-passive? (right-edge-for-referent))
+  (if (is-passive? (right-edge-for-referent))
    (assimilate-subcat vp :object subj)
    (assimilate-subcat vp :subject subj)))
 
 (defun is-passive? (edge)
-  (let
-      ((cat-string
-        (symbol-name 
-         (cat-name
-          (edge-category edge)))))
-    (and
-     (> (length cat-string) 3)
-     (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
+  (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
+    (and (> (length cat-string) 3)
+         (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
 
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
