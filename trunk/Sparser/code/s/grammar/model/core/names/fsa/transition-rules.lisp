@@ -151,7 +151,7 @@
                       (car (rs-left-looking-ids item-rs)))))
       (unless item-id
         (error "The item named ~A~%has never been mentioned in ~
-                a state transition"))
+                a state transition" item-id))
 
       (let ((key (+ state-id item-id))
             (transition (multiply-ids state-id item-id)))

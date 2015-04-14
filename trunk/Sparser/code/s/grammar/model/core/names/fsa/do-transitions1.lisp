@@ -352,7 +352,8 @@
     (let ((e1 (c&r-multi-word-span starting-position split-point))
           (e2 (c&r-multi-word-span (chart-position-after split-point)
                                    ending-position)))
-      (break "of"))))
+      (declare (ignore e1 e2))
+      (break "of -- stub"))))
 #|
 
       (let ((items1 (name-components-of (edge-referent e1) e1))
