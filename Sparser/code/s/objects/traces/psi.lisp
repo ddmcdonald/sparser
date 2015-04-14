@@ -352,6 +352,7 @@
 
 (deftrace :no-psi-found (type bindings-instructions)
   ;; called from Find-psi
+  (declare (ignore type bindings-instructions))
   (when *trace-psi/find*
     (trace-msg "  no psi found")))
 
