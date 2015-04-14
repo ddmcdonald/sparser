@@ -108,8 +108,7 @@
     (setf (edge-ends-at edge)   (edge-ends-at right-edge))
 
     (etypecase lhs-category
-      (category )
-      (referential-category )
+      (category)
       (symbol
        (unless (eq lhs-category :passive)
          (break "Unanticipated keyword used as the explicit ~
