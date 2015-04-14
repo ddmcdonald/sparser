@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  February 2015
+;;;  Version:  April 2015
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -26,7 +26,9 @@
 ;; many small SBCL fixes
 ;; MAJOR SBCL FIX -- added new method get-prep-pobj to allow us to get the prep and pobj from
 ;;  the referent of a PP, without having to bind variables
-;;  and create lots of vaariable bindngs to manage and search through
+;;  and create lots of vaariable bindngs to manage and search through.
+;; 4/14/15 refactored subcategorized-variable to make the test readable and
+;;   accommodate override categories
 
 
 (in-package :sparser)
@@ -521,17 +523,10 @@
       (let ( variable )
         (dolist (entry subcat-patterns)
           (let ((scr (subcat-restriction entry)))
-            (when (and
-                   (eq label (subcat-label entry))
-                   (or
-                    (itypep item category::pronoun/inanimate)
-                    (if (and (consp scr)
-                             (eq (car scr) :or))
-                        (loop for type in (cdr scr) 
-                          thereis (itypep item type))
-                        (itypep item scr))))
-              (setq variable (subcat-variable entry))
-              (return))))
+            (when (eq label (subcat-label entry))
+              (when (satisfies-subcat-restriction? item scr)
+                (setq variable (subcat-variable entry))
+                (return)))))
         ;;(break "testing subcats")
         (or
          variable
@@ -544,6 +539,33 @@
                      (itypep item 'bio-context))
                 (find-variable-in-category/named 'context 
                                                  (category-named 'biological))))))))))
+
+(defun satisfies-subcat-restriction? (item restriction)
+  (let ((override-category (override-label (itype-of item))))
+    (flet ((subcat-itypep (item category)
+             ;; For protein-families and such that are re-written
+             ;; as a more general catgory (protein). There's no
+             ;; provision for inheritance, but if we need it because
+             ;; of the reach of the override we should do something
+             ;; different with it.
+             (or (itypep item category)
+                 (eq category override-category))))
+      (cond
+       ((itypep item category::pronoun/inanimate)
+        t)
+       ((consp restriction)
+        (cond
+         ((eq (car restriction) :or)          
+          (loop for type in (cdr restriction) 
+            thereis (subcat-itypep item type)))
+         (t (error "subcat-restriction on is a cons but it ~
+                    does not start with :or~%  ~a" 
+                   restriction))))
+       ((category-p restriction)
+        (subcat-itypep item restriction))
+       (t (error "Unexpected type of subcat restriction: ~a"
+                 restriction))))))
+                 
 
 
 (defun assimilate-subject (subj vp)
