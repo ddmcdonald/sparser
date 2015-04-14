@@ -249,7 +249,7 @@
     (setq temp (nreverse (cdr (nreverse temp))))
     (when temp
       ;; don't try to make a sequence if there aren't any items
-      (define-sequence temp (value-of 'type  sequence)))))
+      (define-sequence temp))))
 
 
 (defgeneric nth-item (n sequence)
