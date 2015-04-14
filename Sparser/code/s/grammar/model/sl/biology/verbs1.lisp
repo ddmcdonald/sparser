@@ -1402,17 +1402,20 @@
            :of object
 	   ))
 
+;; (p "Dimerization of ERK has been proposed as a requirement for nuclear translocation.")
 (define-category propose
     :specializes bio-thatcomp
-    :binds ((agent pronoun/first/plural)(object bio-process))
+    :binds ((agent pronoun/first/plural)
+            (object bio-process))
     :realization
     (:verb "propose"
-	   :noun "proposal"
-	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :of object
-           :thatcomp statement))
+     :noun "proposal"
+     :etf (svo-passive)
+     :s agent
+     :o object
+     :of object
+     :as object
+     :thatcomp statement))
 
 (define-category provide
     :specializes bio-process
