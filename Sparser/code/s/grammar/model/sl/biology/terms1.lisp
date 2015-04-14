@@ -194,7 +194,7 @@
       :realization
       (:noun "difference"
              :between compared))
-
+#+ignore
 (adj "dimerization-deficient" :super molecule-state
      :binds ((molecule molecule))
      :realization 
@@ -363,7 +363,7 @@
   (:noun "knockdown"
          :to antigen
          :for antigen))
-
+(adj "least-selective" :super predicate) ;; just to get through
 (noun "length" :super bio-scalar)
 (noun "level" :super bio-scalar
       :binds ((measurable biological))
@@ -663,7 +663,7 @@
 
 
 ;;--- ddm 12/18/14 hacked phrases to 'get through' more text
-(adj "least-selective" :super predicate)
+
 (adj "long-term" :super predicate) ;; #51 "effective long-term treatment strategies"
 
 
