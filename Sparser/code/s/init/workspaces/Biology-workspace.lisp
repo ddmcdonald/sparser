@@ -100,11 +100,50 @@ Deletion of GAP or the related NF1 genes will also enhance ras activity
 by slowing the rate of ras-GTP hydrolysis.")
 
 
+(defun russ ()
+  (p "Importantly, the association between β-Trcp and β-catenin depended on 
+the four serine/threonine residues at the amino terminus of β-catenin, 
+as β-catenin (S→A), which is a mutant β-catenin with alanine substitutions
+ of these serine/threonine residues (see Fig.4A), 
+completely lost the ability to associate with β-Trcp (Fig. 1 A and B)."))
+#| Very first pass after translating the arrow as a hyphen
+
+Unpacking #<word "substitution">
+  it is an unambiguous noun
+Unpacking #<word "see">
+  it is ambiguous between (noun verb)
+Unpacking #<word "lose">
+  it is an unambiguous verb
+[importantly], [ the association] between [ β-trcp and β-catenin]
+[ depended] on [the four serine/threonine residues] at 
+[ the] amino [ terminus] of [ β-catenin],
+as [ β-catenin] (s-a), which [ is][ a mutant β-catenin] 
+with [ alanine substitutions] of [ these serine/threonine residues] 
+(see fig.4a), [completely lost][ the ability] to [ associate] with [ β-trcp]
+
+                    source-start
+e132  ADVERB        1 "importantly ," 3
+e102  BIO-ASSOCIATE 3 "the association" 5
+e131  BETWEEN       5 "between β - trcp and β - catenin" 13
+e130  DEPEND        13 "depended on the four serine / threonine residues" 21
+e128  AT            21 "at the" 23
+e25                 "amino"
+e26 e27             "terminus" :: #<word "terminus">, PROTEIN-TERMINUS
+e127  OF            25 "of β - catenin" 29
+e32                 "COMMA"
+e126  AS            30 "as β - catenin ( s - a ) , which is a mutant β - catenin" 47
+e121  WITH          47 "with alanine substitutions" 50
+e120  OF            50 "of these serine / threonine residues ( see fig . 4 a )" 63
+e72                 "COMMA"
+e111  LOSE          64 "completely lost" 66
+e119  ABILITY       66 "the ability to associate with β - trcp ( fig . 1 a and b )" 82
+                    period
+                    end-of-source
+|#
+
 ;;----- phrases from the 12/3/14 Darpa trainng data
 ;
 ; (p "at Lys residues 104 and 147 of K-Ras, and Lys residues 117, 147 and 170 for H-Ras.")
-
-
 
 ;; "J" for Julie
 
