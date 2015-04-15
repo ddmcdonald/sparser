@@ -218,7 +218,8 @@
   :index (:permanent :key protein)
   :realization
     (:etf (pre-mod)
-     :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus")
+     :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
+            "amino terminus")
      ;;:o protein
      :m protein
      :of protein))
@@ -323,6 +324,9 @@ it is created from N-terminus to C-terminus.|#
 ;;; transcription and its control
 ;;;-------------------------------
 ; the ZFN217 transcription factor
+; Wikipedia for 'transcription factor'
+;    factor – a substance, such as a protein, that contributes to 
+;      the cause of a specific biochemical reaction or bodily process
 ; and CtBP1/CtBP2 corepressors, CtBPs
 ; the HER3 promoter
 ; expression of HER3
@@ -382,5 +386,19 @@ the aggregate across the predicate it's in. |#
   :binds ((left amino-acid)
           (right amino-acid))
   :index (:sequential-keys left right))
+
+
+
+;;; translocation 
+
+; (p "ERK Nuclear Translocation Is Dimerization-independent but Controlled by the Rate of Phosphorylation.")
+; (p "Upon activation, ERKs translocate from the cytoplasm to the nucleus.")
+; "the molecular mechanisms that regulate ERK nuclear translocation 
+;     are not fully understood."
+; that ERK1 nuclear accumulation increased
+; (process on ERK) ... a requirement for nuclear translocation."
+; ERK1-4 ... accumulated in the nucleus to the same level as ...
+; 11: is directly translated into a delay in nuclear translocation
+
 
 
