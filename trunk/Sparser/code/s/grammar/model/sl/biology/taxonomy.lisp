@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: February 2015
+;;; version: April 2015
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 ;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, 
@@ -17,7 +17,8 @@
 ;; added variable mutation to protein to allow new rule for protein --> (protein point-mutation) for "ubiquitin C77G"
 ;; /22/2015 added variables for adverb and manner to category::predicate, bi0-process
 ;; added process-rate and redefined the noun meaning of rate -- over-ride old meaning
-;; 2/5/15 Removed mutant from the variables on protein
+;; 2/5/15 Removed mutant from the variables on protein.
+;; 4/15/15 Moved out a flock of verbs to verb1. There were duplications.
 
 (in-package :sparser)
 
@@ -110,6 +111,7 @@
 
 (define-category bio-entity 
   :specializes physical-object  ;; sweeps a lot under the rug
+  :instantiates :self
   :mixins (has-UID has-name biological)
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
@@ -134,67 +136,6 @@
 
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"
   :specializes bio-process)
-
-(define-category control
-  :specializes bio-process
-  :binds ((agent biological) 
-          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
-  :realization
-  (:verb "control" 
-         :etf (svo-passive)
-         :s agent
-         :o object
-         :for theme))
-
-(define-category regulate
-  :specializes control
-  :binds ((agent biological) 
-          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
-  :realization
-  (:verb "regulate" 
-         :etf (svo-passive)
-         :s agent
-         :o object
-         :for theme))
-
-
-(define-category modulate
-  :specializes control
-  :binds ((agent biological) 
-          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
-  :realization
-  (:verb "modulate" 
-         :etf (svo-passive)
-         :s agent
-         :o object
-         :for theme))
-
-(define-category decrease
-  :specializes bio-process
-  :binds ((agent biological) 
-          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
-  :realization
-  (:verb "decrease" 
-         :etf (svo-passive)
-         :s agent
-         :o object
-         :for theme))
-
-(define-category increase
-  :specializes bio-process
-  :binds ((agent biological) 
-          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
-  :realization
-  (:verb "increase" 
-         :etf (svo-passive)
-         :s agent
-         :o object
-         :for theme))
 
 
 (define-category molecular-function 
@@ -223,16 +164,6 @@
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns.")
 
-
-
-
-(define-category study-bio-process
-  :specializes bio-process
-  :instantiates :self
-  :binds ((subject biological))
-  :realization 
-  (:noun "study"
-         :of subject))
 
 
 
