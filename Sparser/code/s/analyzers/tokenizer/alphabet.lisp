@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  0.3 June 2014
+;;;  Version:  0.3 April 2015
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
@@ -15,6 +15,7 @@
 ;;      accommodate characters above that. 
 ;;     (2/27/14) Added lowercase greek up to lambda
 ;;     (6/12/14) added em-dash. Refined the error message.
+;;     (4/15/15) added inadequate entry for an arrow
 
 (in-package :sparser)
 
@@ -668,6 +669,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named #\" )))
     (8221 ;; right double quote
      (:punctuation . ,(punctuation-named #\" )))
+    (8594 ;; arrow 
+     ;;/// could imagine pushing on another character, #\>, so that
+     ;; we have something we can treat as a polyword with the
+     ;; intended interpetation. Or we could just designate some
+     ;; character, like this one, as punctuation, though printing
+     ;; in the code would be tricky. 
+     (:punctuation . ,(punctuation-named #\- )))     
     )
   "If it's not a defparameter, CCL won't let us extend it 
    in a running lisp.")
