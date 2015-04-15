@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "verbs1"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: March 2015
+;;; version: April 2015
 
 ;; verbs initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 12/3/14.
@@ -32,6 +32,7 @@
 ;;   correct object restriction on "express"
 ;;   add definition of upregulate and up-regulate
 ;; 3/12/15 Added pre-mod to phosphorylate for figure-7 case
+;; 4/15/15 Moved in verbs from taxonomy. Quashed/merged duplicatse
 
 (in-package :sparser)
 
@@ -311,6 +312,19 @@
 
 ;; "call"  assigns a name in passive "X is called N"
 
+(define-category control
+  :specializes bio-process
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "control" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
+
+
 ;;/// "catalysis of phosphorylation by MEK"
 (define-category catalytic-activity
   :specializes bio-process
@@ -479,18 +493,23 @@
     :o deactivated
     :of deactivated))
 
+
 (define-category decrease
   :specializes bio-process
-  :binds ((agent biological)(object bio-scalar)) 
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
   :realization
-  (:verb "decrease"
-   :etf (svo-passive)
-   :s agent
-   :o object))
+  (:verb "decrease" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
 
 (def-synonym decrease
   (:noun "decrease"
          :of object))
+
 
 (define-category demonstrate
     :specializes bio-thatcomp
@@ -756,15 +775,6 @@
 (define-category examine :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "examine" :noun "examination" :etf (svo-passive) :s agent :o object)) 
 (define-category explanation :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "explain" :noun "explanation" :etf (svo-passive) :s agent :o object))
 
-(define-category follow
-    :specializes bio-process
-  :binds ((initial bio-process)(subsequent bio-process))
-  :realization
-  (:verb "follow"
-         :etf (svo)
-         :s initial
-         :o subsequent))
-
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
 (define-category gene-transcript-express
     :specializes bio-process
@@ -799,6 +809,15 @@
 	   :s agent
 	   :o object
            :of object))
+
+(define-category follow
+    :specializes bio-process
+  :binds ((initial bio-process)(subsequent bio-process))
+  :realization
+  (:verb "follow"
+         :etf (svo)
+         :s initial
+         :o subsequent))
 
 (define-category form
   :specializes bio-process
@@ -840,14 +859,7 @@
          :o  object
          ))
 
-#+ignore
-(def-realization have
-  :binds ((owner biological)(measure bio-scalar))
-  :realization
-  (:verb "have"
-         :etf (svo)
-         :s owner
-         :o measure))
+
 
 ;; formation "GO:0009058"
 ;;--- hydrolysis
@@ -936,6 +948,20 @@
          :o object
          :of object))
 
+(define-category increase
+  :specializes bio-process
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "increase" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
+
+
+
 ;;--- "induce"
 ;; "which induce transcription of the p53 gene"
 ;; "induce processing of p100"
@@ -1004,18 +1030,6 @@
 
 ;;--- inhibit
 ;; "by inhibiting <p>"
-
-#+ignore  ;;current walker does not handle such ambiguities properly
-(define-category inhibit-process
-  :specializes bio-process
-  :binds ((agent bio-entity) (object biological))
-  :realization 
-  (:verb ("inhibit" :past-tense "inhibited" :present-participle "inhibiting")
-   :noun "inhibition"
-   :etf (svo-passive)
-   :s agent
-   :o object))
-
 
 (define-category inhibit ;; was drug-inhibit but inhibit fits answer key
   :specializes bio-process
@@ -1200,6 +1214,18 @@
          :o object
          :of object
          :at location))
+
+(define-category modulate
+  :specializes control
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "modulate" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
 
 ;;--- "mutation"
 ;; "mutated oncogenes"
@@ -1474,13 +1500,18 @@
 ;;
 (define-category regulate
   :specializes bio-process
-  :binds ((agent biological)(object biological))
-  :realization
-  (:verb   "regulate" :noun "regulation"
-   :etf (svo-passive)
-   :o object  ;; regulation of <process>
-   :s agent
-   :of object))    ;; by <entity>
+  :binds ((agent biological)
+          (object biological)
+          (theme biological)) ;; increase in rate vs increase in RAS activity  :realization
+    :realization
+    (:verb "regulate" 
+     :noun "regulation"
+     :etf (svo-passive)
+     :o object  ;; regulation of <process>
+     :s agent
+     :of object
+     :for theme))    ;; by <entity>
+
 
 (define-category relapse
     :specializes bio-process
@@ -1657,7 +1688,7 @@
 
 (def-synonym study-bio-process
   (:noun "study"
-         :of object))
+   :of object))
 
 (define-category stimulate
   :specializes bio-process
