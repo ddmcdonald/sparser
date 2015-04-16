@@ -582,7 +582,7 @@
   (assimilate-subcat vg :object obj))
 
 (defun assimilate-thatcomp (vg-or-np thatcomp)
-  (assimilate-subcat vg-or-np category::thatcomp thatcomp))
+  (assimilate-subcat vg-or-np :thatcomp thatcomp))
 
 (defun assimilate-pp-subcat (head prep pobj)
   (assimilate-subcat head 
