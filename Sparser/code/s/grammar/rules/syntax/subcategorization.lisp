@@ -240,10 +240,11 @@
 ;;;--------------------------------------------------
 
 (defun assign-subcategorization (category marker v/r variable)
-  ;; called from subcategorize-for-preposition (in shortcut
+  ;; called from subcategorize-for-slot (in shortcut
   ;; processing) to take the information and install it for
   ;; use at runtime. Note that the value restriction has to
   ;; be satisfied
+  (when (null v/r) (break "null-v/r in assign-subcategorization"))
   (let ((sf (fom-subcategorization category :category category)))
     (let ((entry (subcat-patterns sf))
           (new-case `(,marker ,v/r ,variable)))
