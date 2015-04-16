@@ -293,7 +293,8 @@
             'protein-family)
            (t 'bio-family)))
          (i (def-bio/expr name category-name
-             :long long :identifier identifier :synonyms synonyms)))
+             :long long :identifier identifier :synonyms synonyms
+              :takes-plurals t)))
     (when (consp members)
      (set-family-members i members))
     i))
