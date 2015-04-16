@@ -1637,7 +1637,7 @@
 
 (define-category select
     :specializes bio-process
-    :binds ((agent pronoun/first/plural)(object biological)(study study-bio-process))
+    :binds ((agent pronoun/first/plural)(object biological)(study bio-process))
     :realization
     (:verb "select" ;; keyword: ENDS-IN-ED 
 	   :noun "selection"
@@ -1744,7 +1744,7 @@
     :specializes bio-process
     :binds ((tagged protein)(taggant protein))
     :realization
-    (:verb "sustain" ;; keyword: ENDS-IN-ED 
+    (:verb "tag" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s taggant
 	   :o tagged
@@ -1812,14 +1812,16 @@
 
 (define-category translocation :specializes bio-movement
   :binds ((agent bio-entity)(object bio-process)
-          (origin bio-location)(destination bio-location)) 
+          (origin cellular-location)(destination cellular-location)) 
   :realization 
   (:verb "translocate" :noun "translocation" 
          :etf (svo-passive) 
          :s agent
          :o object
          :to destination
-         :from origin))
+         :from origin
+         :premod destination
+         :premod object))
 
 (define-category enter :specializes bio-movement
   :binds ((agent bio-entity)(object bio-process)
