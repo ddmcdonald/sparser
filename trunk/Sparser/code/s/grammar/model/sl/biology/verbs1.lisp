@@ -1432,7 +1432,8 @@
 (define-category propose
     :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)
-            (object bio-process))
+            (object bio-process)
+            (as-object bio-process))
     :realization
     (:verb "propose"
      :noun "proposal"
@@ -1440,7 +1441,7 @@
      :s agent
      :o object
      :of object
-     :as object
+     :as as-object
      :thatcomp statement))
 
 (define-category provide
