@@ -100,7 +100,7 @@
     ;; This should come after any of the modules whose categories
     ;; it references
     (if *lattice-points*
-      (gload "tree-families;loader1")
+      (gload "tree-families;loader2")
       (gload "tree-families;loader")))
 
   (gate-grammar *kinds*
