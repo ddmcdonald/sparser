@@ -285,6 +285,7 @@
       (subcat-info)))
     
 (defun subcat-info (&optional (stream t))
+  (declare (special *collect-subcat-info* *ref-cat-text* *subcat-info*))
   (setq *collect-subcat-info* t)
   (clrhash *ref-cat-text*)
   (compare-to-snapshot 'dec-test)
@@ -294,7 +295,7 @@
     (print x stream))
   (let
       ((cats nil))
-    (maphash #'(lambda (cat strings) (push cat cats)) *ref-cat-text*)
+    (maphash #'(lambda (cat strings) (declare (ignore strings))(push cat cats)) *ref-cat-text*)
     (setq cats (sort cats #'string< :key #'(lambda(cat) (cat-name cat))))
     (loop for cat in cats 
       do
