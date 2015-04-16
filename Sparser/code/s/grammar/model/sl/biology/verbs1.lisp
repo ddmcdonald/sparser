@@ -1812,14 +1812,15 @@
    (:noun "transition"))
 
 (define-category translocation :specializes bio-movement
-  :binds ((agent bio-entity)(object bio-process)
+  :binds ((agent bio-process)(object protein)
           (origin cellular-location)(destination cellular-location)) 
   :realization 
   (:verb "translocate" :noun "translocation" 
          :etf (svo-passive) 
-         :s agent
+         :s object ;; ERK translocates -- this is not the agent, but the object!
          :o object
          :to destination
+         :of object
          :from origin
          :premod destination
          :premod object))
