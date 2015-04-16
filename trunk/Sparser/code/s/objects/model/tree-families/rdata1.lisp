@@ -159,8 +159,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
   (let ((*deliberate-duplication* t))
     (declare (special *deliberate-duplication*))
     (if (includes-def-realization-keyword rdata)
-      (apply #'decode-realization-parameter-list category rdata)
-      (setup-rdata category rdata nil))))
+        (apply-decode-realization-parameter-list category rdata)
+        (setup-rdata category rdata nil))))
 
 
 ;;;-----------------------------------------------------------
