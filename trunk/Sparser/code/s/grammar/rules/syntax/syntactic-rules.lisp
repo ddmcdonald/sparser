@@ -350,13 +350,15 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :form vp
   :referent (:function assimilate-thatcomp left-edge right-edge))
 
-(def-syntax-rule (np thatcomp)
-  :head :left-edge
-  :form np
-  :referent (:function assimilate-thatcomp left-edge right-edge))
+
 
 (loop for nb in (cons category::np *n-bar-categories*)
   do
+  (eval
+   `(def-syntax-rule (,nb thatcomp)
+                     :head :left-edge
+      :form np
+      :referent (:function assimilate-thatcomp left-edge right-edge)))
   (eval 
    `(def-form-rule (,nb copular-pp)
                    :form s
