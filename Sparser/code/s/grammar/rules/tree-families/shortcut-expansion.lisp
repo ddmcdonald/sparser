@@ -72,22 +72,26 @@
                           category 
                           `(:pattern ,subcategorization)))))
 
-;;should be renamed -- general subcategorization for syntactic relations including thatcomp
-(defun subcategorize-for-preposition (category pname var-name)
+;;now renamed -- general subcategorization for syntactic relations including thatcomp
+(defun subcategorize-for-slot (category pname var-name)
   ;; called from decode-realization-parameter-list in the shortcuts.
   (push-debug `(,category ,pname ,var-name))
   (let ((variable (variable/category var-name category))
-        (preposition (resolve pname)))
+        (slot 
+         (if
+          (keywordp pname)
+          pname
+          (resolve pname))))
+    (declare (special variable slot))
     (unless variable
       (error "No variable named ~a associated with ~a"
              var-name category))
-    (unless (or (eq category::thatcomp preposition)
-                (memq preposition '(:subject :object))
-                (word-is-a-preposition? preposition))
-      (error "~s does not appear to be a preposition." pname))
+    (unless (or (member slot *slot-keywords*)
+                (word-is-a-preposition? slot))
+      (error "~s does not appear to be a valid slot." pname))
     (let ((v/r (var-value-restriction variable)))
       (assign-subcategorization 
-       category preposition v/r variable))))
+       category slot v/r variable))))
 
 
 ;;;-----------------------------
