@@ -29,6 +29,7 @@
 ;;  and create lots of vaariable bindngs to manage and search through.
 ;; 4/14/15 refactored subcategorized-variable to make the test readable and
 ;;   accommodate override categories
+;; now can have :premod rules for noun-noun modifiers and adj-noun modifiers
 
 
 (in-package :sparser)
@@ -66,7 +67,13 @@
   (if (category-p head)
     (setq head (make-individual-for-dm&p head))
     (setq head (maybe-copy-individual head)))
-  (or (call-compose qualifier head)
+  (or (call-compose qualifier head);; DAVID -- why is this called?!
+      ;; Rusty - this is the hook that allows for a custom interpretation
+      ;; of the meaning of this pair. If you look up at verb-noun-compound
+      ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
+      ;; In general it's a hook for any knowledge we have about particular
+      ;; cases / co-composition
+      (interpret-premod-to-np qualifier head)
       ;; This case is to benefit marker-categories 
       (if (itypep head 'process) ;; poor man's standing for verb?
           (then
@@ -84,6 +91,21 @@
             (bind-variable 'modifier qualifier head) ;; safe
             head))))
 
+(defun interpret-premod-to-np (premod head)
+  (let* ((variable-to-bind
+          (subcategorized-variable head :premod premod)))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (variable-to-bind
+      (if *collect-subcat-info*
+          (push (subcat-instance head variable-to-bind 
+                                 premod premod)
+                *subcat-info*))
+      (setq head (maybe-copy-individual head))
+      (bind-variable variable-to-bind premod head)
+      head))))
+
+
 (defun adj-noun-compound (qualifier head)
   ;; (break "adj-noun-compound")
   ;; goes with (adjective n-bar-type) syntactic rule 
@@ -91,14 +113,17 @@
     (push-debug `(,qualifier ,head)) 
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-  (cond ((call-compose qualifier head));; This case is to benefit marker-categories     
+  (cond ((call-compose qualifier head));; This case is to benefit marker-categories 
+       
         ((category-p head)
          (setq head (make-individual-for-dm&p head))
          (or (call-compose qualifier head)
+             (interpret-premod-to-np qualifier head)
              (else
               (when (itypep head 'endurant)
                 (bind-variable 'modifier qualifier head))
               head)))
+        ((interpret-premod-to-np qualifier head))
         (t ;; Dec#2 has "low nM" which requires coercing 'low'
          ;; into a number. Right now just falls through
          (setq head (maybe-copy-individual head))
