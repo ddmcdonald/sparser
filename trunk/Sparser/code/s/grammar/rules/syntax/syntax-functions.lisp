@@ -31,6 +31,9 @@
 ;;   accommodate override categories
 ;; 4/15/15 Reworked treatment of the prepositional-phrase scafolding.
 ;;   Now can have :premod rules for noun-noun modifiers and adj-noun modifiers
+;; 4/16/2015 fix make-copular-pp to reject "clausal to-pps" like "to enhance craf activation"
+;;     make apply-copular-pp (almost) work -- something is wrong with the referent of the 
+;;     result -- DAVID -- let's look at it     
 
 (in-package :sparser)
 (defvar CATEGORY::PREPOSITIONAL-PHRASE)
@@ -629,27 +632,44 @@
 (defun make-copular-pp (be-ref pp)
   (when (null (value-of 'predication be-ref))
     ;; If this is not already a predicate copula ("is a drug")
+    
     (let* ((cpp (make-unindexed-individual category::copular-pp))
            (prep (value-of 'prep pp))
            (pobj (value-of 'pobj pp)))
-      (bind-variable 'copula be-ref cpp)
-      (bind-variable 'prep prep cpp)
-      (bind-variable 'pobj pobj cpp)
-      cpp)))
+      (cond
+       (*subcat-test* 
+        ;; when we have clausal "to-pp" like 
+        ;;  to enhance craf activation
+        ;; this is NOT a copular PP
+        (and prep pobj))
+       (t
+        (bind-variable 'copula be-ref cpp)
+        (bind-variable 'prep prep cpp)
+        (bind-variable 'pobj pobj cpp)
+        cpp)))))
 
 (defun apply-copular-pp (np copular-pp)
-  (let ((prep (value-of 'prep copular-pp))
-        (pobj (value-of 'pobj copular-pp))
-        new-np )
+  (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
+         (pobj (value-of 'pobj copular-pp))
+         (variable-to-bind (subcategorized-variable np prep pobj)))
+    (declare (special prep pobj))
     (cond
-     (*subcat-test* 
-      (subcategorized-variable np prep pobj))
+     (*subcat-test* variable-to-bind)
      (t
-      (setq new-np (assimilate-pp-subcat np prep pobj))
-      (break "copular-pp")
-      (bind-variable 'result new-np copular-pp)
+      (if *collect-subcat-info*
+          (push (subcat-instance np prep variable-to-bind 
+                                 copular-pp)
+                *subcat-info*))
+      (setq np (maybe-copy-individual np))
+      (bind-variable variable-to-bind copular-pp np)
+      (bind-variable 'result np copular-pp)
       copular-pp))))
 
+(defun get-word-for-prep (prep-val)
+  (resolve/make ;; needs to be a word for the subcat frame!
+   (string-downcase
+    (symbol-name 
+     (cat-symbol prep-val)))))
 
 ;;;-----------------
 ;;; There + BE
