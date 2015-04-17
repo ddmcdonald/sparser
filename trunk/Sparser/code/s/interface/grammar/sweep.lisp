@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   January 2015
+;;;   Version:   April 2015
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -11,6 +11,8 @@
 ;;  referents was very wasteful
 ;;  put in a hash table instead. This means that all cases where we were searching 
 ;;  for the bindings of pob must be replaced by use of (get-prep-pobj value)
+;; 4/16/15 The hashtable scheme wasted individuals. Only need to store the PP
+;;  as the referent of its edge. Fanout from that change. 
 
 (in-package :sparser)
 
@@ -71,7 +73,7 @@
                 ((itypep value 'unclear) nil)
                 ((itypep value 'prepositional-phrase)
                  (push (list var-name
-                             (collect-model-description (second (get-prep-pobj value))))
+                             (collect-model-description (value-of 'pobj value)))
                        objects))
                 ((itypep value 'bio-family)
                  (push (list var-name value)
