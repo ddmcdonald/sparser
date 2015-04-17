@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 January 2015
+;;;  Version:  0.2 April 2015
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -23,8 +23,11 @@
 ;;    (9/15/14) fixed form on be+adjective
 ;;  1/14/2015 correct the head for BO+AJD to be the ADJ
 ;;  (1/15/15) Substantial make over of rules for tense/aspect
-;; 3/4/2015 make the rules that should produce VGs do so (such as (def-form-rule (be verb+ing) ...)
-;; SBCL suggested speedup on computation of passive label (VERB+ED label created to allow passive rule to work)
+;; 3/4/2015 make the rules that should produce VGs do so 
+;;    (such as (def-form-rule (be verb+ing) ...)
+;; SBCL suggested speedup on computation of passive label (VERB+ED label 
+;;  created to allow passive rule to work)
+;;    (4/15/15) Reformated 'there' and made it its' own section
 
 (in-package :sparser)
 
@@ -199,23 +202,6 @@
 (def-csr apostrophe-s  "is"
   :left-context "there" )
 
-(define-category syntactic-there :specializes abstract
-  :realization
-  (:noun "there"))
-
-(define-category there-exists :specializes abstract
-  :binds ((object)(context))
-  )
-
-(def-cfr there-exists (syntactic-there BE)
-  :form vg
-  :referent (:function make-there-exists left-edge right-edge))
-
-(def-form-rule (there-exists np)
-  :form s
-  :referent (:head left-edge
-                   :function make-exist-claim left-edge right-edge))
-
 ;;--- "it"
 
 #|  Prefer the form rule that combines with an NP to the left.
@@ -230,6 +216,30 @@
 
 (def-csr apostrophe-s "is"
   :left-context "that" )
+
+
+;;;--------------------------------------------
+;;; contentless "there", existance assertions
+;;;--------------------------------------------
+
+(define-category syntactic-there 
+  :specializes abstract
+  :lemma (:common-noun "there"))
+
+(define-category there-exists ;; There is a cat on the mat"
+  :specializes abstract
+  :binds ((object)
+          (context)))
+
+(def-cfr there-exists (syntactic-there BE)
+  :form vg
+  :referent (:function make-there-exists))
+
+(def-form-rule (there-exists np)
+  :form s
+  :referent (:head left-edge
+             :function make-exist-claim right-edge))
+
 
 
 ;;;--------------------------
