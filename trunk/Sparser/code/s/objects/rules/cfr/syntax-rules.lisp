@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "syntax rules"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   April 2013
+;;;   Version:   April 2015
 
 ;; cloned from [form-rules form] 12/30/94  v2.3 
 ;; Rolled in stubbed specified schema 4/9/13. 
+;; 4/15/15 switched the check on syntactic-rule?
 
 (in-package :sparser)
 
@@ -126,10 +127,13 @@
     cfr ))
 
 
-
+;;;----------------------
+;;; predicate over rules
+;;;----------------------
 
 (defun syntactic-rule? (cfr)
   (when (cfr-p cfr)
-    (member :syntax-rule (cfr-plist cfr))))
+    (eq (cfr-category cfr) :syntactic-form))) ;; faster
+    ;;(member :syntax-rule (cfr-plist cfr))))
 
 
