@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2012-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form-rule form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.7 June 2014
+;;;   Version:   0.7 April 2015
 
 ;; initiated 9/3/92 v2.3, 
 ;; 0.1 (10/12) formulated better now that it's getting used
@@ -24,6 +24,7 @@
 ;;      better. Corrects problem with possessive+title having the wrong head.
 ;;      (9/18/13) Added option of an explicit schema.  6/15/14 Added way to
 ;;      note them against their grammar-module. 
+;;     (4/15/15) simplified form-rule?
 
 (in-package :sparser)
 
@@ -276,8 +277,7 @@
 
 (defun form-rule? (cfr)
   (when (cfr-p cfr)
-    (when (member :form-rule (cfr-plist cfr))
-      t)))
+    (member :form-rule (cfr-plist cfr))))
 
 
 
