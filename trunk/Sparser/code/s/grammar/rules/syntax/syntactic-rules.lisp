@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  January 2015
+;;;  Version:  April 2015
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -20,12 +20,11 @@
 ;; 3/4/2015 rules should produce form as S and not subj+verb
 ;; 3/8/2015 rulle for NP+thatcomp,
 ;; rule for VG+DEICTIC-LOCATION (as in "here" as an adverb)
+;; 4/15/15 moved prepositional-phrase category to syntax-functions.
 
 (in-package :sparser)
 
 ;;--- S
-
-;(def
 
 #| This is too potent to use in a leftward sweep
    because it catches things early
@@ -204,13 +203,8 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :referent(:function interpret-adverb+verb left-edge right-edge))
 |#
 
-
 ;;--- prepositional phrases
-(define-category prepositional-phrase :specializes abstract
-  :binds ((prep)(pobj)))
 
-;;/// makes for a counter-intutive edge since the preposition
-;; is its label
 (def-syntax-rule (preposition np)
                  :head :left-edge
   :form pp
