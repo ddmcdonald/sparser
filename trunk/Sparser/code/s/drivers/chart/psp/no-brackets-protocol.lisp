@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  January 2015
+;;;  version:  April 2015
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -15,7 +15,8 @@
 ;; 1/12/2015 Handle circular structures in seemtree -- needed for verb+ed premodifiers, among others
 ;; 1.18.2015 fix collection of description of individuals when modifiers referents are categories and not individuals as in "catalytic domains"
 ;; 1/18/2015 code (a bit sketchy) to extract all entities and all relations after parsing a sentence -- entities-in and relations-in
-;; tweaks to all-entities and all-relations
+;; tweaks to all-entities and all-relations. 
+;; 4/16/15 Fanout from change in treatment of PPs. 
 
 (in-package :sparser)
 
@@ -383,8 +384,8 @@
                 (individual 
                  (if
                   (itypep value 'prepositional-phrase)
-                  (push (list (var-name var)
-                              (collect-model-description (second (get-prep-pobj value))))
+                  (push (list (var-name var) ; 
+                              (collect-model-description (value-of 'pobj value)))
                             desc)
                   (push (list (var-name var)
                               (collect-model-description value))
