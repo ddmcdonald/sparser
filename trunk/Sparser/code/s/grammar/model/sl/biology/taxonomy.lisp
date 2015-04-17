@@ -19,6 +19,8 @@
 ;; added process-rate and redefined the noun meaning of rate -- over-ride old meaning
 ;; 2/5/15 Removed mutant from the variables on protein.
 ;; 4/15/15 Moved out a flock of verbs to verb1. There were duplications.
+;; 4/16/2015 bunch of changes to make protein-family a protein in most senses -- it specializes protein, but has some
+;;  special variables like :members. Also give protein and human-protein-family a sbcat frame for "in"
 
 (in-package :sparser)
 
@@ -231,6 +233,7 @@
   :specializes peptide  ;; this is not clearly true
   :instantiates :self
   :bindings (uid "CHEBI:36080")
+  :binds((species species))
 ;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
@@ -445,8 +448,8 @@
 
 ;;---- family
 
-(define-category bio-family
-  :instantiates :self
+(define-category bio-family :specializes protein
+                 :instantiates :self
   :documentation "Familes of proteins are abstractions based
     on common properties, especially the function, of the
     members. They're talked about just like specific proteins
@@ -454,8 +457,8 @@
   ;; They should be either a sub-category of protein or molecule to allow for
   ;;  selectional restrictions on PPs
   ;; as in "binds to RAS" where RAS is a family
-  :specializes molecule
-  :rule-label protein
+  ;; :specializes molecule
+  ;; :rule-label protein
   :binds ((type bio-entity) ;; a family of what?
           (species species) ;; human? mouse?
           (members collection)
@@ -469,7 +472,7 @@
   ;;/// something needs fixing in the bindings decoder
   ;; since these should be simpler to write
   :rule-label protein
-  :bindings (type (category-named 'protein))
+  ;;:bindings (type (category-named 'protein))
   :realization (:common-noun name))
 
 (define-category human-protein-family
@@ -538,4 +541,12 @@
 
 (define-category article-table
    :specializes abstract) ;; to allow "et al." to be easily ignored
+
+(def-realization protein
+  :noun "protein"
+  :in location)
+
+(def-realization human-protein-family
+  :noun "human protein family"
+  :in location)
 
