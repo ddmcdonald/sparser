@@ -15,6 +15,9 @@
 ;; 1.5 (8/31/11) Added a typecase over all the regular objects I could
 ;;      think of. This simplifies using def-cfr/expr from code when
 ;;      you already have the objects.
+;; 4/16/2015 Fix bug in  resolve-or-make/symbol-to-category 
+;; find-symbol returns NIL if the string is not a symbol in the package
+;;  and NIL is boundp! Thus this method NEVER created categories
 
 (in-package :sparser)
 
@@ -117,7 +120,7 @@
   (unless source (setq source :define-category))
   (let ((c-symbol (find-symbol (symbol-name symbol)
                                *category-package*)))
-    (if (boundp c-symbol)
+    (if (and c-symbol (boundp c-symbol))
       (symbol-value c-symbol)
       (def-category/expr symbol :source source))))
 
