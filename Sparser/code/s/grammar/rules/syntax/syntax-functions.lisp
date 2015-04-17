@@ -29,8 +29,8 @@
 ;;  and create lots of vaariable bindngs to manage and search through.
 ;; 4/14/15 refactored subcategorized-variable to make the test readable and
 ;;   accommodate override categories
-;; now can have :premod rules for noun-noun modifiers and adj-noun modifiers
-
+;; 4/15/15 Reworked treatment of the prepositional-phrase scafolding.
+;;   Now can have :premod rules for noun-noun modifiers and adj-noun modifiers
 
 (in-package :sparser)
 (defvar CATEGORY::PREPOSITIONAL-PHRASE)
@@ -225,39 +225,6 @@
     (bind-variable 'modifier qualifier head)
     head))
 
-;;;----------------
-;;; Prepositional phrase
-;;;;_______________
-
-(defparameter *pp-prep-pobj* (make-hash-table :size 1000))
-(defun link-pp-to-prep-and-object (pp prep pobj)
-  #|(bind-variable 'prep prep pp)
-    (bind-variable 'pobj pobj pp)
-  `|#
-  (setf (gethash pp *pp-prep-pobj*) (list prep pobj)))
-
-(defun get-prep-pobj (pp)
-  #|
-  (let
-      (pobj-ref prep-ref)
-    (dolist (bb (indiv-binds pp-ref))
-      (cond
-       ((eq (var-name (binding-variable bb)) 'pobj)
-        (setq pobj-ref (binding-value bb)))
-       ((eq (var-name (binding-variable bb)) 'prep)
-        (setq prep-ref (binding-value bb)))))
-    (list prep-ref pobj-ref))
-  |#
-  (gethash pp *pp-prep-pobj*))
-
-
-(defun make-pp (prep pobj)
-  (let ((pp (make-category-indexed-individual 
-             category::prepositional-phrase)))
-    (link-pp-to-prep-and-object pp prep pobj)
-    pp))
-
-
 ;;;------------------
 ;;; Verb + Auxiliary
 ;;;------------------
@@ -396,10 +363,9 @@
     (cond
      (*subcat-test* variable-to-bind)
      (t
-      (if *collect-subcat-info*
-          (push (subcat-instance vg prep-word variable-to-bind 
-                                 pp)
-                *subcat-info*))
+      (when *collect-subcat-info*
+        (push (subcat-instance vg prep-word variable-to-bind pp)
+              *subcat-info*))
       (setq vg (maybe-copy-individual vg))
       (bind-variable variable-to-bind pobj-referent vg)
       vg))))
@@ -450,26 +416,25 @@
 ;;;-----------------
 
 (defun assimilate-subcat (head subcat-label item)
-  (let* ((variable-to-bind
-          ;; test if there is a known interpretation of the NP+VP combination
-           (subcategorized-variable head subcat-label item))
-         ;;(head-edge (edge-for-referent head))
-         (item-edge (edge-for-referent item)))
+  (let ((variable-to-bind
+         ;; test if there is a known interpretation of the NP+VP combination
+         (subcategorized-variable head subcat-label item))
+        (item-edge (edge-for-referent item)))
     (cond
-     (*subcat-test* variable-to-bind)
+     (*subcat-test* 
+      variable-to-bind)
      (variable-to-bind
-      (if *collect-subcat-info*
-          (push (subcat-instance head subcat-label variable-to-bind item)
-                *subcat-info*))
+      (when *collect-subcat-info*
+        (push (subcat-instance head subcat-label variable-to-bind item)
+              *subcat-info*))
       (setq head (maybe-copy-individual head))
-      (when
-       (and
-        (is-anaphoric? item)
-        (var-value-restriction variable-to-bind)) ;; this fails when we have BE -- needs to be fixed...
+      (when (and (is-anaphoric? item)
+                 ;; this fails when we have BE -- needs to be fixed...
+                 (var-value-restriction variable-to-bind))
        (setq item 
              (create-anaphoric-edge-and-referent 
               item-edge
-              variable-to-bind)))     
+              variable-to-bind)))   
       (bind-variable variable-to-bind item head)
       head))))
 
@@ -555,15 +520,15 @@
         ;;(break "testing subcats")
         (or
          variable
-         (and (eq label (word-named "in"))
-              (cond
-               ((and (itypep head 'physical)
-                     (itypep item 'location))
-                (find-variable-in-category/named 'location category::physical))
-               ((and (itypep head 'biological)
-                     (itypep item 'bio-context))
-                (find-variable-in-category/named 'context 
-                                                 (category-named 'biological))))))))))
+         (when (eq label (word-named "in"))
+           (cond
+            ((and (itypep head 'physical)
+                  (itypep item 'location))
+             (find-variable-in-category/named 'location category::physical))
+            ((and (itypep head 'biological)
+                  (itypep item 'bio-context))
+             (find-variable-in-category/named
+              'context (category-named 'biological))))))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
   (let ((override-category (override-label (itype-of item))))
@@ -615,38 +580,67 @@
                      pobj))
 
 
-;;;-----------------
-;;; There + BE
-;;;-----------------
+;;;----------------------
+;;; Prepositional phrase
+;;;----------------------
+
+(define-category prepositional-phrase
+  :specializes abstract
+  :binds ((prep)
+          (pobj))
+  :documentation "Provides a scafolding to hold 
+   a generic prepositional phrase as identified by
+   the pp rules in grammar/rules/syntactic-rules.
+   Primary consumer is the subcategorization checking
+   code below. Note that if we make these with an
+   unindexed individual (in make-pp) then the index
+   information doesn't come into play"
+  :index (:temporary :sequential-keys prep pobj))
 
 
-(defun make-there-exists (there-edge be-edge)
-  (let ((exists (make-unindexed-individual category::there-exists)))
-    exists))
+#+ignore(defparameter *pp-prep-pobj* (make-hash-table :size 1000))
+#+ignore(defun link-pp-to-prep-and-object (pp prep pobj)
+  (setf (gethash pp *pp-prep-pobj*) (list prep pobj)))
+#+ignore(defun get-prep-pobj (pp)
+  (gethash pp *pp-prep-obj*))
 
-(defun make-exist-claim (left-edge right-edge)
-  (let ((exists (make-unindexed-individual category::there-exists)))
-    (bind-variable 'object (edge-referent right-edge) exists)
-    exists))
+(defun make-pp (prep pobj)
+  (let* ((binding-instructions 
+          `((prep ,prep) (pobj ,pobj)))
+         (pp (make-simple-individual
+              category::prepositional-phrase
+              binding-instructions)))
+    ;; place for trace or further adornment, storing
+    ;; (p "activity of ras.")
+    ;; (break "Look at who is calling make-pp")
+    pp))
+; Called from whack-a-rule-cycle => copula-rule?
+;       => test-subcat-rule => ref/function
+; Called from whack-a-rule-cycle => best-treetop-rule 
+;       => rule-for-edge-pair => test-subcat-rule => ref/function
+; Called from whack-a-rule-cycle => execute-one-one-rule
+;       => form-rule-completion => referent-from-rule
+;            => dispatch-on-rule-fields => ref/function
 
-(defun make-copular-pp (be-ref pp-ref)
-  (when
-      (null (value-of 'predication be-ref)) ;; this is not already a predicate copula ("is a drug")
-    (let*
-        ((cpp (make-unindexed-individual category::copular-pp))
-         (prep-pobj (get-prep-pobj pp-ref))
-         (prep-ref (car prep-pobj))
-         (pobj-ref (second prep-pobj)))
-      (link-pp-to-prep-and-object cpp prep-ref pobj-ref)
+;;;---------
+;;; be + PP
+;;;---------
+
+(defun make-copular-pp (be-ref pp)
+  (when (null (value-of 'predication be-ref))
+    ;; If this is not already a predicate copula ("is a drug")
+    (let* ((cpp (make-unindexed-individual category::copular-pp))
+           (prep (value-of 'prep pp))
+           (pobj (value-of 'pobj pp)))
       (bind-variable 'copula be-ref cpp)
+      (bind-variable 'prep prep cpp)
+      (bind-variable 'pobj pobj cpp)
       cpp)))
 
 (defun apply-copular-pp (np copular-pp)
-  (let*
-      ((prep-pobj (get-prep-pobj copular-pp))
-       (prep (car prep-pobj))
-       (pobj (second prep-pobj))
-       new-np)
+  (let ((prep (value-of 'prep copular-pp))
+        (pobj (value-of 'pobj copular-pp))
+        new-np )
     (cond
      (*subcat-test* 
       (subcategorized-variable np prep pobj))
@@ -655,4 +649,18 @@
       (break "copular-pp")
       (bind-variable 'result new-np copular-pp)
       copular-pp))))
+
+
+;;;-----------------
+;;; There + BE
+;;;-----------------
+
+(defun make-there-exists ()
+  (let ((exists (make-unindexed-individual category::there-exists)))
+    exists))
+
+(defun make-exist-claim (right-edge)
+  (let ((exists (make-unindexed-individual category::there-exists)))
+    (bind-variable 'object (edge-referent right-edge) exists)
+    exists))
 
