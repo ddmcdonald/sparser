@@ -40,9 +40,7 @@
 (defvar CATEGORY::PRONOUN/INANIMATE)
 (defvar CATEGORY::THERE-EXISTS)
 (defvar CATEGORY::COPULAR-PP)
-(defparameter *collect-subcat-info* nil)
-(defparameter *subcat-info* nil)
-(defparameter *ref-cat-text* (make-hash-table))
+
 
 
 ; (left-edge-for-referent)
@@ -76,34 +74,36 @@
       ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
       ;; In general it's a hook for any knowledge we have about particular
       ;; cases / co-composition
-      (interpret-premod-to-np qualifier head)
+
+      (interpret-premod-to-np qualifier head) 
+      ;; subcat tese is here. If there's a :premod subcategorization
+      ;; that's compapatible this gets it. 
+
       ;; This case is to benefit marker-categories 
       (if (itypep head 'process) ;; poor man's standing for verb?
-          (then
-            
-            (let ((var (object-variable head)))
-              (if var ;; really should check for passivizing
-                  (bind-variable var qualifier head)
-                  ;; otherwise it's not obvious what to bind
-                  (else 
-                    (bind-variable 'modifier qualifier head)))
-              head))
-          (else
-            ;; what's the right relationship? Systemics would say 
-            ;; they are qualifiers, so perhaps subtype? 
-            (bind-variable 'modifier qualifier head) ;; safe
-            head))))
+        (then
+          (let ((var (object-variable head)))
+            (if var ;; really should check for passivizing
+              (bind-variable var qualifier head)
+              ;; otherwise it's not obvious what to bind
+              (else 
+                (bind-variable 'modifier qualifier head)))
+            head))
+        (else
+          ;; what's the right relationship? Systemics would say 
+          ;; they are qualifiers, so perhaps subtype? 
+          (bind-variable 'modifier qualifier head) ;; safe
+          head))))
 
 (defun interpret-premod-to-np (premod head)
-  (let* ((variable-to-bind
+  (let ((variable-to-bind
           (subcategorized-variable head :premod premod)))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
-      (if *collect-subcat-info*
-          (push (subcat-instance head variable-to-bind 
-                                 premod premod)
-                *subcat-info*))
+      (when *collect-subcat-info*
+        (push (subcat-instance head variable-to-bind premod premod)
+              *subcat-info*))
       (setq head (maybe-copy-individual head))
       (bind-variable variable-to-bind premod head)
       head))))
@@ -116,23 +116,23 @@
     (push-debug `(,qualifier ,head)) 
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-  (cond ((call-compose qualifier head));; This case is to benefit marker-categories 
-       
-        ((category-p head)
-         (setq head (make-individual-for-dm&p head))
-         (or (call-compose qualifier head)
-             (interpret-premod-to-np qualifier head)
-             (else
-              (when (itypep head 'endurant)
-                (bind-variable 'modifier qualifier head))
-              head)))
-        ((interpret-premod-to-np qualifier head))
-        (t ;; Dec#2 has "low nM" which requires coercing 'low'
-         ;; into a number. Right now just falls through
-         (setq head (maybe-copy-individual head))
-         (when (itypep head 'endurant)
-           (bind-variable 'modifier qualifier head))
-         head)))
+  (cond 
+   ((call-compose qualifier head));; This case is to benefit marker-categories 
+   ((category-p head)
+    (setq head (make-individual-for-dm&p head))
+    (or (call-compose qualifier head)
+        (interpret-premod-to-np qualifier head)
+        (else
+          (when (itypep head 'endurant)
+            (bind-variable 'modifier qualifier head))
+          head)))
+   ((interpret-premod-to-np qualifier head))
+   (t ;; Dec#2 has "low nM" which requires coercing 'low'
+    ;; into a number. Right now just falls through
+    (setq head (maybe-copy-individual head))
+    (when (itypep head 'endurant)
+      (bind-variable 'modifier qualifier head))
+    head)))
 
 (defun quantifier-noun-compound (quantifier head)
   ;; Not all quantifiers are equivalent. We want to idenify
@@ -142,6 +142,7 @@
   ;; us to do that after the analysis dust has settled.
   ;; Before doing quantifiers seriously find copy of Kurt vanLehn's
   ;; MS thesis and think about generalized quantifiers.
+  ;;(push-debug `(,quantifier ,head)) (break "fix 'additional cystene'")
   (if (category-p head) ;;//// need to reclaim bindings !!!!!!
     (setq head (make-individual-for-dm&p head))
     (setq head (maybe-copy-individual head)))
@@ -149,9 +150,12 @@
       ;; in Jan#4 it's a literal
     (let ((no (find-individual 'quantifier :word "no")))
       (bind-variable 'negation no head)) ;; on top
-    (when (itypep head 'endurant)
-      (bind-variable 'quantifier quantifier head))) ;; on endurant
-  head)
+    (cond
+     ((itypep head 'endurant)
+      (bind-variable 'quantifier quantifier head)
+      head)
+     (t ;;//////// drop it on the floor
+      head))))
 
 (defun number-noun-compound (number head)
   ;;/// for the moment there is a number variable on

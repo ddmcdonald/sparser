@@ -271,6 +271,9 @@
   (caddr entry))
 
 
+;;;-----------
+;;; predicate
+;;;-----------
 
 (defmethod known-subcategorization? ((e edge))
   (known-subcategorization? (edge-category e)))
@@ -289,7 +292,47 @@
       (subcat-patterns sc))))
 
 
-  
- 
+;;;-------------------------------------
+;;; Collecting instances and statistics
+;;;-------------------------------------
+
+(defparameter *collect-subcat-info* nil)
+(defparameter *subcat-info* nil)
+(defparameter *ref-cat-text* (make-hash-table))
+
+(defun save-subcat-info (&optional filename)
+  (if filename
+    (with-open-file (stream filename
+                            :direction :output
+                            :if-exists :overwrite
+                            :if-does-not-exist :create)
+      (subcat-info stream))
+    (subcat-info)))
+    
+(defun subcat-info (&optional (stream t))
+  (declare (special *collect-subcat-info* *ref-cat-text* *subcat-info*))
+  (setq *collect-subcat-info* t)
+  (clrhash *ref-cat-text*)
+  (compare-to-snapshot 'dec-test)
+  (compare-to-snapshot 'dry-run)
+  (loop for x in *subcat-info*
+    do
+    (print x stream))
+  (let ((cats nil))
+    (maphash #'(lambda (cat strings) 
+                 (declare (ignore strings))
+                 (push cat cats))
+             *ref-cat-text*)
+    (setq cats (sort cats #'string< :key #'(lambda(cat) (cat-name cat))))
+    (loop for cat in cats 
+      do
+      (format stream "~&(~A" cat)
+      (loop for item in (gethash cat *ref-cat-text*)
+        do
+        (format stream "~&   ~S" item))
+      (format stream ")"))
+    ;;(format #'(lambda (cat strings)(pprint (list (cat-name cat) strings))) *ref-cat-text*)
+    ))
+
 
 
