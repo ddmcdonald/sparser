@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
-;;; copyright (c) 1989-2005,2010-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1989-2005,2010-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   June 2014
+;;;   Version:   April 2015
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -90,6 +90,8 @@
 ;; prime Comlex. With fire as the default switch setting we were doing that anyway.
 ;; Also added *big-mechanism* as a grammar-load directing flag. 
 ;; 3/21/2015 minor reader conditionalization for SBCL, comparable to that for MCL and CCL
+;; 4/18/15 added *track-incidence-count-on-bindings* because it's relevant to DM&P
+;; which isn't part of most loads so can otherwise count on it having a value
 
 (in-package :cl-user)
 
@@ -401,6 +403,14 @@ or for loading the newer of the compiled or source files.
   (defparameter sparser::*lattice-points* t
     "This governs the loading of alternative versions of several
      core modules, versions that support fully developed lattice points"))
+
+(unless (boundp 'sparser::*track-incidence-count-on-bindings*)
+  (defparameter sparser::*track-incidence-count-on-bindings* nil
+    "Unless we are working with very general individuals as we do
+    in DM&P, the number of times that a binding will be 'created'
+    more than once is vanishingly small. Small enough that when we 
+    notice them we can determine whether they're real.
+    This flag is looked at in bind-variable/expr."))
 
 
 (unless (boundp 'sparser::*edges-from-referent-categories*)
