@@ -7,25 +7,26 @@
 
 ;; utilities for testing in R3. Made format-item prettier 1/10/15.
 ;; 2/8/15 Turning off anaphora on sentence calls. 
-;; 3/21/2015 new functions for saving information about actually occurring sub-categorization cases
+;; 3/21/2015 new functions for saving information about actually 
+;;   occurring sub-categorization cases
 
 (in-package :sparser)
 
-(defvar *dec-tests*)
-(defvar *jan-dry-run*)
+
 (defvar *save-chunk-edges*)
 (defvar *all-chunk-edges*)
 (defvar *relations*)
 
 
-(defvar *known-breaks* nil)
+(defparameter *sentences* nil
+  "The set of sentences a general iterator
+   runs over. Set by one of the corpus specifiers")
 
-(defvar *tested* '(0))
-
-(defun reset-dectest ()
-  (setq *tested* '(0)))
-
-(defparameter *sentences* nil)
+;;;----------------------------
+;;; Sentence corpus specifiers
+;;;----------------------------
+; These specify which corpus a general iterator
+; should run on. 
 
 (defun test-overnight ()
   (declare (special *overnight-sentences*))
@@ -51,11 +52,31 @@
   (reset-test)
   nil)
 
+;;;-------------------------------
+;;; general iterators and friends
+;;;-------------------------------
+
+(defvar *known-breaks* nil
+  "Bad pushes sentence number onto this list when you
+   call it. Useful for marking sentences that get
+   Lisp errors.")
+ 
+(defvar *tested* '(0)
+ "Retest pushes sentence numbers onto this list 
+   as they are executed")
+
+
 (defun reset-test ()
+  "Set the two accumulators back to their initial values"
   (setq *tested* '(0))
   (setq *known-breaks* nil))
 
-(defun retest () 
+(defun reset-dectest ()
+  (reset-test))
+
+(defun retest ()
+  "Loop over all the designated sentences calling
+   run-test on each one"
   (reset-test)
   (loop for i from (+ 1 (car *tested*)) to (length *sentences*) 
     do 
@@ -66,18 +87,30 @@
   (push (car *tested*) *known-breaks*) 
   (retest))
 
-(defun dectest (n &optional (sentences *dec-tests*))
-  (run-test n sentences))
+;;--- tailored iterators
 
 (defun dectests (&optional (start 1))
+  (declare (special *dec-tests*))
   (loop for i from start to (length *dec-tests*) do (dectest i)))
 
+(defun jantests (&optional (start 1))
+  (declare (special *jan-dry-run*))
+  (loop for i from start to (length *jan-dry-run*) do (dectest i)))
 
-(defun jantest (n &optional (sentences *jan-dry-run*))
+
+;;;-------------------------
+;;; Single sentence testers
+;;;-------------------------
+
+(defun dectest (n &optional (sentences *dec-tests*))
+  (declare (special *dec-tests*))
   (run-test n sentences))
 
-(defun jantests (&optional (start 1))
-  (loop for i from start to (length *jan-dry-run*) do (dectest i)))
+(defun jantest (n &optional (sentences *jan-dry-run*))
+  (declare (special *jan-dry-run*))
+  (run-test n sentences))
+
+
 
 (defmacro test (n)
   `(run-test ,n))
@@ -85,7 +118,8 @@
 (defun run-test (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences))
         (*do-anaphora* nil))
-    (declare (special *do-anaphora*))
+    ;; Anaphora rarely is germane on a single sentence by itself
+    (declare (special *do-anaphora* *save-chunk-edges*))
     (format t "~&___________________________________________~%~%")
     (print (list n test))
     (terpri)
@@ -93,9 +127,9 @@
         (print "skipping because of known problems")
         (progn
           (eval test)
-          (if *save-chunk-edges*
-              ;;make the list of chunk edges show their sentence origin
-              (push (cons n (cdr test)) *all-chunk-edges*))
+          (when *save-chunk-edges*
+            ;;make the list of chunk edges show their sentence origin
+            (push (cons n (cdr test)) *all-chunk-edges*))
           (when t
             (terpri) 
             (format t "---SEMANTIC FOREST---")
@@ -124,10 +158,8 @@
        (show-semantics)))))
           
                 
-
-
-
 (defun stest (n &optional (sentences *sentences*))
+  "Variant on run-test using a different semantics extractor"
   (let ((test (nth (- n 1) sentences))
         (*do-anaphora* nil))
     (declare (special *do-anaphora*))
@@ -147,6 +179,11 @@
       (terpri)
       (reverse s-expressions))))
 
+
+
+;;;-------------------------------
+;;; helper functions for sem tree
+;;;-------------------------------
 
 (defun tree-size (tree)
   (cond
@@ -275,35 +312,3 @@
                 (edge-category 
                  (edge-right-daughter edge))))))))
  
-(defun save-subcat-info (&optional filename)
-  (if filename
-      (with-open-file (stream filename
-                              :direction :output
-                              :if-exists :overwrite
-                              :if-does-not-exist :create)
-        (subcat-info stream))
-      (subcat-info)))
-    
-(defun subcat-info (&optional (stream t))
-  (declare (special *collect-subcat-info* *ref-cat-text* *subcat-info*))
-  (setq *collect-subcat-info* t)
-  (clrhash *ref-cat-text*)
-  (compare-to-snapshot 'dec-test)
-  (compare-to-snapshot 'dry-run)
-  (loop for x in *subcat-info*
-    do
-    (print x stream))
-  (let
-      ((cats nil))
-    (maphash #'(lambda (cat strings) (declare (ignore strings))(push cat cats)) *ref-cat-text*)
-    (setq cats (sort cats #'string< :key #'(lambda(cat) (cat-name cat))))
-    (loop for cat in cats 
-      do
-      (format stream "~&(~A" cat)
-      (loop for item in (gethash cat *ref-cat-text*)
-        do
-        (format stream "~&   ~S" item))
-      (format stream ")"))
-    ;;(format #'(lambda (cat strings)(pprint (list (cat-name cat) strings))) *ref-cat-text*)
-    ))
-
