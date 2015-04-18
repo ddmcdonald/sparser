@@ -282,7 +282,6 @@
   ;; Look in the variable's index under this value and see 
   ;; whether one of the bindings there has this individual
   ;; as its body
-  ;; SBCL found this time waster (push-debug `(,variable ,value ,individual))
   (when (typep variable 'anonymous-variable)
     (setq variable (dereference-variable variable individual)))
   
