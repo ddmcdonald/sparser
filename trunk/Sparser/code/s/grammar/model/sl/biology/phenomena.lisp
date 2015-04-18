@@ -389,16 +389,11 @@ the aggregate across the predicate it's in. |#
 
 
 
-;;; translocation 
+;;; accumulation 
 
-; (p "ERK Nuclear Translocation Is Dimerization-independent but Controlled by the Rate of Phosphorylation.")
-; (p "Upon activation, ERKs translocate from the cytoplasm to the nucleus.")
-; "the molecular mechanisms that regulate ERK nuclear translocation 
-;     are not fully understood."
 ; that ERK1 nuclear accumulation increased
-; (process on ERK) ... a requirement for nuclear translocation."
 ; ERK1-4 ... accumulated in the nucleus to the same level as ...
-; 11: is directly translated into a delay in nuclear translocation
+
 
 
 
