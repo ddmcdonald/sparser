@@ -27,6 +27,7 @@
 ;; investigations using SBCL -- minor tweaks
 ;; 3/21/2015 FIX OVERZEALOUS correction of find/binding -- some problem in lookup for
 ;;  find/binding which caused bad definition in (define-unit-of-measure ...) for "nm"
+;; 4/18/2015 removed fix to bind-variable/expr, which prevented multiple bindings of a variable on a single individual
 
 
 (in-package :sparser)
@@ -107,10 +108,7 @@
 
 
 (defun bind-variable/expr (variable value individual)
-  (let ((established-binding
-         (if (individual-p individual)
-             (binding-of-individual variable individual)
-             (find/binding variable value individual))))
+  (let ((established-binding (find/binding variable value individual)))
     (if established-binding
       (let ((count-cons
              (member :incidence-count (unit-plist established-binding))))
