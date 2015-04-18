@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.24 November 2014
+;;;  Version:  2.24 April 2015
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -76,6 +76,7 @@
 ;;       11/7/14 debugged it. 
 ;; 3/10/2015 Make bio-setting set *edges-from-referent-categories* to NIL
 ;;  result is a faster system with (slightly) more accurate results.
+;; 4/18/15 Fanout from flag used in DM&P and checked in bind-variable/expr
 
 (in-package :sparser)
 (defvar *PNF-ROUTINE*)
@@ -350,6 +351,7 @@
   (setq *break-on-new-bracket-situations* t)
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
+  (setq *track-incidence-count-on-bindings* nil) ;; see bind-variable/expr
   (display-bracketing)
   (setq *switch-setting* :tuned-grok))
 
@@ -582,6 +584,7 @@
   (setq *segment-scan/forest-level-transition-protocol*
         :move-only-at-significant-boundary)
   (setq *do-domain-modeling-and-population* t)
+  (setq *track-incidence-count-on-bindings* t)
   (setq *ignore-capitalization* nil)
   (establish-pnf-routine :scan/ignore-boundaries)
   (setq *cap-seq-edge-data-routine* 'dm&p-cap-seq-data)
