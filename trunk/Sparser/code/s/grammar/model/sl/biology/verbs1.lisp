@@ -1811,19 +1811,30 @@
 (def-synonym transition
    (:noun "transition"))
 
+
+
+; (p "ERK Nuclear Translocation Is Dimerization-independent but Controlled by the Rate of Phosphorylation.")
+; (p "Upon activation, ERKs translocate from the cytoplasm to the nucleus.")
+; "the molecular mechanisms that regulate ERK nuclear translocation 
+;     are not fully understood."
+; (process on ERK) ... a requirement for nuclear translocation."
+; 11: is directly translated into a delay in nuclear translocation
 (define-category translocation :specializes bio-movement
-  :binds ((agent bio-process)(object protein)
-          (origin cellular-location)(destination cellular-location)) 
+  :binds ((agent bio-process)
+          (object protein)
+          (origin cellular-location)
+          (destination cellular-location)) 
   :realization 
-  (:verb "translocate" :noun "translocation" 
-         :etf (svo-passive) 
-         :s object ;; ERK translocates -- this is not the agent, but the object!
-         :o object
-         :to destination
-         :of object
-         :from origin
-         :premod destination
-         :premod object))
+  (:verb "translocate" 
+   :noun "translocation" 
+   :etf (svo-passive) 
+   :s object ;; ERK translocates -- this is not the agent, but the object!
+   :o object
+   :to destination
+   :of object
+   :from origin
+   :premod destination
+   :premod object))
 
 (define-category enter :specializes bio-movement
   :binds ((agent bio-entity)(object bio-process)
