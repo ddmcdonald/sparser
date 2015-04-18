@@ -55,12 +55,6 @@
   ;; (test-overnight)
   (test-jan))
 
-(defun ddm-load-corpora ()
-  (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
-  (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
-  (ddm-load "interface/R3-eval/overnight-sents.lisp"))
-
 (defun ddm-bio ()
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
   (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
@@ -75,12 +69,23 @@
 ;;  molecules and NGkappB not loaded
 ;; cf. model/sl/NIH/site.lisp
 
-(defun ddm-pending-notes ()
-  (sparser-doc-ed "notes/note on bio control structure.lisp")
-  (sparser-doc-ed "notes/note on anaphora.lisp")
-  (sparser-doc-ed "notes/note on simpler shortcuts.lisp")
-  (sparser-doc-ed "notes/note on traces.lisp")
-  (sparser-doc-ed "notes/note on edges.lisp"))
+(defun ddm-regression-jig ()
+  (ddm-ed "objects/doc/sentence-corpora.lisp")
+  (ddm-ed "grammar/tests/citations/code/treetop-records.lisp"))
+#|  4/18/15  -- comparing to January
+? (compare-to-snapshot 'dec-test)
+Better: (57 56 55 54 53 50 49 48 46 45 42 41 39 35 34 28 26 25 24 23 22 18 17 13 12 11 10 9 8 7 6 3 2)
+Worse: (52 51 29 14)
+? (compare-to-snapshot 'dry-run)
+Better: (42 39 38 36 34 30 29 25 23 21 19 18 16 15 14 10 9 8 7 5 4 3)
+Worse: (28 13 6 2 1)
+
+|#
+(defun ddm-load-corpora ()
+  (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
+  (ddm-load "interface/R3-eval/overnight-sents.lisp"))
 
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
@@ -115,6 +120,13 @@
   (ddm-ed "objects/rules/cfr/define5.lisp"))
 ; i/r/s-make-the-rule
   
+(defun ddm-pending-notes ()
+  (sparser-doc-ed "notes/note on bio control structure.lisp")
+  (sparser-doc-ed "notes/note on anaphora.lisp")
+  (sparser-doc-ed "notes/note on simpler shortcuts.lisp")
+  (sparser-doc-ed "notes/note on traces.lisp")
+  (sparser-doc-ed "notes/note on edges.lisp"))
+
 
 ;; local anaphora, getting categories right
 ; sentence-sweep-loop  decode-realization-parameter-list
