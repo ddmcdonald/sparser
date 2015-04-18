@@ -82,7 +82,6 @@
           (keywordp pname)
           pname
           (resolve pname))))
-    (declare (special variable slot))
     (unless variable
       (error "No variable named ~a associated with ~a"
              var-name category))
