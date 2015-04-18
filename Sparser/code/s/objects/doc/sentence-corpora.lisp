@@ -40,6 +40,7 @@ previous records of treetop-counts.
                        *workshop-window*))
      ,@body))
 
+
 ;;;---------
 ;;; classes
 ;;;---------
@@ -73,7 +74,6 @@ previous records of treetop-counts.
 ;;; methods
 ;;;---------
 
-
 ;;--- define corpora
 
 (defmacro define-sentence-corpus (name variable &key location doc)
@@ -99,30 +99,21 @@ previous records of treetop-counts.
   (let ((variable (corpus-bound-variable corpus)))
     (unless variable
       (error "Corpus not set up with a variable"))
-    (let ((*readout-relations* nil)
-          (*readout-segments* nil)
-          (*readout-segments-inline-with-text* nil) ;; quiet
-          (*display-word-stream* nil)
-          (*trace-lexicon-unpacking* nil)
-          (*trace-morphology* nil)
-          (*workshop-window* t) ;; block tts in p
-          (*do-anaphora* nil) ;; no anaphora on single sentences
-          (index 0) pairs )
-      (declare (special *readout-relations* *readout-segments*
-                        *readout-segments-inline-with-text*
-                        *display-word-stream*
-                        *trace-lexicon-unpacking* *trace-morphology*
-                        *workshop-window* *do-anaphora*)) 
-      (dolist (exp (eval variable)) ;; (p "...")
-        (incf index)
-        (eval exp)
-        (let ((sentence (previous (sentence))))
-          ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
-          (let ((count (length (treetops-between
-                                (starts-at-pos sentence)
-                                (ends-at-pos sentence)))))
-            (push `(,index . ,count) pairs))))
-      (nreverse pairs))))
+    (with-total-quiet
+      (let ((*do-anaphora* nil) ;; no anaphora on single sentences
+            (index 0) pairs )
+        (declare (special *do-anaphora*))
+        (dolist (exp (eval variable)) ;; (p "...")
+          (incf index)
+          (eval exp)
+          (let ((sentence (previous (sentence))))
+            ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
+            (let ((count (length (treetops-between
+                                  (starts-at-pos sentence)
+                                  (ends-at-pos sentence)))))
+              (push `(,index . ,count) pairs))))
+        (nreverse pairs)))))
+
 
 
 ;;--- compare current performance to a snapshot
@@ -138,8 +129,6 @@ previous records of treetop-counts.
   (let* ((current-pairs (run-treetop-snapshot corpus))
          (snapshot (car (snapshots corpus)))
          (reference-pairs (snapshot-pairs snapshot)))
-    (push-debug `(,current-pairs ,reference-pairs))
-    ;; (setq current-pairs (car *) reference-pairs (cadr *))
     (let ( better worse )
       (loop for ref-pair in reference-pairs
         as pair in current-pairs
