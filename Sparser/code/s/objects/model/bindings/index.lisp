@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  0.2 April 2013
+;;;  version:  0.3 April 2015
 
 ;; initiated 7/20/92 v2.3
 ;; (6/4/93) tweeked the checks for valid values in Index/binding
@@ -14,10 +14,12 @@
 ;;     (3/4/05) added optional to Index/binding to just index the value
 ;;     (4/1/13) Added checks for the variable being anonymous, which post-dates
 ;;      all this code. Ignored index link to the value
-;; 3/21/2015 key changes to find/binding based on SBCL profiling
-;; 3/21/2015 FIX OVERZEALOUS correction of find/binding -- some problem in lookup for
-;;  find/binding which caused bad definition in (define-unit-of-measure ...) for "nm"
-;; 3/22/2015 speed up access to var-instances by using hash table
+;; 0.3 3/21/2015 key changes to find/binding based on SBCL profiling
+;;     3/21/2015 FIX OVERZEALOUS correction of find/binding -- some problem in lookup for
+;;       find/binding which caused bad definition in (define-unit-of-measure ...) for "nm"
+;;     3/22/2015 speed up access to var-instances by using hash table
+;;     4/18/15 Continued redefinition of find/binding by searching on the
+;;        individual rather than the list of bindings on the variable
 
 (in-package :sparser)
 
@@ -284,18 +286,24 @@
   ;; as its body
   (when (typep variable 'anonymous-variable)
     (setq variable (dereference-variable variable individual)))
-  
-  ;; SBCL also found another problematic time waster -- searching in the
-  ;;  variable index, rather than on the bound-in slot for individuals
-  
-  ;;SBCL says that the method below is slow and takes 25% of parse time!
   (let ((instances-ht (var-instances variable)))
     (let ((bindings (gethash value instances-ht)))
       ;; /// If the individual gets dicy to identify (being arbitrary)
       ;; the we probably want to shift to v+v objects.
       (when bindings
-        (find individual bindings :test #'eq
-              :key #'binding-body)))))
+        (let* ((bindings-on-individual (indiv-binds individual))
+               (binding 
+                (loop for b in bindings-on-individual
+                  when (memq b bindings) return b)))
+          (declare (special *track-incidence-count-on-bindings*))
+          (when binding
+            (when *track-incidence-count-on-bindings*
+              (let ((count-cons
+                     (member :incidence-count (unit-plist binding))))
+                (rplacd count-cons
+                        (cons (1+ (cadr count-cons))
+                              (cddr count-cons)))))
+            binding))))))
 
 
 

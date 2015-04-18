@@ -108,6 +108,15 @@
 
 
 (defun bind-variable/expr (variable value individual)
+  (declare (special *track-incidence-count-on-bindings*))
+  (let ((binding
+         (or (when *track-incidence-count-on-bindings*
+               (find/binding variable value individual))
+             (make/binding variable value individual))))
+    (when-binding-hook variable individual value)
+    binding))
+
+#|  Remove when clear that there's no effect from the change
   (let ((established-binding (find/binding variable value individual)))
     (if established-binding
       (let ((count-cons
@@ -124,7 +133,7 @@
               `(:incidence-count 1 ,(unit-plist new-binding)))
         (when-binding-hook variable individual value
                            :new new-binding)
-        new-binding ))))
+        new-binding )))  |#
 
 
 
@@ -138,6 +147,9 @@
     (setf (binding-body b)      individual)
     (setf (binding-variable b)  variable)
     (setf (binding-value b)     value)
+
+    (when *track-incidence-count-on-bindings*
+      (setf (unit-plist b) `(:incidence-count 1 ,(unit-plist b))))
 
     (index/binding b variable no-index-on-body?)
      b ))
