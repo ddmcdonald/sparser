@@ -300,9 +300,6 @@
     (eq (pos-capitalization pos-after) :digits)))
 
 
-  (break "Stub: check for digit at ~a" position))
-
-
 (defun first-word-is-bracket-punct (word1)
   (word-is-bracket-punct word1))
 
