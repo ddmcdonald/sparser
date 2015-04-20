@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2015 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   2.4 April 2014
+;;;   Version:   2.6 April 2015
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -32,8 +32,12 @@
 ;;     (10/10/13) Added final hook to incorporate the referent into the situation. 
 ;;     (3/31/14) Put real call for the c3 case. (4/7/14) Letting the result of
 ;;      the C3 call (which wraps a call to compose) override the referent.
-;; 1/2/2015 change referent-from-rule to refurn :abort-edge when the referent computation fails, so that failed sub-categorization frames are not applied
-
+;; 2.5 (1/2/2015) change referent-from-rule to refurn :abort-edge when the referent 
+;;      computation fails, so that failed sub-categorization frames are not applied
+;; 2.6 (4/19/15) Factored out walk-through-referent-actions from referent-from-rule
+;;      so the guts of the loop were easier to read and as place to restructure
+;;      the rule field to notice head+binding expressions and compose them
+;;      into a new :head-and-bindings expression.
 
 (in-package :sparser)
 
@@ -113,25 +117,8 @@
         (if (listp rule-field)
           (then
             (if (listp (first rule-field))
-              (then ;; more than one referent action
-                (setq *referent*
-                      (dispatch-on-rule-field-keys
-                       (first rule-field)
-                       left-referent right-referent right-edge))
-                (let ( evolved-result )
-                  (dolist (ref-action (rest rule-field))
-                    (setq evolved-result
-                          (dispatch-on-rule-field-keys
-                           ref-action left-referent right-referent right-edge)))
-                  (when (typecase evolved-result
-                          (psi t)
-                          (individual t)
-                          (referential-category t)
-                          (mixin-category t)
-                          (category t)
-                          (otherwise nil))
-                    (setq *referent* evolved-result))))
-
+              (walk-through-referent-actions 
+               rule-field left-referent right-referent right-edge)
               (else  ;; just one action
                 (setq *referent*
                       (dispatch-on-rule-field-keys
@@ -150,10 +137,59 @@
             (when result
               (unless (eq result *referent*)
                 (setq *referent* result)))))
-        (if
-         (null *referent*)
+
+        (if (null *referent*)
          :abort-edge
          *referent* )))))
+
+(defun walk-through-referent-actions  (rule-field 
+                                       left-referent right-referent 
+                                       right-edge)
+  ;; Called from referent-from-rule and able to adjust what happens
+  ;; in the succession of rule actions
+  (declare (special *referent*))
+  (when (and (assq :head rule-field)
+             (assq :binding rule-field))
+    ;; combine them. 
+    (let* ((copy-of-rule-field (copy-list rule-field))
+           (head-entry (cadr (assq :head copy-of-rule-field)))
+           (binding-entry (cadr (assq :binding copy-of-rule-field)))
+           new-rule-field  )
+      (do* ((expression (car rule-field) (car rest))
+            (keyword (car expression) (car expression))
+            (value (cadr expression) (cadr expression))
+            (rest (cdr rule-field) (cdr rest)))
+          ((null keyword))
+        (unless (or (eq keyword :head)
+                    (eq keyword :binding))
+          (push value new-rule-field)
+          (push keyword new-rule-field)))
+
+      (let ((composite `(:head-and-bindings ,head-entry ,binding-entry)))
+        (if new-rule-field ;; some were left
+          (setq new-rule-field (cons composite new-rule-field))
+          (setq new-rule-field (list composite)))
+        ;;(push-debug `(,new-rule-field ,rule-field)) (break " new rule field"))
+        (setq rule-field new-rule-field))))
+
+  (setq *referent* 
+        (dispatch-on-rule-field-keys
+         (first rule-field)
+         left-referent right-referent right-edge))
+  (let ( evolved-result )
+    (dolist (ref-action (rest rule-field))
+      (setq evolved-result
+            (dispatch-on-rule-field-keys
+             ref-action left-referent right-referent right-edge)))
+    (when (typecase evolved-result
+            (psi t)
+            (individual t)
+            (referential-category t)
+            (mixin-category t)
+            (category t)
+            (otherwise nil))
+      (setq *referent* evolved-result))))
+
 
 
 ;;;---------------------------------
