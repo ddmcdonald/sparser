@@ -32,7 +32,8 @@
 ;;      so much inconsistency.
 ;; 2.0 (5/22/13) Made-over as a call to define-function-term and made being
 ;;      sentential adverbs the marked case. 6/9/14 added the other arguments
-;;      to define-function-term.
+;;      to define-function-term. 4/20/15 removing "not", which is to specific
+;;      in action to treat as an adverb.
 
 (in-package :sparser)
 
@@ -51,5 +52,3 @@
     :rule-label rule-label
     :discriminator discriminator
     :tree-families   '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb sentence-adverb)))
-
-(define-adverb "not")
