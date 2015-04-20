@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "reference-points"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  March 2015
+;;;  version:  April 2015
 
 ;; Initiated 10/9/14 as a place to collect the names of functions
 ;; for use by meta-. 
@@ -44,6 +44,12 @@ Reclaimation of temporary individuals:    (trace-reclaimation)
 
   declare-all-existing-individuals-permanent
   index/permanent-individual
+
+Operations over chunks: (aka minimal phrases, segments)
+  identify-chunks => find-chunks *chunks*
+    => parse-chunk-interior *current-chunk*
+        => pts => parse-at-the-segment-level
+           => interp-big-mech-chunk
 
 
 Referent calculation:
