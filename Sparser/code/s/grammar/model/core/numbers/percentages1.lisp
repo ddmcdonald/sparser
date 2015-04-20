@@ -1,15 +1,18 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2014-2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "percentages"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  1.3 September 2014
+;;;  Version:  1.3 April 2015
 
 ;; 1.1 (7/16/92 v2.3) pilot instances of the new representation regime
 ;; 1.2 (1/10/94) stubbed measurement to get around load-order paradox
 ;;     (1/9/96) added string printer
 ;; 1.3 (7/5/98) redone with a schematic realization.
 ;;     (9/9/14) added 'n-fold'
+;;     (4/20/15) Something odd has happened and the #\% character is
+;;      appearing in the chart as the polyword "percent-sign". Added it
+;;      to the options for the np-head.
 
 (in-package :sparser)
 
@@ -28,7 +31,8 @@
   :index (:temporary :list)
   :realization (:tree-family item+idiomatic-head
                 :mapping ((np . :self)
-                          (np-head . ("percent" "%"))
+                          (np-head . ("percent" "%"
+                                      "percent-sign"))
                           (modifier . number)
                           (result-type . :self)
                           (item . number))))
