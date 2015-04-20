@@ -337,19 +337,19 @@
                  (adjacent-tt-pairs sentence)
                  (adjacent-tts)))
         rule  triples )
-    (push-debug `(,pairs))
+    ;;(push-debug `(,pairs))
     (tr :pairs-to-consider-whacking pairs)
     (loop for pair in pairs 
       when (setq rule (rule-for-edge-pair pair))
       do (push (cons rule pair)
                triples))
-    (setq triples ; 
+    (setq triples
           (if *use-broader-set-of-tts*
             (let ((original-triples (copy-list triples))) ;; for trace
               (push-debug `(,original-triples))
               (remove-surplus-literal-compositions triples))
             triples))
-
+    ;;(break "triples")
     (let ((triple (filter-rules-by-local-competition triples)))
       (tr :filter-selected-triple triple)
       triple)))
@@ -448,7 +448,8 @@
     (let ((rule 
            (if pair-seen 
             cached-rule ;; don't recompute the rule for the pair, saves a lot of time, particularly for pairs with no rules
-            (setf (gethash pair *rules-for-pairs*) (multiply-edges (car pair) (second pair))))))
+            (setf (gethash pair *rules-for-pairs*) 
+                  (multiply-edges (car pair) (second pair))))))
       (if rule
         (when (cond
                ((not (consp (cfr-referent rule))))
