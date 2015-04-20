@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.8 August 2013
+;;;   Version:   1.9 April 2015
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -31,6 +31,9 @@
 ;; 1.8 (8/22/13) Changed the rules for the quantifiers to use the constructed
 ;;      category for each quantifier, not the words -- they weren't triggering
 ;;      the method. 
+;; 1.9 (4/20/15) Ignored comment about "not" making little sense as a quantifier
+;;      and making it one instead of handling it as a adverb which was the
+;;      case just before this.
 
 (in-package :sparser)
 
@@ -153,6 +156,10 @@
   
 
 (define-quantifier "no" :brackets '( ].quantifier  .[np )) 
+
+;; ignoring the comment just below as very likely OBE.
+;; Note that these brackets don't handle case of 'not' modifing an adjp.
+(define-quantifier "not"  :brackets '( ].verb .[modal ))
 
 ;; this interferes with the use of NOT as negation on adjectives "is not sensitive"
 ;; I don't know why "NOT" was ever a quantifier
