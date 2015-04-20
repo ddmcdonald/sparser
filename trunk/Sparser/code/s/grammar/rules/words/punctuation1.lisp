@@ -12,6 +12,12 @@
 ;;      (7/20/14) Added a parameter for hyphen\
 ;;      (1/8/15) constant for semicolon.
 ;; 1.3  (1/29/15) moved out the constants to their own file
+;; added (define-punctuation rightwards_arrow #\U+2192) for →
+;; NOTE: the encodings of unicode characters are in HEX, so #\+2192 is 5894 decimal
+;;  while the alist (*entries-for-out-of-band-characters*) for out-of-band characters 
+;;  uses decimal encoding, so in alphabet.lisp we need
+;;(8594 ;; rightwards arrow
+;;   (:punctuation . ,(punctuation-named #\U+2192))) 
 
 (in-package :sparser)
 
@@ -57,4 +63,5 @@
 (define-punctuation  close-curly-bracket #\} )   ;; 125
 (define-punctuation  tilda               #\~ )   ;; 126
 
+(define-punctuation rightwards_arrow #\U+2192) 
 
