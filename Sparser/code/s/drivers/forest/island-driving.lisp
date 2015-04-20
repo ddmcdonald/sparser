@@ -113,13 +113,8 @@
   (let ( copula )
     (loop while (setq copula (copula-rule?))
       do (execute-triple copula)))
-  #+ignore(when (there-are-conjunctions?)
-    (tr :try-spanning-conjunctions)
-    (try-spanning-conjunctions))
+
   (let ( rule-and-edges  edge)
-;    (loop while (setq rule-and-edges (best-treetop-rule))
-;      do (execute-triple rule-and-edges))
-; Reformulated to insert trace
     (clrhash *rules-for-pairs*)
     (loop
       (setq rule-and-edges (best-treetop-rule sentence))
