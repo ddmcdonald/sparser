@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  1.0 March 2015
+;;;  version:  1.0 April 2015
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -17,6 +17,8 @@
 ;; 1.0 11/18/14 Bumped number to permit major revamp to fit into multi-
 ;;   pass scanning. 12/4/14 moved out the patterns to their own file.
 ;;   Tweeking through 1/18/15. Cleaned up specials for character 3/10/15
+;;   4/19/15 Added safe characters to punctuation-terminates-no-space-sequence
+;;    and established notion of other-punct for them. 
 
 (in-package :sparser)
 
@@ -34,7 +36,7 @@
     "Controls whether we try to parse the edges of the words
      inside the span."))
 
-(defvar *the-punctuation-comma*) ;; caught by SBCL
+
 ;;;------------
 ;;; new driver
 ;;;------------
@@ -63,20 +65,25 @@
                        (chart-position-before position-just-after))))
       (tr :no-space-sequence-started-at start-pos)
 
-      ;;(push-debug `(,leftmost-edge ,position-just-after)) 
-      (when nil (break "sanity"))
-
       (when (or (word-is-bracket-punct (pos-terminal start-pos))               
                 (word-is-bracket-punct (pos-terminal position-just-after))
                 (word-never-in-ns-sequence (pos-terminal start-pos))
                 (word-never-in-ns-sequence (pos-terminal position-just-after)))
         (return-from collect-no-space-segment-into-word nil))
 
-      (multiple-value-bind (end-pos hyphen-positions slash-positions colon-positions)
-                           (sweep-to-end-of-ns-regions position-just-after)
+      (multiple-value-bind (end-pos hyphen-positions slash-positions
+                            colon-positions other-punct)
+                           (sweep-to-end-of-ns-regions start-pos)
+        ;; Sweep from the very beginning just to be sure we catch any
+        ;; marked punctuation there. 
+
 
         ;;(push-debug `(,start-pos ,end-pos))
-        ;; on this sentence: (p "Pre-clinical studies have demonstrated that the B-RAFV600E mutation predicts a dependency on the mitogen activated protein kinase (MAPK) signaling cascade in melanoma [1–5] —an observation that has been validated by the success of RAF and MEK inhibitors in clinical trials 6–8.")
+        ;; on this sentence: (p "Pre-clinical studies have demonstrated that 
+        ;;   B-RAFV600E mutation predicts a dependency on the mitogen activated 
+        ;;   protein kinase (MAPK) signaling cascade in melanoma 
+        ;;   [1–5] —an observation that has been validated by the success of 
+        ;;   RAF and MEK inhibitors in clinical trials 6–8.")
         ;; and perhaps others, the sweep to the end routine returns a string
         ;; as the value of end-pos, e.g. "6 - 8. "
         ;; Rather than figure it out just now (12/18/14) I'm just dropping it
@@ -97,16 +104,28 @@
               (words (words-between start-pos end-pos)))
           (tr :segment-ns-pattern pattern)
 
+          ;;(push-debug `(,pattern ,words ,start-pos ,end-pos))
+          ;;(break "Examine pattern and words before running")
+
           ;; Open coding post-accumulator-ns-handler
           (multiple-value-bind (layout edge)
                                (parse-between-boundaries start-pos end-pos)
-            (tr :ns-segment-layout layout)
+            (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
             (cond
              ((eq layout :single-span)  ;; Do nothing. It's already known
               (revise-form-of-nospace-edge-if-necessary edge :find-it))
+             ((and (memq :slash pattern)
+                   (memq :hyphen pattern))
+              (divide-and-recombine-ns-pattern-with-slash 
+               pattern words slash-positions hyphen-positions start-pos end-pos))
+             (other-punct
+              ;; this probably has to be spread over the other cases
+              ;; in some sort of combination, but this is a start
+              (resolve-other-punctuation-pattern
+               pattern words other-punct start-pos end-pos))
              ((memq :slash pattern)
               (tr :ns-looking-at-slash-patterns)
-              (divide-and-recombine-ns-pattern-with-slash 
+              (resolve-slash-pattern 
                pattern words slash-positions hyphen-positions start-pos end-pos))
              ((and (memq :hyphen pattern)
                    (memq :colon pattern))
@@ -166,8 +185,9 @@
   ;; need an EOS check 
   ;;  (push-debug `(,position)) (break "sweep to end from ~a" position)
   (declare (special *the-punctuation-hyphen*))
+
   (let ((next-pos (chart-position-after position))
-        word  hyphens  slashes  colons ) 
+        word  hyphens  slashes  colons  other-punct)
     (loop
       ;; we enter the loop looking for a reason to stop
       (setq word (pos-terminal next-pos))
@@ -183,14 +203,18 @@
         ;; We looked ahead, so reflect that in the stopping position
         (setq next-pos (chart-position-after next-pos))
         (return))
-      (when (eq word *the-punctuation-hyphen*) (push next-pos hyphens))
-      (when (eq word (punctuation-named #\/)) (push next-pos slashes))
-      (when (eq word (punctuation-named #\:)) (push next-pos colons))
+      (cond
+       ((eq word *the-punctuation-hyphen*) (push next-pos hyphens))
+       ((eq word (punctuation-named #\/)) (push next-pos slashes))
+       ((eq word (punctuation-named #\:)) (push next-pos colons))
+       ((punctuation? word) ;; but not terminating punctuation
+        (push next-pos other-punct))) ;; e.g. %, +, ~
       (setq next-pos (chart-position-after next-pos)))
     (values next-pos
             hyphens
             slashes
-            colons)))
+            colons
+            other-punct)))
 
 
 ;;;-----------------------------------------
@@ -198,7 +222,9 @@
 ;;;-----------------------------------------
 
 (defun word-never-in-ns-sequence (word)
-  (declare (special *the-punctuation-period* *the-punctuation-colon*
+  (declare (special *the-punctuation-period*
+                    *the-punctuation-colon*
+                    *the-punctuation-comma*
                     *the-punctuation-semicolon*))
   (when (punctuation? word)
     (or (eq word *the-punctuation-period*)
@@ -242,9 +268,12 @@
 
     ((or (eq word  (punctuation-named #\-))
 	 (eq word (punctuation-named #\/))
-         (eq word  (punctuation-named #\@)))
+         (eq word  (punctuation-named #\@))
+         (eq word  (punctuation-named #\%))
+         (eq word  (punctuation-named #\+)))
      nil)
 
+    ;; Every other punctuation is declared to be a boundary
     (t t)))
 
 
@@ -265,6 +294,12 @@
 	  t)))))
 
 (defun next-word-is-digit? (position)
+  (let ((pos-after (chart-position-after position)))
+    (unless (pos-terminal pos-after)
+        (scan-next-position))
+    (eq (pos-capitalization pos-after) :digits)))
+
+
   (break "Stub: check for digit at ~a" position))
 
 

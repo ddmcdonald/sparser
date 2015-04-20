@@ -147,6 +147,17 @@
      (left-treetop-at/edge end-pos)))
    
    (t (break "unknown NS pattern with colon:~%  ~a" pattern))))
+
+
+;;;-------------------------------------------------------------
+;;; patterns with punctuation other than slash, hypen, or colon
+;;;-------------------------------------------------------------
+
+(defun resolve-other-punctuation-pattern (pattern words other-punct
+                                          start-pos end-pos)
+  (push-debug `(,pattern ,words ,other-punct ,start-pos ,end-pos))
+  (break "stub"))
+
   
 ;;;----------------------------------
 ;;; patterns with no slash or hyphen

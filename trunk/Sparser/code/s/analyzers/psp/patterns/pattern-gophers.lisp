@@ -1,17 +1,39 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "pattern-gophers"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  December 2014
+;;;  version:  April 2015
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
+;; 4/15/15 modified resolve-hyphen-between-two-words to ignore syntax
+;;  or form rules. 
+
 
 (in-package :sparser)
 
 ;;;---------
 ;;; slashes
 ;;;---------
+
+(defun resolve-slash-pattern (pattern words 
+                              slash-positions hyphen-positions 
+                              pos-before pos-after)
+  (if (null (cdr slash-positions)) ;; only one
+    (one-slash-ns-patterns
+     pattern words slash-positions hyphen-positions start-pos end-pos)
+    (divide-and-recombine-ns-pattern-with-slash 
+     pattern words slash-positions hyphen-positions start-pos end-pos)))
+
+(defun one-slash-ns-patterns (pattern words 
+                              slash-positions hyphen-positions 
+                              pos-before pos-after)
+  (cond
+   (*work-on-ns-patterns*
+    (push-debug `(,pattern ,start-pos ,end-pos))
+    (break "New slash pattern to resolve: ~a" pattern))
+   (t t)))
+
 
 ;; (p "the Raf/MEK/ERK pathway.") 
 ;;  (p "For example, SHOC2/Sur-8 bridges.")
@@ -123,22 +145,31 @@
   ;; Have to distinguish between anticipated cases where the edges would
   ;; compose except for the hypen between the words and cases 
   ;; like "Sur-8" where it's the name of a protein
-  (push-debug `(,pos-before ,pos-after ,pattern))
+  ;;(push-debug `(,pos-before ,pos-after ,pattern))
   (tr :resolve-hyphen-between-two-words words)
   (let ((left-edge (right-treetop-at/edge pos-before))
         (right-edge (left-treetop-at/edge pos-after)))
     ;; lifted from nospace-hyphen-specialist
-    (push-debug `(,left-edge ,right-edge)) ;;(break "???")
-    (let ((rule (or (multiply-edges left-edge right-edge)
-                    (multiply-edges right-edge left-edge))))
-      ;; "GTP-bound"
+    ;;(push-debug `(,left-edge ,right-edge)) ;;(break "???")
+    (let* ((rule (or (multiply-edges left-edge right-edge)
+                     (multiply-edges right-edge left-edge)))
+           ;; We only want rules that create real relationships.
+           ;; There will always be a syntactic rule, so that rules
+           ;; out the possibility of looking for a salient literal
+           ;; which would be Very Bad since they are informative.
+           ;; Form rules are half generic, particularly for adjective
+           ;; so I'm ruling those out too.
+           (usable-rule (unless (syntactic-rule? rule)
+                          (unless (form-rule? rule)
+                            rule))))
       (cond
-       (rule
+       (usable-rule ;; "GTP-bound"
         (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
-          (push-debug `(,right-edge ,edge))
+          ;;(push-debug `(,right-edge ,edge))
           (revise-form-of-nospace-edge-if-necessary edge right-edge)
           (tr :two-word-hyphen-edge edge)))
-       ((compose-salient-hyphenated-literals ;; "re-activate"
+       ((some-word-is-a-salient-hyphenated-literal words)
+        (compose-salient-hyphenated-literals ;; "re-activate"
          pattern words pos-before pos-after))
        (t
         ;; make a structure if all else fails
