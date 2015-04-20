@@ -454,6 +454,7 @@ filligre may be used to distinguish them, etc.
 
 (noun "hormone" :super protein)
 (noun "histone" :super protein)
+(noun "histone 2B" :super protein)
 
 
 (def-bio "SAPK" protein) ;; class of stress activated proteins
