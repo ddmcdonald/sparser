@@ -35,9 +35,13 @@
       (:head (ref/head (second rule-field)
                        left-referent right-referent))
 
+      (:head-and-bindings
+       (ref/handle-head-and-bindngs
+        rule-field left-referent right-referent))
+
       (:instantiate-individual
        (ref/instantiate-individual
-        rule-field left-referent right-referent right-edge))
+        rule-field left-referent right-referent))
 
       (:instantiate-individual-with-binding
        (ref/instantiate-individual-with-binding

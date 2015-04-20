@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "cases"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:  1.9 November 2014
+;;;   Version:  1.9 April 2015
 
 ;; (2/27/92 v2.2) fixed a bug in Ref/composite where it was offset
 ;;   by one when extracting a literal from the rule's referent field
@@ -27,6 +27,7 @@
 ;;      indicate no value, so postposing looking it up.
 ;;     (9/25/14) Better error msg if ref-form is bad in ref/daughter
 ;; 1.9 (11/7/14) let ref/function take three arguments. 
+;;     (4/19/15) Added ref/handle-head-and-bindngs.
 
 (in-package :sparser)
 
@@ -49,6 +50,108 @@
     (annotate-daughter ref *rule-being-interpreted* head arg)
     ref))
 
+
+;;;------------------------------
+;;; bindings on established head
+;;;------------------------------
+#| The current version of ref/head make a new individual every time
+the head is a referential-category (using make-individual-for-dm&p).
+There's a note questioning it, but to do the right thing, which would
+be a find-or-make, we need access to the bindings in the way that
+:instantiate-individual-with-binding has. A temporary check and 
+rearrangement in walk-through-referent-actions put this together.
+Once it's been shaken down that should move to the regular referent
+construction code.
+|#
+
+(defun ref/handle-head-and-bindngs (rule-field left-referent right-referent)
+  ;; called from dispatch-on-rule-field-keys to do a find-or-make given
+  ;; the head and these bindings. 
+  (push-debug `(,rule-field ,left-referent ,right-referent))
+  ;; (setq rule-field (car *) left-referent (cadr *) right-referent (caddr *))
+  (let* ((exp (cdr rule-field)) ;; drop keyword
+         (head-key (car exp))
+         (vv-pair-exp (cadr exp))
+         head  vv-pair  i )
+    ;;break "look at decomposition of rule-field")
+
+    (setq head 
+          (typecase head-key
+            (referential-category head-key)
+            (symbol (determine-head-referent head-key))
+            (otherwise
+             (push-debug `(,rule-field ,left-referent ,right-referent))
+             ;; (setq rule-field (car *) left-referent (cadr *) right-referent (caddr *))
+             (error "Unanticiated type of object in head position ~
+                     in head field: ~a~%~a"
+                    (type-of head-key) head-key) )))
+
+    ;; There is probably a case where this requires a loop
+    (let* ((var (car vv-pair-exp))
+           (value-exp (cdr vv-pair-exp))
+           (value (cond
+                   ((eq value-exp 'left-referent)
+                    left-referent)
+                   ((eq value-exp 'right-referent)
+                    right-referent)
+                   (t (error "shouldn't get here")))))
+      (setq vv-pair `((,var ,value)))
+
+      ;;(push-debug `(,vv-pair))
+      ;;(break "senible vv pair?")
+
+      ;; Either we already have an individual for this head
+      ;; and just add the bindings (//// ultimately not the
+      ;; right thing to do), or we have a category and we do
+      ;; a find of make on it with those bindings.
+      (typecase head
+        (word) ;; from morphology-induced edges - ignore it
+
+        (individual 
+         (setq i head)
+         (let* ((pair (car vv-pair))
+                (variable (car pair))
+                (value (cadr pair)))
+           (bind-variable variable value i)))
+
+        (referential-category
+         (setq i (find-or-make/individual head vv-pair)))
+
+        (otherwise
+         (break "Unanticipated type as the head: ~a~%~a"
+                (type-of head) head)))
+      i)))
+  
+
+(defun determine-head-referent (symbol)
+  ;; abstracted out of ref/head which calls it, as does
+  ;; ref/handle-head-and-bindngs
+  (case symbol
+    ;; these set *head-edge* and *arg-edge*
+    (left-referent
+     (indicate-head :left)
+     (indicate-arg :right)
+     left-referent)
+    (right-referent
+     (indicate-head :right)
+     (indicate-arg :left)
+     right-referent)
+    (otherwise
+     (break "Unanticipated symbol as head indicator: ~a"
+            symbol))))
+
+#| Not quite right for decoding a set of bindings, but close
+    (setq vv-pairs
+          (loop for pair in vv-pair-exps
+            with var = (car pair)
+            with value-exp = (cadr pair)
+            with value = (cond
+                          ((eq value-exp 'left-referent)
+                           left-referent)
+                          ((eq value-exp 'right-referent)
+                           right-referent)
+                          (t (error "shouldn't get here")))
+            collect `(,var ,value)))  |#
 
 
 ;;;-----------
