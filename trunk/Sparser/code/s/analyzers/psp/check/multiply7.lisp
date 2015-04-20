@@ -54,6 +54,9 @@
 ;;   of cases in multiply-edges. Separated form from category rule checks. Added np-head
 ;;   to np-chunk check.
 ;; 3/21/2015 speed up suggested by SBCL profiling for cat-name
+;; 4/20/2015 create a list (*dont-check-forms-for-etf*) of etf names for which syntactic form-checking is turnes off
+;;  Control check-rule-form -- it can be turned off for particular ETFs by calling
+;;  dont-check-rule-form-for-etf-named with the name of the family
 
 (in-package :sparser)
 (defparameter *check-chunk-forms* t
@@ -239,12 +242,17 @@
 
 (defun check-rule-form (rule left-edge right-edge) 
   ;; only accept rules that are compatible with their context
+  ;;  this check can be turned off for particular ETFs by calling
+  ;;  dont-check-rule-form-for-etf-named with the name of the family
   (if (not *check-forms*) ;; controlling switch
     rule
     (let ((rf (rule-forms rule))) ;; recorded at rule-creation time
       (cond
-       ((and (compatible-form (first rf) left-edge)
-             (compatible-form (second rf) right-edge))
+       ((or
+         (null rf)
+         (and
+             (compatible-form (first rf) left-edge)
+             (compatible-form (second rf) right-edge)))
         rule)
        (t
         (when *report-form-check-blocks*
@@ -279,6 +287,9 @@
       (pos-edge-ends-at edge)))
 
 (defun rule-forms (rule)
+  ;; This field is set by set-schema-and-rhs-forms which is called by instantiate-rule-schema
+  ;; It is used to check that ETF rules are only applied in cased which match the expected
+  ;;  syntactic form of the constuents
   (when (cfr-p rule)
     (if *only-check-schema-forms*
       (cfr-rhs-forms rule)

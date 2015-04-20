@@ -70,8 +70,25 @@
 ;; 2.3 (3/16/15) Broke i/r/s/-coordinate-chomsky-adjunction into the original case
 ;;      when the lhs is multiple (which doesn't handles multiple rhs elements!)
 ;;      and a simpler one-lhs case that calls the existing multiple-rhs function. 
+;; 4/20/2015 create a list (*dont-check-forms-for-etf*) of etf names for which syntactic form-checking is turnes off
+;;  Control check-rule-form -- it can be turned off for particular ETFs by calling
+;;  dont-check-rule-form-for-etf-named with the name of the family
+
 
 (in-package :sparser)
+
+(defparameter *dont-check-forms-for-etf*
+  '(ITEM+IDIOMATIC-HEAD ;; head is idiomaticmatic, like % or percent, or old as in "5 years old"
+                        ;; can't predict the form category of the head, so just trust the rule writer
+    ))
+
+(defun dont-check-rule-form-for-etf-named (etf-name)
+  ;; The given ETF is to be trusted not to be applied in inappropriate syntactic
+  ;;  contexts, so don't apply compatible-form check in multiply-rules
+  (pushnew etf-name *dont-check-forms-for-etf*))
+
+    
+    
 
 ;;;---------------------------------
 ;;; managing the rule instantiation
@@ -522,7 +539,10 @@
 
 (defun set-schema-and-rhs-forms (cfr schema rhs-forms)
   (setf (cfr-schema cfr) schema)
-  (setf (cfr-rhs-forms cfr) rhs-forms))
+  (unless
+      (member (etf-name (schr-tree-family schema))
+              *dont-check-forms-for-etf*)
+    (setf (cfr-rhs-forms cfr) rhs-forms)))
 
 ;;;----------------------------
 ;;; determining the form label
