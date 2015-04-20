@@ -16,6 +16,7 @@
 ;;    backpointer.
 ;;   (11/13/13) Added 'shadow' slot for use in methods 
 ;; 3/22/2015 speed up access to var-instances by using hash table
+;; 4/20/2015 change var-instance hash-table to use #'equal and not #'eq -- deal with strings as values
 
 
 (in-package :sparser)
@@ -31,7 +32,7 @@
 
   name
   value-restriction
-  (instances (make-hash-table :test #'eq :size 100));; list of bindings -- find/binding
+  (instances (make-hash-table :test #'equal :size 100));; list of bindings -- find/binding
   v+v-table ;; alist of v+v by value
   category  ;; backpointer to the category that (lexically) defines it
   shadow ;; instance for use in k-methods
