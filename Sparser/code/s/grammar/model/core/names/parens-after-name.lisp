@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1996,2013-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "parens after name"
 ;;;   Module:  "model;core:names:"
-;;;  version:  September 2013
+;;;  version:  April 2014
 
 ;; initiated 7/11/96. Revised and updated 2/13/13. Put in a guard to not
-;; require it to always be debugged 9/16/13.
+;; require it to always be debugged 9/16/13. 4/19/95 Added case for bio-entity.
 
 (in-package :sparser)
 
@@ -34,6 +34,10 @@
            ((itypep referent-of-left-edge 'named-object)
             (setup-acronym-as-name-for-company referent-of-right-edge 
                                                referent-of-left-edge))
+           ((and *big-mechanism* ;; establish that the biology is loaded
+                 (itypep referent-of-left-edge 'bio-entity))
+            (setup-acronym-for-bio-entity referent-of-right-edge 
+                                          referent-of-left-edge))
            (t 
             (when *break-on-new-cases*
               ;; iranian-commander starts "TEHRAN (FNA)" where that's 
