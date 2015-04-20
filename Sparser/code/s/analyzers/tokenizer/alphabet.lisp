@@ -15,7 +15,13 @@
 ;;      accommodate characters above that. 
 ;;     (2/27/14) Added lowercase greek up to lambda
 ;;     (6/12/14) added em-dash. Refined the error message.
-;;     (4/15/15) added inadequate entry for an arrow
+;;     (4/15/15) added correct entry for a right arrow
+;; NOTE: the encodings of unicode characters are in HEX, so #\+2192 is 5894 decimal
+;;  while the alist (*entries-for-out-of-band-characters*) for out-of-band characters 
+;;  uses decimal encoding, so in *entries-for-out-of-band-characters* we need
+;;(8594 ;; rightwards arrow
+;;   (:punctuation . ,(punctuation-named #\U+2192))) 
+
 
 (in-package :sparser)
 
@@ -655,7 +661,6 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (956 ;; #\Greek_Small_Letter_Mu
      (:alphabetical . (:lowercase . ,(code-char 956))))
 
-
     (8211  ;; en dash
      (:punctuation . ,(punctuation-named #\- )))
     (8212  ;; em dash, html: &mdash;
@@ -669,13 +674,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named #\" )))
     (8221 ;; right double quote
      (:punctuation . ,(punctuation-named #\" )))
-    (8594 ;; arrow 
-     ;;/// could imagine pushing on another character, #\>, so that
-     ;; we have something we can treat as a polyword with the
-     ;; intended interpetation. Or we could just designate some
-     ;; character, like this one, as punctuation, though printing
-     ;; in the code would be tricky. 
-     (:punctuation . ,(punctuation-named #\- )))     
+    (8594 ;; rightwards arrow
+     (:punctuation . ,(punctuation-named #\U+2192))) 
     )
   "If it's not a defparameter, CCL won't let us extend it 
    in a running lisp.")
