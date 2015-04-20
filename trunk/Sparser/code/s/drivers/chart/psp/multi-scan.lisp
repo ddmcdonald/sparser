@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  February 2015
+;;;  version:  April 2015
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -13,6 +13,8 @@
 ;; 1/18/2015 Allow conjunctions of an ambiguous word and another word (or ambiguous word)
 ;; 2/5/15 Introduced fsa's on edges and words. 2/8/15 fixed bug in them
 ;; SBCL caught type error in short-conjunctions-sweep -- fixed
+;; 4/19/15 adapting pattern-sweep to the case where two edges from prior
+;;  pass are over words that aren't separated by a space ("20%")
 
 (in-package :sparser)
 
@@ -127,7 +129,7 @@
              (do-polyword-fsa word pw-cfr position-before)))
         (if position-reached
           (let ((pw-edge (edge-spanning position-before position-reached)))
-            (unless pw-edge (break "wrong span search"))
+            (unless pw-edge (error "wrong span search"))
             (tr :pw-was-found position-before position-reached pw-edge))
           (tr :pw-not-found word position-before))
         ;;(push-debug `(,position-reached))
@@ -154,7 +156,7 @@
 ;;;------------------------------
 
 (defun pattern-sweep (sentence)  ;; (trace-terminals-sweep)
-  (declare (special *the-punctuation-period*))
+  (declare (special *the-punctuation-period* *trace-sweep*))
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
         tt  treetop  position-after  multiple?  )
@@ -182,24 +184,27 @@
         (error "Pattern sweep walked beyond the bounds of the sentence"))
 
       (when *trace-sweep*
-        (format t "~&p~a ~a"
-                (pos-token-index position-before) treetop))
+        (format t "~&[pattern sweep] p~a ~a p~a~%"
+                (pos-token-index position-before)
+                treetop
+                (pos-token-index position-after)))
 
       (if (no-space-before-word? position-after)
         (then
-         (tr :no-space-at position-after)
-         ;; Run the pre-check for defined patterns
-         (let ((where-pattern-scan-ended
-                (check-for-pattern position-after)))
-           (if where-pattern-scan-ended
-             (then
-               (setq position-after where-pattern-scan-ended))
-             (let ((where-uniform-ns-ended
-                    (do-no-space-collection position-after)))
-               (when where-uniform-ns-ended
-                 (setq position-after where-uniform-ns-ended))))))
+          (tr :no-space-at position-after)
+          ;; Run the pre-check for defined patterns
+          (let ((where-pattern-scan-ended
+                 (check-for-pattern position-after)))
+            (if where-pattern-scan-ended
+              (then
+                (setq position-after where-pattern-scan-ended))
+              (let ((where-uniform-ns-ended
+                     (do-no-space-collection position-after)))
+                (when where-uniform-ns-ended
+                  (setq position-after where-uniform-ns-ended))))))
         (else
-         (look-for-DA-pattern treetop)))
+          (tr :space-before position-after)
+          (look-for-DA-pattern treetop)))
 
       ;; The pattern could have taken us just past the period
       (when (position-precedes end-pos position-after)
@@ -329,7 +334,7 @@
   ;; mention in a cfr, as happens for "the" or even ".")
   ;; So we walk through looking for words
 
-  (declare (special *the-punctuation-period*))
+  (declare (special *the-punctuation-period* *trace-sweep*))
 
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
