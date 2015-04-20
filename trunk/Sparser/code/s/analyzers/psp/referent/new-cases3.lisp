@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "new cases"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  3.2 January 2015
+;;;   Version:  3.2 April 2015
 
 ;; broken out from cases 8/24/93 v2.3.  (3/10/94) fixed typo. Added error
 ;; msg to Ref/head 6/14.  (7/15) patched in mixin-category  (7/19) rearranged
@@ -40,6 +40,8 @@
 ;;      ref/instantiate-individual-with-binding to look and see whether the
 ;;      head it's building on is already an individual of the type it's
 ;;      supposed to use. 1/12/15 fixed but in that.
+;;     (4/20/15) in ref/instantiate-individual-with-binding, the reused case got
+;;      its first instance of the head being a word.
 
 (in-package :sparser)
 
@@ -59,21 +61,8 @@
                  &optional called-from-unary-rule?)
   (let ((head
          (if (symbolp category-or-edge)
-           (case category-or-edge
-             ;; these set *head-edge* and *arg-edge*
-             (left-referent
-              (indicate-head :left)
-              (indicate-arg :right)
-              left-referent)
-             (right-referent
-              (indicate-head :right)
-              (indicate-arg :left)
-              right-referent)
-             (otherwise
-              (break "Unanticipated symbol as category/edge: ~a"
-                     category-or-edge)))
-           ;; individuals, psi, categories
-           category-or-edge)))
+           (determine-head-referent category-or-edge)          
+           category-or-edge))) ;; individuals, psi, categories
 
     (unless head
       (break "Bug in the grammar?  Decoding the head expression:~
@@ -142,10 +131,8 @@
 ;;; instantiate individual
 ;;;------------------------
 
-(defun ref/instantiate-individual
-       (rule-field left-referent right-referent right-edge)
-  (declare (ignore right-edge))
-
+(defun ref/instantiate-individual (rule-field 
+                                   left-referent right-referent)
   (let* ((head
           (case (second rule-field)
             (left-referent left-referent)
@@ -240,8 +227,10 @@
 
          ;(setq bindings-plist (nreverse bindings-plist))
          ;;(push-debug `(,head ,bindings-plist)) (break "f or m")
-         (push-debug `(,(edge-referent head-edge) ,bindings-plist))
-         (let* ((reused? (itypep (edge-referent head-edge) head))
+         ;;(push-debug `(,(edge-referent head-edge) ,bindings-plist))
+         (let* ((head-referent (edge-referent head-edge))
+                (reused? (unless (word-p head-referent) ;; e.g. "%"
+                           (itypep head-referent head)))
                 ;; the head category that we're supposed to 
                 ;; instantiate is the same as the head we've got
                 ;; so we use the head individual rather than 
