@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1996,2015  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id: scan-patterns.lisp 207 2009-06-18 20:59:16Z cgreenba $
 ;;; 
 ;;;     File:  "scan patterns"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  March 2007
+;;;  Version:  April 2015
 
 ;; initiated 10/6/95. Added/modified 7/11/96 through 7/12.
 ;; 3/5/07 Added cases to go with simpler treatment of no-space sequences.
+;; 4/19/15 added trace to record there being white space before the ps
 
 (in-package :sparser)
 
@@ -24,6 +24,12 @@
   ;; called from Check-for/initiate-scan-patterns
   (when (or *trace-scan-patterns* *trace-network-flow*)
     (trace-msg "[scan] no whitespace at p~A. Initiating scan-pattern check."
+               (pos-token-index p))))
+
+(deftrace :space-before (p)
+  ;; called from pattern-sweep
+  (when (or *trace-scan-patterns* *trace-network-flow*)
+    (trace-msg "[scan] there is whitespace before p~A"
                (pos-token-index p))))
 
 

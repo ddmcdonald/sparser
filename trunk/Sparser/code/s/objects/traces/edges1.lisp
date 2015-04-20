@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1990-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-2005,2013-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "edges"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.2 March 2013
+;;;  Version:  1.2 March 2014
 
 ;; initiated 8/90
 ;; 10/30/91 added *trace-paired-punctuation*. 6/18/92 added *trace-terminal-edges*
@@ -21,7 +21,7 @@
 ;;     (8/21/07) Added cases for threading through multiply to debug its rebuild.
 ;;     (3/8/13) Added *trace-do-edge* which is used outside of the tr machinery in
 ;;      drivers/chart/psp/march-seg and presumably elsewhere. Moved out the forest
-;;      traces to traces/treetops
+;;      traces to traces/treetops. 4/20/15 wrote trace-rules-source-and-validity
 
 (in-package :sparser)
 
@@ -754,6 +754,19 @@
 ;;;-----------------------
 ;;; inside multiply-edges
 ;;;-----------------------
+
+(defun trace-rules-source-and-validity ()
+  (setq *trace-rules-source-and-validity* t))
+
+(defun untrace-rules-source-and-validity ()
+  (setq *trace-rules-source-and-validity* nil))
+
+(defun report-form-check-blocks ()
+  (setq *report-form-check-blocks* t))
+
+(defun unreport-form-check-blocks ()
+  (setq *report-form-check-blocks* t))
+
 
 (deftrace :rule-is-valid ()
   (when *trace-rules-source-and-validity*
