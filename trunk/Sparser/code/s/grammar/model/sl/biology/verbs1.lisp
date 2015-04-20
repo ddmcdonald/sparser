@@ -1432,16 +1432,16 @@
 (define-category propose
     :specializes bio-thatcomp
     :binds ((agent pronoun/first/plural)
-            (object bio-process)
-            (as-object bio-process))
+            (proposed bio-process)
+            (to-be bio-process))
     :realization
     (:verb "propose"
      :noun "proposal"
      :etf (svo-passive)
      :s agent
-     :o object
-     :of object
-     :as as-object
+     :o proposed
+     :of proposed
+     :as to-be
      :thatcomp statement))
 
 (define-category provide
@@ -1590,15 +1590,15 @@
 
 (define-category require
     :specializes bio-process
-    :binds ((agent biological)(object biological))
+    :binds ((required-by biological)(requirement biological))
     :realization
     (:verb "require"
 	   :noun "requirement"
 	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :for object
-           :of object))
+	   :s required-by
+	   :o requirement
+           :for required-by
+           :of required-by))
 
 (define-category resist
     :specializes bio-process
