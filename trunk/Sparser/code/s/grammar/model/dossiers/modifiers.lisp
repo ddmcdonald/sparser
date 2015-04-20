@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   October 2014
+;;;   Version:   April 2015
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -12,10 +12,11 @@
 ;; (1/18/13) put in define-position-in-process. 5/22 added "no longer"
 ;; (5/30/13) added in earlier, sooner as adverbs and function words
 ;; 5/6/14 Moved in the quantities from its own file
+;; 10/29/14 exposed the comparatives. Forgot why they had been commented out.
+
 ;; Commenting out some word for collision with stronger forms in bio
-;; through 9/26/14. 10/29/14 exposed the comparatives. Forgot why they
-;; had been commented out. 
-;; THIS FILE NEEDS TO BE REVISITED SINCE IT CONFLICTS WITH WHAT IS NEEDED IN R3 -- look at the handling of "critical", "common"
+;; through 4/20/15
+
 
 (in-package :sparser)
 
@@ -827,7 +828,7 @@
 (define-adjective "cytotoxic")
 (define-adjective "decisive")
 (define-adjective "defective")
-(define-adjective "deficient")
+;;(define-adjective "deficient") ;; 4/20/15 moved to biology/terms1.lisp to take an argument
 (define-adjective "deleterious")
 (define-adjective "demonstrable")
 (define-adjective "derivative")
