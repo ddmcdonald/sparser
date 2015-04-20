@@ -25,7 +25,10 @@
 
 (in-package :sparser)
 
-(noun "32P" :super molecule) ;; actually an isotope -- need to adjust taxonomy 
+(noun "32P" :super molecule) 
+;; actually an isotope -- need to adjust taxonomy 
+
+
 (noun "ability" :super bio-process
       :binds ((agent biological)(result biological))
       :realization
@@ -181,6 +184,10 @@
       :realization 
       (:NOUN "defect"
              :in defective))
+
+(define-adjective "deficient")
+
+
 (adj "dependent" :super predicate) ;; keyword: (ent ADJ) 
 
 

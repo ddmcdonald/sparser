@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2015
+;;; version: April 2015
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 ;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
@@ -12,6 +12,7 @@
 ;; to make the parser happy through 1/6/15
 ;; 3/21/2015 -- revised make-typed-bio-entity              
 ;; SBCL caught fact that some words are actually polywords here...
+;; 4/19/15 Added stub for handling acronyms.
 
 
 (in-package :sparser)
@@ -313,6 +314,22 @@
       (bind-variable 'count count i)
       ;; If we didn't use such a speciic category these would matter.
       i)))
+
+
+
+;;;-------------------
+;;; fielding acronyms
+;;;-------------------
+; overnight #15  "20% fetal calf serum (FCS)"
+
+(defun setup-acronym-for-bio-entity (entity acronym)
+  ;; called from acronym-is-alternative-for-name via a buggy
+  ;; analysis that somehow thinks it has a proper name in its
+  ;; hands, via a form rule about proper names and word-in-parentheses
+  ;; so just ignoring it until we have a real case
+  (push-debug `(,entity ,acronym)) ;; (break "acronym stub")
+)
+
 
 
 
