@@ -145,7 +145,16 @@
     ,(resolve/make "mono")
     ,(resolve/make "di")
     ,(resolve/make "co") ;; co-occurring
+    ,(resolve/make "deficient") ;; dimerization-deficient ERK#7
     ))
+
+
+(defun some-word-is-a-salient-hyphenated-literal (words)
+  ;; called as a test cond in resolve-hyphen-between-two-words
+  ;; that gates compose-salient-hyphenated-literals to 
+  ;; ensure that it has something to work with.
+  (some #'(lambda (word) (memq word *salient-hyphenated-literals*))
+        words))
 
 (defun compose-salient-hyphenated-literals (pattern words
                                             pos-before pos-after)
