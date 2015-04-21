@@ -394,7 +394,7 @@
                          collect (bound-in-short-string b))))
         (format stream "~&  bound in: ~a" (car b-strings))
         (when (cdr b-strings)
-          (format stream "~{~&              ~a~}" (cdr b-strings)))))
+          (format stream "~{~&            ~a~}" (cdr b-strings)))))
     i))
             
 
