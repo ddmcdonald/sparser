@@ -1,6 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1992-1996,2013-2015  David D. McDonald  -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
 ;;;  Version:  0.3 April 2015
@@ -12,15 +12,15 @@
 ;;     (5/23/13) Added Soft_Hyphen at 173 (Latin-1 char set)
 ;; 0.2 (9/23/13) Adding characters in the Latin-1 range of UTF-8.
 ;; 0.3 (2/3/14) Added entry-for-out-of-band-character and friends to
-;;      accommodate characters above that. 
+;;      accommodate characters above that.
 ;;     (2/27/14) Added lowercase greek up to lambda
 ;;     (6/12/14) added em-dash. Refined the error message.
 ;;     (4/15/15) added correct entry for a right arrow
 ;; NOTE: the encodings of unicode characters are in HEX, so #\+2192 is 5894 decimal
-;;  while the alist (*entries-for-out-of-band-characters*) for out-of-band characters 
+;;  while the alist (*entries-for-out-of-band-characters*) for out-of-band characters
 ;;  uses decimal encoding, so in *entries-for-out-of-band-characters* we need
 ;;(8594 ;; rightwards arrow
-;;   (:punctuation . ,(punctuation-named #\U+2192))) 
+;;   (:punctuation . ,(punctuation-named #\U+2192)))
 
 
 (in-package :sparser)
@@ -64,7 +64,7 @@ This will usually entail a web search. There are lots of unicode web pages.
 This is a reasonable choice http://www.fileformat.info/info/unicode/char/search.htm
 
 |#
-         
+
 
 #+:apple ;; old character set, hopefully OBE
 (setf (elt *character-dispatch-array* 138)  ;; #\212  "a" with an umlaut
@@ -612,7 +612,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (setf (elt *character-dispatch-array* 194) ;; #\Latin_Capital_Letter_A_With_Circumflex
       '(:punctuation
         . :space))
-;; Loading the utf-8 file into Hemlock it appears as a space, 
+;; Loading the utf-8 file into Hemlock it appears as a space,
 ;; in Emacs (in whatever it's default is -- Hemloc says its utf-8)
 ;; is appears as \302\240, and ACL just rolls over it.)
 ;; in the character buffer itself is appears like it says: as an
@@ -621,7 +621,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;        . (:uppercase . ,#\a )))
 
 ;;;-------------------------------------------
-;;; Machinery for characters higher than that 
+;;; Machinery for characters higher than that
 ;;;-------------------------------------------
 
 ;; (code-char 954) => #\Greek_Small_Letter_Kappa
@@ -675,9 +675,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8221 ;; right double quote
      (:punctuation . ,(punctuation-named #\" )))
     (8594 ;; rightwards arrow
-     (:punctuation . ,(punctuation-named #\U+2192))) 
+     #-allegro
+     (:punctuation . ,(punctuation-named #\U+2192))
+     #+allegro
+     (:punctuation . ,(punctuation-named (code-char #x2192)))
+     )
     )
-  "If it's not a defparameter, CCL won't let us extend it 
+  "If it's not a defparameter, CCL won't let us extend it
    in a running lisp.")
 
 (defun entry-for-out-of-band-character (char-code)
