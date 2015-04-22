@@ -64,6 +64,8 @@
 (define-punctuation  tilda               #\~ )   ;; 126
 
 ;; [sfriedman:20150422.1026CST] For allegro, we need:
-;; (define-punctuation rightwards_arrow (code-char #x2192))
+#+allegro
+(define-punctuation rightwards_arrow (code-char #x2192))
+#-allegro
 (define-punctuation rightwards_arrow #\U+2192)
 
