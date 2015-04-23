@@ -21,6 +21,8 @@
 ;; 4/15/15 Moved out a flock of verbs to verb1. There were duplications.
 ;; 4/16/2015 bunch of changes to make protein-family a protein in most senses -- it specializes protein, but has some
 ;;  special variables like :members. Also give protein and human-protein-family a sbcat frame for "in"
+;; 4/23/15 Lifted out the dimer classes to phenomena to have all the parts
+;;  in the same place. 
 
 (in-package :sparser)
 
@@ -273,6 +275,7 @@
   :index (:permanent :key name)
   :lemma (:common-noun "kinase")
   :realization (:common-noun name))
+
 #+ignore ;; want to give kinase a FOR case
 ;; but how to do it and still define instances
 ;; (individuals) that are kinases using def-bio
@@ -313,24 +316,6 @@
   :specializes bio-chemical-entity
   :instantiates :self
   :lemma (:common-noun "complex"))
-
-(define-category dimer
-  :specializes complex
-  :instantiates :self
-  :lemma (:common-noun "dimer"))
-
-
-
-(define-category heterodimer
-  :specializes dimer
-  :instantiates :self
-  :lemma (:common-noun "heterodimer"))  
-
-(define-category heterodimerization
-  :specializes bio-process
-  :instantiates :self
-  :lemma (:common-noun "heterodimerization"))
-
 
 
 

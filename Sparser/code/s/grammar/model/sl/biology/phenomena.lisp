@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "phenomena"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: February 2015
+;;; version: April 2015
 
 ;; Initiated 12/28/14 to handle moderately complicated notions
 ;; like cell line and mutation. Conformation and isoform and such
@@ -12,6 +12,7 @@
 ;; 1/9/2015 give ubiquitinate a site variable, and define "pro-apoptotic" as a subclass of "apoptotoic"
 ;; 1/14/2015 tweaks on N and C-terminus
 ;; 2/15/15 trying to make some headway with ubiquitination
+;; 4/23/15 Pulled in dimer material from other files
 
 (in-package :sparser)
 
@@ -124,6 +125,8 @@
 (define-category monoubiquitinate 
  :specializes bio-process )
 
+;;--- wrapper
+
 (define-category  monoubiquitinated-protein
   :specializes modified-protein
   :instantiates self
@@ -176,20 +179,15 @@
   (define-mUbRas))
 
 
-
-
-
-
-
-  
-
-
 ;;;-------------------
 ;;; protein terminals
 ;;;-------------------
 
-; "located in both N- and C-terminal regions of p100"
-; "via the ASPP2 N-terminus"
+#|The convention for writing peptide sequences is 
+to put the N-terminus on the left and write 
+the sequence from N- to C-terminus. When the 
+protein is translated from messenger RNA, 
+it is created from N-terminus to C-terminus.|#
 
 ; There are two terminals, N and C, and they only make
 ; sense in a technical article when they're tied to 
@@ -198,6 +196,11 @@
 ; things happening in these places. "region" is defined in
 ; dossiers/location-kinds.lisp as a region-type
 
+
+; "located in both N- and C-terminal regions of p100"
+; "via the ASPP2 N-terminus"
+; the amino terminus of β-catenin
+
 (define-category protein-terminus
   :specializes bio-location
   :instantiates :self
@@ -205,16 +208,19 @@
   :lemma ((:common-noun "terminal")
           (:common-noun "terminus"))
   :realization
-  (:noun "terminal"
-         :of protein))
+    (:noun "terminal"
+     :of protein))
 
 ;; not clear that we need a proper handling
 ;; of the molecule configuration, etc. that
 ;; differentiates N from C
 
+;;//////////// These are essentially identical definitions
+;; Meed a macro or something 
+
 (define-category N-terminal ;; amino-terminus
   :specializes protein-terminus
-  :binds ((protein protein))
+  :binds ((protein (:or protein bio-entity)))
   :index (:permanent :key protein)
   :realization
     (:etf (pre-mod)
@@ -235,12 +241,6 @@
      :m protein
      :of protein))
 
-
-#|The convention for writing peptide sequences is 
-to put the N-terminus on the left and write 
-the sequence from N- to C-terminus. When the 
-protein is translated from messenger RNA, 
-it is created from N-terminus to C-terminus.|#
 
 
 
@@ -393,6 +393,70 @@ the aggregate across the predicate it's in. |#
 
 ; that ERK1 nuclear accumulation increased
 ; ERK1-4 ... accumulated in the nucleus to the same level as ...
+
+
+;;; dimers and their fellow travelers 
+
+
+;; "GTP-binding" "GO:00055525
+;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
+;; "interacting selectively and non-covalently with GTP"
+;;
+(define-category binding  :specializes molecular-function
+  ;;:obo-id 
+  :bindings (uid "GO:0005488")
+  ;; "<binder> binds to <binde>" the subject moves
+  :binds ((binder biological)(bindee biological)(site bio-location))
+  :realization 
+  (:verb ("bind" :past-tense "bound") :noun "binding"
+         :etf (svo-passive) 
+         :s binder
+         :o  bindee
+         :to bindee
+         :via site
+         :at site
+         :with bindee))
+
+
+
+; From the ERK abstract:
+; #1 "Dimerization-independent" (in title)
+; #6 "dimerization of ERK"
+; #7 "shown consistently to be dimerization-deficient in vitro"
+; #7 "dimerization of ERK1"
+; #8 "did not detect dimerization of GFP-ERK1-WT upon activation"
+; #10 "is a consequence of delayed phosphorylation of ERK by MEK rather than dimerization."
+(define-category dimerize :specializes binding
+  :binds ((monomer protein))
+  :realization
+  (:verb "dimerize" 
+   :noun "dimerization"
+   :etf (sv of-nominal)
+   :s monomer
+   :o monomer
+   :of monomer))
+
+
+(define-category dimer
+  :specializes complex
+  :instantiates :self
+  :lemma (:common-noun "dimer"))
+
+
+
+(define-category heterodimer
+  :specializes dimer
+  :instantiates :self
+  :lemma (:common-noun "heterodimer"))  
+
+; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
+; Dec33: endogenous C-RAF:B-RAF heterodimers
+(define-category heterodimerization
+  :specializes bio-process
+  :instantiates :self
+  :lemma (:common-noun "heterodimerization"))
+
+
 
 
 

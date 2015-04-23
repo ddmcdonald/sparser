@@ -32,7 +32,8 @@
 ;;   correct object restriction on "express"
 ;;   add definition of upregulate and up-regulate
 ;; 3/12/15 Added pre-mod to phosphorylate for figure-7 case
-;; 4/15/15 Moved in verbs from taxonomy. Quashed/merged duplicatse
+;; 4/15/15 Moved in verbs from taxonomy. Quashed/merged duplicates
+;; 4/23/15 Lifted out dimerize to phenomena to have it all together
 
 (in-package :sparser)
 
@@ -277,25 +278,6 @@
 	   :o object
            :on cause
            ))
-
-;; "GTP-binding" "GO:00055525
-;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
-;; "interacting selectively and non-covalently with GTP"
-;;
-(define-category binding  :specializes molecular-function
-  ;;:obo-id 
-  :bindings (uid "GO:0005488")
-  ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder biological)(bindee biological)(site bio-location))
-  :realization 
-  (:verb ("bind" :past-tense "bound") :noun "binding"
-         :etf (svo-passive) 
-         :s binder
-         :o  bindee
-         :to bindee
-         :via site
-         :at site
-         :with bindee))
 
 
 
@@ -588,15 +570,6 @@
    :s agent
    :of object))
 
-(define-category dimerize :specializes binding
-  :binds ((monomer protein))
-  :realization
-  (:verb "dimerize" 
-   :noun "dimerization"
-   :etf (sv of-nominal)
-   :s monomer
-   :o monomer
-   :of monomer))
 
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display
