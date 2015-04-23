@@ -296,7 +296,10 @@
 ;;; Collecting instances and statistics
 ;;;-------------------------------------
 
-(defparameter *collect-subcat-info* nil)
+(defparameter *collect-subcat-info* nil
+  "A flag that governs whether we collect subcategorization
+  statistics")
+
 (defparameter *subcat-info* nil)
 (defparameter *ref-cat-text* (make-hash-table))
 
@@ -308,8 +311,59 @@
                             :if-does-not-exist :create)
       (subcat-info stream))
     (subcat-info)))
-    
+
+
+(defun collect-subcat-statistics (head subcat-label variable-to-bind item)
+  (when *collect-subcat-info* 
+    (push (subcat-instance head subcat-label variable-to-bind item)
+          *subcat-info*)))
+
+(defun subcat-instance (head subcat-label var raw-item)
+  ;; makes a record of the subcatgorization relationship
+  (let* ((raw-item-edge (edge-for-referent raw-item))
+         (item
+          (if (eq (edge-form raw-item-edge) category::pp)
+            (edge-referent (edge-right-daughter raw-item-edge))
+            raw-item))
+         (head-cat 
+          (if (individual-p head)
+            (itype-of head)
+            head))
+         (item-cat
+          (if (individual-p item)
+            (itype-of item)
+            item)))
+    (save-cat-string head-cat 
+     (edge-string (edge-for-referent head)))
+    (save-cat-string item-cat
+     (edge-string (edge-for-referent raw-item)))
+    (list
+     (cat-name head-cat)
+     subcat-label
+     (var-name var)
+     (cat-name item-cat)
+     (edge-string (left-edge-for-referent))
+     (edge-string (right-edge-for-referent)))))
+
+(defun edge-for-referent (ref)
+  (cond
+   ((eq ref (edge-referent (left-edge-for-referent)))
+    (left-edge-for-referent))
+   ((eq ref (edge-referent (right-edge-for-referent)))
+    (right-edge-for-referent))
+   (t
+    (break "edge-for-referent"))))
+
+(defun save-cat-string (cat cat-string)
+  (push cat-string (gethash cat *ref-cat-text*)))
+
+(defun edge-string (edge)
+  (terminals-in-segment/one-string (pos-edge-starts-at edge)
+                                   (pos-edge-ends-at edge)))
+
 (defun subcat-info (&optional (stream t))
+  ;; Prints out the subcatgorization infomation collected by
+  ;; subcat-instance
   (declare (special *collect-subcat-info* *ref-cat-text* *subcat-info*))
   (setq *collect-subcat-info* t)
   (clrhash *ref-cat-text*)

@@ -422,6 +422,28 @@
 ;;; NP + VP
 ;;;-----------------
 
+(defun assimilate-subject (subj vp)
+  (if (is-passive? (right-edge-for-referent))
+   (assimilate-subcat vp :object subj)
+   (assimilate-subcat vp :subject subj)))
+
+(defun is-passive? (edge)
+  (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
+    (and (> (length cat-string) 3)
+         (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
+
+(defun assimilate-object (vg obj)
+  (assimilate-subcat vg :object obj))
+
+(defun assimilate-thatcomp (vg-or-np thatcomp)
+  (assimilate-subcat vg-or-np :thatcomp thatcomp))
+
+(defun assimilate-pp-subcat (head prep pobj)
+  (assimilate-subcat head 
+                     (subcategorized-variable head prep pobj)
+                     pobj))
+
+
 (defun assimilate-subcat (head subcat-label item)
   (let ((variable-to-bind
          ;; test if there is a known interpretation of the NP+VP combination
@@ -431,9 +453,7 @@
      (*subcat-test* 
       variable-to-bind)
      (variable-to-bind
-      (when *collect-subcat-info*
-        (push (subcat-instance head subcat-label variable-to-bind item)
-              *subcat-info*))
+      (collect-subcat-statistics head subcat-label variable-to-bind item)
       (setq head (maybe-copy-individual head))
       (when (and (is-anaphoric? item)
                  ;; this fails when we have BE -- needs to be fixed...
@@ -445,71 +465,26 @@
       (bind-variable variable-to-bind item head)
       head))))
 
-(defun edge-for-referent (ref)
-  (cond
-   ((eq ref (edge-referent (left-edge-for-referent)))
-    (left-edge-for-referent))
-   ((eq ref (edge-referent(right-edge-for-referent)))
-    (right-edge-for-referent))
-   (t
-    (break"edge-for-referent"))))
-
 (defun is-anaphoric? (item)
   (itypep item category::pronoun))
-
-(defun subcat-instance (head subcat-label var raw-item)
-  (let*
-      ((raw-item-edge (edge-for-referent raw-item))
-       (item
-        (if (eq (edge-form raw-item-edge) category::pp)
-            (edge-referent 
-             (edge-right-daughter raw-item-edge))
-            raw-item))
-       (head-cat 
-        (if (individual-p head)
-            (itype-of head)
-            head))
-       (item-cat
-        (if (individual-p item)
-            (itype-of item)
-            item)))
-    (save-cat-string head-cat 
-     (edge-string (edge-for-referent head)))
-    (save-cat-string item-cat
-     (edge-string (edge-for-referent raw-item)))
-    (list
-     (cat-name head-cat)
-     subcat-label
-     (var-name var)
-     (cat-name item-cat)
-     (edge-string (left-edge-for-referent))
-     (edge-string (right-edge-for-referent)))))
   
-(defun save-cat-string (cat cat-string)
-  (push cat-string (gethash cat *ref-cat-text*)))
-
-(defun edge-string (edge)
-  (terminals-in-segment/one-string (pos-edge-starts-at edge)
-                                   (pos-edge-ends-at edge)))
 
 (defun create-anaphoric-edge-and-referent (old-edge variable)
-  (let*
-      ((vr (var-value-restriction variable))
-       (new-item (make-individual-for-dm&p vr))
-       (new-edge
-        (make-completed-unary-edge
-         (edge-starts-at old-edge)
-         (edge-ends-at old-edge)
-         'create-anaphoric-edge-and-referent
-         old-edge
-         vr
-         category::np
-         new-item)))
-    (setf
-     (edge-used-in old-edge)
-     (list new-edge))
-   ;; (break "caer")
+  (let* ((vr (var-value-restriction variable))
+         (new-item (make-individual-for-dm&p vr))
+         (new-edge
+          (make-completed-unary-edge
+           (edge-starts-at old-edge)
+           (edge-ends-at old-edge)
+           'create-anaphoric-edge-and-referent
+           old-edge
+           vr
+           category::np
+           new-item)))
+    (setf (edge-used-in old-edge) (list new-edge))
     new-item))
+
+
 
 (defun subcategorized-variable (head label item)
   ;; included in the subcategorization patterns of the head.
@@ -563,29 +538,6 @@
        (t (error "Unexpected type of subcat restriction: ~a"
                  restriction))))))
                  
-
-
-(defun assimilate-subject (subj vp)
-  (if (is-passive? (right-edge-for-referent))
-   (assimilate-subcat vp :object subj)
-   (assimilate-subcat vp :subject subj)))
-
-(defun is-passive? (edge)
-  (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
-    (and (> (length cat-string) 3)
-         (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
-
-(defun assimilate-object (vg obj)
-  (assimilate-subcat vg :object obj))
-
-(defun assimilate-thatcomp (vg-or-np thatcomp)
-  (assimilate-subcat vg-or-np :thatcomp thatcomp))
-
-(defun assimilate-pp-subcat (head prep pobj)
-  (assimilate-subcat head 
-                     (subcategorized-variable head prep pobj)
-                     pobj))
-
 
 ;;;----------------------
 ;;; Prepositional phrase
@@ -660,10 +612,9 @@
     (cond
      (*subcat-test* variable-to-bind)
      (t
-      (if *collect-subcat-info*
-          (push (subcat-instance np prep variable-to-bind 
-                                 copular-pp)
-                *subcat-info*))
+      (when *collect-subcat-info*
+        (push (subcat-instance np prep variable-to-bin copular-pp)
+              *subcat-info*))
       (setq np (maybe-copy-individual np))
       (bind-variable variable-to-bind copular-pp np)
       (bind-variable 'result np copular-pp)
