@@ -131,13 +131,13 @@
                    (memq :colon pattern))
               (divide-and-recombine-ns-pattern-with-colon
                pattern words colon-positions hyphen-positions start-pos end-pos))
+             ((memq :colon pattern)
+              (tr :ns-looking-at-colon-patterns)
+              (resolve-colon-pattern pattern words colon-positions start-pos end-pos))
              ((memq :hyphen pattern)
               (tr :ns-looking-at-hypen-patterns)
               (resolve-hyphen-pattern 
                pattern words hyphen-positions start-pos end-pos))
-             ((memq :colon pattern)
-              (tr :ns-looking-at-colon-patterns)
-              (resolve-colon-pattern pattern words colon-positions start-pos end-pos))
              (t 
               (tr :ns-taking-default)
               (or (resolve-ns-pattern pattern words start-pos end-pos)
@@ -193,15 +193,19 @@
       (setq word (pos-terminal next-pos))
       (tr :ns-word-sweep word)
       (when (pos-preceding-whitespace next-pos)
+        (tr :ns-return-because-whitespace next-pos)
         (return))
       (when (first-word-is-bracket-punct word)
+        (tr :ns-return-because-bracket-punct word)
         (return))
       (when (word-never-in-ns-sequence word)
+        (tr :ns-return-word-never-in-ns-seq word)
         (return))
       (when (and (punctuation? word)
                  (punctuation-terminates-no-space-sequence word next-pos))
         ;; We looked ahead, so reflect that in the stopping position
         (setq next-pos (chart-position-after next-pos))
+        (tr :ns-return-punch-terminates-seq word next-pos)
         (return))
       (cond
        ((eq word *the-punctuation-hyphen*) (push next-pos hyphens))
@@ -264,7 +268,8 @@
      (sentence-final-punctuation-pattern? (chart-position-after position)))
 
     ((eq word *the-punctuation-colon*)
-     (if (next-word-is-digit? position) nil t))
+     ;;(if (next-word-is-digit? position) nil t)
+     (pos-after-is-end-of-sequence position))
 
     ((or (eq word  (punctuation-named #\-))
 	 (eq word (punctuation-named #\/))
@@ -285,13 +290,16 @@
    (*source-exhausted* t)
    ((eq (pos-terminal position) *end-of-source*) t)
    (t
-    (let ((pos-after (chart-position-after position)))
-      (unless (pos-terminal pos-after)
-        (scan-next-position))
-      (if (or (no-space-before-word? pos-after) ;; e.g. a URL
-	      (not *source-exhausted*))
-	  nil
-	  t)))))
+    (pos-after-is-end-of-sequence position))))
+
+(defun pos-after-is-end-of-sequence (position)
+  (let ((pos-after (chart-position-after position)))
+    (unless (pos-terminal pos-after)
+      (scan-next-position))
+    (if (or (no-space-before-word? pos-after) ;; e.g. a URL
+            (not *source-exhausted*))
+        nil
+        t)))
 
 (defun next-word-is-digit? (position)
   (let ((pos-after (chart-position-after position)))
