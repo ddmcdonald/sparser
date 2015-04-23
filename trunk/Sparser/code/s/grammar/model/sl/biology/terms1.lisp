@@ -184,9 +184,16 @@
       :realization 
       (:NOUN "defect"
              :in defective))
-
-(define-adjective "deficient")
-
+#|
+;; Something is deficient in something else. It needs that
+;; thing but doesn't have it. Vitamin D, 
+(adj deficient :super predicate
+  :binds ()
+  :realization
+    (:adj "deficient"
+     :etf pre-mod
+     :m
+|#
 
 (adj "dependent" :super predicate) ;; keyword: (ent ADJ) 
 
@@ -464,6 +471,7 @@
       :realization
       (:noun "population"
              :of element))  
+(noun "position" :super residue-on-protein)
 (noun "possibility" :super bio-abstract
       :binds ((assertion biological))
       :realization
