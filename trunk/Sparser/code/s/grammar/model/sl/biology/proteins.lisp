@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "proteins"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: December 2014
+;;; version: April 2015
 
 ;; initiated 9/8/14 lifting from other files
 ;; Made some of the proteins lower case, becasue both 
@@ -17,7 +17,18 @@
 
 (in-package :sparser)
 
-;;--- Convience accesor
+;;;---------------------------
+;;; pattern-driven definition
+;;;---------------------------
+
+(defun reify-p-protein-and-make-edge (words start-pos end-pos)
+  ;; Called from resolve-ns-pattern on (:single-cap :digits).
+  ;; Looks for a "p" and if it finds it makes a protein. 
+  ;; E.g "suggesting that p38 SAPK was active" in Jan #34
+  (push-debug `(,words ,start-pos ,end-pos))
+  (when (string= "p" (word-pname (first words)))
+    ;; take template from reify-residue-and-make-edge
+    (break "stub: possible p protein?")))
 
 ;;;--------------------------------------------
 ;;; for (some of) the abstract in the proposal
@@ -37,6 +48,9 @@
 
 (def-bio "p53" protein
   :mitre-link "Uniprot:P04637")
+
+(def-bio "p38 SAPK" protein)
+
 
 (def-bio "EGFR" kinase)
 ;;(def-bio "ERBB1" kinase) synonym for EGFR
@@ -241,7 +255,6 @@ filligre may be used to distinguish them, etc.
   :synonyms ("erk2" "MAPK1" "mapk1")
   :mitre-link "Uniprot:P28482")
 
-(def-bio "p38 SAPK" protein)
 
 ;; and many more: ERK3 (MAPK6) and ERK4 (MAPK4), etc.
 ;; I don't understand the Wikipedia write up well enough
