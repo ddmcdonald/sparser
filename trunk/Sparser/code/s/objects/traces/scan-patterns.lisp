@@ -160,6 +160,32 @@
   (when *trace-scan-patterns*
     (trace-msg "[ns] swept over ~s" (word-pname word))))
 
+(deftrace :ns-return-because-whitespace (p)
+  ;; called from sweep-to-end-of-ns-regions
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] returning from sweep: whitespace before p~a"
+               (pos-token-index p))))
+
+(deftrace :ns-return-because-bracket-punct (word)
+  ;; called from sweep-to-end-of-ns-regions
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] returning from sweep: ~s is bracket punctuation"
+               (word-pname word))))
+
+(deftrace :ns-return-word-never-in-ns-seq (word)
+  ;; called from sweep-to-end-of-ns-regions
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] returning from sweep: ~s is never is a ns sequence"
+               (word-pname word))))
+
+(deftrace :ns-return-punch-terminates-seq (word p)
+  ;; called from sweep-to-end-of-ns-regions
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] returning from sweep: ~s is sequence terminating ~
+                punctuation~%    Moving position to p~a"
+               (word-pname word)  (pos-token-index p))))
+
+
 (deftrace :no-space-sequence-made-word (word)
   (when (or *trace-scan-patterns*)
     (trace-msg "[ns] made word ~a" word)))
