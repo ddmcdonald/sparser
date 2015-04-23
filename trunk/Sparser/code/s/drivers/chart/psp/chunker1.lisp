@@ -425,6 +425,8 @@ all sorts of rules apply and not simply form rules.
       (eq (edge-category edge) category::quantifier-of))
     (eq name 'category::det))))
 
+
+
 (defgeneric ng-start? (label)
   (:documentation "Is a category which can occur inside a NG"))
 (defmethod ng-start? ((w word))
@@ -432,7 +434,10 @@ all sorts of rules apply and not simply form rules.
 (defmethod ng-start? ((s symbol))
   nil)
 (defmethod ng-start? ((e edge))
-  (declare (special e))
+  (declare (special category::modifier category::adjective 
+                    category::be *big-mechanism* category::parentheses
+                    category::that category::verb+ed category::verb+ing
+                    category::preposition))
   (cond
    ((or (eq category::modifier (edge-category e))
         (eq category::adjective (edge-form e)))
