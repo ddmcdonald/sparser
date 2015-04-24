@@ -32,11 +32,14 @@
     (divide-and-recombine-ns-pattern-with-slash 
      pattern words slash-positions hyphen-positions pos-before pos-after)
     (cond
-     ((equal pattern `(:lower :forward-slash :lower))
+     ((equal pattern '(:lower :forward-slash :lower))
       (or (reifiy-amino-acid-pair words pos-before pos-after)
           (reify-ns-name-and-make-edge words pos-before pos-after)))
 
-     (*work-on-ns-patterns* ; 
+     ((equal pattern '(:full :forward-slash :full))
+      (resolve-hyphen-between-two-terms pattern words pos-before pos-after))
+
+     (*work-on-ns-patterns* 
       (push-debug `(,pattern ,pos-before ,pos-after))
       (break "New slash pattern to resolve: ~a" pattern))
      (t (tr :no-ns-pattern-matched) 
@@ -195,6 +198,7 @@
   ;; It's likely that the two connected words are names,
   ;; so we won't assume that they might be connected by rules
   ;; but more like some generalized meaning between the two. 
+  ;; (N.b. also used with the separator is a slash)
   (declare (ignore pattern))
   (tr :resolve-hyphen-between-two-terms words)
   (let* ((left-edge (right-treetop-at/edge pos-before))
@@ -210,9 +214,7 @@
                          left-edge right-edge
                          pos-before pos-after))
      ((itypep left-ref 'amino-acid)
-      (make-amino-acid-pair left-ref right-ref words
-                            left-edge right-edge
-                            pos-before pos-after))
+      (reify-amino-acid-pair words pos-before pos-after))
      (t (make-bio-pair left-ref right-ref words
                        left-edge right-edge
                        pos-before pos-after)))))
