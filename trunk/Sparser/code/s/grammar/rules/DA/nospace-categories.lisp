@@ -158,7 +158,10 @@
 
 (defun compose-salient-hyphenated-literals (pattern words
                                             pos-before pos-after)
-  (push-debug `(,words ,pattern)) ;;(break "salient")
+  ;;(push-debug `(,words ,pattern)) (break "salient")
+  (unless (= 3 (length words))
+    (error "Stub: more than three words in salient-hyphenated-~
+           literals call: ~a" words))
   (when (= 3 (length words))
     (let ((word1 (car words))
           (word2 (caddr words))
@@ -169,9 +172,14 @@
                   (setq right t)))
         ;; do something clever, but for now just tie off
         (let* ((edge (or (and left
-                               (left-treetop-at/edge pos-after))
+                               (left-treetop-at/only-edges pos-after))
                          (and right
-                              (right-treetop-at/edge pos-before)))))
+                              (right-treetop-at/only-edges pos-before)))))
+          (unless edge
+            (push-debug `(,words ,pos-after ,pos-before ,pattern))
+            (error "Neither of these words is spanned by an edge. ~
+                    No way to proceeded."))
+
           ;; dropping the literal on the floor
           ;;/// "re" in Dec 28 is just a word at this point, so the
           ;; other paths won't do.
@@ -285,6 +293,42 @@
       (revise-form-of-nospace-edge-if-necessary edge (third edges))
       ;;/// trace
       edge)))
+
+;;;-----------------
+;;; two part labels
+;;;-----------------
+; See resolve-ns-pattern
+; We can't find anything interesting about the letter so
+; we end up here.
+
+(define-category two-part-label
+  :specializes sequence ;; though we won't use it
+  :binds ((part-one)
+          (part-two))
+  :index (:sequential-keys part-one part-two))
+
+(defun reify-two-part-label (words start-pos end-pos)
+  ;; called from resolve-ns-pattern on (:single-digit :single-lower)
+  ;; and (:single-digit :single-cap)
+  (push-debug `(,start-pos ,end-pos ,words))
+  (let* ((edges (treetops-between start-pos end-pos))
+         (elements (loop for edge in edges
+                     collect (edge-referent edge)))
+         (i (find-or-make-individual 'two-part-label
+               :part-one (first elements)
+               :part-two (second elements))))
+    (let ((edge (make-edge-over-long-span
+                 start-pos
+                 end-pos
+                 category::two-part-label
+                 :rule 'reify-two-part-label
+                 :form category::common-noun
+                 :referent i
+                 ;;:constituents edges
+                 )))
+      edge)))
+
+
 
 ;;;---------------------------------
 ;;; tilda + number => approximation
