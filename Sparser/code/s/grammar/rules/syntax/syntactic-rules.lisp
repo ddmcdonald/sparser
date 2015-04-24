@@ -21,6 +21,7 @@
 ;; 3/8/2015 rulle for NP+thatcomp,
 ;; rule for VG+DEICTIC-LOCATION (as in "here" as an adverb)
 ;; 4/15/15 moved prepositional-phrase category to syntax-functions.
+;; 4/24/2015 make "adverb + verb" be a VG and not a VP -- making it a VP prevented absorbing an object
 
 (in-package :sparser)
 
@@ -175,19 +176,19 @@ to an oncogenic RasG12V mutation (9)."))
   (eval 
    `(def-form-rule (deictic-location ,v)
                    :head :right-edge
-      :form vp
+      :form vg
       :referent(:function interpret-adverb+verb left-edge right-edge)))
   (eval 
    `(def-form-rule (,v deictic-location)
                    :head :left-edge
       
-      :form vp
+      :form vg
       :referent(:function interpret-adverb+verb right-edge left-edge)))
   
   (eval
    `(def-syntax-rule  (adverb ,v)
                       :head :right-edge
-      :form vp
+      :form vg
       :referent(:function interpret-adverb+verb left-edge right-edge))))
 
 #|
