@@ -34,6 +34,7 @@
 ;; 3/12/15 Added pre-mod to phosphorylate for figure-7 case
 ;; 4/15/15 Moved in verbs from taxonomy. Quashed/merged duplicates
 ;; 4/23/15 Lifted out dimerize to phenomena to have it all together
+;; 4/24/2015 generalized a number of V/R to biological based on evidence
 
 (in-package :sparser)
 
@@ -381,7 +382,7 @@
 
 (define-category consider
     :specializes bio-process
-    :binds ((agent pronoun/first/plural)(object bio-process))
+    :binds ((agent pronoun/first/plural)(object biological)) ;; could be "the effects..."
     :realization
     (:verb ("consider"  :past-tense "considered") ;; keyword: ENDS-IN-ED 
 	   :noun "consideration"
@@ -405,7 +406,7 @@
 
 (define-category contain 
      :specializes bio-process 
-     :binds ((agent bio-entity)(object bio-process)) 
+     :binds ((agent biological)(object biological)) 
      :realization 
      (:verb "contain"  
             :etf (svo-passive) 
@@ -488,6 +489,7 @@
          :o object
          :for theme))
 
+#+ignore ;; don't know why we have this -- it misparses "monoubiquitination decreases"
 (def-synonym decrease
   (:noun "decrease"
          :of object))
@@ -511,6 +513,7 @@
   :binds ((agent biological)(theme biological)) 
   :realization
   (:verb "depend" :noun "dependency"
+         :adj "dependent"
    :etf (sv)
    :s agent
    :on theme))
@@ -1601,7 +1604,8 @@
          :of object))
 
 (define-category reveal :specializes bio-thatcomp
-  :binds ((agent bio-entity)(object bio-process))
+  :binds ((agent biological)(object bio-process))
+  ;; the analysis revealed
   :realization
   (:verb "reveal" :noun "revelation" 
          :etf (svo-passive)
@@ -1633,7 +1637,8 @@
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show
     :specializes bio-thatcomp
-    :binds ((agent pronoun/first/plural)(object bio-process))
+    :binds ((agent pronoun/first/plural)(object (:or bio-process pronoun/inanimate)))
+  ;; it was shown that
     :realization
     (:verb ("show" :past-tense "shown")
 	   :etf (svo-passive)
@@ -1653,7 +1658,8 @@
 
 (define-category study-bio-process
  :specializes bio-process
- :binds ((agent pronoun/first/plural)(object bio-process))
+ :binds ((agent pronoun/first/plural)(object biological))
+  ;; can study bio-process or bio-entity
  :realization
  (:verb ("study" :past-tense "studied" :present-participle "studying")
   :etf (svo-passive)
