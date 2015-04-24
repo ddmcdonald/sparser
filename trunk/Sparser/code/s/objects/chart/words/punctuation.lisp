@@ -91,10 +91,10 @@
     (when (boundp symbol)
       (print `(punctuation ,character ,symbol))
       (symbol-value symbol)))
+
   (let* ((symbol (get-punct-symbol character)))    
     (when (boundp symbol)
-      (symbol-value symbol)))
-  )
+      (symbol-value symbol))))
 
 
 
@@ -160,7 +160,7 @@
         (else
           (if (eq designated-symbol
                   (word-symbol word))
-            (format t "~%~%!! redefining the punctuation ~A~
+            (format t "~%~%!! redefining the punctuation '~A'~
                        ~% The second, redundant definition is being ignored."
                     string)
             (else
