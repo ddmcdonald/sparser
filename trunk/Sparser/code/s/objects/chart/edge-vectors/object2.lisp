@@ -142,10 +142,12 @@
 
 (defun top-edge-at/ending (position)
   ;; returns the top-edge that ends at the position
+  ;; or :multiple-initial-edges if that's the case
   (ev-top-node (pos-ends-here position)))
 
 (defun top-edge-at/starting (position)
   ;; returns the top-edge that starts at the position
+  ;; or :multiple-initial-edges if that's the case
   (ev-top-node (pos-starts-here position)))
 
 
