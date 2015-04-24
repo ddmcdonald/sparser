@@ -153,7 +153,7 @@
               (setq rs (make-rule-set :backpointer word))
               (typecase word
                 (word
-                 (setf (rule-set-for word) rs))
+                 (setf (word-rule-set word) rs))
                 (polyword (setf (pw-rules word) rs))
                 ((or category referential-category mixin-category)
                  (setf (cat-rule-set word) rs))))
