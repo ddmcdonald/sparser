@@ -477,6 +477,30 @@
   :bindings (species (find-individual 'species :name "human"))
   :realization (:common-noun name))
 
+;;----- aggregations
+
+(define-category bio-aggregate 
+  :specializes aggregate
+  ;; can drop the 'bio-', but it lets us play with the
+  ;; notion before we promote that behavior to the upper str.
+  :mixins (sequence biological))
+#| This would be a good level at which to site a method that
+meditated whether or not we distributed the components of
+the aggregate across the predicate it's in. |#
+
+(define-category bio-pair
+  :specializes bio-aggregate 
+  :binds ((left)
+          (right))
+  :index (:sequential-keys left right))
+
+(define-category protein-pair
+  :specializes bio-pair
+  :binds ((left (:or protein bio-family nucleotide))
+          (right (:or protein bio-family nucleotide)))
+  :index (:sequential-keys left right))
+
+;; See also amino-acid-pair in amino acids
 
 
 
