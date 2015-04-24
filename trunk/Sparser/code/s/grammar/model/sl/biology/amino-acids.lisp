@@ -14,6 +14,7 @@
 ;; 2/15/15 Defined phosphorylated amino acids. Needs the hyphen variants.
 ;; 4/24/2015 added definition of "position" as a synonym for residue on protein
 ;;  this is the only use of "position" in the corpora so far
+;; "Furthermore, this outcome was specific to monoubiquitination at position 147."
 
 
 (in-package :sparser)
