@@ -3,10 +3,10 @@
 ;;;
 ;;;      File:   "punctuation-constants"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   January 2015
+;;;   Version:   April 2015
 
 ;; Broken out from punctuation1 1/29/15 because the ACL compiler
-;; doesn't know how to serialize a word object. 
+;; doesn't know how to serialize a word object. Added right-arrow 4/23/15
 
 (in-package :sparser)
 
@@ -22,6 +22,7 @@
 (defconstant *the-punctuation-semicolon* (punctuation-named #\;))
 
 (defconstant *the-punctuation-hyphen* (punctuation-named #\-))
+(defconstant *the-punctuation-rightwards-arrow* word::rightwards-arrow)
 
 (defconstant *the-punctuation-open-angle-bracket* (punctuation-named #\<))
 
