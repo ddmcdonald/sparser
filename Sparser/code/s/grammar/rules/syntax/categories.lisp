@@ -77,6 +77,7 @@
 ;; 2/3/15 removed outliers from pronoun-category? 3/13/15 added cases to
 ;;   *category-hierarchy* along with doc.
 ;; 3/21/2015 fixed error in ng-head? caught by SBCL
+;; 4/24/2015 added whethercomp as a form category (for clauses like "whether RAS phosphorylates MEK..."
 
 (in-package :sparser)
 (defvar CATEGORY::NOT)
@@ -163,6 +164,7 @@
 
 (def-form-category relative-clause)
 (def-form-category thatcomp)
+(def-form-category whethercomp)
 
 
 
