@@ -18,6 +18,8 @@
 ;;     (1/12/15) Converted the general method to bind the adverb
 ;;      to the modified variable on the head rather than drop it
 ;;      on the floor. 
+;; 4/24/2015 maybe-copy modified head before binding variable -- needed to avoid damaging vocabulary entries
+
 
 (in-package :sparser)
 
@@ -43,6 +45,7 @@
         (real-head (dereference-shadow-individual head)))
     (tr :modified_modifier+t)
     (when (individual-p head)
+      (setq real-head (maybe-copy-individual real-head))
       (bind-variable 'modifier real-adv real-head))
     real-head))
 
