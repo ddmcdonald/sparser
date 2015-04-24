@@ -160,19 +160,19 @@ therefore we have the special cases:
 ;  russ: "the four serine/threonine residues" ... "these serine/threonine residues"
 
 (define-category amino-acid-pair
-  :specializes amino-acid 
-  :binds ((first-amino-acid  amino-acid)
-          (second-amino-acid  amino-acid))
-  :rule-label amino-acid 
-  :index (:permanent :sequential-keys first-amino-acid second-amino-acid)
+  :specializes bio-pair
+  :binds ((left amino-acid)
+          (right amino-acid))
+  :rule-label amino-acid
+  :index (:permanent :sequential-keys left right)
   :documentation "There are larger and more varied groups of
    amino acids, but a pair is sufficiently frequent and easily
    recognized that it deserves its own reprsentation.")
 
 (defun find-or-make-amino-acid-pair (first second)
   (find-or-make-individual 'amino-acid-pair
-    :first-amino-acid first
-    :second-amino-acid second))
+    :left first
+    :right second))
   
 ;; Compare to make-amino-acit-pair and it's general form
 (defun reifiy-amino-acid-pair (words start-pos end-pos)
