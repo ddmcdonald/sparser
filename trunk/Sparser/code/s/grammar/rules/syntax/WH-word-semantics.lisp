@@ -12,6 +12,7 @@
 ;;     wh-pronoun.
 ;; 0.2 (1/18/13) Complete make over on the style of prepositions
 ;;     (2/28/13) Changed the form of the rule to wh-pronoun
+;; 4/24/2015 remove whether as a wh-pronoun, to allow adding whethercomp as a type of verb complement
 
 (in-package :sparser)
 
@@ -71,6 +72,8 @@ for the word and a rule that rewrite to it.
 (define-wh-pronoun "whose")
 (define-wh-pronoun "why")
 (define-wh-pronoun "how")
+
+#+ignore ;; this makes it able to start a relative clause -- which is not correct
 (define-wh-pronoun "whether")
 
 ;;/// There's a whole flock of these -- need a proper treatment
