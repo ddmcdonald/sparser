@@ -19,6 +19,7 @@
 ;;   Tweeking through 1/18/15. Cleaned up specials for character 3/10/15
 ;;   4/19/15 Added safe characters to punctuation-terminates-no-space-sequence
 ;;    and established notion of other-punct for them. 
+;; 1.1 4/23/15 Fixed bug in dispatch to slash. Added arrow.
 
 (in-package :sparser)
 
@@ -114,30 +115,37 @@
             (cond
              ((eq layout :single-span)  ;; Do nothing. It's already known
               (revise-form-of-nospace-edge-if-necessary edge :find-it))
-             ((and (memq :slash pattern)
-                   (memq :hyphen pattern))
+
+             ((and slash-positions
+                   hyphen-positions)
               (divide-and-recombine-ns-pattern-with-slash 
                pattern words slash-positions hyphen-positions start-pos end-pos))
+
              (other-punct
               ;; this probably has to be spread over the other cases
               ;; in some sort of combination, but this is a start
               (resolve-other-punctuation-pattern
                pattern words other-punct start-pos end-pos))
-             ((memq :slash pattern)
+
+             (slash-positions
               (tr :ns-looking-at-slash-patterns)
               (resolve-slash-pattern 
                pattern words slash-positions hyphen-positions start-pos end-pos))
-             ((and (memq :hyphen pattern)
-                   (memq :colon pattern))
+
+             ((and hyphen-positions
+                   colon-positions)
               (divide-and-recombine-ns-pattern-with-colon
                pattern words colon-positions hyphen-positions start-pos end-pos))
-             ((memq :colon pattern)
+
+             (colon-positions
               (tr :ns-looking-at-colon-patterns)
               (resolve-colon-pattern pattern words colon-positions start-pos end-pos))
-             ((memq :hyphen pattern)
+
+             (hyphen-positions
               (tr :ns-looking-at-hypen-patterns)
               (resolve-hyphen-pattern 
                pattern words hyphen-positions start-pos end-pos))
+
              (t 
               (tr :ns-taking-default)
               (or (resolve-ns-pattern pattern words start-pos end-pos)
@@ -227,7 +235,6 @@
 
 (defun word-never-in-ns-sequence (word)
   (declare (special *the-punctuation-period*
-                    *the-punctuation-colon*
                     *the-punctuation-comma*
                     *the-punctuation-semicolon*))
   (when (punctuation? word)
@@ -257,7 +264,8 @@
 
 (defun punctuation-terminates-no-space-sequence (word position)
   (declare (special *the-punctuation-period* *the-punctuation-comma*
-                    *the-punctuation-colon* *the-punctuation-semicolon*))
+                    *the-punctuation-colon* *the-punctuation-semicolon*
+                    *the-punctuation-rightwards-arrow*))
   (cond
     ((or (eq word *the-punctuation-period*)
 	 (eq word *the-punctuation-comma*)
@@ -271,11 +279,12 @@
      ;;(if (next-word-is-digit? position) nil t)
      (pos-after-is-end-of-sequence position))
 
-    ((or (eq word  (punctuation-named #\-))
+    ((or (eq word (punctuation-named #\-))
 	 (eq word (punctuation-named #\/))
-         (eq word  (punctuation-named #\@))
-         (eq word  (punctuation-named #\%))
-         (eq word  (punctuation-named #\+)))
+         (eq word (punctuation-named #\@))
+         (eq word (punctuation-named #\%))
+         (eq word (punctuation-named #\+))
+         (eq word *the-punctuation-rightwards-arrow*))
      nil)
 
     ;; Every other punctuation is declared to be a boundary
