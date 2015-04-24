@@ -440,6 +440,10 @@
 (defun assimilate-thatcomp (vg-or-np thatcomp)
   (assimilate-subcat vg-or-np :thatcomp thatcomp))
 
+(defun assimilate-whethercomp (vg-or-np whethercomp)
+  (assimilate-subcat vg-or-np :whethercomp whethercomp))
+
+
 (defun assimilate-pp-subcat (head prep pobj)
   (assimilate-subcat head 
                      (subcategorized-variable head prep pobj)
