@@ -23,6 +23,8 @@
 ;;  special variables like :members. Also give protein and human-protein-family a sbcat frame for "in"
 ;; 4/23/15 Lifted out the dimer classes to phenomena to have all the parts
 ;;  in the same place. 
+;; 4/24/2015 added mixins for bio-thtcomp and bio-whethercomp -- verbs that take thatcomps and whethercomps
+
 
 (in-package :sparser)
 
@@ -40,6 +42,23 @@
    lemmas can trigger a specific compose method
    in noun noun compounds.")
  
+(define-mixin-category bio-thatcomp
+  :binds ((statement bio-process))
+  :documentation "Actions that take a that complement -- verbs of
+     communication, demonstraction, observation. Would like to have a 
+     better break-down of these -- at least for wheterh they are positive
+     or negative in terms of belief state. The prefix -bio- may not be warranted,
+     since these are quite general, but at the moment we are putting them below the 
+     bio-processes.")
+
+(define-mixin-category bio-whethercomp
+  :binds ((statement bio-process))
+  :documentation "Actions that take a that complement -- verbs of
+     communication, demonstraction, observation. Would like to have a 
+     better break-down of these -- at least for wheterh they are positive
+     or negative in terms of belief state. The prefix -bio- may not be warranted,
+     since these are quite general, but at the moment we are putting them below the 
+     bio-processes.")
 
 ;;;-----------------
 ;;; generalizations
@@ -150,15 +169,7 @@
   :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
   )
 
-(define-category bio-thatcomp
-  :specializes bio-process
-  :binds ((statement bio-process))
-  :documentation "Actions that take a that complement -- verbs of
-     communication, demonstraction, observation. Would like to have a 
-     better break-down of these -- at least for wheterh they are positive
-     or negative in terms of belief state. The prefix -bio- may not be warranted,
-     since these are quite general, but at the moment we are putting them below the 
-     bio-processes.")
+
 
 (define-category bio-method
   :specializes process
