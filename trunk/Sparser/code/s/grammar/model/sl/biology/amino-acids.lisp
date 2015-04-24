@@ -12,6 +12,8 @@
 ;; 1/15/2015 put both words and single-capitalized-letters as keys in amino acid 
 ;;    table (to correctly handle C77), also added rule for "ubiquitin C77"
 ;; 2/15/15 Defined phosphorylated amino acids. Needs the hyphen variants.
+;; 4/24/2015 added definition of "position" as a synonym for residue on protein
+;;  this is the only use of "position" in the corpora so far
 
 
 (in-package :sparser)
@@ -112,6 +114,9 @@ therefore we have the special cases:
    :of on-protein
    :on on-protein)
   :index (:permanent :sequential-keys amino-acid position))
+
+(def-synonym residue-on-protein
+             (:noun "position"))
 
 (defun reify-residue-and-make-edge (words start-pos end-pos)
   ;; called from the no-space pattern machinery when the
