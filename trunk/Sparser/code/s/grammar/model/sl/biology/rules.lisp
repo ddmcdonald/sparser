@@ -7,6 +7,7 @@
 
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
+;; 4/24/2015 correct spelling from redidue to residue
 
 (in-package :sparser)
 
@@ -118,13 +119,13 @@
                     position right-edge)))
 
 ;; "Lys residues"
-(def-cfr redidue-on-protein (amino-acid residue-on-protein)
+(def-cfr residue-on-protein (amino-acid residue-on-protein)
   :form n-bar
   :referent (:head right-edge
              :bind (amino-acid left-edge)))
 
 ;; residues 104 and 147
-(def-cfr redidue-on-protein (residue-on-protein number)
+(def-cfr residue-on-protein (residue-on-protein number)
   :form n-bar
   :referent (:head left-edge
              :bind (position right-edge)))
@@ -141,7 +142,7 @@
   :referent (:daughter right-edge))
 
 #+ignore ;; replaced with :of on the class realization
-(def-cfr redidue-on-protein (residue-on-protein of-protein)
+(def-cfr residue-on-protein (residue-on-protein of-protein)
   :form n-bar
   :referent (:head left-edge
              :bind (on-protein right-edge)))
