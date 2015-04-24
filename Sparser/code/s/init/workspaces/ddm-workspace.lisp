@@ -45,7 +45,7 @@
 ;  (setq *scan-for-unsaturated-individuals* t)
 ;  (setq *debug-anaphora* t)  *work-on-ns-patterns*
 ;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
-;  (setq *work-on-ns-patterns* t) 
+  (setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) (trace-island-driving)
   ;(incorporate-obo-terms
   ; "/Users/ddm/ws/R3/r3/trunk/corpus/obo-terms.lisp")
