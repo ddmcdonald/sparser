@@ -13,7 +13,7 @@
 ;;--- has a simple name to identify it
 
 (defclass named-object ()
-  ((name :type symbol :accessor name :initarg :name 
+  ((name :type symbol :accessor name :initarg :name
          :initform 'unknown))
   (:documentation "Base class so we trivially get a print method for
       classes that naturally include symbols that name them."))
@@ -40,8 +40,8 @@
   (:documentation "The leaf structure will only have a parent"))
 
 (defclass has-children ()
-  ((children :accessor children
-    :documentation "Point to one or more structures that are 
+  ((children :accessor children :initform nil
+    :documentation "Point to one or more structures that are
       in some sense contained by this object."))
   (:documentation "The topmost structure in a partonomy will
     only have children."))
@@ -56,5 +56,5 @@
     :documentation "Points to the next adjacent ordered item or nil"))
   (:documentation "Provides links to follow through a sequence
     of anything that has a sense of direction (creation order, scanning
-    order, ...) where the notion of 'the next one' and 'the last (previous, 
+    order, ...) where the notion of 'the next one' and 'the last (previous,
     prior) one' makes sense."))
