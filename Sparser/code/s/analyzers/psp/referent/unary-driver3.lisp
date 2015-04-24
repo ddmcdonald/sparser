@@ -108,7 +108,7 @@
   (case (car rule-field)
     (:instantiate-individual
      (ref/instantiate-individual
-      rule-field (second rule-field) nil nil))
+      rule-field (second rule-field) nil))
     (:head
      (ref/head (second rule-field) ;; will be "daughter"
                nil nil :calling-from-unary-rule))
