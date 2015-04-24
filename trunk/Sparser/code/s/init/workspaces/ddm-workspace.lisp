@@ -47,8 +47,8 @@
 ;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
 ;  (setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) (trace-island-driving)
-  (incorporate-obo-terms
-   "/Users/ddm/ws/R3/r3/trunk/corpus/obo-terms.lisp")
+  ;(incorporate-obo-terms
+  ; "/Users/ddm/ws/R3/r3/trunk/corpus/obo-terms.lisp")
   (ddm-load-corpora)
   (ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
