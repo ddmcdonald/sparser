@@ -35,6 +35,7 @@
 ;; 4/15/15 Moved in verbs from taxonomy. Quashed/merged duplicates
 ;; 4/23/15 Lifted out dimerize to phenomena to have it all together
 ;; 4/24/2015 generalized a number of V/R to biological based on evidence
+;; 4/24/2015 added whethercomp as a type of verb complement
 
 (in-package :sparser)
 
@@ -382,6 +383,7 @@
 
 (define-category consider
     :specializes bio-process
+    :mixins (bio-whethercomp)
     :binds ((agent pronoun/first/plural)(object biological)) ;; could be "the effects..."
     :realization
     (:verb ("consider"  :past-tense "considered") ;; keyword: ENDS-IN-ED 
@@ -389,7 +391,8 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :of object
+           :whethercomp statement))
 
 ;; "consist" (of)
 ;; ? (comlex-entry "consist")
@@ -496,7 +499,8 @@
 
 
 (define-category demonstrate
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent biological)(object bio-process))
     :realization
     (:verb "demonstrate" ;; keyword: ENDS-IN-ED 
@@ -873,7 +877,8 @@
      :of activated))
 
 (define-category hypothesize
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb "hypothesize" ;; keyword: ENDS-IN-ED 
@@ -969,7 +974,8 @@
 
 
 (define-category indicate
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent biological)(object bio-process))
     :realization
     (:verb "indicate" ;; keyword: ENDS-IN-ING 
@@ -1244,7 +1250,8 @@
            :for object))
 
 (define-category observe
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)(object biological)(focused-on biological))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
@@ -1336,7 +1343,8 @@
          :at location))
 
 (define-category posit
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb "posit"
@@ -1358,7 +1366,8 @@
            :in manner))
 
 (define-category predict
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent biological)(object bio-process))
   ;; agent can be a process, like "mutation"
     :realization
@@ -1406,7 +1415,8 @@
 
 ;; (p "Dimerization of ERK has been proposed as a requirement for nuclear translocation.")
 (define-category propose
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)
             (proposed bio-process)
             (to-be bio-process))
@@ -1435,12 +1445,14 @@
 
 (define-category query
     :specializes bio-process
+    :mixins (bio-whethercomp)
     :binds ((agent bio-entity)(object bio-process))
     :realization
     (:verb "query" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :whethercomp statement))
 
 (define-category raise
     :specializes bio-process
@@ -1531,6 +1543,11 @@
 	   :s agent
 	   :o object))
 
+(def-form-rule (remain adjective)
+  :form vp
+  :referent (:head right-edge);; :bind (predication right-edge)
+)
+
 (define-category remove
     :specializes bio-process
     :binds ((agent pronoun/first/plural)(object biological))
@@ -1545,7 +1562,8 @@
 (delete-verb-cfr (resolve/make "report"))
 
 (define-category report
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb ("report" :past-tense "reported")
@@ -1603,7 +1621,8 @@
   (:noun "result"
          :of object))
 
-(define-category reveal :specializes bio-thatcomp
+(define-category reveal :specializes bio-process
+		 :mixins (bio-thatcomp)
   :binds ((agent biological)(object bio-process))
   ;; the analysis revealed
   :realization
@@ -1636,7 +1655,8 @@
 
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show
-    :specializes bio-thatcomp
+    :specializes bio-process
+    :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)(object (:or bio-process pronoun/inanimate)))
   ;; it was shown that
     :realization
@@ -1690,7 +1710,8 @@
    :of agent
    :in goal))
 
-(define-category suggest :specializes bio-thatcomp
+(define-category suggest :specializes bio-process
+		 :mixins (bio-thatcomp)
   ;; :specializes rhetorical-process <----- find the right name
   :binds ((agent bio-process)) ;;/// really a propositin
   :realization
@@ -1757,12 +1778,14 @@
 
 (define-category test
     :specializes bio-process
+    :mixins (bio-whethercomp)
     :binds ((agent pronoun/first/plural)(object biological))
     :realization
     (:verb "test" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :whethercomp statement))
 
 (define-category transcribe :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "transcribe" :noun "transcription" :etf (svo-passive) :s agent :o object))
 
@@ -1910,7 +1933,8 @@
 	   :o object
            :of object))
 
-(define-category verify :specializes bio-thatcomp
+(define-category verify :specializes bio-process
+		 :mixins (bio-thatcomp)
   :binds ((agent bio-entity)(object bio-process))
   :realization 
   (:verb "verify" :noun "verification"
