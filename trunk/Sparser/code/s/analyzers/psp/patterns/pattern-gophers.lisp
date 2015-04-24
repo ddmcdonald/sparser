@@ -7,7 +7,7 @@
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
 ;; 4/15/15 modified resolve-hyphen-between-two-words to ignore syntax
-;;  or form rules. 
+;;  or form rules. 4/24/15 Debugged confustion in order of slash positions
 
 
 (in-package :sparser)
@@ -21,18 +21,26 @@
                               pos-before pos-after)
   (if (null (cdr slash-positions)) ;; only one
     (one-slash-ns-patterns
-     pattern words slash-positions hyphen-positions start-pos end-pos)
+     pattern words slash-positions hyphen-positions pos-before pos-after)
     (divide-and-recombine-ns-pattern-with-slash 
-     pattern words slash-positions hyphen-positions start-pos end-pos)))
+     pattern words slash-positions hyphen-positions pos-before pos-after)))
 
 (defun one-slash-ns-patterns (pattern words 
                               slash-positions hyphen-positions 
                               pos-before pos-after)
-  (cond
-   (*work-on-ns-patterns*
-    (push-debug `(,pattern ,start-pos ,end-pos))
-    (break "New slash pattern to resolve: ~a" pattern))
-   (t t)))
+  (if hyphen-positions
+    (divide-and-recombine-ns-pattern-with-slash 
+     pattern words slash-positions hyphen-positions pos-before pos-after)
+    (cond
+     ((equal pattern `(:lower :forward-slash :lower))
+      (or (reifiy-amino-acid-pair words pos-before pos-after)
+          (reify-ns-name-and-make-edge words pos-before pos-after)))
+
+     (*work-on-ns-patterns* ; 
+      (push-debug `(,pattern ,pos-before ,pos-after))
+      (break "New slash pattern to resolve: ~a" pattern))
+     (t (tr :no-ns-pattern-matched) 
+        nil))))
 
 
 ;; (p "the Raf/MEK/ERK pathway.") 
@@ -49,9 +57,11 @@
   ;; their suffix. What's that pattern?
   ;; At this point the terminals are covered by edges. They probably
   ;; have what we want. A second time around they certainly will.
-  (push-debug `(,slash-positions ,pos-before ,pos-after ,words ,pattern))
+  ;;(push-debug `(,slash-positions ,pos-before ,pos-after ,words ,pattern))
   (when *trace-ns-sequences* (tts))
   (tr :slash-ns-pattern pos-before pos-after)
+
+  (setq slash-positions (nreverse slash-positions)) ;;(break "slash-position = ~a" slash-positions)
 
   (when (eq (first slash-positions) pos-before)
     (break "New case: Slash is initial term in no-space region between p~a and p~a"
@@ -59,6 +69,7 @@
 
   (let* ((segment-start pos-before)
          segment-pattern  segments  remainder )
+
     (multiple-value-setq (segment-pattern remainder)
       (pop-up-to-slash pattern))
 
@@ -81,19 +92,17 @@
      (nreverse segments) words pos-before pos-after)))
 
 
-;; endogenous C-RAF:B-RAF heterodimers
-(defun divide-and-recombine-ns-pattern-with-colon (pattern words 
-                                                   colon-positions hyphen-positions 
-                                                   pos-before pos-after)
-  (push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
-  (let ((treetops (treetops-between pos-before pos-after)))
-    (if (= (length treetops) 3)
-      ;; nothing to do, there's already a parse of the consituents to either 
-      ;; side of the colon
-      (make-word-colon-word-structure (first treetops) (third treetops))
-      (else
-       (push-debug `(,treetops))
-       (break "colon+hyphen stub: have to construct one of the constituents")))))
+(defun pop-up-to-slash (pattern)
+  ;; Subroutine of divide-and-recombine-ns-pattern-with-slash but might
+  ;; make a useful utility with a bit of abstraction
+  (let ((slash-index (position :forward-slash pattern)))
+    ;;(push-debug `(,pattern ,slash-index)) (break "index = ~a" slash-index)
+    ;; (setq pattern (car *) slash-index (cadr *))
+    (if slash-index
+      (values (subseq pattern 0 slash-index)
+              (subseq pattern (1+ slash-index)))
+      (values pattern nil))))
+
 
 (defun resolve-slash-segment (segment-pattern hyphen-positions start-pos end-pos)
   (tr :resolve-slash-segment segment-pattern start-pos end-pos)
@@ -106,10 +115,9 @@
       single-edge)
      (t
       (tr :slash-recursive-resolution)
-      (let ((words (words-between start-pos end-pos)))
+      (let ((words (words-between start-pos end-pos)))        
         (resolve-non-slash-ns-pattern 
          segment-pattern words hyphen-positions start-pos end-pos))))))
-
 
 (defun resolve-non-slash-ns-pattern (pattern words hyphen-positions
                                      pos-before pos-after) 
@@ -126,15 +134,20 @@
         (resolve-ns-pattern pattern words pos-before pos-after)
         (reify-ns-name-and-make-edge words pos-before pos-after))))
 
-(defun pop-up-to-slash (pattern)
-  ;; Subroutine of divide-and-recombine-ns-pattern-with-slash but might
-  ;; make a useful utility with a bit of abstraction
-  (let ((slash-index (position :forward-slash pattern)))
-    (if slash-index
-      (values (subseq pattern 0 slash-index)
-              (subseq pattern (1+ slash-index)))
-      (values pattern nil))))
 
+;; endogenous C-RAF:B-RAF heterodimers
+(defun divide-and-recombine-ns-pattern-with-colon (pattern words 
+                                                   colon-positions hyphen-positions 
+                                                   pos-before pos-after)
+  ;;(push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
+  (let ((treetops (treetops-between pos-before pos-after)))
+    (if (= (length treetops) 3)
+      ;; nothing to do, there's already a parse of the consituents to either 
+      ;; side of the colon
+      (make-word-colon-word-structure (first treetops) (third treetops))
+      (else
+       (push-debug `(,treetops))
+       (break "colon+hyphen stub: have to construct one of the constituents")))))
 
 ;;;--------
 ;;; hyphen

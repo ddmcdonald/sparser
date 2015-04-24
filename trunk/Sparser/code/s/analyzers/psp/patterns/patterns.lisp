@@ -125,7 +125,6 @@
        (error "Write the code for ~a colons in a no-space sequence" count)))))
 
 (defun one-colon-ns-patterns (pattern words colon-positions start-pos end-pos)
-  (declare (ignore words colon-positions))
   (cond
    ((or
      (equal pattern '(:single-digit :colon :single-digit))
@@ -146,7 +145,9 @@
      (right-treetop-at/edge start-pos) 
      (left-treetop-at/edge end-pos)))
    
-   (t (break "unknown NS pattern with colon:~%  ~a" pattern))))
+   (t 
+    (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
+    (break "unknown NS pattern with one colon:~%  ~a" pattern))))
 
 
 ;;;-------------------------------------------------------------
@@ -156,7 +157,20 @@
 (defun resolve-other-punctuation-pattern (pattern words other-punct
                                           start-pos end-pos)
   (push-debug `(,pattern ,words ,other-punct ,start-pos ,end-pos))
-  (break "stub"))
+  (cond
+   ((or (equal pattern `(:tilda :digits))  ;; ~60 in Dec# 52
+        (equal pattern `(:tilda :single-digit)))
+    (package-approximation-number words start-pos end-pos))
+   
+   (*work-on-ns-patterns*
+    (push-debug `(,pattern ,start-pos ,end-pos ,words))
+    (break "New pattern to resolve: ~a" pattern))
+
+   ;; fall through
+   (t (tr :no-ns-pattern-matched)
+      nil)))
+
+
 
   
 ;;;----------------------------------
@@ -173,22 +187,26 @@
         (equal pattern '(:full :digits)))
     (reify-ns-name-and-make-edge words start-pos end-pos))
 
-   ((equal pattern '(:single-cap :single-digit :single-cap))
-    (reify-ns-name-and-make-edge words start-pos end-pos))
-
    ((equal pattern '(:single-cap :digits))
     (or (reify-residue-and-make-edge words start-pos end-pos)
         (reify-ns-name-and-make-edge words start-pos end-pos)))
+
+   ((equal pattern '(:single-lower :digits))
+    (or (reify-p-protein-and-make-edge words start-pos end-pos) ;; p38
+        (reify-ns-name-and-make-edge words start-pos end-pos)))
+
+   ((or (equal pattern '(:single-digit :single-lower)) ;; (Fig. 4c, 4d) in Dec. 42 
+        (equal pattern '(:single-digit :single-cap))) ;; "Histone 2B phosphorylated by..." in Jan 34.
+    (reify-two-part-label words start-pos end-pos))
+
+   ((equal pattern '(:single-cap :single-digit :single-cap))
+    (reify-ns-name-and-make-edge words start-pos end-pos))
 
    ((or (equal pattern '(:single-cap :digits :single-cap))
         (equal pattern '(:single-lower :digits :single-lower)))
     ;;/// and a bunch more
     (or (reify-point-mutation-and-make-edge words start-pos end-pos)
         (reify-ns-name-and-make-edge words start-pos end-pos)))
-
-   ((or (equal pattern `(:tilda :digits))  ;; ~60 in Dec# 52
-        (equal pattern `(:tilda :single-digit)))
-    (package-approximation-number words start-pos end-pos))
 
    (*work-on-ns-patterns*
     (push-debug `(,pattern ,start-pos ,end-pos ,words))
