@@ -14,7 +14,7 @@
 ;; 1.1 (10/3/13) Making paragraphs real. Lifting out the generalization
 ;;     (10/26/13) Added word-frequency mixin to article. What about the others?
 ;;     (4/9/14) Moved in the get-document code from objects/doc/article1 so that
-;;      some older code is happy. 
+;;      some older code is happy.
 
 (in-package :sparser)
 
@@ -23,14 +23,14 @@
 ;;;---------------------
 
 (defclass document-element (chart-region document-region
-                            has-parent has-children 
+                            has-parent has-children
                             ordered indexed
                             has-content-model)
   ()
   (:documentation "Provides a super-type with common set of slots
     and behavior for all of the classes that describe portions
     of a document. Not every slot pertains to every object, but
-    enough do that the benefits of uniformity outweight the 
+    enough do that the benefits of uniformity outweight the
     possible lose in efficiency."))
 
 
@@ -44,12 +44,23 @@
     (when (ends-at-pos e)
       (format stream "--p~a" (pos-token-index (ends-at-pos e))))))
 
+;;;-----------------------------------
+;;; Titled entities
+;;;-----------------------------------
+
+(defclass titled-entity ()
+  ((title :accessor title
+          :documentation "Title-text of the entity.")))
+
+(defclass string-holder ()
+  ((content-string :initform "" :accessor content-string
+                   :documentation "The text content of the element")))
 
 ;;;-----------------------------------
 ;;; Articles (whole documents/files)
 ;;;-----------------------------------
 
-(defclass article (document-element named-object word-frequency)
+(defclass article (document-element named-object word-frequency titled-entity)
   ((location :accessor article-location
     :documentation "Usually a short form of the file name")
    (date :accessor article-date
@@ -93,15 +104,15 @@
 ;;
 (defun begin-new-article (&key name location date source)
   ;; Called from per-article-initializations, which is
-  ;; called from analysis-core, which is called from 
+  ;; called from analysis-core, which is called from
   ;; either analyze-text-from-string or analyze-text-from-file
   ;; though you can get to per-article-initializions from
-  ;; do-document-as-stream-of-files -- Responsible for 
-  ;; kicking off the initialization (creation and linking 
+  ;; do-document-as-stream-of-files -- Responsible for
+  ;; kicking off the initialization (creation and linking
   ;; of first instances) of all the other document elements.
   (let ((obj (allocate-article)))
     (setf (name obj) (or name (known-in-context :name)))
-    (setf (article-location obj) 
+    (setf (article-location obj)
           (or location (known-in-context :location)))
     (setf (article-date obj)
           (or date (date-&-time-as-formatted-string)))
@@ -114,12 +125,27 @@
     (initialize-sections) ;; make the 1st section
     obj))
 
+;;;----------
+;;; Titles
+;;;----------
+
+(defclass title-text (document-element named-object string-holder)
+  ()
+  (:documentation "A title of a section or article."))
+
+(define-resource title-text)
+
+(defun initialize-title-text-resource ()
+  (initialize-resource (get-resource :title-text)))
+
+(defun allocate-title-text ()
+  (allocate-next-instance (get-resource :title-text)))
 
 ;;;----------
 ;;; Sections
 ;;;----------
 
-(defclass section (document-element named-object)
+(defclass section (document-element named-object titled-entity)
   ()
   (:documentation "A toplevel unit within a document that
    is several paragraphs long."))
@@ -145,9 +171,9 @@
           *current-section* s1)
     (setf (children article) s1)
     (setf (parent s1) article)
-    (setf (children s1) 
+    (setf (children s1)
           (initialize-paragraphs)))) ;; returns 1st para
-    
+
 (defmethod clear ((s section))
   (setf (parent s) nil) ;; these need their own clear's
   (setf (name s) nil)
@@ -180,7 +206,7 @@
 ;;; Paragraphs
 ;;;------------
 
-(defclass paragraph (document-element named-object)
+(defclass paragraph (document-element named-object string-holder)
   ()
   (:documentation "An orthographic paragraph as established
     by patterns of newlines. See sort-out-result-of-newline-analysis"))
@@ -254,11 +280,11 @@
 
 (defclass sentence (document-element)
   ((string :initform "" :accessor sentence-string
-    :documentation "The string from the character buffer 
+    :documentation "The string from the character buffer
       from its first character up to but not including the
       period. Since it comes from the character buffer it
       has the original capitalization."))
-  (:documentation 
+  (:documentation
    "Represents the content or other interesting features
     of a sentence within the text. If there is an active section or
     paragraph that is parent."))
@@ -301,10 +327,10 @@
 
 (defun start-sentence (pos)
   ;; Called from initialize-sentences for the first one, then
-  ;; from period-hook -- pos is the position after the period. 
+  ;; from period-hook -- pos is the position after the period.
   (let ((s (allocate-sentence)))
     (setf (starts-at-pos s) pos)
-    (setf (starts-at-char s) 
+    (setf (starts-at-char s)
           (if *current-sentence*
             (pos-character-index pos)
             1))
@@ -333,7 +359,7 @@
 
 
 (defparameter *copy-text-to-sentence-objects* t
-  "Controls whether we fill the string field of 
+  "Controls whether we fill the string field of
   the sentence object.")
 
 
@@ -341,7 +367,7 @@
   ;; Called from period-hook
   (setf (ends-at-pos sentence) period-pos)
   (setf (ends-at-char sentence) (1+ (pos-character-index period-pos)))
-  (let ((substring (extract-string-from-char-buffers 
+  (let ((substring (extract-string-from-char-buffers
                     (starts-at-char sentence)
                     (ends-at-char sentence))))
     ;; can remove the extra step when we're guarenteed that
@@ -355,9 +381,9 @@
 ;;; "documents"
 ;;;--------------
 ;; This is an old bit of syntactic sugar over files that wraps them
-;; in an object and used their pathname-name as their index. 
+;; in an object and used their pathname-name as their index.
 ;; Good for operations over all the files in a directory where the
-;; internal organization of the file isn't interesting or relevant. 
+;; internal organization of the file isn't interesting or relevant.
 ;; See count-word-frequencies as an example.
 
 (defclass document (named-object word-frequency)
