@@ -351,18 +351,20 @@ decoding table for referenced OBO terms
   (clrhash *bp-types*)
   (setq *bp-type-list* nil)
   (setq *bpi* nil)
-  (maphash #'(lambda (name p)(push p *bpi*))
+  (maphash #'(lambda (name p)
+               (declare (ignore name))
+               (push p *bpi*))
            *xml-ht*)
   (loop for p in *bpi* 
     do 
-    (let
-        ((simp-tree (simplify-tree p 1)))
-      (if (null simp-tree)
-          (push p *unsimp*))
+    (let ((simp-tree (simplify-tree p 1)))
+      (when (null simp-tree)
+        (push p *unsimp*))
       (push (simplify-tree p 1)
             (gethash (car p) *bp-types*))))
   (maphash 
    #'(lambda (type tl)
+       (declare (ignore type))
        (push (sort tl #'string< :key #'second)
              *bp-type-list*))
    *bp-types*)
@@ -512,8 +514,8 @@ decoding table for referenced OBO terms
 
 
 (defun create-reactome-categories (reactome-categories)
-  (let
-      ((reactome (eval `(define-category Reactome-Category :specializes top))))
+  (let ((reactome (eval `(define-category Reactome-Category :specializes top))))
+    (declare (ignore reactome))
     (loop for rc in reactome-categories
       do
       (eval
