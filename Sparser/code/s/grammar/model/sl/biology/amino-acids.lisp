@@ -154,8 +154,51 @@ therefore we have the special cases:
               edge)))))))
 
 
+;;;------------------------------------
+;;; amino acid combinations/composites
+;;;------------------------------------
+;  russ: "the four serine/threonine residues" ... "these serine/threonine residues"
 
-(noun "position" :super residue-on-protein)
+(define-category amino-acid-pair
+  :specializes amino-acid 
+  :binds ((first-amino-acid  amino-acid)
+          (second-amino-acid  amino-acid))
+  :rule-label amino-acid 
+  :index (:permanent :sequential-keys first-amino-acid second-amino-acid)
+  :documentation "There are larger and more varied groups of
+   amino acids, but a pair is sufficiently frequent and easily
+   recognized that it deserves its own reprsentation.")
+
+(defun find-or-make-amino-acid-pair (first second)
+  (find-or-make-individual 'amino-acid-pair
+    :first-amino-acid first
+    :second-amino-acid second))
+  
+;; Compare to make-amino-acit-pair and it's general form
+(defun reifiy-amino-acid-pair (words start-pos end-pos)
+  ;; called from one-slash-ns-patterns for the pattern
+  ;; `(:lower :forward-slash :lower). If we aren't one of these
+  ;; we return nil and it goes on to its next choice
+  ;;(push-debug `(,words)) (break "a/a check")
+  (let* ((word-one (car words))
+         (word-three (third words))
+         (aa-1 (find-individual 'amino-acid :name word-one))
+         (aa-2 (find-individual 'amino-acid :name word-three)))
+    (when (and aa-1 aa-2)
+      (let ((pair (find-or-make-amino-acid-pair aa-1 aa-2)))
+        (let* ((left-edge (right-treetop-at/edge start-pos))
+               (right-edge (left-treetop-at/edge end-pos))
+               (edge (make-chart-edge
+                      :left-edge left-edge
+                      :right-edge right-edge
+                      :starting-position (pos-edge-starts-at left-edge)
+                      :ending-position (pos-edge-ends-at right-edge)
+                      :category category::amino-acid
+                      :form category::np
+                      :rule-name :reify-amino-acid-pair
+                      :referent pair)))
+          edge)))))
+
 
 
 ;;;----------------------------
