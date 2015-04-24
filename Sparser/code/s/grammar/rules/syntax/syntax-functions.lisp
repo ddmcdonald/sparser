@@ -33,7 +33,9 @@
 ;;   Now can have :premod rules for noun-noun modifiers and adj-noun modifiers
 ;; 4/16/2015 fix make-copular-pp to reject "clausal to-pps" like "to enhance craf activation"
 ;;     make apply-copular-pp (almost) work -- something is wrong with the referent of the 
-;;     result -- DAVID -- let's look at it     
+;;     result -- DAVID -- let's look at it 
+;; 4/24/2015 correct trivial typo variable-to-bin --> variable-to-bind 
+;;  that would have blown up in collection of subcat information    
 
 (in-package :sparser)
 (defvar CATEGORY::PREPOSITIONAL-PHRASE)
@@ -613,7 +615,7 @@
      (*subcat-test* variable-to-bind)
      (t
       (when *collect-subcat-info*
-        (push (subcat-instance np prep variable-to-bin copular-pp)
+        (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
       (setq np (maybe-copy-individual np))
       (bind-variable variable-to-bind copular-pp np)
