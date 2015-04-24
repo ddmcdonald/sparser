@@ -348,7 +348,7 @@
                     ;                        value variable)
                     (return-from unindex-binding))))))))))
 
-#|
+
 
 (defun excise-value-entry (instances-alist value variable)
   (let ((*print-short* t))
@@ -411,7 +411,7 @@
         (setq prior-cell next-cell
               next-cell (cdr next-cell)
               next-binding (car next-cell))))))
-|#
+
 
 
 
