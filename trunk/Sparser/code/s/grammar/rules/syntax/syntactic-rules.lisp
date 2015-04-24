@@ -335,15 +335,23 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :form thatcomp
   :referent (:head right-edge))
 
-(def-syntax-rule (vp thatcomp)
-  :head :left-edge
-  :form vp
-  :referent (:function assimilate-thatcomp left-edge right-edge))
+(def-form-rule (whether s)
+  :form whethercomp
+  :referent (:head right-edge))
 
-(def-syntax-rule (vg thatcomp)
-  :head :left-edge
-  :form vp
-  :referent (:function assimilate-thatcomp left-edge right-edge))
+(loop for vb in '(vp vg) 
+  do
+  (eval
+   `(def-syntax-rule (,vb thatcomp)
+                     :head :left-edge
+      :form vp
+      :referent (:function assimilate-thatcomp left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (,vb whethercomp)
+                     :head :left-edge
+      :form vp
+      :referent (:function assimilate-whethercomp left-edge right-edge))))
+
 
 
 
@@ -354,6 +362,11 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
                      :head :left-edge
       :form np
       :referent (:function assimilate-thatcomp left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (,nb whethercomp)
+                     :head :left-edge
+      :form np
+      :referent (:function assimilate-whethercomp left-edge right-edge)))
   (eval 
    `(def-form-rule (,nb copular-pp)
                    :form s
