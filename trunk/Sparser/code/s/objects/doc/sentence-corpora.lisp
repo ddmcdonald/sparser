@@ -372,3 +372,6 @@ previous records of treetop-counts.
     when
     (search str s)
     collect s))
+
+(defun find-corpus-sents(str)
+  (find-corpus-instances str))
