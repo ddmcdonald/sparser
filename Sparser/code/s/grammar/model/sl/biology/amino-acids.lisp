@@ -174,7 +174,6 @@ therefore we have the special cases:
     :left first
     :right second))
   
-;; Compare to make-amino-acit-pair and it's general form
 (defun reifiy-amino-acid-pair (words start-pos end-pos)
   ;; called from one-slash-ns-patterns for the pattern
   ;; `(:lower :forward-slash :lower). If we aren't one of these
