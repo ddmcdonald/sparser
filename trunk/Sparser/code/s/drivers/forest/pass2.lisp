@@ -10,6 +10,8 @@
 ;; 3/3/15 Ignoring the smash-togeter function as too agressive, changed
 ;;   the comma-edge case in look-for-length-three-patterns to lookup the
 ;;   subcategorization on the preposition.
+;; 4/24/2015 fixed fill-in-between-subject-and-final-verb so that it doesn't look for
+;;  material BETWEEN adjacent subject and vp which are about to be smashed together
 
 (in-package :sparser)
 (defvar CATEGORY::VP)
@@ -131,7 +133,7 @@
   ;; (setq subject (car *) copula (cadr *) treetops (caddr *))
   (when (list-final copula treetops)
     (when (list-initial subject treetops)
-      (unless (> tt-count 4)
+      (unless (or (eq tt-count 2) (> tt-count 4))
         ;; only two constituents between the subject and what we can
         ;; heuristically presume is the main verb of the sentence,
         ;; so there must be a way to fit the two together and treat
