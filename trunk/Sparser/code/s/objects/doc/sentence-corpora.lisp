@@ -362,15 +362,20 @@ previous records of treetop-counts.
 ;;; RUSTY added these utility functions
 (defun all-corpus-sentences ()
   (let ((scvars nil)) 
-    (maphash #'(lambda(key val) (push (corpus-bound-variable val) scvars)) 
+    (maphash #'(lambda(key val) 
+                 (push (list key (corpus-bound-variable val)) scvars)) 
              *sentence-corpus-table*) 
-    (loop for v in scvars append 
-      (loop for p in (eval v) collect (second p)))))
+    (loop for v in scvars 
+      append 
+      (loop for p in (eval (second v)) 
+        as i from 1 by 1
+        collect 
+        (list (car v) i (second p))))))
 
 (defun find-corpus-instances (str)
   (loop for s in (all-corpus-sentences)
     when
-    (search str s)
+    (search str (third s))
     collect s))
 
 (defun find-corpus-sents(str)
