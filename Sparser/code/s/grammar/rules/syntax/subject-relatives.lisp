@@ -19,6 +19,9 @@
 ;;  (9/7/14) Moved out the syntax rules to one place. 9/27/14 started
 ;;  adding variables and code for generic relationships in the style
 ;;  that Jerry Hobbs uses. 
+;; 4/24/2015 maybe-copy modified head before binding variable -- needed to avoid damaging vocabulary entries
+
+
 
 (in-package :sparser)
 
@@ -136,22 +139,23 @@
 ;;/// 10/27/14 This ought to be a method
 (defun apply-subject-relative-clause (np-ref vp-ref)
   (let ((subject-var (subject-variable vp-ref)))
-      (if subject-var
+    (setq np-ref (maybe-copy-individual np-ref))
+    (if subject-var
         ;; copy down the upstairs subject
         ;; Should we check if it was already bound to something?
         (bind-variable subject-var np-ref vp-ref)
         (else
-         ;; (push-debug `(,np-ref ,vp-ref))
-         ;; (break "Can not find subject var in ~a" vp-ref)
-         (when nil
-           (format t "~&~%No subject variable recorded on ~a~%~%"
-                   vp-ref)))      )
-      
-      ;; link the rc to the np
-      (bind-variable 'modifier vp-ref np-ref)
-
-      ;; referent of the combination is the np
-      np-ref))
+          ;; (push-debug `(,np-ref ,vp-ref))
+          ;; (break "Can not find subject var in ~a" vp-ref)
+          (when nil
+            (format t "~&~%No subject variable recorded on ~a~%~%"
+                    vp-ref)))      )
+    
+    ;; link the rc to the np
+    (bind-variable 'modifier vp-ref np-ref)
+    
+    ;; referent of the combination is the np
+    np-ref))
 
 (defun apply-upstairs-np-to-subject-relative (np-ref vp-ref)
   ;; used by refactor-s-for-buried-relative which is tied to
@@ -206,6 +210,7 @@
   (let ((r1 (edge-referent e1))
         (r2 (edge-referent e2)))
     ;; Type check r1 that it's actually an event.
+    (setq e1 (maybe-copy-individual e1))
     (bind-variable 'unspecified-adjunct r2 r1 category::event)
     r1))
 

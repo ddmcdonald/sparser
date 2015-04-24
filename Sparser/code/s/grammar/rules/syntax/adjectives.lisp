@@ -11,6 +11,7 @@
 ;; k-method but got the calling pattern wrong (or something), so make the
 ;; addition to the original method, i.e. to not drop the modifier on the
 ;; floor. 
+;; 4/24/2015 maybe-copy modified head before binding variable -- needed to avoid damaging vocabulary entries
 
 (in-package :sparser)
 
@@ -38,7 +39,8 @@
     (declare (special real-modifier real-head))
     (if
      (category-p real-head)
-     (setq real-head (make-individual-for-dm&p real-head)))
+     (setq real-head (make-individual-for-dm&p real-head))
+     (setq real-head (maybe-copy-individual real-head)))
     (if
      (category-p real-modifier)
      (setq real-modifier (make-individual-for-dm&p real-modifier)))
@@ -73,6 +75,10 @@
   (tr :modifier+noun_modifier+t)
   (let ((real-modifier (dereference-shadow-individual modifier))
         (real-head (dereference-shadow-individual head)))
+    (if
+     (category-p real-head)
+     (setq real-head (make-individual-for-dm&p real-head))
+     (setq real-head (maybe-copy-individual real-head)))
     (bind-variable 'modifier real-modifier real-head)
     real-head))
 
