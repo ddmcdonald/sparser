@@ -22,6 +22,7 @@
 ;; add form rule for relative-clause --> (that vp)
 ;; diverse vocabulary hacking
 ;; 02/18/15 alphabetized terms
+;; 4/24/2015 added subject variable for many adjectives that can be copular adjectives
 
 (in-package :sparser)
 
@@ -142,8 +143,11 @@
          :for complement))
 
 (adj "common" :super predicate
-  :binds ((theme bio-entity))
-  :realization (:to theme))
+  :binds ((subject biological) (theme bio-entity))
+  :realization 
+  (:adj "common"
+        :s subject
+        :to theme))
 
 ;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
 (noun "component" :super bio-abstract)
@@ -160,8 +164,12 @@
 
 
 (adj "critical" :super predicate
-  :binds ((theme bio-entity))
-  :realization (:for theme))
+  :binds ((subject biological) (theme bio-entity))
+  :realization 
+  (:adj "critical"
+        :s subject
+        :to theme
+        :for theme))
 (define-adverb "critically")
 
 (adj "cultured" :super predicate)
@@ -195,7 +203,6 @@
      :m
 |#
 
-(adj "dependent" :super predicate) ;; keyword: (ent ADJ) 
 
 
 (noun "derivative" :super molecule)
@@ -222,10 +229,14 @@
       (:noun "domain"
              :of substrate))
 (adj "downstream" :super predicate
-  :binds ((theme bio-entity))
-  :realization (:for theme
-                :from theme
-                :of theme))
+  :binds ((subject biological)
+          (theme bio-entity))
+  :realization 
+  (:adj "downstream"
+        :s subject
+        :for theme
+        :from theme
+        :of theme))
 (noun "dynamics" :super bio-abstract)
 (adj "ectopic" :super predicate) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
@@ -236,9 +247,10 @@
              :of effector
              :on effectee))
 (adj "effective" :super predicate
-     :binds ((against biological))
+     :binds ((subject biological)(against biological))
      :realization 
      (:adj "effective"
+           :s subject
            :against against)) ;; keyword: (ive ADJ) 
 
 (noun "effector" :super protein) ;; NOT SURE WHAT THE RIGHT SUPER is
@@ -335,9 +347,10 @@
            :s molecule))
 (adj "inducible" :super predicate) ;; keyword: (ible ADJ) 
 (adj "ineffective" :super predicate
-     :binds ((against biological))
+     :binds ((subject biological)(against biological))
      :realization 
      (:adj "ineffective"
+           :s subject
            :against against)) ;; keyword: (ive ADJ) 
 (noun "inhibitor" :super bio-entity) ;; keyword: (or N) 
 
@@ -446,6 +459,11 @@
 (noun "ORF" :super bio-entity) ;; same as above -- need to figure out how to get the category spelling right
 
 (noun "order of magnitude" :super bio-abstract)
+(noun "outcome" :super bio-process
+      :binds ((process bio-process))
+      :realization
+      (:noun "outcome"
+             :of process))
 
 (noun "panel" :super bio-process
       :binds ((component molecule)) ;; this should be for genes and proteins
@@ -478,8 +496,12 @@
       (:noun "possibility"
              :thatcomp assertion)) ;; keyword: (ity N) 
 (adj "potent" :super predicate
-  :binds ((theme bio-entity))
-  :realization (:for theme))
+  :binds ((subject biological)
+          (theme bio-entity))
+  :realization 
+  (:adj "potent"
+        :s subject
+        :for theme))
   
 (noun "presence" :super bio-context
       :binds ((context biological))
@@ -536,8 +558,11 @@
      :to agent))
 
 (adj "responsible" :super predicate ;; adj/noun "resposibility"
-  :binds ((theme bio-entity))
-  :realization (:for theme))
+  :binds ((subject biological)(theme bio-entity))
+  :realization 
+  (:adj "responsible"
+        :s subject 
+        :for theme))
 (noun "responsiveness" :super bio-scalar)
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
@@ -578,12 +603,13 @@
 ;; Jan 14 "mutation of the primary site of monoubiquitination"
 ;; 16 "mUbRas, modified at a single site, "
 (noun "site" :super bio-location
-  :binds ((process bio-process))
+  :binds ((process bio-process)(protein protein))
   :realization
      (:noun "site"
       :etf pre-mod
       :m process
-      :of process))
+      :of process
+      :in protein))
 
 (find-or-make-individual 'qualitative-rate :name "slow")
 
@@ -654,9 +680,10 @@
       (:noun "upstream"
              :of relative-to))
 (adj "useful" :super predicate
-     :binds ((purpose bio-process))
+     :binds ((subject biological)(purpose bio-process))
      :realization
      (:adj "useful"
+           :s subject
            :for purpose))
 (noun "variety" :super bio-variant
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
