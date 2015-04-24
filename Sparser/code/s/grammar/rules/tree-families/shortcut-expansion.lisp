@@ -72,7 +72,7 @@
                           category 
                           `(:pattern ,subcategorization)))))
 
-;;now renamed -- general subcategorization for syntactic relations including thatcomp
+;;now renamed -- general subcategorization for syntactic relations including thatcomp, whethercomp
 (defun subcategorize-for-slot (category pname var-name)
   ;; called from decode-realization-parameter-list in the shortcuts.
   (push-debug `(,category ,pname ,var-name))
