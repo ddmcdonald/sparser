@@ -21,6 +21,7 @@
 ;; 1/13/15 Redid be-able-to and conditional. It seems ti be implicated
 ;;  somehow in the creation of a PSI through some backdoor since lately
 ;;  they've been turned off. 
+;; 4/24/2015 make modal applied to "BE" have the category "BE" and not "MODAL" as in "will likely be..."
 
 (in-package :sparser)
 
@@ -172,6 +173,7 @@
 
 (def-form-rule (modal be)
   :form verb
+  :new-category be
   :referent (:function absorb-auxiliary left-edge right-edge))
 
 
