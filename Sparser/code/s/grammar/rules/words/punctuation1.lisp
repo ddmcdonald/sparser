@@ -3,21 +3,17 @@
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.2 January 2015
+;;;   Version:   1.3 April 2015
 
-;; 1.0  (9/21/92 v2.3) added everything else, in ascii order
-;; 1.1  (4/9/93) moved newline to required
-;; 1.2  (9/26/94) added some globals for quick reference to some of these
-;;      (10/19) added another one, 10/24/94 ditto
-;;      (7/20/14) Added a parameter for hyphen\
-;;      (1/8/15) constant for semicolon.
-;; 1.3  (1/29/15) moved out the constants to their own file
-;; added (define-punctuation rightwards_arrow #\U+2192) for →
-;; NOTE: the encodings of unicode characters are in HEX, so #\+2192 is 5894 decimal
-;;  while the alist (*entries-for-out-of-band-characters*) for out-of-band characters
-;;  uses decimal encoding, so in alphabet.lisp we need
-;;(8594 ;; rightwards arrow
-;;   (:punctuation . ,(punctuation-named #\U+2192)))
+;; 1.0 (9/21/92 v2.3) added everything else, in ascii order
+;; 1.1 (4/9/93) moved newline to required
+;; 1.2 (9/26/94) added some globals for quick reference to some of these
+;;     (10/19) added another one, 10/24/94 ditto
+;;     (7/20/14) Added a parameter for hyphen\
+;;     (1/8/15) constant for semicolon.
+;; 1.3 (1/29/15) moved out the constants to their own file
+;;     Added (define-punctuation rightwards_arrow #\U+2192) for →
+;;     (4/23/15) underbar? Wrong programming language. Changed it.
 
 (in-package :sparser)
 
@@ -63,9 +59,15 @@
 (define-punctuation  close-curly-bracket #\} )   ;; 125
 (define-punctuation  tilda               #\~ )   ;; 126
 
-;; [sfriedman:20150422.1026CST] For allegro, we need:
-#+allegro
-(define-punctuation rightwards_arrow (code-char #x2192))
-#-allegro
-(define-punctuation rightwards_arrow #\U+2192)
+
+;; NOTE: the encodings of unicode characters are in HEX, so #\+2192 is 5894 decimal
+;;  while the alist (*entries-for-out-of-band-characters*) for out-of-band characters
+;;  uses decimal encoding, so in alphabet.lisp we need (8594 ;; rightwards arrow
+;;   (:punctuation . ,(punctuation-named #\U+2192)))
+;; Also note difference is choices for Allegro and CCL
+;; //// where does SBCL come down on this? 
+
+
+#+allegro (define-punctuation rightwards-arrow (code-char #x2192))
+#-allegro (define-punctuation rightwards-arrow #\U+2192)
 
