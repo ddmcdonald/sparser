@@ -36,6 +36,8 @@
 ;; 4/23/15 Lifted out dimerize to phenomena to have it all together
 ;; 4/24/2015 generalized a number of V/R to biological based on evidence
 ;; 4/24/2015 added whethercomp as a type of verb complement
+;; 4/24/2015 add definitions of translate (as in research translates to results) and delay
+;; (ERK 11 "Our data demonstrate for the first time that a delay in cytoplasmic activation of ERK is directly translated into a delay in nuclear translocation.")
 
 (in-package :sparser)
 
@@ -496,6 +498,25 @@
 (def-synonym decrease
   (:noun "decrease"
          :of object))
+
+(delete-noun-cfr (resolve/make "delay"))
+
+(define-category delay
+    :specializes bio-process
+    :binds ((agent biological)(object bio-process))
+    :realization
+    (:verb "delay"
+	   :noun "delay"
+	   :etf (svo-passive )
+	   :s agent
+	   :o object
+           :in object
+           :of object))
+
+(def-synonym delay
+  (:noun "delay"
+         :of object
+         :in object))
 
 
 (define-category demonstrate
@@ -1849,6 +1870,15 @@
          :to destination
          :into destination
          :from origin))
+
+(define-category translate
+  :binds ((agent biological) (initial biological) (result biological))
+  :realization
+  (:verb "translate"
+         :etf (svo-passive)
+         :s agent
+         :o initial
+         :into result))
 
 (define-category treat
   :binds ((agent pronoun/first/plural) (patient biological) (treatment biological))
