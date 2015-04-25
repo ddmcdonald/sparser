@@ -39,9 +39,11 @@
     (when (and (slot-boundp e 'name)
                (name e))
       (format stream " ~a" (name e)))
-    (when (starts-at-pos e)
+    (when (and (slot-boundp e 'starts-at-pos)
+               (starts-at-pos e))
       (format stream " p~a" (pos-token-index (starts-at-pos e))))
-    (when (ends-at-pos e)
+    (when (and (slot-boundp e 'ends-at-pos)
+               (ends-at-pos e))
       (format stream "--p~a" (pos-token-index (ends-at-pos e))))))
 
 ;;;-----------------------------------
