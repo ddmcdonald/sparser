@@ -52,11 +52,34 @@
 
 (defclass titled-entity ()
   ((title :accessor title
-          :documentation "Title-text of the entity.")))
+   :documentation "Provides a title slot for the Title-text 
+      of the entity.")))
 
 (defclass string-holder ()
   ((content-string :initform "" :accessor content-string
                    :documentation "The text content of the element")))
+
+;;;----------
+;;; Titles
+;;;----------
+
+(defclass title-text (document-element named-object string-holder)
+  ()
+  (:documentation "A title of a section or article."))
+
+(defmethod print-object ((title title-text) stream)
+  (print-unreadable-object (title stream :type t)
+    (when (slot-boundp title 'content-string)
+      (format stream "~s" (content-string title)))))
+
+
+(define-resource title-text)
+
+(defun initialize-title-text-resource ()
+  (initialize-resource (get-resource :title-text)))
+
+(defun allocate-title-text ()
+  (allocate-next-instance (get-resource :title-text)))
 
 ;;;-----------------------------------
 ;;; Articles (whole documents/files)
@@ -127,21 +150,6 @@
     (initialize-sections) ;; make the 1st section
     obj))
 
-;;;----------
-;;; Titles
-;;;----------
-
-(defclass title-text (document-element named-object string-holder)
-  ()
-  (:documentation "A title of a section or article."))
-
-(define-resource title-text)
-
-(defun initialize-title-text-resource ()
-  (initialize-resource (get-resource :title-text)))
-
-(defun allocate-title-text ()
-  (allocate-next-instance (get-resource :title-text)))
 
 ;;;----------
 ;;; Sections
@@ -151,6 +159,12 @@
   ()
   (:documentation "A toplevel unit within a document that
    is several paragraphs long."))
+
+(defmethod print-object ((s section) stream)
+  (print-unreadable-object (s stream :type t)
+    (when (and (slot-boundp s 'title)
+               (typep (title s) 'title-text))
+      (format stream "~s" (content-string (title s))))))
 
 (define-resource section)
 
