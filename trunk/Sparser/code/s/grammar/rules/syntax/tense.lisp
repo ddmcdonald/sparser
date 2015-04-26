@@ -22,6 +22,7 @@
 ;; 0.7 (1/14/15) Converting mixins to regular categories because they're
 ;;      somehow getting interpretations as psi, which is presently outlawed.
 ;; 1/14/2015 support for negation and other tense/aspect features
+;; 4/26/15 gave negative a lemma
 
 (in-package :sparser)
 
@@ -29,6 +30,7 @@
 
 (define-category  negative
   :instantiates nil
+  :lemma (adjective "negative")
   :specializes  quantifier )
 ;; "no" and "not" are quantifiers in words/quantifiers1
 
