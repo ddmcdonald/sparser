@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  October 2014
+;;;  Version:  April 2015
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -32,6 +32,7 @@
 ;; in-file flages from Grok work. Added *dbg-print*. 4/24/14 updated definition
 ;; of *forest-level-protocol*. 8/30/14 added flags to enable the new
 ;; forest level protocol. 10/29/14 added more flags to control its lower levels.
+;; 4/26/15 added *reading-populated-document*. 
 
 (in-package :sparser)
 
@@ -162,6 +163,11 @@
   "The set that follows the sweep in the new forest protocol.
    Won't be seen if sweep flag is down. Gates the actual
    parsing of treetops.")
+
+(defparameter *reading-populated-document* nil
+  "Master parameter that differentiates reading from a character
+   stream and assembling a document from starting with a populated
+   document reading from it.")
 
 (defparameter *readout-relations* nil
   "Gates whether to export or display the relations that were
