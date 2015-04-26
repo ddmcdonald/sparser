@@ -71,6 +71,8 @@
       (setq previous-paragraph paragraph)
       (setq paragraph (car remaining)
             remaining (cdr remaining))
+      (setf (previous paragraph) previous-paragraph)
+      (setf (next previous-paragraph) paragraph)
       (break "finished one para: ~a" previous-paragraph))
     (break "finished section")))
 
@@ -86,7 +88,7 @@
                       *recognize-sections-within-articles*
                       *accumulate-content-across-documents*))
     (setq *current-paragraph* p)
-    ;;///// needs contents
+    ;;///// needs contents -- look at make-sentence-container
     (let ((text (content-string p)))
       (initialize-sentences) ;; set up the 1st sentence
       ;;(break "text of length ~a" (length text))
