@@ -36,6 +36,7 @@
 ;;     result -- DAVID -- let's look at it 
 ;; 4/24/2015 correct trivial typo variable-to-bin --> variable-to-bind 
 ;;  that would have blown up in collection of subcat information    
+;; 4/25/13 Made interpret-pp-adjunct-to-np bind the pobj rather than the pp
 
 (in-package :sparser)
 (defvar CATEGORY::PREPOSITIONAL-PHRASE)
@@ -403,10 +404,9 @@
                (subcategorized-variable 
                 np prep-word 
                 pobj-referent)
-               ;; or if we are making a last ditch effore
-               (and *force-modifiers* 'modifier)
-               ;; if not, then return NIL
-               )))
+               ;; or if we are making a last ditch effort
+               ;; if not, then return NIL, failing the rule
+               (and *force-modifiers* 'modifier))))
         (cond
          (*subcat-test* variable-to-bind)
          (t
@@ -415,8 +415,8 @@
                                      pp)
                     *subcat-info*))
           (setq np (maybe-copy-individual np))
-          (bind-variable variable-to-bind pp np)
-
+          ;;(bind-variable variable-to-bind pp np)
+          (bind-variable variable-to-bind pobj-referent np)
           np)))))
 
 
