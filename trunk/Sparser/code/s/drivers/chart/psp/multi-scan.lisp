@@ -109,10 +109,19 @@
   ;;    Has to be ammended in a similar way to the original because
   ;; there will invariably be something that needs to be tied
   ;; off
+  (declare (special *reading-populated-document*))
   (tr :end-of-source-check word position-before)
   (when (eq word *end-of-source*)
-    ;; This just does the throw up to chart-based-analysis
-    (terminate-chart-level-process)))
+    (cond
+     (*reading-populated-document*
+      ;; In this case EOS just means that we've finished the
+      ;; text of the current paragraph, so we throw to
+      ;; its catch.
+      (throw ''do-next-paragraph nil))
+     (t
+      ;; This just does the throw up to chart-based-analysis
+      ;; for terminatnig-chart-processing
+      (terminate-chart-level-process)))))
 
 (defun polyword-check (position-before word)
   ;; lifted from check-for-polywords where all we want is

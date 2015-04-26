@@ -55,7 +55,9 @@
   (sentence-sweep-loop))
 
 
-(defvar *sentence* nil)
+(defvar *sentence* nil
+  "Locally managed by sentence-sweep-loop. Compare to
+   *current-sentence* managed by the sentence creation routines.")
 
 (defun sentence-sweep-loop ()
   (tr :entering-sentence-sweep-loop)
