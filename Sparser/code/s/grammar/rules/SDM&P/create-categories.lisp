@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "create-categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: 0.2 April 2014
+;;;   Version: 0.2 April 2015
 
 ;; Initiated 2/9/07. Elaborated through 8/6. Refactored the head form
 ;; elevator 2/4/08. Added cases through 4/24, then through 6/16.
@@ -16,7 +16,9 @@
 ;;  elevation of segment edge of verb cases to vg from VP. 
 ;;  (1/23/12) cleaned up. Trying to find duplication. 4/1/13 found it.
 ;;  (4/14/14) Added case to generalize-segment-edge 
-;; 1/17/2015 make the segment edge for "GTP-mediated" a verb+ed
+;; 1/17/2015 make the segment edge for "GTP-mediated" a verb+ed.
+;; 4/26/13 put guards in revise-form-of-nospace-edge-if-necessary to
+;;  accommodate fall-through from incomplete ns-operations.
 
 
 (in-package :sparser)
@@ -135,10 +137,12 @@
 
   ;; They should all be some part of an np
   (let ((current-form (edge-form edge))
-        (form-of-last-edge (edge-form right-edge)))
-    
+        (form-of-last-edge (when right-edge (edge-form right-edge))))
+    ;; if we fall through a ns-pattern with no result (becouse its
+    ;; code isn't finished).
     (cond
-     ((verb-category? form-of-last-edge)
+     ((and form-of-last-edge
+           (verb-category? form-of-last-edge))
       ;; as in January sentnece 1 "GAP–mediated hydrolysis"
       (setf (edge-form edge) form-of-last-edge))
      ((eq current-form category::np)
@@ -150,7 +154,8 @@
 
     ;; But we might want to overrule that if the left edge
     ;; of the pair carries more information
-    (when (eq form-of-last-edge category::adjective)
+    (when (and form-of-last-edge
+               (eq form-of-last-edge category::adjective))
       ;; and what others?  any modifier-category?
       (setf (edge-form edge) category::adjective))))
 
