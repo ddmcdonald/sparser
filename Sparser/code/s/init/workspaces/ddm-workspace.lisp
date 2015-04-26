@@ -3,11 +3,22 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  March 2015
+;;;  version:  April 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
+
+; (cwd "/Users/ddm/ws/R3/r3/trunk/code/")
+; (load "load.lisp")
+; (in-package :r3)
+; (make-sparser-doc-structure 1079799)
+; (read-from-document 1079799)
+#|
+wget --output-document=${PMCID}.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cgi?verb=GetRecord\&identifier=oai:pubmedcentral.nih.gov:${PMCID}&metadataPrefix=pmc'
+
+|#
+
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
@@ -31,7 +42,6 @@
 ;; (setq *scan-for-unsaturated-individuals* t)
 ; (figure-7)  (cells-defNP)  (p *brent-story*)
 
-
 ; dec #34 -- "an event"
 
 (defun ddm-standard () ;;    (ddm-standard)
@@ -43,12 +53,12 @@
 ;  (setq *trace-instance-recording* t
 ;        *scan-for-unsaturated-individuals* t)
 ;  (setq *scan-for-unsaturated-individuals* t)
-;  (setq *debug-anaphora* t)  *work-on-ns-patterns*
+;  (setq *debug-anaphora* t)  
 ;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
   (setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) (trace-island-driving)
   ;(incorporate-obo-terms
-  ; "/Users/ddm/ws/R3/r3/trunk/corpus/obo-terms.lisp")
+  ; "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
   (ddm-load-corpora)
   (ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
