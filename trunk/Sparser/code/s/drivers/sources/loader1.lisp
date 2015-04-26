@@ -8,6 +8,7 @@
 ;; 1.1 (9/24/93 v2.3) broke out articles as their own directory
 ;;     (12/13) added [doc stream]
 ;; 1.2 (3/28/94) gated it.  8/10 added [articles]
+;;     (4/15/15) added document.
 
 (in-package :sparser)
 
@@ -20,5 +21,5 @@
 
 (when *orthographic-structure*
   (lload "source-drivers;doc stream")
-  (lload "source-drivers;articles"))
-
+  (lload "source-drivers;articles")
+  (lload "source-drivers;document"))
