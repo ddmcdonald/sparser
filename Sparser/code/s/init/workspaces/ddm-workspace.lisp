@@ -12,11 +12,14 @@
 ; (cwd "/Users/ddm/ws/R3/r3/trunk/code/")
 ; (load "load.lisp")
 ; (in-package :r3)
-; (make-sparser-doc-structure 1079799)
+; (r3::make-sparser-doc-structure 1079799)
 ; (read-from-document 1079799)
 #|
 wget --output-document=${PMCID}.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cgi?verb=GetRecord\&identifier=oai:pubmedcentral.nih.gov:${PMCID}&metadataPrefix=pmc'
 
+wget --output-document=3537887.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cgi?verb=GetRecord\&identifier=oai:pubmedcentral.nih.gov:${PMCID}&metadataPrefix=pmc'
+
+3847091
 |#
 
 
@@ -55,7 +58,7 @@ wget --output-document=${PMCID}.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.c
 ;  (setq *scan-for-unsaturated-individuals* t)
 ;  (setq *debug-anaphora* t)  
 ;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
-  (setq *work-on-ns-patterns* t) 
+  ;(setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) (trace-island-driving)
   ;(incorporate-obo-terms
   ; "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
