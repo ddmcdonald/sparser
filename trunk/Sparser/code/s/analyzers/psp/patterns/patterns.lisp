@@ -121,8 +121,9 @@
       (1 (one-colon-ns-patterns
           pattern words colon-positions start-pos end-pos))
       (otherwise
-       (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
-       (error "Write the code for ~a colons in a no-space sequence" count)))))
+       (when *work-on-ns-patterns*
+         (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
+         (error "Write the code for ~a colons in a no-space sequence" count))))))
 
 (defun one-colon-ns-patterns (pattern words colon-positions start-pos end-pos)
   (cond
@@ -145,9 +146,10 @@
      (right-treetop-at/edge start-pos) 
      (left-treetop-at/edge end-pos)))
    
-   (t 
-    (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
-    (break "unknown NS pattern with one colon:~%  ~a" pattern))))
+   (t ;; fall through unless variable is on
+    (when *work-on-ns-patterns*
+      (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
+      (break "unknown NS pattern with one colon:~%  ~a" pattern)))))
 
 
 ;;;-------------------------------------------------------------

@@ -36,6 +36,14 @@
       (or (reifiy-amino-acid-pair words pos-before pos-after)
           (reify-ns-name-and-make-edge words pos-before pos-after)))
 
+     ((equal pattern '(:mixed :digits :forward-slash :capitalized :digits))
+      ;; recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 
+      ;; in December #46
+      ;; split on the single slash, look up the parts.
+      ;; simpler than the multi-slash case.
+      (when *work-on-ns-patterns*
+        (break "finish pThr202/Tyr204")))
+
      ((equal pattern '(:full :forward-slash :full))
       (resolve-hyphen-between-two-terms pattern words pos-before pos-after))
 
