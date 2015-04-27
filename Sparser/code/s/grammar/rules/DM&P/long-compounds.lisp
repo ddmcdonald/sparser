@@ -27,7 +27,6 @@
 ;;;-----------------------------------------------------
 
 (defun construct-unanalyzed-multiword-compound (list-of-items)
-  (let ((sequence (define-sequence list-of-items
-                    category::unanalyzed-compound)))
+  (let ((sequence (define-sequence list-of-items)))
     (define-individual 'unanalyzed-compound
       :terms sequence)))

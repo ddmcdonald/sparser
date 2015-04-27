@@ -54,7 +54,8 @@
 ;;; print routines for the objects
 ;;;--------------------------------
 
-(define-special-printing-routine-for-category   segment
+;; specific print routines have disappeared
+#+ignore(define-special-printing-routine-for-category   segment
   :short
     ((let ((terms (value-of 'terms obj))
            (id (indiv-id obj)))
@@ -101,7 +102,8 @@
 
 
 
-(define-special-printing-routine-for-category    pair-term
+;; print routines disappeared
+#+ignore(define-special-printing-routine-for-category    pair-term
   :short ((format stream "#<~A.~A ~A>"
                   (princ-dm&p-obj (value-of 'other obj))
                   (princ-dm&p-obj (value-of 'head obj))
@@ -120,7 +122,8 @@
 
 
 
-(define-special-printing-routine-for-category   subject-verb
+;; print routines disappeared
+#+ignore(define-special-printing-routine-for-category   subject-verb
   :short ((format stream "#<~A--~A ~A>"
                  (princ-dm&p-obj (value-of 'subject obj))
                  (princ-dm&p-obj (value-of 'verb obj))
@@ -139,7 +142,8 @@
 
 
 
-(define-special-printing-routine-for-category   you-do
+;; print routines disappeared
+#+ignore(define-special-printing-routine-for-category   you-do
   :short ((format stream "#<you--~A ~A>"
                   (princ-dm&p-obj (value-of 'action obj))
                   (indiv-id obj)))
@@ -148,7 +152,8 @@
                  (indiv-id obj))))
                     
 
-(define-special-printing-routine-for-category   genitive
+;; print routines disappeared
+#+ignore(define-special-printing-routine-for-category   genitive
   :short ((format stream "#<~A : ~A  ~A>"
                  (princ-dm&p-obj (value-of 'owner obj))
                  (princ-dm&p-obj (value-of 'owned obj))
@@ -165,7 +170,8 @@
 
 
 
-(define-special-printing-routine-for-category    verb-object
+;; print routines disappeared
+#+ignore(define-special-printing-routine-for-category    verb-object
   :short ((format stream "#<~A--~A ~A>"
                  (princ-dm&p-obj (value-of 'verb obj))
                  (princ-dm&p-obj (value-of 'object obj))
@@ -182,7 +188,8 @@
 
 
 
-(define-special-printing-routine-for-category    adverb-verb
+;; print routines disappeared
+#+ignore(define-special-printing-routine-for-category    adverb-verb
   :short ((format stream "#<~A--~A ~A>"
                  (princ-dm&p-obj (value-of 'adverb obj))
                  (princ-dm&p-obj (value-of 'verb obj))
@@ -196,7 +203,8 @@
 
 
 
-(define-special-printing-routine-for-category    infinitive-relation
+;; print routines disappeared
+#+ignore(define-special-printing-routine-for-category    infinitive-relation
   :short ((format stream "#<'to ~A'  ~A>"
                   (princ-dm&p-obj (value-of 'verb obj))
                   (indiv-id obj)))
@@ -212,7 +220,8 @@
 
 
 
-(define-special-printing-routine-for-category    unanalyzed-compound
+;; print routines disappeared
+#+ignore(define-special-printing-routine-for-category    unanalyzed-compound
   :short ((format stream "#<~A  ~A>"
                   (princ-dm&p-obj (value-of 'terms obj))
                   (indiv-id obj)))
