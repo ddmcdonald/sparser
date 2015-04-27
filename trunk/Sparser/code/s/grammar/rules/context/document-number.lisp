@@ -84,6 +84,7 @@
           date )))))
 
 (defun find-year-from-last-two-digits (year-digits)
+  (declare (ignore year-digits))
   (break "this is a stub"))
 
 
