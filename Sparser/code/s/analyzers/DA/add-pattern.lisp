@@ -109,14 +109,14 @@
       (tr :checking-pattern-item-to-arc arc)
       (push-debug `(,arc))
       (etypecase arc
-        (label-arc
+        (form-arc
          (when (or (referential-category-p item)
                    (category-p item))
            (when (eq (arc-label arc) item)
              (setq matching-arc arc)
              (return))))
 
-        (form-arc
+        (label-arc
          (when (or (referential-category-p item)
                    (category-p item))
            (when (eq (arc-label arc) item)

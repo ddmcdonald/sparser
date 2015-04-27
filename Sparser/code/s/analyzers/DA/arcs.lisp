@@ -114,9 +114,9 @@
             (short-string-for-vertex (arc-left-vertex obj))
             "nil")
           (etypecase obj
-            (label-arc
-             (string-downcase (symbol-name (cat-symbol (arc-label obj)))))
             (form-arc
+             (string-downcase (symbol-name (cat-symbol (arc-label obj)))))
+            (label-arc
              (string-downcase (symbol-name (cat-symbol (arc-label obj)))))
             (morph-arc
              (arc-morph-keyword obj))
