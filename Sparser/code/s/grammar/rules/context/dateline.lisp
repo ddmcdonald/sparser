@@ -17,5 +17,5 @@
 
 
 (defun check-for-dateline (hyphen-edge)
-  ;(break)
-  )
+  (declare (ignore hyphen-edge))
+  (break "stub"))
