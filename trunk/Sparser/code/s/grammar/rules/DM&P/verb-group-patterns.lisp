@@ -238,11 +238,10 @@
         (break "Inadequate vg rules. Can't form an edge over the ~
                 words:~%  \"~A\"~%"
                (string-of-words-between start-pos pos-after-unk-verb)))
-      (let ((vg-edge
-             (right-treetop-at start-pos)))
-        (reanalyze-rest-of-overly-long-segment
-         'overly-long/word/participle
-         pos-after-unk-verb )))))
+
+      (reanalyze-rest-of-overly-long-segment
+       'overly-long/word/participle
+       pos-after-unk-verb ))))
 
 
 ;;;---------------------
@@ -264,6 +263,7 @@
 
 
 (defun overly-long/word/participle (starts-at ends-at)
+  (declare (ignore starts-at ends-at))
   (when *break-on-pattern-outside-coverage?*
     (break)))
 
