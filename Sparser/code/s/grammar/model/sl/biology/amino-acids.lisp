@@ -15,6 +15,9 @@
 ;; 4/24/2015 added definition of "position" as a synonym for residue on protein
 ;;  this is the only use of "position" in the corpora so far
 ;; "Furthermore, this outcome was specific to monoubiquitination at position 147."
+;; 4/27/2015 add new mechanism for sub-cat like interpretation where the PP obj becomes the head, 
+;;  using the syntactic-function interpret-pp-as-head-of-np
+;;  this is actually for phrases like "a phosphoserine at residue 827"
 
 
 (in-package :sparser)
@@ -22,13 +25,24 @@
 ;;;-------------
 ;;; amino acids
 ;;;-------------
-;; Class in in taxonomy.lisp
+
+
+(define-category amino-acid
+  :specializes molecule
+  :instantiates :self
+  :binds ((three-letter-code :primitive word)
+          (one-letter-code single-capitalized-letter))
+  :index (:permanent :key name)
+  :lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
+  :realization (:common-noun name))
+
 
 #| To make sense of a mutation identifier we need to be able to
 decipher the three-letter and one-letter codes. The three letter
 codes can probably be free-standing words, but the one letter
 ones are gratuitously ambiguous with capitalized initials.
 |#
+
 
 (defparameter *single-letters-to-amino-acids* (make-hash-table))
 (defun single-letter-is-amino-acid (one-letter-word)
@@ -113,7 +127,9 @@ therefore we have the special cases:
   :realization
    (:noun "residue"
    :of on-protein
-   :on on-protein)
+   :on on-protein
+   :at amino-acid)  ;; this is actually for serine at residue 822 -- this is an "inverse" :at
+                    ;;  for use by interpret-pp-as-head-of-np and a form rule in form-rules
   :index (:permanent :sequential-keys amino-acid position))
 
 (def-synonym residue-on-protein
