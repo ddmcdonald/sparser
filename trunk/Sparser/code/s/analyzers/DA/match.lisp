@@ -64,15 +64,15 @@
   (let ((match?
          (typecase arc
 
+           (form-arc
+            (when *edge-tt*
+              (eq (edge-form tt) (arc-label arc))))
+
            (label-arc
             (when *edge-tt*
               (if (eq (edge-category tt) (arc-label arc))
                 t
                 (da/look-under-edge tt (arc-label arc)))))
-
-           (form-arc
-            (when *edge-tt*
-              (eq (edge-form tt) (arc-label arc))))
 
            (morph-arc
             (when *word-tt*
