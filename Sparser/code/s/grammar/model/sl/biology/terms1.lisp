@@ -311,6 +311,15 @@
       (:noun "fragment"
              :of whole))
 
+(adj "free" :super predicate
+     :binds ((subject biological)(free-of biological))
+     :realization 
+     (:adj "free"
+           :s subject
+           :of free-of)) ;; keyword: (ive ADJ) 
+
+(adj "nucleotide-free" :super predicate)
+
 (noun "function" :super bio-process
       :binds ((functional bio-entity)) ;; this should be for genes and proteins
       :realization
@@ -641,7 +650,13 @@
       :realization
       (:noun "strategy"
              :for goal))
-(noun "substrate" :super bio-entity)
+
+(define-category substrate :specializes bio-entity
+      :binds ((enzyme protein))
+  :realization
+  (:noun "substrate"
+         :of enzyme
+         :for enzyme))
 ;;(noun "success" :super bio-abstract) -- make a verb
 
 (adj "suitable" :super predicate)
