@@ -347,3 +347,81 @@
     (compare-to-snapshot 'dec-test)
     (compare-to-snapshot 'dry-run))
  (sb-profile:report))
+
+(defparameter *nht* (make-hash-table :test #'eql))
+(defparameter *vht* (make-hash-table :test #'eq))
+(defparameter *lht* (make-hash-table :test #'equal))
+(defparameter *val* nil)
+(defparameter *name-variables* (find-variable 'name))
+
+(defun make-dummy-v+v()
+  (let* ((v+v (allocate-v+v))
+         (v (cdr (nth (unit-plist v+v) *name-variables*)))
+         (value (car (nth (unit-plist v+v) *name-variables*))))
+    (setf (vv-variable v+v) v)
+    (setf (vv-value v+v) value)
+    (setf (var-v+v-table v)
+          (push `(,value . ,v+v) 
+                (var-v+v-table v)))
+    (tr :made-v+v v+v)
+    v+v))
+
+(defparameter *vvs* (loop for i from 1 to 20 collect (make-dummy-v+v)))
+(setq vk (fifth *vvs*))
+(setq nk (unit-plist vk))
+(setq lk (list (vv-variable vk)(vv-value vk)))
+
+(defun load-vv-tables ()
+  (loop for vv in *vvs* do
+    (setf (gethash (unit-plist vv) *nht*) vv)
+    (setf (gethash vv *vht*) (unit-plist vv))
+    (setf (gethash (cons (vv-value vv)(vv-variable vv)) *lht*) vv)
+    (setf (getf *val* vv) (unit-plist vv))))
+
+(defparameter *rr* nil)
+
+(defun ht (n key ht)
+  (loop for i from 1 to n do (setq *rr* (gethash key ht))))
+
+(defun htnull (n key ht)
+  (loop for i from 1 to n do (setq *rr* (cons n n))))
+
+(defun vt (n key)
+  (loop for i from 1 to n do (setq *rr* (getf *val* key))))
+
+#|? 
+time (ht 10000 nk *nht*))
+;Compiler warnings :
+;   In an anonymous lambda form at position 16: Undeclared free variable NK
+(HT 10000 NK *NHT*)
+took   630 microseconds (0.000630 seconds) to run.
+During that period, and with 8 available CPU cores,
+     1,301 microseconds (0.001301 seconds) were spent in user mode
+         9 microseconds (0.000009 seconds) were spent in system mode
+NIL
+? (time (ht 10000 lk *lht*))
+;Compiler warnings :
+;   In an anonymous lambda form at position 16: Undeclared free variable LK
+(HT 10000 LK *LHT*)
+took 3,371 microseconds (0.003371 seconds) to run.
+During that period, and with 8 available CPU cores,
+     7,330 microseconds (0.007330 seconds) were spent in user mode
+        47 microseconds (0.000047 seconds) were spent in system mode
+ 752 bytes of memory allocated.
+NIL
+? (time (vt 10000 vk))
+;Compiler warnings :
+;   In an anonymous lambda form at position 16: Undeclared free variable VK
+(VT 10000 VK)
+took   913 microseconds (0.000913 seconds) to run.
+During that period, and with 8 available CPU cores,
+     1,897 microseconds (0.001897 seconds) were spent in user mode
+        21 microseconds (0.000021 seconds) were spent in system mode
+NIL
+
+
+|#
+
+
+
+
