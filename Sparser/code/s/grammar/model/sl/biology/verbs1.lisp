@@ -38,7 +38,9 @@
 ;; 4/24/2015 added whethercomp as a type of verb complement
 ;; 4/24/2015 add definitions of translate (as in research translates to results) and delay
 ;; (ERK 11 "Our data demonstrate for the first time that a delay in cytoplasmic activation of ERK is directly translated into a delay in nuclear translocation.")
-
+;; 4/27/2015 remove "load" as a verb -- all instances we see are "loading", and we
+;;  want that treated like a noun
+;; also add duration modifier on grow, and changes some subcat restrictions
 (in-package :sparser)
 
 
@@ -852,12 +854,13 @@
 (define-category bio-grow  :specializes bio-process
   ;;:obo-id "GO:0005488"
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((agent pronoun/first/plural)(object bio-entity))
+  :binds ((agent pronoun/first/plural)(object bio-entity)(duration amount-of-time))
   :realization 
   (:verb ("grow" :past-tense "grown") :noun "growing"
          :etf (svo-passive) 
          :s agent
          :o  object
+         :for duration
          ))
 
 
@@ -1145,31 +1148,7 @@
          :to substrate
          :of object))
 
-;;--- "load" -- "GTP loading"
-;; "activated upon GTP loading"
-;; You load GTP onto something, presumably a protein
-;; can you say "the loading of GTP onto Ras" ?
-;; "Determination of GTP loading on Rho"
-;; "regulation of Ras GTP loading"
-;; "GTP-loading of Ras" <<< hyphen
-;; "may involve Ras-GTP loading"
-;; "enhanced GTP loading"
-;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
-(define-category molecule-load
- :specializes bio-process
- :binds ((agent bio-entity) ;; causes the action
-         (object molecule) ;; the nucleotyde that moves
-         (substrate biological))
- :realization
- (:verb "load"
-  :etf (svo-passive)
-  :s agent
-  :o object
-  :of object
-  :onto substrate))
-;; leads to rule bio-entity + load, 
-;; which works, but isn't satisfying
 
 ;;--- "lower"  ("raise")
 ;;/// N.b. the adjective variant is commented out in the modifiers dossier
@@ -1462,7 +1441,11 @@
 	   :o object
            :of object))
 
-(define-category purify :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "purify" :noun "purification" :etf (svo-passive) :s agent :o object))
+(define-category purify :specializes bio-process
+  :binds ((agent bio-process)(object bio-entity)) 
+  :realization 
+  (:verb "purify" :noun "purification" :etf (svo-passive) 
+         :s agent :o object))
 
 (define-category query
     :specializes bio-process
@@ -1719,7 +1702,8 @@
    :etf (svo-passive)
    :o object  ;; stimulation of <process>
    :s agent
-   :of object))    ;; by <entity>
+   :of object
+   :with agent))    ;; by <entity>
 
 (define-category succeed
   :specializes bio-process
@@ -1734,7 +1718,7 @@
 (define-category suggest :specializes bio-process
 		 :mixins (bio-thatcomp)
   ;; :specializes rhetorical-process <----- find the right name
-  :binds ((agent bio-process)) ;;/// really a propositin
+  :binds ((agent biological)) ;;/// can be "these data suggest"
   :realization
   (:verb "suggest" :noun "suggestion"
    :etf (sv)
