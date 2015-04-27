@@ -77,7 +77,7 @@
 ; and link in phrases at the ETF level, perhaps as an
 ; additional component of the ETF definition. See the code
 ; in Mumble/interface/tsro/map-translations for a start.
-
+#|
 (defmethod tailored-individual-realization ((i individual))
   (declare (special *shadows-to-individuals*))
   (let* ((shadow (find-or-make-shadow i))
@@ -117,7 +117,8 @@
      (t (push-debug `(,n))
         (break "stub: need yet another way to get a word ~
               ~%from a number individual: ~a" n)))))
-        
+    
+|#   
 
 
 ;;--- names
