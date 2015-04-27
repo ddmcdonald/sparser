@@ -699,6 +699,7 @@
              :on scale))
 
 (adj "wild-type" :super predicate)
+(adj "wild type" :super wild-type)
 
 
 
