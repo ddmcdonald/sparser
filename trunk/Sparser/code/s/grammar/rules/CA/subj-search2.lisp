@@ -97,8 +97,8 @@
   ;;   If it finds it within reasonable boundaries, it spans the two
   ;; with the edge called for by the rule it used to determine what
   ;; subject np to accept. 
-
-  (if (comma-just-before-edge? vp-edge)
+  (break "needs more args from caller. edge = ~a" vp-edge)
+  #+ignore(if (comma-just-before-edge? vp-edge)
     (subject-search/adjacent-comma vp-edge)
     (subject-search/walk-leftwards-no-comma vp-edge)))
 
@@ -107,7 +107,8 @@
 
 
 (defun subject-search/adjacent-comma (vp-edge)
-  (let ((adjacent-edge  ;; just to the left of the comma
+  (break "needs more args from caller. edge = ~a" vp-edge)
+  #+ignore(let ((adjacent-edge  ;; just to the left of the comma
          (edge-ending-at (chart-position-before
                           (pos-edge-starts-at vp-edge)))))
     (if adjacent-edge
@@ -152,6 +153,7 @@
 
 (defun span-separated-subject-and-VP (subject-edge vp-edge
                                       cfr  calling-routine)
+  (declare (ignore calling-routine))
   (let ((edge (make-chart-edge
                :left-edge subject-edge
                :right-edge vp-edge
