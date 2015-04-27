@@ -37,6 +37,10 @@
 ;; 4/24/2015 correct trivial typo variable-to-bin --> variable-to-bind 
 ;;  that would have blown up in collection of subcat information    
 ;; 4/25/13 Made interpret-pp-adjunct-to-np bind the pobj rather than the pp
+;; 4/27/2015 add new mechanism for sub-cat like interpretation where the PP obj becomes the head, 
+;;  using the syntactic-function interpret-pp-as-head-of-np
+;;  this is actually for phrases like "a phosphoserine at residue 827"
+
 
 (in-package :sparser)
 (defvar CATEGORY::PREPOSITIONAL-PHRASE)
@@ -418,6 +422,37 @@
           ;;(bind-variable variable-to-bind pp np)
           (bind-variable variable-to-bind pobj-referent np)
           np)))))
+
+(defun interpret-pp-as-head-of-np (np pp)
+  (push-debug `(,np ,pp))
+  (let* ((pp-edge (right-edge-for-referent))
+         (prep-edge (edge-left-daughter pp-edge))
+         (prep-word (edge-left-daughter prep-edge))
+         (pobj-edge (edge-right-daughter pp-edge))
+         (pobj-referent (edge-referent pobj-edge))
+         (variable-to-bind
+          ;; test if there is a known interpretation of the NP/PP combination
+          (or
+           (subcategorized-variable
+            ;; look at the subcategorization on the pobj not on the
+            ;;  preceding np
+            pobj-referent
+            prep-word 
+            np)
+           ;; or if we are making a last ditch effort
+           ;; if not, then return NIL, failing the rule
+           (and *force-modifiers* 'modifier))))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (t
+      (if *collect-subcat-info*
+          (push (subcat-instance np prep-word variable-to-bind 
+                                 pp)
+                *subcat-info*))
+      (setq pobj-referent (maybe-copy-individual pobj-referent))
+      ;;(bind-variable variable-to-bind pp np)
+      (bind-variable variable-to-bind np pobj-referent)
+      pobj-referent))))
 
 
 ;;;-----------------

@@ -8,6 +8,10 @@
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
 ;; 4/24/2015 correct spelling from redidue to residue
+;; 4/27/2015 add new mechanism for sub-cat like interpretation where the PP obj becomes the head, 
+;;  using the syntactic-function interpret-pp-as-head-of-np
+;;  this is actually for phrases like "a phosphoserine at residue 827"
+
 
 (in-package :sparser)
 
@@ -135,6 +139,10 @@
   :referent 
   (:head right-edge           
          :bind (on-protein right-edge)))
+
+(def-form-rule (amino-acid pp) ;; phosphoserine at residue 827
+  :form np 
+  :referent (:function interpret-pp-as-head-of-np left-edge right-edge))
 
 #+ignore ;; replaced with :of on the class realization
 (def-cfr of-protein (of protein)
