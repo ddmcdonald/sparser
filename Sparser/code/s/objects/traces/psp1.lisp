@@ -817,7 +817,7 @@
     (trace-msg "[scan] PNF knows it has a ~a~
               ~%   from p~a to ~a~
               ~%   resetting opening bracket to .[np from ~a"
-               (display-edge-category edge)
+               (edge-category edge)
                (pos-token-index start)
                (pos-token-index end) (b-symbol old-bracket))))
 
