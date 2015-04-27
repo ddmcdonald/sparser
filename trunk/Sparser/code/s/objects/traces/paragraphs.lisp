@@ -25,12 +25,12 @@
 (deftrace :paragraph-start (p pos)
   (when *trace-paragraphs*
     (trace-msg "[P] Starting paragraph number ~A at p~A"
-               (paragraph-number p) (pos-token-index pos))))
+               p (pos-token-index pos))))
 
 (deftrace :paragraph-finish (p start-pos end-pos)
   (when *trace-paragraphs*
     (trace-msg "[P] Finishing paragraph number ~A (start: p~A) at p~A"
-               (paragraph-number p) (pos-token-index start-pos)
+               p (pos-token-index start-pos)
                (pos-token-index end-pos))))
 
 
@@ -44,7 +44,7 @@
   (when *trace-paragraphs*
     (trace-msg "[P] Deallocating paragraph ~A~
               ~%    because it ends (p~a) just after it begins (p~A)"
-               (paragraph-number p) (pos-token-index start-pos)
+               p (pos-token-index start-pos)
                (pos-token-index end-pos))))
 
 

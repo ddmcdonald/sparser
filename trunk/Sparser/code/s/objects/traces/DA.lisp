@@ -112,9 +112,9 @@
     (trace-msg "The next vertex in the DA-trie is ~A~
               ~%    It is a ~A"
                vertex (etypecase vertex
-                        (start-vertex "start vertex")
+                        (end-vertex "end vertex")
                         (vertex "continuing vertex")
-                        (end-vertex "end vertex")))))
+                        (start-vertex "start vertex")))))
 
 
 (deftrace :da-pattern-matched (rule)
