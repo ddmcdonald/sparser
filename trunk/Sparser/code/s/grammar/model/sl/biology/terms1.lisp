@@ -195,12 +195,13 @@
 #|
 ;; Something is deficient in something else. It needs that
 ;; thing but doesn't have it. Vitamin D, 
-(adj deficient :super predicate
-  :binds ()
+;; ERK#7 "to be dimerization-deficient in vitro"
+(adj "deficient" :super predicate
+  :binds ((missing biological)) 
   :realization
-    (:adj "deficient"
+    (
      :etf pre-mod
-     :m
+     :m missing))
 |#
 
 
