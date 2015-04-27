@@ -35,12 +35,12 @@
 		   (cat-symbol form-category))))
     (when symbol
       (case symbol
-	((or category::np-head 
-	     category::number)) ;; "the one that"
+	((category::np-head 
+          category::number)) ;; "the one that"
         (category::quantifier) ;; "[just no] pleasing"
-	((or category::common-noun
-             category::common-noun/plural
-             category::proper-noun) ;; over a name-word 
+	((category::common-noun
+          category::common-noun/plural
+          category::proper-noun) ;; over a name-word 
 	 (setf (edge-form edge) (category-named 'np-head)))
 	(category::modal) ;; "can can they ...
 	(category::verb) ;; "are are"
