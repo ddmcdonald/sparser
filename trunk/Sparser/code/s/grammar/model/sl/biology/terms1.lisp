@@ -23,6 +23,7 @@
 ;; diverse vocabulary hacking
 ;; 02/18/15 alphabetized terms
 ;; 4/24/2015 added subject variable for many adjectives that can be copular adjectives
+;; 4/27/2015 improve handling of "serum" and "fetal calf serum" and "open reading frame" using def-synonym
 
 (in-package :sparser)
 
@@ -281,8 +282,10 @@
 (noun "exclusivity" :super bio-abstract) ;; keyword: (ity N)
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
 (noun "fate" :super bio-abstract)
-(noun "FCS"  :super bio-entity)
-(noun "fetal calf serum" :super bio-entity)
+
+(noun "fetal calf serum" :super bio-context)
+(def-synonym category::fetal\ calf\ serum
+             (:noun "FCS"))
 
 
 (define-adverb "finally")
@@ -456,8 +459,9 @@
 
 ;; These three want to be synonyms
 (noun "open reading frame" :super bio-entity)
-(noun "open reading frames" :super bio-entity)
-(noun "ORF" :super bio-entity) ;; same as above -- need to figure out how to get the category spelling right
+(noun "open reading frames" :super open\ reading\ frame)
+(def-synonym open\ reading\ frame 
+            (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
 
 (noun "order of magnitude" :super bio-abstract)
 (noun "outcome" :super bio-process
@@ -589,7 +593,7 @@
       (:noun "sensitivity"
              :of subject
              :to cause)) ;; keyword: (ity N)
-(noun "serum" :super bio-entity) 
+(noun "serum" :super bio-context) 
 (noun "setting" :super bio-context)
 (adj "short-lived" :super predicate)
 
