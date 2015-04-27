@@ -694,6 +694,7 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defun svo/nominal/adjective (verb nominalization adjective
                               &key subject theme)
+  (declare (ignore adjective))
   (let ((subject-restriction (or subject 'individual))
         (theme-restriction (or theme 'individual)))
     (let* ((name (name-to-use-for-category nominalization))

@@ -210,6 +210,7 @@
   "Rebuild the schematic mapping into a real mapping according to the
    category-specific substitution arguments. Does much of the same job
    as decode-binding in interpreting symbols and strings."
+  (declare (ignore etf))
   ;;(push-debug `(,schema ,args-to-substitute ,etf ,category)) ;; (break "pop")
   ;; (setq schema (car *) args-to-substitute (cadr *) etf (caddr *) category (cadddr *))
   (let ((override-category (override-label category))
