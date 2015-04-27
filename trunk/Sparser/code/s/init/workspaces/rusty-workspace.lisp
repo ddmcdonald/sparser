@@ -36,7 +36,7 @@
   (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
   (trace-lexicon-unpacking) 
   (trace-morphology)
-  (setq *do-anaphora* nil)
+  ;;(setq *do-anaphora* nil)
   (setq *note-text-relations* nil)
 )
 
