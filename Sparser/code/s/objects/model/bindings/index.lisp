@@ -237,16 +237,16 @@
   (clrhash (var-instances v)))
 
 (defun clear-deallocated-bindings/var (v)
-  (let (valid-entries unit viable-bindings
-                      (instances (var-instances v)))
+  (let ((instances (var-instances v))
+        viable-bindings)
     (maphash 
      #'(lambda(unit bindings)
          (dolist (b bindings)
            (unless (deallocated-binding? b)
              (push b viable-bindings)))
          (if viable-bindings
-             (setf (gethash unit instances) viable-bindings)
-             (remhash unit instances)))
+           (setf (gethash unit instances) viable-bindings)
+           (remhash unit instances)))
      instances)))
 
 
@@ -338,9 +338,9 @@
                 
                 (when (list-type-variable? variable)
                   (break "what do I do to unindex from a list-type-variable?")
-                  (check/unindex-dynamically-extended-list
+                  #+ignore(check/unindex-dynamically-extended-list
                    instances-alist variable value b)
-                  (else
+                  #+ignore(else
                     (push-debug `(,value ,variable))
                     ;                 (cerror "ignore it and continue"
                     ;                         "Expected the index for~% value = ~A~
