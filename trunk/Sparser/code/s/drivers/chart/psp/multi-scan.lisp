@@ -117,7 +117,7 @@
       ;; In this case EOS just means that we've finished the
       ;; text of the current paragraph, so we throw to
       ;; its catch.
-      (throw ''do-next-paragraph nil))
+      (throw 'do-next-paragraph nil))
      (t
       ;; This just does the throw up to chart-based-analysis
       ;; for terminatnig-chart-processing
