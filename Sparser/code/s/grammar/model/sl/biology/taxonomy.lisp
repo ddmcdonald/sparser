@@ -24,7 +24,8 @@
 ;; 4/23/15 Lifted out the dimer classes to phenomena to have all the parts
 ;;  in the same place. 
 ;; 4/24/2015 added mixins for bio-thtcomp and bio-whethercomp -- verbs that take thatcomps and whethercomps
-
+;; 4/27/2015 remoe definition of amino-acid and move to that file, and add defnitions for
+;;  nominal for "loading"
 
 (in-package :sparser)
 
@@ -218,15 +219,6 @@
   :lemma (:common-noun "small molecule")
   :realization (:common-noun name))
 
-(define-category amino-acid
-  :specializes molecule
-  :instantiates :self
-  :binds ((three-letter-code :primitive word)
-          (one-letter-code single-capitalized-letter))
-  :index (:permanent :key name)
-  :lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
-  :realization (:common-noun name))
-
 (define-category nucleotide
   :specializes molecule
   :instantiates :self
@@ -322,6 +314,31 @@
 
 
 ;;----- complexes
+;;--- "load" -- "GTP loading"
+;; "activated upon GTP loading"
+;; You load GTP onto something, presumably a protein
+;; can you say "the loading of GTP onto Ras" ?
+;; "Determination of GTP loading on Rho"
+;; "regulation of Ras GTP loading"
+;; "GTP-loading of Ras" <<< hyphen
+;; "may involve Ras-GTP loading"
+;; "enhanced GTP loading"
+;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
+
+(define-category molecule-load
+ :specializes bio-process
+ :binds ((agent bio-entity) ;; causes the action
+         (object molecule) ;; the nucleotyde that moves
+         (substrate biological))
+ :realization
+ (:noun "loading"
+  :etf (of-nominal)
+  :s agent
+  :o object
+  :of object
+  :onto substrate))
+;; leads to rule bio-entity + load, 
+;; which works, but isn't satisfying
 
 (define-category complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
   :specializes bio-chemical-entity
