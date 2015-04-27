@@ -524,7 +524,7 @@
 (define-category demonstrate
     :specializes bio-process
     :mixins (bio-thatcomp)
-    :binds ((agent biological)(object bio-process))
+    :binds ((agent (:or biological pronoun/first/plural these))(object bio-process))
     :realization
     (:verb "demonstrate" ;; keyword: ENDS-IN-ED 
 	   :noun "demonstration"
@@ -1318,7 +1318,7 @@
   :specializes bio-process
   :instantiates self
   :binds ((agent biological)
-          (substrate protein)
+          (substrate (:or protein residue-on-protein))
           (site residue-on-protein))
   :index (:temporary :sequential-keys site substrate)
   :realization
