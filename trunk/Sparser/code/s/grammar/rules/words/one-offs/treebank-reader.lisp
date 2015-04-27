@@ -658,6 +658,7 @@
                           :direction :output
                   :if-exists :supersede
                   :if-does-not-exist :create)
+    (declare (ignore s))
     (dolist (tag-symbol *pos-tags*)
       (let ((entry (gethash tag-symbol symbol-to-pos-tags)))
         (when entry
@@ -745,7 +746,7 @@
                               (simple-condition-format-control e)
                               (simple-condition-format-arguments e))))
               (error (e2)
-                e))
+                e2))
             str))))
 
 

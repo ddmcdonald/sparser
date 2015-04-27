@@ -25,6 +25,7 @@
 ;; referenced it.
 
 (defun def-word/expr (string data)
+  (declare (ignore string data))
   (error "No definition for def-word yet.~
         ~%Use establish-version-of-def-word"))
 
