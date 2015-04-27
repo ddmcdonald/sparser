@@ -188,6 +188,7 @@
 ;;;---------------------------
 
 (defun do-document-as-stream-of-files (document-stream)
+  (declare (special *open-stream-of-source-characters*))
   ;; All of the files are to be interpreted as parts of a single document,
   ;; i.e. initialization and the call to do-article only occur once.
   (clean-out-history-and-temp-objects)
