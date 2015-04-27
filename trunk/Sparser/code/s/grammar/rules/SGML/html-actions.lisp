@@ -19,6 +19,8 @@
   ;; the :angle-brackets hook.  This case handles both the first of
   ;; a paired tag and empty tags.
 
+  (declare (ignore pos-before-close pos-after-open))
+
   (let ((category (edge-referent tag-edge)))
 
     (let ((i (define-or-find-individual category
@@ -57,9 +59,12 @@
   ;; the :angle-brackets hook.  This case handles both the end case
   ;; of a paired tag.
 
+  (declare (ignore layout pos-after-open pos-before-close))
+
   (let ((category (edge-referent close-edge)))
     (multiple-value-bind (i open-edge)
                          (pop-off-top-pending-left-opener)
+      (declare (ignore open-edge))
 
       (unless (and (typep i 'individual)
                    (itypep i category))
