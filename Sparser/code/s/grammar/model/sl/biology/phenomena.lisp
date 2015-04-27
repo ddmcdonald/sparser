@@ -363,8 +363,14 @@ it is created from N-terminus to C-terminus.|#
 ; ERK1-4 ... accumulated in the nucleus to the same level as ...
 
 
+;;;-----------------------------------
 ;;; dimers and their fellow travelers 
+;;;-----------------------------------
 
+;;------------------------ binding ----------------
+; Have to include binding here because dimerize inherits 
+; from it and this file is loaded before the verbs are
+;/// We could change that.
 
 ;; "GTP-binding" "GO:00055525
 ;; from http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005525
