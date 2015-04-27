@@ -88,22 +88,36 @@
 
   (when (consp category) ;; new 6/19/09
     (setq category (car category)))
+  
+  (cond
+   ((and
+     (typep var/name 'anonymous-variable)
+     (null
+      (find-variable-for-category 
+       (avar-name var/name)
+       (if
+        (individual-p individual)
+        (itype-of individual)
+        individual))))
+    (format t "!! CAN'T DEREFERENCE ANONYMOUS VARIABLE ~A AGAINST CATEGORY ~A, GIVING UP"
+            var/name individual))
+   (t
+    (let ((variable 
+           (or (when (typep var/name 'lambda-variable)
+                 var/name)
+               (when (typep var/name 'anonymous-variable)
+                 (dereference-variable var/name individual))
+               (find-variable-for-category var/name category))))
+      (unless variable
+        (push-debug `(,var/name ,value ,individual ,category))
+        (if category
+            (break "There is no variable named ~A~
+    ~%associated with the category ~A" var/name category)
+            (break "There is no variable named ~A~
+    ~%associated with the category of the individual ~A"
+                   var/name individual)))
+      (bind-variable/expr variable value individual)))))
 
-  (let ((variable 
-         (or (when (typep var/name 'lambda-variable)
-               var/name)
-             (when (typep var/name 'anonymous-variable)
-               (dereference-variable var/name individual))
-             (find-variable-for-category var/name category))))
-    (unless variable
-      (push-debug `(,var/name ,value ,individual ,category))
-      (if category
-        (break "There is no variable named ~A~
-                ~%associated with the category ~A" var/name category)
-        (break "There is no variable named ~A~
-                ~%associated with the category of the individual ~A"
-               var/name individual)))
-    (bind-variable/expr variable value individual)))
 
 
 (defun bind-variable/expr (variable value individual)
