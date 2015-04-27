@@ -277,26 +277,24 @@ therefore we have the special cases:
       ;;(break "look at edges re point mutation")
       (let ((aa1 (single-letter-is-amino-acid ref1))
             (aa2 (single-letter-is-amino-acid ref3)))
-        ;;/// do we have enough args to go somewhere else if these are amino acid?
-        (unless (and aa1 aa2)
-          (push-debug `(,ref1 ,ref3))
-          (break "Couldn't find the amino acids"))
+        ;;/// do we have enough args to go somewhere else if these are amino acids?
         (when (and aa1 aa2)
-          (let ((number ;;(find-or-make-number ref2) change residue
-                 (get-tag-for :numerical-value ref2)))
-            (let* ((i (make-point-mutation aa1 aa2 ;; or is it the other order??
-                                          number))
-                   (edge
-                    (make-edge-over-long-span
-                     pos-before
-                     pos-after
-                     category::point-mutation
-                     :rule :reify-point-mutation-and-make-edge
-                     :form category::np
-                     :referent i
-                     :constituents `(,edge1 ,edge2 ,edge3))))
-              ;;/// trace
-              edge)))))))
+          (when (and aa1 aa2)
+            (let ((number ;;(find-or-make-number ref2) change residue
+                   (get-tag-for :numerical-value ref2)))
+              (let* ((i (make-point-mutation aa1 aa2 ;; or is it the other order??
+                                             number))
+                     (edge
+                      (make-edge-over-long-span
+                       pos-before
+                       pos-after
+                       category::point-mutation
+                       :rule :reify-point-mutation-and-make-edge
+                       :form category::np
+                       :referent i
+                       :constituents `(,edge1 ,edge2 ,edge3))))
+                ;;/// trace
+                edge))))))))
               
 
 (defun make-point-mutation (original replacement residue-number)
