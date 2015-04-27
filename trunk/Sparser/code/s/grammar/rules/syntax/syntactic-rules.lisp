@@ -22,6 +22,7 @@
 ;; rule for VG+DEICTIC-LOCATION (as in "here" as an adverb)
 ;; 4/15/15 moved prepositional-phrase category to syntax-functions.
 ;; 4/24/2015 make "adverb + verb" be a VG and not a VP -- making it a VP prevented absorbing an object
+;; 4/27/2015 extend PP rules to allow for (preposition ng) and other general np-type heads
 
 (in-package :sparser)
 
@@ -205,36 +206,23 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 |#
 
 ;;--- prepositional phrases
+(loop for nb in (cons category::np *n-bar-categories*)
+  do
+  (eval 
+   `(def-syntax-rule (preposition ,nb)
+                     :head :left-edge
+      :form pp
+      :referent (:function make-pp left-referent right-referent)))
+   
+   
+   (eval
+    `(def-syntax-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
+                      :head :left-edge
+       :form pp
+       ;; I suppose we need a generic relationship here for
+       ;; a proper referent
+       :referent (:function make-pp left-referent right-referent))))
 
-(def-syntax-rule (preposition np)
-                 :head :left-edge
-  :form pp
-  :referent (:function make-pp left-referent right-referent))
-
-(def-syntax-rule (preposition proper-noun)
-                 :head :left-edge
-  :form pp
-  :referent (:function make-pp left-referent right-referent))
-
-(def-syntax-rule (preposition proper-name)
-                 :head :left-edge
-  :form pp
-  :referent (:function make-pp left-referent right-referent))
-
-
-(def-syntax-rule (spatial-preposition np) ;;//// get rid of spatial-preposition!
-                 :head :left-edge
-  :form pp
-  ;; I suppose we need a generic relationship here for
-  ;; a proper referent
-  :referent (:function make-pp left-referent right-referent))
-
-(def-syntax-rule (spatial-preposition proper-noun) ;;//// get rid of spatial-preposition!
-                 :head :left-edge
-  :form pp
-  ;; I suppose we need a generic relationship here for
-  ;; a proper referent
-  :referent (:function make-pp left-referent right-referent))
 
 ;;/// This should be stated over vp+ing or vg+ing
 ;; (which need to be created and managed), then we
