@@ -95,6 +95,8 @@ previous records of treetop-counts.
       (error "No sentence corpus has been defined with the name ~a" name))
     (run-treetop-snapshot corpus)))
 
+(defparameter *p-sent* nil)
+
 (defmethod run-treetop-snapshot ((corpus sentence-corpus))
   (let ((variable (corpus-bound-variable corpus)))
     (unless variable
@@ -104,6 +106,7 @@ previous records of treetop-counts.
             (index 0) pairs )
         (declare (special *do-anaphora*))
         (dolist (exp (eval variable)) ;; (p "...")
+          (setq *p-sent* exp)
           (incf index)
           (eval exp)
           (let ((sentence (previous (sentence))))
