@@ -34,6 +34,15 @@
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
 
+(def-bio "Akt" protein
+  :long "Protein kinase B"
+  :synonyms ("PKB")
+  :identifier "PR:31749")
+
+(def-bio "IGF" protein
+  :long "Insulin-Like Growth Factor"
+  :identifier "PR:05019")
+
 (def-bio "nfkappab2" protein 
   :identifier "PR:000011178" 
   :greek "kappa")
