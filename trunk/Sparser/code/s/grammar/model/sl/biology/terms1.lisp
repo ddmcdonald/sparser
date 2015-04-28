@@ -173,7 +173,6 @@
         :for theme))
 (define-adverb "critically")
 
-(adj "cultured" :super predicate)
 (adj "current" :super predicate)
 (def-bio "cytosine" nucleotide)
 (noun "cytosol" :super cellular-location)
