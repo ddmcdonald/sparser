@@ -312,8 +312,6 @@
                                (ev-edges right-edge)
                                (list right-edge)))
               (let ((heuristic (conjunction-heuristics left right)))
-                (when nil
-                  (collect-possible-form-conjunction heuristic left right))
                 (if heuristic
                     ;; conjoin/2 looks for leftwards
                     (let ((edge (conjoin/2 left right heuristic)))

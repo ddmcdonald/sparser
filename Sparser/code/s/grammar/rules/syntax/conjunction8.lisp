@@ -44,10 +44,27 @@
 ;;   into trouble semantically we can add more specific checks.
 ;; 4/27/2015 tighten up conjunction of items with the same form -- put in some tests on semantics
 ;;  using method conjunction-incompatible-labels
+;; 4/28/2015 Added bunch of variables and switches to collect information on conjunctions
 
 (in-package :sparser)
 
-
+;;;-----
+;;; data gathering
+;;;-----
+(defparameter *save-conjunctions* nil)
+(defun save-conjunctions (&optional (yes? t))
+  (setq *save-conjunctions* yes?))
+(defparameter *collect-conjunctions* nil)
+(defparameter *all-conjunctions* nil)
+(defparameter *rejected-form-conjs* nil
+  "Accumulator for collecting instances where form motivates
+  conjunction, but semantics rejects it")
+(defparameter *form-conjs* nil
+"Accumulator for collecting instances where form motivates
+   conjunction")
+(defun collect-conjunctions ()
+  (save-conjunctions)
+  (loop for corpus in '(dec-test dry-run erk) do (print corpus)(compare-to-snapshot corpus)))
 ;;;------
 ;;; hook
 ;;;------
@@ -382,13 +399,12 @@
                  (or (and (eq form-before form-after))
                      (and (memq form-before *premod-forms*)
                           (memq form-after *premod-forms*)))
-                 (not (conjunction-incompatible-labels label-before label-after)))
+                 (not (conjunction-incompatible-labels label-before label-after edge-before edge-after)))
               :conjunction/identical-form-labels))))))
 
-(defparameter *rejected-form-conjs* nil)
-(defparameter *form-conjs* nil)
 
-(defun conjunction-incompatible-labels (before after)
+
+(defun conjunction-incompatible-labels (before after edge-before edge-after)
   (let
       ((reject?
         (or
@@ -407,26 +423,19 @@
             (not (itypep before category::bio-process))) )))))
     (cond
      (reject?
-      (push (list before after *p-sent*) *rejected-form-conjs*)
+      (push (conj-info before after edge-before edge-after) *rejected-form-conjs*)
       t)
      (t
-     (push (list before after *p-sent*) *form-conjs*)
-     nil))))
+      (push (conj-info before after edge-before edge-after) *form-conjs*)
+      nil))))
+
+(defun conj-info (before after edge-before edge-after)
+  (list before after 
+        (terminals-in-segment/one-string (pos-edge-starts-at edge-before)
+                                         (pos-edge-ends-at edge-after))
+        *p-sent*))
 
 
-(defparameter *form-conjunctions* nil
-  "Accumulator for collecting instances where form motivates
-   conjunction")
-
-(defun collect-possible-form-conjunction (heuristic left right)
-  (unless heuristic
-    (when (let ((*allow-form-conjunction-heuristic* t))
-            (declare (special *allow-form-conjunction-heuristic*))
-            (conjunction-heuristics left right))
-      (push
-       (terminals-in-segment/one-string (pos-edge-starts-at left)
-                                        (pos-edge-ends-at right))
-       *form-conjunctions*))))
 
 
 
@@ -471,7 +480,11 @@
                  :do-not-knit do-not-knit )))
       (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (edge-interaction-with-quiescence-check edge)
-      edge )))
+      (if *save-conjunctions* 
+          (push (conj-info (edge-referent left-edge) (edge-referent right-edge)
+                           left-edge right-edge)
+                *all-conjunctions*))
+      edge)))
 
 
 (defun conjoin-multiple-edges (edge-list)
@@ -488,6 +501,10 @@
                  :rule-name :comma-delimited-list)))
       (tr :conjoining-multiple-edges/comma edge)
       (edge-interaction-with-quiescence-check edge)
+      (if *save-conjunctions* 
+          (push (conj-info (edge-referent leftmost-edge) (edge-referent rightmost-edge)
+                           leftmost-edge rightmost-edge)
+                *all-conjunctions*))
       edge )))
 
 
