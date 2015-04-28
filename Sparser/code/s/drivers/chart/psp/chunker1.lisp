@@ -24,6 +24,8 @@
 ;; 2/24/2015 allow determiner and quantifier before number in an NG (used to be that we didn't allow "all three drugs"
 ;; 4/14/15 Added tts to top of chunking operation when trace-parse-edges
 ;;  is running. 
+;; 4/27/2015 Improved handling of verb+ed case -- tension is between keeiping it in the NP and losing a reduced relative, or
+;;  breaking up the NP to allow for the verb form. Still need to review this.
 
 (in-package :sparser)
 
@@ -268,7 +270,7 @@ all sorts of rules apply and not simply form rules.
       when 
       (loop for e in (ev-edges ev)    
         thereis
-        (setq edge (compatible-edge-form? e form ev-list)))
+        (setq edge (compatible-edge-form? e form ev-list t)))
       do
       (return edge))))
 
@@ -300,10 +302,10 @@ all sorts of rules apply and not simply form rules.
     when 
     (loop for e in (ev-edges ev)
       thereis 
-      (compatible-edge-form? e form (chunk-ev-list chunk)))
+      (compatible-edge-form? e form (chunk-ev-list chunk) nil))
     collect form))
 
-(defun compatible-edge-form? (edge form ev-list)
+(defun compatible-edge-form? (edge form ev-list remaining-forms?)
   (declare (special edge form ev-list))
   (case
       form 
@@ -311,17 +313,8 @@ all sorts of rules apply and not simply form rules.
      (and
       (ng-compatible? edge ev-list)      
       (or
-       (not 
-        (and (edge-form edge) ;; COMMA has no edge-form
-             (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge)))))
-       ;; new code -- don't accept a past participle immediately following a noun 
-       ;; -- most likely to be a main verb or a reduced relative in this case
-       (not 
-        (loop for e in (ev-edges (car ev-list))
-         thereis
-          (and
-           (edge-form e)
-           (memq (cat-symbol (edge-form e)) *N-BAR-CATEGORIES*)))))))
+       remaining-forms?
+       (not (likely-verb+ed-clause edge ev-list)))))
     (vg (and
          (vg-compatible? edge)
          (not (loop for ev in ev-list
@@ -332,6 +325,40 @@ all sorts of rules apply and not simply form rules.
                            (not (member (cat-symbol (edge-category edge)) 
                                         '(category::be category::have category::do category::modal)))))))))
     (adjg (adjg-compatible? edge))))
+
+
+(defparameter *verb+ed-sents* nil)
+(defun likely-verb+ed-clause (edge ev-list)
+  (declare (special edge ev-list))
+  (cond
+   ((and (edge-form edge) ;; COMMA has no edge-form
+         (not
+          (and ;; e.g. COT-mediated
+           (individual-p (edge-referent edge))
+           (eq (car (indiv-type (edge-referent edge))) category::hyphenated-pair)))
+         (not
+          (eq (edge-category edge) category::have))
+         (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge)))
+         ;; new code -- don't accept a past participle immediately following a noun 
+         ;; -- most likely to be a main verb or a reduced relative in this case
+         (loop for e in (ev-edges (car ev-list))
+           thereis
+           (and
+            (edge-form e)
+            (memq (cat-symbol (edge-form e)) *N-BAR-CATEGORIES*))))
+    (if
+     (not
+      (let*
+          ((ev (pos-starts-here (pos-edge-ends-at edge)))
+           (edges (ev-edges ev)))
+        (loop for e in edges
+          thereis
+          (and
+           (eq (edge-form e) category::preposition)))))           
+     (push (list (edge-category edge) *p-sent*) *verb+ed-sents*))
+    t)
+   (t nil)))
+    
 
 
 (defun starting-forms (ev &optional (forms *chunk-forms*))
@@ -393,11 +420,6 @@ all sorts of rules apply and not simply form rules.
         ;;"RNA interference (RNAi) blocked MEK/ERK activation."
         (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
        nil)
-      ((eq category::verb+ed (edge-form e))
-       (not 
-        (or
-         (eq (edge-category e) category::have) ;; "had" is not an NP constituent
-         (loop for edge in edges thereis (ng-head? edge)))))
       ((eq category::verb+ing (edge-form e))
        (not (loop for edge in edges thereis (ng-head? edge))))
       ((eq category::ordinal (edge-category e))
