@@ -97,6 +97,27 @@
             collect edge)
           (list top)))))
 
+
+(defparameter *record-all-chunks* nil)
+(defparameter *ng-chunks* nil)
+(defparameter *vg-chunks* nil)
+(defparameter *adjg-chunks* nil)
+(defun clear-chunk-recording()
+  (setq *ng-chunks* nil)
+  (setq *vg-chunks* nil)
+  (setq *adjg-chunks* nil))
+(defun show-chunks(&optional (stream t))
+  (format stream "~&~&;;____________________________*ng-chunks*~&")
+  (np (sort *ng-chunks* #'string<) stream)
+
+  (format stream "~&~&;;____________________________*vg-chunks*~&")
+  (np (sort *vg-chunks* #'string<) stream)
+
+  (format stream "~&~&;;____________________________*adjgg-chunks*~&")
+  (np (sort *adjg-chunks* #'string<)  stream))
+
+  
+
 (defun identify-chunks (sentence)
   ;; Called from sentence-sweep-loop after the short sweeps over 
   ;; the sentence have fnished.
@@ -110,7 +131,23 @@
         (tr :parsing-chunk-interior-of chunk)
         (parse-chunk-interior chunk)))
     (set-sentence-status sentence :chunked)
+    (when
+     *record-all-chunks*
+     (loop for c in chunks
+       do
+       (record-chunk c)))
     chunks))
+
+(defun record-chunk (c)
+  (declare (special c))
+  (let
+      ((str (string-of-words-between (chunk-start-pos c)(chunk-end-pos c)))) 
+    (when
+        (chunk-forms c)
+      (ecase (car (chunk-forms c))
+        (ng (push str *ng-chunks*))
+        (vg (push str *vg-chunks*))
+        (adjg (push str *adjg-chunks*))))))
 
 (defun parse-chunk-interior (chunk)
   ;; Use the standard machinery is PTS to parse the interior
