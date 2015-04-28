@@ -42,6 +42,8 @@
 ;;   1/15/2015 allow verb+ed and adjective to combine in early phase
 ;; 8.5 (3/13/15) repealed the restriction on combining S's. If it gets
 ;;   into trouble semantically we can add more specific checks.
+;; 4/27/2015 tighten up conjunction of items with the same form -- put in some tests on semantics
+;;  using method conjunction-incompatible-labels
 
 (in-package :sparser)
 
@@ -369,18 +371,47 @@
   (let ((label-before (edge-category edge-before))
         (label-after (edge-category edge-after)))
     (if (eq label-before label-after)
-      :conjunction/identical-adjacent-labels
-      (when *allow-form-conjunction-heuristic*
-        ;;(break "form heuristics allowed. Check backtrace")
-        (let ((form-before (edge-form edge-before))
-              (form-after (edge-form edge-after)))
-          (declare (special form-before form-after))
-          (if (or (and (eq form-before form-after))
-                  (and (memq form-before *premod-forms*)
-                       (memq form-after *premod-forms*)))
-            :conjunction/identical-form-labels
-            nil))))))
+        :conjunction/identical-adjacent-labels
+        (when *allow-form-conjunction-heuristic*
+          ;;(break "form heuristics allowed. Check backtrace")
+          (let ((form-before (edge-form edge-before))
+                (form-after (edge-form edge-after)))
+            (declare (special form-before form-after))
+            (when
+                (and
+                 (or (and (eq form-before form-after))
+                     (and (memq form-before *premod-forms*)
+                          (memq form-after *premod-forms*)))
+                 (not (conjunction-incompatible-labels label-before label-after)))
+              :conjunction/identical-form-labels))))))
 
+(defparameter *rejected-form-conjs* nil)
+(defparameter *form-conjs* nil)
+
+(defun conjunction-incompatible-labels (before after)
+  (let
+      ((reject?
+        (or
+         (and
+          (member (cat-symbol before) `(category::protein category::residue-on-protein category::other category::fragment))
+          (not (eq before after)))
+         (and
+          (category-p before)
+          (category-p after)
+          (or
+           (and
+            (itypep before category::bio-process)
+            (not (itypep after category::bio-process)))
+           (and
+            (itypep after category::bio-process)
+            (not (itypep before category::bio-process))) )))))
+    (cond
+     (reject?
+      (push (list before after *p-sent*) *rejected-form-conjs*)
+      t)
+     (t
+     (push (list before after *p-sent*) *form-conjs*)
+     nil))))
 
 
 (defparameter *form-conjunctions* nil
