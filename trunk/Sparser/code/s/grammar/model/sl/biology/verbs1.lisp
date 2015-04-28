@@ -152,6 +152,17 @@
          :to added
          :of base))
 
+(define-category accumulation :specializes bio-process
+  :binds ((agent biological) (base biological)(location bio-location))
+  :realization
+  (:verb "accumulate" :noun "accumulation"
+         :etf (svo-passive)
+         :s agent
+         :o base
+         :of base
+         :in location))
+
+
 ;; duplicate??
 (define-category addition :specializes bio-process
   :binds ((agent biological) (base biological)(added biological))
