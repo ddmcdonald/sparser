@@ -78,6 +78,7 @@
 ;;   *category-hierarchy* along with doc.
 ;; 3/21/2015 fixed error in ng-head? caught by SBCL
 ;; 4/24/2015 added whethercomp as a form category (for clauses like "whether RAS phosphorylates MEK..."
+;; 4/27/2015 put back verb+ed as an ng internal category, and put quantifier as a possible head
 
 (in-package :sparser)
 (defvar CATEGORY::NOT)
@@ -333,7 +334,7 @@
     CATEGORY::SUPERLATIVE
     CATEGORY::SPATIAL-ADJECTIVE
     CATEGORY::TEMPORAL-ADJECTIVE
-    ;;CATEGORY::VERB+ED
+    CATEGORY::VERB+ED
     CATEGORY::VERB+ING
     CATEGORY::COMMON-NOUN/PLURAL
     CATEGORY::NOUN/VERB-AMBIGUOUS
@@ -365,6 +366,7 @@
     CATEGORY::THAT
     CATEGORY::NP
     CATEGORY::TIME-UNIT
+    CATEGORY::QUANTIFIER
     ))
 
 (defparameter *n-bar-categories*
