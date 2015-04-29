@@ -7,13 +7,13 @@
 
 ;; This is a set of tools to read in a complete Biopax Level 3 model for the RAS/RAF/MEK/ERK cascade
 ;;  that was exported from Reactome
-;; Simple tool to read in the RDF, and a mor complex set of tools to simplify the structure so that 
+;; Simple tool to read in the RDF, and a mor complex set of tools to simplify the structure so that
 ;;  it can be understood by humans
 ;; Goals is to import this all into Krisp in an appropriate fashion
 ;; also added a  new mechanism of general Krisp interest
 ;; S-expression based creator of individuals in Krisp
-;; example: 
-;; (create-individual 
+;; example:
+;; (create-individual
 ;;   '(residue-on-protein (position 437) (amino-acid (amino-acid (name "threonine")))))
 ;; Formatted Bipoax frames to make them a bit more clear...
 ;; Added commentary on Brent's story at the end of the file
@@ -24,54 +24,54 @@
 
 (defparameter *bp-frames*
   '(
-    ("BioSource" ("name") ("xref" "UnificationXref")) 
+    ("BioSource" ("name") ("xref" "UnificationXref"))
     ("BiochemicalReaction" ("comment") ("conversionDirection") ("dataSource" "Provenance")
      ("displayName") ("eCNumber")
      ("left" "SmallMolecule") ("left" "Protein") ("left" "Complex") ("participantStoichiometry" "Stoichiometry")
-     ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex") 
-     ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
-    ("Catalysis" ("controlType") ("controlled" "BiochemicalReaction") 
-     ("controller" "Protein") ("controller" "Complex") ("controller" "PhysicalEntity") 
-     ("dataSource" "Provenance") ("xref" "RelationshipXref")) 
+     ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex")
+     ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref"))
+    ("Catalysis" ("controlType") ("controlled" "BiochemicalReaction")
+     ("controller" "Protein") ("controller" "Complex") ("controller" "PhysicalEntity")
+     ("dataSource" "Provenance") ("xref" "RelationshipXref"))
     ("CellularLocationVocabulary" ("term") ("xref" "UnificationXref"))
     ("ChemicalStructure" ("structureFormat") ("structureData"))
-    ("bpComplex" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("component" "Complex") ("component" "SmallMolecule") ("component" "Protein") ("componentStoichiometry" "Stoichiometry") ("dataSource" "Provenance") ("displayName") ("memberPhysicalEntity" "Complex") ("name") ("xref" "UnificationXref")) 
-    ("Control" ("comment") ("controlType") ("controlled" "BiochemicalReaction") 
-     ("controller" "Protein") ("controller" "Complex") 
-     ("dataSource" "Provenance") ("displayName") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
+    ("bpComplex" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("component" "Complex") ("component" "SmallMolecule") ("component" "Protein") ("componentStoichiometry" "Stoichiometry") ("dataSource" "Provenance") ("displayName") ("memberPhysicalEntity" "Complex") ("name") ("xref" "UnificationXref"))
+    ("Control" ("comment") ("controlType") ("controlled" "BiochemicalReaction")
+     ("controller" "Protein") ("controller" "Complex")
+     ("dataSource" "Provenance") ("displayName") ("xref" "PublicationXref") ("xref" "UnificationXref"))
     ("Evidence" ("evidenceCode" "EvidenceCodeVocabulary"))
     ("EvidenceCodeVocabulary" ("xref" "UnificationXref") ("term"))
-    ("FragmentFeature" ("featureLocation" "SequenceInterval")) 
-    ("ModificationFeature" ("featureLocation" "SequenceSite") ("modificationType" "SequenceModificationVocabulary")) 
-    ("bpPathway" ("comment") ("dataSource" "Provenance") ("displayName") ("organism" "BioSource") 
-     ("pathwayComponent" "BiochemicalReaction") ("pathwayComponent" "Pathway") 
-     ("pathwayOrder" "PathwayStep") ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
-    ("PathwayStep" ("nextStep" "PathwayStep") 
+    ("FragmentFeature" ("featureLocation" "SequenceInterval"))
+    ("ModificationFeature" ("featureLocation" "SequenceSite") ("modificationType" "SequenceModificationVocabulary"))
+    ("bpPathway" ("comment") ("dataSource" "Provenance") ("displayName") ("organism" "BioSource")
+     ("pathwayComponent" "BiochemicalReaction") ("pathwayComponent" "Pathway")
+     ("pathwayOrder" "PathwayStep") ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref"))
+    ("PathwayStep" ("nextStep" "PathwayStep")
      ("stepProcess" "Control") ("stepProcess" "Pathway") ("stepProcess" "Catalysis") ("stepProcess" "BiochemicalReaction")("step-Process" "Transport"))
-    ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref")) 
-    ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref")) 
-    ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref")) 
-    ("Provenance" ("comment") ("name")) 
-    ("PublicationXref" ("author") ("db") ("id") ("source") ("title") ("year")) 
-    ("RelationshipTypeVocabulary" ("term") ("xref" "UnificationXref")) 
-    ("RelationshipXref" ("comment") ("db") ("id") ("relationshipType" "RelationshipTypeVocabulary")) 
-    ("SequenceInterval" ("sequenceIntervalBegin" "SequenceSite") ("sequenceIntervalEnd" "SequenceSite")) 
-    ("SequenceModificationVocabulary" ("term") ("xref" "UnificationXref")) 
-    ("SequenceSite" ("positionStatus") ("sequencePosition")) 
-    ("bpSmallMolecule" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "SmallMoleculeReference") ("name") ("xref" "UnificationXref")) 
-    ("SmallMoleculeReference" ("name") ("xref" "UnificationXref")) 
-    ("bpStoichiometry" ("physicalEntity" "Complex") ("physicalEntity" "SmallMolecule") ("physicalEntity" "Protein") ("stoichiometricCoefficient")) 
+    ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref"))
+    ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref"))
+    ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref"))
+    ("Provenance" ("comment") ("name"))
+    ("PublicationXref" ("author") ("db") ("id") ("source") ("title") ("year"))
+    ("RelationshipTypeVocabulary" ("term") ("xref" "UnificationXref"))
+    ("RelationshipXref" ("comment") ("db") ("id") ("relationshipType" "RelationshipTypeVocabulary"))
+    ("SequenceInterval" ("sequenceIntervalBegin" "SequenceSite") ("sequenceIntervalEnd" "SequenceSite"))
+    ("SequenceModificationVocabulary" ("term") ("xref" "UnificationXref"))
+    ("SequenceSite" ("positionStatus") ("sequencePosition"))
+    ("bpSmallMolecule" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "SmallMoleculeReference") ("name") ("xref" "UnificationXref"))
+    ("SmallMoleculeReference" ("name") ("xref" "UnificationXref"))
+    ("bpStoichiometry" ("physicalEntity" "Complex") ("physicalEntity" "SmallMolecule") ("physicalEntity" "Protein") ("stoichiometricCoefficient"))
     ("Transport"
      ("comment")("conversionDirection") ("dataSource" "Provenance")
      ("displayName") ("standardName")("eCNumber")
      ("left" "SmallMolecule") ("left" "Protein") ("left" "Complex")
      ("participantStoichiometry" "Stoichiometry")
-     ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex") 
+     ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex")
      ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")
      ("origin" "CellularLocationVocabulary") ("destination" "CellularLocationVocabulary"))
 
     ("UnificationXref" ("comment") ("db") ("id") ("idVersion"))))
- 
+
 (defparameter *bp-patterns*
   '(("BioSource" ("name") ("xref"))
     ("BiochemicalReaction" ("conversionDirection") ("left") ("participantStoichiometry")  ("right") ("eCNumber") ("displayName")) ;; ("xref") )
@@ -79,7 +79,7 @@
     ("CellularLocationVocabulary" ("term") ("xref"))
     ("ChemicalStructure" ("structureFormat") ("structureData"))
     ("bpComplex" ("displayName") ("cellularLocation") ("componentStoichiometry") ("component")); ("xref"))
-    ("Control" ("displayName") ("controlType") ("xref") ("controller") ("controlled")) 
+    ("Control" ("displayName") ("controlType") ("xref") ("controller") ("controlled"))
     ("Evidence" ("evidenceCode" "EvidenceCodeVocabulary"))
     ("EvidenceCodeVocabulary" ("xref" "UnificationXref") ("term"))
     ("FragmentFeature" ("featureLocation"))
@@ -87,16 +87,16 @@
     ("bpPathway" ("pathwayComponent") ("pathwayOrder") ("organism") ("displayName")); ("xref"))
     ("PathwayStep" ("stepProcess"))
     ("PhysicalEntity" ("displayName") ("cellularLocation")); ("xref") )
-    ("Protein" ("displayName") ("cellularLocation") ("entityReference") ("feature") );;("name") ("xref") 
-    ("ProteinState" ("displayName") ("cellularLocation") ("entityReference") ("feature") );;("name") ("xref") 
-    ("ProteinReference" ("organism") ("name") ) ;;("xref") 
+    ("Protein" ("displayName") ("cellularLocation") ("entityReference") ("feature") );;("name") ("xref")
+    ("ProteinState" ("displayName") ("cellularLocation") ("entityReference") ("feature") );;("name") ("xref")
+    ("ProteinReference" ("organism") ("name") ) ;;("xref")
     ("Provenance" ("name"))
     ("PublicationXref" ("id") ("db") ("year")  ("source" "J Biol Chem 270:9809-12"))
     ("RelationshipTypeVocabulary" ("term"))
     ("RelationshipXref" ("db") ("id") )
     ("SequenceInterval" ("sequenceIntervalBegin") ("sequenceIntervalEnd"))
     ("SequenceModificationVocabulary" ("term"));("xref"))
-    ("SequenceSite" ("sequencePosition")) 
+    ("SequenceSite" ("sequencePosition"))
     ("bpSmallMolecule" ("displayName")  ("cellularLocation") ("entityReference") ) ;;("name")("xref")
     ("SmallMoleculeReference" ("name"));("xref"))
     ("bpStoichiometry" ("stoichiometricCoefficient") ("physicalEntity"))
@@ -126,10 +126,17 @@ decoding table for referenced OBO terms
   (or (alphanumericp char)
       (legal-non-alphanumeric? char)))
 
+(defun make-nlp-path (rel-path)
+  (format nil"~A/~A" cl-user::*nlp-home* rel-path))
+
+(defun make-reactome-path (rel-path)
+  (make-nlp-path
+   (format nil "Sparser/code/s/grammar/model/sl/biology/reactome/~A" rel-path)))
+
 (defun legal-non-alphanumeric? (char)
   (member char '(#\_ #\-) :test 'eql))
 (defun CamelCase-string-to-separated (pname &optional (separator #\-))
-  (let ((chars nil) 
+  (let ((chars nil)
         (len (length pname))
         (prior-cap? nil))
     (flet ((next-char (n)
@@ -156,7 +163,7 @@ decoding table for referenced OBO terms
                     (t
                      (push-char c (and upc? (> i 0) ;; dont predash if first char or noncap
                                        (or (not prior-cap?) ;; first upchar
-                                           (and prior-cap? 
+                                           (and prior-cap?
                                                 (alpha-char-p nextc) ;; no dash if num or - next
                                                 (not upcnext?)) ;; but yes if or last alpha cap of seq
                                            )))))
@@ -165,7 +172,7 @@ decoding table for referenced OBO terms
 
 
 
-(defun load-bp-ras-raf(&optional (file "~/sparser/Sparser/code/s/grammar/model/sl/biology/reactome/RAF_MEK_ERK_biopax3.owl"))
+(defun load-bp-ras-raf(&optional (file (make-reactome-path "RAF_MEK_ERK_biopax3.owl")))
   (setq *bpi*
         (loop for i in
           (cdddr (load-owl file))
@@ -185,7 +192,7 @@ decoding table for referenced OBO terms
   (let* ((tag (xmls:xmlrep-tag child))
          (bio-sexpr
           `(,(cond
-              ;; perhaps temporary -- rename the categories from Biopax/Reactome 
+              ;; perhaps temporary -- rename the categories from Biopax/Reactome
               ;;  away from ones already in R3
               ;; Probably need to to a more principled merge
               ((equalp "Protein" tag)  "ProteinState")
@@ -208,14 +215,14 @@ decoding table for referenced OBO terms
                     ((*rep* (remove nil rep))
                      (*val-type* (car (second *rep*))))
                   (declare (special *rep* *val-type*))
-                  `(,(xmls::xmlrep-tag *rep*) 
+                  `(,(xmls::xmlrep-tag *rep*)
                     ,(cond
                       ((equalp (car *val-type*) "resource")
-                       `(xml-resource 
+                       `(xml-resource
                          ,(cond
                            ((eql #\# (char (second *val-type*) 0))
                             (subseq (second (car (second rep))) 1))
-                           (t (second *val-type*) 1))))                 
+                           (t (second *val-type*) 1))))
                       ((equalp (car *val-type*) "datatype")
                        (cond
                         ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#string")
@@ -223,9 +230,9 @@ decoding table for referenced OBO terms
                         ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#int")
                          (read-from-string (third rep)))
                         ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#float")
-                         (read-from-string (concatenate 'string (third rep) ".0"))) 
+                         (read-from-string (concatenate 'string (third rep) ".0")))
                         (t (break "what datatype"))))
-                      (t 
+                      (t
                        ;; in this case we have a recursive structure
                        ;; and we are going to simplify and record it in *xml-ht*
                        (biopax-to-bio-sexpr (second *rep*))))))))))
@@ -265,7 +272,6 @@ decoding table for referenced OBO terms
                 (car (find-children r "displayName"))))
     t)
    (t nil))))
-       
 
 
 (defun normalize-sexpr-to-biopax3 (bio-sexpr)
@@ -285,12 +291,12 @@ decoding table for referenced OBO terms
   (let*
       ((left (eval (car (find-children bio-sexpr "left"))))
        (right (eval (car (find-children bio-sexpr "right"))))
-       (origin (car 
-                (find-children 
+       (origin (car
+                (find-children
                 (eval (car (find-children left "cellularLocation")))
                 "term")))
-       (destination (car 
-                (find-children 
+       (destination (car
+                (find-children
                 (eval (car (find-children right "cellularLocation")))
                 "term")))
        (norm
@@ -302,7 +308,7 @@ decoding table for referenced OBO terms
     norm))
 
 (defun xml-resource? (ii)
-  (and (consp ii) 
+  (and (consp ii)
        (cdr ii)
        (consp (second ii))
        (eq 'xml-resource (car (second ii)))))
@@ -312,7 +318,7 @@ decoding table for referenced OBO terms
   (if (< depth 1)
       `(xml-resource ,(second tree))
       (let
-          ((pattern 
+          ((pattern
             (and (consp tree)
                  (assoc (car tree) *bp-patterns* :test #'equalp))))
         (declare (special pattern))
@@ -355,14 +361,14 @@ decoding table for referenced OBO terms
                (declare (ignore name))
                (push p *bpi*))
            *xml-ht*)
-  (loop for p in *bpi* 
-    do 
+  (loop for p in *bpi*
+    do
     (let ((simp-tree (simplify-tree p 1)))
       (when (null simp-tree)
         (push p *unsimp*))
       (push (simplify-tree p 1)
             (gethash (car p) *bp-types*))))
-  (maphash 
+  (maphash
    #'(lambda (type tl)
        (declare (ignore type))
        (push (sort tl #'string< :key #'second)
@@ -471,23 +477,23 @@ decoding table for referenced OBO terms
       (loop for v in ti
         when (consp v)
         do
-        (pushnew `(,(car v) 
+        (pushnew `(,(car v)
                    ,@(when (xml-resource? v)
                        (list (car (gethash (second (second v)) *xml-ht*)))))
                  (gethash type *bp-type-vars*)
                  :test #'equalp))))
   (maphash #'(lambda (type vars)
-               (push (cons type 
+               (push (cons type
                            (sort vars #'string< :key #'car)) *type-var-list*))
            *bp-type-vars*)
   (setq *type-var-list*
         (sort *type-var-list* #'string< :key #'car))
   (np *type-var-list*))
-                         
 
 
-(defun save-ras-raf (&optional (ifile "~/sparser/Sparser/code/s/grammar/model/sl/biology/reactome/RAF_MEK_ERK_biopax3.owl")
-                               (ofile "~/sparser/Sparser/code/s/grammar/model/sl/biology/reactome/RAF_MEK_ERK_simple.lisp"))
+
+(defun save-ras-raf (&optional (ifile (make-reactome-path "RAF_MEK_ERK_biopax3.owl"))
+                               (ofile (make-reactome-path "RAF_MEK_ERK_simple.lisp")))
   (load-bp-ras-raf ifile)
   (sort-bp-types)
   (with-open-file
@@ -500,16 +506,16 @@ decoding table for referenced OBO terms
         (print item s)))))
 
 (defun save-reduced-ras-raf()
-  (save-ras-raf "~/sparser/Sparser/code/s/grammar/model/sl/biology/reactome/reduced_RAS_RAF_MEK_ERK_biopax3.owl"
-                "~/sparser/Sparser/code/s/grammar/model/sl/biology/reactome/reduced_RAS_RAF_MEK_ERK_simple.lisp"))
+  (save-ras-raf (make-reactome-path "reduced_RAS_RAF_MEK_ERK_biopax3.owl")
+                (make-reactome-path "reduced_RAS_RAF_MEK_ERK_simple.lisp")))
 
 ;;;;;; make Krisp categories and individuals for Reactome objects
 (defun reactome-category (string)
   (category-named (reactome-symbol string)))
 
 (defun reactome-symbol (string)
-  (intern 
-   (CamelCase-string-to-separated string) 
+  (intern
+   (CamelCase-string-to-separated string)
    (find-package :sparser)))
 
 
@@ -522,13 +528,13 @@ decoding table for referenced OBO terms
        `(define-category
             ,(reactome-symbol (car rc))
             :specializes reactome-category)))
-    
+
     (loop for rc in reactome-categories
       do
       (let
           (v/r)
-        (define-variables 
-            (loop for binding in 
+        (define-variables
+            (loop for binding in
               (cons
                 '("ReactomeId")
                 (cdr rc))
@@ -577,24 +583,24 @@ decoding table for referenced OBO terms
     do
     (let
         ((*re* re)
-         (ri (reactome-entity (second re)))) 
+         (ri (reactome-entity (second re))))
       (declare (special ri *re*))
-      (loop for b in 
+      (loop for b in
         (cons
          `("ReactomeId" ,(second re))
          (cddr re))
         do
-        
+
         (let
             ((binding b))
           (declare (special binding))
           (bind-variable (reactome-symbol (car binding))
                          (let
-                             ((val 
+                             ((val
                                (if
                                 (consp (second binding))
                                 (case (car (second binding))
-                                  (xml-resource 
+                                  (xml-resource
                                    (reactome-entity
                                     (second (second binding))))
                                   (t
@@ -604,24 +610,24 @@ decoding table for referenced OBO terms
                          ri))))))
 
 ;; S-expression based creator of individuals in Krisp
-;; example: 
-;; (create-individual 
+;; example:
+;; (create-individual
 ;;   '(residue-on-protein (position 437) (amino-acid (amino-acid (name "threonine")))))
 (defun create-individual (desc)
   (eval
-   `(make-an-individual 
+   `(make-an-individual
      ',(car desc)
      ,@(loop for binding in (cdr desc)
          append
          `(',(typecase
                 (car binding)
               (symbol (car binding))
-              (string 
+              (string
                (reactome-symbol (car binding))))
            ,(typecase (second binding)
               (cons
                (case (car (second binding))
-                 (xml-resource 
+                 (xml-resource
                   (reactome-entity (second (second binding))))
                  (category (category-named (second (second binding))))
                  (t
@@ -629,7 +635,7 @@ decoding table for referenced OBO terms
               (string (second binding))
               (number (second binding))
               (symbol (category-named (second binding)))))))))
-  
+
 
 (defun xml-resource (str)
   (typecase
@@ -667,7 +673,7 @@ decoding table for referenced OBO terms
 
 
 #|
-Goal is to be able to use the mechanisms of the reactome Biopax3 representation to represet both the 
+Goal is to be able to use the mechanisms of the reactome Biopax3 representation to represet both the
 model as given in Reactome for RAS/RAF?MEK/ERK and to represent.
 
 What is missing in the Bipoax notation:
@@ -675,7 +681,7 @@ What is missing in the Bipoax notation:
      to carry a pathway forward (to cause/modulate/inhibit/increase a desired reaction).
 Brent's story:
 
-Ras is a membrane bound protein. 
+Ras is a membrane bound protein.
 When inactive, it is bound to the small molecule GDP. [[perhaps should be "When it is bound to GTP it is in an inactive state."]
 Upon growth factor stimulation of the cell,  an exchange factor, such as the SOS protein, causes ras to release GDP and and ras will now bind to GTP.
 Binding to GTP causes a conformational change of the ras protein that puts ras into the active state.
@@ -683,11 +689,11 @@ GTP-bound ras binds to the raf protein kinase.
 This binding of raf to ras has the effect of activating the raf kinase and localizing the raf kinase to the cell membrane.
 Activated raf now phosphorylates and activates the Mek1 kinase.
 The Mek1 kinase then phosphorylates the ERK kinase on both threonine and tyrosine residues which activate ERK kinase activity.
-The phosphorylated ERK protein then translocates to the nucleus where it regulates gene expression 
+The phosphorylated ERK protein then translocates to the nucleus where it regulates gene expression
   in part by phosphorylating the Elk1 transcription factor.
 Phospho-Elk then upregulates the gene expression of target genes such as the proto- oncogene c-fos.
-The entire signaling cascade is terminated by the intrinsic GTPase activity of ras which hydrolyzes the bound GTP into GTP, 
-   thus returning ras to the GDP bound state where it releases bound raf.  
+The entire signaling cascade is terminated by the intrinsic GTPase activity of ras which hydrolyzes the bound GTP into GTP,
+   thus returning ras to the GDP bound state where it releases bound raf.
 The GTPase activity of ras is accelerated by interaction with another protein called GAP.
 The oncogenic rasv12 mutant has diminished GTPase activity and therefore stays in the active GTP bound state constitutively.
 Deletion of GAP or the related NF1 genes will also enhance ras activity by slowing the rate of ras-GTP hydrolysis.
@@ -697,6 +703,6 @@ Deletion of GAP or the related NF1 genes will also enhance ras activity by slowi
 
 
 
-  
 
-  
+
+
