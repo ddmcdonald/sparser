@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "amino-acids"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: February 2015
+;;; version: April 2015
 
 ;; initiated 9/8/14
 ;; RJB -- added hacks for problems with NS word finding of"S338" and "pThr202/Tyr204"
@@ -25,7 +25,6 @@
 ;;;-------------
 ;;; amino acids
 ;;;-------------
-
 
 (define-category amino-acid
   :specializes molecule
@@ -190,7 +189,7 @@ therefore we have the special cases:
     :left first
     :right second))
   
-(defun reifiy-amino-acid-pair (words start-pos end-pos)
+(defun reify-amino-acid-pair (words start-pos end-pos)
   ;; called from one-slash-ns-patterns for the pattern
   ;; `(:lower :forward-slash :lower). If we aren't one of these
   ;; we return nil and it goes on to its next choice
