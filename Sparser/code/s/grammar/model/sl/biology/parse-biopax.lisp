@@ -27,18 +27,18 @@
     ("BioSource" ("name") ("xref" "UnificationXref"))
     ("BiochemicalReaction" ("comment") ("conversionDirection") ("dataSource" "Provenance")
      ("displayName") ("eCNumber")
-     ("left" "SmallMolecule") ("left" "Protein") ("left" "Complex") ("participantStoichiometry" "Stoichiometry")
-     ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex")
-     ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref"))
-    ("Catalysis" ("controlType") ("controlled" "BiochemicalReaction")
-     ("controller" "Protein") ("controller" "Complex") ("controller" "PhysicalEntity")
-     ("dataSource" "Provenance") ("xref" "RelationshipXref"))
+     ("left" "bpSmallMolecule") ("left" "Protein") ("left" "Complex") ("participantStoichiometry" "Stoichiometry")
+     ("right" "bpSmallMolecule") ("right" "Protein") ("right" "Complex") 
+     ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
+    ("Catalysis" ("controlType") ("controlled" "BiochemicalReaction") 
+     ("controller" "Protein") ("controller" "Complex") ("controller" "PhysicalEntity") 
+     ("dataSource" "Provenance") ("xref" "RelationshipXref")) 
     ("CellularLocationVocabulary" ("term") ("xref" "UnificationXref"))
     ("ChemicalStructure" ("structureFormat") ("structureData"))
-    ("bpComplex" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("component" "Complex") ("component" "SmallMolecule") ("component" "Protein") ("componentStoichiometry" "Stoichiometry") ("dataSource" "Provenance") ("displayName") ("memberPhysicalEntity" "Complex") ("name") ("xref" "UnificationXref"))
-    ("Control" ("comment") ("controlType") ("controlled" "BiochemicalReaction")
-     ("controller" "Protein") ("controller" "Complex")
-     ("dataSource" "Provenance") ("displayName") ("xref" "PublicationXref") ("xref" "UnificationXref"))
+    ("Complex" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("component" "Complex") ("component" "bpSmallMolecule") ("component" "Protein") ("componentStoichiometry" "Stoichiometry") ("dataSource" "Provenance") ("displayName") ("memberPhysicalEntity" "Complex") ("name") ("xref" "UnificationXref")) 
+    ("Control" ("comment") ("controlType") ("controlled" "BiochemicalReaction") 
+     ("controller" "Protein") ("controller" "Complex") 
+     ("dataSource" "Provenance") ("displayName") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
     ("Evidence" ("evidenceCode" "EvidenceCodeVocabulary"))
     ("EvidenceCodeVocabulary" ("xref" "UnificationXref") ("term"))
     ("FragmentFeature" ("featureLocation" "SequenceInterval"))
@@ -48,25 +48,25 @@
      ("pathwayOrder" "PathwayStep") ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref"))
     ("PathwayStep" ("nextStep" "PathwayStep")
      ("stepProcess" "Control") ("stepProcess" "Pathway") ("stepProcess" "Catalysis") ("stepProcess" "BiochemicalReaction")("step-Process" "Transport"))
-    ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref"))
-    ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref"))
-    ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref"))
-    ("Provenance" ("comment") ("name"))
-    ("PublicationXref" ("author") ("db") ("id") ("source") ("title") ("year"))
-    ("RelationshipTypeVocabulary" ("term") ("xref" "UnificationXref"))
-    ("RelationshipXref" ("comment") ("db") ("id") ("relationshipType" "RelationshipTypeVocabulary"))
-    ("SequenceInterval" ("sequenceIntervalBegin" "SequenceSite") ("sequenceIntervalEnd" "SequenceSite"))
-    ("SequenceModificationVocabulary" ("term") ("xref" "UnificationXref"))
-    ("SequenceSite" ("positionStatus") ("sequencePosition"))
-    ("bpSmallMolecule" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "SmallMoleculeReference") ("name") ("xref" "UnificationXref"))
-    ("SmallMoleculeReference" ("name") ("xref" "UnificationXref"))
-    ("bpStoichiometry" ("physicalEntity" "Complex") ("physicalEntity" "SmallMolecule") ("physicalEntity" "Protein") ("stoichiometricCoefficient"))
+    ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref")) 
+    ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref")) 
+    ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref")) 
+    ("Provenance" ("comment") ("name")) 
+    ("PublicationXref" ("author") ("db") ("id") ("source") ("title") ("year")) 
+    ("RelationshipTypeVocabulary" ("term") ("xref" "UnificationXref")) 
+    ("RelationshipXref" ("comment") ("db") ("id") ("relationshipType" "RelationshipTypeVocabulary")) 
+    ("SequenceInterval" ("sequenceIntervalBegin" "SequenceSite") ("sequenceIntervalEnd" "SequenceSite")) 
+    ("SequenceModificationVocabulary" ("term") ("xref" "UnificationXref")) 
+    ("SequenceSite" ("positionStatus") ("sequencePosition")) 
+    ("bpSmallMolecule" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "SmallMoleculeReference") ("name") ("xref" "UnificationXref")) 
+    ("SmallMoleculeReference" ("name") ("xref" "UnificationXref")) 
+    ("Stoichiometry" ("physicalEntity" "Complex") ("physicalEntity" "SmallMolecule") ("physicalEntity" "Protein") ("stoichiometricCoefficient")) 
     ("Transport"
      ("comment")("conversionDirection") ("dataSource" "Provenance")
      ("displayName") ("standardName")("eCNumber")
-     ("left" "SmallMolecule") ("left" "Protein") ("left" "Complex")
+     ("left" "bpSmallMolecule") ("left" "Protein") ("left" "Complex")
      ("participantStoichiometry" "Stoichiometry")
-     ("right" "SmallMolecule") ("right" "Protein") ("right" "Complex")
+     ("right" "bpSmallMolecule") ("right" "Protein") ("right" "Complex") 
      ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")
      ("origin" "CellularLocationVocabulary") ("destination" "CellularLocationVocabulary"))
 
@@ -78,7 +78,7 @@
     ("Catalysis" ("controller") ("controlled") ("controlType" "ACTIVATION"));  ("xref") )
     ("CellularLocationVocabulary" ("term") ("xref"))
     ("ChemicalStructure" ("structureFormat") ("structureData"))
-    ("bpComplex" ("displayName") ("cellularLocation") ("componentStoichiometry") ("component")); ("xref"))
+    ("Complex" ("displayName") ("cellularLocation") ("componentStoichiometry") ("component")); ("xref"))
     ("Control" ("displayName") ("controlType") ("xref") ("controller") ("controlled"))
     ("Evidence" ("evidenceCode" "EvidenceCodeVocabulary"))
     ("EvidenceCodeVocabulary" ("xref" "UnificationXref") ("term"))
@@ -99,7 +99,7 @@
     ("SequenceSite" ("sequencePosition"))
     ("bpSmallMolecule" ("displayName")  ("cellularLocation") ("entityReference") ) ;;("name")("xref")
     ("SmallMoleculeReference" ("name"));("xref"))
-    ("bpStoichiometry" ("stoichiometricCoefficient") ("physicalEntity"))
+    ("Stoichiometry" ("stoichiometricCoefficient") ("physicalEntity"))
     ("Transport" ("standardName") ("right") ("participantStoichiometry") ("left") ("dataSource")("origin")("destination"))
     ("UnificationXref" ("db") ("id") ("idVersion"))))
 
@@ -171,7 +171,6 @@ decoding table for referenced OBO terms
       (concatenate 'string (nreverse chars)))))
 
 
-
 (defun load-bp-ras-raf(&optional (file (make-reactome-path "RAF_MEK_ERK_biopax3.owl")))
   (setq *bpi*
         (loop for i in
@@ -196,10 +195,10 @@ decoding table for referenced OBO terms
               ;;  away from ones already in R3
               ;; Probably need to to a more principled merge
               ((equalp "Protein" tag)  "ProteinState")
-              ((equalp "Complex" tag) "bpComplex")
-              ((equalp "Pathway" tag) "bpPathway")
+              ;;((equalp "Complex" tag) "bpComplex")
+               ((equalp "Pathway" tag) "bpPathway")
               ((equalp "SmallMolecule" tag) "bpSmallMolecule")
-              ((equalp "Stoichiometry" tag) "bpStoichiometry")
+              ;;((equalp "Stoichiometry" tag) "bpStoichiometry")
               ((equalp "BiochemicalPathwayStep" tag) "PathwayStep") ;; change in nomenclature from earlier biopax?
               ((equalp "ComplexAssembly" tag) "BiochemicalReaction") ;; change in nomenclature from earlier biopax?
               (t tag))
@@ -513,6 +512,7 @@ decoding table for referenced OBO terms
 (defun reactome-category (string)
   (category-named (reactome-symbol string)))
 
+
 (defun reactome-symbol (string)
   (intern
    (CamelCase-string-to-separated string)
@@ -565,18 +565,20 @@ decoding table for referenced OBO terms
          (cat (reactome-category (car re)))
          (*index-under-permanent-instances* t))
       (declare (special *re* *index-under-permanent-instances* cat))
-      (if
-       (null cat)
-       (break "null cat"))
-      (setf
-       (gethash (second re) *reactome-entities*)
-       (eval
-        `(define-individual ,cat
-                            ',(reactome-symbol "ReactomeId" )
-           ,(second re))))
-      (gethash (second re) *reactome-entities*)
-      ;;(break "create-reactome-entities")
-      ))
+      (when
+          (not (equalp (car *re*) "UnificationXref"))
+        (if
+         (null cat)
+         (break "null cat"))
+        (setf
+         (gethash (second re) *reactome-entities*)
+         (eval
+          `(define-individual 
+               ,cat
+               ',(reactome-symbol "ReactomeId")
+             ,(second re)
+             ;;(break "create-reactome-entities")
+             ))))))
   ;; now that all individual reactome entities have been created,
   ;;  it is possible to "wire them together" using variable bindings
   (loop for re in reactome-entities
@@ -585,29 +587,31 @@ decoding table for referenced OBO terms
         ((*re* re)
          (ri (reactome-entity (second re))))
       (declare (special ri *re*))
-      (loop for b in
-        (cons
-         `("ReactomeId" ,(second re))
-         (cddr re))
-        do
-
-        (let
-            ((binding b))
-          (declare (special binding))
-          (bind-variable (reactome-symbol (car binding))
-                         (let
-                             ((val
-                               (if
-                                (consp (second binding))
-                                (case (car (second binding))
-                                  (xml-resource
-                                   (reactome-entity
-                                    (second (second binding))))
-                                  (t
-                                   (eval (second binding))))
-                                (second binding))))
-                           val)
-                         ri))))))
+      (when
+          (not (equalp (car *re*) "UnificationXref"))
+        (loop for b in 
+          (cons
+           `("ReactomeId" ,(second re))
+           (cddr re))
+          do
+          
+          (let
+              ((binding b))
+            (declare (special binding))
+            (bind-variable (reactome-symbol (car binding))
+                           (let
+                               ((val 
+                                 (if
+                                  (consp (second binding))
+                                  (case (car (second binding))
+                                    (xml-resource 
+                                     (reactome-entity
+                                      (second (second binding))))
+                                    (t
+                                     (eval (second binding))))
+                                  (second binding))))
+                             val)
+                           ri)))))))
 
 ;; S-expression based creator of individuals in Krisp
 ;; example:
