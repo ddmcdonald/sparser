@@ -311,6 +311,27 @@
 
 ;; "call"  assigns a name in passive "X is called N"
 
+#+ignore
+(define-category co-operate :specializes bio-process 
+  :binds ((agent biological)(co-operator biological)) 
+  :realization 
+  (:verb ("co-operate" :third-plural "co-operates")
+         :noun"coo-operation" 
+         :etf (sv) 
+         :s agent 
+         :with co-operator
+         :of agent))
+
+(define-category operate :specializes bio-process 
+  :binds ((agent biological)(co-operator biological)) 
+  :realization 
+  (:verb "operate"
+         :noun"coo-operation" 
+         :etf (sv) 
+         :s agent 
+         :with co-operator
+         :of agent))
+
 (define-category control
   :specializes bio-process
   :binds ((agent biological) 
@@ -787,6 +808,15 @@
   :o object)) 
 
 (define-category examine :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "examine" :noun "examination" :etf (svo-passive) :s agent :o object)) 
+(define-category exhibit
+    :specializes bio-process
+    :binds ((agent biological)(object biological))
+    :realization
+    (:verb "exhibit"
+	   :etf (svo-passive)
+	   :s agent
+	   :o object))
+
 (define-category explanation :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "explain" :noun "explanation" :etf (svo-passive) :s agent :o object))
 
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
@@ -1803,7 +1833,20 @@
 	   :o object
            :whethercomp statement))
 
-(define-category transcribe :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "transcribe" :noun "transcription" :etf (svo-passive) :s agent :o object))
+(define-category transactivation :specializes bio-process
+  :binds ((agent biological)(object biological))
+  :realization
+  (:verb "transactivate" :noun "transactivation"
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :of object))
+
+
+(define-category transcribe :specializes bio-process
+  :binds ((agent bio-entity)(object bio-process))
+  :realization 
+  (:verb "transcribe" :noun "transcription" :etf (svo-passive) :s agent :o object))
 
 (define-category transduce
   :specializes  bio-process
@@ -1837,7 +1880,7 @@
 ;     are not fully understood."
 ; (process on ERK) ... a requirement for nuclear translocation."
 ; 11: is directly translated into a delay in nuclear translocation
-(define-category translocation :specializes bio-movement
+(define-category translocation :specializes transport
   :binds ((agent bio-process)
           (object protein)
           (origin cellular-location)
