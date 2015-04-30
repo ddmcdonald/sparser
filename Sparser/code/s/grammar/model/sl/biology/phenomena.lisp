@@ -202,7 +202,7 @@ it is created from N-terminus to C-terminus.|#
 ; the amino terminus of β-catenin
 
 (define-category protein-terminus
-  :specializes bio-location
+  :specializes molecular-location
   :instantiates :self
   :binds ((protein protein))
   :lemma ((:common-noun "terminal")
@@ -254,10 +254,12 @@ it is created from N-terminus to C-terminus.|#
 ; MAPK pathway inhibitors / inhibition
 
 (define-category  pathway
-  :specializes bio-entity
+  :specializes bio-process
   :instantiates :self
   :mixins (type-marker biological)
-  :binds ((protein-sequence sequence))
+  :binds ((protein-sequence sequence)
+          (pathwayComponent) (pathwayOrder) 
+          (organism (:or organism species)))
   :index (:permanent :key name)
   :lemma (:common-noun "pathway")
   :realization (:common-noun name)
@@ -265,6 +267,16 @@ it is created from N-terminus to C-terminus.|#
    which makes them more like entities than processes.
    They are named according to the sequence of proteins
    (protein families) in the causal chain.")
+
+(define-category PathwayStep :specializes bio-process
+  :binds ((pathway pathway)
+          (nextStep PathwayStep)       
+          (stepProcess (:or control pathway catalysis 
+                            biochemicalreaction transport)))
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "step")
+  :realization (:common-noun name))
 
 (define-category signaling-pathway
    :specializes pathway
@@ -380,9 +392,9 @@ it is created from N-terminus to C-terminus.|#
   ;;:obo-id 
   :bindings (uid "GO:0005488")
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder biological)(bindee biological)(site bio-location))
+  :binds ((binder biological)(bindee biological)(site molecular-location))
   :realization 
-  (:verb ("bind" :past-tense "bound") :noun "binding"
+  (:verb ("bind" :past-tense "bound" :present-participle "xxxx") :noun "binding"
          :etf (svo-passive) 
          :s binder
          :o  bindee
@@ -391,6 +403,7 @@ it is created from N-terminus to C-terminus.|#
          :at site
          :with bindee))
 
+(delete-verb-cfr (resolve/make "binding"))
 
 
 ; From the ERK abstract:
@@ -409,6 +422,20 @@ it is created from N-terminus to C-terminus.|#
    :s monomer
    :o monomer
    :of monomer))
+
+(define-category complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
+  :specializes bio-chemical-entity
+  :mixins (reactome-category)
+  :instantiates :self
+  :binds ((cellularlocation cellular-location)
+          (component (:or complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :lemma (:common-noun "complex"))
+
+(def-realization complex
+  :noun "complex"
+  :with component
+  :of component)
 
 
 (define-category dimer
