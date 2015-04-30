@@ -416,11 +416,11 @@
           (category-p after)
           (or
            (and
-            (itypep before category::bio-process)
-            (not (itypep after category::bio-process)))
+            (itypep before category::process)
+            (not (itypep after category::process)))
            (and
-            (itypep after category::bio-process)
-            (not (itypep before category::bio-process))) )))))
+            (itypep after category::process)
+            (not (itypep before category::process))) )))))
     (cond
      (reject?
       (push (conj-info before after edge-before edge-after) *rejected-form-conjs*)
