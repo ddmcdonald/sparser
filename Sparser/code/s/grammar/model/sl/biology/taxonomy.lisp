@@ -26,6 +26,8 @@
 ;; 4/24/2015 added mixins for bio-thtcomp and bio-whethercomp -- verbs that take thatcomps and whethercomps
 ;; 4/27/2015 remoe definition of amino-acid and move to that file, and add defnitions for
 ;;  nominal for "loading"
+;; 4/30/2015 bunch of changes to partially merge biopax3/reactome categories with taxonomy
+;; introduce new subcategories of location — molecular-location (for site and residue), cellular-location (organelles within a cell), non-cellular-location (for things like cell-line, species, organism)
 
 (in-package :sparser)
 
@@ -44,7 +46,7 @@
    in noun noun compounds.")
  
 (define-mixin-category bio-thatcomp
-  :binds ((statement bio-process))
+  :binds ((statement (:or bio-process be)))
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstraction, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -61,6 +63,9 @@
      since these are quite general, but at the moment we are putting them below the 
      bio-processes.")
 
+(define-mixin-category reactome-category
+   :binds ((name)(displayname)(reactome-id)))
+
 ;;;-----------------
 ;;; generalizations
 ;;;-----------------
@@ -69,11 +74,19 @@
   :specializes abstract
   :binds ((quantifier)))
 
+(define-category reference-item :specializes abstract
+  
+  :documentation "For things like ProteinReference and SmallMoleculeReference -- generic characterizations of
+  prtoeins and small molecules, etc. which have
+  OBO identifiers, but are not localized to cellular locations.")
+
+
 (define-category biological
   :specializes with-quantifier
   :lemma (:adjective "biological")
   :binds ((context bio-context)
-          (location bio-location)
+          (location non-cellular-location)
+          (cellularLocation cellular-location)
           (quantifier))
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
@@ -161,6 +174,7 @@
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"
   :specializes bio-process)
 
+(define-category transport :specializes bio-movement)
 
 (define-category molecular-function 
   :specializes bio-process
@@ -170,7 +184,18 @@
   :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
   )
 
+(define-category biochemicalreaction :specializes chemical-reaction ;; from biopax
+  )
 
+(define-category catalysis :specializes biochemicalreaction
+  :binds ((controller bio-entity) 
+          (controlled bio-process)
+          (controlType))
+  :realization
+  (:verb "catalyze" :noun "catalysis" 
+         :etf(svo-passive of-nominal) ;;/// "catalyysis of phosphorylation by MEK"
+         :s controller 
+         :o controlled))
 
 (define-category bio-method
   :specializes process
@@ -209,18 +234,20 @@
 
 ;; 'small molecule' should be done with a def-subtype
 ;;/// Start with define-sybtype-derived-category
-(define-category small-molecule
+(define-category small-molecule-reference
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry.
-  :specializes molecule
-  :instantiates :self
-  ;; :bindings (uid "")
-  :index (:permanent :key name)
-  :lemma (:common-noun "small molecule")
-  :realization (:common-noun name))
+  :specializes reference-item
+  :mixins (reactome-category)
+  )
+
+(define-category small-molecule :specializes molecule
+  ;;:mixins (reactome-category)
+  ;; small-molecule, like molecule itself, has a (cellular) location
+  :binds ((entityReference small-molecule-reference)))
 
 (define-category nucleotide
-  :specializes molecule
+  :specializes small-molecule
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "nucleotide")
@@ -340,11 +367,17 @@
 ;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
 
-(define-category complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
-  :specializes bio-chemical-entity
-  :instantiates :self
-  :lemma (:common-noun "complex"))
 
+;; not sure this is the same stoichiometry as used in bipax
+(define-category stoichiometry :specializes bio-abstract
+  :mixins (reactome-category)
+  :binds ((physicalEntity (:or complex small-molecule protein)) 
+          (stoichiometricCoefficient)) ;; an integer -- ask David
+)
+
+(define-category bio-stochiometry :specializes  bio-abstract
+  :realization
+  (:noun  "stoichiometry"))
 
 
 
@@ -408,7 +441,7 @@
                            (complement . bio-condition))))
 
 
-;;--- location ///maybe it's not a bio-entity?
+;;--- ///maybe it's not a bio-entity?
 
 (define-category bio-location 
   :specializes bio-context
@@ -431,12 +464,38 @@
 (def-synonym cytosol
    (:noun "cytoplasm"))
 
-(define-category cell-line
+(define-category non-cellular-location 
   :specializes bio-location
+  :instantiates self
+  :index (:permanent :key name))
+
+(define-category molecular-location 
+  :specializes non-cellular-location
+  :instantiates self
+  :index (:permanent :key name))
+
+(define-category cell-line
+  :specializes non-cellular-location
   :instantiates self
   :realization (:common-noun name)
   :index (:permanent :key name))
 
+(define-category species
+  :instantiates self
+  :specializes non-cellular-location
+  :index (:permanent :key name)
+  :lemma (:common-noun "species")
+  :realization (:common-noun name))
+
+;; used in biopax
+(define-category organism
+  :instantiates self
+  :specializes non-cellular-location
+  :index (:permanent :key name)
+  :lemma (:common-noun "organism")
+  :realization (:common-noun name))
+
+#+ignore
 (define-category  in-bio-location  ;; "in humans, in epithelial cells, in the plasma membrane"
   :instantiates self
   :specializes bio-context
@@ -452,12 +511,6 @@
 
 
 
-(define-category species
-  :instantiates self
-  :specializes bio-location
-  :index (:permanent :key name)
-  :lemma (:common-noun "species")
-  :realization (:common-noun name))
 
 ;;---- family
 
