@@ -276,9 +276,10 @@ filligre may be used to distinguish them, etc.
 ;;/// one of these needs refinement
 (def-family "ERK"
   :members ("ERK1" "ERK2")
-  :long "mitogen activated protein kinase" 
+  :long "mitogen activated protein kinase"
   :synonyms ("ERK" "extracellular signal-regulated kinase"
-             "erk"))
+             "erk"
+             "mitogen-activated protein kinase"))
 
 (def-bio "ERK1-4" protein) ;; mutated form of ERK
 
@@ -326,7 +327,8 @@ filligre may be used to distinguish them, etc.
 (def-bio "ASPP1" protein)
 
 (def-family "ASPP"
-  :members ("ASPP1" "ASPP2"))
+  :members ("ASPP1" "ASPP2")
+    :synonyms ("apoptosis-stimulating protein of p53"))
 
 
 (def-bio "ATG5" protein
@@ -480,7 +482,7 @@ filligre may be used to distinguish them, etc.
 
 
 (def-bio "SAPK" protein) ;; class of stress activated proteins
-(def-bio "ASPP2" protein)
+;;(def-bio "ASPP2" protein)
 (def-bio "GST-ASPP2" protein)
 (def-bio "phospho-ASPP2" protein)
 (def-bio "PI3KC2β" protein)
