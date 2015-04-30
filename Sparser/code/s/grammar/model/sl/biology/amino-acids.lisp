@@ -119,7 +119,7 @@ therefore we have the special cases:
 ;; ; (p "before Ser1507)
 
 (define-category residue-on-protein   
-  :specializes bio-location ;; NOT same as protein, it is the location, not the amino acid
+  :specializes molecular-location ;; NOT same as protein, it is the location, not the amino acid
   :instantiates :self
   :binds ((amino-acid . amino-acid)
           (position :primitive integer) ;; counting from the N terminus
