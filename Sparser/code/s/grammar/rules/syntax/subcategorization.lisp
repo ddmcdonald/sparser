@@ -291,6 +291,11 @@
     (when sc
       (subcat-patterns sc))))
 
+(defmethod known-subcategorization? ((w polyword))
+   (let ((sc (get-subcategorization w)))
+    (when sc
+      (subcat-patterns sc))))
+
 
 ;;;-------------------------------------
 ;;; Collecting instances and statistics
