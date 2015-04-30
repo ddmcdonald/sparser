@@ -62,6 +62,13 @@
       :realization
       (:noun "activity"
              :of agent))
+
+(define-category activator :specializes molecule
+  :binds ((activated molecule))
+  :realization
+  (:noun "activator"
+         :of activated))
+
 (def-bio "adenine" nucleotide)
 (noun "advance" :super bio-process
       :binds ((advancement bio-process))
@@ -224,7 +231,7 @@
            :s molecule))
 
 
-(noun "domain" :super bio-location
+(noun "domain" :super molecular-location
       :binds ((substrate bio-entity))
       :realization 
       (:noun "domain"
@@ -296,6 +303,7 @@
   (:noun "fluorescence"))
 
 (noun "fluorescence correlation spectroscopy" :super bio-method)
+(noun "fluorescence correlation spectroscopy measurements" :super bio-method)
 (noun "fluorescence microscopy" :super bio-method)
 
 (noun "form" :super bio-variant
@@ -303,6 +311,8 @@
       :realization
       (:noun "form"
              :of basis))
+
+(noun "forster resonance energy transfer" :super bio-method)
 
 (noun "fragment" :super bio-entity
       :binds ((whole bio-entity))
@@ -348,7 +358,7 @@
      (:adj "identical"
            :s basis
            :to comparator))
-
+(noun "living cells" :super bio-context)
 (define-adverb "in part")
 (adj "in vivo" :super bio-context)
 (adj "in vitro" :super bio-context)
@@ -421,7 +431,10 @@
       (:noun "manner"
              :of process))
 (noun "mass" :super measurement)
-(noun "mass spectrometry" :super bio-method)
+(noun "mass-spectrometry" :super bio-method)
+(def-synonym mass-spectrometry
+             (:noun "mass spectrometry"))
+             
 (noun "spectroscopy" :super bio-method)
 (noun "means" :super bio-process
       :binds ((process bio-process))
@@ -435,8 +448,15 @@
       (:noun "mechanism"
              :of process))
 (define-adverb "mechanistically")
-(delete-adj-cfr (resolve/make "independent"))
-(adj "independent" :super predicate) ;; keyword: (ent ADJ) 
+;;(delete-adj-cfr (resolve/make "independent"))
+(adj "independent" :super predicate
+  :binds ((subject biological)
+          (theme biological))
+  :realization 
+  (:adj "independent"
+        :s subject
+        :of theme))
+
 (noun "membrane" :super cellular-location)
 (noun "method" :super bio-process)
 (noun "mitogen" :super molecule)
@@ -463,7 +483,7 @@
 
 
 (define-adverb "notably")
-
+(adj "novel" :super predicate)
 
 ;; These three want to be synonyms
 (noun "open reading frame" :super bio-entity)
@@ -643,7 +663,6 @@
            :in context))
 
 (noun "state" :super bio-entity)
-(noun "stoichiometry" :super bio-abstract)
 (noun "strategy" :super bio-process
       :binds ((goal bio-process))
       :realization
@@ -691,6 +710,11 @@
 (noun "tumor formation" :super bio-process)
 (noun "tumorigenesis" :super bio-process)
 (adj "unclear" :super predicate)
+(adj "unknown" :super predicate
+     :binds ((subject biological))
+     :realization
+     (:adj "unknown"
+           :s subject))
 (adj "unmodified" :super predicate)
 (define-adverb "until now")
 (noun "upstream" :super bio-context
