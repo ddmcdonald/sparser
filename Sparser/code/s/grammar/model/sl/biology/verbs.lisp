@@ -69,12 +69,6 @@
 
 (svo/bio "call")
 
-(def-term "catalyze" verb (svo-passive
-                           of-nominal) ;;/// "catalyysis of phosphorylation by MEK"
-  :nominalization "catalysis"
-  :super-category bio-process
-  :patient bio-process 
-  :agent bio-entity)
 
 ;; "consist" (of)
 ;; ? (comlex-entry "consist")
