@@ -75,12 +75,10 @@
   (if (category-p head)
     (setq head (make-individual-for-dm&p head))
     (setq head (maybe-copy-individual head)))
-  (or (call-compose qualifier head);; DAVID -- why is this called?!
-      ;; Rusty - this is the hook that allows for a custom interpretation
-      ;; of the meaning of this pair. If you look up at verb-noun-compound
-      ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
-      ;; In general it's a hook for any knowledge we have about particular
-      ;; cases / co-composition
+  (or (and (null qualifier)
+           head)
+      
+      (call-compose qualifier head) ;; see note with verb-noun-compound
 
       (interpret-premod-to-np qualifier head) 
       ;; subcat tese is here. If there's a :premod subcategorization
