@@ -90,6 +90,7 @@
              :of basis))
 
 (define-adverb "also")
+(adj "also known as" :super predicate)
 
 (noun "analog" :super bio-variant
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
