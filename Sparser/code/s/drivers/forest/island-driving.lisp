@@ -86,7 +86,9 @@
     (tr :handle-parentheses)
     (handle-parentheses))
   
-  #+ignore ;; These have already been done
+ ;; #+ignore ;; These have already been done
+  ;; not quite true -- compare
+  ;;(Overnight 1 (P "Ras, like all GTPases, cycles between an inactive GDP-bound state and  an active GTP-bound state.")) 
   (when (there-are-conjunctions?)
     (tr :looking-for-short-conjuncts)
     (let ((*allow-form-conjunction-heuristic* nil))
