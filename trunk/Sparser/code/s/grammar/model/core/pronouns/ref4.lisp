@@ -78,7 +78,8 @@
        ;; are we the subject? 
        ((eq edge (subject layout))
         (let ((previous-subject
-               (get-sentence-subject (previous sentence))))
+               (and (slot-boundp sentence 'previous)
+                    (get-sentence-subject (previous sentence)))))
           (when (and previous-subject
                      (edge-p previous-subject))
             (let ((category (edge-category previous-subject))
