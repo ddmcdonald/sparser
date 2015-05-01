@@ -16,11 +16,14 @@
 ;;     (2/27/14) Added lowercase greek up to lambda
 ;;     (6/12/14) added em-dash. Refined the error message.
 ;;     (4/15/15) added correct entry for a right arrow
+
+
+
 ;; NOTE: the encodings of unicode characters are in HEX, so #\+2192 is 5894 decimal
 ;;  while the alist (*entries-for-out-of-band-characters*) for out-of-band characters
 ;;  uses decimal encoding, so in *entries-for-out-of-band-characters* we need
-;;(8594 ;; rightwards arrow
-;;   (:punctuation . ,(punctuation-named #\U+2192)))
+;;  (8594 ;; rightwards arrow
+;;    (:punctuation . ,(punctuation-named #\U+2192)))
 
 
 (in-package :sparser)
@@ -609,6 +612,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       `(:punctuation
         . ,(punctuation-named #\- )))
 
+(setf (elt *character-dispatch-array* 176) ;; #\Degree_Sign
+      `(:punctuation
+        . ,(punctuation-named #\* )))
+
+(setf (elt *character-dispatch-array* 177) ;; #\Plus-Minus_Sign
+      `(:punctuation
+        . :space)) ;;////////////////////////////////////////
+
 (setf (elt *character-dispatch-array* 194) ;; #\Latin_Capital_Letter_A_With_Circumflex
       '(:punctuation
         . :space))
@@ -684,11 +695,18 @@ the buffer that is fed to find-word and becomes part of the word's pname.
   "If it's not a defparameter, CCL won't let us extend it
    in a running lisp.")
 
+(defparameter *cache-out-of-band-characters* t)
+
 (defun entry-for-out-of-band-character (char-code)
   (let ((entry
          (cadr (assoc char-code *entries-for-out-of-band-characters*))))
-    (unless entry
-      (announce-out-of-range-character))
-    entry))
+    (or entry
+        (when *cache-out-of-band-characters*
+          (cache-out-of-band-character char-code))
+        (announce-out-of-range-character))))
+
+
+(defun cache-out-of-band-character (char-code)
+  (push-debug `(,char-code)) (break "character"))
 
 
