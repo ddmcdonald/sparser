@@ -84,10 +84,11 @@
        ;; phrases incrementally and then going to the forest level 
        ;; at the sentence boundary (new-forest-level
        ((sucessive-sweeps?)
-        (format t "~&======= at p~a the status of~
-                   ~%    ~a is ~a~%"
-                (pos-token-index position-before)
-                s (parsing-status s))
+        (when nil
+          (format t "~&======= at p~a the status of~
+                     ~%    ~a is ~a~%"
+                  (pos-token-index position-before)
+                  s (parsing-status s)))
         (case (parsing-status s)
           ;; this is the sentence that we're finishing
           (:initial
