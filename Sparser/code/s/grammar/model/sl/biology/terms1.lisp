@@ -167,6 +167,12 @@
 (noun "condition" :super bio-condition)
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
 (adj "conserved" :super predicate) ;; virtually never used as a verb
+(adj "consistent" :super predicate
+  :binds ((subject biological) (theme biological))
+  :realization 
+  (:adj "consistent"
+        :s subject
+        :with theme))
 (define-adverb "constitutively")
 (noun "context" :super bio-context) 
 
@@ -472,6 +478,8 @@
 (adj "molecular" :super predicate) ;; It's realated to molecule, but how exactly? Seems wrong to jump to "is made of molecules"
 (define-adverb "moreover")
 (noun "mortality" :super bio-abstract) ;;/// relationship to "mortal" ??
+(noun "mutagenic approaches" :super bio-method)
+(adj "mutagenic" :super predicate)
 (adj "mutual" :super predicate) ;; keyword: (al ADJ) 
 
 (adj "native" :super predicate)
