@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  April 2014
+;;;  Version:  April 2015
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -14,7 +14,10 @@
 ;; 1.1 (10/3/13) Making paragraphs real. Lifting out the generalization
 ;;     (10/26/13) Added word-frequency mixin to article. What about the others?
 ;;     (4/9/14) Moved in the get-document code from objects/doc/article1 so that
-;;      some older code is happy.
+;;      some older code is happy. 
+;; 1.2 Adding print methods and tweaking initializations to accommodate
+;;      read-from-document through 4/27/15
+;;     4/28/15 added section-of-sections
 
 (in-package :sparser)
 
@@ -217,6 +220,27 @@
       (setq *previous-section* ongoing))
     (setq *current-section* s)))
 
+;;;----------------------------------------
+;;; A section that contains other sections
+;;;----------------------------------------
+
+(defclass section-of-sections (document-element named-object titled-entity)
+  ()
+  (:documentation "Motivated by the NXLM for PubMed articles where there
+      is can be multiple titled 'article' elements within a article.
+      Doesn't appear to be recursive."))
+
+(defmethod print-object ((s section-of-sections) stream)
+  (print-unreadable-object (s stream :type t)
+    (when (and (slot-boundp s 'title)
+               (typep (title s) 'title-text))
+      (format stream "~s" (content-string (title s))))))
+
+(define-resource section-of-sections)
+
+(defun allocate-section-of-sections ()
+  (allocate-next-instance (get-resource :section-of-sections)))
+
 
 ;;;------------
 ;;; Paragraphs
@@ -332,14 +356,45 @@
         *current-sentence* nil))
 
 (defun initialize-sentences ()
-  ;; Called from initialize-paragraphs
-  (let ((s1 (start-sentence (position# 1)))
-        (p1 *current-paragraph*))
+  ;; Called from initialize-paragraphs or read-from-document,
+  ;; in which case it can be starting the first sentence of
+  ;; the next paragraph and had to do additional cleanup.
+  (let ((p1 *current-paragraph*))
     (unless p1
       (error "Threading bug: no value for *current-paragraph"))
-    (setf (children p1) s1)
-    (setf (parent s1) p1)
-    s1))
+    (cond
+     ((prepopulated? p1)
+      ;; reuse the sentences that are there. 
+      (setq *current-sentence* (children p1)))
+     (t
+      (setq *current-sentence* nil)
+      (let ((s1 (start-sentence (position# 1))))
+        (setf (children p1) s1)
+        (setf (parent s1) p1)
+        s1)))))
+
+(defgeneric prepopulated? (document-element)
+  (:documentation "When working with prepopulated documents, 
+  paragraphs start out with just the string of text between 
+  the 'p' tags and the first time through this is rendered as 
+  a sequence of sentences. If something goes wrong partway
+  through this won't be true."))
+
+
+(defmethod prepopulated? ((p paragraph))
+  "A prepopulated paragraph has had some or all of its text
+   rendered into sentences"
+  (let ((first-sentence (children p)))
+    (when first-sentence
+      ;; Let's assume that if the first one has been handled
+      ;; that the rest have been as well
+      (prepopulated? first-sentence))))
+
+(defmethod prepopulated? ((s sentence))
+  "The string is set by a call from the period-hook, so it
+   can't have a value unless we've swept over the sentence
+   at least once."
+  (not (string-equal "" (sentence-string s))))
 
 (defun start-sentence (pos)
   ;; Called from initialize-sentences for the first one, then
@@ -383,14 +438,21 @@
   ;; Called from period-hook
   (setf (ends-at-pos sentence) period-pos)
   (setf (ends-at-char sentence) (1+ (pos-character-index period-pos)))
-  (let ((substring (extract-string-from-char-buffers
-                    (starts-at-char sentence)
-                    (ends-at-char sentence))))
-    ;; can remove the extra step when we're guarenteed that
-    ;; the cross-buffer code is robust.
-    (setf (sentence-string sentence) substring)
-    sentence))
-
+  (let ((start (starts-at-char sentence))
+        (end (ends-at-char sentence)))
+    (unless (> start 0) (error "Sentence start is negative"))
+    (unless (> end start) 
+      (push-debug `(,sentence ,start ,end ,period-pos))
+      (error "Sentence end less that start"))
+    (format t "~&------- sentence ~a~%" sentence)
+    ;;(push-debug `(,sentence ,period-pos)) (break "before substring")
+    (let ((substring (extract-string-from-char-buffers
+                      (starts-at-char sentence)
+                      (ends-at-char sentence))))
+      ;; can remove the extra step when we're guarenteed that
+      ;; the cross-buffer code is robust.
+      (setf (sentence-string sentence) substring)
+      sentence)))
 
 
 ;;;--------------
