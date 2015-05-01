@@ -38,7 +38,7 @@
   ;; it's not available yet in make-individual-for-dm&p where
   ;; the binding is done
   ;; SBCL (bind-variable 'category category i category::expressible-type)
-)
+  (declare (ignore i category)))
 
 
 ;;;---------
