@@ -127,6 +127,11 @@
    in what-to-do-at-the-forest-level where the do-forest-level 
    function is set. Set as part of the switch settings.")
 
+(defparameter *sweep-for-terminals* t
+  "Checked in sentence-sweep-loop when reading from a document
+   to determine whether we run scan-words-loop to populate the
+   edges of the chart, do polywords, and run fsas.")
+
 (defparameter *sweep-for-patterns* t
   "Checked in sentence-sweep-loop to determine whether we continue
    the analysis after the terminals of a sentence have been entered
@@ -168,6 +173,12 @@
   "Master parameter that differentiates reading from a character
    stream and assembling a document from starting with a populated
    document reading from it.")
+
+(defparameter *pre-read-all-sentences* nil
+  "Will typically go with reading from a populated document.
+   Signals the low level sweep to scan all of the text of all 
+   of the text is some range of sentences and populate the
+   corresponding sentence objects.")
 
 (defparameter *readout-relations* nil
   "Gates whether to export or display the relations that were
