@@ -13,6 +13,8 @@
 ;;  for the bindings of pob must be replaced by use of (get-prep-pobj value)
 ;; 4/16/15 The hashtable scheme wasted individuals. Only need to store the PP
 ;;  as the referent of its edge. Fanout from that change. 
+;; 4/28/15 Changed gate of add-new-word-to-catalog to new parameter: 
+;;  *collect-new-words* 
 
 (in-package :sparser)
 
@@ -102,6 +104,10 @@
 ;;; collecting sentences & new vocabulary automatically from a passage
 ;;;--------------------------------------------------------------------
 
+(defparameter *collect-new-words* nil
+  "Gates add-new-word-to-catalog, which is called by 
+  all the different ways of defining a previously unknown word")
+
 (defvar *newly-found-unknown-words* nil
   "Accumulator for add-new-word-to-catalog")
 
@@ -112,7 +118,7 @@
 ;   suitable-for-and-in-OBO => setup-word-denoting-an-OBO
 (defun add-new-word-to-catalog (word source)
   (declare (ignore source)) ;; Comlex vs. morphology vs. ...
-  (when *sweep-for-sentences*
+  (when *collect-new-words*
     (push word *newly-found-unknown-words*)))
   
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
