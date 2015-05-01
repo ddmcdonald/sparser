@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2014 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2015 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  August 2014
+;;;  Version:  April 2015
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -15,6 +15,8 @@
 ;; independent parameters that the assign functions map over. 
 ;; 7/27/14 Slightly factored the set-xx routines to use with affix morph.
 ;; 8/29/14 Made the errors for already defined categories into cerrors
+;; 4/27/15 added *break-on-pattern-outside-coverage?* to the duplicate
+;;  checks.
 
 (in-package :sparser)
 
@@ -179,10 +181,11 @@
             (construct-disambiguating-category-name
              category-name super-category)))
     (when (category-named category-name)
-      (push-debug `(,category-name ,word ,comlex-clause))
-      (cerror "Maybe you can blow that one away?"
-              "Setup: The category named ~a already exists."
-             category-name))
+      (when *break-on-pattern-outside-coverage?*
+        (push-debug `(,category-name ,word ,comlex-clause))
+        (cerror "Maybe you can blow that one away?"
+                "Setup: The category named ~a already exists."
+                category-name)))
     (let* ((category (define-category/expr category-name
                         `(:specializes ,super-category
                          :instantiates :self)))
@@ -210,12 +213,12 @@
             (construct-disambiguating-category-name
              category-name super-category)))
     (let ((category 
-           (if
-            (category-named category-name)
+           (if (category-named category-name)
             (then 
-              (cerror "Maybe you can blow that one away?"
-                      "Setup: The category named ~a already exists."
-                      category-name)
+              (when *break-on-pattern-outside-coverage?*
+                (cerror "Maybe you can blow that one away?"
+                        "Setup: The category named ~a already exists."
+                        category-name))
               (category-named category-name))
             
             (define-category/expr category-name
@@ -243,10 +246,11 @@
             (construct-disambiguating-category-name
              category-name super-category)))
     (when (category-named category-name)
-      (push-debug `(,category-name ,word ,comlex-clause))
-      (cerror "Maybe you can blow that one away?"
-              "Setup: The category named ~a already exists."
-             category-name))
+      (when *break-on-pattern-outside-coverage?*
+        (push-debug `(,category-name ,word ,comlex-clause))
+        (cerror "Maybe you can blow that one away?"
+                "Setup: The category named ~a already exists."
+                category-name)))
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
@@ -273,10 +277,11 @@
             (construct-disambiguating-category-name
              category-name super-category)))
     (when (category-named category-name)
-      (push-debug `(,category-name ,word))
-      (cerror "Maybe you can blow that one away?"
-              "Setup: The category named ~a already exists."
-             category-name))
+      (when *break-on-pattern-outside-coverage?*
+        (push-debug `(,category-name ,word))
+        (cerror "Maybe you can blow that one away?"
+                "Setup: The category named ~a already exists."
+                category-name)))
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
