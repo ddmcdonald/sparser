@@ -417,13 +417,10 @@
          (paren-referent (referent-of-parentheticial-expression
                           count paren-edge)))
 
-    (push-debug `(,left-neighbor ,paren-edge))
-    (unless (individual-p referent)
-      (error "Referent of left-neighbor to parentheses is not an individual"))
-    #+ignore
-    (bind-variable (lambda-variable-named 'trailing-parenthetical) ;; in terms
-                   paren-referent
-                   referent)
+    (when (individual-p paren-referent)
+      (bind-variable (lambda-variable-named 'trailing-parenthetical)
+                     paren-referent
+                     referent))
     ;;// now knit it in. A form rule would be best. It could handle the
     ;; binding as well, but j9 shows that the neighbor is not always
     ;; going to be obvious.
