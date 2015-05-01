@@ -78,7 +78,6 @@
         ;; Sweep from the very beginning just to be sure we catch any
         ;; marked punctuation there. 
 
-
         ;;(push-debug `(,start-pos ,end-pos))
         ;; on this sentence: (p "Pre-clinical studies have demonstrated that 
         ;;   B-RAFV600E mutation predicts a dependency on the mitogen activated 
@@ -91,15 +90,12 @@
         ;; on the floor.
         (when (stringp end-pos) ;; may be bad display in backtrace
           (return-from collect-no-space-segment-into-word nil))
-
         (when (stringp start-pos) ;; This one is weirder
           (return-from collect-no-space-segment-into-word nil))
-
         (unless (position-precedes start-pos end-pos) ;; bug may actually be this
           (return-from collect-no-space-segment-into-word nil))
 
         (tr :looking-at-ns-segment start-pos end-pos)
- 
         (let ((pattern (characterize-words-in-region start-pos end-pos))
               ;(edges (edges-between start-pos end-pos))
               (words (words-between start-pos end-pos)))
@@ -115,6 +111,10 @@
             (cond
              ((eq layout :single-span)  ;; Do nothing. It's already known
               (revise-form-of-nospace-edge-if-necessary edge :find-it))
+
+             ((eq :double-quote (car pattern))
+              (scare-quote-specialist start-pos ;; leading-quote-pos
+                                      words start-pos end-pos))
 
              ((and slash-positions
                    hyphen-positions)
@@ -152,7 +152,10 @@
                   (reify-ns-name-and-make-edge words start-pos end-pos))))))
           end-pos))))
 
-
+;;/// generalize and move
+(defun strip-item-from-either-end (list)
+  (let ((new-list (cdr list)))
+    (setq new-list (nreverse (cdr (nreverse new-list))))))
 
 (defun reify-ns-name-and-make-edge (words pos-before next-position)
   ;; We make an instance of a spelled name with the words as its sequence.
@@ -302,6 +305,7 @@
     (pos-after-is-end-of-sequence position))))
 
 (defun pos-after-is-end-of-sequence (position)
+  (declare (special *source-exhausted*))
   (let ((pos-after (chart-position-after position)))
     (unless (pos-terminal pos-after)
       (scan-next-position))
