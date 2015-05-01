@@ -75,6 +75,7 @@
 ;;now renamed -- general subcategorization for syntactic relations including thatcomp, whethercomp
 (defun subcategorize-for-slot (category pname var-name)
   ;; called from decode-realization-parameter-list in the shortcuts.
+  (declare (special *slot-keywords*))
   (push-debug `(,category ,pname ,var-name))
   (let ((variable (variable/category var-name category))
         (slot 
