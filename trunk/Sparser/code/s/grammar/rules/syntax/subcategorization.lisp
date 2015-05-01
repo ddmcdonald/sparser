@@ -229,6 +229,10 @@
     (when sc
       (takes-preposition? sc prep))))
 
+(defmethod takes-preposition? ((sc subcategorization-frame) (prep polyword))
+  (let ((preps (bound-prepositions sc)))
+    (when preps
+      (memq prep preps))))
 (defmethod takes-preposition? ((sc subcategorization-frame) (prep word))
   (let ((preps (bound-prepositions sc)))
     (when preps
