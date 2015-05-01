@@ -59,7 +59,7 @@ the function.
       like the parameters are, but probably won't be."))
   (:documentation ""))
 
-
+#|
 (defmacro define-category-abbreviation-class (name tree-family
                                               &key parameter-defaults)
   `(define-category-abbreviation-class/expr 
@@ -202,5 +202,7 @@ the function.
 (defun determine-tf-labels (tf)
   (loop for pair in (tf-label-pairs tf)
     collect (car pair)))
+
+|#
   
 
