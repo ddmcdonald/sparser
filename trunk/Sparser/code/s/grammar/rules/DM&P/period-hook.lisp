@@ -51,7 +51,8 @@
 ;; (trace-paragraphs)
 
 (defun period-hook (the-word-period position-before position-after)
-  (declare (ignore the-word-period))
+  (declare (ignore the-word-period)
+           (special *reading-populated-document*))
   ;; position-before is the one with the period on it. After picks out
   ;; the word following the period.  The stack at this point starts
   ;; with word-level-actions-except-terminals > complete-word/hugen >
@@ -61,9 +62,17 @@
     (setq *position-before-last-period* (position# 0)))
 
   (if (period-marks-sentence-end? position-after)
-    (let* ((s (sentence))
-           (pos-after-period (chart-position-after position-before))
-           (next (start-sentence pos-after-period)))
+    (let ((s (sentence))
+          (pos-after-period (chart-position-after position-before)))
+      ;; Do we make another sentence or reuse one that's
+      ;; already been made on a previous pass.
+      (cond 
+       (*reading-populated-document*
+        (unless (slot-boundp s 'next) ;; next sentence exists
+          (start-sentence pos-after-period)))
+       (t ;; ordinary reading from a stream
+        (start-sentence pos-after-period)))
+
       (tr :period-hook position-after)
       (when *break-on-next-sentence*
         (push-debug `(,s))
@@ -75,27 +84,36 @@
        ;; phrases incrementally and then going to the forest level 
        ;; at the sentence boundary (new-forest-level
        ((sucessive-sweeps?)
+        (format t "~&======= at p~a the status of~
+                   ~%    ~a is ~a~%"
+                (pos-token-index position-before)
+                s (parsing-status s))
         (case (parsing-status s)
           ;; this is the sentence that we're finishing
           (:initial
            ;; This is the first moment when we know the length
            ;; of the sentence. 'position-before' is the one that
            ;; has the period as the value of its terminal slot.
-           (set-sentence-endpoints position-before s)
+           (set-sentence-endpoints position-before s) ;; and saves the string
            (set-sentence-status s :scanned)
            (throw :end-of-sentence :finished-scanning))
+          (:scanned
+           (when *reading-populated-document*
+             (throw :end-of-sentence :finished-scanning)))
+          (:chunked
+           ;; shouldn't have to do this. Compensates for something
+           (when *reading-populated-document*
+             (throw :end-of-sentence :finished-scanning)))
           (otherwise
-           (push-debug `(,next ,s))
-           (break "Period-hook did not expect the status ~a~
+           (push-debug `(,s))
+           (break "Period-hook did not expect the status ~a ~
                    on ~a" (parsing-status s) s))))
        ((new-forest-protocol?)
         ;; goes with the incremental protocol when waiting
         ;; for an entire sentence to be chunked before
         ;; rolling any of them up.
         (new-forest-driver position-before))))
-
     (tr :period-at-p-not-eos position-after))
-
   (setq *position-before-last-period* position-before))
 
 
