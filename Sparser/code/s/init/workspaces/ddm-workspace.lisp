@@ -9,18 +9,24 @@
 
 (in-package :sparser)
 
-; (cwd "/Users/ddm/ws/R3/r3/trunk/code/")
-; (load "load.lisp")
-; (in-package :r3)
+
+
+(defvar *r3-trunk* nil
+  "String identifing the location of the trunk on 
+  your machine, including a final slash")
+
+(defun load-nxml-converter (&optional (trunk *r3-trunk*))
+  (let ((code (concatenate 'string trunk "code/")))
+    (cwd trunk)
+    ; (cwd "/Users/ddm/ws/R3/r3/trunk/code/")
+    (load "load.lisp")))
+
 ; (r3::make-sparser-doc-structure 1079799)
 ; (read-from-document 1079799)
-#|
-wget --output-document=${PMCID}.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cgi?verb=GetRecord\&identifier=oai:pubmedcentral.nih.gov:${PMCID}&metadataPrefix=pmc'
-
-wget --output-document=3537887.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cgi?verb=GetRecord\&identifier=oai:pubmedcentral.nih.gov:${PMCID}&metadataPrefix=pmc'
-
-3847091
-|#
+; (r3::make-sparser-doc-structure 537887 :dir darpa/January5-TestMaterials")
+; (r3::make-sparser-doc-structure 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials")
+; (setq *article* (car *))
+; (setq *sweep-for-terminals* nil)
 
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
@@ -49,6 +55,8 @@ wget --output-document=3537887.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cg
 
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
+  (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
+  ;; (load-nxml-converter)
   (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
@@ -503,7 +511,13 @@ Worse: (28 13 6 2 1)
 
 ; (load "/Users/ddm/ws/R3/r3/trunk/code/bel-interpreter/load.lisp")
 
+#|
+wget --output-document=${PMCID}.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cgi?verb=GetRecord\&identifier=oai:pubmedcentral.nih.gov:${PMCID}&metadataPrefix=pmc'
 
+wget --output-document=3537887.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cgi?verb=GetRecord\&identifier=oai:pubmedcentral.nih.gov:${PMCID}&metadataPrefix=pmc'
+
+3847091
+|#
 
 ;;;------------------
 ;;;  Hard filenames
