@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1995,2012-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2012-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.11 November 2014
+;;;  Version:  5.11 April 2015
 
 ;; initiated summer 1990
 ;;  3.0  (9/2/92) bumped to 3 and moved in the newly rationalized set
@@ -32,6 +32,7 @@
 ;;       have the intended code. (10/8/14) Added [chunker]
 ;;  5.11 (11/17/14) Broke [multi-scan] out of [no-brackets-protocol]
 ;;        as part of breaking that pass down into smaller parts.
+;;       (4/28/15) Bumped [no-brackets-protocol] to 1
 
 (in-package :sparser)
 
@@ -49,6 +50,6 @@
 
 (lload "psp-drivers;c3-protocol")
 (lload "psp-drivers;bio-entity-scan")
-(lload "psp-drivers;no-brackets-protocol")
+(lload "psp-drivers;no-brackets-protocol1")
 (lload "psp-drivers;multi-scan")
 (lload "psp-drivers;chunker1")
