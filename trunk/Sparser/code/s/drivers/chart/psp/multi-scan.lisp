@@ -15,16 +15,54 @@
 ;; SBCL caught type error in short-conjunctions-sweep -- fixed
 ;; 4/19/15 adapting pattern-sweep to the case where two edges from prior
 ;;  pass are over words that aren't separated by a space ("20%")
+;; 4/28/15 Added scan-words-loop
 
 (in-package :sparser)
+
 
 ;; (trace-terminals-sweep)
 ;; (trace-network)
 
-(defvar *TRACE-SWEEP*)
+;;;---------------------------------------------------------
+;;; 0th pass - just the new words and sentence delimitation
+;;;---------------------------------------------------------
 
-;Compiler warnings for "/Users/rusty/sparser/Sparser/code/s/drivers/chart/psp/multi-scan.lisp" :
-;   In SWEEP-TO-SPAN-PARENTHESES: Undeclared free variable *THE-PUNCTUATION-PERIOD*
+(defparameter *trace-scan-words-loop* nil
+  "Echos the word being scanned")
+
+;; (trace-paragraphs) -- period-hook 
+;; (setq *trace-scan-words-loop* t)
+
+(defun scan-words-loop (position-before word)
+  ;; position-before - word - position-after
+  ;; Called from scan-sentences-to-eof which is called from
+  ;; initiate-successive-sweeps when it's reading a prepopulated document
+  (simple-eos-check position-before word)  
+  (let ((position-after (chart-position-after position-before)))
+    (unless (includes-state position-after :scanned)
+      (scan-next-position)) ;; unknown words are noticed here
+    (simple-eos-check position-before word)
+
+    (when *trace-scan-words-loop*
+      (format t " ~s" (word-pname word)))
+
+    ;; Trigger the period-hook
+    ;; Without polywords ("Mr.") the boundaries are not 
+    ;; going to be as accurate since they'll just depend
+    ;; on the capitalization of the next word. 
+    (complete-word/hugin word position-before position-after)
+
+    (let ((next-word (pos-terminal position-after)))
+      (scan-words-loop position-after next-word))))
+
+(defun scan-terminals-of-sentence (sentence)
+  (let* ((start-pos (starts-at-pos sentence))
+         (first-word (pos-terminal start-pos)))
+    (tr :scanning-terminals-of sentence)
+    (catch :end-of-sentence
+      (scan-terminals-loop start-pos first-word))))
+
+
 ;;;---------------------------------------------------
 ;;; 1st pass -- polywords, completion, terminal edges
 ;;;---------------------------------------------------
@@ -109,18 +147,26 @@
   ;;    Has to be ammended in a similar way to the original because
   ;; there will invariably be something that needs to be tied
   ;; off
-  (declare (special *reading-populated-document*))
+  (declare (special *reading-populated-document*
+                    *pre-read-all-sentences*))
   (tr :end-of-source-check word position-before)
   (when (eq word *end-of-source*)
     (cond
+     (*pre-read-all-sentences*
+      ;; The catch is in initiate-successive-sweeps when
+      ;; it's reading a pre-populated document
+      ;;(break "pre-read")
+      (throw 'sentences-finished nil))
      (*reading-populated-document*
       ;; In this case EOS just means that we've finished the
       ;; text of the current paragraph, so we throw to
       ;; its catch.
+      ;;(break "next para")
       (throw 'do-next-paragraph nil))
      (t
       ;; This just does the throw up to chart-based-analysis
       ;; for terminatnig-chart-processing
+      ;;(break "stop parsing")
       (terminate-chart-level-process)))))
 
 (defun polyword-check (position-before word)
