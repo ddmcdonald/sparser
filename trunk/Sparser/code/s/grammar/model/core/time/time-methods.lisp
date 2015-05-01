@@ -11,6 +11,19 @@
 (in-package :sparser)
 
 
+;;///////// Move this to some place it can be found again
+(defun category-of-time-unit (unit) ;; method on individual ?
+  (let* ((word (value-of 'name unit))
+         (symbol (when word (word-symbol word))))
+    (when symbol
+      (case symbol
+        (word::|month| category::month)
+        (otherwise
+         (push-debug `(,word ,unit))
+         (error "Don't yet have the category decoder for ~a"
+                symbol))))))
+
+
 ;; "before today"
 (defmethod modifier+noun ((sh1 sh::sequencer) (sh2 sh::date))
   ;; Hmm.... tried sh::before + date and it didn't fire. Need to
@@ -42,18 +55,5 @@
       ;; otherwise we make a relative time
       (break "make relative-time"))))
 
-
-
-;;///////// Move this to some place it can be found again
-(defun category-of-time-unit (unit) ;; method on individual ?
-  (let* ((word (value-of 'name unit))
-         (symbol (when word (word-symbol word))))
-    (when symbol
-      (case symbol
-        (word::|month| category::month)
-        (otherwise
-         (push-debug `(,word ,unit))
-         (error "Don't yet have the category decoder for ~a"
-                symbol))))))
                
   
