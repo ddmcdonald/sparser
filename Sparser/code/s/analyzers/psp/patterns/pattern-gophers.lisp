@@ -33,7 +33,7 @@
      pattern words slash-positions hyphen-positions pos-before pos-after)
     (cond
      ((equal pattern '(:lower :forward-slash :lower))
-      (or (reifiy-amino-acid-pair words pos-before pos-after)
+      (or (reify-amino-acid-pair words pos-before pos-after)
           (reify-ns-name-and-make-edge words pos-before pos-after)))
 
      ((equal pattern '(:mixed :digits :forward-slash :capitalized :digits))
