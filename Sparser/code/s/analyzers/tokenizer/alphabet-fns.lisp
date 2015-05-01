@@ -48,13 +48,16 @@
 (defun character-entry (character)
   ;; caller has to guarentee that the argument is a character
   ;; since this is part of the tokenizer's inner loop
+  (declare (special *cache-out-of-band-characters*))
   (let ((char-code (char-code character)))
     (cond 
      ((< char-code 128) ;; this range is completely filled in
       (elt *character-dispatch-array* char-code))
      ((< char-code 256) ;; length of *character-dispatch-array*
       ;; but sparsely populated. Empty code points return 0.
-      (elt *character-dispatch-array* char-code))
+      (or (elt *character-dispatch-array* char-code)
+          (when *cache-out-of-band-characters*
+            (cache-out-of-band-character char-code))))
      (t ;; consult a table -- the escape for the rest of Unicode
       (entry-for-out-of-band-character char-code)))))
 
