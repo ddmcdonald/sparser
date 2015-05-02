@@ -1238,3 +1238,34 @@
     (trace-msg "Delimited chunk without a head: ~a" chunk)))
 
 
+;;---- sanity checks working with a pre-populated document
+
+(defparameter *trace-prepopulated-doc-contents* nil)
+(defun trace-prepopulation ()
+  (setq *trace-prepopulated-doc-contents* t))
+(defun untrace-prepopulation ()
+  (setq *trace-prepopulated-doc-contents* nil))
+
+;; in scan-sentences-to-eof
+(deftrace :start-scan-to-eof (s)
+  (when *trace-prepopulated-doc-contents*
+    (trace-msg "Scan to eof from ~a" s)))
+(deftrace :scan-to-eof-start-pos (p)
+  (when *trace-prepopulated-doc-contents*
+    (trace-msg "start-pos = ~a" p)))
+    
+(deftrace :sweep-reading-sentence (s)
+  (when *trace-prepopulated-doc-contents*
+    (trace-msg "[sweep successive] Reading ~a" s)))
+(deftrace :scanning-done ()
+  (when *trace-prepopulated-doc-contents*
+    (trace-msg "[sweep successive] scan done")))
+(deftrace :sweep-core-done ()
+  (when *trace-prepopulated-doc-contents*
+    (trace-msg "[sweep successive] core done")))
+(deftrace :sweep-next-sentence (s)
+  (when *trace-prepopulated-doc-contents*
+    (trace-msg "[sweep successive] next sentence is ~a" s)))
+(deftrace :sweep-paragraph-end ()
+  (when *trace-prepopulated-doc-contents*
+    (trace-msg "[sweep successive]  reached last sentence of paragraph")))
