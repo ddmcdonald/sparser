@@ -385,8 +385,13 @@
 ;;/// these next aren't really entities. Consider a new
 ;; toplevel bio category. 
 
-(define-category bio-context
-  :specializes bio-entity)
+(define-category bio-context :specializes bio-entity
+  :binds ((process process)(entity bio-entity))
+  :realization
+  (:noun "context"
+         :of process
+         :of entity))
+
 
 (define-category bio-condition
   :specializes bio-context
