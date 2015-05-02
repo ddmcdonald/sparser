@@ -394,7 +394,7 @@ it is created from N-terminus to C-terminus.|#
   ;; "<binder> binds to <binde>" the subject moves
   :binds ((binder biological)(bindee biological)(site molecular-location))
   :realization 
-  (:verb ("bind" :past-tense "bound" :present-participle "xxxx") ;; xxx is to prevent "binding" being a verb form
+  (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
          :noun "binding"
          :etf (svo-passive) 
          :s binder
