@@ -453,7 +453,8 @@
     (unless (> end start) 
       (push-debug `(,sentence ,start ,end ,period-pos))
       (error "Sentence end less that start"))
-    (format t "~&------- sentence ~a~%" sentence)
+    ;; This should be on a flag -- creates far too much noise
+    ;;(format t "~&------- sentence ~a~%" sentence)
     ;;(push-debug `(,sentence ,period-pos)) (break "before substring")
     (let ((substring (extract-string-from-char-buffers
                       (starts-at-char sentence)
