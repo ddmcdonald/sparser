@@ -355,6 +355,15 @@
   (setq *previous-sentence* nil
         *current-sentence* nil))
 
+(defmethod clear ((s sentence))
+  (setf (sentence-string s) "")
+  (setf (next s) nil) ;; call-next ???
+  (setf (previous s) nil)
+  (setf (starts-at-pos s) nil)
+  (setf (ends-at-pos s) nil)
+  (setf (starts-at-char s) nil)
+  (setf (ends-at-char s) nil))
+
 (defun initialize-sentences ()
   ;; Called from initialize-paragraphs or read-from-document,
   ;; in which case it can be starting the first sentence of
@@ -371,30 +380,8 @@
       (let ((s1 (start-sentence (position# 1))))
         (setf (children p1) s1)
         (setf (parent s1) p1)
+        (setq 
         s1)))))
-
-(defgeneric prepopulated? (document-element)
-  (:documentation "When working with prepopulated documents, 
-  paragraphs start out with just the string of text between 
-  the 'p' tags and the first time through this is rendered as 
-  a sequence of sentences. If something goes wrong partway
-  through this won't be true."))
-
-
-(defmethod prepopulated? ((p paragraph))
-  "A prepopulated paragraph has had some or all of its text
-   rendered into sentences"
-  (let ((first-sentence (children p)))
-    (when first-sentence
-      ;; Let's assume that if the first one has been handled
-      ;; that the rest have been as well
-      (prepopulated? first-sentence))))
-
-(defmethod prepopulated? ((s sentence))
-  "The string is set by a call from the period-hook, so it
-   can't have a value unless we've swept over the sentence
-   at least once."
-  (not (string-equal "" (sentence-string s))))
 
 (defun start-sentence (pos)
   ;; Called from initialize-sentences for the first one, then
@@ -427,6 +414,29 @@
 (defmethod display-contents  ((s sentence)
                               &optional (stream *standard-output*))
   (display-contents (contents s) stream))
+
+
+(defgeneric prepopulated? (document-element)
+  (:documentation "When working with prepopulated documents, 
+  paragraphs start out with just the string of text between 
+  the 'p' tags and the first time through this is rendered as 
+  a sequence of sentences. If something goes wrong partway
+  through this won't be true."))
+
+(defmethod prepopulated? ((p paragraph))
+  "A prepopulated paragraph has had some or all of its text
+   rendered into sentences"
+  (let ((first-sentence (children p)))
+    (when first-sentence
+      ;; Let's assume that if the first one has been handled
+      ;; that the rest have been as well
+      (prepopulated? first-sentence))))
+
+(defmethod prepopulated? ((s sentence))
+  "The string is set by a call from the period-hook, so it
+   can't have a value unless we've swept over the sentence
+   at least once."
+  (not (string-equal "" (sentence-string s))))
 
 
 (defparameter *copy-text-to-sentence-objects* t
