@@ -20,6 +20,8 @@
 
 (in-package :sparser)
 
+(defvar *BREAK-ON-PATTERN-OUTSIDE-COVERAGE?*) ;; actually set in do-transitions1.lisp
+
 ;;;---------------
 ;;; Bracket lists
 ;;;---------------
