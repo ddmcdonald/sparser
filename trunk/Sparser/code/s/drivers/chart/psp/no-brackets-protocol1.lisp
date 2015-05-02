@@ -98,9 +98,12 @@
         (sentence-processing-core sentence)
         (setq sentence (next sentence))))))
 
+(defvar *sentence-in-core* nil)
+
 (defun sentence-processing-core (sentence)
   ;; Handles all of the processing on a sentence that is done
   ;; after scan-terminals-loop runs.
+  (setq *sentence-in-core* sentence)
   (when *sweep-for-patterns*
     (pattern-sweep sentence)
     (short-conjunctions-sweep sentence) ;; precede parens
