@@ -16,6 +16,8 @@
 (defvar *save-chunk-edges*)
 (defvar *all-chunk-edges*)
 (defvar *relations*)
+(defvar *DEC-TESTS*)
+(defvar *JAN-DRY-RUN*)
 
 
 (defparameter *sentences* nil
@@ -49,6 +51,13 @@
 (defun test-erk ()
   (declare (special *erk-abstract*))
   (setq *sentences* *erk-abstract*)
+  (reset-test)
+  nil)
+
+
+(defun test-aspp2 ()
+  (declare (special *erk-abstract*))
+  (setq *sentences* *aspp2-whole*)
   (reset-test)
   nil)
 
