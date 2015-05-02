@@ -153,14 +153,16 @@
          :of base))
 
 (define-category accumulation :specializes bio-process
-  :binds ((agent biological) (base biological)(location bio-location))
+  :binds ((agent biological) (base biological)(location bio-location)
+          (amount scalar-quality))
   :realization
   (:verb "accumulate" :noun "accumulation"
          :etf (svo-passive)
          :s agent
          :o base
          :of base
-         :in location))
+         :in location
+         :to amount))
 
 
 ;; duplicate??
@@ -1888,6 +1890,23 @@
   :realization 
   (:verb "translocate" 
    :noun "translocation" 
+   :etf (svo-passive) 
+   :s object ;; ERK translocates -- this is not the agent, but the object!
+   :o object
+   :to destination
+   :of object
+   :from origin
+   :premod destination
+   :premod object))
+
+(define-category entry :specializes translocation
+  :binds ((agent bio-process)
+          (object protein)
+          (origin cellular-location)
+          (destination cellular-location)) 
+  :realization 
+  (:verb "enter" 
+   :noun "entry" 
    :etf (svo-passive) 
    :s object ;; ERK translocates -- this is not the agent, but the object!
    :o object
