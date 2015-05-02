@@ -66,7 +66,9 @@
       ;;(push-debug `(,s1)) (break "prepopulated sentences")
       (if *sweep-for-terminals*
         ;; Now do the regular loop. All the linguistic
-        ;; analysis is done here.
+        ;; analysis is done here. This either just returns
+        ;; when it runs out of sentences or it reaches eof
+        ;; and there's a thow back into the document reader
         (sweep-successive-sentences-from s1)
         (else
           ;; otherwise we're finished with the paragraph
@@ -124,37 +126,45 @@
   (end-of-sentence-processing-cleanup sentence))
 
 
-;;--- document-driving processing
+
+;;--- document-driven processing
+
+; (trace-prepopulation)
 
 (defun scan-sentences-to-eof (first-sentence)
   ;; Called from initiate-successive-sweeps when reading 
   ;; a prepoulated document. Does scan-next-terminal 
   ;; and detects sentence boundaries but no substantive
   ;; processing. 
-  (format t "~&Scan to eof from ~a~%" first-sentence)
+  (tr :start-scan-to-eof first-sentence)
   (let ((sentence first-sentence))
     (loop
       (let* ((start-pos (starts-at-pos sentence))
              (first-word (pos-terminal start-pos)))
-        (format t "~&start-pos = ~a~%" start-pos)
+        (tr :scan-to-eof-start-pos start-pos)
         (catch :end-of-sentence
           (scan-words-loop start-pos first-word))
         (setq sentence (next sentence))))))
 
+(defvar *current-sentence-string* nil)
+(defun current-string ()
+  *current-sentence-string*)
+
 (defun sweep-successive-sentences-from (sentence)
   ;; Used with prepopulated documents after the sentences
-  ;; have been delimited. Does all of the linguistic
-  ;; analysis, sentence by sentence until we get to 
-  ;; the of the sentence chain. 
+  ;; have been delimited by scan-sentences-to-eof. 
+  ;; Does all of the linguistic analysis, sentence by sentence
+  ;; until we get to the end of the sentence chain. 
   (loop
-    (format t "~&---Reading ~a~%" sentence)
-    (scan-terminals-of-sentence sentence) (format t "~&done scanning~%")
-    (sentence-processing-core sentence)(format t "~&done core")
+    (tr :sweep-reading-sentence sentence)
+    (setq *current-sentence-string* (sentence-string sentence))
+    (scan-terminals-of-sentence sentence) (tr :scanning-done)
+    (sentence-processing-core sentence) (tr :sweep-core-done)
     (let ((next-sentence (next sentence)))
-      (format t "~&>> next sentence is ~a" next-sentence)
+      (tr :sweep-next-sentence next-sentence)
       (when (string-equal "" (sentence-string next-sentence))
-        (format t "~&---- reached last sentence of paragraph~%")
-        (return))
+        (tr :sweep-paragraph-end)
+        (throw 'do-next-paragraph nil))
       (setq sentence next-sentence))))
 
 

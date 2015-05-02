@@ -67,6 +67,7 @@
 ;;; 1st pass -- polywords, completion, terminal edges
 ;;;---------------------------------------------------
 
+;; (trace-terminals-sweep)
 ;; (trace-terminals-loop)
 
 (defun scan-terminals-loop (position-before word)
