@@ -105,6 +105,12 @@ to an oncogenic RasG12V mutation (9)."))
       :referent (:function adj-noun-compound
                            left-edge right-edge)))
   (eval
+   `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
+                     :head :left-edge
+      :form n-bar ;;/// cutting corners
+      :referent (:function adj-noun-compound
+                           right-edge left-edge )))
+  (eval
    `(def-syntax-rule (verb+ed ,nb) ;; "black suv"
                      :head :right-edge
       :form n-bar ;;/// cutting corners
