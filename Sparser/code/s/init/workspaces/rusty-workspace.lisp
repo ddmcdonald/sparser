@@ -1,6 +1,21 @@
 (in-package :sparser)
 
 
+(defvar *r3-trunk* nil
+  "String identifing the location of the trunk on 
+  your machine, including a final slash")
+
+
+(defun rusty-load-article-2 ()
+  (cwd "~/Documents/r3/trunk/code/")
+  (let* ((fn (intern (symbol-name '#:make-sparser-doc-structure)
+                     (find-package :r3)))
+         (doc-elements
+          (funcall fn 3847091 :dir "~/Documents/r3/trunk/darpa/January5-TestMaterials"))
+         (article (car doc-elements)))
+    (setq *article* article)))
+
+
 (defun rusty()
   (setup-bio) ;; load the bio model etc.
   (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
@@ -26,14 +41,16 @@
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
   (ddm-ed "grammar/model/sl/biology/terms1.lisp")
   (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
-  (ddm-ed "grammar/model/sl/biology/drugs.lisp")
-  (ddm-ed "init/workspaces/Biology-workspace.lisp")
+  ;;(ddm-ed "grammar/model/sl/biology/drugs.lisp")
+  ;;(ddm-ed "init/workspaces/Biology-workspace.lisp")
   (ddm-ed "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
  
   ;;  (setq *trace-network-flow* t)
   (bf-on)
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
+
   (trace-lexicon-unpacking) 
   (trace-morphology)
   ;;(setq *do-anaphora* nil)
@@ -384,6 +401,7 @@
   (loop for i from 1 to n do (setq *rr* (gethash key ht))))
 
 (defun htnull (n key ht)
+  (declare (ignore key ht))
   (loop for i from 1 to n do (setq *rr* (cons n n))))
 
 (defun vt (n key)
