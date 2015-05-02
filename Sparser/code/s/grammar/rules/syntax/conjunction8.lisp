@@ -564,7 +564,9 @@
 ;;;-----------
 
 (defun referent-of-two-conjoined-edges (left-ref right-ref)
-  (when (and left-ref right-ref)
+  (when (and left-ref right-ref
+             (not (word-p left-ref))
+             (not (word-p right-ref)))
     ;; when doing DA there can be cases where there's a categorization
     ;; but no referent. 
 
