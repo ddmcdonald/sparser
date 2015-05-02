@@ -462,9 +462,12 @@
   :realization 
   (:noun "nucleus" :adj "nuclear"))
 
+
+;; need to put in "GO:0005829"
 (define-category cytosol :specializes cellular-location
   :realization 
-  (:noun "cytosol"))
+  (:noun "cytosol"
+         :adj "cytosolic"))
 
 (def-synonym cytosol
    (:noun "cytoplasm"))
