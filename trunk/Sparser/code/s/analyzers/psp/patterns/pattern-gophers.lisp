@@ -150,6 +150,7 @@
 (defun divide-and-recombine-ns-pattern-with-colon (pattern words 
                                                    colon-positions hyphen-positions 
                                                    pos-before pos-after)
+  (declare (ignore hyphen-positions colon-positions words pattern))
   ;;(push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
   (let ((treetops (treetops-between pos-before pos-after)))
     (if (= (length treetops) 3)
