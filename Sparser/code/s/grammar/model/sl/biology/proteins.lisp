@@ -52,6 +52,7 @@
   :greek "kappa")
 
 (def-bio "p100" protein :identifier "PR:000011178")
+(def-bio "p120" protein :synonyms ("p120 GAP" "p120GAP"))
 
 (def-bio "p52" protein)  ;; :identifier ??
 
