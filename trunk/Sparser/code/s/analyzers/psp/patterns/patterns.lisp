@@ -79,7 +79,8 @@
       (resolve-hyphen-between-two-words pattern words start-pos end-pos)))
 
    ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
-    (break "digit hyphen digit on ~a" words))
+    (when *work-on-ns-patterns*
+      (break "digit hyphen digit on ~a" words)))
 
    ((equal pattern '(:lower :hyphen)) ;; "mono- "
     (resolve-stranded-hypen pattern words start-pos end-pos))
@@ -90,6 +91,7 @@
     (break "New hyphen pattern to resolve: ~a" pattern))
 
    (t (nospace-hyphen-specialist hyphen-positions start-pos end-pos))))
+
 
 (defun two-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
   ;; Just enough to form some sort of constituent and not beak

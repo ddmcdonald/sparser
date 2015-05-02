@@ -63,12 +63,17 @@
                            pos-before hyphen-pos))
              (second-half (resolve-hyphen-segment 
                            (chart-position-after hyphen-pos) next-position)))
-        (push-debug `(,first-half ,second-half))    
-        (unless (and first-half second-half)
-          (when *work-on-ns-patterns*
-            (break "One of the patterns to either side of a hyphen ~
-                   did not resolve.")))
-        (make-hyphenated-structure first-half second-half)))
+        (if (and first-half second-half)
+          (make-hyphenated-structure first-half second-half)
+          (if *work-on-ns-patterns*
+            (then
+              (push-debug `(,first-half ,second-half))    
+              (break "One of the patterns to either side of a hyphen ~
+                   did not resolve."))
+            ;; If not working on it, completely punt
+            (reify-ns-name-and-make-edge 
+             (words-between pos-before next-position) pos-before next-position)))))
+        
      (t
       (when *work-on-ns-patterns*
         (break "New case for hyphens~%  hyphen count = ~a~
