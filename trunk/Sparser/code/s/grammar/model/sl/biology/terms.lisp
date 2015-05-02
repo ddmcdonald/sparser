@@ -236,7 +236,7 @@
 
 (def-bio "exchange" bio-process)
 
-;; cytosolic "GO:0005829"
+
 
 
 (define-adjective "prevalent")
