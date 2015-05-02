@@ -1918,7 +1918,7 @@
          :o initial
          :into result))
 
-(define-category treatment
+(define-category treatment :specializes bio-method
   :binds ((agent pronoun/first/plural) (patient biological) (treatment biological)
           (modifier (:or predicate modifier)))
   :realization
