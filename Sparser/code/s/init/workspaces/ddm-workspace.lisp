@@ -9,24 +9,35 @@
 
 (in-package :sparser)
 
-
-
 (defvar *r3-trunk* nil
   "String identifing the location of the trunk on 
   your machine, including a final slash")
 
-(defun load-nxml-converter (&optional (trunk *r3-trunk*))
-  (let ((code (concatenate 'string trunk "code/")))
-    (cwd trunk)
-    ; (cwd "/Users/ddm/ws/R3/r3/trunk/code/")
-    (load "load.lisp")))
 
+(defun ddm-load-article-2 ()
+  (cwd "/Users/ddm/ws/R3/r3/trunk/code/")
+  (load "load.lisp")
+  (let* ((fn (intern (symbol-name '#:make-sparser-doc-structure)
+                     (find-package :r3)))
+         (doc-elements
+          (funcall fn 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
+         (article (car doc-elements)))
+    (setq *article* article)))
+; (read-from-document *article*)
+; (setq *sweep-for-terminals* nil)
+  
 ; (r3::make-sparser-doc-structure 1079799)
 ; (read-from-document 1079799)
 ; (r3::make-sparser-doc-structure 537887 :dir darpa/January5-TestMaterials")
 ; (r3::make-sparser-doc-structure 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials")
 ; (setq *article* (car *))
-; (setq *sweep-for-terminals* nil)
+
+;; ASPP2 article
+#| (children *article*)
+(#<section "Introduction"> #<section-of-sections > 
+#<section "Discussion"> #<section-of-sections > 
+#<section "Supporting Information">)
+|#
 
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
@@ -305,8 +316,8 @@ Worse: (28 13 6 2 1)
   (ddm-ed "grammar/rules/syntax/conjunction8.lisp")
   (ddm-ed "grammar/rules/syntax/possessive.lisp"))
 
-; (ddm-ed "objects/chart/edge-vectors/tuck.lisp)
-;(ddm-ed "objects/chart/edge-vectors/peek.lisp)
+; (ddm-ed "objects/chart/edge-vectors/tuck.lisp")
+; (ddm-ed "objects/chart/edge-vectors/peek.lisp")
 
 (defun ddm-anaphora ()  ;;doc -- note on anaphora
   (ddm-ed "analyzers/CA/anaphora3.lisp")
