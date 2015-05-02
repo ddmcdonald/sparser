@@ -380,7 +380,6 @@
       (let ((s1 (start-sentence (position# 1))))
         (setf (children p1) s1)
         (setf (parent s1) p1)
-        (setq 
         s1)))))
 
 (defun start-sentence (pos)
