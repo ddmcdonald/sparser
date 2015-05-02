@@ -388,17 +388,26 @@ all sorts of rules apply and not simply form rules.
            (and
             (edge-form e)
             (memq (cat-symbol (edge-form e)) *N-BAR-CATEGORIES*))))
-    (if
-     (not
-      (let*
-          ((ev (pos-starts-here (pos-edge-ends-at edge)))
-           (edges (ev-edges ev)))
-        (loop for e in edges
-          thereis
-          (and
-           (eq (edge-form e) category::preposition)))))           
-     (push (list (edge-category edge) *p-sent*) *verb+ed-sents*))
-    t)
+    (when
+        (not
+         (let*
+             ((ev (pos-starts-here (pos-edge-ends-at edge)))
+              (edges (ev-edges ev)))
+           (loop for e in edges
+             thereis
+             (memq
+              (edge-form e) 
+              (list
+               category::preposition
+               category::det
+               category::pronoun)))))
+      ;;(break "verb+ed")          
+      (push (list (string-of-words-between 
+                   (chunk-start-pos chunk)
+                   (pos-edge-ends-at edge))
+                  (sentence-string *sentence*)) 
+            *verb+ed-sents*))
+    t) 
    (t nil)))
     
 
