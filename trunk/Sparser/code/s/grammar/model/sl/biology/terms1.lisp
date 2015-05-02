@@ -98,7 +98,7 @@
       (:noun "analog"
              :of basis))
 (noun ("analysis" :plural "analyses")
-  :super bio-process)
+  :super bio-method)
 
 (define-category antibody :specializes protein
   :binds ((antigen molecule))
@@ -175,7 +175,6 @@
         :s subject
         :with theme))
 (define-adverb "constitutively")
-(noun "context" :super bio-context) 
 
 
 (adj "critical" :super predicate
@@ -189,12 +188,12 @@
 
 (adj "current" :super predicate)
 (def-bio "cytosine" nucleotide)
-(noun "cytosol" :super cellular-location)
+
 (define-unit-of-measure "dalton")
 ;;(noun "data" :super bio-entity)
 (def-bio "data" bio-entity) ;; need something better
 
-(adj "de novo" :super predicate)
+(adj "de novo" :super bio-process)
 
 (adj "dead" :super predicate)
 
@@ -365,7 +364,7 @@
      (:adj "identical"
            :s basis
            :to comparator))
-(noun "living cells" :super bio-context)
+;;(noun "living cells" :super bio-context)
 (define-adverb "in part")
 (adj "in vivo" :super bio-context)
 (adj "in vitro" :super bio-context)
@@ -475,7 +474,7 @@
       (:noun "mode"
              :of process))
 (noun "model" :super biological) ;; almost never used as a verb
-(noun "modeling" :super biological) ;; but modeling is a nominal that is used
+(noun "modeling" :super bio-method) ;; but modeling is a nominal that is used
 (adj "molecular" :super predicate) ;; It's realated to molecule, but how exactly? Seems wrong to jump to "is made of molecules"
 (define-adverb "moreover")
 (noun "mortality" :super bio-abstract) ;;/// relationship to "mortal" ??
@@ -724,7 +723,7 @@
      :realization
      (:adj "unknown"
            :s subject))
-(adj "unmodified" :super predicate)
+(adj "unmodified" :super bio-process)
 (define-adverb "until now")
 (noun "upstream" :super bio-context
       :binds ((relative-to biological))
@@ -778,9 +777,12 @@
 ; our panel of cancer cell lines (Figure 6A).
 ; the HCC827 NSCLC cell line
 
-(noun "cell" :super cell-line)
-(noun "line" :super cell-line)
-(noun "cell line" :super cell-line)
+
+(def-synonym cell-line (:noun "line"))
+(def-synonym cell-line (:noun "cell line"))
+(def-synonym cell-line (:noun "cell"))
+(def-synonym cell-line (:noun "cultured cell"))
+(def-synonym cell-line (:noun "cultured cell line"))
 
 (defun def-cell-line (line)
   (def-bio/expr line 'cell-line :takes-plurals nil))
