@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.3 March 2015
+;;;  version:  1.4 May 2015
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
@@ -23,6 +23,8 @@
 ;;      including instances from hashtables.
 ;; 1.3 (8/19/13) Added facility for making later call to make-permanent
 ;;      for use at the bottom of everything. 3/27/15 Minor inline doc.
+;; 1.4 (5/1/15) Since it had worked for Rusty trusted it and turned off the
+;;      examination breaks in add-permanent-individual
 
 (in-package :sparser)
 
@@ -157,10 +159,10 @@
 
      ((null cell/1st-permanent)
       ;; none of the instances on the list are permanent
-      (break "look around and confirm assumptions")
-      (push-debug `(,plist ,cell/instances ,instances))
       ;; The other instances are temporary, so the permanent marker
       ;; and this instance go below them -- see reclaimation code
+      ;;(break "look around and confirm assumptions")
+      ;;(push-debug `(,plist ,cell/instances ,instances))
       (if (eq individual (car instances)) ;; trust but verify
         (setq instances (cdr instances))
         (break "violated assumption. Instance being marked not ~
@@ -170,7 +172,7 @@
         ;; replace its list of instances with the shorter list
         (rplacd instances-cell
                 (cons instances rest-of-the-plist))
-        (break "that look right?")
+        ;;(break "that look right?")
         ;; add the permanent marker on the front
         (setf (unit-plist category)
               `( :1st-permanent-individual
@@ -178,7 +180,8 @@
                  :permanent-individuals
                  ,(list individual)
                 ,@plist))
-        (break "still look right?")))        
+        ;;(break "still look right?")
+        ))        
    
 
 
