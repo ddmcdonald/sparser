@@ -1726,7 +1726,7 @@
  :binds ((agent pronoun/first/plural)(object biological))
   ;; can study bio-process or bio-entity
  :realization
- (:verb ("study" :past-tense "studied" :present-participle "studying")
+ (:verb ("studyxxx" :past-tense "studied" :present-participle "studying")
   :etf (svo-passive)
   :s agent
   :o object))
@@ -1918,10 +1918,11 @@
          :o initial
          :into result))
 
-(define-category treat
-  :binds ((agent pronoun/first/plural) (patient biological) (treatment biological))
+(define-category treatment
+  :binds ((agent pronoun/first/plural) (patient biological) (treatment biological)
+          (modifier (:or predicate modifier)))
   :realization
-  (:verb "treat" ;; :noun "treatment"
+  (:verb "treat" :noun "treatment"
          :etf (svo-passive)
          :s agent
          :o patient
