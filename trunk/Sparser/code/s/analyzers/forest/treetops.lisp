@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "treetops"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   1.5 December 2015
+;;;   Version:   1.5 May 2015
 
 ;; 1.1  (2/8/91 v1.8.1) added Final-tt/category
 ;; 1.2  (2/13 v1.8.1) Modified ...-treetop-at to both return words if there
@@ -29,6 +29,7 @@
 ;;  going on in the code that supports whack-a-rule
 ;; 3/4/2015 correct spelling of *use-broader-set-of-tts*, and replace "wack" with "whack"
 ;; cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
+;; 5/1/2015 minor tweak on losing-competition?  to do better on leftwards extension of NPs which may be SUBJECTs
 
 
 (in-package :sparser)
@@ -500,7 +501,7 @@
     do (return (car tail))))
 
 (defun losing-competition? (triple1 triple2)
-  (declare (special triple1 rule2))
+  (declare (special triple1 triple2))
   (cond
    ((and 
      (eq (second triple1) (third triple2))
@@ -516,6 +517,12 @@
         (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car triple1)))
         (memq (cat-symbol (second (cfr-rhs (car triple1))))
               '(category::vg category::vp)))
+       (not
+        (and
+         (edge-p (edge-left-daughter (third triple1)))
+         (or
+          (eq category::adjective (edge-form (edge-left-daughter (third triple1))))
+          )))
 
        ;; there must be a competing rule
        (let ((preceding-edge (edge-just-to-left-of (second triple2))))
@@ -531,6 +538,7 @@
     ;; Don't do right-to-left activation for the subj+verb rules
     ;(break "competing")
     ;;(print `(dropping rule ,triple1))
+    ;;(print `(in *p-sent* ,*p-sent* dropping rule ,triple1 compared to ,triple2))
     t)
    (t nil)))
 
