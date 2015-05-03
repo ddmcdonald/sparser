@@ -56,7 +56,7 @@
 
 
 (defun test-aspp2 ()
-  (declare (special *erk-abstract*))
+  (declare (special *aspp2-whole*))
   (setq *sentences* *aspp2-whole*)
   (reset-test)
   nil)
