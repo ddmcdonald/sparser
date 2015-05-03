@@ -520,7 +520,7 @@ decoding table for referenced OBO terms
 
 
 (defun create-reactome-categories (reactome-categories)
-  (let ((reactome (eval `(define-category Reactome-Category :specializes top))))
+  (let ((reactome (eval `(define-category Reactome-top :specializes top))))
     (declare (ignore reactome))
     (loop for rc in reactome-categories
       do
