@@ -203,7 +203,8 @@ all sorts of rules apply and not simply form rules.
     do (format t "~&___________________~&")
     (np c)))
 
-(defun np (l)(loop for ll in l do (print ll)))
+(defun np (l &optional (stream t))
+  (loop for ll in l do (print ll stream)))
 
 
 
@@ -370,19 +371,40 @@ all sorts of rules apply and not simply form rules.
 
 
 (defparameter *verb+ed-sents* nil)
+(defparameter *suppressed-verb+ed* nil)
 (defun likely-verb+ed-clause (edge ev-list)
-  (declare (special edge ev-list))
+  (declare (special edge ev-list chunk))
   (cond
    ((and (edge-form edge) ;; COMMA has no edge-form
          (not
           (and ;; e.g. COT-mediated
            (individual-p (edge-referent edge))
-           (eq (car (indiv-type (edge-referent edge))) category::hyphenated-pair)))
+           (eq (cat-symbol (car (indiv-type (edge-referent edge))))
+               'category::hyphenated-pair)))
          (not
           (eq (edge-category edge) category::have))
          (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge)))
          ;; new code -- don't accept a past participle immediately following a noun 
          ;; -- most likely to be a main verb or a reduced relative in this case
+         (let*
+             ((ev-edge (when (car ev-list)(car (ev-edges (car ev-list)))))
+              (prev-edge (when ev-edge(edge-just-to-left-of ev-edge))))
+           (declare (special ev-edge prev-edge))
+           (cond
+            ((and prev-edge 
+                  (edge-form prev-edge)
+                  (memq (cat-symbol (edge-form prev-edge))
+                        '(category::verb category::verb+ed)))
+             (push (list  (list (edge-form prev-edge)
+                                (edge-referent prev-edge))
+                          (list (edge-form ev-edge)
+                                (edge-referent ev-edge))
+                          (list (edge-form edge)
+                                (edge-referent edge))
+                          (sentence-string *sentence-in-core*))
+                   *suppressed-verb+ed*)
+             nil)
+            (t t)))
          (loop for e in (ev-edges (car ev-list))
            thereis
            (and
