@@ -101,6 +101,7 @@
   :super bio-method)
 
 (define-category antibody :specializes protein
+  :mixins (protein-method) ;; just to say that this is a bio-method
   :binds ((antigen molecule))
   :realization
   (:noun "antibody"
@@ -175,6 +176,7 @@
         :s subject
         :with theme))
 (define-adverb "constitutively")
+(noun "content" :super measurement)
 
 
 (adj "critical" :super predicate
@@ -320,7 +322,7 @@
 
 (noun "forster resonance energy transfer" :super bio-method)
 
-(noun "fragment" :super bio-entity
+(noun "fragment" :super protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
       :binds ((whole bio-entity))
       :realization
       (:noun "fragment"
@@ -354,7 +356,9 @@
 (noun "group" :super bio-abstract)
 (def-bio "guanine" nucleotide)
 (adj "high" :super predicate)
-(noun "high performance liquid chromatography" :super bio-method)
+(noun "HPLC" :super bio-method)
+(def-synonym HPLC
+             (:noun "high performance liquid chromatography"))
 (define-adverb "however")
 (noun "human" :super species)
 (adj "identical" :super predicate
@@ -441,7 +445,6 @@
 (def-synonym mass-spectrometry
              (:noun "mass spectrometry"))
              
-(noun "spectroscopy" :super bio-method)
 (noun "means" :super bio-process
       :binds ((process bio-process))
       :realization
@@ -517,6 +520,7 @@
 (adj "parallel" :super predicate)
 (noun "partner" :super bio-abstract)
 (noun "patient" :super bio-entity)
+(noun "peak" :super measurement)
 (adj "pharmacological" :super predicate) ;; keyword: (al ADJ) 
 
 (adj "physiological" :super predicate)
@@ -561,6 +565,7 @@
       (:noun "proportion"
              :of basis))
 (adj "putative" :super predicate)
+
 (noun "radioactivity" :super bio-abstract
       :binds ((material molecule))
       :realization
@@ -605,9 +610,11 @@
         :s subject 
         :for theme))
 (noun "responsiveness" :super bio-scalar)
+(adj "right" :super predicate)
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
 
+(adj "same" :super predicate)
 (noun "scaffold" :super protein) 
 (noun "scale" :super bio-scalar)     
 (noun "screen" :super  bio-process)
@@ -644,13 +651,14 @@
 ;; Jan 14 "mutation of the primary site of monoubiquitination"
 ;; 16 "mUbRas, modified at a single site, "
 (noun "site" :super bio-location
-  :binds ((process bio-process)(protein protein))
+  :binds ((process bio-process)(protein protein)(residue residue-on-protein))
   :realization
      (:noun "site"
       :etf pre-mod
       :m process
       :of process
-      :in protein))
+      :in protein
+      :at residue))
 
 (find-or-make-individual 'qualitative-rate :name "slow")
 
@@ -662,7 +670,7 @@
            :s theme
            :to situation
            :for beneficiary))
-
+(noun "spectrometry" :super bio-method)
 (define-category stable :specializes bio-abstract
      :binds ((agent biological)(context bio-context))
      :realization
@@ -838,12 +846,32 @@
 
 
 (define-category article-figure
-  :specializes bio-abstract)
+  :specializes bio-abstract
+  :binds ((label two-part-label))
+  :realization
+  (:noun "figure"))
+
+(def-synonym article-figure
+             (:noun "fig."))
+
+(def-synonym article-figure
+             (:noun "fig"))
+
+ 
+(def-cfr article-figure (article-figure two-part-label)
+  :form proper-noun
+  :referent (:head left-edge
+             :bind (label right-edge)))
+
+(def-cfr article-figure (article-figure number)
+  :form proper-noun
+  :referent (:head left-edge
+             :bind (label right-edge)))
+
+
+
 (define-category article-table
   :specializes bio-abstract)
-
-(noun "fig" :super article-figure) 
-(noun "figure" :super article-figure)
 
 
 ;;;------------------------------------------------------------------
