@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1994-1995,2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "possessive"
 ;;;   Module:  "grammar;rules:syntax:"
@@ -62,8 +61,8 @@
               (setq rule *possessive-rule*))
 
             (let ((new-edge
-                 (make-completed-binary-edge prior-edge poss-edge
-                                             rule)))
+                   (make-completed-binary-edge prior-edge poss-edge
+                                               rule)))
 
               
               ;; This fn is from adjudicators. It moves the boundary
