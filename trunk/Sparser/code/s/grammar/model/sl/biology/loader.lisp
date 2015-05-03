@@ -30,6 +30,8 @@
 (gload "bio;switches")
 (gload "bio;rules")
 (gload "bio;parse-biopax")
+;; can't figure out how to get gload to work here...(Rusty)
+(load "~/sparser/Sparser/code/s/grammar/model/sl/biology/reactome/find-extension.lisp")
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules") 
