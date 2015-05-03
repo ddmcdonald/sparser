@@ -261,10 +261,8 @@
       (princ " " stream)
       (nspaces (- n 1) stream)))
 
-(defun np (l)
-  (if (consp l)
-      (loop for item in l do (print item))
-      (print l)))
+(defun np (l &optional (stream t))
+  (loop for ll in l do (print ll stream)))
 
 (defun is-pp? (edge)
   (and
