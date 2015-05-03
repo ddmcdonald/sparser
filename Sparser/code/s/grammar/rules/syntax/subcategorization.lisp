@@ -207,6 +207,14 @@
 
 ;;--- query the record
 
+
+;; Strange case -- "treated with or without ..." in ASPP2
+(defmethod takes-preposition? ((word word) (cat referential-category))
+  nil)
+
+(defmethod takes-preposition? ((e edge)(cat referential-category))
+  nil)
+
 (defmethod takes-preposition? ((e edge) (prep word))
   (let* ((label (edge-category e))
          (sc (get-subcategorization label)))
