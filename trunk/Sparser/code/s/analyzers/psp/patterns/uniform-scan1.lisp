@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  1.0 April 2015
+;;;  version:  1.1 May 2015
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -20,6 +20,8 @@
 ;;   4/19/15 Added safe characters to punctuation-terminates-no-space-sequence
 ;;    and established notion of other-punct for them. 
 ;; 1.1 4/23/15 Fixed bug in dispatch to slash. Added arrow.
+;;   5/3/15 Added way to keep the sequence from extending over punctuation
+;;   it didn't do a lookahead on. 
 
 (in-package :sparser)
 
@@ -188,6 +190,14 @@
 ;;; delimiting the no-space span
 ;;;------------------------------
 
+(defvar *terminal-ns-punct-encountered* nil
+  "This is populated by punctuation-terminates-no-space-sequence
+  as it encounters characters that it didn't look ahead on.
+  It's read by sweep-to-end-of-ns-regions to keep it from advancing
+  the chart position on those characters. We could alternatively
+  make this a property of punctuation characters, but if the list
+  is small this will suffice.")
+
 (defun sweep-to-end-of-ns-regions (position)
   ;; From this position, which is marked as having not space between its
   ;; word and the previous word. Look at the positions to the right until
@@ -215,7 +225,8 @@
       (when (and (punctuation? word)
                  (punctuation-terminates-no-space-sequence word next-pos))
         ;; We looked ahead, so reflect that in the stopping position
-        (setq next-pos (chart-position-after next-pos))
+        (unless (memq word *terminal-ns-punct-encountered*)
+          (setq next-pos (chart-position-after next-pos)))
         (tr :ns-return-punch-terminates-seq word next-pos)
         (return))
       (cond
@@ -263,7 +274,7 @@
 ;;      ((eq word (punctuation-named #\/)) ;; cascades in signal pathways
 ;;       t)
       (t nil))))
-      
+
 
 (defun punctuation-terminates-no-space-sequence (word position)
   (declare (special *the-punctuation-period* *the-punctuation-comma*
@@ -291,7 +302,8 @@
      nil)
 
     ;; Every other punctuation is declared to be a boundary
-    (t t)))
+    (t (pushnew word *terminal-ns-punct-encountered*)
+       t)))
 
 
 (defun sentence-final-punctuation-pattern? (position)
