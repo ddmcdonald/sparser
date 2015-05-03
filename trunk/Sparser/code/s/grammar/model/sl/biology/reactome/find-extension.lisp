@@ -25,6 +25,7 @@
   (indiv-pattern-from-tree c))
 
 (defun indiv-pattern-from-tree (tree)
+  (declare (special tree))
   (let*
       ((ivar (this-var))
        (rule-elts
@@ -37,28 +38,28 @@
           (referential-category 
            `((isa ,ivar
                   ,(intern (symbol-name (cat-symbol (car tree))))))))))
-
+    (declare (special ivar rule-elts))
+    
     (append rule-elts
 	    (loop for binding in (cdr tree)
               append
               (let*
-                  ((bval (second binding))
-                   (bvar
-                    (typecase bval
-                      (cons (next-var))
-                      (t bval))))
-                (declare (special bval))
-                `((slot-val ,(car binding)
-                            ,ivar
-                            ,bvar)
-                  ,@(cond
-                     ((consp bval)
-                      (cond
-                       ((individual-p (car bval))
-                        (indiv-pattern-from-tree bval))
-                       (t (indiv-pattern (car bval)))))
-                     (t (break "bval")))))))))
-
+                  ((bval (second binding)))
+                (typecase bval
+                  (cons 
+                   (let
+                       ((bvar (next-var)))
+                     `((slot-val ,(car binding)
+                                 ,ivar
+                                 ,bvar)
+                       ,@(cond
+                          ((individual-p (car bval))
+                           (indiv-pattern-from-tree bval))
+                          (t (indiv-pattern (car bval)))))))
+                  (t
+                   `((slot-val ,(car binding)
+                               ,ivar
+                               ,bval)))))))))
 (defun next-var()
   (intern (format nil "?X~s" (incf *var-index*))
 	  *package*))
