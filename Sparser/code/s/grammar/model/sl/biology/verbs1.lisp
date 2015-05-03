@@ -212,7 +212,20 @@
            :of object
 	   ))
 
-(define-category analyze :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "analyze" :noun "analysis" :etf (svo-passive) :s agent :o object))
+(define-category analyze :specializes bio-process
+  :binds ((agent (:or biological pronoun/first/plural))(object (:or bio-process measurement)))
+  :realization 
+  (:verb "analyze" :noun "analysis" 
+         :etf (svo-passive) 
+         :s agent 
+         :o object))
+
+(def-synonym analyze
+  (:verb "analyse"
+         :etf (svo-passive) 
+         :s agent 
+         :o object
+         ))
 
 
 #+ignore
@@ -1493,7 +1506,7 @@
 (define-category query
     :specializes bio-process
     :mixins (bio-whethercomp)
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent (:or biological pronoun/first/plural))(object bio-process))
     :realization
     (:verb "query" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1621,7 +1634,7 @@
 
 (define-category represent
     :specializes bio-process
-    :binds ((agent biological)(object bio-process))
+    :binds ((agent biological)(object (:or bio-process measurement)))
     :realization
     (:verb "represent" :noun "representation"
 	   :etf (svo-passive)
@@ -1704,13 +1717,16 @@
 (define-category show
     :specializes bio-process
     :mixins (bio-thatcomp)
-    :binds ((agent pronoun/first/plural)(object (:or bio-process pronoun/inanimate)))
+    :binds ((agent pronoun/first/plural)
+            (object (:or bio-process pronoun/inanimate))
+            (fig article-figure))
   ;; it was shown that
     :realization
     (:verb ("show" :past-tense "shown")
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :in fig
            :thatcomp statement))
 
 
