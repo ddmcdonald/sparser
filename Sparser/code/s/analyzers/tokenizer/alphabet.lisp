@@ -707,6 +707,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 
 (defun cache-out-of-band-character (char-code)
-  (push-debug `(,char-code)) (break "character"))
+  (push-debug `(,char-code)))
+;  (break "finish writing cache-out-of-band-character")
 
 
