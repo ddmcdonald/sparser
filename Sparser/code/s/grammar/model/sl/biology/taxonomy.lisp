@@ -46,7 +46,7 @@
    in noun noun compounds.")
  
 (define-mixin-category bio-thatcomp
-  :binds ((statement (:or bio-process be)))
+  :binds ((statement (:or bio-process molecule-state be)))
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstraction, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -271,6 +271,7 @@
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
 
+(define-mixin-category protein-method :specializes bio-method)
 
 ;;/// will have a substantial model, so deserves its own
 ;; file. This is just to ground "encode"
@@ -290,6 +291,7 @@
   
 (define-category enzyme ;; what's the relationship to kinase?
   :specializes protein  ;; not all enzymes are proteins -- there are RNA enzymes
+  :binds ((reaction bio-process))
   :instantiates :self
 ;; :rule-label bio-entity
   :lemma (:common-noun "enzyme")
@@ -303,21 +305,11 @@
   :bindings (uid "GO:0016301") ;; "kinase activity" 
 ;;  :rule-label bio-entity
   :index (:permanent :key name)
-  :lemma (:common-noun "kinase")
   :realization (:common-noun name))
 
-#+ignore ;; want to give kinase a FOR case
-;; but how to do it and still define instances
-;; (individuals) that are kinases using def-bio
-;; which assigns a neme. 
-(define-category kinase
-  :specializes enzyme
-  :instantiates :self
-  :bindings (uid "GO:0016301") ;; "kinase activity"
-  :binds ((process bio-process))
-  :realization
-  (:noun "kinase"
-         :for process))
+(def-synonym kinase
+             (:noun "kinase"
+                   :for reaction))
 
 
 (define-category GTPase
@@ -634,9 +626,6 @@ the aggregate across the predicate it's in. |#
 (define-category bib-reference
    :specializes abstract) ;; to allow "et al." to be easily ignored
 
-(define-category article-figure
-   :specializes abstract) ;; to allow "et al." to be easily ignored
-
 (define-category article-table
    :specializes abstract) ;; to allow "et al." to be easily ignored
 
@@ -648,3 +637,22 @@ the aggregate across the predicate it's in. |#
   :noun "human protein family"
   :in location)
 
+;;; moved from amino-acid
+(define-category residue-on-protein   
+  :specializes molecular-location ;; NOT same as protein, it is the location, not the amino acid
+  :instantiates :self
+  :binds ((amino-acid . amino-acid)
+          (position :primitive integer) ;; counting from the N terminus
+          (on-protein . protein))
+  :realization
+   (:noun "residue"
+   :of on-protein
+   :on on-protein
+   :at amino-acid)  ;; this is actually for serine at residue 822 -- this is an "inverse" :at
+                    ;;  for use by interpret-pp-as-head-of-np and a form rule in form-rules
+  :index (:permanent :sequential-keys amino-acid position))
+
+(def-synonym residue-on-protein
+             (:noun "position"))
+(def-synonym residue-on-protein
+             (:noun "amino acid"))
