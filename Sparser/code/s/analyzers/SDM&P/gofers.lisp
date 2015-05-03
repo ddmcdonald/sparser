@@ -22,8 +22,8 @@
 ;; Need documentation here -- DAVID
 (defvar *left-segment-boundary*)
 (defvar *right-segment-boundary*)
-(defvar CATEGORY::APOSTROPHE-S)
-(defvar *DEBUG-SEGMENT-HANDLING*)
+
+;;(defvar *DEBUG-SEGMENT-HANDLING*)
 
 (defvar *segment-position-just-left-of-head* nil
   "Points to the chart-position-before the right-segment-boundary
@@ -71,6 +71,7 @@
            (chart-position-before *right-segment-boundary*))))
 
 (defun segment-ends-with-appostrope-s? ()
+  (declare (special category::apostrophe-s))
   (let* ((p (position-before-segment-final-multi-word-edge))
          (ev (when p (pos-starts-here p)))
          (edge (when ev (lowest-edge ev))))
