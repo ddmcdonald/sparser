@@ -11,9 +11,9 @@
 ;; on all this for at least expository purposes. Commented out loading
 ;; of NFkappaB since it's worth rethinking those fast an loose treatements.
 ;; Moved likely resuseable parts to terms and verbs.
-;; 9/8/14 added [amino-acids], [proteins], and [taxonomy] to improve 
+;; 9/8/14 added [amino-acids], [proteins], and [taxonomy] to improve
 ;; searching through these. 11/12/14 added [switches]. Bumped verbs
-;; to 1, 12/11/14. 12/28/14 added [phenomena]. 1/16/15 added 
+;; to 1, 12/11/14. 12/28/14 added [phenomena]. 1/16/15 added
 ;; [rules]. 2/20/15 added doc-structure
 
 (in-package :sparser)
@@ -31,8 +31,8 @@
 (gload "bio;rules")
 (gload "bio;parse-biopax")
 ;; can't figure out how to get gload to work here...(Rusty)
-(load "~/sparser/Sparser/code/s/grammar/model/sl/biology/reactome/find-extension.lisp")
+(load (make-reactome-path "find-extension.lisp"))
 
 ;(gload "bio;NFkappaB")
-;(gload "bio;molecules") 
+;(gload "bio;molecules")
 
