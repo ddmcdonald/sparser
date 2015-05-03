@@ -655,7 +655,7 @@
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
       (setq np (maybe-copy-individual np))
-      (bind-variable variable-to-bind copular-pp np)
+      (bind-variable variable-to-bind pobj np)
       (bind-variable 'result np copular-pp)
       copular-pp))))
 
