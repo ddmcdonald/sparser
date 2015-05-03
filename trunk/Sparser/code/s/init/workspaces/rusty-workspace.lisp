@@ -58,7 +58,8 @@
 )
 
 (defun pos (n)(chart-array-cell n))
-(defun np (l)(loop for ll in l do (print ll)))
+(defun np (l &optional (stream t))
+  (loop for ll in l do (print ll stream)))
 
 (defun show-brackets (end)
   (np 
