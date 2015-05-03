@@ -132,6 +132,9 @@
 
 
 (defun revise-form-of-nospace-edge-if-necessary (edge right-edge)
+  (unless edge
+    ;; Got a null edge on "ASPP2"
+    (return-from revise-form-of-nospace-edge-if-necessary nil))
   (when (eq right-edge :find-it)
     (setq right-edge (edge-right-daughter edge)))
 
