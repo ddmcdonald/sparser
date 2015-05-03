@@ -12,20 +12,32 @@
 
 (defparameter *var-index* 0)
 
+(defmethod indiv-pattern ((e edge))
+  (indiv-pattern (edge-referent e)))
+
 (defmethod indiv-pattern ((indiv individual))
-  (indiv-pattern-from-tree (semtree indiv)))
+  (indiv-pattern-from-tree (semtree indiv nil)))
+
+(defmethod indiv-pattern ((c referential-category))
+  (indiv-pattern-from-tree (semtree c nil)))
 
 (defmethod indiv-pattern ((c cons))
   (indiv-pattern-from-tree c))
 
 (defun indiv-pattern-from-tree (tree)
   (let*
-      ((ivar (next-var))
+      ((ivar (this-var))
        (rule-elts
-	(loop for c in (indiv-type (car tree))
-          collect
-          `(isa ,ivar
-                ,(symbol-name (cat-symbol c))))))
+        (typecase (car tree)
+          (individual
+           (loop for c in (indiv-type (car tree))
+             collect
+             `(isa ,ivar
+                   ,(intern (symbol-name (cat-symbol c))))))
+          (referential-category 
+           `((isa ,ivar
+                  ,(intern (symbol-name (cat-symbol (car tree))))))))))
+
     (append rule-elts
 	    (loop for binding in (cdr tree)
               append
@@ -35,13 +47,23 @@
                     (typecase bval
                       (cons (next-var))
                       (t bval))))
+                (declare (special bval))
                 `((slot-val ,(car binding)
                             ,ivar
                             ,bvar)
-                  ,@(when (consp bval)
-                      (indiv-pattern-from-tree bval))))))))
+                  ,@(cond
+                     ((consp bval)
+                      (cond
+                       ((individual-p (car bval))
+                        (indiv-pattern-from-tree bval))
+                       (t (indiv-pattern (car bval)))))
+                     (t (break "bval")))))))))
 
 (defun next-var()
   (intern (format nil "?X~s" (incf *var-index*))
+	  *package*))
+
+(defun this-var()
+  (intern (format nil "?X~s" *var-index*)
 	  *package*))
 	 
