@@ -27,7 +27,7 @@
     (p "All these demonstrate that ASPP2 is a novel substrate of MAPK and Ser827 of ASPP2 can be phosphorylated by RAS/MAPK pathway.")
     (p "Raf/MAPK Pathway Activates the Pro-Apoptotic Function of ASPP2.")
     (p "One of the most studied downstream pathways of RAS signalling is the Raf/MAPK pathway [13].")
-    (p "Knowing ASPP2 is a substrate of MAPK, we thus tested whether activation of Raf/ MAPK pathway is sufficient to regulate ASPP2 activity using a mutant form of Raf (Raf CAAX), which is constitutively present at the plasma membrane, so the Raf pathway is constitutively active [14].")
+    (p "Knowing ASPP2 is a substrate of MAPK, we thus tested whether activation of Raf/MAPK pathway is sufficient to regulate ASPP2 activity using a mutant form of Raf (Raf CAAX), which is constitutively present at the plasma membrane, so the Raf pathway is constitutively active [14].")
     (p "The impact of co-expression of Raf CAAX with p53 and ASPP2 was tested by analysing the transcriptional activity of p53 on the pro-apoptotic Bax reporter.")
     (p "Raf CAAX increases Bax-luciferase levels by 2.5 fold over the baseline of p53 and ASPP2 alone.") ;; problems (P=0.05).")
     (p "This effect is likely to be mediated by ASPP2 as Raf CAAX had little effect on p53 in its absence (Figure 2A).")
