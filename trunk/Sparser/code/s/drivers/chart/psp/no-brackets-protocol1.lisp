@@ -18,6 +18,7 @@
 ;; tweaks to all-entities and all-relations. 
 ;; 4/16/15 Fanout from change in treatment of PPs. 
 ;; 1.0 4/28/15 Bumped to re-factor. 
+;; 5/2/2015 update semtree to support indiv-pattern for pattern matching
 
 (in-package :sparser)
 
@@ -391,37 +392,42 @@
    (not (itypep e 'predicate))
    (not (itypep e 'is-bio-entity))))
 
-(defmethod semtree ((x null))
+(defmethod semtree ((x null) &optional short)
   nil)
 
-(defmethod semtree ((w word))
+(defmethod semtree ((w word) &optional short)
   nil)
 
-(defmethod semtree ((n number))
-  (semtree (e# n)))
+(defmethod semtree ((n number) &optional (short t))
+  (semtree (e# n)) short)
 
-(defmethod semtree ((e edge))
-  (semtree (edge-referent e)))
+(defmethod semtree ((e edge) &optional (short t))
+  (semtree (edge-referent e) short))
 
 (defparameter *semtree-seen-individuals* (make-hash-table))
-(defmethod semtree ((i individual))
+(defmethod semtree ((i individual) &optional (short t))
   (clrhash *semtree-seen-individuals*)
-  (collect-model-description i))
+  (collect-model-description i short))
 
-(defmethod semtree ((i referential-category))
+(defmethod semtree ((i referential-category) &optional (short t))
   (clrhash *semtree-seen-individuals*)
-  (collect-model-description i))
+  (collect-model-description i short))
 
 
-(defmethod collect-model-description ((cat category))
+(defmethod collect-model-description ((cat category) &optional (short t))
   (list cat))
 
-(defmethod collect-model-description ((cal cons))
+(defmethod collect-model-description ((w word) &optional (short t))
+  (word-pname w))
+
+
+(defmethod collect-model-description ((cal cons) &optional (short t))
   `(collection :members 
                (,@(loop for l in cal 
-                    collect (collect-model-description l)))))
+                    collect (collect-model-description l short)))))
 
-(defmethod collect-model-description ((i individual))
+(defmethod collect-model-description ((i individual) &optional (short t))
+  (declare (special i short))
   (cond
    ((gethash i *semtree-seen-individuals*)
     (list (list "!recursion!" i)))
@@ -430,7 +436,20 @@
    ((and
      (itypep i 'bio-family)
      (not (itypep i 'collection)))
-    `(,i))
+    (if
+     short
+     `(,i)
+     (let ((bindings (indiv-binds i))
+            (desc (list i)))
+        (declare (special bindings desc))
+        (append
+         desc
+         (loop for b in bindings 
+           unless (member (var-name(binding-variable b))
+                          '(members count))
+           collect
+           (list (var-name(binding-variable b))
+                 (collect-model-description (binding-value b) short)))))))
    (t  
     (let ((bindings (indiv-binds i))
           (desc (list i)))
@@ -454,23 +473,26 @@
                  (if
                   (itypep value 'prepositional-phrase)
                   (push (list (var-name var) ; 
-                              (collect-model-description (value-of 'pobj value)))
-                            desc)
+                              (collect-model-description
+                               (value-of 'pobj value)
+                               short))
+                        desc)
                   (push (list (var-name var)
-                              (collect-model-description value))
+                              (collect-model-description value short))
                         desc)))
                 (word)
                 (polyword)
                 (category
                  (push (list (var-name var)
-                             (collect-model-description value))
+                             (collect-model-description value short))
                        desc))
                 (cons
                  (push
                   (list (var-name var)
-                        `(collection (:members 
-                              (,@(loop for item in value 
-                                   collect (collect-model-description item))))))
+                        `(collection 
+                          (:members 
+                           (,@(loop for item in value 
+                                collect (collect-model-description item short))))))
                   desc))
                 (otherwise
                  (push-debug `(,value ,b ,i))
