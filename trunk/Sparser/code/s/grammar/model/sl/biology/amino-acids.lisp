@@ -32,7 +32,7 @@
   :binds ((three-letter-code :primitive word)
           (one-letter-code single-capitalized-letter))
   :index (:permanent :key name)
-  :lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
+  ;;:lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
   :realization (:common-noun name))
 
 
@@ -117,22 +117,8 @@ therefore we have the special cases:
 ;; see the sequence ontology
 ;; ; (p "before Ser1507)
 
-(define-category residue-on-protein   
-  :specializes molecular-location ;; NOT same as protein, it is the location, not the amino acid
-  :instantiates :self
-  :binds ((amino-acid . amino-acid)
-          (position :primitive integer) ;; counting from the N terminus
-          (on-protein . protein))
-  :realization
-   (:noun "residue"
-   :of on-protein
-   :on on-protein
-   :at amino-acid)  ;; this is actually for serine at residue 822 -- this is an "inverse" :at
-                    ;;  for use by interpret-pp-as-head-of-np and a form rule in form-rules
-  :index (:permanent :sequential-keys amino-acid position))
+;; moved resideu-on-protein into taxonomy since it is needed in verbs1.lisp
 
-(def-synonym residue-on-protein
-             (:noun "position"))
 
 (defun reify-residue-and-make-edge (words start-pos end-pos)
   ;; called from the no-space pattern machinery when the
