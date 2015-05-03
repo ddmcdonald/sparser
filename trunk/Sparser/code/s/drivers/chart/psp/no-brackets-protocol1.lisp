@@ -393,9 +393,11 @@
    (not (itypep e 'is-bio-entity))))
 
 (defmethod semtree ((x null) &optional short)
+  (declare (ignore short))
   nil)
 
 (defmethod semtree ((w word) &optional short)
+  (declare (ignore short))
   nil)
 
 (defmethod semtree ((n number) &optional (short t))
