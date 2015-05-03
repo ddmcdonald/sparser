@@ -13,7 +13,7 @@
   "String identifing the location of the trunk on 
   your machine, including a final slash")
 
-
+; (ddm-load-article-2)
 (defun ddm-load-article-2 ()
   (cwd "/Users/ddm/ws/R3/r3/trunk/code/")
   (load "load.lisp")
@@ -22,32 +22,21 @@
          (doc-elements
           (funcall fn 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
          (article (car doc-elements)))
-    (setq *article* article)))
+    (setq *sweep-for-terminals* nil)
+    (setq *article* article)
+    (read-from-document *article*)
+    (setq *sweep-for-terminals* t)))
 ; (read-from-document *article*)
-; (setq *sweep-for-terminals* nil)
-  
+
 ; (r3::make-sparser-doc-structure 1079799)
 ; (read-from-document 1079799)
 ; (r3::make-sparser-doc-structure 537887 :dir darpa/January5-TestMaterials")
 ; (r3::make-sparser-doc-structure 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials")
-; (setq *article* (car *))
-
-;; ASPP2 article
-#| (children *article*)
-(#<section "Introduction"> #<section-of-sections > 
-#<section "Discussion"> #<section-of-sections > 
-#<section "Supporting Information">)
-|#
 
 
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (load "/Users/ddm/sparser/load-nlp.lisp")
 
-; test "Gly 34"  "Gly34" 
-; (setq *check-forms*  nil)
-
-; (noun "serine/threonine") ;; want to get NG from "the serine/threonine kinase"
-; ;; not sure of this -- was def-bio, but that now fails
 ; (noun "C-RAF:B-RAF" :super heterodimer)
 
 ; (trace-parse-edges) ;; extend into march-back-from-the-right/segment
@@ -100,24 +89,6 @@
   (ddm-ed "grammar/model/sl/biology/rules.lisp"))
 ;;  molecules and NGkappB not loaded
 ;; cf. model/sl/NIH/site.lisp
-
-(defun ddm-regression-jig ()
-  (ddm-ed "objects/doc/sentence-corpora.lisp")
-  (ddm-ed "grammar/tests/citations/code/treetop-records.lisp"))
-#|  4/18/15  -- comparing to January
-? (compare-to-snapshot 'dec-test)
-Better: (57 56 55 54 53 50 49 48 46 45 42 41 39 35 34 28 26 25 24 23 22 18 17 13 12 11 10 9 8 7 6 3 2)
-Worse: (52 51 29 14)
-? (compare-to-snapshot 'dry-run)
-Better: (42 39 38 36 34 30 29 25 23 21 19 18 16 15 14 10 9 8 7 5 4 3)
-Worse: (28 13 6 2 1)
-
-|#
-(defun ddm-load-corpora ()
-  (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
-  (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
-  (ddm-load "interface/R3-eval/overnight-sents.lisp"))
 
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
@@ -352,6 +323,33 @@ Worse: (28 13 6 2 1)
 (defun ddm-edge-makers ()
   (ddm-ed "analyzers/psp/edges/binary-explicit-all-keys2.lisp")
 )
+
+
+(defun ddm-regression-jig ()
+  (ddm-ed "objects/doc/sentence-corpora.lisp")
+  (ddm-ed "grammar/tests/citations/code/treetop-records.lisp"))
+#|  4/18/15  -- comparing to January
+? (compare-to-snapshot 'dec-test)
+Better: (57 56 55 54 53 50 49 48 46 45 42 41 39 35 34 28 26 25 24 23 22 18 17 13 12 11 10 9 8 7 6 3 2)
+Worse: (52 51 29 14)
+? (compare-to-snapshot 'dry-run)
+Better: (42 39 38 36 34 30 29 25 23 21 19 18 16 15 14 10 9 8 7 5 4 3)
+Worse: (28 13 6 2 1)
+
+|#
+(defun ddm-load-corpora ()
+  (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
+  (ddm-load "interface/R3-eval/overnight-sents.lisp"))
+
+(defun ddm-ed-corpora ()
+  (ddm-ed "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (ddm-ed "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (ddm-ed "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
+  (ddm-ed "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
+  (ddm-ed "interface/R3-eval/overnight-sents.lisp"))
 
 ;;--- 1/6/14
 ; The short cut realization handler, decode-realization-parameter-list
