@@ -401,7 +401,7 @@
   nil)
 
 (defmethod semtree ((n number) &optional (short t))
-  (semtree (e# n)) short)
+  (semtree (e# n) short))
 
 (defmethod semtree ((e edge) &optional (short t))
   (semtree (edge-referent e) short))
@@ -436,7 +436,10 @@
    ((gethash i *semtree-seen-individuals*)
     (list (list "!recursion!" i)))
    ((itypep i 'number)
-    (value-of 'value i))
+    (if
+     (itypep i 'collection)
+     (value-of 'items i)
+     (value-of 'value i)))
    ((and
      (itypep i 'bio-family)
      (not (itypep i 'collection)))
