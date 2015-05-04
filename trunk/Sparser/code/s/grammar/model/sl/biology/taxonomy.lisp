@@ -166,7 +166,7 @@
   :specializes process
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
-  :binds ((adverb)(manner))
+  :binds ((adverb)(manner)(following)(modifier))
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
@@ -184,10 +184,10 @@
   :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
   )
 
-(define-category biochemicalreaction :specializes chemical-reaction ;; from biopax
+(define-category biochemical-reaction :specializes chemical-reaction ;; from biopax
   )
 
-(define-category catalysis :specializes biochemicalreaction
+(define-category catalysis :specializes biochemical-reaction
   :binds ((controller bio-entity) 
           (controlled bio-process)
           (controlType))
@@ -205,6 +205,11 @@
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns.")
 
+(define-category feedback-loop :specializes bio-process
+   :binds ((participant biological))
+  :realization
+  (:noun "feedback loop"
+         :between participant))
 
 
 
