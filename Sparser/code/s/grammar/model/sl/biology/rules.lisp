@@ -11,9 +11,19 @@
 ;; 4/27/2015 add new mechanism for sub-cat like interpretation where the PP obj becomes the head, 
 ;;  using the syntactic-function interpret-pp-as-head-of-np
 ;;  this is actually for phrases like "a phosphoserine at residue 827"
+;;; 5/3/2015 ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
+;; drop the "then" on the floor
+
 
 
 (in-package :sparser)
+
+;;; ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
+;; drop the "then" on the floor
+
+(def-cfr modal (modal then)
+  :form modal
+  :referent (:head left-edge))
 
 
 ;;; 'free' variables
