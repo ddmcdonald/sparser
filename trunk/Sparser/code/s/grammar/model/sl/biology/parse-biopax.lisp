@@ -17,6 +17,7 @@
 ;;   '(residue-on-protein (position 437) (amino-acid (amino-acid (name "threonine")))))
 ;; Formatted Bipoax frames to make them a bit more clear...
 ;; Added commentary on Brent's story at the end of the file
+;; 5/3/2015 updated to make it possible to load ras_1.owl
 
 (in-package :sparser)
 (defvar *bpi*)
@@ -181,6 +182,16 @@ decoding table for referenced OBO terms
     (setf (gethash (second bio-sexpr) *xml-ht*)
           (normalize-sexpr-to-biopax3 (gethash (second bio-sexpr) *xml-ht*)))))
 
+(defun load-ras1(&optional (file "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/ExamplePackage/ras_1.owl"))
+  (setq *bpi*
+        (loop for i in
+          (cdddr (load-owl file))
+          collect (biopax-to-bio-sexpr i)))
+  (loop for bio-sexpr in *bpi*
+    do
+    (setf (gethash (second bio-sexpr) *xml-ht*)
+          (normalize-sexpr-to-biopax3 (gethash (second bio-sexpr) *xml-ht*)))))
+
 (defun load-owl (filename)
   (with-open-file
       (s filename :direction :input)
@@ -196,13 +207,18 @@ decoding table for referenced OBO terms
               ;; Probably need to to a more principled merge
               ((equalp "Protein" tag)  "ProteinState")
               ;;((equalp "Complex" tag) "bpComplex")
-               ((equalp "Pathway" tag) "bpPathway")
+              ((equalp "Pathway" tag) "bpPathway")
               ((equalp "SmallMolecule" tag) "bpSmallMolecule")
               ;;((equalp "Stoichiometry" tag) "bpStoichiometry")
               ((equalp "BiochemicalPathwayStep" tag) "PathwayStep") ;; change in nomenclature from earlier biopax?
               ((equalp "ComplexAssembly" tag) "BiochemicalReaction") ;; change in nomenclature from earlier biopax?
               (t tag))
-            ,(xmls:xmlrep-attrib-value "ID" child)
+            ,(loop for rep in (xmls::xmlrep-attribs child)
+               when
+               (equalp (car rep) "id")
+               return (second rep))
+            
+            ;; darpa uses "id" (xmls:xmlrep-attrib-value "ID" child)
             ,@(loop for rep in (xmls::xmlrep-attribs child)
                 unless
                 (equalp (car rep) "ID")
@@ -230,6 +246,8 @@ decoding table for referenced OBO terms
                          (read-from-string (third rep)))
                         ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#float")
                          (read-from-string (concatenate 'string (third rep) ".0")))
+                        ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#boolean")
+                         (third rep) )
                         (t (break "what datatype"))))
                       (t
                        ;; in this case we have a recursive structure
@@ -360,13 +378,7 @@ decoding table for referenced OBO terms
                (declare (ignore name))
                (push p *bpi*))
            *xml-ht*)
-  (loop for p in *bpi*
-    do
-    (let ((simp-tree (simplify-tree p 1)))
-      (when (null simp-tree)
-        (push p *unsimp*))
-      (push (simplify-tree p 1)
-            (gethash (car p) *bp-types*))))
+  (create-bpi-types)
   (maphash
    #'(lambda (type tl)
        (declare (ignore type))
@@ -378,6 +390,22 @@ decoding table for referenced OBO terms
               #'string<
               :key
               #'caar)))
+
+
+(defun create-bpi-types (&optional (simple t))
+  (if
+   simple
+   (loop for p in *bpi*
+     do
+     (let ((simp-tree (simplify-tree p 1)))
+       (when (null simp-tree)
+         (push p *unsimp*))
+       (push simp-tree
+             (gethash (car p) *bp-types*))))
+   (loop for p in *bpi*
+     do
+     (push p
+           (gethash (car p) *bp-types*)))))
 
 (defun simplify-unification-xref (uxref)
   (let
