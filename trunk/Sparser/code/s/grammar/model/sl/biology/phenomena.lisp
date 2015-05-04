@@ -60,20 +60,22 @@
   :specializes bio-process
   ;;//// bind it explicitly? :obo-id "GO:0023052"  ;; reasonable stand-in
   :binds ((agent protein) ;;bio-entity) ;; what's doing the signalling
-          (object bio-process))  ;; what's being signaled
+          (object (:or bio-process protein)))  ;; what's being signaled
   :index (:permanent :key agent) ;; 
   :realization 
     (:verb "signal"  
-     :noun "signaling"
+     :noun "signalling"
      :etf (svo-passive pre-mod)
      :m agent
      :s agent 
-     :o object))
+     :o object
+     :to object))
 
 (def-synonym signal ;; Jan.#26
-  (:noun "signalling" 
-   :etf pre-mod
-   :m agent))
+   (:noun "signaling" 
+          :etf pre-mod
+          :m agent    
+          :to object))
 
 
 ;;;----------
@@ -272,7 +274,7 @@ it is created from N-terminus to C-terminus.|#
   :binds ((pathway pathway)
           (nextStep PathwayStep)       
           (stepProcess (:or control pathway catalysis 
-                            biochemicalreaction transport)))
+                            biochemical-reaction transport)))
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "step")
@@ -320,6 +322,7 @@ it is created from N-terminus to C-terminus.|#
 
 (def-pathway "MEK" "ERK")
 
+(def-pathway "Raf" "MAPK")
 
 
 (define-category step
@@ -357,13 +360,35 @@ it is created from N-terminus to C-terminus.|#
 ;;(adj "apoptotic" :super apoptosis) 
 
 
-(define-category apoptosis ;; aka cell death
+(define-category apoptosis ;; like apoptosis
   :specializes bio-process
-  :binds ((process bio-process))
+  :binds ((process bio-process)(object biological)) ;; should be cell
+  :realization
+  (:etf pre-mod
+        :noun "autophagy" 
+        :m process
+        :of object))
+
+(define-category autophagy ;; aka cell death
+  :specializes bio-process
+  :binds ((process bio-process)(object biological)) ;; should be cell
   :realization
   (:etf pre-mod
         :noun "apoptosis" :adj "apoptotic"
-        :m process))
+        :m process
+        :of object
+        :in object))
+
+(define-category senescence ;; aka cell death
+  :specializes bio-process
+  :binds ((process bio-process)(object biological)) ;; should be cell
+  :realization
+  (:etf pre-mod
+        :noun "senescence" :adj "senescent"
+        :m process
+        :of object
+        :in object))
+
 
 (adj "pro-apoptotic" :super apoptosis)
 
@@ -392,7 +417,8 @@ it is created from N-terminus to C-terminus.|#
   ;;:obo-id 
   :bindings (uid "GO:0005488")
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder biological)(bindee biological)(site molecular-location))
+  :binds ((binder biological)(bindee biological)(site molecular-location)
+          (cell-site cellular-location))
   :realization 
   (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
          :noun "binding"
@@ -400,8 +426,11 @@ it is created from N-terminus to C-terminus.|#
          :s binder
          :o  bindee
          :to bindee
+         :of bindee
          :via site
          :at site
+         :at cell-site
+         :to cell-site
          :with bindee))
 
 
@@ -430,12 +459,12 @@ it is created from N-terminus to C-terminus.|#
   :binds ((cellularlocation cellular-location)
           (component (:or complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
-  :lemma (:common-noun "complex"))
+  )
 
-(def-realization complex
-  :noun "complex"
-  :with component
-  :of component)
+(def-synonym complex
+  (:noun "complex"
+         :with component
+         :of component))
 
 
 (define-category dimer
