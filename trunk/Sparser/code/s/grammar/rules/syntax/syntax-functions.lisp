@@ -40,6 +40,7 @@
 ;; 4/27/2015 add new mechanism for sub-cat like interpretation where the PP obj becomes the head, 
 ;;  using the syntactic-function interpret-pp-as-head-of-np
 ;;  this is actually for phrases like "a phosphoserine at residue 827"
+;; 5/3/2015 new adjunct like modifier for bio-rocess -- "upon" or "following" <bio-process>
 
 
 (in-package :sparser)
@@ -368,6 +369,14 @@
           (or (subcategorized-variable vg prep-word pobj-referent)
               (and (itypep pp 'upon-condition)
                    'circumstance)
+              (when (or
+                     (eq prep-word (word-named "upon"))
+                     (eq prep-word (word-named "following")))
+                (when
+                    (and (itypep vg 'bio-process)
+                         (itypep pobj-referent 'bio-process))
+                  'following))
+              
               ;; or if we are making a last ditch effore
               (and *force-modifiers* 
                    'modifier))))
