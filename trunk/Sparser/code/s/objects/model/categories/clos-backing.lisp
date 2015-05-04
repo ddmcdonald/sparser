@@ -11,12 +11,12 @@
 ;;  the class is defined but it triggered a MOP issue on the first instance
 ;;  of a subclass. 9/3 simplified the names by using a different package
 ;;  and flushed the check to see if the class already exists, which made
-;;  the MOP problem go away. 1/4/13 Added get-shadow. 
-;; 7/21/13 Moved in the macro that hides the shift-in-representation 
+;;  the MOP problem go away. 1/4/13 Added get-shadow.
+;; 7/21/13 Moved in the macro that hides the shift-in-representation
 ;;  messiness and its ancilary parts so facility can be taken as a whole.
 ;; 11/13/13 Added treatment of lamba variables and doc.
 ;; 4/16/14 Added treatment of mixins. They're folded into the set of
-;;  slots and the superc's. 
+;;  slots and the superc's.
 ;; 5/29/14 Found bug in k-method call macro, folded in integers,
 ;;  auto-generating the call-xx methods along with the k-methods.
 ;; 3/10/2015 for clarity, rename copy-individual to maybe-copy-individual
@@ -60,7 +60,7 @@ for every category.
   ;; Called from the bottom of decode-category-parameter-list when
   ;; we have created everything we can about the category. Also called
   ;; from find-or-make-category-object for other cases, notably
-  ;; form categories like 'modal'. 
+  ;; form categories like 'modal'.
   ;(push-debug `(,c))
   (case source
     (:minimal)
@@ -72,7 +72,7 @@ for every category.
      (break "New backing-CLOS class source: ~a~%~a" source c))))
 
 (defun make-backing-clos-class (c mixins)
-  (when mixins 
+  (when mixins
     (unless (every #'category-p mixins)
       (if (every #'symbolp mixins)
         (setq mixins
@@ -95,9 +95,9 @@ for every category.
          (mixin-variables
           (when mixins (loop for m in mixins
                          append (cat-slots m))))
-         (slot-expressions 
+         (slot-expressions
           (when (or variables mixin-variables)
-            (backing-class-slots-for-category 
+            (backing-class-slots-for-category
              (append variables mixin-variables)))))
     ;(when mixins
     ;  (break "Look at locals"))
@@ -106,7 +106,7 @@ for every category.
            (cond
             ((and superc-name mixin-class-names)
              (cons superc-name mixin-class-names))
-            (superc-name 
+            (superc-name
              `(,superc-name))
             (mixin-class-names
              mixin-class-names)
@@ -130,7 +130,7 @@ for every category.
   ;; 1. It doesn't. 2. If you do, and seeing as how we haven't
   ;; defined it yet, the MOP in its wisdom will create
   ;; a forward-reference-class for it rather than a standard-
-  ;; class. 
+  ;; class.
   (let* ((c-name (cat-symbol c)) ;; in the category package
          (c-pname (symbol-name c-name))
          (class-name (intern c-pname *shadow-package*)))
@@ -146,7 +146,7 @@ for every category.
   (if superc-name
     (if (eq superc-name class-name)
       (intern (string-append '#:category- (symbol-name class-name))
-              *shadow-package*)            
+              *shadow-package*)
       class-name)
     class-name))
 
@@ -162,14 +162,14 @@ for every category.
   (let ( forms )
     (dolist (v variables)
       (let* ((slot-name (intern (symbol-name (var-name v))
-				(find-package :sparser)))
-	     (v/r (var-value-restriction v))
-	     (type-constraint
-	      (when v/r (backing-type-for-variable-restriction v/r))))
-	(push (if v/r
+                                (find-package :sparser)))
+             (v/r (var-value-restriction v))
+             (type-constraint
+              (when v/r (backing-type-for-variable-restriction v/r))))
+        (push (if v/r
                `(,slot-name :type ,type-constraint)
-	       `(,slot-name))
-	      forms)))
+               `(,slot-name))
+              forms)))
     (nreverse forms)))
 
 (defun backing-type-for-variable-restriction (v/r)
@@ -177,44 +177,44 @@ for every category.
     (cons
      (case (car v/r)
        (:primitive
-	(typecase (second v/r)
-	  (symbol
-	   (case (second v/r)
-	     (word 'word)
-	     (list 'list)
-	     (integer 'integer)
-	     (fixnum 'fixnum)
-	     (number 'number)
-	     (pathname 'pathname)
-	     (cons 'cons)
-	     (polyword 'polyword)
-	     (cfr 'cfr)
-	     (category 'category)
-	     (segment 'segment)
+        (typecase (second v/r)
+          (symbol
+           (case (second v/r)
+             (word 'word)
+             (list 'list)
+             (integer 'integer)
+             (fixnum 'fixnum)
+             (number 'number)
+             (pathname 'pathname)
+             (cons 'cons)
+             (polyword 'polyword)
+             (cfr 'cfr)
+             (category 'category)
+             (segment 'segment)
              (symbol 'symbol)
-	     (otherwise (push-debug `(,v/r))
-			(break "Another v/r primitive symbol: ~a" (second v/r)))))
-	  (cons
-	   (let ((tag (car (second v/r)))
-		 (values (cdr (second v/r))))
-	     (unless (symbolp tag) 
-	       (push-debug `(,v/r)) (error "V/R shouldn't go this deep"))
-	     (case tag
-	       (:or
-		(let ((r (mapcar #'backing-type-for-variable-restriction values)))
-		  `(:or ,@r)))
-	       (otherwise
-		(push-debug `(,v/r))
-		(break "New key in deep cons-based value restriction:~%  ~a" v/r)))))
-	  (otherwise
-	   (push-debug `(,v/r))
-	   (break "New type of cons-based value restriction:~%  ~a" v/r))))
+             (otherwise (push-debug `(,v/r))
+                        (break "Another v/r primitive symbol: ~a" (second v/r)))))
+          (cons
+           (let ((tag (car (second v/r)))
+                 (values (cdr (second v/r))))
+             (unless (symbolp tag)
+               (push-debug `(,v/r)) (error "V/R shouldn't go this deep"))
+             (case tag
+               (:or
+                (let ((r (mapcar #'backing-type-for-variable-restriction values)))
+                  `(:or ,@r)))
+               (otherwise
+                (push-debug `(,v/r))
+                (break "New key in deep cons-based value restriction:~%  ~a" v/r)))))
+          (otherwise
+           (push-debug `(,v/r))
+           (break "New type of cons-based value restriction:~%  ~a" v/r))))
        (:or
-	(let ((r (mapcar #'backing-type-for-variable-restriction (cdr v/r))))
-	  `(:or ,@r)))
+        (let ((r (mapcar #'backing-type-for-variable-restriction (cdr v/r))))
+          `(:or ,@r)))
        (otherwise
-	(push-debug `(,v/r))
-	(break "New form for cons-based value restriction:~%  ~a" v/r))))
+        (push-debug `(,v/r))
+        (break "New form for cons-based value restriction:~%  ~a" v/r))))
     ((or referential-category
          mixin-category)
      (backing-class-name-for-cateory v/r))
@@ -234,8 +234,8 @@ for every category.
   ((variable :type lambda-variable :initarg :var :accessor c3-variable)
    (name :type symbol :initarg :name :accessor c3-var-name))
   (:documentation "Super class for all the lambda variable
-     constructed classes / shadow instances. 
-     Will work best under a C3 regime where there's only 
+     constructed classes / shadow instances.
+     Will work best under a C3 regime where there's only
      one instance of a variable with a given name.
      Could be expanded for more uses in C3."))
 
@@ -313,7 +313,7 @@ for every category.
 ;;;-------------------------------
 
 (defgeneric change-itype (individual new-category)
-  (:documentation "This is a placeholder for a more interesting operation 
+  (:documentation "This is a placeholder for a more interesting operation
      that really would change the CLOS type of an established instance.
      Here we just change properties of this individual:
        (a) we add the new category to the front of the type list
@@ -328,13 +328,18 @@ for every category.
       (setf (indiv-shadow i) new-shadow)
       i)))
 
+(defun specialize-itype (individual sub-category)
+  (let ((i (change-itype individual sub-category)))
+    (setf (indiv-type i) (list sub-category))
+    i))
+
 (defgeneric clone-individual-changing-type (individual new-category)
   (:documentation
    "Just like change-itype except that we do the change to
     a new individual. It's the caller's responsibility to index
     or otherwise keep trace of the new individual"))
 
-(defmethod clone-individual-changing-type ((i individual) 
+(defmethod clone-individual-changing-type ((i individual)
                                            (new-category category))
   (let ((established-type (indiv-type i))
         (new (make-unindexed-individual new-category))) ;; includes shadow
@@ -346,10 +351,10 @@ for every category.
     ;; But the 'bound-in' are relationships from other objects to
     ;; the one we're cloning, so they will (ought to) continue to be
     ;; relevant.  ///first case doesn't fall out that neatly, which
-    ;; suggests a knowledge-based, case by case cloning. 
+    ;; suggests a knowledge-based, case by case cloning.
     (push-debug `(,i ,new ,new-category)) ;(break "write binding cloner")
     new))
-  
+
 
 ;;**************** So that David can test this new functionality ***********
 ;; copy-individual is called from many methods in syntax-functions, to avoid smashing the bindings of basic vocabulary like Ras
@@ -380,11 +385,11 @@ for every category.
                             new))
         #|
         since the variable was bound in the source, don't bother doing the check -- somehow "the effect" binds the variable determiner,
-        but has a category which does not have a determiner 
+        but has a category which does not have a determiner
         (if
          (eq 'category (var-name (binding-variable binding)))
          ;; don't check that CATEGORY is a binding variable
-         
+
          (bind-variable (var-name (binding-variable binding))
                         (maybe-copy-individual
                          (binding-value binding)
@@ -397,7 +402,7 @@ for every category.
       ;; But the 'bound-in' are relationships from other objects to
       ;; the one we're cloning, so they will (ought to) continue to be
       ;; relevant.  ///first case doesn't fall out that neatly, which
-      ;; suggests a knowledge-based, case by case cloning. 
+      ;; suggests a knowledge-based, case by case cloning.
       new))))
 
 ;;;---------------------------
@@ -451,9 +456,9 @@ for every category.
               as d in dummy-parameters
               collect `(,d ,r)))
            (let-bindings
-            (construct-let-bindings 
+            (construct-let-bindings
              dummy-parameters parameters type-restrictions)))
- 
+
       (let* ((caller-name (intern (string-append '#:call- name)
                                    (find-package :sparser)))
              (caller-form
@@ -463,7 +468,7 @@ for every category.
         (when *print-generated-k-method-forms*
           (pprint caller-form))
         (eval caller-form))
-       
+
       (let ((form
              `(defmethod ,name ,method-args
                 (let ,let-bindings
@@ -474,13 +479,13 @@ for every category.
 
 
 (defun construct-let-bindings (dummy-parameters parameters type-restrictions)
-  (loop 
+  (loop
     for d in dummy-parameters
     as p in parameters
     as r in type-restrictions
     unless (eq r t)
     collect `(,p (dereference-shadow-individual ,d))
-    else 
+    else
     collect `(,p ,d)))
 
 (defun vet-k-method-argument-form (args)
@@ -575,9 +580,9 @@ for every category.
 ;;--- getting back the individuals from the shadows invoke methods
 
 (defvar *shadows-to-individuals* nil
-  "Set with each call to the setup wrapper. 
+  "Set with each call to the setup wrapper.
    Alist from the nominal category instance use to invoke
-   the method and the referent (usually an individual) 
+   the method and the referent (usually an individual)
    that is the 'real' referent.")
 
 (defun dereference-shadow-individual (shadow)
@@ -610,8 +615,8 @@ for every category.
 
 
 
- 
-	     
+
+
 
 
 
