@@ -18,6 +18,9 @@
 ;; 4/27/2015 add new mechanism for sub-cat like interpretation where the PP obj becomes the head, 
 ;;  using the syntactic-function interpret-pp-as-head-of-np
 ;;  this is actually for phrases like "a phosphoserine at residue 827"
+;; 5/4/2015 Deal with the fact that "a" is a word, and so the right way to get the #<word "A">
+;;  needed for single-letter-is-amino-acid in reify-point-mutation-and-make-edge is to call
+;; edge-left-daughter on the edge (not edge-referent)
 
 
 (in-package :sparser)
@@ -270,11 +273,11 @@ therefore we have the special cases:
     (unless (= 3 (length edges))
       (error "Should be three edges for a point mutation but there are ~a" (length edges)))
     (let* ((edge1 (car edges))
-           (ref1 (edge-referent edge1))
+           (ref1 (edge-left-daughter edge1)) ;;(edge-referent edge1)) -- the letter A has a non-word referent!
            (edge2 (cadr edges))
            (ref2 (edge-referent edge2))
            (edge3 (caddr edges))
-           (ref3 (edge-referent edge3)))
+           (ref3 (edge-left-daughter edge3))) ;;(edge-referent edge3)))
       ;;(break "look at edges re point mutation")
       (let ((aa1 (single-letter-is-amino-acid ref1))
             (aa2 (single-letter-is-amino-acid ref3)))
