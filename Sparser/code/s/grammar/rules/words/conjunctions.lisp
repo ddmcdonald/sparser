@@ -102,6 +102,7 @@
           "as far as"
           "as if"
           "as soon as"
+          "as well as"
           "as though"
           "because"
           "besides"
