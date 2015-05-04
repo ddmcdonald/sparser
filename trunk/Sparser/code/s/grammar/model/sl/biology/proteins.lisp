@@ -189,12 +189,12 @@ filligre may be used to distinguish them, etc.
   :mitre-link "Uniprot:P01116")
 
 (def-bio "HRas" protein      ;; Harvey Ras
-  :synonyms ("H-Ras" "H-RAS")
+  :synonyms ("H-Ras" "H-RAS" "HRAS")
   :identifier "PR:000029705" ;; gene is "PR:P01112")
   :mitre-link "Uniprot:P01112:")
 
 (def-bio "NRas" protein
-  :synonyms ("N-Ras" "N-RAS")
+  :synonyms ("N-Ras" "N-RAS" "NRAS")
   :identifier "PR:000011416" ;; gene is "PR:P01111"
   :mitre-link "Uniprot:P01111")
 
@@ -225,6 +225,7 @@ filligre may be used to distinguish them, etc.
   :identifier "RAF" ;;/// maybe use the Mitre choice?
   :synonyms ("RAF"))
 
+(def-bio "Raf CAAX" protein)
 
 (def-bio "RasA1" protein
   :synonyms ("RASA1")
@@ -475,6 +476,8 @@ filligre may be used to distinguish them, etc.
 ;; Again, it's a family, not a particular
 (def-bio "growth factors" protein)
 (def-bio "growth factor" protein)
+(def-bio "growth receptor" protein)
+(def-bio "growth receptors" protein)
 
 
 (noun "hormone" :super protein)
