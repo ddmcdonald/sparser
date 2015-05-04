@@ -331,7 +331,7 @@
   :binds ((agent biological)(co-operator biological)) 
   :realization 
   (:verb ("co-operate" :third-plural "co-operates")
-         :noun"coo-operation" 
+         :noun"co-operation" 
          :etf (sv) 
          :s agent 
          :with co-operator
@@ -711,6 +711,14 @@
    :s agent
    :of object))
 
+#+ignore ;; need to get polyword morphology working!
+(def-synonym downregulate
+   (:verb "down-regulate"
+   :etf (svo-passive)
+   :o object  ;; regulation of <process>
+   :s agent
+   :of object))
+
 (define-category bio-drive
   :specializes bio-process
   :binds ((driver biological)(driven biological)(mechanism biological))
@@ -787,6 +795,19 @@
 	   :s agent
 	   :o object))
 
+
+
+(define-category bio-promote
+  :specializes bio-process
+  :binds ((agent biological) (process bio-process)(mechanism biological))
+  :realization 
+  (:verb "promote"
+   :etf (svo-passive)
+   :s agent
+   :o process
+   :via mechanism
+   :of process))
+
 (define-category bio-enhance
   :specializes bio-process
   :binds ((agent biological) (process bio-process)(mechanism biological))
@@ -797,7 +818,21 @@
    :o process
    :via mechanism
    :of process))
- 
+
+(define-category bio-amplify
+  :specializes bio-enhance
+  :binds ((agent biological) (process bio-process)(mechanism biological))
+  :realization 
+  (:verb "amplify" :noun "amplification"
+   :etf (svo-passive)
+   :s agent
+   :o process
+   :via mechanism
+   :of process))
+
+
+
+
 (define-category escape
     :specializes bio-process
     :binds ((agent bio-entity)(object bio-process)(from bio-process))
@@ -1028,7 +1063,7 @@
 ;; "induce processing of p100"
 (define-category induce
   :specializes bio-process
-  :binds ((agent bio-entity) (object biological)) ;; we have "induce this phenotype"
+  :binds ((agent (:or bio-entity bio-process)) (object biological)) ;; we have "induce this phenotype"
   :realization 
   (:verb "induce" :noun "induction" :adj "inducible"
    :etf (svo-passive)
@@ -1146,12 +1181,13 @@
 
 (define-category involve
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent biological)(object biological))
     :realization
     (:verb "involve" ;; keyword: ENDS-IN-ING 
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :in object))
 
 (define-category keep
     :specializes bio-process
@@ -1559,7 +1595,23 @@
      :o object  ;; regulation of <process>
      :s agent
      :of object
-     :for theme))    ;; by <entity>
+     :for theme))
+
+#+ignore
+(define-category inter-regulate
+  :specializes bio-process
+  :binds ((agent biological)
+          (object biological)
+          (theme biological)) ;; increase in rate vs increase in RAS activity  :realization
+    :realization
+    (:verb ("inter-regulate" :third-plural "inter-regulates")
+     :noun "inter-regulation"
+     :etf (svo-passive)
+     :o object  ;; regulation of <process>
+     :s agent
+     :of object
+     :for theme
+     :between theme))    ;; by <entity>
 
 
 (define-category relapse
@@ -1914,6 +1966,17 @@
    :from origin
    :premod destination
    :premod object))
+
+(def-synonym translocation
+    (:verb "relocate"
+           :etf (svo-passive) 
+           :s object ;; ERK translocates -- this is not the agent, but the object!
+           :o object
+           :to destination
+           :of object
+           :from origin
+           :premod destination
+           :premod object))
 
 (define-category entry :specializes translocation
   :binds ((agent bio-process)
