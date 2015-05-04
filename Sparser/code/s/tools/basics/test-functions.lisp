@@ -124,6 +124,11 @@
 (defmacro test (n)
   `(run-test ,n))
 
+(defparameter *show-semantics* t)
+(defun quiet-semantics(&optional (flag t))
+  (setq *show-semantics* (not flag)))
+
+
 (defun run-test (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences))
         (*do-anaphora* nil))
@@ -139,7 +144,7 @@
           (when *save-chunk-edges*
             ;;make the list of chunk edges show their sentence origin
             (push (cons n (cdr test)) *all-chunk-edges*))
-          (when t
+          (when *show-semantics*
             (terpri) 
             (format t "---SEMANTIC FOREST---")
             (loop for edge-tree in
