@@ -373,7 +373,7 @@ all sorts of rules apply and not simply form rules.
 (defparameter *verb+ed-sents* nil)
 (defparameter *suppressed-verb+ed* nil)
 (defun likely-verb+ed-clause (edge ev-list)
-  (declare (special edge ev-list chunk))
+  (declare (special edge ev-list chunk *sentence-in-core*))
   (cond
    ((and (edge-form edge) ;; COMMA has no edge-form
          (not
@@ -410,26 +410,21 @@ all sorts of rules apply and not simply form rules.
            (and
             (edge-form e)
             (memq (cat-symbol (edge-form e)) *N-BAR-CATEGORIES*))))
-    (when
-        (not
-         (let*
-             ((ev (pos-starts-here (pos-edge-ends-at edge)))
-              (edges (ev-edges ev)))
-           (loop for e in edges
-             thereis
-             (memq
-              (edge-form e) 
-              (list
-               category::preposition
-               category::det
-               category::pronoun)))))
+    (when (not
+           (let* ((ev (pos-starts-here (pos-edge-ends-at edge)))
+                  (edges (ev-edges ev)))
+             (loop for e in edges
+               thereis (memq (edge-form e)
+                             (list category::preposition
+                                   category::det
+                                   category::pronoun)))))
       ;;(break "verb+ed")          
       (push (list (string-of-words-between 
                    (chunk-start-pos chunk)
                    (pos-edge-ends-at edge))
-                  (sentence-string *sentence*)) 
+                  (sentence-string *sentence-in-core*)) 
             *verb+ed-sents*))
-    t) 
+    t)
    (t nil)))
     
 
