@@ -246,7 +246,7 @@
              :of substrate))
 (adj "downstream" :super predicate
   :binds ((subject biological)
-          (theme bio-entity))
+          (theme (:or bio-entity bio-process)))
   :realization 
   (:adj "downstream"
         :s subject
@@ -334,7 +334,7 @@
      (:adj "free"
            :s subject
            :of free-of)) ;; keyword: (ive ADJ) 
-
+(adj "full" :super predicate)
 (adj "nucleotide-free" :super predicate)
 
 (noun "function" :super bio-process
@@ -486,6 +486,13 @@
 (adj "mutual" :super predicate) ;; keyword: (al ADJ) 
 
 (adj "native" :super predicate)
+(adj "necessary" :super predicate
+     :binds ((condition biological)(agent biological)(result biological))
+     :realization 
+     (:adj "effective"
+           :s condition
+           :for agent
+           :to result))
 (define-adverb "nevertheless")
 (define-adverb "next")
 (define-unit-of-measure "nM")
@@ -795,10 +802,7 @@
 (defun def-cell-line (line)
   (def-bio/expr line 'cell-line :takes-plurals nil))
 
-(def-cell-line "mouse embryo fibroblast") ;; not sure this is right -- it is a type of cell, but...
-;;A fibroblast is a type of cell that synthesizes the extracellular matrix and collagen,[1] 
-;; the structural framework (stroma) for animal tissues, and plays a critical role in wound healing. 
-;; Fibroblasts are the most common cells of connective tissue in animals.
+
 
 (def-cell-line "A375")
 (def-cell-line "D04")
@@ -813,8 +817,15 @@
 (def-cell-line "WM852")
 (def-cell-line "HEK293T")
 (def-cell-line "HKe3 ER:HRASV12")
+(def-cell-line "HKe3 ER:HRAS12")
 (def-cell-line "HKe3")
 (def-cell-line "Saos2")
+
+(def-cell-line "mouse embryo fibroblast") ;; not sure this is right -- it is a type of cell, but...
+;;A fibroblast is a type of cell that synthesizes the extracellular matrix and collagen,[1] 
+;; the structural framework (stroma) for animal tissues, and plays a critical role in wound healing. 
+;; Fibroblasts are the most common cells of connective tissue in animals.
+(def-cell-line "fibroblasts")
 
 
 ;;;------------------
