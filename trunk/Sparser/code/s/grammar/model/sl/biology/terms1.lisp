@@ -244,6 +244,12 @@
       :realization 
       (:noun "domain"
              :of substrate))
+(noun "dna binding" :super bio-process
+      :binds ((substrate bio-entity))
+      :realization 
+      (:noun "dna binding"
+             :of substrate))
+
 (adj "downstream" :super predicate
   :binds ((subject biological)
           (theme (:or bio-entity bio-process)))

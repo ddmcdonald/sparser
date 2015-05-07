@@ -142,6 +142,23 @@
      :through mechanism
      :of activated))
 
+(define-category acetylation
+  :specializes bio-process
+  :instantiates self
+  :binds ((agent biological)
+          (substrate (:or protein residue-on-protein))
+          (site residue-on-protein))
+  :index (:temporary :sequential-keys site substrate)
+  :realization
+  (:verb "acetylate" :noun "acetylation"
+   :etf (svo-passive pre-mod)
+   :s agent
+   :o substrate
+   :m site
+   :of substrate
+   :on site
+   :at site))
+
 (define-category addition :specializes bio-process
   :binds ((agent biological) (base biological)(added biological))
   :realization
