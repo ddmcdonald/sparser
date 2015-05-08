@@ -68,39 +68,56 @@
   ;; their suffix. What's that pattern?
   ;; At this point the terminals are covered by edges. They probably
   ;; have what we want. A second time around they certainly will.
-  ;;(push-debug `(,slash-positions ,pos-before ,pos-after ,words ,pattern))
+
+  (push-debug `(,slash-positions ,pos-before ,pos-after ,words ,pattern))
+  ;; (setq slash-positions (car *) pos-before (cadr *) pos-after (caddr *) words (cadddr *) pattern (nth 4 *))
   (when *trace-ns-sequences* (tts))
   (tr :slash-ns-pattern pos-before pos-after)
 
   (setq slash-positions (nreverse slash-positions)) ;;(break "slash-position = ~a" slash-positions)
 
-  (when (eq (first slash-positions) pos-before)
-    (break "New case: Slash is initial term in no-space region between p~a and p~a"
+  (cond 
+   ((eq (first slash-positions) pos-before)
+    (error "New case: Slash is initial term in no-space region between p~a and p~a"
            (pos-token-index pos-before) (pos-token-index pos-after)))
 
-  (let* ((segment-start pos-before)
-         segment-pattern  segments  remainder )
+   ((eq (car (last pattern)) :forward-slash) ;; it's final
+    ;; and it's probably a mistake in the source: "c-Raf/ MAPK-mediated [6]."
+    (unless (= 1 (length slash-positions))
+      (error "New case: more than one slash in a slash-final pattern"))
+    (let* ((pos-after-minus-1 (chart-position-before pos-after))
+           ;; 1st do the check that would have been done w/o the slash
+           (edge? (span-covered-by-one-edge? pos-before pos-after-minus-1)))
+      (or edge?
+          (else
+            ;;/// I can't think of a meaningfull version of this pattern so
+            ;; dropping the slash on the floor and shrinking the pattern to let
+            ;; the ordinary hyphen-handler do it's thing
+            (setq pattern (nreverse (cdr (nreverse pattern)))
+                  words (nreverse (cdr (nreverse words))))
+            (resolve-hyphen-pattern pattern words hyphen-positions 
+                                    pos-before pos-after-minus-1)))))    
 
+   (t ;; slash(s) somewhere in the middle   
+    (let* ((segment-start pos-before)
+           segment-pattern  segments  remainder )
     (multiple-value-setq (segment-pattern remainder)
       (pop-up-to-slash pattern))
-
     (dolist (slash-pos slash-positions)
       (let ((resolution (resolve-slash-segment 
                          segment-pattern hyphen-positions segment-start slash-pos)))
         (unless resolution
           (push-debug `(,segment-pattern ,segment-start ,slash-pos))
-          (break "pattern resolver called by slash returned nil ~
+          (error "pattern resolver called by slash returned nil ~
                   on ~a" segment-pattern))
         (push resolution segments)
         (setq segment-start (chart-position-after slash-pos))
         (multiple-value-setq (segment-pattern remainder)
           (pop-up-to-slash remainder))))
-
-    (push (resolve-slash-segment segment-pattern hyphen-positions segment-start pos-after)
-          segments)
-
-    (package-slashed-sequence
-     (nreverse segments) words pos-before pos-after)))
+      (push (resolve-slash-segment segment-pattern hyphen-positions segment-start pos-after)
+            segments)
+      (package-slashed-sequence
+       (nreverse segments) words pos-before pos-after)))))
 
 
 (defun pop-up-to-slash (pattern)
