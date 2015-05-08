@@ -68,7 +68,8 @@
       ;; already been made on a previous pass.
       (cond 
        (*reading-populated-document*
-        (unless (slot-boundp s 'next) ;; next sentence exists
+        (unless (and (slot-boundp s 'next) ;; next sentence exists
+                     (next s))
           (start-sentence pos-after-period)))
        (t ;; ordinary reading from a stream
         (start-sentence pos-after-period)))
