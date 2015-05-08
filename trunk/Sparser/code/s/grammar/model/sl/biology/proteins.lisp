@@ -217,7 +217,7 @@ filligre may be used to distinguish them, etc.
   :mitre-link "Uniprot:P15056")
 
 (def-bio "CRaf" protein
-  :synonyms ("C-Raf" "C-RAF")
+  :synonyms ("C-Raf" "C-RAF" "c-Raf" "c-RAF")
   :mitre-link "Uniprot:P04049")
 
 (def-family "Raf" 
