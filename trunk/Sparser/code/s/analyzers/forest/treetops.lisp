@@ -506,9 +506,16 @@
    ((and 
      (eq (second triple1) (third triple2))
      ;; there is an edge which is being competed for
-
      (or ;; competing against a "there BE"
       (eq category::syntactic-there (car (cfr-rhs (car triple2))))
+      (and
+       (equal (cfr-rhs (car triple2)) (list category::vg category::np))
+       ;; likely competition against a relative clause or a main clause
+       ;;  accept triple1 as a winner if if is a rightward extension of and NP
+       ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
+       (not (and (edge-form (third triple1))
+                 (member (cat-symbol (edge-form (third triple1)))
+                         '(category::pp category::relative-clause)))))
       (and
        (or (eq category::preposition (car (cfr-rhs (car triple2))))
            (eq category::spatial-preposition (car (cfr-rhs (car triple2)))))
@@ -516,7 +523,7 @@
         (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car triple1)))
         (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car triple1)))
         (memq (cat-symbol (second (cfr-rhs (car triple1))))
-              '(category::vg category::vp)))
+              '(category::vg category::vp category::vg+ed category::vp+ed)))
        (not
         (and
          (edge-p (edge-left-daughter (third triple1)))
@@ -532,7 +539,8 @@
           (or
            (member (cat-symbol (edge-form preceding-edge)) *ng-head-categories*)
            (member (cat-symbol (edge-form preceding-edge)) *vg-head-categories*)
-           (eq (cat-symbol (edge-form preceding-edge)) 'category::vg)))))))
+           (member (cat-symbol (edge-form preceding-edge)) 
+                   '(category::vg category::vg+ed category::vp+ed))))))))
     ;; goal here is to put off subject attachment until the subject 
     ;; is as large as possible.
     ;; Don't do right-to-left activation for the subj+verb rules
