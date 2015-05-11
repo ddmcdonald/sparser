@@ -58,15 +58,24 @@
 
 
 ;;--- PP complement
-(def-syntax-rule (vg pp)
-                 :head :left-edge
-  :form vp
-  :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
-(def-syntax-rule (vp pp)
-                 :head :left-edge
-  :form vp
-  :referent (:function adjoin-pp-to-vg left-edge right-edge))
+(loop for vv in '((vg vp)
+                  (vp vp)
+                  (vg+ing vp+ing)
+                  (vp+ing vp+ing)
+                  (vg+ed vp+ed)
+                  (vp+ed vp+ed))
+  do
+  (eval
+   `(def-syntax-rule (,(car vv) pp)
+                     :head :left-edge
+      :form ,(second vv)
+      :referent (:function adjoin-pp-to-vg left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (,(car vv) to-comp)
+                     :head :left-edge
+      :form ,(second vv)
+      :referent (:function adjoin-tocomp-to-vg left-edge right-edge))))
 
 
 #| normally copular adjectives become VPs, but in 
@@ -78,7 +87,7 @@ to an oncogenic RasG12V mutation (9)."))
 
 (def-syntax-rule (adjective pp)
                  :head :left-edge
-  :form vp
+  :form ap
   :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
 
@@ -168,6 +177,16 @@ to an oncogenic RasG12V mutation (9)."))
   :form vg
   :referent (:function interpret-adverb+verb right-edge left-edge))
 
+(def-syntax-rule  (vg+ing adverb)
+  :head :left-edge
+  :form vg+ing
+  :referent (:function interpret-adverb+verb right-edge left-edge))
+
+(def-syntax-rule  (vg+ed adverb)
+  :head :left-edge
+  :form vg+ed
+  :referent (:function interpret-adverb+verb right-edge left-edge))
+
 #+ignore
 (def-syntax-rule  (adverb infinitive) 
                   ;;??? what's the test example?
@@ -177,25 +196,31 @@ to an oncogenic RasG12V mutation (9)."))
   :form infinitive
   :referent (:function interpret-adverb+verb left-edge right-edge))
 
-(loop for v in '(verb+ed vg vp s) 
+(loop for vv in '((verb+ed vg+ed)
+                  (verb+ing vg+ing)
+                  (vg vg)
+                  (vp vp)
+                  (vp+ing vp+ing)
+                  (vp+ed vp+ed)
+                  (s s)) 
   ;; "here" is used adverbially
   do
   (eval 
-   `(def-form-rule (deictic-location ,v)
+   `(def-form-rule (deictic-location ,(car vv))
                    :head :right-edge
-      :form vg
+      :form ,(second vv)
       :referent(:function interpret-adverb+verb left-edge right-edge)))
   (eval 
-   `(def-form-rule (,v deictic-location)
+   `(def-form-rule (,(car vv) deictic-location)
                    :head :left-edge
       
-      :form vg
+      :form ,(second vv)
       :referent(:function interpret-adverb+verb right-edge left-edge)))
   
   (eval
-   `(def-syntax-rule  (adverb ,v)
+   `(def-syntax-rule  (adverb ,(car vv))
                       :head :right-edge
-      :form vg
+      :form ,(second vv)
       :referent(:function interpret-adverb+verb left-edge right-edge))))
 
 #|
@@ -227,24 +252,53 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
        :form pp
        ;; I suppose we need a generic relationship here for
        ;; a proper referent
+       :referent (:function make-pp left-referent right-referent)))
+   (eval
+    `(def-syntax-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
+                      :head :left-edge
+       :form pp
+       ;; I suppose we need a generic relationship here for
+       ;; a proper referent
        :referent (:function make-pp left-referent right-referent))))
+
+;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
+;;   e.g. 30 minutes after (treatment)
+(def-form-rule (amount-of-time spatio-temporal-preposition)
+                 :head :right-edge
+  :form spatio-temporal-preposition)
+
+(def-syntax-rule (preposition vg)
+                 :head :left-edge
+  :form to-comp ;; not really a PP -- should be a TO-COMP but fix that later
+  :referent (:function make-to-comp left-referent right-referent))
+               
+(def-syntax-rule (preposition vp)
+               :head :left-edge
+  :form to-comp ;; not really a PP -- should be a TO-COMP but fix that later
+  :referent (:function make-to-comp left-referent right-referent))
 
 
 ;;/// This should be stated over vp+ing or vg+ing
 ;; (which need to be created and managed), then we
 ;; could have a form rule that announced that it was
 ;; a manner adjunct
-(def-syntax-rule (preposition vp)
+(def-syntax-rule (preposition vp+ing)
                  :head :left-edge
   :form pp
   ;; again, need a more interesting referent.
   :referent (:function apply-preposition-to-complement left-edge right-edge))
 
-(def-syntax-rule (preposition vg) ;; J3 hydrolysis maybe elevate?
+(def-syntax-rule (preposition vg+ing) ;; J3 hydrolysis maybe elevate?
                  :head :left-edge
   :form pp
   :referent (:function apply-preposition-to-complement left-edge right-edge))
 
+
+
+
+  
+
+#+ignore
 (def-syntax-rule (preposition s) ;;//// "GTP loading" or subj+verb
                  :head :left-edge
   :form pp
@@ -282,11 +336,13 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 ;;--- direct object
 (loop for nb in (cons category::np *n-bar-categories*)
   do
-  (eval 
-   `(def-syntax-rule (vg ,nb)
-                     :head :left-edge
-      :form vp
-      :referent (:function assimilate-object left-edge right-edge))))
+  (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
+    do
+    (eval 
+     `(def-syntax-rule (,(car vv) ,nb)
+                       :head :left-edge
+        :form ,(second vv)
+        :referent (:function assimilate-object left-edge right-edge)))))
 
 
 ;; subject 
@@ -302,6 +358,22 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
         :form S
         :referent (:function assimilate-subject left-edge right-edge))
      )))
+
+(loop for n in (append '(np pronoun) *n-bar-categories*)
+  do
+  (eval
+   `(def-syntax-rule (,n vp+ed)
+                     :head :right-edge
+      :form S
+      :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
+
+(loop for n in (append '(np pronoun) *n-bar-categories*)
+  do
+  (eval
+   `(def-syntax-rule (,n vg+ed) ;; that we used
+                     :head :right-edge
+      :form S
+      :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
 
 #|
 
@@ -333,17 +405,22 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :form whethercomp
   :referent (:head right-edge))
 
-(loop for vb in '(vp vg) 
+(loop for vv in '((vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
   do
   (eval
-   `(def-syntax-rule (,vb thatcomp)
+   `(def-syntax-rule (,(car vv) thatcomp)
                      :head :left-edge
-      :form vp
+      :form ,(second vv)
       :referent (:function assimilate-thatcomp left-edge right-edge)))
   (eval
-   `(def-syntax-rule (,vb whethercomp)
+   `(def-syntax-rule (,(car vv) whethercomp)
                      :head :left-edge
-      :form vp
+      :form ,(second vv)
+      :referent (:function assimilate-whethercomp left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (,(car vv) verbal-adjunct)
+                     :head :left-edge
+      :form ,(second vv)
       :referent (:function assimilate-whethercomp left-edge right-edge))))
 
 
