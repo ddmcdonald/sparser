@@ -999,7 +999,7 @@
 
 (define-category bio-hyperactivate
   :specializes bio-process
-  :binds ((activator bio-entity) (activated molecule))
+  :binds ((activator bio-entity) (activated (:or molecule pathway)))
   :realization
     (:verb "hyperactivate" 
      :noun "hyperactivation"
@@ -1361,7 +1361,8 @@
 (define-category observe
     :specializes bio-process
     :mixins (bio-thatcomp)
-    :binds ((agent pronoun/first/plural)(object biological)(focused-on biological))
+    :binds ((agent pronoun/first/plural)(object biological)
+            (focused-on biological)(context biological))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
 	   :noun "observation"
@@ -1370,6 +1371,7 @@
 	   :o object
            :for focused-on
            :of object
+           :with context
            :thatcomp statement))
 
 (define-category obtain
@@ -1713,15 +1715,15 @@
 
 (define-category require
     :specializes bio-process
-    :binds ((required-by biological)(requirement biological))
+    :binds ((requires biological)(requirement (:or biological process)))
     :realization
     (:verb "require"
 	   :noun "requirement"
 	   :etf (svo-passive)
-	   :s required-by
+	   :s requires
 	   :o requirement
-           :for required-by
-           :of required-by))
+           :for requires
+           :of requires))
 
 (define-category resist
     :specializes bio-process
@@ -2076,6 +2078,14 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object))
+
+(define-category understand :specializes bio-process
+  :binds ((material biological)(agent pronoun/first/plural))
+  :realization
+  (:verb ("understand" :past-tense "understood")
+         :etf (svo-passive)
+         :s agent
+         :o material))
 
 (define-category upregulate
   :specializes bio-process
