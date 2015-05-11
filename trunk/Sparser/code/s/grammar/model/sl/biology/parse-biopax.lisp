@@ -370,7 +370,7 @@ decoding table for referenced OBO terms
 (defparameter *bp-type-list* nil)
 (defparameter *unsimp* nil)
 
-(defun sort-bp-types ()
+(defun sort-bp-types (&optional (depth 1))
   (clrhash *bp-types*)
   (setq *bp-type-list* nil)
   (setq *bpi* nil)
@@ -378,7 +378,7 @@ decoding table for referenced OBO terms
                (declare (ignore name))
                (push p *bpi*))
            *xml-ht*)
-  (create-bpi-types)
+  (create-bpi-types depth)
   (maphash
    #'(lambda (type tl)
        (declare (ignore type))
@@ -397,7 +397,11 @@ decoding table for referenced OBO terms
    simple
    (loop for p in *bpi*
      do
-     (let ((simp-tree (simplify-tree p 1)))
+     (let ((simp-tree 
+            (simplify-tree p 
+                           (if (numberp simple)
+                             simple
+                             1))))
        (when (null simp-tree)
          (push p *unsimp*))
        (push simp-tree
