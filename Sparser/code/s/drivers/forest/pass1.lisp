@@ -11,6 +11,7 @@
 ;;  was #+ignored
 ;; 3/12/15 Rewrote try-spanning-conjunctions to leave out the special cases and not
 ;;  worry about how many conjunction edges there are. 
+;; 5/8/2015 DAVID -- look-for-prep-binders now also handle premodifiers for prepositions, as in "30 minutes after"
 
 (in-package :sparser)
       
@@ -148,7 +149,7 @@
 ;;;---------------------------------------------------
 ;;; prepositions that are extensions of the predicate
 ;;;---------------------------------------------------
-
+;;This now also handle premodifiers for prepositions, as in "30 minutes after"
 (defun look-for-prep-binders ()
   (dolist (prep-edge (prepositions (layout)))
     (unless (edge-used-in prep-edge)
@@ -160,21 +161,34 @@
           ;; because this preposition is at the beginning of the
           ;; sentence.
           ;;/// that deserves an independent check
-          (let ((head-word (find-head-word left-neighbor)))
-            (when head-word
-              (push-debug `(,prep-edge ,left-neighbor
-                            ,preposition ,head-word))
-              ;; (setq prep-edge (car *) left-neighbor (cadr *) preposition (caddr *) head-word (cadddr *))
-              ;(when (eq preposition (word-named "as")) ;; J3
-              ;  (break "binder"))
-              (unless (punctuation? head-word) ;; comma before "such as")
-                (if (or (takes-preposition? head-word preposition)
-                        (takes-preposition? left-neighbor preposition))
-                  (let ((edge (check-one-one left-neighbor prep-edge)))
-                    (if edge
-                      (tr :took-preposition left-neighbor preposition edge)
-                      (tr :does-not-take-preposition left-neighbor preposition)))
-                  (tr :does-not-take-preposition left-neighbor preposition))))))))))
+          (or
+           (let*
+               ((pair (list left-neighbor prep-edge))
+                (rule (rule-for-edge-pair pair)))
+             (declare (special pair rule))
+             ;;(break "premodifier for prep ~a" preposition)
+             (when
+                 rule
+              
+               (execute-one-one-rule
+                rule
+                left-neighbor
+                prep-edge)))
+           (let ((head-word (find-head-word left-neighbor)))
+             (when head-word
+               (push-debug `(,prep-edge ,left-neighbor
+                                        ,preposition ,head-word))
+               ;; (setq prep-edge (car *) left-neighbor (cadr *) preposition (caddr *) head-word (cadddr *))
+               ;(when (eq preposition (word-named "as")) ;; J3
+               ;  (break "binder"))
+               (unless (punctuation? head-word) ;; comma before "such as")
+                 (if (or (takes-preposition? head-word preposition)
+                         (takes-preposition? left-neighbor preposition))
+                     (let ((edge (check-one-one left-neighbor prep-edge)))
+                       (if edge
+                           (tr :took-preposition left-neighbor preposition edge)
+                           (tr :does-not-take-preposition left-neighbor preposition)))
+                     (tr :does-not-take-preposition left-neighbor preposition)))))))))))
 
 
 ;;;-----------------------------------------------
