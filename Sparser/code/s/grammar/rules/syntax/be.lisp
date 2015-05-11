@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013-2014  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "be"
@@ -28,6 +28,7 @@
 ;; SBCL suggested speedup on computation of passive label (VERB+ED label 
 ;;  created to allow passive rule to work)
 ;;    (4/15/15) Reformated 'there' and made it its' own section
+;;  5/8/2015 handle vp+ed and vp+ing, handle AP as well as adjectives
 
 (in-package :sparser)
 
@@ -102,6 +103,11 @@
   :referent (:head right-edge);; :bind (predication right-edge)
 )
 
+(def-form-rule (be ap)
+  :form vp
+  :referent (:head right-edge);; :bind (predication right-edge)
+)
+  
 
 ;;;-------------------------------
 ;;; be + prepositional complement
@@ -132,6 +138,10 @@
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
 
+(def-form-rule (be vg+ing) ;; "are currently using"
+  :form vg
+  :referent (:head right-edge
+             :function add-tense/aspect left-edge right-edge))
 
 ;;---- tns + not
 
@@ -148,6 +158,10 @@
   :form vg
   :referent (:head right-edge))
 
+(def-form-rule (be vg+ed) ;; were previously used
+  :new-category  :passive
+  :form vg
+  :referent (:head right-edge))
 
 
 ;;;---------
