@@ -95,7 +95,8 @@
           (loop for i from 0 to (- (ev-number-of-edges ev) 1)
             when (not (literal-edge? (setq edge (aref (ev-edge-vector ev) i))))
             collect edge)
-          (list top)))))
+          (when top ;; managed to get an ev with NIL top node
+            (list top))))))
 
 
 (defparameter *record-all-chunks* nil)
@@ -387,7 +388,7 @@ all sorts of rules apply and not simply form rules.
          ;; new code -- don't accept a past participle immediately following a noun 
          ;; -- most likely to be a main verb or a reduced relative in this case
          (let*
-             ((ev-edge (when (car ev-list)(car (ev-edges (car ev-list)))))
+             ((ev-edge (when (car ev-list)(car (ev-edges (car ev-list))))) ; 
               (prev-edge (when ev-edge(edge-just-to-left-of ev-edge))))
            (declare (special ev-edge prev-edge))
            (cond
@@ -524,7 +525,7 @@ all sorts of rules apply and not simply form rules.
 (defmethod ng-start? ((s symbol))
   nil)
 (defmethod ng-start? ((e edge))
-  (declare (special category::modifier category::adjective 
+  (declare (special e category::modifier category::adjective 
                     category::be *big-mechanism* category::parentheses
                     category::that category::verb+ed category::verb+ing
                     category::preposition))
@@ -549,6 +550,11 @@ all sorts of rules apply and not simply form rules.
                    (member 'ng (chunk-forms (car *chunks*)))
                    (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
    ((ng-start? (edge-form e))
+    t)
+   ((and (edge-form e)
+         (eq (cat-symbol (edge-form e)) 'category::wh-pronoun)
+         (member (cat-symbol (edge-referent e)) 
+                 '(category::which category::whose category::what)))
     t)
    ((eq category::verb+ed (edge-form e))
     ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
