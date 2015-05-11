@@ -143,7 +143,8 @@
              (push-loose-adverb tt)))
 
           ((category::preposition
-            category::spatial-preposition) ;; under
+            category::spatial-preposition
+            category::spatio-temporal-preposition) ;; under
            (when sentence-initial?
              (setf (starts-with-prep (layout)) tt))
            (let ((prep (edge-left-daughter tt)))
