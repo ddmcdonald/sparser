@@ -68,6 +68,7 @@
           category::wh-pronoun
           category::reflexive/pronoun
           ))
+        (category::ap)
         (category::subordinate-conjunction)
 	(category::adjunct)
         (category::comparative)
@@ -80,10 +81,14 @@
         (category::preposition)
         (category::spatial-preposition)
         (category::spatio-temporal-preposition)
-
+        
         (category::s)
         (category::vp)
         (category::vg)
+        (category::vg+ing)
+        (category::vg+ed)
+        (category::vp+ing)
+        (category vp+ed)
         (category::pp)
 
         ;; cases where we want to generalize
@@ -95,21 +100,24 @@
           category::np-head
           category::det) ;; "that"
 	 (setf (edge-form edge) (category-named 'np)))
-
+        
 	((category::verb 
           category::verb+s 
-          category::verb+ed
-          category::verb+ing 
+          ;;category::verb+ed
           category::verb+present
           category::verb+passive
           category::modal)
 	 (setf (edge-form edge) (category-named 'vg)))
+        ((category::verb+ing)
+         (setf (edge-form edge) (category-named 'vg+ing)))
+        ((category::verb+ed)
+         (setf (edge-form edge) (category-named 'vg+ed)))
 
 	(otherwise
 	 (unless *cfg-flag*
            (push-debug `(,edge))
 	   (break "New case of form category of edge over segment: ~a~
-                 ~%Add it to generalize-segment-edge-form-if-needed"
+           ~%Add it to generalize-segment-edge-form-if-needed"
 		  (edge-form edge))))))))
 
 
