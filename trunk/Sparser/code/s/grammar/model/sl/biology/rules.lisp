@@ -13,6 +13,7 @@
 ;;  this is actually for phrases like "a phosphoserine at residue 827"
 ;;; 5/3/2015 ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
 ;; drop the "then" on the floor
+;; 5/8/2015 handle "in vitro" and "in vivo" as VP post-modifiers
 
 
 
@@ -118,6 +119,25 @@
 
 
 ;;; raw rules
+;; invitro and in vivo
+(loop for vv in '((vp vp)
+                  (vg vp)
+                  (vp+ed vp+ed)
+                  (vg+ed vp+ed)
+                  (vp+ing vp+ing)
+                  (vg+ing vp+ing))
+  do
+  (eval
+   `(def-form-rule (,(car vv) in-vitro)
+                  :head :left-edge
+     :form ,(second vv)
+     :referent(:function interpret-vp+in-vi-context left-edge right-edge)))
+  (eval
+   `(def-form-rule (,(car vv) in-vivo)
+                  :head :left-edge
+     :form ,(second vv)
+     :referent(:function interpret-vp+in-vi-context left-edge right-edge))))
+
 
 ;;--- amino acids
 ; These are bare rules that could be converted to an ETF
