@@ -46,7 +46,7 @@
    in noun noun compounds.")
  
 (define-mixin-category bio-thatcomp
-  :binds ((statement (:or bio-process molecule-state be)))
+  :binds ((statement (:or bio-process molecule-state be predicate)))
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstraction, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -120,7 +120,8 @@
   :mixins (biological)
   :binds ((negation)
           (adverb)
-          (manner)))
+          (manner)
+          (in-order-to)))
 
 (define-category molecule-state
   :specializes predicate)
@@ -166,7 +167,7 @@
   :specializes process
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
-  :binds ((adverb)(manner)(following)(modifier))
+  :binds ((adverb)(manner)(following)(modifier)(in-order-to))
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
