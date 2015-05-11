@@ -79,6 +79,9 @@
 ;; 3/21/2015 fixed error in ng-head? caught by SBCL
 ;; 4/24/2015 added whethercomp as a form category (for clauses like "whether RAS phosphorylates MEK..."
 ;; 4/27/2015 put back verb+ed as an ng internal category, and put quantifier as a possible head
+;; 5/8/2015 add new fomr category "verbal-adjunct ;; TENTATIVE, intended for manner-adverbials like "by phsophorylating ..." or
+;; purpose adverbials like "for phorsphorylating..." or "to phosphorylate ..."
+
 
 (in-package :sparser)
 (defvar CATEGORY::NOT)
@@ -162,6 +165,8 @@
 (def-form-category adjunct)
 (def-form-category adjunct-to-np)
 (def-form-category adjunct-to-s)
+(def-form-category verbal-adjunct) ;; tentative, intended for manner-adverbials like "by phsophorylating ..." or
+;; purpose adverbials like "for phorsphorylating..." or "to phosphorylate ..."
 
 (def-form-category relative-clause)
 (def-form-category thatcomp)
@@ -173,16 +178,21 @@
 ;;;--------------
 ;;; phrase level
 ;;;--------------
-
+(def-form-category ap) ;; adjective phrase as in "downstream from RAS" -- can be used a NP postmod, or join with copula
 (def-form-category  np)  ;; for consistency with adjg and vg 
 (def-form-category  vp)
+(def-form-category  vp+ing)
+(def-form-category  vp+ed)
 (def-form-category  vg)
+(def-form-category  vg+ing) ;; vg with an untensed (no aux or modal) V+ING
+(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ING
 (def-form-category  pp)
 (def-form-category  advp)
 (def-form-category  adjp)
 (def-form-category  adjg) ;; for consistency with ng and vg -- could have been adj-bar?
 (def-form-category  qp)
 (def-form-category  proper-name)
+(def-form-category to-comp) ;; to + vp or to+vg
 
 
 
@@ -587,7 +597,11 @@
 (defparameter *vp-categories*
   `(,category::s ;; convenient for find-verb
     ,category::vg 
+    ,category::vg+ed
+    ,category::vg+ing
     ,category::vp
+    ,category::vp+ed
+    ,category::vp+ing
     ,category::subj+verb
     ,category::verb+object
     ,category::v-bar
