@@ -344,10 +344,11 @@
 (adj "nucleotide-free" :super predicate)
 
 (noun "function" :super bio-process
-      :binds ((functional bio-entity)) ;; this should be for genes and proteins
+      :binds ((functional bio-entity)(process bio-process)) ;; this should be for genes and proteins
       :realization
       (:noun "function"
-       :of functional))
+       :of functional
+       :to process))
 (adj "further" :super predicate)
 (define-adverb "further")
 (define-adverb "furthermore")
@@ -376,8 +377,14 @@
            :to comparator))
 ;;(noun "living cells" :super bio-context)
 (define-adverb "in part")
-(adj "in vivo" :super bio-context)
-(adj "in vitro" :super bio-context)
+(define-category in-vivo :specializes bio-context
+  :realization
+  (:adj "in vivo"))
+(define-category in-vitro :specializes bio-context
+  :realization
+  (:adj "in vitro"))
+
+
 (adj "inactive" :super molecule-state
      :binds ((molecule molecule))
      :realization 
@@ -477,6 +484,12 @@
 (noun "mitogen" :super molecule)
 (define-unit-of-measure "mL")
 (define-unit-of-measure "ml")
+(define-category mobility :specializes bio-process
+  :binds ((motile bio-entity))
+  :realization
+  (:noun "mobility"
+         :of motile))
+
 (noun "mode" :super bio-process
       :binds ((process bio-process))
       :realization
@@ -591,6 +604,7 @@
       (:noun "RBD"
              :of substrate)) ;; somehow (def-bio "G-domain" protein-segment) did not work
 (adj "real-time" :super predicate)
+(def-synonym real-time (:adj "real time"))
 (adj "recombinant" :super predicate)
 (adj "refractory" :super predicate
      :binds ((theme biological) (treatment bio-process))
@@ -609,7 +623,8 @@
      (:to comparator))
 
 (noun "response" :super bio-process
-    :binds ((beneficiary biological)(agent biological))
+    :binds ((beneficiary biological)
+            (agent biological)) ;; (:or biological drug)))
     :realization
     (;; :verb "respond" cant get the right :etf for verbs
      :noun "response"
