@@ -41,6 +41,7 @@
 ;;  using the syntactic-function interpret-pp-as-head-of-np
 ;;  this is actually for phrases like "a phosphoserine at residue 827"
 ;; 5/3/2015 new adjunct like modifier for bio-rocess -- "upon" or "following" <bio-process>
+;; 5/8/2015 handle "in vitro" and "in vivo" as VP post-modifiers
 
 
 (in-package :sparser)
@@ -348,6 +349,13 @@
   vg)
 
 
+(defun interpret-vp+in-vi-context (vv context)
+  (cond
+   (*subcat-test* (itypep vv 'bio-process))
+   (t
+    (setq vv (maybe-copy-individual vv))
+    (bind-variable 'context context vv)
+    vv)))
 
 ;;;---------
 ;;; VG + PP
@@ -391,6 +399,34 @@
       (bind-variable variable-to-bind pobj-referent vg)
       vg))))
 
+(defun adjoin-tocomp-to-vg (vg pp)
+  ;; The VG is the head. We ask whether it subcategorizes for
+  ;; the preposition in this PP and if so whether the complement
+  ;; of the preposition satisfies the specified value restriction.
+  ;; Otherwise we check for some anticipated cases and then
+  ;; default to binding modifier. 
+  (let* ((pp-edge (right-edge-for-referent))
+         (prep-edge (edge-left-daughter pp-edge))
+         (prep-word (edge-left-daughter prep-edge))
+         (pobj-edge (edge-right-daughter pp-edge))
+         (pobj-referent (edge-referent pobj-edge))
+         (variable-to-bind
+          (loop for category in (indiv-type vg)
+            do
+            (let
+                ((var 
+                  (find-variable-for-category 'in-order-to category)))
+              (when var (return var))))))
+    
+    (cond
+     (*subcat-test* variable-to-bind)
+     (t
+      (when *collect-subcat-info*
+        (push (subcat-instance vg prep-word variable-to-bind pp)
+              *subcat-info*))
+      (setq vg (maybe-copy-individual vg))
+      (bind-variable variable-to-bind pobj-referent vg)
+      vg))))
 
 ;;;---------
 ;;; NP + PP
@@ -471,6 +507,17 @@
    (assimilate-subcat vp :object subj)
    (assimilate-subcat vp :subject subj)))
 
+
+(defparameter *vp-ed-sentences* nil)
+(defun assimilate-subject-to-vp-ed (subj vp)
+  (unless
+      *subcat-test* 
+    (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
+              :test #'equalp))
+  (if (is-passive? (right-edge-for-referent))
+      (assimilate-subcat vp :object subj)
+      (assimilate-subcat vp :subject subj)))
+
 (defun is-passive? (edge)
   (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
     (and (> (length cat-string) 3)
@@ -505,11 +552,12 @@
       (setq head (maybe-copy-individual head))
       (when (and (is-anaphoric? item)
                  ;; this fails when we have BE -- needs to be fixed...
-                 (var-value-restriction variable-to-bind))
-       (setq item 
-             (create-anaphoric-edge-and-referent 
-              item-edge
-              variable-to-bind)))   
+                 (var-value-restriction variable-to-bind)
+                 (not (consp (var-value-restriction variable-to-bind))))
+        (setq item 
+              (create-anaphoric-edge-and-referent 
+               item-edge
+               variable-to-bind)))
       (bind-variable variable-to-bind item head)
       head))))
 
@@ -621,6 +669,27 @@
     ;; (p "activity of ras.")
     ;; (break "Look at who is calling make-pp")
     pp))
+
+(defun make-to-comp (prep pobj)
+  (declare (special prep pobj))
+  (cond
+   (*subcat-test* 
+    ;; when we have clausal "to-pp" like 
+    ;;  to enhance craf activation
+    ;; this is NOT a copular PP
+    (eq prep category::to))
+   (t
+    (let* ((binding-instructions 
+            `((prep ,prep) (pobj ,pobj)))
+           (pp (make-simple-individual
+                category::prepositional-phrase
+                binding-instructions)))
+      ;; place for trace or further adornment, storing
+      ;; (p "activity of ras.")
+      ;; (break "Look at who is calling make-pp")
+      pp))))
+
+
 ; Called from whack-a-rule-cycle => copula-rule?
 ;       => test-subcat-rule => ref/function
 ; Called from whack-a-rule-cycle => best-treetop-rule 
