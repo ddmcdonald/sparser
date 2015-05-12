@@ -1616,14 +1616,14 @@
      :of object
      :for theme))
 
-#+ignore
+
 (define-category inter-regulate
   :specializes bio-process
   :binds ((agent biological)
           (object biological)
           (theme biological)) ;; increase in rate vs increase in RAS activity  :realization
     :realization
-    (:verb ("inter-regulate" :third-plural "inter-regulates")
+    (:verb "inter-regulate"
      :noun "inter-regulation"
      :etf (svo-passive)
      :o object  ;; regulation of <process>
