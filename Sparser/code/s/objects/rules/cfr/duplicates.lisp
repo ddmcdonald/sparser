@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "duplicates"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.7 January 2014
+;;;   Version:   0.8 May 2015
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 0.1 (11/1) fixed polarity of dotted rules can be duplicated.
@@ -20,6 +20,7 @@
 ;;      in establish-multiplier, which calls the duplication-msg itself.
 ;;      Clarified the duplication message. 1/30/14 Added doc. aimed at
 ;;      sorting this out further.
+;; 0.8 (5/12/15) Made duplication-check aware of *deliberate-duplication*
 
 (in-package :sparser)
 
@@ -93,22 +94,31 @@
   ;; the end of a tail-recursive change that will keep the rule
   ;; from going through
 
-  (cond (*permit-rules-with-duplicate-rhs*
-         (construct-cfr lhs rhs form referent source))
+  (declare (special *deliberate-duplication*))
 
-         ((dotted-rule existing-cfr)
-          (if *dotted-rules-can-duplicate-regular-rules*
-            (construct-cfr lhs rhs form referent source)
-            (duplication-msg existing-cfr rhs)))
+  (flet ((complain (cfr existing-cfr)
+           (duplication-msg existing-cfr (cfr-category cfr))
+           (when *break-on-illegal-duplicate-rules*
+             (push-debug `(,cfr ,existing-cfr))
+             (cerror "Accept the existing rule"
+                     "[estab. multiplier] Look at why there's a duplicate rule~
+                     ~%and sort it out."))))
 
-         (t
-          (duplication-msg existing-cfr lhs)
-	  (when *break-on-illegal-duplicate-rules*
-	    (push-debug `(,existing-cfr ,lhs ,rhs ,form ,referent ,source))
-	    (break "[dup. check] Look at why there's a duplicate rule~
-                  ~%and sort it out.")))))
+    (cond (*permit-rules-with-duplicate-rhs*
+           (construct-cfr lhs rhs form referent source))
 
-#| The path to the call to duplication check 
+          ((dotted-rule existing-cfr)
+           (if *dotted-rules-can-duplicate-regular-rules*
+             (construct-cfr lhs rhs form referent source)
+             (duplication-msg existing-cfr rhs)))
+
+          (*deliberate-duplication*
+           (unless (eq lhs (cfr-category existing-cfr))
+             (complain cfr existing-cfr)))
+
+          (t  (complain cfr existing-cfr)))))
+
+#| The path to the call to other duplication check 
 from establish-multiplier 
   < knit-in-binary-rule < construct-cfr < define-cfr
    < i/r/s-make-the-rule < r/r/s-multiply-through/rhs < r/r/s-multiply-through/lhs
