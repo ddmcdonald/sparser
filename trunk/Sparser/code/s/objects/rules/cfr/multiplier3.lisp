@@ -16,6 +16,7 @@
 ;;     (10/25) changed the name of the duplicate dotted rules flag
 ;;     (3/9/13) Added the break-on-duplicates flag.
 ;;     (3/10/15) Coverted break in dup check to a cerror
+;; 3.4 (5/12/15) Folded in *deliberate-duplication*
 
 (in-package :sparser)
 
@@ -26,32 +27,49 @@
 
 (defun establish-multiplier (left-id right-id cfr)
   ;; called as a core part of defining a binary rule.  Enforces
-  ;; the dictum that every rhs can have only a single parent.
+  ;; the dictum that every rhs can have only a single parent, 
+  ;; which makes it somewhat redundant with the duplication-check
+  ;; function. See the calling pattern written next to that fn.
+
+  (declare (special *deliberate-duplication*))
+
+  (flet ((complain (cfr existing-rule/s)
+           (duplication-msg existing-rule/s (cfr-category cfr))
+           (when *break-on-illegal-duplicate-rules*
+             (push-debug `(,cfr ,existing-rule/s))
+             (cerror "Accept the existing rule"
+                     "[estab. multiplier] Look at why there's a duplicate rule~
+                     ~%and sort it out."))))
 
   (let ((existing-rule/s (multiply-ids left-id right-id)))
     (when existing-rule/s
-      (if (or *permit-rules-with-duplicate-rhs*
-              (and *dotted-rules-can-duplicate-regular-rules*
-                   (or (dotted-rule cfr)
-                       (and (cfr-p existing-rule/s)
-                            (dotted-rule existing-rule/s)))))
+      (cond
+       ((or *permit-rules-with-duplicate-rhs*
+            (and *dotted-rules-can-duplicate-regular-rules*
+                 (or (dotted-rule cfr)
+                     (and (cfr-p existing-rule/s)
+                          (dotted-rule existing-rule/s)))))
         (setq cfr
               (if (listp existing-rule/s)
                 (cons cfr existing-rule/s)
-                (list cfr existing-rule/s)))
-        (else
-         (duplication-msg existing-rule/s (cfr-category cfr))
-         (when *break-on-illegal-duplicate-rules*
-           (push-debug `(,cfr ,existing-rule/s))
-           (cerror "Accept the existing rule"
-                   "[estab. multiplier] Look at why there's a duplicate rule~
-                  ~%and sort it out.")))))
+                (list cfr existing-rule/s))))
+       (*deliberate-duplication*
+        (when (consp existing-rule/s)
+          (error "stub: extend for multiple existing rules"))
+        ;; Are the two left-hand sides the same object?
+        ;; If so we just accept the rule and do nothing, since its
+        ;; pattern has already been knit in.
+        (unless (eq (cfr-category existing-rule/s) ;; old one
+                     (cfr-category cfr)) ;; new one
+          (complain cfr existing-rule/s)))
+        (t 
+         (complain cfr existing-rule/s))))
 
     (let ((target-site (+ left-id right-id)))
       (setf (gethash target-site
                      *edge-multiplication-table*)
             cfr)
-      target-site)))
+      target-site))))
 
 
 
