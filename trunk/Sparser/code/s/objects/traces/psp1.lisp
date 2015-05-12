@@ -645,7 +645,7 @@
                (pos-token-index p))))
 
 (deftrace :check-for-uniform-no-space-sequence (pos-before)
-  (when *trace-network-flow*
+  (when (or *trace-network-flow* *trace-scan-patterns*)
     (trace-msg "[scan] check-for-uniform-no-space-sequence ~a" 
                pos-before)))
 
