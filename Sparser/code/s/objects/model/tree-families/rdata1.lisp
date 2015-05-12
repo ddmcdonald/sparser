@@ -155,12 +155,12 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
     (break "There is no category named ~a" category))) 
 
 (defmethod define-additional-realization/expr ((category referential-category) rdata)
-  ;;(push-debug `(,rdata ,category)) (break "check")
+  ;; (push-debug `(,rdata ,category)) (break "check")
   (let ((*deliberate-duplication* t))
     (declare (special *deliberate-duplication*))
     (if (includes-def-realization-keyword rdata)
-        (apply-decode-realization-parameter-list category rdata)
-        (setup-rdata category rdata nil))))
+      (apply-decode-realization-parameter-list category rdata)
+      (setup-rdata category rdata nil))))
 
 
 ;;;-----------------------------------------------------------
