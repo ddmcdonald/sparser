@@ -190,17 +190,17 @@
 
 (defun record-inflections (inflections lemma type)
   (ecase type
-    (:noun
-     (put-property-on-word :noun-inflections inflections lemma)) ;; key, value, word
+    (:noun  ;; key, value, word
+     (put-property-on-word :noun-inflections inflections lemma))
     (:verb
      (put-property-on-word :verb-inflections inflections lemma))))
 
 (defun record-lemma (inflection lemma type)
   (ecase type
     (:noun
-     (put-property-on-word :inflection-of-noun lemma inflection))
+     (put-property-on-word :inflection-of-noun inflection lemma))
     (:verb
-     (put-property-on-word :inflection-of-verb lemma inflection))))
+     (put-property-on-word :inflection-of-verb inflection lemma))))
 
 
 (defun noun-forms-of (w)
@@ -408,6 +408,7 @@
     (flet ((convert-if-needed (raw)
              (typecase raw
                (word raw)
+               (polyword raw)
                (string (define-word/expr raw))
                (cons
                 (loop for r in raw
@@ -418,6 +419,7 @@
            (update-inflections (result)
              (typecase result
                (word (push result inflections))
+               (polyword (push result inflections))
                (cons (setq inflections (append-new result inflections)))
                (otherwise (break "Unexpected result type: ~a~%  ~a"
                                  (type-of result) result)))))
@@ -444,7 +446,7 @@
       (record-inflections inflections word :verb)
       (dolist (w inflections)
         (assign-brackets-as-a-main-verb w)
-        (record-lemma w word :verb))
+        (record-lemma w word :verb)) ;; record-lemma (inflection lemma type)
       (when nominalization
         ;; Makes rules and a category as well.
         (assign-brackets-as-a-common-noun nominalization))
@@ -820,6 +822,12 @@
     (assign-brackets-as-a-main-verb word)
     word ))
 
+(defmethod s-form-of-verb ((base polyword))
+  (let* ((s-form-pname (s-form-of-verb (pw-pname base)))
+         (word (define-polyword/expr s-form-pname)))
+    (assign-brackets-as-a-main-verb word)
+    word ))
+
 (defmethod s-form-of-verb ((pname string))
   ;; comlex-util uses the plural noun routine to generate
   ;; this form, so since the original version here just
@@ -830,6 +838,12 @@
 (defmethod ed-form-of-verb ((word word))
   (let* ((ed-pname (ed-form-of-verb (word-pname word)))
          (word (define-word/expr ed-pname)))
+    (assign-brackets-as-a-main-verb word)
+    word ))
+
+(defmethod ed-form-of-verb ((word polyword))
+  (let* ((ed-pname (ed-form-of-verb (pw-pname word)))
+         (word (define-polyword/expr ed-pname)))
     (assign-brackets-as-a-main-verb word)
     word ))
 
@@ -866,6 +880,12 @@
 (defmethod ing-form-of-verb ((word word))
   (let* ((ing-pname (ing-form-of-verb (word-pname word)))
          (word (define-word/expr ing-pname)))
+    (assign-brackets-as-a-main-verb word)
+    word ))
+
+(defmethod ing-form-of-verb ((word polyword))
+  (let* ((ing-pname (ing-form-of-verb (pw-pname word)))
+         (word (define-polyword/expr ing-pname)))
     (assign-brackets-as-a-main-verb word)
     word ))
     
