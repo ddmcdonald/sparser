@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "shortcut-master"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.0 December 2014
+;;;  version:  1.0 May 2015
 
 ;; Initiated 9/14/14 to make more flexible, complete shortcuts.
 ;; 11/11/14 added keyword for obo-id.
 ;; 1.0 (12/13/14) totally made over to simplify everything down
 ;;  to one two routines. 1/5/15 Refactored a bit to handle
 ;;  nouns and adjectives without ETF. 
-;;1/14/2015 Changes to put :subject and :object selectional 
+;; 1/14/2015 Changes to put :subject and :object selectional 
 ;;   restrictions in the subcat frame
 ;;   also, initial subcat for THATCOMP -- not used yet
 ;;   Delete old noun definitions when redefining a noun (but 
@@ -21,6 +21,7 @@
 ;;  have a variable called slots which holds a plist of all the slot information
 ;; this will make it easier to add new slots, including ones which are not prepositions
 ;; 4/24/2015 added whethercomp as a type of verb complement
+;; 5/12/15 Minor cleanup for read-ability.
 
 
 (in-package :sparser)
@@ -80,13 +81,12 @@
     category))
 
 (defun apply-decode-realization-parameter-list (category key-value-pairs)
-  ;; we are moving from having all the prepositional subcats as specified keywords to 
-  ;;  having them on a plist -- this is a solution that does not require rewriting all the
-  ;;  word definitions
+  ;; we are moving from having all the prepositional subcats as specified
+  ;; keywords to having them on a plist -- this is a solution that does not
+  ;; require rewriting all the word definitions
   (declare (special category key-value-pairs))
-  (let
-      ((kw nil)
-       (slots nil))
+  (let ((kw nil)
+        (slots nil))
     ;;(break "apply-decode-realization-parameter-list")
     (loop for pair on key-value-pairs by #'cddr 
       do
@@ -233,7 +233,6 @@
     (unless (or adj noun)
       (error "You must specifiy a realization schema/s using the keyword ':etf'")))
 
- 
   ;;RUSTY added this -- get rid of old definition for noun if you are 
   ;; redefining noun
   #+ignore  ;;/// sort out relationship to synonyms
@@ -317,6 +316,8 @@
         (handle-slots category slots)))
 
     (when adj
+      ;; Adjectives are analyzed as being able to take subjects and/or objects
+      ;; as well as subcategorizations ('slots')
       (unless (assq :adjective word-map)
         (let* ((word (resolve/make adj))
                (adj-rules (make-rules-for-adjectives word category category)))
@@ -334,7 +335,7 @@
 
 
     (when (or etf substitution-map word-map)
-      (push-debug `(,category ,etf ,substitution-map ,word-map))
+      ;;  (push-debug `(,category ,etf ,substitution-map ,word-map))
       ;; if we go in here for just a noun or an adjective, 
       ;; there may be nothing for this call to do
       (apply-rdata-mappings category etf
@@ -370,10 +371,10 @@
   (loop for pair on slots by #'cddr 
     do 
     (subcategorize-for-slot category 
-                                   (case (car pair)
-                                     ((:premod :thatcomp :whethercomp) (car pair)) 
-                                     (t (string-downcase (symbol-name (car pair)))))
-                                   (second pair))))
+                            (case (car pair)
+                              ((:premod :thatcomp :whethercomp) (car pair)) 
+                              (t (string-downcase (symbol-name (car pair)))))
+                            (second pair))))
 
 
 (defun register-variable (category variable grammatical-relation)
