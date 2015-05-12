@@ -143,7 +143,7 @@
                              &key word-keys 
                                   ((:args substitution-map)))
   ;; Called from decode-realization-parameter-list
-  (push-debug `(,category ,etf-names ,word-keys ,substitution-map))
+  ;; (push-debug `(,category ,etf-names ,word-keys ,substitution-map))
   (dolist (name etf-names)
     (let ((scheme (get-realization-scheme name)))
       (unless scheme
@@ -152,7 +152,7 @@
 
 (defun apply-realization-scheme (category scheme substitution-map word-keys)
   ;; This is an open-coding of make-rules-for-rdata
-  (push-debug `(,category ,scheme ,substitution-map ,word-keys))
+  ;; (push-debug `(,category ,scheme ,substitution-map ,word-keys))
   (let* ((etf (etf-for-schema scheme))
          (head-keyword (schema-head-keyword scheme))
          (mapping (assemble-scheme-form scheme substitution-map etf category))
@@ -182,7 +182,7 @@
       (setq head-word (resolve/make head-word-pname)
             irregulars (cdr (assq :irregulars word-keys)))))
 
-    (push-debug `(,etf ,head-keyword ,head-word ,mapping)) ;(break "1")
+    ;; (push-debug `(,etf ,head-keyword ,head-word ,mapping)) ;(break "1")
     (unless head-word
       (push-debug `(,scheme ,word-keys))
       (error "The word-keys don't have an entry for ~a" head-keyword))
@@ -198,7 +198,7 @@
         (when *big-mechanism*
           (setq rule-schemas (filter-out-big-mech-bad-schemas rule-schemas)))
         (dolist (schema rule-schemas)
-          (push-debug `(,schema ,mapping ,category))
+          ;; (push-debug `(,schema ,mapping ,category))
           (setq rule/s-from-schema
                 (instantiate-rule-schema schema mapping category))
           (if (consp rule/s-from-schema)
