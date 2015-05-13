@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.6 January 2015
+;;;  Version:  0.6 May 2015
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -23,7 +23,8 @@
 ;; 0.6 (7/15/13) Bumped [object] to 1 to start adjustments for greater uniformity
 ;;      in accumulators and operations. Added [classes]. (9/18/13) added
 ;;      [situation]. 10/3/13 moved out [situation].
-;;     (1/26/15) added [sentence-corpora]
+;;     (1/26/15) added [sentence-corpora]. (5/12/15) added [content-methods]
+;;      to solve a class-dependency problem.
 
 (in-package :sparser)
 
@@ -51,6 +52,7 @@
 (lload "doc;header label")
 (lload "doc;style")
 (lload "doc;object1")
+(lload "doc;content-methods") ;; depends on object1
 (lload "doc;doc-set")
 (lload "doc;doc stream")
 (lload "doc;sentence-corpora")
