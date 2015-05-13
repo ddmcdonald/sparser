@@ -120,6 +120,11 @@ previous records of treetop-counts.
 
 
 ;;--- compare current performance to a snapshot
+(defun compare-to-snapshots (&optional (corpora '(overnight dec-test dry-run erk aspp2)))
+  (loop for c in corpora
+    do (terpri)
+    (print c)
+    (print (compare-to-snapshot c))))
 
 (defmethod compare-to-snapshot ((name symbol))
   (let ((corpus (get-sentence-corpus name)))
