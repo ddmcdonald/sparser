@@ -83,14 +83,14 @@
 (defun reset-dectest ()
   (reset-test))
 
-(defun retest ()
+(defun retest (&optional (semantics *show-semantics*))
   "Loop over all the designated sentences calling
    run-test on each one"
   (reset-test)
   (loop for i from (+ 1 (car *tested*)) to (length *sentences*) 
     do 
     (push i *tested*) 
-    (run-test i)))
+    (run-test i semantics)))
 
 (defun bad () 
   (push (car *tested*) *known-breaks*) 
@@ -113,11 +113,11 @@
 
 (defun dectest (n &optional (sentences *dec-tests*))
   (declare (special *dec-tests*))
-  (run-test n sentences))
+  (run-test n :sentences sentences))
 
 (defun jantest (n &optional (sentences *jan-dry-run*))
   (declare (special *jan-dry-run*))
-  (run-test n sentences))
+  (run-test n :sentences sentences))
 
 
 
@@ -129,7 +129,7 @@
   (setq *show-semantics* (not flag)))
 
 
-(defun run-test (n &optional (sentences *sentences*))
+(defun run-test (n &optional  (semantics *show-semantics*) &key(sentences *sentences*))
   (let ((test (nth (- n 1) sentences))
         (*do-anaphora* nil))
     ;; Anaphora rarely is germane on a single sentence by itself
@@ -144,7 +144,7 @@
           (when *save-chunk-edges*
             ;;make the list of chunk edges show their sentence origin
             (push (cons n (cdr test)) *all-chunk-edges*))
-          (when *show-semantics*
+          (when semantics ;;*show-semantics*
             (terpri) 
             (format t "---SEMANTIC FOREST---")
             (loop for edge-tree in
