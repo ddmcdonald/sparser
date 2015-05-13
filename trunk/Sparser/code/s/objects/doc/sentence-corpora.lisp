@@ -1,4 +1,4 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "sentence-corpora"
