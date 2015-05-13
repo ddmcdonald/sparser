@@ -30,6 +30,7 @@
 ;; 3/4/2015 correct spelling of *use-broader-set-of-tts*, and replace "wack" with "whack"
 ;; cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
 ;; 5/1/2015 minor tweak on losing-competition?  to do better on leftwards extension of NPs which may be SUBJECTs
+;; 5/12/2015 fixes to losing-competition? to better handle leftwards extension of NP subjects before they are used as subjects
 
 
 (in-package :sparser)
@@ -527,20 +528,21 @@
        (not
         (and
          (edge-p (edge-left-daughter (third triple1)))
-         (or
-          (eq category::adjective (edge-form (edge-left-daughter (third triple1))))
-          )))
-
+         (eq category::adjective (edge-form (edge-left-daughter (third triple1))))))
+       
        ;; there must be a competing rule
-       (let ((preceding-edge (edge-just-to-left-of (second triple2))))
-         (and
-          preceding-edge
-          (edge-form preceding-edge) ;; got a case with COMMA as a literal edge
-          (or
-           (member (cat-symbol (edge-form preceding-edge)) *ng-head-categories*)
-           (member (cat-symbol (edge-form preceding-edge)) *vg-head-categories*)
-           (member (cat-symbol (edge-form preceding-edge)) 
-                   '(category::vg category::vg+ed category::vp+ed))))))))
+       (let* ((preceding-edge (edge-just-to-left-of (second triple2)))
+              (sym (and
+                    preceding-edge
+                    (edge-form preceding-edge)
+                    (cat-symbol (edge-form preceding-edge)))))
+         ;; got a case with COMMA as a literal edge
+         (when sym
+           (or
+            (member  sym *ng-head-categories*)
+            (member sym *vg-head-categories*)
+            (member sym *adjg-head-categories*)
+            (member sym '(category::vp category::vg category::vg+ed category::vp+ed))))))))
     ;; goal here is to put off subject attachment until the subject 
     ;; is as large as possible.
     ;; Don't do right-to-left activation for the subj+verb rules
