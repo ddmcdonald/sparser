@@ -88,7 +88,7 @@
         (category::vg+ing)
         (category::vg+ed)
         (category::vp+ing)
-        (category vp+ed)
+        (category::vp+ed)
         (category::pp)
 
         ;; cases where we want to generalize
