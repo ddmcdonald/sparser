@@ -21,6 +21,7 @@
 ;; 5/4/2015 Deal with the fact that "a" is a word, and so the right way to get the #<word "A">
 ;;  needed for single-letter-is-amino-acid in reify-point-mutation-and-make-edge is to call
 ;; edge-left-daughter on the edge (not edge-referent)
+;; 5/13/2015 fix handling ov numbers in reify-point-mutation-and-make-edge
 
 
 (in-package :sparser)
@@ -284,8 +285,11 @@ therefore we have the special cases:
         ;;/// do we have enough args to go somewhere else if these are amino acids?
         (when (and aa1 aa2)
           (when (and aa1 aa2)
-            (let ((number ;;(find-or-make-number ref2) change residue
-                   (get-tag-for :numerical-value ref2)))
+            (let ((number 
+                   (if (itypep ref2 'number)
+                       ref2
+                       (find-or-make-number ref2))))
+              (declare (special number))
               (let* ((i (make-point-mutation aa1 aa2 ;; or is it the other order??
                                              number))
                      (edge
