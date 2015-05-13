@@ -227,7 +227,7 @@
 (defclass section-of-sections (document-element named-object titled-entity)
   ()
   (:documentation "Motivated by the NXLM for PubMed articles where there
-      is can be multiple titled 'article' elements within a article.
+      is can be multiple titled 'section' elements within a section.
       Doesn't appear to be recursive."))
 
 (defmethod print-object ((s section-of-sections) stream)
@@ -385,7 +385,10 @@
 (defun start-sentence (pos)
   ;; Called from initialize-sentences for the first one, then
   ;; from period-hook -- pos is the position after the period.
-  (let ((s (allocate-sentence)))
+  (declare (special *reading-populated-document*))
+  (let ((s (if *reading-populated-document*
+             (make-instance 'sentence) ;; permanent
+             (allocate-sentence)))) ;; reclaimed
     (setf (starts-at-pos s) pos)
     (setf (starts-at-char s)
           (if *current-sentence*
