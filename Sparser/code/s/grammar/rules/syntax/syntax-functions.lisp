@@ -466,6 +466,29 @@
           (bind-variable variable-to-bind pobj-referent np)
           np)))))
 
+
+(defun interpret-to-comp-adjunct-to-np (np to-comp)
+  (declare (special np to-comp))
+  (let* ((pp-edge (right-edge-for-referent))
+         (comp-edge (edge-right-daughter pp-edge))
+         (variable-to-bind
+          ;; test if there is a known interpretation of the NP/PP combination
+          (subcategorized-variable 
+           np :to-comp
+           (edge-referent comp-edge))))
+    (declare (special pp-edge comp-edge variable-to-bind))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (t
+      (if *collect-subcat-info*
+          (push (subcat-instance np 'to-comp variable-to-bind 
+                                 to-comp)
+                *subcat-info*))
+      (setq np (maybe-copy-individual np))
+      ;;(bind-variable variable-to-bind pp np)
+      (bind-variable variable-to-bind to-comp np)
+      np))))
+
 (defun interpret-pp-as-head-of-np (np pp)
   (push-debug `(,np ,pp))
   (let* ((pp-edge (right-edge-for-referent))
