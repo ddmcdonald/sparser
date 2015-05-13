@@ -19,6 +19,8 @@
 ;; 4/16/15 Fanout from change in treatment of PPs. 
 ;; 1.0 4/28/15 Bumped to re-factor. 
 ;; 5/2/2015 update semtree to support indiv-pattern for pattern matching
+;; 5/13/2015 code related to semtree that will (eventually) fin the material needed for MITRE's index cards
+;;  itypes-under, process-under, individuals-under...
 
 (in-package :sparser)
 
@@ -392,6 +394,23 @@
    (not (itypep e 'predicate))
    (not (itypep e 'is-bio-entity))))
 
+(defun itypes-under (x type)
+  (loop for i in (individuals-under x)
+    when (itypep i type)
+    collect i))
+
+(defun processes-under (x)
+  (itypes-under x 'bio-process))
+
+(defun individuals-under (x)
+  (let
+      ((indivs nil))
+    (semtree x)
+    (maphash #'(lambda (l h) (push l indivs))
+             *semtree-seen-individuals*)
+    indivs))
+
+
 (defmethod semtree ((x null) &optional short)
   (declare (ignore short))
   nil)
@@ -405,6 +424,8 @@
 
 (defmethod semtree ((e edge) &optional (short t))
   (semtree (edge-referent e) short))
+
+
 
 (defparameter *semtree-seen-individuals* (make-hash-table))
 (defmethod semtree ((i individual) &optional (short t))
