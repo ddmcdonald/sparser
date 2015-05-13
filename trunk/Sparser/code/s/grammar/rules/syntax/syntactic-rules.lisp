@@ -108,7 +108,7 @@ to an oncogenic RasG12V mutation (9)."))
                        left-edge right-edge))
 |#
 
-(loop for nb in *n-bar-categories*
+(loop for nb in (append '(category::NP) *n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (adjective ,nb) ;; "black suv"
@@ -324,15 +324,19 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 ;;--- Relative clauses
 
-(def-syntax-rule (wh-pronoun s) ;; also vp ?
-                 :head :right-edge
-  :form relative-clause
-  :referent (:function compose-wh-with-vp left-edge right-edge))
-
-(def-syntax-rule (wh-pronoun vp)
-                 :head :right-edge
-  :form relative-clause
-  :referent (:function compose-wh-with-vp left-edge right-edge))
+(loop for rel in '(which who whom where) ;;  when this is more often used as a subordinate conjunction
+  do
+  (eval
+   `(def-form-rule (,rel s) ;; also vp ?
+                   :head :right-edge
+      :form relative-clause
+      :referent (:function compose-wh-with-vp left-edge right-edge)))
+  
+  (eval
+   `(def-form-rule (,rel vp)
+                     :head :right-edge
+      :form relative-clause
+      :referent (:function compose-wh-with-vp left-edge right-edge))))
 
 #+ignore
 (def-syntax-rule (np relative-clause)
