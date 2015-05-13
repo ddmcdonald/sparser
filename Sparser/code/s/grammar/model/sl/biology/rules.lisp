@@ -164,6 +164,13 @@
   :referent (:head left-edge
              :bind (position right-edge)))
 
+(def-cfr residue-on-protein (residue-on-protein hyphenated-number)
+  :form proper-noun
+  :referent (:head left-edge
+             :instantiate-individual residue-on-protein
+             :with (amino-acid left-edge
+                    position right-edge)))
+
 (def-cfr residue-on-protein (protein residue-on-protein)
   :form np
   :referent 
