@@ -12,6 +12,8 @@
 ;; 3/12/15 Rewrote try-spanning-conjunctions to leave out the special cases and not
 ;;  worry about how many conjunction edges there are. 
 ;; 5/8/2015 DAVID -- look-for-prep-binders now also handle premodifiers for prepositions, as in "30 minutes after"
+;; 5/13/2015 modified knit-parens-into-neighbor to copy the base item when binding trailing-parenthetical -- this prevents
+;;  smashing base proteins, etc.
 
 (in-package :sparser)
       
@@ -422,7 +424,8 @@
 (defun knit-parens-into-neighbor (left-neighbor paren-edge)
   (declare (special left-neighbor paren-edge))
   (tr :parens-after left-neighbor paren-edge)
-  (let* ((referent (edge-referent left-neighbor))
+  (let* ((referent ;; DAVID -- THIS IS WHERE WE COPY THE BASE ITEM TO AVOID SMASHING IT
+          (maybe-copy-individual (edge-referent left-neighbor)))
          (constituents (edge-constituents paren-edge))
          (count (when constituents ;;///review the code to guarentee this
                   ;; count is a crude 1st-cut distinction in what's inside 
