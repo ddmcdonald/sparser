@@ -23,6 +23,9 @@
 ;; 4/15/15 moved prepositional-phrase category to syntax-functions.
 ;; 4/24/2015 make "adverb + verb" be a VG and not a VP -- making it a VP prevented absorbing an object
 ;; 4/27/2015 extend PP rules to allow for (preposition ng) and other general np-type heads
+;; 5/12/2015 get rid of problematic rule for (number ng) which ended up eating 1C as in "Figure 1C
+;; add rule for postmodification by adjective phrase (perhaps should be done in post-pass)
+;; added rule for to-comp on NPs
 
 (in-package :sparser)
 
@@ -120,6 +123,12 @@ to an oncogenic RasG12V mutation (9)."))
       :referent (:function adj-noun-compound
                            right-edge left-edge )))
   (eval
+   `(def-syntax-rule (,nb ap) ;; "RAF activation downstream of RAS" 
+                     :head :left-edge
+      :form n-bar ;;/// cutting corners
+      :referent (:function adj-noun-compound
+                           right-edge left-edge )))
+  (eval
    `(def-syntax-rule (verb+ed ,nb) ;; "black suv"
                      :head :right-edge
       :form n-bar ;;/// cutting corners
@@ -137,6 +146,7 @@ to an oncogenic RasG12V mutation (9)."))
       :form n-bar ;;/// cutting corners
       :referent (:function quantifier-noun-compound
                            left-edge right-edge)))
+  #+ignore ;; this rule seems to generate bad parses of things like 1C, and not to be terribly useful...
   (eval
    `(def-syntax-rule (number ,nb)
                      :head :right-edge
@@ -169,6 +179,13 @@ to an oncogenic RasG12V mutation (9)."))
       :form np
       :referent (:function interpret-pp-adjunct-to-np left-edge right-edge))))
 
+(loop for nb in (append '(category::NP) *n-bar-categories*)
+  do
+  (eval 
+   `(def-syntax-rule (,nb to-comp)
+                     :head :left-edge
+      :form np
+      :referent (:function interpret-to-comp-adjunct-to-np left-edge right-edge))))
 
 ;;--- adverbs
 
