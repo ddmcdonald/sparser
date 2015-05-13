@@ -32,12 +32,13 @@
 
 
 (noun "ability" :super bio-process
-      :binds ((agent biological)(result biological))
+      :binds ((agent biological)(result biological)(ability bio-process))
       :realization
       (:noun "ability" :adj "able"
              :s agent
              :to result
-             :of agent))
+             :of agent
+             :to-comp ability))
 
 (noun "absence" :super bio-condition
       :binds ((absent biological)) 
@@ -390,6 +391,14 @@
      :realization 
      (:adj "inactive"
            :s molecule))
+(adj "independent" :super predicate
+  :binds ((subject biological)
+          (theme biological))
+  :realization 
+  (:adj "independent"
+        :s subject
+        :of theme))
+
 (adj "inducible" :super predicate) ;; keyword: (ible ADJ) 
 (adj "ineffective" :super predicate
      :binds ((subject biological)(against biological))
@@ -448,6 +457,18 @@
 (adj "long" :super predicate)
 (adj "long-term" :super predicate)
 (adj "low" :super predicate)
+(define-comparative "lower")
+;;--- "lower"  ("raise")
+;;/// N.b. the adjective variant is commented out in the modifiers dossier
+;; "(RasGEFs) lower the transition energy for ..."
+;; only instance of "lower" so far is as an adjective (svo/bio "lower")
+
+(define-category lysate :specializes bio-entity
+  :binds ((source cell-line))
+  :realization
+  (:noun "lysate"
+         :from source))
+
 (noun "manner" :super bio-process
       :binds ((process bio-process))
       :realization
@@ -471,13 +492,6 @@
              :of process))
 (define-adverb "mechanistically")
 ;;(delete-adj-cfr (resolve/make "independent"))
-(adj "independent" :super predicate
-  :binds ((subject biological)
-          (theme biological))
-  :realization 
-  (:adj "independent"
-        :s subject
-        :of theme))
 
 (noun "membrane" :super cellular-location)
 (noun "method" :super bio-process)
@@ -505,6 +519,7 @@
 (adj "mutual" :super predicate) ;; keyword: (al ADJ) 
 
 (adj "native" :super predicate)
+(noun "natural growth conditions" :super bio-context)
 (adj "necessary" :super predicate
      :binds ((condition biological)(agent biological)(result biological))
      :realization 
@@ -721,7 +736,12 @@
          :for enzyme))
 ;;(noun "success" :super bio-abstract) -- make a verb
 
-(adj "suitable" :super predicate)
+(adj "suitable" :super predicate
+     :binds ((theme biological)(purpose biological))
+     :realization
+     (:adj "suitable"
+           :s theme
+           :for purpose))
 
 
 (delete-adj-cfr (resolve/make "sufficient"))
@@ -734,6 +754,11 @@
 
 
 (adj "supplementary" :super predicate) ;; keyword: (ary ADJ)
+(define-category argument-support :specializes abstract
+  :binds ((argument (:or model statement)))
+  :realization
+  (:noun "support"
+         :for argument))
 (noun "surface area" :super bio-location)
 (define-adverb "surprisingly")
 (adj "synthetic" :super predicate)
