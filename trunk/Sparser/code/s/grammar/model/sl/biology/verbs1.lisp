@@ -206,14 +206,15 @@
 ;; really want to have the form "CRAF allows CRAF to hyperactivate the pathway"  -- want the clausal modiffer
 (define-category allow
     :specializes bio-process
-    :binds ((agent bio-entity)(object molecule))
+    :binds ((agent biological)(object biological))
     :realization
     (:verb "allow" ;; keyword: ENDS-IN-ING 
 	   :noun "allowance"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :of object
+           :for object))
 
 
 "" ;; keyword: (ion N) 
@@ -931,16 +932,18 @@
          :o subsequent))
 
 (define-category form
-  :specializes bio-process
+                 :specializes bio-process
   :binds ((creator biological)(creation biological)(mechanism biological))
   :realization
-  (:verb "form" :noun "formation"
-  :etf (svo-passive) 
-  :s creator
-  :o creation
-  :of creation
-  :through mechanism
-  ))
+  (:verb ("formXXX" :third-plural "forms") 
+         ;; "form" has never been seen as a verb in the corpus, but "forms" has been seen
+         :noun "formation"
+         :etf (svo-passive) 
+         :s creator
+         :o creation
+         :of creation
+         :through mechanism
+         ))
 
 (define-category fraction :specializes bio-variant
   :binds ((agent pronoun/first/plural) (basis bio-entity)) ;; this should be for genes and proteins
@@ -957,7 +960,13 @@
 ;; exchange
 
 
-(define-category generate :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "generate" :noun "generation" :etf (svo-passive) :s agent :o object))
+(define-category generate :specializes bio-process
+  :binds ((agent (:or biological pronoun/first/plural))(object biological))
+  :realization 
+  (:verb "generate" :noun "generation"
+         :etf (svo-passive) 
+         :s agent
+         :o object))
 
 (define-category bio-grow  :specializes bio-process
   ;;:obo-id "GO:0005488"
@@ -1229,12 +1238,13 @@
 (delete-noun-cfr (resolve/make "lead"))
 (define-category lead
     :specializes bio-process
-    :binds ((agent biological)(object biological))
+    :binds ((agent biological)(object biological)(result biological))
     :realization
     (:verb "lead" ;; keyword: ENDS-IN-ING 
 	   :etf (sv)
 	   :s agent
-	   :to object))
+	   :to object
+           :to-comp result))
 
 ;; second copy???
 (define-category lead 
@@ -1259,10 +1269,6 @@
 
 
 
-;;--- "lower"  ("raise")
-;;/// N.b. the adjective variant is commented out in the modifiers dossier
-;; "(RasGEFs) lower the transition energy for ..."
-(svo/bio "lower")
 
 
 (define-category maintain
@@ -1543,7 +1549,7 @@
 
 (define-category provide
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent (:or result biological))(object (:or argument-support biological)))
     :realization
     (:verb "provide"
 	   :noun "provision"
@@ -1788,7 +1794,7 @@
 (define-category show
     :specializes bio-process
     :mixins (bio-thatcomp)
-    :binds ((agent pronoun/first/plural)
+    :binds ((agent (:or pronoun/first/plural article-figure))
             (object (:or bio-process pronoun/inanimate))
             (fig article-figure))
   ;; it was shown that
