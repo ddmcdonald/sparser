@@ -41,14 +41,14 @@
     and its content that are approriate to the type of the content model."))
 
 (defmethod after-actions-on-content ((e document-element) (c aggregated-bio-terms))
-  (push-debug `(,e ,c)) (break "stub"))
+  (push-debug `(,e ,c))) ;;(break "stub"))
   
 
 (defmethod after-actions-on-content ((p paragraph) (c aggregated-bio-terms))
-  (push-debug `(,p ,c))
+  (push-debug `(,p ,c)))
   ;; Loop over the sentences, access their entity and relation fields
   ;; and collect them in a hash table keeping counts by category
-  (break "paragraph content"))
+  ;; (break "paragraph content"))
 
 
 ;;;----------------------------------
