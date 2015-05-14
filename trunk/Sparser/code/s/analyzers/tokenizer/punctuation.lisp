@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1993,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation"
 ;;;   Module:  "tokenizer;"
-;;;  Version:  0.3 June 2014
+;;;  Version:  0.3 May 2015
 
 ;; initated 9/28/92 v2.3
 ;; 0.1 (11/2) changed the value of the capitalization global in the case
@@ -12,6 +12,8 @@
 ;;      *break-on-meaningless-characters* flag.
 ;; 0.3 (6/12/14) accumulate-spaces wasn't updated when we started using
 ;;      selected characters in UTF-8
+;;     (5/13/15) Fixed accumulate-spaces to get 0 for it's character
+;;      lookup and to treat is an the out-of-range character indicator
 
 (in-package :sparser)
 
@@ -95,7 +97,8 @@
          (character-entry 
           (elt *character-buffer-in-use*
                (incf *index-of-next-character*)))))
-    (unless next-entry
+    (when (or (null next-entry)
+              (equal next-entry 0))
       (announce-out-of-range-character))
 
     (if (eq (car next-entry) :punctuation)
