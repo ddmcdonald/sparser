@@ -3,17 +3,19 @@
 ;;;
 ;;;     File:  "Biology-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  December 2014
+;;;  version:  May 2015
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
 
 (in-package :sparser)
 
+;;;----------------
+;;; Standard setup
+;;;----------------
+
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (setup-bio) ;; load the bio model etc.
-; (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
-;    (setq *note-text-relations* nil)
 
 (defun setup-bio ()
   (bio-setting)
@@ -24,21 +26,161 @@
   (ddm-load-corpora)
   (declare-all-existing-individuals-permanent))
 
-(defun bio-traps ()
-  ;; switch settings to facilitate 'getting through'
-  (setq *sweep-sentence-treetops* nil) ;; easing these in gradually
-  (setq *island-driving* nil))
+;;;-------------------------------------------------------
+;;; Setup for reading whole documents via the nxml reader
+;;;-------------------------------------------------------
+#|  5/13/15 (ddm)
+This code is set up to take a list of article ids as given
+by Mitre in their 5/4/15 email (*2015-5-4_Mitre-articles*)
+and get them read. 
 
-(defun bf-on () ;; bio forest
-  (setq *sweep-sentence-treetops* t)
-  (setq *island-driving* t))
-(defun bf-off ()
-  (setq *sweep-sentence-treetops* nil)
-  (setq *island-driving* nil))
+It because things don't always work, it runs in three stages
+and stores its results in the global variables just below.
+1. Read the xml had create document objects
+     (populate-article-set)
+2. "Sweep" the document objects and populate their sentences
+     (sweep-article-set)
+3. Read the documents for their content
+     (read-article-set)
+
+The (untested) function load-and-read-article(id) would do all
+those steps sequentially on a single article.
+
+|#
+
+(defvar *articles-created* nil
+  "Holds the document shells as created by make-sparser-doc-structure")
+
+(defvar *populated-articles* nil
+  "Holds all of the articles we've loaded and populated,
+   i.e. run sweep-document over anc created all the sentences")
+
+(defvar *read-articles* nil
+  "Holds all of the articles we've parsed")
+
+;; This should be set in your personal workspace file,
+;; e.g. (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
+;;
+(defvar *r3-trunk* nil
+  "String identifing the location of the trunk on 
+  your machine, including a final slash")
 
 
-; (setq *kind-of-chart-processing-to-do* :successive-sweeps)
-; (bio-setting)
+(defun set-default-corpus-path (pathname-string)
+  "Set r3::*default-corpus-path* to this trunk-relative value"
+  (let ((symbol (intern (symbol-name '#:*default-corpus-path*)
+                        (find-package :r3)))
+        (expanded-pathname
+         (concatenate 'string *r3-trunk* pathname-string)))
+    (format t "~&Setting r3::*default-corpus-path*~
+               ~%  to ~s~%" expanded-pathname)
+    (set symbol expanded-pathname)))
+
+(defparameter *2015-5-4_Mitre-articles*
+  '(;; PMC3902907  contains <?epub October-7-2013?>, which screws parser
+    ;; PMC3441633  kills tokenizer on a tilde somehow
+    PMC1240052
+    ;;PMC1325201  also has ?pub element
+    PMC1240239
+    PMC1289294
+    PMC3058384
+    ;;PMC2597732   tilda bug
+    PMC534114
+    PMC2132783))
+
+(defun PMC-to-nxml (symbol)
+  (let* ((full-string (symbol-name symbol))
+         (number-string (subseq full-string 3))
+         (filename (string-append number-string ".nxml")))
+    filename))
+
+(defun load-xml-to-doc-if-necessary ()
+  (unless (find-package :r3)
+    (if (boundp '*r3-trunk*)
+      (let ((code-dir (string-append *r3-trunk* "code/")))
+        (cwd code-dir)
+        (load "load.lisp"))
+      (format nil "You have to set *r3-trunk*"))))
+
+(defun load-and-read-article (id) ;; assume corpus-path is set
+  (load-xml-to-doc-if-necessary)
+  (let* ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
+                     (find-package :r3)))
+         (doc-elements (funcall maker-fn id))
+         (article (car doc-elements)))
+    (setf (name article) id)
+    (push-debug `(,article))
+    (sweep-document article)
+    (read-from-document article)
+    article))
+
+;; (populate-article-set)
+(defun populate-article-set (&optional list-of-ids location)
+  (load-xml-to-doc-if-necessary)
+  (unless list-of-ids
+    (setq list-of-ids *2015-5-4_Mitre-articles*))
+  (unless location
+    (setq location "corpus/2015-5-4_Mitre-articles/"))
+  (set-default-corpus-path location)
+  (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
+                          (find-package :r3)))
+        (path-fn (intern (symbol-name '#:make-doc-path)
+                         (find-package :r3)))
+        (dbg-symbol (intern (symbol-name '#:*debug-list*)
+                            (find-package :r3))))
+    (setq dbg-symbol nil)
+     
+    (dolist (id list-of-ids)
+      (let ((simple-id (PMC-to-nxml id)))
+        (format t "~&~%~%Reading the file ~a"
+                (funcall path-fn simple-id))
+        (push (funcall maker-fn simple-id)
+              *articles-created*)))
+
+    ;; This is the list of all the document elements for each article.
+    ;; Now in the same order as the list they were created from.
+    (let* ((all-article-forms (nreverse *articles-created*))
+           (article-objects (loop for form in all-article-forms
+                              collect (car form))))
+      (setq *articles-created* article-objects)
+
+      (loop 
+        for article in *articles-created*
+        as id in list-of-ids
+        do (setf (name article) id))
+
+      *articles-created*)))
+
+;; Rewrite -- this kind of loop doesn't continue after
+;; it gets an error. 
+(defun sweep-article-set (&optional (articles *articles-created*))
+  (do ((article (car articles) (car rest))
+       (rest (cdr articles) (cdr rest)))
+      ((null article))
+    (handler-case
+        (push (sweep-document article)    
+              *populated-articles*)
+      (error (e)
+        (format t "~&Error sweeping ~a~%" article)
+        (let ((error-string
+               (apply #'format nil 
+                      (simple-condition-format-control e)
+                      (simple-condition-format-arguments e))))
+          (format t "Error: ~a~%~%" error-string)))))
+  *populated-articles*)
+    
+
+(defun read-article-set (&optional (articles *populated-articles*))
+  ;; Lets see if the error check within the reader in
+  ;; sweep-successive-sentences-from is sufficient to let the
+  ;; loop flow. 
+  (let ((*trap-error-skip-sentence* t))
+    (declare (special *trap-error-skip-sentence*))
+    (loop for article in articles
+      do (read-from-document article))))
+
+ 
+
 
 ; To extract only the new vocabulary from a text corpus, turn on
 ; these traces:
