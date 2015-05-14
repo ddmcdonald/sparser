@@ -22,6 +22,7 @@
 ;;  needed for single-letter-is-amino-acid in reify-point-mutation-and-make-edge is to call
 ;; edge-left-daughter on the edge (not edge-referent)
 ;; 5/13/2015 fix handling ov numbers in reify-point-mutation-and-make-edge
+;; debug handling of word object for number in reify-point-mutation-and-make-edge
 
 
 (in-package :sparser)
@@ -286,7 +287,9 @@ therefore we have the special cases:
         (when (and aa1 aa2)
           (when (and aa1 aa2)
             (let ((number 
-                   (if (itypep ref2 'number)
+                   (if (and
+                        (individual-p ref2)
+                        (itypep ref2 'number))
                        ref2
                        (find-or-make-number ref2))))
               (declare (special number))
