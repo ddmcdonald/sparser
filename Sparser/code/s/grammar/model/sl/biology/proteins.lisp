@@ -28,7 +28,8 @@
   (push-debug `(,words ,start-pos ,end-pos))
   (when (string= "p" (word-pname (first words)))
     ;; take template from reify-residue-and-make-edge
-    (break "stub: possible p protein?")))
+    (when *work-on-ns-patterns*
+      (break "stub: possible p protein?"))))
 
 ;;;--------------------------------------------
 ;;; for (some of) the abstract in the proposal
