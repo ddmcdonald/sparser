@@ -156,16 +156,21 @@
 (defun current-string ()
   *current-sentence-string*)
 
+(defparameter *trap-error-skip-sentence* nil
+  "Governs whether we let error happen")
+
 (defun sweep-successive-sentences-from (sentence)
   ;; Used with prepopulated documents after the sentences
   ;; have been delimited by scan-sentences-to-eof. 
   ;; Does all of the linguistic analysis, sentence by sentence
-  ;; until we get to the end of the sentence chain. 
+  ;; until we get to the end of the sentence chain.
+  (declare (special *trap-error-skip-sentence*))
   (loop
     (tr :sweep-reading-sentence sentence)
     (setq *current-sentence-string* (sentence-string sentence))
-    (scan-terminals-of-sentence sentence) (tr :scanning-done)
-    (sentence-processing-core sentence) (tr :sweep-core-done)
+    (if *trap-error-skip-sentence*
+      (error-trapped-scan-and-core sentence)
+      (scan-termnials-and-do-core sentence))
     (let ((next-sentence (next sentence)))
       (tr :sweep-next-sentence next-sentence)
       (when (string-equal "" (sentence-string next-sentence))
@@ -173,7 +178,23 @@
         (throw 'do-next-paragraph nil))
       (setq sentence next-sentence))))
 
+(defun scan-termnials-and-do-core (sentence)
+  (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
+  (sentence-processing-core sentence)) ;; (tr :sweep-core-done)
 
+(defun error-trapped-scan-and-core (sentence)
+  ;; Modeled on get-bracketing-from-string and test-np-segmentation-for-sexp
+  (handler-case 
+      (scan-termnials-and-do-core sentence)
+    (error (e)
+      (format t "~&Error in ~s~%~%" (current-string))
+      (let ((error-string
+             (apply #'format nil 
+                    (simple-condition-format-control e)
+                    (simple-condition-format-arguments e)))
+            (sentence-string (current-string)))
+        (format t "Error: ~a~%~s~%~%" error-string sentence-string)))))
+           
 
 ;;;----------------------------------------------------
 ;;; operations after the regular analysis has finished
@@ -403,10 +424,12 @@
   (itypes-under x 'bio-process))
 
 (defun individuals-under (x)
-  (let
-      ((indivs nil))
+  (declare (special *semtree-seen-individuals*))
+  (let ((indivs nil))
     (semtree x)
-    (maphash #'(lambda (l h) (push l indivs))
+    (maphash #'(lambda (l h)
+                 (declare (ignore h))
+                 (push l indivs))
              *semtree-seen-individuals*)
     indivs))
 
