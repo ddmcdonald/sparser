@@ -3,30 +3,58 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  April 2015
+;;;  version:  May 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
 
-(defvar *r3-trunk* nil
-  "String identifing the location of the trunk on 
-  your machine, including a final slash")
+
+;  (p "c-Raf/ MAPK-mediated [6].")
+
+(defun ddm-standard () ;;    (ddm-standard)
+  (setup-bio) ;; load the bio model etc.
+  (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
+  (trace-lexicon-unpacking) (trace-morphology)
+  (setq *check-forms* t) ;; allow rule filtering by schema patern
+  (setq *report-form-check-blocks* nil)
+  (setq *readout-relations* t)
+;  (setq *trace-instance-recording* t
+;        *scan-for-unsaturated-individuals* t)
+;  (setq *scan-for-unsaturated-individuals* t)
+;  (setq *debug-anaphora* t)  
+;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
+;  (setq *work-on-ns-patterns* t) 
+;  (trace-parse-edges) (trace-rule-source) 
+;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
+;  (trace-island-driving)
+  (incorporate-obo-terms
+   "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
+  (ddm-load-corpora)
+  (ddm-load "interface/R3-eval/dec14-output.lisp")
+  ;; (test-dec)  (dtst nil t) (reset-dectest)
+  ;; (test-overnight)
+  (test-jan))
+
 
 ; (ddm-load-article-2)
 (defun ddm-load-article-2 ()
-  (cwd "/Users/ddm/ws/R3/r3/trunk/code/")
-  (load "load.lisp")
+  (load-xml-to-doc-if-necessary)
   (let* ((fn (intern (symbol-name '#:make-sparser-doc-structure)
                      (find-package :r3)))
          (doc-elements
           (funcall fn 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
          (article (car doc-elements)))
-    (setq *sweep-for-terminals* nil)
-    (setq *article* article)
-    (read-from-document *article*)
-    (setq *sweep-for-terminals* t)))
+    (setq *article* article)))
+
+;    (sweep-document article)
+;    ;;(read-from-document article)
+ ;   article))
+
+
 ; (read-from-document *article*)
+; (trace-paragraphs)
+; (setq *trap-error-skip-sentence* t)
 
 ; (r3::make-sparser-doc-structure 1079799)
 ; (read-from-document 1079799)
@@ -52,29 +80,6 @@
 ; (figure-7)  (cells-defNP)  (p *brent-story*)
 
 ; dec #34 -- "an event"
-
-(defun ddm-standard () ;;    (ddm-standard)
-  (setup-bio) ;; load the bio model etc.
-  (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
-  ;; (load-nxml-converter)
-  (trace-lexicon-unpacking) (trace-morphology)
-  (setq *check-forms* t) ;; allow rule filtering by schema patern
-  (setq *report-form-check-blocks* nil)
-  (setq *readout-relations* t)
-;  (setq *trace-instance-recording* t
-;        *scan-for-unsaturated-individuals* t)
-;  (setq *scan-for-unsaturated-individuals* t)
-;  (setq *debug-anaphora* t)  
-;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
-  ;(setq *work-on-ns-patterns* t) 
-;  (trace-parse-edges) (trace-rule-source) (trace-island-driving)
-  ;(incorporate-obo-terms
-  ; "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
-  (ddm-load-corpora)
-  (ddm-load "interface/R3-eval/dec14-output.lisp")
-  ;; (test-dec)  (dtst nil t) (reset-dectest)
-  ;; (test-overnight)
-  (test-jan))
 
 (defun ddm-bio ()
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
