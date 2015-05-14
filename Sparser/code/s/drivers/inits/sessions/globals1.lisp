@@ -180,7 +180,7 @@
    of the text is some range of sentences and populate the
    corresponding sentence objects.")
 
-(defparameter *readout-relations* nil
+(defparameter *readout-relations* t
   "Gates whether to export or display the relations that were
    found in the sentence.")
 
