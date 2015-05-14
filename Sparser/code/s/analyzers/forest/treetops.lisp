@@ -523,8 +523,10 @@
        (or
         (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car triple1)))
         (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car triple1)))
-        (memq (cat-symbol (second (cfr-rhs (car triple1))))
-              '(category::vg category::vp category::vg+ed category::vp+ed)))
+        (and
+         (category-p (second (cfr-rhs (car triple2))))
+         (memq (cat-symbol (second (cfr-rhs (car triple1))))
+              '(category::vg category::vp category::vg+ed category::vp+ed))))
        (not
         (and
          (edge-p (edge-left-daughter (third triple1)))
@@ -546,7 +548,6 @@
     ;; goal here is to put off subject attachment until the subject 
     ;; is as large as possible.
     ;; Don't do right-to-left activation for the subj+verb rules
-    ;(break "competing")
     ;;(print `(dropping rule ,triple1))
     ;;(print `(in *p-sent* ,*p-sent* dropping rule ,triple1 compared to ,triple2))
     t)
