@@ -617,12 +617,24 @@ the buffer that is fed to find-word and becomes part of the word's pname.
         . ,(punctuation-named #\* )))
 
 (setf (elt *character-dispatch-array* 177) ;; #\Plus-Minus_Sign
-      `(:punctuation
+      '(:punctuation
+        . :space)) ;;////////////////////////////////////////
+
+(setf (elt *character-dispatch-array* 181) ;; #\Micro_Sign
+      '(:punctuation
         . :space)) ;;////////////////////////////////////////
 
 (setf (elt *character-dispatch-array* 194) ;; #\Latin_Capital_Letter_A_With_Circumflex
-      '(:punctuation
+      `(:punctuation
         . :space))
+
+(setf (elt *character-dispatch-array* 215) ;; #\Multiplication_Sign
+      `(:punctuation
+        . ,(punctuation-named #\* )))
+
+(setf (elt *character-dispatch-array* 239) ;; #\Latin_Small_Letter_I_With_Diaeresis
+      `(:alphabetical . (:lowercase . #\l)))
+      
 ;; Loading the utf-8 file into Hemlock it appears as a space,
 ;; in Emacs (in whatever it's default is -- Hemloc says its utf-8)
 ;; is appears as \302\240, and ACL just rolls over it.)
@@ -639,7 +651,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;; (format nil "~x" 954) => 3BA
 
 (defparameter *entries-for-out-of-band-characters*
-  `((353  ;; #\Latin_Small_Letter_S_With_Caron
+  `(
+    (353  ;; #\Latin_Small_Letter_S_With_Caron
      (:alphabetical . (:lowercase . #\s)))
 
     (769  ;; #\Combining_Acute_Accent
