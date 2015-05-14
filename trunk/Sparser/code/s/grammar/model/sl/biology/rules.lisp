@@ -210,8 +210,8 @@
   :referent (:function convert-bio-entity-to-protein right-edge))
 
 (defun convert-bio-entity-to-protein (bio-entity)
-  (push-debug `(,bio-entity)) (break "convert bio-entity"))
-
+  (push-debug `(,bio-entity)) ;;(break "convert bio-entity"))
+  bio-entity)
 
 
 ;;--- expediency
