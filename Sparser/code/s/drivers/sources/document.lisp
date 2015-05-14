@@ -3,10 +3,11 @@
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   April 2015
+;;;  Version:   May 2015
 
 ;; initiated 4/25/15 to driving reading from a fully populated
-;; article object. 
+;; article object. Continually modifying/adding routines through
+;; 5/12/15. 
 
 (in-package :sparser)
 
@@ -32,20 +33,28 @@
    name sections we want to skip over")
 
 (defun ignore-this-document-section (section)
-  (unless (slot-boundp section 'title)
-    (push-debug `(,section))
-    (error "title of section hasn't been set"))
-  (when *sections-to-ignore*
-    (let ((title-object (title section)))
-      (unless title-object
-        (push-debug `(,section))
-        (error "Section somehow doesn't have a title object"))
-      (let ((title-string (content-string title-object)))
-        (dolist (ignore-substring *sections-to-ignore* nil)
-          (when (search ignore-substring title-string
-                        :test #'string-equal)
-            (format t "~&~%------- Ignoring section ~a --------" section)
-            (return t)))))))
+  (unless (typep section 'paragraph) ;; happens sometimes
+    (unless (slot-boundp section 'title)
+      (push-debug `(,section))
+      (error "title of section hasn't been set"))
+    (when *sections-to-ignore*
+      (let ((title-object (title section)))
+        (unless title-object
+          (push-debug `(,section))
+          (error "Section somehow doesn't have a title object"))
+        (let ((title-string 
+               (typecase title-object
+                 (string title-object)
+                 (string-holder (content-string title-object))
+                 (otherwise
+                  (push-debug `(,title-object))
+                  (error "Unexpected type of title: ~a~%~a"
+                         (type-of title-object) title-object)))))
+          (dolist (ignore-substring *sections-to-ignore* nil)
+            (when (search ignore-substring title-string
+                          :test #'string-equal)
+              (format t "~&~%------- Ignoring section ~a --------" section)
+            (return t))))))))
 
 
 ;;;---------
@@ -75,6 +84,10 @@
     ;; cases and if so create them and make them the new objects
     ;; the children of the article so we can handle them
     ;; correctly
+    (when (typep child 'paragraph)
+      ;; 3058384 starts out as <body> <p> ... before it gets to
+      ;; a proper section.
+      (return-from pre-sweep-for-embedded-sections nil))
     (loop
       (unless child
         (return))
@@ -130,7 +143,8 @@
   (dolist (sec (children a))
     (unless (ignore-this-document-section sec)
       (setq *section* sec)
-      (read-from-document sec)))
+      (catch 'do-next-paragraph ;; article 3058384 starts with paragraphs
+        (read-from-document sec))))
   (after-actions a)
   a)
 
@@ -150,7 +164,8 @@
           previous-section)
       (loop
         (unless section (return))
-        (read-from-document section)
+        (catch 'do-next-paragraph
+          (read-from-document section))
         (setq previous-section section)
         (setq section (car remaining)
               remaining (cdr remaining))
