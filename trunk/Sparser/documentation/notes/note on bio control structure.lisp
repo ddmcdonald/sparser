@@ -253,15 +253,16 @@ the function conjunction-heuristics which presently has just these
 two criteria. If we needed more subtle or context-sensitive 
 rationale to conjoin (or not), that is where they would go. 
 
------------ Parentheses
+
+----------- 4th lowlevel pass: Parentheses
 After applying conjunction we call sweep-to-span-parentheses,
 which like the others does a treetop-by-treetop walk across the
 sentence. What's different in this sweep is the call to the
 function word-traversal-hook on each treetop. This hook, in
 drivers/chart/traversal1.lisp, is designed to track and process
-paired punctuation: different sorts of brackets, quotations, 
+paired punctuation: square, curly, or angle brackets, quotations, 
 and particularly parentheses. This call will return the set of
-characters and the actions, (list-hash-table *traversal-routine-table*).
+characters and their actions, (list-hash-table *traversal-routine-table*).
 
 Each pair of characters, and open and a close, have a matching
 pair of functions. A 'mark' function notes the position of the
