@@ -1,3 +1,12 @@
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;;
+;;;    File: "rusty-workspace"
+;;;  Module: "init/workspaces/
+;;; version: May 2015
+
+;;remove (bio-traps) and (bf-on) in (rusty) -- no longer defined
+
 (in-package :sparser)
 
 
@@ -18,7 +27,7 @@
 
 (defun rusty()
   (setup-bio) ;; load the bio model etc.
-  (bio-traps) ;; turn off forest level parsing and this presently problematic parameter
+  ;;(bio-traps) ;; turn off forest level parsing and this presently problematic parameter
 
   (bio-setting)
   (setq *kind-of-chart-processing-to-do* :successive-sweeps)
@@ -46,7 +55,7 @@
   (ddm-ed "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
  
   ;;  (setq *trace-network-flow* t)
-  (bf-on)
+  ;;(bf-on)
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
