@@ -24,6 +24,10 @@
 ;; 02/18/15 alphabetized terms
 ;; 4/24/2015 added subject variable for many adjectives that can be copular adjectives
 ;; 4/27/2015 improve handling of "serum" and "fetal calf serum" and "open reading frame" using def-synonym
+;; 5/15/2015 substantial revision in taxonomy to drastically reduce the overloading of bio-process,
+;;  provide bio-rhetorical as a marker for verbs that talk about belief and truth, bio-event for actions that are not bio-processes in the OBO sense, bio-relation for things like
+;;  contain, sonstitute, etc.
+;;  concomitant revision for things like thatcomp and whethercomp
 
 (in-package :sparser)
 
@@ -31,7 +35,7 @@
 ;; actually an isotope -- need to adjust taxonomy 
 
 
-(noun "ability" :super bio-process
+(noun "ability" :super bio-relation
       :binds ((agent biological)(result biological)(ability bio-process))
       :realization
       (:noun "ability" :adj "able"
@@ -111,14 +115,14 @@
 
 (adj "anticancer" :super predicate)
 
-(noun "approach" :super bio-process)
+(noun "approach" :super bio-method)
 
 (define-adverb "as a consequence")
 (define-adverb "as expected") ;; not very common, but avoids a break
-(noun "assay" :super bio-process)
+(noun "assay" :super bio-method)
 (define-adverb "at baseline")
 (adj "background" :super predicate)
-(noun "baseline" :super  bio-process)
+(noun "baseline" :super  bio-method)
 (noun "bifc" :super bio-process)
 (noun "binder" :super bio-entity)
 
@@ -469,7 +473,7 @@
   (:noun "lysate"
          :from source))
 
-(noun "manner" :super bio-process
+(noun "manner" :super bio-method
       :binds ((process bio-process))
       :realization
       (:noun "manner"
@@ -479,7 +483,7 @@
 (def-synonym mass-spectrometry
              (:noun "mass spectrometry"))
              
-(noun "means" :super bio-process
+(noun "means" :super bio-method
       :binds ((process bio-process))
       :realization
       (:noun "means"
@@ -504,7 +508,7 @@
   (:noun "mobility"
          :of motile))
 
-(noun "mode" :super bio-process
+(noun "mode" :super bio-method
       :binds ((process bio-process))
       :realization
       (:noun "mode"
@@ -550,7 +554,7 @@
       (:noun "outcome"
              :of process))
 
-(noun "panel" :super bio-process
+(noun "panel" :super bio-method
       :binds ((component molecule)) ;; this should be for genes and proteins
       :realization
       (:noun "panel"
@@ -660,7 +664,7 @@
 (adj "same" :super predicate)
 (noun "scaffold" :super protein) 
 (noun "scale" :super bio-scalar)     
-(noun "screen" :super  bio-process)
+(noun "screen" :super  bio-method)
 (adj "selective" :super predicate
   :binds ((agent biological)(theme bio-entity))
   :realization
@@ -722,7 +726,7 @@
            :in context))
 
 (noun "state" :super bio-entity)
-(noun "strategy" :super bio-process
+(noun "strategy" :super bio-method
       :binds ((goal bio-process))
       :realization
       (:noun "strategy"
@@ -792,7 +796,8 @@
       (:noun "upstream"
              :of relative-to))
 (adj "useful" :super predicate
-     :binds ((subject biological)(purpose bio-process))
+     :binds ((subject biological)
+             (purpose (:or bio-process bio-method)))
      :realization
      (:adj "useful"
            :s subject
@@ -812,6 +817,7 @@
 
 (adj "wild-type" :super predicate)
 (adj "wild type" :super wild-type)
+(noun "work" :super bio-method)
 
 
 
@@ -936,8 +942,6 @@
 ;;;------------------------------------------------------------------
  
 
-"articulate" 
-"assay" 
 "auto" 
 "binder"
 "effect" 
