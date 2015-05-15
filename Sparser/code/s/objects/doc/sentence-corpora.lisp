@@ -11,6 +11,8 @@
 ;; completed methods for semantic regression -- seems to work -- 
 ;; no comparison as yet.
 ;; 3/2/15 Finished compare-to-snapshot. 
+;; 5/15/2015 changes to allow compare-to-snapshot to be used to collect information that would otherwise
+;;  only be saved in document processing -- added optional argument save-info on run-treetop-snapshot, etc.
 
 (in-package :sparser)
 
@@ -26,7 +28,7 @@ previous records of treetop-counts.
 ;;--- useful macro -- but what file should it really be in?
 
 (defmacro with-total-quiet (&body body)
-  `(let ((*readout-relations* nil)
+  `(let (;;(*readout-relations* nil)
          (*readout-segments* nil)
          (*readout-segments-inline-with-text* nil) ;; quiet
          (*display-word-stream* nil)
@@ -89,7 +91,7 @@ previous records of treetop-counts.
 
 ;;--- run their sentences
 
-(defmethod run-treetop-snapshot ((name symbol))
+(defmethod run-treetop-snapshot ((name symbol) &optional (save-info nil))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
@@ -97,25 +99,44 @@ previous records of treetop-counts.
 
 (defparameter *p-sent* nil)
 
-(defmethod run-treetop-snapshot ((corpus sentence-corpus))
+(defmethod run-treetop-snapshot ((corpus sentence-corpus)&optional (save-info nil))
   (let ((variable (corpus-bound-variable corpus)))
     (unless variable
       (error "Corpus not set up with a variable"))
     (with-total-quiet
-      (let ((*do-anaphora* nil) ;; no anaphora on single sentences
-            (index 0) pairs )
-        (declare (special *do-anaphora*))
-        (dolist (exp (eval variable)) ;; (p "...")
-          (setq *p-sent* exp)
-          (incf index)
-          (eval exp)
-          (let ((sentence (previous (sentence))))
-            ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
-            (let ((count (length (treetops-between
-                                  (starts-at-pos sentence)
-                                  (ends-at-pos sentence)))))
-              (push `(,index . ,count) pairs))))
-        (nreverse pairs)))))
+        (let ((*do-anaphora* nil) ;; no anaphora on single sentences
+              (index 0) pairs )
+          (declare (special *do-anaphora*))
+          (if
+           save-info
+           (let ((*reading-populated-document* t)
+                 (*recognize-sections-within-articles* nil) ;; turn of doc init
+                 (*accumulate-content-across-documents* t)) ;; doesn't clear history??
+             (declare (special *reading-populated-document*
+                               *recognize-sections-within-articles*
+                               *accumulate-content-across-documents*))
+             
+             (dolist (exp (eval variable)) ;; (p "...")
+               (setq *p-sent* exp)
+               (incf index)
+               (eval exp)
+               (let ((sentence (previous (sentence))))
+                 ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
+                 (let ((count (length (treetops-between
+                                       (starts-at-pos sentence)
+                                       (ends-at-pos sentence)))))
+                   (push `(,index . ,count) pairs)))))
+           (dolist (exp (eval variable)) ;; (p "...")
+             (setq *p-sent* exp)
+             (incf index)
+             (eval exp)
+             (let ((sentence (previous (sentence))))
+               ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
+               (let ((count (length (treetops-between
+                                     (starts-at-pos sentence)
+                                     (ends-at-pos sentence)))))
+                 (push `(,index . ,count) pairs)))))
+          (nreverse pairs)))))
 
 
 
@@ -126,17 +147,19 @@ previous records of treetop-counts.
     (print c)
     (print (compare-to-snapshot c))))
 
-(defmethod compare-to-snapshot ((name symbol))
+(defmethod compare-to-snapshot ((name symbol)&optional (save-info nil))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
     (compare-to-snapshot corpus)))
 
-(defmethod compare-to-snapshot  ((corpus sentence-corpus))
+(defmethod compare-to-snapshot  ((corpus sentence-corpus)&optional (save-info nil))
   ;;/// consider a way to designate which snapshot to compare against
-  (let* ((current-pairs (run-treetop-snapshot corpus))
+  (let* ((current-pairs (run-treetop-snapshot corpus save-info))
          (snapshot (car (snapshots corpus)))
-         (reference-pairs (snapshot-pairs snapshot)))
+         (reference-pairs (snapshot-pairs snapshot))
+         (*initialize-with-each-unit-of-analysis* nil))
+    (declare (special *initialize-with-each-unit-of-analysis*))
     (let ( better worse )
       (loop for ref-pair in reference-pairs
         as pair in current-pairs
@@ -146,7 +169,7 @@ previous records of treetop-counts.
         do (push (car pair) better))
       (format t "~&Better: ~a~
                  ~%Worse: ~a" better worse)
-      current-pairs)))
+      current-pairs))) 
 
   
       
@@ -303,7 +326,7 @@ previous records of treetop-counts.
   (let ((variable (corpus-bound-variable corpus)))
     (unless variable
       (error "Corpus not set up with a variable"))
-    (let ((*readout-relations* nil)
+    (let ((*readout-relations* t)
           (*readout-segments* nil)
           (*readout-segments-inline-with-text* nil) ;; quiet
           (*display-word-stream* nil)
@@ -385,6 +408,9 @@ previous records of treetop-counts.
     when
     (search str (third s))
     collect s))
+
+(defun show-sents (str)
+  (np (find-corpus-sents str)))
 
 (defun find-corpus-sents(str)
   (find-corpus-instances str))
