@@ -27,8 +27,9 @@
 (lload "basic tools;clos-operations")
 (lload "basic tools;resource")
 (lload "basic tools;test-functions")
-(lload "basic tools;xmls")
-(lload "basic tools;xmlrep-helpers")
+;; [sfriedman:20150515.0915CST] Removing this, and loading from R3 external.
+;;(lload "basic tools;xmls")
+;;(lload "basic tools;xmlrep-helpers")
 
 
 
