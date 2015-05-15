@@ -22,7 +22,8 @@
   (remove-paragraph-marker) ;; #<PSR1155  sgml-label ->  "p"> interfers with "p100"
   (setq *tts-after-each-section* nil)
   (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
-  (gload "bio;loader")
+  (gate-grammar *biology* ;; sets up stats collection
+    (gload "bio;loader"))
   (ddm-load-corpora)
   (declare-all-existing-individuals-permanent))
 
@@ -77,10 +78,10 @@ those steps sequentially on a single article.
     (set symbol expanded-pathname)))
 
 (defparameter *2015-5-4_Mitre-articles*
-  '(;; PMC3902907  contains <?epub October-7-2013?>, which screws parser
+  '(PMC3902907  ;; contained <?epub October-7-2013?>, which screws parser
     ;; PMC3441633  kills tokenizer on a tilde somehow
     PMC1240052
-    ;;PMC1325201  also has ?pub element
+    PMC1325201  ;;also had ?pub element
     PMC1240239
     PMC1289294
     PMC3058384
