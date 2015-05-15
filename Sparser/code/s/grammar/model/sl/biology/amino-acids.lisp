@@ -292,7 +292,6 @@ therefore we have the special cases:
                         (itypep ref2 'number))
                        ref2
                        (find-or-make-number ref2))))
-              (declare (special number))
               (let* ((i (make-point-mutation aa1 aa2 ;; or is it the other order??
                                              number))
                      (edge
