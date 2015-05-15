@@ -21,8 +21,13 @@
 ;; 5/2/2015 update semtree to support indiv-pattern for pattern matching
 ;; 5/13/2015 code related to semtree that will (eventually) fin the material needed for MITRE's index cards
 ;;  itypes-under, process-under, individuals-under...
+;; 5/25/2015 collect information to make MITRE index cards
 
 (in-package :sparser)
+
+;;parameters controlling the collection of information for MITRE index cards
+(defparameter *all-sentences* nil)
+(defparameter *index-cards* t)
 
 ;;; Sweep to introduce minimal edges over the text, one sentence
 ;;; at a time, covering all unary rules, polywords, word-driven
@@ -178,7 +183,7 @@
         (throw 'do-next-paragraph nil))
       (setq sentence next-sentence))))
 
-(defun scan-termnials-and-do-core (sentence)
+(defun scan-terminals-and-do-core (sentence)
   (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
   (sentence-processing-core sentence)) ;; (tr :sweep-core-done)
 
@@ -217,11 +222,27 @@
   (when *readout-relations*
     (multiple-value-bind (relations entities)
                          (identify-relations sentence)
-      (set-entities sentence entities)
+      (if *index-cards*
+          (set-entities sentence 
+                        (all-individuals-in-tts))
+          (set-entities sentence entities))
       (set-relations sentence relations)
       (setq *relations* relations  ; (readout-relations relations)
-            *entities* entities))) ; (readout-entities entities)
-)
+            *entities* entities)); (readout-entities entities)
+    (push (list (sentence-string sentence) 
+                (all-individuals-in-tts))
+          *all-sentences*)))
+     
+(defun all-individuals-in-tts()
+  (let
+      ((indivs nil))
+    (loop for tt in (all-tts)
+      do
+      (loop for i in (individuals-under tt)
+        when (itypep i 'biological)
+        do
+        (pushnew i indivs)))
+    (reverse indivs)))
 
 
 ;;;------------------------------------------------------------
