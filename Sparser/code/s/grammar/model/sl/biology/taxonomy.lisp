@@ -28,6 +28,11 @@
 ;;  nominal for "loading"
 ;; 4/30/2015 bunch of changes to partially merge biopax3/reactome categories with taxonomy
 ;; introduce new subcategories of location — molecular-location (for site and residue), cellular-location (organelles within a cell), non-cellular-location (for things like cell-line, species, organism)
+;; 5/15/2015 substantial revision in taxonomy to drastically reduce the overloading of bio-process,
+;;  provide bio-rhetorical as a marker for verbs that talk about belief and truth, bio-event for actions that are not bio-processes in the OBO sense, bio-relation for things like
+;;  contain, sonstitute, etc.
+;;  concomitant revision for things like thatcomp and whethercomp
+
 
 (in-package :sparser)
 
@@ -46,7 +51,7 @@
    in noun noun compounds.")
  
 (define-mixin-category bio-thatcomp
-  :binds ((statement (:or bio-process molecule-state be predicate)))
+  :binds ((statement (:or bio-process molecule-state be predicate bio-method relation bio-rhetorical)))
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstraction, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -55,7 +60,7 @@
      bio-processes.")
 
 (define-mixin-category bio-whethercomp
-  :binds ((statement bio-process))
+  :binds ((statement (:or bio-process molecule-state be predicate bio-method relation bio-rhetorical)))
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstraction, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -172,6 +177,19 @@
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
+(define-category bio-control :specializes bio-process
+  :binds ((agent biological) 
+          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          (theme biological)) ;; increase in rate vs increase in RAS activity
+  :realization
+  (:verb "control" 
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :for theme))
+
+(define-category bio-rhetorical :specializes event)
+
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"
   :specializes bio-process)
 
@@ -204,6 +222,22 @@
   :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'liquid chromatography', etc. that may be the basis
+    of the grammar patterns.")
+
+(define-category bio-event
+  :specializes event
+  :mixins (has-UID has-name biological)
+  :realization (:common-noun name) ;; for nominal forms
+  :documentation "No content by itself, provides a common parent
+    for 'acquire, act, addition, counfound etc. that may be the basis
+    of the grammar patterns.")
+
+(define-category bio-relation
+  :specializes event
+  :mixins (has-UID has-name biological)
+  :realization (:common-noun name) ;; for nominal forms
+  :documentation "No content by itself, provides a common parent
+    for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
 
 (define-category feedback-loop :specializes bio-process
