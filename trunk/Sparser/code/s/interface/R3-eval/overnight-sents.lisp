@@ -60,11 +60,6 @@
         
 
 
-(defun test-overnight()
-  (setq *sentences* *overnight-sentences*)
-  nil)
-
-
 (defun otst1 (n test stream)
   (print (list n test))
   (let ((*readout-relations* t))
