@@ -13,6 +13,7 @@
 ;; 3/21/2015 -- revised make-typed-bio-entity              
 ;; SBCL caught fact that some words are actually polywords here...
 ;; 4/19/15 Added stub for handling acronyms.
+;; 5/16/2015 attempt (not quite working) to define get-mitre-id which tries to get the MITRE-LINK value for a protein (for example)
 
 
 (in-package :sparser)
@@ -75,6 +76,14 @@
   (setf (gethash i *krisp-object-to-Mitre-ID*) mitre-link)
   (setf (gethash mitre-link *Mitre-ID-to-krisp-object*) i))
 
+(defun get-mitre-id (l)
+  (cond
+   ((individual-p l)
+    (or
+     (gethash l *krisp-object-to-Mitre-ID*)
+     (gethash (car (indiv-type l)) *krisp-object-to-Mitre-ID*)))
+   ((category-p l)
+    (gethash l  *krisp-object-to-Mitre-ID*))))
 
 
 ;;;-------------------------------------------
