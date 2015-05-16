@@ -14,6 +14,8 @@
 ;;; 5/3/2015 ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
 ;; drop the "then" on the floor
 ;; 5/8/2015 handle "in vitro" and "in vivo" as VP post-modifiers
+;; 5/16/2015 correct erroneous binding on rule (def-cfr residue-on-protein (protein residue-on-protein)
+;; discovered while producing MITRE index cards
 
 
 
@@ -175,7 +177,7 @@
   :form np
   :referent 
   (:head right-edge           
-         :bind (on-protein right-edge)))
+         :bind (on-protein left-edge)))
 
 (def-form-rule (amino-acid pp) ;; phosphoserine at residue 827
   :form np 
