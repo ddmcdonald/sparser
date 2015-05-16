@@ -18,6 +18,9 @@
 ;; Formatted Bipoax frames to make them a bit more clear...
 ;; Added commentary on Brent's story at the end of the file
 ;; 5/3/2015 updated to make it possible to load ras_1.owl
+;; 5/15/2015 handle use of "about" instead of "id" for some items in ras_1.owl
+;; remove xrefs from results
+;;  added utility protein-ref-desc to produce a def-bio expression from all of the ProteinReferences that MITRE has
 
 (in-package :sparser)
 (defvar *bpi*)
@@ -51,7 +54,7 @@
      ("stepProcess" "Control") ("stepProcess" "Pathway") ("stepProcess" "Catalysis") ("stepProcess" "BiochemicalReaction")("step-Process" "Transport"))
     ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref")) 
     ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref")) 
-    ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref")) 
+    ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref")("displayName")) 
     ("Provenance" ("comment") ("name")) 
     ("PublicationXref" ("author") ("db") ("id") ("source") ("title") ("year")) 
     ("RelationshipTypeVocabulary" ("term") ("xref" "UnificationXref")) 
@@ -70,8 +73,23 @@
      ("right" "bpSmallMolecule") ("right" "Protein") ("right" "Complex") 
      ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")
      ("origin" "CellularLocationVocabulary") ("destination" "CellularLocationVocabulary"))
-
-    ("UnificationXref" ("comment") ("db") ("id") ("idVersion"))))
+    ("Degradation" ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right")) 
+    ("RnaRegion"  ("cellularLocation") ("displayName") ("comment")  ("standardName")) 
+    ("DnaRegionReference" ("memberEntityReference")  ("memberEntityReference") ("organism") ("displayName") ("comment") ("standardName")) 
+    ("InteractionVocabulary" ("term")) 
+    ("DnaReference" ("displayName") ("comment") ("organism")) 
+    ("TemplateReactionRegulation"  ("controlled") ("controlType") ("controller") ("displayName") ("standardName") ("comment") ("availability")) 
+    ("SequenceRegionVocabulary" ("comment")) 
+    ("RnaReference" ("name")  ("displayName") ("standardName") ("comment") ("organism") ("entityFeature") ("memberEntityReference")) 
+    ("TransportWithBiochemicalReaction"  ("evidence") ("participantStoichiometry") ("left") ("comment") ("right")) 
+    ("DnaRegion" ("entityReference")  ("cellularLocation") ("displayName") ("comment") ("standardName")) 
+    ("MolecularInteraction"  ("evidence") ("participant") ("displayName") ("interactionType") ("name")) 
+    ("BindingFeature" ("bindsTo") ("comment")) 
+    ("EntityFeature" ("about") ("comment")) 
+    ("Rna" ("entityReference")  ("name") ("displayName") ("comment") ("standardName")) 
+    ("TemplateReaction"  ("product") ("templateDirection") ("participant") ("displayName") ("comment") ("standardName") ("interactionType") ("evidence")) 
+    ("Conversion"  ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right")) 
+    ))
 
 (defparameter *bp-patterns*
   '(("BioSource" ("name") ("xref"))
@@ -90,7 +108,7 @@
     ("PhysicalEntity" ("displayName") ("cellularLocation")); ("xref") )
     ("Protein" ("displayName") ("cellularLocation") ("entityReference") ("feature") );;("name") ("xref")
     ("ProteinState" ("displayName") ("cellularLocation") ("entityReference") ("feature") );;("name") ("xref")
-    ("ProteinReference" ("organism") ("name") ) ;;("xref")
+    ("ProteinReference" ("organism") ("name") ("displayName")) ;;("xref")
     ("Provenance" ("name"))
     ("PublicationXref" ("id") ("db") ("year")  ("source" "J Biol Chem 270:9809-12"))
     ("RelationshipTypeVocabulary" ("term"))
@@ -102,7 +120,23 @@
     ("SmallMoleculeReference" ("name"));("xref"))
     ("Stoichiometry" ("stoichiometricCoefficient") ("physicalEntity"))
     ("Transport" ("standardName") ("right") ("participantStoichiometry") ("left") ("dataSource")("origin")("destination"))
-    ("UnificationXref" ("db") ("id") ("idVersion"))))
+    ("UnificationXref" ("db") ("id") ("idVersion"))
+    ("Degradation" ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right")) 
+    ("RnaRegion"  ("cellularLocation") ("displayName") ("comment")  ("standardName")) 
+    ("DnaRegionReference" ("memberEntityReference")  ("memberEntityReference") ("organism") ("displayName") ("comment") ("standardName")) 
+    ("InteractionVocabulary" ("term")) 
+    ("DnaReference" ("displayName") ("comment") ("organism")) 
+    ("TemplateReactionRegulation"  ("controlled") ("controlType") ("controller") ("displayName") ("standardName") ("comment") ("availability")) 
+    ("SequenceRegionVocabulary" ("comment")) 
+    ("RnaReference" ("name")  ("displayName") ("standardName") ("comment") ("organism") ("entityFeature") ("memberEntityReference")) 
+    ("TransportWithBiochemicalReaction"  ("evidence") ("participantStoichiometry") ("left") ("comment") ("right")) 
+    ("DnaRegion" ("entityReference")  ("cellularLocation") ("displayName") ("comment") ("standardName")) 
+    ("MolecularInteraction"  ("evidence") ("participant") ("displayName") ("interactionType") ("name")) 
+    ("BindingFeature" ("bindsTo") ("comment")) 
+    ("EntityFeature" ("about") ("comment")) 
+    ("Rna" ("entityReference")  ("name") ("displayName") ("comment") ("standardName")) 
+    ("TemplateReaction"  ("product") ("templateDirection") ("participant") ("displayName") ("comment") ("standardName") ("interactionType") ("evidence")) 
+    ("Conversion"  ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right"))))
 
 #|
 decoding table for referenced OBO terms
@@ -182,10 +216,17 @@ decoding table for referenced OBO terms
     (setf (gethash (second bio-sexpr) *xml-ht*)
           (normalize-sexpr-to-biopax3 (gethash (second bio-sexpr) *xml-ht*)))))
 
+(defparameter *raw-ras1* nil)
+
 (defun load-ras1(&optional (file "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/ExamplePackage/ras_1.owl"))
+  (setq *raw-ras1* (load-owl file))
+  (setq *trimmed-ras1* 
+        (loop for r in (cdddr *raw-ras1*)
+          unless (equalp (caar r) "RelationshipXref")
+          collect r))
   (setq *bpi*
         (loop for i in
-          (cdddr (load-owl file))
+          *trimmed-ras1*
           collect (biopax-to-bio-sexpr i)))
   (loop for bio-sexpr in *bpi*
     do
@@ -215,7 +256,9 @@ decoding table for referenced OBO terms
               (t tag))
             ,(loop for rep in (xmls::xmlrep-attribs child)
                when
-               (equalp (car rep) "id")
+               (member (car rep) 
+                       '("id" "about")
+                       :test #'equalp)
                return (second rep))
             
             ;; darpa uses "id" (xmls:xmlrep-attrib-value "ID" child)
@@ -224,7 +267,11 @@ decoding table for referenced OBO terms
                 (equalp (car rep) "ID")
                 collect rep)
             ,@(loop for rep in (xmls::xmlrep-children child)
-                unless (null rep) ;; bug in xmls?!
+                unless 
+                (or
+                 (null rep) ;; bug in xmls?!
+                 (equalp "xref"
+                         (xmls::xmlrep-tag (remove nil rep))))
                 collect
                 (let*
                     ((*rep* (remove nil rep))
@@ -257,6 +304,19 @@ decoding table for referenced OBO terms
           bio-sexpr)
     bio-sexpr))
 
+(defun protein-ref-desc (ref)
+  (when
+      (equalp (car ref) "ProteinReference")
+    `((def-bio ,(second (assoc "displayName" (cddr ref) :test #'equalp))protein
+        :synonyms ,(loop for item in (cddr ref) when (equalp (car item) "name") collect (second item))
+        :mitre-link ,(second (assoc "displayName" (cddr ref) :test #'equalp))))))
+
+(defun protein-defs ()
+    (load-ras1)
+    (sort-bp-types)
+    (length (setq prodescs (loop for p in (gethash "ProteinReference" *bp-types*) collect p)))
+    (length (setq prodefs (loop for p in (gethash "ProteinReference" *bp-types*) append (protein-ref-desc p)))))
+
 (defun find-children (bio-sexpr branch-tag)
   (loop for child in (cddr bio-sexpr)
     when (and (consp child)
@@ -274,7 +334,8 @@ decoding table for referenced OBO terms
      (loop for l in lefts
        always
        (loop for r in rights
-         thereis (same-biochemical? l r))))))
+         thereis (same-biochemical? l r)))))
+  nil)
 
 (defun same-biochemical? (l r)
   (let
@@ -345,7 +406,9 @@ decoding table for referenced OBO terms
                 when
                 (and
                  (consp item)
-                 (assoc (car item) (cdr pattern) :test #'equalp)) ;; find-pattern
+                 (or
+                  (null (cdr pattern))
+                  (assoc (car item) (cdr pattern) :test #'equalp))) ;; find-pattern
                 collect
                 `(,(car item)
                   ,(simplify-xml-resource item (- depth 1)))))))))
@@ -389,7 +452,12 @@ decoding table for referenced OBO terms
         (sort *bp-type-list*
               #'string<
               :key
-              #'caar)))
+              #'caar))
+  (loop for b in *bp-type-list* 
+    collect 
+    (print
+     (list (caar b) 
+           (length b)))))
 
 
 (defun create-bpi-types (&optional (simple t))
