@@ -1234,6 +1234,7 @@
            :of object))
 
 (delete-noun-cfr (resolve/make "lead"))
+(delete-noun-cfr (resolve/make "leads"))
 (define-category lead
     :specializes bio-control
     :binds ((agent biological)(object biological)(result biological))
