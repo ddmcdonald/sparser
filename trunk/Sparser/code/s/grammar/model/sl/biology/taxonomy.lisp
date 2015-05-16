@@ -32,6 +32,7 @@
 ;;  provide bio-rhetorical as a marker for verbs that talk about belief and truth, bio-event for actions that are not bio-processes in the OBO sense, bio-relation for things like
 ;;  contain, sonstitute, etc.
 ;;  concomitant revision for things like thatcomp and whethercomp
+;; 5/16/2015 add in all the cellular locations shown in the MITRE ras1 corpus, including their GO identifiers
 
 
 (in-package :sparser)
@@ -490,19 +491,68 @@
   :instantiates self
   :index (:permanent :key name))
 
-(define-category nucleus :specializes cellular-location
-  :realization 
-  (:noun "nucleus" :adj "nuclear"))
 
+;; These came from the MITRE RAS1 owl file
 
-;; need to put in "GO:0005829"
+(define-category caveola :specializes cellular-location
+  :realization
+  (:noun "caveola"))
+(handle-mitre-link category::caveola "GO:0005901")
+(define-category cytoplasm :specializes cellular-location
+  :realization
+  (:noun "cytoplasm"))
+(handle-mitre-link category::cytoplasm "GO:0005737")
 (define-category cytosol :specializes cellular-location
+  :realization
+  (:noun "cytosol" :adj "cytosolic"))
+(handle-mitre-link category::cytosol "GO:0005829")
+(define-category early-endosome :specializes cellular-location
+  :realization
+  (:noun "early-endosome"))
+(handle-mitre-link category::early-endosome "GO:0005769")
+(define-category endosome :specializes cellular-location
+  :realization
+  (:noun "endosome"))
+(handle-mitre-link category::endosome "GO:0005768")
+(define-category extracellular-matrix :specializes cellular-location
+  :realization
+  (:noun "extracellular-matrix"))
+(handle-mitre-link category::extracellular-matrix "GO:0031012")
+(define-category extracellular-region :specializes cellular-location
+  :realization
+  (:noun "extracellular-region"))
+(handle-mitre-link category::extracellular-region "GO:0005576")
+(define-category golgi-apparatus :specializes cellular-location
+  :realization
+  (:noun "golgi-apparatus"))
+(handle-mitre-link category::golgi-apparatus "GO:0005794")
+(define-category integral-to-membrane :specializes cellular-location
+  :realization
+  (:noun "integral-to-membrane"))
+(handle-mitre-link category::integral-to-membrane "GO:0016021")
+(define-category membrane-raft :specializes cellular-location
+  :realization
+  (:noun "membrane-raft"))
+(handle-mitre-link category::membrane-raft "GO:0045121")
+(define-category nucleus :specializes cellular-location
+  :realization
+  (:noun "nucleus"))
+(handle-mitre-link category::nucleus "GO:0005634")
+(define-category plasma-membrane :specializes cellular-location
   :realization 
-  (:noun "cytosol"
-         :adj "cytosolic"))
+  (:noun "plasma-membrane"))
+(handle-mitre-link category::plasma-membrane "GO:0005886")
 
-(def-synonym cytosol
-   (:noun "cytoplasm"))
+(def-synonym early-endosome (:noun "early endosome"))
+(def-synonym extracellular-matrix (:noun "extracellular matrix"))
+(def-synonym extracellular-region (:noun "extracellular region"))
+(def-synonym golgi-apparatus (:noun "Golgi apparatus"))
+(def-synonym integral-to-membrane (:noun "integral to membrane"))
+(def-synonym membrane-raft (:noun "membrane raft"))
+(def-synonym nucleus (:adj "nuclear"))
+(def-synonym plasma-membrane (:noun "plasma membrane"))
+
+
 
 (define-category non-cellular-location 
   :specializes bio-location
