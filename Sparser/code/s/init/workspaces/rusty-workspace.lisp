@@ -10,9 +10,8 @@
 (in-package :sparser)
 
 
-(defvar *r3-trunk* nil
-  "String identifing the location of the trunk on 
-  your machine, including a final slash")
+(setq *r3-trunk* "~/Documents/r3/trunk/")
+;;"String identifing the location of the trunk on your machine, including a final slash"
 
 
 (defun rusty-load-article-2 ()
