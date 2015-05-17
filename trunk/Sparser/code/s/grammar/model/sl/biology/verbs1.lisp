@@ -203,12 +203,13 @@
          :of base))
 
 (define-category affect :specializes process 
-  :binds ((agent biological)(object biological)(result biological)) 
+  :binds ((agent biological)(object biological)
+          (causing (:or be biological)))
   :realization 
   (:verb "affect" :etf (svo-passive) 
          :s agent 
          :o object
-         :to result))
+         :to-comp causing))
 
 
 ;; clausal roles
@@ -286,14 +287,16 @@
 ;; overnight
 (define-category assume
     :specializes bio-rhetorical
-    :binds ((agent pronoun/first/plural)(object biological))
+    :binds ((agent pronoun/first/plural)(object biological)
+            (thatcomp (:or biological there-exists)))
     :realization
     (:verb "assume" ;; keyword: ENDS-IN-ED 
 	   :noun "assumption"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :of object
+           :thatcomp thatcomp))
 
 (define-category auto-phosphorylate
   :specializes bio-process
@@ -437,7 +440,8 @@
 (define-category consider
     :specializes bio-rhetorical
     :mixins (bio-whethercomp)
-    :binds ((agent pronoun/first/plural)(object biological)) ;; could be "the effects..."
+    :binds ((agent pronoun/first/plural)(object biological)
+            (tocomp (:or be biological))) ;; could be "the effects..."
     :realization
     (:verb ("consider"  :past-tense "considered") ;; keyword: ENDS-IN-ED 
 	   :noun "consideration"
@@ -445,6 +449,7 @@
 	   :s agent
 	   :o object
            :of object
+           :to-comp tocomp
            :whethercomp statement))
 
 ;; "consist" (of)
