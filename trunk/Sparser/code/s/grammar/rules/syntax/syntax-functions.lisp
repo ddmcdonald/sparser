@@ -399,6 +399,11 @@
       (bind-variable variable-to-bind pobj-referent vg)
       vg))))
 
+
+(defun adjoin-tocomp-to-vg (vg tocomp)
+  (assimilate-subcat vg :to-comp tocomp))
+
+#+ignore
 (defun adjoin-tocomp-to-vg (vg pp)
   ;; The VG is the head. We ask whether it subcategorizes for
   ;; the preposition in this PP and if so whether the complement
@@ -606,9 +611,13 @@
 
 
 (defun subcategorized-variable (head label item)
+  (declare (special item))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
+  (when
+      (itypep item 'to-comp)
+    (setq item (value-of 'clause item)))
   (let ((subcat-patterns (known-subcategorization? head)))
     (when subcat-patterns
       (let ( variable )
@@ -674,7 +683,20 @@
    unindexed individual (in make-pp) then the index
    information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
-
+(mark-as-form-category category::prepositional-phrase)
+(define-category to-comp
+  :specializes abstract
+  :binds ((prep)
+          (clause))
+  :documentation "Provides a scafolding to hold 
+   a generic to-comp as identified by
+   the pp rules in grammar/rules/syntactic-rules.
+   Primary consumer is the subcategorization checking
+   code below. Note that if we make these with an
+   unindexed individual (in make-pp) then the index
+   information doesn't come into play"
+  :index (:temporary :sequential-keys prep clause))
+(mark-as-form-category category::to-comp)
 
 #+ignore(defparameter *pp-prep-pobj* (make-hash-table :size 1000))
 #+ignore(defun link-pp-to-prep-and-object (pp prep pobj)
@@ -693,8 +715,8 @@
     ;; (break "Look at who is calling make-pp")
     pp))
 
-(defun make-to-comp (prep pobj)
-  (declare (special prep pobj))
+(defun make-to-comp (prep clause)
+  (declare (special prep clause))
   (cond
    (*subcat-test* 
     ;; when we have clausal "to-pp" like 
@@ -703,14 +725,14 @@
     (eq prep category::to))
    (t
     (let* ((binding-instructions 
-            `((prep ,prep) (pobj ,pobj)))
-           (pp (make-simple-individual
-                category::prepositional-phrase
+            `((prep ,prep) (clause ,clause)))
+           (to-comp (make-simple-individual
+                category::to-comp
                 binding-instructions)))
       ;; place for trace or further adornment, storing
       ;; (p "activity of ras.")
       ;; (break "Look at who is calling make-pp")
-      pp))))
+      to-comp))))
 
 
 ; Called from whack-a-rule-cycle => copula-rule?

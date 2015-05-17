@@ -192,7 +192,7 @@
 (def-form-category  adjg) ;; for consistency with ng and vg -- could have been adj-bar?
 (def-form-category  qp)
 (def-form-category  proper-name)
-(def-form-category to-comp) ;; to + vp or to+vg
+;;(def-form-category to-comp) ;; to + vp or to+vg
 
 
 
