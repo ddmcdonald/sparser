@@ -109,10 +109,15 @@
               (cat-symbol c)))))
 
 (defmethod display-subcategorization ((sf subcategorization-frame))
+  (declare (special sf))
   (let ((category (for-category sf))
         (patterns (subcat-patterns sf)))
+    (declare (special category patterns))
+
     (format t "Subcategorization options for ~a"
-            (cat-symbol category))
+            (if (consp category)
+                category
+                (cat-symbol category)))
     (push-debug `(,patterns)) ;;(break "patterns")
     (do* ((subcat-list (car patterns) (car rest))
           (trigger (car subcat-list) (car subcat-list))
@@ -120,13 +125,22 @@
           (var (caddr subcat-list) (caddr subcat-list))
           (rest (cdr patterns) (cdr rest)))
          ((null subcat-list))
+      (declare (special subcat-list trigger v/r var rest))
       (cond
        ((keywordp trigger)
         (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
-                trigger (cat-symbol v/r) (var-name var)))
+                trigger 
+                (if (consp v/r)
+                    v/r
+                    (cat-symbol v/r))               
+                (var-name var)))
        ((word-p trigger)
         (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
-                (word-pname trigger) (cat-symbol v/r) (var-name var)))
+                (word-pname trigger) 
+                (if (consp v/r)
+                    v/r
+                    (cat-symbol v/r))
+                (var-name var)))
        (t (error "Unanticipated type of trigger in ~a" subcat-list))))))
 
 
