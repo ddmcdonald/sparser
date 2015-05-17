@@ -29,9 +29,9 @@
 (gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")
-(gload "bio;parse-biopax")
-;; can't figure out how to get gload to work here...(Rusty)
-(load (make-reactome-path "find-extension.lisp"))
+(when (find-package :xmls) ;; need this for reading xml files
+  (gload "bio;parse-biopax"))
+(gload "bio;find-extension.lisp")
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules")
