@@ -7,9 +7,22 @@
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
-;; 5/12/15. 
+;; 5/18/15. 
 
 (in-package :sparser)
+
+;;;---------
+;;; globals
+;;;---------
+
+;; These are for debugging so we can pick up where we left off
+(defvar *doc-objects* nil)
+(defvar *article* nil)
+(defvar *section-of-sections* nil)
+(defvar *section* nil)
+(defvar *paragraph* nil)
+
+(defparameter *show-section-printouts* nil)
 
 ;;;-------------------------------------------------
 ;;; For now -always- do a sweep before doing a read
@@ -55,46 +68,9 @@
             (dolist (ignore-substring *sections-to-ignore* nil)
               (when (search ignore-substring title-string
                             :test #'string-equal)
-                (format t "~&~%------- Ignoring section ~a --------" section)
+                (when *show-section-printouts*
+                  (format t "~&~%------- Ignoring section ~a --------" section))
                 (return t)))))))))
-
-#|   (cond
-     ((not (slot-boundp section 'title))
-      (push-debug `(,section))
-      (format t  "ERROR! title of section hasn't been set")
-      nil)
-     (t
-      (when *sections-to-ignore*
-        (let ((title-object (title section)))
-          (unless title-object
-            (push-debug `(,section))
-            (error "Section somehow doesn't have a title object"))
-          (let ((title-string 
-                 (typecase title-object
-                   (string title-object)
-                   (string-holder (content-string title-object))
-                   (otherwise
-                    (push-debug `(,title-object))
-                    (error "Unexpected type of title: ~a~%~a"
-                           (type-of title-object) title-object)))))
-            (dolist (ignore-substring *sections-to-ignore* nil)
-              (when (search ignore-substring title-string
-                            :test #'string-equal)
-                (format t "~&~%------- Ignoring section ~a --------" section)
-                (return t))))))))  |#
-
-
-
-;;;---------
-;;; globals
-;;;---------
-
-;; These are for debugging so we can pick up where we left off
-(defvar *doc-objects* nil)
-(defvar *article* nil)
-(defvar *section-of-sections* nil)
-(defvar *section* nil)
-(defvar *paragraph* nil)
 
 
 ;;;--------------------------------
@@ -176,7 +152,6 @@
   (after-actions a)
   a)
 
-(defparameter *show-section-printouts* nil)
 (defmethod read-from-document ((ss section-of-sections))
   (setq *section-of-sections* ss)
   (fresh-contents ss)
