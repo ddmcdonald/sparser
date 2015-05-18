@@ -104,7 +104,7 @@
 ;;; collecting sentences & new vocabulary automatically from a passage
 ;;;--------------------------------------------------------------------
 
-(defparameter *collect-new-words* nil
+(defparameter *collect-new-words* t
   "Gates add-new-word-to-catalog, which is called by 
   all the different ways of defining a previously unknown word")
 
