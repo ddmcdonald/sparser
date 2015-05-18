@@ -28,6 +28,7 @@
 (defun run-token-fsa ()
   ;; we're starting a new token.
   (let ( entry char-type )
+    (declare (special entry))
     (if *pending-entry*
       (then (setq entry *pending-entry*
                   *pending-entry* nil))
@@ -46,6 +47,8 @@
         ;; pointers to keep track of it
         (else
           (setq *category-of-accumulating-token*  (car entry))
+          (when (consp (cdr (cdr entry)))
+            (break "bad entry"))
           (continue-token (kcons (cdr entry)
                                  nil)
                           1
@@ -55,6 +58,11 @@
 
 
 (defun continue-token (accumulated-entries length char-type)
+  (declare (special accumulated-entries))
+  (when
+      (consp (cdr (car accumulated-entries)))
+    (break "bad accumulated entries"))
+
   (let ((next-entry
          (character-entry (elt *character-buffer-in-use*
                                (incf *index-of-next-character*)))))
@@ -81,6 +89,9 @@
                           char-type )
           (else
            (setq *pending-entry* next-entry)
+            (when (consp (cdr (car accumulated-entries)))
+              (break "bad element in accumulated-entries"))
+                
            (finish-token accumulated-entries length char-type))))
       
       (announce-out-of-range-character))))
@@ -88,6 +99,7 @@
 
 
 (defun finish-token (accumulated-entries length char-type)
+  (declare (special accumulated-entries))
   (if (> length *word-lookup-buffer-length*)
     (format t "~%~%The token just found:~%  ~s~
                ~%is longer than the word lookup buffer can ~
@@ -101,12 +113,15 @@
           (index length)
           (capitalization-state :start)
           entry )
+      (declare (special entry))
       
       (setf (fill-pointer interning-array) length)
       
       (loop
         (when (null accumulated-entries)
           (return))
+        (when (consp (cdr (car accumulated-entries)))
+          (break "bad element in accumulated-entries"))
         (setq entry (kpop accumulated-entries))
         (setf (elt interning-array (decf index))
               (cdr entry))
