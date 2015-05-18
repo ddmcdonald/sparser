@@ -15,6 +15,7 @@
 (defun ddm-standard () ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
+  (setq cl-user::*load-sparser-during-r3-load* nil)
   (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
@@ -33,7 +34,7 @@
   (ddm-load-corpora)
   (ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
-  ;; (test-overnight)
+  ;; (test-overnight) (test-erk) (test-aspp2)
   (test-jan))
 
 
@@ -45,9 +46,10 @@
          (doc-elements
           (funcall fn 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
          (article (car doc-elements)))
+    (sweep-document article)
     (setq *article* article)))
 
-;    (sweep-document article)
+
 ;    ;;(read-from-document article)
  ;   article))
 
