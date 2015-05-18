@@ -1432,7 +1432,7 @@
   :binds ((agent biological)
           (substrate (:or protein residue-on-protein))
           (site residue-on-protein))
-  :index (:temporary :sequential-keys site substrate)
+  :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
    :etf (svo-passive pre-mod)
@@ -2173,3 +2173,12 @@
   :referent (:head right-edge
                    :bind (entity left-edge)))
 
+;;;;; new definitions from MITRE test set
+(define-category overlap :specializes bio-relation
+  :binds ((object1 biological)(object2 biological))
+  :realization
+  (:verb "overlap"
+         :etf (svo-passive)
+         :s object1
+         :o object2
+         :with object2))
