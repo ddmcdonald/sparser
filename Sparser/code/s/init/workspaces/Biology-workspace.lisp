@@ -217,7 +217,11 @@ those steps sequentially on a single article.
   (let ((*trap-error-skip-sentence* t))
     (declare (special *trap-error-skip-sentence*))
     (loop for article in articles
-      do (read-from-document article))))
+      do 
+      (time-start)(time-end) ;; CROCK -- can't get time-end for the article
+      (read-from-document article)
+      ;;(time-end)
+      )))
 
  
 
