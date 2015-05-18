@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2013-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  December 2014
+;;;  version:  May 2015
 
 ;; initiated 9/21/95. Moved over [take transitions] 10/5.
 ;; 2/5/2013 broke out the traces and the uniform scan as their own files
 ;; 9/9/14 added [character-specialists]. 11/18/14 bumped uniform-
 ;; scan to 1. 12/4/14 added [patterns]. [pattern-gophers] 12/11/12.
+;; [scan-gophers] and [charaterize-words] 5/15/15
 
 (in-package :sparser)
 
@@ -17,6 +18,8 @@
 (lload "scan-patterns;character-specialists")
 (lload "scan-patterns;pattern-gophers")
 (lload "scan-patterns;patterns")
+(lload "scan-patterns;scan-gophers")
+(lload "scan-patterns;charaterize-words")
 (lload "scan-patterns;uniform-scan1")
 
 (lload "scan-patterns;take transitions")
