@@ -11,12 +11,18 @@
 ;; (2/8/11) Added more conditionalization so will load in Clozure as well as ACL.
 ;; (2/17/12) Marking special variables. 12/8 Copied the functions for -allegro 
 ;;  versions. 
-;; (5/1/15) Trying it out. 
+;; (5/1/15) Trying it out. 5/15/15 prepositioning the shadow w/o doing anything
+;; with it yet. 
 
 (in-package :sparser)
 
 (defparameter *redefine-error-for-traps* nil
   "Used by callers of these routines to gate using them or not.")
+
+(shadow '(#:break) (find-package :sparser)) ;; c.f. the position struct definition.
+
+(defun sparser::break (format-string &rest args)
+  (apply #'error format-string args))
 
 ;;;-----------------------------------
 ;;; globals for saving the old values
