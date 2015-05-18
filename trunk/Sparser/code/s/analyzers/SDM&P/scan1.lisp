@@ -133,6 +133,8 @@ to make any semantic or form edges that the grammar dictates.
   ;; create an edge over the whole segment
   (sdm-span-segment))
 
+(defparameter *show-sdm-span-segment* nil)
+
 (defun sdm-span-segment (&optional start-at)
   ;; Make an edge over the whole segment based largely on the
   ;; properties of its suffix. The edge is presumed to be an NP
@@ -180,9 +182,10 @@ to make any semantic or form edges that the grammar dictates.
 			 (type-of referent) referent))))))
       (when (and *big-mechanism*
                  ;; makes it quiet when other things are quiet
-                 *readout-segments-inline-with-text*)
-        (format t "~&sdm-span-segment: ~a~%" 
-                (if *show-edge-string* (edge-string edge) edge)))
+                 *readout-segments-inline-with-text*
+                 *show-sdm-span-segment*)
+          (format t "~&sdm-span-segment: ~a~%" 
+                  (if *show-edge-string* (edge-string edge) edge)))
       (tr :sdm-span-segment edge)
       edge)))
    
