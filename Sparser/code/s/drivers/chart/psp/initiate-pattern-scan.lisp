@@ -25,7 +25,10 @@
 (defun scan-pattern-starting-pair (position word)
   ;; Called from check-for/initiate-scan-patterns.
   (unless (<= (pos-token-index position) 1) ;; gratuitous NS after start
-    (scan-pattern-starting-pair-1 position word)))
+    (let ((leftwards-edge (top-edge-at/ending position)))
+      (when (edge-p leftwards-edge) ;; vs. word or :multiple-initial-eges
+        (when (one-word-long? leftwards-edge)
+          (scan-pattern-starting-pair-1 position word))))))
 
 (defun scan-pattern-starting-pair-1 (position word)
   ;; Called from check-for/initiate-scan-patterns.

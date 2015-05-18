@@ -47,6 +47,7 @@ Bumps the indexes into the chart. Does an add-terminal-to-chart if
 there is not already a word at this 'next' position. And returns 
 the position. (N.b. there's an incremental trace hook in there.) |#
 
+#+ignore
 (defun r3-entity-pass-loop (position-before word)
   (format t "~&Entity loop: p~a ~s"
           (pos-token-index position-before) (word-pname word))
@@ -182,22 +183,6 @@ the position. (N.b. there's an incremental trace hook in there.) |#
                    (bio-category-for-reifying) form i)))
         edge))))
 
-
-(defun reify-ns-name-as-bio-entity (words pos-before pos-after)
-  ;; called from reify-ns-name-and-make-edge when *big-mechanism*
-  ;; flag is up. Responsible for returning the category to use,
-  ;; the rule, and the referent so that the caller can make an edge
-  (let* ((words-string
-          (actual-characters-of-word pos-before pos-after words))
-         (obo (corresponding-obo words-string)))
-    (if obo
-      (let ((word (resolve/make words-string)))
-        (assemble-category-rule-and-referent-for-an-obo obo word))
-      (let* ((i (reify-bio-entity words-string))
-             (cfr (retrieve-single-rule-from-individual i)))
-        (values (bio-category-for-reifying)
-                cfr
-                i)))))
 
 
 ;;;-------------

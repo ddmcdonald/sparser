@@ -175,7 +175,7 @@
     (setq *current-sentence-string* (sentence-string sentence))
     (if *trap-error-skip-sentence*
       (error-trapped-scan-and-core sentence)
-      (scan-termnials-and-do-core sentence))
+      (scan-terminals-and-do-core sentence))
     (let ((next-sentence (next sentence)))
       (tr :sweep-next-sentence next-sentence)
       (when (string-equal "" (sentence-string next-sentence))
@@ -190,7 +190,7 @@
 (defun error-trapped-scan-and-core (sentence)
   ;; Modeled on get-bracketing-from-string and test-np-segmentation-for-sexp
   (handler-case 
-      (scan-termnials-and-do-core sentence)
+      (scan-terminals-and-do-core sentence)
     (error (e)
       (format t "~&Error in ~s~%~%" (current-string))
       (let ((error-string

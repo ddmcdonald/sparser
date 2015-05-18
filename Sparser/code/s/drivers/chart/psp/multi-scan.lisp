@@ -98,7 +98,7 @@
       (when where-fsa-ended
         (tr :word-fsa-ended-at word where-fsa-ended)
         (setq position-after where-fsa-ended
-              position-before (chart-position-before position-after))
+              position-before (chart-position-before where-fsa-ended))
         (unless (includes-state where-fsa-ended :scanned)
           (scan-next-position))
         (setq word (pos-terminal where-fsa-ended))))
@@ -127,8 +127,8 @@
                (do-any-category-fsas edges position-before)))
           (when where-fsa-ended
             (tr :edge-fsa-ended-at word where-fsa-ended)
-            (setq position-before where-fsa-ended
-              position-before (chart-position-before position-after))
+            (setq position-after where-fsa-ended
+                  position-before (chart-position-before where-fsa-ended))
             (unless (includes-state where-fsa-ended :scanned)
               (scan-next-position))
             (setq word (pos-terminal where-fsa-ended))))))
@@ -215,7 +215,7 @@
   (declare (special *the-punctuation-period* *trace-sweep*))
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
-        tt  treetop  position-after  multiple?  )
+        treetop  position-after  multiple?  )
 
     (loop
       ;; modeled on sweep-sentence-treetops
@@ -229,7 +229,7 @@
         (setq treetop (elt (ev-edge-vector treetop)
                            (1- (ev-number-of-edges treetop)))))
       (when (and (word-p treetop)
-                 (eq tt *the-punctuation-period*))
+                 (eq treetop *the-punctuation-period*))
         (tr :terminated-sweep-at position-after)
         (return))
       (when (eq position-after end-pos)
@@ -253,11 +253,19 @@
                  (check-for-pattern position-after)))
             (if where-pattern-scan-ended
               (then
+                (tr :successful-ns-pattern-reached where-pattern-scan-ended)
                 (setq position-after where-pattern-scan-ended))
-              (let ((where-uniform-ns-ended
-                     (do-no-space-collection position-after)))
-                (when where-uniform-ns-ended
-                  (setq position-after where-uniform-ns-ended))))))
+              (else
+                (tr :no-specific-pattern-trying-uniform position-before)
+                (let ((where-uniform-ns-ended
+                       (do-no-space-collection 
+                        treetop position-before position-after)))
+                  (if where-uniform-ns-ended
+                    (then
+                      (tr :successful-uniform-ns-reached where-uniform-ns-ended)
+                      (setq position-after where-uniform-ns-ended))
+                    (else
+                      (tr :uniform-ns-pattern-failed))))))))
         (else
           (tr :space-before position-after)
           (look-for-DA-pattern treetop)))
@@ -276,6 +284,7 @@
          (state/s (scan-pattern-starting-pair position-after word)))
     ;; This routine returns nil if there is not a no-space scan-pattern
     ;; that starts with the word before this position and this word.
+    ;; Yes/no traces in initiate-scan-pattern-driver
     (when state/s
       (let ((pos-reached
              (initiate-scan-pattern-driver state/s position-after)))
@@ -288,16 +297,51 @@
         pos-reached))))
         
 
-(defun do-no-space-collection (position)
-  ;; lifted from check-for-uniform-no-space-sequence
-  ;; There is no whitespace between the word at this position 
-  ;; and the previous word. 
-  (tr :check-for-uniform-no-space-sequence position)
-  (let* ((uniform-pos-reached
-          ;; (collect-no-space-sequence-into-word position)
-          (collect-no-space-segment-into-word position)))
-    ;;/// trace
-    uniform-pos-reached))
+(defun do-no-space-collection (tt position-before position-after)
+  ;; There is no whitespace between the word at the position-after
+  ;; and the previous word. If the treetop edge is just one word 
+  ;; long then we pass it through as though it were just a word,
+  ;; but if it is longer then we move the adjacency test and
+  ;; position-after so that it fits the expectations of the pattern
+  ;; checker. 
+  ;; (trace-network-flow)
+  (let ((word-at-pos-before (pos-terminal position-before))
+        pos-reached )
+    (unless (or (word-is-bracket-punct word-at-pos-before)
+                (word-never-in-ns-sequence word-at-pos-before))
+      (unless tt
+        (push-debug `(,position-before ,position-after))
+        (error "Why doesn't tt have a value?"))
+
+      (let ((end-pos (typecase tt
+                       (edge (pos-edge-ends-at tt))
+                       (word (chart-position-after position-before))
+                       (otherwise
+                        (error "Unexpected type for tt: ~a~%~a"
+                               (type-of tt) tt)))))
+        (cond
+         ((eq end-pos position-after) ;(break "1")
+          (tr :check-for-uniform-no-space-sequence position-before)
+          (setq pos-reached
+                (collect-no-space-segment-into-word position-after)))
+
+       ;; (p "a 0.45μm filter")
+
+           ;; Quick hit. Is there whitespace on the position
+           ;; where it ends?  If there is, then we're done
+           ;; because this is where the sequence would have ended anyway. 
+           ((pos-preceding-whitespace end-pos) (break "2")
+            (pos-edge-ends-at tt))
+
+           ;; It's going to continue. Does it compose with the edge
+           ;; that there?
+
+           ;; Let it deal with whatever's there
+           (t  (break "3")
+               (collect-no-space-segment-into-word end-pos)))
+        ;;/// trace
+        pos-reached ))))
+
 
 
 (defun look-for-DA-pattern (treetop)  ;; (trace-da)
