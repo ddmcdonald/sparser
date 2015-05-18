@@ -226,14 +226,14 @@
                          (identify-relations sentence)
       (if *index-cards*
           (set-entities sentence 
-                        (all-individuals-in-tts))
+                        (all-individuals-in-tts sentence))
           (set-entities sentence entities))
       (set-relations sentence relations)
       (setq *relations* relations  ; (readout-relations relations)
             *entities* entities)); (readout-entities entities)
     ;;(ccl::break "all-sentences*") 
     (push `(,(sentence-string sentence) 
-             ,(all-individuals-in-tts)
+             ,(all-individuals-in-tts sentence)
              ,@(when
                  (and (boundp '*current-article*)
                       *current-article*)
@@ -245,10 +245,12 @@
      
 
 (defparameter *surface-strings* (make-hash-table :size 10000))
-(defun all-individuals-in-tts() ;;test
+(defun all-individuals-in-tts(sentence)
   (let
-      ((indivs nil))
-    (loop for tt in (all-tts)
+      ((indivs nil)
+       (start-pos (starts-at-pos sentence))
+       (end-pos (ends-at-pos sentence)))
+    (loop for tt in (all-tts start-pos end-pos)
       do
       (loop for i in (individuals-under tt)
         when (itypep i 'biological)
@@ -264,12 +266,29 @@
   (setf (gethash indiv *surface-strings*)
         (get-surface-string-for-individual indiv)))
 
-(defun get-surface-string-for-individual (indiv)
-  (let
-      ((name (value-of 'name indiv)))
-    (if name
-        (name-string name)
-        (format nil "~s" indiv))))
+(defun get-surface-string-for-individual (i)
+  (or
+   (when (itypep i 'protein)
+     (let ((entry (individuals-discourse-entry i)))
+       (when entry
+         (let* ((most-recent (second entry))
+                (start (car most-recent))
+                (end (cdr most-recent)))
+           (when (and (position-p start) (position-p end))
+             (let ((start-index (pos-character-index start))
+                   (end-index (pos-character-index end)))
+               (push-debug `(,start-index ,end-index ,i)) 
+               ;;(ccl::break "dh for ~a" i)
+               (extract-string-from-char-buffers 
+                start-index end-index)))))))
+   (let
+       ((name (value-of 'name i)))
+     (if name
+         (name-string name)
+         (format nil "~s" i)))))
+
+(defun retrieve-surface-string (i)
+  (gethash i *surface-strings*))
 
 ;;;------------------------------------------------------------
 ;;; final operations on sentence before moving to the next one
