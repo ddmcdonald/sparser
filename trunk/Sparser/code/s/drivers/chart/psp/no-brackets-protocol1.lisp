@@ -192,8 +192,8 @@
   (handler-case 
       (scan-terminals-and-do-core sentence)
     (error (e)
-      (format t "~&Error in ~s~%~%" (current-string))
-      (let ((error-string
+      (format t "~&Error in ~s~%~a~%~%" (current-string) e) ; 
+      #+ignore(let ((error-string
              (apply #'format nil 
                     (simple-condition-format-control e)
                     (simple-condition-format-arguments e)))
@@ -571,4 +571,4 @@
                  (break "Unexpected type of value of a binding: ~a" value))))))))
       
       (reverse desc)))))
-
+; 
