@@ -192,8 +192,10 @@
   (handler-case 
       (scan-terminals-and-do-core sentence)
     (error (e)
-      (format t "~&Error in ~s~%~a~%~%" (current-string) e) ; 
-      #+ignore(let ((error-string
+      (format t "~&Error in ~s~%~%" (current-string))
+      (d e)
+      #+ignore
+      (let ((error-string
              (apply #'format nil 
                     (simple-condition-format-control e)
                     (simple-condition-format-arguments e)))
@@ -229,11 +231,21 @@
       (set-relations sentence relations)
       (setq *relations* relations  ; (readout-relations relations)
             *entities* entities)); (readout-entities entities)
-    (push (list (sentence-string sentence) 
-                (all-individuals-in-tts))
+    ;;(ccl::break "all-sentences*") 
+    (push `(,(sentence-string sentence) 
+             ,(all-individuals-in-tts)
+             ,@(when
+                 (and (boundp '*current-article*)
+                      *current-article*)
+                 (list *current-article*
+                       *universal-time-start*
+                       *universal-time-end*)))
+                  
           *all-sentences*)))
      
-(defun all-individuals-in-tts()
+
+(defparameter *surface-strings* (make-hash-table :size 10000))
+(defun all-individuals-in-tts() ;;test
   (let
       ((indivs nil))
     (loop for tt in (all-tts)
@@ -242,8 +254,22 @@
         when (itypep i 'biological)
         do
         (pushnew i indivs)))
+    (loop for i in indivs
+      do
+      (store-surface-string i))
     (reverse indivs)))
 
+
+(defun store-surface-string (indiv)
+  (setf (gethash indiv *surface-strings*)
+        (get-surface-string-for-individual indiv)))
+
+(defun get-surface-string-for-individual (indiv)
+  (let
+      ((name (value-of 'name indiv)))
+    (if name
+        (symbol-pname name)
+        (format nil "~s" indiv))))
 
 ;;;------------------------------------------------------------
 ;;; final operations on sentence before moving to the next one
@@ -571,4 +597,4 @@
                  (break "Unexpected type of value of a binding: ~a" value))))))))
       
       (reverse desc)))))
-; 
+
