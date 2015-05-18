@@ -34,27 +34,30 @@
 
 (defun ignore-this-document-section (section)
   (unless (typep section 'paragraph) ;; happens sometimes
-    (unless (slot-boundp section 'title)
+    (cond
+     ((not (slot-boundp section 'title))
       (push-debug `(,section))
-      (error "title of section hasn't been set"))
-    (when *sections-to-ignore*
-      (let ((title-object (title section)))
-        (unless title-object
-          (push-debug `(,section))
-          (error "Section somehow doesn't have a title object"))
-        (let ((title-string 
-               (typecase title-object
-                 (string title-object)
-                 (string-holder (content-string title-object))
-                 (otherwise
-                  (push-debug `(,title-object))
-                  (error "Unexpected type of title: ~a~%~a"
-                         (type-of title-object) title-object)))))
-          (dolist (ignore-substring *sections-to-ignore* nil)
-            (when (search ignore-substring title-string
-                          :test #'string-equal)
-              (format t "~&~%------- Ignoring section ~a --------" section)
-            (return t))))))))
+      (format t  "ERROR! title of section hasn't been set")
+      nil)
+     (t
+      (when *sections-to-ignore*
+        (let ((title-object (title section)))
+          (unless title-object
+            (push-debug `(,section))
+            (error "Section somehow doesn't have a title object"))
+          (let ((title-string 
+                 (typecase title-object
+                   (string title-object)
+                   (string-holder (content-string title-object))
+                   (otherwise
+                    (push-debug `(,title-object))
+                    (error "Unexpected type of title: ~a~%~a"
+                           (type-of title-object) title-object)))))
+            (dolist (ignore-substring *sections-to-ignore* nil)
+              (when (search ignore-substring title-string
+                            :test #'string-equal)
+                (format t "~&~%------- Ignoring section ~a --------" section)
+                (return t))))))))))
 
 
 ;;;---------
