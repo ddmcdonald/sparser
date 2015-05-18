@@ -31,6 +31,15 @@
 
 (in-package :sparser)
 
+(adj "forward" :super predicate) ;; added to avoid problem with complex lookup
+;;Error: Comlex -- new POS combination for "#<word "forward">:: (ADJECTIVE ADVERB ADVPART NOUN VERB)
+(noun "bar" :super abstract) 
+;;Error: Comlex -- new POS combination for "#<word "bar">:: (NOUN PREP VERB)
+(adj "lesser" :super predicate)
+;;> Error: Unexpected POS marker: 'QUANT' on #<word "lesser">
+;; While executing: #<STANDARD-METHOD UNAMBIGUOUS-COMLEX-PRIMED-DECODER (WORD T)>, in process Listener(4).
+
+
 (noun "32P" :super molecule) 
 ;; actually an isotope -- need to adjust taxonomy 
 
