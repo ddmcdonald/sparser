@@ -37,6 +37,13 @@
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
 
+;; found in the article set
+(def-bio "E-cadherin" protein)
+(def-family "cadherin" ;;//// need capitalization hacks
+  :members ("E-cadherin"))
+
+
+
 (def-bio "Akt" protein
   :long "Protein kinase B"
   :synonyms ("PKB")
