@@ -116,6 +116,26 @@ those steps sequentially on a single article.
     article))
 
 ;; (populate-article-set)
+(defun process-one-article (id)
+  (time-start)
+  (setq *articles-created* nil)
+  (read-article-set
+   (sweep-article-set
+    (populate-one-article id)))
+  (time-end)
+  (pprint
+   `((:READING--STARTED ,@ (mitre-time-format *universal-time-start*))
+    (:READING--STARTED ,@ (mitre-time-format *universal-time-end*))
+    (:PMC--ID ,@ (name *current-article*))))
+  (values *current-article*
+          (mitre-time-format *universal-time-start*)
+          (mitre-time-format *universal-time-end*) ; 
+          (name *current-article*)))
+
+  
+(defun populate-one-article (id)
+  (populate-article-set (list id)))
+
 (defun populate-article-set (&optional list-of-ids location)
   (load-xml-to-doc-if-necessary)
   (unless list-of-ids
@@ -152,23 +172,33 @@ those steps sequentially on a single article.
 
       *articles-created*)))
 
+
+(defparameter *break-on-errors* nil) ;; do error trapping
+
 ;; Rewrite -- this kind of loop doesn't continue after
 ;; it gets an error. 
 (defun sweep-article-set (&optional (articles *articles-created*))
   (do ((article (car articles) (car rest))
        (rest (cdr articles) (cdr rest)))
       ((null article))
-    (handler-case
-        (push (sweep-document article)    
-              *populated-articles*)
-      (error (e)
-        (format t "~&Error sweeping ~a~%" article)
-        (let ((error-string
-               (apply #'format nil 
-                      (simple-condition-format-control e)
-                      (simple-condition-format-arguments e))))
-          (format t "Error: ~a~%~%" error-string)))))
-  *populated-articles*)
+    (if
+     *break-on-errors*
+     (sweep-document article) 
+     
+     (handler-case
+         (push (sweep-document article)    
+               *populated-articles*)
+       (error (e)
+              (declare (special e))
+              (format t "~&Error sweeping ~a~%" article)
+              (d e)
+              #+ignore
+              (let ((error-string
+                     (apply #'format nil 
+                            (simple-condition-format-control e)
+                            (simple-condition-format-arguments e))))
+                (format t "Error: ~a~%~%" error-string)))))
+    *populated-articles*))
     
 
 (defun read-article-set (&optional (articles *populated-articles*))
@@ -521,4 +551,28 @@ These data also provide the first evidence for explaining why overexpression of 
 
 
 ; (f "/Users/ddm/sift/nlp/corpus/biology/cholera.txt")
+(defparameter *time-start* 0)
 
+(defparameter *universal-time-start* 0)
+(defparameter *universal-time-end* 0)
+
+(defun time-start ()
+  (setq *time-start* (get-internal-real-time))
+  (setq *universal-time-start* (get-universal-time)))
+
+(defun time-end ()
+  (setq *universal-time-end* (get-universal-time))
+  (values
+   *universal-time-start*
+   (+ *universal-time-start* 
+      (/ (* 1.0
+            (- *time-start* (get-internal-real-time)))
+         internal-time-units-per-second))))
+         
+(defun mitre-time-format (ut)
+       (multiple-value-bind
+           (second minute hour date month year day-of-week dst-p tz)
+           (decode-universal-time ut)
+         (format nil
+                 "~s-~s-~sT~s:~s:~s"
+                 year month date hour minute second)))
