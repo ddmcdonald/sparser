@@ -268,7 +268,7 @@
   (let
       ((name (value-of 'name indiv)))
     (if name
-        (symbol-name name)
+        (name-string name)
         (format nil "~s" indiv))))
 
 ;;;------------------------------------------------------------
