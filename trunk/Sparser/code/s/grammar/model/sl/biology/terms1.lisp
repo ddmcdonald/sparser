@@ -38,6 +38,10 @@
 (adj "lesser" :super predicate)
 ;;> Error: Unexpected POS marker: 'QUANT' on #<word "lesser">
 ;; While executing: #<STANDARD-METHOD UNAMBIGUOUS-COMLEX-PRIMED-DECODER (WORD T)>, in process Listener(4).
+(noun ("mouse" :plural "mice") :super species)
+(adj "deficient" :super predicate)
+(noun "immunoblotting" :super bio-method)
+(noun "bacteria" :super species) ;; not really
 
 
 (noun "32P" :super molecule) 
@@ -863,7 +867,7 @@
 (defun def-cell-line (line)
   (def-bio/expr line 'cell-line :takes-plurals nil))
 
-
+(def-cell-line "keratin") ;; NOT SURE THIS IS HOW IT IS BEING USED
 
 (def-cell-line "A375")
 (def-cell-line "D04")
