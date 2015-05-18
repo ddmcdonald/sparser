@@ -85,6 +85,8 @@
       (continue-token accumulated-entries length char-type))
     (else
       (setq *pending-entry* whole-entry)
+      (when (consp (cdr (car accumulated-entries)))
+        (break "bad element in accumulated-entries"))
       (finish-token accumulated-entries length char-type))))
 
 
