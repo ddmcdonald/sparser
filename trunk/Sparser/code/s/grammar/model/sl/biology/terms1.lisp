@@ -42,6 +42,7 @@
 (adj "deficient" :super predicate)
 (noun "immunoblotting" :super bio-method)
 (noun "bacteria" :super species) ;; not really
+(adj "rich" :super predicate) ;; proline rich region
 
 
 (noun "32P" :super molecule) 
