@@ -22,6 +22,7 @@
 ;; 1.1 4/23/15 Fixed bug in dispatch to slash. Added arrow.
 ;;   5/3/15 Added way to keep the sequence from extending over punctuation
 ;;   it didn't do a lookahead on. 
+;; 1.2 5/15/15 Incorporating edges if they're more than one word long
 
 (in-package :sparser)
 
@@ -44,41 +45,54 @@
 ;;; new driver
 ;;;------------
 
-;; scan3's call
 (defun collect-no-space-sequence-into-word (position-before) 
+  ;; scan3's call
   (break "Call to find a no-space sequences at ~a~
         ~%Change your code to use collect-no-space-segment-into-word"
          position-before))
 
 ;; (trace-scan-patterns)
 
-(defun collect-no-space-segment-into-word (position-just-after)
-  ;; entry point if the edge is more than one word long, e.g. "SHOC2" after it's
-  ;; been given its definition as a polyword. 
+(defun collect-no-space-segment-into-word (position-after)
+  ;; As called from do-no-space-collection. At this point all of the
+  ;; words in the sentence have be spanned with unary edges, and there
+  ;; are multi-word edges over polywords or created by an FSA (e.g. numbers).
+  ;; This 'position-after' is the position that has no-space recorded
+  ;; on it, indicating that it and the previous word (or multi-word edge)
+  ;; are not separated.  
   (when nil (tts))
 
-  (let ((leftmost-edge (left-treetop-at/edge position-just-after)))
-        ;; but that 'edge' could be a word, e.g. "... (Figure ..."
-    (when (word-p leftmost-edge)
-      (when (first-word-is-bracket-punct leftmost-edge)
-        (return-from collect-no-space-segment-into-word nil)))
+  (let* ((leftmost-edge (left-treetop-at/only-edges position-after))
+         ;; There's always an edge. The question is how long it is.
+         (long-edge (when leftmost-edge
+                      (unless (one-word-long? leftmost-edge)
+                        leftmost-edge))))
 
-    (let ((start-pos (if (edge-p leftmost-edge) 
+;    ;; but that 'edge' could be a word, e.g. "... (Figure ..."
+;    (when (word-p leftmost-edge)
+;      (when (first-word-is-bracket-punct leftmost-edge)
+;        (return-from collect-no-space-segment-into-word nil)))
+
+    (let ((start-pos (if leftmost-edge
                        (pos-edge-starts-at leftmost-edge)
-                       (chart-position-before position-just-after))))
+                       (chart-position-before position-after))))
       (tr :no-space-sequence-started-at start-pos)
 
-      (when (or (word-is-bracket-punct (pos-terminal start-pos))               
-                (word-is-bracket-punct (pos-terminal position-just-after))
-                (word-never-in-ns-sequence (pos-terminal start-pos))
-                (word-never-in-ns-sequence (pos-terminal position-just-after)))
+      ;;//// tune to the possibility we don't care about the first
+      ;; word because it's covered by an edge. 
+      (when (or (word-is-bracket-punct (pos-terminal position-after))
+                (word-never-in-ns-sequence (pos-terminal position-after)))
         (return-from collect-no-space-segment-into-word nil))
 
       (multiple-value-bind (end-pos hyphen-positions slash-positions
-                            colon-positions other-punct)
-                           (sweep-to-end-of-ns-regions start-pos)
+                            colon-positions other-punct edges)
+                           (sweep-to-end-of-ns-regions start-pos long-edge)
         ;; Sweep from the very beginning just to be sure we catch any
         ;; marked punctuation there. 
+
+        ;; If the sweep encountered any more edges we have to fold 
+        ;; them in or else we'll get the wrong pattern
+        (setq edges (sort-out-edges-in-ns-region edges long-edge))
 
         ;;(push-debug `(,start-pos ,end-pos))
         ;; on this sentence: (p "Pre-clinical studies have demonstrated that 
@@ -98,66 +112,92 @@
           (return-from collect-no-space-segment-into-word nil))
 
         (tr :looking-at-ns-segment start-pos end-pos)
-        (let ((pattern (characterize-words-in-region start-pos end-pos))
-              ;(edges (edges-between start-pos end-pos))
-              (words (words-between start-pos end-pos)))
-          (tr :segment-ns-pattern pattern)
+        ;; Open coding post-accumulator-ns-handler
+        (multiple-value-bind (layout edge)
+                             (parse-between-boundaries start-pos end-pos)
+          (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
+          (cond
+           ((eq layout :single-span)  ;; Do nothing. It's already known
+            (revise-form-of-nospace-edge-if-necessary edge :find-it))
+           (t
+            (ns-pattern-dispatch start-pos end-pos edges
+                                 hyphen-positions slash-positions
+                                 colon-positions other-punct))))
+        end-pos))))
 
-          ;;(push-debug `(,pattern ,words ,start-pos ,end-pos))
-          ;;(break "Examine pattern and words before running")
+(defun ns-pattern-dispatch (start-pos end-pos edges
+                            hyphen-positions slash-positions
+                            colon-positions other-punct)
+  (let ((pattern (characterize-words-in-region start-pos end-pos edges))
+        (words (words-between start-pos end-pos)))
+    (tr :segment-ns-pattern pattern)
 
-          ;; Open coding post-accumulator-ns-handler
-          (multiple-value-bind (layout edge)
-                               (parse-between-boundaries start-pos end-pos)
-            (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
-            (cond
-             ((eq layout :single-span)  ;; Do nothing. It's already known
-              (revise-form-of-nospace-edge-if-necessary edge :find-it))
+;    (when edges
+;      (push-debug `(,pattern ,edges ,start-pos ,end-pos))
+;      (break "Look at pattern with edges:~%  ~a" pattern))
 
-             ((eq :double-quote (car pattern))
-              (scare-quote-specialist start-pos ;; leading-quote-pos
-                                      words start-pos end-pos))
+    (cond 
+     (edges
+      (ns-sort-out-pattern-with-edges 
+       pattern start-pos end-pos edges words
+       hyphen-positions slash-positions
+       colon-positions other-punct))
+              
+     ((eq :double-quote (car pattern))
+      (scare-quote-specialist start-pos ;; leading-quote-pos
+                              words start-pos end-pos))
 
-             ((and slash-positions
-                   hyphen-positions)
-              (divide-and-recombine-ns-pattern-with-slash 
-               pattern words slash-positions hyphen-positions start-pos end-pos))
+     ((and slash-positions
+           hyphen-positions)
+      (divide-and-recombine-ns-pattern-with-slash 
+       pattern words slash-positions hyphen-positions start-pos end-pos))
 
-             (other-punct
-              ;; this probably has to be spread over the other cases
-              ;; in some sort of combination, but this is a start
-              (resolve-other-punctuation-pattern
-               pattern words other-punct start-pos end-pos))
+     (other-punct
+      ;; this probably has to be spread over the other cases
+      ;; in some sort of combination, but this is a start
+      (resolve-other-punctuation-pattern
+       pattern words other-punct start-pos end-pos))
 
-             (slash-positions
-              (tr :ns-looking-at-slash-patterns)
-              (resolve-slash-pattern 
-               pattern words slash-positions hyphen-positions start-pos end-pos))
+     (slash-positions
+      (tr :ns-looking-at-slash-patterns)
+      (resolve-slash-pattern 
+       pattern words slash-positions hyphen-positions start-pos end-pos))
 
-             ((and hyphen-positions
-                   colon-positions)
-              (divide-and-recombine-ns-pattern-with-colon
-               pattern words colon-positions hyphen-positions start-pos end-pos))
+     ((and hyphen-positions
+           colon-positions)
+      (divide-and-recombine-ns-pattern-with-colon
+       pattern words colon-positions hyphen-positions start-pos end-pos))
 
-             (colon-positions
-              (tr :ns-looking-at-colon-patterns)
-              (resolve-colon-pattern pattern words colon-positions start-pos end-pos))
+     (colon-positions
+      (tr :ns-looking-at-colon-patterns)
+      (resolve-colon-pattern pattern words colon-positions start-pos end-pos))
+     
+     (hyphen-positions
+      (tr :ns-looking-at-hypen-patterns)
+      (resolve-hyphen-pattern 
+       pattern words hyphen-positions start-pos end-pos))
 
-             (hyphen-positions
-              (tr :ns-looking-at-hypen-patterns)
-              (resolve-hyphen-pattern 
-               pattern words hyphen-positions start-pos end-pos))
-
-             (t 
-              (tr :ns-taking-default)
-              (or (resolve-ns-pattern pattern words start-pos end-pos)
-                  (reify-ns-name-and-make-edge words start-pos end-pos))))))
-          end-pos))))
+     (t 
+      (tr :ns-taking-default)
+      (or (resolve-ns-pattern pattern words start-pos end-pos)
+          (reify-ns-name-and-make-edge words start-pos end-pos))))))
+ 
 
 ;;/// generalize and move
 (defun strip-item-from-either-end (list)
   (let ((new-list (cdr list)))
     (setq new-list (nreverse (cdr (nreverse new-list))))))
+
+(defun sort-out-edges-in-ns-region (edges leftmost-edge) ;;/// need leftmost?
+  ;; The leftmost-edge, if there is one, will always be included
+  ;; in the list of edges
+  (when edges
+    (if (null (cdr edges)) 
+      edges
+      (let ((in-order (nreverse edges)))
+        (push-debug `(,in-order ,leftmost-edge)) 
+        (break "first case of more than one edge in ns region")
+        in-order))))
 
 (defun reify-ns-name-and-make-edge (words pos-before next-position)
   ;; We make an instance of a spelled name with the words as its sequence.
@@ -185,235 +225,18 @@
       edge)))
 
 
-
-;;;------------------------------
-;;; delimiting the no-space span
-;;;------------------------------
-
-(defvar *terminal-ns-punct-encountered* nil
-  "This is populated by punctuation-terminates-no-space-sequence
-  as it encounters characters that it didn't look ahead on.
-  It's read by sweep-to-end-of-ns-regions to keep it from advancing
-  the chart position on those characters. We could alternatively
-  make this a property of punctuation characters, but if the list
-  is small this will suffice.")
-
-(defun sweep-to-end-of-ns-regions (position)
-  ;; From this position, which is marked as having not space between its
-  ;; word and the previous word. Look at the positions to the right until
-  ;; you reach one that is marked for an interveening space and return it. 
-  ;; Because we're working sentence by sentence we will not normally
-  ;; need an EOS check 
-  ;;  (push-debug `(,position)) (break "sweep to end from ~a" position)
-  (declare (special *the-punctuation-hyphen*))
-
-  (let ((next-pos (chart-position-after position))
-        word  hyphens  slashes  colons  other-punct)
-    (loop
-      ;; we enter the loop looking for a reason to stop
-      (setq word (pos-terminal next-pos))
-      (tr :ns-word-sweep word)
-      (when (pos-preceding-whitespace next-pos)
-        (tr :ns-return-because-whitespace next-pos)
-        (return))
-      (when (first-word-is-bracket-punct word)
-        (tr :ns-return-because-bracket-punct word)
-        (return))
-      (when (word-never-in-ns-sequence word)
-        (tr :ns-return-word-never-in-ns-seq word)
-        (return))
-      (when (and (punctuation? word)
-                 (punctuation-terminates-no-space-sequence word next-pos))
-        ;; We looked ahead, so reflect that in the stopping position
-        (unless (memq word *terminal-ns-punct-encountered*)
-          (setq next-pos (chart-position-after next-pos)))
-        (tr :ns-return-punch-terminates-seq word next-pos)
-        (return))
-      (cond
-       ((eq word *the-punctuation-hyphen*) (push next-pos hyphens))
-       ((eq word (punctuation-named #\/)) (push next-pos slashes))
-       ((eq word (punctuation-named #\:)) (push next-pos colons))
-       ((punctuation? word) ;; but not terminating punctuation
-        (push next-pos other-punct))) ;; e.g. %, +, ~
-      (setq next-pos (chart-position-after next-pos)))
-    (values next-pos
-            hyphens
-            slashes
-            colons
-            other-punct)))
-
-
-;;;-----------------------------------------
-;;; reasons to abort or get out of the loop
-;;;-----------------------------------------
-
-(defun word-never-in-ns-sequence (word)
-  (declare (special *the-punctuation-period*
-                    *the-punctuation-comma*
-                    *the-punctuation-semicolon*))
-  (when (punctuation? word)
-    (or (eq word *the-punctuation-period*)
-        (eq word *the-punctuation-comma*)
-        (eq word *the-punctuation-semicolon*))))
-
-
-(defun second-word-not-in-ns-sequence (word next-position)
-  (declare (special *the-punctuation-period* *the-punctuation-comma*
-                    *the-punctuation-semicolon* *end-of-source*))
-  (when (punctuation? word)
-    (cond
-      ((or (eq word *the-punctuation-period*)
-	   (eq word *the-punctuation-comma*)
-	   (eq word *the-punctuation-semicolon*))
-       ;; more general than "." probably, but this is the canonical
-       ;; case
-       (unless (pos-terminal next-position)
-	 (scan-next-position))
-       (or (eq (pos-terminal next-position) *end-of-source*)
-	   (pos-preceding-whitespace next-position)))
-;;      ((eq word (punctuation-named #\/)) ;; cascades in signal pathways
-;;       t)
-      (t nil))))
-
-
-(defun punctuation-terminates-no-space-sequence (word position)
-  (declare (special *the-punctuation-period* *the-punctuation-comma*
-                    *the-punctuation-colon* *the-punctuation-semicolon*
-                    *the-punctuation-rightwards-arrow*))
-  (cond
-    ((or (eq word *the-punctuation-period*)
-	 (eq word *the-punctuation-comma*)
-	 (eq word *the-punctuation-semicolon*))
-     ;; if there's a space after this character, we assume that
-     ;; it's punctuation, otherwise it's part of the compound
-     ;; terminal.
-     (sentence-final-punctuation-pattern? (chart-position-after position)))
-
-    ((eq word *the-punctuation-colon*)
-     ;;(if (next-word-is-digit? position) nil t)
-     (pos-after-is-end-of-sequence position))
-
-    ((or (eq word (punctuation-named #\-))
-	 (eq word (punctuation-named #\/))
-         (eq word (punctuation-named #\@))
-         (eq word (punctuation-named #\%))
-         (eq word (punctuation-named #\+))
-         (eq word *the-punctuation-rightwards-arrow*))
-     nil)
-
-    ;; Every other punctuation is declared to be a boundary
-    (t (pushnew word *terminal-ns-punct-encountered*)
-       t)))
-
-
-(defun sentence-final-punctuation-pattern? (position)
-  (declare (special *source-exhausted* *end-of-source*))
-  (unless (pos-terminal position)
-    (scan-next-position))
-  (cond
-   (*source-exhausted* t)
-   ((eq (pos-terminal position) *end-of-source*) t)
-   (t
-    (pos-after-is-end-of-sequence position))))
-
-(defun pos-after-is-end-of-sequence (position)
-  (declare (special *source-exhausted*))
-  (let ((pos-after (chart-position-after position)))
-    (unless (pos-terminal pos-after)
-      (scan-next-position))
-    (if (or (no-space-before-word? pos-after) ;; e.g. a URL
-            (not *source-exhausted*))
-        nil
-        t)))
-
-(defun next-word-is-digit? (position)
-  (let ((pos-after (chart-position-after position)))
-    (unless (pos-terminal pos-after)
-        (scan-next-position))
-    (eq (pos-capitalization pos-after) :digits)))
-
-
-(defun first-word-is-bracket-punct (word1)
-  (word-is-bracket-punct word1))
-
-(defun word-is-bracket-punct (word1)
-  (or (eq word1 (punctuation-named #\( ))
-      (eq word1 (punctuation-named #\[ ))
-      (eq word1 (punctuation-named #\{ ))
-      (eq word1 (punctuation-named #\< ))
-
-      (eq word1 (punctuation-named #\) ))
-      (eq word1 (punctuation-named #\] ))
-      (eq word1 (punctuation-named #\} ))
-      (eq word1 (punctuation-named #\> ))))
-      
-
-(defun first-or-second-word-is-bracket-punct (word1 word2)
-  (or (eq word1 (punctuation-named #\( ))
-      (eq word1 (punctuation-named #\[ ))
-      (eq word1 (punctuation-named #\{ ))
-      (eq word1 (punctuation-named #\< ))
-      
-      (eq word1 (punctuation-named #\) ))
-      (eq word1 (punctuation-named #\] ))
-      (eq word1 (punctuation-named #\} ))
-      (eq word1 (punctuation-named #\> ))
-
-      (eq word2 (punctuation-named #\( ))
-      (eq word2 (punctuation-named #\[ ))
-      (eq word2 (punctuation-named #\{ ))
-      (eq word2 (punctuation-named #\< ))
-
-      (eq word2 (punctuation-named #\) ))
-      (eq word2 (punctuation-named #\] ))
-      (eq word2 (punctuation-named #\} ))
-      (eq word2 (punctuation-named #\> ))
-
-      ;; 10/7/14 slashes have dedicated treatment
-      ;;(eq word1 (punctuation-named #\/ ))
-      ;;(eq word2 (punctuation-named #\/ ))
-      ))
-
-
-
-
-;;;----------
-;;; go-fer's
-;;;----------
-
-;; These are more of an flet style, but the caller is hard enough
-;; to read already.
-
-(defun polyword-ends-here (position)
-  (let* ((ev (pos-ends-here position))
-	 (top-edge (ev-top-node ev)))
-    (when (and top-edge
-	       (edge-p top-edge)) ;; vs. :multiple-initial-edges
-      (when (polyword-p (edge-category top-edge))
-	top-edge))))
-
-(defun edge-ends-here (position)
-  (let* ((ev (pos-ends-here position))
-	 (top-edge (ev-top-node ev)))
-    (when (and top-edge
-	       (edge-p top-edge)) 
-      top-edge)))
-
-(defun move-ns-start-before-leading-pw (position)
-  ;; return a position that backs away from the given position by 
-  ;; length of the polyword
-  (let ((edge (polyword-ends-here position)))
-    (unless edge
-      (break "Expected to have a pw edge end at ~a" position))
-    (values (ev-position (edge-starts-at edge))
-	    (edge-category edge))))
-
-(defun move-ns-start-before-leading-edge (position)
-  ;; return a position that backs away from the given position by 
-  ;; length of the polyword
-  (let ((edge (edge-ends-here position)))
-    (unless edge
-      (break "Expected to have an edge end at ~a" position))
-    (values (ev-position (edge-starts-at edge))
-	    edge)))
-
+(defun reify-ns-name-as-bio-entity (words pos-before pos-after)
+  ;; called from reify-ns-name-and-make-edge when *big-mechanism*
+  ;; flag is up. Responsible for returning the category to use,
+  ;; the rule, and the referent so that the caller can make an edge
+  (let* ((words-string
+          (actual-characters-of-word pos-before pos-after words))
+         (obo (corresponding-obo words-string)))
+    (if obo
+      (let ((word (resolve/make words-string)))
+        (assemble-category-rule-and-referent-for-an-obo obo word))
+      (let* ((i (reify-bio-entity words-string))
+             (cfr (retrieve-single-rule-from-individual i)))
+        (values (bio-category-for-reifying)
+                cfr
+                i)))))

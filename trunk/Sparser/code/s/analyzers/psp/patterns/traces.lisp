@@ -161,5 +161,10 @@
                (string-of-words-between start-pos end-pos)
                (pos-token-index start-pos)
                (pos-token-index end-pos))))
+
+(deftrace :ns-made-approximation (number)
+  ;; called from package-approximation-number 
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns] formed an approximation of ~a" number)))
                
 

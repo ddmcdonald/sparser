@@ -3,14 +3,59 @@
 ;;;
 ;;;     File:  "pattern-gophers"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  April 2015
+;;;  version:  May 2015
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
 ;; 4/15/15 modified resolve-hyphen-between-two-words to ignore syntax
-;;  or form rules. 4/24/15 Debugged confustion in order of slash positions
-
+;;  or form rules. 4/24/15 Debugged confustion in order of slash positions.
+;; 5/15/15 Sited the handling of edges within patterns here for want of
+;;  a better place. 
 
 (in-package :sparser)
+
+;;;----------------------------------------
+;;; prebuilt-multiword edges w/in the span
+;;;----------------------------------------
+
+(defun ns-sort-out-pattern-with-edges (pattern start-pos end-pos edges words
+                                       hyphen-positions slash-positions
+                                       colon-positions other-punct)
+  (push-debug `(,pattern ,start-pos ,end-pos ,edges ,hyphen-positions 
+                ,slash-positions ,colon-positions ,other-punct))
+  ;; "the RAS/Raf/MAPK pathway" Jan#41: (full forward-slash #<edge18 13 pathway 16>)
+  (cond 
+   ((= 1 (length edges))
+    (let* ((edge-location (cond ((edge-p (car (last pattern))) :final)
+                                ((edge-p (car pattern)) :initial)
+                                (t :middle)))
+           (remaining-pattern (case edge-location
+                                (:final (nreverse (cdr (nreverse pattern))))
+                                (:initial (cdr pattern))
+                                (:middle (error "edge in middle of pattern ~a"
+                                                pattern))))
+           (category (edge-category (car edges))))
+      (push-debug `(,category ,remaining-pattern))
+      ;;//// Look for experts that can make useful sense of 
+      ;; the rest of the pattern
+      (edge-that-punts-edge-inside-pattern words start-pos end-pos edges)))
+   (t
+    (if *work-on-ns-patterns*
+      (break "~a edges in ns pattern" (length edges))
+      (error "Stub more than one edge in pattern:~%  ~a" pattern)))))
+
+(defun edge-that-punts-edge-inside-pattern (words start-pos end-pos edges)
+  (let ((edge (make-edge-over-long-span
+               start-pos
+               end-pos
+               (edge-category (car edges)) 
+               :rule 'edge-that-punts-edge-inside-pattern
+               :form (edge-form (car edges))
+               :referent (edge-referent (car edges))
+               :constituents edges
+               :words words)))
+    ;;/// trace goes here
+    edge))
+
 
 ;;;---------
 ;;; slashes

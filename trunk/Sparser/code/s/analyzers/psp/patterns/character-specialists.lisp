@@ -1,13 +1,13 @@
 ;;;-*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "character-specialists"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  December 2014
+;;;  version:  May 2015
 
 ;; Initiated 9/9/14 to hold specialists dispatched from the no-space
 ;; scan. Tweaking through 10/9/14. Removed slash routines 12/10/14 as
-;; obsolete. 
+;; obsolete. Renewed tweaking/fanout through 5/17/15
 
 (in-package :sparser)
 (defvar *WORK-ON-NS-PATTERNS*)
@@ -58,21 +58,29 @@
       ;; E.g. "Figures S1A–S1D"
       ;; split down the middle, run the two parts through the 
       ;; pattern reifier, then combine them.
-      (let* ((hyphen-pos (car hyphen-position/s))
-             (first-half (resolve-hyphen-segment 
-                           pos-before hyphen-pos))
-             (second-half (resolve-hyphen-segment 
-                           (chart-position-after hyphen-pos) next-position)))
-        (if (and first-half second-half)
-          (make-hyphenated-structure first-half second-half)
-          (if *work-on-ns-patterns*
-            (then
-              (push-debug `(,first-half ,second-half))    
-              (break "One of the patterns to either side of a hyphen ~
-                   did not resolve."))
-            ;; If not working on it, completely punt
-            (reify-ns-name-and-make-edge 
-             (words-between pos-before next-position) pos-before next-position)))))
+      (let ((hyphen-pos (car hyphen-position/s)))
+        (cond
+         ((eq hyphen-pos pos-before) ;; it's initial
+          ;; for the moment don't do anything
+          )
+         ((eq hyphen-pos next-position) ;; its final
+          ) ;; ditto
+         (t
+          (let ((first-half (resolve-hyphen-segment 
+                             pos-before hyphen-pos))
+                (second-half (resolve-hyphen-segment 
+                              (chart-position-after hyphen-pos) next-position)))
+            (if (and first-half second-half)
+              (make-hyphenated-structure first-half second-half)
+              (if *work-on-ns-patterns*
+                (then
+                  (push-debug `(,first-half ,second-half))    
+                  (break "One of the patterns to either side of a hyphen ~
+                         did not resolve."))
+                ;; If not working on it, completely punt
+                (reify-ns-name-and-make-edge 
+                 (words-between pos-before next-position) 
+                 pos-before next-position))))))))
         
      (t
       (when *work-on-ns-patterns*
@@ -87,7 +95,7 @@
   (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
     (or single-edge
         (let ((words (words-between start-pos end-pos))
-              (pattern (characterize-words-in-region start-pos end-pos)))
+              (pattern (characterize-words-in-region start-pos end-pos nil)))
           (let ((*work-on-ns-patterns* nil)) ;; t))
             (declare (special *work-on-ns-patterns*))
             (let ((result (resolve-ns-pattern pattern words start-pos end-pos)))
@@ -132,7 +140,7 @@
                       :rule 'scare-quote-specialist
                       :form (edge-form word-edge)
                       :referent (edge-referent word-edge)
-                      :constituents words)))
+                      :words words)))
           (tr :made-edge edge)
           edge)))
 
