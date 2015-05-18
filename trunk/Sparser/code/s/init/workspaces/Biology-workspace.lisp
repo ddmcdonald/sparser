@@ -105,15 +105,18 @@ those steps sequentially on a single article.
 
 (defun load-and-read-article (id) ;; assume corpus-path is set
   (load-xml-to-doc-if-necessary)
-  (let* ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
+  (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
                      (find-package :r3)))
-         (doc-elements (funcall maker-fn id))
-         (article (car doc-elements)))
-    (setf (name article) id)
-    (push-debug `(,article))
-    (sweep-document article)
-    (read-from-document article)
-    article))
+         (quiet-fn (intern (symbol-name '#:debug-off)
+                           (find-package :r3))))
+    (funcall quiet-fn)
+    (let* ((doc-elements (funcall maker-fn id))
+           (article (car doc-elements)))
+      (setf (name article) id)
+      (push-debug `(,article))
+      (sweep-document article)
+      (read-from-document article)
+      article)))
 
 ;; (populate-article-set)
 (defun process-one-article (id)
@@ -125,8 +128,8 @@ those steps sequentially on a single article.
   (time-end)
   (pprint
    `((:READING--STARTED ,@ (mitre-time-format *universal-time-start*))
-    (:READING--STARTED ,@ (mitre-time-format *universal-time-end*))
-    (:PMC--ID ,@ (name *current-article*))))
+     (:READING--STARTED ,@ (mitre-time-format *universal-time-end*))
+     (:PMC--ID ,@ (name *current-article*))))
   (values *current-article*
           (mitre-time-format *universal-time-start*)
           (mitre-time-format *universal-time-end*) ; 
@@ -146,13 +149,10 @@ those steps sequentially on a single article.
   (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
                           (find-package :r3)))
         (path-fn (intern (symbol-name '#:make-doc-path)
-                         (find-package :r3)))
-        (dbg-symbol (intern (symbol-name '#:*debug-list*)
-                            (find-package :r3))))
-    (setq dbg-symbol nil)
+                         (find-package :r3))))
      
     (dolist (id list-of-ids)
-      (let ((simple-id (PMC-to-nxml id)))
+      (let* ((simple-id (PMC-to-nxml id)))
         (format t "~&~%~%Reading the file ~a"
                 (funcall path-fn simple-id))
         (push (funcall maker-fn simple-id)
