@@ -31,6 +31,7 @@
 ;; cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
 ;; 5/1/2015 minor tweak on losing-competition?  to do better on leftwards extension of NPs which may be SUBJECTs
 ;; 5/12/2015 fixes to losing-competition? to better handle leftwards extension of NP subjects before they are used as subjects
+;; 5/15/15 Moved out literal-edge? to the edge object code.
 
 
 (in-package :sparser)
@@ -360,10 +361,6 @@
 (defun triple-rule (triple) (car triple))
 (defun left-edge-of-triple (triple) (cadr triple))
 (defun right-edge-of-triple (triple) (caddr triple))
-
-;;/// move
-(defun literal-edge? (edge) ;;/// not the best name
-  (word-p (edge-category edge)))
 
 (defun remove-surplus-literal-compositions (triples)
   ;; Is there is pair involving an edge based on a literal
