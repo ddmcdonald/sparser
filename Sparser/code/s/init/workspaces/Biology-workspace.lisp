@@ -118,7 +118,6 @@ those steps sequentially on a single article.
       (read-from-document article)
       article)))
 
-;; (populate-article-set)
 (defun process-one-article (id)
   (time-start)
   (setq *articles-created* nil)
@@ -139,6 +138,7 @@ those steps sequentially on a single article.
 (defun populate-one-article (id)
   (populate-article-set (list id)))
 
+;; (populate-article-set)
 (defun populate-article-set (&optional list-of-ids location)
   (load-xml-to-doc-if-necessary)
   (unless list-of-ids
@@ -175,29 +175,21 @@ those steps sequentially on a single article.
 
 (defparameter *break-on-errors* nil) ;; do error trapping
 
-;; Rewrite -- this kind of loop doesn't continue after
-;; it gets an error. 
 (defun sweep-article-set (&optional (articles *articles-created*))
-  (do ((article (car articles) (car rest))
-       (rest (cdr articles) (cdr rest)))
-      ((null article))
-    (if
-     *break-on-errors*
-     (sweep-document article) 
-     
-     (handler-case
-         (push (sweep-document article)    
-               *populated-articles*)
-       (error (e)
-              (declare (special e))
-              (format t "~&Error sweeping ~a~%" article)
-              (d e)
-              #+ignore
-              (let ((error-string
-                     (apply #'format nil 
-                            (simple-condition-format-control e)
-                            (simple-condition-format-arguments e))))
-                (format t "Error: ~a~%~%" error-string)))))
+  (let ((article (car articles))
+        (rest (cdr articles)))
+    (loop
+      (unless article
+        (return))
+      (handler-case
+          (push (sweep-document article)    
+                *populated-articles*)
+        (error (e)
+          (declare (special e))
+          (format t "~&Error sweeping ~a~%" article)
+          (d e)))
+      (setq article (car rest)
+            rest (cdr rest)))
     *populated-articles*))
     
 
