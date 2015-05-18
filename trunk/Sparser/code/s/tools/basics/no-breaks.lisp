@@ -1,29 +1,34 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(sparser LISP) -*-
-;;; copyright (c) 1990-1991,2011-2012 David D. McDonald -- all rights reserved
+;;; copyright (c) 1990-1991,2011-2015 David D. McDonald -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "no breaks"
 ;;;    Module:   "tools:basics"
-;;;   Version:   December 2012
+;;;   Version:   May 2015
 
 ;; Original version 2/1991 for CTI.
 ;; 7/22/09 brought package out of the dark ages. 10/8/09 Added on-error setup.
 ;; (2/8/11) Added more conditionalization so will load in Clozure as well as ACL.
 ;; (2/17/12) Marking special variables. 12/8 Copied the functions for -allegro 
 ;;  versions. 
-;; (5/1/15) Trying it out. 5/15/15 prepositioning the shadow w/o doing anything
-;; with it yet. 
+;; (5/1/15) Trying it out. 5/15/15 Shadow and convert to call to error works.
+;;  CCL won't let you redefine break (why did MCL permit it?), so the better
+;;  treatment is to get our own symbol for break and define it as a call to error
+;;  that we can trap with an error handler.
 
 (in-package :sparser)
 
-(defparameter *redefine-error-for-traps* nil
-  "Used by callers of these routines to gate using them or not.")
+;;;--------------------
+;;; This version works
+;;;--------------------
 
 (shadow '(#:break) (find-package :sparser)) ;; c.f. the position struct definition.
 
 (defun sparser::break (format-string &rest args)
   (apply #'error format-string args))
 
+
+;; This set used to be effective, but not now (2015)
 ;;;-----------------------------------
 ;;; globals for saving the old values
 ;;;-----------------------------------
