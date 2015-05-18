@@ -32,6 +32,30 @@
     (trace-msg "[scan] there is whitespace before p~A"
                (pos-token-index p))))
 
+(deftrace :successful-ns-pattern-reached (p)
+  ;; called from pattern-sweep
+  (when (or *trace-scan-patterns* *trace-network-flow*)
+    (trace-msg "[scan] specific ns pattern reached p~a"
+               (pos-token-index p))))
+
+(deftrace :no-specific-pattern-trying-uniform (p)
+  ;; called from pattern-sweep
+  (when (or *trace-scan-patterns* *trace-network-flow*)
+    (trace-msg "[scan] no specific ns pattern, trying ~
+                uniform-pattern at p~a"
+               (pos-token-index p))))
+
+(deftrace :successful-uniform-ns-reached (p)
+  ;; called from pattern-sweep
+  (when (or *trace-scan-patterns* *trace-network-flow*)
+    (trace-msg "[scan] uniform-scan went to p~a"
+               (pos-token-index p))))
+
+(deftrace :uniform-ns-pattern-failed ()
+  ;; called from pattern-sweep
+  (when (or *trace-scan-patterns* *trace-network-flow*)
+    (trace-msg "[scan] no uniform pattern succeeded")))
+
 
 
 
@@ -160,6 +184,19 @@
   (when *trace-scan-patterns*
     (trace-msg "[ns] swept over ~s" (word-pname word))))
 
+(deftrace :ns-edge-sweep (edge)
+  ;; called from sweep-to-end-of-ns-regions
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] swept over edge e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :ns-next-position-is (p)
+  ;; called from sweep-to-end-of-ns-regions
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] the next position is p~a"
+               (pos-token-index p))))
+
+
 (deftrace :ns-return-because-whitespace (p)
   ;; called from sweep-to-end-of-ns-regions
   (when *trace-scan-patterns*
@@ -184,6 +221,7 @@
     (trace-msg "[ns] returning from sweep: ~s is sequence terminating ~
                 punctuation~%    Moving position to p~a"
                (word-pname word)  (pos-token-index p))))
+
 
 
 (deftrace :no-space-sequence-made-word (word)
