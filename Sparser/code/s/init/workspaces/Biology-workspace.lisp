@@ -49,6 +49,11 @@ those steps sequentially on a single article.
 
 |#
 
+(defun test-articles ()
+  (populate-article-set)
+  (sweep-article-set)
+  (read-article-set))
+
 (defvar *articles-created* nil
   "Holds the document shells as created by make-sparser-doc-structure")
 
