@@ -176,7 +176,7 @@
   (after-actions a)
   a)
 
-
+(defparameter *show-section-printouts* nil)
 (defmethod read-from-document ((ss section-of-sections))
   (setq *section-of-sections* ss)
   (fresh-contents ss)
@@ -186,7 +186,8 @@
     (when title?
       (setf (title ss) (content-string title?))
       (setq subsections (cdr subsections)))
-    (format t "~&~%--------- starting section of sections ~a~%" ss)
+    (when *show-section-printouts*
+      (format t "~&~%--------- starting section of sections ~a~%" ss))
     (let ((section (car subsections))
           (remaining (cdr subsections))
           previous-section)
@@ -201,7 +202,8 @@
           (setf (previous section) previous-section)
           (setf (next previous-section) section)))
       (after-actions ss)
-      (format t "~&~%--------- finished section of sections ~a~%" ss))))
+      (when *show-section-printouts*
+        (format t "~&~%--------- finished section of sections ~a~%" ss)))))
 
 
 (defmethod read-from-document ((s section))
@@ -209,7 +211,8 @@
   (fresh-contents s)
   ;;/// previous/next also not set, and there's a title-text
   ;;  among the children
-  (format t "~&~%--------- starting section ~a~%" s)
+  (when *show-section-printouts*
+    (format t "~&~%--------- starting section ~a~%" s))
   (let* ((all-children (children s))
          (paragraphs (loop for child in all-children
                        when (typep child 'paragraph)
@@ -233,7 +236,8 @@
     ;;/// section aggregation goes here. 
     ;;(break "finished section")
     (after-actions s)
-    (format t "~%--------- finished section ~a~%~%" s)))
+    (when *show-section-printouts*
+      (format t "~%--------- finished section ~a~%~%" s))))
 
 
 (defmethod read-from-document ((p paragraph))
@@ -241,7 +245,8 @@
   ;;/// do we need a specialized analyser?
   ;;    lookup-the-kind-of-chart-processing-to-do
   ;;/// review per-article-initializations
-  (format t "~&~%--------- starting paragraph ~a~%" p)
+  (when *show-section-printouts*
+    (format t "~&~%--------- starting paragraph ~a~%" p))
   (let ((*reading-populated-document* t)
         (*recognize-sections-within-articles* nil) ;; turn of doc init
         (*accumulate-content-across-documents* t)) ;; doesn't clear history??
