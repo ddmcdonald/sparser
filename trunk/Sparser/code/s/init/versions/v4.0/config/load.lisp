@@ -46,12 +46,12 @@
 ;;;---------------------------------------------------------------
 
 (unless (boundp '*number-of-positions-in-the-chart*)
-  (defparameter *number-of-positions-in-the-chart* 500
+  (defparameter *number-of-positions-in-the-chart* 20000
     "The number of words that can be parsed before the chart resource 
      wraps."))
 
 (unless (boundp '*length-of-edge-resource*)
-  (defparameter *length-of-edge-resource* 5000
+  (defparameter *length-of-edge-resource* 100000
     "The number of edges that the parser can use before the edge 
      resource wraps."))
 
