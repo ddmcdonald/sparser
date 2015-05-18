@@ -107,7 +107,7 @@ those steps sequentially on a single article.
   (load-xml-to-doc-if-necessary)
   (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
                      (find-package :r3)))
-         (quiet-fn (intern (symbol-name '#:debug-off)
+         (quiet-fn (intern (symbol-name 'debug-off)
                            (find-package :r3))))
     (funcall quiet-fn)
     (let* ((doc-elements (funcall maker-fn id))
@@ -140,6 +140,7 @@ those steps sequentially on a single article.
 
 ;; (populate-article-set)
 (defun populate-article-set (&optional list-of-ids location)
+(setq *articles-created* nil) ;; this is a rebuild operation!!
   (load-xml-to-doc-if-necessary)
   (unless list-of-ids
     (setq list-of-ids *2015-5-4_Mitre-articles*))
@@ -149,31 +150,38 @@ those steps sequentially on a single article.
   (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
                           (find-package :r3)))
         (path-fn (intern (symbol-name '#:make-doc-path)
-                         (find-package :r3))))
-     
+                         (find-package :r3)))
+        (quiet-fn (intern (symbol-name 'debug-off)
+                          (find-package :r3))))
+    (funcall quiet-fn)
+    
     (dolist (id list-of-ids)
       (let* ((simple-id (PMC-to-nxml id)))
         (format t "~&~%~%Reading the file ~a"
                 (funcall path-fn simple-id))
         (push (funcall maker-fn simple-id)
               *articles-created*)))
-
+    
     ;; This is the list of all the document elements for each article.
     ;; Now in the same order as the list they were created from.
-    (let* ((all-article-forms (nreverse *articles-created*))
-           (article-objects (loop for form in all-article-forms
-                              collect (car form))))
-      (setq *articles-created* article-objects)
+    (setq *articles-created* 
+          (nreverse
+           (loop for form in *articles-created* 
+             collect 
+             (if
+              (consp form)
+              (car form)
+              form))))
+    
+    (loop 
+      for article in *articles-created*
+      as id in list-of-ids
+      do (setf (name article) id))
+    
+    *articles-created*))
 
-      (loop 
-        for article in *articles-created*
-        as id in list-of-ids
-        do (setf (name article) id))
 
-      *articles-created*)))
-
-
-(defparameter *break-on-errors* nil) ;; do error trapping
+(defparameter *break-on-errors* t) ;; do error trapping
 
 (defun sweep-article-set (&optional (articles *articles-created*))
   (let ((article (car articles))
@@ -181,16 +189,20 @@ those steps sequentially on a single article.
     (loop
       (unless article
         (return))
-      (handler-case
-          (push (sweep-document article)    
-                *populated-articles*)
-        (error (e)
-          (declare (special e))
-          (format t "~&Error sweeping ~a~%" article)
-          (d e)))
+      (if
+       *break-on-errors*
+       (push (sweep-document article)    
+             *populated-articles*)
+       (handler-case
+           (push (sweep-document article)    
+                 *populated-articles*)
+         (error (e)
+                (declare (special e))
+                (format t "~&Error sweeping ~a~%" article)
+                (d e))))
       (setq article (car rest)
-            rest (cdr rest)))
-    *populated-articles*))
+            rest (cdr rest))))
+  *populated-articles*)
     
 
 (defun read-article-set (&optional (articles *populated-articles*))
