@@ -344,6 +344,7 @@
     ;;///// dropping the approximation on the floor
     ;; see model/core/adjuncts/approx/object.lisp for where to 
     ;; start the process of doing it right. 
+    (tr :ns-made-approximation number)
     (let ((edge (make-edge-over-long-span
                  start-pos
                  end-pos
