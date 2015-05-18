@@ -659,6 +659,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named #\' )))
     (776  ;; #\Combining_Diaeresis
      (:punctuation . ,(punctuation-named #\' )))
+    (916 ;; #\Greek_Capital_Letter_Delta
+     (:alphabetical . (:lowercase . ,(code-char 916))))
+     
     ;; 03B1
     (945 ;; #\Greek_Small_Letter_Alpha
      (:alphabetical . (:lowercase . ,(code-char 945))))
@@ -684,6 +687,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:alphabetical . (:lowercase . ,(code-char 955))))
     (956 ;; #\Greek_Small_Letter_Mu
      (:alphabetical . (:lowercase . ,(code-char 956))))
+    (963;; #\Greek_Small_Letter_Sigma
+     (:alphabetical . (:lowercase . ,(code-char 963))))
 
     (8211  ;; en dash
      (:punctuation . ,(punctuation-named #\- )))
@@ -698,6 +703,18 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named #\" )))
     (8221 ;; right double quote
      (:punctuation . ,(punctuation-named #\" )))
+    (8242 ;; "prime"
+     (:punctuation . ,(or
+                       (punctuation-named #\U+2032 )
+                       (punctuation-named #\'))))
+    (8722 
+     (:punctuation . ,(or
+                       (punctuation-named #\U+2212)
+                       (punctuation-named #\-))))
+    (8764
+     (:punctuation . ,(or
+                       (punctuation-named #\U+223C)
+                       (punctuation-named #\~))))
     (8594 ;; rightwards arrow
      #-allegro
      (:punctuation . ,(punctuation-named #\U+2192))
@@ -720,7 +737,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 
 (defun cache-out-of-band-character (char-code)
-  (push-debug `(,char-code)))
-;  (break "finish writing cache-out-of-band-character")
+  (push-debug `(,char-code))
+  (break "finish writing cache-out-of-band-character"))
 
 
