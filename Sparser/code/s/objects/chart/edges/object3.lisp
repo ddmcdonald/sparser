@@ -73,6 +73,14 @@
   ;; they can come from abbreviations as well.
   (eq :literal-in-a-rule (edge-right-daughter e)))
 
+#| I'm thinking this version is a little slower
+(defun literal-edge? (edge)
+  (word-p (edge-category edge))) |#
+
+;;/// move
+(defun literal-edge? (edge) ;;/// not the best name
+  (word-p (edge-category edge)))
+
 ;; forgotten variant defined for use in PNF
 (defun edge-for-literal? (e)
   (eq :literal-in-a-rule (edge-right-daughter e)))
