@@ -18,8 +18,9 @@
 (defmethod sweep-document ((doc document-element))
   "Creates the document objects, including the sentences, 
    but does no analysis at all."
-  (let ((*sweep-for-terminals* nil))
-    (declare (special *sweep-for-terminals*))
+  (let ((*sweep-for-terminals* nil)
+        (*sections-to-ignore* nil))
+    (declare (special *sweep-for-terminals* *sections-to-ignore*))
     (read-from-document doc)))
 
 
@@ -33,8 +34,31 @@
    name sections we want to skip over")
 
 (defun ignore-this-document-section (section)
-  (unless (typep section 'paragraph) ;; happens sometimes
-    (cond
+  (when *sections-to-ignore*
+    (unless (typep section 'paragraph) ;; happens sometimes
+      (when (slot-boundp section 'title)
+        ;(push-debug `(,section))
+        ;(error "title of section hasn't been set"))
+    
+        (let ((title-object (title section)))
+          (unless title-object
+            (push-debug `(,section))
+            (error "Section somehow doesn't have a title object"))
+          (let ((title-string 
+                 (typecase title-object
+                   (string title-object)
+                   (string-holder (content-string title-object))
+                   (otherwise
+                    (push-debug `(,title-object))
+                    (error "Unexpected type of title: ~a~%~a"
+                           (type-of title-object) title-object)))))
+            (dolist (ignore-substring *sections-to-ignore* nil)
+              (when (search ignore-substring title-string
+                            :test #'string-equal)
+                (format t "~&~%------- Ignoring section ~a --------" section)
+                (return t)))))))))
+
+#|   (cond
      ((not (slot-boundp section 'title))
       (push-debug `(,section))
       (format t  "ERROR! title of section hasn't been set")
@@ -57,7 +81,8 @@
               (when (search ignore-substring title-string
                             :test #'string-equal)
                 (format t "~&~%------- Ignoring section ~a --------" section)
-                (return t))))))))))
+                (return t))))))))  |#
+
 
 
 ;;;---------
