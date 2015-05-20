@@ -634,7 +634,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 (setf (elt *character-dispatch-array* 239) ;; #\Latin_Small_Letter_I_With_Diaeresis
       `(:alphabetical . (:lowercase . #\l)))
-      
+
 ;; Loading the utf-8 file into Hemlock it appears as a space,
 ;; in Emacs (in whatever it's default is -- Hemloc says its utf-8)
 ;; is appears as \302\240, and ACL just rolls over it.)
@@ -661,7 +661,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named #\' )))
     (916 ;; #\Greek_Capital_Letter_Delta
      (:alphabetical . (:lowercase . ,(code-char 916))))
-     
+
     ;; 03B1
     (945 ;; #\Greek_Small_Letter_Alpha
      (:alphabetical . (:lowercase . ,(code-char 945))))
@@ -705,16 +705,25 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named #\" )))
     (8242 ;; "prime"
      (:punctuation . ,(or
+                       #-allegro
                        (punctuation-named #\U+2032 )
+                       #+allegro
+                       (punctuation-named (code-char #x2032))
                        (punctuation-named #\'))))
-    (8722 
+    (8722
      (:punctuation . ,(or
+                       #-allegro
                        (punctuation-named #\U+2212)
+                       #+allegro
+                       (punctuation-named (code-char #x2212))
                        (punctuation-named #\-))))
     (8764
      (:punctuation . ,(or
-                       (punctuation-named #\U+223C)
-                       (punctuation-named #\~))))
+                        #-allegro
+                        (punctuation-named #\U+223C)
+                        #+allegro
+                        (punctuation-named (code-char #x223C))
+                        (punctuation-named #\~))))
     (8594 ;; rightwards arrow
      #-allegro
      (:punctuation . ,(punctuation-named #\U+2192))
