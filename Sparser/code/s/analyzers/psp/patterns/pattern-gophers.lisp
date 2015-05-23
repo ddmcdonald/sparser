@@ -31,17 +31,24 @@
            (remaining-pattern (case edge-location
                                 (:final (nreverse (cdr (nreverse pattern))))
                                 (:initial (cdr pattern))
-                                (:middle (error "edge in middle of pattern ~a"
-                                                pattern))))
+                                (:middle 
+                                 (loop for item in pattern
+                                   unless (edge-p item) collect item))))
            (category (edge-category (car edges))))
       (push-debug `(,category ,remaining-pattern))
       ;;//// Look for experts that can make useful sense of 
       ;; the rest of the pattern
-      (edge-that-punts-edge-inside-pattern words start-pos end-pos edges)))
+      (if *work-on-ns-patterns*
+        (break "Work on one edge pattern")
+        (edge-that-punts-edge-inside-pattern words start-pos end-pos edges))))
    (t
-    (if *work-on-ns-patterns*
-      (break "~a edges in ns pattern" (length edges))
-      (error "Stub more than one edge in pattern:~%  ~a" pattern)))))
+    (let ((remaining-pattern
+           (loop for item in pattern
+             unless (edge-p item) collect item)))
+      (push-debug `(,remaining-pattern))
+      (if *work-on-ns-patterns*
+        (break "~a edges in ns pattern" (length edges))
+        (edge-that-punts-edge-inside-pattern words start-pos end-pos edges))))))
 
 (defun edge-that-punts-edge-inside-pattern (words start-pos end-pos edges)
   (let ((edge (make-edge-over-long-span
