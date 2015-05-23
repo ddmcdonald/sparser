@@ -241,6 +241,7 @@
 (define-drug "lomeguatrib")
 (define-drug "lonafarnib")
 (define-drug "lucatumumab")
+(define-drug "LY294002")
 (define-drug "m-vimentib")
 (define-drug "mab")
 (define-drug "manual-lib")
