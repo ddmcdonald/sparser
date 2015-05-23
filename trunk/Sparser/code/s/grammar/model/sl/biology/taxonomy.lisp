@@ -368,7 +368,7 @@
   :specializes molecule
   :instantiates :self)
 
-(define-category protein-segment ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain
+(define-category protein-domain ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain
   :specializes bio-entity
   :instantiates :self)
 
