@@ -26,6 +26,8 @@
 ;; 5/12/2015 get rid of problematic rule for (number ng) which ended up eating 1C as in "Figure 1C
 ;; add rule for postmodification by adjective phrase (perhaps should be done in post-pass)
 ;; added rule for to-comp on NPs
+;; 5/23/2015 allow for PPs that start relative clauses -- "to which", "from whose..."
+
 
 (in-package :sparser)
 
@@ -254,7 +256,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 |#
 
 ;;--- prepositional phrases
-(loop for nb in (cons category::np *n-bar-categories*)
+(loop for nb in `(category::np  category::wh-pronoun ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (preposition ,nb)
