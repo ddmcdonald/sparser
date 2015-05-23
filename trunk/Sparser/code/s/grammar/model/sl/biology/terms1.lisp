@@ -371,13 +371,17 @@
 (adj "further" :super predicate)
 (define-adverb "further")
 (define-adverb "furthermore")
-(noun "G-domain" :super protein-segment) ;; somehow (def-bio "G-domain" protein-segment) did not work
+(noun "G-domain" :super protein-domain) ;; somehow (def-bio "G-domain" protein-segment) did not work
+(noun "BRCT1" :super protein-domain)
+(noun "BRCT2" :super protein-domain)
+(noun "SH2" :super protein-domain)
+(noun "SH3" :super protein-domain)
 
-(def-bio "g1" bio-entity)
-(def-bio "g2" bio-entity)
-(def-bio "g3" bio-entity)
-(def-bio "g4" bio-entity)
-(def-bio "g5" bio-entity)
+(noun "g1" :super protein-domain)
+(noun "g2" :super protein-domain)
+(noun "g3" :super protein-domain)
+(noun "g4" :super protein-domain)
+(noun "g5" :super protein-domain)
 (adj "genetic" :super predicate) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
 (def-bio "guanine" nucleotide)
@@ -631,7 +635,7 @@
       (:noun "radioactivity" :adj "radioactive"
              :of material))
 (noun "range" :super bio-scalar)
-(noun "RBD" :super protein-segment
+(noun "RBD" :super protein-domain
       :binds ((substrate bio-entity))
       :realization 
       (:noun "RBD"
@@ -885,7 +889,12 @@
 (def-cell-line "HKe3 ER:HRASV12")
 (def-cell-line "HKe3 ER:HRAS12")
 (def-cell-line "HKe3")
+(def-cell-line "NIH-3T3")
 (def-cell-line "Saos2")
+(def-cell-line "VMM12")
+(def-cell-line "VMM18")
+(def-cell-line "VMM39")
+(def-cell-line "VMM5A")
 
 (def-cell-line "mouse embryo fibroblast") ;; not sure this is right -- it is a type of cell, but...
 ;;A fibroblast is a type of cell that synthesizes the extracellular matrix and collagen,[1] 
