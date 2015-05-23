@@ -132,9 +132,9 @@
         (words (words-between start-pos end-pos)))
     (tr :segment-ns-pattern pattern)
 
-;    (when edges
-;      (push-debug `(,pattern ,edges ,start-pos ,end-pos))
-;      (break "Look at pattern with edges:~%  ~a" pattern))
+    (when (and edges *work-on-ns-patterns*)
+      (push-debug `(,pattern ,edges ,start-pos ,end-pos))
+      (break "Look at pattern with edges:~%  ~a" pattern))
 
     (cond 
      (edges
@@ -195,8 +195,7 @@
     (if (null (cdr edges)) 
       edges
       (let ((in-order (nreverse edges)))
-        (push-debug `(,in-order ,leftmost-edge)) 
-        (break "first case of more than one edge in ns region")
+        (push-debug `(,in-order ,leftmost-edge))
         in-order))))
 
 (defun reify-ns-name-and-make-edge (words pos-before next-position)

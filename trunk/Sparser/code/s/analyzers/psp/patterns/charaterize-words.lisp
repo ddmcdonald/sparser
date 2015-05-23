@@ -49,12 +49,15 @@
 
 (defun characterize-words-in-region  (start-pos end-pos edges)
   ;; Returns a pattern. Presumes that the whole region has been scanned.
+  (push-debug `(,start-pos ,end-pos ,edges))
   (let ((position start-pos)
         (word (pos-terminal start-pos))
         pattern-elements  element  edge
         (edge-start-positions 
          (when edges (loop for e in edges
-                       collect (pos-edge-starts-at e)))))
+                       collect (pos-edge-starts-at e))))
+        previous-pos  )
+
     #+ignore(when edges
       (push-debug `(,edge-start-positions ,edges ,start-pos ,end-pos))
       (break "Look at edge start positions"))
@@ -71,7 +74,14 @@
         (push element pattern-elements)))
 
       (setq position 
-            (if edge (pos-edge-ends-at edge) (chart-position-after position)))
+            (if edge 
+              (prog1
+                (pos-edge-ends-at edge)
+                (setq edge nil)) ;; reset
+              (chart-position-after position)))
+      (when (eq position previous-pos)
+        (error "characterize-words-in-region is looping"))
+      (setq previous-pos position)
 
       (when (eq position end-pos)
         (return)))
