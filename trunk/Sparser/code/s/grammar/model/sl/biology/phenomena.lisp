@@ -63,7 +63,7 @@
           (object (:or bio-process protein)))  ;; what's being signaled
   :index (:permanent :key agent) ;; 
   :realization 
-    (:verb "signal"  
+    (:verb ("signal"  :present-participle "xxxsignaling") ;; block "signaling" as a verb
      :noun "signalling"
      :etf (svo-passive pre-mod)
      :m agent
