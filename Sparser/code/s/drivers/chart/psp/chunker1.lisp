@@ -26,6 +26,10 @@
 ;;  is running. 
 ;; 4/27/2015 Improved handling of verb+ed case -- tension is between keeiping it in the NP and losing a reduced relative, or
 ;;  breaking up the NP to allow for the verb form. Still need to review this.
+;; 5/23/2015 -- handling wh-pronouns as NPs for relative clause PPs ("in which ...", "from whose") while not allowing them as
+;;  as determiner-like modifiers for the start of a questioned NP ("which protein")
+;;  handle partitive without OF -- "all these ..."
+
 
 (in-package :sparser)
 
@@ -473,7 +477,11 @@ all sorts of rules apply and not simply form rules.
      (not 
       (loop for edge in edges
         thereis
-        (eq category::pronoun (edge-form edge))))
+        (or
+         (eq category::pronoun (edge-form edge))
+         (member (cat-symbol (edge-category edge))
+                 '(category::which category::whose category::what)))))
+        
      (cond
       ((eq word::comma (edge-category e))
        ;;comma can come in the middle of an NP chunk
@@ -513,7 +521,9 @@ all sorts of rules apply and not simply form rules.
     ;; partitive construction e.g. "all of these lines"
     (loop for edge in edges
       thereis
-      (eq (edge-category edge) category::quantifier-of))
+      (or
+       (eq (edge-category edge) category::quantifier-of)
+       (eq (edge-category edge) category::all)))
     (eq name 'category::det))))
 
 
