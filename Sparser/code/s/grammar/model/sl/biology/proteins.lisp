@@ -466,7 +466,7 @@ filligre may be used to distinguish them, etc.
 
 (def-bio "COT/TPL2" protein) ;; see if defining this leads to sentence 53 working consistently when run twice.
 (def-bio "cot" protein
-  :synonyms ("COT"))
+  :synonyms ("COT" "MAP3K8"))
 (def-bio "trypsin" protein)
 
 
@@ -502,6 +502,18 @@ filligre may be used to distinguish them, etc.
 (def-bio "phospho-ASPP2" protein)
 (def-bio "PI3KC2β" protein)
 (def-bio "Ras17N" protein)
+
+;;; proteins missing from the MITRE parts list, but found in the 10 articles
+(DEF-BIO "4EBP1_HUMAN" PROTEIN :synonyms ("4EBP1_HUMAN" "4EBP1") :MITRE-LINK "4EBP1_HUMAN")
+(DEF-BIO "A9YLD1_MEDTR" PROTEIN :synonyms ("AA8") :MITRE-LINK "A9YLD1_MEDTR")
+(DEF-BIO "APEX1_HUMAN" PROTEIN :SYNONYMS ("APEX1" "APE" "APE1" "APEX" "APX" "HAP1" "REF1") :MITRE-LINK "APEX1_HUMAN") 
+(DEF-BIO "FKB1B_HUMAN" PROTEIN :SYNONYMS ("FKBP1B" "FKBP12.6" "FKBP1L" "FKBP9" "OTK4") :MITRE-LINK "FKB1B_HUMAN")
+(DEF-BIO "ELAF_HUMAN" PROTEIN :SYNONYMS ("PI3" "WAP3" "WFDC14") :MITRE-LINK "ELAF_HUMAN")
+(DEF-BIO "SIR1_HUMAN" PROTEIN :synonyms ("SIRT1" "SIR2L1") :MITRE-LINK "SITR1_HUMAN")
+(DEF-BIO "XRCC1_HUMAN" PROTEIN :synonyms ("XRCC1") :MITRE-LINK "XRCC1_HUMAN")
+(DEF-BIO "IF2A_HUMAN" PROTEIN :synonyms ("eIF-2alpha" "eIF2a" "eIF2α" "CG9946") :MITRE-LINK "IF2A_HUMAN")
+(DEF-BIO "EIF3B_HUMAN" PROTEIN :synonyms ("eIF3b" "EIF3S9") :MITRE-LINK "EIF3B_HUMAN")
+(DEF-BIO "IMA1_HUMAN" PROTEIN :synonyms ("KPNA2" "RCH1" "SRP1") :MITRE-LINK "IMA1_HUMAN")
 
 ;;;;; hugely long list from MITRE RAS_1 corpus
 (DEF-BIO "14-3-3" PROTEIN :SYNONYMS NIL :MITRE-LINK "14-3-3") 
@@ -714,7 +726,7 @@ filligre may be used to distinguish them, etc.
 (DEF-BIO "CDC5L_HUMAN" PROTEIN :SYNONYMS ("KIAA0432" "CDC5L" "PCDC5RP") :MITRE-LINK "CDC5L_HUMAN") 
 (DEF-BIO "CDCP1_HUMAN" PROTEIN :SYNONYMS ("CDCP1" "TRASK" "SIMA135" "CD318") :MITRE-LINK "CDCP1_HUMAN") 
 (DEF-BIO "CDIPT_HUMAN" PROTEIN :SYNONYMS ("2.7.8.11" "PIS" "CDIPT" "PIS1") :MITRE-LINK "CDIPT_HUMAN") 
-(DEF-BIO "CDK1_HUMAN" PROTEIN :SYNONYMS ("CDK1" "2.7.11.23" "P34CDC2" "2.7.11.22" "CDC2" "CDKN1" "CDC28A") :MITRE-LINK "CDK1_HUMAN") 
+(DEF-BIO "CDK1_HUMAN" PROTEIN :SYNONYMS ("CDK1" "Cdk1" "2.7.11.23" "P34CDC2" "2.7.11.22" "CDC2" "CDKN1" "CDC28A") :MITRE-LINK "CDK1_HUMAN") 
 (DEF-BIO "CDK4_HUMAN" PROTEIN :SYNONYMS ("2.7.11.22" "PSK-J3" "CDK4") :MITRE-LINK "CDK4_HUMAN") 
 (DEF-BIO "CDK5_HUMAN" PROTEIN :SYNONYMS ("CDKN5" "2.7.11.1" "CDK5") :MITRE-LINK "CDK5_HUMAN") 
 (DEF-BIO "CEBPB_HUMAN" PROTEIN :SYNONYMS ("LIP" "TCF5" "LAP" "TCF-5" "CEBPB") :MITRE-LINK "CEBPB_HUMAN") 
@@ -723,6 +735,7 @@ filligre may be used to distinguish them, etc.
 (DEF-BIO "CHD3_HUMAN" PROTEIN :SYNONYMS ("CHD-3" "hZFH" "3.6.4.12" "Mi2-alpha" "CHD3") :MITRE-LINK "CHD3_HUMAN") 
 (DEF-BIO "CHD4_HUMAN" PROTEIN :SYNONYMS ("CHD-4" "Mi2-beta" "CHD4" "3.6.4.12") :MITRE-LINK "CHD4_HUMAN") 
 (DEF-BIO "CHK1_HUMAN" PROTEIN :SYNONYMS ("CHEK1" "2.7.11.1" "CHK1") :MITRE-LINK "CHK1_HUMAN") 
+(DEF-BIO "CHK2_HUMAN" PROTEIN :SYNONYMS ("CHEK2" "CDS1" "CHK2" "Chk2" "RAD53") :MITRE-LINK "CHK2_HUMAN")
 (DEF-BIO "CHM1A_HUMAN" PROTEIN :SYNONYMS ("Vps46-1" "PCOLN3" "CHMP1a" "KIAA0047" "PRSM1" "CHMP1" "hVps46-1" "CHMP1A") :MITRE-LINK "CHM1A_HUMAN") 
 (DEF-BIO "CHM1B_HUMAN" PROTEIN :SYNONYMS ("CHMP1b" "CHMP1.5" "Vps46-2" "CHMP1B" "C18orf2" "hVps46-2") :MITRE-LINK "CHM1B_HUMAN") 
 (DEF-BIO "CHM2A_HUMAN" PROTEIN :SYNONYMS ("hVps2-1" "CHMP2A" "CHMP2" "Vps2-1" "CHMP2a" "BC2") :MITRE-LINK "CHM2A_HUMAN") 
@@ -958,7 +971,7 @@ filligre may be used to distinguish them, etc.
 (DEF-BIO "G3P_HUMAN" PROTEIN :SYNONYMS ("2.6.99.-" "1.2.1.12" "GAPDH" "GAPD") :MITRE-LINK "G3P_HUMAN") 
 (DEF-BIO "G45IP_HUMAN" PROTEIN :SYNONYMS ("PRG6" "MRP-L59" "MRPL59" "PLINP-1" "CRIF1" "PLINP1" "GADD45GIP1" "PLINP") :MITRE-LINK "G45IP_HUMAN") 
 (DEF-BIO "G6PD_HUMAN" PROTEIN :SYNONYMS ("G6PD" "1.1.1.49") :MITRE-LINK "G6PD_HUMAN") 
-(DEF-BIO "GAB1_HUMAN" PROTEIN :SYNONYMS ("GAB1") :MITRE-LINK "GAB1_HUMAN") 
+(DEF-BIO "GAB1_HUMAN" PROTEIN :SYNONYMS ("GAB1" "Gab1") :MITRE-LINK "GAB1_HUMAN") 
 (DEF-BIO "GAB2_HUMAN" PROTEIN :SYNONYMS ("pp100" "GAB2" "KIAA0571") :MITRE-LINK "GAB2_HUMAN") 
 (DEF-BIO "GAB3_HUMAN" PROTEIN :SYNONYMS ("GAB3") :MITRE-LINK "GAB3_HUMAN") 
 (DEF-BIO "GALC_HUMAN" PROTEIN :SYNONYMS ("GALC" "GALCERase" "Galactosylceramidase" "3.2.1.46") :MITRE-LINK "GALC_HUMAN") 
@@ -1955,3 +1968,13 @@ filligre may be used to distinguish them, etc.
 ;;(DEF-BIO "RAS family" PROTEIN :SYNONYMS NIL :MITRE-LINK "RAS family") 
 ;;(DEF-BIO "Serine/threonine-protein kinase B-raf" PROTEIN :SYNONYMS NIL :MITRE-LINK "Serine/threonine-protein kinase B-raf") 
 ;;(DEF-BIO "Syndecan Family" PROTEIN :SYNONYMS NIL :MITRE-LINK "Syndecan Family") 
+
+(defun new-bio-entities ()
+  (length (setq bes 
+                (loop for a in *all-sentences* 
+                  append 
+                  (loop for i in (second a) when (member category::bio-entity (indiv-type i)) collect i))))
+  (setq bbs nil)
+  (loop for b in bes do (pushnew (mitre-string b) bbs :test #'equal))
+  (length (setq bbs (sort bbs #'string< ))))
+
