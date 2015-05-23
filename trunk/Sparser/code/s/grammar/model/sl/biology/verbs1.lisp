@@ -89,7 +89,7 @@
 
 ;; used almost entirely in "acquired restance" 
 (define-category acquire
-    :specializes bio-event
+    :specializes bio-process ;; for conjunctions, as in "de novo or acquired"
     :binds ((agent bio-entity)(object bio-process))
     :realization
     (:verb "acquire" ;; keyword: ENDS-IN-ED 
@@ -2109,7 +2109,8 @@
 
 (define-category use
     :specializes bio-process
-    :binds ((agent pronoun/first/plural)(object biological)(result biological))
+    :binds ((agent pronoun/first/plural)(object biological)(result biological)
+            (purpose (:or bio-event bio-process bio-rhetorical)))
     :realization
     (:verb "use" ;; keyword: ENDS-IN-ED 
            :noun "use"
@@ -2117,7 +2118,8 @@
 	   :s agent
 	   :o object
            :to result
-           :of object))
+           :of object
+           :to-comp purpose))
 
 
 
