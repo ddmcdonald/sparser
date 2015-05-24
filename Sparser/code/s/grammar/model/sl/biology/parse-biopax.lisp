@@ -210,7 +210,7 @@ decoding table for referenced OBO terms
   (setq *raw-owl* (load-owl file))
   (setq *bpi*
         (loop for i in
-          (cdddr (xmls::xmlrep-children *raw-owl*))
+          (cdddr (xmls::node-children *raw-owl*))
           collect (biopax-to-bio-sexpr i)))
   (loop for bio-sexpr in *bpi*
     do
@@ -222,8 +222,8 @@ decoding table for referenced OBO terms
 (defun load-ras1(&optional (file "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/ExamplePackage/ras_1.owl"))
   (setq *raw-ras1* (load-owl file))
   (setq *trimmed-ras1*
-        (loop for r in (cdddr (xmls::xmlrep-children *raw-ras1*))
-          unless (equalp (xmls:xmlrep-tag r) "RelationshipXref")
+        (loop for r in (cdddr (xmls::node-children *raw-ras1*))
+          unless (equalp (xmls:node-name r) "RelationshipXref")
           collect r))
   (setq *bpi*
         (loop for i in
@@ -241,7 +241,7 @@ decoding table for referenced OBO terms
 
 (defun biopax-to-bio-sexpr (child)
   (declare (special child))
-  (let* ((tag (xmls:xmlrep-tag child))
+  (let* ((tag (xmls:node-name child))
          (bio-sexpr
           `(,(cond
               ;; perhaps temporary -- rename the categories from Biopax/Reactome
@@ -255,7 +255,7 @@ decoding table for referenced OBO terms
               ((equalp "BiochemicalPathwayStep" tag) "PathwayStep") ;; change in nomenclature from earlier biopax?
               ((equalp "ComplexAssembly" tag) "BiochemicalReaction") ;; change in nomenclature from earlier biopax?
               (t tag))
-            ,(loop for rep in (xmls::xmlrep-attribs child)
+            ,(loop for rep in (xmls::node-attrs child)
                when
                (member (car rep)
                        '("id" "about")
@@ -263,22 +263,22 @@ decoding table for referenced OBO terms
                return (second rep))
 
             ;; darpa uses "id" (xmls:xmlrep-attrib-value "ID" child)
-            ,@(loop for rep in (xmls::xmlrep-attribs child)
+            ,@(loop for rep in (xmls::node-attrs child)
                 unless
                 (equalp (car rep) "ID")
                 collect rep)
-            ,@(loop for rep in (xmls::xmlrep-children child)
+            ,@(loop for rep in (xmls::node-children child)
                 unless
                 (or
                  (null rep) ;; bug in xmls?!
                  (equalp "xref"
-                         (xmls::xmlrep-tag rep)))
+                         (xmls::node-name rep)))
                 collect
                 (let*
                     ((*rep* rep)
-                     (attribs (xmls::xmlrep-attribs *rep*)))
+                     (attribs (xmls::node-attrs *rep*)))
                   (declare (special *rep*))
-                  `(,(xmls::xmlrep-tag *rep*)
+                  `(,(xmls::node-name *rep*)
                     ,(cond
                       ((assoc "resource" attribs :test #'equalp)
                        `(xml-resource
