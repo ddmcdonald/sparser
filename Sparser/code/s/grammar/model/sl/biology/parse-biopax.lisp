@@ -205,11 +205,12 @@ decoding table for referenced OBO terms
               (setf prior-cap? upc?)))))
       (concatenate 'string (nreverse chars)))))
 
-
+(defparameter *raw-owl* nil)
 (defun load-bp-ras-raf(&optional (file (make-reactome-path "RAF_MEK_ERK_biopax3.owl")))
+  (setq *raw-owl* (load-owl file))
   (setq *bpi*
         (loop for i in
-          (cdddr (load-owl file))
+          (cdddr (xmls::xmlrep-children *raw-owl*))
           collect (biopax-to-bio-sexpr i)))
   (loop for bio-sexpr in *bpi*
     do
@@ -221,8 +222,8 @@ decoding table for referenced OBO terms
 (defun load-ras1(&optional (file "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/ExamplePackage/ras_1.owl"))
   (setq *raw-ras1* (load-owl file))
   (setq *trimmed-ras1* 
-        (loop for r in (cdddr *raw-ras1*)
-          unless (equalp (caar r) "RelationshipXref")
+        (loop for r in (cdddr (xmls::xmlrep-children *raw-ras1*))
+          unless (equalp (xmls:xmlrep-tag r) "RelationshipXref")
           collect r))
   (setq *bpi*
         (loop for i in
@@ -271,35 +272,47 @@ decoding table for referenced OBO terms
                 (or
                  (null rep) ;; bug in xmls?!
                  (equalp "xref"
-                         (xmls::xmlrep-tag (remove nil rep))))
+                         (xmls::xmlrep-tag rep)))
                 collect
                 (let*
-                    ((*rep* (remove nil rep))
-                     (*val-type* (car (second *rep*))))
-                  (declare (special *rep* *val-type*))
+                    ((*rep* rep)
+                     (attribs (xmls::xmlrep-attribs *rep*)))
+                  (declare (special *rep*))
                   `(,(xmls::xmlrep-tag *rep*)
                     ,(cond
-                      ((equalp (car *val-type*) "resource")
+                      ((assoc "resource" attribs :test #'equalp)
                        `(xml-resource
-                         ,(cond
-                           ((eql #\# (char (second *val-type*) 0))
-                            (subseq (second (car (second rep))) 1))
-                           (t (second *val-type*) 1))))
-                      ((equalp (car *val-type*) "datatype")
-                       (cond
-                        ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#string")
-                         (third rep))
-                        ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#int")
-                         (read-from-string (third rep)))
-                        ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#float")
-                         (read-from-string (concatenate 'string (third rep) ".0")))
-                        ((equalp (second *val-type*) "http://www.w3.org/2001/XMLSchema#boolean")
-                         (third rep) )
-                        (t (break "what datatype"))))
+                         ,(let
+                              ((*res*
+                                (second (assoc "resource" attribs :test #'equalp))))
+                            (declare (special *res*))
+                            (cond
+                             ((eql #\# (char *res* 0))
+                              (subseq *res* 1))
+                             ((search "http" *res*)
+                              *res*)
+                             (t
+                              (ccl::break "look at resource (res* !s" *res*))))))
+                      ((assoc "datatype" attribs :test #'equalp)
+                       (let
+                           ((*datatype*
+                             (second (assoc "datatype" attribs :test #'equalp)))
+                            (*datum* (car (xmls::node-children *rep*))))
+                         (declare (special *datatype* *datum*))
+                         (cond
+                          ((equalp *datatype* "http://www.w3.org/2001/XMLSchema#string")
+                           *datum*)
+                          ((equalp *datatype* "http://www.w3.org/2001/XMLSchema#int")
+                           (read-from-string *datum*))
+                          ((equalp *datatype* "http://www.w3.org/2001/XMLSchema#float")
+                           (read-from-string (concatenate 'string *datum* ".0")))
+                          ((equalp *datatype* "http://www.w3.org/2001/XMLSchema#boolean")
+                           *datum*)
+                          (t (ccl::break "what datatype is ~s for datum ~s" *datatype* *datum*)))))
                       (t
                        ;; in this case we have a recursive structure
                        ;; and we are going to simplify and record it in *xml-ht*
-                       (biopax-to-bio-sexpr (second *rep*))))))))))
+                       (biopax-to-bio-sexpr (car (xmls::node-children *rep*)))))))))))
     (setf (gethash (second bio-sexpr) *xml-ht*)
           bio-sexpr)
     bio-sexpr))
