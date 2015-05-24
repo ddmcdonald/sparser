@@ -32,17 +32,17 @@
     ("BiochemicalReaction" ("comment") ("conversionDirection") ("dataSource" "Provenance")
      ("displayName") ("eCNumber")
      ("left" "bpSmallMolecule") ("left" "Protein") ("left" "Complex") ("participantStoichiometry" "Stoichiometry")
-     ("right" "bpSmallMolecule") ("right" "Protein") ("right" "Complex") 
-     ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
-    ("Catalysis" ("controlType") ("controlled" "BiochemicalReaction") 
-     ("controller" "Protein") ("controller" "Complex") ("controller" "PhysicalEntity") 
-     ("dataSource" "Provenance") ("xref" "RelationshipXref")) 
+     ("right" "bpSmallMolecule") ("right" "Protein") ("right" "Complex")
+     ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref"))
+    ("Catalysis" ("controlType") ("controlled" "BiochemicalReaction")
+     ("controller" "Protein") ("controller" "Complex") ("controller" "PhysicalEntity")
+     ("dataSource" "Provenance") ("xref" "RelationshipXref"))
     ("CellularLocationVocabulary" ("term") ("xref" "UnificationXref"))
     ("ChemicalStructure" ("structureFormat") ("structureData"))
-    ("Complex" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("component" "Complex") ("component" "bpSmallMolecule") ("component" "Protein") ("componentStoichiometry" "Stoichiometry") ("dataSource" "Provenance") ("displayName") ("memberPhysicalEntity" "Complex") ("name") ("xref" "UnificationXref")) 
-    ("Control" ("comment") ("controlType") ("controlled" "BiochemicalReaction") 
-     ("controller" "Protein") ("controller" "Complex") 
-     ("dataSource" "Provenance") ("displayName") ("xref" "PublicationXref") ("xref" "UnificationXref")) 
+    ("Complex" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("component" "Complex") ("component" "bpSmallMolecule") ("component" "Protein") ("componentStoichiometry" "Stoichiometry") ("dataSource" "Provenance") ("displayName") ("memberPhysicalEntity" "Complex") ("name") ("xref" "UnificationXref"))
+    ("Control" ("comment") ("controlType") ("controlled" "BiochemicalReaction")
+     ("controller" "Protein") ("controller" "Complex")
+     ("dataSource" "Provenance") ("displayName") ("xref" "PublicationXref") ("xref" "UnificationXref"))
     ("Evidence" ("evidenceCode" "EvidenceCodeVocabulary"))
     ("EvidenceCodeVocabulary" ("xref" "UnificationXref") ("term"))
     ("FragmentFeature" ("featureLocation" "SequenceInterval"))
@@ -52,43 +52,43 @@
      ("pathwayOrder" "PathwayStep") ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref"))
     ("PathwayStep" ("nextStep" "PathwayStep")
      ("stepProcess" "Control") ("stepProcess" "Pathway") ("stepProcess" "Catalysis") ("stepProcess" "BiochemicalReaction")("step-Process" "Transport"))
-    ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref")) 
-    ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref")) 
-    ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref")("displayName")) 
-    ("Provenance" ("comment") ("name")) 
-    ("PublicationXref" ("author") ("db") ("id") ("source") ("title") ("year")) 
-    ("RelationshipTypeVocabulary" ("term") ("xref" "UnificationXref")) 
-    ("RelationshipXref" ("comment") ("db") ("id") ("relationshipType" "RelationshipTypeVocabulary")) 
-    ("SequenceInterval" ("sequenceIntervalBegin" "SequenceSite") ("sequenceIntervalEnd" "SequenceSite")) 
-    ("SequenceModificationVocabulary" ("term") ("xref" "UnificationXref")) 
-    ("SequenceSite" ("positionStatus") ("sequencePosition")) 
-    ("bpSmallMolecule" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "SmallMoleculeReference") ("name") ("xref" "UnificationXref")) 
-    ("SmallMoleculeReference" ("name") ("xref" "UnificationXref")) 
-    ("Stoichiometry" ("physicalEntity" "Complex") ("physicalEntity" "SmallMolecule") ("physicalEntity" "Protein") ("stoichiometricCoefficient")) 
+    ("PhysicalEntity" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("xref" "UnificationXref"))
+    ("ProteinState" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "ProteinReference") ("feature" "ModificationFeature") ("feature" "FragmentFeature") ("memberPhysicalEntity" "Protein") ("name") ("xref" "UnificationXref"))
+    ("ProteinReference" ("comment") ("name") ("organism" "BioSource") ("xref" "UnificationXref")("displayName"))
+    ("Provenance" ("comment") ("name"))
+    ("PublicationXref" ("author") ("db") ("id") ("source") ("title") ("year"))
+    ("RelationshipTypeVocabulary" ("term") ("xref" "UnificationXref"))
+    ("RelationshipXref" ("comment") ("db") ("id") ("relationshipType" "RelationshipTypeVocabulary"))
+    ("SequenceInterval" ("sequenceIntervalBegin" "SequenceSite") ("sequenceIntervalEnd" "SequenceSite"))
+    ("SequenceModificationVocabulary" ("term") ("xref" "UnificationXref"))
+    ("SequenceSite" ("positionStatus") ("sequencePosition"))
+    ("bpSmallMolecule" ("cellularLocation" "CellularLocationVocabulary") ("comment") ("dataSource" "Provenance") ("displayName") ("entityReference" "SmallMoleculeReference") ("name") ("xref" "UnificationXref"))
+    ("SmallMoleculeReference" ("name") ("xref" "UnificationXref"))
+    ("Stoichiometry" ("physicalEntity" "Complex") ("physicalEntity" "SmallMolecule") ("physicalEntity" "Protein") ("stoichiometricCoefficient"))
     ("Transport"
      ("comment")("conversionDirection") ("dataSource" "Provenance")
      ("displayName") ("standardName")("eCNumber")
      ("left" "bpSmallMolecule") ("left" "Protein") ("left" "Complex")
      ("participantStoichiometry" "Stoichiometry")
-     ("right" "bpSmallMolecule") ("right" "Protein") ("right" "Complex") 
+     ("right" "bpSmallMolecule") ("right" "Protein") ("right" "Complex")
      ("xref" "RelationshipXref") ("xref" "PublicationXref") ("xref" "UnificationXref")
      ("origin" "CellularLocationVocabulary") ("destination" "CellularLocationVocabulary"))
-    ("Degradation" ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right")) 
-    ("RnaRegion"  ("cellularLocation") ("displayName") ("comment")  ("standardName")) 
-    ("DnaRegionReference" ("memberEntityReference")  ("memberEntityReference") ("organism") ("displayName") ("comment") ("standardName")) 
-    ("InteractionVocabulary" ("term")) 
-    ("DnaReference" ("displayName") ("comment") ("organism")) 
-    ("TemplateReactionRegulation"  ("controlled") ("controlType") ("controller") ("displayName") ("standardName") ("comment") ("availability")) 
-    ("SequenceRegionVocabulary" ("comment")) 
-    ("RnaReference" ("name")  ("displayName") ("standardName") ("comment") ("organism") ("entityFeature") ("memberEntityReference")) 
-    ("TransportWithBiochemicalReaction"  ("evidence") ("participantStoichiometry") ("left") ("comment") ("right")) 
-    ("DnaRegion" ("entityReference")  ("cellularLocation") ("displayName") ("comment") ("standardName")) 
-    ("MolecularInteraction"  ("evidence") ("participant") ("displayName") ("interactionType") ("name")) 
-    ("BindingFeature" ("bindsTo") ("comment")) 
-    ("EntityFeature" ("about") ("comment")) 
-    ("Rna" ("entityReference")  ("name") ("displayName") ("comment") ("standardName")) 
-    ("TemplateReaction"  ("product") ("templateDirection") ("participant") ("displayName") ("comment") ("standardName") ("interactionType") ("evidence")) 
-    ("Conversion"  ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right")) 
+    ("Degradation" ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right"))
+    ("RnaRegion"  ("cellularLocation") ("displayName") ("comment")  ("standardName"))
+    ("DnaRegionReference" ("memberEntityReference")  ("memberEntityReference") ("organism") ("displayName") ("comment") ("standardName"))
+    ("InteractionVocabulary" ("term"))
+    ("DnaReference" ("displayName") ("comment") ("organism"))
+    ("TemplateReactionRegulation"  ("controlled") ("controlType") ("controller") ("displayName") ("standardName") ("comment") ("availability"))
+    ("SequenceRegionVocabulary" ("comment"))
+    ("RnaReference" ("name")  ("displayName") ("standardName") ("comment") ("organism") ("entityFeature") ("memberEntityReference"))
+    ("TransportWithBiochemicalReaction"  ("evidence") ("participantStoichiometry") ("left") ("comment") ("right"))
+    ("DnaRegion" ("entityReference")  ("cellularLocation") ("displayName") ("comment") ("standardName"))
+    ("MolecularInteraction"  ("evidence") ("participant") ("displayName") ("interactionType") ("name"))
+    ("BindingFeature" ("bindsTo") ("comment"))
+    ("EntityFeature" ("about") ("comment"))
+    ("Rna" ("entityReference")  ("name") ("displayName") ("comment") ("standardName"))
+    ("TemplateReaction"  ("product") ("templateDirection") ("participant") ("displayName") ("comment") ("standardName") ("interactionType") ("evidence"))
+    ("Conversion"  ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right"))
     ))
 
 (defparameter *bp-patterns*
@@ -121,21 +121,21 @@
     ("Stoichiometry" ("stoichiometricCoefficient") ("physicalEntity"))
     ("Transport" ("standardName") ("right") ("participantStoichiometry") ("left") ("dataSource")("origin")("destination"))
     ("UnificationXref" ("db") ("id") ("idVersion"))
-    ("Degradation" ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right")) 
-    ("RnaRegion"  ("cellularLocation") ("displayName") ("comment")  ("standardName")) 
-    ("DnaRegionReference" ("memberEntityReference")  ("memberEntityReference") ("organism") ("displayName") ("comment") ("standardName")) 
-    ("InteractionVocabulary" ("term")) 
-    ("DnaReference" ("displayName") ("comment") ("organism")) 
-    ("TemplateReactionRegulation"  ("controlled") ("controlType") ("controller") ("displayName") ("standardName") ("comment") ("availability")) 
-    ("SequenceRegionVocabulary" ("comment")) 
-    ("RnaReference" ("name")  ("displayName") ("standardName") ("comment") ("organism") ("entityFeature") ("memberEntityReference")) 
-    ("TransportWithBiochemicalReaction"  ("evidence") ("participantStoichiometry") ("left") ("comment") ("right")) 
-    ("DnaRegion" ("entityReference")  ("cellularLocation") ("displayName") ("comment") ("standardName")) 
-    ("MolecularInteraction"  ("evidence") ("participant") ("displayName") ("interactionType") ("name")) 
-    ("BindingFeature" ("bindsTo") ("comment")) 
-    ("EntityFeature" ("about") ("comment")) 
-    ("Rna" ("entityReference")  ("name") ("displayName") ("comment") ("standardName")) 
-    ("TemplateReaction"  ("product") ("templateDirection") ("participant") ("displayName") ("comment") ("standardName") ("interactionType") ("evidence")) 
+    ("Degradation" ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right"))
+    ("RnaRegion"  ("cellularLocation") ("displayName") ("comment")  ("standardName"))
+    ("DnaRegionReference" ("memberEntityReference")  ("memberEntityReference") ("organism") ("displayName") ("comment") ("standardName"))
+    ("InteractionVocabulary" ("term"))
+    ("DnaReference" ("displayName") ("comment") ("organism"))
+    ("TemplateReactionRegulation"  ("controlled") ("controlType") ("controller") ("displayName") ("standardName") ("comment") ("availability"))
+    ("SequenceRegionVocabulary" ("comment"))
+    ("RnaReference" ("name")  ("displayName") ("standardName") ("comment") ("organism") ("entityFeature") ("memberEntityReference"))
+    ("TransportWithBiochemicalReaction"  ("evidence") ("participantStoichiometry") ("left") ("comment") ("right"))
+    ("DnaRegion" ("entityReference")  ("cellularLocation") ("displayName") ("comment") ("standardName"))
+    ("MolecularInteraction"  ("evidence") ("participant") ("displayName") ("interactionType") ("name"))
+    ("BindingFeature" ("bindsTo") ("comment"))
+    ("EntityFeature" ("about") ("comment"))
+    ("Rna" ("entityReference")  ("name") ("displayName") ("comment") ("standardName"))
+    ("TemplateReaction"  ("product") ("templateDirection") ("participant") ("displayName") ("comment") ("standardName") ("interactionType") ("evidence"))
     ("Conversion"  ("conversionDirection") ("participantStoichiometry") ("left") ("displayName") ("comment") ("interactionType") ("standardName") ("right"))))
 
 #|
@@ -221,7 +221,7 @@ decoding table for referenced OBO terms
 
 (defun load-ras1(&optional (file "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/ExamplePackage/ras_1.owl"))
   (setq *raw-ras1* (load-owl file))
-  (setq *trimmed-ras1* 
+  (setq *trimmed-ras1*
         (loop for r in (cdddr (xmls::xmlrep-children *raw-ras1*))
           unless (equalp (xmls:xmlrep-tag r) "RelationshipXref")
           collect r))
@@ -257,18 +257,18 @@ decoding table for referenced OBO terms
               (t tag))
             ,(loop for rep in (xmls::xmlrep-attribs child)
                when
-               (member (car rep) 
+               (member (car rep)
                        '("id" "about")
                        :test #'equalp)
                return (second rep))
-            
+
             ;; darpa uses "id" (xmls:xmlrep-attrib-value "ID" child)
             ,@(loop for rep in (xmls::xmlrep-attribs child)
                 unless
                 (equalp (car rep) "ID")
                 collect rep)
             ,@(loop for rep in (xmls::xmlrep-children child)
-                unless 
+                unless
                 (or
                  (null rep) ;; bug in xmls?!
                  (equalp "xref"
@@ -292,7 +292,7 @@ decoding table for referenced OBO terms
                              ((search "http" *res*)
                               *res*)
                              (t
-                              (ccl::break "look at resource (res* !s" *res*))))))
+                              (break "look at resource (res* !s" *res*))))))
                       ((assoc "datatype" attribs :test #'equalp)
                        (let
                            ((*datatype*
@@ -308,7 +308,7 @@ decoding table for referenced OBO terms
                            (read-from-string (concatenate 'string *datum* ".0")))
                           ((equalp *datatype* "http://www.w3.org/2001/XMLSchema#boolean")
                            *datum*)
-                          (t (ccl::break "what datatype is ~s for datum ~s" *datatype* *datum*)))))
+                          (t (break "what datatype is ~s for datum ~s" *datatype* *datum*)))))
                       (t
                        ;; in this case we have a recursive structure
                        ;; and we are going to simplify and record it in *xml-ht*
@@ -466,10 +466,10 @@ decoding table for referenced OBO terms
               #'string<
               :key
               #'caar))
-  (loop for b in *bp-type-list* 
-    collect 
+  (loop for b in *bp-type-list*
+    collect
     (print
-     (list (caar b) 
+     (list (caar b)
            (length b)))))
 
 
@@ -478,8 +478,8 @@ decoding table for referenced OBO terms
    simple
    (loop for p in *bpi*
      do
-     (let ((simp-tree 
-            (simplify-tree p 
+     (let ((simp-tree
+            (simplify-tree p
                            (if (numberp simple)
                              simple
                              1))))
@@ -686,7 +686,7 @@ decoding table for referenced OBO terms
         (setf
          (gethash (second re) *reactome-entities*)
          (eval
-          `(define-individual 
+          `(define-individual
                ,cat
                ',(reactome-symbol "ReactomeId")
              ,(second re)
@@ -702,22 +702,22 @@ decoding table for referenced OBO terms
       (declare (special ri *re*))
       (when
           (not (equalp (car *re*) "UnificationXref"))
-        (loop for b in 
+        (loop for b in
           (cons
            `("ReactomeId" ,(second re))
            (cddr re))
           do
-          
+
           (let
               ((binding b))
             (declare (special binding))
             (bind-variable (reactome-symbol (car binding))
                            (let
-                               ((val 
+                               ((val
                                  (if
                                   (consp (second binding))
                                   (case (car (second binding))
-                                    (xml-resource 
+                                    (xml-resource
                                      (reactome-entity
                                       (second (second binding))))
                                     (t
