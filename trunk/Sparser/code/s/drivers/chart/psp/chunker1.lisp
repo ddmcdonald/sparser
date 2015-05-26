@@ -244,11 +244,15 @@ all sorts of rules apply and not simply form rules.
        (t
         ;; no chunk here -- move to next pos
         (let ((right-treetop (right-treetop-at/edge pos)))
-          (when (word-p right-treetop)
+          (cond
+           ((word-p right-treetop)
             (push-debug `(,pos))
+            #+ignore
             (error "Chunker encountered a treetop word: ~s"
-                   (word-pname right-treetop)))
-          (setq pos (pos-edge-ends-at right-treetop))))))))
+                   (word-pname right-treetop))
+            (setq pos (p# (+ 1 (pos-array-index pos)))))
+           (t
+            (setq pos (pos-edge-ends-at right-treetop))))))))))
 
 (defun delimit-next-chunk (ev forms sentence-end)
   (declare (special ev sentence-end))
