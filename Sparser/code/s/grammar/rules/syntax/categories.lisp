@@ -82,6 +82,8 @@
 ;; 5/8/2015 add new fomr category "verbal-adjunct ;; TENTATIVE, intended for manner-adverbials like "by phsophorylating ..." or
 ;; purpose adverbials like "for phorsphorylating..." or "to phosphorylate ..."
 
+;; 5/25/2015 added a bunch of categories to support pp-relative-clause processing
+;;  pp-wh-pronoun, pp-relative-clause, subject-relative-clause
 
 (in-package :sparser)
 (defvar CATEGORY::NOT)
@@ -168,7 +170,9 @@
 (def-form-category verbal-adjunct) ;; tentative, intended for manner-adverbials like "by phsophorylating ..." or
 ;; purpose adverbials like "for phorsphorylating..." or "to phosphorylate ..."
 
-(def-form-category relative-clause)
+;;(def-form-category relative-clause)
+(def-form-category subject-relative-clause)
+(def-form-category pp-relative-clause)
 (def-form-category thatcomp)
 (def-form-category whethercomp)
 
@@ -187,6 +191,7 @@
 (def-form-category  vg+ing) ;; vg with an untensed (no aux or modal) V+ING
 (def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ING
 (def-form-category  pp)
+(def-form-category  pp-wh-pronoun)
 (def-form-category  advp)
 (def-form-category  adjp)
 (def-form-category  adjg) ;; for consistency with ng and vg -- could have been adj-bar?
@@ -605,7 +610,9 @@
     ,category::subj+verb
     ,category::verb+object
     ,category::v-bar
-    ,category::relative-clause
+    ;;,category::relative-clause
+    ,category::subject-relative-clause
+    ,category::pp-relative-clause
     ,category::vp/passive
     ,category::vg/passive
     ,category::participle
@@ -708,7 +715,9 @@
     ,category::proper-name
     ,category::quantifier
     ,category::pp
-    ,category::relative-clause
+    ;;,category::relative-clause
+    ,category::subject-relative-clause
+    ,category::pp-relative-clause
     ,category::thatcomp
     ,category::subordinate-conjunction))
 
@@ -728,7 +737,9 @@
     ,category::vp
     ,category::np
     ,category::n-bar
-    ,category::relative-clause
+    ;;,category::relative-clause
+    ,category::subject-relative-clause
+    ,category::pp-relative-clause
     ,category::thatcomp
     ,category::pp
     ,category::proper-noun
