@@ -8,30 +8,61 @@
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
+#|
+ (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
+ (trace-scan-patterns)  (trace-fsas)
+
+;; more than one edge
+(p "The novel RAS/Raf/MAPK/ASPP2 pathway is thus involved in 
+an important feedback loop between RAS and p53, 
+and is an effective way for mutant RAS to induce apoptosis 
+in cancer cells with wild-type p53.")
+
+;; infinite loop
+(p "Consistent with this finding, energy migration Forster 
+resonance energy transfer and fluorescence correlation 
+spectroscopy measurements in living cells did not detect 
+dimerization of GFP-ERK1-WT upon activation.")
+|#
+
+(defun ddm-polyword-conundrum ()
+  (ddm-ed "objects/chart/words/polywords4.lisp")
+  (ddm-ed "objects/chart/words/polyword-form2.lisp")
+  ;;(ddm-ed "objects/rules/cfr/dotted5.lisp")
+  ;;(ddm-ed "objects/rules/cfr/knit-in3.lisp")
+  (ddm-ed "objects/rules/cfr/polywords2.lisp")
+  (ddm-ed "analyzers/FSA/words3.lisp")  
+  ;;(ddm-ed "analyzers/psp/assess/terminal-edges2.lisp")
+  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
+  (ddm-ed "grammar/rules/FSAs/polyword5.lisp")
+  (ddm-ed "objects/traces/FSA1.lisp"))
+
+
 
 
 ;  (p "c-Raf/ MAPK-mediated [6].")
 
-(defun ddm-standard () ;;    (ddm-standard)
+
+
+(defun ddm-standard ()  ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
   (setq cl-user::*load-sparser-during-r3-load* nil)
-  (trace-lexicon-unpacking) (trace-morphology)
+;  (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
-  (setq *readout-relations* t)
-;  (setq *trace-instance-recording* t
-;        *scan-for-unsaturated-individuals* t)
-;  (setq *scan-for-unsaturated-individuals* t)
-;  (setq *debug-anaphora* t)  
-;  (setq *do-anaphora* nil)  (setq *debug-pronouns* t)
+  (setq *readout-relations* t)  
+  (setq *debug-pronouns* t)
 ;  (setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) 
 ;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
 ;  (trace-island-driving)
+;; (ddm-no-spaces)
+;; (ddm-read-from-documents)
+;; (load-ddm-ws)
+;; (ddm-polyword-conundrum)
   (incorporate-obo-terms
    "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
-  (ddm-load-corpora)
   (ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
   ;; (test-overnight) (test-erk) (test-aspp2)
@@ -92,13 +123,14 @@
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
   (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
+  (ddm-ed "grammar/model/sl/biology/doc-structure.lisp")
   (ddm-ed "grammar/model/sl/biology/switches.lisp")
   (ddm-ed "grammar/model/sl/biology/rules.lisp"))
 ;;  molecules and NGkappB not loaded
 ;; cf. model/sl/NIH/site.lisp
 
 (defun ddm-new-parsing-ws ()
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "drivers/chart/psp/chunker1.lisp")
   (ddm-ed "drivers/chart/psp/pts5.lisp")
@@ -151,6 +183,13 @@
 ; (setq *work-on-ns-patterns* t)
 
 
+(defun ddm-read-from-documents ()
+  (ddm-ed "objects/doc/object1.lisp")
+  (ddm-ed "objects/doc/content-methods.lisp")
+  (ddm-ed "drivers/sources/document.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
+  (ddm-ed "init/workspaces/Biology-workspace.lisp"))
+
 (defun ddm-note-doc-structure ()
   (ddm-ed "grammar/model/sl/biology/doc-structure.lisp")
   (ddm-ed "analyzers/SD&P/note-text-relations.lisp")
@@ -164,16 +203,17 @@
   (ddm-ed "objects/doc/classes.lisp"))
 
 (defun ddm-no-spaces ()
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
+  ;;(ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp") ;; driver
   (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
+  (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp")
+  (ddm-ed "analyzers/psp/patterns/charaterize-words.lisp")
   (ddm-ed "analyzers/psp/patterns/patterns.lisp")
   (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
-  (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
-  (ddm-ed "grammar/rules/SDM&P/create-categories.lisp")
-  (ddm-ed "grammar/rules/syntax/categories.lisp"))
-
+  ;; (ddm-ed "grammar/rules/syntax/categories.lisp")
+  ;; (ddm-ed "grammar/rules/SDM&P/create-categories.lisp")
+  (ddm-ed "grammar/rules/DA/nospace-categories.lisp"))
 
 
 (defun ddm-tense-neg ()
@@ -309,13 +349,6 @@
   (ddm-ed "objects/traces/pronouns.lisp")
   (ddm-ed "objects/traces/discourse.lisp"))
 
-(defun ddm-polyword-conundrum ()
-  (ddm-ed "objects/rules/cfr/dotted5.lisp")
-  (ddm-ed "objects/rules/cfr/knit-in3.lisp")
-  (ddm-ed "objects/rules/cfr/polywords1.lisp")
-  (ddm-ed "objects/chart/words/polyword-form1.lisp")
-  (ddm-ed "analyzers/psp/assess/terminal-edges2.lisp"))
-
 (defun ddm-method-mess ()
   (ddm-ed "objects/model/categories/clos-backing.lisp")
   (ddm-ed "analyzers/psp/referent/ref-method.lisp")
@@ -329,7 +362,16 @@
 ;; updates to all edge creators
 (defun ddm-edge-makers ()
   (ddm-ed "analyzers/psp/edges/binary-explicit-all-keys2.lisp")
-)
+  (ddm-ed "analyzers/psp/edges/binary-explicit2.lisp")
+  (ddm-ed "analyzers/psp/edges/binary1.lisp")
+  (ddm-ed "analyzers/psp/edges/cs2.lisp")
+  (ddm-ed "analyzers/psp/edges/initial-new1.lisp")
+  (ddm-ed "analyzers/psp/edges/looking-under.lisp")
+  (ddm-ed "analyzers/psp/edges/long-scan1.lisp")
+  (ddm-ed "analyzers/psp/edges/polyw1.lisp")
+  (ddm-ed "analyzers/psp/edges/single-new2.lisp")
+  (ddm-ed "analyzers/psp/edges/unary-driver3.lisp")
+  (ddm-ed "analyzers/psp/edges/unkown.lisp"))
 
 
 (defun ddm-regression-jig ()
