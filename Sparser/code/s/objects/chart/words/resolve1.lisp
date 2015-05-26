@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1992-1994.2012  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "resolve"
 ;;;   Module:  "objects;chart:words:"
@@ -52,7 +51,7 @@
 (defun resolve-string-to-word/make/not-runtime (string)
   (if *file-being-lloaded*
     (resolve-string-to-word/make string)
-    (break "Bad threading: call to resolve-string... at runtime:~
+    (error "Bad threading: call to resolve-string... at runtime:~
             ~%    ~A" string)))
 
 
