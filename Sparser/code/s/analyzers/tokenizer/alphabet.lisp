@@ -717,6 +717,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
                        #+allegro
                        (punctuation-named (code-char #x2212))
                        (punctuation-named #\-))))
+    (8758 ;; ratio  #\U+2236
+     (:punctuation . ,(punctuation-named #\:)))
+
     (8764
      (:punctuation . ,(or
                         #-allegro
@@ -734,6 +737,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
   "If it's not a defparameter, CCL won't let us extend it
    in a running lisp.")
 
+
 (defparameter *cache-out-of-band-characters* t)
 
 (defun entry-for-out-of-band-character (char-code)
@@ -744,9 +748,24 @@ the buffer that is fed to find-word and becomes part of the word's pname.
           (cache-out-of-band-character char-code))
         (announce-out-of-range-character))))
 
+(defvar *new-characters-to-define* nil
+  "Holds a list of character points that require definition.
+   Needs to be emptied by hand. No provision as yet for storing
+   across runs if you don't actually make the definitions.")
 
 (defun cache-out-of-band-character (char-code)
-  (push-debug `(,char-code))
-  (break "finish writing cache-out-of-band-character"))
+  ;; Called from character-entry when zero is returned or from
+  ;; entry-given-char-code for the characters above 256.
+  ;; Announce what's happening. Store the character code.
+  ;; Return an inoccuous character is its place.
+  (let ((character (elt *character-buffer-in-use* *index-of-next-character*)))
+    (format t "~&~%The character \"~a\", (code = ~a) is not in the alphabet yet.~
+                 ~%Using a space in its place.~%~%"
+            character char-code)
+    (push (cons character char-code)
+          *new-characters-to-define*)
+    '(:punctuation
+        . :space)))
 
+  
 
