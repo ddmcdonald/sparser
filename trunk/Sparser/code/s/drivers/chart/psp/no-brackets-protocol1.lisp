@@ -192,14 +192,7 @@
   (handler-case 
       (scan-terminals-and-do-core sentence)
     (error (e)
-      (format t "~&Error in ~s~%~a~%~%" (current-string) e)
-      #+ignore
-      (let ((error-string
-             (apply #'format nil 
-                    (simple-condition-format-control e)
-                    (simple-condition-format-arguments e)))
-            (sentence-string (current-string)))
-        (format t "Error: ~a~%~s~%~%" error-string sentence-string)))))
+      (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
            
 
 ;;;----------------------------------------------------
@@ -224,18 +217,17 @@
     (multiple-value-bind (relations entities)
                          (identify-relations sentence)
       (if *index-cards*
-          (set-entities sentence 
-                        (all-individuals-in-tts sentence))
-          (set-entities sentence entities))
+        (set-entities sentence 
+                      (all-individuals-in-tts sentence))
+        (set-entities sentence entities))
       (set-relations sentence relations)
       (setq *relations* relations  ; (readout-relations relations)
             *entities* entities)); (readout-entities entities)
     ;;(ccl::break "all-sentences*") 
     (push `(,(sentence-string sentence) 
              ,(all-individuals-in-tts sentence)
-             ,@(when
-                 (and (boundp '*current-article*)
-                      *current-article*)
+             ,@(when (and (boundp '*current-article*)
+                          *current-article*)
                  (list *current-article*
                        *universal-time-start*
                        *universal-time-end*)))
