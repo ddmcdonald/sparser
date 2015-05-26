@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1994,2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   4.2 December 1994
+;;;   Version:   4.3 May 2015
 
 ;; 4.0 (9/3/92 v2.3) Pushed the version on most of the files given the dramatic
 ;;       reworking of the indexing scheme, 9/6 broke out [construct] and
@@ -11,7 +11,8 @@
 ;; 4.1 (12/21) ordered duplicates before multiplier, form, and define so that
 ;;       the flags it defines are loaded before they're referenced.
 ;; 4.2 (3/17/94) bumped [dotted] to 5
-;;     (12/30) added [syntax rules]
+;;     (12/30/94) added [syntax rules]
+;; 4.3 (5/19/15) bumped [polywords] to 2.
 
 (in-package :sparser)
 
@@ -26,7 +27,7 @@
 
 (lload "cfr;object1")
 (lload "cfr;dotted5")
-(lload "cfr;polywords1")
+(lload "cfr;polywords2")
 (lload "cfr;printers1")
 (lload "cfr;catalog")
 (lload "cfr;lookup5")
