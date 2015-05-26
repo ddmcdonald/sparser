@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "analyzers:FSA:"
-;;;  Version:  4.4 April 1994
+;;;  Version:  4.4 May 2015
 
 (in-package :sparser)
 
@@ -13,8 +13,9 @@
 ;;      Flushing [edge over word] and [driver] as no longer needed
 ;; 4.3 (12/10) added [dispatches]
 ;; 4.4 (4/4/94) bumped [words] to 2
+;;     (5/20/15) bumped [words] to 3
 
 (lload "run FSAs;dispatches")
-(lload "run FSAs;words2")
+(lload "run FSAs;words3")
 (lload "run FSAs;edges1")
 
