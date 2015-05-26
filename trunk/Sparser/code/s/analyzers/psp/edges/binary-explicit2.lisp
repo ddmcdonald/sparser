@@ -12,6 +12,12 @@
 ;; 1.2 (5/1  v1.8.4)  Fixed a bug.
 ;; 2.0 (11/10/92 v2.3) Simplified the name. ///contemplating flushing it.
 
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
+;; THIS FILE SEEMS TO BE LOADED INSTEAD OF binary-explicit3.lisp!
+
 (in-package :sparser)
 
 
@@ -44,7 +50,9 @@
                ;; edge.  If it does, the edge won't be knit in, completed
                ;; or assessed.
                (setf (edge-referent edge)
-                     (funcall referent-function left-edge right-edge))
+                     (place-referent-in-lattice
+                      (funcall referent-function left-edge right-edge)
+                      edge))
                
                (knit-edge-into-positions edge
                                          (edge-starts-at left-edge)
@@ -67,7 +75,7 @@
                     rule-name)))))
 
      (referent
-      (setf (edge-referent edge) referent)
+      (setf (edge-referent edge) (place-referent-in-lattice referent edge))
       (knit-edge-into-positions edge
                                 (edge-starts-at left-edge)
                                 (edge-ends-at right-edge))
@@ -77,6 +85,9 @@
       (knit-edge-into-positions edge
                                 (edge-starts-at left-edge)
                                 (edge-ends-at right-edge))
+      (setf (edge-referent edge)
+            (place-referent-in-lattice (edge-referent edge) edge))
+
       (complete edge)
       (assess-edge-label category edge)))
       

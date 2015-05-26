@@ -17,6 +17,9 @@
 ;; 2.7 (7/21) defaulted some cases in  Make-chart-edge from the rule
 ;; 2.8 (8/28/95) added default 'used-by' for the case of two rules not being adjacent
 ;; 3.0 (8/30/95) moved the used-in after complete
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
 
 (in-package :sparser)
 
@@ -90,27 +93,30 @@
 
   (let ((edge (next-edge-from-resource))
         (start-vector (if starting-position
-                        (pos-starts-here starting-position)
-                        (edge-starts-at left-edge)))
+                          (pos-starts-here starting-position)
+                          (edge-starts-at left-edge)))
         (end-vector   (if ending-position
-                        (pos-ends-here ending-position)
-                        (edge-ends-at right-edge))))
-
+                          (pos-ends-here ending-position)
+                          (edge-ends-at right-edge))))
+    
     (setf (edge-category  edge)  category)
     (setf (edge-rule edge)       (or rule rule-name))
     (setf (edge-form edge)       form)
-
+    
     (setf (edge-starts-at edge) start-vector)
     (setf (edge-ends-at   edge) end-vector)
-
-
-    (setf (edge-referent edge)
-          (if (and (cfr-p rule)
-                   left-edge right-edge)
-            (referent-from-rule
-             left-edge right-edge edge rule)
-            referent))
     
+    
+    (setf (edge-referent edge)
+          (place-referent-in-lattice 
+           (if (and (cfr-p rule)
+                    left-edge right-edge)
+               (referent-from-rule
+                left-edge right-edge edge rule)
+               referent)
+           edge))
+    (edge-referent edge))
+
     (knit-edge-into-positions edge start-vector end-vector)
     (complete edge)
 

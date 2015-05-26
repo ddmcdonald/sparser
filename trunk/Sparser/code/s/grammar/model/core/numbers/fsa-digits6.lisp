@@ -46,6 +46,9 @@
 ;;       were multiple edges over "3", apparently because it's appeared as
 ;;       a literal somewhere. 
 ;; 6.10 (2/5/15) Computed a referent for hypenated-numbers
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
 
 (in-package :sparser)
 
@@ -381,7 +384,8 @@ unknown---in any event, we're taking the first edge that is installed.
       ;; compound digit strings, for which it passed through a constructed
       ;; string to be the compound: (format nil "~A" net-value)
 
-      (setf (edge-referent edge) number-object)
+      (setf (edge-referent edge) 
+            (place-referent-in-lattice number-object edge))
       (setf (edge-rule edge) :number-fsa)
 
       (complete edge)

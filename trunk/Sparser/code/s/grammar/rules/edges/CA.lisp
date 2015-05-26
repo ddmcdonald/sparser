@@ -46,13 +46,15 @@
     (setf (edge-form edge) (if rule (cfr-form rule) form))
 
     (setf (edge-referent edge)
-          (cond (rule
-                 (referent-from-rule left-edge right-edge edge rule))
-                (referent referent)
-                (referent-function
-                 (funcall referent-function
-                          (edge-referent left-edge)
-                          (edge-referent right-edge)))))
+          (place-referent-in-lattice
+           (cond (rule
+                  (referent-from-rule left-edge right-edge edge rule))
+                 (referent referent)
+                 (referent-function
+                  (funcall referent-function
+                           (edge-referent left-edge)
+                           (edge-referent right-edge))))
+           edge))
                                  
     (knit-edge-into-positions edge
                               (edge-starts-at matrix-edge)

@@ -69,8 +69,9 @@
           nil )
 
         (else
-          (setf (edge-referent edge) referent)
-
+          (setf (edge-referent edge) 
+                (place-referent-in-lattice referent edge))
+          
           (knit-edge-into-positions edge
                                     (edge-starts-at left-edge)
                                     (edge-ends-at right-edge))

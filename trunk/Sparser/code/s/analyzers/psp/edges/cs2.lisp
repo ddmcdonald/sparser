@@ -19,6 +19,14 @@
 ;;      to accommodate the trick of interpolated rewriting form rules.
 ;;     (9/16/13) added form-rule-head-category
 
+
+;; THIS FILE SEEMS TO BE LOADED IN PLACE OF CS3.lisp!
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
+
+
 (in-package :sparser)
 
 
@@ -96,7 +104,10 @@
       (setf (edge-rule edge) rule)
       (setf (edge-form edge) (cfr-form rule))
       (setf (edge-referent edge)
-            (referent-from-rule left-edge right-edge edge rule))
+            (place-referent-in-lattice
+             (referent-from-rule left-edge right-edge edge rule)
+             edge))
+
 
       ;; this is the convention for unary edges
       (setf (edge-left-daughter edge)  relevant-edge)
