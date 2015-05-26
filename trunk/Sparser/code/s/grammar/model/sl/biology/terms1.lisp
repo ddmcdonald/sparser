@@ -19,7 +19,6 @@
 ;; and get rid of the interpretation of "al." as a bio-entity (couldn't even find where that cam from)
 ;; RJB 12/14/2014 Added a bunchof stand-in definitions for words that were primed by COMLEX, added cell-line definitions (some) -- need help from <<DAVID>>
 ;; add MEK/ERK and ERK/MEK as pathway designators, try to define S338 as a residue
-;; add form rule for relative-clause --> (that vp)
 ;; diverse vocabulary hacking
 ;; 02/18/15 alphabetized terms
 ;; 4/24/2015 added subject variable for many adjectives that can be copular adjectives
