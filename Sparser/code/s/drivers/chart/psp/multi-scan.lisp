@@ -94,7 +94,9 @@
     ;; FSA's calls lifted from check-word-level-fsa-trigger 
     ;; and cwlft-cont
     (tr :check-word-level-fsa-trigger position-before)
-    (let ((where-fsa-ended (do-word-level-fsas word position-before)))
+    #+ignore(let ((where-fsa-ended (do-word-level-fsas word position-before)))
+      ;;////////// nb. could accidentally re-do the polyword
+      ;; given that entry point. 
       (when where-fsa-ended
         (tr :word-fsa-ended-at word where-fsa-ended)
         (setq position-after where-fsa-ended
@@ -170,19 +172,20 @@
       ;;(break "stop parsing")
       (terminate-chart-level-process)))))
 
+;; (trace-fsas)
 (defun polyword-check (position-before word)
   ;; lifted from check-for-polywords where all we want is
   ;; the fsa to fire if there is one, and to get the position
   ;; that it ends at. Returns either that position or nil. 
   (tr :check-for-polywords word position-before)
   (set-status :polywords-check position-before)
-  (let ((pw-cfr (initiates-polyword1 word position-before)))
+  (let ((initial-state (initiates-polyword1 word position-before)))
     ;; This "1" variant calls a "1" variant of capitalized-correspondent
-    ;; which use the position information correctly
-    (when pw-cfr
+    ;; which use the position information correctly.
+    (when initial-state
       (tr :word-initiates-polyword word position-before)
       (let ((position-reached
-             (do-polyword-fsa word pw-cfr position-before)))
+             (do-polyword-fsa word initial-state position-before)))
         (if position-reached
           (let ((pw-edge (edge-spanning position-before position-reached)))
             (unless pw-edge (error "wrong span search"))
