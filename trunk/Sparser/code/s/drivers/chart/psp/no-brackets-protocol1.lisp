@@ -205,11 +205,11 @@
   "Holds the entities for the last sentence when *readout-relations* is up")
 
 (defun post-analysis-operations (sentence)
+  (declare (special *universal-time-start* *universal-time-end*))
+
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
-
   (identify-salient-text-structure sentence)
-
   (when *do-anaphora*
     (handle-any-anaphora sentence))
 
