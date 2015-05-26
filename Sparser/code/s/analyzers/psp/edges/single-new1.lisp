@@ -17,6 +17,13 @@
 ;;      install-preterminal-edge so code could call it and not have to
 ;;      think about edge vectors.
 
+
+;; NOTE -- THIS FILE IS LOADED IN PLACE OF single-new2.lisp!
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
+
 (in-package :sparser)
 
 ;;;---------
@@ -83,9 +90,11 @@
                                     (cfr-category rule)))
     (setf (edge-form edge)      (or form
                                     (cfr-form rule)))
-    (setf (edge-referent edge)  (or referent
-                                    (referent-from-unary-rule
-                                     edge rule daughter)))
+    (setf (edge-referent edge)  (place-referent-in-lattice
+           (or referent
+               (referent-from-unary-rule
+                edge rule daughter))
+           edge))
     (complete edge)
     
     (when *trace-edge-creation*

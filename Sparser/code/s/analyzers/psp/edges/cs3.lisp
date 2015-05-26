@@ -78,7 +78,9 @@
       (setf (edge-rule edge) rule)
       (setf (edge-form edge) (cfr-form rule))
       (setf (edge-referent edge)
-            (referent-from-rule left-edge right-edge edge rule))
+            (place-referent-in-lattice
+             (referent-from-rule left-edge right-edge edge rule)
+             edge))
 
       ;; this is the convention for unary edges
       (setf (edge-left-daughter edge)  relevant-edge)

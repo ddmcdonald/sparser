@@ -16,6 +16,11 @@
 ;;      make-default-binary-edge. 2/12/15 Removed ~% from edge trace
 ;;      and added a break to notice referent failures. 
 
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
+
 (in-package :sparser)
 
 
@@ -58,7 +63,7 @@
           nil )
 
         (else
-         (setf (edge-referent edge) referent)
+         (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
          (setf (edge-rule edge) rule)
 
          (knit-edge-into-positions edge
@@ -129,8 +134,10 @@
                                (edge-form head-edge)))
 
     (setf (edge-referent edge)
-          (referent-from-rule left-edge right-edge
-                              edge rule))
+           (place-referent-in-lattice
+            (referent-from-rule left-edge right-edge
+                              edge rule)
+            edge))
 
     (setf (edge-rule edge) rule)
 

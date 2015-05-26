@@ -10,6 +10,10 @@
 ;; 0.2 (9/28/94) added form parameter
 ;;     (8/16/13) Set the constituents field
 
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
 (in-package :sparser)
 
 
@@ -33,7 +37,8 @@
 
     (setf (edge-category edge) category)
     (setf (edge-form edge)     form)
-    (setf (edge-referent edge) referent)
+    (setf (edge-referent edge) 
+          (place-referent-in-lattice referent edge))
     (setf (edge-rule edge)     rule)
 
     (if daughters

@@ -15,6 +15,11 @@
 
 ;; OBSOLETE !!   REMOVE FROM REPO IN FAVOR OF single-new1
 
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
+
 (in-package :sparser)
 
 ;;;---------
@@ -82,9 +87,12 @@
                                     (cfr-category rule)))
     (setf (edge-form edge)      (or form
                                     (cfr-form rule)))
-    (setf (edge-referent edge)  (or referent
-                                    (referent-from-unary-rule
-                                     edge rule daughter)))
+    (setf (edge-referent edge)  
+          (place-referent-in-lattice
+           (or referent
+               (referent-from-unary-rule
+                edge rule daughter))
+           edge))
     (complete edge)
     
     (when *trace-edge-creation*

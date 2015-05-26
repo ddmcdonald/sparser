@@ -10,6 +10,13 @@
 
 ;; OBOSLETE  REMOVE FROM REPO
 
+;; NOT AT ALL SURE THIS IS OBSOLETE -- the seems to be the only definition of make-binary-edge/explicit-rule-components which is 
+;; called elsewhere in the coe
+
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
 (in-package :sparser)
 
 
@@ -40,7 +47,9 @@
                ;; edge.  If it does, the edge won't be knit in, completed
                ;; or assessed.
                (setf (edge-referent edge)
-                     (funcall referent-function left-edge right-edge))
+                     (place-referent-in-lattice
+                      (funcall referent-function left-edge right-edge)
+                      edge))
                
                (knit-edge-into-positions edge
                                          (edge-starts-at left-edge)
@@ -65,7 +74,7 @@
                     rule-name)))))
 
      (referent
-      (setf (edge-referent edge) referent)
+      (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
       (knit-edge-into-positions edge
                                 (edge-starts-at left-edge)
                                 (edge-ends-at right-edge))
@@ -78,6 +87,8 @@
       (knit-edge-into-positions edge
                                 (edge-starts-at left-edge)
                                 (edge-ends-at right-edge))
+      (setf (edge-referent edge)
+            (place-referent-in-lattice (edge-referent edge) edge))
       (complete edge)
       (set-used-by left-edge  edge)
       (set-used-by right-edge edge)

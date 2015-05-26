@@ -17,6 +17,11 @@
 ;;      though even that is uneven about choice among multiple edges
 ;;      so added semi-redundant set-used-by when constituents are known.
 
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
+
 (in-package :sparser)
 
 
@@ -44,7 +49,7 @@
     
     (setf (edge-rule edge) rule)
     (setf (edge-form edge) form)    
-    (setf (edge-referent edge) referent)
+    (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
 
     (complete edge)
 

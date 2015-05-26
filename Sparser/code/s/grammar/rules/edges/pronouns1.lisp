@@ -9,6 +9,9 @@
 ;; initiated 1/91
 ;; 1.0 (9/7/92 v2.3) flushed out of date field references
 ;; 1.1 (5/14/93) changed to using Set-used-by as a field-setter
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
 
 (in-package :sparser)
 
@@ -35,7 +38,7 @@
     (set-used-by pn-edge edge)
 
     (setf (edge-form edge)     form)
-    (setf (edge-referent edge) referent)
+    (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
 
     (when *trace-edge-creation*
       (format t "~&~%creating ~A from ~A~

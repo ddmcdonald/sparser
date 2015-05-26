@@ -36,6 +36,8 @@
 ;;        grammar directory to smooth the process of delayed grammar loading.
 ;;       (3/14/05) Added [looking under].
 
+;;5/25/2015 Load initial code for description lattice
+
 (in-package :sparser)
 
 ;; unbumped
@@ -49,6 +51,10 @@
 (gload "kinds of edges;polyw1")
 (gload "kinds of edges;long scan1")
 (gload "kinds of edges;looking under")
+
+;; not sure if this is the place to put the new lattice functionality
+(gload "kinds of edges;lattice-operations")
+
 
 
 ;; These aren't needed unless *load-the-grammar* is true.
