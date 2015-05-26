@@ -173,8 +173,7 @@ those steps sequentially on a single article.
           (nreverse
            (loop for form in *articles-created* 
              collect 
-             (if
-              (consp form)
+             (if (consp form)
               (car form)
               form))))
     
@@ -194,8 +193,7 @@ those steps sequentially on a single article.
     (loop
       (unless article
         (return))
-      (if
-       *break-on-errors*
+      (if *break-on-errors*
        (push (sweep-document article)    
              *populated-articles*)
        (handler-case
