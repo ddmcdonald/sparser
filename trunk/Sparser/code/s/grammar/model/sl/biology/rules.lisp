@@ -231,6 +231,8 @@
 
 ;;--- form, expediency
 
+#|
+;; now in syntactic-rules, producing a subject-relative-clause
 (def-form-rule (that vg)
   :form relative-clause
   :referent (:daughter right-edge))
@@ -238,6 +240,7 @@
 (def-form-rule (that vp)
   :form relative-clause
   :referent (:daughter right-edge))
+|#
 
 
 (def-cfr adverb (adverb comma)
