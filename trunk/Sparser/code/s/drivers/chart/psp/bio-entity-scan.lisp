@@ -1,13 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "bio-entity-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2014
+;;;  version:  May 2015
 
 ;; 8/11/14 This was intended for a scan that did not include bracket
 ;; checking so we could experiment with an alternative way of doing it.
 ;; That's yet to be written, so taking it over for other purposes.
+;; 5/26/15 Stripping parts out that conflict with newer material.
+;; Eventually should probably just drop the file and expunge references
+;; to it once we've gleaned all we can.
 
 (in-package :sparser)
 
@@ -94,7 +97,7 @@ the position. (N.b. there's an incremental trace hook in there.) |#
       (r3-entity-pass-loop position-after next-word))))
 
 
-
+#+ignore
 (defun do-no-space-collection (position-before)
   ; lifted from check-for-uniform-no-space-sequence
   (tr :check-for-uniform-no-space-sequence position-before)
