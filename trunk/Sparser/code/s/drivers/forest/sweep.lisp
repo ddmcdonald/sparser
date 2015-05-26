@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "sweep"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2015
+;;;  Version:  May 2015
 
 ;; Initiated 8/30/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
@@ -14,6 +14,8 @@
 ;; to break on new cases. 
 ;; 3/21/20015 in sweep-sentence-treetops :SBCL errored on case where edge has a word as its category
 ;; (P "As RAS is upstream of..." edge over "As"
+;; 5/26/15 fixes subtle bug of form not being set to nil when the
+;; treetop is a word.
 
 
 (in-package :sparser)
@@ -68,8 +70,9 @@
         ;; This ignores real ambiguities 
         (setq tt (elt (ev-edge-vector tt)
                       (1- (ev-number-of-edges tt)))))
-      (when (edge-p tt)
-        (setq form (edge-form tt)))
+
+      (setq form (when (edge-p tt)
+                   (edge-form tt)))
 
       ;; Periods can get edges over them by accidentally
       ;; being given as a literal in a rule.
