@@ -227,6 +227,7 @@
       ;; side of the colon
       (make-word-colon-word-structure (first treetops) (third treetops))
       (else
+        (when *work-on-ns-patterns*
        (push-debug `(,treetops))
        (break "colon+hyphen stub: have to construct one of the constituents")))))
 
@@ -265,11 +266,19 @@
        ((some-word-is-a-salient-hyphenated-literal words)
         (compose-salient-hyphenated-literals ;; "re-activate"
          pattern words pos-before pos-after))
-       (t
+       ((and (edge-p left-edge)
+             (edge-p right-edge))
+        ;; if either is a word then the assumptions of 
+        ;; make-hyphenated-structure that it has edges to work with
+        ;; and we should really fall through and fail the ns search.
+        (tr :defaulting-two-word-hyphen)
         ;; make a structure if all else fails
         ;; but first alert to anticipated cases not working
-        (tr :defaulting-two-word-hyphen)
-        (make-hyphenated-structure left-edge right-edge))))))
+        (make-hyphenated-structure left-edge right-edge))        
+       (t
+        (when *work-on-ns-patterns*
+          (push-debug `(,left-edge ,right-edge ,pattern ,words))
+          (break "One of the 'edges' is actual a (undefined?) word")))))))
 
 (defun resolve-hyphen-between-two-terms (pattern words
                                          pos-before pos-after)
