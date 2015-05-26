@@ -1520,6 +1520,18 @@
          :o object
          :of object))
 
+(delete-verb-cfr (resolve/make "probe"))
+(define-category probe
+    :specializes bio-rhetorical
+    :binds ((agent bio-entity)(object bio-process))
+    :realization
+    (:verb "probe" 
+           :etf (svo-passive)
+           :s agent
+           :o object))
+(delete-noun-cfr (resolve/make "probe"))
+
+
 (define-category proliferate
     :specializes bio-process
     :binds ((agent bio-entity)(object bio-process))
