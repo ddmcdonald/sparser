@@ -192,8 +192,7 @@
   (handler-case 
       (scan-terminals-and-do-core sentence)
     (error (e)
-      (format t "~&Error in ~s~%~%" (current-string))
-      (d e)
+      (format t "~&Error in ~s~%~a~%~%" (current-string) e)
       #+ignore
       (let ((error-string
              (apply #'format nil 
@@ -266,6 +265,7 @@
   (setf (gethash indiv *surface-strings*)
         (get-surface-string-for-individual indiv)))
 
+
 (defun get-surface-string-for-individual (i)
   (or
    (when (itypep i 'protein)
@@ -278,17 +278,19 @@
              (let ((start-index (pos-character-index start))
                    (end-index (pos-character-index end)))
                (push-debug `(,start-index ,end-index ,i)) 
-               ;;(ccl::break "dh for ~a" i)
                (extract-string-from-char-buffers 
                 start-index end-index)))))))
-   (let
-       ((name (value-of 'name i)))
+   (let ((name (value-of 'name i)))
      (if name
-         (name-string name)
-         (format nil "~s" i)))))
+       (etypecase name
+         (string name)
+         (word (word-pname name))
+         (polyword (pw-pname name)))
+       (format nil "~s" i)))))
 
 (defun retrieve-surface-string (i)
   (gethash i *surface-strings*))
+
 
 ;;;------------------------------------------------------------
 ;;; final operations on sentence before moving to the next one
