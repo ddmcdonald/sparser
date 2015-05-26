@@ -32,6 +32,7 @@
 ;; 5/1/2015 minor tweak on losing-competition?  to do better on leftwards extension of NPs which may be SUBJECTs
 ;; 5/12/2015 fixes to losing-competition? to better handle leftwards extension of NP subjects before they are used as subjects
 ;; 5/15/15 Moved out literal-edge? to the edge object code.
+;; 5/25/2015 add on check on competition for pp-wh-pronoun as part of pp-relative-clause
 
 
 (in-package :sparser)
@@ -513,17 +514,30 @@
        ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
        (not (and (edge-form (third triple1))
                  (member (cat-symbol (edge-form (third triple1)))
-                         '(category::pp category::relative-clause)))))
+                         '(category::pp category::relative-clause
+                                        category::subject-relative-clause)))))
+      (and ;; pp starting a relative clause -- "in which"
+       (memq (cat-symbol (car (cfr-rhs (car triple2))))
+             '(category::preposition category::spatial-preposition))
+       (eq (cat-symbol (second (cfr-rhs (car triple1)))) 'category::s)
+       (memq (cat-symbol (car (cfr-rhs (car triple1))))
+             '(category::which category::who category::whom category::where)))
+      
       (and
-       (or (eq category::preposition (car (cfr-rhs (car triple2))))
-           (eq category::spatial-preposition (car (cfr-rhs (car triple2)))))
+       (memq (cat-symbol (car (cfr-rhs (car triple2))))
+             '(category::preposition category::spatial-preposition))
        (or
         (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car triple1)))
         (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car triple1)))
         (and
          (category-p (second (cfr-rhs (car triple2))))
-         (memq (cat-symbol (second (cfr-rhs (car triple1))))
-              '(category::vg category::vp category::vg+ed category::vp+ed))))
+         (or
+          (memq (cat-symbol (second (cfr-rhs (car triple1))))
+                '(category::vg category::vp category::vg+ed category::vp+ed))
+          (and
+           (eq (cat-symbol (second (cfr-rhs (car triple1)))) 'category::s)
+           (memq (cat-symbol (car (cfr-rhs (car triple1))))
+                 '(category::which category::who category::whom category::where))))))
        (not
         (and
          (edge-p (edge-left-daughter (third triple1)))
