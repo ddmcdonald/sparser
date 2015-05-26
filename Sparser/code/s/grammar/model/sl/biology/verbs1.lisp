@@ -216,7 +216,7 @@
 ;; really want to have the form "CRAF allows CRAF to hyperactivate the pathway"  -- want the clausal modiffer
 (define-category allow
     :specializes bio-control
-    :binds ((agent biological)(object biological))
+    :binds ((agent biological)(object biological)(process process))
     :realization
     (:verb "allow" ;; keyword: ENDS-IN-ING 
 	   :noun "allowance"
@@ -224,7 +224,8 @@
 	   :s agent
 	   :o object
            :of object
-           :for object))
+           :for object
+           :to-comp process))
 
 
 "" ;; keyword: (ion N) 
@@ -856,13 +857,13 @@
 
 (define-category establish 
   :specializes bio-rhetorical 
-  :binds ((agent bio-entity)(object bio-process)) 
+  :binds ((agent (:or bio-entity bio-method))(object biological)) 
   :realization 
   (:verb "establish" 
   :noun "establishment" 
   :etf (svo-passive) 
   :s agent 
-  :o object)) 
+  :o object))
 
 (define-category examine
     :specializes bio-rhetorical
