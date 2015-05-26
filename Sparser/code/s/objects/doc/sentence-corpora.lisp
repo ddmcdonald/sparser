@@ -141,7 +141,7 @@ previous records of treetop-counts.
 
 
 ;;--- compare current performance to a snapshot
-(defun compare-to-snapshots (&optional (save-info nil)(corpora '(overnight dec-test dry-run erk aspp2)))
+(defun compare-to-snapshots (&optional (save-info nil)(corpora '(overnight dec-test dry-run aspp2 erk)))
   (loop for c in corpora
     do (terpri)
     (print c)
