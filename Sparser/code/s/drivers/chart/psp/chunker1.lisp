@@ -480,7 +480,7 @@ all sorts of rules apply and not simply form rules.
         (or
          (eq category::pronoun (edge-form edge))
          (member (cat-symbol (edge-category edge))
-                 '(category::which category::whose category::what)))))
+                 '(category::which category::what)))))
         
      (cond
       ((eq word::comma (edge-category e))
