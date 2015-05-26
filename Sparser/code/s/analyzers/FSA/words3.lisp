@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2015  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-
 ;;; 
 ;;;     File:  "words"
 ;;;   Module:  "analyzers;FSA:"
-;;;  Version:  2.4 October 2014
+;;;  Version:  3.0 May 2015
 
 ;; 5/5/93 v2.3, typed in hard copy of 11/24/92 that had been lost in
 ;;  disk crash
@@ -32,6 +31,7 @@
 ;; 2.4 (10/22/14) Added initiates-polyword1 which differs only in that it
 ;;      calls capitalized-correspondent1, which gets the choice of position
 ;;      correct. Start of changing it all over.
+;; 3.0 (5/20/15) Makeover of polywords to fsa rather than rules and edges.
 
 (in-package :sparser)
 
@@ -226,51 +226,48 @@
 
 (defun initiates-polyword (word position-before)
   ;; Returns the rule that marks the polyword
-  (flet ((polyword-rule (rules-field)
-           (when rules-field
-             (let ((fsa-field (rs-fsa rules-field)))
-               (loop for item in fsa-field
-                 when (typep item 'cfr)
-                 return item)))))
-    (let ((rules-field (word-rules word)))
-      (or (polyword-rule rules-field)
-          (let ((caps-word (capitalized-correspondent word position-before)))
-            (when caps-word
-              (let ((caps-rules-field (word-rules caps-word)))
-                (polyword-rule caps-rules-field))))))))
-
-(defun initiates-polyword1 (word position-before)
-  ;; Returns the rule that marks the polyword
-  (flet ((polyword-rule (rules-field)
-           (when rules-field
-             (let ((fsa-field (rs-fsa rules-field)))
-               (loop for item in fsa-field
-                 when (typep item 'cfr)
-                 return item)))))
-    (let ((rules-field (word-rules word)))
-      (or (polyword-rule rules-field)
-          (let ((caps-word (capitalized-correspondent1 position-before word)))
-            (when caps-word
-              (let ((caps-rules-field (word-rules caps-word)))
-                (polyword-rule caps-rules-field))))))))
-
-
-(defun initiates-polyword2 (word position-before)
-  ;; For the new, fsa-based polyword treatment, where it's called
-  ;; from polyword-check in the first pass and returns something
-  ;; that's passed to do-polyword-fsa
   (flet ((polyword-fsa (rules-field)
            (when rules-field
              (let ((fsa-field (rs-fsa rules-field)))
-               (loop for item in fsa-field
-                 when (typep item 'polyword-state)
-                 return item)))))
+               (typecase fsa-field
+                 (polyword-state fsa-field)
+                 (cons
+                  (loop for item in fsa-field
+                    when (typep item 'polyword-state)
+                    return item))
+                 (otherwise
+                  (push-debug `(,fsa-field ,word ,position-before))
+                  (error "fsa field of unexpected type: ~a~%~a"
+                         (type-of fsa-field) fsa-field) ))))))
     (let ((rules-field (word-rules word)))
-      (or (rs-fsa rules-field)
-          (let ((caps-word (capitalized-correspondent1 position-before word)))
+      (or (polyword-fsa rules-field)
+          (let ((caps-word (capitalized-correspondent word position-before)))
             (when caps-word
               (let ((caps-rules-field (word-rules caps-word)))
                 (polyword-fsa caps-rules-field))))))))
+
+
+;;///////// field should be a list 
+(defun initiates-polyword1 (word position-before)
+  ;; Returns the rule that marks the polyword or nil
+  (or (starts-polyword word)
+      (let ((caps-word (capitalized-correspondent1 
+                        position-before word)))
+        (when caps-word
+           (starts-polyword caps-word)))))
+
+(defun starts-polyword (word)
+  (let ((rule-set (word-rules word)))
+    (when rule-set
+      (let ((fsa-field (rs-fsa rule-set)))
+        (when fsa-field
+          (typecase fsa-field
+            (polyword-state fsa-field)
+            (cons
+             (loop for item in fsa-field
+               when (typep item 'polyword-state)
+               return item))))))))
+
 
 
 ;;;-------------------------
@@ -279,7 +276,7 @@
 
 (defun do-fsa-field (fsa-field word position)
   (let ( fsa  position-reached )
-    (tr :wfsa/options word position fsa-field)
+    ;;(tr :wfsa/options word position fsa-field)
 
     (if (null (cdr fsa-field))
       (then ;; there's only one
@@ -328,7 +325,7 @@
 (defun push-fsa-onto-word (word fn-name)
   (unless (and word
 	       (word-p word))
-    (break "~a is not a word" word))
+    (error "~a is not a word" word))
   (let ((rs (word-rules word)))
     (unless rs
       (setq rs (make-rule-set :backpointer word))
