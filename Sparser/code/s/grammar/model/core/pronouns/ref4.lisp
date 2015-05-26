@@ -51,7 +51,7 @@
             (category::wh-pronoun) ;; ignore -- question or subordinator
             (otherwise
              (push-debug `(,edge ,form ,label))
-             (break "next pronoun form: ~a" form))))))))
+             (break "Unhandled category of form on pronoun: ~a" form))))))))
 
 ;; (trace-pronouns)
 ;; (trace-discourse-structure)
