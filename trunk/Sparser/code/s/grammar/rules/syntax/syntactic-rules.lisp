@@ -28,6 +28,9 @@
 ;; added rule for to-comp on NPs
 ;; 5/23/2015 allow for PPs that start relative clauses -- "to which", "from whose..."
 
+;; 5/25/2015 bunch of cleanup for rule-creating loops. Put in rules for subject-relative-clause and pp-relative-clause
+;;  still need to hook those in
+
 
 (in-package :sparser)
 
@@ -110,7 +113,7 @@ to an oncogenic RasG12V mutation (9)."))
                        left-edge right-edge))
 |#
 
-(loop for nb in (append '(category::NP) *n-bar-categories*)
+(loop for nb in `(category::NP ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (adjective ,nb) ;; "black suv"
@@ -173,16 +176,13 @@ to an oncogenic RasG12V mutation (9)."))
   :form np
   :referent (:function interpret-pp-adjunct-to-np left-edge right-edge))
 
-(loop for nb in (append '(category::NP) *n-bar-categories*)
+(loop for nb in `(category::NP ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (,nb pp)
                      :head :left-edge
       :form np
-      :referent (:function interpret-pp-adjunct-to-np left-edge right-edge))))
-
-(loop for nb in (append '(category::NP) *n-bar-categories*)
-  do
+      :referent (:function interpret-pp-adjunct-to-np left-edge right-edge)))
   (eval 
    `(def-syntax-rule (,nb to-comp)
                      :head :left-edge
@@ -256,29 +256,53 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 |#
 
 ;;--- prepositional phrases
-(loop for nb in `(category::np  category::wh-pronoun ,@*n-bar-categories*)
+(loop for nb in `(category::np  ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (preposition ,nb)
                      :head :left-edge
       :form pp
       :referent (:function make-pp left-referent right-referent)))
-   
-   
-   (eval
-    `(def-syntax-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
-                      :head :left-edge
-       :form pp
-       ;; I suppose we need a generic relationship here for
-       ;; a proper referent
-       :referent (:function make-pp left-referent right-referent)))
-   (eval
-    `(def-syntax-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
-                      :head :left-edge
-       :form pp
-       ;; I suppose we need a generic relationship here for
-       ;; a proper referent
-       :referent (:function make-pp left-referent right-referent))))
+  
+  
+  (eval
+   `(def-syntax-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
+                     :head :left-edge
+      :form pp
+      ;; I suppose we need a generic relationship here for
+      ;; a proper referent
+      :referent (:function make-pp left-referent right-referent)))
+  (eval
+   `(def-syntax-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
+                     :head :left-edge
+      :form pp
+      ;; I suppose we need a generic relationship here for
+      ;; a proper referent
+      :referent (:function make-pp left-referent right-referent))))
+
+(loop for nb in `(category::wh-pronoun)
+  do
+  (eval 
+   `(def-syntax-rule (preposition ,nb)
+                     :head :left-edge
+      :form pp-wh-pronoun
+      :referent (:function make-pp left-referent right-referent)))
+  
+  
+  (eval
+   `(def-syntax-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
+                     :head :left-edge
+      :form pp-wh-pronoun
+      ;; I suppose we need a generic relationship here for
+      ;; a proper referent
+      :referent (:function make-pp left-referent right-referent)))
+  (eval
+   `(def-syntax-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
+                     :head :left-edge
+      :form pp-wh-pronoun
+      ;; I suppose we need a generic relationship here for
+      ;; a proper referent
+      :referent (:function make-pp left-referent right-referent))))
 
 ;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
 ;;   e.g. 30 minutes after (treatment)
@@ -326,30 +350,51 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 ;;--- Relative clauses
 
-(loop for rel in '(which who whom where) ;;  when this is more often used as a subordinate conjunction
+(loop for v in '(s vp)
   do
-  (eval
-   `(def-form-rule (,rel s) ;; also vp ?
-                   :head :right-edge
-      :form relative-clause
-      :referent (:function compose-wh-with-vp left-edge right-edge)))
-  
-  (eval
-   `(def-form-rule (,rel vp)
+  (loop for rel in '(which who whom where that) ;;  when this is more often used as a subordinate conjunction
+    do
+    (eval
+     `(def-form-rule (,rel ,v) 
                      :head :right-edge
-      :form relative-clause
-      :referent (:function compose-wh-with-vp left-edge right-edge))))
+        :form subject-relative-clause
+        :referent (:function compose-wh-with-vp left-edge right-edge))))
+  (eval
+   `(def-syntax-rule (pp-wh-pronoun ,v) 
+                     :head :right-edge
+      :form pp-relative-clause
+      :referent (:function make-pp-relative-clause left-edge right-edge))))
 
-#+ignore
-(def-syntax-rule (np relative-clause)
+;;    (unspecified-adjunction np-ref vp-ref)
+
+
+(def-form-rule (comma subject-relative-clause)
+               :head :right-edge
+  :form subject-relative-clause
+  :referent (:daughter right-edge))
+
+(def-form-rule (comma pp-relative-clause)
+               :head :right-edge
+  :form pp-relative-clause
+  :referent (:daughter right-edge))
+
+#+ignore ;; what was this?
+(def-syntax-rule (np subject-relative-clause)
                  :head :left-edge
   :form np
   :referent (:function assimilate-appositive left-edge right-edge))
 
-(loop for nb in (append '(category::np) *n-bar-categories*)
+#+ignore ;; not yet ready
+(def-syntax-rule (np pp-relative-clause)
+                 :head :left-edge
+  :form np
+  :referent (:function apply-pp-relative-clause left-edge right-edge))
+
+
+(loop for nb in `(category::np ,@*n-bar-categories*)
   do
   (eval 
-   `(def-syntax-rule (,nb relative-clause)
+   `(def-syntax-rule (,nb subject-relative-clause)
                      :head :left-edge
       :form np
       :referent (:function apply-subject-relative-clause left-edge right-edge))))
@@ -357,7 +402,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 
 ;;--- direct object
-(loop for nb in (cons category::np *n-bar-categories*)
+(loop for nb in `(category::np ,@*n-bar-categories*)
   do
   (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
     do
@@ -371,7 +416,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 ;; subject 
 ;;--- subject + verb
 
-(loop for n in (append '(np pronoun) *n-bar-categories*)
+(loop for n in `(np pronoun ,@*n-bar-categories*)
   do
   (loop for v in '(vp vg)
     do
@@ -379,19 +424,13 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
      `(def-syntax-rule (,n ,v)
                        :head :right-edge
         :form S
-        :referent (:function assimilate-subject left-edge right-edge))
-     )))
-
-(loop for n in (append '(np pronoun) *n-bar-categories*)
-  do
+        :referent (:function assimilate-subject left-edge right-edge))))
   (eval
    `(def-syntax-rule (,n vp+ed)
                      :head :right-edge
       :form S
-      :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
+      :referent (:function assimilate-subject-to-vp-ed left-edge right-edge)))
 
-(loop for n in (append '(np pronoun) *n-bar-categories*)
-  do
   (eval
    `(def-syntax-rule (,n vg+ed) ;; that we used
                      :head :right-edge
@@ -449,7 +488,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 
 
-(loop for nb in (cons category::np *n-bar-categories*)
+(loop for nb in `(category::np ,@*n-bar-categories*)
   do
   (eval
    `(def-syntax-rule (,nb thatcomp)
