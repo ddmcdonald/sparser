@@ -217,19 +217,19 @@
 
 ;; endogenous C-RAF:B-RAF heterodimers
 (defun divide-and-recombine-ns-pattern-with-colon (pattern words 
-                                                   colon-positions hyphen-positions 
-                                                   pos-before pos-after)
+                                                           colon-positions hyphen-positions 
+                                                           pos-before pos-after)
   (declare (ignore hyphen-positions colon-positions words pattern))
   ;;(push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
   (let ((treetops (treetops-between pos-before pos-after)))
     (if (= (length treetops) 3)
-      ;; nothing to do, there's already a parse of the consituents to either 
-      ;; side of the colon
-      (make-word-colon-word-structure (first treetops) (third treetops))
-      (else
-        (when *work-on-ns-patterns*
-       (push-debug `(,treetops))
-       (break "colon+hyphen stub: have to construct one of the constituents")))))
+        ;; nothing to do, there's already a parse of the consituents to either 
+        ;; side of the colon
+        (make-word-colon-word-structure (first treetops) (third treetops))
+        (else
+          (when *work-on-ns-patterns*
+            (push-debug `(,treetops))
+            (break "colon+hyphen stub: have to construct one of the constituents"))))))
 
 ;;;--------
 ;;; hyphen
