@@ -1,10 +1,10 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP)
-;;; copyright (c) 1991-2003,2010-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2003,2010-2015 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;versions:v2.7:loaders:"
-;;;  Version:   JANUARY 2014
+;;;  Version:   May 2015
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -80,7 +80,7 @@
 ;; *da* module isn't included.  8/27 Added objects/import/. 9/23/11 Removed it
 ;; since it no longer does any work. Also removed load of basic-tests workspace
 ;; because it's too confusing. 1/29/14 Removing the *c3* guards to see if everything
-;; will load compatibly. 
+;; will load compatibly. 5/19/15 bumped [fsa;polywords] to 5.
 
 (in-package :sparser)
 
@@ -165,7 +165,7 @@
 (lload "fill chart;loader4")
 (lload "init chart;loader1")
 (gate-grammar *polywords*
-  (gload "fsa;polywords4"))
+  (gload "fsa;polywords5"))
 (lload "scan;loader2")
 (lload "assess;loader6")
 (if *lattice-points*
