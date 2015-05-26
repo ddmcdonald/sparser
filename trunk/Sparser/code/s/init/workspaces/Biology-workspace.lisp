@@ -35,7 +35,7 @@ This code is set up to take a list of article ids as given
 by Mitre in their 5/4/15 email (*2015-5-4_Mitre-articles*)
 and get them read. 
 
-It because things don't always work, it runs in three stages
+Because things don't always work, it runs in three stages
 and stores its results in the global variables just below.
 1. Read the xml had create document objects
      (populate-article-set)
@@ -49,10 +49,7 @@ those steps sequentially on a single article.
 
 |#
 
-(defun test-articles ()
-  (populate-article-set)
-  (sweep-article-set)
-  (read-article-set))
+;;---- Globals 
 
 (defvar *articles-created* nil
   "Holds the document shells as created by make-sparser-doc-structure")
@@ -66,47 +63,134 @@ those steps sequentially on a single article.
 
 ;; This should be set in your personal workspace file,
 ;; e.g. (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
-;;
 (defvar *r3-trunk* nil
   "String identifing the location of the trunk on 
   your machine, including a final slash")
 
 
-(defun set-default-corpus-path (pathname-string)
-  "Set r3::*default-corpus-path* to this trunk-relative value"
-  (let ((symbol (intern (symbol-name '#:*default-corpus-path*)
-                        (find-package :r3)))
-        (expanded-pathname
-         (concatenate 'string *r3-trunk* pathname-string)))
-    (format t "~&Setting r3::*default-corpus-path*~
-               ~%  to ~s~%" expanded-pathname)
-    (set symbol expanded-pathname)))
+;;---- Error handline
+
+(defparameter *break-on-sweep-errors* t
+  "Read by sweep-article-set to determine whether or not to use 
+   an error handler.")
+
+; In read-article-set the flag *trap-error-skip-sentence* is set.
+; This will handle any errors that occur while parsing while
+; letting you continue an handle the rest of the text.
+
+
+;;---- the May "dry run" articles
 
 (defparameter *2015-5-4_Mitre-articles*
-  '(PMC3902907  ;; contained <?epub October-7-2013?>, which screws parser
-    ;; PMC3441633  kills tokenizer on a tilde somehow
+  '(PMC3902907  ;; contained <?epub October-7-2013?>, which weirds out the XML parser
+    PMC3441633
     PMC1240052
     PMC1325201  ;;also had ?pub element
     PMC1240239
     PMC1289294
     PMC3058384
-    ;;PMC2597732   tilda bug
+    PMC2597732
     PMC534114
     PMC2132783))
 
-(defun PMC-to-nxml (symbol)
-  (let* ((full-string (symbol-name symbol))
-         (number-string (subseq full-string 3))
-         (filename (string-append number-string ".nxml")))
-    filename))
 
-(defun load-xml-to-doc-if-necessary ()
-  (unless (find-package :r3)
-    (if (boundp '*r3-trunk*)
-      (let ((code-dir (string-append *r3-trunk* "code/")))
-        (cwd code-dir)
-        (load "load.lisp"))
-      (format nil "You have to set *r3-trunk*"))))
+;--- 1st populate: Locate the nxml file and run the 
+; XML-to-doc-structure to convert it to the equivalent
+; document object. 
+
+;; (populate-article-set)
+(defun populate-article-set (&optional list-of-ids location)
+  "Given a list of document ids and the location of their
+   files in the corpus, run make-sparser-doc-structure to
+   return a set of article objects."
+  (setq *articles-created* nil) ;; this is a rebuild operation!!
+  (load-xml-to-doc-if-necessary)
+  (unless list-of-ids
+    (setq list-of-ids *2015-5-4_Mitre-articles*))
+  (unless location
+    (setq location "corpus/2015-5-4_Mitre-articles/"))
+  (set-default-corpus-path location)
+  (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
+                          (find-package :r3)))
+        (path-fn (intern (symbol-name '#:make-doc-path)
+                         (find-package :r3)))
+        (quiet-fn (intern (symbol-name 'debug-off)
+                          (find-package :r3))))
+    (funcall quiet-fn)
+    (dolist (id list-of-ids)
+      (let* ((simple-id (PMC-to-nxml id)))
+        (format t "~&~%~%Reading the file ~a"
+                (funcall path-fn simple-id))
+        (push (funcall maker-fn simple-id)
+              *articles-created*)))
+    (setq *articles-created* 
+          (nreverse
+           (loop for form in *articles-created* 
+             collect 
+             (if (consp form)
+              (car form)
+              form))))
+    (loop 
+      for article in *articles-created*
+      as id in list-of-ids
+      do (setf (name article) id))
+    *articles-created*))
+
+(defun populate-one-article (id)
+  (populate-article-set (list id)))
+
+
+;--- 2d sweep.  Run through the article that is the result
+; of the XML conversion, identify its sub-subsections, and
+; create sentence objects for the text content of paragraphs
+
+(defun sweep-article-set (&optional (articles *articles-created*))
+  "Given a list of articles, by default the ones created by the
+   populate operation and stored on *articles-created*, run the
+   function sweep-document over them and return/store the result
+   of *populated-articles*."
+  (let ((article (car articles))
+        (rest (cdr articles)))
+    (loop
+      (unless article
+        (return))
+      (if *break-on-sweep-errors*
+       (push (sweep-document article)    
+             *populated-articles*)
+       (handler-case
+           (push (sweep-document article)    
+                 *populated-articles*)
+         (error (e)
+                (declare (special e))
+                (format t "~&Error sweeping ~a~%" article)
+                (d e))))
+      (setq article (car rest)
+            rest (cdr rest))))
+  *populated-articles*)
+    
+
+;--- 3d read. 
+
+(defun read-article-set (&optional (articles *populated-articles*))
+  ;; Lets see if the error check within the reader in
+  ;; sweep-successive-sentences-from is sufficient to let the
+  ;; loop flow. 
+  (let ((*trap-error-skip-sentence* t))
+    (declare (special *trap-error-skip-sentence*))
+    (loop for article in articles
+      do 
+      (time-start)(time-end) ;; CROCK -- can't get time-end for the article
+      (read-from-document article)
+      ;;(time-end)
+      )))
+
+
+;;--- Variations on the basic operations
+ 
+(defun test-articles ()
+  (populate-article-set)
+  (sweep-article-set)
+  (read-article-set))
 
 (defun load-and-read-article (id) ;; assume corpus-path is set
   (load-xml-to-doc-if-necessary)
@@ -139,101 +223,46 @@ those steps sequentially on a single article.
           (mitre-time-format *universal-time-end*) ; 
           (name *current-article*)))
 
-  
-(defun populate-one-article (id)
-  (populate-article-set (list id)))
+;;---- Gophers for going through articles
 
-;; (populate-article-set)
-(defun populate-article-set (&optional list-of-ids location)
-(setq *articles-created* nil) ;; this is a rebuild operation!!
-  (load-xml-to-doc-if-necessary)
-  (unless list-of-ids
-    (setq list-of-ids *2015-5-4_Mitre-articles*))
-  (unless location
-    (setq location "corpus/2015-5-4_Mitre-articles/"))
-  (set-default-corpus-path location)
-  (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
-                          (find-package :r3)))
-        (path-fn (intern (symbol-name '#:make-doc-path)
-                         (find-package :r3)))
-        (quiet-fn (intern (symbol-name 'debug-off)
-                          (find-package :r3))))
-    (funcall quiet-fn)
-    
-    (dolist (id list-of-ids)
-      (let* ((simple-id (PMC-to-nxml id)))
-        (format t "~&~%~%Reading the file ~a"
-                (funcall path-fn simple-id))
-        (push (funcall maker-fn simple-id)
-              *articles-created*)))
-    
-    ;; This is the list of all the document elements for each article.
-    ;; Now in the same order as the list they were created from.
-    (setq *articles-created* 
-          (nreverse
-           (loop for form in *articles-created* 
-             collect 
-             (if (consp form)
-              (car form)
-              form))))
-    
-    (loop 
-      for article in *articles-created*
-      as id in list-of-ids
-      do (setf (name article) id))
-    
-    *articles-created*))
+(defun set-default-corpus-path (pathname-string)
+  "Set r3::*default-corpus-path* to this trunk-relative value"
+  (let ((symbol (intern (symbol-name '#:*default-corpus-path*)
+                        (find-package :r3)))
+        (expanded-pathname
+         (concatenate 'string *r3-trunk* pathname-string)))
+    (format t "~&Setting r3::*default-corpus-path*~
+               ~%  to ~s~%" expanded-pathname)
+    (set symbol expanded-pathname)))
 
 
-(defparameter *break-on-errors* t) ;; do error trapping
-
-(defun sweep-article-set (&optional (articles *articles-created*))
-  (let ((article (car articles))
-        (rest (cdr articles)))
-    (loop
-      (unless article
-        (return))
-      (if *break-on-errors*
-       (push (sweep-document article)    
-             *populated-articles*)
-       (handler-case
-           (push (sweep-document article)    
-                 *populated-articles*)
-         (error (e)
-                (declare (special e))
-                (format t "~&Error sweeping ~a~%" article)
-                (d e))))
-      (setq article (car rest)
-            rest (cdr rest))))
-  *populated-articles*)
-    
-
-(defun read-article-set (&optional (articles *populated-articles*))
-  ;; Lets see if the error check within the reader in
-  ;; sweep-successive-sentences-from is sufficient to let the
-  ;; loop flow. 
-  (let ((*trap-error-skip-sentence* t))
-    (declare (special *trap-error-skip-sentence*))
-    (loop for article in articles
-      do 
-      (time-start)(time-end) ;; CROCK -- can't get time-end for the article
-      (read-from-document article)
-      ;;(time-end)
-      )))
-
- 
+(defun PMC-to-nxml (symbol)
+  "Given a symbol like PMC1240052, which was how they were sent 
+   to us by Mitre in May. Convert it to the filename form that's
+   actually used in the corpus directory."
+  (let* ((full-string (symbol-name symbol))
+         (number-string (subseq full-string 3))
+         (filename (string-append number-string ".nxml")))
+    filename))
 
 
-; To extract only the new vocabulary from a text corpus, turn on
-; these traces:
-;   (trace-lexicon-unpacking)
-;   (trace-morphology)
-; And set this flag to nil to turn off all the processing beyond
-; populating the chart
-;   (setq *sweep-for-patterns* nil)
+(defun load-xml-to-doc-if-necessary ()
+  "If you load Sparser first and R3 second, then you can't
+   assume that the XML-reader is loaded (and you can't
+   use :r3 as a package name). This uses the definition
+   of the package as a proxy for the whole relevant body
+   of code having been loaded."
+  (unless (find-package :r3)
+    (if (boundp '*r3-trunk*)
+      (let ((code-dir (string-append *r3-trunk* "code/")))
+        (cwd code-dir)
+        (load "load.lisp"))
+      (format nil "You have to set *r3-trunk*"))))
 
-; (setq *do-islands-2d-pass* nil)
 
+;;;---------------
+;;; Example texts
+;;;---------------
 
 (defun figure-7 ()
   ;; of Turke et al. "MKE inhibition leads ..."
@@ -560,8 +589,13 @@ These data also provide the first evidence for explaining why overexpression of 
 
 
 
-
 ; (f "/Users/ddm/sift/nlp/corpus/biology/cholera.txt")
+
+
+;;;-------------------------------------------
+;;; timing code used with process-one-article
+;;;-------------------------------------------
+
 (defparameter *time-start* 0)
 
 (defparameter *universal-time-start* 0)
@@ -581,9 +615,10 @@ These data also provide the first evidence for explaining why overexpression of 
          internal-time-units-per-second))))
          
 (defun mitre-time-format (ut)
-       (multiple-value-bind
-           (second minute hour date month year day-of-week dst-p tz)
-           (decode-universal-time ut)
-         (format nil
-                 "~s-~s-~sT~s:~s:~s"
-                 year month date hour minute second)))
+  (multiple-value-bind
+      (second minute hour date month year day-of-week dst-p tz)
+      (decode-universal-time ut)
+    (declare (ignore day-of-week dst-p tz))
+    (format nil
+            "~s-~s-~sT~s:~s:~s"
+            year month date hour minute second)))
