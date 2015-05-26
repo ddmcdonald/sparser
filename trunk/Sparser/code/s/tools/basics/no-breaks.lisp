@@ -24,9 +24,15 @@
 
 (shadow '(#:break) (find-package :sparser)) ;; c.f. the position struct definition.
 
-(defun sparser::break (format-string &rest args)
+(defun sparser::break (&optional format-string &rest args)
   (apply #'error format-string args))
 
+(defun revert-to-regular-break ()
+  (let ((form
+         '(defun sparser::break (format-string &rest args)
+            #+ccl(apply #'ccl::break format-string args)
+            #-ccl(apply #'cl-user::break format-string args))))
+    (eval form)))
 
 ;; This set used to be effective, but not now (2015)
 ;;;-----------------------------------
