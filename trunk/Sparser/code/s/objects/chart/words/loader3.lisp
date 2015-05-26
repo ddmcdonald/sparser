@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "objects;words:"
-;;;  Version:  3.2 October 1992
+;;;  Version:  3.4 May 2015
 
 ;; Changelog: 
 ;; 1.1 (starting 7/25/90)
@@ -28,7 +28,10 @@
 ;;      from the master-loader
 ;; 3.2 (10/5) bumped polyword-form having finally found a direct call to it
 ;; 3.3 (6/2/93) bumped [object] to change its definition to inherit from unit
-;; SBCL 3/21/2015  -- revised loader for code for printing words and polywords -- moved to after polywords are defined, to reduce warnings in SBCL
+;;    SBCL 3/21/2015  -- revised loader for code for printing words and polywords.
+;;    Moved to after polywords are defined, to reduce warnings in SBCL.
+;; 3.4 Bumped [polyword] to 4 and [polyword-form] to 2 for make-over to 
+;;    a state machine.
 
 
 (in-package :sparser)
@@ -49,7 +52,7 @@
 ;;--- files
 
 (lload "word-obj;object3")
-(lload "word-obj;polywords3")       ;; bumped for loader3
+(lload "word-obj;polywords4")       ;; bumped to 3 for loader3
 (lload "word-obj;def form")
 ;(lload "word-obj;lookup3")
 (lload "word-obj;catalog1")
@@ -57,7 +60,7 @@
 ;(lload "word-obj;flush")
 (lload "word-obj;resolve1")         ;; bumped for loader3
 
-(lload "word-obj;polyword form1")   ;; bumped for loader3
+(lload "word-obj;polyword-form2")   ;; bumped to 1 for loader3
 (lload "word-obj;punctuation")
 (lload "word-obj;spaces")
 (lload "word-obj;whitespace")
