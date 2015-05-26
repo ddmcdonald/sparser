@@ -43,6 +43,8 @@
 ;; 5/3/2015 new adjunct like modifier for bio-rocess -- "upon" or "following" <bio-process>
 ;; 5/8/2015 handle "in vitro" and "in vivo" as VP post-modifiers
 
+;; 5/25/2015 start on handling pp-relative-clauses
+
 
 (in-package :sparser)
 (defvar CATEGORY::PREPOSITIONAL-PHRASE)
@@ -699,6 +701,21 @@
   :index (:temporary :sequential-keys prep clause))
 (mark-as-form-category category::to-comp)
 
+(define-category pp-relative-clause
+  :specializes abstract
+  :binds ((pp)
+          (clause))
+  :documentation "Provides a scafolding to hold 
+   a generic pp-relative clause such as 'in which ERK is phosphorylated
+   in grammar/rules/syntactic-rules.
+   Primary consumer is the subcategorization checking
+   code below. Note that if we make these with an
+   unindexed individual (in make-pp) then the index
+   information doesn't come into play"
+  :index (:temporary :sequential-keys prep pobj))
+(mark-as-form-category category::prepositional-phrase)
+  
+
 #+ignore(defparameter *pp-prep-pobj* (make-hash-table :size 1000))
 #+ignore(defun link-pp-to-prep-and-object (pp prep pobj)
   (setf (gethash pp *pp-prep-pobj*) (list prep pobj)))
@@ -715,6 +732,19 @@
     ;; (p "activity of ras.")
     ;; (break "Look at who is calling make-pp")
     pp))
+
+(defun make-pp-relative-clause (pp clause)
+  (let* ((binding-instructions 
+          `((pp ,pp) (clause ,clause)))
+         (pp-rel-clause
+          (make-simple-individual
+              category::pp-relative-clause
+              binding-instructions)))
+    ;; place for trace or further adornment, storing
+    ;; (p "activity of ras.")
+    ;; (break "Look at who is calling make-pp")
+    pp-rel-clause))
+
 
 (defun make-to-comp (prep clause)
   (declare (special prep clause))
