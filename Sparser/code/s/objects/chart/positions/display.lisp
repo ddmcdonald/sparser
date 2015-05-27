@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990-1991  Content Technologies Inc.
-;;; copyright (c) 1992-1994,2012-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "display"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  0.5 January 2014
+;;;  Version:  0.5 May 2015
 
 ;; 0.1 (1/29 v1.8)  Added the key :ends-rather-than-starts? to Display-
 ;;      chart-edges.
@@ -17,6 +17,7 @@
 ;;     (5/18/09) Added mixin-category to display-edge-as-tree
 ;;     (3/4/12) quiet compiler (1/27/14) another case in display-edge-as-tree
 ;; 3/4/2015 edge-form can be :DOTTED-INTERMEDIATE
+;; 5/27/15 Polyword's can now appear as "rules" given the change-over
 
 
 (in-package :sparser)
@@ -187,6 +188,7 @@
              (etypecase rule
                (cfr (concatenate 'string
                       "rule " (subseq (symbol-name (cfr-symbol rule)) 3)))
+               (polyword "polyword")
                (list (if (eq right-daughter :literal-in-a-rule)
                        "literal"
                        (format nil "~A" rule)))
@@ -240,8 +242,8 @@
         edge ))))
 
 (defun display-edge-as-tree/syntax (edge
-                             &optional (offset 0)
-                                       (s *standard-output*))
+                                    &optional (offset 0)
+                                              (s *standard-output*))
 
   ;; a tree-on-its-side, just characters
   (let ((index (edge-position-in-resource-array edge))
@@ -261,8 +263,8 @@
                                    "~A/~A"
                                    (cat-symbol label)
                                    (if (symbolp form)
-                                       form ;; as in :DOTTED-INTERMEDIATE
-                                       (cat-symbol form))))
+                                     form ;; as in :DOTTED-INTERMEDIATE
+                                     (cat-symbol form))))
                           (word 
                            (concatenate
                             'string "\"" (word-pname label) "\"" ))
@@ -277,6 +279,7 @@
              (etypecase rule
                (cfr (concatenate 'string
                       "rule " (subseq (symbol-name (cfr-symbol rule)) 3)))
+               (polyword "polyword")
                (list (if (eq right-daughter :literal-in-a-rule)
                        "literal"
                        (format nil "~A" rule)))
