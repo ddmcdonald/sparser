@@ -310,13 +310,19 @@
 (defun reify-two-part-label (words start-pos end-pos)
   ;; called from resolve-ns-pattern on (:single-digit :single-lower)
   ;; and (:single-digit :single-cap)
+  ;; N.b. this code -knows- that the 2d element is a letter
   (push-debug `(,start-pos ,end-pos ,words))
   (let* ((edges (treetops-between start-pos end-pos))
          (elements (loop for edge in edges
-                     collect (edge-referent edge)))
+                     when (edge-p edge) collect (edge-referent edge)
+                     when (word-p edge) collect edge))
+         (letter-word (second elements))
+         (letter (find-individual 'single-capitalized-letter 
+                                  :letter letter-word))
+
          (i (find-or-make-individual 'two-part-label
                :part-one (first elements)
-               :part-two (second elements))))
+               :part-two letter)))
     (let ((edge (make-edge-over-long-span
                  start-pos
                  end-pos
