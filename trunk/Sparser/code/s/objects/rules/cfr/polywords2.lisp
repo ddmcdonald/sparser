@@ -10,7 +10,7 @@
 ;;      rolled out, which keeps a spurious rule from being created.
 ;;     (12/16/94) added version to rollout from regular words rather than presume
 ;;      it's got a string.
-;; 2.0 (5/19/15) Complete rebuild
+;; 2.0 (5/19/15) Complete rebuild. Finished 5/25/15.
 
 (in-package :sparser)
 
@@ -40,6 +40,33 @@
       do (format stream " ~s" (word-pname w)))))
 
 
+;;;-------------------------------------------
+;;; Defining the state machine for a polyword
+;;;-------------------------------------------
+
+(defun construct-fsa-for-pw (pw)
+  ;; called from define-polyword/expr all the fields of the pw
+  ;; have been filled except fsa. The value we return goes into
+  ;; that field. After this the pw is catalogued.
+  (let* ((words (pw-words pw))
+         (initial-state (find-or-make-initial-pw-state (first words)))
+         (state initial-state)
+         (next-word (second words))
+         (states `(,initial-state))
+         (remaining-words (cddr words))
+         next-state  final-state  )
+    (loop
+      (setq next-state (find-or-make-next-pw-state state next-word))
+      (push next-state states)
+      (when (null remaining-words)
+        (setq final-state next-state)
+        (return))
+      (setq next-word (car remaining-words)
+            remaining-words (cdr remaining-words)
+            state next-state))
+    (setf (pw-accept-state? final-state) pw)
+    initial-state))
+
 (defun find-or-make-initial-pw-state (word)
   (or (and (word-rule-set word)
            (rs-fsa (word-rule-set word))) ;; find 
@@ -55,150 +82,12 @@
   (or (gethash next-word (pw-continuations state))
       (make-next-state state next-word)))
 
-;; (hashtable-to-alist 
-
 (defun make-next-state (prior-state next-word)
   (let* ((words-so-far (pw-word-chain prior-state))
          (words (tail-cons next-word (copy-list words-so-far)))
          (prior-table (pw-continuations prior-state))
          (next-state (make-instance 'polyword-state
                        :word words)))
-    ;;(push-debug `(,prior-table ,next-state ,next-word))
-    ;;  (setq prior-table (car *) next-state (cadr *) next-word (caddr *))
-    ;;(break "before")
     (setf (gethash next-word prior-table) next-state)
-    ;;(break "after")
     next-state))
-
-
-(defun construct-fsa-for-pw (pw)
-  ;; called from define-polyword/expr all the fields of the pw
-  ;; have been filled except fsa. The value we return goes into
-  ;; that field. After this the pw is catalogued.
-  (let* ((words (pw-words pw))
-         (initial-state (find-or-make-initial-pw-state (first words)))
-         (state initial-state)
-         (next-word (second words))
-         (states `(,initial-state))
-         (remaining-words (cddr words))
-         next-state  final-state  )
-    ;;(format t "&The initial state of~a is ~a" pw initial-state)
-    (loop
-      (setq next-state (find-or-make-next-pw-state state next-word))
-      (push next-state states)
-      (when (null remaining-words)
-        (setq final-state next-state)
-        (return))
-      ;;(format t "~&~s => ~a" (word-pname next-word) next-state)
-    ;  (when (null next-word)
-     ;   (return))
-      (setq next-word (car remaining-words)
-            remaining-words (cdr remaining-words)
-            state next-state))
-
-    ;;(push-debug `(,states ,words ,pw))
-    (setf (pw-accept-state? final-state) pw)
-    ;;(format t "~&The accept state is ~a" final-state)
-    initial-state))
-    
-
-;;----------------------------------- old -----------------------------------------
-
-;;;-----------------------
-;;; making polyword-rules
-;;;-----------------------
-
-(defun construct-cfr-for-embedded-pw (pw)
-  (error "There's still a call to construct-cfr-for-embedded-pw ~
-     for ~a" pw)
-  ;; called from construct-cfr when one of the labels on the
-  ;; rhs is a polyword.  In a case like this, we just make a rule
-  ;; whose lhs is the polyword, using the usual machinery below.
-  ;; Also called from define-polyword/expr
-  #+ignore
-  (let ((earlier-cfr (pw-fsa pw)))
-    (or earlier-cfr
-        (let ((cfr (make-cfr :category pw
-                             :rhs      (list pw)
-                             :form     nil
-                             :referent nil)))
-
-          (construct-polyword-cfr cfr)))))
-
-(defun construct-cfr-for-word-list-pw (pw list-of-words)
-  ;; Called from define-polyword/from-words. This is really only
-  ;; a hook if we want to do something different here
-  (declare (ignore list-of-words))
-  (construct-cfr-for-embedded-pw pw))
-
-
-(defun construct-polyword-cfr (cfr)
-  ;; called from Construct-cfr when the rhs is a 
-  ;; list of length one containing a polyword.
-  (let* ((pw (first (cfr-rhs cfr)))
-         (words (pw-words pw))
-         (first-word (first words)))
-
-    ;; since the polyword is run as a chart-level fsa rather than
-    ;; through the parser, this stands in for Knit-into-psg-tables
-    ;; and for the rest of the thread of code in Construct-cfr.
-    ;;   It's a copy of selected code from cfr;dotted
-
-    (if (= 2 (length words))
-      (polyword-doesnt-need-rollout cfr pw words first-word)
-
-      (let ((dotted-rules
-             (rollout-naries-from-the-left words cfr)))
-
-        (add-pw-to-words-rules first-word cfr)
-        
-        (setf (cfr-plist cfr)
-              `(:polyword ,pw
-                :n-ary (,pw ,dotted-rules)
-                ,@(cfr-plist cfr)))
-        
-        (let ((r-symbol (gen-cfr-symbol)))
-          (catalog/cfr cfr r-symbol))
-        cfr ))))
-
-
-
-(defun polyword-doesnt-need-rollout (cfr pw words first-word)
-  ;; this cfr has the polyword as its entire righthand side but
-  ;; the polyword is just two words long.
-  (setf (cfr-rhs cfr)
-        words)
-  (knit-in-binary-rule cfr)
-
-  (add-pw-to-words-rules first-word cfr)
-  (setf (cfr-plist cfr)
-        `(:polyword ,pw
-          ,@(cfr-plist cfr)))
-  (let ((r-symbol (gen-cfr-symbol)))
-    (catalog/cfr cfr r-symbol))
-  cfr )
-
-
-
-;;;------------
-;;; subroutine
-;;;------------
-
-(defun add-pw-to-words-rules (first-word cfr)
-  (let ((rs (word-rule-set first-word))
-        fsa-field )
-    (unless rs
-      (setq rs (setf (word-rule-set first-word)
-                     (make-rule-set :backpointer first-word))))
-    (setq fsa-field (rs-fsa rs))
-          
-    ;; we only put one cfr in the fsa field, even if the word
-    ;; is the start of many polywords.  The fsa interpreter
-    ;; does the right thing.
-    (let ( already-has-a-cfr? )
-      (dolist (item fsa-field)
-        (when (typep item 'cfr)
-          (setq already-has-a-cfr? t)))
-      (unless already-has-a-cfr?          
-        (setf (rs-fsa rs) (push cfr fsa-field))))))
 
