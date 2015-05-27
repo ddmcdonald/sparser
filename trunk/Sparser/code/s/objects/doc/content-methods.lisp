@@ -7,7 +7,8 @@
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
-;; be referred to. 
+;; be referred to. 5/27/15 Subject is now the referent rather than
+;; the edge. 
 
 
 (in-package :sparser)
@@ -82,9 +83,9 @@
     Alusion to the NLG notion of text structure."))
 
 (defmethod set-sentence-subject ((e edge) (s sentence))
-  ;; (let ((referent (edge-referent e)))
-    ;;/// should it be an individual ?
-    (setf (sentence-subject (contents s)) e)) ;;referent)))
+  (let ((referent (edge-referent e)))
+    ;;/// should we insist that it be an individual ?
+    (setf (sentence-subject (contents s)) referent)))
 
 (defmethod get-sentence-subject ((s sentence))
   (sentence-subject (contents s)))
