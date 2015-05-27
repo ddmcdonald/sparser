@@ -68,7 +68,15 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
               accept-pw (when next-state
                           (pw-accept-state? next-state)))
         (when next-state
-          (tr :pw-word-extends))        
+          (tr :pw-word-extends))
+        (unless next-state ;; maybe the capitalization is wrong
+          (push-debug `(,word ,position ,table))
+          ;; (setq word (car *) position (cadr *) table (caddr *))
+          (let ((caps-word (capitalized-correspondent1 position word)))
+            (when caps-word
+              (setq next-state (gethash caps-word table)
+                    accept-pw (when next-state
+                                (pw-accept-state? next-state))))))
         (when accept-pw
           (tr :pw-complete-looking-further accept-pw)
           (push (cons accept-pw position) accept-positions))
