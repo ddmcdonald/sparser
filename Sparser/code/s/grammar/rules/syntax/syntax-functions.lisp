@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  April 2015
+;;;  Version:  May 2015
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -42,8 +42,9 @@
 ;;  this is actually for phrases like "a phosphoserine at residue 827"
 ;; 5/3/2015 new adjunct like modifier for bio-rocess -- "upon" or "following" <bio-process>
 ;; 5/8/2015 handle "in vitro" and "in vivo" as VP post-modifiers
-
-;; 5/25/2015 start on handling pp-relative-clauses
+;; 5/25/2015 start on handling pp-relative-clauses. 5/26/15 Modified return of
+;; interpret-pp-adjunct-to-np to fail the rule rather than try to bind it's arg
+;; to the variable 'nil'. 
 
 
 (in-package :sparser)
@@ -465,14 +466,15 @@
         (cond
          (*subcat-test* variable-to-bind)
          (t
-          (if *collect-subcat-info*
-              (push (subcat-instance np prep-word variable-to-bind 
-                                     pp)
-                    *subcat-info*))
+          (when *collect-subcat-info*
+            (push (subcat-instance np prep-word variable-to-bind 
+                                   pp)
+                  *subcat-info*))
           (setq np (maybe-copy-individual np))
           ;;(bind-variable variable-to-bind pp np)
-          (bind-variable variable-to-bind pobj-referent np)
-          np)))))
+          (when variable-to-bind ;; otherwise return nil and fail the rule
+            (bind-variable variable-to-bind pobj-referent np)
+            np))))))
 
 
 (defun interpret-to-comp-adjunct-to-np (np to-comp)
