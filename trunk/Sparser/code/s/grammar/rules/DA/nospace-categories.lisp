@@ -316,23 +316,29 @@
          (elements (loop for edge in edges
                      when (edge-p edge) collect (edge-referent edge)
                      when (word-p edge) collect edge))
-         (letter-word (second elements))
-         (letter (find-individual 'single-capitalized-letter 
-                                  :letter letter-word))
-
-         (i (find-or-make-individual 'two-part-label
-               :part-one (first elements)
-               :part-two letter)))
-    (let ((edge (make-edge-over-long-span
-                 start-pos
-                 end-pos
-                 category::two-part-label
-                 :rule 'reify-two-part-label
-                 :form category::common-noun
-                 :referent i
-                 ;;:constituents edges
-                 )))
-      edge)))
+         (letter-word (second elements)))
+    (let* ((letter
+            (typecase letter-word
+              (individual letter-word) ;;/// check type?
+              (word (find-individual 'single-capitalized-letter 
+                                     :letter letter-word))
+              (otherwise
+               (push-debug `(,letter-word ,elements ,edges ,words))
+               (error "Unexpected type for letter in two-part label: ~
+                       ~a~%  ~a" (type-of letter-word) letter-word))))
+           (i (find-or-make-individual 'two-part-label
+                 :part-one (first elements)
+                 :part-two letter)))
+      (let ((edge (make-edge-over-long-span
+                   start-pos
+                   end-pos
+                   category::two-part-label
+                   :rule 'reify-two-part-label
+                   :form category::common-noun
+                   :referent i
+                   ;;:constituents edges
+                   )))
+        edge))))
 
 
 
