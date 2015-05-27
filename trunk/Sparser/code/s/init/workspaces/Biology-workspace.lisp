@@ -363,20 +363,50 @@ e119  ABILITY       66 "the ability to associate with β - trcp ( fig . 1 a and 
 (defun j1 ()
   (p "The most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are KRAS, PIK3CA and BRAF."))
 #|  
+[the most frequently mutated oncogenes] in [ the deadliest cancers]
+
+[ responsible] for [ human mortality][ are][ kras, pik3ca and braf]
 e35   BE   1 "the most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are kras , pik 3 ca and braf" 22
            period
+5/26/15
+e28   ONCOGENE      1 "the most frequently mutated oncogenes" 6
+e34   IN            6 "in the deadliest cancers responsible" 11
+e32   FOR           11 "for human mortality" 14
+e17   BE            14 "are" 15
+e24   PROTEIN       15 "kras , pik 3 ca and braf" 22
  |#
 
 (defun j2 ()
   (p "Importantly the signaling enzymes encoded by PIK3CA and BRAF are, in part, regulated by direct binding to activated forms of the Ras proteins suggesting that dysregulation of this key step in signaling is critical for tumor formation. "))
-#|  Needs work
-importantly bio-entity encode [M:2 "by"] bio-entity be comma in part comma 
-regulate [M:2 "by"] binding [M:2 "to"] activate form [M:2 "of"] bio-entity 
-suggest that dysregulation [M:2 "of"] step [M:2 "in"] "signaling" be modifier [M:2 "for"] formation "." |#
+#|  5/26/15
+[importantly][ the signaling enzymes][ encoded] by [ pik3ca and braf]
+[ are, in part, regulated] by [ direct binding] to [ activated][ forms] 
+of [ the ras proteins][ suggesting] that [ dysregulation] of [ this key step]
+ in [ signaling][ is critical] for [ tumor formation]
+
+e0    IMPORTANTLY   1 "importantly" 2
+e55   ENZYME        2 "the signaling enzymes" 5
+e5    ENCODE        5 "encoded" 6
+e72   BY            6 "by pik 3 ca and braf" 12
+e71   REGULATE+ED   12 "are , in part , regulated by direct binding" 21
+e22 e23             "to" :: #<word "to">, TO
+e24   BIO-ACTIVATE  22 "activated" 23
+e69   FORM          23 "forms of the ras proteins" 28
+e32   SUGGEST       28 "suggesting" 29
+e33 e34             "that" :: #<word "that">, THAT
+e67   DYSREGULATE   30 "dysregulation of this key step" 35
+e65   IN            35 "in signaling" 37
+e63   CRITICAL      37 "is critical" 39
+e64   FOR           39 "for tumor formation" 42
+
+|#
 
 (defun j3 ()
   (p "Ras acts as a molecular switch that is activated upon GTP loading and deactivated upon hydrolysis of GTP to GDP."))
-#|  Needs to see the two vps
+#|  [ras][ acts] as [ a molecular switch] that [ is activated] 
+upon [ gtp loading] and [ deactivated] u
+pon [ hydrolysis] of [ gtp] to [ gdp]
+
 e31   ACT                     1 "ras acts as a molecular switch" 7
 e9                               "that"
 e33   ACTIVATE                8 "is activated upon" 11
@@ -384,7 +414,15 @@ e30   LOAD                    11 "gtp loading" 13
 e16 e17                          "and" :: and, AND
 e32   DEACTIVATE              14 "deactivated upon" 16
 e28   HYDROLYSIS              16 "hydrolysis of gtp to gdp" 21
+
+5/26/15
+e40   BIO-ACT       1 "ras acts" 3
+e39   AS            3 "as a molecular switch that is activated upon gtp loading" 13
+e16   AND           13 "and" 14
+e17   DEACTIVATE    14 "deactivated" 15
+e34   UPON          15 "upon hydrolysis of gtp to gdp" 21
 |#
+
 (defun j4 ()
   (p "This switch mechanism is common to a wide variety of GTP-binding proteins and is mediated by a conserved structure called the G-domain that consists of five conserved G boxes."))
 #| [this switch mechanism][ is][ common] to [ a wide variety] of [ gtp-binding proteins] 
@@ -401,38 +439,140 @@ e48   CALL                    22 "called the g - domain" 27
 e36                              "that"
 e37   CONSISTS                28 "consists" 29
 e46   OF                      29 "of five conserved g boxes" 34
-                                period|#
+                                period
+5/26/15
+e66   COMMON        1 "this switch mechanism is common to a wide variety" 10
+e63   OF            10 "of gtp - binding" 14
+e18   PROTEIN       14 "proteins" 15
+e19   AND           15 "and" 16
+e54   MEDIATE+ED    16 "is mediated" 18
+e62   BY            18 "by a conserved structure" 22
+e30   CAL           22 "called" 23
+e57   BIO-ENTITY    23 "the g - domain" 27
+e36 e37             "that" :: #<word "that">, THAT
+e38   CONSIST       28 "consists" 29
+e61   OF            29 "of five conserved g boxes" 34
+                    period
+|#
 
 (defun j5 ()
   (p "Under physiological conditions, the rate of GDP or GTP release from the G-domain is slow."))
 #|  
+under [ physiological conditions], [ the rate] of [
+ gdp or gtp][ release] from [ the g-domain][ is slow]
+
 e24   UNDER                   1 "under physiological conditions" 4
 e4                               "COMMA"
 e30   RATE-OF-PROCESS         5 "the rate of gdp or gtp release from the g - domain is slow" 19
-                                 period  |#
+                                 period 
+5/26/15
+e30   UNDER         1 "under physiological conditions" 4
+e5                  "COMMA"
+e25   PROCESS-RATE  5 "the rate" 7
+e29   OF            7 "of gdp or gtp" 11
+e14   MOLECULE-RELEASE  11 "release" 12
+e28   FROM          12 "from the g - domain" 17
+e27   QUALITATIVE-RATE  17 "is slow" 19
+ |#
 
 (defun j6 ()
   (p "As a consequence the GDP produced by GTP hydrolysis on Ras is trapped and the bulk of cellular Ras accumulates in the GDP-bound ‘off’ state, despite the high GTP/GDP ratio in the cytosol (1–3)."))
-#|  Needs the hypen and slash specialists done. Also something for the scare quotes and the reference in parenthese
+#| [as a consequence][ the gdp][ produced] by [ gtp hydrolysis] on [ ras]
+[ is trapped] and [ the bulk] of [ cellular ras][ accumulates] in 
+[ the gdp-bound] 'off' [ state], despite [ the high gtp/gdp ratio] in [ the cytosol]
+5/26/15
+e1    AS A CONSEQUENCE  1 "as a consequence" 4
+e57   NUCLEOTIDE    4 "the gdp" 6
+e5    PRODUCE       6 "produced" 7
+e76   BY            7 "by gtp hydrolysis on ras" 12
+e59   TRAP          12 "is trapped" 14
+e15   AND           14 "and" 15
+e61   BULK-KIND     15 "the bulk" 17
+e73   OF            17 "of cellular ras" 20
+e24   ACCUMULATION  20 "accumulates" 21
+e72   IN            21 "in the gdp - bound" 26
+e71   OFF           26 "' off ' state" 30
+e36                 "COMMA"
+e37   DESPITE       31 "despite" 32
+e70   RATIO         32 "the high gtp / gdp ratio in the cytosol ( 1 - 3 )" 46
+                    period
+
 |#
 
 (defun j7 ()
   (p "Growth factors can turn on Ras by activating Guanine nucleotide Exchange Factors (GEFs) or by inhibiting the GTPase Activating Proteins (GAPs) or by both mechanisms."))
-#|  Fix comma-delimited-list to write a better edge so it will print nicely. 
+#|  
+[growth factors][ can turn] on [ ras] by [ activating][ guanine nucleotide 
+exchange factors] (gefs) or by [ inhibiting][ the gtpase activating proteins] 
+(gaps) or by [ both mechanisms]
+
+    Fix comma-delimited-list to write a better edge so it will print nicely. 
     Make 'both' active
 e46   TURN                    1 "growth factors can turn on ras by activating guanine nucleotide exchange factors ( gefs ) or by inhibiting the gtpase activating proteins ( gaps ) or by both mechanisms" 30
-e34                              "PERIOD" |#
+e34                              "PERIOD" 
+
+5/26/15
+e41   TURN-ON       1 "growth factors can turn on ras" 7
+e43   BY            7 "by activating guanine nucleotide exchange factors ( gefs ) or by inhibiting the gtpase activating proteins ( gaps ) or by both mechanisms" 30
+|#
 
 (defun j8 ()
   (p "RasGEFs bind to Ras and lower the transition energy for the nucleotide exchange of the bound GDP for the more abundant cytosolic GTP, whereas RasGAPs bind to Ras and catalyze GTP hydrolysis. "))
-#|  needs lots of ordinarly / semi-biological vocabulary
+#|  [rasgefs][ bind] to [ ras] and [ lower][ the transition] energy 
+for [ the nucleotide exchange] of [ the bound gdp] for 
+[ the more abundant cytosolic gtp], whereas [ rasgaps][ bind] to 
+[ ras] and [ catalyze][ gtp hydrolysis]
+
+e63   BINDING       1 "rasgefs bind to ras" 5
+e5    AND           5 "and" 6
+e6    LOWER         6 "lower" 7
+e44   TRANSITION    7 "the transition" 9
+                    "energy"
+e60   FOR           10 "for the nucleotide exchange" 14
+e59   OF            14 "of the bound gdp" 18
+e58   FOR           18 "for the more abundant cytosolic gtp" 24
+e31                 "COMMA"
+e32   WHEREAS       25 "whereas" 26
+e57   BINDING       26 "rasgaps bind to ras" 30
+e38   AND           30 "and" 31
+e54   CATALYSIS     31 "catalyze gtp hydrolysis" 34
 |#
 
 (defun j9 ()
   (p "The most prevalent oncogenic mutations in Ras (Gly12 and Gly13 in the G1 box, and Gln61 in the G3 box) preserve the GTP bound state by inhibiting intrinsic GTPase activity and by interfering with the ability of GAPs. "))
+#|  [the most prevalent oncogenic mutations] in [ ras] (gly12 and gly13 in the g1 box,
+ and gln61 in the g3 box) [ preserve][ the gtp][ bound][ state] 
+ by [ inhibiting][ intrinsic gtpase activity] and by [ interfering] with [ the ability] of [ gaps]
+5.26/15
+e98   MUTATE        1 "the most prevalent oncogenic mutations in ras ( gly 12 and gly 13 in the g 1 box , and gln 61 in the g 3 box )" 29
+e38   PRESERVE      29 "preserve" 30
+e96   BINDING       30 "the gtp bound state by inhibiting intrinsic gtpase activity" 39
+e51   AND           39 "and" 40
+e91   BY            40 "by interfering" 42
+e90   WITH          42 "with the ability of gaps" 47
+                    period
+
+|#
 (defun j10 ()
   (p "Other less frequently observed mutations, such as those found in the G4 and G5 boxes, increase the rate of nucleotide exchange, thereby mimicking the GEFs and increasing the GTP-bound state (1–7)."))
+#|  [other less frequently observed mutations], such as [ those found] in [ the g4 and g5 boxes], 
+[ increase][ the rate] of [ nucleotide exchange], 
+[ thereby mimicking][ the gefs] and [ increasing][ the gtp-bound state]
+5/26/15
+e54   MUTATE        1 "other less frequently observed mutations" 6
+e5                  "COMMA"
+e70   SUCH AS       7 "such as those found" 11
+e69   IN            11 "in the g 4 and g 5 boxes" 19
+e21                 "COMMA"
+e68   INCREASE      20 "increase the rate of nucleotide exchange" 26
+e31                 "COMMA"
+e60   MIMICK        27 "thereby mimicking" 29
+e61   PROTEIN       29 "the gefs" 31
+e37   AND           31 "and" 32
+e65   INCREASE      32 "increasing the gtp - bound state ( 1 - 7 )" 43
+                    period
 
+|#
 
 (defun d1 () ;; "d" for Denver
   (p "Mitogen-induced signal transduction is mediated by a cascade of protein phosphorylation and dephosphorylation."))
