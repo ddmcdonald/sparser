@@ -250,6 +250,11 @@
           (return))
         (multiple-value-setq (tt next-pos)
           (next-treetop/rightward next-pos))
+        ;; could define a variant of next-treetop/rightward
+        ;; but so far this is a one-off.
+        (when (edge-vector-p tt)
+          (setq tt (elt (ev-edge-vector tt)
+                        (1- (ev-number-of-edges tt)))))
         (push tt tts))
       (nreverse tts))))
     
