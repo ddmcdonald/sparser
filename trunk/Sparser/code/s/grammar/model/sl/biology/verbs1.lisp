@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "verbs1"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: April 2015
+;;; version: May 2015
 
 ;; verbs initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 12/3/14.
@@ -45,7 +45,8 @@
 ;;  provide bio-rhetorical as a marker for verbs that talk about belief and truth, bio-event for actions that are not bio-processes in the OBO sense, bio-relation for things like
 ;;  contain, sonstitute, etc.
 ;;  concomitant revision for things like thatcomp and whethercomp
-
+;; 5/29/15 Removed things that belonged else where, notably 
+;;  moved phosphoriated to phenomena to live with the other modifications
 
 
 (in-package :sparser)
@@ -151,22 +152,7 @@
      :through mechanism
      :of activated))
 
-(define-category acetylation
-  :specializes bio-process
-  :instantiates self
-  :binds ((agent biological)
-          (substrate (:or protein residue-on-protein))
-          (site residue-on-protein))
-  :index (:temporary :sequential-keys site substrate)
-  :realization
-  (:verb "acetylate" :noun "acetylation"
-   :etf (svo-passive pre-mod)
-   :s agent
-   :o substrate
-   :m site
-   :of substrate
-   :on site
-   :at site))
+
 
 (define-category addition :specializes process
   :binds ((agent biological) (base biological)(added biological))
@@ -1406,6 +1392,16 @@
 	   :o object
            :of object))
 
+;; new definitions from MITRE test set
+(define-category overlap :specializes bio-relation
+  :binds ((object1 biological)(object2 biological))
+  :realization
+  (:verb "overlap"
+         :etf (svo-passive)
+         :s object1
+         :o object2
+         :with object2))
+
 (define-category perform
     :specializes bio-method
     :binds ((agent pronoun/first/plural)(object bio-method)
@@ -1420,29 +1416,6 @@
            :of object
            :on beneficiary))
 
-
-
-;;--- "phosphorylate"
-;; GO:0016310	
-;; "activated IKKα phosphorylates specific serines"
-;;  "The phosphorylation of these specific serines"
-
-(define-category phosphorylate
-  :specializes bio-process
-  :instantiates self
-  :binds ((agent biological)
-          (substrate (:or protein residue-on-protein))
-          (site residue-on-protein))
-  :index (:permanent :sequential-keys site substrate)
-  :realization
-  (:verb "phosphorylate" :noun "phosphorylation"
-   :etf (svo-passive pre-mod)
-   :s agent
-   :o substrate
-   :m site ;; "T669 phosphorylation" in figure-7
-   :of substrate
-   :on site
-   :at site))
 
 
 (define-category place :specializes bio-method
@@ -2172,28 +2145,3 @@
          :of object))
 
 
-
-
-(define-category is-bio-entity
-  :specializes predicate  
-  :binds ((entity biological)(predication biological)))
-
-(def-cfr IS-BIO-ENTITY (be biological)
-  :form vp
-  :referent (:instantiate-individual is-bio-entity
-                :with (predication right-edge)))
-
-(def-cfr is-bio-entity (biological is-bio-entity)
-  :form s
-  :referent (:head right-edge
-                   :bind (entity left-edge)))
-
-;;;;; new definitions from MITRE test set
-(define-category overlap :specializes bio-relation
-  :binds ((object1 biological)(object2 biological))
-  :realization
-  (:verb "overlap"
-         :etf (svo-passive)
-         :s object1
-         :o object2
-         :with object2))

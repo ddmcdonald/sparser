@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2015
+;;; version: May 2015
 
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
@@ -15,7 +15,8 @@
 ;; drop the "then" on the floor
 ;; 5/8/2015 handle "in vitro" and "in vivo" as VP post-modifiers
 ;; 5/16/2015 correct erroneous binding on rule (def-cfr residue-on-protein (protein residue-on-protein)
-;; discovered while producing MITRE index cards
+;;   discovered while producing MITRE index cards
+;; 5/29/15 moved in rules that were in verbs1
 
 
 
@@ -42,6 +43,11 @@
 (define-debris-analysis-rule comma-adverb-comma
   :pattern ( "," adverb "," )
   :action (:function respan-edge-around-one-word second first third))
+
+(define-debris-analysis-rule s-and-vp
+  :pattern ( s and vp )
+  :action (:function conjoin-clause-and-vp first third))
+
 
 
 ;;; no-space pattern
@@ -214,6 +220,23 @@
 (defun convert-bio-entity-to-protein (bio-entity)
   (push-debug `(,bio-entity)) ;;(break "convert bio-entity"))
   bio-entity)
+
+
+(define-category is-bio-entity
+  :specializes predicate  
+  :binds ((entity biological)
+          (predication biological)))
+
+(def-cfr IS-BIO-ENTITY (be biological)
+  :form vp
+  :referent (:instantiate-individual is-bio-entity
+                :with (predication right-edge)))
+
+(def-cfr is-bio-entity (biological is-bio-entity)
+  :form s
+  :referent (:head right-edge
+                   :bind (entity left-edge)))
+
 
 
 ;;--- expediency
