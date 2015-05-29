@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "phenomena"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: April 2015
+;;; version: May 2015
 
 ;; Initiated 12/28/14 to handle moderately complicated notions
 ;; like cell line and mutation. Conformation and isoform and such
@@ -13,6 +13,7 @@
 ;; 1/14/2015 tweaks on N and C-terminus
 ;; 2/15/15 trying to make some headway with ubiquitination
 ;; 4/23/15 Pulled in dimer material from other files
+;; 5/29/15 Added the rest of the Mitre-designated modification features
 
 (in-package :sparser)
 
@@ -78,22 +79,154 @@
           :to object))
 
 
-;;;----------
-;;; ubiqutin 
-;;;----------
+
+
+(define-category acetylation
+  :specializes bio-process
+  :instantiates self
+  :binds ((agent biological)
+          (substrate (:or protein residue-on-protein))
+          (site residue-on-protein))
+  :index (:temporary :sequential-keys site substrate)
+  :realization
+  (:verb "acetylate" :noun "acetylation"
+   :etf (svo-passive pre-mod)
+   :s agent
+   :o substrate
+   :m site
+   :of substrate
+   :on site
+   :at site))
+
+(define-category farnesylation 
+ :specializes bio-process 
+ :binds ((agent biological) ;; what causes it to happen
+         (substrate protein) ;; which protein now has ubiquitin on it
+         (site residue-on-protein)) ;; which is attached here
+  :realization 
+    (:verb "farnesylate"
+     :noun "farnesylation"
+     :etf (svo-passive pre-mod) 
+     :s agent 
+     :o substrate
+     :m site
+     :of substrate
+     :on site
+     :at site))
+
+(define-category glycosylation 
+ :specializes bio-process 
+ :binds ((agent biological) ;; what causes it to happen
+         (substrate protein) ;; which protein now has ubiquitin on it
+         (site residue-on-protein)) ;; which is attached here
+  :realization 
+    (:verb "glycosylate"
+     :noun "glycosylation"
+     :etf (svo-passive pre-mod) 
+     :s agent 
+     :o substrate
+     :m site
+     :of substrate
+     :on site
+     :at site))
+
+(define-category hydoxylation 
+ :specializes bio-process 
+ :binds ((agent biological) ;; what causes it to happen
+         (substrate protein) ;; which protein now has ubiquitin on it
+         (site residue-on-protein)) ;; which is attached here
+  :realization 
+    (:verb "hydoxylate"
+     :noun "hydoxylation"
+     :etf (svo-passive pre-mod) 
+     :s agent 
+     :o substrate
+     :m site
+     :of substrate
+     :on site
+     :at site))
+
+(define-category methylation 
+ :specializes bio-process 
+ :binds ((agent biological) ;; what causes it to happen
+         (substrate protein) ;; which protein now has ubiquitin on it
+         (site residue-on-protein)) ;; which is attached here
+  :realization 
+    (:verb "methylate"
+     :noun "methylation"
+     :etf (svo-passive pre-mod) 
+     :s agent 
+     :o substrate
+     :m site
+     :of substrate
+     :on site
+     :at site))
+
+
+;;--- "phosphorylate"
+;; GO:0016310	
+;; "activated IKKα phosphorylates specific serines"
+;;  "The phosphorylation of these specific serines"
+(define-category phosphorylate
+  :specializes bio-process
+  :instantiates self
+  :binds ((agent biological)
+          (substrate (:or protein residue-on-protein))
+          (site residue-on-protein))
+  :index (:permanent :sequential-keys site substrate)
+  :realization
+  (:verb "phosphorylate" :noun "phosphorylation"
+   :etf (svo-passive pre-mod)
+   :s agent
+   :o substrate
+   :m site ;; "T669 phosphorylation" in figure-7
+   :of substrate
+   :on site
+   :at site))
+
+
+(define-category ribosylation 
+ :specializes bio-process 
+ :binds ((agent biological) ;; what causes it to happen
+         (substrate protein) ;; which protein now has ubiquitin on it
+         (site residue-on-protein)) ;; which is attached here
+  :realization 
+    (:verb "ribosylate"
+     :noun "ribosylation"
+     :etf (svo-passive pre-mod) 
+     :s agent 
+     :o substrate
+     :m site
+     :of substrate
+     :on site
+     :at site))
+
+(define-category sumoylation 
+ :specializes bio-process 
+ :binds ((agent biological) ;; what causes it to happen
+         (substrate protein) ;; which protein now has ubiquitin on it
+         (site residue-on-protein)) ;; which is attached here
+  :realization 
+    (:verb "sumoylate"
+     :noun "sumoylation"
+     :etf (svo-passive pre-mod) 
+     :s agent 
+     :o substrate
+     :m site
+     :of substrate
+     :on site
+     :at site))
+
 
 ; monoubiquitination increases the population 
 ;;  this process has this effect
-
 ; the enzymatic and chemical ubiquitination linkers 
 ; the monoubiquitinated and unmodified fractions of Ras
 ; the sensitivity of mUbRas
 ; our ability to easily generate mUbRas
-
 ; the c–terminus of Ubiquitin (Ubiquitin C77)
 ; Ras ligated to Ubiquitin C77
 ; ligated to Ubiquitin G76C. <--- point mutation
-
 (def-bio "ubiquitin" protein)
 ;; not strictly true, but a reasonable approximation. 
 
@@ -103,10 +236,14 @@
          (substrate protein) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
-    (:verb "ubiquitinate" 
-     :etf (svo-passive) 
+    (:verb "ubiquitinate"
+     :noun "ubiquitination"
+     :etf (svo-passive pre-mod) 
      :s agent 
      :o substrate
+     :m site
+     :of substrate
+     :on site
      :at site))
 
 ;;;------------------------------
