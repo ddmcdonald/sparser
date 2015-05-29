@@ -64,6 +64,19 @@
               ~%               ~A"
                edge)))
 
+(deftrace :pw-caps-variant (p word)
+  (when *trace-fsas*
+    (trace-msg "[pw]   Looking for capitalized variant of ~
+              ~s at p~a" (word-pname word)
+              (pos-token-index p))))
+
+(deftrace :pw-found-caps-variant (caps-word)
+  (when *trace-fsas*
+    (trace-msg "[pw]     found ~s" (word-pname caps-word))))
+
+(deftrace :pw-no-caps-variant ()
+  (when *trace-fsas*
+    (trace-msg "[pw]     nothing found")))
 
 ;;;-----------------
 ;;; word level fsas
