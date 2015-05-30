@@ -806,7 +806,7 @@
 (define-adjective "chronic")
 (define-adjective "circumstantial")
 (define-adjective "clear")
-(define-adjective "clinical")
+;;(define-adjective "clinical")
 (define-adjective "clonal")
 ;;(define-adjective "common")
 (define-adjective "complementary")
