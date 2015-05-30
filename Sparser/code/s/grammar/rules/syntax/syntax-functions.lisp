@@ -45,6 +45,12 @@
 ;; 5/25/2015 start on handling pp-relative-clauses. 5/26/15 Modified return of
 ;; interpret-pp-adjunct-to-np to fail the rule rather than try to bind it's arg
 ;; to the variable 'nil'. 
+;; 5/30/2015 make sure all subcat type rules return NIL when they are called with an
+;; argument that does not meet subcategorization requirements -- 
+;; sometimes the rules can be called inside parenthesis processing, etc., and that
+;; process does not do the appropariate "pre-checks"
+;; Better handling of special cases for tense/aspect and adverb
+
 
 
 (in-package :sparser)
@@ -248,9 +254,11 @@
 ;;;------------------
 
 (defun find-or-make-aspect-vector (vg)
-  (unless (itypep vg 'event)
-    (error "tense/aspect only applies to individuals that ~
-            inherit from event."))
+  (unless (or
+           (itypep vg 'event)
+           (itypep vg 'have))
+    (error "~s is not an event, tense/aspect only applies to individuals that ~
+            inherit from event." vg))
   (or (value-of 'aspect vg)
       (let ((i (make/individual 
                 (category-named 'tense/aspect-vector) nil)))
@@ -292,10 +300,29 @@
 (defmethod add-tense/aspect ((aux category) (vg category))
   (add-tense/aspect aux (make-individual-for-dm&p vg)))
 
+(defmethod add-tense/aspect ((aux individual) (vg category))
+  (add-tense/aspect aux (make-individual-for-dm&p vg)))
+
 (defmethod add-tense/aspect ((aux category) (vg individual))
   (push-debug `(,aux ,vg)) ;;(break "is this right?")
   (let ((i (find-or-make-aspect-vector vg)))
     (case (cat-symbol aux)
+      (category::be  ;; be + ing
+       (bind-variable 'progressive aux i))
+      (category::have  ;; have + en
+       (bind-variable 'perfect aux i))
+      (category::past
+       (bind-variable 'past t i))
+      (otherwise
+       (push-debug `(,aux ,vg))
+       (error "Extend add-tense/aspect to handle ~a" aux)))
+    ;;(push-debug `(,i)) (break "look at i")
+    vg))
+
+(defmethod add-tense/aspect ((aux individual) (vg individual))
+  (push-debug `(,aux ,vg)) ;;(break "is this right?")
+  (let ((i (find-or-make-aspect-vector vg)))
+    (case (cat-symbol (car (indiv-type aux)))
       (category::be  ;; be + ing
        (bind-variable 'progressive aux i))
       (category::have  ;; have + en
@@ -330,6 +357,7 @@
 (defparameter *adverb+vg* nil)
 
 (defun interpret-adverb+verb (adverb vg)
+  (declare (special adverb vg))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   ;; "direct binding" has a specitif meaning
   ;;/// so there should be a compose method to deal with that
@@ -337,20 +365,38 @@
   ;; default
   (setq vg (maybe-copy-individual vg))
   #|need to diagnose among 
-   (time)
-   (location)
-   (purpose)
-   (circumstance)
-   (manner)
-   (aspect . tense/aspect)
+  (time)
+  (location)
+  (purpose)
+  (circumstance)
+  (manner)
+  (aspect . tense/aspect)
   BUT UNTIL THEN, JUST BIND THE ADVERB
   |#
   #+ignore
   (push (list (edge-string (left-edge-for-referent))
               (edge-string (right-edge-for-referent)))
         *adverb+vg*)
-  (bind-variable 'adverb adverb vg)
-  vg)
+  (cond
+   ((vg-has-adverb-variable? vg)
+    (bind-variable 'adverb adverb vg)
+    vg)
+   (t (break "can't find adverb slot for ~s on verb ~s"
+                  (edge-string (left-edge-for-referent))
+                  (edge-string (right-edge-for-referent))))
+   ;; don't apply rule to verbs whose interpretation does not have an adverb variable
+   ))
+
+(defun vg-has-adverb-variable? (vg)
+  (cond
+   ((individual-p vg)
+     (loop for category in (indiv-type vg)
+       thereis
+       (find-variable-for-category 'adverb category)))
+    ((referential-category-p vg)
+     (find-variable-for-category 'adverb vg))
+    (t
+     (ccl::break "what type of thing is the vg ~s" vg))))
 
 
 (defun interpret-vp+in-vi-context (vv context)
@@ -395,7 +441,7 @@
     
     (cond
      (*subcat-test* variable-to-bind)
-     (t
+     (variable-to-bind
       (when *collect-subcat-info*
         (push (subcat-instance vg prep-word variable-to-bind pp)
               *subcat-info*))
@@ -429,7 +475,7 @@
     
     (cond
      (*subcat-test* variable-to-bind)
-     (t
+     (variable-to-bind
       (when *collect-subcat-info*
         (push (subcat-instance vg prep-word variable-to-bind pp)
               *subcat-info*))
@@ -465,7 +511,7 @@
                (and *force-modifiers* 'modifier))))
         (cond
          (*subcat-test* variable-to-bind)
-         (t
+         (variable-to-bind
           (when *collect-subcat-info*
             (push (subcat-instance np prep-word variable-to-bind 
                                    pp)
@@ -489,7 +535,7 @@
     (declare (special pp-edge comp-edge variable-to-bind))
     (cond
      (*subcat-test* variable-to-bind)
-     (t
+     (variable-to-bind
       (if *collect-subcat-info*
           (push (subcat-instance np 'to-comp variable-to-bind 
                                  to-comp)
@@ -520,7 +566,7 @@
            (and *force-modifiers* 'modifier))))
     (cond
      (*subcat-test* variable-to-bind)
-     (t
+     (variable-to-bind
       (if *collect-subcat-info*
           (push (subcat-instance np prep-word variable-to-bind 
                                  pp)
@@ -578,8 +624,7 @@
          (subcategorized-variable head subcat-label item))
         (item-edge (edge-for-referent item)))
     (cond
-     (*subcat-test* 
-      variable-to-bind)
+     (*subcat-test* variable-to-bind)
      (variable-to-bind
       (collect-subcat-statistics head subcat-label variable-to-bind item)
       (setq head (maybe-copy-individual head))
