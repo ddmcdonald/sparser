@@ -10,6 +10,7 @@
 ;;  or form rules. 4/24/15 Debugged confustion in order of slash positions.
 ;; 5/15/15 Sited the handling of edges within patterns here for want of
 ;;  a better place. 
+;; 5/30/2015 catch error caused by undefined words in resolve-hyphen-between-three-words before they get to make-hyphenated-triple
 
 (in-package :sparser)
 
@@ -293,6 +294,12 @@
          (left-ref (edge-referent left-edge))
          (right-ref (edge-referent right-edge)))
     (cond
+     ((not ;;;; might be a word -- until I defined BRCT, it died on BRCT-BRCT interaction
+       (or (individual-p left-ref) 
+           (category-p left-ref)))
+      (make-bio-pair left-ref right-ref words
+                     left-edge right-edge
+                     pos-before pos-after))
      ((or (itypep left-ref 'protein)
           (itypep left-ref 'bio-family) ;; RAS-GTP
           (itypep left-ref 'small-molecule) ;; GTP-GDP ???
@@ -312,13 +319,20 @@
   ;; Should look for standard patterns, especially on the
   ;; middle word. ///Postponing that effort so we can make some
   ;; progress. 
-  (declare (ignore pattern))
+  (declare (special words pos-before -pos-after)(ignore pattern))
   (tr :resolve-hyphens-between-three-words words)
   (let ((left-edge (right-treetop-at/edge pos-before))
         (right-edge (left-treetop-at/edge pos-after))
         (middle-edge (right-treetop-at/edge 
                       (chart-position-after 
                        (chart-position-after pos-before)))))
+    (declare (special left-edge right-edge middle-edge))
+    (when
+        (or
+         (not (edge-p left-edge))
+         (not (edge-p middle-edge))
+         (not (edge-p right-edge)))
+      (break "non-edge in make-hyphenated-triple, ~s ~s ~s" left-edge middle-edge right-edge))
     (make-hyphenated-triple left-edge middle-edge right-edge)))
 
     
