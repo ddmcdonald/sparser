@@ -84,6 +84,11 @@
 
 ;; 5/25/2015 added a bunch of categories to support pp-relative-clause processing
 ;;  pp-wh-pronoun, pp-relative-clause, subject-relative-clause
+;; 5/30/2015 added new passive categories
+;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
+;;(def-form-category  vg+passive) ;; vg with an be and V+ED
+;;(def-form-category  vp+passive) ;; vg with an be and V+ED
+
 
 (in-package :sparser)
 (defvar CATEGORY::NOT)
@@ -189,7 +194,9 @@
 (def-form-category  vp+ed)
 (def-form-category  vg)
 (def-form-category  vg+ing) ;; vg with an untensed (no aux or modal) V+ING
-(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ING
+(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
+(def-form-category  vg+passive) ;; vg with an be and V+ED
+(def-form-category  vp+passive) ;; vg with an be and V+ED
 (def-form-category  pp)
 (def-form-category  pp-wh-pronoun)
 (def-form-category  advp)
@@ -476,6 +483,7 @@
     CATEGORY::VERB+PRESENT
     CATEGORY::VERB+PASSIVE
     CATEGORY::NOUN/VERB-AMBIGUOUS
+    CATEGORY::MODAL
     CATEGORY::NOT))
 
 (defvar *vg-head-categories*
