@@ -63,28 +63,28 @@
           nil )
 
         (else
-         (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
-         (setf (edge-rule edge) rule)
-
-         (knit-edge-into-positions edge
-                                   (edge-starts-at left-edge)
-                                   (edge-ends-at right-edge))
-         (set-used-by left-edge edge)
-         (set-used-by right-edge edge)
-         (setf (edge-left-daughter edge) left-edge)
-         (setf (edge-right-daughter edge) right-edge)
-
-         (complete edge)
-
-         (when *trace-edge-creation*
-           (format t "~%creating ~A from ~A~
-                        ~%    rule: ~A"
-                   edge
-                   (edge-position-in-resource-array edge)
-                   rule))
-         
-         (assess-edge-label promulgated-label edge)
-         edge )))))
+          
+          (setf (edge-rule edge) rule)
+          
+          (knit-edge-into-positions edge
+                                    (edge-starts-at left-edge)
+                                    (edge-ends-at right-edge))
+          (set-used-by left-edge edge)
+          (set-used-by right-edge edge)
+          (setf (edge-left-daughter edge) left-edge)
+          (setf (edge-right-daughter edge) right-edge)
+          (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
+          (complete edge)
+          
+          (when *trace-edge-creation*
+            (format t "~%creating ~A from ~A~
+         ~%    rule: ~A"
+                    edge
+                    (edge-position-in-resource-array edge)
+                    rule))
+          
+          (assess-edge-label promulgated-label edge)
+          edge )))))
 
 
 
@@ -104,57 +104,57 @@
              (setq head-edge right-edge)
              (edge-category right-edge))))
          (edge (next-edge-from-resource))
-          coerced-form )
-
+         coerced-form )
+    
     (knit-edge-into-positions edge
                               (edge-starts-at left-edge)
                               (edge-ends-at right-edge))
     (setf (edge-starts-at edge) (edge-starts-at left-edge))
     (setf (edge-ends-at edge)   (edge-ends-at right-edge))
-
+    
     (etypecase lhs-category
       (category)
       (symbol
        (unless (eq lhs-category :passive)
          (break "Unanticipated keyword used as the explicit ~
-                 category in ~%a form rule: ~A" lhs-category))
+         category in ~%a form rule: ~A" lhs-category))
        (let ((passive-category
               (lookup-passive-counterpart promulgated-label)))
          (if passive-category
-           (setq lhs-category passive-category)
-           (else
-             (setq lhs-category promulgated-label)
-             (setq coerced-form (category-named 'verb+passive)))))))
-
-
+             (setq lhs-category passive-category)
+             (else
+               (setq lhs-category promulgated-label)
+               (setq coerced-form (category-named 'verb+passive)))))))
+    
+    
     (setf (edge-category edge) lhs-category)
-
+    
     (setf (edge-form edge) (or coerced-form
                                (cfr-form rule)
                                (edge-form head-edge)))
-
-    (setf (edge-referent edge)
-           (place-referent-in-lattice
-            (referent-from-rule left-edge right-edge
-                              edge rule)
-            edge))
-
+    
+    
+    
     (setf (edge-rule edge) rule)
-
+    
     (set-used-by left-edge edge)
     (set-used-by right-edge edge)
     (setf (edge-left-daughter edge) left-edge)
     (setf (edge-right-daughter edge) right-edge)
-
+    (setf (edge-referent edge)
+          (place-referent-in-lattice
+           (referent-from-rule left-edge right-edge
+                               edge rule)
+           edge))
     (complete edge)
-
+    
     (when *trace-edge-creation*
       (format t "~%creating ~A from ~A~
-                 ~%    rule: ~A"
+         ~%    rule: ~A"
               edge
               (edge-position-in-resource-array edge)
               rule))
-
+    
     (assess-edge-label promulgated-label edge)
     edge ))
 
