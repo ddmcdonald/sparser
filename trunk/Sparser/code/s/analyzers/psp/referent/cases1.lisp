@@ -28,6 +28,7 @@
 ;;     (9/25/14) Better error msg if ref-form is bad in ref/daughter
 ;; 1.9 (11/7/14) let ref/function take three arguments. 
 ;;     (4/19/15) Added ref/handle-head-and-bindngs.
+;; 5/30/2015 do necessary copy (for Descritption Lattice) in ef/handle-head-and-bindngs
 
 (in-package :sparser)
 
@@ -104,11 +105,12 @@ construction code.
       ;; and just add the bindings (//// ultimately not the
       ;; right thing to do), or we have a category and we do
       ;; a find of make on it with those bindings.
+      ;;(ccl::break "ref/handle-head-and-bindngs")
       (typecase head
         (word) ;; from morphology-induced edges - ignore it
 
         (individual 
-         (setq i head)
+         (setq i (maybe-copy-individual head))
          (let* ((pair (car vv-pair))
                 (variable (car pair))
                 (value (cadr pair)))
