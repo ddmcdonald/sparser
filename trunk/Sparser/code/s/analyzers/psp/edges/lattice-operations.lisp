@@ -7,8 +7,11 @@
 
 ;; initiated in May 2015
 ;; Code to place referents in a description lattice to facilitate anaphora and other reasoning
+;; 5/30/2015 added a bunch more functionality to description (not-yet-quite-a)lattice
 
 (in-package :sparser)
+
+(defvar category::top)
 
 (defstruct (dl-indiv
             (:include unit)
@@ -67,8 +70,12 @@
 (defun get-dli (ref)
   (gethash ref *lattice-ht*))
 
+(defparameter *source-ht* (make-hash-table :size 5000))
+
 (defun set-dli (ref dli)
+  (push ref (gethash dli *source-ht*))
   (setf (gethash ref *lattice-ht*) dli))
+
 
 (defparameter *dl-lattice-index* 0)
 (defparameter *dl-lattice-top* nil)
@@ -107,22 +114,28 @@
      
 
 (defparameter *complete-interps* nil)
+(defparameter *no-description-lattice* t)
 
 (defun place-referent-in-lattice (referent edge)
-  (when referent
-    (if (or (individual-p referent) (referential-category-p referent))
-      (let*
-          ((base-and-new-bindings (base-and-new-bindings referent edge))
-           (lattice-description
-            (find-or-make-lattice-description base-and-new-bindings)))
-        
-        (push base-and-new-bindings *complete-interps*)
-        (set-dli referent lattice-description)
-        referent)
-      referent)))
+  (declare (special referent edge))
+  (if *no-description-lattice*
+      referent
+      
+      (when referent
+        (if (or (individual-p referent) (referential-category-p referent))
+            (let*
+                ((base-and-new-bindings (base-and-new-bindings referent edge))
+                 (lattice-description
+                  (find-or-make-lattice-description base-and-new-bindings)))
+              
+              (push base-and-new-bindings *complete-interps*)
+              (set-dli referent lattice-description)
+              referent)
+            referent))))
      
 
 (defun find-or-make-lattice-description (base-and-new-bindings)
+  (declare (special base-and-new-bindings))
   ;; This next piece of code is just to avoid load-time dependencies between the creation of category::top and 
   ;;  loading this file
   (unless *dl-lattice-top*
@@ -139,10 +152,29 @@
           ((referential-category-p base)
            (find-or-make-lattice-description-for-ref-category base))
           ((individual-p base)
-           (ccl::break "individual without dli: ~s" base))
+           (cond
+            ((memq category::collection (indiv-type base)) ;; likely a conjunction
+             (set-dli 
+              base
+              (find-or-make-lattice-description-for-ref-category category::collection))
+             (get-dli base))
+            ((filter-bindings (indiv-binds base))
+             ;;(ccl::break "individual without dli: ~s" base) PUNT!!
+             (set-dli 
+              base
+              (find-or-make-lattice-description-for-ref-category category::top))
+             (get-dli base))
+            (t
+             ;; this can happen for VGs -- possibly because of the creation of an individual for the referent-category
+             ;;  in the interpretation process
+             (set-dli 
+              base
+              (find-or-make-lattice-description-for-ref-category (car (indiv-type base))))
+             (get-dli base))))         
           (t
            (ccl::break "what type of base is this? ~s" base)))))
        (current-dli base-dli))
+    (declare (special base bindings base-dll current-dll))
     (loop for b in bindings
       do
       (setq current-dli
@@ -222,56 +254,66 @@
   
 
 (defun base-and-new-bindings (referent edge)
+  (declare (special referent edge))
   (let
-      ((hr (head-referent? edge))
+      ((hr (head-referent? edge referent))
        (er referent ;;(edge-referent edge)
            ))
     (declare (special hr er))
-    (cond
-     ((or
-       (null er)
-       (and (not (individual-p er))
-            (not (referential-category-p er))))
-      nil)
-     (hr
-      (cons
-       hr 
-       (let*
-           ((hr-bindings 
-             (when (individual-p hr)
-               (indiv-binds hr)))
-            (e-bindings
-             (when (individual-p er)
-               (indiv-binds er)))
-            (new-bindings
-             (loop for b in e-bindings
-               when
-               (not
-                (loop for hb in hr-bindings
-                  thereis
-                  (and
-                   (eq (binding-variable hb)(binding-variable b))
-                   (equalp (binding-value hb) (binding-value b)))))
-               collect b)))
-         new-bindings)))
-     ((individual-p er)
-      (cons (car (indiv-type er))
-            (indiv-binds er)))
-     ((referential-category-p er)
-      (list er))
-     (t
-      (ccl::break "banb: what do I do with ~s " er)
-      ))))
+    (let*
+        ((hr-bindings 
+          (when (individual-p hr)
+            (filter-bindings (indiv-binds hr))))
+         (e-bindings
+          (when (individual-p er)
+            (filter-bindings (indiv-binds er))))
+         (new-bindings
+          (loop for b in e-bindings
+            when
+            (not
+             (loop for hb in hr-bindings
+               thereis
+               (and
+                (eq (binding-variable hb)(binding-variable b))
+                (eq (binding-value hb) (binding-value b)))))
+            collect b)))
+      (declare (special hr-bindings e-bindings new-bindings))
+      (when (> (length new-bindings) 4) (ccl::break "too many incremental bindings"))
+      (cond
+       ((or
+         (null er)
+         (and (not (individual-p er))
+              (not (referential-category-p er))))
+        nil)
+       (hr
+        (cons hr new-bindings))
+       ((individual-p er)
+        (when (> (length e-bindings) 4) (ccl::break "too many individual bindings"))      
+        (cons (car (indiv-type er))
+              e-bindings))
+       ((referential-category-p er)
+        (list er))
+       (t
+        (ccl::break "banb: what do I do with ~s " er)
+        )))))
 
-(defun head-referent? (edge)
+(defun filter-bindings (bindings)
+  (declare (special bindings))
+  (loop for b in bindings
+    unless 
+    (memq (var-name (binding-variable b)) '(has-determiner value)) ;; value is bound in items of type number
+    collect b))
+
+
+(defun head-referent? (edge &optional ref)
+  (when (and (null referent) edge (edge-referent edge))
+    (setq ref (edge-referent edge)))
   (when
-      (and
-       edge
-       (edge-referent edge))
+      (and edge
+           referent)
     (let
         ((left (edge-left-daughter edge))
-         (right (edge-right-daughter edge))
-         (ref (edge-referent edge)))
+         (right (edge-right-daughter edge)))
       (cond
        ((and (edge-p left) (same-category? (edge-referent left) ref))
         (edge-referent left))
@@ -289,5 +331,18 @@
     (equal (indiv-type daughter-ref)
            (indiv-type ref)))))
 
-  
+(defparameter *dlis* nil)
+(defparameter *bmax* 0)
+(defparameter *maxb* nil)
+(defparameter *ref-counts* (make-hash-table))
 
+(defun survey-bindings ()
+  (setq *dlis* nil)
+  (maphash #'(lambda(e dli)(push dli *dlis*)) *lattice-ht*)
+  (format t "There are ~S dlis" (length *dlis*))
+  (setq *bmax* 0)
+  (setq *maxb* nil)
+  (loop for d in *dlis* 
+    do
+    (when (> (length (dli-binds d)) *bmax*) (setq *bmax* (length (dli-binds d)))(setq *maxb* d))
+    (push d (gethash (length (gethash d *source-ht*)) *ref-counts*))))
