@@ -47,6 +47,7 @@
 ;;  concomitant revision for things like thatcomp and whethercomp
 ;; 5/29/15 Removed things that belonged else where, notably 
 ;;  moved phosphoriated to phenomena to live with the other modifications
+;; 5/30/2015 change poor definition of "state" to "bio-state" -- conflicted with definition of "have"
 
 
 (in-package :sparser)
@@ -101,6 +102,16 @@
            :of object
 	   ))
 
+(define-category attribute
+    :specializes bio-rhetorical
+    :binds ((agent pronoun/first/plural)(object biological) (cause biological))
+    :realization
+    (:verb "hypothesize" ;; keyword: ENDS-IN-ED 
+	   :noun "hypothesis"
+	   :etf (svo-passive)
+	   :s agent
+	   :o object
+           :to cause))
 
 ;; According to Sketch Engine on the Mitre corpus,
 ;; "act" by itself roughly means "do" or "behave" and can
@@ -462,7 +473,7 @@
             :o object))
 
 (define-category correspond
-    :specializes abstract
+    :specializes bio-relation
     :binds ((item1 biological)(item2 biological))
     :realization
   (:verb "correspond" :noun "correspondence"
@@ -500,7 +511,7 @@
 (define-category cycle
  :specializes bio-process
  :binds ((agent bio-entity)(object molecule)
-         (from biological)(to biological)(path state))
+         (from biological)(to biological)(path bio-state))
  :realization
  (:verb "cycle"
   :etf (svo-passive)
@@ -1015,7 +1026,7 @@
 
 (define-category identify
     :specializes bio-method
-    :binds ((agent pronoun/first/plural)(object biological)(predicate biological)
+    :binds ((agent pronoun/first/plural)(object biological)(identified-as biological)
             (manner bio-method))
     :realization
     (:verb "identify" ;; keyword: ENDS-IN-ED 
@@ -1023,7 +1034,7 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :as predicate
+           :as identified-as
            :of object
            :in manner))
 
@@ -1331,14 +1342,16 @@
 
 (define-category need
     :specializes bio-relation
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)(object (:or bio-entity bio-process))
+            (result-or-purpose process))
     :realization
     (:verb "need" ;; keyword: ENDS-IN-ED 
 	   :noun "need"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           ))
+           :FOR object
+           :to-comp result-or-purpose))
 
 (def-synonym need
     (:noun "need"
@@ -1536,7 +1549,7 @@
 
 (define-category provide
     :specializes bio-relation
-    :binds ((agent (:or result biological))(object (:or argument-support biological)))
+    :binds ((agent (:or result biological))(object (:or argument-support biological bio-rhetorical)))
     :realization
     (:verb "provide"
 	   :noun "provision"
@@ -1557,7 +1570,7 @@
 (define-category query
     :specializes bio-method
     :mixins (bio-whethercomp)
-    :binds ((agent (:or biological pronoun/first/plural))(object bio-process))
+    :binds ((agent (:or biological pronoun/first/plural))(object (:or bio-process bio-entity)))
     :realization
     (:verb "query" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -2029,7 +2042,7 @@
 
 (define-category treatment :specializes bio-method
   :binds ((agent pronoun/first/plural) (patient biological) (treatment biological)
-          (modifier (:or predicate modifier)))
+          (modifier (:or bio-predication modifier)))
   :realization
   (:verb "treat" :noun "treatment"
          :etf (svo-passive)
