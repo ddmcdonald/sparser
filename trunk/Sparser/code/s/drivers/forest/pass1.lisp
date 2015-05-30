@@ -424,34 +424,40 @@
 (defun knit-parens-into-neighbor (left-neighbor paren-edge)
   (declare (special left-neighbor paren-edge))
   (tr :parens-after left-neighbor paren-edge)
-  (let* ((referent ;; DAVID -- THIS IS WHERE WE COPY THE BASE ITEM TO AVOID SMASHING IT
-          (maybe-copy-individual (edge-referent left-neighbor)))
-         (constituents (edge-constituents paren-edge))
-         (count (when constituents ;;///review the code to guarentee this
-                  ;; count is a crude 1st-cut distinction in what's inside 
-                  ;; the parens
-                  (- (length constituents) 2)))
-         (paren-referent (referent-of-parentheticial-expression
-                          count paren-edge)))
-
-    (when (individual-p paren-referent)
-      (bind-variable (lambda-variable-named 'trailing-parenthetical)
-                     paren-referent
-                     referent))
-    ;;// now knit it in. A form rule would be best. It could handle the
-    ;; binding as well, but j9 shows that the neighbor is not always
-    ;; going to be obvious.
-    (let ((edge (make-chart-edge ;; very drawn out version. More reason for rule
-                 :left-edge left-neighbor
-                 :right-edge paren-edge
-                 :starting-position (pos-edge-starts-at left-neighbor)
-                 :ending-position (pos-edge-ends-at paren-edge)
-                 :category (edge-category left-neighbor)
-                 :form (edge-form left-neighbor)
-                 :rule-name 'knit-parens-into-neighbor
-                 :referent referent)))
-      (tr :new-edge-incorporating-parens edge)
-      edge )))
+  (cond
+   ((and
+     (edge-p left-neighbor)
+     (edge-referent left-neighbor))
+    (let* ((referent ;; DAVID -- THIS IS WHERE WE COPY THE BASE ITEM TO AVOID SMASHING IT
+            (maybe-copy-individual (edge-referent left-neighbor)))
+           (constituents (edge-constituents paren-edge))
+           (count (when constituents ;;///review the code to guarentee this
+                    ;; count is a crude 1st-cut distinction in what's inside 
+                    ;; the parens
+                    (- (length constituents) 2)))
+           (paren-referent (referent-of-parentheticial-expression
+                            count paren-edge)))
+      
+      (when (individual-p paren-referent)
+        (bind-variable (lambda-variable-named 'trailing-parenthetical)
+                       paren-referent
+                       referent))
+      ;;// now knit it in. A form rule would be best. It could handle the
+      ;; binding as well, but j9 shows that the neighbor is not always
+      ;; going to be obvious.
+      (let ((edge (make-chart-edge ;; very drawn out version. More reason for rule
+                   :left-edge left-neighbor
+                   :right-edge paren-edge
+                   :starting-position (pos-edge-starts-at left-neighbor)
+                   :ending-position (pos-edge-ends-at paren-edge)
+                   :category (edge-category left-neighbor)
+                   :form (edge-form left-neighbor)
+                   :rule-name 'knit-parens-into-neighbor
+                   :referent referent)))
+        (tr :new-edge-incorporating-parens edge)
+        edge )))
+   (t
+    (format t "~&Can't knit paren item ~s into non-edge ~s" paren-edge left-neighbor))))
 
 (defun referent-of-parentheticial-expression (count paren-edge)
   ;; If there's one interior edge return it's referent. 
