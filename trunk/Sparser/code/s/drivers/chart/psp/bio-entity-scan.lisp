@@ -35,6 +35,7 @@
 
 ; (p "alpha aa bb cc omega. N22 apple BBB")
 
+#+ignore
 (defun initiate-R3-entity-pass ()
   ;; Copied from inititate-c3-protocol which is already stipped down
   ;; from the normal inititate-top-edges-protocol driver. 
