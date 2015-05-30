@@ -25,6 +25,9 @@
 
 (in-package :sparser)
 
+(defvar *universal-time-start*)
+(defvar *universal-time-end*)
+
 ;;parameters controlling the collection of information for MITRE index cards
 (defparameter *all-sentences* nil)
 (defparameter *index-cards* t)
@@ -571,7 +574,8 @@
       (dolist (b bindings)
         (let ((var (binding-variable b))
               (value (binding-value b)))
-          (unless (or (eq (var-name var) 'category)
+          (unless (or (memq (var-name var)
+                            '(trailing-parenthetical category))
                       (typep value 'mixin-category)) ;; has-determiner
             (cond
              ((or (numberp value)
