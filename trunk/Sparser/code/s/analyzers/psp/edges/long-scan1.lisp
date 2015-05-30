@@ -29,11 +29,11 @@
                                  ending-position
                                  category
                                  &key  rule
-                                       form
-                                       referent 
-                                       constituents
-                                       words )
-
+                                 form
+                                 referent 
+                                 constituents
+                                 words )
+  
   ;; Called by routines in the header and anywhere else that a segment
   ;; of text can be bounded and characterized without it having any
   ;; internal structure or (unless specified) any denotation.
@@ -49,13 +49,11 @@
     
     (setf (edge-rule edge) rule)
     (setf (edge-form edge) form)    
-    (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
-
-    (complete edge)
-
+    
+    
     (let ((daughters (successive-treetops :from starting-position
-                                   :to ending-position
-                                   :below edge)))
+                                          :to ending-position
+                                          :below edge)))
       (mapcar #'(lambda (tt)
                   (when (edge-p tt)
                     (set-used-by tt edge)))
@@ -78,5 +76,8 @@
         (format t "~&Ccreating ~A for ~A" edge rule))
     
       (assess-edge-label category edge) 
+      (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
+      
+      (complete edge)
       edge )))
 
