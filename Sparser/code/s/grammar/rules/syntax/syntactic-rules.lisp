@@ -30,6 +30,10 @@
 
 ;; 5/25/2015 bunch of cleanup for rule-creating loops. Put in rules for subject-relative-clause and pp-relative-clause
 ;;  still need to hook those in
+;; 5/30-2015 update to take into accoun addition of new passive categories
+;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
+;;(def-form-category  vg+passive) ;; vg with an be and V+ED
+;;(def-form-category  vp+passive) ;; vg with an be and V+ED
 
 
 (in-package :sparser)
@@ -57,6 +61,7 @@
 ;;--- predicate adjective
 
 ;; For 'be' there's the form rule psr235
+#+ignore
 (def-syntax-rule (vg adjective) ;;/// adjp
                  :head :left-edge
   :form vp
@@ -72,7 +77,9 @@
                   (vg+ing vp+ing)
                   (vp+ing vp+ing)
                   (vg+ed vp+ed)
-                  (vp+ed vp+ed))
+                  (vp+ed vp+ed)
+                  (vg+passive vp+passive)
+                  (vp+passive vp+passive))
   do
   (eval
    `(def-syntax-rule (,(car vv) pp)
@@ -171,10 +178,6 @@ to an oncogenic RasG12V mutation (9)."))
 
 ;;--- NP + PP
 
-(def-syntax-rule (np pp)
-                 :head :left-edge
-  :form np
-  :referent (:function interpret-pp-adjunct-to-np left-edge right-edge))
 
 (loop for nb in `(category::NP ,@*n-bar-categories*)
   do
@@ -219,8 +222,12 @@ to an oncogenic RasG12V mutation (9)."))
                   (verb+ing vg+ing)
                   (vg vg)
                   (vp vp)
+                  (vg+ing vg+ing)
                   (vp+ing vp+ing)
+                  (vg+ed vg+ed)
                   (vp+ed vp+ed)
+                  (vg+passive vg+passive)
+                  (vp+passive vp+passive)
                   (s s)) 
   ;; "here" is used adverbially
   do
@@ -280,24 +287,25 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
       ;; a proper referent
       :referent (:function make-pp left-referent right-referent))))
 
-(loop for nb in `(category::wh-pronoun)
+
+(loop for nb in `(category::who category::which category::whom)
   do
   (eval 
-   `(def-syntax-rule (preposition ,nb)
+   `(def-form-rule (preposition ,nb)
                      :head :left-edge
       :form pp-wh-pronoun
       :referent (:function make-pp left-referent right-referent)))
   
   
   (eval
-   `(def-syntax-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
+   `(def-form-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
                      :head :left-edge
       :form pp-wh-pronoun
       ;; I suppose we need a generic relationship here for
       ;; a proper referent
       :referent (:function make-pp left-referent right-referent)))
   (eval
-   `(def-syntax-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
+   `(def-form-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
                      :head :left-edge
       :form pp-wh-pronoun
       ;; I suppose we need a generic relationship here for
@@ -310,10 +318,12 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
                  :head :right-edge
   :form spatio-temporal-preposition)
 
-(def-syntax-rule (preposition vg)
-                 :head :left-edge
-  :form to-comp ;; not really a PP -- should be a TO-COMP but fix that later
-  :referent (:function make-to-comp left-referent right-referent))
+(loop for v in  '(vg vg+ing vg+ed vg+passive vp+passive)
+  do
+  (eval `(def-syntax-rule (preposition ,v)
+                          :head :left-edge
+           :form to-comp ;; not really a PP -- should be a TO-COMP but fix that later
+           :referent (:function make-to-comp left-referent right-referent))))
                
 (def-syntax-rule (preposition vp)
                :head :left-edge
@@ -350,7 +360,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 ;;--- Relative clauses
 
-(loop for v in '(s vp)
+(loop for v in '(vp vp+passive vg+passive vg)
   do
   (loop for rel in '(which who whom where that) ;;  when this is more often used as a subordinate conjunction
     do
@@ -418,7 +428,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 (loop for n in `(np pronoun ,@*n-bar-categories*)
   do
-  (loop for v in '(vp vg)
+  (loop for v in '(vp vg vp+passive vg+passive vg+ed vg+ing)
     do
     (eval
      `(def-syntax-rule (,n ,v)
@@ -467,7 +477,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
   :form whethercomp
   :referent (:head right-edge))
 
-(loop for vv in '((vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
+(loop for vv in '((vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)(vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
   do
   (eval
    `(def-syntax-rule (,(car vv) thatcomp)
