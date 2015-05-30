@@ -33,6 +33,7 @@
 ;; 5/12/2015 fixes to losing-competition? to better handle leftwards extension of NP subjects before they are used as subjects
 ;; 5/15/15 Moved out literal-edge? to the edge object code.
 ;; 5/25/2015 add on check on competition for pp-wh-pronoun as part of pp-relative-clause
+;; 5/30/2015 handle new cases of vp_passive in rule competition
 
 
 (in-package :sparser)
@@ -42,8 +43,11 @@
 (defvar *RULES-FOR-PAIRS*)
 (defvar CATEGORY::SYNTACTIC-THERE)
 (defvar CATEGORY::PREPOSITION)
+(defvar CATEGORY::VG)
+(defvar CATEGORY::NP)
 (defvar CATEGORY::SPATIAL-PREPOSITION)
 (defvar *NG-HEAD-CATEGORIES*)
+(defvar *ADJG-HEAD-CATEGORIES*)
 (defvar *VG-HEAD-CATEGORIES*)
 
 ;;;--------------------------------
@@ -538,7 +542,9 @@
          (category-p (second (cfr-rhs (car triple2))))
          (or
           (memq (cat-symbol (second (cfr-rhs (car triple1))))
-                '(category::vg category::vp category::vg+ed category::vp+ed))
+                '(category::vg category::vp category::vg+ed category::vp+ed
+                               category::vg+passive category::vp+passive
+                               ))
           (and
            (eq (cat-symbol (second (cfr-rhs (car triple1)))) 'category::s)
            (memq (cat-symbol (car (cfr-rhs (car triple1))))
