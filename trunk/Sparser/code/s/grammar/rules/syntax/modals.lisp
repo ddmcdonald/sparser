@@ -22,6 +22,11 @@
 ;;  somehow in the creation of a PSI through some backdoor since lately
 ;;  they've been turned off. 
 ;; 4/24/2015 make modal applied to "BE" have the category "BE" and not "MODAL" as in "will likely be..."
+;; 5/30-2015 update to take into accoun addition of new passive categories
+;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
+;;(def-form-category  vg+passive) ;; vg with an be and V+ED
+;;(def-form-category  vp+passive) ;; vg with an be and V+ED
+
 
 (in-package :sparser)
 
@@ -394,6 +399,12 @@ They might well work as straight-up cfr rules, and that's a case
                 :head :right-edge
   :form vg
   :referent (:function absorb-auxiliary left-edge right-edge))
+
+(def-syntax-rule (modal vg+passive)
+                :head :right-edge
+  :form vg+passive
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
 
 #|
 (def-form-rule (will verb+passive)
