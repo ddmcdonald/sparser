@@ -86,15 +86,16 @@
 (defun retest (&optional (semantics *show-semantics*))
   "Loop over all the designated sentences calling
    run-test on each one"
-  (reset-test)
+  ;;(reset-test)
   (loop for i from (+ 1 (car *tested*)) to (length *sentences*) 
+    unless (memq i *known-breaks*)
     do 
     (push i *tested*) 
     (run-test i semantics)))
 
-(defun bad () 
+(defun bad (&optional (semantics *show-semantics*))
   (push (car *tested*) *known-breaks*) 
-  (retest))
+  (retest *show-semantics*))
 
 ;;--- tailored iterators
 
@@ -113,11 +114,11 @@
 
 (defun dectest (n &optional (sentences *dec-tests*))
   (declare (special *dec-tests*))
-  (run-test n :sentences sentences))
+  (run-test n nil :sentences sentences))
 
 (defun jantest (n &optional (sentences *jan-dry-run*))
   (declare (special *jan-dry-run*))
-  (run-test n :sentences sentences))
+  (run-test n nil :sentences sentences))
 
 
 
