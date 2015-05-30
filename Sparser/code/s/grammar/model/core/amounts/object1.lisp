@@ -47,6 +47,6 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
-(define-individual 'vague-amount :name "amount")
-(define-individual 'vague-amount :name "number")
-(define-individual 'vague-amount :name "quantity")
+;;(define-individual 'vague-amount :name "amount")
+;;(define-individual 'vague-amount :name "number")causes problems with R3 biology
+;;(define-individual 'vague-amount :name "quantity")
