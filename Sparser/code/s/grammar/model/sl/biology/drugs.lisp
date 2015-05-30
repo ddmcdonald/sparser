@@ -389,6 +389,7 @@
 (define-drug "sib")
 (define-drug "siltuximab")
 (define-drug "sorafenib")
+(define-drug "BAY43-9006") ;; also known as sorefenib!!
 (define-drug "sorafinib")
 (define-drug "soranfinib")
 (define-drug "sorfenib")
