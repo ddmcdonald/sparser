@@ -20,6 +20,7 @@
 ;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
 ;;  initial work to produce a lattice of descriptions
 ;;  the places where this call is put were determined by the methods where (complete edge) was also called
+;; 5/30/2015 correct ordering of knit-edge-into-position and place-referent-in-lattice
 
 (in-package :sparser)
 
@@ -105,6 +106,7 @@
     
     (setf (edge-starts-at edge) start-vector)
     (setf (edge-ends-at   edge) end-vector)
+    (knit-edge-into-positions edge start-vector end-vector)
     
     
     (setf (edge-referent edge)
@@ -117,7 +119,7 @@
            edge))
     (edge-referent edge))
 
-    (knit-edge-into-positions edge start-vector end-vector)
+    
     (complete edge)
 
     (when *trace-edge-creation*
