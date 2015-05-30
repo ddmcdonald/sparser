@@ -61,13 +61,13 @@
 
 
 ;;---- mixin
-
+;; adjective causes problems with biology, and the adjective does nothing
 (define-mixin-category sequential
   ;; motivating case is the cyclic aspect of calendar time.
   ;; Doesn't directly model the 'cycle' or 'spiral' aspect
   ;; of the calendar ("what month comes after December?"
   ;; but it's a start.
-  :lemma (:adjective "sequential")
+  ;;  :lemma (:adjective "sequential")
   :binds ((sequence . sequence)))
 
 (define-mixin-category cyclic
