@@ -33,6 +33,7 @@
 ;;  contain, sonstitute, etc.
 ;;  concomitant revision for things like thatcomp and whethercomp
 ;; 5/16/2015 add in all the cellular locations shown in the MITRE ras1 corpus, including their GO identifiers
+;; 5/30/2015 Rename poorly named "predicate" to "bio-predication" and update dependencies
 
 
 (in-package :sparser)
@@ -52,7 +53,7 @@
    in noun noun compounds.")
  
 (define-mixin-category bio-thatcomp
-  :binds ((statement (:or bio-process molecule-state be predicate bio-method relation bio-rhetorical)))
+  :binds ((statement (:or bio-process molecule-state be bio-predication bio-method relation bio-rhetorical)))
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstraction, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -61,7 +62,7 @@
      bio-processes.")
 
 (define-mixin-category bio-whethercomp
-  :binds ((statement (:or bio-process molecule-state be predicate bio-method relation bio-rhetorical)))
+  :binds ((statement (:or bio-process molecule-state be bio-predication bio-method relation bio-rhetorical)))
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstraction, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -97,10 +98,14 @@
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
 
-(define-category bio-abstract
-  :specializes with-quantifier
+(define-category bio-abstract :specializes biological ;; some probelm with with-quantifier and abstract
+  :mixins (with-quantifier)
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
+
+(define-category bio-state :specializes bio-abstract ;; for things like "activated state"
+  :realization
+  (:noun "state"))
 
 (define-category bio-scalar
   :specializes scalar-quality
@@ -122,7 +127,7 @@
 ;; Worse is that you have no examples of this being used
 ;; in some text so I could figure out your intention and
 ;; suggest an alternative. 
-(define-category predicate :specializes modifier
+(define-category bio-predication :specializes modifier
   :mixins (biological)
   :binds ((negation)
           (adverb)
@@ -130,7 +135,7 @@
           (in-order-to)))
 
 (define-category molecule-state
-  :specializes predicate)
+  :specializes bio-state)
 
 
 
@@ -194,7 +199,22 @@
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"
   :specializes bio-process)
 
-(define-category transport :specializes bio-movement)
+(define-category transport :specializes bio-movement
+  :binds ((agent bio-process)
+          (object protein)
+          (origin cellular-location)
+          (destination cellular-location)) 
+  :realization 
+  (;;:verb "transport" 
+   :noun "transport" 
+   ;;:etf (svo-passive) 
+   :s object ;; ERK translocates -- this is not the agent, but the object!
+   :o object
+   :to destination
+   :of object
+   :from origin
+   :premod destination
+   :premod object))
 
 (define-category molecular-function 
   :specializes bio-process
@@ -401,16 +421,14 @@
 ;; which works, but isn't satisfying
 
 
-;; not sure this is the same stoichiometry as used in bipax
+;; not sure this is the same stoichiometry as used in biopax
 (define-category stoichiometry :specializes bio-abstract
   :mixins (reactome-category)
   :binds ((physicalEntity (:or complex small-molecule protein)) 
           (stoichiometricCoefficient)) ;; an integer -- ask David
-)
-
-(define-category bio-stochiometry :specializes  bio-abstract
   :realization
-  (:noun  "stoichiometry"))
+  (:noun  "stoichiometry"
+          :of physicalEntity))
 
 
 
