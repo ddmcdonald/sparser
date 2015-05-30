@@ -90,6 +90,7 @@
         (category::vp+ing)
         (category::vp+ed)
         (category::pp)
+        (category::vg+passive)
 
         ;; cases where we want to generalize
 	((category::n-bar
