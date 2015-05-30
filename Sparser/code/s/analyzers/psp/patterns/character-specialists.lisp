@@ -8,6 +8,7 @@
 ;; Initiated 9/9/14 to hold specialists dispatched from the no-space
 ;; scan. Tweaking through 10/9/14. Removed slash routines 12/10/14 as
 ;; obsolete. Renewed tweaking/fanout through 5/17/15
+;; 5/30/2015 short-term patch for problems with ; as in "...with β-, γ-, and α-catenins..."
 
 (in-package :sparser)
 (defvar *WORK-ON-NS-PATTERNS*)
@@ -92,19 +93,22 @@
 
 ;;/// This is surely the same a resolve-slash-segment so they should mergw
 (defun resolve-hyphen-segment (start-pos end-pos)
-  (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
-    (or single-edge
-        (let ((words (words-between start-pos end-pos))
-              (pattern (characterize-words-in-region start-pos end-pos nil)))
-          (let ((*work-on-ns-patterns* nil)) ;; t))
-            (declare (special *work-on-ns-patterns*))
-            (let ((result (resolve-ns-pattern pattern words start-pos end-pos)))
-              (unless result 
-                (push-debug `(,pattern ,words ,start-pos ,end-pos))
-                ;; (setq pattern (car *) words (cadr *) start-pos (caddr *) end-pos (cadddr *))
-                (when *work-on-ns-patterns*
-                  (break "no result on hyphen segment pattern: ~a" pattern)))
-              result))))))
+  (if
+   (eq start-pos end-pos) ;; as in "...with β-, γ-, and α-catenins..."
+   nil
+   (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
+     (or single-edge
+         (let ((words (words-between start-pos end-pos))
+               (pattern (characterize-words-in-region start-pos end-pos nil)))
+           (let ((*work-on-ns-patterns* nil)) ;; t))
+             (declare (special *work-on-ns-patterns*))
+             (let ((result (resolve-ns-pattern pattern words start-pos end-pos)))
+               (unless result 
+                 (push-debug `(,pattern ,words ,start-pos ,end-pos))
+                 ;; (setq pattern (car *) words (cadr *) start-pos (caddr *) end-pos (cadddr *))
+                 (when *work-on-ns-patterns*
+                   (break "no result on hyphen segment pattern: ~a" pattern)))
+               result)))))))
 
 (defun make-edge-into-adjective (edge)
   (setf (edge-form edge) category::adjective)
