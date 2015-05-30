@@ -29,6 +29,8 @@
 ;;  created to allow passive rule to work)
 ;;    (4/15/15) Reformated 'there' and made it its' own section
 ;;  5/8/2015 handle vp+ed and vp+ing, handle AP as well as adjectives
+;; 5/30/2015 take into account the introduction of vg+passive, etc.
+;;  update super-catgory of there-exists to be relation
 
 (in-package :sparser)
 
@@ -155,12 +157,12 @@
 
 (def-form-rule (be verb+ed)
   :new-category  :passive
-  :form vg
+  :form vg+passive
   :referent (:head right-edge))
 
-(def-form-rule (be vg+ed) ;; were previously used
+(def-form-rule (be vg+passive) ;; were previously used
   :new-category  :passive
-  :form vg
+  :form vg+passive
   :referent (:head right-edge))
 
 
@@ -241,7 +243,7 @@
   :lemma (:common-noun "there"))
 
 (define-category there-exists ;; There is a cat on the mat"
-  :specializes abstract
+  :specializes relation
   :binds ((object)
           (context)))
 
