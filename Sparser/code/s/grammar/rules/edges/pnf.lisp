@@ -37,8 +37,7 @@
 
     (setf (edge-category edge) category)
     (setf (edge-form edge)     form)
-    (setf (edge-referent edge) 
-          (place-referent-in-lattice referent edge))
+
     (setf (edge-rule edge)     rule)
 
     (if daughters
@@ -57,9 +56,12 @@
     (setf (edge-right-daughter edge) :proper-name)
     (setf (edge-constituents edge) daughters)
 
+    (setf (edge-referent edge) 
+      (place-referent-in-lattice referent edge))
     (when *trace-edge-creation*
       (format t "~&creating ~A for a proper name"
               edge))
+    
 
     (complete edge)
     (assess-edge-label category edge)
