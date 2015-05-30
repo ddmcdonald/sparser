@@ -218,6 +218,7 @@ decoding table for referenced OBO terms
           (normalize-sexpr-to-biopax3 (gethash (second bio-sexpr) *xml-ht*)))))
 
 (defparameter *raw-ras1* nil)
+(defparameter *trimmed-ras1* nil)
 
 (defun load-ras1(&optional (file "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/ExamplePackage/ras_1.owl"))
   (setq *raw-ras1* (load-owl file))
@@ -325,10 +326,11 @@ decoding table for referenced OBO terms
         :mitre-link ,(second (assoc "displayName" (cddr ref) :test #'equalp))))))
 
 (defun protein-defs ()
-    (load-ras1)
-    (sort-bp-types)
-    (length (setq prodescs (loop for p in (gethash "ProteinReference" *bp-types*) collect p)))
-    (length (setq prodefs (loop for p in (gethash "ProteinReference" *bp-types*) append (protein-ref-desc p)))))
+  (declare (special prodescs prodefs))
+  (load-ras1)
+  (sort-bp-types)
+  (length (setq prodescs (loop for p in (gethash "ProteinReference" *bp-types*) collect p)))
+  (length (setq prodefs (loop for p in (gethash "ProteinReference" *bp-types*) append (protein-ref-desc p)))))
 
 (defun find-children (bio-sexpr branch-tag)
   (loop for child in (cddr bio-sexpr)
