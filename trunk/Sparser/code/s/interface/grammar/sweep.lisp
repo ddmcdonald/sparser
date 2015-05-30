@@ -67,7 +67,8 @@
         (let* ((var (binding-variable b))
                (var-name (var-name var))
                (value (binding-value b)))
-          (unless (or (eq var-name 'category)
+          (declare (special var var-name value))
+          (unless (or (memq var-name '(category trailing-parenthetical))
                       (typep value 'mixin-category)) ;; has-determiner
             (typecase value
               (individual 
