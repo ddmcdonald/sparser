@@ -190,7 +190,8 @@ those steps sequentially on a single article.
 (defun test-articles ()
   (populate-article-set)
   (sweep-article-set)
-  (read-article-set))
+  (with-total-quiet
+      (read-article-set)))
 
 (defun load-and-read-article (id) ;; assume corpus-path is set
   (load-xml-to-doc-if-necessary)
