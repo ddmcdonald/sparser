@@ -17,6 +17,11 @@
 ;;      have+verb-ed since it can also be verb+passive
 ;; 0.4 (1/15/15) Substantial make over of rules for tense/aspect. Gave it
 ;;      bindings inspired by what's in possessive. Resistered the variables.
+;; 5/30-2015 update to take into accoun addition of new passive categories
+;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
+;;(def-form-category  vg+passive) ;; vg with an be and V+ED
+;;(def-form-category  vp+passive) ;; vg with an be and V+ED
+
 
 (in-package :sparser)
 
@@ -78,10 +83,22 @@
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
 
-(def-form-rule (have verb+passive) 
-  :form verb
+(def-form-rule (have vg+ed)
+  :form vg
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
+
+
+(def-form-rule (have vg+passive) 
+  :form vg+passive
+  :referent (:head right-edge
+             :function add-tense/aspect left-edge right-edge))
+
+(def-form-rule (have verb+passive) ;; "been visulaized" comes out like this ?!
+  :form vg+passive
+  :referent (:head right-edge
+             :function add-tense/aspect left-edge right-edge))
+
 
 
 
