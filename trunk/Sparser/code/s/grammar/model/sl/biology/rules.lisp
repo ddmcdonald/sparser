@@ -17,6 +17,9 @@
 ;; 5/16/2015 correct erroneous binding on rule (def-cfr residue-on-protein (protein residue-on-protein)
 ;;   discovered while producing MITRE index cards
 ;; 5/29/15 moved in rules that were in verbs1
+;; 5/30/2015 update for change from "predicate" to "bio-predication"
+;; Temproarily remove David's new debris-analysis rule (define-debris-analysis-rule s-and-vp
+;;  until the corresponding function is checked in
 
 
 
@@ -44,6 +47,7 @@
   :pattern ( "," adverb "," )
   :action (:function respan-edge-around-one-word second first third))
 
+#+ignore
 (define-debris-analysis-rule s-and-vp
   :pattern ( s and vp )
   :action (:function conjoin-clause-and-vp first third))
@@ -223,7 +227,7 @@
 
 
 (define-category is-bio-entity
-  :specializes predicate  
+  :specializes bio-predication
   :binds ((entity biological)
           (predication biological)))
 
