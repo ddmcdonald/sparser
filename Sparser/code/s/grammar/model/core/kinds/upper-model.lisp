@@ -102,6 +102,7 @@
 (define-category relation
   :instantiates nil
   :specializes abstract
+  :binds ((adverb))
   :lemma (:common-noun "relation")
   :documentation
   "A relation designates a relationship between some number (arity) of
