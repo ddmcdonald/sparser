@@ -24,7 +24,7 @@
 ;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
 ;;  initial work to produce a lattice of descriptions
 ;;  the places where this call is put were determined by the methods where (complete edge) was also called
-
+;; 5/30/2015 correct ordering of knit-edge-into-position and place-referent-in-lattice
 
 
 (in-package :sparser)
@@ -103,15 +103,16 @@
       (setf (edge-category edge) category)
       (setf (edge-rule edge) rule)
       (setf (edge-form edge) (cfr-form rule))
+      ;; this is the convention for unary edges
+      (setf (edge-left-daughter edge)  relevant-edge)
+      (setf (edge-right-daughter edge) :context-sensitive)
+
       (setf (edge-referent edge)
             (place-referent-in-lattice
              (referent-from-rule left-edge right-edge edge rule)
              edge))
 
 
-      ;; this is the convention for unary edges
-      (setf (edge-left-daughter edge)  relevant-edge)
-      (setf (edge-right-daughter edge) :context-sensitive)
 
       (set-used-by relevant-edge edge)
 
