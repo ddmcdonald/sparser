@@ -21,6 +21,7 @@
 ;; 5/15/2015 handle use of "about" instead of "id" for some items in ras_1.owl
 ;; remove xrefs from results
 ;;  added utility protein-ref-desc to produce a def-bio expression from all of the ProteinReferences that MITRE has
+;; 5/31/2015 code to load new ras-2 model
 
 (in-package :sparser)
 (defvar *bpi*)
@@ -234,6 +235,9 @@ decoding table for referenced OBO terms
     do
     (setf (gethash (second bio-sexpr) *xml-ht*)
           (normalize-sexpr-to-biopax3 (gethash (second bio-sexpr) *xml-ht*)))))
+
+(defun load-ras2 ()
+  (load-ras1 "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/Ras-2-neighborhood.owl"))
 
 (defun load-owl (filename)
   (with-open-file
