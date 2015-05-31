@@ -130,6 +130,7 @@ therefore we have the special cases:
   ;; pattern is (:single-cap :digits) and it's possible that
   ;; that first word is the short form af an amino acid.
   ;; Return nil if this doesn't work out
+  (declare (special words))
   (push-debug `(,words ,start-pos ,end-pos))
   ;; (setq words (car *) start-pos (cadr *) end-pos (caddr *))
   (let* ((single-letter (car words))
@@ -145,7 +146,11 @@ therefore we have the special cases:
                   (find-or-make-individual 'residue-on-protein
                     :amino-acid amino-acid
                     :position number)))
-            ;;(break "residue = ~a" residue)
+            (declare (special residue digit-word number))
+            (when
+                (null number)
+              (break "non-numeric position for residue-on-protein with words ~s, residue = ~a, number = ~s"
+                      words residue number))
             (let* ((left-edge (top-edge-at/starting start-pos))
                    (right-edge (top-edge-at/ending end-pos))
                    (edge (make-chart-edge
