@@ -380,13 +380,18 @@
 (defun register-variable (category variable grammatical-relation)
   (push-onto-plist category variable grammatical-relation))
 
+(defmethod subject-variable ((e edge))
+  (let ((ref (edge-referent e)))
+    (when ref (subject-variable ref))))
 (defmethod subject-variable ((c category))
   (get-tag-for :subject-variable c))
 (defmethod subject-variable ((i individual))
   (get-tag-for :subject-variable (car (indiv-type i))))
 (defmethod subject-variable ((ignore t)) nil)
 
-
+(defmethod object-variable ((e edge))
+  (let ((ref (edge-referent e)))
+    (when ref (object-variable ref))))
 (defmethod object-variable ((c category))
   (get-tag-for :object-variable c))
 (defmethod object-variable ((i individual))
