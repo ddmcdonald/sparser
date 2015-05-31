@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "pass2"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  March 2015
+;;;  Version:  May 2015
 
 ;; Broken out of island-driving 10/23/14. Added relative clause check
 ;; 12/19/14. 
@@ -12,6 +12,7 @@
 ;;   subcategorization on the preposition.
 ;; 4/24/2015 fixed fill-in-between-subject-and-final-verb so that it doesn't look for
 ;;  material BETWEEN adjacent subject and vp which are about to be smashed together
+;; 5/30/15 wrote conjoin-clause-and-vp as target of debris-analyis pattern
 
 (in-package :sparser)
 (defvar CATEGORY::VP)
@@ -123,7 +124,32 @@
             ;; trace
             ;; (trace-da) 
             (standalone-da-execution da-node first-tt))
-      (tr :no-3tt-da-pattern))))
+      (else
+        (tr :no-3tt-da-pattern)))))
+
+(defun conjoin-clause-and-vp (s-edge vp-edge)
+  ;; get the value of the subject or (perhaps) the subject
+  ;; variable of the s. Look up the s variable of the vp
+  (push-debug `(,s-edge ,vp-edge)) 
+  (let* ((s-subj-var (subject-variable s-edge))
+         (vp-subj-var (subject-variable vp-edge))
+         (s-ref (edge-referent s-edge))
+         (vp-ref (edge-referent vp-edge)))
+    (when (and s-ref vp-ref 
+               s-subj-var vp-subj-var)
+      (let ((subject (value-of s-subj-var s-ref)))
+        (when subject
+          (bind-variable vp-subj-var subject vp-ref))))
+    ;; regardless of whether we could set the subject of the
+    ;; vp we should create the edge
+    ;; This returns a edge and uses referent-of-two-conjoined-edges 
+    ;; to make the referent, which basically stuffs them both
+    ;; into a collection.
+    ;;//// which is not the right thing at all at the sentence
+    ;; level but it's a place to start. The actual relationship
+    ;; could be causes or follows, for which we need to understand
+    ;; more to get it right.
+    (conjoin-two-edges s-edge vp-edge :conjoin-clause-and-vp)))
 
 
 
