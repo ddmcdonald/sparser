@@ -6,6 +6,7 @@
 ;;;  version:  April 2015
 
 ;; initiated 1/25/15. Next see 4/18/19
+;; add  corpus load-test with sentence list *load-test-sents* to hold the ~1000 sentences from the 10 article load-test
 
 (in-package :sparser)
 
@@ -33,7 +34,11 @@
 
 (define-sentence-corpus aspp2 *aspp2-whole*
   :location corpus
-  :doc "material from the article PMC3847091 Phosphorylation of ASPP2 by RAS/MAPK Pathway")                      
+  :doc "material from the article PMC3847091 Phosphorylation of ASPP2 by RAS/MAPK Pathway")   
+
+(define-sentence-corpus load-test *load-test-sents*
+  :location corpus
+  :doc "material from the ten article set used for the load test in May 2015")          
 
 ;;;-----------
 ;;; snapshots
