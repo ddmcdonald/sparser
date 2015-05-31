@@ -88,7 +88,9 @@
     (sentence-sweep-loop))))
 
 
-;;--- "normal" processing
+;;;------------------------------------------------------
+;;; "normal" processing directly from a character stream
+;;;------------------------------------------------------
 
 (defun sentence-sweep-loop ()
   ;; Called from initiate-successive-sweeps when reading from 
@@ -108,6 +110,11 @@
           (scan-terminals-loop start-pos first-word))
         (sentence-processing-core sentence)
         (setq sentence (next sentence))))))
+
+
+;;;-------------------------------
+;;; Shared core of the processing
+;;;-------------------------------
 
 (defvar *sentence-in-core* nil)
 
