@@ -58,6 +58,8 @@
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
+  (ddm-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp")
+  (ddm-ed "grammar/model/sl/biology/cureRAS/load-test-sents.lisp")
 
   (trace-lexicon-unpacking) 
   (trace-morphology)
