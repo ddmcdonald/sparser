@@ -21,6 +21,7 @@
 ;; 4.4 (8/28/13) Extended respan with person to look for named-objects. 
 ;;     (2/3/15) Adding general search routines to handle 'it' forms in a more
 ;;      diverse type set. Added wh-pronoun to be ignored 3/19/15.
+;; 5/31/2015 temporarily ignore reflexiives like "itself" in handle-any-anaphora -- don't generate error
 
 (in-package :sparser)
 (defvar *BACKGROUND-COMPANIES*)
@@ -49,6 +50,7 @@
             (category::pronoun
              (handle-pronoun label edge sentence))
             (category::wh-pronoun) ;; ignore -- question or subordinator
+            (category::reflexive/pronoun) ;; ignore -- adds emphasis, but can be ignored for now
             (otherwise
              (push-debug `(,edge ,form ,label))
              (break "Unhandled category of form on pronoun: ~a" form))))))))
