@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  8.5 March 2015
+;;;  Version:  8.5 May 2015
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -45,6 +45,7 @@
 ;; 4/27/2015 tighten up conjunction of items with the same form -- put in some tests on semantics
 ;;  using method conjunction-incompatible-labels
 ;; 4/28/2015 Added bunch of variables and switches to collect information on conjunctions
+;; 5/30/15 Cleaned up that code so that I could read it.
 
 (in-package :sparser)
 
@@ -388,42 +389,34 @@
   (let ((label-before (edge-category edge-before))
         (label-after (edge-category edge-after)))
     (if (eq label-before label-after)
-        :conjunction/identical-adjacent-labels
-        (when *allow-form-conjunction-heuristic*
-          ;;(break "form heuristics allowed. Check backtrace")
-          (let ((form-before (edge-form edge-before))
-                (form-after (edge-form edge-after)))
-            (declare (special form-before form-after))
-            (when
-                (and
-                 (or (and (eq form-before form-after))
-                     (and (memq form-before *premod-forms*)
-                          (memq form-after *premod-forms*)))
-                 (not (conjunction-incompatible-labels label-before label-after edge-before edge-after)))
-              :conjunction/identical-form-labels))))))
-
-
+      :conjunction/identical-adjacent-labels
+      (when *allow-form-conjunction-heuristic*
+        ;;(break "form heuristics allowed. Check backtrace")
+        (let ((form-before (edge-form edge-before))
+              (form-after (edge-form edge-after)))
+          (when (and (or (and (eq form-before form-after))
+                         (and (memq form-before *premod-forms*)
+                              (memq form-after *premod-forms*)))
+                     (not (conjunction-incompatible-labels
+                           label-before label-after edge-before edge-after)))
+            :conjunction/identical-form-labels))))))
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
-  (let
-      ((reject?
-        (or
-         (and
-          (member (cat-symbol before) `(category::protein category::residue-on-protein category::other category::fragment))
-          (not (eq before after)))
-         (and
-          (category-p before)
-          (category-p after)
-          (or
-           (and
-            (itypep before category::process)
-            (not (itypep after category::process)))
-           (and
-            (itypep after category::process)
-            (not (itypep before category::process))) )))))
+  (let ((reject?
+        (or (and (member (cat-symbol before)
+                         `(category::protein category::residue-on-protein 
+                           category::other category::fragment))
+                 (not (eq before after)))
+            (and (category-p before)
+                 (category-p after)
+                 (or (and (itypep before category::process)
+                          (not (itypep after category::process)))
+                     (and (itypep after category::process)
+                          (not (itypep before category::process))))))))
     (cond
      (reject?
-      (push (conj-info before after edge-before edge-after) *rejected-form-conjs*)
+      (push (conj-info before after edge-before edge-after) 
+            *rejected-form-conjs*)
       t)
      (t
       (push (conj-info before after edge-before edge-after) *form-conjs*)
@@ -480,10 +473,10 @@
                  :do-not-knit do-not-knit )))
       (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (edge-interaction-with-quiescence-check edge)
-      (if *save-conjunctions* 
-          (push (conj-info (edge-referent left-edge) (edge-referent right-edge)
-                           left-edge right-edge)
-                *all-conjunctions*))
+      (when *save-conjunctions* 
+        (push (conj-info (edge-referent left-edge) (edge-referent right-edge)
+                         left-edge right-edge)
+              *all-conjunctions*))
       edge)))
 
 
