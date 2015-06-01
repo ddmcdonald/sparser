@@ -36,12 +36,19 @@
                                  (loop for item in pattern
                                    unless (edge-p item) collect item))))
            (category (edge-category (car edges))))
-      (push-debug `(,category ,remaining-pattern))
+      
       ;;//// Look for experts that can make useful sense of 
       ;; the rest of the pattern
-      (if *work-on-ns-patterns*
-        (break "Work on one edge pattern")
-        (edge-that-punts-edge-inside-pattern words start-pos end-pos edges))))
+      (cond
+       ((and (eq edge-location :initial)
+             (equal remaining-pattern '(:hyphen :lower)))
+        (ns-sort-out-edge-hyphen-lower
+         (car edges) start-pos end-pos words))
+       (*work-on-ns-patterns*
+        (push-debug `(,edge-location ,category ,remaining-pattern))
+        (break "Work on one edge pattern"))
+       (t
+        (edge-that-punts-edge-inside-pattern words start-pos end-pos edges)))))
    (t
     (let ((remaining-pattern
            (loop for item in pattern

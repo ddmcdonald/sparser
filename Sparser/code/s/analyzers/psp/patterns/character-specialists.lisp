@@ -115,6 +115,39 @@
   edge)
 
 
+;;--- Common pattern <edge>-mediated, -specific -associated, ...
+(defun ns-sort-out-edge-hyphen-lower (leading-edge start-pos end-pos words)
+  ;; Called from ns-sort-out-pattern-with-edges when the edge 
+  ;; is :initial and the remaining pattern is (:hyphen :lower)
+  (declare (special category::verb+ed category::adjective))
+  (let* ((trailing-edge (left-treetop-at end-pos))
+         (form (edge-form trailing-edge))
+         (right-ref (edge-referent trailing-edge))
+         (left-ref (edge-referent leading-edge))
+         agent?   )
+    (case form
+      (category::verb+ed ;; assume passive
+       (setq agent? t))
+      (category::adjective
+       (setq agent? t)))
+    (push-debug `(,agent? ,words)) ;; quiet compiler while in progress
+    (cond
+;     (agent?
+;      (setq referent 
+     (t
+      ;; Base everything on the trailing edge. Drop the referent
+      ;; of the starting edge because we don't know where to put it
+      (let* ((referent (make-qualifying-pair left-ref right-ref))
+             (edge
+              (make-binary-edge/explicit-rule-components
+               leading-edge trailing-edge
+               :category (edge-category trailing-edge)
+               :rule-name 'ns-sort-out-edge-hyphen-lower
+               :form form
+               :referent referent)))
+        edge)))))
+
+
 
 ;;;-----------------------
 ;;; single 'scare' quotes
