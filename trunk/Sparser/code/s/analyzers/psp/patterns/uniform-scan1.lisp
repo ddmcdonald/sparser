@@ -77,6 +77,8 @@
                        (pos-edge-starts-at leftmost-edge)
                        (chart-position-before position-after))))
       (tr :no-space-sequence-started-at start-pos)
+      (when long-edge
+        (tr :no-space-initial-long-edge long-edge))
 
       ;;//// tune to the possibility we don't care about the first
       ;; word because it's covered by an edge. 
@@ -128,13 +130,15 @@
 (defun ns-pattern-dispatch (start-pos end-pos edges
                             hyphen-positions slash-positions
                             colon-positions other-punct)
+  ;; Subroutine of collect-no-space-segment-into-word that does the
+  ;; dispatch. Every path is expected to form an edge over the
+  ;; span one way or another.
   (let ((pattern (characterize-words-in-region start-pos end-pos edges))
         (words (words-between start-pos end-pos)))
     (tr :segment-ns-pattern pattern)
-
-    (when (and edges *work-on-ns-patterns*)
+    (when edges
       (push-debug `(,pattern ,edges ,start-pos ,end-pos))
-      (break "Look at pattern with edges:~%  ~a" pattern))
+      (tr :ns-pattern-includes-edges edges))
 
     (cond 
      (edges
@@ -188,15 +192,20 @@
   (let ((new-list (cdr list)))
     (setq new-list (nreverse (cdr (nreverse new-list))))))
 
-(defun sort-out-edges-in-ns-region (edges leftmost-edge) ;;/// need leftmost?
-  ;; The leftmost-edge, if there is one, will always be included
-  ;; in the list of edges
-  (when edges
+(defun sort-out-edges-in-ns-region (edges leftmost-edge)
+  (cond
+   (edges
+    ;; The leftmost-edge, if there is one, will always be included
+    ;; in the list of edges
     (if (null (cdr edges)) 
       edges
       (let ((in-order (nreverse edges)))
         (push-debug `(,in-order ,leftmost-edge))
-        in-order))))
+        in-order)))
+   (leftmost-edge
+    ;; no additional edges collected by sweep-to-end-of-ns-regions
+    ;; but we can't forget the one we already have.
+    `(,leftmost-edge))))
 
 (defun reify-ns-name-and-make-edge (words pos-before next-position)
   ;; We make an instance of a spelled name with the words as its sequence.
