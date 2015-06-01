@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "select"
 ;;;   Module:  "drivers;chart:"
-;;;  Version:  2.4 October 2014
+;;;  Version:  2.4 June 2015
 
 ;; 2.0 (9/12/92) moved up to chart level from psp
 ;; 2.1 (4/7/93) commented out the wsj-headers option
@@ -14,6 +14,7 @@
 ;;     (9/16/13) added :c3-protocol.
 ;;     (8/11/14) added :r3-entity-sweep
 ;;     (10/6/14) added :successive-sweeps
+;;     (6/1/15) Removed the entity sweep. 
 
 (in-package :sparser)
 
@@ -75,8 +76,6 @@
          (look-at-all-terminals))
         (:successive-sweeps
          (initiate-successive-sweeps))
-        (:r3-entity-sweep
-         (initiate-R3-entity-pass))
         (:scan-for-closing-markup-tag
          (initiate-scan-for-closing-markup-tag))
         ;(:test-protocol  ;; ?? where's the definition?
