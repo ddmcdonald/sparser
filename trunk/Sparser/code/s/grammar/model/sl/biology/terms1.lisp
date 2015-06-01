@@ -114,7 +114,7 @@
       :realization 
       (:noun "advance" 
              :in advancement))
-
+(adj "additive" :super bio-predication)
 ;;(def-bio "agent" bio-entity)
 (noun "agonist":super bio-entity) ;; keyword: (ist N) 
 (define-category affinity :specializes bio-process
@@ -515,9 +515,11 @@
 (define-category likely :specializes bio-relation
   :binds ((result process))
   :realization
-  (:adj "likely"
+  (:adj "likely" 
         :o result
         :to-comp result))
+
+(define-adverb "likely")
 
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "liquid chromatography" :super bio-method)
@@ -709,12 +711,20 @@
      :realization
      (:to comparator))
 
+(adj "resistant" :super bio-predication
+     :binds ((agent (:or bio-entity bio-process bio-method))
+             (effect (:or bio-process bio-entity)))
+     :realization
+     (:adj "resistant"
+           :s agent
+           :to-comp effect))
+
 (noun "response" :super bio-process
     :binds ((beneficiary biological)
             (agent biological)) ;; (:or biological drug)))
     :realization
     (;; :verb "respond" cant get the right :etf for verbs
-     :noun "response"
+     :noun "response" :adj "responsive"
      :of beneficiary
      :to agent))
 
@@ -850,6 +860,14 @@
 (noun "tumor" :super bio-location)
 (noun "tumor formation" :super bio-process)
 (noun "tumorigenesis" :super bio-process)
+(adj "unable" :super bio-predication
+     :binds ((agent (:or bio-entity bio-process bio-method))
+             (capability bio-process))
+     :realization
+     (:adj "unable"
+           :s agent
+           :to-comp capability))
+           
 (adj "unclear" :super bio-predication)
 (adj "unknown" :super bio-predication
      :binds ((subject biological))
@@ -857,6 +875,13 @@
      (:adj "unknown"
            :s subject))
 (adj "unmodified" :super bio-process)
+(adj "unresponsive" :super bio-predication
+     :binds ((agent (:or bio-entity bio-process bio-method))
+             (effect (:or bio-process bio-entity)))
+     :realization
+     (:adj "unresponsive"
+           :s agent
+           :to-comp effect))
 (define-adverb "until now")
 (noun "upstream" :super bio-context
       :binds ((relative-to biological))
