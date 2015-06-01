@@ -251,8 +251,9 @@
       (if (no-space-before-word? position-after)
         (then
           (tr :no-space-at position-after)
-          ;; Run the pre-check for defined patterns
+          ;; "no whitespace at P, Initating scan-pattern check"
           (let ((where-pattern-scan-ended
+                 ;; Run the pre-check for defined patterns
                  (check-for-pattern position-after)))
             (if where-pattern-scan-ended
               (then
