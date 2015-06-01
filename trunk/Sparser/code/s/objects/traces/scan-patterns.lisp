@@ -176,8 +176,12 @@
 
 (deftrace :no-space-sequence-started-at (p)
   (when (or *trace-scan-patterns*)
-    (trace-msg "[ns] simple-scheme started at p~a"
+    (trace-msg "[ns] simple no-space collector started at p~a"
 	       (pos-token-index p))))
+
+(deftrace :no-space-initial-long-edge (edge)
+  (when (or *trace-scan-patterns*)
+    (trace-msg "[ns] with initial long edge ~a" edge)))
 
 (deftrace :ns-word-sweep (word)
   ;; called from sweep-to-end-of-ns-regions
@@ -240,6 +244,11 @@
 (deftrace :segment-ns-pattern (pattern)
   (when *trace-scan-patterns*
     (trace-msg "[ns] The pattern is ~a" pattern)))
+
+(deftrace :ns-pattern-includes-edges (edges)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] It includes edges ~a" edges)))
+
 
 (deftrace :ns-segment-layout (layout)
   (when *trace-scan-patterns*
