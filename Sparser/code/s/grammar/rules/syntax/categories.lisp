@@ -530,6 +530,7 @@
     CATEGORY::SUPERLATIVE
     CATEGORY::SPATIAL-ADJECTIVE
     CATEGORY::TEMPORAL-ADJECTIVE
+    CATEGORY::MODAL
     ;;CATEGORY::QUANTIFIER don't think this is right -- it accepts "NO"
     ))
 
