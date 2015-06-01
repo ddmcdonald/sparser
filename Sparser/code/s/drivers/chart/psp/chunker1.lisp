@@ -579,11 +579,11 @@ all sorts of rules apply and not simply form rules.
       (and (not
             (and (edge-p prev-edge)
                  (eq category::parentheses (edge-category prev-edge))))
-       (not (and
-             (car *chunks*)
-             (member 'ng (chunk-forms (car *chunks*)))
-             (eq (chunk-end-pos (car *chunks*))
-                 (pos-edge-starts-at e)))))))
+           (not (and
+                 (car *chunks*)
+                 (member 'ng (chunk-forms (car *chunks*)))
+                 (eq (chunk-end-pos (car *chunks*))
+                     (pos-edge-starts-at e)))))))
    ((eq category::verb+ing (edge-form e))
     ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
     ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
@@ -591,5 +591,6 @@ all sorts of rules apply and not simply form rules.
       (let ((prev-edge (edge-just-to-left-of e)))
         (and (not (and (edge-p prev-edge)
                        (eq category::parentheses (edge-category prev-edge))))
-             (not (or (eq category::preposition (edge-form prev-edge))
-                      (ng-head? prev-edge)))))))))
+             (not (and (edge-p prev-edge)
+                       (or (eq category::preposition (edge-form prev-edge))
+                           (ng-head? prev-edge))))))))))
