@@ -61,6 +61,14 @@
   (reset-test)
   nil)
 
+(defun test-load-test ()
+  (declare (special *load-test-sents*))
+  (setq *sentences* *load-test-sents*)
+  (reset-test)
+  nil)
+
+
+
 ;;;-------------------------------
 ;;; general iterators and friends
 ;;;-------------------------------
