@@ -191,7 +191,11 @@ those steps sequentially on a single article.
   (populate-article-set)
   (sweep-article-set)
   (with-total-quiet
-      (read-article-set)))
+      (read-article-set))
+  (setq *accumulate-content-across-documents* t))
+
+(defun single-sent-parse ()
+  (setq *accumulate-content-across-documents* t))
 
 (defun load-and-read-article (id) ;; assume corpus-path is set
   (load-xml-to-doc-if-necessary)
