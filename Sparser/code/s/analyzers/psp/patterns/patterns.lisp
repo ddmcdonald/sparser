@@ -63,6 +63,7 @@
   (cond
    ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
         (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
+        (equal pattern '(:full :hyphen :digits)) ;; "CI-1040" actually a drug
         (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
         (equal pattern '(:full :hyphen :single-digit :single-digit))) ;;/// IL-1a -bug somewhere
     ;; We accept these as terms that won't deccompose or involve
