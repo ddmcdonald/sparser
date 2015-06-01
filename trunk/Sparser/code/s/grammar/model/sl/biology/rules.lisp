@@ -337,12 +337,14 @@
   :head :right-edge
   :referent (:head right-edge :bind (modifier left-edge)))
   
+#+ignore ;; don't know why this is here -- it dies on "all the proteins"
 (def-form-rule (quantifier biological) 
                :head :right-edge 
   :form n-bar ;; requires a determiner 
   :referent 
   (:head right-edge :bind (quantifier left-edge)))
-                   
+ 
+#+ignore ;; don't know why this is here -- it dies on "all the proteins"                  
 (def-form-rule (quantifier protein) 
                :head :right-edge 
   :form n-bar ;; requires a determiner 
