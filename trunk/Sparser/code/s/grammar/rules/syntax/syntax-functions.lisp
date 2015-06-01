@@ -50,6 +50,10 @@
 ;; sometimes the rules can be called inside parenthesis processing, etc., and that
 ;; process does not do the appropariate "pre-checks"
 ;; Better handling of special cases for tense/aspect and adverb
+;; 6/1/2015 add new method individual-for-ref that does all the work of getting an appropriate individual for
+;; the referent of an edge (creating an individual in the case where the referent is a category, and copying the 
+;; individual when needed if the referent was an individual)
+;; Uniformly used this metghod in all places that previously used maybe-copy-individualand/or make-individual-for-dm&p
 
 
 
@@ -78,14 +82,13 @@
 ;;;-------------------
 
 (defun noun-noun-compound (qualifier head)
+  (declare (special qualifier head))
   ;; goes with (common-noun common-noun) syntactic rule 
   (when nil
     (push-debug `(,qualifier ,head)) 
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-  (if (category-p head)
-    (setq head (make-individual-for-dm&p head))
-    (setq head (maybe-copy-individual head)))
+  (setq head (individual-for-ref head))
   (or (and (null qualifier)
            head)
       
@@ -99,6 +102,8 @@
       (if (itypep head 'process) ;; poor man's standing for verb?
         (then
           (let ((var (object-variable head)))
+            (declare (special var))
+           ;; (ccl::break "noun-noun")
             (if var ;; really should check for passivizing
               (bind-variable var qualifier head)
               ;; otherwise it's not obvious what to bind
@@ -120,7 +125,7 @@
       (when *collect-subcat-info*
         (push (subcat-instance head variable-to-bind premod premod)
               *subcat-info*))
-      (setq head (maybe-copy-individual head))
+      (setq head (individual-for-ref head))
       (bind-variable variable-to-bind premod head)
       head))))
 
@@ -145,7 +150,7 @@
    ((interpret-premod-to-np qualifier head))
    (t ;; Dec#2 has "low nM" which requires coercing 'low'
     ;; into a number. Right now just falls through
-    (setq head (maybe-copy-individual head))
+    (setq head (individual-for-ref head))
     (when (itypep head 'endurant)
       (bind-variable 'modifier qualifier head))
     head)))
@@ -159,9 +164,7 @@
   ;; Before doing quantifiers seriously find copy of Kurt vanLehn's
   ;; MS thesis and think about generalized quantifiers.
   ;;(push-debug `(,quantifier ,head)) (break "fix 'additional cystene'")
-  (if (category-p head) ;;//// need to reclaim bindings !!!!!!
-    (setq head (make-individual-for-dm&p head))
-    (setq head (maybe-copy-individual head)))
+  (setq head (individual-for-ref head))
   (if (eq quantifier (word-named "no")) ;; Jan#4 "no increase"
       ;; in Jan#4 it's a literal
     (let ((no (find-individual 'quantifier :word "no")))
@@ -179,10 +182,7 @@
   ;; endurant we can bind. Going forward we should automatically
   ;; make a composite individual using a collection.
   ;; See notes on forming plurals in morphology1
-  (if (category-p head) ;;//// need to reclaim bindings !!!!!!
-    ;; or in this case make a collection
-    (setq head (make-individual-for-dm&p head))
-    (setq head (maybe-copy-individual head)))
+  (setq head (individual-for-ref head))
   (when (itypep head 'endurant) ;; J34: "Histone 2B"
     (bind-variable 'number number head))
   head)
@@ -205,15 +205,12 @@
          (call-compose qualifier head)
          (link-in-verb+ing qualifier head)))
        (t
-        (setq head (maybe-copy-individual head))
+        (setq head (individual-for-ref head))
         (link-in-verb+ing qualifier head)))))
 
 (defun link-in-verb+ing (qualifier head)
   (let ((subject (subject-variable qualifier)))
-    (if
-        (category-p qualifier)
-      (setq qualifier (make-individual-for-dm&p qualifier))
-      (setq qualifier (maybe-copy-individual qualifier)))
+    (setq qualifier (individual-for-ref qualifier))
     (if subject ;; really should check for passivizing
         (bind-variable subject head qualifier))
     (bind-variable 'modifier qualifier head)
@@ -236,14 +233,12 @@
          (call-compose qualifier head)
          (link-in-verb qualifier head)))
        (t
-        (setq head (maybe-copy-individual head))
+        (setq head (individual-for-ref head))
         (link-in-verb qualifier head)))))
 
 (defun link-in-verb (qualifier head)
   (let ((object (object-variable qualifier)))
-    (if (category-p qualifier)
-      (setq qualifier (make-individual-for-dm&p qualifier))
-      (setq qualifier (maybe-copy-individual qualifier)))
+    (setq qualifier (individual-for-ref qualifier))
     (when object ;; really should check for passivizing
       (bind-variable object head qualifier))
     (bind-variable 'modifier qualifier head)
@@ -262,7 +257,7 @@
   (or (value-of 'aspect vg)
       (let ((i (make/individual 
                 (category-named 'tense/aspect-vector) nil)))
-        (setq vg (maybe-copy-individual vg))
+        (setq vg (individual-for-ref vg))
         (bind-variable 'aspect i vg)
         i)))
 
@@ -342,7 +337,7 @@
 ;;;-----------------
 
 (defun vg-plus-adjective (vg adj)
-  (setq vg (maybe-copy-individual vg))
+  (setq vg (individual-for-ref vg))
   (let ((var (object-variable vg)))
     (if var
       (bind-variable var adj vg)
@@ -363,7 +358,7 @@
   ;;/// so there should be a compose method to deal with that
   
   ;; default
-  (setq vg (maybe-copy-individual vg))
+  (setq vg (individual-for-ref vg))
   #|need to diagnose among 
   (time)
   (location)
@@ -403,7 +398,7 @@
   (cond
    (*subcat-test* (itypep vv 'bio-process))
    (t
-    (setq vv (maybe-copy-individual vv))
+    (setq vv (individual-for-ref vv))
     (bind-variable 'context context vv)
     vv)))
 
@@ -445,7 +440,7 @@
       (when *collect-subcat-info*
         (push (subcat-instance vg prep-word variable-to-bind pp)
               *subcat-info*))
-      (setq vg (maybe-copy-individual vg))
+      (setq vg (individual-for-ref vg))
       (bind-variable variable-to-bind pobj-referent vg)
       vg))))
 
@@ -479,7 +474,7 @@
       (when *collect-subcat-info*
         (push (subcat-instance vg prep-word variable-to-bind pp)
               *subcat-info*))
-      (setq vg (maybe-copy-individual vg))
+      (setq vg (individual-for-ref vg))
       (bind-variable variable-to-bind pobj-referent vg)
       vg))))
 
@@ -516,7 +511,7 @@
             (push (subcat-instance np prep-word variable-to-bind 
                                    pp)
                   *subcat-info*))
-          (setq np (maybe-copy-individual np))
+          (setq np (individual-for-ref np))
           ;;(bind-variable variable-to-bind pp np)
           (when variable-to-bind ;; otherwise return nil and fail the rule
             (bind-variable variable-to-bind pobj-referent np)
@@ -540,7 +535,7 @@
           (push (subcat-instance np 'to-comp variable-to-bind 
                                  to-comp)
                 *subcat-info*))
-      (setq np (maybe-copy-individual np))
+      (setq np (individual-for-ref np))
       ;;(bind-variable variable-to-bind pp np)
       (bind-variable variable-to-bind to-comp np)
       np))))
@@ -571,7 +566,7 @@
           (push (subcat-instance np prep-word variable-to-bind 
                                  pp)
                 *subcat-info*))
-      (setq pobj-referent (maybe-copy-individual pobj-referent))
+      (setq pobj-referent (individual-for-ref pobj-referent))
       ;;(bind-variable variable-to-bind pp np)
       (bind-variable variable-to-bind np pobj-referent)
       pobj-referent))))
@@ -627,7 +622,7 @@
      (*subcat-test* variable-to-bind)
      (variable-to-bind
       (collect-subcat-statistics head subcat-label variable-to-bind item)
-      (setq head (maybe-copy-individual head))
+      (setq head (individual-for-ref head)) 
       (when (and (is-anaphoric? item)
                  ;; this fails when we have BE -- needs to be fixed...
                  (var-value-restriction variable-to-bind)
@@ -638,6 +633,11 @@
                variable-to-bind)))
       (bind-variable variable-to-bind item head)
       head))))
+
+(defun individual-for-ref (head)
+  (if (category-p head) ;;//// need to reclaim bindings !!!!!!
+      (make-individual-for-dm&p head)
+      (maybe-copy-individual head)))
 
 (defun is-anaphoric? (item)
   (itypep item category::pronoun))
@@ -855,7 +855,7 @@
       (when *collect-subcat-info*
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
-      (setq np (maybe-copy-individual np))
+      (setq np (individual-for-ref np))
       (bind-variable variable-to-bind pobj np)
       (bind-variable 'result np copular-pp)
       copular-pp))))
