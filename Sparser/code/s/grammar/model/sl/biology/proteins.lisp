@@ -524,6 +524,7 @@ filligre may be used to distinguish them, etc.
 
 (DEF-BIO "CTNA2_HUMAN" PROTEIN :SYNONYMS ("Alpha-catenin" "CTNNB" "CTNNB1" "α-catenin") :MITRE-LINK "UNIPROT:CTNA2_HUMAN")
 (DEF-BIO "PLAK_HUMAN" PROTEIN :synonyms ("γ-catenin" "gamma-catenin" "γ-catenin/plakoglobin" "plakoglobin") :MITRE-LINK "UNIPROT:PLAK_HUMAN")
+(DEF-BIO "ELK1_HUMAN" PROTEIN :synonyms ("Elk-1") :MITRE-LINK "UNIPROT:ELK1_HUMAN")
 
 ;;;;; hugely long list from MITRE RAS_1 corpus
 (DEF-BIO "14-3-3" PROTEIN :SYNONYMS NIL :MITRE-LINK "UNIPROT:14-3-3") 
