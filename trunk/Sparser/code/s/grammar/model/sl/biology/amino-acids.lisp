@@ -23,6 +23,7 @@
 ;; edge-left-daughter on the edge (not edge-referent)
 ;; 5/13/2015 fix handling ov numbers in reify-point-mutation-and-make-edge
 ;; debug handling of word object for number in reify-point-mutation-and-make-edge
+;; 6/1/2015 added flagged break on bad residues (ones which do not have a numeric position)
 
 
 (in-package :sparser)
@@ -124,6 +125,7 @@ therefore we have the special cases:
 
 ;; moved resideu-on-protein into taxonomy since it is needed in verbs1.lisp
 
+(defparameter *break-on-bad-residues* nil)
 
 (defun reify-residue-and-make-edge (words start-pos end-pos)
   ;; called from the no-space pattern machinery when the
@@ -148,7 +150,7 @@ therefore we have the special cases:
                     :position number)))
             (declare (special residue digit-word number))
             (when
-                (null number)
+                (and *break-on-bad-residues* (null number))
               (break "non-numeric position for residue-on-protein with words ~s, residue = ~a, number = ~s"
                       words residue number))
             (let* ((left-edge (top-edge-at/starting start-pos))
