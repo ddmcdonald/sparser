@@ -99,8 +99,9 @@
         (individual-p individual)
         (itype-of individual)
         individual))))
-    (format t "!! CAN'T DEREFERENCE ANONYMOUS VARIABLE ~A AGAINST CATEGORY ~A, GIVING UP"
-            var/name individual))
+    (format t "~&~&!! CAN'T DEREFERENCE ANONYMOUS VARIABLE ~A AGAINST CATEGORY ~A, GIVING UP~&"
+           var/name individual)
+    nil)
    (t
     (let ((variable 
            (or (when (typep var/name 'lambda-variable)
