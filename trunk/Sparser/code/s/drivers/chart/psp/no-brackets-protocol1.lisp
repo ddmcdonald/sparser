@@ -117,11 +117,17 @@
 ;;;-------------------------------
 
 (defvar *sentence-in-core* nil)
+(defparameter *print-sentences* nil)
 
 (defun sentence-processing-core (sentence)
   ;; Handles all of the processing on a sentence that is done
   ;; after scan-terminals-loop runs.
   (setq *sentence-in-core* sentence)
+  (when
+      (numberp *print-sentences*)
+    (format t "*** (p ~s) ;; ~s" 
+            (sentence-string *sentence-in-core*) 
+            (incf *print-sentences*)))
   (when *sweep-for-patterns*
     (pattern-sweep sentence)
     (short-conjunctions-sweep sentence) ;; precede parens
@@ -216,33 +222,36 @@
 
 (defun post-analysis-operations (sentence)
   (declare (special *universal-time-start* *universal-time-end*))
-
+  
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
   (identify-salient-text-structure sentence)
   (when *do-anaphora*
     (handle-any-anaphora sentence))
-
+  
   (when *readout-relations*
-    (multiple-value-bind (relations entities)
-                         (identify-relations sentence)
-      (if *index-cards*
-        (set-entities sentence 
-                      (all-individuals-in-tts sentence))
+    (cond
+     (*index-cards*
+      (set-entities sentence 
+                    (all-individuals-in-tts sentence))
+      (push `(,(sentence-string sentence) 
+              ,(all-individuals-in-tts sentence)
+              ,@(when (and (boundp '*current-article*)
+                           *current-article*)
+                  (list *current-article*
+                        *universal-time-start*
+                        *universal-time-end*)))
+            
+            *all-sentences*))
+     (t
+      (multiple-value-bind (relations entities)
+                           (identify-relations sentence)
         (set-entities sentence entities))
       (set-relations sentence relations)
       (setq *relations* relations  ; (readout-relations relations)
             *entities* entities)); (readout-entities entities)
-    ;;(ccl::break "all-sentences*") 
-    (push `(,(sentence-string sentence) 
-             ,(all-individuals-in-tts sentence)
-             ,@(when (and (boundp '*current-article*)
-                          *current-article*)
-                 (list *current-article*
-                       *universal-time-start*
-                       *universal-time-end*)))
-                  
-          *all-sentences*)))
+     ;;(ccl::break "all-sentences*") 
+     )))
      
 
 (defparameter *surface-strings* (make-hash-table :size 10000))
