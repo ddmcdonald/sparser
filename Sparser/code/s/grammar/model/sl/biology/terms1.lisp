@@ -180,6 +180,9 @@
 (adj "class II" :super bio-predication)
 (adj "clinical" :super bio-predication)
 (adj "pre-clinical" :super bio-predication)
+(noun "post-translational modification" :super bio-process)
+(noun "post-transcriptional modification" :super bio-process)
+(noun "post-transcriptional fate" :super bio-process)
 
 (adj "close" :super bio-predication)
 (define-unit-of-measure "cm")
