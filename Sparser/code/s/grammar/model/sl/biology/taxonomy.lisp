@@ -132,6 +132,7 @@
   :binds ((negation)
           (adverb)
           (manner)
+          (aspect) ;; "will likely be useful"
           (in-order-to)))
 
 (define-category molecule-state
