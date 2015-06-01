@@ -1241,7 +1241,7 @@
     :specializes bio-control
     :binds ((agent biological)(object biological)(result biological))
     :realization
-    (:verb "lead" ;; keyword: ENDS-IN-ING 
+    (:verb ("lead" :past-tense "led")
 	   :etf (sv)
 	   :s agent
 	   :to object
