@@ -10,39 +10,8 @@
 (in-package :sparser)
 #|
  (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
- (trace-scan-patterns)  (trace-fsas)
-
-;; more than one edge
-(p "The novel RAS/Raf/MAPK/ASPP2 pathway is thus involved in 
-an important feedback loop between RAS and p53, 
-and is an effective way for mutant RAS to induce apoptosis 
-in cancer cells with wild-type p53.")
-
-;; infinite loop
-(p "Consistent with this finding, energy migration Forster 
-resonance energy transfer and fluorescence correlation 
-spectroscopy measurements in living cells did not detect 
-dimerization of GFP-ERK1-WT upon activation.")
 |#
-
-(defun ddm-polyword-conundrum ()
-  (ddm-ed "objects/chart/words/polywords4.lisp")
-  (ddm-ed "objects/chart/words/polyword-form2.lisp")
-  ;;(ddm-ed "objects/rules/cfr/dotted5.lisp")
-  ;;(ddm-ed "objects/rules/cfr/knit-in3.lisp")
-  (ddm-ed "objects/rules/cfr/polywords2.lisp")
-  (ddm-ed "analyzers/FSA/words3.lisp")  
-  ;;(ddm-ed "analyzers/psp/assess/terminal-edges2.lisp")
-  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
-  (ddm-ed "grammar/rules/FSAs/polyword5.lisp")
-  (ddm-ed "objects/traces/FSA1.lisp"))
-
-
-
-
 ;  (p "c-Raf/ MAPK-mediated [6].")
-
-
 
 (defun ddm-standard ()  ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
@@ -51,7 +20,6 @@ dimerization of GFP-ERK1-WT upon activation.")
 ;  (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
-  (setq *readout-relations* t)  
   (setq *debug-pronouns* t)
 ;  (setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) 
@@ -66,7 +34,9 @@ dimerization of GFP-ERK1-WT upon activation.")
   (ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
   ;; (test-overnight) (test-erk) (test-aspp2)
-  (test-jan))
+  (test-jan)) ;; (compare-to-snapshot 'dec-test)
+  ;; (hashtable-to-alist 
+; (test-load-test)
 
 
 ; (ddm-load-article-2)
@@ -154,6 +124,16 @@ dimerization of GFP-ERK1-WT upon activation.")
   (ddm-ed "analyzers/psp/patterns/traces.lisp")
   (ddm-ed "objects/traces/scan-patterns.lisp")
   (ddm-ed "objects/traces/treetops.lisp"))
+
+
+(defun ddm-polyword-conundrum ()
+  (ddm-ed "objects/chart/words/polywords4.lisp")
+  (ddm-ed "objects/chart/words/polyword-form2.lisp")
+  (ddm-ed "objects/rules/cfr/polywords2.lisp")
+  (ddm-ed "analyzers/FSA/words3.lisp")  
+  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
+  (ddm-ed "grammar/rules/FSAs/polyword5.lisp")
+  (ddm-ed "objects/traces/FSA1.lisp"))
 
 (defun ddm-maybe-spurious-rule-dupb ()
   (ddm-ed "objects/rules/cfr/multiplier3.lisp")
