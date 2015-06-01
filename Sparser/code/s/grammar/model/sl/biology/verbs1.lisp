@@ -106,8 +106,7 @@
     :specializes bio-rhetorical
     :binds ((agent pronoun/first/plural)(object biological) (cause biological))
     :realization
-    (:verb "hypothesize" ;; keyword: ENDS-IN-ED 
-	   :noun "hypothesis"
+    (:verb "attribute" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
@@ -1754,7 +1753,7 @@
 
 (define-category result
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent (:or bio-entity bio-process))(object bio-process))
     :realization
     (:verb "result" ;; keyword: ENDS-IN-ED 
 	   :etf (svo)
