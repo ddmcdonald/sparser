@@ -250,11 +250,11 @@
 ;;///////// field should be a list 
 (defun initiates-polyword1 (word position-before)
   ;; Returns the rule that marks the polyword or nil
-  (or (starts-polyword word)
-      (let ((caps-word (capitalized-correspondent1 
+  (or (let ((caps-word (capitalized-correspondent1 
                         position-before word)))
         (when caps-word
-           (starts-polyword caps-word)))))
+          (starts-polyword caps-word)))
+      (starts-polyword word)))
 
 (defun starts-polyword (word)
   (let ((rule-set (word-rules word)))
