@@ -110,6 +110,24 @@
       edge)))
 
 
+(define-category qualifying-pair
+  :specializes sequence
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((head) ;; 'Ras'
+          (qualifier)) ;; 'mediated'
+  :documentation "Inadequate name. This is for phrases
+   like 'Ras-mediated' for the cases where we don't know
+   or can't figure out the correct relationship (variable)."
+  :index (:sequential-keys head qualifier))
+
+(defun make-qualifying-pair (left right)
+  (find-or-make-individual 'qualifying-pair
+     :head left
+     :qualifier right))
+
+
+
 
 (define-category hyphenated-triple
   :specializes sequence
