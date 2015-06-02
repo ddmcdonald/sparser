@@ -324,25 +324,25 @@
                         (error "Unexpected type for tt: ~a~%~a"
                                (type-of tt) tt)))))
         (cond
-         ((eq end-pos position-after) ;(break "1")
+         ((eq end-pos position-after)
+          ;; Given that end-pos and position-after are always in
+          ;; sync, this clause is the only one that's ever taken.
+          ;; The others are presently doing no work, but will
+          ;; be useful if we need to change the protocol. 
           (tr :check-for-uniform-no-space-sequence position-before)
           (setq pos-reached
                 (collect-no-space-segment-into-word position-after)))
 
-       ;; (p "a 0.45μm filter")
+         ;; (p "a 0.45μm filter")
 
-           ;; Quick hit. Is there whitespace on the position
-           ;; where it ends?  If there is, then we're done
-           ;; because this is where the sequence would have ended anyway. 
-           ((pos-preceding-whitespace end-pos) (break "2")
-            (pos-edge-ends-at tt))
+         ;; Quick hit. Is there whitespace on the position
+         ;; where it ends?  If there is, then we're done
+         ;; because this is where the sequence would have ended anyway. 
+         ((pos-preceding-whitespace end-pos)
+          (pos-edge-ends-at tt))
 
-           ;; It's going to continue. Does it compose with the edge
-           ;; that there?
-
-           ;; Let it deal with whatever's there
-           (t  (break "3")
-               (collect-no-space-segment-into-word end-pos)))
+         ;; Let it deal with whatever's there
+         (t  (collect-no-space-segment-into-word end-pos)))
         ;;/// trace
         pos-reached ))))
 
