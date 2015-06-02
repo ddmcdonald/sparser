@@ -158,13 +158,29 @@
         edge)))
                              
 
+
+
+
+
+(defun resolve-stranded-hyphen (pattern words start-pos end-pos)
+  ;; called from one-hyphen-ns-patterns for (:lower :hyphen),
+  ;; e.g. "mono-"
+  (let* ((word (car words))
+         (known? (memq word *salient-hyphenated-literals*)))
+    (when *work-on-ns-patterns*
+      (break "stranded hyphen: define the category etc"))))
+
+
+
 (defparameter *salient-hyphenated-literals*
-  `(,(resolve/make "re") ;; "re-activate"
-    ,(resolve/make "mono")
-    ,(resolve/make "di")
+  `(
+    ,(resolve/make "auto")
     ,(resolve/make "co") ;; co-occurring
-    ,(resolve/make "deficient") ;; dimerization-deficient ERK#7
+    ,(resolve/make "di")
+    ,(resolve/make "mono")
+    ,(resolve/make "re") ;; "re-activate"
     ))
+
 
 
 (defun some-word-is-a-salient-hyphenated-literal (words)
@@ -176,11 +192,9 @@
 
 (defun compose-salient-hyphenated-literals (pattern words
                                             pos-before pos-after)
-  ;;(push-debug `(,words ,pattern)) (break "salient")
-  (unless (= 3 (length words))
-    (error "Stub: more than three words in salient-hyphenated-~
-           literals call: ~a" words))
-  (when (= 3 (length words))
+  (tr :salient-hyphenated-literal)
+  (cond
+   ((= 3 (length words))
     (let ((word1 (car words))
           (word2 (caddr words))
           left  right  )
@@ -188,7 +202,7 @@
                   (setq left t))
                 (prog1 (memq word2 *salient-hyphenated-literals*)
                   (setq right t)))
-        ;; do something clever, but for now just tie off
+        ;;//// do something clever, but for now just tie off
         (let* ((edge (or (and left
                                (left-treetop-at/only-edges pos-after))
                          (and right
@@ -210,11 +224,13 @@
                    :form (edge-form edge)
                    :referent (edge-referent edge)
                    :words words)))
-            new-edge))))))
+            new-edge)))))
+   (*work-on-ns-patterns*
+    (push-debug `(,words ,pattern ,pos-before ,pos-after))
+    (break "Not exactly 3 words: new case"))
+   (t ;; bail
+    (reify-ns-name-and-make-edge words pos-before pos-after))))
 
-(defun resolve-stranded-hypen (pattern words start-pos end-pos)
-  (push-debug `(,pattern ,words ,start-pos ,end-pos))
-  (break "Stub: stranded hyphen"))
 
 
 ;;;--------
