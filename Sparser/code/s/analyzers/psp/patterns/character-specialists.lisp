@@ -18,6 +18,8 @@
 ;;;----------
 
 (defun nospace-hyphen-specialist (hyphen-position/s pos-before next-position)
+  ;; Cleanup case in one-hyphen-ns-patterns when no defined pattern
+  ;; has matched. 
   (push-debug `(,hyphen-position/s ,pos-before ,next-position))
   ;; (setq hyphen-position/s (car *) pos-before (cadr *) next-position (caddr *))
   (let ((hyphen-count (length hyphen-position/s))
@@ -63,9 +65,10 @@
         (cond
          ((eq hyphen-pos pos-before) ;; it's initial
           ;; for the moment don't do anything
-          )
+          ;; but could look at compose-salient-hyphenated-literals
+          nil)
          ((eq hyphen-pos next-position) ;; its final
-          ) ;; ditto
+          nil)
          (t
           (let ((first-half (resolve-hyphen-segment 
                              pos-before hyphen-pos))
@@ -93,16 +96,16 @@
 
 ;;/// This is surely the same a resolve-slash-segment so they should mergw
 (defun resolve-hyphen-segment (start-pos end-pos)
-  (if
-   (eq start-pos end-pos) ;; as in "...with β-, γ-, and α-catenins..."
-   nil
-   (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
-     (or single-edge
-         (let ((words (words-between start-pos end-pos))
-               (pattern (characterize-words-in-region start-pos end-pos nil)))
-           (let ((*work-on-ns-patterns* nil)) ;; t))
-             (declare (special *work-on-ns-patterns*))
-             (let ((result (resolve-ns-pattern pattern words start-pos end-pos)))
+  (if (eq start-pos end-pos) ;; as in "...with β-, γ-, and α-catenins..."
+    (when *work-on-ns-patterns*
+      (break "start-pos and end-pos are identical"))
+    (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
+      (or single-edge
+          (let ((words (words-between start-pos end-pos))
+                (pattern (characterize-words-in-region start-pos end-pos nil)))
+            (let ((*work-on-ns-patterns* nil)) ;; t))
+              (declare (special *work-on-ns-patterns*))
+              (let ((result (resolve-ns-pattern pattern words start-pos end-pos)))
                (unless result 
                  (push-debug `(,pattern ,words ,start-pos ,end-pos))
                  ;; (setq pattern (car *) words (cadr *) start-pos (caddr *) end-pos (cadddr *))
@@ -120,7 +123,7 @@
   ;; Called from ns-sort-out-pattern-with-edges when the edge 
   ;; is :initial and the remaining pattern is (:hyphen :lower)
   (declare (special category::verb+ed category::adjective))
-  (let* ((trailing-edge (left-treetop-at end-pos))
+  (let* ((trailing-edge (left-treetop-at/edge end-pos))
          (form (edge-form trailing-edge))
          (right-ref (edge-referent trailing-edge))
          (left-ref (edge-referent leading-edge))

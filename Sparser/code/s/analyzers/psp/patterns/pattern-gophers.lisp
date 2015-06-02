@@ -131,32 +131,36 @@
 
   (push-debug `(,slash-positions ,pos-before ,pos-after ,words ,pattern))
   ;; (setq slash-positions (car *) pos-before (cadr *) pos-after (caddr *) words (cadddr *) pattern (nth 4 *))
-  (when *trace-ns-sequences* (tts))
   (tr :slash-ns-pattern pos-before pos-after)
+  (when *trace-ns-sequences* (tts))
 
   (setq slash-positions (nreverse slash-positions)) ;;(break "slash-position = ~a" slash-positions)
 
   (cond 
    ((eq (first slash-positions) pos-before)
-    (error "New case: Slash is initial term in no-space region between p~a and p~a"
-           (pos-token-index pos-before) (pos-token-index pos-after)))
+    (when *work-on-ns-patterns*
+      (error "New case: Slash is initial term in no-space region between p~a and p~a"
+             (pos-token-index pos-before) (pos-token-index pos-after))))
 
    ((eq (car (last pattern)) :forward-slash) ;; it's final
     ;; and it's probably a mistake in the source: "c-Raf/ MAPK-mediated [6]."
-    (unless (= 1 (length slash-positions))
-      (error "New case: more than one slash in a slash-final pattern"))
-    (let* ((pos-after-minus-1 (chart-position-before pos-after))
-           ;; 1st do the check that would have been done w/o the slash
-           (edge? (span-covered-by-one-edge? pos-before pos-after-minus-1)))
-      (or edge?
-          (else
-            ;;/// I can't think of a meaningfull version of this pattern so
-            ;; dropping the slash on the floor and shrinking the pattern to let
-            ;; the ordinary hyphen-handler do it's thing
-            (setq pattern (nreverse (cdr (nreverse pattern)))
-                  words (nreverse (cdr (nreverse words))))
-            (resolve-hyphen-pattern pattern words hyphen-positions 
-                                    pos-before pos-after-minus-1)))))    
+    (cond
+     ((not (= 1 (length slash-positions)))
+      (when *work-on-ns-patterns*
+        (error "New case: more than one slash in a slash-final pattern")))
+     (t
+      (let* ((pos-after-minus-1 (chart-position-before pos-after))
+             ;; 1st do the check that would have been done w/o the slash
+             (edge? (span-covered-by-one-edge? pos-before pos-after-minus-1)))
+        (or edge?
+            (else
+              ;;/// I can't think of a meaningfull version of this pattern so
+              ;; dropping the slash on the floor and shrinking the pattern to let
+              ;; the ordinary hyphen-handler do it's thing
+              (setq pattern (nreverse (cdr (nreverse pattern)))
+                    words (nreverse (cdr (nreverse words))))
+              (resolve-hyphen-pattern pattern words hyphen-positions 
+                                      pos-before pos-after-minus-1)))))))
 
    (t ;; slash(s) somewhere in the middle   
     (let* ((segment-start pos-before)
@@ -225,19 +229,21 @@
 
 ;; endogenous C-RAF:B-RAF heterodimers
 (defun divide-and-recombine-ns-pattern-with-colon (pattern words 
-                                                           colon-positions hyphen-positions 
-                                                           pos-before pos-after)
+                                                   colon-positions hyphen-positions 
+                                                   pos-before pos-after)
   (declare (ignore hyphen-positions colon-positions words pattern))
   ;;(push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
   (let ((treetops (treetops-between pos-before pos-after)))
-    (if (= (length treetops) 3)
-        ;; nothing to do, there's already a parse of the consituents to either 
-        ;; side of the colon
-        (make-word-colon-word-structure (first treetops) (third treetops))
-        (else
-          (when *work-on-ns-patterns*
-            (push-debug `(,treetops))
-            (break "colon+hyphen stub: have to construct one of the constituents"))))))
+    (cond
+     ((= (length treetops) 3)
+      ;; nothing to do, there's already a parse of the consituents to either 
+      ;; side of the colon
+      (make-word-colon-word-structure (first treetops) (third treetops)))
+     (*work-on-ns-patterns*
+      (push-debug `(,treetops))
+      (break "colon+hyphen stub: have to construct one of the constituents"))
+     (t ;; bail
+      (reify-ns-name-and-make-edge words pos-before pos-after)))))
 
 ;;;--------
 ;;; hyphen
@@ -283,10 +289,11 @@
         ;; make a structure if all else fails
         ;; but first alert to anticipated cases not working
         (make-hyphenated-structure left-edge right-edge))        
-       (t
-        (when *work-on-ns-patterns*
-          (push-debug `(,left-edge ,right-edge ,pattern ,words))
-          (break "One of the 'edges' is actual a (undefined?) word")))))))
+       (*work-on-ns-patterns*
+        (push-debug `(,left-edge ,right-edge ,pattern ,words))
+        (break "One of the 'edges' is actual a (undefined?) word"))
+       (t ;; bail
+        (reify-ns-name-and-make-edge words pos-before pos-after))))))
 
 (defun resolve-hyphen-between-two-terms (pattern words
                                          pos-before pos-after)
@@ -301,7 +308,7 @@
          (left-ref (edge-referent left-edge))
          (right-ref (edge-referent right-edge)))
     (cond
-     ((not ;;;; might be a word -- until I defined BRCT, it died on BRCT-BRCT interaction
+     ((not ;; might be a word 
        (or (individual-p left-ref) 
            (category-p left-ref)))
       (make-bio-pair left-ref right-ref words
@@ -325,22 +332,23 @@
                                            pos-before pos-after)
   ;; Should look for standard patterns, especially on the
   ;; middle word. ///Postponing that effort so we can make some
-  ;; progress. 
-  (declare (special words pos-before -pos-after)(ignore pattern))
+  ;; progress. E.g GAP–to–Ras
+  (declare (special words pos-before pos-after)(ignore pattern))
   (tr :resolve-hyphens-between-three-words words)
   (let ((left-edge (right-treetop-at/edge pos-before))
         (right-edge (left-treetop-at/edge pos-after))
         (middle-edge (right-treetop-at/edge 
                       (chart-position-after 
                        (chart-position-after pos-before)))))
-    (declare (special left-edge right-edge middle-edge))
-    (when
-        (or
-         (not (edge-p left-edge))
-         (not (edge-p middle-edge))
-         (not (edge-p right-edge)))
-      (break "non-edge in make-hyphenated-triple, ~s ~s ~s" left-edge middle-edge right-edge))
-    (make-hyphenated-triple left-edge middle-edge right-edge)))
+    (cond
+     ((or (not (edge-p left-edge))
+          (not (edge-p middle-edge))
+          (not (edge-p right-edge)))
+      (when *work-on-ns-patterns*
+        (break "non-edge in make-hyphenated-triple, ~s ~s ~s" 
+               left-edge middle-edge right-edge)))
+     (t
+      (make-hyphenated-triple left-edge middle-edge right-edge)))))
 
     
 

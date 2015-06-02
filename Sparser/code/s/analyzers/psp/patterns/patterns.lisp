@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  May 2015
+;;;  version:  June 2015
 
 ;; initiated 12/4/14 breaking out the patterns from uniform-scan1.
 ;; 2/2/2015 added initial patterns for colons, such as the ratio 1:500
@@ -56,8 +56,12 @@
       (2 (two-hyphen-ns-patterns
           pattern words hyphen-positions start-pos end-pos))
       (otherwise
-       (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
-       (error "Write the code for ~a hyphens in a no-space sequence" count)))))
+       (cond
+        (*work-on-ns-patterns*
+         (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
+         (error "Write the code for ~a hyphens in a no-space sequence" count))
+        (t
+         (reify-ns-name-and-make-edge words start-pos end-pos)))))))
 
 (defun one-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
   (cond
@@ -92,7 +96,7 @@
       (break "digit hyphen digit on ~a" words)))
 
    ((equal pattern '(:lower :hyphen)) ;; "mono- "
-    (resolve-stranded-hypen pattern words start-pos end-pos))
+    (resolve-stranded-hyphen pattern words start-pos end-pos))
 
    ((and *work-on-ns-patterns*
          (memq :hyphen pattern))
@@ -111,11 +115,14 @@
     (cond
      ((eq (third words) (word-named "to"))
       ;;//// needs a specialization to appreciate what's going on
-      (resolve-hyphen-between-three-words pattern words start-pos end-pos))
+      (or (when *work-on-ns-patterns* (break "Make special pattern for 'to'"))
+          (resolve-hyphen-between-three-words pattern words start-pos end-pos)))
      (t
       (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
    (t  
     (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
+
+
 
 ;;;---------------------------------------------
 ;;; patterns with a colon (only ratios for now)
@@ -180,7 +187,7 @@
 
    ;; fall through
    (t (tr :no-ns-pattern-matched)
-      nil)))
+      (reify-ns-name-and-make-edge words start-pos end-pos))))
 
 
 
