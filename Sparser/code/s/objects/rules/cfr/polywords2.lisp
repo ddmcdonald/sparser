@@ -68,15 +68,32 @@
     initial-state))
 
 (defun find-or-make-initial-pw-state (word)
-  (or (and (word-rule-set word)
-           (rs-fsa (word-rule-set word))) ;; find 
+  (or (starts-polyword word) ;; find 
       (let ((initial-state (make-instance 'polyword-state
                              :word `(,word))))
-        (let ((rs (word-rules word)))
-          (unless rs
-            (setq rs (make-rule-set :backpointer word))
-            (setf (word-rule-set word) rs))
-          (setf (rs-fsa rs) initial-state)))))
+        (let* ((rule-set (word-rules word))
+               (fsa-value (when rule-set (rs-fsa rule-set))))
+          (cond
+           ((null rule-set) ;; guarenteed new
+            (setq rule-set (make-rule-set :backpointer word))
+            (setf (word-rule-set word) rule-set)
+            (setf (rs-fsa rule-set) `(,initial-state)))
+           (fsa-value ;; existing case, e.g. for hyphen
+            (setf (rs-fsa rule-set)
+                  (typecase fsa-value
+                    (cons 
+                     (cons initial-state fsa-value))
+                    (symbol
+                     (list initial-state fsa-value))
+                    (otherwise
+                     (push-debug `(,word ,rule-set ,fsa-value))
+                     (error "Unexpected type of value for fsa field")))))
+           (rule-set
+            ;; has a rule set but no fsa values
+            (setf (rs-fsa rule-set) `(,initial-state)))))
+        initial-state)))
+
+
 
 (defun find-or-make-next-pw-state (state next-word)
   (or (gethash next-word (pw-continuations state))
