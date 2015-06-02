@@ -242,16 +242,26 @@
 ;;; go-fer's
 ;;;----------
 
-;; These are more of an flet style, but the caller is hard enough
-;; to read already.
+;;/// generalize and move
+(defun strip-item-from-either-end (list)
+  (let ((new-list (cdr list)))
+    (setq new-list (nreverse (cdr (nreverse new-list))))))
 
-(defun polyword-ends-here (position)
-  (let* ((ev (pos-ends-here position))
-	 (top-edge (ev-top-node ev)))
-    (when (and top-edge
-	       (edge-p top-edge)) ;; vs. :multiple-initial-edges
-      (when (polyword-p (edge-category top-edge))
-	top-edge))))
+(defun sort-out-edges-in-ns-region (edges leftmost-edge)
+  (cond
+   (edges
+    ;; The leftmost-edge, if there is one, will always be included
+    ;; in the list of edges
+    (if (null (cdr edges)) 
+      edges
+      (let ((in-order (nreverse edges)))
+        (push-debug `(,in-order ,leftmost-edge))
+        in-order)))
+   (leftmost-edge
+    ;; no additional edges collected by sweep-to-end-of-ns-regions
+    ;; but we can't forget the one we already have.
+    `(,leftmost-edge))))
+
 
 (defun edge-ends-here (position)
   (let* ((ev (pos-ends-here position))
@@ -259,22 +269,4 @@
     (when (and top-edge
 	       (edge-p top-edge)) 
       top-edge)))
-
-(defun move-ns-start-before-leading-pw (position)
-  ;; return a position that backs away from the given position by 
-  ;; length of the polyword
-  (let ((edge (polyword-ends-here position)))
-    (unless edge
-      (break "Expected to have a pw edge end at ~a" position))
-    (values (ev-position (edge-starts-at edge))
-	    (edge-category edge))))
-
-(defun move-ns-start-before-leading-edge (position)
-  ;; return a position that backs away from the given position by 
-  ;; length of the polyword
-  (let ((edge (edge-ends-here position)))
-    (unless edge
-      (break "Expected to have an edge end at ~a" position))
-    (values (ev-position (edge-starts-at edge))
-	    edge)))
 

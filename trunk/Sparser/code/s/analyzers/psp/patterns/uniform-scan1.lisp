@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  1.1 May 2015
+;;;  version:  1.1 June 2015
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -23,6 +23,8 @@
 ;;   5/3/15 Added way to keep the sequence from extending over punctuation
 ;;   it didn't do a lookahead on. 
 ;; 1.2 5/15/15 Incorporating edges if they're more than one word long
+;;   6/1/15 fixed bug in single multi-word edge case. Added some sectioning
+;;    to make it easier to navigate
 
 (in-package :sparser)
 
@@ -116,7 +118,7 @@
         (tr :looking-at-ns-segment start-pos end-pos)
         ;; Open coding post-accumulator-ns-handler
         (multiple-value-bind (layout edge)
-                             (parse-between-boundaries start-pos end-pos)
+                             (parse-between-scan-boundaries start-pos end-pos)
           (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
           (cond
            ((eq layout :single-span)  ;; Do nothing. It's already known
@@ -126,6 +128,10 @@
                                  hyphen-positions slash-positions
                                  colon-positions other-punct))))
         end-pos))))
+
+;;;----------
+;;; Dispatch
+;;;----------
 
 (defun ns-pattern-dispatch (start-pos end-pos edges
                             hyphen-positions slash-positions
@@ -142,44 +148,52 @@
 
     (cond 
      (edges
+      (tr :ns-sort-out-pattern-with-edges)
       (ns-sort-out-pattern-with-edges 
        pattern start-pos end-pos edges words
        hyphen-positions slash-positions
        colon-positions other-punct))
               
      ((eq :double-quote (car pattern))
+      (tr :ns-scare-quote)
       (scare-quote-specialist start-pos ;; leading-quote-pos
                               words start-pos end-pos))
 
      ((and slash-positions
            hyphen-positions)
+      (tr :ns-slash-hyphen-combination)
       (divide-and-recombine-ns-pattern-with-slash 
        pattern words slash-positions hyphen-positions start-pos end-pos))
 
      (other-punct
       ;; this probably has to be spread over the other cases
       ;; in some sort of combination, but this is a start
+      (tr :ns-other-punct other-punct)
       (resolve-other-punctuation-pattern
        pattern words other-punct start-pos end-pos))
 
      (slash-positions
       (tr :ns-looking-at-slash-patterns)
-      (resolve-slash-pattern 
-       pattern words slash-positions hyphen-positions start-pos end-pos))
+      (or (resolve-slash-pattern 
+           pattern words slash-positions hyphen-positions start-pos end-pos)
+          (reify-ns-name-and-make-edge words start-pos end-pos)))
 
      ((and hyphen-positions
            colon-positions)
+      (tr :ns-hyphen-and-colon-patterns)
       (divide-and-recombine-ns-pattern-with-colon
        pattern words colon-positions hyphen-positions start-pos end-pos))
 
      (colon-positions
       (tr :ns-looking-at-colon-patterns)
-      (resolve-colon-pattern pattern words colon-positions start-pos end-pos))
+      (or (resolve-colon-pattern pattern words colon-positions start-pos end-pos)
+          (reify-ns-name-and-make-edge words start-pos end-pos)))
      
      (hyphen-positions
-      (tr :ns-looking-at-hypen-patterns)
-      (resolve-hyphen-pattern 
-       pattern words hyphen-positions start-pos end-pos))
+      (tr :ns-looking-at-hyphen-patterns)
+      (or (resolve-hyphen-pattern 
+           pattern words hyphen-positions start-pos end-pos)
+          (reify-ns-name-and-make-edge words start-pos end-pos)))
 
      (t 
       (tr :ns-taking-default)
@@ -187,25 +201,10 @@
           (reify-ns-name-and-make-edge words start-pos end-pos))))))
  
 
-;;/// generalize and move
-(defun strip-item-from-either-end (list)
-  (let ((new-list (cdr list)))
-    (setq new-list (nreverse (cdr (nreverse new-list))))))
 
-(defun sort-out-edges-in-ns-region (edges leftmost-edge)
-  (cond
-   (edges
-    ;; The leftmost-edge, if there is one, will always be included
-    ;; in the list of edges
-    (if (null (cdr edges)) 
-      edges
-      (let ((in-order (nreverse edges)))
-        (push-debug `(,in-order ,leftmost-edge))
-        in-order)))
-   (leftmost-edge
-    ;; no additional edges collected by sweep-to-end-of-ns-regions
-    ;; but we can't forget the one we already have.
-    `(,leftmost-edge))))
+;;;-------------------------------------------
+;;; Default -- basic definition plus polyword
+;;;-------------------------------------------
 
 (defun reify-ns-name-and-make-edge (words pos-before next-position)
   ;; We make an instance of a spelled name with the words as its sequence.
