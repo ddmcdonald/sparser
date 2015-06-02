@@ -90,6 +90,8 @@
 (defmethod get-sentence-subject ((s sentence))
   (sentence-subject (contents s)))
 
+(defmethod get-sentence-subject ((ignore null))
+  nil)
 
 
 ;;;--------------------------
