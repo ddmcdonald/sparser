@@ -170,6 +170,10 @@
     (when *work-on-ns-patterns*
       (break "stranded hyphen: define the category etc"))))
 
+(defun resolve-initial-stranded-hyphen  (pattern words start-pos end-pos)
+  ;; e.g. "-tagged"
+  (push-debug `(,pattern ,words ,start-pos ,end-pos)))
+
 
 
 (defparameter *salient-hyphenated-literals*
