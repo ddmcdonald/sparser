@@ -46,7 +46,7 @@
 (defun who-subject-relative-clause-operation (wh-edge)
   (let* ((start-pos (pos-edge-starts-at wh-edge))
          (end-pos (pos-edge-ends-at wh-edge))
-         (leftward-tt (left-treetop-at start-pos)))
+         (leftward-tt (left-treetop-at/edge start-pos)))
     ;; If there is an NP to our immediate left,
     ;; then respan the wh word with the referent of the NP
 
@@ -59,7 +59,7 @@
       (if (eq leftward-tt word::comma)
         (then 
          (setq start-pos (chart-position-before start-pos))
-         (setq leftward-tt (left-treetop-at start-pos)))
+         (setq leftward-tt (left-treetop-at/edge start-pos)))
         (else
          ;; it's unlikely to be a relative clause start
          ;; so punt e.g "(WHO)"
