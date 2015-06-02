@@ -149,8 +149,9 @@
   (end-of-sentence-processing-cleanup sentence))
 
 
-
-;;--- document-driven processing
+;;;----------------------------
+;;; document-driven processing
+;;;----------------------------
 
 ; (trace-prepopulation)
 
