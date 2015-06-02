@@ -143,11 +143,15 @@
 ; i/r/s-make-the-rule
   
 (defun ddm-pending-notes ()
-  (sparser-doc-ed "notes/note on bio control structure.lisp")
   (sparser-doc-ed "notes/note on anaphora.lisp")
+  (sparser-doc-ed "notes/note on bio control structure.lisp")
+  (sparser-doc-ed "notes/note on edges.lisp")
+  (sparser-doc-ed "notes/note on edges.lisp")
   (sparser-doc-ed "notes/note on simpler shortcuts.lisp")
   (sparser-doc-ed "notes/note on traces.lisp")
-  (sparser-doc-ed "notes/note on edges.lisp"))
+  (sparser-doc-ed "notes/Note on what happens when Sparser loads.lisp")
+  (draft-doc-ed "Notes for polywords.lisp")
+)
 
 
 ;; local anaphora, getting categories right
@@ -578,7 +582,7 @@ wget --output-document=3537887.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cg
                    "~/sparser/Sparser/code/s/"
                    string))
   #+sbcl
-  (print `(**** cant call ed from SBCL yet)))
+  (print `(**** can't call ed from SBCL yet)))
 
 (defun ddm-load (string)
   (load (concatenate 'string
@@ -593,6 +597,11 @@ wget --output-document=3537887.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cg
           "Sparser/documentation/"
           string)))
     (ed load-string)))
+
+(defun draft-doc-ed (string)
+  (ed (concatenate 'string
+        "~/nlp/Sparser/documentation/notes-in-preparation/"
+        string)))
 
 
 
