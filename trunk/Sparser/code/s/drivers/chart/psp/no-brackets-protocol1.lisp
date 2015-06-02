@@ -117,17 +117,13 @@
 ;;;-------------------------------
 
 (defvar *sentence-in-core* nil)
-(defparameter *print-sentences* nil)
 
 (defun sentence-processing-core (sentence)
   ;; Handles all of the processing on a sentence that is done
   ;; after scan-terminals-loop runs.
   (setq *sentence-in-core* sentence)
-  (when
-      (numberp *print-sentences*)
-    (format t "*** (p ~s) ;; ~s" 
-            (sentence-string *sentence-in-core*) 
-            (incf *print-sentences*)))
+  (possibly-print-sentence)
+  
   (when *sweep-for-patterns*
     (pattern-sweep sentence)
     (short-conjunctions-sweep sentence) ;; precede parens
@@ -253,56 +249,6 @@
      ;;(ccl::break "all-sentences*") 
      )))
      
-
-(defparameter *surface-strings* (make-hash-table :size 10000))
-(defun all-individuals-in-tts(sentence)
-  (let
-      ((indivs nil)
-       (start-pos (starts-at-pos sentence))
-       (end-pos (ends-at-pos sentence)))
-    (loop for tt in (all-tts start-pos end-pos)
-      do
-      (loop for i in (individuals-under tt)
-        when (itypep i 'biological)
-        do
-        (pushnew i indivs)))
-    (loop for i in indivs
-      do
-      (store-surface-string i))
-    (reverse indivs)))
-
-
-(defun store-surface-string (indiv)
-  (setf (gethash indiv *surface-strings*)
-        (get-surface-string-for-individual indiv)))
-
-
-(defun get-surface-string-for-individual (i)
-  (or
-   (when (itypep i 'protein)
-     (let ((entry (individuals-discourse-entry i)))
-       (when entry
-         (let* ((most-recent (second entry))
-                (start (car most-recent))
-                (end (cdr most-recent)))
-           (when (and (position-p start) (position-p end))
-             (let ((start-index (pos-character-index start))
-                   (end-index (pos-character-index end)))
-               (push-debug `(,start-index ,end-index ,i)) 
-               (extract-string-from-char-buffers 
-                start-index end-index)))))))
-   (let ((name (value-of 'name i)))
-     (if name
-       (etypecase name
-         (string name)
-         (word (word-pname name))
-         (polyword (pw-pname name)))
-       (format nil "~s" i)))))
-
-(defun retrieve-surface-string (i)
-  (gethash i *surface-strings*))
-
-
 ;;;------------------------------------------------------------
 ;;; final operations on sentence before moving to the next one
 ;;;------------------------------------------------------------
@@ -312,6 +258,7 @@
   ;; we could do a tts 
   #+ignore(when *readout-segments-inline-with-text* ;; be quiet when others are
     (format t "~&--------------------------~%~%")))
+
 
   
 
@@ -372,6 +319,62 @@
 
 
 
+;;;---------------------------
+;;; Helper code for the cards
+;;;---------------------------
+
+(defparameter *surface-strings* (make-hash-table :size 10000))
+(defun all-individuals-in-tts(sentence)
+  (let
+      ((indivs nil)
+       (start-pos (starts-at-pos sentence))
+       (end-pos (ends-at-pos sentence)))
+    (loop for tt in (all-tts start-pos end-pos)
+      do
+      (loop for i in (individuals-under tt)
+        when (itypep i 'biological)
+        do
+        (pushnew i indivs)))
+    (loop for i in indivs
+      do
+      (store-surface-string i))
+    (reverse indivs)))
+
+
+(defun store-surface-string (indiv)
+  (setf (gethash indiv *surface-strings*)
+        (get-surface-string-for-individual indiv)))
+
+
+(defun get-surface-string-for-individual (i)
+  (or
+   (when (itypep i 'protein)
+     (let ((entry (individuals-discourse-entry i)))
+       (when entry
+         (let* ((most-recent (second entry))
+                (start (car most-recent))
+                (end (cdr most-recent)))
+           (when (and (position-p start) (position-p end))
+             (let ((start-index (pos-character-index start))
+                   (end-index (pos-character-index end)))
+               (push-debug `(,start-index ,end-index ,i)) 
+               (extract-string-from-char-buffers 
+                start-index end-index)))))))
+   (let ((name (value-of 'name i)))
+     (if name
+       (etypecase name
+         (string name)
+         (word (word-pname name))
+         (polyword (pw-pname name)))
+       (format nil "~s" i)))))
+
+(defun retrieve-surface-string (i)
+  (gethash i *surface-strings*))
+
+
+;;;------------------------------------
+;;; collectors for semtree and friends
+;;;------------------------------------
 
 (defun tts-semantics ()
   (loop for edge in (cdr (all-tts)) 
@@ -630,4 +633,20 @@
                  (break "Unexpected type of value of a binding: ~a" value))))))))
       
       (reverse desc)))))
+
+
+;;;--------------------
+;;; save the sentences
+;;;--------------------
+
+(defparameter *print-sentences* nil)
+
+(defun possibly-print-sentence ()
+  (declare (special *sentence-in-core* *print-sentences*))
+  (when (numberp *print-sentences*)
+    (format t "*** (p ~s) ;; ~s" 
+            (sentence-string *sentence-in-core*) 
+            (incf *print-sentences*))))
+
+
 
