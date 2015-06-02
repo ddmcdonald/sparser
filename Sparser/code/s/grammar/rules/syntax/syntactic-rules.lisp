@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  April 2015
+;;;  Version:  June 2015
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -27,13 +27,13 @@
 ;; add rule for postmodification by adjective phrase (perhaps should be done in post-pass)
 ;; added rule for to-comp on NPs
 ;; 5/23/2015 allow for PPs that start relative clauses -- "to which", "from whose..."
-
 ;; 5/25/2015 bunch of cleanup for rule-creating loops. Put in rules for subject-relative-clause and pp-relative-clause
 ;;  still need to hook those in
 ;; 5/30-2015 update to take into accoun addition of new passive categories
 ;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
 ;;(def-form-category  vg+passive) ;; vg with an be and V+ED
 ;;(def-form-category  vp+passive) ;; vg with an be and V+ED
+;; 6/2/15 Added pronoun to direct object rules
 
 
 (in-package :sparser)
@@ -412,7 +412,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 
 ;;--- direct object
-(loop for nb in `(category::np ,@*n-bar-categories*)
+(loop for nb in `(category::np ,category::pronoun ,@*n-bar-categories*)
   do
   (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
     do
