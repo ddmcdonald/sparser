@@ -249,22 +249,41 @@
   (when *trace-scan-patterns*
     (trace-msg "[ns] It includes edges ~a" edges)))
 
+(deftrace :ns-sort-out-pattern-with-edges ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Sorting out pattern involving multi-word edges")))
 
 (deftrace :ns-segment-layout (layout)
   (when *trace-scan-patterns*
     (trace-msg "[ns] After parsing the layout is ~a" layout)))
 
+(deftrace :ns-scare-quote ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking for possibility of scare quotes")))
+
 (deftrace :ns-looking-at-slash-patterns ()
   (when *trace-scan-patterns*
     (trace-msg "[ns] Looking for a matching slash pattern")))
 
-(deftrace :ns-looking-at-hypen-patterns ()
+(deftrace :ns-looking-at-hyphen-patterns ()
   (when *trace-scan-patterns*
     (trace-msg "[ns] Looking for a matching hyphen pattern")))
+
+(deftrace :ns-slash-hyphen-combination ()
+   (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking for a matching slash and hyphen pattern")))
+
+(deftrace :ns-hyphen-and-colon-patterns ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking for a hyphen + colon patterns")))
 
 (deftrace :ns-looking-at-colon-patterns ()
   (when *trace-scan-patterns*
     (trace-msg "[ns] Looking for a matching colon pattern")))
+
+(deftrace :ns-other-punct (punct)
+  (when *trace-scan-patterns*
+    (trace-msg "[ns] Looking for pattern with ~a" punct)))
 
 (deftrace :ns-taking-default ()
   (when *trace-scan-patterns*
@@ -286,6 +305,10 @@
 (deftrace :defaulting-two-word-hyphen ()
   (when *trace-scan-patterns*
     (trace-msg "[ns]   Using the default")))
+
+(deftrace :salient-hyphenated-literal ()
+  (when *trace-scan-patterns*
+    (trace-msg "[ns]   Using salient hyphenated-literal")))
 
 (deftrace :two-hyphen-default-edge (edge)
   (when *trace-scan-patterns*
