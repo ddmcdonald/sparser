@@ -18,9 +18,25 @@
 ;; 0.4 (12/10/14) Made try-combination-to-the-left/bounded throw if it
 ;;     encountered a word. 
 ;; 0.5 (1/9/15) Changed the return value to include the edge as well as the layout
+;; 0.6 (6/2/15) Cloned the entry point so that we could have a different
+;;      version with a different rule policy
 
 (in-package :sparser)
 
+
+(defun parse-between-scan-boundaries (left-bound right-bound)
+  ;; the caller has determined that there the two positions aren't
+  ;; the same and that there's some chance of there being an edge
+  ;; across the whole span, e.g. Evaluate-angle-bracket-interior
+  (push-debug `(,left-bound ,right-bound)) ;(break "parse-between")
+  (let ((edge (catch :done-parsing-region
+                (parse-from-to/topmost left-bound right-bound))))
+    (let ((layout (analyze-segment-layout
+                   ;; /// it ought to be possible to keep a running model of this
+                   ;; rather than have to recalculate it here
+                   left-bound right-bound)))
+      (values layout
+              edge))))
 
 (defun parse-between-boundaries (left-bound right-bound)
   ;; the caller has determined that there the two positions aren't
