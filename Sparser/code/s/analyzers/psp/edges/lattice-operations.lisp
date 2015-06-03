@@ -23,9 +23,9 @@
   type
   binds
   downlinks
-   ;; An alist keyed on {category, variable} that takes us to 
+   ;; An alist keyed on {category, variable} that takes us to
    ;; one or more lattice points that bind one more variable
-   ;; than is bound here. 
+   ;; than is bound here.
 
   uplinks
    ;; another such alist.
@@ -50,7 +50,7 @@
             (:conc-name #:dlvv-)
             (:print-function print-dl-variable+value-structure)
             )
-  variable 
+  variable
   value
 )
 
@@ -63,8 +63,8 @@
 
 
 
-(defparameter *lattice-ht* (make-hash-table :size 10000) 
-  "This is the initial way that edge-referent's are linked to the structures that are in the lattice. 
+(defparameter *lattice-ht* (make-hash-table :size 10000)
+  "This is the initial way that edge-referent's are linked to the structures that are in the lattice.
    A bit slower than putting a field in the referent, but applicable to all referents, and does not change their structure.")
 
 (defun get-dli (ref)
@@ -94,7 +94,7 @@
   (let*
       ((var (binding-variable binding))
        (val (binding-value binding))
-       (val-dli 
+       (val-dli
         (or
          (get-dli val)
          ;; otherwise assume that it is a word, or another non-KRISP item
@@ -110,8 +110,8 @@
          (gethash val-dli var-ht) ;; found the unique dlvv
          (setf (gethash val-dli var-ht)
                (make-dl-variable+value :variable var :value val-dli))))))))
-      
-     
+
+
 
 (defparameter *complete-interps* nil)
 (defparameter *no-description-lattice* t)
@@ -120,23 +120,23 @@
   (declare (special referent edge))
   (if *no-description-lattice*
       referent
-      
+
       (when referent
         (if (or (individual-p referent) (referential-category-p referent))
             (let*
                 ((base-and-new-bindings (base-and-new-bindings referent edge))
                  (lattice-description
                   (find-or-make-lattice-description base-and-new-bindings)))
-              
+
               (push base-and-new-bindings *complete-interps*)
               (set-dli referent lattice-description)
               referent)
             referent))))
-     
+
 
 (defun find-or-make-lattice-description (base-and-new-bindings)
   (declare (special base-and-new-bindings))
-  ;; This next piece of code is just to avoid load-time dependencies between the creation of category::top and 
+  ;; This next piece of code is just to avoid load-time dependencies between the creation of category::top and
   ;;  loading this file
   (unless *dl-lattice-top*
     (setq *dl-lattice-top* (make-dl-indiv :id 0 :type category::top))
@@ -145,7 +145,7 @@
   (let*
       ((base (car base-and-new-bindings))
        (bindings (cdr base-and-new-bindings))
-       (base-dli 
+       (base-dli
         (or
          (get-dli base)
          (cond
@@ -154,25 +154,26 @@
           ((individual-p base)
            (cond
             ((memq category::collection (indiv-type base)) ;; likely a conjunction
-             (set-dli 
+             (set-dli
               base
               (find-or-make-lattice-description-for-ref-category category::collection))
              (get-dli base))
             ((filter-bindings (indiv-binds base))
              ;;(ccl::break "individual without dli: ~s" base) PUNT!!
-             (set-dli 
+             (set-dli
               base
               (find-or-make-lattice-description-for-ref-category category::top))
              (get-dli base))
             (t
              ;; this can happen for VGs -- possibly because of the creation of an individual for the referent-category
              ;;  in the interpretation process
-             (set-dli 
+             (set-dli
               base
               (find-or-make-lattice-description-for-ref-category (car (indiv-type base))))
-             (get-dli base))))         
+             (get-dli base))))
           (t
-           (ccl::break "what type of base is this? ~s" base)))))
+           (lsp-break "what type of base is this? ~s" base)
+           ))))
        (current-dli base-dli))
     (declare (special base bindings base-dll current-dll))
     (loop for b in bindings
@@ -222,7 +223,7 @@
   (declare (special parent binding))
   (let*
       ((dl-vv (find-or-make-dlvv binding))
-       (var-subs 
+       (var-subs
         (or
          (assoc (binding-variable binding) (dli-downlinks parent))
          (progn
@@ -251,7 +252,13 @@
 
 (defun link-to-existing-children (new-child parent binding) ;; to be written
   nil)
-  
+
+(defun lsp-break (&rest args)
+  #+allegro
+  (apply #'cl-user::break args)
+  #-allegro
+  (apply #'ccl::break args)
+  )
 
 (defun base-and-new-bindings (referent edge)
   (declare (special referent edge))
@@ -261,7 +268,7 @@
            ))
     (declare (special hr er))
     (let*
-        ((hr-bindings 
+        ((hr-bindings
           (when (individual-p hr)
             (filter-bindings (indiv-binds hr))))
          (e-bindings
@@ -278,7 +285,8 @@
                 (eq (binding-value hb) (binding-value b)))))
             collect b)))
       (declare (special hr-bindings e-bindings new-bindings))
-      (when (> (length new-bindings) 4) (ccl::break "too many incremental bindings"))
+      (when (> (length new-bindings) 4)
+        (lsp-break "too many incremental bindings"))
       (cond
        ((or
          (null er)
@@ -288,19 +296,20 @@
        (hr
         (cons hr new-bindings))
        ((individual-p er)
-        (when (> (length e-bindings) 4) (ccl::break "too many individual bindings"))      
+        (when (> (length e-bindings) 4)
+          (lsp-break "too many individual bindings"))
         (cons (car (indiv-type er))
               e-bindings))
        ((referential-category-p er)
         (list er))
        (t
-        (ccl::break "banb: what do I do with ~s " er)
+        (lsp-break "banb: what do I do with ~s " er)
         )))))
 
 (defun filter-bindings (bindings)
   (declare (special bindings))
   (loop for b in bindings
-    unless 
+    unless
     (memq (var-name (binding-variable b)) '(has-determiner value)) ;; value is bound in items of type number
     collect b))
 
@@ -342,7 +351,7 @@
   (format t "There are ~S dlis" (length *dlis*))
   (setq *bmax* 0)
   (setq *maxb* nil)
-  (loop for d in *dlis* 
+  (loop for d in *dlis*
     do
     (when (> (length (dli-binds d)) *bmax*) (setq *bmax* (length (dli-binds d)))(setq *maxb* d))
     (push d (gethash (length (gethash d *source-ht*)) *ref-counts*))))
