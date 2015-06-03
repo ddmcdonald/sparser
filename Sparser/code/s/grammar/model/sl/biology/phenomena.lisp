@@ -184,6 +184,42 @@
    :on site
    :at site))
 
+(define-category auto-phosphorylate
+  :specializes bio-process
+  :binds ((agent bio-entity))
+  :realization
+  (:verb "auto-phosphorylate" :noun "auto-phosphorylation"
+   :etf (sv)
+   :s agent))
+
+(define-category dephosphorylate
+  :specializes bio-process
+  :binds ((agent biological)(object molecule)) 
+  :realization
+  (:verb "dephosphorylate" :noun "dephosphorylation"
+   :etf (svo-passive)
+   :s agent
+   :o object
+   :of object))
+
+
+(define-category transphosphorylate
+  :specializes bio-process
+  :instantiates self
+  :binds ((agent biological)
+          (substrate (:or protein residue-on-protein))
+          (site residue-on-protein))
+  :index (:permanent :sequential-keys site substrate)
+  :realization
+  (:verb "transphosphorylate" :noun "transphosphorylation"
+   :etf (svo-passive pre-mod)
+   :s agent
+   :o substrate
+   :m site ;; "T669 phosphorylation" in figure-7
+   :of substrate
+   :on site
+   :at site))
+
 
 (define-category ribosylation 
  :specializes bio-process 
