@@ -590,7 +590,9 @@ it is created from N-terminus to C-terminus.|#
   ;;:obo-id 
   :bindings (uid "GO:0005488")
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder molecule)(bindee molecule)(bindee molecule)(direct-bindee molecule)(site molecular-location)
+  :binds ((binder (:or molecule protein-domain))
+          (bindee (:or molecule protein-domain))
+          (direct-bindee molecule)(site molecular-location)
           (cell-site cellular-location))
   :realization 
   (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
