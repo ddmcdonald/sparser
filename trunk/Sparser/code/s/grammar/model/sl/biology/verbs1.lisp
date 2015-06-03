@@ -1416,7 +1416,8 @@
 
 
 (define-category place :specializes bio-method
-  :binds ((agent pronoun/first/plural)(object bio-process)(location bio-location))
+  :binds ((agent pronoun/first/plural)(object (:or bio-process bio-entity))
+          (location bio-location))
   :realization 
   (:verb "place" 
          :noun "placement" 
