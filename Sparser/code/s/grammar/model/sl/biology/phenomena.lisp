@@ -590,14 +590,14 @@ it is created from N-terminus to C-terminus.|#
   ;;:obo-id 
   :bindings (uid "GO:0005488")
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder biological)(bindee biological)(site molecular-location)
+  :binds ((binder molecule)(bindee molecule)(bindee molecule)(direct-bindee molecule)(site molecular-location)
           (cell-site cellular-location))
   :realization 
   (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
          :noun "binding"
          :etf (svo-passive) 
          :s binder
-         :o  bindee
+         :o  direct-bindee
          :to bindee
          :of bindee
          :via site
@@ -606,6 +606,7 @@ it is created from N-terminus to C-terminus.|#
          :to cell-site
          :with bindee))
 
+;; added in notion of direct-bindee for "A binds B" as opposed to "A binds to B"
 
 
 ; From the ERK abstract:
