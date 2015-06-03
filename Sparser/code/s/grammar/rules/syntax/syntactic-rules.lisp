@@ -33,7 +33,8 @@
 ;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
 ;;(def-form-category  vg+passive) ;; vg with an be and V+ED
 ;;(def-form-category  vp+passive) ;; vg with an be and V+ED
-;; 6/2/15 Added pronoun to direct object rules
+;; 6/2/15 Added pronoun and reflexive/pronoun to direct object rules
+;; proper handling of "where" relative clause
 
 
 (in-package :sparser)
@@ -263,7 +264,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 |#
 
 ;;--- prepositional phrases
-(loop for nb in `(category::np  ,@*n-bar-categories*)
+(loop for nb in `(category::np category::pronoun category::reflexive/pronoun ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (preposition ,nb)
@@ -369,6 +370,11 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
                      :head :right-edge
         :form subject-relative-clause
         :referent (:function compose-wh-with-vp left-edge right-edge))))
+  (def-form-rule (where s) 
+                 :head :right-edge
+    :form subject-relative-clause
+    :referent (:function compose-wh-with-vp left-edge right-edge))
+  
   (eval
    `(def-syntax-rule (pp-wh-pronoun ,v) 
                      :head :right-edge
@@ -412,7 +418,7 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 
 ;;--- direct object
-(loop for nb in `(category::np ,category::pronoun ,@*n-bar-categories*)
+(loop for nb in `(category::np ,category::pronoun category::reflexive/pronoun ,@*n-bar-categories*)
   do
   (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
     do
