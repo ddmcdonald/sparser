@@ -434,13 +434,6 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 (loop for n in `(np pronoun ,@*n-bar-categories*)
   do
-  (loop for v in '(vp vg vp+passive vg+passive vg+ed vg+ing)
-    do
-    (eval
-     `(def-syntax-rule (,n ,v)
-                       :head :right-edge
-        :form S
-        :referent (:function assimilate-subject left-edge right-edge))))
   (eval
    `(def-syntax-rule (,n vp+ed)
                      :head :right-edge
@@ -452,6 +445,16 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
                      :head :right-edge
       :form S
       :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
+
+(loop for n in `(np pronoun ,@*n-bar-categories*)
+  do
+  (loop for v in '(vp vg vp+passive vg+passive vg+ing)
+    do
+    (eval
+     `(def-syntax-rule (,n ,v)
+                       :head :right-edge
+        :form S
+        :referent (:function assimilate-subject left-edge right-edge)))))
 
 #|
 
