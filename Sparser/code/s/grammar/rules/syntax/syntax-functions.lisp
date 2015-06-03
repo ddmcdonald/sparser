@@ -54,7 +54,11 @@
 ;; the referent of an edge (creating an individual in the case where the referent is a category, and copying the 
 ;; individual when needed if the referent was an individual)
 ;; Uniformly used this metghod in all places that previously used maybe-copy-individualand/or make-individual-for-dm&p
-
+;; 6/2/2015 Key check in assimilate-subject-to-vp-ed that blocks using vp+ed (or vg+ed) as a main verb when there is
+;; a missing object -- such cases are much more likely to be reduced relatives
+;; this helps handle the Chen/Sorger sentences like "BRAF bound to Ras transphosphorylates itself at Thr598 and Ser601."
+;; in the sense that the reduced relative is not absorbed as a  main verb, though we still need to handle the
+;; rule for the reduced relative
 
 
 (in-package :sparser)
@@ -584,13 +588,21 @@
 
 (defparameter *vp-ed-sentences* nil)
 (defun assimilate-subject-to-vp-ed (subj vp)
+  (declare (special subj vp))
+  ;;(ccl::break "assimilate-subject-to-vp+ed")
   (unless
       *subcat-test* 
     (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
               :test #'equalp))
-  (if (is-passive? (right-edge-for-referent))
-      (assimilate-subcat vp :object subj)
-      (assimilate-subcat vp :subject subj)))
+  (when (or ;; vp has a bound object
+         (null (object-variable vp))
+         (value-of (var-name (object-variable vp)) vp))
+    ;;(ccl::break "assimilate-subject-to-vp+ed")
+    (if (is-passive? (right-edge-for-referent))
+        (then 
+          (ccl::break "can't have a passive vp+ed")
+          (assimilate-subcat vp :object subj)) ; 
+        (assimilate-subcat vp :subject subj))))
 
 (defun is-passive? (edge)
   (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
