@@ -20,6 +20,7 @@
 ;;  adding variables and code for generic relationships in the style
 ;;  that Jerry Hobbs uses. 
 ;; 4/24/2015 maybe-copy modified head before binding variable -- needed to avoid damaging vocabulary entries
+;; 6/2/2015 deal correctly with passives in apply-subject-relative-clause, as in "a protein which is phosphorylated" vs "a protein which phosphorylates"
 
 
 
@@ -139,26 +140,31 @@
 ;;/// 10/27/14 This ought to be a method
 (defun apply-subject-relative-clause (np-ref vp-ref)
   (cond
-   (*subcat-test* t) ;; this rule has no semantic restrictions as of now
+   (*subcat-test* t) ;; this rule has no semantic restrictions as of now    
    (t
-    (let ((subject-var (subject-variable vp-ref)))
-      (setq np-ref (maybe-copy-individual np-ref))
-      (if subject-var
-          ;; copy down the upstairs subject
-          ;; Should we check if it was already bound to something?
-          (bind-variable subject-var np-ref vp-ref)
-          (else
-            ;; (push-debug `(,np-ref ,vp-ref))
-            ;; (break "Can not find subject var in ~a" vp-ref)
-            (when nil
-              (format t "~&~%No subject variable recorded on ~a~%~%"
-                      vp-ref)))      )
-      
-      ;; link the rc to the np
-      (bind-variable 'modifier vp-ref np-ref)
-      
-      ;; referent of the combination is the np
-      np-ref))))
+    (let ((var 
+           (if
+            (is-passive? (right-edge-for-referent))
+            (object-variable vp-ref)
+            (subject-variable vp-ref)))
+          (when var
+            (setq np-ref (maybe-copy-individual np-ref))
+            
+            ;; copy down the upstairs subject
+            ;; Should we check if it was already bound to something?
+            (bind-variable var np-ref vp-ref)
+            (else
+              ;; (push-debug `(,np-ref ,vp-ref))
+              ;; (break "Can not find subject var in ~a" vp-ref)
+              (when nil
+                (format t "~&~%No subject variable recorded on ~a~%~%"
+                        vp-ref)))
+            
+            ;; link the rc to the np
+            (bind-variable 'modifier vp-ref np-ref)
+            
+            ;; referent of the combination is the np
+            np-ref))))))
 
 (defun apply-pp-relative-clause (np-ref vp-ref)
   (cond
