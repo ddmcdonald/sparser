@@ -295,13 +295,6 @@
            :of object
            :thatcomp thatcomp))
 
-(define-category auto-phosphorylate
-  :specializes bio-process
-  :binds ((agent bio-entity))
-  :realization
-  (:verb "auto-phosphorylate" :noun "auto-phosphorylation"
-   :etf (sv)
-   :s agent))
 
 
 ;;--- activity
@@ -596,15 +589,7 @@
    :s agent
    :on theme))
 
-(define-category dephosphorylate
-  :specializes bio-process
-  :binds ((agent biological)(object molecule)) 
-  :realization
-  (:verb "dephosphorylate" :noun "dephosphorylation"
-   :etf (svo-passive)
-   :s agent
-   :o object
-   :of object))
+
 
 (define-category deplete
   :specializes bio-process
