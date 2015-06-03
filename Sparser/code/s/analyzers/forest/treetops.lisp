@@ -34,7 +34,8 @@
 ;; 5/15/15 Moved out literal-edge? to the edge object code.
 ;; 5/25/2015 add on check on competition for pp-wh-pronoun as part of pp-relative-clause
 ;; 5/30/2015 handle new cases of vp_passive in rule competition
-
+;; 6/2/2015 major cleanup in losing-competition?, which led to the discoverhy of some omitted cases in the final check
+;; this allowed it to work in the case of the Chen/Sorger sentences...
 
 (in-package :sparser)
 
@@ -505,74 +506,73 @@
     ;; they are competing over an edges that they have
     ;; in common, and apply heuristics to determine
     ;; which one to permit to win.
-    unless (losing-competition? (car tail) (cadr tail))
+    unless (and (cadr tail)
+                (losing-competition?  (cadr tail) (car tail)))
     do (return (car tail))))
 
-(defun losing-competition? (triple1 triple2)
-  (declare (special triple1 triple2))
-  (cond
-   ((and 
-     (eq (second triple1) (third triple2))
-     ;; there is an edge which is being competed for
-     (or ;; competing against a "there BE"
-      (eq category::syntactic-there (car (cfr-rhs (car triple2))))
-      (and
-       (equal (cfr-rhs (car triple2)) (list category::vg category::np))
-       ;; likely competition against a relative clause or a main clause
-       ;;  accept triple1 as a winner if if is a rightward extension of and NP
-       ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
-       (not (and (edge-form (third triple1))
-                 (member (cat-symbol (edge-form (third triple1)))
-                         '(category::pp category::relative-clause
-                                        category::subject-relative-clause)))))
-      (and ;; pp starting a relative clause -- "in which"
-       (memq (cat-symbol (car (cfr-rhs (car triple2))))
-             '(category::preposition category::spatial-preposition))
-       (eq (cat-symbol (second (cfr-rhs (car triple1)))) 'category::s)
-       (memq (cat-symbol (car (cfr-rhs (car triple1))))
-             '(category::which category::who category::whom category::where)))
-      
-      (and
-       (memq (cat-symbol (car (cfr-rhs (car triple2))))
-             '(category::preposition category::spatial-preposition))
-       (or
-        (equal '(NP/SUBJECT VP) (cfr-rhs-forms (car triple1)))
-        (equal '(NP/PATIENT VP/+ED) (cfr-rhs-forms (car triple1)))
-        (and
-         (category-p (second (cfr-rhs (car triple2))))
-         (or
-          (memq (cat-symbol (second (cfr-rhs (car triple1))))
-                '(category::vg category::vp category::vg+ed category::vp+ed
-                               category::vg+passive category::vp+passive
-                               ))
-          (and
-           (eq (cat-symbol (second (cfr-rhs (car triple1)))) 'category::s)
-           (memq (cat-symbol (car (cfr-rhs (car triple1))))
-                 '(category::which category::who category::whom category::where))))))
-       (not
-        (and
-         (edge-p (edge-left-daughter (third triple1)))
-         (eq category::adjective (edge-form (edge-left-daughter (third triple1))))))
+(defun losing-competition? (l-triple r-triple)
+  (declare (special r-triple l-triple))
+  ;; goal here is to put off subject attachment until the subject 
+  ;; is as large as possible.
+  ;; Don't do right-to-left activation for the subj+verb rules
+  ;;(print `(dropping rule ,r-triple))
+  ;;(print `(in *p-sent* ,*p-sent* dropping rule ,r-triple compared to ,l-triple))
+  (when (eq (second r-triple) (third l-triple))	;; there is an edge which is being competed for
+    (let*
+	((l-triple-rhs (cfr-rhs (car l-triple)))
+	 (l-triple-left (cat-symbol (car l-triple-rhs)))
+	 (r-triple-rhs (cfr-rhs (car r-triple)))
+	 (r-triple-left (cat-symbol (car r-triple-rhs)))
+	 (r-triple-right 
+	  (when (category-p (second r-triple-rhs))
+	    (cat-symbol (second r-triple-rhs)))))
+      (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-left r-triple-right))
+      ;;(ccl::break "compete")
+      (or
+       (eq category::syntactic-there l-triple-left) ;; competing against a "there BE"
+       (and
+        (equal l-triple-rhs (list category::vg category::np))
+        ;; likely competition against a relative clause or a main clause
+        ;;  accept r-triple as a winner if if is a rightward extension of and NP
+        ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
+        (not (and (edge-form (third r-triple))
+                  (member (cat-symbol (edge-form (third r-triple)))
+                          '(category::pp category::relative-clause
+                                         category::subject-relative-clause)))))
        
-       ;; there must be a competing rule
-       (let* ((preceding-edge (edge-just-to-left-of (second triple2)))
-              (sym (and
-                    preceding-edge
-                    (edge-form preceding-edge)
-                    (cat-symbol (edge-form preceding-edge)))))
-         ;; got a case with COMMA as a literal edge
-         (when sym
-           (or
-            (member  sym *ng-head-categories*)
-            (member sym *vg-head-categories*)
-            (member sym *adjg-head-categories*)
-            (member sym '(category::vp category::vg category::vg+ed category::vp+ed))))))))
-    ;; goal here is to put off subject attachment until the subject 
-    ;; is as large as possible.
-    ;; Don't do right-to-left activation for the subj+verb rules
-    ;;(print `(dropping rule ,triple1))
-    ;;(print `(in *p-sent* ,*p-sent* dropping rule ,triple1 compared to ,triple2))
-    t)
-   (t nil)))
+       
+       (and
+        (prep? l-triple-left)
+        (or
+         (and ;; pp starting a relative clause -- "in which"
+          (memq r-triple-left '(category::which category::who category::whom category::where))
+	  (eq r-triple-right 'category::s))
+         (memq r-triple-right
+               '(category::vg category::vp category::vg+ed category::vp+ed
+                              category::vg+passive category::vp+passive)))
+        (not
+         (and
+          (edge-p (edge-left-daughter (third r-triple)))
+          (eq category::adjective (edge-form (edge-left-daughter (third r-triple))))))
+        
+        ;; there must be a constituent which can absorb the result of the left competing rule
+        (let* ((preceding-edge (edge-just-to-left-of (second l-triple)))
+               (sym (and
+                     preceding-edge
+                     (edge-form preceding-edge) ;; got a case with COMMA as a literal edge
+                     (cat-symbol (edge-form preceding-edge)))))
+          (declare (special preceding-edge sym))
+	  (or
+	   (member sym *ng-head-categories*)
+	   (member sym *vg-head-categories*)
+	   (member sym *adjg-head-categories*)
+	   (member sym 
+                   '(category::vp category::vg 
+                                  category::vg+ed category::vp+ed 
+                                  category::vg+ing category::vp+ing
+                                  category::vg-passive categoryvp+passive)))))))))
+
+(defun prep? (cat)
+  (memq cat '(category::preposition category::spatial-preposition)))
 
 
