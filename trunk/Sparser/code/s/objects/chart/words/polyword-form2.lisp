@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1992-1994,2012-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; 
+;;;
 ;;;     File:  "polyword form"
 ;;;   Module:  "objects/chart/words:"
 ;;;  Version:  2.0 May 2015
@@ -56,7 +56,7 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
               a polyword" multi-word-string)))
   ;;(format t "~&Making polyword for ~s~%" multi-word-string)
   (when *force-case-shift*
-    (setq multi-word-string 
+    (setq multi-word-string
           (force-case-of-word-string multi-word-string)))
 
   (let* ((symbol (or (find-symbol multi-word-string *polyword-package*)
@@ -86,12 +86,15 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
       (catalog/polyword polyword symbol)
       (note-file-location polyword)
       (note-grammar-module polyword)
-          
+
       polyword )))
 
 
 
 (defun define-polyword/from-words (list-of-words)
+  #+allegro
+  (cl-user::break "who's calling polyword -- from-words ?")
+  #-allegro
   (ccl::break "who's calling polyword -- from-words ?")
   (let ((string-equivalent
          (polyword-multiword-string-for-list-of-words list-of-words)))
@@ -107,7 +110,7 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
         (let ((pw (make-polyword :symbol symbol
                                  :pname string-equivalent
                                  :words list-of-words)))
-          
+
           (catalog/polyword pw symbol)
           (note-file-location pw)
           (note-grammar-module pw)

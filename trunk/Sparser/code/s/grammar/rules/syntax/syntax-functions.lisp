@@ -1,23 +1,23 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2014-2015 David D. McDonald -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
 ;;;  Version:  May 2015
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
-;; RJB 12/20/2014 tentative fix to allow interpret-pp-adjunct-to-np 
-;;   to handle bio-context. 
-;; 1/2/2015 put hooks in adjoin-pp-to-vg and interpret-pp-adjunct-to-np 
+;; RJB 12/20/2014 tentative fix to allow interpret-pp-adjunct-to-np
+;;   to handle bio-context.
+;; 1/2/2015 put hooks in adjoin-pp-to-vg and interpret-pp-adjunct-to-np
 ;;   to allow for subcategorization frames
-;; 1/5/2015 refactor code that David wrote for adjoin-pp-to-vg and 
+;; 1/5/2015 refactor code that David wrote for adjoin-pp-to-vg and
 ;;   interpret-pp-adjunct-to-np to allow them to be used as predicates as well as actions
 ;; 1/14/2015 support for negation and (eventually) other tense/aspect features
-;;   methods for assimilating object using sub-categorization frame, 
+;;   methods for assimilating object using sub-categorization frame,
 ;;   and for handling verb_ing premodifiers
 ;; (2/12/15) Fixed return value for adj-noun-compound.
-;; 2/23/2015 allow pronouns to be subjects using the submit mechanism, and 
+;; 2/23/2015 allow pronouns to be subjects using the submit mechanism, and
 ;; this file contains the mechanisms for creating an edge over the pronoun edge to include the semantic constraint from the verb
 ;; 3/4/2015 make subcategorization frame respect passives (maps surface subject to object)
 ;;  don't allow a copular-pp on an instance of BE+NP
@@ -32,26 +32,26 @@
 ;; 4/15/15 Reworked treatment of the prepositional-phrase scafolding.
 ;;   Now can have :premod rules for noun-noun modifiers and adj-noun modifiers
 ;; 4/16/2015 fix make-copular-pp to reject "clausal to-pps" like "to enhance craf activation"
-;;     make apply-copular-pp (almost) work -- something is wrong with the referent of the 
-;;     result -- DAVID -- let's look at it 
-;; 4/24/2015 correct trivial typo variable-to-bin --> variable-to-bind 
-;;  that would have blown up in collection of subcat information    
+;;     make apply-copular-pp (almost) work -- something is wrong with the referent of the
+;;     result -- DAVID -- let's look at it
+;; 4/24/2015 correct trivial typo variable-to-bin --> variable-to-bind
+;;  that would have blown up in collection of subcat information
 ;; 4/25/13 Made interpret-pp-adjunct-to-np bind the pobj rather than the pp
-;; 4/27/2015 add new mechanism for sub-cat like interpretation where the PP obj becomes the head, 
+;; 4/27/2015 add new mechanism for sub-cat like interpretation where the PP obj becomes the head,
 ;;  using the syntactic-function interpret-pp-as-head-of-np
 ;;  this is actually for phrases like "a phosphoserine at residue 827"
 ;; 5/3/2015 new adjunct like modifier for bio-rocess -- "upon" or "following" <bio-process>
 ;; 5/8/2015 handle "in vitro" and "in vivo" as VP post-modifiers
 ;; 5/25/2015 start on handling pp-relative-clauses. 5/26/15 Modified return of
 ;; interpret-pp-adjunct-to-np to fail the rule rather than try to bind it's arg
-;; to the variable 'nil'. 
+;; to the variable 'nil'.
 ;; 5/30/2015 make sure all subcat type rules return NIL when they are called with an
-;; argument that does not meet subcategorization requirements -- 
+;; argument that does not meet subcategorization requirements --
 ;; sometimes the rules can be called inside parenthesis processing, etc., and that
 ;; process does not do the appropariate "pre-checks"
 ;; Better handling of special cases for tense/aspect and adverb
 ;; 6/1/2015 add new method individual-for-ref that does all the work of getting an appropriate individual for
-;; the referent of an edge (creating an individual in the case where the referent is a category, and copying the 
+;; the referent of an edge (creating an individual in the case where the referent is a category, and copying the
 ;; individual when needed if the referent was an individual)
 ;; Uniformly used this metghod in all places that previously used maybe-copy-individualand/or make-individual-for-dm&p
 ;; 6/2/2015 Key check in assimilate-subject-to-vp-ed that blocks using vp+ed (or vg+ed) as a main verb when there is
@@ -73,12 +73,12 @@
 ; (right-edge-for-referent)
 ; (parent-edge-for-referent)
 
-(defparameter *force-modifiers* nil 
-  "Set to T when you want to accept all PP modifiers 
+(defparameter *force-modifiers* nil
+  "Set to T when you want to accept all PP modifiers
   to NPs and VPs")
 
 (defparameter *subcat-test* nil
-  "Set to T when we are executing the referent function 
+  "Set to T when we are executing the referent function
    as a predicate, not as part of interpretation of an NP or VP")
 
 ;;;-------------------
@@ -87,36 +87,36 @@
 
 (defun noun-noun-compound (qualifier head)
   (declare (special qualifier head))
-  ;; goes with (common-noun common-noun) syntactic rule 
+  ;; goes with (common-noun common-noun) syntactic rule
   (when nil
-    (push-debug `(,qualifier ,head)) 
+    (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
   (setq head (individual-for-ref head))
   (or (and (null qualifier)
            head)
-      
+
       (call-compose qualifier head) ;; see note with verb-noun-compound
 
-      (interpret-premod-to-np qualifier head) 
+      (interpret-premod-to-np qualifier head)
       ;; subcat tese is here. If there's a :premod subcategorization
-      ;; that's compapatible this gets it. 
+      ;; that's compapatible this gets it.
 
-      ;; This case is to benefit marker-categories 
+      ;; This case is to benefit marker-categories
       (if (itypep head 'process) ;; poor man's standing for verb?
         (then
           (let ((var (object-variable head)))
             (declare (special var))
-           ;; (ccl::break "noun-noun")
+           ;; (lsp-break "noun-noun")
             (if var ;; really should check for passivizing
               (bind-variable var qualifier head)
               ;; otherwise it's not obvious what to bind
-              (else 
+              (else
                 (bind-variable 'modifier qualifier head)))
             head))
         (else
-          ;; what's the right relationship? Systemics would say 
-          ;; they are qualifiers, so perhaps subtype? 
+          ;; what's the right relationship? Systemics would say
+          ;; they are qualifiers, so perhaps subtype?
           (bind-variable 'modifier qualifier head) ;; safe
           head))))
 
@@ -136,13 +136,13 @@
 
 (defun adj-noun-compound (qualifier head)
   ;; (break "adj-noun-compound")
-  ;; goes with (adjective n-bar-type) syntactic rule 
+  ;; goes with (adjective n-bar-type) syntactic rule
   (when nil
-    (push-debug `(,qualifier ,head)) 
+    (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-  (cond 
-   ((call-compose qualifier head));; This case is to benefit marker-categories 
+  (cond
+   ((call-compose qualifier head));; This case is to benefit marker-categories
    ((category-p head)
     (setq head (make-individual-for-dm&p head))
     (or (call-compose qualifier head)
@@ -194,12 +194,12 @@
 
 (defun verb+ing-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")
-  ;; goes with (verb+ed n-bar-type) syntactic rule 
+  ;; goes with (verb+ed n-bar-type) syntactic rule
   (when nil
-    (push-debug `(,qualifier ,head)) 
+    (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-  
+
   (or (call-compose qualifier head)
       ;; This case is to benefit marker-categories
       (cond
@@ -222,12 +222,12 @@
 
 (defun verb-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")
-  ;; goes with (verb+ed n-bar-type) syntactic rule 
+  ;; goes with (verb+ed n-bar-type) syntactic rule
   (when nil
-    (push-debug `(,qualifier ,head)) 
+    (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-  
+
   (or (call-compose qualifier head)
       ;; This case is to benefit marker-categories
       (cond
@@ -259,7 +259,7 @@
     (error "~s is not an event, tense/aspect only applies to individuals that ~
             inherit from event." vg))
   (or (value-of 'aspect vg)
-      (let ((i (make/individual 
+      (let ((i (make/individual
                 (category-named 'tense/aspect-vector) nil)))
         (setq vg (individual-for-ref vg))
         (bind-variable 'aspect i vg)
@@ -268,7 +268,7 @@
 (defun absorb-auxiliary (aux vg)
   (when (category-p vg)
     (setq vg (make-individual-for-dm&p vg)))
-  
+
   ;; otherwise the variable is unavailable
   (let ((aux-type (etypecase aux
                     (individual (itype-of aux))
@@ -333,7 +333,7 @@
        (error "Extend add-tense/aspect to handle ~a" aux)))
     ;;(push-debug `(,i)) (break "look at i")
     vg))
-      
+
 
 
 ;;;-----------------
@@ -360,10 +360,10 @@
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   ;; "direct binding" has a specitif meaning
   ;;/// so there should be a compose method to deal with that
-  
+
   ;; default
   (setq vg (individual-for-ref vg))
-  #|need to diagnose among 
+  #|need to diagnose among
   (time)
   (location)
   (purpose)
@@ -395,7 +395,7 @@
     ((referential-category-p vg)
      (find-variable-for-category 'adverb vg))
     (t
-     (ccl::break "what type of thing is the vg ~s" vg))))
+     (lsp-break "what type of thing is the vg ~s" vg))))
 
 
 (defun interpret-vp+in-vi-context (vv context)
@@ -415,7 +415,7 @@
   ;; the preposition in this PP and if so whether the complement
   ;; of the preposition satisfies the specified value restriction.
   ;; Otherwise we check for some anticipated cases and then
-  ;; default to binding modifier. 
+  ;; default to binding modifier.
   (let* ((pp-edge (right-edge-for-referent))
          (prep-edge (edge-left-daughter pp-edge))
          (prep-word (edge-left-daughter prep-edge))
@@ -433,11 +433,11 @@
                     (and (itypep vg 'bio-process)
                          (itypep pobj-referent 'bio-process))
                   'following))
-              
+
               ;; or if we are making a last ditch effore
-              (and *force-modifiers* 
+              (and *force-modifiers*
                    'modifier))))
-    
+
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
@@ -458,7 +458,7 @@
   ;; the preposition in this PP and if so whether the complement
   ;; of the preposition satisfies the specified value restriction.
   ;; Otherwise we check for some anticipated cases and then
-  ;; default to binding modifier. 
+  ;; default to binding modifier.
   (let* ((pp-edge (right-edge-for-referent))
          (prep-edge (edge-left-daughter pp-edge))
          (prep-word (edge-left-daughter prep-edge))
@@ -468,10 +468,10 @@
           (loop for category in (indiv-type vg)
             do
             (let
-                ((var 
+                ((var
                   (find-variable-for-category 'in-order-to category)))
               (when var (return var))))))
-    
+
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
@@ -485,7 +485,7 @@
 ;;;---------
 ;;; NP + PP
 ;;;---------
-    
+
 (defun interpret-pp-adjunct-to-np (np pp)
   (push-debug `(,np ,pp))
   (or (call-compose np pp) ;; DAVID -- why is this called?!
@@ -502,8 +502,8 @@
              (variable-to-bind
               ;; test if there is a known interpretation of the NP/PP combination
               (or
-               (subcategorized-variable 
-                np prep-word 
+               (subcategorized-variable
+                np prep-word
                 pobj-referent)
                ;; or if we are making a last ditch effort
                ;; if not, then return NIL, failing the rule
@@ -512,7 +512,7 @@
          (*subcat-test* variable-to-bind)
          (variable-to-bind
           (when *collect-subcat-info*
-            (push (subcat-instance np prep-word variable-to-bind 
+            (push (subcat-instance np prep-word variable-to-bind
                                    pp)
                   *subcat-info*))
           (setq np (individual-for-ref np))
@@ -528,7 +528,7 @@
          (comp-edge (edge-right-daughter pp-edge))
          (variable-to-bind
           ;; test if there is a known interpretation of the NP/PP combination
-          (subcategorized-variable 
+          (subcategorized-variable
            np :to-comp
            (edge-referent comp-edge))))
     (declare (special pp-edge comp-edge variable-to-bind))
@@ -536,7 +536,7 @@
      (*subcat-test* variable-to-bind)
      (variable-to-bind
       (if *collect-subcat-info*
-          (push (subcat-instance np 'to-comp variable-to-bind 
+          (push (subcat-instance np 'to-comp variable-to-bind
                                  to-comp)
                 *subcat-info*))
       (setq np (individual-for-ref np))
@@ -558,7 +558,7 @@
             ;; look at the subcategorization on the pobj not on the
             ;;  preceding np
             pobj-referent
-            prep-word 
+            prep-word
             np)
            ;; or if we are making a last ditch effort
            ;; if not, then return NIL, failing the rule
@@ -567,7 +567,7 @@
      (*subcat-test* variable-to-bind)
      (variable-to-bind
       (if *collect-subcat-info*
-          (push (subcat-instance np prep-word variable-to-bind 
+          (push (subcat-instance np prep-word variable-to-bind
                                  pp)
                 *subcat-info*))
       (setq pobj-referent (individual-for-ref pobj-referent))
@@ -589,19 +589,19 @@
 (defparameter *vp-ed-sentences* nil)
 (defun assimilate-subject-to-vp-ed (subj vp)
   (declare (special subj vp))
-  ;;(ccl::break "assimilate-subject-to-vp+ed")
+  ;;(lsp-break "assimilate-subject-to-vp+ed")
   (unless
-      *subcat-test* 
+      *subcat-test*
     (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
               :test #'equalp))
   (when (or ;; vp has a bound object
          (null (object-variable vp))
          (value-of (var-name (object-variable vp)) vp))
-    ;;(ccl::break "assimilate-subject-to-vp+ed")
+    ;;(lsp-break "assimilate-subject-to-vp+ed")
     (if (is-passive? (right-edge-for-referent))
-        (then 
-          (ccl::break "can't have a passive vp+ed")
-          (assimilate-subcat vp :object subj)) ; 
+        (then
+          (lsp-break "can't have a passive vp+ed")
+          (assimilate-subcat vp :object subj)) ;
         (assimilate-subcat vp :subject subj))))
 
 (defun is-passive? (edge)
@@ -620,7 +620,7 @@
 
 
 (defun assimilate-pp-subcat (head prep pobj)
-  (assimilate-subcat head 
+  (assimilate-subcat head
                      (subcategorized-variable head prep pobj)
                      pobj))
 
@@ -634,13 +634,13 @@
      (*subcat-test* variable-to-bind)
      (variable-to-bind
       (collect-subcat-statistics head subcat-label variable-to-bind item)
-      (setq head (individual-for-ref head)) 
+      (setq head (individual-for-ref head))
       (when (and (is-anaphoric? item)
                  ;; this fails when we have BE -- needs to be fixed...
                  (var-value-restriction variable-to-bind)
                  (not (consp (var-value-restriction variable-to-bind))))
-        (setq item 
-              (create-anaphoric-edge-and-referent 
+        (setq item
+              (create-anaphoric-edge-and-referent
                item-edge
                variable-to-bind)))
       (bind-variable variable-to-bind item head)
@@ -653,7 +653,7 @@
 
 (defun is-anaphoric? (item)
   (itypep item category::pronoun))
-  
+
 
 (defun create-anaphoric-edge-and-referent (old-edge variable)
   (let* ((vr (var-value-restriction variable))
@@ -717,17 +717,17 @@
         t)
        ((consp restriction)
         (cond
-         ((eq (car restriction) :or)          
-          (loop for type in (cdr restriction) 
+         ((eq (car restriction) :or)
+          (loop for type in (cdr restriction)
             thereis (subcat-itypep item type)))
          (t (error "subcat-restriction on is a cons but it ~
-                    does not start with :or~%  ~a" 
+                    does not start with :or~%  ~a"
                    restriction))))
        ((category-p restriction)
         (subcat-itypep item restriction))
        (t (error "Unexpected type of subcat restriction: ~a"
                  restriction))))))
-                 
+
 
 ;;;----------------------
 ;;; Prepositional phrase
@@ -737,7 +737,7 @@
   :specializes abstract
   :binds ((prep)
           (pobj))
-  :documentation "Provides a scafolding to hold 
+  :documentation "Provides a scafolding to hold
    a generic prepositional phrase as identified by
    the pp rules in grammar/rules/syntactic-rules.
    Primary consumer is the subcategorization checking
@@ -750,7 +750,7 @@
   :specializes abstract
   :binds ((prep)
           (clause))
-  :documentation "Provides a scafolding to hold 
+  :documentation "Provides a scafolding to hold
    a generic to-comp as identified by
    the pp rules in grammar/rules/syntactic-rules.
    Primary consumer is the subcategorization checking
@@ -764,7 +764,7 @@
   :specializes abstract
   :binds ((pp)
           (clause))
-  :documentation "Provides a scafolding to hold 
+  :documentation "Provides a scafolding to hold
    a generic pp-relative clause such as 'in which ERK is phosphorylated
    in grammar/rules/syntactic-rules.
    Primary consumer is the subcategorization checking
@@ -773,7 +773,7 @@
    information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
 (mark-as-form-category category::prepositional-phrase)
-  
+
 
 #+ignore(defparameter *pp-prep-pobj* (make-hash-table :size 1000))
 #+ignore(defun link-pp-to-prep-and-object (pp prep pobj)
@@ -782,7 +782,7 @@
   (gethash pp *pp-prep-obj*))
 
 (defun make-pp (prep pobj)
-  (let* ((binding-instructions 
+  (let* ((binding-instructions
           `((prep ,prep) (pobj ,pobj)))
          (pp (make-simple-individual
               category::prepositional-phrase
@@ -793,7 +793,7 @@
     pp))
 
 (defun make-pp-relative-clause (pp clause)
-  (let* ((binding-instructions 
+  (let* ((binding-instructions
           `((pp ,pp) (clause ,clause)))
          (pp-rel-clause
           (make-simple-individual
@@ -808,13 +808,13 @@
 (defun make-to-comp (prep clause)
   (declare (special prep clause))
   (cond
-   (*subcat-test* 
-    ;; when we have clausal "to-pp" like 
+   (*subcat-test*
+    ;; when we have clausal "to-pp" like
     ;;  to enhance craf activation
     ;; this is NOT a copular PP
     (eq prep category::to))
    (t
-    (let* ((binding-instructions 
+    (let* ((binding-instructions
             `((prep ,prep) (clause ,clause)))
            (to-comp (make-simple-individual
                 category::to-comp
@@ -827,7 +827,7 @@
 
 ; Called from whack-a-rule-cycle => copula-rule?
 ;       => test-subcat-rule => ref/function
-; Called from whack-a-rule-cycle => best-treetop-rule 
+; Called from whack-a-rule-cycle => best-treetop-rule
 ;       => rule-for-edge-pair => test-subcat-rule => ref/function
 ; Called from whack-a-rule-cycle => execute-one-one-rule
 ;       => form-rule-completion => referent-from-rule
@@ -840,13 +840,13 @@
 (defun make-copular-pp (be-ref pp)
   (when (null (value-of 'predication be-ref))
     ;; If this is not already a predicate copula ("is a drug")
-    
+
     (let* ((cpp (make-unindexed-individual category::copular-pp))
            (prep (value-of 'prep pp))
            (pobj (value-of 'pobj pp)))
       (cond
-       (*subcat-test* 
-        ;; when we have clausal "to-pp" like 
+       (*subcat-test*
+        ;; when we have clausal "to-pp" like
         ;;  to enhance craf activation
         ;; this is NOT a copular PP
         (and prep pobj))
@@ -875,7 +875,7 @@
 (defun get-word-for-prep (prep-val)
   (resolve/make ;; needs to be a word for the subcat frame!
    (string-downcase
-    (symbol-name 
+    (symbol-name
      (cat-symbol prep-val)))))
 
 ;;;-----------------
