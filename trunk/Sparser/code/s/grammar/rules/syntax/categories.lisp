@@ -181,14 +181,18 @@
 (def-form-category thatcomp)
 (def-form-category whethercomp)
 
+(def-form-category unknown-grammatical-function)
 
+;; Grammatical function
+(def-form-category subject)
+(def-form-category direct-object) ;; 'object' is a subcat of Thing
 
 
 ;;;--------------
 ;;; phrase level
 ;;;--------------
-(def-form-category ap) ;; adjective phrase as in "downstream from RAS" -- can be used a NP postmod, or join with copula
-(def-form-category  np)  ;; for consistency with adjg and vg 
+
+(def-form-category  np)  
 (def-form-category  vp)
 (def-form-category  vp+ing)
 (def-form-category  vp+ed)
@@ -201,11 +205,13 @@
 (def-form-category  pp-wh-pronoun)
 (def-form-category  advp)
 (def-form-category  adjp)
+(def-form-category  ap) ;; adjective phrase as in "downstream from RAS"
+                        ;; can be used a NP postmod, or join with copula
 (def-form-category  adjg) ;; for consistency with ng and vg -- could have been adj-bar?
 (def-form-category  qp)
-(def-form-category  proper-name)
-;;(def-form-category to-comp) ;; to + vp or to+vg
 
+(def-form-category  proper-name)
+(def-form-category  to-comp) ;; to + vp or to+vg
 
 
 (def-form-category vg/passive)
