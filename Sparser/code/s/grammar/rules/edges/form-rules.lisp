@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "form rules"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  0.4 February 2015
+;;;  Version:  0.4 June 2015
 
 ;; initiated 10/12/92 v2.3
 ;; 0.1 (6/4/93) allowed a default if the rule doesn't specify the form
@@ -15,10 +15,10 @@
 ;;      edge (keep it from being knit into the chart) following pattern in
 ;;      make-default-binary-edge. 2/12/15 Removed ~% from edge trace
 ;;      and added a break to notice referent failures. 
-
-;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
-;;  initial work to produce a lattice of descriptions
-;;  the places where this call is put were determined by the methods where (complete edge) was also called
+;; 5/25/2015 added call to place-referent-in-lattice around computation 
+;;  of edge-referent field
+;; 6/2/15 Moving the edge kniting operations above the referent computation
+;;  so that we have access to the edge arrangement from there. 
 
 
 (in-package :sparser)
@@ -44,6 +44,15 @@
     (setf (edge-category edge) promulgated-label)
     (setf (edge-form     edge) (or (cfr-form rule)
                                    (edge-form head-edge)))
+    (setf (edge-rule edge) rule)
+
+    (knit-edge-into-positions edge
+                              (edge-starts-at left-edge)
+                              (edge-ends-at right-edge))
+    (set-used-by left-edge edge)
+    (set-used-by right-edge edge)
+    (setf (edge-left-daughter edge) left-edge)
+    (setf (edge-right-daughter edge) right-edge)
 
     (let ((referent (catch :abort-edge
                       (referent-from-rule left-edge right-edge
@@ -60,19 +69,12 @@
           ;; check routine, which should suffice for the parsing
           ;; routines not to see an edge here even though the
           ;; rule went through
+          (remove-edge-from-chart edge)
+          (set-used-by left-edge nil)
+          (set-used-by right-edge nil)
           nil )
 
-        (else
-          
-          (setf (edge-rule edge) rule)
-          
-          (knit-edge-into-positions edge
-                                    (edge-starts-at left-edge)
-                                    (edge-ends-at right-edge))
-          (set-used-by left-edge edge)
-          (set-used-by right-edge edge)
-          (setf (edge-left-daughter edge) left-edge)
-          (setf (edge-right-daughter edge) right-edge)
+        (else          
           (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
           (complete edge)
           
