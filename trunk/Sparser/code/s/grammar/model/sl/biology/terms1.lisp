@@ -351,7 +351,7 @@
 (noun "exchange" :super bio-process)
 (noun "exclusivity" :super bio-abstract) ;; keyword: (ity N)
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
-(noun "fate" :super bio-abstract)
+(noun "fate" :super bio-process)
 
 (noun "fetal calf serum" :super bio-context)
 (def-synonym category::fetal\ calf\ serum
@@ -856,6 +856,7 @@
 (noun "tissue" :super bio-context)
 (define-adverb "to this end")
 (adj "transient" :super bio-predication)
+(noun "transition state intermediate" :super molecule-state)
 (noun "trial" :super bio-context)
 (noun "tumor" :super bio-location)
 (noun "tumor formation" :super bio-process)
