@@ -70,8 +70,8 @@
           ;; routines not to see an edge here even though the
           ;; rule went through
           (remove-edge-from-chart edge)
-          (set-used-by left-edge nil)
-          (set-used-by right-edge nil)
+          (setf (edge-used-in left-edge) nil)
+          (setf (edge-used-in right-edge) nil)
           nil )
 
         (else          
