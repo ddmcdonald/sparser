@@ -1,4 +1,4 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content-methods"
