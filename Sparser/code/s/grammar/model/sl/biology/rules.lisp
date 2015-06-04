@@ -288,8 +288,15 @@
          :bind (context right-edge)))
 
 
-(def-form-rule (VP category::in\ vitro)
+(def-form-rule (VP category::in-vitro)
   :form VP
+  :head :left-edge
+  :referent
+  (:head left-edge
+         :bind (context right-edge)))
+
+(def-form-rule (vp+passive category::in-vitro)
+  :form vp+passive
   :head :left-edge
   :referent
   (:head left-edge
@@ -302,7 +309,7 @@
   (:head left-edge
          :bind (context right-edge)))
 
-(def-form-rule (S category::in\ vivo)
+(def-form-rule (S category::in-vivo)
   :form s
   :head :left-edge
   :referent
@@ -310,7 +317,7 @@
          :bind (context right-edge)))
 
 
-(def-form-rule (VP category::in\ vivo)
+(def-form-rule (VP category::in-vivo)
   :form VP
   :head :left-edge
   :referent
