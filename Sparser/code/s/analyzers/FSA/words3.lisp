@@ -247,9 +247,8 @@
                 (polyword-fsa caps-rules-field))))))))
 
 
-;;///////// field should be a list 
 (defun initiates-polyword1 (word position-before)
-  ;; Returns the rule that marks the polyword or nil
+  ;; Returns the initial state of the polyword or nil
   (or (let ((caps-word (capitalized-correspondent1 
                         position-before word)))
         (when caps-word
