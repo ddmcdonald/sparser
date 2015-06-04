@@ -103,7 +103,7 @@
     (push-debug `(,pattern ,start-pos ,end-pos))
     (break "New hyphen pattern to resolve: ~a" pattern))
 
-   (t (nospace-hyphen-specialist hyphen-positions start-pos end-pos))))
+   (t (nospace-hyphen-specialist words pattern hyphen-positions start-pos end-pos))))
 
 
 (defun two-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
