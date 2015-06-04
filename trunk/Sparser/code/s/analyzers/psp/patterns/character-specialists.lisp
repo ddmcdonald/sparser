@@ -17,7 +17,8 @@
 ;;; hyphens
 ;;;----------
 
-(defun nospace-hyphen-specialist (hyphen-position/s pos-before next-position)
+(defun nospace-hyphen-specialist (words pattern hyphen-position/s 
+                                  pos-before next-position)
   ;; Cleanup case in one-hyphen-ns-patterns when no defined pattern
   ;; has matched. 
   (push-debug `(,hyphen-position/s ,pos-before ,next-position))
@@ -64,11 +65,14 @@
       (let ((hyphen-pos (car hyphen-position/s)))
         (cond
          ((eq hyphen-pos pos-before) ;; it's initial
-          ;; for the moment don't do anything
-          ;; but could look at compose-salient-hyphenated-literals
-          nil)
+          ;; in "green fluorescent protein (GFP)-tagged ERK1"
+          ;; the scanner won't cross the parentheses so we
+          ;; get "-tagged"
+          (resolve-initial-stranded-hyphen 
+           pattern words pos-before next-position))
          ((eq hyphen-pos next-position) ;; its final
-          nil)
+          (resolve-stranded-hyphen 
+           pattern words pos-before next-position))
          (t
           (let ((first-half (resolve-hyphen-segment 
                              pos-before hyphen-pos))
