@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2015
+;;; version: June 2015
 
 ;; Initiated 11/5/13. 3/3/14 Added mechanics and NFkappaB while
 ;; commenting out the original molecules and verbs as OBE and requiring
@@ -15,7 +15,8 @@
 ;; searching through these. 11/12/14 added [switches]. Bumped verbs
 ;; to 1, 12/11/14. 12/28/14 added [phenomena]. 1/16/15 added
 ;; [rules]. 2/20/15 added doc-structure. 5/17/15 gated parse-biopax
-;; when xmls moved out of normal Sparser load.
+;; when xmls moved out of normal Sparser load. 6/4/15 added [rhetoric]
+;; so all elements can go in one place. 
 
 (in-package :sparser)
 
@@ -27,6 +28,7 @@
 (gload "bio;drugs") ;; needed by verbs
 (gload "bio;phenomena") ;; after proteins
 (gload "bio;verbs1")
+(gload "bio;rhetoric")
 (gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")
