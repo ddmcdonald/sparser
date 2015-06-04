@@ -448,6 +448,11 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 (loop for n in `(np pronoun ,@*n-bar-categories*)
   do
+  (eval ;; this is the gerund form of the verb as an NP!!!
+   `(def-syntax-rule (,n vp+ing)
+                       :head :right-edge
+        :form np
+        :referent (:function assimilate-subject left-edge right-edge)))
   (loop for v in '(vp vg vp+passive vg+passive vg+ing)
     do
     (eval
