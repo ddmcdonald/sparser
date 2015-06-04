@@ -671,9 +671,9 @@
                    (not (consp (var-value-restriction variable-to-bind))))
           ;; this fails when we have BE -- needs to be fixed...            
           (break "what's the condition with this break about 'be' ??"))
-        (setq item 
-              (condition-anaphor-edge
-               item-edge subcat-label variable-to-bind)))
+        (when *do-anaphora*
+          (setq item (condition-anaphor-edge
+                      item-edge subcat-label variable-to-bind))))
 
       (bind-variable variable-to-bind item head)
       head))))
