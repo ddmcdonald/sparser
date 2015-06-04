@@ -615,7 +615,8 @@
        (*subcat-test* t) ;; ?????????????
        ((or ;; vp has a bound object
          (null (object-variable vp))
-         (value-of (object-variable vp) vp))
+         (value-of (object-variable vp) vp)
+         (itype subj 'pronoun))
         ;; This situation corresponds to composing them as
         ;; subject and predicate, which is what the rule that
         ;; drives this is set up to do. 
@@ -629,7 +630,8 @@
         ;; situation. But we'll check that the vp has
         ;; the form we expect it to.
         (cond
-         ((eq vp-form category::vp+ed)
+         ((or (eq vp-form category::vp+ed)
+              (eq vp-form category::vg+ed))
           (convert-clause-to-reduced-relative))
          (t
           (push-debug `(,vp-form ,vp-edge))
