@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.6 March 2013
+;;;  Version:  3.7 June 2013
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -49,6 +49,7 @@
 ;;      The shift in modeling style to permit CLOS methods added an entire new
 ;;      set of types of individuals.
 ;;     (3/12/15) Fixed error messages in better to be clearer.
+;; 3.7 (6/3/15) removed restriction on when record-instance-within-sequence runs
 
 (in-package :sparser)
 
@@ -185,7 +186,7 @@
 ;;;----------
 
 (defun add-subsuming-object-to-discourse-history (edge)
-  ;; called from Complete.
+  ;; called from complete.
   (let ((obj (edge-referent edge))
         (start-pos (ev-position (edge-starts-at edge)))
         (end-pos   (ev-position (edge-ends-at edge))))
@@ -285,7 +286,7 @@
 
 (defun irrelevant-category-for-dh (category i)
   (declare (ignore i))
-  ;; Return non-nil for any category that should not be recored
+  ;; Return non-nil for any category that should not be recorded
   ;; in the discourse history. 
   (declare (special *irrelevant-to-discourse-history*))
   (unless *irrelevant-to-discourse-history*
@@ -318,16 +319,15 @@
 
 (defun record-instance-within-sequence (i edge)
   ;; called from add-subsuming-object-to-discourse-history 
-  (when *scan-for-unsaturated-individuals*
-    (flet ((store-on-lifo (i edge)
-             (when *trace-instance-recording*
-               (format t "~&Storing ~a" i))
-             (push `(,i ,edge) *lifo-instance-list*)))
-      (let ((prior-mention (assq i *lifo-instance-list*)))
-        (if prior-mention
-          (unless (new-mention-subsumes-old? prior-mention edge)
-            (store-on-lifo i edge))
-          (store-on-lifo i edge))))))
+  (flet ((store-on-lifo (i edge)
+           (when *trace-instance-recording*
+             (format t "~&Storing ~a" i))
+           (push `(,i ,edge) *lifo-instance-list*)))
+    (let ((prior-mention (assq i *lifo-instance-list*)))
+      (if prior-mention
+        (unless (new-mention-subsumes-old? prior-mention edge)
+          (store-on-lifo i edge))
+        (store-on-lifo i edge)))))
 
 
 (defun cleanup-lifo-instance-list ()
@@ -340,7 +340,7 @@
 
 
 
-;;--- sweep over list look for something unsaturated
+;;; sweep over sentence lifo list look for something unsaturated
 
 ; (setq *scan-for-unsaturated-individuals* t)
 
