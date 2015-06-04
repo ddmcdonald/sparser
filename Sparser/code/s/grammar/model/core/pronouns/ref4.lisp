@@ -47,8 +47,10 @@
         (let ((label (edge-category edge))
               (form (edge-form edge)))
           (case (cat-symbol form)
-            (category::pronoun
-             (handle-pronoun label edge sentence))
+            ((category::pronoun
+              category::subject category::direct-object)
+             (handle-pronoun
+              label form edge sentence))
             (category::wh-pronoun) ;; ignore -- question or subordinator
             (category::reflexive/pronoun) ;; ignore -- adds emphasis, but can be ignored for now
             (otherwise
@@ -68,36 +70,84 @@
    in grammar/rules/.")
 
 
-(defun handle-pronoun (label edge sentence)
-  (push-debug `(,label ,edge ,sentence))
-  ;; (setq label (car *) edge (cadr *) sentence (caddr *))
-  (unless (and *ignore-personal-pronouns*
-               (memq (cat-symbol label)
-                     '(category::pronoun/first/plural 
-                       category::pronoun/first/singular
-                       category::pronoun/second)))
-    (let ((layout (base-layout (contents sentence))))
-      (cond
-       ;; are we the subject? 
-       ((eq edge (subject layout))
-        (let ((previous-subject
-               (and (slot-boundp sentence 'previous)
-                    (get-sentence-subject (previous sentence)))))
-          (when (and previous-subject
-                     (edge-p previous-subject))
-            (let ((category (edge-category previous-subject))
-                  (form (edge-form previous-subject))
-                  (referent (edge-referent previous-subject)))
-              (tr :subverting-pn-edge edge category referent)
-              (setf (edge-category edge) category)
-              (setf (edge-form edge) form)
-              (setf (edge-referent edge) referent)))))
-       (t
-        (when *debug-pronouns*
-          (break "pronoun is not the subject")))))))
+(defun handle-pronoun (label form edge sentence)
+  ;; This is for 'it' in the biology texts where the edge 
+  ;; has been conditioned for us by condition-anaphor-edge
+  ;; which changed the values of the edge's fields to
+  ;; provide us with additional information to constrain
+  ;; the search for a referent
+  (let ((layout (base-layout (contents sentence))))
+    (cond
+     ;; are we the subject? 
+     ((eq edge (subject layout))
+      (let ((previous-subject
+             (and (slot-boundp sentence 'previous)
+                  (get-sentence-subject (previous sentence)))))
+        (when (and previous-subject
+                   (edge-p previous-subject))
+          (transfer-edge-data-to-edge previous-subject edge))))
+     ;; any other edge-based checks go here
+     ((not (eq (edge-rule edge) 'condition-anaphor-edge))
+      (error "Pronoun edge didn't go through condition-anaphor-edge~
+            ~% ~a" edge))
+     (t (let ((type-restriction (edge-category edge))
+              (grammatical-relation (edge-form edge)))
+          (let ((referent
+                 (search-dh-for-compatible-referent 
+                  type-restriction grammatical-relation)))
+            (cond
+             ((null referent)
+              (when *debug-pronouns*
+                (push-debug `(,label ,form ,edge ,sentence))
+                (break "Couldn't find a referent"))
+              ;; convert it back to a pronoun
+              )
+             (t ;; make-over the referent
+              (push-debug `(,edge ,referent))
+              (let ((i (car referent))
+                    (source-edge (cadr referent))
+                    (dummy-i (edge-referent edge)))
+                (transfer-edge-data-to-edge source-edge edge)
+                (rethread-anaphor-bindings dummy-i i)
+                i)))))))))
 
 
+(defun search-dh-for-compatible-referent (type-restriction grammatical-relation)
+  (push-debug `(,type-restriction ,grammatical-relation))
+  ;; (setq type-restriction (car *) grammatical-relation (cadr *))
+  ;; When the restriction is broad, e.g. biological, then
+  ;; local-recorded-instances will return everything and 
+  ;; find-best-recent will prefer the verb (in a simple clause)
+  ;; because it went the referent list last.
+  ;; If we reverse the list we'll pickup the subject
+  (let ((local-candidates (local-recorded-instances type-restriction)))
+    (when local-candidates
+      (let ((in-order (nreverse (copy-list local-candidates))))
+        ;; That puts them in the order they occurred in within
+        ;; the sentence. In a simple clause this is now subject-first
+        (car in-order)))))
 
+(defun transfer-edge-data-to-edge (from to)
+  ;; Copy values on the from edge onto the to edge
+  (let ((category (edge-category from))
+        (form (edge-form from))
+        (referent (edge-referent from)))
+    (tr :subverting-pn-edge to category referent)
+    (setf (edge-category to) category)
+    (setf (edge-form to) form)
+    (setf (edge-referent to) referent)))
+
+(defun rethread-anaphor-bindings (dummy real)
+  ;; The dummy individual on the pronoun edge has already been
+  ;; integrated into one or more bindings as a result of the
+  ;; analysis has already been done. We look up those bindings
+  ;; and modify them to replace the dummy with the real individual.
+  (let ((bindings (indiv-bound-in dummy)))
+    (when bindings
+      ;; The dummy is in the value field
+      (loop for b in bindings
+        do (setf (binding-value b) real))
+      real)))
 
 
 ;;;-----------
