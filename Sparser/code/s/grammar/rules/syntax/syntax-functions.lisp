@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  May 2015
+;;;  Version:  June 2015
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -50,15 +50,20 @@
 ;; sometimes the rules can be called inside parenthesis processing, etc., and that
 ;; process does not do the appropariate "pre-checks"
 ;; Better handling of special cases for tense/aspect and adverb
-;; 6/1/2015 add new method individual-for-ref that does all the work of getting an appropriate individual for
-;; the referent of an edge (creating an individual in the case where the referent is a category, and copying the
-;; individual when needed if the referent was an individual)
-;; Uniformly used this metghod in all places that previously used maybe-copy-individualand/or make-individual-for-dm&p
-;; 6/2/2015 Key check in assimilate-subject-to-vp-ed that blocks using vp+ed (or vg+ed) as a main verb when there is
-;; a missing object -- such cases are much more likely to be reduced relatives
-;; this helps handle the Chen/Sorger sentences like "BRAF bound to Ras transphosphorylates itself at Thr598 and Ser601."
-;; in the sense that the reduced relative is not absorbed as a  main verb, though we still need to handle the
-;; rule for the reduced relative
+;; 6/1/2015 add new method individual-for-ref that does all the work of
+;;  getting an appropriate individual for the referent of an edge (creating
+;;  an individual in the case where the referent is a category, and copying
+;;  the individual when needed if the referent was an individual) Uniformly
+;;  used this metghod in all places that previously used
+;;  maybe-copy-individualand/or make-individual-for-dm&p
+;; 6/2/2015 Key check in assimilate-subject-to-vp-ed that blocks using
+;;  vp+ed (or vg+ed) as a main verb when there is a missing object -- such
+;;  ases are much more likely to be reduced relatives this helps handle the
+;;  Chen/Sorger sentences like "BRAF bound to Ras transphosphorylates itself
+;;  at Thr598 and Ser601."  in the sense that the reduced relative is not
+;;  bsorbed as a main verb, though we still need to handle the rule for the
+;;  reduced relative.
+;; 6/4/15 More modification to assimilate-subject-to-vp-ed for reduced relative
 
 
 (in-package :sparser)
@@ -398,6 +403,7 @@
      (lsp-break "what type of thing is the vg ~s" vg))))
 
 
+
 (defun interpret-vp+in-vi-context (vv context)
   (cond
    (*subcat-test* (itypep vv 'bio-process))
@@ -588,26 +594,47 @@
 
 (defparameter *vp-ed-sentences* nil)
 (defun assimilate-subject-to-vp-ed (subj vp)
-  (declare (special subj vp))
-  ;;(lsp-break "assimilate-subject-to-vp+ed")
-  (unless
-      *subcat-test*
-    (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
-              :test #'equalp))
-  (when (or ;; vp has a bound object
+  (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
+  (let* ((vp-edge (right-edge-for-referent))
+         (vp-form (edge-form vp-edge)))
+    ;;(break "assimilate-subject-to-vp+ed")
+    (unless *subcat-test* 
+      (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
+                :test #'equalp))
+    ;; We have to determine whether this is an s (which the rule
+    ;; that's being invoked assumes) or actually a reduced relative,
+    ;; where the criteria is whether the verb is in oblique or tensed
+    ;; form. If it turned out to be a RR then we do fairly serious
+    ;; surgery on the edge.
+    (when (edge-p (edge-right-daughter vp-edge))
+      ;; The other possibility is :single-term, which indicates
+      ;; that we've just got a vg (one one form or another)
+      ;; and not a full vp, in which case we're returning nil
+      ;; so that the rule doesn't go through.
+      (cond
+       (*subcat-test* t) ;; ?????????????
+       ((or ;; vp has a bound object
          (null (object-variable vp))
-         (value-of (var-name (object-variable vp)) vp))
-    ;;(lsp-break "assimilate-subject-to-vp+ed")
-    (if (is-passive? (right-edge-for-referent))
-        (then
-          (lsp-break "can't have a passive vp+ed")
-          (assimilate-subcat vp :object subj)) ;
-        (assimilate-subcat vp :subject subj))))
+         (value-of (object-variable vp) vp))
+        ;; This situation corresponds to composing them as
+        ;; subject and predicate, which is what the rule that
+        ;; drives this is set up to do. 
+        (if (is-passive? (right-edge-for-referent))
+            (then 
+              (break "can't have a passive vp+ed")
+              (assimilate-subcat vp :object subj))
+            (assimilate-subcat vp :subject subj)))       
+       (t
+        ;; This should correspond to the reduced relative
+        ;; situation. But we'll check that the vp has
+        ;; the form we expect it to.
+        (cond
+         ((eq vp-form category::vp+ed)
+          (convert-clause-to-reduced-relative))
+         (t
+          (push-debug `(,vp-form ,vp-edge))
+          (error "Unexpected vp form in np+vp: ~a" vp-form))))))))
 
-(defun is-passive? (edge)
-  (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
-    (and (> (length cat-string) 3)
-         (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
 
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
@@ -618,43 +645,106 @@
 (defun assimilate-whethercomp (vg-or-np whethercomp)
   (assimilate-subcat vg-or-np :whethercomp whethercomp))
 
-
 (defun assimilate-pp-subcat (head prep pobj)
-  (assimilate-subcat head
-                     (subcategorized-variable head prep pobj)
-                     pobj))
+  (assimilate-subcat head (subcategorized-variable head prep pobj) pobj))
 
+
+(defun form-label-corresponding-to-subcat (subcat-label)
+  ;; Used with pronouns to encode relationship when it's known
+  (case subcat-label
+    (:subject category::subject)
+    (:object category::direct-object)
+    (otherwise nil)))
 
 (defun assimilate-subcat (head subcat-label item)
-  (let ((variable-to-bind
+  (let ((item-edge (edge-for-referent item))
+        (variable-to-bind
          ;; test if there is a known interpretation of the NP+VP combination
-         (subcategorized-variable head subcat-label item))
-        (item-edge (edge-for-referent item)))
+         (subcategorized-variable head subcat-label item)))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
       (collect-subcat-statistics head subcat-label variable-to-bind item)
       (setq head (individual-for-ref head))
-      (when (and (is-anaphoric? item)
-                 ;; this fails when we have BE -- needs to be fixed...
-                 (var-value-restriction variable-to-bind)
-                 (not (consp (var-value-restriction variable-to-bind))))
-        (setq item
-              (create-anaphoric-edge-and-referent
-               item-edge
-               variable-to-bind)))
+      (when (is-anaphoric? item)
+        #+ignore(when (and (var-value-restriction variable-to-bind)
+                   (not (consp (var-value-restriction variable-to-bind))))
+          ;; this fails when we have BE -- needs to be fixed...            
+          (break "what's the condition with this break about 'be' ??"))
+        (setq item 
+              (condition-anaphor-edge
+               item-edge subcat-label variable-to-bind)))
+
       (bind-variable variable-to-bind item head)
       head))))
 
+
 (defun individual-for-ref (head)
-  (if (category-p head) ;;//// need to reclaim bindings !!!!!!
-      (make-individual-for-dm&p head)
-      (maybe-copy-individual head)))
+  (typecase head
+    (individual
+     (maybe-copy-individual head))
+    (category
+     ;;//// need to reclaim bindings !!!!!!
+     (make-individual-for-dm&p head))
+    (cons
+     ;; presumably it's a disjoint value restriction
+     (unless (eq (car head) :or)
+       (error "The 'head' is a cons but it's not a value restriction:~%~a"
+              head))
+     ;; Arbitrily pick the first one
+     (make-individual-for-dm&p (second head)))
+    (otherwise
+     (push-debug `(,head))
+     (error "Unexpected type of 'head' in individual for ref: ~a~
+           ~%  ~a" (type-of head) head))))
+ 
 
-(defun is-anaphoric? (item)
-  (itypep item category::pronoun))
 
+(defun condition-anaphor-edge (pn-edge subcat-label variable)
+  ;; We now know the restriction that any candidate referent for this
+  ;; pronoun has to satisfy, and we know the variable it has to bind. This
+  ;; edge was recorded in the layout as a pronoun and will be retrieved in
+  ;; the pass that does the search after all the parsing has finished, so
+  ;; this is the edge that we work with. We need to record this
+  ;; information, and we need to arrange a 'dummy' individual to be created
+  ;; and bound to this variable during the parsing phase so that we can
+  ;; track through its bound-in relation an replace it in that binding with
+  ;; the correct referent once we've identified it. Kind of Rube Goldberg
+  ;; -esque, but it's the price we pay for delaying rather than trying to
+  ;; identify the referent at moment the pronoun is encountered.
+  (declare (special *ignore-personal-pronouns*))
+  (let* ((original-label (edge-category pn-edge))
+         (relation-label (form-label-corresponding-to-subcat subcat-label))
+         (restriction (var-value-restriction variable))
+         (new-ref (individual-for-ref restriction)))
+    (unless relation-label
+      (setq relation-label category::np))
+    (unless restriction ;; no restriction on the variable being bound
+      (push-debug `(,pn-edge ,subcat-label))
+      (break "New case in pronoun adjustment: no restriction on ~a"
+             variable)
+      (setq restriction category::unknown-grammatical-function))
+    (when (consp restriction)
+      (break "First case of alternative restrictions on pronoun"))
 
+    (unless (and *ignore-personal-pronouns*
+               (memq (cat-symbol original-label)
+                     '(category::pronoun/first/plural 
+                       category::pronoun/first/singular
+                       category::pronoun/second)))
+      ;; If we're going to ignore the pronoun we don't want or
+      ;; need to rework its edge
+      ;;
+      ;; Encode the type-restriction in the category label
+      ;; and the grammatical relationship in the form
+      (setf (edge-category pn-edge) restriction)
+      (setf (edge-form pn-edge) relation-label)
+      (setf (edge-referent pn-edge) new-ref)
+      (setf (edge-rule pn-edge) 'condition-anaphor-edge))
+       
+    new-ref))
+
+#+ignore ;; earlier version -- doesn't link into chart
 (defun create-anaphoric-edge-and-referent (old-edge variable)
   (let* ((vr (var-value-restriction variable))
          (new-item (make-individual-for-dm&p vr))
@@ -672,13 +762,13 @@
 
 
 
+
 (defun subcategorized-variable (head label item)
   (declare (special item))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
-  (when
-      (itypep item 'to-comp)
+  (when (itypep item 'to-comp)
     (setq item (value-of 'clause item)))
   (let ((subcat-patterns (known-subcategorization? head)))
     (when subcat-patterns
@@ -877,6 +967,21 @@
    (string-downcase
     (symbol-name
      (cat-symbol prep-val)))))
+
+
+;;;-----------------------
+;;; type-queries on edges
+;;;-----------------------
+
+(defun is-passive? (edge)
+  (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
+    (and (> (length cat-string) 3)
+         (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
+
+(defun is-anaphoric? (item)
+  (itypep item category::pronoun))
+ 
+
 
 ;;;-----------------
 ;;; There + BE

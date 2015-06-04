@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "subject relatives"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  version:  October 2014
+;;;  version:  June 2015
 
 ;; initiated 6/18/93 v2.3
 ;; (8/9/07) Well something else can go in this file, but just now this
@@ -19,8 +19,12 @@
 ;;  (9/7/14) Moved out the syntax rules to one place. 9/27/14 started
 ;;  adding variables and code for generic relationships in the style
 ;;  that Jerry Hobbs uses. 
-;; 4/24/2015 maybe-copy modified head before binding variable -- needed to avoid damaging vocabulary entries
-;; 6/2/2015 deal correctly with passives in apply-subject-relative-clause, as in "a protein which is phosphorylated" vs "a protein which phosphorylates"
+;; 4/24/2015 maybe-copy modified head before binding variable -- needed to
+;;   avoid damaging vocabulary entries
+;; 6/2/2015 deal correctly with passives in apply-subject-relative-clause,
+;;  as in "a protein which is phosphorylated" vs "a protein which
+;;  phosphorylates"
+;; 6/4/15 Added convert-clause-to-reduced-relative
 
 
 
@@ -139,11 +143,9 @@
 ;;;-----------------
 ;;/// 10/27/14 This ought to be a method
 (defun apply-subject-relative-clause (np-ref vp-ref)
-  (let ((var 
-         (if
-          (is-passive? (right-edge-for-referent))
-          (object-variable vp-ref)
-          (subject-variable vp-ref))))
+  (let ((var (if (is-passive? (right-edge-for-referent))
+               (object-variable vp-ref)
+               (subject-variable vp-ref))))
     (cond
      (*subcat-test* (not (null var))) ;; this rule has no semantic restrictions as of now    
      (var
@@ -187,6 +189,34 @@
       
       ;; referent of the combination is the np
       np-ref))))
+
+(defun convert-clause-to-reduced-relative ()
+  ;; called from assimilate-subject-to-vp-ed when it's looked
+  ;; at the form of the vp and concluded that the combination
+  ;; is a RR rather than an S. 
+  (let ((parent (parent-edge-for-referent))
+        (np-edge (left-edge-for-referent))
+        (vp-edge (right-edge-for-referent)))
+    (unless (eq (edge-category parent)
+                (edge-category vp-edge))
+      ;; This can happen if we're mistakenly getting
+      ;; here in a *subcat-test*
+      (error "Timing may be wrong with when referent is ~
+              computed and edge parts are assembled. Parent S ~
+              is not a projection of VP."))
+    (let* ((np-ref (edge-referent np-edge))
+           (vp-ref (edge-referent vp-edge))
+           (ref ;; do the bindings
+            (apply-pp-relative-clause np-ref vp-ref)))
+      ;; At this point, the parent is set up to be
+      ;; an S, with the np and vp as its daughters.
+      ;; Impose the characteristics of the np on what
+      ;; would have been the S edge.
+      (revise-parent-edge
+       :category (edge-category np-edge)
+       :form (edge-form np-edge)
+       :referent ref)
+      ref)))
 
 (defun apply-upstairs-np-to-subject-relative (np-ref vp-ref)
   ;; used by refactor-s-for-buried-relative which is tied to
