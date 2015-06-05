@@ -654,7 +654,7 @@
 (defun form-label-corresponding-to-subcat (subcat-label)
   ;; Used with pronouns to encode relationship when it's known
   (case subcat-label
-    (:subject category::subject)
+    (:subject category::grammatical-subject)
     (:object category::direct-object)
     (otherwise nil)))
 
@@ -717,34 +717,32 @@
   (declare (special *ignore-personal-pronouns*))
   (let* ((original-label (edge-category pn-edge))
          (relation-label (form-label-corresponding-to-subcat subcat-label))
-         (restriction (var-value-restriction variable))
-         (new-ref (individual-for-ref restriction)))
+         (restriction 
+          (or (var-value-restriction variable)
+              category::unknown-grammatical-function)))
+    (when (consp restriction)
+      ;; the first one after the :or
+      (setq restriction (cadr restriction)))
     (unless relation-label
       (setq relation-label category::np))
-    (unless restriction ;; no restriction on the variable being bound
-      (push-debug `(,pn-edge ,subcat-label))
-      (break "New case in pronoun adjustment: no restriction on ~a"
-             variable)
-      (setq restriction category::unknown-grammatical-function))
-    (when (consp restriction)
-      (break "First case of alternative restrictions on pronoun"))
-
-    (unless (and *ignore-personal-pronouns*
-               (memq (cat-symbol original-label)
-                     '(category::pronoun/first/plural 
-                       category::pronoun/first/singular
-                       category::pronoun/second)))
-      ;; If we're going to ignore the pronoun we don't want or
-      ;; need to rework its edge
-      ;;
-      ;; Encode the type-restriction in the category label
-      ;; and the grammatical relationship in the form
-      (setf (edge-category pn-edge) restriction)
-      (setf (edge-form pn-edge) relation-label)
-      (setf (edge-referent pn-edge) new-ref)
-      (setf (edge-rule pn-edge) 'condition-anaphor-edge))
+ 
+    (let ((new-ref (individual-for-ref restriction)))
+      (unless (and *ignore-personal-pronouns*
+                   (memq (cat-symbol original-label)
+                         '(category::pronoun/first/plural 
+                           category::pronoun/first/singular
+                           category::pronoun/second)))
+        ;; If we're going to ignore the pronoun we don't want or
+        ;; need to rework its edge
+        ;;
+        ;; Encode the type-restriction in the category label
+        ;; and the grammatical relationship in the form
+        (setf (edge-category pn-edge) restriction)
+        (setf (edge-form pn-edge) relation-label)
+        (setf (edge-referent pn-edge) new-ref)
+        (setf (edge-rule pn-edge) 'condition-anaphor-edge))
        
-    new-ref))
+      new-ref)))
 
 #+ignore ;; earlier version -- doesn't link into chart
 (defun create-anaphoric-edge-and-referent (old-edge variable)
