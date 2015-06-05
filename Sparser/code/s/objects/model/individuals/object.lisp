@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.3 April 2014
+;;;  version:  0.4 June 2015
 
 ;; initiated 7/16/92 v2.3
 ;; (6/8/93) added Indiv-typep
@@ -14,6 +14,7 @@
 ;; 0.3 (8/14/13) Since itypep may be used in cases where its argument
 ;;      is a category (head word) rather than an individual, added a
 ;;      diversion for that case. 4/16/14 ditto for itype-of
+;; 0.4 (6/5/15) indiv-typep now returns nil when passed a category.
 
 (in-package :sparser)
 
@@ -72,9 +73,10 @@
            (when inherits-it?
              (values t (i-type-of individual))))))
       (otherwise
-       (push-debug `(,individual ,category/symbol))
-       (error "indiv-typep not applied to an individual:~%~a  ~a"
-              (type-of individual) individual)))))
+       (when *break-on-pattern-outside-coverage?*
+         (push-debug `(,individual ,category/symbol))
+         (error "indiv-typep not applied to an individual:~%~a  ~a"
+                (type-of individual) individual))))))
 
            
 
