@@ -157,13 +157,20 @@ those steps sequentially on a single article.
         (format t "~&~%~%Reading the file ~a" pathname)
         (push (funcall maker-fn simple-id)
               *articles-created*)))
+    (setq list-of-ids 
+          (loop for id in list-of-ids
+            collect
+            (typecase id
+              (symbol id)
+              (string (intern (format nil "PMC~A" id)))
+              (t id))))
     (setq *articles-created* 
           (nreverse
            (loop for form in *articles-created* 
              collect 
              (if (consp form)
-              (car form)
-              form))))
+                 (car form)
+                 form))))
     (loop 
       for article in *articles-created*
       as id in list-of-ids
