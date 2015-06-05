@@ -22,6 +22,7 @@
 ;;     (2/3/15) Adding general search routines to handle 'it' forms in a more
 ;;      diverse type set. Added wh-pronoun to be ignored 3/19/15.
 ;;     (5/31/15 Guard the otherwise fall-through in handle-any-anaphora
+;;     (6/5/15) Make handle-pronoun return nil if pronoun hasn't been massaged.
 
 (in-package :sparser)
 (defvar *BACKGROUND-COMPANIES*)
@@ -88,8 +89,13 @@
           (transfer-edge-data-to-edge previous-subject edge))))
      ;; any other edge-based checks go here
      ((not (eq (edge-rule edge) 'condition-anaphor-edge))
-      (error "Pronoun edge didn't go through condition-anaphor-edge~
-            ~% ~a" edge))
+      (if *debug-pronouns*
+        (then
+          (push-debug `(,edge ,sentence))
+          (error "Pronoun edge didn't go through condition-anaphor-edge~
+                ~% ~a" edge))
+        ;; Don't do anything
+        (return-from handle-pronoun nil)))
      (t (let ((type-restriction (edge-category edge))
               (grammatical-relation (edge-form edge)))
           (let ((referent
