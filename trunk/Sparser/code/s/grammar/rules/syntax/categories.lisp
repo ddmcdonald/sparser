@@ -1,3 +1,4 @@
+
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
 ;;; copyright (c) 1992-1999,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
@@ -88,6 +89,9 @@
 ;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
 ;;(def-form-category  vg+passive) ;; vg with an be and V+ED
 ;;(def-form-category  vp+passive) ;; vg with an be and V+ED
+;; 6/5/15 Added grammatical-subject and direct-object to name relationships of a term
+;;  (e.g. a pronoun) to its syntactic environment
+
 
 
 (in-package :sparser)
@@ -184,7 +188,7 @@
 (def-form-category unknown-grammatical-function)
 
 ;; Grammatical function
-(def-form-category subject)
+(def-form-category grammatical-subject) ;; subject
 (def-form-category direct-object) ;; 'object' is a subcat of Thing
 
 
