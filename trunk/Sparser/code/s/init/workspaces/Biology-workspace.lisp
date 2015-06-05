@@ -121,7 +121,7 @@ those steps sequentially on a single article.
         (format t "~&About to operate on ~a files~%" (length ids))
         (break "Something went wrong. No ids were generated from~%~a"
                directory-namestring))
-      (populate-article-set ids corpus-path))))
+      (populate-article-set ids corpus-path :quiet))))
 
 
 ;--- 1st populate: Locate the nxml file and run the 
@@ -129,7 +129,7 @@ those steps sequentially on a single article.
 ; document object. 
 
 ;; (populate-article-set)
-(defun populate-article-set (&optional list-of-ids location)
+(defun populate-article-set (&optional list-of-ids location quiet)
   "Given a list of document ids and the location of their
    files in the corpus, run make-sparser-doc-structure to
    return a set of article objects."
@@ -154,7 +154,9 @@ those steps sequentially on a single article.
           (push-debug `(,simple-id ,location))
           (lsp-break "Probe file failed"))
 
-        (format t "~&~%~%Reading the file ~a" pathname)
+        (if quiet
+            (princ "." t)
+            (format t "~&~%~%Reading the file ~a" pathname))
         (push (funcall maker-fn simple-id)
               *articles-created*)))
     (setq list-of-ids 
@@ -233,6 +235,13 @@ those steps sequentially on a single article.
  
 (defun test-articles ()
   (populate-article-set)
+  (sweep-article-set)
+  (with-total-quiet
+      (read-article-set))
+  (setq *accumulate-content-across-documents* t))
+
+(defun test-12-month-articles ()
+  (populate-12-month-NXML-model-article-set)
   (sweep-article-set)
   (with-total-quiet
       (read-article-set))
