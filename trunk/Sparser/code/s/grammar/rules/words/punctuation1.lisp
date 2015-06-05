@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.3 April 2015
+;;;   Version:   1.4 June 2015
 
 ;; 1.0 (9/21/92 v2.3) added everything else, in ascii order
 ;; 1.1 (4/9/93) moved newline to required
@@ -14,6 +14,8 @@
 ;; 1.3 (1/29/15) moved out the constants to their own file
 ;;     Added (define-punctuation rightwards_arrow #\U+2192) for →
 ;;     (4/23/15) underbar? Wrong programming language. Changed it.
+;; 1.4 (6/5/15) Revived old way of mass-generation of punction for the
+;;      massive extension of out-of-band characters in alphabet
 
 (in-package :sparser)
 
@@ -58,6 +60,66 @@
 (define-punctuation  vertical-bar        #\| )   ;; 124
 (define-punctuation  close-curly-bracket #\} )   ;; 125
 (define-punctuation  tilda               #\~ )   ;; 126
+
+
+(defparameter *out-of-band-punctuation*
+  '(
+    (code-char 772)
+    (code-char 894)
+
+    (code-char 8197) ;; whitespace?
+    (code-char 8201)
+    (code-char 8202)
+
+    (code-char 8208)
+    (code-char 8213)
+    (code-char 8218) ;;"‚", (code = 8218)
+
+    (code-char 8226) ;;"•", (code = 8226)
+    (code-char 8230) ;;"…", (code = 8230)
+    (code-char 8232) ;;"", (code = 8232)
+    (code-char 8240) ;;"‰", (code = 8240)
+    (code-char 8242) ;; "prime"
+
+    (code-char 8243) ;;"″", (code = 8243)
+    (code-char 8451) ;;"℃", (code = 8451)
+    (code-char 8482) ;;"™", (code = 8482)
+    (code-char 8491) ;; "Å"
+    (code-char 8545) ;;"Ⅱ", (code = 8545)    (code-char 
+    (code-char 8593) ;;"↑", (code = 8593)
+    ;;(code-char 8594) ;; rightwards arrow  see below
+    (code-char 8595) ;;"↓", (code = 8595)
+    (code-char 8596) ;;"↔", (code = 8596)
+    (code-char 8706) ;;"∂", (code = 8706)
+    (code-char 8722)
+    (code-char 8734) ;;"∞", (code = 8734)
+    (code-char 8776) ;;"≈", (code = 8776)
+    (code-char 8781) ;;"≍", (code = 8781)
+
+
+    (code-char 8804) ;;  "≤"
+    (code-char 8805) ;;"≥", (code = 8805)
+    (code-char 8806) ;;"≦", (code = 8806)
+    (code-char 8901) ;;"⋅", (code = 8901)
+    (code-char 10878) ;;"⩾", (code = 10878)
+
+    (code-char 64257) ;;"ﬁ", (code = 64257) ;; alphabetical
+    (code-char 64258) ;;"ﬂ", (code = 64258)
+
+    (code-char 65288) ;;"（", (code = 65288)
+    (code-char 65293) ;;"－", (code = 65293)
+    ))
+
+(defun add-punctuation-chars ()
+  (dolist (form *out-of-band-punctuation*)
+    (let* ((character (eval form))
+           (namestring (char-name character))
+           (symbol (intern namestring *word-package*)))
+      (format t "~&~a ~a" (cadr form) character)
+      (define-punctuation/expr symbol character))))
+
+(add-punctuation-chars)
+
 
 
 ;; NOTE: the encodings of unicode characters are in HEX, so #\+2192 is 5894 decimal
