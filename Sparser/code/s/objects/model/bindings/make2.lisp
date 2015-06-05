@@ -30,6 +30,9 @@
 ;; 4/18/2015 removed fix to bind-variable/expr, which prevented multiple bindings of a variable on a single individual
 ;; 1.9 (4/20/15) dereferenced instance of anonymous variable in 
 ;;      bind-variable
+;;     (6/5/15) wrapped *break-on-pattern-outside-coverage?* around the 
+;;      complaint in bind-variable when the individual doesn't have the variable
+;;      it wants to bind.
 
 (in-package :sparser)
 
@@ -110,14 +113,17 @@
                  (dereference-variable var/name individual))
                (find-variable-for-category var/name category))))
       (unless variable
-        (push-debug `(,var/name ,value ,individual ,category))
-        (if category
+        ;; motivated by "lipofectamine 2000" where 2000 is read as a year
+        (when *break-on-pattern-outside-coverage?*
+          (push-debug `(,var/name ,value ,individual ,category))
+          (if category
             (break "There is no variable named ~A~
-    ~%associated with the category ~A" var/name category)
+                  ~%associated with the category ~A" var/name category)
             (break "There is no variable named ~A~
-    ~%associated with the category of the individual ~A"
-                   var/name individual)))
-      (bind-variable/expr variable value individual)))))
+                  ~%associated with the category of the individual ~A"
+                   var/name individual))))
+      (when variable
+        (bind-variable/expr variable value individual))))))
 
 
 
