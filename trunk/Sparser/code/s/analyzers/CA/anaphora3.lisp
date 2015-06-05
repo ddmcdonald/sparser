@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.7 June 2013
+;;;  Version:  3.7 June 2015
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -50,6 +50,8 @@
 ;;      set of types of individuals.
 ;;     (3/12/15) Fixed error messages in better to be clearer.
 ;; 3.7 (6/3/15) removed restriction on when record-instance-within-sequence runs
+;;     (6/5/15) Modified individuals-discourse-entry to make it robust under the 
+;;      possiblity that the individual's category has no operations defined for it.
 
 (in-package :sparser)
 
@@ -475,9 +477,12 @@ saturated? is a good entry point. |#
   (unless (individual-p i)
     (error "Argument must be an individual.~%~A is not" i))
   (let* ((primary-category (car (indiv-type i)))
-         (category-instantiated
-          (cat-ops-instantiate (cat-operations primary-category)))
-         (entry (discourse-entry category-instantiated)))
+         (operations (cat-operations primary-category))
+         (category-instantiated 
+          (when operations (cat-ops-instantiate operations)))
+         (entry 
+          (when category-instantiated 
+            (discourse-entry category-instantiated))))
     (when entry
       (assoc i entry :test #'eq))))
 
