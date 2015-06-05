@@ -13,6 +13,41 @@
 |#
 ;  (p "c-Raf/ MAPK-mediated [6].")
 
+;;;------------------
+;;;  These were Hard filenames - now use sparser-pathname defined in load-nlp.lisp
+;;;------------------
+
+;;--- Peter Clark's string function utilities
+; (ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
+; (bel::read-model )
+
+(defun ddm-corpus-location (in-list out-file)
+  (declare (ignore in-list out-file))
+  ;; Note the pathname is given in ancient Mac syntax. 
+  (setq cl-user::location-of-text-corpora
+        "Users:ddm:sift:nlp:corpus:"))
+
+(defun ddm-ed (string)
+  #-sbcl
+  (ed (sparser-sourcefile string))
+  #+sbcl
+  (print `(**** can't call ed from SBCL yet)))
+
+(defun ddm-load (string)
+  (load (sparser-sourcefile string)))
+
+(defun sparser-doc-ed (string)
+  (ed (sparser-file "Sparser/documentation/" string)))
+
+(defun draft-doc-ed (string)
+  (ed (concatenate 'string
+        "~/nlp/Sparser/documentation/notes-in-preparation/"
+        string)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
 (defun ddm-standard ()  ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
@@ -561,47 +596,4 @@ wget --output-document=3537887.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cg
 
 3847091
 |#
-
-;;;------------------
-;;;  Hard filenames
-;;;------------------
-
-;;--- Peter Clark's string function utilities
-; (ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
-; (bel::read-model )
-
-(defun ddm-corpus-location (in-list out-file)
-  (declare (ignore in-list out-file))
-  ;; Note the pathname is given in ancient Mac syntax. 
-  (setq cl-user::location-of-text-corpora
-        "Users:ddm:sift:nlp:corpus:"))
-
-(defun ddm-ed (string)
-  #-sbcl
-  (ed (concatenate 'string
-                   "~/sparser/Sparser/code/s/"
-                   string))
-  #+sbcl
-  (print `(**** can't call ed from SBCL yet)))
-
-(defun ddm-load (string)
-  (load (concatenate 'string
-                     "~/sparser/Sparser/code/s/"
-                     string)))
-
-(defun sparser-doc-ed (string)
-  (let ((load-string
-         (concatenate
-          'string
-          (namestring cl-user::*nlp-home*) ;; e.g. #P"/Users/ddm/sparser/"
-          "Sparser/documentation/"
-          string)))
-    (ed load-string)))
-
-(defun draft-doc-ed (string)
-  (ed (concatenate 'string
-        "~/nlp/Sparser/documentation/notes-in-preparation/"
-        string)))
-
-
 

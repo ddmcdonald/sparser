@@ -17,6 +17,17 @@
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (setup-bio) ;; load the bio model etc.
 
+;;; copied from ddm-load-corpora in ddm-workspace. 
+(defun load-bio-corpora ()
+  (s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (s-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (s-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
+  (s-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
+  (s-load "interface/R3-eval/overnight-sents.lisp")
+  (s-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
+
+
+
 (defun setup-bio ()
   (bio-setting)
   (remove-paragraph-marker) ;; #<PSR1155  sgml-label ->  "p"> interfers with "p100"
@@ -24,7 +35,7 @@
   (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
   (gate-grammar *biology* ;; sets up stats collection
     (gload "bio;loader"))
-  (ddm-load-corpora)
+  (load-bio-corpora)
   (declare-all-existing-individuals-permanent))
 
 ;;;-------------------------------------------------------
