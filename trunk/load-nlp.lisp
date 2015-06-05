@@ -56,6 +56,19 @@
 ;; Change this to fit where you put Sparser
 ;; (setq *nlp-home* "/Users/ddm/sparser/")
 
+(defun sparser-file (&rest file-path-parts) ;; as strings
+  (merge-pathnames (apply #' concatenate 'string file-path-parts) *nlp-home*))
+
+(defun sparser-load-file (&rest file-path-parts)
+  (load  (merge-pathnames (apply #' concatenate 'string file-path-parts) *nlp-home*)))
+
+(defun sparser-sourcefile (s-path-string)
+  (sparser-file "Sparser/code/s/" s-path-string))
+
+;;; load for path under SPARSER/code/s/
+;;; this is what ddm-load should be. 
+(defun s-load (source-path)
+  (load (sparser-sourcefile source-path)))
 
 ;; #2 --- ASDF setup
 
@@ -96,7 +109,9 @@
     (:use common-lisp
           ddm-util
           #+apple ccl
-          #+openmcl :ccl)))
+          #+openmcl :ccl)
+    (:import-from :cl-user #:sparser-file #:sparser-load-file #:sparser-sourcefile #:s-load)
+    ))
 
 ;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, that invocatation of
 ;; defpackage does not include ddm-util in the result. Works just fine
