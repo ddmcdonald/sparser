@@ -60,6 +60,29 @@
 (define-punctuation  vertical-bar        #\| )   ;; 124
 (define-punctuation  close-curly-bracket #\} )   ;; 125
 (define-punctuation  tilda               #\~ )   ;; 126
+(define-punctuation  division-sign       #\÷ )   ;; 247
+
+(define-punctuation copyright_sign #\Copyright_Sign) ;; 169
+(define-punctuation registered_sign #\Registered_Sign) ;; 174
+(define-punctuation  acute_accent #\Acute_Accent) ;;180
+(define-punctuation  middle_dot #\Middle_Dot) ;; 183
+(define-punctuation  masculine_ordinal_indicator   #\Masculine_Ordinal_Indicator) ;; 186
+(define-punctuation  vulgar_fraction_one_half   #\Vulgar_Fraction_One_Half) ;; 189
+(define-punctuation  vulgar_fraction_three_quarters   #\Vulgar_Fraction_Three_Quarters) ;; 190
+(define-punctuation  latin_capital_letter_a_with_ring_above   #\Latin_Capital_Letter_A_With_Ring_Above) ;; 197
+(define-punctuation  latin_small_letter_sharp_s   #\Latin_Small_Letter_Sharp_S) ;; 223
+(define-punctuation  latin_small_letter_a_with_acute   #\Latin_Small_Letter_A_With_Acute) ;; 225
+(define-punctuation  latin_smalL_letter_a_with_tilde   #\Latin_Small_Letter_A_With_Tilde) ;; 227
+(define-punctuation  latin_small_letter_a_with_diaeresis   #\Latin_Small_Letter_A_With_Diaeresis) ;; 228
+(define-punctuation  latin_small_letter_e_with_grave   #\Latin_Small_Letter_E_With_Grave) ;; 232 
+(define-punctuation  latin_small_letter_e_with_acute   #\Latin_Small_Letter_E_With_Acute) ;; 233
+(define-punctuation  latin_small_letter_e_with_diaeresis   #\Latin_Small_Letter_E_With_Diaeresis) ;; 235
+(define-punctuation  latin_small_letter_i_with_grave   #\Latin_Small_Letter_I_With_Grave) ;; 236
+(define-punctuation  latin_small_letter_i_with_acute   #\Latin_Small_Letter_I_With_Acute) ;; 237
+(define-punctuation  latin_small_letter_o_with_circumflex   #\Latin_Small_Letter_O_With_Circumflex) ;; 244
+(define-punctuation  latin_small_letter_o_with_diaeresis   #\Latin_Small_Letter_O_With_Diaeresis) ;; 246
+(define-punctuation  latin_small_letter_o_with_stroke   #\Latin_Small_Letter_O_With_Stroke) ;; 248
+(define-punctuation  latin_small_letter_u_with_diaeresis   #\Latin_Small_Letter_U_With_Diaeresis) ;; 252
 
 
 (defparameter *out-of-band-punctuation*
