@@ -163,14 +163,14 @@ decoding table for referenced OBO terms
       (legal-non-alphanumeric? char)))
 
 (defun make-nlp-path (rel-path)
-  (format nil"~A/~A" cl-user::*nlp-home* rel-path))
+  (sparser-sourcefile rel-path))
 
 (defun make-reactome-path (rel-path)
-  (make-nlp-path
-   (format nil "Sparser/code/s/grammar/model/sl/biology/reactome/~A" rel-path)))
+  (sparser-sourcefile "grammar/model/sl/biology/reactome/" rel-path))
 
 (defun legal-non-alphanumeric? (char)
   (member char '(#\_ #\-) :test 'eql))
+
 (defun CamelCase-string-to-separated (pname &optional (separator #\-))
   (let ((chars nil)
         (len (length pname))
@@ -221,7 +221,9 @@ decoding table for referenced OBO terms
 (defparameter *raw-ras1* nil)
 (defparameter *trimmed-ras1* nil)
 
-(defun load-ras1(&optional (file "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/ExamplePackage/ras_1.owl"))
+;;; r3-path defined in r3/trunk/code/load.lisp
+
+(defun load-ras1 (&optional (file (cl-user::r3-path "darpa/12-month TestMaterials/ExamplePackage/ras_1.owl")))
   (setq *raw-ras1* (load-owl file))
   (setq *trimmed-ras1*
         (loop for r in (cdddr (xmls::node-children *raw-ras1*))
@@ -237,7 +239,7 @@ decoding table for referenced OBO terms
           (normalize-sexpr-to-biopax3 (gethash (second bio-sexpr) *xml-ht*)))))
 
 (defun load-ras2 ()
-  (load-ras1 "/Users/rusty/Documents/r3/trunk/darpa/12-month TestMaterials/Ras-2-neighborhood.owl"))
+  (load-ras1 (cl-user::r3-path "darpa/12-month TestMaterials/Ras-2-neighborhood.owl")))
 
 (defun load-owl (filename)
   (with-open-file
