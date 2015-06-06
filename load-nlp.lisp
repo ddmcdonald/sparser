@@ -46,7 +46,6 @@
 
 (in-package :cl-user)
 (defparameter *NO-MUMBLE* t) ;; for SBCL compatibility
-
 ;; #1 --- set the base directory
 
 (defparameter *nlp-home*
@@ -70,6 +69,7 @@
 (defun s-load (source-path)
   (load (sparser-sourcefile source-path)))
 
+
 ;; #2 --- ASDF setup
 
 (require :asdf)
@@ -84,20 +84,10 @@
     (pushnew (merge-pathnames (make-pathname :directory '(:relative "Mumble" "derivation-trees")))
              asdf:*central-registry*)))
 
-
-
 ;; #3 --- Load the utilities. Note that their exported symbols
 ;; are in the package :ddm-util, which is also the name of its asd file
 
 #+openmcl(asdf:operate 'asdf:load-op :ddm-util)
-
-;; Accommodates an undiagnosed issue with Allegro CL
-#-openmcl(let ((*default-pathname-defaults* cl-user::*nlp-home*))
-           (load (merge-pathnames 
-                  (make-pathname :directory '(:relative "util") 
-                                 :name "loader"
-                                 :type "lisp"))))
-
 
 
 ;; #4 --- Create the sparser package
@@ -113,10 +103,22 @@
     (:import-from :cl-user #:sparser-file #:sparser-load-file #:sparser-sourcefile #:s-load)
     ))
 
+
 ;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, that invocatation of
 ;; defpackage does not include ddm-util in the result. Works just fine
 ;; in ACL and before installing Lion (for what that's worth).  -- ddm
 #+openmcl (use-package (find-package :ddm-util) (find-package :sparser))
+
+
+
+
+;; Accommodates an undiagnosed issue with Allegro CL
+#-openmcl(let ((*default-pathname-defaults* cl-user::*nlp-home*))
+           (load (merge-pathnames 
+                  (make-pathname :directory '(:relative "util") 
+                                 :name "loader"
+                                 :type "lisp"))))
+
 
 
 ;; #5 Load Mumble
