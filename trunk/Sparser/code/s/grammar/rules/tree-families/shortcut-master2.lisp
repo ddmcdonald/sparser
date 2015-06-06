@@ -22,6 +22,8 @@
 ;; this will make it easier to add new slots, including ones which are not prepositions
 ;; 4/24/2015 added whethercomp as a type of verb complement
 ;; 5/12/15 Minor cleanup for read-ability.
+;; 6/5/2015 extend subject-variable and object-variable to make use of subcategorization information
+;; and add thatcomp-variable
 
 
 (in-package :sparser)
@@ -384,19 +386,58 @@
   (let ((ref (edge-referent e)))
     (when ref (subject-variable ref))))
 (defmethod subject-variable ((c category))
-  (get-tag-for :subject-variable c))
+  (or
+   (get-tag-for :subject-variable c)
+   (let
+       ((sc (get-ref-subcategorization c)))
+     (when sc
+       (third (assoc :subject sc))))))
 (defmethod subject-variable ((i individual))
-  (get-tag-for :subject-variable (car (indiv-type i))))
+  (or
+   (get-tag-for :subject-variable (car (indiv-type i)))
+   (let
+       ((sc (get-ref-subcategorization i)))
+     (when sc
+       (third (assoc :subject sc))))))
 (defmethod subject-variable ((ignore t)) nil)
 
 (defmethod object-variable ((e edge))
   (let ((ref (edge-referent e)))
     (when ref (object-variable ref))))
 (defmethod object-variable ((c category))
-  (get-tag-for :object-variable c))
+  (or
+   (get-tag-for :object-variable c)
+   (let
+       ((sc (get-ref-subcategorization c)))
+     (when sc
+       (third (assoc :object sc))))))
+
 (defmethod object-variable ((i individual))
-  (get-tag-for :object-variable (car (indiv-type i))))
+  (or
+   (get-tag-for :object-variable (car (indiv-type i)))
+   (let
+       ((sc (get-ref-subcategorization i)))
+     (when sc
+       (third (assoc :object sc))))))
+
 (defmethod object-variable ((ignore t)) nil)
+
+(defmethod thatcomp-variable ((e edge))
+  (let ((ref (edge-referent e)))
+    (when ref (thatcomp-variable ref))))
+
+(defmethod thatcomp-variable ((c category))
+  (let
+      ((sc (get-ref-subcategorization c)))
+    (when sc
+      (third (assoc :thatcomp sc)))))
+
+(defmethod thatcomp-variable ((i individual))
+  (let
+      ((sc (get-ref-subcategorization i)))
+    (when sc
+      (third (assoc :thatcomp sc)))))
+                              
 
 (defmethod complement-variable ((c category))
   (get-tag-for :complement-variable c))
