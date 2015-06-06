@@ -22,6 +22,9 @@
 ;;   calling multiply-edges unnecessarily
 ;; turn off *edges-from-referent-categories*  -- no longer seems to be needed -- 
 ;;   this speeds up the system by a factor of 3!
+;; 6/5/2015 added (defvar *whack-a-rule-sentence*)bound in  whack-a-rule-cycle
+;;  so that all-tts knows the boundaries of the current sentence.
+
 
 (in-package :sparser)
 (defvar *parse-edges*)
@@ -110,16 +113,16 @@
       (try-spanning-conjunctions))))
 
 (defparameter *rules-for-pairs* (make-hash-table :test #'equal :size 200))
-
-(defun whack-a-rule-cycle (sentence)
-  (let ( copula )
+(defvar *whack-a-rule-sentence*)
+(defun whack-a-rule-cycle (*whack-a-rule-sentence*)
+  (let (copula)
     (loop while (setq copula (copula-rule?))
       do (execute-triple copula)))
-
+  
   (let ( rule-and-edges  edge)
     (clrhash *rules-for-pairs*)
     (loop
-      (setq rule-and-edges (best-treetop-rule sentence))
+      (setq rule-and-edges (best-treetop-rule *whack-a-rule-sentence*))
       (when (null rule-and-edges)
         (return))
       (setq edge (execute-triple rule-and-edges))
