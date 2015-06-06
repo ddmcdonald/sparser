@@ -19,6 +19,8 @@
 ;;  rewrote this version to take the bast of that one and integrate
 ;;  a real 'choose the best' locus, presently a trivial default
 ;; 2/4/2015 cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
+;; 6/5/2-15 Use different parsers for NG, VG and ADJG -- NG is right to left, ADJG and VG are left to right
+;;  this needs to be reviewed, but it helps with "will likely be useful" where the modal wants to be associated with the "be'
 
 (in-package :sparser)
 
@@ -33,9 +35,12 @@
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
   ;;(break "about to parse ~a" *current-chunk*)
-  (if (use-specialized-np-parser?)
-    (interp-big-mech-chunk *current-chunk*)
-    (march-back-from-the-right/segment)))
+  (cond
+   ((use-specialized-ng-parser?)
+    (interp-big-mech-chunk *current-chunk* t))
+   ((use-specialized-vg-parser?)
+    (interp-big-mech-chunk *current-chunk* nil))
+   (t (march-back-from-the-right/segment))))
 
 
 ;;;------------------------
@@ -52,14 +57,12 @@
 (defvar *chunk-edges* nil)
 (defvar *all-chunk-edges* nil)
 
-(defun use-specialized-np-parser? ()
+(defun use-specialized-ng-parser? ()
   ;; Predicate used by parse-at-the-segment-level to determine
   ;; whether to use the specialized big-mech segment parser
   (declare (special *big-mechanism-ngs* *current-chunk*))
   (and *big-mechanism-ngs*
-       (or
-        (eq 'NG (car (chunk-forms *current-chunk*)))
-        (eq 'VG (car (chunk-forms *current-chunk*))))
+       (eq 'NG (car (chunk-forms *current-chunk*)))
        (let ((edges (treetops-in-current-segment)))
          (and (cdr edges) ;; more than one edge
               (or (cddr edges) ;; more than two
@@ -67,7 +70,21 @@
                    (or (eq (edge-form (car edges)) category::det)
                        (eq (edge-form (car edges)) category::quantifier))))))))
 
-(defun interp-big-mech-chunk (chunk)
+(defun use-specialized-vg-parser? ()
+  ;; Predicate used by parse-at-the-segment-level to determine
+  ;; whether to use the specialized big-mech segment parser
+  (declare (special *big-mechanism-ngs* *current-chunk*))
+  (and *big-mechanism-ngs*
+       (memq (car (chunk-forms *current-chunk*)) '(VG ADJG))
+       (let ((edges (treetops-in-current-segment)))
+         (and (cdr edges) ;; more than one edge
+              (or (cddr edges) ;; more than two
+                  (not
+                   (or (eq (edge-form (car edges)) category::det)
+                       (eq (edge-form (car edges)) category::quantifier))))))))
+
+
+(defun interp-big-mech-chunk (chunk from-right)
   ;;(push-debug `(,chunk)) (break "interp chunk: ~a" chunk)
   (when *save-chunk-edges*
     (add-chunk-edges-snapshot))
@@ -80,18 +97,19 @@
     (clrhash *rules-for-pairs*)
     (loop
       (setq triple (select-best-triple
-                    (collect-triples-in-segment chunk)))
+                    (if from-right
+                        (collect-triples-in-segment chunk)
+                        (reverse (collect-triples-in-segment chunk)))))
       (unless triple
         (return))
       (setq edge (execute-triple triple))
       (unless edge 
         (push-debug `(,triple))
-        (error "triple did not produce an edge"))
+        (break "triple did not produce an edge"))
       (tr :triple-led-to-edge edge))
 
     ;; Then mop up anything else that that couldn't
     (march-back-from-the-right/segment)))
-
 
 (defun select-best-triple (triples)
   ;; decision-making goes here, e.g. the types of edges involved,
