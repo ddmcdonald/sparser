@@ -10,6 +10,7 @@
 ;; subcat patterns based on hydrolysis. 
 ;; fixed print method for subcategorization-frame to handle cases without bound word or category slots...
 ;; 1/14/2015 Changes to put :subject and :object selectional restrictions in the subcat frame
+;; 6/5/2015 new utility function get-ref-subcategorization that gets the subcat frame for an individual or a category
 
 (in-package :sparser)
 
@@ -157,6 +158,14 @@
       (if facet
         (funcall facet entry)
         entry))))
+
+(defun get-ref-subcategorization (ref-object)
+  (let ((frame
+         (etypecase ref-object
+           (individual (get-subcategorization (car (indiv-type ref-object))))
+           (category (get-subcategorization ref-object)))))
+    (when frame
+      (subcat-patterns frame))))
 
 (defun fom-subcategorization (label &key form category)
   (let ((sf (get-subcategorization label)))
