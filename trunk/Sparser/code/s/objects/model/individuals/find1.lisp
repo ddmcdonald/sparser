@@ -25,6 +25,14 @@
 ;;      rather than make/individual so that it respects the realization
 ;;      data on the category.
 ;;     (11/13/13) Improved error msg in find/individual/key/hash
+;; 6/5/2015 DAVID!! There is an error that shows up in find/individual/seq-keys 
+;; in which 'instances' which is supposed to be an alist of alists ((instances (cat-instances category)))
+;; ends up as #<hyphenated-triple 131414> during the parse of
+;;"The latter group includes RBPs such as human antigen R (HuR), 
+;; AU-binding factor 1 (AUF1), nucleolin and T-cell intracellular antigen (TIA)-1 
+;; and TIA-1-related (TIAR) proteins, which associate 
+;; with subsets of target mRNAs and modulate their stability and/or translation rates ( xref , xref )."
+
 
 (in-package :sparser)
 
@@ -178,8 +186,15 @@
   (let ((instances (cat-instances category)))
     (when instances
       (let ((unit?
-             (f/i/seq-keys instances
-                           key-sequence category binding-instructions)))
+             (when
+                 ;; block failure when instances is #<hyphenated-triple 131414> from
+                 ;;"The latter group includes RBPs such as human antigen R (HuR), 
+                 ;; AU-binding factor 1 (AUF1), nucleolin and T-cell intracellular antigen (TIA)-1 
+                 ;; and TIA-1-related (TIAR) proteins, which associate 
+                 ;; with subsets of target mRNAs and modulate their stability and/or translation rates ( xref , xref )."
+                 (consp instances)
+               (f/i/seq-keys instances
+                           key-sequence category binding-instructions))))
         unit? ))))
 
 
@@ -189,7 +204,9 @@
 
     (let ((entry (cdr (assoc value instances))))
       (when entry
-        (if (null keys)
+        (if (or
+             (null keys)
+             (not (consp entry)))
           entry
           (f/i/seq-keys entry keys cat instr))))))
 
