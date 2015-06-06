@@ -7,7 +7,8 @@
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
-
+;; 6/5/2015 added methods to control whether breaks and errors halt processing of articles
+;; (defparameter *break-during-read* nil), break-in-articles,  dont-break-in-articles 
 (in-package :sparser)
 
 ;;;----------------
@@ -227,12 +228,25 @@ those steps sequentially on a single article.
     
 
 ;--- 3d read. 
+(defparameter *break-during-read* nil)
+
+(defun break-in-articles ()
+  (setq *break-on-pattern-outside-coverage?* nil)
+  (setq *break-during-read* t)
+  (REVERT-TO-REGULAR-BREAK))
+
+(defun dont-break-in-articles ()
+  (setq *break-on-pattern-outside-coverage?* t)
+  (setq *break-during-read* nil)
+  (revert-to-error-break))
+
+
 
 (defun read-article-set (&optional (articles *populated-articles*))
   ;; Lets see if the error check within the reader in
   ;; sweep-successive-sentences-from is sufficient to let the
   ;; loop flow. 
-  (let ((*trap-error-skip-sentence* t))
+  (let ((*trap-error-skip-sentence* (not *break-during-read*)))
     (declare (special *trap-error-skip-sentence*))
     (loop for article in articles
       do 
