@@ -485,11 +485,11 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 
 (def-form-rule (that s)
   :form thatcomp
-  :referent (:head right-edge))
+  :referent (:function create-thatcomp left-edge right-edge));; (:head right-edge))
 
 (def-form-rule (whether s)
   :form whethercomp
-  :referent (:head right-edge))
+  :referent (:function create-whethercomp left-edge right-edge))
 
 (loop for vv in '((vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)(vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
   do
