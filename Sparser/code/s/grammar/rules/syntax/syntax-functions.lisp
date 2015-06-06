@@ -637,6 +637,11 @@
           (push-debug `(,vp-form ,vp-edge))
           (error "Unexpected vp form in np+vp: ~a" vp-form))))))))
 
+(defun create-thatcomp (that s)
+  s)
+
+(defun create-whethercomp (that s)
+  s)
 
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
