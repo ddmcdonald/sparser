@@ -433,7 +433,8 @@
         *parse-chunk-interior-online* t
         *parse-chunked-treetop-forest* t
         *sweep-sentence-treetops* t
-        *island-driving* t)
+        *island-driving* t
+        *profligate-creation-of-individuals* nil)
 
   ;; make sure we notice periods
   (period-hook-on)
