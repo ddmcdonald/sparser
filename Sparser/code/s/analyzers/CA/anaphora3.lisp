@@ -193,7 +193,14 @@
         (start-pos (ev-position (edge-starts-at edge)))
         (end-pos   (ev-position (edge-ends-at edge))))
 
-    (when (and (consp obj) (= 1 (length obj)))
+    (when (and (consp obj)
+               (or
+                ;; Got dotted pair in parsing
+                ;;"As identified by mass spec analysis, JAK3 phosphorylates 
+                ;;three HuR residues (Y63, Y68, Y200), but it remains possible that other tyrosine kinases besides JAK3 can also phosphorylate HuR at tyrosines, although no such kinases have been identified to date."
+                (consp (cdr obj))
+                (null (cdr obj)))
+               (= 1 (length obj)))
       (setq obj (car obj)))
 
     (when obj
