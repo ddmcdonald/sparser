@@ -25,6 +25,7 @@
 ;;  as in "a protein which is phosphorylated" vs "a protein which
 ;;  phosphorylates"
 ;; 6/4/15 Added convert-clause-to-reduced-relative
+;; 6/5/2015 rename method to apply-reduced-relative-clause and add semantic constraints
 
 
 
@@ -167,21 +168,22 @@
       ;; referent of the combination is the np
       np-ref))))
 
-(defun apply-pp-relative-clause (np-ref vp-ref)
+(defun apply-reduced-relative-clause (np-ref vp-ref)
   (cond
-   (*subcat-test* t) ;; this rule has no semantic restrictions as of now
+   (*subcat-test* 
+    (subcategorized-variable vp :object subj)) ;; this rule has no semantic restrictions as of now
    (t
-    (let ((subject-var (subject-variable vp-ref)))
+    (let ((object-var (object-variable vp-ref)))
       (setq np-ref (maybe-copy-individual np-ref))
-      (if subject-var
+      (if object-var
           ;; copy down the upstairs subject
           ;; Should we check if it was already bound to something?
-          (bind-variable subject-var np-ref vp-ref)
+          (bind-variable object-var np-ref vp-ref)
           (else
             ;; (push-debug `(,np-ref ,vp-ref))
             ;; (break "Can not find subject var in ~a" vp-ref)
             (when nil
-              (format t "~&~%No subject variable recorded on ~a~%~%"
+              (format t "~&~%No object variable recorded on ~a~%~%"
                       vp-ref)))      )
       
       ;; link the rc to the np
@@ -207,7 +209,7 @@
     (let* ((np-ref (edge-referent np-edge))
            (vp-ref (edge-referent vp-edge))
            (ref ;; do the bindings
-            (apply-pp-relative-clause np-ref vp-ref)))
+            (apply-reduced-relative-clause np-ref vp-ref)))
       ;; At this point, the parent is set up to be
       ;; an S, with the np and vp as its daughters.
       ;; Impose the characteristics of the np on what
