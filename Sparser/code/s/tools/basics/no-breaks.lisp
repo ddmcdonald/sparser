@@ -34,6 +34,12 @@
             #-ccl(apply #'cl-user::break format-string args))))
     (eval form)))
 
+(defun revert-to-error-break ()
+  (let ((form
+         '(defun sparser::break (&optional format-string &rest args)
+            (apply #'error format-string args))))
+    (eval form)))
+
 ;; This set used to be effective, but not now (2015)
 ;;;-----------------------------------
 ;;; globals for saving the old values
