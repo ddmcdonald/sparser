@@ -31,6 +31,7 @@
 ;;     (9/19/13) moved find/edge-with-category to edge-vectors/peek to consolidate
 ;;      the operation down to one function.
 ;;     (8/30/14) added adjacent-edges?
+;; 6/5/2015 check for empty seto of edges in highest-preterminal-at, to avoid error
 
 (in-package :sparser)
 
@@ -254,7 +255,7 @@
       (:kcons-list
        (break "write the code for the kcons variation"))
       (:vector
-       (when max
+       (when (and max (> max 0))
          (do* ((i (decf max) (decf max))
                (edge (aref vector i) (aref vector i)))
               ((< i 0)
