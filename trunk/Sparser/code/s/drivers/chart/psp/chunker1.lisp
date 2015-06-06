@@ -29,6 +29,7 @@
 ;; 5/23/2015 -- handling wh-pronouns as NPs for relative clause PPs ("in which ...", "from whose") while not allowing them as
 ;;  as determiner-like modifiers for the start of a questioned NP ("which protein")
 ;;  handle partitive without OF -- "all these ..."
+;; 6/5/2015 don't run over the final period in scanning for chunk boundary
 
 
 (in-package :sparser)
@@ -250,7 +251,10 @@ all sorts of rules apply and not simply form rules.
             #+ignore
             (error "Chunker encountered a treetop word: ~s"
                    (word-pname right-treetop))
-            (setq pos (p# (+ 1 (pos-array-index pos)))))
+            (if
+             (eq word::period right-treetop)
+             (setq pos end)
+             (setq pos (p# (+ 1 (pos-array-index pos))))))
            (t
             (setq pos (pos-edge-ends-at right-treetop))))))))))
 
