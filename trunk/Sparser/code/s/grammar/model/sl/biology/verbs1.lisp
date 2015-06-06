@@ -48,7 +48,7 @@
 ;; 5/29/15 Removed things that belonged else where, notably 
 ;;  moved phosphoriated to phenomena to live with the other modifications
 ;; 5/30/2015 change poor definition of "state" to "bio-state" -- conflicted with definition of "have"
-
+;; 6/5/2015 some vocabulary tweaks
 
 (in-package :sparser)
 
@@ -343,6 +343,15 @@
          :s agent 
          :with co-operator
          :of agent))
+
+
+(define-category open :specializes bio-process 
+  :binds ((agent biological)(object biological)) 
+  :realization 
+  (:verb "open"
+         :etf (svo-passive)
+         :s agent 
+         :o object))
 
 (define-category operate :specializes bio-process 
   :binds ((agent biological)(co-operator biological)) 
@@ -892,7 +901,7 @@
 ;; mostly passive -- "... are found ..."
 (define-category find
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb ("find" :past-tense "found")
 	   :noun "finding"
@@ -1565,7 +1574,7 @@
 
 (define-category raise
     :specializes bio-control
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)(object (:or bio-process bio-abstract))) ;; bio-abstract for "raised the possibility"
     :realization
     (:verb "raise" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -2094,9 +2103,9 @@
 (define-category use
     :specializes bio-process
     :binds ((agent pronoun/first/plural)(object biological)(result biological)
-            (purpose (:or bio-event bio-process bio-rhetorical)))
+            (purpose (:or bio-event bio-process bio-method bio-rhetorical)))
     :realization
-    (:verb "use" ;; keyword: ENDS-IN-ED 
+    (:verb ("useXXX" :past-tense "used" :present-participle "using") ;; keyword: ENDS-IN-ED 
            :noun "use"
 	   :etf (svo-passive)
 	   :s agent
