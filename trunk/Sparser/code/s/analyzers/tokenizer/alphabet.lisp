@@ -637,8 +637,51 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       `(:alphabetical . (:lowercase . #\l)))
 
 (setf (elt *character-dispatch-array* 247) ;; division sign
-      ``(:punctuation
+      `(:punctuation
         . ,(punctuation-named #\÷)))
+
+(setf (elt *character-dispatch-array* 169)
+      `(punctuation . ,(punctuation-named (code-char 169))))
+(setf (elt *character-dispatch-array* 174)
+      `(punctuation . ,(punctuation-named (code-char 174))))
+(setf (elt *character-dispatch-array* 180)
+      `(punctuation . ,(punctuation-named (code-char 180))))
+(setf (elt *character-dispatch-array* 186)
+      `(punctuation . ,(punctuation-named (code-char 186)))) 
+(setf (elt *character-dispatch-array* 189)
+      `(punctuation . ,(punctuation-named (code-char 189)))) 
+(setf (elt *character-dispatch-array* 190)
+      `(punctuation . ,(punctuation-named (code-char 190)))) 
+(setf (elt *character-dispatch-array* 197)
+      `(punctuation . ,(punctuation-named (code-char 197)))) 
+(setf (elt *character-dispatch-array* 223)
+      `(punctuation . ,(punctuation-named (code-char 223)))) 
+(setf (elt *character-dispatch-array* 225)
+      `(punctuation . ,(punctuation-named (code-char 225)))) 
+(setf (elt *character-dispatch-array* 227)
+      `(punctuation . ,(punctuation-named (code-char 227)))) 
+(setf (elt *character-dispatch-array* 228)
+      `(punctuation . ,(punctuation-named (code-char 228)))) 
+(setf (elt *character-dispatch-array* 232)
+      `(punctuation . ,(punctuation-named (code-char 232))))
+(setf (elt *character-dispatch-array* 233)
+      `(punctuation . ,(punctuation-named (code-char 233)))) 
+(setf (elt *character-dispatch-array* 235)
+      `(punctuation . ,(punctuation-named (code-char 235)))) 
+(setf (elt *character-dispatch-array* 236)
+      `(punctuation . ,(punctuation-named (code-char 236)))) 
+(setf (elt *character-dispatch-array* 237)
+      `(punctuation . ,(punctuation-named (code-char 237)))) 
+(setf (elt *character-dispatch-array* 244)
+      `(punctuation . ,(punctuation-named (code-char 244)))) 
+(setf (elt *character-dispatch-array* 246)
+      `(punctuation . ,(punctuation-named (code-char 246)))) 
+(setf (elt *character-dispatch-array* 248)
+      `(punctuation . ,(punctuation-named (code-char 248)))) 
+(setf (elt *character-dispatch-array* 252)
+      `(punctuation . ,(punctuation-named (code-char 252))))
+
+
 
 
 ;; Loading the utf-8 file into Hemlock it appears as a space,
