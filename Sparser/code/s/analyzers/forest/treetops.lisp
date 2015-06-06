@@ -36,6 +36,9 @@
 ;; 5/30/2015 handle new cases of vp_passive in rule competition
 ;; 6/2/2015 major cleanup in losing-competition?, which led to the discoverhy of some omitted cases in the final check
 ;; this allowed it to work in the case of the Chen/Sorger sentences...
+;; 6/5/2015 fix all-tts to take into account the sentence being processed by whack-a-rule, and to get the start and end positions from there
+;;  previously this looked across the whole chart, and that caused errors and apparently damaged some core structures, leading to future errors
+;; had to adjust adjacent-tts to take into account that all edges returned by (all-tts) are valid (as against having a bogus first edge)
 
 (in-package :sparser)
 
@@ -269,7 +272,7 @@
 ;;;---------------------------
       
 (defun adjacent-tts (&optional (all-edges (all-tts)))
-  (loop for edges on (cdr all-edges) 
+  (loop for edges on  all-edges ;; the set of edges no longer includes a dummy starting edge
     while (cdr edges) 
     when (and 
           (edge-p (car edges)) 
@@ -278,12 +281,12 @@
     collect
     (list (car edges) (second edges))))
 
+(defvar *whack-a-rule-sentence*)
 (defun all-tts (&optional 
                 (starting-position
-                 (if (still-in-the-chart 0)
-                   (chart-position 0)
-                   (chart-position (+ 2 *first-chart-position*))))
-                stop-pos)
+                 (starts-at-pos *whack-a-rule-sentence*))
+                (stop-pos
+                 (ends-at-pos *whack-a-rule-sentence*)))
   (let* ((tt (right-treetop-edge-at starting-position))
          (ending-position
           (where-tt-ends tt starting-position)))
@@ -292,7 +295,7 @@
                       (eq (pos-terminal ending-position)
                           word::end-of-source)
                       (null (pos-terminal ending-position)))
-            (all-tts ending-position stop-pos))))) 
+            (all-tts ending-position stop-pos)))))
 
 (defun right-treetop-edge-at (position)
   (let* ((vector (pos-starts-here position))
