@@ -29,6 +29,8 @@
 ;;  concomitant revision for things like thatcomp and whethercomp
 ;;  5/30/2015 Rename poorly named "predicate" to "bio-predication" and update dependencies
 ;;  bunch of vo cabulary tweaks for test set -- at the beginning of the file temporarily
+;; 6/5/2015 DAVID!! There is a temporary fix for the problems with interpreting "the next day" -- make it into a polyword
+;;  the underlying problem needs to be fixed (by you)
 
 
 (in-package :sparser)
@@ -41,6 +43,7 @@
   :realization
   (:noun "number"))
 (noun "CML" :super disease)
+(noun "the next day" :specializes abstract)
 
 
 (define-category bio-amount :specializes measurement
