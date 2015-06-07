@@ -59,6 +59,7 @@
 (defun indiv-typep (individual category/symbol)
   ;; analogous to Typep -- does this individual include this
   ;; category in its type field
+  (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category (category-named category/symbol :break-if-none)))
     (typecase individual
       (psi (or (eq category (base-category-of-psi individual))
