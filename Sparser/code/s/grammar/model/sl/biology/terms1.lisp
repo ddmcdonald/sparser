@@ -35,6 +35,14 @@
 
 (in-package :sparser)
 
+;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
+(noun "asides" :super abstract)
+(noun "backs" :super abstract)
+(noun "cans" :super abstract)
+(noun "downs" :super abstract)
+(noun "ups" :super abstract)
+(noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
+
 (adj "phospho-specific" :super bio-predication) ;; standin for "phosho-specific antibody"
 (def-synonym not (:adj "non"))
 (delete-noun-cfr (resolve/make "number"))
