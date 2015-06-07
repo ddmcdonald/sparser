@@ -171,7 +171,7 @@
 (defun apply-reduced-relative-clause (np-ref vp-ref)
   (cond
    (*subcat-test* 
-    (subcategorized-variable vp :object subj)) ;; this rule has no semantic restrictions as of now
+    (subcategorized-variable vp-ref :object np-ref)) ;; this rule has no semantic restrictions as of now
    (t
     (let ((object-var (object-variable vp-ref)))
       (setq np-ref (maybe-copy-individual np-ref))
