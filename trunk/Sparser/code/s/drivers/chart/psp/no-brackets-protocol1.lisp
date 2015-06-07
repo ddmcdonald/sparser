@@ -97,6 +97,7 @@
   ;; a stream of characters
   (tr :entering-sentence-sweep-loop)
   (let ((sentence (sentence)))
+    (clear-local-edge-referent-pair-cache)
     (setq *sentence* sentence) ;; if we wait it will be the next sentence
     (loop
       (let* ((start-pos (starts-at-pos sentence))
@@ -160,6 +161,7 @@
   ;; a prepoulated document. Does scan-next-terminal 
   ;; and detects sentence boundaries but no substantive
   ;; processing. 
+  (clear-local-edge-referent-pair-cache)
   (tr :start-scan-to-eof first-sentence)
   (let ((sentence first-sentence))
     (loop
@@ -325,6 +327,8 @@
 ;;;---------------------------
 
 (defparameter *surface-strings* (make-hash-table :size 10000))
+
+#| Keep original for reference
 (defun all-individuals-in-tts(sentence)
   (let
       ((indivs nil)
@@ -334,33 +338,59 @@
       do
       (loop for i in (individuals-under tt)
         when (itypep i 'biological)
-        do
-        (pushnew i indivs)))
+        do (pushnew i indivs)))
     (loop for i in indivs
-      do
-      (store-surface-string i))
+      do (store-surface-string i))
     (reverse indivs)))
+|#
+#|  version two
+(defun all-individuals-in-tts (sentence)
+  ;; Does double duty. It walks the treetops to identify
+  ;; all of the individuals they reference, and it also
+  ;; records the surface string of each individual at
+  ;; the same time.
+  (let ((individuals nil)
+        (i-edge-pairs nil)
+        (start-pos (starts-at-pos sentence))
+        (end-pos (ends-at-pos sentence)))
+    (loop for tt in (all-tts start-pos end-pos)
+      do (loop for pair in (individuals-under/record-edge tt)
+           do (push pair i-edge-pairs)
+           with i = (car pair)
+           when (itypep i 'biological)
+           do (pushnew pair individuals)))
+    (loop for pair in i-edge-pairs
+      do (store-surface-string pair))
+    (reverse individuals)))
+|#
 
+;; Version three
+(defun all-individuals-in-tts (sentence)
+  ;; Does double duty. It walks the treetops to identify
+  ;; all of the individuals they reference, and it also
+  ;; records the surface string of each individual at
+  ;; the same time.
+  (let ((individuals nil)
+        (start-pos (starts-at-pos sentence))
+        (end-pos (ends-at-pos sentence)))
+    (loop for tt in (all-tts start-pos end-pos)
+      do (loop for i in (individuals-under tt)
+           when (itypep i 'biological)
+           do (pushnew i individuals)))
+    (loop for i in individuals
+      do (store-surface-string i))
+    (reverse individuals)))
 
-(defun store-surface-string (indiv)
-  (setf (gethash indiv *surface-strings*)
-        (get-surface-string-for-individual indiv)))
+(defun store-surface-string (i)
+  (setf (gethash i *surface-strings*)
+        (get-surface-string-for-individual i)))
 
-
+;; version 3
 (defun get-surface-string-for-individual (i)
-  (or
+  (or ;; fall through to progressively weaker string sources
+   ;; if the strong source returns nil or we're not a protein
    (when (itypep i 'protein)
-     (let ((entry (individuals-discourse-entry i)))
-       (when entry
-         (let* ((most-recent (second entry))
-                (start (car most-recent))
-                (end (cdr most-recent)))
-           (when (and (position-p start) (position-p end))
-             (let ((start-index (pos-character-index start))
-                   (end-index (pos-character-index end)))
-               (push-debug `(,start-index ,end-index ,i)) 
-               (extract-string-from-char-buffers 
-                start-index end-index)))))))
+     (get-string-from-local-edge-cache i))
    (let ((name (value-of 'name i)))
      (if name
        (etypecase name
@@ -369,9 +399,121 @@
          (polyword (pw-pname name)))
        (format nil "~s" i)))))
 
+(defvar *local-edge-referent-pair-cache* (make-hash-table))
+
+(defun clear-local-edge-referent-pair-cache ()
+  (clrhash *local-edge-referent-pair-cache*))
+
+(defun cache-local-edge-referent-pair (edge)
+  (let ((referent (edge-referent edge)))
+    (when referent
+      (when (individual-p referent)
+        ;;  (format t "~&caching ~a for ~a~%" edge referent)
+        (setf (gethash referent *local-edge-referent-pair-cache*)
+              edge)))))
+
+(defmethod get-local-edge-cache-entry ((i individual))
+  (gethash i *local-edge-referent-pair-cache*))
+
+(defmethod get-string-from-local-edge-cache ((i individual))
+  (let ((edge (get-local-edge-cache-entry i)))
+    (when edge ;; complain if it's not there?
+      (let* ((start-pos (pos-edge-starts-at edge))
+             (end-pos (pos-edge-ends-at edge))
+             (start-index (pos-character-index start-pos))
+             (end-index (pos-character-index end-pos)))
+        (unless (and start-index end-index)
+          (error "Some position index is null"))
+        (extract-string-from-char-buffers 
+         start-index end-index)))))
+
+
+#| original 
+(defun store-surface-string (indiv)
+  (setf (gethash indiv *surface-strings*)
+        (get-surface-string-for-individual indiv)))
+|#
+#| version two
+(defun store-surface-string (i-edge-pair)
+  (let ((i (car i-edge-pair)))
+    (setf (gethash i *surface-strings*)
+          (get-surface-string-for-individual i-edge-pair))))
+
+(defun get-surface-string-for-individual (i-edge-pair)
+  (let ((i  (car i-edge-pair))
+        (edges (cdr i-edge-pair)))
+  (or ;; fall through to progressively weaker string sources
+   ;; if the strong source returns nil or we're not a protein
+   (when (itypep i 'protein)
+     ;;(get-surface-string-from-discourse-entry i)
+     (get-surface-string-from-locally-recorded-edge edges))
+   (let ((name (value-of 'name i)))
+     (if name
+       (etypecase name
+         (string name)
+         (word (word-pname name))
+         (polyword (pw-pname name)))
+       (format nil "~s" i))))) |#
+
 (defun retrieve-surface-string (i)
   (gethash i *surface-strings*))
 
+
+(defvar *local-individuals-and-their-edges* (make-hash-table)
+  "Managed by individuals-under/record-edge, populated by
+   collaboration between collect-model-description(edge) which 
+   keeps track of the edge and collect-model-description(individual)
+   which fills it with individuals.")
+
+(defun record-individual-and-edge (i edge)
+  (declare (special *local-individuals-and-their-edges*))
+  (let ((entry (gethash i *local-individuals-and-their-edges*)))
+    ;;(format t "~&recording ~a at ~a~%" i edge)
+    (setf (gethash i *local-individuals-and-their-edges*)
+          (if entry (push edge entry) (list edge)))))
+
+(defun individuals-under/record-edge (treetop)
+  ;; Called from all-individuals-in-tts whose purpose is to
+  ;; collect the surface strings on all the mentioned 
+  ;; proteins. 
+  (declare (special *local-individuals-and-their-edges*))
+  (clrhash *local-individuals-and-their-edges*)
+  (let ((pairs nil)) ;; (individual . edges-it-occurs-in)
+    (semtree treetop) ;; do the recording
+    (maphash #'(lambda (i edges)
+                 (push `(,i . ,edges) pairs))
+             *local-individuals-and-their-edges*)
+    pairs))
+
+(defun get-surface-string-from-locally-recorded-edge (edges)
+  (let ((edge (car edges))) 
+    ;; ignoring possibility of mulitple mentions at least for now
+    (let* ((start-pos (pos-edge-starts-at edge))
+           (end-pos (pos-edge-ends-at edge))
+           (start-index (pos-character-index start-pos))
+           (end-index (pos-character-index end-pos)))
+      (unless (and start-index end-index)
+        (error "Some position index is null"))
+      (extract-string-from-char-buffers 
+       start-index end-index))))
+
+(defun get-surface-string-from-discourse-entry (i)
+  ;; N.b. depends on the dicourse entries being current
+  ;; and tacitly assumes that there's only one mention
+  ;; of an individual in the region being looked at
+  ;; or that their spelling (surface string) in those two
+  ;; mentions is identical.
+  (let ((entry (individuals-discourse-entry i)))
+    (when entry
+      (let* ((most-recent (second entry))
+             (start (car most-recent))
+             (end (cdr most-recent)))
+        (when (and (position-p start) (position-p end))
+          (let ((start-index (pos-character-index start))
+                (end-index (pos-character-index end)))
+            (push-debug `(,start-index ,end-index ,i)) 
+            (extract-string-from-char-buffers 
+             start-index end-index)))))))
 
 ;;;------------------------------------
 ;;; collectors for semtree and friends
@@ -506,6 +648,7 @@
 (defun processes-under (x)
   (itypes-under x 'bio-process))
 
+
 (defun individuals-under (x)
   (declare (special *semtree-seen-individuals*))
   (let ((indivs nil))
@@ -528,12 +671,20 @@
 (defmethod semtree ((n number) &optional (short t))
   (semtree (e# n) short))
 
+
+(defvar *current-edge-semtree-is-walking* nil)
+
 (defmethod semtree ((e edge) &optional (short t))
-  (semtree (edge-referent e) short))
+  (let ((*current-edge-semtree-is-walking* e))
+    (declare (special *current-edge-semtree-is-walking*))
+    (semtree (edge-referent e) short)))
 
 
 
-(defparameter *semtree-seen-individuals* (make-hash-table))
+(defparameter *semtree-seen-individuals* (make-hash-table)
+  "Cleared and used by semtree to avoid walking through the
+  same individual twice and getting into a loop.")
+
 (defmethod semtree ((i individual) &optional (short t))
   (clrhash *semtree-seen-individuals*)
   (collect-model-description i short))
@@ -551,27 +702,25 @@
   (declare (ignore short))
   (word-pname w))
 
-
 (defmethod collect-model-description ((cal cons) &optional (short t))
   `(collection :members 
                (,@(loop for l in cal 
-                    collect (collect-model-description l short)))))
+                    collect (collect-model-description l short)))))     
 
 (defmethod collect-model-description ((i individual) &optional (short t))
-  (declare (special i short))
+  (declare (special i short *current-edge-semtree-is-walking*))
+  (record-individual-and-edge i *current-edge-semtree-is-walking*)
   (cond
    ((gethash i *semtree-seen-individuals*)
     (list (list "!recursion!" i)))
    ((itypep i 'number)
-    (if
-     (itypep i 'collection)
+    (if (itypep i 'collection)
      (value-of 'items i)
      (value-of 'value i)))
    ((and
      (itypep i 'bio-family)
      (not (itypep i 'collection)))
-    (if
-     short
+    (if short
      `(,i)
      (let ((bindings (indiv-binds i))
             (desc (list i)))
