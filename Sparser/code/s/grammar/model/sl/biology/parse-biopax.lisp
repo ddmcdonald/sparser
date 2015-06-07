@@ -166,7 +166,9 @@ decoding table for referenced OBO terms
   (sparser-sourcefile rel-path))
 
 (defun make-reactome-path (rel-path)
-  (sparser-sourcefile "grammar/model/sl/biology/reactome/" rel-path))
+  (merge-pathnames
+   rel-path
+   (sparser-sourcefile "grammar/model/sl/biology/reactome/")))
 
 (defun legal-non-alphanumeric? (char)
   (member char '(#\_ #\-) :test 'eql))
