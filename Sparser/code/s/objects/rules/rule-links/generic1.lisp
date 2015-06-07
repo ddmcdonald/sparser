@@ -30,8 +30,9 @@
       (individual nil)
       (otherwise
        (unless ignore-otherwise-case
-         (error "No generic access function for rule-sets defined ~
-                 ~%  for objects of type ~A" (type-of obj)))))
+         (break "rule-set-for -- No generic access function for rule-sets defined ~
+                 ~%  for objects of type ~A -- ~&  nearby string is ~s~&" 
+                (type-of obj) (cur-string)))))
 
     nil ;; handle the case when Nil is passed in for some reason
         ;; /// probably deserves a trap
