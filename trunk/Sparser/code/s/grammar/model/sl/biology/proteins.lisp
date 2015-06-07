@@ -1980,12 +1980,17 @@ filligre may be used to distinguish them, etc.
 ;;(DEF-BIO "Serine/threonine-protein kinase B-raf" PROTEIN :SYNONYMS NIL :MITRE-LINK "UNIPROT:Serine/threonine-protein kinase B-raf") 
 ;;(DEF-BIO "Syndecan Family" PROTEIN :SYNONYMS NIL :MITRE-LINK "UNIPROT:Syndecan Family") 
 
+(defparameter *bio-ents* nil)
+(defparameter *mitre-bio-ents* nil)
+
 (defun new-bio-entities ()
-  (length (setq bes 
-                (loop for a in *all-sentences* 
-                  append 
-                  (loop for i in (second a) when (member category::bio-entity (indiv-type i)) collect i))))
-  (setq bbs nil)
-  (loop for b in bes do (pushnew (mitre-string b) bbs :test #'equal))
-  (length (setq bbs (sort bbs #'string<))))
+  (let ((bes 
+         (loop for a in *all-sentences* 
+           append 
+           (loop for i in (second a) when (member category::bio-entity (indiv-type i)) collect i)))
+        (bbs nil))
+    (setf *bio-ents* bes)
+    
+    (loop for b in bes do (pushnew (mitre-string b) bbs :test #'equal))
+    (length (setq *mitre-bio-ents* (sort bbs #'string<)))))
 
