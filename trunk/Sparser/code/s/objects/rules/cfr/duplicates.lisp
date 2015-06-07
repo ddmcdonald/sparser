@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "duplicates"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.8 May 2015
+;;;   Version:   0.8 June 2015
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 0.1 (11/1) fixed polarity of dotted rules can be duplicated.
@@ -21,6 +21,7 @@
 ;;      Clarified the duplication message. 1/30/14 Added doc. aimed at
 ;;      sorting this out further.
 ;; 0.8 (5/12/15) Made duplication-check aware of *deliberate-duplication*
+;;     (6/7/15) Fixed C&S mistake in that code
 
 (in-package :sparser)
 
@@ -96,10 +97,10 @@
 
   (declare (special *deliberate-duplication*))
 
-  (flet ((complain (cfr existing-cfr)
-           (duplication-msg existing-cfr (cfr-category cfr))
+  (flet ((complain (lhs existing-cfr)
+           (duplication-msg existing-cfr lhs)
            (when *break-on-illegal-duplicate-rules*
-             (push-debug `(,cfr ,existing-cfr))
+             (push-debug `(,lhs ,existing-cfr))
              (cerror "Accept the existing rule"
                      "[estab. multiplier] Look at why there's a duplicate rule~
                      ~%and sort it out."))))
@@ -110,13 +111,13 @@
           ((dotted-rule existing-cfr)
            (if *dotted-rules-can-duplicate-regular-rules*
              (construct-cfr lhs rhs form referent source)
-             (duplication-msg existing-cfr rhs)))
+             (duplication-msg existing-cfr lhs)))
 
           (*deliberate-duplication*
            (unless (eq lhs (cfr-category existing-cfr))
-             (complain cfr existing-cfr)))
+             (complain lhs existing-cfr)))
 
-          (t  (complain cfr existing-cfr)))))
+          (t  (complain lhs existing-cfr)))))
 
 #| The path to the call to other duplication check 
 from establish-multiplier 
