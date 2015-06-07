@@ -19,6 +19,7 @@
 (defvar *DEC-TESTS*)
 (defvar *JAN-DRY-RUN*)
 
+(defparameter *show-semantics* t)
 
 (defparameter *sentences* nil
   "The set of sentences a general iterator
@@ -103,7 +104,7 @@
 
 (defun bad (&optional (semantics *show-semantics*))
   (push (car *tested*) *known-breaks*) 
-  (retest *show-semantics*))
+  (retest semantics))
 
 ;;--- tailored iterators
 
@@ -133,7 +134,7 @@
 (defmacro test (n)
   `(run-test ,n))
 
-(defparameter *show-semantics* t)
+
 (defun quiet-semantics(&optional (flag t))
   (setq *show-semantics* (not flag)))
 
