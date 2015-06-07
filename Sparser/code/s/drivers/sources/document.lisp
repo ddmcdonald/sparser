@@ -27,13 +27,15 @@
 ;;;-------------------------------------------------
 ;;; For now -always- do a sweep before doing a read
 ;;;-------------------------------------------------
-
+(defparameter *show-article-progress* t)
 (defmethod sweep-document ((doc document-element))
   "Creates the document objects, including the sentences, 
    but does no analysis at all."
   (let ((*sweep-for-terminals* nil)
         (*sections-to-ignore* nil))
     (declare (special *sweep-for-terminals* *sections-to-ignore*))
+    (when *show-article-progress*
+      (format t "Sweeping document ~a" (name doc)))
     (read-from-document doc)))
 
 
@@ -144,6 +146,9 @@
   (unless *sweep-for-terminals*
     (pre-sweep-for-embedded-sections a))
   (fresh-contents a)
+ `(when *show-article-progress*
+      (format t "read-from-documentt ~a" (name doc)))
+
   (dolist (sec (children a))
     (unless (ignore-this-document-section sec)
       (setq *section* sec)
