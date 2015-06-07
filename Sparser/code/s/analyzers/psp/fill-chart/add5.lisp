@@ -14,6 +14,8 @@
 ;;     (6/3) added Next-chart-position-to-fill
 ;; 5.4 (12/12) moved binding point of 'word' after the wrapping-check so that
 ;;      the correct *next-array-position-to-fill* is available to next-terminal.
+;; 6/7/2015 slightly more informative error message in add-terminal-to-chart  to
+;;  help in debugging character issues in large article set
 
 
 (defun add-terminal-to-chart ()
@@ -31,6 +33,12 @@
       
       (let ((word (next-terminal))
             (position (aref *the-chart* *next-array-position-to-fill*)))
+        (declare (special word))
+        (unless (word-p word)
+          (break "error in add-terminal-to-chart ~s is not a word object! In region ~s of sentence ~s" 
+                 word
+                 (cur-string)
+                 (sentence-string (sentence))))
         
         (setf (pos-token-index position)
               *number-of-next-position*)  ;; token index
