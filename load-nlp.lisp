@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2010-2015 David D. McDonald
 ;;;
 ;;;   File:   load-nlp
-;;; Version:  February 2015
+;;; Version:  June 2015
 
 #|
  This file loads the language understanding system Sparser, the
@@ -31,21 +31,18 @@
 ;; 6. Chooses a specializing script and load Sparser
 ;; 7. Loads the files in Mumble that depend on Sparser.
 
-;; 3/17/2015 Putting in flags to avoid loading Mumble. Trying to be able to use SBCL, and it is a stickler for ANSI standards
-; file: /Users/rusty/sparser/Mumble/types/defining-types.lisp
-; in: DEFUN DO-THE-TYPE-OF-TYPE-BY-HAND
-;     (SPECIAL TYPE)
-; 
-; caught WARNING:
-;   Compile-time package lock violation:
-;     Lock on package COMMON-LISP violated when declaring TYPE special while in
-;     package MUMBLE.
-;   See also:
-;     The SBCL Manual, Node "Package Locks"
-;     The ANSI Standard, Section 11.1.2.1.2
 
 (in-package :cl-user)
-(defparameter *NO-MUMBLE* t) ;; for SBCL compatibility
+(unless (boundp '*no-mumble*)
+  (defparameter *no-mumble*
+    #+sbcl t
+    #-sbcl nil
+    "Controls whether or not the Mumble language generation system
+     is loaded. There are presently issues in geting Mumble to load
+     under SBCL, which is the principal motivation for this switch,
+     but you could decide to leave it out deliberately, and this
+     switch coordinate the inclusion/omission of the requisite files."))
+
 ;; #1 --- set the base directory
 
 (defparameter *nlp-home*
@@ -80,12 +77,13 @@
 (let ((*default-pathname-defaults* cl-user::*nlp-home*))
   (pushnew (merge-pathnames (make-pathname :directory '(:relative "util")))
            asdf:*central-registry*)
-  (unless *NO-MUMBLE*
-    (pushnew (merge-pathnames (make-pathname :directory '(:relative "Mumble" "derivation-trees")))
+  (unless *no-mumble*
+    (pushnew (merge-pathnames (make-pathname :directory '(:relative "Mumble" 
+                                                                    "derivation-trees")))
              asdf:*central-registry*)))
 
 ;; #3 --- Load the utilities. Note that their exported symbols
-;; are in the package :ddm-util, which is also the name of its asd file
+;; are in the package :ddm-util, which is also the name of its asdf file
 
 (asdf:operate 'asdf:load-op :ddm-util)
 
@@ -109,29 +107,29 @@
 ;; in ACL and before installing Lion (for what that's worth).  -- ddm
 #+openmcl (use-package (find-package :ddm-util) (find-package :sparser))
 
+;; (shadow '(#:break) (find-package :sparser)) 
+;; (defun sparser::break (format-string &rest args)
+;;   (apply #'error format-string args))
 
 
 
-;; Accommodates an undiagnosed issue with Allegro CL
-#-openmcl(let ((*default-pathname-defaults* cl-user::*nlp-home*))
-           (load (merge-pathnames 
-                  (make-pathname :directory '(:relative "util") 
-                                 :name "loader"
-                                 :type "lisp"))))
-
-
-
+;; ;; Accommodates an undiagnosed issue with Allegro CL
+;; #-openmcl(let ((*default-pathname-defaults* cl-user::*nlp-home*))
+;;            (load (merge-pathnames 
+;;                   (make-pathname :directory '(:relative "util") 
+;;                                  :name "loader"
+;;                                  :type "lisp"))))
 ;; #5 Load Mumble
-(unless
-    *NO-MUMBLE*
+(unless *no-mumble*
   (load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp")))
+
 
 
 ;; #6  Use the selected script to pick the desired version of Sparser
 ;;  and load it.
 ;;   The easiest way to use something other than the default is to set this
 ;; variable before you load this file. Note that right now we are in the
-;; symbol package :cl-user, which is also the usual default package when a lisp
+;; symbol package :cl-user, which is the usual default package when a Lisp
 ;; is loaded.
 
 (unless (boundp 'script) (defvar script :default))
@@ -165,8 +163,26 @@
 
 ;; #7 load the files from Mumble that reference types in Sparser
 
-(unless
-    *NO-MUMBLE*
+(unless *no-mumble*
   (asdf:operate 'asdf:load-op :mumble-after-sparser)
   (load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
   (load (concatenate 'string *mumble-location* "grammar/numbers.lisp")))
+
+
+#|  Notes
+;; 3/17/2015 Putting in flags to avoid loading Mumble. Trying to be able to use SBCL, 
+;; and it is a stickler for ANSI standards
+; file: /Users/rusty/sparser/Mumble/types/defining-types.lisp
+; in: DEFUN DO-THE-TYPE-OF-TYPE-BY-HAND
+;     (SPECIAL TYPE)
+; 
+; caught WARNING:
+;   Compile-time package lock violation:
+;     Lock on package COMMON-LISP violated when declaring TYPE special while in
+;     package MUMBLE.
+;   See also:
+;     The SBCL Manual, Node "Package Locks"
+;     The ANSI Standard, Section 11.1.2.1.2
+|#
+
+
