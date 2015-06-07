@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "polyword form"
 ;;;   Module:  "objects/chart/words:"
-;;;  Version:  2.0 May 2015
+;;;  Version:  2.0 June 2015
 
 ;;  0.1  Changed the definition of the symbol for polywords to be the
 ;;       string in vertical bars rather than the equivalent uppercase
@@ -24,6 +24,9 @@
 ;;       type check for the case of punctionation. Word-around for two
 ;;       single quotes being used for double quote in uniform-scan.
 ;;  2.0 (5/19/15) For make-over to a state machine.
+;;      (6/7/15) Removed define-polyword/from-words because nothing has
+;;       called it since the make-over. If something from another grammar
+;;       module does then can adapt to it then.
 
 (in-package :sparser)
 #|
@@ -89,34 +92,4 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
 
       polyword )))
 
-
-
-(defun define-polyword/from-words (list-of-words)
-  #+allegro
-  (cl-user::break "who's calling polyword -- from-words ?")
-  #-allegro
-  (ccl::break "who's calling polyword -- from-words ?")
-  (let ((string-equivalent
-         (polyword-multiword-string-for-list-of-words list-of-words)))
-
-    (let ((symbol (or (find-symbol string-equivalent *polyword-package*)
-                      (intern string-equivalent *polyword-package*))))
-      (if (boundp symbol)
-        (then
-          ;; this is an opportunity to check if this is right
-          ;(break "redefining \"~A\"" string-equivalent)
-          (symbol-value symbol))
-
-        (let ((pw (make-polyword :symbol symbol
-                                 :pname string-equivalent
-                                 :words list-of-words)))
-
-          (catalog/polyword pw symbol)
-          (note-file-location pw)
-          (note-grammar-module pw)
-
-          (let ((rule (construct-cfr-for-word-list-pw pw list-of-words)))
-            (setf (pw-fsa pw) rule)
-
-            pw ))))))
 
