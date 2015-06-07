@@ -903,7 +903,7 @@
 
 
 (defun make-to-comp (prep clause)
-  (declare (special prep clause category::to-comp))
+  (declare (special prep clause category::to-comp category::to))
   (cond
    (*subcat-test*
     ;; when we have clausal "to-pp" like
