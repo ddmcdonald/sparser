@@ -638,9 +638,11 @@
           (error "Unexpected vp form in np+vp: ~a" vp-form))))))))
 
 (defun create-thatcomp (that s)
+  (declare (ignore that))
   s)
 
 (defun create-whethercomp (that s)
+  (declare (ignore that))
   s)
 
 (defun assimilate-object (vg obj)
@@ -901,7 +903,7 @@
 
 
 (defun make-to-comp (prep clause)
-  (declare (special prep clause))
+  (declare (special prep clause category::to-comp))
   (cond
    (*subcat-test*
     ;; when we have clausal "to-pp" like
