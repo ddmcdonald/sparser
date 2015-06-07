@@ -66,9 +66,11 @@
 ;;;--------
 
 (defun complete-edge/hugin (edge)
+  (declare (special *do-anaphora*)) ;; may be dynamically bound
   (unless (subsumption-check/complete edge)
     (check-for-completion-actions/category (edge-category edge)
                                            edge))
+  (cache-local-edge-referent-pair edge)
   (when *include-model-facilities*
     (when (and *pronouns* ;; the module is loaded
                *do-anaphora*) ;; we've not deliberately turned it off
