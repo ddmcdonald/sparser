@@ -84,53 +84,63 @@
 (define-punctuation  latin_small_letter_o_with_stroke   #\Latin_Small_Letter_O_With_Stroke) ;; 248
 (define-punctuation  latin_small_letter_u_with_diaeresis   #\Latin_Small_Letter_U_With_Diaeresis) ;; 252
 
+(define-punctuation acute-accent #\Acute_Accent) ;; 180
+(define-punctuation middle-dot #\Middle_Dot) ;; 183
+(define-punctuation masculine-ordinal_indicator #\Masculine_Ordinal_Indicator) ;; 186
+
+(define-punctuation Right-Pointing-Double-Angle-Quotation-Mark #\Right-Pointing_Double_Angle_Quotation_Mark)
+(define-punctuation Vulgar-Fraction-One-Quarter #\Vulgar_Fraction_One_Quarter)
+(define-punctuation Inverted-Question-Mark #\Inverted_Question_Mark)
+(define-punctuation Multiplication-Sign #\Multiplication_Sign)
+
+
 
 (defparameter *out-of-band-punctuation*
   '(
     (code-char 772)
     (code-char 894)
-
     (code-char 8197) ;; whitespace?
     (code-char 8201)
     (code-char 8202)
-
+    (code-char 8203) ;;  "​"
     (code-char 8208)
     (code-char 8213)
     (code-char 8218) ;;"‚", (code = 8218)
-
     (code-char 8226) ;;"•", (code = 8226)
     (code-char 8230) ;;"…", (code = 8230)
     (code-char 8232) ;;"", (code = 8232)
     (code-char 8240) ;;"‰", (code = 8240)
     (code-char 8242) ;; "prime"
-
     (code-char 8243) ;;"″", (code = 8243)
     (code-char 8451) ;;"℃", (code = 8451)
     (code-char 8482) ;;"™", (code = 8482)
     (code-char 8491) ;; "Å"
-    (code-char 8545) ;;"Ⅱ", (code = 8545)    (code-char 
+    (code-char 8545) ;;"Ⅱ", (code = 8545)
     (code-char 8593) ;;"↑", (code = 8593)
-    ;;(code-char 8594) ;; rightwards arrow  see below
     (code-char 8595) ;;"↓", (code = 8595)
     (code-char 8596) ;;"↔", (code = 8596)
     (code-char 8706) ;;"∂", (code = 8706)
+    (code-char 8714) ;; "∊"
+    (code-char 8721) ;; "∑"
     (code-char 8722)
     (code-char 8734) ;;"∞", (code = 8734)
+    (code-char 8747) ;; "∫"
     (code-char 8776) ;;"≈", (code = 8776)
     (code-char 8781) ;;"≍", (code = 8781)
-
-
+    (code-char 8800) ;; "≠"
     (code-char 8804) ;;  "≤"
     (code-char 8805) ;;"≥", (code = 8805)
     (code-char 8806) ;;"≦", (code = 8806)
     (code-char 8901) ;;"⋅", (code = 8901)
+    (code-char 8943) ;; "⋯"
+    (code-char 9653) ;; "▵"
+    (code-char 10877) ;; "⩽"
     (code-char 10878) ;;"⩾", (code = 10878)
-
     (code-char 64257) ;;"ﬁ", (code = 64257) ;; alphabetical
     (code-char 64258) ;;"ﬂ", (code = 64258)
-
     (code-char 65288) ;;"（", (code = 65288)
     (code-char 65293) ;;"－", (code = 65293)
+    
     ))
 
 (defun add-punctuation-chars ()
