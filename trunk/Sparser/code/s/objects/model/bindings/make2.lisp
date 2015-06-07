@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  1.9 April 2015
+;;;  version:  1.9 June 2015
 
 ;; initiated 11/30/91 v2.1
 ;; 1.1 (7/20/92 v2.3) revised to fit new regime
@@ -63,7 +63,8 @@
 
 (defun bind-variable (var/name value individual
                       &optional category)
-  (declare (special *legal-to-add-bindings-to-categories*))
+  (declare (special *legal-to-add-bindings-to-categories*
+                    *break-on-pattern-outside-coverage?*))
   ;;try to find out who is binding a varibale named category
   ;;  seems to be make-individual-for-DM&P
   ;;     (when (eq var/name 'category) (break "category variable"))
@@ -93,17 +94,14 @@
     (setq category (car category)))
   
   (cond
-   ((and
-     (typep var/name 'anonymous-variable)
-     (null
-      (find-variable-for-category 
-       (avar-name var/name)
-       (if
-        (individual-p individual)
-        (itype-of individual)
-        individual))))
-    (format t "~&~&!! CAN'T DEREFERENCE ANONYMOUS VARIABLE ~A AGAINST CATEGORY ~A, GIVING UP~&"
-           var/name individual)
+   ((and (typep var/name 'anonymous-variable)
+         (null (find-variable-for-category 
+                (avar-name var/name)
+                (if (individual-p individual)
+                  (itype-of individual)
+                  individual))))
+    (format t "~&~&!! Can't dereference anonymous variable ~a against category ~a.~
+               ~%Can't do binding.~%" var/name individual)
     nil)
    (t
     (let ((variable 
