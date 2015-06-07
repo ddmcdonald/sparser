@@ -87,7 +87,7 @@
 ;; #3 --- Load the utilities. Note that their exported symbols
 ;; are in the package :ddm-util, which is also the name of its asd file
 
-#+openmcl(asdf:operate 'asdf:load-op :ddm-util)
+(asdf:operate 'asdf:load-op :ddm-util)
 
 
 ;; #4 --- Create the sparser package
