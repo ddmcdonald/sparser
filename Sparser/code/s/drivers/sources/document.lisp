@@ -34,8 +34,10 @@
   (let ((*sweep-for-terminals* nil)
         (*sections-to-ignore* nil))
     (declare (special *sweep-for-terminals* *sections-to-ignore*))
-    (when *show-article-progress*
-      (format t "Sweeping document ~a" (name doc)))
+    (when (and 
+         *show-article-progress*
+         *sweep-for-terminals*)
+      (format t "Sweeping document ~a~&" (name doc)))
     (read-from-document doc)))
 
 
@@ -146,8 +148,10 @@
   (unless *sweep-for-terminals*
     (pre-sweep-for-embedded-sections a))
   (fresh-contents a)
- `(when *show-article-progress*
-      (format t "read-from-documentt ~a" (name doc)))
+  (when (and 
+         *show-article-progress*
+         *sweep-for-terminals*)         
+      (format t "read-from-document ~a~&" (name a)))
 
   (dolist (sec (children a))
     (unless (ignore-this-document-section sec)
