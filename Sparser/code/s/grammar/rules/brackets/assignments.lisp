@@ -183,11 +183,15 @@
             (construct-disambiguating-category-name
              category-name super-category)))
     (when (category-named category-name)
-      (when *break-on-pattern-outside-coverage?*
+      (cond
+       (*break-on-pattern-outside-coverage?*
         (push-debug `(,category-name ,word ,comlex-clause))
-        (cerror "Maybe you can blow that one away?"
+        (break "Maybe you can blow that one away?"
                 "Setup: The category named ~a already exists."
-                category-name)))
+                category-name))
+       (t
+        (format t "~&IGNORING COVERAGE ERROR: setup-common-noun : The category named ~a already exists while defining ~s.~&"
+                category-name word))))
     (let* ((category (define-category/expr category-name
                         `(:specializes ,super-category
                          :instantiates :self)))
