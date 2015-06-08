@@ -107,8 +107,7 @@ previous records of treetop-counts.
         (let ((*do-anaphora* nil) ;; no anaphora on single sentences
               (index 0) pairs )
           (declare (special *do-anaphora*))
-          (if
-           save-info
+          (if save-info
            (let ((*reading-populated-document* t)
                  (*recognize-sections-within-articles* nil) ;; turn of doc init
                  (*accumulate-content-across-documents* t)) ;; doesn't clear history??
@@ -141,13 +140,15 @@ previous records of treetop-counts.
 
 
 ;;--- compare current performance to a snapshot
-(defun compare-to-snapshots (&optional (save-info nil)(corpora '(overnight dec-test dry-run aspp2 erk)))
+(defun compare-to-snapshots (&optional
+                             (save-info nil)
+                             (corpora '(overnight dec-test dry-run aspp2 erk)))
   (loop for c in corpora
     do (terpri)
     (print c)
     (print (compare-to-snapshot c save-info))))
 
-(defmethod compare-to-snapshot ((name symbol)&optional (save-info nil))
+(defmethod compare-to-snapshot ((name symbol) &optional (save-info nil))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
