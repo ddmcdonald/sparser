@@ -126,7 +126,7 @@
 (defun ns-sort-out-edge-hyphen-lower (leading-edge start-pos end-pos words)
   ;; Called from ns-sort-out-pattern-with-edges when the edge 
   ;; is :initial and the remaining pattern is (:hyphen :lower)
-  (declare (special category::verb+ed category::adjective))
+  (declare (special category::verb+ed category::adjective)(ignore start-pos))
   (let* ((trailing-edge (left-treetop-at/edge end-pos))
          (form (edge-form trailing-edge))
          (right-ref (edge-referent trailing-edge))
