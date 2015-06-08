@@ -17,7 +17,7 @@
           ((rules (rs-single-term-rewrites rs))
            (first-rule (car rules))
            (form (cfr-form first-rule)))
-        (declare (specialrules first-rule form))
+        (declare (special rules first-rule form))
         form))))
 
 (defparameter *pos-ht* (make-hash-table :size 100))
@@ -28,6 +28,7 @@
 
 
 (defun save-new-word-list ()
+  (declare (special *new-word-strings*))
   (length (setq *new-word-strings* 
                 (sort (mapcar #'word-pname *newly-found-unknown-words*) #'string<)))
   
