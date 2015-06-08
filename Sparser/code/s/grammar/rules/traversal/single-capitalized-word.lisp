@@ -26,7 +26,7 @@
                                                     pos-after-open pos-before-close 
                                                     layout )
   (declare (ignore pos-after-open pos-before-close))
-  (push-debug `(,edge))
+  ;; (push-debug `(,edge)) (lsp-break "elevate")
 
   (if (eq layout :single-span)
     (make-edge-over-long-span
