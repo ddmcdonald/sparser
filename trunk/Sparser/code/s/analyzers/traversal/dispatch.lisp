@@ -80,7 +80,7 @@
 
       (:span-is-longer-than-segment
        (unless *allow-large-paired-interiors*
-         (break "~&~%Paired Punctuation:~
+         (error "~&~%Paired Punctuation:~
                ~%The span of text between the ~A~
                ~%at p~A and p~A is unreasonably large.~
                ~%Probably there is some sort of undetected imbalance.~%"
@@ -95,7 +95,7 @@
       (otherwise
        (push-debug `(,pos-before-open ,pos-after-open
                      ,pos-before-close ,pos-after-close))
-       (break "Unexpected layout between paired punctuation: ~a" layout)))
+       (error "Unexpected layout between paired punctuation: ~a" layout)))
 
 
     (flet ((vanila-edge (pos-before-open pos-after-close type)
@@ -158,7 +158,11 @@
          ;; A more complex layout, which doesn't have a scheme for
          ;; hooks yet.
          (tr :pp-not-single-span layout)
-         (vanila-edge pos-before-open pos-after-close type))))))
+         (vanila-edge pos-before-open pos-after-close type)))
+
+       (assess-parenthesized-content layout first-edge
+                                     pos-before-open pos-after-open
+                                     pos-before-close pos-after-close))))
 
 
 
