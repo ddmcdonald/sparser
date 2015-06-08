@@ -262,12 +262,16 @@ those steps sequentially on a single article.
 ; XML-to-doc-structure to convert it to the equivalent
 ; document object. 
 
+
+(defparameter *missing-ids* nil)
+
 ;; (populate-article-set)
 (defun populate-article-set (&optional list-of-ids location quiet use-pmc)
   "Given a list of document ids and the location of their
-   files in the corpus, run make-sparser-doc-structure to
-   return a set of article objects."
+  files in the corpus, run make-sparser-doc-structure to
+  return a set of article objects."
   (setq *articles-created* nil) ;; this is a rebuild operation!!
+  (setq *missing-ids* nil)
   (load-xml-to-doc-if-necessary)
   (unless list-of-ids
     (setq list-of-ids *2015-5-4_Mitre-articles*))
@@ -284,17 +288,20 @@ those steps sequentially on a single article.
     (dolist (id list-of-ids)
       (let* ((simple-id (if use-pmc (string-append (symbol-name id) ".nxml") (PMC-to-nxml id)))
              (pathname (funcall path-fn simple-id)))
-        (unless pathname
+        (cond
+         ((null pathname)
           (push-debug `(,simple-id ,location))
-          (lsp-break "Probe file failed"))
-
-        (if quiet
-            (princ "." t)
-            (format t "~&~%~%Reading the file ~a" pathname))
-        (push (funcall maker-fn simple-id)
-              *articles-created*)))
+          (push id *missing-ids*)
+          nil)
+         (t
+          (if quiet
+              (princ "." t)
+              (format t "~&~%~%Reading the file ~a" pathname))
+          (push (funcall maker-fn simple-id)
+                *articles-created*)))))
     (setq list-of-ids 
           (loop for id in list-of-ids
+            unless (memq id *missing-ids*)
             collect
             (typecase id
               (symbol id)
