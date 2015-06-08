@@ -326,18 +326,6 @@
 ;; (setq *scan-for-unsaturated-individuals* t)
 (defparameter *trace-instance-recording* nil)
 
-#+ignore
-(defun record-instance-within-sequence (i edge)
-  ;; called from add-subsuming-object-to-discourse-history 
-  (flet ((store-on-lifo (i edge)
-           (when *trace-instance-recording*
-             (format t "~&Storing ~a" i))
-           (push `(,i ,edge) *lifo-instance-list*)))
-    (let ((prior-mention (assq i *lifo-instance-list*)))
-      (if prior-mention
-        (unless (new-mention-subsumes-old? prior-mention edge)
-          (store-on-lifo i edge))
-        (store-on-lifo i edge)))))
 
 (defun record-instance-within-sequence (i edge)
   ;; called from add-subsuming-object-to-discourse-history 
@@ -352,8 +340,19 @@
           (store-on-lifo i edge))
         (store-on-lifo i edge)))))
 
+(defun new-mention-subsumes-old? (prior-mention edge)
+  ;; used by record-instance-within-sequence to do what
+  ;; extend-entry-in-discourse-history does without an edge
+  (let ((prior-edge (cadr prior-mention)))
+    (when (edge-subsumes-edge? edge prior-edge)
+      (rplaca (cdr prior-mention)
+               edge)
+      t)))
+
+
 (defun cleanup-lifo-instance-list ()
-  ;; called from end-of-sentence-processing-cleanup
+  ;; called from end-of-sentence-processing-cleanup and
+  ;; becomes the value of the sentence's long-term discourse history.
   (let ( individuals )
     (dolist (pair *lifo-instance-list*)
       (push (car pair) individuals)) ;; reverses the list
@@ -361,8 +360,9 @@
     individuals))
 
 
-
+;;;--------------------------------------------------------------
 ;;; sweep over sentence lifo list look for something unsaturated
+;;;--------------------------------------------------------------
 
 ; (setq *scan-for-unsaturated-individuals* t)
 
@@ -474,6 +474,8 @@ saturated? is a good entry point. |#
         (> new-count
            reigning-count)))))
 
+<<<<<<< .mine
+=======
 (defun new-mention-subsumes-old? (prior-mention edge)
   ;; used by record-instance-within-sequence to do what
   ;; extend-entry-in-discourse-history does without an edge
@@ -488,7 +490,7 @@ saturated? is a good entry point. |#
         (rplaca (cdr prior-mention)
                 edge)
         t)))))
-
+>>>>>>> .r3892
 
 
 ;;;--------
