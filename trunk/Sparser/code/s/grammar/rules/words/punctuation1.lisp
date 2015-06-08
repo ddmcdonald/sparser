@@ -63,6 +63,7 @@
 (define-punctuation  division-sign       #\÷ )   ;; 247
 
 (define-punctuation copyright_sign #\Copyright_Sign) ;; 169
+(define-punctuation left-pointing-double-angle-quotation_Mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
 (define-punctuation registered_sign #\Registered_Sign) ;; 174
 (define-punctuation  acute_accent #\Acute_Accent) ;;180
 (define-punctuation  middle_dot #\Middle_Dot) ;; 183
@@ -99,6 +100,8 @@
   '(
     (code-char 772)
     (code-char 894)
+    (code-char 1013)
+    (code-char 8194) ;; whitespace?
     (code-char 8197) ;; whitespace?
     (code-char 8201)
     (code-char 8202)
@@ -112,6 +115,7 @@
     (code-char 8240) ;;"‰", (code = 8240)
     (code-char 8242) ;; "prime"
     (code-char 8243) ;;"″", (code = 8243)
+    (code-char 8446) ;;"ℒ", (code = 8446)
     (code-char 8451) ;;"℃", (code = 8451)
     (code-char 8482) ;;"™", (code = 8482)
     (code-char 8491) ;; "Å"
@@ -134,12 +138,14 @@
     (code-char 8901) ;;"⋅", (code = 8901)
     (code-char 8943) ;; "⋯"
     (code-char 9653) ;; "▵"
+    (code-char 9658) ;; "►"
     (code-char 10877) ;; "⩽"
     (code-char 10878) ;;"⩾", (code = 10878)
     (code-char 64257) ;;"ﬁ", (code = 64257) ;; alphabetical
     (code-char 64258) ;;"ﬂ", (code = 64258)
     (code-char 65288) ;;"（", (code = 65288)
     (code-char 65293) ;;"－", (code = 65293)
+    (code-char 119967) ;; "풟"
     
     ))
 
