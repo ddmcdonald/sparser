@@ -189,8 +189,10 @@
     (tr :sweep-reading-sentence sentence)
     (setq *current-sentence-string* (sentence-string sentence))
     (if *trap-error-skip-sentence*
-      (error-trapped-scan-and-core sentence)
-      (scan-terminals-and-do-core sentence))
+        (error-trapped-scan-and-core sentence)
+        (scan-terminals-and-do-core sentence))
+    (unless (slot-boundp sentence 'next)
+      (throw 'do-next-paragraph nil))
     (let ((next-sentence (next sentence)))
       (tr :sweep-next-sentence next-sentence)
       (when (string-equal "" (sentence-string next-sentence))
