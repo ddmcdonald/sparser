@@ -42,6 +42,14 @@
 (noun "downs" :super abstract)
 (noun "ups" :super abstract)
 (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
+(noun "MeHg" :super molecule)
+(def-synonym MeHg (:noun "methyl mercury"))
+(noun "colon" :super bio-organ)
+(noun "breast" :super bio-organ)
+(noun "prostate" :super bio-organ)
+(noun "kidney" :super bio-organ)
+
+(noun "carcinogen" :super bio-agent)
 
 (adj "phospho-specific" :super bio-predication) ;; standin for "phosho-specific antibody"
 (def-synonym not (:adj "non"))
@@ -702,7 +710,7 @@
       (:noun "RBD"
              :of substrate)) 
 (noun "Raf-RBD" :super RBD)
-
+(adj "rate-limiting" :super bio-predication)
 (adj "real-time" :super bio-predication)
 (def-synonym real-time (:adj "real time"))
 (adj "recombinant" :super bio-predication)
@@ -814,6 +822,8 @@
      (:adj "stable" 
            :s agent
            :in context))
+
+(noun "starvation" :super bio-method)
 
 (noun "strategy" :super bio-method
       :binds ((goal bio-process))
