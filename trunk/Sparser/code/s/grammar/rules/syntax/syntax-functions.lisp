@@ -416,6 +416,8 @@
 ;;; VG + PP
 ;;;---------
 
+(defparameter *pobj-edge* nil) ;; used to generate useful error messages when the edge referent is NIL
+
 (defun adjoin-pp-to-vg (vg pp)
   ;; The VG is the head. We ask whether it subcategorizes for
   ;; the preposition in this PP and if so whether the complement
@@ -425,8 +427,8 @@
   (let* ((pp-edge (right-edge-for-referent))
          (prep-edge (edge-left-daughter pp-edge))
          (prep-word (edge-left-daughter prep-edge))
-         (pobj-edge (edge-right-daughter pp-edge))
-         (pobj-referent (edge-referent pobj-edge))
+         (*pobj-edge* (edge-right-daughter pp-edge))
+         (pobj-referent (edge-referent *pobj-edge*))
          (variable-to-bind
           ;; test if there is a known interpretation of the VG/PP combination
           (or (subcategorized-variable vg prep-word pobj-referent)
@@ -443,6 +445,7 @@
               ;; or if we are making a last ditch effore
               (and *force-modifiers*
                    'modifier))))
+    (declare (special *pobj-edge*))
 
     (cond
      (*subcat-test* variable-to-bind)
@@ -494,38 +497,41 @@
 
 (defun interpret-pp-adjunct-to-np (np pp)
   (push-debug `(,np ,pp))
-  (or (call-compose np pp) ;; DAVID -- why is this called?!
-      ;; Rusty - this is the hook that allows for a custom interpretation
-      ;; of the meaning of this pair. If you look up at verb-noun-compound
-      ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
-      ;; In general it's a hook for any knowledge we have about particular
-      ;; cases / co-composition
-      (let* ((pp-edge (right-edge-for-referent))
-             (prep-edge (edge-left-daughter pp-edge))
-             (prep-word (edge-left-daughter prep-edge))
-             (pobj-edge (edge-right-daughter pp-edge))
-             (pobj-referent (edge-referent pobj-edge))
-             (variable-to-bind
-              ;; test if there is a known interpretation of the NP/PP combination
-              (or
-               (subcategorized-variable
-                np prep-word
-                pobj-referent)
-               ;; or if we are making a last ditch effort
-               ;; if not, then return NIL, failing the rule
-               (and *force-modifiers* 'modifier))))
-        (cond
-         (*subcat-test* variable-to-bind)
-         (variable-to-bind
-          (when *collect-subcat-info*
-            (push (subcat-instance np prep-word variable-to-bind
-                                   pp)
-                  *subcat-info*))
-          (setq np (individual-for-ref np))
-          ;;(bind-variable variable-to-bind pp np)
-          (when variable-to-bind ;; otherwise return nil and fail the rule
-            (bind-variable variable-to-bind pobj-referent np)
-            np))))))
+  (cond
+   ((null np) 
+    (break "null interpretation in interpret-pp-adjunct-to-np edge ~s~&" *left-edge-into-reference*)
+    nil)
+   (t
+    (or (when (and np pp) (call-compose np pp)) ;; guard against passing a null NP to call-compose
+        ;; Rusty - this is the hook that allows for a custom interpretation
+        ;; of the meaning of this pair. If you look up at verb-noun-compound
+        ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
+        ;; In general it's a hook for any knowledge we have about particular
+        ;; cases / co-composition
+        (let* ((pp-edge (right-edge-for-referent))
+               (prep-edge (edge-left-daughter pp-edge))
+               (prep-word (edge-left-daughter prep-edge))
+               (*pobj-edge* (edge-right-daughter pp-edge))
+               (pobj-referent (edge-referent *pobj-edge*))
+               (variable-to-bind
+                ;; test if there is a known interpretation of the NP/PP combination
+                (or
+                 (subcategorized-variable np prep-word pobj-referent)
+                 ;; or if we are making a last ditch effort
+                 ;; if not, then return NIL, failing the rule
+                 (and *force-modifiers* 'modifier))))
+          (cond
+           (*subcat-test* variable-to-bind)
+           (variable-to-bind
+            (when *collect-subcat-info*
+              (push (subcat-instance np prep-word variable-to-bind
+                                     pp)
+                    *subcat-info*))
+            (setq np (individual-for-ref np))
+            ;;(bind-variable variable-to-bind pp np)
+            (when variable-to-bind ;; otherwise return nil and fail the rule
+              (bind-variable variable-to-bind pobj-referent np)
+              np))))))))
 
 
 (defun interpret-to-comp-adjunct-to-np (np to-comp)
@@ -771,33 +777,45 @@
 
 
 (defun subcategorized-variable (head label item)
-  (declare (special item))
+  (declare (special item *pobj-edge*))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
-  (when (itypep item 'to-comp)
-    (setq item (value-of 'clause item)))
-  (let ((subcat-patterns (known-subcategorization? head)))
-    (when subcat-patterns
-      (let ( variable )
-        (dolist (entry subcat-patterns)
-          (let ((scr (subcat-restriction entry)))
-            (when (eq label (subcat-label entry))
-              (when (satisfies-subcat-restriction? item scr)
-                (setq variable (subcat-variable entry))
-                (return)))))
-        ;;(break "testing subcats")
-        (or
-         variable
-         (when (eq label (word-named "in"))
-           (cond
-            ((and (itypep head 'physical)
-                  (itypep item 'location))
-             (find-variable-in-category/named 'location category::physical))
-            ((and (itypep head 'biological)
-                  (itypep item 'bio-context))
-             (find-variable-in-category/named
-              'context (category-named 'biological))))))))))
+  (cond
+   ((null item)
+    (cond
+     ((and (boundp '*pobj-edge*) *pobj-edge*)
+        (break "null interpretation in subcategorized-variable for edge ~s~&" *pobj-edge*))
+     ((eq label :subject)
+      (break "null interpretation in subcategorized-variable for edge ~s~&" *left-edge-into-reference*))
+     ((eq label :object)
+      (break "null interpretation in subcategorized-variable for edge ~s~&" *right-edge-into-reference*))
+     (t
+        (break "null item in subcategorized-variable~&"))))
+   (t
+    (when (itypep item 'to-comp)
+      (setq item (value-of 'clause item)))
+    (let ((subcat-patterns (known-subcategorization? head)))
+      (when subcat-patterns
+        (let ( variable )
+          (dolist (entry subcat-patterns)
+            (let ((scr (subcat-restriction entry)))
+              (when (eq label (subcat-label entry))
+                (when (satisfies-subcat-restriction? item scr)
+                  (setq variable (subcat-variable entry))
+                  (return)))))
+          ;;(break "testing subcats")
+          (or
+           variable
+           (when (eq label (word-named "in"))
+             (cond
+              ((and (itypep head 'physical)
+                    (itypep item 'location))
+               (find-variable-in-category/named 'location category::physical))
+              ((and (itypep head 'biological)
+                    (itypep item 'bio-context))
+               (find-variable-in-category/named
+                'context (category-named 'biological))))))))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
   (let ((override-category (override-label (itype-of item))))
