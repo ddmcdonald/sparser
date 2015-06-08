@@ -187,7 +187,10 @@
         ;; The amount in the other buffer
         (let ((offset-start (- start accumulated))
               (end-current-buffer (- end accumulated)))
-          (break "sensible numbers?")
+          (break "About to extract a string from character ~
+                  buffers in transition.~%Is start of ~a (in ~
+                  previous buffer) and and end of ~a (current) ~
+                  sensible numbers?" offset-start end-current-buffer)
           (let ((prefix (subseq *the-next-character-buffer* offset-start))
                 (suffix
                  (subseq *character-buffer-in-use*
