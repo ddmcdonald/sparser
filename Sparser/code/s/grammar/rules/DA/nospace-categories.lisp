@@ -91,20 +91,30 @@
 (defun make-hyphenated-pair (cat-name left-ref right-ref
                              left-edge right-edge
                              words pos-before pos-after)
-  ;; dropping the sequence aspect on the floor because
-  ;; there's not a nice factoring of its f-or-m as a mixin
 #|  (unless (and (individual-p left-ref)
                (individual-p right-ref))
     (unless (individual-p left-ref)
       (typecase left-ref
         (rule
-
-
     (break "One of the referents is not an individual")) |#
-  (let* ((category (category-named cat-name :break-if-none))
-         (i (find-or-make-individual category 
-                                     :left left-ref
-                                     :right right-ref)))
+
+  (let ((category (category-named cat-name :break-if-none))
+        (daughter (edge-left-daughter right-edge))
+        i )
+    ;; special case simplifications
+    (when (and (word-p daughter)
+               (eq daughter (word-named "WT")))
+      ;; That's "wild type". Ought to make a specialization but
+      ;; the facility isn't finished, so just change the
+      ;; referent instead simplify the referent since "WT"
+      ;; as a name-word won't fit the value restrictions.
+      (setq i left-ref)) ;; pesumably the protein
+
+    (unless i
+      (setq i (find-or-make-individual category 
+                                      :left left-ref
+                                      :right right-ref)))
+ 
     (let ((edge (make-edge-over-long-span
                  pos-before 
                  pos-after
@@ -221,9 +231,12 @@
                          (and right
                               (right-treetop-at/only-edges pos-before)))))
           (unless edge
-            (push-debug `(,words ,pos-after ,pos-before ,pattern))
-            (error "Neither of these words is spanned by an edge. ~
-                    No way to proceeded."))
+            (when *work-on-ns-patterns*
+              (push-debug `(,words ,pos-after ,pos-before ,pattern))
+              (error "Neither of these words is spanned by an edge. ~
+                      No way to proceeded."))
+            (reify-ns-name-and-make-edge words pos-before pos-after)
+            (return-from compose-salient-hyphenated-literals nil))
 
           ;; dropping the literal on the floor
           ;;/// "re" in Dec 28 is just a word at this point, so the
@@ -244,7 +257,18 @@
    (t ;; bail
     (reify-ns-name-and-make-edge words pos-before pos-after))))
 
-
+#| Kills compose-salient-hyphenated-literals when no edges in "anti-actin"
+"Antibodies used for immunoblotting were: anti-EGFR (#2232, Cell Signaling Technologies), 
+anti-phospho-EGFR Y1173 (#05–483, Upstate), anti-phospho-EGFR Y1068 (#2234, 
+Cell Signaling Technologies), anti-phospho-EGFR Y845 (Cell Signaling Technologies, 
+Beverly, Massachusetts, United States; #2231), anti-phospho-EGFR Y1045 (Cell Signaling 
+Technologies; #2237), anti-actin (Santa Cruz Biotechnology, Santa Cruz, California, 
+United States; #sc-1615), anti-Shc (Upstate; #06–203), anti-phospho-Shc Y317 
+(Upstate; #05–668), anti-Stat3 (Cell Signaling Technologies; #9132), and 
+anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S473 
+(Cell Signaling Technologies; #9271), and anti-Akt (Cell Signaling Technologies; #9272)."
+=
+|#
 
 ;;;--------
 ;;; colons
