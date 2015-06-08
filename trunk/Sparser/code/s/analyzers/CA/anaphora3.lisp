@@ -335,6 +335,9 @@
            (push `(,i ,edge) *lifo-instance-list*)))
     (let ((prior-mention (assq i *lifo-instance-list*)))
       (if (and prior-mention
+               ;; If we've (somehow) looped around far enough
+               ;; that the edge is deactivated then it surely
+               ;; isn't a subsumer
                (not (deactivated? (cadr prior-mention))))
         (unless (new-mention-subsumes-old? prior-mention edge)
           (store-on-lifo i edge))
@@ -348,7 +351,6 @@
       (rplaca (cdr prior-mention)
                edge)
       t)))
-
 
 (defun cleanup-lifo-instance-list ()
   ;; called from end-of-sentence-processing-cleanup and
@@ -474,23 +476,6 @@ saturated? is a good entry point. |#
         (> new-count
            reigning-count)))))
 
-<<<<<<< .mine
-=======
-(defun new-mention-subsumes-old? (prior-mention edge)
-  ;; used by record-instance-within-sequence to do what
-  ;; extend-entry-in-discourse-history does without an edge
-  (let ((prior-edge (cadr prior-mention)))
-    (cond
-     ((null (edge-starts-at prior-edge))
-      ;; inactive edge
-      (break "new-mention-subsumes-old? looking at inactive edge")
-      nil)
-     (t
-      (when (edge-subsumes-edge? edge prior-edge)
-        (rplaca (cdr prior-mention)
-                edge)
-        t)))))
->>>>>>> .r3892
 
 
 ;;;--------
