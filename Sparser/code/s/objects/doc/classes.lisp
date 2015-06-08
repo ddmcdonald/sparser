@@ -15,9 +15,11 @@
 
 (defclass chart-region ()
   ((starts-at-pos ;; :type position -- no hassles from nil
+    :initform nil
     :initarg :start-pos :accessor starts-at-pos
     :documentation "The position just before the region starts")
    (ends-at-pos ;; :type position
+    :initform nil
     :accessor ends-at-pos
     :documentation "The position just after the region ends"))
   (:documentation "Picks out a region of the chart. Somewhat the
