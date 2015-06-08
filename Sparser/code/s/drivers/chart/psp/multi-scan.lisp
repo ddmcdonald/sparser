@@ -470,7 +470,7 @@
         ;; over. We check for traversal hits before the no-space check
         ;; because the ns is greedy and moves the position, which can
         ;; cause the open to be missed. 
-      
+       
 
       (when (eq position-after end-pos)
         (return))
@@ -480,7 +480,11 @@
       (setq position-before position-after))))
 
    
-
- 
+(defun assess-parenthesized-content (layout first-edge
+                                     pos-before-open pos-after-open
+                                     pos-before-close pos-after-close)
+  (push-debug `(,layout ,first-edge ,pos-before-open ,pos-after-open
+                ,pos-before-close ,pos-after-close))
+  ) ;;(lsp-break "called at ~a" pos-before-open))
 
 
