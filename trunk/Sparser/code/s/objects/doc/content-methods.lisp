@@ -3,12 +3,13 @@
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  May 2015
+;;;  Version:  June 2015
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
 ;; be referred to. 5/27/15 Subject is now the referent rather than
-;; the edge. 
+;; the edge. 6/8/15 Added get-element methods and began to play with
+;; after methods.
 
 
 (in-package :sparser)
@@ -42,14 +43,16 @@
     and its content that are approriate to the type of the content model."))
 
 (defmethod after-actions-on-content ((e document-element) (c aggregated-bio-terms))
-  (push-debug `(,e ,c))) ;;(break "stub"))
+  (push-debug `(,e ,c)))  ;; (break "after action stub on ~a" e))
   
 
 (defmethod after-actions-on-content ((p paragraph) (c aggregated-bio-terms))
-  (push-debug `(,p ,c)))
+  (push-debug `(,p ,c))
   ;; Loop over the sentences, access their entity and relation fields
   ;; and collect them in a hash table keeping counts by category
-  ;; (break "paragraph content"))
+;  (let ((sentence-1 (children p))
+  ;;(break "paragraph content"))
+)
 
 
 ;;;----------------------------------
@@ -57,8 +60,8 @@
 ;;;----------------------------------
 
 (defclass entities-and-relations ()
-  ((entities :accessor entities-in-sentence)
-   (relations :accessor relations-in-sentence))
+  ((entities :initform nil :accessor entities-in-sentence)
+   (relations :initform nil :accessor relations-in-sentence))
   (:documentation "Copies the output of identify-relations
      from the post-analysis-operations function. Note that
      this is dependent on the *readout-relations* flag."))
@@ -67,6 +70,11 @@
   (setf (entities-in-sentence (contents s)) list))
 (defmethod set-relations ((s sentence) (list list))
   (setf (relations-in-sentence (contents s)) list))
+
+(defmethod get-entities ((s sentence))
+  (entities-in-sentence (contents s)))
+(defmethod get-relations ((s sentence))
+  (relations-in-sentence (contents s)))
 
 
 ;;;----------------------------------------------
