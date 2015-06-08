@@ -95,7 +95,7 @@ previous records of treetop-counts.
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
-    (run-treetop-snapshot corpus)))
+    (run-treetop-snapshot corpus save-info)))
 
 (defparameter *p-sent* nil)
 
@@ -155,7 +155,7 @@ previous records of treetop-counts.
 
 (defmethod compare-to-snapshot  ((corpus sentence-corpus)&optional (save-info nil))
   ;;/// consider a way to designate which snapshot to compare against
-  (let* ((current-pairs (run-treetop-snapshot corpus save-info))
+  (let* ((current-pairs (run-treetop-snapshot corpus))
          (snapshot (car (snapshots corpus)))
          (reference-pairs (snapshot-pairs snapshot))
          (*initialize-with-each-unit-of-analysis* nil))
