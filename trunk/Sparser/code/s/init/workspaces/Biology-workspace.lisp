@@ -18,17 +18,6 @@
 ; (defvar script :biology)  ;; For customizing what gets loaded
 ; (setup-bio) ;; load the bio model etc.
 
-;;; copied from ddm-load-corpora in ddm-workspace. 
-(defun load-bio-corpora ()
-  (s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
-  (s-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (s-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
-  (s-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
-  (s-load "interface/R3-eval/overnight-sents.lisp")
-  (s-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
-
-
-
 (defun setup-bio ()
   (bio-setting)
   (remove-paragraph-marker) ;; #<PSR1155  sgml-label ->  "p"> interfers with "p100"
@@ -38,6 +27,16 @@
     (gload "bio;loader"))
   (load-bio-corpora)
   (declare-all-existing-individuals-permanent))
+
+
+;;; copied from ddm-load-corpora in ddm-workspace. 
+(defun load-bio-corpora ()
+  (s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (s-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (s-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
+  (s-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
+  (s-load "interface/R3-eval/overnight-sents.lisp")
+  (s-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
 
 ;;;-------------------------------------------------------
 ;;; Setup for reading whole documents via the nxml reader
@@ -971,6 +970,64 @@ These data also provide the first evidence for explaining why overexpression of 
 
 ; (f "/Users/ddm/sift/nlp/corpus/biology/cholera.txt")
 
+
+
+;;; OBO => Lisp
+
+#| We can read in a set of OBO files (in .obo format, not .owl), 
+convert them to a Lisp-readable form, then load the resulting
+file into Sparser (or anything else) and operate on it.
+
+The first step is to do the translation. It only has to be done
+where there's a new version of the OBO files that we want to use.
+Otherwise we're working with the result of the translation
+The OBO files are in <R3 trunk>/ontologies/*.obo and date from 
+November 2014 when this machinery was set up. 
+
+The translation code is in <R3>/code/obo3lisp/obo2lisp.lisp. 
+As shown below, it takes a list of input obo files and writes
+out another combined file with the results of the translation.
+
+This is the code I used (ddm). It has to be modified to use
+generic file names. This is all lisp code. The translator
+is in cl-user. The rendered Lisp version of the OBO data
+is in sparser.
+
+(defun translate-obos ()  ;; (translate-obos)
+ (cl-user::translate-obo-files 
+  '("/Users/ddm/ws/R3/trunk/ontologies/bfo.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/ro.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/go-plus.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/pro.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/chebi.obo"
+    "/Users/ddm/ws/R3/trunk/ontologies/cl.obo")
+
+  "~/ws/R3/rs/trunk/corpus/obo-terms.lisp")
+
+The output file is a sequence of Lisp forms that replicate
+all of the interesting information in the corresponding
+.obo entry. The file has to be read in (which defines the Lisp 
+version of each entry) and then several additional operations
+are carried to to make the terms accessible as possible 
+definitions of otherwise unknown words. These are all bundled
+into the function incorporate-obo-terms which is packaged
+below along with its required file argument. This and the
+other operations on OBOs is defined in the file obo-reader.lisp
+in words/one-offs. 
+
+These return the Lisp-based obo entries. 
+-- get-obo-by-id (id-string)
+   get-obo (name-string)
+
+|#
+(defun load-obo-terms ()
+  (unless *r3-trunk* ;; nust end with a slash
+    (error "Bind *r3-trunk* to that spot in your directory"))
+  (let ((filename 
+         (concatenate 'string *r3-trunk* "code/obo-terms.lisp")))
+    (incorporate-obo-terms filename)))
+
+ 
 
 ;;;-------------------------------------------
 ;;; timing code used with process-one-article
