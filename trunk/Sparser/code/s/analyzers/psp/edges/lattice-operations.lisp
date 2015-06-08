@@ -12,6 +12,7 @@
 (in-package :sparser)
 
 (defvar category::top)
+(defvar category::collection)
 
 (defstruct (dl-indiv
             (:include unit)
@@ -248,9 +249,11 @@
 
 ;;;;; KEY METHODS TO BE WRITTEN ;;;;;;;
 (defun link-to-other-parents (new-child parent binding) ;; to be written
+  (declare (ignore new-child parent binding))
   nil)
 
 (defun link-to-existing-children (new-child parent binding) ;; to be written
+  (declare (ignore new-child parent binding))
   nil)
 
 (defun lsp-break (&rest args)
@@ -314,19 +317,18 @@
     collect b))
 
 
-(defun head-referent? (edge &optional ref)
+(defun head-referent? (edge &optional referent)
   (when (and (null referent) edge (edge-referent edge))
-    (setq ref (edge-referent edge)))
+    (setq referent (edge-referent edge)))
   (when
-      (and edge
-           referent)
+      (and edge referent)
     (let
         ((left (edge-left-daughter edge))
          (right (edge-right-daughter edge)))
       (cond
-       ((and (edge-p left) (same-category? (edge-referent left) ref))
+       ((and (edge-p left) (same-category? (edge-referent left) referent))
         (edge-referent left))
-       ((and (edge-p right) (same-category? (edge-referent right) ref))
+       ((and (edge-p right) (same-category? (edge-referent right) referent))
         (edge-referent right))))))
 
 (defun same-category? (daughter-ref ref)
@@ -347,7 +349,7 @@
 
 (defun survey-bindings ()
   (setq *dlis* nil)
-  (maphash #'(lambda(e dli)(push dli *dlis*)) *lattice-ht*)
+  (maphash #'(lambda(e dli)(declare (ignore e))(push dli *dlis*)) *lattice-ht*)
   (format t "There are ~S dlis" (length *dlis*))
   (setq *bmax* 0)
   (setq *maxb* nil)
