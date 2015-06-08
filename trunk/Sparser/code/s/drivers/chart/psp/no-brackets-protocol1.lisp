@@ -22,6 +22,7 @@
 ;; 5/13/2015 code related to semtree that will (eventually) fin the material needed for MITRE's index cards
 ;;  itypes-under, process-under, individuals-under...
 ;; 5/25/2015 collect information to make MITRE index cards
+;; 6/8/2015 Catching errors in get-string-from-local-edge-cache
 
 (in-package :sparser)
 
@@ -188,13 +189,12 @@
   (loop
     (tr :sweep-reading-sentence sentence)
     (setq *current-sentence-string* (sentence-string sentence))
+    (setq *sentence-in-core* sentence)
     (if *trap-error-skip-sentence*
         (error-trapped-scan-and-core sentence)
         (scan-terminals-and-do-core sentence))
     (unless (slot-boundp sentence 'next)
       (throw 'do-next-paragraph nil))
-    (unless (slot-boundp sentence 'next)
-       (throw 'do-next-paragraph nil))
     (let ((next-sentence (next sentence)))
       (tr :sweep-next-sentence next-sentence)
       (when (string-equal "" (sentence-string next-sentence))
@@ -422,14 +422,21 @@
 (defmethod get-string-from-local-edge-cache ((i individual))
   (let ((edge (get-local-edge-cache-entry i)))
     (when edge ;; complain if it's not there?
-      (let* ((start-pos (pos-edge-starts-at edge))
-             (end-pos (pos-edge-ends-at edge))
-             (start-index (pos-character-index start-pos))
-             (end-index (pos-character-index end-pos)))
-        (unless (and start-index end-index)
-          (error "Some position index is null"))
-        (extract-string-from-char-buffers 
-         start-index end-index)))))
+      (cond
+       ;; inactive edge ERROR
+       ((null (edge-starts-at edge))
+        (format t "~&Trying to get surface string for ~s from inactive edge ~s"
+                i edge)
+        nil)
+       (t
+        (let* ((start-pos (pos-edge-starts-at edge))
+               (end-pos (pos-edge-ends-at edge))
+               (start-index (pos-character-index start-pos))
+               (end-index (pos-character-index end-pos)))
+          (unless (and start-index end-index)
+            (error "Some position index is null"))
+          (extract-string-from-char-buffers 
+           start-index end-index)))))))
 
 
 #| original 
