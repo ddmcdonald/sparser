@@ -223,6 +223,7 @@
 (defvar *entities* nil
   "Holds the entities for the last sentence when *readout-relations* is up")
 
+#| Original
 (defun post-analysis-operations (sentence)
   (declare (special *universal-time-start* *universal-time-end*))
   
@@ -254,7 +255,36 @@
         (setq *relations* relations  ; (readout-relations relations)
               *entities* entities))) ; (readout-entities entities)
      ;;(ccl::break "all-sentences*") 
-     )))
+     ))) |#
+
+(defun post-analysis-operations (sentence)
+  (declare (special *universal-time-start* *universal-time-end*))
+  
+  (when *scan-for-unsaturated-individuals*
+    (sweep-for-unsaturated-individuals sentence))
+  (identify-salient-text-structure sentence)
+  (when *do-anaphora*
+    (handle-any-anaphora sentence))
+  
+  (when *readout-relations*
+    (when *index-cards*
+      (push `(,(sentence-string sentence) 
+              ,(all-individuals-in-tts sentence)
+              ,@(when (and (boundp '*current-article*)
+                           *current-article*)
+                  (list *current-article*
+                        *universal-time-start*
+                        *universal-time-end*)))
+            
+            *all-sentences*))
+     
+    (multiple-value-bind (relations entities)
+                         (identify-relations sentence)
+      (set-entities sentence entities)
+      (set-relations sentence relations)
+      (setq *relations* relations  ; (readout-relations relations)
+            *entities* entities)))) ; (readout-entities entities)
+
      
 ;;;------------------------------------------------------------
 ;;; final operations on sentence before moving to the next one
