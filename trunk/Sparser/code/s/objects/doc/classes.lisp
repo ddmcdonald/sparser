@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File:  "classes"
 ;;;   Module:  "objects/doc/"
-;;;  Version:  September 2013
+;;;  Version:  June 2015
 
 ;; initiated 7/15/13 to hold Sparser-specific mixin clos classes.
 ;; Loads after the regular objects including the model and before
-;; any other document objects. Fleshed out 9/17/13.
+;; any other document objects. Fleshed out 9/17/13. Added initform's
+;; of nil 6/8/15 to avoid gratuitous unbound slots. 
 
 (in-package :sparser)
 
@@ -37,9 +38,11 @@
 
 (defclass document-region ()
   ((starts-at-char ;; :type integer 
+    :initform nil
     :initarg :start-char :accessor starts-at-char
     :documentation "The index of the first character in the region")
    (ends-at-char ;; :type position -- not defined yet
+    :initform nil
     :accessor ends-at-char
     :documentation "The index just after the last character in the region"))
   (:documentation "Picks out a region of a document. 
@@ -55,6 +58,7 @@
 
 (defclass has-content-model ()
   ((contents :accessor contents
+    :initform nil
     :documentation "Holds some object of type contents, the one
       for Grok is text-relation-contents"))
   (:documentation "Belongs on all levels of the document structure
