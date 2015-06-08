@@ -632,8 +632,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 (setf (elt *character-dispatch-array* 169)
       `(:punctuation . ,(punctuation-named (code-char 169))))
+(setf (elt *character-dispatch-array* 171) `(:punctuation . ,(punctuation-named (code-char 171)))) ;;#\Acute_Accent
+
 (setf (elt *character-dispatch-array* 174)
       `(:punctuation . ,(punctuation-named (code-char 174))))
+
 
 (setf (elt *character-dispatch-array* 180) `(:punctuation . ,(punctuation-named (code-char 180)))) ;;#\Acute_Accent
 (setf (elt *character-dispatch-array* 183) `(:punctuation . ,(punctuation-named (code-char 183)))) ;;#\Middle_Dot
@@ -821,7 +824,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (968 (:alphabetical . (:lowercase . , (code-char 968)))) ;;"ψ", (code = 968)
     (969 (:alphabetical . (:lowercase . , (code-char 969)))) ;;"ω", (code = 969)
     (981 (:alphabetical . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
-    (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082)
+    (1013 (:punctuation . ,(punctuation-named (code-char 1013)))) ;; "ϵ"
+    (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082)    
+
+    (8194 (:punctuation . ,(punctuation-named (code-char 8194)))) ;;" ", (code = 8194)
+
     (8197 (:punctuation . ,(punctuation-named (code-char 8197)))) ;;" ", (code = 8197)
     (8201 (:punctuation . ,(punctuation-named (code-char 8201)))) ;;" ", (code = 8201)
     (8202 (:punctuation . ,(punctuation-named (code-char 8202)))) ;;" ", (code = 8202)
@@ -864,6 +871,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8243 (:punctuation . ,(punctuation-named (code-char 8243)))) ;;"″", (code = 8243)
     
     (8451 (:punctuation . ,(punctuation-named (code-char 8451)))) ;;"℃", (code = 8451)
+    (8466 (:punctuation . ,(punctuation-named (code-char 8466)))) ;;"ℒ", (code = 8466)
     (8482 (:punctuation . ,(punctuation-named (code-char 8482)))) ;;"™", (code = 8482)
     (8488
      (:alphabetical . (:uppercase . , #\ℨ)))
@@ -919,13 +927,14 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
     (8901 (:punctuation . ,(punctuation-named (code-char 8901)))) ;;"⋅", (code = 8901)
     (9653 (:punctuation . ,(punctuation-named (code-char 9653)))) ;;"▵", (code = 8901)afffff
+    (9658 (:punctuation . ,(punctuation-named (code-char 9658)))) ;;""►", (code = 9658)
     (10877 (:punctuation . ,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10878)
     (10878 (:punctuation . ,(punctuation-named (code-char 10878)))) ;;"⩾", (code = 10878)
     (64257 (:alphabetical . (:lowercase . , (code-char 64257)))) ;;"ﬁ", (code = 64257)
     (64258 (:alphabetical . (:lowercase . , (code-char 64258)))) ;;"ﬂ", (code = 64258)
     (65288 (:punctuation . ,(punctuation-named (code-char 65288)))) ;;"（", (code = 65288)
     (65293 (:punctuation . ,(punctuation-named (code-char 65293)))) ;;"－", (code = 65293)
-    
+    (119967 (:punctuation . ,(punctuation-named (code-char 119967)))) ;;"풟", (code = 119967)
     
     )
   "If it's not a defparameter, CCL won't let us extend it
