@@ -919,11 +919,12 @@
          :s initial
          :o subsequent))
 
-(define-category form :specializes bio-process
+(define-category bio-form :specializes bio-process
   :binds ((creator biological)(creation biological)(mechanism biological))
   :realization
-  (:verb ("formXXX" :third-plural "forms") 
-         ;; "form" has never been seen as a verb in the corpus, but "forms" has been seen
+  (:verb ("formXXX" :third-plural "forms" :past-tense "formed") 
+         ;; "form" has never been seen as a verb in the corpus, but "forms" and "formed"
+         ;; have been seen
          :noun "formation"
          :etf (svo-passive) 
          :s creator
