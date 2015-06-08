@@ -326,6 +326,7 @@
 ;; (setq *scan-for-unsaturated-individuals* t)
 (defparameter *trace-instance-recording* nil)
 
+#+ignore
 (defun record-instance-within-sequence (i edge)
   ;; called from add-subsuming-object-to-discourse-history 
   (flet ((store-on-lifo (i edge)
@@ -338,6 +339,18 @@
           (store-on-lifo i edge))
         (store-on-lifo i edge)))))
 
+(defun record-instance-within-sequence (i edge)
+  ;; called from add-subsuming-object-to-discourse-history 
+  (flet ((store-on-lifo (i edge)
+           (when *trace-instance-recording*
+             (format t "~&Storing ~a" i))
+           (push `(,i ,edge) *lifo-instance-list*)))
+    (let ((prior-mention (assq i *lifo-instance-list*)))
+      (if (and prior-mention
+               (not (deactivated? (cadr prior-mention))))
+        (unless (new-mention-subsumes-old? prior-mention edge)
+          (store-on-lifo i edge))
+        (store-on-lifo i edge)))))
 
 (defun cleanup-lifo-instance-list ()
   ;; called from end-of-sentence-processing-cleanup
@@ -465,10 +478,16 @@ saturated? is a good entry point. |#
   ;; used by record-instance-within-sequence to do what
   ;; extend-entry-in-discourse-history does without an edge
   (let ((prior-edge (cadr prior-mention)))
-    (when (edge-subsumes-edge? edge prior-edge)
-      (rplaca (cdr prior-mention)
-               edge)
-      t)))
+    (cond
+     ((null (edge-starts-at prior-edge))
+      ;; inactive edge
+      (break "new-mention-subsumes-old? looking at inactive edge")
+      nil)
+     (t
+      (when (edge-subsumes-edge? edge prior-edge)
+        (rplaca (cdr prior-mention)
+                edge)
+        t)))))
 
 
 
