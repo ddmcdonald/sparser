@@ -82,7 +82,7 @@ those steps sequentially on a single article.
 
 ;;---- Error handline
 
-(defparameter *break-on-sweep-errors* t
+(defparameter *break-on-sweep-errors* nil
   "Read by sweep-article-set to determine whether or not to use 
    an error handler.")
 
@@ -231,12 +231,12 @@ those steps sequentially on a single article.
 (defparameter *break-during-read* nil)
 
 (defun break-in-articles ()
-  (setq *break-on-pattern-outside-coverage?* nil)
+  ;;(setq *break-on-pattern-outside-coverage?* t)
   (setq *break-during-read* t)
   (REVERT-TO-REGULAR-BREAK))
 
 (defun dont-break-in-articles ()
-  (setq *break-on-pattern-outside-coverage?* t)
+  (setq *break-on-pattern-outside-coverage?* nil)
   (setq *break-during-read* nil)
   (revert-to-error-break))
 
@@ -265,12 +265,19 @@ those steps sequentially on a single article.
       (read-article-set))
   (setq *accumulate-content-across-documents* t))
 
-(defun test-12-month-articles ()
-  (populate-12-month-NXML-model-article-set)
-  (sweep-article-set)
-  (with-total-quiet
-      (read-article-set))
-  (setq *accumulate-content-across-documents* t))
+(defun test-12-month-articles (&optional (n nil))
+  (when (null *articles-created*)
+    (populate-12-month-NXML-model-article-set))
+  (let
+      ((articles-to-run
+        (if (numberp n)
+            (loop for a in *articles-created* as i from 1 to n
+              collect a)
+            *articles-created*)))
+    (sweep-article-set articles-to-run)
+    (with-total-quiet
+        (read-article-set articles-to-run))
+    (setq *accumulate-content-across-documents* t)))
 
 (defun single-sent-parse ()
   (setq *accumulate-content-across-documents* t))
