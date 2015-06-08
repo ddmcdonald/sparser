@@ -37,6 +37,7 @@
   (gload "bio;parse-biopax"))
 #-r3
 (gload "bio;find-extension.lisp")
+(gload "bio;new-words")
 
 
 ;(gload "bio;NFkappaB")
