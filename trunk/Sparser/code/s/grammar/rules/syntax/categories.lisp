@@ -92,6 +92,8 @@
 ;; 6/5/15 Added grammatical-subject and direct-object to name relationships of a term
 ;;  (e.g. a pronoun) to its syntactic environment
 
+;; 6/8/2015 tweaked ng-head?  to prevent treating <adverb> <vp+ing> as a NG group
+
 
 
 (in-package :sparser)
@@ -463,16 +465,17 @@
 (defmethod ng-head? ((e edge))
   (cond
    ((eq (edge-form e) CATEGORY::VERB+ING) ; 
-    (and
-     (not (eq category::det 
-              (edge-form
-               (right-treetop-at/edge
-                (pos-edge-ends-at e)))))
-     (not
-      (memq 
-       ;; SBCL caught an error here -- led to simplification to use pos-terminal
-       (word-symbol (pos-terminal (pos-edge-ends-at e)))
-       '(WORD::|that| WORD::|which| WORD::|whose|)))))
+    (let
+        ((end-pos (pos-edge-ends-at e))
+         (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
+      (and
+       (not (and (edge-p prev-edge)(eq (edge-form prev-edge) category::adverb)))
+       (not (eq (edge-form (right-treetop-at/edge end-pos)) category::det))
+       (not
+        (memq 
+         ;; SBCL caught an error here -- led to simplification to use pos-terminal
+         (word-symbol (pos-terminal (pos-edge-ends-at e)))
+         '(WORD::|that| WORD::|which| WORD::|whose|))))))
    ((ng-head? (edge-form e)) t)
    ((and
      (eq category::det (edge-form e))
