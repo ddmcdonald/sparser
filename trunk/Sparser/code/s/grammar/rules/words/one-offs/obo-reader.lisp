@@ -3,10 +3,11 @@
 ;;;
 ;;;     File: "obo-reader"
 ;;;   Module: "grammar;rules:words:one-offs:"
-;;;  Version:  January 2015
+;;;  Version:  June 2015
 
 ;; initiated 11/25/14 to read in entries created by translate-obo-files 
-;; that are stashed in a designated file. 
+;; that are stashed in a designated file. 6/8/15 Added superc sweep
+;; to the setup function. 
 
 ;; The format of a OBO file is spelled out in 
 ;; http://oboformat.googlecode.com/svn/trunk/doc/GO.format.obo-1_2.html
@@ -30,6 +31,7 @@
   (extract-obo-table-to-list)
   (record-obo-names)
   (sweep-obo-terms-to-collect-synonyms)
+  (sweep-obo-terms-for-supercs)
   (setq *obo-terms-incorporated* t))
 
 
