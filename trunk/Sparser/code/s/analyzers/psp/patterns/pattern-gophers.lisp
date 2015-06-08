@@ -323,7 +323,8 @@
                          pos-before pos-after))
      ((itypep left-ref 'amino-acid)
       (reify-amino-acid-pair words pos-before pos-after))
-     (t (make-bio-pair left-ref right-ref words
+     (t ;;(break "two-terms default")
+(make-bio-pair left-ref right-ref words
                        left-edge right-edge
                        pos-before pos-after)))))
 
