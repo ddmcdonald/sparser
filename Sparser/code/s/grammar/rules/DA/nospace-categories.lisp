@@ -93,6 +93,14 @@
                              words pos-before pos-after)
   ;; dropping the sequence aspect on the floor because
   ;; there's not a nice factoring of its f-or-m as a mixin
+#|  (unless (and (individual-p left-ref)
+               (individual-p right-ref))
+    (unless (individual-p left-ref)
+      (typecase left-ref
+        (rule
+
+
+    (break "One of the referents is not an individual")) |#
   (let* ((category (category-named cat-name :break-if-none))
          (i (find-or-make-individual category 
                                      :left left-ref
@@ -178,6 +186,7 @@
 
 (defparameter *salient-hyphenated-literals*
   `(
+    ,(resolve/make "anti")
     ,(resolve/make "auto")
     ,(resolve/make "co") ;; co-occurring
     ,(resolve/make "di")
