@@ -254,7 +254,7 @@ all sorts of rules apply and not simply form rules.
             (if
              (eq word::period right-treetop)
              (setq pos end)
-             (setq pos (p# (+ 1 (pos-array-index pos))))))
+             (setq pos (chart-position-after pos))));;(setq pos (p# (+ 1 (pos-array-index pos))))
            (t
             (setq pos (pos-edge-ends-at right-treetop))))))))))
 
