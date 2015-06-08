@@ -293,6 +293,8 @@
         category::conditional)
        (bind-variable 'modal aux i))
       (category::anonymous-agentive-action) ;; do
+      (category::have
+       (bind-variable 'perfect aux i))
       (otherwise
        (push-debug `(,aux ,vg))
        (error "Assimilate the auxiliary category ~a~%  ~a"
