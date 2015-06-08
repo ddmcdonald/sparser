@@ -22,8 +22,8 @@
 ;; Need documentation here -- DAVID
 (defvar *left-segment-boundary*)
 (defvar *right-segment-boundary*)
+(defvar *DEBUG-SEGMENT-HANDLING*) ;; needed to quiet the compiler
 
-;;(defvar *DEBUG-SEGMENT-HANDLING*)
 
 (defvar *segment-position-just-left-of-head* nil
   "Points to the chart-position-before the right-segment-boundary
