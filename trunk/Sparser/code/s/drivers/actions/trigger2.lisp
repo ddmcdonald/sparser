@@ -1,18 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "trigger"
 ;;;   Module:  "drivers;actions:"
-;;;  Version:  2.1 November 1993
+;;;  Version:  2.2 June 2015
 
 ;; initiated 6/90
 ;; 1.1 (10/21/91 v2.0) Completely revamped.  10/27 fixed typos. 10/30 ditto.
 ;;     (7/13 v2.2) shifted the trace to be ...-hook so it wouldn't clutter
 ;;       as much.
 ;; 2.0 (6/11/93 v2.3) Added position args to word version
-;; 2.1 (11/12) fixed buggy arguments in category version and flushed
+;; 2.1 (11/12/93) fixed buggy arguments in category version and flushed
 ;;      polyword case
+;; 2.2 (6/9/15) Put a polyword case back in (very different polywords now)
 
 (in-package :sparser)
 
@@ -42,7 +43,9 @@
   (when *trace-completion-hook*
     (format t "~&Checking for completion actions associated with the ~
                word ~A~%" word))
-  (let ((rule-set (word-rules word)))
+  (let ((rule-set (etypecase word
+                    (word (word-rules word))
+                    (polyword (pw-rules word)))))
     (if rule-set
       (etypecase rule-set
         (symbol  ;;e.g. :whitespace
@@ -59,5 +62,5 @@
                (format t "~&  There aren't any -- empty action ~
                           field~%"))))))
       (when *trace-completion-hook*
-        (format t "~%  There aren't any -- it's an unknown word~%")))))
+        (format t "~%  There aren't any -- word has no rule-set~%")))))
 

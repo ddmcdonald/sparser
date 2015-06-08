@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "hook"
 ;;;   Module:  "drivers;actions"
-;;;  Version:  1.5 May 1994
+;;;  Version:  1.5 June 2015
 
 ;; 1.1 (10/21/92 v2.0) Completely revamped.
 ;;     10/30 fixed bug in the loop
@@ -12,6 +12,7 @@
 ;; 1.3 (6/11/93 v2.3) Added position args to the default call
 ;; 1.4 (12/8) Reorganized what actions got called in the marker case
 ;; 1.5 (5/20/94) changed args to default case to dispatch on edge vs. position
+;;     (6/8/15) Added polyword optoin for the argument.
 
 (in-package :sparser)
 (defvar *trace-completion-hook*)
@@ -57,7 +58,7 @@
 
       (otherwise
        (etypecase argument
-         (word
+         ((or word polyword)
           (when *trace-completion-hook*
             (format t "~&  Calling ~a on ~s ot p~a~%"
                     function (word-pname argument) 
