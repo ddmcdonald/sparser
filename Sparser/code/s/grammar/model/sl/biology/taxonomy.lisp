@@ -275,14 +275,13 @@
 ;;;----------------------------------------------------
 
 
-(delete-noun-cfr (resolve/make "agent"))
-(delete-noun-cfr (resolve/make "agents"))
 
-(define-category bio-agent
-  :specializes biological
-  :binds ((dummy biological))
-  :realization
-  (:noun "agent"))
+(define-category bio-agent :specializes bio-entity
+  :binds ((causes biological))
+  :realization 
+  (:noun "agent"
+   :of causes
+   :premod causes))
 
 (define-category molecule
   ;; makes more sense for ATP than H20, but not worrying about whether
@@ -502,6 +501,10 @@
 
 (define-category bio-location 
   :specializes bio-context
+  :instantiates self
+  :index (:permanent :key name))
+
+(define-category bio-organ :specializes bio-location
   :instantiates self
   :index (:permanent :key name))
 
