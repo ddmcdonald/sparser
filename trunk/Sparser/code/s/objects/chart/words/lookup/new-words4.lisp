@@ -67,6 +67,7 @@
 
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
 
+(defparameter *word-to-be-defined?* nil)
 
 (defun make-word/all-properties/or-primed (character-type)
   (declare (special *capitalization-of-current-token*
@@ -79,6 +80,8 @@
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (make-word :symbol symbol
                           :pname  (symbol-name symbol))))
+
+    (setq *word-to-be-defined?* word)
     (catalog/word word symbol)
 
     (ecase character-type
