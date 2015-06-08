@@ -193,6 +193,8 @@
         (scan-terminals-and-do-core sentence))
     (unless (slot-boundp sentence 'next)
       (throw 'do-next-paragraph nil))
+    (unless (slot-boundp sentence 'next)
+       (throw 'do-next-paragraph nil))
     (let ((next-sentence (next sentence)))
       (tr :sweep-next-sentence next-sentence)
       (when (string-equal "" (sentence-string next-sentence))
@@ -247,10 +249,10 @@
      (t
       (multiple-value-bind (relations entities)
                            (identify-relations sentence)
-        (set-entities sentence entities))
-      (set-relations sentence relations)
-      (setq *relations* relations  ; (readout-relations relations)
-            *entities* entities)); (readout-entities entities)
+        (set-entities sentence entities)
+        (set-relations sentence relations)
+        (setq *relations* relations  ; (readout-relations relations)
+              *entities* entities))) ; (readout-entities entities)
      ;;(ccl::break "all-sentences*") 
      )))
      
