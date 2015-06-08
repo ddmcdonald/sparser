@@ -64,6 +64,7 @@
 ;;  bsorbed as a main verb, though we still need to handle the rule for the
 ;;  reduced relative.
 ;; 6/4/15 More modification to assimilate-subject-to-vp-ed for reduced relative
+;; 6/8/2015 more informative messages for cases where subcategorization is handed a NP with NIL referent
 
 
 (in-package :sparser)
@@ -618,7 +619,15 @@
       ;; and not a full vp, in which case we're returning nil
       ;; so that the rule doesn't go through.
       (cond
-       (*subcat-test* t) ;; ?????????????
+       (*subcat-test* 
+        (or
+         (not
+          (or ;; vp has a bound object
+           (null (object-variable vp))
+           (value-of (object-variable vp) vp)
+           (itype subj 'pronoun)))
+         (subcategorized-variable vp :subject subj)))
+       ;; ?????????????
        ((or ;; vp has a bound object
          (null (object-variable vp))
          (value-of (object-variable vp) vp)
@@ -785,13 +794,14 @@
    ((null item)
     (cond
      ((and (boundp '*pobj-edge*) *pobj-edge*)
-        (break "null interpretation in subcategorized-variable for edge ~s~&" *pobj-edge*))
+        (format t "~&*** null interpretation in subcategorized-variable for edge ~s~&" *pobj-edge*))
      ((eq label :subject)
-      (break "null interpretation in subcategorized-variable for edge ~s~&" *left-edge-into-reference*))
+      (format t "~&*** null interpretation in subcategorized-variable for edge ~s~&" *left-edge-into-reference*))
      ((eq label :object)
-      (break "null interpretation in subcategorized-variable for edge ~s~&" *right-edge-into-reference*))
+      (format t "~&*** null interpretation in subcategorized-variable for edge ~s~&" *right-edge-into-reference*))
      (t
-        (break "null item in subcategorized-variable~&"))))
+        (format t "~&null item in subcategorized-variable~&")))
+    nil)
    (t
     (when (itypep item 'to-comp)
       (setq item (value-of 'clause item)))
