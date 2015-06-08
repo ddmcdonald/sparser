@@ -210,6 +210,7 @@
       (setq *paragraph* paragraph)
       (catch 'do-next-paragraph
         (read-from-document paragraph))
+      (after-actions paragraph)
       (setq previous-paragraph paragraph)
       (setq paragraph (car remaining)
             remaining (cdr remaining))
@@ -243,8 +244,7 @@
       (initialize-sentences) ;; set up or reuse the 1st sentence
       ;; lifted from analyze-text-from-string 
       (establish-character-source/string text)
-      (analysis-core)
-      (after-actions p))))
+      (analysis-core))))
 
 
 #+ignore ;; nice idea, but would need pretty drastic
