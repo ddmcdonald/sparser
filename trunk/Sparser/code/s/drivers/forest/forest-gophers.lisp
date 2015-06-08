@@ -259,11 +259,12 @@
           (let ((constituents (edge-constituents edge)))
             (unless constituents (error "no constituents on long span ~a" edge))            
             (let ((last-constituent (car (last constituents))))
-              (when (and (word-p last-constituent)
-                         (not (punctuation? last-constituent)))
-                (if (eq (edge-right-daughter last-constituent) :single-term)
-                  last-constituent
-                  (walk-down-right-headline last-constituent))))))
+              (etypecase last-constituent
+                (word nil)
+                (edge
+                 (if (eq (edge-right-daughter last-constituent) :single-term)
+                   last-constituent
+                   (walk-down-right-headline last-constituent)))))))
          (t (push-debug `(,edge ,daughter))
             (error "Unexpected symbol in headline walk: ~a" daughter))))
        (t (push-debug `(,edge ,daughter))
