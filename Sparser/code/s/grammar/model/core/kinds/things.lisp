@@ -87,7 +87,9 @@
    Agentive objects are usually constituted of (are made out of) regular
  Object's. People have bodies. Robots are assembled out of engines and
  sensors and such (Legos). "
-  :lemma (common-noun "agent")) ;; n.b. "Mossad agent"
+  ;;:lemma (common-noun "agent") commented out because having the definition
+  ;; of a noun be a mixin causes problems (shows up in biology)
+  ) ;; n.b. "Mossad agent"
 
 
 (define-category feature
