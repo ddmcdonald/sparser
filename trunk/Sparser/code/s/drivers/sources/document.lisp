@@ -8,6 +8,7 @@
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
 ;; 5/18/15. 
+;; 6/8/2015 better rejection of sections that shouldn't be parsed
 
 (in-package :sparser)
 
@@ -46,9 +47,19 @@
 ;;;-------------------------------------------------
 ;;//// needs a setter
 
-(defparameter *sections-to-ignore* '("method")
+(defparameter *sections-to-ignore* 
+  '("method"
+    "authors' contributions"
+    "competing interests"
+    "experimental procedures"
+    "funding"
+    "materials and methods"
+    "methods summary"
+    "methods")
+  
+  
   "Contains a list of section titles or title fragments that
-   name sections we want to skip over")
+  name sections we want to skip over")
 
 (defun ignore-this-document-section (section)
   (when *sections-to-ignore*
@@ -62,16 +73,18 @@
             (push-debug `(,section))
             (error "Section somehow doesn't have a title object"))
           (let ((title-string 
-                 (typecase title-object
-                   (string title-object)
-                   (string-holder (content-string title-object))
-                   (otherwise
-                    (push-debug `(,title-object))
-                    (error "Unexpected type of title: ~a~%~a"
-                           (type-of title-object) title-object)))))
+                 (string-downcase
+                  (typecase title-object
+                    (string title-object)
+                    (string-holder (content-string title-object))
+                    (otherwise
+                     (push-debug `(,title-object))
+                     (error "Unexpected type of title: ~a~%~a"
+                            (type-of title-object) title-object))))))
+            ;;(format t "~&---- Section title: ~S~&" title-string)
             (dolist (ignore-substring *sections-to-ignore* nil)
               (when (search ignore-substring title-string
-                            :test #'string-equal)
+                            :test #'equalp)
                 (when *show-section-printouts*
                   (format t "~&~%------- Ignoring section ~a --------" section))
                 (return t)))))))))
