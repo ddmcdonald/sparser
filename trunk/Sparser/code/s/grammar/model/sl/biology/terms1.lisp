@@ -31,6 +31,7 @@
 ;;  bunch of vo cabulary tweaks for test set -- at the beginning of the file temporarily
 ;; 6/5/2015 DAVID!! There is a temporary fix for the problems with interpreting "the next day" -- make it into a polyword
 ;;  the underlying problem needs to be fixed (by you)
+;; 6/8/2015 added a bunch of plasmids
 
 
 (in-package :sparser)
@@ -48,6 +49,17 @@
 (noun "breast" :super bio-organ)
 (noun "prostate" :super bio-organ)
 (noun "kidney" :super bio-organ)
+
+(noun "pcDNA3.1-PPARγ" :super plasmid)
+(noun "pcDNA3.1-Med1" :super plasmid)
+(noun "pCMX-Med1" :super plasmid)
+(noun "pcDNA3.1-PIMT" :super plasmid)
+(noun "pcDNA3.1-PIMT-N" :super plasmid)
+(noun "pCMV-PIMT-Flag" :super plasmid)
+(noun "3XPPRE-Luc" :super plasmid)
+(noun "GST-PIMT-N" :super plasmid)
+(noun "GST-Med1-CRAF-BXB" :super plasmid)
+(noun "pCMV-ERK2-HA" :super plasmid)
 
 
 (adj "wild-type" :super bio-predication)
@@ -75,9 +87,9 @@
 (adj  "exclusive" :super bio-predication)
 (adj  "least" :super bio-predication)
 
+(noun "PIMT" :super protein)
 (noun  "heregulin" :super protein)
 (noun  "actin" :super protein)
-(noun  "atp" :super small-molecule)
 (noun  "catenin" :super protein-family)
 (noun  "cyclooxygenase" :super protein)
 (noun  "abl" :super bio-entity)
