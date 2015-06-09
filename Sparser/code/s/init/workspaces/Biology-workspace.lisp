@@ -9,6 +9,7 @@
 ;; and constructing process models from them. 
 ;; 6/5/2015 added methods to control whether breaks and errors halt processing of articles
 ;; (defparameter *break-during-read* nil), break-in-articles,  dont-break-in-articles 
+
 (in-package :sparser)
 
 ;;;----------------
@@ -29,14 +30,15 @@
   (declare-all-existing-individuals-permanent))
 
 
+
 ;;; copied from ddm-load-corpora in ddm-workspace. 
 (defun load-bio-corpora ()
-  (s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
-  (s-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (s-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
-  (s-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
-  (s-load "interface/R3-eval/overnight-sents.lisp")
-  (s-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
+  (cl-user::s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
+  (cl-user::s-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
+  (cl-user::s-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
+  (cl-user::s-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
+  (cl-user::s-load "interface/R3-eval/overnight-sents.lisp")
+  (cl-user::s-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
 
 ;;;-------------------------------------------------------
 ;;; Setup for reading whole documents via the nxml reader
