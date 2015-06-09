@@ -98,7 +98,8 @@
           ddm-util
           #+apple ccl
           #+openmcl :ccl)
-    (:import-from :cl-user #:sparser-file #:sparser-load-file #:sparser-sourcefile #:s-load)
+    (:import-from :cl-user #:sparser-file #:sparser-load-file
+                           #:sparser-sourcefile #:s-load)
     ))
 
 
@@ -107,18 +108,7 @@
 ;; in ACL and before installing Lion (for what that's worth).  -- ddm
 #+openmcl (use-package (find-package :ddm-util) (find-package :sparser))
 
-;; (shadow '(#:break) (find-package :sparser)) 
-;; (defun sparser::break (format-string &rest args)
-;;   (apply #'error format-string args))
 
-
-
-;; ;; Accommodates an undiagnosed issue with Allegro CL
-;; #-openmcl(let ((*default-pathname-defaults* cl-user::*nlp-home*))
-;;            (load (merge-pathnames 
-;;                   (make-pathname :directory '(:relative "util") 
-;;                                  :name "loader"
-;;                                  :type "lisp"))))
 ;; #5 Load Mumble
 (unless *no-mumble*
   (load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp")))
