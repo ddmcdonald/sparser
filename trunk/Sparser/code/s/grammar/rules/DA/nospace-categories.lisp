@@ -16,6 +16,7 @@
 ;; added code for similar GAP:Ras structure
 ;; 3/18/15 Fleshed out package-approximation-number but without a
 ;;  treatment of it being approximate. 
+;; 6/8/2015 patched David's hack for -WT
 
 (in-package :sparser)
 
@@ -103,7 +104,9 @@
         i )
     ;; special case simplifications
     (when (and (word-p daughter)
-               (eq daughter (word-named "WT")))
+               (or
+                (eq daughter (word-named "WT"))
+                (eq daughter (word-named "wt"))))
       ;; That's "wild type". Ought to make a specialization but
       ;; the facility isn't finished, so just change the
       ;; referent instead simplify the referent since "WT"
