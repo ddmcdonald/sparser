@@ -763,15 +763,16 @@ the aggregate across the predicate it's in. |#
   :specializes molecular-location ;; NOT same as protein, it is the location, not the amino acid
   :instantiates :self
   :binds ((amino-acid . amino-acid)
-          (position :primitive integer) ;; counting from the N terminus
+          (position number) ;; counting from the N terminus
           (on-protein . protein))
+  :index (:permanent :sequential-keys amino-acid position)
   :realization
    (:noun "residue"
    :of on-protein
    :on on-protein
-   :at amino-acid)  ;; this is actually for serine at residue 822 -- this is an "inverse" :at
+   :at amino-acid))  ;; this is actually for serine at residue 822 -- this is an "inverse" :at
                     ;;  for use by interpret-pp-as-head-of-np and a form rule in form-rules
-  :index (:permanent :sequential-keys amino-acid position))
+
 
 (def-synonym residue-on-protein
              (:noun "position"))
