@@ -117,13 +117,14 @@ therefore we have the special cases:
 
 
 
-;;;----------------------------------------------------
-;;; numbered residues:  "point mutations" (variations)
-;;;----------------------------------------------------
+;;;-------------------
+;;; numbered residues
+;;;-------------------
 ;; see the sequence ontology
 ;; ; (p "before Ser1507)
+;; See also rules for recognizing residues in rules.lisp
 
-;; moved resideu-on-protein into taxonomy since it is needed in verbs1.lisp
+;; moved residue-on-protein into taxonomy since it is needed in verbs1.lisp
 
 (defparameter *break-on-bad-residues* nil)
 
@@ -132,27 +133,18 @@ therefore we have the special cases:
   ;; pattern is (:single-cap :digits) and it's possible that
   ;; that first word is the short form af an amino acid.
   ;; Return nil if this doesn't work out
-  (declare (special words))
   (push-debug `(,words ,start-pos ,end-pos))
   ;; (setq words (car *) start-pos (cadr *) end-pos (caddr *))
   (let* ((single-letter (car words))
          (variants (word-capitalization-variants single-letter))
          ;; given this pattern, there will only be one if there is one
-         (capitalized-letter (when variants (car variants))))
-    (when capitalized-letter
+         (capitalized-letter (when variants (car variants)))
+         (digit-word (cadr words))
+         (number (get-tag-for :numerical-value digit-word)))
+    (when (and capitalized-letter number)
       (let ((amino-acid (single-letter-is-amino-acid capitalized-letter)))
         (when amino-acid
-          (let* ((digit-word (cadr words))
-                 (number (get-tag-for :numerical-value digit-word))
-                 (residue
-                  (find-or-make-individual 'residue-on-protein
-                    :amino-acid amino-acid
-                    :position number)))
-            (declare (special residue digit-word number))
-            (when
-                (and *break-on-bad-residues* (null number))
-              (break "non-numeric position for residue-on-protein with words ~s, residue = ~a, number = ~s"
-                      words residue number))
+          (let ((residue (make-residue-on-protein amino-acid number)))             
             (let* ((left-edge (top-edge-at/starting start-pos))
                    (right-edge (top-edge-at/ending end-pos))
                    (edge (make-chart-edge
@@ -165,6 +157,33 @@ therefore we have the special cases:
                          :rule-name :reify-residue
                          :referent residue)))
               edge)))))))
+
+(defun make-residue-on-protein (amino-acid number-exp)
+  ;;/// resolve type of the number -- rules vs. here
+  ;; Open-code the find-or-make to put under microscope
+  #|  (find-or-make-individual 'residue-on-protein
+                           :amino-acid amino-acid
+                           :position number) |#
+  (let ((number (typecase number-exp
+                  (number (find-or-make-number number-exp))
+                  (word (find-or-make-number number-exp))
+                  (individual
+                   (unless (itype i 'number)
+                     (error "individual should be of type number"))
+                   number-exp))))
+    ;; From define-or-find-individual
+    (let* ((category (category-named 'residue-on-protein :break-if-missing))
+           (binding-plist `(:amino-acid ,amino-acid :position ,number))
+           (binding-instructions
+            (decode-category-specific-binding-instr-exps
+             category binding-plist))
+           (i (find/individual category binding-instructions)))
+      (unless i
+        ;;(ccl::break "Did not find residue for ~a + ~a" amino-acid number)
+        (setq i (apply #'define-individual category binding-plist)))
+      (push-debug `(,i ,binding-plist))
+      ;;(ccl::break "look at i")
+      i)))
 
 
 ;;;------------------------------------
