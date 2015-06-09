@@ -262,7 +262,7 @@
   (unless (or
            (itypep vg 'event)
            (itypep vg 'have))
-    (error "~s is not an event, tense/aspect only applies to individuals that ~
+    (break "~s is not an event, tense/aspect only applies to individuals that ~
             inherit from event." vg))
   (or (value-of 'aspect vg)
       (let ((i (make/individual
@@ -813,9 +813,14 @@
           (dolist (entry subcat-patterns)
             (let ((scr (subcat-restriction entry)))
               (when (eq label (subcat-label entry))
-                (when (satisfies-subcat-restriction? item scr)
+                (cond
+                 ((consp item)
+                  (break "what are you doing passing a CONSP as an item, ~s~&" item)
+                  (setq variable nil)
+                  (return))
+                 ((satisfies-subcat-restriction? item scr)
                   (setq variable (subcat-variable entry))
-                  (return)))))
+                  (return))))))
           ;;(break "testing subcats")
           (or
            variable
