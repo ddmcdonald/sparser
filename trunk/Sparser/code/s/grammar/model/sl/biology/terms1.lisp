@@ -50,6 +50,8 @@
 (noun "prostate" :super bio-organ)
 (noun "kidney" :super bio-organ)
 
+(noun "lactate" :super molecule)
+
 (noun "pcDNA3.1-PPARγ" :super plasmid)
 (noun "pcDNA3.1-Med1" :super plasmid)
 (noun "pCMX-Med1" :super plasmid)

@@ -856,10 +856,17 @@
   :o object))
 
 (define-category examine
-    :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process))
-    :realization
-    (:verb "examine" :noun "examination" :etf (svo-passive) :s agent :o object)) 
+                 :specializes bio-rhetorical
+  :mixins (bio-whethercomp)
+  :binds ((agent bio-entity)(object bio-process))
+  :realization
+  (:verb "examine"
+         :noun "examination"
+         :etf (svo-passive)
+         :s agent 
+         :o object
+         :whethercomp statement))
+
 (define-category exhibit
     :specializes bio-event
     :binds ((agent biological)(object biological))
