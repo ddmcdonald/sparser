@@ -25,6 +25,8 @@
 ;;     (7/14/08) Made "hugin" lowercase in anticipation of lower-casing
 ;;      all functions.
 ;;     (2/8/13) Fixed incorrect status setter
+;; 6/8/2015 Diagnostics for edge-referents which are CONS cells --
+;;  break is controlled by parameter *diagnose-consp-referents*
 
 (in-package :sparser)
 
@@ -65,8 +67,13 @@
 ;;; edges
 ;;;--------
 
+(defparameter *diagnose-consp-referents* nil)
+
 (defun complete-edge/hugin (edge)
   (declare (special *do-anaphora*)) ;; may be dynamically bound
+  (when (and *diagnose-consp-referents*
+             (consp (edge-referent edge)))
+    (break "referent is a CONS~ ~s" (edge-referent edge)))
   (unless (subsumption-check/complete edge)
     (check-for-completion-actions/category (edge-category edge)
                                            edge))
