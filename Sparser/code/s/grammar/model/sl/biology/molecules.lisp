@@ -24,6 +24,7 @@
 (find-or-make-individual 'small-named-molecule :name "GTP")
 (find-or-make-individual 'small-named-molecule :name "GDP")
 
-
+(find-or-make-individual 'small-named-molecule :name "ATP")
+(find-or-make-individual 'small-named-molecule :name "ADP")
 
             
