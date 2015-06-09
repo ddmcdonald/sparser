@@ -42,18 +42,23 @@
              an individual" (type-of i)))))
 
 (defun itypep (i c/s) 
-  (typecase i
-    (individual
-     (indiv-typep i c/s))
-    (referential-category
-     (category-inherits-type? i (category-named c/s :break-if-none)))
-    (mixin
-     (format t "*** indiv-typep applied to MIXIN category ~s" i)
+  (if
+   (consp i)
+   (then
+     (break "what are you doing passing a CONS to itypep: ~s~&" i)
      nil)
-    (otherwise
-     (push-debug `(,i ,c/s))
-     (error "indiv-typep not applied to an individual:~%~a  ~a"
-            (type-of i) i))))
+   (typecase i
+     (individual
+      (indiv-typep i c/s))
+     (referential-category
+      (category-inherits-type? i (category-named c/s :break-if-none)))
+     (mixin
+      (format t "*** indiv-typep applied to MIXIN category ~s" i)
+      nil)
+     (otherwise
+      (push-debug `(,i ,c/s))
+      (error "indiv-typep not applied to an individual:~%~a  ~a"
+             (type-of i) i)))))
 
 (defun itype (i c/s)
   (indiv-typep i c/s))
