@@ -15,6 +15,8 @@
 ;;      is a category (head word) rather than an individual, added a
 ;;      diversion for that case. 4/16/14 ditto for itype-of
 ;; 0.4 (6/5/15) indiv-typep now returns nil when passed a category.
+;; 6/8/2015 avoid break in itypep -- (format t "*** indiv-typep applied to MIXIN category ~s" i)
+
 
 (in-package :sparser)
 
@@ -45,6 +47,9 @@
      (indiv-typep i c/s))
     (referential-category
      (category-inherits-type? i (category-named c/s :break-if-none)))
+    (mixin
+     (format t "*** indiv-typep applied to MIXIN category ~s" i)
+     nil)
     (otherwise
      (push-debug `(,i ,c/s))
      (error "indiv-typep not applied to an individual:~%~a  ~a"
