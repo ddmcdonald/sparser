@@ -32,6 +32,8 @@
 ;; AU-binding factor 1 (AUF1), nucleolin and T-cell intracellular antigen (TIA)-1 
 ;; and TIA-1-related (TIAR) proteins, which associate 
 ;; with subsets of target mRNAs and modulate their stability and/or translation rates ( xref , xref )."
+;; 6/8/2015 Diagnostics for edge-referents which are CONS cells --
+;;  break is controlled by parameter *diagnose-consp-referents*
 
 
 (in-package :sparser)
@@ -52,22 +54,28 @@
       (make/individual category bindings-instructions)))
 
 
-
+(defvar *diagnose-consp-referents*)
 (defun define-or-find-individual (category &rest binding-plist)
+  (declare (special category))
   ;; same idea, different packaging of the arguments
   ;; to fit calls from category-specific code
   (etypecase category
     (referential-category category)
     (symbol
      (setq category (category-named category :break-if-missing))))
-
-  (let ((binding-instructions
-         (decode-category-specific-binding-instr-exps
-          category binding-plist)))
-
-    (or (find/individual category binding-instructions)
-        ;; N.b. this version applies realization data, the others don't.
-        (apply #'define-individual category binding-plist))))
+  
+  (let* ((binding-instructions
+          (decode-category-specific-binding-instr-exps
+           category binding-plist))
+         (result
+          (or (find/individual category binding-instructions)
+              ;; N.b. this version applies realization data, the others don't.
+              (apply #'define-individual category binding-plist))))
+    (declare (special binding-instructions result))
+    (when (and *diagnose-consp-referents*
+               (consp result))
+      (break "~&CONSP result from define-or-find-individual ~s~&" result))
+    result))
 
 (defun find-or-make-individual (category &rest binding-plist)
   ;; I can't remember what this function is called so trying this
