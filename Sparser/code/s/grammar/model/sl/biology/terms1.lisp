@@ -157,7 +157,7 @@
 (noun  "receptor" :super bio-entity)
 (noun  "resonance" :super bio-entity)
 (noun  "ret" :super bio-entity)
-(noun  "rho" :super bio-entity)
+;; (noun  "rho" :super bio-entity) context shows it to be a protein family
 (noun  "stimuli" :super bio-entity)
 (noun  "syk" :super bio-entity)
 (noun  "t" :super bio-entity)
