@@ -159,7 +159,6 @@ therefore we have the special cases:
               edge)))))))
 
 (defun make-residue-on-protein (amino-acid number-exp)
-  ;;/// resolve type of the number -- rules vs. here
   ;; Open-code the find-or-make to put under microscope
   #|  (find-or-make-individual 'residue-on-protein
                            :amino-acid amino-acid
@@ -179,10 +178,8 @@ therefore we have the special cases:
              category binding-plist))
            (i (find/individual category binding-instructions)))
       (unless i
-        ;;(ccl::break "Did not find residue for ~a + ~a" amino-acid number)
         (setq i (apply #'define-individual category binding-plist)))
-      (push-debug `(,i ,binding-plist))
-      ;;(ccl::break "look at i")
+      ;;(push-debug `(,i ,binding-plist))
       i)))
 
 
