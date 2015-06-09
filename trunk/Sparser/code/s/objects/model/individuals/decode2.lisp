@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.7 March 2015
+;;;  version:  0.7 May 2015
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -36,7 +36,7 @@
 ;; 0.6 (2/3/13) Reworked treatment of an :or over both categories and
 ;;      a primitive v/r in decode-value-for-var/list
 ;; 0.7 (3/9/15) Allowed mixins the same status are referential categories in
-;;      decode/check-value
+;;      decode/check-value. (6/9/15) Better error message on violated restriction
 
 (in-package :sparser)
 
@@ -229,8 +229,8 @@
       ;; after the loop
       (unless succeeded?
         (error "None of the alternatives in the value restrictions ~
-                on~%  ~A~%were satisfied~%  ~A~%~%"
-               value-exp v/r))
+                on~%  ~A~%~a~%were satisfied by ~a"
+               variable v/r value-exp))
       succeeded? ))
 
    ((eq (car v/r) :primitive)
