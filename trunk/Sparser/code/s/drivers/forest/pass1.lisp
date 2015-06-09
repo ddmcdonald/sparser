@@ -425,9 +425,8 @@
   (declare (special left-neighbor paren-edge))
   (tr :parens-after left-neighbor paren-edge)
   (cond
-   ((and
-     (edge-p left-neighbor)
-     (edge-referent left-neighbor))
+   ((and (edge-p left-neighbor)
+         (edge-referent left-neighbor))
     (let* ((referent ;; DAVID -- THIS IS WHERE WE COPY THE BASE ITEM TO AVOID SMASHING IT
             (maybe-copy-individual (edge-referent left-neighbor)))
            (constituents (edge-constituents paren-edge))
@@ -457,7 +456,12 @@
         (tr :new-edge-incorporating-parens edge)
         edge )))
    (t
-    (format t "~&Can't knit paren item ~s into non-edge ~s" paren-edge left-neighbor))))
+    ;; See discussion in hide-parenthesis-edge-at-pos
+    ;; We may have the timing of this wrong since there should usually be a
+    ;; spanned chunk to the left.
+    ;; Quashing the error message since it's just too noisy.
+    ;;(format t "~&Can't knit paren item ~s into non-edge ~s" paren-edge left-neighbor)
+)))
 
 (defun referent-of-parentheticial-expression (count paren-edge)
   ;; If there's one interior edge return it's referent. 
