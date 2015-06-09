@@ -3,49 +3,11 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  May 2015
+;;;  version:  June 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
-#|
- (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
-|#
-;  (p "c-Raf/ MAPK-mediated [6].")
-
-;;;------------------
-;;;  These were Hard filenames - now use sparser-pathname defined in load-nlp.lisp
-;;;------------------
-
-;;--- Peter Clark's string function utilities
-; (ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
-; (bel::read-model )
-
-(defun ddm-corpus-location (in-list out-file)
-  (declare (ignore in-list out-file))
-  ;; Note the pathname is given in ancient Mac syntax. 
-  (setq cl-user::location-of-text-corpora
-        "Users:ddm:sift:nlp:corpus:"))
-
-(defun ddm-ed (string)
-  #-sbcl
-  (ed (sparser-sourcefile string))
-  #+sbcl
-  (print `(**** can't call ed from SBCL yet)))
-
-(defun ddm-load (string)
-  (load (sparser-sourcefile string)))
-
-(defun sparser-doc-ed (string)
-  (ed (sparser-file "Sparser/documentation/" string)))
-
-(defun draft-doc-ed (string)
-  (ed (concatenate 'string
-        "~/nlp/Sparser/documentation/notes-in-preparation/"
-        string)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 
 (defun ddm-standard ()  ;;    (ddm-standard)
@@ -55,7 +17,7 @@
 ;  (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
-  (setq *debug-pronouns* t)
+  (setq *debug-pronouns* nil)
 ;  (setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) 
 ;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
@@ -64,14 +26,37 @@
 ;; (ddm-read-from-documents)
 ;; (load-ddm-ws)
 ;; (ddm-polyword-conundrum)
-  (incorporate-obo-terms
-   "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
+  ;(incorporate-obo-terms
+  ; "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
+  (load-obo-terms)
   (ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
   ;; (test-overnight) (test-erk) (test-aspp2)
   (test-jan)) ;; (compare-to-snapshot 'dec-test)
   ;; (hashtable-to-alist 
 ; (test-load-test)
+
+
+#|
+ (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
+ (setq *trace-instance-recording* t)
+ ;; (p "Phosphorylation of MEK1 at Ser218 and Ser222 activates it.")
+ (p "BRAF bound to Ras transphosphorylates itself at Thr598.")
+ resolve-stranded-hyphen (mono-, -tagged)
+
+;; GFP becomes the head
+(p "We have used a mouse embryo fibroblast ERK1-knock-out 
+cell line expressing green fluorescent protein (GFP)-tagged ERK1 
+to probe the spatio-temporal regulation of ERK1.")
+ setup-acronym-for-bio-entity  acronym-is-alternative-for-name
+ assess-parenthesized-content
+ hide-parenthesis-edge-at-pos span-parentheses
+ referent-of-parentheticial-expression
+
+(p "We previously reported that oncogenic RAS requires CRAF but not BRAF to activate MEK (Dumaz et al., 2006) 
+and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
+|#
+;  (p "c-Raf/ MAPK-mediated [6].")
 
 
 ; (ddm-load-article-2)
@@ -83,11 +68,9 @@
           (funcall fn 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
          (article (car doc-elements)))
     (sweep-document article)
-    (setq *article* article)))
-
-
-;    ;;(read-from-document article)
- ;   article))
+    (setq *article* article)
+    ;; (read-from-document article)
+    article))
 
 
 ; (read-from-document *article*)
@@ -133,6 +116,29 @@
   (ddm-ed "grammar/model/sl/biology/rules.lisp"))
 ;;  molecules and NGkappB not loaded
 ;; cf. model/sl/NIH/site.lisp
+
+(defun ddm-alphabet ()
+  (ddm-ed "analyzers/tokenizer/alphabet.lisp")
+  (ddm-ed "grammar/rules/words/punctuation1.lisp")
+  (ddm-ed "grammar/rules/words/punctuation-constants.lisp")
+  (ddm-ed "objects/words/punctuation.lisp")
+  (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp"))
+
+(defun ddm-new-info ()
+  (ddm-ed "objects/doc/rhetoric.lisp") ;; for classes and methods
+  (ddm-ed "grammar/model/sl/biology/rhetoric.lisp") ;; for data
+  (ddm-ed "objects/doc/content.lisp") ;; basics for 'containers'
+  (ddm-ed "objects/doc/content-methods.lisp") ;; container classes & methods, e.g. after-action
+  (ddm-ed "objects/doc/object1.lisp") ;; the classes that define article structure
+  (ddm-ed "drivers/sources/document.lisp") ;; the methods that operate on article structure and organize reading
+  (ddm-ed "init/workspaces/Biology-workspace.lisp") ;; Illustrates the pipeline
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp") ;; master driver for reading a sentence: see post-analysis-operations
+  (ddm-ed "driver/action/object.lisp") ;; define-completion-action
+  (ddm-ed "driver/actions/trigger2.lisp") ;; action checker
+  (ddm-ed "driver/actions/hook1.lisp") ;; carry out
+  (ddm-ed "analyzers/psp/complete/complete-HA3.lisp") ;; site of action
+  (ddm-ed "objects/traces/completion.lisp"))
+  
 
 (defun ddm-new-parsing-ws ()
   (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
@@ -557,31 +563,45 @@ Worse: (28 13 6 2 1)
 (defun load-ddm-ws ()
   (ddm-ed "init/workspaces/reference-points.lisp")
   (ddm-ed "init/workspaces/traces.lisp")
-  (ddm-ed "init/workspaces/flags.lisp")
+  
+
   (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
   (ddm-ed "init/workspaces/Biology-workspace.lisp"))
 ; (ed "/Users/ddm/ws/Sparser local/workspaces/fire.lisp")
 
 
-;;------- working with OBOs
+;;;------------------
 
-;;--- 1st generate the output file
-; (load "/Users/ddm/ws/R3/r3/trunk/code/obo2lisp/obo2lisp.lisp")
-; (transcribe-obo-file "/Users/ddm/ws/R3/trunk/ontologies/pro-test-file.obo")
-(defun translate-obos ()  ;; (translate-obos)
- (cl-user::translate-obo-files 
-  '("/Users/ddm/ws/R3/trunk/ontologies/bfo.obo"
-    "/Users/ddm/ws/R3/trunk/ontologies/ro.obo"
-    "/Users/ddm/ws/R3/trunk/ontologies/go-plus.obo"
-    "/Users/ddm/ws/R3/trunk/ontologies/pro.obo"
-    "/Users/ddm/ws/R3/trunk/ontologies/chebi.obo"
-    "/Users/ddm/ws/R3/trunk/ontologies/cl.obo")
-;"/Users/ddm/ws/R3/trunk/ontologies/"
-  "~/ws/R3/rs/trunk/corpus/obo-terms.lisp"))
+;;--- Peter Clark's string function utilities
+; (ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
+; (bel::read-model )
 
-(defun cl-user::translate-obo-files (in-files out-file)
-  (declare (ignore in-files out-file))
-  (error "load the real one -- this just quiets the compiler"))
+(defun ddm-corpus-location (in-list out-file)
+  (declare (ignore in-list out-file))
+  ;; Note the pathname is given in ancient Mac syntax. 
+  (setq cl-user::location-of-text-corpora
+        "Users:ddm:sift:nlp:corpus:"))
+
+(defun ddm-ed (string)
+  #-sbcl
+  (ed (sparser-sourcefile string))
+  #+sbcl
+  (print `(**** can't call ed from SBCL yet)))
+
+(defun ddm-load (string)
+  (load (sparser-sourcefile string)))
+
+(defun sparser-doc-ed (string)
+  (ed (sparser-file "Sparser/documentation/" string)))
+
+(defun draft-doc-ed (string)
+  (ed (concatenate 'string
+        "~/nlp/Sparser/documentation/notes-in-preparation/"
+        string)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 ;;--- 2d work over the result
 ; (ddm-ed "grammar/rules/words/one-offs/obo-reader.lisp")
