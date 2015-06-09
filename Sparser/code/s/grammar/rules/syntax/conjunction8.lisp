@@ -455,6 +455,7 @@
 ;;;---------------------
 
 (defun conjoin-two-edges (left-edge right-edge heuristic &key do-not-knit)
+  (declare (special left-edge right-edge))
   (let ((referent
          (referent-of-two-conjoined-edges
           (edge-referent left-edge) (edge-referent right-edge)))
@@ -562,28 +563,34 @@
              (not (word-p right-ref)))
     ;; when doing DA there can be cases where there's a categorization
     ;; but no referent. 
-
-    (let* ((left-type (etypecase left-ref
-                        (individual (car (indiv-type left-ref)))
-                        (category left-ref)))
-           (right-type (etypecase right-ref
-                        (individual (car (indiv-type right-ref)))
-                        (category right-ref)))
-           (type left-type))
-
-      (unless (eq left-type right-type)
-        (multiple-value-setq (left-ref right-ref type)
-          (adjudicate-specializations left-ref left-type
+    (if
+     (or
+      (consp left-ref)
+      (consp right-ref))
+     (then
+       (break "bad referent in referent-of-two-conjoined-edges, ~s" left-ref right-ref)
+       nil)
+     (let* ((left-type (etypecase left-ref
+                         (individual (car (indiv-type left-ref)))
+                         (category left-ref)))
+            (right-type (etypecase right-ref
+                          (individual (car (indiv-type right-ref)))
+                          (category right-ref)))
+            (type left-type))
+       
+       (unless (eq left-type right-type)
+         (multiple-value-setq (left-ref right-ref type)
+           (adjudicate-specializations left-ref left-type
                                        right-ref right-type)))
-      (let ((collection
-             (define-or-find-individual 'collection
-               :items (list left-ref right-ref)
-               :number 2
-               :type type)))
-        ;;(push-debug `(,collection ,type))
-        (when type
-          (one-off-specialization collection type))
-        collection ))))
+       (let ((collection
+              (define-or-find-individual 'collection
+                                         :items (list left-ref right-ref)
+                :number 2
+                :type type)))
+         ;;(push-debug `(,collection ,type))
+         (when type
+           (one-off-specialization collection type))
+         collection )))))
 
 
 (defun referent-of-list-of-conjoined-edges (edge-list)
