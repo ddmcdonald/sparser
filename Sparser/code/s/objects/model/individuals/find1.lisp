@@ -71,9 +71,9 @@
           (or (find/individual category binding-instructions)
               ;; N.b. this version applies realization data, the others don't.
               (apply #'define-individual category binding-plist))))
-    (declare (special binding-instructions result))
     (when (and *diagnose-consp-referents*
                (consp result))
+      (push-debug `(,binding-instructions ,result))
       (break "~&CONSP result from define-or-find-individual ~s~&" result))
     result))
 
