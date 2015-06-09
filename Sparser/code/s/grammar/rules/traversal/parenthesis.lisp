@@ -102,15 +102,24 @@
   ;; to its left.
   (push-debug `(,paren-edge ,open-pos))
   (let ((edge-to-immediate-left (left-treetop-at/edge open-pos)))
-    (unless edge-to-immediate-left
-      (error "hide parenthesis: new situation, no edge to the left"))
-    (let ((paren-ends-at (edge-ends-at paren-edge)))
-          ;;(neighbor-ends-at (edge-ends-at edge-to-immediate-left)))
-      (setf (edge-ends-at edge-to-immediate-left) paren-ends-at)
-      (knit-edge-into-position edge-to-immediate-left paren-ends-at)
-      (push-debug `(,edge-to-immediate-left)) 
-      ;;(break "is the edge hidden?")
-)))
+    ;; With lots of new words and the polyword treatment no longer
+    ;; populating the chart with literals, there is quite likely
+    ;; not to be an edge to the left to 'hide' the parenthesized
+    ;; expression under until we can give them reasonable treatments.
+    ;; If there's no edge we should leave it, then add a rule or
+    ;; such to do the hiding when there's a chunk to the left
+    ;; which is guarenteed to have a spanning edge
+    ;; See knit-parens-into-neighbor in pass1
+;    (unless edge-to-immediate-left
+;      (error "hide parenthesis: new situation, no edge to the left"))
+    (when edge-to-immediate-left
+      (let ((paren-ends-at (edge-ends-at paren-edge)))
+        ;;(neighbor-ends-at (edge-ends-at edge-to-immediate-left)))
+        (setf (edge-ends-at edge-to-immediate-left) paren-ends-at)
+        (knit-edge-into-position edge-to-immediate-left paren-ends-at)
+        (push-debug `(,edge-to-immediate-left)) 
+        ;;(break "is the edge hidden?")
+        ))))
 
 
 
