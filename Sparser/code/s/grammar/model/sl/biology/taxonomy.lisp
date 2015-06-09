@@ -34,6 +34,7 @@
 ;;  concomitant revision for things like thatcomp and whethercomp
 ;; 5/16/2015 add in all the cellular locations shown in the MITRE ras1 corpus, including their GO identifiers
 ;; 5/30/2015 Rename poorly named "predicate" to "bio-predication" and update dependencies
+;; 6/8.2015 added cyclic and plasmid definitions
 
 
 (in-package :sparser)
@@ -134,6 +135,10 @@
           (manner)
           (aspect) ;; "will likely be useful"
           (in-order-to)))
+(delete-adj-cfr (resolve/make "cyclic"))
+(define-category bio-cyclic :specializes bio-predication
+  :realization
+  (:adj "cyclic"))
 
 (define-category molecule-state
   :specializes bio-state)
@@ -167,6 +172,10 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+(define-category plasmid :specializes bio-entity
+  :realization
+  (:noun "plasmid"))
+
 (define-category bio-chemical-entity ;; includes all molecules and complexes
   :specializes bio-entity  ;; sweeps a lot under the rug
   :mixins (has-UID has-name biological)
@@ -189,7 +198,7 @@
           (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
           (theme biological)) ;; increase in rate vs increase in RAS activity
   :realization
-  (:verb "control" 
+  (:verb ("control" :present-participle "controlling" :present-participle "controling") 
          :etf (svo-passive)
          :s agent
          :o object
