@@ -221,6 +221,7 @@ to an oncogenic RasG12V mutation (9)."))
 
 (loop for vv in '((verb+ed vg+ed)
                   (verb+ing vg+ing)
+                  (verb+present vg)
                   (vg vg)
                   (vp vp)
                   (vg+ing vg+ing)
