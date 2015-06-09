@@ -20,6 +20,7 @@
 ;; 5/29/14 Found bug in k-method call macro, folded in integers,
 ;;  auto-generating the call-xx methods along with the k-methods.
 ;; 3/10/2015 for clarity, rename copy-individual to maybe-copy-individual
+;; 6/8/2015 temporary fix  -- DON'T KNOW WHY sclass IS NIL in some cases in the new articles
 
 (in-package :sparser)
 
@@ -272,7 +273,8 @@ for every category.
                      (cons (car type))
                      (referential-category type)))
          (sclass (get-sclass category))
-         (shadow (make-instance sclass))) ;; need a backpointer?
+         ;; THIS IS A TEMPORARY FIX -- DON'T KNOW WHY sclass IS NIL in some cases in the new articles
+         (shadow (when sclass (make-instance sclass)))) ;; need a backpointer?
     (setf (indiv-shadow individual) shadow)
     shadow))
 
