@@ -32,6 +32,7 @@
 ;; 6/5/2015 DAVID!! There is a temporary fix for the problems with interpreting "the next day" -- make it into a polyword
 ;;  the underlying problem needs to be fixed (by you)
 ;; 6/8/2015 added a bunch of plasmids
+;; 6/10/15 Commented out "c" and "h" for clobbering more frequent interpretations
 
 
 (in-package :sparser)
@@ -104,7 +105,7 @@
 (noun  "beta" :super bio-entity)
 (noun  "blnk" :super bio-entity)
 (noun  "bp" :super bio-entity)
-(noun  "c" :super bio-entity)
+;; (noun  "c" :super bio-entity) Distroys the single letter
 (noun  "cas" :super bio-entity)
 (noun  "cbl" :super bio-entity)
 (noun  "cbp" :super bio-entity)
@@ -120,7 +121,7 @@
 (noun  "growth" :super bio-entity)
 (noun  "gsk" :super bio-entity)
 (noun  "gst" :super bio-entity)
-(noun  "h" :super bio-entity)
+;; (noun  "h" :super bio-entity) Surely this is a synonym for "hour"
 (noun  "hcc" :super bio-entity)
 (noun  "iia" :super bio-entity)
 (noun  "ips" :super bio-entity)
