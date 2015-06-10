@@ -407,7 +407,7 @@ those steps sequentially on a single article.
 
 (defun test-june-articles (&optional (n nil)(reload nil))
   (when reload 
-    (setq *articles-created nil)
+    (setq *articles-created* nil)
     (setq *populated-articles* nil))
   (when (null *articles-created*)
     (populate-june-test-article-set n))
