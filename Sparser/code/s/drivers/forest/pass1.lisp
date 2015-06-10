@@ -437,7 +437,8 @@
            (paren-referent (referent-of-parentheticial-expression
                             count paren-edge)))
       
-      (when (individual-p paren-referent)
+      (when (and (individual-p paren-referent)
+                 (individual-p referent))
         (bind-variable (lambda-variable-named 'trailing-parenthetical)
                        paren-referent
                        referent))
