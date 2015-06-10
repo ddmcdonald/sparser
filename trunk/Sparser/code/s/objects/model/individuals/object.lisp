@@ -52,7 +52,7 @@
       (indiv-typep i c/s))
      (referential-category
       (category-inherits-type? i (category-named c/s :break-if-none)))
-     (mixin
+     (mixin-category
       (format t "*** indiv-typep applied to MIXIN category ~s" i)
       nil)
      (otherwise
