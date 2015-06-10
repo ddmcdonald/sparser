@@ -32,11 +32,11 @@
 (gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")
-#-r3 ;; r3 loads these after.
-(when (find-package :xmls) ;; need this for reading xml files
-  (gload "bio;parse-biopax"))
-#-r3
-(gload "bio;find-extension.lisp")
+;;; now only defined in r3 system. 
+;(when (find-package :xmls) ;; need this for reading xml files
+;  (gload "bio;parse-biopax"))
+;(gload "bio;find-extension.lisp")
+
 (gload "bio;new-words")
 
 
