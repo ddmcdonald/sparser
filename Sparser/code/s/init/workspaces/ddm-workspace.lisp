@@ -9,7 +9,6 @@
 
 (in-package :sparser)
 
-
 (defun ddm-standard ()  ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
   (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
@@ -28,6 +27,8 @@
 ;; (ddm-polyword-conundrum)
   ;(incorporate-obo-terms
   ; "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
+  (setq *diagnose-consp-referents* t)
+  (setq *show-section-printouts* t)
   (load-obo-terms)
   (ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
@@ -36,9 +37,10 @@
   ;; (hashtable-to-alist 
 ; (test-load-test)
 
-
-#|
- (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
+; (test-june-snapshot <N>  (current-string)
+; (compare-to-snapshots) (sentence-string (previous (sentence)))
+#| (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
+   (revert-to-error-break)
  (setq *trace-instance-recording* t)
  ;; (p "Phosphorylation of MEK1 at Ser218 and Ser222 activates it.")
  (p "BRAF bound to Ras transphosphorylates itself at Thr598.")
@@ -62,32 +64,21 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 ; (ddm-load-article-2)
 (defun ddm-load-article-2 ()
   (load-xml-to-doc-if-necessary)
-  (let* ((fn (intern (symbol-name '#:make-sparser-doc-structure)
-                     (find-package :r3)))
-         (doc-elements
-          (funcall fn 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
-         (article (car doc-elements)))
-    (sweep-document article)
-    (setq *article* article)
-    ;; (read-from-document article)
-    article))
+  (let ((fn (intern (symbol-name '#:make-sparser-doc-structure)
+                    (find-package :r3)))
+        (quiet-fn (intern (symbol-name 'debug-off)
+                          (find-package :r3))))
+    (funcall quiet-fn)
+    (let* ((doc-elements
+            (funcall fn 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
+           (article (car doc-elements)))
+      (sweep-document article)
+      (setq *article* article)
+      article)))
+; (read-from-document (setq article *article*))
 
-
-; (read-from-document *article*)
-; (trace-paragraphs)
-; (setq *trap-error-skip-sentence* t)
-
-; (r3::make-sparser-doc-structure 1079799)
-; (read-from-document 1079799)
-; (r3::make-sparser-doc-structure 537887 :dir darpa/January5-TestMaterials")
-; (r3::make-sparser-doc-structure 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials")
-
-
-; (defvar script :biology)  ;; For customizing what gets loaded
-; (load "/Users/ddm/sparser/load-nlp.lisp")
 
 ; (noun "C-RAF:B-RAF" :super heterodimer)
-
 ; (trace-parse-edges) ;; extend into march-back-from-the-right/segment
 ; meta-. parse-at-the-segment-level
 
@@ -111,9 +102,14 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
   (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
+  (ddm-ed "grammar/model/sl/biology/rhetoric.lisp")
   (ddm-ed "grammar/model/sl/biology/doc-structure.lisp")
   (ddm-ed "grammar/model/sl/biology/switches.lisp")
-  (ddm-ed "grammar/model/sl/biology/rules.lisp"))
+  (ddm-ed "grammar/model/sl/biology/rules.lisp")
+  (ddm-ed "grammar/model/sl/biology/parse-biopax.lisp") ;; +R3
+  (ddm-ed "grammar/model/sl/biology/find-extension.lisp") ;; +R3
+  (ddm-ed "grammar/model/sl/biology/new-words.lisp")
+  (ddm-ed "grammar/model/sl/biology/new-word-list.lisp"))
 ;;  molecules and NGkappB not loaded
 ;; cf. model/sl/NIH/site.lisp
 
