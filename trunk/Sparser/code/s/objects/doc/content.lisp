@@ -54,7 +54,7 @@
 ;;;------------------------------------------
 
 (defclass sentence-content (container parsing-status 
-                            local-layout
+                            local-layout epistemic-status
                             entities-and-relations
                             sentence-discourse-history
                             sentence-text-structure
