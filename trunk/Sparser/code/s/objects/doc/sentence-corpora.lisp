@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "sentence-corpora"
 ;;;   Module:  "objects/doc/"
-;;;  version:  March 2015
+;;;  version:  June 2015
 
 ;; initiated 1/25/15
 ;; 1/28/2015 added methods to for building a regression test for sentence semantics
@@ -11,8 +11,11 @@
 ;; completed methods for semantic regression -- seems to work -- 
 ;; no comparison as yet.
 ;; 3/2/15 Finished compare-to-snapshot. 
-;; 5/15/2015 changes to allow compare-to-snapshot to be used to collect information that would otherwise
-;;  only be saved in document processing -- added optional argument save-info on run-treetop-snapshot, etc.
+;; 5/15/2015 changes to allow compare-to-snapshot to be used to collect
+;; information that would otherwise only be saved in document processing --
+;; added optional argument save-info on run-treetop-snapshot, etc.
+;; 6/10/15 Added more printing parameters to ignore
+
 
 (in-package :sparser)
 
@@ -24,18 +27,20 @@ in the analysis of a particular sentence and compares it to
 previous records of treetop-counts. 
 |#
 
-
 ;;--- useful macro -- but what file should it really be in?
 
 (defmacro with-total-quiet (&body body)
   `(let (;;(*readout-relations* nil)
          (*readout-segments* nil)
          (*readout-segments-inline-with-text* nil) ;; quiet
+         (*show-article-progress* nil) ;; document handling
+         (*show-section-printouts* nil)
          (*display-word-stream* nil)
          (*trace-lexicon-unpacking* nil)
          (*trace-morphology* nil)
          (*workshop-window* t)) ;; block tts in p
      (declare (special *readout-relations* *readout-segments*
+                       *show-article-progress* *show-section-printouts* 
                        *readout-segments-inline-with-text*
                        *display-word-stream*
                        *trace-lexicon-unpacking* *trace-morphology*
