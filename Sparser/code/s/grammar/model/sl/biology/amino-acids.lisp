@@ -167,7 +167,7 @@ therefore we have the special cases:
                   (number (find-or-make-number number-exp))
                   (word (find-or-make-number number-exp))
                   (individual
-                   (unless (itype i 'number)
+                   (unless (itype number-exp 'number)
                      (error "individual should be of type number"))
                    number-exp))))
     ;; From define-or-find-individual
