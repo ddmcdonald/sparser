@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  4.6 October 2014
+;;;  Version:  4.6 May 2015
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -19,7 +19,7 @@
 ;;      That fixed bug where the new forms didn't see the original oblique
 ;;      form of the lemma and build a new one. 
 ;;     (10/14/14) added make-word/all-properties/or-primed
-;;     (11/6/14) e
+;;     (6/9/15) Added another case to it.
 
 (in-package :sparser)
 (defvar *primed-words*)
@@ -104,6 +104,8 @@
               word morph-keyword))
             (entry
              (unpack-primed-word word symbol entry))
+            (*big-mechanism*
+             (setup-unknown-word-BigMech-default word))
             (t
              (setup-unknown-word-by-default word)))
            (when entry
