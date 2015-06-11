@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   April 2015
+;;;   Version:   June 2015
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -15,8 +15,64 @@
 ;;  as the referent of its edge. Fanout from that change. 
 ;; 4/28/15 Changed gate of add-new-word-to-catalog to new parameter: 
 ;;  *collect-new-words* 
+;; 6/9/15 Added "strip" routines to reverse the "human-reaable" expressions
+;;  created by collect-model
 
 (in-package :sparser)
+
+
+(defun strip-model-descriptions (list)
+  ;; Called by identify-relations
+  (let (  clean-items  )
+    (dolist (item list)
+      (when item ;; some are null
+        (typecase item
+          (category) ;; ignore it
+          (number)
+          (individual
+           (when (relevant-type-of-individual item)
+             (push item clean-items)))
+          (cons
+           (let ((results (strip-model-description item)))
+             (loop for r in results
+               do (push r clean-items))))
+          (otherwise
+           (push-debug `(,item))
+           (break "New type of item: ~a~%~a"
+                  (type-of item) item)))))
+    ;; The original list was created by pushing
+    ;; so this puts in text order. 
+    clean-items))
+
+(defun strip-model-description (tree)
+  ;; it's a tree, e.g. 
+  ;; (agent
+  ;; (#<pathway 4020>
+  ;;  (modifier
+  ;;   (#<protein-pair 4030> (right #<human-protein-family "MAPK" 397>)
+  ;;    (left #<human-protein-family "Ras" 401>)))))
+  (push-debug `(,tree))
+  (nconc
+   (strip-model-description1 (car tree))
+   (strip-model-description1 (cdr tree))))
+
+(defun strip-model-description1 (item)
+  ;; return a list or nil 
+  (typecase item
+    (symbol nil)
+    (individual `(,item))
+    (category nil)
+    (cons (strip-model-description item))
+    (number)
+    (otherwise
+     (push-debug `(,item))
+     (break "New case to strip: ~a~%~a"
+            (type-of item) item))))
+
+
+(defun relevant-type-of-individual (i)
+  ;; close through propbably not completely correct
+  (itypep i 'biological))
 
 ;;;----------------------
 ;;; collecting the model
