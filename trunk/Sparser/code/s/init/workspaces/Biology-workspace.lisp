@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "Biology-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  May 2015
+;;;  version:  June 2015
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
 ;; and constructing process models from them. 
@@ -255,8 +255,7 @@ those steps sequentially on a single article.
         (format t "~&About to operate on ~a files~%" (length ids))
         (break "Something went wrong. No ids were generated from~%~a"
                directory-namestring))
-      (if
-       (numberp n)
+      (if (numberp n)
        (populate-article-set (loop for i from 1 to n as id in ids collect id) corpus-path :quiet t)
        (populate-article-set ids corpus-path :quiet t)))))
 
@@ -980,8 +979,9 @@ These data also provide the first evidence for explaining why overexpression of 
 ; (f "/Users/ddm/sift/nlp/corpus/biology/cholera.txt")
 
 
-
+;;;-------------
 ;;; OBO => Lisp
+;;;-------------
 
 #| We can read in a set of OBO files (in .obo format, not .owl), 
 convert them to a Lisp-readable form, then load the resulting
