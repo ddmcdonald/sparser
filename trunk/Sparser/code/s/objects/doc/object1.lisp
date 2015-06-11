@@ -455,7 +455,7 @@
     (unless (> start 0) (error "Sentence start is negative"))
     (unless (> end start) 
       (push-debug `(,sentence ,start ,end ,period-pos))
-      (error "Sentence end less that start"))
+      (break "Sentence end less than start"))
     ;; This should be on a flag -- creates far too much noise
     ;;(format t "~&------- sentence ~a~%" sentence)
     ;;(push-debug `(,sentence ,period-pos)) (break "before substring")
