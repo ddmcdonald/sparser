@@ -163,6 +163,25 @@ the position. (N.b. there's an incremental trace hook in there.) |#
       (let ((i (eval form)))
         i))))
 
+(defun setup-unknown-word-BigMech-default (word)
+  ;; called from make-word/all-properties/or-primed when
+  ;; *big-mechanism* flag is up and OBO lookup, morphology,
+  ;; and Comlex have not applied.
+  (let* ((likely-protein? ;; true more often than not given hand inspection
+          (memq (word-capitalization word)
+                '(:initial-letter-capitalized 
+                  :all-caps
+                  :mixed-case)))
+         (kind ;;(if likely-protein? 'protein 'bio-entity)
+          ;; wildly overgenerates
+          'bio-entity))
+    (declare (ignore likely-protein?)) ;; needs refined check
+    (let ((i (def-bio/expr (word-pname word) ;; short
+                           kind
+               :takes-plurals nil)))
+      i)))
+
+
 
 (defparameter *fullcaps-to-bio-entities* nil ;; an alist
   "It's overkill to introduce edge checking into r3-entity-pass-loop
