@@ -34,6 +34,10 @@
 (defun define-drug (drug-name)
   (def-bio/expr drug-name 'drug :takes-plurals nil))
 
+
+(define-drug "AZ3146")
+(define-drug "nocodazole")
+
 (define-drug "885-A")
 (define-drug "abciximab")
 (define-drug "abl-ib")
