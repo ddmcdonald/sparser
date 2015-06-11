@@ -101,7 +101,7 @@
 (define-category farnesylation 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
-         (substrate protein) ;; which protein now has ubiquitin on it
+         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "farnesylate"
@@ -117,7 +117,7 @@
 (define-category glycosylation 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
-         (substrate protein) ;; which protein now has ubiquitin on it
+         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "glycosylate"
@@ -133,7 +133,7 @@
 (define-category hydoxylation 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
-         (substrate protein) ;; which protein now has ubiquitin on it
+         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "hydoxylate"
@@ -149,7 +149,7 @@
 (define-category methylation 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
-         (substrate protein) ;; which protein now has ubiquitin on it
+         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "methylate"
@@ -224,7 +224,7 @@
 (define-category ribosylation 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
-         (substrate protein) ;; which protein now has ubiquitin on it
+         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "ribosylate"
@@ -240,7 +240,7 @@
 (define-category sumoylation 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
-         (substrate protein) ;; which protein now has ubiquitin on it
+         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "sumoylate"
@@ -269,7 +269,7 @@
 (define-category ubiquitinate 
  :specializes bio-process 
  :binds ((agent biological) ;; what causes it to happen
-         (substrate protein) ;; which protein now has ubiquitin on it
+         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "ubiquitinate"
