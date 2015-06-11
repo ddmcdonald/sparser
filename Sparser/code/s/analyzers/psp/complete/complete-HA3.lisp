@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1993-1997,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1991  Content Technologies Inc.
+;;; copyright (c) 1993-1997,2013-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "complete HA"
 ;;;    Module:   "analyzers;psp:complete:"
-;;;   Version:   3.5 February 2013
+;;;   Version:   3.6 June 2015
 
 ;; 1.1  (5/2 v1.8.4)  Modified Complete-edge to check the quiescent
 ;;      position of the forest-level parser
@@ -25,8 +25,13 @@
 ;;     (7/14/08) Made "hugin" lowercase in anticipation of lower-casing
 ;;      all functions.
 ;;     (2/8/13) Fixed incorrect status setter
-;; 6/8/2015 Diagnostics for edge-referents which are CONS cells --
-;;  break is controlled by parameter *diagnose-consp-referents*
+;;     (6/6/15) Added cache-local-edge-referent-pair to the edge case
+;; 3.6 (6/8/15) Folded in polywords throughout.
+;;      Diagnostics for edge-referents which are CONS cells --
+;;        break is controlled by parameter *diagnose-consp-referents*
+;;      Installed (note-surface-string edge) to provide information
+;;        for cards.
+
 
 (in-package :sparser)
 
@@ -40,8 +45,9 @@
   (when *do-completion-actions*
     (tr :completing obj position)
     (typecase obj
-      (edge     (complete-edge/hugin     obj))
+      (edge     (complete-edge/hugin obj))
       (word     (complete-word/hugin obj position next-position))
+      (polyword (complete-word/hugin obj position next-position))
       (otherwise
        (break "Something other than an edge or a word passed ~
                to completion hook: ~a" obj)))))
@@ -71,13 +77,17 @@
 
 (defun complete-edge/hugin (edge)
   (declare (special *do-anaphora*)) ;; may be dynamically bound
+
   (when (and *diagnose-consp-referents*
              (consp (edge-referent edge)))
     (break "referent is a CONS~ ~s" (edge-referent edge)))
+
   (unless (subsumption-check/complete edge)
     (check-for-completion-actions/category (edge-category edge)
                                            edge))
-  (cache-local-edge-referent-pair edge)
+  ;; Should this be inside the subsumption check ?
+  (note-surface-string edge)
+
   (when *include-model-facilities*
     (when (and *pronouns* ;; the module is loaded
                *do-anaphora*) ;; we've not deliberately turned it off
