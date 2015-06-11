@@ -23,21 +23,29 @@
 (defvar *section* nil)
 (defvar *paragraph* nil)
 
-(defparameter *show-section-printouts* nil)
+(defparameter *show-section-printouts* nil
+  "Tracks entering and exiting sections of any type
+  including paragraphs")
 
 ;;;-------------------------------------------------
 ;;; For now -always- do a sweep before doing a read
 ;;;-------------------------------------------------
-(defparameter *show-article-progress* t)
+
+(defparameter *show-article-progress* t
+  "Announce what article we're working on
+")
+
 (defmethod sweep-document ((doc document-element))
   "Creates the document objects, including the sentences, 
-   but does no analysis at all."
+   but does no analysis at all. Uses read-from-document
+   to walk the document -- the same method as used to
+   parse it -- but the sweep-for-terminals flag must be
+   up for the initiate-successive-sweeps code to run the
+   parsing, and we dynamically bind it here to nil."
   (let ((*sweep-for-terminals* nil)
         (*sections-to-ignore* nil))
     (declare (special *sweep-for-terminals* *sections-to-ignore*))
-    (when (and 
-         *show-article-progress*
-         *sweep-for-terminals*)
+    (when *show-article-progress*
       (format t "Sweeping document ~a~&" (name doc)))
     (read-from-document doc)))
 
@@ -67,7 +75,6 @@
       (when (slot-boundp section 'title)
         ;(push-debug `(,section))
         ;(error "title of section hasn't been set"))
-    
         (let ((title-object (title section)))
           (unless title-object
             (push-debug `(,section))
@@ -161,9 +168,8 @@
   (unless *sweep-for-terminals*
     (pre-sweep-for-embedded-sections a))
   (fresh-contents a)
-  (when (and 
-         *show-article-progress*
-         *sweep-for-terminals*)         
+  (when (and *show-article-progress*
+             *sweep-for-terminals*)
       (format t "read-from-document ~a~&" (name a)))
 
   (dolist (sec (children a))
