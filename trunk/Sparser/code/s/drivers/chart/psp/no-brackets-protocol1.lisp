@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  1.0 April 2015
+;;;  version:  1.0 June 2015
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -23,15 +23,10 @@
 ;;  itypes-under, process-under, individuals-under...
 ;; 5/25/2015 collect information to make MITRE index cards
 ;; 6/8/2015 Catching errors in get-string-from-local-edge-cache
+;; 6/10/15 Rearranging to make globals and their management more apparent
+;;  and cleaning up debugging code
 
 (in-package :sparser)
-
-(defvar *universal-time-start*)
-(defvar *universal-time-end*)
-
-;;parameters controlling the collection of information for MITRE index cards
-(defparameter *all-sentences* nil)
-(defparameter *index-cards* t)
 
 ;;; Sweep to introduce minimal edges over the text, one sentence
 ;;; at a time, covering all unary rules, polywords, word-driven
@@ -48,9 +43,42 @@
   ;; syntactic sugar for a mode detector. Cf. new-forest-protocol?
   (eq *kind-of-chart-processing-to-do* :successive-sweeps))
 
+;;;---------
+;;; Globals
+;;;---------
+
+(defvar *universal-time-start*)
+(defvar *universal-time-end*)
+
+;;parameters controlling the collection of information for MITRE index cards
+(defparameter *all-sentences* nil)
+(defparameter *index-cards* t)
+
+
 (defvar *sentence* nil
   "Locally managed by sentence-sweep-loop. Compare to
    *current-sentence* managed by the sentence creation routines.")
+
+(defvar *current-sentence-string* nil
+  "Set in sweep-successive-sentences-from and retains its value
+   until the next time that's called. This isn't bound.")
+(defun current-string ()
+  *current-sentence-string*)
+
+(defvar *sentence-in-core* nil
+  "Set in sweep-successive-sentences-from and also in
+   sentence-processing-core.")
+
+(defparameter *trap-error-skip-sentence* nil
+  "Governs whether we let errors happen. If it's nill they
+  go through and cause a break. When it's T this is noticed
+  in sweep-successive-sentences-from and we go through an
+  error handler that suppresses the break and instead prints
+  out what the error was and the text of the sentence that
+  was being analyzed at the time of the error.
+    Presently always set (dynamically bound) deliberately.
+  Right now (6/12/15) that only happens in read-article-set.")
+
 
 ;;;--------
 ;;; Driver
@@ -66,16 +94,14 @@
   (scan-next-position) ;; adds 1st real word into the chart
   (cond
    (*reading-populated-document*
+    ;; Dynamically bound by paragraph method for read-from-document
     (let ((s1 (sentence)))
-      (push-debug `(,s1)) 
-      ;; first accumulate all the sentences
       (unless (prepopulated? s1)
         (let ((*pre-read-all-sentences* t))
           (declare (special *pre-read-all-sentences*))
-          ;;/// fold in *collect-new-words* for the words pass
           (catch 'sentences-finished
             (scan-sentences-to-eof s1))))
-      ;;(push-debug `(,s1)) (break "prepopulated sentences")
+
       (if *sweep-for-terminals*
         ;; Now do the regular loop. All the linguistic
         ;; analysis is done here. This either just returns
@@ -85,7 +111,8 @@
         (else
           ;; otherwise we're finished with the paragraph
           (throw 'do-next-paragraph nil)))))
-   (t   
+   (t
+    ;; default path used by p or f
     (sentence-sweep-loop))))
 
 
@@ -98,7 +125,6 @@
   ;; a stream of characters
   (tr :entering-sentence-sweep-loop)
   (let ((sentence (sentence)))
-    (clear-local-edge-referent-pair-cache)
     (setq *sentence* sentence) ;; if we wait it will be the next sentence
     (loop
       (let* ((start-pos (starts-at-pos sentence))
@@ -117,8 +143,6 @@
 ;;;-------------------------------
 ;;; Shared core of the processing
 ;;;-------------------------------
-
-(defvar *sentence-in-core* nil)
 
 (defun sentence-processing-core (sentence)
   ;; Handles all of the processing on a sentence that is done
@@ -162,7 +186,6 @@
   ;; a prepoulated document. Does scan-next-terminal 
   ;; and detects sentence boundaries but no substantive
   ;; processing. 
-  (clear-local-edge-referent-pair-cache)
   (tr :start-scan-to-eof first-sentence)
   (let ((sentence first-sentence))
     (loop
@@ -172,13 +195,6 @@
         (catch :end-of-sentence
           (scan-words-loop start-pos first-word))
         (setq sentence (next sentence))))))
-
-(defvar *current-sentence-string* nil)
-(defun current-string ()
-  *current-sentence-string*)
-
-(defparameter *trap-error-skip-sentence* nil
-  "Governs whether we let error happen")
 
 (defun sweep-successive-sentences-from (sentence)
   ;; Used with prepopulated documents after the sentences
@@ -190,9 +206,11 @@
     (tr :sweep-reading-sentence sentence)
     (setq *current-sentence-string* (sentence-string sentence))
     (setq *sentence-in-core* sentence)
+
     (if *trap-error-skip-sentence*
-        (error-trapped-scan-and-core sentence)
-        (scan-terminals-and-do-core sentence))
+      (error-trapped-scan-and-core sentence)
+      (scan-terminals-and-do-core sentence))
+
     (unless (slot-boundp sentence 'next)
       (throw 'do-next-paragraph nil))
     (let ((next-sentence (next sentence)))
@@ -223,40 +241,6 @@
 (defvar *entities* nil
   "Holds the entities for the last sentence when *readout-relations* is up")
 
-#| Original
-(defun post-analysis-operations (sentence)
-  (declare (special *universal-time-start* *universal-time-end*))
-  
-  (when *scan-for-unsaturated-individuals*
-    (sweep-for-unsaturated-individuals sentence))
-  (identify-salient-text-structure sentence)
-  (when *do-anaphora*
-    (handle-any-anaphora sentence))
-  
-  (when *readout-relations*
-    (cond
-     (*index-cards*
-      (set-entities sentence 
-                    (all-individuals-in-tts sentence))
-      (push `(,(sentence-string sentence) 
-              ,(all-individuals-in-tts sentence)
-              ,@(when (and (boundp '*current-article*)
-                           *current-article*)
-                  (list *current-article*
-                        *universal-time-start*
-                        *universal-time-end*)))
-            
-            *all-sentences*))
-     (t
-      (multiple-value-bind (relations entities)
-                           (identify-relations sentence)
-        (set-entities sentence entities)
-        (set-relations sentence relations)
-        (setq *relations* relations  ; (readout-relations relations)
-              *entities* entities))) ; (readout-entities entities)
-     ;;(ccl::break "all-sentences*") 
-     ))) |#
-
 (defun post-analysis-operations (sentence)
   (declare (special *universal-time-start* *universal-time-end*))
   
@@ -281,9 +265,8 @@
     (multiple-value-bind (relations entities)
                          (identify-relations sentence)
       (set-entities sentence entities)
-      (set-relations sentence relations)
-      (setq *relations* relations  ; (readout-relations relations)
-            *entities* entities)))) ; (readout-entities entities)
+      (set-relations sentence relations))))
+
 
      
 ;;;------------------------------------------------------------
@@ -317,7 +300,7 @@
   (let* ((start-pos (starts-at-pos sentence))
          (end-pos (ends-at-pos sentence))
          (rightmost-pos start-pos)
-         entities  relations  tt-contents
+         raw-entities  raw-relations  tt-contents
          treetop  referent  pos-after    )
     (when nil
       ;; add a space to separate these traces from the
@@ -340,9 +323,11 @@
           (setq tt-contents (collect-model referent))
 
           (loop for item in tt-contents
-            do (if (subject-variable item)
-                 (push item relations)
-                 (pushnew item entities)))))
+            do (if (or (subject-variable item)
+                       (when (individual-p item)
+                         (itypep item 'bio-process)))
+                 (push item raw-relations)
+                 (pushnew item raw-entities)))))
 
       (when (eq pos-after end-pos)
         (return))
@@ -351,8 +336,15 @@
         (return))
       (setq rightmost-pos pos-after))
 
-    (values relations
-            entities)))
+    (push-debug `(,raw-entities ,raw-relations))
+    ;; (setq raw-entities (car *) raw-relations (cadr *))
+    ;; (strip-model-descriptions raw-relations)
+    ;; (break "debug strip model")
+
+    (let ((relations (strip-model-descriptions raw-relations))
+          (entities (strip-model-descriptions raw-entities)))
+      (values relations
+              entities))))
 
 
 
@@ -360,50 +352,12 @@
 ;;; Helper code for the cards
 ;;;---------------------------
 
-(defparameter *surface-strings* (make-hash-table :size 10000))
-
-#| Keep original for reference
-(defun all-individuals-in-tts(sentence)
-  (let
-      ((indivs nil)
-       (start-pos (starts-at-pos sentence))
-       (end-pos (ends-at-pos sentence)))
-    (loop for tt in (all-tts start-pos end-pos)
-      do
-      (loop for i in (individuals-under tt)
-        when (itypep i 'biological)
-        do (pushnew i indivs)))
-    (loop for i in indivs
-      do (store-surface-string i))
-    (reverse indivs)))
-|#
-#|  version two
 (defun all-individuals-in-tts (sentence)
-  ;; Does double duty. It walks the treetops to identify
-  ;; all of the individuals they reference, and it also
-  ;; records the surface string of each individual at
-  ;; the same time.
-  (let ((individuals nil)
-        (i-edge-pairs nil)
-        (start-pos (starts-at-pos sentence))
-        (end-pos (ends-at-pos sentence)))
-    (loop for tt in (all-tts start-pos end-pos)
-      do (loop for pair in (individuals-under/record-edge tt)
-           do (push pair i-edge-pairs)
-           with i = (car pair)
-           when (itypep i 'biological)
-           do (pushnew pair individuals)))
-    (loop for pair in i-edge-pairs
-      do (store-surface-string pair))
-    (reverse individuals)))
-|#
-
-;; Version three
-(defun all-individuals-in-tts (sentence)
-  ;; Does double duty. It walks the treetops to identify
-  ;; all of the individuals they reference, and it also
-  ;; records the surface string of each individual at
-  ;; the same time.
+  ;; This used to both walk the treetops to identify
+  ;; all of the individuals that they references 
+  ;; and also recurd their surface strings.
+  ;; Now it just does the walk and the strings
+  ;; are recorded by the call to note-surface-string in complete/hugin.
   (let ((individuals nil)
         (start-pos (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence)))
@@ -411,121 +365,60 @@
       do (loop for i in (individuals-under tt)
            when (itypep i 'biological)
            do (pushnew i individuals)))
-    (loop for i in individuals
-      do (store-surface-string i))
+;;    (loop for i in individuals
+;;      do (store-surface-string i))
     (reverse individuals)))
 
-(defun store-surface-string (i)
-  (setf (gethash i *surface-strings*)
-        (get-surface-string-for-individual i)))
-
-;; version 3
-(defun get-surface-string-for-individual (i)
-  (or ;; fall through to progressively weaker string sources
-   ;; if the strong source returns nil or we're not a protein
-   (when (itypep i 'protein)
-     (get-string-from-local-edge-cache i))
-   (let ((name (value-of 'name i)))
-     (if name
-       (etypecase name
-         (string name)
-         (word (word-pname name))
-         (polyword (pw-pname name)))
-       (format nil "~s" i)))))
-
-(defvar *local-edge-referent-pair-cache* (make-hash-table))
-
-(defun clear-local-edge-referent-pair-cache ()
-  (clrhash *local-edge-referent-pair-cache*))
-
-(defun cache-local-edge-referent-pair (edge)
+(defun note-surface-string (edge)
+  ;; Called on every edge from complete-edge/hugin
+  ;; Record the surface string from the span dictated 
+  ;; by the edge. 
   (let ((referent (edge-referent edge)))
     (when referent
       (when (individual-p referent)
-        ;;  (format t "~&caching ~a for ~a~%" edge referent)
-        (setf (gethash referent *local-edge-referent-pair-cache*)
-              edge)))))
-
-(defmethod get-local-edge-cache-entry ((i individual))
-  (gethash i *local-edge-referent-pair-cache*))
-
-(defmethod get-string-from-local-edge-cache ((i individual))
-  (let ((edge (get-local-edge-cache-entry i)))
-    (when edge ;; complain if it's not there?
-      (cond
-       ;; inactive edge ERROR
-       ((null (edge-starts-at edge))
-        (format t "~&Trying to get surface string for ~s from inactive edge ~s"
-                i edge)
-        nil)
-       (t
         (let* ((start-pos (pos-edge-starts-at edge))
                (end-pos (pos-edge-ends-at edge))
                (start-index (pos-character-index start-pos))
                (end-index (pos-character-index end-pos)))
-          (unless (and start-index end-index)
-            (error "Some position index is null"))
-          (extract-string-from-char-buffers 
-           start-index end-index)))))))
+          (unless start-index
+            (format t "~&>>> Null start-index: ~a~%~%" edge))
+          (unless end-index
+            (format t "~&>>> Null end-index: ~a~%~%" edge))
+          (when (and start-index end-index)
+            ;; need both indices to extract the string
+            (let ((string (extract-string-from-char-buffers 
+                           start-index end-index)))
+              (setf (gethash referent *surface-strings*)
+                    string))))))))
 
 
-#| original 
-(defun store-surface-string (indiv)
-  (setf (gethash indiv *surface-strings*)
-        (get-surface-string-for-individual indiv)))
-|#
-#| version two
-(defun store-surface-string (i-edge-pair)
-  (let ((i (car i-edge-pair)))
-    (setf (gethash i *surface-strings*)
-          (get-surface-string-for-individual i-edge-pair))))
+(defparameter *surface-strings* (make-hash-table :size 10000))
 
-(defun get-surface-string-for-individual (i-edge-pair)
-  (let ((i  (car i-edge-pair))
-        (edges (cdr i-edge-pair)))
-  (or ;; fall through to progressively weaker string sources
-   ;; if the strong source returns nil or we're not a protein
-   (when (itypep i 'protein)
-     ;;(get-surface-string-from-discourse-entry i)
-     (get-surface-string-from-locally-recorded-edge edges))
-   (let ((name (value-of 'name i)))
-     (if name
-       (etypecase name
-         (string name)
-         (word (word-pname name))
-         (polyword (pw-pname name)))
-       (format nil "~s" i))))) |#
+;; OBE ??? Or part of a last-resort strategy. 
+;; No longer called from all-individuals-in-tts
+(defun store-surface-string (i)
+  (setf (gethash i *surface-strings*)
+        (get-surface-string-for-individual i)))
 
-(defun retrieve-surface-string (i)
-  (gethash i *surface-strings*))
+(defun get-surface-string-for-individual (i)
+  ;; Most all entities should have gotten their surface string
+  ;; recorded when their edge passed through complete. 
+  ;; This provides a minimal value for the others.
+  (let ((name (value-of 'name i)))
+    (if name
+      (etypecase name
+        (string name)
+        (word (word-pname name))
+        (polyword (pw-pname name)))
+      (format nil "~s" i))))
 
 
-(defvar *local-individuals-and-their-edges* (make-hash-table)
-  "Managed by individuals-under/record-edge, populated by
-   collaboration between collect-model-description(edge) which 
-   keeps track of the edge and collect-model-description(individual)
-   which fills it with individuals.")
 
-(defun record-individual-and-edge (i edge)
-  (declare (special *local-individuals-and-their-edges*))
-  (let ((entry (gethash i *local-individuals-and-their-edges*)))
-    ;;(format t "~&recording ~a at ~a~%" i edge)
-    (setf (gethash i *local-individuals-and-their-edges*)
-          (if entry (push edge entry) (list edge)))))
 
-(defun individuals-under/record-edge (treetop)
-  ;; Called from all-individuals-in-tts whose purpose is to
-  ;; collect the surface strings on all the mentioned 
-  ;; proteins. 
-  (declare (special *local-individuals-and-their-edges*))
-  (clrhash *local-individuals-and-their-edges*)
-  (let ((pairs nil)) ;; (individual . edges-it-occurs-in)
-    (semtree treetop) ;; do the recording
-    (maphash #'(lambda (i edges)
-                 (push `(,i . ,edges) pairs))
-             *local-individuals-and-their-edges*)
-    pairs))
+;;--------- dregs of another scheme for getting 
+;; surface strings  --- Review and flush.
 
+#+ignore
 (defun get-surface-string-from-locally-recorded-edge (edges)
   (let ((edge (car edges))) 
     ;; ignoring possibility of mulitple mentions at least for now
@@ -538,6 +431,7 @@
       (extract-string-from-char-buffers 
        start-index end-index))))
 
+#+ignore
 (defun get-surface-string-from-discourse-entry (i)
   ;; N.b. depends on the dicourse entries being current
   ;; and tacitly assumes that there's only one mention
@@ -750,7 +644,6 @@
 
 (defmethod collect-model-description ((i individual) &optional (short t))
   (declare (special i short *current-edge-semtree-is-walking*))
-  (record-individual-and-edge i *current-edge-semtree-is-walking*)
   (cond
    ((gethash i *semtree-seen-individuals*)
     (list (list "!recursion!" i)))
@@ -819,9 +712,13 @@
                            (,@(loop for item in value 
                                 collect (collect-model-description item short))))))
                   desc))
+                (rule-set) ;; the word "anti" presently does this
+                ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
                 (otherwise
                  (push-debug `(,value ,b ,i))
-                 (break "Unexpected type of value of a binding: ~a" value))))))))
+                 ;;(break "Unexpected type of value of a binding: ~a" value)
+                 (format t "~&~%Collect model: ~
+                            Unexpected type of value of a binding: ~a~%~%" value))))))))
       
       (reverse desc)))))
 
