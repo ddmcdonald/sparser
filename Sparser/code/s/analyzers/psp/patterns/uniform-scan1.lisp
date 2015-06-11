@@ -236,14 +236,17 @@
   ;; called from reify-ns-name-and-make-edge when *big-mechanism*
   ;; flag is up. Responsible for returning the category to use,
   ;; the rule, and the referent so that the caller can make an edge
-  (let* ((words-string
-          (actual-characters-of-word pos-before pos-after words))
-         (obo (corresponding-obo words-string)))
-    (if obo
-      (let ((word (resolve/make words-string)))
-        (assemble-category-rule-and-referent-for-an-obo obo word))
+  (let* ((words-string (actual-characters-of-word pos-before pos-after words))
+         (obo (corresponding-obo words-string))
+         (word (resolve/make words-string))) ;; usually a polyword
+    ;; OBO check/handling matches what is done when it comes in as
+    ;; an unknown word via make-word/all-properties/or-primed
+    (cond
+     (obo 
+      (assemble-category-rule-and-referent-for-an-obo obo word))
+     (t ;; do cap's hack here too?
       (let* ((i (reify-bio-entity words-string))
              (cfr (retrieve-single-rule-from-individual i)))
         (values (bio-category-for-reifying)
                 cfr
-                i)))))
+                i))))))
