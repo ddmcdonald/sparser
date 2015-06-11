@@ -17,28 +17,44 @@
 ;;      (1/2/96) added a variation that only returns edges
 ;;      (9/8/14) Converted a few functions to methods taking edges.
 ;;      (10/7/14) reorderd and notice redundancies to flush at some point
-;;      (1/2/2015) key component of whack-a-rule control structure -- find all applicable rules across adjacent treetops
-;;       called repeatedly, getting different rules each time as the tretops change by application of rules
-;; 1/4/2015 add flag and bind the special *left-edge-into-reference* in possible-treetop-=rules so that ref/function can work as a predicate
-;; 1/6/2015 new mechanism in whack-a-rule to prioritize PP creation and attachemnt above subject+verb binding
+;;      (1/2/2015) key component of whack-a-rule control structure -- find
+;;        all applicable rules across adjacent treetops called repeatedly,
+;;        getting different rules each time as the tretops change by
+;;        application of rules
+;; 1/4/2015 add flag and bind the special *left-edge-into-reference* in
+;;  ossible-treetop-=rules so that ref/function can work as a predicate
+;; 1/6/2015 new mechanism in whack-a-rule to prioritize PP creation and
+;;  attachemnt above subject+verb binding
 ;; 1/8/2015 refactor possible-treetop-rules to make it easier to trace and understand
 ;; 1/8/2015 rename to best-treetop-rule and make it return one rule only
-;; 1/14/2015 revise losing-competition? to account for more general form of subject rule, looking at cfr-rule-forms
+;; 1/14/2015 revise losing-competition? to account for more general form of
+;;  subject rule, looking at cfr-rule-forms
 ;; 1/18/2015 fix typo in test-subcat-rule
 ;; 2/10/15 cleaned up / reformatted a bit so I could figure out what's
 ;;  going on in the code that supports whack-a-rule
-;; 3/4/2015 correct spelling of *use-broader-set-of-tts*, and replace "wack" with "whack"
-;; cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
-;; 5/1/2015 minor tweak on losing-competition?  to do better on leftwards extension of NPs which may be SUBJECTs
-;; 5/12/2015 fixes to losing-competition? to better handle leftwards extension of NP subjects before they are used as subjects
+;; 3/4/2015 correct spelling of *use-broader-set-of-tts*, and replace
+;;  "wack" with "whack" cache rules discovered for pairs of edges so that we
+;;  do not keep calling multiply-edges unnecessarily
+;; 5/1/2015 minor tweak on losing-competition?  to do better on leftwards
+;;  extension of NPs which may be SUBJECTs
+;; 5/12/2015 fixes to losing-competition? to better handle leftwards
+;; extension of NP subjects before they are used as subjects
 ;; 5/15/15 Moved out literal-edge? to the edge object code.
 ;; 5/25/2015 add on check on competition for pp-wh-pronoun as part of pp-relative-clause
 ;; 5/30/2015 handle new cases of vp_passive in rule competition
-;; 6/2/2015 major cleanup in losing-competition?, which led to the discoverhy of some omitted cases in the final check
-;; this allowed it to work in the case of the Chen/Sorger sentences...
-;; 6/5/2015 fix all-tts to take into account the sentence being processed by whack-a-rule, and to get the start and end positions from there
-;;  previously this looked across the whole chart, and that caused errors and apparently damaged some core structures, leading to future errors
-;; had to adjust adjacent-tts to take into account that all edges returned by (all-tts) are valid (as against having a bogus first edge)
+;; 6/2/2015 major cleanup in losing-competition?, which led to the
+;;  discoverhy of some omitted cases in the final check this allowed it to
+;;  work in the case of the Chen/Sorger sentences...
+;; 6/5/2015 fix all-tts to take into account the sentence being processed
+;;  by whack-a-rule, and to get the start and end positions from there
+;;  previously this looked across the whole chart, and that caused errors
+;;  and apparently damaged some core structures, leading to future errors
+;;  had to adjust adjacent-tts to take into account that all edges returned
+;;  by (all-tts) are valid (as against having a bogus first edge)
+;; 6/9/15) Modified all-tts to be able to take its sentence from context
+;;  rather than presume that *whack-a-rule-sentence* is bound. Needed to
+;;  run sem-test.
+
 
 (in-package :sparser)
 
@@ -281,12 +297,26 @@
     collect
     (list (car edges) (second edges))))
 
-(defvar *whack-a-rule-sentence*)
-(defun all-tts (&optional 
-                (starting-position
-                 (starts-at-pos *whack-a-rule-sentence*))
-                (stop-pos
-                 (ends-at-pos *whack-a-rule-sentence*)))
+(defvar *whack-a-rule-sentence* nil
+  "Dynamically bound to provide the correct boundaries,
+  usually within a particular sentence or chunk, without
+  needing to pass down the sentence as a parameter")
+
+(defun all-tts (&optional starting-position stop-pos)
+  ;; This was originally designed to operate on single 
+  ;; sentences starting at position zero. However, since
+  ;; it is central to the whack-a-rule algorithm, and
+  ;; because it is the basis of tt-semtantics which we
+  ;; can want to use -after- the parsing is finished,
+  ;; we supply it will a sentence to work from. 
+  (declare (special *sentence-in-core*)) ;;/// bad name
+  (unless starting-position
+    (let ((sentence (or *whack-a-rule-sentence*
+                        *sentence-in-core*)))
+      (unless sentence
+        (error "No sentence in scope. Cannot calculate all-tts"))
+      (setq starting-position (starts-at-pos sentence)
+            stop-pos (ends-at-pos sentence))))
   (let* ((tt (right-treetop-edge-at starting-position))
          (ending-position
           (where-tt-ends tt starting-position)))
