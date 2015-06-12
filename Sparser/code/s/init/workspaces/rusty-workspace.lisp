@@ -10,7 +10,7 @@
 (in-package :sparser)
 
 
-(setq *r3-trunk* "~/Documents/r3/trunk/")
+(setq *r3-trunk* "~/r3/trunk/")
 ;;"String identifing the location of the trunk on your machine, including a final slash"
 
 
