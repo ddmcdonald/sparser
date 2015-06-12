@@ -84,6 +84,193 @@ those steps sequentially on a single article.
 ;  your machine, including a final slash"
 
 
+
+
+(defvar *corpus-paths* '((:jan15 "darpa/January5-TestMaterials")
+                         (:May15 "corpus/2015-5-4_Mitre-articles")
+                         (:jun15 "darpa/12-month TestMaterials/NXML-model")))
+
+
+(defun make-corpus-path (corpus-kwd)
+  (let ((path-from-r3-trunk (cond ((stringp corpus-kwd) corpus-kwd)
+                                  ((second (assoc corpus-kwd *corpus-paths*)))
+                                  (T "corpus/2015-5-4_Mitre-articles"))))
+  (format nil "~A/~A/" cl-user::*r3-trunk* path-from-r3-trunk)))
+
+
+(defun set-default-corpus-path (corpus-kwd-or-string)
+  "Set r3::*default-corpus-path* to this trunk-relative value"
+  (declare (special *default-corpus-path*))
+  (let ((expanded-pathname  (make-corpus-path corpus-kwd-or-string)))
+    (format t "~&Setting r3::*default-corpus-path* to ~s~%" expanded-pathname)
+    (setf *default-corpus-path* expanded-pathname)))
+
+
+(defun populate-12-month-NXML-model-article-set ()
+  (unless cl-user::*r3-trunk* 
+    (error "*r3-trunk* needs to be set."))
+  (let* ((location "darpa/12-month TestMaterials/NXML-model")
+          (fullpath (make-corpus-path location))
+         (directory-namestring (string-append fullpath "*.nxml")))
+    (let ((ids (generate-id-list-from-directory-listing directory-namestring)))
+      (if ids
+        (format t "~&About to operate on ~a files~%" (length ids))
+        (break "Something went wrong. No ids were generated from~%~a"
+               directory-namestring))
+      (populate-article-set ids location :quiet))))
+
+
+(defun populate-june-test-article-set (&optional n)
+  (declare (special *june-nxml-files-in-MITRE-order*))
+  (unless cl-user::*r3-trunk*
+    (error "*r3-trunk* needs to be set."))
+  (let* ((location (string-append 
+                   cl-user::*r3-trunk* "code/evaluation/June2015Materials/Eval_NXML/"))
+         (corpus-path "code/evaluation/June2015Materials/Eval_NXML/")
+         (directory-namestring
+          (string-append location "*.nxml")))
+    (let ((ids 
+           (or *june-nxml-files-in-MITRE-order*
+               (generate-id-list-from-directory-listing directory-namestring))))
+      (if ids
+        (format t "~&About to operate on ~a files~%" (length ids))
+        (break "Something went wrong. No ids were generated from~%~a"
+               directory-namestring))
+      (if (numberp n)
+       (populate-article-set 
+        (loop for i from 1 to n 
+          as id in ids 
+          collect id) 
+        corpus-path 
+        :quiet t)
+       (populate-article-set ids corpus-path :quiet t)))))
+
+;--- 1st populate: Locate the nxml file and run the 
+; XML-to-doc-structure to convert it to the equivalent
+; document object. 
+
+(defparameter *missing-ids* nil)
+
+;; (populate-article-set)
+(defun populate-article-set (&optional list-of-ids location quiet use-pmc)
+  "Given a list of document ids and the location of their
+  files in the corpus, run make-sparser-doc-structure to
+  return a set of article objects."
+  (declare (special *2015-5-4_Mitre-articles*))
+  (setq *articles-created* nil) ;; this is a rebuild operation!!
+  (setq *missing-ids* nil)
+  (load-xml-to-doc-if-necessary)
+  (unless list-of-ids
+    (setq list-of-ids *2015-5-4_Mitre-articles*))
+  (unless location
+    (setq location "2015-5-4_Mitre-articles"))
+  (set-default-corpus-path location)
+  (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
+                          (find-package :r3)))
+        (path-fn (intern (symbol-name '#:make-doc-path)
+                         (find-package :r3)))
+        (quiet-fn (intern (symbol-name 'debug-off)
+                          (find-package :r3)))
+        (count 0))
+    (funcall quiet-fn)
+    (dolist (id list-of-ids)
+      (let* ((simple-id (if use-pmc 
+                          (string-append (symbol-name id) ".nxml")
+                          (PMC-to-nxml id)))
+             (pathname (funcall path-fn simple-id)))
+        (cond
+         ((null pathname)
+          (push-debug `(,simple-id ,location))
+          (push id *missing-ids*)
+          nil)
+         (t
+          (if quiet
+              (princ "." t)
+              (format t "~&~%~%Reading the file ~a" pathname))
+          (incf count) ;; if there's an error, how far along are we
+          (push (funcall maker-fn simple-id)
+                *articles-created*)))))
+    (setq list-of-ids 
+          (loop for id in list-of-ids
+            unless (memq id *missing-ids*)
+            collect
+            (typecase id
+              (symbol id)
+              (string (intern (format nil "PMC~A" id)))
+              (t id))))
+    (setq *articles-created* 
+          (nreverse
+           (loop for form in *articles-created* 
+             collect 
+             (if (consp form)
+                 (car form)
+                 form))))
+    (loop 
+      for article in *articles-created*
+      as id in list-of-ids
+      do (setf (name article) id))
+    *articles-created*))
+
+(defun populate-one-article (id)
+  (populate-article-set (list id)))
+
+
+
+
+
+;--- 2d sweep.  Run through the article that is the result
+; of the XML conversion, identify its sub-subsections, and
+; create sentence objects for the text content of paragraphs
+
+(defun sweep-article-set (&optional (articles *articles-created*))
+  "Given a list of articles, by default the ones created by the
+   populate operation and stored on *articles-created*, run the
+   function sweep-document over them and return/store the result
+   of *populated-articles*."
+  (declare (special *break-on-sweep-errors*))
+  (let ((article (car articles))
+        (rest (cdr articles)))
+    (loop
+      (unless article
+        (return))
+      (if *break-on-sweep-errors*
+       (push (sweep-document article)    
+             *populated-articles*)
+       (handler-case
+           (push (sweep-document article)    
+                 *populated-articles*)
+         (error (e)
+                (declare (special e))
+                (format t "~&Error sweeping ~a~%" article)
+                (d e))))
+      (setq article (car rest)
+            rest (cdr rest))))
+  *populated-articles*)
+    
+
+;--- 3d read. 
+
+(defun read-article-set (&optional (articles *populated-articles*))
+  (declare (special *break-during-read*))
+
+  (let ((*trap-error-skip-sentence* (not *break-during-read*))
+        (count 0))
+    (declare (special *trap-error-skip-sentence*))
+    ;; Enables the error-handler in the parser that will 
+    ;; skip to the next sentence
+
+    (loop for article in articles
+      do 
+      (incf count)
+      (time-start)(time-end) ;; CROCK -- can't get time-end for the article
+      (format t "~&Reading document #~a ~a~%" count (name article))
+      (read-from-document article)
+      ;;(time-end)
+      )))
+
+
+
+
 ;;---- Error handline
 
 (defparameter *break-on-sweep-errors* nil
@@ -94,6 +281,141 @@ those steps sequentially on a single article.
 ; This will handle any errors that occur while parsing while
 ; letting you continue an handle the rest of the text.
 
+(defparameter *break-during-read* nil)
+
+(defun break-in-articles ()
+  ;;(setq *break-on-pattern-outside-coverage?* t)
+  (setq *break-during-read* t)
+  (REVERT-TO-REGULAR-BREAK))
+
+(defun dont-break-in-articles ()
+  (setq *break-on-pattern-outside-coverage?* nil)
+  (setq *break-during-read* nil)
+  (revert-to-error-break))
+
+
+;;--- Variations on the basic operations
+ 
+(defun test-articles ()
+  (populate-article-set)
+  (sweep-article-set)
+  (with-total-quiet
+      (read-article-set))
+  (setq *accumulate-content-across-documents* t))
+
+(defun test-12-month-articles (&optional (n nil)(reload nil))
+  (when reload 
+    (setq *articles-created* nil)
+    (setq *populated-articles* nil))
+  (when (null *articles-created*)
+    (populate-12-month-NXML-model-article-set))
+  (sweep-and-run-n-articles n))
+
+
+(defun test-june-articles (&optional (n nil)(reload nil))
+  (when reload 
+    (setq *articles-created* nil)
+    (setq *populated-articles* nil))
+  (when (null *articles-created*)
+    (populate-june-test-article-set n))
+  (sweep-and-run-n-articles n))
+
+(defun sweep-and-run-n-articles (n)
+  (let ((articles-to-run
+        (if (numberp n)
+            (loop for a in *articles-created* as i from 1 to n
+              collect a)
+            *articles-created*)))
+    (if *populated-articles*
+        (sweep-article-set 
+         (loop for a in articles-to-run
+           unless (memq a *populated-articles*) collect a))
+        (sweep-article-set articles-to-run))
+    (with-total-quiet
+        (read-article-set articles-to-run))
+    (setq *accumulate-content-across-documents* t)))
+
+
+(defun single-sent-parse ()
+  (setq *accumulate-content-across-documents* t))
+
+(defun load-and-read-article (id) ;; assume corpus-path is set
+  (load-xml-to-doc-if-necessary)
+  (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
+                     (find-package :r3)))
+         (quiet-fn (intern (symbol-name 'debug-off)
+                           (find-package :r3))))
+    (funcall quiet-fn)
+    (let* ((doc-elements (funcall maker-fn id))
+           (article (car doc-elements)))
+      (setf (name article) id)
+      (push-debug `(,article))
+      (sweep-document article)
+      (read-from-document article)
+      article)))
+
+(defun process-one-article (id)
+  (time-start)
+  (setq *articles-created* nil)
+  (read-article-set
+   (sweep-article-set
+    (populate-one-article id)))
+  (time-end)
+  (pprint
+   `((:READING--STARTED ,@ (mitre-time-format *universal-time-start*))
+     (:READING--STARTED ,@ (mitre-time-format *universal-time-end*))
+     (:PMC--ID ,@ (name *current-article*))))
+  (values *current-article*
+          (mitre-time-format *universal-time-start*)
+          (mitre-time-format *universal-time-end*) ; 
+          (name *current-article*)))
+
+;;---- Gophers for going through articles
+
+(defun generate-id-list-from-directory-listing (directory-namestring)
+  "Given a namestring that ends with *.nxml or the equivalent, 
+  this returns a list of filename strings."
+  (let ((pathnames (directory directory-namestring)))
+    ;; N.b. This use of directory might be CCL specific
+    (loop for pn in pathnames
+      collect (pathname-name pn))))
+
+
+
+(defmethod PMC-to-nxml ((symbol symbol))
+  "Given a symbol like PMC1240052, which was how they were sent 
+   to us by Mitre in May. Convert it to the filename form that's
+   actually used in the corpus directory."
+  (let* ((full-string (symbol-name symbol))
+         (number-string (subseq full-string 3))
+         (filename (string-append number-string ".nxml")))
+    filename))
+
+(defmethod PMC-to-nxml ((filename string))
+  "This is designed to work with ids generated by
+  generate-id-list-from-directory-listing which returns strings."
+  (string-append filename ".nxml"))
+
+
+
+(defun load-xml-to-doc-if-necessary ()
+  "If you load Sparser first and R3 second, then you can't
+   assume that the XML-reader is loaded (and you can't
+   use :r3 as a package name). This uses the definition
+   of the package as a proxy for the whole relevant body
+   of code having been loaded."
+  (unless (find-package :r3)
+    (if (boundp 'cl-user::*r3-trunk*)
+      (let ((code-dir (string-append cl-user::*r3-trunk* "code/")))
+        (cwd code-dir)
+        (load "load.lisp"))
+      (format nil "You have to set *r3-trunk*"))))
+
+
+
+;;;---------------
+;;; Article lists
+;;;---------------
 
 ;;---- the May "dry run" articles
 
@@ -116,46 +438,6 @@ those steps sequentially on a single article.
  (setq directory-namestring 
     "/Users/ddm/ws/R3/r3/trunk/darpa/12-month TestMaterials/NXML-model/*.nxml")
 |#
-(defun generate-id-list-from-directory-listing (directory-namestring)
-  "Given a namestring that ends with *.nxml or the equivalent, 
-  this returns a list of filename strings."
-  (let ((pathnames (directory directory-namestring)))
-    ;; N.b. This use of directory might be CCL specific
-    (loop for pn in pathnames
-      collect (pathname-name pn))))
-
-
-
-(defvar *corpus-paths* '((:jan15 "darpa/January5-TestMaterials")
-                         (:May15 "corpus/2015-5-4_Mitre-articles")
-                         (:jun15 "darpa/12-month TestMaterials/NXML-model")))
-
-
-(defun make-corpus-path (corpus-kwd)
-  (let ((path-from-r3-trunk (cond ((stringp corpus-kwd) corpus-kwd)
-                                  ((second (assoc corpus-kwd *corpus-paths*)))
-                                  (T "corpus/2015-5-4_Mitre-articles"))))
-  (format nil "~A/~A/" cl-user::*r3-trunk* path-from-r3-trunk)))
-
-
-(defun set-default-corpus-path (corpus-kwd-or-string)
-  "Set r3::*default-corpus-path* to this trunk-relative value"
-  (let ((expanded-pathname  (make-corpus-path corpus-kwd-or-string)))
-    (format t "~&Setting r3::*default-corpus-path* to ~s~%" expanded-pathname)
-    (setf *default-corpus-path* expanded-pathname)))
-
-
-(defun populate-12-month-NXML-model-article-set ()
-  (unless cl-user::*r3-trunk* (error "*r3-trunk* needs to be set."))
-  (let* ((location "darpa/12-month TestMaterials/NXML-model")
-          (fullpath (make-corpus-path location))
-         (directory-namestring (string-append fullpath "*.nxml")))
-    (let ((ids (generate-id-list-from-directory-listing directory-namestring)))
-      (if ids
-        (format t "~&About to operate on ~a files~%" (length ids))
-        (break "Something went wrong. No ids were generated from~%~a"
-               directory-namestring))
-      (populate-article-set ids location :quiet))))
 
 (defparameter *june-nxml-files-in-MITRE-order*
   '(PMC2194190 PMC3284553 PMC1242143 PMC4026536 PMC3052367 PMC3866170 PMC2258316 PMC4322841 PMC2199242 PMC2140160
@@ -260,267 +542,6 @@ those steps sequentially on a single article.
     PMC2422857 PMC2173479 PMC2064505 PMC2064504 PMC3954878 PMC2704372 PMC3245278 PMC2118656 PMC2234022 PMC3271441
     ))
 
-(defun populate-june-test-article-set (&optional n)
-  (unless cl-user::*r3-trunk*
-    (error "*r3-trunk* needs to be set."))
-  (let* ((location (string-append 
-                   cl-user::*r3-trunk* "code/evaluation/June2015Materials/Eval_NXML/"))
-         (corpus-path "code/evaluation/June2015Materials/Eval_NXML/")
-         (directory-namestring
-          (string-append location "*.nxml")))
-    (let ((ids 
-           (or
-            *june-nxml-files-in-MITRE-order*
-            (generate-id-list-from-directory-listing directory-namestring))))
-      (if ids
-        (format t "~&About to operate on ~a files~%" (length ids))
-        (break "Something went wrong. No ids were generated from~%~a"
-               directory-namestring))
-      (if (numberp n)
-       (populate-article-set 
-        (loop for i from 1 to n 
-          as id in ids 
-          collect id) 
-        corpus-path 
-        :quiet t)
-       (populate-article-set ids corpus-path :quiet t)))))
-
-;--- 1st populate: Locate the nxml file and run the 
-; XML-to-doc-structure to convert it to the equivalent
-; document object. 
-
-(defparameter *missing-ids* nil)
-
-;; (populate-article-set)
-(defun populate-article-set (&optional list-of-ids location quiet use-pmc)
-  "Given a list of document ids and the location of their
-  files in the corpus, run make-sparser-doc-structure to
-  return a set of article objects."
-  (setq *articles-created* nil) ;; this is a rebuild operation!!
-  (setq *missing-ids* nil)
-  (load-xml-to-doc-if-necessary)
-  (unless list-of-ids
-    (setq list-of-ids *2015-5-4_Mitre-articles*))
-  (unless location
-    (setq location "2015-5-4_Mitre-articles"))
-  (set-default-corpus-path location)
-  (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
-                          (find-package :r3)))
-        (path-fn (intern (symbol-name '#:make-doc-path)
-                         (find-package :r3)))
-        (quiet-fn (intern (symbol-name 'debug-off)
-                          (find-package :r3)))
-        (count 0))
-    (funcall quiet-fn)
-    (dolist (id list-of-ids)
-      (let* ((simple-id (if use-pmc 
-                          (string-append (symbol-name id) ".nxml")
-                          (PMC-to-nxml id)))
-             (pathname (funcall path-fn simple-id)))
-        (cond
-         ((null pathname)
-          (push-debug `(,simple-id ,location))
-          (push id *missing-ids*)
-          nil)
-         (t
-          (if quiet
-              (princ "." t)
-              (format t "~&~%~%Reading the file ~a" pathname))
-          (incf count) ;; if there's an error, how far along are we
-          (push (funcall maker-fn simple-id)
-                *articles-created*)))))
-    (setq list-of-ids 
-          (loop for id in list-of-ids
-            unless (memq id *missing-ids*)
-            collect
-            (typecase id
-              (symbol id)
-              (string (intern (format nil "PMC~A" id)))
-              (t id))))
-    (setq *articles-created* 
-          (nreverse
-           (loop for form in *articles-created* 
-             collect 
-             (if (consp form)
-                 (car form)
-                 form))))
-    (loop 
-      for article in *articles-created*
-      as id in list-of-ids
-      do (setf (name article) id))
-    *articles-created*))
-
-(defun populate-one-article (id)
-  (populate-article-set (list id)))
-
-
-
-
-
-;--- 2d sweep.  Run through the article that is the result
-; of the XML conversion, identify its sub-subsections, and
-; create sentence objects for the text content of paragraphs
-
-(defun sweep-article-set (&optional (articles *articles-created*))
-  "Given a list of articles, by default the ones created by the
-   populate operation and stored on *articles-created*, run the
-   function sweep-document over them and return/store the result
-   of *populated-articles*."
-  (let ((article (car articles))
-        (rest (cdr articles)))
-    (loop
-      (unless article
-        (return))
-      (if *break-on-sweep-errors*
-       (push (sweep-document article)    
-             *populated-articles*)
-       (handler-case
-           (push (sweep-document article)    
-                 *populated-articles*)
-         (error (e)
-                (declare (special e))
-                (format t "~&Error sweeping ~a~%" article)
-                (d e))))
-      (setq article (car rest)
-            rest (cdr rest))))
-  *populated-articles*)
-    
-
-;--- 3d read. 
-(defparameter *break-during-read* nil)
-
-(defun break-in-articles ()
-  ;;(setq *break-on-pattern-outside-coverage?* t)
-  (setq *break-during-read* t)
-  (REVERT-TO-REGULAR-BREAK))
-
-(defun dont-break-in-articles ()
-  (setq *break-on-pattern-outside-coverage?* nil)
-  (setq *break-during-read* nil)
-  (revert-to-error-break))
-
-
-
-(defun read-article-set (&optional (articles *populated-articles*))
-  ;; Lets see if the error check within the reader in
-  ;; sweep-successive-sentences-from is sufficient to let the
-  ;; loop flow. 
-  (let ((*trap-error-skip-sentence* (not *break-during-read*)))
-    (declare (special *trap-error-skip-sentence*))
-    (loop for article in articles
-      do 
-      (time-start)(time-end) ;; CROCK -- can't get time-end for the article
-      (read-from-document article)
-      ;;(time-end)
-      )))
-
-
-;;--- Variations on the basic operations
- 
-(defun test-articles ()
-  (populate-article-set)
-  (sweep-article-set)
-  (with-total-quiet
-      (read-article-set))
-  (setq *accumulate-content-across-documents* t))
-
-(defun test-12-month-articles (&optional (n nil)(reload nil))
-  (when reload 
-    (setq *articles-created* nil)
-    (setq *populated-articles* nil))
-  (when (null *articles-created*)
-    (populate-12-month-NXML-model-article-set))
-  (sweep-and-run-n-articles n))
-
-
-(defun test-june-articles (&optional (n nil)(reload nil))
-  (when reload 
-    (setq *articles-created* nil)
-    (setq *populated-articles* nil))
-  (when (null *articles-created*)
-    (populate-june-test-article-set n))
-  (sweep-and-run-n-articles n))
-
-(defun sweep-and-run-n-articles (n)
-  (let ((articles-to-run
-        (if (numberp n)
-            (loop for a in *articles-created* as i from 1 to n
-              collect a)
-            *articles-created*)))
-    (if *populated-articles*
-        (sweep-article-set 
-         (loop for a in articles-to-run
-           unless (memq a *populated-articles*) collect a))
-        (sweep-article-set articles-to-run))
-    (with-total-quiet
-        (read-article-set articles-to-run))
-    (setq *accumulate-content-across-documents* t)))
-
-
-(defun single-sent-parse ()
-  (setq *accumulate-content-across-documents* t))
-
-(defun load-and-read-article (id) ;; assume corpus-path is set
-  (load-xml-to-doc-if-necessary)
-  (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
-                     (find-package :r3)))
-         (quiet-fn (intern (symbol-name 'debug-off)
-                           (find-package :r3))))
-    (funcall quiet-fn)
-    (let* ((doc-elements (funcall maker-fn id))
-           (article (car doc-elements)))
-      (setf (name article) id)
-      (push-debug `(,article))
-      (sweep-document article)
-      (read-from-document article)
-      article)))
-
-(defun process-one-article (id)
-  (time-start)
-  (setq *articles-created* nil)
-  (read-article-set
-   (sweep-article-set
-    (populate-one-article id)))
-  (time-end)
-  (pprint
-   `((:READING--STARTED ,@ (mitre-time-format *universal-time-start*))
-     (:READING--STARTED ,@ (mitre-time-format *universal-time-end*))
-     (:PMC--ID ,@ (name *current-article*))))
-  (values *current-article*
-          (mitre-time-format *universal-time-start*)
-          (mitre-time-format *universal-time-end*) ; 
-          (name *current-article*)))
-
-;;---- Gophers for going through articles
-
-(defmethod PMC-to-nxml ((symbol symbol))
-  "Given a symbol like PMC1240052, which was how they were sent 
-   to us by Mitre in May. Convert it to the filename form that's
-   actually used in the corpus directory."
-  (let* ((full-string (symbol-name symbol))
-         (number-string (subseq full-string 3))
-         (filename (string-append number-string ".nxml")))
-    filename))
-
-(defmethod PMC-to-nxml ((filename string))
-  "This is designed to work with ids generated by
-  generate-id-list-from-directory-listing which returns strings."
-  (string-append filename ".nxml"))
-
-
-
-(defun load-xml-to-doc-if-necessary ()
-  "If you load Sparser first and R3 second, then you can't
-   assume that the XML-reader is loaded (and you can't
-   use :r3 as a package name). This uses the definition
-   of the package as a proxy for the whole relevant body
-   of code having been loaded."
-  (unless (find-package :r3)
-    (if (boundp 'cl-user::*r3-trunk*)
-      (let ((code-dir (string-append cl-user::*r3-trunk* "code/")))
-        (cwd code-dir)
-        (load "load.lisp"))
-      (format nil "You have to set *r3-trunk*"))))
 
 
 ;;;---------------
