@@ -343,6 +343,7 @@ those steps sequentially on a single article.
   (setq *accumulate-content-across-documents* t))
 
 (defun load-and-read-article (id) ;; assume corpus-path is set
+  (declare (special *break-during-read*))
   (load-xml-to-doc-if-necessary)
   (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
                      (find-package :r3)))
@@ -350,11 +351,15 @@ those steps sequentially on a single article.
                            (find-package :r3))))
     (funcall quiet-fn)
     (let* ((doc-elements (funcall maker-fn id))
-           (article (car doc-elements)))
+           (article (car doc-elements))
+           (*trap-error-skip-sentence* (not *break-during-read*)))
+      (declare (special *trap-error-skip-sentence*))
       (setf (name article) id)
       (push-debug `(,article))
       (sweep-document article)
-      (read-from-document article)
+      (format t "~&Reading ~a~%" (name article))
+      (with-total-quiet
+          (read-from-document article))
       article)))
 
 (defun process-one-article (id)
@@ -442,11 +447,15 @@ those steps sequentially on a single article.
     "/Users/ddm/ws/R3/r3/trunk/darpa/12-month TestMaterials/NXML-model/*.nxml")
 |#
 
+; The commented out article somehow gets the system into a spinning beachball state
+; such that you have to force-quit CCL.  Determined this by running individual articles
+; in succession using load-and-read-article
+
 (defparameter *june-nxml-files-in-MITRE-order*
   '(PMC2194190 PMC3284553 PMC1242143 PMC4026536 PMC3052367 PMC3866170 PMC2258316 PMC4322841 PMC2199242 PMC2140160
     PMC2171479 PMC2212462 PMC2173577 PMC2963603 PMC2952868 PMC2683795 PMC2150897 PMC2193139 PMC3755003 PMC3832667
     PMC2172734 PMC2172271 PMC509302 PMC4018780 PMC2900437 PMC2196252 PMC2118081 PMC2964295 PMC2173591 PMC3235705
-    PMC3077625 PMC2199364 PMC2518715 PMC2172453 PMC4122675 PMC2139975 PMC2585478 PMC4047089 PMC3594181 PMC3651755
+    PMC3077625 PMC2199364 PMC2518715 PMC2172453 PMC4122675 PMC2139975 PMC2585478 PMC4047089 #|PMC3594181|# PMC3651755
     PMC2171813 PMC1240052 PMC3020772 PMC2903679 PMC2063981 PMC2603313 PMC3205876 PMC3467212 PMC3329184 PMC2156209
     PMC3547897 PMC2175269 PMC2766052 PMC4118959 PMC3691183 PMC3445325 PMC2196065 PMC3250444  PMC2982111  ;; missing
     PMC3102680 PMC3378484 PMC2880659 PMC2174844 PMC2173797 PMC2843713 PMC1702556 PMC3995649 PMC3056717 PMC3010981
