@@ -277,7 +277,12 @@ those steps sequentially on a single article.
         (break "Something went wrong. No ids were generated from~%~a"
                directory-namestring))
       (if (numberp n)
-       (populate-article-set (loop for i from 1 to n as id in ids collect id) corpus-path :quiet t)
+       (populate-article-set 
+        (loop for i from 1 to n 
+          as id in ids 
+          collect id) 
+        corpus-path 
+        :quiet t)
        (populate-article-set ids corpus-path :quiet t)))))
 
 ;--- 1st populate: Locate the nxml file and run the 
@@ -436,10 +441,8 @@ those steps sequentially on a single article.
     (populate-june-test-article-set n))
   (sweep-and-run-n-articles n))
 
-
 (defun sweep-and-run-n-articles (n)
-  (let
-      ((articles-to-run
+  (let ((articles-to-run
         (if (numberp n)
             (loop for a in *articles-created* as i from 1 to n
               collect a)
