@@ -573,6 +573,9 @@
   :realization 
   (:noun "plasma-membrane"))
 (handle-mitre-link category::plasma-membrane "GO:0005886")
+(define-category stress-granule :specializes cellular-location
+  :realization (:noun "SG"))
+(def-synonym stress-granule (:noun "stress granule"))
 
 (def-synonym early-endosome (:noun "early endosome"))
 (def-synonym extracellular-matrix (:noun "extracellular matrix"))
