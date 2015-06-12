@@ -98,6 +98,7 @@
           ddm-util
           #+apple ccl
           #+openmcl :ccl)
+    (:nicknames :sp)
     (:import-from :cl-user #:sparser-file #:sparser-load-file
                            #:sparser-sourcefile #:s-load)
     ))
