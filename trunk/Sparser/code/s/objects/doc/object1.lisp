@@ -88,7 +88,8 @@
 ;;; Articles (whole documents/files)
 ;;;-----------------------------------
 
-(defclass article (document-element named-object word-frequency titled-entity)
+(defclass article (document-element named-object 
+                   word-frequency titled-entity)
   ((location :accessor article-location
     :documentation "Usually a short form of the file name")
    (date :accessor article-date
@@ -147,7 +148,7 @@
     (setf (article-source obj)
           (or source (known-in-context :source)))
     (setf (contents obj)
-          (fresh-contents obj))
+          (install-contents obj))
     (setf *current-article* obj)
     (add-to-document-set obj)
     (initialize-sections) ;; make the 1st section
