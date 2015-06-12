@@ -11,8 +11,6 @@
 
 (defun ddm-standard ()  ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
-  (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
-  (setq cl-user::*load-sparser-during-r3-load* nil)
 ;  (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
@@ -25,11 +23,8 @@
 ;; (ddm-read-from-documents)
 ;; (load-ddm-ws)
 ;; (ddm-polyword-conundrum)
-  ;(incorporate-obo-terms
-  ; "/Users/ddm/ws/R3/r3/trunk/code/obo-terms.lisp")
   (setq *diagnose-consp-referents* t)
-  (setq *show-section-printouts* t)
-  (load-obo-terms)
+ ;;     (setq *show-section-printouts* t)
   (ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
   ;; (test-overnight) (test-erk) (test-aspp2)
@@ -37,7 +32,7 @@
   ;; (hashtable-to-alist 
 ; (test-load-test)
 
-; (test-june-snapshot <N>  (current-string)
+; (test-june-articles <N>  (current-string)
 ; (compare-to-snapshots) (sentence-string (previous (sentence)))
 #| (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
    (revert-to-error-break)
