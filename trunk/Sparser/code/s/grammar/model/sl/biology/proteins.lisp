@@ -77,7 +77,7 @@
 (def-family "NF-AT" :members ("NFAT5_HUMAN"))
 (define-protein "PKNA_MYCTU" ("pknA")) ;; bacterial protein -- have to look at why it shows up in the articles
 (define-protein "GSTP1_HUMAN" ("Glutathione S-transferase P"))
-(define-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
+(def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 
 ;; from June test
 (define-protein "TGS1_HUMAN" ("PIMT" "TGS1" "HCA137" "NCOA6IP"))
