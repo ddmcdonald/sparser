@@ -112,6 +112,8 @@
 (define-preposition "as to")
 (define-preposition "aside from")
 (define-preposition "at" :form 'spatial-preposition) ;;what about "at 5PM"
+(define-preposition "at or above")
+(define-preposition "at or below")
 (define-preposition "at the expense of") 
 (define-preposition "at the hands of")
 (define-preposition "at variance with")
