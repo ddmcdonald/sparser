@@ -85,7 +85,8 @@
     :level :initial))
 
 
-(defclass paragraph-content (container aggregated-bio-terms)
+(defclass paragraph-content (container aggregated-bio-terms
+                             epistemic-state )
   ()
   (:documentation "Will want a bunch more structure just over
     the enties for the purpose of facilitating anaphora. 
