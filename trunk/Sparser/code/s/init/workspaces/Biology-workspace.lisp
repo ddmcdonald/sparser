@@ -88,7 +88,10 @@ those steps sequentially on a single article.
 
 (defvar *corpus-paths* '((:jan15 "darpa/January5-TestMaterials")
                          (:May15 "corpus/2015-5-4_Mitre-articles")
-                         (:jun15 "darpa/12-month TestMaterials/NXML-model")))
+                         ;; this is the WRONG location -- it does not match
+                         ;; where Jeremy did his work
+                         ;;(:jun15 "darpa/12-month TestMaterials/NXML-model")
+                         (:jun15 "code/evaluation/June2015Materials/Eval-NXML"))
 
 
 (defun make-corpus-path (corpus-kwd)
