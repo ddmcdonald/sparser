@@ -91,7 +91,7 @@ those steps sequentially on a single article.
                          ;; this is the WRONG location -- it does not match
                          ;; where Jeremy did his work
                          ;;(:jun15 "darpa/12-month TestMaterials/NXML-model")
-                         (:jun15 "code/evaluation/June2015Materials/Eval-NXML"))
+                         (:jun15 "code/evaluation/June2015Materials/Eval-NXML")))
 
 
 (defun make-corpus-path (corpus-kwd)
