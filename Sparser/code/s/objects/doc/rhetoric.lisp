@@ -80,15 +80,12 @@ you also add the corresponding slot to the class. |#
   (let ((form
          `(defun ,fn-name (edge-or-word &optional pos-before pos-after)
             (declare (ignore pos-before pos-after)
-                     (special *sentence*
-                              *reading-populated-document*
-                              *sweep-for-terminals*))
+                     (special *reading-populated-document*
+                              *sentence-making-sweep*))
             (when *reading-populated-document*
-              (unless *sweep-for-terminals*
+              (when *sentence-making-sweep*
                 (return-from ,fn-name)))
-            (let ((sentence *sentence*))
-              (unless sentence
-                (error "Global sentence is nil somehow. Check scope."))
+            (let ((sentence (identify-current-sentence)))
               (let ((contents (contents sentence))
                     (value (etypecase edge-or-word
                              (edge (edge-category edge-or-word))
