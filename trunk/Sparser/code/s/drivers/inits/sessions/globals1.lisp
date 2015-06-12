@@ -127,10 +127,19 @@
    in what-to-do-at-the-forest-level where the do-forest-level 
    function is set. Set as part of the switch settings.")
 
-(defparameter *sweep-for-terminals* t
+#|(defparameter *sweep-for-terminals* t
   "Checked in sentence-sweep-loop when reading from a document
    to determine whether we run scan-words-loop to populate the
-   edges of the chart, do polywords, and run fsas.")
+   edges of the chart, do polywords, and run fsas.") |#
+
+(defparameter *sweep-for-sentences* nil
+  "Alternative to parsing that is applied to large texts where
+   we identify what new vocabularly the text may have and optionally
+   chop it into sentences saved to a file.")
+
+(defparameter *sentence-making-sweep* nil
+  "Flag that is up when we are making that sweep through a
+   document to drive or inhibit the right set of activities.")
 
 (defparameter *sweep-for-patterns* t
   "Checked in sentence-sweep-loop to determine whether we continue
@@ -138,11 +147,6 @@
    into the chart. Setting this to nil and turning on the traces for
    unknown words is a good way to identify the unknown words in a
    new corpus.")
-
-(defparameter *sweep-for-sentences* nil
-  "Alternative to parsing that is applied to large texts where
-   we identify what new vocabularly the text may have and optionally
-   chop it into sentences saved to a file.")
 
 (defparameter *chunk-sentence-into-phrases* t
   "Controls whether we proceed to chunk the sentence after we 
