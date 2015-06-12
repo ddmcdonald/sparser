@@ -104,7 +104,15 @@
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
 
-(define-category bio-state :specializes bio-abstract ;; for things like "activated state"
+(define-category bio-predication :specializes modifier
+  :mixins (biological)
+  :binds ((negation)
+          (adverb)
+          (manner)
+          (aspect) ;; "will likely be useful"
+          (in-order-to)))
+
+(define-category bio-state :specializes bio-predication ;; for things like "activated state"
   :realization
   (:noun "state"))
 
@@ -128,13 +136,7 @@
 ;; Worse is that you have no examples of this being used
 ;; in some text so I could figure out your intention and
 ;; suggest an alternative. 
-(define-category bio-predication :specializes modifier
-  :mixins (biological)
-  :binds ((negation)
-          (adverb)
-          (manner)
-          (aspect) ;; "will likely be useful"
-          (in-order-to)))
+
 (delete-adj-cfr (resolve/make "cyclic"))
 (define-category bio-cyclic :specializes bio-predication
   :realization
