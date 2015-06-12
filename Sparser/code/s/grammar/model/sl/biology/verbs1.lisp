@@ -1085,12 +1085,15 @@
 ;; "induce processing of p100"
 (define-category induce
   :specializes bio-control
-  :binds ((agent (:or bio-entity bio-process)) (object biological)) ;; we have "induce this phenotype"
+  :binds ((agent (:or bio-entity bio-process)) 
+          (object biological)
+          (response response)) ;; we have "induce this phenotype"
   :realization 
   (:verb "induce" :noun "induction" :adj "inducible"
    :etf (svo-passive)
    :s agent
-   :o object))
+   :o object
+   :in response))
 ;;/// want subtypes, want to understand the syntax of "-inducing"
 
 
@@ -1133,10 +1136,15 @@
          :o object
          :via mechanism))
 
+#| only two examples of noun use of "influence"
+(LOAD-TEST 998 "Although the anchorage-independent growth assay measures only one of many phenotypes of transformation and does not, for example, recapitulate tumor microenvironment or account for the influence of the immune system on tumor formation, this system will be useful for dissecting inhibitor response and downstream signaling pathways, particularly for those mutants not found in existing cancer-derived cell lines.") 
+(LOAD-TEST 1219 "Given the documented levels of HuR association with SIRT1 and VHL mRNAs ( xref ) and the SIRT1 and VHL mRNA half-lives ( xref A), we investigated the influence of non-phosphorylatable HuR Y200F mutant on the abundance of these mRNAs.") 
+
 (def-synonym influence
   (:noun "influence"
          :of agent
          :on object))
+|#
 
 (define-category inform
     :specializes bio-rhetorical
