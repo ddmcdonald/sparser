@@ -163,7 +163,62 @@
       (establish-character-source/string text)
       (analysis-core))))
 
+(defgeneric recurse-through-document (source fn in-results?)
+  (:documentation "recurses through document structure applying fn"))
+(defmethod recurse-through-document ((a article) fn in-results?)
+ (loop for child in (children a)
+    do (recurse-through-document child fn nil)))
+(defmethod recurse-through-document ((ss section-of-sections) fn in-results?)
+  (declare (special ss))
+  (let
+      ((ir (or in-results? (in-results? ss))))
+    (loop for child in (children ss)
+      do (recurse-through-document child fn ir))))
 
+(defmethod recurse-through-document ((tt title-text) fn in-results?)
+  (declare (special tt))
+  ;;(print `(title-text , (content-string tt)))
+  )
+(defmethod recurse-through-document ((s section) fn in-results?)
+  (declare (special s in-results?))
+  (when in-results?
+    (break "rtd s"))
+  (if (and in-results?(slot-boundp s 'title))
+      (funcall fn (title s)))
+      
+  (loop for child in (children s)
+    do (recurse-through-document child fn (or in-results? (in-results? s)))))
+
+(defmethod recurse-through-document ((p paragraph) fn in-results?)
+  nil)
+
+(defun in-results? (s)
+  (declare (special s))
+  (when
+      (slot-boundp s 'title)
+    (let
+        ((title (if (stringp (title s)) (title s)(content-string (title s)))))
+    (cond
+     ((member (string-downcase title)'("results") :test #'equal)
+      t)
+     (t
+      ;;(print (list 'results? title))
+      nil)))))
+
+(defparameter *results-section-titles* nil)
+(defparameter *relevant-titles* nil)
+(defun collect-results-section-titles (a)
+  (let
+      ((*relevant-titles* nil))
+    (recurse-through-document a #'collect-relevant-titles nil)  
+    (push (list (name a) *relevant-titles*)
+          *results-section-titles*)))
+(defun collect-relevant-titles (title)
+  (push (content-string title) *relevant-titles*))
+          
+  
+
+ 
 #+ignore ;; nice idea, but would need pretty drastic
 ;; makeover as of 5/12/15
 (defmethod read-from-document ((id integer))
