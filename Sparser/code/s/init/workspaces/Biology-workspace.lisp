@@ -284,7 +284,6 @@ those steps sequentially on a single article.
 ; XML-to-doc-structure to convert it to the equivalent
 ; document object. 
 
-
 (defparameter *missing-ids* nil)
 
 ;; (populate-article-set)
@@ -305,12 +304,13 @@ those steps sequentially on a single article.
         (path-fn (intern (symbol-name '#:make-doc-path)
                          (find-package :r3)))
         (quiet-fn (intern (symbol-name 'debug-off)
-                          (find-package :r3))))
+                          (find-package :r3)))
+        (count 0))
     (funcall quiet-fn)
     (dolist (id list-of-ids)
       (let* ((simple-id (if use-pmc 
-                            (string-append (symbol-name id) ".nxml") 
-                            (PMC-to-nxml id)))
+                          (string-append (symbol-name id) ".nxml")
+                          (PMC-to-nxml id)))
              (pathname (funcall path-fn simple-id)))
         (cond
          ((null pathname)
@@ -321,6 +321,7 @@ those steps sequentially on a single article.
           (if quiet
               (princ "." t)
               (format t "~&~%~%Reading the file ~a" pathname))
+          (incf count) ;; if there's an error, how far along are we
           (push (funcall maker-fn simple-id)
                 *articles-created*)))))
     (setq list-of-ids 
