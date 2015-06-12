@@ -101,6 +101,12 @@ those steps sequentially on a single article.
   (format nil "~A/~A/" cl-user::*r3-trunk* path-from-r3-trunk)))
 
 
+(defun stripped-corpus-path ()
+  (or
+   *default-corpus-path*
+   (make-corpus-path "corpus/stripped")))
+
+
 (defun set-default-corpus-path (corpus-kwd-or-string)
   "Set r3::*default-corpus-path* to this trunk-relative value"
   (declare (special *default-corpus-path*))
