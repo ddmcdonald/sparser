@@ -69,6 +69,11 @@
   "Set in sweep-successive-sentences-from and also in
    sentence-processing-core.")
 
+(defun identify-current-sentence ()
+  ;; called from the epistemic collector functions but could
+  ;; be generally useful.
+  (break "find the current sentence"))
+
 (defparameter *trap-error-skip-sentence* nil
   "Governs whether we let errors happen. If it's nill they
   go through and cause a break. When it's T this is noticed
@@ -86,7 +91,7 @@
 
 (defun initiate-successive-sweeps ()
   (declare (special *reading-populated-document*
-                    *sweep-for-terminals*))
+                    *sentence-making-sweep*))
   ;; Called from lookup-the-kind-of-chart-processing-to-do which
   ;; is the content of analysis-core after it finishes initializing.
   ;; N.b. The initialization routines created a sentence already
@@ -102,15 +107,16 @@
           (catch 'sentences-finished
             (scan-sentences-to-eof s1))))
 
-      (if *sweep-for-terminals*
+      (if *sentence-making-sweep*
+        (then ;; we've done all that we need to on this pass
+          ;; over the document, so move on.
+          (throw 'do-next-paragraph nil))
+        (else
         ;; Now do the regular loop. All the linguistic
         ;; analysis is done here. This either just returns
         ;; when it runs out of sentences or it reaches eof
         ;; and there's a thow back into the document reader
-        (sweep-successive-sentences-from s1)
-        (else
-          ;; otherwise we're finished with the paragraph
-          (throw 'do-next-paragraph nil)))))
+        (sweep-successive-sentences-from s1)))))
    (t
     ;; default path used by p or f
     (sentence-sweep-loop))))
@@ -179,13 +185,12 @@
 ;;; document-driven processing
 ;;;----------------------------
 
-; (trace-prepopulation)
-
 (defun scan-sentences-to-eof (first-sentence)
-  ;; Called from initiate-successive-sweeps when reading 
-  ;; a prepoulated document. Does scan-next-terminal 
-  ;; and detects sentence boundaries but no substantive
-  ;; processing. 
+  ;; Called from initiate-successive-sweeps when we're
+  ;; in the initial sweep phase and need to identify
+  ;; and populate the sentences of the paragraphs.
+  ;; Does scan-next-terminal and detects sentence boundaries 
+  ;; but no substantive processing.
   (tr :start-scan-to-eof first-sentence)
   (let ((sentence first-sentence))
     (loop
@@ -387,10 +392,12 @@
                (end-pos (pos-edge-ends-at edge))
                (start-index (pos-character-index start-pos))
                (end-index (pos-character-index end-pos)))
+          #| Too noisy. Digit sequences typically have
+             a null end-inded
           (unless start-index
             (format t "~&>>> Null start-index: ~a~%~%" edge))
           (unless end-index
-            (format t "~&>>> Null end-index: ~a~%~%" edge))
+            (format t "~&>>> Null end-index: ~a~%~%" edge)) |#
           (when (and start-index end-index)
             ;; need both indices to extract the string
             (let ((string (extract-string-from-char-buffers 
