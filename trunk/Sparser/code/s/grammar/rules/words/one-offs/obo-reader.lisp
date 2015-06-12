@@ -31,7 +31,10 @@
   (extract-obo-table-to-list)
   (record-obo-names)
   (sweep-obo-terms-to-collect-synonyms)
-  (sweep-obo-terms-for-supercs)
+  ;;(sweep-obo-terms-for-supercs)
+  ;; 6/12/15 Its FYI message about a term not having a superc link
+  ;; does because of a bug in the OBO-term printer for (at least)
+  ;; that case. 
   (setq *obo-terms-incorporated* t))
 
 
