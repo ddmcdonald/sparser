@@ -229,7 +229,8 @@
   (handler-case 
       (scan-terminals-and-do-core sentence)
     (error (e)
-      (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
+      (ignore-errors ;; got an error with something printing once
+       (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
            
 
 ;;;----------------------------------------------------
@@ -249,9 +250,12 @@
   (identify-salient-text-structure sentence)
   (when *do-anaphora*
     (handle-any-anaphora sentence))
+
+  (let ((relevant? (assess-relevance sentence)))
   
-  (when *readout-relations*
-    (when *index-cards*
+    (when (and *readout-relations*
+               *index-cards*
+               relevant?)
       (push `(,(sentence-string sentence) 
               ,(all-individuals-in-tts sentence)
               ,@(when (and (boundp '*current-article*)
@@ -262,6 +266,8 @@
             
             *all-sentences*))
      
+    ;; We always retrieve the entities and relations to store
+    ;; with the sentence and accumulate at higher levels
     (multiple-value-bind (relations entities)
                          (identify-relations sentence)
       (set-entities sentence entities)
@@ -373,6 +379,7 @@
   ;; Called on every edge from complete-edge/hugin
   ;; Record the surface string from the span dictated 
   ;; by the edge. 
+  (declare (special *surface-strings*))
   (let ((referent (edge-referent edge)))
     (when referent
       (when (individual-p referent)
