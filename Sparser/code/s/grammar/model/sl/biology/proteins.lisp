@@ -76,6 +76,8 @@
 (def-bio "NFAT5_HUMAN" protein :synonyms ("NF-AT5" "NFAT5") :MITRE-LINK "NFAT5_HUMAN")
 (def-family "NF-AT" :members ("NFAT5_HUMAN"))
 (define-protein "PKNA_MYCTU" ("pknA")) ;; bacterial protein -- have to look at why it shows up in the articles
+(define-protein "GSTP1_HUMAN" ("Glutathione S-transferase P"))
+(define-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 
 ;; from June test
 (define-protein "TGS1_HUMAN" ("PIMT" "TGS1" "HCA137" "NCOA6IP"))
@@ -542,7 +544,7 @@ filligre may be used to distinguish them, etc.
 
 (def-bio "Ras17N" protein)
 
-;;; proteins missing from the MITRE parts list, but found in the 10 articles
+;;; proteins missing from the MITRE parts list, but found in the 30 articles
 (define-protein "4EBP1_HUMAN" ("4EBP1_HUMAN" "4EBP1"))
 (define-protein "A9YLD1_MEDTR" ("AA8"))
 (define-protein "APEX1_HUMAN" ("APEX1" "APE" "APE1" "APEX" "APX" "HAP1" "REF1"))
@@ -555,6 +557,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "IMA1_HUMAN" ("KPNA2" "RCH1" "SRP1"))
 (define-protein "DNLI3_HUMAN" ("LIG3" "Lig III" "LIG III"))
 (define-protein "LAT_HUMAN" ("LAT" "pp36" "p36-38"))
+(define-protein "PML_HUMAN" ("Promyelocytic leukemia protein" "RING finger protein"))
 
 
 (define-protein "CTNA2_HUMAN" ("Alpha-catenin" "CTNNB" "CTNNB1" "α-catenin"))
@@ -2019,6 +2022,7 @@ filligre may be used to distinguish them, etc.
 
 
 (def-family  "cyclooxygenase" :members ("PGH2_HUMAN"))
+(def-family "Rho" :members ("RHOA_HUMAN" "RHOB_HUMAN" "RHOD_HUMAN" "RHOF_HUMAN" "RHOG_HUMAN"))
 
 (defparameter *bio-ents* nil)
 (defparameter *mitre-bio-ents* nil)
