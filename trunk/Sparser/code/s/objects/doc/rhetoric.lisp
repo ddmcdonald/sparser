@@ -12,22 +12,49 @@
 
 (in-package :sparser)
 
-;; (trace-completion)
 
+;;;-------------------
+;;; Class definitions
+;;;-------------------
+#| This file is loaded well before these classes are used 
+in the file objecs/doc/content.lisp as part of the definition of
+sentence content and of paragraph content (or higher if you think
+that would be useful. 
+ 
+Those are the classes sentence-content and paragraph-content in that file
 
-;;--- completion actions
+When you make a change here is ought to flow right through (I'm almost
+positive) to the content definitions so that the next time one of them
+is instantiated (which probably means re-building your test articles
+from their xml) any slots you've added or other changes you've made
+will take effect in the new content instances.
 
-(defvar *labels-used-by-new-information-detector* nil
-  "Holds the list of word and polywords with completion actions
-   that provide information to the detector and its calculations.")
+The names of the classes and the slots in them are what occurred to
+me at the time. Change anything that doesn't feel natural. 
+|#
 
-;;--- object (move to content-methods with the other classes)
+;;-- Paragraph and/or maybe section level class
+
+(defclass epistemic-state ()
+  (  ;; has an initial state that's affected by the epistemic
+   ;; status of the succession of sentences. E.g. that now every
+   ;; sentence we encounter from this point on has new information.
+   )
+  (:documentation "A place to record and update the state of a
+    which can change as we go through its sentences"))
+#| You could define a slot for this "initial state" of the paragraph
+which could be set automatically by using the :init-form on the slot.
+|#
+
+;;-- Sentence level
 
 (defclass epistemic-status ()
-  (
-(explicit-reference :initform nil :accessor explicit-reference
+  ((explicit-reference :initform nil :accessor explicit-reference
     :documentation "Does the sentence include an explicit
-   reference into the literature?")
+      reference into the literature?")
+   (conjectures :initform nil :accessor conjectures
+    :documentation "Evidence that the sentence is stating 
+      a conjecture or a hypothesis rather than an actual fact.")
 )
   (:documentation "The slots provide sentence-local buckets
    in which to accumulate different kinds of evidence about whether
@@ -36,6 +63,50 @@
    what might be the case (which in isolation will look like a fact)."))
 
 
+;;;--------------------
+;;; function generator
+;;;--------------------
+
+#| These are for defining the function that complete calls, which I'm
+assuming we can uniformly treat as adding the phrase to the designated
+slot in the epistemic status class. The only this you have to be careful
+about is to ensure that when you make an additional collection function
+you also add the corresponding slot to the class. |#
+	
+(defmacro define-epistemic-collector (fn-name slot-name)
+  `(define-epistemic-collector/expr ',fn-name ',slot-name))
+
+(defun define-epistemic-collector/expr (fn-name slot-name)
+  (let ((form
+         `(defun ,fn-name (edge-or-word &optional pos-before pos-after)
+            (declare (ignore pos-before pos-after)
+                     (special *sentence*
+                              *reading-populated-document*
+                              *sweep-for-terminals*))
+            (when *reading-populated-document*
+              (unless *sweep-for-terminals*
+                (return-from ,fn-name)))
+            (let ((sentence *sentence*))
+              (unless sentence
+                (error "Global sentence is nil somehow. Check scope."))
+              (let ((contents (contents sentence))
+                    (value (etypecase edge-or-word
+                             (edge (edge-category edge-or-word))
+                             (word edge-or-word))))
+                (unless (typep contents 'epistemic-status)
+                  (error "Forgot to fold epistemic-status into ~
+                          sentence contents"))
+                (push value
+                      (slot-value contents ',slot-name))))) ))
+    (eval form)
+    fn-name))
+
+ 
+(define-epistemic-collector note-conjecture-phrase conjectures)
+
+(define-epistemic-collector note-explicit-reference explicit-reference)
+
+#+igmore ;; original hand-coded versio
 (defun note-explicit-reference (label pos-before pos-after)
   (declare (ignore pos-before pos-after)
            (special *sentence*))
@@ -46,8 +117,20 @@
     (let ((contents (contents sentence)))
       (unless (typep contents 'epistemic-status)
         (error "Forgot to fold epistemic-status into sentence contents"))
+      (push label (explicit-reference contents)))))
 
-      (setf (explicit-reference contents) label))))
+;;;-------------------------------------
+;;; Hook up to the completion machinery
+;;;-------------------------------------
+
+(defvar *labels-used-by-new-information-detector* nil
+  "Holds the list of word and polywords with completion actions
+   that provide information to the detector and its calculations.")
+
+;; (trace-completion)
+;;  Traces whether a word (polyword, edge) going through the
+;;  complete routine has a completion action action associated
+;;  with it and notes whether it's run. 
 
 (defgeneric setup-epistemic-data-collector (label function)
   (:documentation ""))
@@ -61,9 +144,13 @@
   (setup-epistemic-data-collector (resolve/make label) fn))
 
 (defmethod setup-epistemic-data-collector ((label word) (fn symbol))
+  ;; Words go through complete as words, and use a function call
+  ;; with three arguments.
   (make-completion-datum-for-epistemics label fn))
 
 (defmethod setup-epistemic-data-collector ((label polyword) (fn symbol))
+  ;; Polywords go through complete as edges. The function takes the
+  ;; edge as it's single argument
   (make-completion-datum-for-epistemics label fn))
 
 (defun make-completion-datum-for-epistemics (label fn-name)
@@ -71,9 +158,16 @@
   (push label *labels-used-by-new-information-detector*))
 
 
-;;--- Def forms
+;;;-----------
+;;; Def forms
+;;;-----------
 
 (defun evidence-of-reference (string)
   (setup-epistemic-data-collector
    string 'note-explicit-reference))
-  
+
+(defun conjecture-phrase (string)
+  (setup-epistemic-data-collector
+   string 'note-conjecture-phrase))
+ 
+
