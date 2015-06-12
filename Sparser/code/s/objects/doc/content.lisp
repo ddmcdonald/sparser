@@ -3,13 +3,17 @@
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  May 2015
+;;;  Version:  June 2015
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
 ;; a container and set up simple accumulator for sentences.
 ;; 5/12/15 Reorganized a good deal and pulled out fresh-contents
-;; to go in drivers/forest/parsing-containers.lisp 
+;; to go in drivers/forest/parsing-containers.lisp. Moved them
+;; back here 6/11/15 reincarnated as 'install-contents' that only
+;; does it once. Added more mixins to the content classes for
+;; organizing aggregation of their relations and entities as well
+;; as record their rhetorical aspects. 
 
 (in-package :sparser)
 
@@ -101,8 +105,29 @@
 ;;; Setting the context of the different levels of document
 ;;;---------------------------------------------------------
 
-(defmethod fresh-contents ((a article))
-  (setf (contents a) (make-instance 'article-content)))
+(defgeneric install-contents (document-element)
+  (:documentation "Instantiate the appropriate content class for
+    this class of document element. Assumes that the elements are
+    permanent and checks to insure that multiple passses over
+    an element will not replace the original contents instance."))
+
+(defmethod install-contents ((a article))
+  (unless (contents a)
+    (setf (contents a) (make-instance 'article-content :in a))))
+
+(defmethod install-contents ((sos section-of-sections))
+  (unless (contents sos)
+    (setf (contents sos) (make-instance 'section-content :in sos))))
+
+(defmethod install-contents ((s section))
+  (unless (contents s)
+    (setf (contents s) (make-instance 'section-content :in s))))
+
+(defmethod install-contents ((p paragraph))
+  (unless (contents p)
+    (setf (contents p) (make-instance 'paragraph-content :in p))))
+
+
 #|   Definition for Grok
   "Supplies the content field of an article"
   ;; placeholder for resource -- but only via a generating macro that
@@ -114,18 +139,6 @@
       (setf (name contents) :no-name-in-article))
     contents))
 |#
-
-(defmethod fresh-contents ((sos section-of-sections))
-  (setf (contents sos) (make-instance 'section-content)))
-
-(defmethod fresh-contents ((s section))
-  (setf (contents s) (make-instance 'section-content)))
-
-(defmethod fresh-contents ((p paragraph))
-  (setf (contents p) (make-instance 'paragraph-content)))
-
-
-
 
 ;;;---------------------------
 ;;; Grok code to rehabilitate
