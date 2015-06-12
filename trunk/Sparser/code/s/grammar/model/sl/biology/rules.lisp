@@ -136,6 +136,8 @@
                   (vg vp)
                   (vp+ed vp+ed)
                   (vg+ed vp+ed)
+                  (verb+ed vg+ed) ;; somehow "phosphorylated" stops being elevated
+                                  ;; to vg+ed after we run the June corpus
                   (vp+ing vp+ing)
                   (vg+ing vp+ing))
   do
