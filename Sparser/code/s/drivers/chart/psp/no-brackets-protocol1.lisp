@@ -412,7 +412,10 @@
 ;; No longer called from all-individuals-in-tts
 (defun store-surface-string (i)
   (setf (gethash i *surface-strings*)
-        (get-surface-string-for-individual i)))
+    (get-surface-string-for-individual i)))
+
+(defun retrieve-surface-string (i)
+  (gethash i *surface-strings*))
 
 (defun get-surface-string-for-individual (i)
   ;; Most all entities should have gotten their surface string
