@@ -343,7 +343,7 @@
 (define-adverb "absolutely")
 (define-adverb "accordingly")
 (define-adverb "accurately")
-(define-adverb "actively")
+#+ignore(define-adverb "actively") ;; conflicts with bio domain
 (define-adverb "actually")
 (define-adverb "acutely")
 (define-adverb "additionally")
@@ -770,7 +770,7 @@
 (define-adjective "abnormal")
 (define-adjective "abundant")
 (define-adjective "accurate")
-(define-adjective "active")
+#+ignore (define-adjective "active") ;; conflicts with bio-domain
 (define-adjective "adaptive")
 (define-adjective "adhesive")
 (define-adjective "adjacent" :form 'spatial-adjective)
