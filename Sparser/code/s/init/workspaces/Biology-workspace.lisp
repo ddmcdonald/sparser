@@ -25,7 +25,8 @@
   (setq *tts-after-each-section* nil)
   (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
   (gate-grammar *biology* ;; sets up stats collection
-    (gload "bio;loader"))
+                (gload "bio;loader"))
+  (load-obo-terms)
   (load-bio-corpora)
   (declare-all-existing-individuals-permanent))
 
@@ -76,9 +77,11 @@ those steps sequentially on a single article.
 
 ;; This should be set in your personal workspace file,
 ;; e.g. (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
-(defvar *r3-trunk* nil
-  "String identifing the location of the trunk on 
-  your machine, including a final slash")
+(if (boundp 'cl-user::*r3-trunk*)
+    (setf *r3-trunk* cl-user::*r3-trunk*)
+    (setf *r3-trunk* nil))
+;  "String identifing the location of the trunk on 
+;  your machine, including a final slash"
 
 
 ;;---- Error handline
@@ -121,20 +124,38 @@ those steps sequentially on a single article.
     (loop for pn in pathnames
       collect (pathname-name pn))))
 
+
+
+(defvar *corpus-paths* '((:jan15 "darpa/January5-TestMaterials")
+                         (:May15 "corpus/2015-5-4_Mitre-articles")
+                         (:jun15 "darpa/12-month TestMaterials/NXML-model")))
+
+
+(defun make-corpus-path (corpus-kwd)
+  (let ((path-from-r3-trunk (cond ((stringp corpus-kwd) corpus-kwd)
+                                  ((second (assoc corpus-kwd *corpus-paths*)))
+                                  (T "corpus/2015-5-4_Mitre-articles"))))
+  (format nil "~A/~A/" cl-user::*r3-trunk* path-from-r3-trunk)))
+
+
+(defun set-default-corpus-path (corpus-kwd-or-string)
+  "Set r3::*default-corpus-path* to this trunk-relative value"
+  (let ((expanded-pathname  (make-corpus-path corpus-kwd-or-string)))
+    (format t "~&Setting r3::*default-corpus-path* to ~s~%" expanded-pathname)
+    (setf *default-corpus-path* expanded-pathname)))
+
+
 (defun populate-12-month-NXML-model-article-set ()
-  (unless *r3-trunk*
-    (error "*r3-trunk* needs to be set."))
-  (let* ((location (string-append 
-                   *r3-trunk* "darpa/12-month TestMaterials/NXML-model/"))
-         (corpus-path "darpa/12-month TestMaterials/NXML-model/")
-         (directory-namestring
-          (string-append location "*.nxml")))
+  (unless cl-user::*r3-trunk* (error "*r3-trunk* needs to be set."))
+  (let* ((location "darpa/12-month TestMaterials/NXML-model")
+          (fullpath (make-corpus-path location))
+         (directory-namestring (string-append fullpath "*.nxml")))
     (let ((ids (generate-id-list-from-directory-listing directory-namestring)))
       (if ids
         (format t "~&About to operate on ~a files~%" (length ids))
         (break "Something went wrong. No ids were generated from~%~a"
                directory-namestring))
-      (populate-article-set ids corpus-path :quiet))))
+      (populate-article-set ids location :quiet))))
 
 (defparameter *june-nxml-files-in-MITRE-order*
   '(PMC2194190 PMC3284553 PMC1242143 PMC4026536 PMC3052367 PMC3866170 PMC2258316 PMC4322841 PMC2199242 PMC2140160
@@ -240,10 +261,10 @@ those steps sequentially on a single article.
     ))
 
 (defun populate-june-test-article-set (&optional n)
-  (unless *r3-trunk*
+  (unless cl-user::*r3-trunk*
     (error "*r3-trunk* needs to be set."))
   (let* ((location (string-append 
-                   *r3-trunk* "code/evaluation/June2015Materials/Eval_NXML/"))
+                   cl-user::*r3-trunk* "code/evaluation/June2015Materials/Eval_NXML/"))
          (corpus-path "code/evaluation/June2015Materials/Eval_NXML/")
          (directory-namestring
           (string-append location "*.nxml")))
@@ -277,7 +298,7 @@ those steps sequentially on a single article.
   (unless list-of-ids
     (setq list-of-ids *2015-5-4_Mitre-articles*))
   (unless location
-    (setq location "corpus/2015-5-4_Mitre-articles/"))
+    (setq location "2015-5-4_Mitre-articles"))
   (set-default-corpus-path location)
   (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
                           (find-package :r3)))
@@ -287,7 +308,9 @@ those steps sequentially on a single article.
                           (find-package :r3))))
     (funcall quiet-fn)
     (dolist (id list-of-ids)
-      (let* ((simple-id (if use-pmc (string-append (symbol-name id) ".nxml") (PMC-to-nxml id)))
+      (let* ((simple-id (if use-pmc 
+                            (string-append (symbol-name id) ".nxml") 
+                            (PMC-to-nxml id)))
              (pathname (funcall path-fn simple-id)))
         (cond
          ((null pathname)
@@ -466,17 +489,6 @@ those steps sequentially on a single article.
 
 ;;---- Gophers for going through articles
 
-(defun set-default-corpus-path (pathname-string)
-  "Set r3::*default-corpus-path* to this trunk-relative value"
-  (let ((symbol (intern (symbol-name '#:*default-corpus-path*)
-                        (find-package :r3)))
-        (expanded-pathname
-         (concatenate 'string *r3-trunk* pathname-string)))
-    (format t "~&Setting r3::*default-corpus-path*~
-               ~%  to ~s~%" expanded-pathname)
-    (set symbol expanded-pathname)))
-
-
 (defmethod PMC-to-nxml ((symbol symbol))
   "Given a symbol like PMC1240052, which was how they were sent 
    to us by Mitre in May. Convert it to the filename form that's
@@ -500,8 +512,8 @@ those steps sequentially on a single article.
    of the package as a proxy for the whole relevant body
    of code having been loaded."
   (unless (find-package :r3)
-    (if (boundp '*r3-trunk*)
-      (let ((code-dir (string-append *r3-trunk* "code/")))
+    (if (boundp 'cl-user::*r3-trunk*)
+      (let ((code-dir (string-append cl-user::*r3-trunk* "code/")))
         (cwd code-dir)
         (load "load.lisp"))
       (format nil "You have to set *r3-trunk*"))))
@@ -1030,10 +1042,10 @@ These return the Lisp-based obo entries.
 
 |#
 (defun load-obo-terms ()
-  (unless *r3-trunk* ;; nust end with a slash
+  (unless cl-user::*r3-trunk* ;; nust end with a slash
     (error "Bind *r3-trunk* to that spot in your directory"))
   (let ((filename 
-         (concatenate 'string *r3-trunk* "code/obo-terms.lisp")))
+         (concatenate 'string cl-user::*r3-trunk* "code/obo-terms.lisp")))
     (incorporate-obo-terms filename)))
 
  
