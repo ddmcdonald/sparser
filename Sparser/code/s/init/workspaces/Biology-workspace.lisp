@@ -115,7 +115,7 @@ those steps sequentially on a single article.
     (setf *default-corpus-path* expanded-pathname)))
 
 
-(defun populate-12-month-NXML-model-article-set ()
+(defun populate-12-month-NXML-model-article-set (&optional (n nil))
   (unless cl-user::*r3-trunk* 
     (error "*r3-trunk* needs to be set."))
   (let* ((location "darpa/12-month TestMaterials/NXML-model")
@@ -126,6 +126,8 @@ those steps sequentially on a single article.
         (format t "~&About to operate on ~a files~%" (length ids))
         (break "Something went wrong. No ids were generated from~%~a"
                directory-namestring))
+      (if (numberp n)
+          (setq ids (nthcdr n ids)))
       (populate-article-set ids location :quiet))))
 
 
@@ -316,8 +318,7 @@ those steps sequentially on a single article.
   (when reload 
     (setq *articles-created* nil)
     (setq *populated-articles* nil))
-  (when (null *articles-created*)
-    (populate-12-month-NXML-model-article-set))
+  (populate-12-month-NXML-model-article-set n)
   (sweep-and-run-n-articles n))
 
 
