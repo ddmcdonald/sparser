@@ -41,6 +41,11 @@
      (error "i-type-of applied to a ~a rather than ~
              an individual" (type-of i)))))
 
+
+(defun itype-symbol (i)
+  (cat-symbol (i-type-of i)))
+
+
 (defun itypep (i c/s) 
   (if
    (consp i)
@@ -62,6 +67,7 @@
 
 (defun itype (i c/s)
   (indiv-typep i c/s))
+
 
 
 ;;--- Does the search
