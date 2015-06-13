@@ -62,7 +62,6 @@ which could be set automatically by using the :init-form on the slot.
    already established facts, or making a conjecture about
    what might be the case (which in isolation will look like a fact)."))
 
-
 ;;;--------------------
 ;;; function generator
 ;;;--------------------
@@ -81,9 +80,9 @@ you also add the corresponding slot to the class. |#
          `(defun ,fn-name (edge-or-word &optional pos-before pos-after)
             (declare (ignore pos-before pos-after)
                      (special *reading-populated-document*
-                              *sentence-making-sweep*))
+                              *scanning-epistemic-features*))
             (when *reading-populated-document*
-              (when *sentence-making-sweep*
+              (unless *scanning-epistemic-features*
                 (return-from ,fn-name)))
             (let ((sentence (identify-current-sentence)))
               (let ((contents (contents sentence))
@@ -93,6 +92,7 @@ you also add the corresponding slot to the class. |#
                 (unless (typep contents 'epistemic-status)
                   (error "Forgot to fold epistemic-status into ~
                           sentence contents"))
+                (format t "~&>>> ~a~%" value)
                 (push value
                       (slot-value contents ',slot-name))))) ))
     (eval form)
