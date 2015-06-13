@@ -47,6 +47,17 @@
       (format t "~&Sweeping document ~a~%" (name doc)))
     (read-from-document doc)))
 
+;;;--------------------------------------------
+;;; shallow pass for rhetoric/epistemic status
+;;;--------------------------------------------
+
+(defmethod read-epistemic-features ((a article))
+  (let ((*scanning-epistemic-features* t)
+        (*sweep-for-patterns* nil))
+    (declare (special *scanning-epistemic-features*
+                      *sweep-for-patterns*))
+    (read-from-document a)
+    a))
 
 ;;;--------------------------------
 ;;; The read-from-document methods 
@@ -183,7 +194,7 @@
   (declare (special s in-results?))
   (when in-results?
     (break "rtd s"))
-  (if (and in-results?(slot-boundp s 'title))
+  (if (and in-results? (slot-boundp s 'title))
       (funcall fn (title s)))
       
   (loop for child in (children s)
@@ -193,23 +204,27 @@
   nil)
 
 (defun in-results? (s)
+  ;; Are we in a results section>
   (declare (special s))
-  (when
-      (slot-boundp s 'title)
-    (let
-        ((title (if (stringp (title s)) (title s)(content-string (title s)))))
-    (cond
-     ((member (string-downcase title)'("results") :test #'equal)
-      t)
-     (t
-      ;;(print (list 'results? title))
-      nil)))))
+  (when (slot-boundp s 'title)
+    (let ((title 
+           (if (stringp (title s)) 
+             (title s)
+             (content-string (title s)))))
+      (cond
+       ((member (string-downcase title)'("results") :test #'equal)
+        t)
+       (t
+        ;;(print (list 'results? title))
+        nil)))))
+
+
 
 (defparameter *results-section-titles* nil)
 (defparameter *relevant-titles* nil)
+
 (defun collect-results-section-titles (a)
-  (let
-      ((*relevant-titles* nil))
+  (let ((*relevant-titles* nil))
     (recurse-through-document a #'collect-relevant-titles nil)  
     (push (list (name a) *relevant-titles*)
           *results-section-titles*)))
