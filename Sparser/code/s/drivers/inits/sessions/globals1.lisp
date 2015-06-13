@@ -137,6 +137,10 @@
    we identify what new vocabularly the text may have and optionally
    chop it into sentences saved to a file.")
 
+(defparameter *scanning-epistemic-features* nil
+  "State flag that is up when that activity is underway.
+   See read-epistemic-features.")
+
 (defparameter *sentence-making-sweep* nil
   "Flag that is up when we are making that sweep through a
    document to drive or inhibit the right set of activities.")
