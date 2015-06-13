@@ -110,7 +110,7 @@ you also add the corresponding slot to the class. |#
   ;; Don't need them because we're not doing anything to the chart
   (let ((sentence *sentence*))
     (unless sentence
-      (error "Global sentence devar is nil somehow. Check scope."))
+      (error "Global sentence defvar is nil somehow. Check scope."))
     (let ((contents (contents sentence)))
       (unless (typep contents 'epistemic-status)
         (error "Forgot to fold epistemic-status into sentence contents"))
