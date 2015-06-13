@@ -25,7 +25,7 @@
 ;; (ddm-polyword-conundrum)
   (setq *diagnose-consp-referents* t)
  ;;     (setq *show-section-printouts* t)
-  (ddm-load "interface/R3-eval/dec14-output.lisp")
+  ;;(ddm-load "interface/R3-eval/dec14-output.lisp")
   ;; (test-dec)  (dtst nil t) (reset-dectest)
   ;; (test-overnight) (test-erk) (test-aspp2)
   (test-jan)) ;; (compare-to-snapshot 'dec-test)
