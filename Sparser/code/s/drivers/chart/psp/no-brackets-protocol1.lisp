@@ -72,7 +72,10 @@
 (defun identify-current-sentence ()
   ;; called from the epistemic collector functions but could
   ;; be generally useful.
-  (break "find the current sentence"))
+  (let ((s *sentence-in-core*))
+    (unless (typep s 'sentence)
+      (break "Need another way to find the current sentence"))
+    s))
 
 (defparameter *trap-error-skip-sentence* nil
   "Governs whether we let errors happen. If it's nill they
@@ -153,6 +156,7 @@
 (defun sentence-processing-core (sentence)
   ;; Handles all of the processing on a sentence that is done
   ;; after scan-terminals-loop runs.
+  (declare (special *sweep-for-patterns*))
   (setq *sentence-in-core* sentence)
   (possibly-print-sentence)
   
