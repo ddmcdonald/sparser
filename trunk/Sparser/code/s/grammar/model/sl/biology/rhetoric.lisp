@@ -22,10 +22,15 @@
   ;; make a card. If it returns nil -- having determined that
   ;; the sentence is about established or conjectured facts and
   ;; consequently not relevant -- then no card will be made.
-  (let ((paragraph (parent sentence))
-        )
+  (let ((paragraph (parent sentence)))        
     (push-debug `(,paragraph))
-    t))
+    (cond
+     ((includes-a-reference sentence)
+      (format t "~&   Not relevant: ~a~%" sentence)
+      nil)
+     (t
+      t))))
+
 
 #| At the point when this is called, all of the phrases (text strings)
 that applied to this sentence will have been seen by complete and 
@@ -42,14 +47,28 @@ no evidence in the sentence.
 |#
 
 
+;;;-------------------------------------------
+;;; Convenience functions over status objects
+;;;-------------------------------------------
+
+(defmethod includes-a-reference ((s sentence))
+  (explicit-reference (contents s)))
+
 ;;;-------
 ;;; rules
 ;;;-------
-#|
-(conjecture-phrase "could") ;; could also
+
+;; Let's not mark modals or other elements of tense
+;; and aspect during the feature-reading pass. The complete routine
+;; complicates the regular function of "could" within the parsing
+;; of the verb group. We can look for this sort of thing during
+;; the relevance computation at which point we just (... a mear matter
+;; of programming) look for them and judge accordingly. 
+;;(conjecture-phrase "could") ;; could also
+
+
 (conjecture-phrase "it is possible that")
 (conjecture-phrase "it is likely that")
 
 
 (evidence-of-reference "xref")
-|#
