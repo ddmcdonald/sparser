@@ -94,11 +94,21 @@ those steps sequentially on a single article.
                          (:jun15 "code/evaluation/June2015Materials/Eval-NXML")))
 
 
+;;; remove slashes from both ends unless just-end = t then just right end. 
+(defun remove-end-slashes (string &optional (just-end nil))
+  (let* ((lastpos (1- (length string)))
+         (p1 (if (and (not just-end) (eq (elt string 0) #\/)) 1 0))
+         (p2 (if (eq (elt string lastpos) #\/) lastpos (1+ lastpos))))
+    (subseq string p1 p2)))
+
+
 (defun make-corpus-path (corpus-kwd)
   (let ((path-from-r3-trunk (cond ((stringp corpus-kwd) corpus-kwd)
                                   ((second (assoc corpus-kwd *corpus-paths*)))
                                   (T "corpus/2015-5-4_Mitre-articles"))))
-  (format nil "~A/~A/" cl-user::*r3-trunk* path-from-r3-trunk)))
+  (format nil "~A/~A/" 
+          (remove-end-slashes cl-user::*r3-trunk* t)
+          (remove-end-slashes path-from-r3-trunk))))
 
 
 (defun stripped-corpus-path ()
@@ -155,6 +165,8 @@ those steps sequentially on a single article.
         corpus-path 
         :quiet t)
        (populate-article-set ids corpus-path :quiet t)))))
+
+
 
 ;--- 1st populate: Locate the nxml file and run the 
 ; XML-to-doc-structure to convert it to the equivalent
@@ -222,11 +234,9 @@ those steps sequentially on a single article.
       do (setf (name article) id))
     *articles-created*))
 
+
 (defun populate-one-article (id)
   (populate-article-set (list id)))
-
-
-
 
 
 ;--- 2d sweep.  Run through the article that is the result
