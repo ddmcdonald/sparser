@@ -521,72 +521,74 @@
 
 (define-category cellular-location 
   :specializes bio-location
+  :binds ((id))
   :instantiates self
   :index (:permanent :key name))
 
 
 ;; These came from the MITRE RAS1 owl file
 
+(defmacro define-cellular-location (name id &key (adj nil)(synonyms nil))
+  (def-cell-loc name id :adj adj :synonyms synonyms))
+
+(defun hyphen-subs (str)
+  (substitute #\- #\space str))
+
+(defun def-cell-loc (name id &key adj synonyms)
+  (let
+      ((cat-name (intern (string-upcase (hyphen-subs name)))))
+    `(progn
+      (define-category ,cat-name :specializes cellular-location
+        :bindings (id ,id name ,name)
+        :realization
+        (:noun ,name ,@(when adj `(:adj ,adj))))
+      (handle-mitre-link ,(find-symbol (symbol-name cat-name) (find-package :category)) ,id)
+      ,@(loop for syn in synonyms collect `(def-synonym ,cat-name (:noun ,syn))))))
+
+       
+
 (define-category caveola :specializes cellular-location
   :realization
   (:noun "caveola"))
 (handle-mitre-link category::caveola "GO:0005901")
-(define-category cytoplasm :specializes cellular-location
-  :realization
-  (:noun "cytoplasm"))
-(handle-mitre-link category::cytoplasm "GO:0005737")
-(define-category cytosol :specializes cellular-location
-  :realization
-  (:noun "cytosol" :adj "cytosolic"))
-(handle-mitre-link category::cytosol "GO:0005829")
-(define-category early-endosome :specializes cellular-location
-  :realization
-  (:noun "early-endosome"))
-(handle-mitre-link category::early-endosome "GO:0005769")
-(define-category endosome :specializes cellular-location
-  :realization
-  (:noun "endosome"))
-(handle-mitre-link category::endosome "GO:0005768")
-(define-category extracellular-matrix :specializes cellular-location
-  :realization
-  (:noun "extracellular-matrix"))
-(handle-mitre-link category::extracellular-matrix "GO:0031012")
-(define-category extracellular-region :specializes cellular-location
-  :realization
-  (:noun "extracellular-region"))
-(handle-mitre-link category::extracellular-region "GO:0005576")
-(define-category golgi-apparatus :specializes cellular-location
-  :realization
-  (:noun "golgi-apparatus"))
-(handle-mitre-link category::golgi-apparatus "GO:0005794")
-(define-category integral-to-membrane :specializes cellular-location
-  :realization
-  (:noun "integral-to-membrane"))
-(handle-mitre-link category::integral-to-membrane "GO:0016021")
-(define-category membrane-raft :specializes cellular-location
-  :realization
-  (:noun "membrane-raft"))
-(handle-mitre-link category::membrane-raft "GO:0045121")
-(define-category nucleus :specializes cellular-location
-  :realization
-  (:noun "nucleus"))
-(handle-mitre-link category::nucleus "GO:0005634")
-(define-category plasma-membrane :specializes cellular-location
-  :realization 
-  (:noun "plasma-membrane"))
-(handle-mitre-link category::plasma-membrane "GO:0005886")
+(define-cellular-location "Golgi apparatus" "GO_0005794")
+(define-cellular-location "basolateral plasma membrane" "GO_0016323")
+(define-cellular-location "caveola" "GO_0005901")
+(define-cellular-location "cell leading edge" "GO_0031252")
+(define-cellular-location "cell-cell junction" "GO_0005911")
+(define-cellular-location "cytoplasm" "GO_0005737")
+(define-cellular-location "cytoplasmic vesicle" "GO_0031410")
+(define-cellular-location "cytoskeleton" "GO_0005856")
+(define-cellular-location "cytosol" "GO_0005829" :adj "cytosolic")
+(define-cellular-location "dendritic spine" "GO_0043197")
+(define-cellular-location "early endosome" "GO_0005769")
+(define-cellular-location "endoplasmic reticulum membrane" "GO_0005789")
+(define-cellular-location "endoplasmic reticulum" "GO_0005783")
+(define-cellular-location "endosome" "GO_0005768")
+(define-cellular-location "extracellular matrix" "GO_0031012")
+(define-cellular-location "extracellular region" "GO_0005576")
+(define-cellular-location "focal adhesion" "GO_0005925")
+(define-cellular-location "growth cone" "GO_0030426")
+(define-cellular-location "hemidesmosome" "GO_0030056")
+(define-cellular-location "integral to membrane" "GO_0016021")
+(define-cellular-location "intracellular" "GO_0005622")
+(define-cellular-location "lamellipodium" "GO_0030027")
+(define-cellular-location "membrane raft" "GO_0045121")
+(define-cellular-location "membrane" "GO_0016020")
+(define-cellular-location "mitochondrial inner membrane" "GO_0005743")
+(define-cellular-location "mitochondrial intermembrane space" "GO_0005758")
+(define-cellular-location "mitochondrial matrix" "GO_0005759")
+(define-cellular-location "neuromuscular junction" "GO_0031594")
+(define-cellular-location "nucleoplasm" "GO_0005654")
+(define-cellular-location "nucleus" "GO_0005634")
+(define-cellular-location "plasma membrane" "GO_0005886")
+(define-cellular-location "platelet dense granule lumen" "GO_0031089")
+(define-cellular-location "trailing edge" "GO_0031254")
+
 (define-category stress-granule :specializes cellular-location
   :realization (:noun "SG"))
 (def-synonym stress-granule (:noun "stress granule"))
 
-(def-synonym early-endosome (:noun "early endosome"))
-(def-synonym extracellular-matrix (:noun "extracellular matrix"))
-(def-synonym extracellular-region (:noun "extracellular region"))
-(def-synonym golgi-apparatus (:noun "Golgi apparatus"))
-(def-synonym integral-to-membrane (:noun "integral to membrane"))
-(def-synonym membrane-raft (:noun "membrane raft"))
-(def-synonym nucleus (:adj "nuclear"))
-(def-synonym plasma-membrane (:noun "plasma membrane"))
 
 
 
