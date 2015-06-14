@@ -110,8 +110,11 @@ those steps sequentially on a single article.
           (remove-end-slashes cl-user::*r3-trunk* t)
           (remove-end-slashes path-from-r3-trunk))))
 
+(defparameter *default-corpus-path* nil)
+
 
 (defun stripped-corpus-path ()
+  (declare (special *default-corpus-path*))
   (or
    *default-corpus-path*
    (make-corpus-path "corpus/stripped")))
