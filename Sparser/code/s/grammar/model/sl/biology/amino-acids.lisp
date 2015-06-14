@@ -280,11 +280,12 @@ therefore we have the special cases:
 ;;; point mutations
 ;;;-----------------
 
-(define-category point-mutation
-  :specializes residue-on-protein ;; amino-acid position on-protein
+(define-category point-mutation :specializes bio-process ;; amino-acid position on-protein
   ;; if we had 'mutation' that might be better
   ;; but these do involve a particular residue
-  :binds ((new-amino-acid . amino-acid))
+  :binds ((new-amino-acid . amino-acid)
+          (amino-acid . amino-acid)
+          (position number)) ;; counting from the N terminus
   :lemma (common-noun "point mutation")
   :index (:permanent :sequential-keys new-amino-acid position))
 
