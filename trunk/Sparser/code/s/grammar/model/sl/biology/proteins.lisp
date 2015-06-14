@@ -50,6 +50,70 @@
    dp
    `(define-protein ,(second dp) ,(cddr dp))))
 
+(defun all-proteins ()
+  (loop for s in *all-sentences*
+    append
+    (loop for e in (second s)
+      when (or
+            (itypep e 'protein)
+            (itypep e 'protein-family))
+      collect e)))
+
+(defun pro-name (pro)
+  (let ((name (value-of 'name pro)))
+    (cond((polyword-p name) (pw-pname name))
+         ((word-p name)(word-pname name)))))
+
+(defun prot-name (prot)
+  (or
+   (pro-name prot)
+   (get-mitre-id prot)))
+
+(defparameter *prot-ht* (make-hash-table :test #'equal))
+(defparameter *prot-cts* nil)
+(defparameter *prots* nil)
+(defparameter *nil-prots* nil)
+(defparameter *aps* nil)
+(defparameter *aaps* nil)
+(defparameter *naps* nil)
+(defparameter *named-proteins* nil)
+(defparameter *unique-named-substrates* nil)
+(defparameter *poorly-identified-proteins* nil)
+
+(defun protein-name-count (proteins)
+  (clrhash *prot-ht*)
+  (loop for p in proteins
+    do
+    (push p (gethash (prot-name p) *prot-ht*)))
+  (setq *prot-cts* nil)
+  (maphash #'(lambda(name prots) (push (list name (length prots)) *prot-cts*)) *prot-ht*)
+  (setq *prot-cts* (sort *prot-cts* #'> :key #'second))
+  *prot-ht*)
+
+(defun poorly-identified-proteins()
+  (length (setq *prots* (all-proteins)))
+  (protein-name-count *prots*)
+  (length (setq *nil-prots* (gethash nil *prot-ht*)))
+  ;;(loop for i from 1 to 30 collect (print (retrieve-surface-string (nth i nil-prots))) (nth i nil-prots))
+  (length (setq *aps* (all-phosphorylations)))
+  (length (setq *aaps* (loop for a in aps when (get-protein-substrate (car a)) collect (car a))))
+  (length (setq *naps* (loop for a in aps unless (get-protein-substrate (car a)) collect (car a))))
+  (length 
+   (setq *named-proteins* (loop for a in aaps when (prot-name (car (get-protein-substrate a))) 
+                            collect (prot-name (car (get-protein-substrate a))))))
+  (setq *unique-named-substrates* (remove-duplicates *named-proteins* :test #'equalp))
+  (setq *poorly-identified-proteins*
+        (loop for s in *unique-named-substrates* unless (or (search "PR:" s)(search "_" s)) collect s)))
+
+
+(defun protein-desc (pro)
+  (when (pro-name pro)
+    (let
+        ((st (semtree pro)))
+      `(,(symbol-name (cat-symbol (car (indiv-type (car st))))) (:name ,(pro-name pro)),@(cdr st)))))
+
+
+
 (defun reify-p-protein-and-make-edge (words start-pos end-pos)
   ;; Called from resolve-ns-pattern on (:single-cap :digits).
   ;; Looks for a "p" and if it finds it makes a protein. 
