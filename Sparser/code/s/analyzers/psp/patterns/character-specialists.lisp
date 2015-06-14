@@ -118,6 +118,7 @@
                result)))))))
 
 (defun make-edge-into-adjective (edge)
+  (declare (special category::adjective))
   (setf (edge-form edge) category::adjective)
   edge)
 
@@ -126,7 +127,7 @@
 (defun ns-sort-out-edge-hyphen-lower (leading-edge start-pos end-pos words)
   ;; Called from ns-sort-out-pattern-with-edges when the edge 
   ;; is :initial and the remaining pattern is (:hyphen :lower)
-  (declare (special category::verb+ed category::adjective)(ignore start-pos))
+  (declare (special category::verb+ed category::adjective))
   (let* ((trailing-edge (left-treetop-at/edge end-pos))
          (form (edge-form trailing-edge))
          (right-ref (edge-referent trailing-edge))
@@ -139,12 +140,16 @@
        (setq agent? t)))
     (push-debug `(,agent? ,words)) ;; quiet compiler while in progress
     (cond
-;     (agent?
-;      (setq referent 
+     (agent?
+      (push-debug `(,trailing-edge ,right-ref))
+      (break "agent case")
+      (make-right-head-with-agent-left
+       left-ref right-ref leading-edge trailing-edge))
      (t
       ;; Base everything on the trailing edge. Drop the referent
       ;; of the starting edge because we don't know where to put it
-      (let* ((referent (make-qualifying-pair left-ref right-ref))
+      (let* ((referent ;;(make-qualifying-pair left-ref right-ref))
+              right-ref) ;; droppign left-ref on the floor
              (edge
               (make-binary-edge/explicit-rule-components
                leading-edge trailing-edge
@@ -153,6 +158,29 @@
                :form form
                :referent referent)))
         edge)))))
+
+(defun make-right-head-with-agent-left (left-ref right-ref
+                                        leading-edge trailing-edge)
+  (declare (special category::adjective))
+  ;; "EphB1-induced", "tyrosine-phosphorylated"
+  (let ((variable (subject-variable right-ref)))
+    ;; Which variable this is really depends on the two referents.
+    ;; For the induced example its an agent (= subject). But the
+    ;; tyrosine goes on the site variable of the phosphoryate.
+    ;; For right now, binding the subject and letting the chips
+    ;; fall as they may. Elevating the right edeg as the head
+    ;; but making it an adjective overall. 
+    (when variable
+      ;; otherwise do 'modifier' ???
+      (bind-variable variable left-ref right-ref))
+    (let ((edge
+           (make-binary-edge/explicit-rule-components
+            leading-edge trailing-edge
+               :category (edge-category trailing-edge)
+               :form category::adjective
+               :referent right-ref
+               :rule-name 'make-right-head-with-agent-left)))
+      edge)))
 
 
 

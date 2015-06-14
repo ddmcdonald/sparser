@@ -251,9 +251,11 @@
 
 (defun resolve-hyphen-between-two-words (pattern words
                                          pos-before pos-after)
+  ;; Called from one-hyphen-ns-patterns
   ;; Have to distinguish between anticipated cases where the edges would
   ;; compose except for the hypen between the words and cases 
   ;; like "Sur-8" where it's the name of a protein
+  (declare (special category::verb+ed))
   ;;(push-debug `(,pos-before ,pos-after ,pattern))
   (tr :resolve-hyphen-between-two-words words)
   (let ((left-edge (right-treetop-at/edge pos-before))
@@ -274,12 +276,16 @@
       (cond
        (usable-rule ;; "GTP-bound"
         (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
-          ;;(push-debug `(,right-edge ,edge))
           (revise-form-of-nospace-edge-if-necessary edge right-edge)
           (tr :two-word-hyphen-edge edge)))
        ((some-word-is-a-salient-hyphenated-literal words)
         (compose-salient-hyphenated-literals ;; "re-activate"
          pattern words pos-before pos-after))
+       ((and (edge-p right-edge)
+             (eq (edge-form right-edge) category::verb+ed))
+        (make-right-head-with-agent-left
+         (edge-referent left-edge) (edge-referent right-edge)
+         left-edge right-edge))
        ((and (edge-p left-edge)
              (edge-p right-edge))
         ;; if either is a word then the assumptions of 
