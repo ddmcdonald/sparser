@@ -15,6 +15,8 @@
 ;; information that would otherwise only be saved in document processing --
 ;; added optional argument save-info on run-treetop-snapshot, etc.
 ;; 6/10/15 Added more printing parameters to ignore
+;; 6/14/2015 code how-art-sents to find all the sentences in the set of articles
+;;   so far processed that have a given string
 
 
 (in-package :sparser)
@@ -417,6 +419,19 @@ previous records of treetop-counts.
 
 (defun show-sents (str)
   (np (find-corpus-sents str)))
+
+(defun show-art-sents (str &optional sents)
+  (if sents
+      (loop for a in sents when (search str (car a))
+        collect (list (car a) (second a)))
+      (loop for a in *all-sentences* when (search str (car a))
+        collect (list (car a) (name (third a))))))
+
+(defun phos-sents ()
+  (remove-duplicates 
+   (loop for a in (all-phosphorylations)
+     collect (list (second a) (name (third a))))
+   :test #'equal))
 
 (defun find-corpus-sents(str)
   (find-corpus-instances str))
