@@ -166,7 +166,8 @@ those steps sequentially on a single article.
         :quiet t)
        (populate-article-set ids corpus-path :quiet t)))))
 
-
+(defun populate-june-article (id)
+  (populate-article-set (list id) "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
 
 ;--- 1st populate: Locate the nxml file and run the 
 ; XML-to-doc-structure to convert it to the equivalent
@@ -339,6 +340,12 @@ those steps sequentially on a single article.
   (when (null *articles-created*)
     (populate-june-test-article-set n))
   (sweep-and-run-n-articles n))
+
+(defun test-june-article (id)
+  (setq *articles-created* nil)
+  (setq *populated-articles* nil)
+  (populate-june-article id)
+  (sweep-and-run-n-articles 1))
 
 (defun sweep-and-run-n-articles (n)
   (let ((articles-to-run
