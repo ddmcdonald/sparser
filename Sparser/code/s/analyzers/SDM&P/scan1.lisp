@@ -16,6 +16,11 @@
 ;; 1.1 (11/11/14) Reduced propagate-suffix-to-segment to a call to
 ;;  sdm-span-segment since the did the same thing and sdm-span-segment
 ;;  didn't blindly take the right suffix's form. 
+;; 6/13/2015 fix record-any-determiner 
+;; we were adding determiners to the base meaning of
+;; amino acids, among others, generating individuals
+;; with hundreds of determiners
+;;  (setq i (maybe-copy-individual i))
 
 
 (in-package :sparser)
@@ -237,9 +242,14 @@ to make any semantic or form edges that the grammar dictates.
       (let ((i (edge-referent edge)))
         (unless (individual-p i)
           ;;/// complain?
-          (return-from record-any-determiner nil))
+          (return-from record-any-determiner nil)) 
+        ;; we were adding determiners to the base meaning of
+        ;; amino acids, among others, generating individuals
+        ;; with hundreds of determiners
+        (setq i (maybe-copy-individual i))
+        (setf (edge-referent edge) i)
         (if (definite-determiner? word)
-          (bind-variable 'has-determiner category::definite
+          (bind-variable 'has-determiner category::definite 
                          i category::det)
           (bind-variable 'has-determiner category::indefinite
                          i category::det))
