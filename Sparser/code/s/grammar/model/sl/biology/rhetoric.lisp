@@ -27,7 +27,6 @@
     (push-debug `(,paragraph))
     (cond
      ((includes-a-reference sentence)
-      (format t "~&   Not relevant: ~a~%" sentence)
       nil)
      ((title-of-currect-section-is "intro")
       nil)
