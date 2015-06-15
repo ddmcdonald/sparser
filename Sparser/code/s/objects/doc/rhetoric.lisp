@@ -55,7 +55,12 @@ which could be set automatically by using the :init-form on the slot.
    (conjectures :initform nil :accessor conjectures
     :documentation "Evidence that the sentence is stating 
       a conjecture or a hypothesis rather than an actual fact.")
-)
+   (new-facts :initform nil :accessor new-facts
+    :documentation "Evidence that the sentence contains
+      novel information.")
+   (known-results :initform nil :accessor known-results
+    :documentation "Evidence that the sentence is reporting an
+      already established fact."))
   (:documentation "The slots provide sentence-local buckets
    in which to accumulate different kinds of evidence about whether
    the sentence is providing new facts about something, referencing
@@ -98,12 +103,12 @@ you also add the corresponding slot to the class. |#
     (eval form)
     fn-name))
 
- 
 (define-epistemic-collector note-conjecture-phrase conjectures)
-
 (define-epistemic-collector note-explicit-reference explicit-reference)
+(define-epistemic-collector note-new-fact new-facts)
+(define-epistemic-collector note-known-result known-results)
 
-#+igmore ;; original hand-coded versio
+#+ignore ;; original hand-coded versio
 (defun note-explicit-reference (label pos-before pos-after)
   (declare (ignore pos-before pos-after)
            (special *sentence*))
@@ -166,5 +171,12 @@ you also add the corresponding slot to the class. |#
 (defun conjecture-phrase (string)
   (setup-epistemic-data-collector
    string 'note-conjecture-phrase))
- 
+
+(defun new-fact-phrase (string)
+  (setup-epistemic-data-collector
+   string 'note-new-fact))
+
+(defun known-result-phrase (string)
+  (setup-epistemic-data-collector
+   string 'note-known-result))
 
