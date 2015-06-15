@@ -136,7 +136,7 @@
 #+ignore
 (def-bio "E-cadherin" protein)
 
-(def-family "cadherin" :members ("E-cadherin"))
+
 
 #+ignore
 (def-bio "Src" protein :MITRE-LINK "UNIPROT:SRC_HUMAN")
@@ -150,7 +150,7 @@
 #+ignore
 (def-bio "NFAT5_HUMAN" protein :synonyms ("NF-AT5" "NFAT5") :MITRE-LINK "NFAT5_HUMAN")
 
-(def-family "NF-AT" :members ("NFAT5_HUMAN"))
+
 (define-protein "PKNA_MYCTU" ("pknA")) ;; bacterial protein -- have to look at why it shows up in the articles
 (define-protein "GSTP1_HUMAN" ("Glutathione S-transferase P"))
 (def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
@@ -162,16 +162,18 @@
 
 (define-protein "KSYK_HUMAN" ("Syk"))
 
-
+#+ignore
 (def-bio "Akt" protein
   :long "Protein kinase B"
   :synonyms ("PKB")
   :identifier "PR:31749")
 
+#+ignore
 (def-bio "IGF" protein
   :long "Insulin-Like Growth Factor"
   :identifier "PR:05019")
 
+#+ignore
 (def-bio "nfkappab2" protein 
   :identifier "PR:000011178" 
   :greek "kappa")
@@ -181,10 +183,13 @@
   :greek "kappa")
 
 (def-bio "p100" protein :identifier "PR:000011178")
+
+#+ignore
 (def-bio "p120" protein :synonyms ("p120 GAP" "p120GAP"))
 
 (def-bio "p52" protein)  ;; :identifier ??
 
+#+ignore
 (def-bio "p53" protein
   :mitre-link "Uniprot:P04637")
 
