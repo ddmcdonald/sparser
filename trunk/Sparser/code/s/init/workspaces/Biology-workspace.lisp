@@ -1162,6 +1162,9 @@ These return the Lisp-based obo entries.
 (defun cards-from-article (id)
   (test-june-article id))
 
+(defun cards-for-article (id)
+  (test-june-article id))
+
 ;;;-------------------------------------------
 ;;; timing code used with process-one-article
 ;;;-------------------------------------------
