@@ -79,6 +79,8 @@ assuming we can uniformly treat as adding the phrase to the designated
 slot in the epistemic status class. The only this you have to be careful
 about is to ensure that when you make an additional collection function
 you also add the corresponding slot to the class. |#
+
+(defparameter *trace-epistemic-collector* nil)
 	
 (defmacro define-epistemic-collector (fn-name slot-name)
   `(define-epistemic-collector/expr ',fn-name ',slot-name))
@@ -100,7 +102,8 @@ you also add the corresponding slot to the class. |#
                 (unless (typep contents 'epistemic-status)
                   (error "Forgot to fold epistemic-status into ~
                           sentence contents"))
-                (format t "~&>>> ~a~%" value)
+                (when *trace-epistemic-collector*
+                  (format t "~&>>> ~a~%" value))
                 (push value
                       (slot-value contents ',slot-name))))) ))
     (eval form)
@@ -147,7 +150,9 @@ you also add the corresponding slot to the class. |#
   ;; have a function that depends on what should be updated.
 
 (defmethod setup-epistemic-data-collector ((label string) (fn symbol))
-  (setup-epistemic-data-collector (resolve/make label) fn))
+  (let ((*use-occasional-polywords* t))
+    (declare (special *use-occasional-polywords*))
+    (setup-epistemic-data-collector (resolve/make label) fn)))
 
 (defmethod setup-epistemic-data-collector ((label word) (fn symbol))
   ;; Words go through complete as words, and use a function call
