@@ -28,6 +28,8 @@
 (defmacro define-protein (name IDS)
   (make-def-protein (cons name IDS)))
 
+(defparameter *prot-synonyms* (make-hash-table :test #'equal))
+
 (defun get-protein-synonyms (id)
   (gethash id *prot-synonyms*))
 
@@ -95,15 +97,17 @@
   *prot-ht*)
 
 (defun poorly-identified-proteins()
+  (declare (special *prots* *aps* *aaps* *naps* *named-proteins* *poorly-identified-proteins* 
+                    *unique-named-substrates*))
   (length (setq *prots* (all-proteins)))
   (protein-name-count *prots*)
   (length (setq *nil-prots* (gethash nil *prot-ht*)))
   ;;(loop for i from 1 to 30 collect (print (retrieve-surface-string (nth i nil-prots))) (nth i nil-prots))
   (length (setq *aps* (all-phosphorylations)))
-  (length (setq *aaps* (loop for a in aps when (get-protein-substrate (car a)) collect (car a))))
-  (length (setq *naps* (loop for a in aps unless (get-protein-substrate (car a)) collect (car a))))
+  (length (setq *aaps* (loop for a in *aps* when (get-protein-substrate (car a)) collect (car a))))
+  (length (setq *naps* (loop for a in *aps* unless (get-protein-substrate (car a)) collect (car a))))
   (length 
-   (setq *named-proteins* (loop for a in aaps when (prot-name (car (get-protein-substrate a))) 
+   (setq *named-proteins* (loop for a in *aaps* when (prot-name (car (get-protein-substrate a))) 
                             collect (prot-name (car (get-protein-substrate a))))))
   (setq *unique-named-substrates* (remove-duplicates *named-proteins* :test #'equalp))
   (setq *poorly-identified-proteins*
