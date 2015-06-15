@@ -1148,7 +1148,7 @@ These return the Lisp-based obo entries.
     (sweep-and-run-articles (populate-june-article id))))
 
 (defun test-june-article (id &optional show-sents)
-  (if (find-package :r3) (funcall (intern :load-ras2-model :r3)))
+  (if (find-package :r3) (funcall (intern "LOAD-RAS2-MODEL" :r3)))
   (when show-sents (setq *print-sentences* 0))
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id))
