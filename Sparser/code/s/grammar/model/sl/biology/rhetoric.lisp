@@ -31,6 +31,24 @@
      ((title-of-currect-section-is "intro")
       nil)
      (*reading-section-title* t)
+     ((contains-conjecture-phrase sentence)
+      (format t "~&   Not relevant: ~a~%" sentence)
+      nil)
+     ((contains-known-result-phrase sentence)
+      (format t "~&   Not relevant: ~a~%" sentence)
+      nil)
+     ((contains-methodology-phrase sentence)
+      (format t "~&   Not relevant: ~a~%" sentence)
+      nil)
+     ((past-tense sentence)
+      (format t "~&   Not relevant: ~a~%" sentence)
+      nil)
+     ((future-tense sentence)
+      (format t "~&   Not relevant: ~a~%" sentence)
+      nil)
+     ((contains-modal sentence)
+      (format t "~&   Not relevant: ~a~%" sentence)
+      nil)
      (t
       t))))
 
@@ -56,6 +74,31 @@ no evidence in the sentence.
 
 (defmethod includes-a-reference ((s sentence))
   (explicit-reference (contents s)))
+
+(defmethod contains-conjecture-phrase ((s sentence))
+  (conjectures (contents s)))
+
+(defmethod contains-known-result-phrase ((s sentence))
+  (known-results (contents s)))
+
+(defmethod contains-new-fact-phrase ((s sentence))
+  (new-facts (contents s)))
+
+(defmethod contains-methodology-phrase ((s sentence))
+  (methodology (contents s)))
+
+(defmethod past-tense ((s sentence))
+  )
+
+(defmethod present-tense ((s sentence))
+  )
+
+(defmethod future-tense ((s sentence))
+  )
+
+(defmethod contains-modal ((s sentence))
+  )
+
 
 ;;;-------
 ;;; rules
@@ -109,6 +152,7 @@ no evidence in the sentence.
 (new-fact-phrase "this indicates that")
 (new-fact-phrase "this observation suggests")
 (new-fact-phrase "thus")
+(new-fact-phrase "we also show that")
 (new-fact-phrase "we conclude that")
 (new-fact-phrase "we demonstrate that")
 (new-fact-phrase "we find that")
@@ -116,7 +160,9 @@ no evidence in the sentence.
 (new-fact-phrase "we report here")
 (new-fact-phrase "we show here that")
 
+(methodology-phrase "to assess")
 (methodology-phrase "to determine")
+(methodology-phrase "we analyzed")
 (methodology-phrase "we carried out")
 (methodology-phrase "we examined")
 (methodology-phrase "we investigated")
