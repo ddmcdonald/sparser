@@ -183,14 +183,18 @@
 (defun resolve-stranded-hyphen (pattern words start-pos end-pos)
   ;; called from one-hyphen-ns-patterns for (:lower :hyphen),
   ;; e.g. "mono-"
+  (declare (special *salient-hyphenated-literals*))
   (let* ((word (car words))
          (known? (memq word *salient-hyphenated-literals*)))
     (when *work-on-ns-patterns*
+      (push-debug `(,known? ,pattern))
       (break "stranded hyphen: define the category etc"))))
 
 (defun resolve-initial-stranded-hyphen  (pattern words start-pos end-pos)
   ;; e.g. "-tagged"
-  (push-debug `(,pattern ,words ,start-pos ,end-pos)))
+  (when *work-on-ns-patterns*
+    (push-debug `(,pattern ,words ,start-pos ,end-pos))
+    (break "do initial stranded hyphen")))
 
 
 
