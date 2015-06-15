@@ -53,6 +53,17 @@
 ;;; For now -always- do a sweep before doing a read
 ;;;-------------------------------------------------
 
+(defgeneric sweep-document (article)
+  (:documentation "Presumes that it has been given a just-created
+   article object for a document, i.e. an article fresh from it
+   creation by parsing its .nxml. Runs the method read-from-document
+   recursively over the articles elements, with switch settings
+   that cause it to notice the daughters of sections are themselves
+   sections (converting these to section-of-sections objects), 
+   to set every section title (assuming the xml parser found it),
+   to create the sequence of sentence objects under each paragraph,
+   and to not do any reading (parsing)."))
+
 (defmethod sweep-document ((doc document-element))
   "Creates additional document objects, including the sentences, 
    but does no analysis at all. Uses read-from-document
@@ -69,10 +80,22 @@
 ;;; shallow pass for rhetoric/epistemic status
 ;;;--------------------------------------------
 
+(defgeneric read-epistemic-features (article)
+  (:documentation "Presumes that it is getting an article object
+    that has been processed by sweep-document. Calls the method
+    read-from-document recursively on all the article's elements.
+    Runs for side-effects on the content objects on those elements
+    principally sentences and the paragraphs that contain them to
+    accumulated data to be used by the assess-relevance function 
+    to determine whether a given sentence contains information that
+    is new in this document."))
+
 (defmethod read-epistemic-features ((a article))
   (let ((*scanning-epistemic-features* t)
+        (*use-occasional-polywords* t) ;; not the usual sort
         (*sweep-for-patterns* nil))
     (declare (special *scanning-epistemic-features*
+                      *use-occasional-polywords*
                       *sweep-for-patterns*))
     (read-from-document a)
     a))
