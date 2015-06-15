@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  April 2015
+;;;  Version:  June 2015
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -18,6 +18,7 @@
 ;; 1.2 Adding print methods and tweaking initializations to accommodate
 ;;      read-from-document through 4/27/15
 ;;     4/28/15 added section-of-sections
+;;     6/14/15 Added a sentence to title-text.
 
 (in-package :sparser)
 
@@ -67,7 +68,9 @@
 ;;;----------
 
 (defclass title-text (document-element named-object string-holder)
-  ()
+  ((sentence :accessor title-sentence
+    :documentation "When we're parsing long titles, the results
+      and context are stored in this."))
   (:documentation "A title of a section or article."))
 
 (defmethod print-object ((title title-text) stream)
