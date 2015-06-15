@@ -1003,5 +1003,5 @@
 
 
 ;; Protein families
-(def-family "cadherin" :members ("E-cadherin"))
-(def-family "NF-AT" :members ("NFAT5_HUMAN")) 
+(def-family "cadherin" :members ("p110"))
+(def-family "NF-AT" :members ("p110")) 
