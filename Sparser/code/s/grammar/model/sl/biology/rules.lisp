@@ -191,6 +191,11 @@
   (:head right-edge           
          :bind (on-protein left-edge)))
 
+;; p38 kinase
+(def-cfr protein (protein kinase)
+  :form np
+  :referent (:head left-edge))
+
 (def-form-rule (amino-acid pp) ;; phosphoserine at residue 827
   :form np 
   :referent (:function interpret-pp-as-head-of-np left-edge right-edge))
