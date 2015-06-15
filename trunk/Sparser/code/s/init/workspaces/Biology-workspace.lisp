@@ -322,7 +322,8 @@ those steps sequentially on a single article.
 
 ;--- 3d read. 
 
-(defun read-article-set (&optional (articles *populated-articles*))
+(defun read-article-set (&optional (articles (or *epistemically-scanned-articles*
+                                                 *populated-articles*)))
   (let ((count 0))
     (loop for article in articles
       do  
@@ -402,8 +403,9 @@ those steps sequentially on a single article.
           (corpus-path "code/evaluation/June2015Materials/Eval_NXML/"))
       (with-total-quiet
           (read-article-set
-           (sweep-article-set
-            (populate-article-set ids corpus-path :quiet t)))))))
+           (epistemic-article-sweep
+            (sweep-article-set
+             (populate-article-set ids corpus-path :quiet t))))))))
 
 
 ;; run n articles starting with number STARTING-FROM (0 based)
@@ -428,6 +430,12 @@ those steps sequentially on a single article.
 
 (defun single-sent-parse ()
   (setq *accumulate-content-across-documents* t))
+
+(defun load-and-run-June-article-number (n)
+  (declare (special *june-nxml-files-in-MITRE-order*))
+  (load-xml-to-doc-if-necessary)
+  (let ((id (nth (1- n) *june-nxml-files-in-MITRE-order*)))
+    (load-and-read-article id)))
 
 (defun load-and-read-article (id) ;; assume corpus-path is set
   (declare (special *break-during-read*))
@@ -563,7 +571,7 @@ those steps sequentially on a single article.
     PMC3836728 PMC3245910 PMC3192247 PMC4022835 PMC516019 PMC3810642 PMC2427238 PMC4230785 PMC3661391 PMC3154041
     PMC2063726 PMC2920919 PMC3146484 PMC2947478 PMC3280209 PMC2211785 PMC2289101 PMC3527391 PMC2148200 PMC2151612
     PMC4174894 PMC3418684 PMC2010584 PMC3204078 PMC3307738 PMC1240691 PMC3994303 PMC3725175 PMC2990696 PMC3815131
-    PMC2175200 PMC2169493 PMC2721872 PMC3823883 PMC3230772 PMC2064017 PMC3005830 PMC4058076 PMC3362580 PMC3772867
+    PMC2175200 PMC2169493 PMC2721872 PMC3823883 #|PMC3230772|# PMC2064017 PMC3005830 PMC4058076 PMC3362580 PMC3772867
     PMC2714665 PMC3498744 PMC2196001 PMC3262806 PMC420458 PMC1240281 PMC2592601 PMC2790897 PMC1363772 PMC3146489
     PMC3858192 PMC1635424 PMC3230443 PMC3101926 PMC3934890 PMC3474812 PMC2786891 PMC3154889 PMC3121916 PMC2779247
     PMC2173654 PMC2902519 PMC3309901 PMC3747153 PMC2139781 PMC2846939 PMC3297637 PMC3333883 PMC3734504 PMC3174176
