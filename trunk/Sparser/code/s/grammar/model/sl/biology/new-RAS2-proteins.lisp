@@ -662,6 +662,7 @@
 (DEFINE-PROTEIN "NFAC2_HUMAN" ("NFAC2_HUMAN" "NFATC2" "NF-ATc2" "T-cell transcription factor NFAT1" "NFAT pre-existing subunit" "NF-ATp" "NFAT1" "NFATP" "NFATc2")) 
 (DEFINE-PROTEIN "NFAC3_HUMAN" ("NFAC3_HUMAN" "NF-AT4" "NFATC3" "NFATx" "NFAT4" "T-cell transcription factor NFAT4" "NF-ATc3" "NFATc3")) 
 (DEFINE-PROTEIN "NFAT1-c-4-inactive2" ("NFAT1-c-4-inactive2")) 
+(DEFINE-PROTEIN "NFAT5_HUMAN" ("NFAT5" "Nuclear factor of activated T-cells 5"))
 (DEFINE-PROTEIN "NFKB1_HUMAN" ("NFKB1_HUMAN" "NFKB1" "EBP-1" "Nuclear factor of kappa light polypeptide gene enhancer in B-cells 1" "Nuclear factor of κ light polypeptide gene enhancer in B-cells 1" "DNA-binding factor KBF1" "Nuclear factor NF-kappa-B p50 subunit" "Nuclear factor NF-κ-B p50 subunit")) 
 (DEFINE-PROTEIN "NFL_HUMAN" ("NFL_HUMAN" "NEFL" "68 kDa neurofilament protein" "NF-L" "Neurofilament triplet L protein" "NFL" "NF68")) 
 (DEFINE-PROTEIN "NGAP_HUMAN" ("NGAP_HUMAN" "RAS protein activator-like 2" "NGAP" "RASAL2")) 
