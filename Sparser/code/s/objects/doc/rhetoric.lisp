@@ -60,7 +60,10 @@ which could be set automatically by using the :init-form on the slot.
       novel information.")
    (known-results :initform nil :accessor known-results
     :documentation "Evidence that the sentence is reporting an
-      already established fact."))
+      already established fact.")
+   (methodology :initform nil :accessor methodology
+    :documentation "Evidence that the sentence is discussing
+      experimental design, rather than results."))
   (:documentation "The slots provide sentence-local buckets
    in which to accumulate different kinds of evidence about whether
    the sentence is providing new facts about something, referencing
@@ -107,6 +110,7 @@ you also add the corresponding slot to the class. |#
 (define-epistemic-collector note-explicit-reference explicit-reference)
 (define-epistemic-collector note-new-fact new-facts)
 (define-epistemic-collector note-known-result known-results)
+(define-epistemic-collector note-methodology methodology)
 
 #+ignore ;; original hand-coded versio
 (defun note-explicit-reference (label pos-before pos-after)
@@ -179,4 +183,8 @@ you also add the corresponding slot to the class. |#
 (defun known-result-phrase (string)
   (setup-epistemic-data-collector
    string 'note-known-result))
+
+(defun methodology-phrase (string)
+  (setup-epistemic-data-collector
+   string 'note-methodology))
 
