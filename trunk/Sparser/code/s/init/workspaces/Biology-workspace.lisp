@@ -41,6 +41,7 @@
   (cl-user::s-load "interface/R3-eval/overnight-sents.lisp")
   (cl-user::s-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
 
+
 ;;;-------------------------------------------------------
 ;;; Setup for reading whole documents via the nxml reader
 ;;;-------------------------------------------------------
@@ -63,14 +64,15 @@ those steps sequentially on a single article.
 
 |#
 
-;;---- Globals 
-
 (defvar *articles-created* nil
   "Holds the document shells as created by make-sparser-doc-structure")
 
 (defvar *populated-articles* nil
   "Holds all of the articles we've loaded and populated,
    i.e. run sweep-document over anc created all the sentences")
+
+(defvar *epistemically-scanned-articles nil
+  "Holds articles that read-epistemic-features has processed.")
 
 (defvar *read-articles* nil
   "Holds all of the articles we've parsed")
@@ -84,7 +86,9 @@ those steps sequentially on a single article.
 ;  your machine, including a final slash"
 
 
-
+;;;-------------------------------------------
+;;; Alternative paths to the document corpora
+;;;-------------------------------------------
 
 (defvar *corpus-paths* '((:jan15 "darpa/January5-TestMaterials")
                          (:May15 "corpus/2015-5-4_Mitre-articles")
@@ -528,7 +532,7 @@ those steps sequentially on a single article.
     PMC2171987 PMC1945022 PMC3281867 PMC2688251 PMC2938265 PMC3442415 PMC2120693 PMC2816010 PMC2977078 PMC3573765
     PMC3092057 PMC3058055 #|PMC3330201|# PMC2910721 PMC4039235 PMC3541148 PMC3316618 PMC2194235 PMC3200337 PMC2653860
     PMC2172529 PMC2213113 PMC2777864 PMC3460441 PMC3466004 PMC2118591 PMC2854723 PMC2193563 PMC137934 PMC3795476
-    PMC3114799 PMC3581604 PMC3032556 PMC2584136 PMC3360763 PMC3587705 PMC3345340 PMC2362047 PMC3643583 PMC3032679
+    PMC3114799 PMC3581604 PMC3032556 PMC2584136 PMC3360763 #|PMC3587705|# PMC3345340 PMC2362047 PMC3643583 PMC3032679
     PMC2360641 PMC1410911 PMC2192257 PMC2172297 PMC1885470 PMC3061860 PMC2064836 PMC2830670 PMC2741570 PMC2171597
     PMC2172350 PMC2603596 PMC3564006 PMC2699591 PMC3460538 PMC2441623 PMC3472074 PMC3430618 PMC3633911 PMC2249593
     PMC1669725 PMC3592994 PMC2729378 PMC3179746 PMC1892123 PMC2118145 PMC3087862 PMC1817693 PMC2063756 PMC2685831
