@@ -267,6 +267,16 @@
                when (typep item 'polyword-state)
                return item))))))))
 
+(defun initiates-occasional-polyword (word position-before)
+   (or (let ((caps-word (capitalized-correspondent1 
+                        position-before word)))
+        (when caps-word
+          (starts-occasional-polyword caps-word)))
+      (starts-occasional-polyword word)))
+
+(defun starts-occasional-polyword (word)
+  (get-tag-for :occasional-polyword word))
+
 
 
 ;;;-------------------------
