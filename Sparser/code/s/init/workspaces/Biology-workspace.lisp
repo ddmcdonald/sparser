@@ -71,7 +71,7 @@ those steps sequentially on a single article.
   "Holds all of the articles we've loaded and populated,
    i.e. run sweep-document over anc created all the sentences")
 
-(defvar *epistemically-scanned-articles nil
+(defvar *epistemically-scanned-articles* nil
   "Holds articles that read-epistemic-features has processed.")
 
 (defvar *read-articles* nil
@@ -183,15 +183,15 @@ those steps sequentially on a single article.
        (populate-article-set ids corpus-path :quiet t)))))
 
 
-;--- 1st populate: Locate the nxml file and run the 
-; XML-to-doc-structure to convert it to the equivalent
-; document object. 
-
 (defparameter *missing-ids* nil)
 
 (defparameter *articles-created-ht* (make-hash-table :size 1000))
 (defparameter *articles-populated-ht* (make-hash-table :size 1000))
 
+
+;--- 1st populate: Locate the nxml file and run the 
+; XML-to-doc-structure to convert it to the equivalent
+; document object. 
 ;; (populate-article-set)
 (defun populate-article-set (&optional list-of-ids location quiet use-pmc)
   "Given a list of document ids and the location of their
@@ -296,23 +296,45 @@ those steps sequentially on a single article.
   *populated-articles*)
     
 
+;--- 2.5 scan for the data that feeds assess-relevance
+(defun epistemic-article-sweep (&optional (articles *populated-articles*))
+  (declare (special *break-on-sweep-errors*))
+  (let ((article (car articles))
+        (counter 0)
+        (rest (cdr articles)))
+    (loop
+      (unless article
+        (return))
+      (incf counter)
+      (format t "~&Extracting feature: #~a ~a~%" counter (name article))
+      (if *break-on-sweep-errors*
+        (push (read-epistemic-features article)    
+              *epistemically-scanned-articles*)
+        (handler-case
+            (push (read-epistemic-features article)    
+                  *populated-articles*)
+           (error (e)
+                  (format t "~&Error sweeping ~a~%~a~%" article e))))
+      (setq article (car rest)
+            rest (cdr rest))))
+  *epistemically-scanned-articles*)
+
+
 ;--- 3d read. 
 
 (defun read-article-set (&optional (articles *populated-articles*))
   (let ((count 0))
     (loop for article in articles
-      do 
+      do  
       (incf count)
-      (read-article article count)  
-      ;;(time-end)
-      )))
+      (read-article article count))))
 
 (defun read-article (article counter)
   (declare (special *break-during-read*))
   (let ((*trap-error-skip-sentence* (not *break-during-read*)))
     ;; Enables the error-handler in the parser that will 
     ;; skip to the next sentence
-    (declare (special *trap-error-skip-sentence* ))
+    (declare (special *trap-error-skip-sentence*))
     (time-start)(time-end) ;; CROCK -- can't get time-end for the article
     (format t "~&Reading document #~a ~a~%" counter (name article))
     (read-from-document article)))
@@ -420,8 +442,8 @@ those steps sequentially on a single article.
            (*trap-error-skip-sentence* (not *break-during-read*)))
       (declare (special *trap-error-skip-sentence*))
       (setf (name article) id)
-      (push-debug `(,article))
       (sweep-document article)
+      (read-epistemic-features article)
       (format t "~&Reading ~a~%" (name article))
       (with-total-quiet
           (read-from-document article))
