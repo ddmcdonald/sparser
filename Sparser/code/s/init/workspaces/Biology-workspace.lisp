@@ -1205,6 +1205,7 @@ These return the Lisp-based obo entries.
   (sweep-and-run-articles (populate-june-article id)))
 
 (defun run-june-articles (n &optional (run-cards nil))
+  (setq *all-sentences* nil)
   (loop for id in *june-nxml-files-in-MITRE-order*
     as i from 1 to n
     do
