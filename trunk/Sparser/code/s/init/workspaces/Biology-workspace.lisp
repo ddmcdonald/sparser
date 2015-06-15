@@ -390,9 +390,9 @@ those steps sequentially on a single article.
   (declare (special *break-during-read*))
   (load-xml-to-doc-if-necessary)
   (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
-                     (find-package :r3)))
-         (quiet-fn (intern (symbol-name 'debug-off)
-                           (find-package :r3))))
+                          (find-package :r3)))
+        (quiet-fn (intern (symbol-name 'debug-off)
+                          (find-package :r3))))
     (funcall quiet-fn)
     (let* ((doc-elements (funcall maker-fn id))
            (article (car doc-elements))
@@ -477,7 +477,7 @@ those steps sequentially on a single article.
     "/Users/ddm/ws/R3/r3/trunk/darpa/12-month TestMaterials/NXML-model/*.nxml")
 |#
 
-; The commented out article somehow gets the system into a spinning beachball state
+; The commented out articles somehow get the system into a spinning beachball state
 ; such that you have to force-quit CCL.  Determined this by running individual articles
 ; in succession using load-and-read-article
 
@@ -501,7 +501,7 @@ those steps sequentially on a single article.
     PMC2828647 PMC2330239 PMC3017127 PMC2929211 PMC3869375 PMC1590027 PMC2196396 PMC3032734 PMC2957917 PMC2761823
     PMC2873441 PMC2360050 PMC2644174 PMC3801471 PMC3549912 PMC553973 PMC3566099 PMC2794162 PMC2757918 PMC4022239
     PMC3792062 PMC3801437 PMC3763371 PMC2949799 PMC1183491 PMC3554898 PMC3813012 PMC3326670 PMC2141638 PMC3956975
-    PMC4015990 PMC3791481 PMC3316627 PMC2694275 PMC3615008 PMC2753297 PMC3148253 PMC2828807 PMC2132754 PMC2742444
+    PMC4015990 PMC3791481 PMC3316627 PMC2694275 PMC3615008 #|PMC2753297|# PMC3148253 PMC2828807 PMC2132754 PMC2742444
     PMC2920880  PMC2192964 PMC2748937 PMC515295 PMC3902907 PMC2731169 PMC3002187 PMC2847151 PMC3155019 ;; PMC3016435 has a nil section suddenly
     PMC3002188 PMC3140544 PMC2806626 PMC2173149 PMC2173263 PMC2172499 PMC3116964 PMC2845071 PMC2118109 PMC3667761
     PMC3072457 PMC3315807 PMC3561302 PMC1064093 PMC3105394 PMC2516513 PMC2770482 PMC3172218 PMC3506457 PMC2064431
@@ -1139,6 +1139,11 @@ These return the Lisp-based obo entries.
    (list id) 
    "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
 
+
+(defun test-june-article-num (number)
+  (set-default-corpus-path :jun15)
+  (let ((id (nth (1- number) *june-nxml-files-in-MITRE-order*)))
+    (sweep-and-run-articles (populate-june-article id))))
 
 (defun test-june-article (id &optional show-sents)
   (when show-sents (setq *print-sentences* 0))
