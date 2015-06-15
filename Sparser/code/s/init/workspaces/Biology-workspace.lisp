@@ -169,14 +169,15 @@ those steps sequentially on a single article.
         :quiet t)
        (populate-article-set ids corpus-path :quiet t)))))
 
-(defun populate-june-article (id)
-  (populate-article-set (list id) "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
 
 ;--- 1st populate: Locate the nxml file and run the 
 ; XML-to-doc-structure to convert it to the equivalent
 ; document object. 
 
 (defparameter *missing-ids* nil)
+
+(defparameter *articles-created-ht* (make-hash-table :size 1000))
+(defparameter *articles-populated-ht* (make-hash-table :size 1000))
 
 ;; (populate-article-set)
 (defun populate-article-set (&optional list-of-ids location quiet use-pmc)
@@ -235,12 +236,11 @@ those steps sequentially on a single article.
     (loop 
       for article in *articles-created*
       as id in list-of-ids
-      do (setf (name article) id))
+      do (setf (name article) id)
+      (setf (gethash (name article) *articles-created-ht*) article))
     *articles-created*))
 
 
-(defun populate-one-article (id)
-  (populate-article-set (list id)))
 
 
 ;--- 2d sweep.  Run through the article that is the result
@@ -259,8 +259,10 @@ those steps sequentially on a single article.
       (unless article
         (return))
       (if *break-on-sweep-errors*
-       (push (sweep-document article)    
-             *populated-articles*)
+       (then
+         (push (sweep-document article)    
+               *populated-articles*)
+         (setf (gethash (name article) *articles-populated-ht*) article))
        (handler-case
            (push (sweep-document article)    
                  *populated-articles*)
@@ -344,18 +346,16 @@ those steps sequentially on a single article.
     (populate-june-test-article-set n))
   (sweep-and-run-n-articles n))
 
-(defun test-june-article (id)
-  (setq *articles-created* nil)
-  (setq *populated-articles* nil)
-  (populate-june-article id)
-  (sweep-and-run-n-articles 1))
 
 (defun sweep-and-run-n-articles (n)
   (let ((articles-to-run
-        (if (numberp n)
-            (loop for a in *articles-created* as i from 1 to n
-              collect a)
-            *articles-created*)))
+         (if (numberp n)
+             (loop for a in *articles-created* as i from 1 to n
+               collect a)
+             *articles-created*)))
+    (sweep-and-run-articles articles-to-run)))
+
+(defun sweep-and-run-articles (articles-to-run)
     (if *populated-articles*
         (sweep-article-set 
          (loop for a in articles-to-run
@@ -363,7 +363,7 @@ those steps sequentially on a single article.
         (sweep-article-set articles-to-run))
     (with-total-quiet
         (read-article-set articles-to-run))
-    (setq *accumulate-content-across-documents* t)))
+    (setq *accumulate-content-across-documents* t))
 
 
 (defun single-sent-parse ()
@@ -389,21 +389,7 @@ those steps sequentially on a single article.
           (read-from-document article))
       article)))
 
-(defun process-one-article (id)
-  (time-start)
-  (setq *articles-created* nil)
-  (read-article-set
-   (sweep-article-set
-    (populate-one-article id)))
-  (time-end)
-  (pprint
-   `((:READING--STARTED ,@ (mitre-time-format *universal-time-start*))
-     (:READING--STARTED ,@ (mitre-time-format *universal-time-end*))
-     (:PMC--ID ,@ (name *current-article*))))
-  (values *current-article*
-          (mitre-time-format *universal-time-start*)
-          (mitre-time-format *universal-time-end*) ; 
-          (name *current-article*)))
+
 
 ;;---- Gophers for going through articles
 
@@ -1112,7 +1098,34 @@ These return the Lisp-based obo entries.
          (concatenate 'string cl-user::*r3-trunk* "code/obo-terms.lisp")))
     (incorporate-obo-terms filename)))
 
- 
+(defun populate-one-article (id)
+  (populate-article-set (list id)))
+
+(defun process-one-article (id)
+  (time-start)
+  (setq *articles-created* nil)
+  (read-article-set
+   (sweep-article-set
+    (populate-one-article id)))
+  (time-end)
+  (pprint
+   `((:READING--STARTED ,@ (mitre-time-format *universal-time-start*))
+     (:READING--STARTED ,@ (mitre-time-format *universal-time-end*))
+     (:PMC--ID ,@ (name *current-article*))))
+  (values *current-article*
+          (mitre-time-format *universal-time-start*)
+          (mitre-time-format *universal-time-end*) ; 
+          (name *current-article*)))
+
+(defun populate-june-article (id)
+  (populate-article-set 
+   (list id) 
+   "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
+
+
+(defun test-june-article (id &optional show-sents)
+  (when show-sents (setq *print-sentences* 0))
+  (sweep-and-run-articles (populate-june-article id)))
 
 ;;;-------------------------------------------
 ;;; timing code used with process-one-article
