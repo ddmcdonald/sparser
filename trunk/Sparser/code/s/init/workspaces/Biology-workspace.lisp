@@ -361,8 +361,24 @@ those steps sequentially on a single article.
     (setq *articles-created* nil)
     (setq *populated-articles* nil))
   (when (null *articles-created*)
-    (populate-june-test-article-set n))
+    (populate-june-test-article-set))
   (sweep-and-run-n-articles n start))
+
+(defun test-range-of-June-articles (from n) ;; adjust for 0 based
+  "The parameters are both numbers. Run a subset of the June
+   articles starting at the id at from and continuing for n more.
+   Purpose is to walk through the ~1k articles in manageble
+   chunks, particularly since so far 1/100 of the articles has
+   a defect that wedges the lisp requiring a restart."
+  (declare (special *june-nxml-files-in-MITRE-order*))
+  (load-xml-to-doc-if-necessary)
+  (let ((to (+ from n)))
+    (let ((ids (subseq *june-nxml-files-in-MITRE-order* from to))
+          (corpus-path "code/evaluation/June2015Materials/Eval_NXML/"))
+      (with-total-quiet
+          (read-article-set
+           (sweep-article-set
+            (populate-article-set ids corpus-path :quiet t)))))))
 
 
 ;; run n articles starting with number STARTING-FROM (0 based)
@@ -373,6 +389,8 @@ those steps sequentially on a single article.
              (subseq *articles-created* starting-from (+ starting-from n))
              (subseq *articles-created* starting-from))))
     (sweep-and-run-articles articles-to-run)))
+
+
 
 (defun sweep-and-run-articles (articles-to-run)
     (if *populated-articles*
@@ -1141,6 +1159,8 @@ These return the Lisp-based obo entries.
    (list id) 
    "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
 
+    
+
 
 (defun test-june-article-num (number)
   (set-default-corpus-path :jun15)
@@ -1168,6 +1188,7 @@ These return the Lisp-based obo entries.
 
 (defun cards-for-article (id)
   (test-june-article id))
+  
 
 ;;;-------------------------------------------
 ;;; timing code used with process-one-article
