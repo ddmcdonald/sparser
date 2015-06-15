@@ -133,6 +133,9 @@
          (right-ref (edge-referent trailing-edge))
          (left-ref (edge-referent leading-edge))
          agent?   )
+    (unless (or (individual-p left-ref)
+                (category-p left-ref))
+      (break "Lower: left-ref = ~a" left-ref))
     (case form
       (category::verb+ed ;; assume passive
        (setq agent? t))
@@ -161,8 +164,15 @@
 
 (defun make-right-head-with-agent-left (left-ref right-ref
                                         leading-edge trailing-edge)
+  ;; Called from ns-sort-out-edge-hyphen-lower and 
+  ;; resolve-hyphen-between-two-words, which probably should merge.
   (declare (special category::adjective))
   ;; "EphB1-induced", "tyrosine-phosphorylated"
+  (when (word-p left-ref)
+    ;; see note in resolve-hyphen-between-two-words
+    (throw :punt-on-nospace-without-resolution nil))
+  (when (category-p right-ref)
+    (setq right-ref (make-individual-for-dm&p right-ref)))
   (let ((variable (subject-variable right-ref)))
     ;; Which variable this is really depends on the two referents.
     ;; For the induced example its an agent (= subject). But the
