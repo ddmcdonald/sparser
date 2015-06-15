@@ -132,14 +132,21 @@
 ;; found in the article set
 #+ignore
 (def-bio "E-cadherin" protein)
+
 (def-family "cadherin" :members ("E-cadherin"))
+
+#+ignore
 (def-bio "Src" protein :MITRE-LINK "UNIPROT:SRC_HUMAN")
+
 (def-bio "BCR-ABL" protein)
 (define-protein "PARP1_HUMAN" ("poly(ADP–ribose) 1"))
 (define-protein "PARP2_HUMAN" ("poly(ADP–ribose) 2"))
 (define-protein "PARP3_HUMAN" ("poly(ADP–ribose) 3"))
 (def-family "poly(ADP–ribose)" :members ("PARP1_HUMAN" "PARP2_HUMAN" "PARP3_HUMAN"))
+
+#+ignore
 (def-bio "NFAT5_HUMAN" protein :synonyms ("NF-AT5" "NFAT5") :MITRE-LINK "NFAT5_HUMAN")
+
 (def-family "NF-AT" :members ("NFAT5_HUMAN"))
 (define-protein "PKNA_MYCTU" ("pknA")) ;; bacterial protein -- have to look at why it shows up in the articles
 (define-protein "GSTP1_HUMAN" ("Glutathione S-transferase P"))
