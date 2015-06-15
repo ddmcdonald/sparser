@@ -39,7 +39,7 @@
 
 (gload "bio;new-words")
 (gload "bio;UCD-proteins2")
-(gload "bio;RAS2-proteins")
+(gload "bio;new-RAS2-proteins")
 
 
 ;(gload "bio;NFkappaB")
