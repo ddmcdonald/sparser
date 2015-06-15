@@ -33,7 +33,8 @@
 
 (defvar *current-section-title* nil
   "Bound to the title-text object of each section recursively
-   provided that the section (or section-of-sections) has one.")
+   provided that the section (or section-of-sections) has one.
+   See title-of-currect-section-is.")
 
 
 ;;--- context
@@ -227,6 +228,19 @@
           (analysis-core))
         (let ((s (identify-current-sentence)))
           (setf (title-sentence title) s))))))
+
+
+
+;;;-----------------------------
+;;; Identifying current section
+;;;-----------------------------
+
+(defun title-of-currect-section-is (partial-string)
+  (declare (special *current-section-title*))
+  (let* ((title *current-section-title*)
+         (title-string (when title (content-string title))))
+    (when title-string
+      (search partial-string title-string :test #'equalp))))
 
 
 
