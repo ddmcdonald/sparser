@@ -610,7 +610,7 @@
 (DEFINE-PROTEIN "MCF2L_HUMAN" ("MCF2L_HUMAN" "MCF2L" "MCF2-transforming sequence-like protein" "KIAA0362" "DBL's big sister")) 
 (DEFINE-PROTEIN "MCF2_HUMAN" ("MCF2_HUMAN" "Proto-oncogene MCF-2" "DBL-transforming protein" "DBL" "MCF2" "MCF2-transforming protein")) 
 (DEFINE-PROTEIN "MEF2D_HUMAN" ("MEF2D_HUMAN" "MEF2D")) 
-(DEFINE-PROTEIN "MEK" ("MEK")) 
+;(DEFINE-PROTEIN "MEK" ("MEK")) 
 (DEFINE-PROTEIN "MEK1-2" ("MEK1-2")) 
 (DEFINE-PROTEIN "MEK1-2" ("MEK1-2"))  
 (DEFINE-PROTEIN "MEK1-2-active" ("MEK1-2-active")) 
@@ -664,6 +664,7 @@
 (DEFINE-PROTEIN "NFAT1-c-4-inactive2" ("NFAT1-c-4-inactive2")) 
 (DEFINE-PROTEIN "NFAT5_HUMAN" ("NFAT5" "Nuclear factor of activated T-cells 5"))
 (DEFINE-PROTEIN "NFKB1_HUMAN" ("NFKB1_HUMAN" "NFKB1" "EBP-1" "Nuclear factor of kappa light polypeptide gene enhancer in B-cells 1" "Nuclear factor of κ light polypeptide gene enhancer in B-cells 1" "DNA-binding factor KBF1" "Nuclear factor NF-kappa-B p50 subunit" "Nuclear factor NF-κ-B p50 subunit")) 
+(DEFINE-PROTEIN "NFKB2_HUMAN" ("NFKB2_HUMAN" "Nuclear factor NF-kappa-B p100 subunit"))
 (DEFINE-PROTEIN "NFL_HUMAN" ("NFL_HUMAN" "NEFL" "68 kDa neurofilament protein" "NF-L" "Neurofilament triplet L protein" "NFL" "NF68")) 
 (DEFINE-PROTEIN "NGAP_HUMAN" ("NGAP_HUMAN" "RAS protein activator-like 2" "NGAP" "RASAL2")) 
 (DEFINE-PROTEIN "NGEF_HUMAN" ("NGEF_HUMAN" "Eph-interacting exchange protein" "NGEF" "Neuronal guanine nucleotide exchange factor")) 
@@ -801,7 +802,7 @@
 (DEFINE-PROTEIN "RAP2A-B" ("RAP2A-B")) 
 (DEFINE-PROTEIN "RAS family" ("RAS family")) 
 (DEFINE-PROTEIN "RAS4B_HUMAN" ("RAS4B_HUMAN" "RASA4B")) 
-(DEFINE-PROTEIN "RASA1_HUMAN" ("RASA1_HUMAN" "Ras p21 protein activator" "RASA1" "RASA" "GAP" "p120GAP" "RasGAP" "GTPase-activating protein")) 
+(DEFINE-PROTEIN "RASA1_HUMAN" ("RASA1_HUMAN" "Ras p21 protein activator" "RASA1" "RASA" "GAP" "p120GAP" "RasGAP" "GTPase-activating protein" "p120GAP" "p120 GAP")) 
 (DEFINE-PROTEIN "RASA2_HUMAN" ("RASA2_HUMAN" "RASA2" "GTPase-activating protein 1m" "GAP1m" "RASGAP" "GAP1M")) 
 (DEFINE-PROTEIN "RASH_HUMAN" ("RASH_HUMAN" "HRAS1" "Ha-Ras" "Transforming protein p21" "p21ras" "H-Ras-1" "HRAS" "GTPase HRas, N-terminally processed" "c-H-ras")) 
 (DEFINE-PROTEIN "RASK_HUMAN" ("RASK_HUMAN" "Ki-Ras" "KRAS2" "c-K-ras" "GTPase KRas, N-terminally processed" "c-Ki-ras" "RASK2" "K-Ras 2" "KRAS")) 
@@ -997,4 +998,10 @@
 (DEFINE-PROTEIN "p110" ("p110")) 
 (DEFINE-PROTEIN "p14/19 ARF" ("p14/19 ARF")) 
 (DEFINE-PROTEIN "p42/p44MAPKs" ("p42/p44MAPKs")) 
-(DEFINE-PROTEIN "smgGDS" ("smgGDS")) 
+(DEFINE-PROTEIN "smgGDS" ("smgGDS"))
+
+
+
+;; Protein families
+(def-family "cadherin" :members ("E-cadherin"))
+(def-family "NF-AT" :members ("NFAT5_HUMAN")) 
