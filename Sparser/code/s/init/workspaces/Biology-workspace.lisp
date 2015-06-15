@@ -1147,15 +1147,19 @@ These return the Lisp-based obo entries.
 
 (defun test-june-article (id &optional show-sents)
   (when show-sents (setq *print-sentences* 0))
+  (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id))
   (let*
       ((ht (group-phosphorylations-by-article) )
        (aht (gethash id ht))
        (cards nil))
     (declare (special ht aht cards))
-    (break "tja")
     (maphash #'(lambda (simple-phos aps) (push (phos-card aps) cards))
-             aht)))
+             aht)
+    cards))
+
+(defun cards-from-article (id)
+  (test-june-article id))
 
 ;;;-------------------------------------------
 ;;; timing code used with process-one-article
