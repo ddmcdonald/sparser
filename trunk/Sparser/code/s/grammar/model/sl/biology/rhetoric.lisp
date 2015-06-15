@@ -29,6 +29,8 @@
      ((includes-a-reference sentence)
       (format t "~&   Not relevant: ~a~%" sentence)
       nil)
+     ((title-of-currect-section-is "intro")
+      nil)
      (*reading-section-title* t)
      (t
       t))))
