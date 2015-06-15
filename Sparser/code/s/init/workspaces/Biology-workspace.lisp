@@ -136,7 +136,7 @@ those steps sequentially on a single article.
   (merge-pathnames (format nil "~a-~d.txt" name counter) *card-folder*))
 
 
-
+;; n means starting from n
 (defun populate-12-month-NXML-model-article-set (&optional (n nil))
   (unless cl-user::*r3-trunk* 
     (error "*r3-trunk* needs to be set."))
@@ -152,7 +152,7 @@ those steps sequentially on a single article.
           (setq ids (nthcdr n ids)))
       (populate-article-set ids location :quiet))))
 
-
+;; n is for do the first n
 (defun populate-june-test-article-set (&optional n)
   (declare (special *june-nxml-files-in-MITRE-order*))
   (unless cl-user::*r3-trunk*
@@ -355,21 +355,23 @@ those steps sequentially on a single article.
   (sweep-and-run-n-articles n))
 
 
-(defun test-june-articles (&optional (n nil)(reload nil))
+;;; start is 0 based. 
+(defun test-june-articles (&optional (n nil)(start 0) (reload nil)))
   (when reload 
     (setq *articles-created* nil)
     (setq *populated-articles* nil))
   (when (null *articles-created*)
     (populate-june-test-article-set n))
-  (sweep-and-run-n-articles n))
+  (sweep-and-run-n-articles n start))
 
 
-(defun sweep-and-run-n-articles (n)
-  (let ((articles-to-run
-         (if (numberp n)
-             (loop for a in *articles-created* as i from 1 to n
-               collect a)
-             *articles-created*)))
+;; run n articles starting with number STARTING-FROM (0 based)
+(defun sweep-and-run-n-articles (n &optional (starting-from 0))
+  (unless (integerp starting-from) (setf starting-from 0))
+  (let ((articles-to-run 
+         (if (integerp n) 
+             (subseq *articles-created* starting-from (+ starting-from n))
+             (subseq *articles-created* starting-from))))
     (sweep-and-run-articles articles-to-run)))
 
 (defun sweep-and-run-articles (articles-to-run)
