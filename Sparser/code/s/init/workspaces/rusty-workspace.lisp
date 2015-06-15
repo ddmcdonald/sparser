@@ -10,16 +10,6 @@
 (in-package :sparser)
 
 
-(defun rusty-load-article-2 ()
-  (cwd "~/Documents/r3/trunk/code/")
-  (let* ((fn (intern (symbol-name '#:make-sparser-doc-structure)
-                     (find-package :r3)))
-         (doc-elements
-          (funcall fn 3847091 :dir "~/Documents/r3/trunk/darpa/January5-TestMaterials"))
-         (article (car doc-elements)))
-    (setq *article* article)))
-
-
 (defun rusty()
   (setup-bio) ;; load the bio model etc.
   ;;(bio-traps) ;; turn off forest level parsing and this presently problematic parameter
