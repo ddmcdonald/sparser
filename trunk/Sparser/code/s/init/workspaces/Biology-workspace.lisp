@@ -214,7 +214,9 @@ those steps sequentially on a single article.
       (let* ((simple-id (if use-pmc 
                           (string-append (symbol-name id) ".nxml")
                           (PMC-to-nxml id)))
-             (pathname (funcall path-fn simple-id)))
+             (pathname (funcall path-fn simple-id))
+             created
+             article)
         (cond
          ((null pathname)
           (push-debug `(,simple-id ,location))
@@ -225,8 +227,14 @@ those steps sequentially on a single article.
               (princ "." t)
               (format t "~&~%~%Reading the file ~a" pathname))
           (incf count) ;; if there's an error, how far along are we
-          (push (funcall maker-fn simple-id)
-                *articles-created*)))))
+          (setq created (funcall maker-fn simple-id))
+          (setq article (if (consp created) (car created) created))
+          (setf (name article) 
+                (typecase id
+                  (symbol id)
+                  (string (intern (format nil "PMC~A" id)))
+                  (t id)))
+          (push created *articles-created*)))))
     (setq list-of-ids 
           (loop for id in list-of-ids
             unless (memq id *missing-ids*)
@@ -245,7 +253,7 @@ those steps sequentially on a single article.
     (loop 
       for article in *articles-created*
       as id in list-of-ids
-      do (setf (name article) id)
+      do ;;(setf (name article) id)
       (setf (gethash (name article) *articles-created-ht*) article))
     *articles-created*))
 
@@ -1134,7 +1142,15 @@ These return the Lisp-based obo entries.
 
 (defun test-june-article (id &optional show-sents)
   (when show-sents (setq *print-sentences* 0))
-  (sweep-and-run-articles (populate-june-article id)))
+  (sweep-and-run-articles (populate-june-article id))
+  (let*
+      ((ht (group-phosphorylations-by-article) )
+       (aht (gethash id ht))
+       (cards nil))
+    (declare (special ht aht cards))
+    (break "tja")
+    (maphash #'(lambda (simple-phos aps) (push (phos-card aps) cards))
+             aht)))
 
 ;;;-------------------------------------------
 ;;; timing code used with process-one-article
