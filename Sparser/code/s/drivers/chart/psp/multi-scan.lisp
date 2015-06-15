@@ -177,9 +177,13 @@
   ;; lifted from check-for-polywords where all we want is
   ;; the fsa to fire if there is one, and to get the position
   ;; that it ends at. Returns either that position or nil. 
+  (declare (special *use-occasional-polywords*))
   (tr :check-for-polywords word position-before)
   (set-status :polywords-check position-before)
-  (let ((initial-state (initiates-polyword1 word position-before)))
+  (let ((initial-state
+         (if *use-occasional-polywords*
+           (initiates-occasional-polyword word position-before)
+           (initiates-polyword1 word position-before))))
     ;; This "1" variant calls a "1" variant of capitalized-correspondent
     ;; which use the position information correctly.
     (when initial-state
