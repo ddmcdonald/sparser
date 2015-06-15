@@ -124,9 +124,10 @@
            ((eq layout :single-span)  ;; Do nothing. It's already known
             (revise-form-of-nospace-edge-if-necessary edge :find-it))
            (t
-            (ns-pattern-dispatch start-pos end-pos edges
-                                 hyphen-positions slash-positions
-                                 colon-positions other-punct))))
+            (catch :punt-on-nospace-without-resolution
+              (ns-pattern-dispatch start-pos end-pos edges
+                                   hyphen-positions slash-positions
+                                   colon-positions other-punct)))))
         end-pos))))
 
 ;;;----------

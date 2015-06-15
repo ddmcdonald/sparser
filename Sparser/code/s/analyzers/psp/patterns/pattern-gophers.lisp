@@ -258,8 +258,26 @@
   (declare (special category::verb+ed))
   ;;(push-debug `(,pos-before ,pos-after ,pattern))
   (tr :resolve-hyphen-between-two-words words)
-  (let ((left-edge (right-treetop-at/edge pos-before))
-        (right-edge (left-treetop-at/edge pos-after)))
+  (let* ((left-edge (right-treetop-at/edge pos-before))
+         (right-edge (left-treetop-at/edge pos-after))
+         (left-ref (when (edge-p left-edge)
+                     (edge-referent left-edge)))
+         (right-ref (when (edge-p right-edge)
+                      (edge-referent right-edge))))
+    (when (or (word-p left-edge)
+              (word-p right-edge))
+      ;; The left-edge is frequently a word, in e.g. 
+      ;; "stimuli-specific", "receptor-ligand"
+      ;; The correct thing to do (see note below on blocked case)
+      ;; is to see what the right edge (assuming it is one) assumes
+      ;; as the type of its subject, and on-the-fly define this
+      ;; word as one of those and update all the local variable
+      ;; and make a real edge.
+      ;;    Time not being a luxury we'll punt, which puts
+      ;; debris in the chart but that's better than a weird polyword
+      (throw :punt-on-nospace-without-resolution nil))
+
+
     ;; lifted from nospace-hyphen-specialist
     ;;(push-debug `(,left-edge ,right-edge)) ;;(break "???")
     (let* ((rule (or (multiply-edges left-edge right-edge)
@@ -281,11 +299,13 @@
        ((some-word-is-a-salient-hyphenated-literal words)
         (compose-salient-hyphenated-literals ;; "re-activate"
          pattern words pos-before pos-after))
+
        ((and (edge-p right-edge)
              (eq (edge-form right-edge) category::verb+ed))
         (make-right-head-with-agent-left
-         (edge-referent left-edge) (edge-referent right-edge)
+         left-ref right-ref
          left-edge right-edge))
+
        ((and (edge-p left-edge)
              (edge-p right-edge))
         ;; if either is a word then the assumptions of 
