@@ -214,8 +214,10 @@
       ;; Does it end in a period? Othewise add one. 
       (unless (eql #\. (char string (1- length)))
         (setq string (string-append string ".")))
-      (let ((*reading-section-title* t))
-        (declare (special *reading-section-title*))
+      (let ((*reading-section-title* t)
+            (*accumulate-content-across-documents* t)) ;; don't clear history
+        (declare (special *reading-section-title*
+                          *accumulate-content-across-documents*))
         (establish-character-source/string string)
         (when *show-section-printouts*
           (format t "~&~%About to parse section title%"))
