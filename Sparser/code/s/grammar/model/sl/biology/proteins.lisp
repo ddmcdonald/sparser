@@ -28,22 +28,15 @@
 (defmacro define-protein (name IDS)
   (make-def-protein (cons name IDS)))
 
-(defparameter *prot-synonyms* (make-hash-table :test #'equal))
-
-(defun store-protein-synonyms (main-id synonyms)
-  (setf (gethash main-id *prot-synonyms*) synonyms))
-
 (defun make-def-protein (IDS)
-  (let* ((bpid (best-protein-id IDS))
-         (mitre-id (if (search "_" bpid)
-                       (format nil "UNIPROT:~A" bpid)
-                       bpid))
-         )
-    (store-protein-synonyms (or mitre-id (car IDS)) (pushnew mitre-id IDS :test #'equal))
+  (let
+      ((bpid (best-protein-id IDS)))
     `(def-bio ,bpid
               protein
        :synonyms ,(loop for id in IDS unless (or (equal id bpid)(search " " id)) collect id)
-       :MITRE-LINK ,mitre-id)))
+       :MITRE-LINK ,(if (search "_" bpid)
+                        (format nil "UNIPROT:~A" bpid)
+                        bpid))))
 
 (defun best-protein-id (ids)
   (or
@@ -99,16 +92,15 @@
   *prot-ht*)
 
 (defun poorly-identified-proteins()
-  (declare (special *aps* *aaps* *naps* *prots*))
   (length (setq *prots* (all-proteins)))
   (protein-name-count *prots*)
   (length (setq *nil-prots* (gethash nil *prot-ht*)))
   ;;(loop for i from 1 to 30 collect (print (retrieve-surface-string (nth i nil-prots))) (nth i nil-prots))
   (length (setq *aps* (all-phosphorylations)))
-  (length (setq *aaps* (loop for a in *aps* when (get-protein-substrate (car a)) collect (car a))))
-  (length (setq *naps* (loop for a in *aps* unless (get-protein-substrate (car a)) collect (car a))))
+  (length (setq *aaps* (loop for a in aps when (get-protein-substrate (car a)) collect (car a))))
+  (length (setq *naps* (loop for a in aps unless (get-protein-substrate (car a)) collect (car a))))
   (length 
-   (setq *named-proteins* (loop for a in *aaps* when (prot-name (car (get-protein-substrate a))) 
+   (setq *named-proteins* (loop for a in aaps when (prot-name (car (get-protein-substrate a))) 
                             collect (prot-name (car (get-protein-substrate a))))))
   (setq *unique-named-substrates* (remove-duplicates *named-proteins* :test #'equalp))
   (setq *poorly-identified-proteins*
@@ -138,6 +130,7 @@
 ;;;--------------------------------------------
 
 ;; found in the article set
+#+ignore
 (def-bio "E-cadherin" protein)
 (def-family "cadherin" :members ("E-cadherin"))
 (def-bio "Src" protein :MITRE-LINK "UNIPROT:SRC_HUMAN")
@@ -208,6 +201,8 @@
 ;;; for an example in the starter kit
 ;;;-----------------------------------
 
+
+#+ignore
 (def-bio "APC" protein) 
 ;; n.b. could be mouse APC for all we know w/o context
 
