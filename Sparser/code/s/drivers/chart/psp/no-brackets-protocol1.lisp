@@ -55,6 +55,8 @@
 (defparameter *index-cards* t)
 
 
+;; N.b. *current-sentence* is set by start-sentence
+
 (defvar *sentence* nil
   "Locally managed by sentence-sweep-loop. Compare to
    *current-sentence* managed by the sentence creation routines.")
