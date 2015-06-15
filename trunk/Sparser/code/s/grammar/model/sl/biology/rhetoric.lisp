@@ -22,12 +22,14 @@
   ;; make a card. If it returns nil -- having determined that
   ;; the sentence is about established or conjectured facts and
   ;; consequently not relevant -- then no card will be made.
+  (declare (special *reading-section-title*))
   (let ((paragraph (parent sentence)))        
     (push-debug `(,paragraph))
     (cond
      ((includes-a-reference sentence)
       (format t "~&   Not relevant: ~a~%" sentence)
       nil)
+     (*reading-section-title* t)
      (t
       t))))
 
