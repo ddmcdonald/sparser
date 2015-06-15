@@ -753,7 +753,7 @@
 (defun possibly-print-sentence ()
   (declare (special *sentence-in-core* *print-sentences*))
   (when (numberp *print-sentences*)
-    (format t "*** (p ~s) ;; ~s" 
+    (format t "~&~&*** (p ~s) ;; ~s" 
             (sentence-string *sentence-in-core*) 
             (incf *print-sentences*))))
 
