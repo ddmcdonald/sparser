@@ -41,6 +41,12 @@
  (p "BRAF bound to Ras transphosphorylates itself at Thr598.")
  resolve-stranded-hyphen (mono-, -tagged)
 
+; 
+
+;=== Finish routines in 
+; (p "in EphB1-induced ERK activation.")
+
+
 ;; GFP becomes the head
 (p "We have used a mouse embryo fibroblast ERK1-knock-out 
 cell line expressing green fluorescent protein (GFP)-tagged ERK1 
