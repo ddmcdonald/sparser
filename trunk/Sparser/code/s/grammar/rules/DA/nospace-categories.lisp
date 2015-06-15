@@ -196,7 +196,6 @@
 
 (defparameter *salient-hyphenated-literals*
   `(
-    ,(resolve/make "anti")
     ,(resolve/make "auto")
     ,(resolve/make "co") ;; co-occurring
     ,(resolve/make "di")
