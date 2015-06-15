@@ -10,10 +10,6 @@
 (in-package :sparser)
 
 
-(setq *r3-trunk* "~/r3/trunk/")
-;;"String identifing the location of the trunk on your machine, including a final slash"
-
-
 (defun rusty-load-article-2 ()
   (cwd "~/Documents/r3/trunk/code/")
   (let* ((fn (intern (symbol-name '#:make-sparser-doc-structure)
