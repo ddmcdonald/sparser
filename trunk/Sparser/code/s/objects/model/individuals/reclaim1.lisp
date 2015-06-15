@@ -433,7 +433,9 @@
         (format t "~&Zero'ing instances of ~a" category))
       (zero-category-index category 1st-permanent-individual)))
 
-    (nconc all-values all-bodies)))
+    (when (or all-values all-bodies)
+      (nconc all-values all-bodies))))
+
 
 
 
