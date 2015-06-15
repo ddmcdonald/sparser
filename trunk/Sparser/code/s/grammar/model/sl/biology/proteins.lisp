@@ -65,9 +65,10 @@
          ((word-p name)(word-pname name)))))
 
 (defun prot-name (prot)
-  (or
-   (pro-name prot)
-   (get-mitre-id prot)))
+  (when prot
+    (or
+     (pro-name prot)
+     (get-mitre-id prot))))
 
 (defparameter *prot-ht* (make-hash-table :test #'equal))
 (defparameter *prot-cts* nil)
