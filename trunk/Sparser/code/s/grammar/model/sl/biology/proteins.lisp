@@ -28,6 +28,9 @@
 (defmacro define-protein (name IDS)
   (make-def-protein (cons name IDS)))
 
+(defun get-protein-synonyms (id)
+  (gethash id *prot-synonyms*))
+
 (defun make-def-protein (IDS)
   (let
       ((bpid (best-protein-id IDS)))
