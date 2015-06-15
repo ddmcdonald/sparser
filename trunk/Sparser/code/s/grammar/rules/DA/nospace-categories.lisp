@@ -39,8 +39,7 @@
   ;; inherits items, item, type, number
   :instantiates :self
   :binds ((left) ;; of the hyphen
-          (right))
-  :index (:sequential-keys left right))
+          (right)))
 
 (defun make-hyphenated-structure (left-edge right-edge)
   ;; called from nospace-hyphen-specialist
@@ -139,8 +138,7 @@
           (qualifier)) ;; 'mediated'
   :documentation "Inadequate name. This is for phrases
    like 'Ras-mediated' for the cases where we don't know
-   or can't figure out the correct relationship (variable)."
-  :index (:sequential-keys head qualifier))
+   or can't figure out the correct relationship (variable).")
 
 (defun make-qualifying-pair (left right)
   (find-or-make-individual 'qualifying-pair
@@ -156,8 +154,7 @@
   :instantiates :self
   :binds ((left)
           (middle)
-          (right))
-  :index (:sequential-keys middle left right))
+          (right)))
 
 (defun make-hyphenated-triple (left-edge middle-edge right-edge)
   (let ((i (find-or-make-individual 'hyphenated-triple
