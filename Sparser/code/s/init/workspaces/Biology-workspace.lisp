@@ -128,6 +128,15 @@ those steps sequentially on a single article.
     (setf *default-corpus-path* expanded-pathname)))
 
 
+
+(defparameter *card-folder* nil)
+(defun make-card-filename (name counter)
+  (unless *card-folder* 
+    (setf *card-folder* (merge-pathnames "../mitre-cards/" (pathname *default-corpus-path*))))
+  (merge-pathnames (format nil "~a-~d.txt" name counter) *card-folder*))
+
+
+
 (defun populate-12-month-NXML-model-article-set (&optional (n nil))
   (unless cl-user::*r3-trunk* 
     (error "*r3-trunk* needs to be set."))
