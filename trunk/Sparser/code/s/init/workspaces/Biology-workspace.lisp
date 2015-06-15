@@ -252,7 +252,7 @@ those steps sequentially on a single article.
                  form))))
     (loop 
       for article in *articles-created*
-      as id in list-of-ids
+;      as id in list-of-ids
       do ;;(setf (name article) id)
       (setf (gethash (name article) *articles-created-ht*) article))
     *articles-created*))
@@ -356,7 +356,7 @@ those steps sequentially on a single article.
 
 
 ;;; start is 0 based. 
-(defun test-june-articles (&optional (n nil)(start 0) (reload nil)))
+(defun test-june-articles (&optional (n nil)(start 0) (reload nil))
   (when reload 
     (setq *articles-created* nil)
     (setq *populated-articles* nil))
@@ -1148,7 +1148,7 @@ These return the Lisp-based obo entries.
     (sweep-and-run-articles (populate-june-article id))))
 
 (defun test-june-article (id &optional show-sents)
-  (if (find-package :r3) (funcall (intern load-ras2-model :r3)))
+  (if (find-package :r3) (funcall (intern :load-ras2-model :r3)))
   (when show-sents (setq *print-sentences* 0))
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id))
@@ -1157,7 +1157,9 @@ These return the Lisp-based obo entries.
        (aht (gethash id ht))
        (cards nil))
     (declare (special ht aht cards))
-    (maphash #'(lambda (simple-phos aps) (push (phos-card aps) cards))
+    (maphash #'(lambda (simple-phos aps) 
+                 (declare (ignore simple-phos))
+                 (push (phos-card aps) cards))
              aht)
     cards))
 
