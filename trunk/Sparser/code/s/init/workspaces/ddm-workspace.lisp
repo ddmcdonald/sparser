@@ -36,6 +36,7 @@
 ; (compare-to-snapshots) (sentence-string (previous (sentence)))
 #| (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
    (revert-to-error-break)
+ (d (rule-set-for (word-named "")))
  (setq *trace-instance-recording* t)
  ;; (p "Phosphorylation of MEK1 at Ser218 and Ser222 activates it.")
  (p "BRAF bound to Ras transphosphorylates itself at Thr598.")
