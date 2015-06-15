@@ -295,24 +295,23 @@ those steps sequentially on a single article.
 ;--- 3d read. 
 
 (defun read-article-set (&optional (articles *populated-articles*))
-  (declare (special *break-during-read*))
-
-  (let ((*trap-error-skip-sentence* (not *break-during-read*))
-        (count 0))
-    (declare (special *trap-error-skip-sentence*))
-    ;; Enables the error-handler in the parser that will 
-    ;; skip to the next sentence
-
+  (let ((count 0))
     (loop for article in articles
       do 
       (incf count)
-      (time-start)(time-end) ;; CROCK -- can't get time-end for the article
-      (format t "~&Reading document #~a ~a~%" count (name article))
-      (read-from-document article)
+      (read-article article count)  
       ;;(time-end)
       )))
 
-
+(defun read-article (article counter)
+  (declare (special *break-during-read*))
+  (let ((*trap-error-skip-sentence* (not *break-during-read*)))
+    ;; Enables the error-handler in the parser that will 
+    ;; skip to the next sentence
+    (declare (special *trap-error-skip-sentence* ))
+    (time-start)(time-end) ;; CROCK -- can't get time-end for the article
+    (format t "~&Reading document #~a ~a~%" counter (name article))
+    (read-from-document article)))
 
 
 ;;---- Error handline
@@ -1169,23 +1168,33 @@ These return the Lisp-based obo entries.
   (if (find-package :r3) (funcall (intern "LOAD-RAS2-MODEL" :r3)))
   (when show-sents (setq *print-sentences* 0))
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
-  (sweep-and-run-articles (populate-june-article id))
-  (let*
-      ((ht (group-phosphorylations-by-article) )
-       (aht (gethash id ht))
-       (cards nil))
-    (declare (special ht aht cards))
-    (maphash #'(lambda (simple-phos aps) 
-                 (declare (ignore simple-phos))
-                 (push (phos-card aps) cards))
-             aht)
-    cards))
+  (sweep-and-run-articles (populate-june-article id)))
 
-(defun cards-from-article (id)
-  (test-june-article id))
+(defun run-june-articles (n &optional (run-cards nil))
+  (loop for id in *june-nxml-files-in-MITRE-order*
+    as i from 1 to n
+    do
+    (format t "~& Generating cards for #~s article ~s~&" i id)
+    (cards-for-article id run-cards)))
 
-(defun cards-for-article (id)
-  (test-june-article id))
+(defun cards-for-article (id &optional (run-cards nil))
+  (test-june-article id)
+  (when run-cards
+    (let*
+        ((ht (group-phosphorylations-by-article) )
+         (aht (gethash id ht))
+         (cards nil))
+      (declare (special ht aht cards))
+      (when
+          aht
+        (maphash #'(lambda (simple-phos aps) 
+                     (declare (ignore simple-phos))
+                     (push (phos-card aps) cards))
+                 aht)
+        (format t "~&Creating ~s cards for article ~s~&" (length cards) id)
+        (loop for card in cards
+          do
+          (phos-file-from-card card))))))
   
 
 ;;;-------------------------------------------
