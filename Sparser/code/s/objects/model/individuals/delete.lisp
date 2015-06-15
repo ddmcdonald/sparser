@@ -130,6 +130,12 @@
                  variable individual c)
           (return-from walk-alist/delete)))
 
+      (unless (consp alist)
+        (if *debug-individual-unindexing*
+          (break "Badly formed multi-key alist? While deleting the ~
+                  individual ~a, the alist is now ~a" individual alist)
+          (return-from walk-alist/delete)))
+
       (let ((entry (assoc value alist)))
         (when (cdr entry)
           ;; timing wierdness? entry was reaped before we got to it
