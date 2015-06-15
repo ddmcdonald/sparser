@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: December 2014
+;;; version: June 2015
 
 ;; Initiated 7/23/14 by lifting proteins from NFkappaB experiment.
 ;; Moved proteins out to their own file 9/8/14
@@ -187,6 +187,10 @@
              :of basis))
 (noun ("analysis" :plural "analyses")
   :super bio-method)
+
+;; Usually in a hyphenated construction. Idiomatically as a XXXXXXX
+;; marker and generally: "anti-inflammatory"
+(adj "anti" :super bio-predication)
 
 (define-category antibody :specializes protein
   :mixins (protein-method) ;; just to say that this is a bio-method
