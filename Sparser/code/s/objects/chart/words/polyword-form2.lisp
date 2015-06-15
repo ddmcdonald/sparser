@@ -49,6 +49,17 @@ objects/rules/cfr/polywords2.lisp:  ;; Also called from define-polyword/expr
 grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (define-polyword/expr long-form)))
 |#
 
+(defvar *use-occasional-polywords* nil
+  "This flag governs polywords that are indended to be only active
+   at certain, delimited times, as in a specific pass over a
+   document. It makes different arrangements for where polywords
+   defined when this flag is up have their initial states stored,
+   and along with that were drivers looks for them. In other respects
+   the polywords are defined and scanned in the same way.")
+
+
+
+
 (defun define-polyword/expr (multi-word-string)
   (declare (special *break-on-pattern-outside-coverage?*))
 
