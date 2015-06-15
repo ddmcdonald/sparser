@@ -33,20 +33,19 @@
 ; (test-load-test)
 
 ; (test-june-articles <N>  (current-string)
+; (test-range-of-June-articles from n)
 ; (compare-to-snapshots) (sentence-string (previous (sentence)))
 #| (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
    (revert-to-error-break)
  (d (rule-set-for (word-named "")))
+ (setq *show-section-printouts* t)
  (setq *trace-instance-recording* t)
  ;; (p "Phosphorylation of MEK1 at Ser218 and Ser222 activates it.")
  (p "BRAF bound to Ras transphosphorylates itself at Thr598.")
  resolve-stranded-hyphen (mono-, -tagged)
 
-; 
-
 ;=== Finish routines in 
 ; (p "in EphB1-induced ERK activation.")
-
 
 ;; GFP becomes the head
 (p "We have used a mouse embryo fibroblast ERK1-knock-out 
@@ -62,7 +61,6 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 |#
 ;  (p "c-Raf/ MAPK-mediated [6].")
 
-
 ; (ddm-load-article-2)
 (defun ddm-load-article-2 ()
   (load-xml-to-doc-if-necessary)
@@ -77,6 +75,7 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
       (sweep-document article)
       (setq *article* article)
       article)))
+; (read-epistemic-features article)
 ; (read-from-document (setq article *article*))
 
 
