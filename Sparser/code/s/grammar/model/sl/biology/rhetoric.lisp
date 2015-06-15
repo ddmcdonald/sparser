@@ -16,6 +16,7 @@
 ;;;----------
 ;;; assessor
 ;;;----------
+(defparameter *trace-relevance-judgements* nil)
 
 (defun assess-relevance (sentence)
   ;; Called from post-analysis-operations just before we would
@@ -26,31 +27,41 @@
   (let ((paragraph (parent sentence)))        
     (push-debug `(,paragraph))
     (cond
-     ((includes-a-reference sentence)
-      nil)
-     ((title-of-currect-section-is "intro")
-      nil)
-     (*reading-section-title* t)
-     ((contains-conjecture-phrase sentence)
-      (format t "~&   Not relevant: ~a~%" sentence)
-      nil)
-     ((contains-known-result-phrase sentence)
-      (format t "~&   Not relevant: ~a~%" sentence)
-      nil)
-     ((contains-methodology-phrase sentence)
-      (format t "~&   Not relevant: ~a~%" sentence)
-      nil)
-     ((past-tense sentence)
-      (format t "~&   Not relevant: ~a~%" sentence)
-      nil)
-     ((future-tense sentence)
-      (format t "~&   Not relevant: ~a~%" sentence)
-      nil)
-     ((contains-modal sentence)
-      (format t "~&   Not relevant: ~a~%" sentence)
-      nil)
-     (t
-      t))))
+      ((includes-a-reference sentence)
+       (when *trace-relevance-judgements*
+	(format t "~&   Not relevant (reference): ~a~%" sentence))
+       nil)
+      ((title-of-currect-section-is "intro")
+       nil)
+      (*reading-section-title* t)
+      ((contains-conjecture-phrase sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Not relevant (conjecture): ~a~%" sentence))
+       nil)
+      ((contains-known-result-phrase sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Not relevant (known result): ~a~%" sentence))
+       nil)
+      ((contains-methodology-phrase sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Not relevant (methodology): ~a~%" sentence))
+       nil)
+      ((past-tense sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Not relevant (past tense): ~a~%" sentence))
+       nil)
+      ((future-tense sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Not relevant (future tense): ~a~%" sentence))
+       nil)
+      ((contains-modal sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Not relevant (modal): ~a~%" sentence))
+       nil)
+      (t
+       (when *trace-relevance-judgements*
+	 (format t "~&   Relevant: ~a~%" sentence))
+       t))))
 
 
 #| At the point when this is called, all of the phrases (text strings)
