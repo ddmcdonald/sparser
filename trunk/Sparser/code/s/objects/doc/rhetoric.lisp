@@ -36,10 +36,10 @@ me at the time. Change anything that doesn't feel natural.
 ;;-- Paragraph and/or maybe section level class
 
 (defclass epistemic-state ()
-  (  ;; has an initial state that's affected by the epistemic
+   ;; has an initial state that's affected by the epistemic
    ;; status of the succession of sentences. E.g. that now every
    ;; sentence we encounter from this point on has new information.
-   )
+  ()
   (:documentation "A place to record and update the state of a
     which can change as we go through its sentences"))
 #| You could define a slot for this "initial state" of the paragraph
