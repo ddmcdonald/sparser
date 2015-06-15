@@ -3,12 +3,12 @@
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   May 2015
+;;;  Version:   June 2015
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
 ;; 5/18/15. 
-;; 6/8/2015 better rejection of sections that shouldn't be parsed
+;; 6/8/2015 better rejection of sections that shouldn't be parsed.
 
 (in-package :sparser)
 
@@ -31,6 +31,23 @@
   "Announce what article we're working on")
 
 
+(defvar *current-section-title* nil
+  "Bound to the title-text object of each section recursively
+   provided that the section (or section-of-sections) has one.")
+
+
+;;--- context
+
+(defun actually-reading ()
+  ;; The special passes have their own flags that indicate
+  ;; that they are underway. If both of those are down then
+  ;; we are actually reading. This gates the parsing of
+  ;; titles.
+  (declare (special *sentence-making-sweep* *scanning-epistemic-features*))
+  (and (not *sentence-making-sweep*)
+       (not *scanning-epistemic-features*)))
+
+
 ;;;-------------------------------------------------
 ;;; For now -always- do a sweep before doing a read
 ;;;-------------------------------------------------
@@ -40,7 +57,7 @@
    but does no analysis at all. Uses read-from-document
    to walk the document -- the same method as used to
    parse it."
-  (let ((*sentence-making-sweep* t)
+  (let ((*sentence-making-sweep* t) ;; sweep that makes the sentences
         (*sections-to-ignore* nil))
     (declare (special *sentence-making-sweep* *sections-to-ignore*))
     (when *show-article-progress*
@@ -95,13 +112,15 @@
          (title (when (typep (car subsections) 'title-text)
                    (car subsections))))
     (when title
-      (setf (title ss) (content-string title))
+      (setf (title ss) title)
       (setq subsections (cdr subsections)))
     (when *show-section-printouts*
       (format t "~&--------- starting section of sections ~a~%" ss))
-    (let ((section (car subsections))
+    (let ((*current-section-title* title)
+          (section (car subsections))
           (remaining (cdr subsections))
           previous-section)
+      (declare (special *current-section-title*))
       (loop
         (unless section (return))
         (catch 'do-next-paragraph
@@ -120,9 +139,6 @@
 (defmethod read-from-document ((s section))
   (setq *current-section* s)
   (install-contents s)
-  ;;/// previous/next also not set, and there's a title-text
-  ;;  among the children
-  
   (when *show-section-printouts*
     (format t "~&~%--------- starting section ~a~%" s))
   (let* ((all-children (children s))
@@ -134,23 +150,29 @@
          (paragraph (car paragraphs))
          (remaining (cdr paragraphs))
          previous-paragraph )
-    (when title (setf (title s) (content-string title)))
-    (loop
-      (unless paragraph
-        (return))
-      (setq *paragraph* paragraph)
-      (catch 'do-next-paragraph
-        (read-from-document paragraph))
-      (after-actions paragraph)
-      (setq previous-paragraph paragraph)
-      (setq paragraph (car remaining)
-            remaining (cdr remaining))
-      (when paragraph
-        (setf (previous paragraph) previous-paragraph)
-        (setf (next previous-paragraph) paragraph)))
-    (after-actions s)
-    (when *show-section-printouts*
-      (format t "~%--------- finished section ~a~%~%" s))))
+    (when title 
+      (setf (title s) title))
+    (when title
+      (when (actually-reading)
+        (parse-section-title title)))
+    (let ((*current-section-title* title))
+      (declare (special *current-section-title*))
+      (loop
+        (unless paragraph
+          (return))
+        (setq *paragraph* paragraph)
+        (catch 'do-next-paragraph
+          (read-from-document paragraph))
+        (after-actions paragraph)
+        (setq previous-paragraph paragraph)
+        (setq paragraph (car remaining)
+              remaining (cdr remaining))
+        (when paragraph
+          (setf (previous paragraph) previous-paragraph)
+          (setf (next previous-paragraph) paragraph)))
+      (after-actions s)
+      (when *show-section-printouts*
+        (format t "~%--------- finished section ~a~%~%" s)))))
 
 
 (defmethod read-from-document ((p paragraph))
@@ -173,6 +195,44 @@
       ;; lifted from analyze-text-from-string 
       (establish-character-source/string text)
       (analysis-core))))
+
+
+
+(defvar *reading-section-title* nil
+  "Flag for the benefit of assess-relevance. The content
+   of a section title is always relevant.")
+
+(defun parse-section-title (title)
+  (declare (special *trap-error-skip-sentence*))
+  (let* ((string (content-string title))
+         (length (length string)))
+    ;; We could parse them all, but really should have a model
+    ;; of biomedical journal titles before we do that, so until
+    ;; then, making a heuristic limitation on minimal length
+    (when (> length 20)
+      ;; Does it end in a period? Othewise add one. 
+      (unless (eql #\. (char string (1- length)))
+        (setq string (string-append string ".")))
+      (let ((*reading-section-title* t))
+        (declare (special *reading-section-title*))
+        (establish-character-source/string string)
+        (when *show-section-printouts*
+          (format t "~&~%About to parse section title%"))
+        (if *trap-error-skip-sentence*
+          (handler-case
+              (analysis-core)
+            (error (e)
+               (ignore-errors ;; got an error with something printing once
+                (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
+          (analysis-core))
+        (let ((s (identify-current-sentence)))
+          (setf (title-sentence title) s))))))
+
+
+
+;;;---------------------------------------
+;;; walking a function through a document
+;;;---------------------------------------
 
 (defgeneric recurse-through-document (source fn in-results?)
   (:documentation "recurses through document structure applying fn"))
@@ -233,23 +293,8 @@
           
   
 
- 
-#+ignore ;; nice idea, but would need pretty drastic
-;; makeover as of 5/12/15
-(defmethod read-from-document ((id integer))
-  (unless (find-package :r3)
-    (return-from read-from-document
-      "R3 document reading machinery is not loaded"))
-  (let ((reader (intern (symbol-name '#:make-sparser-doc-structure)
-                        (find-package :r3))))
-    (let* ((doc-objects (funcall reader id))
-           (article (car doc-objects)))
-      (setq *doc-objects* doc-objects
-            *article* article) 
-      (read-from-document article))))
 
 
-        
 ;;;-------------------------------------------------
 ;;; arranging to ignore certain (toplevel) sections
 ;;;-------------------------------------------------
