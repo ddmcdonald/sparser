@@ -464,9 +464,7 @@ filligre may be used to distinguish them, etc.
 ;; in the text, but not Matt's list
 (def-bio "ASPP1" protein)
 
-(def-family "ASPP"
-  :members ("ASPP1" "ASPP2")
-  :synonyms ("apoptosis-stimulating protein of p53"))
+
 
 
 (def-bio "ATG5" protein
