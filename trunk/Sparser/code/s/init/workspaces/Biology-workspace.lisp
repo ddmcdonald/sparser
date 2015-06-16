@@ -1225,23 +1225,29 @@ These return the Lisp-based obo entries.
 
 (defun cards-for-article (id &optional (run-cards nil))
   (test-june-article id)
-  (when run-cards
-    (let*
-        ((ht (group-phosphorylations-by-article) )
-         (aht (gethash id ht))
-         (counter 0)
-         (cards nil))
-      (declare (special ht aht cards))
-      (when
-          aht
-        (maphash #'(lambda (simple-phos aps) 
-                     (declare (ignore simple-phos))
-                     (push (phos-card aps) cards))
-                 aht)
-        (format t "~&Creating ~s cards for article ~s~&" (length cards) id)
-        (loop for card in cards
-          do
-          (phos-file-from-card card (incf counter)))))))
+  (handler-case 
+      (when run-cards
+        (let*
+            ((ht (group-phosphorylations-by-article) )
+             (aht (gethash id ht))
+             (counter 0)
+             (cards nil))
+          (declare (special ht aht cards))
+          (when
+              aht
+            (maphash #'(lambda (simple-phos aps) 
+                         (declare (ignore simple-phos))
+                         (push (phos-card aps) cards))
+                     aht)
+            (format t "~&Creating ~s cards for article ~s~&" (length cards) id)
+            (loop for card in cards
+              do
+              (phos-file-from-card card (incf counter))))))
+    (error (e)
+           (ignore-errors ;; got an error with something printing once
+            (when *show-handled-sentence-errors*
+              (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
+
   
 
 #|
