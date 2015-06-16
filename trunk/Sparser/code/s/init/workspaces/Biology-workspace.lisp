@@ -238,7 +238,7 @@ those steps sequentially on a single article.
                   (symbol id)
                   (string (intern (format nil "PMC~A" id)))
                   (t id)))
-          (push created *articles-created*)))))
+          (push article *articles-created*)))))
     (setq list-of-ids 
           (loop for id in list-of-ids
             unless (memq id *missing-ids*)
@@ -276,6 +276,7 @@ those steps sequentially on a single article.
   (declare (special *break-on-sweep-errors*))
   (let ((article (car articles))
         (rest (cdr articles)))
+    ;;(format t "Sweep phase: ~a articles" (length articles))
     (loop
       (unless article
         (return))
@@ -289,7 +290,7 @@ those steps sequentially on a single article.
                  *populated-articles*)
          (error (e)
                 (declare (special e))
-                (format t "~&Error sweeping ~a~%" article)
+                (format t "~&Error sweeping: ~a~%" article)
                 (d e))))
       (setq article (car rest)
             rest (cdr rest))))
@@ -299,6 +300,8 @@ those steps sequentially on a single article.
 ;--- 2.5 scan for the data that feeds assess-relevance
 (defun epistemic-article-sweep (&optional (articles *populated-articles*))
   (declare (special *break-on-sweep-errors*))
+  (setq *epistemically-scanned-articles* nil) ;; reset
+  (format t "~&~%Feature phase: ~a articles~%" (length articles))
   (let ((article (car articles))
         (counter 0)
         (rest (cdr articles)))
@@ -306,15 +309,20 @@ those steps sequentially on a single article.
       (unless article
         (return))
       (incf counter)
-      (format t "~&Extracting feature: #~a ~a~%" counter (name article))
+      ;;(format t "~&Extracting features: #~a ~a~%" counter (name article))
+      (format t " ~a" counter)
       (if *break-on-sweep-errors*
         (push (read-epistemic-features article)    
               *epistemically-scanned-articles*)
         (handler-case
-            (push (read-epistemic-features article)    
-                  *populated-articles*)
+            ;; An error in the feature computation will block
+            ;; feature creation on the rest of the sentences in
+            ;; the article, but it doesn't make the article
+            ;; unuseable for reading. 
+            (read-epistemic-features article)
            (error (e)
-                  (format t "~&Error sweeping ~a~%~a~%" article e))))
+                  (format t "~&Error in Feature sweep: ~a~%~a~%" article e))))
+      (push article *epistemically-scanned-articles*)
       (setq article (car rest)
             rest (cdr rest))))
   *epistemically-scanned-articles*)
@@ -324,6 +332,7 @@ those steps sequentially on a single article.
 
 (defun read-article-set (&optional (articles (or *epistemically-scanned-articles*
                                                  *populated-articles*)))
+  ;; (format t "Reading phase: ~a articles" (length articles))
   (let ((count 0))
     (loop for article in articles
       do  
@@ -418,14 +427,16 @@ those steps sequentially on a single article.
     (sweep-and-run-articles articles-to-run)))
 
 (defun sweep-and-run-articles (articles-to-run)
-    (if *populated-articles*
-        (sweep-article-set 
-         (loop for a in articles-to-run
-           unless (memq a *populated-articles*) collect a))
-        (sweep-article-set articles-to-run))
-    (with-total-quiet
-        (read-article-set articles-to-run))
-    (setq *accumulate-content-across-documents* t))
+  (if *populated-articles*
+    (sweep-article-set 
+     (loop for a in articles-to-run
+       unless (memq a *populated-articles*) collect a))
+    (sweep-article-set articles-to-run))
+  (setq *accumulate-content-across-documents* t)
+  (with-total-quiet
+      (read-article-set 
+       (epistemic-article-sweep
+        articles-to-run))))
 
 
 (defun single-sent-parse ()
@@ -579,7 +590,7 @@ those steps sequentially on a single article.
     PMC2173613 PMC3118333 PMC2722734 PMC4150800 PMC2944884 PMC2789045 PMC3922905 PMC2064837 PMC3226468 PMC2199218
     PMC3261948 PMC2175150 PMC3827269 PMC2680824 PMC2966438 PMC2193052 PMC3440368 PMC2193724 PMC2173856 PMC2996328
     PMC2139940 PMC2928679 PMC2213442 PMC3524246 PMC3954820 PMC3055126 PMC2635715 PMC3317662 PMC2877094 PMC2712958
-    PMC3113797 PMC2141701 PMC2191527 PMC3641356 PMC3089458 PMC2120440 PMC3177200 PMC2150849 PMC2120444 PMC3114812
+    #|PMC3113797|# PMC2141701 PMC2191527 PMC3641356 PMC3089458 PMC2120440 PMC3177200 PMC2150849 PMC2120444 PMC3114812
     PMC1519399 PMC117437 PMC3787382 PMC2168101 PMC2854722 PMC3348883 PMC2063764 PMC3500352 PMC2033725 PMC3113733
     PMC2213302 PMC3261204 PMC2997772 PMC3080931 PMC2606960 PMC2064443 PMC3973334 PMC3559880 PMC3583389 PMC3680435
     PMC4016758 PMC2363329 PMC3747992 PMC3495968 PMC4142620 PMC179877 PMC1080125 PMC3114815 PMC2171843 PMC2875002
