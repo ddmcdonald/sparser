@@ -1215,13 +1215,13 @@ These return the Lisp-based obo entries.
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id)))
 
-(defun run-june-articles (n &optional (run-cards nil))
+(defun run-june-articles (n &key (from-article 10) (cards t))
   (setq *all-sentences* nil)
-  (loop for id in *june-nxml-files-in-MITRE-order*
-    as i from 1 to n
+  (loop for id in (nthcdr from-article *june-nxml-files-in-MITRE-order*)
+    as i from (+ 1 from-article) to (+ n from-article)
     do
-    (format t "~& Generating cards for #~s article ~s~&" i id)
-    (cards-for-article id run-cards)))
+    (format t "~&~&---------^^^^^ Generating cards for #~s article ~s~&" i id)
+    (cards-for-article id cards)))
 
 (defun cards-for-article (id &optional (run-cards nil))
   (test-june-article id)
@@ -1243,6 +1243,30 @@ These return the Lisp-based obo entries.
           do
           (phos-file-from-card card (incf counter)))))))
   
+
+#|
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 0)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 50)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 100)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 150)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 200)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 250)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 300)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 350)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 400)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 450)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 500)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 550)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 600)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 650)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 700)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 750)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 800)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 850)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 900)
+(RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 950)
+
+|#
 
 ;;;-------------------------------------------
 ;;; timing code used with process-one-article
