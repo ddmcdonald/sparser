@@ -1000,8 +1000,3 @@
 (DEFINE-PROTEIN "p42/p44MAPKs" ("p42/p44MAPKs")) 
 (DEFINE-PROTEIN "smgGDS" ("smgGDS"))
 
-
-
-;; Protein families
-(def-family "cadherin" :members ("CADH1_HUMAN"))
-(def-family "NF-AT" :members ("NFAT5_HUMAN")) 
