@@ -586,8 +586,11 @@ filligre may be used to distinguish them, etc.
 
 (def-bio "MAP" protein)
 
-
+#+ignore
 (def-bio "COT/TPL2" protein) ;; see if defining this leads to sentence 53 working consistently when run twice.
+
+(DEFINE-PROTEIN "COT/TPL2" ("M3K8_HUMAN" "Mitogen-activated protein kinase kinase kinase 8"))
+
 (def-bio "cot" protein
   :synonyms ("COT" "MAP3K8"))
 (def-bio "trypsin" protein)
