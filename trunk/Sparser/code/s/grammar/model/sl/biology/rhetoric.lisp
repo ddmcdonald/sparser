@@ -18,6 +18,20 @@
 ;;;----------
 (defparameter *trace-relevance-judgements* nil)
 
+(defparameter *all-irrelevant-sentences* nil)
+
+(defun record-irrelevant-sentence (sentence reason)
+  (push `(,reason
+          ,(sentence-string sentence) 
+          ,(all-individuals-in-tts sentence)
+          ,@(when (and (boundp '*current-article*)
+                       *current-article*)
+              (list *current-article*
+                    *universal-time-start*
+                    *universal-time-end*)))
+        *all-irrelevant-sentences*))
+
+
 (defun assess-relevance (sentence)
   ;; Called from post-analysis-operations just before we would
   ;; make a card. If it returns nil -- having determined that
@@ -30,34 +44,51 @@
       ((includes-a-reference sentence)
        (when *trace-relevance-judgements*
 	(format t "~&   Not relevant (reference): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :includes-reference)
        nil)
+
       ((title-of-currect-section-is "intro")
+       (record-irrelevant-sentence sentence :in-intro)
        nil)
+
       (*reading-section-title* t)
+
       ((contains-conjecture-phrase sentence)
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (conjecture): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :has-conjecture-phrase)
        nil)
+
       ((contains-known-result-phrase sentence)
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (known result): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :has-known-result-phrase)
        nil)
+
       ((contains-methodology-phrase sentence)
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (methodology): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :has-methodology-phrase)
        nil)
+
       ((past-tense sentence)
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (past tense): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :past-tense)
        nil)
+
       ((future-tense sentence)
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (future tense): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :future)
        nil)
+
       ((contains-modal sentence)
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (modal): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :modal)
        nil)
+
       (t
        (when *trace-relevance-judgements*
 	 (format t "~&   Relevant: ~a~%" sentence))
@@ -99,16 +130,17 @@ no evidence in the sentence.
   (methodology (contents s)))
 
 (defmethod past-tense ((s sentence))
-  )
+  (declare (ignore s)) nil  )
 
 (defmethod present-tense ((s sentence))
-  )
+  (declare (ignore s)) nil  )
 
 (defmethod future-tense ((s sentence))
-  )
+  (declare (ignore s)) nil  )
 
 (defmethod contains-modal ((s sentence))
-  )
+  (declare (ignore s)) nil  )
+
 
 
 ;;;-------
