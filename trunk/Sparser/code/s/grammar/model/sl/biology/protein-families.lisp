@@ -13,6 +13,10 @@
 
 
 ;; Protein families
+(def-family "ASPP"
+  :members ("ASPP1" "ASPP2")
+  :synonyms ("apoptosis-stimulating protein of p53"))
+
 (def-family "cadherin" :members ("CADH1_HUMAN"))
 (def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 
