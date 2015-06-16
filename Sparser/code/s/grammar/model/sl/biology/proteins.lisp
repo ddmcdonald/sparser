@@ -155,6 +155,8 @@
 (def-bio "NFAT5_HUMAN" protein :synonyms ("NF-AT5" "NFAT5") :MITRE-LINK "NFAT5_HUMAN")
 
 
+(DEFINE-PROTEIN "NFAT5_HUMAN" ("NFAT5" "Nuclear factor of activated T-cells 5"))
+
 (define-protein "PKNA_MYCTU" ("pknA")) ;; bacterial protein -- have to look at why it shows up in the articles
 (define-protein "GSTP1_HUMAN" ("Glutathione S-transferase P"))
 
