@@ -15,6 +15,11 @@
 ;; Protein families
 (def-family "cadherin" :members ("CADH1_HUMAN"))
 (def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
+
+(def-family "MEK" 
+  :members ("MEK1" "MEK2")
+  :synonyms ("MEK1/2"))
+
 (def-family "NF-AT" :members ("NFAT5_HUMAN")) 
 (def-family "poly(ADP–ribose)" :members ("PARP1_HUMAN" "PARP2_HUMAN" "PARP3_HUMAN"))
 

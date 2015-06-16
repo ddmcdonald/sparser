@@ -435,9 +435,7 @@ filligre may be used to distinguish them, etc.
 (def-bio "MEK2" protein
   :mitre-link "Uniprot:P36507")
 
-(def-family "MEK" 
-  :members ("MEK1" "MEK2")
-  :synonyms ("MEK1/2"))
+
 
 
 
