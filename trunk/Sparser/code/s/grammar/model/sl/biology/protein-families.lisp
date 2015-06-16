@@ -14,5 +14,11 @@
 
 ;; Protein families
 (def-family "cadherin" :members ("CADH1_HUMAN"))
+(def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 (def-family "NF-AT" :members ("NFAT5_HUMAN")) 
+(def-family "poly(ADP–ribose)" :members ("PARP1_HUMAN" "PARP2_HUMAN" "PARP3_HUMAN"))
 
+(def-family "Raf" 
+  :members ("ARaf" "BRaf" "CRaf")
+  :identifier "RAF" ;;/// maybe use the Mitre choice?
+  :synonyms ("RAF"))

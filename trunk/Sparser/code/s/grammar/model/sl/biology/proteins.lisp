@@ -149,7 +149,7 @@
 (define-protein "PARP1_HUMAN" ("poly(ADP–ribose) 1"))
 (define-protein "PARP2_HUMAN" ("poly(ADP–ribose) 2"))
 (define-protein "PARP3_HUMAN" ("poly(ADP–ribose) 3"))
-(def-family "poly(ADP–ribose)" :members ("PARP1_HUMAN" "PARP2_HUMAN" "PARP3_HUMAN"))
+
 
 #+ignore
 (def-bio "NFAT5_HUMAN" protein :synonyms ("NF-AT5" "NFAT5") :MITRE-LINK "NFAT5_HUMAN")
@@ -157,7 +157,7 @@
 
 (define-protein "PKNA_MYCTU" ("pknA")) ;; bacterial protein -- have to look at why it shows up in the articles
 (define-protein "GSTP1_HUMAN" ("Glutathione S-transferase P"))
-(def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
+
 
 ;; from June test
 (define-protein "TGS1_HUMAN" ("PIMT" "TGS1" "HCA137" "NCOA6IP"))
@@ -337,6 +337,7 @@ filligre may be used to distinguish them, etc.
   :identifier "PR:000011416" ;; gene is "PR:P01111"
   :mitre-link "Uniprot:P01111")
 
+
 (def-family "Ras" ;;//// need capitalization hacks
   :members ("KRas" "HRas" "NRas")
   :identifier "GO:0003930"
@@ -360,10 +361,7 @@ filligre may be used to distinguish them, etc.
   :synonyms ("C-Raf" "C-RAF" "c-Raf" "c-RAF")
   :mitre-link "Uniprot:P04049")
 
-(def-family "Raf" 
-  :members ("ARaf" "BRaf" "CRaf")
-  :identifier "RAF" ;;/// maybe use the Mitre choice?
-  :synonyms ("RAF"))
+
 
 (def-bio "Raf CAAX" protein)
 
