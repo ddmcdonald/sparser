@@ -128,7 +128,7 @@ those steps sequentially on a single article.
   "Set r3::*default-corpus-path* to this trunk-relative value"
   (declare (special *default-corpus-path*))
   (let ((expanded-pathname  (make-corpus-path corpus-kwd-or-string)))
-    (format t "~&Setting r3::*default-corpus-path* to ~s~%" expanded-pathname)
+    ;;(format t "~&Setting r3::*default-corpus-path* to ~s~%" expanded-pathname)
     (setf *default-corpus-path* expanded-pathname)))
 
 
@@ -1218,6 +1218,7 @@ These return the Lisp-based obo entries.
     (let*
         ((ht (group-phosphorylations-by-article) )
          (aht (gethash id ht))
+         (counter 0)
          (cards nil))
       (declare (special ht aht cards))
       (when
@@ -1229,7 +1230,7 @@ These return the Lisp-based obo entries.
         (format t "~&Creating ~s cards for article ~s~&" (length cards) id)
         (loop for card in cards
           do
-          (phos-file-from-card card))))))
+          (phos-file-from-card card (incf counter)))))))
   
 
 ;;;-------------------------------------------
