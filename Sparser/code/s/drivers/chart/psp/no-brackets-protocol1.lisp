@@ -54,6 +54,13 @@
 (defparameter *all-sentences* nil)
 (defparameter *index-cards* t)
 
+(defparameter *show-handled-sentence-errors* nil
+  "Printing the error that's caught by the handler in 
+  error-trapped-scan-and-core turns out to be a significant
+  time cost in CCL. This gates that operation so that 
+  the error and the sentence it applies to will only be
+  printed if this flag is t.")
+
 
 ;; N.b. *current-sentence* is set by start-sentence
 
@@ -241,7 +248,8 @@
       (scan-terminals-and-do-core sentence)
     (error (e)
       (ignore-errors ;; got an error with something printing once
-       (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+       (when *show-handled-sentence-errors*
+         (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
            
 
 ;;;----------------------------------------------------
