@@ -238,8 +238,10 @@
       (unless (eql #\. (char string (1- length)))
         (setq string (string-append string ".")))
       (let ((*reading-section-title* t)
+            (*recognize-sections-within-articles* nil) ;; turn of doc init
             (*accumulate-content-across-documents* t)) ;; don't clear history
         (declare (special *reading-section-title*
+                          *recognize-sections-within-articles*
                           *accumulate-content-across-documents*))
         (establish-character-source/string string)
         (when *show-section-printouts*
