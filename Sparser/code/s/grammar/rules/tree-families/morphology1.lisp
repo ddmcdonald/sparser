@@ -1,11 +1,10 @@
-
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1992-2005,2010-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.12 January 2015
+;;;  version:  1.13 June 2015
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -95,6 +94,7 @@
 ;;       is aleady defined. 
 ;;      (1/6/15) Fixed over-zealous application of irregulars check that was
 ;;       blocking simple case of multiple words with the same definition.
+;;      (6/19/15) Rebuilt plural-version/pw because it was duplicating the 1st word
 
 (in-package :sparser)
 
@@ -966,7 +966,7 @@
          (schematic-rule (get-schematic-word-rule :common-noun)))
 
     (let ((singular-rule
-           (define-cfr category (list word)
+           (define-cfr category `(,word)
              :form  category::common-noun
              :referent referent)))
       (setf (cfr-schema singular-rule) schematic-rule)
@@ -981,7 +981,6 @@
        (*inihibit-constructing-plural*
         (list singular-rule))
        (t
-
         (make-cn-rules/aux/plural
          word special-cases category referent singular-rule schematic-rule))))))
 
@@ -1066,20 +1065,21 @@
          (last-word (car (last words)))
          (last-word-plural (plural-version last-word)))
 
-    ;; this approach seem awfully indirect, but it does package
-    ;; up all the hard work of creating the needed cfr, and
-    ;; unwinding the input pw would be too messy
-    (let* ((strings
-            (cons (word-pname (first words))
-                  (mapcar #'(lambda (w)
-                              (concatenate 'string
-                                           " " (word-pname w)))
-                          (nreverse
-                           (cons last-word-plural
-                                 (cddr (reverse (pw-words pw))))))))
-           (pw-string (apply #'concatenate 'string strings)))
+    (let* ((word-list (copy-list words))
+           (final-cell (last word-list)))
+      (rplaca final-cell last-word-plural)
 
-      (define-polyword/expr pw-string))))
+      (let* ((word-strings (loop for w in word-list collect (word-pname w)))
+             (pw-string (spaced-string word-strings)))
+        (define-polyword/expr pw-string)))))
+
+;; Adapted from Peter Clark's string package
+(defun spaced-string (list) (apply #'string-append (spaced-list list)))
+(defun spaced-list (list)
+  (cond ((endp list) nil)
+	((null (cdr list)) list)
+	(t (cons (first list) (cons " " (spaced-list (rest list)))))))
+
 
 
 ;;--- predicate over plural things
