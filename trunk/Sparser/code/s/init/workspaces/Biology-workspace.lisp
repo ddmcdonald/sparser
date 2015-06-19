@@ -6,9 +6,9 @@
 ;;;  version:  June 2015
 
 ;; Initiated 11/6/13 to setup experiments in reading biology texts
-;; and constructing process models from them. 
+;; and constructing process models from them.
 ;; 6/5/2015 added methods to control whether breaks and errors halt processing of articles
-;; (defparameter *break-during-read* nil), break-in-articles,  dont-break-in-articles 
+;; (defparameter *break-during-read* nil), break-in-articles,  dont-break-in-articles
 
 (in-package :sparser)
 
@@ -32,7 +32,7 @@
 
 
 
-;;; copied from ddm-load-corpora in ddm-workspace. 
+;;; copied from ddm-load-corpora in ddm-workspace.
 (defun load-bio-corpora ()
   (cl-user::s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (cl-user::s-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
@@ -48,7 +48,7 @@
 #|  5/13/15 (ddm)
 This code is set up to take a list of article ids as given
 by Mitre in their 5/4/15 email (*2015-5-4_Mitre-articles*)
-and get them read. 
+and get them read.
 
 Because things don't always work, it runs in three stages
 and stores its results in the global variables just below.
@@ -82,7 +82,7 @@ those steps sequentially on a single article.
 (if (boundp 'cl-user::*r3-trunk*)
     (setf *r3-trunk* cl-user::*r3-trunk*)
     (setf *r3-trunk* nil))
-;  "String identifing the location of the trunk on 
+;  "String identifing the location of the trunk on
 ;  your machine, including a final slash"
 
 
@@ -98,7 +98,7 @@ those steps sequentially on a single article.
                          (:jun15 "code/evaluation/June2015Materials/Eval-NXML")))
 
 
-;;; remove slashes from both ends unless just-end = t then just right end. 
+;;; remove slashes from both ends unless just-end = t then just right end.
 (defun remove-end-slashes (string &optional (just-end nil))
   (let* ((lastpos (1- (length string)))
          (p1 (if (and (not just-end) (eq (elt string 0) #\/)) 1 0))
@@ -110,7 +110,7 @@ those steps sequentially on a single article.
   (let ((path-from-r3-trunk (cond ((stringp corpus-kwd) corpus-kwd)
                                   ((second (assoc corpus-kwd *corpus-paths*)))
                                   (T "corpus/2015-5-4_Mitre-articles"))))
-  (format nil "~A/~A/" 
+  (format nil "~A/~A/"
           (remove-end-slashes cl-user::*r3-trunk* t)
           (remove-end-slashes path-from-r3-trunk))))
 
@@ -135,14 +135,14 @@ those steps sequentially on a single article.
 
 (defparameter *card-folder* nil)
 (defun make-card-filename (name counter)
-  (unless *card-folder* 
+  (unless *card-folder*
     (setf *card-folder* (merge-pathnames "../mitre-cards/" (pathname *default-corpus-path*))))
   (merge-pathnames (format nil "~a-~d.txt" name counter) *card-folder*))
 
 
 ;; n means starting from n
 (defun populate-12-month-NXML-model-article-set (&optional (n nil))
-  (unless cl-user::*r3-trunk* 
+  (unless cl-user::*r3-trunk*
     (error "*r3-trunk* needs to be set."))
   (let* ((location "darpa/12-month TestMaterials/NXML-model")
           (fullpath (make-corpus-path location))
@@ -161,12 +161,12 @@ those steps sequentially on a single article.
   (declare (special *june-nxml-files-in-MITRE-order*))
   (unless cl-user::*r3-trunk*
     (error "*r3-trunk* needs to be set."))
-  (let* ((location (string-append 
+  (let* ((location (string-append
                    cl-user::*r3-trunk* "code/evaluation/June2015Materials/Eval_NXML/"))
          (corpus-path "code/evaluation/June2015Materials/Eval_NXML/")
          (directory-namestring
           (string-append location "*.nxml")))
-    (let ((ids 
+    (let ((ids
            (or *june-nxml-files-in-MITRE-order*
                (generate-id-list-from-directory-listing directory-namestring))))
       (if ids
@@ -174,11 +174,11 @@ those steps sequentially on a single article.
         (break "Something went wrong. No ids were generated from~%~a"
                directory-namestring))
       (if (numberp n)
-       (populate-article-set 
-        (loop for i from 1 to n 
-          as id in ids 
-          collect id) 
-        corpus-path 
+       (populate-article-set
+        (loop for i from 1 to n
+          as id in ids
+          collect id)
+        corpus-path
         :quiet t)
        (populate-article-set ids corpus-path :quiet t)))))
 
@@ -189,9 +189,9 @@ those steps sequentially on a single article.
 (defparameter *articles-populated-ht* (make-hash-table :size 1000))
 
 
-;--- 1st populate: Locate the nxml file and run the 
+;--- 1st populate: Locate the nxml file and run the
 ; XML-to-doc-structure to convert it to the equivalent
-; document object. 
+; document object.
 ;; (populate-article-set)
 (defun populate-article-set (&optional list-of-ids location quiet use-pmc)
   "Given a list of document ids and the location of their
@@ -215,7 +215,7 @@ those steps sequentially on a single article.
         (count 0))
     (funcall quiet-fn)
     (dolist (id list-of-ids)
-      (let* ((simple-id (if use-pmc 
+      (let* ((simple-id (if use-pmc
                           (string-append (symbol-name id) ".nxml")
                           (PMC-to-nxml id)))
              (pathname (funcall path-fn simple-id))
@@ -233,13 +233,13 @@ those steps sequentially on a single article.
           (incf count) ;; if there's an error, how far along are we
           (setq created (funcall maker-fn simple-id))
           (setq article (if (consp created) (car created) created))
-          (setf (name article) 
+          (setf (name article)
                 (typecase id
                   (symbol id)
                   (string (intern (format nil "PMC~A" id)))
                   (t id)))
           (push article *articles-created*)))))
-    (setq list-of-ids 
+    (setq list-of-ids
           (loop for id in list-of-ids
             unless (memq id *missing-ids*)
             collect
@@ -247,14 +247,14 @@ those steps sequentially on a single article.
               (symbol id)
               (string (intern (format nil "PMC~A" id)))
               (t id))))
-    (setq *articles-created* 
+    (setq *articles-created*
           (nreverse
-           (loop for form in *articles-created* 
-             collect 
+           (loop for form in *articles-created*
+             collect
              (if (consp form)
                  (car form)
                  form))))
-    (loop 
+    (loop
       for article in *articles-created*
 ;      as id in list-of-ids
       do ;;(setf (name article) id)
@@ -282,11 +282,11 @@ those steps sequentially on a single article.
         (return))
       (if *break-on-sweep-errors*
        (then
-         (push (sweep-document article)    
+         (push (sweep-document article)
                *populated-articles*)
          (setf (gethash (name article) *articles-populated-ht*) article))
        (handler-case
-           (push (sweep-document article)    
+           (push (sweep-document article)
                  *populated-articles*)
          (error (e)
                 (declare (special e))
@@ -295,7 +295,7 @@ those steps sequentially on a single article.
       (setq article (car rest)
             rest (cdr rest))))
   *populated-articles*)
-    
+
 
 ;--- 2.5 scan for the data that feeds assess-relevance
 (defun epistemic-article-sweep (&optional (articles *populated-articles*))
@@ -312,13 +312,13 @@ those steps sequentially on a single article.
       ;;(format t "~&Extracting features: #~a ~a~%" counter (name article))
       (format t " ~a" counter)
       (if *break-on-sweep-errors*
-        (push (read-epistemic-features article)    
+        (push (read-epistemic-features article)
               *epistemically-scanned-articles*)
         (handler-case
             ;; An error in the feature computation will block
             ;; feature creation on the rest of the sentences in
             ;; the article, but it doesn't make the article
-            ;; unuseable for reading. 
+            ;; unuseable for reading.
             (read-epistemic-features article)
            (error (e)
                   (format t "~&Error in Feature sweep: ~a~%~a~%" article e))))
@@ -328,21 +328,21 @@ those steps sequentially on a single article.
   *epistemically-scanned-articles*)
 
 
-;--- 3d read. 
+;--- 3d read.
 
 (defun read-article-set (&optional (articles (or *epistemically-scanned-articles*
                                                  *populated-articles*)))
   ;; (format t "Reading phase: ~a articles" (length articles))
   (let ((count 0))
     (loop for article in articles
-      do  
+      do
       (incf count)
       (read-article article count))))
 
 (defun read-article (article counter)
   (declare (special *break-during-read*))
   (let ((*trap-error-skip-sentence* (not *break-during-read*)))
-    ;; Enables the error-handler in the parser that will 
+    ;; Enables the error-handler in the parser that will
     ;; skip to the next sentence
     (declare (special *trap-error-skip-sentence*))
     (time-start)(time-end) ;; CROCK -- can't get time-end for the article
@@ -353,7 +353,7 @@ those steps sequentially on a single article.
 ;;---- Error handline
 
 (defparameter *break-on-sweep-errors* nil
-  "Read by sweep-article-set to determine whether or not to use 
+  "Read by sweep-article-set to determine whether or not to use
    an error handler.")
 
 ; In read-article-set the flag *trap-error-skip-sentence* is set.
@@ -374,7 +374,7 @@ those steps sequentially on a single article.
 
 
 ;;--- Variations on the basic operations
- 
+
 (defun test-articles ()
   (populate-article-set)
   (sweep-article-set)
@@ -383,16 +383,16 @@ those steps sequentially on a single article.
   (setq *accumulate-content-across-documents* t))
 
 (defun test-12-month-articles (&optional (n nil)(reload nil))
-  (when reload 
+  (when reload
     (setq *articles-created* nil)
     (setq *populated-articles* nil))
   (populate-12-month-NXML-model-article-set n)
   (sweep-and-run-n-articles n))
 
 
-;;; start is 0 based. 
+;;; start is 0 based.
 (defun test-june-articles (&optional (n nil)(start 0) (reload nil))
-  (when reload 
+  (when reload
     (setq *articles-created* nil)
     (setq *populated-articles* nil))
   (when (null *articles-created*)
@@ -420,21 +420,21 @@ those steps sequentially on a single article.
 ;; run n articles starting with number STARTING-FROM (0 based)
 (defun sweep-and-run-n-articles (n &optional (starting-from 0))
   (unless (integerp starting-from) (setf starting-from 0))
-  (let ((articles-to-run 
-         (if (integerp n) 
+  (let ((articles-to-run
+         (if (integerp n)
              (subseq *articles-created* starting-from (+ starting-from n))
              (subseq *articles-created* starting-from))))
     (sweep-and-run-articles articles-to-run)))
 
 (defun sweep-and-run-articles (articles-to-run)
   (if *populated-articles*
-    (sweep-article-set 
+    (sweep-article-set
      (loop for a in articles-to-run
        unless (memq a *populated-articles*) collect a))
     (sweep-article-set articles-to-run))
   (setq *accumulate-content-across-documents* t)
   (with-total-quiet
-      (read-article-set 
+      (read-article-set
        (epistemic-article-sweep
         articles-to-run))))
 
@@ -473,7 +473,7 @@ those steps sequentially on a single article.
 ;;---- Gophers for going through articles
 
 (defun generate-id-list-from-directory-listing (directory-namestring)
-  "Given a namestring that ends with *.nxml or the equivalent, 
+  "Given a namestring that ends with *.nxml or the equivalent,
   this returns a list of filename strings."
   (let ((pathnames (directory directory-namestring)))
     ;; N.b. This use of directory might be CCL specific
@@ -483,7 +483,7 @@ those steps sequentially on a single article.
 
 
 (defmethod PMC-to-nxml ((symbol symbol))
-  "Given a symbol like PMC1240052, which was how they were sent 
+  "Given a symbol like PMC1240052, which was how they were sent
    to us by Mitre in May. Convert it to the filename form that's
    actually used in the corpus directory."
   (let* ((full-string (symbol-name symbol))
@@ -535,7 +535,7 @@ those steps sequentially on a single article.
 ;;---- The set we pulled over ourselves
 
 #|
- (setq directory-namestring 
+ (setq directory-namestring
     "/Users/ddm/ws/R3/r3/trunk/darpa/12-month TestMaterials/NXML-model/*.nxml")
 |#
 
@@ -655,57 +655,57 @@ those steps sequentially on a single article.
 (defun figure-7 ()
   ;; of Turke et al. "MKE inhibition leads ..."
   ;; Caption of figure seven  on page 20 minus the portion in bold
-  (p "In untreated cells, EGFR is phosphorylated at T669 by MEK/ERK, 
-which inhibits activation of EGFR and ERBB3. In the presence of AZD6244, 
-ERK is inhibited and T669 phosphorylation is blocked, increasing 
+  (p "In untreated cells, EGFR is phosphorylated at T669 by MEK/ERK,
+which inhibits activation of EGFR and ERBB3. In the presence of AZD6244,
+ERK is inhibited and T669 phosphorylation is blocked, increasing
 EGFR and ERBB3 tyrosine phosphorylation and up-regulating downstream signaling."))
 
 (defun cells-defNP ()
   ;; from the December passages, sentences 17 and 18
-  (p "BRAF is not active and is not required for MEK/ERK activation 
-in RAS mutant cells. 
+  (p "BRAF is not active and is not required for MEK/ERK activation
+in RAS mutant cells.
 Nevertheless, BRAF inhibitors hyperactivate CRAF and MEK in these cells."))
 
 ;;  (p *brent-story*)
 (defparameter *brent-story*
-"Ras is a membrane bound protein. 
-When inactive, it is bound to the small molecule GDP. 
-Upon growth factor stimulation of the cell, an exchange factor, 
-such as the SOS protein, 
-causes ras to release GDP and and ras will now bind to GTP. 
-Binding to GTP causes a conformational change of the ras protein 
-that puts ras into the active state. 
-GTP-bound ras binds to the raf protein kinase. 
-This binding of raf to ras has the effect of 
-activating the raf kinase 
-and localizing the raf kinase to the cell membrane. 
-Activated raf now phosphorylates and activates the Mek1 kinase. 
-The Mek1 kinase then phosphorylates the ERK kinase 
-on both threonine and tyrosine residues 
-which activate ERK kinase activity. 
-The phosphorylated ERK protein then translocates to the nucleus 
-where it regulates gene expression 
-in part by phosphorylating the Elk1 transcription factor. 
-Phospho-Elk then upregulates the gene expression of target genes 
-such as the proto-oncogene c-fos.  
-The entire signaling cascade is terminated by 
-the intrinsic GTPase activity of ras 
-which hydrolyzes the bound GTP into GTP, 
-thus returning ras to the GDP bound state 
-where it releases bound raf. 
-The GTPase activity of ras is accelerated 
-by interaction with another protein called GAP.  
-The oncogenic rasv12 mutant has diminished GTPase activity 
-and therefore stays in the active GTP bound state constitutively. 
-Deletion of GAP or the related NF1 genes will also enhance ras activity 
+"Ras is a membrane bound protein.
+When inactive, it is bound to the small molecule GDP.
+Upon growth factor stimulation of the cell, an exchange factor,
+such as the SOS protein,
+causes ras to release GDP and and ras will now bind to GTP.
+Binding to GTP causes a conformational change of the ras protein
+that puts ras into the active state.
+GTP-bound ras binds to the raf protein kinase.
+This binding of raf to ras has the effect of
+activating the raf kinase
+and localizing the raf kinase to the cell membrane.
+Activated raf now phosphorylates and activates the Mek1 kinase.
+The Mek1 kinase then phosphorylates the ERK kinase
+on both threonine and tyrosine residues
+which activate ERK kinase activity.
+The phosphorylated ERK protein then translocates to the nucleus
+where it regulates gene expression
+in part by phosphorylating the Elk1 transcription factor.
+Phospho-Elk then upregulates the gene expression of target genes
+such as the proto-oncogene c-fos.
+The entire signaling cascade is terminated by
+the intrinsic GTPase activity of ras
+which hydrolyzes the bound GTP into GTP,
+thus returning ras to the GDP bound state
+where it releases bound raf.
+The GTPase activity of ras is accelerated
+by interaction with another protein called GAP.
+The oncogenic rasv12 mutant has diminished GTPase activity
+and therefore stays in the active GTP bound state constitutively.
+Deletion of GAP or the related NF1 genes will also enhance ras activity
 by slowing the rate of ras-GTP hydrolysis.")
 
 
 (defun russ ()
-  (p "Importantly, the association between β-Trcp and β-catenin depended on 
-the four serine/threonine residues at the amino terminus of β-catenin, 
+  (p "Importantly, the association between β-Trcp and β-catenin depended on
+the four serine/threonine residues at the amino terminus of β-catenin,
 as β-catenin (S→A), which is a mutant β-catenin with alanine substitutions
- of these serine/threonine residues (see Fig.4A), 
+ of these serine/threonine residues (see Fig.4A),
 completely lost the ability to associate with β-Trcp (Fig. 1 A and B)."))
 #| Very first pass after translating the arrow as a hyphen
 
@@ -716,10 +716,10 @@ Unpacking #<word "see">
 Unpacking #<word "lose">
   it is an unambiguous verb
 [importantly], [ the association] between [ β-trcp and β-catenin]
-[ depended] on [the four serine/threonine residues] at 
+[ depended] on [the four serine/threonine residues] at
 [ the] amino [ terminus] of [ β-catenin],
-as [ β-catenin] (s-a), which [ is][ a mutant β-catenin] 
-with [ alanine substitutions] of [ these serine/threonine residues] 
+as [ β-catenin] (s-a), which [ is][ a mutant β-catenin]
+with [ alanine substitutions] of [ these serine/threonine residues]
 (see fig.4a), [completely lost][ the ability] to [ associate] with [ β-trcp]
 
                     source-start
@@ -750,7 +750,7 @@ e119  ABILITY       66 "the ability to associate with β - trcp ( fig . 1 a and 
 
 (defun j1 ()
   (p "The most frequently mutated oncogenes in the deadliest cancers responsible for human mortality are KRAS, PIK3CA and BRAF."))
-#|  
+#|
 [the most frequently mutated oncogenes] in [ the deadliest cancers]
 
 [ responsible] for [ human mortality][ are][ kras, pik3ca and braf]
@@ -768,7 +768,7 @@ e24   PROTEIN       15 "kras , pik 3 ca and braf" 22
   (p "Importantly the signaling enzymes encoded by PIK3CA and BRAF are, in part, regulated by direct binding to activated forms of the Ras proteins suggesting that dysregulation of this key step in signaling is critical for tumor formation. "))
 #|  5/26/15
 [importantly][ the signaling enzymes][ encoded] by [ pik3ca and braf]
-[ are, in part, regulated] by [ direct binding] to [ activated][ forms] 
+[ are, in part, regulated] by [ direct binding] to [ activated][ forms]
 of [ the ras proteins][ suggesting] that [ dysregulation] of [ this key step]
  in [ signaling][ is critical] for [ tumor formation]
 
@@ -791,7 +791,7 @@ e64   FOR           39 "for tumor formation" 42
 
 (defun j3 ()
   (p "Ras acts as a molecular switch that is activated upon GTP loading and deactivated upon hydrolysis of GTP to GDP."))
-#|  [ras][ acts] as [ a molecular switch] that [ is activated] 
+#|  [ras][ acts] as [ a molecular switch] that [ is activated]
 upon [ gtp loading] and [ deactivated] u
 pon [ hydrolysis] of [ gtp] to [ gdp]
 
@@ -813,8 +813,8 @@ e34   UPON          15 "upon hydrolysis of gtp to gdp" 21
 
 (defun j4 ()
   (p "This switch mechanism is common to a wide variety of GTP-binding proteins and is mediated by a conserved structure called the G-domain that consists of five conserved G boxes."))
-#| [this switch mechanism][ is][ common] to [ a wide variety] of [ gtp-binding proteins] 
-   and [ is mediated] by [ a conserved structure][ called][ the g-domain][ that consists] of 
+#| [this switch mechanism][ is][ common] to [ a wide variety] of [ gtp-binding proteins]
+   and [ is mediated] by [ a conserved structure][ called][ the g-domain][ that consists] of
    [ five conserved g boxes]
 Hits new cases in the second pass, but before that we got:
 e45   BE                      1 "this switch mechanism is" 5
@@ -845,14 +845,14 @@ e61   OF            29 "of five conserved g boxes" 34
 
 (defun j5 ()
   (p "Under physiological conditions, the rate of GDP or GTP release from the G-domain is slow."))
-#|  
+#|
 under [ physiological conditions], [ the rate] of [
  gdp or gtp][ release] from [ the g-domain][ is slow]
 
 e24   UNDER                   1 "under physiological conditions" 4
 e4                               "COMMA"
 e30   RATE-OF-PROCESS         5 "the rate of gdp or gtp release from the g - domain is slow" 19
-                                 period 
+                                 period
 5/26/15
 e30   UNDER         1 "under physiological conditions" 4
 e5                  "COMMA"
@@ -866,7 +866,7 @@ e27   QUALITATIVE-RATE  17 "is slow" 19
 (defun j6 ()
   (p "As a consequence the GDP produced by GTP hydrolysis on Ras is trapped and the bulk of cellular Ras accumulates in the GDP-bound ‘off’ state, despite the high GTP/GDP ratio in the cytosol (1–3)."))
 #| [as a consequence][ the gdp][ produced] by [ gtp hydrolysis] on [ ras]
-[ is trapped] and [ the bulk] of [ cellular ras][ accumulates] in 
+[ is trapped] and [ the bulk] of [ cellular ras][ accumulates] in
 [ the gdp-bound] 'off' [ state], despite [ the high gtp/gdp ratio] in [ the cytosol]
 5/26/15
 e1    AS A CONSEQUENCE  1 "as a consequence" 4
@@ -889,15 +889,15 @@ e70   RATIO         32 "the high gtp / gdp ratio in the cytosol ( 1 - 3 )" 46
 
 (defun j7 ()
   (p "Growth factors can turn on Ras by activating Guanine nucleotide Exchange Factors (GEFs) or by inhibiting the GTPase Activating Proteins (GAPs) or by both mechanisms."))
-#|  
-[growth factors][ can turn] on [ ras] by [ activating][ guanine nucleotide 
-exchange factors] (gefs) or by [ inhibiting][ the gtpase activating proteins] 
+#|
+[growth factors][ can turn] on [ ras] by [ activating][ guanine nucleotide
+exchange factors] (gefs) or by [ inhibiting][ the gtpase activating proteins]
 (gaps) or by [ both mechanisms]
 
-    Fix comma-delimited-list to write a better edge so it will print nicely. 
+    Fix comma-delimited-list to write a better edge so it will print nicely.
     Make 'both' active
 e46   TURN                    1 "growth factors can turn on ras by activating guanine nucleotide exchange factors ( gefs ) or by inhibiting the gtpase activating proteins ( gaps ) or by both mechanisms" 30
-e34                              "PERIOD" 
+e34                              "PERIOD"
 
 5/26/15
 e41   TURN-ON       1 "growth factors can turn on ras" 7
@@ -906,9 +906,9 @@ e43   BY            7 "by activating guanine nucleotide exchange factors ( gefs 
 
 (defun j8 ()
   (p "RasGEFs bind to Ras and lower the transition energy for the nucleotide exchange of the bound GDP for the more abundant cytosolic GTP, whereas RasGAPs bind to Ras and catalyze GTP hydrolysis. "))
-#|  [rasgefs][ bind] to [ ras] and [ lower][ the transition] energy 
-for [ the nucleotide exchange] of [ the bound gdp] for 
-[ the more abundant cytosolic gtp], whereas [ rasgaps][ bind] to 
+#|  [rasgefs][ bind] to [ ras] and [ lower][ the transition] energy
+for [ the nucleotide exchange] of [ the bound gdp] for
+[ the more abundant cytosolic gtp], whereas [ rasgaps][ bind] to
 [ ras] and [ catalyze][ gtp hydrolysis]
 
 e63   BINDING       1 "rasgefs bind to ras" 5
@@ -929,7 +929,7 @@ e54   CATALYSIS     31 "catalyze gtp hydrolysis" 34
 (defun j9 ()
   (p "The most prevalent oncogenic mutations in Ras (Gly12 and Gly13 in the G1 box, and Gln61 in the G3 box) preserve the GTP bound state by inhibiting intrinsic GTPase activity and by interfering with the ability of GAPs. "))
 #|  [the most prevalent oncogenic mutations] in [ ras] (gly12 and gly13 in the g1 box,
- and gln61 in the g3 box) [ preserve][ the gtp][ bound][ state] 
+ and gln61 in the g3 box) [ preserve][ the gtp][ bound][ state]
  by [ inhibiting][ intrinsic gtpase activity] and by [ interfering] with [ the ability] of [ gaps]
 5.26/15
 e98   MUTATE        1 "the most prevalent oncogenic mutations in ras ( gly 12 and gly 13 in the g 1 box , and gln 61 in the g 3 box )" 29
@@ -943,8 +943,8 @@ e90   WITH          42 "with the ability of gaps" 47
 |#
 (defun j10 ()
   (p "Other less frequently observed mutations, such as those found in the G4 and G5 boxes, increase the rate of nucleotide exchange, thereby mimicking the GEFs and increasing the GTP-bound state (1–7)."))
-#|  [other less frequently observed mutations], such as [ those found] in [ the g4 and g5 boxes], 
-[ increase][ the rate] of [ nucleotide exchange], 
+#|  [other less frequently observed mutations], such as [ those found] in [ the g4 and g5 boxes],
+[ increase][ the rate] of [ nucleotide exchange],
 [ thereby mimicking][ the gefs] and [ increasing][ the gtp-bound state]
 5/26/15
 e54   MUTATE        1 "other less frequently observed mutations" 6
@@ -1004,7 +1004,7 @@ Proteins (GAPs) or by both mechanisms. |#
 ; (setq *kind-of-chart-processing-to-do* :r3-entity-sweep)
 
 ;;  8/22/14 Need to tweak ordering so the full caps hack doesn't do
-;  the PIK of PIK3CA before the no-space can get it. 
+;  the PIK of PIK3CA before the no-space can get it.
 ;  Also, full-caps doesn't look for the set already having been defined
 ;   and caps is wrong on no-space cases, e.g. pik3ca
 ;  Also doesn't see cases like GTPase, and gets false positives from
@@ -1013,10 +1013,10 @@ Proteins (GAPs) or by both mechanisms. |#
 ;; 8/27/14
 ; *peek-rightward* is t. Presumably from Strider. Used in segment-finished
 ; do we want it in general?
-;   
+;
 ; (trace-ns-sequences)  (p "Sunday R1. Tuesday R2.")
 ;;  The final period is correctly omitted from the no-space name,
-;;  but the interior period is being swallowed. 
+;;  but the interior period is being swallowed.
 
 ; (setq *dbg-print* t)  (setq *debug-segment-handling* t)
 
@@ -1064,7 +1064,7 @@ During that period, and with 8 available CPU cores,
 ; as the combination of #\Latin_Capital_Letter_I_With_Circumflex with
 ; #\Masculine_Ordinal_Indicator when passed to the parser.
 ; Eyeballing the string shows a kappa. Describing it reveils that pair
-; rather than a kappa. 
+; rather than a kappa.
 
 ;; 2/25/14 Have to remove SGML rules, e.g. for 'p' unless it's ok w/in ns-sequences
 (defun remove-paragraph-marker ()
@@ -1073,13 +1073,13 @@ During that period, and with 8 available CPU cores,
       (delete/cfr rule))))
 
 ;; From 15677466
-(defvar *pc* "The processing of the nfκb2 gene product p100 to generate p52 is a regulated event, which is important for the instrumental function of NF-κB. We previously demonstrated that this tightly controlled event is regulated positively by NF-κB-inducing kinase (NIK) and its downstream kinase, IκB kinase α (IKKα). 
-However, the precise mechanisms by which NIK and IKKα induce p100 processing remain unclear. 
-Here, we show that, besides activating IKKα, NIK also serves as a docking molecule recruiting IKKα to p100. 
-This novel function of NIK requires two specific amino acid residues, serine 866 and serine 870, of p100 that are known to be essential for inducible processing of p100. 
-We also show that, after being recruited into p100 complex, activated IKKα phosphorylates specific serines located in both N- and C-terminal regions of p100 (serines 99, 108, 115, 123, and 872). 
-The phosphorylation of these specific serines is the prerequisite for ubiquitination and subsequent processing of p100 mediated by the β-TrCP ubiquitin ligase and 26 S proteasome, respectively. 
-These results highlight the critical but different roles of NIK and IKKα in regulating p100 processing and shed light on the mechanisms mediating the tight control of p100 processing. 
+(defvar *pc* "The processing of the nfκb2 gene product p100 to generate p52 is a regulated event, which is important for the instrumental function of NF-κB. We previously demonstrated that this tightly controlled event is regulated positively by NF-κB-inducing kinase (NIK) and its downstream kinase, IκB kinase α (IKKα).
+However, the precise mechanisms by which NIK and IKKα induce p100 processing remain unclear.
+Here, we show that, besides activating IKKα, NIK also serves as a docking molecule recruiting IKKα to p100.
+This novel function of NIK requires two specific amino acid residues, serine 866 and serine 870, of p100 that are known to be essential for inducible processing of p100.
+We also show that, after being recruited into p100 complex, activated IKKα phosphorylates specific serines located in both N- and C-terminal regions of p100 (serines 99, 108, 115, 123, and 872).
+The phosphorylation of these specific serines is the prerequisite for ubiquitination and subsequent processing of p100 mediated by the β-TrCP ubiquitin ligase and 26 S proteasome, respectively.
+These results highlight the critical but different roles of NIK and IKKα in regulating p100 processing and shed light on the mechanisms mediating the tight control of p100 processing.
 These data also provide the first evidence for explaining why overexpression of IKKα or its activation by many other stimuli such as tumor necrosis factor and mitogens fails to induce p100 processing."
   "target paragraph for proposal")
 
@@ -1124,17 +1124,17 @@ These data also provide the first evidence for explaining why overexpression of 
 ;;; OBO => Lisp
 ;;;-------------
 
-#| We can read in a set of OBO files (in .obo format, not .owl), 
+#| We can read in a set of OBO files (in .obo format, not .owl),
 convert them to a Lisp-readable form, then load the resulting
 file into Sparser (or anything else) and operate on it.
 
 The first step is to do the translation. It only has to be done
 where there's a new version of the OBO files that we want to use.
 Otherwise we're working with the result of the translation
-The OBO files are in <R3 trunk>/ontologies/*.obo and date from 
-November 2014 when this machinery was set up. 
+The OBO files are in <R3 trunk>/ontologies/*.obo and date from
+November 2014 when this machinery was set up.
 
-The translation code is in <R3>/code/obo3lisp/obo2lisp.lisp. 
+The translation code is in <R3>/code/obo3lisp/obo2lisp.lisp.
 As shown below, it takes a list of input obo files and writes
 out another combined file with the results of the translation.
 
@@ -1144,7 +1144,7 @@ is in cl-user. The rendered Lisp version of the OBO data
 is in sparser.
 
 (defun translate-obos ()  ;; (translate-obos)
- (cl-user::translate-obo-files 
+ (cl-user::translate-obo-files
   '("/Users/ddm/ws/R3/trunk/ontologies/bfo.obo"
     "/Users/ddm/ws/R3/trunk/ontologies/ro.obo"
     "/Users/ddm/ws/R3/trunk/ontologies/go-plus.obo"
@@ -1156,16 +1156,16 @@ is in sparser.
 
 The output file is a sequence of Lisp forms that replicate
 all of the interesting information in the corresponding
-.obo entry. The file has to be read in (which defines the Lisp 
+.obo entry. The file has to be read in (which defines the Lisp
 version of each entry) and then several additional operations
-are carried to to make the terms accessible as possible 
+are carried to to make the terms accessible as possible
 definitions of otherwise unknown words. These are all bundled
 into the function incorporate-obo-terms which is packaged
 below along with its required file argument. This and the
 other operations on OBOs is defined in the file obo-reader.lisp
-in words/one-offs. 
+in words/one-offs.
 
-These return the Lisp-based obo entries. 
+These return the Lisp-based obo entries.
 -- get-obo-by-id (id-string)
    get-obo (name-string)
 
@@ -1173,7 +1173,7 @@ These return the Lisp-based obo entries.
 (defun load-obo-terms ()
   (unless cl-user::*r3-trunk* ;; nust end with a slash
     (error "Bind *r3-trunk* to that spot in your directory"))
-  (let ((filename 
+  (let ((filename
          (concatenate 'string cl-user::*r3-trunk* "code/obo-terms.lisp")))
     (incorporate-obo-terms filename)))
 
@@ -1193,15 +1193,15 @@ These return the Lisp-based obo entries.
      (:PMC--ID ,@ (name *current-article*))))
   (values *current-article*
           (mitre-time-format *universal-time-start*)
-          (mitre-time-format *universal-time-end*) ; 
+          (mitre-time-format *universal-time-end*) ;
           (name *current-article*)))
 
 (defun populate-june-article (id)
-  (populate-article-set 
-   (list id) 
+  (populate-article-set
+   (list id)
    "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
 
-    
+
 
 
 (defun test-june-article-num (number)
@@ -1215,17 +1215,20 @@ These return the Lisp-based obo entries.
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id)))
 
-(defun run-june-articles (n &key (from-article 10) (cards t))
+(defun run-june-articles (n &key (from-article 10) (cards t) (new nil))
   (setq *all-sentences* nil)
   (loop for id in (nthcdr from-article *june-nxml-files-in-MITRE-order*)
     as i from (+ 1 from-article) to (+ n from-article)
     do
     (format t "~&~&---------^^^^^ Generating cards for #~s article ~s~&" i id)
-    (cards-for-article id cards)))
+
+    (if new
+        (cards-for-article-new id cards)
+        (cards-for-article id cards))))
 
 (defun cards-for-article (id &optional (run-cards nil))
   (test-june-article id)
-  (handler-case 
+  (handler-case
       (when run-cards
         (let*
             ((ht (group-phosphorylations-by-article) )
@@ -1235,7 +1238,7 @@ These return the Lisp-based obo entries.
           (declare (special ht aht cards))
           (when
               aht
-            (maphash #'(lambda (simple-phos aps) 
+            (maphash #'(lambda (simple-phos aps)
                          (declare (ignore simple-phos))
                          (push (phos-card aps) cards))
                      aht)
@@ -1248,7 +1251,32 @@ These return the Lisp-based obo entries.
             (when *show-handled-sentence-errors*
               (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
 
-  
+(defun cards-for-article-new (id &optional (run-cards nil))
+  (test-june-article id)
+  (handler-case
+      (when run-cards
+        (let*
+            ((ht (group-pts-by-article) )
+             (aht (gethash id ht))
+             (counter 0)
+             (cards nil))
+          (declare (special ht aht cards))
+          (when
+              aht
+            (maphash #'(lambda (simple-phos aps)
+                         (declare (ignore simple-phos))
+                         (push (pt-card aps) cards))
+                     aht)
+            (format t "~&Creating ~s cards for article ~s~&" (length cards) id)
+            (loop for card in cards
+              do
+              (phos-file-from-card card (incf counter))))))
+    (error (e)
+           (ignore-errors ;; got an error with something printing once
+            (when *show-handled-sentence-errors*
+              (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
+
+
 
 #|
 (RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 0)
@@ -1291,11 +1319,11 @@ These return the Lisp-based obo entries.
   (setq *universal-time-end* (get-universal-time))
   (values
    *universal-time-start*
-   (+ *universal-time-start* 
+   (+ *universal-time-start*
       (/ (* 1.0
             (- *time-start* (get-internal-real-time)))
          internal-time-units-per-second))))
-         
+
 (defun mitre-time-format (ut)
   (multiple-value-bind
       (second minute hour date month year day-of-week dst-p tz)
