@@ -8,8 +8,14 @@
 ;; initiated in May 2015
 ;; Code to place referents in a description lattice to facilitate anaphora and other reasoning
 ;; 5/30/2015 added a bunch more functionality to description (not-yet-quite-a)lattice
+;; 6/20.2015 substantial cleanup for this file -- revised data structures and methods
+;; still need to deal with implied superc and subc links
+;; First test on compare-to-snapshots d=generated many more elements in the lattice than I would have expected
+;; set *no-description-lattice* to have this called when parsing
 
 (in-package :sparser)
+
+(defparameter *no-description-lattice* t)
 
 (defvar category::top)
 (defvar category::collection)
@@ -22,14 +28,15 @@
 
   id ;; an arbitrary number used for accessing the lp
   type
-  binds
-  downlinks
-   ;; An alist keyed on {category, variable} that takes us to
-   ;; one or more lattice points that bind one more variable
-   ;; than is bound here.
+  binds ;; a list of vv items
+  (downlinks (make-hash-table))
+   ;; A hash-table with keys that are either categories or vv = {variable, category} items
+  ;; a category takes us to the dli for the meet with that category,
+  ;;  a vv takes us to the lattice point that binds one more variable
 
-  uplinks
-   ;; another such alist.
+  (uplinks (make-hash-table)) ;; a hash table. 
+  ;;  1) If binds=nil, then the keys are categories, and the values are dli's for the pairwise joins
+  ;;  2) if binds is not null, then the keys are vv items, and the values are the dli for the one less binding
   )
 
 (defun print-dl-indiv (dli stream depth)
@@ -45,15 +52,30 @@
               (list (string-downcase (symbol-name (var-name (dlvv-variable vv))))
                     (dlvv-value vv))))))
 
-
+;; NOTE -- dl-variable_value are UNIQUELY DEETERMINED by the variable and value
 (defstruct (dl-variable+value
             (:include unit)
             (:conc-name #:dlvv-)
             (:print-function print-dl-variable+value-structure)
             )
   variable
-  value
-)
+  value)
+
+(defparameter *dl-vv-from-variable* (make-hash-table :size 500))
+
+(defun find-or-make-dlvv-ht-from-variable (variable)
+  (or (gethash variable *dl-vv-from-variable*)
+      (setf (gethash variable *dl-vv-from-variable*) (make-hash-table :size 100 :test #'equal))))
+
+(defun find-or-make-dlvv-from-var-val (variable value)
+  (let
+      ((vht (find-or-make-dlvv-ht-from-variable variable)))
+    (or (gethash value vht)
+        (setf (gethash value vht) 
+              (make-dl-variable+value :variable variable :value (get-dli value))))))
+
+(defun find-or-make-dlvv (binding)
+  (find-or-make-dlvv-from-var-val (binding-variable binding) (binding-value binding)))
 
 (defun print-dl-variable+value-structure (dl-vv stream depth)
   (declare (ignore depth))
@@ -62,153 +84,166 @@
             (string-downcase (symbol-name (var-name (dlvv-variable dl-vv))))
             (dlvv-value dl-vv))))
 
-
-
 (defparameter *lattice-ht* (make-hash-table :size 10000)
   "This is the initial way that edge-referent's are linked to the structures that are in the lattice.
    A bit slower than putting a field in the referent, but applicable to all referents, and does not change their structure.")
+(defparameter *source-ht* (make-hash-table :size 5000)
+  "Inverse link to *lattice-ht*")
 
-(defun get-dli (ref)
-  (gethash ref *lattice-ht*))
-
-(defparameter *source-ht* (make-hash-table :size 5000))
+(defun get-dli (ref) (gethash ref *lattice-ht*))
 
 (defun set-dli (ref dli)
   (push ref (gethash dli *source-ht*))
   (setf (gethash ref *lattice-ht*) dli))
 
-
 (defparameter *dl-lattice-index* 0)
 (defparameter *dl-lattice-top* nil)
-
-
-(defparameter *dl-vv-from-variable* (make-hash-table :size 500))
-(defun find-or-make-dlvv-ht-from-variable (variable)
-  (let
-      ((ht (gethash variable *dl-vv-from-variable*)))
-    (or
-     ht
-     (setf (gethash variable *dl-vv-from-variable*)
-           (make-hash-table :size 100)))))
-
-(defun find-or-make-dlvv (binding)
-  (let*
-      ((var (binding-variable binding))
-       (val (binding-value binding))
-       (val-dli
-        (or
-         (get-dli val)
-         ;; otherwise assume that it is a word, or another non-KRISP item
-         val)))
-    (declare (special var val val-dli))
-    (cond
-     ((null val-dli)
-      (break "can't find the description lattice individual for ~s" val-dli))
-     (t
-      (let
-          ((var-ht (find-or-make-dlvv-ht-from-variable var))) ;; guaranteed to return a hash-table
-        (or
-         (gethash val-dli var-ht) ;; found the unique dlvv
-         (setf (gethash val-dli var-ht)
-               (make-dl-variable+value :variable var :value val-dli))))))))
-
-
-
-(defparameter *complete-interps* nil)
-(defparameter *no-description-lattice* t)
 
 (defun place-referent-in-lattice (referent edge)
   (declare (special referent edge))
   (if *no-description-lattice*
       referent
-
       (when referent
         (if (or (individual-p referent) (referential-category-p referent))
-            (let*
-                ((base-and-new-bindings (base-and-new-bindings referent edge))
-                 (lattice-description
-                  (find-or-make-lattice-description base-and-new-bindings)))
-
-              (push base-and-new-bindings *complete-interps*)
-              (set-dli referent lattice-description)
+            (then(set-dli referent (find-or-make-lattice-description referent edge))
               referent)
             referent))))
 
+(defun fom-lattice-description (base)
+  (cond
+   ((get-dli base))
+   ((referential-category-p base)
+    (find-or-make-lattice-description-for-ref-category base))
+   ((individual-p base)
+    (find-or-make-lattice-description-for-individual base))
+   ((consp base) ;; a join of categories
+    (find-or-make-lattice-description-for-multi-categories base))
+   (t (lsp-break "what type of base is this? ~s" base))))
 
-(defun find-or-make-lattice-description (base-and-new-bindings)
-  (declare (special base-and-new-bindings))
+(defun find-or-make-lattice-description (referent edge)
+  (declare (special referent edge))
   ;; This next piece of code is just to avoid load-time dependencies between the creation of category::top and
   ;;  loading this file
   (unless *dl-lattice-top*
     (setq *dl-lattice-top* (make-dl-indiv :id 0 :type category::top))
     (set-dli category::top *dl-lattice-top*))
+  (multiple-value-bind (base bindings)
+                       (base-and-new-bindings referent edge)
+    (declare (special base bindings))
+    (let
+        ((current-dli (fom-lattice-description base)))
+      (declare (special current-dll))
+      (loop for b in bindings
+        do (setq current-dli (find-or-make-lattice-subordinate current-dli b)))
+      current-dli)))
 
-  (let*
-      ((base (car base-and-new-bindings))
-       (bindings (cdr base-and-new-bindings))
-       (base-dli
-        (or
-         (get-dli base)
-         (cond
-          ((referential-category-p base)
-           (find-or-make-lattice-description-for-ref-category base))
-          ((individual-p base)
-           (cond
-            ((memq category::collection (indiv-type base)) ;; likely a conjunction
-             (set-dli
-              base
-              (find-or-make-lattice-description-for-ref-category category::collection))
-             (get-dli base))
-            ((filter-bindings (indiv-binds base))
-             ;;(ccl::break "individual without dli: ~s" base) PUNT!!
-             (set-dli
-              base
-              (find-or-make-lattice-description-for-ref-category category::top))
-             (get-dli base))
-            (t
-             ;; this can happen for VGs -- possibly because of the creation of an individual for the referent-category
-             ;;  in the interpretation process
-             (set-dli
-              base
-              (find-or-make-lattice-description-for-ref-category (car (indiv-type base))))
-             (get-dli base))))
-          (t
-           (lsp-break "what type of base is this? ~s" base)
-           ))))
-       (current-dli base-dli))
-    (declare (special base bindings base-dll current-dll))
-    (loop for b in bindings
-      do
-      (setq current-dli
-            (find-or-make-lattice-subordinate current-dli b)))
-    current-dli))
-
+(defun base-and-new-bindings (er edge)
+  (declare (special er edge))
+  (cond
+   ((or (null er) (and (not (individual-p er)) (not (referential-category-p er))))
+    (values nil nil))
+   ((referential-category-p er) (values er nil))
+   ((individual-p er)
+    (let
+        ((hr (head-referent? edge er))
+         (e-bindings (when (individual-p er) (filter-bindings (indiv-binds er)))))
+      (if (null hr)
+          (if e-bindings 
+              (if (> (length e-bindings) 4)
+                  (lsp-break "too many individual bindings")
+                  (values (indiv-type er) e-bindings))
+              (values er nil))
+          (let*
+              ((hr-bindings (when (individual-p hr) (filter-bindings (indiv-binds hr))))
+               (new-bindings
+                (loop for b in e-bindings unless
+                  (loop for hb in hr-bindings
+                    thereis
+                    (and
+                     (eq (binding-variable hb)(binding-variable b))
+                     (eq (binding-value hb) (binding-value b))))
+                  collect b)))
+            (declare (special hr-bindings e-bindings new-bindings))
+            (when (> (length new-bindings) 4)
+              (lsp-break "too many incremental bindings"))
+            (values hr new-bindings)))))
+   (t (lsp-break "banb: what do I do with ~s " er))))
 
 (defun find-or-make-lattice-description-for-ref-category (base)
-  (if (get-dli base)
-      (get-dli base)
-      (progn
-        (set-dli base
-                 (make-dl-indiv :id (incf *dl-lattice-index*)
-                                :type base
-                                :uplinks (loop for c in (immediate-supers base)
-                                           collect
-                                           (list nil (find-or-make-lattice-description-for-ref-category c)))
-                                :binds nil))
+  (or (get-dli base)
+      (let ((new-dli (make-dli base)))
+        (set-dli base new-dli)
         (loop for c in (immediate-supers base)
-          do
-          (down-link-if-necessary (get-dli c)
-                                  (get-dli base)))
-        (get-dli base))))
+          do (add-downlink (get-dli c) new-dli))
+        new-dli)))
 
-(defun down-link-if-necessary (up down)
+(defun make-dli (base)
   (let
-      ((subc-downlinks (assoc :subc (dli-downlinks up))))
-    (cond
-     ((null subc-downlinks)
-      (push `(:subc (,down)) (dli-downlinks up)))
-     ((not (memq down (second subc-downlinks)))
-      (push down (second subc-downlinks))))))
+      ((dli (make-dl-indiv :id (incf *dl-lattice-index*) :type base)))
+    (loop for sc in (immediate-supers base)
+      do (add-uplink dli (find-or-make-lattice-description-for-ref-category sc)))
+    dli))
+
+(defun add-downlink (dli down)
+  (setf (gethash (find-or-make-dlvv-from-var-val :subc down) (dli-downlinks dli)) down))
+
+(defun add-uplink (dli up)
+  (setf (gethash (find-or-make-dlvv-from-var-val :superc up) (dli-uplinks dli)) up))
+                 
+(defun find-or-make-lattice-description-for-multi-categories (cat-list)
+  (if (null (cdr cat-list))
+      (fom-lattice-description (car cat-list))
+      (find-or-make-dl-join cat-list)))
+
+(defun find-or-make-dl-join (cats)
+  (cond
+   ((get-dli cats))
+   ((cdr cats)
+    (find-or-make-dl-join-2 (fom-lattice-description (car cats)) (car cats) 
+                            (find-or-make-dl-join (cdr cats)) (cdr cats)))
+   (t (fom-lattice-description (car cats)))))
+
+(defun find-or-make-dl-join-2 (dl1 ref1 dltail reftail)
+  (or
+   (get-dli (cons ref1 reftail))
+   (let
+       ((new-dli (make-dl-indiv :id (incf *dl-lattice-index*) :type (cons ref1 reftail))))
+     (set-dli (cons ref1 reftail) new-dli)
+     (loop for up in (shared-supercs ref1 reftail) do (add-uplink new-dli (fom-lattice-description up)))
+     (add-downlink new-dli dl1)
+     (add-downlink new-dli dltail)
+     new-dli)))
+
+(defun shared-supercs (c1 c2)
+  (if (consp c2)
+      (intersection (immediate-supers c1)(shared-supercs (car c2) (cdr c2)))
+      (immediate-supers c1)))
+
+(defun find-or-make-lattice-description-for-individual (base)
+  (if
+     (memq category::collection (indiv-type base)) ;; likely a conjunction
+     (find-or-make-lattice-description-for-collection base) ;; not quite right -- ehat to do here?
+     (let* ((current-dli (find-or-make-lattice-description-for-multi-categories (indiv-type base))))
+       ;; bindings = NIL can happen for VGs -- possibly because of the creation of an individual for the referent-category
+       ;;  in the interpretation process
+       (loop for b in (filter-bindings (indiv-binds base)) 
+         do (setq current-dli (find-or-make-lattice-subordinate current-dli b)))
+       (set-dli base current-dli))))
+
+(defun find-or-make-lattice-description-for-collection (indiv-collection)
+  (let
+      ((new-dli (make-dl-indiv :id (incf *dl-lattice-index*) :type (indiv-type indiv-collection))))
+      (add-uplink new-dli (find-or-make-dl-join (indiv-type indiv-collection)))
+    (loop for member in (value-of 'members indiv-collection)
+      do
+      (add-downlink new-dli (fom-lattice-description member)))
+    new-dli))
+
+(defun filter-bindings (bindings)
+  (declare (special bindings))
+  (loop for b in bindings
+    unless (memq (var-name (binding-variable b)) '(has-determiner value)) ;; value is bound in items of type number
+    collect b))
 
 (defun immediate-supers (c)
   (let*
@@ -220,31 +255,21 @@
         (cons (lp-super-category lp) mixins)
         mixins)))
 
-(defun  find-or-make-lattice-subordinate (parent binding)
+(defun find-or-make-lattice-subordinate (parent binding)
   (declare (special parent binding))
   (let*
-      ((dl-vv (find-or-make-dlvv binding))
-       (var-subs
-        (or
-         (assoc (binding-variable binding) (dli-downlinks parent))
-         (progn
-           (push (list (binding-variable binding) nil) (dli-downlinks parent))
-           (assoc (binding-variable binding) (dli-downlinks parent)))))
-       (existing-subordinate
-        (second
-         (assoc (binding-value binding) (second var-subs)))))
-    (declare (special dl-vv var-subs existing-subordinate))
-   (or
-     existing-subordinate
-     (let
-         ((new-child (make-dl-indiv :id (incf *dl-lattice-index*)
-                                    :type (dli-type parent)
-                                    :uplinks (list (list dl-vv parent))
-                                    :binds (cons dl-vv (dli-binds parent)))))
-       (push (list (binding-value binding) new-child) (second var-subs))
-       (link-to-other-parents new-child parent binding)
-       (link-to-existing-children new-child parent binding)
-       new-child))))
+      ((dl-vv (find-or-make-dlvv binding)))
+    (or
+     (gethash dl-vv (dli-downlinks parent))) ;; already there in the hierarchy
+    (let
+        ((new-child (make-dl-indiv :id (incf *dl-lattice-index*)
+                                   :type (dli-type parent)
+                                   :uplinks (list (list dl-vv parent))
+                                   :binds (cons dl-vv (dli-binds parent)))))
+      (setf (gethash dl-vv (dli-downlinks parent)) new-child)
+      (link-to-other-parents new-child parent binding)
+      (link-to-existing-children new-child parent binding)
+      new-child)))
 
 
 ;;;;; KEY METHODS TO BE WRITTEN ;;;;;;;
@@ -255,61 +280,6 @@
 (defun link-to-existing-children (new-child parent binding) ;; to be written
   (declare (ignore new-child parent binding))
   nil)
-
-
-(defun base-and-new-bindings (referent edge)
-  (declare (special referent edge))
-  (let
-      ((hr (head-referent? edge referent))
-       (er referent ;;(edge-referent edge)
-           ))
-    (declare (special hr er))
-    (let*
-        ((hr-bindings
-          (when (individual-p hr)
-            (filter-bindings (indiv-binds hr))))
-         (e-bindings
-          (when (individual-p er)
-            (filter-bindings (indiv-binds er))))
-         (new-bindings
-          (loop for b in e-bindings
-            when
-            (not
-             (loop for hb in hr-bindings
-               thereis
-               (and
-                (eq (binding-variable hb)(binding-variable b))
-                (eq (binding-value hb) (binding-value b)))))
-            collect b)))
-      (declare (special hr-bindings e-bindings new-bindings))
-      (when (> (length new-bindings) 4)
-        (lsp-break "too many incremental bindings"))
-      (cond
-       ((or
-         (null er)
-         (and (not (individual-p er))
-              (not (referential-category-p er))))
-        nil)
-       (hr
-        (cons hr new-bindings))
-       ((individual-p er)
-        (when (> (length e-bindings) 4)
-          (lsp-break "too many individual bindings"))
-        (cons (car (indiv-type er))
-              e-bindings))
-       ((referential-category-p er)
-        (list er))
-       (t
-        (lsp-break "banb: what do I do with ~s " er)
-        )))))
-
-(defun filter-bindings (bindings)
-  (declare (special bindings))
-  (loop for b in bindings
-    unless
-    (memq (var-name (binding-variable b)) '(has-determiner value)) ;; value is bound in items of type number
-    collect b))
-
 
 (defun head-referent? (edge &optional referent)
   (when (and (null referent) edge (edge-referent edge))
