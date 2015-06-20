@@ -693,7 +693,6 @@
 
 (noun "phenotype" :super bio-entity)
 (noun "plasma" :super cellular-location)
-(noun "plasma membrane" :super cellular-location)
 (adj "polyclonal" :super bio-predication)
 (noun "population" :super bio-entity
       :binds ((element biological))
