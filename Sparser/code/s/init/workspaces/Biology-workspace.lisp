@@ -9,6 +9,8 @@
 ;; and constructing process models from them.
 ;; 6/5/2015 added methods to control whether breaks and errors halt processing of articles
 ;; (defparameter *break-during-read* nil), break-in-articles,  dont-break-in-articles
+;; 6/20/2015 added control prameter *load-ras2* that can be used to turn off the loading of
+;; the large model while doing tests...
 
 (in-package :sparser)
 
@@ -345,8 +347,9 @@ those steps sequentially on a single article.
     ;; Enables the error-handler in the parser that will
     ;; skip to the next sentence
     (declare (special *trap-error-skip-sentence*))
-    (time-start)(time-end) ;; CROCK -- can't get time-end for the article
+    (time-start) ;; CROCK -- can't get time-end for the article
     (format t "~&Reading document #~a ~a~%" counter (name article))
+    (time-end)
     (read-from-document article)))
 
 
@@ -1209,8 +1212,10 @@ These return the Lisp-based obo entries.
   (let ((id (nth (1- number) *june-nxml-files-in-MITRE-order*)))
     (sweep-and-run-articles (populate-june-article id))))
 
+(defparameter *load-ras2* t)
+
 (defun test-june-article (id &optional show-sents)
-  (if (find-package :r3) (funcall (intern "LOAD-RAS2-MODEL" :r3)))
+  (if (and *load-ras2* (find-package :r3)) (funcall (intern "LOAD-RAS2-MODEL" :r3)))
   (when show-sents (setq *print-sentences* 0))
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id)))
