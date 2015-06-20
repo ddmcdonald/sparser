@@ -256,12 +256,6 @@
   (declare (ignore new-child parent binding))
   nil)
 
-(defun lsp-break (&rest args)
-  #+allegro
-  (apply #'cl-user::break args)
-  #-allegro
-  (apply #'ccl::break args)
-  )
 
 (defun base-and-new-bindings (referent edge)
   (declare (special referent edge))
