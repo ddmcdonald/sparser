@@ -72,7 +72,12 @@
       ((vht (find-or-make-dlvv-ht-from-variable variable)))
     (or (gethash value vht)
         (setf (gethash value vht) 
-              (make-dl-variable+value :variable variable :value (get-dli value))))))
+              (make-dl-variable+value 
+               :variable variable 
+               :value (if (or (referential-category-p value)
+                              (individual-p value))
+                          (get-dli value)
+                          value))))))
 
 (defun find-or-make-dlvv (binding)
   (find-or-make-dlvv-from-var-val (binding-variable binding) (binding-value binding)))
@@ -81,7 +86,9 @@
   (declare (ignore depth))
   (let ((*print-short* t))
     (format stream "#<dl-vv ~a + ~a>"
-            (string-downcase (symbol-name (var-name (dlvv-variable dl-vv))))
+            (if (symbolp (dlvv-variable dl-vv))
+                (dlvv-variable dl-vv)
+                (string-downcase (symbol-name (var-name (dlvv-variable dl-vv)))))
             (dlvv-value dl-vv))))
 
 (defparameter *lattice-ht* (make-hash-table :size 10000)
@@ -101,13 +108,11 @@
 
 (defun place-referent-in-lattice (referent edge)
   (declare (special referent edge))
-  (if *no-description-lattice*
-      referent
-      (when referent
-        (if (or (individual-p referent) (referential-category-p referent))
-            (then(set-dli referent (find-or-make-lattice-description referent edge))
-              referent)
-            referent))))
+  (when (and referent
+             (not *no-description-lattice*)
+             (or (individual-p referent) (referential-category-p referent)))
+    (find-or-make-lattice-description referent edge))
+  referent)
 
 (defun fom-lattice-description (base)
   (cond
@@ -127,15 +132,18 @@
   (unless *dl-lattice-top*
     (setq *dl-lattice-top* (make-dl-indiv :id 0 :type category::top))
     (set-dli category::top *dl-lattice-top*))
-  (multiple-value-bind (base bindings)
-                       (base-and-new-bindings referent edge)
-    (declare (special base bindings))
-    (let
-        ((current-dli (fom-lattice-description base)))
-      (declare (special current-dll))
-      (loop for b in bindings
-        do (setq current-dli (find-or-make-lattice-subordinate current-dli b)))
-      current-dli)))
+  (or
+   (get-dli referent)
+   (multiple-value-bind (base bindings)
+                        (base-and-new-bindings referent edge)
+     (declare (special base bindings))
+     (let
+         ((current-dli (fom-lattice-description base)))
+       (declare (special current-dll))
+       (loop for b in bindings
+         do (setq current-dli (find-or-make-lattice-subordinate current-dli b)))
+       (set-dli referent current-dli)
+       current-dli))))
 
 (defun base-and-new-bindings (er edge)
   (declare (special er edge))
@@ -220,15 +228,17 @@
       (immediate-supers c1)))
 
 (defun find-or-make-lattice-description-for-individual (base)
-  (if
-     (memq category::collection (indiv-type base)) ;; likely a conjunction
-     (find-or-make-lattice-description-for-collection base) ;; not quite right -- ehat to do here?
-     (let* ((current-dli (find-or-make-lattice-description-for-multi-categories (indiv-type base))))
-       ;; bindings = NIL can happen for VGs -- possibly because of the creation of an individual for the referent-category
-       ;;  in the interpretation process
-       (loop for b in (filter-bindings (indiv-binds base)) 
-         do (setq current-dli (find-or-make-lattice-subordinate current-dli b)))
-       (set-dli base current-dli))))
+  (or
+   (get-dli base)
+   (if
+    (memq category::collection (indiv-type base)) ;; likely a conjunction
+    (find-or-make-lattice-description-for-collection base) ;; not quite right -- ehat to do here?
+    (let* ((current-dli (find-or-make-lattice-description-for-multi-categories (indiv-type base))))
+      ;; bindings = NIL can happen for VGs -- possibly because of the creation of an individual for the referent-category
+      ;;  in the interpretation process
+      (loop for b in (filter-bindings (indiv-binds base)) 
+        do (setq current-dli (find-or-make-lattice-subordinate current-dli b)))
+      (set-dli base current-dli)))))
 
 (defun find-or-make-lattice-description-for-collection (indiv-collection)
   (let
@@ -247,7 +257,7 @@
 
 (defun immediate-supers (c)
   (let*
-      ((lp (cat-lattice-position c))
+      ((lp (cat-lattice-position c)) ; 
        (mixins (cat-mix-ins c)))
     (if (and
          (lattice-point-p lp)
@@ -258,18 +268,18 @@
 (defun find-or-make-lattice-subordinate (parent binding)
   (declare (special parent binding))
   (let*
-      ((dl-vv (find-or-make-dlvv binding)))
+      ((dl-vv (find-or-make-dlvv binding))
+       (downlinks (dli-downlinks parent)))
     (or
-     (gethash dl-vv (dli-downlinks parent))) ;; already there in the hierarchy
-    (let
-        ((new-child (make-dl-indiv :id (incf *dl-lattice-index*)
-                                   :type (dli-type parent)
-                                   :uplinks (list (list dl-vv parent))
-                                   :binds (cons dl-vv (dli-binds parent)))))
-      (setf (gethash dl-vv (dli-downlinks parent)) new-child)
-      (link-to-other-parents new-child parent binding)
-      (link-to-existing-children new-child parent binding)
-      new-child)))
+     (gethash dl-vv downlinks) ;; already there in the hierarchy
+     (let
+         ((new-child (make-dl-indiv :id (incf *dl-lattice-index*)
+                                    :type (dli-type parent)
+                                    :binds (cons dl-vv (dli-binds parent)))))
+       (setf (gethash dl-vv downlinks) new-child)
+       (link-to-other-parents new-child parent binding)
+       (link-to-existing-children new-child parent binding)
+       new-child))))
 
 
 ;;;;; KEY METHODS TO BE WRITTEN ;;;;;;;
@@ -320,4 +330,4 @@
   (loop for d in *dlis*
     do
     (when (> (length (dli-binds d)) *bmax*) (setq *bmax* (length (dli-binds d)))(setq *maxb* d))
-    (push d (gethash (length (gethash d *source-ht*)) *ref-counts*))))
+    (push d (gethash (length (gethash d *source-ht*)) *ref-counts*)))) ; 
