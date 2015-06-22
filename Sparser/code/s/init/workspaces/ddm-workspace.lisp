@@ -32,6 +32,9 @@
   ;; (hashtable-to-alist 
 ; (test-load-test)
 
+;; Would have timing. Needs debugging
+; (load-and-run-june-article-number 12)
+
 ; (test-june-articles <N>  (current-string)
 ; (test-range-of-June-articles from n)
 ; (compare-to-snapshots) (sentence-string (previous (sentence)))
@@ -70,14 +73,16 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
                           (find-package :r3))))
     (funcall quiet-fn)
     (let* ((doc-elements
-            (funcall fn 3847091 :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
+            (funcall fn "3847091" :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
            (article (car doc-elements)))
       (sweep-document article)
       (setq *article* article)
       article)))
+; (setq article *article*)
 ; (read-epistemic-features article)
-; (read-from-document (setq article *article*))
-
+; (read-from-document article)
+#| (length *all-sentences*) => 43
+(length *all-irrelevant-sentences*) => 68  |#
 
 ; (noun "C-RAF:B-RAF" :super heterodimer)
 ; (trace-parse-edges) ;; extend into march-back-from-the-right/segment
@@ -87,11 +92,8 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 ; (ddm-ed "grammar/model/sl/biology/reactome/RAF_MEK_ERK_simple.lisp")
 ; (d (reactome-entity    "BiochemicalReaction13" "Complex21"
 
-
-;; *do-anaphora* = t  
 ;; (setq *scan-for-unsaturated-individuals* t)
 ; (figure-7)  (cells-defNP)  (p *brent-story*)
-
 ; dec #34 -- "an event"
 
 (defun ddm-bio ()
@@ -114,11 +116,22 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 ;;  molecules and NGkappB not loaded
 ;; cf. model/sl/NIH/site.lisp
 
+(defun ddm-timing ()
+  (ddm-ed "drivers/timing/calculation.lisp")
+  (ddm-ed "drivers/timing/cases.lisp")
+  (ddm-ed "drivers/chart/select2.lisp")) ;; example
+
+(defun ddm-rhetoric ()
+  (ddm-ed "grammar/model/sl/biology/rhetoric.lisp")
+  (ddm-ed "objects/doc/rhetoric.lisp")
+  (ddm-ed "drivers/sources/document.lisp"))
+  ; post-analysis-operations
+
 (defun ddm-alphabet ()
   (ddm-ed "analyzers/tokenizer/alphabet.lisp")
   (ddm-ed "grammar/rules/words/punctuation1.lisp")
   (ddm-ed "grammar/rules/words/punctuation-constants.lisp")
-  (ddm-ed "objects/words/punctuation.lisp")
+  (ddm-ed "objects/chart/words/punctuation.lisp")
   (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp"))
 
 (defun ddm-new-info ()
