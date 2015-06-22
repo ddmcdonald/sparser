@@ -28,7 +28,7 @@
 (gload "bio;drugs") ;; needed by verbs
 (gload "bio;phenomena") ;; after proteins
 (gload "bio;verbs1")
-(gload "bio;rhetoric")
+#-:sbcl(gload "bio;rhetoric")
 (gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")
