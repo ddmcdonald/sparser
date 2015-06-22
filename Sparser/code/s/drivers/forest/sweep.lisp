@@ -40,7 +40,6 @@
 
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
   "Scan the treetops left to right"
-  (declare (special tt prior-tt))
   (tr :sweep-sentence-treetops start-pos end-pos)
   (push-debug `(,sentence ,start-pos ,end-pos))
   (clear-sweep-sentence-tt-state-vars)
@@ -49,6 +48,7 @@
         (sentence-initial? t)
         (count 0) ;; how many treetops have been scanned
         tt  prior-tt  form  pos-after  multiple?  )
+    (declare (special tt prior-tt))
 
     (loop
       (multiple-value-setq (tt pos-after multiple?)
@@ -71,126 +71,126 @@
         (setq tt (elt (ev-edge-vector tt)
                       (1- (ev-number-of-edges tt)))))
 
-      (setq form (when (edge-p tt)
-                   (edge-form tt)))
-
-      ;; Periods can get edges over them by accidentally
-      ;; being given as a literal in a rule.
-      ;;/// ought to figure out a way to trap that.
-      ;; This check also catches all kinds of punctuation
-      (unless form
-        (cond
-         ((eq (edge-category tt) 
-              *the-punctuation-period*)  ;; we're done
-          (return))
-         ((edge-over-punctuation? tt)) ;; flag it?          
-         (t 
-          (unless *no-error-on-no-form*
-            (push-debug `(,tt ,pos-after))
-            (error "No form value on ~a" tt)))))
-
-      (when form
-        (case (cat-symbol form)
-          ;; this is a gross control structure, but it lets
-          ;; us play while sorting out what will be better
-          ((category::np
-            category::proper-name
-            category::proper-noun
-            category::n-bar
-            category::common-noun
-            category::pronoun
-            category::WH-PRONOUN
-            category::reflexive/pronoun
-            category::possessive/pronoun) 
-           (cond ((np-over-that? tt)
-                  (push-that tt))
-                 ((null prior-tt)
-                  (set-subject tt))
-                 ((and prior-tt
-                       (< count 3) ;; <adv> , <np>
-                       (category-p (edge-category prior-tt)) 
-                       ;; :SBCL errored on case where edge has a word as its category
-                       ;; (P "As RAS is upstream of..." edge over "As"
-                       (memq (cat-symbol (edge-category prior-tt))
-                             '(word::comma category::pp category::adverb)))
-                  (set-subject tt))
-                 (main-verb-seen?
-                  (push-loose-np tt))
-                 (t (push-loose-np tt)))
-           (when (pronoun-category? form)
-             (tr :noticed-pronoun tt)
-             (push-pronoun tt)))
-
-          (category::vg
-           (if main-verb-seen?
-             ;;/// need to modify verb builder and set of form categories
-             ;; to retain the participlial nature of, e.g. "inhibiting"
-             (push-post-mvs-verbs tt)
-             (set-main-verb tt))) ;;/// won't work for preposed participles
-
-          (category::vp
-           (push-verb-phrase tt))
-
-          (category::adjective
-           (push-loose-adjective tt))
-
-          (category::s
-           (push-loose-clauses tt))
-
-          (category::subj+verb
-           (push-loose-subj+verb tt))
-
-          (category::adverb
-           (if sentence-initial?
-             (setf (starts-with-adverb (layout)) tt)
-             (push-loose-adverb tt)))
-
-          ((category::preposition
-            category::spatial-preposition
-            category::spatio-temporal-preposition) ;; under
-           (when sentence-initial?
-             (setf (starts-with-prep (layout)) tt))
-           (let ((prep (edge-left-daughter tt)))
-             (if (eq prep word::|of|)
-               (push-of tt)
-               (push-preposition tt))))
-
-          (category::pp
-           (push-prepositional-phrase tt))
-
-          (category::conjunction
-           (push-conjunction tt))
-
-          (category::subordinate-conjunction
-           (push-subordinate-conjunction tt))
-
-          ((category::parentheses
-            category::square-brackets)
-           (push-parentheses tt))
-
-          (category::quantifier
-           ;; drop it on the floor for now: "each of"
-           )
-          (category::det
-           (if (eq (edge-category tt) category::that)
-             (then
-              (when *show-thatcomps* 
-               (print "IGNORING LIKELY THATCOMP IN SWEEP")))
-             (else
-              (when *break-on-new-tt-sweep-cases*
-                (push-debug `(,tt ,form))
-                (break "deal with determiner that's not 'that'.~
-                      ~% tt = ~a~
-                      ~% form = ~a"
-                       tt form)))))
-
-         (otherwise
-          (when *break-on-new-tt-sweep-cases*
-            (push-debug `(,tt ,form))
-            (break "New case in sweep.~
-                  ~% tt = ~a~
-                  ~% form = ~a"
-                   tt form)))))
+      (when (edge-p tt)
+        (setq form (edge-form tt))
+        
+        ;; Periods can get edges over them by accidentally
+        ;; being given as a literal in a rule.
+        ;;/// ought to figure out a way to trap that.
+        ;; This check also catches all kinds of punctuation
+        (unless form
+          (cond
+           ((eq (edge-category tt) ;; SBCL caught error
+                *the-punctuation-period*)  ;; we're done
+            (return))
+           ((edge-over-punctuation? tt)) ;; flag it?          
+           (t 
+            (unless *no-error-on-no-form*
+              (push-debug `(,tt ,pos-after))
+              (error "No form value on ~a" tt)))))
+        
+        (when form
+          (case (cat-symbol form)
+            ;; this is a gross control structure, but it lets
+            ;; us play while sorting out what will be better
+            ((category::np
+              category::proper-name
+              category::proper-noun
+              category::n-bar
+              category::common-noun
+              category::pronoun
+              category::WH-PRONOUN
+              category::reflexive/pronoun
+              category::possessive/pronoun) 
+             (cond ((np-over-that? tt)
+                    (push-that tt))
+                   ((null prior-tt)
+                    (set-subject tt))
+                   ((and prior-tt
+                         (< count 3) ;; <adv> , <np>
+                         (category-p (edge-category prior-tt)) 
+                         ;; :SBCL errored on case where edge has a word as its category
+                         ;; (P "As RAS is upstream of..." edge over "As"
+                         (memq (cat-symbol (edge-category prior-tt))
+                               '(word::comma category::pp category::adverb)))
+                    (set-subject tt))
+                   (main-verb-seen?
+                    (push-loose-np tt))
+                   (t (push-loose-np tt)))
+             (when (pronoun-category? form)
+               (tr :noticed-pronoun tt)
+               (push-pronoun tt)))
+            
+            (category::vg
+             (if main-verb-seen?
+                 ;;/// need to modify verb builder and set of form categories
+                 ;; to retain the participlial nature of, e.g. "inhibiting"
+                 (push-post-mvs-verbs tt)
+                 (set-main-verb tt))) ;;/// won't work for preposed participles
+            
+            (category::vp
+             (push-verb-phrase tt))
+            
+            (category::adjective
+             (push-loose-adjective tt))
+            
+            (category::s
+             (push-loose-clauses tt))
+            
+            (category::subj+verb
+             (push-loose-subj+verb tt))
+            
+            (category::adverb
+             (if sentence-initial?
+                 (setf (starts-with-adverb (layout)) tt)
+                 (push-loose-adverb tt)))
+            
+            ((category::preposition
+              category::spatial-preposition
+              category::spatio-temporal-preposition) ;; under
+             (when sentence-initial?
+               (setf (starts-with-prep (layout)) tt))
+             (let ((prep (edge-left-daughter tt)))
+               (if (eq prep word::|of|)
+                   (push-of tt)
+                   (push-preposition tt))))
+            
+            (category::pp
+             (push-prepositional-phrase tt))
+            
+            (category::conjunction
+             (push-conjunction tt))
+            
+            (category::subordinate-conjunction
+             (push-subordinate-conjunction tt))
+            
+            ((category::parentheses
+              category::square-brackets)
+             (push-parentheses tt))
+            
+            (category::quantifier
+             ;; drop it on the floor for now: "each of"
+             )
+            (category::det
+             (if (eq (edge-category tt) category::that)
+                 (then
+                   (when *show-thatcomps* 
+                     (print "IGNORING LIKELY THATCOMP IN SWEEP")))
+                 (else
+                   (when *break-on-new-tt-sweep-cases*
+                     (push-debug `(,tt ,form))
+                     (break "deal with determiner that's not 'that'.~
+                     ~% tt = ~a~
+                     ~% form = ~a"
+                            tt form)))))
+            
+            (otherwise
+             (when *break-on-new-tt-sweep-cases*
+               (push-debug `(,tt ,form))
+               (break "New case in sweep.~
+                     ~% tt = ~a~
+                     ~% form = ~a"
+                      tt form))))))
 
       (when (known-subcategorization? tt)
         (push-subcat tt))
