@@ -60,17 +60,21 @@
 (define-punctuation  vertical-bar        #\| )   ;; 124
 (define-punctuation  close-curly-bracket #\} )   ;; 125
 (define-punctuation  tilda               #\~ )   ;; 126
-(define-punctuation  division-sign       #\÷ )   ;; 247
 
-(define-punctuation copyright_sign #\Copyright_Sign) ;; 169
-(define-punctuation left-pointing-double-angle-quotation_Mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
-(define-punctuation registered_sign #\Registered_Sign) ;; 174
-(define-punctuation  acute_accent #\Acute_Accent) ;;180
-(define-punctuation  middle_dot #\Middle_Dot) ;; 183
-(define-punctuation  masculine_ordinal_indicator   #\Masculine_Ordinal_Indicator) ;; 186
+(define-punctuation  copyright_sign #\Copyright_Sign) ;; 169
+(define-punctuation  left-pointing-double-angle-quotation_mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
+(define-punctuation  registered_sign #\Registered_Sign) ;; 174
+
+(define-punctuation  acute-accent #\Acute_Accent) ;; 180
+(define-punctuation  middle-dot #\Middle_Dot) ;; 183
+(define-punctuation  masculine-ordinal-indicator   #\Masculine_Ordinal_Indicator) ;; 186
+(define-punctuation  right-pointing-double-angle-quotation-mark #\Right-Pointing_Double_Angle_Quotation_Mark) ;; 187
 (define-punctuation  vulgar_fraction_one_half   #\Vulgar_Fraction_One_Half) ;; 189
+(define-punctuation  vulgar-Fraction-One-Quarter #\Vulgar_Fraction_One_Quarter)
 (define-punctuation  vulgar_fraction_three_quarters   #\Vulgar_Fraction_Three_Quarters) ;; 190
+(define-punctuation  Inverted-Question-Mark #\Inverted_Question_Mark) ;; 191
 (define-punctuation  latin_capital_letter_a_with_ring_above   #\Latin_Capital_Letter_A_With_Ring_Above) ;; 197
+(define-punctuation  Multiplication-Sign #\Multiplication_Sign) ;; 215
 (define-punctuation  latin_small_letter_sharp_s   #\Latin_Small_Letter_Sharp_S) ;; 223
 (define-punctuation  latin_small_letter_a_with_acute   #\Latin_Small_Letter_A_With_Acute) ;; 225
 (define-punctuation  latin_smalL_letter_a_with_tilde   #\Latin_Small_Letter_A_With_Tilde) ;; 227
@@ -82,72 +86,117 @@
 (define-punctuation  latin_small_letter_i_with_acute   #\Latin_Small_Letter_I_With_Acute) ;; 237
 (define-punctuation  latin_small_letter_o_with_circumflex   #\Latin_Small_Letter_O_With_Circumflex) ;; 244
 (define-punctuation  latin_small_letter_o_with_diaeresis   #\Latin_Small_Letter_O_With_Diaeresis) ;; 246
+(define-punctuation  division-sign       #\÷ )   ;; 247
 (define-punctuation  latin_small_letter_o_with_stroke   #\Latin_Small_Letter_O_With_Stroke) ;; 248
 (define-punctuation  latin_small_letter_u_with_diaeresis   #\Latin_Small_Letter_U_With_Diaeresis) ;; 252
-
-(define-punctuation acute-accent #\Acute_Accent) ;; 180
-(define-punctuation middle-dot #\Middle_Dot) ;; 183
-(define-punctuation masculine-ordinal_indicator #\Masculine_Ordinal_Indicator) ;; 186
-
-(define-punctuation Right-Pointing-Double-Angle-Quotation-Mark #\Right-Pointing_Double_Angle_Quotation_Mark)
-(define-punctuation Vulgar-Fraction-One-Quarter #\Vulgar_Fraction_One_Quarter)
-(define-punctuation Inverted-Question-Mark #\Inverted_Question_Mark)
-(define-punctuation Multiplication-Sign #\Multiplication_Sign)
 
 
 
 (defparameter *out-of-band-punctuation*
   '(
-    (code-char 772)
+    (code-char 339) ;; "œ" #\Latin_Small_Ligature_Oe 
+    (code-char 697) ;; "ʹ" #\Modifier_Letter_Prime
+    (code-char 710) ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
+    (code-char 772) ;; #\Combining_Macron
+    (code-char 776) ;; #\Combining_Diaeresis
+    (code-char 834) ;; "͂" #\Combining_Greek_Perispomeni
     (code-char 894)
+
+    ;;(code-char 919) ;; "Η" #\Greek_Capital_Letter_Eta
+    ;;(code-char 922) ;; "Κ" #\Greek_Capital_Letter_Kappa
+    ;;(code-char 931) ;; "Σ"#\Greek_Capital_Letter_Sigma
+    ;;(code-char 958) ;; "ξ" #\Greek_Small_Letter_Xi
+    ;;(code-char 965) ;; "υ" #\Greek_Small_Letter_Upsilon
+    ;;(code-char 966) ;; "φ" #\Greek_Small_Letter_Phi
+
     (code-char 1013)
+
     (code-char 8194) ;; whitespace?
     (code-char 8197) ;; whitespace?
+
     (code-char 8201)
     (code-char 8202)
     (code-char 8203) ;;  "​"
     (code-char 8208)
-    (code-char 8213)
+    (code-char 8212)  ;; em dash, html: &mdash;
+    (code-char 8213) ;;"―"
+    (code-char 8216) ;; left single quote
+    (code-char 8217) ;; right single quote
     (code-char 8218) ;;"‚", (code = 8218)
+    (code-char 8220) ;; left double quote
+    (code-char 8221) ;; right double quote
     (code-char 8226) ;;"•", (code = 8226)
     (code-char 8230) ;;"…", (code = 8230)
     (code-char 8232) ;;"", (code = 8232)
     (code-char 8240) ;;"‰", (code = 8240)
     (code-char 8242) ;; "prime"
     (code-char 8243) ;;"″", (code = 8243)
+    (code-char 8260) ;; "⁄" #\U+2044
+
     (code-char 8446) ;;"ℒ", (code = 8446)
     (code-char 8451) ;;"℃", (code = 8451)
+    (code-char 8466) ;;"ℒ", (code = 8466)
     (code-char 8482) ;;"™", (code = 8482)
+    (code-char 8486) ;;"Ω" #\U+2126 
     (code-char 8491) ;; "Å"
-    (code-char 8545) ;;"Ⅱ", (code = 8545)
+    (code-char 8499) ;;"ℳ" #\U+2133
+
+    (code-char 8545) ;;"Ⅱ" (code = 8545)
+    (code-char 8592) ;;"←" #\U+2190
     (code-char 8593) ;;"↑", (code = 8593)
+    (code-char 8594) ;; rightwards arrow
     (code-char 8595) ;;"↓", (code = 8595)
     (code-char 8596) ;;"↔", (code = 8596)
+
     (code-char 8706) ;;"∂", (code = 8706)
+    (code-char 8710) ;;"∆" #\U+2206
+    (code-char 8712) ;; "∈" #\U+2208
     (code-char 8714) ;; "∊"
     (code-char 8721) ;; "∑"
     (code-char 8722)
+    (code-char 8727) ;; "∗" #\U+2217
     (code-char 8734) ;;"∞", (code = 8734)
+    (code-char 8743) ;; "∧" #\U+2227
+    (code-char 8745) ;; "∩" #\U+2229
     (code-char 8747) ;; "∫"
+    (code-char 8758) ;; ratio  #\U+2236
+    (code-char 8764)
     (code-char 8776) ;;"≈", (code = 8776)
     (code-char 8781) ;;"≍", (code = 8781)
+
     (code-char 8800) ;; "≠"
     (code-char 8804) ;;  "≤"
     (code-char 8805) ;;"≥", (code = 8805)
     (code-char 8806) ;;"≦", (code = 8806)
+    (code-char 8811) ;; "≫" #\U+226B
+    (code-char 8839) ;; "⊇" #\U+2287
+
     (code-char 8901) ;;"⋅", (code = 8901)
     (code-char 8943) ;; "⋯"
+
+    (code-char 9651) ;; "△" #\U+25B3
     (code-char 9653) ;; "▵"
     (code-char 9658) ;; "►"
+    (code-char 9663) ;; "▿" #\U+25BF
+    (code-char 9674) ;; "◊" #\U+25CA
+    (code-char 9675) ;; "○" #\U+25CB
+
+    (code-char 9792) ;; "♀" #\U+2640
+    (code-char 9794) ;; "♂" #\U+2642
+
+    (code-char 10794) ;; "⨪" #\U+2A2A
     (code-char 10877) ;; "⩽"
     (code-char 10878) ;;"⩾", (code = 10878)
+
     (code-char 64257) ;;"ﬁ", (code = 64257) ;; alphabetical
     (code-char 64258) ;;"ﬂ", (code = 64258)
     (code-char 65288) ;;"（", (code = 65288)
     (code-char 65293) ;;"－", (code = 65293)
+
     (code-char 119967) ;; "풟"
     
     ))
+
 
 (defun add-punctuation-chars ()
   (dolist (form *out-of-band-punctuation*)
