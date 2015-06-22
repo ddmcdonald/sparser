@@ -386,20 +386,21 @@
   ;; This is the actual check that says whether we should conjoin
   ;; or not. More heuristic judgements go here as they are
   ;; developed
-  (let ((label-before (edge-category edge-before))
-        (label-after (edge-category edge-after)))
-    (if (eq label-before label-after)
-      :conjunction/identical-adjacent-labels
-      (when *allow-form-conjunction-heuristic*
-        ;;(break "form heuristics allowed. Check backtrace")
-        (let ((form-before (edge-form edge-before))
-              (form-after (edge-form edge-after)))
-          (when (and (or (and (eq form-before form-after))
-                         (and (memq form-before *premod-forms*)
-                              (memq form-after *premod-forms*)))
-                     (not (conjunction-incompatible-labels
-                           label-before label-after edge-before edge-after)))
-            :conjunction/identical-form-labels))))))
+  (when (and (edge-p edge-before)(edge-p edge-after))
+    (let ((label-before (edge-category edge-before))
+          (label-after (edge-category edge-after)))
+      (if (eq label-before label-after)
+          :conjunction/identical-adjacent-labels
+          (when *allow-form-conjunction-heuristic*
+            ;;(break "form heuristics allowed. Check backtrace")
+            (let ((form-before (edge-form edge-before))
+                  (form-after (edge-form edge-after)))
+              (when (and (or (and (eq form-before form-after))
+                             (and (memq form-before *premod-forms*)
+                                  (memq form-after *premod-forms*)))
+                         (not (conjunction-incompatible-labels
+                               label-before label-after edge-before edge-after)))
+                :conjunction/identical-form-labels)))))))
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
   (let ((reject?
