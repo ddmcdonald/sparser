@@ -35,6 +35,9 @@
 ;;(def-form-category  vp+passive) ;; vg with an be and V+ED
 ;; 6/2/15 Added pronoun and reflexive/pronoun to direct object rules
 ;; proper handling of "where" relative clause
+;; 6/22/15 Downgraded to-comp in favor of prep-comp, which needs work to make
+;;  a more specific set of rules that pay attention the the syntax of the
+;;  complement: infinitive vs. particlple vs. ?. 
 
 
 (in-package :sparser)
@@ -91,7 +94,13 @@
    `(def-syntax-rule (,(car vv) to-comp)
                      :head :left-edge
       :form ,(second vv)
-      :referent (:function adjoin-tocomp-to-vg left-edge right-edge))))
+      :referent (:function adjoin-tocomp-to-vg left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (,(car vv) prep-comp)
+                     :head :left-edge
+      :form ,(second vv)
+      :referent (:function adjoin-prepcomp-to-vg left-edge right-edge)))
+)
 
 
 #| normally copular adjectives become VPs, but in 
@@ -252,7 +261,8 @@ to an oncogenic RasG12V mutation (9)."))
       :referent(:function interpret-adverb+verb left-edge right-edge))))
 
 #|
-WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETORICAL ADVERBS
+WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS 
+SUCH AS RHETORICAL ADVERBS
 (def-syntax-rule  (adverb vp)
   :head :right-edge
   :form vp
@@ -265,21 +275,20 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
 |#
 
 ;;--- prepositional phrases
-(loop for nb in `(category::np category::pronoun category::reflexive/pronoun ,@*n-bar-categories*)
+(loop for nb in `(category::np 
+                  category::pronoun 
+                  category::reflexive/pronoun 
+                  ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (preposition ,nb)
                      :head :left-edge
       :form pp
       :referent (:function make-pp left-referent right-referent)))
-  
-  
   (eval
    `(def-syntax-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
                      :head :left-edge
       :form pp
-      ;; I suppose we need a generic relationship here for
-      ;; a proper referent
       :referent (:function make-pp left-referent right-referent)))
   (eval
    `(def-syntax-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
@@ -290,6 +299,8 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
       :referent (:function make-pp left-referent right-referent))))
 
 
+;; "by who" or "in who" etc. is very non standard, so this
+;; overgenerates
 (loop for nb in `(category::who category::which category::whom)
   do
   (eval 
@@ -297,14 +308,10 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
                      :head :left-edge
       :form pp-wh-pronoun
       :referent (:function make-pp left-referent right-referent)))
-  
-  
   (eval
    `(def-form-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
                      :head :left-edge
       :form pp-wh-pronoun
-      ;; I suppose we need a generic relationship here for
-      ;; a proper referent
       :referent (:function make-pp left-referent right-referent)))
   (eval
    `(def-form-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
@@ -314,38 +321,37 @@ WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS SUCH AS RHETOR
       ;; a proper referent
       :referent (:function make-pp left-referent right-referent))))
 
+
 ;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
 ;;   e.g. 30 minutes after (treatment)
 (def-form-rule (amount-of-time spatio-temporal-preposition)
                  :head :right-edge
   :form spatio-temporal-preposition)
 
+
 (loop for v in  '(vg vg+ing vg+ed vg+passive vp+passive)
   do
   (eval `(def-syntax-rule (preposition ,v)
                           :head :left-edge
-           :form to-comp ;; not really a PP -- should be a TO-COMP but fix that later
-           :referent (:function make-to-comp left-referent right-referent))))
+           :form prep-comp ;;//////////////////////////
+           :referent (:function make-prep-comp left-referent right-referent))))
                
-(def-syntax-rule (preposition vp)
-               :head :left-edge
-  :form to-comp ;; not really a PP -- should be a TO-COMP but fix that later
-  :referent (:function make-to-comp left-referent right-referent))
+(def-syntax-rule (preposition vp) ;;/// to + infinitive-comp ??
+               :head :left-edge   ;; Make this one more specfiic?
+  :form prep-comp ;;//////////////////////////
+  :referent (:function make-prep-comp left-referent right-referent))
 
 
-;;/// This should be stated over vp+ing or vg+ing
-;; (which need to be created and managed), then we
-;; could have a form rule that announced that it was
-;; a manner adjunct
-(def-syntax-rule (preposition vp+ing)
+(def-syntax-rule (preposition vp+ing) 
                  :head :left-edge
   :form pp
-  ;; again, need a more interesting referent.
+  ;; Code only works for "upon". Intended to use compositional method
   :referent (:function apply-preposition-to-complement left-edge right-edge))
 
 (def-syntax-rule (preposition vg+ing) ;; J3 hydrolysis maybe elevate?
                  :head :left-edge
   :form pp
+  ;; Code only works for "upon"
   :referent (:function apply-preposition-to-complement left-edge right-edge))
 
 
