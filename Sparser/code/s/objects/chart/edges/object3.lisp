@@ -80,7 +80,9 @@
 
 ;;/// move
 (defun literal-edge? (edge) ;;/// not the best name
-  (word-p (edge-category edge)))
+  (and
+   (edge-p edge)
+   (word-p (edge-category edge))))
 
 ;; forgotten variant defined for use in PNF
 (defun edge-for-literal? (e)
