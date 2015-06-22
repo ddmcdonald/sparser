@@ -593,9 +593,9 @@ Worse: (28 13 6 2 1)
         "Users:ddm:sift:nlp:corpus:"))
 
 (defun ddm-ed (string)
-  #-sbcl
+  #-:sbcl
   (ed (sparser-sourcefile string))
-  #+sbcl
+  #+:sbcl
   (print `(**** can't call ed from SBCL yet)))
 
 (defun ddm-load (string)
