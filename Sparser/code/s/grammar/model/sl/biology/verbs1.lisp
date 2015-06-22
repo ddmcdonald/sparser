@@ -82,12 +82,17 @@
 ;;;--------------------------------------------------------
 
 (define-category abrogate :specializes bio-process 
-  :binds ((agent biological)(object bio-process)) 
+  :binds ((agent biological)
+          (object bio-process)
+          (at bio-concentration)
+          (with biological)) 
   :realization
   (:verb "abrogate" :noun "abrogation" 
          :etf (svo-passive) 
          :s agent 
-         :o object))
+         :o object
+         :at at
+         :with with))
 
 ;; used almost entirely in "acquired restance" 
 (define-category acquire
