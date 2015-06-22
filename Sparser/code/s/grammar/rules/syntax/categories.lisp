@@ -217,8 +217,9 @@
 (def-form-category  qp)
 
 (def-form-category  proper-name)
-(def-form-category  to-comp) ;; to + vp or to+vg
 
+(def-form-category  to-comp) ;; to + vp or to+vg
+(def-form-category  prep-comp) ;; {by, for, after, ..} + vg{+ing}
 
 (def-form-category vg/passive)
 (def-form-category vp/passive)

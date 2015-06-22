@@ -64,7 +64,10 @@
 ;;  bsorbed as a main verb, though we still need to handle the rule for the
 ;;  reduced relative.
 ;; 6/4/15 More modification to assimilate-subject-to-vp-ed for reduced relative
-;; 6/8/2015 more informative messages for cases where subcategorization is handed a NP with NIL referent
+;; 6/8/2015 more informative messages for cases where subcategorization is 
+;;   handed a NP with NIL referent
+;; 6/22/15 Added prep-comp to allow richer set of prepositions to adjoint
+;;   to VPs and expose the preposition to the subcategorization of the head.
 
 
 (in-package :sparser)
@@ -419,7 +422,18 @@
 ;;; VG + PP
 ;;;---------
 
-(defparameter *pobj-edge* nil) ;; used to generate useful error messages when the edge referent is NIL
+(defparameter *pobj-edge* nil
+  "Used to generate useful error messages when the edge 
+   referent is NIL.")
+
+(defun identify-preposition (edge)
+  "Utility subroutine that is used by any check that wants
+   to identity the preposition in a pp, or prep-complement, etc."
+  (let* ((prep-edge (edge-left-daughter edge))
+         (prep-word (edge-left-daughter prep-edge)))
+    ;;//// check that it's a preposition
+    prep-word))
+
 
 (defun adjoin-pp-to-vg (vg pp)
   ;; The VG is the head. We ask whether it subcategorizes for
@@ -428,8 +442,7 @@
   ;; Otherwise we check for some anticipated cases and then
   ;; default to binding modifier.
   (let* ((pp-edge (right-edge-for-referent))
-         (prep-edge (edge-left-daughter pp-edge))
-         (prep-word (edge-left-daughter prep-edge))
+         (prep-word (identify-preposition pp-edge)) 
          (*pobj-edge* (edge-right-daughter pp-edge))
          (pobj-referent (edge-referent *pobj-edge*))
          (variable-to-bind
@@ -463,6 +476,25 @@
 
 (defun adjoin-tocomp-to-vg (vg tocomp)
   (assimilate-subcat vg :to-comp tocomp))
+
+(defun adjoin-prepcomp-to-vg (vg prep-comp) ;; "by binding..."
+  (let* ((comp-edge (right-edge-for-referent))
+         (prep-word (identify-preposition comp-edge))
+         (comp-ref (edge-referent (edge-right-daughter comp-edge))))
+    (push-debug `(,prep-word ,comp-ref))
+    (let ((variable
+           (subcategorized-variable vg prep-word comp-ref)))
+      (cond
+       (*subcat-test* variable)
+       (variable
+        (when *collect-subcat-info*
+          (push (subcat-instance vg prep-word variable prep-comp)
+                *subcat-info*))
+        (setq vg (individual-for-ref vg)) ;; category => individual
+        (bind-variable variable comp-ref vg)
+        vg)))))
+
+
 
 #+ignore
 (defun adjoin-tocomp-to-vg (vg pp)
@@ -703,26 +735,6 @@
 
       (bind-variable variable-to-bind item head)
       head))))
-
-
-(defun individual-for-ref (head)
-  (typecase head
-    (individual
-     (maybe-copy-individual head))
-    (category
-     ;;//// need to reclaim bindings !!!!!!
-     (make-individual-for-dm&p head))
-    (cons
-     ;; presumably it's a disjoint value restriction
-     (unless (eq (car head) :or)
-       (error "The 'head' is a cons but it's not a value restriction:~%~a"
-              head))
-     ;; Arbitrily pick the first one
-     (make-individual-for-dm&p (second head)))
-    (otherwise
-     (push-debug `(,head))
-     (error "Unexpected type of 'head' in individual for ref: ~a~
-           ~%  ~a" (type-of head) head))))
  
 
 
@@ -768,24 +780,6 @@
        
       new-ref)))
 
-#+ignore ;; earlier version -- doesn't link into chart
-(defun create-anaphoric-edge-and-referent (old-edge variable)
-  (let* ((vr (var-value-restriction variable))
-         (new-item (make-individual-for-dm&p vr))
-         (new-edge
-          (make-completed-unary-edge
-           (edge-starts-at old-edge)
-           (edge-ends-at old-edge)
-           'create-anaphoric-edge-and-referent
-           old-edge
-           vr
-           category::np
-           new-item)))
-    (setf (edge-used-in old-edge) (list new-edge))
-    new-item))
-
-
-
 
 (defun subcategorized-variable (head label item)
   (declare (special item *pobj-edge*))
@@ -796,13 +790,16 @@
    ((null item)
     (cond
      ((and (boundp '*pobj-edge*) *pobj-edge*)
-        (format t "~&*** null interpretation in subcategorized-variable for edge ~s~&" *pobj-edge*))
+      (format t "~&*** null item in subcategorized pobj for edge ~s~&" *pobj-edge*))
      ((eq label :subject)
-      (format t "~&*** null interpretation in subcategorized-variable for edge ~s~&" *left-edge-into-reference*))
+      (format t "~&*** null item in subcategorized subject for edge ~s~&" *left-edge-into-reference*))
      ((eq label :object)
-      (format t "~&*** null interpretation in subcategorized-variable for edge ~s~&" *right-edge-into-reference*))
+      (format t "~&*** null item in subcategorized object for edge ~s~&" *right-edge-into-reference*))
      (t
-        (format t "~&null item in subcategorized-variable~&")))
+      (format t "~&null item in subcategorized-variable~&")))
+    nil)
+   ((consp item)
+    (break "what are you doing passing a CONS as an item, ~s~&" item)
     nil)
    (t
     (when (itypep item 'to-comp)
@@ -813,14 +810,9 @@
           (dolist (entry subcat-patterns)
             (let ((scr (subcat-restriction entry)))
               (when (eq label (subcat-label entry))
-                (cond
-                 ((consp item)
-                  (break "what are you doing passing a CONSP as an item, ~s~&" item)
-                  (setq variable nil)
-                  (return))
-                 ((satisfies-subcat-restriction? item scr)
+                (when (satisfies-subcat-restriction? item scr)
                   (setq variable (subcat-variable entry))
-                  (return))))))
+                  (return)))))
           ;;(break "testing subcats")
           (or
            variable
@@ -878,10 +870,11 @@
    information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
 (mark-as-form-category category::prepositional-phrase)
+
 (define-category to-comp
   :specializes abstract
   :binds ((prep)
-          (clause))
+          (comp))
   :documentation "Provides a scafolding to hold
    a generic to-comp as identified by
    the pp rules in grammar/rules/syntactic-rules.
@@ -889,8 +882,19 @@
    code below. Note that if we make these with an
    unindexed individual (in make-pp) then the index
    information doesn't come into play"
-  :index (:temporary :sequential-keys prep clause))
-(mark-as-form-category category::to-comp)
+  :index (:temporary :sequential-keys prep comp))
+
+
+(define-category prep-comp
+  :specializes abstract
+  :binds ((prep)
+          (comp))
+  :documentation "If to-comp picks up infinitive complements
+    this picks up all the rest, e.g. 'by being phosphorylated'
+    though the head decides what to do with it based on the
+    composition. Same design as pps."
+  :index (:temporary :sequential-keys prep comp))
+
 
 (define-category pp-relative-clause
   :specializes abstract
@@ -904,14 +908,9 @@
    unindexed individual (in make-pp) then the index
    information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
-(mark-as-form-category category::prepositional-phrase)
 
 
-#+ignore(defparameter *pp-prep-pobj* (make-hash-table :size 1000))
-#+ignore(defun link-pp-to-prep-and-object (pp prep pobj)
-  (setf (gethash pp *pp-prep-pobj*) (list prep pobj)))
-#+ignore(defun get-prep-pobj (pp)
-  (gethash pp *pp-prep-obj*))
+
 
 (defun make-pp (prep pobj)
   (let* ((binding-instructions
@@ -937,24 +936,20 @@
     pp-rel-clause))
 
 
-(defun make-to-comp (prep clause)
-  (declare (special prep clause category::to-comp category::to))
+(defun make-prep-comp (prep complement)
+  ;; Called for the pattern 
+  ;; preposition + (vg vg+ing vg+ed vg+passive vp+passive & vp)
+  (declare (special prep clause category::prep-comp))
   (cond
    (*subcat-test*
-    ;; when we have clausal "to-pp" like
-    ;;  to enhance craf activation
-    ;; this is NOT a copular PP
-    (eq prep category::to))
-   (t
+    (and prep complement))
+   (t 
     (let* ((binding-instructions
-            `((prep ,prep) (clause ,clause)))
-           (to-comp (make-simple-individual
-                category::to-comp
-                binding-instructions)))
-      ;; place for trace or further adornment, storing
-      ;; (p "activity of ras.")
-      ;; (break "Look at who is calling make-pp")
-      to-comp))))
+            `((prep ,prep) (comp ,complement)))
+           (prep-comp (make-simple-individual
+                       category::prep-comp
+                       binding-instructions)))
+      prep-comp))))
 
 
 ; Called from whack-a-rule-cycle => copula-rule?
@@ -1038,3 +1033,25 @@
     (bind-variable 'object (edge-referent right-edge) exists)
     exists))
 
+
+;;;------------------------------------------------------------------
+;;; broad routine for making/adjusting an individual from a category
+;;;------------------------------------------------------------------
+
+(defun individual-for-ref (head)
+  (typecase head
+    (individual
+     (maybe-copy-individual head))
+    (category
+     (make-individual-for-dm&p head))
+    (cons
+     ;; presumably it's a disjoint value restriction
+     (unless (eq (car head) :or)
+       (error "The 'head' is a cons but it's not a value restriction:~%~a"
+              head))
+     ;; Arbitrily pick the first one
+     (make-individual-for-dm&p (second head)))
+    (otherwise
+     (push-debug `(,head))
+     (error "Unexpected type of 'head' in individual for ref: ~a~
+           ~%  ~a" (type-of head) head))))
