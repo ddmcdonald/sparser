@@ -421,6 +421,7 @@ previous records of treetop-counts.
   (np (find-corpus-sents str)))
 
 (defun show-art-sents (str &optional sents)
+  (declare (special *all-sentences*))
   (if sents
       (loop for a in sents when (search str (car a))
         collect (list (car a) (second a)))
