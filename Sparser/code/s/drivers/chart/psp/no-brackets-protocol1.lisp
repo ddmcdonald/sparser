@@ -269,9 +269,10 @@
   (identify-salient-text-structure sentence)
   (when *do-anaphora*
     (handle-any-anaphora sentence))
-
-  (let ((relevant? (assess-relevance sentence)))
   
+  (let ((relevant? #-:sbcl(assess-relevance sentence)
+                   #+:sbcl t))
+    
     (when (and *readout-relations*
                *index-cards*
                relevant?)
