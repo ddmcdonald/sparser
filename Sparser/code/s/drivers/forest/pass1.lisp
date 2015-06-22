@@ -434,7 +434,7 @@
                     ;; count is a crude 1st-cut distinction in what's inside 
                     ;; the parens
                     (- (length constituents) 2)))
-           (paren-referent (referent-of-parentheticial-expression
+           (paren-referent (referent-of-parenthetical-expression
                             count paren-edge)))
       
       (when (and (individual-p paren-referent)
@@ -464,7 +464,7 @@
     ;;(format t "~&Can't knit paren item ~s into non-edge ~s" paren-edge left-neighbor)
 )))
 
-(defun referent-of-parentheticial-expression (count paren-edge)
+(defun referent-of-parenthetical-expression (count paren-edge)
   ;; If there's one interior edge return it's referent. 
   ;; If there are more edges then try to categorize them but
   ;; for now returning nil is ok. In general the content of the
@@ -478,7 +478,7 @@
                                     0 count)))
       ;;(break "interior-edge/s = ~a" interior-edge/s)           
       (case count
-        (1 (edge-referent (car interior-edge/s)))
+        (1 (when (edge-p (car interior-edge/s))(edge-referent (car interior-edge/s))))
         (otherwise
          ;;//// defacto stub
          nil)))))
