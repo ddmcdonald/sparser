@@ -341,16 +341,21 @@ those steps sequentially on a single article.
       (incf count)
       (read-article article count))))
 
+(defvar *time-reading-document* 0)
+
 (defun read-article (article counter)
   (declare (special *break-during-read*))
-  (let ((*trap-error-skip-sentence* (not *break-during-read*)))
+  (let ((*trap-error-skip-sentence* (not *break-during-read*))
+        (elapsed-internal-real-time 0))
     ;; Enables the error-handler in the parser that will
     ;; skip to the next sentence
     (declare (special *trap-error-skip-sentence*))
-    (time-start) ;; CROCK -- can't get time-end for the article
-    (format t "~&Reading document #~a ~a~%" counter (name article))
-    (time-end)
-    (read-from-document article)))
+    (format t "~&Reading document #~a ~a" counter (name article))
+    (start-timer '*time-reading-document*)
+    (read-from-document article)
+    (setq elapsed-internal-real-time
+          (stop-timer '*time-reading-document*))
+    (format t "  ~a~%" (elapsed-time-to-string elapsed-internal-real-time))))
 
 
 ;;---- Error handline
@@ -447,6 +452,7 @@ those steps sequentially on a single article.
 
 (defun load-and-run-June-article-number (n)
   (declare (special *june-nxml-files-in-MITRE-order*))
+  (set-default-corpus-path :jun15)
   (load-xml-to-doc-if-necessary)
   (let ((id (nth (1- n) *june-nxml-files-in-MITRE-order*)))
     (load-and-read-article id)))
@@ -456,21 +462,31 @@ those steps sequentially on a single article.
   (load-xml-to-doc-if-necessary)
   (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
                           (find-package :r3)))
+        (path-fn (intern (symbol-name '#:make-doc-path)
+                         (find-package :r3)))
         (quiet-fn (intern (symbol-name 'debug-off)
                           (find-package :r3))))
     (funcall quiet-fn)
-    (let* ((doc-elements (funcall maker-fn id))
+    (let* ((simple-id (string-append (symbol-name id) ".nxml"))
+           (pathname (funcall path-fn simple-id)))
+      (when pathname
+
+    (let* ((doc-elements (funcall maker-fn simple-id))
            (article (car doc-elements))
-           (*trap-error-skip-sentence* (not *break-during-read*)))
+           (*trap-error-skip-sentence* (not *break-during-read*))
+           (elapsed-internal-real-time 0))
       (declare (special *trap-error-skip-sentence*))
       (setf (name article) id)
       (sweep-document article)
       (read-epistemic-features article)
-      (format t "~&Reading ~a~%" (name article))
+      (start-timer '*time-reading-document*)
+      (format t "~&Reading ~a" (name article))
       (with-total-quiet
           (read-from-document article))
-      article)))
-
+       (setq elapsed-internal-real-time
+          (stop-timer '*time-reading-document*))
+      (format t "  ~a~%" (elapsed-time-to-string elapsed-internal-real-time))
+      article)))))
 
 
 ;;---- Gophers for going through articles
@@ -1310,6 +1326,13 @@ These return the Lisp-based obo entries.
 ;;;-------------------------------------------
 ;;; timing code used with process-one-article
 ;;;-------------------------------------------
+
+(defun elapsed-time-to-string (diff)
+  (multiple-value-bind (totsecs rem) (floor dif internal-time-units-per-second)
+      (multiple-value-bind (mins secs) (floor totsecs 60)
+        (if (zerop mins)
+            (format nil "~d.~3,'0d" secs rem)
+          (format nil "~d:~2,'0d.~3,'0d" mins secs rem)))))
 
 (defparameter *time-start* 0)
 
