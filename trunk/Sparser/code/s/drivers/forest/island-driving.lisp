@@ -198,9 +198,10 @@
 
 (defun clean-treetops (treetops)
   (loop for edge in treetops
-    unless (or 
-            (memq (edge-category edge) `(,word::comma))
-            (memq (edge-form edge) `(,category::adverb)))
+    unless
+    (or (not (edge-p edge))
+        (memq (edge-category edge) `(,word::comma))
+        (memq (edge-form edge) `(,category::adverb)))
     collect edge))
 
 (defun run-island-checks-pass-two (layout start-pos end-pos)
