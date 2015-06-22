@@ -126,7 +126,6 @@
           (var (caddr subcat-list) (caddr subcat-list))
           (rest (cdr patterns) (cdr rest)))
          ((null subcat-list))
-      (declare (special subcat-list trigger v/r var rest))
       (cond
        ((keywordp trigger)
         (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
