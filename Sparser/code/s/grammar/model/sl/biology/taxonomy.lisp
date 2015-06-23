@@ -713,7 +713,9 @@ the aggregate across the predicate it's in. |#
          :for components))
 
 (define-category bio-concentration
-  :specializes bio-scalar)
+  :specializes bio-scalar
+  :realization
+  (:noun "concentration"))
 
 
 
