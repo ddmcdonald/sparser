@@ -85,6 +85,8 @@
   :binds ((agent biological)
           (object bio-process)
           (at bio-concentration)
+          (by biological)
+          (in biological)
           (with biological)) 
   :realization
   (:verb "abrogate" :noun "abrogation" 
@@ -92,7 +94,24 @@
          :s agent 
          :o object
          :at at
+         :by biological
+         :in in
          :with with))
+
+
+(define-category accumulation :specializes bio-process
+  :binds ((agent biological) (base biological)(location bio-location)
+          (amount scalar-quality)(within bio-location))
+  :realization
+  (:verb "accumulate" :noun "accumulation"
+         :etf (svo-passive)
+         :s agent
+         :o base
+         :in location
+         :of base
+         :to amount
+         :within within))
+
 
 ;; used almost entirely in "acquired restance" 
 (define-category acquire
@@ -178,18 +197,6 @@
          :o base
          :to added
          :of base))
-
-(define-category accumulation :specializes bio-process
-  :binds ((agent biological) (base biological)(location bio-location)
-          (amount scalar-quality))
-  :realization
-  (:verb "accumulate" :noun "accumulation"
-         :etf (svo-passive)
-         :s agent
-         :o base
-         :of base
-         :in location
-         :to amount))
 
 
 ;; duplicate??
