@@ -432,6 +432,10 @@
   (let* ((prep-edge (edge-left-daughter edge))
          (prep-word (edge-left-daughter prep-edge)))
     ;;//// check that it's a preposition
+    (unless (word-p prep-word)
+      (push-debug `(,edge))
+      (error "Did not get the expected word as left-daughter ~
+              of ~a" prep-edge))
     prep-word))
 
 
@@ -481,7 +485,7 @@
   (let* ((comp-edge (right-edge-for-referent))
          (prep-word (identify-preposition comp-edge))
          (comp-ref (edge-referent (edge-right-daughter comp-edge))))
-    (push-debug `(,prep-word ,comp-ref))
+    (push-debug `(,prep-word ,comp-ref)) ;;(break "here")
     (let ((variable
            (subcategorized-variable vg prep-word comp-ref)))
       (cond
@@ -654,12 +658,10 @@
       ;; so that the rule doesn't go through.
       (cond
        (*subcat-test* 
-        (or
-         (not
-          (or ;; vp has a bound object
-           (null (object-variable vp))
-           (value-of (object-variable vp) vp)
-           (itype subj 'pronoun)))
+        (or (not (or ;; vp has a bound object
+                  (null (object-variable vp))
+                  (value-of (object-variable vp) vp)
+                  (itype subj 'pronoun)))
          (subcategorized-variable vp :subject subj)))
        ;; ?????????????
        ((or ;; vp has a bound object
@@ -939,16 +941,26 @@
 (defun make-prep-comp (prep complement)
   ;; Called for the pattern 
   ;; preposition + (vg vg+ing vg+ed vg+passive vp+passive & vp)
-  (declare (special prep clause category::prep-comp))
+  (declare (special category::to category::prep-comp))
+  ;;(push-debug `(,prep ,complement)) (break "where prep?") 
   (cond
    (*subcat-test*
     (and prep complement))
-   (t 
+   (t
     (let* ((binding-instructions
             `((prep ,prep) (comp ,complement)))
-           (prep-comp (make-simple-individual
-                       category::prep-comp
-                       binding-instructions)))
+           (prep-comp 
+            (make-simple-individual
+             (cond ((eq prep category::to) category::to-comp)
+                   (t category::prep-comp))
+             binding-instructions)))
+      ;; If this starts to make a lot of preposition-specific
+      ;; distinctions then we need to refactor and move the
+      ;; cond up.
+      (when (eq prep category::to)
+        ;; If this routine starts to make a lot of preposition-specific
+        ;; distinctions then we need to refactor and move the cond up.
+        (revise-parent-edge :form category::to-comp))
       prep-comp))))
 
 
