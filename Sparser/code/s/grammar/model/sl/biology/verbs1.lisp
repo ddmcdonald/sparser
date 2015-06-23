@@ -101,16 +101,18 @@
 
 (define-category accumulation :specializes bio-process
   :binds ((agent biological) (base biological)(location bio-location)
-          (amount scalar-quality)(within bio-location))
+          (amount scalar-quality)(into biological)(upon biological))
   :realization
   (:verb "accumulate" :noun "accumulation"
          :etf (svo-passive)
          :s agent
          :o base
          :in location
+         :into into
          :of base
          :to amount
-         :within within))
+         :upon upon
+         :within location))
 
 
 ;; used almost entirely in "acquired restance" 
@@ -699,6 +701,7 @@
          :etf (svo-passive)
          :s agent
          :o object
+         :into into
          ))
 
 (define-category dominate 
