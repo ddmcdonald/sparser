@@ -37,7 +37,7 @@
     :binds :realization
     :prep :by
     :premod
-    :against :as :at :between :for :from :in :into :of :on :onto :to :to-comp :thatcomp :through :via :whethercomp :with))
+    :against :as :at :between :for :from :in :into :of :on :onto :to :to-comp :thatcomp :through :via :whethercomp :with :within))
 
 (defparameter *slot-keywords*
   '(:premod :against :as :at :between :for :from :in :into :of :on :onto :to :to-comp :thatcomp :through :via :whethercomp :with))
