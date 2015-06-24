@@ -100,8 +100,12 @@
 
 
 (define-category accumulation :specializes bio-process
-  :binds ((agent biological) (base biological)(location bio-location)
-          (amount scalar-quality)(into biological)(upon biological))
+  :binds ((agent biological)
+          (base biological)
+          (location bio-location)
+          (amount scalar-quality)
+          (into biological)
+          (upon biological))
   :realization
   (:verb "accumulate" :noun "accumulation"
          :etf (svo-passive)
@@ -116,7 +120,9 @@
  
 (define-category acquire
     :specializes bio-process ;; for conjunctions, as in "de novo or acquired"
-    :binds ((agent bio-entity)(object biological)(method bio-method))
+    :binds ((agent bio-entity)
+            (object biological)
+            (method bio-method))
     :realization
     (:verb "acquire" ;; keyword: ENDS-IN-ED 
 	   :noun "acquisition"
@@ -129,16 +135,6 @@
            :with method ;; "Single images were acquired with a Leica fluorescence microscope..."
 	   ))
 
-(define-category attribute
-    :specializes bio-rhetorical
-    :binds ((agent pronoun/first/plural)(object biological) (cause biological))
-    :realization
-    (:verb "attribute" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :to cause))
-
 ;; According to Sketch Engine on the Mitre corpus,
 ;; "act" by itself roughly means "do" or "behave" and can
 ;; take "on" and "in" as well as "to".
@@ -146,18 +142,29 @@
 ;; There's also the full caps ACT, which stands for
 ;; "adoptive cell therapy"
 
+;;--- activity
+;; "ERK activity in BRAF mutant A375 melanoma cells" #8
+;;  conjectured:  "activity of ERK"
+#|(def-term activity-of-protein
+  :super-category bio-process
+  :noun "activity"
+  -- pooh. we need a couple of NP ETF
+|#
+
 (define-category bio-act
   ;; N.b. "bio-" implies that there's an unmarked "act" as well, and it's a bit cumbersome
   :specializes bio-event
   :binds ((actor bio-entity)
-          (object bio-entity))
+          (object bio-entity)
+          (via biological))
   :documentation "compare with act as")
 
 (def-realization bio-act
   :verb "act"
   :etf sv
   :s actor
-  :on object)
+  :on object
+  :via via)
 
 ;; better choice for 'theme' is complement 
 ;; and the etf thing-is-description
@@ -178,33 +185,28 @@
 
 (define-category bio-activate
   :specializes bio-process
-  :binds ((activator biological) (activated biological)(mechanism biological))
+  :binds ((activator biological)
+          (activated biological)
+          (mechanism biological)
+          (condition bio-condition))
   :realization
     (:verb "activate" 
      :noun "activation"
      :etf (svo-passive)
      :s activator
      :o activated
+     :by activator
      :via mechanism
      :through mechanism
+     :under condition
      :of activated))
 
 
 
 (define-category addition :specializes process
-  :binds ((agent biological) (base biological)(added biological))
-  :realization
-  (:verb "add" :noun "addition"
-         :etf (svo-passive)
-         :s agent
-         :o base
-         :to added
-         :of base))
-
-
-;; duplicate??
-(define-category addition :specializes bio-event
-  :binds ((agent biological) (base biological)(added biological))
+  :binds ((agent biological)
+          (base biological)
+          (added biological))
   :realization
   (:verb "add" :noun "addition"
          :etf (svo-passive)
@@ -214,7 +216,8 @@
          :of base))
 
 (define-category affect :specializes process 
-  :binds ((agent biological)(object biological)
+  :binds ((agent biological)
+          (object biological)
           (causing (:or be biological)))
   :realization 
   (:verb "affect" :etf (svo-passive) 
@@ -227,7 +230,9 @@
 ;; really want to have the form "CRAF allows CRAF to hyperactivate the pathway"  -- want the clausal modiffer
 (define-category allow
     :specializes bio-control
-    :binds ((agent biological)(object biological)(process process))
+    :binds ((agent biological)
+            (object biological)
+            (process process))
     :realization
     (:verb "allow" ;; keyword: ENDS-IN-ING 
 	   :noun "allowance"
@@ -242,7 +247,8 @@
 "" ;; keyword: (ion N) 
 (define-category alter
     :specializes bio-control
-    :binds ((agent biological)(object biological))
+    :binds ((agent biological)
+            (object biological))
     :realization
     (:verb "alter"
 	   :noun "alteration"
@@ -253,7 +259,8 @@
 	   ))
 
 (define-category analyze :specializes bio-method
-  :binds ((agent (:or biological pronoun/first/plural))(object (:or bio-process measurement)))
+  :binds ((agent (:or biological pronoun/first/plural))
+          (object (:or bio-process measurement)))
   :realization 
   (:verb "analyze" :noun "analysis" 
          :etf (svo-passive) 
@@ -271,7 +278,8 @@
 
 (define-category articulate
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "articulate" ;; keyword: ENDS-IN-ED 
 	   :noun "articulation"
@@ -284,7 +292,9 @@
 (define-category bio-associate  :specializes bio-process ;; MAYBE THIS IS LIKE BIND
   ;;:obo-id "GO:0005488"
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((agent biological)(object biological)(site bio-location))
+  :binds ((agent biological)
+          (object biological)
+          (site bio-location))
   :realization 
   (:verb "associate"
          :noun "association"
@@ -299,7 +309,8 @@
 ;; overnight
 (define-category assume
     :specializes bio-rhetorical
-    :binds ((agent pronoun/first/plural)(object biological)
+    :binds ((agent pronoun/first/plural)
+            (object biological)
             (thatcomp (:or biological there-exists)))
     :realization
     (:verb "assume" ;; keyword: ENDS-IN-ED 
@@ -311,20 +322,25 @@
            :thatcomp thatcomp))
 
 
+(define-category attribute
+    :specializes bio-rhetorical
+    :binds ((agent pronoun/first/plural)
+            (object biological)
+            (cause biological))
+    :realization
+    (:verb "attribute" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)
+	   :s agent
+	   :o object
+           :to cause))
 
-;;--- activity
-;; "ERK activity in BRAF mutant A375 melanoma cells" #8
-;;  conjectured:  "activity of ERK"
-#|(def-term activity-of-protein
-  :super-category bio-process
-  :noun "activity"
-  -- pooh. we need a couple of NP ETF
-|#
 
 ;; DAVID -- not sure about the relation of basis to base
 (define-category base
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process)(cause biological))
+    :binds ((agent bio-entity)
+            (object bio-process)
+            (cause biological))
     :realization
     (:verb "base" ;; keyword: ENDS-IN-ED 
 	   :noun "basis"
@@ -337,7 +353,8 @@
 
 
 (define-category block :specializes bio-control
-  :binds ((blocker biological)(blocked biological)) ;; dec sentence 13 "depletion blocks ..."
+  :binds ((blocker biological)
+          (blocked biological)) ;; dec sentence 13 "depletion blocks ..."
   :realization
   (:verb "block"
          :noun "blocking"
@@ -350,7 +367,8 @@
 
 #+ignore
 (define-category co-operate :specializes bio-process 
-  :binds ((agent biological)(co-operator biological)) 
+  :binds ((agent biological)
+          (co-operator biological)) 
   :realization 
   (:verb ("co-operate" :third-plural "co-operates")
          :noun"co-operation" 
