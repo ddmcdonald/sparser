@@ -113,12 +113,10 @@
          :to amount
          :upon upon
          :within location))
-
-
-;; used almost entirely in "acquired restance" 
+ 
 (define-category acquire
     :specializes bio-process ;; for conjunctions, as in "de novo or acquired"
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)(object biological)(method bio-method))
     :realization
     (:verb "acquire" ;; keyword: ENDS-IN-ED 
 	   :noun "acquisition"
@@ -126,6 +124,9 @@
 	   :s agent
 	   :o object
            :of object
+           :on method
+           :through object
+           :with method ;; "Single images were acquired with a Leica fluorescence microscope..."
 	   ))
 
 (define-category attribute
