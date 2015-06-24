@@ -503,6 +503,7 @@
 (define-adverb "illustratively")
 (define-adverb "implicitly")
 (define-adverb "importantly")
+(define-adverb "in concert")
 (define-adverb "in contrast")
 (define-adverb "in stark contrast")
 (define-adverb "in fact")
