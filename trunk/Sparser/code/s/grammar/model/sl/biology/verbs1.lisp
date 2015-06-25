@@ -216,6 +216,7 @@
          :etf (svo-passive)
          :s agent
          :o base
+         :into added
          :to added
          :of base))
 
