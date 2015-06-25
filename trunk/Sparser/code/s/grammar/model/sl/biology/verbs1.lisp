@@ -156,15 +156,19 @@
   :specializes bio-event
   :binds ((actor bio-entity)
           (object bio-entity)
-          (via biological))
+          (process bio-process)
+          (bio biological))
   :documentation "compare with act as")
 
 (def-realization bio-act
   :verb "act"
   :etf sv
   :s actor
+  :at bio
+  :by process
   :on object
-  :via via)
+  :through bio
+  :via bio)
 
 ;; better choice for 'theme' is complement 
 ;; and the etf thing-is-description
