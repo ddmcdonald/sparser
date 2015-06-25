@@ -429,14 +429,25 @@
 (defun identify-preposition (edge)
   "Utility subroutine that is used by any check that wants
    to identity the preposition in a pp, or prep-complement, etc."
+  (declare (special category::preposition))
   (let* ((prep-edge (edge-left-daughter edge))
          (prep-word (edge-left-daughter prep-edge)))
-    ;;//// check that it's a preposition
-    (unless (word-p prep-word)
-      (push-debug `(,edge))
-      (error "Did not get the expected word as left-daughter ~
-              of ~a" prep-edge))
-    prep-word))
+    (cond
+     ((edge-p prep-word)
+      ;; usually indicative that the preposition is a polyword
+      (cond
+       ((word-p prep-word)
+        prep-word)
+       ((polyword-p (edge-rule prep-word))
+        (edge-rule prep-word)) ;; return the pw
+       ((and (eq (edge-form prep-word) category::preposition) ;; sanity check
+             ;; The word was elevated to a category, e.g. 'with'
+             (word-p (edge-left-daughter prep-word)))
+        (edge-left-daughter prep-word))
+       (t
+        (push-debug `(,edge ,prep-edge ,prep-word))
+        (break "Unexpeceted type of preposition: ~a~%~a"
+               (type-of prep-word) prep-word)))))))
 
 
 (defun adjoin-pp-to-vg (vg pp)
@@ -805,7 +816,8 @@
     nil)
    (t
     (when (itypep item 'to-comp)
-      (setq item (value-of 'clause item)))
+      (setq item (value-of 'comp item)))
+    ;;/// prep-comp, etc.
     (let ((subcat-patterns (known-subcategorization? head)))
       (when subcat-patterns
         (let ( variable )
