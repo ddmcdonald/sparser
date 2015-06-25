@@ -433,21 +433,25 @@
   (let* ((prep-edge (edge-left-daughter edge))
          (prep-word (edge-left-daughter prep-edge)))
     (cond
+     ((word-p prep-word)
+      prep-word)
      ((edge-p prep-word)
       ;; usually indicative that the preposition is a polyword
       (cond
-       ((word-p prep-word)
-        prep-word)
-       ((polyword-p (edge-rule prep-word))
+              ((polyword-p (edge-rule prep-word))
         (edge-rule prep-word)) ;; return the pw
        ((and (eq (edge-form prep-word) category::preposition) ;; sanity check
              ;; The word was elevated to a category, e.g. 'with'
              (word-p (edge-left-daughter prep-word)))
         (edge-left-daughter prep-word))
        (t
-        (push-debug `(,edge ,prep-edge ,prep-word))
-        (break "Unexpeceted type of preposition: ~a~%~a"
-               (type-of prep-word) prep-word)))))))
+         (push-debug `(,edge ,prep-edge ,prep-word))
+         (break "Unexpected pattern of an edge over a preposition:~%~a"
+                prep-word))))
+     (t
+      (push-debug `(,edge ,prep-edge ,prep-word))
+      (break "Unexpeceted type of preposition: ~a~%~a"
+             (type-of prep-word) prep-word)))))
 
 
 (defun adjoin-pp-to-vg (vg pp)
