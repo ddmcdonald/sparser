@@ -53,10 +53,14 @@
    lemmas can trigger a specific compose method
    in noun noun compounds.")
  
+(define-mixin-category bio-ifcomp
+  :binds ((ifstatement (:or bio-process molecule-state be bio-predication bio-method relation bio-rhetorical)))
+  :documentation "Similar to bio-whethercomp.")
+
 (define-mixin-category bio-thatcomp
   :binds ((statement (:or bio-process molecule-state be bio-predication bio-method relation bio-rhetorical)))
   :documentation "Actions that take a that complement -- verbs of
-     communication, demonstraction, observation. Would like to have a 
+     communication, demonstration, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
      or negative in terms of belief state. The prefix -bio- may not be warranted,
      since these are quite general, but at the moment we are putting them below the 
@@ -65,7 +69,7 @@
 (define-mixin-category bio-whethercomp
   :binds ((statement (:or bio-process molecule-state be bio-predication bio-method relation bio-rhetorical)))
   :documentation "Actions that take a that complement -- verbs of
-     communication, demonstraction, observation. Would like to have a 
+     communication, demonstration, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
      or negative in terms of belief state. The prefix -bio- may not be warranted,
      since these are quite general, but at the moment we are putting them below the 
