@@ -267,13 +267,16 @@
 
 
 (define-category analyze :specializes bio-method
+  :mixins (bio-whethercomp bio-ifcomp)
   :binds ((agent (:or biological pronoun/first/plural))
           (object (:or bio-process measurement)))
   :realization 
   (:verb "analyze" :noun "analysis" 
          :etf (svo-passive) 
          :s agent 
-         :o object))
+         :o object
+         :ifcomp ifstatement
+         :whethercomp statement))
 
 (def-synonym analyze
   (:verb "analyse"
@@ -893,19 +896,25 @@
    :via mechanism
    :of process))
 
-
+;; needs to come after bio-enhance.
 (define-category bio-amplify
   :specializes bio-enhance
   :binds ((agent biological)
           (process bio-process)
-          (mechanism biological))
+          (mechanism biological)
+          (bio biological))
   :realization 
   (:verb "amplify" :noun "amplification"
    :etf (svo-passive)
    :s agent
    :o process
+   :as bio ;; need to change this at some point to account for, e.g.,
+           ;; "GAPDH transcripts were amplified as an internal control."
+   :by bio
+   :from bio
+   :of process
    :via mechanism
-   :of process))
+   :with bio))
 
 
 
@@ -934,7 +943,7 @@
   :o object))
 
 (define-category examine
-                 :specializes bio-rhetorical
+  :specializes bio-rhetorical
   :mixins (bio-whethercomp)
   :binds ((agent bio-entity)(object bio-process))
   :realization
