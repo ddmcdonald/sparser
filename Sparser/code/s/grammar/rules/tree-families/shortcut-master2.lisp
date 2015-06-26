@@ -37,10 +37,10 @@
     :binds :realization
     :prep :by
     :premod
-    :against :as :at :between :for :from :in :into :of :on :onto :to :to-comp :thatcomp :through :under :upon :via :whethercomp :with :within))
+    :against :as :at :between :for :from :ifcomp :in :into :of :on :onto :to :to-comp :thatcomp :through :under :upon :via :whethercomp :with :within))
 
 (defparameter *slot-keywords*
-  '(:premod :against :as :at :between :for :from :in :into :of :on :onto :to :to-comp :thatcomp :through :under :upon :via :whethercomp :with :within))
+  '(:premod :against :as :at :between :for :from :ifcomp :in :into :of :on :onto :to :to-comp :thatcomp :through :under :upon :via :whethercomp :with :within))
 
 
 (defun includes-def-realization-keyword (rdata)
@@ -374,7 +374,7 @@
     do 
     (subcategorize-for-slot category 
                             (case (car pair)
-                              ((:premod :thatcomp :whethercomp :to-comp) (car pair)) 
+                              ((:premod :thatcomp :whethercomp :to-comp :ifcomp) (car pair)) 
                               (t (string-downcase (symbol-name (car pair)))))
                             (second pair))))
 
