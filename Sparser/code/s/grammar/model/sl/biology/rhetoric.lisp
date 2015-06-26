@@ -41,9 +41,14 @@
   (let ((paragraph (parent sentence)))        
     (push-debug `(,paragraph))
     (cond
+      ((contains-new-fact-phrase sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Relevant (contains phrase): ~a~%" sentence))
+       t)
+
       ((includes-a-reference sentence)
        (when *trace-relevance-judgements*
-	(format t "~&   Not relevant (reference): ~a~%" sentence))
+	 (format t "~&   Not relevant (reference): ~a~%" sentence))
        (record-irrelevant-sentence sentence :includes-reference)
        nil)
 
@@ -171,27 +176,48 @@ no evidence in the sentence.
 (known-result-phrase "it has been unclear how")
 (known-result-phrase "it is less clear how")
 (known-result-phrase "it remains unclear why")
+(known-result-phrase "it was established")
+(known-result-phrase "knowing")
 (known-result-phrase "most commonly")
+(known-result-phrase "most studied")
 (known-result-phrase "previously")
 (known-result-phrase "recent data")
 (known-result-phrase "recent evidence")
+(known-result-phrase "recent investigations")
 (known-result-phrase "recently")
 (known-result-phrase "thus far identified")
 
+;; Can we reduce this to just the verbs+present tense,
+;; e.g., "reveal", "show", "demonstrate", etc.? 
+;; Or give a list of words and say that a new-fact-phrase
+;; is any polyword that is a (syntactically valid?)permutation
+;; of those words. Or just if a sentence contains enough of
+;; the words?
 (new-fact-phrase "arguing that")
 (new-fact-phrase "demonstrates that")
+(new-fact-phrase "for the first time") 
 (new-fact-phrase "hence")
 (new-fact-phrase "here we show")
 (new-fact-phrase "indicates that")
+(new-fact-phrase "indicating")
 (new-fact-phrase "our data provide evidence")
+(new-fact-phrase "our data reveal")
 (new-fact-phrase "our data suggest that")
 (new-fact-phrase "provides a novel link between")
 (new-fact-phrase "provides an explanation of how")
 (new-fact-phrase "suggesting that")
+(new-fact-phrase "therefore")
+(new-fact-phrase "the data also suggest")
+(new-fact-phrase "the data suggest")
 (new-fact-phrase "these data suggest")
+(new-fact-phrase "these data support")
 (new-fact-phrase "these findings reveal")
+(new-fact-phrase "this modeling result suggests that")
+(new-fact-phrase "this result indicates")
+(new-fact-phrase "these results indicate")
 (new-fact-phrase "these results show")
 (new-fact-phrase "these results suggest")
+(new-fact-phrase "this result shows that")
 (new-fact-phrase "this indicates that")
 (new-fact-phrase "this observation suggests")
 (new-fact-phrase "thus")
@@ -205,9 +231,13 @@ no evidence in the sentence.
 
 (methodology-phrase "to assess")
 (methodology-phrase "to determine")
+(methodology-phrase "to test")
 (methodology-phrase "we analyzed")
 (methodology-phrase "we carried out")
+(methodology-phrase "we conducted")
+(methodology-phrase "we employed")
 (methodology-phrase "we examined")
+(methodology-phrase "we first determined")
 (methodology-phrase "we investigated")
 (methodology-phrase "we observed")
 (methodology-phrase "we performed")
