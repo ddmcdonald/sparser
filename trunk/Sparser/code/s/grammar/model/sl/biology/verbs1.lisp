@@ -265,6 +265,7 @@
            :of object
 	   ))
 
+
 (define-category analyze :specializes bio-method
   :binds ((agent (:or biological pronoun/first/plural))
           (object (:or bio-process measurement)))
@@ -892,9 +893,12 @@
    :via mechanism
    :of process))
 
+
 (define-category bio-amplify
   :specializes bio-enhance
-  :binds ((agent biological) (process bio-process)(mechanism biological))
+  :binds ((agent biological)
+          (process bio-process)
+          (mechanism biological))
   :realization 
   (:verb "amplify" :noun "amplification"
    :etf (svo-passive)
@@ -902,7 +906,6 @@
    :o process
    :via mechanism
    :of process))
-
 
 
 
@@ -1311,7 +1314,8 @@
 
 (define-category know
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "know"
 	   :noun "knowledge" 
@@ -1333,8 +1337,9 @@
            :to-comp result))
 
 (define-category ligate :specializes bio-process 
-  :binds ((agent bio-entity)(object bio-process)(substrate bio-entity) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
-          ) 
+  :binds ((agent bio-entity)
+          (object bio-process)
+          (substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "ligate" :noun "ligation" 
          :etf (svo-passive)
@@ -1349,7 +1354,8 @@
 
 (define-category maintain
     :specializes bio-control
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "maintain"
 	   :noun "maintenance"
@@ -1359,7 +1365,8 @@
            :of object)) 
 
 (define-category measure :specializes bio-method
-  :binds ((agent pronoun/first/plural)(object biological)) ;; object can be a bio-scalar, bio-entity or bio-process 
+  :binds ((agent pronoun/first/plural)
+          (object biological)) ;; object can be a bio-scalar, bio-entity or bio-process 
   :realization 
   (:verb "measure" :noun "measurement"
          :etf (svo-passive)
@@ -1369,7 +1376,8 @@
 
 (define-category mediate
   :specializes bio-process
-  :binds ((agent bio-entity)(object bio-process))
+  :binds ((agent bio-entity)
+          (object bio-process))
   :realization
   (:verb   "mediate" :noun "mediation"
    :etf (svo-passive)
@@ -1379,7 +1387,9 @@
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
 
 (define-category modify :specializes bio-process
-  :binds ((agent bio-entity)(object bio-process)(location bio-location))
+  :binds ((agent bio-entity)
+          (object bio-process)
+          (location bio-location))
   :realization 
   (:verb "modify" :noun "modification"
          :etf (svo-passive) 
@@ -1426,7 +1436,8 @@
 
 (define-category need
     :specializes bio-relation
-    :binds ((agent bio-entity)(object (:or bio-entity bio-process))
+    :binds ((agent bio-entity)
+            (object (:or bio-entity bio-process))
             (result-or-purpose process))
     :realization
     (:verb "need" ;; keyword: ENDS-IN-ED 
@@ -1445,8 +1456,10 @@
 (define-category observe
     :specializes bio-method
     :mixins (bio-thatcomp)
-    :binds ((agent pronoun/first/plural)(object biological)
-            (focused-on biological)(context biological))
+    :binds ((agent pronoun/first/plural)
+            (object biological)
+            (focused-on biological)
+            (context biological))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
 	   :noun "observation"
@@ -1460,7 +1473,9 @@
 
 (define-category obtain
     :specializes bio-method
-    :binds ((agent pronoun/first/plural)(object bio-process)(source biological))
+    :binds ((agent pronoun/first/plural)
+            (object bio-process)
+            (source biological))
     :realization
     (:verb "obtain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1470,7 +1485,8 @@
 
 (define-category occur
     :specializes bio-event
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb ("occur" :present-participle "occurring" :past-tense "occurred")
 	   :noun "occurrence"
@@ -1480,7 +1496,8 @@
 
 (define-category overexpress
     :specializes bio-process
-    :binds ((agent bio-entity)(object biological))
+    :binds ((agent bio-entity)
+            (object biological))
     :realization
     (:verb "overexpress"
 	   :noun "overexpression"
@@ -1491,7 +1508,8 @@
 
 ;; new definitions from MITRE test set
 (define-category overlap :specializes bio-relation
-  :binds ((object1 biological)(object2 biological))
+  :binds ((object1 biological)
+          (object2 biological))
   :realization
   (:verb "overlap"
          :etf (svo-passive)
@@ -1501,8 +1519,10 @@
 
 (define-category perform
     :specializes bio-method
-    :binds ((agent pronoun/first/plural)(object bio-method)
-            (beneficiary biological)(using biological))
+    :binds ((agent pronoun/first/plural)
+            (object bio-method)
+            (beneficiary biological)
+            (using biological))
     :realization
     (:verb "perform" ;; keyword: ENDS-IN-ED 
 	   :noun "performance"
@@ -1516,7 +1536,8 @@
 
 
 (define-category place :specializes bio-method
-  :binds ((agent pronoun/first/plural)(object (:or bio-process bio-entity))
+  :binds ((agent pronoun/first/plural)
+          (object (:or bio-process bio-entity))
           (location bio-location))
   :realization 
   (:verb "place" 
@@ -1529,7 +1550,8 @@
 (define-category posit
     :specializes bio-rhetorical
     :mixins (bio-thatcomp)
-    :binds ((agent pronoun/first/plural)(object bio-process))
+    :binds ((agent pronoun/first/plural)
+            (object bio-process))
     :realization
     (:verb "posit"
 	   :etf (svo-passive)
@@ -1539,7 +1561,9 @@
 
 (define-category potentiate
     :specializes bio-control
-    :binds ((agent biological)(object bio-process)(manner bio-process))
+    :binds ((agent biological)
+            (object bio-process)
+            (manner bio-process))
     :realization
     (:verb "potentiate" ;; keyword: ENDS-IN-ED 
 	   :noun "potentiation"
@@ -1552,7 +1576,8 @@
 (define-category predict
     :specializes bio-rhetorical
     :mixins (bio-thatcomp)
-    :binds ((agent biological)(object bio-process))
+    :binds ((agent biological)
+            (object bio-process))
   ;; agent can be a process, like "mutation"
     :realization
     (:verb "predict"
@@ -1564,7 +1589,8 @@
 
 (define-category present
     :specializes bio-relation
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "present"
 	   :noun "presentation"
@@ -1574,7 +1600,8 @@
            :of object))
 
 (define-category preserve :specializes bio-control
-  :binds ((agent bio-entity)(object bio-process))
+  :binds ((agent bio-entity)
+          (object bio-process))
   :realization
   (:verb "preserve" :noun "preservation"
          :etf (svo-passive)
@@ -1583,7 +1610,8 @@
 
 
 (define-category prevent :specializes bio-control
-  :binds ((agent biological)(object biological)) 
+  :binds ((agent biological)
+          (object biological)) 
   :realization
   (:verb "prevent" :noun "prevention" 
          :etf (svo-passive) 
@@ -1594,7 +1622,8 @@
 (delete-verb-cfr (resolve/make "probe"))
 (define-category probe
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "probe" 
            :etf (svo-passive)
@@ -1605,7 +1634,8 @@
 
 (define-category proliferate
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "proliferate"
 	   :noun "proliferation"
@@ -1634,7 +1664,8 @@
 
 (define-category provide
     :specializes bio-relation
-    :binds ((agent (:or result biological))(object (:or argument-support biological bio-rhetorical)))
+    :binds ((agent (:or result biological))
+            (object (:or argument-support biological bio-rhetorical)))
     :realization
     (:verb "provide"
 	   :noun "provision"
@@ -1655,7 +1686,8 @@
 (define-category query
     :specializes bio-method
     :mixins (bio-whethercomp)
-    :binds ((agent (:or biological pronoun/first/plural))(object (:or bio-process bio-entity)))
+    :binds ((agent (:or biological pronoun/first/plural))
+            (object (:or bio-process bio-entity)))
     :realization
     (:verb "query" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1665,7 +1697,8 @@
 
 (define-category raise
     :specializes bio-control
-    :binds ((agent bio-entity)(object (:or bio-process bio-abstract))) ;; bio-abstract for "raised the possibility"
+    :binds ((agent bio-entity)
+            (object (:or bio-process bio-abstract))) ;; bio-abstract for "raised the possibility"
     :realization
     (:verb "raise" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1673,7 +1706,8 @@
 	   :o object))
 
 (define-category reconstitute :specializes bio-process
-  :binds ((agent bio-entity)(object bio-process))
+  :binds ((agent bio-entity)
+          (object bio-process))
   :realization
   (:verb "reconstitute" :noun "reconstitution"
          :etf (svo-passive)
@@ -1681,7 +1715,10 @@
          :o object))
 
 (define-category recruit :specializes bio-process 
-  :binds ((agent bio-entity)(object bio-process)(source biological)(destination biological)) 
+  :binds ((agent bio-entity)
+          (object bio-process)
+          (source biological)
+          (destination biological)) 
   :realization 
   (:verb "recruit" :noun "recruitment"
          :etf (svo-passive) 
@@ -1691,7 +1728,8 @@
 
 (define-category reduce
     :specializes bio-control
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "reduce" ;; keyword: ENDS-IN-ING 
 	   :noun "reduction"
@@ -1735,7 +1773,8 @@
 
 (define-category relapse
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-entity))
+    :binds ((agent bio-entity)
+            (object bio-entity))
     :realization
     (:verb "relapse" ;; keyword: ENDS-IN-ING 
 	   :noun "relapse"
@@ -1755,7 +1794,9 @@
 
 (define-category molecule-release
  :specializes bio-process
- :binds ((agent bio-entity)(object molecule)(substrate molecule))
+ :binds ((agent bio-entity)
+         (object molecule)
+         (substrate molecule))
  :realization
  (:verb "release" :noun "release"
   :etf (svo-passive)
@@ -1767,7 +1808,8 @@
 
 (define-category remain
     :specializes bio-relation
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1781,7 +1823,8 @@
 
 (define-category remove
     :specializes bio-process
-    :binds ((agent pronoun/first/plural)(object biological))
+    :binds ((agent pronoun/first/plural)
+            (object biological))
     :realization
     (:verb "remove" ;; keyword: ENDS-IN-ED 
 	   :noun "removal"
@@ -1794,7 +1837,8 @@
 
 (define-category report :specializes bio-rhetorical
     :mixins (bio-thatcomp)
-    :binds ((agent pronoun/first/plural)(object bio-process))
+    :binds ((agent pronoun/first/plural)
+            (object bio-process))
     :realization
     (:verb ("report" :past-tense "reported")
 	   :etf (svo-passive)
@@ -1804,7 +1848,8 @@
 
 (define-category represent
     :specializes bio-relation
-    :binds ((agent biological)(object (:or bio-process measurement)))
+    :binds ((agent biological)
+            (object (:or bio-process measurement)))
     :realization
     (:verb "represent" :noun "representation"
 	   :etf (svo-passive)
@@ -1814,7 +1859,8 @@
 
 (define-category require
     :specializes bio-control
-    :binds ((requires biological)(requirement (:or biological process)))
+    :binds ((requires biological)
+            (requirement (:or biological process)))
     :realization
     (:verb "require"
 	   :noun "requirement"
@@ -1826,7 +1872,8 @@
 
 (define-category resist
     :specializes bio-process
-    :binds ((agent bio-entity)(object biological))
+    :binds ((agent bio-entity)
+            (object biological))
     :realization
     (:verb "resist"
 	   :noun "resistance"
@@ -1839,7 +1886,8 @@
 
 (define-category result
     :specializes bio-process
-    :binds ((agent (:or bio-entity bio-process))(object bio-process))
+    :binds ((agent (:or bio-entity bio-process))
+            (object bio-process))
     :realization
     (:verb "result" ;; keyword: ENDS-IN-ED 
 	   :etf (svo)
@@ -1853,7 +1901,8 @@
 
 (define-category reveal :specializes bio-rhetorical
 		 :mixins (bio-thatcomp)
-  :binds ((agent biological)(object bio-process))
+  :binds ((agent biological)
+          (object bio-process))
   ;; the analysis revealed
   :realization
   (:verb "reveal" :noun "revelation" 
@@ -1864,7 +1913,9 @@
 
 (define-category select
     :specializes bio-method
-    :binds ((agent pronoun/first/plural)(object biological)(study bio-method))
+    :binds ((agent pronoun/first/plural)
+            (object biological)
+            (study bio-method))
     :realization
     (:verb "select" ;; keyword: ENDS-IN-ED 
 	   :noun "selection"
@@ -1876,7 +1927,8 @@
 
 (define-category seem
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "seem"
 	   :etf (svo)
@@ -1904,7 +1956,8 @@
 
 
 (define-category stabilize :specializes bio-control
-  :binds ((agent biological)(object biological))
+  :binds ((agent biological)
+          (object biological))
  :realization
   (:verb "stabilize" :noun "stabilization"
          :etf (svo-passive) 
@@ -1913,7 +1966,8 @@
 
 (define-category study-bio-process
  :specializes bio-method
- :binds ((agent pronoun/first/plural)(object biological))
+ :binds ((agent pronoun/first/plural)
+         (object biological))
   ;; can study bio-process or bio-entity
  :realization
  (:verb ("studyxxx" :past-tense "studied" :present-participle "studying")
@@ -1927,7 +1981,8 @@
 
 (define-category stimulate
   :specializes bio-control
-  :binds ((agent bio-entity)(object biological))
+  :binds ((agent bio-entity)
+          (object biological))
   :realization
   (:verb "stimulate" :noun "stimulation"
    :etf (svo-passive)
@@ -1938,7 +1993,8 @@
 
 (define-category succeed
   :specializes bio-relation
-  :binds ((agent biological)(goal biological))
+  :binds ((agent biological)
+          (goal biological))
   :realization
   (:verb "succeed" :noun "success"
    :etf (sv)
@@ -1959,7 +2015,8 @@
 
 (define-category suppress
     :specializes bio-control
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "suppress" ;; keyword: ENDS-IN-ED 
 	   :noun "suppression"
@@ -1970,7 +2027,8 @@
 
 (define-category sustain
     :specializes bio-control
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "sustain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1979,7 +2037,8 @@
 
 (define-category tag
     :specializes bio-method
-    :binds ((tagged protein)(taggant protein))
+    :binds ((tagged protein)
+            (taggant protein))
     :realization
     (:verb "tag" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -1991,7 +2050,8 @@
 #+ignore
 (define-category target
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb ("target" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
 	   :noun "target"
@@ -2003,7 +2063,8 @@
 
 (define-category tend
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "tend" ;; keyword: ENDS-IN-ED 
 	   :noun "tendency"
@@ -2015,7 +2076,8 @@
 (define-category test
     :specializes bio-method
     :mixins (bio-whethercomp)
-    :binds ((agent pronoun/first/plural)(object (:or bio-rhetorical biological)))
+    :binds ((agent pronoun/first/plural)
+            (object (:or bio-rhetorical biological)))
     :realization
     (:verb "test" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
@@ -2024,7 +2086,8 @@
            :whethercomp statement))
 
 (define-category transactivation :specializes bio-process
-  :binds ((agent biological)(object biological))
+  :binds ((agent biological)
+          (object biological))
   :realization
   (:verb "transactivate" :noun "transactivation"
          :etf (svo-passive)
@@ -2034,13 +2097,15 @@
 
 
 (define-category transcribe :specializes bio-process
-  :binds ((agent bio-entity)(object bio-process))
+  :binds ((agent bio-entity)
+          (object bio-process))
   :realization 
   (:verb "transcribe" :noun "transcription" :etf (svo-passive) :s agent :o object))
 
 (define-category transduce
   :specializes  bio-process
-  :binds ((agent bio-entity)(object bio-entity))
+  :binds ((agent bio-entity)
+          (object bio-entity))
   :realization
   (:verb "transduce" :noun "transduction" 
   :etf (svo-passive)
@@ -2050,7 +2115,10 @@
 
 (define-category transition
  :specializes bio-process
- :binds ((agent bio-entity)(object molecule)(from biological)(to biological))
+ :binds ((agent bio-entity)
+         (object molecule)
+         (from biological)
+         (to biological))
  :realization
  (:verb "transition" ; :noun "release"
   :etf (svo-passive)
@@ -2117,7 +2185,9 @@
    :premod object))
 
 (define-category translate :specializes bio-relation
-  :binds ((agent biological) (initial biological) (result biological))
+  :binds ((agent biological)
+          (initial biological)
+          (result biological))
   :realization
   (:verb "translate"
          :etf (svo-passive)
@@ -2126,7 +2196,9 @@
          :into result))
 
 (define-category treatment :specializes bio-method
-  :binds ((agent pronoun/first/plural) (patient biological) (treatment biological)
+  :binds ((agent pronoun/first/plural)
+          (patient biological)
+          (treatment biological)
           (modifier (:or bio-predication modifier)))
   :realization
   (:verb "treat" :noun "treatment"
@@ -2139,7 +2211,8 @@
 ;;This is almost never used as a verb -- only as "truncating...mutation" and "...truncation of ..."
 (define-category truncate
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "truncate"
 	   :noun "truncation"
@@ -2162,7 +2235,8 @@
 ;; base form is "underlie" though...
 (define-category underly
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "underly" ;; keyword: ENDS-IN-ING 
 	   :etf (svo-passive)
@@ -2170,7 +2244,8 @@
 	   :o object))
 
 (define-category understand :specializes bio-rhetorical
-  :binds ((material biological)(agent pronoun/first/plural))
+  :binds ((material biological)
+          (agent pronoun/first/plural))
   :realization
   (:verb ("understand" :past-tense "understood")
          :etf (svo-passive)
@@ -2179,7 +2254,8 @@
 
 (define-category upregulate
   :specializes bio-control
-  :binds ((agent bio-entity)(object biological))
+  :binds ((agent bio-entity)
+          (object biological))
   :realization
   (:verb   "upregulate" :noun "upregulation"
    :etf (svo-passive)
@@ -2193,7 +2269,9 @@
 
 (define-category use
     :specializes bio-process
-    :binds ((agent pronoun/first/plural)(object biological)(result biological)
+    :binds ((agent pronoun/first/plural)
+            (object biological)
+            (result biological)
             (purpose (:or bio-event bio-process bio-method bio-rhetorical)))
     :realization
     (:verb ("useXXX" :past-tense "used" :present-participle "using") ;; keyword: ENDS-IN-ED 
@@ -2209,7 +2287,8 @@
 
 (define-category validate
     :specializes bio-rhetorical
-    :binds ((agent biological)(object bio-process))
+    :binds ((agent biological)
+            (object bio-process))
   ;; validated by the success of MEK inhibition
     :realization
     (:verb "validate" ;; keyword: ENDS-IN-ED 
@@ -2221,7 +2300,8 @@
 
 (define-category verify :specializes bio-rhetorical
 		 :mixins (bio-thatcomp)
-  :binds ((agent bio-entity)(object bio-process))
+  :binds ((agent bio-entity)
+          (object bio-process))
   :realization 
   (:verb "verify" :noun "verification"
          :etf (svo-passive)
@@ -2231,7 +2311,8 @@
 
 (define-category yield
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "yield" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
