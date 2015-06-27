@@ -180,15 +180,16 @@
     ;; For right now, binding the subject and letting the chips
     ;; fall as they may. Elevating the right edeg as the head
     ;; but making it an adjective overall. 
-    (when variable
-      ;; otherwise do 'modifier' ???
-      (bind-variable variable left-ref right-ref))
+    
     (let ((edge
            (make-binary-edge/explicit-rule-components
             leading-edge trailing-edge
                :category (edge-category trailing-edge)
                :form category::adjective
-               :referent right-ref
+               :referent (if variable
+                             ;; otherwise do 'modifier' ???
+                             (bind-dli-variable variable left-ref right-ref)
+                             right-ref)
                :rule-name 'make-right-head-with-agent-left)))
       edge)))
 

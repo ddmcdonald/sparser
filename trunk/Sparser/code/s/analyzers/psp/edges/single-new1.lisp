@@ -90,7 +90,8 @@
                                     (cfr-category rule)))
     (setf (edge-form edge)      (or form
                                     (cfr-form rule)))
-    (setf (edge-referent edge)  (place-referent-in-lattice
+    (setf (edge-referent edge)  
+          (place-referent-in-lattice
            (or referent
                (referent-from-unary-rule
                 edge rule daughter))

@@ -288,7 +288,7 @@
     (when value
       (if psi?
         (setq extended-psi (extend-psi-by-binding variable value body))
-        (bind-variable variable value body)))
+        (bind-variable variable value body))) ;; obsolete in DLI case
     
     ;; //// annotate the value re. what c+v it's been bound to
     
