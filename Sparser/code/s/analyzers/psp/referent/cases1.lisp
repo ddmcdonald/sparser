@@ -110,14 +110,22 @@ construction code.
         (word) ;; from morphology-induced edges - ignore it
 
         (individual 
-         (setq i (maybe-copy-individual head))
+         (setq i (individual-for-ref head))
          (let* ((pair (car vv-pair))
                 (variable (car pair))
                 (value (cadr pair)))
-           (bind-variable variable value i)))
+           (setq i (bind-dli-variable variable value i))))
 
         (referential-category
-         (setq i (find-or-make/individual head vv-pair)))
+         (cond
+          (*description-lattice*
+           (setq i (individual-for-ref head))
+           (let* ((pair (car vv-pair))
+                  (variable (car pair))
+                  (value (cadr pair)))
+             (setq i (bind-dli-variable variable value i))))
+          (t
+           (setq i (find-or-make/individual head vv-pair)))))
 
         (otherwise
          (break "Unanticipated type as the head: ~a~%~a"

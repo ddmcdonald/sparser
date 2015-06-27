@@ -239,7 +239,9 @@
                      (edge-referent head-edge)
                      (find-or-make/individual head bindings-plist))))
            (when reused?
-             (apply-bindings i bindings-plist))
+             (multiple-value-bind (bindings individual)
+                                  (apply-bindings i bindings-plist)
+               (setq i individual)))
            (annotate-realization/base-case lp i)
            (setq type-of-head head)
            (dolist (annotation annotation-list)
@@ -399,7 +401,7 @@
     (when value
       (if psi?
         (setq extended-psi (find-or-make-psi-with-binding variable value body))
-        (bind-variable variable value body)))
+        (setq body (bind-dli-variable variable value body))))
 
     ;; //// annotate the value re. what c+v it's been bound to
     (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
