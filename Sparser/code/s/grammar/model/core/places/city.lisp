@@ -129,7 +129,7 @@
                    (string (find-individual 'state :name state))
                    ;;(list ) ;; (state . country)
                    (referential-category state))))
-            (bind-variable 'state state-obj obj)))
+            (setq obj (bind-dli-variable 'state state-obj obj))))
                     
         (when aliases
           (let ( word )

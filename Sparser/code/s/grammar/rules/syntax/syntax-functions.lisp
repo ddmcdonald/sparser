@@ -118,15 +118,15 @@
             (declare (special var))
            ;; (lsp-break "noun-noun")
             (if var ;; really should check for passivizing
-              (bind-variable var qualifier head)
+		(setq  head (bind-dli-variable var qualifier head))
               ;; otherwise it's not obvious what to bind
               (else
-                (bind-variable 'modifier qualifier head)))
+                (setq  head (bind-dli-variable 'modifier qualifier head))))
             head))
         (else
           ;; what's the right relationship? Systemics would say
           ;; they are qualifiers, so perhaps subtype?
-          (bind-variable 'modifier qualifier head) ;; safe
+          (setq  head (bind-dli-variable 'modifier qualifier head)) ;; safe
           head))))
 
 (defun interpret-premod-to-np (premod head)
@@ -139,12 +139,13 @@
         (push (subcat-instance head variable-to-bind premod premod)
               *subcat-info*))
       (setq head (individual-for-ref head))
-      (bind-variable variable-to-bind premod head)
+      (setq  head (bind-dli-variable variable-to-bind premod head))
       head))))
 
 
 (defun adj-noun-compound (qualifier head)
-  ;; (break "adj-noun-compound")
+  (declare (special qualifier head))
+  ;;(lsp-break "adj-noun-compound")
   ;; goes with (adjective n-bar-type) syntactic rule
   (when nil
     (push-debug `(,qualifier ,head))
@@ -158,14 +159,14 @@
         (interpret-premod-to-np qualifier head)
         (else
           (when (itypep head 'endurant)
-            (bind-variable 'modifier qualifier head))
+            (setq  head (bind-dli-variable 'modifier qualifier head)))
           head)))
    ((interpret-premod-to-np qualifier head))
    (t ;; Dec#2 has "low nM" which requires coercing 'low'
     ;; into a number. Right now just falls through
     (setq head (individual-for-ref head))
     (when (itypep head 'endurant)
-      (bind-variable 'modifier qualifier head))
+      (setq  head (bind-dli-variable 'modifier qualifier head)))
     head)))
 
 (defun quantifier-noun-compound (quantifier head)
@@ -181,11 +182,11 @@
   (if (eq quantifier (word-named "no")) ;; Jan#4 "no increase"
       ;; in Jan#4 it's a literal
     (let ((no (find-individual 'quantifier :word "no")))
-      (bind-variable 'negation no head)
+      (setq  head (bind-dli-variable 'negation no head))
       head);; on top
     (cond
      ((itypep head 'endurant)
-      (bind-variable 'quantifier quantifier head)
+      (setq  head (bind-dli-variable 'quantifier quantifier head))
       head)
      (t ;;//////// drop it on the floor
       head))))
@@ -197,7 +198,7 @@
   ;; See notes on forming plurals in morphology1
   (setq head (individual-for-ref head))
   (when (itypep head 'endurant) ;; J34: "Histone 2B"
-    (bind-variable 'number number head))
+    (setq  head (bind-dli-variable 'number number head)))
   head)
 
 
@@ -225,8 +226,8 @@
   (let ((subject (subject-variable qualifier)))
     (setq qualifier (individual-for-ref qualifier))
     (if subject ;; really should check for passivizing
-        (bind-variable subject head qualifier))
-    (bind-variable 'modifier qualifier head)
+        (setq  qualifier (bind-dli-variable subject head qualifier)))
+    (setq  head (bind-dli-variable 'modifier qualifier head))
     head))
 
 (defun verb-noun-compound (qualifier head)
@@ -253,8 +254,8 @@
   (let ((object (object-variable qualifier)))
     (setq qualifier (individual-for-ref qualifier))
     (when object ;; really should check for passivizing
-      (bind-variable object head qualifier))
-    (bind-variable 'modifier qualifier head)
+      (setq  qualifier (bind-dli-variable object head qualifier)))
+    (setq  head (bind-dli-variable 'modifier qualifier head))
     head))
 
 ;;;------------------
@@ -271,7 +272,7 @@
       (let ((i (make/individual
                 (category-named 'tense/aspect-vector) nil)))
         (setq vg (individual-for-ref vg))
-        (bind-variable 'aspect i vg)
+        (setq  vg (bind-dli-variable 'aspect i vg))
         i)))
 
 (defun absorb-auxiliary (aux vg)
@@ -287,22 +288,23 @@
     ;; Check for negation
     (when (value-of 'negation aux)
       ;;/// RJB has negation on event too -- sort that out
-      (bind-variable 'negation (value-of 'negation aux) i))
+      (setq  i (bind-dli-variable 'negation (value-of 'negation aux) i)))
 
     ;; Propagate the auxiliary
     (case (cat-symbol aux-type)
       ((category::be-able-to  ;; see modals.lisp
         category::future
         category::conditional)
-       (bind-variable 'modal aux i))
+       (setq  i (bind-dli-variable 'modal aux i)))
       (category::anonymous-agentive-action) ;; do
       (category::have
-       (bind-variable 'perfect aux i))
+       (setq  i (bind-dli-variable 'perfect aux i)))
       (otherwise
        (push-debug `(,aux ,vg))
        (error "Assimilate the auxiliary category ~a~%  ~a"
               aux-type aux)))
     ;;(push-debug `(,i)) (break "look at i")
+    (setq vg (bind-dli-variable 'aspect i vg))
     vg))
 
 
@@ -318,15 +320,16 @@
   (let ((i (find-or-make-aspect-vector vg)))
     (case (cat-symbol aux)
       (category::be  ;; be + ing
-       (bind-variable 'progressive aux i))
+       (setq  i (bind-dli-variable 'progressive aux i)))
       (category::have  ;; have + en
-       (bind-variable 'perfect aux i))
+       (setq  i (bind-dli-variable 'perfect aux i)))
       (category::past
-       (bind-variable 'past t i))
+       (setq  i (bind-dli-variable 'past t i)))
       (otherwise
        (push-debug `(,aux ,vg))
        (error "Extend add-tense/aspect to handle ~a" aux)))
     ;;(push-debug `(,i)) (break "look at i")
+    (setq vg (bind-dli-variable 'aspect i vg))
     vg))
 
 (defmethod add-tense/aspect ((aux individual) (vg individual))
@@ -334,15 +337,16 @@
   (let ((i (find-or-make-aspect-vector vg)))
     (case (cat-symbol (car (indiv-type aux)))
       (category::be  ;; be + ing
-       (bind-variable 'progressive aux i))
+       (setq  i (bind-dli-variable 'progressive aux i)))
       (category::have  ;; have + en
-       (bind-variable 'perfect aux i))
+       (setq  i (bind-dli-variable 'perfect aux i)))
       (category::past
-       (bind-variable 'past t i))
+       (setq  i (bind-dli-variable 'past t i)))
       (otherwise
        (push-debug `(,aux ,vg))
        (error "Extend add-tense/aspect to handle ~a" aux)))
     ;;(push-debug `(,i)) (break "look at i")
+    (setq vg (bind-dli-variable 'aspect i vg))
     vg))
 
 
@@ -355,8 +359,8 @@
   (setq vg (individual-for-ref vg))
   (let ((var (object-variable vg)))
     (if var
-      (bind-variable var adj vg)
-      (bind-variable 'participant adj vg))
+      (setq  vg (bind-dli-variable var adj vg))
+      (setq  vg (bind-dli-variable 'participant adj vg)))
     vg))
 
 
@@ -389,7 +393,7 @@
         *adverb+vg*)
   (cond
    ((vg-has-adverb-variable? vg)
-    (bind-variable 'adverb adverb vg)
+    (setq  vg (bind-dli-variable 'adverb adverb vg))
     vg)
    (t (break "can't find adverb slot for ~s on verb ~s"
                   (edge-string (left-edge-for-referent))
@@ -415,7 +419,7 @@
    (*subcat-test* (itypep vv 'bio-process))
    (t
     (setq vv (individual-for-ref vv))
-    (bind-variable 'context context vv)
+    (setq  vv (bind-dli-variable 'context context vv))
     vv)))
 
 ;;;---------
@@ -489,7 +493,7 @@
         (push (subcat-instance vg prep-word variable-to-bind pp)
               *subcat-info*))
       (setq vg (individual-for-ref vg))
-      (bind-variable variable-to-bind pobj-referent vg)
+      (setq  vg (bind-dli-variable variable-to-bind pobj-referent vg))
       vg))))
 
 
@@ -510,7 +514,7 @@
           (push (subcat-instance vg prep-word variable prep-comp)
                 *subcat-info*))
         (setq vg (individual-for-ref vg)) ;; category => individual
-        (bind-variable variable comp-ref vg)
+        (setq vg (bind-dli-variable variable comp-ref vg))
         vg)))))
 
 
@@ -542,7 +546,7 @@
         (push (subcat-instance vg prep-word variable-to-bind pp)
               *subcat-info*))
       (setq vg (individual-for-ref vg))
-      (bind-variable variable-to-bind pobj-referent vg)
+      (setq  vg (bind-dli-variable variable-to-bind pobj-referent vg))
       vg))))
 
 ;;;---------
@@ -582,9 +586,9 @@
                                      pp)
                     *subcat-info*))
             (setq np (individual-for-ref np))
-            ;;(bind-variable variable-to-bind pp np)
+            ;;(setq  np (bind-dli-variable variable-to-bind pp np))
             (when variable-to-bind ;; otherwise return nil and fail the rule
-              (bind-variable variable-to-bind pobj-referent np)
+              (setq  np (bind-dli-variable variable-to-bind pobj-referent np))
               np))))))))
 
 
@@ -606,8 +610,8 @@
                                  to-comp)
                 *subcat-info*))
       (setq np (individual-for-ref np))
-      ;;(bind-variable variable-to-bind pp np)
-      (bind-variable variable-to-bind to-comp np)
+      ;;(setq  np (bind-dli-variable variable-to-bind pp np))
+      (setq  np (bind-dli-variable variable-to-bind to-comp np))
       np))))
 
 (defun interpret-pp-as-head-of-np (np pp)
@@ -637,8 +641,8 @@
                                  pp)
                 *subcat-info*))
       (setq pobj-referent (individual-for-ref pobj-referent))
-      ;;(bind-variable variable-to-bind pp np)
-      (bind-variable variable-to-bind np pobj-referent)
+      ;;(setq  np (bind-dli-variable variable-to-bind pp np))
+      (setq  pobj-referent (bind-dli-variable variable-to-bind np pobj-referent))
       pobj-referent))))
 
 
@@ -750,7 +754,7 @@
           (setq item (condition-anaphor-edge
                       item-edge subcat-label variable-to-bind))))
 
-      (bind-variable variable-to-bind item head)
+      (setq  head (bind-dli-variable variable-to-bind item head))
       head))))
  
 
@@ -927,19 +931,10 @@
    information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
 
-
-
-
 (defun make-pp (prep pobj)
-  (let* ((binding-instructions
-          `((prep ,prep) (pobj ,pobj)))
-         (pp (make-simple-individual
-              category::prepositional-phrase
-              binding-instructions)))
-    ;; place for trace or further adornment, storing
-    ;; (p "activity of ras.")
-    ;; (break "Look at who is calling make-pp")
-    pp))
+  (make-simple-individual
+   category::prepositional-phrase
+   `((prep ,prep) (pobj ,pobj))))
 
 (defun make-pp-relative-clause (pp clause)
   (let* ((binding-instructions
@@ -996,8 +991,7 @@
   (when (null (value-of 'predication be-ref))
     ;; If this is not already a predicate copula ("is a drug")
 
-    (let* ((cpp (make-unindexed-individual category::copular-pp))
-           (prep (value-of 'prep pp))
+    (let* ((prep (value-of 'prep pp))
            (pobj (value-of 'pobj pp)))
       (cond
        (*subcat-test*
@@ -1006,10 +1000,10 @@
         ;; this is NOT a copular PP
         (and prep pobj))
        (t
-        (bind-variable 'copula be-ref cpp)
-        (bind-variable 'prep prep cpp)
-        (bind-variable 'pobj pobj cpp)
-        cpp)))))
+        (make-simple-individual
+              category::copular-pp
+              `((copula ,be-ref)
+                (prep ,prep) (pobj ,pobj))))))))
 
 (defun apply-copular-pp (np copular-pp)
   (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
@@ -1023,8 +1017,8 @@
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
       (setq np (individual-for-ref np))
-      (bind-variable variable-to-bind pobj np)
-      (bind-variable 'result np copular-pp)
+      (setq  np (bind-dli-variable variable-to-bind pobj np))
+      (setq  copular-pp (bind-dli-variable 'result np copular-pp))
       copular-pp))))
 
 (defun get-word-for-prep (prep-val)
@@ -1053,12 +1047,16 @@
 ;;;-----------------
 
 (defun make-there-exists ()
-  (let ((exists (make-unindexed-individual category::there-exists)))
+  (let ((exists 
+         (if
+          *description-lattice*
+          (fom-lattice-description category::there-exists)
+          (make-unindexed-individual category::there-exists))))
     exists))
 
 (defun make-exist-claim (right-edge)
   (let ((exists (make-unindexed-individual category::there-exists)))
-    (bind-variable 'object (edge-referent right-edge) exists)
+    (setq  exists (bind-dli-variable 'object (edge-referent right-edge) exists))
     exists))
 
 
@@ -1067,19 +1065,23 @@
 ;;;------------------------------------------------------------------
 
 (defun individual-for-ref (head)
-  (typecase head
-    (individual
-     (maybe-copy-individual head))
-    (category
-     (make-individual-for-dm&p head))
-    (cons
-     ;; presumably it's a disjoint value restriction
-     (unless (eq (car head) :or)
-       (error "The 'head' is a cons but it's not a value restriction:~%~a"
-              head))
-     ;; Arbitrily pick the first one
-     (make-individual-for-dm&p (second head)))
-    (otherwise
-     (push-debug `(,head))
-     (error "Unexpected type of 'head' in individual for ref: ~a~
-           ~%  ~a" (type-of head) head))))
+  (if
+   *description-lattice*
+   head
+   (typecase head
+     (individual
+      (maybe-copy-individual head))
+     (category
+      (make-individual-for-dm&p head))
+     (cons
+      ;; presumably it's a disjoint value restriction
+      (unless (eq (car head) :or)
+        (error "The 'head' is a cons but it's not a value restriction:~%~a"
+               head))
+      ;; Arbitrily pick the first one
+      (make-individual-for-dm&p (second head)))
+     (otherwise
+      (push-debug `(,head))
+      (error "Unexpected type of 'head' in individual for ref: ~a~
+        ~%  ~a" (type-of head) head))))
+  )

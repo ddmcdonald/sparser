@@ -93,8 +93,9 @@
 
     (let ((obj (define-individual 'fractional-denomination/money
                  :name string)))
-      (bind-variable 'reference-denomination reference-obj obj)
-      (bind-variable 'fraction fraction obj)
+            (setq obj
+                  (bind-dli-variable 'fraction fraction 
+                                 (bind-dli-variable 'reference-denomination reference-obj obj)))
       obj )))
 
 ;; Saving this version in case the pendulum swings back to making psi
@@ -106,8 +107,8 @@
 
     (let ((obj0 (define-individual 'fractional-denomination/money
                  :name string)))
-      (let ((obj1 (bind-variable 'reference-denomination reference-obj obj0)))
-        (let ((obj2 (bind-variable 'fraction fraction obj1)))
+      (let ((obj1 (bind-variable 'reference-denomination reference-obj obj0))) ;; obsolete for bind-dli-variable
+        (let ((obj2 (bind-variable 'fraction fraction obj1)));; obsolete for bind-dli-variable
           obj2 )))))|#
 
 

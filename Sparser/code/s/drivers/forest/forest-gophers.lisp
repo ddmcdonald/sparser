@@ -460,8 +460,7 @@
     ;; so there's no way notion of a variable in it for 'what' is
     ;; responsible 'for' its complement. For that matter right now
     ;; (9/28/14) 'cancer' is just an np head
-    (bind-variable 'reduced-relative rr-ref np-ref)
-    np-ref))
+    (bind-dli-variable 'reduced-relative rr-ref np-ref)))
 
 
 (defun ad-hoc-subj+copula-rule (subject copula)
@@ -473,11 +472,11 @@
          ;; to lift from it. ///duh -- make coherent
          (np-ref (value-of 'participant cop-ref)))
     (let ((i (find-or-make-individual *the-category-to-be*)))
-      (bind-variable 'theme subj-ref i)
+      (setq i (bind-dli-variable 'theme subj-ref i))
       ;;/// for J1, the np-ref is more specific, so the roles
       ;; should be reversed, but how to do know that?
       ;; this order is what the rspec on be would have done
-      (bind-variable 'description np-ref i)
+      (setq i (bind-dli-variable 'description np-ref i))
       (make-binary-edge/explicit-rule-components
        subject copula
        :category (edge-category copula) ;; right-headed

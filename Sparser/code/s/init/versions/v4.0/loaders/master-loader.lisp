@@ -173,7 +173,7 @@
   (lload "check;loader"))
 (lload "analyzers;psp:threading:loader2")
 ;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
-(lload "kinds of edges;loader2")
+(lload "kinds of edges;loader3")
 (lload "complete;loader1")
 (if *lattice-points*
   (then ;;(lload "annotation;loader") empty file flushed 9/22/11

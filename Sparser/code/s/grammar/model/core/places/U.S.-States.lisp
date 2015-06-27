@@ -69,7 +69,7 @@
 
     (when adjective
       (setq adj-word (resolve-string-to-word/make adjective))
-      (bind-variable 'adjective-form adj-word obj)
+      (setq obj (bind-dli-variable 'adjective-form adj-word obj))
       (push (define-cfr US-state `(,adj-word)
               :form category::proper-adjective
               :referent obj)
@@ -85,8 +85,8 @@
                         category::np-head)
                 :referent obj)
               rules))
-      (bind-variable 'abbreviations (nreverse abbrev-words) obj
-                     US-state))   
+      (setq obj (bind-dli-variable 'abbreviations (nreverse abbrev-words) obj
+                     US-state)))
      
     (when aliases
       (dolist (string aliases)
@@ -98,7 +98,7 @@
                         category::np-head)
                 :referent obj)
               rules))
-      (bind-variable 'aliases alias-words obj))
+      (setq obj (bind-dli-variable 'aliases alias-words obj)))
 
 
     ;;/// put the rules somewhere that they can be deleted

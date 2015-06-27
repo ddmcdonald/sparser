@@ -154,6 +154,7 @@
         ;; and passed through in a parameter. 
         (*inihibit-constructing-plural* (not takes-plurals))
         rules  i   )
+    (declare (special i))
 
     ;; There is a bug that I can't sort out with the available evidence
     ;; when redefining a def-bio entity involving a list of rules being 
@@ -168,7 +169,9 @@
         (return-from make-typed-bio-entity i))
       (setq i (define-individual category :name word)))
      (t 
-      (setq i (find-or-make-individual category :name word))))
+      (setq i (find-or-make-individual category :name word))
+      ;;(lsp-break "make-typed-bio-entity")
+      ))
       ;; The real form to use
       ;;     (setq i (find-or-make-individual category :name word))
       ;; The find-or-make call will set up a rule for the short form
@@ -199,7 +202,7 @@
                 rules))))
  
     (when identifier
-      (bind-variable 'uid identifier i))
+      (setq i (bind-dli-variable 'uid identifier i)))
     (when mitre-link
       (handle-mitre-link i mitre-link))
 
@@ -319,8 +322,8 @@
         (push protein proteins)))
     (let ((set-of-proteins (create-collection proteins 'protein))
           (count (find-number (length members))))
-      (bind-variable 'members set-of-proteins i)
-      (bind-variable 'count count i)
+      (setq i (bind-dli-variable 'members set-of-proteins i))
+      (setq i (bind-dli-variable 'count count i))
       ;; If we didn't use such a speciic category these would matter.
       i)))
 

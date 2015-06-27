@@ -73,7 +73,7 @@
               a last-name variable.~%Something upstream used ~
               something other than make-person-name-from-items."
              person))
-    (bind-variable 'name-of person last-name)))
+    (bind-variable 'name-of person last-name))) ;; needs to be checked in DLI case
 
 ;;--- make
 

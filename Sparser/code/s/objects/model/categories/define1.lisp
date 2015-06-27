@@ -112,17 +112,18 @@
 
 (defun decode-category-parameter-list (category
                                        &key mixins
-                                            documentation
-                                            instantiates
-                                            specializes
-                                            rule-label
-                                            ((:binds var-v/r-pair))
-                                            bindings
-                                            ((:restrict restrictions))
-                                            ((:realization rdata))
-                                            lemma
-                                            index )
-
+                                       documentation
+                                       instantiates
+                                       specializes
+                                       rule-label
+                                       ((:binds var-v/r-pair))
+                                       bindings
+                                       ((:restrict restrictions))
+                                       ((:realization rdata))
+                                       lemma
+                                       index )
+  (declare (special category bindings))
+  
   (let ((specialized-category
          (when specializes (etypecase specializes
                              (symbol (category-named specializes))
@@ -131,13 +132,13 @@
          (when mixins
            (loop for symbol in mixins
              collect (category-named symbol :break-if-missing)))))
-
+    
     (remove-property-from category :super-categories) ;; clear the cache
-
+    
     (when specializes
       (unless specialized-category
         (break "~A is supposed to be a specialization of ~A~
-                ~%but that category has not been defined"
+               ~%but that category has not been defined"
                (cat-symbol category) specializes))
       (when (not (or (referential-category-p specialized-category)
                      (mixin-category-p specialized-category)))
@@ -149,48 +150,57 @@
         (setq specialized-category
               (convert-simple-to-referential-category
                specialized-category))))
-
+    
     (when mixin-categories
       (setf (cat-mix-ins category) mixin-categories))
-
+    
     (when documentation
       (store-category-documentation category documentation))
- 
+    
     (define-variables var-v/r-pair category)
-
+    
     (when bindings
       (unless specialized-category
         (break "A category cannot be given bindings unless it ~
-                is a specialization of some other category.~
-                ~%  ~A is not." (cat-symbol category)))
+               is a specialization of some other category.~
+               ~%  ~A is not." (cat-symbol category)))
       (attach-bindings-to-category category
                                    bindings
                                    specialized-category
-                                   mixin-categories))
-
+                                   mixin-categories)
+      #+ignore
+      (multiple-value-bind (new-bindings new-cat)
+                           (attach-bindings-to-category category
+                                                        bindings
+                                                        specialized-category
+                                                        mixin-categories)
+        (declare (special new-bindings new-cat))
+        ;;(lsp-break "after attach-bindings")
+        (setq category new-cat)))
+    
     (setf (cat-lattice-position category)
           (initialize-top-lattice-point 
            category :specializes specialized-category))
-
+    
     (prepare-category-operations category index instantiates rule-label)
     ;; has to preceed rdata setup since some calculations there
     ;; can depend upon it.
-
+    
     (when restrictions
       (handle-variable-restrictions category restrictions))
-
+    
     (when rdata
       (cond
        ((includes-def-realization-keyword rdata)
         (setup-shortcut-rdata category rdata))
        (t (setup-rdata category rdata))))
-
+    
     (when lemma
       (setup-category-lemma category lemma))
-
+    
     (when *CLOS*
       (setup-backing-clos-class category mixins :referential))
-
+    
     category ))
 
 
@@ -290,12 +300,19 @@
 
       (when value
         (setq real-value (decode-value-for-variable value variable))
-
-        (setq binding (bind-variable variable
-                                     real-value
-                                     category))
-        (push binding bindings)))))
-
+        (bind-variable/expr variable real-value category)
+        #+ignore
+        (multiple-value-bind (ii bb)
+                             (if
+                              *description-lattice*
+                              (bind-dli-variable variable ;; check for DLI
+                                                 real-value
+                                                 category)
+                              (values
+                               (old-bind-variable variable real-value category)
+                               category))
+          (setq category ii)
+          (push bb bindings))))))
 
 
 

@@ -79,23 +79,23 @@
                     :reporting-period (value-of 'time-period chg))))
           
           (if (itype (value-of 'change chg) 'change-by-amount)
-            (let ((amt-of-chg (value-of 'change chg)))
-              (bind-variable 'direction-of-change
-                             (value-of 'direction amt-of-chg)
-                             fr)
-              
-              ;; This distinction would be better caught at the source
-              ;; when the With-binding is done, but right now that
-              ;; form doesn't have the notational capacity to make
-              ;; a distinction based on the type of the value being
-              ;; copied up.
-              (if (itype (value-of 'amount amt-of-chg) 'percent)
-                (bind-variable 'percentage-changed
-                               (value-of 'amount amt-of-chg)
+              (let ((amt-of-chg (value-of 'change chg)))
+                (bind-variable 'direction-of-change
+                               (value-of 'direction amt-of-chg)
                                fr)
-                (bind-variable 'value
-                               (value-of 'value-reached chg)
-                               fr))))
+                
+                ;; This distinction would be better caught at the source
+                ;; when the With-binding is done, but right now that
+                ;; form doesn't have the notational capacity to make
+                ;; a distinction based on the type of the value being
+                ;; copied up.
+                (if (itype (value-of 'amount amt-of-chg) 'percent)
+                    (setq fr (bind-dli-variable 'percentage-changed
+                                                (value-of 'amount amt-of-chg)
+                                                fr))
+                    (setq fr (bind-dli-variable 'value
+                                                (value-of 'value-reached chg)
+                                                fr)))))
 
           (unless (member fr *financial-reports-in-article*)
             (push fr *financial-reports-in-article*)))))

@@ -35,7 +35,7 @@
 
 (defmacro add-binding-to (variable-for-i/p variable-name value)
   `(setq ,variable-for-i/p 
-         (bind-variable ,variable-name ,value ,variable-for-i/p)))
+         (bind-variable ,variable-name ,value ,variable-for-i/p))) ;; check in DLI
 
 ; A flaw is that a function incorporating this will report that
 ; the variable you ue to point to the value is 'unused'. 

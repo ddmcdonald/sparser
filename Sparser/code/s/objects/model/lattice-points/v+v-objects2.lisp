@@ -185,7 +185,7 @@
         (tr :made-psi-at-lp psi lattice-point)
         (tr :made-new-psi psi)
         
-        (bind-variable/expr variable value psi)
+        (bind-variable/expr variable value psi) ;; check in DLI
 
         psi)))
 

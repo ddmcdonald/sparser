@@ -151,20 +151,7 @@
       ;; the variable might not have a restriction in which case it's
       ;; ok if the value is a word, but otherwise we check it out
       ;; in detail.
-      #+ignore  ;; case in point is an or of two categories
-      (unless (word-p value)
-        (let ((v/r (var-value-restriction variable)))
-          (when v/r
-            (if (consp v/r)
-              (unless (member :primitive v/r :test #'eq)
-                (break "Data problem?  v/r is a list but not a ~
-                        primitive:~%~A" v/r))
-
-              ;; so it has a specific restriction, and if its
-              ;; consistent then we let the binding go through
-              ( ;;/// check up the specialization ladder and bind
-                ;; to the category if need-be
-               ))))))
+      )
 
     ;; index it on the variable -- this is where it is
     ;; looked up from

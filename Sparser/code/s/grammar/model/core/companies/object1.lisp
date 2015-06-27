@@ -80,7 +80,8 @@
         ;; convert to a polyword, which is just fine.
         (loop for alias in aliases
           as co-name = (do-company-name alias)
-          do (link-alias-to-company alias co-name company)))
+          do (setq company  ;; needed because of bind-dli-variable
+                   (link-alias-to-company alias co-name company))))
 
       company)))
 

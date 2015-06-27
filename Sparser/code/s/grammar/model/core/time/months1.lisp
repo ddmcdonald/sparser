@@ -58,8 +58,8 @@
         ;; accommodate cases where we don't know them,
         ;; see model/sl/middle-east/months.lisp
         (count (when length (find-or-make-number length))))
-    (bind-variable 'position-in-year ordinal month)
-    (when count (bind-variable 'number-of-days count month))
+    (setq month (bind-dli-variable 'position-in-year ordinal month))
+    (when count (setq month (bind-dli-variable 'number-of-days count month)))
     (when abbrev
       (define-abbreviation string abbrev))
     month ))

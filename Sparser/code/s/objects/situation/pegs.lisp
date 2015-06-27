@@ -55,7 +55,7 @@
   (loop for pair in (peg-v+v-alist peg)
     as variable = (car pair)
     as value = (cadr pair)
-    collect (bind-variable/expr variable value i)))
+    collect (bind-variable/expr variable value i))) ;; check in DLI
 
 (defun check-validity-of-individual (i peg)
   (let ( failed )

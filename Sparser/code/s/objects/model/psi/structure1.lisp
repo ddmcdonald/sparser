@@ -27,7 +27,7 @@
   v+v  ;; a list of the v+v objects accumulated by this psi.
        ;; Chains from those in psi above it.
 
-  downlinks ;; alist by variable then by value to next psi(s) down
+  pdownlinks ;; alist by variable then by value to next psi(s) down
 
   source ;; the psi that this one builds on
 

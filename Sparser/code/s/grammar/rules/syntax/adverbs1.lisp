@@ -45,7 +45,7 @@
         (real-head (dereference-shadow-individual head)))
     (tr :modified_modifier+t)
     (when (individual-p head)
-      (setq real-head (maybe-copy-individual real-head))
-      (bind-variable 'modifier real-adv real-head))
+      (setq real-head (individual-for-ref real-head))
+      (setq real-head (bind-dli-variable 'modifier real-adv real-head)))
     real-head))
 

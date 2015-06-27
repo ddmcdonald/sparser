@@ -212,7 +212,7 @@
           :slots slots)
 
         (when obo-id
-          (bind-variable 'uid obo-id category))
+          (setq category (bind-dli-variable 'uid obo-id category)))
         category))))
 
 

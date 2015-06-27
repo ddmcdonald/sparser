@@ -31,7 +31,7 @@
              :number (length name-word-sequence)
              :type category::name-word)))
 
-      (bind-variable 'name/s sequence obj)
+      (setq obj (bind-dli-variable 'name/s sequence obj))
       (index/uncategorized-name obj name-word-sequence)
       obj )))
 
@@ -51,7 +51,7 @@
                     category::uncategorized-name))
               (sequence (define-sequence name-word-list)))
 
-          (bind-variable 'name/s sequence obj)
+          (setq obj (bind-dli-variable 'name/s sequence obj))
           (index/uncategorized-name obj sequence)
           obj )))))
 
@@ -79,8 +79,8 @@
                  :number 3
                  :type :mixed)))
 
-          (bind-variable 'first-name/s sequence obj)
-          (bind-variable 'last-name last-name obj)
+          (setq obj (bind-dli-variable 'first-name/s sequence obj))
+          (setq obj (bind-dli-variable 'last-name last-name obj))
           obj ))
       (else "write code for :initial+words of > length 3"))))
 
@@ -130,8 +130,8 @@
                  :number (1- (length whole-name))
                  :type :mixed )))
           
-          (bind-variable 'first-name/s first-names obj)
-          (bind-variable 'last-name last-name obj)
+          (setq obj (bind-dli-variable 'first-name/s first-names obj))
+          (setq obj (bind-dli-variable 'last-name last-name obj))
           (index/person-name obj whole-name)
           obj ))))) |#
 
@@ -152,8 +152,8 @@
                      :number 2
                      :type :mixed)))
 
-    (bind-variable 'first-name/s sequence obj)
-    (bind-variable 'last-name last-name obj)
+    (setq obj (bind-dli-variable 'first-name/s sequence obj))
+    (setq obj (bind-dli-variable 'last-name last-name obj))
     (index/person-name obj name-list)
     obj ))
 
@@ -172,8 +172,8 @@
                              :items (list name1 initial)
                              :number 2
                              :type :mixed )))
-          (bind-variable 'first-name/s first-names obj)
-          (bind-variable 'last-name last-name obj)
+          (setq obj (bind-dli-variable 'first-name/s first-names obj))
+          (setq obj (bind-dli-variable 'last-name last-name obj))
           (index/person-name obj name-list)
           obj ))))
 
@@ -210,12 +210,12 @@
       (then
         ;; //// does the wrong thing with "Messrs"
         (unless (value-of 'standard-prefix known-name)
-          (bind-variable 'standard-prefix prefix known-name))
+          (setq known-name (bind-dli-variable 'standard-prefix prefix known-name)))
         known-name)
       (else
         (let ((obj (make-throw-away-individual category::person-name)))
-          (bind-variable 'last-name last-name obj)
-          (bind-variable 'standard-prefix prefix obj)
+          (setq obj (bind-dli-variable 'last-name last-name obj))
+          (setq obj (bind-dli-variable 'standard-prefix prefix obj))
           obj )))))
 
 
@@ -299,9 +299,9 @@
     (let ((name1 (make-name-word-for-unknown-word-in-name
                   (cdr (first item-list)))))
 
-      (bind-variable 'first-word name1 obj)
+      (setq obj (bind-dli-variable 'first-word name1 obj))
 
-      (bind-variable 'inc-term (cdr (second item-list)) obj)
+      (setq obj (bind-dli-variable 'inc-term (cdr (second item-list)) obj))
         ;; /// There will cases where there's also an inc term,
         ;; but it seems unlikely that in one article there would
         ;; be a subsequent reference that *expanded* the name
@@ -332,8 +332,8 @@
         (else
           (let ((obj (make-throw-away-individual
                       category::company-name)))
-            (bind-variable 'first-word name1 obj)
-            (bind-variable 'inc-term koc obj)
+            (setq obj (bind-dli-variable 'first-word name1 obj))
+            (setq obj (bind-dli-variable 'inc-term koc obj))
             (index/company-name obj (list name1 koc))
             obj ))))))
 |#
@@ -355,7 +355,7 @@
                   (cdr (first item-list))))
           (koc (cdr (fifth item-list))))
 
-      (bind-variable 'first-word name1 obj)
+      (setq obj (bind-dli-variable 'first-word name1 obj))
 
       (let ((middle
              (def-individual category::sequence
@@ -365,8 +365,8 @@
                :number 4
                :type :mixed )))
 
-        (bind-variable 'rest middle obj)
-        (bind-variable 'inc-term koc obj)
+        (setq obj (bind-dli-variable 'rest middle obj))
+        (setq obj (bind-dli-variable 'inc-term koc obj))
 
         (index/company-name obj
                             (append (cons name1
@@ -395,9 +395,9 @@
                        :number 3
                        :type :mixed )))
 
-            (bind-variable 'first-word name1 new-name)
-            (bind-variable 'rest l&l new-name)
-            (bind-variable 'inc-term koc new-name)
+            (setq new-name (bind-dli-variable 'first-word name1 new-name))
+            (setq new-name (bind-dli-variable 'rest l&l new-name))
+            (setq new-name (bind-dli-variable 'inc-term koc new-name))
 
             new-name ))))))
 

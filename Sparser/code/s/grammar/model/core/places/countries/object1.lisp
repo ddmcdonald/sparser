@@ -72,7 +72,7 @@
     (when cities
       (dolist (city-string cities)
         (let ((city (define-or-find-individual 'city :name city-string)))
-          (bind-variable 'country country city))))
+          (bind-variable 'country country city)))) ;; needs to be checked in DLI case
     (values country
             rules)))
 

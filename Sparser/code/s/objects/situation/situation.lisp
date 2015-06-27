@@ -194,7 +194,9 @@
   (let* ((i (car args))
          (value (cadr args))
          (variable (find-variable-from-individual var-name i)))
-    (let ((b (bind-variable variable value i))
+    (let ((b (multiple-value-bind (ii bb)
+                                  (bind-dli-variable variable value i)
+               bb))
           (s (the-situation))) ;; who would know about the level?
       ;; that makes the associaton on the instance
       ;; Now we add it to the content as another relation

@@ -25,7 +25,7 @@
 (defun relate-company-to-country (country company)
   ;;//////// Nothing is checking the possessive
   ;; Where could we put that?
-  (bind-variable 'location country company)
+  (setq company (bind-dli-variable 'location country company))
   company)
 
 

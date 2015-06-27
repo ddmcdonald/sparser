@@ -97,7 +97,7 @@
   (initialize-fields/individual i)
   (setf (psi-lp i) nil)
   (setf (psi-v+v i) nil)
-  (setf (psi-downlinks i) nil)
+  (setf (psi-pdownlinks i) nil)
   (setf (psi-source i) nil)
   (setf (psi-path i) nil)
   i)

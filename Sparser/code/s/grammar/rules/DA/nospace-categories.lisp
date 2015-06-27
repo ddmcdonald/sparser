@@ -52,8 +52,8 @@
 
     (when (eq (edge-category left-edge)
               (edge-category right-edge))
-      (bind-variable 'type (edge-category left-edge)
-                     i category::sequence))
+      (setq i (bind-dli-variable 'type (edge-category left-edge)
+                             i category::sequence)))
     (let ((edge (make-edge-over-long-span
                    (pos-edge-starts-at left-edge)
                    (pos-edge-ends-at right-edge)
@@ -303,8 +303,8 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
 
     (when (eq (edge-category left-edge)
               (edge-category right-edge))
-      (bind-variable 'type (edge-category left-edge)
-                     i category::sequence))
+      (setq i (bind-dli-variable 'type (edge-category left-edge)
+                                 i category::sequence)))
     (let ((edge (make-edge-over-long-span
                    (pos-edge-starts-at left-edge)
                    (pos-edge-ends-at right-edge)
@@ -352,8 +352,8 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
                     (edge-category (second edges))) ;; makes a trend
             (edge-category (first edges)))))
     (when common-category
-      (bind-variable 'type (edge-category (first edges)) i
-                     category::slashed-sequence))
+      (setq i (bind-dli-variable 'type (edge-category (first edges)) i
+                     category::slashed-sequence)))
 
     (let ((edge (make-edge-over-long-span
                  start-pos

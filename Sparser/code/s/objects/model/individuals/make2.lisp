@@ -168,7 +168,10 @@
           (decode-category-specific-binding-instr-exps
            category symbols-and-values)))
 
-    (when binding-instructions (apply-bindings individual binding-instructions))
+    (when binding-instructions 
+      (multiple-value-bind (bindings new-indiv)
+                           (apply-bindings individual binding-instructions)
+        (setq individual new-indiv)))
     individual ))
 
 
@@ -177,9 +180,9 @@
 (defun make/permanent-individual (category binding-instructions)
   (let ((*index-under-permanent-instances* t)
         (individual (make-a-permanent-individual)))
-    (let ((bindings
-           (apply-bindings individual binding-instructions)))
-
+    (multiple-value-bind (bindings new-indiv)
+                         (apply-bindings individual binding-instructions)
+      (setq individual new-indiv)
       (index/permanent-individual individual category bindings)
       individual )))
 
@@ -296,12 +299,16 @@
 (defun make-simple-individual (category binding-instructions)
   (declare (special *index-under-permanent-instances*))
   ;;(break "permanent = ~a" *index-under-permanent-instances*)
-  (let ((individual (if *index-under-permanent-instances*
-                      (make-a-permanent-individual)
-                      (allocate-individual))))
-    (setf (indiv-type individual) (list category))
-    (setf (indiv-id   individual) (next-id category))
-    (let ((bindings (apply-bindings individual binding-instructions)))
+  (let ((individual (cond
+                     (*description-lattice* (fom-lattice-description category))
+                     (*index-under-permanent-instances* (make-a-permanent-individual))
+                     (t (allocate-individual)))))
+    (unless *description-lattice*
+      (setf (indiv-type individual) (list category))
+      (setf (indiv-id   individual) (next-id category)))
+    (multiple-value-bind (bindings new-indiv)
+                         (apply-bindings individual binding-instructions)
+      (setq individual new-indiv)
       ;;(push-debug `(,individual ,category ,bindings))
       (index/individual individual category bindings)
       (create-shadow individual)
@@ -370,9 +377,12 @@
 (defun make-individual-for-dm&p (category)
   ;; This is a placeholder so when the decision about what to
   ;; really do make we only have to change this one place
-  (let ((i (make-unindexed-individual category)))
-    (bind-category-of-instance i category)
-    i))
+  (if
+   *description-lattice*
+   (fom-lattice-description category)
+   (let ((i (make-unindexed-individual category)))
+     (bind-category-of-instance i category)
+     i)))
 
 
 ;;;--------------------------

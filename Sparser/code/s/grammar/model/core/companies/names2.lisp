@@ -91,11 +91,13 @@
       ;; see subsequent-reference-off-name-word, which was
       ;; really only intended for single words, but we
       ;; can adapt
-      when (and (individual-p nw) ;; not words like "and"
+      collect
+      (if
+       (and (individual-p nw) ;; not words like "and"
                 (itypep nw 'name-word))
       ;; Company terms, countries, ...
-      do (bind-variable 'name-of company nw))
-    name-words))
+       (bind-dlivariable 'name-of company nw)
+       nw))))
   
 
 
@@ -104,31 +106,14 @@
   (let ((known-aliases (value-of 'aliases company)))
     (if known-aliases
       (tail-cons name known-aliases)
-      (bind-variable 'aliases (list name) company)))
+      (setq company (bind-dli-variable 'aliases (list name) company))))
   (let* ((sequence (value-of 'sequence name))
          (items (value-of 'items sequence)))
     (if (null (cdr items)) ;; just one
-      (bind-variable 'name-of company (car items))
+      (bind-dli-variable 'name-of company (car items))
       ;; 'associated-with' each of the items the name
-)))
-
-
-;;  (record-string-against-company full-name-as-string company))
-#+ignore
-(defun aditional-name-for-company (name company)
-  (push-debug `(,name ,company))
-  (bind-variable 'name name company)
-  ;; That will put a name that might not have been analyzed 
-  ;; as a company name as the first 'name' binding on the
-  ;; company, which will freakout the company printer.
-  ;;   To make its life easier, we'll reverse the order
-  ;; of the bindings.  We can be confedent that there
-  ;; aren't other cases since we're in a continuous thread.
-  (setf (indiv-binds company)
-        (nreverse (indiv-binds company))))
-
-
-
+      )
+    company)) ;; NOT SURE ABOUT THIS RETURN -- NEEDS TO BE CHECKIED IN bind-dli-variable case
 
 
 (defun make-company-name-from-items (items
@@ -150,7 +135,7 @@
       ;; /// strip the "The" from the name (assuming we've gone that route
       ;; and it is indeed part of the original scanned sequence of words.
       ;; Then hack the company-printer to be sensitive to the 'the' binding.
-      (mark-company-name-as-taking-the co-name))
+      (setq co-name (mark-company-name-as-taking-the co-name)))
     co-name ))
 
 
@@ -161,7 +146,7 @@
     (setq name (define-individual 'company-name
                  :sequence sequence))
     (let ((first-word (first-item-of-sequence sequence))) 
-      (bind-variable 'first-word first-word name)
+      (setq name (bind-dli-variable 'first-word first-word name))
       ;;(map-name-words-to-name items name)
       ;; wrong signature
       name )))
@@ -200,7 +185,7 @@
 ;;;-------------------------------
 
 (defun mark-company-name-as-taking-the (co-name)
-  (bind-variable 'the t co-name))
+  (bind-dli-variable 'the t co-name))
 
 
 (defun mark-company-as-taking-the (company)
@@ -212,7 +197,9 @@
     ;; appreciation of "service"
 
     (let ((name (value-of 'name company)))
-      (mark-company-name-as-taking-the name)
+      (setq company
+            (bind-dli-value 'name
+                            (mark-company-name-as-taking-the name)))
       company )))
 
 

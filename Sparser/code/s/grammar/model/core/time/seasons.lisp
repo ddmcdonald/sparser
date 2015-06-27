@@ -63,5 +63,5 @@ Maybe these are specific to seasons (among stuff in time)
   (let ((season (define-or-find-individual
                     'season :name string))
         (ordinal (nth-ordinal integer)))
-    (bind-variable 'position-in-year ordinal season)       
+    (setq season (bind-dli-variable 'position-in-year ordinal season))
     season ))

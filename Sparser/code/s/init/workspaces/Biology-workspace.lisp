@@ -388,7 +388,8 @@ those steps sequentially on a single article.
   (sweep-article-set)
   (with-total-quiet
       (read-article-set))
-  (setq *accumulate-content-across-documents* t))
+  ;;(setq *accumulate-content-across-documents* t)
+  )
 
 (defun test-12-month-articles (&optional (n nil)(reload nil))
   (when reload
@@ -440,13 +441,14 @@ those steps sequentially on a single article.
      (loop for a in articles-to-run
        unless (memq a *populated-articles*) collect a))
     (sweep-article-set articles-to-run))
-  (setq *accumulate-content-across-documents* t)
+  ;;(setq *accumulate-content-across-documents* t)
   (with-total-quiet
       (read-article-set
        (epistemic-article-sweep
         articles-to-run))))
 
 
+#+ignore
 (defun single-sent-parse ()
   (setq *accumulate-content-across-documents* t))
 
@@ -1228,7 +1230,7 @@ These return the Lisp-based obo entries.
   (let ((id (nth (1- number) *june-nxml-files-in-MITRE-order*)))
     (sweep-and-run-articles (populate-june-article id))))
 
-(defparameter *load-ras2* t)
+(defparameter *load-ras2* nil)
 
 (defun test-june-article (id &optional show-sents)
   (if (and *load-ras2* (find-package :r3)) (funcall (intern "LOAD-RAS2-MODEL" :r3)))
@@ -1328,7 +1330,7 @@ These return the Lisp-based obo entries.
 ;;;-------------------------------------------
 
 (defun elapsed-time-to-string (diff)
-  (multiple-value-bind (totsecs rem) (floor dif internal-time-units-per-second)
+  (multiple-value-bind (totsecs rem) (floor diff internal-time-units-per-second)
       (multiple-value-bind (mins secs) (floor totsecs 60)
         (if (zerop mins)
             (format nil "~d.~3,'0d" secs rem)
