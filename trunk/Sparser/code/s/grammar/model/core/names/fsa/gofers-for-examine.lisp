@@ -160,7 +160,7 @@
 (defun add-longer-name-to-entity (entity prefix names items)
   (push-debug `(,entity ,prefix ,names ,items))
   (let ((longer-name (make-company-name-as-simple-sequence items)))
-    (bind-variable 'prefix prefix longer-name)
+    (setq longer-name (bind-dli-variable 'prefix prefix longer-name))
     (index-company-name-to-company longer-name entity)
 
     ;; This call is suspect. It goes straight to 
@@ -170,7 +170,7 @@
 
     ;; Could take the original, shorter name and make it
     ;; an alias so there's only one "name". This makes there two
-    (bind-variable 'name longer-name entity)
+    (bind-variable 'name longer-name entity) ;; needs to be checked in DLI case
     longer-name))
 
 (defun shorter-from-longer-name (list-of-names)
@@ -216,7 +216,7 @@
                   ;; so the choice doesn't matter. 
                   ;; One examined case had two companies in this
                   ;; list, but they were both the same one
-                  (bind-variable 'name name company)
+                  (setq company (bind-dli-variable 'name name company))
                   
                   (list company))))))))))
             

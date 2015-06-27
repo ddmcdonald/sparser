@@ -29,7 +29,7 @@
 ;; first load all the structures
 (lload "objects;model:categories:structure")
 (lload "objects;model:categories:ops structure")
-(lload "objects;model:individuals:structure")
+(lload "objects;model:individuals:structure1")
 (lload "objects;model:bindings:structure")
 (if cl-user::*psi-2009*
   (then

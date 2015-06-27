@@ -42,6 +42,8 @@
 ;;; Find or Make
 ;;;--------------
 
+
+;; This needs to be updated for new DLI individuals
 (defun find-or-make/individual (category
                                 bindings-instructions)
 
@@ -111,31 +113,34 @@
 ;;;------
 
 (defun find/individual (category binding-instructions)
-
+  
   ;; Looks up the appropriate Find function for this category
   ;; and calls it with these binding-instructions.
   ;; All the arguments must be objects.  If there are no
   ;; operations defined specifically for this category, we do it
   ;; as a psi.
-
-  (let ((fn-data
-         ;; either just the name of a function, or a function plus
-         ;; some data such as a variable to act as a key
-         (when (cat-operations category)
-           (cat-ops-find (cat-operations category)))))
-
-    ;(when (null fn-data)
-    ;  ;; maybe it's inherited?
-    ;  (setq fn-data (inherited-operation/find category)))
-    ;; Pulled 8/14/98
-
-    (if (and fn-data
-             (fits-criteria-for-simple-individuals category binding-instructions))
-      (if (listp fn-data)
-        (funcall (car fn-data) (cadr fn-data) category binding-instructions)
-        (funcall fn-data category binding-instructions))
-
-      (find-psi category binding-instructions))))
+  (if *description-lattice*
+      (find-by-apply-bindings 
+       (fom-lattice-description category) 
+       binding-instructions)
+      (let ((fn-data
+             ;; either just the name of a function, or a function plus
+             ;; some data such as a variable to act as a key
+             (when (cat-operations category)
+               (cat-ops-find (cat-operations category)))))
+        
+        ;(when (null fn-data)
+        ;  ;; maybe it's inherited?
+        ;  (setq fn-data (inherited-operation/find category)))
+        ;; Pulled 8/14/98
+        
+        (if (and fn-data
+                 (fits-criteria-for-simple-individuals category binding-instructions))
+            (if (listp fn-data)
+                (funcall (car fn-data) (cadr fn-data) category binding-instructions)
+                (funcall fn-data category binding-instructions))
+            
+            (find-psi category binding-instructions)))))
 
 
 ;;;---------------

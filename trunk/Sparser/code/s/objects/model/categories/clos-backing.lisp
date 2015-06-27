@@ -379,22 +379,9 @@ for every category.
        (setf (indiv-type  new) established-type))
      (loop for binding in (indiv-binds i)
        do
-       (bind-variable/expr (binding-variable binding)
+       (bind-variable/expr (binding-variable binding) ;; should be obsolete with DLI
                            (binding-value binding)
                            new))
-     #|
-     since the variable was bound in the source, don't bother doing the check -- somehow "the effect" binds the variable determiner,
-     but has a category which does not have a determiner
-     (if
-     (eq 'category (var-name (binding-variable binding)))
-     ;; don't check that CATEGORY is a binding variable
-     
-     (bind-variable (var-name (binding-variable binding))
-     (maybe-copy-individual
-     (binding-value binding)
-     subs)
-     new)))
-     |#
      ;; The 'binds' bindings are probably intrinsic to the nature of
      ;; the object we're starting from and wouldn't make sense on
      ;; the new object since the whole point was to change the type.

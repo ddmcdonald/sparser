@@ -56,14 +56,6 @@
     :illion illion
     :value value))
 
-
-#| (make-unindexed-temporary-individual
-            ;; These need something to index off of.
-            (category-named 'illions-distribution))))
-    (bind-variable 'number number i)
-    (bind-variable 'illion illion i)
-    (bind-variable 'value value i)
-     i ))  |#
     
 
 

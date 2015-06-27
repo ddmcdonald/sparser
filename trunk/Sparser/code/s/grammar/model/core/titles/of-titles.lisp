@@ -104,7 +104,7 @@
 
     ;; Really ought to have a rule that packages this property.
     ;; Then could just call make-binary-edge
-    (bind-variable 'area-of-responsibility np-ref title)
+    (setq title (bind-dli-variable 'area-of-responsibility np-ref title))
     (let ((start (pos-edge-starts-at title-edge))
           (end (pos-edge-ends-at np-edge)))
       (make-edge-over-long-span start end category::title

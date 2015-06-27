@@ -20,7 +20,6 @@
 ;; we were adding determiners to the base meaning of
 ;; amino acids, among others, generating individuals
 ;; with hundreds of determiners
-;;  (setq i (maybe-copy-individual i))
 
 
 (in-package :sparser)
@@ -171,7 +170,9 @@ to make any semantic or form edges that the grammar dictates.
 		  ;;(instantiate-reified-segment-category referent)
                   ;; This call creates an individual (stored on the
                   ;; category that might provide the basis for a subtype.
-                  (make-category-indexed-individual referent))
+                  (if *description-lattice*
+                      (fom-lattice-description referent)
+                      (make-category-indexed-individual referent)))
 		 (mixin-category
 		  referent) ;; "can"
 		 (individual
@@ -246,15 +247,16 @@ to make any semantic or form edges that the grammar dictates.
         ;; we were adding determiners to the base meaning of
         ;; amino acids, among others, generating individuals
         ;; with hundreds of determiners
-        (setq i (maybe-copy-individual i))
-        (setf (edge-referent edge) i)
-        (if (definite-determiner? word)
-          (bind-variable 'has-determiner category::definite 
-                         i category::det)
-          (bind-variable 'has-determiner category::indefinite
-                         i category::det))
+        (setq i (individual-for-ref i))
+        (setq i
+              (if (definite-determiner? word)
+                  (bind-dli-variable 'has-determiner category::definite 
+                                     i category::det)
+                  (bind-dli-variable 'has-determiner category::indefinite
+                                     i category::det)))
         ;;/// This also gets the "the" in a company name,  
         ;; but that's probably not relevant.
+        (setf (edge-referent edge) i)
         i))))
     
 

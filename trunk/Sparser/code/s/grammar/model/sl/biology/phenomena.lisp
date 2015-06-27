@@ -477,7 +477,7 @@ it is created from N-terminus to C-terminus.|#
           (name (create-slash-separated-string strings-naming-proteins)))
       (let ((i (find-or-make-individual 'pathway :name name)))
         ;;/// make a lowercase version?
-        (bind-variable 'protein-sequence sequence i)
+        (setq i (bind-dli-variable 'protein-sequence sequence i))
         i))))
 
 ;;//// move to string utilities

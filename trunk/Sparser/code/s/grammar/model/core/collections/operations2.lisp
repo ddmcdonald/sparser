@@ -62,9 +62,10 @@
 (defun create-sequence (items)
   (let ((sequence (make-unindexed-individual category::sequence))
         (count (length items)))
-    (bind-variable 'number count sequence)
-    (bind-variable 'items items sequence)
-    ;;(bind-variable 'type category sequence)
+    
+    (setq sequence
+          (bind-dli-variable 'items items 
+                       (bind-dli-variable 'number count sequence)))
        ;; There used to be more options for what the type was. Look at the
        ;; operations in "operations", esp. Spread-sequence-across-ordinals
     (spread-sequence-across-ordinals sequence items count)
@@ -89,9 +90,11 @@
                             (type-of category-specifier) category-specifier)))))
     (unless category
       (error "There is no category named ~s" category-specifier))
-    (bind-variable 'number (length items) collection)
-    (bind-variable 'items items collection)
-    (bind-variable 'type category collection)
+
+    (setq collection
+          (bind-dli-variable 'items items 
+                         (bind-dli-variable 'number (length items) collection)))
+    (setq collection (bind-dli-variable 'type category collection))
     (index-collection collection)
     collection))
 

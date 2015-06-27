@@ -107,7 +107,8 @@
                                               prep-word
                                               pobj-referent)
                      'modifier)))
-            (bind-variable var-name pobj-referent clause-referent)
+            (setq clause-referent 
+                  (bind-dli-variable var-name pobj-referent clause-referent))
             (let ((edge (make-binary-edge/explicit-rule-components
                           pp clause
                           :category (edge-category clause)
@@ -139,7 +140,7 @@
                s-subj-var vp-subj-var)
       (let ((subject (value-of s-subj-var s-ref)))
         (when subject
-          (bind-variable vp-subj-var subject vp-ref))))
+          (setq vp-ref (bind-dli-variable vp-subj-var subject vp-ref)))))
     ;; regardless of whether we could set the subject of the
     ;; vp we should create the edge
     ;; This returns a edge and uses referent-of-two-conjoined-edges 

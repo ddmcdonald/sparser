@@ -221,7 +221,7 @@
 
     (let ((sequence (define-sequence (list name-word))))
 
-      (bind-variable 'name/s sequence name)
+      (setq name (bind-dli-variable 'name/s sequence name))
       (index/uncategorized-name name sequence)
 
       (let ((edge (edge-over-proper-name

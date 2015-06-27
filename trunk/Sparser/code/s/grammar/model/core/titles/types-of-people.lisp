@@ -37,12 +37,12 @@ if it was done as subtyping. |#
         (break "Stub: 1st case of a description with more than two elements"))
       (else
         ;; 1st time
-        (bind-variable 'head right-item type-obj)
+        (setq type-obj (bind-dli-variable 'head right-item type-obj))
         (let ((attr-set (define-individual 'collection
                           :number 2
                           :type nil  ;; // need a category for 'anything'
                           :items (list left-item right-item))))
-          (bind-variable 'attributes attr-set type-obj)
+          (setq type-obj (bind-dli-variable 'attributes attr-set type-obj))
           type-obj )))))
         
 

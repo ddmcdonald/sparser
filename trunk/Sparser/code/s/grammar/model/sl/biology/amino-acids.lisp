@@ -253,7 +253,7 @@ therefore we have the special cases:
            (i (find-or-make-individual 'phosphorylated-amino-acid
                  :name first-name))) 
       ;;(push-debug `(,i ,aa)) (break "rule on i?")
-      (bind-variable 'amino-acid aa i)
+      (setq i (bind-dli-variable 'amino-acid aa i))
       (dolist (string p-names)
         (let* ((word (resolve/make string))
                (rule (define-cfr category::amino-acid

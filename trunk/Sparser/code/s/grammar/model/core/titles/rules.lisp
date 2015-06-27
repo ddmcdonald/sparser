@@ -101,7 +101,7 @@
         (let ((title-mod (convert-to-modified-title title 'locale)))
           (setq title title-mod)
           (revise-right-edge-into-rule :referent title-mod)))
-      (bind-variable 'locale possessive title))
+      (setq title (bind-dli-variable 'locale possessive title)))
 
      (t (push-debug `(,possessive ,title))
         (error "New type for possessive: ~a~%  ~a"
@@ -138,8 +138,8 @@
   ;;(push-debug `(,time ,title))
   (if (itypep title 'qualified-title)
     (then
-     (bind-variable 'time time title)
-     title)
+      (setq title (bind-dli-variable 'time time title))
+      title)
     (let ((new-title ;; make it one
            (define-or-find-individual 'qualified-title
              :title title  :qualifier time)))

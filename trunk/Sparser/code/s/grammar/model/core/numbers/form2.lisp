@@ -182,7 +182,7 @@
                  ,multiplicand)))|#
              (m
               (define-individual 'multiplier binding-instructions-plist)))
-        (bind-variable 'value number m)
+        (setq m (bind-dli-variable 'value number m))
 
         ;; 8/24/00 This scheme has been confused and I'm a bit befuddled
         ;; about what the original motivations might have been if it wasn't

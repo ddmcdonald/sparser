@@ -39,8 +39,8 @@
         (time (find-individual 'time-unit :name unit-of-time)))
     (push-debug `(,distance ,time))
     (let ((unit (find-or-make-individual 'unit-of-rate-of-change
-                  :distance-measure distance
-                  :time-measure time)))
+                                         :distance-measure distance
+                                         :time-measure time)))
       (when abbreviations
         ;;//// it needs the plural -- parenthesize the marked case        
         (let ((*inihibit-constructing-plural* t))
@@ -49,7 +49,7 @@
             (let ((word (define-word/expr string)))
               (make-cn-rules/aux 
                word (category-named 'unit-of-rate-of-change) unit)))
-          (bind-variable 'name (word-named (car abbreviations)) unit)))
+          (setq unit (bind-dli-variable 'name (word-named (car abbreviations)) unit))))
       unit)))
 
 (def-rate-of-change-unit "mile" "hour" ("mph"))

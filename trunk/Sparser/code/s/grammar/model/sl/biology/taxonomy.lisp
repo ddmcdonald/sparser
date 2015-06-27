@@ -108,7 +108,7 @@
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
 
-(define-category bio-predication :specializes modifier
+(define-category bio-predication :specializes endurant ;; might be better as "quality" -- need to talk to David
   :mixins (biological)
   :binds ((negation)
           (adverb)

@@ -20,11 +20,12 @@
         (waypoint (category-named 'waypoint)))
     (when (and type (memq type '(entry target)))
       (cond ((eq type 'entry)
-             (bind-variable 'type (category-named 'entry-waypoint) wp
-                            waypoint))
+             (setq wp (bind-dli-variable 'type (category-named 'entry-waypoint) wp
+                                         waypoint)))
             ((eq type 'target)
-             (bind-variable 'type (category-named 'target-waypoint) wp
-                            waypoint))))
+             (setq wp
+                   (bind-dli-variable 'type (category-named 'target-waypoint) wp
+                                  waypoint)))))
     (when airspeed)
     (when altitude)
     (when radius)

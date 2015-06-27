@@ -315,7 +315,7 @@
     ;; The name doesn't have to be indexed because we recover it from
     ;; the sequence it's comprised of.  If/when we find out what sort of name
     ;; it really is we would index that.
-    (bind-variable :name/s sequence obj)
+    (setq obj (bind-dli-variable :name/s sequence obj))
     (tr :make-uncategorized-name obj sequence)
     obj ))
 
@@ -399,7 +399,7 @@ WHO.
   ;; reify-ns-name-and-make-edge
   (let ((sequence (define-sequence words))
         (name (make-unindexed-individual category::spelled-name)))
-    (bind-variable :name/s sequence name category::spelled-name)
+    (setq name (bind-dli-ariable :name/s sequence name category::spelled-name))
 
     ;; This code is frightfully low-level in its choice of operations.
     ;; //// We need to find other uses for this pattern. 

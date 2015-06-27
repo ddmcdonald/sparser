@@ -80,7 +80,11 @@
             ref))
 
         (let ((new-indiv 
-               (make-default-descriptive-individual category-of-head)))
+               (if
+                *description-lattice*
+                ;; DAVID -- is this plausible
+                (fom-lattice-description category-of-head)
+                (make-default-descriptive-individual category-of-head))))
           (tr :defnp-made-new-individual new-indiv)
           new-indiv)))))
 
@@ -127,7 +131,7 @@
           (kind-of-company
            (let ((individual
                   (make-unindexed-individual category::company)))
-             (bind-variable 'kind category-of-head individual)
+             (setq individual (bind-dli-variable 'kind category-of-head individual))
              individual ))
 
           (otherwise

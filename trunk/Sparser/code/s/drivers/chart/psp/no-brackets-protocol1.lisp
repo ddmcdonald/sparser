@@ -54,7 +54,7 @@
 (defparameter *all-sentences* nil)
 (defparameter *index-cards* t)
 
-(defparameter *show-handled-sentence-errors* nil
+(defparameter *show-handled-sentence-errors* t
   "Printing the error that's caught by the handler in 
   error-trapped-scan-and-core turns out to be a significant
   time cost in CCL. This gates that operation so that 

@@ -124,7 +124,7 @@
                     :word word))
 
             (when roman-numeral
-              (bind-variable 'roman-numeral roman ordinal)
+              (setq ordinal (bind-dli-variable 'roman-numeral roman ordinal))
               (push (define-cfr category::post-ordinal `(,roman)
                         :form category::post-ordinal
                         :referent  category::post-ordinal )

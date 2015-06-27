@@ -211,7 +211,7 @@ broadly speaking doing for you all the things you might do by hand.
         (setq category (eval form)))))
 
     (when obo-id
-      (bind-variable 'uid obo-id category))
+      (setq category (bind-dli-variable 'uid obo-id category)))
     category))
 
 
@@ -293,7 +293,7 @@ broadly speaking doing for you all the things you might do by hand.
         (setq category (eval form)))))
 
     (when obo-id
-      (bind-variable 'uid obo-id category))
+      (setq category (bind-dli-variable 'uid obo-id category)))
     category))
 
 

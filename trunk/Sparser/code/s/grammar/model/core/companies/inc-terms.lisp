@@ -103,6 +103,10 @@
     (when name
       ;; //// This isn't enough to get the inc-term
       ;; to show up in the print-form of the company.
-      (bind-variable 'inc-term inc-term name))
+      (setq company
+            (bind-dli-variable
+             'name
+             (bind-dli-variable 'inc-term inc-term name)
+             company)))
     company ))
 

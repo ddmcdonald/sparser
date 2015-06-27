@@ -37,14 +37,11 @@
              (dereference-shadow-individual head)
              head)))
     (declare (special real-modifier real-head))
-    (if
-     (category-p real-head)
-     (setq real-head (make-individual-for-dm&p real-head))
-     (setq real-head (maybe-copy-individual real-head)))
+    (setq real-head (individual-for-ref real-head))
     (if
      (category-p real-modifier)
      (setq real-modifier (make-individual-for-dm&p real-modifier)))
-    (bind-variable 'modifier real-modifier real-head)
+    (setq real-head (bind-dli-variable 'modifier real-modifier real-head))
     real-head))
 
 (defun is-shadow (i)
@@ -56,7 +53,7 @@
    or the structure of the method
 
 (def-k-method modifier+noun ((m modifier) (head t)) ;; Kurdish city - name-word city
-  (bind-variable 'modifier m head)
+  (setq head (bind-dli-variable 'modifier m head))
   head)  |#
 
 #+ignore  ;; original that ignored the modifier
@@ -75,11 +72,8 @@
   (tr :modifier+noun_modifier+t)
   (let ((real-modifier (dereference-shadow-individual modifier))
         (real-head (dereference-shadow-individual head)))
-    (if
-     (category-p real-head)
-     (setq real-head (make-individual-for-dm&p real-head))
-     (setq real-head (maybe-copy-individual real-head)))
-    (bind-variable 'modifier real-modifier real-head)
+    (setq real-head (individual-for-ref real-head))
+    (setq real-head (bind-dli-variable 'modifier real-modifier real-head))
     real-head))
 
 

@@ -39,8 +39,8 @@
                       (find-individual 'month 'name string))
                   *month-names*))
          (sequence (create-sequence the-months)))
-    (bind-variable 'sequence sequence category::month)
-    (bind-variable 'cycle-length 12 category::month)))
+    (old-bind-variable 'sequence sequence category::month)
+    (old-bind-variable 'cycle-length 12 category::month)));; needs to be checked in DLI
 
 ;;;----------
 ;;; weekdays
@@ -58,7 +58,7 @@
                       (find-individual 'weekday :name string))
                   *weekday-names*))
          (sequence (create-sequence the-weekdays)))
-    (bind-variable 'sequence sequence category::weekday)))
+    (old-bind-variable 'sequence sequence category::weekday))) ;; needs to be checked in DLI
 
 
 

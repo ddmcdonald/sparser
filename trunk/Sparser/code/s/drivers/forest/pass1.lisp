@@ -428,7 +428,7 @@
    ((and (edge-p left-neighbor)
          (edge-referent left-neighbor))
     (let* ((referent ;; DAVID -- THIS IS WHERE WE COPY THE BASE ITEM TO AVOID SMASHING IT
-            (maybe-copy-individual (edge-referent left-neighbor)))
+            (individual-for-ref (edge-referent left-neighbor)))
            (constituents (edge-constituents paren-edge))
            (count (when constituents ;;///review the code to guarentee this
                     ;; count is a crude 1st-cut distinction in what's inside 
@@ -439,9 +439,10 @@
       
       (when (and (individual-p paren-referent)
                  (individual-p referent))
-        (bind-variable (lambda-variable-named 'trailing-parenthetical)
-                       paren-referent
-                       referent))
+        (setq referent
+              (bind-dli-variable (lambda-variable-named 'trailing-parenthetical) ;; obsolete in DLI case
+                                 paren-referent
+                                 referent)))
       ;;// now knit it in. A form rule would be best. It could handle the
       ;; binding as well, but j9 shows that the neighbor is not always
       ;; going to be obvious.
@@ -523,7 +524,7 @@
             (if (and np-ref (itypep np-ref v/r))
               (let ((head-ref (edge-referent head-tt))
                     (variable (subcat-variable subcat)))
-                (bind-variable variable np-ref head-ref)
+                (setq head-ref (bind-dli-variable variable np-ref head-ref))
                 (let ((edge (make-edge-over-long-span 
                         (pos-edge-starts-at head-tt)
                         (pos-edge-ends-at following-tt)
@@ -580,7 +581,7 @@
        (other-vars (cdr variables) (cdr other-vars))
        (other-tts (cdr tts-to-bind) (cdr other-tts)))
       ((null next-var))
-    (bind-variable next-var (edge-referent next-tt) referent))
+    (setq referent (bind-dli-variable next-var (edge-referent next-tt) referent))) ;; obsolete in DLI case
   referent)
 
 #+ignore

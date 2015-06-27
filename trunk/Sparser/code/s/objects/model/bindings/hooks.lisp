@@ -165,7 +165,7 @@
         ;; There doesn't have to be. The presence of some binding may
         ;; be dependent on how the bound individual was itself
         ;; arrived at. 
-        (bind-variable higher-var lower-value binding-individual)))))
+        (bind-variable higher-var lower-value binding-individual))))) ;; check in DLI
 
 
 ;;;--------------------------------------------------------------------------

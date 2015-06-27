@@ -56,6 +56,7 @@
 ;;--- Linking name words to named-objects (companies, people, etc.)
 ;;  Used with names/parens-after-names to handle the new alias
 
+#+ignore ;; never called
 (defun link-named-object-to-name-word (object nw)  
   (let ((collection (value-of 'name-of nw category::name-word)))
     (push-debug `(,object ,nw ,collection))
@@ -65,7 +66,7 @@
       (then
        (add-item-to-collection object collection))
       (let ((c (define-collection `(,object) category::named-object)))
-        (bind-variable 'name-of c nw category::name-word)))))
+        (bind-variable 'name-of c nw category::name-word))))) ;; obsolete in bind-dli-variable
 
 
 ;;--- sort routine

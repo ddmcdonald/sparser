@@ -150,11 +150,11 @@
     (cond
      (*subcat-test* (not (null var))) ;; this rule has no semantic restrictions as of now    
      (var
-      (setq np-ref (maybe-copy-individual np-ref))
+      (setq np-ref (individual-for-ref np-ref))
       
       ;; copy down the upstairs subject
       ;; Should we check if it was already bound to something?
-      (bind-variable var np-ref vp-ref)
+      (setq  vp-ref (bind-dli-variable var np-ref vp-ref))
       (else
         ;; (push-debug `(,np-ref ,vp-ref))
         ;; (break "Can not find subject var in ~a" vp-ref)
@@ -163,7 +163,7 @@
                   vp-ref)))
       
       ;; link the rc to the np
-      (bind-variable 'modifier vp-ref np-ref)
+      (setq  np-ref (bind-dli-variable 'modifier vp-ref np-ref))
       
       ;; referent of the combination is the np
       np-ref))))
@@ -174,11 +174,11 @@
     (subcategorized-variable vp-ref :object np-ref)) ;; this rule has no semantic restrictions as of now
    (t
     (let ((object-var (object-variable vp-ref)))
-      (setq np-ref (maybe-copy-individual np-ref))
+      (setq np-ref (individual-for-ref np-ref))
       (if object-var
           ;; copy down the upstairs subject
           ;; Should we check if it was already bound to something?
-          (bind-variable object-var np-ref vp-ref)
+          (setq  vp-ref (bind-dli-variable object-var np-ref vp-ref))
           (else
             ;; (push-debug `(,np-ref ,vp-ref))
             ;; (break "Can not find subject var in ~a" vp-ref)
@@ -187,7 +187,7 @@
                       vp-ref)))      )
       
       ;; link the rc to the np
-      (bind-variable 'modifier vp-ref np-ref)
+      (setq  np-ref (bind-dli-variable 'modifier vp-ref np-ref))
       
       ;; referent of the combination is the np
       np-ref))))
@@ -233,7 +233,7 @@
       (if subject-var
         ;; copy down the upstairs subject
         ;; Should we check if it was already bound to something?
-        (bind-variable subject-var np-ref vp-ref)
+        (setq  vp-ref (bind-dli-variable subject-var np-ref vp-ref))
         (else
          ;; (push-debug `(,np-ref ,vp-ref))
          ;; (break "Can not find subject var in ~a" vp-ref)
@@ -242,7 +242,7 @@
                    vp-ref)))      )
       
       ;; link the rc to the np
-      (bind-variable 'modifier vp-ref np-ref)
+      (setq  np-ref (bind-dli-variable 'modifier vp-ref np-ref))
 
       ;; referent of the combination is the np
       np-ref)))
@@ -265,8 +265,8 @@
   (let ((r1 (edge-referent e1))
         (r2 (edge-referent e2)))
     ;; Type check r1 that it's actually an event.
-    (setq e1 (maybe-copy-individual e1))
-    (bind-variable 'unspecified-adjunct r2 r1 category::event)
+    (setq e1 (individual-for-ref e1))
+    (setq  r1 (bind-dli-variable 'unspecified-adjunct r2 r1 category::event))
     r1))
 
 (define-lambda-variable 'reduced-relative nil

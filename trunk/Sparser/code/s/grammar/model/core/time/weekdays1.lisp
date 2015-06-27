@@ -46,6 +46,6 @@
                        position-integer)
   (let ((weekday (define-or-find-individual 'weekday :name string))
         (ordinal (nth-ordinal position-integer)))
-    (bind-variable 'position-in-week ordinal weekday)
+    (setq weekday (bind-dli-variable 'position-in-week ordinal weekday))
     (define-abbreviation string abbrev-string)
     weekday ))
