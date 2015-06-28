@@ -1238,7 +1238,7 @@ These return the Lisp-based obo entries.
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id)))
 
-(defun run-june-articles (n &key (from-article 10) (cards t) (new nil))
+(defun run-june-articles (n &key (from-article 0) (cards t) (new nil))
   (setq *all-sentences* nil)
   (loop for id in (nthcdr from-article *june-nxml-files-in-MITRE-order*)
     as i from (+ 1 from-article) to (+ n from-article)
