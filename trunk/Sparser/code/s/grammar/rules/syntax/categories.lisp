@@ -643,6 +643,7 @@
     ,category::verb+ed
     ,category::verb ;; this covers BE!
     ,category::verb+ing
+    ,category::verb+s ;; added
     )
   "All the form categories that cover verbs")
 
