@@ -30,7 +30,9 @@
                 (gload "bio;loader"))
   (load-obo-terms)
   (load-bio-corpora)
-  (declare-all-existing-individuals-permanent))
+  (declare-all-existing-individuals-permanent)
+  (push :biology-loaded *features*)
+  )
 
 
 
