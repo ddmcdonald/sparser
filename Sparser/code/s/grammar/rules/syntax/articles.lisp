@@ -4,14 +4,17 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2015
+;;;  Version:  0.1 June 2015
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
 ;; because they preempt relative clause interpretation. 1/30/13 Added 
 ;; the+proper-name. 8/7/14 Added the other definite determiners, don't
 ;; remember what the problem might hae been. Added defNP dereference to
-;; "these". 3/2/15 Converted 'this' cases to defNP
+;; "these". 3/2/15 Converted 'this' cases to defNP.
+;; 0.1 6/28/15 Pulled all the literal "the" form rules in favor of
+;;  their equivalents that were make with define-determner.
+;;  Need to do the same with the indefinites and the others.
 
 (in-package :sparser)
 
@@ -107,32 +110,7 @@
   :referent (:daughter right-edge))
 
 
-;;--- the
-
-(def-form-rule ("the" common-noun)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule ("the" common-noun/plural)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule ("the" np-head)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule ("the" n-bar)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule ("the" np)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule ("the" proper-name)
-  :form proper-name
-  :referent (:daughter right-edge))
-
+;;--- the (as a referential category, not a literal)
 
 (def-form-rule (the common-noun)
   :form np
@@ -150,9 +128,10 @@
   :form np
   :referent (:daughter right-edge))
 
-(def-form-rule (the proper-name)
+(def-form-rule (the proper-noun)
   :form proper-name
   :referent (:daughter right-edge))
+
 
 ;;--- this
 
