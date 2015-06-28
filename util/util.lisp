@@ -719,7 +719,7 @@ tries to arrange that everything is tabbed to this column.")
           (insert-tab new-str))))
     new-str))
 
-
+#-:SBCL
 (defun format-fully-qualified (stream fstring &rest args)
    "Output FSTRING and ARGS onto STREAM -- all objects formatted with the ~S
     directive are fully qualified.  (this ought to be an option to ~S)"
