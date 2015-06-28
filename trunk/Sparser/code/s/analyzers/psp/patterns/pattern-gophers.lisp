@@ -11,6 +11,7 @@
 ;; 5/15/15 Sited the handling of edges within patterns here for want of
 ;;  a better place. 
 ;; 5/30/2015 catch error caused by undefined words in resolve-hyphen-between-three-words before they get to make-hyphenated-triple
+;; 6/27/2015 more informative error message in resolve-hyphen-between-two-terms when the right element is a word, not an edge
 
 (in-package :sparser)
 
@@ -333,6 +334,10 @@
          (right-edge (left-treetop-at/edge pos-after))
          (left-ref (edge-referent left-edge))
          (right-ref (edge-referent right-edge)))
+    (unless
+        (edge-p right-edge)
+      (break "the right-edge in resolve-hyphen-between-two-terms is ~s, not an edge"
+             right-edge))
     (cond
      ((not ;; might be a word 
        (or (individual-p left-ref) 
@@ -350,9 +355,9 @@
      ((itypep left-ref 'amino-acid)
       (reify-amino-acid-pair words pos-before pos-after))
      (t ;;(break "two-terms default")
-(make-bio-pair left-ref right-ref words
-                       left-edge right-edge
-                       pos-before pos-after)))))
+      (make-bio-pair left-ref right-ref words
+                     left-edge right-edge
+                     pos-before pos-after)))))
 
 
 (defun resolve-hyphen-between-three-words (pattern words
