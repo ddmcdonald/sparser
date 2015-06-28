@@ -359,20 +359,26 @@
 	   :s agent
 	   :o object
            :on cause
+           :upon cause
            ))
 
 
 
 (define-category block :specializes bio-control
-  :binds ((blocker biological)
-          (blocked biological)) ;; dec sentence 13 "depletion blocks ..."
+  :binds ((blocker biological) ;; dec sentence 13 "depletion blocks ..."
+          (blocked biological)
+          (at quantity)) 
   :realization
   (:verb "block"
          :noun "blocking"
          :etf (svo-passive)
          :s blocker
          :o blocked
-         :of blocked))
+         :at at
+         :by blocker
+         :in context
+         :of blocked
+         :with blocker))
 
 ;; "call"  assigns a name in passive "X is called N"
 
