@@ -19,6 +19,9 @@
 ;;      than multiplying them out as a number.  4/1/12 blocked call to undefined
 ;;      fn for after commas.  
 ;; 0.4 (9/27/13) Discriminated more cases in apply-multiplier.
+;; 6/27/2015 TEMPORARY PATCH to handle problems with multipliers like "million"
+;; it seems like the DL operations change the intended structures of the multipliers
+;;  NEED HELP FROM DAVID HERE
 
 (in-package :sparser)
 
@@ -196,16 +199,22 @@
            (multiplier-value 
             (cond ((typep multiplier 'number) multiplier)
                   ((itypep multiplier 'multiplier)
-                   (value-of 'value (value-of 'value multiplier)))
+                   (value-of 'value multiplier))
                   (t (error "New type for multiplier: ~a"
-                            (itype-of multiplier)))))
+                            (itype-of multiplier))))))
+      
+      (when
+          (not (numberp multiplier-value))
+        (format t "The multiplier ~s does not have a good value, substituting 1000~&"
+                multiplier)
+        (setq multiplier-value 1000))
 
-           (net-value (* number-value multiplier-value))
-           (net-number
-            (find-or-make-number net-value)))
-      ;; This pattern establishes an illions-distribution.
-      (set-illion-distribution net-number number multiplier)
-      net-number )))
+      (let*((net-value (* number-value multiplier-value))
+            (net-number
+             (find-or-make-number net-value)))
+        ;; This pattern establishes an illions-distribution.
+        (set-illion-distribution net-number number multiplier)
+        net-number ))))
 
 
 ;; old, original treatment for this case from Number-word-fsa
