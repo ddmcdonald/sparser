@@ -420,13 +420,14 @@
 (define-category catalytic-activity
   :specializes bio-process
   :bindings (uid "GO:0003824")
-  :binds ((catalyst enzyme)
+  :binds ((catalyst (:or enzyme complex))
           (process bio-process))
   :realization
   (:verb "catalyze" :noun "catalysis" :adj "catalytic"
          :etf (svo-passive) 
          :s catalyst
          :o process
+         :by catalyst
          :of process))
 
 
@@ -439,7 +440,8 @@
     (:verb "cause" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :by agent))
 
 (def-synonym cause
   (:noun "cause"
