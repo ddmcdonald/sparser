@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "proteins"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: April 2015
+;;; version: June 2015
 
 ;; initiated 9/8/14 lifting from other files
 ;; Made some of the proteins lower case, becasue both 
@@ -18,6 +18,7 @@
 ;;  about 1400 new proteins with several synonyms each
 ;; 5/30/2015 Give the MITRE-LINK the right UniProt: prefix,
 ;; add definitions for cadherin, Src, BCR-ABL and "poly(ADP–ribose)"
+;; 6/28/15 un-ignored p53
 
 (in-package :sparser)
 
@@ -195,7 +196,6 @@
 
 (def-bio "p52" protein)  ;; :identifier ??
 
-#+ignore
 (def-bio "p53" protein
   :mitre-link "Uniprot:P04637")
 
