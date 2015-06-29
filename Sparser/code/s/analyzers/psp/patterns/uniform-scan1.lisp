@@ -25,8 +25,13 @@
 ;; 1.2 5/15/15 Incorporating edges if they're more than one word long
 ;;   6/1/15 fixed bug in single multi-word edge case. Added some sectioning
 ;;    to make it easier to navigate
+;; 6/28/2015 Mechanism to collect all examples of nospace segments, keyed on *ns-examples*
 
 (in-package :sparser)
+
+;; This variable enables a collection of all no-space examples that contain - or /
+(defparameter *ns-examples* nil) ;; if non-null, collect all ns examples
+
 
 ;;;----------------
 ;;; gating globals
@@ -117,6 +122,11 @@
 
         (tr :looking-at-ns-segment start-pos end-pos)
         ;; Open coding post-accumulator-ns-handler
+        (when *ns-examples* 
+          (let
+              ((nsitem (actual-characters-of-word start-pos end-pos nil)))
+            (when (or (search "-" nsitem)(search "/" nsitem))
+          (push nsitem *ns-examples*))))
         (multiple-value-bind (layout edge)
                              (parse-between-scan-boundaries start-pos end-pos)
           (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
