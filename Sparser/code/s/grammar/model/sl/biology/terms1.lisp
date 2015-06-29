@@ -80,7 +80,12 @@
 (noun "the next day" :specializes abstract)
 (noun  "blotting" :super bio-method)
 (noun  "pipetting" :super bio-method)
-(noun  "processing" :super bio-method)
+(noun  "processing" :super bio-method
+       :binds ((agent biological)(object biological))
+       :realization
+       (:noun "processing"
+       :by agent
+       :of object)) ;; add "of"
 (noun  "stripping" :super bio-method)
 (noun  "uncapping" :super bio-method)
 (noun  "spectroscopy" :super bio-method)
