@@ -20,6 +20,9 @@
 ;; we were adding determiners to the base meaning of
 ;; amino acids, among others, generating individuals
 ;; with hundreds of determiners
+;; 6/28/2015 make sure to record determiners, and to use fom-lattice-description
+;; in convert-referent-to-individual
+
 
 
 (in-package :sparser)
@@ -206,11 +209,19 @@ to make any semantic or form edges that the grammar dictates.
       (referential-category
        ;;/// Could imagine using a find-individual here,
        ;; but with no binding values we've nothing to find against.
+       
+       ;; seems to cause of the smashing of 
+       ;; the referent of "the nucleus"
+       ;; -- we have now turned off this flag in the bio domain
        (when *profligate-creation-of-individuals*
          (let ((super (supercategory-of-constructed-category referent)))
            (setf (edge-referent edge)
                  (make-individual-for-dm&p (or super
-                                               referent))))))
+                                               referent)))))
+       (if *description-lattice*
+           (setf (edge-referent edge)
+                 (fom-lattice-description referent)))
+       referent)
       ;; These cases are original from 2009 and 
       ;; not reconsidered yet.
       (mixin-category
@@ -241,6 +252,7 @@ to make any semantic or form edges that the grammar dictates.
       (return-from record-any-determiner nil))
     (when (determiner? word)
       (let ((i (edge-referent edge)))
+        #+ignore
         (unless (individual-p i)
           ;;/// complain?
           (return-from record-any-determiner nil)) 
