@@ -169,12 +169,7 @@ in the mix (this will blow out) we should revisit the whole treatment.
 ;;; make sure the file exists before you load it, fail-soft
 ;;;---------------------------------------------------------
 
-(unless (boundp 'cl-user::*lload-quietly*)
-  (defparameter cl-user::*lload-quietly* t))
-
-
 (defun check-&-load (raw-namestring  &key already-expanded? )
-  (declare (special cl-user::*lload-quietly*))
   (let ((namestring (if already-expanded?
                       raw-namestring
                       (expand-namestring raw-namestring))))
@@ -187,8 +182,6 @@ in the mix (this will blow out) we should revisit the whole treatment.
     (if (probe-file namestring)
       (let ((*file-being-lloaded* namestring))
         (load namestring)
-        (unless (and (boundp 'cl-user::*lload-quietly*) cl-user::*lload-quietly*)
-          (format t "~%Loaded file ~a" namestring))
         (special-hacks raw-namestring namestring)
         (record-file-write-time namestring)
         (when (and (boundp '*grammar-module-being-loaded*)
