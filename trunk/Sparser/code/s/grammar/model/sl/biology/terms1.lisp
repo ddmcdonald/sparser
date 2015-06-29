@@ -81,7 +81,7 @@
 (noun  "blotting" :super bio-method)
 (noun  "pipetting" :super bio-method)
 (noun  "processing" :super bio-method
-       :binds ((agent biological)(object biological))
+       :binds ((agent biological)(object bio-entity))
        :realization
        (:noun "processing"
        :by agent
