@@ -704,7 +704,8 @@
          :adj "dependent"
    :etf (sv)
    :s agent
-   :on theme))
+   :on theme
+   :upon theme))
 
 
 
