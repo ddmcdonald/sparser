@@ -276,7 +276,7 @@
              :of measurable)) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super bio-condition)
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
-(adj "conserved" :super bio-predication) ;; virtually never used as a verb
+;;(adj "conserved" :super bio-predication) Moved to verbs1.lisp
 (adj "consistent" :super bio-predication
   :binds ((subject biological) (theme biological))
   :realization 
