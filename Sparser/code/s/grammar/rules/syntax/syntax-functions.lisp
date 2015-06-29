@@ -683,7 +683,7 @@
         (or (not (or ;; vp has a bound object
                   (null (object-variable vp))
                   (value-of (object-variable vp) vp)
-                  (itype subj 'pronoun)))
+                  (itypep subj 'pronoun)))
          (subcategorized-variable vp :subject subj)))
        ;; ?????????????
        ((or ;; vp has a bound object
@@ -782,7 +782,12 @@
               category::unknown-grammatical-function)))
     (when (consp restriction)
       ;; the first one after the :or
-      (setq restriction (cadr restriction)))
+      (setq restriction 
+            (or
+             (loop for c in (cdr restriction) 
+               when (itypep (edge-referent pn-edge) c)
+               do (return c))
+             (cadr restriction))))
     (unless relation-label
       (setq relation-label category::np))
  
