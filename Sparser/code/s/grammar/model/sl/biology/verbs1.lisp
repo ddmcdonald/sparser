@@ -514,6 +514,7 @@
          :by agent
          :from bio
          :in bio
+         :to bio
          :with bio))
 
 (define-category consider
@@ -544,7 +545,8 @@
     (:verb "constitute" ;; keyword: ENDS-IN-ED 
 	   :etf (svo)
 	   :s agent
-	   :o object))
+	   :o object
+           :by agent))
 
 (define-category contain 
      :specializes bio-relation 
@@ -559,11 +561,13 @@
 (define-category correspond
     :specializes bio-relation
     :binds ((item1 biological)
-            (item2 biological))
+            (item2 biological)
+            (property common-noun))
     :realization
   (:verb "correspond" :noun "correspondence"
          :etf (sv)
          :s item1
+         :in property ;; "fragments correspond in size..."
          :of item1
          :to item2
          :with item2))
@@ -571,14 +575,19 @@
 (define-category create
   :specializes bio-process
   :binds ((creator biological)
-          (creation biological))
+          (creation biological)
+          (source biological)
+          (process bio-process))
   :realization
   (:verb "create"
          :noun "creation"
          :etf (svo-passive) 
          :s creator
          :o creation
-         :of creation))
+         :by creator
+         :from source
+         :of creation
+         :through process))
 
 (define-category culture
     :specializes bio-method
