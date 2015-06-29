@@ -85,7 +85,7 @@
        :realization
        (:noun "processing"
        :by agent
-       :of object)) ;; add "of"
+       :of object))
 (noun  "stripping" :super bio-method)
 (noun  "uncapping" :super bio-method)
 (noun  "spectroscopy" :super bio-method)
