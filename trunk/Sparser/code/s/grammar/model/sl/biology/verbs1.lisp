@@ -450,16 +450,18 @@
 (define-category compare :specializes bio-method
   :binds ((agent pronoun/first/plural)
           (object biological)
-          (camparator biological)
-          (context bio-context))
+          (comparator biological)
+          (context bio-context)
+          (by (:or bio-method biological)))
   :realization 
   (:verb "compare" :noun "comparison" :adj "comparable"
          :etf (svo-passive)
          :s agent 
          :o object
-         :to camparator
          :in context
-         :of object))
+         :of object
+         :to comparator
+         :with comparator))
 
 
 (define-category confer
