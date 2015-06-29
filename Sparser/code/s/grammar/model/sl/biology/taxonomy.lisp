@@ -236,7 +236,9 @@
   :specializes bio-process
   :bindings (uid "GO:0005488"))
 
+(delete-noun-cfr (resolve/make "reaction"))
 (define-category chemical-reaction
+  :realization (:noun "reaction")
   :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
   )
 
