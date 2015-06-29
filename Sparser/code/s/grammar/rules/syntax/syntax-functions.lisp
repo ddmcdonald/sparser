@@ -68,6 +68,8 @@
 ;;   handed a NP with NIL referent
 ;; 6/22/15 Added prep-comp to allow richer set of prepositions to adjoint
 ;;   to VPs and expose the preposition to the subcategorization of the head.
+;; 6/28/2015 Don't collect information on VP+ED sentences -- 
+;; mechanism causes stack overflow because of the pushne with equalp...
 
 
 (in-package :sparser)
@@ -662,6 +664,7 @@
   (let* ((vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge)))
     ;;(break "assimilate-subject-to-vp+ed")
+    #+ignore
     (unless *subcat-test* 
       (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
                 :test #'equalp))
