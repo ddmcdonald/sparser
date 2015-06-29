@@ -466,13 +466,19 @@
 
 (define-category confer
     :specializes bio-control
-    :binds ((agent bio-entity)
-            (object bio-process))
+    :binds ((agent (:or bio-entity common-noun))
+            (object bio-process)
+            (to bio-entity)
+            (bio biological))
     :realization
     (:verb "confer" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :by agent
+           :on bio
+           :to to
+           :upon bio))
 
 ;; like inhibit "therapeutics are confounded by acquired resistance"
 (define-category confound
