@@ -99,7 +99,7 @@ those steps sequentially on a single article.
                          ;; this is the WRONG location -- it does not match
                          ;; where Jeremy did his work
                          ;;(:jun15 "darpa/12-month TestMaterials/NXML-model")
-                         (:jun15 "code/evaluation/June2015Materials/Eval-NXML")))
+                         (:jun15 "code/evaluation/June2015Materials/Eval_NXML")))
 
 
 ;;; remove slashes from both ends unless just-end = t then just right end.
