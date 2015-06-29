@@ -56,6 +56,11 @@
 (defun pos (n)(chart-array-cell n))
 (defun np (l &optional (stream t))
   (loop for ll in l do (print ll stream)))
+(defun ht-to-alist (ht)
+  (let
+      ((alist nil))
+    (maphash #'(lambda(l h) (push (list l h) alist)) ht)
+    (sort alist #'(lambda (x y)(string< (format nil "~s" x)(format nil "~s" y))) :key #'car)))
 
 (defun show-brackets (end)
   (np 
