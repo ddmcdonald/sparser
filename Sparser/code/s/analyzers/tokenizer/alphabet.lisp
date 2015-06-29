@@ -26,6 +26,8 @@
 ;;  uses decimal encoding, so in *entries-for-out-of-band-characters* we need
 ;;  (8594 ;; rightwards arrow
 ;;    (:punctuation . ,(punctuation-named #\U+2192)))
+;; 6/28/2015 correct handling of  (8764 (:punctuation . ,(punctuation-named (code-char 8764)))) ;; #\∼
+
 
 
 (in-package :sparser)
@@ -920,13 +922,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8758 ;; ratio  #\U+2236
      (:punctuation . ,(punctuation-named #\:)))
 
-    (8764
-     (:punctuation . ,(or
-                       #-allegro
-                       (punctuation-named #\U+223C)
-                       #+allegro
-                       (punctuation-named (code-char #x223C))
-                       (punctuation-named #\~))))
+    (8764 (:punctuation . ,(punctuation-named (code-char 8764)))) ;; #\∼
     (8776 (:punctuation . ,(punctuation-named (code-char 8776)))) ;;"≈", (code = 8776)
     (8781 (:punctuation . ,(punctuation-named (code-char 8781)))) ;;"≍", (code = 8781)
     
