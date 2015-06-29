@@ -736,13 +736,13 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by agent
            :of object))
 
 (define-category detect
     :specializes bio-method
-    :binds ((agent pronoun/first/plural)
-            (object biological)
-            (detector biological))
+    :binds ((agent (:or biological bio-method pronoun/first/plural))
+            (object biological))
     :realization
     (:verb "detect" ;; keyword: ENDS-IN-ED 
 	   :noun "detection"
@@ -751,7 +751,7 @@
 	   :s agent
 	   :o object
            :of object
-           :by biological))
+           :by agent))
 
 (define-category digest ;; as in a chemical process for breaking down proteins
   :specializes bio-method
