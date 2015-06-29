@@ -160,7 +160,7 @@
     (code-char 8745) ;; "∩" #\U+2229
     (code-char 8747) ;; "∫"
     (code-char 8758) ;; ratio  #\U+2236
-    (code-char 8764)
+    (code-char 8764) ;;#\∼ 
     (code-char 8776) ;;"≈", (code = 8776)
     (code-char 8781) ;;"≍", (code = 8781)
 
