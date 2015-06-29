@@ -481,16 +481,19 @@
            :upon bio))
 
 ;; like inhibit "therapeutics are confounded by acquired resistance"
+;; "...studies of human BTICs have been confounded by their scarcity in tumors..."
 (define-category confound
     :specializes bio-event
-    :binds ((agent biological)
+    :binds ((agent (:or common-noun biological))
             (object bio-process)) 
   ;; changed agent to biological, since it can include bio-process such as resistnace
     :realization
     (:verb "confound" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :of object ;; "confounding of the gene expression.."
+           :by agent))
 
 (define-category conserve 
   :specializes bio-process 
