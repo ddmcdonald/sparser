@@ -155,9 +155,12 @@
             ;;make the list of chunk edges show their sentence origin
             (push (cons n (cdr test)) *all-chunk-edges*))
           (when semantics ;;*show-semantics*
-            (terpri) 
-            (format t "---SEMANTIC FOREST---")
-            (loop for edge-tree in
+            (format t "~%---SEMANTIC FOREST---")
+            (show-sem-forest)
+            )))))
+
+(defun show-sem-forest ()
+  (loop for edge-tree in
               (tts-edge-semantics)
               do
               (terpri)
@@ -167,7 +170,7 @@
                     (print-tree (second edge-tree) t 0 t t))
                   (else
                     (format t "-----  ~s" (car edge-tree))
-                    (print-tree (second edge-tree))))))))))
+                    (print-tree (second edge-tree))))))
 
 (defun sem-test (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences))
@@ -203,6 +206,15 @@
       (terpri)
       (reverse s-expressions))))
 
+(defparameter *current-sentences* nil)
+(defun p-nth-2sem (n &optional (sentences *current-sentences*))
+  (when sentences (p2sem (nth n sentences))))
+    
+;; sentence a string.
+(defun p2sem (sentence) 
+  (format t "~2%----------------------------------------------~%Processing '~a'~%" sentence)
+  (p sentence)
+  (show-sem-forest))
 
 
 ;;;-------------------------------
