@@ -712,13 +712,18 @@
 (define-category deplete
   :specializes bio-process
   :binds ((agent biological)
-          (object bio-entity)) 
+          (object biological)
+          (method bio-method)
+          (bio biological)) 
   :realization
   (:verb "deplete" :noun "depletion"
    :etf (svo-passive)
    :s agent
    :o object
-   :of object))
+   :by agent
+   :from bio
+   :of object
+   :with method))
 
 
 (define-category describe
