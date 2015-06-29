@@ -592,9 +592,10 @@
 (define-category culture
     :specializes bio-method
     :binds ((agent bio-entity)
-            (object bio-process))
+            (object bio-process)
+            (bio biological))
     :realization
-    (:verb "culture" ;; keyword: ENDS-IN-ED 
+    (:verb "culture" ;; keyword: ENDS-IN-ED
 	   :etf (svo-passive)
 	   :s agent
 	   :o object))
@@ -632,6 +633,7 @@
     :etf (svo-passive)
     :s deactivator
     :o deactivated
+    :by deactivator
     :of deactivated))
 
 
@@ -639,13 +641,17 @@
   :specializes bio-control
   :binds ((agent biological) 
           (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
+          (theme biological)
+          (level (:or measurement bio-scalar))) 
   :realization
   (:verb "decrease" 
          :etf (svo-passive)
          :s agent
          :o object
-         :for theme))
+         :by agent
+         :for theme
+         :in theme
+         :to level))
 
 #+ignore ;; don't know why we have this -- it misparses "monoubiquitination decreases"
 (def-synonym decrease
@@ -676,7 +682,7 @@
 (define-category demonstrate
     :specializes bio-rhetorical
     :mixins (bio-thatcomp)
-    :binds ((agent (:or biological pronoun/first/plural these))
+    :binds ((agent (:or biological pronoun/first/plural these bio-process))
             (object bio-process))
     :realization
     (:verb "demonstrate" ;; keyword: ENDS-IN-ED 
@@ -684,6 +690,7 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by agent
            :of object
            :thatcomp statement))
 
