@@ -499,13 +499,22 @@
 (define-category conserve 
   :specializes bio-process 
   :binds ((agent bio-entity)
-          (object bio-process)) 
+          (object bio-process)
+          (bio biological)
+          (at bio-location)) 
   :realization 
   (:verb "conserve" 
          :noun "conservation" 
          :etf (svo-passive) 
          :s agent 
-         :o object))
+         :o object
+         :across bio
+         :among bio
+         :at at
+         :by agent
+         :from bio
+         :in bio
+         :with bio))
 
 (define-category consider
     :specializes bio-rhetorical
