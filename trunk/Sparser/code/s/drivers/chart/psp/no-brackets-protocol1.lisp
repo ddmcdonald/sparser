@@ -539,13 +539,13 @@
 ;;;------------------------------------
 
 (defun tts-semantics ()
-  (loop for edge in (cdr (all-tts)) 
+  (loop for edge in (all-tts) #+ignore (cdr (all-tts)) 
     when (and (edge-p edge) 
               (not (word-p (edge-referent edge))))
     collect (semtree (edge-referent edge))))
 
 (defun tts-edge-semantics ()
-  (loop for edge in (cdr (all-tts)) 
+  (loop for edge in (all-tts) #+ignore (cdr (all-tts)) 
     when (and (edge-p edge) 
               (not (word-p (edge-referent edge))))
     collect (list edge
