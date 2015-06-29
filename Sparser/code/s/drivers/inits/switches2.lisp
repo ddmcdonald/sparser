@@ -195,7 +195,6 @@
   (use-return-newline-tokens-fsa)
   (establish-version-of-capitalization-dispatch :no-op)
   (establish-version-of-complete :ca/ha)
-  (setq *polyword-routine* :multiple-completions)
   (setq *count-input-lines* (not *nothing-Mac-specific*)))
 
 
