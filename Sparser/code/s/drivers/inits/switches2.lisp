@@ -77,6 +77,7 @@
 ;; 3/10/2015 Make bio-setting set *edges-from-referent-categories* to NIL
 ;;  result is a faster system with (slightly) more accurate results.
 ;; 4/18/15 Fanout from flag used in DM&P and checked in bind-variable/expr
+;; 6/28/2015 Tunr off *profligate-creation-of-individuals* in set-bio
 
 (in-package :sparser)
 (defvar *PNF-ROUTINE*)
@@ -448,7 +449,7 @@
   ;; segment actions we do
   (setq *do-strong-domain-modeling* t
         *new-segment-coverage* :trivial ;; vs. :full or :none
-        *profligate-creation-of-individuals* t
+        ;;*profligate-creation-of-individuals* t
         ;;*reify-implicit-individuals* t
         *note-text-relations* t)
   ;; Specify where we start (needed as switch settings change)
