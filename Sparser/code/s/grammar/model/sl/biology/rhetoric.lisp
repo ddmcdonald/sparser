@@ -161,6 +161,7 @@ no evidence in the sentence.
 ;;(conjecture-phrase "could") ;; could also
 
 
+(conjecture-phrase "a possible explanation")
 (conjecture-phrase "it is likely that")
 (conjecture-phrase "it is possible that")
 (conjecture-phrase "one could hypothesize that")
@@ -168,10 +169,8 @@ no evidence in the sentence.
 (conjecture-phrase "we queried whether")
 (conjecture-phrase "we tested whether")
 
-(known-result-phrase "as previously demonstrated")
 (known-result-phrase "emerging evidence suggests")
 (known-result-phrase "has been shown")
-(known-result-phrase "in a previous paper")
 (known-result-phrase "it has been proposed that")
 (known-result-phrase "it has been unclear how")
 (known-result-phrase "it is less clear how")
@@ -180,6 +179,7 @@ no evidence in the sentence.
 (known-result-phrase "knowing")
 (known-result-phrase "most commonly")
 (known-result-phrase "most studied")
+(known-result-phrase "previous")
 (known-result-phrase "previously")
 (known-result-phrase "recent data")
 (known-result-phrase "recent evidence")
@@ -206,7 +206,6 @@ no evidence in the sentence.
 (new-fact-phrase "provides a novel link between")
 (new-fact-phrase "provides an explanation of how")
 (new-fact-phrase "suggesting that")
-(new-fact-phrase "therefore")
 (new-fact-phrase "the data also suggest")
 (new-fact-phrase "the data suggest")
 (new-fact-phrase "these data suggest")
@@ -217,10 +216,9 @@ no evidence in the sentence.
 (new-fact-phrase "these results indicate")
 (new-fact-phrase "these results show")
 (new-fact-phrase "these results suggest")
-(new-fact-phrase "this result shows that")
+(new-fact-phrase "this result shows")
 (new-fact-phrase "this indicates that")
 (new-fact-phrase "this observation suggests")
-(new-fact-phrase "thus")
 (new-fact-phrase "we also show that")
 (new-fact-phrase "we conclude that")
 (new-fact-phrase "we demonstrate that")
@@ -241,5 +239,6 @@ no evidence in the sentence.
 (methodology-phrase "we investigated")
 (methodology-phrase "we observed")
 (methodology-phrase "we performed")
+(methodology-phrase "we queried")
 
 (evidence-of-reference "xref")
