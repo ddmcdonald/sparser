@@ -21,6 +21,7 @@
 ;; 2/4/2015 cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
 ;; 6/5/2-15 Use different parsers for NG, VG and ADJG -- NG is right to left, ADJG and VG are left to right
 ;;  this needs to be reviewed, but it helps with "will likely be useful" where the modal wants to be associated with the "be'
+;; 6/28/2015 Don't call march-back-from-the-right/segment when segment has been fully parsed
 
 (in-package :sparser)
 
@@ -107,9 +108,10 @@
         (push-debug `(,triple))
         (break "triple did not produce an edge"))
       (tr :triple-led-to-edge edge))
-
-    ;; Then mop up anything else that that couldn't
-    (march-back-from-the-right/segment)))
+    (if (eq (segment-coverage) :one-edge-over-entire-segment)
+        (segment-parsed1)
+        ;; else, then mop up anything else that that couldn't
+        (march-back-from-the-right/segment))))
 
 (defun select-best-triple (triples)
   ;; decision-making goes here, e.g. the types of edges involved,
