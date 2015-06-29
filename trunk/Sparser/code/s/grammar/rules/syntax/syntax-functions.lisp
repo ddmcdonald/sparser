@@ -167,8 +167,9 @@
    (t ;; Dec#2 has "low nM" which requires coercing 'low'
     ;; into a number. Right now just falls through
     (setq head (individual-for-ref head))
-    (when (itypep head 'endurant)
-      (setq  head (bind-dli-variable 'modifier qualifier head)))
+    ;; (when (itypep head 'endurant)
+      (setq  head (bind-dli-variable 'modifier qualifier head)) 
+      ;;)
     head)))
 
 (defun quantifier-noun-compound (quantifier head)
