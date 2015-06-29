@@ -39,6 +39,12 @@
 ;; called from chart-based-analysis where there is a catch to 
 ;; terminate chart parsing. 
 
+;; 6/28/2015 The *missing-subcats* parameter, when non-null causes the saving of all cases where a PP 
+;; is not absorbed by a preceding NP or VP
+
+(defparameter *missing-subcats* '(()))
+
+
 (defun sucessive-sweeps? ()
   ;; syntactic sugar for a mode detector. Cf. new-forest-protocol?
   (eq *kind-of-chart-processing-to-do* :successive-sweeps))
@@ -285,6 +291,7 @@
                         *universal-time-end*)))
             
             *all-sentences*))
+    (save-missing-subcats)
      
     ;; We always retrieve the entities and relations to store
     ;; with the sentence and accumulate at higher levels
@@ -294,7 +301,52 @@
       (set-relations sentence relations))))
 
 
-     
+
+(defun save-missing-subcats ()
+  (when *missing-subcats*
+    (let* ((ee (reverse (all-tts))) 
+           (pp-pairs 
+            (loop for e on ee by #'cddr 
+              when 
+              (and (edge-p (car e))
+                   (eq category::pp (edge-form (car e)))
+                   (cdr e) 
+                   (edge-p (second e))
+                   (or (vp-category? (second e) )(noun-category? (second e))))
+              collect 
+              (list (edge-category (second e))
+                    (value-of 'prep (edge-referent (car e)))
+                    (value-of 'pobj (edge-referent (car e)))
+                    (actual-characters-of-word (pos-edge-starts-at (second e))
+                                               (pos-edge-ends-at (second e)) nil)
+                    (actual-characters-of-word (pos-edge-starts-at (car e))
+                                               (pos-edge-ends-at (car e)) nil)))))
+      (setq *missing-subcats*
+            (nconc pp-pairs *missing-subcats*)))))
+
+(defun cat-sym (cat)
+  (cond ((null cat) nil)
+        ((category-p cat)
+         (if (symbolp (cat-symbol cat))
+             (intern (symbol-name (cat-symbol cat)))
+             cat))
+        (t cat)))
+
+(defun write-missing-subcats (outfile)
+  (let
+      ((missing
+        (loop for l in *missing-subcats* 
+          when (consp l)
+          collect 
+          `(,(cat-sym (car l)) ,(cat-sym (second l)) ,@(cddr l)))))
+    (with-open-file (s outfile
+                       :direction :output
+                       :if-exists :overwrite
+                       :if-does-not-exist :create)
+      (np missing s))))
+  
+
+
 ;;;------------------------------------------------------------
 ;;; final operations on sentence before moving to the next one
 ;;;------------------------------------------------------------
