@@ -813,25 +813,30 @@
 (define-category dissociate :specializes bio-process
   :binds ((agent biological)
           (object complex)
-          (into biological))
+          (bio biological)
+          (with bio-chemical-entity))
   :realization
   (:verb "dissociate" :noun "dissociation"
          :etf (svo-passive)
          :s agent
          :o object
-         :into into
-         ))
+         :by agent
+         :from bio
+         :into bio
+         :with with)) 
 
 (define-category dominate 
   :specializes bio-relation 
-  :binds ((agent bio-entity)
+  :binds ((agent biological)
           (object bio-process)) 
   :realization 
   (:verb "dominate" 
   :noun "domination" 
   :etf (svo-passive) 
   :s agent 
-  :o object))
+  :o object
+  :by agent
+  :over object))
 
 (define-category downregulate
   :specializes bio-control
