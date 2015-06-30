@@ -1296,13 +1296,16 @@
   :specializes bio-control
   :binds ((agent biological) 
           (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
+          (theme biological)
+          (method (:or bio-process bio-method biological))) ;; increase in rate vs increase in RAS activity
   :realization
   (:verb "increase" 
          :etf (svo-passive)
          :s agent
          :o object
-         :for theme))
+         :by method
+         :for theme
+         :with method))
 
 
 
@@ -1317,7 +1320,7 @@
   :realization 
   (:verb "induce" :noun "induction" :adj "inducible"
    :etf (svo-passive)
-   :s agent
+   :s agent ;;can also be treatment? "ACF formation induced by dextran sodium sulfate"
    :o object
    :in response))
 ;;/// want subtypes, want to understand the syntax of "-inducing"
@@ -1342,7 +1345,8 @@
 (define-category indicate
     :specializes bio-rhetorical
     :mixins (bio-thatcomp)
-    :binds ((agent biological)(object bio-process))
+    :binds ((agent biological)
+            (object bio-process))
     :realization
     (:verb "indicate" ;; keyword: ENDS-IN-ING 
 	   :noun "indication"
@@ -1354,12 +1358,15 @@
 
 (define-category influence
     :specializes bio-control
-    :binds ((agent biological)(object biological)(mechanism biological))
+    :binds ((agent biological)
+            (object biological)
+            (mechanism biological))
     :realization
   (:verb "influence" ;; keyword: ENDS-IN-ING 
          :etf (svo-passive)
          :s agent
          :o object
+         :by mechanism
          :via mechanism))
 
 #| only two examples of noun use of "influence"
