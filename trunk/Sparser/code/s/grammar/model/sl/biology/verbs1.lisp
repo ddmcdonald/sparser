@@ -933,16 +933,19 @@
    :s encoder
    :o encoded
    :by encoder
+   :for encoded
    :of encoded))
 
 (define-category engender
     :specializes bio-control
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent (:or bio-entity biological))
+            (object bio-process))
     :realization
     (:verb "engender"
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :by agent))
 
 
 
