@@ -19,9 +19,7 @@
 ;;      than multiplying them out as a number.  4/1/12 blocked call to undefined
 ;;      fn for after commas.  
 ;; 0.4 (9/27/13) Discriminated more cases in apply-multiplier.
-;; 6/27/2015 TEMPORARY PATCH to handle problems with multipliers like "million"
-;; it seems like the DL operations change the intended structures of the multipliers
-;;  NEED HELP FROM DAVID HERE
+;;
 
 (in-package :sparser)
 
@@ -181,12 +179,6 @@
   ;; the edge that's just completed. 
   (let ((number left-referent)
         (multiplier right-referent))
-    #|(unless (XXX number 'number)
-      (break "Threading bug: the left-referent is not a number: ~
-              ~%   ~a" number))
-    (unless (XXX number 'multiplier)
-      (break "Threading bug: the left-referent is not a multiplier: ~
-              ~%   ~a" multiplier))|#
     (push-debug `(,number ,multiplier))
     (let* ((number-value
             (cond ((typep number 'number) number)
@@ -199,19 +191,16 @@
            (multiplier-value 
             (cond ((typep multiplier 'number) multiplier)
                   ((itypep multiplier 'multiplier)
-                   (value-of 'value multiplier))
+                   (let ((v (value-of 'value multiplier)))
+                     (cond ((itypep v 'number)
+                            (value-of 'value v))
+                           (t (error "New type for value of multiplier")))))
                   (t (error "New type for multiplier: ~a"
-                            (itype-of multiplier))))))
-      
-      (when
-          (not (numberp multiplier-value))
-        (format t "The multiplier ~s does not have a good value, substituting 1000~&"
-                multiplier)
-        (setq multiplier-value 1000))
+                            (itype-of multiplier))))))      
 
-      (let*((net-value (* number-value multiplier-value))
-            (net-number
-             (find-or-make-number net-value)))
+      (let* ((net-value (* number-value multiplier-value))
+             (net-number
+              (find-or-make-number net-value)))
         ;; This pattern establishes an illions-distribution.
         (set-illion-distribution net-number number multiplier)
         net-number ))))
