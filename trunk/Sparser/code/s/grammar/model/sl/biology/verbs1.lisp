@@ -1489,6 +1489,7 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           ;;:about object
            :of object))
 
 (delete-noun-cfr (resolve/make "lead"))
@@ -1512,6 +1513,7 @@
          :etf (svo-passive)
          :s agent
          :o object
+         :into substrate
          :to substrate
          :of object))
 
