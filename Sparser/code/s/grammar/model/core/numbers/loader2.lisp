@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  2.7 May 2013
+;;;  Version:  2.7 June 2015
 
 ;; 2.0  (7/16/92 v2.3) bumped [percentages] to 1 to install new regime
 ;;      7/19 bumped nearly everything else to make it over to new categories
@@ -18,13 +18,15 @@
 ;;     (3/29/06) Appeared to have left out the digits fsa in the 2.6 mod.
 ;;     (8/16/07) added [relation].
 ;; 2.7 (5/9/13) Moved the two dossier filees in to load here so we can use
-;;      them right away.
+;;      them right away. Bumbed form to 3 on 6/28/15 to have a clean
+;;      copy while reorganizing the creation of number individuals
+;;      and their rules. 
 
 (in-package :sparser)
 
 (gload "numbers;object1") 
 (gload "numbers;categories1")
-(gload "numbers;form2")
+(gload "numbers;form3")
 (gload "numbers;fsa digits6")
 (gload "numbers;fsa words")
 (gload "numbers;ordinals3")
