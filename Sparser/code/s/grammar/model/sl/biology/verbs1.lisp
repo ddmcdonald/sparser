@@ -884,18 +884,23 @@
 
 (define-category elevate
     :specializes bio-control
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process)
+            (in bio-location))
     :realization
     (:verb "elevate" ;; keyword: ENDS-IN-ED 
 	   :noun "elevation"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by agent
+           :in in
            :of object))
 
 (define-category elucidate
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object biological)) 
+    :binds ((agent bio-entity)
+            (object biological)) 
      ;; change object to biological, since we have December 51, "in a manner that elucidates ... targets"
     :realization
     (:verb "elucidate" ;; keyword: ENDS-IN-ED 
@@ -903,6 +908,7 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by agent
            :of object))
 
 (define-category elute
