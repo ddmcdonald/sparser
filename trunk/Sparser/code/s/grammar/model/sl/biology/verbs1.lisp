@@ -645,21 +645,26 @@
           (level (:or measurement bio-scalar))) 
   :realization
   (:verb "decrease" 
-         :etf (svo-passive)
-         :s agent
-         :o object
-         :by agent
-         :for theme
-         :in theme
-         :to level))
+   :etf (svo-passive)
+   :s agent
+   :o object
+   :by agent
+   :for theme
+   :in theme
+   :to level))
 
-#+ignore ;; don't know why we have this -- it misparses "monoubiquitination decreases"
+
+;; Potentially problematic since the plural will misparse
+;; "monoubiquitination decreases". Committing horrible hack
+;; of putting in a dummy plural to circumvent that.
+;; When we finally encounter are legitimate use of the
+;; plural noun form we'll have to reconsider all this.
 (def-synonym decrease
-  (:noun "decrease"
-         :of object))
+  (:noun ("decrease" :plural "ddddecrease")
+   :of object))
 
 (delete-noun-cfr (resolve/make "delay"))
-
+;; Remove existing version of "delay" to replace it with this one
 (define-category delay
     :specializes bio-event
     :binds ((agent biological)
@@ -742,8 +747,7 @@
 (define-category detect
     :specializes bio-method
     :binds ((agent (:or biological bio-method pronoun/first/plural))
-            (object biological)
-            (location bio-location))
+            (object biological))
     :realization
     (:verb "detect" ;; keyword: ENDS-IN-ED 
 	   :noun "detection"
@@ -751,11 +755,8 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :at location
-           :by agent
-           :in location
            :of object
-           :with agent))
+           :by agent))
 
 (define-category digest ;; as in a chemical process for breaking down proteins
   :specializes bio-method
@@ -786,7 +787,7 @@
          :of object))
 
 (define-category disrupt :specializes bio-process
-  :binds ((agent (:or biological bio-method))
+  :binds ((agent biological)
           (object bio-process)) 
   :realization
   (:verb "disrupt" :noun "disruption" 
@@ -794,49 +795,41 @@
          :s agent 
          :o object
          :by agent
-         :of object
-         :with agent))
+         :of object))
 
 (define-category dissect 
   :specializes bio-method 
   :binds ((agent bio-entity)
-          (object bio-process)
-          (from biological)) 
+          (object bio-process)) 
   :realization 
   (:verb "dissect" 
    :noun "dissection" 
    :etf (svo-passive) 
    :s agent 
-   :o object
-   :from from))
+   :o object))
 
 (define-category dissociate :specializes bio-process
   :binds ((agent biological)
           (object complex)
-          (bio biological)
-          (with bio-chemical-entity))
+          (into biological))
   :realization
   (:verb "dissociate" :noun "dissociation"
          :etf (svo-passive)
          :s agent
          :o object
-         :by agent
-         :from bio
-         :into bio
-         :with with)) 
+         :into into
+         ))
 
 (define-category dominate 
   :specializes bio-relation 
-  :binds ((agent biological)
+  :binds ((agent bio-entity)
           (object bio-process)) 
   :realization 
   (:verb "dominate" 
   :noun "domination" 
   :etf (svo-passive) 
   :s agent 
-  :o object
-  :by agent
-  :over object))
+  :o object))
 
 (define-category downregulate
   :specializes bio-control
@@ -864,11 +857,9 @@
           (mechanism biological))
   :realization 
   (:verb "drive"
-   :adj "driven"
    :etf (svo-passive) 
    :s driver
    :o driven
-   :by driver
    :through mechanism))
 
 (define-category dysregulate
