@@ -890,8 +890,9 @@
 
 (define-category elucidate
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)
+    :binds ((agent biological)
             (object biological)) 
+    :mixins (bio-whethercomp)
      ;; change object to biological, since we have December 51, "in a manner that elucidates ... targets"
     :realization
     (:verb "elucidate" ;; keyword: ENDS-IN-ED 
@@ -900,30 +901,38 @@
 	   :s agent
 	   :o object
            :by agent
-           :of object))
+           :of object
+           :whethercomp statement))
 
 (define-category elute
     :specializes bio-method
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process)
+            (bio biological))
     :realization
     (:verb "elute" ;; keyword: ENDS-IN-ED 
 	   :noun "elution"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :by agent
+           :from bio
+           :of object
+           :with agent)) ;; from/onto column (?)
 
 ;;--- "encode"
 ;; <enzyme> encoded by <gene>
 (define-category encode
   :specializes bio-process
-  :binds ((encoder gene) (encoded protein)) ;; should be protein-or-transcript??
+  :binds ((encoder gene) 
+          (encoded protein)) ;; should be protein-or-transcript??
   :realization
   (:verb "encode"
    :noun "encoding"
    :etf (svo-passive)
    :s encoder
    :o encoded
+   :by encoder
    :of encoded))
 
 (define-category engender
