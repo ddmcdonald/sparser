@@ -1026,6 +1026,7 @@
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
       (setq np (individual-for-ref np))
+      (setq copular-pp (bind-dli-variable 'predicated-of np copular-pp))
       (setq  np (bind-dli-variable variable-to-bind pobj np))
       (setq  copular-pp (bind-dli-variable 'result np copular-pp))
       copular-pp))))
