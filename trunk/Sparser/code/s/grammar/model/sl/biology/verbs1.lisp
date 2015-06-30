@@ -789,6 +789,7 @@
          :etf (svo-passive) 
          :s agent 
          :o object
+         :by agent
          :of object))
 
 (define-category dissect 
