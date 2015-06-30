@@ -754,7 +754,8 @@
            :at location
            :by agent
            :in location
-           :of object))
+           :of object
+           :with agent))
 
 (define-category digest ;; as in a chemical process for breaking down proteins
   :specializes bio-method
@@ -785,7 +786,7 @@
          :of object))
 
 (define-category disrupt :specializes bio-process
-  :binds ((agent biological)
+  :binds ((agent (:or biological bio-method))
           (object bio-process)) 
   :realization
   (:verb "disrupt" :noun "disruption" 
@@ -793,18 +794,21 @@
          :s agent 
          :o object
          :by agent
-         :of object))
+         :of object
+         :with agent))
 
 (define-category dissect 
   :specializes bio-method 
   :binds ((agent bio-entity)
-          (object bio-process)) 
+          (object bio-process)
+          (from biological)) 
   :realization 
   (:verb "dissect" 
    :noun "dissection" 
    :etf (svo-passive) 
    :s agent 
-   :o object))
+   :o object
+   :from from))
 
 (define-category dissociate :specializes bio-process
   :binds ((agent biological)
