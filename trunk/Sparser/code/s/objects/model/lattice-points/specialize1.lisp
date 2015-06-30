@@ -22,6 +22,8 @@
 ;;   to CLOS and shadows. 
 ;;   (1/7/15) Wrote one-off-specialization to expedite an issue in
 ;;   conjunctions. 
+;; 6/30/2015 Fix one-off-specialization so that it does-not keep adding copies of the same super-category when
+;;  the same DL conjunction individuals
 
 
 (in-package :sparser)
@@ -65,7 +67,7 @@
   ;; use specialize-object and have the class and shadow
   ;; created. This one is used strictly for comparison
   (let ((present-type-field (indiv-type i)))
-    (setf (indiv-type i) (cons mixin present-type-field))
+    (pushnew mixin (indiv-type i))
     i))
 
 
