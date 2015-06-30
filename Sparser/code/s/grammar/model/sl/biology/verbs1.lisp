@@ -1115,12 +1115,15 @@
 
 (define-category follow
     :specializes bio-relation
-  :binds ((initial bio-process)(subsequent bio-process))
+  :binds ((initial bio-process)
+          (subsequent bio-process)
+          (by (:or bio-method bio-process)))
   :realization
   (:verb "follow"
          :etf (svo)
          :s initial
-         :o subsequent))
+         :o subsequent
+         :by by))
 
 (define-category bio-form :specializes bio-process
   :binds ((creator biological)(creation biological)(mechanism biological))
@@ -1152,12 +1155,17 @@
 
 
 (define-category generate :specializes bio-process
-  :binds ((agent (:or biological pronoun/first/plural))(object biological))
+  :binds ((agent (:or biological pronoun/first/plural))
+          (object biological)
+          (bio biological))
   :realization 
   (:verb "generate" :noun "generation"
          :etf (svo-passive) 
          :s agent
-         :o object))
+         :o object
+         :by agent
+         :from bio
+         :in bio))
 
 (define-category bio-grow  :specializes bio-process
   ;;:obo-id "GO:0005488"
