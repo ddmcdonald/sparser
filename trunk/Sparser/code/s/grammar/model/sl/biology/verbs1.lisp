@@ -1535,13 +1535,18 @@
 
 (define-category measure :specializes bio-method
   :binds ((agent pronoun/first/plural)
-          (object biological)) ;; object can be a bio-scalar, bio-entity or bio-process 
+          (object biological) ;; object can be a bio-scalar, bio-entity or bio-process 
+          (method bio-method)
+          (location bio-location))
   :realization 
   (:verb "measure" :noun "measurement"
          :etf (svo-passive)
          :s agent
          :o object
-         :of object))
+         :by method
+         :in location
+         :of object
+         :with method))
 
 (define-category mediate
   :specializes bio-process
