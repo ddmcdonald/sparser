@@ -89,10 +89,14 @@
 (defun print-individual/number (n stream)
   (write-string "#<number " stream)
   (let ((word (cadr (member :digit-sequence (unit-plist n)))))
-    (if word
-      (princ-word word stream)
-      (let ((value (value-of 'value n)))  ;; the integer
-        (princ value stream)))          
+    (cond
+     (word (princ-word word stream))
+     ((itypep n 'collection)
+      (format stream "{collection: ~(~s ~)} ~s" 
+              (value-of 'items n)
+              (indiv-uid n)))
+     (t (let ((value (value-of 'value n)))  ;; the integer
+          (princ value stream))))
     (write-string ">" stream)))
 
 
