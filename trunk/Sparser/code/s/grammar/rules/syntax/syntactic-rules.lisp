@@ -168,7 +168,8 @@ to an oncogenic RasG12V mutation (9)."))
       :form n-bar ;;/// cutting corners
       :referent (:function quantifier-noun-compound
                            left-edge right-edge)))
-  #+ignore ;; this rule seems to generate bad parses of things like 1C, and not to be terribly useful...
+  ;;#+ignore ;; this rule seems to generate bad parses of things like 1C, and not to be terribly useful...
+  ;; should be OK now
   (eval
    `(def-syntax-rule (number ,nb)
                      :head :right-edge
