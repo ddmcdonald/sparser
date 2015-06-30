@@ -951,7 +951,9 @@
 
 (define-category bio-promote
   :specializes bio-control
-  :binds ((agent biological) (process bio-process)(mechanism biological))
+  :binds ((agent biological)
+          (process bio-process)
+          (mechanism biological))
   :realization 
   (:verb "promote"
    :etf (svo-passive)
@@ -962,12 +964,15 @@
 
 (define-category bio-enhance
   :specializes bio-control
-  :binds ((agent biological) (process bio-process)(mechanism biological))
+  :binds ((agent biological)
+          (process bio-process)
+          (mechanism biological))
   :realization 
   (:verb "enhance" :noun "enhancement"
    :etf (svo-passive)
    :s agent
    :o process
+   :by mechanism
    :via mechanism
    :of process))
 
@@ -995,7 +1000,8 @@
 
 (define-category escape
     :specializes bio-process
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "escape"
 	   :etf (svo-passive)
@@ -1009,13 +1015,17 @@
 
 (define-category establish 
   :specializes bio-rhetorical 
-  :binds ((agent (:or bio-entity bio-method))(object biological)) 
+  :mixins (bio-whethercomp)
+  :binds ((agent (:or bio-entity bio-method))
+          (object biological)) 
   :realization 
   (:verb "establish" 
   :noun "establishment" 
   :etf (svo-passive) 
   :s agent 
-  :o object))
+  :o object
+  :by agent
+  :whethercomp statement))
 
 (define-category examine
   :specializes bio-rhetorical
