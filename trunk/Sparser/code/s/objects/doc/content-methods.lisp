@@ -151,19 +151,24 @@
 (defmethod sections-in-article ((a article))
   (children a))
 
-(defmethod has-paragraphs? ((s section))
-  (some #'(lambda (c) (typep c 'paragraph))
-        (children s)))
-(defmethod has-paragraphs? ((s section-of-sections))
+(defmethod has-paragraphs? ((s has-children))
   (some #'(lambda (c) (typep c 'paragraph))
         (children s)))
 
-(defmethod has-subsections ((s section))
-  (break "stub for ~a" s))
+(defmethod has-subsections? ((s has-children))
+  (some #'(lambda (c) (typep c 'section))
+        (children s)))
+
+(defmethod nth-section ((n integer) (a has-children))
+  ;; Argument is 1-based, so needs conversion to
+  ;; zero-based
+  (nth (1- n) (children a))) ;; what else could it be?
 
 (defmethod first-section ((a article))
-  (first (children a))) ;; what else could it be?
-
+  (first (children a)))
+(defmethod first-section ((ss section-of-sections))
+  (loop for c in (children ss)
+    when (typep c 'section) return c))
 
 (defmethod first-paragraph ((a article))
   (first-paragraph (first-section a)))
@@ -173,7 +178,7 @@
     (loop for c in (children s)
       when (typep c 'paragraph) return c))
    ((has-subsections? s)
-    (first-paragraph (first-section XXXX)))))
+    (first-paragraph (first-section s)))))
 
 (defmethod sentences-in-paragraph ((p paragraph))
   ;; They chain off the child. ////elevate?
