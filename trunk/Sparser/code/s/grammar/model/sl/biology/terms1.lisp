@@ -645,6 +645,7 @@
 (adj "mutagenic" :super bio-predication)
 (adj "mutual" :super bio-predication) ;; keyword: (al ADJ) 
 
+(define-adverb "namely")
 (adj "native" :super bio-predication)
 (noun "natural growth conditions" :super bio-context)
 (adj "necessary" :super bio-predication
@@ -723,7 +724,11 @@
       :realization 
       (:noun "presence" 
              :of context)) ;; keyword: (ence N) 
-(adj "present" :super bio-predication) ;; keyword: (ent ADJ) 
+(adj "present" :super bio-predication  ;; keyword: (ent ADJ)
+     :binds ((location bio-location))
+     :realization
+     (:adj "present"
+	   :at location)) 
 (adj "prevalent" :super bio-predication)
 (define-adverb "primarily") ;; keyword: ENDS-IN-LY 
 (adj "prior" :super bio-predication
