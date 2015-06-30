@@ -1050,18 +1050,26 @@
 
 (define-category exhibit
     :specializes bio-event
-    :binds ((agent biological)(object biological))
+    :binds ((agent biological)
+            (object biological))
     :realization
     (:verb "exhibit"
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :by agent))
 
 (define-category explanation
     :specializes bio-rhetorical
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent (:or biological common-noun))
+            (object bio-process))
     :realization
-    (:verb "explain" :noun "explanation" :etf (svo-passive) :s agent :o object))
+    (:verb "explain" 
+           :noun "explanation" 
+           :etf (svo-passive) 
+           :s agent 
+           :o object
+           :by agent))
 
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
 (define-category gene-transcript-express
