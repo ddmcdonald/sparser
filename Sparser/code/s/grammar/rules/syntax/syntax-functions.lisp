@@ -436,9 +436,10 @@
 (defun identify-preposition (edge)
   "Utility subroutine that is used by any check that wants
    to identity the preposition in a pp, or prep-complement, etc."
-  (declare (special category::preposition))
+  (declare (special category::preposition edge ))
   (let* ((prep-edge (edge-left-daughter edge))
          (prep-word (edge-left-daughter prep-edge)))
+    (declare (special prep-edge prep-word))
     (cond
      ((word-p prep-word)
       prep-word)
@@ -447,17 +448,26 @@
       (cond
               ((polyword-p (edge-rule prep-word))
         (edge-rule prep-word)) ;; return the pw
-       ((and (eq (edge-form prep-word) category::preposition) ;; sanity check
+       ((and (memq (cat-name (edge-form prep-word))
+                   '(preposition spatio-temporal-preposition spatial-preposition)) ;; sanity check
              ;; The word was elevated to a category, e.g. 'with'
              (word-p (edge-left-daughter prep-word)))
         (edge-left-daughter prep-word))
+       ((and ;; "30 minutes after stimulation ..."
+         (edge-p (edge-left-daughter prep-edge))
+         (itypep (edge-referent (edge-left-daughter prep-edge))
+                 'amount-of-time) 
+         (edge-p (edge-right-daughter prep-edge))
+         (memq (cat-name (edge-form (edge-right-daughter prep-edge)))
+               '(preposition spatio-temporal-preposition spatial-preposition)))
+        (edge-left-daughter (edge-right-daughter prep-edge)))        
        (t
          (push-debug `(,edge ,prep-edge ,prep-word))
          (break "Unexpected pattern of an edge over a preposition:~%~a"
                 prep-word))))
      (t
       (push-debug `(,edge ,prep-edge ,prep-word))
-      (break "Unexpeceted type of preposition: ~a~%~a"
+      (break "Unexpected type of preposition: ~a~%~a"
              (type-of prep-word) prep-word)))))
 
 
