@@ -1424,33 +1424,41 @@
 
 (define-category interfere
     :specializes bio-control
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "interfere" ;; keyword: ENDS-IN-ING 
 	   :noun "interference"
 	   :etf (sv)
 	   :s agent
            :of agent
+           :in object
            :with object))
 
 (define-category interrogate
     :specializes bio-method
-    :binds ((agent bio-entity)(object bio-process))
+    :binds ((agent bio-entity)
+            (object bio-process))
     :realization
     (:verb "interrogate" ;; keyword: ENDS-IN-ING 
 	   :noun "interrogation"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by agent
            :of object))
 
-(define-category investigate :specializes bio-method 
-  :binds ((agent bio-entity)(object bio-process))
+(define-category investigate 
+  :specializes bio-method 
+  :mixins (bio-whethercomp)
+  :binds ((agent bio-entity)
+          (object bio-process))
   :realization
   (:verb "investigate" :noun "investigation"
          :etf (svo-passive)
          :s agent
-         :o object))
+         :o object
+         :whethercomp statement))
 
 (define-category involve
     :specializes bio-relation
