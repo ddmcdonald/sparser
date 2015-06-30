@@ -1074,14 +1074,21 @@
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
 (define-category gene-transcript-express
     :specializes bio-process
-    :binds ((agent bio-entity)(object protein))
+    :binds ((agent bio-entity)
+            (object protein)
+            (location bio-location)
+            (from biological))
     :realization
     (:verb "express"
 	   :noun "expression"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :by agent
+           :from from
+           :in location
+           :of object
+           :on location))
 
 ;;events are favored in a context
 (define-category favor
