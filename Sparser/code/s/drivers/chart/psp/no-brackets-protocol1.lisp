@@ -302,7 +302,22 @@
 
 
 
+;;;------------------------------------------------------------
+;;; final operations on sentence before moving to the next one
+;;;------------------------------------------------------------
+
+(defun end-of-sentence-processing-cleanup (sentence)
+  (set-discourse-history sentence (cleanup-lifo-instance-list))
+  ;; we could do a tts 
+  #+ignore(when *readout-segments-inline-with-text* ;; be quiet when others are
+    (format t "~&--------------------------~%~%")))
+
+
+
+;;;---------------------------------------------------------------------
+
 (defun save-missing-subcats ()
+  (declare (special category::pp))
   (when *missing-subcats*
     (let* ((ee (reverse (all-tts))) 
            (pp-pairs 
@@ -346,18 +361,6 @@
       (np missing s))))
   
 
-
-;;;------------------------------------------------------------
-;;; final operations on sentence before moving to the next one
-;;;------------------------------------------------------------
-
-(defun end-of-sentence-processing-cleanup (sentence)
-  (set-discourse-history sentence (cleanup-lifo-instance-list))
-  ;; we could do a tts 
-  #+ignore(when *readout-segments-inline-with-text* ;; be quiet when others are
-    (format t "~&--------------------------~%~%")))
-
-
   
 
 
@@ -372,7 +375,8 @@
   ;; sweep over every treetop in the sentence and look at
   ;; their referents. For all sensible cases recursively
   ;; examine the object and tally the entities and relations.
-  ;;/// when we do discourrse add these to the sentence object
+  ;; N.b. this sweep is based on collect-model, which is
+  ;; defined in interface/grammar/sweep.lisp
   (setq *relations* nil
         *entities* nil)
   (let* ((start-pos (starts-at-pos sentence))
@@ -460,7 +464,7 @@
                (start-index (pos-character-index start-pos))
                (end-index (pos-character-index end-pos)))
           #| Too noisy. Digit sequences typically have
-             a null end-inded
+             a null end-index for reasons as yet unexplored
           (unless start-index
             (format t "~&>>> Null start-index: ~a~%~%" edge))
           (unless end-index
@@ -617,13 +621,9 @@
        (cddr r)))
 
 (defun relations-in (tree)
-  (let
-      (relations)
-    (when
-        (and 
-         (consp tree)
-         (not (eq 'collection (car tree))))
-      
+  (let (relations)
+    (when (and (consp tree)
+               (not (eq 'collection (car tree))))
       (if
        (and
         (not (consp (car tree)))
@@ -643,11 +643,10 @@
         collect 
         `(,(car binding) 
           ,(if (consp (second binding)) 
-              (if
-               (consp (car (second binding)))
+             (if (consp (car (second binding)))
                (second (car (second binding)))
                (car (second binding)))
-              (second binding))))))
+             (second binding))))))
 
 
 ;; THIS NEEDS TO BE REFINED
@@ -679,6 +678,8 @@
     indivs))
 
 
+;;----- semtree methods
+
 (defmethod semtree ((x null) &optional short)
   (declare (ignore short))
   nil)
@@ -690,14 +691,8 @@
 (defmethod semtree ((n number) &optional (short t))
   (semtree (e# n) short))
 
-
-(defvar *current-edge-semtree-is-walking* nil)
-
 (defmethod semtree ((e edge) &optional (short t))
-  (let ((*current-edge-semtree-is-walking* e))
-    (declare (special *current-edge-semtree-is-walking*))
-    (semtree (edge-referent e) short)))
-
+  (semtree (edge-referent e) short))
 
 
 (defparameter *semtree-seen-individuals* (make-hash-table)
@@ -713,6 +708,8 @@
   (collect-model-description i short))
 
 
+;;----- collect-model-description mentods
+
 (defmethod collect-model-description ((cat category) &optional (short t))
   (declare (ignore short))
   (list cat))
@@ -727,7 +724,6 @@
                     collect (collect-model-description l short)))))     
 
 (defmethod collect-model-description ((i individual) &optional (short t))
-  (declare (special i short *current-edge-semtree-is-walking*))
   (cond
    ((gethash i *semtree-seen-individuals*)
     (list (list "!recursion!" i)))
@@ -735,18 +731,17 @@
     (if (itypep i 'collection)
      (value-of 'items i)
      (value-of 'value i)))
-   ((and
-     (itypep i 'bio-family)
-     (not (itypep i 'collection)))
+   ((and (itypep i 'bio-family)
+         (not (itypep i 'collection)))
     (if short
      `(,i)
      (let ((bindings (indiv-binds i))
-            (desc (list i)))
+           (desc (list i)))
         (declare (special bindings desc))
         (append
          desc
          (loop for b in bindings 
-           unless (member (var-name(binding-variable b))
+           unless (member (var-name (binding-variable b))
                           '(members count))
            collect
            (list (var-name(binding-variable b))
@@ -772,8 +767,7 @@
              (t
               (typecase value
                 (individual 
-                 (if
-                  (itypep value 'prepositional-phrase)
+                 (if (itypep value 'prepositional-phrase)
                   (push (list (var-name var) ; 
                               (collect-model-description
                                (value-of 'pobj value)
