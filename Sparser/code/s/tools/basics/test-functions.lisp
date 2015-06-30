@@ -135,11 +135,12 @@
   `(run-test ,n))
 
 
-(defun quiet-semantics(&optional (flag t))
+(defun quiet-semantics (&optional (flag t))
   (setq *show-semantics* (not flag)))
 
 
-(defun run-test (n &optional  (semantics *show-semantics*) &key(sentences *sentences*))
+(defun run-test (n &optional (semantics *show-semantics*) 
+                   &key (sentences *sentences*))
   (let ((test (nth (- n 1) sentences))
         (*do-anaphora* nil))
     ;; Anaphora rarely is germane on a single sentence by itself
@@ -172,6 +173,7 @@
                     (format t "-----  ~s" (car edge-tree))
                     (print-tree (second edge-tree))))))
 
+
 (defun sem-test (n &optional (sentences *sentences*))
   (let ((test (nth (- n 1) sentences))
         (*do-anaphora* nil))
@@ -181,8 +183,15 @@
     (if (member n *known-breaks*)
       (print "skipping because of known problems")
       (else
-       (pp (second test))
-       (show-semantics)))))
+        (pp (second test))
+        ;; below is the code of what was formerly 'show-semantics'
+        ;; before I took over the function to make it a sentence
+        ;; based method
+        (loop for tt in (all-tts)
+          do (when (and (edge-p tt) (not (word-p (edge-category tt))))
+               (format t "~&_____________________________~&")
+               (print-treetop-tight tt (pos-edge-starts-at tt))
+               (psemtree tt)))))))
           
                 
 (defun stest (n &optional (sentences *sentences*))
