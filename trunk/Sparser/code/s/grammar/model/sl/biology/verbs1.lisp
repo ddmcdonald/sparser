@@ -742,7 +742,8 @@
 (define-category detect
     :specializes bio-method
     :binds ((agent (:or biological bio-method pronoun/first/plural))
-            (object biological))
+            (object biological)
+            (location bio-location))
     :realization
     (:verb "detect" ;; keyword: ENDS-IN-ED 
 	   :noun "detection"
@@ -750,8 +751,10 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object
-           :by agent))
+           :at location
+           :by agent
+           :in location
+           :of object))
 
 (define-category digest ;; as in a chemical process for breaking down proteins
   :specializes bio-method
