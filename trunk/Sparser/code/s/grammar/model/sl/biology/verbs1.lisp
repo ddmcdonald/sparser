@@ -1409,12 +1409,16 @@
    ))
 
 (define-category interact :specializes bio-process 
-  :binds ((agent biological)(object bio-process)(interactor biological)) 
+  :binds ((agent biological)
+          (object bio-process)
+          (interactor biological)
+          (location bio-location)) 
   :realization 
   (:verb "interact" :noun"interaction" 
          :etf (sv) 
          :s agent 
          ;;:o object ;; THIS IS BOGUS -- NEED HELP WITH SV verbs
+         :in location
          :with interactor
          :of agent))
 
