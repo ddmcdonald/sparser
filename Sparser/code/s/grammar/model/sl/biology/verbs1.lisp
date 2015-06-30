@@ -1190,16 +1190,18 @@
 ;;  "gtp hydrolysis on ras"
 ;; "GO:0019514"
 (define-category hydrolyze :specializes bio-process
-  :binds ((agent molecule) ;; the agent which cause or scatalyzes the hydrolysis
+  :binds ((agent molecule) ;; the agent which causes or catalyzes the hydrolysis
           (object molecule) ;; the chemical that gets hydrolyzed
           (goal molecule) ;; the resulting chemical
-          (substrate molecule)) ;;the context in which the hydrolysis occurs
+          (substrate molecule)
+          (by (:or molecule bio-method))) ;;the context in which the hydrolysis occurs
   :realization            
   (:verb "hydrolyze" :noun "hydrolysis"
    :etf (svo-passive pre-mod) 
    :s agent 
    :o object 
    :m object
+   :by by
    :of object
    :to goal
    :on substrate))
@@ -1231,7 +1233,9 @@
 
 (define-category identify
     :specializes bio-method
-    :binds ((agent pronoun/first/plural)(object biological)(identified-as biological)
+    :binds ((agent pronoun/first/plural)
+            (object biological)
+            (identified-as biological)
             (manner bio-method))
     :realization
     (:verb "identify" ;; keyword: ENDS-IN-ED 
@@ -1244,7 +1248,9 @@
            :in manner))
 
 (define-category immunoprecipitate :specializes bio-method
-  :binds ((agent pronoun/first/plural)(object bio-entity)(origin bio-location))
+  :binds ((agent pronoun/first/plural)
+          (object bio-entity)
+          (origin bio-location))
   :realization 
   (:verb "immunoprecipitate" :noun "immunoprecipitation"
          :etf (svo-passive) 
@@ -1254,14 +1260,16 @@
          :of object))
 
 (define-category impact :specializes bio-predication
-  :binds ((subject biological)(theme biological))
+  :binds ((subject biological)
+          (theme biological))
   :realization
   (:verb "impact" :noun "impact"
 	 :s subject
 	 :of theme))
 
 (define-category impair :specializes bio-control
-  :binds ((agent biological)(object biological)) 
+  :binds ((agent biological)
+          (object biological)) 
   :realization 
   (:verb "impair" :noun "impairment"
          :etf (svo-passive)
@@ -1270,12 +1278,18 @@
          :of object))
 
 (define-category incorporate :specializes bio-relation 
-  :binds ((agent biological)(object biological))
+  :binds ((agent biological)
+          (object biological)
+          (bio biological)
+          (location bio-location))
   :realization 
   (:verb "incorporate" :noun "incorporation"
          :etf (svo-passive)
          :s agent
          :o object
+         :at location
+         :in bio
+         :into bio
          :of object))
 
 (define-category increase
