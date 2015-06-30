@@ -1467,13 +1467,13 @@
   :specializes bio-process
   :binds ((agent bio-entity)
           (object bio-process)
-	  (location biological))
+	  (process bio-process))
   :realization
   (:verb   "mediate" :noun "mediation"
    :etf (svo-passive)
    :s agent
    :o object
-   :via location))
+   :via process))
 
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
 
