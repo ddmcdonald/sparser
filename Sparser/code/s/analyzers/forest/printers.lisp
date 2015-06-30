@@ -633,15 +633,7 @@ there were ever to be any.  ///hook into final actions ??  |#
                (edge-position-in-resource-array tt)
                (pw-pname word-or-category))))))
 
-(defun show-semantics()
-  (loop for tt in (all-tts)
-    do (when (and (edge-p tt) (not (word-p (edge-category tt))))
-         (format t "~&_____________________________~&")
-         (print-treetop-tight tt (pos-edge-starts-at tt))
-         (psemtree tt))))
                                                                                                                                                                      
-
-
 
 (defun print-multiple-edges-tt (stream starting-position)
   ;; used when the top-edge on the vector reads ":multiple-initial-edges",
