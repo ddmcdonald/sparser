@@ -1017,26 +1017,35 @@
   :specializes bio-rhetorical 
   :mixins (bio-whethercomp)
   :binds ((agent (:or bio-entity bio-method))
-          (object biological)) 
+          (object biological)
+          (bio biological)) 
   :realization 
   (:verb "establish" 
   :noun "establishment" 
   :etf (svo-passive) 
   :s agent 
   :o object
+  :as bio
   :by agent
+  :from bio
   :whethercomp statement))
 
 (define-category examine
   :specializes bio-rhetorical
-  :mixins (bio-whethercomp)
-  :binds ((agent bio-entity)(object bio-process))
+  :mixins (bio-whethercomp bio-ifcomp)
+  :binds ((agent bio-entity)
+          (object bio-process)
+          (by bio-method)
+          (for biological))
   :realization
   (:verb "examine"
          :noun "examination"
          :etf (svo-passive)
          :s agent 
          :o object
+         :by by
+         :for for
+         :ifcomp statement
          :whethercomp statement))
 
 (define-category exhibit
