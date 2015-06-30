@@ -1186,6 +1186,14 @@
          :o object
          :from origin
          :of object))
+
+(define-category impact :specializes bio-predication
+  :binds ((subject biological)(theme biological))
+  :realization
+  (:verb "impact" :noun "impact"
+	 :s subject
+	 :of theme))
+
 (define-category impair :specializes bio-control
   :binds ((agent biological)(object biological)) 
   :realization 
@@ -1437,12 +1445,14 @@
 (define-category mediate
   :specializes bio-process
   :binds ((agent bio-entity)
-          (object bio-process))
+          (object bio-process)
+	  (location biological))
   :realization
   (:verb   "mediate" :noun "mediation"
    :etf (svo-passive)
    :s agent
-   :o object))
+   :o object
+   :via location))
 
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
 
