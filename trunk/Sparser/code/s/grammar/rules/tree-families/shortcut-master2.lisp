@@ -24,6 +24,7 @@
 ;; 5/12/15 Minor cleanup for read-ability.
 ;; 6/5/2015 extend subject-variable and object-variable to make use of subcategorization information
 ;; and add thatcomp-variable
+;; 6/30/15 Implemented irregular plural for nouns.
 
 
 (in-package :sparser)
@@ -37,10 +38,15 @@
     :binds :realization
     :prep :by
     :premod
-    :across :against :among :as :at :between :for :from :ifcomp :in :into :of :on :onto :over :to :to-comp :thatcomp :through :under :upon :via :whethercomp :with :within))
+    :across :against :among :as :at :between :for :from :ifcomp :in :into 
+    :of :on :onto :to :to-comp :thatcomp :through :under :upon :via 
+    :whethercomp :with :within))
 
 (defparameter *slot-keywords*
-  '(:premod :across :against :among :as :at :between :for :from :ifcomp :in :into :of :on :onto :over :to :to-comp :thatcomp :through :under :upon :via :whethercomp :with :within))
+  '(:premod :across :against :among :as :at :between :for :from :ifcomp 
+    :in :into :of :on :onto :to :to-comp :thatcomp :through :under :upon 
+    :via :whethercomp :with :within))
+
 
 
 (defun includes-def-realization-keyword (rdata)
@@ -227,6 +233,8 @@
   ;; Decoder for the realization part of def-term, for the rdata of
   ;; define-category when it fits this new pattern, and for def-synonym,
   ;; though in that case the *deliberate-duplication* flag will be up.
+  (declare (special *valid-keywords-for-irregular-word-forms*))
+
   (if etf
     (typecase etf
       (cons)
@@ -311,8 +319,19 @@
     (when noun ;; a noun can just expect to get all the pp's w/o an etf
       (unless (assq :common-noun word-map)
         ;; if it's on the map then the realization machinery will expand it
-        (let* ((word (resolve/make noun))
-               (cn-rules (make-cn-rules/aux word category category)))
+        (when (consp noun)
+          ;; Check that it's marking an irregular plural
+          (unless (= 3 (length noun))
+            (error "Illformed irregular noun spec: not three items long"))
+          (unless (and (keywordp (second noun))
+                       (memq (second noun) *valid-keywords-for-irregular-word-forms*))
+            (error "Unknown keyword in irregular noun spec~%~a" noun)))
+
+        (let* ((word-string (if (consp noun) (car noun) noun))
+               (word (resolve/make word-string))
+               (special-cases (when (consp noun) (cdr noun)))
+               (cn-rules (make-cn-rules/aux word category category
+                                            special-cases)))
           (add-rules-to-category category cn-rules)))
       (unless etf ;; where they were already handled
         (handle-slots category slots)))
