@@ -119,6 +119,7 @@
 (define-category  copular-pp
   :specializes be
   :binds ((result)
+          (predicated-of)
           (copula)
           (prep)
           (pobj)))
