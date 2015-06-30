@@ -864,9 +864,11 @@
           (mechanism biological))
   :realization 
   (:verb "drive"
+   :adj "driven"
    :etf (svo-passive) 
    :s driver
    :o driven
+   :by driver
    :through mechanism))
 
 (define-category dysregulate
