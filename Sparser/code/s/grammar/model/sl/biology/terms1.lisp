@@ -844,6 +844,7 @@
      (:noun "site"
       :etf pre-mod
       :m process
+      :m protein
       :of process
       :in protein
       :at residue))
