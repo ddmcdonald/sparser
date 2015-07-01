@@ -127,11 +127,8 @@ the fsa would be identified at the word level rather than the category level.
 ;;; driver
 ;;;--------
 
-(defun digit-FSA (treetop  ;; the digit-seq. word that triggered
-                           ;; the fsas
-                  starting-position  ;; the position just before it
-                  )
-
+(defun digit-FSA (treetop  ;; the digit-seq. word that triggered the fsas
+                  starting-position)  ;; the position just before it
   ;; initialization of flags
   (setq *period-within-digit-sequence* nil
         *pending-final-hyphen* nil
@@ -148,9 +145,8 @@ the fsa would be identified at the word level rather than the category level.
          (expect-digit-delimiter-as-next-treetop
                         1  ;; the array cell to put the next word into
                         *digit-position-array*
-                        treetop  ;; the first digit-seq. 
-                        )
-
+                        treetop)  ;; the first digit-seq. 
+                        
     (ecase *interpretation-of-digit-sequence*
       (:number
        (span-digits-number starting-position
@@ -170,15 +166,15 @@ the fsa would be identified at the word level rather than the category level.
                 (right-ref (edge-referent right-edge))
                 (i (find-or-make-individual 'hyphenated-number
                       :left left-ref :right right-ref)))
-
            (make-chart-edge :starting-position starting-position
                             :ending-position ending-position
                             :category (category-named 'hyphenated-number)
                             :form category::number
                             :referent  i
                             :rule 'digit-fsa)))))
-    
     ending-position ))
+
+  
 
 
 
@@ -373,6 +369,7 @@ unknown---in any event, we're taking the first edge that is installed.
               (construct-temporary-number nil nil net-value)
               net-value)))
 
+
       ;; This call is to handle 'illions, but the fsa doesn't
       ;; include them in the digits array
 ;      (when *include-model-facilities*
@@ -389,13 +386,40 @@ unknown---in any event, we're taking the first edge that is installed.
       (setf (edge-rule edge) :number-fsa)
 
       (complete edge)
-      (assess-edge-label category::number edge)
+      
+      ;; make-edge-over-digit-sequence already did this
+      ;;(assess-edge-label category::number edge)
 
       (cache-rnode-on-edge 
        (annotate-number number-object :digit-based-number t)
        edge)
 
       ending-position )))
+
+
+(defun make-edge-over-single-digit-word (pos-before)
+  ;; Called from, e.g., reify-residue-and-make-edge when it has
+  ;; a digit word and appreciates that it's not been spanned with
+  ;; an edge by the digits fsa. //// Probably a better tailored
+  ;; version of parse between boundaries for the span of a
+  ;; no space sequence would obviate the need for this. 
+  ;; Compare to span-digits-number which is where we'd end
+  ;; if the FSA had run. Using what seem to be the relevant
+  ;; parts of that code.
+  (zero-the-digits-array)
+  (let ((digits-word (pos-terminal pos-before))
+        (end-pos (chart-position-after pos-before)))
+    (setf (aref *digit-position-array* 0) digits-word)
+    (let ((edge (make-edge-over-digit-sequence pos-before end-pos))
+          (i (find-or-make-number digits-word)))
+      (setf (edge-referent edge) i)
+      (setf (edge-left-daughter edge) digits-word)
+      ;; (break "digits edge = ~a" edge)
+      (complete edge)
+      (setf (edge-rule edge) 'make-edge-over-single-digit-word)
+      edge)))
+
+
 
 
 (defun hookup-daughter-number-rnodes (number-rnode)
