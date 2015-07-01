@@ -1735,16 +1735,20 @@
     :binds ((agent pronoun/first/plural)
             (object bio-method)
             (beneficiary biological)
-            (using biological))
+            (using biological)
+            (method bio-method)
+            (context bio-context))
     :realization
     (:verb "perform" ;; keyword: ENDS-IN-ED 
 	   :noun "performance"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :with using
+           :by method
+           :in context
            :of object
-           :on beneficiary))
+           :on beneficiary
+           :with using))
 
 
 
@@ -1783,13 +1787,14 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by agent
            :of object
            :in manner))
 
 (define-category predict
     :specializes bio-rhetorical
     :mixins (bio-thatcomp)
-    :binds ((agent biological)
+    :binds ((agent (:or biological bio-rhetorical)) ;; "predicted by hypothesis"
             (object bio-process))
   ;; agent can be a process, like "mutation"
     :realization
@@ -1798,6 +1803,7 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by agent
            :thatcomp statement))
 
 (define-category present
