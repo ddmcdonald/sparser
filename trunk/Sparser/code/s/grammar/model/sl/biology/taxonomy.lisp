@@ -320,12 +320,13 @@
   )
 
 (define-category small-molecule :specializes molecule
+  :mixins (bio-location)
   ;;:mixins (reactome-category)
   ;; small-molecule, like molecule itself, has a (cellular) location
   :binds ((entityReference small-molecule-reference)))
 
 (define-category nucleotide
-  :specializes small-molecule
+  :specializes small-molecule 
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "nucleotide")
