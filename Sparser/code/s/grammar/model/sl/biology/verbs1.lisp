@@ -1658,6 +1658,7 @@
 	   :o object
            :by method ;; can also be people..
            :for focused-on
+           :in context
            :of object
            :with context
            :thatcomp statement))
