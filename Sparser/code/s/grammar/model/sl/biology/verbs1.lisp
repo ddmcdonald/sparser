@@ -1482,14 +1482,15 @@
 (define-category know
     :specializes bio-rhetorical
     :binds ((agent bio-entity)
-            (object bio-process))
+            (object bio-process)
+            (topic biological))
     :realization
     (:verb "know"
 	   :noun "knowledge" 
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           ;;:about object
+           :about topic
            :of object))
 
 (delete-noun-cfr (resolve/make "lead"))
