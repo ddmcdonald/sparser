@@ -1724,6 +1724,9 @@
 
 (def-synonym overlap
   (:noun "overlap"
+         :among object1
+         :between object1
+         :in object1
          :of object1
          :with object2))
 
