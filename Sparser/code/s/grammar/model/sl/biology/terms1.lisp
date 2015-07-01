@@ -315,17 +315,19 @@
       :realization 
       (:NOUN "defect"
              :in defective))
-#|
+
 ;; Something is deficient in something else. It needs that
 ;; thing but doesn't have it. Vitamin D, 
 ;; ERK#7 "to be dimerization-deficient in vitro"
 (adj "deficient" :super bio-predication
   :binds ((missing biological)) 
   :realization
-    (
+    (:adj "deficient"
+     :noun "deficiency"
      :etf pre-mod
-     :m missing))
-|#
+     :m missing
+     :in missing))
+
 
 
 
