@@ -1667,13 +1667,16 @@
     :specializes bio-method
     :binds ((agent pronoun/first/plural)
             (object bio-process)
-            (source biological))
+            (source biological)
+            (method bio-method))
     :realization
     (:verb "obtain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :from source))
+           :by method
+           :from source
+           :without source))
 
 (define-category occur
     :specializes bio-event
