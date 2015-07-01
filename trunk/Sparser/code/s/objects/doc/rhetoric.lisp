@@ -46,6 +46,24 @@ me at the time. Change anything that doesn't feel natural.
 which could be set automatically by using the :init-form on the slot.
 |#
 
+(defclass discourse-relations ()
+  ((background-knowledge :initform nil :accessor background-knowledge
+    :documentation "Pairs of sentences (X, Y), where X is
+       explicitely assumed or acknowledged prior to the assertion
+       of Y.")
+   (evidence-for :initform nil :accessor evidence-for
+    :documentation "Pairs of sentences (X, Y), where X is 
+       evidence for Y.")
+   (experimental-result :initform nil :accessor experimental-result
+    :documentation "Pairs of sentences (X, Y), where X is
+       the (material) result of the experiment described by Y.")
+   (cause :initform nil :accessor cause
+    :documentation "Pairs of sentences (X, Y), where X causes the
+     assertion of Y. Less restrictive than evidence-for. Triggered
+     by words like 'therefore' and 'thus'."))
+  (:documentation "Stores the discourse-relations between sentences 
+    of a subsection."))
+
 ;;-- Sentence level
 
 (defclass epistemic-status ()
@@ -63,7 +81,10 @@ which could be set automatically by using the :init-form on the slot.
       already established fact.")
    (methodology :initform nil :accessor methodology
     :documentation "Evidence that the sentence is discussing
-      experimental design, rather than results."))
+      experimental design, rather than results.")
+  (motivation :initform nil :accessor motivation
+    :documentation "Is the sentence providing motivation for
+     an experiment, i.e., the claim that will be tested?"))
   (:documentation "The slots provide sentence-local buckets
    in which to accumulate different kinds of evidence about whether
    the sentence is providing new facts about something, referencing
@@ -114,6 +135,7 @@ you also add the corresponding slot to the class. |#
 (define-epistemic-collector note-new-fact new-facts)
 (define-epistemic-collector note-known-result known-results)
 (define-epistemic-collector note-methodology methodology)
+(define-epistemic-collector note-motivation motivation)
 
 #+ignore ;; original hand-coded versio
 (defun note-explicit-reference (label pos-before pos-after)
@@ -192,4 +214,8 @@ you also add the corresponding slot to the class. |#
 (defun methodology-phrase (string)
   (setup-epistemic-data-collector
    string 'note-methodology))
+
+(defun motivation-phrase (string)
+  (setup-epistemic-data-collector
+   string 'note-motivation))
 
