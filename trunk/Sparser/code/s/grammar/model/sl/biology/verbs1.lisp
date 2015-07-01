@@ -1565,14 +1565,16 @@
 (define-category modify :specializes bio-process
   :binds ((agent bio-entity)
           (object bio-process)
-          (location bio-location))
+          (location bio-location)
+          (by biological))
   :realization 
   (:verb "modify" :noun "modification"
          :etf (svo-passive) 
          :s agent
          :o object
          :of object
-         :at location))
+         :at location
+         :by by))
 
 (define-category modulate
   :specializes bio-control
@@ -1584,6 +1586,7 @@
          :etf (svo-passive)
          :s agent
          :o object
+         :by agent
          :for theme))
 
 ;;--- "mutation"
@@ -1593,14 +1596,22 @@
 (define-category mutate
   :specializes bio-process
   :binds ((agent biological)
-          (object biological))  ;; mutation of gene
+          (object biological)  ;; mutation of gene
+          (location bio-location)
+          (method bio-method)) ;; "mutated randomly via PCR"
   :realization
   (:verb "mutate" :noun "mutation"
    :etf (svo-passive)
    :s agent
    :o object
+   :at location
+   :by agent
    :of object
-   :in object))
+   :in object
+   :into object
+   :on location
+   :to object
+   :via method))
 ;; These two were in terms and need to be integrated with
 ;; this category
 (np-head "mutant" :super 'bio-entity)
