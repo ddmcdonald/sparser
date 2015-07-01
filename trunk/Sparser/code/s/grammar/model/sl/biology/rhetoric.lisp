@@ -70,6 +70,12 @@
        (record-irrelevant-sentence sentence :has-known-result-phrase)
        nil)
 
+      ((contains-motivation-phrase sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Not relevant (motivation): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :has-motivation-phrase)
+       nil)
+
       ((contains-methodology-phrase sentence)
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (methodology): ~a~%" sentence))
@@ -134,6 +140,9 @@ no evidence in the sentence.
 (defmethod contains-methodology-phrase ((s sentence))
   (methodology (contents s)))
 
+(defmethod contains-motivation-phrase ((s sentence))
+  (motivation (contents s)))
+
 (defmethod past-tense ((s sentence))
   (declare (ignore s)) nil  )
 
@@ -165,9 +174,6 @@ no evidence in the sentence.
 (conjecture-phrase "it is likely that")
 (conjecture-phrase "it is possible that")
 (conjecture-phrase "one could hypothesize that")
-(conjecture-phrase "we evaluated whether")
-(conjecture-phrase "we queried whether")
-(conjecture-phrase "we tested whether")
 
 (known-result-phrase "emerging evidence suggests")
 (known-result-phrase "has been shown")
@@ -227,9 +233,6 @@ no evidence in the sentence.
 (new-fact-phrase "we report here")
 (new-fact-phrase "we show here that")
 
-(methodology-phrase "to assess")
-(methodology-phrase "to determine")
-(methodology-phrase "to test")
 (methodology-phrase "we analyzed")
 (methodology-phrase "we carried out")
 (methodology-phrase "we conducted")
@@ -239,6 +242,14 @@ no evidence in the sentence.
 (methodology-phrase "we investigated")
 (methodology-phrase "we observed")
 (methodology-phrase "we performed")
-(methodology-phrase "we queried")
+
+#| we queried whether [the activity of ASPP2 is regulated
+by the activation of a RAS-mediated signalling pathway." |#
+(motivation-phrase "to assess")
+(motivation-phrase "to determine")
+(motivation-phrase "to test")
+(motivation-phrase "we evaluated whether")
+(motivation-phrase "we queried whether")
+(motivation-phrase "we tested whether")
 
 (evidence-of-reference "xref")
