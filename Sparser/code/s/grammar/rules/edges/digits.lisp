@@ -62,7 +62,8 @@
           (if (eq ending-position 
                   (chart-position-after starting-position))
             ;; then there's just the one daughter that we've already found
-            (set-used-by leftmost-daughter edge)
+            (when leftmost-daughter ;; not set in all entry points
+              (set-used-by leftmost-daughter edge))
             (set-used-by/anonymous-daughters
              starting-position ending-position edge)))
 
