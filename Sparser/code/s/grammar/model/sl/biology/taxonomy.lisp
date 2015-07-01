@@ -300,6 +300,13 @@
    :of causes
    :premod causes))
 
+
+;; must come before small-molecule
+(define-category bio-location 
+  :specializes bio-context
+  :instantiates self
+  :index (:permanent :key name))
+
 (define-category molecule
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry.
@@ -517,10 +524,7 @@
 
 ;;--- ///maybe it's not a bio-entity?
 
-(define-category bio-location 
-  :specializes bio-context
-  :instantiates self
-  :index (:permanent :key name))
+
 
 (define-category bio-organ :specializes bio-location
   :instantiates self
