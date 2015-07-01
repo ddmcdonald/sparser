@@ -38,15 +38,14 @@
     :binds :realization
     :prep :by
     :premod
-    :across :against :among :as :at :between :for :from :ifcomp :in :into 
+    :about :across :against :among :as :at :between :for :from :ifcomp :in :into 
     :of :on :onto :to :to-comp :thatcomp :through :under :upon :via 
     :whethercomp :with :within))
 
 (defparameter *slot-keywords*
-  '(:premod :across :against :among :as :at :between :for :from :ifcomp 
+  '(:premod :about :across :against :among :as :at :between :for :from :ifcomp 
     :in :into :of :on :onto :to :to-comp :thatcomp :through :under :upon 
     :via :whethercomp :with :within))
-
 
 
 (defun includes-def-realization-keyword (rdata)

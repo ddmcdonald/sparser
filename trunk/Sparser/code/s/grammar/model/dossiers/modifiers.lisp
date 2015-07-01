@@ -37,6 +37,7 @@
 
 (define-approximator/determiner "almost")
 (define-approximator/determiner "about")
+(define-preposition "about")
 (define-approximator/determiner "around")
 
 (define-approximator/determiner "approximately")
