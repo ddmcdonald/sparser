@@ -1865,15 +1865,19 @@
 (define-category proliferate
     :specializes bio-process
     :binds ((agent bio-entity)
-            (object bio-process))
+            (object bio-process)
+            (bio biological))
     :realization
     (:verb "proliferate"
 	   :noun "proliferation"
 	   :etf (sv)
 	   :s agent
 	   :o object
+           :in bio
            :of object
-	   ))
+           :through bio
+           :with bio
+	   :within bio))
 
 ;; (p "Dimerization of ERK has been proposed as a requirement for nuclear translocation.")
 (define-category propose
