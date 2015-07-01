@@ -1827,12 +1827,14 @@
 
 (define-category preserve :specializes bio-control
   :binds ((agent bio-entity)
-          (object bio-process))
+          (object bio-process)
+          (location bio-location))
   :realization
   (:verb "preserve" :noun "preservation"
          :etf (svo-passive)
          :s agent
-         :o object)) 
+         :o object
+         :in location)) 
 
 
 (define-category prevent :specializes bio-control
@@ -1843,18 +1845,20 @@
          :etf (svo-passive) 
          :s agent 
          :o object
+         :by agent
          :of object))
 
 (delete-verb-cfr (resolve/make "probe"))
 (define-category probe
     :specializes bio-rhetorical
     :binds ((agent bio-entity)
-            (object bio-process))
+            (object biological))
     :realization
     (:verb "probe" 
            :etf (svo-passive)
            :s agent
-           :o object))
+           :o object
+           :for object))
 (delete-noun-cfr (resolve/make "probe"))
 
 
