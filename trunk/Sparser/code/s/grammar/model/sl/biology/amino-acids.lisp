@@ -146,12 +146,14 @@ therefore we have the special cases:
         (when amino-acid
           (let ((residue (make-residue-on-protein amino-acid number)))             
             (let* ((left-edge (top-edge-at/starting start-pos))
-                   (right-edge (top-edge-at/ending end-pos))
+                   (right-edge (or (top-edge-at/ending end-pos) ; 
+                                   (make-edge-over-single-digit-word
+                                    (chart-position-before end-pos))))
                    (edge (make-chart-edge
                          :left-edge left-edge
                          :right-edge right-edge
-                         :starting-position (pos-edge-starts-at left-edge)
-                         :ending-position (pos-edge-ends-at right-edge)
+                         :starting-position start-pos
+                         :ending-position end-pos
                          :category category::residue-on-protein
                          :form category::np
                          :rule-name :reify-residue
@@ -291,44 +293,43 @@ therefore we have the special cases:
 
 
 (defun reify-point-mutation-and-make-edge (words pos-before pos-after)
-  ;; Called from resolve-ns-pattern when the pattern is a word
-  ;; on either side of a digits span
-  ;;//// look at the edges
+  ;; Called from resolve-ns-pattern when the pattern is either
+  ;; '(:single-cap :digits :single-cap) or '(:single-lower :digits :single-lower)
   (push-debug `(,words ,pos-before ,pos-after))
   (let ((edges (treetops-between pos-before pos-after)))
     (unless (= 3 (length edges))
       (error "Should be three edges for a point mutation but there are ~a" (length edges)))
+    ;; Capital letters will have Single-capitalized-letter's as referent.
+    ;; Lowercase is much less predictable. 
     (let* ((edge1 (car edges))
-           (ref1 (edge-left-daughter edge1)) ;;(edge-referent edge1)) -- the letter A has a non-word referent!
+           (word1 (edge-left-daughter edge1))
            (edge2 (cadr edges))
-           (ref2 (edge-referent edge2))
+           (ref2 (typecase edge2
+                   (edge (edge-referent edge2))
+                   (word edge2)
+                   (otherwise (error "Wrong type for point-mutation number."))))
            (edge3 (caddr edges))
-           (ref3 (edge-left-daughter edge3))) ;;(edge-referent edge3)))
-      ;;(break "look at edges re point mutation")
-      (let ((aa1 (single-letter-is-amino-acid ref1))
-            (aa2 (single-letter-is-amino-acid ref3)))
-        ;;/// do we have enough args to go somewhere else if these are amino acids?
+           (word3 (edge-left-daughter edge3)))
+
+      (let ((aa1 (single-letter-is-amino-acid word1))
+            (aa2 (single-letter-is-amino-acid word3)))
         (when (and aa1 aa2)
-          (when (and aa1 aa2)
-            (let ((number 
-                   (if (and
-                        (individual-p ref2)
-                        (itypep ref2 'number))
-                       ref2
-                       (find-or-make-number ref2))))
-              (let* ((i (make-point-mutation aa1 aa2 ;; or is it the other order??
-                                             number))
-                     (edge
-                      (make-edge-over-long-span
-                       pos-before
-                       pos-after
-                       category::point-mutation
-                       :rule :reify-point-mutation-and-make-edge
-                       :form category::np
-                       :referent i
-                       :constituents `(,edge1 ,edge2 ,edge3))))
+          (let ((number (if (and (individual-p ref2)
+                                 (itypep ref2 'number))
+                          ref2
+                          (find-or-make-number ref2))))
+            (let* ((i (make-point-mutation aa2 aa1 number))
+                   (edge
+                    (make-edge-over-long-span
+                     pos-before
+                     pos-after
+                     category::point-mutation
+                     :rule :reify-point-mutation-and-make-edge
+                     :form category::np
+                     :referent i
+                     :constituents `(,edge1 ,edge2 ,edge3))))
                 ;;/// trace
-                edge))))))))
+                edge)))))))
               
 
 (defun make-point-mutation (original replacement residue-number)
