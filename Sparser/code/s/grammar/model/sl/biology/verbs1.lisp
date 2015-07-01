@@ -1606,12 +1606,13 @@
    :o object
    :at location
    :by agent
-   :of object
    :in object
    :into object
+   :of object
    :on location
    :to object
-   :via method))
+   :via method
+   :within location))
 ;; These two were in terms and need to be integrated with
 ;; this category
 (np-head "mutant" :super 'bio-entity)
@@ -1646,13 +1647,15 @@
     :binds ((agent pronoun/first/plural)
             (object biological)
             (focused-on biological)
-            (context biological))
+            (context biological)
+            (method bio-method))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
 	   :noun "observation"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by method ;; can also be people..
            :for focused-on
            :of object
            :with context
