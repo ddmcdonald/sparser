@@ -399,7 +399,7 @@ WHO.
   ;; reify-ns-name-and-make-edge
   (let ((sequence (define-sequence words))
         (name (make-unindexed-individual category::spelled-name)))
-    (setq name (bind-dli-ariable :name/s sequence name category::spelled-name))
+    (setq name (bind-dli-variable :name/s sequence name category::spelled-name))
 
     ;; This code is frightfully low-level in its choice of operations.
     ;; //// We need to find other uses for this pattern. 
