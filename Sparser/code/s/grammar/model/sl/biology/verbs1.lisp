@@ -408,15 +408,23 @@
 (define-category operate :specializes bio-process 
   :binds ((agent biological)
           (co-operator biological)
-          (object biological)) 
+          (object biological)
+          (bio biological)
+          (location bio-location)) 
   :realization 
   (:verb "operate"
          :noun"operation" 
          :etf (sv) 
          :s agent 
+         :as bio
+         :by agent
+         :in location
+         :of agent
          :on object
-         :with co-operator
-         :of agent))
+         :through bio
+         :upon object
+         :via bio
+         :with co-operator))
 
 
 ;;/// "catalysis of phosphorylation by MEK"
@@ -1712,6 +1720,11 @@
          :etf (svo-passive)
          :s object1
          :o object2
+         :with object2))
+
+(def-synonym overlap
+  (:noun "overlap"
+         :of object1
          :with object2))
 
 (define-category perform
