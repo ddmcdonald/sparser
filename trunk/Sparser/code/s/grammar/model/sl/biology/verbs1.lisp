@@ -407,12 +407,14 @@
 
 (define-category operate :specializes bio-process 
   :binds ((agent biological)
-          (co-operator biological)) 
+          (co-operator biological)
+          (object biological)) 
   :realization 
   (:verb "operate"
-         :noun"coo-operation" 
+         :noun"operation" 
          :etf (sv) 
          :s agent 
+         :on object
          :with co-operator
          :of agent))
 
