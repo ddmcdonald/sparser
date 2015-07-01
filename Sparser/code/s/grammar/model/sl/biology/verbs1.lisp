@@ -1809,7 +1809,8 @@
 (define-category present
     :specializes bio-relation
     :binds ((agent bio-entity)
-            (object bio-process))
+            (object bio-process)
+            (location bio-location))
     :realization
     (:verb "present"
 	   :noun "presentation"
@@ -1817,6 +1818,12 @@
 	   :s agent
 	   :o object
            :of object))
+
+(def-synonym present
+   (:adj "present"
+           :at location
+           :in location
+           :on location))
 
 (define-category preserve :specializes bio-control
   :binds ((agent bio-entity)
