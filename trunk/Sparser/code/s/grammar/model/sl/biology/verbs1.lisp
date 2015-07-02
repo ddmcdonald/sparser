@@ -2482,6 +2482,8 @@
    :etf (svo-passive) 
    :s object ;; ERK translocates -- this is not the agent, but the object!
    :o object
+   :at origin
+   :into destination
    :to destination
    :of object
    :from origin
@@ -2522,12 +2524,15 @@
   :binds ((agent pronoun/first/plural)
           (patient biological)
           (treatment biological)
-          (modifier (:or bio-predication modifier)))
+          (modifier (:or bio-predication modifier))
+          (disease disease))
   :realization
   (:verb "treat" :noun "treatment"
          :etf (svo-passive)
          :s agent
          :o patient
+         :for disease
+         :of disease
          :with treatment))
 
 
