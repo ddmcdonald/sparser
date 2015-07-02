@@ -298,7 +298,10 @@
     (multiple-value-bind (relations entities)
                          (identify-relations sentence)
       (set-entities sentence entities)
-      (set-relations sentence relations))))
+      (set-relations sentence relations)))
+
+  (when *do-discourse-relations*
+    (establish-discourse-relations sentence)))
 
 
 

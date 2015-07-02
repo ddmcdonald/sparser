@@ -31,7 +31,6 @@
                     *universal-time-end*)))
         *all-irrelevant-sentences*))
 
-
 (defun assess-relevance (sentence)
   ;; Called from post-analysis-operations just before we would
   ;; make a card. If it returns nil -- having determined that
@@ -45,6 +44,12 @@
        (when *trace-relevance-judgements*
 	 (format t "~&   Relevant (contains phrase): ~a~%" sentence))
        t)
+
+      ((contains-motivation-phrase sentence)
+       (when *trace-relevance-judgements*
+	 (format t "~&   Not relevant (motivation): ~a~%" sentence))
+       (record-irrelevant-sentence sentence :has-motivation-phrase)
+       nil)
 
       ((includes-a-reference sentence)
        (when *trace-relevance-judgements*
@@ -70,12 +75,6 @@
        (record-irrelevant-sentence sentence :has-known-result-phrase)
        nil)
 
-      ((contains-motivation-phrase sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (motivation): ~a~%" sentence))
-       (record-irrelevant-sentence sentence :has-motivation-phrase)
-       nil)
-
       ((contains-methodology-phrase sentence)
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (methodology): ~a~%" sentence))
@@ -86,12 +85,6 @@
        (when *trace-relevance-judgements*
 	 (format t "~&   Not relevant (past tense): ~a~%" sentence))
        (record-irrelevant-sentence sentence :past-tense)
-       nil)
-
-      ((future-tense sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (future tense): ~a~%" sentence))
-       (record-irrelevant-sentence sentence :future)
        nil)
 
       ((contains-modal sentence)
@@ -120,42 +113,194 @@ over both sentence and paragraph, deferring to the paragraph when there's
 no evidence in the sentence.
 |#
 
+;;;--------------------------------------------
+;;; Determine sentences' roles in the discourse
+;;;--------------------------------------------
 
+(defparameter *no-discourse-role-sents* nil)
+
+;;; These functions look at the content of a sentence
+;;; and determine if the sentence can be classified as
+;;; a type of discourse atom.
+;;; TODO experimental-result
+
+(defmethod known-result? ((c sentence-content))
+  (or (includes-a-reference c)
+      (contains-known-result-phrase c)))
+
+(defmethod new-fact? ((c sentence-content))
+  (contains-new-fact-phrase c))
+
+(defmethod methodology? ((c sentence-content))
+  (or (contains-methodology-phrase c)
+      (past-tense c)))
+
+(defmethod motivation? ((c sentence-content))
+  (contains-motivation-phrase c))
+
+(defmethod conjecture? ((c sentence-content))
+  (or (contains-conjecture-phrase c)
+      (contains-modal c)))
+
+(defun determine-discourse-role (sentence)
+  ;; Figure out what role the sentence is playing as an
+  ;; atom of the discourse.
+  (let ((contents (contents sentence)))
+    (cond ((new-fact? contents)
+	   (setf (discourse-role contents) 'new-fact))
+	  ((motivation? contents)
+	   (setf (discourse-role contents) 'motivation))
+	  ((methodology? contents)
+	   (setf (discourse-role contents) 'methodology))
+	  ((conjecture? contents)
+	   (setf (discourse-role contents) 'conjecture))
+	  ((known-result? contents)
+	   (setf (discourse-role contents) 'known-result))
+	  (t
+	   (push
+	    `(,(sentence-string sentence)
+	      ,(contents sentence))
+	    *no-discourse-role-sents*)))))
+    
+;;;--------------------------------------
+;;; Establish shallow discourse relations
+;;;--------------------------------------
+#| The check-for-<relation> functions consider a two sentences
+and determine if a discourse relation can hold between them.
+The current possible relations are:
+    - background-knowledge
+    - evidence-for
+    - same-role |#
+;;;TODO experimental-result-of, result-of
+
+(defparameter *collect-discourse-relations* nil)
+(defparameter *all-discourse-relations* nil)
+
+;;; What should actually be put in the relation buckets???
+(defmethod note-discourse-relation (sent1 sent2 relation paragraph)
+  ;; Add the relation to the appropriate slot in the paragraph
+  ;; object.
+  (push `(,sent1 ,sent2)
+	(slot-value (contents paragraph) relation))
+  (when *collect-discourse-relations*
+    (push `(,relation
+	   (,(discourse-role (contents sent1)) ,(sentence-string sent1))
+	   (,(discourse-role (contents sent2)) ,(sentence-string sent2)))
+	   *all-discourse-relations*)))
+	  
+(defmethod check-for-background-knowledge ((contents1 sentence-content)
+					   (contents2 sentence-content))
+  ;; Checks to see if sent1 is background information
+  ;; for sent2. Makes some restricting assumptions, namely,
+  ;; only a known result can be background info, and only
+  ;; methodology and motivation phrases can stand in the
+  ;; background-knowledge relation to a known result.
+  (and (eql (discourse-role contents1) 'known-result)
+       (or (eql (discourse-role contents2) 'methodology)
+	   (eql (discourse-role contents2) 'motivation))))
+
+(defmethod check-for-evidence-for ((contents1 sentence-content)
+				   (contents2 sentence-content))
+  ;; Checks to see if sent1 is evidence for sent2. True if sent1
+  ;; is methodology or motivation, and sent2 is conjecture or new fact.
+  (and (or (eql (discourse-role contents1) 'methodology)
+	   (eql (discourse-role contents1) 'motivation))
+       (or (eql (discourse-role contents2) 'conjecture)
+	   (eql (discourse-role contents2) 'new-fact))))
+
+(defmethod check-for-same-role ((contents1 sentence-content)
+				(contents2 sentence-content))
+  ;; Checks to see if sent1 and sent2 have the same discourse
+  ;; role (as determined by determine-discourse-role).
+  (unless (null (discourse-role contents1))
+    (eql (discourse-role contents1)
+	 (discourse-role contents2))))
+
+(defun establish-discourse-relations (sentence)
+  ;; A pair of sentences may be eligible to stand in more
+  ;; than one relation to each other. The ordering of the
+  ;; cond clauses below determine which relation is actually
+  ;; established in the paragraph content container.
+  (declare (special *previous-sentence*))
+  (let ((paragraph (parent sentence))
+	(prev-sent *previous-sentence*)
+	(contents (contents sentence))
+	(prev-cont (contents *previous-sentence*)))
+    (when *previous-sentence*
+      (determine-discourse-role sentence)
+      (unless (discourse-role prev-cont)
+	(determine-discourse-role prev-sent))
+      (cond ((check-for-same-role contents prev-cont)
+	     (note-discourse-relation sentence prev-sent
+				      'same-role paragraph))
+	    ((check-for-evidence-for contents prev-cont)
+	     (note-discourse-relation sentence prev-sent
+				      'evidence-for paragraph))
+	    ;; parameter order is switched here - previous sentence
+	    ;; will generally be background knowledge for current sentence
+	    ((check-for-background-knowledge prev-cont contents)
+	     (note-discourse-relation prev-sent sentence
+				      'background-knowledge paragraph))
+	    (t
+	     t)))))
+	   
 ;;;-------------------------------------------
 ;;; Convenience functions over status objects
 ;;;-------------------------------------------
 
 (defmethod includes-a-reference ((s sentence))
-  (explicit-reference (contents s)))
+  (includes-a-reference (contents s)))
+
+(defmethod includes-a-reference ((c sentence-content))
+  (explicit-reference c))
 
 (defmethod contains-conjecture-phrase ((s sentence))
-  (conjectures (contents s)))
+  (contains-conjecture-phrase (contents s)))
+
+(defmethod contains-conjecture-phrase ((c sentence-content))
+  (conjectures c))
 
 (defmethod contains-known-result-phrase ((s sentence))
-  (known-results (contents s)))
+  (contains-known-result-phrase (contents s)))
+
+(defmethod contains-known-result-phrase ((c sentence-content))
+  (known-results c))
 
 (defmethod contains-new-fact-phrase ((s sentence))
-  (new-facts (contents s)))
+  (contains-new-fact-phrase (contents s)))
+
+(defmethod contains-new-fact-phrase ((c sentence-content))
+  (new-facts c))
 
 (defmethod contains-methodology-phrase ((s sentence))
-  (methodology (contents s)))
+  (contains-methodology-phrase (contents s)))
+
+(defmethod contains-methodology-phrase ((c sentence-content))
+  (methodology c))
 
 (defmethod contains-motivation-phrase ((s sentence))
-  (motivation (contents s)))
+  (contains-motivation-phrase (contents s)))
+
+(defmethod contains-motivation-phrase ((c sentence-content))
+  (motivation c))
 
 (defmethod past-tense ((s sentence))
-  (declare (ignore s)) nil  )
+  (past-tense (contents s)))
+  
+(defmethod past-tense ((c sentence-content))
+  (declare (ignore c)) nil )
 
 (defmethod present-tense ((s sentence))
-  (declare (ignore s)) nil  )
+  (present-tense (contents s)))
 
-(defmethod future-tense ((s sentence))
-  (declare (ignore s)) nil  )
-
+(defmethod present-tense ((c sentence-content))
+  (declare (ignore c)) nil )
+  
 (defmethod contains-modal ((s sentence))
-  (declare (ignore s)) nil  )
+  (contains-modal (contents s)))
 
-
+(defmethod contains-modal ((c sentence-content))
+  (declare (ignore c)) nil )
 
 ;;;-------
 ;;; rules
@@ -168,7 +313,6 @@ no evidence in the sentence.
 ;; the relevance computation at which point we just (... a mear matter
 ;; of programming) look for them and judge accordingly. 
 ;;(conjecture-phrase "could") ;; could also
-
 
 (conjecture-phrase "a possible explanation")
 (conjecture-phrase "it is likely that")
@@ -239,7 +383,6 @@ no evidence in the sentence.
 (methodology-phrase "we employed")
 (methodology-phrase "we examined")
 (methodology-phrase "we first determined")
-(methodology-phrase "we investigated")
 (methodology-phrase "we observed")
 (methodology-phrase "we performed")
 
@@ -249,6 +392,7 @@ by the activation of a RAS-mediated signalling pathway." |#
 (motivation-phrase "to determine")
 (motivation-phrase "to test")
 (motivation-phrase "we evaluated whether")
+(motivation-phrase "we investigated whether")
 (motivation-phrase "we queried whether")
 (motivation-phrase "we tested whether")
 
