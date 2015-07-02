@@ -980,15 +980,17 @@
   :specializes bio-control
   :binds ((agent biological)
           (process bio-process)
-          (mechanism biological))
+          (mechanism biological)
+          (condition bio-condition))
   :realization 
   (:verb "enhance" :noun "enhancement"
    :etf (svo-passive)
    :s agent
    :o process
    :by mechanism
-   :via mechanism
-   :of process))
+   :of process
+   :under condition
+   :via mechanism))
 
 ;; needs to come after bio-enhance.
 (define-category bio-amplify
@@ -1049,7 +1051,7 @@
   :mixins (bio-whethercomp bio-ifcomp)
   :binds ((agent bio-entity)
           (object bio-process)
-          (by bio-method)
+          (method bio-method)
           (for biological))
   :realization
   (:verb "examine"
@@ -1057,8 +1059,9 @@
          :etf (svo-passive)
          :s agent 
          :o object
-         :by by
+         :by method
          :for for
+         :under method
          :ifcomp statement
          :whethercomp statement))
 
