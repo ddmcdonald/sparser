@@ -2540,7 +2540,8 @@
 (define-category truncate
     :specializes bio-process
     :binds ((agent bio-entity)
-            (object bio-process))
+            (object bio-process)
+            (bio biological))
     :realization
     (:verb "truncate"
 	   :noun "truncation"
@@ -2548,7 +2549,7 @@
 	   :s agent
 	   :o object
            :of object
-	   )) 
+	   :to bio)) 
 
 ;; "Growth factors can turn on Ras"
 (def-term turn-on
@@ -2615,8 +2616,11 @@
 
 (define-category validate
     :specializes bio-rhetorical
+    :mixins (bio-whethercomp bio-ifcomp)
     :binds ((agent biological)
-            (object bio-process))
+            (object bio-process)
+            (method bio-method)
+            (bio biological))
   ;; validated by the success of MEK inhibition
     :realization
     (:verb "validate" ;; keyword: ENDS-IN-ED 
@@ -2624,7 +2628,14 @@
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
-           :of object))
+           :as bio
+           :by method
+           :ifcomp ifstatement
+           :of object
+           :through method
+           :via method
+           :whethercomp statement
+           :with method))
 
 (define-category verify :specializes bio-rhetorical
 		 :mixins (bio-thatcomp)
