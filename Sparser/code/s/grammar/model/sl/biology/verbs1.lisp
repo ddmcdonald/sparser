@@ -2153,12 +2153,13 @@
 (define-category result
     :specializes bio-process
     :binds ((agent (:or bio-entity bio-process))
-            (object bio-process))
+            (object (:or bio-process bio-method)))
     :realization
     (:verb "result" ;; keyword: ENDS-IN-ED 
 	   :etf (svo)
 	   :s agent
            :o object
+           :from object 
 	   :in object))
 
 (def-synonym result
@@ -2227,7 +2228,8 @@
  :realization
   (:verb "stabilize" :noun "stabilization"
          :etf (svo-passive) 
-         :s agent :o object
+         :s agent 
+         :o object
          :of object))
 
 (define-category study-bio-process
