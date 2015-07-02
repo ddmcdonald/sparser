@@ -728,9 +728,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;; (code-char 954) => #\Greek_Small_Letter_Kappa
 ;; (format nil "~x" 954) => 3BA
 
-(defparameter *entries-for-out-of-band-characters*
-  `((262 ;;
-    (:alphabetical (:uppercase . #\Ć)))    
+;;; temporarily ignore char reading problem.
+(defparameter *entries-for-out-of-band-characters* 
+    `(
+      (262 #+allegro (:alphabetical (:uppercase . #\C))
+      #-allegro (:alphabetical (:uppercase . #\Ć)))    
     (263 ;; #\Latin_Small_Letter_C_With_Acute
      (:alphabetical . (:lowercase . #\c))) ;;"ć", (code = 263)
     (339 ;; "œ" #\Latin_Small_Ligature_Oe
@@ -882,9 +884,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8482 (:punctuation . ,(punctuation-named (code-char 8482)))) ;;"™", (code = 8482)
     (8486 ;;"Ω" #\U+2126 
      (:punctuation . ,(punctuation-named (code-char 8486))))
+    #-allegro
     (8488
      (:alphabetical . (:uppercase . , #\ℨ)))
-    (8491 ;; "Å"
+    (8491 ;; angstrom symbol
      (:punctuation . ,(punctuation-named (code-char 8491))))
     (8499 ;;"ℳ" #\U+2133
      (:punctuation . ,(punctuation-named (code-char 8499))))
@@ -964,6 +967,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (64258 (:alphabetical . (:lowercase . , (code-char 64258)))) ;;"ﬂ", (code = 64258)
     (65288 (:punctuation . ,(punctuation-named (code-char 65288)))) ;;"（", (code = 65288)
     (65293 (:punctuation . ,(punctuation-named (code-char 65293)))) ;;"－", (code = 65293)
+    #-allegro
     (119967 (:punctuation . ,(punctuation-named (code-char 119967)))) ;;"풟", (code = 119967)
     
     )
