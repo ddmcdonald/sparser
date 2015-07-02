@@ -118,8 +118,8 @@
 
 (defun make-edge-over-unknown-digit-sequence (word position)
   ;; placed over individual digit sequences that were not predefined
-  ;; in the grammar.  Called from Specific-assessed-actions.
-  ;;
+  ;; in the grammar.  Called from Specific-assessed-actions or
+  ;; from preterminals-for-unknown
   (let ((digit-string (word-pname word))
         (next-position (chart-position-after position)))
 
