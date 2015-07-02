@@ -72,7 +72,7 @@
   (declare (special *use-occasional-polywords*))
   (cond
    (*use-occasional-polywords*
-    (or (starts-occasional-polyword word)
+    (or (starts-occasional-polyword word) ;; find
         (let ((initial-state (make-instance 'polyword-state
                              :word `(,word))))
           (push-onto-plist word initial-state
