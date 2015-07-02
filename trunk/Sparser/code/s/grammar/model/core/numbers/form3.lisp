@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "form"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  3.0 June 2015
+;;;  Version:  3.0 July 2015
 
 ;; 2.0  (7/20/92 v2.3) made over to use "real" categories
 ;; 2.1  (10/5) tweeked construct-temporary... to not make a polyword
@@ -28,6 +28,8 @@
 ;;      (3/13/13) Gave digit and word numbers adjective brackets.
 ;; 3.0  (6/28/15) Reorganizing construct-number to define the individual before
 ;;       defing any of the rules that use it as a referent. 
+;;      (7/2/15) Added reify-digit-word to make sure that digit sequences
+;;       that weren't predefined are remembered.
 
 
 (in-package :sparser)
@@ -254,3 +256,20 @@
         :word-object-for-digits word 
         :temporary? t))))
 
+#| But if we only make a temporary number, and we're running in
+a context that reclaims with every new sentence, then we get into
+an odd situation where we have a rule-set for the digit but
+no connection from there to the number. The rule-set makes the
+digit now a 'known' word, so we have to have a rule there for
+it to execute.
+|#
+(defun reify-digit-word (word edge)
+  (let ((i (edge-referent edge)))
+    ;; Defining the rule puts it on the rule set
+    (define-cfr *the-category-of-digit-sequences*
+                `(,word)
+      :form (category-named 'number)
+      :referent i
+      :schema (get-schematic-word-rule :number))))
+    
+         
