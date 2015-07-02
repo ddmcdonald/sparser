@@ -96,7 +96,7 @@
        (and (individual-p nw) ;; not words like "and"
                 (itypep nw 'name-word))
       ;; Company terms, countries, ...
-       (bind-dlivariable 'name-of company nw)
+       (bind-dli-variable 'name-of company nw)
        nw))))
   
 
@@ -234,7 +234,7 @@
     (otherwise
      (push-debug `(,name))
      (break "New case for render-name-as-company-name: ~a"
-	    (cat-symbol (itype-of name))))))
+            (cat-symbol (itype-of name))))))
 
 
 
