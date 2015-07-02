@@ -2057,7 +2057,7 @@
  :specializes bio-process
  :binds ((agent bio-entity)
          (object molecule)
-         (substrate molecule))
+         (from (:or molecule pathway)))
  :realization
  (:verb "release" :noun "release"
   :etf (svo-passive)
@@ -2065,7 +2065,8 @@
   :o object
   ;; Comlex: (np-pp :pval ("in" "into" "from" "to"))
   ;;  and a lot of others
-  :from substrate))
+  :from from
+  :of object))
 
 (define-category remain
     :specializes bio-relation
@@ -2085,13 +2086,17 @@
 (define-category remove
     :specializes bio-process
     :binds ((agent pronoun/first/plural)
-            (object biological))
+            (object biological)
+            (source biological)
+            (by (:or bio-method bio-process)))
     :realization
     (:verb "remove" ;; keyword: ENDS-IN-ED 
 	   :noun "removal"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by by
+           :from source
            :of object))
 
 (delete-verb-cfr (resolve/make "report"))
