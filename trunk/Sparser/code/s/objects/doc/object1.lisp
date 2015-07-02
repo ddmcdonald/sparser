@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  June 2015
+;;;  Version:  July 2015
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -18,7 +18,8 @@
 ;; 1.2 Adding print methods and tweaking initializations to accommodate
 ;;      read-from-document through 4/27/15
 ;;     4/28/15 added section-of-sections
-;;     6/14/15 Added a sentence to title-text.
+;;     6/14/15 Added a sentence to title-text. 7/2/15 Added iniform nil
+;;     to a few cases that didn't have it already. 
 
 (in-package :sparser)
 
@@ -55,7 +56,7 @@
 ;;;-----------------------------------
 
 (defclass titled-entity ()
-  ((title :accessor title
+  ((title :initform nil :accessor title
    :documentation "Provides a title slot for the Title-text 
       of the entity.")))
 
@@ -68,7 +69,7 @@
 ;;;----------
 
 (defclass title-text (document-element named-object string-holder)
-  ((sentence :accessor title-sentence
+  ((sentence :initform nil :accessor title-sentence
     :documentation "When we're parsing long titles, the results
       and context are stored in this."))
   (:documentation "A title of a section or article."))
@@ -93,12 +94,12 @@
 
 (defclass article (document-element named-object 
                    word-frequency titled-entity)
-  ((location :accessor article-location
+  ((location :initform nil :accessor article-location
     :documentation "Usually a short form of the file name")
-   (date :accessor article-date
+   (date :initform nil :accessor article-date
     :documentation "In principle should be a date object, but
      in practice just a string encoding the date")
-   (source :accessor article-source
+   (source :initform nil :accessor article-source
     :documentation "The pathname of the document"))
   (:documentation "Representation of a document as a whole.
     Provides a top most reference point that paragraphs and
