@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "terminal edges"
 ;;;   Module:  "analyzers;psp:assess:"
-;;;  Version:  2.7 February 2011
+;;;  Version:  2.7 July 2015
 
 ;; initiated 9/12 v2.3
 ;; 1.1 (10/23) reorganized what kinds of property edges are created
@@ -30,8 +30,10 @@
 ;; 2.5 (7/25) refined cases of edges over unknowns re. affixes
 ;; 2.6 (5/22/95) modified Known-preterminals/check-caps to go back to the lowercase
 ;;      if the variants don't yield edges
-;; 2/7 (2/20/11) Refined control of creation of digit edges in preterminals-
+;; 2.7 (2/20/11) Refined control of creation of digit edges in preterminals-
 ;;      for-unknown with *make-edges-over-new-digit-sequences*. 
+;;     (7/2/15) Modified preterminals-for-unknown to make a call to
+;;      reify-digit-word so that new digit sequences are remembered.
 
 
 (in-package :sparser)
@@ -124,6 +126,7 @@
           (let ((edge (make-edge-over-unknown-digit-sequence
                        word position-scanned)))
             (tr :making-edge-over-digit-sequence edge)
+            (reify-digit-word word edge)
             (list edge))))
        
        (capitalization-counts
