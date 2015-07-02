@@ -1910,43 +1910,55 @@
 
 (define-category purify :specializes bio-method
   :binds ((agent (:or bio-method bio-process))
-          (object bio-entity)) 
+          (object bio-entity)
+          (bio biological)) 
   :realization 
   (:verb "purify" :noun "purification" 
          :etf (svo-passive) 
          :s agent
-         :o object))
+         :o object
+         :by agent
+         :from bio
+         :with agent))
 
 (define-category query
     :specializes bio-method
     :mixins (bio-whethercomp)
     :binds ((agent (:or biological pronoun/first/plural))
-            (object (:or bio-process bio-entity)))
+            (object (:or bio-process bio-entity))
+            (against pathway))
     :realization
     (:verb "query" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :against against ;; "12,484 genes were queried against KEGG biopathways"
            :whethercomp statement))
 
 (define-category raise
     :specializes bio-control
     :binds ((agent bio-entity)
-            (object (:or bio-process bio-abstract))) ;; bio-abstract for "raised the possibility"
+            (object (:or bio-process bio-abstract)) ;; bio-abstract for "raised the possibility"
+            (method bio-method)
+            (bio biological))
     :realization
     (:verb "raise" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :against bio
+           :by method))
 
 (define-category reconstitute :specializes bio-process
   :binds ((agent bio-entity)
-          (object bio-process))
+          (object bio-process)
+          (amount measurement))
   :realization
   (:verb "reconstitute" :noun "reconstitution"
          :etf (svo-passive)
          :s agent
-         :o object))
+         :o object
+         :to amount))
 
 (define-category recruit :specializes bio-process 
   :binds ((agent bio-entity)
