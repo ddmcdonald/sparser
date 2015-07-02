@@ -1952,13 +1952,16 @@
 (define-category reconstitute :specializes bio-process
   :binds ((agent bio-entity)
           (object bio-process)
-          (amount measurement))
+          (amount measurement)
+          (in (:or measurement biological)))
   :realization
   (:verb "reconstitute" :noun "reconstitution"
          :etf (svo-passive)
          :s agent
          :o object
-         :to amount))
+         :in in
+         :to amount
+         :with agent))
 
 (define-category recruit :specializes bio-process 
   :binds ((agent bio-entity)
