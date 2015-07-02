@@ -2640,13 +2640,17 @@
 (define-category verify :specializes bio-rhetorical
 		 :mixins (bio-thatcomp)
   :binds ((agent bio-entity)
-          (object bio-process))
+          (object bio-process)
+          (method bio-method))
   :realization 
   (:verb "verify" :noun "verification"
          :etf (svo-passive)
          :s agent
          :o object
-         :thatcomp statement))
+         :by method
+         :thatcomp statement
+         ;;:whethercomp statement
+         :with method))
 
 (define-category yield
     :specializes bio-process
