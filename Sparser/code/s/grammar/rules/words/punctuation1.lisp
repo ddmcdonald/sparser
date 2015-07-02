@@ -86,6 +86,7 @@
 (define-punctuation  latin_small_letter_i_with_acute   #\Latin_Small_Letter_I_With_Acute) ;; 237
 (define-punctuation  latin_small_letter_o_with_circumflex   #\Latin_Small_Letter_O_With_Circumflex) ;; 244
 (define-punctuation  latin_small_letter_o_with_diaeresis   #\Latin_Small_Letter_O_With_Diaeresis) ;; 246
+#-allegro
 (define-punctuation  division-sign       #\÷ )   ;; 247
 (define-punctuation  latin_small_letter_o_with_stroke   #\Latin_Small_Letter_O_With_Stroke) ;; 248
 (define-punctuation  latin_small_letter_u_with_diaeresis   #\Latin_Small_Letter_U_With_Diaeresis) ;; 252
@@ -197,14 +198,19 @@
     
     ))
 
-
+;; ignore unknown characters for allegro's sake.
 (defun add-punctuation-chars ()
   (dolist (form *out-of-band-punctuation*)
-    (let* ((character (eval form))
-           (namestring (char-name character))
-           (symbol (intern namestring *word-package*)))
-      (format t "~&~a ~a" (cadr form) character)
-      (define-punctuation/expr symbol character))))
+    (let* ((character (eval form)) namestring symbol)
+      (if character
+          (setf namestring (char-name character))
+        (warn "Couldn't find code-char ~a" (second form))
+        )
+      (when namestring
+           (setf symbol (intern namestring *word-package*)))
+      (when (and symbol character)
+        (format t "~&~a ~a" (cadr form) character)
+        (define-punctuation/expr symbol character)))))
 
 (add-punctuation-chars)
 
