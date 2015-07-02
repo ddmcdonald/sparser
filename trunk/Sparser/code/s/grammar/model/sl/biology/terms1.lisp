@@ -98,6 +98,7 @@
 (noun  "uncapping" :super bio-method)
 (noun  "spectroscopy" :super bio-method)
 (noun  "microscopy" :super bio-method)
+(noun  "microscope" :super bio-method)
 
 (adj  "dimensional" :super bio-predication)
 (adj  "exclusive" :super bio-predication)
