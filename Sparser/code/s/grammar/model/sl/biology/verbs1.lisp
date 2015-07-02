@@ -603,12 +603,14 @@
     :specializes bio-method
     :binds ((agent bio-entity)
             (object bio-process)
-            (bio biological))
+            (bio biological)
+            (timeperiod time-unit))
     :realization
     (:verb "culture" ;; keyword: ENDS-IN-ED
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :for timeperiod))
 
 (def-synonym culture
   (:noun "culture"
@@ -621,13 +623,15 @@
          (object molecule)
          (from biological)
          (to biological)
-         (path bio-state))
+         (path bio-state)
+         (treatment treatment))
  :realization
  (:verb "cycle"
   :etf (svo-passive)
   :s agent
   :o object
   :from from
+  :of treatment
   :to to
   :between path))
 
@@ -1286,12 +1290,15 @@
 
 (define-category impair :specializes bio-control
   :binds ((agent biological)
-          (object biological)) 
+          (object biological)
+          (bio biological)) 
   :realization 
   (:verb "impair" :noun "impairment"
          :etf (svo-passive)
          :s agent
          :o object
+         :for bio
+         :in bio
          :of object))
 
 (define-category incorporate :specializes bio-relation 
@@ -2083,7 +2090,8 @@
  :specializes bio-process
  :binds ((agent bio-entity)
          (object molecule)
-         (from (:or molecule pathway)))
+         (from (:or molecule pathway))
+         (bio biological))
  :realization
  (:verb "release" :noun "release"
   :etf (svo-passive)
@@ -2092,6 +2100,7 @@
   ;; Comlex: (np-pp :pval ("in" "into" "from" "to"))
   ;;  and a lot of others
   :from from
+  :into bio
   :of object))
 
 (define-category remain
