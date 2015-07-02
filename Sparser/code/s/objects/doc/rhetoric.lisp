@@ -9,6 +9,9 @@
 ;; to identify and work with the rhetorical structure of a text
 ;; writ large (epistemic status, story structure, new vs. old information,
 ;; etc.)
+;; 6/30/15 Added paragraph-level class to store discourse relations.
+;; Expanded methodology-phrase into methodology-phrase and motivation-phrase.
+;; Added discourse-role slot to epistemic-status (sentence-level class).
 
 (in-package :sparser)
 
@@ -54,15 +57,21 @@ which could be set automatically by using the :init-form on the slot.
    (evidence-for :initform nil :accessor evidence-for
     :documentation "Pairs of sentences (X, Y), where X is 
        evidence for Y.")
-   (experimental-result :initform nil :accessor experimental-result
+   (experimental-result-of :initform nil :accessor experimental-result
     :documentation "Pairs of sentences (X, Y), where X is
-       the (material) result of the experiment described by Y.")
-   (cause :initform nil :accessor cause
-    :documentation "Pairs of sentences (X, Y), where X causes the
-     assertion of Y. Less restrictive than evidence-for. Triggered
-     by words like 'therefore' and 'thus'."))
+       the (material) result of the experiment described by Y.
+       That is, X is stating the direct findings of an experiment, 
+       rather than a conjecture or generalization made because of
+       a result.")
+   (result-of :initform nil :accessor result-of
+    :documentation "Pairs of sentences (X, Y), where X is a result of
+      Y. Less restrictive than evidence-for. Triggered by words like 
+      'therefore' and 'thus'.")
+   (same-role :initform nil :accessor same-role
+    :documentation "Pairs of sentences (X, Y), where X and Y have the
+      function in the discourse, e.g., both are describing methods."))
   (:documentation "Stores the discourse-relations between sentences 
-    of a subsection."))
+    of a paragraph."))
 
 ;;-- Sentence level
 
@@ -82,14 +91,23 @@ which could be set automatically by using the :init-form on the slot.
    (methodology :initform nil :accessor methodology
     :documentation "Evidence that the sentence is discussing
       experimental design, rather than results.")
-  (motivation :initform nil :accessor motivation
+   (motivation :initform nil :accessor motivation
     :documentation "Is the sentence providing motivation for
-     an experiment, i.e., the claim that will be tested?"))
+      an experiment, i.e., the claim that will be tested?")
+   (discourse-role :initform nil :accessor discourse-role
+    :documentation "How does the sentence function as an atomic
+      part of the discourse? Set by determine-discourse-role."))
   (:documentation "The slots provide sentence-local buckets
    in which to accumulate different kinds of evidence about whether
    the sentence is providing new facts about something, referencing
    already established facts, or making a conjecture about
    what might be the case (which in isolation will look like a fact)."))
+#| Possible values for discourse-role:
+     known-result
+     new-fact
+     method
+     motivation
+     conjecture |#
 
 ;;;--------------------
 ;;; function generator
@@ -218,4 +236,3 @@ you also add the corresponding slot to the class. |#
 (defun motivation-phrase (string)
   (setup-epistemic-data-collector
    string 'note-motivation))
-

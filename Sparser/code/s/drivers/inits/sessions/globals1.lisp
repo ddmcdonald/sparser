@@ -206,6 +206,10 @@
    binding this flag to nil will block looking for referents
    when we're in successive-sweeps mode.")
 
+(defparameter *do-discourse-relations* nil
+  "Controls whether we try to establish discourse relations between 
+   successive sentences.")
+
 (defparameter *do-debris-analysis* nil
   "Set as part of the switch settings, read within HA code and in
    special DA drivers")

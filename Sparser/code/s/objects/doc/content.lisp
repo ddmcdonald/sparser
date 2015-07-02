@@ -90,7 +90,7 @@
 
 
 (defclass paragraph-content (container aggregated-bio-terms
-                             epistemic-state )
+                             epistemic-state discourse-relations)
   ()
   (:documentation "Will want a bunch more structure just over
     the enties for the purpose of facilitating anaphora. 
