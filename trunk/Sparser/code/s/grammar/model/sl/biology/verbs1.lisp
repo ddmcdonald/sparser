@@ -744,7 +744,8 @@
 (define-category describe
     :specializes bio-rhetorical
     :binds ((agent pronoun/first/plural)
-            (object bio-process))
+            (object bio-process)
+            (figure article-figure))
     :realization
     (:verb "describe"
 	   :noun "description"
@@ -752,6 +753,7 @@
 	   :s agent
 	   :o object
            :by agent
+           :in figure
            :of object))
 
 (define-category detect
@@ -1356,13 +1358,15 @@
     :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent biological)
-            (object bio-process))
+            (object bio-process)
+            (figure article-figure))
     :realization
     (:verb "indicate" ;; keyword: ENDS-IN-ING 
 	   :noun "indication"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :in figure
            :of object
            :thatcomp statement))
 
@@ -1810,13 +1814,15 @@
     :specializes bio-relation
     :binds ((agent bio-entity)
             (object bio-process)
-            (location bio-location))
+            (location bio-location)
+            (figure article-figure))
     :realization
     (:verb "present"
 	   :noun "presentation"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :in figure
            :of object))
 
 (def-synonym present
@@ -2115,12 +2121,14 @@
 (define-category represent
     :specializes bio-relation
     :binds ((agent biological)
-            (object (:or bio-process measurement)))
+            (object (:or bio-process measurement))
+            (figure article-figure))
     :realization
     (:verb "represent" :noun "representation"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :in figure
            :of object))
 
 (define-category require
