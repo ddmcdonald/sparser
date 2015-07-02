@@ -1966,14 +1966,22 @@
 (define-category recruit :specializes bio-process 
   :binds ((agent bio-entity)
           (object bio-process)
+          (process bio-process)
           (source biological)
+          (location bio-location)
           (destination biological)) 
   :realization 
   (:verb "recruit" :noun "recruitment"
          :etf (svo-passive) 
          :s agent
          :o object
-         :to destination))
+         :by agent
+         :from source
+         :in destination
+         :onto location
+         :through location
+         :to destination
+         :via process))
 
 (define-category reduce
     :specializes bio-control
