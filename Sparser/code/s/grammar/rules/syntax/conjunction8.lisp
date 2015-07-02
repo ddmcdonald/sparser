@@ -676,3 +676,44 @@
       nil )))
 
 
+;;;;; CODE TO EXPAND CONJUNCTIONS ;;;;;;
+
+(defun maybe-expand-conjunctions (i)
+  (cond
+   ((or (referential-category-p i) (not (individual-p i)))
+    i)
+   ((itypep i 'collection)
+    (value-of 'items i))
+   (t ;; must be an individual which is not a collection -- 
+    ;; return either a list of individuals that is the result of expanding
+    ;; internal conjunctions, or the individual itself
+    (let (conjunctive-bindings simple-bindings expansion)
+      (loop for b in (indiv-binds i)
+        do
+        (setq expansion (maybe-expand-conjunctions (binding-value b)))
+        (if (consp expansion)
+            (push (list (binding-variable b) expansion) conjunctive-bindings)
+            (push (list (binding-variable b) expansion) simple-bindings)))
+      (if (null conjunctive-bindings)
+          i
+          (expand-conjunctions i simple-bindings conjunctive-bindings))))))
+
+(defun expand-conjunctions (i simple-bindings conjunctive-bindings)
+  (let ((i-list 
+         (list
+          (apply #'find-or-make-individual 
+                 (car (indiv-type i)) 
+                 (loop for bb in simple-bindings append (list (var-name (car bb)) (second bb)))))))
+    (loop for bb in conjunctive-bindings
+      do
+      (setq i-list (loop for i in i-list 
+                     append 
+                     (loop for bv in (cadr bb)
+                       collect
+                       (bind-dli-variable (car bb) bv i)))))
+    i-list))
+        
+       
+                            
+
+
