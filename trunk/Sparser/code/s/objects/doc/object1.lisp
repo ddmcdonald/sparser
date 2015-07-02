@@ -373,6 +373,7 @@
   ;; Called from initialize-paragraphs or read-from-document,
   ;; in which case it can be starting the first sentence of
   ;; the next paragraph and had to do additional cleanup.
+  (declare (special *current-paragraph*))
   (let ((p1 *current-paragraph*))
     (unless p1
       (error "Threading bug: no value for *current-paragraph"))
