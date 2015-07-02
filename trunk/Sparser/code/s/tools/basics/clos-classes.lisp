@@ -27,7 +27,7 @@
 ;;--- has a unique number for each of its instances
 
 (defclass indexed ()
-  ((index :type integer :initform nil :initarg :index :accessor index
+  ((index :type integer :initform 0 :initarg :index :accessor index
     :documentation ""))
    (:documentation ""))
 
