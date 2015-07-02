@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;    File:  "clos-classes"
 ;;;   Module:  tools/basics/
-;;;  Version:  September 2013
+;;;  Version:  July 2015
 
 ;; initiated 3/29/13 to hold general clos classes that will be used as
 ;; mix-ins and such. 9/16/13 added ordered. 9/17/13 added indexed.
+;; 7/2/15 provides nil initforms so don't have to check for slot bound
 
 (in-package :sparser)
 
@@ -26,7 +27,7 @@
 ;;--- has a unique number for each of its instances
 
 (defclass indexed ()
-  ((index :type integer :initarg :index :accessor index
+  ((index :type integer :initform nil :initarg :index :accessor index
     :documentation ""))
    (:documentation ""))
 
@@ -34,7 +35,7 @@
 ;;--- partonomy: parent and children
 
 (defclass has-parent ()
-  ((parent :accessor parent
+  ((parent :initform nil :accessor parent
     :documentation "Point up to the larger stucture that contains
       this one."))
   (:documentation "The leaf structure will only have a parent"))
@@ -50,9 +51,9 @@
 ;;---- double linked list
 
 (defclass ordered ()
-  ((previous :accessor previous
+  ((previous :initform nil :accessor previous
     :documentation "Points to the previous adjacent ordered item or nil")
-   (next :accessor next
+   (next :initform nil :accessor next
     :documentation "Points to the next adjacent ordered item or nil"))
   (:documentation "Provides links to follow through a sequence
     of anything that has a sense of direction (creation order, scanning
