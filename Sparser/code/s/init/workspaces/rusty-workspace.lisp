@@ -213,7 +213,8 @@
       (when (fboundp s) (push s fns)))
     fns))
       
-
+(defun mark-examples ()
+  (load "~/r3/code/integration/cycorp/aspp2-examples"))
 #+:sbcl
 (defun timings(&optional (n 1))
   (setq profns
