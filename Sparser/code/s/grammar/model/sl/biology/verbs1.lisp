@@ -889,7 +889,8 @@
     :specializes bio-control
     :binds ((agent bio-entity)
             (object bio-process)
-            (in bio-location))
+            (in bio-location)
+            (condition bio-condition))
     :realization
     (:verb "elevate" ;; keyword: ENDS-IN-ED 
 	   :noun "elevation"
@@ -898,7 +899,8 @@
 	   :o object
            :by agent
            :in in
-           :of object))
+           :of object
+           :under condition))
 
 (define-category elucidate
     :specializes bio-rhetorical
