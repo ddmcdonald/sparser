@@ -1985,14 +1985,17 @@
 
 (define-category reduce
     :specializes bio-control
-    :binds ((agent bio-entity)
-            (object bio-process))
+    :binds ((agent (:or bio-entity bio-process))
+            (object bio-process)
+            (bio biological))
     :realization
     (:verb "reduce" ;; keyword: ENDS-IN-ING 
 	   :noun "reduction"
 	   :etf (svo-passive)
 	   :s agent
 	   :o object
+           :by agent
+           :in bio
            :of object))
 
 ;;--- "regulate"
@@ -2008,6 +2011,7 @@
      :etf (svo-passive)
      :o object  ;; regulation of <process>
      :s agent
+     :in theme
      :of object
      :for theme))
 
