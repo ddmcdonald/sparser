@@ -492,6 +492,28 @@ those steps sequentially on a single article.
       (format t "  ~a~%" (elapsed-time-to-string elapsed-internal-real-time))
       article)))))
 
+;; Functions for timing single articles and batches
+
+(defun time-single-article (n)
+  (let ((real-time-start (get-internal-real-time))
+      (run-time-start (get-internal-run-time)))
+    ;; (setf *default-corpus-path* (make-corpus-path :jun15))
+    ;; (load-and-run-June-article-number n)
+    (declare (special *june-nxml-files-in-MITRE-order*))
+    (sparser::set-default-corpus-path :jun15)
+    (sparser::load-xml-to-doc-if-necessary)
+    (let ((id (nth (1- n) *june-nxml-files-in-MITRE-order*)))
+      (sparser::load-and-read-article id)
+      (list (symbol-name id) (cons (- (get-internal-run-time) run-time-start) (- (get-internal-real-time) real-time-start))))))
+
+(defun time-article-batch (start n outfile)
+  (with-open-file (timing-stream outfile :direction :output :if-exists :supersede)
+    (loop for i from start to (+ start n) do
+      (let* ((article-time (time-single-article i))
+           (id (car article-time))
+           (runtime (car (cadr article-time)))
+           (realtime (cdr (cadr article-time))))
+         (format timing-stream "~w,~d,~d~%" id runtime realtime )))))
 
 ;;---- Gophers for going through articles
 
