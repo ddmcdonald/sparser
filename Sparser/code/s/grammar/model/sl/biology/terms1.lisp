@@ -928,7 +928,7 @@
 (define-adverb "therefore")
 (define-adverb "thereby")
 (noun "throughput" :super measurement)
-(define-adverb "thus")
+
 (noun "tissue" :super bio-context)
 (define-adverb "to this end")
 (adj "transient" :super bio-predication)
