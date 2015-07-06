@@ -455,4 +455,30 @@ NIL
 
 
 
+(defun parse-sentence-carefully (sent-string)
+  (let ((*trap-error-skip-sentence* t))
+    (declare (special *trap-error-skip-sentence*))
+    (let* ((length (length sent-string)))
+      (unless (eql #\. (char sent-string (1- length)))
+        (setq sent-string (string-append sent-string ".")))
+      (establish-character-source/string sent-string)
+      (if *trap-error-skip-sentence*
+          (handler-case
+              (analysis-core)
+            (error (e)
+                   (ignore-errors ;; got an error with something printing once
+                    (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
+          (analysis-core)))))
+
+(defun ras2-sentence (s)
+  (with-total-quiet
+      (when
+          (parse-sentence-carefully s)
+        (loop for i in (second (car *all-sentences*))
+          thereis (and (individual-p i)(itypep i 'protein)(value-of 'ras2-model i))))))
+
+
+  
+      
+
 
