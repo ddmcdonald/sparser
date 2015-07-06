@@ -92,7 +92,7 @@
 
 (defmacro def-bio (short kind
                    &key greek identifier long synonyms takes-plurals
-                        mitre-link )
+                        mitre-link ras2-model)
   ;; short = "NIK", long = "NF-κB-inducing kinase"
   ;; kind = kinase, greek = "alpha"
   ;; Makes individuals (particulars), that are instances of 
@@ -123,17 +123,18 @@
 
   `(def-bio/expr ,short ',kind 
      :greek ',greek :identifier ',identifier :mitre-link ,mitre-link
+     :ras2-model ,ras2-model
      :long ,long :synonyms ',synonyms :takes-plurals ,takes-plurals))
 
 
 (defun def-bio/expr (short kind 
                      &key greek identifier mitre-link
-                          long synonyms takes-plurals)
+                          long synonyms takes-plurals ras2-model)
   ;; use find-individual with their names to retrieve these. 
   (let* ((word (resolve/make short))
          (category (category-named kind :break-if-undefined)))
     (make-typed-bio-entity word category
-                          greek identifier mitre-link
+                          greek identifier mitre-link ras2-model
                           long synonyms takes-plurals)))
  
 
@@ -143,7 +144,8 @@
 
 
 (defun make-typed-bio-entity (word category 
-                              &optional greek identifier mitre-link 
+                              &optional greek identifier mitre-link
+                                        ras2-model
                                         long synonyms takes-plurals)
   (declare (special *inihibit-constructing-plural*))
   (let ((label (or (override-label category) category))
@@ -205,6 +207,8 @@
       (setq i (bind-dli-variable 'uid identifier i)))
     (when mitre-link
       (handle-mitre-link i mitre-link))
+    (when ras2-model
+      (setq i (bind-dli-variable 'ras2-model ras2-model i)))
 
     (when synonyms ;; quoted list of strings
       (dolist (syn synonyms)
