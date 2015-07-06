@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "sort"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  0.5 September 2011
+;;;   version:  0.5 July 2015
 
 ;; initiated 3/10/92 v2.2, elaborated 3/19,21,26
 ;; 0.1 (6/7/93 v2.3) Added appreciation of form rules to the combined
@@ -18,6 +18,7 @@
 ;;      do a query.
 ;;     (1/22/99) tweaked Labels-string to accomodate MCL 4.0. 9/26/11 setting off
 ;;      some more the complaint about identical rules
+;;     (7/5/15) First draft of sort-bio-terms
 
 (in-package :sparser)
 
@@ -401,4 +402,30 @@
           ((and (null r1-completion)
                 (null r2-completion))
            (sort-cfrs-by-pnames-from-the-left r1 r2)))))
+
+
+;;;-----------------------------------------
+;;; Lists of (<object> . <numerical count>)
+;;;-----------------------------------------
+
+(defmethod sort-bio-terms ((e document-element) (c aggregated-bio-terms))
+  (let ((proteins (copy-list (aggregated-proteins c)))
+        (processes (copy-list (aggregated-processes c)))
+        (residues (copy-list (aggregated-residues c)))
+        (other (copy-list (aggregated-other c))))
+    (setf (aggregated-proteins c)
+          (sort proteins 'sort-by-count-and-alphabetical))
+    (setf (aggregated-processes c)
+          (sort processes 'sort-by-count-and-alphabetical))
+    (setf (aggregated-residues c)
+          (sort residues 'sort-by-count-and-alphabetical))
+    (setf (aggregated-other c)
+          (sort other 'sort-by-count-and-alphabetical))
+    c))
+
+(defun sort-by-count-and-alphabetical (pair1 pair2)
+  (cond 
+   ((> (cdr pair1) (cdr pair2)) t)
+   ((> (cdr pair2) (cdr pair1)) nil)
+   (t (sort-units-alphabetically (car pair1) (car pair2)))))
 
