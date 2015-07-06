@@ -278,6 +278,8 @@ those steps sequentially on a single article.
    function sweep-document over them and return/store the result
    of *populated-articles*."
   (declare (special *break-on-sweep-errors*))
+  (setq *populated-articles* nil) ;; this is a rebuild operation!!
+
   (let ((article (car articles))
         (rest (cdr articles)))
     ;;(format t "Sweep phase: ~a articles" (length articles))
@@ -303,9 +305,11 @@ those steps sequentially on a single article.
 
 ;--- 2.5 scan for the data that feeds assess-relevance
 (defun epistemic-article-sweep (&optional (articles *populated-articles*))
-  (declare (special *break-on-sweep-errors*))
+  (declare (special *break-on-sweep-errors* *show-article-progress*))
   (setq *epistemically-scanned-articles* nil) ;; reset
-  (format t "~&~%Feature phase: ~a articles~%" (length articles))
+  (when
+      *show-article-progress*
+      (format t "~&~%Feature phase: ~a articles~%" (length articles)))
   (let ((article (car articles))
         (counter 0)
         (rest (cdr articles)))
@@ -438,11 +442,7 @@ those steps sequentially on a single article.
     (sweep-and-run-articles articles-to-run)))
 
 (defun sweep-and-run-articles (articles-to-run)
-  (if *populated-articles*
-    (sweep-article-set
-     (loop for a in articles-to-run
-       unless (memq a *populated-articles*) collect a))
-    (sweep-article-set articles-to-run))
+  (sweep-article-set articles-to-run)
   ;;(setq *accumulate-content-across-documents* t)
   (with-total-quiet
       (read-article-set
@@ -1255,24 +1255,64 @@ These return the Lisp-based obo entries.
     (sweep-and-run-articles (populate-june-article id))))
 
 (defparameter *load-ras2* t)
+ 
+(defun maybe-load-ras2 ()
+ (if (and *load-ras2* (find-package :r3)) (funcall (intern "LOAD-RAS2-MODEL" :r3))))
 
 (defun test-june-article (id &optional show-sents)
-  (if (and *load-ras2* (find-package :r3)) (funcall (intern "LOAD-RAS2-MODEL" :r3)))
+  (maybe-load-ras2)
   (when show-sents (setq *print-sentences* 0))
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id)))
 
 (defun run-june-articles (n &key (from-article 0) (cards t) (new nil))
-  (setq *all-sentences* nil)
-  (loop for id in (nthcdr from-article *june-nxml-files-in-MITRE-order*)
-    as i from (+ 1 from-article) to (+ n from-article)
-    do
-    (format t "~&~&---------^^^^^ Generating cards for #~s article ~s~&" i id)
+  (let
+      ((*show-article-progress* nil))
+    (declare (special *show-article-progress*))
+    (loop for id in (nthcdr from-article *june-nxml-files-in-MITRE-order*)
+      as i from (+ 1 from-article) to (+ n from-article)
+      do
+      (format t "~&~&---------^^^^^ Generating cards for #~s article ~s~&" i id)
+      (setq *all-sentences* nil)
+      (if new
+          (cards-for-article-new id cards)
+          (cards-for-article id cards)))))
 
-    (if new
-        (cards-for-article-new id cards)
-        (cards-for-article id cards))))
+(defun cards-for-article (id &optional (create-cards nil))
+  (test-june-article id)
+  (when create-cards
+    (if
+     *trap-error-skip-sentence*
+     (handler-case
+         (run-cards id)
+       (error (e)
+              (ignore-errors ;; got an error with something printing once
+               (when *show-handled-sentence-errors*
+                 (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+     (run-cards id))))
 
+(defun run-cards (*article-id*) 
+  (let*
+      ((ht (group-pts-by-article))
+       (aht (gethash *article-id* ht))
+       (counter 0)
+       (cards nil))
+    (declare (special ht aht cards))
+    (when
+        aht
+      (maphash #'(lambda (simple-phos aps)
+                   (declare (ignore simple-phos))
+                   (format t "~&writing ~s card for ~s"
+                           (string-downcase (symbol-name (pt-type(caar (car aps)))))
+                           *article-id*)
+                   (push (pt-card aps) cards))
+               aht)
+      (format t "~&Creating ~s cards for article ~s~&" (length cards) *article-id*)
+      (loop for card in cards
+        do
+        (post-translation-file-from-card card (incf counter))))))
+
+#+ignore ;; old version
 (defun cards-for-article (id &optional (run-cards nil))
   (test-june-article id)
   (handler-case
@@ -1386,3 +1426,77 @@ These return the Lisp-based obo entries.
     (format nil
             "~s-~s-~sT~s:~s:~s"
             year month date hour minute second)))
+
+(defun load-pmc-1000-sents ()
+  (load "~/r3/darpa/12-month TestMaterials/PMC1000-sents.lisp"))
+
+(defvar *1000-art-sents* nil)
+
+(defun PMC-sent-list (name pattern)
+  (let ((namesents (intern (string-upcase (format nil "~a-sents" name)))))
+    (length (set namesents
+		 (loop for s in *1000-art-sents* when (search pattern s)
+                   collect
+                   (if (and (numberp (search "." s :from-end t))(equal (- (length s) 1) (search "." s :from-end t)))
+                       s
+                       (format nil "~a." s)))))
+    (with-open-file 
+        (s (string-append "~/r3/darpa/12-month TestMaterials/" name "sents.lisp") 
+           :direction :output :if-exists :supersede)
+      (format s "(in-package :sparser)~&~&(defparameter ~s~&  '(~&" namesents)
+      (np (symbol-value namesents) s)
+      (format s "~&))~&"))
+    (load (string-append "~/r3/darpa/12-month TestMaterials/" name "sents.lisp"))
+    (format t "~&~s has ~s sentences" namesents (length (eval namesents)))))
+
+(defun PMC-sent-lists ()
+  (loop for sl in 
+    '(("ACTIV" " activat")
+      ("PHOS" "hosphorylat")
+      ("UBIQ" "biquitinat")
+      ("CREASE" "creas")
+      ("ACETYL" " acetylat")
+      ("INDUCE" " induc")
+      ("BIND" " bind")
+      ("BOUND" " bound")
+      ("COMPLEX" " complex")
+      ("ABLE" " able to")
+      ("TRANSPORT" " transport")
+      ("TRANSLOCATE" " translocat")
+      )
+    do
+    (PMC-sent-list (car sl) (second sl))))
+
+(defun load-PMC-sent-lists ()
+  (loop for sl in 
+    '(("ACTIV" " activat")
+      ("PHOS" "hosphorylat")
+      ("UBIQ" "biquitinat")
+      ("CREASE" "creas")
+      ("ACETYL" " acetylat")
+      ("INDUCE" " induc")
+      ("BIND" " bind")
+      ("BOUND" " bound")
+      ("COMPLEX" " complex")
+      ("ABLE" " able to")
+      ("TRANSPORT" " transport")
+      ("TRANSLOCATE" " translocat")
+      )
+    do
+    (load-PMC-sent-list (car sl) (second sl))))
+
+(defun load-PMC-sent-list (name pattern)
+  (let ((namesents (intern (string-upcase (format nil "~a-sents" name)))))
+    (load (string-append "~/r3/darpa/12-month TestMaterials/" name "sents.lisp"))
+    (format t "~&~s has ~s sentences" namesents (length (eval namesents)))))
+
+(defun run-PMC-sents (n sent-list)
+  (break-in-articles)
+  (loop for i from 1 to n as s in sent-list
+    do
+    (format t "~&~&-------~&~s~&" s)
+    (eval (list 'p s))))
+
+(defun has-RAS2-protein (s)
+  (eval (list 'pp s))
+  (car *all-sentences*))
