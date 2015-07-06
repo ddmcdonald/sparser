@@ -38,7 +38,7 @@ you can continue from a break (c.f. cerror).
 
 (shadow '(#:break) (find-package :sparser)) ;; c.f. the position struct definition.
 
-(defun sparser::break (&optional format-string &rest args)
+(defun sparser::break (&optional (format-string "Call to break") &rest args)
   (apply #'error format-string args))
 
 #| N.b. When we load Sparser we're using this error version of break. |#
