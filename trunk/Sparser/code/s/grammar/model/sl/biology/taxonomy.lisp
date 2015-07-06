@@ -35,6 +35,8 @@
 ;; 5/16/2015 add in all the cellular locations shown in the MITRE ras1 corpus, including their GO identifiers
 ;; 5/30/2015 Rename poorly named "predicate" to "bio-predication" and update dependencies
 ;; 6/8.2015 added cyclic and plasmid definitions
+;; 7/6/2015 New merge-classes post-translational-modification and phosphorylation-modification
+;; make it easier to find processes that are handled the same way wrt MITRE index cards
 
 
 (in-package :sparser)
@@ -208,6 +210,9 @@
          :s agent
          :o object
          :for theme))
+
+(define-category post-translational-modification :specializes bio-process)
+(define-category phosphorylation-modification :specializes post-translational-modification)
 
 (define-category bio-rhetorical :specializes event)
 
