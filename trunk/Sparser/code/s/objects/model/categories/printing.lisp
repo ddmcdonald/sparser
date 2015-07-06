@@ -16,7 +16,7 @@
 ;;; print routines for categories
 ;;;-------------------------------
 
-(defun print-ref-model-structures (c stream depth)
+(defun print-model-category-structures (c stream depth)
   (declare (ignore depth))
   (write-string "#<model-category " stream)
   (write-string (symbol-name (cat-symbol c)) stream)
