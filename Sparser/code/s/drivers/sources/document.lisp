@@ -9,6 +9,8 @@
 ;; article object. Continually modifying/adding routines through
 ;; 5/18/15. 
 ;; 6/8/2015 better rejection of sections that shouldn't be parsed.
+;; 7/6/2015 commented out utility function show-paragraph-sents to help debug sentence
+;; segmentation
 
 (in-package :sparser)
 
@@ -187,6 +189,7 @@
         (setq *paragraph* paragraph)
         (catch 'do-next-paragraph
           (read-from-document paragraph))
+        ;;(show-paragraph-sents paragraph)
         (after-actions paragraph)
         (setq previous-paragraph paragraph)
         (setq paragraph (car remaining)
@@ -198,6 +201,23 @@
       (when *show-section-printouts*
         (format t "~%--------- finished section ~a~%~%" s)))))
 
+#|
+(defparameter *show-paragraph-sents* t)
+
+(defun show-paragraph-sents (p)
+  (when *show-paragraph-sents*
+  (format t "Paragraph sents: ~&")
+  (let
+      ((sent (if (consp (children p))
+                 (if (cdr (children p))
+                     (second (children p))
+                     (car (children p)))
+                 (children p))))
+    (declare (special sent))
+    (print sent)
+    (loop while (setq sent (next sent))
+      do (print sent)))))
+|#
 
 (defmethod read-from-document ((p paragraph))
   ;;/// read thuogh do-document-as-stream-of-files
