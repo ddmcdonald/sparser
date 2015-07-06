@@ -78,6 +78,9 @@
 (define-mixin-category reactome-category
    :binds ((name)(displayname)(reactome-id)))
 
+(define-mixin-category in-ras2-model
+   :binds ((ras2-model)))
+
 ;;;-----------------
 ;;; generalizations
 ;;;-----------------
@@ -135,11 +138,7 @@
   (:noun "ratio"
         :of value))
 
-;; Rusty -- This is a strikingly bad choice of name for this
-;; category. Look before you leap (model/core/kinds/*
-;; Worse is that you have no examples of this being used
-;; in some text so I could figure out your intention and
-;; suggest an alternative. 
+
 
 (delete-adj-cfr (resolve/make "cyclic"))
 (define-category bio-cyclic :specializes bio-predication
@@ -349,7 +348,7 @@
 (define-category peptide
   :specializes molecule
   :instantiates :self
-;;  :rule-label bio-entity
+  ;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "peptide")
   :realization (:common-noun name))
@@ -358,8 +357,9 @@
   :specializes peptide  ;; this is not clearly true
   :instantiates :self
   :bindings (uid "CHEBI:36080")
-  :binds((species species))
-;;  :rule-label bio-entity
+  :binds ((species species))
+  :mixins (  reactome-category  in-ras2-model )
+  ;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
