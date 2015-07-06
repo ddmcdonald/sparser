@@ -1,21 +1,23 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "shortcut-master"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.0 December 2014
+;;;  version:  1.0 July 2015
 
 ;; Initiated 9/14/14 to make more flexible, complete shortcuts.
 ;; 11/11/14 added keyword for obo-id.
 ;; 1.0 (12/13/14) totally made over to simplify everything down
 ;;  to one two routines. 1/5/15 Refactored a bit to handle
 ;;  nouns and adjectives without ETF. 
-;;1/14/2015 Changes to put :subject and :object selectional 
+;; 1/14/2015 Changes to put :subject and :object selectional 
 ;;   restrictions in the subcat frame
 ;;   also, initial subcat for THATCOMP -- not used yet
 ;;   Delete old noun definitions when redefining a noun (but 
 ;;     don't delete old verb definitions)
-;; add new method delete-adj-cfr (like delete-noun-cfr) to handle cases where core definitions conflict with new definitions
+;; Added new method delete-adj-cfr (like delete-noun-cfr) to handle cases
+;;   where core definitions conflict with new definitions
+;; 7/6/15 added find-single-unary-cfr 
 
 (in-package :sparser)
 
@@ -311,28 +313,6 @@
 
     category))
 
-(defun delete-noun-cfr (wd)
-  (let ((noun-cfr (find-form-cfr wd category::common-noun)))
-    (when noun-cfr
-      (delete/cfr noun-cfr))))
-
-(defun find-form-cfr (wd form)
-  (when (rule-set-p (rule-set-for wd))
-    (loop for cfr in (rs-single-term-rewrites (rule-set-for wd))
-      when (eq form (cfr-form cfr))
-      do (return cfr))))
-
-
-(defun delete-adj-cfr (wd)
-  (let ((adj-cfr (find-form-cfr wd category::adjective)))
-    (when adj-cfr
-      (delete/cfr adj-cfr))))
-
-(defun delete-verb-cfr (wd)
-  (let ((verb-cfr (find-form-cfr wd category::verb)))
-    (when verb-cfr
-      (delete/cfr verb-cfr))))
-
 (defun handle-prepositions (category &optional against as at between for from in into
                                      of on onto to thatcomp through via with)
   (when against
@@ -368,6 +348,10 @@
   (when with
     (subcategorize-for-preposition category "with" with)))
 
+
+;;;------------------------------------------------
+;;; Designated interesting variables in a category
+;;;------------------------------------------------
 
 (defun register-variable (category variable grammatical-relation)
   (push-onto-plist category variable grammatical-relation))
@@ -449,5 +433,37 @@ grammar/model/core/time/anaphors1.lisp:;(define-realization calculated-day pre-v
 grammar/model/sl/ISR/draft-lexicon.lisp:(define-realization 
 grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
+;;;---------------------------------------------------------------
+;;; looking for and removing unwanted definitions via their rules
+;;;---------------------------------------------------------------
 
-    
+(defun delete-noun-cfr (wd)
+  (let ((noun-cfr (find-form-cfr wd category::common-noun)))
+    (when noun-cfr
+      (delete/cfr noun-cfr))))
+
+(defun delete-adj-cfr (wd)
+  (let ((adj-cfr (find-form-cfr wd category::adjective)))
+    (when adj-cfr
+      (delete/cfr adj-cfr))))
+
+(defun delete-verb-cfr (wd)
+  (let ((verb-cfr (find-form-cfr wd category::verb)))
+    (when verb-cfr
+      (delete/cfr verb-cfr))))
+
+(defun find-form-cfr (wd form)
+  (when (rule-set-p (rule-set-for wd))
+    (loop for cfr in (rs-single-term-rewrites (rule-set-for wd))
+      when (eq form (cfr-form cfr))
+      do (return cfr))))
+
+(defun find-single-unary-cfr (word)
+  (let ((rs (rule-set-for word)))
+    (when rs
+      (let ((single-rewrites (rs-single-term-rewrites rs)))
+        (when single-rewrites
+          ;;/// check for there being more than one?
+          (car single-rewrites))))))
+
+
