@@ -82,7 +82,7 @@
 
 
 (define-category acetylation
-  :specializes bio-process
+  :specializes post-translational-modification
   :instantiates self
   :binds ((agent biological)
           (substrate (:or protein residue-on-protein))
@@ -99,7 +99,7 @@
    :at site))
 
 (define-category farnesylation 
- :specializes bio-process 
+ :specializes post-translational-modification 
  :binds ((agent biological) ;; what causes it to happen
          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
@@ -115,7 +115,7 @@
      :at site))
 
 (define-category glycosylation 
- :specializes bio-process 
+ :specializes post-translational-modification 
  :binds ((agent biological) ;; what causes it to happen
          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
@@ -131,7 +131,7 @@
      :at site))
 
 (define-category hydoxylation 
- :specializes bio-process 
+ :specializes post-translational-modification 
  :binds ((agent biological) ;; what causes it to happen
          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
@@ -147,7 +147,7 @@
      :at site))
 
 (define-category methylation 
- :specializes bio-process 
+ :specializes post-translational-modification 
  :binds ((agent biological) ;; what causes it to happen
          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
@@ -168,7 +168,7 @@
 ;; "activated IKKα phosphorylates specific serines"
 ;;  "The phosphorylation of these specific serines"
 (define-category phosphorylate
-  :specializes bio-process
+  :specializes phosphorylation-modification
   :instantiates self
   :binds ((agent biological)
           (substrate (:or protein residue-on-protein))
@@ -185,7 +185,7 @@
    :at site))
 
 (define-category auto-phosphorylate
-  :specializes bio-process
+  :specializes phosphorylation-modification
   :binds ((agent bio-entity))
   :realization
   (:verb "auto-phosphorylate" :noun "auto-phosphorylation"
@@ -193,7 +193,7 @@
    :s agent))
 
 (define-category dephosphorylate
-  :specializes bio-process
+  :specializes post-translational-modification
   :binds ((agent biological)(object molecule)) 
   :realization
   (:verb "dephosphorylate" :noun "dephosphorylation"
@@ -204,7 +204,7 @@
 
 
 (define-category transphosphorylate
-  :specializes bio-process
+  :specializes phosphorylation-modification
   :instantiates self
   :binds ((agent biological)
           (substrate (:or protein residue-on-protein))
@@ -222,7 +222,7 @@
 
 
 (define-category ribosylation 
- :specializes bio-process 
+ :specializes post-translational-modification 
  :binds ((agent biological) ;; what causes it to happen
          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
@@ -238,7 +238,7 @@
      :at site))
 
 (define-category sumoylation 
- :specializes bio-process 
+ :specializes post-translational-modification 
  :binds ((agent biological) ;; what causes it to happen
          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
@@ -267,7 +267,7 @@
 ;; not strictly true, but a reasonable approximation. 
 
 (define-category ubiquitinate 
- :specializes bio-process 
+ :specializes post-translational-modification 
  :binds ((agent biological) ;; what causes it to happen
          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
          (site residue-on-protein)) ;; which is attached here
@@ -298,7 +298,7 @@
 
 ;; strictly for the rule-label
 (define-category monoubiquitinate 
- :specializes bio-process )
+ :specializes post-translational-modification )
 
 ;;--- wrapper
 
