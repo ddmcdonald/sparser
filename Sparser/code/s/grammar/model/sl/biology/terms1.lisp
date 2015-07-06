@@ -43,7 +43,7 @@
 (noun "cans" :super abstract)
 (noun "downs" :super abstract)
 (noun "ups" :super abstract)
-(noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
+#-allegro (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
 (noun "MeHg" :super molecule)
 (def-synonym MeHg (:noun "methyl mercury"))
 (noun "colon" :super bio-organ)
@@ -53,7 +53,7 @@
 
 (noun "lactate" :super molecule)
 
-(noun "pcDNA3.1-PPARγ" :super plasmid)
+#-allegro (noun "pcDNA3.1-PPARγ" :super plasmid)
 (noun "pcDNA3.1-Med1" :super plasmid)
 (noun "pCMX-Med1" :super plasmid)
 (noun "pcDNA3.1-PIMT" :super plasmid)
