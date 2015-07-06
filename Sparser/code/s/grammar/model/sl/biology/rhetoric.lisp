@@ -117,6 +117,8 @@ no evidence in the sentence.
 ;;; Determine sentences' roles in the discourse
 ;;;--------------------------------------------
 
+(defparameter *all-discourse-role-sents* nil)
+
 (defparameter *no-discourse-role-sents* nil)
 
 ;;; These functions look at the content of a sentence
@@ -147,15 +149,25 @@ no evidence in the sentence.
   ;; atom of the discourse.
   (let ((contents (contents sentence)))
     (cond ((new-fact? contents)
-	   (setf (discourse-role contents) 'new-fact))
+	   (setf (discourse-role contents) 'new-fact)
+	   (push `('new-fact ,(sentence-string sentence))
+		 *all-discourse-role-sents*))
 	  ((motivation? contents)
-	   (setf (discourse-role contents) 'motivation))
+	   (setf (discourse-role contents) 'motivation)
+	   (push `('motivation ,(sentence-string sentence))
+		 *all-discourse-role-sents*))
 	  ((methodology? contents)
-	   (setf (discourse-role contents) 'methodology))
+	   (setf (discourse-role contents) 'methodology)
+	   (push `('methodology ,(sentence-string sentence))
+		 *all-discourse-role-sents*))
 	  ((conjecture? contents)
-	   (setf (discourse-role contents) 'conjecture))
+	   (setf (discourse-role contents) 'conjecture)
+	   (push `('conjecture ,(sentence-string sentence))
+		 *all-discourse-role-sents*))
 	  ((known-result? contents)
-	   (setf (discourse-role contents) 'known-result))
+	   (setf (discourse-role contents) 'known-result)
+	   (push `('known-result ,(sentence-string sentence))
+		 *all-discourse-role-sents*))
 	  (t
 	   (push
 	    `(,(sentence-string sentence)
@@ -174,14 +186,14 @@ The current possible relations are:
 ;;;TODO experimental-result-of, result-of
 
 (defparameter *collect-discourse-relations* nil)
+
 (defparameter *all-discourse-relations* nil)
 
-;;; What should actually be put in the relation buckets???
 (defmethod note-discourse-relation (sent1 sent2 relation paragraph)
   ;; Add the relation to the appropriate slot in the paragraph
   ;; object.
   (push `(,sent1 ,sent2)
-	(slot-value (contents paragraph) relation))
+	 (slot-value (contents paragraph) relation))
   (when *collect-discourse-relations*
     (push `(,relation
 	   (,(discourse-role (contents sent1)) ,(sentence-string sent1))
@@ -222,27 +234,27 @@ The current possible relations are:
   ;; cond clauses below determine which relation is actually
   ;; established in the paragraph content container.
   (declare (special *previous-sentence*))
-  (let ((paragraph (parent sentence))
-	(prev-sent *previous-sentence*)
+  (let* ((paragraph (parent sentence))
+	(prev-sent (previous sentence))
 	(contents (contents sentence))
-	(prev-cont (contents *previous-sentence*)))
-    (when *previous-sentence*
+	(prev-cont (when prev-sent (contents prev-sent))))
+    (when prev-sent
       (determine-discourse-role sentence)
       (unless (discourse-role prev-cont)
 	(determine-discourse-role prev-sent))
       (cond ((check-for-same-role contents prev-cont)
-	     (note-discourse-relation sentence prev-sent
-				      'same-role paragraph))
-	    ((check-for-evidence-for contents prev-cont)
-	     (note-discourse-relation sentence prev-sent
-				      'evidence-for paragraph))
-	    ;; parameter order is switched here - previous sentence
-	    ;; will generally be background knowledge for current sentence
-	    ((check-for-background-knowledge prev-cont contents)
-	     (note-discourse-relation prev-sent sentence
-				      'background-knowledge paragraph))
-	    (t
-	     t)))))
+	    (note-discourse-relation sentence prev-sent
+				     'same-role paragraph))
+	   ((check-for-evidence-for contents prev-cont)
+	    (note-discourse-relation sentence prev-sent
+				     'evidence-for paragraph))
+	   ;; parameter order is switched here - previous sentence
+	   ;; will generally be background knowledge for current sentence
+	   ((check-for-background-knowledge prev-cont contents)
+	    (note-discourse-relation prev-sent sentence
+				     'background-knowledge paragraph))
+	   (t
+	    t)))))
 	   
 ;;;-------------------------------------------
 ;;; Convenience functions over status objects
@@ -367,6 +379,7 @@ The current possible relations are:
 (new-fact-phrase "these results show")
 (new-fact-phrase "these results suggest")
 (new-fact-phrase "this result shows")
+(new-fact-phrase "this suggests that")
 (new-fact-phrase "this indicates that")
 (new-fact-phrase "this observation suggests")
 (new-fact-phrase "we also show that")
