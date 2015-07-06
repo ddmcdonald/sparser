@@ -606,15 +606,41 @@ the buffer that is fed to find-word and becomes part of the word's pname.
         . :meaningless))
 
 
-;;---- selected characters above 127 and below 256
+;;---- selected characters above 127 and below 256 (extended ASCII)
+
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 128) ;; Euro sign
+      `(:punctuation . ,(punctuation-named (code-char 128))))
+
+
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 145) ;; left single quotation
+      `(:punctuation . ,(punctuation-named #\' )))
+
+
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 146) ;; right single quotation
+      `(:punctuation . ,(punctuation-named #\' )))
+
+
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 147) ;; left double quotation
+      `(:punctuation . ,(punctuation-named #\" )))
+
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 148) ;; right double quotation
+      `(:punctuation . ,(punctuation-named #\" )))
+
+
 
 (setf (elt *character-dispatch-array* 160) ;; #\No-break_Space
-      '(:punctuation
-        . :space))
+  '(:punctuation . :space))
+
 (setf (elt *character-dispatch-array* 169) ;; #\Copyright_Sign
       `(:punctuation . ,(punctuation-named (code-char 169))))
 
-(setf (elt *character-dispatch-array* 171) `(:punctuation . ,(punctuation-named (code-char 171)))) ;;#\Acute_Accent
+(setf (elt *character-dispatch-array* 171) 
+      `(:punctuation . ,(punctuation-named (code-char 171)))) ;;#\Acute_Accent
 
 (setf (elt *character-dispatch-array* 173) ;; #\Soft_Hyphen
       `(:punctuation . ,(punctuation-named #\- )))
@@ -630,6 +656,15 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       '(:punctuation
         . :space)) ;;////////////////////////////////////////
 
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 178) ;; superscript two or 'squared' - just use #\2
+      `(:number . (:digit . ,#\2 )))
+
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 179) ;; superscript two or 'cubed' - just use #\3
+       `(:number . (:digit . ,#\3 )))
+
+
 (setf (elt *character-dispatch-array* 180) ;;#\Acute_Accent
       `(:punctuation . ,(punctuation-named (code-char 180)))) 
 
@@ -639,6 +674,18 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 (setf (elt *character-dispatch-array* 183) ;; #\Middle_Dot
       `(:punctuation . ,(punctuation-named (code-char 183)))) 
+
+
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 184) ;; Spacing cedilla (subscript dot)
+      `(:punctuation . :space))
+
+
+;;; added to cover up bio protein definition problems
+(setf (elt *character-dispatch-array* 185) ;; superscript one - just use #\1
+      `(:number . (:digit . ,#\1 )))
+
+
 
 (setf (elt *character-dispatch-array* 186)  ;;#\Masculine_Ordinal_Indicator
       `(:punctuation . ,(punctuation-named (code-char 186))))
@@ -995,17 +1042,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
   ;; entry-given-char-code for the characters above 256.
   ;; Announce what's happening. Store the character code.
   ;; Return an inoccuous character is its place.
-  (let ((character
-         ;; stumbling on greek chars...in allegro
-         (when *character-buffer-in-use*
-           (elt *character-buffer-in-use* *index-of-next-character*))))
+  (let ((character (code-char char-code)))
     (format t "~&~%The character \"~a\", (code = ~a) is not in the alphabet yet.~
                  ~%Using a space in its place.~%~%"
             character char-code)
     (push (cons character char-code)
           *new-characters-to-define*)
-    '(:punctuation
-        . :space)))
+    '(:punctuation . :space)))
 
 
 
