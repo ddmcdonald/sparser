@@ -19,6 +19,8 @@
 ;; 5/30/2015 Give the MITRE-LINK the right UniProt: prefix,
 ;; add definitions for cadherin, Src, BCR-ABL and "poly(ADP–ribose)"
 ;; 6/28/15 un-ignored p53
+;; 7/6/2015 Support for macro def-ras2-protein to mark proteins that are mentioned in the MITRE RAS 2-hop model
+
 
 (in-package :sparser)
 
@@ -26,15 +28,17 @@
 ;;; pattern-driven definition
 ;;;---------------------------
 
-(defmacro define-protein (name IDS)
-  (make-def-protein (cons name IDS)))
+(defmacro define-protein (name IDS &key ras2-model)
+  (if ras2-model
+      (make-def-protein (cons name IDS) :ras2-model t)
+      (make-def-protein (cons name IDS))))
 
 (defparameter *prot-synonyms* (make-hash-table :test #'equal))
 
 (defun get-protein-synonyms (id)
   (gethash id *prot-synonyms*))
 
-(defun make-def-protein (IDS)
+(defun make-def-protein (IDS &key (ras2-model nil))
   (let
       ((bpid (best-protein-id IDS)))
     `(def-bio ,bpid
@@ -42,7 +46,11 @@
        :synonyms ,(loop for id in IDS unless (or (equal id bpid)(search " " id)) collect id)
        :MITRE-LINK ,(if (search "_" bpid)
                         (format nil "UNIPROT:~A" bpid)
-                        bpid))))
+                        bpid)
+       :ras2-model ,ras2-model)))
+
+(defun in-ras2-model? (entity)
+  (value-of 'ras2-model entity))
 
 (defun best-protein-id (ids)
   (or
@@ -410,17 +418,22 @@ filligre may be used to distinguish them, etc.
 ;; and many more: ERK3 (MAPK6) and ERK4 (MAPK4), etc.
 ;; I don't understand the Wikipedia write up well enough
 
-(def-family "MAPK"
-  :members ("ERK1" "ERK2")
-  :long "mitogen activated protein kinase" 
-  :synonyms ("ERK" "extracellular signal-regulated kinase"
-             "erk"))
 ;;/// one of these needs refinement
-(def-family "ERK"
+;; This duplication is NECESSARY get-protein NEEDS to be able use the initial name 
+;; when it is called from the creatin of pathways
+
+(def-family "MAPK"
   :members ("ERK1" "ERK2")
   :long "mitogen activated protein kinase"
   :synonyms ("ERK" "extracellular signal-regulated kinase"
-             "erk"
+             "erk" "mapk"
+             "mitogen-activated protein kinase"))
+
+(def-family "ERK"
+  :members ("ERK1" "ERK2")
+  :long "mitogen activated protein kinase"
+  :synonyms ("MAPC" "extracellular signal-regulated kinase"
+             "erk" "mapk"
              "mitogen-activated protein kinase"))
 
 (def-bio "ERK1-4" protein) ;; mutated form of ERK
