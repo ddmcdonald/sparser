@@ -253,9 +253,18 @@
   (unless (typep variable 'anonymous-variable)
     ;; These are missing the needed fields. As a rule they should be
     ;; avoided
+
+
     (let ((ht (var-instances variable))
           (*print-short* t))
       (declare (special *print-short*))        
+;;; hack to try to get through loading with allegro - should never be needed elsewhere.
+;;; for some reason the hash table on variables was getting lost during load.
+      #+allegro
+      (unless (typep ht 'hash-table)
+        (setf (var-instances variable) (make-hash-table :test #'equal))
+        (setf ht (var-instances variable)))
+
       (push binding (gethash value ht))
       (when *trace-binding-indexing*
         (if (cdr (gethash value ht))
@@ -342,6 +351,7 @@
     (declare (special *print-short*))
     (if (eq value (caar instances-alist))
       (let ((cell instances-alist))
+;;; IS THIS WRONG? var-instances is supposed to be a hash table!!
         (setf (var-instances variable) (cdr instances-alist))
         (when *trace-binding-indexing*
           (format t "~&   [1st in var's entry] under ~A~
