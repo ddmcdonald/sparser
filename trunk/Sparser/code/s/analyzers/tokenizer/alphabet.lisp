@@ -995,7 +995,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
   ;; entry-given-char-code for the characters above 256.
   ;; Announce what's happening. Store the character code.
   ;; Return an inoccuous character is its place.
-  (let ((character (elt *character-buffer-in-use* *index-of-next-character*)))
+  (let ((character
+         ;; stumbling on greek chars...in allegro
+         (when *character-buffer-in-use*
+           (elt *character-buffer-in-use* *index-of-next-character*))))
     (format t "~&~%The character \"~a\", (code = ~a) is not in the alphabet yet.~
                  ~%Using a space in its place.~%~%"
             character char-code)
