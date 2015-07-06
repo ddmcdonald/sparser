@@ -61,6 +61,8 @@
 (define-punctuation  close-curly-bracket #\} )   ;; 125
 (define-punctuation  tilda               #\~ )   ;; 126
 
+(define-punctuation euro_sign (code-char 128)) ;; 128
+
 (define-punctuation  copyright_sign #\Copyright_Sign) ;; 169
 (define-punctuation  left-pointing-double-angle-quotation_mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
 (define-punctuation  registered_sign #\Registered_Sign) ;; 174
