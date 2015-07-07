@@ -90,15 +90,21 @@
 
 
 (defclass paragraph-content (container aggregated-bio-terms
-                             epistemic-state discourse-relations)
+                             epistemic-state discourse-relations
+                             sentence-tt-counts)
   ()
   (:documentation "Will want a bunch more structure just over
     the enties for the purpose of facilitating anaphora. 
     Story structure might be paragraph based too."))
 
-(defclass section-content (container aggregated-bio-terms) ())
+(defclass section-content (container aggregated-bio-terms
+                           sentence-parse-quality)
+  ())
 
-(defclass article-content (container aggregated-bio-terms) ())
+(defclass article-content (container aggregated-bio-terms
+                           sentence-parse-quality)
+  ())
+
 
   
 ;;;---------------------------------------------------------
