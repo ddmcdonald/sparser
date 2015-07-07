@@ -66,13 +66,13 @@
    to create the sequence of sentence objects under each paragraph,
    and to not do any reading (parsing)."))
 
-(defmethod sweep-document ((doc document-element))
+(defmethod sweep-document ((doc article))
   "Creates additional document objects, including the sentences, 
    but does no analysis at all. Uses read-from-document
    to walk the document -- the same method as used to
    parse it."
   (let ((*sentence-making-sweep* t) ;; sweep that makes the sentences
-        (*sections-to-ignore* nil))
+        (*sections-to-ignore* nil)) ;; e.g. also methods
     (declare (special *sentence-making-sweep* *sections-to-ignore*))
     (when *show-article-progress*
       (format t "~&Sweeping document ~a~%" (name doc)))
@@ -95,7 +95,7 @@
 (defmethod read-epistemic-features ((a article))
   (let ((*scanning-epistemic-features* t)
         (*use-occasional-polywords* t) ;; not the usual sort
-        (*sweep-for-patterns* nil))
+        (*sweep-for-patterns* nil)) ;; don't parse
     (declare (special *scanning-epistemic-features*
                       *use-occasional-polywords*
                       *sweep-for-patterns*))
@@ -118,25 +118,31 @@
   (declare (special *sentence-making-sweep* *sections-to-ignore*))
   (setq *current-article* a) ;; sets up the function (article)
   (when *sentence-making-sweep*
+    ;; makes the section-of-section objects as needed
     (sweep-for-embedded-sections a))
   (install-contents a)
   (when (and *show-article-progress*
              (not *sentence-making-sweep*))
       (format t "read-from-document ~a~&" (name a)))
-  (dolist (sec (children a))
-    (unless (ignore-this-document-section sec)
-      (setq *section* sec)
-      (catch 'do-next-paragraph ;; article 3058384 starts with paragraphs
-        (read-from-document sec))))
+  (let ((count 0))
+    (dolist (sec (children a))
+      (setf (doc-index sec) (incf count))
+      (unless (ignore-this-document-section sec)
+        (setq *section* sec)
+        (catch 'do-next-paragraph ;; article 3058384 starts with paragraphs
+          (read-from-document sec)))))
   (after-actions a)
   a)
 
 (defmethod read-from-document ((ss section-of-sections))
+  "A section-of-sections is a toplevel section such as Results
+   that has section objects as its children"
   (setq *section-of-sections* ss)
   (install-contents ss)
   (let* ((subsections (children ss))
          (title (when (typep (car subsections) 'title-text)
-                   (car subsections))))
+                   (car subsections)))
+         (count (copy-list '(a b c d e f g h i j))))
     (when title
       (setf (title ss) title)
       (setq subsections (cdr subsections)))
@@ -147,6 +153,7 @@
           (remaining (cdr subsections))
           previous-section)
       (declare (special *current-section-title*))
+      (setf (doc-index section) (pop count))
       (loop
         (unless section (return))
         (catch 'do-next-paragraph
@@ -155,6 +162,7 @@
         (setq section (car remaining)
               remaining (cdr remaining))
         (when section
+          (setf (doc-index section) (pop count))
           (setf (previous section) previous-section)
           (setf (next previous-section) section)))
       (after-actions ss)
@@ -175,6 +183,7 @@
                        collect child))
          (paragraph (car paragraphs))
          (remaining (cdr paragraphs))
+         (count 0)
          previous-paragraph )
     (when title 
       (setf (title s) title))
@@ -187,6 +196,7 @@
         (unless paragraph
           (return))
         (setq *paragraph* paragraph)
+        (setf (doc-index paragraph) (incf count))
         (catch 'do-next-paragraph
           (read-from-document paragraph))
         ;;(show-paragraph-sents paragraph)
@@ -201,43 +211,27 @@
       (when *show-section-printouts*
         (format t "~%--------- finished section ~a~%~%" s)))))
 
-#|
-(defparameter *show-paragraph-sents* t)
-
-(defun show-paragraph-sents (p)
-  (when *show-paragraph-sents*
-  (format t "Paragraph sents: ~&")
-  (let
-      ((sent (if (consp (children p))
-                 (if (cdr (children p))
-                     (second (children p))
-                     (car (children p)))
-                 (children p))))
-    (declare (special sent))
-    (print sent)
-    (loop while (setq sent (next sent))
-      do (print sent)))))
-|#
-
 (defmethod read-from-document ((p paragraph))
-  ;;/// read thuogh do-document-as-stream-of-files
-  ;;/// do we need a specialized analyser?
-  ;;    lookup-the-kind-of-chart-processing-to-do
-  ;;/// review per-article-initializations
   (when *show-section-printouts*
     (format t "~&~%--------- starting paragraph ~a~%" p))
   (let ((*reading-populated-document* t)
         (*recognize-sections-within-articles* nil) ;; turn of doc init
-        (*accumulate-content-across-documents* t)) ;; doesn't clear history??
+        (*accumulate-content-acro/Users/ddm/sparser/Sparser/code/s/drivers/sources/document.lispss-documents* t)  ;; don't clear history
+        (*current-paragraph* p)) ;; read by sentence-maker
     (declare (special *reading-populated-document*
                       *recognize-sections-within-articles*
-                      *accumulate-content-across-documents*))
-    (setq *current-paragraph* p)
+                      *accumulate-content-across-documents*
+                      *current-paragraph*))
     (install-contents p)
     (let ((text (content-string p)))
       (initialize-sentences) ;; set up or reuse the 1st sentence
       ;; lifted from analyze-text-from-string 
       (establish-character-source/string text)
+      ;; Once all the sentences in the paragraph have been
+      ;; handled control is passed by a throw to the tag
+      ;; 'do-next-paragraph. The usual point is in the section
+      ;; reader but it could also be the section-of-sections reader
+      ;; in some odd cases.
       (analysis-core))))
 
 
@@ -354,6 +348,24 @@
           
   
 
+#|
+(defparameter *show-paragraph-sents* t)
+
+(defun show-paragraph-sents (p)
+  (when *show-paragraph-sents*
+  (format t "Paragraph sents: ~&")
+  (let
+      ((sent (if (consp (children p))
+                 (if (cdr (children p))
+                     (second (children p))
+                     (car (children p)))
+                 (children p))))
+    (declare (special sent))
+    (print sent)
+    (loop while (setq sent (next sent))
+      do (print sent)))))
+|#
+
 
 
 ;;;-------------------------------------------------
@@ -382,25 +394,28 @@
         ;(push-debug `(,section))
         ;(error "title of section hasn't been set"))
         (let ((title-object (title section)))
-          (unless title-object
-            (push-debug `(,section))
-            (error "Section somehow doesn't have a title object"))
-          (let ((title-string 
-                 (string-downcase
-                  (typecase title-object
-                    (string title-object)
-                    (string-holder (content-string title-object))
-                    (otherwise
-                     (push-debug `(,title-object))
-                     (error "Unexpected type of title: ~a~%~a"
-                            (type-of title-object) title-object))))))
-            ;;(format t "~&---- Section title: ~S~&" title-string)
-            (dolist (ignore-substring *sections-to-ignore* nil)
-              (when (search ignore-substring title-string
-                            :test #'equalp)
-                (when *show-section-printouts*
-                  (format t "~&~%------- Ignoring section ~a --------" section))
-                (return t)))))))))
+          (when nil
+            ;; teething problem with abstract
+            (unless title-object
+              (push-debug `(,section))
+              (error "Section somehow doesn't have a title object")))
+          (when title-object
+            (let ((title-string 
+                   (string-downcase
+                    (typecase title-object
+                      (string title-object)
+                      (string-holder (content-string title-object))
+                      (otherwise
+                       (push-debug `(,title-object))
+                       (error "Unexpected type of title: ~a~%~a"
+                              (type-of title-object) title-object))))))
+              ;;(format t "~&---- Section title: ~S~&" title-string)
+              (dolist (ignore-substring *sections-to-ignore* nil)
+                (when (search ignore-substring title-string
+                              :test #'equalp)
+                  (when *show-section-printouts*
+                    (format t "~&~%------- Ignoring section ~a --------" section))
+                  (return t))))))))))
 
 
 ;;;--------------------------------
