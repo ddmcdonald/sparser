@@ -40,7 +40,7 @@
 (defun load-bio-corpora ()
   (cl-user::s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (cl-user::s-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (cl-user::s-load "grammar/model/sl/biology/cureRAS/erk-translocation.lisp")
+  (cl-user::s-load "grammar/model/sl/biology/cureRAS/ERK-translocation.lisp")
   (cl-user::s-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
   (cl-user::s-load "interface/R3-eval/overnight-sents.lisp")
   (cl-user::s-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
