@@ -12,6 +12,12 @@
 ;; still need to deal with implied superc and subc links
 ;; First test on compare-to-snapshots d=generated many more elements in the lattice than I would have expected
 ;; set *no-description-lattice* to have this called when parsing
+;; 7/7/2015 Maintain the indiv-restrictions field, which contains a list of all the immediate superior referential categories 
+;; (1 in most cases, but can be more than on for a join) and all of the dli-vv’s which have been produced
+;; by the set of bind-variable operations that defined this individual.
+;; added predicate more-specific? which tests relative position (subsumption) in the description lattice
+
+
 
 (in-package :sparser)
 
@@ -84,7 +90,7 @@
 (defparameter *dl-lattice-top* nil)
 
 
-(defun place-referent-in-lattice (referent edge)
+(defun place-referent-in-lattice (referent edge) ;; THIS IS NOW A NO-OP IN THE DESCRIPTION LATTICE CASE
   (declare (special referent edge))
   #+ignore
   (if (and referent *description-lattice* (not (word-p referent)))
@@ -127,17 +133,18 @@
   (make-category-indexed-individual category))
 
 (defun make-dli-for-join (category-list)
-  (let ((i (make-category-indexed-individual (car category-list))))
+  (let ((new-dli (make-category-indexed-individual (car category-list))))
+    (setf (indiv-restrictions new-dli) (append category-list nil)) ;; copy the list in case it is in use elsewhere
     (loop for c in (cdr category-list)
        do (pushnew c (indiv-type i) ))
     i))
-
 
 (defun find-or-make-lattice-description-for-ref-category (base)
   (or (get-dli base)
       (let ((new-dli (make-dli-for-ref-category base)))
         (loop for c in (immediate-supers base)
           do (add-downlink (find-or-make-lattice-description-for-ref-category c) new-dli))
+        (setf (indiv-restrictions new-dli) (list base))
 	(set-dli base new-dli))))
 
 
@@ -213,6 +220,7 @@
   (let* ((parent (if (referential-category-p oparent)
 		   (find-or-make-lattice-description-for-ref-category oparent)
 		   oparent))
+         (parent-restrictions (indiv-modifiers parent))
          (var (find-var-from-var/name var/name category))
          (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
          (downlinks (indiv-downlinks parent)))
@@ -222,16 +230,21 @@
       ;;(lsp-break "fom-lattice-subordinate")
       (let ((result
              (or (gethash dl-vv downlinks) ;; already there in the hierarchy
-                 (let ((new-child (maybe-copy-individual parent)))
+                 (let 
+                     ((new-child (maybe-copy-individual parent)))
                    (setq new-child (old-bind-variable var value new-child))
                    (setf (gethash dl-vv downlinks) new-child)
                    (setf (gethash dl-vv (indiv-uplinks new-child)) parent)
                    (link-to-other-parents new-child parent dl-vv)
                    (link-to-existing-children new-child parent dl-vv)
+                   (setf (indiv-restrictions new-child) (cons dl-vv parent-restrictions))
                    new-child))))
         (values
          result
          (get-binding-of var result value))))))
+
+(defun more-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
+  (subsetp (indiv-restrictions sub-dli) (indiv-restrictions super-dli)))
 
 (defun find-var-from-var/name (var/name category)
   (declare (special parent))
