@@ -85,12 +85,11 @@
 
           (setq value (decode-value-for-variable value-exp variable))))
 
-      (if plist?
+      (if plist? ;; were the bindings supplied as a plist
         (then
           (push variable instructions)
           (push value instructions))
         (push `(,variable ,value) instructions)))
-
     (nreverse instructions)))
 
 
