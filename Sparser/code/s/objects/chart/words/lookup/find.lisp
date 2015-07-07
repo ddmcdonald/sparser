@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "find"
 ;;;   Module:  "objects;words:lookup"
-;;;  Version:  January 1992
+;;;  Version:  July 2015
 
-;; initiated 1/16/92
+;; initiated 1/16/92. 7/6/15 Commented out the complaint
+;; just to make the load quieter. Needs researc.
 
 (in-package :sparser)
 
@@ -19,7 +20,7 @@
     (if symbol
       (if (boundp symbol)
         (symbol-value symbol)
-        (else (format t "~%There is a word symbol, ~S,~
+        (else #+ignore(format t "~%There is a word symbol, ~S,~
                          ~%   but it isn't bound to a word object~%"
                       string)
               nil))
