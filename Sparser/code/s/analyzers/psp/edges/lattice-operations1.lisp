@@ -26,12 +26,16 @@
 (defvar category::top)
 (defvar category::collection)
 
+
+;;;-----
+;;; V+V
+;;;-----
+
 ;; NOTE -- dl-variable_value are UNIQUELY DEETERMINED by the variable and value
 (defstruct (dl-variable+value
             (:include unit)
             (:conc-name #:dlvv-)
-            (:print-function print-dl-variable+value-structure)
-            )
+            (:print-function print-dl-variable+value-structure))
   variable
   value)
 
@@ -42,8 +46,7 @@
       (setf (gethash variable *dl-vv-from-variable*) (make-hash-table :size 100 :test #'equal))))
 
 (defun find-or-make-dlvv-from-var-val (variable value)
-  (let
-      ((vht (find-or-make-dlvv-ht-from-variable variable)))
+  (let ((vht (find-or-make-dlvv-ht-from-variable variable)))
     (or (gethash value vht)
         (setf (gethash value vht) 
               (make-dl-variable+value 
@@ -61,6 +64,9 @@
                 (dlvv-variable dl-vv)
                 (string-downcase (symbol-name (var-name (dlvv-variable dl-vv)))))
             (dlvv-value dl-vv))))
+
+
+
 
 (defparameter *lattice-ht* (make-hash-table :size 10000 :test #'equal)
   "This is the initial way that edge-referent's are linked to the structures that are in the lattice.
@@ -88,13 +94,14 @@
   )
 
 (defun fom-lattice-description (base)
+  ;; Called with the category of the to-be-make individual
+  ;; from make-simple-individual and from make-individual-for-dm&p
   (cond
    ((get-dli base))
    ((referential-category-p base)
     (find-or-make-lattice-description-for-ref-category base))
    ((individual-p base)
-    (if
-     (indiv-binds base)
+    (if (indiv-binds base)
      (find-or-make-lattice-description-for-individual base)
      (find-or-make-lattice-description-for-cat-list (indiv-type base))))
    ((consp base) ;; a join of categories
@@ -104,12 +111,12 @@
 (defun find-or-make-lattice-description-for-individual (base)
   (or
    (get-dli base)
-   (if
-    (memq category::collection (indiv-type base)) ;; likely a conjunction
+   (if (memq category::collection (indiv-type base)) ;; likely a conjunction
     (find-or-make-lattice-description-for-collection base) ;; not quite right -- ehat to do here?
     (let* ((current-dli (find-or-make-lattice-description-for-cat-list (indiv-type base))))
-      ;; bindings = NIL can happen for VGs -- possibly because of the creation of an individual for the referent-category
-      ;;  in the interpretation process
+      ;; bindings = NIL can happen for VGs -- possibly because of the
+      ;; creation of an individual for the referent-category in the
+      ;; interpretation process
       (loop for b in (filter-bindings (indiv-binds base)) 
         do 
         (setq current-dli 
@@ -120,8 +127,7 @@
   (make-category-indexed-individual category))
 
 (defun make-dli-for-join (category-list)
-  (let
-      ((i (make-category-indexed-individual (car category-list))))
+  (let ((i (make-category-indexed-individual (car category-list))))
     (loop for c in (cdr category-list)
        do (pushnew c (indiv-type i) ))
     i))
@@ -149,20 +155,20 @@
                  
 (defun find-or-make-lattice-description-for-cat-list (cat-list)
   (if (null (cdr cat-list))
-      (find-or-make-lattice-description-for-ref-category (car cat-list))
-      (or (get-dli cat-list)
-	  (set-dli cat-list (make-dli-for-join cat-list)))))
+   (find-or-make-lattice-description-for-ref-category (car cat-list))
+   (or (get-dli cat-list)
+       (set-dli cat-list (make-dli-for-join cat-list)))))
 
 (defun shared-supercs (c1 c2)
   (if (consp c2)
-      (intersection (immediate-supers c1)(shared-supercs (car c2) (cdr c2)))
-      (immediate-supers c1)))
+    (intersection (immediate-supers c1) 
+                  (shared-supercs (car c2) (cdr c2)))
+    (immediate-supers c1)))
 
 (defun find-or-make-lattice-description-for-collection (indiv-collection)
   (or
    (get-dli indiv-collection)
-   (let
-       ((new-dli (make-individual :id (incf *dl-lattice-index*) :type (indiv-type indiv-collection))))
+   (let ((new-dli (make-individual :id (incf *dl-lattice-index*) :type (indiv-type indiv-collection))))
      (add-uplink new-dli (find-or-make-lattice-description-for-cat-list (indiv-type indiv-collection)))
      (loop for member in (value-of 'members indiv-collection)
        do
@@ -179,58 +185,56 @@
   bindings)
 
 (defun immediate-supers (c)
-  (let*
-      ((lp (cat-lattice-position c)) ; 
-       (mixins (cat-mix-ins c)))
-    (if (and
-         (lattice-point-p lp)
-         (lp-super-category lp))
-        (cons (lp-super-category lp) mixins)
-        mixins)))
+  (let* ((lp (cat-lattice-position c)) ; 
+         (mixins (cat-mix-ins c)))
+    (if (and (lattice-point-p lp)
+             (lp-super-category lp))
+      (cons (lp-super-category lp) mixins)
+      mixins)))
 
 (defun find-lattice-subordinate (oparent var/name value)
+  ;; called from find-by-apply-bindings
   (declare (special oparent var/name binding))
-  (let*
-      ((parent (if (referential-category-p oparent)
+  (let* ((parent (if (referential-category-p oparent)
 		   (find-or-make-lattice-description-for-ref-category oparent)
 		   oparent))
-       (var (find-var-from-var/name var/name nil))
-       (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
-       (downlinks (indiv-downlinks parent)))
+         (var (find-var-from-var/name var/name nil))
+         (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
+         (downlinks (indiv-downlinks parent)))
     (declare (special parent var dl-vv downlinks))
     ;;(lsp-break "fom-lattice-subordinate")
     (when dl-vv
       (gethash dl-vv downlinks))))
 
 (defun find-or-make-lattice-subordinate (oparent var/name value &optional category)
+  ;; Called from bind-dli-variable and returns the new individual and 
+  ;; the new finding
   (declare (special oparent var/name binding))
-  (let*
-      ((parent (if (referential-category-p oparent)
+  (let* ((parent (if (referential-category-p oparent)
 		   (find-or-make-lattice-description-for-ref-category oparent)
 		   oparent))
-       (var (find-var-from-var/name var/name category))
-       (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
-       (downlinks (indiv-downlinks parent)))
+         (var (find-var-from-var/name var/name category))
+         (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
+         (downlinks (indiv-downlinks parent)))
     (declare (special parent var dl-vv downlinks))
     (if (null var)
-        (return-from find-or-make-lattice-subordinate (values parent nil))
-        ;;(lsp-break "fom-lattice-subordinate")
-        (let ((result
-               (or
-                (gethash dl-vv downlinks) ;; already there in the hierarchy
-                (let
-                    ((new-child (maybe-copy-individual parent)))
-                  (setq new-child (old-bind-variable var value new-child))
-                  (setf (gethash dl-vv downlinks) new-child)
-                  (setf (gethash dl-vv (indiv-uplinks new-child)) parent)
-                  (link-to-other-parents new-child parent dl-vv)
-                  (link-to-existing-children new-child parent dl-vv)
-                  new-child))))
-          (values
-           result
-           (get-binding-of var result value))))))
+      (return-from find-or-make-lattice-subordinate (values parent nil))
+      ;;(lsp-break "fom-lattice-subordinate")
+      (let ((result
+             (or (gethash dl-vv downlinks) ;; already there in the hierarchy
+                 (let ((new-child (maybe-copy-individual parent)))
+                   (setq new-child (old-bind-variable var value new-child))
+                   (setf (gethash dl-vv downlinks) new-child)
+                   (setf (gethash dl-vv (indiv-uplinks new-child)) parent)
+                   (link-to-other-parents new-child parent dl-vv)
+                   (link-to-existing-children new-child parent dl-vv)
+                   new-child))))
+        (values
+         result
+         (get-binding-of var result value))))))
 
 (defun find-var-from-var/name (var/name category)
+  (declare (special parent))
   (cond
    ((typep var/name 'lambda-variable) var/name)
    ((typep var/name 'anonymous-variable) 
@@ -238,18 +242,17 @@
      ((null (find-variable-for-category 
              (avar-name var/name)
              (if (individual-p parent)
-                 (itype-of parent)
-                 parent)))
-      (format t "~&~&!! Can't dereference anonymous variable ~a against category ~a.~
+               (itype-of parent)
+               parent)))
+      #+ignore(format t "~&~&!! Can't dereference anonymous variable ~a against category ~a.~
          ~%Can't do binding. Leaving object unchanged.~%" var/name parent)
       nil)
      (t
       (dereference-variable var/name parent))))
    ((symbolp var/name)
-    (or
-     (find-variable-from-individual var/name parent)
-     (when category
-       (find-variable-for-category var/name category))))
+    (or (find-variable-from-individual var/name parent)
+        (when category
+          (find-variable-for-category var/name category))))
    (t (break "var/name ~s can't be mapped to a variable in ~s"
              var/name parent))))
 
@@ -271,15 +274,11 @@
   nil)
 
 (defun same-category? (daughter-ref ref)
-  (or
-   (and
-    (category-p daughter-ref)
-    (itypep ref daughter-ref)))
-  (or
-   (and
-    (individual-p daughter-ref)
-    (equal (indiv-type daughter-ref)
-           (indiv-type ref)))))
+  (or (and (category-p daughter-ref)
+           (itypep ref daughter-ref)))
+  (or (and (individual-p daughter-ref)
+           (equal (indiv-type daughter-ref)
+                  (indiv-type ref)))))
 
 (defparameter *dlis* nil)
 (defparameter *bmax* 0)
@@ -294,8 +293,10 @@
   (setq *maxb* nil)
   (loop for d in *dlis*
     do
-    (when (> (length (indiv-binds d)) *bmax*) (setq *bmax* (length (indiv-binds d)))(setq *maxb* d))
-    (push d (gethash (length (gethash d *source-ht*)) *ref-counts*)))) ; 
+    (when (> (length (indiv-binds d)) *bmax*) 
+      (setq *bmax* (length (indiv-binds d)))
+      (setq *maxb* d))
+    (push d (gethash (length (gethash d *source-ht*)) *ref-counts*))))
 
 
 
