@@ -220,7 +220,7 @@
   (let* ((parent (if (referential-category-p oparent)
 		   (find-or-make-lattice-description-for-ref-category oparent)
 		   oparent))
-         (parent-restrictions (indiv-modifiers parent))
+         (parent-restrictions (indiv-restrictions parent))
          (var (find-var-from-var/name var/name category))
          (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
          (downlinks (indiv-downlinks parent)))
