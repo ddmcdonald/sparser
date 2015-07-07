@@ -195,8 +195,7 @@
   ;;   The binding instructions are a list of variable - value pairs.
   (when force-new?
     (break "Call to make/individual with force-new? set -- document why"))
-  (or (make-trivial-saturated-individual category binding-instructions)
-      (make/psi category binding-instructions force-new?)))
+  (make-trivial-saturated-individual category binding-instructions))
 
 
 ;;;--------------
@@ -288,28 +287,21 @@
 
 
 ;;--- Constructor 
-;;   n.b. this is the original make/individual, so care must be taken
-;;   not to feed it things as complicated as it originally took 
-;;   (e.g. 'appoint') since those should now be handled by psi.
 
 (defun make-simple-individual (category binding-instructions)
   (declare (special *index-under-permanent-instances*))
   ;;(break "permanent = ~a" *index-under-permanent-instances*)
-  (let ((individual (cond
-                     (*description-lattice* (fom-lattice-description category))
-                     (*index-under-permanent-instances* (make-a-permanent-individual))
-                     (t (allocate-individual)))))
-    ;(push-debug `(,individual ,binding-instructions))
-    ;(break "make simple ~a" category)
+  (let ((individual 
+         (cond
+          (*description-lattice* (fom-lattice-description category))
+          (*index-under-permanent-instances* (make-a-permanent-individual))
+          (t (allocate-individual)))))
     (unless *description-lattice*
       (setf (indiv-type individual) (list category))
       (setf (indiv-id   individual) (next-id category)))
     (multiple-value-bind (bindings new-indiv)
                          (apply-bindings individual binding-instructions)
       (setq individual new-indiv)
-      ;(push-debug `(,new-indiv)) 
-      ;(break "after making ~a~%  ~a" category new-indiv)
-      ;;(push-debug `(,individual ,category ,bindings))
       (index/individual individual category bindings)
       (create-shadow individual)
       individual )))
@@ -377,8 +369,7 @@
 (defun make-individual-for-dm&p (category)
   ;; This is a placeholder so when the decision about what to
   ;; really do make we only have to change this one place
-  (if
-   *description-lattice*
+  (if *description-lattice*
    (fom-lattice-description category)
    (let ((i (make-unindexed-individual category)))
      (bind-category-of-instance i category)
