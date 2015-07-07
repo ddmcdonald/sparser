@@ -29,45 +29,36 @@
 
 (defun run-token-fsa ()
   ;; we're starting a new token.
-  (let (entry 
-        char-type 
-        (*char*
+  (let (entry  char-type 
+        (char
          (unless *pending-entry*
            (elt *character-buffer-in-use*
                 (incf *index-of-next-character*)))))
-    (declare (special entry *char*))
     (if *pending-entry*
-        (then (setq entry *pending-entry*
-                    *pending-entry* nil))
-        (setq entry
-              (character-entry *char*)))
+      (then (setq entry *pending-entry*
+                  *pending-entry* nil))
+      (setq entry
+            (character-entry char)))
     
     (if entry
-        (if (eq :punctuation 
-                (setq char-type (car entry)))
+      (if (eq :punctuation 
+              (setq char-type (car entry)))
             
-            (do-punctuation (cdr entry))
+        (do-punctuation (cdr entry))
             
-            ;; it's now likely to be more than one character long, so set up
-            ;; pointers to keep track of it
-            (else
-              (setq *category-of-accumulating-token*  (car entry))
-              (when (consp (cdr (cdr entry)))
-                (break "bad entry"))
-              (continue-token (kcons (cdr entry)
-                                     nil)
-                              1
-                              char-type)))
+        ;; it's now likely to be more than one character long, so set up
+        ;; pointers to keep track of it
+        (else
+          (setq *category-of-accumulating-token*  (car entry))
+          (when (consp (cdr (cdr entry)))
+            (break "bad character entry: ~a" entry))
+          (continue-token (kcons (cdr entry)
+                                 nil)
+                          1
+                          char-type)))
         
-        (announce-out-of-range-character))))
+      (announce-out-of-range-character))))
 
-(defun cur-char ()
-  (elt *character-buffer-in-use* *index-of-next-character*))
-
-(defun cur-string ()
-  (subseq *character-buffer-in-use* 
-          (- *index-of-next-character* 40) 
-          (+ *index-of-next-character* 20)))
 
 (defun continue-token (accumulated-entries length char-type)
   (declare (special accumulated-entries))
@@ -145,3 +136,12 @@
             (cleanup-call-to-caps-fsa capitalization-state length))
       (setq *length-of-the-token* length)
       (find-word char-type))))
+
+
+(defun cur-char ()
+  (elt *character-buffer-in-use* *index-of-next-character*))
+
+(defun cur-string ()
+  (subseq *character-buffer-in-use* 
+          (- *index-of-next-character* 40) 
+          (+ *index-of-next-character* 20)))
