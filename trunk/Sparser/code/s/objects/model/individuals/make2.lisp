@@ -99,33 +99,29 @@
 
   ;; intended as the standard way to create a permanent individual
   ;; from toplevel or from code that doesn't have ready access
-  ;; to category and variable objects.  Does the same thing for psi
-  ;; if that's the starting point
-  
-  (if (typep symbol/psi 'psi)
-    ;;(find-or-make-extended-psi symbol/psi var-name+value-pairs)
-    (break "define-individual -- starting with a psi -- stub")
-    (let* ((symbol symbol/psi)
-           (category (etypecase symbol
-                       (symbol (resolve-symbol-to-category/check symbol))
-                       (referential-category symbol)))
-           (binding-instructions
-            (decode-category-specific-binding-instr-exps
-             category
-             var-name+value-pairs)))
+  ;; to category and variable objects.   
 
-      (let ((*index-under-permanent-instances* ;;t
-             (or *index-under-permanent-instances* ;; for recursive calls
-                 (individuals-of-this-category-are-permanent category))))
-        (declare (special *index-under-permanent-instances*))
-        (let ((individual
-               (find-or-make/individual category binding-instructions)))
+  (let* ((symbol symbol/psi)
+         (category (etypecase symbol
+                     (symbol (resolve-symbol-to-category/check symbol))
+                     (referential-category symbol)))
+         (binding-instructions
+          (decode-category-specific-binding-instr-exps
+           category
+           var-name+value-pairs)))
 
-          (if *c3*
-            (apply-distributed-realization-data individual)
-            (apply-single-category-rdata individual category))
+    (let ((*index-under-permanent-instances* ;;t
+           (or *index-under-permanent-instances* ;; for recursive calls
+               (individuals-of-this-category-are-permanent category))))
+      (declare (special *index-under-permanent-instances*))
+      (let ((individual
+             (find-or-make/individual category binding-instructions)))
 
-          individual)))))
+        (if *c3*
+          (apply-distributed-realization-data individual)
+          (apply-single-category-rdata individual category))
+
+        individual))))
 
 
 (defun make-an-individual (symbol 
@@ -303,12 +299,16 @@
                      (*description-lattice* (fom-lattice-description category))
                      (*index-under-permanent-instances* (make-a-permanent-individual))
                      (t (allocate-individual)))))
+    ;(push-debug `(,individual ,binding-instructions))
+    ;(break "make simple ~a" category)
     (unless *description-lattice*
       (setf (indiv-type individual) (list category))
       (setf (indiv-id   individual) (next-id category)))
     (multiple-value-bind (bindings new-indiv)
                          (apply-bindings individual binding-instructions)
       (setq individual new-indiv)
+      ;(push-debug `(,new-indiv)) 
+      ;(break "after making ~a~%  ~a" category new-indiv)
       ;;(push-debug `(,individual ,category ,bindings))
       (index/individual individual category bindings)
       (create-shadow individual)
