@@ -299,7 +299,8 @@
                          (identify-relations sentence)
       (set-entities sentence entities)
       (set-relations sentence relations)
-      (set-tt-count sentence tt-count)))
+      ;;(set-tt-count sentence tt-count)
+      ))
 
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))
