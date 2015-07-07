@@ -244,7 +244,7 @@
          (get-binding-of var result value))))))
 
 (defun more-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
-  (subsetp (indiv-restrictions sub-dli) (indiv-restrictions super-dli)))
+  (subsetp  (indiv-restrictions super-dli) (indiv-restrictions sub-dli)))
 
 (defun find-var-from-var/name (var/name category)
   (declare (special parent))
