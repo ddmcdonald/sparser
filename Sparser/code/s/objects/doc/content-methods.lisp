@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  June 2015
+;;;  Version:  July 2015
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -15,14 +15,31 @@
 (in-package :sparser)
 
 
+(defclass sentence-parse-quality ()
+  ((great :initform 0 :accessor parses-with-one-edge
+    :documentation "Number of sentences in the doc element
+      that were spanned by one edge.")
+   (medium :initform 0 :accessor medium-quality-parses
+    :documentation "Number of sentences in the doc element
+      that were spanned by 2 to 5 edges.")
+   (horrible :initform 0 :accessor horrible-parses
+    :documentation "Number of sentences in the doc element
+      that were spanned by more than 5 edges."))
+  (:documentation "Compute measures of how well we are doing
+    in reading. At the sentence level and aggregated at
+    higher levels of document structure."))
+
+
 (defclass aggregated-bio-terms ()
-  ((proteins :initform nil)
-   (residues :initform nil)
-   (bio-processes :initform nil)
-   (other :initform nil))
+  ((proteins :initform nil :accessor aggregated-proteins)
+   (residues :initform nil :accessor aggregated-residues)
+   (bio-processes :initform nil :accessor aggregated-processes)
+   (other :initform nil :accessor aggregated-other))
   (:documentation "Collects the entities and relations of
      the document layer below them summarizes them as
      tables of individuals and their count."))
+
+
 
 
 ;;;---------------------------------------------------
@@ -39,42 +56,40 @@
   (:documentation "Carry out the actions to be taken when all of
      the children of a given document element have been read."))
 
-(defmethod after-actions ((element has-content-model))
-  "Call a method that has both the element and its contents"
+(defmethod after-actions ((p paragraph))
   (when *apply-document-after-actions*
-    (after-actions-on-content element (contents element))))
+    (aggregate-bio-terms p)
+    (assess-sentence-analysis-quality p)))
 
-
-(defgeneric after-actions-on-content (document-element content-model)
-  (:documentation "Carry out the actions on the document element
-    and its content that are approriate to the type of the content model."))
-
-(defmethod after-actions-on-content ((e document-element) (c aggregated-bio-terms))
+(defmethod after-actions ((s section))
   (when *apply-document-after-actions*
-    (push-debug `(,e ,c))
-    (break "after action stub on ~a" e)
-    (summarize-bio-terms e c)))
+    (do-section-level-after-actions s)))
 
-
-(defmethod after-actions-on-content ((p paragraph) (c aggregated-bio-terms))
+(defmethod after-actions ((ss section-of-sections))
   (when *apply-document-after-actions*
-    (aggregate-bio-terms p)))
+    (do-section-level-after-actions ss)))
+
+(defmethod do-section-level-after-actions ((s has-content-model))
+  (summarize-parse-performance s))
+
+
+
 
 
 ;;;------------------------------------
 ;;; aggregating entities and relations
 ;;;------------------------------------
 
-(defmethod summarize-bio-terms ((e document-element) (c aggregated-bio-terms))
+(defmethod summarize-bio-terms ((e document-element))
   ;; The sentence's contents have aggregated into instances of
   ;; aggregated-bio-terms on their paragraphs. At levels above the
   ;; paragraph we just lump all of that content together without
   ;; doing anything more interesting (for now).
-  (push-debug `(,e ,c))
-  (break "summarize-bio-terms"))
+  e)
   
 
 ;;--- sentences => paragraph contents
+
 
 (defmethod aggregate-bio-terms ((p paragraph))
   "Collect the raw lists of entities and relations from 
@@ -89,6 +104,24 @@
 (defun aggregate-sentence-bio-terms (s p)
   (aggregate-terms p (get-entities s))
   (aggregate-terms p (get-relations s)))
+
+(defun aggregate-terms (paragraph terms)
+  (when terms
+    (let ((c (contents paragraph)))
+      (dolist (term terms)
+        (let ((slot (aggregation-target term)))
+          (when slot
+          (let ((bucket (slot-value c slot)))
+            (cond
+             ((null bucket)
+              (let* ((entry `(,term . 1))
+                     (bucket `( ,entry  )))
+                (setf (slot-value c slot) bucket)))
+             (t
+              (let ((entry (when bucket (get-from-bucket term bucket))))
+                (if entry
+                  (incf-bucket-entry entry)
+                  (make-bucket-entry term bucket slot c))))))))))))
 
 (defun aggregation-target (i)
   ;; Return the name of the slot that this individual 
@@ -110,25 +143,6 @@
      (error "Unexpected type of thing passed to aggregatoin-target: ~
              ~a~%  ~a" (type-of i) i))))
 
-
-(defun aggregate-terms (paragraph terms)
-  (when terms
-    (let ((c (contents paragraph)))
-      (dolist (term terms)
-        (let ((slot (aggregation-target term)))
-          (when slot
-          (let ((bucket (slot-value c slot)))
-            (cond
-             ((null bucket)
-              (let* ((entry `(,term . 1))
-                     (bucket `( ,entry  )))
-                (setf (slot-value c slot) bucket)))
-             (t
-              (let ((entry (when bucket (get-from-bucket term bucket))))
-                (if entry
-                  (incf-bucket-entry entry)
-                  (make-bucket-entry term bucket slot c))))))))))))
-
 (defun get-from-bucket (term bucket)
   (assq term bucket))
 
@@ -141,7 +155,46 @@
          (new-bucket-value (cons entry bucket)))
     (setf (slot-value contents-instance slot-name)
           new-bucket-value)))
+
+;;;--------------------------------
+;;; how well is our analysis doing
+;;;--------------------------------
+
+(defclass sentence-tt-counts ()
+  ((count-list :initform 0 :accessor sentence-tt-count
+    :documentation "The counts for each sentence in 
+      a paragraph")))
    
+(defmethod assess-sentence-analysis-quality ((p paragraph))
+  (let* ((sentences (sentences-in-paragraph p))
+         (content (contents p))
+         (tt-list (loop for s in sentences
+                    collect (get-tt-count s))))
+    (setf (sentence-tt-count content) tt-list)))
+    
+
+(defun grade-sentence-tt-counts (paragraph quality)
+  (let ((count-list (contents paragraph)))
+    (loop for count in count-list
+      when (= 1 count) do (incf (parses-with-one-edge quality))
+      when (and (> count t) (<= count 5))
+           do (incf (medium-quality-parses quality))
+      when (> count 5) do (incf (horrible-parses quality)))))
+
+(defmethod summarize-parse-performance ((e document-element))
+  (let ((content (contents e))
+        (children (children e)))
+    (when (typep content 'sentence-parse-quality)
+      (dolist (child children)
+        (typecase child
+          (paragraph
+           (grade-sentence-tt-counts child content))
+          ((or section section-of-sections article)
+           (break "foo")))))))
+
+
+          
+      
 
 
 ;;;----------------------------------------------
@@ -159,7 +212,7 @@
   (some #'(lambda (c) (typep c 'section))
         (children s)))
 
-(defmethod nth-section ((n integer) (a has-children))
+(defmethod nth-child ((n integer) (a has-children))
   ;; Argument is 1-based, so needs conversion to
   ;; zero-based
   (nth (1- n) (children a))) ;; what else could it be?
@@ -203,20 +256,27 @@
 
 (defclass entities-and-relations ()
   ((entities :initform nil :accessor entities-in-sentence)
-   (relations :initform nil :accessor relations-in-sentence))
+   (relations :initform nil :accessor relations-in-sentence)
+   (treetop-count :initform 0 :accessor treetops-in-sentence))
   (:documentation "Copies the output of identify-relations
      from the post-analysis-operations function. Note that
-     this is dependent on the *readout-relations* flag."))
+     this is dependent on the *readout-relations* flag.
+     Treetop count is simple by-product of the e/r calculation."))
 
 (defmethod set-entities ((s sentence) (list list))
   (setf (entities-in-sentence (contents s)) list))
 (defmethod set-relations ((s sentence) (list list))
   (setf (relations-in-sentence (contents s)) list))
+(defmethod set-tt-count ((s sentence) (number integer))
+  (setf (treetops-in-sentence (contents s)) number))
 
 (defmethod get-entities ((s sentence))
   (entities-in-sentence (contents s)))
 (defmethod get-relations ((s sentence))
   (relations-in-sentence (contents s)))
+(defmethod get-tt-count ((s sentence))
+  (treetops-in-sentence (contents s)))
+  
 
 
 ;;;----------------------------------------------
