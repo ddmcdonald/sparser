@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "find"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.3 November 2013
+;;;  version:  1.4 June 2015
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/10) fixing the semantics of some cases of the find operation
@@ -34,6 +34,7 @@
 ;; with subsets of target mRNAs and modulate their stability and/or translation rates ( xref , xref )."
 ;; 6/8/2015 Diagnostics for edge-referents which are CONS cells --
 ;;  break is controlled by parameter *diagnose-consp-referents*
+;; 1.4 6/27/15 Now includes *description-lattice* cases
 
 
 (in-package :sparser)
@@ -43,7 +44,6 @@
 ;;;--------------
 
 
-;; This needs to be updated for new DLI individuals
 (defun find-or-make/individual (category
                                 bindings-instructions)
 
@@ -51,16 +51,16 @@
   ;; a rule.  All these individuals will be temporary.
   ;; ???  But also called from define-individual where permanence
   ;; is a function of the pertinant global. 
+  ;; N.b. The binding-instructions are an alist of variable and value
 
   (or (find/individual category bindings-instructions)
       (make/individual category bindings-instructions)))
 
 
-(defvar *diagnose-consp-referents*)
 (defun define-or-find-individual (category &rest binding-plist)
-  (declare (special category))
   ;; same idea, different packaging of the arguments
   ;; to fit calls from category-specific code
+  (declare (special *diagnose-consp-referents*))
   (etypecase category
     (referential-category category)
     (symbol
@@ -71,19 +71,29 @@
            category binding-plist))
          (result
           (or (find/individual category binding-instructions)
-              ;; N.b. this version applies realization data, the others don't.
               (apply #'define-individual category binding-plist))))
-    (when (and *diagnose-consp-referents*
-               (consp result))
+    ;; N.b. when define-individual creates the individual
+    ;; it applies the category's realization data. 
+    ;; Other individual creators don't. 
+
+    (when (and *diagnose-consp-referents* (consp result))
       (push-debug `(,binding-instructions ,result))
       (break "~&CONSP result from define-or-find-individual ~s~&" result))
+
     result))
 
 (defun find-or-make-individual (category &rest binding-plist)
-  ;; I can't remember what this function is called so trying this
-  ;; variation out
+  ;; I can't ever remember what this function is called so trying out 
+  ;; this variation as more memorable
   (apply #'define-or-find-individual category binding-plist))
 
+
+
+(defvar *diagnose-consp-referents* nil
+  "For a little while and for reasons as yet unknown (6/30/15)
+   we were getting referents from the define-or-find call
+   that were lists rather than singletons. This gates a check
+   to detect when that happens.")
 
 
 
@@ -113,34 +123,42 @@
 ;;;------
 
 (defun find/individual (category binding-instructions)
+  (declare (special *description-lattice*))
   
   ;; Looks up the appropriate Find function for this category
   ;; and calls it with these binding-instructions.
-  ;; All the arguments must be objects.  If there are no
-  ;; operations defined specifically for this category, we do it
-  ;; as a psi.
+  ;; All the arguments must be objects.  
+
   (if *description-lattice*
-      (find-by-apply-bindings 
-       (fom-lattice-description category) 
-       binding-instructions)
-      (let ((fn-data
-             ;; either just the name of a function, or a function plus
-             ;; some data such as a variable to act as a key
-             (when (cat-operations category)
-               (cat-ops-find (cat-operations category)))))
-        
-        ;(when (null fn-data)
-        ;  ;; maybe it's inherited?
-        ;  (setq fn-data (inherited-operation/find category)))
-        ;; Pulled 8/14/98
-        
-        (if (and fn-data
-                 (fits-criteria-for-simple-individuals category binding-instructions))
-            (if (listp fn-data)
-                (funcall (car fn-data) (cadr fn-data) category binding-instructions)
-                (funcall fn-data category binding-instructions))
-            
-            (find-psi category binding-instructions)))))
+    (find-by-apply-bindings 
+     (fom-lattice-description category) binding-instructions)
+
+    (let ((fn-data
+           ;; either just the name of a function, or a function plus
+           ;; some data such as a variable to act as a key
+           (when (cat-operations category)
+             (cat-ops-find (cat-operations category)))))
+      (when fn-data
+        (if (listp fn-data)
+          (funcall (car fn-data) (cadr fn-data) category binding-instructions)
+          (funcall fn-data category binding-instructions))))))
+
+
+(defun find-by-apply-bindings (input-individual binding-instructions)
+  ;; Called from, e.g., make-simple-individual
+  (let ((individual input-individual)
+        bindings  var  value )
+    (dolist (instr binding-instructions)
+      (setq var (car instr)
+            value (cadr instr))
+      ;;(format t "~&apply bindings loop, binding ~s as ~s of ~s" value var individual)
+      (when (and value individual)
+       (multiple-value-bind (new-indiv binding) 
+                            (find-lattice-subordinate individual var value)
+         (setq individual new-indiv))))
+    ;;(lsp-break "apply bindings")
+    individual))
+
 
 
 ;;;---------------
@@ -199,15 +217,16 @@
   (let ((instances (cat-instances category)))
     (when instances
       (let ((unit?
-             (when
-                 ;; block failure when instances is #<hyphenated-triple 131414> from
-                 ;;"The latter group includes RBPs such as human antigen R (HuR), 
-                 ;; AU-binding factor 1 (AUF1), nucleolin and T-cell intracellular antigen (TIA)-1 
-                 ;; and TIA-1-related (TIAR) proteins, which associate 
-                 ;; with subsets of target mRNAs and modulate their stability and/or translation rates ( xref , xref )."
-                 (consp instances)
+             (when (consp instances)
+               ;; Block failure when instances is #<hyphenated-triple 131414> from
+               ;;"The latter group includes RBPs such as human antigen R (HuR), 
+               ;; AU-binding factor 1 (AUF1), nucleolin and T-cell
+               ;; intracellular antigen (TIA)-1 and TIA-1-related (TIAR)
+               ;; proteins, which associate with subsets of target mRNAs
+               ;; and modulate their stability and/or translation rates (
+               ;; xref , xref )."
                (f/i/seq-keys instances
-                           key-sequence category binding-instructions))))
+                             key-sequence category binding-instructions))))
         unit? ))))
 
 
