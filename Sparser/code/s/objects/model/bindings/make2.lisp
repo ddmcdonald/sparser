@@ -33,6 +33,8 @@
 ;;     (6/5/15) wrapped *break-on-pattern-outside-coverage?* around the 
 ;;      complaint in bind-variable when the individual doesn't have the variable
 ;;      it wants to bind.
+;; 1.10 6/27/15 Now has *description-lattice* cases. 6/30/15 pulling out
+;;     now deadwood PSI cases.
 
 (in-package :sparser)
 
@@ -42,10 +44,10 @@
 ;;;---------------------------
 
 (defun apply-bindings (input-individual binding-instructions)
-  (declare (special input-individual binding-instructions))
   ;; Called from, e.g., make-simple-individual
+  ;; Notice that binding-instructions is an alist, not a plist
+  (declare (special *description-lattice*))
   (let ( bindings  var  value (individual input-individual))
-    (declare (special bindings var value individual))
     (dolist (instr binding-instructions)
       (setq var (car  instr)
             value (cadr instr))
@@ -53,31 +55,14 @@
       (when value
         (push (multiple-value-bind (new-indiv binding) 
                                    (if *description-lattice*
-                                       (bind-dli-variable var value individual)
-                                       (old-bind-variable var value individual))
+                                     (bind-dli-variable var value individual)
+                                     (old-bind-variable var value individual))
                 (setq individual new-indiv)
                 binding)
               bindings)))
-    ;;(lsp-break "apply bindings")
     (values
      (nreverse bindings)
      individual)))
-
-(defun find-by-apply-bindings (input-individual binding-instructions)
-    (declare (special input-individual binding-instructions))
-  ;; Called from, e.g., make-simple-individual
-  (let ( bindings  var  value (individual input-individual))
-    (declare (special bindings var value individual))
-    (dolist (instr binding-instructions)
-      (setq var (car  instr)
-            value (cadr instr))
-      ;;(format t "~&apply bindings loop, binding ~s as ~s of ~s" value var individual)
-      (when (and value individual)
-       (multiple-value-bind (new-indiv binding) 
-                                       (find-lattice-subordinate individual var value)
-                (setq individual new-indiv))))
-    ;;(lsp-break "apply bindings")
-    individual))
 
 
 
@@ -85,22 +70,14 @@
 ;;; core
 ;;;--------
 
-; And see the macro add-binding-to when dealing with psi
-
 (defun old-bind-variable (var/name value individual
-                               &optional category)
+                          &optional category)
   (declare (special *legal-to-add-bindings-to-categories*
                     *break-on-pattern-outside-coverage?*))
   ;;try to find out who is binding a varibale named category
   ;;  seems to be make-individual-for-DM&P
   ;;     (when (eq var/name 'category) (break "category variable"))
-  
-  ;; psi case
-  (when (typep individual 'psi)
-    (break "don't bind to psi's")
-    (let ((new-psi (bind-v+v var/name value individual category)))
-      (return-from old-bind-variable new-psi)))
-  
+    
   (when (typep individual 'category)
     ;;/// this is debatable in principle, but it would be very
     ;; permanent, so it's probably something to be crept up on
@@ -108,7 +85,7 @@
     ;; initial step.
     (unless *legal-to-add-bindings-to-categories*
       (error "It doesn't make sense to add a binding to the ~
-    category ~a" individual)))
+              category ~a" individual)))
   
   ;; individual case
   (unless category
@@ -127,7 +104,7 @@
                 (if (individual-p individual)
                     (itype-of individual)
                     individual))))
-    (format t "~&~&!! Can't dereference anonymous variable ~a against category ~a.~
+    #+ignore(format t "~&~&!! Can't dereference anonymous variable ~a against category ~a.~
     ~%Can't do binding. Leaving object unchanged.~%" var/name individual)
     (values individual nil))
    (t
@@ -143,22 +120,21 @@
           (push-debug `(,var/name ,value ,individual ,category))
           (if category
               (break "There is no variable named ~A~
-    ~%associated with the category ~A" var/name category)
+                    ~%associated with the category ~A" var/name category)
               (break "There is no variable named ~A~
-    ~%associated with the category of the individual ~A"
+                     ~%associated with the category of the individual ~A"
                      var/name individual))))
       (when variable
-        (let
-            ((binding (bind-variable/expr variable value individual)))
+        (let ((binding (bind-variable/expr variable value individual)))
           (values individual binding)))))))
 
-;;new name for method in transition -- makes it easier to tell when other calls
-;; have been edited to use the new "contract" -- 
-;; bind-dli-variable returns the resulting individual as its first (primary) value
-;; it returns the binding object as its second (secondary) value
+
 (defun bind-dli-variable (var/name value individual &optional category)
-  (if
-    *description-lattice*
+  ;;new name for method in transition -- makes it easier to tell when other calls
+  ;; have been edited to use the new "contract" -- 
+  ;; bind-dli-variable returns the resulting individual as its first (primary) value
+  ;; it returns the binding object as its second (secondary) value
+  (if *description-lattice*
     (find-or-make-lattice-subordinate individual var/name value category)
     (old-bind-variable var/name value individual category)))
 
@@ -175,7 +151,8 @@
 
 
 (defun make/binding (variable value individual &optional no-index-on-body?)
-  (declare (special *index-under-permanent-instances*))
+  (declare (special *index-under-permanent-instances*
+                    *track-incidence-count-on-bindings*))
   (let ((b (if *index-under-permanent-instances*
              (make-binding)
              (allocate-binding))))
