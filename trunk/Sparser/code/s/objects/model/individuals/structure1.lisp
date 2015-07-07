@@ -9,6 +9,7 @@
 ;; (6/30/98) added rnodes field to hold the realization annotations
 ;; that the individual receives. (12/14/12) Addes shadow to support
 ;; regular lisp methods.
+;; 7/7/2015 added restrictions field to support test for more specific restrictions
 
 (in-package :sparser)
 
@@ -37,6 +38,12 @@
   ;;  1) If binds=nil, then the keys are categories, and the values are dli's for the pairwise joins
   ;;  2) if binds is not null, then the keys are vv items, and the values are the dli for the one less binding
 
+  restrictions ;; the set of all modifiers as dl-vv pairs, 
+            ;; that define this dli -- starts with the
+            ;; the referential category or conjunctive set of categories that defines a join
+            ;; that is at the top of this branch, 
+            ;; then adds all bindings (as dli-vv's) that
+            ;; distingusih this individual from its bare category parent
 
   shadow
   )
