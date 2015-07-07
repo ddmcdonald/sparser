@@ -143,15 +143,13 @@
                  binding body))))
 
     ;; link it to its value
-    (if (individual-p value)
-      (push-binding-onto-bind-in-field binding value)
-
+    (when (individual-p value)
       ;; if it isn't an individual, then it might be a primitive and
       ;; we don't put in the backpointer ( the "bound-in" field), or
       ;; the variable might not have a restriction in which case it's
       ;; ok if the value is a word, but otherwise we check it out
       ;; in detail.
-      )
+      (push-binding-onto-bind-in-field binding value))
 
     ;; index it on the variable -- this is where it is
     ;; looked up from
@@ -220,6 +218,7 @@
 ;;;-------
 ;;; clear
 ;;;-------
+
 (defun clear-instances/variable (v)
   (clrhash (var-instances v)))
 
@@ -253,8 +252,6 @@
   (unless (typep variable 'anonymous-variable)
     ;; These are missing the needed fields. As a rule they should be
     ;; avoided
-
-
     (let ((ht (var-instances variable))
           (*print-short* t))
       (declare (special *print-short*))        
