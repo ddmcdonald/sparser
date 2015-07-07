@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.5 January 2015
+;;;  version:  1.5 July 2015
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -53,7 +53,9 @@
 ;;      use in abbreviation code.
 ;;     (5/12/14) Fixed error message in decode-rdata-mapping. 6/11/14 Added call
 ;;      in record ETF to the categories that use them inside dereference-rdata.
-;;     (1/6/15) Modified setup-category-lemma to allow multiple words
+;;     (1/6/15) Modified setup-category-lemma to allow multiple words.
+;;     (7/6/15) Commented out apparently no-op complain in decode-rdata-mapping
+;;      that it wasn't getting a dotten pair. Need to come back to this and fix it.
 
 (in-package :sparser)
 
@@ -611,7 +613,7 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
         ;; We check here for the notation error.
         (when (null (cadr value))
           (setq value (car value))
-          (format t "~%Mapping values should be dotted pairs.~
+          #+ignore(format t "~%Mapping values should be dotted pairs.~
                      ~%The ~A pair of ~A isn't a pair.~
                      ~%Continuing anyway." pair category)))
       (cond
