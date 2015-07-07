@@ -15,7 +15,8 @@
 ;;      is a category (head word) rather than an individual, added a
 ;;      diversion for that case. 4/16/14 ditto for itype-of
 ;; 0.4 (6/5/15) indiv-typep now returns nil when passed a category.
-;; 6/8/2015 avoid break in itypep -- (format t "*** indiv-typep applied to MIXIN category ~s" i)
+;; 6/8/2015 avoid break in itypep by flagging mixin categories
+;; 7/7/15 Removing psi deadwood
 
 
 (in-package :sparser)
@@ -30,7 +31,6 @@
 
 (defun i-type-of (i)
   (typecase i
-    (psi (base-category-of-psi i))
     (individual
      (let ((type-field (indiv-type i)))
        (values (car type-field)
@@ -47,8 +47,7 @@
 
 
 (defun itypep (i c/s) 
-  (if
-   (consp i)
+  (if (consp i)
    (then
      (break "what are you doing passing a CONS to itypep: ~s~&" i)
      nil)
@@ -78,8 +77,6 @@
   (declare (special *break-on-pattern-outside-coverage?*))
   (let ((category (category-named category/symbol :break-if-none)))
     (typecase individual
-      (psi (or (eq category (base-category-of-psi individual))
-               (individual-inherits-type? individual category)))
       (individual 
        (if (member category (indiv-type individual) :test #'eq)
          ;; then the immediate type-field satisfies the check
