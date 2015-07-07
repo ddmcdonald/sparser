@@ -130,11 +130,11 @@
           ;; over the document, so move on.
           (throw 'do-next-paragraph nil))
         (else
-        ;; Now do the regular loop. All the linguistic
-        ;; analysis is done here. This either just returns
-        ;; when it runs out of sentences or it reaches eof
-        ;; and there's a thow back into the document reader
-        (sweep-successive-sentences-from s1)))))
+          ;; Now do the regular loop. All the linguistic
+          ;; analysis is done here. This either just returns
+          ;; when it runs out of sentences or it reaches eof
+          ;; and there's a thow back into the document reader
+          (sweep-successive-sentences-from s1)))))
    (t
     ;; default path used by p or f
     (sentence-sweep-loop))))
@@ -289,16 +289,17 @@
                   (list *current-article*
                         *universal-time-start*
                         *universal-time-end*)))
-            
             *all-sentences*))
+
     (save-missing-subcats)
      
     ;; We always retrieve the entities and relations to store
     ;; with the sentence and accumulate at higher levels
-    (multiple-value-bind (relations entities)
+    (multiple-value-bind (relations entities tt-count)
                          (identify-relations sentence)
       (set-entities sentence entities)
-      (set-relations sentence relations)))
+      (set-relations sentence relations)
+      (set-tt-count sentence tt-count)))
 
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))
@@ -385,6 +386,7 @@
   (let* ((start-pos (starts-at-pos sentence))
          (end-pos (ends-at-pos sentence))
          (rightmost-pos start-pos)
+         (tt-count 0)
          raw-entities  raw-relations  tt-contents
          treetop  referent  pos-after    )
     (when nil
@@ -396,7 +398,8 @@
     (loop
       (multiple-value-setq (treetop pos-after) ;; multiple?
         (next-treetop/rightward rightmost-pos))
-
+      
+      (incf tt-count)
       (when nil
         (format t "~&[relations] tt = ~a~%" treetop))
 
@@ -429,7 +432,8 @@
     (let ((relations (strip-model-descriptions raw-relations))
           (entities (strip-model-descriptions raw-entities)))
       (values relations
-              entities))))
+              entities
+              tt-count))))
 
 
 
