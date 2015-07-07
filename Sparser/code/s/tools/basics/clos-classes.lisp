@@ -27,9 +27,13 @@
 ;;--- has a unique number for each of its instances
 
 (defclass indexed ()
-  ((index :type integer :initform 0 :initarg :index :accessor index
-    :documentation ""))
-   (:documentation ""))
+  ((index :initform nil :initarg :index :accessor doc-index
+    :documentation "Holds a number or a letter")
+   (toc-index :initform nil :accessor toc-index
+    :documentation "Holds a sequence of indexes, e.g. '2.b.3'"))
+   (:documentation "Provides a sequential index for individual
+    document elements and for an element as a position within
+    the hierarchy of document structure as in a table of contents."))
 
 
 ;;--- partonomy: parent and children
