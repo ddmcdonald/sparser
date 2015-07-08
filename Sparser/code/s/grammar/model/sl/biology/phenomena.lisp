@@ -266,7 +266,7 @@
 (def-bio "ubiquitin" protein)
 ;; not strictly true, but a reasonable approximation. 
 
-(define-category ubiquitinate 
+(define-category ubiquitination
  :specializes post-translational-modification 
  :binds ((agent biological) ;; what causes it to happen
          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
@@ -297,7 +297,7 @@
 ;; Resulting version of Ras after adding one ubiquitin. 
 
 ;; strictly for the rule-label
-(define-category monoubiquitinate 
+(define-category monoubiquitination 
  :specializes post-translational-modification )
 
 ;;--- wrapper
