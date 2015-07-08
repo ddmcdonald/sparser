@@ -1229,9 +1229,9 @@ These return the Lisp-based obo entries.
     (run-june-articles n :from-article start :cardp t :show-timep t)
     ))
 
-(defun write-article-time-to-log (i id runtime &optional (realtime 0.0))
+(defun write-article-time-to-log (i id runtime &optional (realtime 0.0) (numcards 0))
   (when *article-timing-stream*
-    (format *article-timing-stream* "~w,~6,3d,~6,3d~%" id runtime realtime )))
+    (format *article-timing-stream* "~w, ~6,3d, ~6,3d, ~d~%" id runtime realtime numcards)))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
@@ -1257,7 +1257,7 @@ These return the Lisp-based obo entries.
                      (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
             (setf numcards (create-cards-for-article id)))
           )
-        (when write-timep (write-article-time-to-log i id *article-elapsed-time*))
+        (when write-timep (write-article-time-to-log i id *article-elapsed-time* numcards))
         (format t "Completed ~d, ~a in time ~a. Cards: ~d" i id *article-elapsed-time* numcards )
         ))
 
