@@ -22,6 +22,8 @@
 
 (gload "bio;mechanics")
 (gload "bio;taxonomy")
+;; move RAS2 proteins first, so that the ras-model field is not blocked
+(gload "bio;new-RAS2-proteins")
 (gload "bio;proteins")
 (gload "bio;amino-acids")
 (gload "bio;terms1")
@@ -39,7 +41,7 @@
 
 (gload "bio;new-words")
 (gload "bio;UCD-proteins2")
-(gload "bio;new-RAS2-proteins")
+
 (gload "bio;protein-families")
 
 

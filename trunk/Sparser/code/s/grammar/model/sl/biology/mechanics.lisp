@@ -18,6 +18,138 @@
 
 (in-package :sparser)
 
+;;; Protein definition operations
+(defun ras2-protein? (i)
+  (and (individual-p i)
+       (itypep i 'protein)
+       (value-of 'ras2-model i)))
+
+;;obsolete
+;;(defparameter *ras2-proteins* (make-hash-table :size 1500 :test #'equal))
+;;(gethash (string-for/name i) *ras-2-proteins*)
+
+(defmacro def-ras2-protein (name args)
+  (eval `(define-protein ,name ,args :ras2-model t)))
+
+;;;---------------------------
+;;; pattern-driven protein definition
+;;;---------------------------
+
+(defmacro define-protein (name IDS &key ras2-model)
+  (if ras2-model
+      (make-def-protein (cons name IDS) :ras2-model t)
+      (make-def-protein (cons name IDS))))
+
+(defparameter *prot-synonyms* (make-hash-table :test #'equal))
+
+(defun get-protein-synonyms (id)
+  (gethash id *prot-synonyms*))
+
+(defun make-def-protein (IDS &key (ras2-model nil))
+  (let
+      ((bpid (best-protein-id IDS)))
+    `(def-bio ,bpid
+              protein
+       :synonyms ,(loop for id in IDS unless (or (equal id bpid)(search " " id)) collect id)
+       :MITRE-LINK ,(if (search "_" bpid)
+                        (format nil "UNIPROT:~A" bpid)
+                        bpid)
+       :ras2-model ,ras2-model)))
+
+(defun in-ras2-model? (entity)
+  (value-of 'ras2-model entity))
+
+(defun best-protein-id (ids)
+  (or
+   (loop for id in ids when (search "_HUMAN" id) do (return id))
+   (loop for id in ids when (search "PR:" id) do (return id))
+   (car ids)))
+
+(defun simp-protein (dp)
+  (if
+   (consp (third dp))
+   dp
+   `(define-protein ,(second dp) ,(cddr dp))))
+
+(defun all-proteins ()
+  (loop for s in *all-sentences*
+    append
+    (loop for e in (second s)
+      when (or
+            (itypep e 'protein)
+            (itypep e 'protein-family))
+      collect e)))
+
+(defun pro-name (pro)
+  (let ((name (value-of 'name pro)))
+    (cond((polyword-p name) (pw-pname name))
+         ((word-p name)(word-pname name)))))
+
+(defun prot-name (prot)
+  (when prot
+    (or
+     (pro-name prot)
+     (get-mitre-id prot))))
+
+(defparameter *prot-ht* (make-hash-table :test #'equal))
+(defparameter *prot-cts* nil)
+(defparameter *prots* nil)
+(defparameter *nil-prots* nil)
+(defparameter *aps* nil)
+(defparameter *aaps* nil)
+(defparameter *naps* nil)
+(defparameter *named-proteins* nil)
+(defparameter *unique-named-substrates* nil)
+(defparameter *poorly-identified-proteins* nil)
+
+(defun protein-name-count (proteins)
+  (clrhash *prot-ht*)
+  (loop for p in proteins
+    do
+    (push p (gethash (prot-name p) *prot-ht*)))
+  (setq *prot-cts* nil)
+  (maphash #'(lambda(name prots) (push (list name (length prots)) *prot-cts*)) *prot-ht*)
+  (setq *prot-cts* (sort *prot-cts* #'> :key #'second))
+  *prot-ht*)
+
+(defun poorly-identified-proteins()
+  (declare (special *prots* *aps* *aaps* *naps* *named-proteins* *poorly-identified-proteins* 
+                    *unique-named-substrates*))
+  (length (setq *prots* (all-proteins)))
+  (protein-name-count *prots*)
+  (length (setq *nil-prots* (gethash nil *prot-ht*)))
+  ;;(loop for i from 1 to 30 collect (print (retrieve-surface-string (nth i nil-prots))) (nth i nil-prots))
+  (length (setq *aps* (all-phosphorylations)))
+  (length (setq *aaps* (loop for a in *aps* when (get-protein-substrate (car a)) collect (car a))))
+  (length (setq *naps* (loop for a in *aps* unless (get-protein-substrate (car a)) collect (car a))))
+  (length 
+   (setq *named-proteins* (loop for a in *aaps* when (prot-name (car (get-protein-substrate a))) 
+                            collect (prot-name (car (get-protein-substrate a))))))
+  (setq *unique-named-substrates* (remove-duplicates *named-proteins* :test #'equalp))
+  (setq *poorly-identified-proteins*
+        (loop for s in *unique-named-substrates* unless (or (search "PR:" s)(search "_" s)) collect s)))
+
+
+(defun protein-desc (pro)
+  (when (pro-name pro)
+    (let
+        ((st (semtree pro)))
+      `(,(symbol-name (cat-symbol (car (indiv-type (car st))))) (:name ,(pro-name pro)),@(cdr st)))))
+
+
+
+(defun reify-p-protein-and-make-edge (words start-pos end-pos)
+  ;; Called from resolve-ns-pattern on (:single-cap :digits).
+  ;; Looks for a "p" and if it finds it makes a protein. 
+  ;; E.g "suggesting that p38 SAPK was active" in Jan #34
+  (push-debug `(,words ,start-pos ,end-pos))
+  (when (string= "p" (word-pname (first words)))
+    ;; take template from reify-residue-and-make-edge
+    (when *work-on-ns-patterns*
+      (break "stub: possible p protein?"))))
+
+
+
 ;;;------------------
 ;;; Useful accessors
 ;;;------------------
@@ -144,9 +276,9 @@
 
 
 (defun make-typed-bio-entity (word category 
-                              &optional greek identifier mitre-link
-                                        ras2-model
-                                        long synonyms takes-plurals)
+                                   &optional greek identifier mitre-link
+                                   ras2-model
+                                   long synonyms takes-plurals)
   (declare (special *inihibit-constructing-plural*))
   (let ((label (or (override-label category) category))
         (form (category-named 'proper-noun))
@@ -155,9 +287,7 @@
         ;; of the word, which would have to be caught upstream
         ;; and passed through in a parameter. 
         (*inihibit-constructing-plural* (not takes-plurals))
-        rules  i   )
-    (declare (special i))
-
+        rules  i   )    
     ;; There is a bug that I can't sort out with the available evidence
     ;; when redefining a def-bio entity involving a list of rules being 
     ;; expected to be a structure. Until there's time to creep up on
@@ -174,72 +304,81 @@
       (setq i (find-or-make-individual category :name word))
       ;;(lsp-break "make-typed-bio-entity")
       ))
-      ;; The real form to use
-      ;;     (setq i (find-or-make-individual category :name word))
-      ;; The find-or-make call will set up a rule for the short form
-      ;; as a common noun that has this individual as its referent.
-      ;; Ignoring brackets since this runs with the new chunker
-
-    (push-debug `(,i ,word)) ;;(break "find base rule")
-
-    ;; This is packaged up some place, but no time to see where
+    ;; The real form to use
+    ;;     (setq i (find-or-make-individual category :name word))
+    ;; The find-or-make call will set up a rule for the short form
+    ;; as a common noun that has this individual as its referent.
+    ;; Ignoring brackets since this runs with the new chunker
+    
+    
+    
     (let* ((retrieved-rules (get-rules i))
            (r (when retrieved-rules (car retrieved-rules))))
-      (unless (and r (cfr-p r))
-        (push-debug `(,i ,word))
-        (error "something badly formed about rules field"))
-      (when r
+      
+      (when identifier
+        (setq i (bind-dli-variable 'uid identifier i)))
+      (when mitre-link
+        (handle-mitre-link i mitre-link))
+      (when ras2-model
+        (setq i (bind-dli-variable 'ras2-model ras2-model i)))
+      
+      ;; At this point, i has been changed to include the ras2-model
+      ;; binding (and the mitre-link binding) if necessary, so we need to use this 
+      ;; version of i for all 
+      
+      ;; This is packaged up some place, but no time to see where
+      
+      
+      (cond
+       ((and r (cfr-p r))
         ;;(push-debug `(,r)) (break " set rule form?")
-        (setf (cfr-form r) category::proper-noun)))
-
-    (let* ((pname (etypecase word 
-                    (word (word-pname word))
-                    (polyword (pw-pname word))))
-           (downcased-pname (string-downcase pname)))
-      (unless (string= downcased-pname pname) ;; case-sensitive
-        (let ((lowercase-word (resolve/make downcased-pname)))
-          (push (define-cfr label `(,lowercase-word)
+        (setf (cfr-form r) category::proper-noun)
+        (setf (cfr-referent r) i))
+       (t
+        (push-debug `(,i ,word))
+        (error "something badly formed about rules field")))
+      
+      (let* ((pname (etypecase word 
+                      (word (word-pname word))
+                      (polyword (pw-pname word))))
+             (downcased-pname (string-downcase pname)))
+        (unless (string= downcased-pname pname) ;; case-sensitive
+          (let ((lowercase-word (resolve/make downcased-pname)))
+            (push (define-cfr label `(,lowercase-word)
+                    :form form
+                    :referent i)
+                  rules))))
+      
+      (when synonyms ;; quoted list of strings
+        (dolist (syn synonyms)
+          (push (define-cfr label `(,(resolve/make syn))
                   :form form
                   :referent i)
-                rules))))
- 
-    (when identifier
-      (setq i (bind-dli-variable 'uid identifier i)))
-    (when mitre-link
-      (handle-mitre-link i mitre-link))
-    (when ras2-model
-      (setq i (bind-dli-variable 'ras2-model ras2-model i)))
-
-    (when synonyms ;; quoted list of strings
-      (dolist (syn synonyms)
-        (push (define-cfr label `(,(resolve/make syn))
-                :form form
-                :referent i)
-              rules)))
-
-    ;; Now we do that by-hand for the long-form. If the long form needs
-    ;; to have a variant with a greek letter in it we'll make two rules.
-    (when long
-      (let* ((pw (resolve/make long)) ;; pw = polyword = multiword
-             (cfr (define-cfr label `(,pw)
-                    :form form
-                    :referent i)))
-        (push cfr rules)))
-
-    (when greek
-      (let ((additional-rules
-             (rules-with-greek-chars-substituted
-              ;; SBCL caught fact that some words are actually polywords here...
-              (etypecase word 
-                    (word (word-pname word))
-                    (polyword (pw-pname word)))
-              long greek label form i)))
-        (setq rules (nconc additional-rules rules))))
-
-    (when rules
-      (add-rules-to-individual i rules))
-
-    i))
+                rules)))
+      
+      ;; Now we do that by-hand for the long-form. If the long form needs
+      ;; to have a variant with a greek letter in it we'll make two rules.
+      (when long
+        (let* ((pw (resolve/make long)) ;; pw = polyword = multiword
+               (cfr (define-cfr label `(,pw)
+                      :form form
+                      :referent i)))
+          (push cfr rules)))
+      
+      (when greek
+        (let ((additional-rules
+               (rules-with-greek-chars-substituted
+                ;; SBCL caught fact that some words are actually polywords here...
+                (etypecase word 
+                  (word (word-pname word))
+                  (polyword (pw-pname word)))
+                long greek label form i)))
+          (setq rules (nconc additional-rules rules))))
+      
+      (when rules
+        (add-rules-to-individual i rules))
+      
+      i)))
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
   (unless *greek-character-map*
