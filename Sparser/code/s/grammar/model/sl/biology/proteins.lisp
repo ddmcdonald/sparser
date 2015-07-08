@@ -24,144 +24,18 @@
 
 (in-package :sparser)
 
-;;;---------------------------
-;;; pattern-driven definition
-;;;---------------------------
-
-(defmacro define-protein (name IDS &key ras2-model)
-  (if ras2-model
-      (make-def-protein (cons name IDS) :ras2-model t)
-      (make-def-protein (cons name IDS))))
-
-(defparameter *prot-synonyms* (make-hash-table :test #'equal))
-
-(defun get-protein-synonyms (id)
-  (gethash id *prot-synonyms*))
-
-(defun make-def-protein (IDS &key (ras2-model nil))
-  (let
-      ((bpid (best-protein-id IDS)))
-    `(def-bio ,bpid
-              protein
-       :synonyms ,(loop for id in IDS unless (or (equal id bpid)(search " " id)) collect id)
-       :MITRE-LINK ,(if (search "_" bpid)
-                        (format nil "UNIPROT:~A" bpid)
-                        bpid)
-       :ras2-model ,ras2-model)))
-
-(defun in-ras2-model? (entity)
-  (value-of 'ras2-model entity))
-
-(defun best-protein-id (ids)
-  (or
-   (loop for id in ids when (search "_HUMAN" id) do (return id))
-   (loop for id in ids when (search "PR:" id) do (return id))
-   (car ids)))
-
-(defun simp-protein (dp)
-  (if
-   (consp (third dp))
-   dp
-   `(define-protein ,(second dp) ,(cddr dp))))
-
-(defun all-proteins ()
-  (loop for s in *all-sentences*
-    append
-    (loop for e in (second s)
-      when (or
-            (itypep e 'protein)
-            (itypep e 'protein-family))
-      collect e)))
-
-(defun pro-name (pro)
-  (let ((name (value-of 'name pro)))
-    (cond((polyword-p name) (pw-pname name))
-         ((word-p name)(word-pname name)))))
-
-(defun prot-name (prot)
-  (when prot
-    (or
-     (pro-name prot)
-     (get-mitre-id prot))))
-
-(defparameter *prot-ht* (make-hash-table :test #'equal))
-(defparameter *prot-cts* nil)
-(defparameter *prots* nil)
-(defparameter *nil-prots* nil)
-(defparameter *aps* nil)
-(defparameter *aaps* nil)
-(defparameter *naps* nil)
-(defparameter *named-proteins* nil)
-(defparameter *unique-named-substrates* nil)
-(defparameter *poorly-identified-proteins* nil)
-
-(defun protein-name-count (proteins)
-  (clrhash *prot-ht*)
-  (loop for p in proteins
-    do
-    (push p (gethash (prot-name p) *prot-ht*)))
-  (setq *prot-cts* nil)
-  (maphash #'(lambda(name prots) (push (list name (length prots)) *prot-cts*)) *prot-ht*)
-  (setq *prot-cts* (sort *prot-cts* #'> :key #'second))
-  *prot-ht*)
-
-(defun poorly-identified-proteins()
-  (declare (special *prots* *aps* *aaps* *naps* *named-proteins* *poorly-identified-proteins* 
-                    *unique-named-substrates*))
-  (length (setq *prots* (all-proteins)))
-  (protein-name-count *prots*)
-  (length (setq *nil-prots* (gethash nil *prot-ht*)))
-  ;;(loop for i from 1 to 30 collect (print (retrieve-surface-string (nth i nil-prots))) (nth i nil-prots))
-  (length (setq *aps* (all-phosphorylations)))
-  (length (setq *aaps* (loop for a in *aps* when (get-protein-substrate (car a)) collect (car a))))
-  (length (setq *naps* (loop for a in *aps* unless (get-protein-substrate (car a)) collect (car a))))
-  (length 
-   (setq *named-proteins* (loop for a in *aaps* when (prot-name (car (get-protein-substrate a))) 
-                            collect (prot-name (car (get-protein-substrate a))))))
-  (setq *unique-named-substrates* (remove-duplicates *named-proteins* :test #'equalp))
-  (setq *poorly-identified-proteins*
-        (loop for s in *unique-named-substrates* unless (or (search "PR:" s)(search "_" s)) collect s)))
-
-
-(defun protein-desc (pro)
-  (when (pro-name pro)
-    (let
-        ((st (semtree pro)))
-      `(,(symbol-name (cat-symbol (car (indiv-type (car st))))) (:name ,(pro-name pro)),@(cdr st)))))
-
-
-
-(defun reify-p-protein-and-make-edge (words start-pos end-pos)
-  ;; Called from resolve-ns-pattern on (:single-cap :digits).
-  ;; Looks for a "p" and if it finds it makes a protein. 
-  ;; E.g "suggesting that p38 SAPK was active" in Jan #34
-  (push-debug `(,words ,start-pos ,end-pos))
-  (when (string= "p" (word-pname (first words)))
-    ;; take template from reify-residue-and-make-edge
-    (when *work-on-ns-patterns*
-      (break "stub: possible p protein?"))))
-
 ;;;--------------------------------------------
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
 
 ;; found in the article set
-#+ignore
-(def-bio "E-cadherin" protein)
 
 
-
-#+ignore
-(def-bio "Src" protein :MITRE-LINK "UNIPROT:SRC_HUMAN")
 
 (def-bio "BCR-ABL" protein)
 (define-protein "PARP1_HUMAN" ("poly(ADP–ribose) 1"))
 (define-protein "PARP2_HUMAN" ("poly(ADP–ribose) 2"))
 (define-protein "PARP3_HUMAN" ("poly(ADP–ribose) 3"))
-
-
-#+ignore
-(def-bio "NFAT5_HUMAN" protein :synonyms ("NF-AT5" "NFAT5") :MITRE-LINK "NFAT5_HUMAN")
 
 
 (DEFINE-PROTEIN "NFAT5_HUMAN" ("NFAT5" "Nuclear factor of activated T-cells 5"))
@@ -175,7 +49,6 @@
 (noun  "actin" :super protein)
 (noun  "catenin" :super protein-family)
 
-(define-protein "KSYK_HUMAN" ("Syk"))
 
 #+ignore
 (def-bio "Akt" protein
@@ -797,7 +670,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "ATG5_HUMAN" ("APG5L" "ATG5" "APG5-like" "ASP"))
 (define-protein "ATG7_HUMAN" ("hAGP7" "ATG7" "APG7-like" "APG7L"))
 (define-protein "ATM_HUMAN" ( "ATM"))
-(define-protein "ATR_HUMAN" ("ATR" "FRP1"))
 (define-protein "AURKA_HUMAN" ("AYK1" "ARK-1" "STK6" "AURA" "AURKA" "AIK" "IAK1" "AIRK1" "ARK1" "hARK1" "STK15" "BTAK"))
 (define-protein "AVR2A_HUMAN" ("ACVR2A" "ACTR-IIA" "ACTRIIA" "ACVR2"))
 (define-protein "AVR2B_HUMAN" ("ACVR2B" "ACTR-IIB"))
@@ -884,7 +756,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "CH033_HUMAN" ("C8orf33"))
 (define-protein "CHD3_HUMAN" ("CHD-3" "hZFH" "Mi2-alpha" "CHD3"))
 (define-protein "CHD4_HUMAN" ("CHD-4" "Mi2-beta" "CHD4"))
-(define-protein "CHK1_HUMAN" ("CHEK1" "CHK1"))
 (define-protein "CHK2_HUMAN" ("CHEK2" "CDS1" "CHK2" "Chk2" "RAD53"))
 (define-protein "CHM1A_HUMAN" ("Vps46-1" "PCOLN3" "CHMP1a" "KIAA0047" "PRSM1" "CHMP1" "hVps46-1" "CHMP1A"))
 (define-protein "CHM1B_HUMAN" ("CHMP1b" "CHMP1.5" "Vps46-2" "CHMP1B" "C18orf2" "hVps46-2"))
@@ -933,7 +804,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "CSK22_HUMAN" ("CSNK2A2" "CK2A2"))
 (define-protein "CSKP_HUMAN" ("hCASK" "CASK" "LIN2"))
 (define-protein "CTNA1_HUMAN" ("CTNNA1"))
-(define-protein "CTNB1_HUMAN" ("β-catenin" "Beta-catenin" "CTNNB" "CTNNB1"))
 (define-protein "CTR1_HUMAN" ("ERR" "SLC7A1" "CAT1" "ATRC1" "CAT-1" "REC1L"))
 (define-protein "CUL3_HUMAN" ("KIAA0617" "CUL3" "CUL-3"))
 (define-protein "CYBP_HUMAN" ("SIP" "hCacyBP" "S100A6BP" "CACYBP" "CacyBP"))
@@ -1065,7 +935,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "FA71C_HUMAN" ("FAM71C"))
 (define-protein "FACR2_HUMAN" ("FAR2" "MLSTD1"))
 (define-protein "FAK" NIL)
-(define-protein "FAK1_HUMAN" ("p125FAK" "FAK" "pp125FAK" "PPP1R71" "FRNK" "PTK2" "FAK1"))
 (define-protein "FAK2_HUMAN" ("CAKB" "RAFTK" "PYK2" "CADTK" "FAK2" "CAK-beta" "PTK2B"))
 (define-protein "FANCI_HUMAN" ("KIAA1794" "FANCI"))
 (define-protein "FBP1L_HUMAN" ("C1orf39" "FNBP1L" "Toca-1" "TOCA1"))
@@ -1254,7 +1123,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "INSR_HUMAN" ("IR" "INSR" "CD220"))
 (define-protein "INS_HUMAN" ("INS"))
 (define-protein "INT3_HUMAN" ("C1orf60" "Int3" "C1orf193" "INTS3" "SOSS-A"))
-(define-protein "IQGA1_HUMAN" ("IQGAP1" "p195" "KIAA0051"))
 (define-protein "IQGA2_HUMAN" ("IQGAP2"))
 (define-protein "IQGA3_HUMAN" ("IQGAP3"))
 (define-protein "IRAK1_HUMAN" ("IRAK1" "IRAK-1" "IRAK"))
@@ -1324,7 +1192,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "KS6A4_HUMAN" ( "RSKB" "MSK2" "RPS6KA4" "S6K-alpha-4"))
 (define-protein "KS6A5_HUMAN" ("RSKL" "MSK1" "S6K-alpha-5" "RPS6KA5"))
 (define-protein "KSR1_HUMAN" ("KSR1" "KSR"))
-(define-protein "KSYK_HUMAN" ( "SYK" "p72-Syk"))
 (define-protein "KTHY_HUMAN" ( "TYMK" "DTYMK" "CDC8" "TMPK"))
 (define-protein "L2GL2_HUMAN" ("LLGL2" "HGL"))
 (define-protein "LAMP1_HUMAN" ("LAMP1" "LAMP-1" "CD107a"))
@@ -1375,7 +1242,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "MCM2_HUMAN" ("CCNL1" "KIAA0030" "CDCL1" "MCM2" "BM28"))
 (define-protein "MD2L1_HUMAN" ("MAD2" "HsMAD2" "MAD2L1"))
 (define-protein "MDM2_HUMAN" ( "MDM2" "Hdm2"))
-(define-protein "MEK" NIL)
 (define-protein "MEKK1/4" NIL)
 (define-protein "MERL_HUMAN" ("Neurofibromin-2" "NF2" "Schwannomerlin" "SCH" "Schwannomin"))
 (define-protein "MET_HUMAN" ("MET"))
@@ -1876,7 +1742,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "SPY2_HUMAN" ("Spry-2" "SPRY2"))
 (define-protein "SQRD_HUMAN" ("SQRDL" "SQOR"))
 (define-protein "SRC8_HUMAN" ("CTTN" "EMS1" "Amplaxin"))
-(define-protein "SRC_HUMAN" ( "p60-Src" "SRC" "SRC1" "pp60c-src"))
 (define-protein "SRP09_HUMAN" ("SRP9"))
 (define-protein "SRP14_HUMAN" ("SRP14"))
 (define-protein "SRP19_HUMAN" ("SRP19"))
