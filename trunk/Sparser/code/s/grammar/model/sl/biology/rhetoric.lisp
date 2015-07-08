@@ -124,7 +124,6 @@ no evidence in the sentence.
 ;;; These functions look at the content of a sentence
 ;;; and determine if the sentence can be classified as
 ;;; a type of discourse atom.
-;;; TODO experimental-result
 
 (defmethod known-result? ((c sentence-content))
   (or (includes-a-reference c)
@@ -169,10 +168,10 @@ no evidence in the sentence.
 	   (push `('known-result ,(sentence-string sentence))
 		 *all-discourse-role-sents*))
 	  (t
-	   (push
-	    `(,(sentence-string sentence)
-	      ,(contents sentence))
-	    *no-discourse-role-sents*)))))
+	   (pushnew
+	    `(,(sentence-string sentence))
+	    *no-discourse-role-sents*
+	    :test #'string-equal :key #'car)))))
     
 ;;;--------------------------------------
 ;;; Establish shallow discourse relations
@@ -228,6 +227,26 @@ The current possible relations are:
     (eql (discourse-role contents1)
 	 (discourse-role contents2))))
 
+(defmethod check-for-result-of ((s sentence))
+  ;; Domain-agnostic relation. Simply checks the first word
+  ;; of the second sentence, and if it's one of the words known
+  ;; to be a discourse marker of causality, the relation holds.
+  (let ((first-word (first (split (sentence-string s)))))
+    (or (string-equal first-word "hence")
+	(string-equal first-word "thus")
+	(string-equal first-word "therefore")
+	(string-equal first-word "therefor")
+	(string-equal first-word "consequently"))))
+
+(defmethod check-for-contrast ((s sentence))
+  ;; Domain-agnostic relation. Checks if the first word(s)
+  ;; of the sentence are on eof the known markers for contrast.
+  (let* ((sent-words (split (sentence-string s)))
+	 (first-two-words
+	  (concatenate 'string (first sent-words) " " (second sent-words))))
+    (or (string-equal first-two-words "in contrast,")
+	(string-equal first-two-words "in contrast"))))
+				       
 (defun establish-discourse-relations (sentence)
   ;; A pair of sentences may be eligible to stand in more
   ;; than one relation to each other. The ordering of the
@@ -235,9 +254,9 @@ The current possible relations are:
   ;; established in the paragraph content container.
   (declare (special *previous-sentence*))
   (let* ((paragraph (parent sentence))
-	(prev-sent (previous sentence))
-	(contents (contents sentence))
-	(prev-cont (when prev-sent (contents prev-sent))))
+	 (prev-sent (previous sentence))
+	 (contents (contents sentence))
+	 (prev-cont (when prev-sent (contents prev-sent))))
     (when prev-sent
       (determine-discourse-role sentence)
       (unless (discourse-role prev-cont)
@@ -253,6 +272,12 @@ The current possible relations are:
 	   ((check-for-background-knowledge prev-cont contents)
 	    (note-discourse-relation prev-sent sentence
 				     'background-knowledge paragraph))
+	   ((check-for-result-of sentence)
+	    (note-discourse-relation sentence prev-sent
+				     'result-of paragraph))
+	   ((check-for-contrast sentence)
+	    (note-discourse-relation sentence prev-sent
+				     'contrast paragraph))
 	   (t
 	    t)))))
 	   
@@ -338,7 +363,7 @@ The current possible relations are:
 (known-result-phrase "it is less clear how")
 (known-result-phrase "it remains unclear why")
 (known-result-phrase "it was established")
-(known-result-phrase "knowing")
+(known-result-phrase "it was shown")
 (known-result-phrase "most commonly")
 (known-result-phrase "most studied")
 (known-result-phrase "previous")
@@ -370,6 +395,7 @@ The current possible relations are:
 (new-fact-phrase "suggesting that")
 (new-fact-phrase "the data also suggest")
 (new-fact-phrase "the data suggest")
+(new-fact-phrase "these data illustrate")
 (new-fact-phrase "these data suggest")
 (new-fact-phrase "these data support")
 (new-fact-phrase "these findings reveal")
@@ -390,6 +416,8 @@ The current possible relations are:
 (new-fact-phrase "we report here")
 (new-fact-phrase "we show here that")
 
+(methodology-phrase "was performed")
+(methodology-phrase "was tested")
 (methodology-phrase "we analyzed")
 (methodology-phrase "we carried out")
 (methodology-phrase "we conducted")
@@ -398,15 +426,18 @@ The current possible relations are:
 (methodology-phrase "we first determined")
 (methodology-phrase "we observed")
 (methodology-phrase "we performed")
+(methodology-phrase "were analysed")
 
 #| we queried whether [the activity of ASPP2 is regulated
 by the activation of a RAS-mediated signalling pathway." |#
-(motivation-phrase "to assess")
-(motivation-phrase "to determine")
-(motivation-phrase "to test")
+(motivation-phrase "to assess whether")
+(motivation-phrase "to determine whether")
+(motivation-phrase "to test whether")
 (motivation-phrase "we evaluated whether")
 (motivation-phrase "we investigated whether")
 (motivation-phrase "we queried whether")
 (motivation-phrase "we tested whether")
+(motivation-phrase "we therefore tested whether")
+(motivation-phrase "we thus tested whether")
 
 (evidence-of-reference "xref")
