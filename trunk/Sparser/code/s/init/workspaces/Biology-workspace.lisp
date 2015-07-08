@@ -338,30 +338,29 @@ those steps sequentially on a single article.
 
 ;--- 3d read.
 
-(defun read-article-set (&optional (articles (or *epistemically-scanned-articles*
-                                                 *populated-articles*)))
+(defun read-article-set (&key (articles (or *epistemically-scanned-articles*
+                                                 *populated-articles*))
+                              (counter 0))
   ;; (format t "Reading phase: ~a articles" (length articles))
-  (let ((count 0))
+  (let ((count counter))
     (loop for article in articles
       do
       (incf count)
       (read-article article count))))
 
-(defvar *time-reading-document* 0)
+;;(defvar *time-reading-document* 0)
 
 (defun read-article (article counter)
   (declare (special *break-during-read*))
-  (let ((*trap-error-skip-sentence* (not *break-during-read*))
-        (elapsed-internal-real-time 0))
+  (let ((*trap-error-skip-sentence* (not *break-during-read*)))
     ;; Enables the error-handler in the parser that will
     ;; skip to the next sentence
     (declare (special *trap-error-skip-sentence*))
     (format t "~&Reading document #~a ~a" counter (name article))
-    (start-timer '*time-reading-document*)
+    (time-start article)
     (read-from-document article)
-    (setq elapsed-internal-real-time
-          (stop-timer '*time-reading-document*))
-    (format t "  ~a~%" (elapsed-time-to-string elapsed-internal-real-time))))
+    (time-end article)
+    (format t "  ~a~%" (elapsed-time-to-string *article-elapsed-time*))))
 
 
 ;;---- Error handline
@@ -427,9 +426,11 @@ those steps sequentially on a single article.
           (corpus-path "code/evaluation/June2015Materials/Eval_NXML/"))
       (with-total-quiet
           (read-article-set
+           :articles
            (epistemic-article-sweep
             (sweep-article-set
-             (populate-article-set ids corpus-path :quiet t))))))))
+             (populate-article-set ids corpus-path :quiet t)))
+           :counter from)))))
 
 
 ;; run n articles starting with number STARTING-FROM (0 based)
@@ -441,13 +442,15 @@ those steps sequentially on a single article.
              (subseq *articles-created* starting-from))))
     (sweep-and-run-articles articles-to-run)))
 
-(defun sweep-and-run-articles (articles-to-run)
+(defun sweep-and-run-articles (articles-to-run &key (from 0))
   (sweep-article-set articles-to-run)
   ;;(setq *accumulate-content-across-documents* t)
   (with-total-quiet
       (read-article-set
+       :articles
        (epistemic-article-sweep
-        articles-to-run))))
+        articles-to-run)
+       :counter from)))
 
 
 #+ignore
@@ -477,21 +480,18 @@ those steps sequentially on a single article.
 
     (let* ((doc-elements (funcall maker-fn simple-id))
            (article (car doc-elements))
-           (*trap-error-skip-sentence* (not *break-during-read*))
-           (elapsed-internal-real-time 0))
+           (*trap-error-skip-sentence* (not *break-during-read*)))
       (declare (special *trap-error-skip-sentence*))
       (setf (name article) id)
       (sweep-document article)
       (read-epistemic-features article)
-      (start-timer '*time-reading-document*)
       (format t "~&Reading ~a" (name article))
       (with-total-quiet
           (read-from-document article))
-       (setq elapsed-internal-real-time
-          (stop-timer '*time-reading-document*))
-      (format t "  ~a~%" (elapsed-time-to-string elapsed-internal-real-time))
+      (format t "  ~a~%" (elapsed-time-to-string *article-elapsed-time*))
       article)))))
 
+#|
 ;; Functions for timing single articles and batches
 
 (defun time-single-article (n)
@@ -514,6 +514,7 @@ those steps sequentially on a single article.
            (runtime (car (cadr article-time)))
            (realtime (cdr (cadr article-time))))
          (format timing-stream "~w,~d,~d~%" id runtime realtime )))))
+|#
 
 ;;---- Gophers for going through articles
 
@@ -1225,29 +1226,10 @@ These return the Lisp-based obo entries.
 (defun populate-one-article (id)
   (populate-article-set (list id)))
 
-(defun process-one-article (id)
-  (time-start)
-  (setq *articles-created* nil)
-  (read-article-set
-   (sweep-article-set
-    (populate-one-article id)))
-  (time-end)
-  (pprint
-   `((:READING--STARTED ,@ (mitre-time-format *universal-time-start*))
-     (:READING--STARTED ,@ (mitre-time-format *universal-time-end*))
-     (:PMC--ID ,@ (name *current-article*))))
-  (values *current-article*
-          (mitre-time-format *universal-time-start*)
-          (mitre-time-format *universal-time-end*) ;
-          (name *current-article*)))
-
 (defun populate-june-article (id)
   (populate-article-set
    (list id)
    "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
-
-
-
 
 (defun test-june-article-num (number)
   (set-default-corpus-path :jun15)
@@ -1265,7 +1247,7 @@ These return the Lisp-based obo entries.
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id)))
 
-(defun run-june-articles (n &key (from-article 0) (cards t) (new nil))
+(defun run-june-articles (n &key (from-article 0) (cards t))
   (let
       ((*show-article-progress* nil))
     (declare (special *show-article-progress*))
@@ -1274,24 +1256,19 @@ These return the Lisp-based obo entries.
       do
       (format t "~&~&---------^^^^^ Generating cards for #~s article ~s~&" i id)
       (setq *all-sentences* nil)
-      (if new
-          (cards-for-article-new id cards)
-          (cards-for-article id cards)))))
+      (test-june-article id)
+      (when cards
+        (if
+         *trap-error-skip-sentence*
+         (handler-case
+             (create-cards-for-article id)
+           (error (e)
+                  (ignore-errors ;; got an error with something printing once
+                   (when *show-handled-sentence-errors*
+                     (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+         (create-cards-for-article id))))))
 
-(defun cards-for-article (id &optional (create-cards nil))
-  (test-june-article id)
-  (when create-cards
-    (if
-     *trap-error-skip-sentence*
-     (handler-case
-         (run-cards id)
-       (error (e)
-              (ignore-errors ;; got an error with something printing once
-               (when *show-handled-sentence-errors*
-                 (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
-     (run-cards id))))
-
-(defun run-cards (*article-id*) 
+(defun create-cards-for-article (*article-id*) 
   (let*
       ((ht (group-pts-by-article))
        (aht (gethash *article-id* ht))
@@ -1311,57 +1288,6 @@ These return the Lisp-based obo entries.
       (loop for card in cards
         do
         (post-translation-file-from-card card (incf counter))))))
-
-#+ignore ;; old version
-(defun cards-for-article (id &optional (run-cards nil))
-  (test-june-article id)
-  (handler-case
-      (when run-cards
-        (let*
-            ((ht (group-phosphorylations-by-article) )
-             (aht (gethash id ht))
-             (counter 0)
-             (cards nil))
-          (declare (special ht aht cards))
-          (when
-              aht
-            (maphash #'(lambda (simple-phos aps)
-                         (declare (ignore simple-phos))
-                         (push (phos-card aps) cards))
-                     aht)
-            (format t "~&Creating ~s cards for article ~s~&" (length cards) id)
-            (loop for card in cards
-              do
-              (phos-file-from-card card (incf counter))))))
-    (error (e)
-           (ignore-errors ;; got an error with something printing once
-            (when *show-handled-sentence-errors*
-              (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
-
-(defun cards-for-article-new (id &optional (run-cards nil))
-  (test-june-article id)
-  (handler-case
-      (when run-cards
-        (let*
-            ((ht (group-pts-by-article) )
-             (aht (gethash id ht))
-             (counter 0)
-             (cards nil))
-          (declare (special ht aht cards))
-          (when
-              aht
-            (maphash #'(lambda (simple-phos aps)
-                         (declare (ignore simple-phos))
-                         (push (pt-card aps) cards))
-                     aht)
-            (format t "~&Creating ~s cards for article ~s~&" (length cards) id)
-            (loop for card in cards
-              do
-              (phos-file-from-card card (incf counter))))))
-    (error (e)
-           (ignore-errors ;; got an error with something printing once
-            (when *show-handled-sentence-errors*
-              (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
 
 
 
@@ -1393,6 +1319,10 @@ These return the Lisp-based obo entries.
 ;;; timing code used with process-one-article
 ;;;-------------------------------------------
 
+(defun elapsed-time-to-string (floating-secs)
+  (format nil "~,3f" floating-secs))
+
+#+ignore
 (defun elapsed-time-to-string (diff)
   (multiple-value-bind (totsecs rem) (floor diff internal-time-units-per-second)
       (multiple-value-bind (mins secs) (floor totsecs 60)
@@ -1401,22 +1331,29 @@ These return the Lisp-based obo entries.
           (format nil "~d:~2,'0d.~3,'0d" mins secs rem)))))
 
 (defparameter *time-start* 0)
+(defparameter *time-end* 0)
 
 (defparameter *universal-time-start* 0)
 (defparameter *universal-time-end* 0)
+(defparameter *article-elapsed-time* 0.0)
+(defparameter *article-times* nil)
 
-(defun time-start ()
+(defun time-start (article)
   (setq *time-start* (get-internal-real-time))
   (setq *universal-time-start* (get-universal-time)))
 
-(defun time-end ()
+(defun time-end (article)
   (setq *universal-time-end* (get-universal-time))
+  (setq *time-end* (get-internal-real-time))
+  (setq *article-elapsed-time*
+        (/ (* 1.0 (-  *time-end* *time-start*)) internal-time-units-per-second))
+  (push (list article *universal-time-start* *universal-time-end* 
+              *article-elapsed-time* *time-start* *time-end* )
+        *article-times*)
+  
   (values
    *universal-time-start*
-   (+ *universal-time-start*
-      (/ (* 1.0
-            (- *time-start* (get-internal-real-time)))
-         internal-time-units-per-second))))
+   (+ *universal-time-start* *article-elapsed-time*)))
 
 (defun mitre-time-format (ut)
   (multiple-value-bind
