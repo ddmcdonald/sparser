@@ -1221,7 +1221,7 @@ These return the Lisp-based obo entries.
   (sweep-and-run-articles (populate-june-article id) :from article-number))
 
 
-(defparameter *article-timing-stream* nil)
+(defparameter *article-timing-stream* t)
 
 (defun time-article-batch (start n outfile)
   (with-open-file (timing-stream outfile :direction :output :if-exists :supersede)
@@ -1229,8 +1229,9 @@ These return the Lisp-based obo entries.
     (run-june-articles n :from-article start :cardp t :show-timep t)
     ))
 
-(defun write-article-time-to-log (i id runtime)
-  (format *article-timing-stream* "~w,~6,3d,~6,3d~%" id runtime realtime ))
+(defun write-article-time-to-log (i id runtime &optional (realtime 0.0))
+  (when *article-timing-stream*
+    (format *article-timing-stream* "~w,~6,3d,~6,3d~%" id runtime realtime )))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
