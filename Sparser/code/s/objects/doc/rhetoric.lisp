@@ -52,17 +52,20 @@ which could be set automatically by using the :init-form on the slot.
 (defclass discourse-relations ()
   ((background-knowledge :initform nil :accessor background-knowledge
     :documentation "Pairs of sentences (X, Y), where X is
-       explicitely assumed or acknowledged prior to the assertion
-       of Y.")
+      explicitely assumed or acknowledged prior to the assertion
+      of Y.")
+   (contrast :initform nil :accessor contrast
+    :documentation "Pairs of sentences (X, Y), where X and Y are
+      being contrasted.")
    (evidence-for :initform nil :accessor evidence-for
     :documentation "Pairs of sentences (X, Y), where X is 
-       evidence for Y.")
+      evidence for Y.")
    (experimental-result-of :initform nil :accessor experimental-result
     :documentation "Pairs of sentences (X, Y), where X is
-       the (material) result of the experiment described by Y.
-       That is, X is stating the direct findings of an experiment, 
-       rather than a conjecture or generalization made because of
-       a result.")
+      the (material) result of the experiment described by Y.
+      That is, X is stating the direct findings of an experiment, 
+      rather than a conjecture or generalization made because of
+      a result.")
    (result-of :initform nil :accessor result-of
     :documentation "Pairs of sentences (X, Y), where X is a result of
       Y. Less restrictive than evidence-for. Triggered by words like 
