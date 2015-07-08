@@ -732,6 +732,7 @@ as β-catenin (S→A), which is a mutant β-catenin with alanine substitutions
 completely lost the ability to associate with β-Trcp (Fig. 1 A and B)."))
 #| Very first pass after translating the arrow as a hyphen
 
+
 Unpacking #<word "substitution">
   it is an unambiguous noun
 Unpacking #<word "see">
@@ -1197,7 +1198,7 @@ These return the Lisp-based obo entries.
   (unless cl-user::*r3-trunk* ;; nust end with a slash
     (error "Bind *r3-trunk* to that spot in your directory"))
   (let ((filename
-         (concatenate 'string cl-user::*r3-trunk* "code/obo-terms.lisp")))
+         (format nil "~a~a" cl-user::*r3-trunk* "code/obo-terms.lisp")))
     (incorporate-obo-terms filename)))
 
 (defun populate-one-article (id)
@@ -1219,25 +1220,45 @@ These return the Lisp-based obo entries.
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
   (sweep-and-run-articles (populate-june-article id) :from article-number))
 
-(defun run-june-articles (n &key (from-article 0) (cards t))
-  (let
-      ((*show-article-progress* nil))
+
+(defparameter *article-timing-stream* nil)
+
+(defun time-article-batch (start n outfile)
+  (with-open-file (timing-stream outfile :direction :output :if-exists :supersede)
+    (setf *article-timing-stream* timing-stream)
+    (run-june-articles n :from-article start :cardp t :show-timep t)
+    ))
+
+(defun write-article-time-to-log (i id runtime)
+  (format *article-timing-stream* "~w,~6,3d,~6,3d~%" id runtime realtime ))
+
+
+(defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
+  (let ((*show-article-progress* nil))
     (declare (special *show-article-progress*))
     (loop for id in (nthcdr from-article *june-nxml-files-in-MITRE-order*)
       as i from (+ 1 from-article) to (+ n from-article)
-      do
+        do (run-one-june-article i id cardp show-timep))))
+          
+(defun run-one-june-article (i id &optional cardp write-timep)          
+  (declare (special *article-elapsed-time*)) ;; defined below. 
+
       (setq *all-sentences* nil)
       (test-june-article id :article-number i)
-      (when cards
-        (if
-         *trap-error-skip-sentence*
-         (handler-case
-             (create-cards-for-article id)
-           (error (e)
+      (let ((numcards 0))
+        (when cards
+          (if *trap-error-skip-sentence*
+              (handler-case
+                  (create-cards-for-article id)
+                (error (e)
                   (ignore-errors ;; got an error with something printing once
                    (when *show-handled-sentence-errors*
                      (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
-         (create-cards-for-article id))))))
+            (setf numcards (create-cards-for-article id)))
+          )
+        (when write-timep (write-article-time-to-log i id *article-elapsed-time*))
+        (format t "Completed ~d, ~a in time ~a. Cards: ~d" i id *article-elapsed-time* numcards )
+        ))
 
 (defun create-cards-for-article (*article-id*) 
   (let*
@@ -1257,8 +1278,9 @@ These return the Lisp-based obo entries.
                aht)
       (format t "~&Creating ~s cards for article ~s~&" (length cards) *article-id*)
       (loop for card in cards
-        do
-        (post-translation-file-from-card card (incf counter))))))
+        do (post-translation-file-from-card card (incf counter)))
+      (length cards)
+      )))
 
 
 
@@ -1343,7 +1365,7 @@ These return the Lisp-based obo entries.
 (defun PMC-sent-list (name pattern)
   (let ((namesents (intern (string-upcase (format nil "~a-sents" name)))))
     (length (set namesents
-		 (loop for s in *1000-art-sents* when (search pattern s)
+                 (loop for s in *1000-art-sents* when (search pattern s)
                    collect
                    (if (and (numberp (search "." s :from-end t))(equal (- (length s) 1) (search "." s :from-end t)))
                        s
