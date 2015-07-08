@@ -181,8 +181,10 @@ and determine if a discourse relation can hold between them.
 The current possible relations are:
     - background-knowledge
     - evidence-for
-    - same-role |#
-;;;TODO experimental-result-of, result-of
+    - same-role 
+The relations are shallow because the semantic content of
+the sentences is not considered. |#
+;;;TODO experimental-result-of, more comments
 
 (defparameter *collect-discourse-relations* nil)
 
@@ -246,7 +248,63 @@ The current possible relations are:
 	  (concatenate 'string (first sent-words) " " (second sent-words))))
     (or (string-equal first-two-words "in contrast,")
 	(string-equal first-two-words "in contrast"))))
-				       
+
+
+;;; Splitting relations into bio and structural so that a sentence
+;;; can be part of both types of relations at once.
+
+(defun establish-structural-discourse-relations (sentence prev-sent
+						 paragraph)
+  ;; Relations triggered by explicit discourse markers.
+  ;; Don't take the discourse roles of the sentences into account.
+  (cond ((check-for-result-of sentence)
+	 (note-discourse-relation sentence prev-sent
+				  'result-of paragraph))
+	((check-for-contrast sentence)
+	 (note-discourse-relation sentence prev-sent
+				  'contrast paragraph))
+	(t
+	 t)))
+
+(defun establish-bio-discourse-relations (sentence prev-sent paragraph
+					  contents prev-cont)
+  ;; Relations that are determined by the discourse roles
+  ;; of the sentences being considered.
+  (cond ((check-for-same-role contents prev-cont)
+	 (note-discourse-relation sentence prev-sent
+				  'same-role paragraph))
+	((check-for-evidence-for contents prev-cont)
+	 (note-discourse-relation sentence prev-sent
+				  'evidence-for paragraph))
+	;; parameter order is switched here - previous sentence
+	;; will generally be background knowledge for current sentence
+	((check-for-background-knowledge prev-cont contents)
+	 (note-discourse-relation prev-sent sentence
+				  'background-knowledge paragraph))
+	(t
+	 t)
+
+(defun establish-discourse-relations (sentence)
+  ;; Two types of discourse relations can hold of a pair
+  ;; of sentences: biological (i.e., a relation that is
+  ;; computed using the discourse roles of each sentence),
+  ;; and structural (i.e., a relation that is triggered
+  ;; solely by the presence of an explicit discourse marker.
+  (declare (special *previous-sentence*))
+  (let* ((paragraph (parent sentence))
+	 (prev-sent (previous sentence))
+	 (contents (contents sentence))
+	 (prev-cont (when prev-sent (contents prev-sent))))
+    (when prev-sent
+      (determine-discourse-role sentence)
+      (unless (discourse-role prev-cont)
+	(determine-discourse-role prev-sent))
+      (establish-bio-discourse-relations sentence prev-sent paragraph
+					 contents prev-cont)
+      (establish-structural-discourse-relations sentence prev-sent
+						paragraph))))
+
+#|
 (defun establish-discourse-relations (sentence)
   ;; A pair of sentences may be eligible to stand in more
   ;; than one relation to each other. The ordering of the
@@ -280,6 +338,7 @@ The current possible relations are:
 				     'contrast paragraph))
 	   (t
 	    t)))))
+|#
 	   
 ;;;-------------------------------------------
 ;;; Convenience functions over status objects
@@ -429,7 +488,7 @@ The current possible relations are:
 (methodology-phrase "were analysed")
 
 #| we queried whether [the activity of ASPP2 is regulated
-by the activation of a RAS-mediated signalling pathway." |#
+by the activation of a RAS-mediated signalling pathway]." |#
 (motivation-phrase "to assess whether")
 (motivation-phrase "to determine whether")
 (motivation-phrase "to test whether")
