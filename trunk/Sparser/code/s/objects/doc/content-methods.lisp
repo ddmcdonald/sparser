@@ -69,6 +69,11 @@
   (when *apply-document-after-actions*
     (do-section-level-after-actions ss)))
 
+(defmethod after-actions ((a article))
+  (when *apply-document-after-actions*
+    (do-section-level-after-actions a)))
+
+
 (defmethod do-section-level-after-actions ((s has-content-model))
   (summarize-parse-performance s))
 
