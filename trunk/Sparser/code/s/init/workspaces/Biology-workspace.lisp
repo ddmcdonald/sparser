@@ -1246,7 +1246,7 @@ These return the Lisp-based obo entries.
       (setq *all-sentences* nil)
       (test-june-article id :article-number i)
       (let ((numcards 0))
-        (when cards
+        (when cardp
           (if *trap-error-skip-sentence*
               (handler-case
                   (create-cards-for-article id)
@@ -1267,8 +1267,7 @@ These return the Lisp-based obo entries.
        (counter 0)
        (cards nil))
     (declare (special ht aht cards))
-    (when
-        aht
+    (when aht
       (maphash #'(lambda (simple-phos aps)
                    (declare (ignore simple-phos))
                    (format t "~%    writing ~s card for ~s"
