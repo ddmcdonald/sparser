@@ -282,7 +282,7 @@ the sentences is not considered. |#
 	 (note-discourse-relation prev-sent sentence
 				  'background-knowledge paragraph))
 	(t
-	 t)
+	 t)))
 
 (defun establish-discourse-relations (sentence)
   ;; Two types of discourse relations can hold of a pair
