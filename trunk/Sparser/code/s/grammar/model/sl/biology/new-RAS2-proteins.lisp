@@ -9,19 +9,6 @@
 ;; 7/6/2015 New macro def-ras2-protein to mark proteins that are mentioned in the MITRE RAS 2-hop model
 
 
-
-(defun ras2-protein? (i)
-  (and (individual-p i)
-       (itypep i 'protein)
-       (value-of 'ras2-model i)))
-
-;;obsolete
-;;(defparameter *ras2-proteins* (make-hash-table :size 1500 :test #'equal))
-;;(gethash (string-for/name i) *ras-2-proteins*)
-
-(defmacro def-ras2-protein (name &rest args)
-  (eval `(define-protein ,name ,@args :ras2-model t)))
-
 (DEF-RAS2-PROTEIN "14-3-3 family" ("14-3-3 family")) 
 (DEF-RAS2-PROTEIN "1433B_HUMAN" ("1433B_HUMAN" "Protein kinase C inhibitor protein 1" "KCIP-1" "YWHAB" "14-3-3 protein beta/alpha, N-terminally processed" "14-3-3 protein bη/α, N-terminally processed" "Protein 1054")) 
 (DEF-RAS2-PROTEIN "1433E_HUMAN" ("1433E_HUMAN" "YWHAE" "14-3-3E")) 
@@ -242,7 +229,7 @@
 (DEF-RAS2-PROTEIN "CSF2R_HUMAN" ("CSF2R_HUMAN" "CDw116" "CSF2RA" "CD116" "CSF2R" "GM-CSF-R-alpha" "GM-CSF-R-α" "GMCSFR-alpha" "GMCSFR-α" "CSF2RY" "GMR-alpha" "GMR-α")) 
 (DEF-RAS2-PROTEIN "CSF2_HUMAN" ("CSF2_HUMAN" "Sargramostim" "Molgramostin" "Colony-stimulating factor" "GMCSF" "GM-CSF" "CSF2" "CSF")) 
 (DEF-RAS2-PROTEIN "CTNA1_HUMAN" ("CTNA1_HUMAN" "Renal carcinoma antigen NY-REN-13" "CTNNA1" "Cadherin-associated protein" "Alpha E-catenin")) 
-(DEF-RAS2-PROTEIN "CTNB1_HUMAN" ("CTNB1_HUMAN" "Beta-catenin" "Bη-catenin" "CTNNB1" "CTNNB")) 
+(DEF-RAS2-PROTEIN "CTNB1_HUMAN" ("CTNB1_HUMAN" "Beta-catenin" "Bη-catenin" "CTNNB1" "CTNNB" "β-catenin")) 
 (DEF-RAS2-PROTEIN "CTND1_HUMAN" ("CTND1_HUMAN" "Cadherin-associated Src substrate" "p120 catenin" "p120(cas)" "KIAA0384" "CTNND1" "CAS" "p120(ctn)")) 
 (DEF-RAS2-PROTEIN "CTRO_HUMAN" ("CTRO_HUMAN" "CIT" "KIAA0949" "CRIK" "2.7.11.1" "Serine/threonine-protein kinase 21" "STK21")) 
 (DEF-RAS2-PROTEIN "CXCL9_HUMAN" ("CXCL9_HUMAN" "MIG" "SCYB9" "HuMIG" "CMK" "CXCL9" "Gamma-interferon-induced monokine" "Monokine induced by interferon-gamma" "Monokine induced by interferon-γ" "Small-inducible cytokine B9")) 
@@ -624,7 +611,7 @@
 (DEF-RAS2-PROTEIN "MCF2L_HUMAN" ("MCF2L_HUMAN" "MCF2L" "MCF2-transforming sequence-like protein" "KIAA0362" "DBL's big sister")) 
 (DEF-RAS2-PROTEIN "MCF2_HUMAN" ("MCF2_HUMAN" "Proto-oncogene MCF-2" "DBL-transforming protein" "DBL" "MCF2" "MCF2-transforming protein")) 
 (DEF-RAS2-PROTEIN "MEF2D_HUMAN" ("MEF2D_HUMAN" "MEF2D")) 
-;(DEF-RAS2-PROTEIN "MEK" ("MEK")) 
+(DEF-RAS2-PROTEIN "MEK" ("MEK")) 
 (DEF-RAS2-PROTEIN "MEK1-2" ("MEK1-2")) 
 (DEF-RAS2-PROTEIN "MEK1-2" ("MEK1-2"))  
 (DEF-RAS2-PROTEIN "MEK1-2-active" ("MEK1-2-active")) 
