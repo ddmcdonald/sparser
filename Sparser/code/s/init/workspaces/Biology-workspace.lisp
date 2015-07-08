@@ -232,7 +232,7 @@ those steps sequentially on a single article.
           nil)
          (t
           (if quiet
-              (princ "." t)
+              nil ;; don't print anything now (princ "." t)
               (format t "~&~%~%Reading the file ~a" pathname))
           (incf count) ;; if there's an error, how far along are we
           (setq created (funcall maker-fn simple-id))
@@ -318,7 +318,7 @@ those steps sequentially on a single article.
         (return))
       (incf counter)
       ;;(format t "~&Extracting features: #~a ~a~%" counter (name article))
-      (format t " ~a" counter)
+      ;;(format t " ~a" counter)
       (if *break-on-sweep-errors*
         (push (read-epistemic-features article)
               *epistemically-scanned-articles*)
@@ -345,8 +345,8 @@ those steps sequentially on a single article.
   (let ((count counter))
     (loop for article in articles
       do
-      (incf count)
-      (read-article article count))))
+      (read-article article count)
+      (incf count))))
 
 ;;(defvar *time-reading-document* 0)
 
@@ -356,11 +356,12 @@ those steps sequentially on a single article.
     ;; Enables the error-handler in the parser that will
     ;; skip to the next sentence
     (declare (special *trap-error-skip-sentence*))
-    (format t "~&Reading document #~a ~a" counter (name article))
+    (format t "~%~%---------------------------------------------~&Reading document #~a ~a~&" counter (name article))
     (time-start article)
     (read-from-document article)
     (time-end article)
-    (format t "  ~a~%" (elapsed-time-to-string *article-elapsed-time*))))
+    (format t "~%---- Article: ~a took ~a seconds to read----~%~%" 
+            (name article) (elapsed-time-to-string *article-elapsed-time*))))
 
 
 ;;---- Error handline
@@ -440,7 +441,7 @@ those steps sequentially on a single article.
          (if (integerp n)
              (subseq *articles-created* starting-from (+ starting-from n))
              (subseq *articles-created* starting-from))))
-    (sweep-and-run-articles articles-to-run)))
+    (sweep-and-run-articles articles-to-run :from starting-from)))
 
 (defun sweep-and-run-articles (articles-to-run &key (from 0))
   (sweep-article-set articles-to-run)
@@ -491,30 +492,6 @@ those steps sequentially on a single article.
       (format t "  ~a~%" (elapsed-time-to-string *article-elapsed-time*))
       article)))))
 
-#|
-;; Functions for timing single articles and batches
-
-(defun time-single-article (n)
-  (let ((real-time-start (get-internal-real-time))
-      (run-time-start (get-internal-run-time)))
-    ;; (setf *default-corpus-path* (make-corpus-path :jun15))
-    ;; (load-and-run-June-article-number n)
-    (declare (special *june-nxml-files-in-MITRE-order*))
-    (sparser::set-default-corpus-path :jun15)
-    (sparser::load-xml-to-doc-if-necessary)
-    (let ((id (nth (1- n) *june-nxml-files-in-MITRE-order*)))
-      (sparser::load-and-read-article id)
-      (list (symbol-name id) (cons (- (get-internal-run-time) run-time-start) (- (get-internal-real-time) real-time-start))))))
-
-(defun time-article-batch (start n outfile)
-  (with-open-file (timing-stream outfile :direction :output :if-exists :supersede)
-    (loop for i from start to (+ start n) do
-      (let* ((article-time (time-single-article i))
-           (id (car article-time))
-           (runtime (car (cadr article-time)))
-           (realtime (cdr (cadr article-time))))
-         (format timing-stream "~w,~d,~d~%" id runtime realtime )))))
-|#
 
 ;;---- Gophers for going through articles
 
@@ -1231,21 +1208,16 @@ These return the Lisp-based obo entries.
    (list id)
    "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
 
-(defun test-june-article-num (number)
-  (set-default-corpus-path :jun15)
-  (let ((id (nth (1- number) *june-nxml-files-in-MITRE-order*)))
-    (sweep-and-run-articles (populate-june-article id))))
-
 (defparameter *load-ras2* t)
  
 (defun maybe-load-ras2 ()
  (if (and *load-ras2* (find-package :r3)) (funcall (intern "LOAD-RAS2-MODEL" :r3))))
 
-(defun test-june-article (id &optional show-sents)
+(defun test-june-article (id &key (show-sents nil)(article-number 0))
   (maybe-load-ras2)
   (when show-sents (setq *print-sentences* 0))
   (when (numberp id) (setq id (nth (1- id) *june-nxml-files-in-MITRE-order*)))
-  (sweep-and-run-articles (populate-june-article id)))
+  (sweep-and-run-articles (populate-june-article id) :from article-number))
 
 (defun run-june-articles (n &key (from-article 0) (cards t))
   (let
@@ -1254,9 +1226,8 @@ These return the Lisp-based obo entries.
     (loop for id in (nthcdr from-article *june-nxml-files-in-MITRE-order*)
       as i from (+ 1 from-article) to (+ n from-article)
       do
-      (format t "~&~&---------^^^^^ Generating cards for #~s article ~s~&" i id)
       (setq *all-sentences* nil)
-      (test-june-article id)
+      (test-june-article id :article-number i)
       (when cards
         (if
          *trap-error-skip-sentence*
@@ -1279,7 +1250,7 @@ These return the Lisp-based obo entries.
         aht
       (maphash #'(lambda (simple-phos aps)
                    (declare (ignore simple-phos))
-                   (format t "~&writing ~s card for ~s"
+                   (format t "~%    writing ~s card for ~s"
                            (string-downcase (symbol-name (pt-type(caar (car aps)))))
                            *article-id*)
                    (push (pt-card aps) cards))
