@@ -13,6 +13,8 @@
 
 
 ;; Protein families
+(noun  "catenin" :super protein-family)
+
 (def-family "ASPP"
   :members ("ASPP1" "ASPP2")
   :synonyms ("apoptosis-stimulating protein of p53"))
@@ -31,3 +33,25 @@
   :members ("ARaf" "BRaf" "CRaf")
   :identifier "RAF" ;;/// maybe use the Mitre choice?
   :synonyms ("RAF"))
+
+(def-family "Ras" ;;//// need capitalization hacks
+  :members ("KRas" "HRas" "NRas")
+  :identifier "GO:0003930"
+  :synonyms ("RAS")
+  :long "GTPase")
+
+(def-family "MAPK"
+  :members ("ERK1" "ERK2")
+  :long "mitogen activated protein kinase"
+  :synonyms ("ERK" "extracellular signal-regulated kinase"
+             "erk" "mapk"
+             "mitogen-activated protein kinase"))
+
+(def-family  "cyclooxygenase" :members ("PGH2_HUMAN"))
+
+
+;; http://en.wikipedia.org/wiki/Growth_factor
+;; Again, it's a family, not a particular
+(def-bio "growth factor" protein-family)
+(def-bio "growth-factor" protein-family)
+(def-bio "growth receptor" protein-family)

@@ -282,7 +282,9 @@ therefore we have the special cases:
 ;;; point mutations
 ;;;-----------------
 
-(define-category point-mutation :specializes bio-process ;; amino-acid position on-protein
+(define-category mutation :specializes bio-process) ;; there are many types of mutations
+
+(define-category point-mutation :specializes mutation ;; amino-acid position on-protein
   ;; if we had 'mutation' that might be better
   ;; but these do involve a particular residue
   :binds ((new-amino-acid . amino-acid)

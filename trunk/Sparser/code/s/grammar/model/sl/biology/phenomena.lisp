@@ -592,6 +592,7 @@ it is created from N-terminus to C-terminus.|#
   ;; "<binder> binds to <binde>" the subject moves
   :binds ((binder (:or molecule protein-domain))
           (bindee (:or molecule protein-domain))
+          (binding-set (:or molecule protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
           (direct-bindee molecule)(site molecular-location)
           (cell-site cellular-location))
   :realization 
@@ -606,7 +607,9 @@ it is created from N-terminus to C-terminus.|#
          :at site
          :at cell-site
          :to cell-site
-         :with bindee))
+         :with bindee
+         :between binding-set))
+
 
 ;; added in notion of direct-bindee for "A binds B" as opposed to "A binds to B"
 
