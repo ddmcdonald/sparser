@@ -1248,44 +1248,59 @@ These return the Lisp-based obo entries.
           
 (defun run-one-june-article (i id &optional cardp write-timep)          
   (declare (special *article-elapsed-time*)) ;; defined below. 
-
-      (setq *all-sentences* nil)
-      (test-june-article id :article-number i)
-      (let ((numcards 0))
-        (when cardp
-          (if *trap-error-skip-sentence*
-              (handler-case
-                  (create-cards-for-article id)
-                (error (e)
-                  (ignore-errors ;; got an error with something printing once
-                   (when *show-handled-sentence-errors*
-                     (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
-            (setf numcards (or (create-cards-for-article id) 0)))
-          )
-        (when write-timep (write-article-time-to-log i id *article-elapsed-time* numcards))
-        (format t "Completed ~d, ~a in time ~a. Cards: ~d" i id *article-elapsed-time* numcards )
-        ))
+  
+  (setq *all-sentences* nil)
+  (test-june-article id :article-number i)
+  (let ((numcards 0)(num-duplicates 0)(num-filtered 0))
+    (when cardp
+      (if *trap-error-skip-sentence*
+          (handler-case
+              (multiple-value-setq (numcards num-duplicates num-filtered)
+                (create-cards-for-article id))
+            (error (e)
+                   (ignore-errors ;; got an error with something printing once
+                    (when *show-handled-sentence-errors*
+                      (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+          (multiple-value-setq (numcards num-duplicates num-filtered)
+            (create-cards-for-article id))))
+    (when write-timep (write-article-time-to-log i id *article-elapsed-time* numcards))
+    (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered"
+            i id *article-elapsed-time* numcards num-duplicates num-filtered)
+    ))
 
 (defun create-cards-for-article (*article-id*) 
   (let*
       ((ht (group-pts-by-article))
        (aht (gethash *article-id* ht))
        (counter 0)
-       (cards nil))
+       (cards nil)
+       (duplicate-count 0))
     (declare (special ht aht cards))
-    (when aht
+    (cond
+     (aht
       (maphash #'(lambda (simple-phos aps)
                    (declare (ignore simple-phos))
-                   (format t "~%    writing ~s card for ~s"
+                   (format t "~%    creating single ~s card for ~s, generated from ~s examples~%"
                            (string-downcase (symbol-name (pt-type(caar (car aps)))))
-                           *article-id*)
+                           *article-id*
+                           (length aps))
+                   (setq duplicate-count (+ duplicate-count (- (length aps) 1)))
                    (push (pt-card aps) cards))
                aht)
       (format t "~&Creating ~s cards for article ~s~&" (length cards) *article-id*)
-      (loop for card in cards
-        do (post-translation-file-from-card card (incf counter)))
-      (length cards)
-      )))
+      (let
+          ((ncards
+            (loop for card in cards
+              when (post-translation-file-from-card card (incf counter))
+              count 1)))
+        (unless (equal (length cards) ncards)
+          (format t "~%filtered out ~s cards which did not have proteins in the RAS2 model~%"
+                  (- (length cards) ncards)))
+        (values
+         (length cards)
+         duplicate-count
+         (- (length cards) ncards))))
+     (t (values 0 0 0)))))
 
 
 
