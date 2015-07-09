@@ -175,10 +175,20 @@
       protein)))
 
 (defmethod get-protein ((name word))
-  (find-individual 'protein :name name))
+  (let
+      ((rule
+        (car (rs-single-term-rewrites (word-rule-set name)))))
+    (if (cfr-p rule)
+        (cfr-referent rule)
+        (find-individual 'protein :name name))))
 
 (defmethod get-protein ((name polyword))
-  (find-individual 'protein :name name))
+  (let
+      ((rule
+        (car (rs-single-term-rewrites (pw-rules name)))))
+    (if (cfr-p rule)
+        (cfr-referent rule)
+        (find-individual 'protein :name name))))
 
 (defmethod get-family ((name word))
   (or (find-individual 'human-protein-family :name name)

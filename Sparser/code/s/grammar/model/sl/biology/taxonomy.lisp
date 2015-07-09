@@ -362,7 +362,8 @@
   :specializes peptide  ;; this is not clearly true
   :instantiates :self
   :bindings (uid "CHEBI:36080")
-  :binds ((species species))
+  :binds ((species species)
+          (mutation point-mutation))
   :mixins (  reactome-category  in-ras2-model )
   ;;  :rule-label bio-entity
   :index (:permanent :key name)
@@ -565,16 +566,12 @@
 
        
 
-(define-category caveola :specializes cellular-location
-  :realization
-  (:noun "caveola"))
-(handle-mitre-link category::caveola "GO:0005901")
 (define-cellular-location "Golgi apparatus" "GO_0005794")
 (define-cellular-location "basolateral plasma membrane" "GO_0016323")
 (define-cellular-location "caveola" "GO_0005901")
 (define-cellular-location "cell leading edge" "GO_0031252")
 (define-cellular-location "cell-cell junction" "GO_0005911")
-(define-cellular-location "cytoplasm" "GO_0005737")
+(define-cellular-location "cytoplasm" "GO_0005737" :adj "cytoplasmic")
 (define-cellular-location "cytoplasmic vesicle" "GO_0031410")
 (define-cellular-location "cytoskeleton" "GO_0005856")
 (define-cellular-location "cytosol" "GO_0005829" :adj "cytosolic")
@@ -598,7 +595,7 @@
 (define-cellular-location "mitochondrial matrix" "GO_0005759")
 (define-cellular-location "neuromuscular junction" "GO_0031594")
 (define-cellular-location "nucleoplasm" "GO_0005654")
-(define-cellular-location "nucleus" "GO_0005634")
+(define-cellular-location "nucleus" "GO_0005634" :adj "nuclear")
 (define-cellular-location "plasma membrane" "GO_0005886")
 (define-cellular-location "platelet dense granule lumen" "GO_0031089")
 (define-cellular-location "trailing edge" "GO_0031254")

@@ -28,7 +28,7 @@
 (gload "bio;amino-acids")
 (gload "bio;terms1")
 (gload "bio;drugs") ;; needed by verbs
-(gload "bio;phenomena") ;; after proteins
+
 (gload "bio;verbs1")
 #-:sbcl(gload "bio;rhetoric")
 (gload "bio;doc-structure")
@@ -41,9 +41,8 @@
 
 (gload "bio;new-words")
 (gload "bio;UCD-proteins2")
-
 (gload "bio;protein-families")
-
+(gload "bio;phenomena") ;; after proteins
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules")
