@@ -57,7 +57,21 @@
        :ras2-model ,ras2-model)))
 
 (defun in-ras2-model? (entity)
-  (value-of 'ras2-model entity))
+  (not 
+   (null
+    (or
+     (value-of 'ras2-model entity)
+     (let*
+         ((name-word (value-of 'name entity))
+          (name (cond
+                 ((word-p name-word) 
+                  (word-pname name-word))
+                 ((polyword-p name-word)
+                  (pw-pname name-word))
+                 (t nil))))
+         (member name 
+                 '("MAPK" "MEK" "E3b1" "_HUMAN" "p140"  "hVps34" "hRad17" "RasGRF1" "D3" )
+                 :test #'equal))))))
 
 (defun best-protein-id (ids)
   (or
