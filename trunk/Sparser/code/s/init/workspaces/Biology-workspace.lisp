@@ -104,6 +104,7 @@ those steps sequentially on a single article.
 
 ;;; remove slashes from both ends unless just-end = t then just right end.
 (defun remove-end-slashes (string &optional (just-end nil))
+  (if (pathnamep string) (setq string (path-namestring string)))
   (let* ((lastpos (1- (length string)))
          (p1 (if (and (not just-end) (eq (elt string 0) #\/)) 1 0))
          (p2 (if (eq (elt string lastpos) #\/) lastpos (1+ lastpos))))
