@@ -1223,15 +1223,20 @@ These return the Lisp-based obo entries.
 
 (defparameter *article-timing-stream* t)
 
-(defun time-article-batch (start n outfile)
+;;; having trouble passing in string on Rex cmd line from script.
+(defun time-article-batch (start n &optional outfile)
+  (unless outfile 
+    (setf outfile (format nil "~a/code/evaluation/times/article-times-~d-to-~d.csv"
+                          cl-user::*r3-trunk* start (+ start n))))
+
   (with-open-file (timing-stream outfile :direction :output :if-exists :supersede)
     (setf *article-timing-stream* timing-stream)
     (run-june-articles n :from-article start :cardp t :show-timep t)
     ))
 
-(defun write-article-time-to-log (i id runtime &optional (realtime 0.0) (numcards 0))
+(defun write-article-time-to-log (i id runtime &optional (numcards 0))
   (when *article-timing-stream*
-    (format *article-timing-stream* "~w, ~6,3f, ~6,3f, ~d~%" id runtime realtime numcards)))
+    (format *article-timing-stream* "~a, ~6,3f, ~d~%" id runtime numcards)))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
@@ -1255,7 +1260,7 @@ These return the Lisp-based obo entries.
                   (ignore-errors ;; got an error with something printing once
                    (when *show-handled-sentence-errors*
                      (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
-            (setf numcards (create-cards-for-article id)))
+            (setf numcards (or (create-cards-for-article id) 0)))
           )
         (when write-timep (write-article-time-to-log i id *article-elapsed-time* numcards))
         (format t "Completed ~d, ~a in time ~a. Cards: ~d" i id *article-elapsed-time* numcards )
