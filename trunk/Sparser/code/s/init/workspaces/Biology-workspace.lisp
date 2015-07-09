@@ -104,7 +104,7 @@ those steps sequentially on a single article.
 
 ;;; remove slashes from both ends unless just-end = t then just right end.
 (defun remove-end-slashes (string &optional (just-end nil))
-  (if (pathnamep string) (setq string (path-namestring string)))
+  (if (pathnamep string) (setq string (file-namestring string)))
   (let* ((lastpos (1- (length string)))
          (p1 (if (and (not just-end) (eq (elt string 0) #\/)) 1 0))
          (p2 (if (eq (elt string lastpos) #\/) lastpos (1+ lastpos))))
@@ -161,8 +161,8 @@ those steps sequentially on a single article.
           (setq ids (nthcdr n ids)))
       (populate-article-set ids location :quiet))))
 
-;; n is for do the first n
-(defun populate-june-test-article-set (&optional n)
+;; n is for do the first n. n followed by m does from m to n inclusive (zero based for nth)
+(defun populate-june-test-article-set (&optional n m)
   (declare (special *june-nxml-files-in-MITRE-order*))
   (unless cl-user::*r3-trunk*
     (error "*r3-trunk* needs to be set."))
@@ -180,9 +180,8 @@ those steps sequentially on a single article.
                directory-namestring))
       (if (numberp n)
        (populate-article-set
-        (loop for i from 1 to n
-          as id in ids
-          collect id)
+        (loop for i from m to n
+          collect (nth i ids))
         corpus-path
         :quiet t)
        (populate-article-set ids corpus-path :quiet t)))))
@@ -1232,7 +1231,7 @@ These return the Lisp-based obo entries.
 
 (defun write-article-time-to-log (i id runtime &optional (realtime 0.0) (numcards 0))
   (when *article-timing-stream*
-    (format *article-timing-stream* "~w, ~6,3d, ~6,3d, ~d~%" id runtime realtime numcards)))
+    (format *article-timing-stream* "~w, ~6,3f, ~6,3f, ~d~%" id runtime realtime numcards)))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
