@@ -1224,19 +1224,23 @@ These return the Lisp-based obo entries.
 (defparameter *article-timing-stream* t)
 
 ;;; having trouble passing in string on Rex cmd line from script.
-(defun time-article-batch (start n &optional outfile)
-  (unless outfile 
-    (setf outfile (format nil "~a/code/evaluation/times/article-times-~d-to-~d.csv"
-                          cl-user::*r3-trunk* start (+ start n))))
-
-  (with-open-file (timing-stream outfile :direction :output :if-exists :supersede)
+(defun time-article-batch (start n &optional (localdir 'results))
+  (declare (special *card-folder*))
+  (let* ((outdir
+          (make-corpus-path (format nil "code/evaluation/~a"  localdir)))
+         (carddir (concatenate 'string outdir "cards/"))
+         (timedir (concatenate 'string outdir "times/"))
+         (filename (format nil "~a/article-data-~d-to-~d.csv" timedir start (+ start n))))
+    (setf *card-folder* (format nil "~a/code/evaluation/~a/cards" cl-user::*r3-trunk* localdir))
+  (with-open-file (timing-stream filename :direction :output :if-exists :supersede)
     (setf *article-timing-stream* timing-stream)
     (run-june-articles n :from-article start :cardp t :show-timep t)
-    ))
+    (dump-orphans timedir)
+    )))
 
-(defun write-article-time-to-log (i id runtime &optional (numcards 0))
+(defun write-article-time-to-log (i id runtime &optional (numcards 0)(duplicates 0)(filtered 0))
   (when *article-timing-stream*
-    (format *article-timing-stream* "~a, ~6,3f, ~d~%" id runtime numcards)))
+    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d~%" i id runtime (or numcards 0) duplicates filtered)))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
