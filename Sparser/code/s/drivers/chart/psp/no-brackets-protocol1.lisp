@@ -25,6 +25,8 @@
 ;; 6/8/2015 Catching errors in get-string-from-local-edge-cache
 ;; 6/10/15 Rearranging to make globals and their management more apparent
 ;;  and cleaning up debugging code
+;; 7/10/2015 new parameter *dont-filter-on-discourse-relevance* that turns off use of discourse relevance filtering
+;; to see how many cards that has surpressed
 
 (in-package :sparser)
 
@@ -267,6 +269,8 @@
 (defvar *entities* nil
   "Holds the entities for the last sentence when *readout-relations* is up")
 
+(defparameter *dont-filter-on-discourse-relevance* nil)
+
 (defun post-analysis-operations (sentence)
   (declare (special *universal-time-start* *universal-time-end*))
   
@@ -281,7 +285,7 @@
     
     (when (and *readout-relations*
                *index-cards*
-               relevant?)
+               (or *dont-filter-on-discourse-relevance* relevant?))
       (push `(,(sentence-string sentence) 
               ,(all-individuals-in-tts sentence)
               ,@(when (and (boundp '*current-article*)
