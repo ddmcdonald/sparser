@@ -429,7 +429,7 @@ it is created from N-terminus to C-terminus.|#
 ; MAPK pathway inhibitors / inhibition
 
 (define-category  pathway
-  :specializes bio-process
+  :specializes bio-mechanism
   :instantiates :self
   :mixins (type-marker biological)
   :binds ((protein-sequence sequence)

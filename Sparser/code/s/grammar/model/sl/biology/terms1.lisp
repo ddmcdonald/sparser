@@ -623,11 +623,7 @@
       (:noun "means"
              :of process))
 (adj "measurable" :super bio-predication) ;; keyword: (able ADJ) 
-(noun "mechanism" :super bio-process
-      :binds ((process bio-process))
-      :realization
-      (:noun "mechanism"
-             :of process))
+
 (define-adverb "mechanistically")
 ;;(delete-adj-cfr (resolve/make "independent"))
 

@@ -97,6 +97,12 @@
   prtoeins and small molecules, etc. which have
   OBO identifiers, but are not localized to cellular locations.")
 
+(define-category mechanism :specializes endurant
+:binds ((function process) ;;  the process typically performed by this mechanism in the context of discussion
+        (goal)) ;; the predication that defines the desired end-state?
+  :documentation 
+  "A collection of interacting physical entities that performs an action or has a purpose. Expand this comment..."
+)
 
 (define-category biological
   :specializes with-quantifier
@@ -108,7 +114,7 @@
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
 
-(define-category bio-abstract :specializes biological ;; some probelm with with-quantifier and abstract
+(define-category bio-abstract :specializes biological ;; some problem with with-quantifier and abstract
   :mixins (with-quantifier)
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
@@ -120,6 +126,13 @@
           (manner)
           (aspect) ;; "will likely be useful"
           (in-order-to)))
+
+(define-category bio-mechanism :specializes process
+  :mixins (biological)
+  :binds ((process bio-process)) ;; should be the same as the "function" of the process
+  :realization
+  (:noun "mechanism"
+         :of process))
 
 (define-category bio-state :specializes bio-predication ;; for things like "activated state"
   :realization
@@ -193,6 +206,15 @@
 
 (define-category bio-process
   :specializes process
+  :mixins (has-UID has-name biological)
+  :realization (:common-noun name) ;; for nominal forms
+  :binds ((adverb)(manner)(following)(modifier)(in-order-to))
+  :documentation "No content by itself, provides a common parent
+    for 'processing', 'ubiquitization', etc. that may be the basis
+    of the grammar patterns.")
+
+(define-category bio-mechanism
+  :specializes endurant
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
   :binds ((adverb)(manner)(following)(modifier)(in-order-to))
