@@ -1079,7 +1079,16 @@
     (setq  exists (bind-dli-variable 'object (edge-referent right-edge) exists))
     exists))
 
-
+;;; Adjuncts for clauses ;;
+(defun add-adjunctive-clause-to-s (s adjunctive-clause)
+  (declare (special s adjunctive-clause))
+  (let* ((variable-to-bind 
+          (find-variable-for-category 'causally-related-to (car (indiv-type s)))))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (variable-to-bind
+            (setq s (bind-dli-variable variable-to-bind adjunctive-clause s))
+      s))))
 ;;;------------------------------------------------------------------
 ;;; broad routine for making/adjusting an individual from a category
 ;;;------------------------------------------------------------------
