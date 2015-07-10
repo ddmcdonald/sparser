@@ -394,7 +394,7 @@ SUCH AS RHETORICAL ADVERBS
 
 (def-form-rule (comma subject-relative-clause)
                :head :right-edge
-  :form subject-relative-clause
+  :form comma-separated-subject-relative-clause
   :referent (:daughter right-edge))
 
 (def-form-rule (comma pp-relative-clause)
@@ -417,13 +417,18 @@ SUCH AS RHETORICAL ADVERBS
 
 (loop for nb in `(category::np ,@*n-bar-categories*)
   do
-  (eval 
-   `(def-syntax-rule (,nb subject-relative-clause)
+  (loop for src in '(category::subject-relative-clause category::comma-separated-subject-relative-clause)
+    do
+    (eval 
+   `(def-syntax-rule (,nb ,src)
                      :head :left-edge
       :form np
-      :referent (:function apply-subject-relative-clause left-edge right-edge))))
+      :referent (:function apply-subject-relative-clause left-edge right-edge)))))
 
-
+(def-syntax-rule (s comma-separated-subject-relative-clause)
+  :head :left-edge
+  :form s
+  :referent (:function add-adjunctive-clause-to-s left-edge right-edge))
 
 ;;--- direct object
 (loop for nb in `(category::np ,category::pronoun category::reflexive/pronoun ,@*n-bar-categories*)

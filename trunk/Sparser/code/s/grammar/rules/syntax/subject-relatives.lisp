@@ -101,18 +101,22 @@
   ;; and any other relations that make sense given the
   ;; particulars of the predicate. 
   (declare (special *parent-edge-getting-reference*))
-  (let ((parent *parent-edge-getting-reference*)
-        ;; renaming to help make things clear
-        (subject wh-referent)
-        (event predicate-referent))
-    (push-debug `(,subject ,event ,parent))
-
-    (add-subject-relation event subject)
-
-    ;; Referent of the whole edge is the referent of the
-    ;; predicate, now with a binding to reflect the relationship
-    ;; to the subject (... or should it be called something else?)
-    event))
+  (if
+   *subcat-test*
+   t
+   (let ((parent *parent-edge-getting-reference*)
+         ;; renaming to help make things clear
+         (subject wh-referent)
+         (event predicate-referent))
+     (push-debug `(,subject ,event ,parent))
+     ;;(lsp-break "compose-wh-with-vp")
+     
+     (add-subject-relation event subject)
+     
+     ;; Referent of the whole edge is the referent of the
+     ;; predicate, now with a binding to reflect the relationship
+     ;; to the subject (... or should it be called something else?)
+     event)))
 
 
 (defun add-subject-relation (event subject)
