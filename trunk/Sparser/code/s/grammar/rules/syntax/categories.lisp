@@ -183,6 +183,7 @@
 
 ;;(def-form-category relative-clause)
 (def-form-category subject-relative-clause)
+(def-form-category comma-separated-subject-relative-clause)
 (def-form-category pp-relative-clause)
 (def-form-category thatcomp)
 (def-form-category whethercomp)
