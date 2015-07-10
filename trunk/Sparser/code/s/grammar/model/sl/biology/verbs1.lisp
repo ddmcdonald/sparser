@@ -1419,7 +1419,7 @@
 
 (define-category inhibit ;; was drug-inhibit but inhibit fits answer key
   :specializes bio-control
-  :binds ((agent biological) 
+  :binds ((agent (:or bio-process bio-entity)) ;; see if this blocks anything other than bio-mechanism
           (object biological)
           (measurement measurement)) ;; FIX THIS -- for the moment the rule number-noun-rule makes 2nM a unit of measure, not a measurement))
   :realization 
@@ -2106,12 +2106,15 @@
 (define-category remain
     :specializes bio-relation
     :binds ((agent bio-entity)
-            (object bio-process))
+            (object bio-process)
+            (location bio-location))
     :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
 	   :s agent
-	   :o object))
+	   :o object
+           :at location
+           :in location))
 
 (def-form-rule (remain adjective)
   :form vp

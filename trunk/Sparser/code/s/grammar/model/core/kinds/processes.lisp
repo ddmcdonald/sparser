@@ -31,6 +31,7 @@
           (circumstance)
           (manner)
           (aspect . tense/aspect)
+          (causally-related-to)
           ;; interpret-adverb+verb needs to be improved to diagnose the type of adverb
           ;; but until then, we need to have this variable or something equivalent
           (adverb) ;; general adverb catcher -- for now
