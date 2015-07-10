@@ -1231,7 +1231,7 @@ These return the Lisp-based obo entries.
          (carddir (concatenate 'string outdir "cards/"))
          (timedir (concatenate 'string outdir "times/"))
          (filename (format nil "~a/article-data-~d-to-~d.csv" timedir start (+ start n))))
-    (setf *card-folder* (format nil "~a/code/evaluation/~a/cards" cl-user::*r3-trunk* localdir))
+    (setf *card-folder* (pathname carddir))
   (with-open-file (timing-stream filename :direction :output :if-exists :supersede)
     (setf *article-timing-stream* timing-stream)
     (run-june-articles n :from-article start :cardp t :show-timep t)
@@ -1240,7 +1240,8 @@ These return the Lisp-based obo entries.
 
 (defun write-article-time-to-log (i id runtime &optional (numcards 0)(duplicates 0)(filtered 0))
   (when *article-timing-stream*
-    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d~%" i id runtime (or numcards 0) duplicates filtered)))
+    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d~%"
+            i id runtime (or numcards 0) duplicates filtered)))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
@@ -1250,27 +1251,30 @@ These return the Lisp-based obo entries.
       as i from (+ 1 from-article) to (+ n from-article)
         do (run-one-june-article i id cardp show-timep))))
           
+(defparameter *skip-articles* '(422 576))
+
 (defun run-one-june-article (i id &optional cardp write-timep)          
   (declare (special *article-elapsed-time*)) ;; defined below. 
-  
-  (setq *all-sentences* nil)
-  (test-june-article id :article-number i)
-  (let ((numcards 0)(num-duplicates 0)(num-filtered 0))
-    (when cardp
-      (if *trap-error-skip-sentence*
-          (handler-case
-              (multiple-value-setq (numcards num-duplicates num-filtered)
-                (create-cards-for-article id))
-            (error (e)
-                   (ignore-errors ;; got an error with something printing once
-                    (when *show-handled-sentence-errors*
-                      (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+  (unless (member i *skip-articles*)
+    (setq *all-sentences* nil)
+    (test-june-article id :article-number i)
+    (let ((numcards 0)(num-duplicates 0)(num-filtered 0))
+      (when cardp
+        (if *trap-error-skip-sentence*
+            (handler-case
+                (multiple-value-setq (numcards num-duplicates num-filtered)
+                  (create-cards-for-article id))
+              (error (e)
+                (ignore-errors ;; got an error with something printing once
+                 (when *show-handled-sentence-errors*
+                   (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
           (multiple-value-setq (numcards num-duplicates num-filtered)
             (create-cards-for-article id))))
-    (when write-timep (write-article-time-to-log i id *article-elapsed-time* numcards))
-    (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered"
-            i id *article-elapsed-time* numcards num-duplicates num-filtered)
-    ))
+      (when write-timep (write-article-time-to-log i id *article-elapsed-time* 
+                                                   numcards num-duplicates num-filtered))
+      (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered"
+              i id *article-elapsed-time* numcards num-duplicates num-filtered)
+      )))
 
 (defun create-cards-for-article (*article-id*) 
   (let*
