@@ -560,7 +560,7 @@
 	  (when (category-p (second r-triple-rhs))
 	    (cat-symbol (second r-triple-rhs)))))
       (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-left r-triple-right))
-      ;;(ccl::break "compete")
+      ;;(lsp-break "compete")
       (or
        (eq category::syntactic-there l-triple-left) ;; competing against a "there BE"
        (and
@@ -571,7 +571,8 @@
         (not (and (edge-form (third r-triple))
                   (member (cat-symbol (edge-form (third r-triple)))
                           '(category::pp category::relative-clause
-                                         category::subject-relative-clause)))))
+                                         category::subject-relative-clause
+                                         category::comma-separated-subject-relative-clause)))))
        
        
        (and
@@ -582,7 +583,8 @@
 	  (eq r-triple-right 'category::s))
          (memq r-triple-right
                '(category::vg category::vp category::vg+ed category::vp+ed
-                              category::vg+passive category::vp+passive)))
+                              category::vg+passive category::vp+passive
+                              category::comma-separated-subject-relative-clause)))
         (not
          (and
           (edge-p (edge-left-daughter (third r-triple)))
