@@ -11,6 +11,10 @@
 ;; (defparameter *break-during-read* nil), break-in-articles,  dont-break-in-articles
 ;; 6/20/2015 added control prameter *load-ras2* that can be used to turn off the loading of
 ;; the large model while doing tests...
+;; 7/11/2015 New method TJ to test a single article and add to a file
+;;  current "~/r3/code/evaluation/no-cards.lisp" but should be made more parameterizable
+;; all the sentences that mention RAS2 proteins. This is particularly useful to figure out why we are not generating cards for some articles
+
 
 (in-package :sparser)
 
@@ -1275,6 +1279,13 @@ These return the Lisp-based obo entries.
       (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered"
               i id *article-elapsed-time* numcards num-duplicates num-filtered)
       )))
+
+(defun tj (i id)
+  (run-one-june-article i id t)
+  (with-open-file (s "~/r3/code/evaluation/no-cards.lisp" :direction :output :if-does-not-exist :create :if-exists :append)
+    (format s "~%(defparameter ~s-R2-SENTS~%  '(~%" id)
+    (pprint (r2-proteins) s)
+    (format s "~%))~%~%")))
 
 (defun create-cards-for-article (*article-id*) 
   (let*
