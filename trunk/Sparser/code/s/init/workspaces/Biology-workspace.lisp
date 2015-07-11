@@ -115,13 +115,14 @@ those steps sequentially on a single article.
     (subseq string p1 p2)))
 
 
-(defun make-corpus-path (corpus-kwd)
+(defun make-corpus-path (corpus-kwd &optional (folderp t))
   (let ((path-from-r3-trunk (cond ((stringp corpus-kwd) corpus-kwd)
                                   ((second (assoc corpus-kwd *corpus-paths*)))
                                   (T "corpus/2015-5-4_Mitre-articles"))))
-  (format nil "~A/~A/"
+  (format nil "~A/~A~@[/~]"
           (remove-end-slashes cl-user::*r3-trunk* t)
-          (remove-end-slashes path-from-r3-trunk))))
+          (remove-end-slashes path-from-r3-trunk)
+          folderp)))
 
 (defparameter *default-corpus-path* nil)
 
@@ -1280,12 +1281,13 @@ These return the Lisp-based obo entries.
               i id *article-elapsed-time* numcards num-duplicates num-filtered)
       )))
 
-(defun tj (i id)
+(defun tj (i &optional (id (nth i *june-nxml-files-in-MITRE-order*)))
   (run-one-june-article i id t)
-  (with-open-file (s "~/r3/code/evaluation/no-cards.lisp" :direction :output :if-does-not-exist :create :if-exists :append)
-    (format s "~%(defparameter ~s-R2-SENTS~%  '(~%" id)
-    (pprint (r2-proteins) s)
-    (format s "~%))~%~%")))
+  (let ((file (make-corpus-path "code/evaluation/no-cards.lisp" nil)))
+    (with-open-file (s file :direction :output :if-does-not-exist :create :if-exists :append)
+      (format s "~%(defparameter ~s-R2-SENTS~%  '(~%" id)
+      (pprint (r2-proteins) s)
+      (format s "~%))~%~%"))))
 
 (defun create-cards-for-article (*article-id*) 
   (let*
