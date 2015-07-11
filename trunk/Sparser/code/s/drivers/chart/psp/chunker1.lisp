@@ -596,5 +596,9 @@ all sorts of rules apply and not simply form rules.
         (and (not (and (edge-p prev-edge)
                        (eq category::parentheses (edge-category prev-edge))))
              (not (and (edge-p prev-edge)
+                       (or
+                        (eq word::comma (edge-category prev-edge))
+                        (eq category::and (edge-category prev-edge)))))
+             (not (and (edge-p prev-edge)
                        (or (eq category::preposition (edge-form prev-edge))
                            (ng-head? prev-edge))))))))))
