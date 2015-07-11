@@ -309,7 +309,8 @@ unknown---in any event, we're taking the first edge that is installed.
                       (else
                        (push-debug `(,edges ,next-position))
                        (error "No obvious digit edge amoung~%~a" edges))))))
-
+          (when (null edges) 
+            (error "continue-digit-sequence-after-period got null edges"))
           (when (> next-cell 4)
             (error "No provision for digit-based numbers in the quadrillions ~
                     or larger"))
