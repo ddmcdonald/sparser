@@ -768,7 +768,7 @@
 #|"RFX1_HUMAN"|#   (define-protein "RFXs" ("RFX1_HUMAN"))
 #|"RGAP1_HUMAN"|#   (define-protein "HsCYK" ("RGAP1_HUMAN"))
 #|"RGAP1_HUMAN"|#   (define-protein "MgcRacGAP" ("RGAP1_HUMAN"))
-#|"RGS3_HUMAN"|#   (define-protein "regulator" ("RGS3_HUMAN" "PR:Q94547"))
+;;#|"RGS3_HUMAN"|#   (define-protein "regulator" ("RGS3_HUMAN" "PR:Q94547"))
 #|"RHBL2_HUMAN"|#   (define-protein "NTFs" ("RHBL2_HUMAN"))
 #|"RND1_HUMAN"|#   (define-protein "Rnd1" ("RND1_HUMAN"))
 #|"RND3_HUMAN"|#   (define-protein "Rnd3" ("RND3_HUMAN"))
