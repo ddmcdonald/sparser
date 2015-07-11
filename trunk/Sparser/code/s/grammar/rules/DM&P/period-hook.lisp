@@ -52,7 +52,7 @@
 
 (defun period-hook (the-word-period position-before position-after)
   (declare (ignore the-word-period)
-           (special *reading-populated-document*))
+           (special *reading-populated-document* *sentence-making-sweep*))
   ;; position-before is the one with the period on it. After picks out
   ;; the word following the period.  The stack at this point starts
   ;; with word-level-actions-except-terminals > complete-word/hugen >
@@ -96,7 +96,8 @@
            ;; This is the first moment when we know the length
            ;; of the sentence. 'position-before' is the one that
            ;; has the period as the value of its terminal slot.
-           (set-sentence-endpoints position-before s) ;; and saves the string
+           (when *sentence-making-sweep*
+             (set-sentence-endpoints position-before s)) ;; and saves the string
            (set-sentence-status s :scanned)
            (throw :end-of-sentence :finished-scanning))
           (:scanned
