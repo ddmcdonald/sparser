@@ -2604,8 +2604,17 @@
    :s agent
    :of object))
 
-(def-synonym upregulate
-   (:verb "up-regulate" :noun "up-regulatiion"))
+(define-category up-regulate
+  :specializes bio-control
+  :binds ((agent bio-entity)
+          (object biological))
+  :realization
+  (:verb "up-regulate"
+         :noun "up-regulation"
+         :etf (svo-passive)
+         :o object  ;; regulation of <process>
+         :s agent
+         :of object))
 
 
 (define-category use
