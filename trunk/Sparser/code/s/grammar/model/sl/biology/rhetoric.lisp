@@ -178,17 +178,27 @@ no evidence in the sentence.
 ;;;--------------------------------------
 #| The check-for-<relation> functions consider a two sentences
 and determine if a discourse relation can hold between them.
-The current possible relations are:
+The current possible relations are split into two types, bio
+and structural. The former are computed using the sentences'
+discourse roles, while the latter only look for specific lexical
+triggers. 
+
+bio-discourse-relations:
     - background-knowledge
     - evidence-for
     - same-role 
-The relations are shallow because the semantic content of
+structural-discourse-relations:
+    - contrast
+    - result-of
+
+The relations are 'shallow' because the semantic content of
 the sentences is not considered. |#
-;;;TODO experimental-result-of, more comments
 
 (defparameter *collect-discourse-relations* nil)
 
 (defparameter *all-discourse-relations* nil)
+
+;;; Bio discourse relations
 
 (defmethod note-discourse-relation (sent1 sent2 relation paragraph)
   ;; Add the relation to the appropriate slot in the paragraph
@@ -221,6 +231,15 @@ the sentences is not considered. |#
        (or (eql (discourse-role contents2) 'conjecture)
 	   (eql (discourse-role contents2) 'new-fact))))
 
+(defmethod check-for-experimental-result-of ((contents1 sentence-content)
+					     (contents2 sentence-content))
+  ;; Is sent1 the result of some experiment described by sent2?
+  ;; This will overgenerate without tense info to properly classify
+  ;; methodology/motivation discourse roles.
+  (and (not (discourse-role contents1))
+       (or (eql (discourse-role contents2) 'methodology)
+	   (eql (discourse-role contents2) 'motivation))))
+
 (defmethod check-for-same-role ((contents1 sentence-content)
 				(contents2 sentence-content))
   ;; Checks to see if sent1 and sent2 have the same discourse
@@ -229,30 +248,44 @@ the sentences is not considered. |#
     (eql (discourse-role contents1)
 	 (discourse-role contents2))))
 
-(defmethod check-for-result-of ((s sentence))
-  ;; Domain-agnostic relation. Simply checks the first word
-  ;; of the second sentence, and if it's one of the words known
-  ;; to be a discourse marker of causality, the relation holds.
-  (let ((first-word (first (split (sentence-string s)))))
-    (or (string-equal first-word "hence")
-	(string-equal first-word "thus")
-	(string-equal first-word "therefore")
-	(string-equal first-word "therefor")
-	(string-equal first-word "consequently"))))
+;;; Structural discourse relations
 
+(defun match-first-word (sent-words match-words)
+  ;; If one of the supplied match-words matches the
+  ;; first of a list of words, return that word. Else,
+  ;; return nil.
+  (let ((first-word (first sent-words)))
+    (loop for word in match-words
+       if (string-equal first-word word)
+       return first-word)))
+
+(defun match-second-word (sent-words match-words)
+  ;; If one of the supplied match-words matches the
+  ;; second of a list of words, return that word. Else,
+  ;; return nil.
+  (let ((second-word (second sent-words)))
+    (loop for word in match-words
+       if (string-equal second-word word)
+       return second-word))) 
+
+(defmethod check-for-result-of ((s sentence))
+  ;; Domain-agnostic relation. Simply checks the first and second
+  ;; words of the sentence, and if one of them is one of the words
+  ;; known to be a discourse marker of causality, the relation holds.
+  (let ((sent-words (split (sentence-string s)))
+	(match-words '("hence" "thus" "therefore" "therefor"
+		       "consequently")))
+    (or (match-first-word sent-words match-words)
+	(match-second-word sent-words match-words))))
+    
 (defmethod check-for-contrast ((s sentence))
   ;; Domain-agnostic relation. Checks if the first word(s)
   ;; of the sentence are on eof the known markers for contrast.
-  (let* ((sent-words (split (sentence-string s)))
-	 (first-two-words
-	  (concatenate 'string (first sent-words) " " (second sent-words))))
-    (or (string-equal first-two-words "in contrast,")
-	(string-equal first-two-words "in contrast"))))
-
-
-;;; Splitting relations into bio and structural so that a sentence
-;;; can be part of both types of relations at once.
-
+  (let ((sent-words (split (sentence-string s))))
+    (and (match-first-word sent-words '("in"))
+	 (or (match-second-word sent-words '("contrast"))
+	     (match-second-word sent-words '("contrast,"))))))
+    
 (defun establish-structural-discourse-relations (sentence prev-sent
 						 paragraph)
   ;; Relations triggered by explicit discourse markers.
@@ -273,14 +306,18 @@ the sentences is not considered. |#
   (cond ((check-for-same-role contents prev-cont)
 	 (note-discourse-relation sentence prev-sent
 				  'same-role paragraph))
-	((check-for-evidence-for contents prev-cont)
-	 (note-discourse-relation sentence prev-sent
-				  'evidence-for paragraph))
 	;; parameter order is switched here - previous sentence
 	;; will generally be background knowledge for current sentence
+	((check-for-evidence-for prev-cont contents)
+	 (note-discourse-relation prev-sent sentence
+				  'evidence-for paragraph))
+	;; same order here as check-for-evidence-for
 	((check-for-background-knowledge prev-cont contents)
 	 (note-discourse-relation prev-sent sentence
 				  'background-knowledge paragraph))
+	((check-for-experimental-result-of contents prev-cont)
+	 (note-discourse-relation sentence prev-sent
+				  'experimental-result-of paragraph))
 	(t
 	 t)))
 
@@ -304,42 +341,38 @@ the sentences is not considered. |#
       (establish-structural-discourse-relations sentence prev-sent
 						paragraph))))
 
-#|
-(defun establish-discourse-relations (sentence)
-  ;; A pair of sentences may be eligible to stand in more
-  ;; than one relation to each other. The ordering of the
-  ;; cond clauses below determine which relation is actually
-  ;; established in the paragraph content container.
-  (declare (special *previous-sentence*))
-  (let* ((paragraph (parent sentence))
-	 (prev-sent (previous sentence))
-	 (contents (contents sentence))
-	 (prev-cont (when prev-sent (contents prev-sent))))
-    (when prev-sent
-      (determine-discourse-role sentence)
-      (unless (discourse-role prev-cont)
-	(determine-discourse-role prev-sent))
-      (cond ((check-for-same-role contents prev-cont)
-	    (note-discourse-relation sentence prev-sent
-				     'same-role paragraph))
-	   ((check-for-evidence-for contents prev-cont)
-	    (note-discourse-relation sentence prev-sent
-				     'evidence-for paragraph))
-	   ;; parameter order is switched here - previous sentence
-	   ;; will generally be background knowledge for current sentence
-	   ((check-for-background-knowledge prev-cont contents)
-	    (note-discourse-relation prev-sent sentence
-				     'background-knowledge paragraph))
-	   ((check-for-result-of sentence)
-	    (note-discourse-relation sentence prev-sent
-				     'result-of paragraph))
-	   ((check-for-contrast sentence)
-	    (note-discourse-relation sentence prev-sent
-				     'contrast paragraph))
-	   (t
-	    t)))))
-|#
-	   
+(defun write-discourse-to-file (filename)
+  ;; Writes a list of all identified discourse elements
+  ;; (relations and roles) to file specified by filename,
+  ;; as well as all sentences not given a discourse role.
+  (unless *all-discourse-relations*
+    (error "No stored discourse relations."))
+  (with-open-file (out filename
+		       :direction :output
+		       :if-exists :supersede)
+    (format out "NUMBER OF SENTENCES WITH ROLES: ~a~%"
+	    (length *all-discourse-role-sents*))
+    (format out "NUMBER OF SENTENCES WITHOUT ROLES: ~a~%"
+	    (length *no-discourse-role-sents*))
+    (format out "NUMBER OF ESTABLISHED RELATIONS: ~a~%~%"
+	    (length *all-discourse-relations*))
+    (princ "----------DISCOURSE ROLES----------" out)
+    (format out "~%")
+    (dolist (role (reverse *all-discourse-role-sents*))
+      (format out "~a ~a~%~%" (car role) (cadr role)))
+    (format out "~%~%~%")
+    (princ "----------NO DISCOURSE ROLES----------" out)
+    (format out "~%")
+    (dolist (sent (reverse *no-discourse-role-sents*))
+      (format out "~a~%~%" (car sent)))
+    (format out "~%~%~%")
+    (princ "----------DISCOURSE RELATIONS----------" out)
+    (format out "~%")
+    (dolist (dr (reverse *all-discourse-relations*))
+      (format out "~a~%    ~a~%    ~a~%~%" (first dr)
+	                                   (second dr)
+	                                   (third dr)))))
+  
 ;;;-------------------------------------------
 ;;; Convenience functions over status objects
 ;;;-------------------------------------------
@@ -455,6 +488,7 @@ the sentences is not considered. |#
 (new-fact-phrase "the data also suggest")
 (new-fact-phrase "the data suggest")
 (new-fact-phrase "these data illustrate")
+(new-fact-phrase "these data indicate")
 (new-fact-phrase "these data suggest")
 (new-fact-phrase "these data support")
 (new-fact-phrase "these findings reveal")
@@ -475,6 +509,8 @@ the sentences is not considered. |#
 (new-fact-phrase "we report here")
 (new-fact-phrase "we show here that")
 
+;; Similarly can these be boiled down to verb+past?
+(methodology-phrase "was compared")
 (methodology-phrase "was performed")
 (methodology-phrase "was tested")
 (methodology-phrase "we analyzed")
@@ -489,7 +525,9 @@ the sentences is not considered. |#
 
 #| we queried whether [the activity of ASPP2 is regulated
 by the activation of a RAS-mediated signalling pathway]." |#
+(motivation-phrase "to assess the effect")
 (motivation-phrase "to assess whether")
+(motivation-phrase "to determine the effect")
 (motivation-phrase "to determine whether")
 (motivation-phrase "to test whether")
 (motivation-phrase "we evaluated whether")

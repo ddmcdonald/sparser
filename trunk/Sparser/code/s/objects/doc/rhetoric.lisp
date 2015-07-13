@@ -60,7 +60,7 @@ which could be set automatically by using the :init-form on the slot.
    (evidence-for :initform nil :accessor evidence-for
     :documentation "Pairs of sentences (X, Y), where X is 
       evidence for Y.")
-   (experimental-result-of :initform nil :accessor experimental-result
+   (experimental-result-of :initform nil :accessor experimental-result-of
     :documentation "Pairs of sentences (X, Y), where X is
       the (material) result of the experiment described by Y.
       That is, X is stating the direct findings of an experiment, 
