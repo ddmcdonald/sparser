@@ -857,11 +857,17 @@
           ;;(break "testing subcats")
           (or
            variable
-           (when (eq label (word-named "in"))
+           (when (or
+                  (eq label (word-named "in"))
+                  (eq label :premod))
              (cond
               ((and (itypep head 'physical)
                     (itypep item 'location))
                (find-variable-in-category/named 'location category::physical))
+              ((and (itypep head 'biological)
+                    (itypep item 'bio-location))
+               (find-variable-in-category/named
+                'location (category-named 'biological)))
               ((and (itypep head 'biological)
                     (itypep item 'bio-context))
                (find-variable-in-category/named
