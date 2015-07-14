@@ -16,7 +16,6 @@
 ;;;----------
 ;;; assessor
 ;;;----------
-(defparameter *trace-relevance-judgements* nil)
 
 (defparameter *all-irrelevant-sentences* nil)
 
@@ -41,19 +40,13 @@
     (push-debug `(,paragraph))
     (cond
       ((contains-new-fact-phrase sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Relevant (contains phrase): ~a~%" sentence))
        t)
 
       ((contains-motivation-phrase sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (motivation): ~a~%" sentence))
        (record-irrelevant-sentence sentence :has-motivation-phrase)
        nil)
 
       ((includes-a-reference sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (reference): ~a~%" sentence))
        (record-irrelevant-sentence sentence :includes-reference)
        nil)
 
@@ -64,38 +57,26 @@
       (*reading-section-title* t)
 
       ((contains-conjecture-phrase sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (conjecture): ~a~%" sentence))
        (record-irrelevant-sentence sentence :has-conjecture-phrase)
        nil)
 
       ((contains-known-result-phrase sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (known result): ~a~%" sentence))
        (record-irrelevant-sentence sentence :has-known-result-phrase)
        nil)
 
       ((contains-methodology-phrase sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (methodology): ~a~%" sentence))
        (record-irrelevant-sentence sentence :has-methodology-phrase)
        nil)
 
-      ((past-tense sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (past tense): ~a~%" sentence))
-       (record-irrelevant-sentence sentence :past-tense)
+      ((contains-exp-result-phrase sentence)
+       (record-irrelevant-sentence sentence :has-exp-result-phrase)
        nil)
 
       ((contains-modal sentence)
-       (when *trace-relevance-judgements*
-	 (format t "~&   Not relevant (modal): ~a~%" sentence))
        (record-irrelevant-sentence sentence :modal)
        nil)
 
       (t
-       (when *trace-relevance-judgements*
-	 (format t "~&   Relevant: ~a~%" sentence))
        t))))
 
 
@@ -143,6 +124,9 @@ no evidence in the sentence.
   (or (contains-conjecture-phrase c)
       (contains-modal c)))
 
+(defmethod experimental-result? ((c sentence-content))
+  (contains-exp-result-phrase c))
+
 (defun determine-discourse-role (sentence)
   ;; Figure out what role the sentence is playing as an
   ;; atom of the discourse.
@@ -154,6 +138,10 @@ no evidence in the sentence.
 	  ((motivation? contents)
 	   (setf (discourse-role contents) 'motivation)
 	   (push `('motivation ,(sentence-string sentence))
+		 *all-discourse-role-sents*))
+	  ((experimental-result? contents)
+	   (setf (discourse-role contents) 'experimental-result)
+	   (push `('experimental-result ,(sentence-string sentence))
 		 *all-discourse-role-sents*))
 	  ((methodology? contents)
 	   (setf (discourse-role contents) 'methodology)
@@ -220,23 +208,26 @@ the sentences is not considered. |#
   ;; background-knowledge relation to a known result.
   (and (eql (discourse-role contents1) 'known-result)
        (or (eql (discourse-role contents2) 'methodology)
-	   (eql (discourse-role contents2) 'motivation))))
+	   (eql (discourse-role contents2) 'motivation)
+	   (eql (discourse-role contents2) 'experimental-result))))
 
 (defmethod check-for-evidence-for ((contents1 sentence-content)
 				   (contents2 sentence-content))
   ;; Checks to see if sent1 is evidence for sent2. True if sent1
   ;; is methodology or motivation, and sent2 is conjecture or new fact.
   (and (or (eql (discourse-role contents1) 'methodology)
-	   (eql (discourse-role contents1) 'motivation))
+	   (eql (discourse-role contents1) 'motivation)
+	   (eql (discourse-role contents1) 'experimental-result))
        (or (eql (discourse-role contents2) 'conjecture)
 	   (eql (discourse-role contents2) 'new-fact))))
 
 (defmethod check-for-experimental-result-of ((contents1 sentence-content)
 					     (contents2 sentence-content))
   ;; Is sent1 the result of some experiment described by sent2?
-  ;; This will overgenerate without tense info to properly classify
-  ;; methodology/motivation discourse roles.
-  (and (not (discourse-role contents1))
+  ;; This will overgenerate, since all sentences without discourse
+  ;; roles are contender participants in the relation.
+  (and (or (not (discourse-role contents1))
+	   (eql (discourse-role contents1) 'experimental-result))
        (or (eql (discourse-role contents2) 'methodology)
 	   (eql (discourse-role contents2) 'motivation))))
 
@@ -389,6 +380,12 @@ the sentences is not considered. |#
 (defmethod contains-conjecture-phrase ((c sentence-content))
   (conjectures c))
 
+(defmethod contains-exp-result-phrase ((s sentence))
+  (contains-exp-result-phrase (contents s)))
+
+(defmethod contains-exp-result-phrase ((c sentence-content))
+  (experimental-results c))
+
 (defmethod contains-known-result-phrase ((s sentence))
   (contains-known-result-phrase (contents s)))
 
@@ -447,6 +444,9 @@ the sentences is not considered. |#
 (conjecture-phrase "it is likely that")
 (conjecture-phrase "it is possible that")
 (conjecture-phrase "one could hypothesize that")
+
+(experimental-result-phrase "we found")
+(experimental-result-phrase "we observed")
 
 (known-result-phrase "emerging evidence suggests")
 (known-result-phrase "has been shown")
@@ -518,8 +518,6 @@ the sentences is not considered. |#
 (methodology-phrase "we conducted")
 (methodology-phrase "we employed")
 (methodology-phrase "we examined")
-(methodology-phrase "we first determined")
-(methodology-phrase "we observed")
 (methodology-phrase "we performed")
 (methodology-phrase "were analysed")
 
