@@ -85,6 +85,9 @@ which could be set automatically by using the :init-form on the slot.
    (conjectures :initform nil :accessor conjectures
     :documentation "Evidence that the sentence is stating 
       a conjecture or a hypothesis rather than an actual fact.")
+   (experimental-results :initform nil :accessor experimental-results
+    :documentation "Evidence that the sentence is reporting the
+      material results of some experiment.")
    (new-facts :initform nil :accessor new-facts
     :documentation "Evidence that the sentence contains
       novel information.")
@@ -110,7 +113,8 @@ which could be set automatically by using the :init-form on the slot.
      new-fact
      method
      motivation
-     conjecture |#
+     conjecture 
+     experimental-result |#
 
 ;;;--------------------
 ;;; function generator
@@ -152,10 +156,17 @@ you also add the corresponding slot to the class. |#
     fn-name))
 
 (define-epistemic-collector note-conjecture-phrase conjectures)
+
+(define-epistemic-collector note-experimental-result experimental-results)
+
 (define-epistemic-collector note-explicit-reference explicit-reference)
+
 (define-epistemic-collector note-new-fact new-facts)
+
 (define-epistemic-collector note-known-result known-results)
+
 (define-epistemic-collector note-methodology methodology)
+
 (define-epistemic-collector note-motivation motivation)
 
 #+ignore ;; original hand-coded versio
@@ -223,6 +234,10 @@ you also add the corresponding slot to the class. |#
 (defun conjecture-phrase (string)
   (setup-epistemic-data-collector
    string 'note-conjecture-phrase))
+
+(defun experimental-result-phrase (string)
+  (setup-epistemic-data-collector
+   string 'note-experimental-result))
 
 (defun new-fact-phrase (string)
   (setup-epistemic-data-collector
