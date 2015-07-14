@@ -6,32 +6,35 @@
 ;;; version: June 2015
 
 ;; Definitions of proteins from the MITRE June test set, as determined by the UCD tagging pipeline
+;; false synonyms, will add later: "NR1H4_HUMAN"  "YMEL1_HUMAN" "SRSF2_HUMAN" "SF01_HUMAN"  "TNNI3_HUMAN"
+
+
 
 (in-package :sparser)
 
-#|"4EBP1_HUMAN"|#   ;;(define-protein "eukaryotic" ("4EBP1_HUMAN"))
+#|"4EBP1_HUMAN"|#   (define-protein "4EBP1_HUMAN" ())
 #|"4F2_HUMAN"|#   (define-protein "4F2hc" ("4F2_HUMAN"))
 #|"AATF_HUMAN"|#   (define-protein "DEDs" ("AATF_HUMAN"))
-#|"ABCBB_HUMAN"|#   ;;(define-protein "bile" ("ABCBB_HUMAN" "NR1H4_HUMAN"))
+#|"ABCBB_HUMAN"|#   (define-protein "ABCBB_HUMAN" ())
 #|"ACES_HUMAN"|#   (define-protein "AChE" ("ACES_HUMAN"))
 #|"ACES_HUMAN"|#   (define-protein "AChEs" ("ACES_HUMAN"))
 #|"ACE_HUMAN"|#   (define-protein "ACE" ("PR:000022052" "ACE_HUMAN"))
 #|"ADAM9_HUMAN"|#   (define-protein "ADAMs" ("ADAM9_HUMAN"))
-#|"ADML_HUMAN"|#   ;;(define-protein "PAMPs" ("ADML_HUMAN" "YMEL1_HUMAN"))
+#|"ADML_HUMAN"|#   (define-protein "ADML_HUMAN" ())
 #|"AGO2_HUMAN"|#   (define-protein "Ago2" ("PR:000006968" "AGO2_HUMAN"))
 #|"AGRIN_HUMAN"|#   (define-protein "agrin" ("AGRIN_HUMAN"))
 #|"AHRR_HUMAN"|#   (define-protein "AhR" ("AHR_HUMAN"))
 #|"AHRR_HUMAN"|#   (define-protein "AhRR" ("AHRR_HUMAN"))
-#|"AK17A_HUMAN"|#   ;;(define-protein "splicing" ("AK17A_HUMAN" "SRSF2_HUMAN" "SF01_HUMAN"))
-#|"AL3A1_HUMAN"|#   ;;(define-protein "aldehyde" ("AL3A1_HUMAN" "PR:E1C078"))
+#|"AK17A_HUMAN"|#   (define-protein "AK17A_HUMAN" ())
+#|"AL3A1_HUMAN"|#   (define-protein "AL3A1_HUMAN"  ("PR:E1C078"))
 #|"ALDR_HUMAN"|#   (define-protein "aldose reductase" ("ALDR_HUMAN"))
-#|"ALK_HUMAN"|#   ;;(define-protein "anaplastic" ("ALK_HUMAN"))
+#|"ALK_HUMAN"|#   (define-protein "ALK_HUMAN" ())
 #|"ALPK3_HUMAN"|#   (define-protein "Mak" ("PR:000023146" "ALPK3_HUMAN" "MAK_HUMAN"))
 #|"AMPH_HUMAN"|#   (define-protein "amphiphysin" ("AMPH_HUMAN"))
 #|"ANF_HUMAN"|#   (define-protein "PNDs" ("ANF_HUMAN"))
 #|"ANGT_HUMAN"|#   (define-protein "Ang" ("ANGT_HUMAN"))
 #|"ANK1_HUMAN"|#   (define-protein "ankyrin" ("ANK1_HUMAN"))
-#|"ANKR1_HUMAN"|#   ;;(define-protein "cardiac" ("ANKR1_HUMAN" "TNNI3_HUMAN"))
+#|"ANKR1_HUMAN"|#   (define-protein "ANKR1_HUMAN"())
 #|"ANKR2_HUMAN"|#   (define-protein "Arpp" ("PR:000004044" "ANKR2_HUMAN"))
 #|"APEL_HUMAN"|#   (define-protein "Apelin" ("APEL_HUMAN"))
 #|"APOA1_HUMAN"|#   (define-protein "ApoA" ("APOA1_HUMAN"))
@@ -39,7 +42,7 @@
 #|"APR_HUMAN"|#   (define-protein "Noxa" ("APR_HUMAN" "PR:Q0GKC8"))
 #|"ARC_HUMAN"|#   (define-protein "Arg3" ("ARC_HUMAN"))
 #|"ARI3A_HUMAN"|#   (define-protein "Bright" ("ARI3A_HUMAN"))
-#|"ARI3A_HUMAN"|#   ;;(define-protein "brightness" ("ARI3A_HUMAN"))
+#|"ARI3A_HUMAN"|#   (define-protein "ARI3A_HUMAN" ())
 #|"ARNT_HUMAN"|#   (define-protein "aryl" ("ARNT_HUMAN" "AHR_HUMAN"))
 #|"ARPIN_HUMAN"|#   (define-protein "Arpin" ("ARPIN_HUMAN"))
 #|"ASC_HUMAN"|#   (define-protein "ASCs" ("ASC_HUMAN" "STS_HUMAN"))
