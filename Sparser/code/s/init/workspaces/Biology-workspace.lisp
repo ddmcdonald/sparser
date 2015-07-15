@@ -1244,9 +1244,11 @@ These return the Lisp-based obo entries.
     )))
 
 (defun write-article-time-to-log (i id runtime &optional (numcards 0)(duplicates 0)(filtered 0))
+  (declare (special *all-found-reactions*))
+  (unless (boundp '*all-found-reactions*) (setf *all-found-reactions* 0))
   (when *article-timing-stream*
-    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d~%"
-            i id runtime (or numcards 0) duplicates filtered)))
+    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d~%"
+            i id runtime (length *all-sentences*) *all-found-reactions* (or numcards 0) duplicates filtered )))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
@@ -1267,21 +1269,21 @@ These return the Lisp-based obo entries.
       (when cardp
         (if *trap-error-skip-sentence*
             (handler-case
-                (multiple-value-setq (numcards num-duplicates num-filtered)
+                (multiple-value-setq (numcards verbs num-duplicates num-filtered)
                   (create-cards-for-article id))
               (error (e)
                 (ignore-errors ;; got an error with something printing once
                  (when *show-handled-sentence-errors*
                    (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
-          (multiple-value-setq (numcards num-duplicates num-filtered)
+          (multiple-value-setq (numcards  num-duplicates num-filtered)
             (create-cards-for-article id))))
       (when write-timep (write-article-time-to-log i id *article-elapsed-time* 
-                                                   numcards num-duplicates num-filtered))
+                                                   numcards  num-duplicates num-filtered))
       (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered"
               i id *article-elapsed-time* numcards num-duplicates num-filtered)
       )))
 
-(defun tj (i &optional (id (nth i *june-nxml-files-in-MITRE-order*)))
+(defun tj (i &optional (id (nth (1- i) *june-nxml-files-in-MITRE-order*)))
   (run-one-june-article i id t)
   (let ((file (make-corpus-path "code/evaluation/no-cards.lisp" nil)))
     (with-open-file (s file :direction :output :if-does-not-exist :create :if-exists :append)
@@ -1302,7 +1304,7 @@ These return the Lisp-based obo entries.
       (maphash #'(lambda (simple-phos aps)
                    (declare (ignore simple-phos))
                    (format t "~%    creating single ~s card for ~s, generated from ~s examples~%"
-                           (string-downcase (symbol-name (pt-type(caar (car aps)))))
+                           (string-downcase (symbol-name (pt-type (caar (car aps)))))
                            *article-id*
                            (length aps))
                    (setq duplicate-count (+ duplicate-count (- (length aps) 1)))
@@ -1319,6 +1321,7 @@ These return the Lisp-based obo entries.
                   (- (length cards) ncards)))
         (values
          (length cards)
+         0 ;; raw verbs
          duplicate-count
          (- (length cards) ncards))))
      (t (values 0 0 0)))))
