@@ -3,10 +3,11 @@
 ;;;
 ;;;     File:  "scan-gophers"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  May 2015
+;;;  version:  July 2015
 
 ;; initiated 5/15/15 breaking out the region delimiter and pattern
-;; reader from other files.
+;; reader from other files. 7/18/15 Fixed but in collection of
+;; edges. 
 
 (in-package :sparser)
 
@@ -36,8 +37,9 @@
                      (pos-edge-ends-at initial-long-edge)
                      (chart-position-after initial-position)))
          (word (pos-terminal position))
+         (edges (list initial-long-edge))
          hyphens  slashes  colons  other-punct 
-         edge  long-edge-ends-at  edges )
+         edge  long-edge-ends-at  )
 
     (flet ((store-important-punctuation (word)
              (cond
@@ -46,13 +48,6 @@
               ((eq word (punctuation-named #\:)) (push position colons))
               ((punctuation? word) ;; but not terminating punctuation
                (push position other-punct))))) ;; e.g. %, +, ~
-
-      #+ignore(unless initial-long-edge
-        ;; we know the first word is value in a ns-sequence because
-        ;; it's a gating criterion, but we really start looking
-        ;; a our loop on the next word.
-        (store-important-punctuation (pos-terminal position)))
-
       (loop
         ;; we enter the loop looking for a reason to stop
         (store-important-punctuation word)
@@ -60,7 +55,6 @@
               edge (right-treetop-at/only-edges next-pos))
         (cond
          ((and edge (not (one-word-long? edge)))
-          ;; then remember it and then move over it
           (tr :ns-edge-sweep edge)
           (setq long-edge-ends-at (pos-edge-ends-at edge))
           (push edge edges))
