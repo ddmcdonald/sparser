@@ -65,9 +65,6 @@
 (noun "pCMV-ERK2-HA" :super plasmid)
 
 
-(adj "wild-type" :super bio-predication)
-(def-synonym wild-type (:adj "wild type"))
-
 (noun "carcinogen" :super bio-agent)
 (adj "phospho-specific" :super bio-predication) ;; standin for "phosho-specific antibody"
 (def-synonym not (:adj "non"))
@@ -102,7 +99,7 @@
 
 (adj  "dimensional" :super bio-predication)
 (adj  "exclusive" :super bio-predication)
-(adj  "least" :super bio-predication)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -120,11 +117,11 @@
 ;;> Error: Unexpected POS marker: 'QUANT' on #<word "lesser">
 ;; While executing: #<STANDARD-METHOD UNAMBIGUOUS-COMLEX-PRIMED-DECODER (WORD T)>, in process Listener(4).
 (noun ("mouse" :plural "mice") :super species)
-(adj "deficient" :super bio-predication)
+
 (noun "immunoblotting" :super bio-method)
 (noun "sequential immunoblotting" :super bio-method)
 
-(noun "bacteria" :super species) ;; not really
+
 (adj "rich" :super bio-predication) ;; proline rich region
 
 
@@ -223,6 +220,7 @@
 (noun "assay" :super bio-method)
 (define-adverb "at baseline")
 (adj "background" :super bio-predication)
+(noun "bacteria" :super species) ;; not really
 (noun "baseline" :super  bio-method)
 (noun "bifc" :super bio-process)
 (noun "binder" :super bio-entity)
@@ -336,6 +334,12 @@
      :etf pre-mod
      :m missing
      :in missing))
+#+ignore
+(adj "dimerization-deficient" :super molecule-state
+     :binds ((molecule molecule))
+     :realization 
+     (:adj "dimerization-deficient"
+           :s molecule))
 
 
 
@@ -350,12 +354,6 @@
       :realization
       (:noun "difference"
              :between compared))
-#+ignore
-(adj "dimerization-deficient" :super molecule-state
-     :binds ((molecule molecule))
-     :realization 
-     (:adj "dimerization-deficient"
-           :s molecule))
 
 
 (noun "domain" :super molecular-location
@@ -571,6 +569,7 @@
   (:noun "knockdown"
          :to antigen
          :for antigen))
+(adj "least" :super bio-predication)
 (adj "least-selective" :super bio-predication) ;; just to get through
 (noun "length" :super bio-scalar)
 (noun "level" :super bio-scalar
@@ -578,6 +577,7 @@
       :realization 
       (:noun "level"
              :of measurable)) ;;levels of incorporated 32P (January sentence 34)
+
 ;;is likely to be mediated by
 ;;is likely that this possible feedback
 ;;will likely be useful
@@ -587,13 +587,14 @@
   (:adj "likely" 
         :o result
         :to-comp result))
-
 (define-adverb "likely")
 
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "liquid chromatography" :super bio-method)
 (adj "long" :super bio-predication)
 (adj "long-term" :super bio-predication)
+
+
 (adj "low" :super bio-predication)
 (define-comparative "lower")
 ;;--- "lower"  ("raise")
@@ -989,15 +990,15 @@
              :in basis
              :on scale))
 
+
+(adj "wild-type" :super bio-predication)
+(def-synonym wild-type (:adj "wild type"))
+(def-synonym wild-type (:adj "WT"))
+
 (noun "work" :super bio-method)
 
 
 
-
-
-;;--- ddm 12/18/14 hacked phrases to 'get through' more text
-
-(adj "long-term" :super bio-predication) ;; #51 "effective long-term treatment strategies"
 
 
 
