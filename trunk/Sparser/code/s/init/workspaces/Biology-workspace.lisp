@@ -1237,7 +1237,7 @@ These return the Lisp-based obo entries.
          (timedir (concatenate 'string outdir "times/"))
          (filename (format nil "~a/article-data-~d-to-~d.csv" timedir start (+ start n))))
     (setf *card-folder* (pathname carddir))
-  (with-open-file (timing-stream filename :direction :output :if-exists :supersede)
+  (with-open-file (timing-stream filename :direction :output :if-exists :append)
     (setf *article-timing-stream* timing-stream)
     (run-june-articles n :from-article start :cardp t :show-timep t)
     (dump-orphans timedir)
@@ -1247,6 +1247,9 @@ These return the Lisp-based obo entries.
   (declare (special *all-found-reactions*))
   (unless (boundp '*all-found-reactions*) (setf *all-found-reactions* 0))
   (when *article-timing-stream*
+    (when (eq i 1)
+      (format *article-timing-stream* "Art#, ID, Runtime, #Reactions, #cards, #dups, #filtered~%"))
+
     (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d~%"
             i id runtime (length *all-sentences*) *all-found-reactions* (or numcards 0) duplicates filtered )))
 
@@ -1275,10 +1278,10 @@ These return the Lisp-based obo entries.
                 (ignore-errors ;; got an error with something printing once
                  (when *show-handled-sentence-errors*
                    (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
-          (multiple-value-setq (numcards  num-duplicates num-filtered)
+          (multiple-value-setq (numcards num-duplicates num-filtered)
             (create-cards-for-article id))))
       (when write-timep (write-article-time-to-log i id *article-elapsed-time* 
-                                                   numcards  num-duplicates num-filtered))
+                                                   numcards num-duplicates num-filtered))
       (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered"
               i id *article-elapsed-time* numcards num-duplicates num-filtered)
       )))
@@ -1321,7 +1324,7 @@ These return the Lisp-based obo entries.
                   (- (length cards) ncards)))
         (values
          (length cards)
-         0 ;; raw verbs
+        ; 0 ;; raw verbs - use *all-reactions* instead.
          duplicate-count
          (- (length cards) ncards))))
      (t (values 0 0 0)))))
