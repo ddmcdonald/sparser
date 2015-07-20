@@ -6,6 +6,8 @@
 ;;; version: May 2015
 
 ;;remove (bio-traps) and (bf-on) in (rusty) -- no longer defined
+;; 7/19/2015 Code to load all the sentences in the 1000 articles and search for patterns like no-space 
+;;  words with dashes (or slashes)
 
 (in-package :sparser)
 
@@ -477,8 +479,77 @@ NIL
         (loop for i in (second (car *all-sentences*))
           thereis (and (individual-p i)(itypep i 'protein)(value-of 'ras2-model i))))))
 
+(defun all-bind-prots (i)
+  (loop for bb in (indiv-binds i)
+    when (and
+          (memq (var-name (binding-variable bb)) '(bindee direct-bindee binder))
+          (value-of 'name (binding-value bb)))
+    collect (binding-value bb)))
 
+(defun all-prots (a)
+  (loop for i in (second a) when (and (individual-p i)
+                                      (or (itypep i 'protein)(itypep i 'protein-family))
+                                      (value-of 'name i))
+    collect i))
+
+(defun bind-and-prots ()
+  (loop for a in *all-sentences* 
+    append
+    (loop for i in (second a)
+      when (and (individual-p i)(itypep i 'binding))
+      collect (list i (all-bind-prots i)(all-prots a) (car a)))))
+
+(defun bind-and-bio-entity ()
+  (loop for a in *all-sentences* 
+    append
+    (loop for i in (second a)
+      when (and (individual-p i)
+                (itypep i 'binding)
+                (loop for ii in (all-bind-prots i) thereis (eq (itype-of ii) category::bio-entity)))
+      collect (list i (all-bind-prots i)(all-prots a) (car a)))))
+
+(defun all-bio-entities ()
+ (loop for a in *all-sentences* 
+    append
+    (loop for i in (second a)
+      when (and (individual-p i)(eq (itype-of i) category::bio-entity))
+      collect i)))
   
-      
+(defun test-bind-sents ()
+  (load-pmc-sent-lists)
+  (loop for i from 1 to 3000 as s in bind-sents do (eval `(with-total-quiet (epp ,s)))))
+
+(defmacro to-file (f exp)
+  `(with-open-file (s ,f :direction :output :if-exists :supersede)
+       ,exp))
+(defun save-slash-words () ;; example to show how it is done
+  (unless (boundp '*1000-art-sents*)
+    (load "~/r3/darpa/12-month TestMaterials/PMC1000-sents.lisp"))
+  (length (setq s/ (loop for s in *1000-art-sents* when (search "/" s) collect s)))
+  (length (setq w/ 
+                (sort (remove-duplicates 
+                       (loop for s in s/  append (ppcre::all-matches-as-strings "\\w+/\\w+" s)) 
+                       :test #'equal) #'string<)))
+  (to-file "~/r3/darpa/12-month TestMaterials/slash-words.lisp"
+           (progn (format s "(in-package :sparser)~&(defparameter *slash-words* '(")
+             (loop for i from 1 to (length w-) 
+               do (format s "~s " (nth i w-))
+               (if (multiple-value-bind (f r)(floor i 10) (zerop r)) (terpri s)))
+             (format s "~&))~&"))))
+
+(defun save-dash-words () ;; example to show how it is done
+  (unless (boundp '*1000-art-sents*)
+    (load "~/r3/darpa/12-month TestMaterials/PMC1000-sents.lisp"))
+  (length (setq s- (loop for s in *1000-art-sents* when (search "/" s) collect s)))
+  (length (setq w-
+                (sort (remove-duplicates 
+                       (loop for s in s-  append (ppcre::all-matches-as-strings "\\w+-\\w+" s)) 
+                       :test #'equal) #'string<)))
+  (to-file "~/r3/darpa/12-month TestMaterials/dash-words.lisp"
+           (progn (format s "(in-package :sparser)~&(defparameter *dash-words* '(")
+             (loop for i from 1 to (length w-) 
+               do (format s "~s " (nth i w-))
+               (if (multiple-value-bind (f r)(floor i 10) (zerop r)) (terpri s)))
+             (format s "~&))~&"))))
 
 
