@@ -70,6 +70,7 @@
 ;;   to VPs and expose the preposition to the subcategorization of the head.
 ;; 6/28/2015 Don't collect information on VP+ED sentences -- 
 ;; mechanism causes stack overflow because of the pushne with equalp...
+;; Handle locations as premodifiers "nuclear kinase"
 
 
 (in-package :sparser)
