@@ -1326,11 +1326,40 @@ These return the Lisp-based obo entries.
         (unless (equal (length cards) ncards)
           (format t "~%filtered out ~s cards which did not have proteins in the RAS2 model~%"
                   (- (length cards) ncards)))
-        (values
-         (length cards)
-        ; 0 ;; raw verbs - use *all-reactions* instead.
-         duplicate-count
-         (- (length cards) ncards))))
+        (let
+            ((bc-count (create-binding-cards-for-article *article-id*)))
+          (values
+           (+ (length cards) bc-count)
+           ;;0 ;; raw verbs
+           duplicate-count
+           (- (length cards) ncards)))))
+     ;;(t (values 0 0 0 0))
+     (t (values 0 0 0))
+     )))
+
+(defun create-binding-cards-for-article (*article-id*) 
+  (let*
+      ((ht (group-binding-reactions-by-article))
+       (aht (gethash *article-id* ht))
+       (counter 0)
+       (cards nil)
+       (duplicate-count 0))
+    (declare (special ht aht cards))
+    (cond
+     (aht
+      (maphash #'(lambda (simple-phos aps)
+                   (declare (ignore simple-phos))
+                   (format t "~%    creating single ~s card for ~s, generated from ~s examples~%"
+                           "binding"
+                           *article-id*
+                           (length aps))
+                   (push aps cards))
+               aht)
+      (format t "~&Creating ~s **BINDING** cards for article ~s~&" (length cards) *article-id*)
+      (values
+       (length cards)
+       duplicate-count
+       (length cards)))
      (t (values 0 0 0)))))
 
 
