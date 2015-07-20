@@ -821,6 +821,12 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     
     (894 (:punctuation . ,(punctuation-named (code-char 894)))) ;;";", (code = 894)
     
+    (913 ;; #\Greek_Capital_Letter_Alpha
+     (:alphabetical . (:uppercase . ,(code-char 913))))
+    (914 ;; #\Greek_Capital_Letter_Beta
+     (:alphabetical . (:uppercase . ,(code-char 914))))
+    (915 ;; #\Greek_Capital_Letter_Gamma
+     (:alphabetical . (:uppercase . ,(code-char 915))))
     (916 ;; #\Greek_Capital_Letter_Delta
      (:alphabetical . (:uppercase . ,(code-char 916))))
     (919 ;; "Η" #\Greek_Capital_Letter_Eta
