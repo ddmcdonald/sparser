@@ -731,6 +731,7 @@ the aggregate across the predicate it's in. |#
 
 (define-category protein-pair
   :specializes bio-pair
+  :mixins (protein)
   :binds ((left (:or protein bio-family nucleotide))
           (right (:or protein bio-family nucleotide)))
   :index (:sequential-keys left right))
