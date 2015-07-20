@@ -36,6 +36,9 @@
 (define-protein "PARP1_HUMAN" ("poly(ADP–ribose) 1"))
 (define-protein "PARP2_HUMAN" ("poly(ADP–ribose) 2"))
 (define-protein "PARP3_HUMAN" ("poly(ADP–ribose) 3"))
+(define-protein "ARBK1_HUMAN" ("Beta-ARK-1" "βARK1"))
+(define-protein "SRC_HUMAN" ("Src"))
+(define-protein "SNIP1_HUMAN" ("SNIP1"))
 
 
 (DEFINE-PROTEIN "NFAT5_HUMAN" ("NFAT5" "Nuclear factor of activated T-cells 5"))
@@ -394,6 +397,7 @@ filligre may be used to distinguish them, etc.
 ;;(def-bio "ASPP2" protein),nameprotein 
 (def-bio "GST-ASPP2" protein)
 (def-bio "phospho-ASPP2" protein)
+(define-protein "AZIN1_HUMAN" ("Az"))
 
 
 
@@ -1410,7 +1414,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "SOX2_HUMAN" ("Transcription factor SOX-2"))
 (define-protein "SOX9_HUMAN" ("Transcription factor SOX-9"))
 (define-protein "SP16H_HUMAN" ("FACTp140" "FACTP140" "FACT140" "hSPT16" "SUPT16H")) 
-(define-protein "SP1_HUMAN" ("Transcription factor Sp1"))
+(define-protein "SP1_HUMAN" ("Transcription factor Sp1" "SP1"))
 (define-protein "SPAS2_HUMAN" ("SCR59" "p59scr" "SPATS2" "SPATA10")) 
 (define-protein "SPC24_HUMAN" ("SPBC24" "hSpc24" "SPC24")) 
 (define-protein "SPC25_HUMAN" ("SPBC25" "hSpc25" "SPC25")) 
