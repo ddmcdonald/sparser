@@ -759,6 +759,14 @@
       :realization 
       (:noun "RBD"
              :of substrate)) 
+
+(define-category DBD :specializes protein-domain
+      :binds ((substrate bio-entity))
+      :realization 
+      (:noun "DBD"
+             :of substrate))
+(def-synonym DBD (:noun "DNA binding domain"))
+
 (noun "Raf-RBD" :super RBD)
 (adj "rate-limiting" :super bio-predication)
 (adj "real-time" :super bio-predication)
