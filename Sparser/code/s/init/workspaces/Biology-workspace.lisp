@@ -1235,7 +1235,10 @@ These return the Lisp-based obo entries.
           (make-corpus-path (format nil "code/evaluation/~a"  localdir)))
          (carddir (concatenate 'string outdir "cards/"))
          (timedir (concatenate 'string outdir "times/"))
-         (filename (format nil "~a/article-data-~d-to-~d.csv" timedir start (+ start n))))
+;         (filename (format nil "~a/article-data-~d-to-~d.csv" timedir start (+ start n)))
+;;; using append now
+         (filename (format nil "~a/article-data.csv" timedir start (+ start n)))
+         )
     (setf *card-folder* (pathname carddir))
   (with-open-file (timing-stream filename :direction :output :if-exists :append)
     (setf *article-timing-stream* timing-stream)
