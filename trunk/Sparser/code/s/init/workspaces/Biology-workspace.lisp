@@ -1237,21 +1237,22 @@ These return the Lisp-based obo entries.
          (timedir (concatenate 'string outdir "times/"))
 ;         (filename (format nil "~a/article-data-~d-to-~d.csv" timedir start (+ start n)))
 ;;; using append now
-         (filename (format nil "~a/article-data.csv" timedir start (+ start n)))
+         (filename (format nil "~atimes/article-data.csv" outdir start (+ start n)))
          )
     (setf *card-folder* (pathname carddir))
-  (with-open-file (timing-stream filename :direction :output :if-exists :append)
+  (with-open-file (timing-stream filename :direction :output :if-exists :append :if-does-not-exist :create)
     (setf *article-timing-stream* timing-stream)
     (run-june-articles n :from-article start :cardp t :show-timep t)
-    (dump-orphans timedir)
-    )))
+    )
+  (dump-orphans timedir)
+  ))
 
 (defun write-article-time-to-log (i id runtime &optional (numcards 0)(duplicates 0)(filtered 0))
   (declare (special *all-found-reactions*))
   (unless (boundp '*all-found-reactions*) (setf *all-found-reactions* 0))
   (when *article-timing-stream*
     (when (eq i 1)
-      (format *article-timing-stream* "Art#, ID, Runtime, #Reactions, #cards, #dups, #filtered~%"))
+      (format *article-timing-stream* "Art#, ID, Runtime, #Sentences #Reactions, #Cards, #Duplicates, #Filtered~%"))
 
     (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d~%"
             i id runtime (length *all-sentences*) *all-found-reactions* (or numcards 0) duplicates filtered )))
