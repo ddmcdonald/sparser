@@ -18,6 +18,7 @@
 ;; 10/9/13 added ietf. 10/17/13 augmented ic to get mixins. 11/18/14 added
 ;; drs for describe rule set, over words or categories. 1/7/15 Added
 ;; the names of the plist generics
+;; 7/18\9/2015 (defun qepp (string)  ;; quiet, error-protected call to pp
 
 (in-package :sparser)
 
@@ -206,6 +207,17 @@
      ;; outputs parse as s-expression in speech act-inspired format
      (checkpoint-call-and-postprocessing string))
     (t (analyze-text-from-string string))))
+
+(defun qepp (string)  ;; quiet, error-protected call to pp
+  (with-total-quiet
+      (handler-case
+          (progn
+            (analyze-text-from-string string)
+            (if (equal "" (caar *all-sentences*))
+                (setf (car (car *all-sentences*)) string)))
+        (error (e)
+               (format t "~&Error ~a~%" e)))))
+
 
 (defun p (string)
   (pp string)
