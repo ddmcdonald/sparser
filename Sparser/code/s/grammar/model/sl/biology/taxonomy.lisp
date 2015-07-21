@@ -729,6 +729,20 @@ the aggregate across the predicate it's in. |#
           (right))
   :index (:sequential-keys left right))
 
+(define-category no-space-pair
+  :specializes bio-pair
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((left)
+          (right))
+  :index (:sequential-keys left right)
+  :documentation
+  "Trust the pattern matching to correctly handle the
+  value restrictions. This cuts down on the variation
+  in how to define a pair which should reduce the possibilities
+  for error.")
+
+
 (define-category protein-pair
   :specializes bio-pair
   :mixins (protein)
