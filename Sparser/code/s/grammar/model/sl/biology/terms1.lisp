@@ -66,13 +66,9 @@
 
 
 (noun "carcinogen" :super bio-agent)
-(adj "phospho-specific" :super bio-predication) ;; standin for "phosho-specific antibody"
+(adj "phospho-specific" :super bio-predication) ;; standin for "phospho-specific antibody"
 (def-synonym not (:adj "non"))
-(delete-noun-cfr (resolve/make "number"))
-(delete-noun-cfr (resolve/make "numbers"))
-(define-category bio-number :specializes measurement
-  :realization
-  (:noun "number"))
+
 (noun "CML" :super disease)
 (noun "the next day" :specializes abstract)
 (noun  "blotting" :super bio-method)
@@ -106,8 +102,6 @@
 (define-category bio-amount :specializes measurement
   :realization
   (:noun "amount"))
-(delete-adj-cfr (resolve/make "important"))
-(adj "important" :super bio-predication)
 
 (adj "forward" :super bio-predication) ;; added to avoid problem with complex lookup
 ;;Error: Comlex -- new POS combination for "#<word "forward">:: (ADJECTIVE ADVERB ADVPART NOUN VERB)
@@ -122,7 +116,12 @@
 (noun "sequential immunoblotting" :super bio-method)
 
 
-(adj "rich" :super bio-predication) ;; proline rich region
+
+
+
+
+
+
 
 
 (noun "32P" :super molecule) 
@@ -492,8 +491,15 @@
 (def-synonym HPLC
              (:noun "high performance liquid chromatography"))
 (adj "housekeeping" :super bio-predication)
+
+;; "However" is actually a subordinate conjunction.
+;; It can appear in adverbial positions as an interjection
+;;/// but the correct fix is in the grammar.
 (define-adverb "however")
+
 (noun "human" :super species)
+
+
 (adj "identical" :super bio-predication
      :binds ((basis biological)
              (comparator biological))
@@ -509,6 +515,10 @@
 (define-category in-vitro :specializes bio-context
   :realization
   (:adj "in vitro"))
+
+
+(delete-adj-cfr (resolve/make "important"))
+(adj "important" :super bio-predication)
 
 
 (adj "inactive" :super molecule-state
@@ -669,6 +679,11 @@
 (define-unit-of-measure "nm")
 (noun "NMR" :super bio-method)
 
+(delete-noun-cfr (resolve/make "number"))
+(delete-noun-cfr (resolve/make "numbers"))
+(define-category bio-number :specializes measurement
+  :realization
+  (:noun "number"))
 
 (define-adverb "notably")
 (adj "novel" :super bio-predication)
@@ -813,6 +828,7 @@
         :s subject 
         :for theme))
 (noun "responsiveness" :super bio-scalar)
+(adj "rich" :super bio-predication) ;; proline rich region
 (adj "right" :super bio-predication)
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-process)
