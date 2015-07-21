@@ -363,7 +363,8 @@ those steps sequentially on a single article.
     (declare (special *trap-error-skip-sentence*))
     (format t "~%~%---------------------------------------------~&Reading document #~a ~a~&" counter (name article))
     (time-start article)
-    (read-from-document article)
+    (with-total-quiet 
+        (read-from-document article))
     (time-end article)
     (format t "~%---- Article: ~a took ~a seconds to read----~%~%" 
             (name article) (elapsed-time-to-string *article-elapsed-time*))))
