@@ -262,7 +262,8 @@ function word-traversal-hook on each treetop. This hook, in
 drivers/chart/traversal1.lisp, is designed to track and process
 paired punctuation: square, curly, or angle brackets, quotations, 
 and particularly parentheses. This call will return the set of
-characters and their actions, (list-hash-table *traversal-routine-table*).
+characters and their actions that are presently defined:
+  (list-hash-table *traversal-routine-table*).
 
 Each pair of characters, and open and a close, have a matching
 pair of functions. A 'mark' function notes the position of the
@@ -273,6 +274,11 @@ The span-parentheses function is passed the position just before
 the open paren and the position just after the close. It passed
 these on to do-paired-punctuation-interior which is the common
 final path for all sorts of paired punctuation. 
+
+Do-paired-punctuation-interior has two sections. It doesn't do
+any analysis of the words between the, e.g., parentheses. It only
+looks at the result of any analysis that has preceded it and
+reacts to it. 
 
 
 
