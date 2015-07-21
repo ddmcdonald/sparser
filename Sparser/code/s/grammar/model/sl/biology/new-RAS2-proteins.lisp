@@ -624,7 +624,7 @@
 (DEF-RAS2-PROTEIN "MK01_HUMAN" ("MK01_HUMAN" "Mitogen-activated protein kinase 2" "PRKM1" "PRKM2" "MAP kinase isoform p42" "ERK-2" "Extracellular signal-regulated kinase 2" "MAP kinase 2" "MAP kinase 1" "MAPK1" "p42-MAPK" "ERT1" "2.7.11.24" "MAPK 1" "MAPK 2" "ERK2")) 
 (DEF-RAS2-PROTEIN "MK03_HUMAN" ("MK03_HUMAN" "PRKM3" "ERK-1" "Extracellular signal-regulated kinase 1" "MAPK3" "MAP kinase 3" "p44-ERK1" "p44-MAPK" "ERT2" "Insulin-stimulated MAP2 kinase" "MAPK 3" "2.7.11.24" "MAP kinase isoform p44" "ERK1" "Microtubule-associated protein 2 kinase")) 
 (DEF-RAS2-PROTEIN "MK08_HUMAN" ("MK08_HUMAN" "Stress-activated protein kinase JNK1" "MAPK8" "JNK1" "c-Jun N-terminal kinase 1" "MAP kinase 8" "Stress-activated protein kinase 1c" "JNK-46" "MAPK 8" "SAPK1" "SAPK1C" "2.7.11.24" "SAPK1c" "PRKM8")) 
-(DEF-RAS2-PROTEIN "MK09_HUMAN" ("MK09_HUMAN" "Stress-activated protein kinase JNK2" "MAPK9" "JNK2" "c-Jun N-terminal kinase 2" "Stress-activated protein kinase 1a" "MAP kinase 9" "SAPK1A" "2.7.11.24" "SAPK1a" "PRKM9" "JNK-55" "MAPK 9")) 
+(DEF-RAS2-PROTEIN "MK09_HUMAN" ("MK09_HUMAN" "Stress-activated protein kinase JNK2" "MAPK9" "JNK2" "c-Jun N-terminal kinase 2" "Stress-activated protein kinase 1a" "MAP kinase 9" "SAPK1A" "2.7.11.24" "SAPK1a" "PRKM9" "JNK-55" "MAPK 9" "JNK")) 
 (DEF-RAS2-PROTEIN "MK10_HUMAN" ("MK10_HUMAN" "JNK3" "Stress-activated protein kinase JNK3" "JNK3A" "MAP kinase 10" "PRKM10" "MAPK 10" "MAP kinase p49 3F12" "Stress-activated protein kinase 1b" "c-Jun N-terminal kinase 3" "SAPK1B" "MAPK10" "SAPK1b" "2.7.11.24")) 
 (DEF-RAS2-PROTEIN "MKK3-MKK6" ("MKK3-MKK6")) 
 (DEF-RAS2-PROTEIN "MKK3-MKK6-active" ("MKK3-MKK6-active")) 
