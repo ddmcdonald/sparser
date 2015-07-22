@@ -695,6 +695,28 @@ EGFR and ERBB3 tyrosine phosphorylation and up-regulating downstream signaling."
 in RAS mutant cells.
 Nevertheless, BRAF inhibitors hyperactivate CRAF and MEK in these cells."))
 
+#| From Reactome. Descrption of "SPRED dimer binds NF1"
+Sprouty-related proteins (SPRED) 1, 2 and 3 are negative regulators 
+of the MAPK pathway that act at least in part by recruiting 
+the RAS GAP protein neurofibromin 1 (NF1) to the plasma membrane 
+(Kato et al, 2003; King et al, 2006; Stowe et al, 2012). 
+NF1, a negative regulator of RAS is a tumor suppressor that is mutated 
+in the familial cancer syndrome neurofibromatosis I as well as 
+in sporadic cases of glioblastoma, non-small cell lung cancers, 
+neuroblastoma and melanoma (Martin et al, 1990; Bollag et al, 1996; 
+reviewed in Bollag and McCormick, 1992; Maertens and Cichowski, 2014).
+
+Plasma membrane-association of the SPRED proteins themselves depends on 
+the C-terminal SPR domain. Mutations in this region abrogate membrane localization 
+of the protein (King et al, 2005; Stowe et al, 2012). 
+Membrane association may also be promoted by interaction of the SPRED proteins 
+with RAS (Wakioka et al, 2001). 
+Interaction with NF1 is mediated by the SPRED EVH1 domain, and mutations 
+in this region affect both NF1 recruitment and the ability of SPRED and NF1 proteins 
+to negatively regulate RAS pathway activity (Stowe et al, 2012; 
+reviewed in McClatchey and Cichowski, 2012).
+|#
+
 ;;  (p *brent-story*)
 (defparameter *brent-story*
 "Ras is a membrane bound protein.
