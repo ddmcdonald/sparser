@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "sort individuals"
 ;;;    Module:  "interface:grammar:"
-;;;   version:  0.3 November 1995
+;;;   version:  0.3 July 2015
 
 ;; broken out from [analyzers;DM&P:measure] 11/21/94.  
 ;; Added/removed cases ...12/1
@@ -13,7 +13,8 @@
 ;;     (5/3) added Sort-words/polywords
 ;;     (7/25) added *announce-missing-sort-routines*
 ;; 0.3 (9/13) added check for the individuals having names to sort indiv 
-;;     (11/15) fixed bug in placement of check for specific fn.
+;;     (11/15/95) fixed bug in placement of check for specific fn.
+;;     (7/8/15) Added sort-by-UID to break a tie in the alphabetic sort
 
 (in-package :sparser)
 
@@ -194,28 +195,28 @@
           (category::section-object
            (sort-section-objects i1 i2))
 
-          
-          
           (otherwise
            (cond
             ((setq sort-fn (get-tag-for :sort-function itype1))
              (funcall sort-fn i1 i2))
             ((value-of 'name i1)
              (sort-individuals-by-their-name i1 i2))
-
             (t
-             (when *announce-missing-sort-routines*
-               (format t "Sort-individuals-alphabetically -- no sort ~
-                          routine for the category~%~A~%" itype1)
-               (break))
-             i1 ))))
+             (sort-by-UID i1 i2))))))
 
-        (order-unlike-individuals i1 i2))))))
+      (order-unlike-individuals i1 i2)))))
 
 
 ;;;-------
 ;;; cases
 ;;;-------
+
+(defun sort-by-UID (i1 i2)
+  ;; vs. it identifier that distinguish it from all other
+  ;; individuals. This one's just w/in the category.
+  (let ((id1 (indiv-uid i1))
+        (id2 (indiv-uid i2)))
+    (> id1 id2)))
 
 (defun sort-directives-alphabetically (i1 i2)
   (let ((action1 (value-of 'action i1))
