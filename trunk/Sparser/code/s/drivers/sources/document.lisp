@@ -76,7 +76,8 @@
     (declare (special *sentence-making-sweep* *sections-to-ignore*))
     (when *show-article-progress*
       (format t "~&Sweeping document ~a~%" (name doc)))
-    (read-from-document doc)))
+    (read-from-document doc)
+    doc))
 
 ;;;--------------------------------------------
 ;;; shallow pass for rhetoric/epistemic status
@@ -131,7 +132,8 @@
         (setq *section* sec)
         (catch 'do-next-paragraph ;; article 3058384 starts with paragraphs
           (read-from-document sec)))))
-  (after-actions a)
+  (when (actually-reading)
+    (after-actions a))
   a)
 
 (defmethod read-from-document ((ss section-of-sections))
@@ -165,7 +167,8 @@
           (setf (doc-index section) (pop count))
           (setf (previous section) previous-section)
           (setf (next previous-section) section)))
-      (after-actions ss)
+      (when (actually-reading)
+        (after-actions ss))
       (when *show-section-printouts*
         (format t "~&~%--------- finished section of sections ~a~%" ss)))))
 
@@ -199,15 +202,16 @@
         (setf (doc-index paragraph) (incf count))
         (catch 'do-next-paragraph
           (read-from-document paragraph))
-        ;;(show-paragraph-sents paragraph)
-        (after-actions paragraph)
+        (when (actually-reading)
+          (after-actions paragraph))
         (setq previous-paragraph paragraph)
         (setq paragraph (car remaining)
               remaining (cdr remaining))
         (when paragraph
           (setf (previous paragraph) previous-paragraph)
           (setf (next previous-paragraph) paragraph)))
-      (after-actions s)
+      (when (actually-reading)
+        (after-actions s))
       (when *show-section-printouts*
         (format t "~%--------- finished section ~a~%~%" s)))))
 
