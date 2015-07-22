@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  1.0 June 2015
+;;;  version:  1.0 July 2015
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -27,6 +27,7 @@
 ;;  and cleaning up debugging code
 ;; 7/10/2015 new parameter *dont-filter-on-discourse-relevance* that turns off use of discourse relevance filtering
 ;; to see how many cards that has surpressed
+;; 7/20/15 Tweak to note-surface-string to keep it from returning nil.
 
 (in-package :sparser)
 
@@ -303,8 +304,7 @@
                          (identify-relations sentence)
       (set-entities sentence entities)
       (set-relations sentence relations)
-      ;;(set-tt-count sentence tt-count)
-      ))
+      (set-tt-count sentence tt-count)))
 
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))
@@ -469,24 +469,24 @@
   ;; by the edge. 
   (declare (special *surface-strings*))
   (let ((referent (edge-referent edge)))
-    (when referent
-      (when (individual-p referent)
-        (let* ((start-pos (pos-edge-starts-at edge))
-               (end-pos (pos-edge-ends-at edge))
-               (start-index (pos-character-index start-pos))
-               (end-index (pos-character-index end-pos)))
-          #| Too noisy. Digit sequences typically have
-             a null end-index for reasons as yet unexplored
-          (unless start-index
-            (format t "~&>>> Null start-index: ~a~%~%" edge))
-          (unless end-index
-            (format t "~&>>> Null end-index: ~a~%~%" edge)) |#
-          (when (and start-index end-index)
-            ;; need both indices to extract the string
-            (let ((string (extract-string-from-char-buffers 
-                           start-index end-index)))
-              (setf (gethash referent *surface-strings*)
-                    string))))))))
+    (when (and referent (individual-p referent))
+      (let* ((start-pos (pos-edge-starts-at edge))
+             (end-pos (pos-edge-ends-at edge))
+             (start-index (pos-character-index start-pos))
+             (end-index (pos-character-index end-pos)))
+        #| Too noisy. Digit sequences typically have
+        a null end-index for reasons as yet unexplored
+        (unless start-index
+          (format t "~&>>> Null start-index: ~a~%~%" edge))
+        (unless end-index
+          (format t "~&>>> Null end-index: ~a~%~%" edge)) |#
+        (if (and start-index end-index)
+          ;; need both indices to extract the string
+          (let ((string (extract-string-from-char-buffers 
+                         start-index end-index)))
+            (setf (gethash referent *surface-strings*)
+                  string))
+          (setf (gethash referent *surface-strings*) ""))))))
 
 
 (defparameter *surface-strings* (make-hash-table :size 10000))
