@@ -1,13 +1,43 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp -*-
 ;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  June 2015
+;;;  version:  July 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
+
+#|  (ddm-ws-ed "NoSpace hassles.lisp")
+(ddm-no-spaces)
+(setq *sweep-for-patterns* nil)
+(p "Smad1/HsN3 complex.")  
+
+ (p "Tyrosine phosphorylation of PLC-γ1, PLC-γ2, and SLP-76.")
+from article 1 is generating the nil is not a structure error
+
+|#
+
+; (test-range-of-June-articles from n)   (current-string)
+; (revert-to-regular-break)  (revert-to-error-break)
+; (compare-to-snapshots) (sentence-string (previous (sentence)))
+
+; "co-ordinate" => coordinate
+;  compose-salient-hyphenated-literals  resolve-hyphen-between-two-words
+;  nospace-hyphen-specialist
+
+
+#|  (p "RICTOR knockdown increased the number of apoptotic MCF7 cells
+on β1 integrin ligands up to 2-fold after 24 h in serum-free conditions.
+β1 integrin-stimulation induced phosphorylation of both AKT1 and AKT2
+but markedly preferred AKT2.")
+  Doesn't see the sentence start because that's a lowecase beta
+  and as a result the process of the actual second sentence is
+  messed up -- no-space and chunking are absent. Why I don't know.
+      period-marks-sentence-end?
+|#
+; (p "Ras proteins caused widespead transcriptional activation of p53 through a mechanism involving acetylation of specific residues in its DNA binding domain.")
 
 (defun ddm-standard ()  ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
@@ -19,27 +49,31 @@
 ;  (trace-parse-edges) (trace-rule-source) 
 ;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
 ;  (trace-island-driving)
-;; (ddm-no-spaces)
+  (ddm-ed "tools/basics/clos-classes.lisp")
+  (ddm-ed "objects/doc/content-methods.lisp")
+  (ddm-ed "objects/doc/content.lisp")
+  (ddm-ed "drivers/sources/document.lisp")
+  (ddm-ed "analyzers/psp/edges/lattice-operations.lisp")
+  (ddm-ws-ed "NoSpace hassles.lisp")
+  (ddm-no-spaces)
 ;; (ddm-read-from-documents)
 ;; (load-ddm-ws)
 ;; (ddm-polyword-conundrum)
+  (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
   (setq *diagnose-consp-referents* t)
- ;;     (setq *show-section-printouts* t)
-  ;;(ddm-load "interface/R3-eval/dec14-output.lisp")
+  ;;     (setq *show-section-printouts* t)
   ;; (test-dec)  (dtst nil t) (reset-dectest)
   ;; (test-overnight) (test-erk) (test-aspp2)
-  (test-jan)) ;; (compare-to-snapshot 'dec-test)
+  (test-jan))
   ;; (hashtable-to-alist 
 ; (test-load-test)
 
+; Make seg printer context sensitive: print-words-between-segments
 ;; Would have timing. Needs debugging
 ; (load-and-run-june-article-number 12)
 
-; (test-june-articles <N>  (current-string)
-; (test-range-of-June-articles from n)
-; (compare-to-snapshots) (sentence-string (previous (sentence)))
-#| (revert-to-regular-break)  (setq *work-on-ns-patterns* t)
-   (revert-to-error-break)
+#|   (setq *work-on-ns-patterns* t)
+   
  (d (rule-set-for (word-named "")))
  (setq *show-section-printouts* t)
  (setq *trace-instance-recording* t)
@@ -64,8 +98,10 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 |#
 ;  (p "c-Raf/ MAPK-mediated [6].")
 
-; (ddm-load-article-2)
-(defun ddm-load-article-2 ()
+; r3/trunk/corpus/Walter-July-articles
+
+; (ddm-load-article-2 t)
+(defun ddm-load-article-2 (&optional do-not-read)
   (load-xml-to-doc-if-necessary)
   (let ((fn (intern (symbol-name '#:make-sparser-doc-structure)
                     (find-package :r3)))
@@ -75,12 +111,32 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
     (let* ((doc-elements
             (funcall fn "3847091" :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
            (article (car doc-elements)))
-      (sweep-document article)
       (setq *article* article)
+      (sweep-document article)
+      (read-epistemic-features article)
+      (unless do-not-read
+        (read-from-document article))
       article)))
-; (setq article *article*)
-; (read-epistemic-features article)
-; (read-from-document article)
+#| (setq article *article*)
+(setq a *)  
+(setq results (third (children a)))
+(setq s (third (children results)))
+(setq p1 (second (children *)) p2 (third (children *)))
+(setq string (content-string p2)) |#
+
+(defun ddm-issue-records ()
+  (ddm-ws-ed "Parsing ASPP2.lisp")
+  (ddm-ws-ed "Weird stuff 6-6-15.lisp")
+  (ddm-ws-ed "20 articles error.lisp")
+  (ddm-ws-ed "NoSpace hassles.lisp")
+  (ddm-ws-ed "mUbRas issues March 2015.lisp")
+  (ddm-ws-ed "Doc str hassles.lisp")
+  (ddm-ws-ed "polyword hassles.lisp")
+  (draft-doc-ed "navigating the no-space code.lisp")
+  (ddm-r3-notes "ERK nuclear transport tasks.lisp")
+  (ddm-r3-notes "Playing with Will's sentences.lisp"))
+      
+
 #| (length *all-sentences*) => 43
 (length *all-irrelevant-sentences*) => 68  |#
 
@@ -96,10 +152,13 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 ; (figure-7)  (cells-defNP)  (p *brent-story*)
 ; dec #34 -- "an event"
 
+;; mine and remove (ddm-ed "drivers/chart/psp/bio-entity-scan.lisp")
 (defun ddm-bio ()
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
   (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
   (ddm-ed "grammar/model/sl/biology/proteins.lisp")
+  (ddm-ed "grammar/model/sl/biology/protein-families.lisp")
+  (ddm-ed "grammar/model/sl/biology/new-RAS2-proteins.lisp")
   (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
   (ddm-ed "grammar/model/sl/biology/terms1.lisp")
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
@@ -121,11 +180,33 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "drivers/timing/cases.lisp")
   (ddm-ed "drivers/chart/select2.lisp")) ;; example
 
-(defun ddm-rhetoric ()
-  (ddm-ed "grammar/model/sl/biology/rhetoric.lisp")
-  (ddm-ed "objects/doc/rhetoric.lisp")
-  (ddm-ed "drivers/sources/document.lisp"))
-  ; post-analysis-operations
+(defun ddm-think-about-methods ()
+  (ddm-ed "objects/model/categories/clos-backing.lisp"))
+
+(defun ddm-doc-methods ()
+  (ddm-ed "objects/doc/content-methods.lisp")
+  (ddm-ed "objects/doc/content.lisp")
+  (ddm-ed "objects/doc/object1.lisp")
+  (ddm-ed "drivers/sources/document.lisp")
+  (ddm-ed "interface/grammar/sweep.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
+  )
+
+(defun ddm-fix-parentheses ()
+  (ddm-ed "model/core/names/parens-after-name.lisp")
+)
+
+(defun ddm-itype-p-of-what ()
+  (ddm-ed "objects/model/lattice-points/operations1.lisp")
+)
+
+;; longer, shorter, big:  def-attribution
+
+;; Fix capitalization of chunking (online and afterwards)
+; display-bracketing
+  
+;; Why is the right position of a number sometimes nil?
+;  digit-FSA  make-edge-over-digit-sequence
 
 (defun ddm-alphabet ()
   (ddm-ed "analyzers/tokenizer/alphabet.lisp")
@@ -133,6 +214,12 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "grammar/rules/words/punctuation-constants.lisp")
   (ddm-ed "objects/chart/words/punctuation.lisp")
   (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp"))
+
+(defun ddm-rhetoric ()
+  (ddm-ed "grammar/model/sl/biology/rhetoric.lisp")
+  (ddm-ed "objects/doc/rhetoric.lisp")
+  (ddm-ed "drivers/sources/document.lisp"))
+  ; post-analysis-operations
 
 (defun ddm-new-info ()
   (ddm-ed "objects/doc/rhetoric.lisp") ;; for classes and methods
@@ -181,7 +268,7 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "objects/chart/words/polywords4.lisp")
   (ddm-ed "objects/chart/words/polyword-form2.lisp")
   (ddm-ed "objects/rules/cfr/polywords2.lisp")
-  (ddm-ed "analyzers/FSA/words3.lisp")  
+  (ddm-ed "analyzers/FSA/words3.lisp") ;; coordinate w/ FSAs
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "grammar/rules/FSAs/polyword5.lisp")
   (ddm-ed "objects/traces/FSA1.lisp"))
@@ -197,7 +284,7 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (sparser-doc-ed "notes/note on anaphora.lisp")
   (sparser-doc-ed "notes/note on bio control structure.lisp")
   (sparser-doc-ed "notes/note on edges.lisp")
-  (sparser-doc-ed "notes/note on edges.lisp")
+  (sparser-doc-ed "notes/note on switches.lisp")
   (sparser-doc-ed "notes/note on simpler shortcuts.lisp")
   (sparser-doc-ed "notes/note on traces.lisp")
   (sparser-doc-ed "notes/Note on what happens when Sparser loads.lisp")
@@ -238,9 +325,15 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "objects/doc/classes.lisp"))
 
 (defun ddm-no-spaces ()
-  ;;(ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp") ;; driver
+  (ddm-ed "analyzers/psp/patterns/hyphen-pattern.lisp")
+  (ddm-ed "analyzers/psp/patterns/loader.lisp")
+  (ddm-ed "analyzers/psp/patterns/traces.lisp")
+  (ddm-ed "analyzers/psp/patterns/edge-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/slash-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/.lisp")
   (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
   (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp")
   (ddm-ed "analyzers/psp/patterns/charaterize-words.lisp")
@@ -381,6 +474,7 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "grammar/model/core/pronouns/ref4.lisp")
   (ddm-ed "grammar/rules/syntax/articles.lisp")
   (ddm-ed "grammar/rules/words/pronouns.lisp")
+  (ddm-ed "grammar/rules/situation/text-structure.lisp")
   (ddm-ed "objects/traces/pronouns.lisp")
   (ddm-ed "objects/traces/discourse.lisp"))
 
@@ -594,7 +688,7 @@ Worse: (28 13 6 2 1)
 
 (defun ddm-ed (string)
   #-:sbcl
-  (ed (sparser-sourcefile string))
+  (ed (cl-user::sparser-sourcefile string))
   #+:sbcl
   (print `(**** can't call ed from SBCL yet)))
 
@@ -608,6 +702,14 @@ Worse: (28 13 6 2 1)
   (ed (concatenate 'string
         "~/nlp/Sparser/documentation/notes-in-preparation/"
         string)))
+
+(defun ddm-r3-notes (string)
+  (ed (concatenate 'string
+        "~/ws/R3/r3/trunk/notes/" string)))
+
+(defun ddm-ws-ed (string)
+  (ed (concatenate 'string
+         "~/ws/Sparser local/ws/" string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
