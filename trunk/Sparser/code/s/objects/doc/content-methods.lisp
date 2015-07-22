@@ -14,34 +14,6 @@
 
 (in-package :sparser)
 
-
-(defclass sentence-parse-quality ()
-  ((great :initform 0 :accessor parses-with-one-edge
-    :documentation "Number of sentences in the doc element
-      that were spanned by one edge.")
-   (medium :initform 0 :accessor medium-quality-parses
-    :documentation "Number of sentences in the doc element
-      that were spanned by 2 to 5 edges.")
-   (horrible :initform 0 :accessor horrible-parses
-    :documentation "Number of sentences in the doc element
-      that were spanned by more than 5 edges."))
-  (:documentation "Compute measures of how well we are doing
-    in reading. At the sentence level and aggregated at
-    higher levels of document structure."))
-
-
-(defclass aggregated-bio-terms ()
-  ((proteins :initform nil :accessor aggregated-proteins)
-   (residues :initform nil :accessor aggregated-residues)
-   (bio-processes :initform nil :accessor aggregated-processes)
-   (other :initform nil :accessor aggregated-other))
-  (:documentation "Collects the entities and relations of
-     the document layer below them summarizes them as
-     tables of individuals and their count."))
-
-
-
-
 ;;;---------------------------------------------------
 ;;; Action hook for after a document element finishes
 ;;;---------------------------------------------------
@@ -74,27 +46,36 @@
     (do-section-level-after-actions a)))
 
 
-(defmethod do-section-level-after-actions ((s has-content-model))
-  (summarize-parse-performance s))
-
-
-
-
-
 ;;;------------------------------------
 ;;; aggregating entities and relations
 ;;;------------------------------------
 
-(defmethod summarize-bio-terms ((e document-element))
-  ;; The sentence's contents have aggregated into instances of
-  ;; aggregated-bio-terms on their paragraphs. At levels above the
-  ;; paragraph we just lump all of that content together without
-  ;; doing anything more interesting (for now).
-  e)
+(defgeneric summarize-bio-terms (document-element)
+  (:documentation "The sentence's contents have aggregated into
+     instances of aggregated-bio-terms on their paragraphs. 
+     At levels above the paragraph we just lump all of that content
+     together without doing anything more interesting (for now)."))
+
+(defmethod summarize-bio-terms ((s section))
+  s)
+
+(defmethod summarize-bio-terms ((ss section-of-sections))
+  ss)
+
+(defmethod summarize-bio-terms ((a article))
+  a)
   
 
 ;;--- sentences => paragraph contents
 
+(defclass aggregated-bio-terms ()
+  ((proteins :initform nil :accessor aggregated-proteins)
+   (residues :initform nil :accessor aggregated-residues)
+   (bio-processes :initform nil :accessor aggregated-processes)
+   (other :initform nil :accessor aggregated-other))
+  (:documentation "Collects the entities and relations of
+     the document layer below them summarizes them as
+     tables of individuals and their count."))
 
 (defmethod aggregate-bio-terms ((p paragraph))
   "Collect the raw lists of entities and relations from 
@@ -104,7 +85,9 @@
   (let ((sentences (sentences-in-paragraph p)))
     ;;/// something should attend to the topic sentence
     (dolist (s sentences)
-      (aggregate-sentence-bio-terms s p))))
+      (aggregate-sentence-bio-terms s p)
+      (sort-bio-terms p (contents p)))))
+
 
 (defun aggregate-sentence-bio-terms (s p)
   (aggregate-terms p (get-entities s))
@@ -164,6 +147,21 @@
 ;;;--------------------------------
 ;;; how well is our analysis doing
 ;;;--------------------------------
+
+(defclass sentence-parse-quality ()
+  ((great :initform 0 :accessor parses-with-one-edge
+    :documentation "Number of sentences in the doc element
+      that were spanned by one edge.")
+   (medium :initform 0 :accessor medium-quality-parses
+    :documentation "Number of sentences in the doc element
+      that were spanned by 2 to 5 edges.")
+   (horrible :initform 0 :accessor horrible-parses
+    :documentation "Number of sentences in the doc element
+      that were spanned by more than 5 edges."))
+  (:documentation "Compute measures of how well we are doing
+    in reading. At the sentence level and aggregated at
+    higher levels of document structure."))
+
 
 (defclass sentence-tt-counts ()
   ((count-list :initform 0 :accessor sentence-tt-count
@@ -355,5 +353,15 @@
 
 (defmethod parsing-status ((s parsing-status))
   (level-completed s))
+
+
+;;;--------------------------------
+;;; Sets of after actions by level
+;;;--------------------------------
+
+(defun do-section-level-after-actions (s)
+  (summarize-bio-terms s))
+
+
 
 
