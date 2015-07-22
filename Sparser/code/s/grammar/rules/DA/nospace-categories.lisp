@@ -38,16 +38,18 @@
   :specializes sequence
   ;; inherits items, item, type, number
   :instantiates :self
+  :index (:sequential-keys left right)
   :binds ((left) ;; of the hyphen
           (right)))
 
 (defun make-hyphenated-structure (left-edge right-edge)
-  ;; called from nospace-hyphen-specialist
+  ;; called from nospace-hyphen-specialist or from
+  ;; resolve-hyphen-between-two-words
   (push-debug `(,left-edge ,right-edge))
   (let ((i (find-or-make-individual 'hyphenated-pair
              :left (edge-referent left-edge)
              :right (edge-referent right-edge)))
-        (category 
+        (category
          (ns-category-for-reifying category::hyphenated-pair)))
 
     (when (eq (edge-category left-edge)
@@ -63,30 +65,67 @@
                    :referent i
                    :constituents `(,left-edge ,right-edge))))
         (revise-form-of-nospace-edge-if-necessary edge right-edge)
-        (tr :two-hyphen-default-edge edge)
+        (tr :two-hyphen-default-structure i edge)
         edge)))
 
 
-(defun make-protein-pair (left-ref right-ref words
-                         left-edge right-edge
-                          pos-before pos-after)
-  (make-hyphenated-pair 'protein-pair left-ref right-ref 
-                        left-edge right-edge
-                        words pos-before pos-after))
+;;;; The category is in sl/biology/taxonomy.lisp 
+;;;; because of it's inheitance pattern
+;;;;/// Has to be some refactoring sooner than later. 
+#|
+(define-category no-space-pair
+  :specializes bio-pair
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((left)
+          (right))
+  :index (:sequential-keys left right)
+  :documentation
+  "Trust the pattern matching to correctly handle the
+  value restrictions. This cuts down on the variation
+  in how to define a pair which should reduce the possibilities
+  for error.") |#
 
-(defun make-amino-acid-pair (left-ref right-ref words
-                             left-edge right-edge
-                             pos-before pos-after)
-  (make-hyphenated-pair 'amino-acid-pair left-ref right-ref 
-                        left-edge right-edge
-                         words pos-before pos-after))
+(defun make-ns-pair (category-name left-edge right-edge
+                     words pos-before pos-after)
+  "Instantiate a no-space-pair. Add the indicated category to
+   the new individual. Make the edge, using the left-edge as
+   the source of the labels."
+  ;;/// This loses the fact that, e.g., these were separacted
+  ;; by a slash. If the subcat machinery does all the work
+  ;; then we could record that in the edge category
+  (let ((category (etypecase category-name
+                    (category category-name)
+                    (symbol
+                     (category-named category-name :break-if-none))))
+        (left-ref (edge-referent left-edge))
+        (right-ref (edge-referent right-edge)))
+    (tr :making-ns-pair-on category)
+    (when (or (word-p left-ref)
+              (word-p right-ref))
+      (push-debug `(,left-ref ,right-ref))
+      (error "A word leaked through to make-ns-pair"))
+    (let ((i (find-or-make-individual 'no-space-pair
+                           :left left-ref
+                           :right right-ref)))
+      (setf (indiv-type i)
+            ;; Subcat checks are on the referent, so we make
+            ;; sure that it has the expected type
+            (push category (indiv-type i)))
+      (let ((edge (make-edge-over-long-span
+                   pos-before
+                   pos-after
+                   category
+                   :form (edge-form left-edge)
+                   :referent i
+                   :rule 'make-ns-pair
+                   :constituents `(,left-edge ,right-edge)
+                   :words words)))
+        ;; trace
+        edge))))
 
-(defun make-bio-pair (left-ref right-ref words
-                      left-edge right-edge
-                      pos-before pos-after)
-  (make-hyphenated-pair 'bio-pair left-ref right-ref 
-                        left-edge right-edge
-                        words pos-before pos-after))
+
+
 
 (defun make-hyphenated-pair (cat-name left-ref right-ref
                              left-edge right-edge
@@ -129,6 +168,27 @@
       ;; trace
       edge)))
 
+
+(defun make-protein-pair (left-ref right-ref words
+                         left-edge right-edge
+                          pos-before pos-after)
+  (make-hyphenated-pair 'protein-pair left-ref right-ref 
+                        left-edge right-edge
+                        words pos-before pos-after))
+
+(defun make-amino-acid-pair (left-ref right-ref words
+                             left-edge right-edge
+                             pos-before pos-after)
+  (make-hyphenated-pair 'amino-acid-pair left-ref right-ref 
+                        left-edge right-edge
+                         words pos-before pos-after))
+
+(defun make-bio-pair (left-ref right-ref words
+                      left-edge right-edge
+                      pos-before pos-after)
+  (make-hyphenated-pair 'bio-pair left-ref right-ref 
+                        left-edge right-edge
+                        words pos-before pos-after))
 
 (define-category qualifying-pair
   :specializes sequence
@@ -218,13 +278,33 @@
 
 (defun compose-salient-hyphenated-literals (pattern words
                                             pos-before pos-after)
+  ;; Called from resolve-hyphen-between-two-words at least.
+  
   (tr :salient-hyphenated-literal)
-  (cond
-   ((= 3 (length words))
-    (let ((word1 (car words))
-          (word2 (caddr words))
-          left  right  )
-      (when (or (prog1 (memq word1 *salient-hyphenated-literals*)
+
+  (unless (= 3 (length words))
+    (when *work-on-ns-patterns*
+      (push-debug `(,words ,pattern ,pos-before ,pos-after))
+      (break "Not exactly 3 words: new case"))
+    (reify-ns-name-and-make-edge words pos-before pos-after)
+    (return-from compose-salient-hyphenated-literals t))
+
+  (let* ((word1 (car words))
+         (word2 (caddr words))
+         (pname (string-append (word-pname word1) (word-pname word2)))
+         (composite-word (resolve pname)) ;; "co-operate" => "cooperate"
+         left  right  )
+    (cond
+     (composite-word
+      ;; Lookup its unary rule / rule-set and make those edges
+      (let ((word-rule (find-single-unary-cfr word2)))
+        (if word-rule
+          (let ((edge (install-preterminal-edge
+                       word-rule composite-word pos-before pos-after)))
+            edge)
+          (else
+            (reify-ns-name-and-make-edge words pos-before pos-after)))))
+     ((when (or (prog1 (memq word1 *salient-hyphenated-literals*)
                   (setq left t))
                 (prog1 (memq word2 *salient-hyphenated-literals*)
                   (setq right t)))
@@ -253,12 +333,7 @@
                    :form (edge-form edge)
                    :referent (edge-referent edge)
                    :words words)))
-            new-edge)))))
-   (*work-on-ns-patterns*
-    (push-debug `(,words ,pattern ,pos-before ,pos-after))
-    (break "Not exactly 3 words: new case"))
-   (t ;; bail
-    (reify-ns-name-and-make-edge words pos-before pos-after))))
+            new-edge)))))))
 
 #| Kills compose-salient-hyphenated-literals when no edges in "anti-actin"
 "Antibodies used for immunoblotting were: anti-EGFR (#2232, Cell Signaling Technologies), 
