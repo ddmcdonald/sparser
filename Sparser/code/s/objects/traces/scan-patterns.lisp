@@ -4,11 +4,13 @@
 ;;; 
 ;;;     File:  "scan patterns"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  April 2015
+;;;  Version:  July 2015
 
 ;; initiated 10/6/95. Added/modified 7/11/96 through 7/12.
 ;; 3/5/07 Added cases to go with simpler treatment of no-space sequences.
 ;; 4/19/15 added trace to record there being white space before the ps
+;; Gradually adding more through 7/18/15. Lifted out the no-space cases
+;; to analyzers/psp/patterns/traces.lisp 7/21/15.
 
 (in-package :sparser)
 
@@ -169,171 +171,6 @@
   (when (or *trace-scan-patterns*)
     (trace-msg "[ns]     there isn't any")))
 
-
-;;;--------------------------------------
-;;; simpler scheme not based on patterns
-;;;--------------------------------------
-
-(deftrace :no-space-sequence-started-at (p)
-  (when (or *trace-scan-patterns*)
-    (trace-msg "[ns] simple no-space collector started at p~a"
-	       (pos-token-index p))))
-
-(deftrace :no-space-initial-long-edge (edge)
-  (when (or *trace-scan-patterns*)
-    (trace-msg "[ns] with initial long edge ~a" edge)))
-
-(deftrace :ns-word-sweep (word)
-  ;; called from sweep-to-end-of-ns-regions
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] swept over ~s" (word-pname word))))
-
-(deftrace :ns-edge-sweep (edge)
-  ;; called from sweep-to-end-of-ns-regions
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] swept over edge e~a"
-               (edge-position-in-resource-array edge))))
-
-(deftrace :ns-next-position-is (p)
-  ;; called from sweep-to-end-of-ns-regions
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] the next position is p~a"
-               (pos-token-index p))))
-
-
-(deftrace :ns-return-because-whitespace (p)
-  ;; called from sweep-to-end-of-ns-regions
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] returning from sweep: whitespace before p~a"
-               (pos-token-index p))))
-
-(deftrace :ns-return-because-bracket-punct (word)
-  ;; called from sweep-to-end-of-ns-regions
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] returning from sweep: ~s is bracket punctuation"
-               (word-pname word))))
-
-(deftrace :ns-return-word-never-in-ns-seq (word)
-  ;; called from sweep-to-end-of-ns-regions
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] returning from sweep: ~s is never is a ns sequence"
-               (word-pname word))))
-
-(deftrace :ns-return-punch-terminates-seq (word p)
-  ;; called from sweep-to-end-of-ns-regions
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] returning from sweep: ~s is sequence terminating ~
-                punctuation~%    Moving position to p~a"
-               (word-pname word)  (pos-token-index p))))
-
-
-
-(deftrace :no-space-sequence-made-word (word)
-  (when (or *trace-scan-patterns*)
-    (trace-msg "[ns] made word ~a" word)))
-
-(deftrace :no-space-made-edge (edge)
-  (when (or *trace-scan-patterns*)
-    (trace-msg "[ns] made edge ~a" edge)))
-
-(deftrace :looking-at-ns-segment (start-pos end-pos)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking at the segment ~s"
-               (string-of-words-between start-pos end-pos))))
-
-(deftrace :segment-ns-pattern (pattern)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] The pattern is ~a" pattern)))
-
-(deftrace :ns-pattern-includes-edges (edges)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] It includes edges ~a" edges)))
-
-(deftrace :ns-sort-out-pattern-with-edges ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Sorting out pattern involving multi-word edges")))
-
-(deftrace :ns-segment-layout (layout)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] After parsing the layout is ~a" layout)))
-
-(deftrace :ns-scare-quote ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking for possibility of scare quotes")))
-
-(deftrace :ns-looking-at-slash-patterns ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking for a matching slash pattern")))
-
-(deftrace :ns-looking-at-hyphen-patterns ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking for a matching hyphen pattern")))
-
-(deftrace :ns-slash-hyphen-combination ()
-   (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking for a matching slash and hyphen pattern")))
-
-(deftrace :ns-hyphen-and-colon-patterns ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking for a hyphen + colon patterns")))
-
-(deftrace :ns-looking-at-colon-patterns ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking for a matching colon pattern")))
-
-(deftrace :ns-other-punct (punct)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking for pattern with ~a" punct)))
-
-(deftrace :ns-taking-default ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Looking at default patterns")))
-
-(deftrace :resolve-hyphen-between-two-words (words)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Resolving hyphen between two words: ~s" words)))
-
-(deftrace :resolve-hyphen-between-two-terms (words)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Resolving hyphen between two terms: ~s" words)))
-
-(deftrace :two-word-hyphen-edge (edge)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns]   resolved to e~a"
-               (edge-position-in-resource-array edge))))
-
-(deftrace :defaulting-two-word-hyphen ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns]   Using the default")))
-
-(deftrace :salient-hyphenated-literal ()
-  (when *trace-scan-patterns*
-    (trace-msg "[ns]   Using salient hyphenated-literal")))
-
-(deftrace :two-hyphen-default-edge (edge)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns]   Defaulted to e~a"
-               (edge-position-in-resource-array edge))))
-
-(deftrace :number-colon-number-default-edge (edge)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns]   Defaulted to e~a"
-               (edge-position-in-resource-array edge))))
-
-(deftrace :word-colon-word-default-edge (edge)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns]   Defaulted to e~a"
-               (edge-position-in-resource-array edge))))
-
-
-(deftrace :resolve-hyphens-between-three-words (words)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns] Resolving hyphen between three words: ~s" words)))
-
-(deftrace :three-hyphen-default-edge (edge)
-  (when *trace-scan-patterns*
-    (trace-msg "[ns]   Defaulted to e~a"
-               (edge-position-in-resource-array edge))))
 
 
 
