@@ -49,11 +49,7 @@ but markedly preferred AKT2.")
 ;  (trace-parse-edges) (trace-rule-source) 
 ;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
 ;  (trace-island-driving)
-  (ddm-ed "tools/basics/clos-classes.lisp")
-  (ddm-ed "objects/doc/content-methods.lisp")
-  (ddm-ed "objects/doc/content.lisp")
-  (ddm-ed "drivers/sources/document.lisp")
-  (ddm-ed "analyzers/psp/edges/lattice-operations.lisp")
+  ;; (ddm-workset)
   (ddm-ws-ed "NoSpace hassles.lisp")
   (ddm-no-spaces)
 ;; (ddm-read-from-documents)
@@ -67,6 +63,15 @@ but markedly preferred AKT2.")
   (test-jan))
   ;; (hashtable-to-alist 
 ; (test-load-test)
+
+(defun ddm-workset ()
+  (ddm-ed "tools/basics/clos-classes.lisp")
+  (ddm-ed "objects/doc/content-methods.lisp")
+  (ddm-ed "objects/doc/content.lisp")
+  (ddm-ed "drivers/sources/document.lisp")
+  (ddm-ed "analyzers/psp/edges/lattice-operations.lisp"))
+
+
 
 ; Make seg printer context sensitive: print-words-between-segments
 ;; Would have timing. Needs debugging
@@ -328,7 +333,7 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp") ;; driver
-  (ddm-ed "analyzers/psp/patterns/hyphen-pattern.lisp")
+  (ddm-ed "analyzers/psp/patterns/hyphen-patterns.lisp")
   (ddm-ed "analyzers/psp/patterns/loader.lisp")
   (ddm-ed "analyzers/psp/patterns/traces.lisp")
   (ddm-ed "analyzers/psp/patterns/edge-patterns.lisp")
