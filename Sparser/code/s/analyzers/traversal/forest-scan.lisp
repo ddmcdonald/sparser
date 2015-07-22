@@ -25,9 +25,9 @@
 
 
 (defun parse-between-scan-boundaries (left-bound right-bound)
-  ;; the caller has determined that there the two positions aren't
-  ;; the same and that there's some chance of there being an edge
-  ;; across the whole span, e.g. Evaluate-angle-bracket-interior
+  ;; Called from collect-no-space-segment-into-word to look for
+  ;; a parse between where the no-space sequence starts and where
+  ;; it ends. Provides for different alg. 
   (push-debug `(,left-bound ,right-bound)) ;(break "parse-between")
   (let ((edge (catch :done-parsing-region
                 (parse-from-to/topmost left-bound right-bound))))
