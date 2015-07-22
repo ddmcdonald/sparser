@@ -327,6 +327,7 @@
                        (otherwise
                         (error "Unexpected type for tt: ~a~%~a"
                                (type-of tt) tt)))))
+        ;;(push-debug `(,end-pos ,position-after)) (break "do no-space: tt = ~a" tt)
         (cond
          ((eq end-pos position-after)
           ;; Given that end-pos and position-after are always in
