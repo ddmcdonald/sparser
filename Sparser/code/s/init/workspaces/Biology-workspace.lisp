@@ -363,10 +363,10 @@ those steps sequentially on a single article.
     (declare (special *trap-error-skip-sentence*))
     (format t "~%~%---------------------------------------------~&Reading document #~a ~a~&" counter (name article))
     (time-start article)
-    (with-total-quiet 
+    (with-total-quiet
         (read-from-document article))
     (time-end article)
-    (format t "~%---- Article: ~a took ~a seconds to read----~%~%" 
+    (format t "~%---- Article: ~a took ~a seconds to read----~%~%"
             (name article) (elapsed-time-to-string *article-elapsed-time*))))
 
 
@@ -696,24 +696,24 @@ in RAS mutant cells.
 Nevertheless, BRAF inhibitors hyperactivate CRAF and MEK in these cells."))
 
 #| From Reactome. Descrption of "SPRED dimer binds NF1"
-Sprouty-related proteins (SPRED) 1, 2 and 3 are negative regulators 
-of the MAPK pathway that act at least in part by recruiting 
-the RAS GAP protein neurofibromin 1 (NF1) to the plasma membrane 
-(Kato et al, 2003; King et al, 2006; Stowe et al, 2012). 
-NF1, a negative regulator of RAS is a tumor suppressor that is mutated 
-in the familial cancer syndrome neurofibromatosis I as well as 
-in sporadic cases of glioblastoma, non-small cell lung cancers, 
-neuroblastoma and melanoma (Martin et al, 1990; Bollag et al, 1996; 
+Sprouty-related proteins (SPRED) 1, 2 and 3 are negative regulators
+of the MAPK pathway that act at least in part by recruiting
+the RAS GAP protein neurofibromin 1 (NF1) to the plasma membrane
+(Kato et al, 2003; King et al, 2006; Stowe et al, 2012).
+NF1, a negative regulator of RAS is a tumor suppressor that is mutated
+in the familial cancer syndrome neurofibromatosis I as well as
+in sporadic cases of glioblastoma, non-small cell lung cancers,
+neuroblastoma and melanoma (Martin et al, 1990; Bollag et al, 1996;
 reviewed in Bollag and McCormick, 1992; Maertens and Cichowski, 2014).
 
-Plasma membrane-association of the SPRED proteins themselves depends on 
-the C-terminal SPR domain. Mutations in this region abrogate membrane localization 
-of the protein (King et al, 2005; Stowe et al, 2012). 
-Membrane association may also be promoted by interaction of the SPRED proteins 
-with RAS (Wakioka et al, 2001). 
-Interaction with NF1 is mediated by the SPRED EVH1 domain, and mutations 
-in this region affect both NF1 recruitment and the ability of SPRED and NF1 proteins 
-to negatively regulate RAS pathway activity (Stowe et al, 2012; 
+Plasma membrane-association of the SPRED proteins themselves depends on
+the C-terminal SPR domain. Mutations in this region abrogate membrane localization
+of the protein (King et al, 2005; Stowe et al, 2012).
+Membrane association may also be promoted by interaction of the SPRED proteins
+with RAS (Wakioka et al, 2001).
+Interaction with NF1 is mediated by the SPRED EVH1 domain, and mutations
+in this region affect both NF1 recruitment and the ability of SPRED and NF1 proteins
+to negatively regulate RAS pathway activity (Stowe et al, 2012;
 reviewed in McClatchey and Cichowski, 2012).
 |#
 
@@ -1238,7 +1238,7 @@ These return the Lisp-based obo entries.
    "code/evaluation/June2015Materials/Eval_NXML/" :quiet t))
 
 (defparameter *load-ras2* t)
- 
+
 (defun maybe-load-ras2 ()
  (if (and *load-ras2* (find-package :r3)) (funcall (intern "LOAD-RAS2-MODEL" :r3))))
 
@@ -1287,11 +1287,11 @@ These return the Lisp-based obo entries.
     (loop for id in (nthcdr from-article *june-nxml-files-in-MITRE-order*)
       as i from (+ 1 from-article) to (+ n from-article)
         do (run-one-june-article i id cardp show-timep))))
-          
+
 (defparameter *skip-articles* '(422 576))
 
-(defun run-one-june-article (i id &optional cardp write-timep)          
-  (declare (special *article-elapsed-time*)) ;; defined below. 
+(defun run-one-june-article (i id &optional cardp write-timep)
+  (declare (special *article-elapsed-time*)) ;; defined below.
   (unless (member i *skip-articles*)
     (setq *all-sentences* nil)
     (test-june-article id :article-number i)
@@ -1307,7 +1307,7 @@ These return the Lisp-based obo entries.
                    (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
           (multiple-value-setq (numcards num-duplicates num-filtered)
             (create-cards-for-article id))))
-      (when write-timep (write-article-time-to-log i id *article-elapsed-time* 
+      (when write-timep (write-article-time-to-log i id *article-elapsed-time*
                                                    numcards num-duplicates num-filtered))
       (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered"
               i id *article-elapsed-time* numcards num-duplicates num-filtered)
@@ -1321,7 +1321,7 @@ These return the Lisp-based obo entries.
       (pprint (r2-proteins) s)
       (format s "~%))~%~%"))))
 
-(defun create-cards-for-article (*article-id*) 
+(defun create-cards-for-article (*article-id*)
   (let*
       ((ht (group-pts-by-article))
        (aht (gethash *article-id* ht))
@@ -1360,7 +1360,7 @@ These return the Lisp-based obo entries.
      (t (values 0 0 0))
      )))
 
-(defun create-binding-cards-for-article (*article-id*) 
+(defun create-binding-cards-for-article (*article-id*)
   (let*
       ((ht (group-binding-reactions-by-article))
        (aht (gethash *article-id* ht))
@@ -1386,6 +1386,17 @@ These return the Lisp-based obo entries.
      (t (values 0 0 0)))))
 
 
+
+;; Note that this assumes you have reset *all-sentences* between each article.
+(defun create-misc-cards-for-article (article-id &aux (counter 0)
+                                                      (index 1000))
+  (let ((cards (do-cards)))
+    (format t "~&Creating ~s cards using generalized function.~%" (length cards))
+    (dolist (card cards)
+      (let ((file-result (post-translation-file-from-card card (incf index))))
+        (when file-result
+          (incf counter))))
+    ))
 
 #|
 (RUN-JUNE-ARTICLES 50 :FROM-ARTICLE 0)
@@ -1443,10 +1454,10 @@ These return the Lisp-based obo entries.
   (setq *time-end* (get-internal-real-time))
   (setq *article-elapsed-time*
         (/ (* 1.0 (-  *time-end* *time-start*)) internal-time-units-per-second))
-  (push (list article *universal-time-start* *universal-time-end* 
+  (push (list article *universal-time-start* *universal-time-end*
               *article-elapsed-time* *time-start* *time-end* )
         *article-times*)
-  
+
   (values
    *universal-time-start*
    (+ *universal-time-start* *article-elapsed-time*)))
@@ -1473,8 +1484,8 @@ These return the Lisp-based obo entries.
                    (if (and (numberp (search "." s :from-end t))(equal (- (length s) 1) (search "." s :from-end t)))
                        s
                        (format nil "~a." s)))))
-    (with-open-file 
-        (s (string-append "~/r3/darpa/12-month TestMaterials/" name "sents.lisp") 
+    (with-open-file
+        (s (string-append "~/r3/darpa/12-month TestMaterials/" name "sents.lisp")
            :direction :output :if-exists :supersede)
       (format s "(in-package :sparser)~&~&(defparameter ~s~&  '(~&" namesents)
       (np (symbol-value namesents) s)
@@ -1483,7 +1494,7 @@ These return the Lisp-based obo entries.
     (format t "~&~s has ~s sentences" namesents (length (eval namesents)))))
 
 (defun PMC-sent-lists ()
-  (loop for sl in 
+  (loop for sl in
     '(("ACTIV" " activat")
       ("PHOS" "hosphorylat")
       ("UBIQ" "biquitinat")
@@ -1501,7 +1512,7 @@ These return the Lisp-based obo entries.
     (PMC-sent-list (car sl) (second sl))))
 
 (defun load-PMC-sent-lists ()
-  (loop for sl in 
+  (loop for sl in
     '(("ACTIV" " activat")
       ("PHOS" "hosphorylat")
       ("UBIQ" "biquitinat")
