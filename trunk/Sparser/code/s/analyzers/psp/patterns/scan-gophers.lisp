@@ -37,7 +37,7 @@
                      (pos-edge-ends-at initial-long-edge)
                      (chart-position-after initial-position)))
          (word (pos-terminal position))
-         (edges (list initial-long-edge))
+         (edges (when initial-long-edge (list initial-long-edge)))
          hyphens  slashes  colons  other-punct 
          edge  long-edge-ends-at  )
 

@@ -37,92 +37,6 @@
 ;; phospho-ERBB3, T677A mutant HER2, ERK-mediated 
 ;; shRNA
 
-;;;-------------------------------------
-;;; patterns for sequences with hyphens
-;;;-------------------------------------
-
-;; (trace-scan-patterns)
-;; (setq *work-on-ns-patterns* t)
-
-(defun resolve-hyphen-pattern (pattern words hyphen-positions start-pos end-pos)
-  ;; (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
-  ;; (break "starting hyphen pattern: ~a" pattern)
-  (let ((count 0))
-    (dolist (item pattern)
-      (when (eq item :hyphen ) (incf count)))
-    (case count
-      (1 (one-hyphen-ns-patterns
-          pattern words hyphen-positions start-pos end-pos))
-      (2 (two-hyphen-ns-patterns
-          pattern words hyphen-positions start-pos end-pos))
-      (otherwise
-       (cond
-        (*work-on-ns-patterns*
-         (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
-         (error "Write the code for ~a hyphens in a no-space sequence" count))
-        (t
-         (reify-ns-name-and-make-edge words start-pos end-pos)))))))
-
-(defun one-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
-  (cond
-   ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
-        (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
-        (equal pattern '(:full :hyphen :digits)) ;; "CI-1040" actually a drug
-        (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
-        (equal pattern '(:full :hyphen :single-digit :single-digit))) ;;/// IL-1a -bug somewhere
-    ;; We accept these as terms that won't deccompose or involve
-    ;; a rule. Experience may show that to be false, but it's a start
-    (reify-ns-name-and-make-edge words start-pos end-pos))
-
-   ((or (equal pattern '(:full :hyphen :full))  ;; RAS-ASSP
-        (equal pattern '(:capitalized :hyphen :full))
-        (equal pattern '(:full :hyphen :capitalized)))
-    (resolve-hyphen-between-two-terms pattern words start-pos end-pos))
-
-   ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
-    (resolve-hyphen-between-two-words pattern words start-pos end-pos))
-
-   ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
-    ;;(break "stub :single-cap :hyphen :lower")
-    (reify-ns-name-and-make-edge words start-pos end-pos))
-
-   ((equal pattern '(:lower :hyphen :lower)) ;; "high-activity"
-    (let ((*inhibit-big-mech-interpretation* t))
-      (declare (special *inhibit-big-mech-interpretation*))
-      (resolve-hyphen-between-two-words pattern words start-pos end-pos)))
-
-   ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
-    (when *work-on-ns-patterns*
-      (break "digit hyphen digit on ~a" words)))
-
-   ((equal pattern '(:lower :hyphen)) ;; "mono- "
-    (resolve-stranded-hyphen pattern words start-pos end-pos))
-
-   ((and *work-on-ns-patterns*
-         (memq :hyphen pattern))
-    (push-debug `(,pattern ,start-pos ,end-pos))
-    (break "New hyphen pattern to resolve: ~a" pattern))
-
-   (t (nospace-hyphen-specialist words pattern hyphen-positions start-pos end-pos))))
-
-
-(defun two-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
-  ;; Just enough to form some sort of constituent and not beak
-  (declare (ignore hyphen-positions))
-  (cond
-   ((or (equal pattern '(:full :hyphen :lower :hyphen :capitalized)) ;; GAP–to–Ras
-        (equal pattern '(:full :hyphen :lower :hyphen :full)))
-    (cond
-     ((eq (third words) (word-named "to"))
-      ;;//// needs a specialization to appreciate what's going on
-      (or (when *work-on-ns-patterns* (break "Make special pattern for 'to'"))
-          (resolve-hyphen-between-three-words pattern words start-pos end-pos)))
-     (t
-      (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
-   (t  
-    (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
-
-
 
 ;;;---------------------------------------------
 ;;; patterns with a colon (only ratios for now)
@@ -162,11 +76,14 @@
     (make-word-colon-word-structure 
      (right-treetop-at/edge start-pos) 
      (left-treetop-at/edge end-pos)))
-   
-   (t ;; fall through unless variable is on
-    (when *work-on-ns-patterns*
-      (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
-      (break "unknown NS pattern with one colon:~%  ~a" pattern)))))
+
+   (*work-on-ns-patterns*
+    (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
+    (break "unknown NS pattern with one colon:~%  ~a" pattern))
+
+   ;; fall through
+   (t (tr :no-ns-pattern-matched)
+      (reify-ns-name-and-make-edge words start-pos end-pos))))
 
 
 ;;;-------------------------------------------------------------
@@ -185,9 +102,10 @@
     (push-debug `(,pattern ,start-pos ,end-pos ,words))
     (break "New pattern to resolve: ~a" pattern))
 
-   ;; fall through
    (t (tr :no-ns-pattern-matched)
       (reify-ns-name-and-make-edge words start-pos end-pos))))
+
+ 
 
 
 

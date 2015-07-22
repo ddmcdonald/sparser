@@ -168,9 +168,13 @@
   ;; resolve-hyphen-between-two-words, which probably should merge.
   (declare (special category::adjective))
   ;; "EphB1-induced", "tyrosine-phosphorylated"
+  (tr :make-right-head-with-agent-left)
+
   (when (word-p left-ref)
     ;; see note in resolve-hyphen-between-two-words
+    (tr :ns-punt-left-referent-is-a-word left-ref)
     (throw :punt-on-nospace-without-resolution nil))
+
   (when (category-p right-ref)
     (setq right-ref (make-individual-for-dm&p right-ref)))
   (let ((variable (subject-variable right-ref)))
@@ -180,6 +184,9 @@
     ;; For right now, binding the subject and letting the chips
     ;; fall as they may. Elevating the right edeg as the head
     ;; but making it an adjective overall. 
+    (if variable
+      (tr :ns-found-subject-var-in variable right-ref)
+      (tr :ns-no-subject-var-in right-ref))
     
     (let ((edge
            (make-binary-edge/explicit-rule-components
@@ -191,6 +198,7 @@
                              (bind-dli-variable variable left-ref right-ref)
                              right-ref)
                :rule-name 'make-right-head-with-agent-left)))
+      (tr :no-space-made-edge edge)
       edge)))
 
 
@@ -212,7 +220,7 @@
 
 ;    (if (= (length words) 3) ;; only one word
 ;      (then
-;;                 "hot-spot" -- send the interior back through the process
+;;/////          "hot-spot" -- send the interior back through the process
         (tr :scare-quotes-creating-edge-around (second words))
         (let* ((word-edge (left-treetop-at/only-edges 
                            (chart-position-before next-position)))

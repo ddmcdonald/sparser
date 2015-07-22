@@ -47,6 +47,14 @@
                         (word-pname word)
                         top-edge)))))
 
+(defparameter *word-nospace-keywords*
+  '(:capitalized :single-cap :full :mixed :single-lower :lower))
+
+(defparameter *digit-nospace-keywords*
+  '(::single-digit :digits))
+
+
+
 (defun characterize-words-in-region  (start-pos end-pos edges)
   ;; Returns a pattern. Presumes that the whole region has been scanned.
   (push-debug `(,start-pos ,end-pos ,edges))
