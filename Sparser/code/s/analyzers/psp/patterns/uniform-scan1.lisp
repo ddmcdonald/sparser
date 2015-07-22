@@ -29,10 +29,6 @@
 
 (in-package :sparser)
 
-;; This variable enables a collection of all no-space examples that contain - or /
-(defparameter *ns-examples* nil) ;; if non-null, collect all ns examples
-
-
 ;;;----------------
 ;;; gating globals
 ;;;----------------
@@ -46,6 +42,15 @@
   (defparameter *parser-interior-of-no-space-token-sequence* t
     "Controls whether we try to parse the edges of the words
      inside the span."))
+
+;;;-------------------
+;;; collection global
+;;;-------------------
+
+(defparameter *collect-ns-examples* nil
+  "if non-null, collect all ns examples that contain #\- or #\/.
+   Called from collect-no-space-segment-into-word just before
+  it sets up the dispatch.")
 
 
 ;;;------------
@@ -61,7 +66,7 @@
 ;; (trace-scan-patterns)
 
 (defun collect-no-space-segment-into-word (position-after)
-  ;; As called from do-no-space-collection. At this point all of the
+  ;; As called from do-no-space-collection . At this point all of the
   ;; words in the sentence have be spanned with unary edges, and there
   ;; are multi-word edges over polywords or created by an FSA (e.g. numbers).
   ;; This 'position-after' is the position that has no-space recorded
@@ -83,6 +88,7 @@
     (let ((start-pos (if leftmost-edge
                        (pos-edge-starts-at leftmost-edge)
                        (chart-position-before position-after))))
+
       (tr :no-space-sequence-started-at start-pos)
       (when long-edge
         (tr :no-space-initial-long-edge long-edge))
@@ -103,6 +109,11 @@
         ;; them in or else we'll get the wrong pattern
         (setq edges (sort-out-edges-in-ns-region edges long-edge))
 
+        (when *collect-ns-examples* 
+          (let ((nsitem (actual-characters-of-word start-pos end-pos nil)))
+            (when (or (search "-" nsitem) (search "/" nsitem))
+              (push nsitem *collect-ns-examples*))))
+
         ;;(push-debug `(,start-pos ,end-pos))
         ;; on this sentence: (p "Pre-clinical studies have demonstrated that 
         ;;   B-RAFV600E mutation predicts a dependency on the mitogen activated 
@@ -114,19 +125,17 @@
         ;; Rather than figure it out just now (12/18/14) I'm just dropping it
         ;; on the floor.
         (when (stringp end-pos) ;; may be bad display in backtrace
+          (tr :bailing-from-ns/end-pos-is-the-string end-pos)
           (return-from collect-no-space-segment-into-word nil))
         (when (stringp start-pos) ;; This one is weirder
+          (tr :bailing-from-ns/start-pos-is-the-string start-pos)
           (return-from collect-no-space-segment-into-word nil))
         (unless (position-precedes start-pos end-pos) ;; bug may actually be this
+          (tr :bailing-from-ns/end-pos-less-than-start-pos start-pos end-pos)
           (return-from collect-no-space-segment-into-word nil))
 
         (tr :looking-at-ns-segment start-pos end-pos)
-        ;; Open coding post-accumulator-ns-handler
-        (when *ns-examples* 
-          (let
-              ((nsitem (actual-characters-of-word start-pos end-pos nil)))
-            (when (or (search "-" nsitem)(search "/" nsitem))
-          (push nsitem *ns-examples*))))
+
         (multiple-value-bind (layout edge)
                              (parse-between-scan-boundaries start-pos end-pos)
           (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
