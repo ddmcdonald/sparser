@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  January 2015
+;;;  Version:  July 2015
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -248,12 +248,15 @@
         (walk-down-right-headline daughter))
        ((symbolp daughter)
         (cond
-         ((eq daughter :digit-based-number) nil)
+         ((eq daughter :digit-based-number) 
+          nil)
          ((eq daughter :single-term)
           edge)
          ((eq daughter :single-digit-sequence)
           edge)
          ((eq daughter :literal-in-a-rule)
+          edge)
+         ((eq daughter :context-sensitive)
           edge)
          ((eq daughter :long-span)
           (let ((constituents (edge-constituents edge)))
