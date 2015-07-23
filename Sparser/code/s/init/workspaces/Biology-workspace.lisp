@@ -1270,15 +1270,15 @@ These return the Lisp-based obo entries.
   (dump-orphans timedir)
   ))
 
-(defun write-article-time-to-log (i id runtime &optional (numcards 0)(duplicates 0)(filtered 0))
+(defun write-article-time-to-log (i id runtime &optional (numcards 0)(duplicates 0)(filtered 0) (misc 0))
   (declare (special *all-found-reactions*))
   (unless (boundp '*all-found-reactions*) (setf *all-found-reactions* 0))
   (when *article-timing-stream*
     (when (eq i 1)
-      (format *article-timing-stream* "Art#, ID, Runtime, #Sentences #Reactions, #Cards, #Duplicates, #Filtered~%"))
+      (format *article-timing-stream* "Art#, ID, Runtime, #Sentences #Reactions, #Cards, #Duplicates, #Filtered, #misc~%"))
 
-    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d~%"
-            i id runtime (length *all-sentences*) *all-found-reactions* (or numcards 0) duplicates filtered )))
+    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d, ~d~%"
+            i id runtime (length *all-sentences*) *all-found-reactions* (or numcards 0) duplicates filtered misc)))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
@@ -1292,26 +1292,32 @@ These return the Lisp-based obo entries.
 
 (defun run-one-june-article (i id &optional cardp write-timep)
   (declare (special *article-elapsed-time*)) ;; defined below.
+
   (unless (member i *skip-articles*)
     (setq *all-sentences* nil)
     (test-june-article id :article-number i)
-    (let ((numcards 0)(num-duplicates 0)(num-filtered 0))
+    (let ((numcards 0)(num-duplicates 0)(num-filtered 0)(misc-cards 0))
+      (flet ((create-cards (id)
+                (multiple-value-setq (numcards num-duplicates num-filtered)
+                    (create-cards-for-article id))
+                (setf misc-cards
+                   (create-misc-cards-for-article id))))
+
       (when cardp
         (if *trap-error-skip-sentence*
             (handler-case
-                (multiple-value-setq (numcards verbs num-duplicates num-filtered)
-                  (create-cards-for-article id))
+                (create-cards id)
               (error (e)
                 (ignore-errors ;; got an error with something printing once
                  (when *show-handled-sentence-errors*
                    (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
-          (multiple-value-setq (numcards num-duplicates num-filtered)
-            (create-cards-for-article id))))
+            (create-cards id)))
+
       (when write-timep (write-article-time-to-log i id *article-elapsed-time*
-                                                   numcards num-duplicates num-filtered))
-      (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered"
-              i id *article-elapsed-time* numcards num-duplicates num-filtered)
-      )))
+                                                   numcards num-duplicates num-filtered misc-cards))
+      (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc"
+              i id *article-elapsed-time* numcards num-duplicates num-filtered misc-cards)
+      ))))
 
 (defun tj (i &optional (id (nth (1- i) *june-nxml-files-in-MITRE-order*)))
   (run-one-june-article i id t)
@@ -1396,6 +1402,7 @@ These return the Lisp-based obo entries.
       (let ((file-result (post-translation-file-from-card card (incf index))))
         (when file-result
           (incf counter))))
+    counter
     ))
 
 #|
