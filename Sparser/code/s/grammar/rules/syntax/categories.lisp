@@ -510,8 +510,18 @@
     CATEGORY::VERB+PASSIVE
     CATEGORY::NOUN/VERB-AMBIGUOUS))
 
+(defmethod vg-start? ((e edge))
+  (if
+   (plural-noun-and-present-verb? e)
+   (not (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
+          thereis (or (ng-start? ee)
+                      (memq (cat-name (edge-category ee)) 
+                            '(category::preposition category::spatial-preposition)))))
+   (vg-compatible? e)))
+
 (defgeneric vg-compatible? (label)
-  (:documentation "Is a category which can occur inside a VG"))
+ (:documentation "Is a category which can occur inside a VG"))
+
 (defmethod vg-compatible? ((w word))
   t)
 (defmethod vg-compatible? ((e edge))
