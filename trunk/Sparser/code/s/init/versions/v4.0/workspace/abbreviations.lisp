@@ -208,6 +208,8 @@
      (checkpoint-call-and-postprocessing string))
     (t (analyze-text-from-string string))))
 
+(defparameter *bad-sentences* nil)
+
 (defun qepp (string)  ;; quiet, error-protected call to pp
   (with-total-quiet
       (handler-case
@@ -216,6 +218,7 @@
             (if (equal "" (caar *all-sentences*))
                 (setf (car (car *all-sentences*)) string)))
         (error (e)
+               (push string *bad-sentences*)
                (format t "~&Error ~a~%" e)))))
 
 
