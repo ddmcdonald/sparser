@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "rhetoric"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  June 2015
+;;;  Version:  July 2015
 
 ;; Created 6/4/15 to mixins, forms, and computation that is needed
 ;; to identify and work with the rhetorical structure of a text
@@ -12,6 +12,7 @@
 ;; 6/30/15 Added paragraph-level class to store discourse relations.
 ;; Expanded methodology-phrase into methodology-phrase and motivation-phrase.
 ;; Added discourse-role slot to epistemic-status (sentence-level class).
+;; 7/22/15 Gating he recording on the availabity of the sentence.
 
 (in-package :sparser)
 
@@ -140,18 +141,22 @@ you also add the corresponding slot to the class. |#
             (when *reading-populated-document*
               (unless *scanning-epistemic-features*
                 (return-from ,fn-name)))
-            (let ((sentence (identify-current-sentence)))
-              (let ((contents (contents sentence))
-                    (value (etypecase edge-or-word
-                             (edge (edge-category edge-or-word))
-                             (word edge-or-word))))
-                (unless (typep contents 'epistemic-status)
-                  (error "Forgot to fold epistemic-status into ~
-                          sentence contents"))
-                (when *trace-epistemic-collector*
-                  (format t "~&>>> ~a~%" value))
-                (push value
-                      (slot-value contents ',slot-name))))) ))
+            (let ((sentence (identify-current-sentence :no-break)))
+              (when sentence
+                ;; When running an article there will always be 
+                ;; a sentence at this point, but when runnng a short
+                ;; text complete will be called before
+                (let ((contents (contents sentence))
+                      (value (etypecase edge-or-word
+                               (edge (edge-category edge-or-word))
+                               (word edge-or-word))))
+                  (unless (typep contents 'epistemic-status)
+                    (error "Forgot to fold epistemic-status into ~
+                            sentence contents"))
+                  (when *trace-epistemic-collector*
+                    (format t "~&>>> ~a~%" value))
+                  (push value
+                        (slot-value contents ',slot-name)))))) ))
     (eval form)
     fn-name))
 
