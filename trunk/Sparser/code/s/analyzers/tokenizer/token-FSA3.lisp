@@ -116,7 +116,6 @@
           (index length)
           (capitalization-state :start)
           entry )
-      (declare (special entry))
       
       (setf (fill-pointer interning-array) length)
       
@@ -124,7 +123,7 @@
         (when (null accumulated-entries)
           (return))
         (when (consp (cdr (car accumulated-entries)))
-          (break "bad element in accumulated-entries"))
+          (error "bad element in accumulated-entries"))
         (setq entry (kpop accumulated-entries))
         (setf (elt interning-array (decf index))
               (cdr entry))
