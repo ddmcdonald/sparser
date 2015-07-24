@@ -114,8 +114,11 @@
 
 (defun jantests (&optional (start 1))
   (declare (special *jan-dry-run*))
-  (loop for i from start to (length *jan-dry-run*) do (dectest i)))
+  (loop for i from start to (length *jan-dry-run*) do (jantest i)))
 
+(defun aspp2tests (&optional (start 1))
+  (declare (special *aspp2-whole*))
+  (loop for i from start to (length *aspp2-whole*) do (aspp2test i)))
 
 ;;;-------------------------
 ;;; Single sentence testers
@@ -129,6 +132,9 @@
   (declare (special *jan-dry-run*))
   (run-test n nil :sentences sentences))
 
+(defun aspp2test (n &optional (sentences *aspp2-whole*))
+  (declare (special *aspp2-whole*))
+  (run-test n nil :sentences sentences))
 
 
 (defmacro test (n)
