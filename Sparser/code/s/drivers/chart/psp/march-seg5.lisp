@@ -37,6 +37,9 @@
   (setq *rightmost-active-position/segment* segment-end-pos)
   ;;(break "about to parse ~a" *current-chunk*)
   (cond
+   ((and *big-mechanism-ngs*
+        (member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal))
+    (interp-big-mech-chunk *current-chunk* nil))
    ((use-specialized-ng-parser?)
     (interp-big-mech-chunk *current-chunk* t))
    ((use-specialized-vg-parser?)
@@ -58,31 +61,62 @@
 (defvar *chunk-edges* nil)
 (defvar *all-chunk-edges* nil)
 
+
+(defun treetops-in-current-chunk ()
+  ;; like  treetops-in-current-segment  but takes into account the chunk forms
+  (loop for ev in
+    (treetops-in-segment *left-segment-boundary*
+                         *right-segment-boundary*)
+    collect
+    (cond
+     ((edge-p ev)
+      ev)
+     ((edge-vector-p ev)
+      (loop for e in (ev-edges ev)
+        when
+        (compatible-with-chunk e *current-chunk*)
+        do
+        (return e))))))
+
+(defun compatible-with-chunk (edge chunk)
+  (cond
+   ((equal (chunk-forms chunk) '(vg))
+    (member (cat-symbol (edge-form edge)) *vg-word-categories*))
+   ((equal (chunk-forms chunk) '(ng))
+    (not (member (cat-symbol (edge-form edge)) *vg-word-categories*)))
+   (t t)))
+
 (defun use-specialized-ng-parser? ()
   ;; Predicate used by parse-at-the-segment-level to determine
   ;; whether to use the specialized big-mech segment parser
   (declare (special *big-mechanism-ngs* *current-chunk*))
   (and *big-mechanism-ngs*
-       (eq 'NG (car (chunk-forms *current-chunk*)))
-       (let ((edges (treetops-in-current-segment)))
-         (and (cdr edges) ;; more than one edge
-              (or (cddr edges) ;; more than two
-                  (not
-                   (or (eq (edge-form (car edges)) category::det)
-                       (eq (edge-form (car edges)) category::quantifier))))))))
+       (or
+        (equal (chunk-forms *current-chunk*) '(NG))
+        (and
+         (eq 'NG (car (chunk-forms *current-chunk*)))
+         (let ((edges (treetops-in-current-chunk)))
+           (and (cdr edges) ;; more than one edge
+                (or (cddr edges) ;; more than two
+                    (not
+                     (or (eq (edge-form (car edges)) category::det)
+                         (eq (edge-form (car edges)) category::quantifier))))))))))
 
 (defun use-specialized-vg-parser? ()
   ;; Predicate used by parse-at-the-segment-level to determine
   ;; whether to use the specialized big-mech segment parser
   (declare (special *big-mechanism-ngs* *current-chunk*))
   (and *big-mechanism-ngs*
-       (memq (car (chunk-forms *current-chunk*)) '(VG ADJG))
-       (let ((edges (treetops-in-current-segment)))
-         (and (cdr edges) ;; more than one edge
-              (or (cddr edges) ;; more than two
-                  (not
-                   (or (eq (edge-form (car edges)) category::det)
-                       (eq (edge-form (car edges)) category::quantifier))))))))
+       (or
+        (member (chunk-forms *current-chunk*) '((VG) (ADJG)))
+        (and
+         (memq (car (chunk-forms *current-chunk*)) '(VG ADJG))
+         (let ((edges (treetops-in-current-chunk)))
+           (and (cdr edges) ;; more than one edge
+                (or (cddr edges) ;; more than two
+                    (not
+                     (or (eq (edge-form (car edges)) category::det)
+                         (eq (edge-form (car edges)) category::quantifier))))))))))
 
 
 (defun interp-big-mech-chunk (chunk from-right)
@@ -149,7 +183,7 @@
 (defun collect-triples-in-segment (chunk)
   ;; Executed multiple times because it's recalculated with
   ;; every rule execution
-  (let ((pairs (adjacent-segment-tts (treetops-in-current-segment)))
+  (let ((pairs (adjacent-segment-tts (treetops-in-current-chunk)))
         rule )
     ;;(push-debug `(,pairs)) (break "pairs = ~a" pairs)
     (loop for pair in pairs
@@ -234,7 +268,7 @@
       (car rules))))  |#
 
 (defun add-chunk-edges-snapshot ()
-  (push (loop for edge in (treetops-in-current-segment)
+  (push (loop for edge in (treetops-in-current-chunk)
           collect 
           (list (and (edge-form edge)
                      (intern (symbol-name (cat-symbol (edge-form edge)))))
