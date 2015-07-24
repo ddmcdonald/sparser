@@ -25,6 +25,8 @@
   "The set of sentences a general iterator
    runs over. Set by one of the corpus specifiers")
 
+(defparameter *no-anaphora* t)
+
 ;;;----------------------------
 ;;; Sentence corpus specifiers
 ;;;----------------------------
@@ -134,7 +136,7 @@
 
 (defun aspp2test (n &optional (sentences *aspp2-whole*))
   (declare (special *aspp2-whole*))
-  (run-test n nil :sentences sentences))
+  (run-test n nil nil :sentences sentences))
 
 
 (defmacro test (n)
@@ -145,12 +147,15 @@
   (setq *show-semantics* (not flag)))
 
 
-(defun run-test (n &optional (semantics *show-semantics*) 
+(defun run-test (n &optional (semantics *show-semantics*) (no-anaphora *no-anaphora*)
                    &key (sentences *sentences*))
-  (let ((test (nth (- n 1) sentences))
-        (*do-anaphora* nil))
-    ;; Anaphora rarely is germane on a single sentence by itself
-    (declare (special *do-anaphora* *save-chunk-edges*))
+  (if no-anaphora
+      (let (*do-anaphora* 'nil) (declare (special *do-anaphora*))) ;; it was on by default, so turn it off
+      )
+ 
+  (let ((test (nth (- n 1) sentences)))
+    (declare (special *save-chunk-edges*))
+
     (format t "~&___________________________________________~%~%")
     (print (list n test))
     (terpri)
