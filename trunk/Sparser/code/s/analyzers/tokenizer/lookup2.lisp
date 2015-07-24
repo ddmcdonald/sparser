@@ -18,7 +18,7 @@
 
 (in-package :sparser)
 
-
+#|
 (defun find-word (char-type)
   ;; Called from finish-token to find or make the word that corresponds
   ;; to the sequence of characters we just delimited and is resident in
@@ -46,14 +46,14 @@
                 word)))
             word))
         (establish-unknown-word char-type))
-      (establish-unknown-word char-type))))
+      (establish-unknown-word char-type)))) |#
 
-#| Original 9/92
+
 (defun find-word (char-type)
   (let ((symbol (lookup-word-symbol)))
     (if symbol
       (if (boundp symbol)
         (symbol-value symbol)
         (establish-unknown-word char-type))
-      (establish-unknown-word char-type)))) |#
+      (establish-unknown-word char-type)))) 
 
