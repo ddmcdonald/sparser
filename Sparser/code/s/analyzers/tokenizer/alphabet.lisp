@@ -792,6 +792,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute))) 
     (353  ;; #\Latin_Small_Letter_S_With_Caron
      (:alphabetical . (:lowercase . #\s)))
+    (400  ;; #\Latin_Capital_Letter_Open_E
+     (:alphabetical . (:lowercase . #\s)))
     
     (603 ;; #\Latin_Small_Letter_Open_E
      (:alphabetical . (:lowercase . #\e))) ;;"ɛ", (code = 603)
