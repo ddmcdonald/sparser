@@ -48,7 +48,8 @@
 ;; 5/29/15 Removed things that belonged else where, notably 
 ;;  moved phosphoriated to phenomena to live with the other modifications
 ;; 5/30/2015 change poor definition of "state" to "bio-state" -- conflicted with definition of "have"
-;; 6/5/2015 some vocabulary tweaks
+;; 6/5/2015 some vocabulary tweaks. Adjusted svo/bio/expr to take input
+;; from setup-verb 7/22/15.
 
 (in-package :sparser)
 
@@ -67,6 +68,9 @@
   `(svo/bio/expr ,verb))
 
 (defun svo/bio/expr (verb)
+  (when (word-p verb) 
+    ;; came in from setup-verb
+    (setq verb (word-pname verb)))
   (let* ((category-name (intern (string-upcase verb)
                                 (find-package :sparser)))
          (form `(def-term ,category-name
@@ -1331,6 +1335,21 @@
          :for theme
          :with method))
 
+;; January
+; "observed an order of magnitude increase in the rate of GTP hydrolysis"
+; "No increase in the rate of GTP hydrolysis"
+; "monoubiquitination increases the population of active, GTP–bound Ras"
+; monoubiquitination increases the proportion of Ras ...
+;  monoubiquitination decreases ..
+; #41 "leads to its increased translocation to the cytosol/nucleus and increased binding to p53"
+;; The problem with the noun form is the clash of the plural noun 
+;; with the simple present form of the verb. That spelling form is 
+;; overwhelmingly the verb in bio corpora. This bogus explicit plural
+;; effectively blocks the clash.
+(def-synonym increase
+  (:noun ("increase" :plural "increasessss")
+   :in object
+   :of object))
 
 
 ;;--- "induce"
@@ -1349,21 +1368,6 @@
    :in response))
 ;;/// want subtypes, want to understand the syntax of "-inducing"
 
-
-;; January
-; "observed an order of magnitude increase in the rate of GTP hydrolysis"
-; "No increase in the rate of GTP hydrolysis"
-; "monoubiquitination increases the population of active, GTP–bound Ras"
-; monoubiquitination increases the proportion of Ras ...
-;  monoubiquitination decreases ..
-; #41 "leads to its increased translocation to the cytosol/nucleus and increased binding to p53"
-
-;;//// look at change in amount for how to do measures
-;; until def-synonym actually works without clobbering earlier rules
-(def-synonym increase
-  (:noun "increase"
-   :in object
-   :of object))
 
 
 (define-category indicate
