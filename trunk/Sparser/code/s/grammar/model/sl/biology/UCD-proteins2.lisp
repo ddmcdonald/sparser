@@ -830,7 +830,7 @@
 #|"SPB3_HUMAN"|#   (define-protein "SCCAs" ("SPB3_HUMAN"))
 #|"SPB3_HUMAN"|#   (define-protein "SPB3_HUMAN" ())
 #|"SPB5_HUMAN"|#   (define-protein "maspin" ("SPB5_HUMAN"))
-#|"SPDYA_HUMAN"|#   (define-protein "Spy1" ("SPDYA_HUMAN"))
+#|"SPDYA_HUMAN"|#   (define-protein "Spy1" ("SPDYA_HUMAN" "Speedy" "Ringo" "Speedy/Ringo" "Speedy/Ringo A2"))
 #|"SPP2A_HUMAN"|#   (define-protein "SPPL2a" ("SPP2A_HUMAN"))
 #|"SRBP1_HUMAN"|#   (define-protein "sterol" ("SRBP1_HUMAN" "PR:000028988"))
 #|"SRBS2_HUMAN"|#   (define-protein "ArgBP2" ("SRBS2_HUMAN"))
