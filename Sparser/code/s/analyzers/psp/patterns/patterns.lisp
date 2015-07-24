@@ -96,11 +96,28 @@
   (cond
    ((or (equal pattern `(:tilda :digits))  ;; ~60 in Dec# 52
         (equal pattern `(:tilda :single-digit)))
+    ;;/// n.b. does do all it should -- ignores the approximation
     (package-approximation-number words start-pos end-pos))
+
+   ((equal pattern '(:tilda :digits :percent-sign))
+    ;;/// parser should have noticed the percentage
+    ;;/// see above, but it aught to be an approximate-number that
+    ;; we use in making the percentage
+    (let* ((number (find-or-make-number (second words)))
+           (i (find-or-make-individual 'percent :number number)))
+      (let ((edge (make-edge-over-long-span
+                   start-pos end-pos
+                   (category-named 'percent :break-if-none)
+                   :rule 'resolve-other-punctuation-pattern
+                   :form (category-named 'np) ;; ???
+                   :referent i
+                   :words words)))
+        (tr :made-edge edge)
+        edge)))
    
    (*work-on-ns-patterns*
     (push-debug `(,pattern ,start-pos ,end-pos ,words))
-    (break "New pattern to resolve: ~a" pattern))
+    (break "New 'other punctuation' pattern to resolve: ~a" pattern))
 
    (t (tr :no-ns-pattern-matched)
       (reify-ns-name-and-make-edge words start-pos end-pos))))
