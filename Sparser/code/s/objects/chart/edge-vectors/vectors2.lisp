@@ -106,16 +106,21 @@
 (defun remove-edge-from-vector-ev (ev edge)
   (let ((array (ev-edge-vector ev))
         (count (ev-number-of-edges ev)))
-    (unless (eq edge
-                (aref array (1- count)))
+    (cond
+     ((eq edge
+          (aref array (1- count)))
+      
+      (setf (aref array
+                  (decf (ev-number-of-edges ev)))
+            nil))
+     (t
+      (reset-ev-edges ev (loop for e in (ev-edges ev) unless (eq e edge) collect e))
+      #+ignore ;; o longer true
       (break "Only the topmost edge in a vector may be deleted~
-              ~%for ~A, the top edge is ~A~
-              ~%and the edge to be deleted is ~A"
+             ~%for ~A, the top edge is ~A~
+             ~%and the edge to be deleted is ~A"
              ev (aref array (1- count)) edge))
-    (setf (aref array
-                (decf (ev-number-of-edges ev)))
-          nil)
-    edge ))
+     edge )))
 
 
 ;;;--------------------------------------
