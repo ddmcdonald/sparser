@@ -87,13 +87,18 @@
   "Set in sweep-successive-sentences-from and also in
    sentence-processing-core.")
 
-(defun identify-current-sentence ()
+(defun identify-current-sentence (&optional no-break)
   ;; called from the epistemic collector functions but could
   ;; be generally useful.
   (let ((s *sentence-in-core*))
-    (unless (typep s 'sentence)
-      (break "Need another way to find the current sentence"))
-    s))
+    (cond
+     ((typep s 'sentence) s)
+     (s (error "Odd type returned for sentence: ~a~%~a"
+               (type-of s) s))
+     (t
+      (unless no-break
+        (break "Need another way to find the current sentence"))))))
+
 
 (defparameter *trap-error-skip-sentence* nil
   "Governs whether we let errors happen. If it's nill they
