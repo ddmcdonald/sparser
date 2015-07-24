@@ -64,6 +64,7 @@
     (category nil)
     (cons (strip-model-description item))
     (number)
+    (word)
     (otherwise
      (push-debug `(,item))
      (break "New case to strip: ~a~%~a"
