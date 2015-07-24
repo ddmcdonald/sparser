@@ -23,7 +23,7 @@
   :specializes nil
   :instantiates self )
 
-(trace-pronouns)
+;;(trace-pronouns)
 
 (defparameter *ignore-out-of-pattern-dereferencing* t)
 
