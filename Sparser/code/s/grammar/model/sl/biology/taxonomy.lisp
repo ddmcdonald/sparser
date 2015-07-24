@@ -241,7 +241,7 @@
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"
   :specializes bio-process)
 
-(define-category transport :specializes bio-movement
+(define-category bio-transport :specializes bio-movement
   :binds ((agent bio-process)
           (object protein)
           (origin cellular-location)
