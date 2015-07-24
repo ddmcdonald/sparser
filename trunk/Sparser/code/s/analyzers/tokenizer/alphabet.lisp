@@ -959,13 +959,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8714 (:punctuation . ,(punctuation-named (code-char 8714)))) ;;"∊", (code = 8714)
     (8721 (:punctuation . ,(punctuation-named (code-char 8721)))) ;;"∑", (code = 8721)
 
-    (8722
-     (:punctuation . ,(or
-                       #-allegro
-                       (punctuation-named #\U+2212)
-                       #+allegro
-                       (punctuation-named (code-char #x2212))
-                       (punctuation-named #\-))))
+    (8722 ;; ""−" #\U+2212 Minus sign
+     (:punctuation . ,(punctuation-named #\-)))
     (8727 ;; "∗" #\U+2217
      (:punctuation . ,(punctuation-named (code-char 8727))))
     (8734 (:punctuation . ,(punctuation-named (code-char 8734)))) ;;"∞", (code = 8734)
@@ -978,7 +973,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8758 ;; ratio  #\U+2236
      (:punctuation . ,(punctuation-named #\:)))
 
-    (8764 (:punctuation . ,(punctuation-named (code-char 8764)))) ;; #\∼
+    ;; This is tilde in the Mathematical operator section.
+    ;; we'll use a regular ascii tilde instead
+    (8764 (:punctuation . ,(punctuation-named #\~ ))) ;; #\∼
+
+
     (8776 (:punctuation . ,(punctuation-named (code-char 8776)))) ;;"≈", (code = 8776)
     (8781 (:punctuation . ,(punctuation-named (code-char 8781)))) ;;"≍", (code = 8781)
     
