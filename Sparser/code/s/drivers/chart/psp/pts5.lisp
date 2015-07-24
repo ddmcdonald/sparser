@@ -59,6 +59,9 @@
 ;;       next segment if it's up. Motivated by just-brackets testing. 
 ;; 5.17 (10/10/14) Found another way to do that, so ripped out that incomplete
 ;;       attempt.	
+;; 7/24/2015  new more general mechanism for handling plural noun/present tense verb conflicts can be used
+;; see ensure-edge-consistent-with-chunk and new code in handling NG and VG chunks
+;; (much better handling of alternative uses of "increases" as a verb and a plural noun)
 
 (in-package :sparser)
 
@@ -96,7 +99,15 @@
          (segment-finished :null-span))
 
         (:one-edge-over-entire-segment
-         (segment-finished :one-edge-over-entire-segment))
+         (when *big-mechanism-ngs*
+           (ensure-edge-consistent-with-chunk))
+         (segment-finished :one-edge-over-entire-segment)
+         ;; want to do full parsing, so that we can distinguish NG and VG chunks
+         ;; can have a chunk over a plural-noun and verb+present (like "increases")
+         ;; where the chunker decides whetehr it is a NG or VG chunk based on
+         ;; context (e.g. "we saw increases in ERK.")
+         ;;(parse-at-the-segment-level *right-segment-boundary*)
+         )
 
         (:no-edges
          (segment-finished :no-edges))
@@ -119,6 +130,27 @@
       ;;(scan-next-segment *right-segment-boundary*)
       (return-to-scanning-level *right-segment-boundary*)))))
 
+
+(defun ensure-edge-consistent-with-chunk ()
+  (when
+      (member (chunk-forms *current-chunk*) '((ng)(vg)))
+    (let*
+        ((chunk-treetops (treetops-in-current-chunk))
+         (segment-treetops (treetops-in-segment *left-segment-boundary* *right-segment-boundary*))
+         treetops-to-remove)
+      (declare (special chunk-treetops segment-treetops treetops-to-remove))
+      (loop for e in segment-treetops do
+        (cond
+         ((edge-vector-p e)
+          (loop for ee in (ev-edges e) unless (memq ee chunk-treetops) 
+            do (push ee treetops-to-remove)))
+         ((not (memq e chunk-treetops))
+          (push e treetops-to-remove))))
+      ;; these will be different only in the case where the chunk
+      ;; limits the treetops because of POS
+      (when treetops-to-remove
+        (loop for e in treetops-to-remove when (edge-p e) do (remove-edge-from-chart e))))))
+        
 
 
 (defparameter *return-after-doing-segment* nil
