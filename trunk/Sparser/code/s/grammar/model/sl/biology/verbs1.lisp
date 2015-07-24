@@ -1347,7 +1347,7 @@
 ;; overwhelmingly the verb in bio corpora. This bogus explicit plural
 ;; effectively blocks the clash.
 (def-synonym increase
-  (:noun ("increase" :plural "increasessss")
+  (:noun "increase"
    :in object
    :of object))
 
@@ -2487,7 +2487,7 @@
 ;     are not fully understood."
 ; (process on ERK) ... a requirement for nuclear translocation."
 ; 11: is directly translated into a delay in nuclear translocation
-(define-category translocation :specializes transport
+(define-category translocation :specializes bio-transport
   :binds ((agent bio-process)
           (object protein)
           (origin cellular-location)
