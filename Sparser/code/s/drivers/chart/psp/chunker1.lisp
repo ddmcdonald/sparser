@@ -92,7 +92,7 @@
 ;;;--------
 (defun ev-edges (ev)
   ;; return a list of all the relevant edges on an edge vector -- hope it doesn't cons too much
-  (and ev ;; can be called with nil, when there is no previous ev in a chunk
+  (when ev ;; can be called with nil, when there is no previous ev in a chunk
        (let
            ((top (ev-top-node ev)) edge)
          (if
@@ -102,6 +102,17 @@
             collect edge)
           (when top ;; managed to get an ev with NIL top node
             (list top))))))
+
+(defun reset-ev-edges (ev edge-list)
+  (when ev
+    (if (null (cdr edge-list))
+        (setf (ev-top-node ev) (car edge-list))
+        (setf (ev-top-node ev) :multiple-initial-edges))
+    (loop for i from 0 to (- (length (ev-edge-vector ev)) 1) 
+      do (setf (aref (ev-edge-vector ev) i) nil))
+    (loop for i from 0 to (- (length edge-list) 1) as e in edge-list
+      do (setf (aref (ev-edge-vector ev) i) E))
+    (setf (ev-number-of-edges ev) (length edge-list))))
 
 
 (defparameter *record-all-chunks* nil)
@@ -170,39 +181,6 @@
     (declare (special *return-after-doing-segment*
                       *current-chunk*))
     (pts)))
-
-#| Inter-segment parsing done under direction of PTS
-starting at parse-at-the-segment-level where we let
-all sorts of rules apply and not simply form rules. 
-   
-(defun parse-ng-or-vg-interior (chunk)
-  (let* ((edges (reverse (treetops-in-current-segment)))
-         (left (ng-edge (second edges)))
-         (right (ng-edge (first edges)))
-         rule)
-    (loop while (and (cdr edges)
-                     (setq rule (check-form-form left right)))
-      do
-      (execute-one-one-rule rule left right)
-      (setq edges (reverse (treetops-in-segment 
-                            (chunk-start-pos chunk)
-                            (chunk-end-pos chunk))))
-      (setq left (ng-edge (second edges)))
-      (setq right (ng-edge (car edges)))))
-  (pts nil chunk))
-
-(defun ng-edge (tt)
-  (cond
-   ((null tt) nil)
-   ((edge-p tt) tt) ;; the edge for the treetop was unambiguous
-   ((edge-vector-p tt)(highest-edge tt))
-   (t (break "what type of treetop is this?"))))
-
-(defun verb-chunks ()
-  (loop for c in *all-chunk-edges*
-    when (loop for e in c 
-           thereis (memq (car e) '(verb+ed verb+ing)))
-    collect c))  |#
 
 (defun show-chunk-edges (&optional (ces *all-chunk-edges*))
   (loop for c in (reverse ces)
@@ -452,11 +430,20 @@ all sorts of rules apply and not simply form rules.
 (defun can-start? (form edge)
   (case form
     (ng (ng-start? edge))
-    (vg (vg-compatible? edge))
+    (vg (vg-start? edge))
     (adjg (adjg-compatible? edge))))
 
 ;;; FROM categories.lisp but should be here to maintain compatibility when structure of chunk changes
-
+(defun plural-noun-and-present-verb? (e)
+  (or
+   (and
+    (eq (edge-form e) category::common-noun/plural)
+    (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
+      thereis (eq (edge-form ee) category::verb+present)))
+   (and
+    (eq (edge-form e) category::verb+present)
+    (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
+      thereis (eq (edge-form ee) category::common-noun/plural)))))
 
 (defgeneric ng-compatible? (label evlist)
   (:documentation "Is a category which can occur inside a NG"))
@@ -466,52 +453,50 @@ all sorts of rules apply and not simply form rules.
 (defmethod ng-compatible? ((e edge) evlist)
   (declare (special e evlist))
   (let
-      ((edges (ev-edges (car evlist))))
-    (declare (special edges))
-  
-    (and
-     ;;in fact nothing should follow a pronoun (except a possessive pronoun)
-     ;;(not (eq category::time-unit (edge-category e))) WHY WAS THIS HERE? WE NEED TO HANDLE "3 HOURS"
-     (not
+      ((edges (ev-edges (car evlist)))
+       (eform (edge-form e)))
+    (declare (special edges eform))
+   ;;(lsp-break "ng-compatible")
+    (not
+     (or
+      (and (plural-noun-and-present-verb? e)
+           (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
+             thereis (ng-start? ee)))
+      ;;in fact nothing should follow a pronoun (except a possessive pronoun)
+      ;;(not (eq category::time-unit (edge-category e))) WHY WAS THIS HERE? WE NEED TO HANDLE "3 HOURS"
       (and
-       (eq category::number (edge-form e))
+       (eq category::number eform)
        (loop for ev in evlist
          thereis
-          (loop for edge in (ev-edges ev)
-            thereis
-            (not (memq (edge-form edge) 
-                       `(,category::quantifier ,category::det)))
-            ))))
-     (not 
+         (loop for edge in (ev-edges ev)
+           never (memq (edge-form edge) `(,category::quantifier ,category::det)))))
       (loop for edge in edges
         thereis
         (or
          (eq category::pronoun (edge-form edge))
          (member (cat-symbol (edge-category edge))
-                 '(category::which category::what)))))
-        
-     (cond
-      ((eq word::comma (edge-category e))
-       ;;comma can come in the middle of an NP chunk
-       ;; as in "active, GTP-bound Ras"
-       ;; BUT THIS IS NOT AS COMMON AS OTHER USES OF COMMA -- DROP IT FOR NOW
-       ;(not (null evlist))
-       nil)
-      ((and
-        (or
-         (eq category::verb+ed (edge-form e))
-         (eq category::verb+ing (edge-form e)))
-        ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
-        ;;"RNA interference (RNAi) blocked MEK/ERK activation."
-        (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
-       nil)
-      ((eq category::verb+ing (edge-form e))
-       (not (loop for edge in edges thereis (ng-head? edge))))
-      ((eq category::ordinal (edge-category e))
-       ;;WORKAROUND -- DAVID
-       t)
-      (t
-       (ng-compatible? (edge-form e) edges))))))
+                 '(category::which category::what))))
+      
+      (cond
+       ((eq word::comma (edge-category e))
+        ;;comma can come in the middle of an NP chunk
+        ;; as in "active, GTP-bound Ras"
+        ;; BUT THIS IS NOT AS COMMON AS OTHER USES OF COMMA -- DROP IT FOR NOW
+        ;(not (null evlist))
+        t)
+       ((and
+         (memq (cat-name eform) '(category::verb+ed category::verb+ing))
+         ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
+         ;;"RNA interference (RNAi) blocked MEK/ERK activation."
+         (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
+        t)
+       ((eq category::verb+ing eform)
+        (loop for edge in edges thereis (ng-head? edge)))
+       ((eq category::ordinal (edge-category e))
+        ;;WORKAROUND -- DAVID
+        nil)
+       (t
+        (not (ng-compatible? (edge-form e) edges))))))))
 
 (defmethod ng-compatible? ((c referential-category) evlist)
   (ng-compatible? (cat-symbol c) evlist))
@@ -548,6 +533,10 @@ all sorts of rules apply and not simply form rules.
                     category::that category::verb+ed category::verb+ing
                     category::preposition))
   (cond
+   ((and (plural-noun-and-present-verb? e)
+         (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
+           thereis (ng-start? ee)))
+    nil)
    ((or (eq category::modifier (edge-category e))
         (eq category::adjective (edge-form e)))
     ;;when the previous chunk was a copula verb (just check for BE at this time)
