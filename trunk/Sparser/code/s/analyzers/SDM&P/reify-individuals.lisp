@@ -79,8 +79,6 @@ to the value of the viable after-action flag for segments.
        (when (and suffix-form prefix-form)
          (when (noun-category? suffix-form)
            (convert-referent-to-individual suffix)))))
-         
-    ;; (treetops-in-current-segment)
     (:no-edges
      (when *debug-reify-implicit-individuals*
        (break "reify-implicit-individuals: no-edges")))
