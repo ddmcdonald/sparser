@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.7 June 2015
+;;;  Version:  3.8 July 2015
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -52,6 +52,8 @@
 ;; 3.7 (6/3/15) removed restriction on when record-instance-within-sequence runs
 ;;     (6/5/15) Modified individuals-discourse-entry to make it robust under the 
 ;;      possiblity that the individual's category has no operations defined for it.
+;; 3.8 (7/8/15) Pulling out PSI deadwood when I find it. Revamping the update
+;;      operation to appreciate individuals evolving as modifiers are added.
 
 (in-package :sparser)
 
@@ -68,7 +70,7 @@
 ;;;----------
 
 (defparameter *objects-in-the-discourse* (make-hash-table :test #'eq))
-(defvar *CATEGORY-HIERARCHY*)
+
 
 (defparameter *debug-anaphora* nil
   "Flag around the 'unexpected situation' error/break calls")
@@ -90,7 +92,7 @@
 
 (defun clear-discourse-history-entry (category category-entry)  ;; tag, value
   ;; deallocate the conses in the entry, then flush the entry
-  (break "category")
+  (break " Stub: clearing discourse entry for category")
   ;(dolist (individual-entry category-entry)
   ;  (clear-individual-dh-entry individual-entry)
   ;  ;(break "after entry")
@@ -105,7 +107,7 @@
         (instance-records klist)
         data  start-data  end-data )
     (declare (ignore individual))
-    (break "start")
+    (break "Stub: clearing individual's dh history: start")
     (dolist (record instance-records)
       (cond ((eq (car record) :display-index)
              (setq data (cdr record))
@@ -188,7 +190,8 @@
 ;;;----------
 
 (defun add-subsuming-object-to-discourse-history (edge)
-  ;; called from complete.
+  ;; called from complete-edge/hugin provided that *do-anaphora* and
+  ;; *pronouns* are set. 
   (let ((obj (edge-referent edge))
         (start-pos (ev-position (edge-starts-at edge)))
         (end-pos   (ev-position (edge-ends-at edge))))
@@ -205,12 +208,6 @@
 
     (when obj
       (typecase obj
-        (psi 
-         ;; Assume that all psi instantiate themselves and so should
-         ;; be recorded
-         (dolist (category (all-categories-in-psi obj))
-           (update-categorys-discourse-history category obj start-pos end-pos)))
-
         (individual
          (let* ((primary-category (car (indiv-type obj)))
                 (other-categories (cdr (indiv-type obj)))
@@ -294,10 +291,10 @@
 ;;;-----------------------------------
 
 (defun irrelevant-category-for-dh (category i)
-  (declare (ignore i))
   ;; Return non-nil for any category that should not be recorded
   ;; in the discourse history. 
-  (declare (special *irrelevant-to-discourse-history*))
+  (declare (ignore i)
+           (special *irrelevant-to-discourse-history*))
   (unless *irrelevant-to-discourse-history*
     (populate-irrelevant-to-discourse-history))
   (let ((supers (super-categories-of category)))
@@ -331,7 +328,8 @@
   ;; called from add-subsuming-object-to-discourse-history 
   (flet ((store-on-lifo (i edge)
            (when *trace-instance-recording*
-             (format t "~&Storing ~a" i))
+             (format t "~&Storing ~a from e~a"
+                     i (edge-position-in-resource-array edge)))
            (push `(,i ,edge) *lifo-instance-list*)))
     (let ((prior-mention (assq i *lifo-instance-list*)))
       (if (and prior-mention
@@ -441,6 +439,7 @@ saturated? is a good entry point. |#
   ;; them (used-in). The edge whose category is the highest in
   ;; the hierarchy should be more salient in the text and is
   ;; preferred. 
+  (declare (special *category-hierarchy*))
   (let ((new-parent (edge-used-in (cadr new-pair)))
         (reigning-parent (edge-used-in (cadr reigning-pair))))
     (unless new-parent
@@ -561,7 +560,59 @@ saturated? is a good entry point. |#
   ;; in the discourse history. This may be a further instance of an
   ;; already entered individual or it may be a new individual, so we
   ;; dispatch accordingly.
+  (declare (special *description-lattice*))
+  (if *description-lattice*
+    (lattice-individuals-extend-dh-entry
+     entry category individual start-pos end-pos)
+    (conventional-individuals-extend-dh-entry 
+     entry category individual start-pos end-pos)))
 
+(defun lattice-individuals-extend-dh-entry (entry category
+                                            individual start-pos end-pos)
+  (push-debug `(,entry ,category ,individual ,start-pos ,end-pos))
+  (let ( individuals-entry )
+    (cond ((eq (caar entry) individual)
+           ;; The object was the very last one of its type to be added.
+           ;; Check for this being a larger edge over the same object
+           (let* ((existing-entry (car entry))
+                  (last-pos (cadr existing-entry)))
+
+             (if (eq (car last-pos) :display-index)
+               ;; happens when the last instance is in a region of
+               ;; the text outside the current span of the chart, so this
+               ;; instance couldn't possibly be subsuming the last one
+               (new-instance-of-known-object
+                existing-entry start-pos end-pos)
+
+               ;; check for subsumption (= larger edge over the same object)
+               (let ((last-start# (pos-token-index (car last-pos)))
+                     (last-end#   (pos-token-index (cdr last-pos)))
+                     (start# (pos-token-index start-pos))
+                     (end# (pos-token-index end-pos)))
+                 
+                 (if (or (eql start# last-start#)
+                         (eql end#   last-end#)
+                         (and (<= start# last-start#)
+                              (>= end#   last-end#)))
+                   (then ;; this instance subsumes the prior one
+                     (rplaca last-pos start-pos)
+                     (rplacd last-pos end-pos))
+                   
+                   ;; otherwise it's a new new instance
+                   (new-instance-of-known-object
+                    existing-entry start-pos end-pos))))))
+
+          ((setq individuals-entry
+                 (assoc individual entry :test #'eq))
+           (new-instance-of-known-object
+            individuals-entry start-pos end-pos))
+
+          (t ;; a new object of this type
+           (new-object-of-established-category
+            category entry individual start-pos end-pos)))))
+
+(defun conventional-individuals-extend-dh-entry (entry category
+                                                 individual start-pos end-pos)
   (let ( individuals-entry )
     (cond ((eq (caar entry) individual)
            ;; The object was the very last one of its type to be added.
