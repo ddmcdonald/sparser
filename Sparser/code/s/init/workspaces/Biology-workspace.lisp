@@ -14,7 +14,7 @@
 ;; 7/11/2015 New method TJ to test a single article and add to a file
 ;;  current "~/r3/code/evaluation/no-cards.lisp" but should be made more parameterizable
 ;; all the sentences that mention RAS2 proteins. This is particularly useful to figure out why we are not generating cards for some articles
-
+;; Put in error handler around the card production code -- this should prevent errors in card production from killing an entire article
 
 (in-package :sparser)
 
@@ -1335,73 +1335,90 @@ These return the Lisp-based obo entries.
        (cards nil)
        (duplicate-count 0))
     (declare (special ht aht cards))
-    (cond
-     (aht
-      (maphash #'(lambda (simple-phos aps)
-                   (declare (ignore simple-phos))
-                   (format t "~%    creating single ~s card for ~s, generated from ~s examples~%"
-                           (string-downcase (symbol-name (pt-type (caar (car aps)))))
-                           *article-id*
-                           (length aps))
-                   (setq duplicate-count (+ duplicate-count (- (length aps) 1)))
-                   (push (pt-card aps) cards))
-               aht)
-      (format t "~&Creating ~s cards for article ~s~&" (length cards) *article-id*)
-      (let
-          ((ncards
-            (loop for card in cards
-              when (post-translation-file-from-card card (incf counter))
-              count 1)))
-        (unless (equal (length cards) ncards)
-          (format t "~%filtered out ~s cards which did not have proteins in the RAS2 model~%"
-                  (- (length cards) ncards)))
-        (let
-            ((bc-count (create-binding-cards-for-article *article-id*)))
-          (values
-           (+ (length cards) bc-count)
-           ;;0 ;; raw verbs
-           duplicate-count
-           (- (length cards) ncards)))))
-     ;;(t (values 0 0 0 0))
-     (t (values 0 0 0))
-     )))
+    (handler-case 
+        (cond
+         (aht
+          (maphash #'(lambda (simple-phos aps)
+                       (declare (ignore simple-phos))
+                       (format t "~%    creating single ~s card for ~s, generated from ~s examples~%"
+                               (string-downcase (symbol-name (pt-type (caar (car aps)))))
+                               *article-id*
+                               (length aps))
+                       (setq duplicate-count (+ duplicate-count (- (length aps) 1)))
+                       (push (pt-card aps) cards))
+                   aht)
+          (format t "~&Creating ~s cards for article ~s~&" (length cards) *article-id*)
+          (let
+              ((ncards
+                (loop for card in cards
+                  when (post-translation-file-from-card card (incf counter))
+                  count 1)))
+            (unless (equal (length cards) ncards)
+              (format t "~%filtered out ~s cards which did not have proteins in the RAS2 model~%"
+                      (- (length cards) ncards)))
+            (let
+                ((bc-count (create-binding-cards-for-article *article-id*)))
+              (values
+               (+ (length cards) bc-count)
+               ;;0 ;; raw verbs
+               duplicate-count
+               (- (length cards) ncards)))))
+         ;;(t (values 0 0 0 0))
+         (t (values 0 0 0))
+         )
+      (error (e)
+             (ignore-errors ;; got an error with something printing once
+              (when *show-handled-sentence-errors*
+                (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+    ))
 
 (defun create-binding-cards-for-article (*article-id*)
-  (let*
-      ((ht (group-binding-reactions-by-article))
-       (aht (gethash *article-id* ht))
-       (counter 0)
-       (cards nil)
-       (duplicate-count 0))
-    (declare (special ht aht cards))
-    (cond
-     (aht
-      (maphash #'(lambda (simple-phos aps)
-                   (declare (ignore simple-phos))
-                   (format t "~%    creating single ~s card for ~s, generated from ~s examples~%"
-                           "binding"
-                           *article-id*
-                           (length aps))
-                   (push aps cards))
-               aht)
-      (format t "~&Creating ~s **BINDING** cards for article ~s~&" (length cards) *article-id*)
-      (values
-       (length cards)
-       duplicate-count
-       (length cards)))
-     (t (values 0 0 0)))))
+  (handler-case 
+      (let*
+          ((ht (group-binding-reactions-by-article))
+           (aht (gethash *article-id* ht))
+           (counter 0)
+           (cards nil)
+           (duplicate-count 0))
+        (declare (special ht aht cards))
+        (cond
+         (aht
+          (maphash #'(lambda (simple-phos aps)
+                       (declare (ignore simple-phos))
+                       (format t "~%    creating single ~s card for ~s, generated from ~s examples~%"
+                               "binding"
+                               *article-id*
+                               (length aps))
+                       (push aps cards))
+                   aht)
+          (format t "~&Creating ~s **BINDING** cards for article ~s~&" (length cards) *article-id*)
+          (values
+           (length cards)
+           duplicate-count
+           (length cards)))
+         (t (values 0 0 0))))
+    (error (e)
+           (ignore-errors ;; got an error with something printing once
+            (when *show-handled-sentence-errors*
+              (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+  )
 
 
 
 ;; Note that this assumes you have reset *all-sentences* between each article.
 (defun create-misc-cards-for-article (article-id &aux (counter 0)
-                                                      (index 1000))
+                                                 (index 1000))
   (let ((cards (do-cards)))
     (format t "~&Creating ~s cards using generalized function.~%" (length cards))
     (dolist (card cards)
-      (let ((file-result (post-translation-file-from-card card (incf index))))
-        (when file-result
-          (incf counter))))
+      (handler-case 
+          (let ((file-result (post-translation-file-from-card card (incf index))))
+            (when file-result
+              (incf counter)))
+        (error (e)
+               (ignore-errors ;; got an error with something printing once
+                  (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
+      )
     counter
     ))
 
@@ -1481,7 +1498,7 @@ These return the Lisp-based obo entries.
 (defun load-pmc-1000-sents ()
   (load "~/r3/darpa/12-month TestMaterials/PMC1000-sents.lisp"))
 
-(defvar *1000-art-sents* nil)
+(defvar *1000-art-sents*)
 
 (defun PMC-sent-list (name pattern)
   (let ((namesents (intern (string-upcase (format nil "~a-sents" name)))))
