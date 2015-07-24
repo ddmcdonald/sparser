@@ -128,11 +128,11 @@
 
 (defun dectest (n &optional (sentences *dec-tests*))
   (declare (special *dec-tests*))
-  (run-test n nil :sentences sentences))
+  (run-test n nil t :sentences sentences))
 
 (defun jantest (n &optional (sentences *jan-dry-run*))
   (declare (special *jan-dry-run*))
-  (run-test n nil :sentences sentences))
+  (run-test n nil t :sentences sentences))
 
 (defun aspp2test (n &optional (sentences *aspp2-whole*))
   (declare (special *aspp2-whole*))
@@ -149,12 +149,10 @@
 
 (defun run-test (n &optional (semantics *show-semantics*) (no-anaphora *no-anaphora*)
                    &key (sentences *sentences*))
-  (if no-anaphora
-      (let (*do-anaphora* 'nil) (declare (special *do-anaphora*))) ;; it was on by default, so turn it off
-      )
  
-  (let ((test (nth (- n 1) sentences)))
-    (declare (special *save-chunk-edges*))
+  (let ((*do-anaphora* (not no-anaphora))
+        (test (nth (- n 1) sentences)))
+    (declare (special *do-anaphora* *save-chunk-edges*))
 
     (format t "~&___________________________________________~%~%")
     (print (list n test))
