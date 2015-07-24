@@ -447,7 +447,7 @@ it is created from N-terminus to C-terminus.|#
   :binds ((pathway pathway)
           (nextStep PathwayStep)       
           (stepProcess (:or control pathway catalysis 
-                            biochemical-reaction transport)))
+                            biochemical-reaction bio-transport)))
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "step")
@@ -590,8 +590,8 @@ it is created from N-terminus to C-terminus.|#
   ;;:obo-id 
   :bindings (uid "GO:0005488")
   ;; "<binder> binds to <binde>" the subject moves
-  :binds ((binder (:or molecule protein-domain))
-          (bindee (:or molecule protein-domain))
+  :binds ((binder (:or molecule protein-domain bio-entity))
+          (bindee (:or molecule protein-domain bio-entity))
           (binding-set (:or molecule protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
           (direct-bindee molecule)(site molecular-location)
           (cell-site cellular-location))
@@ -643,7 +643,8 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym complex
   (:noun "complex"
          :with component
-         :of component))
+         :of component
+         :between component))
 
 
 (define-category dimer
