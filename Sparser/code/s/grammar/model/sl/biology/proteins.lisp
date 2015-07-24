@@ -37,7 +37,7 @@
 (define-protein "PARP2_HUMAN" ("poly(ADP–ribose) 2"))
 (define-protein "PARP3_HUMAN" ("poly(ADP–ribose) 3"))
 (define-protein "ARBK1_HUMAN" ("Beta-ARK-1" "βARK1"))
-(define-protein "SRC_HUMAN" ("Src"))
+;;(define-protein "SRC_HUMAN" ("Src"))
 (define-protein "SNIP1_HUMAN" ("SNIP1"))
 
 
@@ -48,7 +48,7 @@
 
 
 ;; from June test
-(define-protein "TGS1_HUMAN" ("PIMT" "TGS1" "HCA137" "NCOA6IP"))
+(define-protein "TGS1_HUMAN" ("PIMT" "TGS1" "HCA137" "NCOA6IP" "NCoA6IP"))
 (noun  "actin" :super protein)
 
 
@@ -80,8 +80,7 @@
 
 (def-bio "p52" protein)  ;; :identifier ??
 
-(def-bio "p53" protein
-  :mitre-link "Uniprot:P04637")
+;;(def-bio "p53" protein :mitre-link "Uniprot:P04637")
 
 (def-bio "p38 SAPK" protein)
 
@@ -528,7 +527,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "BBS4_HUMAN" ("Bardet-Biedl syndrome 4 protein"))
 (define-protein "BCCIP_HUMAN" ("TOK1" "BCCIP")) 
 (define-protein "BCL2_HUMAN" ("Apoptosis regulator Bcl-2"))
-(define-protein "BCL2_HUMAN" ("BCL2")) 
+(define-protein "BCL2_HUMAN" ("BCL2" "Bcl2")) 
 (define-protein "BCL6_HUMAN" ("B-cell lymphoma 6 protein" "BCL-6" "B-cell lymphoma 5 protein" "BCL-5" "Protein LAZ-3" "Zinc finger and BTB domain-containing protein 27" "Zinc finger protein 51"))
 (define-protein "BET1_HUMAN" ("hBET1" "BET1")) 
 (define-protein "BIG1_HUMAN" ("ARFGEF1" "ARFGEP1" "BIG1")) 
@@ -588,7 +587,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "CDCP1_HUMAN" ("CDCP1" "TRASK" "SIMA135" "CD318")) 
 (define-protein "CDIPT_HUMAN" ("PIS" "CDIPT" "PIS1")) 
 (define-protein "CDK1_HUMAN" ("CDK1" "Cdk1" "P34CDC2" "CDC2" "CDKN1" "CDC28A")) 
-(define-protein "CDK2_HUMAN" ("Cyclin-dependent kinase 2" "Cell division protein kinase 2" "p33 protein kinase"))
+(define-protein "CDK2_HUMAN" ("Cyclin-dependent kinase 2" "Cell division protein kinase 2" "p33 protein kinase" "CDK2" "Cdk2"))
 (define-protein "CDK4_HUMAN" ("PSK-J3" "CDK4")) 
 (define-protein "CDK5_HUMAN" ("CDKN5" "CDK5")) 
 (define-protein "CDK6_HUMAN" ("Cyclin-dependent kinase 6" "Cell division protein kinase 6" "Serine/threonine-protein kinase PLSTIRE"))
@@ -659,7 +658,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "CYTS_HUMAN" ("CST4" "Cystatin-4" "Cystatin-SA-III")) 
 (define-protein "DACH1_HUMAN" ("Dachshund homolog 1" "Dach1"))
 (define-protein "DACT1_HUMAN" ("Dapper homolog 1" "hDPR1" "Dapper antagonist of catenin 1" "Hepatocellular carcinoma novel gene 3 protein"))
-(define-protein "DAPP1_HUMAN" ("Dual adapter for phosphotyrosine and 3-phosphotyrosine and 3-phosphoinositide" "hDAPP1" "B lymphocyte adapter protein Bam32" "B-cell adapter molecule of 32 kDa"))
+;;(define-protein "DAPP1_HUMAN" ("Dual adapter for phosphotyrosine and 3-phosphotyrosine and 3-phosphoinositide" "hDAPP1" "B lymphocyte adapter protein Bam32" "B-cell adapter molecule of 32 kDa"))
 (define-protein "DAZP2_HUMAN" ("DAZ-associated protein 2" "Deleted in azoospermia-associated protein 2"))
 (define-protein "DC1I1_HUMAN" ("DYNC1I1" "DNCI1" "DNCIC1")) 
 (define-protein "DC1I2_HUMAN" ("DYNC1I2" "DNCI2" "DNCIC2")) 
@@ -885,7 +884,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "HXA1_HUMAN" ("Homeobox protein Hox-A1" "Homeobox protein Hox-1F"))
 (define-protein "HXA2_HUMAN" ("Homeobox protein Hox-A2" "Homeobox protein Hox-1K"))
 (define-protein "HXA5_HUMAN" ("Homeobox protein Hox-A5" "Homeobox protein Hox-1C"))
-(define-protein "ICAM1_HUMAN" ("Intercellular adhesion molecule 1" "ICAM-1" "Major group rhinovirus receptor"))
+(define-protein "ICAM1_HUMAN" ("Intercellular adhesion molecule 1" "ICAM-1" "Icam-1" "Major group rhinovirus receptor"))
 (define-protein "ICMT_HUMAN" ("PPMT" "pcCMT" "PCCMT" "ICMT")) 
 (define-protein "IF1AY_HUMAN" ("eIF-4C" "EIF1AY")) 
 (define-protein "IF2B2_HUMAN" ("VICKZ2" "IMP-2" "IGF2BP2" "IMP2")) 
@@ -948,7 +947,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "KMT2B_HUMAN" ("Histone-lysine N-methyltransferase 2B" "Lysine N-methyltransferase 2B" "Myeloid/lymphoid or mixed-lineage leukemia protein 4" "Trithorax homolog 2" "WW domain-binding protein 7" "WBP-7"))
 (define-protein "KNTC1_HUMAN" ("HsROD" "KIAA0166" "hRod" "Rod" "KNTC1")) 
 (define-protein "KS6A1_HUMAN" ("MAPKAPK-1a" "S6K-alpha-1" "p90S6K" "RSK1" "MAPKAPK1A" "RSK-1" "RPS6KA1" "p90RSK1")) 
-(define-protein "KS6A3_HUMAN" ("pp90RSK2" "MAPKAPK-1b" "RPS6KA3" "S6K-alpha-3" "ISPK1" "RSK2" "MAPKAPK1B" "ISPK-1" "RSK-2" "p90RSK3")) 
+(define-protein "KS6A3_HUMAN" ("pp90RSK2" "MAPKAPK-1b" "RPS6KA3" "S6K-alpha-3" "ISPK1" "RSK2" "MAPKAPK1B" "ISPK-1" "RSK-2" "p90RSK3" "Rsk2")) 
 (define-protein "KS6A4_HUMAN" ("RSKB" "MSK2" "RPS6KA4" "S6K-alpha-4")) 
 (define-protein "KS6A5_HUMAN" ("RSKL" "MSK1" "S6K-alpha-5" "RPS6KA5")) 
 (define-protein "KS6B2_HUMAN" ("Ribosomal protein S6 kinase beta-2" "S6K-beta-2" "S6K2" "70 kDa ribosomal protein S6 kinase 2" "P70S6K2" "p70-S6K 2" "S6 kinase-related kinase" "SRK" "Serine/threonine-protein kinase 14B" "p70 ribosomal S6 kinase beta" "S6K-beta" "p70 S6 kinase beta" "p70 S6K-beta" "p70 S6KB" "p70-beta"))
@@ -1378,7 +1377,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "SMC2_HUMAN" ("SMC-2" "hCAP-E" "SMC2" "SMC2L1" "CAPE")) 
 (define-protein "SMC3_HUMAN" ("BMH" "Bamacan" "CSPG6" "SMC3L1" "SMC3" "SMC-3" "hCAP" "BAM")) 
 (define-protein "SMC4_HUMAN" ("SMC4L1" "SMC-4" "SMC4" "CAPC" "hCAP-C")) 
-(define-protein "SMUF2_HUMAN" ("hSMURF2" "SMURF2")) 
+(define-protein "SMUF2_HUMAN" ("hSMURF2" "SMURF2" "Smurf2" )) 
 (define-protein "SMYD3_HUMAN" ("Histone-lysine N-methyltransferase SMYD3" "SET and MYND domain-containing protein 3" "Zinc finger MYND domain-containing protein 1"))
 (define-protein "SNAA_HUMAN" ("NAPA" "SNAP-alpha" "SNAPA")) 
 (define-protein "SNAG_HUMAN" ("SNAPG" "SNAP-gamma" "NAPG")) 
@@ -1465,7 +1464,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "STXB3_HUMAN" ("PSP" "Unc18-3" "Unc-18C" "STXBP3")) 
 (define-protein "SUMO1_HUMAN" ("Small ubiquitin-related modifier 1" "SUMO-1" "GAP-modifying protein 1" "GMP1" "SMT3 homolog 3" "Sentrin" "Ubiquitin-homology domain protein PIC1" "Ubiquitin-like protein SMT3C" "Smt3C" "Ubiquitin-like protein UBL1"))
 (define-protein "SUMO2_HUMAN" ("Small ubiquitin-related modifier 2" "SUMO-2" "HSMT3" "SMT3 homolog 2" "SUMO-3" "Sentrin-2" "Ubiquitin-like protein SMT3B" "Smt3B"))
-(define-protein "SWP70_HUMAN" ("SWAP70" "KIAA0640" "SWAP-70")) 
+(define-protein "SWP70_HUMAN" ("SWAP70" "KIAA0640" "SWAP-70" "Swap-70")) 
 (define-protein "SYJ2B_HUMAN" ("SYNJ2BP" "OMP25")) 
 (define-protein "SYNE2_HUMAN" ("Syne-2" "SYNE2" "NUA" "KIAA1011")) 
 (define-protein "TAGL2_HUMAN" ("TAGLN2" "KIAA0120")) 
