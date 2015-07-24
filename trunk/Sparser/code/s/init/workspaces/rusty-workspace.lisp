@@ -519,37 +519,3 @@ NIL
   (load-pmc-sent-lists)
   (loop for i from 1 to 3000 as s in bind-sents do (eval `(with-total-quiet (epp ,s)))))
 
-(defmacro to-file (f exp)
-  `(with-open-file (s ,f :direction :output :if-exists :supersede)
-       ,exp))
-(defun save-slash-words () ;; example to show how it is done
-  (unless (boundp '*1000-art-sents*)
-    (load "~/r3/darpa/12-month TestMaterials/PMC1000-sents.lisp"))
-  (length (setq s/ (loop for s in *1000-art-sents* when (search "/" s) collect s)))
-  (length (setq w/ 
-                (sort (remove-duplicates 
-                       (loop for s in s/  append (ppcre::all-matches-as-strings "\\w+/\\w+" s)) 
-                       :test #'equal) #'string<)))
-  (to-file "~/r3/darpa/12-month TestMaterials/slash-words.lisp"
-           (progn (format s "(in-package :sparser)~&(defparameter *slash-words* '(")
-             (loop for i from 1 to (length w-) 
-               do (format s "~s " (nth i w-))
-               (if (multiple-value-bind (f r)(floor i 10) (zerop r)) (terpri s)))
-             (format s "~&))~&"))))
-
-(defun save-dash-words () ;; example to show how it is done
-  (unless (boundp '*1000-art-sents*)
-    (load "~/r3/darpa/12-month TestMaterials/PMC1000-sents.lisp"))
-  (length (setq s- (loop for s in *1000-art-sents* when (search "/" s) collect s)))
-  (length (setq w-
-                (sort (remove-duplicates 
-                       (loop for s in s-  append (ppcre::all-matches-as-strings "\\w+-\\w+" s)) 
-                       :test #'equal) #'string<)))
-  (to-file "~/r3/darpa/12-month TestMaterials/dash-words.lisp"
-           (progn (format s "(in-package :sparser)~&(defparameter *dash-words* '(")
-             (loop for i from 1 to (length w-) 
-               do (format s "~s " (nth i w-))
-               (if (multiple-value-bind (f r)(floor i 10) (zerop r)) (terpri s)))
-             (format s "~&))~&"))))
-
-
