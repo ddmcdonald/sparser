@@ -2246,6 +2246,19 @@
 	   :s agent
 	   :o object))
 
+(define-category bio-sequence
+    :specializes bio-method
+    :binds ((agent pronoun/first/plural)
+            (object biological)
+            (method bio-method))
+    :realization
+    (:verb "sequence" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)
+	   :s agent
+	   :o object
+           :with method
+	   ))
+
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show
     :specializes bio-rhetorical
