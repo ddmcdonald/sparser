@@ -11,6 +11,9 @@
 ;; 6/8/2015 better rejection of sections that shouldn't be parsed.
 ;; 7/6/2015 commented out utility function show-paragraph-sents to help debug sentence
 ;; segmentation
+;; Define a dummy action for read-from-document on a title-text section
+;;  this was causing a major blowout (in terms of writing error messages) in the overall test
+;; when reading document #65 PMC1702556
 
 (in-package :sparser)
 
@@ -172,6 +175,9 @@
       (when *show-section-printouts*
         (format t "~&~%--------- finished section of sections ~a~%" ss)))))
 
+(defmethod read-from-document ((tt title-text))
+  ;; not sure what to do with title-text when it appears as a section in a section-of-sections
+  nil)
 
 (defmethod read-from-document ((s section))
   (setq *current-section* s)
