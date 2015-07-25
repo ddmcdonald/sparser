@@ -653,7 +653,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
         . ,(punctuation-named #\* ))) ;; substitute simple asterisk
 
 (setf (elt *character-dispatch-array* 177) ;; #\Plus-Minus_Sign
-      '(:punctuation
+      `(:punctuation
         . ,(punctuation-named #\±))) ;;////////////////////////////////////////
 
 ;;; added to cover up bio protein definition problems
