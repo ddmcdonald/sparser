@@ -10,7 +10,7 @@
 ;; 9/8/14 lifted taxonomy out to its own file, added keyword to
 ;; inhibit plurals, defaults to allow plurals. Working on nits
 ;; to make the parser happy through 1/6/15
-;; 3/21/2015 -- revised make-typed-bio-entity              
+;; 3/21/2015 -- revised make-typed-bio-entity
 ;; SBCL caught fact that some words are actually polywords here...
 ;; 4/19/15 Added stub for handling acronyms.
 ;; 5/16/2015 attempt (not quite working) to define get-mitre-id which tries to get the MITRE-LINK value for a protein (for example)
@@ -57,20 +57,20 @@
        :ras2-model ,ras2-model)))
 
 (defun in-ras2-model? (entity)
-  (not 
+  (not
    (null
     (or
      (value-of 'ras2-model entity)
      (let*
          ((name-word (value-of 'name entity))
           (name (cond
-                 ((word-p name-word) 
+                 ((word-p name-word)
                   (word-pname name-word))
                  ((polyword-p name-word)
                   (pw-pname name-word))
                  (t nil))))
-         (member name 
-                 '("MAPK" "MEK" "E3b1" "_HUMAN" "p140"  "hVps34" "hRad17" "RasGRF1" "D3" )
+         (member name
+                 '("MAPK" "MEK" "E3b1" "_HUMAN" "p140"  "hVps34" "hRad17" "RasGRF1" "D3" "Ras")
                  :test #'equal))))))
 
 (defun best-protein-id (ids)
@@ -127,7 +127,7 @@
   *prot-ht*)
 
 (defun poorly-identified-proteins()
-  (declare (special *prots* *aps* *aaps* *naps* *named-proteins* *poorly-identified-proteins* 
+  (declare (special *prots* *aps* *aaps* *naps* *named-proteins* *poorly-identified-proteins*
                     *unique-named-substrates*))
   (length (setq *prots* (all-proteins)))
   (protein-name-count *prots*)
@@ -136,8 +136,8 @@
   (length (setq *aps* (all-phosphorylations)))
   (length (setq *aaps* (loop for a in *aps* when (get-protein-substrate (car a)) collect (car a))))
   (length (setq *naps* (loop for a in *aps* unless (get-protein-substrate (car a)) collect (car a))))
-  (length 
-   (setq *named-proteins* (loop for a in *aaps* when (prot-name (car (get-protein-substrate a))) 
+  (length
+   (setq *named-proteins* (loop for a in *aaps* when (prot-name (car (get-protein-substrate a)))
                             collect (prot-name (car (get-protein-substrate a))))))
   (setq *unique-named-substrates* (remove-duplicates *named-proteins* :test #'equalp))
   (setq *poorly-identified-proteins*
@@ -154,7 +154,7 @@
 
 (defun reify-p-protein-and-make-edge (words start-pos end-pos)
   ;; Called from resolve-ns-pattern on (:single-cap :digits).
-  ;; Looks for a "p" and if it finds it makes a protein. 
+  ;; Looks for a "p" and if it finds it makes a protein.
   ;; E.g "suggesting that p38 SAPK was active" in Jan #34
   (push-debug `(,words ,start-pos ,end-pos))
   (when (string= "p" (word-pname (first words)))
@@ -170,7 +170,7 @@
 
 (defmethod get-protein ((pname string))
   ;; conventient syntactic sugar. Motivated by explicitly
-  ;; constructed pathways. 
+  ;; constructed pathways.
   (flet ((lookup (word)
            (or (get-protein word)
                (get-family word))))
@@ -184,7 +184,7 @@
       (unless protein
         (let* ((capitalized (string-capitalize pname))
                (cap-word (resolve capitalized)))
-          (when cap-word 
+          (when cap-word
             (setq protein (lookup cap-word)))))
       protein)))
 
@@ -251,7 +251,7 @@
                         mitre-link ras2-model)
   ;; short = "NIK", long = "NF-κB-inducing kinase"
   ;; kind = kinase, greek = "alpha"
-  ;; Makes individuals (particulars), that are instances of 
+  ;; Makes individuals (particulars), that are instances of
   ;; a specific kind. Staying vague about what they might denote.
   (unless (and (stringp short) (symbolp kind))
     (error "Malformed definition: short form must be a string,~
@@ -277,29 +277,29 @@
   (unless takes-plurals
     (setq takes-plurals t))
 
-  `(def-bio/expr ,short ',kind 
+  `(def-bio/expr ,short ',kind
      :greek ',greek :identifier ',identifier :mitre-link ,mitre-link
      :ras2-model ,ras2-model
      :long ,long :synonyms ',synonyms :takes-plurals ,takes-plurals))
 
 
-(defun def-bio/expr (short kind 
+(defun def-bio/expr (short kind
                      &key greek identifier mitre-link
                           long synonyms takes-plurals ras2-model)
-  ;; use find-individual with their names to retrieve these. 
+  ;; use find-individual with their names to retrieve these.
   (let* ((word (resolve/make short))
          (category (category-named kind :break-if-undefined)))
     (make-typed-bio-entity word category
                           greek identifier mitre-link ras2-model
                           long synonyms takes-plurals)))
- 
+
 
 (defun define-bio (word category-name)
   (let ((category (category-named category-name :break-if-undefined)))
     (make-typed-bio-entity word category)))
 
 
-(defun make-typed-bio-entity (word category 
+(defun make-typed-bio-entity (word category
                                    &optional greek identifier mitre-link
                                    ras2-model
                                    long synonyms takes-plurals)
@@ -309,11 +309,11 @@
         ;; proper noun makes sense for named protiens and such
         ;; but the marker may actually be the capitalization
         ;; of the word, which would have to be caught upstream
-        ;; and passed through in a parameter. 
+        ;; and passed through in a parameter.
         (*inihibit-constructing-plural* (not takes-plurals))
-        rules  i   )    
+        rules  i   )
     ;; There is a bug that I can't sort out with the available evidence
-    ;; when redefining a def-bio entity involving a list of rules being 
+    ;; when redefining a def-bio entity involving a list of rules being
     ;; expected to be a structure. Until there's time to creep up on
     ;; that bug and kill it, I've separated the find from the make and
     ;; not looking for the possibility that a redefinition actually
@@ -324,7 +324,7 @@
       (when i
         (return-from make-typed-bio-entity i))
       (setq i (define-individual category :name word)))
-     (t 
+     (t
       (setq i (find-or-make-individual category :name word))
       ;;(lsp-break "make-typed-bio-entity")
       ))
@@ -333,26 +333,26 @@
     ;; The find-or-make call will set up a rule for the short form
     ;; as a common noun that has this individual as its referent.
     ;; Ignoring brackets since this runs with the new chunker
-    
-    
-    
+
+
+
     (let* ((retrieved-rules (get-rules i))
            (r (when retrieved-rules (car retrieved-rules))))
-      
+
       (when identifier
         (setq i (bind-dli-variable 'uid identifier i)))
       (when mitre-link
         (handle-mitre-link i mitre-link))
       (when ras2-model
         (setq i (bind-dli-variable 'ras2-model ras2-model i)))
-      
+
       ;; At this point, i has been changed to include the ras2-model
-      ;; binding (and the mitre-link binding) if necessary, so we need to use this 
-      ;; version of i for all 
-      
+      ;; binding (and the mitre-link binding) if necessary, so we need to use this
+      ;; version of i for all
+
       ;; This is packaged up some place, but no time to see where
-      
-      
+
+
       (cond
        ((and r (cfr-p r))
         ;;(push-debug `(,r)) (break " set rule form?")
@@ -361,8 +361,8 @@
        (t
         (push-debug `(,i ,word))
         (error "something badly formed about rules field")))
-      
-      (let* ((pname (etypecase word 
+
+      (let* ((pname (etypecase word
                       (word (word-pname word))
                       (polyword (pw-pname word))))
              (downcased-pname (string-downcase pname)))
@@ -372,14 +372,14 @@
                     :form form
                     :referent i)
                   rules))))
-      
+
       (when synonyms ;; quoted list of strings
         (dolist (syn synonyms)
           (push (define-cfr label `(,(resolve/make syn))
                   :form form
                   :referent i)
                 rules)))
-      
+
       ;; Now we do that by-hand for the long-form. If the long form needs
       ;; to have a variant with a greek letter in it we'll make two rules.
       (when long
@@ -388,20 +388,20 @@
                       :form form
                       :referent i)))
           (push cfr rules)))
-      
+
       (when greek
         (let ((additional-rules
                (rules-with-greek-chars-substituted
                 ;; SBCL caught fact that some words are actually polywords here...
-                (etypecase word 
+                (etypecase word
                   (word (word-pname word))
                   (polyword (pw-pname word)))
                 long greek label form i)))
           (setq rules (nconc additional-rules rules))))
-      
+
       (when rules
         (add-rules-to-individual i rules))
-      
+
       i)))
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
@@ -434,7 +434,7 @@
                    (revised (concatenate 'string prefix char suffix)))
               ;;(break "revised = \"~a\"" revised)
               (push revised rhs-strings))))))
-    
+
     (dolist (rhs rhs-strings)
       (let* ((word (resolve/make rhs))
              (rule (define-cfr label `(,word)
@@ -450,21 +450,21 @@
 
 (defmacro def-family (name &key type species members ;; for family
                            long identifier synonyms) ;; for def-bio
-                           
+
   (unless (stringp name) (error "Name argument should be a string"))
-  `(define-family 
+  `(define-family
      ,name :type ',type :species ',species :members ',members
      :long ',long :identifier ',identifier :synonyms ',synonyms))
 
 (defun define-family (name &key type species members
                            long identifier synonyms)
-  (unless members 
+  (unless members
     (error "It doesn't make sense to define a family without members"))
   (unless type
     (setq type (category-named 'protein)))
   (unless species
     (setq species (find-individual 'species :name "human")))
-  (let* ((category-name 
+  (let* ((category-name
           (cond
            ((and (eq species (find-individual 'species :name "human"))
                  (eq type (category-named 'protein)))
@@ -479,7 +479,7 @@
      (set-family-members i members))
     i))
 
-(defun set-family-members (i members) 
+(defun set-family-members (i members)
   ;;(print `(the individual which has added members is ,i))
   (let ( proteins )
     (dolist (name members)
