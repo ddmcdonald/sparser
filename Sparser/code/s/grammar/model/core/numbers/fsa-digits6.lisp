@@ -187,36 +187,38 @@ the fsa would be identified at the word level rather than the category level.
   ;;   If we see either any of the characters that extend digit sequences
   ;; then we continue, otherwise we declare the digit-sequence finished
   ;; and return.
-
-  (let* ((next-position (ev-position (edge-ends-at last-treetop)))
-         (status (pos-assessed? next-position)))
-    (unless status
-      (scan-next-position))
-
-    (if (null (pos-preceding-whitespace next-position))
-      ;; rule out cases like "47 -", as well as what would probably
-      ;; be misspellings: "47 ,000"
-
-      (let ((word-at-next-position (pos-terminal next-position)))
-        (cond ((eq word-at-next-position word::comma)
-               (continue-digit-sequence-after-comma
-                next-cell array next-position))
-
-              ((eq word-at-next-position word::period)
-               (setq *period-within-digit-sequence* t)
-               (continue-digit-sequence-after-period
-                next-cell array next-position))
-
-              ((eq word-at-next-position word::hyphen)
-               (setq *interpretation-of-digit-sequence* :hypenated-numbers)
-               (continue-digit-sequence-after-hyphen
-                next-cell array next-position))
-
-              (t (values next-position next-cell))))
-
-      (values next-position  ;; the position at the end of the seq.
-              next-cell ;; the count on the number of cells filled.
-              ))))
+  (if (null last-treetop)
+      (break 
+       "what are you doing passing expect-digit-delimiter-as-next-treetop NIL as a last-treetop")
+      (let* ((next-position (ev-position (edge-ends-at last-treetop)))
+             (status (pos-assessed? next-position)))
+        (unless status
+          (scan-next-position))
+        
+        (if (null (pos-preceding-whitespace next-position))
+            ;; rule out cases like "47 -", as well as what would probably
+            ;; be misspellings: "47 ,000"
+            
+            (let ((word-at-next-position (pos-terminal next-position)))
+              (cond ((eq word-at-next-position word::comma)
+                     (continue-digit-sequence-after-comma
+                      next-cell array next-position))
+                    
+                    ((eq word-at-next-position word::period)
+                     (setq *period-within-digit-sequence* t)
+                     (continue-digit-sequence-after-period
+                      next-cell array next-position))
+                    
+                    ((eq word-at-next-position word::hyphen)
+                     (setq *interpretation-of-digit-sequence* :hypenated-numbers)
+                     (continue-digit-sequence-after-hyphen
+                      next-cell array next-position))
+                    
+                    (t (values next-position next-cell))))
+            
+            (values next-position  ;; the position at the end of the seq.
+                    next-cell ;; the count on the number of cells filled.
+                    )))))
 
 
 
