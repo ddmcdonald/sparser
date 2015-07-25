@@ -15,6 +15,8 @@
 ;;  current "~/r3/code/evaluation/no-cards.lisp" but should be made more parameterizable
 ;; all the sentences that mention RAS2 proteins. This is particularly useful to figure out why we are not generating cards for some articles
 ;; Put in error handler around the card production code -- this should prevent errors in card production from killing an entire article
+;; pt-card can produce NIL cards (when there is no substrate or agent). 
+;; Don't push them onto the list of cards to be printed in create-cards-for-article...
 
 (in-package :sparser)
 
@@ -1345,7 +1347,10 @@ These return the Lisp-based obo entries.
                                *article-id*
                                (length aps))
                        (setq duplicate-count (+ duplicate-count (- (length aps) 1)))
-                       (push (pt-card aps) cards))
+                       (let
+                           ((card-sexpr (pt-card aps)))
+                         (when card-sexpr
+                           (push card-sexpr cards))))
                    aht)
           (format t "~&Creating ~s cards for article ~s~&" (length cards) *article-id*)
           (let
