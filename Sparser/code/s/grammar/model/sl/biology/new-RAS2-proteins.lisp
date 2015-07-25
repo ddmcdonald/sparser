@@ -911,7 +911,7 @@
 (DEF-RAS2-PROTEIN "SPTN2_HUMAN" ("SPTN2_HUMAN" "SPTBN2" "SCA5" "Spinocerebellar ataxia 5 protein" "KIAA0302" "Beta-III spectrin" "Bη-III spectrin")) 
 (DEF-RAS2-PROTEIN "SPTN4_HUMAN" ("SPTN4_HUMAN" "KIAA1642" "SPTBN4" "SPTBN3" "Beta-IV spectrin" "Bη-IV spectrin" "Spectrin, non-erythroid beta chain 3" "Spectrin, non-erythroid bη chain 3")) 
 (DEF-RAS2-PROTEIN "SPTN5_HUMAN" ("SPTN5_HUMAN" "HUBSPECV" "BSPECV" "HUSPECV" "SPTBN5" "Beta-V spectrin" "Bη-V spectrin")) 
-(DEF-RAS2-PROTEIN "SRC_HUMAN" ("SRC_HUMAN" "SRC" "pp60c-src" "2.7.10.2" "p60-Src" "Proto-oncogene c-Src" "SRC1" "Src")) 
+(DEF-RAS2-PROTEIN "SRC_HUMAN" ("SRC_HUMAN" "SRC" "pp60c-src" "2.7.10.2" "p60-Src" "Proto-oncogene c-Src" "SRC1" "Src" "c-Src")) 
 (DEF-RAS2-PROTEIN "STA5A_HUMAN" ("STA5A_HUMAN" "STAT5A" "STAT5")) 
 (DEF-RAS2-PROTEIN "STA5B_HUMAN" ("STA5B_HUMAN" "STAT5B")) 
 (DEF-RAS2-PROTEIN "STAT" ("STAT")) 
