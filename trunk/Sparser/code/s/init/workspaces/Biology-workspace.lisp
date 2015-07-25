@@ -1296,11 +1296,11 @@ These return the Lisp-based obo entries.
   (unless (member i *skip-articles*)
     (setq *all-sentences* nil)
     (test-june-article id :article-number i)
-    (let ((numcards 0)(num-duplicates 0)(num-filtered 0)(misc-cards 0))
+    (let ((numcards 0)(num-duplicates 0)(num-filtered 0)(misc-cards 0)(misc-dupes 0)(misc-filtered 0))
       (flet ((create-cards (id)
                 (multiple-value-setq (numcards num-duplicates num-filtered)
                     (create-cards-for-article id))
-                (setf misc-cards
+                (multiple-value-setq (misc-cards misc-dupes misc-filtered)
                    (create-misc-cards-for-article id))))
 
       (when cardp
@@ -1315,8 +1315,8 @@ These return the Lisp-based obo entries.
 
       (when write-timep (write-article-time-to-log i id *article-elapsed-time*
                                                    numcards num-duplicates num-filtered misc-cards))
-      (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc"
-              i id *article-elapsed-time* numcards num-duplicates num-filtered misc-cards)
+      (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc ~d misc-duplicate ~d misc-filtered"
+              i id *article-elapsed-time* numcards num-duplicates num-filtered (+ misc-cards misc-dupes misc-filtered) misc-dupes misc-filtered)
       ))))
 
 (defun tj (i &optional (id (nth (1- i) *june-nxml-files-in-MITRE-order*)))
@@ -1335,7 +1335,7 @@ These return the Lisp-based obo entries.
        (cards nil)
        (duplicate-count 0))
     (declare (special ht aht cards))
-    (handler-case 
+    (handler-case
         (cond
          (aht
           (maphash #'(lambda (simple-phos aps)
@@ -1373,7 +1373,7 @@ These return the Lisp-based obo entries.
     ))
 
 (defun create-binding-cards-for-article (*article-id*)
-  (handler-case 
+  (handler-case
       (let*
           ((ht (group-binding-reactions-by-article))
            (aht (gethash *article-id* ht))
@@ -1408,10 +1408,11 @@ These return the Lisp-based obo entries.
 ;; Note that this assumes you have reset *all-sentences* between each article.
 (defun create-misc-cards-for-article (article-id &aux (counter 0)
                                                  (index 1000))
-  (let ((cards (do-cards)))
+  (multiple-value-bind (cards n-duplicates n-not-in-model)
+      (do-cards)
     (format t "~&Creating ~s cards using generalized function.~%" (length cards))
     (dolist (card cards)
-      (handler-case 
+      (handler-case
           (let ((file-result (post-translation-file-from-card card (incf index))))
             (when file-result
               (incf counter)))
@@ -1419,7 +1420,7 @@ These return the Lisp-based obo entries.
                (ignore-errors ;; got an error with something printing once
                   (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
       )
-    counter
+    (values counter n-duplicates n-not-in-model)
     ))
 
 #|
