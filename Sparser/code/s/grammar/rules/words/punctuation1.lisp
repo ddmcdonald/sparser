@@ -66,6 +66,7 @@
 (define-punctuation  copyright_sign #\Copyright_Sign) ;; 169
 (define-punctuation  left-pointing-double-angle-quotation_mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
 (define-punctuation  registered_sign #\Registered_Sign) ;; 174
+(define-punctuation plus-minus #\±) ;; 177
 
 (define-punctuation  acute-accent #\Acute_Accent) ;; 180
 (define-punctuation  middle-dot #\Middle_Dot) ;; 183
