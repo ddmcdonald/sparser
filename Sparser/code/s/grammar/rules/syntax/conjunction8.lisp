@@ -704,6 +704,7 @@
 
 
 ;;;;; CODE TO EXPAND CONJUNCTIONS ;;;;;;
+;;;;; to help with searches -- distribute conjunctions
 
 (defun maybe-expand-conjunctions (i)
   (cond
