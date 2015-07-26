@@ -609,7 +609,24 @@ it is created from N-terminus to C-terminus.|#
          :to cell-site
          :with bindee
          :between binding-set))
+(delete-verb-cfr (resolve/make "assemble"))
+(delete-verb-cfr (resolve/make "assembles"))
+(delete-verb-cfr (resolve/make "assembled"))
+(delete-verb-cfr (resolve/make "assembling"))
 
+(define-category assemble
+    :specializes binding
+    :binds ((binder (:or protein molecule protein-domain bio-entity))
+            (bindee (:or protein molecule protein-domain bio-entity))
+            (result complex))
+    :realization
+    (:verb "assemble" ;; keyword: ENDS-IN-ED 
+	   :noun "assembly"
+	   :etf (svo-passive)
+	   :s binder
+	   :o bindee
+           :into result
+           :of bindee))
 
 ;; added in notion of direct-bindee for "A binds B" as opposed to "A binds to B"
 
@@ -634,17 +651,32 @@ it is created from N-terminus to C-terminus.|#
 (define-category complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
   :specializes bio-chemical-entity
   :mixins (reactome-category)
-  :instantiates :self
   :binds ((cellularlocation cellular-location)
           (component (:or complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
-  )
-
-(def-synonym complex
+  :realization
   (:noun "complex"
+         :etf pre-mod
+         :m component
          :with component
          :of component
          :between component))
+
+(define-category tricomplex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
+  :specializes complex
+  :mixins (reactome-category)
+  :binds ((cellularlocation cellular-location)
+          (component (:or complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :realization
+  (:noun "tricomplex"
+         :etf pre-mod
+         :m component
+         :with component
+         :of component
+         :between component))
+
+
 
 
 (define-category dimer
