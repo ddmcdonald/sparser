@@ -470,7 +470,7 @@
 (DEF-RAS2-PROTEIN "I20RA_HUMAN" ("I20RA_HUMAN" "ZcytoR7" "Cytokine receptor class-II member 8" "IL-20R-alpha" "IL-20R-α" "IL-20 receptor subunit alpha" "IL-20 receptor subunit α" "CRF2-8" "Cytokine receptor family 2 member 8" "IL20RA" "IL-20RA" "IL-20R1")) 
 (DEF-RAS2-PROTEIN "ICEF1_HUMAN" ("ICEF1_HUMAN" "Phosphoinositide-binding protein PIP3-E" "IPCEF1" "KIAA0403")) 
 (DEF-RAS2-PROTEIN "IGF1R_HUMAN" ("IGF1R_HUMAN" "2.7.10.1" "Insulin-like growth factor 1 receptor alpha chain" "Insulin-like growth factor 1 receptor α chain" "IGF-I receptor" "CD221" "Insulin-like growth factor I receptor" "Insulin-like growth factor 1 receptor beta chain" "Insulin-like growth factor 1 receptor bη chain" "IGF1R")) 
-(DEF-RAS2-PROTEIN "IGF1_HUMAN" ("IGF1_HUMAN" "Somatomedin-C" "Mechano growth factor" "IGF1" "IBP1" "IGF-I" "MGF")) 
+(DEF-RAS2-PROTEIN "IGF1_HUMAN" ("IGF1_HUMAN" "Somatomedin-C" "Mechano growth factor" "IGF1" "IBP1" "IGF-I" "IGF-1" "MGF"))
 (DEF-RAS2-PROTEIN "IGF2_HUMAN" ("IGF2_HUMAN" "Insulin-like growth factor II Ala-25 Del" "Somatomedin-A" "IGF2" "IGF-II" "Preptin")) 
 (DEF-RAS2-PROTEIN "IGHE_HUMAN" ("IGHE_HUMAN" "IGHE")) 
 (DEF-RAS2-PROTEIN "IKBA_HUMAN" ("IKBA_HUMAN" "I-kappa-B-alpha" "I-κ-B-α" "IKBA" "NFKBIA" "IkappaBalpha" "IκBα" "IkB-alpha" "IkB-α" "Major histocompatibility complex enhancer-binding protein MAD3" "NFKBI" "MAD3")) 
