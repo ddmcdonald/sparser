@@ -8,6 +8,9 @@
 ;;remove (bio-traps) and (bf-on) in (rusty) -- no longer defined
 ;; 7/19/2015 Code to load all the sentences in the 1000 articles and search for patterns like no-space 
 ;;  words with dashes (or slashes)
+;; add new utility methods for understanding non-card producing articles
+;; ras2-proteins-in-sentences  show-sentences r2-proteins-in (n)
+
 
 (in-package :sparser)
 
@@ -518,4 +521,27 @@ NIL
 (defun test-bind-sents ()
   (load-pmc-sent-lists)
   (loop for i from 1 to 3000 as s in bind-sents do (eval `(with-total-quiet (epp ,s)))))
+
+(defun ras2-proteins-in-sentences (&optional (with-sentence? t))
+  (loop for a in *all-sentences*
+    append
+    (loop for i in (second a)
+      when (and (individual-p i)(itypep i 'protein) (in-ras2-model? i))
+      collect
+      (if
+       with-sentence?
+       (list i (car a))
+       i))))
+
+(defun show-sentences ()
+  (np (reverse (mapcar #'first *all-sentences*))))
+
+(defun r2-proteins-in (n)
+  (run-june-articles 1 :from-article (- n 1))
+  (let
+      ((r2p (ras2-proteins-in-sentences)))
+    (if r2p
+        (np r2p)
+        (show-sentences))))
+      
 
