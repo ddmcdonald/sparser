@@ -46,6 +46,9 @@
 ;;  using method conjunction-incompatible-labels
 ;; 4/28/2015 Added bunch of variables and switches to collect information on conjunctions
 ;; 5/30/15 Cleaned up that code so that I could read it.
+;; 7/26/2015 allow conjunctions of bio-entities and proteins, using method bio-coercion-compatible? 
+;; and print out the fact that the bio-entities so-conjoined are likely to be unrecognized proteins...
+
 
 (in-package :sparser)
 
@@ -389,7 +392,9 @@
   (when (and (edge-p edge-before)(edge-p edge-after))
     (let ((label-before (edge-category edge-before))
           (label-after (edge-category edge-after)))
-      (if (eq label-before label-after)
+      (if (or
+           (eq label-before label-after)
+           (bio-coercion-compatible? label-before label-after edge-before edge-after))
           :conjunction/identical-adjacent-labels
           (when *allow-form-conjunction-heuristic*
             ;;(break "form heuristics allowed. Check backtrace")
@@ -401,6 +406,28 @@
                          (not (conjunction-incompatible-labels
                                label-before label-after edge-before edge-after)))
                 :conjunction/identical-form-labels)))))))
+
+(defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
+  (cond
+   ((itypep label-before 'protein)
+    (when
+        (itypep label-after 'bio-entity)
+      (show-protein-coercion edge-after edge-before)
+      t))
+   
+   ((itypep label-after 'protein)
+    (when
+        (itypep label-before 'bio-entity)
+      (show-protein-coercion edge-before edge-after)
+      t))))
+
+(defun show-protein-coercion (e1 e2)
+  (format t "~&*** ~s is likely to be a protein, because of conjunction with ~s~&"
+          (edge-string e1)
+          (edge-string e2)))
+
+(defun edge-string (e)
+  (get-surface-string-for-individual (edge-referent e)))
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
   (let ((reject?
