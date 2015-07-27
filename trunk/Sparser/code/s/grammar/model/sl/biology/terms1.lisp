@@ -618,6 +618,11 @@
   (:noun "lysate"
          :from source))
 
+(def-bio "adenine" nucleotide)
+(noun "LPA" :super phospholipid)
+(def-synonym lpa
+             (:noun "lysophosphatidic acid"))
+
 (noun "manner" :super bio-method
       :binds ((process bio-process))
       :realization

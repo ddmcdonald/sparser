@@ -350,6 +350,12 @@
   :lemma (:common-noun "molecule")
   :realization (:common-noun name))
 
+(define-category phospholipid :specializes molecule
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "phospholipid")
+  :realization (:common-noun name))
+
 ;; 'small molecule' should be done with a def-subtype
 ;;/// Start with define-sybtype-derived-category
 (define-category small-molecule-reference
