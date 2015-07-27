@@ -1331,28 +1331,33 @@ These return the Lisp-based obo entries.
                 (multiple-value-setq (misc-cards misc-dupes misc-filtered)
                    (create-misc-cards-for-article id))))
 
-      (when cardp
-        (if *trap-error-skip-sentence*
-            (handler-case
-                (create-cards id)
-              (error (e)
-                (ignore-errors ;; got an error with something printing once
-                 (when *show-handled-sentence-errors*
-                   (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
-            (create-cards id)))
-        (let ((cards (+ numcards misc-cards))
-              (dups  (+ num-duplicates misc-dupes))
-              (filt  (+ num-filtered misc-filtered))
-              (misc  (+ misc-cards misc-dupes misc-filtered))
-              (tot (+ numcards num-duplicates num-filtered))
-              )
-          (when write-timep (write-article-time-to-log i id *article-elapsed-time* cards dups filt tot misc))
-          (format t "~2%Completed ~d:~a in ~4,3f secs. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc ~d misc-duplicate ~d misc-filtered"
-                  i id *article-elapsed-time* 
-                  cards dups filt misc
-                  misc-dupes misc-filtered
-                  )
-          )))))
+
+
+        (when cardp
+          (if *trap-error-skip-sentence*
+              (handler-case
+                  (create-cards id)
+                (error (e)
+                       (ignore-errors ;; got an error with something printing once
+                        (when *show-handled-sentence-errors*
+                          (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+              (create-cards id))
+        ;; not sure why still getting nils for values from create-cards-for-article if no cards there but this should fix it
+        (setf numcards (or numcards 0) num-duplicates (or num-duplicates 0) num-filtered (or num-filtered 0))
+        (setf misc-cards (or misc-cards 0) misc-dupes (or misc-dupes 0) misc-filtered (or misc-filtered 0))
+          (let ((cards (+ numcards misc-cards))
+                (dups  (+ num-duplicates misc-dupes))
+                (filt  (+ num-filtered misc-filtered))
+                (misctot  (+ misc-cards misc-dupes misc-filtered))
+                (regtot (+ numcards num-duplicates num-filtered))
+                )
+            (when write-timep (write-article-time-to-log i id *article-elapsed-time* cards dups filt regtot misctot))
+            (format t "~2%Completed ~d:~a in ~4,3f secs. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc ~d misc-duplicate ~d misc-filtered"
+                    i id *article-elapsed-time* 
+                    cards dups filt misctot
+                    misc-dupes misc-filtered
+                    )
+            ))))))
 
 (defun tj (i &optional (id (nth (1- i) *june-nxml-files-in-MITRE-order*)))
   (run-one-june-article i id t)
@@ -1399,11 +1404,12 @@ These return the Lisp-based obo entries.
                    ;; OBE - handled by Scott's code
                    ;; (bc-count (create-binding-cards-for-article *article-id*))
                    )
+              (setf ncards (or ncards 0))
+              (setf duplicate-count (or duplicate-count 0))
               (values
-               ncards  ;; produced cards
-;;               bc-count ;; not yet produced
-               duplicate-count          ;; duplicates 
-               (- card-count ncards)    ;; filtered
+                 ncards
+                 duplicate-count
+                 (- card-count ncards)    ;; filtered
                ))))
          ;;(t (values 0 0 0 0))
          (t (values 0 0 0 0))
@@ -1450,8 +1456,7 @@ These return the Lisp-based obo entries.
 ;; Note that this assumes you have reset *all-sentences* between each article.
 (defun create-misc-cards-for-article (article-id &aux (counter 0)
                                                  (index 1000))
-  (multiple-value-bind (cards n-duplicates n-not-in-model)
-      (do-cards)
+  (multiple-value-bind (cards n-duplicates n-not-in-model) (do-cards)
     (format t "~&Creating ~s cards using generalized function.~%" (length cards))
     (dolist (card cards)
       (handler-case
