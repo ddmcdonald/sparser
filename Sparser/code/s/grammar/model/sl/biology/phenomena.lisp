@@ -660,6 +660,7 @@ it is created from N-terminus to C-terminus.|#
   (:noun "complex"
          :etf pre-mod
          :premod component
+         :m component
          :with component
          :of component
          :between component))
@@ -674,6 +675,7 @@ it is created from N-terminus to C-terminus.|#
   (:noun "tricomplex"
          :etf pre-mod
          :premod component
+         :m component
          :with component
          :of component
          :between component))
@@ -689,6 +691,7 @@ it is created from N-terminus to C-terminus.|#
   (:noun "dimer"
          :etf pre-mod
          :premod component
+         :m component
          :with component
          :of component
          :between component))
@@ -703,6 +706,7 @@ it is created from N-terminus to C-terminus.|#
   (:noun "heterodimer"
          :etf pre-mod
          :premod component
+         :m component
          :with component
          :of component
          :between component))
