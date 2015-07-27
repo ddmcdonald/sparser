@@ -490,7 +490,7 @@
 ;; not sure this is the same stoichiometry as used in biopax
 (define-category stoichiometry :specializes bio-abstract
   :mixins (reactome-category)
-  :binds ((physicalEntity (:or complex small-molecule protein)) 
+  :binds ((physicalEntity (:or bio-complex small-molecule protein)) 
           (stoichiometricCoefficient)) ;; an integer -- ask David
   :realization
   (:noun  "stoichiometry"

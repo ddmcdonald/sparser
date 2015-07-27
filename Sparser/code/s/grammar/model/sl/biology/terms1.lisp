@@ -269,7 +269,7 @@
 
 ;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
 (define-category component :specializes molecule
-  :binds ((complex complex))
+  :binds ((complex bio-complex))
   :realization
   (:noun "component"
          :of complex))
