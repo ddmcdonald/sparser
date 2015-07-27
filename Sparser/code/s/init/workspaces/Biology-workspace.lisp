@@ -1254,7 +1254,7 @@ These return the Lisp-based obo entries.
 (defparameter *article-timing-stream* t)
 
 ;;; having trouble passing in string on Rex cmd line from script.
-(defun time-article-batch (start n &optional (localdir 'all))
+(defun time-article-batch (start n &optional (localdir (short-date-time)))
   (declare (special *card-folder*))
   (let* ((outdir
           (make-corpus-path (format nil "code/evaluation/~a"  localdir)))
@@ -1272,16 +1272,33 @@ These return the Lisp-based obo entries.
   (dump-orphans timedir)
   ))
 
+(defun short-date-time ()
+  (multiple-value-bind (s m h d mo) (decode-universal-time (get-universal-time))
+    
+    (declare (ignore s))
+    (format nil "~a~2,'0d-~2,'0d~2,'0d" 
+            (nth (1- mo) '(jan feb mar apr may jun jul aug sep oct nov dec))
+            d h m)))
 
-(defun write-article-time-to-log (i id runtime &optional (numcards 0)(duplicates 0)(filtered 0) (misc 0))
+(defun do-june (&optional (start 0) (end 988) (localdir (short-date-time)))
+  (time-article-batch start end localdir))
+
+
+(defun write-article-time-to-log (i id runtime &optional (numcards 0)(binds 0) (duplicates 0)(filtered 0) (tot 0) (misc 0))
   (declare (special *all-found-reactions*))
   (unless (boundp '*all-found-reactions*) (setf *all-found-reactions* 0))
+  (if (null numcards) (setf numcards 0))
   (when *article-timing-stream*
     (when (eq i 1)
-      (format *article-timing-stream* "Art#, ID, Runtime, #Sentences, #Reactions, #Cards, #Duplicates, #Filtered, #misc~%"))
+      (format *article-timing-stream* "Art#, ID, Runtime, #Sentences, #Reactions, #Cards, #Bindings, #Duplicates, #Filtered, Total, #Reg, #Misc~%"))
 
-    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d, ~d~%"
-            i id runtime (length *all-sentences*) *all-found-reactions* (or numcards 0) duplicates filtered misc)))
+    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d, ~d, ~d, ~d, ~d~%"
+            i id runtime 
+            (length *all-sentences*) 
+            *all-found-reactions* 
+            numcards binds duplicates filtered 
+            (+ numcards duplicates filtered) 
+            tot misc)))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
@@ -1299,9 +1316,9 @@ These return the Lisp-based obo entries.
   (unless (member i *skip-articles*)
     (setq *all-sentences* nil)
     (test-june-article id :article-number i)
-    (let ((numcards 0)(num-duplicates 0)(num-filtered 0)(misc-cards 0)(misc-dupes 0)(misc-filtered 0))
+    (let ((numcards 0)(binds 0) (num-duplicates 0)(num-filtered 0)(misc-cards 0)(misc-dupes 0)(misc-filtered 0))
       (flet ((create-cards (id)
-                (multiple-value-setq (numcards num-duplicates num-filtered)
+                (multiple-value-setq (numcards binds num-duplicates num-filtered)
                     (create-cards-for-article id))
                 (multiple-value-setq (misc-cards misc-dupes misc-filtered)
                    (create-misc-cards-for-article id))))
@@ -1315,12 +1332,19 @@ These return the Lisp-based obo entries.
                  (when *show-handled-sentence-errors*
                    (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
             (create-cards id)))
-
-      (when write-timep (write-article-time-to-log i id *article-elapsed-time*
-                                                   numcards num-duplicates num-filtered misc-cards))
-      (format t "Completed ~d, ~a in time ~a. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc ~d misc-duplicate ~d misc-filtered"
-              i id *article-elapsed-time* numcards num-duplicates num-filtered (+ misc-cards misc-dupes misc-filtered) misc-dupes misc-filtered)
-      ))))
+        (let ((cards (+ numcards misc-cards))
+              (dups  (+ num-duplicates misc-dupes))
+              (filt  (+ num-filtered misc-filtered))
+              (misc  (+ misc-cards misc-dupes misc-filtered))
+              (tot (+ numcards num-duplicates num-filtered))
+              )
+          (when write-timep (write-article-time-to-log i id *article-elapsed-time* cards binds dups filt tot misc))
+          (format t "~2%Completed ~d:~a in ~4,3f secs. Cards: ~d distinct, ~d bindings, ~d duplicate, ~d filtered ~d misc ~d misc-duplicate ~d misc-filtered"
+                  i id *article-elapsed-time* 
+                  cards binds dups filt misc
+                  misc-dupes misc-filtered
+                  )
+          )))))
 
 (defun tj (i &optional (id (nth (1- i) *june-nxml-files-in-MITRE-order*)))
   (run-one-june-article i id t)
@@ -1362,15 +1386,16 @@ These return the Lisp-based obo entries.
             (unless (equal (length cards) ncards)
               (format t "~%filtered out ~s cards which did not have proteins in the RAS2 model~%"
                       (- (length cards) ncards)))
-            (let
-                ((bc-count (create-binding-cards-for-article *article-id*)))
+            (let* ((card-count (length cards))
+                   (bc-count (create-binding-cards-for-article *article-id*)))
               (values
-               (+ (length cards) bc-count)
-               ;;0 ;; raw verbs
-               duplicate-count
-               (- (length cards) ncards)))))
+               ncards  ;; produced cards
+               bc-count ;; not yet produced
+               duplicate-count          ;; duplicates 
+               (- card-count ncards)    ;; filtered
+               ))))
          ;;(t (values 0 0 0 0))
-         (t (values 0 0 0))
+         (t (values 0 0 0 0))
          )
       (error (e)
              (ignore-errors ;; got an error with something printing once
