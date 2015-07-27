@@ -620,7 +620,7 @@ it is created from N-terminus to C-terminus.|#
     :specializes binding
     :binds ((binder (:or protein molecule protein-domain bio-entity))
             (bindee (:or protein molecule protein-domain bio-entity))
-            (result complex))
+            (result bio-complex))
     :realization
     (:verb "assemble" ;; keyword: ENDS-IN-ED 
 	   :noun "assembly"
@@ -650,30 +650,30 @@ it is created from N-terminus to C-terminus.|#
    :o monomer
    :of monomer))
 
-(define-category complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
+(define-category bio-complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
   :specializes bio-chemical-entity
   :mixins (reactome-category)
   :binds ((cellularlocation cellular-location)
-          (component (:or complex small-molecule protein))
+          (component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "complex"
          :etf pre-mod
-         :m component
+         :premod component
          :with component
          :of component
          :between component))
 
 (define-category tricomplex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
-  :specializes complex
+  :specializes bio-complex
   :mixins (reactome-category)
   :binds ((cellularlocation cellular-location)
-          (component (:or complex small-molecule protein))
+          (component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "tricomplex"
          :etf pre-mod
-         :m component
+         :premod component
          :with component
          :of component
          :between component))
@@ -681,17 +681,31 @@ it is created from N-terminus to C-terminus.|#
 
 
 
-(define-category dimer
-  :specializes complex
-  :instantiates :self
-  :lemma (:common-noun "dimer"))
+(define-category dimer :specializes bio-complex
+   :binds ((cellularlocation cellular-location)
+          (component (:or bio-complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :realization
+  (:noun "dimer"
+         :etf pre-mod
+         :premod component
+         :with component
+         :of component
+         :between component))
 
 
 
-(define-category heterodimer
-  :specializes dimer
-  :instantiates :self
-  :lemma (:common-noun "heterodimer"))  
+(define-category:specializes bio-complex
+   :binds ((cellularlocation cellular-location)
+          (component (:or bio-complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :realization
+  (:noun "heterodimer"
+         :etf pre-mod
+         :premod component
+         :with component
+         :of component
+         :between component))
 
 ; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
 ; Dec33: endogenous C-RAF:B-RAF heterodimers

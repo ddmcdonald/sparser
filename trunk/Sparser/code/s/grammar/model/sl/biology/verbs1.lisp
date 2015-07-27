@@ -435,7 +435,7 @@
 (define-category catalytic-activity
   :specializes bio-process
   :bindings (uid "GO:0003824")
-  :binds ((catalyst (:or enzyme complex))
+  :binds ((catalyst (:or enzyme bio-complex))
           (process bio-process))
   :realization
   (:verb "catalyze" :noun "catalysis" :adj "catalytic"
@@ -831,7 +831,7 @@
 
 (define-category dissociate :specializes bio-process
   :binds ((agent biological)
-          (object complex)
+          (object bio-complex)
           (into biological))
   :realization
   (:verb "dissociate" :noun "dissociation"
