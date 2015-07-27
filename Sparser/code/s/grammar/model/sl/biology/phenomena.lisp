@@ -594,6 +594,7 @@ it is created from N-terminus to C-terminus.|#
           (bindee (:or molecule protein-domain bio-entity))
           (binding-set (:or molecule protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
           (direct-bindee molecule)(site molecular-location)
+          (domain protein-domain)
           (cell-site cellular-location))
   :realization 
   (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
@@ -608,6 +609,7 @@ it is created from N-terminus to C-terminus.|#
          :at cell-site
          :to cell-site
          :with bindee
+         :through domain
          :between binding-set))
 (delete-verb-cfr (resolve/make "assemble"))
 (delete-verb-cfr (resolve/make "assembles"))
