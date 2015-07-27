@@ -384,18 +384,27 @@
 ;;//// needs a setter
 
 (defparameter *sections-to-ignore* 
-  '("method"
+  '(
     "authors' contributions"
     "competing interests"
     "experimental procedures"
     "funding"
-    "materials and methods"
-    "methods summary"
-    "methods")
+    )
   
   
   "Contains a list of section titles or title fragments that
   name sections we want to skip over")
+
+
+;;; let's not ignore these for now. 
+(defparameter *methods-section-names*
+    '("method"
+    "materials and methods"
+    "methods summary"
+    "methods"))
+
+
+(defparameter *ignore-methods-sections* t)
 
 (defun ignore-this-document-section (section)
   (when *sections-to-ignore*
@@ -403,7 +412,12 @@
       (when (slot-boundp section 'title)
         ;(push-debug `(,section))
         ;(error "title of section hasn't been set"))
-        (let ((title-object (title section)))
+        (let ((title-object (title section))
+              (sections-to-ignore (append *sections-to-ignore*
+                                          (if *ignore-methods-sections*
+                                              *method-section-names*)))
+                                            
+              )
           (when nil
             ;; teething problem with abstract
             (unless title-object
@@ -420,7 +434,7 @@
                        (error "Unexpected type of title: ~a~%~a"
                               (type-of title-object) title-object))))))
               ;;(format t "~&---- Section title: ~S~&" title-string)
-              (dolist (ignore-substring *sections-to-ignore* nil)
+              (dolist (ignore-substring sections-to-ignore nil)
                 (when (search ignore-substring title-string
                               :test #'equalp)
                   (when *show-section-printouts*
