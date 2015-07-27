@@ -698,7 +698,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 
-(define-category:specializes bio-complex
+(define-category heterodimer :specializes bio-complex
    :binds ((cellularlocation cellular-location)
           (component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
