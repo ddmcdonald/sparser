@@ -1970,6 +1970,19 @@
            :against against ;; "12,484 genes were queried against KEGG biopathways"
            :whethercomp statement))
 
+(define-category question
+    :specializes bio-rhetorical
+    :mixins (bio-thatcomp)
+    :binds ((agent pronoun/first/plural)(object biological))
+    :realization
+    (:verb "question" ;; keyword: ENDS-IN-ED 
+	   :noun "hypothesis"
+	   :etf (svo-passive)
+	   :s agent
+	   :o object
+           :thatcomp statement
+           ))
+
 (define-category raise
     :specializes bio-control
     :binds ((agent bio-entity)
