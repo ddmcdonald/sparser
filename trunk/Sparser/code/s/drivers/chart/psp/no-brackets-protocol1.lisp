@@ -291,14 +291,18 @@
     
     (when (and *readout-relations*
                *index-cards*
-               (or *dont-filter-on-discourse-relevance* relevant?))
+               ;; goal is to move this constraint to card creation by adding the flag to the end of the *all-sentences* struct
+               (or *dont-filter-on-discourse-relevance* relevant?)
+               )
       (push `(,(sentence-string sentence) 
               ,(all-individuals-in-tts sentence)
               ,@(when (and (boundp '*current-article*)
                            *current-article*)
                   (list *current-article*
                         *universal-time-start*
-                        *universal-time-end*)))
+                        *universal-time-end*))
+              ,relevant? ;; added it back here. 
+              )
             *all-sentences*))
 
     (save-missing-subcats)
