@@ -1373,7 +1373,9 @@ These return the Lisp-based obo entries.
        (aht (gethash *article-id* ht))
        (counter 0)
        (cards nil)
-       (duplicate-count 0))
+       (duplicate-count 0)
+;       (relevance-filtered 0) ;; not used yet. 
+       )
     (declare (special ht aht cards))
     (handler-case
         (cond
@@ -1409,7 +1411,8 @@ These return the Lisp-based obo entries.
               (values
                  ncards
                  duplicate-count
-                 (- card-count ncards)    ;; filtered
+                 (- card-count ncards)    ;; filtered for participant b missing
+; not yet                 relevance-filtered
                ))))
          ;;(t (values 0 0 0 0))
          (t (values 0 0 0 0))
