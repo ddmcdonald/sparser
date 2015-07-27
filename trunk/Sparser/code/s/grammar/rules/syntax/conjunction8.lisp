@@ -410,16 +410,26 @@
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
   (declare (special label-after label-before))
   (cond
-   ((itypep label-before 'protein)
+   ((safe-itypep label-before 'protein)
     (when
-        (eq (itype-of label-after) category::bio-entity)
+        (eq (safe-itype-of label-after) category::bio-entity)
       (show-protein-coercion edge-after edge-before)
       t))
-   ((itypep label-after 'protein)
+   ((safe-itypep label-after 'protein)
     (when
-        (eq (itype-of label-before) category::bio-entity)
+        (eq (safe-itype-of label-before) category::bio-entity)
       (show-protein-coercion edge-before edge-after)
       t))))
+
+(defun safe-itypep (low high)
+  (when (or (individual-p low)
+            (referential-category-p low))
+    (itypep low high)))
+
+(defun safe-itype-of (low)
+  (when (or (individual-p low)
+            (referential-category-p low))
+    (itype-of low)))
 
 (defun show-protein-coercion (e1 e2)
   (format t "~&*** ~s is likely to be a protein, because of conjunction with ~s~&"
