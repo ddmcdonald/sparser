@@ -402,6 +402,8 @@ filligre may be used to distinguish them, etc.
 
 (def-bio "Ras17N" protein)
 
+(define-protein "41_HUMAN" ("Band4.1" "EPB4.1" "4.1R" "P4.1" "band4.1" "band4.1 protein"))
+
 (define-protein "14-3-3" NIL) 
 (define-protein "2A5A_HUMAN" ("PPP2R5A" "PR61alpha")) 
 (define-protein "2A5B_HUMAN" ("PPP2R5B")) 
