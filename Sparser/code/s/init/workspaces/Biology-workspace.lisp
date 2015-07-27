@@ -1280,14 +1280,16 @@ These return the Lisp-based obo entries.
             (nth (1- mo) '(jan feb mar apr may jun jul aug sep oct nov dec))
             d h m)))
 
+
+;;;; THIS IS NOW CALLED BY run-june-articles script
 ;;; for now, just use ep-filter
-(defun do-june (&key (start 0) (end 988) (dir (short-date-time))
+(defun do-june (&key (start 0) (n 988) (dir (short-date-time))
                      (ep-filter t) (section-filter t)
                      )
   (declare (special *dont-filter-on-discourse-relevance*))
   (setf *dont-filter-on-discourse-relevance* (not ep-filter))
 
-  (time-article-batch start end dir))
+  (time-article-batch start n dir))
 
 
 (defun write-article-time-to-log (i id runtime &optional (numcards 0) (duplicates 0)(filtered 0) (tot 0) (misc 0))
@@ -1302,7 +1304,7 @@ These return the Lisp-based obo entries.
             i id runtime 
             (length *all-sentences*) 
             *all-found-reactions* 
-            numcards binds duplicates filtered 
+            numcards duplicates filtered 
             (+ numcards duplicates filtered) 
             tot misc)))
 
