@@ -20,62 +20,67 @@
 (defparameter *all-irrelevant-sentences* nil)
 
 (defun record-irrelevant-sentence (sentence reason)
-  (push `(,reason
-          ,(sentence-string sentence) 
-          ,(all-individuals-in-tts sentence)
-          ,@(when (and (boundp '*current-article*)
-                       *current-article*)
-              (list *current-article*
-                    *universal-time-start*
-                    *universal-time-end*)))
-        *all-irrelevant-sentences*))
+  (pushnew `(,reason
+	     ,(sentence-string sentence)
+	     ,(all-individuals-in-tts sentence)
+	     ,@(when (and (boundp '*current-article*)
+			  *current-article*)
+		     (list *current-article*
+			   *universal-time-start*
+			   *universal-time-end*)))
+	   *all-irrelevant-sentences*
+	   :key #'second))
 
 (defun assess-relevance (sentence)
   ;; Called from post-analysis-operations just before we would
   ;; make a card. If it returns nil -- having determined that
   ;; the sentence is about established or conjectured facts and
   ;; consequently not relevant -- then no card will be made.
-  (declare (special *reading-section-title*))
   (let ((paragraph (parent sentence)))        
     (push-debug `(,paragraph))
+    (cond ((contains-new-fact-phrase sentence) t)
+	  ((or (not (assess-relevance-phrases sentence))
+	       (not (assess-relevance-ref sentence))
+	       (not (assess-relevance-intro sentence)))
+	   nil)
+	  (t
+	   t))))
+	
+(defun assess-relevance-phrases (sentence)
+  (cond
+    ((contains-motivation-phrase sentence)
+     (record-irrelevant-sentence sentence :has-motivation-phrase)
+     nil)
+    ((contains-conjecture-phrase sentence)
+     (record-irrelevant-sentence sentence :has-conjecture-phrase)
+     nil)
+    ((contains-known-result-phrase sentence)
+     (record-irrelevant-sentence sentence :has-known-result-phrase)
+     nil)
+    ((contains-methodology-phrase sentence)
+     (record-irrelevant-sentence sentence :has-methodology-phrase)
+     nil)
+    ((contains-exp-result-phrase sentence)
+     (record-irrelevant-sentence sentence :has-exp-result-phrase)
+     nil)
+    (t
+     t)))
+
+(defun assess-relevance-ref (sentence)
+  (cond
+    ((includes-a-reference sentence)
+     (record-irrelevant-sentence sentence :includes-reference)
+     nil)
+    (t
+     t)))
+
+(defun assess-relevance-intro (sentence)
+  (let ((*reading-section-title* t))
+    (declare (special *reading-section-title*))
     (cond
-      ((contains-new-fact-phrase sentence)
-       t)
-
-      ((contains-motivation-phrase sentence)
-       (record-irrelevant-sentence sentence :has-motivation-phrase)
-       nil)
-
-      ((includes-a-reference sentence)
-       (record-irrelevant-sentence sentence :includes-reference)
-       nil)
-
       ((title-of-currect-section-is "intro")
        (record-irrelevant-sentence sentence :in-intro)
        nil)
-
-      (*reading-section-title* t)
-
-      ((contains-conjecture-phrase sentence)
-       (record-irrelevant-sentence sentence :has-conjecture-phrase)
-       nil)
-
-      ((contains-known-result-phrase sentence)
-       (record-irrelevant-sentence sentence :has-known-result-phrase)
-       nil)
-
-      ((contains-methodology-phrase sentence)
-       (record-irrelevant-sentence sentence :has-methodology-phrase)
-       nil)
-
-      ((contains-exp-result-phrase sentence)
-       (record-irrelevant-sentence sentence :has-exp-result-phrase)
-       nil)
-
-      ((contains-modal sentence)
-       (record-irrelevant-sentence sentence :modal)
-       nil)
-
       (t
        t))))
 
