@@ -411,13 +411,17 @@
   (cond
    ((itypep label-before 'protein)
     (when
-        (itypep label-after 'bio-entity)
+        (and
+         (individual-p label-after)
+         (eq (itype-of label-after) category::bio-entity))
       (show-protein-coercion edge-after edge-before)
       t))
    
    ((itypep label-after 'protein)
     (when
-        (itypep label-before 'bio-entity)
+        (and
+         (individual-p label-before)
+         (eq (itype-of label-before) category::bio-entity))
       (show-protein-coercion edge-before edge-after)
       t))))
 
