@@ -408,20 +408,16 @@
                 :conjunction/identical-form-labels)))))))
 
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
+  (declare (special label-after label-before))
   (cond
    ((itypep label-before 'protein)
     (when
-        (and
-         (individual-p label-after)
-         (eq (itype-of label-after) category::bio-entity))
+        (eq (itype-of label-after) category::bio-entity)
       (show-protein-coercion edge-after edge-before)
       t))
-   
    ((itypep label-after 'protein)
     (when
-        (and
-         (individual-p label-before)
-         (eq (itype-of label-before) category::bio-entity))
+        (eq (itype-of label-before) category::bio-entity)
       (show-protein-coercion edge-before edge-after)
       t))))
 
