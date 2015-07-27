@@ -16,6 +16,16 @@
 ;;;----------
 ;;; assessor
 ;;;----------
+(defparameter *filter-phrases* t
+  "Filter out sentences with recognized phrases that indicate the sentence
+contains irrelevant information.")
+
+;; turned off by default since figures and citations are indistinguishable
+(defparameter *filter-refs* nil
+  "Filter out sentences with references.")
+
+(defparameter *filter-intro* t
+  "Filter out sentences in the intro.")
 
 (defparameter *all-irrelevant-sentences* nil)
 
@@ -36,16 +46,17 @@
   ;; make a card. If it returns nil -- having determined that
   ;; the sentence is about established or conjectured facts and
   ;; consequently not relevant -- then no card will be made.
-  (let ((paragraph (parent sentence)))        
+  (let ((paragraph (parent sentence)))
     (push-debug `(,paragraph))
-    (cond ((contains-new-fact-phrase sentence) t)
-	  ((or (not (assess-relevance-phrases sentence))
-	       (not (assess-relevance-ref sentence))
-	       (not (assess-relevance-intro sentence)))
-	   nil)
-	  (t
-	   t))))
-	
+    (when *filter-phrases*
+      (if (contains-new-fact-phrase sentence) t)
+      (if (not (assess-relevance-phrases sentence)) nil))
+    (when *filter-refs*
+      (if (not (assess-relevance-ref sentence)) nil))
+    (when *filter-intro*
+      (if (not (assess-relevance-intro sentence)) nil))
+    t))
+    
 (defun assess-relevance-phrases (sentence)
   (cond
     ((contains-motivation-phrase sentence)
