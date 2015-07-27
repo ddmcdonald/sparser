@@ -70,7 +70,7 @@
                   (pw-pname name-word))
                  (t nil))))
          (member name
-                 '("MAPK" "MEK" "E3b1" "_HUMAN" "p140"  "hVps34" "hRad17" "RasGRF1" "D3" "Ras")
+                 '("MAPK" "MEK" "E3b1" "_HUMAN" "p140"  "hVps34" "hRad17" "RasGRF1" "D3" "Ras" "AKT")
                  :test #'equal))))))
 
 (defun best-protein-id (ids)
