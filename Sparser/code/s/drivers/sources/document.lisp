@@ -286,14 +286,24 @@
 ;;; Identifying current section
 ;;;-----------------------------
 
-(defun title-of-currect-section-is (partial-string)
+(defun title-of-current-section-is (partial-string)
   (declare (special *current-section-title*))
+; (format t "~%Testing title: ~s" *current-section-title*)
+
   (let* ((title *current-section-title*)
          (title-string (when title (content-string title))))
     (when title-string
       (search partial-string title-string :test #'equalp))))
 
 
+(defun exact-title-of-current-section-is (string)
+  (declare (special *current-section-title*))
+; (format t "~%Testing title: ~s" *current-section-title*)
+
+  (let* ((title *current-section-title*)
+         (title-string (when title (content-string title))))
+    (when title-string
+      (string-equal string title-string))))
 
 ;;;---------------------------------------
 ;;; walking a function through a document
