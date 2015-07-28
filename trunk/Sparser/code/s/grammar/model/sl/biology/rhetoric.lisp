@@ -48,7 +48,7 @@ contains irrelevant information.")
   ;; consequently not relevant -- then no card will be made.
   (let ((paragraph (parent sentence)))
     (push-debug `(,paragraph))
-    (or (and *filter-phrases* (contains-new-fact-phrase sentence) )
+    (or (and *filter-phrases* (contains-new-fact-phrase sentence) t)
         (and
          (if *filter-intro* (assess-relevance-intro sentence) t)
          (if *filter-phrases* (assess-relevance-phrases sentence) t)
