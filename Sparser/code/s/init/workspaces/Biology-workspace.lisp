@@ -1316,7 +1316,7 @@ These return the Lisp-based obo entries.
       as i from (+ 1 from-article) to (+ n from-article)
         do (run-one-june-article i id cardp show-timep))))
 
-(defparameter *skip-articles* '(422 576))
+(defparameter *skip-articles* '(422 576 937))
 
 (defun run-one-june-article (i id &optional cardp write-timep)
   (declare (special *article-elapsed-time*)) ;; defined below.
