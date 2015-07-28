@@ -397,7 +397,7 @@
 
 
 ;;; let's not ignore these for now. 
-(defparameter *methods-section-names*
+(defparameter *method-section-names*
     '("method"
     "materials and methods"
     "methods summary"
