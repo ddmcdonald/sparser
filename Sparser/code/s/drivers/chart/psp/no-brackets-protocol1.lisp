@@ -275,24 +275,24 @@
 (defvar *entities* nil
   "Holds the entities for the last sentence when *readout-relations* is up")
 
-(defparameter *dont-filter-on-discourse-relevance* nil)
 
 (defun post-analysis-operations (sentence)
   (declare (special *universal-time-start* *universal-time-end*))
-  
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
   (identify-salient-text-structure sentence)
   (when *do-anaphora*
     (handle-any-anaphora sentence))
-  
-  (let ((relevant? #-:sbcl(assess-relevance sentence)
-                   #+:sbcl t))
+  (let ((relevant? ; not sure why the sbcl condition here. (MB)
+          #-:sbcl (assess-relevance sentence)
+          #+:sbcl t))
+;    (format t "~%Sentence ~a is ~:[NOT RELEVANT~;RELEVANT~]" sentence relevant?)
     
     (when (and *readout-relations*
                *index-cards*
-               ;; goal is to move this constraint to card creation by adding the flag to the end of the *all-sentences* struct
-               (or *dont-filter-on-discourse-relevance* relevant?)
+               ;; move removal of irrelevant sentences to after cards
+;;;               relevant?
+;; old              (or *dont-filter-on-discourse-relevance* relevant?)
                )
       (push `(,(sentence-string sentence) 
               ,(all-individuals-in-tts sentence)
@@ -301,7 +301,7 @@
                   (list *current-article*
                         *universal-time-start*
                         *universal-time-end*))
-              ,relevant? ;; added it back here. 
+              ,relevant? ;; added relevance info here. 
               )
             *all-sentences*))
 
