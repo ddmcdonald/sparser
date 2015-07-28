@@ -15,7 +15,7 @@
 ;;  current "~/r3/code/evaluation/no-cards.lisp" but should be made more parameterizable
 ;; all the sentences that mention RAS2 proteins. This is particularly useful to figure out why we are not generating cards for some articles
 ;; Put in error handler around the card production code -- this should prevent errors in card production from killing an entire article
-;; pt-card can produce NIL cards (when there is no substrate or agent). 
+;; pt-card can produce NIL cards (when there is no substrate or agent).
 ;; Don't push them onto the list of cards to be printed in create-cards-for-article...
 
 (in-package :sparser)
@@ -1274,9 +1274,9 @@ These return the Lisp-based obo entries.
 
 (defun short-date-time ()
   (multiple-value-bind (s m h d mo) (decode-universal-time (get-universal-time))
-    
+
     (declare (ignore s))
-    (format nil "~a~2,'0d-~2,'0d~2,'0d" 
+    (format nil "~a~2,'0d-~2,'0d~2,'0d"
             (nth (1- mo) '(jan feb mar apr may jun jul aug sep oct nov dec))
             d h m)))
 
@@ -1301,11 +1301,11 @@ These return the Lisp-based obo entries.
       (format *article-timing-stream* "Art#, ID, Runtime, #Sentences, #Reactions, #Cards, #Duplicates, #Filtered, Total, #Reg, #Misc~%"))
 
     (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d, ~d, ~d, ~d~%"
-            i id runtime 
-            (length *all-sentences*) 
-            *all-found-reactions* 
-            numcards duplicates filtered 
-            (+ numcards duplicates filtered) 
+            i id runtime
+            (length *all-sentences*)
+            *all-found-reactions*
+            numcards duplicates filtered
+            (+ numcards duplicates filtered)
             tot misc)))
 
 
@@ -1324,11 +1324,11 @@ These return the Lisp-based obo entries.
   (unless (member i *skip-articles*)
     (setq *all-sentences* nil)
     (test-june-article id :article-number i)
-    (let ((numcards 0) (num-duplicates 0)(num-filtered 0)(misc-cards 0)(misc-dupes 0)(misc-filtered 0))
+    (let ((numcards 0) (num-duplicates 0)(num-filtered 0)(misc-cards 0)(misc-dupes 0)(misc-filtered 0) (misc-irrelevant 0))
       (flet ((create-cards (id)
                 (multiple-value-setq (numcards num-duplicates num-filtered)
                     (create-cards-for-article id))
-                (multiple-value-setq (misc-cards misc-dupes misc-filtered)
+                (multiple-value-setq (misc-cards misc-dupes misc-filtered misc-irrelevant)
                    (create-misc-cards-for-article id))))
 
 
@@ -1352,10 +1352,10 @@ These return the Lisp-based obo entries.
                 (regtot (+ numcards num-duplicates num-filtered))
                 )
             (when write-timep (write-article-time-to-log i id *article-elapsed-time* cards dups filt regtot misctot))
-            (format t "~2%Completed ~d:~a in ~4,3f secs. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc ~d misc-duplicate ~d misc-filtered"
-                    i id *article-elapsed-time* 
+            (format t "~2%Completed ~d:~a in ~4,3f secs. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc ~d misc-duplicate ~d misc-filtered ~d misc-irrelevant"
+                    i id *article-elapsed-time*
                     cards dups filt misctot
-                    misc-dupes misc-filtered
+                    misc-dupes misc-filtered misc-irrelevant
                     )
             ))))))
 
@@ -1374,7 +1374,7 @@ These return the Lisp-based obo entries.
        (counter 0)
        (cards nil)
        (duplicate-count 0)
-;       (relevance-filtered 0) ;; not used yet. 
+;       (relevance-filtered 0) ;; not used yet.
        )
     (declare (special ht aht cards))
     (handler-case
@@ -1459,7 +1459,7 @@ These return the Lisp-based obo entries.
 ;; Note that this assumes you have reset *all-sentences* between each article.
 (defun create-misc-cards-for-article (article-id &aux (counter 0)
                                                  (index 1000))
-  (multiple-value-bind (cards n-duplicates n-not-in-model) (do-cards)
+  (multiple-value-bind (cards n-duplicates n-not-in-model n-irrelevant) (do-cards)
     (format t "~&Creating ~s cards using generalized function.~%" (length cards))
     (dolist (card cards)
       (handler-case
@@ -1470,7 +1470,7 @@ These return the Lisp-based obo entries.
                (ignore-errors ;; got an error with something printing once
                   (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
       )
-    (values counter n-duplicates n-not-in-model)
+    (values counter n-duplicates n-not-in-model n-irrelevant)
     ))
 
 #|
