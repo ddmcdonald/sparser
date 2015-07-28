@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2010-2015 David D. McDonald
 ;;;
 ;;;   File:   load-nlp
-;;; Version:  June 2015
+;;; Version:  July 2015
 
 #|
  This file loads the language understanding system Sparser, the
@@ -87,27 +87,24 @@
 
 (asdf:operate 'asdf:load-op :ddm-util)
 
-
 ;; #4 --- Create the sparser package
 ;;   We do this here so that the package is available for reference
 ;;   in Mumble's code.
 
+
 ;;; apparently LISP doesnt mind it being redeclared, and this (no unless) avoids the problem in ccl
 ;;; that it defines the package wrong when it opens a file to edit.
 
-;(unless (find-package :sparser)
+;;(unless (find-package :sparser)
+(defpackage :sparser
+  (:use common-lisp
+        ddm-util
+        #+apple ccl
+        #+openmcl :ccl)
+  (:nicknames :sp)
+  (:import-from :cl-user #:sparser-file #:sparser-load-file
+                #:sparser-sourcefile #:s-load))
 
-  (defpackage :sparser
-    (:use common-lisp
-          ddm-util
-          #+apple ccl
-          #+openmcl :ccl)
-    (:nicknames :sp)
-    (:import-from :cl-user #:sparser-file #:sparser-load-file
-                           #:sparser-sourcefile #:s-load)
-    )
-
-; )
 
 
 ;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, that invocatation of
