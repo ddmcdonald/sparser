@@ -48,15 +48,14 @@ contains irrelevant information.")
   ;; consequently not relevant -- then no card will be made.
   (let ((paragraph (parent sentence)))
     (push-debug `(,paragraph))
-    (when *filter-phrases*
-      (if (contains-new-fact-phrase sentence) t)
-      (if (not (assess-relevance-phrases sentence)) nil))
-    (when *filter-refs*
-      (if (not (assess-relevance-ref sentence)) nil))
-    (when *filter-intro*
-      (if (not (assess-relevance-intro sentence)) nil))
-    t))
+    (or (and *filter-phrases* (contains-new-fact-phrase sentence) )
+        (and
+         (if *filter-intro* (assess-relevance-intro sentence) t)
+         (if *filter-phrases* (assess-relevance-phrases sentence) t)
+         (if *filter-refs* (assess-relevance-ref sentence) t) 
+         ))))
     
+;;; return true if sentence is relevant because of phrasing
 (defun assess-relevance-phrases (sentence)
   (cond
     ((contains-motivation-phrase sentence)
@@ -77,6 +76,7 @@ contains irrelevant information.")
     (t
      t)))
 
+;;; return true if sentence is relevant because it doesnt cite someone else (original material test)
 (defun assess-relevance-ref (sentence)
   (cond
     ((includes-a-reference sentence)
@@ -85,11 +85,12 @@ contains irrelevant information.")
     (t
      t)))
 
+;;; return true if not in the introduction
 (defun assess-relevance-intro (sentence)
   (let ((*reading-section-title* t))
     (declare (special *reading-section-title*))
     (cond
-      ((title-of-currect-section-is "intro")
+      ((exact-title-of-current-section-is "Introduction")
        (record-irrelevant-sentence sentence :in-intro)
        nil)
       (t
