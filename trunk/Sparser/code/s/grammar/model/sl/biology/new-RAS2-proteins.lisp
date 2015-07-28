@@ -145,7 +145,7 @@
 (DEF-RAS2-PROTEIN "ARHGI_HUMAN" ("ARHGI_HUMAN" "p114RhoGEF" "114 kDa Rho-specific guanine nucleotide exchange factor" "p114-Rho-GEF" "SA-RhoGEF" "ARHGEF18" "Septin-associated RhoGEF" "KIAA0521")) 
 (DEF-RAS2-PROTEIN "ARHGP_HUMAN" ("ARHGP_HUMAN" "Guanine nucleotide exchange factor GEFT" "GEFT" "RhoA/Rac/Cdc42 guanine nucleotide exchange factor GEFT" "ARHGEF25" "p63RhoGEF" "Rac/Cdc42/Rho exchange factor GEFT")) 
 (DEF-RAS2-PROTEIN "ARK72_HUMAN" ("ARK72_HUMAN" "AFB1-AR 1" "AFAR1" "Succinic semialdehyde reductase" "SSA reductase" "AKR7" "1.1.1.n11" "AKR7A2" "Aldoketoreductase 7" "AFAR" "AFB1 aldehyde reductase 1")) 
-(DEF-RAS2-PROTEIN "ARRB1_HUMAN" ("ARRB1_HUMAN" "Arrestin bη-1" "ARR1" "ARRB1" "β-arrestin1" "Beta-arrestin-1" "Arrestin beta-1")) 
+(DEF-RAS2-PROTEIN "ARRB1_HUMAN" ("ARRB1_HUMAN" "Arrestin bη-1" "ARR1" "ARRB1" "β-arrestin1" "Beta-arrestin-1" "Arrestin beta-1" "β-arrestin")) 
 (DEF-RAS2-PROTEIN "ARRB2_HUMAN" ("ARRB2_HUMAN" "Arrestin bη-2" "ARR2" "ARRB2" "ARB2" "Arrestin-2" "Beta-arrestin-2" "Arrestin beta-2")) 
 (DEF-RAS2-PROTEIN "ARRC_HUMAN" ("ARRC_HUMAN" "CAR" "ARR3" "ARRX" "arrestin-3" "Arrestin-C" "Cone arrestin" "C-arrestin" "cArr" "Retinal cone arrestin-3" "X-arrestin")) 
 (DEF-RAS2-PROTEIN "ASM_HUMAN" ("ASM_HUMAN" "ASM" "Acid sphingomyelinase" "3.1.4.12" "SMPD1" "aSMase")) 
