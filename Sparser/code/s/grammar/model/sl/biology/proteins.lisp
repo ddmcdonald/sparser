@@ -1209,7 +1209,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "GBG8_HUMAN" ("GNGT9" "GNG9" "GNG8" "Gamma-9")) 
 (define-protein "GBP2_HUMAN" ("neun" "Interferon-induced guanylate-binding protein 2" "GTP-binding protein 2" "GBP-2" "HuGBP-2" "Guanine nucleotide-binding protein 2")) 
 (define-protein "GCC1_HUMAN" ("GCC1")) 
-(define-protein "GCH1_HUMAN" ("GTP-" "GTP cyclohydrolase 1" "GTP cyclohydrolase I" "GTP-CH-I")) 
+(define-protein "GCH1_HUMAN" ("GTP cyclohydrolase 1" "GTP cyclohydrolase I" "GTP-CH-I")) 
 (define-protein "GCN1L_HUMAN" ("KIAA0219" "GCN1L1" "HsGCN1")) 
 (define-protein "GCP2_HUMAN" ("GCP2" "hGrip103" "h103p" "TUBGCP2" "hSpc97" "GCP-2" "hGCP2")) 
 (define-protein "GCP3_HUMAN" ("γ-tubulin" "Gamma-tubulin complex component 3" "GCP-3" "hGCP3" "Gamma-ring complex protein 104 kDa" "h104p" "hGrip104" "Spindle pole body protein Spc98 homolog" "hSpc98")) 
