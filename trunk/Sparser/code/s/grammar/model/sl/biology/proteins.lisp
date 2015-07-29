@@ -418,7 +418,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "PSN1_HUMAN" ("Presenilin1" "Presenilin-1" "PS-1" "Protein S182"))
 (define-protein "IL1B_HUMAN" ("IL-1β" "IL-1 beta"))
 (define-protein "PTN7_HUMAN" ("heptp" "Tyrosine-protein phosphatase non-receptor type 7" "Hematopoietic protein-tyrosine phosphatase" "HEPTP" "LC-PTP" "Protein-tyrosine phosphatase LC-PTP"))
-(define-protein "PLCG1_HUMAN" ("PLCγ1" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase gamma-1" "PLC-148" "Phosphoinositide phospholipase C-gamma-1" "Phospholipase C-II" "PLC-II" "Phospholipase C-gamma-1" "PLC-gamma-1"))
+;;(define-protein "PLCG1_HUMAN" ( "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase gamma-1" "PLC-148" "Phosphoinositide phospholipase C-gamma-1" "Phospholipase C-II" "PLC-II" "Phospholipase C-gamma-1" "PLC-gamma-1"))
 (define-protein "H2AX_HUMAN" ("γH2AX" "Histone H2AX" "H2a/x" "Histone H2A.X"))
 (define-protein "CDN1A_HUMAN" ("waf1" "Cyclin-dependent kinase inhibitor 1" "CDK-interacting protein 1" "Melanoma differentiation-associated protein 6" "MDA-6" "p21"))
 (define-protein "STX5_HUMAN" ("syntaxin5" "Syntaxin-5"))
