@@ -52,9 +52,13 @@
          ((eq character-in-middle :colon)
           (ns-patterns/edge-colon-edge label-pattern
             start-pos end-pos edges words))
+         ((eq character-in-middle :plus-minus)
+          (ns-patterns/edge-plusminus-edge label-pattern
+            start-pos end-pos edges words))
          (t (if *work-on-ns-patterns*
               (break "edges: character in middle is ~a" character-in-middle)
               (edge-that-punts-edge-inside-pattern words start-pos end-pos edges))))))
+
      (t 
       (if *work-on-ns-patterns*
         (break "~a edges in ns pattern" (length edges))
@@ -103,10 +107,12 @@
    ((equal label-pattern '(:protein :hyphen  :protein))
     (make-ns-pair 'protein (first edges) (second edges)
                   words start-pos end-pos))
+   ((equal label-pattern '(:protein :hyphen :bio-entity))
+    (make-protein-pair/convert-bio-entity 
+     start-pos end-pos edges words :right))
    ((equal label-pattern '(:protein :hyphen :lower))
     ;; same as (:full :hyphen :lower))  "GTP-bound" "EGFR-positive"
     (resolve-hyphen-between-two-words label-pattern words start-pos end-pos))
-    
    (t (if *work-on-ns-patterns*
         (break "New edge hyphen pattern ~a" label-pattern)
         (edge-that-punts-edge-inside-pattern words start-pos end-pos edges)))))
@@ -121,6 +127,15 @@
         (break "New edge colon pattern ~a" label-pattern)
         (edge-that-punts-edge-inside-pattern words start-pos end-pos edges)))))
 
+(defun ns-patterns/edge-plusminus-edge (label-pattern
+                                        start-pos end-pos edges words)
+  (cond
+   ((equal label-pattern '(:number :plus-minus  :number))
+    (package-number-plus-error edges words start-pos end-pos))
+   (t (if *work-on-ns-patterns*
+        (break "New edge colon pattern ~a" label-pattern)
+        (edge-that-punts-edge-inside-pattern words start-pos end-pos edges)))))
+ 
 
  
 (defun edge-ns-pattern-character-outside (pattern label-pattern
@@ -185,6 +200,10 @@
           ;; Doesn't work in real ambiguities, but it's
           ;; easy. Another option is chasing up used-in.
           (setq edge (highest-edge (pos-starts-here next-start))))
+         ((null edge) ;; "re" in "re-activaton is a word without
+          ;; an edge so put in this part of the pattern instead
+          ;;//// need to give them meanings and not punt.
+          (push (nth (1- count) pattern) edges))
          (t (error "Unexpected situation with edge vector ~
                     at p~a" (pos-token-index next-start)))))
       (push edge edges)

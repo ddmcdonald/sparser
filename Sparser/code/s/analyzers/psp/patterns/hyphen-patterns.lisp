@@ -21,25 +21,29 @@
   ;; more than one edge and hyphen(s) is the only punctuation
   ;; (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
   ;; (break "starting hyphen pattern: ~a" pattern)
-  (let ((count 0))
+  (let ((label-pattern (identify-edge-ns-pattern pattern start-pos end-pos))
+        (hyphen-count 0))
     (dolist (item pattern)
-      (when (eq item :hyphen ) (incf count)))
-    (case count
+      (when (eq item :hyphen ) (incf hyphen-count)))
+    (case hyphen-count
       (1 (one-hyphen-ns-patterns
-          pattern words hyphen-positions start-pos end-pos))
+          pattern label-pattern words hyphen-positions start-pos end-pos))
       (2 (two-hyphen-ns-patterns
           pattern words hyphen-positions start-pos end-pos))
       (otherwise
        (cond
         (*work-on-ns-patterns*
          (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
-         (error "Write the code for ~a hyphens in a no-space sequence" count))
+         (error "Write the code for ~a hyphens in a no-space sequence" 
+                hyphen-count))
         (t
          (reify-ns-name-and-make-edge words start-pos end-pos)))))))
 
 
-(defun one-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
+(defun one-hyphen-ns-patterns (pattern label-pattern words hyphen-positions 
+                               start-pos end-pos)
   (tr :ns-one-hyphen-patterns)
+  (tr :ns-edge-pattern label-pattern)
   (cond
    ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
         (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
@@ -50,8 +54,12 @@
     ;; a rule. Experience may show that to be false, but it's a start
     (reify-ns-name-and-make-edge words start-pos end-pos))
 
+   ((equal label-pattern '(:protein :hyphen :bio-entity))
+    (make-protein-pair/convert-bio-entity
+     start-pos end-pos nil words :right))
+
    ((or (equal pattern '(:full :hyphen :full))  ;; RAS-ASSP
-        (equal pattern '(:capitalized :hyphen :full))
+        (equal pattern '(:capitalized :hyphen :full)) ;; Rho-GDI
         (equal pattern '(:full :hyphen :capitalized)))
     (resolve-hyphen-between-two-terms pattern words start-pos end-pos))
 
@@ -61,6 +69,10 @@
    ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
     ;;(break "stub :single-cap :hyphen :lower")
     (reify-ns-name-and-make-edge words start-pos end-pos))
+
+   ((eq :no-space-prefix (car label-pattern))
+    (compose-salient-hyphenated-literals 
+     pattern words start-pos end-pos))
 
    ((equal pattern '(:lower :hyphen :lower)) ;; "high-activity"
     (let ((*inhibit-big-mech-interpretation* t))
@@ -199,10 +211,9 @@
          (left-ref (edge-referent left-edge))
          (right-ref (edge-referent right-edge)))
     (unless (edge-p right-edge)
-      (break "the right-edge in resolve-hyphen-between-two-terms is ~s, not an edge"
+      (break "the right-edge in resolve-hyphen-between-two-terms ~
+              is ~s, not an edge"
              right-edge))
-
-
     (cond
      ((not ;; might be a word 
        (or (individual-p left-ref) 
@@ -219,7 +230,7 @@
                          pos-before pos-after))
      ((itypep left-ref 'amino-acid)
       (reify-amino-acid-pair words pos-before pos-after))
-     (t ;;(break "two-terms default")
+     (t ;(break "two-terms default")
       (make-bio-pair left-ref right-ref words
                      left-edge right-edge
                      pos-before pos-after)))))

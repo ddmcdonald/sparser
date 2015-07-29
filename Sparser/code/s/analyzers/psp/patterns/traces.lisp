@@ -414,6 +414,10 @@
   ;; called from package-approximation-number 
   (when *trace-ns-sequences* 
     (trace-msg "[ns] formed an approximation of ~a" number)))
+
+(deftrace :ns-make-number-plus-error (number error)
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns] formed a number ~a plus/minus ~a" number error)))
                
 (deftrace :making-ns-pair-on (category)
   (when *trace-ns-sequences* 
