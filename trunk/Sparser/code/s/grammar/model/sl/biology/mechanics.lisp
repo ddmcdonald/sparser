@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: April 2015
+;;; version: July 2015
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 ;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
@@ -18,7 +18,24 @@
 
 (in-package :sparser)
 
+;;;-----------------------
+;;; bio-entity -> protein
+;;;-----------------------
+
+;; From CS rule. Needs to return the referent of the edge
+#|(def-csr bio-entity protein
+  :left-context mutant
+  :form proper-noun
+  :referent (:function convert-bio-entity-to-protein right-edge)) |#
+(defun convert-bio-entity-to-protein (bio-entity)
+  (push-debug `(,bio-entity)) ;;(break "convert bio-entity"))
+  bio-entity)
+
+
+;;;-------------------------------
 ;;; Protein definition operations
+;;;-------------------------------
+
 (defun ras2-protein? (i)
   (and (individual-p i)
        (itypep i 'protein)
