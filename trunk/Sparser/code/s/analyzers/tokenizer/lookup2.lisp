@@ -3,7 +3,7 @@
 ;;; copyright (c) 1992,2012-2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "lookup"
-;;;   Module:  "tokenizer;"
+;;;   Module:  "analysers/tokenizer/"
 ;;;  Version:  2.1 July 2015
 
 ;;  1.1 (v1.6 12/14/90) Cleans up the mess in Lookup as part of doing :ignore
@@ -18,7 +18,7 @@
 
 (in-package :sparser)
 
-#|
+
 (defun find-word (char-type)
   ;; Called from finish-token to find or make the word that corresponds
   ;; to the sequence of characters we just delimited and is resident in
@@ -41,19 +41,25 @@
                ((memq :function-word (plist-for word)) ;; "than"
                 word)
                ((null (rs-single-term-rewrites rs))
-                (establish-unknown-word char-type))
+                (establish-unknown-word char-type word))
                (t
                 word)))
             word))
+
+        ;; Symbol exists but isn't bound
         (establish-unknown-word char-type))
-      (establish-unknown-word char-type)))) |#
 
 
+      ;; There's no symbol
+      (establish-unknown-word char-type))))
+
+#|
+;; original
 (defun find-word (char-type)
   (let ((symbol (lookup-word-symbol)))
     (if symbol
       (if (boundp symbol)
         (symbol-value symbol)
         (establish-unknown-word char-type))
-      (establish-unknown-word char-type)))) 
+      (establish-unknown-word char-type)))) |#
 
