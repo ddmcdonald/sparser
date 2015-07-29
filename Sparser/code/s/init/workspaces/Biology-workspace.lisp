@@ -20,6 +20,34 @@
 
 (in-package :sparser)
 
+;;; There's probably a better place for these - used here and R3 in this package.
+
+(defun all-hash-keys (ht)
+  (let ((keys nil))
+    (maphash #'(lambda (key val)
+                 (declare (ignore val))
+                 (push key keys))
+             ht)
+    keys))
+
+(defun all-hash-vals (ht)
+  (let ((vals nil))
+    (maphash #'(lambda (key val)
+                 (declare (ignore key))
+                 (push val vals))
+             ht)
+    vals))
+
+
+(defun hash-counts (ht)
+  (let ((key-counts nil))
+    (maphash #'(lambda (key val)
+                 (push (list key (length val)) key-counts))
+             ht)
+    key-counts))
+
+
+
 ;;;----------------
 ;;; Standard setup
 ;;;----------------
@@ -1281,32 +1309,36 @@ These return the Lisp-based obo entries.
             d h m)))
 
 
-;;;; THIS IS NOW CALLED BY run-june-articles script
-;;; for now, just use ep-filter
-(defun do-june (&key (start 0) (n 988) (dir (short-date-time))
-                     (ep-filter t) (section-filter t)
-                     )
-  (declare (special *dont-filter-on-discourse-relevance*))
-  (setf *dont-filter-on-discourse-relevance* (not ep-filter))
+;;;; THIS IS CALLED BY RUN-JUNE-ARTICLES BASH SCRIPT
 
+(defun do-june (&key (start 0) (n 988) (dir (short-date-time))
+                     (discourse-filter t) (intro-filter t) (methods-filter t)
+                     )
+  (declare (special *filter-phrases* *filter-intro* *filter-refs* ;; see rhetoric.lisp
+                    *ignore-methods-sections*)) ;; see document.lisp
+  (setf *filter-phrases* discourse-filter)
+  (setf *filter-intro* intro-filter)
+  (setf *ignore-methods-sections* methods-filter)
+  (format t "~%Relevance filtering: intro ~a phrases ~a methods ~a~%" intro-filter discourse-filter methods-filter)
   (time-article-batch start n dir))
 
 
-(defun write-article-time-to-log (i id runtime &optional (numcards 0) (duplicates 0)(filtered 0) (tot 0) (misc 0))
+(defun write-article-time-to-log (i id runtime &optional (numcards 0) (duplicates 0)(filtered 0) (irrel 0) (regtot 0) (misctot 0))
   (declare (special *all-found-reactions*))
   (unless (boundp '*all-found-reactions*) (setf *all-found-reactions* 0))
   (if (null numcards) (setf numcards 0))
   (when *article-timing-stream*
     (when (eq i 1)
-      (format *article-timing-stream* "Art#, ID, Runtime, #Sentences, #Reactions, #Cards, #Duplicates, #Filtered, Total, #Reg, #Misc~%"))
+      (format *article-timing-stream* "Art#, ID, Runtime, #Sentences, #Reactions, #Cards, #Duplicates, #Filtered, #Irrelevant, #RegTot, #MiscTot, Total~%"))
 
-    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d, ~d, ~d, ~d~%"
+    (format *article-timing-stream* "~d, ~a, ~6,3f, ~d, ~d, ~d, ~d, ~d, ~d, ~d, ~d, ~d~%"
             i id runtime
             (length *all-sentences*)
             *all-found-reactions*
-            numcards duplicates filtered
-            (+ numcards duplicates filtered)
-            tot misc)))
+            numcards duplicates filtered irrel
+            regtot misctot
+            (+ numcards duplicates filtered irrel)
+            )))
 
 
 (defun run-june-articles (n &key (from-article 0) (cardp t) show-timep)
@@ -1318,20 +1350,24 @@ These return the Lisp-based obo entries.
 
 (defparameter *skip-articles* '(422 576 937))
 
+;;; filters are: duplicate cards, filtered(not related to model), irrelevant(deemed not new info)
+;;; the test whether a valid card because it has a participant b should be done first, as it cannot occur
+;;; under the kraql sceme used for misc cards (which will eventually be used for all pt cards as well)
+
 (defun run-one-june-article (i id &optional cardp write-timep)
   (declare (special *article-elapsed-time*)) ;; defined below.
 
   (unless (member i *skip-articles*)
     (setq *all-sentences* nil)
     (test-june-article id :article-number i)
-    (let ((numcards 0) (num-duplicates 0)(num-filtered 0)(misc-cards 0)(misc-dupes 0)(misc-filtered 0) (misc-irrelevant 0))
+    (let ((numcards 0)   (num-dups 0)  (num-filtered 0)  (num-irrelevant 0)
+          (misc-cards 0) (misc-dups 0) (misc-filtered 0) (misc-irrelevant 0)
+          (no-partb 0))
       (flet ((create-cards (id)
-                (multiple-value-setq (numcards num-duplicates num-filtered)
+                (multiple-value-setq (numcards num-dups num-filtered num-irrelevant no-partb)
                     (create-cards-for-article id))
-                (multiple-value-setq (misc-cards misc-dupes misc-filtered misc-irrelevant)
+                (multiple-value-setq (misc-cards misc-dups misc-filtered misc-irrelevant)
                    (create-misc-cards-for-article id))))
-
-
 
         (when cardp
           (if *trap-error-skip-sentence*
@@ -1343,19 +1379,27 @@ These return the Lisp-based obo entries.
                           (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
               (create-cards id))
         ;; not sure why still getting nils for values from create-cards-for-article if no cards there but this should fix it
-        (setf numcards (or numcards 0) num-duplicates (or num-duplicates 0) num-filtered (or num-filtered 0))
-        (setf misc-cards (or misc-cards 0) misc-dupes (or misc-dupes 0) misc-filtered (or misc-filtered 0))
+          (setf numcards (or numcards 0) num-dups (or num-dups 0) 
+                num-filtered (or num-filtered 0) num-irrelevant (or num-irrelevant 0))
+          (setf misc-cards (or misc-cards 0) misc-dups (or misc-dups 0) 
+                misc-filtered (or misc-filtered 0) misc-irrelevant (or misc-irrelevant 0))
+          (setf no-partb (or no-partb 0))
+
           (let ((cards (+ numcards misc-cards))
-                (dups  (+ num-duplicates misc-dupes))
+                (dups  (+ num-dups misc-dups))
                 (filt  (+ num-filtered misc-filtered))
-                (misctot  (+ misc-cards misc-dupes misc-filtered))
-                (regtot (+ numcards num-duplicates num-filtered))
+                (irrel (+ num-irrelevant misc-irrelevant))
+                (misctot  (+ misc-cards misc-dups misc-filtered misc-irrelevant))
+                (regtot (+ numcards num-dups num-filtered num-irrelevant))
                 )
-            (when write-timep (write-article-time-to-log i id *article-elapsed-time* cards dups filt regtot misctot))
-            (format t "~2%Completed ~d:~a in ~4,3f secs. Cards: ~d distinct, ~d duplicate, ~d filtered ~d misc ~d misc-duplicate ~d misc-filtered ~d misc-irrelevant"
+            (when write-timep (write-article-time-to-log i id *article-elapsed-time* cards dups filt irrel regtot misctot))
+            (format t "~2%Completed ~d:~a in ~4,3f secs. Cards: ~d+~d=~d : duplicate ~d ~d; filtered ~d ~d; irrel ~d ~d; no-partb ~d"
                     i id *article-elapsed-time*
-                    cards dups filt misctot
-                    misc-dupes misc-filtered misc-irrelevant
+                    numcards misc-cards cards 
+                    num-dups misc-dups
+                    num-filtered misc-filtered
+                    num-irrelevant misc-irrelevant
+                    no-partb
                     )
             ))))))
 
@@ -1368,55 +1412,38 @@ These return the Lisp-based obo entries.
       (format s "~%))~%~%"))))
 
 (defun create-cards-for-article (*article-id*)
-  (let*
-      ((ht (group-pts-by-article))
-       (aht (gethash *article-id* ht))
-       (counter 0)
-       (cards nil)
-       (duplicate-count 0)
-;       (relevance-filtered 0) ;; not used yet.
-       )
+  (let* ((ht (group-pts-by-article))
+         (aht (gethash *article-id* ht))
+         (numcards 0)
+         (cards nil)
+         (duplicate-count 0)
+         (not-in-model-cnt 0)
+         (not-relevant-cnt 0)
+         (no-partb-cnt 0)
+         )
     (declare (special ht aht cards))
     (handler-case
-        (cond
-         (aht
-          (maphash #'(lambda (simple-phos aps)
-                       (declare (ignore simple-phos))
+        (if (not aht) 
+            (values 0 0 0 0 0)
+            ;; else consider building cards
+            (let* ((card-sets (all-hash-vals aht))) ;; collect values lists
+              (format t "~%In create-cards-for-article found ~d card sets~%" (length card-sets))
+              (loop for aps in card-sets
+                do (multiple-value-bind (card-sexpr dups not-in-model not-relevant no-partb) (pt-card aps)
+                     (when card-sexpr
                        (format t "~%    creating single ~s card for ~s, generated from ~s examples~%"
                                (string-downcase (symbol-name (pt-type (caar (car aps)))))
                                *article-id*
                                (length aps))
-                       (setq duplicate-count (+ duplicate-count (- (length aps) 1)))
-                       (let
-                           ((card-sexpr (pt-card aps)))
-                         (when card-sexpr
-                           (push card-sexpr cards))))
-                   aht)
-          (format t "~&Creating ~s cards for article ~s~&" (length cards) *article-id*)
-          (let
-              ((ncards
-                (loop for card in cards
-                  when (post-translation-file-from-card card (incf counter))
-                  count 1)))
-            (unless (equal (length cards) ncards)
-              (format t "~%filtered out ~s cards which did not have proteins in the RAS2 model~%"
-                      (- (length cards) ncards)))
-
-            (let* ((card-count (length cards))
-                   ;; OBE - handled by Scott's code
-                   ;; (bc-count (create-binding-cards-for-article *article-id*))
-                   )
-              (setf ncards (or ncards 0))
-              (setf duplicate-count (or duplicate-count 0))
-              (values
-                 ncards
-                 duplicate-count
-                 (- card-count ncards)    ;; filtered for participant b missing
-; not yet                 relevance-filtered
-               ))))
-         ;;(t (values 0 0 0 0))
-         (t (values 0 0 0 0))
-         )
+                       (if no-partb (incf no-partb-cnt no-partb))
+                       (incf duplicate-count dups)
+                       (incf not-in-model-cnt not-in-model)
+                       (incf not-relevant-cnt not-relevant)
+                       (push card-sexpr cards))))
+              (format t "~&Creating ~s cards for article ~s~&" (length cards) *article-id*)
+              (dolist (card cards) (post-translation-file-from-card card (incf numcards)))
+              (values numcards duplicate-count not-in-model-cnt not-relevant-cnt no-partb-cnt)
+              ))
       (error (e)
              (ignore-errors ;; got an error with something printing once
               (when *show-handled-sentence-errors*
@@ -1462,14 +1489,15 @@ These return the Lisp-based obo entries.
   (multiple-value-bind (cards n-duplicates n-not-in-model n-irrelevant) (do-cards)
     (format t "~&Creating ~s cards using generalized function.~%" (length cards))
     (dolist (card cards)
-      (handler-case
+;      (handler-case
           (let ((file-result (post-translation-file-from-card card (incf index))))
             (when file-result
               (incf counter)))
+      #+ignore
         (error (e)
                (ignore-errors ;; got an error with something printing once
                   (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
-      )
+;      )
     (values counter n-duplicates n-not-in-model n-irrelevant)
     ))
 
