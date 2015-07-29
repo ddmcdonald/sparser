@@ -69,7 +69,8 @@
 
 (defparameter *word-to-be-defined?* nil)
 
-(defun make-word/all-properties/or-primed (character-type)
+(defun make-word/all-properties/or-primed (character-type 
+                                           &optional existing-word)
   (declare (special *capitalization-of-current-token*
                     *introduce-brackets-for-unknown-words-from-their-suffixes*))
   ;; Motivated by biomedical text. When dealing with unknown words,
@@ -77,9 +78,14 @@
   ;; because they don't have its predilection for POS ambiguity. However
   ;; some definition is much preferred to none. 
 
-  (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
-         (word (make-word :symbol symbol
-                          :pname  (symbol-name symbol))))
+  (let* ((symbol (make-word-symbol))
+         (word (or existing-word
+                  ;; The caller is find-word, which needs to ensure
+                  ;; that when *edge-for-unknown-words* is up that
+                  ;; there is a category and edge for every word
+                  ;; however trivial it might be.
+                   (make-word :symbol symbol
+                              :pname (symbol-name symbol)))))
 
     (setq *word-to-be-defined?* word)
     (catalog/word word symbol)
