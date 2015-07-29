@@ -182,19 +182,18 @@
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    (when (category-named category-name)
-      (cond
-       (*break-on-pattern-outside-coverage?*
-        (push-debug `(,category-name ,word ,comlex-clause))
-        (break "Maybe you can blow that one away?"
-                "Setup: The category named ~a already exists."
-                category-name))
-       (t
-        (format t "~&IGNORING COVERAGE ERROR: setup-common-noun : The category named ~a already exists while defining ~s.~&"
-                category-name word))))
-    (let* ((category (define-category/expr category-name
-                        `(:specializes ,super-category
-                         :instantiates :self)))
+    (let* ((category 
+            (if (category-named category-name)
+              (then
+                (when *break-on-pattern-outside-coverage?*
+                  (push-debug `(,category-name ,word ,comlex-clause))
+                  (break "Maybe you can blow that one away?"
+                         "Setup: The category named ~a already exists."
+                         category-name))
+                (category-named category-name))
+              (define-category/expr category-name
+                                    `(:specializes ,super-category
+                                      :instantiates :self))))
            (rules
             (make-cn-rules/aux ;; we don't need to decipher the 'word'
              word
@@ -207,6 +206,10 @@
 
 
 (defun setup-verb (word &optional comlex-clause  ambiguous?)
+  (declare (special *big-mechanism*))
+  (when *big-mechanism*
+    (svo/bio/expr word)
+    (return-from setup-verb nil))
   (when (stringp word)
     (setq word (resolve/make word)))
   (let ((special-cases
