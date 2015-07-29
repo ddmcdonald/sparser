@@ -10,12 +10,25 @@
 (in-package :sparser)
 
 #|  (ddm-ws-ed "NoSpace hassles.lisp")
-(ddm-no-spaces)
-(setq *sweep-for-patterns* nil)
-(p "Smad1/HsN3 complex.")  
+(ddm-no-spaces) (trace-ns-sequences) (trace-fsas);;pw's
+(setq *work-on-ns-patterns* t)   setup-verb
 
- (p "Tyrosine phosphorylation of PLC-γ1, PLC-γ2, and SLP-76.")
-from article 1 is generating the nil is not a structure error
+(p "RAS-ASSP.")
+make-protein-pair/convert-bio-entity convert-bio-entity-to-protein
+
+(p "BLAST sequence similarity searching 
+indicated that the Bam32 SH2 domain is most highly related (30–37% identity) 
+to those of the adaptor protein Nck, PLCγ1, PI3K p85 subunit, and the 
+protein tyrosine phosphatases SHP-1 and SHP-2.")
+;; No edges at all over "SHP", so the lookup has to handle it.
+
+ ;; In case something goes south with the new 'unknown word' handler
+ (ddm-ed "analyzers/tokenizer/lookup2.lisp")
+    find-word  make-word/all-properties/or-primed  
+;; auto-expansion of "ablate"
+  (p "Also, Chk2 −/− DT40 avian B lymphoma cells in which Chk2 was genetically 
+ablated by gene targeting ( xref ) exhibited decreased prometaphase accumulation 
+in the presence of nocodazole, but not taxol, compared with controls ( xref ).")
 
 |#
 
@@ -41,28 +54,32 @@ but markedly preferred AKT2.")
 
 (defun ddm-standard ()  ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
-;  (trace-lexicon-unpacking) (trace-morphology)
+  (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
   (setq *debug-pronouns* nil)
+  (revert-to-regular-break)
 ;  (setq *work-on-ns-patterns* t) 
 ;  (trace-parse-edges) (trace-rule-source) 
 ;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
 ;  (trace-island-driving)
   ;; (ddm-workset)
-  (ddm-ws-ed "NoSpace hassles.lisp")
-  (ddm-no-spaces)
+;  (ddm-ws-ed "NoSpace hassles.lisp")
+;  (ddm-no-spaces)
+;  (ddm-doc-methods)
 ;; (ddm-read-from-documents)
 ;; (load-ddm-ws)
 ;; (ddm-polyword-conundrum)
-  (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
+;  (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
+  (ddm-ed "init/workspaces/ddm-workspace.lisp")
   (setq *diagnose-consp-referents* t)
   ;;     (setq *show-section-printouts* t)
   ;; (test-dec)  (dtst nil t) (reset-dectest)
-  ;; (test-overnight) (test-erk) (test-aspp2)
-  (test-jan))
+  (test-overnight) ;;(test-erk) (test-aspp2)
+  ;;(test-jan))  (retest)
   ;; (hashtable-to-alist 
 ; (test-load-test)
+)
 
 (defun ddm-workset ()
   (ddm-ed "tools/basics/clos-classes.lisp")
@@ -70,6 +87,10 @@ but markedly preferred AKT2.")
   (ddm-ed "objects/doc/content.lisp")
   (ddm-ed "drivers/sources/document.lisp")
   (ddm-ed "analyzers/psp/edges/lattice-operations.lisp"))
+
+;; !!! Semtree isn't walking down to report all the
+;; content in e.g. (p "Ras bound to GTP binds to BRAF.")
+;  post-analysis-operations  collect-model
 
 
 
@@ -105,6 +126,25 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 
 ; r3/trunk/corpus/Walter-July-articles
 
+;; Runaway 7/28/15
+#| (load-xml-to-doc-if-necessary)
+   (populate-june-article 'PMC4007333)
+ (setq p1 (cadr (children (setq results (nth 3 (children (setq abstract (car (children (setq article *)
+"Atorvastatin inhibited endothelial cell apoptosis induced 
+by 1 mmol/L Hcy in a dose-dependent manner and the maximal 
+inhibitory effect was reached at 100 μmol/L. 
+Atorvastatin (10 μmol/L) significantly suppressed 
+Hcy (1 mmol/L for 30 min) induced ROS accumulation (3.17±0.33 
+vs 4.34±0.31, P <0.05). 
+Atorvastatin (10 μmol/L) also antagonized Hcy (1 mmol/L for 30 min) 
+induced activation of NADPH oxidase (2.57±0.49 vs 3.33±0.6, P <0.05). 
+Furthermore, atorvastatin inhibited Hcy-induced phosphorylation of 
+p38 MAPK (1.7±0.1 vs 2.22±0.25, P <0.05), 
+similar effects occurred with DPI, NAC and SB203580."
+
+
+|#
+
 ; (ddm-load-article-2 t)
 (defun ddm-load-article-2 (&optional do-not-read)
   (load-xml-to-doc-if-necessary)
@@ -129,8 +169,25 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 (setq p1 (second (children *)) p2 (third (children *)))
 (setq string (content-string p2)) |#
 
+(defun ddm-debug-ns () ; (ddm-debug-ns)
+  (trace-ns-sequences)
+  ;; (trace-scan-patterns)
+  ;; (trace-terminals-sweep)
+  ;; (trace-terminals-loop)
+  ;; (trace-fsas)
+  (setq *work-on-ns-patterns* t))
+(defun ddm-debug-ns-off () ; (ddm-debug-ns-off)
+  (untrace-ns-sequences)
+  ;; (untrace-scan-patterns)
+  ;; (untrace-terminals-sweep)
+  ;; (untrace-terminals-loop)
+  ;; (untrace-fsas)
+  (setq *work-on-ns-patterns* nil))
+
+
 (defun ddm-issue-records ()
   (ddm-ws-ed "Parsing ASPP2.lisp")
+  (ddm-ws-ed "PW digit-fsa hassle.lisp")
   (ddm-ws-ed "Weird stuff 6-6-15.lisp")
   (ddm-ws-ed "20 articles error.lisp")
   (ddm-ws-ed "NoSpace hassles.lisp")
@@ -275,7 +332,7 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "objects/rules/cfr/polywords2.lisp")
   (ddm-ed "analyzers/FSA/words3.lisp") ;; coordinate w/ FSAs
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
-  (ddm-ed "grammar/rules/FSAs/polyword5.lisp")
+  (ddm-ed "grammar/rules/FSAs/polywords5.lisp")
   (ddm-ed "objects/traces/FSA1.lisp"))
 
 (defun ddm-maybe-spurious-rule-dupb ()
@@ -330,23 +387,24 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "objects/doc/classes.lisp"))
 
 (defun ddm-no-spaces ()
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
-  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
-  (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp") ;; driver
-  (ddm-ed "analyzers/psp/patterns/hyphen-patterns.lisp")
   (ddm-ed "analyzers/psp/patterns/loader.lisp")
   (ddm-ed "analyzers/psp/patterns/traces.lisp")
-  (ddm-ed "analyzers/psp/patterns/edge-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/slash-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/.lisp")
-  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
+  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp")
   (ddm-ed "analyzers/psp/patterns/charaterize-words.lisp")
+  (ddm-ed "analyzers/psp/patterns/colon-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/hyphen-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/edge-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/slash-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
   (ddm-ed "analyzers/psp/patterns/patterns.lisp")
   (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
   ;; (ddm-ed "grammar/rules/syntax/categories.lisp")
   ;; (ddm-ed "grammar/rules/SDM&P/create-categories.lisp")
-  (ddm-ed "grammar/rules/DA/nospace-categories.lisp"))
+  (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
+  (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp") ;; driver
+)
 
 
 (defun ddm-tense-neg ()
@@ -363,7 +421,7 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp"))
 
 (defun ddm-write-additional-realization ()
-  (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
+  (ddm-ed "grammar/rules/tree-families/shortcut-master2.lisp")
   (ddm-ed "objects/model/tree-families/rdata1.lisp"))
 
 (defun ddm-trap-new-words-write-sentence ()
@@ -432,7 +490,7 @@ and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
 
 
 (defun ddm-shortcuts ()
-  (ddm-ed "grammar/rules/tree-families/shortcut-master1.lisp")
+  (ddm-ed "grammar/rules/tree-families/shortcut-master2.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-expansion.lisp")
   (ddm-ed "grammar/rules/tree-families/shortcut-mechanics.lisp")
   (ddm-ed "grammar/rules/tree-families/families1.lisp")
