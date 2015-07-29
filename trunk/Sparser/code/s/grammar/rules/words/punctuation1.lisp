@@ -61,12 +61,12 @@
 (define-punctuation  close-curly-bracket #\} )   ;; 125
 (define-punctuation  tilda               #\~ )   ;; 126
 
-(define-punctuation euro_sign (code-char 128)) ;; 128
+(define-punctuation  euro_sign (code-char 128)) ;; 128
 
 (define-punctuation  copyright_sign #\Copyright_Sign) ;; 169
 (define-punctuation  left-pointing-double-angle-quotation_mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
 (define-punctuation  registered_sign #\Registered_Sign) ;; 174
-(define-punctuation plus-minus #\±) ;; 177
+(define-punctuation  plus-minus #\±) ;; 177
 
 (define-punctuation  acute-accent #\Acute_Accent) ;; 180
 (define-punctuation  middle-dot #\Middle_Dot) ;; 183
@@ -122,7 +122,7 @@
     (code-char 8202)
     (code-char 8203) ;;  "​"
     (code-char 8208)
-    (code-char 8212)  ;; em dash, html: &mdash;
+    (code-char 8212) ;; em dash, html: &mdash;
     (code-char 8213) ;;"―"
     (code-char 8216) ;; left single quote
     (code-char 8217) ;; right single quote
@@ -226,7 +226,7 @@
 ;; Also note difference is choices for Allegro and CCL
 ;; //// where does SBCL come down on this? 
 
-
+;;////////// This duplicates the definition in the list above
 #+allegro (define-punctuation rightwards-arrow (code-char #x2192))
 #-allegro (define-punctuation rightwards-arrow #\U+2192)
 
