@@ -156,8 +156,9 @@
   ;; Called from initiate-successive-sweeps when reading from 
   ;; a stream of characters
   (tr :entering-sentence-sweep-loop)
-  (let ((sentence (sentence)))
-    (setq *sentence* sentence) ;; if we wait it will be the next sentence
+  (let* ((sentence (sentence)) ;; to pass to subroutines
+         (*sentence* sentence)) ;; for global reference
+    (declare (special *sentence*))
     (loop
       (let* ((start-pos (starts-at-pos sentence))
              (first-word (pos-terminal start-pos)))
