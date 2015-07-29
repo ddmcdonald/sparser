@@ -18,8 +18,7 @@
 ;;   discovered while producing MITRE index cards
 ;; 5/29/15 moved in rules that were in verbs1
 ;; 5/30/2015 update for change from "predicate" to "bio-predication"
-;; Temproarily remove David's new debris-analysis rule (define-debris-analysis-rule s-and-vp
-;;  until the corresponding function is checked in
+;; Exposed s-and-vp debris rule. Pulled bio-entity converter to mechanics.
 
 
 
@@ -47,7 +46,6 @@
   :pattern ( "," adverb "," )
   :action (:function respan-edge-around-one-word second first third))
 
-#+ignore
 (define-debris-analysis-rule s-and-vp
   :pattern ( s and vp )
   :action (:function conjoin-clause-and-vp first third))
@@ -216,28 +214,27 @@
 ;;--- mutation
 ; "EGFR T669A"
 ; "the EGFR T669A mutant"
-#+ignore
-(def-cfr protein (protein point-mutation)
-  :form NP
-  :referent (:instantiate-individual mutated-protein
-             :with (protein left-edge
-                    mutation right-edge)))
 
 (def-cfr protein (protein point-mutation)
   :form NP
   :referent (:head left-edge
              :bind (mutation right-edge)))
 
+(def-cfr protein (point-mutation protein)
+  :form NP
+  :referent (:head right-edge
+             :bind (mutation left-edge)))
+
+
+;;--- CS rule for protein
 
 (def-csr bio-entity protein
   :left-context mutant
   :form proper-noun
   :referent (:function convert-bio-entity-to-protein right-edge))
 
-(defun convert-bio-entity-to-protein (bio-entity)
-  (push-debug `(,bio-entity)) ;;(break "convert bio-entity"))
-  bio-entity)
 
+;;--- bio-predication
 
 (define-category is-bio-entity
   :specializes bio-predication
