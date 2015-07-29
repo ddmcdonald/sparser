@@ -133,7 +133,8 @@
 (defun punctuation-terminates-no-space-sequence (word position)
   (declare (special *the-punctuation-period* *the-punctuation-comma*
                     *the-punctuation-colon* *the-punctuation-semicolon*
-                    *the-punctuation-rightwards-arrow*))
+                    *the-punctuation-rightwards-arrow*
+                    *the-punctuation-plus-minus*))
   (cond
     ((or (eq word *the-punctuation-period*)
 	 (eq word *the-punctuation-comma*)
@@ -153,7 +154,8 @@
          (eq word (punctuation-named #\%))
          (eq word (punctuation-named #\~))
          (eq word (punctuation-named #\+))
-         (eq word *the-punctuation-rightwards-arrow*))
+         (eq word *the-punctuation-rightwards-arrow*)
+         (eq word *the-punctuation-plus-minus*))
      nil)
 
     ;; Every other punctuation is declared to be a boundary
