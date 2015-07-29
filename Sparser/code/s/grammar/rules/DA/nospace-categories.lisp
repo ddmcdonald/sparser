@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  March 2015
+;;;  Version:  July 2015
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
@@ -17,6 +17,7 @@
 ;; 3/18/15 Fleshed out package-approximation-number but without a
 ;;  treatment of it being approximate. 
 ;; 6/8/2015 patched David's hack for -WT
+;; 7/28/15 Added package-number-plus-error
 
 (in-package :sparser)
 
@@ -123,6 +124,17 @@
                    :words words)))
         ;; trace
         edge))))
+
+(defun make-protein-pair/convert-bio-entity (start-pos end-pos 
+                                             edges words edge-to-convert)
+  "Make a protein pair, but first convert the designated edge/referent
+  from a bio-entity to a protein."
+  (push-debug `(,start-pos ,end-pos ,edges ,words ,edge-to-convert))
+  (break "Stub: convert bio-entity and make pair"))
+
+;    (let ((protein2 (convert-bio-entity-to-protein 
+ ;                    (left-treetop-at/edge pos-after))))
+
 
 
 
@@ -256,18 +268,38 @@
     (push-debug `(,pattern ,words ,start-pos ,end-pos))
     (break "do initial stranded hyphen")))
 
+#| Define the notion of a prefix (or no-space-prefix) that
+can compose with its suffix and apply a general-purpose
+operator to its suffix to compute the meaning. 
+//// for the moment that could be identity and we drop
+the operator on the floor. Same style of treatment as
+quantifiers and prepositions (etc.) where we create individuals
+for each case and define a k-method to make sense of it all.
+|#
+(define-category no-space-prefix
+  :specializes abstract
+  :instantiates nil
+  :binds ((word :primitive word)))
 
+(defun define-no-space-prefix (string)
+  (let* ((word (resolve/make string))
+         (category (category-named 'no-space-prefix :break))
+         (i (find-or-make-individual 'no-space-prefix
+                                     :word word)))
+    (let* ((cfr (def-cfr/expr category (list word)
+                  :form category::common-noun ;; odd, but what alternative?
+                  :referent i)))
+      (push-onto-plist i (list cfr) :rules)
+      word))) ;; to go on the list
 
 (defparameter *salient-hyphenated-literals*
   `(
-    ,(resolve/make "auto")
-    ,(resolve/make "co") ;; co-occurring
-    ,(resolve/make "di")
-    ,(resolve/make "mono")
-    ,(resolve/make "re") ;; "re-activate"
+    ,(define-no-space-prefix "auto")
+    ,(define-no-space-prefix "co") ;; co-occurring
+    ,(define-no-space-prefix "di")
+    ,(define-no-space-prefix "mono")
+    ,(define-no-space-prefix "re") ;; "re-activate"
     ))
-
-
 
 (defun some-word-is-a-salient-hyphenated-literal (words)
   ;; called as a test cond in resolve-hyphen-between-two-words
@@ -278,14 +310,13 @@
 
 (defun compose-salient-hyphenated-literals (pattern words
                                             pos-before pos-after)
-  ;; Called from resolve-hyphen-between-two-words at least.
-  
+  ;; Called from resolve-hyphen-between-two-words and from
+  ;; one-hyphen-ns-patterns when the label prefix sees the literal
   (tr :salient-hyphenated-literal)
-
   (unless (= 3 (length words))
     (when *work-on-ns-patterns*
       (push-debug `(,words ,pattern ,pos-before ,pos-after))
-      (break "Not exactly 3 words: new case"))
+      (break "new case: ~a words" (length words)))
     (reify-ns-name-and-make-edge words pos-before pos-after)
     (return-from compose-salient-hyphenated-literals t))
 
@@ -294,6 +325,7 @@
          (pname (string-append (word-pname word1) (word-pname word2)))
          (composite-word (resolve pname)) ;; "co-operate" => "cooperate"
          left  right  )
+    ;;(lsp-break "composite = ~a" composite-word)
     (cond
      (composite-word
       ;; Lookup its unary rule / rule-set and make those edges
@@ -304,26 +336,31 @@
             edge)
           (else
             (reify-ns-name-and-make-edge words pos-before pos-after)))))
+
      ((when (or (prog1 (memq word1 *salient-hyphenated-literals*)
                   (setq left t))
                 (prog1 (memq word2 *salient-hyphenated-literals*)
                   (setq right t)))
         ;;//// do something clever, but for now just tie off
-        (let* ((edge (or (and left
-                               (left-treetop-at/only-edges pos-after))
-                         (and right
-                              (right-treetop-at/only-edges pos-before)))))
+        (let ((edge (or (and left
+                             (left-treetop-at/only-edges pos-after))
+                        (and right
+                             (right-treetop-at/only-edges pos-before)))))
+          ;;(lsp-break "edge = ~a" edge)
           (unless edge
             (when *work-on-ns-patterns*
               (push-debug `(,words ,pos-after ,pos-before ,pattern))
               (error "Neither of these words is spanned by an edge. ~
                       No way to proceeded."))
-            (reify-ns-name-and-make-edge words pos-before pos-after)
-            (return-from compose-salient-hyphenated-literals nil))
+            (reify-ns-name-and-make-edge words pos-before pos-after))
+          
+          ;; Should add the literal as a modifier or some such in 
+          ;; syntax function that will call-compose such as
+          ;; interpret-premod-to-np (depending on the type of
+          ;; the edge but the constraint in subcategorized-variable
+          ;; is too presumptive of "in as location" to work
+          ;; So dripping it on the floor
 
-          ;; dropping the literal on the floor
-          ;;/// "re" in Dec 28 is just a word at this point, so the
-          ;; other paths won't do.
           (let ((new-edge
                  (make-edge-over-long-span
                    pos-before
@@ -333,7 +370,13 @@
                    :form (edge-form edge)
                    :referent (edge-referent edge)
                    :words words)))
-            new-edge)))))))
+            new-edge))))
+
+     (*work-on-ns-patterns*
+      (push-debug `(,words ,pos-after ,pos-before ,pattern))
+      (lsp-break "Nothing worked for composing literal"))
+     (t 
+      (reify-ns-name-and-make-edge words pos-before pos-after)))))
 
 #| Kills compose-salient-hyphenated-literals when no edges in "anti-actin"
 "Antibodies used for immunoblotting were: anti-EGFR (#2232, Cell Signaling Technologies), 
@@ -517,7 +560,25 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
       ;;/// trace
       edge)))
 
-
+;;  (p "2.22±0.25.")
+(defun package-number-plus-error (edges words start-pos end-pos)
+  (let* ((base-edge (car edges))
+         (base (edge-referent base-edge))
+         (range-edge (cadr edges))
+         (range (edge-referent range-edge)))
+    ;;///////// dropping the range on the floor
+    ;; and not continuing with proper representation 
+    (tr :ns-make-number-plus-error base range)
+    (let ((edge (make-edge-over-long-span
+                 start-pos
+                 end-pos
+                 category::number
+                 :rule 'package-number-plus-error
+                 :form category::number
+                 :referent base
+                 :words words)))
+      (tr :no-space-made-edge edge)
+      edge)))
 
 
 
