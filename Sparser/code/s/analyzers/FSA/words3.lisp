@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "words"
 ;;;   Module:  "analyzers;FSA:"
-;;;  Version:  3.0 May 2015
+;;;  Version:  3.0 July 2015
 
 ;; 5/5/93 v2.3, typed in hard copy of 11/24/92 that had been lost in
 ;;  disk crash
@@ -32,6 +32,7 @@
 ;;      calls capitalized-correspondent1, which gets the choice of position
 ;;      correct. Start of changing it all over.
 ;; 3.0 (5/20/15) Makeover of polywords to fsa rather than rules and edges.
+;;     (7/28/15) removed pw options from do-fsa-field
 
 (in-package :sparser)
 
@@ -40,7 +41,7 @@
 ;;;------------------
 
 (defun do-word-level-fsas (word position)
-  ;; called from the psp drivers
+  ;; called from the psp drivers, e.g. scan-terminals-loop or scan3
   (set-status :word-fsas-done position)
   (tr :considering-word-level-fsas word position)
 
@@ -284,40 +285,32 @@
 ;;;-------------------------
 
 (defun do-fsa-field (fsa-field word position)
+  ;; FSAs are differentiated from polywords, and checked for
+  ;; independently. 
   (let ( fsa  position-reached )
     ;;(tr :wfsa/options word position fsa-field)
 
     (if (null (cdr fsa-field))
       (then ;; there's only one
         (setq fsa (car fsa-field))
-        (setq position-reached
-              (if (typep fsa 'cfr)
-                (do-polyword-fsa word fsa position)
-                (funcall fsa word position)))
+        (unless (typep fsa 'polyword-state)
+          (setq position-reached
+                (funcall fsa word position))
 
-        (if position-reached
-          (tr :wfsa/succeeded/1 position-reached)
-          (tr :wfsa/failed/1))
+          (if position-reached
+            (tr :wfsa/succeeded/1 position-reached)
+            (tr :wfsa/failed/1))
 
-        position-reached )
+          position-reached ))
 
       (else
-        ;; Since there's more than one we have to impose an order.
-        ;; Polywords get first crack, and they pre-empt any other
-        ;; possibilities.  The others are attempted in the order they
-        ;; were defined in, which is the reverse of their order in 
-        ;; the field
-        (let ( fsas  polyword-fsa )
+        ;; Execute the fsas in the order they were
+        ;; defined. Note that polywords have already
+        ;; run at this point. 
+        (let ( fsas )
           (dolist (item fsa-field)
-            (if (typep item 'cfr)
-              (setq polyword-fsa item)
+            (unless (typep item 'polyword-state)
               (push item fsas)))
-
-          (when polyword-fsa
-            (setq position-reached
-                  (do-polyword-fsa word polyword-fsa position))
-            (when position-reached
-              (return-from do-fsa-field position-reached)))
 
           (when fsas
             (dolist (fsa fsas)
