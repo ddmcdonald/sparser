@@ -25,7 +25,7 @@
 ;; 6/5/2015 extend subject-variable and object-variable to make use of subcategorization information
 ;; and add thatcomp-variable
 ;; 6/30/15 Implemented irregular plural for nouns.
-
+;; 7/29/30 added find-single-unary-cfr and rearranged slightly.
 
 (in-package :sparser)
 
@@ -364,38 +364,22 @@
 
     category))
 
-(defun delete-noun-cfr (wd)
-  (let ((noun-cfr (find-form-cfr wd category::common-noun)))
-    (when noun-cfr
-      (delete/cfr noun-cfr))))
-
-(defun find-form-cfr (wd form)
-  (when (rule-set-p (rule-set-for wd))
-    (loop for cfr in (rs-single-term-rewrites (rule-set-for wd))
-      when (eq form (cfr-form cfr))
-      do (return cfr))))
-
-
-(defun delete-adj-cfr (wd)
-  (let ((adj-cfr (find-form-cfr wd category::adjective)))
-    (when adj-cfr
-      (delete/cfr adj-cfr))))
-
-(defun delete-verb-cfr (wd)
-  (let ((verb-cfr (find-form-cfr wd category::verb)))
-    (when verb-cfr
-      (delete/cfr verb-cfr))))
 
 (defun handle-slots (category slots)
-  (declare (special category slots))
   (loop for pair on slots by #'cddr 
     do 
-    (subcategorize-for-slot category 
-                            (case (car pair)
-                              ((:premod :thatcomp :whethercomp :to-comp :ifcomp) (car pair)) 
-                              (t (string-downcase (symbol-name (car pair)))))
-                            (second pair))))
+    (subcategorize-for-slot
+     category 
+     (case (car pair)
+       ((:premod :thatcomp :whethercomp :to-comp :ifcomp) (car pair)) 
+       (t (string-downcase (symbol-name (car pair)))))
+     (second pair))))
 
+
+
+;;;------------------------------------------------
+;;; Designated interesting variables in a category
+;;;------------------------------------------------
 
 (defun register-variable (category variable grammatical-relation)
   (push-onto-plist category variable grammatical-relation))
@@ -404,61 +388,86 @@
   (let ((ref (edge-referent e)))
     (when ref (subject-variable ref))))
 (defmethod subject-variable ((c category))
-  (or
-   (get-tag-for :subject-variable c)
-   (let
-       ((sc (get-ref-subcategorization c)))
+  (or (get-tag-for :subject-variable c)
+   (let ((sc (get-ref-subcategorization c)))
      (when sc
        (third (assoc :subject sc))))))
 (defmethod subject-variable ((i individual))
-  (or
-   (get-tag-for :subject-variable (car (indiv-type i)))
-   (let
-       ((sc (get-ref-subcategorization i)))
+  (or (get-tag-for :subject-variable (car (indiv-type i)))
+   (let ((sc (get-ref-subcategorization i)))
      (when sc
        (third (assoc :subject sc))))))
 (defmethod subject-variable ((ignore t)) nil)
+
 
 (defmethod object-variable ((e edge))
   (let ((ref (edge-referent e)))
     (when ref (object-variable ref))))
 (defmethod object-variable ((c category))
-  (or
-   (get-tag-for :object-variable c)
-   (let
-       ((sc (get-ref-subcategorization c)))
+  (or (get-tag-for :object-variable c)
+   (let ((sc (get-ref-subcategorization c)))
      (when sc
        (third (assoc :object sc))))))
-
 (defmethod object-variable ((i individual))
-  (or
-   (get-tag-for :object-variable (car (indiv-type i)))
-   (let
-       ((sc (get-ref-subcategorization i)))
+  (or (get-tag-for :object-variable (car (indiv-type i)))
+   (let ((sc (get-ref-subcategorization i)))
      (when sc
        (third (assoc :object sc))))))
-
 (defmethod object-variable ((ignore t)) nil)
+
 
 (defmethod thatcomp-variable ((e edge))
   (let ((ref (edge-referent e)))
     (when ref (thatcomp-variable ref))))
-
 (defmethod thatcomp-variable ((c category))
-  (let
-      ((sc (get-ref-subcategorization c)))
+  (let ((sc (get-ref-subcategorization c)))
     (when sc
       (third (assoc :thatcomp sc)))))
-
 (defmethod thatcomp-variable ((i individual))
-  (let
-      ((sc (get-ref-subcategorization i)))
+  (let ((sc (get-ref-subcategorization i)))
     (when sc
       (third (assoc :thatcomp sc)))))
                               
 
 (defmethod complement-variable ((c category))
   (get-tag-for :complement-variable c))
+
+
+;;;---------------------------------------------------------------
+;;; looking for and removing unwanted definitions via their rules
+;;;---------------------------------------------------------------
+
+(defun find-form-cfr (wd form)
+  (when (rule-set-p (rule-set-for wd))
+    (loop for cfr in (rs-single-term-rewrites (rule-set-for wd))
+      when (eq form (cfr-form cfr))
+      do (return cfr))))
+
+(defun delete-noun-cfr (wd)
+  (let ((noun-cfr (find-form-cfr wd category::common-noun)))
+    (when noun-cfr
+      (delete/cfr noun-cfr))))
+
+(defun delete-verb-cfr (wd)
+  (let ((verb-cfr (find-form-cfr wd category::verb)))
+    (when verb-cfr
+      (delete/cfr verb-cfr))))
+
+(defun delete-adj-cfr (wd)
+  (let ((adj-cfr (find-form-cfr wd category::adjective)))
+    (when adj-cfr
+      (delete/cfr adj-cfr))))
+
+
+(defun find-single-unary-cfr (word)
+  (let ((rs (rule-set-for word)))
+    (when rs
+      (let ((single-rewrites (rs-single-term-rewrites rs)))
+        (when single-rewrites
+          ;;/// check for there being more than one?
+          (car single-rewrites))))))
+
+
 
 
         
