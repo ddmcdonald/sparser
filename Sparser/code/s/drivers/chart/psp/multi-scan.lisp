@@ -93,10 +93,10 @@
 
     ;; FSA's calls lifted from check-word-level-fsa-trigger 
     ;; and cwlft-cont
-    (tr :check-word-level-fsa-trigger position-before)
-    #+ignore(let ((where-fsa-ended (do-word-level-fsas word position-before)))
+    (let ((where-fsa-ended (do-word-level-fsas word position-before)))
       ;;////////// nb. could accidentally re-do the polyword
       ;; given that entry point. 
+      (tr :check-word-level-fsa-trigger position-before)
       (when where-fsa-ended
         (tr :word-fsa-ended-at word where-fsa-ended)
         (setq position-after where-fsa-ended
