@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  8.5 May 2015
+;;;  Version:  8.5 July 2015
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -46,8 +46,9 @@
 ;;  using method conjunction-incompatible-labels
 ;; 4/28/2015 Added bunch of variables and switches to collect information on conjunctions
 ;; 5/30/15 Cleaned up that code so that I could read it.
+;; 7/24/15 Permitting a collection of categories in multi-element conjunction
 ;; 7/26/2015 allow conjunctions of bio-entities and proteins, using method bio-coercion-compatible? 
-;; and print out the fact that the bio-entities so-conjoined are likely to be unrecognized proteins...
+;; and print out the fact that the bio-entities so-conjoined are likely to be unrecognized proteins.
 
 
 (in-package :sparser)
@@ -68,7 +69,9 @@
    conjunction")
 (defun collect-conjunctions ()
   (save-conjunctions)
-  (loop for corpus in '(dec-test dry-run erk) do (print corpus)(compare-to-snapshot corpus)))
+  (loop for corpus in '(dec-test dry-run erk) 
+    do (print corpus)(compare-to-snapshot corpus)))
+
 ;;;------
 ;;; hook
 ;;;------
@@ -392,20 +395,19 @@
   (when (and (edge-p edge-before)(edge-p edge-after))
     (let ((label-before (edge-category edge-before))
           (label-after (edge-category edge-after)))
-      (if (or
-           (eq label-before label-after)
-           (bio-coercion-compatible? label-before label-after edge-before edge-after))
-          :conjunction/identical-adjacent-labels
-          (when *allow-form-conjunction-heuristic*
-            ;;(break "form heuristics allowed. Check backtrace")
-            (let ((form-before (edge-form edge-before))
-                  (form-after (edge-form edge-after)))
-              (when (and (or (and (eq form-before form-after))
-                             (and (memq form-before *premod-forms*)
-                                  (memq form-after *premod-forms*)))
-                         (not (conjunction-incompatible-labels
+      (if (or (eq label-before label-after)
+              (bio-coercion-compatible? label-before label-after edge-before edge-after))
+        :conjunction/identical-adjacent-labels
+        (when *allow-form-conjunction-heuristic*
+          ;;(break "form heuristics allowed. Check backtrace")
+          (let ((form-before (edge-form edge-before))
+                (form-after (edge-form edge-after)))
+            (when (and (or (and (eq form-before form-after))
+                           (and (memq form-before *premod-forms*)
+                                (memq form-after *premod-forms*)))
+                       (not (conjunction-incompatible-labels
                                label-before label-after edge-before edge-after)))
-                :conjunction/identical-form-labels)))))))
+              :conjunction/identical-form-labels)))))))
 
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
   (declare (special label-after label-before))
@@ -530,13 +532,14 @@
                  :category (edge-category leftmost-edge)
                  :form (edge-form leftmost-edge)
                  :referent referent
-                 :rule-name :comma-delimited-list)))
+                 :rule-name 'conjoin-multiple-edges)))
       (tr :conjoining-multiple-edges/comma edge)
       (edge-interaction-with-quiescence-check edge)
-      (if *save-conjunctions* 
-          (push (conj-info (edge-referent leftmost-edge) (edge-referent rightmost-edge)
-                           leftmost-edge rightmost-edge)
-                *all-conjunctions*))
+      (when *save-conjunctions* 
+        (push (conj-info (edge-referent leftmost-edge) 
+                         (edge-referent rightmost-edge)
+                         leftmost-edge rightmost-edge)
+              *all-conjunctions*))
       edge )))
 
 
@@ -601,13 +604,11 @@
              (not (word-p right-ref)))
     ;; when doing DA there can be cases where there's a categorization
     ;; but no referent. 
-    (if
-     (or
-      (consp left-ref)
-      (consp right-ref))
-     (then
-       (break "bad referent in referent-of-two-conjoined-edges, ~s" left-ref right-ref)
-       nil)
+    (if (or (consp left-ref)
+            (consp right-ref))
+     (break "bad referent in referent-of-two-conjoined-edges, ~s"
+            left-ref right-ref)
+
      (let* ((left-type (etypecase left-ref
                          (individual (car (indiv-type left-ref)))
                          (category left-ref)))
@@ -632,36 +633,39 @@
 
 
 (defun referent-of-list-of-conjoined-edges (edge-list)
-  (when (every #'(lambda (e)
-                   (not (null e)))
-               edge-list)
+  (when (every #'(lambda (e) (not (null e))) edge-list)
 
-    (let ((referents (mapcar #'edge-referent edge-list)))
-
-      (if (individual-p (first referents))
+    (let* ((referents (mapcar #'edge-referent edge-list))
+           (first-ref (when referents (car referents))))
+      (cond
+       ((individual-p first-ref)
         (let ((types (mapcar #'indiv-type referents))
-              (sample-type (indiv-type (car (last referents)))))
-          
-          (unless (every #'(lambda (type)
-                             (eq type sample-type))
+              (sample-type (indiv-type (car (last referents)))))          
+          (when (every #'(lambda (type) (eq type sample-type))
                          referents)
             (setq sample-type
                   (adjudicate-specializations/list referents types)))
-          
           (let ((collection
                  (define-or-find-individual 'collection
                    :items referents
                    :number (length referents)
                    :type sample-type)))
-            
+            collection )))
+
+       ;; "biochemical, molecular and immunological approaches"
+       ((category-p first-ref)
+        ;;/// Finding a type would be a matter of finding their
+        ;; common super-type and that's unlikely given the 
+        ;; excessively flat category structure we tend to have
+         (let ((collection
+                 (define-or-find-individual 'collection
+                   :items referents
+                   :number (length referents))))
             collection ))
 
-        ;; The edges in the list either don't have referents, or if they
-        ;; do they are some data-type other than individuals, and we'd
-        ;; need a different routine than this one.
-        (else
-          (tr :conjoined-edges-dont-have-individuals-as-referents)
-          nil )))))
+       (t
+        (tr :conjoined-edges-dont-have-individuals-as-referents)
+        nil )))))
 
 
 
