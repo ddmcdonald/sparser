@@ -68,16 +68,31 @@
   (push :biology-loaded *features*)
   )
 
+(defun cureRAS-directory ()
+  "Compute namestring or complain that you can't."
+  (unless (boundp 'cl-user::*r3-trunk*)
+    (error "No value defined for cl-user::*r3-trunk*"))
+  (let ((namestring (concatenate 'string cl-user::*r3-trunk*
+                                 "code/vocabulary-discovery/cureRAS/")))
+    (unless (probe-file namestring)
+      (error "The location given for the curRAS directory doesn't ~
+              exist:~% ~s" namestring))
+    namestring))
 
 
 ;;; copied from ddm-load-corpora in ddm-workspace.
 (defun load-bio-corpora ()
-  (cl-user::s-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
-  (cl-user::s-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
-  (cl-user::s-load "grammar/model/sl/biology/cureRAS/ERK-translocation.lisp")
-  (cl-user::s-load "grammar/model/sl/biology/cureRAS/aspp2-whole.lisp")
-  (cl-user::s-load "interface/R3-eval/overnight-sents.lisp")
-  (cl-user::s-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
+  (let ((base (cureRAS-directory)))
+    (flet ((cload (filename)
+             (let ((ns (concatenate 'string base filename)))
+               (load ns))))
+      (cload "December-text-passages.lisp")
+      (cload "January Dry Run passages.lisp")
+      (cload "ERK-translocation.lisp")
+      (cload "aspp2-whole.lisp")
+      ;;//// what about "interface/R3-eval/overnight-sents.lisp" ???
+      (cload "load-test-sents.lisp"))))
+ 
 
 
 ;;;-------------------------------------------------------
