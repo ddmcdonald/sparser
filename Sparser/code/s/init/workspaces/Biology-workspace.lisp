@@ -82,7 +82,9 @@
 
 ;;; copied from ddm-load-corpora in ddm-workspace.
 (defun load-bio-corpora ()
-  (let ((base (cureRAS-directory)))
+  (let ((base (cureRAS-directory))
+        (vocab-base 
+         (concatenate 'string cl-user::*r3-trunk* "code/vocabulary-discovery/")))
     (flet ((cload (filename)
              (let ((ns (concatenate 'string base filename)))
                (load ns))))
@@ -90,8 +92,9 @@
       (cload "January Dry Run passages.lisp")
       (cload "ERK-translocation.lisp")
       (cload "aspp2-whole.lisp")
-      ;;//// what about "interface/R3-eval/overnight-sents.lisp" ???
-      (cload "load-test-sents.lisp"))))
+      (cload "load-test-sents.lisp")
+      (load (concatenate 'string vocab-base "overnight-sents.lisp"))
+)))
  
 
 
