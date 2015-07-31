@@ -80,7 +80,7 @@
 
   (let* ((symbol (make-word-symbol))
          (word (or existing-word
-                  ;; The caller is find-word, which needs to ensure
+                   ;; The caller is find-word, which needs to ensure
                   ;; that when *edge-for-unknown-words* is up that
                   ;; there is a category and edge for every word
                   ;; however trivial it might be.
