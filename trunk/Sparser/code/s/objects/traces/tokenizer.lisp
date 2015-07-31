@@ -24,12 +24,42 @@
 (defun untrace-morphology ()
   (setq *trace-morphology* nil))
 
+(deftrace :fw-symbol-bound-to (word)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] symbol is bound to ~s" (word-pname word))))
+
+(deftrace :fw-no-rule-set (word)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] ~s does not have a rule set" (word-pname word))))
+
+(deftrace :tw-is-a-function-word (word)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] ~s is a function word" (word-pname word))))
+
+(deftrace :tw-no-unary-rule (word)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] ~s does not have a rule" (word-pname word))))
+
+(deftrace :fw-symbol-unbound (symbol)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] symbol ~a exists, but not bound to a word"
+               (symbol-name symbol))))
+
+(deftrace :fw-no-symbol ()
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] no symbol. Completely unknown")))
+
 (deftrace :defining-unknown-word-from-morph (word morph-keyword)
   ;; called from assign-morph-brackets-to-unknown-word
   (when *trace-morphology*
     (trace-msg "[Morphology] unknown word ~s keyword: ~a"
                (word-pname word) morph-keyword)))
-
 
 (deftrace :defining-as-given-morph (pos-term)
   ;; called from assign-morph-brackets-to-unknown-word
