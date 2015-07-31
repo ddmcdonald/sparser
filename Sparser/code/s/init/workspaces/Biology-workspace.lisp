@@ -734,6 +734,15 @@ which inhibits activation of EGFR and ERBB3. In the presence of AZD6244,
 ERK is inhibited and T669 phosphorylation is blocked, increasing
 EGFR and ERBB3 tyrosine phosphorylation and up-regulating downstream signaling."))
 
+(defun empty-this-mutant () ;; for ticket 12
+  ;; it's p85<alpha> though its not rinting like one
+  (p "Thus, we introduced the same mutations (R358A and R649A in 
+the FLVRD/E motif of each of the SH2 domains of p85ﰀ) to generate 
+the EGFP–p85ﰀ RARA mutant. As expected, although this mutant 
+bound the PI 3-kinase p110 catalytic sub- unit normally, 
+it could no longer bind tyrosine-phosphorylated IRS-1 
+after IGF-1 stimulation."))
+
 (defun cells-defNP ()
   ;; from the December passages, sentences 17 and 18
   (p "BRAF is not active and is not required for MEK/ERK activation
