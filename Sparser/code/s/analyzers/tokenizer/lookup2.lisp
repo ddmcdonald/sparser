@@ -27,6 +27,7 @@
     (if symbol
       (if (boundp symbol)
         (let ((word (symbol-value symbol)))
+          (tr :fw-symbol-bound-to word)
           (if *edge-for-unknown-words*
             ;; In this case we have to look at whether there is
             ;; a rule-set, and if there is that is has unary rule
@@ -36,22 +37,28 @@
             ;; unknown word machinery, which will give it one
             (let ((rs (rule-set-for word)))
               (cond
-               ((null rs) 
-                (establish-unknown-word char-type))
+               ((null rs)
+                (tr :fw-no-rule-set word)
+                (establish-unknown-word char-type word))
                ((memq :function-word (plist-for word)) ;; "than"
+                (tr :tw-is-a-function-word word)
                 word)
                ((null (rs-single-term-rewrites rs))
+                (tr :tw-no-unary-rule word)
                 (establish-unknown-word char-type word))
                (t
                 word)))
             word))
 
         ;; Symbol exists but isn't bound
-        (establish-unknown-word char-type))
-
+        (else
+          (tr :fw-symbol-unbound symbol)
+          (establish-unknown-word char-type)))
 
       ;; There's no symbol
-      (establish-unknown-word char-type))))
+      (else
+        (tr :fw-no-symbol)
+        (establish-unknown-word char-type)))))
 
 #|
 ;; original
