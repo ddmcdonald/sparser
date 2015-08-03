@@ -27,9 +27,20 @@
   :left-context mutant
   :form proper-noun
   :referent (:function convert-bio-entity-to-protein right-edge)) |#
-(defun convert-bio-entity-to-protein (bio-entity)
+(defmethod convert-bio-entity-to-protein ((bio-entity individual))
   (push-debug `(,bio-entity)) ;;(break "convert bio-entity"))
   bio-entity)
+
+(defmethod convert-bio-entity-to-protein ((e edge))
+  ;; called from make-protein-pair/convert-bio-entity
+  (let* ((rule (edge-rule e))
+         (old-ref (edge-referent e))
+         (new-ref (convert-bio-entity-to-protein old-ref)))
+    ;; subvert both this edge and the rule
+    (setf (edge-category e) (category-named 'protein))
+    (setf (edge-referent e) new-ref)
+    new-ref))
+        
 
 
 ;;;-------------------------------
