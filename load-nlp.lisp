@@ -66,6 +66,8 @@
 (defun s-load (source-path)
   (load (sparser-sourcefile source-path)))
 
+(defun r3-load (source-path)
+  (load (r3-path source-path)))
 
 ;; #2 --- ASDF setup
 
