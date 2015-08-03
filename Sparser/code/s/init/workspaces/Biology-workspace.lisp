@@ -81,20 +81,14 @@
 
 
 ;;; copied from ddm-load-corpora in ddm-workspace.
+ 
 (defun load-bio-corpora ()
-  (let ((base (cureRAS-directory))
-        (vocab-base 
-         (concatenate 'string cl-user::*r3-trunk* "code/vocabulary-discovery/")))
-    (flet ((cload (filename)
-             (let ((ns (concatenate 'string base filename)))
-               (load ns))))
-      (cload "December-text-passages.lisp")
-      (cload "January Dry Run passages.lisp")
-      (cload "ERK-translocation.lisp")
-      (cload "aspp2-whole.lisp")
-      (cload "load-test-sents.lisp")
-      (load (concatenate 'string vocab-base "overnight-sents.lisp"))
-)))
+  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/December-text-passages.lisp")
+  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/January Dry Run passages.lisp")
+  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/ERK-translocation.lisp")
+  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/aspp2-whole.lisp")
+  (cl-user::r3-load "code/vocabulary-discovery/overnight-sents.lisp")
+  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/load-test-sents.lisp"))
  
 
 
