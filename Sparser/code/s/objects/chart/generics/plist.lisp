@@ -45,11 +45,46 @@
     (lattice-point (lp-plist obj))))
 
 
+;;; added generic get/set for these plists
+
+;;; same as get-tag-for, really, but avoid the bad case where a value is eq to a property name. 
+;;; David says there is some possibility that values without property names may be pushed onto these lists
+;;; so reverting to the use of member (ugh)
+#+ignore
+(defun get-object-property (obj prop)
+  (let ((plist (plist-for obj)))
+    (when plist
+      (loop for (key val) on plist :by #'cddr
+        when (eq key prop)
+        do (return val)))))
+
+(defun get-object-property (obj prop)
+  (get-tag-for prop obj))
+
+
+#+ignore ; see comment above
+(defun set-object-property (obj prop val)
+  (let ((plist (plist-for obj)))
+    (set-plist-of obj 
+                  (cond (plist
+                         (loop for rest on plist :by #'cddr
+                           do (cond ((eq (car rest) prop)
+                                     (setf (second rest) val)
+                                     (return plist)))
+                           finally (return (cons prop (cons val plist)))))
+                        (t (list prop val))))))
+
+(defun set-object-property (obj prop val)
+  (if (has-tag? prop obj)
+      (change-plist-value obj prop val)
+      (push-onto-plist obj val prop)))
+
 
 ;;;--------------
 ;;; return value
 ;;;--------------
 
+;;; this should be changed to the ignored def of get-object-property for correctness, above.
 (defun get-tag-for (tag obj)
   (let ((plist (plist-for obj)))
     (when plist
