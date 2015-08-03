@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: June 2015
+;;; version: August 2015
 
 ;; Initiated 11/5/13. 3/3/14 Added mechanics and NFkappaB while
 ;; commenting out the original molecules and verbs as OBE and requiring
@@ -16,7 +16,8 @@
 ;; to 1, 12/11/14. 12/28/14 added [phenomena]. 1/16/15 added
 ;; [rules]. 2/20/15 added doc-structure. 5/17/15 gated parse-biopax
 ;; when xmls moved out of normal Sparser load. 6/4/15 added [rhetoric]
-;; so all elements can go in one place. 
+;; so all elements can go in one place. 8/3/15 added [methods] to
+;; avoid load-time category dependencies. It must be loaded last.
 
 (in-package :sparser)
 
@@ -46,4 +47,6 @@
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules")
+
+(gload "bio;methods.lisp") ;; this one goes last
 
