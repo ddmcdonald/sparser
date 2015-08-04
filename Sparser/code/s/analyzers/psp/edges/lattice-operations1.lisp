@@ -129,6 +129,8 @@
               (find-or-make-lattice-subordinate current-dli (binding-variable b) (binding-value b))))
       (set-dli base current-dli)))))
 
+
+;; The next two methods create a PERMANENT individual
 (defun make-dli-for-ref-category (category)
   (make-category-indexed-individual category))
 
