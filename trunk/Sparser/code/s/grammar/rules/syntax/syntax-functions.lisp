@@ -78,6 +78,7 @@
 (defvar CATEGORY::PRONOUN/INANIMATE)
 (defvar CATEGORY::THERE-EXISTS)
 (defvar CATEGORY::COPULAR-PP)
+(defvar CATEGORY::COPULAR-PREDICATE)
 
 
 
@@ -671,6 +672,22 @@
    (assimilate-subcat vp :subject subj)))
 
 
+;; special case where the vp is a gerund, and we make it an NP (not sure how often this is right)
+(defun assimilate-subject-to-vp-ing(subj vp)
+  (unless 
+      ;; remove the printout until it is needed again
+      t ;;   *subcat-test*
+    (format t "~&----assimilate-subject-to-vp-ing make an NP for ~s and ~s---~&  in ~s~&" 
+            subj vp
+            (if
+             (> (length (sentence-string *sentence-in-core*)) 0)
+             (sentence-string *sentence-in-core*)
+             *string-from-analyze-text-from-string*)))
+  (if (is-passive? (right-edge-for-referent))
+      (assimilate-subcat vp :object subj)
+      (assimilate-subcat vp :subject subj)))
+
+
 (defparameter *vp-ed-sentences* nil)
 (defun assimilate-subject-to-vp-ed (subj vp)
   (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
@@ -959,7 +976,7 @@
   :index (:temporary :sequential-keys prep pobj))
 
 (defun make-pp (prep pobj)
-  (make-simple-individual
+  (make-non-dli-individual
    category::prepositional-phrase
    `((prep ,prep) (pobj ,pobj))))
 
@@ -1027,7 +1044,7 @@
         ;; this is NOT a copular PP
         (and prep pobj))
        (t
-        (make-simple-individual
+        (make-non-dli-individual
               category::copular-pp
               `((copula ,be-ref)
                 (prep ,prep) (pobj ,pobj))))))))
@@ -1035,6 +1052,7 @@
 (defun apply-copular-pp (np copular-pp)
   (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
          (pobj (value-of 'pobj copular-pp))
+         (copula (value-of 'copula copular-pp))
          (variable-to-bind (subcategorized-variable np prep pobj)))
     (declare (special prep pobj))
     (cond
@@ -1043,11 +1061,11 @@
       (when *collect-subcat-info*
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
-      (setq np (individual-for-ref np))
-      (setq copular-pp (bind-dli-variable 'predicated-of np copular-pp))
-      (setq  np (bind-dli-variable variable-to-bind pobj np))
-      (setq  copular-pp (bind-dli-variable 'result np copular-pp))
-      copular-pp))))
+      (setq result (individual-for-ref np))
+      (setq  result (bind-dli-variable variable-to-bind pobj result))
+      (make-simple-individual category::copular-predicate
+                              `((predicated-of ,np)
+                                (result ,result)))))))
 
 (defun get-word-for-prep (prep-val)
   (resolve/make ;; needs to be a word for the subcat frame!
