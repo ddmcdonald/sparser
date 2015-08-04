@@ -17,7 +17,9 @@
 
 (export 'analyze-text-from-string)
 
+(defparameter *string-from-analyze-text-from-string* nil)
 (defun analyze-text-from-string (string)
+  (setq *string-from-analyze-text-from-string* string)
   (set-initial-state :name 'text-string)
   (establish-character-source/string string)
   (analysis-core))
