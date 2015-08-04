@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
 ;;; copyright (c) 1992-1999,2010-2014 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; 
+;;;
 ;;;     File:  "logicals"
 ;;;   Module:  "init:versions:v4.0:loaders:"
 ;;;  version:  June 2014
@@ -10,8 +10,8 @@
 ;; directories under "names;" up to "core;",  7/23 added tools;time
 ;; and model;sl:jv:,  9/17 added "places;US States:",  10/2 added
 ;; "core;amounts",  10/7 swapped Sparser-source for CTI-code,
-;; 10/19 added traversal-routines;  11/28 broke psp;finish into 
-;; complete and referent, 12/2 moved individuals from dossiers to 
+;; 10/19 added traversal-routines;  11/28 broke psp;finish into
+;; complete and referent, 12/2 moved individuals from dossiers to
 ;; objects;model, 12/28 added in additional definitions to fit new
 ;; loading scheme, 1/16 added object;words:lookup, 2/9 pushed the
 ;; grammar configurations down. 2/10 added init;lisp.  5/9 added
@@ -55,10 +55,10 @@
      (cl-user::*unix-file-system*
       ;; the globals that name files will have slashes in them
       ;; but Def-logical-pathname wants to see an MCL pathname
-      (unix-namestring-to-mac 
+      (unix-namestring-to-mac
        cl-user::location-of-sparser-directory))
      (cl-user::*windows-file-system*
-      (MS-namestring-to-mac 
+      (MS-namestring-to-mac
        cl-user::location-of-sparser-directory))
      (t
       cl-user::location-of-sparser-directory))
@@ -76,15 +76,15 @@
     (concatenate 'string
       (cond
        (cl-user::*unix-file-system*
-	;; the globals that name files will have slashes in them
-	;; but Def-logical-pathname wants to see an MCL pathname
-	(unix-namestring-to-mac 
-	 cl-user::location-of-Sparser-code-directory))
+        ;; the globals that name files will have slashes in them
+        ;; but Def-logical-pathname wants to see an MCL pathname
+        (unix-namestring-to-mac
+         cl-user::location-of-Sparser-code-directory))
        (cl-user::*windows-file-system*
-	(MS-namestring-to-mac 
-	 cl-user::location-of-sparser-directory))
+        (MS-namestring-to-mac
+         cl-user::location-of-sparser-directory))
        (t
-	cl-user::location-of-Sparser-code-directory))
+        cl-user::location-of-Sparser-code-directory))
       "s:init:"))
 
 (def-logical-pathname "images;"  "init;images:")
@@ -97,7 +97,7 @@
 (def-logical-pathname "version;"
     (cond
      (cl-user::*unix-file-system*
-      (unix-namestring-to-mac 
+      (unix-namestring-to-mac
        cl-user::location-of-current-version-code))
      (cl-user::*windows-file-system*
       (MS-namestring-to-mac
@@ -129,11 +129,11 @@
                       (cond
                        ((listp *source-root*)
                         (if cl-user::*unix-file-system*
-			  (unix-namestring-to-mac 
-			   (concatenate 'string 
-			     (namelist-to-unix *source-root*)
-			     "/"))
-                          (concatenate 'string 
+                          (unix-namestring-to-mac
+                           (concatenate 'string
+                             (namelist-to-unix *source-root*)
+                             "/"))
+                          (concatenate 'string
                                        (namelist-to-mac *source-root*)
                                        ":")))
                        (t *source-root*)))
@@ -368,3 +368,4 @@
 (def-logical-pathname "measuring;"    "tools;timing:")
 (def-logical-pathname "kons;"         "tools;cons-resource:")
 
+(def-logical-pathname "kraql;"        "objects;model:kraql:")

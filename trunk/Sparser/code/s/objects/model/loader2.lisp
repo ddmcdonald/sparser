@@ -17,8 +17,8 @@
 ;;       understands lattice-points. 12/6 bumped tree-families to 1.
 ;;       3/22 put the lattice points loader in. 9/12 broke psi out from
 ;;       lattice points. 1013 bumped individuals to 1.
-;;     (8/15/07) moved in the psi structure file. 
-;; 2.1 (6/17/09) Added cl-user::*psi-2009* flag to gate the transition to 
+;;     (8/15/07) moved in the psi structure file.
+;; 2.1 (6/17/09) Added cl-user::*psi-2009* flag to gate the transition to
 ;;      the moby makeover. 7/12 moved over bindings.loader2. 10/9 bumped
 ;;      the categories loader to 2 and moved that version into the psi-2009
 ;;      section.
@@ -44,4 +44,4 @@
 (lload "objects;model:lattice-points:loader1")
 (lload "objects;model:psi:loader1")
 (lload "objects;model:tree-families:loader1")
-
+(lload "objects;model:kraql:loader")

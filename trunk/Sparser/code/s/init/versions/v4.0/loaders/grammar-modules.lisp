@@ -36,14 +36,13 @@
 ;; 12/15/11 added *hurricanes*. 10/8/13 added *qualities*, *middle-east*,
 ;; *Banking*, *ISR*. 11/30/13 *waypoints*.
 ;; 6/4/14 Removed *NIH* as redundant with *biology*, brought here from
-;; a workspace. 
+;; a workspace.
 
 (in-package :sparser)
 
 #|  This is the set of all grammar modules known to the loaders.
     By default they are all off, and must be explicitly activated
     in a configuration file before they will be loaded.   |#
-
 
 
 ;;;-------------------------
@@ -98,7 +97,7 @@
 
 (define-grammar-module  *semantics-of-WH-words*
                         :parent *standard-syntactic-constructions*
-			:name "semantics of WH")
+                        :name "semantics of WH")
 
 
 (define-grammar-module  *standard-syntactic-categories*
@@ -384,7 +383,7 @@
 
 (define-grammar-module  *whos-news/core*
                         :name "core"
-                        :parent *whos-news* ) 
+                        :parent *whos-news* )
 
 (define-grammar-module  *job-events*
                         :name "Job events"
@@ -449,7 +448,7 @@
 (define-grammar-module *Banking*
   :name "Banking"
   :parent *sublanguages*)
-		       
+
 (define-grammar-module *ISR*
   :name "Intelligence, survalence, and reconaisance"
   :parent *sublanguages*)
@@ -601,7 +600,7 @@
 
 (define-grammar-module *reversable*
                        :name "Reversing parsing results"
-		       :parent *other*)
+                       :parent *other*)
 
 
 ;;;------------------------------------
@@ -627,3 +626,11 @@
                         :parent *finite-state-automata* )
 
 
+
+;;;-------------------------
+;;; Krisp Retrieval, Action, & Query Language (KRAQL)
+;;;-------------------------
+
+(define-grammar-module  *kraql*
+                        :parent *other*
+                        :name "kraql")
