@@ -238,7 +238,7 @@ filligre may be used to distinguish them, etc.
 
 
 
-(def-bio "ERK1-4" protein) ;; mutated form of ERK
+(def-bio "ERK1-4" protein :documentation "mutated form of ERK")
 
 
 
