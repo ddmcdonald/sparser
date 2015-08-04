@@ -81,7 +81,7 @@
       (establish-binding-resource)))
 
   (load-grammar-specific-edge-types)
-  
+
   (gload "fsa;loader - model1")
 
   (gate-grammar *standard-syntactic-categories*
@@ -104,7 +104,7 @@
       (gload "tree-families;loader")))
 
   (gate-grammar *kinds*
-    (gload "kinds;1st-loader")) ;; defines individual and such 
+    (gload "kinds;1st-loader")) ;; defines individual and such
 
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
@@ -135,7 +135,7 @@
 
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
-  
+
   (gate-grammar *location*
     (gload "places;loader1"))
 
@@ -280,7 +280,7 @@
   ;; any new categories
 
   (when (find-package :mumble)
-    (gate-grammar *tree-families*     
+    (gate-grammar *tree-families*
        (gload "tree-families;correspondences"))
     (gate-grammar *tree-families* *reversable*
        (gload "mumble-interface;loader")))
@@ -328,12 +328,15 @@
     (gate-grammar *citations*
       (gload "citations;loader")))
 
-  
+
   (when *external-grammar-files*
     (load *external-grammar-files*))
   (when *external-grammar-dossier-files*
     (load *external-grammar-dossier-files*))
 
+  ;; KRAQL might not need a gate-grammar invocation...
+  ;;(gate-grammar *kraql*
+  ;;  (gload "kraql;loader"))
 
   (unless (or *just-note-changed-files*
               *copy-file*)
