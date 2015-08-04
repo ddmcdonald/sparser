@@ -1061,11 +1061,11 @@
       (when *collect-subcat-info*
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
-      (setq result (individual-for-ref np))
-      (setq  result (bind-dli-variable variable-to-bind pobj result))
+      (setq predicate (individual-for-ref np))
+      (setq  predicate (bind-dli-variable variable-to-bind pobj result))
       (make-simple-individual category::copular-predicate
                               `((predicated-of ,np)
-                                (result ,result)))))))
+                                (predicate ,predicate)))))))
 
 (defun get-word-for-prep (prep-val)
   (resolve/make ;; needs to be a word for the subcat frame!

@@ -124,7 +124,7 @@
 
 (define-category  copular-predicate
   :specializes be
-  :binds ((result)
+  :binds ((predicate)
           (predicated-of)
           (copula)))
 
