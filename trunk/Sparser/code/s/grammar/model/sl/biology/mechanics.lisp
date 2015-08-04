@@ -63,17 +63,17 @@
 ;;; pattern-driven protein definition
 ;;;---------------------------
 
-(defmacro define-protein (name IDS &key ras2-model)
+(defmacro define-protein (name IDS &key documentation ras2-model)
   (if ras2-model
-      (make-def-protein (cons name IDS) :ras2-model t)
-      (make-def-protein (cons name IDS))))
+      (make-def-protein (cons name IDS) :documentation documentation :ras2-model t)
+      (make-def-protein (cons name IDS) :documentation documentation)))
 
 (defparameter *prot-synonyms* (make-hash-table :test #'equal))
 
 (defun get-protein-synonyms (id)
   (gethash id *prot-synonyms*))
 
-(defun make-def-protein (IDS &key (ras2-model nil))
+(defun make-def-protein (IDS &key documentation (ras2-model nil))
   (let
       ((bpid (best-protein-id IDS)))
     `(def-bio ,bpid
@@ -82,7 +82,8 @@
        :MITRE-LINK ,(if (search "_" bpid)
                         (format nil "UNIPROT:~A" bpid)
                         bpid)
-       :ras2-model ,ras2-model)))
+       :ras2-model ,ras2-model
+       ,@(if documentation `(:documentation ,documentation)))))
 
 (defun in-ras2-model? (entity)
   (not
@@ -275,7 +276,7 @@
 ;;;-------------------------------------------
 
 (defmacro def-bio (short kind
-                   &key greek identifier long synonyms takes-plurals
+                   &key documentation greek identifier long synonyms takes-plurals
                         mitre-link ras2-model)
   ;; short = "NIK", long = "NF-κB-inducing kinase"
   ;; kind = kinase, greek = "alpha"
@@ -306,20 +307,21 @@
     (setq takes-plurals t))
 
   `(def-bio/expr ,short ',kind
+     :documentation ',documentation
      :greek ',greek :identifier ',identifier :mitre-link ,mitre-link
      :ras2-model ,ras2-model
      :long ,long :synonyms ',synonyms :takes-plurals ,takes-plurals))
 
 
 (defun def-bio/expr (short kind
-                     &key greek identifier mitre-link
+                     &key documentation greek identifier mitre-link
                           long synonyms takes-plurals ras2-model)
   ;; use find-individual with their names to retrieve these.
   (let* ((word (resolve/make short))
          (category (category-named kind :break-if-undefined)))
     (make-typed-bio-entity word category
-                          greek identifier mitre-link ras2-model
-                          long synonyms takes-plurals)))
+                          greek identifier mitre-link
+                          ras2-model long synonyms takes-plurals documentation)))
 
 
 (defun define-bio (word category-name)
@@ -330,7 +332,7 @@
 (defun make-typed-bio-entity (word category
                                    &optional greek identifier mitre-link
                                    ras2-model
-                                   long synonyms takes-plurals)
+                                   long synonyms takes-plurals documentation)
   (declare (special *inihibit-constructing-plural*))
   (let ((label (or (override-label category) category))
         (form (category-named 'proper-noun))
@@ -429,6 +431,9 @@
 
       (when rules
         (add-rules-to-individual i rules))
+
+      (when documentation
+        (store-category-documentation word documentation))
 
       i)))
 
