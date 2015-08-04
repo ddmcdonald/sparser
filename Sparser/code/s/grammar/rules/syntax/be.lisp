@@ -118,11 +118,15 @@
 
 (define-category  copular-pp
   :specializes be
-  :binds ((result)
-          (predicated-of)
-          (copula)
+  :binds ((copula)
           (prep)
           (pobj)))
+
+(define-category  copular-predicate
+  :specializes be
+  :binds ((result)
+          (predicated-of)
+          (copula)))
 
 (def-form-rule (be pp)
   :form vp

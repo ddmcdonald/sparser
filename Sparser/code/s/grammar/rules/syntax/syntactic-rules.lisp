@@ -465,7 +465,7 @@ SUCH AS RHETORICAL ADVERBS
    `(def-syntax-rule (,n vp+ing)
                        :head :right-edge
         :form np
-        :referent (:function assimilate-subject left-edge right-edge)))
+        :referent (:function assimilate-subject-to-vp-ing left-edge right-edge)))
   (loop for v in '(vp vg vp+passive vg+passive vg+ing)
     do
     (eval
