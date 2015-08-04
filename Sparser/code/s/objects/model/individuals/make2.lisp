@@ -306,6 +306,18 @@
       (create-shadow individual)
       individual )))
 
+(defun make-non-dli-individual (category binding-instructions &optional (non-permanent nil))
+  (let ((individual (allocate-individual))
+        (*description-lattice* nil))
+    (declare (special *description-lattice*))
+    (setf (indiv-type individual) (list category))
+    (setf (indiv-id   individual) (next-id category))
+    (multiple-value-bind (bindings new-indiv)
+                         (apply-bindings individual binding-instructions)
+      (setq individual new-indiv)
+      ;;(index/individual individual category bindings)
+      (create-shadow individual)
+      individual )))
 
 (defun make-throw-away-individual (category)
   (break "~&~%Trapped a call to make-throw-away-individual~
