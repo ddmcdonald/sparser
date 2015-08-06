@@ -437,26 +437,29 @@
 ;;; looking for and removing unwanted definitions via their rules
 ;;;---------------------------------------------------------------
 
-(defun find-form-cfr (wd form)
-  (when (rule-set-p (rule-set-for wd))
-    (loop for cfr in (rs-single-term-rewrites (rule-set-for wd))
+(defun find-form-cfr (word form)
+  (when (rule-set-p (rule-set-for word))
+    (loop for cfr in (rs-single-term-rewrites (rule-set-for word))
       when (eq form (cfr-form cfr))
       do (return cfr))))
 
-(defun delete-noun-cfr (wd)
-  (let ((noun-cfr (find-form-cfr wd category::common-noun)))
-    (when noun-cfr
-      (delete/cfr noun-cfr))))
+(defun delete-noun-cfr (word)
+  (when word
+    (let ((noun-cfr (find-form-cfr word category::common-noun)))
+      (when noun-cfr
+        (delete/cfr noun-cfr)))))
 
-(defun delete-verb-cfr (wd)
-  (let ((verb-cfr (find-form-cfr wd category::verb)))
-    (when verb-cfr
-      (delete/cfr verb-cfr))))
+(defun delete-verb-cfr (word)
+  (when word
+    (let ((verb-cfr (find-form-cfr word category::verb)))
+      (when verb-cfr
+        (delete/cfr verb-cfr)))))
 
-(defun delete-adj-cfr (wd)
-  (let ((adj-cfr (find-form-cfr wd category::adjective)))
-    (when adj-cfr
-      (delete/cfr adj-cfr))))
+(defun delete-adj-cfr (word)
+  (when word
+    (let ((adj-cfr (find-form-cfr word category::adjective)))
+      (when adj-cfr
+        (delete/cfr adj-cfr)))))
 
 
 (defun find-single-unary-cfr (word)
