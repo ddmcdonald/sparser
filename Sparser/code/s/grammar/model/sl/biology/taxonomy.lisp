@@ -92,7 +92,6 @@
   :binds ((quantifier)))
 
 (define-category reference-item :specializes abstract
-  
   :documentation "For things like ProteinReference and SmallMoleculeReference -- generic characterizations of
   prtoeins and small molecules, etc. which have
   OBO identifiers, but are not localized to cellular locations.")
@@ -127,17 +126,6 @@
           (aspect) ;; "will likely be useful"
           (in-order-to)))
 
-(define-category bio-mechanism :specializes process
-  :mixins (biological)
-  :binds ((process bio-process)) ;; should be the same as the "function" of the process
-  :realization
-  (:noun "mechanism"
-         :of process))
-
-(define-category bio-state :specializes bio-predication ;; for things like "activated state"
-  :realization
-  (:noun "state"))
-
 (define-category bio-scalar
   :specializes scalar-quality
   :mixins (biological)
@@ -155,10 +143,14 @@
 
 
 
-(delete-adj-cfr (resolve/make "cyclic"))
+(delete-adj-cfr (resolve "cyclic"))
 (define-category bio-cyclic :specializes bio-predication
   :realization
   (:adj "cyclic"))
+
+(define-category bio-state :specializes bio-predication ;; for things like "activated state"
+  :realization
+  (:noun "state"))
 
 (define-category molecule-state
   :specializes bio-state)
@@ -213,6 +205,13 @@
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
+(define-category bio-mechanism :specializes process
+  :mixins (biological)
+  :binds ((process bio-process)) ;; should be the same as the "function" of the process
+  :realization
+  (:noun "mechanism"
+         :of process))
+
 (define-category bio-mechanism
   :specializes endurant
   :mixins (has-UID has-name biological)
@@ -262,7 +261,7 @@
   :specializes bio-process
   :bindings (uid "GO:0005488"))
 
-(delete-noun-cfr (resolve/make "reaction"))
+(delete-noun-cfr (resolve "reaction"))
 (define-category chemical-reaction
   :realization (:noun "reaction")
   :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
@@ -381,7 +380,6 @@
 (define-category peptide
   :specializes molecule
   :instantiates :self
-  ;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "peptide")
   :realization (:common-noun name))
@@ -393,7 +391,6 @@
   :binds ((species species)
           (mutation point-mutation))
   :mixins (  reactome-category  in-ras2-model )
-  ;;  :rule-label bio-entity
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
@@ -420,7 +417,6 @@
   :specializes protein  ;; not all enzymes are proteins -- there are RNA enzymes
   :binds ((reaction bio-process))
   :instantiates :self
-;; :rule-label bio-entity
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
 
@@ -430,7 +426,6 @@
   :specializes enzyme
   :instantiates :self
   :bindings (uid "GO:0016301") ;; "kinase activity" 
-;;  :rule-label bio-entity
   :index (:permanent :key name)
   :realization (:common-noun name))
 
@@ -538,11 +533,6 @@
   :lemma (:common-noun "melanoma")
   :realization (:common-noun name))
 
-
-;; Rusty: if you define a category with -no- parameters
-;; you get a simple category data structure that, e.g., you can't
-;; inherit from. Most form categories are "simple".
-
                  
 (define-category  in-bio-condition  ;; "in cancer, in physiological conditions"
   :instantiates self
@@ -556,9 +546,6 @@
                            (pp . :self)
                            (preposition . ("in" "under"))
                            (complement . bio-condition))))
-
-
-;;--- ///maybe it's not a bio-entity?
 
 
 
@@ -761,7 +748,7 @@ the aggregate across the predicate it's in. |#
 
 
 ;;//// are these even "bio" at all?
-(delete-noun-cfr (resolve/make "rate"))
+(delete-noun-cfr (resolve "rate"))
 (define-category process-rate ;;(noun "rate" :super bio-scalar
   :specializes bio-scalar
   :binds ((process bio-process) (components biological))
