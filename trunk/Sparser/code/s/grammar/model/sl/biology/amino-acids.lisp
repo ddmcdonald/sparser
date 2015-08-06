@@ -77,6 +77,8 @@ ones are gratuitously ambiguous with capitalized initials.
        (add-rule-to-individual caps-3-letter-rule i)
       (setf (gethash one-letter-object *single-letters-to-amino-acids*) i)
       (setf (gethash one-letter-word *single-letters-to-amino-acids*) i)
+      (set-object-property i :one-letter-code one)
+      (set-object-property i :three-letter-code three)
       i)))
     
 
