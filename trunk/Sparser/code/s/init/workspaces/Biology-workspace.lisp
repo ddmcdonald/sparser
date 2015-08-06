@@ -68,21 +68,22 @@
   (push :biology-loaded *features*)
   )
 
-(defun cureRAS-directory ()
-  "Compute namestring or complain that you can't."
-  (unless (boundp 'cl-user::*r3-trunk*)
-    (error "No value defined for cl-user::*r3-trunk*"))
-  (let ((namestring (concatenate 'string cl-user::*r3-trunk*
-                                 "code/vocabulary-discovery/cureRAS/")))
-    (unless (probe-file namestring)
-      (error "The location given for the curRAS directory doesn't ~
-              exist:~% ~s" namestring))
-    namestring))
+(defun define-r3-path-if-needed ()
+  "The function r3-path is bound in <r3 trunk>/code/load.lisp
+   and defined relative to the directory just above that location,
+   i.e. *r3-trunk*. This defines the function if it isn't already."
+  (unless (fboundp 'cl-user::r3-path)
+    (unless (boundp 'cl-user::*r3-trunk*)
+      (error "No value defined for cl-user::*r3-trunk*"))
+    (defun cl-user::r3-path (relative-path)
+      (merge-pathnames relative-path cl-user::*r3-trunk*))))
+
 
 
 ;;; copied from ddm-load-corpora in ddm-workspace.
  
 (defun load-bio-corpora ()
+  (define-r3-path-if-needed)
   (cl-user::r3-load "code/vocabulary-discovery/cureRAS/December-text-passages.lisp")
   (cl-user::r3-load "code/vocabulary-discovery/cureRAS/January Dry Run passages.lisp")
   (cl-user::r3-load "code/vocabulary-discovery/cureRAS/ERK-translocation.lisp")
