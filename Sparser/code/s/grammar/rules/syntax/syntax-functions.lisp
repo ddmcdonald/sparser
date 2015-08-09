@@ -1062,7 +1062,7 @@
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
       (setq predicate (individual-for-ref np))
-      (setq  predicate (bind-dli-variable variable-to-bind pobj result))
+      (setq  predicate (bind-dli-variable variable-to-bind pobj predicate))
       (make-simple-individual category::copular-predicate
                               `((predicated-of ,np)
                                 (predicate ,predicate)))))))
