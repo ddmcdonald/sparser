@@ -53,7 +53,7 @@ which could be set automatically by using the :init-form on the slot.
 (defclass discourse-relations ()
   ((background-knowledge :initform nil :accessor background-knowledge
     :documentation "Pairs of sentences (X, Y), where X is
-      explicitely assumed or acknowledged prior to the assertion
+      explicitly assumed or acknowledged prior to the assertion
       of Y.")
    (contrast :initform nil :accessor contrast
     :documentation "Pairs of sentences (X, Y), where X and Y are

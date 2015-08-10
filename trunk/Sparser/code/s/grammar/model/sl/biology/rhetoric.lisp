@@ -112,12 +112,32 @@ no evidence in the sentence.
 |#
 
 ;;;--------------------------------------------
-;;; Determine sentences' roles in the discourse
+;;; Discourse roles and relations
 ;;;--------------------------------------------
 
-(defparameter *all-discourse-role-sents* nil)
+(defparameter *all-discourse-relations* nil
+  "Stores all discourse relations found by establish-discourse-relations.")
 
-(defparameter *no-discourse-role-sents* nil)
+(defparameter *collect-discourse-relations* nil
+  "Flag to control whether or not discourse relations are pushed to 
+*all-discourse-relations*.")
+
+(defparameter *all-discourse-role-sents* nil
+  "Stores all of the sentences that have been classified with a discourse role.")
+
+(defparameter *no-discourse-role-sents* nil
+  "Stores all of the sentences that have not been given a discourse role.")
+
+(defun reset-and-do-discourse ()
+  (setf *all-discourse-relations* nil
+	*collect-discourse-relations* t
+	*all-discourse-role-sents* nil
+	*no-discourse-role-sents* nil
+	*do-discourse-relations* t))
+
+;;;--------------------------------------------
+;;; Determine sentences' roles in the discourse
+;;;--------------------------------------------
 
 ;;; These functions look at the content of a sentence
 ;;; and determine if the sentence can be classified as
@@ -198,10 +218,6 @@ structural-discourse-relations:
 
 The relations are 'shallow' because the semantic content of
 the sentences is not considered. |#
-
-(defparameter *collect-discourse-relations* nil)
-
-(defparameter *all-discourse-relations* nil)
 
 ;;; Bio discourse relations
 
@@ -449,24 +465,19 @@ the sentences is not considered. |#
 ;;; rules
 ;;;-------
 
-;; Let's not mark modals or other elements of tense
-;; and aspect during the feature-reading pass. The complete routine
-;; complicates the regular function of "could" within the parsing
-;; of the verb group. We can look for this sort of thing during
-;; the relevance computation at which point we just (... a mear matter
-;; of programming) look for them and judge accordingly. 
-;;(conjecture-phrase "could") ;; could also
-
 (conjecture-phrase "a possible explanation")
 (conjecture-phrase "it is likely that")
 (conjecture-phrase "it is possible that")
 (conjecture-phrase "one could hypothesize that")
+(conjecture-phrase "we speculate that")
 
 (experimental-result-phrase "we found")
+(experimental-result-phrase "we also observed")
 (experimental-result-phrase "we observed")
 
 (known-result-phrase "emerging evidence suggests")
 (known-result-phrase "has been shown")
+(known-result-phrase "in previous studies")
 (known-result-phrase "it has been proposed that")
 (known-result-phrase "it has been unclear how")
 (known-result-phrase "it is less clear how")
@@ -475,20 +486,16 @@ the sentences is not considered. |#
 (known-result-phrase "it was shown")
 (known-result-phrase "most commonly")
 (known-result-phrase "most studied")
-(known-result-phrase "previous")
-(known-result-phrase "previously")
+(known-result-phrase "previous studies have shown")
+(known-result-phrase "previous studies predicted")
+(known-result-phrase "previous computational studies predicated")
 (known-result-phrase "recent data")
-(known-result-phrase "recent evidence")
+(known-result-phrase "recent evidence indicates")
 (known-result-phrase "recent investigations")
 (known-result-phrase "recently")
 (known-result-phrase "thus far identified")
+(known-result-phrase "we previously showed")
 
-;; Can we reduce this to just the verbs+present tense,
-;; e.g., "reveal", "show", "demonstrate", etc.? 
-;; Or give a list of words and say that a new-fact-phrase
-;; is any polyword that is a (syntactically valid?)permutation
-;; of those words. Or just if a sentence contains enough of
-;; the words?
 (new-fact-phrase "arguing that")
 (new-fact-phrase "demonstrates that")
 (new-fact-phrase "for the first time") 
@@ -496,9 +503,11 @@ the sentences is not considered. |#
 (new-fact-phrase "here we show")
 (new-fact-phrase "indicates that")
 (new-fact-phrase "indicating")
+(new-fact-phrase "it is evident that")
 (new-fact-phrase "our data provide evidence")
 (new-fact-phrase "our data reveal")
 (new-fact-phrase "our data suggest that")
+(new-fact-phrase "out findings reveal")
 (new-fact-phrase "provides a novel link between")
 (new-fact-phrase "provides an explanation of how")
 (new-fact-phrase "suggesting that")
@@ -509,12 +518,15 @@ the sentences is not considered. |#
 (new-fact-phrase "these data suggest")
 (new-fact-phrase "these data support")
 (new-fact-phrase "these findings reveal")
+(new-fact-phrase "these findings suggest")
 (new-fact-phrase "this modeling result suggests that")
 (new-fact-phrase "this result indicates")
 (new-fact-phrase "these results indicate")
+(new-fact-phrase "these results indicated")
 (new-fact-phrase "these results show")
 (new-fact-phrase "these results suggest")
 (new-fact-phrase "this result shows")
+(new-fact-phrase "this result suggests")
 (new-fact-phrase "this suggests that")
 (new-fact-phrase "this indicates that")
 (new-fact-phrase "this observation suggests")
@@ -525,29 +537,53 @@ the sentences is not considered. |#
 (new-fact-phrase "we further demonstrate that")
 (new-fact-phrase "we report here")
 (new-fact-phrase "we show here that")
+(new-fact-phrase "we show that")
 
-;; Similarly can these be boiled down to verb+past?
+(methodology-phrase "in our approach")
+(methodology-phrase "to test this prediction")
 (methodology-phrase "was compared")
 (methodology-phrase "was performed")
 (methodology-phrase "was tested")
 (methodology-phrase "we analyzed")
+(methodology-phrase "we built computational models")
 (methodology-phrase "we carried out")
+(methodology-phrase "we chemically ligated")
 (methodology-phrase "we conducted")
 (methodology-phrase "we employed")
+(methodology-phrase "we equilibrated")
 (methodology-phrase "we examined")
+(methodology-phrase "we generated")
+(methodology-phrase "we immunopreciated")
+(methodology-phrase "we measured")
+(methodology-phrase "we modified")
+(methodology-phrase "we mutated")
 (methodology-phrase "we performed")
+(methodology-phrase "we placed")
+(methodology-phrase "we replaced")
+(methodology-phrase "we used")
 (methodology-phrase "were analysed")
 
 #| we queried whether [the activity of ASPP2 is regulated
 by the activation of a RAS-mediated signalling pathway]." |#
 (motivation-phrase "to assess the effect")
 (motivation-phrase "to assess whether")
+(motivation-phrase "to determine if")
 (motivation-phrase "to determine the effect")
+(motivation-phrase "to determine the mechanism")
 (motivation-phrase "to determine whether")
+(motivation-phrase "to elucidate the mechanism")
+(motivation-phrase "to establish whether")
+(motivation-phrase "to further establish that")
 (motivation-phrase "to test whether")
+(motivation-phrase "to validate")
+(motivation-phrase "to verify that")
+(motivation-phrase "we considered whether")
 (motivation-phrase "we evaluated whether")
+(motivation-phrase "we first determined if")
 (motivation-phrase "we investigated whether")
+(motivation-phrase "we next considered")
 (motivation-phrase "we queried whether")
+(motivation-phrase "we set out to identify")
 (motivation-phrase "we tested whether")
 (motivation-phrase "we therefore tested whether")
 (motivation-phrase "we thus tested whether")
