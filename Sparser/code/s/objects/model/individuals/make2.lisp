@@ -117,9 +117,13 @@
       (let ((individual
              (find-or-make/individual category binding-instructions)))
 
-        (if *c3*
-          (apply-distributed-realization-data individual)
-          (apply-single-category-rdata individual category))
+        ;;(if *c3*
+        ;; This is (probably) irrelevant without restrictions
+        ;; so moving it out of the way. Failed on the determiner "the"
+        ;; and not obvious what would have changed. Expects the rule-set
+        ;; to have a unary rule at this point and it doesn't. 
+        ;;  (apply-distributed-realization-data individual)
+          (apply-single-category-rdata individual category)
 
         individual))))
 
