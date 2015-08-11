@@ -58,10 +58,12 @@
 ;; 5.16 (6/4/14) Added *no-segment-level-operations* to skip on to scan the
 ;;       next segment if it's up. Motivated by just-brackets testing. 
 ;; 5.17 (10/10/14) Found another way to do that, so ripped out that incomplete
-;;       attempt.	
-;; 7/24/2015  new more general mechanism for handling plural noun/present tense verb conflicts can be used
-;; see ensure-edge-consistent-with-chunk and new code in handling NG and VG chunks
-;; (much better handling of alternative uses of "increases" as a verb and a plural noun)
+;;       attempt. 
+;; 7/24/2015 new more general mechanism for handling plural-noun/present-
+;;  tense-verb conflicts can be used see ensure-edge-consistent-with-chunk
+;;  and new code in handling NG and VG chunks (much better handling of
+;;  alternative uses of "increases" as a verb and a plural noun)
+;; 8/8/15 considered points at which to site hidden acronym handler
 
 (in-package :sparser)
 
@@ -91,6 +93,11 @@
          *left-segment-boundary* *right-segment-boundary*))))
 
     (tr :pts-coverage coverage)
+
+    ;; If there is an acronym in the interior of this span
+    ;; (vs. at the end) it consitutes a significant parsing
+    ;; boundary since it is providing a name for everything
+    ;; from the segment start to the position of the acronym
 
     (cond
      (coverage
@@ -132,13 +139,11 @@
 
 
 (defun ensure-edge-consistent-with-chunk ()
-  (when
-      (member (chunk-forms *current-chunk*) '((ng)(vg)))
-    (let*
-        ((chunk-treetops (treetops-in-current-chunk))
-         (segment-treetops (treetops-in-segment *left-segment-boundary* *right-segment-boundary*))
-         treetops-to-remove)
-      (declare (special chunk-treetops segment-treetops treetops-to-remove))
+  (when (member (chunk-forms *current-chunk*) '((ng) (vg)))
+    (let* ((chunk-treetops (treetops-in-current-chunk))
+           (segment-treetops 
+            (treetops-in-segment *left-segment-boundary* *right-segment-boundary*))
+           treetops-to-remove )
       (loop for e in segment-treetops do
         (cond
          ((edge-vector-p e)
@@ -149,7 +154,8 @@
       ;; these will be different only in the case where the chunk
       ;; limits the treetops because of POS
       (when treetops-to-remove
-        (loop for e in treetops-to-remove when (edge-p e) do (remove-edge-from-chart e))))))
+        (loop for e in treetops-to-remove when (edge-p e)
+          do (remove-edge-from-chart e))))))
         
 
 
@@ -595,7 +601,7 @@ have to be tail recursion to the next thing to do.
                  :ending-position   *right-segment-boundary*
                  :category  (category-named 'segment)
                  :form nil
-                 :rule-name  :incomplete-segment-default
+                 :rule-name 'trivially-span-current-segment
                  :referent nil)))
       edge )))
 

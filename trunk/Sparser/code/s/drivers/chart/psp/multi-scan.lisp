@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  April 2015
+;;;  version:  August 2015
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -15,7 +15,8 @@
 ;; SBCL caught type error in short-conjunctions-sweep -- fixed
 ;; 4/19/15 adapting pattern-sweep to the case where two edges from prior
 ;;  pass are over words that aren't separated by a space ("20%")
-;; 4/28/15 Added scan-words-loop
+;; 4/28/15 Added scan-words-loop. 8/9/15 added assess-parenthesized-content
+;; and an acronym handler.
 
 (in-package :sparser)
 
@@ -429,11 +430,6 @@
 
 ;; (trace-parentheses)
 
-(defparameter *hide-parentheses* nil
-  "Provides an adequate way to remove text within parentheses to be
-   removed from the parser's attention by burying within the prior
-   edge.")
-
 (defun sweep-to-span-parentheses (sentence)
   ;; (trace-traversal-hook) (trace-traversal-hits)
   ;; Given the sweeps that have preceded this, there will be
@@ -445,7 +441,9 @@
 
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
-        treetop  position-after    )
+        (*special-acronym-handling* t)
+        treetop  position-after )
+    (declare (special *special-acronym-handling*))
 
     ;; (push-debug `(,sentence ,position-before ,end-pos))
     (loop
@@ -461,21 +459,18 @@
         (when (eq treetop *the-punctuation-period*)
           (tr :terminated-sweep-at position-after)
           (return)))
-
-      (let ((hide-parentheses *hide-parentheses*))
-        (declare (special hide-parentheses))
-        (word-traversal-hook treetop position-before position-after))
-        ;; Traversal actions are managed by a hash table from the word
-        ;; qua label (i.e. could be applied to edges as well) to a function
-        ;; that takes these same arguments. This is used for bracket pairs
-        ;; such as parentheses, double quotes, etc. Check with a call to
-        ;; (list-hash-table *traversal-routine-table*)
-        ;;    The action is always on the matching close. The open
-        ;; notes its oposition so the close knows what span to operate
-        ;; over. We check for traversal hits before the no-space check
-        ;; because the ns is greedy and moves the position, which can
-        ;; cause the open to be missed. 
-       
+      
+      (word-traversal-hook treetop position-before position-after)
+      ;; Traversal actions are managed by a hash table from the word
+      ;; qua label (i.e. could be applied to edges as well) to a function
+      ;; that takes these same arguments. This is used for bracket pairs
+      ;; such as parentheses, double quotes, etc. Check with a call to
+      ;; (list-hash-table *traversal-routine-table*)
+      ;;    The action is always on the matching close. The open
+      ;; notes its oposition so the close knows what span to operate
+      ;; over. We check for traversal hits before the no-space check
+      ;; because the ns is greedy and moves the position, which can
+      ;; cause the open to be missed.       
 
       (when (eq position-after end-pos)
         (return))
@@ -484,12 +479,122 @@
              
       (setq position-before position-after))))
 
+
+;;;-----------------------------------
+;;; acronym handling and paren hiding
+;;;-----------------------------------
+
+(defparameter *hide-parentheses* nil
+  "Provides an adequate way to remove text within parentheses to be
+   removed from the parser's attention by burying within the prior
+   edge.")
+
+(defvar *pending-acronyms* nil
+  "If we have walked over what appears to be an acronym to be
+  handled later, this stores the needed information.")
    
-(defun assess-parenthesized-content (layout first-edge
+(defun assess-parenthesized-content (paren-edge
                                      pos-before-open pos-after-open
                                      pos-before-close pos-after-close)
-  (push-debug `(,layout ,first-edge ,pos-before-open ,pos-after-open
+  ;; Called from span-parentheses after all the handling of
+  ;; the interior has been handled and a (usually) vanilla edge
+  ;; constructed to span the whole expression. 
+  (push-debug `(,paren-edge ,pos-before-open ,pos-after-open
                 ,pos-before-close ,pos-after-close))
-  ) ;;(lsp-break "called at ~a" pos-before-open))
+  #| (setq first-edge (nth 0 *) pos-before-open (nth 1 *)
+        pos-after-open (nth 2 *) pos-before-close (nth 3 *)
+        pos-after-close (nth 4 *)) |#
+  ;; Some of this lookup is recreating observations within
+  ;; do-paired-punctuation-interior but it simpler than figuring out
+  ;; a way to export it.
+  (let* ((first-edge (right-treetop-at/edge pos-after-open))
+         (one-edge-over-entire-segment?
+          (when (edge-p first-edge) ;; e.g. "the underlying mechanism(s)."
+            (eq (pos-edge-ends-at first-edge) pos-before-close)))
+         (edge-to-left (left-treetop-at/edge pos-before-open)))
+    (cond
+     ((and (edge-p first-edge)
+           one-edge-over-entire-segment?
+           (one-word-long? first-edge)
+           (eq (pos-capitalization pos-after-open) :all-caps))
+      (let ((ev-after-close (pos-ends-here pos-after-close))
+            (ev-of-edge (when edge-to-left (edge-ends-at edge-to-left))))
+        (when edge-to-left ;; otherwise there's nothing to hide under
+          ;; Move the edge over the parentheses
+          (knit-edge-into-position edge-to-left ev-after-close)
+          (setf (edge-ends-at edge-to-left) ev-after-close)        
+          ;; save the information we need to recover it all
+          (push `(,pos-before-open ,paren-edge ,first-edge ,ev-of-edge)
+                *pending-acronyms*))))
+     (*hide-parentheses*
+      (lsp-break "hide parentheses?")
+      (hide-parenthesis-edge paren-edge edge-to-left)))))
 
+(defun recover-acronym-if-necessary (segment-start segment-end)
+  ;; called from parse-chunk-interior after pts has finished
+  ;; that may not be the best location for it. 
+  (when *pending-acronyms*
+    (let ((pos-before-open (first (car *pending-acronyms*))))
+      (when (position-is-between pos-before-open
+                                 segment-start segment-end)
+        (let* ((data (pop *pending-acronyms*))
+               (paren-edge (second data))
+               (acronym-edge (third data))
+               (ev-of-edge-to-the-left (fourth data)) ;; ends at
+               (regular-edge (ev-top-node ev-of-edge-to-the-left)))
+          (push-debug `(,pos-before-open ,paren-edge ,acronym-edge
+                        ,ev-of-edge-to-the-left ,regular-edge))
+          (unless regular-edge
+            ;; have to go find it. Could be argument for hacking
+            ;; chunk parse to see the boundary
+            (break "missing regular-edge - go find it"))
+          ;; What should the parse look like? The right-head of
+          ;; the regular edge has been hacked to extend over
+          ;; the parens. Is that still ok?
+          (let ((regular-referent (edge-referent regular-edge))
+                (acronym-referent (edge-referent acronym-edge)))
+            (unless (eq regular-referent acronym-referent)
+              ;; it's been predefined. Nothing to do
+              ;; Otherwise we take over the acronym edge
+              ;; and rule and make them look like the regular edge
+              (let* ((rule (edge-rule acronym-edge))
+                     (lowercase-rhs (car (cfr-rhs rule)))
+                     (string (word-pname lowercase-rhs))
+                     (uppercase-word (resolve/make (string-upcase string))))
+                (setf (cfr-category rule) (edge-category regular-edge))
+                (setf (cfr-rhs rule) (list uppercase-word))
+                (setf (cfr-form rule) (edge-form regular-edge))
+                (setf (cfr-referent rule) regular-referent)
+                ;;(break "acronym made rule ~a" rule)
+                rule ))))))))
+
+;; (setq *pending-acronyms* nil)
+
+  
+
+
+
+(defun hide-parenthesis-edge (paren-edge edge-to-immediate-left)
+  ;; Paren-edge spans from the open paren to the close inclusive.
+
+  ;; With lots of new words and the polyword treatment no longer
+  ;; populating the chart with literals, there is quite likely
+  ;; not to be an edge to the left to 'hide' the parenthesized
+  ;; expression under until we can give them reasonable treatments.
+  ;; If there's no edge we should leave it, then add a rule or
+  ;; such to do the hiding when there's a chunk to the left
+  ;; which is guarenteed to have a spanning edge
+
+  ;; See also knit-parens-into-neighbor in pass1
+
+;    (unless edge-to-immediate-left
+;      (error "hide parenthesis: new situation, no edge to the left"))
+  (when edge-to-immediate-left
+    (let ((paren-ends-at (edge-ends-at paren-edge)))
+      ;;(neighbor-ends-at (edge-ends-at edge-to-immediate-left)))
+      (setf (edge-ends-at edge-to-immediate-left) paren-ends-at)
+      (knit-edge-into-position edge-to-immediate-left paren-ends-at)
+      (push-debug `(,edge-to-immediate-left)) 
+      ;;(break "is the edge hidden?")
+      )))
 
