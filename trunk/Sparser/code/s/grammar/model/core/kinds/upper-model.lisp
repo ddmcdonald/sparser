@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.2 January 2015
+;;;  version:  0.4 August 2015
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -28,6 +28,7 @@
 ;; 0.3 (6/16/14) Trying to insert more organization.
 ;;     (1/12/15) Filled in missing super-types.  1/20/15 added negation
 ;;      to top. Worth seeing what a good ontologist would do though. 
+;; 0.4 (8/10/15) Reorganized for clarity and ease of reading. 
 
 (in-package :sparser)
 
@@ -62,7 +63,10 @@
 ;;;-----------------------------------------------------------------
 ;;;     'real' categories -- the effective top of the hierarchy
 ;;;-----------------------------------------------------------------
-;; The other 'tops' are in the files kinds/processes.lisp and
+;; The other 'tops' are in the files kinds/processes.lisp, kinds/things.lisp,
+;; and kinds/space.lisp (though that needs to be integrated better with
+;; rest of the location
+;; There are
 
 (define-category  quality
   :instantiates nil
@@ -78,9 +82,9 @@
  will change to brown. Nothing happens to the points in color space
  that the rose's color quality refers to: they are independent
  abstract entities.")
-
 ;;; possible subclasses: SensoryQuality (color, sound), SocialQuality
 ;;; (angry), units of measure
+
 
 (define-category abstract
   :instantiates nil
@@ -93,6 +97,8 @@
  descriptions, structures assembled out of symbols..")
 
 
+
+;;;--- Subcategories of abstract
 
 ; We need an unmarked, equally weighted 'relation' for what holds
 ; among things like the members of a collection or between categories
@@ -117,27 +123,49 @@
  from 2000.")
 
 
+;;;-----------------------------------------------------
+;;; names -- simple and root of real
+;;;-----------------------------------------------------
 
-;;;-----------------
-;;; Next layer down
-;;;-----------------
+(define-category has-name
+  :specializes relation 
+  :binds ((name :primitive word))
+  ;; Can hang lots of realizations here
+  ;; 'known as', 'called', ...
+  :realization (:proper-noun name)
+;;/// This has to be integrated with 'real' names in a cleaner
+;; way, but it's a start. Probably requires a more complex 'or'
+;; restriction on the name variable.
+  :documentation "Used as a mix-in to supply a simple name
+  variable to another class. Part of the movement to cut down
+  on the number and diversity of variables in the ontology
+  as per C3.")
 
-(define-category scalar-quality
-  :instantiates nil
-  :specializes quality)
 
+(define-category  name
+  :specializes quality 
+  :instantiates self
+  :documentation "This is the root for all (real) names.
+   Something has a (real) name, which is why it's a quality.")
+
+
+
+
+;;;------------------------------------------------
+;;;--------- subcategories of relation -------------
+;;;------------------------------------------------
 
 (define-category dependent-substrate
    :specializes relation
    ;; See dependent-of ETF and paths (exit-turnpike)
+   ;; Related to feature in things.lisp
    :binds ((dependent)
            (substrate)))
 
-
-;;;-----------------
-;;; operator et al.
-;;;-----------------
-
+;
+(define-category operator
+  :specializes relation
+  :binds ((name :primitive word)))
 ; The intuitions for the notion of 'operator' come ultimately from
 ; logic. This is classification for properties (in this model these
 ; are 'qualities' to stay with the clearest current literature) like
@@ -159,9 +187,6 @@
 ; that derives from operator, which goes along with the fact that adjuncts 
 ; are always grammatically optional.
 
-(define-category operator
-  :specializes relation
-  :binds ((name :primitive word)))
 
 ; Atributes or predicates some property of something.
 ; Goes with the relation modified.
@@ -170,6 +195,13 @@
 
 (define-category adverbial
    :specializes modifier)
+
+(define-category modifies
+  :specializes relation
+  :instantiates :self
+  :binds ((modifier . modifier)
+          (modified)))
+
 
 
 ; Predication is a category that exists because operator does. It will
@@ -183,6 +215,20 @@
   :binds ((term)
           (operator . operator)))
 
+(define-category  attribute-value
+  ;; as in 'attribute-value pair'
+  :specializes predication ;;/// re-think the variables there
+  :binds ((attribute . attribute)
+          (value))
+  :index (:permanent :sequential-keys attribute value))
+
+
+;;;------------------------------------------------
+;;;--------- subcategories of quality -------------
+;;;------------------------------------------------
+
+;; n.b. the directory model/core/qualities/ has color should have
+;; other such things.
 
 (define-category  attribute
   :instantiates :self
@@ -195,23 +241,25 @@
   ;; scalar quality. 
   :binds ((name :primitive word)))
 
-(define-category  attribute-value
-  ;; as in 'attribute-value pair'
-  :specializes predication ;;/// re-think the variables there
-  :binds ((attribute . attribute)
-          (value))
-  :index (:permanent :sequential-keys attribute value))
+
+(define-category scalar-quality
+  :instantiates nil
+  :specializes quality)
 
 
 
-(define-category modifies
-  :specializes relation
-  :instantiates :self
-  :binds ((modifier . modifier)
-          (modified)))
 
 
 
+;;;------------------------------------------------------------
+;;;---------------- nothing live beyond here ------------------
+;;;------------------------------------------------------------
+
+#|  This is the presently unused part of the ontology that started
+    with Meteer's study of Talmy for her thesis, as laundered by
+    McDonald at Zoesis. It's worth mining this periodically for
+    notions that might be worth incorporating into the now Dolce-
+    centric upper model. 
 
 ;;--- expressible-type  (more of a generation-centric notion)
 
@@ -240,10 +288,6 @@
 ; All the categories for the things we can mention/talk about in language
 ; fall under this category. 
 
-
-;;---------------- nothing live beyond here ------------------
-
-#|  
 
 
 ;;--- categories that are classifications of effects rather than stuff

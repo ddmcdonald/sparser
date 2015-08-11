@@ -31,7 +31,7 @@
     ;; than core conceptualizations and incorporated sublanguages
   'category ;; name
   nil ;; value restriction, which would be 'category' but don't want to go there
-  category::expressible-type) ;; category we link it to. Top of the taxonomy
+  category::top) ;; category we link it to. Top of the taxonomy
 
 (defun bind-category-of-instance (i category)
   ;; Syntactic sugar to hide the category from the compiler since
