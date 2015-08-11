@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "parentheses"
 ;;;   Module:  "grammar;rules:traversal:"
-;;;  Version:  0.6 June2014
+;;;  Version:  0.6 August 2015
 ; 
 ;; initiated 5/1/91, v1.8.4
 ;; 0.1 (5/15/94) flushed the segment-start hack
@@ -15,7 +15,11 @@
 ;; 0.5 (8/31/09) Broke out the capitalized-word hook into its own file so that
 ;;     it could be gated by *proper-name*. 8/28/11 cleaned up.
 ;; 0.6 (6/4/14) Added *permit-extra-open-parens* flag to accommodate bio text
-;;      where arrow is expressed as an open-paren.
+;;      where arrow is expressed as an open-paren. 8/7/15 tweaked naming of
+;;      special for hiding parentheses.
+;;     (8/9/15) moved assess-parenthesized-content here and pulled
+;;      paren hding to be part of that.
+
 
 (in-package :sparser)
 
@@ -39,7 +43,8 @@
 
 (defparameter *permit-extra-open-parens* nil)
 
-(defun mark-open-paren (start-pos end-pos)
+(defun mark-open-paren (pos-before-open pos-after-open)
+  (declare (ignore pos-after-open))
   (unless *ignore-parentheses*
     (if *position-of-pending-open-paren*
       ;; Then we're already inside an open parenthesis
@@ -48,26 +53,25 @@
        ;; where the arrow of a chemical equation is expressed
        ;; as an open paren
        ;;(break "double parens")
-       (unless *permit-extra-open-parens*
+       (when *permit-extra-open-parens*
          (push *position-of-pending-open-paren*
                *pending-open-paren-stack*))
-       (setq *position-of-pending-open-paren* start-pos))
+       (setq *position-of-pending-open-paren* pos-before-open))
       (else
-       (tr :open-paren-seen start-pos)
-       (setq *position-of-pending-open-paren* start-pos)))))
+       (tr :open-paren-seen pos-before-open)
+       (setq *position-of-pending-open-paren* pos-before-open)))))
 
 
 
-(defun span-parentheses (start-pos end-pos)
-  (declare (special hide-parentheses))
+(defun span-parentheses (pos-before-close pos-after-close)
   (unless *ignore-parentheses*
-    (tr :close-paren-seen start-pos)
+    (tr :close-paren-seen pos-before-close)
     
-    (let ((open-pos *position-of-pending-open-paren*))
+    (let* ((open-pos *position-of-pending-open-paren*)
+           (pos-after-open (chart-position-after open-pos)))
       (setq *position-of-pending-open-paren*
-            (if *pending-open-paren-stack*
-		       (pop *pending-open-paren-stack*)
-               nil))
+            (when *pending-open-paren-stack*
+              (pop *pending-open-paren-stack*)))
       
       (unless open-pos
         ;;(if *break-on-pattern-outside-coverage?*
@@ -79,47 +83,22 @@
       (tr :matching-open-is-at open-pos)
       
       (do-paired-punctuation-interior :parentheses
-				      open-pos
-				      (chart-position-after open-pos)
-				      start-pos
-				      end-pos)
+				      open-pos ;; just before the open
+				      pos-after-open
+				      pos-before-close 
+				      pos-after-close) ;; just after the close
       
       (let ((edge (top-edge-starting-at open-pos)))
         ;; this will be the edge produced by the paired-punct hook
+
+        (assess-parenthesized-content edge
+                                      open-pos pos-after-open
+                                      pos-before-close pos-after-close)
 	
         (edge-interaction-with-quiescence-check edge)
 
-        (when hide-parentheses
-          ;;/// should also record the position of the parentheses
-          ;; in case a second pass considers them.
-          (hide-parenthesis-edge-at-pos edge open-pos))
         (tr :parenthesis-edge edge)
         edge ))))
-
-(defun hide-parenthesis-edge-at-pos (paren-edge open-pos)
-  ;; Edge spans from the open paren to the close inclusive.
-  ;; Open-pos is the position between that edge and the word/edge
-  ;; to its left.
-  (push-debug `(,paren-edge ,open-pos))
-  (let ((edge-to-immediate-left (left-treetop-at/edge open-pos)))
-    ;; With lots of new words and the polyword treatment no longer
-    ;; populating the chart with literals, there is quite likely
-    ;; not to be an edge to the left to 'hide' the parenthesized
-    ;; expression under until we can give them reasonable treatments.
-    ;; If there's no edge we should leave it, then add a rule or
-    ;; such to do the hiding when there's a chunk to the left
-    ;; which is guarenteed to have a spanning edge
-    ;; See knit-parens-into-neighbor in pass1
-;    (unless edge-to-immediate-left
-;      (error "hide parenthesis: new situation, no edge to the left"))
-    (when edge-to-immediate-left
-      (let ((paren-ends-at (edge-ends-at paren-edge)))
-        ;;(neighbor-ends-at (edge-ends-at edge-to-immediate-left)))
-        (setf (edge-ends-at edge-to-immediate-left) paren-ends-at)
-        (knit-edge-into-position edge-to-immediate-left paren-ends-at)
-        (push-debug `(,edge-to-immediate-left)) 
-        ;;(break "is the edge hidden?")
-        ))))
 
 
 
