@@ -6,10 +6,9 @@
 ;;;  version:  April 2014
 
 ;; initiated 7/11/96. Revised and updated 2/13/13. Put in a guard to not
-;; require it to always be debugged 9/16/13. 4/19/95 Added case for bio-entity.
+;; require it to always be debugged 9/16/13. 4/19/15 Added case for bio-entity.
 
 (in-package :sparser)
-
 
 ;;;-------------------------------------------
 ;;; e.g. "Electronic Book Technologies (EBT)"
