@@ -8,27 +8,35 @@
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
 ;; words not covered by edges. Added traces.
-;; RJB 12/13/2014 changes to method "remaining-forms" and to code in categories.lisp
-;; to provide more subtle handling of NP chunking to deal with verb+ed cases
-;; contrast "direct binding to activated forms of RAS" where "activated" is likely to be a pre-nominal modifier (from j2)
-;; with "these drugs blocked ERK activity" where "blocked" is the main verb.
-;; the key is to end a NG when you hit a verb+ed immediately preceded by a noun, and to prevent that verb+ed from
-;; starting another NG (so that it becomes a VG on its own) 
+
+;; RJB 12/13/2014 changes to method "remaining-forms" and to code in
+;; categories.lisp to provide more subtle handling of NP chunking to deal
+;; with verb+ed cases contrast "direct binding to activated forms of RAS"
+;; where "activated" is likely to be a pre-nominal modifier (from j2) with
+;; "these drugs blocked ERK activity" where "blocked" is the main verb.
+;; the key is to end a NG when you hit a verb+ed immediately preceded by a
+;; noun, and to prevent that verb+ed from starting another NG (so that it
+;; becomes a VG on its own)
 ;; RJB 12/19/2014     ;; partitive construction e.g. "all of these lines"
-;; 1/1/2015 break out adjective/modifier from start of NG if the preceding chunk was a copula
-;; and fix handling of chunks terminated by the end of the sentence
+;; 1/1/2015 break out adjective/modifier from start of NG if the preceding
+;;  chunk was a copula and fix handling of chunks terminated by the end of
+;;  the sentence
 ;; 1/12/2015 Start on new NG interpreter parse-ng-interior -- works modestly well
 ;; 1/14/2015 New whack-a-rule type interpreter for NG and VG chunks
-;; 1/17/2015 NEW VERSION -- should handle ambiguities in base edges
-;; 1.28.2015 better handling of VG chunks -- don't allow two finite verbs in the chunk (excpet for BE, HAVE and modals)
-;; 2/24/2015 allow determiner and quantifier before number in an NG (used to be that we didn't allow "all three drugs"
+;; 1/17/2015 NEW VERSION -- should handle ambiguities in base edge
+;; 1.28.2015 better handling of VG chunks -- don't allow two finite verbs
+;; in the chunk (excpet for BE, HAVE and modals)
+;; 2/24/2015 allow determiner and quantifier before number in an NG (used
+;; to be that we didn't allow "all three drugs"
 ;; 4/14/15 Added tts to top of chunking operation when trace-parse-edges
 ;;  is running. 
-;; 4/27/2015 Improved handling of verb+ed case -- tension is between keeiping it in the NP and losing a reduced relative, or
-;;  breaking up the NP to allow for the verb form. Still need to review this.
-;; 5/23/2015 -- handling wh-pronouns as NPs for relative clause PPs ("in which ...", "from whose") while not allowing them as
-;;  as determiner-like modifiers for the start of a questioned NP ("which protein")
-;;  handle partitive without OF -- "all these ..."
+;; 4/27/2015 Improved handling of verb+ed case -- tension is between
+;; keeiping it in the NP and losing a reduced relative, or breaking up the
+;; NP to allow for the verb form. Still need to review this.
+;; 5/23/2015 -- handling wh-pronouns as NPs for relative clause PPs ("in
+;; which ...", "from whose") while not allowing them as as determiner-like
+;; modifiers for the start of a questioned NP ("which protein") handle
+;; partitive without OF -- "all these ..."
 ;; 6/5/2015 don't run over the final period in scanning for chunk boundary
 
 
@@ -93,15 +101,14 @@
 (defun ev-edges (ev)
   ;; return a list of all the relevant edges on an edge vector -- hope it doesn't cons too much
   (when ev ;; can be called with nil, when there is no previous ev in a chunk
-       (let
-           ((top (ev-top-node ev)) edge)
-         (if
-          (eq top :multiple-initial-edges)
-          (loop for i from 0 to (- (ev-number-of-edges ev) 1)
-            when (not (literal-edge? (setq edge (aref (ev-edge-vector ev) i))))
-            collect edge)
-          (when top ;; managed to get an ev with NIL top node
-            (list top))))))
+    (let ((top (ev-top-node ev))
+          edge)
+      (if (eq top :multiple-initial-edges)
+        (loop for i from 0 to (- (ev-number-of-edges ev) 1)
+          when (not (literal-edge? (setq edge (aref (ev-edge-vector ev) i))))
+          collect edge)
+        (when top ;; managed to get an ev with NIL top node
+          (list top))))))
 
 (defun reset-ev-edges (ev edge-list)
   (when ev
@@ -123,14 +130,14 @@
   (setq *ng-chunks* nil)
   (setq *vg-chunks* nil)
   (setq *adjg-chunks* nil))
-(defun show-chunks(&optional (stream t))
+(defun show-chunks (&optional (stream t))
   (format stream "~&~&;;____________________________*ng-chunks*~&")
   (np (sort *ng-chunks* #'string<) stream)
 
   (format stream "~&~&;;____________________________*vg-chunks*~&")
   (np (sort *vg-chunks* #'string<) stream)
 
-  (format stream "~&~&;;____________________________*adjgg-chunks*~&")
+  (format stream "~&~&;;____________________________*adjg-chunks*~&")
   (np (sort *adjg-chunks* #'string<)  stream))
 
   
@@ -138,7 +145,7 @@
 (defun identify-chunks (sentence)
   ;; Called from sentence-sweep-loop after the short sweeps over 
   ;; the sentence have fnished.
-  (when *parse-edges* (tts)) 
+  (when *parse-edges* (tts)) ;; when tracing
   (let ((chunks (find-chunks sentence)))
     ;;(push-debug `(,sentence ,chunks)) (break "~a chunks" (length chunks))
     ;;(pop-debug) (setq sentence (car *) chunks (cadr *))
@@ -148,19 +155,15 @@
         (tr :parsing-chunk-interior-of chunk)
         (parse-chunk-interior chunk)))
     (set-sentence-status sentence :chunked)
-    (when
-     *record-all-chunks*
-     (loop for c in chunks
-       do
-       (record-chunk c)))
+    (when *record-all-chunks*
+      (loop for c in chunks
+        do (record-chunk c)))
     chunks))
 
 (defun record-chunk (c)
   (declare (special c))
-  (let
-      ((str (string-of-words-between (chunk-start-pos c)(chunk-end-pos c)))) 
-    (when
-        (chunk-forms c)
+  (let ((str (string-of-words-between (chunk-start-pos c)(chunk-end-pos c)))) 
+    (when (chunk-forms c)
       (ecase (car (chunk-forms c))
         (ng (push str *ng-chunks*))
         (vg (push str *vg-chunks*))
@@ -170,7 +173,7 @@
   ;; Use the standard machinery is PTS to parse the interior
   ;; of the chunk and introduce a corresponding edge into
   ;; the chart. Run pts in a mode that will make it run
-  ;; to completion and return rather than makinig a tail
+  ;; to completion and return rather than making a tail
   ;; recursive call back to the scan level
   (declare (special *left-segment-boundary*
                     *right-segment-boundary*))
@@ -180,7 +183,14 @@
         (*current-chunk* chunk))
     (declare (special *return-after-doing-segment*
                       *current-chunk*))
-    (pts)))
+    (pts)
+    (recover-acronym-if-necessary
+     ;; this may belong somewhere within the dynamic scope 
+     ;; of pts, but precisely where isn't clear yet.
+     *left-segment-boundary* *right-segment-boundary*)))
+
+
+
 
 (defun show-chunk-edges (&optional (ces *all-chunk-edges*))
   (loop for c in (reverse ces)
@@ -204,12 +214,10 @@
   (setq *chunks* nil)
   (let ((pos (starts-at-pos sentence))
         (end (ends-at-pos sentence))
-        forms
-        ev)
+        forms  ev)
     (declare (special pos end forms ev))
-    (until
-        (eq pos end)
-        (reverse *chunks*) ;; this is the return value
+    (until (eq pos end)
+           (reverse *chunks*) ;; this is the return value
       (setq ev (pos-starts-here pos))
       (setq forms (starting-forms ev *chunk-forms*))
       (cond
@@ -229,10 +237,9 @@
             #+ignore
             (error "Chunker encountered a treetop word: ~s"
                    (word-pname right-treetop))
-            (if
-             (eq word::period right-treetop)
+            (if (eq word::period right-treetop)
              (setq pos end)
-             (setq pos (chart-position-after pos))));;(setq pos (p# (+ 1 (pos-array-index pos))))
+             (setq pos (chart-position-after pos)))) ;;(setq pos (p# (+ 1 (pos-array-index pos))))
            (t
             (setq pos (pos-edge-ends-at right-treetop))))))))))
 

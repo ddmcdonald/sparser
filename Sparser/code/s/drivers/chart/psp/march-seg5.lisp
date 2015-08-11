@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "march/seg"             ;; march back, parsing edges
 ;;;   Module:  "drivers;chart:psp:"    ;;  in a segment
-;;;  Version:  5.5 February 2015
+;;;  Version:  5.5 June 2015
 
 ;; 4.0 (5/7/93 v2.3) Bringing into sinc with the new word-level driver
 ;; 5.0 (3/15/94) Added dotted-rule hack
@@ -18,10 +18,14 @@
 ;;  proper and making what runs here moot, removed the copy and
 ;;  rewrote this version to take the bast of that one and integrate
 ;;  a real 'choose the best' locus, presently a trivial default
-;; 2/4/2015 cache rules discovered for pairs of edges so that we do not keep calling multiply-edges unnecessarily
-;; 6/5/2-15 Use different parsers for NG, VG and ADJG -- NG is right to left, ADJG and VG are left to right
-;;  this needs to be reviewed, but it helps with "will likely be useful" where the modal wants to be associated with the "be'
-;; 6/28/2015 Don't call march-back-from-the-right/segment when segment has been fully parsed
+;; 2/4/2015 cache rules discovered for pairs of edges so that we do not
+;;   keep calling multiply-edges unnecessarily
+;; 6/5/2-15 Use different parsers for NG, VG and ADJG -- NG is right to
+;;   left, ADJG and VG are left to right this needs to be reviewed, but it
+;;   helps with "will likely be useful" where the modal wants to be
+;;   associated with the "be'
+;; 6/28/2015 Don't call march-back-from-the-right/segment when segment has
+;;   been fully parsed
 
 (in-package :sparser)
 
@@ -32,13 +36,13 @@
 ;; (trace-parse-edges)
 
 (defun parse-at-the-segment-level (segment-end-pos)
-  (declare (special *current-chunk*))
+  (declare (special *current-chunk* *big-mechanism-ngs*))
   (tr :parse-at-the-segment-level segment-end-pos)
   (setq *rightmost-active-position/segment* segment-end-pos)
   ;;(break "about to parse ~a" *current-chunk*)
   (cond
    ((and *big-mechanism-ngs*
-        (member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal))
+         (member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal))
     (interp-big-mech-chunk *current-chunk* nil))
    ((use-specialized-ng-parser?)
     (interp-big-mech-chunk *current-chunk* t))
@@ -68,15 +72,11 @@
     (treetops-in-segment *left-segment-boundary*
                          *right-segment-boundary*)
     collect
-    (cond
-     ((edge-p ev)
-      ev)
-     ((edge-vector-p ev)
-      (loop for e in (ev-edges ev)
-        when
-        (compatible-with-chunk e *current-chunk*)
-        do
-        (return e))))))
+    (cond ((edge-p ev) ev)
+          ((edge-vector-p ev)
+           (loop for e in (ev-edges ev)
+             when (compatible-with-chunk e *current-chunk*)
+             do (return e))))))
 
 (defun compatible-with-chunk (edge chunk)
   (cond
@@ -133,14 +133,14 @@
     (loop
       (setq triple (select-best-triple
                     (if from-right
-                        (collect-triples-in-segment chunk)
-                        (reverse (collect-triples-in-segment chunk)))))
+                      (collect-triples-in-segment chunk)
+                      (reverse (collect-triples-in-segment chunk)))))
       (unless triple
         (return))
       (setq edge (execute-triple triple))
       (unless edge 
         (push-debug `(,triple))
-        (break "triple did not produce an edge"))
+        (error "triple did not produce an edge"))
       (tr :triple-led-to-edge edge))
     (if (eq (segment-coverage) :one-edge-over-entire-segment)
         (segment-parsed1)
@@ -201,8 +201,7 @@
     (multiple-value-bind (cached-rule pair-seen)
                          (gethash pair *rules-for-pairs*)
       (let ((rule 
-             (if
-              pair-seen
+             (if pair-seen
               cached-rule
               (setf (gethash pair *rules-for-pairs*)
                     (multiply-edges left-edge right-edge chunk)))))
