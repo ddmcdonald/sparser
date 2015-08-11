@@ -27,6 +27,7 @@ them quickly.
   :rule-label attribute
   ;; completely unclear how this fits in. It's a tuple of convenience
   ;; more than anything else. 
+  :specializes quality
   :instantiates :self
   :binds ((attribute)
           (entity))

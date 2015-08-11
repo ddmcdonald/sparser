@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "color"
 ;;;   Module:  "grammar/core/qualities/
 ;;;  version:  October 2013
 
-;; Initiated 10/9/13.
+;; Initiated 10/9/13. 8/10/15 Make it specialize quality.
 
 (in-package :sparser)
 
@@ -15,7 +15,7 @@
 ;;;--------------
 
 (define-category color
-  :specializes nil
+  :specializes quality
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
