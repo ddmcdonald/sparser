@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.1 June 2014
+;;;  version:  0.1 August 2015
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -18,38 +18,13 @@
 ;;   a complication with the restriction of the name variable to name.
 ;;  (7/4/131) Marked named-object permanent. Put traces in its find/make functions
 ;;  (6/17/14) Folded in the has-name from C3. 
+;;  (8/10/15) Moved it to kinds/upper-model since you can want it but
+;;   not want the rest of the name machinery. Also moved name category for
+;;   benefit of location. 
+
 
 (in-package :sparser)
 (defvar *PNF-SCAN-STARTS-HERE*)
-
-;;;-----------------------------------------------------
-;;; The simple version of a name as symbolic identifier
-;;;-----------------------------------------------------
-;;/// This has to be integrated with 'real' names in a cleaner
-;; way, but it's a start. Probably requires a more complex 'or'
-;; restriction on the name variable.
-
-(define-category has-name
-  :specializes relation 
-  :binds ((name :primitive word))
-  ;; Can hang lots of realizations here
-  ;; 'known as', 'called', ...
-  :realization (:common-noun name)
-  :documentation "Used as a mix-in to supply a simple name
-  variable to another class. Part of the movement to cut down
-  on the number and diversity of variables in the ontology
-  as per C3.")
-
-
-;;;-----------------------------------------------------
-;;; the root in the lattice for all names -- no content
-;;;-----------------------------------------------------
-
-(define-category  name
-  :instantiates self
-  :specializes quality )    ;; never instantiated, just a common
-                        ;; root for this part of the lattice
-
 
 ;;;-----------------------------------------------
 ;;; common super-class for things that have names
