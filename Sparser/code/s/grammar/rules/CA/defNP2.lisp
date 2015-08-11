@@ -36,7 +36,6 @@
 
   (let* ((category-of-head
           (etypecase head
-            (psi (base-category-of-psi head))
             (individual (first (indiv-type head)))
             (referential-category head)
             (mixin-category head))) ;; "this agent" -- meaning drug
