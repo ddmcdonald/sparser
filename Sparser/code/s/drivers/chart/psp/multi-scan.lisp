@@ -565,7 +565,7 @@
                 (setf (cfr-rhs rule) (list uppercase-word))
                 (setf (cfr-form rule) (edge-form regular-edge))
                 (setf (cfr-referent rule) regular-referent)
-                ;;(break "acronym made rule ~a" rule)
+                ;;h(break "acronym made rule ~a" rule)
                 rule ))))))))
 
 ;; (setq *pending-acronyms* nil)
