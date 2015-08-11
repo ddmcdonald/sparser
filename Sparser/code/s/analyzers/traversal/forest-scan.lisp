@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  0.5 January 2015
+;;;  Version:  0.6 August 2015
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
@@ -19,7 +19,8 @@
 ;;     encountered a word. 
 ;; 0.5 (1/9/15) Changed the return value to include the edge as well as the layout
 ;; 0.6 (6/2/15) Cloned the entry point so that we could have a different
-;;      version with a different rule policy
+;;      version with a different rule policy. 8/7/15 did it again for
+;;      parse-between-parentheses-boundaries
 
 (in-package :sparser)
 
@@ -28,7 +29,21 @@
   ;; Called from collect-no-space-segment-into-word to look for
   ;; a parse between where the no-space sequence starts and where
   ;; it ends. Provides for different alg. 
-  (push-debug `(,left-bound ,right-bound)) ;(break "parse-between")
+  (push-debug `(,left-bound ,right-bound)) ;(break "parse-between ns-scans")
+  (let ((edge (catch :done-parsing-region
+                (parse-from-to/topmost left-bound right-bound))))
+    (let ((layout (analyze-segment-layout
+                   ;; /// it ought to be possible to keep a running model of this
+                   ;; rather than have to recalculate it here
+                   left-bound right-bound)))
+      (values layout
+              edge))))
+
+(defun parse-between-parentheses-boundaries (left-bound right-bound)
+  ;; Called from do-paired-punctuation-interior to look for
+  ;; a parse between just after the open and just before the ends.
+  ;; Provides for different alg. 
+  (push-debug `(,left-bound ,right-bound)) ;(break "parse-between parens")
   (let ((edge (catch :done-parsing-region
                 (parse-from-to/topmost left-bound right-bound))))
     (let ((layout (analyze-segment-layout
