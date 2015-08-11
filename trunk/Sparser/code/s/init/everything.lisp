@@ -91,7 +91,7 @@
 ;; Also added *big-mechanism* as a grammar-load directing flag. 
 ;; 3/21/2015 minor reader conditionalization for SBCL, comparable to that for MCL and CCL
 ;; 4/18/15 added *track-incidence-count-on-bindings* because it's relevant to DM&P
-;; which isn't part of most loads so can otherwise count on it having a value
+;; which isn't part of most loads so can otherwise count on it having a value.
 
 (in-package :cl-user)
 
