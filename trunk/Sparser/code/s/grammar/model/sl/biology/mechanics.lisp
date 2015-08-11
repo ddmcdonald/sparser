@@ -535,12 +535,11 @@
 ; overnight #15  "20% fetal calf serum (FCS)"
 
 (defun setup-acronym-for-bio-entity (entity acronym)
-  ;; called from acronym-is-alternative-for-name via a buggy
-  ;; analysis that somehow thinks it has a proper name in its
-  ;; hands, via a form rule about proper names and word-in-parentheses
-  ;; so just ignoring it until we have a real case
-  (push-debug `(,entity ,acronym)) ;; (break "acronym stub")
-)
+  ;; called from acronym-is-alternative-for-name should we happen
+  ;; to get do-paired-punctuation-interior to see an likely
+  ;; acronym when the *special-acronym-handling* flag is down.
+  (push-debug `(,entity ,acronym))) ;; (break "acronym stub"))
+
 
 
 
