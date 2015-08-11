@@ -134,7 +134,7 @@
 ;;;------------------------------
 
 (defun pull-document-number-out-of-edge-sequence (start-pos end-pos)
-  )
+  (declare (ignore start-pos end-pos)))
 
 (defun pull-out-document-number-from-edge (edge)
   ;; called from Analyze-segment-as-article-source and returns what
