@@ -458,7 +458,7 @@
         (tr :new-edge-incorporating-parens edge)
         edge )))
    (t
-    ;; See discussion in hide-parenthesis-edge-at-pos
+    ;; See discussion in hide-parenthesis-edge
     ;; We may have the timing of this wrong since there should usually be a
     ;; spanned chunk to the left.
     ;; Quashing the error message since it's just too noisy.
@@ -479,7 +479,8 @@
                                     0 count)))
       ;;(break "interior-edge/s = ~a" interior-edge/s)           
       (case count
-        (1 (when (edge-p (car interior-edge/s))(edge-referent (car interior-edge/s))))
+        (1 (when (edge-p (car interior-edge/s))
+             (edge-referent (car interior-edge/s))))
         (otherwise
          ;;//// defacto stub
          nil)))))
