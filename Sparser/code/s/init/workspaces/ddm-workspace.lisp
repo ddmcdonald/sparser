@@ -13,8 +13,11 @@
 (ddm-no-spaces) (trace-ns-sequences) (trace-fsas);;pw's
 (setq *work-on-ns-patterns* t)   setup-verb
 
-(p "RAS-ASSP.")
+(p "RAS-ASSP.") -- bio-entity => protein
 make-protein-pair/convert-bio-entity convert-bio-entity-to-protein
+
+assess-parenthesized-content pts span-parentheses 
+do-paired-punctuation-interior parse-chunk-interior
 
 (p "BLAST sequence similarity searching 
 indicated that the Bam32 SH2 domain is most highly related (30–37% identity) 
@@ -24,14 +27,14 @@ protein tyrosine phosphatases SHP-1 and SHP-2.")
 
  ;; In case something goes south with the new 'unknown word' handler
  (ddm-ed "analyzers/tokenizer/lookup2.lisp")
-    find-word  make-word/all-properties/or-primed  
+   (trace-morphology)
+  find-word  make-word/all-properties/or-primed  
+
 ;; auto-expansion of "ablate"
   (p "Also, Chk2 −/− DT40 avian B lymphoma cells in which Chk2 was genetically 
 ablated by gene targeting ( xref ) exhibited decreased prometaphase accumulation 
 in the presence of nocodazole, but not taxol, compared with controls ( xref ).")
-
 |#
-
 ; (test-range-of-June-articles from n)   (current-string)
 ; (revert-to-regular-break)  (revert-to-error-break)
 ; (compare-to-snapshots) (sentence-string (previous (sentence)))
@@ -50,11 +53,10 @@ but markedly preferred AKT2.")
   messed up -- no-space and chunking are absent. Why I don't know.
       period-marks-sentence-end?
 |#
-; (p "Ras proteins caused widespead transcriptional activation of p53 through a mechanism involving acetylation of specific residues in its DNA binding domain.")
 
 (defun ddm-standard ()  ;;    (ddm-standard)
   (setup-bio) ;; load the bio model etc.
-  (trace-lexicon-unpacking) (trace-morphology)
+  (trace-lexicon-unpacking) ;(trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
   (setq *debug-pronouns* nil)
@@ -75,10 +77,10 @@ but markedly preferred AKT2.")
   (setq *diagnose-consp-referents* t)
   ;;     (setq *show-section-printouts* t)
   ;; (test-dec)  (dtst nil t) (reset-dectest)
-  (test-overnight) ;;(test-erk) (test-aspp2)
-  ;;(test-jan))  (retest)
+  ;;(test-overnight) (test-erk) (test-aspp2)
+  ;;(test-jan) = dry-run   (retest)
   ;; (hashtable-to-alist 
-; (test-load-test)
+  ;;(test-load-test)
 )
 
 (defun ddm-workset ()
@@ -119,8 +121,10 @@ to probe the spatio-temporal regulation of ERK1.")
  hide-parenthesis-edge-at-pos span-parentheses
  referent-of-parentheticial-expression
 
-(p "We previously reported that oncogenic RAS requires CRAF but not BRAF to activate MEK (Dumaz et al., 2006) 
-and consistent with this, BRAF is inactive in NRAS mutant cells (Figure 1E).")
+(p "We previously reported that oncogenic RAS requires CRAF 
+but not BRAF to activate MEK (Dumaz et al., 2006) 
+and consistent with this, BRAF is inactive 
+in NRAS mutant cells (Figure 1E).")
 |#
 ;  (p "c-Raf/ MAPK-mediated [6].")
 
@@ -535,9 +539,9 @@ similar effects occurred with DPI, NAC and SB203580."
   (ddm-ed "grammar/model/core/pronouns/object1.lisp")
   (ddm-ed "grammar/model/core/pronouns/cases1.lisp")
   (ddm-ed "grammar/model/core/pronouns/ref4.lisp")
+  (ddm-ed "grammar/rules/syntax/syntax-functions.lisp")
   (ddm-ed "grammar/rules/syntax/articles.lisp")
   (ddm-ed "grammar/rules/words/pronouns.lisp")
-  (ddm-ed "grammar/rules/situation/text-structure.lisp")
   (ddm-ed "objects/traces/pronouns.lisp")
   (ddm-ed "objects/traces/discourse.lisp"))
 
