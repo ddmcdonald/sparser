@@ -9,17 +9,16 @@
 ;; Commented out stranded function 4/1/12
 
 (in-package :sparser)
-(defvar CATEGORY::COMPANY-HEAD)
-(defvar CATEGORY::COMPANY-HEAD/S)
-(defvar CATEGORY::COMPANY-POSSESSIVE)
-(defvar CATEGORY::PERSON-POSSESSIVE)
-(defvar CATEGORY::RESPONSIBILITY)
-(defvar CATEGORY::STATUS-OF-A-POSITION)
-(defvar CATEGORY::SUBSIDIARY-HEAD)
-(defvar CATEGORY::TEMPORAL-ADVERB)
-(defvar CATEGORY::TITLE/PLURAL)
+
 
 (defun sort-out-which-category-of-treetop-edge-to-prefer (list-of-edges)
+  (declare (special category::title category::title/plural 
+                    category::person category::person-possessive
+                    category::country category::name 
+                    category::status-of-a-position
+                    category::company-head category::company-head/s
+                    category::company-possessive category::subsidiary-head
+                    category::temporal-adverb category::responsibility))
   (let (category
         co-head co-head/s self-ref literal ordinal sequencer
         responsi word pronoun person pers-poss company comp-poss
