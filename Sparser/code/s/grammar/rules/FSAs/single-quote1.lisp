@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2012-2015 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  1.1 April 2012
+;;;  Version:  1.1 August 2015
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
 ;; 1.1 (7/25/94) added 're' and 'll'   8/16 added 've'  9/6 'm'.
-;;     typo 10/24. (4/22/12) Compiler fix.
+;;     typo 10/24. (4/22/12) Compiler fix. (8/10/15) another one.
 
 (in-package :sparser)
 (defvar WORD::\s)
@@ -58,7 +58,8 @@
   ;; There's a single-quote (appostrophe) at the starting position.
   ;; We check here whether there's an "s", "t", "re", or "ll" just after it,
   ;; without any interveening space.
-  (declare (ignore single-quote))
+  (declare (ignore single-quote)
+           (special category::verb category::modal))
   (when *trace-fsas*
     (format t "~&Starting FSA for |'s_or't| at p~A~%"
             (pos-token-index starting-position)))
