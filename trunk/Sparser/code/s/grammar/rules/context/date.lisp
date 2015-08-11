@@ -17,7 +17,8 @@
    Tipster article.  It is a #<date>.")
 
 
-(defun pull-date-out-of-edge-sequence (start-pos end-pos))
+(defun pull-date-out-of-edge-sequence (start-pos end-pos)
+  (declare (ignore start-pos end-pos)))
 
 
 (defun pull-out-date-from-edge (edge)
