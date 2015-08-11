@@ -36,7 +36,7 @@
 
 (define-lambda-variable 'trailing-parenthetical
   'parentheses ;; value restriction
-  category::expressible-type) ;; overly high type bound to.
+  category::top) ;; overly high type bound to.
 ;; used by knit-parens-into-neighbor 
 
 
