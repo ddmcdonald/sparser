@@ -70,7 +70,7 @@
 (include-grammar-module  *abbreviations*)
 ;(include-grammar-module  *initials*)
 (include-grammar-module  *single-quote*) ;; for contractions
-;(include-grammar-module  *hyphen*)
+(include-grammar-module  *hyphen*)
 
 
 ;;;-------------------------
@@ -128,7 +128,7 @@
 (include-grammar-module  *digits-fsa*)
 (include-grammar-module  *amounts*)
 
-;(include-grammar-module  *time*)
+(include-grammar-module  *time*)
 ;(include-grammar-module  *money*)
 ;(include-grammar-module  *finance*)
 
@@ -139,12 +139,12 @@
 ;  (include-grammar-module *title-modifiers*)
 ;  (include-grammar-module *title-qualifiers*)
 
-;(include-grammar-module  *location*)
+(include-grammar-module  *location*)
 ; (include-grammar-module  *countries*)
 ; (include-grammar-module  *US-States*)
 ; (include-grammar-module  *cities*)
-; (include-grammar-module  *other-locations*)
-; (include-grammar-module  *locations-core*)
+ (include-grammar-module  *other-locations*)
+ (include-grammar-module  *locations-core*)
 
 
 ;;;-----------------------
