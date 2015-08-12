@@ -409,7 +409,7 @@
 (defun display-categories-below (&key (top (category-named 'top)) (depth -1) (stream *standard-output*))
   (clrhash *category-was-displayed*)
   (initialize-indentation)
-  (display-with-subcs top stream)
+  (display-with-subcs top stream depth)
   (when
       (= depth -1)
     (let* ((remaining (loop for c in *categories-defined*
