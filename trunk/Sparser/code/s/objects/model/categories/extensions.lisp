@@ -17,5 +17,4 @@
 
 
 (defun store-category-documentation (category documentation)
-  ;; leave it on the floor for now
-  category documentation)
+ (set-object-property category :documentation documentation))
