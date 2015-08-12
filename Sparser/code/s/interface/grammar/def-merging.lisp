@@ -1,4 +1,4 @@
-;; (in-package :user)
+(in-package :sparser)
 
 
 (defvar *this-directory-pathname* 
@@ -9,6 +9,8 @@
     (let ((word (resolve name)))
       (find-individual type :name word)))
 
+
+;; Not actually using this but might be useful to leave in
 (defun outfile (&key (subdir "Biology")
                      (filename "proteins")
                      (extension "lisp")
@@ -100,7 +102,7 @@
     (loop for def in *definition-list*
       do (format stream "~%") (pprint def stream))))
 
-
+;; By default, dumps output into this directory 
 (defvar outpath (merge-pathnames "out.lisp" *this-directory-pathname*))
 
 (defun merge-definitions (path1 path2) 
