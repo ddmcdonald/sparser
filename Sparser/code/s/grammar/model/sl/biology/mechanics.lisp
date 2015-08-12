@@ -307,7 +307,7 @@
     (setq takes-plurals t))
 
   `(def-bio/expr ,short ',kind
-     :documentation ',documentation
+     :documentation ,documentation
      :greek ',greek :identifier ',identifier :mitre-link ,mitre-link
      :ras2-model ,ras2-model
      :long ,long :synonyms ',synonyms :takes-plurals ,takes-plurals))
@@ -433,7 +433,7 @@
         (add-rules-to-individual i rules))
 
       (when documentation
-        (store-category-documentation word documentation))
+        (store-category-documentation i documentation))
 
       i)))
 
