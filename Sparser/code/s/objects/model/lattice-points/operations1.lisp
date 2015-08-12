@@ -404,32 +404,38 @@
   ;; When that's exhausted, sweep the remaining categories
   ;; from the master list for those without supercategories
   ;; and treat them as level 0 seeds.
+  (display-categories-below))
+
+(defun display-categories-below (&key (top (category-named 'top)) (depth -1) (stream *standard-output*))
   (clrhash *category-was-displayed*)
   (initialize-indentation)
-  (display-with-subcs (category-named 'top) stream)
-  (let* ((remaining (loop for c in *categories-defined*
-                      unless (gethash c *category-was-displayed*)
-                      collect c))
-         (remaining-without-supercs
-          (loop for r in remaining
-            unless (has-supercategories? r)
-            collect r)))
-    (format t "~&~%~a remaining, ~a without a supercategory~%~%~%"
-            (length remaining) (length remaining-without-supercs))
-    (dolist (c remaining-without-supercs)
-      (unless (gethash c *category-was-displayed*)
-        (initialize-indentation)
-        (display-with-subcs c stream)))))
+  (display-with-subcs top stream)
+  (when
+      (= depth -1)
+    (let* ((remaining (loop for c in *categories-defined*
+                        unless (gethash c *category-was-displayed*)
+                        collect c))
+           (remaining-without-superc
+            (loop for r in remaining
+              unless (has-supercategories? r)
+              collect r)))
+      (format t "~&~%~a remaining, ~a without a supercategory~%~%~%"
+              (length remaining) (length remaining-without-supercs))
+      (dolist (c remaining-without-supercs)
+        (unless (gethash c *category-was-displayed*)
+          (initialize-indentation)
+          (display-with-subcs c stream depth))))))
 
 
-(defun display-with-subcs (category stream)
-  (emit-line stream "~a" (cat-symbol category))
-  (setf (gethash category *category-was-displayed*) t)
-  (push-indentation)
-  (unless (form-category? category)
-    (loop for subc in (subcategories-of category)
-      do (display-with-subcs subc stream)))
-  (pop-indentation))
+(defun display-with-subcs (category stream &optional (depth -1))
+  (unless (= depth 0)
+    (emit-line stream "~a" (cat-symbol category))
+    (setf (gethash category *category-was-displayed*) t)
+    (push-indentation)
+    (unless (form-category? category)
+      (loop for subc in (subcategories-of category)
+        do (display-with-subcs subc stream (- depth 1))))
+    (pop-indentation)))
   
 
 
