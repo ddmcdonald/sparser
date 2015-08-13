@@ -135,7 +135,7 @@
                  (push (list var-name
                              (collect-model-description (value-of 'pobj value)))
                        objects))
-                ((itypep value 'bio-family)
+                ((itypep value 'protein-family) ;; no longer use bio-family
                  (push (list var-name value)
                        objects))
                 (t
