@@ -1238,7 +1238,6 @@
            :of object
            :in manner))
 
-(lsp-break "immunoprecipitate")
 (define-category immunoprecipitate :specializes bio-method
   :binds ((agent pronoun/first/plural)
           (object bio-entity)
