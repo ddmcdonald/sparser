@@ -11,6 +11,9 @@
 ;; fixed print method for subcategorization-frame to handle cases without bound word or category slots...
 ;; 1/14/2015 Changes to put :subject and :object selectional restrictions in the subcat frame
 ;; 6/5/2015 new utility function get-ref-subcategorization that gets the subcat frame for an individual or a category
+;; 8/13/2015 -- make subcategorization information inheritable, so that we can get adjunctive like modifiers that 
+;; are specific to particular higher level categories 
+;; (like "in cell-line" and "in species" for almost all biological entities)
 
 (in-package :sparser)
 
@@ -178,8 +181,22 @@
                   :cat category)))
       (setf (gethash label *labels-to-their-subcategorization*) sf)
       (when category
-        (setf (gethash category *labels-to-their-subcategorization*) sf)))
+        (setf (gethash category *labels-to-their-subcategorization*) sf)
+        (loop for fc in (inherited-sc-patterns category) 
+          do
+          (pushnew fc (subcat-patterns sf) :test #'equal))))
     sf))
+
+(defun inherited-sc-patterns (category)
+ (let
+     ((sf nil))
+   (loop for sc in (super-categories-of category) 
+     do
+     (let ((frame (get-subcategorization sc)))
+       (when frame 
+         (loop for sp in (subcat-patterns frame)
+           do (pushnew sp sf :test #'equal)))))
+   sf))
 
 
 (defmacro assign-subcat (label form category &rest parameter-plist) ;; :verb+prep)
