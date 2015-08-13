@@ -45,8 +45,7 @@
 ;;; mixins
 ;;;--------
 
-(define-mixin-category has-UID
-  :specializes relation
+(define-mixin-category has-UID :specializes relation
   :binds ((uid)))
 
 (define-mixin-category type-marker
@@ -87,8 +86,7 @@
 ;;; generalizations
 ;;;-----------------
 
-(define-category with-quantifier
-  :specializes abstract
+(define-category with-quantifier :specializes abstract
   :binds ((quantifier)))
 
 (define-category reference-item :specializes abstract
@@ -96,20 +94,25 @@
   prtoeins and small molecules, etc. which have
   OBO identifiers, but are not localized to cellular locations.")
 
-(define-category mechanism :specializes endurant
-:binds ((function process) ;;  the process typically performed by this mechanism in the context of discussion
-        (goal)) ;; the predication that defines the desired end-state?
-  :documentation 
-  "A collection of interacting physical entities that performs an action or has a purpose. Expand this comment..."
-)
 
-(define-category biological
-  :specializes with-quantifier
+
+(define-category biological :specializes with-quantifier
   :lemma (:adjective "biological")
   :binds ((context bio-context)
+          (cell-line cell-line)
           (location non-cellular-location)
-          (cellularLocation cellular-location)
+          (cellular-location cellular-location)
+          (species species) ;; human? mouse?
+          (non-cellular-location non-cellular-location)
           (quantifier))
+  :realization
+  (:noun "xxx-dummy"
+         :in non-cellular-location
+         :in species
+         :in cellular-location
+         :in context
+         :in cell-line
+         :from cell-line)
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories")
 
@@ -126,16 +129,14 @@
           (aspect) ;; "will likely be useful"
           (in-order-to)))
 
-(define-category bio-scalar
-  :specializes scalar-quality
+(define-category bio-scalar :specializes scalar-quality
   :mixins (biological)
   :documentation "Provides a generalization over biological and scalar")
 
 
 ;; Rusty -- where are we supposed to put the two numbers
 ;; or two molecules?  Need example. 
-(define-category ratio 
-  :specializes bio-scalar
+(define-category ratio  :specializes bio-scalar
   :binds ((name)(value ratio))
   :realization
   (:noun "ratio"
@@ -152,14 +153,12 @@
   :realization
   (:noun "state"))
 
-(define-category molecule-state
-  :specializes bio-state)
+(define-category molecule-state :specializes bio-state)
 
 
 
 
-(define-category  measurement  ;; "10 yards"
-  :specializes bio-scalar
+(define-category  measurement  :specializes bio-scalar ;; "10 yards" 
   :instantiates self
   :binds ((units . unit-of-measure)
           (quantity  :or quantity number))
@@ -176,8 +175,7 @@
 ;;; top of the biological hierarchy
 ;;;---------------------------------
 
-(define-category bio-entity 
-  :specializes physical-object  ;; sweeps a lot under the rug
+(define-category bio-entity  :specializes physical-object  ;; sweeps a lot under the rug
   :instantiates :self
   :mixins (has-UID has-name biological)
   :binds ((long-form :primitive polyword))
@@ -188,38 +186,41 @@
   :realization
   (:noun "plasmid"))
 
-(define-category bio-chemical-entity ;; includes all molecules and complexes
-  :specializes bio-entity  ;; sweeps a lot under the rug
+(define-category bio-chemical-entity :specializes bio-entity ;; includes all molecules and complexes   ;; sweeps a lot under the rug
   :mixins (has-UID has-name biological)
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
   :realization (:common-noun name))
 
 
-(define-category bio-process
-  :specializes process
+(define-category bio-process :specializes process
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
-  :binds ((adverb)(manner)(following)(modifier)(in-order-to))
+  :binds ((adverb)(manner)(following)(modifier)(in-order-to))         
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
-(define-category bio-mechanism :specializes process
-  :mixins (biological)
-  :binds ((process bio-process)) ;; should be the same as the "function" of the process
-  :realization
-  (:noun "mechanism"
-         :of process))
+(define-category mechanism :specializes endurant
+:binds ((function process) ;;  the process typically performed by this mechanism in the context of discussion
+        (goal)) ;; the predication that defines the desired end-state?
+  :documentation 
+  "A collection of interacting physical entities that performs an action or has a purpose. Expand this comment..."
+)
 
-(define-category bio-mechanism
-  :specializes endurant
+(define-category bio-mechanism :specializes mechanism
   :mixins (has-UID has-name biological)
-  :realization (:common-noun name) ;; for nominal forms
+  :realization 
+  (:common-noun name) ;; for nominal forms
   :binds ((adverb)(manner)(following)(modifier)(in-order-to))
+  ;;restricts ((function bio-process))
   :documentation "No content by itself, provides a common parent
-    for 'processing', 'ubiquitization', etc. that may be the basis
-    of the grammar patterns.")
+  for 'processing', 'ubiquitization', etc. that may be the basis
+  of the grammar patterns.")
+
+(def-synonym bio-mechanism
+             (:noun "mechanism"
+                   :of function))
 
 (define-category bio-control :specializes bio-process
   :binds ((agent biological) 
@@ -237,8 +238,8 @@
 
 (define-category bio-rhetorical :specializes event)
 
-(define-category bio-movement ;; like translocation, entry and "binding to membrane"
-  :specializes bio-process)
+(define-category bio-movement :specializes bio-process) ;; like translocation, entry and "binding to membrane" 
+                 
 
 (define-category bio-transport :specializes bio-movement
   :binds ((agent bio-process)
@@ -257,14 +258,12 @@
    :premod destination
    :premod object))
 
-(define-category molecular-function 
-  :specializes bio-process
+(define-category molecular-function  :specializes bio-process
   :bindings (uid "GO:0005488"))
 
 (delete-noun-cfr (resolve "reaction"))
 (define-category chemical-reaction
-  :realization (:noun "reaction")
-  :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
+  :realization (:noun "reaction") :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
   )
 
 (define-category biochemical-reaction :specializes chemical-reaction ;; from biopax
@@ -280,24 +279,21 @@
          :s controller 
          :o controlled))
 
-(define-category bio-method
-  :specializes process
+(define-category bio-method :specializes process
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns.")
 
-(define-category bio-event
-  :specializes event
+(define-category bio-event :specializes event
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'acquire, act, addition, counfound etc. that may be the basis
     of the grammar patterns.")
 
-(define-category bio-relation
-  :specializes event
+(define-category bio-relation :specializes state
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
@@ -305,10 +301,10 @@
     of the grammar patterns.")
 
 (define-category feedback-loop :specializes bio-process
-   :binds ((participant biological))
+  :binds ((participant biological))
   :realization
   (:noun "feedback loop"
-         :between participant))
+	 :between participant))
 
 
 
@@ -326,23 +322,23 @@
    :premod causes))
 
 
-(define-category bio-context :specializes bio-entity
+(define-category bio-context :specializes biological
   :binds ((process process)(entity bio-entity))
+  :mixins (has-name)
   :realization
   (:noun "context"
+         ;; "yielded sustained C-RAF(S338) and ERK phosphorylation in the context of drug treatment"
          :of process
          :of entity))
 
 ;; must come before small-molecule
-(define-category bio-location 
-  :specializes bio-context
+(define-category bio-location  :specializes bio-context
   :instantiates self
   :index (:permanent :key name))
 
-(define-category molecule
+(define-category molecule :specializes bio-chemical-entity ;; SBCL caught random backquote here!
   ;; makes more sense for ATP than H20, but not worrying about whether
-  ;; we're doing organic or inorganic chemistry.
-  :specializes bio-entity ;; SBCL caught random backquote here!
+  ;; we're doing organic or inorganic chemistry. 
   :instantiates :self
   :bindings (uid "CHEBI:36357")
   :index (:permanent :key name)
@@ -357,35 +353,31 @@
 
 ;; 'small molecule' should be done with a def-subtype
 ;;/// Start with define-sybtype-derived-category
-(define-category small-molecule-reference
+(define-category small-molecule-reference :specializes reference-item
   ;; makes more sense for ATP than H20, but not worrying about whether
-  ;; we're doing organic or inorganic chemistry.
-  :specializes reference-item
+  ;; we're doing organic or inorganic chemistry. 
   :mixins (reactome-category)
   )
 
 (define-category small-molecule :specializes molecule
-  :mixins (bio-location)
+  ;;:mixins (bio-location)
   ;;:mixins (reactome-category)
   ;; small-molecule, like molecule itself, has a (cellular) location
   :binds ((entityReference small-molecule-reference)))
 
-(define-category nucleotide
-  :specializes small-molecule 
+(define-category nucleotide :specializes small-molecule 
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "nucleotide")
   :realization (:common-noun name))
 
-(define-category peptide
-  :specializes molecule
+(define-category peptide :specializes molecule
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "peptide")
   :realization (:common-noun name))
 
-(define-category protein
-  :specializes peptide  ;; this is not clearly true
+(define-category protein :specializes peptide  ;; this is not clearly true
   :instantiates :self
   :bindings (uid "CHEBI:36080")
   :binds ((species species)
@@ -399,31 +391,27 @@
 
 ;;/// will have a substantial model, so deserves its own
 ;; file. This is just to ground "encode"
-(define-category gene
-  :specializes bio-entity ;;// case in point
+(define-category gene :specializes bio-entity ;;// case in point
   :instantiates :self
   :binds ((:expresses . protein))
   :index (:permanent :key name)
   :lemma (:common-noun "gene")
   :realization (:common-noun name))
 
-(define-category oncogene
-  :specializes gene 
+(define-category oncogene :specializes gene 
   :instantiates :self
   :lemma (:common-noun "oncogene")
   :realization (:common-noun name))        
   
-(define-category enzyme ;; what's the relationship to kinase?
-  :specializes protein  ;; not all enzymes are proteins -- there are RNA enzymes
+(define-category enzyme :specializes protein ;; what's the relationship to kinase?   ;; not all enzymes are proteins -- there are RNA enzymes
   :binds ((reaction bio-process))
   :instantiates :self
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
 
-(define-category kinase 
+(define-category kinase :specializes enzyme
                  ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
-                 ;;  should be as a "telic" qualia for those molecules which are kinases
-  :specializes enzyme
+                 ;;  should be as a "telic" qualia for those molecules which are kinases 
   :instantiates :self
   :bindings (uid "GO:0016301") ;; "kinase activity" 
   :index (:permanent :key name)
@@ -434,8 +422,7 @@
                    :for reaction))
 
 
-(define-category GTPase
-  :specializes enzyme
+(define-category GTPase :specializes enzyme
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "GTPase")
@@ -445,12 +432,10 @@
    (:noun "gtpase"))
 
 
-(define-category bio-variant ;; not sure this is the correct term, but intended for things like "forms of ras"
-  :specializes molecule
+(define-category bio-variant :specializes molecule ;; not sure this is the correct term, but intended for things like "forms of ras" 
   :instantiates :self)
 
-(define-category protein-domain ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain
-  :specializes bio-entity
+(define-category protein-domain :specializes bio-entity ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
   :instantiates :self)
 
 
@@ -466,8 +451,7 @@
 ;; "enhanced GTP loading"
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
-(define-category molecule-load
- :specializes bio-process
+(define-category molecule-load :specializes bio-process
  :binds ((agent bio-entity) ;; causes the action
          (object molecule) ;; the nucleotyde that moves
          (substrate biological))
@@ -500,52 +484,33 @@
 
 
 
-(define-category bio-condition
-  :specializes bio-context
+(define-category bio-condition :specializes bio-context
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "condition")
   :realization (:common-noun name))
 
-(define-category experimental-system
-  :specializes bio-context
+(define-category experimental-system :specializes bio-context
   :realization
   (:noun "system"))
 
-(define-category disease 
-  :specializes bio-condition
+(define-category disease  :specializes bio-condition
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "disease")
   :realization (:common-noun name))
 
-(define-category cancer 
-  :specializes disease
+(define-category cancer  :specializes disease
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "cancer")
   :realization (:common-noun name))
 
-(define-category melananoma 
-  :specializes cancer
+(define-category melananoma  :specializes cancer
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "melanoma")
   :realization (:common-noun name))
-
-                 
-(define-category  in-bio-condition  ;; "in cancer, in physiological conditions"
-  :instantiates self
-  :specializes bio-context
-  :binds ((place)
-          (functor :primitive word)) ;;  
-  :realization (:tree-family content-pp
-                 :mapping ((type . :self)
-                           (articulator . functor)
-                           (item . place)
-                           (pp . :self)
-                           (preposition . ("in" "under"))
-                           (complement . bio-condition))))
 
 
 
@@ -553,8 +518,7 @@
   :instantiates self
   :index (:permanent :key name))
 
-(define-category cellular-location 
-  :specializes bio-location
+(define-category cellular-location  :specializes bio-location
   :binds ((id))
   :instantiates self
   :index (:permanent :key name))
@@ -622,57 +586,36 @@
 
 
 
-(define-category non-cellular-location 
-  :specializes bio-location
+(define-category non-cellular-location  :specializes bio-location
   :instantiates self
   :index (:permanent :key name))
 
-(define-category molecular-location 
-  :specializes non-cellular-location
+(define-category molecular-location  :specializes non-cellular-location
   :instantiates self
   :index (:permanent :key name))
 
-(define-category cell-line
-  :specializes non-cellular-location
+(define-category cell-line :specializes bio-entity
   :instantiates self
   :realization (:common-noun name)
   :index (:permanent :key name))
 
-(define-category species
-  :instantiates self
-  :specializes non-cellular-location
+(define-category species :specializes non-cellular-location
+  :instantiates self 
   :index (:permanent :key name)
   :lemma (:common-noun "species")
   :realization (:common-noun name))
 
 ;; used in biopax
-(define-category organism
-  :instantiates self
-  :specializes non-cellular-location
+(define-category organism :specializes non-cellular-location
+  :instantiates self  
   :index (:permanent :key name)
   :lemma (:common-noun "organism")
   :realization (:common-noun name))
 
-#+ignore
-(define-category  in-bio-location  ;; "in humans, in epithelial cells, in the plasma membrane"
-  :instantiates self
-  :specializes bio-context
-  :binds ((place)
-          (functor :primitive word)) ;;  may not be too relevant
-  :realization (:tree-family content-pp
-                 :mapping ((type . :self)
-                           (articulator . functor)
-                           (item . place)
-                           (pp . :self)
-                           (preposition . ("in" "within" "on")) ;; what else is imortant?
-                           (complement . bio-location))))
-
-
-
 
 ;;---- family
 
-(define-category bio-family :specializes protein
+(define-category protein-family :specializes protein  ;; was bio-family, but only used fro protein families
                  :instantiates :self
   :documentation "Familes of proteins are abstractions based
     on common properties, especially the function, of the
@@ -684,31 +627,22 @@
   ;; :specializes molecule
   ;; :rule-label protein
   :binds ((type bio-entity) ;; a family of what?
-          (species species) ;; human? mouse?
           (members collection)
           (count number))
+  :rule-label protein
   :index (:permanent :key name)
   :lemma (:common-noun "family")
-  :realization (:common-noun name))
+  :realization 
+  (:common-noun name))
 
-(define-category protein-family
-  :specializes bio-family
-  ;;/// something needs fixing in the bindings decoder
-  ;; since these should be simpler to write
-  :rule-label protein
-  ;;:bindings (type (category-named 'protein))
-  :realization (:common-noun name))
-
-(define-category human-protein-family
-  :specializes protein-family
+(define-category human-protein-family :specializes protein-family
   :rule-label protein
   :bindings (species (find-individual 'species :name "human"))
   :realization (:common-noun name))
 
 ;;----- aggregations
 
-(define-category bio-aggregate 
-  :specializes aggregate
+(define-category bio-aggregate  :specializes aggregate
   ;; can drop the 'bio-', but it lets us play with the
   ;; notion before we promote that behavior to the upper str.
   :mixins (sequence biological))
@@ -716,14 +650,12 @@
 meditated whether or not we distributed the components of
 the aggregate across the predicate it's in. |#
 
-(define-category bio-pair
-  :specializes bio-aggregate 
+(define-category bio-pair :specializes bio-aggregate 
   :binds ((left)
           (right))
   :index (:sequential-keys left right))
 
-(define-category no-space-pair
-  :specializes bio-pair
+(define-category no-space-pair :specializes bio-pair
   ;; inherits items, item, type, number
   :instantiates :self
   :binds ((left)
@@ -736,8 +668,7 @@ the aggregate across the predicate it's in. |#
   for error.")
 
 
-(define-category protein-pair
-  :specializes bio-pair
+(define-category protein-pair :specializes bio-pair
   :mixins (protein)
   :binds ((left (:or protein bio-family nucleotide))
           (right (:or protein bio-family nucleotide)))
@@ -749,16 +680,14 @@ the aggregate across the predicate it's in. |#
 
 ;;//// are these even "bio" at all?
 (delete-noun-cfr (resolve "rate"))
-(define-category process-rate ;;(noun "rate" :super bio-scalar
-  :specializes bio-scalar
+(define-category process-rate :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
   :binds ((process bio-process) (components biological))
   :realization 
   (:noun "rate"
          :of process
          :for components))
 
-(define-category bio-concentration
-  :specializes bio-scalar
+(define-category bio-concentration :specializes bio-scalar
   :realization
   (:noun "concentration"))
 
@@ -779,8 +708,7 @@ the aggregate across the predicate it's in. |#
  superc list is (abstract relation relation) 
  Relation is a subclass of abstract, so it's (super sub sub)
 
-(define-category bio-type
-  :specializes abstract
+(define-category bio-type :specializes abstract
   :mixins (has-UID has-name)
   :index (:permanent :key name)
   :realization (:common-noun name))
@@ -813,8 +741,7 @@ the aggregate across the predicate it's in. |#
   :in location)
 
 ;;; moved from amino-acid
-(define-category residue-on-protein   
-  :specializes molecular-location ;; NOT same as protein, it is the location, not the amino acid
+(define-category residue-on-protein    :specializes molecular-location ;; NOT same as protein, it is the location, not the amino acid
   :instantiates :self
   :binds ((amino-acid . amino-acid)
           (position number) ;; counting from the N terminus
@@ -832,3 +759,31 @@ the aggregate across the predicate it's in. |#
              (:noun "position"))
 (def-synonym residue-on-protein
              (:noun "amino acid"))
+
+#|                
+;;OBSOLETE (define-category  in-bio-condition  ;; "in cancer, in physiological conditions"
+  :instantiates self :specializes bio-context
+  :binds ((place)
+          (functor :primitive word)) ;;  
+  :realization (:tree-family content-pp
+                 :mapping ((type . :self)
+                           (articulator . functor)
+                           (item . place)
+                           (pp . :self)
+                           (preposition . ("in" "under"))
+                           (complement . bio-condition))))
+
+
+;;OBSOLETE (define-category  in-bio-location  ;; "in humans, in epithelial cells, in the plasma membrane"
+  :instantiates self :specializes bio-context
+  :binds ((place)
+          (functor :primitive word)) ;;  may not be too relevant
+  :realization (:tree-family content-pp
+                 :mapping ((type . :self)
+                           (articulator . functor)
+                           (item . place)
+                           (pp . :self)
+                           (preposition . ("in" "within" "on")) ;; what else is imortant?
+                           (complement . bio-location))))
+|#
+
