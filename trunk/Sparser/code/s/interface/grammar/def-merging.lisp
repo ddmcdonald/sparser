@@ -1,3 +1,16 @@
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;;
+;;;    File: "def-merging"
+;;;  Module: "interface/grammar"
+;;; version: August 2015
+
+
+;; As of August 2015, this only works on define-protein and will not handle comments (they would need
+;; to be copied to the new file manually).
+
+
+
 (in-package :sparser)
 
 
