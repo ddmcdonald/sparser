@@ -233,15 +233,15 @@
         (cfr-referent rule)
         (find-individual 'protein :name name))))
 
+
+;; get rid of misnamed "bio-family" -- it is only used for proteins
 (defmethod get-family ((name word))
   (or (find-individual 'human-protein-family :name name)
-      (find-individual 'protein-family :name name)
-      (find-individual 'bio-family :name name)))
+      (find-individual 'protein-family :name name)))
 
 (defmethod get-family ((name polyword))
   (or (find-individual 'human-protein-family :name name)
-      (find-individual 'protein-family :name name)
-      (find-individual 'bio-family :name name)))
+      (find-individual 'protein-family :name name)))
 
 
 ;;;---------------------------------
@@ -504,7 +504,7 @@
             'human-protein-family)
            ((eq type (category-named 'protein))
             'protein-family)
-           (t 'bio-family)))
+           (t (break "what type of family is this supposed to be?"))))
          (i (def-bio/expr name category-name
              :long long :identifier identifier :synonyms synonyms
               :takes-plurals t)))

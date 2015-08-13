@@ -753,7 +753,7 @@
     (if (itypep i 'collection)
      (value-of 'items i)
      (value-of 'value i)))
-   ((and (itypep i 'bio-family)
+   ((and (itypep i 'protein-family) ;; get rid of bio-family -- misnamed...
          (not (itypep i 'collection)))
     (if short
      `(,i)
