@@ -222,7 +222,7 @@
                      left-edge right-edge
                      pos-before pos-after))
      ((or (itypep left-ref 'protein)
-          (itypep left-ref 'bio-family) ;; RAS-GTP
+          ;;(itypep left-ref 'bio-family) covered by itypep protein ; RAS-GTP
           (itypep left-ref 'small-molecule) ;; GTP-GDP ???
           (itypep left-ref 'nucleotide))
       (make-protein-pair left-ref right-ref words
