@@ -1,4 +1,4 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "verbs1"
@@ -123,8 +123,7 @@
          :upon upon
          :within location))
  
-(define-category acquire
-    :specializes bio-process ;; for conjunctions, as in "de novo or acquired"
+(define-category acquire :specializes bio-process ;; for conjunctions, as in "de novo or acquired"
     :binds ((agent bio-entity)
             (object biological)
             (method bio-method))
@@ -239,8 +238,7 @@
 
 ;; clausal roles
 ;; really want to have the form "CRAF allows CRAF to hyperactivate the pathway"  -- want the clausal modiffer
-(define-category allow
-    :specializes bio-control
+(define-category allow :specializes bio-control
     :binds ((agent biological)
             (object biological)
             (process process))
@@ -256,8 +254,7 @@
 
 
 "" ;; keyword: (ion N) 
-(define-category alter
-    :specializes bio-control
+(define-category alter :specializes bio-control
     :binds ((agent biological)
             (object biological))
     :realization
@@ -292,8 +289,7 @@
 
 
 
-(define-category articulate
-    :specializes bio-rhetorical
+(define-category articulate :specializes bio-rhetorical
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -323,8 +319,7 @@
          :of object))
 
 ;; overnight
-(define-category assume
-    :specializes bio-rhetorical
+(define-category assume :specializes bio-rhetorical
     :binds ((agent pronoun/first/plural)
             (object biological)
             (thatcomp (:or biological there-exists)))
@@ -338,8 +333,7 @@
            :thatcomp thatcomp))
 
 
-(define-category attribute
-    :specializes bio-rhetorical
+(define-category attribute :specializes bio-rhetorical
     :binds ((agent pronoun/first/plural)
             (object biological)
             (cause biological))
@@ -352,8 +346,7 @@
 
 
 ;; DAVID -- not sure about the relation of basis to base
-(define-category base
-    :specializes bio-rhetorical
+(define-category base :specializes bio-rhetorical
     :binds ((agent bio-entity)
             (object bio-process)
             (cause biological))
@@ -447,8 +440,7 @@
 
 
 
-(define-category cause
-    :specializes bio-control
+(define-category cause :specializes bio-control
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -479,8 +471,7 @@
          :with comparator))
 
 
-(define-category confer
-    :specializes bio-control
+(define-category confer :specializes bio-control
     :binds ((agent (:or bio-entity common-noun))
             (object bio-process)
             (to bio-entity)
@@ -497,8 +488,7 @@
 
 ;; like inhibit "therapeutics are confounded by acquired resistance"
 ;; "...studies of human BTICs have been confounded by their scarcity in tumors..."
-(define-category confound
-    :specializes bio-event
+(define-category confound :specializes bio-event
     :binds ((agent (:or common-noun biological))
             (object bio-process)) 
   ;; changed agent to biological, since it can include bio-process such as resistnace
@@ -531,8 +521,7 @@
          :to bio
          :with bio))
 
-(define-category consider
-    :specializes bio-rhetorical
+(define-category consider :specializes bio-rhetorical
     :mixins (bio-whethercomp)
     :binds ((agent pronoun/first/plural)
             (object biological)
@@ -551,8 +540,7 @@
 ;; ? (comlex-entry "consist")
 ;; ((verb (:subc ((p-ing-sc :pval ("in" "of")) (pp :pval ("of" "in"))))))
 
-(define-category constitute
-    :specializes bio-relation
+(define-category constitute :specializes bio-relation
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -562,8 +550,7 @@
 	   :o object
            :by agent))
 
-(define-category contain 
-     :specializes bio-relation 
+(define-category contain :specializes bio-relation 
      :binds ((agent biological)
              (object biological)) 
      :realization 
@@ -572,8 +559,7 @@
             :s agent 
             :o object))
 
-(define-category correspond
-    :specializes bio-relation
+(define-category correspond :specializes bio-relation
     :binds ((item1 biological)
             (item2 biological)
             (property common-noun))
@@ -603,8 +589,7 @@
          :of creation
          :through process))
 
-(define-category culture
-    :specializes bio-method
+(define-category culture :specializes bio-method
     :binds ((agent bio-entity)
             (object bio-process)
             (bio biological)
@@ -683,8 +668,7 @@
 
 (delete-noun-cfr (resolve/make "delay"))
 ;; Remove existing version of "delay" to replace it with this one
-(define-category delay
-    :specializes bio-event
+(define-category delay :specializes bio-event
     :binds ((agent biological)
             (object bio-process))
     :realization
@@ -702,8 +686,7 @@
          :in object))
 
 
-(define-category demonstrate
-    :specializes bio-rhetorical
+(define-category demonstrate :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent (:or biological pronoun/first/plural these bio-process))
             (object bio-process))
@@ -749,8 +732,7 @@
    :with method))
 
 
-(define-category describe
-    :specializes bio-rhetorical
+(define-category describe :specializes bio-rhetorical
     :binds ((agent pronoun/first/plural)
             (object bio-process)
             (figure article-figure))
@@ -764,8 +746,7 @@
            :in figure
            :of object))
 
-(define-category detect
-    :specializes bio-method
+(define-category detect :specializes bio-method
     :binds ((agent (:or biological bio-method pronoun/first/plural))
             (object biological)
             (condition bio-condition))
@@ -793,8 +774,7 @@
 
 
 ;; e.g. displayed sustained ERK phosphorylation
-(define-category display
-    :specializes bio-rhetorical
+(define-category display :specializes bio-rhetorical
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -840,8 +820,7 @@
          :o object
          :into into))
 
-(define-category dominate 
-  :specializes bio-relation 
+(define-category dominate :specializes bio-relation 
   :binds ((agent bio-entity)
           (object bio-process)) 
   :realization 
@@ -893,8 +872,7 @@
    :s agent
    :of object))    ;; by <entity>
 
-(define-category elevate
-    :specializes bio-control
+(define-category elevate :specializes bio-control
     :binds ((agent bio-entity)
             (object bio-process)
             (in bio-location)
@@ -910,8 +888,7 @@
            :of object
            :under condition))
 
-(define-category elucidate
-    :specializes bio-rhetorical
+(define-category elucidate :specializes bio-rhetorical
     :binds ((agent biological)
             (object biological)) 
     :mixins (bio-whethercomp)
@@ -926,8 +903,7 @@
            :of object
            :whethercomp statement))
 
-(define-category elute
-    :specializes bio-method
+(define-category elute :specializes bio-method
     :binds ((agent bio-entity)
             (object bio-process)
             (bio biological))
@@ -958,8 +934,7 @@
    :for encoded
    :of encoded))
 
-(define-category engender
-    :specializes bio-control
+(define-category engender :specializes bio-control
     :binds ((agent (:or bio-entity biological))
             (object bio-process))
     :realization
@@ -1022,8 +997,7 @@
 
 
 
-(define-category escape
-    :specializes bio-process
+(define-category escape :specializes bio-process
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -1073,8 +1047,7 @@
          :ifcomp statement
          :whethercomp statement))
 
-(define-category exhibit
-    :specializes bio-event
+(define-category exhibit :specializes bio-event
     :binds ((agent biological)
             (object biological))
     :realization
@@ -1084,8 +1057,7 @@
 	   :o object
            :by agent))
 
-(define-category explanation
-    :specializes bio-rhetorical
+(define-category explanation :specializes bio-rhetorical
     :binds ((agent (:or biological common-noun))
             (object bio-process))
     :realization
@@ -1097,8 +1069,7 @@
            :by agent))
 
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
-(define-category gene-transcript-express
-    :specializes bio-process
+(define-category gene-transcript-express :specializes bio-process
     :binds ((agent bio-entity)
             (object protein)
             (location bio-location)
@@ -1116,8 +1087,7 @@
            :on location))
 
 ;;events are favored in a context
-(define-category favor
-    :specializes bio-control
+(define-category favor :specializes bio-control
     :binds ((agent bio-entity)(object bio-process))
     :realization
     (:verb ("favor" :past-tense "favored") ;; keyword: ENDS-IN-ED 
@@ -1127,8 +1097,7 @@
 	  ))  ;; :in bio-context))  <--------------- not in scope
 
 ;; mostly passive -- "... are found ..."
-(define-category find
-    :specializes bio-rhetorical
+(define-category find :specializes bio-rhetorical
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
     (:verb ("find" :past-tense "found")
@@ -1138,8 +1107,7 @@
 	   :o object
            :of object))
 
-(define-category follow
-    :specializes bio-relation
+(define-category follow :specializes bio-relation
   :binds ((initial bio-process)
           (subsequent bio-process)
           (by (:or bio-method bio-process)))
@@ -1242,8 +1210,7 @@
      :o activated
      :of activated))
 
-(define-category hypothesize
-    :specializes bio-rhetorical
+(define-category hypothesize :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)(object bio-process))
     :realization
@@ -1256,8 +1223,7 @@
            ))
 
 
-(define-category identify
-    :specializes bio-method
+(define-category identify :specializes bio-method
     :binds ((agent pronoun/first/plural)
             (object biological)
             (identified-as biological)
@@ -1272,6 +1238,7 @@
            :of object
            :in manner))
 
+(lsp-break "immunoprecipitate")
 (define-category immunoprecipitate :specializes bio-method
   :binds ((agent pronoun/first/plural)
           (object bio-entity)
@@ -1370,8 +1337,7 @@
 
 
 
-(define-category indicate
-    :specializes bio-rhetorical
+(define-category indicate :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent biological)
             (object bio-process)
@@ -1386,8 +1352,7 @@
            :of object
            :thatcomp statement))
 
-(define-category influence
-    :specializes bio-control
+(define-category influence :specializes bio-control
     :binds ((agent biological)
             (object biological)
             (mechanism biological))
@@ -1409,8 +1374,7 @@
          :on object))
 |#
 
-(define-category inform
-    :specializes bio-rhetorical
+(define-category inform :specializes bio-rhetorical
     :binds ((agent (:or biological bio-method))(object (:or bio-process bio-method)))
     :realization
     (:verb "inform" ;; keyword: ENDS-IN-ING 
@@ -1452,8 +1416,7 @@
          :with interactor
          :of agent))
 
-(define-category interfere
-    :specializes bio-control
+(define-category interfere :specializes bio-control
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -1465,8 +1428,7 @@
            :in object
            :with object))
 
-(define-category interrogate
-    :specializes bio-method
+(define-category interrogate :specializes bio-method
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -1490,8 +1452,7 @@
          :o object
          :whethercomp statement))
 
-(define-category involve
-    :specializes bio-relation
+(define-category involve :specializes bio-relation
     :binds ((agent biological)
             (object biological))
     :realization
@@ -1501,8 +1462,7 @@
 	   :o object
            :in object))
 
-(define-category keep
-    :specializes bio-relation
+(define-category keep :specializes bio-relation
     :binds ((agent bio-entity)
             (object bio-process)
             (condition bio-condition)
@@ -1515,8 +1475,7 @@
            :for timeperiod
            :under condition))
 
-(define-category know
-    :specializes bio-rhetorical
+(define-category know :specializes bio-rhetorical
     :binds ((agent bio-entity)
             (object bio-process)
             (topic biological))
@@ -1531,8 +1490,7 @@
 
 (delete-noun-cfr (resolve/make "lead"))
 (delete-noun-cfr (resolve/make "leads"))
-(define-category lead
-    :specializes bio-control
+(define-category lead :specializes bio-control
     :binds ((agent biological)(object biological)(result biological))
     :realization
     (:verb ("lead" :past-tense "led")
@@ -1558,8 +1516,7 @@
 
 
 
-(define-category maintain
-    :specializes bio-control
+(define-category maintain :specializes bio-control
     :binds ((agent bio-entity)
             (object bio-process)
             (condition bio-condition)
@@ -1663,8 +1620,7 @@
 
 (np-head "knock-out" :super 'mutate)
 
-(define-category need
-    :specializes bio-relation
+(define-category need :specializes bio-relation
     :binds ((agent bio-entity)
             (object (:or bio-entity bio-process))
             (result-or-purpose process))
@@ -1682,8 +1638,7 @@
            :of agent
            :for object))
 
-(define-category observe
-    :specializes bio-method
+(define-category observe :specializes bio-method
     :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)
             (object biological)
@@ -1704,8 +1659,7 @@
            :with context
            :thatcomp statement))
 
-(define-category obtain
-    :specializes bio-method
+(define-category obtain :specializes bio-method
     :binds ((agent pronoun/first/plural)
             (object bio-process)
             (source biological)
@@ -1719,8 +1673,7 @@
            :from source
            :without source))
 
-(define-category occur
-    :specializes bio-event
+(define-category occur :specializes bio-event
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -1730,8 +1683,7 @@
 	   :s agent
 	   :o object))
 
-(define-category overexpress
-    :specializes bio-process
+(define-category overexpress :specializes bio-process
     :binds ((agent bio-entity)
             (object biological))
     :realization
@@ -1761,8 +1713,7 @@
          :of object1
          :with object2))
 
-(define-category perform
-    :specializes bio-method
+(define-category perform :specializes bio-method
     :binds ((agent pronoun/first/plural)
             (object bio-method)
             (beneficiary biological)
@@ -1797,8 +1748,7 @@
          :o object
          :at location))
 
-(define-category posit
-    :specializes bio-rhetorical
+(define-category posit :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)
             (object bio-process))
@@ -1809,8 +1759,7 @@
 	   :o object
            :thatcomp statement))
 
-(define-category potentiate
-    :specializes bio-control
+(define-category potentiate :specializes bio-control
     :binds ((agent biological)
             (object bio-process)
             (manner bio-process))
@@ -1824,8 +1773,7 @@
            :of object
            :in manner))
 
-(define-category predict
-    :specializes bio-rhetorical
+(define-category predict :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent (:or biological bio-rhetorical)) ;; "predicted by hypothesis"
             (object bio-process))
@@ -1839,8 +1787,7 @@
            :by agent
            :thatcomp statement))
 
-(define-category present
-    :specializes bio-relation
+(define-category present :specializes bio-relation
     :binds ((agent bio-entity)
             (object bio-process)
             (location bio-location)
@@ -1884,8 +1831,7 @@
          :of object))
 
 (delete-verb-cfr (resolve/make "probe"))
-(define-category probe
-    :specializes bio-rhetorical
+(define-category probe :specializes bio-rhetorical
     :binds ((agent bio-entity)
             (object biological))
     :realization
@@ -1897,8 +1843,7 @@
 (delete-noun-cfr (resolve/make "probe"))
 
 
-(define-category proliferate
-    :specializes bio-process
+(define-category proliferate :specializes bio-process
     :binds ((agent bio-entity)
             (object bio-process)
             (bio biological))
@@ -1915,8 +1860,7 @@
 	   :within bio))
 
 ;; (p "Dimerization of ERK has been proposed as a requirement for nuclear translocation.")
-(define-category propose
-    :specializes bio-rhetorical
+(define-category propose :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)
             (proposed bio-process)
@@ -1931,8 +1875,7 @@
      :as to-be
      :thatcomp statement))
 
-(define-category provide
-    :specializes bio-relation
+(define-category provide :specializes bio-relation
     :binds ((agent (:or result biological))
             (object (:or argument-support biological bio-rhetorical)))
     :realization
@@ -1956,11 +1899,11 @@
          :from bio
          :with agent))
 
-(define-category query
-    :specializes bio-method
+(define-category query :specializes bio-method
     :mixins (bio-whethercomp)
     :binds ((agent (:or biological pronoun/first/plural))
-            (object (:or bio-process bio-entity))
+
+	    (object (:or bio-process bio-entity))
             (against pathway))
     :realization
     (:verb "query" ;; keyword: ENDS-IN-ED 
@@ -1970,8 +1913,7 @@
            :against against ;; "12,484 genes were queried against KEGG biopathways"
            :whethercomp statement))
 
-(define-category question
-    :specializes bio-rhetorical
+(define-category question :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent pronoun/first/plural)(object biological))
     :realization
@@ -1983,8 +1925,7 @@
            :thatcomp statement
            ))
 
-(define-category raise
-    :specializes bio-control
+(define-category raise :specializes bio-control
     :binds ((agent bio-entity)
             (object (:or bio-process bio-abstract)) ;; bio-abstract for "raised the possibility"
             (method bio-method)
@@ -2033,8 +1974,7 @@
          :to destination
          :via process))
 
-(define-category reduce
-    :specializes bio-control
+(define-category reduce :specializes bio-control
     :binds ((agent (:or bio-entity bio-process))
             (object bio-process)
             (bio biological))
@@ -2082,8 +2022,7 @@
      :between theme))    ;; by <entity>
 
 
-(define-category relapse
-    :specializes bio-process
+(define-category relapse :specializes bio-process
     :binds ((agent bio-entity)
             (object bio-entity))
     :realization
@@ -2120,8 +2059,7 @@
   :into bio
   :of object))
 
-(define-category remain
-    :specializes bio-relation
+(define-category remain :specializes bio-relation
     :binds ((agent bio-entity)
             (object bio-process)
             (location bio-location))
@@ -2138,8 +2076,7 @@
   :referent (:head right-edge);; :bind (predication right-edge)
 )
 
-(define-category remove
-    :specializes bio-process
+(define-category remove :specializes bio-process
     :binds ((agent pronoun/first/plural)
             (object biological)
             (source biological)
@@ -2167,8 +2104,7 @@
 	   :o object
            :thatcomp statement))
 
-(define-category represent
-    :specializes bio-relation
+(define-category represent :specializes bio-relation
     :binds ((agent biological)
             (object (:or bio-process measurement))
             (figure article-figure))
@@ -2180,8 +2116,7 @@
            :in figure
            :of object))
 
-(define-category require
-    :specializes bio-control
+(define-category require :specializes bio-control
     :binds ((requires biological)
             (requirement (:or biological process)))
     :realization
@@ -2193,8 +2128,7 @@
            :for requires
            :of requires))
 
-(define-category resist
-    :specializes bio-process
+(define-category resist :specializes bio-process
     :binds ((agent bio-entity)
             (object biological))
     :realization
@@ -2207,8 +2141,7 @@
            :of agent))
 
 
-(define-category result
-    :specializes bio-process
+(define-category result :specializes bio-process
     :binds ((agent (:or bio-entity bio-process))
             (object (:or bio-process bio-method)))
     :realization
@@ -2235,8 +2168,7 @@
          :o object
          :thatcomp statement))
 
-(define-category select
-    :specializes bio-method
+(define-category select :specializes bio-method
     :binds ((agent pronoun/first/plural)
             (object biological)
             (study bio-method))
@@ -2249,8 +2181,7 @@
            :for study
            :of object))
 
-(define-category seem
-    :specializes bio-rhetorical
+(define-category seem :specializes bio-rhetorical
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -2259,8 +2190,7 @@
 	   :s agent
 	   :o object))
 
-(define-category bio-sequence
-    :specializes bio-method
+(define-category bio-sequence :specializes bio-method
     :binds ((agent pronoun/first/plural)
             (object biological)
             (method bio-method))
@@ -2273,8 +2203,7 @@
 	   ))
 
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
-(define-category show
-    :specializes bio-rhetorical
+(define-category show :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent (:or pronoun/first/plural article-figure))
             (object (:or bio-process pronoun/inanimate))
@@ -2335,8 +2264,7 @@
    :of object
    :with agent))    ;; by <entity>
 
-(define-category succeed
-  :specializes bio-relation
+(define-category succeed :specializes bio-relation
   :binds ((agent biological)
           (goal biological))
   :realization
@@ -2357,8 +2285,7 @@
    :thatcomp statement))
 
 
-(define-category suppress
-    :specializes bio-control
+(define-category suppress :specializes bio-control
     :binds ((agent (:or bio-entity bio-method)) ;; "suppressed by treatment"
             (object bio-process)
             (bio biological))
@@ -2371,8 +2298,7 @@
            :in bio
            :of object)) 
 
-(define-category sustain
-    :specializes bio-control
+(define-category sustain :specializes bio-control
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -2381,8 +2307,7 @@
 	   :s agent
 	   :o object))
 
-(define-category tag
-    :specializes bio-method
+(define-category tag :specializes bio-method
     :binds ((tagged protein)
             (taggant protein)
             (location bio-location))
@@ -2396,8 +2321,7 @@
 
 
 #+ignore
-(define-category target
-    :specializes bio-process
+(define-category target :specializes bio-process
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -2409,8 +2333,7 @@
            :of object))
 
 
-(define-category tend
-    :specializes bio-rhetorical
+(define-category tend :specializes bio-rhetorical
    ;; :mixins (bio-tocomp) working on this.. other comps not working.
     :binds ((agent bio-entity)
             (object bio-process))
@@ -2422,8 +2345,7 @@
 	   :o object
            :of agent)) 
 
-(define-category test
-    :specializes bio-method
+(define-category test :specializes bio-method
     :mixins (bio-whethercomp)
     :binds ((agent pronoun/first/plural)
             (object (:or bio-rhetorical biological))
@@ -2579,8 +2501,7 @@
 
 
 ;;This is almost never used as a verb -- only as "truncating...mutation" and "...truncation of ..."
-(define-category truncate
-    :specializes bio-process
+(define-category truncate :specializes bio-process
     :binds ((agent bio-entity)
             (object bio-process)
             (bio biological))
@@ -2604,8 +2525,7 @@
 
 
 ;; base form is "underlie" though...
-(define-category underly
-    :specializes bio-process
+(define-category underly :specializes bio-process
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
@@ -2647,8 +2567,7 @@
          :of object))
 
 
-(define-category use
-    :specializes bio-process
+(define-category use :specializes bio-process
     :binds ((agent pronoun/first/plural)
             (object biological)
             (result biological)
@@ -2665,8 +2584,7 @@
 
 
 
-(define-category validate
-    :specializes bio-rhetorical
+(define-category validate :specializes bio-rhetorical
     :mixins (bio-whethercomp bio-ifcomp)
     :binds ((agent biological)
             (object bio-process)
@@ -2703,8 +2621,7 @@
          ;;:whethercomp statement
          :with method))
 
-(define-category yield
-    :specializes bio-process
+(define-category yield :specializes bio-process
     :binds ((agent bio-entity)
             (object bio-process))
     :realization
