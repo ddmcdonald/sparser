@@ -80,7 +80,7 @@
 
 (define-category has-spatial-location
   :specializes has-location
-  :restrict ((location . spatial-region)))
+  :restrict ((location spatial-region)))
 
 
 ;;;----------------
