@@ -3,19 +3,26 @@
 ;;;
 ;;;      File:   "lattice-operations"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.0 May 2015
+;;;   Version:   1.0 August 2015
 
 ;; initiated in May 2015
 ;; Code to place referents in a description lattice to facilitate anaphora and other reasoning
 ;; 5/30/2015 added a bunch more functionality to description (not-yet-quite-a)lattice
 ;; 6/20.2015 substantial cleanup for this file -- revised data structures and methods
 ;; still need to deal with implied superc and subc links
-;; First test on compare-to-snapshots d=generated many more elements in the lattice than I would have expected
-;; set *no-description-lattice* to have this called when parsing
-;; 7/7/2015 Maintain the indiv-restrictions field, which contains a list of all the immediate superior referential categories 
-;; (1 in most cases, but can be more than on for a join) and all of the dli-vv’s which have been produced
-;; by the set of bind-variable operations that defined this individual.
-;; added predicate more-specific? which tests relative position (subsumption) in the description lattice
+
+;; First test on compare-to-snapshots d=generated many more elements in the
+;;  lattice than I would have expected set *no-description-lattice* to have
+;;  this called when parsing
+
+;; 7/7/2015 Maintain the indiv-restrictions field, which contains a list of
+;;  all the immediate superior referential categories (1 in most cases, but
+;;  can be more than on for a join) and all of the dli-vv’s which have been
+;;  produced by the set of bind-variable operations that defined this
+;;  individual.
+;; Added predicate more-specific? which tests relative position
+;;  (subsumption) in the description lattice.
+;; 8/12/15 Moved call to use-description-lattice to switches (bio-setting)
 
 
 
@@ -24,10 +31,11 @@
 (defparameter *description-lattice* t)
 
 (defun use-description-lattice (&optional (use-it t))
-  (setq *index-under-permanent-instances* use-it) ;; all individuals will be permanent, and in description-lattice
+  (setq *index-under-permanent-instances* use-it) 
+  ;; all individuals will be permanent, and in description-lattice
   (setq *description-lattice* use-it))
 
-(use-description-lattice t)
+
 
 (defvar category::top)
 (defvar category::collection)
