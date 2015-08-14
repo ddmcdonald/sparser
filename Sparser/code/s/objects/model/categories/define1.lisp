@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.5 January 2014
+;;;  version:  1.5 August 2015
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -122,7 +122,6 @@
                                        ((:realization rdata))
                                        lemma
                                        index )
-  (declare (special category bindings))
   
   (let ((specialized-category
          (when specializes (etypecase specializes
@@ -167,16 +166,7 @@
       (attach-bindings-to-category category
                                    bindings
                                    specialized-category
-                                   mixin-categories)
-      #+ignore
-      (multiple-value-bind (new-bindings new-cat)
-                           (attach-bindings-to-category category
-                                                        bindings
-                                                        specialized-category
-                                                        mixin-categories)
-        (declare (special new-bindings new-cat))
-        ;;(lsp-break "after attach-bindings")
-        (setq category new-cat)))
+                                   mixin-categories))
     
     (setf (cat-lattice-position category)
           (initialize-top-lattice-point 
