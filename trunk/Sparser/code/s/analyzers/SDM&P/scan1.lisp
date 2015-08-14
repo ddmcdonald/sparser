@@ -98,7 +98,8 @@ to make any semantic or form edges that the grammar dictates.
        (when edge ;; That will fail if its assumptions are violated
          (generalize-segment-edge-form-if-needed edge)
          (convert-referent-to-individual edge)
-         (record-any-determiner edge))))
+         (when *note-text-relations*
+           (record-any-determiner edge)))))
 
     ((:all-contiguous-edges
       :discontinuous-edges 
@@ -110,7 +111,8 @@ to make any semantic or form edges that the grammar dictates.
      (let ((edge (propagate-suffix-to-segment)))
        (generalize-segment-edge-form-if-needed edge)
        (convert-referent-to-individual edge)
-       (record-any-determiner edge)))
+       (when *note-text-relations*
+         (record-any-determiner edge))))
 
     (:no-edges ;; "burnt" or any other word not in Comlex
      (cond
@@ -213,14 +215,15 @@ to make any semantic or form edges that the grammar dictates.
        ;; seems to cause of the smashing of 
        ;; the referent of "the nucleus"
        ;; -- we have now turned off this flag in the bio domain
-       (when *profligate-creation-of-individuals*
+       (cond
+        (*profligate-creation-of-individuals*
          (let ((super (supercategory-of-constructed-category referent)))
            (setf (edge-referent edge)
                  (make-individual-for-dm&p (or super
                                                referent)))))
-       (if *description-lattice*
-           (setf (edge-referent edge)
-                 (fom-lattice-description referent)))
+        (*description-lattice*
+         (setf (edge-referent edge)
+               (fom-lattice-description referent))))
        referent)
       ;; These cases are original from 2009 and 
       ;; not reconsidered yet.
