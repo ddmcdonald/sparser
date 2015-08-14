@@ -16,6 +16,11 @@
 (p "RAS-ASSP.") -- bio-entity => protein
 make-protein-pair/convert-bio-entity convert-bio-entity-to-protein
 
+ (ddm-ws-ed "pronoun hacking.lisp")
+handle-any-anaphora  find-best-recent  post-analysis-operations
+condition-anaphor-edge  (there-are-pronouns)
+ (setq *trace-instance-recording* t)
+
 assess-parenthesized-content pts span-parentheses 
 do-paired-punctuation-interior parse-chunk-interior
 
@@ -94,7 +99,8 @@ but markedly preferred AKT2.")
 ;; content in e.g. (p "Ras bound to GTP binds to BRAF.")
 ;  post-analysis-operations  collect-model
 
-
+; c3-grammar-module-choices
+; location c3-location located-in
 
 ; Make seg printer context sensitive: print-words-between-segments
 ;; Would have timing. Needs debugging
@@ -146,7 +152,9 @@ Furthermore, atorvastatin inhibited Hcy-induced phosphorylation of
 p38 MAPK (1.7±0.1 vs 2.22±0.25, P <0.05), 
 similar effects occurred with DPI, NAC and SB203580."
 
-
+ (trace-pronouns)  
+ (trace-discourse-structure)
+ (setq *trace-instance-recording* t)
 |#
 
 ; (ddm-load-article-2 t)
@@ -190,6 +198,8 @@ similar effects occurred with DPI, NAC and SB203580."
 
 
 (defun ddm-issue-records ()
+  (ddm-ws-ed "discourse and surface strings.lisp")
+  (ddm-ws-ed "pronoun hacking.lisp")
   (ddm-ws-ed "Parsing ASPP2.lisp")
   (ddm-ws-ed "PW digit-fsa hassle.lisp")
   (ddm-ws-ed "Weird stuff 6-6-15.lisp")
@@ -202,10 +212,6 @@ similar effects occurred with DPI, NAC and SB203580."
   (ddm-r3-notes "ERK nuclear transport tasks.lisp")
   (ddm-r3-notes "Playing with Will's sentences.lisp"))
       
-
-#| (length *all-sentences*) => 43
-(length *all-irrelevant-sentences*) => 68  |#
-
 ; (noun "C-RAF:B-RAF" :super heterodimer)
 ; (trace-parse-edges) ;; extend into march-back-from-the-right/segment
 ; meta-. parse-at-the-segment-level
@@ -544,6 +550,7 @@ similar effects occurred with DPI, NAC and SB203580."
   (ddm-ed "grammar/rules/words/pronouns.lisp")
   (ddm-ed "objects/traces/pronouns.lisp")
   (ddm-ed "objects/traces/discourse.lisp"))
+; (trace-pronouns)  (trace-discourse-structure)
 
 (defun ddm-method-mess ()
   (ddm-ed "objects/model/categories/clos-backing.lisp")
