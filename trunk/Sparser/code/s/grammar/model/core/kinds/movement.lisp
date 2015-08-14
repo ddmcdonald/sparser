@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "movement"
 ;;;   Module:  "grammar/model/core/kinds/"
-;;;  version:  May 2014
+;;;  version:  August 2015
 
 ;; Initiated 3/20/14. Elaborated 3/31/14. 4/14/14 Moved to core/kinds/
-;; and expunged of ISR vocabulary/. 5/12/14 Working on getting 
-;; inferences going. 
+;; and expunged of ISR vocabulary. 5/12/14 Working on getting 
+;; inferences going. 8/14/15 cleaned up theme.
 
 (in-package :sparser)
 
@@ -50,19 +50,14 @@ Cases:
 ;;
 (define-category move
   :specializes accomplishment
-  :mixins (event) ;;//////// Sort out 'event' vs. 'perdurant'
-  :binds ((theme . can-change-location)
-          ;;/// FrameNet for the thing that moves
-          ;; /// If this is a useful variable move it higher
-          (from-location) ;; source - the theme's former location
+  ;; realization -- "move" and "movement"
+  :restrict ((theme can-change-location))
+  :binds ((from-location) ;; source - the theme's former location
           (to-location) ;; goal - its new location
           ;; See set of variables in define-movement-verb that
           ;; could all be inherited.///modulo when their restriction
           ;; were loaded: via-path, for-distance, in-direction
           ;; when-done, and landmark
-          ;;
           ;; means -- by self or via something else
-          )
-  ;; realization -- "move" and "movement"
-  :restrict ((theme . can-change-location)))
+          ))
 
