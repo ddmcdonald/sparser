@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.2 May 2014
+;;;  version:  1.2 August 2015
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -36,8 +36,9 @@
 ;;      started caching superc's on the category's plist.
 ;;     (5/22/14) Wrote display-category-tree and some ancilary routines to print
 ;;      the whole set of categories nicely. 
-;; 3/21/2015 SBCL caught application of lp-super-category to non lattice point --
-;;  form categories are not in a lattice...
+;;     3/21/2015 SBCL caught application of lp-super-category to non lattice point --
+;;       form categories are not in a lattice...
+;;     (8/12/15) Removed references to PSI.
 
 (in-package :sparser)
 
@@ -48,7 +49,6 @@
 
 (defun category-of (item)
   (typecase item
-    (psi (base-category-of-psi item))
     (individual (first (indiv-type item))) ;; c.f. i-type-of
     (mixin-category item)
     (referential-category item)
@@ -57,8 +57,6 @@
      (break "New type passed to category-of: ~a~%~a"
             (type-of item) item))))
 
-(defun base-category-of-psi (psi)
-  (base-category-of-lp (psi-lp psi)))
 
 (defmethod base-category-of-lp ((lp lattice-point))
   (base-category-of-lp (lp-top-lp lp)))
@@ -66,26 +64,6 @@
 (defmethod base-category-of-lp ((lp top-lattice-point))
   (lp-category lp))
 
-
-
-(defun all-categories-in-psi (psi)
-  (let ((lp (psi-lp psi)))
-    (typecase lp
-      (subtype-lattice-point
-       (when (lp-subtypes lp) (break "Subtypes on subtype object"))
-       (list (base-category-of-lp (lp-supertype lp))
-             (lp-specializing-category lp)))
-;      (self-lattice-point
-;       (list (base-category-of-lp lp)))
-;      (psi-lattice-point
-;       (list (base-category-of-lp lp)))
-      (top-lattice-point
-       (list (lp-category lp)))
-      (lattice-point
-       (list (lp-category (lp-top-lp (psi-lp psi)))))
-      (otherwise
-       (break "New type of lattice point: ~a~%~a"
-              (type-of lp) lp)))))
 
 
 ;;;----------------------------------------------
@@ -98,6 +76,17 @@
       (lp-super-category lp))))
 
 ;;--- entry points
+
+(defgeneric super-categories-of (category)
+  (:documentation "If the category is in the lattice then
+     walk up the lattice to collect all category's that
+     it inherits from, including mixins and their supercategories.
+     The category itself is included in the list that is returned.
+     After the first sweep of the lattice the result is cached
+     on the category's property list. If the category isn't
+     in the lattice (e.g. it's a form category) then this
+     returns a singleton list."))
+
 (defmethod super-categories-of ((c referential-category))
   (if (cat-lattice-position c)
     (super-categories-of1 c)
@@ -108,16 +97,13 @@
     (super-categories-of1 c)
     (list c)))
 
-(defmethod super-categories-of ((p psi))
-  (all-categories-in-psi p))
-
 (defmethod super-categories-of ((i individual))
   (let ((type (indiv-type i)))
     (if (null (cdr type))
       (super-categories-of (car type))
       (else
        (push-debug `(,i ,type))
-       (error "Stub: right the code to handle collecting ~
+       (error "Stub: write the code to handle collecting ~
           the super-categories-of an individual with more ~
           than one type.~%~a~%~a" i type)))))
 
@@ -241,11 +227,6 @@
 ;;; seeing if one category inherits from another
 ;;;----------------------------------------------
 
-(defun psi-inherits-type? (psi category)
-  ;; n.b. super-categories-of(psi) doesn't work. Doesn't sweep up
-  ;; the lattice
-  (individual-inherits-type? psi category))
-
 (defun individual-inherits-type? (i category)
   ;; does the primary category of the individual inherit from that category?
   (let ((base-category (itype-of i)))
@@ -263,7 +244,6 @@
   (when (null category) (error "Illegal null category."))
   (if (eq category reference-category)
     t
-
     (let* ((lp (cat-lattice-position category))
            (super-category
             ;; SBCL caught application of lp-super-category to non lattice point --
@@ -271,7 +251,6 @@
             (when (lattice-point-p lp)
               (lp-super-category lp)))
            (mixins (cat-mix-ins category)))
-
       (or
        (when super-category
         (when (eq category super-category)
