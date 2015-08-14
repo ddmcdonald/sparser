@@ -419,7 +419,11 @@
 (defun bio-setting () ;; copy & specialize of back-named old-bio-setting
   (turn-off-c3)
   (tuned-grok)
-  (setq *edges-from-referent-categories* nil) ;; should be off in the bio system!
+  ;; except
+  (setq *edges-from-referent-categories* nil ;; should be off in the bio system!
+        *note-text-relations* nil
+        *profligate-creation-of-individuals* nil
+)
 
   (include-comlex)
   ;; Get everything primed, but don't use it on the unknown words
@@ -433,11 +437,12 @@
         *parse-chunk-interior-online* t
         *parse-chunked-treetop-forest* t
         *sweep-sentence-treetops* t
-        *island-driving* t
-        *profligate-creation-of-individuals* nil)
+        *island-driving* t)
 
   ;; make sure we notice periods
   (period-hook-on)
+
+  (use-description-lattice t)
 
   ;; Flags that control how the parsing is done
   
