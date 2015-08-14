@@ -439,7 +439,7 @@
         (return))
       (setq rightmost-pos pos-after))
 
-    (push-debug `(,raw-entities ,raw-relations))
+    ;; (push-debug `(,raw-entities ,raw-relations))
     ;; (setq raw-entities (car *) raw-relations (cadr *))
     ;; (strip-model-descriptions raw-relations)
     ;; (break "debug strip model")
@@ -490,13 +490,20 @@
           (format t "~&>>> Null start-index: ~a~%~%" edge))
         (unless end-index
           (format t "~&>>> Null end-index: ~a~%~%" edge)) |#
+
         (if (and start-index end-index)
           ;; need both indices to extract the string
           (let ((string (extract-string-from-char-buffers 
                          start-index end-index)))
+            (when nil
+              (format t "~&Suface string for ~a set to ~s on e~a~%"
+                      referent string 
+                      (edge-position-in-resource-array edge)))
             (setf (gethash referent *surface-strings*)
                   string))
+
           (setf (gethash referent *surface-strings*) ""))))))
+
 
 
 (defparameter *surface-strings* (make-hash-table :size 10000))
