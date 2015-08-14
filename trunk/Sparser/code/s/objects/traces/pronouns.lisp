@@ -27,6 +27,70 @@
                (edge-position-in-resource-array edge)
                (edge-category edge))))
 
+
+;;--- Conditioning
+
+(deftrace :conditioning-anaphor-edge (pn-edge)
+  ;; called from condition-anaphor-edge 
+  (when *tracing-pronouns*
+    (trace-msg "Conditioning pronoun edge e~a"
+               (edge-position-in-resource-array pn-edge))))
+
+(deftrace :anaphor-conditioned-to (new-ref restriction relation-label)
+  ;; called from condition-anaphor-edge 
+  (when *tracing-pronouns*
+    (trace-msg "  new referent: ~a~
+              ~%  value restriction: ~a~
+              ~%  grammatical relation: ~a"
+               new-ref restriction relation-label)))
+
+
+;;--- ref4 - doing the anaphora
+
+(deftrace :anaphora-looking-at-edge (edge)
+  ;; called from handle-any-anaphora, which is called from
+  ;; post-analysis-operations when *do-anaphora* is up.
+  (when *tracing-pronouns*
+    (trace-msg "Doing anaphoric edge e~a"
+                (edge-position-in-resource-array edge))))
+
+(deftrace :ignoring-wh-pronoun ()
+  ;; called from handle-any-anaphora
+  (when *tracing-pronouns*
+    (trace-msg "  Ignoring WH pronoun")))
+
+(deftrace :ignoring-reflexive-pronoun ()
+  ;; called from handle-any-anaphora
+  (when *tracing-pronouns*
+    (trace-msg "  Ignoring non-object relexive pronoun")))
+
+(deftrace :resolving-pronoun/previous-subject (previous-subject)
+  ;; called from handle-pronoun
+  (when *tracing-pronouns*
+    (trace-msg "  Resolved to the previous subject: ~a"
+               previous-subject)))
+
+(deftrace :pronoun-not-conditioned ()
+  ;; called from handle-pronoun
+  (when *tracing-pronouns*
+    (trace-msg "  Edge wasn't conditioned. Returning nil")))
+
+(deftrace :restriction-on-pronoun (type-restriction)
+  ;; called from handle-pronoun
+  (when *tracing-pronouns*
+    (trace-msg "  Looking for a ~a" type-restriction)))
+
+(deftrace :no-compatible-referent ()
+  ;; called from handle-pronoun
+  (when *tracing-pronouns*
+    (trace-msg "    Nothing found")))
+
+(deftrace :pronoun-resolved-to (i)
+  ; called from handle-pronoun
+  (when *tracing-pronouns*
+    (trace-msg "    Found ~a" i)))
+
+
 ;;--- dereference-DefNP
 
 (deftrace :decoding-definite-reference-to (head)
