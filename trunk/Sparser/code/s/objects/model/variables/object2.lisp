@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1991-2000 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:variables:"
@@ -23,7 +22,8 @@
 ;;      the category case if both are provided for disambiguation purposes.
 ;; 2.0 (6/16/09) Switching to a lexical treatment. These routines are probably
 ;;      moot given what's in index2 now. 7/14 Made them indirect calls to the
-;;      new ones rather than try reworking the myriad of callers
+;;      new ones rather than try reworking the myriad of callers.
+
 
 (in-package :sparser)
 
