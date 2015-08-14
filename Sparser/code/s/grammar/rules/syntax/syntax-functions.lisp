@@ -449,10 +449,11 @@
      ((edge-p prep-word)
       ;; usually indicative that the preposition is a polyword
       (cond
-              ((polyword-p (edge-rule prep-word))
+       ((polyword-p (edge-rule prep-word))
         (edge-rule prep-word)) ;; return the pw
        ((and (memq (cat-name (edge-form prep-word))
-                   '(preposition spatio-temporal-preposition spatial-preposition)) ;; sanity check
+                   '(preposition spatio-temporal-preposition 
+                     spatial-preposition)) ;; sanity check
              ;; The word was elevated to a category, e.g. 'with'
              (word-p (edge-left-daughter prep-word)))
         (edge-left-daughter prep-word))
@@ -492,9 +493,8 @@
               (when (or
                      (eq prep-word (word-named "upon"))
                      (eq prep-word (word-named "following")))
-                (when
-                    (and (itypep vg 'bio-process)
-                         (itypep pobj-referent 'bio-process))
+                (when (and (itypep vg 'bio-process)
+                           (itypep pobj-referent 'bio-process))
                   'following))
 
               ;; or if we are making a last ditch effore
@@ -673,7 +673,7 @@
 
 
 ;; special case where the vp is a gerund, and we make it an NP (not sure how often this is right)
-(defun assimilate-subject-to-vp-ing(subj vp)
+(defun assimilate-subject-to-vp-ing (subj vp)
   (unless 
       ;; remove the printout until it is needed again
       t ;;   *subcat-test*
@@ -804,7 +804,9 @@
   ;; the correct referent once we've identified it. Kind of Rube Goldberg
   ;; -esque, but it's the price we pay for delaying rather than trying to
   ;; identify the referent at moment the pronoun is encountered.
-  (declare (special *ignore-personal-pronouns*))
+  (declare (special *ignore-personal-pronouns*
+                    category::unknown-grammatical-function))
+  (tr :conditioning-anaphor-edge pn-edge)
   (let* ((original-label (edge-category pn-edge))
          (relation-label (form-label-corresponding-to-subcat subcat-label))
          (restriction 
@@ -813,10 +815,9 @@
     (when (consp restriction)
       ;; the first one after the :or
       (setq restriction 
-            (or
-             (loop for c in (cdr restriction) 
-               when (itypep (edge-referent pn-edge) c)
-               do (return c))
+            (or (loop for c in (cdr restriction) 
+                  when (itypep (edge-referent pn-edge) c)
+                  do (return c))
              (cadr restriction))))
     (unless relation-label
       (setq relation-label category::np))
@@ -829,7 +830,7 @@
                            category::pronoun/second)))
         ;; If we're going to ignore the pronoun we don't want or
         ;; need to rework its edge
-        ;;
+        (tr :anaphor-conditioned-to new-ref restriction relation-label)
         ;; Encode the type-restriction in the category label
         ;; and the grammatical relationship in the form
         (setf (edge-category pn-edge) restriction)
@@ -1120,8 +1121,7 @@
 ;;;------------------------------------------------------------------
 
 (defun individual-for-ref (head)
-  (if
-   *description-lattice*
+  (if *description-lattice*
    head
    (typecase head
      (individual
@@ -1138,5 +1138,5 @@
      (otherwise
       (push-debug `(,head))
       (error "Unexpected type of 'head' in individual for ref: ~a~
-        ~%  ~a" (type-of head) head))))
-  )
+        ~%  ~a" (type-of head) head)))))
+
