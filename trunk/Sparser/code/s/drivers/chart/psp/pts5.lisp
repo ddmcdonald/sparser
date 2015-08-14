@@ -236,7 +236,7 @@
 ;;; choice of segment-finished after-action protocols
 ;;;---------------------------------------------------
 
-(defparameter *debug-segment-handling* t
+(defparameter *debug-segment-handling* nil
   "Guards errors and breaks within the segment handling code that traps
    new cases or violations of standing assumptions.")
 
