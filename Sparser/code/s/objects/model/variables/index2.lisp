@@ -50,8 +50,11 @@
     (error "Category parameter is a ~a instead of a category.~
           ~%Upstream function call passed down the wrong thing."
            (type-of category)))
-  (or (find-variable-in-category variable-name category)
-      (super-category-has-variable-named variable-name category)
+  ;; First we look on the category itself. Then we look through
+  ;; of its superc's as determined by super-categories-of,
+  ;; Finally we consult the category's mixins.
+  (or (find-variable-in-category variable-name category) 
+      (super-category-has-variable-named variable-name category) 
       (find-variable-in-mixins variable-name category)))
 
 
@@ -60,13 +63,22 @@
 
 
 
+(defgeneric find-variable-in-category (name category)
+  (:documentation "Given a symbol that names a variable, return
+    the actual variable on the indicated category. Alternative
+    methods provide other ways to getting to the category.
+    This method does -not- search beyond the category itself"))
+
 (defmethod find-variable-in-category (symbol (i individual))
+  (loop for category in (indiv-type i)
+    thereis (find-variable-in-category symbol category)))
+#|
   (let ((type (indiv-type i)))
     (if (null (cadr type))
       (find-variable-in-category symbol (car type))
       (else
         (push-debug `(,symbol ,i ,type))
-        (error "New case: multi-valued type")))))
+        (error "New case: multi-valued type")))) |#
 
 (defmethod find-variable-in-category (symbol (category model-category))
   (let ((variables (cat-slots category)))
