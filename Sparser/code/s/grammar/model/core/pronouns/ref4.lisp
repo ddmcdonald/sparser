@@ -25,7 +25,6 @@
 ;;     (6/5/15) Make handle-pronoun return nil if pronoun hasn't been massaged.
 
 (in-package :sparser)
-(defvar *BACKGROUND-COMPANIES*)
 
 (defparameter *debug-pronouns* nil
   "Guards breaks like the one in seek-person-for-pronoun where the search
@@ -41,19 +40,26 @@
 (defun handle-any-anaphora (sentence)
   ;; called from post-analysis-operations with the sentence currently being
   ;; analyzed. 
-  (let ( edge/s )
-    (when (setq edge/s (there-are-pronouns))
+  (let ((edge/s (there-are-pronouns)))
+    (when edge/s
       ;; It's a push list, so we're going to set the rightmost ones first
       (dolist (edge edge/s)
+        (tr :anaphora-looking-at-edge edge)
         (let ((label (edge-category edge))
               (form (edge-form edge)))
+          (push-debug `(,edge/s ,sentence)) ;;(lsp-break "Looking at pn")
           (case (cat-symbol form)
             ((category::pronoun
               category::subject category::direct-object)
              (handle-pronoun
               label form edge sentence))
-            (category::wh-pronoun) ;; ignore -- question or subordinator
-            (category::reflexive/pronoun) ;; ignore -- adds emphasis, but can be ignored for now
+            (category::wh-pronoun ;; ignore -- question or subordinator
+             (tr :ignoring-wh-pronoun))
+            (category::reflexive/pronoun
+             ;; ignore -- adds emphasis, but can be ignored for now
+             ;; N.b. when a reflexive is in object position it will
+             ;; be handled by the prior clause
+             (tr :ignoring-reflexive-pronoun))
             (otherwise
              (when *debug-pronouns*
                (push-debug `(,edge ,form ,label))
@@ -84,10 +90,17 @@
       (let ((previous-subject
              (and (slot-boundp sentence 'previous)
                   (get-sentence-subject (previous sentence)))))
-        (when (and previous-subject
-                   (edge-p previous-subject))
-          (transfer-edge-data-to-edge previous-subject edge))))
+        (if (and previous-subject
+                 (edge-p previous-subject))
+          (then
+            (tr :resolving-pronoun/previous-subject previous-subject)
+            (transfer-edge-data-to-edge previous-subject edge))
+          (when *debug-pronouns*
+            (push-debug `(,edge ,sentence))
+            (error "Problem with resolving to prevous subject")))))
+
      ;; any other edge-based checks go here
+
      ((not (eq (edge-rule edge) 'condition-anaphor-edge))
       (if *debug-pronouns*
         (then
@@ -95,24 +108,30 @@
           (error "Pronoun edge didn't go through condition-anaphor-edge~
                 ~% ~a" edge))
         ;; Don't do anything
-        (return-from handle-pronoun nil)))
+        (else
+          (tr :pronoun-not-conditioned)
+          (return-from handle-pronoun nil))))
+
      (t (let ((type-restriction (edge-category edge))
               (grammatical-relation (edge-form edge)))
+          (tr :restriction-on-pronoun type-restriction) ;; grammatical-relation)
           (let ((referent
                  (search-dh-for-compatible-referent 
                   type-restriction grammatical-relation)))
             (cond
              ((null referent)
+              (tr :no-compatible-referent)
+              ;; convert it back to a pronoun?
               (when *debug-pronouns*
                 (push-debug `(,label ,form ,edge ,sentence))
-                (break "Couldn't find a referent"))
-              ;; convert it back to a pronoun
-              )
+                (break "Couldn't find a referent")))
+              
              (t ;; make-over the referent
               (push-debug `(,edge ,referent))
               (let ((i (car referent))
                     (source-edge (cadr referent))
                     (dummy-i (edge-referent edge)))
+                (tr :pronoun-resolved-to i)
                 (transfer-edge-data-to-edge source-edge edge)
                 (rethread-anaphor-bindings dummy-i i)
                 i)))))))))
@@ -289,6 +308,7 @@
 
 
 (defun respan-pn-with-most-recent-company-anaphor (pn-edge)
+  (declare (special *background-companies*))
   (let ((company-entries
          (discourse-entry (category-named 'company)))
         (pronoun-form (edge-form pn-edge)))
