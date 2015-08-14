@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "plist"
 ;;;    Module:   "objects;chart:generics:"
-;;;   Version:   0.2 January 2015
+;;;   Version:   0.2 August 2015
 
 ;; (2/10/92 v2.2) added cases for cfr's.
 ;; (9/2 v2.3) added cases for referential-categories
@@ -16,6 +16,7 @@
 ;; 0.2 (6/3/13) converted the push to a pushnew. 
 ;;     (8/6/14) added has-tag? as sugar for memq
 ;;     (1/12/15) removed a break from remove
+;;     (8/14/15) adding variable to the set. 
 
 (in-package :sparser)
 
@@ -31,6 +32,7 @@
     (cfr       (cfr-plist obj))
     (polyword  (pw-plist obj))
     (individual (indiv-plist obj))
+    (lambda-variable (var-plist obj))
     (lattice-point (lp-plist obj))))
 
 
@@ -42,14 +44,17 @@
     (cfr       (setf (cfr-plist obj) plist))
     (polyword  (setf (pw-plist obj) plist))
     (individual (setf (unit-plist obj) plist))
+    (lambda-variable (setf (var-plist obj) plist))
     (lattice-point (lp-plist obj))))
 
 
 ;;; added generic get/set for these plists
 
-;;; same as get-tag-for, really, but avoid the bad case where a value is eq to a property name. 
-;;; David says there is some possibility that values without property names may be pushed onto these lists
-;;; so reverting to the use of member (ugh)
+;;; same as get-tag-for, really, but avoid the bad case where a value is eq
+;;; to a property name.  David says there is some possibility that values
+;;; without property names may be pushed onto these lists so reverting to
+;;; the use of member (ugh)
+
 #+ignore
 (defun get-object-property (obj prop)
   (let ((plist (plist-for obj)))
@@ -57,10 +62,6 @@
       (loop for (key val) on plist :by #'cddr
         when (eq key prop)
         do (return val)))))
-
-(defun get-object-property (obj prop)
-  (get-tag-for prop obj))
-
 
 #+ignore ; see comment above
 (defun set-object-property (obj prop val)
@@ -74,10 +75,14 @@
                            finally (return (cons prop (cons val plist)))))
                         (t (list prop val))))))
 
+
+(defun get-object-property (obj prop)
+  (get-tag-for prop obj))
+
 (defun set-object-property (obj prop val)
   (if (has-tag? prop obj)
-      (change-plist-value obj prop val)
-      (push-onto-plist obj val prop)))
+    (change-plist-value obj prop val)
+    (push-onto-plist obj val prop)))
 
 
 ;;;--------------
@@ -151,6 +156,7 @@
        (push-onto-cat-plist  obj item tag))
       (cfr      (push-onto-cfr-plist  obj item tag))
       (polyword (push-onto-pw-plist   obj item tag))
+      (lambda-variable (push-onto-var-plist obj item tag))
       (individual (push-onto-individual-plist obj item tag)))))
 
 
@@ -182,6 +188,16 @@
                 (cons item
                       (cat-plist obj))))
     (setf (cat-plist obj)
+          (list tag item))))
+
+
+(defun push-onto-var-plist (obj item tag)
+  (if (var-plist obj)
+    (setf (var-plist obj)
+          (cons tag
+                (cons item
+                      (var-plist obj))))
+    (setf (var-plist obj)
           (list tag item))))
 
 
