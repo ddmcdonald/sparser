@@ -168,10 +168,12 @@
   (:head right-edge           
          :bind (on-protein left-edge)))
 
+#|
 ;; p38 kinase
-(def-cfr protein (protein kinase)
+(def-cfr protein (protein kinase) ;; replaced with premod on the class realization
   :form np
   :referent (:head left-edge))
+|#
 
 (def-form-rule (amino-acid pp) ;; phosphoserine at residue 827
   :form np 
@@ -215,8 +217,7 @@
 
 ;;--- bio-predication
 
-(define-category is-bio-entity
-  :specializes bio-predication
+(define-category is-bio-entity :specializes bio-predication
   :binds ((entity biological)
           (predication biological)))
 
