@@ -111,6 +111,8 @@
          :in species
          :in cellular-location
          :in context
+         :under context
+         :with context
          :in cell-line
          :from cell-line)
   :documentation "Provides a generalization over bio entities
@@ -212,11 +214,9 @@
   :mixins (has-UID has-name biological)
   :realization 
   (:common-noun name) ;; for nominal forms
-  :binds ((adverb)(manner)(following)(modifier)(in-order-to))
   ;;restricts ((function bio-process))
   :documentation "No content by itself, provides a common parent
-  for 'processing', 'ubiquitization', etc. that may be the basis
-  of the grammar patterns.")
+  for 'pathway' and potentially things like 'feedback loop', ...")
 
 (def-synonym bio-mechanism
              (:noun "mechanism"
@@ -234,6 +234,7 @@
          :for theme))
 
 (define-category post-translational-modification :specializes bio-process)
+
 (define-category phosphorylation-modification :specializes post-translational-modification)
 
 (define-category bio-rhetorical :specializes event)
@@ -279,6 +280,13 @@
          :s controller 
          :o controlled))
 
+(define-category kinase-activity :specializes catalysis
+  :binds ((enzyme protein))
+  :realization
+  (:noun "kinase activity"
+         :premod enzyme))
+
+
 (define-category bio-method :specializes process
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
@@ -288,10 +296,15 @@
 
 (define-category bio-event :specializes event
   :mixins (has-UID has-name biological)
+  :binds ((process bio-process))
   :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'acquire, act, addition, counfound etc. that may be the basis
     of the grammar patterns.")
+
+(def-synonym bio-event 
+   (:noun "event"
+          :for process))
 
 (define-category bio-relation :specializes state
   :mixins (has-UID has-name biological)
@@ -331,8 +344,8 @@
          :of process
          :of entity))
 
-;; must come before small-molecule
-(define-category bio-location  :specializes bio-context
+(define-category bio-location  :specializes biological
+  :mixins (has-UID has-name)
   :instantiates self
   :index (:permanent :key name))
 
@@ -360,9 +373,6 @@
   )
 
 (define-category small-molecule :specializes molecule
-  ;;:mixins (bio-location)
-  ;;:mixins (reactome-category)
-  ;; small-molecule, like molecule itself, has a (cellular) location
   :binds ((entityReference small-molecule-reference)))
 
 (define-category nucleotide :specializes small-molecule 
@@ -412,6 +422,7 @@
 (define-category kinase :specializes enzyme
                  ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
                  ;;  should be as a "telic" qualia for those molecules which are kinases 
+  :binds ((protein protein) (residue amino-acid))
   :instantiates :self
   :bindings (uid "GO:0016301") ;; "kinase activity" 
   :index (:permanent :key name)
@@ -419,7 +430,9 @@
 
 (def-synonym kinase
              (:noun "kinase"
-                   :for reaction))
+                   :for reaction
+                   :premod protein
+                   :premod residue))
 
 
 (define-category GTPase :specializes enzyme
@@ -433,7 +446,14 @@
 
 
 (define-category bio-variant :specializes molecule ;; not sure this is the correct term, but intended for things like "forms of ras" 
-  :instantiates :self)
+  :binds ((basis bio-entity)) ;; can be a gene or protein, or something else
+  :instantiates :self
+  :realization
+  (:noun "variant"
+         :etf pre-mod
+         :m basis
+         :of basis))
+
 
 (define-category protein-domain :specializes bio-entity ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
   :instantiates :self)
@@ -484,17 +504,17 @@
 
 
 
-(define-category bio-condition :specializes bio-context
+(define-category experimental-condition :specializes bio-context
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "condition")
   :realization (:common-noun name))
 
-(define-category experimental-system :specializes bio-context
+(define-category experimental-system :specializes experimental-condition
   :realization
   (:noun "system"))
 
-(define-category disease  :specializes bio-condition
+(define-category disease  :specializes bio-context
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "disease")
@@ -512,11 +532,6 @@
   :lemma (:common-noun "melanoma")
   :realization (:common-noun name))
 
-
-
-(define-category bio-organ :specializes bio-location
-  :instantiates self
-  :index (:permanent :key name))
 
 (define-category cellular-location  :specializes bio-location
   :binds ((id))
@@ -590,6 +605,11 @@
   :instantiates self
   :index (:permanent :key name))
 
+(define-category bio-organ :specializes non-cellular-location
+  :mixins (has-UID has-name)
+  :instantiates self
+  :index (:permanent :key name))
+
 (define-category molecular-location  :specializes non-cellular-location
   :instantiates self
   :index (:permanent :key name))
@@ -599,17 +619,19 @@
   :realization (:common-noun name)
   :index (:permanent :key name))
 
-(define-category species :specializes non-cellular-location
-  :instantiates self 
-  :index (:permanent :key name)
-  :lemma (:common-noun "species")
-  :realization (:common-noun name))
+
 
 ;; used in biopax
 (define-category organism :specializes non-cellular-location
   :instantiates self  
   :index (:permanent :key name)
   :lemma (:common-noun "organism")
+  :realization (:common-noun name))
+
+(define-category species :specializes organism
+  :instantiates self 
+  :index (:permanent :key name)
+  :lemma (:common-noun "species")
   :realization (:common-noun name))
 
 
