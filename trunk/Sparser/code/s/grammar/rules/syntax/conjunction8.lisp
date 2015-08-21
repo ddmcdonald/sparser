@@ -396,6 +396,8 @@
     (let ((label-before (edge-category edge-before))
           (label-after (edge-category edge-after)))
       (if (or (eq label-before label-after)
+              (and (safe-itypep label-before 'protein)  ;; allow for protein and kinase
+                   (safe-itypep label-after 'protein))
               (bio-coercion-compatible? label-before label-after edge-before edge-after))
         :conjunction/identical-adjacent-labels
         (when *allow-form-conjunction-heuristic*
