@@ -133,11 +133,11 @@
       :realization
       (:noun "ability" :adj "able"
              :s agent
-             :to result
+             :to-comp result
              :of agent
-             :to-comp ability))
+             :to ability))
 
-(noun "absence" :super bio-condition
+(noun "absence" :super experimental-condition
       :binds ((absent biological)) 
       :realization
       (:noun "absence"
@@ -181,20 +181,12 @@
      :realization
      (:noun "affinity"
             :for object))
-(noun "allele" :super bio-variant
-      :binds ((basis bio-entity)) ;; this should be for genes and proteins
-      :realization
-      (:noun "allele"
-             :of basis))
+(noun "allele" :super bio-variant)
 
 (define-adverb "also")
 (adj "also known as" :super bio-predication)
 
-(noun "analog" :super bio-variant
-      :binds ((basis bio-entity)) ;; this should be for genes and proteins
-      :realization
-      (:noun "analog"
-             :of basis))
+(noun "analog" :super bio-variant)
 (noun ("analysis" :plural "analyses")
   :super bio-method)
 
@@ -234,10 +226,7 @@
 
 
 (noun "class" :super bio-variant  ;;NOT SURE THIS IS RIGHT
-      :binds ((basis bio-entity)) 
-      :realization
-      (:noun "class"
-             :of basis))
+      )
 
 ;; This should be made more general
 (adj "class I" :super bio-predication)
@@ -280,7 +269,7 @@
       :realization 
       (:noun "concentration"
              :of measurable)) ;;levels of incorporated 32P (January sentence 34)
-(noun "condition" :super bio-condition)
+(noun "condition" :super experimental-condition)
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
 ;;(adj "conserved" :super bio-predication) Moved to verbs1.lisp
 (adj "consistent" :super bio-predication
@@ -419,7 +408,7 @@
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
 (noun "fate" :super bio-process)
 
-(noun "fetal calf serum" :super bio-context)
+(noun "fetal calf serum" :super experimental-condition)
 (def-synonym category::fetal\ calf\ serum
              (:noun "FCS"))
 
@@ -436,11 +425,7 @@
 (noun "fluorescence correlation spectroscopy measurements" :super bio-method)
 (noun "fluorescence microscopy" :super bio-method)
 
-(noun "form" :super bio-variant
-      :binds ((basis bio-entity)) ;; this should be for genes and proteins
-      :realization
-      (:noun "form"
-             :of basis))
+(noun "form" :super bio-variant)
 
 (noun "forster resonance energy transfer" :super bio-method)
 
@@ -464,7 +449,8 @@
       :realization
       (:noun "function"
        :of functional
-       :to process))
+       :to-comp process))
+
 (adj "further" :super bio-predication)
 (define-adverb "further")
 (define-adverb "furthermore")
@@ -507,12 +493,11 @@
      (:adj "identical"
            :s basis
            :to comparator))
-;;(noun "living cells" :super bio-context)
 (define-adverb "in part")
-(define-category in-vivo :specializes bio-context
+(define-category in-vivo :specializes experimental-condition
   :realization
   (:adj "in vivo"))
-(define-category in-vitro :specializes bio-context
+(define-category in-vitro :specializes experimental-condition
   :realization
   (:adj "in vitro"))
 
@@ -565,20 +550,17 @@
 
 (adj "integrative" :super bio-predication) ;; keyword: (ive ADJ) 
 (adj "intriguing" :super bio-predication) ;; keyword: ENDS-IN-ING 
-(noun "isoform" :super bio-variant
-      :binds ((basis bio-entity)) ;; this should be for genes and proteins
-      :realization
-      (:noun "isoform"
-             :of basis))
+(noun "isoform" :super bio-variant)
 (adj "kinase-dead" :super bio-predication)
+
+
 (adj "kinetic" :super bio-predication)
 
 (define-category knockdown :specializes bio-process
-  :binds ((antigen molecule))
+  :binds ((gene-or-protein (:or protein gene)))
   :realization
-  (:noun "knockdown"
-         :to antigen
-         :for antigen))
+  (:noun "knockdown" :of gene-or-protein))
+
 (adj "least" :super bio-predication)
 (adj "least-selective" :super bio-predication) ;; just to get through
 (noun "length" :super bio-scalar)
@@ -670,14 +652,15 @@
 
 (define-adverb "namely")
 (adj "native" :super bio-predication)
-(noun "natural growth conditions" :super bio-context)
+(noun "natural growth conditions" :super experimental-condition)
 (adj "necessary" :super bio-predication
      :binds ((condition biological)(agent biological)(result biological))
      :realization 
      (:adj "effective"
            :s condition
            :for agent
-           :to result))
+           :to result
+           :to-comp result))
 (define-adverb "nevertheless")
 (define-adverb "next")
 (define-unit-of-measure "nM")
@@ -799,7 +782,7 @@
      (:s theme
          :to treatment))
      ;; keyword: (ory ADJ)
-(noun "region" :super bio-location
+(noun "region" :super molecular-location
       :binds ((bounds biological))
       :realization
       (:noun "region"
@@ -815,7 +798,7 @@
      :realization
      (:adj "resistant"
            :s agent
-           :to-comp effect))
+           :to effect))
 
 (noun "response" :super bio-process
     :binds ((beneficiary biological)
@@ -861,7 +844,7 @@
       (:noun "sensitivity"
              :of subject
              :to cause)) ;; keyword: (ity N)
-(noun "serum" :super bio-context) 
+(noun "serum" :super experimental-condition) 
 (noun "setting" :super bio-context)
 (adj "short-lived" :super bio-predication)
 
@@ -875,7 +858,7 @@
 ;; Jan 29 "two MAPK phosphorylation sites in ASPP1 and ASPP2."
 ;; Jan 14 "mutation of the primary site of monoubiquitination"
 ;; 16 "mUbRas, modified at a single site, "
-(noun "site" :super bio-location
+(noun "site" :super molecular-location
   :binds ((process bio-process)(protein protein)(residue residue-on-protein))
   :realization
      (:noun "site"
@@ -934,7 +917,7 @@
      :realization
      (:adj "sufficient"
            :s theme
-           :to result))
+           :to-comp result))
 
 
 (adj "supplementary" :super bio-predication) ;; keyword: (ary ADJ)
@@ -943,7 +926,7 @@
   :realization
   (:noun "support"
          :for argument))
-(noun "surface area" :super bio-location)
+(noun "surface area" :super molecular-location)
 (define-adverb "surprisingly")
 (adj "synthetic" :super bio-predication)
 (noun "table" :super article-table)
@@ -960,7 +943,7 @@
 (adj "transient" :super bio-predication)
 (noun "transition state intermediate" :super molecule-state)
 (noun "trial" :super bio-context)
-(noun "tumor" :super bio-location)
+(noun "tumor" :super non-cellular-location)
 (noun "tumor formation" :super bio-process)
 (noun "tumorigenesis" :super bio-process)
 (adj "unable" :super bio-predication
@@ -984,7 +967,7 @@
      :realization
      (:adj "unresponsive"
            :s agent
-           :to-comp effect))
+           :to effect))
 (define-adverb "until now")
 (noun "upstream" :super bio-context
       :binds ((relative-to biological))
@@ -998,16 +981,11 @@
      (:adj "useful"
            :s subject
            :for purpose))
-(noun "variety" :super bio-variant
-      :binds ((basis bio-entity)) ;; this should be for genes and proteins
-      :realization
-      (:noun "variety"
-             :of basis))
+(noun "variety" :super bio-variant)
 (noun "variation" :super bio-variant
-      :binds ((basis biological)(scale bio-scalar)) ;; this should be for genes and proteins
+      :binds ((scale bio-scalar)) ;; this should be for genes and proteins
       :realization
       (:noun "variation"
-             :of basis
              :in basis
              :on scale))
 
