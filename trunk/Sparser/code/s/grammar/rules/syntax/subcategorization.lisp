@@ -156,10 +156,17 @@
 
 (defun get-subcategorization (label &optional facet)
   (let ((entry (gethash label *labels-to-their-subcategorization*)))
-    (when entry
-      (if facet
-        (funcall facet entry)
-        entry))))
+    (if entry
+          (if facet
+              (funcall facet entry)
+              entry)
+        (when (and nil 
+                   (category-p label))
+          ;;(lsp-break "get-subcategorization")
+          (loop for sc in (super-categories-of label) 
+            when (and (not (eq sc label))
+                      (gethash sc *labels-to-their-subcategorization*))
+            do (return (gethash label *labels-to-their-subcategorization*)))))))
 
 (defun get-ref-subcategorization (ref-object)
   (let ((frame
