@@ -399,7 +399,7 @@ those steps sequentially on a single article.
 ;;(defvar *time-reading-document* 0)
 
 (defun read-article (article counter)
-  (declare (special *break-during-read*))
+  (declare (special *break-during-read* *article-elapsed-time*))
   (let ((*trap-error-skip-sentence* (not *break-during-read*)))
     ;; Enables the error-handler in the parser that will
     ;; skip to the next sentence
@@ -515,7 +515,7 @@ those steps sequentially on a single article.
     (load-and-read-article id)))
 
 (defun load-and-read-article (id) ;; assume corpus-path is set
-  (declare (special *break-during-read*))
+  (declare (special *break-during-read* *article-elapsed-time*))
   (load-xml-to-doc-if-necessary)
   (let ((maker-fn (intern (symbol-name '#:make-sparser-doc-structure)
                           (find-package :r3)))
@@ -768,6 +768,50 @@ in this region affect both NF1 recruitment and the ability of SPRED and NF1 prot
 to negatively regulate RAS pathway activity (Stowe et al, 2012;
 reviewed in McClatchey and Cichowski, 2012).
 |#
+
+;;; The Ubiquitous Co-Reference Problem
+#|
+http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030011
+;; Title
+A Signaling Pathway Involving TGF-β2 and Snail in Hair Follicle Morphogenesis.
+;; sentence 5
+We found that transforming growth factor β2 signaling 
+is necessary to transiently induce the transcription factor Snail 
+and activate the Ras-mitogen-activated protein kinase (MAPK) pathway 
+in the bud.
+;; sentence 9
+This novel signaling pathway further weaves together the web of 
+different morphogens and downstream transcriptional events that 
+guide hair bud formation within the developing skin.
+;; sentence 32
+α-Catenin also binds to the class III Lin-1, Isl-1, Mec-3 (LIM) 
+protein Ajuba (a member of the zyxin family of proteins), 
+which appears to function dually in both adhesion and 
+in activation of the Ras-mitogen-activated protein kinase (MAPK) pathway.
+;; sentence 127
+If the competition between Grb-2/Sos and α-catenin for Ajuba 
+is functionally relevant to the hyperproliferative state 
+of a keratinocyte, then overexpression of Ajuba would be expected 
+to bypass the competition and promote activation of the Ras-MAPK pathway 
+in WT keratinocytes. 
+;; sentence 133
+These data suggested that by elevating cytosolic Ajuba levels, 
+Ajuba's pre-LIM domain may associate with Grb-2/Sos in a manner 
+that stimulates its nucleotide exchange activity and leads to 
+activation of the Ras-MAPK pathway.
+;; sentence 134
+Although this pathway provides one mechanism by which Snail expression 
+and proliferation may be coupled in skin epithelium, proliferative 
+circuitries involving AJs are known to be complex 
+and often interwoven.
+;; sentence 176
+Thus, although the pathway mediated by TGF-β2 signaling impacts 
+the earliest step of epithelial invagination, 
+it does not appear to be essential for bud morphogenesis. 
+;; Discussion, P2 sentence 192
+Further investigation will be required to determine whether 
+the signaling pathway we have elucidated here is a theme 
+with multiple variations.  |#
 
 ;;  (p *brent-story*)
 (defparameter *brent-story*
@@ -1477,7 +1521,7 @@ These return the Lisp-based obo entries.
       (let*
           ((ht (group-binding-reactions-by-article))
            (aht (gethash *article-id* ht))
-           (counter 0)
+           ;;(counter 0) -- unused
            (cards nil)
            (duplicate-count 0))
         (declare (special ht aht cards))
@@ -1508,7 +1552,9 @@ These return the Lisp-based obo entries.
 ;; Note that this assumes you have reset *all-sentences* between each article.
 (defun create-misc-cards-for-article (article-id &aux (counter 0)
                                                  (index 1000))
-  (multiple-value-bind (cards n-duplicates n-not-in-model n-irrelevant) (do-cards)
+  (declare (ignore article-id))
+  (multiple-value-bind (cards n-duplicates n-not-in-model n-irrelevant)
+                       (do-cards)
     (format t "~&Creating ~s cards using generalized function.~%" (length cards))
     (dolist (card cards)
 ;      (handler-case
@@ -1571,6 +1617,7 @@ These return the Lisp-based obo entries.
 (defparameter *article-times* nil)
 
 (defun time-start (article)
+  (declare (ignore article))
   (setq *time-start* (get-internal-real-time))
   (setq *universal-time-start* (get-universal-time)))
 
@@ -1655,6 +1702,7 @@ These return the Lisp-based obo entries.
     (load-PMC-sent-list (car sl) (second sl))))
 
 (defun load-PMC-sent-list (name pattern)
+  (declare (ignore pattern))
   (let ((namesents (intern (string-upcase (format nil "~a-sents" name)))))
     (load (string-append "~/r3/darpa/12-month TestMaterials/" name "sents.lisp"))
     (format t "~&~s has ~s sentences" namesents (length (eval namesents)))))

@@ -503,6 +503,7 @@ NIL
       collect (list i (all-bind-prots i)(all-prots a) (car a)))))
 
 (defun bind-and-bio-entity ()
+  (declare (special category::bio-entity))
   (loop for a in *all-sentences* 
     append
     (loop for i in (second a)
@@ -512,13 +513,15 @@ NIL
       collect (list i (all-bind-prots i)(all-prots a) (car a)))))
 
 (defun all-bio-entities ()
- (loop for a in *all-sentences* 
+  (declare (special category::bio-entity))
+  (loop for a in *all-sentences* 
     append
     (loop for i in (second a)
       when (and (individual-p i)(eq (itype-of i) category::bio-entity))
       collect i)))
   
 (defun test-bind-sents ()
+  (declare (special bind-sents))
   (load-pmc-sent-lists)
   (loop for i from 1 to 3000 as s in bind-sents do (eval `(with-total-quiet (epp ,s)))))
 
