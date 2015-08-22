@@ -3,9 +3,10 @@
 ;;;
 ;;;     File:  "edge-patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  July 2015
+;;;  version:  August 2015
 
-;; Broken out from pattern-gophers 7/19/15
+;; Broken out from pattern-gophers 7/19/15. 8/22/15 fixed bug in
+;; identify-edge-ns-pattern when we finally got a word "termini"
 
 (in-package :sparser)
 
@@ -186,7 +187,7 @@
   permit things like coersion of bio-entities."
   (push-debug `(,pattern ,start-pos ,end-pos))
   ;; (setq pattern (car *) start-pos (cadr *) end-pos (caddr *))
-  (let ((pos-count (length pattern))
+  (let (;;(pos-count (length pattern)) -- unused
         (count 0)
         (next-start start-pos)
         edge  edges )
@@ -199,14 +200,14 @@
           ;; in other situations we take the top one.
           ;; Doesn't work in real ambiguities, but it's
           ;; easy. Another option is chasing up used-in.
-          (setq edge (highest-edge (pos-starts-here next-start))))
+          (setq edge (highest-edge (pos-starts-here next-start)))
+          (push edge edges))
          ((null edge) ;; "re" in "re-activaton is a word without
           ;; an edge so put in this part of the pattern instead
           ;;//// need to give them meanings and not punt.
           (push (nth (1- count) pattern) edges))
          (t (error "Unexpected situation with edge vector ~
                     at p~a" (pos-token-index next-start)))))
-      (push edge edges)
       (setq next-start (chart-position-after next-start))
       (when (eq next-start end-pos)
         (return)))
