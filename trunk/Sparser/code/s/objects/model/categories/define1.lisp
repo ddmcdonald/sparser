@@ -260,7 +260,7 @@
   ;; would do for us if we already had values, so we're unbundling
   ;; it's effects.
   (let ((*legal-to-add-bindings-to-categories* t)
-        bindings  variable  value  real-value  binding )
+          variable  value  real-value   )
     (declare (special *legal-to-add-bindings-to-categories*))
 
     (do ((var-name (first bindings-plist) (first remainder))
@@ -293,8 +293,7 @@
         (bind-variable/expr variable real-value category)
         #+ignore
         (multiple-value-bind (ii bb)
-                             (if
-                              *description-lattice*
+                             (if *description-lattice*
                               (bind-dli-variable variable ;; check for DLI
                                                  real-value
                                                  category)
