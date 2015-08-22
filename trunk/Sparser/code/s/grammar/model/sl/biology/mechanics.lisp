@@ -36,6 +36,7 @@
   (let* ((rule (edge-rule e))
          (old-ref (edge-referent e))
          (new-ref (convert-bio-entity-to-protein old-ref)))
+    (declare (ignore rule)) ;; for now
     ;; subvert both this edge and the rule
     (setf (edge-category e) (category-named 'protein))
     (setf (edge-referent e) new-ref)
