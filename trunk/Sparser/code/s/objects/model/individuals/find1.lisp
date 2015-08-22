@@ -147,7 +147,7 @@
 (defun find-by-apply-bindings (input-individual binding-instructions)
   ;; Called from, e.g., make-simple-individual
   (let ((individual input-individual)
-        bindings  var  value )
+         var  value )
     (dolist (instr binding-instructions)
       (setq var (car instr)
             value (cadr instr))
@@ -155,6 +155,7 @@
       (when (and value individual)
        (multiple-value-bind (new-indiv binding) 
                             (find-lattice-subordinate individual var value)
+         (declare (ignore binding))
          (setq individual new-indiv))))
     ;;(lsp-break "apply bindings")
     individual))
