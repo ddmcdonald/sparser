@@ -134,6 +134,7 @@
   ;; have been edited to use the new "contract" -- 
   ;; bind-dli-variable returns the resulting individual as its first (primary) value
   ;; it returns the binding object as its second (secondary) value
+  (declare (special *description-lattice*))
   (if *description-lattice*
     (find-or-make-lattice-subordinate individual var/name value category)
     (old-bind-variable var/name value individual category)))
