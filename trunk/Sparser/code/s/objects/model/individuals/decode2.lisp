@@ -37,6 +37,7 @@
 ;;      a primitive v/r in decode-value-for-var/list
 ;; 0.7 (3/9/15) Allowed mixins the same status are referential categories in
 ;;      decode/check-value. (6/9/15) Better error message on violated restriction
+;;     (8/22/15) Removed check on PSI.
 
 (in-package :sparser)
 
@@ -139,17 +140,6 @@
 
 (defun decode-exp-as-ref-category (exp category)
   (etypecase exp
-    (psi
-     (if (eq (category-of exp) category)
-       exp
-       (if (psi-inherits-type? exp category)
-         exp
-         (v/r-violation "The type of the partially saturated individual given as the value,~
-                       ~%   ~A~
-                       ~%   whose type is ~a~
-                       ~%does not match the value restriction ~A"
-                        exp (category-of exp) category))))
-
     (individual
      (if (eq (first (indiv-type exp)) category)
        exp
