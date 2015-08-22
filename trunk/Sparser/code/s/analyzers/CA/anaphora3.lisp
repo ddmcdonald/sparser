@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.8 July 2015
+;;;  Version:  3.8 August 2015
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -54,6 +54,8 @@
 ;;      possiblity that the individual's category has no operations defined for it.
 ;; 3.8 (7/8/15) Pulling out PSI deadwood when I find it. Revamping the update
 ;;      operation to appreciate individuals evolving as modifiers are added.
+;;     (8/12/15) Removed dotted pair check when example sentence didn't reproduce
+;;      it
 
 (in-package :sparser)
 
@@ -196,16 +198,6 @@
         (start-pos (ev-position (edge-starts-at edge)))
         (end-pos   (ev-position (edge-ends-at edge))))
 
-    (when (and (consp obj)
-               (or
-                ;; Got dotted pair in parsing
-                ;;"As identified by mass spec analysis, JAK3 phosphorylates 
-                ;;three HuR residues (Y63, Y68, Y200), but it remains possible that other tyrosine kinases besides JAK3 can also phosphorylate HuR at tyrosines, although no such kinases have been identified to date."
-                (consp (cdr obj))
-                (null (cdr obj)))
-               (= 1 (length obj)))
-      (setq obj (car obj)))
-
     (when obj
       (typecase obj
         (individual
@@ -218,13 +210,17 @@
 
            (unless (irrelevant-category-for-dh primary-category obj)
              (when instantiates
+               ;; Besides being relevant, a category definition
+               ;; has to mark how individuals of that category should
+               ;; be indexed in the discourse history -- what
+               ;; category do the "instantiate" (which could be :self)
                (update-discourse-history instantiates
                                          obj
                                          start-pos end-pos)
                (dolist (category other-categories)
                  (when category
                    ;; there's a Nil in the list sometimes
-                   (update-categorys-discourse-history 
+                   (update-category-discourse-history 
                     category obj start-pos end-pos)))
                (record-instance-within-sequence obj edge)))))
 
@@ -244,7 +240,7 @@
                  ~%the discourse history: ~a~%~a" (type-of obj) obj)))))))
 
 
-(defun update-categorys-discourse-history (category obj start-pos end-pos)
+(defun update-category-discourse-history (category obj start-pos end-pos)
   (let* ((operations (cat-operations category))
          (cat-to-instantiate (when operations
                                (cat-ops-instantiate operations))))
@@ -256,8 +252,9 @@
 ;(setq *trace-discourse-history* nil)
 
 
-(defun update-discourse-history (category instance start-pos end-pos)
-  ;; called from Add-subsuming-object-to-discourse-history.
+(defun update-discourse-history (category new-instance start-pos end-pos)
+  ;; called from Add-subsuming-object-to-discourse-history when it has
+  ;; a new instance of a particular category (see :instantiates)
   ;; Looks up the entry for instances of this category and
   ;; adds (or extends) the discourse history accordingly
   (declare (special *trace-discourse-history*))
@@ -265,13 +262,13 @@
     ;; then it is marked to be indexed under several categories  
     ;; not just one
     (dolist (c category)
-      (update-discourse-history c instance start-pos end-pos))
+      (update-discourse-history c new-instance start-pos end-pos))
 
     (else
       (when (eq *trace-discourse-history* category)
         (format t "~&~%Recording ~A ~a  ~s~
                      ~%      from ~A to ~A~%~%"
-                (cat-symbol category) instance
+                (cat-symbol category) new-instance
                 (string-of-words-between start-pos end-pos)
                 (string-for-recycled-pos start-pos)
                 (string-for-recycled-pos end-pos)))
@@ -279,9 +276,9 @@
       (let ((entry (discourse-entry category)))
         (if entry
           (extend-entry-in-discourse-history
-           entry category instance start-pos end-pos)
+           entry category new-instance start-pos end-pos)
           (create-entry-in-discourse-history
-           category instance start-pos end-pos))
+           category new-instance start-pos end-pos))
         
         category ))))
 
@@ -306,6 +303,224 @@
       do (when nil (format t "~&Ignoring ~a~%" i))
       (return-from irrelevant-category-for-dh t))
     nil))
+
+
+;;;--------
+;;; lookup
+;;;--------
+
+(defun discourse-entry (category)
+  (gethash category *objects-in-the-discourse*))
+
+
+(defun individuals-discourse-entry (i)
+  (unless (individual-p i)
+    (error "Argument must be an individual.~%~A is not" i))
+  (let* ((primary-category (car (indiv-type i)))
+         (operations (cat-operations primary-category))
+         (category-instantiated 
+          (when operations (cat-ops-instantiate operations)))
+         (entry 
+          (when category-instantiated 
+            (discourse-entry category-instantiated))))
+    (when entry
+      (assoc i entry :test #'eq))))
+
+(defun instance-history (individual)
+  ;; alternative on Individuals-discourse-entry that just returns
+  ;; the instances
+  (cdr (individuals-discourse-entry individual)))
+
+(defun category-for-individuals-discourse-history (i)
+  (cat-ops-instantiate 
+   (cat-operations
+    (car (indiv-type i)))))
+
+
+;;;--------------------------
+;;; discourse entries per se
+;;;--------------------------
+
+(defun create-discourse-entry (i start-pos end-pos)
+  (declare (special *description-lattice*))
+  (if *description-lattice*
+    (create-discourse-mention i start-pos end-pos)
+    (create-discourse-entry i start-pos end-pos)))
+
+
+(defun create-discourse-entry (i start-pos end-pos)
+  "Individuals are rigid designators. They do not change their
+  identity as they acquire properties or stand in new relations.
+  We can depend on that identity to make simple entries."
+  (kcons (kcons i
+                (kcons (kcons start-pos end-pos)
+                       nil))
+         nil))
+
+(defun create-discourse-mention (i start-pos end-pos)
+  "Individuals reside in a description lattice. Every new
+  property or relation extends the lattice and in so doing
+  creates a new individual that is more specific than
+  its predecessor. As a result we need to keep the (new)
+  individual as part of the entry, and we need to record
+  this mention in a table from the (new) individual so that
+  we can search back for correspondences from partial individual
+  further up the lattice."
+  (push-debug `(,i ,start-pos ,end-pos)))
+
+
+;;;----------------------------
+;;; discourse entry management
+;;;----------------------------
+
+(defun create-entry-in-discourse-history (category individual
+                                          start-pos end-pos)
+  (unless (referential-category-p category)
+    (error "Key is not a referential category:~%    ~A" category))
+
+  ;; Called from update-discourse-history when the discourse 
+  ;; history of this category is empty, i.e. this is the first
+  ;; time an individual of this category has been mentioned.
+  (setf (gethash category *objects-in-the-discourse*)
+        (create-discourse-entry individual start-pos end-pos)))
+
+
+(defun new-object-of-established-category (category categories-entry
+                                           individual start-pos end-pos)
+
+  ;; We have had individuals of this category before. But this is
+  ;; a new individual in the category, and this is its first instance.
+  ;; N.b. only really make sense for rigid individuals since we always
+  ;; get new individuals when using the description lattice. 
+  ;; This produces an alist of individuals of this category.
+  (setf (gethash category *objects-in-the-discourse*)
+        (kcons (kcons individual
+                      (kcons (kcons start-pos end-pos)
+                             nil))
+               categories-entry)))
+
+(defun new-instance-of-known-object (individuals-entry start-pos end-pos)
+  ;; We've seen this individual before. This is a new instance of it.
+  (rplacd individuals-entry
+          (kcons (kcons start-pos end-pos)
+                 (cdr individuals-entry))))
+
+
+(defun extend-entry-in-discourse-history (entry category
+                                          new-individual start-pos end-pos)
+  ;; Called from update-discourse-history
+  ;; There have been earlier instances of indivdiuals of this category
+  ;; in the discourse history. This may be a further instance of an
+  ;; already entered individual or it may be a new individual When using
+  ;; the description lattice it may be an individual that extends one
+  ;; that is already there (by being more specifiic) and in that case
+  ;; will usually involve a subsuming (larger) edge. 
+  (declare (special *description-lattice*))
+  (if *description-lattice*
+    (lattice-individuals-extend-dh-entry
+     entry category individual start-pos end-pos)
+    (conventional-individuals-extend-dh-entry 
+     entry category individual start-pos end-pos)))
+
+(defun lattice-individuals-extend-dh-entry (entry category
+                                            individual start-pos end-pos)
+  ;(push-debug `(,entry ,category ,individual ,start-pos ,end-pos))
+  #|  (setq entry (nth 0 *) category (nth 1 *) individual (nth 2 *)
+        start-pos (nth 3 *) end-pos (nth 4 *))  |#
+  ;(lsp-break "extending entry for ~a" category)
+  (let ( individuals-entry )
+    (cond ((or (eq individual (caar entry))
+               (more-specific? individual (caar entry)))
+           ;; The object was the very last one of its type to be added.
+           ;; Check for this being a larger edge over the same object
+           (let* ((existing-entry (car entry))
+                  (last-pos (cadr existing-entry)))
+
+             (if (eq (car last-pos) :display-index)
+               ;; happens when the last instance is in a region of
+               ;; the text outside the current span of the chart, so this
+               ;; instance couldn't possibly be subsuming the last one
+               (then
+                 (tr :adding-new-instance-of-known-object individual start-pos end-pos)
+                 (new-instance-of-known-object
+                  existing-entry start-pos end-pos))
+
+               ;; check for subsumption (= larger edge over the same object)
+               (let ((last-start# (pos-token-index (car last-pos)))
+                     (last-end#   (pos-token-index (cdr last-pos)))
+                     (start# (pos-token-index start-pos))
+                     (end# (pos-token-index end-pos)))
+                 
+                 (if (or (eql start# last-start#)
+                         (eql end#   last-end#)
+                         (and (<= start# last-start#)
+                              (>= end#   last-end#)))
+                   (then ;; this instance subsumes the prior one
+                     (tr :extending-with-subsuming-instance 
+                         individual start-pos end-pos)
+                     (rplaca last-pos start-pos)
+                     (rplacd last-pos end-pos))
+                   
+                   ;; otherwise it's a new new instance
+                   (else
+                      (tr :adding-new-instance-of-known-object individual start-pos end-pos)
+                     (new-instance-of-known-object
+                      existing-entry start-pos end-pos)))))))
+
+          ((setq individuals-entry
+                 (assoc individual entry :test #'eq))
+           (tr :adding-new-instance-of-known-object individual start-pos end-pos)
+           (new-instance-of-known-object 
+            individuals-entry start-pos end-pos))
+
+          (t ;; a new object of this type
+           (tr :adding-new-instance-of-category individual category)
+           (new-object-of-established-category
+            category entry individual start-pos end-pos)))))
+
+(defun conventional-individuals-extend-dh-entry (entry category
+                                                 individual start-pos end-pos)
+  (let ( individuals-entry )
+    (cond ((eq (caar entry) individual)
+           ;; The object was the very last one of its type to be added.
+           ;; Check for this being a larger edge over the same object
+           (let* ((existing-entry (car entry))
+                  (last-pos (cadr existing-entry)))
+
+             (if (eq (car last-pos) :display-index)
+               ;; happens when the last instance is in a region of
+               ;; the text outside the current span of the chart, so this
+               ;; instance couldn't possibly be subsuming the last one
+               (new-instance-of-known-object
+                existing-entry start-pos end-pos)
+
+               ;; check for subsumption (= larger edge over the same object)
+               (let ((last-start# (pos-token-index (car last-pos)))
+                     (last-end#   (pos-token-index (cdr last-pos)))
+                     (start# (pos-token-index start-pos))
+                     (end# (pos-token-index end-pos)))
+                 
+                 (if (or (eql start# last-start#)
+                         (eql end#   last-end#)
+                         (and (<= start# last-start#)
+                              (>= end#   last-end#)))
+                   (then ;; this instance subsumes the prior one
+                     (rplaca last-pos start-pos)
+                     (rplacd last-pos end-pos))
+                   
+                   ;; otherwise it's a new new instance
+                   (new-instance-of-known-object
+                    existing-entry start-pos end-pos))))))
+
+          ((setq individuals-entry
+                 (assoc individual entry :test #'eq))
+           (new-instance-of-known-object
+            individuals-entry start-pos end-pos))
+
+          (t ;; a new object of this type
+           (new-object-of-established-category
+            category entry individual start-pos end-pos)))))
+
 
 
 ;;;-----------------------------
@@ -475,184 +690,6 @@ saturated? is a good entry point. |#
         (> new-count
            reigning-count)))))
 
-
-
-;;;--------
-;;; lookup
-;;;--------
-
-(defun discourse-entry (category)
-  (gethash category *objects-in-the-discourse*))
-
-
-(defun individuals-discourse-entry (i)
-  (unless (individual-p i)
-    (error "Argument must be an individual.~%~A is not" i))
-  (let* ((primary-category (car (indiv-type i)))
-         (operations (cat-operations primary-category))
-         (category-instantiated 
-          (when operations (cat-ops-instantiate operations)))
-         (entry 
-          (when category-instantiated 
-            (discourse-entry category-instantiated))))
-    (when entry
-      (assoc i entry :test #'eq))))
-
-(defun instance-history (individual)
-  ;; alternative on Individuals-discourse-entry that just returns
-  ;; the instances
-  (cdr (individuals-discourse-entry individual)))
-
-
-(defun category-for-individuals-discourse-history (i)
-  (cat-ops-instantiate 
-   (cat-operations
-    (car (indiv-type i)))))
-
-
-
-
-(defun create-entry-in-discourse-history (category individual
-                                          start-pos end-pos)
-  (unless (referential-category-p category)
-    (error "Key is not a referential category:~%    ~A" category))
-
-  ;; This is the first time there has been an individual of this
-  ;; category in the discourse.  We set up the alist of individuals
-  ;; with just this case
-  (setf (gethash category *objects-in-the-discourse*)
-        (kcons (kcons individual
-                      (kcons (kcons start-pos end-pos)
-                             nil))
-               nil)))
-
-
-
-           
-(defun new-object-of-established-category (category categories-entry
-                                           individual start-pos end-pos)
-
-  ;; We have had individuals of this category before. But this is
-  ;; a new individual in the category, and this is its first instance.
-  
-  (setf (gethash category *objects-in-the-discourse*)
-        (kcons (kcons individual
-                      (kcons (kcons start-pos end-pos)
-                             nil))
-               categories-entry)))
-
-
-
-
-(defun new-instance-of-known-object (individuals-entry start-pos end-pos)
-  ;; We've seen this individual before. This is a new instance of it.
-  (rplacd individuals-entry
-          (kcons (kcons start-pos end-pos)
-                 (cdr individuals-entry))))
-
-
-
-
-(defun extend-entry-in-discourse-history (entry category
-                                          individual start-pos end-pos)
-
-  ;; There have been earlier instances of indivdiuals of this category
-  ;; in the discourse history. This may be a further instance of an
-  ;; already entered individual or it may be a new individual, so we
-  ;; dispatch accordingly.
-  (declare (special *description-lattice*))
-  (if *description-lattice*
-    (lattice-individuals-extend-dh-entry
-     entry category individual start-pos end-pos)
-    (conventional-individuals-extend-dh-entry 
-     entry category individual start-pos end-pos)))
-
-(defun lattice-individuals-extend-dh-entry (entry category
-                                            individual start-pos end-pos)
-  (push-debug `(,entry ,category ,individual ,start-pos ,end-pos))
-  (let ( individuals-entry )
-    (cond ((eq (caar entry) individual)
-           ;; The object was the very last one of its type to be added.
-           ;; Check for this being a larger edge over the same object
-           (let* ((existing-entry (car entry))
-                  (last-pos (cadr existing-entry)))
-
-             (if (eq (car last-pos) :display-index)
-               ;; happens when the last instance is in a region of
-               ;; the text outside the current span of the chart, so this
-               ;; instance couldn't possibly be subsuming the last one
-               (new-instance-of-known-object
-                existing-entry start-pos end-pos)
-
-               ;; check for subsumption (= larger edge over the same object)
-               (let ((last-start# (pos-token-index (car last-pos)))
-                     (last-end#   (pos-token-index (cdr last-pos)))
-                     (start# (pos-token-index start-pos))
-                     (end# (pos-token-index end-pos)))
-                 
-                 (if (or (eql start# last-start#)
-                         (eql end#   last-end#)
-                         (and (<= start# last-start#)
-                              (>= end#   last-end#)))
-                   (then ;; this instance subsumes the prior one
-                     (rplaca last-pos start-pos)
-                     (rplacd last-pos end-pos))
-                   
-                   ;; otherwise it's a new new instance
-                   (new-instance-of-known-object
-                    existing-entry start-pos end-pos))))))
-
-          ((setq individuals-entry
-                 (assoc individual entry :test #'eq))
-           (new-instance-of-known-object
-            individuals-entry start-pos end-pos))
-
-          (t ;; a new object of this type
-           (new-object-of-established-category
-            category entry individual start-pos end-pos)))))
-
-(defun conventional-individuals-extend-dh-entry (entry category
-                                                 individual start-pos end-pos)
-  (let ( individuals-entry )
-    (cond ((eq (caar entry) individual)
-           ;; The object was the very last one of its type to be added.
-           ;; Check for this being a larger edge over the same object
-           (let* ((existing-entry (car entry))
-                  (last-pos (cadr existing-entry)))
-
-             (if (eq (car last-pos) :display-index)
-               ;; happens when the last instance is in a region of
-               ;; the text outside the current span of the chart, so this
-               ;; instance couldn't possibly be subsuming the last one
-               (new-instance-of-known-object
-                existing-entry start-pos end-pos)
-
-               ;; check for subsumption (= larger edge over the same object)
-               (let ((last-start# (pos-token-index (car last-pos)))
-                     (last-end#   (pos-token-index (cdr last-pos)))
-                     (start# (pos-token-index start-pos))
-                     (end# (pos-token-index end-pos)))
-                 
-                 (if (or (eql start# last-start#)
-                         (eql end#   last-end#)
-                         (and (<= start# last-start#)
-                              (>= end#   last-end#)))
-                   (then ;; this instance subsumes the prior one
-                     (rplaca last-pos start-pos)
-                     (rplacd last-pos end-pos))
-                   
-                   ;; otherwise it's a new new instance
-                   (new-instance-of-known-object
-                    existing-entry start-pos end-pos))))))
-
-          ((setq individuals-entry
-                 (assoc individual entry :test #'eq))
-           (new-instance-of-known-object
-            individuals-entry start-pos end-pos))
-
-          (t ;; a new object of this type
-           (new-object-of-established-category
-            category entry individual start-pos end-pos)))))
 
 
 ;;;--------------------
