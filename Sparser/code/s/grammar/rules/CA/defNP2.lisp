@@ -34,6 +34,9 @@
 
   (tr :decoding-definite-reference-to head)
 
+  (unless *do-anaphora*
+    (return-from dereference-DefNP head))
+
   (let* ((category-of-head
           (etypecase head
             (individual (first (indiv-type head)))
@@ -57,14 +60,10 @@
           ;; Because completion will have run a different points
           ;; the first entry may be subsumed by the one we're doing
           (then
-           (push-debug `(,discourse-entry))
-           ;; (parent-edge-for-referent)
-           ;; But pushing that off for just now
-           (when (cdr discourse-entry)
-             (let* ((second-entry (cadr discourse-entry))
-                    (ref (car second-entry)))
-               (tr :defnp-returning ref)
-               ref)))
+            (push-debug `(,discourse-entry))
+            (defnp/extract-referent-from-discourse-entry
+              discourse-entry (parent-edge-for-referent)
+              head category-to-look-for))            
 
           ;; Earlier ("normal") assuptions
           (let ((ref
@@ -79,15 +78,32 @@
             ref))
 
         (let ((new-indiv 
-               (if
-                *description-lattice*
+               (if *description-lattice*
                 ;; DAVID -- is this plausible
                 (fom-lattice-description category-of-head)
                 (make-default-descriptive-individual category-of-head))))
           (tr :defnp-made-new-individual new-indiv)
           new-indiv)))))
 
-
+(defun defnp/extract-referent-from-discourse-entry (entry parent-edge
+                                                    head category)
+  ;; subroutine of dereference-DefNP
+#| In cells-defNP
+   With one entry, for the word 'cells' basically. Appearing
+   in two places. Head was #<cell-line 5260>
+  ((#<cell-line 5260> 
+   (#<position29 29 "cells"> . #<position30 30 ".">) ;; "these cells"
+   (#<position15 15 "ras"> . #<position18 18 ".">))) ;; "Ras mutant cells"
+|#
+  (push-debug `(,entry ,parent-edge ,head ,category))
+  (lsp-break "dh")
+)
+#|
+           (when (cdr discourse-entry)
+             (let* ((second-entry (cadr discourse-entry))
+                    (ref (car second-entry)))
+               (tr :defnp-returning ref)
+               ref)) |#
 
 
 (defun make-default-descriptive-individual (category-of-head)
