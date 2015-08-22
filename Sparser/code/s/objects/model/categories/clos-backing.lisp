@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "clos-backing"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  May 2014
+;;;  version:  August 2014
 
 ;; initated 11/9/10. Modified the storage scheme 11/11. Tweaking cases
 ;; through 12/6. 6/16/11 fixed case of clash with existing classes.
@@ -20,7 +20,8 @@
 ;; 5/29/14 Found bug in k-method call macro, folded in integers,
 ;;  auto-generating the call-xx methods along with the k-methods.
 ;; 3/10/2015 for clarity, rename copy-individual to maybe-copy-individual
-;; 6/8/2015 temporary fix  -- DON'T KNOW WHY sclass IS NIL in some cases in the new articles
+;; 6/8/2015 temporary fix  -- DON'T KNOW WHY sclass IS NIL in some cases 
+;;  in the new articles.  8/22/15 Pulle psi from a typecase
 
 (in-package :sparser)
 
@@ -540,7 +541,6 @@ for every category.
                                         &body body)
   `(flet ((dispatch-type-of (o)
            (typecase o
-             (psi (base-category-of-psi o))
              (individual (i-type-of o))
              (category o)
              (integer o)
