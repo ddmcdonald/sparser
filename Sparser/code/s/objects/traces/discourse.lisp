@@ -30,6 +30,38 @@
                sentence)))
 
 
+
+;;; discourse history management
+
+(defparameter *trace-discourse-history-management* nil
+  "Tracing addition or entension of individuals into
+  the discourse history.")
+
+(defun trace-history ()
+  (setq *trace-discourse-history-management* t))
+(defun untrace-history ()
+  (setq *trace-discourse-history-management* nil))
+
+(deftrace :adding-new-instance-of-category (i category)
+  (when *trace-discourse-history-management*
+    (trace-msg "[DH] adding ~a, new instance of ~a"
+               i category)))
+
+(deftrace :adding-new-instance-of-known-object (i start-pos end-pos)
+  (when *trace-discourse-history-management*
+    (trace-msg "[DH] Extending reference to ~a~
+              ~%     to be between p~a and p~a" i
+              (pos-token-index start-pos)
+              (pos-token-index end-pos))))
+
+(deftrace :extending-with-subsuming-instance (i start-pos end-pos)
+  (when *trace-discourse-history-management*
+    (trace-msg "[DH] adding another reference to ~a~
+              ~%     between p~a and p~a" i
+              (pos-token-index start-pos)
+              (pos-token-index end-pos))))
+
+
 ;;;-------------------
 ;;; flags set by hand
 ;;;-------------------
