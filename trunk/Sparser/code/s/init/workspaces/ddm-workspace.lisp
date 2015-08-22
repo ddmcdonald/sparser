@@ -3,23 +3,37 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  July 2015
+;;;  version:  August 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
 
-#|  (ddm-ws-ed "NoSpace hassles.lisp")
-(ddm-no-spaces) (trace-ns-sequences) (trace-fsas);;pw's
-(setq *work-on-ns-patterns* t)   setup-verb
+(setq *do-anaphora* nil)
+;; 8/22/15 data structure for history is in progress
 
-(p "RAS-ASSP.") -- bio-entity => protein
-make-protein-pair/convert-bio-entity convert-bio-entity-to-protein
+#| 
+Rebuild pass2 on DA patterns
+  run-island-checks-pass-two  look-for-length-three-patterns
+
+ dereference-DefNP  complete-edge/hugin
+ add-subsuming-object-to-discourse-history
 
  (ddm-ws-ed "pronoun hacking.lisp")
 handle-any-anaphora  find-best-recent  post-analysis-operations
 condition-anaphor-edge  (there-are-pronouns)
  (setq *trace-instance-recording* t)
+
+;; Save out clean copies of sentence runs
+  with-total-quiet
+
+
+(ddm-ws-ed "NoSpace hassles.lisp")
+(ddm-no-spaces) (trace-ns-sequences) (trace-fsas);;pw's
+(setq *work-on-ns-patterns* t)   setup-verb
+
+(p "RAS-ASSP.") -- bio-entity => protein
+make-protein-pair/convert-bio-entity convert-bio-entity-to-protein
 
 assess-parenthesized-content pts span-parentheses 
 do-paired-punctuation-interior parse-chunk-interior
@@ -155,6 +169,8 @@ similar effects occurred with DPI, NAC and SB203580."
  (trace-pronouns)  
  (trace-discourse-structure)
  (setq *trace-instance-recording* t)
+
+In article 2  "c-termini"
 |#
 
 ; (ddm-load-article-2 t)
@@ -199,6 +215,7 @@ similar effects occurred with DPI, NAC and SB203580."
 
 (defun ddm-issue-records ()
   (ddm-ws-ed "discourse and surface strings.lisp")
+  (ddm-ws-ed "DA data.lisp")
   (ddm-ws-ed "pronoun hacking.lisp")
   (ddm-ws-ed "Parsing ASPP2.lisp")
   (ddm-ws-ed "PW digit-fsa hassle.lisp")
