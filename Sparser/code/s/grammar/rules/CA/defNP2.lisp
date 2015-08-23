@@ -65,7 +65,7 @@
               discourse-entry (parent-edge-for-referent)
               head category-to-look-for))            
 
-          ;; Earlier ("normal") assuptions
+          ;; Earlier ("normal") assumptions
           (let ((ref
                  (if (> (length discourse-entry) 1)
                    (if *ignore-out-of-pattern-dereferencing*
