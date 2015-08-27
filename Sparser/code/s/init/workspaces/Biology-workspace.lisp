@@ -769,6 +769,15 @@ to negatively regulate RAS pathway activity (Stowe et al, 2012;
 reviewed in McClatchey and Cichowski, 2012).
 |#
 
+;; Another Reactome example. MAB's emai of 8/24/15 13:04
+(defun inactive-ras ()
+  (p "Inactive p21ras:GDP is anchored to the plasma membrane by a farnesyl
+residue. Insulin stimulation results in phosphorylation of IRS1/2 on
+tyrosine residues. GRB2 binds the phosphotyrosines via its SH2 domain.
+As IRS is phosphorylated by the insulin receptor near to the plasma
+membrane, the GRB2:SOS1:IRS interaction brings SOS1 and p21 Ras into
+close proximity."))
+
 ;;; The Ubiquitous Co-Reference Problem
 #|
 http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030011
