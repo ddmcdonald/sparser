@@ -1,7 +1,43 @@
-********************************
-* How to install & run Sparser *
-* Version 0.4 - 5/3/14         *
-********************************
+
+****************
+* Introduction *
+****************
+
+Sparser is a architecture for analyzing English text. 
+It handles text of any length and employs a fast, efficient, 
+constant-time algorithm designed for use with semantic grammars.
+See McD-Sparser-ANLP-92.pdf in the paper's directory of 
+the documentation.  
+
+Sparser can use context-free and context-sensitive semantic
+grammar phrase-structure rules, along with syntactic rules
+that check for valid semantic relations before they complete.
+It provides hooks for regular-expression analysis, multi-words, 
+and arbitrary state-based code.
+
+Sparser comes 'out of the box' with just a minimal grammar 
+of function words and access to grammar modules that have 
+already been developed for core notions like amounts and time 
+and for some sublanguages. 
+
+There is extensive documentation for Sparser included with 
+the code base. We regularly extend this documentation, 
+especially with 'notes' that provide a guide that is very
+close to the implemenation.
+
+Sparser is written in Lisp, and until we restore some form
+of the interactive workbench it had on earlier versions of
+the Mac, using Sparser requires that you have a working knowledge
+of Lisp and are comforable reading code. 
+
+Note that as of this writing, the primary Sparser developers
+are using it as a component within DPARPA
+
+
+*************************
+* How to install & run  *
+* Version of 8/23/15    *
+*************************
 
 Thank you for downloading Sparser. This short guide
 will help you get everything up & running in no time.
@@ -14,27 +50,26 @@ Installation & Setup
 We recommend (and the default configuration assumes) that
 you keep it in your home directory, e.g., as ~/sparser/.
 
-When you checkout the trunk of the svn distribution to
-that root location, it should contain three immediate
-subdirectories: "Mumble", "Sparser", and "util", 
-as well as this README file and the file load-nlp.lisp.
+When you checkout the master repository to that root location, 
+it should contain three immediate subdirectories: "Mumble", 
+"Sparser", and "util", as well as this README file, the
+LICENSE file, and the file load-nlp.lisp.
 
 2. If you installed the "sparser" directory somewhere
 other than your home directory, you'll need to modify
 the file paths in the "ASDF setup" section of the
 "load-nlp.lisp" file to match your configuration.
+ 
 
-You are now ready to load Sparser.
-
-
-Testing Sparser
+Loading Sparser
 ====================
 
 You need to have a modern implementation of Common Lisp
 already installed. Sparser has been primarily tested on 
 Intel-based Mac OS X using Clozure (www.clozure.com) and
-Allegro (www.franz.com). It will not (yet) run under
-SBCL. What happens with other Lisps is not known.
+Allegro (www.franz.com). It also runs under SBCL though
+there are a few incompatibilities that remain to be
+worked through.
 
 We recommend Clozure because it automatically compiles 
 functions as it loads them. If you use Allegro, you will
@@ -51,16 +86,18 @@ see sparser/Sparser/init/scripts/compile-everything.lisp.
   (in-package :sparser).
 
 4. Test that Sparser is working properly & that it can
-parse a simple phrase. Execute (p "10 days").
+parse a simple phrase. Execute (p "10 hours."). 
+Note that right now you need to include the period.
 
 Your output should look something like this:
 ====================
-sparser(3): (p "10 days")
-[10 days]
+? (p "10 hours.")
+[10 hours]
 
-                                 source-start
-e3    amount-of-time          1 "10 days" 3
-                                 end-of-source
+                    source-start
+e3    AMOUNT-OF-TIME  1 "10 hours" 3
+                    period
+                    end-of-source
 :done-printing
 ====================
 
