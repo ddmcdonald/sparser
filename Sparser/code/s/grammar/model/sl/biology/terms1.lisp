@@ -940,6 +940,10 @@
 
 (noun "tissue" :super bio-context)
 (define-adverb "to this end")
+(define-category orientation-top
+  :realization
+  (:noun "top"))
+
 (adj "transient" :super bio-predication)
 (noun "transition state intermediate" :super molecule-state)
 (noun "trial" :super bio-context)
