@@ -279,7 +279,15 @@ places. ]]
       ;; to establish if this simple version is  ok
       (when *edge-for-unknown-words*
         (setup-verb lemma clauses)) ;; n.b. not ambiguous
-      (assign-brackets-as-a-main-verb lemma))      
+      (assign-brackets-as-a-main-verb lemma))
+
+     ((equal combinations '(adjective adverb advpart noun verb)) ;; "back"
+      (when *edge-for-unknown-words*
+        (setup-adjective lemma clauses :ambiguous)
+        (setup-adverb lemma :ambiguous)
+        (setup-common-noun lemma clauses :ambiguous)
+        (setup-verb lemma clauses :ambiguous))
+      (brackets-for-adverb-noun-verb lemma clauses))
      
      ;; "firm" is four-ways ambiguous
      
