@@ -122,7 +122,7 @@
     (mapcar #'car (car blists))))
 
 (defun make-kraql-call (sym rule-portion)
-  (intern (format nil "KRAQL-~A-~A" rule-portion sym) :sparser))
+ (intern (string-upcase (format nil "KRAQL-~A-~A" rule-portion sym)) :sparser))
 
 (defun make-kraql-body-call (sym)
   (make-kraql-call sym 'body))
