@@ -50,7 +50,9 @@
   :pattern ( s and vp )
   :action (:function conjoin-clause-and-vp first third))
 
-
+(define-debris-analysis-rule s-and-vp
+  :pattern ( s and vp+passive )
+  :action (:function conjoin-clause-and-vp first third))
 
 ;;; no-space pattern
 
