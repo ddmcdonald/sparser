@@ -261,10 +261,11 @@
 (defun allocate-paragraph ()
   (allocate-next-instance (get-resource :paragraph)))
 
-(defvar *current-paragraph* nil
-  "points to the paragraph whose text is being analyzed")
 (defvar *previous-paragraph* nil
   "The paragraph just before the current one")
+(defvar *current-paragraph* nil
+  "points to the paragraph whose text is being analyzed")
+(defun paragraph () *current-paragraph*)
 
 (defun initialize-paragraph-resource ()
   ;; called from initialize-document-element-resources
@@ -386,6 +387,7 @@
       (let ((s1 (start-sentence (position# 1))))
         (setf (children p1) s1)
         (setf (parent s1) p1)
+        (set-document-index s1 1)
         s1)))))
 
 (defun start-sentence (pos)
@@ -394,7 +396,10 @@
   (declare (special *reading-populated-document*))
   (let ((s (if *reading-populated-document*
              (make-instance 'sentence) ;; permanent
-             (allocate-sentence)))) ;; reclaimed
+             (allocate-sentence))) ;; reclaimed
+        (index (if *current-sentence*
+                 (1+ (doc-index *current-sentence*))
+                 1)))
     (setf (starts-at-pos s) pos)
     (setf (starts-at-char s)
           (if *current-sentence*
@@ -412,9 +417,10 @@
         (setf (ends-at-pos last) ;; stop at the period
               (chart-position-before pos))
         (setf (ends-at-char last) (pos-character-index pos))
+        (set-document-index s index)
         ;; tie off the prev contents
         (setq *previous-sentence* last)))
-    ;; 1st sentence in a section (= paragraph) is has the
+    ;; 1st sentence in a section (= paragraph) has the
     ;; section as its parent
     (tr :starting-sentence pos)
     (setq *current-sentence* s)))
