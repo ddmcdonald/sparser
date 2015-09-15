@@ -54,6 +54,11 @@
   :pattern ( s and vp+passive )
   :action (:function conjoin-clause-and-vp first third))
 
+(define-debris-analysis-rule pp-comma-s
+  :pattern ( pp "," s )
+  :action (:function attach-leading-pp-to-clause first third))
+
+
 ;;; no-space pattern
 
 ;; (p "in the 'off' state.")
