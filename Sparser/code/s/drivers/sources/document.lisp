@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   June 2015
+;;;  Version:   September 2015
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
@@ -12,8 +12,10 @@
 ;; 7/6/2015 commented out utility function show-paragraph-sents to help debug sentence
 ;; segmentation
 ;; Define a dummy action for read-from-document on a title-text section
-;;  this was causing a major blowout (in terms of writing error messages) in the overall test
-;; when reading document #65 PMC1702556
+;;  this was causing a major blowout (in terms of writing error messages) in the 
+;;  overall test when reading document #65 PMC1702556
+;; 9/9/15 Flushed the section globals here in favor of the ones
+;;  with their object definitions. 
 
 (in-package :sparser)
 
@@ -21,20 +23,12 @@
 ;;; globals
 ;;;---------
 
-;; These are for debugging so we can pick up where we left off
-(defvar *doc-objects* nil)
-(defvar *article* nil)
-(defvar *section-of-sections* nil)
-(defvar *section* nil)
-(defvar *paragraph* nil)
-
 (defparameter *show-section-printouts* nil
   "Tracks entering and exiting sections of any type
   including paragraphs")
 
 (defparameter *show-article-progress* t
   "Announce what article we're working on")
-
 
 (defvar *current-section-title* nil
   "Bound to the title-text object of each section recursively
@@ -48,7 +42,7 @@
   ;; The special passes have their own flags that indicate
   ;; that they are underway. If both of those are down then
   ;; we are actually reading. This gates the parsing of
-  ;; titles.
+  ;; titles and the population of the discourse history.
   (declare (special *sentence-making-sweep* *scanning-epistemic-features*))
   (and (not *sentence-making-sweep*)
        (not *scanning-epistemic-features*)))
@@ -75,7 +69,7 @@
    to walk the document -- the same method as used to
    parse it."
   (let ((*sentence-making-sweep* t) ;; sweep that makes the sentences
-        (*sections-to-ignore* nil)) ;; e.g. also methods
+        (*sections-to-ignore* nil)) ;; e.g. methods
     (declare (special *sentence-making-sweep* *sections-to-ignore*))
     (when *show-article-progress*
       (format t "~&Sweeping document ~a~%" (name doc)))
@@ -120,29 +114,32 @@
 
 (defmethod read-from-document ((a article))
   (declare (special *sentence-making-sweep* *sections-to-ignore*))
-  (setq *current-article* a) ;; sets up the function (article)
-  (when *sentence-making-sweep*
-    ;; makes the section-of-section objects as needed
-    (sweep-for-embedded-sections a))
-  (install-contents a)
-  (when (and *show-article-progress*
-             (not *sentence-making-sweep*))
+  (let ((*current-article* a)) ;; sets up the function (article)
+    (declare (special *current-article*))
+    (when *sentence-making-sweep*
+      ;; makes the section-of-section objects as needed
+      (sweep-for-embedded-sections a))
+    (install-contents a)
+    (when (and *show-article-progress*
+               (not *sentence-making-sweep*))
       (format t "read-from-document ~a~&" (name a)))
-  (let ((count 0))
-    (dolist (sec (children a))
-      (setf (doc-index sec) (incf count))
-      (unless (ignore-this-document-section sec)
-        (setq *section* sec)
-        (catch 'do-next-paragraph ;; article 3058384 starts with paragraphs
-          (read-from-document sec)))))
-  (when (actually-reading)
-    (after-actions a))
-  a)
+    (let ((count 0))
+      (dolist (sec (children a))
+        (set-document-index sec (incf count))
+        (unless (ignore-this-document-section sec)
+          (let ((*current-section* sec))
+            (declare (special *current-section*))
+            (catch 'do-next-paragraph ;; article 3058384 starts with paragraphs
+              (read-from-document sec))))))
+    (when (actually-reading)
+      (after-actions a))
+    a))
 
 (defmethod read-from-document ((ss section-of-sections))
   "A section-of-sections is a toplevel section such as Results
-   that has section objects as its children"
-  (setq *section-of-sections* ss)
+   that has section objects as its children. This reads through
+   each of the sections in order, and handles its own title 
+   if there is one."
   (install-contents ss)
   (let* ((subsections (children ss))
          (title (when (typep (car subsections) 'title-text)
@@ -153,12 +150,14 @@
       (setq subsections (cdr subsections)))
     (when *show-section-printouts*
       (format t "~&--------- starting section of sections ~a~%" ss))
-    (let ((*current-section-title* title)
+    (let ((*section-of-sections* ss)
+          (*current-section-title* title)
           (section (car subsections))
           (remaining (cdr subsections))
           previous-section)
-      (declare (special *current-section-title*))
-      (setf (doc-index section) (pop count))
+      (declare (special *current-section-title*
+                        *section-of-sections*))
+      (set-document-index section (pop count))
       (loop
         (unless section (return))
         (catch 'do-next-paragraph
@@ -167,7 +166,7 @@
         (setq section (car remaining)
               remaining (cdr remaining))
         (when section
-          (setf (doc-index section) (pop count))
+          (set-document-index section (pop count))
           (setf (previous section) previous-section)
           (setf (next previous-section) section)))
       (when (actually-reading)
@@ -180,11 +179,14 @@
   nil)
 
 (defmethod read-from-document ((s section))
-  (setq *current-section* s)
+  "The children of a section are paragraphs. Read through each
+  of the paragraphs in sequence after first reading through the
+  section title if there is one."
   (install-contents s)
   (when *show-section-printouts*
     (format t "~&~%--------- starting section ~a~%" s))
-  (let* ((all-children (children s))
+  (let* ((*current-section* s)
+         (all-children (children s))
          (title (loop for child in all-children
                   when (typep child 'title-text) return child))
          (paragraphs (loop for child in all-children
@@ -194,6 +196,7 @@
          (remaining (cdr paragraphs))
          (count 0)
          previous-paragraph )
+    (declare (special *current-section*))
     (when title 
       (setf (title s) title))
     (when title
@@ -202,10 +205,8 @@
     (let ((*current-section-title* title))
       (declare (special *current-section-title*))
       (loop
-        (unless paragraph
-          (return))
-        (setq *paragraph* paragraph)
-        (setf (doc-index paragraph) (incf count))
+        (unless paragraph (return))
+        (set-document-index paragraph (incf count))
         (catch 'do-next-paragraph
           (read-from-document paragraph))
         (when (actually-reading)
@@ -226,7 +227,7 @@
     (format t "~&~%--------- starting paragraph ~a~%" p))
   (let ((*reading-populated-document* t)
         (*recognize-sections-within-articles* nil) ;; turn of doc init
-        (*accumulate-content-acro/Users/ddm/sparser/Sparser/code/s/drivers/sources/document.lispss-documents* t)  ;; don't clear history
+        (*accumulate-content-across-documents* t)  ;; don't clear history
         (*current-paragraph* p)) ;; read by sentence-maker
     (declare (special *reading-populated-document*
                       *recognize-sections-within-articles*
@@ -481,6 +482,7 @@
                   its-children)
         ;; make a section-of-sections for it
         (let ((ss (allocate-section-of-sections)))
+          (setf (parent ss) a)
           (setf (children ss) its-children)
           (let ((title? (when (typep (car its-children) 'title-text)
                           ;;/// searching for it would be more robust

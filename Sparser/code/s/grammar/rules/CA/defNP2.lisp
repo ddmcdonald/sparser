@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "defNP"
 ;;;   Module:  "grammar;rules:CA:"
-;;;  Version:  0.1 March 2015
+;;;  Version:  0.2 September 2015
 
 ;; initiated 6/13/93 v2.3.  3/30/94 set the ignore flag to t as the default
 ;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category 
@@ -12,7 +12,8 @@
 ;;      function call. Two more instances 9/26. Added PSI to typecase.
 ;;     (12/26/14) Stubbed an approach to selecting the referent when working
 ;;      sentence by sentence. 
-;;     *3/6/15) Added traces. 
+;;     (3/6/15) Added traces. 
+;; 0.2 (8-9/15) folded in mentions and impact of description lattice
 
 (in-package :sparser)
 
@@ -88,22 +89,35 @@
 (defun defnp/extract-referent-from-discourse-entry (entry parent-edge
                                                     head category)
   ;; subroutine of dereference-DefNP
-#| In cells-defNP
+  (push-debug `(,entry ,parent-edge ,head ,category))
+  ;; (setq entry (car *) parent-edge (cadr *) head (caddr *) category (cadddr *))
+  (cond
+   (*description-lattice*
+    ;; entry is a sequence of mentions
+    ;; (#<i5260 p29 p30> #<i6551 p15 p18> #<i6550 p16 p18> #<i5260 p17 p18>)
+    ;;/// Might confirm that the most recent one is for the head
+    ;; of this NP. Just trusting now
+    (let* ((relevant-mention (second entry))
+           (ref (when relevant-mention
+                  ;; "We propose that when BRAF is inhibited, 
+                  ;;  it escapes this auto-inhibited fate ..."
+                  (mention-of relevant-mention))))
+      (when ref
+        (tr :defnp-returning ref)
+        ref)))
+   (t
+#| Old-style, rigid individual entry  (cells-defNP)
    With one entry, for the word 'cells' basically. Appearing
    in two places. Head was #<cell-line 5260>
   ((#<cell-line 5260> 
    (#<position29 29 "cells"> . #<position30 30 ".">) ;; "these cells"
    (#<position15 15 "ras"> . #<position18 18 ".">))) ;; "Ras mutant cells"
 |#
-  (push-debug `(,entry ,parent-edge ,head ,category))
-  (lsp-break "dh")
-)
-#|
-           (when (cdr discourse-entry)
-             (let* ((second-entry (cadr discourse-entry))
-                    (ref (car second-entry)))
-               (tr :defnp-returning ref)
-               ref)) |#
+    (when (cdr entry)
+      (let* ((second-entry (cadr entry))
+             (ref (car second-entry)))
+        (tr :defnp-returning ref)
+        ref)))))
 
 
 (defun make-default-descriptive-individual (category-of-head)

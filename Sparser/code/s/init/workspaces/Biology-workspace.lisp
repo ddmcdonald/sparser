@@ -343,9 +343,7 @@ those steps sequentially on a single article.
            (push (sweep-document article)
                  *populated-articles*)
          (error (e)
-                (declare (special e))
-                (format t "~&Error sweeping: ~a~%" article)
-                (d e))))
+             (format t "~&Error sweeping: ~a~%~a~%" article e))))
       (setq article (car rest)
             rest (cdr rest))))
   *populated-articles*)
@@ -746,6 +744,14 @@ after IGF-1 stimulation."))
   (p "BRAF is not active and is not required for MEK/ERK activation
 in RAS mutant cells.
 Nevertheless, BRAF inhibitors hyperactivate CRAF and MEK in these cells."))
+
+#| Reactome http://www.reactome.org/PathwayBrowser/#DIAGRAM=177929&ID=179467&PATH=162582
+  "Gab1 binds phosphatidylinositol-3,4,5-trisphosphate"
+  "The pleckstrin homology (PH) domain of GAB1 binds to PIP3 and 
+   can target GAB1 to the plasma membrane in response to 
+   EGF stimulation. This mechanism provides a positive feedback loop
+   with respect to PI3K activation, to enhance EGFR signalling."
+|#
 
 #| From Reactome. Descrption of "SPRED dimer binds NF1"
 Sprouty-related proteins (SPRED) 1, 2 and 3 are negative regulators

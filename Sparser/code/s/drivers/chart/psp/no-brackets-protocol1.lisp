@@ -71,15 +71,30 @@
   printed if this flag is t.")
 
 
+(defparameter *trap-error-skip-sentence* nil
+  "Governs whether we let errors happen. If it's nill they
+  go through and cause a break. When it's T this is noticed
+  in sweep-successive-sentences-from and we go through an
+  error handler that suppresses the break and instead prints
+  out what the error was and the text of the sentence that
+  was being analyzed at the time of the error.
+    Presently always set (dynamically bound) deliberately.
+  Right now (6/12/15) that only happens in read-article-set.")
+ 
+
 ;; N.b. *current-sentence* is set by start-sentence
 
 (defvar *sentence* nil
-  "Locally managed by sentence-sweep-loop. Compare to
-   *current-sentence* managed by the sentence creation routines.")
+  "Dynamically bound by sentence-sweep-loop. Compare to
+   *current-sentence* managed by the sentence creation routines
+   and returned by the function sentence(). That global
+   changes with successive calls to start-sentence from the
+   period hook. As a result, it quickly get ahead of the
+   sentence we are working on whereas this global will not.")
 
 (defvar *current-sentence-string* nil
   "Set in sweep-successive-sentences-from and retains its value
-   until the next time that's called. This isn't bound.")
+   until the next time that's called. Not dynamically bound.")
 (defun current-string ()
   *current-sentence-string*)
 
@@ -98,17 +113,6 @@
      (t
       (unless no-break
         (break "Need another way to find the current sentence"))))))
-
-
-(defparameter *trap-error-skip-sentence* nil
-  "Governs whether we let errors happen. If it's nill they
-  go through and cause a break. When it's T this is noticed
-  in sweep-successive-sentences-from and we go through an
-  error handler that suppresses the break and instead prints
-  out what the error was and the text of the sentence that
-  was being analyzed at the time of the error.
-    Presently always set (dynamically bound) deliberately.
-  Right now (6/12/15) that only happens in read-article-set.")
 
 
 ;;;--------
@@ -271,12 +275,6 @@
 ;;; operations after the regular analysis has finished
 ;;;----------------------------------------------------
 
-(defvar *relations* nil
-  "Holds the relations for the last sentence when *readout-relations* is up")
-(defvar *entities* nil
-  "Holds the entities for the last sentence when *readout-relations* is up")
-
-
 (defun post-analysis-operations (sentence)
   (declare (special *universal-time-start* *universal-time-end*))
   (when *scan-for-unsaturated-individuals*
@@ -312,6 +310,7 @@
     ;; with the sentence and accumulate at higher levels
     (multiple-value-bind (relations entities tt-count)
                          (identify-relations sentence)
+      ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
       (set-entities sentence entities)
       (set-relations sentence relations)
       (set-tt-count sentence tt-count)))
@@ -389,6 +388,12 @@
 
 ;; (setq *readout-relations* nil)
 ;; (identify-relations *sentence*)
+
+(defvar *relations* nil
+  "Holds the relations for the last sentence when *readout-relations* is up")
+(defvar *entities* nil
+  "Holds the entities for the last sentence when *readout-relations* is up")
+
 
 (defun identify-relations (sentence)
   ;; sweep over every treetop in the sentence and look at

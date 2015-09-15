@@ -3,26 +3,33 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  August 2015
+;;;  version:  September 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
 
-(setq *do-anaphora* nil)
+;;   (setq *do-anaphora* nil)
 ;; 8/22/15 data structure for history is in progress
 
 #| 
 Rebuild pass2 on DA patterns
   run-island-checks-pass-two  look-for-length-three-patterns
+  (ddm-ws-ed "DA data.lisp")
 
+Sentence treetop count is always zero
+  identify-relations  post-analysis-operations
+
+(ddm-ws-ed "pronoun hacking.lisp")
+ handle-any-anaphora  find-best-recent  post-analysis-operations
+ condition-anaphor-edge  (there-are-pronouns)
+ trace-discourse-structure  trace-pronouns
+ (setq *trace-instance-recording* t)
+
+Revise the discourse history structure
  dereference-DefNP  complete-edge/hugin
  add-subsuming-object-to-discourse-history
 
- (ddm-ws-ed "pronoun hacking.lisp")
-handle-any-anaphora  find-best-recent  post-analysis-operations
-condition-anaphor-edge  (there-are-pronouns)
- (setq *trace-instance-recording* t)
 
 ;; Save out clean copies of sentence runs
   with-total-quiet
@@ -80,7 +87,8 @@ but markedly preferred AKT2.")
   (setq *report-form-check-blocks* nil)
   (setq *debug-pronouns* nil)
   (revert-to-regular-break)
-;  (setq *work-on-ns-patterns* t) 
+;  (setq *work-on-ns-patterns* t)
+  (setq *apply-document-after-actions* t)
 ;  (trace-parse-edges) (trace-rule-source) 
 ;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
 ;  (trace-island-driving)
@@ -107,11 +115,14 @@ but markedly preferred AKT2.")
   (ddm-ed "objects/doc/content-methods.lisp")
   (ddm-ed "objects/doc/content.lisp")
   (ddm-ed "drivers/sources/document.lisp")
-  (ddm-ed "analyzers/psp/edges/lattice-operations.lisp"))
+  (ddm-ed "analyzers/psp/edges/lattice-operations.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp"))
 
 ;; !!! Semtree isn't walking down to report all the
 ;; content in e.g. (p "Ras bound to GTP binds to BRAF.")
 ;  post-analysis-operations  collect-model
+
+; comlex-entry
 
 ; c3-grammar-module-choices
 ; location c3-location located-in
@@ -173,6 +184,8 @@ similar effects occurred with DPI, NAC and SB203580."
 In article 2  "c-termini"
 |#
 
+; (setq *show-section-printouts* t)
+
 ; (ddm-load-article-2 t)
 (defun ddm-load-article-2 (&optional do-not-read)
   (load-xml-to-doc-if-necessary)
@@ -216,7 +229,7 @@ In article 2  "c-termini"
 (defun ddm-issue-records ()
   (ddm-ws-ed "discourse and surface strings.lisp")
   (ddm-ws-ed "DA data.lisp")
-  (ddm-ws-ed "pronoun hacking.lisp")
+  (ddm-ws-ed "prounoun hacking.lisp")
   (ddm-ws-ed "Parsing ASPP2.lisp")
   (ddm-ws-ed "PW digit-fsa hassle.lisp")
   (ddm-ws-ed "Weird stuff 6-6-15.lisp")
@@ -819,4 +832,36 @@ wget --output-document=3537887.nxml 'http://www.pubmedcentral.nih.gov/oai/oai.cg
 
 3847091
 |#
+
+#| 9/4/15
+? (compare-to-snapshots)
+
+overnight 
+Better: (19 11 10 9 4)
+Worse: (7)
+((1 . 5) (2 . 1) (3 . 11) (4 . 1) (5 . 1) (6 . 5) (7 . 5) (8 . 4) (9 . 6) (10 . 12) (11 . 7) (12 . 1) (13 . 3) (14 . 3) (15 . 9) (16 . 2) (17 . 6) (18 . 10) (19 . 5) (20 . 4)) 
+
+dec-test 
+Better: (42 38 28 25 22 16 4)
+Worse: (57 55 43 37 35 5)
+((1 . 1) (2 . 7) (3 . 4) (4 . 1) (5 . 2) (6 . 6) (7 . 1) (8 . 1) (9 . 3) (10 . 1) (11 . 1) (12 . 1) (13 . 3) (14 . 9) (15 . 2) (16 . 1) (17 . 4) (18 . 16) (19 . 12) (20 . 17) (21 . 1) (22 . 13) (23 . 15) (24 . 15) (25 . 3) (26 . 3) (27 . 4) (28 . 3) (29 . 10) (30 . 1) (31 . 1) (32 . 8) (33 . 5) (34 . 6) (35 . 4) (36 . 14) (37 . 9) (38 . 13) (39 . 3) (40 . 4) (41 . 5) (42 . 4) (43 . 6) (44 . 1) (45 . 3) (46 . 7) (47 . 1) (48 . 4) (49 . 3) (50 . 1) (51 . 1) (52 . 9) (53 . 1) (54 . 1) (55 . 9) (56 . 1) (57 . 9)) 
+
+dry-run 
+Better: (37 19 7)
+Worse: (32 9 8)
+((1 . 1) (2 . 2) (3 . 4) (4 . 1) (5 . 3) (6 . 10) (7 . 8) (8 . 10) (9 . 6) (10 . 5) (11 . 6) (12 . 4) (13 . 8) (14 . 8) (15 . 1) (16 . 6) (17 . 1) (18 . 5) (19 . 4) (20 . 9) (21 . 1) (22 . 11) (23 . 1) (24 . 5) (25 . 1) (26 . 4) (27 . 4) (28 . 4) (29 . 1) (30 . 4) (31 . 3) (32 . 2) (33 . 4) (34 . 10) (35 . 4) (36 . 13) (37 . 1) (38 . 4) (39 . 1) (40 . 5) (41 . 10) (42 . 6)) 
+
+aspp2 
+*** "V12" is likely to be a protein, because of conjunction with "RASK_HUMAN"
+Better: (90 88 80 77 76 75 59 58 57 55 47 43 42 40 39 36 29 24 16 15)
+Worse: (53 30 8)
+((1 . 1) (2 . 4) (3 . 4) (4 . 4) (5 . 1) (6 . 4) (7 . 3) (8 . 2) (9 . 4) (10 . 13) (11 . 6) (12 . 2) (13 . 4) (14 . 13) (15 . 1) (16 . 7) (17 . 1) (18 . 3) (19 . 3) (20 . 9) (21 . 2) (22 . 6) (23 . 10) (24 . 5) (25 . 4) (26 . 1) (27 . 4) (28 . 11) (29 . 5) (30 . 5) (31 . 3) (32 . 4) (33 . 6) (34 . 3) (35 . 1) (36 . 5) (37 . 9) (38 . 6) (39 . 2) (40 . 5) (41 . 9) (42 . 7) (43 . 4) (44 . 7) (45 . 5) (46 . 2) (47 . 16) (48 . 5) (49 . 1) (50 . 3) (51 . 4) (52 . 9) (53 . 11) (54 . 5) (55 . 6) (56 . 6) (57 . 2) (58 . 7) (59 . 1) (60 . 5) (61 . 2) (62 . 4) (63 . 3) (64 . 2) (65 . 10) (66 . 4) (67 . 1) (68 . 5) (69 . 10) (70 . 6) (71 . 10) (72 . 3) (73 . 7) (74 . 4) (75 . 7) (76 . 12) (77 . 7) (78 . 7) (79 . 8) (80 . 10) (81 . 10) (82 . 1) (83 . 8) (84 . 3) (85 . 5) (86 . 1) (87 . 5) (88 . 2) (89 . 3) (90 . 1)) 
+
+erk 
+Better: (11 10 8)
+Worse: (7)
+((1 . 3) (2 . 1) (3 . 3) (4 . 3) (5 . 9) (6 . 1) (7 . 13) (8 . 6) (9 . 7) (10 . 10) (11 . 3)) 
+
+|#
+
 

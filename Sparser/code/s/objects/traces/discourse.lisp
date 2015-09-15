@@ -30,8 +30,9 @@
                sentence)))
 
 
-
+;;;------------------------------
 ;;; discourse history management
+;;;------------------------------
 
 (defparameter *trace-discourse-history-management* nil
   "Tracing addition or entension of individuals into
@@ -60,6 +61,52 @@
               ~%     between p~a and p~a" i
               (pos-token-index start-pos)
               (pos-token-index end-pos))))
+
+;;--- dl variants
+
+(deftrace :extending-dh-entry (i)
+  ;; top of lattice-individuals-extend-dh-entry
+  (when *trace-discourse-history-management*
+    (trace-msg "[DH] adding ~a to its category's entry" i)))
+
+(deftrace :extending-with-subsuming-instance/dl (i j start-pos end-pos)
+  (when *trace-discourse-history-management*
+    (trace-msg "[DH] i~a is a specialization of ~a ~
+              ~%   on larger edge between p~a and p~a" 
+               (indiv-uid i) j
+               (pos-token-index start-pos)
+               (pos-token-index end-pos))))
+
+(deftrace :exending-span-of-mention (m start-pos end-pos)
+  (when *trace-discourse-history-management*
+    (trace-msg "[DH] extending span of ~a to p~a:p~a"
+               m
+               (pos-token-index start-pos)
+               (pos-token-index end-pos))))
+  
+
+;;--- Mentions
+
+(deftrace :creating-category-dh-entry (category i start-pos end-pos)
+  (when *trace-discourse-history-management*
+    (trace-msg "[DH] i~a b/w p~a and p~a is 1st entry for ~a"
+               (indiv-uid i) 
+               (pos-token-index start-pos)
+               (pos-token-index end-pos)
+               category)))
+
+(deftrace :made-mention (m)
+  (when *trace-discourse-history-management*
+    (let* ((i (mention-of m))
+           (category (itype-of i)))
+      (trace-msg "[DH]  mention of a ~a: ~a" 
+                 (cat-symbol category)  m))))
+(deftrace :making-new-mention (m)
+  ;; in make-new-mention just after it's created
+  (when *trace-discourse-history-management*
+    (trace-msg "[DH] new mention: ~a" m)))
+
+
 
 
 ;;;-------------------

@@ -55,7 +55,9 @@
 ;; 3.8 (7/8/15) Pulling out PSI deadwood when I find it. Revamping the update
 ;;      operation to appreciate individuals evolving as modifiers are added.
 ;;     (8/12/15) Removed dotted pair check when example sentence didn't reproduce
-;;      it
+;;      it. 
+;; 3.9 (8/28/15) Substantial makeover to handle mentions of description lattice
+;;      individuals, plus a drastic reordering to improve readability. 
 
 (in-package :sparser)
 
@@ -77,116 +79,6 @@
 (defparameter *debug-anaphora* nil
   "Flag around the 'unexpected situation' error/break calls")
 
-
-;;;---------------
-;;; initializing
-;;;---------------
-
-(defun initialize-discourse-history ()
-  (declare (special *lifo-instance-list*))
-  (setq *lifo-instance-list* nil)
-  (clrhash *objects-in-the-discourse*))
- #| Attempting to deallocate the kconses is leading to circularities
-    in the kcons resource, so for the moment just flushing the whole
-    table and leaving it to GC to handle
-  (maphash #'clear-discourse-history-entry
-             *objects-in-the-discourse*))|#
-
-(defun clear-discourse-history-entry (category category-entry)  ;; tag, value
-  ;; deallocate the conses in the entry, then flush the entry
-  (break " Stub: clearing discourse entry for category")
-  ;(dolist (individual-entry category-entry)
-  ;  (clear-individual-dh-entry individual-entry)
-  ;  ;(break "after entry")
-  ;  )
-  (deallocate-klist category-entry)
-  (break "after")
-  (remhash category *objects-in-the-discourse*))
-
-
-(defun clear-individual-dh-entry (klist)
-  (let ((individual (kpop klist))
-        (instance-records klist)
-        data  start-data  end-data )
-    (declare (ignore individual))
-    (break "Stub: clearing individual's dh history: start")
-    (dolist (record instance-records)
-      (cond ((eq (car record) :display-index)
-             (setq data (cdr record))
-             (setq start-data (car data)
-                   end-data (cdr data))
-             (break "2")
-             (deallocate-kons start-data)
-             (deallocate-kons end-data)
-             (break "3")
-             (deallocate-kons data)
-             (deallocate-kons record)
-             (break "4"))
-
-            ((position-p (car record))
-             ;(deallocate-kons record)
-             ;(break "a")
-             )))
-    ;(break "after do")
-    ;(deallocate-klist instance-records)
-    ))
-
-
-
-
-;;;----------
-;;; printers
-;;;----------
-
-(defun pname-of-category (c)
-  (unless (or (referential-category-p c)
-              (mixin-category-p c)
-              (category-p c))
-    (error "~A is not a category or of the expected specialization" c))
-  (symbol-name (cat-symbol c)))
-
-
-(defun object-types-in-discourse-history ()
-  (let ( type-list )
-    (maphash #'(lambda (key value)
-                 (declare (ignore value))
-                 (push key type-list))
-             *objects-in-the-discourse*)
-    (sort type-list #'string< :key #'pname-of-category)))
-
-
-(defun print-discourse-history (&optional (stream *standard-output*))
-  (dolist (type (object-types-in-discourse-history))
-    (format stream "~&~%~A:~%" type)
-    (dolist (sub-entry (discourse-entry type))
-      (format stream "~&   ~A   " (car sub-entry))
-      (dolist (pos-cons (cdr sub-entry))
-        (format stream "~30,3t~A-~A"
-                (car pos-cons) (cdr pos-cons)))))
-  (format stream "~%~%~%~%"))
-
-(defun print-category-discourse-history (category 
-                                         &optional (stream *standard-output*))
-  (format stream "~&~%~A:~%" category)
-  (dolist (sub-entry (discourse-entry category))
-    (format stream "~&   ~A   " (car sub-entry))
-    (dolist (pos-cons (cdr sub-entry))
-      (format stream "~&~15,3t~a - ~a"
-              (string-for-recycled-pos pos-cons)
-              (string-for-recycled-pos pos-cons)))))
-
-(defun string-for-recycled-pos (pos-cons)
-  "Returns a compact string for the position with actual and
-   absolute indexes"
-  (if (eq (car pos-cons) :display-index) ;; position array wrapped
-    (format nil "p~a" (cadr pos-cons))
-    (let ((p (car pos-cons)))
-      (let ((token-index (pos-token-index p))  ;; always extends
-            (array-index (pos-array-index p))) ;; recycles
-        (if (>= token-index *number-of-positions-in-the-chart*)
-          (format nil "p~a(~a)" token-index array-index)
-          (format nil "p~a" array-index))))))
-
 ;;;----------
 ;;; creation
 ;;;----------
@@ -194,10 +86,18 @@
 (defun add-subsuming-object-to-discourse-history (edge)
   ;; called from complete-edge/hugin provided that *do-anaphora* and
   ;; *pronouns* are set. 
+  (declare (special *reading-populated-document*))
+  (when *reading-populated-document*
+    ;; The epistemic sweep through a document still introduces
+    ;; edges over words (it doesn't have to), but that process
+    ;; introduces a duplicate history on all single words that
+    ;; have a referent, which would lead to unnecessary complications.
+    (unless (actually-reading)
+      (return-from add-subsuming-object-to-discourse-history nil)))
+
   (let ((obj (edge-referent edge))
         (start-pos (ev-position (edge-starts-at edge)))
         (end-pos   (ev-position (edge-ends-at edge))))
-
     (when obj
       (typecase obj
         (individual
@@ -214,6 +114,7 @@
                ;; has to mark how individuals of that category should
                ;; be indexed in the discourse history -- what
                ;; category do the "instantiate" (which could be :self)
+               (record-instance-within-sequence obj edge)
                (update-discourse-history instantiates
                                          obj
                                          start-pos end-pos)
@@ -221,8 +122,7 @@
                  (when category
                    ;; there's a Nil in the list sometimes
                    (update-category-discourse-history 
-                    category obj start-pos end-pos)))
-               (record-instance-within-sequence obj edge)))))
+                    category obj start-pos end-pos)))))))
 
         (referential-category )
         (mixin-category )
@@ -241,6 +141,12 @@
 
 
 (defun update-category-discourse-history (category obj start-pos end-pos)
+  "Subroutine of add-subsuming-object-to-discourse-history that looks
+  up the category (':instantiates') that individuals should be indexed by.
+  If the category does not 'instantiate' anything then it's not stored
+  in the history."
+  ;; This is somewhat redundant with the main check, but applies when
+  ;; the individual has multiple categories in its type. 
   (let* ((operations (cat-operations category))
          (cat-to-instantiate (when operations
                                (cat-ops-instantiate operations))))
@@ -248,12 +154,13 @@
       (update-discourse-history cat-to-instantiate obj start-pos end-pos))))
 
 
+
 ;(setq *trace-discourse-history* t) category::person
 ;(setq *trace-discourse-history* nil)
-
+; (trace-history) -- managing the entries
 
 (defun update-discourse-history (category new-instance start-pos end-pos)
-  ;; called from Add-subsuming-object-to-discourse-history when it has
+  ;; called from add-subsuming-object-to-discourse-history when it has
   ;; a new instance of a particular category (see :instantiates)
   ;; Looks up the entry for instances of this category and
   ;; adds (or extends) the discourse history accordingly
@@ -283,58 +190,18 @@
         category ))))
 
 
-;;;-----------------------------------
-;;; filter out grammatical categories
-;;;-----------------------------------
-
-(defun irrelevant-category-for-dh (category i)
-  ;; Return non-nil for any category that should not be recorded
-  ;; in the discourse history. 
-  (declare (ignore i)
-           (special *irrelevant-to-discourse-history*))
-  (unless *irrelevant-to-discourse-history*
-    (populate-irrelevant-to-discourse-history))
-  (let ((supers (super-categories-of category)))
-    ;(push-debug `(,category ,i))
-    ;(break "category = ~a~
-    ;      ~%supers = ~a" category supers)))
-    (loop for c in *irrelevant-to-discourse-history*
-      when (memq c supers)
-      do (when nil (format t "~&Ignoring ~a~%" i))
-      (return-from irrelevant-category-for-dh t))
-    nil))
-
-
-;;;--------
-;;; lookup
-;;;--------
+(defun create-entry-in-discourse-history (category i start-pos end-pos)
+  (unless (referential-category-p category)
+    (error "Key is not a referential category:~%    ~A" category))
+  ;; Called from update-discourse-history when the discourse 
+  ;; history of this category is empty, i.e. this is the first
+  ;; time an individual of this category has been mentioned.
+  (tr :creating-category-dh-entry category i start-pos end-pos)
+  (setf (gethash category *objects-in-the-discourse*)
+        (create-discourse-entry i start-pos end-pos)))
 
 (defun discourse-entry (category)
   (gethash category *objects-in-the-discourse*))
-
-
-(defun individuals-discourse-entry (i)
-  (unless (individual-p i)
-    (error "Argument must be an individual.~%~A is not" i))
-  (let* ((primary-category (car (indiv-type i)))
-         (operations (cat-operations primary-category))
-         (category-instantiated 
-          (when operations (cat-ops-instantiate operations)))
-         (entry 
-          (when category-instantiated 
-            (discourse-entry category-instantiated))))
-    (when entry
-      (assoc i entry :test #'eq))))
-
-(defun instance-history (individual)
-  ;; alternative on Individuals-discourse-entry that just returns
-  ;; the instances
-  (cdr (individuals-discourse-entry individual)))
-
-(defun category-for-individuals-discourse-history (i)
-  (cat-ops-instantiate 
-   (cat-operations
-    (car (indiv-type i)))))
 
 
 ;;;--------------------------
@@ -342,13 +209,16 @@
 ;;;--------------------------
 
 (defun create-discourse-entry (i start-pos end-pos)
+  ;; called from create-entry-in-discourse-history on the
+  ;; first time an individual of this category has been
+  ;; created. Returns the entry.
   (declare (special *description-lattice*))
   (if *description-lattice*
     (create-discourse-mention i start-pos end-pos)
-    (create-discourse-entry i start-pos end-pos)))
+    (create-rigid-discourse-entry i start-pos end-pos)))
 
 
-(defun create-discourse-entry (i start-pos end-pos)
+(defun create-rigid-discourse-entry (i start-pos end-pos)
   "Individuals are rigid designators. They do not change their
   identity as they acquire properties or stand in new relations.
   We can depend on that identity to make simple entries."
@@ -356,6 +226,86 @@
                 (kcons (kcons start-pos end-pos)
                        nil))
          nil))
+
+;;;--- Mentions
+
+(defvar *lattice-individuals-to-mentions* (make-hash-table)
+  "Maps from description lattice individuals to a push-list of 
+  the places they have been mentioned, encoded as 'mention'
+  objects.")
+
+(defmethod get-history-of-mentions ((i individual))
+  (gethash i *lattice-individuals-to-mentions*))
+
+(defvar *lattice-individuals-mentioned-in-paragraph* nil
+  "List of mentions within the current paragraph. Most recent
+   first. Mostly needed as a resource to 'long-term-ify' 
+   mention locations, but may have other uses such as mergine
+   with or replacing the sentence list of individuals.")
+
+(defclass discourse-mention ()
+  ((di :initarg :i :accessor mention-of
+    :documentation "Backpointer to the individual")
+   (location-in-paragraph :initarg :loc :accessor mentioned-where
+    :documentation "An encoding of the location at which
+     this mention occurred. Given the present implementation,
+     we can use chart positions within a paragraph (the ends
+     of the edge over the individual), but need to convert if 
+     the paragraph is long enough to wrap the chart.")
+   (location-in-article :initarg :article :accessor mentioned-in-article-where
+    :documentation "When reading a text represented as an
+     article, this encodes the location of the sentence that
+     the mention is part of in the style of table-of-contents label")
+   (subsumes :initform nil :accessor subsumes-mention
+    :documentation "If the edge for this mention extends
+     the edge of the previous mention (i.e. we're walking
+     up a head line), then this points to that mention.")
+   (subsumed-by :initform nil :accessor subsumed-by-mention
+    :documentation "Inverse of subsumes"))
+  (:documentation "Records a location in the text where 
+   a particular description lattice individuals has been
+   mentioned. Each different location corresponds to a
+   different mention, even when subsuming edges are involved."))
+
+(defmethod print-object ((m discourse-mention) stream)
+  (print-unreadable-object (m stream) ;; not :type t
+    (let ((i (mention-of m))
+          (location (mentioned-where m)))
+      (format stream "i~a " (indiv-uid i))
+      (cond
+       ((consp location) ;; w/in paragraph
+        (typecase (car location)
+          (position
+           (format stream "p~a p~a"
+                   (pos-token-index (car location))
+                   (pos-token-index (cdr location))))
+          (integer
+           (format stream "~a ~a"
+                   (car location) (cdr location)))
+          (otherwise
+           (format stream " ill-formed location"))))
+       (t
+        (format stream "?"))))))
+
+(defun search-mentions-by-position (mentions start-pos end-pos)
+  ;;/// 9/13/15 probably an ad-hoc fn we can later dispense with
+  ;; Used by long-term-ify/individual
+  (loop for m in mentions
+    as cons = (mentioned-where m)
+    as start = (car cons)
+    when (eq start start-pos) return m))
+
+(defun encode-mention-location (start-pos end-pos)
+  "Encodes the location of a mention in terms of the two positions
+   that span the individual, i.e. the ends of the edge that added it."
+  (cons start-pos end-pos))
+
+(defun make-mentions-long-term ()
+  (loop for mention in *lattice-individuals-mentioned-in-paragraph*
+    do (long-term-ify-mention mention))
+  (setq *lattice-individuals-mentioned-in-paragraph* nil))
+
+
 
 (defun create-discourse-mention (i start-pos end-pos)
   "Individuals reside in a description lattice. Every new
@@ -366,45 +316,50 @@
   this mention in a table from the (new) individual so that
   we can search back for correspondences from partial individual
   further up the lattice."
-  (push-debug `(,i ,start-pos ,end-pos)))
+  ;; The discourse entry for a category is a push list, most
+  ;; recent (and thereafter most specific) first
+  (let* ((location (encode-mention-location start-pos end-pos))
+         (toc (location-in-article-of-current-sentence))
+         (m (make-instance 'discourse-mention
+              :i i :loc location :article toc)))
+    (setf (gethash i *lattice-individuals-to-mentions*) `(,m))
+    (push m *lattice-individuals-mentioned-in-paragraph*)
+    (tr :made-mention m)
+    (list m)))
+
+(defun make-new-mention (entry i start-pos end-pos
+                         &optional subsumed-mention)
+  (let* ((location (encode-mention-location start-pos end-pos))
+         (m (make-instance 'discourse-mention
+              :i i :loc location))
+         (previous-mentions (get-history-of-mentions i)))
+    (tr :making-new-mention m)
+    (when subsumed-mention
+      (setf (subsumes-mention m) subsumed-mention)
+      (setf (subsumed-by-mention subsumed-mention) m)
+      (update-instance-within-sequence m subsumed-mention start-pos end-pos))
+    (setf (gethash i *lattice-individuals-to-mentions*)
+          (cons m previous-mentions))
+    (push m *lattice-individuals-mentioned-in-paragraph*)
+    (extend-category-dh-entry entry m)
+    m ))
+    
+
+(defun extend-category-dh-entry (entry m)
+  (push-debug `(,entry ,m))
+  ;; The symbol entry points to the first cons cell in the
+  ;; list of entries
+  (let ((entry-car (car entry))
+        (entry-cdr (cdr entry)))
+    (push-debug `(,entry ,m)) ;(lsp-break "what's wrong with replaca")
+    (rplaca entry m)
+    (rplacd entry (cons entry-car entry-cdr))
+    entry))
 
 
-;;;----------------------------
-;;; discourse entry management
-;;;----------------------------
-
-(defun create-entry-in-discourse-history (category individual
-                                          start-pos end-pos)
-  (unless (referential-category-p category)
-    (error "Key is not a referential category:~%    ~A" category))
-
-  ;; Called from update-discourse-history when the discourse 
-  ;; history of this category is empty, i.e. this is the first
-  ;; time an individual of this category has been mentioned.
-  (setf (gethash category *objects-in-the-discourse*)
-        (create-discourse-entry individual start-pos end-pos)))
-
-
-(defun new-object-of-established-category (category categories-entry
-                                           individual start-pos end-pos)
-
-  ;; We have had individuals of this category before. But this is
-  ;; a new individual in the category, and this is its first instance.
-  ;; N.b. only really make sense for rigid individuals since we always
-  ;; get new individuals when using the description lattice. 
-  ;; This produces an alist of individuals of this category.
-  (setf (gethash category *objects-in-the-discourse*)
-        (kcons (kcons individual
-                      (kcons (kcons start-pos end-pos)
-                             nil))
-               categories-entry)))
-
-(defun new-instance-of-known-object (individuals-entry start-pos end-pos)
-  ;; We've seen this individual before. This is a new instance of it.
-  (rplacd individuals-entry
-          (kcons (kcons start-pos end-pos)
-                 (cdr individuals-entry))))
-
+;;;--------------------------
+;;; Extend discourse history
+;;;--------------------------
 
 (defun extend-entry-in-discourse-history (entry category
                                           new-individual start-pos end-pos)
@@ -418,65 +373,89 @@
   (declare (special *description-lattice*))
   (if *description-lattice*
     (lattice-individuals-extend-dh-entry
-     entry category individual start-pos end-pos)
+     entry new-individual start-pos end-pos)
     (conventional-individuals-extend-dh-entry 
-     entry category individual start-pos end-pos)))
+     entry category new-individual start-pos end-pos)))
 
-(defun lattice-individuals-extend-dh-entry (entry category
-                                            individual start-pos end-pos)
-  ;(push-debug `(,entry ,category ,individual ,start-pos ,end-pos))
-  #|  (setq entry (nth 0 *) category (nth 1 *) individual (nth 2 *)
-        start-pos (nth 3 *) end-pos (nth 4 *))  |#
-  ;(lsp-break "extending entry for ~a" category)
-  (let ( individuals-entry )
-    (cond ((or (eq individual (caar entry))
-               (more-specific? individual (caar entry)))
+(defun lattice-individuals-extend-dh-entry (entry i start-pos end-pos)
+  ;; Works in terms of mentions rather than regular discourse entries
+  ;; that just encode position pairs. If the most recent individual
+  ;; of this category is a 'parent' of the new individual and the
+  ;; new position subsumes the parent's location then we update
+  ;; the sentence-level information about entities/relations (which
+  ;; is edge-oriented). In any event we make a new mention for
+  ;; this case, chaining the mentions in a case of subsuming edges
+  (push-debug `(,entry ,i ,start-pos ,end-pos))
+  #|  (setq entry (nth 0 *) i (nth 1 *)
+        start-pos (nth 2 *) end-pos (nth 3 *))  |#
+  (let* ((top-mention (car entry))
+         (top-instance (mention-of top-mention)))
+    (tr :extending-dh-entry i)
+    (push-debug `(,top-mention ,top-instance)) ;(lsp-break "mentions")
+    ;; (setq top-mention (car *) top-instance (cadr *))
+
+    (flet ((subsumes-position (mention start-pos end-pos)
+             (let ((old-position (mentioned-where mention)))
+               (cond
+                ((consp old-position)
+                 (let ((last-start# (pos-token-index (car old-position)))
+                       (last-end# (pos-token-index (cdr old-position)))
+                       (start# (pos-token-index start-pos))
+                       (end# (pos-token-index end-pos)))
+                   (or (eql start# last-start#)
+                       (eql end#   last-end#)
+                       (and (<= start# last-start#)
+                            (>= end#   last-end#)))))
+                ;;/// are there other posibilties, or is it always nil?
+                (t nil)))))
+
+    ;; If we've referred to this head line referent twice in a row
+    ;; then there's either a subsuming edge case or something like
+    ;; a reflexive or possessive prooun (where the location of the
+    ;; mention is different than this one), though in those cases there
+    ;; are also likely to be interveening referring individuals. 
+    (cond ((eq i top-instance)
+           ;; If we're eq to the most recent entry for this category
+           ;; then we have two cases: [1] The edges subsume and this
+           ;; new edge has for some reason not added any properties
+           ;; to its referent, or [2] the edges are disjoint and
+           ;; we have a new mention
+           (cond
+            ((long-term-mention? top-mention)
+             ;;/// tr
+             (make-new-mention entry i start-pos end-pos))
+            ((subsumes-position top-mention start-pos end-pos)
+             (let ((new-loc (encode-mention-location start-pos end-pos)))
+               ;; "this auto-inhibited fate" w/ no referent for "this"
+               (tr :exending-span-of-mention top-mention start-pos end-pos)
+               (setf (mentioned-where top-mention) new-loc)))
+            (t
+             (tr :extending-with-subsuming-instance i start-pos end-pos)
+             (make-new-mention entry i start-pos end-pos))))
+
+          ((more-specific? i top-instance)
            ;; The object was the very last one of its type to be added.
-           ;; Check for this being a larger edge over the same object
-           (let* ((existing-entry (car entry))
-                  (last-pos (cadr existing-entry)))
+           ;; Check for this being a larger edge over the same object.
+           (cond
+            ((long-term-mention? top-mention)
+             ;;/// tr
+             (make-new-mention entry i start-pos end-pos))
+            ((subsumes-position top-mention start-pos end-pos)
+             ;; this instance subsumes the prior one
+             (tr :extending-with-subsuming-instance/dl
+                 i top-instance start-pos end-pos)
+             (make-new-mention entry i start-pos end-pos top-mention))
+            (t
+             ;; otherwise it's a new instance
+             (tr :adding-new-instance-of-known-object i start-pos end-pos)
+             (make-new-mention entry i start-pos end-pos))))
 
-             (if (eq (car last-pos) :display-index)
-               ;; happens when the last instance is in a region of
-               ;; the text outside the current span of the chart, so this
-               ;; instance couldn't possibly be subsuming the last one
-               (then
-                 (tr :adding-new-instance-of-known-object individual start-pos end-pos)
-                 (new-instance-of-known-object
-                  existing-entry start-pos end-pos))
+          (t
+           ;; we make a new mention. The subroutine will appreciate
+           ;; whether it has ever been mentioned before.
+           (make-new-mention entry i start-pos end-pos))))))
 
-               ;; check for subsumption (= larger edge over the same object)
-               (let ((last-start# (pos-token-index (car last-pos)))
-                     (last-end#   (pos-token-index (cdr last-pos)))
-                     (start# (pos-token-index start-pos))
-                     (end# (pos-token-index end-pos)))
-                 
-                 (if (or (eql start# last-start#)
-                         (eql end#   last-end#)
-                         (and (<= start# last-start#)
-                              (>= end#   last-end#)))
-                   (then ;; this instance subsumes the prior one
-                     (tr :extending-with-subsuming-instance 
-                         individual start-pos end-pos)
-                     (rplaca last-pos start-pos)
-                     (rplacd last-pos end-pos))
-                   
-                   ;; otherwise it's a new new instance
-                   (else
-                      (tr :adding-new-instance-of-known-object individual start-pos end-pos)
-                     (new-instance-of-known-object
-                      existing-entry start-pos end-pos)))))))
 
-          ((setq individuals-entry
-                 (assoc individual entry :test #'eq))
-           (tr :adding-new-instance-of-known-object individual start-pos end-pos)
-           (new-instance-of-known-object 
-            individuals-entry start-pos end-pos))
-
-          (t ;; a new object of this type
-           (tr :adding-new-instance-of-category individual category)
-           (new-object-of-established-category
-            category entry individual start-pos end-pos)))))
 
 (defun conventional-individuals-extend-dh-entry (entry category
                                                  individual start-pos end-pos)
@@ -522,6 +501,27 @@
             category entry individual start-pos end-pos)))))
 
 
+(defun new-object-of-established-category (category categories-entry
+                                           individual start-pos end-pos)
+
+  ;; We have had individuals of this category before. But this is
+  ;; a new individual in the category, and this is its first instance.
+  ;; N.b. only really make sense for rigid individuals since we always
+  ;; get new individuals when using the description lattice. 
+  ;; This produces an alist of individuals of this category.
+  (setf (gethash category *objects-in-the-discourse*)
+        (kcons (kcons individual
+                      (kcons (kcons start-pos end-pos)
+                             nil))
+               categories-entry)))
+
+(defun new-instance-of-known-object (individuals-entry start-pos end-pos)
+  ;; We've seen this individual before. This is a new instance of it.
+  (rplacd individuals-entry
+          (kcons (kcons start-pos end-pos)
+                 (cdr individuals-entry))))
+
+
 
 ;;;-----------------------------
 ;;; sequential list of DH items
@@ -540,12 +540,24 @@
 
 
 (defun record-instance-within-sequence (i edge)
+  (declare (special *description-lattice*))
+  (if *description-lattice*
+    (record-dl-instance-within-sequence i edge)
+    (record-simple-instance-within-sequence i edge)))
+
+
+(defun record-simple-instance-within-sequence (i edge)
   ;; called from add-subsuming-object-to-discourse-history 
   (flet ((store-on-lifo (i edge)
            (when *trace-instance-recording*
              (format t "~&Storing ~a from e~a"
                      i (edge-position-in-resource-array edge)))
-           (push `(,i ,edge) *lifo-instance-list*)))
+           (push `(,i ,edge) *lifo-instance-list*))
+         (new-mention-subsumes-old? (prior-mention edge)
+           (let ((prior-edge (cadr prior-mention)))
+             (when (edge-subsumes-edge? edge prior-edge)
+               (rplaca (cdr prior-mention)
+                       edge)))))
     (let ((prior-mention (assq i *lifo-instance-list*)))
       (if (and prior-mention
                ;; If we've (somehow) looped around far enough
@@ -556,14 +568,29 @@
           (store-on-lifo i edge))
         (store-on-lifo i edge)))))
 
-(defun new-mention-subsumes-old? (prior-mention edge)
-  ;; used by record-instance-within-sequence to do what
-  ;; extend-entry-in-discourse-history does without an edge
-  (let ((prior-edge (cadr prior-mention)))
-    (when (edge-subsumes-edge? edge prior-edge)
-      (rplaca (cdr prior-mention)
-               edge)
-      t)))
+
+
+(defun record-dl-instance-within-sequence (i edge)
+  ;; prior mentions and subsumption handled by separate call.
+  ;; This is the equivalent of the flet store-on-lifo
+  ;; except for the arrangement of the alist
+  (when *trace-instance-recording*
+    (format t "~&Storing ~a from e~a"
+            i (edge-position-in-resource-array edge)))
+   (push `(,i ,edge) *lifo-instance-list*))
+
+(defun update-instance-within-sequence (new-mention old-mention
+                                        start-pos end-pos)
+  ;; Have to replace the old individual+edge pair since
+  ;; with the dl protocol this is a new individual, not an
+  ;; established individual with a new spanning edge
+  (push-debug `(,new-mention ,old-mention ,start-pos ,end-pos))
+  (let ((new-edge (edge-between start-pos end-pos))
+        (new-i (mention-of new-mention))
+        (old-top (pop *lifo-instance-list*)))
+    (push-debug `(,old-top)) ;;/// use in trace ?
+    (push `(,new-i ,new-edge) *lifo-instance-list*)))
+;  (setq new-mention (car *) old-mention (cadr *) start-pos (caddr *) end-pos (cadddr *))
 
 (defun cleanup-lifo-instance-list ()
   ;; called from end-of-sentence-processing-cleanup and
@@ -690,6 +717,99 @@ saturated? is a good entry point. |#
         (> new-count
            reigning-count)))))
 
+
+
+;;;-------------
+;;; Individuals
+;;;-------------
+;; N.b. not adapted to derivation lattice individuals
+
+(defun individuals-discourse-entry (i)
+  (declare (special *description-lattice*))
+  (unless (individual-p i)
+    (error "Argument must be an individual.~%~A is not" i))
+  (cond
+   (*description-lattice*
+    (get-history-of-mentions i))
+   (t ;; conventional, rigid individuals
+    (let* ((primary-category (car (indiv-type i)))
+           (operations (cat-operations primary-category))
+           (category-instantiated 
+            (when operations (cat-ops-instantiate operations)))
+           (entry 
+            (when category-instantiated 
+              (discourse-entry category-instantiated))))
+      (when entry
+        (assoc i entry :test #'eq))))))
+
+(defun instance-history (individual)
+  ;; alternative on Individuals-discourse-entry that just returns
+  ;; the instances
+  (declare (special *description-lattice*))
+  (when *description-lattice*
+    (break "The function instance-history has to be revised for "))
+  (cdr (individuals-discourse-entry individual)))
+
+(defun category-for-individuals-discourse-history (i)
+  (cat-ops-instantiate 
+   (cat-operations
+    (car (indiv-type i)))))
+
+
+;;;---------------
+;;; initializing
+;;;---------------
+
+(defun initialize-discourse-history ()
+  (declare (special *lifo-instance-list*))
+  (setq *lifo-instance-list* nil
+        *lattice-individuals-mentioned-in-paragraph* nil)
+  (clrhash *objects-in-the-discourse*)
+  (clrhash *lattice-individuals-to-mentions*))
+ #| Attempting to deallocate the kconses is leading to circularities
+    in the kcons resource, so for the moment just flushing the whole
+    table and leaving it to GC to handle
+  (maphash #'clear-discourse-history-entry
+             *objects-in-the-discourse*))|#
+
+(defun clear-discourse-history-entry (category category-entry)  ;; tag, value
+  ;; deallocate the conses in the entry, then flush the entry
+  (break " Stub: clearing discourse entry for category")
+  ;(dolist (individual-entry category-entry)
+  ;  (clear-individual-dh-entry individual-entry)
+  ;  ;(break "after entry")
+  ;  )
+  (deallocate-klist category-entry)
+  (break "after")
+  (remhash category *objects-in-the-discourse*))
+
+
+(defun clear-individual-dh-entry (klist)
+  (let ((individual (kpop klist))
+        (instance-records klist)
+        data  start-data  end-data )
+    (declare (ignore individual))
+    (break "Stub: clearing individual's dh history: start")
+    (dolist (record instance-records)
+      (cond ((eq (car record) :display-index)
+             (setq data (cdr record))
+             (setq start-data (car data)
+                   end-data (cdr data))
+             (break "2")
+             (deallocate-kons start-data)
+             (deallocate-kons end-data)
+             (break "3")
+             (deallocate-kons data)
+             (deallocate-kons record)
+             (break "4"))
+
+            ((position-p (car record))
+             ;(deallocate-kons record)
+             ;(break "a")
+             )))
+    ;(break "after do")
+    ;(deallocate-klist instance-records)
+    ))
 
 
 ;;;--------------------
@@ -831,34 +951,63 @@ saturated? is a good entry point. |#
 
 
 
+(defun long-term-ify-mention (mention)
+  "Same idea a working with a conventional discourse entry
+   in that we replace positions with their indexes. 
+   The more important long-term location information is position
+   in the article, which was recorded when the mention was made."
+  (let* ((cons (mentioned-where mention))
+         (start-pos (car cons))
+         (end-pos (cdr cons)))
+    (unless (integerp start-pos) ;; already done
+      (setf (mentioned-where mention)
+            (cons (pos-token-index start-pos)
+                  (pos-token-index end-pos))))))
+
+(defun long-term-mention? (mention)
+  "Has this mention been converted to its long-term form?"
+  (integerp (car (mentioned-where mention))))
+
+
 (defun long-term-ify/individual (i workbench? start-pos end-pos)
-  (let ((instances-record
-         (cdr (individuals-discourse-entry i)))
-        (start-index (if workbench? 
-                       (pos-display-char-index start-pos)
-                       (pos-token-index start-pos)))
-        (end-index (if workbench?
-                     (pos-display-char-index end-pos)
-                     (pos-token-index end-pos))))
+  (declare (special *description-lattice*))
+  (cond
+   (*description-lattice*
+    ;; 1st find the mention, then modify it.
+    (let ((mentions (get-history-of-mentions i)))
+      (push-debug `(,start-pos ,end-pos ,mentions ,i))
+      (let ((m (search-mentions-by-position mentions start-pos end-pos)))
+        (when m
+          ;; if it's not there we're not going to have a problem
+          ;; //// Ditto with the duplicates of 9/12/15
+          (long-term-ify-mention m)))))
+   (t ;; conventional individuals
+    (let ((instances-record
+           (cdr (individuals-discourse-entry i)))
+          (start-index (if workbench? 
+                         (pos-display-char-index start-pos)
+                         (pos-token-index start-pos)))
+          (end-index (if workbench?
+                       (pos-display-char-index end-pos)
+                       (pos-token-index end-pos))))
 
-    (when (or (null start-index) (null end-index))
-      (break "Display index/s is nil -- Some threading is bad.~%"))
+      (when (or (null start-index) (null end-index))
+        (break "Display index/s is nil -- Some threading is bad.~%"))
 
-    (when instances-record
-      (dolist (cell instances-record
-                    (already-long-term-ified? instances-record
-                                              workbench?
-                                              start-index
-                                              end-index))
-       
-        (when (eq (car cell) start-pos)
+      (when instances-record
+        (dolist (cell instances-record
+                      (already-long-term-ified? instances-record
+                                                workbench?
+                                                start-index
+                                                end-index))       
+          (when (eq (car cell) start-pos)
 ;          (when (eq *trace-discourse-history* (itype-of i))
 ;            (break "old person"))
  
-          (rplaca cell :display-index)
-          (rplacd cell (kcons start-index
-                              end-index))
-          (return))))))
+            (rplaca cell :display-index)
+            (rplacd cell (kcons start-index
+                                end-index))
+            (return))))))))
 
 
 
@@ -969,4 +1118,73 @@ saturated? is a good entry point. |#
         (push-debug `(,1st-instance1 ,1st-instance2))
         (break "Stub: check that the '1st instance' computation is ~
                 correct and then finish this routine")))))
-          
+
+
+;;;----------
+;;; printers
+;;;----------
+
+(defun object-types-in-discourse-history ()
+  (let ( type-list )
+    (maphash #'(lambda (key value)
+                 (declare (ignore value))
+                 (push key type-list))
+             *objects-in-the-discourse*)
+    (sort type-list #'string< :key #'pname-of-category)))
+
+
+(defun print-discourse-history (&optional (stream *standard-output*))
+  (dolist (type (object-types-in-discourse-history))
+    (format stream "~&~%~A:~%" type)
+    (dolist (sub-entry (discourse-entry type))
+      (format stream "~&   ~A   " (car sub-entry))
+      (dolist (pos-cons (cdr sub-entry))
+        (format stream "~30,3t~A-~A"
+                (car pos-cons) (cdr pos-cons)))))
+  (format stream "~%~%~%~%"))
+
+(defun print-category-discourse-history (category 
+                                         &optional (stream *standard-output*))
+  (format stream "~&~%~A:~%" category)
+  (dolist (sub-entry (discourse-entry category))
+    (format stream "~&   ~A   " (car sub-entry))
+    (dolist (pos-cons (cdr sub-entry))
+      (format stream "~&~15,3t~a - ~a"
+              (string-for-recycled-pos pos-cons)
+              (string-for-recycled-pos pos-cons)))))
+
+(defun string-for-recycled-pos (pos-cons)
+  "Returns a compact string for the position with actual and
+   absolute indexes"
+  (if (eq (car pos-cons) :display-index) ;; position array wrapped
+    (format nil "p~a" (cadr pos-cons))
+    (let ((p (car pos-cons)))
+      (let ((token-index (pos-token-index p))  ;; always extends
+            (array-index (pos-array-index p))) ;; recycles
+        (if (>= token-index *number-of-positions-in-the-chart*)
+          (format nil "p~a(~a)" token-index array-index)
+          (format nil "p~a" array-index))))))
+
+
+
+;;;-----------------------------------
+;;; filter out grammatical categories
+;;;-----------------------------------
+
+(defun irrelevant-category-for-dh (category i)
+  ;; Return non-nil for any category that should not be recorded
+  ;; in the discourse history. 
+  (declare (ignore i)
+           (special *irrelevant-to-discourse-history*))
+  (unless *irrelevant-to-discourse-history*
+    (populate-irrelevant-to-discourse-history))
+  (let ((supers (super-categories-of category)))
+    ;(push-debug `(,category ,i))
+    ;(break "category = ~a~
+    ;      ~%supers = ~a" category supers)))
+    (loop for c in *irrelevant-to-discourse-history*
+      when (memq c supers)
+      do (when nil (format t "~&Ignoring ~a~%" i))
+      (return-from irrelevant-category-for-dh t))
+    nil))
+

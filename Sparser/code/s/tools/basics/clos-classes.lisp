@@ -31,7 +31,7 @@
     :documentation "Holds a number or a letter")
    (toc-index :initform nil :accessor toc-index
     :documentation "Holds a sequence of indexes, e.g. '2.b.3'"))
-   (:documentation "Provides a sequential index for individual
+  (:documentation "Provides a sequential index for individual
     document elements and for an element as a position within
     the hierarchy of document structure as in a table of contents."))
 

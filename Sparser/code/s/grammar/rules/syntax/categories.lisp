@@ -91,9 +91,9 @@
 ;;(def-form-category  vp+passive) ;; vg with an be and V+ED
 ;; 6/5/15 Added grammatical-subject and direct-object to name relationships of a term
 ;;  (e.g. a pronoun) to its syntactic environment
-
 ;; 6/8/2015 tweaked ng-head?  to prevent treating <adverb> <vp+ing> as a NG group
-
+;; 9/6/15 Added number to the list of categories that aren't relevant in a discourse
+;;   history. 
 
 
 (in-package :sparser)
@@ -840,6 +840,8 @@
           ,(category-named 'preposition)
           ,(category-named 'spatial-preposition)
           ,(category-named 'pronoun)
+
+          ,(category-named 'number)
           )))
 
 ;;;----------------------------------------

@@ -3,13 +3,14 @@
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  July 2015
+;;;  Version:  September 2015
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
 ;; be referred to. 5/27/15 Subject is now the referent rather than
 ;; the edge. 6/8/15 Added get-element methods and began to play with
-;; after methods. 6/10/15 Added paragraph aggregator
+;; after methods. 6/10/15 Added paragraph aggregator. 9/8/15 added
+;; long-term-ifying mentions to paragraph. 
 
 
 (in-package :sparser)
@@ -30,6 +31,7 @@
 
 (defmethod after-actions ((p paragraph))
   (when *apply-document-after-actions*
+    (make-mentions-long-term)
     (aggregate-bio-terms p)
     (assess-sentence-analysis-quality p)))
 
@@ -44,6 +46,11 @@
 (defmethod after-actions ((a article))
   (when *apply-document-after-actions*
     (do-section-level-after-actions a)))
+
+
+(defun do-section-level-after-actions (s)
+  (summarize-bio-terms s))
+
 
 
 ;;;------------------------------------
@@ -198,8 +205,6 @@
 
           
       
-
-
 ;;;----------------------------------------------
 ;;; convenience accessors to parts of an article
 ;;;----------------------------------------------
@@ -355,13 +360,66 @@
   (level-completed s))
 
 
-;;;--------------------------------
-;;; Sets of after actions by level
-;;;--------------------------------
+;;;-------------------
+;;; table of contents
+;;;-------------------
 
-(defun do-section-level-after-actions (s)
-  (summarize-bio-terms s))
+;; Based on the indexed class
 
+(defgeneric set-document-index (doc-element number-or-letter)
+  (:documentation "Sets the identifying index and accumulated
+     table of contents on the document element (it's parents)
+     if that has not already been done. 
+     Called by the read-from-document for each element type."))
 
+(defmethod set-document-index ((a article) index)
+  (declare (ignore index))
+  (unless (toc-index a)
+    (setf (doc-index a) (name a))
+    (setf (toc-index a)
+          (format nil "~a" (name a)))))
+
+(defmethod set-document-index ((ss section-of-sections) (index integer))
+  (unless (toc-index ss)
+    (let* ((parent (parent ss))
+           (parent-toc (toc-index parent)))
+      (setf (doc-index ss) index)
+      (setf (toc-index ss)
+            (format nil "~a.~a" parent-toc index)))))
+
+(defmethod set-document-index ((s section) index)
+  ;; The index is a letter.
+  (unless (toc-index s)
+    (let* ((parent (parent s))
+           (parent-toc (toc-index parent)))
+      (setf (doc-index s) index)
+      (setf (toc-index s)
+            (format nil "~a.~a" parent-toc index)))))
+
+(defmethod set-document-index ((p paragraph) (index integer))
+  (unless (toc-index p)
+    (let* ((parent (parent p))
+           (parent-toc (toc-index parent)))
+      (setf (doc-index p) index)
+      (setf (toc-index p)
+            (format nil "~a.p~a" parent-toc index)))))
+
+(defmethod set-document-index ((s sentence) (index integer))
+  (unless (toc-index s)
+    (let* ((parent (parent s))
+           (parent-toc (toc-index parent)))
+      (setf (doc-index s) index)
+      (setf (toc-index s)
+            (format nil "~a.s~a" parent-toc index)))))
+
+(defun location-in-article-of-current-sentence ()
+  "Looks up the sentence we are presently working on
+  and returns its document index. Only makes sense if
+  we are working through a document that supports the
+  toc classes (as above), so returns nil if we aren't"
+  (declare (special *reading-populated-document*))
+  (when *reading-populated-document*
+    (let ((s (identify-current-sentence)))
+      (toc-index s))))
 
 
