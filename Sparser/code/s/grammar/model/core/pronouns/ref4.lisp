@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ref"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  4.4 March 2015
+;;;  version:  4.5 September 2015
 
 ;; 3.0 (7/11/94) completely redone from scratch
 ;; 4.0 (5/8/95) in progress ..5/22
@@ -23,6 +23,7 @@
 ;;      diverse type set. Added wh-pronoun to be ignored 3/19/15.
 ;;     (5/31/15 Guard the otherwise fall-through in handle-any-anaphora
 ;;     (6/5/15) Make handle-pronoun return nil if pronoun hasn't been massaged.
+;; 4.5 (9/8/15) Turned off the completion actions on proteins. 
 
 (in-package :sparser)
 
@@ -50,7 +51,8 @@
           (push-debug `(,edge/s ,sentence)) ;;(lsp-break "Looking at pn")
           (case (cat-symbol form)
             ((category::pronoun
-              category::subject category::direct-object)
+              category::subject 
+              category::direct-object)
              (handle-pronoun
               label form edge sentence))
             (category::wh-pronoun ;; ignore -- question or subordinator
@@ -178,6 +180,14 @@
 ;;;-----------
 ;;; CA action
 ;;;-----------
+#|  Turning these off (9/8/15) because 
+ (a) they are too specific in what they're looking for except in
+   a concrete domain like Who's News or perhaps Strider where
+   people and companies are the principal things being referred to
+ (b) this should probably be done a different way depending on
+   the grammatical function of the pronoun. The rule-based
+   example of "these" as a determiner (see syntax/articles.lisp)
+   is probably a better sort of operation. 
 
 (define-completion-action  category::pronoun/inanimate  ;; label
                            :pronoun                     ;; tag
@@ -195,7 +205,7 @@
 (define-completion-action  category::pronoun/plural   ;; "they", "them", "their"
                            :pronoun
                            'seek-collection-of-people-for-plural-pronoun )
-
+|#
 
 ;;;---------------------------------------
 ;;; masculine/feminine 3d person pronouns
