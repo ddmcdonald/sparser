@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "printers"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.8 March 2015
+;;;  version:  0.8 August 2015
 
 ;; initiated 7/16/92 v2.3, 9/3 added Princ-individual
 ;; (5/26/93) added Print-individual-with-name
@@ -36,6 +36,7 @@
 ;; 0.8 (1/10/15) Modifying printers to use the uid number.
 ;;     (3/12/15) wrote describe-individual as alternative to pretty printer
 ;;      which might be OBE because of referent values in bindings
+;;     (8/27/15) Removed references to PSI
 
 (in-package :sparser)
 
@@ -44,45 +45,44 @@
 ;;;----------------------
 
 (defun print-individual-structure (indiv stream depth)
-  (if (typep indiv 'psi)
-    (print-partially-saturated-individual-structure indiv stream depth)
-    (let ((type-field (indiv-type indiv)))
-      (if type-field
-        (cond
-         ((eq type-field :never-used)
-          (format stream "#<fresh individual ~A>"
-                  (cadr (member :uid (unit-plist indiv)
-                                :test #'eq))))
-         ((eq type-field :freshly-allocated)
-          (format stream "#<fresh individual ~A>"
-                  (cadr (member :uid (unit-plist indiv)
-                                :test #'eq))))
-         ((deallocated-individual? indiv)
-          (format stream "#<deallocated individual ~A>"
-                  (cadr (member :uid (unit-plist indiv)
-                                :test #'eq))))
-         (t
-          (let* ((operations (cat-operations (first type-field)))
-		 (special-routine
-		  (when operations (cat-ops-print operations))))
-            (if special-routine
-              (funcall special-routine indiv stream)
-              (cond
-               ((has-a-bp-id? indiv)
-                (print-biopax-entity indiv stream))
-               ((has-a-name? indiv)
-                (print-individual-with-name indiv stream))
-                (t
-                  (write-string "#<" stream)
-                  (dolist (category (indiv-type indiv))
-                    (if (category-p category)
-                      (princ-category category stream)
-                      (write-string "type-not-handled" stream))
-                    (write-string " " stream))
-                  (format stream "~A>" (indiv-uid indiv))))))))
-        (else
-          ;; a freshly allocated individual has no type
-          (write-string "#<empty individual>" stream))))))
+  (declare (ignore depth))
+  (let ((type-field (indiv-type indiv)))
+    (if type-field
+      (cond
+       ((eq type-field :never-used)
+        (format stream "#<fresh individual ~A>"
+                (cadr (member :uid (unit-plist indiv)
+                              :test #'eq))))
+       ((eq type-field :freshly-allocated)
+        (format stream "#<fresh individual ~A>"
+                (cadr (member :uid (unit-plist indiv)
+                              :test #'eq))))
+       ((deallocated-individual? indiv)
+        (format stream "#<deallocated individual ~A>"
+                (cadr (member :uid (unit-plist indiv)
+                              :test #'eq))))
+       (t
+        (let* ((operations (cat-operations (first type-field)))
+               (special-routine
+                (when operations (cat-ops-print operations))))
+          (if special-routine
+            (funcall special-routine indiv stream)
+            (cond
+             ((has-a-bp-id? indiv)
+              (print-biopax-entity indiv stream))
+             ((has-a-name? indiv)
+              (print-individual-with-name indiv stream))
+             (t
+              (write-string "#<" stream)
+              (dolist (category (indiv-type indiv))
+                (if (category-p category)
+                  (princ-category category stream)
+                  (write-string "type-not-handled" stream))
+                (write-string " " stream))
+              (format stream "~A>" (indiv-uid indiv))))))))
+      (else
+        ;; a freshly allocated individual has no type
+        (write-string "#<empty individual>" stream)))))
 
 
 
@@ -101,24 +101,13 @@
 ;;; individuals that have 'names'
 ;;;-------------------------------
 
-(defun has-a-name? (i)
-  (binds i 'name))
-
-(defun name-of-individual (i)
-  (let ((b (has-a-name? i)))
-    (when b
-      (let* ((value (binding-value b))
-             (word (if (consp value) (first value) value)))
-        word))))
-
+;;--- Specific to Big Mechanism. /// Consider moving
 (defun has-a-bp-id? (i)
   (binds i 'reactome-id))
 
-(defun display-name? (i)
-  (let
-      ((binding (binds i 'reactome-id)))
-    (when
-        binding
+(defmethod display-name? ((i individual))
+  (let ((binding (binds i 'reactome-id)))
+    (when binding
       (binding-value binding))))
 
 (defun bp-id-of-individual (i)
@@ -128,29 +117,33 @@
              (word (if (consp value) (first value) value)))
         word))))
 
-
 (defun print-biopax-entity (i stream)
-  ;; a 'special-routine' that is used with individuals that
-  ;; have a name field, which we assume is bound to a word. 
-  ;; This routine is put on the ops-printer field of the category
-  ;; at the time the category is defined.
   (declare (special *print-short*))
-  
   (write-string "#<" stream)
   (unless *print-short*
     (dolist (category (indiv-type i))
       (princ-category category stream)
       (write-string " " stream)))
-  (format stream "~A ~A ~A>" (or (bp-id-of-individual i) "")
-          (if
-           (name-of-individual i)
+  (format stream "~A ~A ~A>" (or `(bp-id-of-individual i) "")
+          (if (name-of-individual i)
            (format nil "[~A]" 
-                   (or
-                    (display-name? i)
-                    (name-of-individual i)))
+                   (or (display-name? i)
+                       (name-of-individual i)))
            "")
           (indiv-uid i)))
 
+
+;;--- Vanilla cases
+
+(defun has-a-name? (i)
+  (binds i 'name))
+
+(defun name-of-individual (i)
+  (let ((b (has-a-name? i)))
+    (when b
+      (let* ((value (binding-value b))
+             (word (if (consp value) (first value) value)))
+        word))))
 
 (defun princ-name (name stream)
   (let ((string (string-for/name/individual name)))
@@ -175,7 +168,6 @@
          (word
           (cond (name name)
                 (word-binding (binding-value word-binding)))))
-    (declare (special name word-binding word))
     (if word
       (then
        (unless *print-short*
