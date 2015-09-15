@@ -19,7 +19,7 @@
 ;;; Action hook for after a document element finishes
 ;;;---------------------------------------------------
 
-(defparameter *apply-document-after-actions* nil
+(defparameter *apply-document-after-actions* t
   "Gates whether to run after actions. Makes it possible to commit
   the file while they're still being debugged.")
 
