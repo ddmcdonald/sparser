@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 April 2015
+;;;  Version:  0.2 September 2015
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -31,6 +31,8 @@
 ;;  5/8/2015 handle vp+ed and vp+ing, handle AP as well as adjectives
 ;; 5/30/2015 take into account the introduction of vg+passive, etc.
 ;;  update super-catgory of there-exists to be relation
+;; 9/17/15 added (be vg+ed) form rule. Worth going through the rest
+;;  and ensuring they have every variant they need. 
 
 (in-package :sparser)
 
@@ -161,6 +163,11 @@
 ;;---- "be" + "en" (passive)
 
 (def-form-rule (be verb+ed)
+  :new-category  :passive
+  :form vg+passive
+  :referent (:head right-edge))
+
+(def-form-rule (be vg+ed)
   :new-category  :passive
   :form vg+passive
   :referent (:head right-edge))
