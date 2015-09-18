@@ -1127,7 +1127,7 @@
 
 (deftrace :no-treetops-remain-exiting ()
   (when *trace-island-driving*
-    (trace-msg "[pass2] ran out of treetops. Exiting"))
+    (trace-msg "[pass2] ran out of treetops. Exiting")))
 
 (deftrace :trying-da-pattern-on (tt)
   (when *trace-island-driving*
