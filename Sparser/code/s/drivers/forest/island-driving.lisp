@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  March 2015
+;;;  Version:  September 2015
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -24,12 +24,10 @@
 ;;   this speeds up the system by a factor of 3!
 ;; 6/5/2015 added (defvar *whack-a-rule-sentence*)bound in  whack-a-rule-cycle
 ;;  so that all-tts knows the boundaries of the current sentence.
+;; 9/18/15 Completely rebuilt the 2d pass. 
 
 
 (in-package :sparser)
-(defvar *parse-edges*)
-(defparameter *island-driven-efrc* nil) ;; controls *edges-from-referent-categories* inside island-driven-forest-parse -- 
-;; when set to nil will speed up the system by a factor of 3!
 
 ;;;--------------------
 ;;; control parameters
@@ -42,16 +40,23 @@
 (defun whack-a-rule (&optional (yes? t))
   (setq *whack-a-rule* yes?))
 
+(defparameter *island-driven-efrc* nil
+  "Controls *edges-from-referent-categories* inside
+   island-driven-forest-parse. When set to nil will speed up
+   the system by a factor of 3!")
 
 ;;;-------------
 ;;; entry point
 ;;;-------------
 
+;; (trace-island-driving)
+
 (defun island-driven-forest-parse (sentence layout start-pos end-pos)
   ;; called from new-forest-driver after it has called 
   ;; sweep-sentence-treetops to create the layout
   (declare (special *allow-pure-syntax-rules*
-                    *edges-from-referent-categories*)
+                    *edges-from-referent-categories* ;; OBE or leave?
+                    *trace-island-driving* *parse-edges*) ;; trace flags
            (ignore layout))
   (tr :island-driven-forest-parse start-pos end-pos)
   (when (or *trace-island-driving* 
@@ -69,12 +74,10 @@
         ;; after chunking. It has useful information in it.
         (let ((new-layout
                (sweep-sentence-treetops sentence start-pos end-pos)))
-          ;; (push-debug `(,new-layout)) (break "new layout")
-          ;;(break "before p2")
-          (when t
-            (tr :island-driver-forest-pass-2)
-            (when *trace-island-driving* (tts))
-            (run-island-checks-pass-two new-layout start-pos end-pos)))))))
+          (declare (ignore new-layout)) ;; hedging my bet for now
+          (tr :island-driver-forest-pass-2)
+          (when *trace-island-driving* (tts))
+          (when t (run-island-checks-pass-two sentence start-pos end-pos)))))))
 
 
 ;;;------------
@@ -112,21 +115,25 @@
       (declare (special *allow-form-conjunction-heuristic*))
       (try-spanning-conjunctions))))
 
-(defparameter *rules-for-pairs* (make-hash-table :test #'equal :size 200))
-(defvar *whack-a-rule-sentence*)
-(defun whack-a-rule-cycle (*whack-a-rule-sentence*)
-  (let (copula)
-    (loop while (setq copula (copula-rule?))
-      do (execute-triple copula)))
-  
-  (let ( rule-and-edges  edge)
-    (clrhash *rules-for-pairs*)
-    (loop
-      (setq rule-and-edges (best-treetop-rule *whack-a-rule-sentence*))
-      (when (null rule-and-edges)
-        (return))
-      (setq edge (execute-triple rule-and-edges))
-      (tr :whacking-triple rule-and-edges edge))))
+
+(defparameter *rules-for-pairs* (make-hash-table :test #'equal :size 200)
+  "Cache for rule lookup")
+
+(defun whack-a-rule-cycle (sentence)
+  (let ((*whack-a-rule-sentence* sentence))
+    (declare (special *whack-a-rule-sentence*))
+    (let (copula)
+      (loop while (setq copula (copula-rule?))
+        do (execute-triple copula)))
+
+    (let ( rule-and-edges  edge )
+      (clrhash *rules-for-pairs*)
+      (loop
+        (setq rule-and-edges (best-treetop-rule sentence))
+        (when (null rule-and-edges)
+          (return))
+        (setq edge (execute-triple rule-and-edges))
+        (tr :whacking-triple rule-and-edges edge)))))
 
 (defun execute-triple (triple)
   ;; triple = rule, left-edge, right-edge
@@ -135,6 +142,145 @@
                         (third triple)))
 
 
+    
+;;;-------------
+;;; second pass
+;;;-------------
+
+(defun run-island-checks-pass-two (sentence start-pos end-pos)
+  ;; Called from island-driven-forest-parse after it's done everything
+  ;; in its phase-one operations. Given the predominance of whack a rule
+  ;; in phase one, we could probably fold these two together into
+  ;; one routine. It's a question of what sorts of hard boundaries
+  ;; we have on regular rules (e.g. ";") that call for a shift to
+  ;; debris analysis. Also should mine the regular roueines for
+  ;; handling the forest level.
+  ;;   We won't have gotten here unless the adjacency-driven rule
+  ;; application has run out of cases, so we start with DA. We also
+  ;; know that the sentence is not spanned by a single edge.
+
+  ;; N.b. execute-da-trie does the interleaving between regular parsing
+  ;; and a walk over the treetops looking for debris patterns,
+  ;; but it's tail-recursive and would require considerable reworking
+  ;; to use in this multi-pass context.
+  
+  (let* ((treetops (successive-treetops :from start-pos :to end-pos))
+         (number-of-treetops (length treetops)))
+    (tr :islands-pass-2 number-of-treetops)
+    (labels 
+      ((look-for-da-pattern (tt)
+         "If there is a da pattern that starts at this treetop
+          execute it and return the 'result'"
+         (let ((da-node (trie-for-1st-item tt)))
+           (when da-node
+             (standalone-da-execution da-node tt))))           
+
+       (whack-new-edge (sentence)
+         "We got a new edge and there are adjacent edge, 
+          try composing them"
+         (whack-a-rule-cycle sentence))
+
+       (coverage-dispatch (prior-coverage)
+         "Look at the new coverage. If we're not done then
+          return a keyword saying what to do next"
+         (declare (ignore prior-coverage)) ;; possible alg to see if making progress
+         (let ((coverage (coverage-over-region start-pos end-pos)))
+           (case coverage
+             (:one-edge-over-entire-segment ;; we're done
+              (return-from run-island-checks-pass-two t))
+             ((:all-contiguous-edges :some-adjacent-edges)
+              :apply-rules)
+             (:discontinuous-edges
+              :do-not-apply-rules)
+             (otherwise
+              (break "Unexpected pass-two coverage: ~a" coverage))))))
+;;  :one-edge-over-entire-segment  :all-contiguous-edges 
+;; :some-adjacent-edges   :discontinuous-edges
+
+      (let ((ramaining-treetops (copy-list treetops))
+            (tt-count 0)
+            tt  result  coverage  )
+      
+        (loop
+          ;; We're looping over successive treetops. When we run out 
+          ;; of tt we're done.
+          (unless ramaining-treetops
+            (tr :no-treetops-remain-exiting)
+            (return))
+          (setq tt (pop ramaining-treetops))
+
+          (when (>= (incf tt-count) number-of-treetops)
+            ;; belt and suspenders to ensure we don't loop indefinitely
+            (return))
+
+          ;; Start with Debris Analysis to find a pattern over these
+          ;; treetops. We may have to look at several successive tt
+          ;; before we get one
+          (tr :trying-da-pattern-on tt)
+          (setq result (look-for-da-pattern  tt))
+
+          ;; Did that cover everything? (Could only happen on the
+          ;; first iteration.
+          (setq coverage (coverage-over-region start-pos end-pos))
+          (when (eq coverage :one-edge-over-entire-segment)
+            ;; we're done because we've succeeded
+             (return-from run-island-checks-pass-two t))
+
+          ;; Ok. Look at the result of the debris analysis run
+          (cond
+           ((null result)
+            ;; Loop around to try DA on the next tt
+            (tr :no-result-from-da))
+
+           ((edge-p result)
+            ;; If there are any contiguous edges now
+            ;; we should run the rule engine   
+            (tr :p2-da-returned-edge result)
+            (let ((action (coverage-dispatch coverage)))
+              (case action
+                (:do-not-apply-rules
+                 ;; go to the da loop
+                 (tr :p2-no-use-applying-rules))
+                (:apply-rules 
+                 ;; The cycle runs to completion on all the treetops
+                 ;; and does it's own recalulation
+                 (tr :p2-applying-rules)
+                 (whack-new-edge sentence)                 
+                 ;; Once it's done we evaluate the coverage again
+                 ;; to see whether we're done, 
+                 (setq coverage (coverage-over-region start-pos end-pos))
+                 (tr :p2-converage-is coverage)
+                 (when (eq coverage :one-edge-over-entire-segment)
+                   (return-from run-island-checks-pass-two t))
+                 ;; otherwise we update the tracking variables and loop
+                 (setq ramaining-treetops (successive-treetops :from start-pos :to end-pos)
+                       number-of-treetops (length ramaining-treetops)))
+                (otherwise
+                 (error "Unanticipate return from coverage dispatch: ~a" action)))))
+
+           ((keywordp result)
+            (ecase result
+              (:trie-exhausted
+               ;; didn't find anything, if there's a next tt after
+               ;; this one we should look for a pattern starting there
+               (tr :no-result-from-da))
+              (:pattern-matched
+               ;; the function ran, but it didn't return an edge
+               ;; (so it should be revised to do so !!)
+               (lsp-break "pattern matched, but what actually happened?"))))
+           (t
+            (push-debug `(,result ,sentence ,start-pos ,end-pos))
+            (error "Unanticipated type of result: ~a" (type-of result))))
+
+
+          ) ;; the loop
+        ))))
+
+             
+  
+;;;------------------------------------
+;;; Older, more ad-hoc schemes to mine
+;;;------------------------------------
 
 (defun older-island-driving-rest-of-pass-one ()
   (when (starts-with-prep?)
@@ -189,42 +335,26 @@
     (try-simple-vps)
     (when *trace-island-driving* (tts))))
 
-        
 
-    
-;;;-------------
-;;; second pass
-;;;-------------
-
-(defun clean-treetops (treetops)
-  (loop for edge in treetops
-    unless
-    (or (not (edge-p edge))
-        (memq (edge-category edge) `(,word::comma))
-        (memq (edge-form edge) `(,category::adverb)))
-    collect edge))
-
-(defun run-island-checks-pass-two (layout start-pos end-pos)
-  (let* ((actual-treetops (successive-treetops :from start-pos :to end-pos))
-         (treetops (clean-treetops actual-treetops))
-         (tt-count (length treetops))
-         (clauses (there-are-loose-clauses))
-         (subject-edge (subject layout))
-         (vps (verb-phrases layout))
-         (copula (when vps (find-copular-vp vps)))
-         (other-vps (when vps (find-non-copular-vps vps)))
-         (pps (there-are-prepositional-phrases)))
-    ;;(declare (special treetops tt-count clauses subject-edge vps copula))
+(defun older-run-island-checks-pass-two (layout start-pos end-pos)
+  (flet ((clean-treetops (treetops)
+           (loop for edge in treetops
+             unless (or (not (edge-p edge))
+                        (memq (edge-category edge) `(,word::comma))
+                        (memq (edge-form edge) `(,category::adverb)))
+             collect edge)))
+    (let* ((actual-treetops (successive-treetops :from start-pos :to end-pos))
+           (treetops (clean-treetops actual-treetops))
+           (tt-count (length treetops))
+           (clauses (there-are-loose-clauses))
+           (subject-edge (subject layout))
+           (vps (verb-phrases layout))
+           (copula (when vps (find-copular-vp vps)))
+           (other-vps (when vps (find-non-copular-vps vps)))
+           (pps (there-are-prepositional-phrases)))
     (tr :islands-pass-2 tt-count)
-    ;;(push-debug `(,start-pos ,end-pos ,treetops)) (break "pass2")
-
+    (push-debug `(,start-pos ,end-pos ,treetops)) 
     (cond
-     ((and (not (= tt-count (length actual-treetops)))
-           ;; a comma or an adverb was dropped out
-           (= 3 (length actual-treetops)))
-      (look-for-length-three-patterns actual-treetops))
-     ((= tt-count 3)
-      (look-for-length-three-patterns treetops)) ;; t)
      ((and subject-edge copula)
       (fill-in-between-subject-and-final-verb subject-edge copula treetops tt-count))
      ((there-is-a-that?)
@@ -232,6 +362,5 @@
      (t (push-debug `(,clauses ,vps ,other-vps ,pps))
         (tr :no-established-pass-2-patterns-applied)
         (when nil
-          (break "other"))))))
-
+          (break "other")))))))
 
