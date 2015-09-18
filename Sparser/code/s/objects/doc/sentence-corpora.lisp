@@ -155,6 +155,16 @@ previous records of treetop-counts.
     (print c)
     (print (compare-to-snapshot c save-info))))
 
+
+(defun save-treetop-snapshots (&optional
+                             (save-info nil)
+                             (corpora '(overnight dec-test dry-run aspp2 erk)))
+  (loop for c in corpora
+    do (terpri)
+    (print c)
+    (print (save-treetop-snapshot c *file-for-treetop-snapshots*))))
+
+
 (defmethod compare-to-snapshot ((name symbol) &optional (save-info nil))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
