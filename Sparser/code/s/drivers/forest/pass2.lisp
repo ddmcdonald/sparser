@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "pass2"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  May 2015
+;;;  Version:  September 2015
 
 ;; Broken out of island-driving 10/23/14. Added relative clause check
 ;; 12/19/14. 
@@ -12,16 +12,19 @@
 ;;   subcategorization on the preposition.
 ;; 4/24/2015 fixed fill-in-between-subject-and-final-verb so that it doesn't look for
 ;;  material BETWEEN adjacent subject and vp which are about to be smashed together
-;; 5/30/15 wrote conjoin-clause-and-vp as target of debris-analyis pattern
+;; 5/30/15 wrote conjoin-clause-and-vp as target of debris-analyis pattern.
+;; 9/18/15 Moved da-handlers to go with the rules themselves in rules/DA.
+;;  What's left here is connected with the original, highly heuristic, way of
+;;  doing the second pass, so it may well soon be determined to be OBE.
 
 (in-package :sparser)
-(defvar CATEGORY::VP)
-(defvar CATEGORY::PP)
-(defvar CATEGORY::S)
-(defvar CATEGORY::PP)
-(defvar *THE-PUNCTUATION-COMMA*)
+
+;;;------------------------------
+;;; Original pass-two operations
+;;;------------------------------
 
 (defun try-to-make-that-relative-clause ()
+  (declare (special category::np category::vp))
   (let ((that-edge/s (there-is-a-that?)))
     (when (cdr that-edge/s)
       (break "Need to extent relative clause forming routine ~
@@ -42,7 +45,7 @@
        (t
         (tr :not-rc-pattern)
         nil)))))
-      
+
 
 ;; Rusty determined that this model of an unspecified 
 ;; adjunction between a major and a minor constituent
@@ -79,81 +82,6 @@
           (break "not major: ~a" e1))))))
 
 
-
-(defun look-for-length-three-patterns (treetops)
-  ;; with just three treetops, there's probably a pattern over them
-  ;; that's easy to state. 
-  (tr :pattern-over-three-tt (car treetops) (cadr treetops) (caddr treetops))
-  (push-debug `(,treetops))
-  ;;/// See if DA patterns machinery do this better -- especially the setup
-  (let ((comma-edge (includes-tt-over-comma treetops))) ;; or 'that', etc.
-    (when comma-edge
-      ;; Try a stranded initial pp -- J5
-      (when (match-treetop-pattern `(,category::pp
-                                     ,*the-punctuation-comma*
-                                     ,category::s)
-                                   treetops)
-        (let* ((clause (third treetops)) ;; drops the comma
-               (pp (first treetops))   ;; rather than folding it into pp
-
-               ;; For working determining the correct variable
-               (clause-referent (edge-referent clause))
-               (pobj-edge (edge-right-daughter pp))
-               (pobj-referent (edge-referent pobj-edge))
-               (prep-edge (edge-left-daughter pp))
-               (prep-word (edge-left-daughter prep-edge)))
-          (let ((var-name
-                 (or (subcategorized-variable clause-referent
-                                              prep-word
-                                              pobj-referent)
-                     'modifier)))
-            (setq clause-referent 
-                  (bind-dli-variable var-name pobj-referent clause-referent))
-            (let ((edge (make-binary-edge/explicit-rule-components
-                          pp clause
-                          :category (edge-category clause)
-                          :form (edge-form clause)
-                          :rule-name :look-for-patterns
-                          :referent clause-referent)))
-              (tr :comma-3tt-pattern edge)
-              edge))))))
-  (let* ((first-tt (car treetops))
-         ;;(ca-action (conceptual-analysis-action first-tt))
-         (da-node (trie-for-1st-item first-tt)))
-    (if da-node
-      (then (push-debug `(,da-node))
-            ;; trace
-            ;; (trace-da) 
-            (standalone-da-execution da-node first-tt))
-      (else
-        (tr :no-3tt-da-pattern)))))
-
-(defun conjoin-clause-and-vp (s-edge vp-edge)
-  ;; get the value of the subject or (perhaps) the subject
-  ;; variable of the s. Look up the s variable of the vp
-  (push-debug `(,s-edge ,vp-edge)) 
-  (let* ((s-subj-var (subject-variable s-edge))
-         (vp-subj-var (subject-variable vp-edge))
-         (s-ref (edge-referent s-edge))
-         (vp-ref (edge-referent vp-edge)))
-    (when (and s-ref vp-ref 
-               s-subj-var vp-subj-var)
-      (let ((subject (value-of s-subj-var s-ref)))
-        (when subject
-          (setq vp-ref (bind-dli-variable vp-subj-var subject vp-ref)))))
-    ;; regardless of whether we could set the subject of the
-    ;; vp we should create the edge
-    ;; This returns a edge and uses referent-of-two-conjoined-edges 
-    ;; to make the referent, which basically stuffs them both
-    ;; into a collection.
-    ;;//// which is not the right thing at all at the sentence
-    ;; level but it's a place to start. The actual relationship
-    ;; could be causes or follows, for which we need to understand
-    ;; more to get it right.
-    (conjoin-two-edges s-edge vp-edge :conjoin-clause-and-vp)))
-
-
-
 (defun fill-in-between-subject-and-final-verb (subject copula treetops tt-count)
   (tr :filling-in-between-subj-and-verb subject copula tt-count)
   (push-debug `(,subject ,copula ,treetops))
@@ -177,12 +105,12 @@
                 (ad-hoc-subj+copula-rule extended-subject copula)))))))))
 
 
-                               
+;; Written for patterns over three treetops which were made obsolete
+;; by the use of debris analysis patterns
 (defun match-treetop-pattern (sequence treetops)
   ;; This should be factored to combine it with follow-out-pattern which
   ;; is looking through the raw set of treetops (pass 1) whereas here
   ;; we have a fixed sequence and a specified pattern
-  (push-debug `(,sequence ,treetops))
   (let ( tt )
     (dolist (item sequence t)
       (setq tt (pop treetops))
@@ -199,14 +127,14 @@
          (error "Unexpected type of item in the pattern: ~a~%~a"
                 (type-of item) item))))))
 
-
 (defun try-to-carefully-compose-two-edges (two-edges)
+  (declare (special category::pp))
   (tr :carefully-compose (car two-edges) (cadr two-edges))
   (let* ((left (car two-edges))
          (left-form (edge-form left))
          (right (cadr two-edges))
          (right-form (edge-form right)))
-    (push-debug `(,left ,right))
+
     ;; These didn't naturally compose in phase 1, Lets assume
     ;; it was because the timing of the different things we tried
     ;; rather than a gap in the grammar. 
