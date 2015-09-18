@@ -512,6 +512,7 @@
           (when (edge-p first-edge) ;; e.g. "the underlying mechanism(s)."
             (eq (pos-edge-ends-at first-edge) pos-before-close)))
          (edge-to-left (left-treetop-at/edge pos-before-open)))
+    (declare (special edge-to-left first-edge))
     (cond
      ((and (edge-p first-edge)
            one-edge-over-entire-segment?
@@ -524,8 +525,12 @@
           (knit-edge-into-position edge-to-left ev-after-close)
           (setf (edge-ends-at edge-to-left) ev-after-close)        
           ;; save the information we need to recover it all
+          
+
           (push `(,pos-before-open ,paren-edge ,first-edge ,ev-of-edge)
-                *pending-acronyms*))))
+                *pending-acronyms*)
+          ;;(lsp-break "*pending-acronyms*")
+          )))
      (*hide-parentheses*
       (lsp-break "hide parentheses?")
       (hide-parenthesis-edge paren-edge edge-to-left)))))
@@ -542,6 +547,7 @@
                (acronym-edge (third data))
                (ev-of-edge-to-the-left (fourth data)) ;; ends at
                (regular-edge (ev-top-node ev-of-edge-to-the-left)))
+          (setq *pending-acronyms* nil)
           (push-debug `(,pos-before-open ,paren-edge ,acronym-edge
                         ,ev-of-edge-to-the-left ,regular-edge))
           (unless regular-edge
