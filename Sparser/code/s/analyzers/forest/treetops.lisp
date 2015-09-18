@@ -245,6 +245,10 @@
       category))
 
 
+;;;------------
+;;; collectors
+;;;------------
+
 (defun treetop-between (start end)
   (let ((treetop-at-start (right-treetop-at/edge start))
         (treetop-at-end   (left-treetop-at/edge  end)))
@@ -288,7 +292,8 @@
 ;;;---------------------------
       
 (defun adjacent-tts (&optional (all-edges (all-tts)))
-  (loop for edges on  all-edges ;; the set of edges no longer includes a dummy starting edge
+  (loop for edges on  all-edges 
+    ;; the set of edges no longer includes a dummy starting edge
     while (cdr edges) 
     when (and 
           (edge-p (car edges)) 
@@ -306,10 +311,11 @@
   ;; This was originally designed to operate on single 
   ;; sentences starting at position zero. However, since
   ;; it is central to the whack-a-rule algorithm, and
-  ;; because it is the basis of tt-semtantics which we
+  ;; because it is the basis of tt-semantics which we
   ;; can want to use -after- the parsing is finished,
-  ;; we supply it will a sentence to work from. 
-  (declare (special *sentence-in-core*)) ;;/// bad name
+  ;; we supply it with a sentence to work from. 
+  (declare (special *sentence-in-core* ;;/// bad name
+                    *whack-a-rule-sentence*))
   (unless starting-position
     (let ((sentence (or *whack-a-rule-sentence*
                         *sentence-in-core*)))
@@ -401,7 +407,7 @@
       (tr :filter-selected-triple triple)
       triple)))
 
-;; seriously consider a resource of thse
+;;/// seriously consider a resource of these
 (defun triple-rule (triple) (car triple))
 (defun left-edge-of-triple (triple) (cadr triple))
 (defun right-edge-of-triple (triple) (caddr triple))
@@ -427,34 +433,34 @@
 (defun remove-redundant-literal-triples (records)
   (push-debug `(,records))
   (let ( edge  word  words  word+records  )
-            ;; over the same word?            
-            (dolist (record records)
-              (setq edge (second record))
-              (setq word (edge-left-daughter edge))
-              (if (memq word words) ;; already seen?
-                (let ((w+r (assq word word+records)))
-                  (unless w+r 
-                    (push-debug `(,word+records ,word ,words))
-                    ;; (setq word+records (car *) word (cadr *) words (caddr *))
-                    (break "where's the record for ~s?"
-                           (word-pname word)))
-                  (rplacd w+r (cons record (cdr w+r))))
-                (else ;; it's new
-                  (setq word+records `((,word ,record)))
-                  (push word words))))
-            (when (cdr words)
-              (push-debug `(,words ,word+records)) 
-              (break "stub in surplus literals: more than one word"))
-            ;; The word+records at this point all have a unary
-            ;; edge that spans the same word. We're discounting
-            ;; the possibility that this word is duplicated at
-            ;; several places in the text. 
-            (loop for record in (cdr (car word+records))
-              as edge = (ecase (car record)
-                          (:left (left-edge-of-triple (third record)))
-                          (:right (right-edge-of-triple (third record))))
-              unless (literal-edge? edge)
-              collect edge)))
+    ;; over the same word?            
+    (dolist (record records)
+      (setq edge (second record))
+      (setq word (edge-left-daughter edge))
+      (if (memq word words) ;; already seen?
+        (let ((w+r (assq word word+records)))
+          (unless w+r 
+            (push-debug `(,word+records ,word ,words))
+            ;; (setq word+records (car *) word (cadr *) words (caddr *))
+            (break "where's the record for ~s?"
+                   (word-pname word)))
+          (rplacd w+r (cons record (cdr w+r))))
+        (else ;; it's new
+          (setq word+records `((,word ,record)))
+          (push word words))))
+    (when (cdr words)
+      (push-debug `(,words ,word+records)) 
+      (break "stub in surplus literals: more than one word"))
+    ;; The word+records at this point all have a unary
+    ;; edge that spans the same word. We're discounting
+    ;; the possibility that this word is duplicated at
+    ;; several places in the text. 
+    (loop for record in (cdr (car word+records))
+      as edge = (ecase (car record)
+                  (:left (left-edge-of-triple (third record)))
+                  (:right (right-edge-of-triple (third record))))
+      unless (literal-edge? edge)
+      collect edge)))
 
 (defun collect-triples-with-edges-over-one-word (triples)
   (loop for triple in triples
@@ -550,15 +556,15 @@
   ;; Don't do right-to-left activation for the subj+verb rules
   ;;(print `(dropping rule ,r-triple))
   ;;(print `(in *p-sent* ,*p-sent* dropping rule ,r-triple compared to ,l-triple))
-  (when (eq (second r-triple) (third l-triple))	;; there is an edge which is being competed for
-    (let*
-	((l-triple-rhs (cfr-rhs (car l-triple)))
-	 (l-triple-left (cat-symbol (car l-triple-rhs)))
-	 (r-triple-rhs (cfr-rhs (car r-triple)))
-	 (r-triple-left (cat-symbol (car r-triple-rhs)))
-	 (r-triple-right 
-	  (when (category-p (second r-triple-rhs))
-	    (cat-symbol (second r-triple-rhs)))))
+  (when (eq (second r-triple) (third l-triple))	
+    ;; there is an edge which is being competed for
+    (let* ((l-triple-rhs (cfr-rhs (car l-triple)))
+           (l-triple-left (cat-symbol (car l-triple-rhs)))
+           (r-triple-rhs (cfr-rhs (car r-triple)))
+           (r-triple-left (cat-symbol (car r-triple-rhs)))
+           (r-triple-right 
+            (when (category-p (second r-triple-rhs))
+              (cat-symbol (second r-triple-rhs)))))
       (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-left r-triple-right))
       ;;(lsp-break "compete")
       (or
@@ -570,9 +576,10 @@
         ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
         (not (and (edge-form (third r-triple))
                   (member (cat-symbol (edge-form (third r-triple)))
-                          '(category::pp category::relative-clause
-                                         category::subject-relative-clause
-                                         category::comma-separated-subject-relative-clause)))))
+                          '(category::pp 
+                            category::relative-clause
+                            category::subject-relative-clause
+                            category::comma-separated-subject-relative-clause)))))
        
        
        (and
@@ -580,22 +587,21 @@
         (or
          (and ;; pp starting a relative clause -- "in which"
           (memq r-triple-left '(category::which category::who category::whom category::where))
-	  (or
-           (eq r-triple-right 'category::s)
-           (eq (second (cfr-rhs-forms (car r-triple))) 's)))
+	  (or (eq r-triple-right 'category::s)
+              (eq (second (cfr-rhs-forms (car r-triple))) 's)))
          (memq r-triple-right
                '(category::vg category::vp category::vg+ed category::vp+ed
-                              category::vg+passive category::vp+passive
-                              category::comma-separated-subject-relative-clause))
+                 category::vg+passive category::vp+passive
+                 category::comma-separated-subject-relative-clause))
          ;; this is needed because the schema based rules generate rules in terms of 
          ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
          (memq (second (cfr-rhs-forms (car r-triple)))
                '(vg vp vg+ed vg/+ed vp/+ed vg/+passive vp/+passive
-                    comma-separated-subject-relative-clause)))
+                 comma-separated-subject-relative-clause)))
         (not
-         (and
-          (edge-p (edge-left-daughter (third r-triple)))
-          (eq category::adjective (edge-form (edge-left-daughter (third r-triple))))))
+         (and (edge-p (edge-left-daughter (third r-triple)))
+              (eq category::adjective 
+                  (edge-form (edge-left-daughter (third r-triple))))))
         
         ;; there must be a constituent which can absorb the result of the left competing rule
         (let* ((preceding-edge (edge-just-to-left-of (second l-triple)))
@@ -610,9 +616,9 @@
 	   (member sym *adjg-head-categories*)
 	   (member sym 
                    '(category::vp category::vg 
-                                  category::vg+ed category::vp+ed 
-                                  category::vg+ing category::vp+ing
-                                  category::vg-passive categoryvp+passive)))))))))
+                     category::vg+ed category::vp+ed 
+                     category::vg+ing category::vp+ing
+                     category::vg-passive categoryvp+passive)))))))))
 
 (defun prep? (cat)
   (memq cat '(category::preposition category::spatial-preposition)))
