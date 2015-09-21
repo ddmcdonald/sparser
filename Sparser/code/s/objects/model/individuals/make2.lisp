@@ -312,8 +312,9 @@
 
 (defun make-non-dli-individual (category binding-instructions &optional (non-permanent nil))
   (let ((individual (allocate-individual))
-        (*description-lattice* nil))
-    (declare (special *description-lattice*))
+        (*description-lattice* nil)
+        (*index-under-permanent-instances* nil))
+    (declare (special *description-lattice* *index-under-permanent-instances*))
     (setf (indiv-type individual) (list category))
     (setf (indiv-id   individual) (next-id category))
     (multiple-value-bind (bindings new-indiv)
