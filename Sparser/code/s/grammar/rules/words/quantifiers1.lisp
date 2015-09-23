@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.9 April 2015
+;;;   Version:   1.9 September 2015
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -34,6 +34,7 @@
 ;; 1.9 (4/20/15) Ignored comment about "not" making little sense as a quantifier
 ;;      and making it one instead of handling it as a adverb which was the
 ;;      case just before this.
+;;     (9/22/15) Make quantifier specialize operator and moved in a bio mixin
 
 (in-package :sparser)
 
@@ -60,9 +61,14 @@
 |#
 
 (define-category  quantifier
-    :specializes nil
-    :instantiates nil
-    :binds ((word  :primitive word)))
+  :specializes operator
+  :instantiates nil
+  :binds ((word  :primitive word)))
+
+(define-mixin-category with-quantifier
+  :binds ((quantifier quantifier))
+  :documentation "Was in bio taxonomy. May not make sense")
+
 
 
 (defun define-quantifier (string &key brackets rules)
@@ -135,9 +141,7 @@
 (define-quantifier "some"    :brackets '( ].quantifier  .[np ) :rules '(of))
 (define-quantifier "such"    :brackets '( ].quantifier  .[np ))
 
-
 (define-quantifier "another" :brackets '( ].quantifier  .[np ) :rules '(det of))
-  
   
 (define-quantifier "additional" :brackets '( ].quantifier  .[np ) :rules '(det the))
 (define-quantifier "other"      :brackets '( ].quantifier  .[np ) :rules '(det the))
