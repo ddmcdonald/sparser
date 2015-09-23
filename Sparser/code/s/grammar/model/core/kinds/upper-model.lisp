@@ -29,6 +29,8 @@
 ;;     (1/12/15) Filled in missing super-types.  1/20/15 added negation
 ;;      to top. Worth seeing what a good ontologist would do though. 
 ;; 0.4 (8/10/15) Reorganized for clarity and ease of reading. 
+;; 0.5 (9/22/15) pulled the lemmas so the upper model could be loaded early
+
 
 (in-package :sparser)
 
@@ -63,15 +65,16 @@
 ;;;-----------------------------------------------------------------
 ;;;     'real' categories -- the effective top of the hierarchy
 ;;;-----------------------------------------------------------------
-;; The other 'tops' are in the files kinds/processes.lisp, kinds/things.lisp,
-;; and kinds/space.lisp (though that needs to be integrated better with
-;; rest of the location
-;; There are
+;; The other 'tops' are in the files 
+;;   kinds/processes.lisp, 
+;;   kinds/things.lisp,
+;;   kinds/space.lisp (though that needs to be integrated better with
+;;     rest of the location
+
 
 (define-category  quality
   :instantiates nil
   :specializes  top
-  :lemma (:common-noun "quality")
   :documentation 
 "Qualities are attributes of / inhere in other entities, such as
  color location, size, severity, saturation, anger Their 'range', so
@@ -89,7 +92,6 @@
 (define-category abstract
   :instantiates nil
   :specializes top
-  :lemma (:common-noun "abstract")
   :documentation
  "Independent stuff that is not anchored in space or time or by
  association with something that is: Units of measure, regions of the
@@ -109,7 +111,6 @@
   :instantiates nil
   :specializes abstract
   :binds ((adverb))
-  :lemma (:common-noun "relation")
   :documentation
   "A relation designates a relationship between some number (arity) of
  entities. It is intended as the super class of more specifc types
@@ -132,7 +133,6 @@
   :binds ((name :primitive word))
   ;; Can hang lots of realizations here
   ;; 'known as', 'called', ...
-  :realization (:proper-noun name)
 ;;/// This has to be integrated with 'real' names in a cleaner
 ;; way, but it's a start. Probably requires a more complex 'or'
 ;; restriction on the name variable.
