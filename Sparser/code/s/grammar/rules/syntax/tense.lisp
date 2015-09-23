@@ -23,15 +23,17 @@
 ;;      somehow getting interpretations as psi, which is presently outlawed.
 ;; 1/14/2015 support for negation and other tense/aspect features
 ;; 4/26/15 gave negative a lemma
+;; 9/22/15 Hooked up negative to quantifier, deleted the variable
+;;  negative
 
 (in-package :sparser)
 
 ;;--- negation
 
 (define-category  negative
+  :specializes  quantifier 
   :instantiates nil
-  :lemma (adjective "negative")
-  :specializes  quantifier )
+  :lemma (adjective "negative"))
 ;; "no" and "not" are quantifiers in words/quantifiers1
 
 (define-mixin-category takes-neg
@@ -44,8 +46,7 @@
 (define-category  tense/aspect-vector
   :instantiates nil
   :specializes  abstract
-  :binds ((negative)
-          (occurs-at-moment) ;; future, past
+  :binds ((occurs-at-moment) ;; future, past
           (modal)
           (present)
           (past)
