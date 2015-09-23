@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  August 2015
+;;;  version:  September 2015
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -16,8 +16,8 @@
 ;; 1/28/2015 added variable for general adverb
 ;; interpret-adverb+verb needs to be improved to diagnose the type of
 ;; adverb but until then, we need to have this variable or something
-;; equivalent. 8/14/15 Moved theme up to perdurant.
-
+;; equivalent. 8/14/15 Moved theme up to perdurant. 9/22/15 pulled
+;; the lemmas so the upper model could be loaded early
 
 (in-package :sparser)
 
@@ -29,15 +29,13 @@
           (purpose)
           (circumstance)
           (manner)
-          (aspect . tense/aspect) ;; see rules/tense
+          (aspect . tense/aspect-vector) ;; see rules/tense
           (causally-related-to)
 
           ;; interpret-adverb+verb needs to be improved to diagnose the
           ;; type of adverb but until then, we need to have this variable
           ;; or something equivalent
           (adverb))
-          
-  :lemma (:common-noun "event")
   :documentation
  "This was the original (circa '89) superclass of all clausal verbs.
   It's threaded into a substantial part of the model, requiring too
@@ -101,7 +99,6 @@
 
 (define-category process
   :specializes perdurant
-  :lemma (common-noun "process") ;; used phrasally in prepositions
   :documentation
   "A process involves a change over time. It will decompose into a
  sequence of smaller events that that can be given the same
@@ -123,7 +120,6 @@
 
 (define-category transition
   :specializes perdurant
-  :lemma (common-noun "transition")
   :documentation
   "A transition is a process that culminates in a change of state,
  often an opposition: open, give, build. 'Lia is walking' is a
