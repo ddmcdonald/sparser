@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "have"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.4 January 2015
+;;;  Version:  0.4 September 2015
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3.  Fleshed out 6/4.
 ;; Added negative contractions 1/11/94.  7/21 switch aux rule to use
@@ -18,9 +18,7 @@
 ;; 0.4 (1/15/15) Substantial make over of rules for tense/aspect. Gave it
 ;;      bindings inspired by what's in possessive. Resistered the variables.
 ;; 5/30-2015 update to take into accoun addition of new passive categories
-;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
-;;(def-form-category  vg+passive) ;; vg with an be and V+ED
-;;(def-form-category  vp+passive) ;; vg with an be and V+ED
+;; 9/22/15 Turned back on the subtypes
 
 
 (in-package :sparser)
@@ -60,14 +58,12 @@
 (def-cfr have ("had")
   :form verb+ed
   :referent (:head have
-             ;;:subtype past  ;;subtypes need to be reimplemented
-             ))
+             :subtype past))
 
 (def-cfr have ("having")
   :form verb+ing
   :referent (:head have
-             ;;:subtype progressive
-             ))
+             :subtype progressive))
 
 
 
