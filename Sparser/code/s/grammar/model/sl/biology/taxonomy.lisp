@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: April 2015
+;;; version: September 2015
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 ;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, 
@@ -19,25 +19,29 @@
 ;; added process-rate and redefined the noun meaning of rate -- over-ride old meaning
 ;; 2/5/15 Removed mutant from the variables on protein.
 ;; 4/15/15 Moved out a flock of verbs to verb1. There were duplications.
-;; 4/16/2015 bunch of changes to make protein-family a protein in most senses -- it specializes protein, but has some
-;;  special variables like :members. Also give protein and human-protein-family a sbcat frame for "in"
+;; 4/16/2015 bunch of changes to make protein-family a protein in most
+;;  senses -- it specializes protein, but has some special variables like
+;;  :members. Also give protein and human-protein-family a sbcat frame for "in"
 ;; 4/23/15 Lifted out the dimer classes to phenomena to have all the parts
 ;;  in the same place. 
-;; 4/24/2015 added mixins for bio-thtcomp and bio-whethercomp -- verbs that take thatcomps and whethercomps
+;; 4/24/2015 added mixins for bio-thtcomp and bio-whethercomp 
 ;; 4/27/2015 remoe definition of amino-acid and move to that file, and add defnitions for
 ;;  nominal for "loading"
-;; 4/30/2015 bunch of changes to partially merge biopax3/reactome categories with taxonomy
-;; introduce new subcategories of location — molecular-location (for site and residue), cellular-location (organelles within a cell), non-cellular-location (for things like cell-line, species, organism)
-;; 5/15/2015 substantial revision in taxonomy to drastically reduce the overloading of bio-process,
-;;  provide bio-rhetorical as a marker for verbs that talk about belief and truth, bio-event for actions that are not bio-processes in the OBO sense, bio-relation for things like
-;;  contain, sonstitute, etc.
-;;  concomitant revision for things like thatcomp and whethercomp
+;; 4/30/2015 bunch of changes to partially merge biopax3/reactome
+;;  categories with taxonomy introduce new subcategories of location —
+;;  molecular-location (for site and residue), cellular-location (organelles
+;;  within a cell), non-cellular-location (for things like cell-line, species, organism)
+;; 5/15/2015 substantial revision in taxonomy to drastically reduce the
+;;  overloading of bio-process, provide bio-rhetorical as a marker for verbs
+;;  that talk about belief and truth, bio-event for actions that are not
+;;  bio-processes in the OBO sense, bio-relation for things like contain,
+;;  sonstitute, etc.  concomitant revision for things like thatcomp and whethercomp
 ;; 5/16/2015 add in all the cellular locations shown in the MITRE ras1 corpus, including their GO identifiers
 ;; 5/30/2015 Rename poorly named "predicate" to "bio-predication" and update dependencies
 ;; 6/8.2015 added cyclic and plasmid definitions
 ;; 7/6/2015 New merge-classes post-translational-modification and phosphorylation-modification
-;; make it easier to find processes that are handled the same way wrt MITRE index cards
-
+;;   make it easier to find processes that are handled the same way wrt MITRE index cards
+;; 9/22/15 More colapsing of cases,
 
 (in-package :sparser)
 
@@ -53,13 +57,15 @@
    like 'protein' or 'pathway or 'cell line' so that their
    lemmas can trigger a specific compose method
    in noun noun compounds.")
- 
-(define-mixin-category bio-ifcomp
-  :binds ((ifstatement (:or bio-process molecule-state be bio-predication bio-method relation bio-rhetorical)))
-  :documentation "Similar to bio-whethercomp.")
+
+(define-mixin-category bio-complement
+  :binds ((statement (:or bio-process molecule-state be bio-predication 
+                          bio-method relation bio-rhetorical)))
+  :documentation "Common parent to the other types of biological 
+    complements to share the same standard set of bindings.")
 
 (define-mixin-category bio-thatcomp
-  :binds ((statement (:or bio-process molecule-state be bio-predication bio-method relation bio-rhetorical)))
+  :specializes bio-complement
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstration, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -68,43 +74,54 @@
      bio-processes.")
 
 (define-mixin-category bio-whethercomp
-  :binds ((statement (:or bio-process molecule-state be bio-predication bio-method relation bio-rhetorical)))
+  :specializes bio-complement
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstration, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
      or negative in terms of belief state. The prefix -bio- may not be warranted,
      since these are quite general, but at the moment we are putting them below the 
      bio-processes.")
+ 
+(define-mixin-category bio-ifcomp
+  ;;  :specializes bio-complement
+  ;; Except that it uses a different variable name -- see analyze
+  :binds ((ifstatement (:or bio-process molecule-state be bio-predication 
+                            bio-method relation bio-rhetorical)))
+  :documentation "Similar to bio-whethercomp.")
+
 
 (define-mixin-category reactome-category
-   :binds ((name)(displayname)(reactome-id)))
+   :mixins (has-name)
+   :binds ((displayname)
+           (reactome-id)))
 
 (define-mixin-category in-ras2-model
    :binds ((ras2-model)))
+
 
 ;;;-----------------
 ;;; generalizations
 ;;;-----------------
 
-(define-category with-quantifier :specializes abstract
-  :binds ((quantifier)))
-
 (define-category reference-item :specializes abstract
-  :documentation "For things like ProteinReference and SmallMoleculeReference -- generic characterizations of
-  prtoeins and small molecules, etc. which have
+  :documentation "For things like ProteinReference and SmallMoleculeReference.
+  Generic characterizations of proteins and small molecules, etc. which have
   OBO identifiers, but are not localized to cellular locations.")
 
 
-
-(define-category biological :specializes with-quantifier
+(define-mixin-category biological
   :lemma (:adjective "biological")
+  :documentation "Provides a generalization over bio entities
+   and processes by being mixed into those categories, Because
+   it spans such a wide range of things it will not fit into
+   an upper-model category. It's real job is to contribute slots."
+  :mixins (with-quantifier)
   :binds ((context bio-context)
           (cell-line cell-line)
           (location non-cellular-location)
           (cellular-location cellular-location)
           (species species) ;; human? mouse?
-          (non-cellular-location non-cellular-location)
-          (quantifier))
+          (non-cellular-location non-cellular-location))
   :realization
   (:noun "xxx-dummy"
          :in non-cellular-location
@@ -114,27 +131,25 @@
          :under context
          :with context
          :in cell-line
-         :from cell-line)
-  :documentation "Provides a generalization over bio entities
-   and processes by being mixed into those categories")
+         :from cell-line))
 
-(define-category bio-abstract :specializes biological ;; some problem with with-quantifier and abstract
-  :mixins (with-quantifier)
-  :documentation "Provides a generalization over bio entities
-   and processes by being mixed into those categories")
+;;/// This is OBE given revision to biological. 
+(define-category bio-abstract :specializes biological)
 
-(define-category bio-predication :specializes endurant ;; might be better as "quality" -- need to talk to David
+(define-category bio-predication :specializes event 
   :mixins (biological)
-  :binds ((negation)
-          (adverb)
-          (manner)
-          (aspect) ;; "will likely be useful"
-          (in-order-to)))
+  ;;/// This category is unlikely to be doing interesting
+  ;; work for us. Need to review where it's used. 
+  ;; Made it inherit from event because that provided
+  ;; almost all the slots.
+  ;; Aspect was annotated with "will likely be useful"
+  :binds ((in-order-to)))
+
+
 
 (define-category bio-scalar :specializes scalar-quality
   :mixins (biological)
   :documentation "Provides a generalization over biological and scalar")
-
 
 ;; Rusty -- where are we supposed to put the two numbers
 ;; or two molecules?  Need example. 
@@ -203,12 +218,14 @@
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
+
 (define-category mechanism :specializes endurant
-:binds ((function process) ;;  the process typically performed by this mechanism in the context of discussion
+:binds ((function process) ;;  the process typically performed by 
+                           ;; this mechanism in the context of discussion
         (goal)) ;; the predication that defines the desired end-state?
   :documentation 
-  "A collection of interacting physical entities that performs an action or has a purpose. Expand this comment..."
-)
+  "A collection of interacting physical entities that performs an action 
+   or has a purpose. Expand this comment...")
 
 (define-category bio-mechanism :specializes mechanism
   :mixins (has-UID has-name biological)
@@ -336,7 +353,8 @@
 
 
 (define-category bio-context :specializes biological
-  :binds ((process process)(entity bio-entity))
+  :binds ((process process)
+          (entity bio-entity))
   :mixins (has-name)
   :realization
   (:noun "context"
@@ -399,8 +417,7 @@
 
 (define-mixin-category protein-method :specializes bio-method)
 
-;;/// will have a substantial model, so deserves its own
-;; file. This is just to ground "encode"
+;; grounds "encode"
 (define-category gene :specializes bio-entity ;;// case in point
   :instantiates :self
   :binds ((:expresses . protein))
@@ -422,7 +439,8 @@
 (define-category kinase :specializes enzyme
                  ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
                  ;;  should be as a "telic" qualia for those molecules which are kinases 
-  :binds ((protein protein) (residue amino-acid))
+  :binds ((protein protein) 
+          (residue amino-acid))
   :instantiates :self
   :bindings (uid "GO:0016301") ;; "kinase activity" 
   :index (:permanent :key name)
@@ -445,7 +463,8 @@
    (:noun "gtpase"))
 
 
-(define-category bio-variant :specializes molecule ;; not sure this is the correct term, but intended for things like "forms of ras" 
+(define-category bio-variant :specializes molecule
+  ;; not sure this is the correct term, but intended for things like "forms of ras" 
   :binds ((basis bio-entity)) ;; can be a gene or protein, or something else
   :instantiates :self
   :realization
@@ -459,7 +478,6 @@
   :instantiates :self)
 
 
-;;----- complexes
 ;;--- "load" -- "GTP loading"
 ;; "activated upon GTP loading"
 ;; You load GTP onto something, presumably a protein
@@ -501,9 +519,6 @@
 ;;/// these next aren't really entities. Consider a new
 ;; toplevel bio category. 
 
-
-
-
 (define-category experimental-condition :specializes bio-context
   :instantiates self
   :index (:permanent :key name)
@@ -544,19 +559,17 @@
 (defmacro define-cellular-location (name id &key (adj nil)(synonyms nil))
   (def-cell-loc name id :adj adj :synonyms synonyms))
 
-(defun hyphen-subs (str)
-  (substitute #\- #\space str))
-
 (defun def-cell-loc (name id &key adj synonyms)
-  (let
-      ((cat-name (intern (string-upcase (hyphen-subs name)))))
-    `(progn
-      (define-category ,cat-name :specializes cellular-location
-        :bindings (id ,id name ,name)
-        :realization
-        (:noun ,name ,@(when adj `(:adj ,adj))))
-      (handle-mitre-link ,(find-symbol (symbol-name cat-name) (find-package :category)) ,id)
-      ,@(loop for syn in synonyms collect `(def-synonym ,cat-name (:noun ,syn))))))
+  (flet ((hyphen-subs (str)
+           (substitute #\- #\space str)))
+    (let ((cat-name (intern (string-upcase (hyphen-subs name)))))
+      `(progn
+         (define-category ,cat-name :specializes cellular-location
+           :bindings (id ,id name ,name)
+           :realization
+           (:noun ,name ,@(when adj `(:adj ,adj))))
+         (handle-mitre-link ,(find-symbol (symbol-name cat-name) (find-package :category)) ,id)
+         ,@(loop for syn in synonyms collect `(def-synonym ,cat-name (:noun ,syn)))))))
 
        
 
@@ -782,30 +795,5 @@ the aggregate across the predicate it's in. |#
 (def-synonym residue-on-protein
              (:noun "amino acid"))
 
-#|                
-;;OBSOLETE (define-category  in-bio-condition  ;; "in cancer, in physiological conditions"
-  :instantiates self :specializes bio-context
-  :binds ((place)
-          (functor :primitive word)) ;;  
-  :realization (:tree-family content-pp
-                 :mapping ((type . :self)
-                           (articulator . functor)
-                           (item . place)
-                           (pp . :self)
-                           (preposition . ("in" "under"))
-                           (complement . bio-condition))))
 
-
-;;OBSOLETE (define-category  in-bio-location  ;; "in humans, in epithelial cells, in the plasma membrane"
-  :instantiates self :specializes bio-context
-  :binds ((place)
-          (functor :primitive word)) ;;  may not be too relevant
-  :realization (:tree-family content-pp
-                 :mapping ((type . :self)
-                           (articulator . functor)
-                           (item . place)
-                           (pp . :self)
-                           (preposition . ("in" "within" "on")) ;; what else is imortant?
-                           (complement . bio-location))))
-|#
 
