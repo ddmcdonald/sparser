@@ -55,7 +55,9 @@
 ;; module gates so we get a better tally of who many words, etc. we have. 12/10/14
 ;; moved 1st-kinds in front of collections, which led to adjustments in the construction
 ;; of plurals for the lemmas in 1st-kinds. 1/30/15 had to change conditionalization
-;; on situation to get text structure to load.
+;; on situation to get text structure to load. 9/22/15 Want to refer to the upper model
+;; in the categories that are defined with the words so moved kinds;1st-loader ahead
+;; of words
 
 
 (in-package :sparser)
@@ -91,20 +93,18 @@
     ;; the bracket definitions reference syntactic categories
     (gload "brackets;loader"))
 
+  (gate-grammar *kinds*
+    (gload "kinds;1st-loader")) ;; defines the upper model
+
   (gate-grammar *general-words*
     (gload "words;loader1")
-    ;; the function words make reference to bracket types
+    ;; the function words make reference to bracket types and upper model categories
     (gload "words;whitespace assignments"))
 
   (gate-grammar *tree-families*
     ;; This should come after any of the modules whose categories
     ;; it references
-    (if *lattice-points*
-      (gload "tree-families;loader2")
-      (gload "tree-families;loader")))
-
-  (gate-grammar *kinds*
-    (gload "kinds;1st-loader")) ;; defines individual and such
+    (gload "tree-families;loader2"))
 
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
