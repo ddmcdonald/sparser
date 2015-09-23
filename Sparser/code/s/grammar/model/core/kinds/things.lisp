@@ -9,7 +9,8 @@
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
 ;; words for categories whose names are ordinary words. 11/20/14
 ;; rationalizing the very top. 1/20/15 tentatively added number
-;; and quantifier to endurant.
+;; and quantifier to endurant. 9/22/15 pulled the lemmas so the 
+;; upper model could be loaded early
 
 (in-package :sparser)
 
@@ -33,7 +34,6 @@
 
 (define-category physical
   :specializes endurant
-  :lemma (adjective "physical")
   :binds ((location)) ;; c3-location?
   :documentation
   "Common parent to the physical subclasses.This is the level at
@@ -49,14 +49,12 @@
 (define-category  kind
   :instantiates :self
   :specializes physical
-  :lemma (common-noun "kind")
   :binds ((name :primitive word)))
 
 (define-category  individual ;; purely a placeholder like "kind"
   ;; This is the default nominal restriction 
   ;; on circa-2009 abbreviations
-  :specializes physical
-  :lemma (common-noun "individual"))
+  :specializes physical)
 
 
 
@@ -69,7 +67,6 @@
 
 (define-category object 
   :specializes physical-object
-  :lemma (common-noun "object")
   :documentation
   "Conventional physical objects: chairs, amoeba, mountains, breaths of air.")
 
@@ -86,15 +83,11 @@
  Agency is not to be equated with causality.
    Agentive objects are usually constituted of (are made out of) regular
  Object's. People have bodies. Robots are assembled out of engines and
- sensors and such (Legos). "
-  ;;:lemma (common-noun "agent") commented out because having the definition
-  ;; of a noun be a mixin causes problems (shows up in biology)
-  ) ;; n.b. "Mossad agent"
+ sensors and such (Legos). ") ;; n.b. "Mossad agent"
 
 
 (define-category feature
   :specializes physical
-  :lemma (common-noun "feature")
   :documentation
   "These are things like stains, holes, boundaries, or surfaces that are
  dependent on some other PhysicalObject as the 'host'. Other examples would
@@ -103,7 +96,6 @@
 
 (define-category aggregate 
   :specializes physical
-  :lemma (common-noun "aggregate")
   :documentation
   "Aggregates have no unity. They aren't wholes. They don't have good
   connection relations among their parts or a sensible notion of their
