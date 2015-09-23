@@ -207,7 +207,7 @@
 (def-form-category  vg+ing) ;; vg with an untensed (no aux or modal) V+ING
 (def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
 (def-form-category  vg+passive) ;; vg with an be and V+ED
-(def-form-category  vp+passive) ;; vg with an be and V+ED
+(def-form-category  vp+passive) ;; vp with an be and V+ED
 (def-form-category  pp)
 (def-form-category  pp-wh-pronoun)
 (def-form-category  advp)
