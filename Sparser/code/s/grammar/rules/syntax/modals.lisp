@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "modals"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 20145
+;;;  Version:  September 2015
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3. Populated w/o semantics 1/11/94
 ;; Given a mix-in interpretation 7/11.  8/2 pulled the check for whether 'modal'
@@ -22,11 +22,8 @@
 ;;  somehow in the creation of a PSI through some backdoor since lately
 ;;  they've been turned off. 
 ;; 4/24/2015 make modal applied to "BE" have the category "BE" and not "MODAL" as in "will likely be..."
-;; 5/30-2015 update to take into accoun addition of new passive categories
-;;(def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
-;;(def-form-category  vg+passive) ;; vg with an be and V+ED
-;;(def-form-category  vp+passive) ;; vg with an be and V+ED
-
+;; 5/30/2015 update to take into accoun addition of new passive categories
+;; 9/22/15 Form om form rules changed from verb to vg
 
 (in-package :sparser)
 
@@ -172,12 +169,12 @@
 ;;--- modal + aux form
 
 (def-form-rule (modal have)
-  :form verb
+  :form vg
   :referent (:function absorb-auxiliary left-edge right-edge))
 
 
 (def-form-rule (modal be)
-  :form verb
+  :form vg
   :new-category be
   :referent (:function absorb-auxiliary left-edge right-edge))
 
