@@ -9,16 +9,56 @@
 
 (in-package :sparser)
 
-;;   (setq *do-anaphora* nil)
-;; 8/22/15 data structure for history is in progress
+(defun ddm-standard ()  ;;    (ddm-standard)
+  (setup-bio) ;; load the bio model etc.
+  (trace-lexicon-unpacking) ;(trace-morphology)
+  (setq *check-forms* t) ;; allow rule filtering by schema patern
+  (setq *report-form-check-blocks* nil)
+  (setq *debug-pronouns* nil)
+  (revert-to-regular-break)
+;  (setq *work-on-ns-patterns* t)
+  (setq *apply-document-after-actions* t)
+;  (trace-parse-edges) (trace-rule-source) 
+;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
+;  (trace-island-driving)
+  ;; (ddm-workset)
+;  (ddm-ws-ed "NoSpace hassles.lisp")
+;  (ddm-no-spaces)
+;  (ddm-doc-methods)
+;; (ddm-read-from-documents)
+;; (load-ddm-ws)
+;; (ddm-polyword-conundrum)
+;  (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
+  (ddm-ed "init/workspaces/ddm-workspace.lisp")
+  (setq *diagnose-consp-referents* t)
+  ;;     (setq *show-section-printouts* t)
+  ;; (test-dec)  (dtst nil t) (reset-dectest)
+  ;;(test-overnight) (test-erk) (test-aspp2)
+  ;;(test-jan) = dry-run   (retest)
+  ;; (hashtable-to-alist 
+  ;;(test-load-test)
+)
 
-#| 
+;; (compare-to-snapshots)
+;; (find-corpus-sents "")
+
+#| ---------  Pending or recent tasks
 Rebuild pass2 on DA patterns
   run-island-checks-pass-two  look-for-length-three-patterns
   (ddm-ws-ed "DA data.lisp")
 
 Sentence treetop count is always zero
   identify-relations  post-analysis-operations
+
+Inherit instantiates information
+   *instantiate-inherits*  look-for-parent-instantiates-information
+   decode-category-parameter-list add-subsuming-object-to-discourse-history
+   (setq *trace-instance-recording* t)
+   (trace-pronouns) (trace-history)
+
+Test the unsaturation code
+   sweep-for-unsaturated-individuals 
+   (setq *scan-for-unsaturated-individuals* t)
 
 (ddm-ws-ed "pronoun hacking.lisp")
  handle-any-anaphora  find-best-recent  post-analysis-operations
@@ -63,7 +103,7 @@ in the presence of nocodazole, but not taxol, compared with controls ( xref ).")
 |#
 ; (test-range-of-June-articles from n)   (current-string)
 ; (revert-to-regular-break)  (revert-to-error-break)
-; (compare-to-snapshots) (sentence-string (previous (sentence)))
+; (sentence-string (previous (sentence)))
 
 ; "co-ordinate" => coordinate
 ;  compose-salient-hyphenated-literals  resolve-hyphen-between-two-words
@@ -80,35 +120,10 @@ but markedly preferred AKT2.")
       period-marks-sentence-end?
 |#
 
-(defun ddm-standard ()  ;;    (ddm-standard)
-  (setup-bio) ;; load the bio model etc.
-  (trace-lexicon-unpacking) ;(trace-morphology)
-  (setq *check-forms* t) ;; allow rule filtering by schema patern
-  (setq *report-form-check-blocks* nil)
-  (setq *debug-pronouns* nil)
-  (revert-to-regular-break)
-;  (setq *work-on-ns-patterns* t)
-  (setq *apply-document-after-actions* t)
-;  (trace-parse-edges) (trace-rule-source) 
-;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
-;  (trace-island-driving)
-  ;; (ddm-workset)
-;  (ddm-ws-ed "NoSpace hassles.lisp")
-;  (ddm-no-spaces)
-;  (ddm-doc-methods)
-;; (ddm-read-from-documents)
-;; (load-ddm-ws)
-;; (ddm-polyword-conundrum)
-;  (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
-  (ddm-ed "init/workspaces/ddm-workspace.lisp")
-  (setq *diagnose-consp-referents* t)
-  ;;     (setq *show-section-printouts* t)
-  ;; (test-dec)  (dtst nil t) (reset-dectest)
-  ;;(test-overnight) (test-erk) (test-aspp2)
-  ;;(test-jan) = dry-run   (retest)
-  ;; (hashtable-to-alist 
-  ;;(test-load-test)
-)
+
+
+
+
 
 (defun ddm-workset ()
   (ddm-ed "tools/basics/clos-classes.lisp")
