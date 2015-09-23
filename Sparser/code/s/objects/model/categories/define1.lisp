@@ -203,6 +203,8 @@
                                     index-field
                                     instantiates-field
                                     rule-label)
+  
+  (declare (special *supply-instantiates-data*))
 
   ;; to permit redefinition of category definitions during development
   ;; we overwrite most of the indexes/objects that are created as a
@@ -215,9 +217,17 @@
     (variables-allow-specialized-printer? category op-object)
 
     ;; instantiate in the discourse history
-    (when instantiates-field
-      (decode-category-to-instantiate category instantiates-field))
-
+    (if instantiates-field
+      (decode-category-to-instantiate category instantiates-field)
+      (when *supply-instantiates-data*
+        (ecase *supply-instantiates-data*
+          (:inherit
+           (look-for-parent-instantiates-information
+            category op-object))
+          (:auto-self
+           (set-instantiates-information-to-self 
+            category op-object)))))
+        
     ;; find, index, delete
     (decode-index-field category op-object index-field)
 
@@ -225,6 +235,81 @@
     (setup-rule-label op-object rule-label)
 
     op-object ))
+
+
+;;;----------------------------------
+;;; category to instantiate (if any)
+;;;----------------------------------
+
+(defparameter *supply-instantiates-data* :auto-self
+  "Consulted when the category does not supply any information
+  on what it instantiates, i.e. how individuals of that type
+  should be integrated into the discourse history.
+    People have a tendency to unintentionally leave this
+  information out of their definitions. When this is not nil,
+  it lets us do that for them, in either of two styles according
+  to what value we give this parameter.
+    :inherit 
+       Look up their supercategory chain for an instantiates
+       value and to use it instead. 
+    :auto-self
+       Use the category itself as though the keyword :self had
+       been used.
+  The ultimately best scheme is to have the category explicitly
+  set by strategic set of categories in the lattice and everything
+  else inherit from them.")
+
+(defun decode-category-to-instantiate (category instantiates-field)
+  ;; the field should be a symbol naming a category or the symbol :self
+  ;; It's what handles explicit values
+  (let ((category-to-instantiate
+         (if (or (eq instantiates-field :self)
+                 (eq instantiates-field 'self))
+           category
+           (if (listp instantiates-field)
+             (mapcar #'(lambda (field-value)
+                         (etypecase field-value
+                           (referential-category field-value)
+                           (symbol
+                            (find-or-make-category-object field-value
+                                                          :referential))))
+                     instantiates-field)
+             (etypecase instantiates-field
+               (referential-category instantiates-field)
+               (symbol
+                (find-or-make-category-object instantiates-field
+                                              :referential)))))))
+    (setf (cat-ops-instantiate (cat-operations category))
+          category-to-instantiate)))
+
+
+(defun look-for-parent-instantiates-information (category op-object)
+  ;; Called by prepare-category-operations when the inherit
+  ;; instantiation data flag is set to :inherit
+  ;; Modeled sort of on super-category-has-variable-named
+  (let ((supercs (super-categories-of category)))
+    (push-debug `(,category ,supercs))
+    (when supercs
+      (let ((category-to-instantiate
+             (loop for c in supercs
+               as ops = (cat-operations c)
+               as instantiation-value = 
+                 (when ops (cat-ops-instantiate ops))
+               when instantiation-value
+               return instantiation-value)))
+        (when category-to-instantiate
+          (setf (cat-ops-instantiate op-object)
+                category-to-instantiate))))))
+
+(defun set-instantiates-information-to-self (category op-object)
+  ;; Called by prepare-category-operations when the inherit
+  ;; instantiation data flag is set to :auto-self
+   (setf (cat-ops-instantiate op-object) category))
+
+
+;;;------------
+;;; Rule label
+;;;------------
 
 (defun setup-rule-label (op-object rule-label)
   (when rule-label
@@ -319,33 +404,6 @@
       (setf (cat-ops-print op-object)
             'print-individual-with-name))))
 
-
-
-;;;------------------------------------
-;;; sorting out the define-time format
-;;;------------------------------------
-
-(defun decode-category-to-instantiate (category instantiates-field)
-  ;; the field should be a symbol naming a category or the symbol :self
-  (let ((category-to-instantiate
-         (if (or (eq instantiates-field :self)
-                 (eq instantiates-field 'self))
-           category
-           (if (listp instantiates-field)
-             (mapcar #'(lambda (field-value)
-                         (etypecase field-value
-                           (referential-category field-value)
-                           (symbol
-                            (find-or-make-category-object field-value
-                                                          :referential))))
-                     instantiates-field)
-             (etypecase instantiates-field
-               (referential-category instantiates-field)
-               (symbol
-                (find-or-make-category-object instantiates-field
-                                              :referential)))))))
-    (setf (cat-ops-instantiate (cat-operations category))
-          category-to-instantiate)))
 
 
 
