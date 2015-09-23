@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.8 August 2015
+;;;  Version:  3.8 September 2015
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -58,6 +58,7 @@
 ;;      it. 
 ;; 3.9 (8/28/15) Substantial makeover to handle mentions of description lattice
 ;;      individuals, plus a drastic reordering to improve readability. 
+;;      cleaning up initial implementation through 9/22/15
 
 (in-package :sparser)
 
@@ -74,7 +75,6 @@
 ;;;----------
 
 (defparameter *objects-in-the-discourse* (make-hash-table :test #'eq))
-
 
 (defparameter *debug-anaphora* nil
   "Flag around the 'unexpected situation' error/break calls")
@@ -157,7 +157,7 @@
 
 ;(setq *trace-discourse-history* t) category::person
 ;(setq *trace-discourse-history* nil)
-; (trace-history) -- managing the entries
+; (trace-pronouns) -- managing the entries
 
 (defun update-discourse-history (category new-instance start-pos end-pos)
   ;; called from add-subsuming-object-to-discourse-history when it has
@@ -541,6 +541,10 @@
 
 (defun record-instance-within-sequence (i edge)
   (declare (special *description-lattice*))
+  (when *trace-instance-recording*
+    (format t "~&Storing i~a for e~a as a ~a"
+            (indiv-uid i) (edge-position-in-resource-array edge)
+            (cat-symbol (itype-of i))))
   (if *description-lattice*
     (record-dl-instance-within-sequence i edge)
     (record-simple-instance-within-sequence i edge)))
@@ -548,10 +552,7 @@
 
 (defun record-simple-instance-within-sequence (i edge)
   ;; called from add-subsuming-object-to-discourse-history 
-  (flet ((store-on-lifo (i edge)
-           (when *trace-instance-recording*
-             (format t "~&Storing ~a from e~a"
-                     i (edge-position-in-resource-array edge)))
+  (flet ((store-on-lifo (i edge)           
            (push `(,i ,edge) *lifo-instance-list*))
          (new-mention-subsumes-old? (prior-mention edge)
            (let ((prior-edge (cadr prior-mention)))
@@ -574,10 +575,7 @@
   ;; prior mentions and subsumption handled by separate call.
   ;; This is the equivalent of the flet store-on-lifo
   ;; except for the arrangement of the alist
-  (when *trace-instance-recording*
-    (format t "~&Storing ~a from e~a"
-            i (edge-position-in-resource-array edge)))
-   (push `(,i ,edge) *lifo-instance-list*))
+  (push `(,i ,edge) *lifo-instance-list*))
 
 (defun update-instance-within-sequence (new-mention old-mention
                                         start-pos end-pos)
