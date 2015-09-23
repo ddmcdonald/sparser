@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.5 July 2015
+;;;  version:  1.5 September 2015
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -56,6 +56,8 @@
 ;;     (1/6/15) Modified setup-category-lemma to allow multiple words.
 ;;     (7/6/15) Commented out apparently no-op complain in decode-rdata-mapping
 ;;      that it wasn't getting a dotten pair. Need to come back to this and fix it.
+;;     (9/22/15) added final value to setup-category-lemma now that it's being
+;;      called by itself.
 
 (in-package :sparser)
 
@@ -406,7 +408,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
              (word-arg `(,keyword ,head-word))
              (rules (head-word-rule-construction-dispatch
                      word-arg category category)))
-        (add-rules-to-category category rules))))))
+        (add-rules-to-category category rules)
+        :done)))))
 
 
 
