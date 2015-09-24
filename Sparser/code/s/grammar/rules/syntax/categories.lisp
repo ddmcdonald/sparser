@@ -1,11 +1,10 @@
-
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
 ;;; copyright (c) 1992-1999,2011-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 June 2015
+;;;  Version:  0.8 September 2015
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -93,7 +92,7 @@
 ;;  (e.g. a pronoun) to its syntactic environment
 ;; 6/8/2015 tweaked ng-head?  to prevent treating <adverb> <vp+ing> as a NG group
 ;; 9/6/15 Added number to the list of categories that aren't relevant in a discourse
-;;   history. 
+;;   history. And again 9/24/15
 
 
 (in-package :sparser)
@@ -836,11 +835,13 @@
 (defun populate-irrelevant-to-discourse-history ()
   (setq *irrelevant-to-discourse-history*
         `(,(category-named 'determiner)
-          ,(category-named 'prepositionial-phrase)
+          ,(category-named 'prepositional-phrase)
           ,(category-named 'preposition)
           ,(category-named 'spatial-preposition)
           ,(category-named 'pronoun)
+          ,(category-named 'conjunction) ;; Observed cases just covered "and"
 
+          ,(category-named 'single-capitalized-letter)
           ,(category-named 'number)
           )))
 
