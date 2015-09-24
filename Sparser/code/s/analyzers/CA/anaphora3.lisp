@@ -540,6 +540,8 @@
 
 
 (defun record-instance-within-sequence (i edge)
+  ;; called from add-subsuming-object-to-discourse-history
+  ;; on every addition of an individual and its edge
   (declare (special *description-lattice*))
   (when *trace-instance-recording*
     (format t "~&Storing i~a for e~a as a ~a"
@@ -550,31 +552,33 @@
     (record-simple-instance-within-sequence i edge)))
 
 
+;;--- ordinary, rigid individuals
+
 (defun record-simple-instance-within-sequence (i edge)
-  ;; called from add-subsuming-object-to-discourse-history 
   (flet ((store-on-lifo (i edge)           
            (push `(,i ,edge) *lifo-instance-list*))
-         (new-mention-subsumes-old? (prior-mention edge)
-           (let ((prior-edge (cadr prior-mention)))
+         (new-instance-subsumes-old? (prior-instance edge)
+           (let ((prior-edge (cadr prior-instance)))
              (when (edge-subsumes-edge? edge prior-edge)
-               (rplaca (cdr prior-mention)
+               (rplaca (cdr prior-instance)
                        edge)))))
-    (let ((prior-mention (assq i *lifo-instance-list*)))
-      (if (and prior-mention
+    (let ((prior-instance (assq i *lifo-instance-list*)))
+      (if (and prior-instance
                ;; If we've (somehow) looped around far enough
                ;; that the edge is deactivated then it surely
                ;; isn't a subsumer
-               (not (deactivated? (cadr prior-mention))))
-        (unless (new-mention-subsumes-old? prior-mention edge)
+               (not (deactivated? (cadr prior-instance))))
+        (unless (new-instance-subsumes-old? prior-instance edge)
           (store-on-lifo i edge))
         (store-on-lifo i edge)))))
 
 
 
+;;--- description lattice individuals
+
 (defun record-dl-instance-within-sequence (i edge)
-  ;; prior mentions and subsumption handled by separate call.
-  ;; This is the equivalent of the flet store-on-lifo
-  ;; except for the arrangement of the alist
+  ;; Called with every call to add-subsuming-object-to-discourse-history
+  ;; with out regard to prior subuming mentions
   (push `(,i ,edge) *lifo-instance-list*))
 
 (defun update-instance-within-sequence (new-mention old-mention
@@ -582,13 +586,35 @@
   ;; Have to replace the old individual+edge pair since
   ;; with the dl protocol this is a new individual, not an
   ;; established individual with a new spanning edge
+
+  (declare (special *lifo-instance-list*))
+
   (push-debug `(,new-mention ,old-mention ,start-pos ,end-pos))
-  (let ((new-edge (edge-between start-pos end-pos))
-        (new-i (mention-of new-mention))
-        (old-top (pop *lifo-instance-list*)))
-    (push-debug `(,old-top)) ;;/// use in trace ?
-    (push `(,new-i ,new-edge) *lifo-instance-list*)))
-;  (setq new-mention (car *) old-mention (cadr *) start-pos (caddr *) end-pos (cadddr *))
+  ;; (setq new-mention (car *) old-mention (cadr *) start-pos (caddr *) end-pos (cadddr *))
+
+  (let* ((redundant-instance (pop *lifo-instance-list*))
+         ;; Because the individuals are virtually always new, even
+         ;; when the edges subsume an established edge on its headine,
+         ;; the list will have an 'extra' record on the front that
+         ;; we should get rid of. 
+         (new-edge (edge-between start-pos end-pos))
+         (new-i (mention-of new-mention))
+         (old-i (mention-of old-mention))
+         (old-instance ;; pair of old-i and its edge
+          (loop for pair in *lifo-instance-list* ;; or assq
+            when (eq (car pair) old-i) return pair)))
+    ;;
+    (unless old-instance
+      (error "No record of old mention in *lifo-instance-list*"))
+    ;;/// Broken out let us make one modification to ignore this case
+    (when old-instance
+      ;; We're going to subvert it. If order matters we can
+      ;; do that later.
+      (rplaca old-instance new-i)
+      (rplaca (cdr old-instance) new-edge)
+      (unless (equal old-instance redundant-instance)
+        (lsp-break "why is new different?")))))
+
 
 (defun cleanup-lifo-instance-list ()
   ;; called from end-of-sentence-processing-cleanup and
@@ -611,11 +637,13 @@
   ;; unsaturated? If so, can we use one of the other entities
   ;; to bind the open variables
   (declare (ignore sentence)) ;; later look through previous sentences
+  ;; (lsp-break "look at *lifo-instance-list*")
   (dolist (pair *lifo-instance-list*)
-    (let* ((i (car pair)) ;; edge is (cadr pair)
+    (let* ((i (car pair)) ;; pair = (<individual> <edge>)
            (open-variables (unsaturated? i)))
       (when (and open-variables
                  (null (cdr open-variables)))
+        
         ;; lets start with just one. January #37
         (let* ((var (car open-variables))
                (v/r (var-value-restriction var)))
@@ -670,9 +698,21 @@ saturated? is a good entry point. |#
           (car best-so-far)))))))
 
 (defun local-recorded-instances (category)
-  (loop for pair in *lifo-instance-list*
-    when (itypep (car pair) category)
-    collect pair))
+  ;; 'category' can be a disjunct
+  (let ((types (typecase category
+                 (referential-category (list category))
+                 (cons
+                  (unless (eq (car category) :or)
+                    (error "Unexpected form of list of categories: ~a"
+                           category))
+                  (cdr category))
+                 (otherwise
+                  (push-debug `(,category))
+                  (break "Unexpected type of category: ~a~%~a"
+                         (type-of category) category)))))
+    (loop for pair in *lifo-instance-list*
+      when (memq (itype-of (car pair)) types)
+      collect pair)))
 
 (defun better (new-pair reigning-pair)
   ;; Given two edges, look at the form of the edge that dominates
