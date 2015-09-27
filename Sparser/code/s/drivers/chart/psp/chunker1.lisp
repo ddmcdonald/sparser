@@ -255,7 +255,7 @@
     (declare (special start chunk pos possible-heads))
     
     (until
-        (or (chunk-end-pos chunk)
+        (or (chunk-end-pos chunk) ; 
             (eq pos sentence-end))
         (find-consistent-edges chunk)
       
@@ -269,7 +269,7 @@
 
       (if (or
            (null forms) ;; indicates syntactic category of edge inconsistent with possible forms for chunk
-           (eq pos sentence-end))  
+           (eq pos sentence-end)) 
           ;;  chunk must end at or before this pos-before
           
           (let
