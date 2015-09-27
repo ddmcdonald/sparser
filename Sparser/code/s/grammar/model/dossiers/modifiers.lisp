@@ -511,7 +511,7 @@
 (define-adverb "in general")
 (define-adverb "in large part")
 (define-adverb "in one way or another")
-;;(define-adverb "in turn") ;; sequential?  /// should be compositional
+(define-adverb "in turn") ;; imposes relationship between events
 (define-adverb "inaccurately")
 (define-adverb "inadvertently")
 (define-adverb "incidentally")
