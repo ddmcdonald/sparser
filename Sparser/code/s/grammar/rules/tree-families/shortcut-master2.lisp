@@ -40,12 +40,14 @@
     :premod
     :about :across :against :among :as :at :between :for :from :ifcomp :in :into 
     :of :on :onto :to :to-comp :thatcomp :through :under :upon :via 
+    :designator
     :whethercomp :with :within :without))
 
 (defparameter *slot-keywords*
   '(:premod :about :across :against :among :as :at :between :for :from :ifcomp 
     :in :into :of :on :onto :to :to-comp :thatcomp :through :under :upon 
-    :via :whethercomp :with :within :without))
+    :via :whethercomp :with :within :without
+    :designator))
 
 
 (defun includes-def-realization-keyword (rdata)
