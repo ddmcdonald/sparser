@@ -471,6 +471,9 @@
              thereis (ng-start? ee)))
       ;;in fact nothing should follow a pronoun (except a possessive pronoun)
       ;;(not (eq category::time-unit (edge-category e))) WHY WAS THIS HERE? WE NEED TO HANDLE "3 HOURS"
+      #+ignore 
+      ;; not sure why this was put in -- can have "3 proteins" and "serine 195"
+      ;; OK -- examples are "the phospho - specific antibody 30 minutes" where the "30 minutes" is a new NP
       (and
        (eq category::number eform)
        (loop for ev in evlist
