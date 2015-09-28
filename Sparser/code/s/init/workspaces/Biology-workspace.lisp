@@ -90,7 +90,8 @@
   (cl-user::r3-load "code/grammar-tests/aspp2-whole.lisp")
   (cl-user::r3-load "code/grammar-tests/overnight-sents.lisp")
   (cl-user::r3-load "code/grammar-tests/load-test-sents.lisp")
-  (cl-user::r3-load "code/grammar-tests/treetop-records.lisp"))
+  (cl-user::r3-load "code/grammar-tests/corpora-definitions.lisp")
+  (cl-user::r3-load "code/grammar-tests/corpora-snapshots.lisp"))
  
 
 ;;;-------------------------------------------------------
