@@ -25,6 +25,7 @@
 ;;      [situation]. 10/3/13 moved out [situation].
 ;;     (1/26/15) added [sentence-corpora]. (5/12/15) added [content-methods]
 ;;      to solve a class-dependency problem. [6/4/15) added [rhetoric]
+;; 9/28/2015 removed[sentence-corpora].
 
 (in-package :sparser)
 
@@ -56,7 +57,6 @@
 (lload "doc;content-methods") ;; depends on object1
 (lload "doc;doc-set")
 (lload "doc;doc stream")
-(lload "doc;sentence-corpora")
 (lload "doc;context")
 (lload "doc;content")
 (lload "doc;initialization")

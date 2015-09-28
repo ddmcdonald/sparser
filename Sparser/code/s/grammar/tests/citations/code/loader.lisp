@@ -7,13 +7,14 @@
 
 ;; initiated 11/2/93 v2.3.  3/18/94 moved menu to [menus:]
 ;; 1/25/15 added [treetop-records]
+;; 9/28/2015 added [sentence-corpora]
 
 (in-package :sparser)
 
 (lload "citation-code;object")
 (lload "citation-code;test")
-(lload "citation-code;treetop-records")
 (lload "citation-code;input-output")
 (lload "citation-code;construction")
 (lload "citation-code;batches")
+(lload "citation-code;sentence-corpora")
 

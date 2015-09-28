@@ -84,14 +84,14 @@
  
 (defun load-bio-corpora ()
   (define-r3-path-if-needed)
-  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/December-text-passages.lisp")
-  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/January Dry Run passages.lisp")
-  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/ERK-translocation.lisp")
-  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/aspp2-whole.lisp")
-  (cl-user::r3-load "code/vocabulary-discovery/overnight-sents.lisp")
-  (cl-user::r3-load "code/vocabulary-discovery/cureRAS/load-test-sents.lisp"))
+  (cl-user::r3-load "code/grammar-tests/December-text-passages.lisp")
+  (cl-user::r3-load "code/grammar-tests/January Dry Run passages.lisp")
+  (cl-user::r3-load "code/grammar-tests/ERK-translocation.lisp")
+  (cl-user::r3-load "code/grammar-tests/aspp2-whole.lisp")
+  (cl-user::r3-load "code/grammar-tests/overnight-sents.lisp")
+  (cl-user::r3-load "code/grammar-tests/load-test-sents.lisp")
+  (cl-user::r3-load "code/grammar-tests/treetop-records.lisp"))
  
-
 
 ;;;-------------------------------------------------------
 ;;; Setup for reading whole documents via the nxml reader

@@ -628,8 +628,9 @@ In article 2  "c-termini"
 
 
 (defun ddm-regression-jig ()
-  (ddm-ed "objects/doc/sentence-corpora.lisp")
-  (ddm-ed "grammar/tests/citations/code/treetop-records.lisp"))
+  (ddm-ed "tests/citation/code/sentence-corpora.lisp")
+  ;;(ddm-ed "grammar/tests/citations/code/treetop-records.lisp") now in r3/code/grammar-testing
+  )
 #|  4/18/15  -- comparing to January
 ? (compare-to-snapshot 'dec-test)
 Better: (57 56 55 54 53 50 49 48 46 45 42 41 39 35 34 28 26 25 24 23 22 18 17 13 12 11 10 9 8 7 6 3 2)
@@ -639,6 +640,7 @@ Better: (42 39 38 36 34 30 29 25 23 21 19 18 16 15 14 10 9 8 7 5 4 3)
 Worse: (28 13 6 2 1)
 
 |#
+#+ignore ;; obsolete -- all in r3
 (defun ddm-load-corpora ()
   (ddm-load "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
@@ -647,6 +649,7 @@ Worse: (28 13 6 2 1)
   (ddm-load "interface/R3-eval/overnight-sents.lisp")
   (ddm-load "grammar/model/sl/biology/cureRAS/load-test-sents.lisp"))
 
+#+ignore ;; obsolete -- all in r3
 (defun ddm-ed-corpora ()
   (ddm-ed "grammar/model/sl/biology/cureRAS/December-text-passages.lisp")
   (ddm-ed "grammar/model/sl/biology/cureRAS/January Dry Run passages.lisp")
