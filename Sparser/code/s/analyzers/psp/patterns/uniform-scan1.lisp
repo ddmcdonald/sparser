@@ -233,6 +233,9 @@
   ;; form is 'proper-name'.  Something makes me think this could
   ;; be problem down the line, but we can deal with it when it emerges.
   (declare (special *big-mechanism*))
+  (when (eq pos-before next-position)
+    (error "Upstream mistake in no-space routine. ~
+            the position before is EQ to the position after"))
   (multiple-value-bind (category rule referent)
                        (if *big-mechanism*
                          (reify-ns-name-as-bio-entity 
