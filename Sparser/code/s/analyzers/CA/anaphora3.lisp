@@ -604,8 +604,8 @@
           (loop for pair in *lifo-instance-list* ;; or assq
             when (eq (car pair) old-i) return pair)))
     ;;
-    (unless old-instance
-      (error "No record of old mention in *lifo-instance-list*"))
+    ;(unless old-instance
+    ;  (error "No record of old mention in *lifo-instance-list*"))
     ;;/// Broken out let us make one modification to ignore this case
     (when old-instance
       ;; We're going to subvert it. If order matters we can
