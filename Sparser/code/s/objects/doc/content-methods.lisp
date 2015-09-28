@@ -404,6 +404,17 @@
       (setf (toc-index p)
             (format nil "~a.p~a" parent-toc index)))))
 
+(defmethod set-document-index ((p paragraph) index)
+  ;; If the document has a complex abstract, the document structure
+  ;; gets out of sync and thinks it is operating on a section
+  ;; when it's actually got a paragraph
+  (unless (toc-index p)
+    (let* ((parent (parent p))
+           (parent-toc (toc-index parent)))
+      (setf (doc-index p) index)
+      (setf (toc-index p)
+            (format nil "~a.~a" parent-toc index)))))
+
 (defmethod set-document-index ((s sentence) (index integer))
   (unless (toc-index s)
     (let* ((parent (parent s))
