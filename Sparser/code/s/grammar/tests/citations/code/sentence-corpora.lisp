@@ -216,7 +216,7 @@ previous records of treetop-counts.
                    cl-user::*r3-code-directory*))
 
 (defparameter *file-for-treetop-snapshots*
-  (merge-pathnames "treetop-records.lisp"
+  (merge-pathnames "corpora-snapshots.lisp"
                    *directory-for-tree-snapshots*)
   "This file is in the loader for citations so it will always be
    included in a load of Sparser")
