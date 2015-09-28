@@ -211,19 +211,19 @@ previous records of treetop-counts.
 
 ;;--- write the snapshot to a file 
 
+(defparameter *directory-for-tree-snapshots*
+  (merge-pathnames (make-pathname :directory '(:relative "grammar" "tests"))
+                   cl-user::*r3-code-directory*))
+
 (defparameter *file-for-treetop-snapshots*
-  (concatenate 'string
-               "~/sparser/Sparser/code/s/"
-               "grammar/tests/citations/code/"
-               "treetop-records.lisp")
+  (merge-pathnames "treetop-records.lisp"
+                   *directory-for-tree-snapshots*)
   "This file is in the loader for citations so it will always be
    included in a load of Sparser")
 
 (defparameter *file-for-treetop-semantic-snapshots*
-  (concatenate 'string
-               "~/sparser/Sparser/code/s/"
-               "grammar/tests/citations/code/"
-               "treetop-semantic-records.lisp")
+  (merge-pathnames "treetop-semantic-records.lisp"
+                   *directory-for-tree-snapshots*)
   "This file is in the loader for citations so it will always be
    included in a load of Sparser")
 
