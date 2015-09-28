@@ -43,6 +43,10 @@
 ;; (find-corpus-sents "")
 
 #| ---------  Pending or recent tasks
+ 
+  sdm-span-segment assumes it's spanning an np. It should
+instead use the max projection of the category of the head/
+
 Rebuild pass2 on DA patterns
   run-island-checks-pass-two  look-for-length-three-patterns
   (ddm-ws-ed "DA data.lisp")
@@ -242,6 +246,7 @@ In article 2  "c-termini"
 
 
 (defun ddm-issue-records ()
+  (ddm-ws-ed "figure-7.lisp")
   (ddm-ws-ed "discourse and surface strings.lisp")
   (ddm-ws-ed "DA data.lisp")
   (ddm-ws-ed "prounoun hacking.lisp")

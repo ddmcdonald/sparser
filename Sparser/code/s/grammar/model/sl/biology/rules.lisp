@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2015
+;;; version: September 2015
 
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
@@ -19,7 +19,7 @@
 ;; 5/29/15 moved in rules that were in verbs1
 ;; 5/30/2015 update for change from "predicate" to "bio-predication"
 ;; Exposed s-and-vp debris rule. Pulled bio-entity converter to mechanics.
-
+;; 9/18/15 Moved out debris analysis rules to pass2 where their interpeters are
 
 
 (in-package :sparser)
@@ -39,20 +39,6 @@
   category::top) ;; overly high type bound to.
 ;; used by knit-parens-into-neighbor 
 
-
-;;; debris analysis rules
-
-(define-debris-analysis-rule comma-adverb-comma
-  :pattern ( "," adverb "," )
-  :action (:function respan-edge-around-one-word second first third))
-
-(define-debris-analysis-rule s-and-vp
-  :pattern ( s and vp )
-  :action (:function conjoin-clause-and-vp first third))
-
-(define-debris-analysis-rule s-and-vp
-  :pattern ( s and vp+passive )
-  :action (:function conjoin-clause-and-vp first third))
 
 ;;; no-space pattern
 
@@ -76,40 +62,20 @@
     (respan-edge-around-one-word edge q1 q2)))
 
 
-;;/// move somewhere else
-(defun respan-edge-around-one-word (word-edge left-term right-term)
-  (let ((word-category (edge-category word-edge))
-        (word-form (edge-form word-edge))
-        (word-referent (edge-referent word-edge))
-        (new-start-pos (chart-position-before (pos-edge-starts-at word-edge)))
-        (new-end-pos (chart-position-after (pos-edge-ends-at word-edge))))
-    (let ((edge (make-completed-unary-edge
-                 ;; We're ignoring the commas in the edge structure
-                 ;;/// this is usually an interjection, how could we
-                 ;; indicate that
-                 (pos-starts-here new-start-pos) ;; the edge vector
-                 (pos-ends-here new-end-pos)
-                 :respan-edge-around-one-word ;; rule
-                 word-edge ;; daughter
-                 word-category 
-                 word-form
-                 word-referent)))
-      (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
-      ;; (push-debug `(,edge)) (break "look at edge")
-      edge)))
 
 
 ;;--- a type rule
 
 (def-cfr enzyme (bio-process enzyme)
   :form n-bar
-  :referent (:head right-edge :function passive-premodifier left-edge right-edge patient))
+  :referent (:head right-edge 
+             :function passive-premodifier left-edge right-edge patient))
 
 
 
-
-
+;;;
 ;;; raw rules
+
 ;; invitro and in vivo
 (loop for vv in '((vp vp)
                   (vg vp)
@@ -124,12 +90,12 @@
    `(def-form-rule (,(car vv) in-vitro)
                   :head :left-edge
      :form ,(second vv)
-     :referent(:function interpret-vp+in-vi-context left-edge right-edge)))
+     :referent (:function interpret-vp+in-vi-context left-edge right-edge)))
   (eval
    `(def-form-rule (,(car vv) in-vivo)
                   :head :left-edge
      :form ,(second vv)
-     :referent(:function interpret-vp+in-vi-context left-edge right-edge))))
+     :referent (:function interpret-vp+in-vi-context left-edge right-edge))))
 
 
 ;;--- amino acids

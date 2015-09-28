@@ -1,0 +1,155 @@
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 2015  David D. McDonald  -- all rights reserved
+;;; 
+;;;     File:  "da-rules"
+;;;   Module:  "grammar;rules:DA:"
+;;;  Version:  September 2015
+
+;; initiated 9/18/15 for da patterns and interpreters that had been
+;; stashed in biology. 
+
+(in-package :sparser)
+
+;;;-------------------------------------------------
+;;; debris analysis rules and their interpretations
+;;;-------------------------------------------------
+
+(define-debris-analysis-rule pp-comma-s
+  :pattern ( pp "," s )
+  :action (:function attach-leading-pp-to-clause first third))
+
+(defun attach-leading-pp-to-clause (pp clause)
+ (let* ((clause-referent (edge-referent clause))
+        (pobj-edge (edge-right-daughter pp))
+        (pobj-referent (edge-referent pobj-edge))
+        (prep-edge (edge-left-daughter pp))
+        (prep-word (edge-left-daughter prep-edge)))
+   (let ((var-name
+          (or (subcategorized-variable clause-referent
+                                       prep-word
+                                       pobj-referent)
+              'modifier)))
+     (setq clause-referent 
+           (bind-dli-variable var-name pobj-referent clause-referent))
+     (let ((edge (make-binary-edge/explicit-rule-components
+                  pp clause
+                  :category (edge-category clause)
+                  :form (edge-form clause)
+                  :rule-name :attach-leading-pp-to-clause
+                  :referent clause-referent)))
+       (tr :comma-3tt-pattern edge)
+       edge))))
+
+
+(define-debris-analysis-rule s-and-vp
+  :pattern ( s and vp )
+  :action (:function conjoin-clause-and-vp first third))
+
+(define-debris-analysis-rule s-and-vp
+  :pattern ( s and vp+passive )
+  :action (:function conjoin-clause-and-vp first third))
+
+(defun conjoin-clause-and-vp (s-edge vp-edge)
+  ;; get the value of the subject or (perhaps) the subject
+  ;; variable of the s. Look up the s variable of the vp
+  (let* ((s-subj-var (subject-variable s-edge))
+         (vp-subj-var (subject-variable vp-edge))
+         (s-ref (edge-referent s-edge))
+         (vp-ref (edge-referent vp-edge)))
+    (when (and s-ref vp-ref 
+               s-subj-var vp-subj-var)
+      (let ((subject (value-of s-subj-var s-ref)))
+        (when subject
+          (setq vp-ref (bind-dli-variable vp-subj-var subject vp-ref)))))
+    ;; regardless of whether we could set the subject of the
+    ;; vp we should create the edge
+    ;; This returns a edge and uses referent-of-two-conjoined-edges 
+    ;; to make the referent, which basically stuffs them both
+    ;; into a collection.
+    ;;//// which is not the right thing at all at the sentence
+    ;; level but it's a place to start. The actual relationship
+    ;; could be causes or follows, for which we need to understand
+    ;; more to get it right.
+    (conjoin-two-edges s-edge vp-edge :conjoin-clause-and-vp)))
+
+
+
+(define-debris-analysis-rule s-comma-vp+ing
+  :pattern ( s "," vp+ing )
+  :action (:function attach-trailing-participle-to-clause first third))
+
+(defun attach-trailing-participle-to-clause (s-edge vp-edge)
+  ;; The participle (vp+ing) is presumably missing it's subject,
+  ;; which we'll take to be the whole clause. 
+  ;;//// motivated by second sentence in figure-7 where the participle
+  ;; is a conjunction, as is the clause. Semantically that one reads
+  ;; as the entire clause being the cause of (each of) the elements of
+  ;; the participle. But this should be reconsidered if other cases
+  ;; have a different relationship.
+  (let ((clause-ref (edge-referent s-edge))        
+        (vp-ref (edge-referent vp-edge)))
+
+    (flet ((unpack-subject-control (subject vp vp-edge)
+             (let* ((downstairs-subj-var (subject-variable vp))
+                    (new-vp-ref (bind-dli-variable
+                                 downstairs-subj-var subject vp)))
+               (setf (edge-referent vp-edge) new-vp-ref))))
+
+      (cond
+       ((itypep vp-ref 'collection)
+        ;; distribute this over the conjunction. Need a general way / macro
+        ;; for doing this
+        (let* ((daughter-edges (list (edge-left-daughter vp-edge)
+                                     (edge-right-daughter vp-edge)))
+               (daughter-refs (loop for edge in daughter-edges
+                                collect (edge-referent edge)))
+               (new-items
+                (loop for edge in daughter-edges
+                  as ref in daughter-refs
+                  collect (unpack-subject-control
+                           clause-ref ref edge))))
+          ;; now remake the collection
+          (let ((new-conjunct 
+                 (apply #'referent-of-two-conjoined-edges new-items)))
+            (setf (edge-referent vp-edge) new-conjunct))))
+
+       (t ;; simple vp
+        (unpack-subject-control clause-ref vp-ref vp-edge)))
+      
+      (let ((edge (make-binary-edge/explicit-rule-components
+                   s-edge vp-edge
+                   :category (edge-category s-edge)
+                   :form (edge-form s-edge)
+                   :rule-name :attach-trailing-participle-to-clause
+                   :referent clause-ref)))
+        edge))))
+        
+
+
+
+
+(define-debris-analysis-rule comma-adverb-comma
+  :pattern ( "," adverb "," )
+  :action (:function respan-edge-around-one-word second first third))
+
+(defun respan-edge-around-one-word (word-edge left-term right-term)
+  (let ((word-category (edge-category word-edge))
+        (word-form (edge-form word-edge))
+        (word-referent (edge-referent word-edge))
+        (new-start-pos (chart-position-before (pos-edge-starts-at word-edge)))
+        (new-end-pos (chart-position-after (pos-edge-ends-at word-edge))))
+    (let ((edge (make-completed-unary-edge
+                 ;; We're ignoring the commas in the edge structure
+                 ;;/// this is usually an interjection, how could we
+                 ;; indicate that
+                 (pos-starts-here new-start-pos) ;; the edge vector
+                 (pos-ends-here new-end-pos)
+                 :respan-edge-around-one-word ;; rule
+                 word-edge ;; daughter
+                 word-category 
+                 word-form
+                 word-referent)))
+      (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
+      ;; (push-debug `(,edge)) (break "look at edge")
+      edge)))
+

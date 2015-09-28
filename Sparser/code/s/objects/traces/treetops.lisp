@@ -1,17 +1,18 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013-2015  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "treetops"
 ;;;   Module:  "objects;traces:"
-;;;  Version:   October 2014que
+;;;  Version:   September2015
 
 ;; Stubbed with parameters 10/1990. Moved in the traces from
 ;; drivers/chart/psp/march-forest 3/8/13. 
 ;; Adding patterns for the new forest design through 10/23/14.
-;; FIxed typo in printout -- "subjec" --> "subject"
-;;1/1/2015 support for whack-a-rule -- find all adjacent treetops
-;;  which can be spanned by a rule
+;; Fixed typo in printout -- "subjec" --> "subject"
+;; 1/1/2015 support for whack-a-rule -- find all adjacent treetops
+;;  which can be spanned by a rule. 
+;; Adding island-driving traces through 9/18/15
 
 (in-package :sparser)
 (defvar *TRACE-FOREST-TRANSITIONS*)
@@ -567,7 +568,7 @@
 (deftrace :islands-pass-2 (tt-count)
   ;; called from run-island-checks-pass-two
   (when *trace-island-driving*
-    (trace-msg " Looking for patterns over ~a treetops" tt-count)))
+    (trace-msg "Looking for patterns over ~a treetops" tt-count)))
 
 (deftrace :no-established-pass-2-patterns-applied ()
   ;; called from run-island-checks-pass-two
@@ -1047,7 +1048,7 @@
                (edge-position-in-resource-array subject)
                (edge-position-in-resource-array copula)
                tt-count)))
-
+#+ignore
 (deftrace :pattern-over-three-tt (tt1 tt2 tt3)
   ;; called from look-for-length-three-patterns
   (when *trace-island-driving*
@@ -1119,6 +1120,43 @@
   (when *trace-island-driving*
     (trace-msg "[islands]     Unknown pattern: e~a not major"
                (edge-position-in-resource-array tt))))
+
+
+;;-------------- New Pass2 (9/15)
+
+
+(deftrace :no-treetops-remain-exiting ()
+  (when *trace-island-driving*
+    (trace-msg "[pass2] ran out of treetops. Exiting")))
+
+(deftrace :trying-da-pattern-on (tt)
+  (when *trace-island-driving*
+    (trace-msg "[pass2] Looking for debris pattern starting with e~a"
+               (edge-position-in-resource-array tt))))
+
+(deftrace :no-result-from-da ()
+  (when *trace-island-driving*
+    (trace-msg "[pass2]    It did not trigger a pattern")))
+
+(deftrace :p2-da-returned-edge (edge)
+  (when *trace-island-driving*
+    (trace-msg "[pass2]    It created e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :p2-no-use-applying-rules ()
+  (when *trace-island-driving*
+    (trace-msg "[pass2] No point in applying rules")))
+
+(deftrace :p2-applying-rules ()
+  (when *trace-island-driving*
+    (trace-msg "[pass2] Applying rules")))
+
+(deftrace :p2-converage-is (coverage)
+  (when *trace-island-driving*
+    (trace-msg "[pass2]   Coverage now is ~a" coverage)))
+  
+
+
 
 
 
