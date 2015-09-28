@@ -179,11 +179,7 @@ in NRAS mutant cells (Figure 1E).")
 ;  (p "c-Raf/ MAPK-mediated [6].")
 
 ; r3/trunk/corpus/Walter-July-articles
-
-;; Runaway 7/28/15
-#| (load-xml-to-doc-if-necessary)
-   (populate-june-article 'PMC4007333)
- (setq p1 (cadr (children (setq results (nth 3 (children (setq abstract (car (children (setq article *)
+#|  From PMC4007333
 "Atorvastatin inhibited endothelial cell apoptosis induced 
 by 1 mmol/L Hcy in a dose-dependent manner and the maximal 
 inhibitory effect was reached at 100 μmol/L. 
