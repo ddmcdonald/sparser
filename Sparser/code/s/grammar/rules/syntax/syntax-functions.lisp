@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  June 2015
+;;;  Version:  September 2015
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -70,7 +70,8 @@
 ;;   to VPs and expose the preposition to the subcategorization of the head.
 ;; 6/28/2015 Don't collect information on VP+ED sentences -- 
 ;; mechanism causes stack overflow because of the pushne with equalp...
-;; Handle locations as premodifiers "nuclear kinase"
+;; Handle locations as premodifiers "nuclear kinase"  9/29/15 abstracted the
+;; check for a pronoun we should ignore.
 
 
 (in-package :sparser)
@@ -823,11 +824,7 @@
       (setq relation-label category::np))
  
     (let ((new-ref (individual-for-ref restriction)))
-      (unless (and *ignore-personal-pronouns*
-                   (memq (cat-symbol original-label)
-                         '(category::pronoun/first/plural 
-                           category::pronoun/first/singular
-                           category::pronoun/second)))
+      (unless (ignore-this-type-of-pronoun original-label)
         ;; If we're going to ignore the pronoun we don't want or
         ;; need to rework its edge
         (tr :anaphor-conditioned-to new-ref restriction relation-label)
