@@ -2,8 +2,8 @@
 ;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "sentence-corpora"
-;;;   Module:  "objects/doc/"
-;;;  version:  June 2015
+;;;   Module:  "grammar/tests/citations/code/"
+;;;  version:  September 2015
 
 ;; initiated 1/25/15
 ;; 1/28/2015 added methods to for building a regression test for sentence semantics
@@ -17,6 +17,7 @@
 ;; 6/10/15 Added more printing parameters to ignore
 ;; 6/14/2015 code how-art-sents to find all the sentences in the set of articles
 ;;   so far processed that have a given string
+;; 9/29/15 moved next to rest of the related code
 
 
 (in-package :sparser)
@@ -211,9 +212,10 @@ previous records of treetop-counts.
 
 ;;--- write the snapshot to a file 
 
-(defparameter *directory-for-tree-snapshots*
-  (merge-pathnames (make-pathname :directory '(:relative "grammar" "tests"))
-                   cl-user::*r3-code-directory*))
+(unless (boundp '*directory-for-tree-snapshots*)
+  (defparameter *directory-for-tree-snapshots*
+    (merge-pathnames (make-pathname :directory '(:relative "s" "grammar" "tests"))
+                     cl-user::location-of-Sparser-code-directory)))
 
 (defparameter *file-for-treetop-snapshots*
   (merge-pathnames "corpora-snapshots.lisp"
