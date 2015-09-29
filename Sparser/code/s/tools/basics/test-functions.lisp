@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "test-functions"
 ;;;    Module:   "tools:basics"
-;;;   Version:   February 2015
+;;;   Version:   September 2015
 
 ;; utilities for testing in R3. Made format-item prettier 1/10/15.
 ;; 2/8/15 Turning off anaphora on sentence calls. 
@@ -19,13 +19,18 @@
 (defvar *DEC-TESTS*)
 (defvar *JAN-DRY-RUN*)
 
-(defparameter *show-semantics* t)
+(defparameter *show-semantics* t
+  "Parameter default to run-test. If non-nil the semantic interpretation
+  of the text is shown after it is parsed.")
 
 (defparameter *sentences* nil
   "The set of sentences a general iterator
    runs over. Set by one of the corpus specifiers")
 
-(defparameter *no-anaphora* t)
+(defparameter *no-anaphora* t
+  "Parameter default to run-test. If non-nil, the *do-anaphor* flag
+  will be dynamically bound to nil so all discourse history
+  and anaphora processing will be turned off. ")
 
 ;;;----------------------------
 ;;; Sentence corpus specifiers
