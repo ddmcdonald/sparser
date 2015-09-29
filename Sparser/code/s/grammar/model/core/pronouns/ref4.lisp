@@ -24,6 +24,7 @@
 ;;     (5/31/15 Guard the otherwise fall-through in handle-any-anaphora
 ;;     (6/5/15) Make handle-pronoun return nil if pronoun hasn't been massaged.
 ;; 4.5 (9/8/15) Turned off the completion actions on proteins. 
+;;     (9/29/15) Fixed cases in handle-any-anaphora
 
 (in-package :sparser)
 
@@ -50,11 +51,16 @@
               (form (edge-form edge)))
           (push-debug `(,edge/s ,sentence)) ;;(lsp-break "Looking at pn")
           (case (cat-symbol form)
-            ((category::pronoun
-              category::subject 
+            ((category::pronoun ;;/// Review -- is this case still possible?
+              category::subject ;;/// Review -- why do we have both of these
+              category::grammatical-subject ;; ways to say 'subject' ?
               category::direct-object)
-             (handle-pronoun
-              label form edge sentence))
+             (cond
+              ((ignore-this-type-of-pronoun label)
+               (tr :ignoring-personal-pronouns))
+              (t
+               (handle-pronoun
+                label form edge sentence))))
             (category::wh-pronoun ;; ignore -- question or subordinator
              (tr :ignoring-wh-pronoun))
             (category::reflexive/pronoun
@@ -77,6 +83,16 @@
    They need a completely different treatment that maps
    them to specific entities. There are drafts of this
    in grammar/rules/.")
+
+(defun ignore-this-type-of-pronoun (label)
+  "If we're ignoring personal pronouns then is the label on
+   this edge we're looking at (it's category) one of the
+   proscribed cases"
+  (and *ignore-personal-pronouns*
+       (memq (cat-symbol label)
+             '(category::pronoun/first/plural 
+               category::pronoun/first/singular
+               category::pronoun/second))))
 
 
 (defun handle-pronoun (label form edge sentence)
