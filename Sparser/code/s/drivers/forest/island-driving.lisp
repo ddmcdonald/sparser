@@ -24,7 +24,9 @@
 ;;   this speeds up the system by a factor of 3!
 ;; 6/5/2015 added (defvar *whack-a-rule-sentence*)bound in  whack-a-rule-cycle
 ;;  so that all-tts knows the boundaries of the current sentence.
-;; 9/18/15 Completely rebuilt the 2d pass. 
+;; 9/18/15 Completely rebuilt the 2d pass. 9/29/15 removed the re-computation
+;;  of the layout for 2d pass because it wasn't needed and it lost information
+;;  about the presence of pronouns.
 
 
 (in-package :sparser)
@@ -64,20 +66,13 @@
     (tts))
   (let ((*allow-pure-syntax-rules* t)
         (*edges-from-referent-categories* *island-driven-efrc*))
-    (run-island-checks sentence) ;;layout)
+    (run-island-checks sentence)
     ;;  (successive-treetops :from start-pos :to end-pos)
     (let ((coverage (coverage-over-region start-pos end-pos)))
       (unless (eq coverage :one-edge-over-entire-segment)
-        ;; make one more pass with a new layout. Notice that 
-        ;; this layout is local. We want to keep it that way
-        ;; so as not to lose the base layout that we got
-        ;; after chunking. It has useful information in it.
-        (let ((new-layout
-               (sweep-sentence-treetops sentence start-pos end-pos)))
-          (declare (ignore new-layout)) ;; hedging my bet for now
-          (tr :island-driver-forest-pass-2)
-          (when *trace-island-driving* (tts))
-          (when t (run-island-checks-pass-two sentence start-pos end-pos)))))))
+        (tr :island-driver-forest-pass-2)
+        (when *trace-island-driving* (tts))
+        (run-island-checks-pass-two sentence start-pos end-pos)))))
 
 
 ;;;------------
