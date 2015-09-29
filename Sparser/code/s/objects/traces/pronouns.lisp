@@ -3,9 +3,10 @@
 ;;; 
 ;;;     File:  "pronouns"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  March 2015
+;;;  Version:  September 2015
 
-;; Initiated 9/1/13. Added DefNP cases 3/6/15
+;; Initiated 9/1/13. Added DefNP cases 3/6/15. Added more for tracking
+;; the progress of handling the pronoun through various cases 9/29/15
 
 (in-package :sparser)
 
@@ -59,6 +60,11 @@
   (when *tracing-pronouns*
     (trace-msg "  Ignoring WH pronoun")))
 
+(deftrace :ignoring-personal-pronouns ()
+  ;; called from handle-any-anaphora
+  (when *tracing-pronouns*
+    (trace-msg "  Ignoring first or secnod person pronoun")))
+
 (deftrace :ignoring-reflexive-pronoun ()
   ;; called from handle-any-anaphora
   (when *tracing-pronouns*
@@ -89,6 +95,12 @@
   ; called from handle-pronoun
   (when *tracing-pronouns*
     (trace-msg "    Found ~a" i)))
+
+(deftrace :cannot-find-disjoint-value-restrictions ()
+  ;; called from local-recorded-instances
+  (when *tracing-pronouns*
+    (trace-msg " Cannot do local-recorded-instances of an ':or' ~
+               value restriction. Returning nil.")))
 
 
 ;;--- dereference-DefNP
