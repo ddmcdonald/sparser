@@ -59,6 +59,8 @@
 ;; 3.9 (8/28/15) Substantial makeover to handle mentions of description lattice
 ;;      individuals, plus a drastic reordering to improve readability. 
 ;;      cleaning up initial implementation through 9/22/15
+;;     (9/29/15) fixed the logic in local-recorded-instances, but it has to be
+;;      extended to handle ':or' value restrictions.
 
 (in-package :sparser)
 
@@ -698,7 +700,14 @@ saturated? is a good entry point. |#
           (car best-so-far)))))))
 
 (defun local-recorded-instances (category)
-  ;; 'category' can be a disjunct
+  "The category is the value restriction on the pronoun we are trying
+   to dereference. Since value restictions can be a disjunct of a set
+   of categories we need to check for that. The 'local' effectively
+   means 'within this sentence' since the candidates are drawn from
+   the alist on the *lifo-instance-list*."
+  (when (consp category)
+    (tr :cannot-find-disjoint-value-restrictions)
+    (return-from local-recorded-instances nil))
   (let ((types (typecase category
                  (referential-category (list category))
                  (cons
@@ -708,10 +717,15 @@ saturated? is a good entry point. |#
                   (cdr category))
                  (otherwise
                   (push-debug `(,category))
-                  (break "Unexpected type of category: ~a~%~a"
+                  (break "Unexpected type of  category: ~a~%~a"
                          (type-of category) category)))))
+    (declare (ignore types))
+    ;; ddm -- can't sort out the looping structure. The list
+    ;; had been done with memq but that was the wrong logic
+    ;; since we want to see if the stored individuals are
+    ;; compatible with the value-restriction (itypep).
     (loop for pair in *lifo-instance-list*
-      when (memq (itype-of (car pair)) types)
+      when (itypep (car pair) category)
       collect pair)))
 
 (defun better (new-pair reigning-pair)
