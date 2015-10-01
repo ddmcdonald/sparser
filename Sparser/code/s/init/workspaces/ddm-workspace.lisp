@@ -44,8 +44,13 @@
 
 #| ---------  Pending or recent tasks
  
-  sdm-span-segment assumes it's spanning an np. It should
-instead use the max projection of the category of the head/
+sdm-span-segment assumes it's spanning an np. It should
+  instead use the max projection of the category of the head
+
+Siting compoositon or other method calls
+  referent-from-rule
+
+convert-bio-entity-to-protein
 
 Rebuild pass2 on DA patterns
   run-island-checks-pass-two  look-for-length-three-patterns
