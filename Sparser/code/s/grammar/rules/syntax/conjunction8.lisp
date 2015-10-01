@@ -398,7 +398,13 @@
           (label-after (edge-category edge-after)))
       (declare (special label-before label-after))
       (if (or (and
-      (if (or (eq label-before label-after)
+               (eq label-before label-after)
+               (cond
+                ((eq
+                    (individual-p (edge-referent edge-before))
+                    (individual-p (edge-referent edge-after)))
+                 t)
+                (t (lsp-break "conjunction-problem")) ))
               (and (safe-itypep label-before 'protein)  ;; allow for protein and kinase
                    (safe-itypep label-after 'protein))
               (bio-coercion-compatible? label-before label-after edge-before edge-after))
