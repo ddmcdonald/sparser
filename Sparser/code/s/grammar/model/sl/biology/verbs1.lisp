@@ -98,7 +98,7 @@
          :s agent 
          :o object
          :at at
-         :by biological
+         :by agent
          :in in
          :with with))
 
