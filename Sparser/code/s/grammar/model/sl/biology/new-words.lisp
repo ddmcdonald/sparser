@@ -108,6 +108,7 @@
           (pushnew  pid (gethash (third tag) *UCD-proteins-actual-case*) :test #'equalp))))))
 
 (defun new-word-protein-defs ()
+  (declare (special *new-word-strings*))
   (let
       ((any nil)
        (actual nil))
@@ -129,6 +130,7 @@
   (let
       ((mcp nil))
     (maphash #'(lambda (prot label) 
+                 (declare (ignore label))
                  (if (and (not (equal prot (string-downcase prot)))(not (equal prot (string-upcase prot))))
                      (push prot mcp)))
              *UCD-proteins-actual-case*)
