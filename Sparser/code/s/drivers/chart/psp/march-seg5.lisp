@@ -79,6 +79,7 @@
              do (return e))))))
 
 (defun compatible-with-chunk (edge chunk)
+  (declare (special *vg-word-categories*))
   (cond
    ((equal (chunk-forms chunk) '(vg))
     (member (cat-symbol (edge-form edge)) *vg-word-categories*))

@@ -70,6 +70,9 @@
 ;;     (5/29/14) Added some (now commented out) debugging code to make-simple-individual
 
 (in-package :sparser)
+;; this is a global used to turn on and off use of the description lattice
+;;  the defparameter for this global is defined later in the compilation order
+(defvar *description-lattice*) 
 
 
 ;;;-------------------------------------------------
@@ -171,6 +174,7 @@
     (when binding-instructions 
       (multiple-value-bind (bindings new-indiv)
                            (apply-bindings individual binding-instructions)
+        (declare (ignore bindings))
         (setq individual new-indiv)))
     individual ))
 
@@ -311,14 +315,16 @@
       individual )))
 
 (defun make-non-dli-individual (category binding-instructions &optional (non-permanent nil))
+  (declare (ignore non-permanent))
   (let ((individual (allocate-individual))
         (*description-lattice* nil)
         (*index-under-permanent-instances* nil))
-    (declare (special *description-lattice* *index-under-permanent-instances*))
+    (declare (special *index-under-permanent-instances*))
     (setf (indiv-type individual) (list category))
     (setf (indiv-id   individual) (next-id category))
     (multiple-value-bind (bindings new-indiv)
                          (apply-bindings individual binding-instructions)
+      (declare (ignore bindings))
       (setq individual new-indiv)
       ;;(index/individual individual category bindings)
       (create-shadow individual)

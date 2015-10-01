@@ -196,6 +196,7 @@
          (variable (find-variable-from-individual var-name i)))
     (let ((b (multiple-value-bind (ii bb)
                                   (bind-dli-variable variable value i)
+               (declare (ignore ii))
                bb))
           (s (the-situation))) ;; who would know about the level?
       ;; that makes the associaton on the instance

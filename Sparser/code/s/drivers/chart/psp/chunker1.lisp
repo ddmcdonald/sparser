@@ -442,6 +442,7 @@
 
 ;;; FROM categories.lisp but should be here to maintain compatibility when structure of chunk changes
 (defun plural-noun-and-present-verb? (e)
+  (declare (special category::common-noun/plural))
   (or
    (and
     (eq (edge-form e) category::common-noun/plural)
@@ -511,7 +512,7 @@
 (defmethod ng-compatible? ((c referential-category) evlist)
   (ng-compatible? (cat-symbol c) evlist))
 (defmethod ng-compatible? ((name symbol) edges)
-  (declare (special chunk name))
+  (declare (special chunk name category::all))
   (or
    (and
     (memq name *ng-internal-categories*)
@@ -541,7 +542,7 @@
   (declare (special e category::modifier category::adjective 
                     category::be *big-mechanism* category::parentheses
                     category::that category::verb+ed category::verb+ing
-                    category::preposition))
+                    category::preposition category::and))
   (cond
    ((and (plural-noun-and-present-verb? e)
          (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )

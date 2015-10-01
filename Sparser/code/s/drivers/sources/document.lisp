@@ -313,6 +313,7 @@
 (defgeneric recurse-through-document (source fn in-results?)
   (:documentation "recurses through document structure applying fn"))
 (defmethod recurse-through-document ((a article) fn in-results?)
+  (declare (ignore in-results?))
  (loop for child in (children a)
     do (recurse-through-document child fn nil)))
 (defmethod recurse-through-document ((ss section-of-sections) fn in-results?)
@@ -323,7 +324,7 @@
       do (recurse-through-document child fn ir))))
 
 (defmethod recurse-through-document ((tt title-text) fn in-results?)
-  (declare (special tt))
+  (declare (ignore tt fn in-results?))
   ;;(print `(title-text , (content-string tt)))
   )
 (defmethod recurse-through-document ((s section) fn in-results?)
@@ -337,6 +338,7 @@
     do (recurse-through-document child fn (or in-results? (in-results? s)))))
 
 (defmethod recurse-through-document ((p paragraph) fn in-results?)
+  (declare (ignore p fn in-results?))
   nil)
 
 (defun in-results? (s)

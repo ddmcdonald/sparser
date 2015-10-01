@@ -132,6 +132,7 @@ those steps sequentially on a single article.
 
 ;; This should be set in your personal workspace file,
 ;; e.g. (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
+(defvar *r3-trunk*)
 (if (boundp 'cl-user::*r3-trunk*)
     (setf *r3-trunk* cl-user::*r3-trunk*)
     (setf *r3-trunk* nil))

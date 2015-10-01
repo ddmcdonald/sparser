@@ -383,7 +383,7 @@
   ;; When that's exhausted, sweep the remaining categories
   ;; from the master list for those without supercategories
   ;; and treat them as level 0 seeds.
-  (display-categories-below))
+  (display-categories-below :stream stream))
 
 (defun display-categories-below (&key (top (category-named 'top)) (depth -1) (stream *standard-output*))
   (clrhash *category-was-displayed*)
@@ -394,7 +394,7 @@
     (let* ((remaining (loop for c in *categories-defined*
                         unless (gethash c *category-was-displayed*)
                         collect c))
-           (remaining-without-superc
+           (remaining-without-supercs
             (loop for r in remaining
               unless (has-supercategories? r)
               collect r)))

@@ -846,6 +846,7 @@
   ents)
 
 (defun collect-sentences-if (pred)
+  (declare (special *all-sentences*))
   (loop for s in *all-sentences*
       when (funcall pred s)
       collect s))
@@ -863,6 +864,7 @@
              (second s)))))
 
 (defun collect-parsed-indivs-if (pred &key keep-sentence &aux ans)
+  (declare (special *all-sentences*))
   (dolist (s *all-sentences*)
     (dolist (e (second s))
       (when (funcall pred e)

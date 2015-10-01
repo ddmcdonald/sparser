@@ -146,8 +146,8 @@
   (let ((new-dli (make-category-indexed-individual (car category-list))))
     (setf (indiv-restrictions new-dli) (append category-list nil)) ;; copy the list in case it is in use elsewhere
     (loop for c in (cdr category-list)
-       do (pushnew c (indiv-type i) ))
-    i))
+       do (pushnew c (indiv-type new-dli) ))
+    new-dli))
 
 (defun find-or-make-lattice-description-for-ref-category (base)
   (or (get-dli base)

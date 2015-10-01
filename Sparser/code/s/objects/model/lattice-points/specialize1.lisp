@@ -67,7 +67,7 @@
   ;; use specialize-object and have the class and shadow
   ;; created. This one is used strictly for comparison
   (let ((present-type-field (indiv-type i)))
-    (pushnew mixin (indiv-type i))
+    (pushnew mixin present-type-field)
     i))
 
 

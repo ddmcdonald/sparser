@@ -241,6 +241,7 @@
            (when reused?
              (multiple-value-bind (bindings individual)
                                   (apply-bindings i bindings-plist)
+               (declare (ignore bindings))
                (setq i individual)))
            (annotate-realization/base-case lp i)
            (setq type-of-head head)

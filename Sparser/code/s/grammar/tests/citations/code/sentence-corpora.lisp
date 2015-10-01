@@ -160,6 +160,7 @@ previous records of treetop-counts.
 (defun save-treetop-snapshots (&optional
                              (save-info nil)
                              (corpora '(overnight dec-test dry-run aspp2 erk)))
+  (declare (special *file-for-treetop-snapshots*)(ignore save-info))
   (loop for c in corpora
     do (terpri)
     (print c)
@@ -167,12 +168,14 @@ previous records of treetop-counts.
 
 
 (defmethod compare-to-snapshot ((name symbol) &optional (save-info nil))
+  (declare (ignore save-info))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
     (compare-to-snapshot corpus)))
 
 (defmethod compare-to-snapshot  ((corpus sentence-corpus)&optional (save-info nil))
+  (declare (ignore save-info))
   ;;/// consider a way to designate which snapshot to compare against
   (let* ((current-pairs (run-treetop-snapshot corpus))
          (snapshot (car (snapshots corpus)))

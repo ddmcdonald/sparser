@@ -917,9 +917,9 @@
                  restriction))))))
 
 
-;;;----------------------
+;;;----------------------
 ;;; Prepositional phrase
-;;;----------------------
+;;;----------------------
 
 (define-category prepositional-phrase
   :specializes abstract
@@ -1050,7 +1050,7 @@
 (defun apply-copular-pp (np copular-pp)
   (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
          (pobj (value-of 'pobj copular-pp))
-         (copula (value-of 'copula copular-pp))
+         ;;(copula (value-of 'copula copular-pp))
          (variable-to-bind (subcategorized-variable np prep pobj)))
     (declare (special prep pobj))
     (cond
@@ -1059,11 +1059,12 @@
       (when *collect-subcat-info*
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
-      (setq predicate (individual-for-ref np))
-      (setq  predicate (bind-dli-variable variable-to-bind pobj predicate))
-      (make-simple-individual category::copular-predicate
-                              `((predicated-of ,np)
-                                (predicate ,predicate)))))))
+      (let
+          ((predicate (individual-for-ref np)))
+        (setq  predicate (bind-dli-variable variable-to-bind pobj predicate))
+        (make-simple-individual category::copular-predicate
+                                `((predicated-of ,np)
+                                  (predicate ,predicate))))))))
 
 (defun get-word-for-prep (prep-val)
   (resolve/make ;; needs to be a word for the subcat frame!
