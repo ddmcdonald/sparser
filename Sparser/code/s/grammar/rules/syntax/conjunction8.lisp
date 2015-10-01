@@ -392,9 +392,12 @@
   ;; This is the actual check that says whether we should conjoin
   ;; or not. More heuristic judgements go here as they are
   ;; developed
+  (declare (special edge-before edge-after))
   (when (and (edge-p edge-before)(edge-p edge-after))
     (let ((label-before (edge-category edge-before))
           (label-after (edge-category edge-after)))
+      (declare (special label-before label-after))
+      (if (or (and
       (if (or (eq label-before label-after)
               (and (safe-itypep label-before 'protein)  ;; allow for protein and kinase
                    (safe-itypep label-after 'protein))
