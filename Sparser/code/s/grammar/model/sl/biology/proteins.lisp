@@ -2757,6 +2757,7 @@ filligre may be used to distinguish them, etc.
 (defparameter pht (make-hash-table :test #'equal))
 (defparameter *new-proteins* nil)
 (defun merge-proteins ()
+  (declare (special *proteins*))
   (setq *new-proteins* nil)
   (clrhash pht)
   (loop for p in *proteins* do 
@@ -2784,6 +2785,7 @@ filligre may be used to distinguish them, etc.
 
 (defparameter *new-ras2-proteins* nil)
 (defun merge-ras2-proteins ()
+  (declare (special *ras2-proteins*))
   (setq *new-ras2-proteins* nil)
   (clrhash pht)
   (loop for p in *ras2-proteins* do 
@@ -2812,11 +2814,11 @@ filligre may be used to distinguish them, etc.
 (defparameter *overlap* nil)
 
 (defun merge-into-ras2 ()
+  (declare (special *ras2-proteins*))
   (clrhash pht)
   (let ((np nil))
     (loop for p in *ras2-proteins* do 
-      (let* ((primary (second p))
-             (previous (gethash primary pht)))
+      (let* ((primary (second p)))
         (setf (gethash primary pht) p)))
     (loop for p in *new-proteins* 
       do
