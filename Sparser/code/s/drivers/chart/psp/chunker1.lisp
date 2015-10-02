@@ -48,7 +48,8 @@
 
 (defvar *chunk-forms* '(ng vg adjg))
 (defparameter *new-chunk-parse* t)
-(defvar *N-BAR-CATEGORIES*)
+
+#|(defvar *N-BAR-CATEGORIES*)
 (defvar CATEGORY::ORDINAL)
 (defvar CATEGORY::PRONOUN)
 (defvar CATEGORY::QUANTIFIER)
@@ -56,7 +57,8 @@
 (defvar CATEGORY::PRONOUN)
 (defvar *NG-INTERNAL-CATEGORIES*)
 (defvar CATEGORY::THAT)
-(defvar CATEGORY::MODIFIER)
+(defvar CATEGORY::MODIFIER)|#
+
 (defvar *current-chunk* nil)
 
 (defclass chunk ()
@@ -145,6 +147,7 @@
 (defun identify-chunks (sentence)
   ;; Called from sentence-sweep-loop after the short sweeps over 
   ;; the sentence have fnished.
+  (declare (special *parse-edges* *parse-chunk-interior-online*))
   (when *parse-edges* (tts)) ;; when tracing
   (let ((chunks (find-chunks sentence)))
     ;;(push-debug `(,sentence ,chunks)) (break "~a chunks" (length chunks))
@@ -170,7 +173,7 @@
         (adjg (push str *adjg-chunks*))))))
 
 (defun parse-chunk-interior (chunk)
-  ;; Use the standard machinery is PTS to parse the interior
+  ;; Use the standard machinery in PTS to parse the interior
   ;; of the chunk and introduce a corresponding edge into
   ;; the chart. Run pts in a mode that will make it run
   ;; to completion and return rather than making a tail
@@ -371,7 +374,9 @@
 (defparameter *verb+ed-sents* nil)
 (defparameter *suppressed-verb+ed* nil)
 (defun likely-verb+ed-clause (edge ev-list)
-  (declare (special edge ev-list chunk *sentence-in-core*))
+  (declare (special category::verb+ed *n-bar-categories*
+                    category::preposition category::det
+                    category::pronoun *verb+ed-sents* *sentence-in-core*))
   (cond
    ((and (edge-form edge) ;; COMMA has no edge-form
          (not
@@ -381,12 +386,12 @@
                'category::hyphenated-pair)))
          (not
           (eq (edge-category edge) category::have))
-         (eq 'CATEGORY::VERB+ED (cat-symbol (edge-form edge)))
+         (eq 'category::verb+ed (cat-symbol (edge-form edge)))
          ;; new code -- don't accept a past participle immediately following a noun 
          ;; -- most likely to be a main verb or a reduced relative in this case
          (let*
              ((ev-edge (when (car ev-list)(car (ev-edges (car ev-list))))) ; 
-              (prev-edge (when ev-edge(edge-just-to-left-of ev-edge))))
+              (prev-edge (when ev-edge (edge-just-to-left-of ev-edge))))
            (declare (special ev-edge prev-edge))
            (cond
             ((and prev-edge 
@@ -407,7 +412,7 @@
            thereis
            (and
             (edge-form e)
-            (memq (cat-symbol (edge-form e)) *N-BAR-CATEGORIES*))))
+            (memq (cat-symbol (edge-form e)) *n-bar-categories*))))
     (when (not
            (let* ((ev (pos-starts-here (pos-edge-ends-at edge)))
                   (edges (ev-edges ev)))
@@ -459,11 +464,12 @@
   (declare (ignore w evlist))
   nil)
 (defmethod ng-compatible? ((e edge) evlist)
-  (declare (special e evlist))
-  (let
-      ((edges (ev-edges (car evlist)))
-       (eform (edge-form e)))
-    (declare (special edges eform))
+  (declare (special category::quantifier category::det
+                    category::which category::what category::parentheses
+                    word::comma category::pronoun category::verb+ing
+                    category::ordinal))
+  (let ((edges (ev-edges (car evlist)))
+        (eform (edge-form e)))
    ;;(lsp-break "ng-compatible")
     (not
      (or
@@ -481,6 +487,7 @@
          thereis
          (loop for edge in (ev-edges ev)
            never (memq (edge-form edge) `(,category::quantifier ,category::det)))))
+
       (loop for edge in edges
         thereis
         (or
@@ -511,8 +518,9 @@
 
 (defmethod ng-compatible? ((c referential-category) evlist)
   (ng-compatible? (cat-symbol c) evlist))
+
 (defmethod ng-compatible? ((name symbol) edges)
-  (declare (special chunk name category::all))
+  (declare (special category::all category::quantifier-of))
   (or
    (and
     (memq name *ng-internal-categories*)
