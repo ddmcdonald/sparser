@@ -611,11 +611,12 @@
     ;;/// Broken out let us make one modification to ignore this case
     (when old-instance
       ;; We're going to subvert it. If order matters we can
-      ;; do that later.
+      ;; do that later. Changes the lifo instance list in place.
       (rplaca old-instance new-i)
       (rplaca (cdr old-instance) new-edge)
-      (unless (equal old-instance redundant-instance)
-        (lsp-break "why is new different?")))))
+      #+ignore(unless (equal old-instance redundant-instance)
+        (lsp-break "why is new different?"))
+      )))
 
 
 (defun cleanup-lifo-instance-list ()
