@@ -73,6 +73,9 @@
   ;; of how covered (with edges) the segment is and dispatches
   ;; to the the parser if there's something to parse or else to the
   ;; the common end-of-segment adjudicator to dispatch again.
+  (declare (special *chunk-sentence-into-phrases*
+                    *segment-ended-because-of-boundary-from-form-label*
+                    *left-segment-boundary* *right-segment-boundary*
   (tr :pts)
   (when boundary-from-edge?
     (setq *segment-ended-because-of-boundary-from-form-label* t))
@@ -106,7 +109,7 @@
          (segment-finished :null-span))
 
         (:one-edge-over-entire-segment
-         (when *big-mechanism-ngs*
+         (when *chunk-sentence-into-phrases*
            (ensure-edge-consistent-with-chunk))
          (segment-finished :one-edge-over-entire-segment)
          ;; want to do full parsing, so that we can distinguish NG and VG chunks
