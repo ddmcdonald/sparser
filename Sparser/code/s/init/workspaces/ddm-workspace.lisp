@@ -52,6 +52,13 @@ Siting compoositon or other method calls
 
 convert-bio-entity-to-protein
 
+Subcategorization inheritance // non-use of bound preps "act as"
+   subcategorize-for-slot  fom-subcategorization
+   decode-realization-parameter-list
+
+Grand cleanup -- flush bio-entity-scan or move
+    reify-bio-entity
+
 Rebuild pass2 on DA patterns
   run-island-checks-pass-two  look-for-length-three-patterns
   (ddm-ws-ed "DA data.lisp")
@@ -816,15 +823,17 @@ Worse: (28 13 6 2 1)
 
 (defun ddm-ed (string)
   #-:sbcl
-  (ed (cl-user::sparser-sourcefile string))
+  (ed (concatenate 'string 
+                   "~/sparser/Sparser/code/s/" string))
   #+:sbcl
   (print `(**** can't call ed from SBCL yet)))
 
 (defun ddm-load (string)
-  (load (sparser-sourcefile string)))
+  (load (concatenate 'string 
+                     "~/sparser/Sparser/code/s/" string)))
 
 (defun sparser-doc-ed (string)
-  (ed (sparser-file "Sparser/documentation/" string)))
+  (ed (concatenate 'string "~/sparser/Sparser/documentation/" string)))
 
 (defun draft-doc-ed (string)
   (ed (concatenate 'string
