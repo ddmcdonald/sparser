@@ -76,7 +76,10 @@
     (unless (boundp 'cl-user::*r3-trunk*)
       (error "No value defined for cl-user::*r3-trunk*"))
     (defun cl-user::r3-path (relative-path)
-      (merge-pathnames relative-path cl-user::*r3-trunk*))))
+      (merge-pathnames relative-path cl-user::*r3-trunk*)))
+  (unless (fboundp 'cl-user::r3-load)
+    (defun cl-user::r3-load (source-path)
+      (load (cl-user::r3-path source-path)))))
 
 
 
