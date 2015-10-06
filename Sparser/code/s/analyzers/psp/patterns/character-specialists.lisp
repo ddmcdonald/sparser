@@ -3,12 +3,13 @@
 ;;; 
 ;;;     File:  "character-specialists"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  May 2015
+;;;  version:  October 2015
 
 ;; Initiated 9/9/14 to hold specialists dispatched from the no-space
 ;; scan. Tweaking through 10/9/14. Removed slash routines 12/10/14 as
 ;; obsolete. Renewed tweaking/fanout through 5/17/15
 ;; 5/30/2015 short-term patch for problems with ; as in "...with β-, γ-, and α-catenins..."
+;; 10/6/15 Commented out unfinished routine that isn't called
 
 (in-package :sparser)
 (defvar *WORK-ON-NS-PATTERNS*)
@@ -123,11 +124,13 @@
   edge)
 
 
-;;--- Common pattern <edge>-mediated, -specific -associated, ...
+;;--- Common pattern <edge>-mediated, -specific -associated, ..
+#+ignore  ;; is in the "dregs" section of the caller
 (defun ns-sort-out-edge-hyphen-lower (leading-edge start-pos end-pos words)
   ;; Called from ns-sort-out-pattern-with-edges when the edge 
   ;; is :initial and the remaining pattern is (:hyphen :lower)
   (declare (special category::verb+ed category::adjective))
+  (declare (ignore start-pos)) ;; see note just below
   (let* ((trailing-edge (left-treetop-at/edge end-pos))
          (form (edge-form trailing-edge))
          (right-ref (edge-referent trailing-edge))
@@ -135,7 +138,7 @@
          agent?   )
     (unless (or (individual-p left-ref)
                 (category-p left-ref))
-      (break "Lower: left-ref = ~a" left-ref))
+      (break "Hyphen lower: left-ref = ~a" left-ref))
     (case form
       (category::verb+ed ;; assume passive
        (setq agent? t))
@@ -152,7 +155,7 @@
       ;; Base everything on the trailing edge. Drop the referent
       ;; of the starting edge because we don't know where to put it
       (let* ((referent ;;(make-qualifying-pair left-ref right-ref))
-              right-ref) ;; droppign left-ref on the floor
+              right-ref) ;; dropping left-ref on the floor
              (edge
               (make-binary-edge/explicit-rule-components
                leading-edge trailing-edge
