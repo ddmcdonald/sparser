@@ -3,6 +3,9 @@
 Notes on what happens when you load Sparser
 Version 5/7/15
 
+The proper way to load the Sparser system is to use the Lisp load
+function to load the file load-nlp.lisp at the top of the directory
+tree. 
 
 Once the specializing script is determined, what happens next is
 goverened by the the operations and setting orchestrated by the
