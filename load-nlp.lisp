@@ -68,22 +68,6 @@
 (asdf:operate 'asdf:load-op :ddm-util)
 
 
-(defun sparser-file (&rest file-path-parts) ;; as strings
-  (merge-pathnames (apply #' concatenate 'string file-path-parts) 
-                   *nlp-home*))
-
-(defun sparser-load-file (&rest file-path-parts)
-  (load (sparser-file file-path-parts)))
-
-(defun sparser-sourcefile (s-path-string)
-  (sparser-file "Sparser/code/s/" s-path-string))
-
-(defun s-load (source-path)
-  (load (sparser-sourcefile source-path)))
-
-(defun r3-load (source-path)
-  (load (r3-path source-path)))
-
 ;; #4 --- Create the sparser package
 ;;  We do this here so that the package is available for reference
 ;;  in Mumble's code. When Sparser/Mumble are part of another 
@@ -96,10 +80,10 @@
         #+apple ccl
         #+openmcl :ccl)
   (:nicknames :sp)
-  (:import-from :cl-user 
-                #:sparser-file #:sparser-load-file
-                #:sparser-sourcefile #:s-load))
-
+; (:import-from :cl-user 
+;                #:sparser-file #:sparser-load-file
+  ;              #:sparser-sourcefile #:s-load)
+)
 
 
 ;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, that invocatation of
