@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 September 2015
+;;;  Version:  0.8 October 2015
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -464,6 +464,7 @@
 (defmethod ng-head? ((w word))
   nil)
 (defmethod ng-head? ((e edge))
+  (declare (special category::that)) ;; timing. Isn't loaded yet
   (cond
    ((eq (edge-form e) CATEGORY::VERB+ING) ; 
     (let
