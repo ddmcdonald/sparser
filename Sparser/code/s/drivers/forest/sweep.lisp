@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "sweep"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  May 2015
+;;;  Version:  October 2015
 
 ;; Initiated 8/30/14. To hold the new class of containers to support
 ;; analysis and discourse structure to go with the new forest protocol
@@ -15,7 +15,7 @@
 ;; 3/21/20015 in sweep-sentence-treetops :SBCL errored on case where edge has a word as its category
 ;; (P "As RAS is upstream of..." edge over "As"
 ;; 5/26/15 fixes subtle bug of form not being set to nil when the
-;; treetop is a word.
+;; treetop is a word. 
 
 
 (in-package :sparser)
@@ -40,6 +40,7 @@
 
 (defun sweep-sentence-treetops (sentence start-pos end-pos)
   "Scan the treetops left to right"
+  (declare (special category::that))
   (tr :sweep-sentence-treetops start-pos end-pos)
   (push-debug `(,sentence ,start-pos ,end-pos))
   (clear-sweep-sentence-tt-state-vars)
