@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2010-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2010-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar modules"
 ;;;    Module:  "init;versions:v4.0:loaders:"
-;;;   version:  June 2014
+;;;   version:  October 2015
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
 ;; 5/11/93 added refinements in words and syntax
@@ -36,7 +36,7 @@
 ;; 12/15/11 added *hurricanes*. 10/8/13 added *qualities*, *middle-east*,
 ;; *Banking*, *ISR*. 11/30/13 *waypoints*.
 ;; 6/4/14 Removed *NIH* as redundant with *biology*, brought here from
-;; a workspace.
+;; a workspace. 10/6/15 added *blocks-world*
 
 (in-package :sparser)
 
@@ -455,6 +455,10 @@
 
 (define-grammar-module *waypoints*
   :name "Waypoints and related concepts"
+  :parent *sublanguages*)
+
+(define-grammar-module *blocks-world*
+  :name "Blocks World"
   :parent *sublanguages*)
 
 
