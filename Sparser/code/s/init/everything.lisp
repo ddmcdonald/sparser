@@ -1,10 +1,10 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
 ;;; copyright (c) 1989-2005,2010-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   April 2015
+;;;   Version:   October 2015
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -92,6 +92,7 @@
 ;; 3/21/2015 minor reader conditionalization for SBCL, comparable to that for MCL and CCL
 ;; 4/18/15 added *track-incidence-count-on-bindings* because it's relevant to DM&P
 ;; which isn't part of most loads so can otherwise count on it having a value.
+;; 10/7/15 added *CwC* and made a consistency pass for readability.
 
 (in-package :cl-user)
 
@@ -368,13 +369,14 @@ or for loading the newer of the compiled or source files.
      is specific to the vendor of the lisp and the operating system,
      so for the present this is only enabled for Mac versions."))
 
-(defparameter sparser::*do-not-create-an-image* nil
-  "This flag is set at the end of this file if we have answered No to
-   any of the various prompts to create images. Its purpose is to block
-   the calls in the Launch configuration file that would (under various
-   conditions) automatically save out images, e.g., as when working from
-   a fixed engine and saving out new versions of the grammar without
-   dossiers.")
+(unless (boundp 'sparser::*do-not-create-an-image*)
+  (defparameter sparser::*do-not-create-an-image* nil
+    "This flag is set at the end of this file if we have answered No to
+    any of the various prompts to create images. Its purpose is to block
+    the calls in the Launch configuration file that would (under various
+    conditions) automatically save out images, e.g., as when working from
+    a fixed engine and saving out new versions of the grammar without
+    dossiers."))
 
 (unless (boundp 'sparser::*sparser-is-an-application?*)
   (defparameter sparser::*sparser-is-an-application?* nil
@@ -793,12 +795,13 @@ or for loading the newer of the compiled or source files.
     it with the configuration is a safe way to do it."))
 
 
-
+;;;-----------------------------------------------------------------------
 ;;--- Mutually exclusive application settings.
 ;; These correspond to alternative system configurations, some of them
 ;; now very old and mothballed (i.e. not incorporated in the present
 ;; codebase). They dictate choices of grammar modules to load and values
 ;; for initializations.
+;;;-----------------------------------------------------------------------
 
 (unless (boundp 'sparser::*just-bracketing*)
   (defparameter sparser::*just-bracketing* nil
@@ -820,6 +823,11 @@ or for loading the newer of the compiled or source files.
   (defparameter sparser::*big-mechanism* nil
     "Uses a tailored version of the full grammar to remove grammar modules
      whose rules get in the way"))
+
+(unless (boundp 'sparser::*CwC*)
+  (defparameter sparser::*CwC* nil
+    "Uses a configuration similar a bit larger than the one for C3,
+    along with a grammar module (sublanguage) for the blocks world."))
 
 (unless (boundp 'sparser::*checkpoint-operations*) ;; in mothballs
   (defparameter sparser::*checkpoint-operations* nil))
@@ -860,8 +868,10 @@ or for loading the newer of the compiled or source files.
   (defparameter sparser::*apple*  nil))
 
 
+;;;------------------------------------------------------------
 ;;--- Scheme for drawing on additional files not in Sparser's
 ;;    directory tree. Developed for the Answer project.
+;;;------------------------------------------------------------
 
 (unless (boundp 'sparser::*external-object-files*)
   (defparameter sparser::*external-object-files* nil
@@ -949,7 +959,13 @@ or for loading the newer of the compiled or source files.
 ;;; load the corresponding grammar configuration file
 ;;;---------------------------------------------------
 
-(cond (sparser::*external-grammar-config*
+(cond (sparser::*grammar-configuration*
+       (let ((file (concatenate 'string
+				"grammar-configurations;"
+				sparser::*grammar-configuration*)))
+         (sparser::lload file)))
+
+      (sparser::*external-grammar-config*
        (load sparser::*external-grammar-config*)) ;; n.b. "load", not "lload"
 
       (sparser::*just-bracketing*
@@ -964,6 +980,9 @@ or for loading the newer of the compiled or source files.
 
       (sparser::*c3*
        (sparser::lload "grammar-configurations;c3-configuration"))
+
+      (sparser::*CwC*
+       (sparser::lload "grammar-configurations;blocks-world"))
 
       (sparser::*checkpoint-operations*
        (sparser::lload "grammar-configurations;checkpoint-ops"))
@@ -1002,12 +1021,6 @@ or for loading the newer of the compiled or source files.
       (sparser::*academic-grammar*
        (sparser::lload "grammar-configurations;academic grammar"))  |#
 
-      (sparser::*grammar-configuration*
-       (let ((file (concatenate 'string
-				"grammar-configurations;"
-				sparser::*grammar-configuration*)))
-         (sparser::lload file)))
-
       (sparser::*load-the-grammar*
        (sparser::lload "grammar-configurations;full grammar"))
 
@@ -1045,11 +1058,14 @@ or for loading the newer of the compiled or source files.
 
 
 ;; Set up basic sizing parameters
-(if sparser::*sparser-is-an-application?*    ;; then we use the source version.
+(if sparser::*sparser-is-an-application?*  ;; then we use the source version.
   (let ((sparser::*insist-on-binaries* nil)
         (sparser::*prefer-binaries* nil)
         (sparser::*compile* nil))
+    (declare (special sparser::*compile* sparser::*insist-on-binaries*
+                      sparser::*prefer-binaries*))
     (sparser::lload "config;load"))
+
   ;; otherwise we use the binaries or newer.
   (sparser::lload "config;load"))
   
@@ -1088,6 +1104,8 @@ or for loading the newer of the compiled or source files.
 	(let ((sparser::*insist-on-binaries* nil)
 	      (sparser::*prefer-binaries* nil)
 	      (sparser::*compile* nil))
+          (declare (special sparser::*compile* sparser::*insist-on-binaries*
+                            sparser::*prefer-binaries*))
 	  (sparser::lload config))
 	(sparser::lload config)))   ;; otherwise we use the binaries or newer.
   
@@ -1102,7 +1120,6 @@ or for loading the newer of the compiled or source files.
         (declare-all-existing-individuals-permanent))))
   
   
-  
   ;;--- done as part of the launch
   
   (unless (or sparser::*nothing-Mac-specific*
@@ -1110,25 +1127,6 @@ or for loading the newer of the compiled or source files.
               *copy-file*)
     (sparser::launch-sparser-menus))
 
-
-#| If we want to tailor the workspaces to the application,
-then the load-workspaces call in config/launch.lisp is the
-place to do it. At this point in the overall load the config 
-code has already executed so these are a duplication. 
-|#
-;;   ;;--- load workspaces
-;;   (cond ;; This format gives us a hook to load workspaces
-;;    ;; according to the system mode we're in. But for now
-;;    ;; load them al
-;;    (t
-;;     (sparser::lload "init;workspaces:Grok")
-;;     (sparser::lload "init;workspaces:ERN")
-;;     (sparser::lload "init;workspaces:Darwin")
-;;     (sparser::lload "init;workspaces:Mari")
-;;     (sparser::lload "init;workspaces:med")
-;;     (sparser::lload "init;workspaces:dm&p")
-;;     (sparser::lload "init;workspaces:Strider")))
-	
   
   (redeclare-permanent-individuals-if-necessary) ;; e.g. from workspaces
   
