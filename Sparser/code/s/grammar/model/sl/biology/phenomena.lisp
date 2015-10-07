@@ -532,17 +532,7 @@ it is created from N-terminus to C-terminus.|#
 ;;(noun "apoptosis" :super bio-process)
 ;;(adj "apoptotic" :super apoptosis) 
 
-
-(define-category apoptosis ;; like apoptosis
-  :specializes bio-process
-  :binds ((process bio-process)(object biological)) ;; should be cell
-  :realization
-  (:etf pre-mod
-        :noun "autophagy" 
-        :m process
-        :of object))
-
-(define-category autophagy ;; aka cell death
+(define-category apoptosis  ;; aka cell death
   :specializes bio-process
   :binds ((process bio-process)(object biological)) ;; should be cell
   :realization
@@ -551,6 +541,15 @@ it is created from N-terminus to C-terminus.|#
         :m process
         :of object
         :in object))
+
+(define-category  autophagy;; like apoptosis
+  :specializes bio-process
+  :binds ((process bio-process)(object biological)) ;; should be cell
+  :realization
+  (:etf pre-mod
+        :noun "autophagy" 
+        :m process
+        :of object))
 
 (define-category senescence ;; aka cell death
   :specializes bio-process
