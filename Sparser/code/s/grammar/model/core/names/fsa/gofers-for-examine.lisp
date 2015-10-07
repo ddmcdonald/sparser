@@ -1,8 +1,8 @@
-;;; Copyright (c) 2013-2014 David D. McDonald all rights reserved
+;;; Copyright (c) 2013-2015 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: July 2014
+;;;   Version: October 2015
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
@@ -16,16 +16,9 @@
 ;;      recent hack on 'of' add-longer-name-to-entity when the names share
 ;;      a prefix.  (7/21/14) commented out direct reference to military-rank
 ;;      which needs to somehow be conditionalized to the available grammar
-;;      modules. 
+;;      modules. (10/7/15) Removed special decls what had nasty fan-out
 
 (in-package :sparser)
-(defvar CATEGORY::GENERIC-CO-WORD)
-(defvar CATEGORY::INC-TERM)
-(defvar CATEGORY::COMPANY-NAME)
-(defvar END-POS)
-(defvar START-POS)
-(defvar CATEGORY::TITLE-MODIFIER)
-(defvar CATEGORY::PHASE-OF-DAY)
 
 
 ;;;--------------------------------------------------------------
@@ -35,6 +28,8 @@
 ;;--- "and"
 
 (defun reason-to-terminate-name-at-and? (items-in-reverse-order)
+  (declare (special category::generic-co-word category::inc-term
+                    category::country category::name-word))
   (if (null items-in-reverse-order)
     ;; if there aren't any items, then the "and" is the first item
     ;; in the sequence.
@@ -72,6 +67,8 @@
   ;; the list of processed items and the state of the various
   ;; globals), then it returns t.  Otherwise it returns nil and
   ;; the name will be truncated at that point.
+  (declare (special category::name-word category::kind-of-subsidiary
+                    category::kind-of-company))
   (let* ((item1 (first items))
          (label-on-prior-item
           (etypecase item1
@@ -181,6 +178,7 @@
   ;; that's already been introduced in a longer form. 
   ;; "he Shahid Beheshti University of Teheran" => "Shahid Beheshti University"
   ;; Only deals with case of one name. Returns a list.
+  (declare (special category::company-name))
   (when (null (cdr list-of-names)) 
     ;; or call a variant on (ambiguous-name-stub names entities)
     (let ((name (car list-of-names)))
@@ -239,6 +237,7 @@
          `(:not-a-name ,(pos-edge-ends-at country-tt))))
 
 (defun only-country-in-items (items start-pos end-pos)
+  (declare (special category::country word::hyphen))
   ;(unless *non-country-categories
   (let ((just-countries t)
         label )
@@ -272,6 +271,7 @@
   ;; have to be first in the sequence. ///Need to look at titles
   ;; and prefixes like "Mr."
   ;;(push-debug `(,items)) (break "items = ~a" items)
+  (declare (special category::initial))
   (let ((item-is-an-initial? nil)
         (state :start)) ;; :collecting-initials, :after-initials
      (flet ((initial? (item)
@@ -312,6 +312,7 @@
         (title-element? referent)))))
 
 (defmethod title-element? ((i individual))
+  (declare (special category::title category::title-modifier))
   (let ((c (i-type-of i)))
     (memq c `(,category::title-modifier
               ,category::title
@@ -397,6 +398,7 @@
 
 
 (defun pnf/prefer-name-words (edges position)
+  (declare (special category::name-word))
   (dolist (edge edges)
     (when (eq (edge-category edge) category::name-word)
       (return-from pnf/prefer-name-words edge)))
@@ -425,6 +427,8 @@
   ;; a phrase, whereas the heads are often in composition with terms
   ;; outside the grammar and are less likely to have parsed up under
   ;; a larger edge
+  (declare (special category::np-head category::noun 
+                    category::common-noun category::common-noun/plural))
   (let ( residue  head  noun  form-label )
     (dolist (edge edges)
       (setq form-label (edge-form edge))
@@ -458,6 +462,7 @@
 
 (defun backoff-multiple-treetops-for-pnf (treetops)
   ;; This scheme will only work if we're spanning just one word
+  (declare (special category::name-word category::proper-noun))
   (let* ((first-tt (first treetops))
          (start-vector (edge-starts-at first-tt))
          (end-vector (edge-ends-at first-tt))
@@ -580,6 +585,7 @@
   "Given an edge with one of these labels we use their referent directly.")
 
 (defun populate-categories-that-appear-in-names ()
+  (declare (special category::phase-of-day))
   (setq *categories-that-appear-in-names*
         (list category::phase-of-day  ;; "Morning", in a newspape's name
         )))
@@ -588,6 +594,7 @@
   "Some edges are built by processes that aren't model-directed, 
    so we have to figure out what they should be given the purpose
    this is being called (just :pnf right now)"
+  (declare (special category::hyphenated-sequence))
   (unless (eq  purpose :pnf)
     (error "Function hasn't been generalized beyond proper names"))
   (unless *categories-that-appear-in-names*
