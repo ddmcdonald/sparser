@@ -1,11 +1,27 @@
 (in-package :sparser)
 
 Notes on what happens when you load Sparser
-Version 5/7/15
+Version 10/6/15
 
 The proper way to load the Sparser system is to use the Lisp load
 function to load the file load-nlp.lisp at the top of the directory
-tree. 
+tree. The key part of this file is the selection of a 'script'
+and starting the load process by loading the script file.
+
+The purpose of the script file is to provide a place to predefine
+parameters or define one or more parameters that can act as
+flags to indicate that you are using Sparser under that setting.
+
+At present, the set of scripts and setting flags is burned into
+the options in load-nlp.lisp and later in init/everything.lisp.
+The set up is very stylized, as described here, so it should
+be possible to carry out these steps programmatically, but
+that is for the future. 
+
+The default is simply to load the everything file and take the
+default settings, effectively loading the entire system. At the
+time this is writen (10/6/15) that is very likely to result
+in an incoherent runtime system. 
 
 Once the specializing script is determined, what happens next is
 goverened by the the operations and setting orchestrated by the
