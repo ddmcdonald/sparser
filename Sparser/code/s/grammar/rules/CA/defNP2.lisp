@@ -1,18 +1,18 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1993-1995,2011-2015 David D. McDonald -- all rights reserved
-;;; 
+;;;
 ;;;     File:  "defNP"
 ;;;   Module:  "grammar;rules:CA:"
 ;;;  Version:  0.2 September 2015
 
 ;; initiated 6/13/93 v2.3.  3/30/94 set the ignore flag to t as the default
-;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category 
+;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category
 ;;      since none of the routines that would use it exist yet and it makes
 ;;      the printing odd sometimes: "the Army". 9/13/11 fixed out of date
 ;;      function call. Two more instances 9/26. Added PSI to typecase.
 ;;     (12/26/14) Stubbed an approach to selecting the referent when working
-;;      sentence by sentence. 
-;;     (3/6/15) Added traces. 
+;;      sentence by sentence.
+;;     (3/6/15) Added traces.
 ;; 0.2 (8-9/15) folded in mentions and impact of description lattice
 
 (in-package :sparser)
@@ -34,6 +34,10 @@
   ;; with a leading definite determiner
 
   (tr :decoding-definite-reference-to head)
+
+  ;; [sfriedman:20151008.1354CST] Store the metadata.
+  (push (list :def-np-coref head (parent-edge-for-referent))
+        (metadata (contents (previous-sentence))))
 
   (unless *do-anaphora*
     (return-from dereference-DefNP head))
@@ -64,7 +68,7 @@
             (push-debug `(,discourse-entry))
             (defnp/extract-referent-from-discourse-entry
               discourse-entry (parent-edge-for-referent)
-              head category-to-look-for))            
+              head category-to-look-for))
 
           ;; Earlier ("normal") assumptions
           (let ((ref
@@ -78,7 +82,7 @@
             (tr :defnp-returning ref)
             ref))
 
-        (let ((new-indiv 
+        (let ((new-indiv
                (if *description-lattice*
                 ;; DAVID -- is this plausible
                 (fom-lattice-description category-of-head)
@@ -99,7 +103,7 @@
     ;; of this NP. Just trusting now
     (let* ((relevant-mention (second entry))
            (ref (when relevant-mention
-                  ;; "We propose that when BRAF is inhibited, 
+                  ;; "We propose that when BRAF is inhibited,
                   ;;  it escapes this auto-inhibited fate ..."
                   (mention-of relevant-mention))))
       (when ref
@@ -109,7 +113,7 @@
 #| Old-style, rigid individual entry  (cells-defNP)
    With one entry, for the word 'cells' basically. Appearing
    in two places. Head was #<cell-line 5260>
-  ((#<cell-line 5260> 
+  ((#<cell-line 5260>
    (#<position29 29 "cells"> . #<position30 30 ".">) ;; "these cells"
    (#<position15 15 "ras"> . #<position18 18 ".">))) ;; "Ras mutant cells"
 |#
