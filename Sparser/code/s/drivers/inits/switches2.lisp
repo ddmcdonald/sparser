@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.24 April 2015
+;;;  Version:  2.24 October 2015
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -78,6 +78,7 @@
 ;;  result is a faster system with (slightly) more accurate results.
 ;; 4/18/15 Fanout from flag used in DM&P and checked in bind-variable/expr
 ;; 6/28/2015 Tunr off *profligate-creation-of-individuals* in set-bio
+;; 10/7/15 put in a stub for blocks-world-setting
 
 (in-package :sparser)
 (defvar *PNF-ROUTINE*)
@@ -463,6 +464,9 @@
   (setq *switch-setting* :biology))
 
 
+(defun blocks-world-setting ()
+  (c3-setting)
+  (setq *switch-setting* :blocks-world))
 
 
 ;;--- C3, and now for something completely different
