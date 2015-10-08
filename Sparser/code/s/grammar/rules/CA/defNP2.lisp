@@ -36,7 +36,7 @@
   (tr :decoding-definite-reference-to head)
 
   ;; [sfriedman:20151008.1354CST] Store the metadata.
-  (push (list :def-np-coref head (parent-edge-for-referent))
+  (push (list :def-np-coref head (parent-edge-for-referent) *do-anaphora*)
         (metadata (contents (previous-sentence))))
 
   (unless *do-anaphora*
