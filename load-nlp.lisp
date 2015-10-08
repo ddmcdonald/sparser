@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2010-2015 David D. McDonald
 ;;;
 ;;;   File:   load-nlp
-;;; Version:  August 2015
+;;; Version:  October 2015
 
 #|
  This file loads the language understanding system Sparser, the
@@ -79,17 +79,13 @@
         ddm-util
         #+apple ccl
         #+openmcl :ccl)
-  (:nicknames :sp)
-; (:import-from :cl-user 
-;                #:sparser-file #:sparser-load-file
-  ;              #:sparser-sourcefile #:s-load)
-)
-
+  (:nicknames :sp))
 
 ;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, that invocatation of
 ;; defpackage does not include ddm-util in the result. Works just fine
 ;; in ACL and before installing Lion (for what that's worth).  -- ddm
 #+openmcl (use-package (find-package :ddm-util) (find-package :sparser))
+
 
 
 ;; #5 Load Mumble
@@ -124,6 +120,7 @@
         (case script
           (:fire "scripts/fire")
           (:biology "scripts/bio-script")
+          (:blocks-world "scripts/blocks-world")
           (:grok "scripts/grok")
           (:c3 "scripts/C3-script")
           (:no-grammar "scripts/no-grammar")
@@ -133,7 +130,7 @@
            (error "The value provided for cl-user::script was ~a~
                  ~%which is not one of the anticipated values:~
                  ~%  :fire, :biology, :grok, :c3, :no-grammar, ~
-                 :just-dm&pm or :default"
+                 :just-dm&pm, :blocks-world, or :default"
                   script)))))
   (format t "~&Using the ~a loading script~%" sparser-load-script)
 
