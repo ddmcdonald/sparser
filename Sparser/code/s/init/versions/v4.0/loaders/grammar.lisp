@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  January 2015
+;;;   version:  October 2015
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -57,7 +57,7 @@
 ;; of plurals for the lemmas in 1st-kinds. 1/30/15 had to change conditionalization
 ;; on situation to get text structure to load. 9/22/15 Want to refer to the upper model
 ;; in the categories that are defined with the words so moved kinds;1st-loader ahead
-;; of words
+;; of words. 10/6/15 added blocks-world.
 
 
 (in-package :sparser)
@@ -231,6 +231,9 @@
   (gate-grammar *biology* ;; or *c3* or *ISR*, gate-grammar
     ;; uses this argument to determine where to store the rules
     (gload "sit-rules;loader"))
+
+  (gate-grammar *blocks-world*
+    (gload "blocks;loader"))
 
 
   (gate-grammar *waypoints*
