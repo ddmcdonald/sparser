@@ -355,7 +355,6 @@ thinking about the future when some kind of "semantic paging" is available.
 
 (defun do-the-type-of-type-by-hand ()
    "otherwise the set-of-all-sets paradox bites you"
-   (declare (special type))
    (let* ((the-vector
            (make-mtype :postprocessed? t
                        :name  'Mtype
