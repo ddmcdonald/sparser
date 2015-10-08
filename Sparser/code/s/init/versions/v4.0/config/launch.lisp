@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1997,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "launch"
 ;;;   Module:  "init;versions:v4.0:config:"
-;;;  version:  October 2013
+;;;  version:  October 2015
 
 ;; 10/7/94 commented out the call to make objects permanent and move it to the
 ;; save images file. 10/12 turning off the break-outside-coverage flag
@@ -38,7 +38,7 @@
 ;; blocked the workspaces when compiling since they can invoke grammar
 ;; resources that won't exist when just compiling files. 9/16/13 added c3 setting.
 ;; 10/21/13 Changed the default switch setting to fire, which at the moment
-;; is the equivalent of making it Strider's settings.
+;; is the equivalent of making it Strider's settings. 10/7/15 Added *CwC* case.
 
 (in-package :sparser)
 
@@ -170,6 +170,7 @@
   (cond
     (*grok* (grok-setting))
     (*big-mechanism* (bio-setting))
+    (*CwC* (blocks-world-setting))
     (*bbn*  (all-edges-setting))
     (*fire* (fire-setting))
     (*c3* (c3-setting))
