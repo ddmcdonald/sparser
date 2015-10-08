@@ -13,7 +13,7 @@
 ;; back here 6/11/15 reincarnated as 'install-contents' that only
 ;; does it once. Added more mixins to the content classes for
 ;; organizing aggregation of their relations and entities as well
-;; as record their rhetorical aspects. 
+;; as record their rhetorical aspects.
 
 (in-package :sparser)
 
@@ -31,7 +31,7 @@
 ;;;---------------------
 
 (defparameter *container-for-sentence* :simple ;; :situation
-  "Switch parameter for the kind of container we make for 
+  "Switch parameter for the kind of container we make for
    a sentence, which could be designed for simple accumulation,
    presumably structured accumulation, long-distance parse state
    or (the motive for all this) a situation.")
@@ -57,13 +57,14 @@
 ;;; content containers for document elements
 ;;;------------------------------------------
 
-(defclass sentence-content (container parsing-status 
+(defclass sentence-content (container parsing-status
                             local-layout epistemic-status
                             entities-and-relations
                             sentence-discourse-history
                             sentence-text-structure
                             accumulate-items ordered)
-  ()
+  ((metadata :initform nil :accessor metadata
+    :documentation "Metadata describing choices made by Sparser."))
   (:documentation "From container we get :in to point back to the
     sentence. From ordered we get previous and next so we can link
     the directly without having to go to the sentence objects."))
@@ -94,7 +95,7 @@
                              sentence-tt-counts)
   ()
   (:documentation "Will want a bunch more structure just over
-    the enties for the purpose of facilitating anaphora. 
+    the enties for the purpose of facilitating anaphora.
     Story structure might be paragraph based too."))
 
 (defclass section-content (container aggregated-bio-terms
@@ -106,7 +107,7 @@
   ())
 
 
-  
+
 ;;;---------------------------------------------------------
 ;;; Setting the context of the different levels of document
 ;;;---------------------------------------------------------
@@ -137,10 +138,10 @@
 #|   Definition for Grok
   "Supplies the content field of an article"
   ;; placeholder for resource -- but only via a generating macro that
-  ;; has some generality. 
+  ;; has some generality.
   (let ((contents (make-instance 'text-relation-contents :container article))
         (symbol (name article)))
-    (if symbol 
+    (if symbol
       (setf (name contents) symbol)
       (setf (name contents) :no-name-in-article))
     contents))
@@ -162,7 +163,7 @@
 
 (defclass simple-container (container accumulate-items)
   ())
-  
+
 (defmethod print-object ((c accumulate-items) stream)
   (print-unreadable-object (c stream :type t)
     (let ((items (items c))
@@ -201,7 +202,7 @@
 
 
 
-          
+
 ;;----------- original, clumsy Grok code below here ----------
 
 (defclass text-relation-contents (named-object
