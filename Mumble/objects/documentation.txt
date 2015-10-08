@@ -19,9 +19,9 @@ indicated type and populates its fields. It does not attempt to
 interpret the field contents and make the substitutions of objects for
 expressions; that is the job of the postprocessing code.
 
-The parameter values in the filepostprocessing-order list the types in
+The parameter values in the file postprocessing-order list the types in
 Mumble-86 from the least encumbered (e.g. its expressions are only
 names or function symbols) to the most (expressions reference other
 objects). Postprocessing follows this order, using the functions
-defined and associated w ith the types in the postprocess-objects
+defined and associated with the types in the postprocess-objects
 file, which also contains the macros for the forms.
