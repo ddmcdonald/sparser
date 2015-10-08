@@ -23,7 +23,8 @@
 ;; 0.1 (1/30/14) Determined that defining a region the established way
 ;;   is the source of the duplicated rules in the load, so refactored it
 ;;   into a named regions and a relation to its type. 
-;;   (4/14/14) Fixed instantiation issue in border. 
+;;   (4/14/14) Fixed instantiation issue in border.
+;; (10/7/15) Conditioned references to countries 
 
 (in-package :sparser)
 
@@ -189,6 +190,8 @@
               rule))))
 
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (when *countries*
 
 (define-category located-in
   :instantiates self
@@ -213,6 +216,7 @@
         :country country :region location)
     location)) ;; return the referent of the right edge
 
+)) ;; close eval-when
 
 
 ;;;--------------------------
