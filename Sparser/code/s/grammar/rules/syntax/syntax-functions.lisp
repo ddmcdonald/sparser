@@ -272,7 +272,13 @@
 (defun find-or-make-aspect-vector (vg)
   (unless (or
            (itypep vg 'event)
-           (itypep vg 'have))
+           (itypep vg 'have)
+           (and
+            (itypep vg 'collection)
+            (let ((vg1 (car (value-of 'items vg))))
+              (or
+               (itypep vg1 'event)
+               (itypep vg1 'have)))))
     (break "~s is not an event, tense/aspect only applies to individuals that ~
             inherit from event." vg))
   (or (value-of 'aspect vg)
@@ -898,8 +904,21 @@
              ;; provision for inheritance, but if we need it because
              ;; of the reach of the override we should do something
              ;; different with it.
-             (or (itypep item category)
-                 (eq category override-category))))
+             (cond
+              ((itypep item 'collection)
+               ;; this check is patterned after, but not entirely identical with
+               ;; the category that conjoin-two-edges inserts for the edge
+               ;; over a conjunction
+               ;; we only apply itypep to the referent first conjoined item
+               ;; eventually should be 
+               ;; (assuming the type variable of a collection is always set)
+               ;; (itypep (value-of 'type item) category)
+               (if
+                (car (value-of 'items item))
+                (itypep (car (value-of 'items item)) category)
+                (lsp-break "collection without items -- fix this")))
+              ((itypep item category))
+              (t (eq category override-category)))))
       (cond
        ((itypep item category::pronoun/inanimate)
         t)
