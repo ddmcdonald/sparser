@@ -211,6 +211,21 @@ similar effects occurred with DPI, NAC and SB203580."
 In article 2  "c-termini"
 |#
 
+(defun load-xml-to-doc-if-necessary ()
+  "If you load Sparser first and R3 second, then you can't
+   assume that the XML-reader is loaded (and you can't
+   use :r3 as a package name). This uses the definition
+   of the package as a proxy for the whole relevant body
+   of code having been loaded."
+  (unless (find-package :r3)
+    (if (boundp 'cl-user::*r3-trunk*)
+      (let ((code-dir (string-append cl-user::*r3-trunk* "code/")))
+        (cwd code-dir)
+        (load "load.lisp"))
+      (format nil "You have to set *r3-trunk*"))))
+
+
+
 ; (setq *show-section-printouts* t)
 
 ; (ddm-load-article-2 t)
@@ -286,13 +301,11 @@ In article 2  "c-termini"
 (defun ddm-bio ()
   (ddm-ed "grammar/model/sl/biology/mechanics.lisp")
   (ddm-ed "grammar/model/sl/biology/taxonomy.lisp")
-  (ddm-ed "grammar/model/sl/biology/proteins.lisp")
-  (ddm-ed "grammar/model/sl/biology/protein-families.lisp")
   (ddm-ed "grammar/model/sl/biology/new-RAS2-proteins.lisp")
+  (ddm-ed "grammar/model/sl/biology/proteins.lisp")
   (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
   (ddm-ed "grammar/model/sl/biology/terms1.lisp")
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
-  (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
   (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
   (ddm-ed "grammar/model/sl/biology/rhetoric.lisp")
   (ddm-ed "grammar/model/sl/biology/doc-structure.lisp")
@@ -301,6 +314,11 @@ In article 2  "c-termini"
   (ddm-ed "grammar/model/sl/biology/parse-biopax.lisp") ;; +R3
   (ddm-ed "grammar/model/sl/biology/find-extension.lisp") ;; +R3
   (ddm-ed "grammar/model/sl/biology/new-words.lisp")
+  (ddm-ed "grammar/model/sl/biology/UCD-proteins2.lisp")
+  (ddm-ed "grammar/model/sl/biology/protein-families.lisp")
+  (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
+  (ddm-ed "grammar/model/sl/biology/methods.lisp")
+  (ddm-ed "grammar/model/sl/biology/examples.lisp")
   (ddm-ed "grammar/model/sl/biology/new-word-list.lisp"))
 ;;  molecules and NGkappB not loaded
 ;; cf. model/sl/NIH/site.lisp
@@ -896,5 +914,39 @@ Worse: (7)
 ((1 . 3) (2 . 1) (3 . 3) (4 . 3) (5 . 9) (6 . 1) (7 . 13) (8 . 6) (9 . 7) (10 . 10) (11 . 3)) 
 
 |#
+
+
+
+; (setq *permit-extra-open-parens* t)
+;? (f "/Users/ddm/ws/Sparser local/corpus/LarryHunterBioBook/BeingAlive.textsource")
+
+
+; (word-frequency-setting)
+; (setq *stem-words-for-frequency-counts* nil)
+; (initialize-word-frequency-data)
+; (f "/Users/ddm/sift/nlp/corpus/biology/hallmarks.txt")
+;; Added fair number of characters to analyzers/tokenizer/alphabet.lisp
+;; 2,902 unique words in 23,973 words
+#|
+took 74,471 microseconds (0.074471 seconds) to run.
+      2,917 microseconds (0.002917 seconds, 3.92%) of which was spent in GC.
+During that period, and with 8 available CPU cores,
+     79,797 microseconds (0.079797 seconds) were spent in user mode
+      1,607 microseconds (0.001607 seconds) were spent in system mode
+ 2,284,960 bytes of memory allocated.
+
+|#
+
+;; 2/6/14
+; (setq *uniformly-scan-all-no-space-token-sequences* t)
+;   polyword referents for HBP1 or D1 made done by reify-spelled-name
+;   called from reify-ns-name-and-make-edge
+; Referent is a category cons'd on the fly -- doesn't feel right
+; (p "HBP1 is a repressor of the cyclin D1 gene and inhibits the Wnt signaling pathway. The inhibition of Wnt signaling and growth requires a common domain of HBP1. The apparent mechanism is an inhibition of TCF/LEF DNA binding through physical interaction with HBP1")
+
+; (f "/Users/ddm/sift/nlp/corpus/biology/cholera.txt")
+
+;  8/11/14 Sweep through everything and scoop up all the bio-entities
+; (setq *kind-of-chart-processing-to-do* :r3-entity-sweep)
 
 
