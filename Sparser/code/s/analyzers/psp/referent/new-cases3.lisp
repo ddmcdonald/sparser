@@ -197,8 +197,12 @@
         (setq head (car head))
         (error "head is a cons. New case: ~a" head)))
 
-    (if *do-not-use-psi*
-      (then 
+    (when (null *do-not-use-psi*)
+      ;; note - below this code is commented out
+      (error "Expected the *do-not-use-psi* flag to be up"))
+
+    (when *do-not-use-psi*
+
        (let ((lp (cat-lattice-position head))
              bindings-plist  annotation-list  )
          (dolist (pair binding-exp/s)
@@ -251,7 +255,7 @@
            (setq return-value i))))
 
       ;; psi case
-      (let ((psi
+    #|(let ((psi
              (typecase head
                (psi
                 (setq type-of-head
@@ -298,14 +302,11 @@
           ;; annotate what c+v the value has been bound to.
           (annotate-site-bound-to value variable type-of-head edge))
         (setq return-value psi) ;; after the dust has settled
-        ))
+        ) |#
 
     (when *annotate-realizations*
       ;; annotate this combination
-      (let ((lattice-point
-             (if *do-not-use-psi*
-               (cat-lattice-position head)
-               (psi-lp return-value))))
+      (let ((lattice-point (cat-lattice-position head)))
         (cond 
          ((and head-edge arg-edge) ;; canonical case
           (annotate-realization-pair
@@ -360,8 +361,7 @@
                         value-datum
                         (cdr binding-exp)))
         (body *referent*)
-        (psi? (typep *referent* 'psi))
-        value  head-edge  arg-edge  edge-being-bound  extended-psi)
+        value  head-edge  arg-edge  edge-being-bound )
 
     (unless value-symbol
       (break "Threading bug -- no value for the value symbol ~A~
@@ -383,6 +383,11 @@
                             (type-of value-symbol) value-symbol)))))
     (tr :ref/binding variable value body)
 
+    ;; This had no utility other than to allow the code that
+    ;; sets these to be kept around for use by a t.b.d. annotation
+    ;; routine now that the psi-based routine is no longer called
+    (cons head-edge arg-edge)
+
     (setq edge-being-bound (case value-symbol
                              (right-referent *right-edge-into-reference*)
                              (left-referent *left-edge-into-reference*)))
@@ -400,25 +405,14 @@
         (setq variable v)))
 
     (when value
-      (if psi?
-        (setq extended-psi (find-or-make-psi-with-binding variable value body))
-        (setq body (bind-dli-variable variable value body))))
+      (setq body (bind-dli-variable variable value body))
 
     ;; //// annotate the value re. what c+v it's been bound to
     (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
 
-    ;; annotate this combination
-    (when psi?
-      ;; composite case has does the annotation within the
-      ;; code that does the opportunistic binding.
-      ;; --- what about individuals ???  3/16/05 ----
-      (annotate-realization-pair
-       extended-psi (psi-lp extended-psi) *rule-being-interpreted*
-       head-edge arg-edge))
-
-    (tr :ref/binding-result variable (or extended-psi body))
-    (or extended-psi
-        body)))
+    (tr :ref/binding-result variable body)
+    
+    body))
 
 
 
