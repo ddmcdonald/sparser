@@ -66,9 +66,10 @@
   ;; If we want to drive methods off of these then we need to
   ;; use specialize-object and have the class and shadow
   ;; created. This one is used strictly for comparison
-  (let ((present-type-field (indiv-type i)))
-    (pushnew mixin present-type-field)
-    i))
+  
+  ;; NO LONGER MAKE A COLLECTION HAVE THE SAME TYPE OF AN ELEMENT
+    ;;(pushnew mixin (indiv-type i))
+    i)
 
 
 
