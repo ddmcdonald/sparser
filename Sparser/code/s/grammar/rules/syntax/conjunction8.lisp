@@ -617,30 +617,31 @@
     ;; but no referent. 
     (if (or (consp left-ref)
             (consp right-ref))
-     (break "bad referent in referent-of-two-conjoined-edges, ~s"
-            left-ref right-ref)
-
-     (let* ((left-type (etypecase left-ref
-                         (individual (car (indiv-type left-ref)))
-                         (category left-ref)))
-            (right-type (etypecase right-ref
-                          (individual (car (indiv-type right-ref)))
-                          (category right-ref)))
-            (type left-type))
-       
-       (unless (eq left-type right-type)
-         (multiple-value-setq (left-ref right-ref type)
-           (adjudicate-specializations left-ref left-type
-                                       right-ref right-type)))
-       (let ((collection
-              (define-or-find-individual 'collection
-                                         :items (list left-ref right-ref)
-                :number 2
-                :type type)))
-         ;;(push-debug `(,collection ,type))
-         (when type
-           (one-off-specialization collection type))
-         collection )))))
+        (break "bad referent in referent-of-two-conjoined-edges, ~s"
+               left-ref right-ref)
+        
+        (let* ((left-type (etypecase left-ref
+                            (individual (car (indiv-type left-ref)))
+                            (category left-ref)))
+               (right-type (etypecase right-ref
+                             (individual (car (indiv-type right-ref)))
+                             (category right-ref)))
+               (type left-type))
+          
+          (unless (eq left-type right-type)
+            (multiple-value-setq (left-ref right-ref type)
+              (adjudicate-specializations left-ref left-type
+                                          right-ref right-type)))
+          (let ((collection
+                 (define-or-find-individual 'collection
+                                            :items (list left-ref right-ref)
+                   :number 2
+                   :type type)))
+            ;;(push-debug `(,collection ,type))
+            (if
+             type
+             (one-off-specialization collection type)
+             collection ))))))
 
 
 (defun referent-of-list-of-conjoined-edges (edge-list)
