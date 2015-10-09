@@ -384,7 +384,7 @@
   ;; Perhaps better as an flet on multiply-referents since it has 
   ;; no other use. Tracks multiple-referent-categories
   (typecase obj
-    ((or individual psi referential-category) t)
+    ((or individual referential-category) t)
     (otherwise nil)))
 
 (defun multiple-referent-categories (referent)
@@ -393,7 +393,6 @@
   ;; most general. Feeds this list to multiply-referents
   (let ((base-category
          (typecase referent
-           (psi (all-categories-in-psi referent))
            (individual (indiv-type referent))
            (referential-category referent)
            (otherwise
