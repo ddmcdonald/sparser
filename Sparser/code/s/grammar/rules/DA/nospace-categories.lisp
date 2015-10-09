@@ -166,7 +166,8 @@
     (unless i
       (setq i (find-or-make-individual category 
                                       :left left-ref
-                                      :right right-ref)))
+                                      :right right-ref
+                                      :items (list left-ref right-ref))))
  
     (let ((edge (make-edge-over-long-span
                  pos-before 
@@ -416,7 +417,8 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
   (push-debug `(,left-edge ,right-edge))
   (let ((i (find-or-make-individual 'word-colon-word
              :left (edge-referent left-edge)
-             :right (edge-referent right-edge)))
+             :right (edge-referent right-edge)
+             :items (list (edge-referent left-edge) (edge-referent right-edge))))
         (category category::word-colon-word))
 
     (when (eq (edge-category left-edge)
