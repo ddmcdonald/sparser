@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2012-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2015  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "conjunctions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.3 October 2014
+;;;   Version:   0.3 October 2015
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/11/94
 ;; added conjunction.] to "and" and "or" 3/17
@@ -18,16 +18,22 @@
 ;; 0.3 (8/31/14) Rewriting these as things that make an edge and have form
 ;;      labels so the new forest sweep can see them. Modeling them sort of
 ;;      on the way quantifiers are treated. 
+;;     (10/8/15) Hooked up conjunction and subordinate-conjunction into
+;;      the upper structure.
 
 (in-package :sparser)
 
 ;;--- these augment the definitions as form categories
 
 (define-category conjunction
-  :binds ((word  :primitive word)))
+  :specializes relation
+  :binds ((word  :primitive word))
+  :index (:permanent :key word))
 
 (define-category subordinate-conjunction
-  :binds ((word  :primitive word)))
+  :specializes relation
+  :binds ((word  :primitive word))
+  :index (:permanent :key word))
 
  
 (defun define-conjunction (string &key brackets form)
