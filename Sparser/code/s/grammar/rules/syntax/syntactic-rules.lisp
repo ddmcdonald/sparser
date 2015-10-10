@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  June 2015
+;;;  Version:  October 2015
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -38,6 +38,8 @@
 ;; 6/22/15 Downgraded to-comp in favor of prep-comp, which needs work to make
 ;;  a more specific set of rules that pay attention the the syntax of the
 ;;  complement: infinitive vs. particlple vs. ?. 
+;; 10/8/15 Wrote syntax rule for (subordinate-conjunction vp+ing). It will
+;;  presumably need extensions to other kinds of complements. 
 
 
 (in-package :sparser)
@@ -494,9 +496,25 @@ SUCH AS RHETORICAL ADVERBS
   :referent (:function assimilate-subject left-edge right-edge))
 
 |#
-                 
-              
 
+;;;--------------------------
+;;; subordinate conjunctions
+;;;--------------------------
+; These frequently have rhetorical or temporal force
+; e.g. the "thus" in 
+;   (p "SOS promotes the formation of GTP-bound RAS, thus activating this protein.")
+
+(def-syntax-rule (subordinate-conjunction vp+ing)
+                 :head :right-edge
+  :form vp+ing ;; swallow the conjunction. Not grammatical import
+  :referent (:function interpret-subordinator left-edge right-edge))
+
+                 
+
+;;;----------------------
+;;; "that" and "whether"
+;;;----------------------
+              
 (def-form-rule (that s)
   :form thatcomp
   :referent (:function create-thatcomp left-edge right-edge));; (:head right-edge))
@@ -505,7 +523,9 @@ SUCH AS RHETORICAL ADVERBS
   :form whethercomp
   :referent (:function create-whethercomp left-edge right-edge))
 
-(loop for vv in '((vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)(vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
+(loop for vv in '((vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
+                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
+  ;; verb complements 
   do
   (eval
    `(def-syntax-rule (,(car vv) thatcomp)
@@ -525,8 +545,8 @@ SUCH AS RHETORICAL ADVERBS
 
 
 
-
 (loop for nb in `(category::np ,@*n-bar-categories*)
+  ;; np complements
   do
   (eval
    `(def-syntax-rule (,nb thatcomp)
