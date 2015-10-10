@@ -405,7 +405,7 @@
         (setq variable v)))
 
     (when value
-      (setq body (bind-dli-variable variable value body))
+      (setq body (bind-dli-variable variable value body)))
 
     ;; //// annotate the value re. what c+v it's been bound to
     (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
