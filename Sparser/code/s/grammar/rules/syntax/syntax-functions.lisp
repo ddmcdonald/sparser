@@ -747,6 +747,29 @@
           (push-debug `(,vp-form ,vp-edge))
           (error "Unexpected vp form in np+vp: ~a" vp-form))))))))
 
+
+
+
+;;;--------------------------
+;;; subordinate conjunctions
+;;;--------------------------
+
+(defun interpret-subordinator (conj eventuality)
+  "Goes with (subordinate-conjunction vp+ing) rule and others like it.
+   The effect of the subordinate conjunction strictly depends on
+   the conjunction or its class, so most of the work will be done
+   by the method. If there's no applicable method then we mark
+   the conjunction as a modifier just to keep it around. My reading
+   of Quirk et al. is that the ones that we're most interested in
+   have an adverbial function in structuring the discourse (19.55)."
+  (or (call-compose conj eventuality)
+      eventuality)) ;; for the moment dropping it on the floor
+
+
+;;;----------------------
+;;; "that" and "whether"
+;;;----------------------
+
 (defun create-thatcomp (that s)
   (declare (ignore that))
   s)
@@ -767,6 +790,10 @@
 (defun assimilate-pp-subcat (head prep pobj)
   (assimilate-subcat head (subcategorized-variable head prep pobj) pobj))
 
+
+;;;-----------------------------
+;;; subcategorization machinery
+;;;-----------------------------
 
 (defun form-label-corresponding-to-subcat (subcat-label)
   ;; Used with pronouns to encode relationship when it's known
