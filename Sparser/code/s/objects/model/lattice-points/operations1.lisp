@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.2 August 2015
+;;;  version:  1.2 October 2015
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -36,9 +36,10 @@
 ;;      started caching superc's on the category's plist.
 ;;     (5/22/14) Wrote display-category-tree and some ancilary routines to print
 ;;      the whole set of categories nicely. 
-;;     3/21/2015 SBCL caught application of lp-super-category to non lattice point --
+;;     (3/21/2015) SBCL caught application of lp-super-category to non lattice point --
 ;;       form categories are not in a lattice...
 ;;     (8/12/15) Removed references to PSI.
+;;     (10/9/15 moved in useful functions from psi directory
 
 (in-package :sparser)
 
@@ -65,6 +66,28 @@
   (lp-category lp))
 
 
+(defun corresponding-lattice-point (unit)
+  (typecase unit
+    (psi
+     (psi-lp unit))
+    (individual
+     (cat-lattice-position (first (indiv-type unit))))
+    ;; Do individuals and categories point to the same lattice point for
+    ;; purposes of recording realization-nodes? 
+    (referential-category 
+     (cat-lattice-position unit))
+    (otherwise
+     (error "It doesn't make sense (or does it) to look up the ~
+             lattice-point of a~%~a" unit))))
+
+
+;;/// probably needs reconsideration if lp isn't updated well enough
+;; given use of description lattice
+(defun saturated? (lp)
+  (let ((bound (lp-variables-bound lp))
+        (possible (lp-variables-free (lp-top-lp lp))))
+    ;; Assumes that there's just one set of variables
+    (= (length bound) (length possible))))
 
 ;;;----------------------------------------------
 ;;; what categories does a category inherit from
