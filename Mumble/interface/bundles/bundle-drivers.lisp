@@ -229,7 +229,7 @@
 (defun should-be-pronominalized-in-present-context (dtn)
   (let ((grammatical-context (labels *current-position*))
 	(model-level-object (referent dtn)))
-    (when (mentions model-level-object)
+    (when (and model-level-object (mentions model-level-object))
       ;;(break "pronomialize? bundle = ~a" bundle)
       (cond  ((member (slot-label-named 'relative-pronoun) grammatical-context)
 	      'context-requires-a-relative-pronoun )
