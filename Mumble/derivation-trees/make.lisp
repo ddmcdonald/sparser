@@ -58,6 +58,12 @@
     dtn))
 
 
+(defun make-dtn (&key referent resource)
+  (let ((dtn (make-instance 'derivation-tree-node
+			    :referent referent
+               :resource resource)))
+    dtn))
+
 
 ;;---
 
@@ -113,16 +119,23 @@ but we don't want to count on that.
       (push apn (adjuncts dtn))
       apn)))
 
-(defun make-complement-node (parameter i dtn)
-  (let ((cn (make-instance 'complement-node
-			   :phrase-parameter parameter
-			   :bkptrs dtn)))
+(defmethod make-complement-node ((parameter-name symbol)
+                                 i (dtn derivation-tree-node))
+  (make-complement-node (parameter-named parameter-name)
+                        i dtn))
+
+(defmethod make-complement-node ((parameter parameter)
+                                 i (dtn derivation-tree-node))
+  (let* ((lexp (resource dtn))
+         (free-variables (free lexp))
+         (cn (make-instance 'complement-node
+               :phrase-parameter parameter
+               :bkptrs dtn)))
     (setf (value cn) i) ;; could have folded these into the make-instance call
     (setf (referent cn) i) ;; ditto
     ;;(setf (complements dtn) `(,cn)) ;; was causing duplicate complement-node
-    (push cn (complements dtn))
+    (push cn (bound lexp))
+    (setf (free lexp) (remove parameter free-variables))
     cn))
-			    
-
 
 
