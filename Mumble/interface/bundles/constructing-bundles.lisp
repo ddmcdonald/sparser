@@ -153,44 +153,54 @@
 
 
 (defun add-accessory (bundle name &optional value literal?)
-  (let ((accessory
-         (etypecase name
-	    (symbol
-	      (if (keywordp name)
-		  (accessory-type-named name)
-		  (mbug "Accessory types are to be indicated with keywords~%~
-                         you used a symbol for ~A in ~A"  name bundle)))
-	    (accessory-type name)))
-	(accessory-value
-         (if literal?
-           value
-	   (when value
-	     (etypecase value
-	       (symbol (or (accessory-value-named value)
-			   (label-named value)))	  
-	       (accessory-value value)
-	       (label value)
-	       (specification   value)
-	       (list value)
-	       (string (word-for-string value)))))))
+  (typecase bundle
+    (specification
+     (let ((accessory
+            (etypecase name
+              (symbol
+               (if (keywordp name)
+                   (accessory-type-named name)
+                   (mbug "Accessory types are to be indicated with keywords~%~
+                          you used a symbol for ~A in ~A"  name bundle)))
+              (accessory-type name)))
+           (accessory-value
+            (if literal?
+                value
+                (when value
+                  (etypecase value
+                    (symbol (or (accessory-value-named value)
+                                (label-named value)))	  
+                    (accessory-value value)
+                    (label value)
+                    (specification value)
+                    (list value)
+                    (string (word-for-string value)))))))
 
 ;    (when accessory-value
 ;      (unless (appropriate-value-for-accessory? accessory accessory-value)
 ;	(mbug "~A is not a known value for the accessory ~A"
 ;	      accessory-value accessory)))
       
-    (when (not (bundle-specificationp bundle))
-      (mbug "Add-accessory of ~A with value ~A~%~
-             was called on ~A instead of a bundle"
-	    name value bundle))
+       (when (not (bundle-specificationp bundle))
+         (mbug "Add-accessory of ~A with value ~A~%~
+                was called on ~A instead of a bundle"
+               name value bundle))
       
-    (let* ((existing-accessories
-	     (accessories bundle))
-	   (accessories-with-additions
-	     (cons (cons accessory accessory-value)
-		   existing-accessories)))
-      (set-accessories bundle accessories-with-additions)
-      accessories-with-additions)))
+       (let* ((existing-accessories
+               (accessories bundle))
+              (accessories-with-additions
+               (cons (cons accessory accessory-value)
+                     existing-accessories)))
+         (set-accessories bundle accessories-with-additions)
+         accessories-with-additions)))
+    (derivation-tree-node
+     (add-feature bundle name value literal?))
+    (otherwise
+     (push-debug `(,bundle ,name))
+     (error "Unexpected 1st arg passed to add-accessory: ~a~%~a"
+            (type-of bundle) bundle))))
+
+
 
 
 (defun make-a-further-specification (attachment-function &optional specification)
