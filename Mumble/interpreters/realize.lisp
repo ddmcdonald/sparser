@@ -83,12 +83,17 @@
 (defun realize-dtn (dtn) 
   (push-debug `(,dtn)) 
   (let ((resource (resource dtn))
+        (features (features dtn))
         phrase-type  root-node )
     (push-debug `(,resource))
 
     ;; Get the phrase instantiated
     (typecase resource
-      (lexicalized-phrase (break "realize-dtn lexicalized-phrase stub"))
+      (lexicalized-phrase
+       (let ((phrase (phrase resource)))
+         (feature-driven-prepocessing features dtn) ;;///hack
+         (setq phrase-type (caar (definition phrase)))
+         (setq root-node (instantiate-lexicalized-phrase resource))))
       (phrase 
        (setq phrase-type (caar (definition resource)))
        (setq root-node (instantiate-phrase-in-dtn resource dtn)))
@@ -99,7 +104,7 @@
     ;; Handle features and adjunctions
     (typecase resource
       ;; The 'otherwise' case is caught just above.
-      (phrase
+      ((or phrase lexicalized-phrase)
        (push-debug `(:realize-dtn ,root-node ,phrase-type))
        ;;(break "after dtn resource instantiated") ;; replace w/ landmark??
        (case (name phrase-type)
