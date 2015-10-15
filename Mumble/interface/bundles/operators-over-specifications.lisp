@@ -1,14 +1,17 @@
 ;;; -*- Syntax: Common-lisp; Mode: LISP; Package: MUMBLE -*-
-;;; $Id: operators-over-specifications.lisp 100 2007-07-04 14:31:27Z dmcdonal $
-
 ;;;  MUMBLE-86: message-level;operators-over-specifications
 
+;;; Copyright (C) 2015 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+
+;; Changelog:
+;; 10/13/15 added more determiner cases to match set in
+;; process-determiner-accessory. 
 
 (in-package :mumble)
 
@@ -122,17 +125,36 @@
 (defun initially-indefinite (np-bundle)
   (add-accessory np-bundle
 		 :determiner-policy
-		 'indefinite-first-mention_definite-subsequent-mentions))
+		 'indefinite-first-mention_definite-subsequent-mentions)
+  np-bundle)
 
 (defun always-definite (np-bundle)
   (add-accessory np-bundle
 		 :determiner-policy
-		 'always-definite))
+		 'always-definite)
+  np-bundle)
 
 (defun no-determiner (np-bundle)
   (add-accessory np-bundle
 		 :determiner-policy
-		 'no-determiner))
+		 'no-determiner)
+  np-bundle)
+
+(defun anonymous-individual (np-bundle)
+  (add-accessory np-bundle
+		 :determiner-policy
+		 'anonymous-individual)
+  np-bundle)
+
+(defun known-individual (np-bundle)
+  (add-accessory np-bundle
+		 :determiner-policy
+		 'known-individual)
+  np-bundle)
+
+(defun kind (np-bundle)
+  (add-accessory np-bundle :determiner-policy 'kind)
+  np-bundle)
 
 ;################  Adding Further-Specifications ################
 
