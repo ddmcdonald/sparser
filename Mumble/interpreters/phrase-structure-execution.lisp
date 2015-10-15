@@ -1,10 +1,7 @@
 ;;; -*- Mode: Lisp;  Package: Mumble; Syntax: Common-lisp; Base: 10 -*-
-;;; $Id: phrase-structure-execution.lisp 341 2009-12-29 17:09:23Z dmcdonal $
-
-
 ;;;  MUMBLE-86:  interpreters> phrase-structure-execution
 
-;;; Copyright (C) 1985-2000,2010-2011  David D. McDonald
+;;; Copyright (C) 1985-2000,2010-2015  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for
@@ -16,7 +13,8 @@
 ;;   position type was renamed mposition to avoid a class with the position
 ;;   structure in Sparser. Affected the ecase in process-slot.
 ;;  3/26/07 Beginging to knit in unconventional objects. 
-;;  3/17/11 Tweaking things a little
+;;  3/17/11 Tweaking things a little 10/13/15 folded trace into
+;; contents options
 
 (in-package :mumble)
 
@@ -88,10 +86,12 @@
 	     (realization-cycle new-contents position)
 	     new-contents)))
     (typecase contents
+      (derivation-tree-node
+       (realize-and-knit contents))
+      ((or phrasal-root node word pronoun tense-marker ttrace)
+       contents)
       ((or bundle-specification kernel-specification)
        (realize-and-knit contents))
-      ((or phrasal-root node word pronoun tense-marker)
-       contents)
       (otherwise
        (if (has-realization? contents)
 	     (realize-and-knit contents)
