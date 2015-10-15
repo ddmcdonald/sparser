@@ -1,9 +1,7 @@
-;;; -*- Mode: LISP;  package: MUMBLE;  Syntax: Common-lisp; Base: 10 -*-
-;;; $Id: instantiate-phrase.lisp 342 2009-12-29 18:35:14Z dmcdonal $
-
+;;; -*- Mode: LISP;  package: MUMBLE;  Syntax: Common-lisp; Base: 10 -*
 ;;; MUMBLE-05:  interpreters> realization> instantiate-phrase
 
-;;; Copyright (C) 2005,2011-2014 David D. McDonald
+;;; Copyright (C) 2005,2011-2015 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
@@ -19,7 +17,8 @@
 ;; 9/18/09 ddm. Converted instantiate-lexicalized-phrase to a method.
 ;; 3/28/11 ddm: Fixing glitches in mapping from DTN. 11/21/12 accomodate directly
 ;; pasing in a parameter object. 1/27/14 Added instantiate-phrase to quiet the
-;; compiler even though it's not likely to work
+;; compiler even though it's not likely to work. 10/13/15 folded trace into
+;; contents options. 
 
 (in-package :mumble)
 
@@ -75,7 +74,7 @@
 ;;;--------------
 
 (defmethod instantiate-lexicalized-phrase ((lp saturated-lexicalized-phrase))
-  (let ((phrase (resource lp)))
+  (let ((phrase (phrase lp)))
     (let-with-dynamic-extent 
 	((*phrase-parameter-argument-list* 
 	  (pvp-to-list-of-parameter-value-conses (bound lp))))
@@ -204,7 +203,7 @@
                (push-debug `(,contents ,*phrase-parameter-argument-list*))
                (break "parameter-value of ~a returned nil." contents))
              (typecase value
-               ((or word specification)
+               ((or word specification ttrace)
                 (set-contents slot value))
                (node (knit-phrase-into-tree slot value))
                (derivation-tree-node
