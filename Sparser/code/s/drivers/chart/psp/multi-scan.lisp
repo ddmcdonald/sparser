@@ -501,6 +501,7 @@
   ;; constructed to span the whole expression. 
   (push-debug `(,paren-edge ,pos-before-open ,pos-after-open
                 ,pos-before-close ,pos-after-close))
+  ;; (lsp-break "call to assess-parenthesized-content")
   #| (setq first-edge (nth 0 *) pos-before-open (nth 1 *)
         pos-after-open (nth 2 *) pos-before-close (nth 3 *)
         pos-after-close (nth 4 *)) |#
@@ -512,27 +513,38 @@
           (when (edge-p first-edge) ;; e.g. "the underlying mechanism(s)."
             (eq (pos-edge-ends-at first-edge) pos-before-close)))
          (edge-to-left (left-treetop-at/edge pos-before-open)))
-    (declare (special edge-to-left first-edge))
     (cond
      ((and (edge-p first-edge)
            one-edge-over-entire-segment?
            (one-word-long? first-edge)
            (eq (pos-capitalization pos-after-open) :all-caps))
-      (let ((ev-after-close (pos-ends-here pos-after-close))
-            (ev-of-edge (when edge-to-left (edge-ends-at edge-to-left))))
-        (when edge-to-left ;; otherwise there's nothing to hide under
-          ;; Move the edge over the parentheses
-          (knit-edge-into-position edge-to-left ev-after-close)
-          (setf (edge-ends-at edge-to-left) ev-after-close)        
-          ;; save the information we need to recover it all
-          
+      (unless edge-to-left
+        (lsp-break "Stub of new case: probable acronym w/o edge to the left"))
+      (when edge-to-left ;; otherwise there's nothing to hide under
+        (let* ((ev-after-close (pos-ends-here pos-after-close))
+               (ev-to-get-edges-from (edge-starts-at edge-to-left))
+               (edges-to-extend (all-edges-on ev-to-get-edges-from))
+               (ev-of-edge (edge-ends-at edge-to-left)))
+          ;; There may be more than one edge just before the open,
+          ;; i.e. it's top-node is :multiple-initial-eges. We need to
+          ;; make all of them longer because which of these edges is
+          ;; going to be selected by the chunker can't be determined here.
 
-          (push `(,pos-before-open ,paren-edge ,first-edge ,ev-of-edge)
-                *pending-acronyms*)
+          (loop for edge in edges-to-extend
+            ;; Move the edge over the parentheses
+            do 
+            (knit-edge-into-position edge ev-after-close)
+            (setf (edge-ends-at edge) ev-after-close))
+
+;          (knit-edge-into-position edge-to-left ev-after-close)
+;          (setf (edge-ends-at edge-to-left) ev-after-close)
+
+          ;; save the information we need to recover it all
           ;;(lsp-break "*pending-acronyms*")
-          )))
+          (push `(,pos-before-open ,paren-edge ,first-edge ,ev-of-edge)
+                *pending-acronyms*))))
      (*hide-parentheses*
-      (lsp-break "hide parentheses?")
+      (lsp-break "stub: finish revision of hide parentheses?")
       (hide-parenthesis-edge paren-edge edge-to-left)))))
 
 (defun recover-acronym-if-necessary (segment-start segment-end)
@@ -546,9 +558,9 @@
                (paren-edge (second data))
                (acronym-edge (third data))
                (ev-of-edge-to-the-left (fourth data)) ;; ends at
-               (regular-edge (ev-top-node ev-of-edge-to-the-left)))
-          (setq *pending-acronyms* nil)
-          (push-debug `(,pos-before-open ,paren-edge ,acronym-edge
+               (regular-edge (highest-edge ev-of-edge-to-the-left)))
+          (setq *pending-acronyms* nil) ;; clear flag
+          (push-debug `(,pos-before-open ,paren-edge ,acronym-edge ; 
                         ,ev-of-edge-to-the-left ,regular-edge))
           (unless regular-edge
             ;; have to go find it. Could be argument for hacking
@@ -571,13 +583,7 @@
                 (setf (cfr-rhs rule) (list uppercase-word))
                 (setf (cfr-form rule) (edge-form regular-edge))
                 (setf (cfr-referent rule) regular-referent)
-                ;;h(break "acronym made rule ~a" rule)
                 rule ))))))))
-
-;; (setq *pending-acronyms* nil)
-
-  
-
 
 
 (defun hide-parenthesis-edge (paren-edge edge-to-immediate-left)
