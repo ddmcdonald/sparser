@@ -81,12 +81,25 @@
 
 
 
+(define-category post-translational-modification :specializes bio-process
+  :binds ((agent biological) ;; what causes it to happen
+          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
+          (site residue-on-protein)) ;; which is attached here
+  :realization (:noun "post-translational modification")
+  )
+
+(def-synonym post-translational-modification
+     (:noun "post-transcriptional modification"))  
+(def-synonym post-translational-modification
+     (:noun "post-transcriptional fate"))  
+
+
+
+(define-category phosphorylation-modification :specializes post-translational-modification)
+
 (define-category acetylation
   :specializes post-translational-modification
   :instantiates self
-  :binds ((agent biological)
-          (substrate (:or protein residue-on-protein))
-          (site residue-on-protein))
   :index (:temporary :sequential-keys site substrate)
   :realization
   (:verb "acetylate" :noun "acetylation"
@@ -99,26 +112,20 @@
    :at site))
 
 (define-category farnesylation 
- :specializes post-translational-modification 
- :binds ((agent biological) ;; what causes it to happen
-         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
-         (site residue-on-protein)) ;; which is attached here
+  :specializes post-translational-modification 
   :realization 
-    (:verb "farnesylate"
-     :noun "farnesylation"
-     :etf (svo-passive pre-mod) 
-     :s agent 
-     :o substrate
-     :m site
-     :of substrate
-     :on site
-     :at site))
+  (:verb "farnesylate"
+         :noun "farnesylation"
+         :etf (svo-passive pre-mod) 
+         :s agent 
+         :o substrate
+         :m site
+         :of substrate
+         :on site
+         :at site))
 
 (define-category glycosylation 
  :specializes post-translational-modification 
- :binds ((agent biological) ;; what causes it to happen
-         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
-         (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "glycosylate"
      :noun "glycosylation"
@@ -132,9 +139,6 @@
 
 (define-category hydoxylation 
  :specializes post-translational-modification 
- :binds ((agent biological) ;; what causes it to happen
-         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
-         (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "hydoxylate"
      :noun "hydoxylation"
@@ -148,9 +152,6 @@
 
 (define-category methylation 
  :specializes post-translational-modification 
- :binds ((agent biological) ;; what causes it to happen
-         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
-         (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "methylate"
      :noun "methylation"
@@ -170,9 +171,6 @@
 (define-category phosphorylate
   :specializes phosphorylation-modification
   :instantiates self
-  :binds ((agent biological)
-          (substrate (:or protein residue-on-protein))
-          (site residue-on-protein))
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
@@ -186,7 +184,6 @@
 
 (define-category auto-phosphorylate
   :specializes phosphorylation-modification
-  :binds ((agent bio-entity))
   :realization
   (:verb "auto-phosphorylate" :noun "auto-phosphorylation"
    :etf (sv)
@@ -194,21 +191,17 @@
 
 (define-category dephosphorylate
   :specializes post-translational-modification
-  :binds ((agent biological)(object molecule)) 
   :realization
   (:verb "dephosphorylate" :noun "dephosphorylation"
    :etf (svo-passive)
    :s agent
-   :o object
-   :of object))
+   :o substrate
+   :of substrate))
 
 
 (define-category transphosphorylate
   :specializes phosphorylation-modification
   :instantiates self
-  :binds ((agent biological)
-          (substrate (:or protein residue-on-protein))
-          (site residue-on-protein))
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "transphosphorylate" :noun "transphosphorylation"
@@ -223,9 +216,6 @@
 
 (define-category ribosylation 
  :specializes post-translational-modification 
- :binds ((agent biological) ;; what causes it to happen
-         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
-         (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "ribosylate"
      :noun "ribosylation"
@@ -239,9 +229,6 @@
 
 (define-category sumoylation 
  :specializes post-translational-modification 
- :binds ((agent biological) ;; what causes it to happen
-         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
-         (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "sumoylate"
      :noun "sumoylation"
@@ -268,9 +255,6 @@
 
 (define-category ubiquitination
  :specializes post-translational-modification 
- :binds ((agent biological) ;; what causes it to happen
-         (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
-         (site residue-on-protein)) ;; which is attached here
   :realization 
     (:verb "ubiquitinate"
      :noun "ubiquitination"
@@ -652,8 +636,7 @@ it is created from N-terminus to C-terminus.|#
 (define-category bio-complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
   :specializes bio-chemical-entity
   :mixins (reactome-category)
-  :binds ((cellularlocation cellular-location)
-          (component (:or bio-complex small-molecule protein))
+  :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "complex"
@@ -667,8 +650,7 @@ it is created from N-terminus to C-terminus.|#
 (define-category tricomplex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
   :specializes bio-complex
   :mixins (reactome-category)
-  :binds ((cellularlocation cellular-location)
-          (component (:or bio-complex small-molecule protein))
+  :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "tricomplex"
@@ -683,8 +665,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 (define-category dimer :specializes bio-complex
-   :binds ((cellularlocation cellular-location)
-          (component (:or bio-complex small-molecule protein))
+   :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "dimer"
@@ -698,8 +679,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 (define-category heterodimer :specializes bio-complex
-   :binds ((cellularlocation cellular-location)
-          (component (:or bio-complex small-molecule protein))
+   :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "heterodimer"
@@ -718,7 +698,24 @@ it is created from N-terminus to C-terminus.|#
   :lemma (:common-noun "heterodimerization"))
 
 
+(define-category homodimer :specializes bio-complex
+   :binds ((component (:or bio-complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :realization
+  (:noun "homodimer"
+         :etf pre-mod
+         :premod component
+         :m component
+         :with component
+         :of component
+         :between component))
 
+; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
+; Dec33: endogenous C-RAF:B-RAF heterodimers
+(define-category homodimerization
+  :specializes bio-process
+  :instantiates :self
+  :lemma (:common-noun "homorodimerization"))
 
 
 

@@ -40,6 +40,7 @@
 ;; 5/30/2015 Rename poorly named "predicate" to "bio-predication" and update dependencies
 ;; 6/8.2015 added cyclic and plasmid definitions
 ;; 7/6/2015 New merge-classes post-translational-modification and phosphorylation-modification
+;; 10/15/2015 moved post-translational-modification and phosphorylation-modification to phenomena
 ;;   make it easier to find processes that are handled the same way wrt MITRE index cards
 ;; 9/22/15 More colapsing of cases,
 
@@ -205,7 +206,6 @@
 
 (define-category bio-chemical-entity :specializes bio-entity ;; includes all molecules and complexes   ;; sweeps a lot under the rug
   :mixins (has-UID has-name biological)
-  :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
   :realization (:common-noun name))
 
@@ -250,14 +250,9 @@
          :o object
          :for theme))
 
-(define-category post-translational-modification :specializes bio-process)
-
-(define-category phosphorylation-modification :specializes post-translational-modification)
-
 (define-category bio-rhetorical :specializes event)
 
-(define-category bio-movement :specializes bio-process) ;; like translocation, entry and "binding to membrane" 
-                 
+(define-category bio-movement :specializes bio-process) ;; like translocation, entry and "binding to membrane"                 
 
 (define-category bio-transport :specializes bio-movement
   :binds ((agent bio-process)
