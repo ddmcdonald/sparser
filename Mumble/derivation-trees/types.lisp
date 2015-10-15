@@ -20,7 +20,12 @@
 ; named-object
 (defobject has-name ()
   ((mname))) ;; just a symbol
-
+#| This is problematic in that 'name' is a field on the
+ -struct- for named-object that's built using def-type.
+ Probably the way to go is a thorough revision of def-type
+ to produce classes and instances using the original set
+ of accessors/setters. 
+|#
 ; linguistic-object: features
 
 ; referential: referent, expressible-type
@@ -146,11 +151,13 @@
     (format stream "#<dtn for ~a>" r)))
 
 (defmethod print-object ((slp saturated-lexicalized-phrase) stream)
-  (if (= 1 (length (bound slp)))
-    (let ((pvp (car (bound slp))))
-      (format stream "#<lp ~a: ~a = ~a>" (name (resource slp))
-	      (name (phrase-parameter pvp)) (value pvp)))
-    (call-next-method))) ;; how to print them??
+  (if (typep slp 'has-name)
+    (format stream "<lp ~a>" (mname slp))
+    (if (= 1 (length (bound slp)))
+      (let ((pvp (car (bound slp))))
+        (format stream "#<lp ~a: ~a = ~a>" (name (resource slp))
+                (name (phrase-parameter pvp)) (value pvp)))
+      (call-next-method)))) ;; how to print them??
 
 (defmethod print-object ((cn complement-node) stream)
   (let ((parameter (phrase-parameter cn))
