@@ -58,6 +58,28 @@
     (push-debug `(,dt))
     dt))
 
+;;;-------
+
+(defun feature-driven-prepocessing (features dtn)
+  ;; This is an experiment that could turn into a hook when
+  ;; the editing style of 'transformations' matures.
+  ;; Writing it with just one case in mind, as more cases
+  ;; accumulate might want to move from location inside
+  ;; realize-dtn in the lexicalized-phrase case
+  (when features
+    (when (assoc (accessory-type-named :command) features)
+      ;; bind the value of the subject to a trace
+      (let* ((lexp (resource dtn))
+             (free-vars (free lexp))
+             (subject (parameter-named 's))
+             (trace (build-trace nil))) 
+        ;; replace the nil of the trace with designator for
+        ;; the interlocutor ("you")
+        (unless (memq subject free-vars)
+          (error "The subject isn't free. Something's wrong"))
+        (make-complement-node subject trace dtn)))))
+
+
 
 
 ;;;-------
@@ -94,12 +116,14 @@
                (lp
                 (if open
                   (make-instance 'partially-saturated-lexicalized-phrase
+                    :phrase phrase
                     :free open
                     :bound bound-parameters)
                   (make-instance 'saturated-lexicalized-phrase
+                    :phrase phrase
                     :bound bound-parameters))))
           (push-debug `(,bound-parameters ,lp))
-          (setf (name lp) (name-composite lp))
+          (setf (mname lp) (name-composite lp))
           lp)))))
 
 (defgeneric name-composite (object)
@@ -126,22 +150,9 @@
   (let ( interleaved-list )
     (dolist (string list-of-strings)
       (push "_" interleaved-list)
-      (push (string-upcase string) interleaved-list))
+      (push (string-downcase string) interleaved-list))
     (apply #'string-append (nreverse interleaved-list))))
 
 
-;;;-----------
-;;; operators
-;;;-----------
-;; Derivation tree versions of message-level/operators-over-specifications.lisp
-
-(defmethod definite ((dtn derivation-tree-node))
-  (add-feature dtn :determiner-policy 'always-definite)
-  dtn)
-
-
-(defmethod present ((dtn derivation-tree-node))
-  (add-feature dtn :tense-modal 'present)
-  dtn)
 
 
