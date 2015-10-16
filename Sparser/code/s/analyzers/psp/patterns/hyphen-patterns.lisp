@@ -119,6 +119,7 @@
   ;; Have to distinguish between anticipated cases where the edges would
   ;; compose except for the hypen between the words and cases 
   ;; like "Sur-8" where it's the name of a protein
+  ;; Also called from ns-patterns/edge-hyphen-edge for some patterns.
   (declare (special category::verb+ed))
   ;;(push-debug `(,pos-before ,pos-after ,pattern))
   (tr :resolve-hyphen-between-two-words words)
@@ -155,21 +156,23 @@
            (usable-rule (unless (syntactic-rule? rule)
                           (unless (form-rule? rule)
                             rule))))
+      (push-debug `(,left-edge ,left-ref ,right-edge ,right-ref))
+      ;; (setq left-edge (car *) left-ref (cadr *) right-edge (caddr *) right-ref (cadddr *))
+      (lsp-break "which path?")
       (cond
        (usable-rule ;; "GTP-bound"
         (tr :ns-found-usable-rule rule)
         (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
           (revise-form-of-nospace-edge-if-necessary edge right-edge)
           (tr :two-word-hyphen-edge edge)))
+
        ((some-word-is-a-salient-hyphenated-literal words)
         (compose-salient-hyphenated-literals ;; "re-activate"
          pattern words pos-before pos-after))
 
-       ((and (edge-p right-edge)
-             (eq (edge-form right-edge) category::verb+ed))
-        (make-right-head-with-agent-left
-         left-ref right-ref
-         left-edge right-edge))
+       ((second-imposes-relation-on-first? right-ref right-edge)
+        (do-relation-between-first-and-second
+         left-ref right-ref left-edge right-edge))
 
        ((and (edge-p left-edge)
              (edge-p right-edge))
@@ -193,7 +196,6 @@
         (break "One of the 'edges' is actualy a (undefined?) word"))
        (t ;; bail
         (reify-ns-name-and-make-edge words pos-before pos-after))))))
-
 
 
 ;; RAS-ASSP

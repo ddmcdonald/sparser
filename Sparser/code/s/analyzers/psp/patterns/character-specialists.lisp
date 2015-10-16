@@ -124,86 +124,56 @@
   edge)
 
 
-;;--- Common pattern <edge>-mediated, -specific -associated, ..
-#+ignore  ;; is in the "dregs" section of the caller
-(defun ns-sort-out-edge-hyphen-lower (leading-edge start-pos end-pos words)
-  ;; Called from ns-sort-out-pattern-with-edges when the edge 
-  ;; is :initial and the remaining pattern is (:hyphen :lower)
-  (declare (special category::verb+ed category::adjective))
-  (declare (ignore start-pos)) ;; see note just below
-  (let* ((trailing-edge (left-treetop-at/edge end-pos))
-         (form (edge-form trailing-edge))
-         (right-ref (edge-referent trailing-edge))
-         (left-ref (edge-referent leading-edge))
-         agent?   )
-    (unless (or (individual-p left-ref)
-                (category-p left-ref))
-      (break "Hyphen lower: left-ref = ~a" left-ref))
-    (case form
-      (category::verb+ed ;; assume passive
-       (setq agent? t))
-      (category::adjective
-       (setq agent? t)))
-    (push-debug `(,agent? ,words)) ;; quiet compiler while in progress
-    (cond
-     (agent?
-      (push-debug `(,trailing-edge ,right-ref))
-      (break "agent case")
-      (make-right-head-with-agent-left
-       left-ref right-ref leading-edge trailing-edge))
-     (t
-      ;; Base everything on the trailing edge. Drop the referent
-      ;; of the starting edge because we don't know where to put it
-      (let* ((referent ;;(make-qualifying-pair left-ref right-ref))
-              right-ref) ;; dropping left-ref on the floor
-             (edge
-              (make-binary-edge/explicit-rule-components
-               leading-edge trailing-edge
-               :category (edge-category trailing-edge)
-               :rule-name 'ns-sort-out-edge-hyphen-lower
-               :form form
-               :referent referent)))
-        edge)))))
+;;;------------------------------------
+;;; Combine them by binding a variable
+;;;------------------------------------
 
-(defun make-right-head-with-agent-left (left-ref right-ref
-                                        leading-edge trailing-edge)
-  ;; Called from ns-sort-out-edge-hyphen-lower and 
-  ;; resolve-hyphen-between-two-words, which probably should merge.
+(defun second-imposes-relation-on-first? (right-ref right-edge)
+  (let ((form (edge-form right-edge)))
+    (when (memq (cat-symbol form) '(category::verb+ed ;; assume passive
+                                    category::adjective))
+      ;; now figure out what variable on the second (right)
+      ;; should be bound to the first (left)
+      (let ((variable (subject-variable right-ref)))
+        ;; Which variable this is really depends on the two referents.
+        ;; For the induced example its an agent (= subject). But the
+        ;; tyrosine goes on the site variable of the phosphoryate.
+        ;; For right now, binding the subject and letting the chips
+        ;; fall as they may. Elevating the right edge as the head
+        ;; but making it an adjective overall. 
+        (unless variable
+          ;;/// clear motivation for structure on variables on perhaps
+          ;; on the mixing in of categories for this same purpose
+          ;; Default to modifier ??
+          (setq variable
+                (single-on-variable-on-category right-ref)))
+        variable))))
+
+;; "EphB1-induced", "tyrosine-phosphorylated"
+(defun do-relation-between-first-and-second (left-ref right-ref left-edge right-edge)
+  ;; Called from resolve-hyphen-between-two-words when the predicate just above 
+  ;; is non-nil.
   (declare (special category::adjective))
-  ;; "EphB1-induced", "tyrosine-phosphorylated"
-  (tr :make-right-head-with-agent-left)
 
-  (when (word-p left-ref)
-    ;; see note in resolve-hyphen-between-two-words
-    (tr :ns-punt-left-referent-is-a-word left-ref)
-    (throw :punt-on-nospace-without-resolution nil))
+  (tr :make-right-head-with-agent-left)
 
   (when (category-p right-ref)
     (setq right-ref (make-individual-for-dm&p right-ref)))
-  (let ((variable (subject-variable right-ref)))
-    ;; Which variable this is really depends on the two referents.
-    ;; For the induced example its an agent (= subject). But the
-    ;; tyrosine goes on the site variable of the phosphoryate.
-    ;; For right now, binding the subject and letting the chips
-    ;; fall as they may. Elevating the right edeg as the head
-    ;; but making it an adjective overall. 
-    (if variable
-      (tr :ns-found-subject-var-in variable right-ref)
-      (tr :ns-no-subject-var-in right-ref))
-    
-    (let ((edge
-           (make-binary-edge/explicit-rule-components
-            leading-edge trailing-edge
-               :category (edge-category trailing-edge)
-               :form category::adjective
-               :referent (if variable
-                             ;; otherwise do 'modifier' ???
-                             (bind-dli-variable variable left-ref right-ref)
-                             right-ref)
-               :rule-name 'make-right-head-with-agent-left)))
-      (tr :no-space-made-edge edge)
-      edge)))
 
+  (let* ((variable (second-imposes-relation-on-first? right-ref right-edge))
+         (edge
+          (make-binary-edge/explicit-rule-components
+            left-edge right-edge
+            :category (edge-category right-edge)
+            :form category::adjective
+            :referent (bind-dli-variable variable left-ref right-ref)
+            :rule-name 'form-relation-between-first-and-second)))
+    (tr :no-space-made-edge edge)
+    edge))
+
+
+
+  
 
 
 ;;;-----------------------
