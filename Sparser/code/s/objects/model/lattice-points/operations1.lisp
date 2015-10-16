@@ -39,7 +39,11 @@
 ;;     (3/21/2015) SBCL caught application of lp-super-category to non lattice point --
 ;;       form categories are not in a lattice...
 ;;     (8/12/15) Removed references to PSI.
-;;     (10/9/15 moved in useful functions from psi directory
+;;     (10/9/15 moved in useful functions from psi directory.
+;;     (10/15/15) added predicate to look for a category having a single variable
+;;       This is probably an expediency for something more deliberate, since the
+;;       real question is, if we're to binds a dependent individual to a variable
+;;       on the head individual, what variable should we use. 
 
 (in-package :sparser)
 
@@ -81,6 +85,10 @@
              lattice-point of a~%~a" unit))))
 
 
+;;;-----------------------------------------
+;;; predicates about a category's variables
+;;;-----------------------------------------
+
 ;;/// probably needs reconsideration if lp isn't updated well enough
 ;; given use of description lattice
 (defun saturated? (lp)
@@ -88,6 +96,20 @@
         (possible (lp-variables-free (lp-top-lp lp))))
     ;; Assumes that there's just one set of variables
     (= (length bound) (length possible))))
+
+
+(defgeneric single-on-variable-on-category (category)
+  (:documentation "If the category has any variables
+    and there is just one of them, then return that variable."))
+
+(defmethod single-on-variable-on-category ((c model-category))
+  (let ((variables (cat-slots c)))
+    (when (= (length variables) 1)
+      (car variables))))
+
+(defmethod single-on-variable-on-category ((i individual))
+  (single-on-variable-on-category (itype-of i)))
+
 
 ;;;----------------------------------------------
 ;;; what categories does a category inherit from
