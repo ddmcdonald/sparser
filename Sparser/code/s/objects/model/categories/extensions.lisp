@@ -10,6 +10,10 @@
 
 (in-package :sparser)
 
+;;;----------------------------
+;;; restrictions on variables
+;;;----------------------------
+
 (defun handle-variable-restrictions (category restrictions)
   ;; called from decode-category-parameter-list
   (push-debug `(,category ,restrictions))
@@ -78,6 +82,9 @@ it's not a deal breaker. |#
   ;; When the category is C, the restriction on variable V is R
 
 
+;;;---------------
+;;; documentation
+;;;---------------
 
 (defun store-category-documentation (category documentation)
  (set-object-property category :documentation documentation))
