@@ -158,7 +158,7 @@
                             rule))))
       (push-debug `(,left-edge ,left-ref ,right-edge ,right-ref))
       ;; (setq left-edge (car *) left-ref (cadr *) right-edge (caddr *) right-ref (cadddr *))
-      (lsp-break "which path?")
+      ;;(lsp-break "which path?")
       (cond
        (usable-rule ;; "GTP-bound"
         (tr :ns-found-usable-rule rule)
