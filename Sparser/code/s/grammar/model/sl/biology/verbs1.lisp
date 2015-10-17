@@ -652,6 +652,17 @@
    :in theme
    :to level))
 
+(define-category degrade
+  :specializes bio-process
+  :binds ((agent bio-entity) 
+          (object bio-chemical-entity) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
+          )
+  :realization 
+  (:verb "degrade" :noun "degradation"
+         :etf (svo-passive)
+         :s agent
+         :o object))
+
 
 ;; Potentially problematic since the plural will misparse
 ;; "monoubiquitination decreases". Committing horrible hack
@@ -812,7 +823,8 @@
          :etf (svo-passive)
          :s agent
          :o object
-         :into into))
+         :into into
+         :of object))
 
 (define-category dominate :specializes bio-relation 
   :binds ((agent bio-entity)
