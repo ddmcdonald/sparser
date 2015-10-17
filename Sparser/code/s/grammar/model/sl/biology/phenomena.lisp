@@ -634,10 +634,11 @@ it is created from N-terminus to C-terminus.|#
          :with bindee
          :through domain
          :between binding-set))
-(delete-verb-cfr (resolve/make "assemble"))
-(delete-verb-cfr (resolve/make "assembles"))
-(delete-verb-cfr (resolve/make "assembled"))
-(delete-verb-cfr (resolve/make "assembling"))
+
+(delete-verb-cfr (resolve "assemble"))
+(delete-verb-cfr (resolve "assembles"))
+(delete-verb-cfr (resolve "assembled"))
+(delete-verb-cfr (resolve "assembling"))
 
 (define-category assemble
     :specializes binding
@@ -708,7 +709,9 @@ it is created from N-terminus to C-terminus.|#
    :with monomer))
 
 
-(define-category bio-complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
+(define-category bio-complex 
+  ;; changed -- complexes are not molecules, but associated groups of
+  ;; molecules, often preteins, but not always
   :specializes bio-chemical-entity
   :mixins (reactome-category)
   :binds ((component (:or bio-complex small-molecule protein))
@@ -722,7 +725,7 @@ it is created from N-terminus to C-terminus.|#
          :of component
          :between component))
 
-(define-category tricomplex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
+(define-category tricomplex
   :specializes bio-complex
   :mixins (reactome-category)
   :binds ((component (:or bio-complex small-molecule protein))
@@ -737,10 +740,28 @@ it is created from N-terminus to C-terminus.|#
          :between component))
 
 
+; From the ERK abstract:
+; #1 "Dimerization-independent" (in title)
+; #6 "dimerization of ERK"
+; #7 "shown consistently to be dimerization-deficient in vitro"
+; #7 "dimerization of ERK1"
+; #8 "did not detect dimerization of GFP-ERK1-WT upon activation"
+; #10 "is a consequence of delayed phosphorylation of ERK by MEK rather than dimerization."
+(define-category dimerize
+  :specializes binding
+  :binds ((monomer protein))
+  :realization
+  (:verb "dimerize" 
+   :noun "dimerization"
+   :etf (sv of-nominal)
+   :s monomer
+   :o monomer
+   :of monomer))
 
 
-(define-category dimer :specializes bio-complex
-   :binds ((component (:or bio-complex small-molecule protein))
+(define-category dimer
+  :specializes bio-complex
+  :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "dimer"
@@ -753,8 +774,9 @@ it is created from N-terminus to C-terminus.|#
 
 
 
-(define-category heterodimer :specializes bio-complex
-   :binds ((component (:or bio-complex small-molecule protein))
+(define-category heterodimer
+  :specializes bio-complex
+  :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "heterodimer"
@@ -773,8 +795,9 @@ it is created from N-terminus to C-terminus.|#
   :lemma (:common-noun "heterodimerization"))
 
 
-(define-category homodimer :specializes bio-complex
-   :binds ((component (:or bio-complex small-molecule protein))
+(define-category homodimer
+  :specializes bio-complex
+  :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "homodimer"
