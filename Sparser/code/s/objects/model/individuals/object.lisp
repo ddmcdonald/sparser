@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.4 June 2015
+;;;  version:  0.5 October 2015
 
 ;; initiated 7/16/92 v2.3
 ;; (6/8/93) added Indiv-typep
@@ -15,8 +15,12 @@
 ;;      is a category (head word) rather than an individual, added a
 ;;      diversion for that case. 4/16/14 ditto for itype-of
 ;; 0.4 (6/5/15) indiv-typep now returns nil when passed a category.
-;; 6/8/2015 avoid break in itypep by flagging mixin categories
-;; 7/7/15 Removing psi deadwood
+;;     6/8/2015 avoid break in itypep by flagging mixin categories  
+;;     7/7/15 Removing psi deadwood.
+;; 0.5 (10/16/15) Cleaned up. Allowing mixins to itypep, previous
+;;      change was too stringent. Inserted a convenience for the
+;;      case of conjunctions, where the type is buried inside the
+;;      structure. 
 
 
 (in-package :sparser)
@@ -42,56 +46,68 @@
              an individual" (type-of i)))))
 
 
-(defun itype-symbol (i)
-  (cat-symbol (i-type-of i)))
-
-
 (defun itypep (i c/s) 
   (if (consp i)
-   (then
-     (break "what are you doing passing a CONS to itypep: ~s~&" i)
-     nil)
-   (typecase i
-     (individual
-      (indiv-typep i c/s))
-     (referential-category
-      (category-inherits-type? i (category-named c/s :break-if-none)))
-     (mixin-category
-      (format t "*** indiv-typep applied to MIXIN category ~s" i)
-      nil)
-     (otherwise
-      (push-debug `(,i ,c/s))
-      (error "indiv-typep not applied to an individual:~%~a  ~a"
-             (type-of i) i)))))
+    (error "what are you doing passing a CONS to itypep: ~s~&" i)
+    (typecase i
+      (individual
+       (indiv-typep i c/s))
+      (referential-category
+       (category-inherits-type? i (category-named c/s :break-if-none)))
+      (mixin-category
+       ;; strictly speaking mixins are not organized into taxonomies
+       ;; but in most code one won't be able to tell
+       (category-inherits-type? i (category-named c/s :break-if-none)))
+      (otherwise
+       (push-debug `(,i ,c/s))
+       (error "indiv-typep not applied to an individual:~%~a  ~a"
+              (type-of i) i)))))
 
 (defun itype (i c/s)
   (indiv-typep i c/s))
 
 
 
-;;--- Does the search
+;;--- Does the actual search
 
-(defun indiv-typep (individual category/symbol)
+(defun indiv-typep (i category/symbol)
   ;; analogous to Typep -- does this individual include this
   ;; category in its type field
-  (declare (special *break-on-pattern-outside-coverage?*))
-  (let ((category (category-named category/symbol :break-if-none)))
-    (typecase individual
+  (declare (special *break-on-pattern-outside-coverage?*
+                    category::collection category::sequence))
+  (let ((category (category-named category/symbol :break-if-none))
+        (type-field (indiv-type i)))
+
+    (when (or (memq category::collection type-field)
+              (memq category::sequence type-field))
+      (let ((conj-type (value-of 'type i)))
+        (unless conj-type
+          (error "Type variable is not set on conjunction ~a" i))
+        (setq type-field 
+              (if (consp conj-type) conj-type `(,conj-type)))))
+
+    (typecase i
       (individual 
-       (if (member category (indiv-type individual) :test #'eq)
-         ;; then the immediate type-field satisfies the check
-         t
-         ;; otherwise lets look at the supercategories
-         (let ((inherits-it? (individual-inherits-type? individual
-                                                        category)))
+       (cond
+        ((member category type-field :test #'eq) t)
+        (t  ;; otherwise lets look at the supercategories
+         ;; We've already checked the base case of individual-inherits-type
+         ;; so we can skip to the next level 
+         (let ((inherits-it? ;;(individual-inherits-type? i category)
+                (category-inherits-type? (car type-field) ;; for conj
+                                         category))) ;; 'reference category'
            (when inherits-it?
-             (values t (i-type-of individual))))))
+             (values t (i-type-of i)))))))
       (otherwise
        (when *break-on-pattern-outside-coverage?*
-         (push-debug `(,individual ,category/symbol))
+         (push-debug `(,i ,category/symbol))
          (error "indiv-typep not applied to an individual:~%~a  ~a"
-                (type-of individual) individual))))))
+                (type-of i) i))))))
 
            
 
+;;---- Misc. 
 
+;;/// is this being used?
+(defun itype-symbol (i)
+  (cat-symbol (i-type-of i)))
