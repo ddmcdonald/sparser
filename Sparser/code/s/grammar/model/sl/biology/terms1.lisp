@@ -354,13 +354,15 @@
 
 (adj "downstream" :super bio-predication
   :binds ((subject biological)
-          (theme (:or bio-entity bio-process)))
+          (theme (:or bio-entity bio-process))
+          (pathway pathway))
   :realization 
   (:adj "downstream"
         :s subject
         :for theme
         :from theme
-        :of theme))
+        :of theme
+        :in pathway))
 (noun "dynamics" :super bio-abstract)
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
@@ -971,10 +973,12 @@
            :to effect))
 (define-adverb "until now")
 (noun "upstream" :super bio-context
-      :binds ((relative-to biological))
+      :binds ((relative-to biological)
+              (pathway pathway))
       :realization
       (:noun "upstream"
-             :of relative-to))
+             :of relative-to
+             :in pathway))
 (adj "useful" :super bio-predication
      :binds ((subject biological)
              (purpose (:or bio-process bio-method)))
