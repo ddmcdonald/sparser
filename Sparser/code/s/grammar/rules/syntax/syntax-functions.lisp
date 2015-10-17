@@ -270,15 +270,11 @@
 ;;;------------------
 
 (defun find-or-make-aspect-vector (vg)
-  (unless (or
-           (itypep vg 'event)
-           (itypep vg 'have)
-           (and
-            (itypep vg 'collection)
-            (let ((vg1 (car (value-of 'items vg))))
-              (or
-               (itypep vg1 'event)
-               (itypep vg1 'have)))))
+  (unless (or (itypep vg 'perdurant)
+              (and (itypep vg 'collection)
+                   (let ((vg1 (car (value-of 'items vg))))
+                     (itypep vg1 'perdurant))))
+    (push-debug `(,vg))
     (break "~s is not an event, tense/aspect only applies to individuals that ~
             inherit from event." vg))
   (or (value-of 'aspect vg)
@@ -520,9 +516,6 @@
       vg))))
 
 
-(defun adjoin-tocomp-to-vg (vg tocomp)
-  (assimilate-subcat vg :to-comp tocomp))
-
 (defun adjoin-prepcomp-to-vg (vg prep-comp) ;; "by binding..."
   (let* ((comp-edge (right-edge-for-referent))
          (prep-word (identify-preposition comp-edge))
@@ -540,6 +533,64 @@
         (setq vg (bind-dli-variable variable comp-ref vg))
         vg)))))
 
+
+;;;----------------
+;;; to complements
+;;;----------------
+
+(define-category to-comp
+  :specializes abstract
+  :binds ((prep)
+          (comp))
+  :documentation "Provides a scafolding to hold
+   a generic to-comp as identified by
+   the pp rules in grammar/rules/syntactic-rules.
+   Primary consumer is the subcategorization checking
+   code below. Note that if we make these with an
+   unindexed individual (in make-pp) then the index
+   information doesn't come into play"
+  :index (:temporary :sequential-keys prep comp))
+
+(defun adjoin-tocomp-to-vg (vg tocomp)
+  (assimilate-subcat vg :to-comp tocomp))
+
+(defun interpret-to-comp-adjunct-to-np (np to-comp)
+  (declare (special np to-comp))
+  (let* ((pp-edge (right-edge-for-referent))
+         (comp-edge (edge-right-daughter pp-edge))
+         (variable-to-bind
+          ;; test if there is a known interpretation of the NP/PP combination
+          (subcategorized-variable
+           np :to-comp
+           (edge-referent comp-edge))))
+    (declare (special pp-edge comp-edge variable-to-bind))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (variable-to-bind
+      (if *collect-subcat-info*
+          (push (subcat-instance np 'to-comp variable-to-bind
+                                 to-comp)
+                *subcat-info*))
+      (setq np (individual-for-ref np))
+      ;;(setq  np (bind-dli-variable variable-to-bind pp np))
+      (setq  np (bind-dli-variable variable-to-bind to-comp np))
+      np))))
+
+(defun interpret-to-comp-adjunct-to-s (s tocomp)
+  ;; Tbese are very likely to be purpose clauses. A sufficient test
+  ;; for that is the the s and the complement are both eventualities
+  ;; (aka perdurants). 
+#| (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS signalling 
+to enhance p53 mediated apoptosis [2].") |#
+  (let* ((complement (value-of 'comp tocomp))
+         (ok? (and (itypep s 'perdurant)
+                   (itypep complement 'perdurant))))
+    ;; (push-debug `(,s ,complement))  (lsp-break "ok?")
+    (cond
+     (*subcat-test* ok?)
+     (ok?
+      (setq s (bind-dli-variable 'purpose complement s))
+      s))))
 
 
 #+ignore
@@ -571,6 +622,8 @@
       (setq vg (individual-for-ref vg))
       (setq  vg (bind-dli-variable variable-to-bind pobj-referent vg))
       vg))))
+
+
 
 ;;;---------
 ;;; NP + PP
@@ -614,28 +667,6 @@
               (setq  np (bind-dli-variable variable-to-bind pobj-referent np))
               np))))))))
 
-
-(defun interpret-to-comp-adjunct-to-np (np to-comp)
-  (declare (special np to-comp))
-  (let* ((pp-edge (right-edge-for-referent))
-         (comp-edge (edge-right-daughter pp-edge))
-         (variable-to-bind
-          ;; test if there is a known interpretation of the NP/PP combination
-          (subcategorized-variable
-           np :to-comp
-           (edge-referent comp-edge))))
-    (declare (special pp-edge comp-edge variable-to-bind))
-    (cond
-     (*subcat-test* variable-to-bind)
-     (variable-to-bind
-      (if *collect-subcat-info*
-          (push (subcat-instance np 'to-comp variable-to-bind
-                                 to-comp)
-                *subcat-info*))
-      (setq np (individual-for-ref np))
-      ;;(setq  np (bind-dli-variable variable-to-bind pp np))
-      (setq  np (bind-dli-variable variable-to-bind to-comp np))
-      np))))
 
 (defun interpret-pp-as-head-of-np (np pp)
   (push-debug `(,np ,pp))
@@ -981,19 +1012,6 @@
   :index (:temporary :sequential-keys prep pobj))
 (mark-as-form-category category::prepositional-phrase)
 
-(define-category to-comp
-  :specializes abstract
-  :binds ((prep)
-          (comp))
-  :documentation "Provides a scafolding to hold
-   a generic to-comp as identified by
-   the pp rules in grammar/rules/syntactic-rules.
-   Primary consumer is the subcategorization checking
-   code below. Note that if we make these with an
-   unindexed individual (in make-pp) then the index
-   information doesn't come into play"
-  :index (:temporary :sequential-keys prep comp))
-
 
 (define-category prep-comp
   :specializes abstract
@@ -1160,6 +1178,8 @@
      (variable-to-bind
             (setq s (bind-dli-variable variable-to-bind adjunctive-clause s))
       s))))
+
+
 ;;;------------------------------------------------------------------
 ;;; broad routine for making/adjusting an individual from a category
 ;;;------------------------------------------------------------------
