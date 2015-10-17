@@ -709,7 +709,7 @@
 
 
 (define-category depend
-  :specializes bio-process
+  :specializes bio-predication
   :binds ((agent biological)
           (theme biological)) 
   :realization
