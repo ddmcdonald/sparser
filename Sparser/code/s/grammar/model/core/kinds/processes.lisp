@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  September 2015
+;;;  version:  October 2015
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -18,13 +18,17 @@
 ;; adverb but until then, we need to have this variable or something
 ;; equivalent. 8/14/15 Moved theme up to perdurant. 9/22/15 pulled
 ;; the lemmas so the upper model could be loaded early
+;; 10/16/15 Moved the event bindings to perdurant and put it on top.
 
 (in-package :sparser)
 
-(define-category  event
+(define-category  perdurant
   :instantiates self
   :specializes  top
-  :binds ((time)
+  :binds ((theme) ;; one salient participant
+                  ;; FrameNet for the thing that moves
+          (participant) ;; any number of others
+          (time)
           (location)
           (purpose)
           (circumstance)
@@ -36,18 +40,8 @@
           ;; type of adverb but until then, we need to have this variable
           ;; or something equivalent
           (adverb))
-  :documentation
- "This was the original (circa '89) superclass of all clausal verbs.
-  It's threaded into a substantial part of the model, requiring too
-  much time now (9/14) to rework.")
 
 
-(define-category  perdurant
-  :instantiates nil
-  :specializes  event
-  :binds ((theme) ;; one salient participant
-                  ;; FrameNet for the thing that moves
-          (participant)) ;; any number of others
   :documentation
   "Perdurants could otherwise be called events, processes, or phenomena,
  but those terms are heavily burdened by prior work and lose their
@@ -63,6 +57,16 @@
  participate in them. They have temporal extents (duration), temporal
  bounds (begin, end), and usually a spatial extent (the region in
  which they happen)." )
+
+
+(define-category  event
+  :instantiates self
+  :specializes  perdurant
+  :binds ()
+  :documentation
+ "This was the original (circa '89) superclass of all clausal verbs.
+  It's threaded into a substantial part of the model, requiring too
+  much time now (9/14) to rework.")
 
 
 
