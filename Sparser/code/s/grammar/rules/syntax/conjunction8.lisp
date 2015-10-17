@@ -621,10 +621,10 @@
                left-ref right-ref)
         
         (let* ((left-type (etypecase left-ref
-                            (individual (car (indiv-type left-ref)))
+                            (individual (i-type-of left-ref))
                             (category left-ref)))
                (right-type (etypecase right-ref
-                             (individual (car (indiv-type right-ref)))
+                             (individual (i-type-of right-ref))
                              (category right-ref)))
                (type left-type))
           
@@ -634,14 +634,9 @@
                                           right-ref right-type)))
           (let ((collection
                  (define-or-find-individual 'collection
-                                            :items (list left-ref right-ref)
+                   :items (list left-ref right-ref)
                    :number 2
-                   :type type)))
-            ;;(push-debug `(,collection ,type))
-            (if
-             type
-             (one-off-specialization collection type)
-             collection ))))))
+                   :type type))))))))
 
 
 (defun referent-of-list-of-conjoined-edges (edge-list)
@@ -668,11 +663,14 @@
        ((category-p first-ref)
         ;;/// Finding a type would be a matter of finding their
         ;; common super-type and that's unlikely given the 
-        ;; excessively flat category structure we tend to have
-         (let ((collection
-                 (define-or-find-individual 'collection
-                   :items referents
-                   :number (length referents))))
+        ;; excessively flat category structure we tend to have.
+        ;; Still, the check routines expect a type so we pick
+        ;; the first one.
+        (let ((collection
+               (define-or-find-individual 'collection
+                 :items referents
+                 :number (length referents)
+                 :type (category-of (first referents)))))
             collection ))
 
        (t
