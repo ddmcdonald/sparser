@@ -375,7 +375,7 @@
 (DEF-RAS2-PROTEIN "FRS2_HUMAN" ("FRS2_HUMAN" "FRS2" "FGFR-signaling adaptor SNT" "Suc1-associated neurotrophic factor target 1" "SNT-1" "FGFR substrate 2")) 
 (DEF-RAS2-PROTEIN "FRS3_HUMAN" ("FRS3_HUMAN" "FRS3" "Suc1-associated neurotrophic factor target 2" "SNT-2" "FGFR-signaling adaptor SNT2" "FGFR substrate 3")) 
 (DEF-RAS2-PROTEIN "FSHB_HUMAN" ("FSHB_HUMAN" "FSHB" "FSH-bη" "Follitropin bη chain" "Follicle-stimulating hormone bη subunit" "gonadotropins" "Follitropin subunit beta" "Follicle-stimulating hormone beta subunit" "FSH-B" "FSH-beta" "Follitropin beta chain")) 
-(DEF-RAS2-PROTEIN "FYN_HUMAN" ("FYN_HUMAN" "2.7.10.2" "FYN" "PAG/Cbp" "Tyrosine-protein kinase Fyn" "Proto-oncogene Syn" "Proto-oncogene c-Fyn" "Src-like kinase" "SLK" "p59-Fyn")) 
+(DEF-RAS2-PROTEIN "FYN_HUMAN" ("FYN_HUMAN" "2.7.10.2" "FYN" "Fyn" "PAG/Cbp" "Tyrosine-protein kinase Fyn" "Proto-oncogene Syn" "Proto-oncogene c-Fyn" "Src-like kinase" "SLK" "p59-Fyn")) 
 (DEF-RAS2-PROTEIN "FZD2_HUMAN" ("FZD2_HUMAN" "Fz-2" "FzE2" "FZD2" "hFz2")) 
 (DEF-RAS2-PROTEIN "Fringe" ("Fringe")) 
 (DEF-RAS2-PROTEIN "G12 family" ("G12 family")) 
