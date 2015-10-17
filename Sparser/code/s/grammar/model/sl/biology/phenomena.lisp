@@ -182,12 +182,40 @@
    :on site
    :at site))
 
+
 (define-category auto-phosphorylate
   :specializes phosphorylation-modification
   :realization
   (:verb "auto-phosphorylate" :noun "auto-phosphorylation"
    :etf (sv)
    :s agent))
+
+(def-synonym auto-phosphorylate 
+             (:verb "autophosphosphorylate"
+              :etf (sv) :s agent))
+
+(define-category cis-auto-phosphorylate
+  :specializes auto-phosphorylate
+  :realization
+  (:verb "cis-auto-phosphorylate" :noun "cis-auto-phosphorylation"
+   :etf (sv)
+   :s agent))
+(def-synonym cis-auto-phosphorylate
+             (:verb "cis-autophosphosphorylate"
+              :etf (sv) :s agent
+              :noun "cis-autophosphorylation"))
+
+(define-category trans-auto-phosphorylate
+  :specializes auto-phosphorylate
+  :realization
+  (:verb "trans-auto-phosphorylate" :noun "trans-auto-phosphorylation"
+   :etf (sv)
+   :s agent))
+   
+(def-synonym trans-auto-phosphorylate
+             (:verb "trans-autophosphosphorylate"
+                    :etf (sv) :s agent
+                    :noun "trans-autophosphorylation"))
 
 (define-category dephosphorylate
   :specializes post-translational-modification
@@ -196,7 +224,8 @@
    :etf (svo-passive)
    :s agent
    :o substrate
-   :of substrate))
+   :of substrate
+   :at site))
 
 
 (define-category transphosphorylate
@@ -265,6 +294,17 @@
      :of substrate
      :on site
      :at site))
+
+(define-category auto-ubiquitinate
+  :specializes ubiquitination
+  :realization
+  (:verb "auto-ubiquitinate" :noun "auto-ubiquitination"
+   :etf (sv)
+   :s agent))
+
+(def-synonym auto-ubiquitinate 
+             (:verb "autoubiquitinate"
+              :etf (sv) :s agent))
 
 ;;;------------------------------
 ;;; mUbRas, monoubitutinated Ras
@@ -631,7 +671,42 @@ it is created from N-terminus to C-terminus.|#
    :etf (sv of-nominal)
    :s monomer
    :o monomer
-   :of monomer))
+   :of monomer
+   :with monomer))
+
+(define-category heterodimerize :specializes binding
+  :binds ((monomer protein))
+  :realization
+  (:verb "heterodimerize" 
+   :noun "heterodimerization"
+   :etf (sv of-nominal)
+   :s monomer
+   :o monomer
+   :of monomer
+   :with monomer))
+
+(define-category homodimerize :specializes binding
+  :binds ((monomer protein))
+  :realization
+  (:verb "homodimerize" 
+   :noun "homodimerization"
+   :etf (sv of-nominal)
+   :s monomer
+   :o monomer
+   :of monomer
+   :with monomer))
+
+(define-category homo/heterodimerize :specializes binding
+  :binds ((monomer protein))
+  :realization
+  (:verb "homo/heterodimerize" 
+   :noun "homo/heterodimerization"
+   :etf (sv of-nominal)
+   :s monomer
+   :o monomer
+   :of monomer
+   :with monomer))
+
 
 (define-category bio-complex ;; changed -- complexes are not molecules, but associated groups of molecules, often preteins, but not always
   :specializes bio-chemical-entity
