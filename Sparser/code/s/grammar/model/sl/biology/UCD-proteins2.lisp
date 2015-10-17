@@ -2728,7 +2728,9 @@
  ("PR:P49721" "Proteasome subunit beta type-2"
   "Macropain subunit C7-I"
   "Multicatalytic endopeptidase complex subunit C7-I"
-  "Proteasome component C7-I" "proteasome" "PR:Q9M330"
+  "Proteasome component C7-I" 
+  ;;"proteasome" THIS PROTEIN IS NOT THE PROTEASOME
+  "PR:Q9M330"
   "PR:000027410"))
 
 (define-protein "PSB4_HUMAN"
