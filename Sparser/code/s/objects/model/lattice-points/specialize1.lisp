@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "specialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 January 2015
+;;;  version:  1.0 October 2015
 
 ;; initiated 11/29/97. Given some content 1/2/01 though punting on the issue of
 ;; cross-indexing all the different paths down to a subtype that is a specialization
@@ -23,7 +23,8 @@
 ;;   (1/7/15) Wrote one-off-specialization to expedite an issue in
 ;;   conjunctions. 
 ;; 6/30/2015 Fix one-off-specialization so that it does-not keep adding copies of the same super-category when
-;;  the same DL conjunction individuals
+;;  the same DL conjunction individuals, 10/17/15 was convinced it does'm make sense
+
 
 
 (in-package :sparser)
@@ -60,17 +61,6 @@
            (new-shadow (make-instance sclass)))
       (setf (indiv-shadow i) new-shadow) ;; does all the work
       i )))
-
-(defmethod one-off-specialization ((i individual) (mixin category))
-  ;; Used with conjunctions - referent-of-two-conjoined-edges 
-  ;; If we want to drive methods off of these then we need to
-  ;; use specialize-object and have the class and shadow
-  ;; created. This one is used strictly for comparison
-  
-  ;; NO LONGER MAKE A COLLECTION HAVE THE SAME TYPE OF AN ELEMENT
-    ;;(pushnew mixin (indiv-type i))
-    i)
-
 
 
 (defun find-subtype (i mixin)
