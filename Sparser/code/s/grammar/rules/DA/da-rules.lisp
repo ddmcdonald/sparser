@@ -40,6 +40,15 @@
        (tr :comma-3tt-pattern edge)
        edge))))
 
+(define-debris-analysis-rule s-comma-s
+  :pattern ( s "," s )
+  :action (:function conjoin-two-clauses first third))
+
+(defun conjoin-two-clauses (s1 s2)
+  ;; Since they are full clauses (see ERK#3), there's no content
+  ;; to copy from one to the other, just the utility of joining them
+  (conjoin-two-edges s1 s2 :conjoin-s-and-s))
+
 
 (define-debris-analysis-rule s-and-vp
   :pattern ( s and vp )
@@ -73,6 +82,9 @@
     (conjoin-two-edges s-edge vp-edge :conjoin-clause-and-vp)))
 
 
+(define-debris-analysis-rule s-vp+ing
+  :pattern ( s vp+ing )
+  :action (:function attach-trailing-participle-to-clause first second))
 
 (define-debris-analysis-rule s-comma-vp+ing
   :pattern ( s "," vp+ing )
