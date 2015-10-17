@@ -40,11 +40,19 @@
 ;;  complement: infinitive vs. particlple vs. ?. 
 ;; 10/8/15 Wrote syntax rule for (subordinate-conjunction vp+ing). It will
 ;;  presumably need extensions to other kinds of complements. 
+;; 10/16/15 Wrote s + to-comp, which is looks to be a purpose clause in
+;;  the cases I've seen. 
 
 
 (in-package :sparser)
 
 ;;--- S
+
+(def-syntax-rule (s to-comp)
+                 :head :left-edge
+  :form s
+  :referent (:function interpret-to-comp-adjunct-to-s left-edge right-edge))
+
 
 #| This is too potent to use in a leftward sweep
    because it catches things early
@@ -106,8 +114,8 @@
 
 
 #| normally copular adjectives become VPs, but in 
-(5 (P "Therefore, mUbRas is insensitive to GAP–mediated regulation, similar
-to an oncogenic RasG12V mutation (9).")) 
+(5 (P "Therefore, mUbRas is insensitive to GAP–mediated regulation, 
+similar to an oncogenic RasG12V mutation (9).")) 
 
 "similar" is just an adjective
 |#
@@ -137,54 +145,55 @@ to an oncogenic RasG12V mutation (9)."))
   (eval 
    `(def-syntax-rule (adjective ,nb) ;; "black suv"
                      :head :right-edge
-      :form n-bar ;;/// cutting corners
+      :form n-bar
       :referent (:function adj-noun-compound
                            left-edge right-edge)))
   (eval
    `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
                      :head :left-edge
-      :form n-bar ;;/// cutting corners
+      :form n-bar
       :referent (:function adj-noun-compound
                            right-edge left-edge )))
   (eval
    `(def-syntax-rule (,nb ap) ;; "RAF activation downstream of RAS" 
                      :head :left-edge
-      :form n-bar ;;/// cutting corners
+      :form n-bar
       :referent (:function adj-noun-compound
                            right-edge left-edge )))
   (eval
-   `(def-syntax-rule (verb+ed ,nb) ;; "black suv"
+   `(def-syntax-rule (verb+ed ,nb)
                      :head :right-edge
-      :form n-bar ;;/// cutting corners
+      :form n-bar
       :referent (:function verb-noun-compound
                            left-edge right-edge)))
   (eval
-   `(def-syntax-rule (verb+ing ,nb) ;; "black suv"
+   `(def-syntax-rule (verb+ing ,nb)
                      :head :right-edge
-      :form n-bar ;;/// cutting corners
+      :form n-bar 
       :referent (:function verb+ing-noun-compound
                            left-edge right-edge)))
   (eval
    `(def-syntax-rule (quantifier ,nb)
                      :head :right-edge
-      :form n-bar ;;/// cutting corners
+      :form n-bar 
       :referent (:function quantifier-noun-compound
                            left-edge right-edge)))
-  ;;#+ignore ;; this rule seems to generate bad parses of things like 1C, and not to be terribly useful...
-  ;; should be OK now
+  ;; this rule seemed to generate bad parses of things like 1C, 
+  ;; and not to be terribly useful...
+  ;; but should be OK now
   (eval
    `(def-syntax-rule (number ,nb)
                      :head :right-edge
-      :form n-bar ;;/// cutting corners
+      :form n-bar 
       :referent (:function number-noun-compound
                            left-edge right-edge)))
 
   (loop for nbmod in *n-bar-categories*
     do   
     (eval
-     `(def-syntax-rule (,nbmod ,nb) ;; "black suv"
+     `(def-syntax-rule (,nbmod ,nb) 
                        :head :right-edge
-        :form n-bar ;;/// cutting corners
+        :form n-bar 
         :referent (:function noun-noun-compound
                              left-edge right-edge)))))
 
@@ -263,19 +272,8 @@ to an oncogenic RasG12V mutation (9)."))
       :form ,(second vv)
       :referent(:function interpret-adverb+verb left-edge right-edge))))
 
-#|
-WORK NEEDS TO BE DONE HERE TO DEAL WITH SENTIENTIAL LEVEL ADVERBS 
-SUCH AS RHETORICAL ADVERBS
-(def-syntax-rule  (adverb vp)
-  :head :right-edge
-  :form vp
-  :referent(:function interpret-adverb+verb left-edge right-edge))
 
-(def-syntax-rule  (adverb s)
-  :head :right-edge
-  :form s
-  :referent(:function interpret-adverb+verb left-edge right-edge))
-|#
+
 
 ;;--- prepositional phrases
 (loop for nb in `(category::np 
@@ -404,12 +402,6 @@ SUCH AS RHETORICAL ADVERBS
   :form pp-relative-clause
   :referent (:daughter right-edge))
 
-#+ignore ;; what was this?
-(def-syntax-rule (np subject-relative-clause)
-                 :head :left-edge
-  :form np
-  :referent (:function assimilate-appositive left-edge right-edge))
-
 #+ignore ;; not yet ready
 (def-syntax-rule (np pp-relative-clause)
                  :head :left-edge
@@ -419,7 +411,8 @@ SUCH AS RHETORICAL ADVERBS
 
 (loop for nb in `(category::np ,@*n-bar-categories*)
   do
-  (loop for src in '(category::subject-relative-clause category::comma-separated-subject-relative-clause)
+  (loop for src in '(category::subject-relative-clause 
+                     category::comma-separated-subject-relative-clause)
     do
     (eval 
    `(def-syntax-rule (,nb ,src)
@@ -478,8 +471,6 @@ SUCH AS RHETORICAL ADVERBS
         :referent (:function assimilate-subject left-edge right-edge)))))
 
 #|
-
-
 (def-syntax-rule (np vg)
                  :head :right-edge
   :form subj+verb
@@ -494,7 +485,6 @@ SUCH AS RHETORICAL ADVERBS
   :head :right-edge
   :form s
   :referent (:function assimilate-subject left-edge right-edge))
-
 |#
 
 ;;;--------------------------
@@ -509,6 +499,10 @@ SUCH AS RHETORICAL ADVERBS
   :form vp+ing ;; swallow the conjunction. Not grammatical import
   :referent (:function interpret-subordinator left-edge right-edge))
 
+(def-syntax-rule (subordinate-conjunction vp+ed)
+                 :head :right-edge
+  :form vp+ing ;; swallow the conjunction. Not grammatical import
+  :referent (:function interpret-subordinator left-edge right-edge))
                  
 
 ;;;----------------------
