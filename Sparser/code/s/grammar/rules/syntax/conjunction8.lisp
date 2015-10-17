@@ -636,7 +636,8 @@
                  (define-or-find-individual 'collection
                    :items (list left-ref right-ref)
                    :number 2
-                   :type type))))))))
+                   :type type)))
+            collection)))))
 
 
 (defun referent-of-list-of-conjoined-edges (edge-list)
