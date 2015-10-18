@@ -88,9 +88,11 @@
 (adj "resting" :super bio-predication)
 (define-adverb "sterically")
 (define-adverb "uniquely")
+
+;;proteins from comments -- TO-DO move out to proteins file and do correctly
 (define-protein "LAMTOR2" ("LAMTOR2" "MEK partner 1" "MP1"))
 (define-protein "LAMTOR3" ("LAMTOR3"))
-
+(define-protein "KBTBD7 E3 RING" ("KBTBD7 E3 RING"))
 
 ;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
 (noun "asides" :super abstract)
@@ -580,6 +582,7 @@
      (:adj "ineffective"
            :s subject
            :against against)) ;; keyword: (ive ADJ) 
+
 (noun "inhibitor" :super bio-entity) ;; keyword: (or N) 
 
 (adj "initial" :super bio-predication)
