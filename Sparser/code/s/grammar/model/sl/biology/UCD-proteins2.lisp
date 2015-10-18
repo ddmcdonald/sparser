@@ -2261,7 +2261,7 @@
 
 (define-protein "PR:000022500" ("Eco"))
 
-(define-protein "PR:000022507" ("DUBs" "deubiquitinase"))
+(define-protein "PR:000022507" ("DUBs" )) ;; "deubiquitinase" is a descriptive term
 
 (define-protein "PR:000022606" ("Fe"))
 
