@@ -37,6 +37,61 @@
 
 (in-package :sparser)
 
+;; new nouns and verbs used in Ras model comments
+(define-category coincident 
+                 :specializes bio-relation
+  :realization
+  (:adj "coincident"
+        :s subject
+        :with theme))
+
+(define-category conformational-change
+                 :specializes bio-process ;;TO-DO  not sure this is the best choice, but can't think of one better
+  :binds ((structure bio-entity))
+  :realization
+  (:noun "conformational change"
+         :in structure
+         :of structure))
+
+(noun "N-terminal acidic motif" :super molecular-location)
+(noun "N-terminal acidic region" :super molecular-location)
+(adj "acidic" :super bio-predication)
+(adj "adaptor" :super bio-predication) ;; "adaptor protein"
+(adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"
+(noun "anchor" :super molecule) ;; "cytoplasmic anchor"
+(adj "apparent" :super bio-predication) ;; perhaps need :rhetorical predication"
+(adj "asymmetric" :super bio-predication)
+(adj "conventional" :super bio-predication) ;;"conventinal MAPK cascade"
+(adj "early" :super bio-predication)
+(adj "familial" :super bio-predication)
+(noun "glioblastoma" :super cancer)
+(noun "neurooblastoma" :super cancer)
+(noun "non-small cell lung cancer" :super cancer)
+(noun "isomerase" :super enzyme)
+(noun "ligaase" :super enzyme)
+(noun "ubiquitinase" :super enzyme)
+(noun "neurofibromatosis" :super disease)
+(adj "intermolecular" :super bio-predication)
+(adj "intramolecular" :super bio-predication)
+(adj "lethal" :super bio-predication)
+(adj "linear" :super bio-predication)
+(adj "mammalian" :super species)
+(adj "hydrophobic" :super bio-predication)
+(adj "inhibitory" :super bio-predication)
+(adj "obligatory" :super bio-predication)
+(adj "adjesion" :super bio-predication) ;; TO-DO need to think about how to define "adhere" to structure
+(adj "closed" :super bio-predication)
+(adj "scaffolding" :super bio-predication) ;; "scaffolding protein"
+(adj "scaffold" :super bio-predication);; "scaffold protein"
+(adj "direct" :super bio-predication)
+(adj "spatial" :super bio-predication)
+(adj "resting" :super bio-predication)
+(define-adverb "sterically")
+(define-adverb "uniquely")
+(define-protein "LAMTOR2" ("LAMTOR2" "MEK partner 1" "MP1"))
+(define-protein "LAMTOR3" ("LAMTOR3"))
+
+
 ;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
 (noun "asides" :super abstract)
 (noun "backs" :super abstract)
@@ -129,11 +184,11 @@
 
 
 (noun "ability" :super bio-relation
-      :binds ((agent biological)(result biological)(ability bio-process))
+      :binds ((agent biological)(ability bio-process))
       :realization
       (:noun "ability" :adj "able"
              :s agent
-             :to-comp result
+             :to-comp ability
              :of agent
              :to ability))
 
@@ -269,7 +324,7 @@
 (noun "condition" :super experimental-condition)
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
 ;;(adj "conserved" :super bio-predication) Moved to verbs1.lisp
-(adj "consistent" :super bio-predication
+(adj "consistent" :super bio-relation
   :binds ((subject biological) (theme biological))
   :realization 
   (:adj "consistent"
@@ -573,11 +628,9 @@
 ;;is likely that this possible feedback
 ;;will likely be useful
 (define-category likely :specializes bio-relation
-  :binds ((result process))
   :realization
   (:adj "likely" 
-        :o result
-        :to-comp result))
+        :to-comp theme))
 (define-adverb "likely")
 
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
@@ -945,6 +998,11 @@
 
 (adj "transient" :super bio-predication)
 (noun "transition state intermediate" :super molecule-state)
+(define-category translation :specializes bio-process
+  :binds ((result bio-entity))
+  :realization
+  (:of subject
+       :into result))
 (noun "trial" :super bio-context)
 (noun "tumor" :super non-cellular-location)
 (noun "tumor formation" :super bio-process)
