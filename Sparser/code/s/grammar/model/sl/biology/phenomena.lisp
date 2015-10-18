@@ -190,7 +190,12 @@
    :etf (sv)
    :s agent))
 
-(def-synonym auto-phosphorylate 
+(def-synonym auto-phosphorylate
+  (:verb "autophosphorylate" :noun "autophosphorylation"
+   :etf (sv)
+   :s agent))
+
+(def-synonym auto-phosphorylate
              (:verb "autophosphosphorylate"
               :etf (sv) :s agent))
 
@@ -227,6 +232,13 @@
    :of substrate
    :at site))
 
+(def-synonym dephosphorylate
+  (:noun "dephophosphorylation" ;; misplelling from comments
+   :s agent
+   :o substrate
+   :of substrate
+   :at site))
+
 
 (define-category transphosphorylate
   :specializes phosphorylation-modification
@@ -234,6 +246,20 @@
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "transphosphorylate" :noun "transphosphorylation"
+   :etf (svo-passive pre-mod)
+   :s agent
+   :o substrate
+   :m site ;; "T669 phosphorylation" in figure-7
+   :of substrate
+   :on site
+   :at site))
+
+(define-category hypersphosphorylate
+  :specializes phosphorylation-modification
+  :instantiates self
+  :index (:permanent :sequential-keys site substrate)
+  :realization
+  (:verb "hyperphosphorylate" :noun "hyperphosphorylation"
    :etf (svo-passive pre-mod)
    :s agent
    :o substrate
@@ -304,7 +330,9 @@
 
 (def-synonym auto-ubiquitinate 
              (:verb "autoubiquitinate"
-              :etf (sv) :s agent))
+                    :etf (sv)
+                    :noun "autoubiquitination"
+                    :s agent))
 
 ;;;------------------------------
 ;;; mUbRas, monoubitutinated Ras

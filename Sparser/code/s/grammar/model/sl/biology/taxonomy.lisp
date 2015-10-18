@@ -125,6 +125,7 @@
           (non-cellular-location non-cellular-location))
   :realization
   (:noun "xxx-dummy"
+         :at cellular-location
          :in non-cellular-location
          :in species
          :in cellular-location
@@ -137,16 +138,15 @@
 ;;/// This is OBE given revision to biological. 
 (define-category bio-abstract :specializes biological)
 
-(define-category bio-predication :specializes event 
+(define-category bio-predication :specializes state 
   :mixins (biological)
   ;;/// This category is unlikely to be doing interesting
   ;; work for us. Need to review where it's used. 
   ;; Made it inherit from event because that provided
   ;; almost all the slots.
   ;; Aspect was annotated with "will likely be useful"
-  :binds ((in-order-to)))
-
-
+  :binds ((subject biological)
+          (in-order-to biological)))
 
 (define-category bio-scalar :specializes scalar-quality
   :mixins (biological)
@@ -210,13 +210,32 @@
   :realization (:common-noun name))
 
 
-(define-category bio-process :specializes process
+(define-category bio-process
+    :specializes process
   :mixins (has-UID has-name biological)
   :realization (:common-noun name) ;; for nominal forms
-  :binds ((adverb)(manner)(following)(modifier)(in-order-to))         
+  :binds ((subject biological)
+          (following)
+          (modifier)
+          (in-order-to))
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
+
+(define-category caused-bio-process
+                 :specializes bio-process
+  :binds
+  ((agent biological) ;; supercedes subject in bio=-process
+   (object biological)
+   (mechanism (:or bio-process mechanism bio-entity))
+   (at (:or bio-concentration quantity measurement)))
+  :realization
+  (:of object
+       :by agent
+       :by mechanism
+       :through mechanism
+       :via mechanism
+       :at at));; can be bio-entity or bio-scalar (and perhaps? bio-process)
 
 
 (define-category mechanism :specializes endurant
@@ -239,37 +258,59 @@
              (:noun "mechanism"
                    :of function))
 
-(define-category bio-control :specializes bio-process
-  :binds ((agent biological) 
-          (object biological) ;; can be bio-entity or bio-scalar (and perhaps? bio-process)
-          (theme biological)) ;; increase in rate vs increase in RAS activity
+(define-category bio-control :specializes caused-bio-process
+  :binds ((theme biological)
+          (timeperiod time-unit))
+ ;; increase in rate vs increase in RAS activity
   :realization
   (:verb ("control" :present-participle "controlling" :present-participle "controling") 
          :etf (svo-passive)
          :s agent
          :o object
-         :for theme))
+         :for theme
+         :for timeperiod))
 
 (define-category bio-rhetorical :specializes event)
 
-(define-category bio-movement :specializes bio-process) ;; like translocation, entry and "binding to membrane"                 
+(define-category bio-movement ;; like translocation, entry and "binding to membrane"                 
+    :specializes bio-process
+    :binds
+    ((object bio-entity)
+     (origin cellular-location)
+     (destination cellular-location))
+    :realization 
+    (:to destination
+     :of object
+     :from origin
+     :premod destination
+     :premod object))
 
 (define-category bio-transport :specializes bio-movement
-  :binds ((agent bio-process)
-          (object protein)
-          (origin cellular-location)
-          (destination cellular-location)) 
+  :mixins (caused-bio-process)
   :realization 
   (;;:verb "transport" 
    :noun "transport" 
    ;;:etf (svo-passive) 
-   :s object ;; ERK translocates -- this is not the agent, but the object!
-   :o object
-   :to destination
-   :of object
-   :from origin
-   :premod destination
-   :premod object))
+   ))
+
+(define-category originate :specializes bio-movement
+  :realization 
+  (:verb "originate" 
+         :etf (sv)
+   :noun "origination" 
+   :s object
+   :in origin
+   :at origin
+   ))
+
+(define-category culminate :specializes bio-movement
+  :realization 
+  (:verb "culminate" 
+         :etf (sv)
+   :s object
+   :in destination
+   :at destination
+   ))
 
 (define-category molecular-function  :specializes bio-process
   :bindings (uid "GO:0005488"))
@@ -301,10 +342,15 @@
 
 (define-category bio-method :specializes process
   :mixins (has-UID has-name biological)
-  :realization (:common-noun name) ;; for nominal forms
+  :binds ((agent (:or pronoun/first/plural biological))
+          (object (:or biological measurement))
+          (timeperiod time-unit))
+  :realization (:by agent
+                    :of object
+                    :for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
-    for 'liquid chromatography', etc. that may be the basis
-    of the grammar patterns.")
+  for 'liquid chromatography', etc. that may be the basis
+  of the grammar patterns.")
 
 (define-category bio-event :specializes event
   :mixins (has-UID has-name biological)
@@ -318,9 +364,11 @@
    (:noun "event"
           :for process))
 
-(define-category bio-relation :specializes state
+(define-category bio-relation :specializes bio-predication
   :mixins (has-UID has-name biological)
-  :realization (:common-noun name) ;; for nominal forms
+  :binds ((theme biological)
+          (timeperiod time-unit)) ;; this probably belongs higher
+  :realization (:for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
@@ -446,6 +494,7 @@
                    :for reaction
                    :premod protein
                    :premod residue))
+
 
 
 (define-category GTPase :specializes enzyme
@@ -581,7 +630,7 @@
 (define-cellular-location "early endosome" "GO_0005769")
 (define-cellular-location "endoplasmic reticulum membrane" "GO_0005789")
 (define-cellular-location "endoplasmic reticulum" "GO_0005783")
-(define-cellular-location "endosome" "GO_0005768")
+(define-cellular-location "endosome" "GO_0005768" :adj "endosomal")
 (define-cellular-location "extracellular matrix" "GO_0031012")
 (define-cellular-location "extracellular region" "GO_0005576")
 (define-cellular-location "focal adhesion" "GO_0005925")
