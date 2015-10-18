@@ -426,7 +426,7 @@ similar to an oncogenic RasG12V mutation (9)."))
   :referent (:function add-adjunctive-clause-to-s left-edge right-edge))
 
 ;;--- direct object
-(loop for nb in `(category::np ,category::pronoun category::reflexive/pronoun ,@*n-bar-categories*)
+(loop for nb in `(category::np ,category::pronoun category::reflexive/pronoun vp+ing vg+ing ,@*n-bar-categories*)
   do
   (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
     do
@@ -440,7 +440,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 ;; subject 
 ;;--- subject + verb
 
-(loop for n in `(np pronoun ,@*n-bar-categories*)
+(loop for n in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
   do
   (eval
    `(def-syntax-rule (,n vp+ed)
@@ -454,7 +454,7 @@ similar to an oncogenic RasG12V mutation (9)."))
       :form S
       :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
 
-(loop for n in `(np pronoun ,@*n-bar-categories*)
+(loop for n in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
   do
   (when nil
     (eval ;; this is the gerund form of the verb as an NP!!!
