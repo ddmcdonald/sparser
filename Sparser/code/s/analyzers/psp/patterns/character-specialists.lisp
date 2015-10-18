@@ -134,7 +134,17 @@
                                     category::adjective))
       ;; now figure out what variable on the second (right)
       ;; should be bound to the first (left)
-      (let ((variable (subject-variable right-ref)))
+      (let ((variable 
+             (if (eq (cat-symbol form) 'category::adjective)
+                 (let
+                     ((vars (cat-slots 
+                             (if (category-p right-ref)
+                                 right-ref
+                                 (itype-of right-ref))))
+                      (sv (subject-variable right-ref)))
+                   (loop for v in vars when (not (eq v sv))
+                     do (return v)))
+                 (subject-variable right-ref))))
         ;; Which variable this is really depends on the two referents.
         ;; For the induced example its an agent (= subject). But the
         ;; tyrosine goes on the site variable of the phosphoryate.
