@@ -189,21 +189,19 @@
       (setf (gethash label *labels-to-their-subcategorization*) sf)
       (when category
         (setf (gethash category *labels-to-their-subcategorization*) sf)
-        (loop for fc in (inherited-sc-patterns category) 
-          do
-          (pushnew fc (subcat-patterns sf) :test #'equal))))
+        (extend-sc-patterns-by-inheritance sf category)))
     sf))
 
-(defun inherited-sc-patterns (category)
- (let
-     ((sf nil))
-   (loop for sc in (super-categories-of category) 
-     do
-     (let ((frame (get-subcategorization sc)))
-       (when frame 
-         (loop for sp in (subcat-patterns frame)
-           do (pushnew sp sf :test #'equal)))))
-   sf))
+(defun extend-sc-patterns-by-inheritance (sf category)
+  (let
+      ((patterns (reverse (subcat-patterns sf))))
+    (loop for sc in (super-categories-of category) 
+      do
+      (let ((frame (get-subcategorization sc)))
+        (when frame 
+          (loop for sp in (subcat-patterns frame)
+            do (pushnew sp patterns :test #'equal)))))
+    (setf (subcat-patterns sf) (reverse patterns))))
 
 
 (defmacro assign-subcat (label form category &rest parameter-plist) ;; :verb+prep)

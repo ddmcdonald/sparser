@@ -241,6 +241,8 @@
       (cons)
       (symbol (setq etf (list etf)))
       (otherwise (error "The :etf parameter must be a symbol or a list")))
+
+    #+ignore ;; allow cases without etf or adj, noun -- this allows for inherited sub-cat frames
     (unless (or adj noun)
       (error "You must specifiy a realization schema/s using the keyword ':etf'")))
 
@@ -334,8 +336,7 @@
                (cn-rules (make-cn-rules/aux word category category
                                             special-cases)))
           (add-rules-to-category category cn-rules)))
-      (unless etf ;; where they were already handled
-        (handle-slots category slots)))
+      )
 
     (when adj
       ;; Adjectives are analyzed as being able to take subjects and/or objects
@@ -352,9 +353,10 @@
         (let* ((var (variable/category o category))
                (v/r (var-value-restriction var)))
           (assign-object category v/r var)))
-      (unless etf
-        (handle-slots category slots)))
-
+      )
+    
+    (unless etf ;; where they were already handled
+        (handle-slots category slots))
 
     (when (or etf substitution-map word-map)
       ;;  (push-debug `(,category ,etf ,substitution-map ,word-map))
@@ -368,14 +370,16 @@
 
 
 (defun handle-slots (category slots)
-  (loop for pair on slots by #'cddr 
-    do 
-    (subcategorize-for-slot
-     category 
-     (case (car pair)
-       ((:premod :thatcomp :whethercomp :to-comp :ifcomp) (car pair)) 
-       (t (string-downcase (symbol-name (car pair)))))
-     (second pair))))
+  (if slots
+      (loop for pair on slots by #'cddr 
+        do 
+        (subcategorize-for-slot
+         category 
+         (case (car pair)
+           ((:premod :thatcomp :whethercomp :to-comp :ifcomp) (car pair)) 
+           (t (string-downcase (symbol-name (car pair)))))
+         (second pair)))
+      (fom-subcategorization category :category category)))
 
 
 
