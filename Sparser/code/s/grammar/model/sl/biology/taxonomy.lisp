@@ -61,12 +61,14 @@
 
 (define-mixin-category bio-complement
   :binds ((statement (:or bio-process molecule-state be bio-predication 
-                          bio-method relation bio-rhetorical)))
+                          bio-method relation bio-rhetorical
+                          there-exists)))
   :documentation "Common parent to the other types of biological 
     complements to share the same standard set of bindings.")
 
 (define-mixin-category bio-thatcomp
   :specializes bio-complement
+  :realization (:thatcomp statement)
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstration, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -129,11 +131,14 @@
          :in non-cellular-location
          :in species
          :in cellular-location
+         :on cellular-location
+         :upon cellular-location
          :in context
          :under context
          :with context
          :in cell-line
-         :from cell-line))
+         :from cell-line
+         :within cellular-location))
 
 ;;/// This is OBE given revision to biological. 
 (define-category bio-abstract :specializes biological)
@@ -213,29 +218,40 @@
 (define-category bio-process
     :specializes process
   :mixins (has-UID has-name biological)
-  :realization (:common-noun name) ;; for nominal forms
   :binds ((subject biological)
           (following)
           (modifier)
           (in-order-to))
+  :realization (:s subject) ;; for nominal forms
+
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
-(define-category caused-bio-process
+(define-category named-bio-process
+    :specializes bio-process
+  :realization (:common-noun name) ;; for nominal forms
+
+  :documentation "No content by itself, provides a common parent
+    for 'processing', 'ubiquitization', etc. that may be the basis
+    of the grammar patterns.")
+
+(define-mixin-category caused-bio-process
                  :specializes bio-process
   :binds
   ((agent biological) ;; supercedes subject in bio=-process
-   (object biological)
+   (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
    (mechanism (:or bio-process mechanism bio-entity))
    (at (:or bio-concentration quantity measurement)))
   :realization
-  (:of object
-       :by agent
-       :by mechanism
-       :through mechanism
-       :via mechanism
-       :at at));; can be bio-entity or bio-scalar (and perhaps? bio-process)
+  (:s agent
+      :o object
+      :of object
+      :by agent
+      :by mechanism
+      :through mechanism
+      :via mechanism
+      :at at));; can be bio-entity or bio-scalar (and perhaps? bio-process)
 
 
 (define-category mechanism :specializes endurant
@@ -265,12 +281,20 @@
   :realization
   (:verb ("control" :present-participle "controlling" :present-participle "controling") 
          :etf (svo-passive)
-         :s agent
-         :o object
          :for theme
          :for timeperiod))
 
-(define-category bio-rhetorical :specializes event)
+(define-category negative-bio-control :specializes bio-control)
+(define-category positive-bio-control :specializes bio-control)
+
+(define-category bio-rhetorical :specializes event
+  :binds ((agent (:or pronoun/first/plural bio-entity))
+          (object biological))
+  :realization
+  (:s agent
+      :o object
+      :by agent
+      :of object))
 
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"                 
     :specializes bio-process
@@ -279,11 +303,12 @@
      (origin cellular-location)
      (destination cellular-location))
     :realization 
-    (:to destination
-     :of object
-     :from origin
-     :premod destination
-     :premod object))
+  (:s object
+      :to destination
+      :of object
+      :from origin
+      :premod destination
+      :premod object))
 
 (define-category bio-transport :specializes bio-movement
   :mixins (caused-bio-process)
@@ -298,7 +323,6 @@
   (:verb "originate" 
          :etf (sv)
    :noun "origination" 
-   :s object
    :in origin
    :at origin
    ))
@@ -307,7 +331,6 @@
   :realization 
   (:verb "culminate" 
          :etf (sv)
-   :s object
    :in destination
    :at destination
    ))
@@ -324,14 +347,11 @@
   )
 
 (define-category catalysis :specializes biochemical-reaction
-  :binds ((controller bio-entity) 
-          (controlled bio-process)
-          (controlType))
+  :mixins (bio-control)
+  :binds ((controlType))
   :realization
   (:verb "catalyze" :noun "catalysis" 
-         :etf(svo-passive of-nominal) ;;/// "catalyysis of phosphorylation by MEK"
-         :s controller 
-         :o controlled))
+         :etf(svo-passive of-nominal) ));;/// "catalyysis of phosphorylation by MEK"
 
 (define-category kinase-activity :specializes catalysis
   :binds ((enzyme protein))
@@ -345,9 +365,11 @@
   :binds ((agent (:or pronoun/first/plural biological))
           (object (:or biological measurement))
           (timeperiod time-unit))
-  :realization (:by agent
-                    :of object
-                    :for timeperiod) ;; for nominal forms
+  :realization (:s agent
+                   :o object
+                   :by agent
+                   :of object
+                   :for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
   for 'liquid chromatography', etc. that may be the basis
   of the grammar patterns.")
@@ -533,16 +555,12 @@
 ;; "enhanced GTP loading"
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
-(define-category molecule-load :specializes bio-process
- :binds ((agent bio-entity) ;; causes the action
-         (object molecule) ;; the nucleotyde that moves
+(define-category molecule-load :specializes caused-bio-process
+ :binds (;;(object molecule) ;; the nucleotyde that moves
          (substrate biological))
  :realization
  (:noun "loading"
   :etf (of-nominal)
-  :s agent
-  :o object
-  :of object
   :onto substrate))
 ;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
@@ -556,9 +574,6 @@
   :realization
   (:noun  "stoichiometry"
           :of physicalEntity))
-
-
-
 
 ;;/// these next aren't really entities. Consider a new
 ;; toplevel bio category. 
