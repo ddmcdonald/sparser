@@ -150,8 +150,7 @@
   ;; Made it inherit from event because that provided
   ;; almost all the slots.
   ;; Aspect was annotated with "will likely be useful"
-  :binds ((subject biological)
-          (in-order-to biological)))
+  :binds ((subject biological)))
 
 (define-category bio-scalar :specializes scalar-quality
   :mixins (biological)
@@ -220,8 +219,7 @@
   :mixins (has-UID has-name biological)
   :binds ((subject biological)
           (following)
-          (modifier)
-          (in-order-to))
+          (modifier))
   :realization (:s subject) ;; for nominal forms
 
   :documentation "No content by itself, provides a common parent
@@ -242,7 +240,8 @@
   ((agent biological) ;; supercedes subject in bio=-process
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
    (mechanism (:or bio-process mechanism bio-entity))
-   (at (:or bio-concentration quantity measurement)))
+   (at (:or bio-concentration quantity measurement))
+   (method bio-method))
   :realization
   (:s agent
       :o object
@@ -251,6 +250,7 @@
       :by mechanism
       :through mechanism
       :via mechanism
+      :via method
       :at at));; can be bio-entity or bio-scalar (and perhaps? bio-process)
 
 
