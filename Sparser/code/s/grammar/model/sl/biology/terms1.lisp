@@ -129,14 +129,7 @@
 (noun "CML" :super disease)
 (noun "the next day" :specializes abstract)
 (noun  "blotting" :super bio-method)
-(noun "incubation" :super bio-method
-      :binds ((agent biological)
-              (object biological))
-      :realization 
-      (:noun "incubation" 
-       :verb "incubate"
-       :by agent
-       :of object))
+
 (noun  "pipetting" :super bio-method)
 (noun  "processing" :super bio-method
        :binds ((agent biological)(object bio-entity))
