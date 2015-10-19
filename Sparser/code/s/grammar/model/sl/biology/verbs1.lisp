@@ -1077,8 +1077,11 @@
   :binds ((subject biological)
           (theme biological))
   :realization
-  (:verb "impact" :noun "impact"
+  (:verb "impact" 
+         :etf (svo-passive)
+         :noun "impact"
 	 :s subject
+         :o theme
 	 :of theme))
 
 (define-category impair :specializes negative-bio-control
@@ -1122,6 +1125,16 @@
    :in object
    :of object))
 
+(define-category incubation
+                 :specializes bio-method
+  :binds ((agent biological)
+          (object biological))
+  :realization 
+  (:verb "incubate"
+         :etf (svo-passive)
+         :noun "incubation"
+         :by agent
+         :of object))
 
 ;;--- "induce"
 ;; "which induce transcription of the p53 gene"
@@ -1367,24 +1380,14 @@
 ;; "oncogenic mutations"
 ;; "in BRAF mutant thyroid cell"
 (define-category mutate
-  :specializes bio-process
-  :binds ((agent biological)
-          (object biological)  ;; mutation of gene
-          (location bio-location)
-          (method bio-method)) ;; "mutated randomly via PCR"
+  :specializes caused-bio-process
   :realization
   (:verb "mutate" :noun "mutation"
    :etf (svo-passive)
-   :s agent
-   :o object
-   :at location
-   :by agent
    :in object
    :into object
-   :of object
    :on location
    :to object
-   :via method
    :within location))
 ;; These two were in terms and need to be integrated with
 ;; this category
@@ -1448,16 +1451,11 @@
 	   :s agent
 	   :o object))
 
-(define-category overexpress :specializes bio-process
-    :binds ((agent bio-entity)
-            (object biological))
+(define-category overexpress :specializes caused-bio-process
     :realization
     (:verb "overexpress"
 	   :noun "overexpression"
-	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :of object))
+	   :etf (svo-passive)))
 
 ;; new definitions from MITRE test set
 (define-category overlap :specializes bio-relation
