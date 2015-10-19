@@ -192,6 +192,10 @@
         (setf (subcat-patterns sf) (inherited-sc-patterns category))))
     sf))
 
+;; This code needs to be reviewed to take into account
+;; the fact that the inherited categories have also incorporated their
+;; inheritance -- may be able to do this one level at a time if this can
+;; be guaranteed
 (defun inherited-sc-patterns (category)
   (let
       ((patterns nil))
@@ -199,7 +203,7 @@
       do
       (let ((frame (get-subcategorization sc)))
         (when frame 
-          (loop for sp in (subcat-patterns frame)
+          (loop for sp in (reverse (subcat-patterns frame))
             do (pushnew sp patterns :test #'equal)))))
     (nreverse patterns)))
 
