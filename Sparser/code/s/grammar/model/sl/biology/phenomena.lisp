@@ -581,8 +581,6 @@ it is created from N-terminus to C-terminus.|#
 ; apoptotic signals
 ; the apoptosis pathway
 
-;;(noun "apoptosis" :super bio-process)
-;;(adj "apoptotic" :super apoptosis) 
 
 (define-category apoptosis  ;; aka cell death
   :specializes bio-process
