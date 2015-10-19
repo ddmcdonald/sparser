@@ -270,7 +270,7 @@
 (adj "background" :super bio-predication)
 (noun "bacteria" :super species) ;; not really
 (noun "baseline" :super  bio-method)
-(noun "bifc" :super bio-process)
+(noun "bifc" :super bio-method)
 (noun "binder" :super bio-entity)
 
 (adj "biophysical" :super bio-predication)
@@ -681,7 +681,7 @@
 ;;(delete-adj-cfr (resolve/make "independent"))
 
 (noun "membrane" :super cellular-location)
-(noun "method" :super bio-process)
+(noun "method" :super bio-method)
 (noun "mitogen" :super molecule)
 (define-unit-of-measure "mL")
 (define-unit-of-measure "ml")
@@ -874,7 +874,7 @@
 (adj "rich" :super bio-predication) ;; proline rich region
 (adj "right" :super bio-predication)
 (noun "rna" :super molecule)
-(noun "rnai" :super bio-process)
+(noun "rnai" :super bio-method)
 
 (adj "same" :super bio-predication)
 (noun "scaffold" :super protein) 
@@ -987,7 +987,7 @@
 (noun "table" :super article-table)
 (noun "target" :super bio-entity)
 (adj "targeted" :super bio-predication)
-(noun "targeting" :super bio-process)
+(noun "targeting" :super bio-method)
 
 (define-adverb "therefore")
 (define-adverb "thereby")
@@ -1008,8 +1008,8 @@
        :into result))
 (noun "trial" :super bio-context)
 (noun "tumor" :super non-cellular-location)
-(noun "tumor formation" :super bio-process)
-(noun "tumorigenesis" :super bio-process)
+(noun "tumor formation" :super named-bio-process)
+(noun "tumorigenesis" :super named-bio-process)
 (adj "unable" :super bio-predication
      :binds ((agent (:or bio-entity bio-process bio-method))
              (capability bio-process))
@@ -1024,7 +1024,7 @@
      :realization
      (:adj "unknown"
            :s subject))
-(adj "unmodified" :super bio-process)
+(adj "unmodified" :super bio-predication)
 (adj "unresponsive" :super bio-predication
      :binds ((agent (:or bio-entity bio-process bio-method))
              (effect (:or bio-process bio-entity)))
