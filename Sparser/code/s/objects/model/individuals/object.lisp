@@ -80,11 +80,16 @@
 
     (when (or (memq category::collection type-field)
               (memq category::sequence type-field))
-      (let ((conj-type (value-of 'type i)))
-        (unless conj-type
-          (error "Type variable is not set on conjunction ~a" i))
-        (setq type-field 
-              (if (consp conj-type) conj-type `(,conj-type)))))
+      ;; of course, one can ask a collection whether it is 
+      ;; a collection and have it say yes rather than
+      ;; look at what it's a collection of
+      (unless (or (eq category category::collection)
+                  (eq category category::sequence))
+        (let ((conj-type (value-of 'type i)))
+          (unless conj-type
+            (error "Type variable is not set on conjunction ~a" i))
+          (setq type-field 
+                (if (consp conj-type) conj-type `(,conj-type))))))
 
     (typecase i
       (individual 
