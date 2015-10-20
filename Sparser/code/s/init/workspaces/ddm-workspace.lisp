@@ -47,11 +47,16 @@
 sdm-span-segment assumes it's spanning an np. It should
   instead use the max projection of the category of the head
 
+"thus"  interpret-subordinator
+
 Siting composition other method calls
   referent-from-rule
 
 Are restrictions working?
   decode-category-parameter-list  handle-variable-restrictions
+
+Fold mixins into "daughter" inheritance sweep
+   compute-daughter-relationships  display-categories-below
 
 convert-bio-entity-to-protein
 
