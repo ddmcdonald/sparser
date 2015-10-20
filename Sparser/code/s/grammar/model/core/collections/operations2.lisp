@@ -47,13 +47,14 @@
 ;;;-------------------------------------------------
 ;;; sort fn used by Sort-individuals-alphabetically
 ;;;-------------------------------------------------
-
+#|
 #+ccl(define-sort-function 'collection 'sort-sequences)
-
+  The stub hits at an unfortunate moment in the ASPP January
+  article for bad reasons, so just ignoring the whole thing
 (defun sort-sequences (s1 s2)
   (push-debug `(,s1 ,s2))
   (break "stub"))
-
+|#
 
 ;;;-----------------
 ;;; create routines
