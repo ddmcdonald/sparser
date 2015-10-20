@@ -86,10 +86,16 @@
       (unless (or (eq category category::collection)
                   (eq category category::sequence))
         (let ((conj-type (value-of 'type i)))
-          (unless conj-type
-            (error "Type variable is not set on conjunction ~a" i))
-          (setq type-field 
-                (if (consp conj-type) conj-type `(,conj-type))))))
+          (when conj-type
+            ;; If there isn't a type, then this was either a badly
+            ;; modeled collection (though all the ones created by
+            ;; conjunction have been vetted), or it's an instance
+            ;; of the actual word, e.g. "a specific phorphorylation 
+            ;; sequence" in the ASPP January article. These need
+            ;; proper models, but we can't block a type-check waiting
+            ;; for them all to be done
+            (setq type-field 
+                  (if (consp conj-type) conj-type `(,conj-type)))))))
 
     (typecase i
       (individual 
