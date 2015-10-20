@@ -963,19 +963,7 @@ to enhance p53 mediated apoptosis [2].") |#
              ;; of the reach of the override we should do something
              ;; different with it.
              (cond
-              ((itypep item 'collection)
-               ;; this check is patterned after, but not entirely identical with
-               ;; the category that conjoin-two-edges inserts for the edge
-               ;; over a conjunction
-               ;; we only apply itypep to the referent first conjoined item
-               ;; eventually should be 
-               ;; (assuming the type variable of a collection is always set)
-               ;; (itypep (value-of 'type item) category)
-               (if
-                (car (value-of 'items item))
-                (itypep (car (value-of 'items item)) category)
-                (lsp-break "collection without items -- fix this")))
-              ((itypep item category))
+              ((itypep item category)) ;; handles conjunctions
               (t (eq category override-category)))))
       (cond
        ((itypep item category::pronoun/inanimate)
