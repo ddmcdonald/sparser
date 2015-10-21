@@ -344,7 +344,9 @@
 (define-adverb "absolutely")
 (define-adverb "accordingly")
 (define-adverb "accurately")
-#+ignore(define-adverb "actively") ;; conflicts with bio domain
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adverb "actively")) ;; conflicts with bio domain
 (define-adverb "actually")
 (define-adverb "acutely")
 (define-adverb "additionally")
@@ -772,7 +774,9 @@
 (define-adjective "abnormal")
 (define-adjective "abundant")
 (define-adjective "accurate")
-#+ignore (define-adjective "active") ;; conflicts with bio-domain
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "active"));; conflicts with bio-domain
 (define-adjective "adaptive")
 (define-adjective "adhesive")
 (define-adjective "adjacent" :form 'spatial-adjective)
