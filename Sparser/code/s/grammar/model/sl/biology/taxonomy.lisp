@@ -111,7 +111,6 @@
   Generic characterizations of proteins and small molecules, etc. which have
   OBO identifiers, but are not localized to cellular locations.")
 
-
 (define-mixin-category biological
   :lemma (:adjective "biological")
   :documentation "Provides a generalization over bio entities
@@ -150,7 +149,8 @@
   ;; Made it inherit from event because that provided
   ;; almost all the slots.
   ;; Aspect was annotated with "will likely be useful"
-  :binds ((subject biological)))
+  :binds ((subject biological))
+  :realization (:s subject))
 
 (define-category bio-scalar :specializes scalar-quality
   :mixins (biological)
@@ -220,8 +220,7 @@
   :binds ((subject biological)
           (following)
           (modifier))
-  :realization (:s subject) ;; for nominal forms
-
+  :realization (:s subject) 
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
@@ -235,22 +234,20 @@
     of the grammar patterns.")
 
 (define-mixin-category caused-bio-process
-                 :specializes bio-process
+  :specializes bio-process
   :binds
   ((agent biological) ;; supercedes subject in bio=-process
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
-   (mechanism (:or bio-process mechanism bio-entity))
-   (at (:or bio-concentration quantity measurement))
-   (method bio-method))
+   (by-means-of (:or bio-process mechanism bio-entity))
+   (at (:or bio-concentration quantity measurement)))
   :realization
   (:s agent
       :o object
       :of object
       :by agent
-      :by mechanism
-      :through mechanism
-      :via mechanism
-      :via method
+      :by by-means-of
+      :through by-means-of
+      :via by-means-of
       :at at));; can be bio-entity or bio-scalar (and perhaps? bio-process)
 
 
@@ -275,13 +272,13 @@
                    :of function))
 
 (define-category bio-control :specializes caused-bio-process
-  :binds ((theme biological)
+  :binds (;;(theme biological)
           (timeperiod time-unit))
  ;; increase in rate vs increase in RAS activity
   :realization
   (:verb ("control" :present-participle "controlling" :present-participle "controling") 
          :etf (svo-passive)
-         :for theme
+         ;;:for theme
          :for timeperiod))
 
 (define-category negative-bio-control :specializes bio-control)
