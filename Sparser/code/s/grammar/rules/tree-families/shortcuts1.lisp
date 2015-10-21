@@ -166,7 +166,10 @@ broadly speaking doing for you all the things you might do by hand.
     (unless realization
       (error "Variables were specified (:binds) but not a realization")))
   (when realization
-    (unless binds
+    (unless (or binds 
+                ;; should actually check for inherited categories as well
+                (and super (cat-slots (category-named super)))
+                (and specializes (cat-slots (category-named specializes))))
       (error "A realization was specified but no variables")))
 
   #+ignore(unless index
@@ -254,7 +257,10 @@ broadly speaking doing for you all the things you might do by hand.
     (unless realization
       (error "Variables were specified (:binds) but not a realization")))
   (when realization
-    (unless binds
+    (unless (or binds 
+                ;; should actually check for inherited categories as well
+                (and super (cat-slots (category-named super)))
+                (and specializes (cat-slots (category-named specializes))))
       (error "A realization was specified but no variables"))
     (setq realization
           (cons :adj (cons adj realization))))
@@ -288,8 +294,7 @@ broadly speaking doing for you all the things you might do by hand.
                 :rule-label ,rule-label
                 :restrict ,restrict
                 :mixins ,mixin
-                :realization
-                  (:adjective ,adj))))
+                :realization ,(or realization `(:adjective ,adj)))))
         (setq category (eval form)))))
 
     (when obo-id
