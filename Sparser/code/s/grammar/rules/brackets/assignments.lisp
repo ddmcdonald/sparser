@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  April 2015
+;;;  Version:  October 2015
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -16,7 +16,7 @@
 ;; 7/27/14 Slightly factored the set-xx routines to use with affix morph.
 ;; 8/29/14 Made the errors for already defined categories into cerrors
 ;; 4/27/15 added *break-on-pattern-outside-coverage?* to the duplicate
-;;  checks.
+;; checks. 10/21/15 fixed explicit-plurals
 
 (in-package :sparser)
 
@@ -173,6 +173,7 @@
 ;; the code in morphology just as its used by ETF.
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
+  ;; (push-debug `(,word ,comlex-clause ,ambiguous?)) (break "setup noun")
   (let ((marked-plural
          (when comlex-clause
            (explicit-plurals comlex-clause)))
@@ -199,7 +200,7 @@
              word
              category ;; lhs
              category ;; referent
-             marked-plural)))
+             marked-plural))) ;; special-cases
       (mark-as-constructed-category-for-word category super-category)
       (add-rules-to-category category rules)
       category)))
@@ -359,8 +360,9 @@
 
 
 (defun explicit-plurals (comlex-clause)
-  (when (some #'keywordp comlex-clause)
-    (let ((plural-entry (cadr (assoc :plural comlex-clause))))
+  ;; E.g. (noun (:plural "stimuli") (:features ((countable))))
+  (let ((alist (cdr comlex-clause)))
+    (let ((plural-entry (cadr (assoc :plural alist))))
       (when plural-entry
         `(:plural ,plural-entry)))))
 
