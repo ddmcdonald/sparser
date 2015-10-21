@@ -1,4 +1,4 @@
-;;; -*- Mode: LISP;  package: MUMBLE;  Syntax: Common-lisp; Base: 10 -*
+;;; -*- Mode: LISP;  package: MUMBLE;  Syntax: Common-lisp; Base: 10 -*-
 ;;; MUMBLE-05:  interpreters> realization> instantiate-phrase
 
 ;;; Copyright (C) 2005,2011-2015 David D. McDonald
