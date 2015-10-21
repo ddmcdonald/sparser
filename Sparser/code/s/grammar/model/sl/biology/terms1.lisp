@@ -296,11 +296,10 @@
   (:noun "complementation"
          :for complement))
 
-(adj "common" :super bio-predication
-  :binds ((subject biological) (theme bio-entity))
+(adj "common" :super bio-relation
+  :binds ((theme bio-entity))
   :realization 
   (:adj "common"
-        :s subject
         :to theme))
 
 ;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
@@ -318,7 +317,6 @@
              :of measurable)) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super experimental-condition)
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
-;;(adj "conserved" :super bio-predication) Moved to verbs1.lisp
 (adj "consistent" :super bio-relation
   :binds ((subject biological) (theme biological))
   :realization 
@@ -329,11 +327,9 @@
 (noun "content" :super measurement)
 
 
-(adj "critical" :super bio-predication
-  :binds ((subject biological) (theme bio-entity))
+(adj "critical" :super bio-relation
   :realization 
   (:adj "critical"
-        :s subject
         :to theme
         :for theme))
 (define-adverb "critically")
@@ -352,32 +348,22 @@
 (adj "deadliest" :super bio-predication) ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
 
-(noun "defect" :super bio-predication
-      :binds ((defective biological))
+(noun "defect" :super bio-relation
       :realization 
       (:NOUN "defect"
-             :in defective))
+             :in theme))
 
 ;; Something is deficient in something else. It needs that
 ;; thing but doesn't have it. Vitamin D, 
 ;; ERK#7 "to be dimerization-deficient in vitro"
-(adj "deficient" :super bio-predication
-  :binds ((missing biological)) 
+(adj "deficient" :super bio-relation
+     :binds ((missing biological))
   :realization
     (:adj "deficient"
      :noun "deficiency"
      :etf pre-mod
      :m missing
      :in missing))
-#+ignore
-(adj "dimerization-deficient" :super molecule-state
-     :binds ((molecule molecule))
-     :realization 
-     (:adj "dimerization-deficient"
-           :s molecule))
-
-
-
 
 (noun "derivative" :super molecule)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
@@ -402,14 +388,10 @@
       (:noun "dna binding"
              :of substrate))
 
-(adj "downstream" :super bio-predication
-  :binds ((subject biological)
-          (theme (:or bio-entity bio-process))
-          (pathway pathway))
+(adj "downstream" :super bio-relation
+  :binds ((pathway pathway))
   :realization 
   (:adj "downstream"
-        :s subject
-        :for theme
         :from theme
         :of theme
         :in pathway))
@@ -422,20 +404,18 @@
       (:noun "effect" 
              :of effector
              :on effectee))
-(adj "effective" :super bio-predication
-     :binds ((subject biological)(against biological))
+(adj "effective" :super bio-relation
+     :binds ((against biological))
      :realization 
      (:adj "effective"
-           :s subject
            :against against)) ;; keyword: (ive ADJ) 
 
 (noun "effector" :super protein) ;; NOT SURE WHAT THE RIGHT SUPER is
 
 (define-category efficacy :specializes bio-predication
-  :binds ((item biological))
   :realization
   (:noun "efficacy"
-         :of item))
+         :of subject))
 
 (noun "EGF" :super protein)
 (adj "endogenous" :super bio-predication) ;; keyword: (ous ADJ) 
@@ -484,11 +464,10 @@
       (:noun "fragment"
              :of whole))
 
-(adj "free" :super bio-predication
-     :binds ((subject biological)(free-of biological))
+(adj "free" :super bio-relation
+     :binds ((free-of biological))
      :realization 
      (:adj "free"
-           :s subject
            :of free-of)) ;; keyword: (ive ADJ) 
 (adj "full" :super bio-predication)
 (adj "nucleotide-free" :super bio-predication)
@@ -535,12 +514,10 @@
 (noun "human" :super species)
 
 
-(adj "identical" :super bio-predication
-     :binds ((basis biological)
-             (comparator biological))
+(adj "identical" :super bio-relation
+     :binds ((comparator biological))
      :realization
      (:adj "identical"
-           :s basis
            :to comparator))
 (define-adverb "in part")
 (define-category in-vivo :specializes experimental-condition
@@ -560,31 +537,24 @@
      :realization 
      (:adj "inactive"
            :s molecule))
-(adj "independent" :super bio-predication
-  :binds ((subject biological)
-          (theme biological))
+(adj "independent" :super bio-relation
   :realization 
-  (:adj "independent"
-        :s subject
-        :of theme))
+  (:adj "independent"))
 
 (adj "inducible" :super bio-predication) ;; keyword: (ible ADJ) 
-(adj "ineffective" :super bio-predication
-     :binds ((subject biological)(against biological))
+(adj "ineffective" :super bio-relation
+     :binds ((against biological))
      :realization 
      (:adj "ineffective"
-           :s subject
            :against against)) ;; keyword: (ive ADJ) 
 
 (noun "inhibitor" :super bio-entity) ;; keyword: (or N) 
 
 (adj "initial" :super bio-predication)
-(adj "insensitive" :super bio-predication
-      :binds ((subject biological)(cause biological))
+(adj "insensitive" :super bio-relation
       :realization
       (:adj "insensitive"
-             :s subject
-             :to cause))
+             :to theme))
    
 (noun "insensitivity" :super bio-scalar
       :binds ((subject biological)(cause biological))
@@ -701,7 +671,7 @@
 (define-adverb "namely")
 (adj "native" :super bio-predication)
 (noun "natural growth conditions" :super experimental-condition)
-(adj "necessary" :super bio-predication
+(adj "necessary" :super bio-relation
      :binds ((condition biological)(agent biological)(result biological))
      :realization 
      (:adj "effective"
@@ -770,13 +740,9 @@
       :realization
       (:noun "possibility"
              :thatcomp assertion)) ;; keyword: (ity N) 
-(adj "potent" :super bio-predication
-  :binds ((subject biological)
-          (theme bio-entity))
+(adj "potent" :super bio-relation
   :realization 
-  (:adj "potent"
-        :s subject
-        :for theme))
+  (:adj "potent"))
   
 (noun "presence" :super bio-context
       :binds ((context biological))
@@ -790,9 +756,9 @@
 	   :at location)) 
 (adj "prevalent" :super bio-predication)
 (define-adverb "primarily") ;; keyword: ENDS-IN-LY 
-(adj "prior" :super bio-predication
-  :binds ((event . bio-process))
-  :realization (:to event))
+(adj "prior" :super bio-relation
+  :binds ((prior-event  bio-process))
+  :realization (:to prior-event))
 (noun "proportion" :super bio-scalar
       :binds ((basis bio-entity)) ;; this should be for genes and proteins
       :realization
@@ -824,29 +790,26 @@
 (adj "real-time" :super bio-predication)
 (def-synonym real-time (:adj "real time"))
 (adj "recombinant" :super bio-predication)
-(adj "refractory" :super bio-predication
-     :binds ((theme biological) (treatment bio-process))
+(adj "refractory" :super bio-relation
+     :binds ((treatment biological))
      :realization
-     (:s theme
-         :to treatment))
+     (:to treatment))
      ;; keyword: (ory ADJ)
 (noun "region" :super molecular-location
       :binds ((bounds biological))
       :realization
       (:noun "region"
              :between bounds))
-(adj "relative" :super bio-predication
+(adj "relative" :super bio-relation
      :binds ((comparator biological))
      :realization
      (:to comparator))
 
-(adj "resistant" :super bio-predication
-     :binds ((agent (:or bio-entity bio-process bio-method))
-             (effect (:or bio-process bio-entity)))
+(adj "resistant" :super bio-relation
+     :binds ((treatment (:or bio-process bio-entity)))
      :realization
      (:adj "resistant"
-           :s agent
-           :to effect))
+           :to treatment))
 
 (noun "response" :super bio-process
     :binds ((beneficiary biological)
@@ -874,18 +837,15 @@
 (noun "scale" :super bio-scalar)     
 (noun "screen" :super  bio-method)
 (noun "SDS-PAGE"  :super bio-method)
-(adj "selective" :super bio-predication
-  :binds ((agent biological)(theme bio-entity))
-  :realization
-  (:s agent
-      :for theme))
+(adj "selective" :super bio-relation
+     :binds ((for biological))
+     :realization (:for for))
 
-(adj "sensitive" :super bio-predication
-      :binds ((subject biological)(cause biological))
+(adj "sensitive" :super bio-relation
+      :binds ((treatment biological))
       :realization
       (:adj "sensitive"
-             :s subject
-             :to cause))
+             :to treatment))
 (noun "sensitivity" :super bio-scalar
       :binds ((subject biological)(cause biological))
       :realization
@@ -896,11 +856,10 @@
 (noun "setting" :super bio-context)
 (adj "short-lived" :super bio-predication)
 
-(adj "similar" :super bio-predication
-  :binds ((item biological)(compared-to biological))
+(adj "similar" :super bio-relation
+  :binds ((compared-to biological))
   :realization 
-  (:s item
-      :to compared-to))
+  (:to compared-to))
 (define-adverb "similarly")
  
 ;; Jan 29 "two MAPK phosphorylation sites in ASPP1 and ASPP2."
@@ -920,11 +879,10 @@
 (find-or-make-individual 'qualitative-rate :name "slow")
 
 
-(adj "specific" :super bio-predication :super bio-abstract
-     :binds ((theme biological)(situation biological)(beneficiary biological))
+(adj "specific" :super bio-relation
+     :binds ((situation biological)(beneficiary biological))
      :realization
      (:adj "specific"
-           :s theme
            :to situation
            :for beneficiary))
 (noun "spectrometry" :super bio-method)
@@ -951,11 +909,10 @@
          :for enzyme))
 ;;(noun "success" :super bio-abstract) -- make a verb
 
-(adj "suitable" :super bio-predication
-     :binds ((theme biological)(purpose biological))
+(adj "suitable" :super bio-relation
+     :binds ((purpose biological))
      :realization
      (:adj "suitable"
-           :s theme
            :for purpose))
 
 
@@ -1003,28 +960,20 @@
 (noun "tumor" :super non-cellular-location)
 (noun "tumor formation" :super named-bio-process)
 (noun "tumorigenesis" :super named-bio-process)
-(adj "unable" :super bio-predication
-     :binds ((agent (:or bio-entity bio-process bio-method))
-             (capability bio-process))
+(adj "unable" :super bio-relation
+     :binds ((capability bio-process))
      :realization
      (:adj "unable"
-           :s agent
            :to-comp capability))
            
 (adj "unclear" :super bio-predication)
-(adj "unknown" :super bio-predication
-     :binds ((subject biological))
-     :realization
-     (:adj "unknown"
-           :s subject))
+(adj "unknown" :super bio-predication)
 (adj "unmodified" :super bio-predication)
-(adj "unresponsive" :super bio-predication
-     :binds ((agent (:or bio-entity bio-process bio-method))
-             (effect (:or bio-process bio-entity)))
+(adj "unresponsive" :super bio-relation
+     :binds ((treatment (:or bio-process bio-entity)))
      :realization
      (:adj "unresponsive"
-           :s agent
-           :to effect))
+           :to treatment))
 (define-adverb "until now")
 (noun "upstream" :super bio-context
       :binds ((relative-to biological)
@@ -1033,7 +982,7 @@
       (:noun "upstream"
              :of relative-to
              :in pathway))
-(adj "useful" :super bio-predication
+(adj "useful" :super bio-relation
      :binds ((subject biological)
              (purpose (:or bio-process bio-method)))
      :realization
