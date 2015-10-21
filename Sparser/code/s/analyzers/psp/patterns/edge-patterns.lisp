@@ -62,7 +62,7 @@
 
      (t 
       (if *work-on-ns-patterns*
-        (break "~a edges in ns pattern" (length edges))
+        (break "Sort-out-pattern-with-edges: ~a edges in ns pattern" (length edges))
         (edge-that-punts-edge-inside-pattern words start-pos end-pos edges))))))
 
 
