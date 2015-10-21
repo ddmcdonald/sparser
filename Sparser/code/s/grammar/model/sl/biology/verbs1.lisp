@@ -568,7 +568,7 @@
 
 
 (define-category depend
-  :specializes bio-predication
+  :specializes bio-relation
   :binds ((agent biological)
           (theme biological)) 
   :realization
