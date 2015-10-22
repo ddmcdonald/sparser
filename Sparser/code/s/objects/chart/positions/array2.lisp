@@ -25,7 +25,7 @@
 ;;;----------------------------------
 
 (unless (boundp '*number-of-positions-in-the-chart*)
-  (defparameter *number-of-positions-in-the-chart* 250))
+  (defparameter *number-of-positions-in-the-chart* 1000))
 
 (defun make-position-array ()
   (make-array *number-of-positions-in-the-chart*))
