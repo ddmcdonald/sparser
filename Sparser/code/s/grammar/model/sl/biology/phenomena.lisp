@@ -734,6 +734,11 @@ it is created from N-terminus to C-terminus.|#
    :of monomer
    :with monomer))
 
+(def-synonym homo/heterodimerize
+             (:noun "homo- or heterodimerization"
+                    :verb "homo- or heterodimerize"
+                    :etf (sv of-nominal)))
+
 
 (define-category bio-complex 
   ;; changed -- complexes are not molecules, but associated groups of
@@ -801,7 +806,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 (define-category heterodimer
-  :specializes bio-complex
+  :specializes dimer
   :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
@@ -822,7 +827,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 (define-category homodimer
-  :specializes bio-complex
+  :specializes dimer
   :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
@@ -833,6 +838,23 @@ it is created from N-terminus to C-terminus.|#
          :with component
          :of component
          :between component))
+
+(define-category homo/heterodimer
+  :specializes dimer
+  :binds ((component (:or bio-complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :realization
+  (:noun "homo/heterodimer"
+         :etf pre-mod
+         :premod component
+         :m component
+         :with component
+         :of component
+         :between component))
+
+(def-synonym homo/heterodimer
+             (:noun "homo-heterodimer"))
+
 
 ; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
 ; Dec33: endogenous C-RAF:B-RAF heterodimers
