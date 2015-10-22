@@ -804,7 +804,7 @@
 (DEF-RAS2-PROTEIN "RASA1_HUMAN" ("RASA1_HUMAN" "Ras p21 protein activator" "RASA1" "RASA" "GAP" "p120GAP" "RasGAP" "GTPase-activating protein" "p120GAP" "p120 GAP")) 
 (DEF-RAS2-PROTEIN "RASA2_HUMAN" ("RASA2_HUMAN" "RASA2" "GTPase-activating protein 1m" "GAP1m" "RASGAP" "GAP1M")) 
 (DEF-RAS2-PROTEIN "RASH_HUMAN" ("RASH_HUMAN" "HRAS1" "HRAS" "HRas" "GTPase HRas, N-terminally processed" "H-ras" "GTPase HRas" "H-Ras-1" "Ha-Ras" "Transforming protein p21" "c-H-ras" "p21ras")) 
-(DEF-RAS2-PROTEIN "RASK_HUMAN" ("RASK_HUMAN" "KRAS2" "GTPase KRas, N-terminally processed" "RASK2" "KRAS" "KRas"  "GTPase KRas" "K-Ras 2" "Ki-Ras" "c-K-ras" "c-Ki-ras")) 
+(DEF-RAS2-PROTEIN "RASK_HUMAN" ("RASK_HUMAN" "KRAS2" "K-RAS" "K-Ras" "GTPase KRas, N-terminally processed" "RASK2" "KRAS" "KRas"  "GTPase KRas" "K-Ras 2" "Ki-Ras" "c-K-ras" "c-Ki-ras")) 
 (DEF-RAS2-PROTEIN "RASL1_HUMAN" ("RASL1_HUMAN" "RASAL" "RASAL1")) 
 (DEF-RAS2-PROTEIN "RASL2_HUMAN" ("RASL2_HUMAN" "RASA4" "KIAA0538" "CAPRI" "Ras p21 protein activator 4" "GAPL" "Calcium-promoted Ras inactivator" "RasGAP-activating-like protein 2")) 
 (DEF-RAS2-PROTEIN "RASM_HUMAN" ("RASM_HUMAN" "RRAS3" "MRAS" "Ras-related protein R-Ras3")) 
