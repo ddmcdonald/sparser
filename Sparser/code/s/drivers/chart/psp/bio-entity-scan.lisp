@@ -142,6 +142,9 @@ the position. (N.b. there's an incremental trace hook in there.) |#
 
 
 ;;---- move to somewhere under biology.
+
+(defparameter *created-bio-entities* nil)
+
 (defvar *bio-category-for-reifying* nil
   "Set the first time it's used. When we convert full caps or a
    no-space term to a bio entity, this is the category used for
@@ -155,6 +158,7 @@ the position. (N.b. there's an incremental trace hook in there.) |#
         c)))
 
 (defun reify-bio-entity (name)
+  (push name *created-bio-entities*)
   (let* ((category (bio-category-for-reifying))
          ;; use a new type that's intentially indeterminate?
          (kind (cat-symbol category)))
