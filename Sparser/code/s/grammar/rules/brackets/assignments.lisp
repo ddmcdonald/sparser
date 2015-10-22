@@ -175,10 +175,14 @@
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
   ;; (push-debug `(,word ,comlex-clause ,ambiguous?)) (break "setup noun")
   (let ((marked-plural
-         (when comlex-clause
-           (explicit-plurals comlex-clause)))
+         (when comlex-clause (explicit-plurals comlex-clause)))
         (category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :noun)))
+    ;;/// refactor to detect plural=*none* and set
+    ;;  *inihibit-constructing-plural*
+    ;(when marked-plural
+    ;  (push-debug `(,word ,marked-plural ,comlex-clause))
+    ;  (lsp-break "really plural? ~s" marked-plural))
     (when ambiguous?
       (setq category-name
             (construct-disambiguating-category-name
@@ -364,7 +368,11 @@
   (let ((alist (cdr comlex-clause)))
     (let ((plural-entry (cadr (assoc :plural alist))))
       (when plural-entry
-        `(:plural ,plural-entry)))))
+        (unless (eq plural-entry '*none*)
+          ;;/// This should be elevated to set *inihibit-constructing-plural*
+          ;; to completely block creating a plural, as it stands this
+          ;; will have us create a regular plural by rule
+          `(:plural ,plural-entry))))))
 
 
 ;;;-------------------------------------------
