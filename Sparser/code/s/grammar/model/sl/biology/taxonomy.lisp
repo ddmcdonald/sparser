@@ -392,6 +392,9 @@
     for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
 
+(define-category pathway-direction 
+                 :specializes bio-relation)
+
 (define-category feedback-loop :specializes bio-process
   :binds ((participant biological))
   :realization
