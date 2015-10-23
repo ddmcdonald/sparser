@@ -136,7 +136,8 @@
   :binds ((actor bio-entity)
           (object bio-entity)
           (process bio-process)
-          (bio biological))
+          (bio biological)
+          (tocomp biological))
   :documentation "compare with act as"
   :realization
   (:verb "act"
@@ -146,7 +147,8 @@
   :by process
   :on object
   :through bio
-  :via bio))
+  :via bio
+  :to-comp tocomp))
 
 ;; better choice for 'theme' is complement 
 ;; and the etf thing-is-description
@@ -1201,9 +1203,7 @@
   (:verb ("inhibit" :past-tense "inhibited" 
                     :present-participle "inhibiting" )
    :noun "inhibition"
-   :etf (svo-passive)
-   :s agent
-   :o object))
+   :etf (svo-passive)))
 
 (def-synonym inhibit ;; was drug-inhibit but inhibit fits answer key 
   (:noun "inhibitory interaction"
@@ -1213,11 +1213,12 @@
 (def-synonym inhibit ;; was drug-inhibit but inhibit fits answer key 
              (:verb "attenuate"
                     :etf (svo-passive)
-                    :s agent
-                    :o object
-                    :of agent
-                    :with object
-                    ))
+                    :with object))
+
+(def-synonym inhibit ;; was drug-inhibit but inhibit fits answer key 
+             (:verb "dampen"
+                    :etf (svo-passive)
+                    :with object))
 
 (define-category interact :specializes bio-process 
   :binds ((agent biological)
