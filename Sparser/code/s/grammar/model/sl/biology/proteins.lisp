@@ -402,6 +402,8 @@ filligre may be used to distinguish them, etc.
 
 (def-bio "Ras17N" protein)
 
+(define-protein "Q2NL66_HUMAN" ("USP15" "Q2NL66_HUMAN"))
+
 ;; new proteins from conjunction based discovery (bio-entityconjoined with protein) and UniProt lookup
 (define-protein "NALP1_HUMAN" ("ced-4" "NACHT, LRR and PYD domains-containing protein 1" "Caspase recruitment domain-containing protein 7" "Death effector filament-forming ced-4-like apoptosis protein" "Nucleotide-binding domain and caspase recruitment domain"))
 (define-protein "BIRC3_HUMAN" ("cIAP-2" "Baculoviral IAP repeat-containing protein 3" "Apoptosis inhibitor 2" "API2" "C-IAP2" "IAP homolog C" "Inhibitor of apoptosis protein 1" "IAP-1" "hIAP-1" "hIAP1" "RING finger protein 49" "TNFR2-TRAF-signaling complex protein 1"))
