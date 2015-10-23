@@ -17,6 +17,12 @@
 
 (in-package :sparser)
 
+(define-category signal-propagation
+                 :specializes bio-process
+  :binds ((direction pathway-direction))
+  :realization (:noun "signal propagation"
+                      :premod direction))
+
 (define-realization-scheme pre-mod premodifier-adds-property 
   ;; used in quarter -- as are a number of other np patterns
   :head :common-noun
@@ -81,12 +87,18 @@
 
 
 
-(define-category post-translational-modification :specializes bio-process
-  :binds ((agent biological) ;; what causes it to happen
-          (substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
-          (site residue-on-protein)) ;; which is attached here
-  :realization (:noun "post-translational modification")
-  )
+(define-category post-translational-modification :specializes caused-bio-process
+  :binds ((substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
+          (site residue-on-protein)
+          (region region)) ;; which is attached here
+  :realization 
+  (:noun "post-translational modification"
+         :o substrate
+         :m site
+         :of substrate
+         :on site
+         :at site
+         :of region))
 
 (def-synonym post-translational-modification
      (:noun "post-transcriptional modification"))  
@@ -738,7 +750,8 @@ it is created from N-terminus to C-terminus.|#
              (:noun "homo- or heterodimerization"
                     :verb "homo- or heterodimerize"
                     :etf (sv of-nominal)))
-
+(def-synonym homo/heterodimerize
+             (:noun "homo- and heterodimerization"))
 
 (define-category bio-complex 
   ;; changed -- complexes are not molecules, but associated groups of
