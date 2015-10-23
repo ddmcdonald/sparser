@@ -38,6 +38,10 @@
 (in-package :sparser)
 
 ;; new nouns and verbs used in Ras model comments
+
+(noun ("stimulus" :plural "stimuli") :super bio-mechanism) 
+;; not sure if this is ontologically correc, but I think it might be close
+
 (define-category coincident 
                  :specializes bio-relation
   :realization
@@ -70,6 +74,7 @@
 (noun "isomerase" :super enzyme)
 (noun "ligaase" :super enzyme)
 (noun "ubiquitinase" :super enzyme)
+(noun "deubiquitinase" :super enzyme)
 (noun "neurofibromatosis" :super disease)
 (adj "intermolecular" :super bio-predication)
 (adj "intramolecular" :super bio-predication)
@@ -388,7 +393,7 @@
       (:noun "dna binding"
              :of substrate))
 
-(adj "downstream" :super bio-relation
+(adj "downstream" :super pathway-direction
   :binds ((pathway pathway))
   :realization 
   (:adj "downstream"
@@ -548,7 +553,13 @@
      (:adj "ineffective"
            :against against)) ;; keyword: (ive ADJ) 
 
-(noun "inhibitor" :super bio-entity) ;; keyword: (or N) 
+(define-category inhibitor 
+                 :specializes bio-entity
+  :binds ((process (:or bio-process pathway bio-mechanism)))
+  :realization (:noun "inhibitor" :of process))
+(define-category negative-regulator 
+                 :specializes inhibitor
+  :realizAtion (:noun "negative regulator"))
 
 (adj "initial" :super bio-predication)
 (adj "insensitive" :super bio-relation
