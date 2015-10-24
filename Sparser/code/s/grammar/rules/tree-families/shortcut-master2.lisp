@@ -223,6 +223,23 @@
         category))))
 
 
+(defun clear-redundant-subcat-patterns (sf cat-name)
+  (declare (special sf cat-name))
+  ;; :sbuject and :object are special -- don't allow for multiple definitions of subcat pattern
+  (let
+      ((first-one t) lst)
+    (setf (subcat-patterns sf)
+          (progn
+            (loop for sp in (subcat-patterns sf)
+              do
+              (cond
+               ((eq (subcat-label sp) cat-name) 
+                (when first-one
+                  (setq first-one nil)
+                  (push sp lst)))
+               (t (push sp lst))))
+            (nreverse lst)))))
+
 (defun decode-realization-parameter-list (category
                                           &key etf verb noun adj
                                           s o c m ;; arguments
@@ -245,6 +262,7 @@
   
   (let
       ((sf (fom-subcategorization category :category category)))
+    (declare (special sf))
     ;; get inherited sub-cat frames so that we can use inherited Subjects and Objects.
     ;; Now over-ride inherited cases with local information
     
@@ -254,6 +272,10 @@
     (when o ;; direct object
       (let ((var (variable/category o category)))
         (assign-object category (var-value-restriction var) var)))
+
+    (clear-redundant-subcat-patterns sf :subject)
+    (clear-redundant-subcat-patterns sf :object)
+
     
     (when m ;; direct object
       (let ((var (variable/category m category)))
