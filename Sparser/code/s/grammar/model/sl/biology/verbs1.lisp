@@ -417,11 +417,7 @@
     (:verb ("consider"  :past-tense "considered") ;; keyword: ENDS-IN-ED 
 	   :noun "consideration"
 	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :of object
-           :to-comp tocomp
-           :whethercomp statement))
+           :to-comp tocomp))
 
 ;; "consist" (of)
 ;; ? (comlex-entry "consist")
@@ -430,26 +426,19 @@
 (define-category constitute :specializes bio-relation
     :realization
     (:verb "constitute" ;; keyword: ENDS-IN-ED 
-	   :etf (svo)
-	   :s subject
-	   :o theme
-           :by subject))
+	   :etf (svo)))
 
 (define-category contain :specializes bio-relation 
      :realization 
      (:verb "contain"  
-            :etf (svo-passive) 
-            :s subject 
-            :o theme))
+            :etf (svo-passive) ))
 
 (define-category correspond :specializes bio-relation
   :binds ((property common-noun))
   :realization
   (:verb "correspond" :noun "correspondence"
          :etf (sv)
-         :s subject
          :in property ;; "fragments correspond in size..."
-         :of subject
          :to theme
          :with theme))
 
@@ -571,13 +560,10 @@
 
 (define-category depend
   :specializes bio-relation
-  :binds ((agent biological)
-          (theme biological)) 
   :realization
   (:verb "depend" :noun "dependency"
          :adj "dependent"
    :etf (sv)
-   :s agent
    :on theme
    :upon theme))
 
@@ -694,9 +680,7 @@
   :realization 
   (:verb "dominate" 
   :noun "domination" 
-  :etf (svo-passive) 
-  :s subject 
-  :o theme))
+  :etf (svo-passive) ))
 
 (define-category downregulate
   :specializes negative-bio-control
@@ -939,24 +923,24 @@
 
 ;; mostly passive -- "... are found ..."
 (define-category find :specializes bio-rhetorical
-    :binds ((agent pronoun/first/plural)(object bio-process))
-    :realization
-    (:verb ("find" :past-tense "found")
-	   :noun "finding"
-	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :of object))
+  :mixins (bio-thatcomp)
+  :binds ((agent pronoun/first/plural)(object bio-process))
+  :realization
+  (:verb ("find" :past-tense "found")
+         :noun "finding"
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :of object))
 
 (define-category follow :specializes bio-relation
-  :binds ((subject bio-process)
-          (theme bio-process)
+  :binds (;; subject and theme inherited from bio-relation
+          ;;(subject bio-process) ;; this is the initial process
+          ;;(theme bio-process) ;; this is the "following" process
           (by (:or bio-method bio-process)))
   :realization
   (:verb "follow"
-         :etf (svo)
-         :s subject ;; this is the initial process
-         :o theme ;; this is the "following" process
+         :etf (svo) 
          :by by))
 
 (define-category bio-form :specializes caused-bio-process
@@ -1099,10 +1083,7 @@
   :realization 
   (:verb "incorporate" :noun "incorporation"
          :etf (svo-passive)
-         :s subject
-         :o theme
-         :into theme
-         :of subject))
+         :into subject))
 
 (define-category increase
   :specializes positive-bio-control
@@ -1265,16 +1246,12 @@
     :realization
     (:verb "involve" ;; keyword: ENDS-IN-ING 
 	   :etf (svo)
-	   :s subject
-	   :o theme
-           :in theme))
+           :in subject))
 
 (define-category keep :specializes bio-relation
     :realization
     (:verb ("keep" :past-tense "kept")
-	   :etf (svo-passive)
-	   :s subject
-	   :o theme))
+	   :etf (svo-passive)))
 
 (define-category know :specializes bio-rhetorical
     :binds ((agent bio-entity)
@@ -1405,8 +1382,6 @@
     (:verb "need" ;; keyword: ENDS-IN-ED 
 	   :noun "need"
 	   :etf (svo-passive)
-	   :s subject
-	   :o theme
            :FOR theme
            :to-comp result-or-purpose))
 
@@ -1463,8 +1438,6 @@
   :realization
   (:verb "overlap"
          :etf (svo-passive)
-         :s subject
-         :o theme
          :with theme))
 
 (def-synonym overlap
@@ -1472,7 +1445,6 @@
          :among subject
          :between theme
          :in subject
-         :of subject
          :with theme))
 
 (define-category perform :specializes bio-method
@@ -1534,18 +1506,15 @@
            :by agent
            :thatcomp statement))
 
-(define-category present :specializes bio-relation
+(define-category presentation :specializes bio-relation ;; the category "present" is the adjective "present"
     :binds ((figure article-figure))
     :realization
     (:verb "present"
 	   :noun "presentation"
 	   :etf (svo-passive)
-	   :s subject
-	   :o theme
-           :in figure
-           :of subject))
+           :in figure))
 
-(def-synonym present
+(def-synonym presentation
    (:adj "present"
            :at location
            :in location
@@ -1617,15 +1586,12 @@
 ;; TO-DO may want to split rehtorical version and bio-chemical version
 ;; "X provides support for Y" and "X supports process Y"
 (define-category provide :specializes bio-relation
-    :binds ((subject (:or result biological))
-            (theme (:or argument-support biological bio-rhetorical)))
+    :restrict ((subject (:or result biological))
+               (theme (:or argument-support biological bio-rhetorical)))
     :realization
     (:verb "provide"
 	   :noun "provision"
-	   :etf (svo-passive)
-	   :s subject
-	   :o theme
-           :of subject))
+	   :etf (svo-passive)))
 
 (define-category purify :specializes bio-method
   :binds ((bio biological)) 
@@ -1779,9 +1745,7 @@
 (define-category remain :specializes bio-relation
     :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)
-	   :s subject
-	   :o theme))
+	   :etf (svo-passive)))
 
 (def-form-rule (remain adjective)
   :form vp
@@ -1818,16 +1782,16 @@
 
 ;;TO-DO -- fix this one
 (define-category represent :specializes bio-relation
-    :binds ((agent biological)
-            (object (:or bio-process measurement))
-            (figure article-figure))
-    :realization
-    (:verb "represent" :noun "representation"
-	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :in figure
-           :of object))
+  :binds ((agent biological)
+          (object (:or bio-process measurement))
+          (figure article-figure))
+  :realization
+  (:verb "represent" :noun "representation"
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :in figure
+         :of object))
 
 (define-category require :specializes bio-control
     :binds ((requires biological)
@@ -1973,8 +1937,6 @@
   :realization
   (:verb "succeed" :noun "success"
    :etf (sv)
-   :s subject
-   :of subject
    :in theme))
 
 (define-category suggest :specializes bio-rhetorical
