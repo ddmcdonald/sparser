@@ -401,24 +401,40 @@
                (eq label-before label-after)
                (cond
                 ((eq
-                    (individual-p (edge-referent edge-before))
-                    (individual-p (edge-referent edge-after)))
+                  (individual-p (edge-referent edge-before))
+                  (individual-p (edge-referent edge-after)))
                  t)
                 (t (lsp-break "conjunction-problem")) ))
               (and (safe-itypep label-before 'protein)  ;; allow for protein and kinase
                    (safe-itypep label-after 'protein))
               (bio-coercion-compatible? label-before label-after edge-before edge-after))
-        :conjunction/identical-adjacent-labels
-        (when *allow-form-conjunction-heuristic*
-          ;;(break "form heuristics allowed. Check backtrace")
-          (let ((form-before (edge-form edge-before))
-                (form-after (edge-form edge-after)))
-            (when (and (or (and (eq form-before form-after))
-                           (and (memq form-before *premod-forms*)
-                                (memq form-after *premod-forms*)))
-                       (not (conjunction-incompatible-labels
+          :conjunction/identical-adjacent-labels
+          (when *allow-form-conjunction-heuristic*
+            ;;(break "form heuristics allowed. Check backtrace")
+            (let ((form-before (edge-form edge-before))
+                  (form-after (edge-form edge-after)))
+              (when (and (or (and (eq form-before form-after))
+                             (and (memq form-before *premod-forms*)
+                                  (memq form-after *premod-forms*)))
+                         (not
+                          (and
+                           (ng-head? edge-before)
+                           (ng-head? edge-after)
+                           (and 
+                            (right-treetop-at/edge edge-after)
+                            (eq category::preposition (edge-form (right-treetop-at/edge edge-after)))
+                            (let ((sub-cats (known-subcategorization? (edge-referent (right-treetop-at/edge edge-after)))))
+                              (and 
+                               (assoc (edge-left-daughter (right-treetop-at/edge edge-after)) sub-cats)                                 
+                               (not (assoc (edge-left-daughter (right-treetop-at/edge edge-after)) sub-cats))))
+                            ;;this code blocks conjunction of NG heads that are followed by a preposition --
+                            ;;  because it appears much more likely that the following PP is attached 
+                            ;;  to the second head, not to the conjunction
+                            
+                            )))
+                         (not (conjunction-incompatible-labels
                                label-before label-after edge-before edge-after)))
-              :conjunction/identical-form-labels)))))))
+                :conjunction/identical-form-labels)))))))
 
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
   (declare (special label-after label-before))
