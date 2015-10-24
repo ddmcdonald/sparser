@@ -258,6 +258,13 @@
          :of object
          :between objects))
 
+(define-category assess :specializes bio-method
+  :mixins (bio-thatcomp)
+  :realization
+  (:verb "assess" ;; keyword: ENDS-IN-ED 
+         :noun "assessment"
+         :etf (svo-passive)))
+
 ;; overnight
 (define-category assume :specializes bio-rhetorical
   :mixins (bio-thatcomp)
@@ -689,10 +696,10 @@
    :etf (svo-passive)))
 
 (define-category abrogate :specializes negative-bio-control
+  :restrict ((object bio-process))
   :realization
   (:verb "abrogate" :noun "abrogation" 
-         :etf (svo-passive) 
-         :s agent 
+         :etf (svo-passive)
          :o object))
 
 ;; TO-DO check the need for this #+ignore ;; need to get polyword morphology working!
@@ -1495,7 +1502,7 @@
 (define-category predict :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :binds ((agent (:or biological bio-rhetorical)) ;; "predicted by hypothesis"
-            (object bio-process))
+            (object (:or bio-process bio-relation)))
   ;; agent can be a process, like "mutation"
     :realization
     (:verb "predict"
@@ -1582,6 +1589,18 @@
      :as to-be
      :thatcomp statement))
 
+
+(define-category protect :specializes caused-bio-process
+    :restrict ((agent (:or protein bio-process))
+               (object bio-entity))
+  :binds ((protects-against bio-process))
+    :realization
+    (:verb "protect"
+     :noun "protection"
+     :etf (svo-passive)
+     :s agent
+     :o object
+     :from protects-against))
 
 ;; TO-DO may want to split rehtorical version and bio-chemical version
 ;; "X provides support for Y" and "X supports process Y"
