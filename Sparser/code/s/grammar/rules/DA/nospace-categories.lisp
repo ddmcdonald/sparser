@@ -415,17 +415,35 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
 (defun make-word-colon-word-structure (left-edge right-edge)
   ;; called from nospace-colon-specialist
   (push-debug `(,left-edge ,right-edge))
-  (let ((i (find-or-make-individual 'word-colon-word
-             :left (edge-referent left-edge)
-             :right (edge-referent right-edge)
-             :items (list (edge-referent left-edge) (edge-referent right-edge))))
-        (category category::word-colon-word))
-
-    (when (eq (edge-category left-edge)
-              (edge-category right-edge))
-      (setq i (bind-dli-variable 'type (edge-category left-edge)
-                                 i category::sequence)))
-    (let ((edge (make-edge-over-long-span
+  (cond
+   ((and (itypep (edge-referent left-edge) 'protein)
+         (itypep (edge-referent right-edge) 'protein))
+    (make-edge-over-long-span
+     (pos-edge-starts-at left-edge)
+     (pos-edge-ends-at right-edge)
+     category::dimer
+     :rule 'nospace-colon-dimer
+     :form category::n-bar
+     :referent (find-or-make-individual 
+                'dimer
+                :component (edge-referent left-edge)
+                :component (edge-referent right-edge))
+     :constituents `(,left-edge ,right-edge))
+    )
+   (t
+    (let ((i 
+           (find-or-make-individual 
+            'word-colon-word
+            :left (edge-referent left-edge)
+            :right (edge-referent right-edge)
+            :items (list (edge-referent left-edge) (edge-referent right-edge))))
+          (category category::word-colon-word))
+      
+      (when (eq (edge-category left-edge)
+                (edge-category right-edge))
+        (setq i (bind-dli-variable 'type (edge-category left-edge)
+                                   i category::sequence)))
+      (let ((edge (make-edge-over-long-span
                    (pos-edge-starts-at left-edge)
                    (pos-edge-ends-at right-edge)
                    category
@@ -435,7 +453,7 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
                    :constituents `(,left-edge ,right-edge))))
         (revise-form-of-nospace-edge-if-necessary edge right-edge)
         (tr :word-colon-word-default-edge edge)
-      edge)))
+        edge)))))
 
 ;;/// abstract out the constructor
 (defun make-number-colon-number-structure (left-edge right-edge)
