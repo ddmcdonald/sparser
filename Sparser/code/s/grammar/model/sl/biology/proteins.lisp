@@ -402,7 +402,7 @@ filligre may be used to distinguish them, etc.
 
 
 
-(def-bio "Ras17N" protein)
+
 
 (define-protein "Q2NL66_HUMAN" ("USP15" "Q2NL66_HUMAN"))
 
