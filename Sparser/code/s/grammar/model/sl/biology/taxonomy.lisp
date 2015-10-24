@@ -78,6 +78,7 @@
 
 (define-mixin-category bio-whethercomp
   :specializes bio-complement
+  :realization (:whethercomp statement)
   :documentation "Actions that take a that complement -- verbs of
      communication, demonstration, observation. Would like to have a 
      better break-down of these -- at least for wheterh they are positive
@@ -150,7 +151,8 @@
   ;; almost all the slots.
   ;; Aspect was annotated with "will likely be useful"
   :binds ((subject biological))
-  :realization (:s subject))
+  :realization (:s subject
+                   :of subject))
 
 (define-category bio-scalar :specializes scalar-quality
   :mixins (biological)
@@ -387,7 +389,8 @@
   :mixins (has-UID has-name biological)
   :binds ((theme biological)
           (timeperiod time-unit)) ;; this probably belongs higher
-  :realization (:for timeperiod) ;; for nominal forms
+  :realization (:o theme 
+                   :for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
