@@ -618,7 +618,8 @@
                    '(category::vp category::vg 
                      category::vg+ed category::vp+ed 
                      category::vg+ing category::vp+ing
-                     category::vg-passive categoryvp+passive)))))))))
+                     category::vg-passive categoryvp+passive
+                     category::adverb)))))))))
 
 (defun prep? (cat)
   (memq cat '(category::preposition category::spatial-preposition)))
