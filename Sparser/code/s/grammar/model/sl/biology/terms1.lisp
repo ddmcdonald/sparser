@@ -856,6 +856,13 @@
       :realization
       (:adj "sensitive"
              :to treatment))
+
+(adj "subject" :super bio-relation
+      :binds ((treatment biological))
+      :realization
+      (:adj "subject"
+             :to treatment))
+
 (noun "sensitivity" :super bio-scalar
       :binds ((subject biological)(cause biological))
       :realization
