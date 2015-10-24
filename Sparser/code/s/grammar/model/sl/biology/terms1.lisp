@@ -449,7 +449,6 @@
 
 (define-adverb "finally")
 
-(noun "finding" :super bio-entity) ;; like data(noun "paradigm" :super bio-entity)
 
 (define-category fluorescence :specializes bio-process
   :realization
