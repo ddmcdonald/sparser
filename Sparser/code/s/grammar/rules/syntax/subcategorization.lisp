@@ -319,6 +319,11 @@
   ;; called from decode-realization-parameter-list
   (assign-subcategorization category :object v/r variable))
 
+(defun assign-premod (category v/r variable)
+  ;; called from decode-realization-parameter-list
+  (assign-subcategorization category :premod v/r variable))
+
+
 
 ;;--- Syntactic sugar over the list 
 
