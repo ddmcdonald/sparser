@@ -582,15 +582,22 @@
   ;; (aka perdurants). 
 #| (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS signalling 
 to enhance p53 mediated apoptosis [2].") |#
-  (let* ((complement (value-of 'comp tocomp))
-         (ok? (and (itypep s 'perdurant)
-                   (itypep complement 'perdurant))))
-    ;; (push-debug `(,s ,complement))  (lsp-break "ok?")
+  (let*
+      ((complement (value-of 'comp tocomp))
+       (to-comp-var ;; e.g. for "acts to dampen..."
+        (subcategorized-variable s :to-comp complement)))
     (cond
-     (*subcat-test* ok?)
-     (ok?
-      (setq s (bind-dli-variable 'purpose complement s))
-      s))))
+     (to-comp-var 
+      (or *subcat-test*
+       (setq s (bind-dli-variable to-comp-var complement s))))
+     (t
+      (let
+          ((ok? (and (itypep s 'perdurant) (itypep complement 'perdurant))))
+        (cond
+         (*subcat-test* ok?)
+         (ok?
+          (setq s (bind-dli-variable 'purpose complement s))
+          s)))))))
 
 
 #+ignore
@@ -806,6 +813,10 @@ to enhance p53 mediated apoptosis [2].") |#
   s)
 
 (defun create-whethercomp (that s)
+  (declare (ignore that))
+  s)
+
+(defun create-howcomp (how s)
   (declare (ignore that))
   s)
 

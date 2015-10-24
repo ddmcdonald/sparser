@@ -506,7 +506,7 @@ similar to an oncogenic RasG12V mutation (9)."))
                  
 
 ;;;----------------------
-;;; "that" and "whether"
+;;; "that" and "whether" and "how"
 ;;;----------------------
               
 (def-form-rule (that s)
@@ -516,6 +516,11 @@ similar to an oncogenic RasG12V mutation (9)."))
 (def-form-rule (whether s)
   :form whethercomp
   :referent (:function create-whethercomp left-edge right-edge))
+
+(def-form-rule (how s)
+  :form np
+  :referent (:function create-howcomp left-edge right-edge))
+
 
 (loop for vv in '((vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
