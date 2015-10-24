@@ -254,6 +254,10 @@
     (when o ;; direct object
       (let ((var (variable/category o category)))
         (assign-object category (var-value-restriction var) var)))
+    
+    (when m ;; direct object
+      (let ((var (variable/category m category)))
+        (assign-premod category (var-value-restriction var) var)))
     ;; at this point the sub-cat frame has the correct "s" and "o"
     ;; (inherited overidden by local versions if present)
     
@@ -264,6 +268,9 @@
            (obj-pat (assoc :object sub-cat-patterns))
            (o-var (subcat-variable obj-pat))
            (o-v/r (subcat-restriction obj-pat))
+           (m-pat (assoc :premod sub-cat-patterns))
+           (m-var (subcat-variable m-pat))
+           (m-v/r (subcat-restriction m-pat))
            substitution-map  word-map )
       
       (dolist (schema-name etf)
@@ -309,20 +316,16 @@
               (push `(comp-v/r . ,v/r) substitution-map)
               (register-variable category var :omplement-variable)))
           
-          (when m ;; modifier, normally to a head noun
-            (let* ((var (variable/category m category))
-                   (v/r (when var (var-value-restriction var))))
-              (unless var (error "No ~a variable associated with ~a"
+          (when m-pat ;; modifier, normally to a head noun
+            (unless m-var (error "No ~a variable associated with ~a"
                                  m category))
-              (push `(modifier-slot . ,var) substitution-map)
-              (push `(modifier-v/r . ,v/r) substitution-map)))
-          
-          ;;(handle-slots category slots)
-          
-          (when prep ;; preposition 'owned' by the verb, appears
-            ;; immediately after the verb, making it effectively 
-            ;; a compound verb name 
-            (apply-preposition verb prep category)))) ;; end dolist
+            (push `(modifier-slot . ,m-var) substitution-map)
+            (push `(modifier-v/r . ,m-v/r) substitution-map)))
+        
+        (when prep ;; preposition 'owned' by the verb, appears
+          ;; immediately after the verb, making it effectively 
+          ;; a compound verb name 
+          (apply-preposition verb prep category))) ;; end dolist
       
       (when noun ;; a noun can just expect to get all the pp's w/o an etf
         (unless (assq :common-noun word-map)
