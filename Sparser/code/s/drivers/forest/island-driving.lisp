@@ -100,6 +100,14 @@
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
   
+  (when (there-are-conjunctions?) 
+    ;; Inserted this call for conjunctions to merge conjoined NPs before creating PPs
+    ;; as in "as a tumor suppressor and an activator"
+    (tr :try-spanning-conjunctions)
+    (let ((*allow-form-conjunction-heuristic* t))
+      (declare (special *allow-form-conjunction-heuristic*))
+      (try-spanning-conjunctions)))
+
   (if *whack-a-rule*
     (whack-a-rule-cycle sentence)
     (older-island-driving-rest-of-pass-one))
