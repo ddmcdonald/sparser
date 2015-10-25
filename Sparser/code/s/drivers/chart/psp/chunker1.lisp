@@ -49,15 +49,6 @@
 (defvar *chunk-forms* '(ng vg adjg))
 (defparameter *new-chunk-parse* t)
 
-#|(defvar *N-BAR-CATEGORIES*)
-(defvar CATEGORY::ORDINAL)
-(defvar CATEGORY::PRONOUN)
-(defvar CATEGORY::QUANTIFIER)
-(defvar CATEGORY::QUANTIFIER-OF)
-(defvar CATEGORY::PRONOUN)
-(defvar *NG-INTERNAL-CATEGORIES*)
-(defvar CATEGORY::THAT)
-(defvar CATEGORY::MODIFIER)|#
 
 (defvar *current-chunk* nil)
 
@@ -153,10 +144,11 @@
     ;;(push-debug `(,sentence ,chunks)) (break "~a chunks" (length chunks))
     ;;(pop-debug) (setq sentence (car *) chunks (cadr *))
     (when *parse-chunk-interior-online*
-      (dolist (chunk chunks)
-        (push-debug `(,chunk))
-        (tr :parsing-chunk-interior-of chunk)
-        (parse-chunk-interior chunk)))
+      (dolist (*chunk* chunks)
+        (declare (special *chunk*))
+        (push-debug `(,*chunk*))
+        (tr :parsing-chunk-interior-of *chunk*)
+        (parse-chunk-interior *chunk*)))
     (set-sentence-status sentence :chunked)
     (when *record-all-chunks*
       (loop for c in chunks
@@ -164,7 +156,6 @@
     chunks))
 
 (defun record-chunk (c)
-  (declare (special c))
   (let ((str (string-of-words-between (chunk-start-pos c)(chunk-end-pos c)))) 
     (when (chunk-forms c)
       (ecase (car (chunk-forms c))
@@ -252,20 +243,20 @@
   ;;  chunk type (maybe more than one)
   ;;  Goal is to create the longest chunk possible from this point
   (let* ((start (ev-position ev))
-         (chunk (make-instance 'chunk :forms forms :start start :end nil :edge-list nil :ev-list nil))
+         (*chunk* (make-instance 'chunk :forms forms :start start :end nil :edge-list nil :ev-list nil))
          (pos start)
          possible-heads)
-    (declare (special start chunk pos possible-heads))
+    (declare (special *chunk*))
     
     (until
-        (or (chunk-end-pos chunk) ; 
+        (or (chunk-end-pos *chunk*) ; 
             (eq pos sentence-end))
-        (find-consistent-edges chunk)
+        (find-consistent-edges *chunk*)
       
       (when
           forms ;; chunk still valid for at least one category
-        (setf (chunk-forms chunk) forms)
-        (push ev (chunk-ev-list chunk))
+        (setf (chunk-forms *chunk*) forms)
+        (push ev (chunk-ev-list *chunk*))
         (setq pos (pos-ev-ends-at ev forms))
         (loop for ch in (compatible-heads forms ev pos) 
           do (push ch possible-heads)))
@@ -276,23 +267,23 @@
           ;;  chunk must end at or before this pos-before
           
           (let
-              ((head (best-head (chunk-forms chunk) possible-heads))) 
+              ((head (best-head (chunk-forms *chunk*) possible-heads))) 
             (cond
              (head
               ;; the chunk has a head for at least one of the consistent forms
               ;; complete this chunk -- signaling end of until loop
-              (setf (chunk-end-pos chunk) (second head))
-              (setf (chunk-forms chunk) (list (first head)))
-              (tr :delimited-chunk chunk))
+              (setf (chunk-end-pos *chunk*) (second head))
+              (setf (chunk-forms *chunk*) (list (first head)))
+              (tr :delimited-chunk *chunk*))
              (t
               ;;(break "HUH2")
-              (setf (chunk-end-pos chunk) pos)
-              (setf (chunk-forms chunk) nil)
-              (tr :delimited-ill-formed-chunk chunk))))
+              (setf (chunk-end-pos *chunk*) pos)
+              (setf (chunk-forms *chunk*) nil)
+              (tr :delimited-ill-formed-chunk *chunk*))))
           (else     
             (setq ev (pos-starts-here pos))
             (tr :chunk-loop-next-edge ev)
-            (setq forms (remaining-forms ev chunk)))))))
+            (setq forms (remaining-forms ev *chunk*)))))))
 
 (defun pos-ev-ends-at (ev forms)
   (declare (ignore forms))
@@ -376,7 +367,8 @@
 (defun likely-verb+ed-clause (edge ev-list)
   (declare (special category::verb+ed *n-bar-categories*
                     category::preposition category::det
-                    category::pronoun *verb+ed-sents* *sentence-in-core*))
+                    category::pronoun *verb+ed-sents* *sentence-in-core*
+                    *chunk*))
   (cond
    ((and (edge-form edge) ;; COMMA has no edge-form
          (not
@@ -423,7 +415,7 @@
                                    category::pronoun)))))
       ;;(break "verb+ed")          
       (push (list (string-of-words-between 
-                   (chunk-start-pos chunk)
+                   (chunk-start-pos *chunk*)
                    (pos-edge-ends-at edge))
                   (sentence-string *sentence-in-core*)) 
             *verb+ed-sents*))
@@ -520,7 +512,8 @@
   (ng-compatible? (cat-symbol c) evlist))
 
 (defmethod ng-compatible? ((name symbol) edges)
-  (declare (special category::all category::quantifier-of))
+  (declare (special category::all category::quantifier-of category::pronoun
+                    *ng-internal-categories*))
   (or
    (and
     (memq name *ng-internal-categories*)

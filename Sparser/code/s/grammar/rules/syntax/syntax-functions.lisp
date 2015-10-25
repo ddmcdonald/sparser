@@ -817,7 +817,7 @@ to enhance p53 mediated apoptosis [2].") |#
   s)
 
 (defun create-howcomp (how s)
-  (declare (ignore that))
+  (declare (ignore how))
   s)
 
 (defun assimilate-object (vg obj)

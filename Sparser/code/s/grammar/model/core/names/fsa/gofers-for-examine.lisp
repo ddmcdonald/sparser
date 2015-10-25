@@ -237,7 +237,7 @@
          `(:not-a-name ,(pos-edge-ends-at country-tt))))
 
 (defun only-country-in-items (items start-pos end-pos)
-  (declare (special category::country word::hyphen))
+  (declare (special category::country word::hyphen)(ignore start-pos end-pos))
   ;(unless *non-country-categories
   (let ((just-countries t)
         label )

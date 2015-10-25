@@ -437,7 +437,7 @@
                 :conjunction/identical-form-labels)))))))
 
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
-  (declare (special label-after label-before))
+  (declare (special label-after label-before category::bio-entity))
   (cond
    ((safe-itypep label-before 'protein)
     (when

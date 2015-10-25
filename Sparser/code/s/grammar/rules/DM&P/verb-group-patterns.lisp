@@ -224,6 +224,7 @@
 ;;( modal  nil  nil  :ends-in-ing )
 
 (defun reanalyze-modal/mvb/plural-do/participle (start-pos end-pos)
+  (declare (ignore end-pos))
   ;; ah hoc starter case.
   ;; Each pattern element is one word long.
   (let* ((pos-before-unk-verb (chart-position-after start-pos))

@@ -256,7 +256,7 @@
 (defun resolve-stranded-hyphen (pattern words start-pos end-pos)
   ;; called from one-hyphen-ns-patterns for (:lower :hyphen),
   ;; e.g. "mono-"
-  (declare (special *salient-hyphenated-literals*))
+  (declare (special *salient-hyphenated-literals*) (ignore start-pos end-pos))
   (let* ((word (car words))
          (known? (memq word *salient-hyphenated-literals*)))
     (when *work-on-ns-patterns*
@@ -413,6 +413,7 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
   :index (:sequential-keys left right))
 
 (defun make-word-colon-word-structure (left-edge right-edge)
+  (declare (special category::dimer))
   ;; called from nospace-colon-specialist
   (push-debug `(,left-edge ,right-edge))
   (cond

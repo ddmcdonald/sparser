@@ -18,7 +18,7 @@
 (defvar *relations*)
 (defvar *DEC-TESTS*)
 (defvar *JAN-DRY-RUN*)
-
+(defvar *aspp2-whole*) ;; one of the local declares does not seem to work
 (defparameter *show-semantics* t
   "Parameter default to run-test. If non-nil the semantic interpretation
   of the text is shown after it is parsed.")

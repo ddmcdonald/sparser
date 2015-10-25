@@ -521,7 +521,7 @@
                                  &-sign initials? person-version
                                  inc-term? of and the generic-co co-activity
                                  koc? ordinal location-head hurricane)
-  (declare (ignore hurricane name-state country))
+  (declare (special category::company-name)(ignore hurricane name-state country))
 
   ;; Analyze the evidence and determine what sort of name this is
   ;; and make it [[ why not look for existing one? ]]. 

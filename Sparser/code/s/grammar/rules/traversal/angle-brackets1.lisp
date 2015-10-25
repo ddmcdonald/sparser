@@ -27,6 +27,7 @@
 ;;;-------------------
 
 (defun mark-open-angle-bracket (start-pos end-pos)
+  (declare (ignore end-pos))
   (setq *pending-open-angle-bracket* start-pos))
 
 

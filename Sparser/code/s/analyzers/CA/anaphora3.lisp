@@ -290,6 +290,7 @@
         (format stream "?"))))))
 
 (defun search-mentions-by-position (mentions start-pos end-pos)
+  (declare (ignore end-pos))
   ;;/// 9/13/15 probably an ad-hoc fn we can later dispense with
   ;; Used by long-term-ify/individual
   (loop for m in mentions
@@ -605,6 +606,7 @@
          (old-instance ;; pair of old-i and its edge
           (loop for pair in *lifo-instance-list* ;; or assq
             when (eq (car pair) old-i) return pair)))
+    (declare (ignore redundant-instance))
     ;;
     ;(unless old-instance
     ;  (error "No record of old mention in *lifo-instance-list*"))

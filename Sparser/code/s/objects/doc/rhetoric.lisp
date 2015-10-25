@@ -118,6 +118,25 @@ which could be set automatically by using the :init-form on the slot.
      experimental-result |#
 
 ;;;--------------------
+;;; method needed by this file -- define in no-brackets-protocol1.lisp
+;;; but needs to be redundantly defined here to avoid complaints
+;;; -------------------
+(defun identify-current-sentence (&optional no-break)
+  (declare (special *sentence-in-core*))
+  ;; called from the epistemic collector functions but could
+  ;; be generally useful.
+  (let ((s *sentence-in-core*))
+    
+    (cond
+     ((typep s 'sentence) s)
+     (s (error "Odd type returned for sentence: ~a~%~a"
+               (type-of s) s))
+     (t
+      (unless no-break
+        (break "Need another way to find the current sentence"))))))
+
+
+;;;--------------------
 ;;; function generator
 ;;;--------------------
 
