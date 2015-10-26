@@ -88,7 +88,7 @@
 
 
 (define-category post-translational-modification :specializes caused-bio-process
-  :binds ((substrate (:or protein residue-on-protein)) ;; which protein now has ubiquitin on it
+  :binds ((substrate (:or protein residue-on-protein molecular-location)) ;; which protein now has ubiquitin on it
           (site residue-on-protein)
           (region region)) ;; which is attached here
   :realization 
@@ -450,6 +450,20 @@ it is created from N-terminus to C-terminus.|#
     (:noun "terminal"
      :of protein))
 
+(define-category activation-loop :specializes molecular-location
+      :realization
+      (:noun "activation loop"))
+
+(define-category NtA-region :specializes molecular-location
+  :realization
+  (:noun "NtA region"))
+
+(def-synonym NtA-region
+             (:noun "N-terminal acidic region"))
+
+(def-synonym NtA-region
+             (:noun "N-terminal acidic domain"))
+
 ;; not clear that we need a proper handling
 ;; of the molecule configuration, etc. that
 ;; differentiates N from C
@@ -809,6 +823,19 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "dimer"
+         :etf pre-mod
+         :premod component
+         :m component
+         :with component
+         :of component
+         :between component))
+
+(define-category monomer
+  :specializes bio-complex
+  :binds ((component (:or bio-complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :realization
+  (:noun "monomer"
          :etf pre-mod
          :premod component
          :m component
