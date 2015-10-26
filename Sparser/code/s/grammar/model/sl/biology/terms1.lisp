@@ -169,7 +169,7 @@
 
 (noun "immunoblotting" :super bio-method)
 (noun "sequential immunoblotting" :super bio-method)
-
+(noun "immunofluorescence" :super bio-method)
 
 
 
@@ -211,10 +211,12 @@
            :s molecule))
 
 (noun "activity" :super bio-process
-      :binds ((agent biological))
+      :binds ((theme biological))
       :realization
       (:noun "activity"
-             :of agent))
+             :of subject
+             :towards theme
+             :on theme))
 
 (define-category activator :specializes molecule
   :binds ((activated molecule))
@@ -330,7 +332,7 @@
         :with theme))
 (define-adverb "constitutively")
 (noun "content" :super measurement)
-
+(noun "control" :super bio-method)
 
 (adj "critical" :super bio-relation
   :realization 
@@ -591,6 +593,8 @@
   :realization
   (:noun "knockdown" :of gene-or-protein))
 
+(define-category lack :specializes bio-relation
+      :realization (:noun "lack" :of theme))
 (adj "least" :super bio-predication)
 (adj "least-selective" :super bio-predication) ;; just to get through
 (noun "length" :super bio-scalar)
@@ -760,10 +764,10 @@
       (:noun "presence" 
              :of context)) ;; keyword: (ence N) 
 (adj "present" :super bio-predication  ;; keyword: (ent ADJ)
-     :binds ((location bio-location))
+     :binds ((in-molecule molecule))
      :realization
      (:adj "present"
-	   :at location)) 
+           :in in-molecule))
 (adj "prevalent" :super bio-predication)
 (define-adverb "primarily") ;; keyword: ENDS-IN-LY 
 (adj "prior" :super bio-relation
@@ -810,6 +814,7 @@
       :realization
       (:noun "region"
              :between bounds))
+
 (adj "relative" :super bio-relation
      :binds ((comparator biological))
      :realization
