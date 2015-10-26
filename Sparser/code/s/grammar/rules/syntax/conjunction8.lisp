@@ -405,8 +405,11 @@
                   (individual-p (edge-referent edge-after)))
                  t)
                 (t (lsp-break "conjunction-problem")) ))
-              (and (safe-itypep label-before 'protein)  ;; allow for protein and kinase
-                   (safe-itypep label-after 'protein))
+              (and (or (safe-itypep label-before 'protein)
+                       (safe-itypep label-before 'bio-complex))  ;; allow for protein and kinase
+                   (or
+                    (safe-itypep label-after 'protein)
+                    (safe-itypep label-after 'bio-complex)))
               (bio-coercion-compatible? label-before label-after edge-before edge-after))
           :conjunction/identical-adjacent-labels
           (when *allow-form-conjunction-heuristic*
