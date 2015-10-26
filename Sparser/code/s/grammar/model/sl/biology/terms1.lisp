@@ -57,8 +57,7 @@
          :in structure
          :of structure))
 
-(noun "N-terminal acidic motif" :super molecular-location)
-(noun "N-terminal acidic region" :super molecular-location)
+
 (adj "acidic" :super bio-predication)
 (adj "adaptor" :super bio-predication) ;; "adaptor protein"
 (adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"

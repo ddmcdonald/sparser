@@ -464,6 +464,10 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym NtA-region
              (:noun "N-terminal acidic domain"))
 
+(def-synonym NtA-region
+             (:noun "N-terminal acidic motif"))
+
+
 ;; not clear that we need a proper handling
 ;; of the molecule configuration, etc. that
 ;; differentiates N from C
