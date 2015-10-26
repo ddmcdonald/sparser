@@ -48,6 +48,10 @@
              "erk" "mapk"
              "mitogen-activated protein kinase"))
 
+(def-family "MAP2K"
+  :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7")
+  :long "mitogen activated protein kinase"
+  )
 (def-family  "cyclooxygenase" :members ("PGH2_HUMAN"))
 
 
