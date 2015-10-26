@@ -33,6 +33,8 @@
 
 
 (def-bio "BCR-ABL" protein)
+
+(define-protein "RBX1_HUMAN" ("RBX1" "RBX1 RING E3 ligase" "RBX1_HUMAN" "E3 ubiquitin-protein ligase RBX1" "protein ZYP" "RING finger protein 75" "RING-box protein 1"))
 (define-protein "PARP1_HUMAN" ("poly(ADP–ribose) 1"))
 (define-protein "PARP2_HUMAN" ("poly(ADP–ribose) 2"))
 (define-protein "PARP3_HUMAN" ("poly(ADP–ribose) 3"))
@@ -186,7 +188,7 @@
   :synonyms ("Ras-GEF" "Ras GEF")) ;; should do that automagically
 
 
-
+(define-protein "MP2K5_HUMAN" ("MAP2K5" "MP2K5_HUMAN" "MAP kinase kinase 5" "MAPKK 5" "MEK5"))
 
 ;;;----------------------------------------------------
 ;;; for the September 4th Reactome supporting abstract
