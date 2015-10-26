@@ -38,6 +38,10 @@
   ;; position-before - word - position-after
   ;; Called from scan-sentences-to-eof which is called from
   ;; initiate-successive-sweeps when it's reading a prepopulated document
+  "Starting at the beginning of a sentence, add words into the
+   chart until a sentence-ending period is encountered.
+   It's a recursive loop. We get out of it we the period-hook
+   runs and throws to :end-of-sentence."
   (simple-eos-check position-before word)  
   (let ((position-after (chart-position-after position-before)))
     (unless (includes-state position-after :scanned)
@@ -48,7 +52,7 @@
       (format t " ~s" (word-pname word)))
 
     ;; Trigger the period-hook
-    ;; Without polywords ("Mr.") the boundaries are not 
+    ;; Without polywords ("Mr."), the boundaries are not 
     ;; going to be as accurate since they'll just depend
     ;; on the capitalization of the next word. 
     (complete-word/hugin word position-before position-after)
