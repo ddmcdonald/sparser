@@ -360,11 +360,14 @@
 	   :etf (svo-passive)))
 
 (define-category coimmunoprecipitate :specializes bio-method
-  :binds ((origin bio-location))
+  :binds ((origin bio-location)
+          (antibody bio-entity))
   :realization 
   (:verb "coimmunoprecipitate" :noun "coimmunoprecipitation"
          :etf (svo-passive) 
-         :from origin))
+         :from origin
+         :with antibody
+         :via antibody))
 
 (define-category compare :specializes bio-method
   :binds ((comparator biological)
@@ -401,7 +404,7 @@
 
 (define-category conserve 
   :specializes caused-bio-process 
-  :binds ( (bio biological)
+  :binds ((bio biological)
           (at bio-location)) 
   :realization 
   (:verb "conserve" 
@@ -439,6 +442,15 @@
      :realization 
      (:verb "contain"  
             :etf (svo-passive) ))
+
+(define-category contribute :specializes positive-bio-control ;; not sure about this
+  :binds ((contribution biological))
+  :realization (:verb "contribute" 
+                      :etf (svo-passive)
+                      :noun "contribution"
+                      :o contribution
+                      :to object
+                      :to-comp object))
 
 (define-category correspond :specializes bio-relation
   :binds ((property common-noun))
@@ -708,6 +720,15 @@
    :etf (svo-passive)
    :o object  ;; regulation of <process>
    :s agent))
+
+(def-synonym downregulate 
+             (:verb "negatively regulate"
+                    :noun "negative regulation"
+                    :etf (svo-passive)
+                    :o object  ;; regulation of <process>
+                    :s agent
+                    :of object
+                    ))
 
 (define-category block
   :specializes negative-bio-control
@@ -1058,13 +1079,17 @@
            :in manner))
 
 (define-category immunoprecipitate :specializes bio-method
-  :binds ((origin bio-location))
+  :binds ((origin bio-location)
+          (antibody bio-entity))
   :realization 
   (:verb "immunoprecipitate" :noun "immunoprecipitation"
          :etf (svo-passive) 
          :s agent 
          :o object
-         :from origin))
+         :from origin
+         :with antibody
+         :via antibody))
+
 
 (define-category impact :specializes bio-predication
   :binds ((subject biological)
@@ -1397,6 +1422,7 @@
            :of subject
            :for theme))
 
+
 (define-category observe :specializes bio-method
     :mixins (bio-thatcomp)
     :binds ((focused-on biological)
@@ -1572,6 +1598,12 @@
            :through bio
            :with bio
 	   :within bio))
+
+(define-category prolong :specializes caused-bio-process
+  :realization
+  (:verb "prolong"
+         :etf (svo-passive)))
+  
 
 ;; (p "Dimerization of ERK has been proposed as a requirement for nuclear translocation.")
 (define-category propose :specializes bio-rhetorical
@@ -1761,6 +1793,13 @@
   :into bio
   :of object))
 
+
+(define-category relieve :specializes negative-bio-control
+  :realization
+  (:verb "relieve"
+         :noun "relief"
+         :etf (svo-passive)))
+
 (define-category remain :specializes bio-relation
     :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
@@ -1839,7 +1878,7 @@
 
 (define-category result :specializes bio-process
     :binds ((agent (:or bio-entity bio-process))
-            (object (:or bio-process bio-method)))
+            (object (:or bio-process bio-method bio-predication)))
     :realization
     (:verb "result" ;; keyword: ENDS-IN-ED 
 	   :etf (svo)
@@ -2205,6 +2244,13 @@
   :etf (svo)
   :s (agent bio-entity)
   :o (object bio-entity))
+
+(define-category undergo :specializes bio-process
+  :binds ((process (:or bio-process bio-method)))
+  :realization 
+  (:verb "undergo" 
+         :etf (svo)
+         :o process))
 
 
 ;; base form is "underlie" though...
