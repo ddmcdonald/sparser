@@ -123,6 +123,7 @@
           (cell-line cell-line)
           (location non-cellular-location)
           (cellular-location cellular-location)
+          (molecular-location molecular-location)
           (species species) ;; human? mouse?
           (non-cellular-location non-cellular-location))
   :realization
@@ -134,6 +135,8 @@
          :on cellular-location
          :upon cellular-location
          :in context
+         :in molecular-location
+         :at molecular-location
          :under context
          :with context
          :in cell-line
@@ -150,9 +153,11 @@
   ;; Made it inherit from event because that provided
   ;; almost all the slots.
   ;; Aspect was annotated with "will likely be useful"
-  :binds ((subject biological))
+  :binds ((subject biological)
+          (as-comp as-comp))
   :realization (:s subject
-                   :of subject))
+                   :of subject
+                   :as-comp as-comp))
 
 (define-category bio-scalar :specializes scalar-quality
   :mixins (biological)
@@ -217,15 +222,25 @@
 
 
 (define-category bio-process
-    :specializes process
+                 :specializes process
   :mixins (has-UID has-name biological)
   :binds ((subject biological)
           (following)
-          (modifier))
-  :realization (:s subject) 
+          (modifier)
+          (by-means-of (:or bio-process mechanism bio-entity))
+          (manner (:or bio-process bio-mechanism))
+          (as-comp as-comp))
+  
+  :realization 
+  (:s subject
+      :by by-means-of
+      :through by-means-of
+      :via by-means-of
+      :in manner
+      :as-comp as-comp)
   :documentation "No content by itself, provides a common parent
-    for 'processing', 'ubiquitization', etc. that may be the basis
-    of the grammar patterns.")
+  for 'processing', 'ubiquitization', etc. that may be the basis
+  of the grammar patterns.")
 
 (define-category named-bio-process
     :specializes bio-process
@@ -240,16 +255,12 @@
   :binds
   ((agent biological) ;; supercedes subject in bio=-process
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
-   (by-means-of (:or bio-process mechanism bio-entity))
    (at (:or bio-concentration quantity measurement)))
   :realization
   (:s agent
       :o object
       :of object
-      :by agent
-      :by by-means-of
-      :through by-means-of
-      :via by-means-of
+      :by agent     
       :at at));; can be bio-entity or bio-scalar (and perhaps? bio-process)
 
 
