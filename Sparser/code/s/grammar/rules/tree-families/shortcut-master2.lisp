@@ -38,14 +38,14 @@
     :binds :realization
     :prep :by
     :premod
-    :about :across :against :among :as :at :between :for :from :ifcomp :in :into 
-    :of :on :onto :to :to-comp :thatcomp :through :under :upon :via 
+    :about :across :against :among :as :as-comp :at :between :for :from :ifcomp :in :into 
+    :of :on :onto :to :to-comp :thatcomp :through :towards :under :upon :via 
     :designator
     :whethercomp :with :within :without))
 
 (defparameter *slot-keywords*
-  '(:premod :about :across :against :among :as :at :between :for :from :ifcomp 
-    :in :into :of :on :onto :to :to-comp :thatcomp :through :under :upon 
+  '(:premod :about :across :against :among :as :as-comp :at :between :for :from :ifcomp 
+    :in :into :of :on :onto :to :to-comp :thatcomp :through :towards :under :upon 
     :via :whethercomp :with :within :without
     :designator))
 
@@ -395,7 +395,7 @@
     (subcategorize-for-slot
      category 
      (case (car pair)
-       ((:premod :thatcomp :whethercomp :to-comp :ifcomp) (car pair)) 
+       ((:premod :thatcomp :whethercomp :to-comp :ifcomp :as-comp) (car pair)) 
        (t (string-downcase (symbol-name (car pair)))))
      (second pair))))
 
