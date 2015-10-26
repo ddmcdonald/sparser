@@ -410,6 +410,30 @@
    ;; don't apply rule to verbs whose interpretation does not have an adverb variable
    ))
 
+(defun interpret-as-comp (as vp+ed)
+  (declare (special adverb vp+ed))
+  (edge-referent vp+ed))
+
+(defun adjoin-ascomp-to-vg (vp as-comp)
+  (declare (special vp as-comp))
+  (let* ((as-comp-edge (right-edge-for-referent))
+         (comp-edge (edge-right-daughter as-comp-edge))
+         (variable-to-bind
+          ;; test if there is a known interpretation of the NP/PP combination
+          (subcategorized-variable
+           vp :as-comp category::as-comp)))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (variable-to-bind
+      (if *collect-subcat-info*
+          (push (subcat-instance np 'to-comp variable-to-bind
+                                 to-comp)
+                *subcat-info*))
+      (setq vp (individual-for-ref vp))
+      ;;(setq  np (bind-dli-variable variable-to-bind pp np))
+      (setq  vp (bind-dli-variable variable-to-bind as-comp vp))
+      vp))))
+
 (defun vg-has-adverb-variable? (vg)
   (cond
    ((individual-p vg)
@@ -550,6 +574,21 @@
    unindexed individual (in make-pp) then the index
    information doesn't come into play"
   :index (:temporary :sequential-keys prep comp))
+
+(define-category as-comp
+  :specializes abstract
+  :binds ((prep)
+          (comp))
+  :documentation "Provides a scafolding to hold
+   a generic to-comp as identified by
+   the pp rules in grammar/rules/syntactic-rules.
+   Primary consumer is the subcategorization checking
+   code below. Note that if we make these with an
+   unindexed individual (in make-pp) then the index
+   information doesn't come into play"
+  :index (:temporary :sequential-keys prep comp))
+
+
 
 (defun adjoin-tocomp-to-vg (vg tocomp)
   (assimilate-subcat vg :to-comp tocomp))

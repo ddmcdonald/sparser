@@ -53,6 +53,17 @@
   :form s
   :referent (:function interpret-to-comp-adjunct-to-s left-edge right-edge))
 
+(def-form-rule (as vp+ed)
+               :head :right-edge
+  :form as-comp
+  :referent 
+  (:function interpret-adverb+verb left-edge right-edge))
+
+(def-form-rule (as vg+ed)
+               :head :right-edge
+  :form as-comp
+  :referent 
+  (:function interpret-adverb+verb left-edge right-edge))
 
 #| This is too potent to use in a leftward sweep
    because it catches things early
@@ -105,6 +116,13 @@
                      :head :left-edge
       :form ,(second vv)
       :referent (:function adjoin-tocomp-to-vg left-edge right-edge)))
+  
+  (eval
+   `(def-syntax-rule (,(car vv) as-comp)
+                     :head :left-edge
+      :form ,(second vv)
+      :referent (:function adjoin-ascomp-to-vg left-edge right-edge)))
+
   (eval
    `(def-syntax-rule (,(car vv) prep-comp)
                      :head :left-edge
