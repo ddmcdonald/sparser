@@ -217,9 +217,7 @@ previous records of treetop-counts.
 
 (unless (boundp '*directory-for-tree-snapshots*)
   (defparameter *directory-for-tree-snapshots*
-    (merge-pathnames
-     "grammar-tests/"
-     common-lisp-user::*r3-code-directory*)))   
+    (merge-pathnames #P"code/grammar-tests/" cl-user::*r3-trunk*)))
 
 (defparameter *file-for-treetop-snapshots*
   (merge-pathnames "corpora-snapshots.lisp"
