@@ -86,11 +86,8 @@
      since these are quite general, but at the moment we are putting them below the 
      bio-processes.")
  
-(define-mixin-category bio-ifcomp
-  ;;  :specializes bio-complement
-  ;; Except that it uses a different variable name -- see analyze
-  :binds ((ifstatement (:or bio-process molecule-state be bio-predication 
-                            bio-method relation bio-rhetorical)))
+(define-mixin-category bio-ifcomp  :specializes bio-complement
+  :realization (:ifcomp statement)
   :documentation "Similar to bio-whethercomp.")
 
 
@@ -228,16 +225,19 @@
           (following)
           (modifier)
           (by-means-of (:or bio-process mechanism bio-entity))
-          (manner (:or bio-process bio-mechanism))
-          (as-comp as-comp))
+          (manner (:or bio-process bio-mechanism bio-method))
+          (as-comp as-comp)
+          (timeperiod (:or time-unit amount-of-time)))
   
   :realization 
   (:s subject
+      :of subject
       :by by-means-of
       :through by-means-of
       :via by-means-of
       :in manner
-      :as-comp as-comp)
+      :as-comp as-comp
+      :for timeperiod)
   :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
@@ -282,43 +282,57 @@
 
 (def-synonym bio-mechanism
              (:noun "mechanism"
-                   :of function))
+                :of function))
 
 (define-category bio-control :specializes caused-bio-process
-  :binds (;;(theme biological)
-          (timeperiod time-unit))
  ;; increase in rate vs increase in RAS activity
   :realization
   (:verb ("control" :present-participle "controlling" :present-participle "controling") 
-         :etf (svo-passive)
-         ;;:for theme
-         :for timeperiod))
+         :etf (svo-passive)))
 
-(define-category negative-bio-control :specializes bio-control)
-(define-category positive-bio-control :specializes bio-control)
+(define-category negative-bio-control :specializes bio-control
+  :realization (:verb "negatively controls"  :etf (svo-passive)))
+
+(define-category positive-bio-control :specializes bio-control
+  :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
-  :binds ((agent (:or pronoun/first/plural bio-entity))
-          (object biological))
+  :binds ((agent (:or pronoun/first/plural these bio-entity article-figure 
+                      bio-rhetorical
+                      bio-process ;; the B-RAFV600E mutation predicts
+                      bio-method  ;; high-throughput functional screens may inform
+                      ))
+          (object (:or biological pronoun/inanimate))
+          (fig article-figure)
+          (method bio-method))
   :realization
   (:s agent
       :o object
       :by agent
-      :of object))
+      :of object
+      :in fig
+      :by method
+      :through method
+      :under method
+      :via method
+      :with method))
 
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"                 
-    :specializes bio-process
-    :binds
-    ((object bio-entity)
-     (origin cellular-location)
-     (destination cellular-location))
-    :realization 
+                 :specializes bio-process
+  :binds
+  ((object bio-entity)
+   (origin cellular-location)
+   (destination cellular-location))
+  :realization 
   (:s object
+      :at origin
+      :into destination
+      :to destination
       :to destination
       :of object
       :from origin
-      :premod destination
-      :premod object))
+      :m destination
+      :m object))
 
 (define-category bio-transport :specializes bio-movement
   :mixins (caused-bio-process)
@@ -374,7 +388,7 @@
   :mixins (has-UID has-name biological)
   :binds ((agent (:or pronoun/first/plural biological))
           (object (:or biological measurement))
-          (timeperiod time-unit))
+          (timeperiod (:or time-unit amount-of-time)))
   :realization (:s agent
                    :o object
                    :by agent
@@ -399,8 +413,9 @@
 (define-category bio-relation :specializes bio-predication
   :mixins (has-UID has-name biological)
   :binds ((theme biological)
-          (timeperiod time-unit)) ;; this probably belongs higher
-  :realization (:o theme 
+          (timeperiod (:or time-unit amount-of-time))) ;; this probably belongs higher
+  :realization (:o theme
+                   :of theme ;; for nominals
                    :for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'constitute, contains etc. that may be the basis
@@ -409,7 +424,7 @@
 (define-category pathway-direction 
                  :specializes bio-relation)
 
-(define-category feedback-loop :specializes bio-process
+(define-category feedback-loop :specializes bio-mechanism
   :binds ((participant biological))
   :realization
   (:noun "feedback loop"
