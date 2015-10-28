@@ -105,6 +105,11 @@
 (def-synonym post-translational-modification
      (:noun "post-transcriptional fate"))  
 
+(define-category transformation
+  :specializes  post-translational-modification
+  :realization
+  (:verb "transform" :noun "transformation" 
+  :etf (svo-passive)))
 
 
 (define-category phosphorylation-modification :specializes post-translational-modification)
