@@ -411,14 +411,12 @@
    ))
 
 (defun interpret-as-comp (as vp+ed)
-  (declare (special adverb vp+ed))
+  (declare (ignore as))
   (edge-referent vp+ed))
 
 (defun adjoin-ascomp-to-vg (vp as-comp)
   (declare (special vp as-comp))
-  (let* ((as-comp-edge (right-edge-for-referent))
-         (comp-edge (edge-right-daughter as-comp-edge))
-         (variable-to-bind
+  (let* ((variable-to-bind
           ;; test if there is a known interpretation of the NP/PP combination
           (subcategorized-variable
            vp :as-comp category::as-comp)))
@@ -426,8 +424,8 @@
      (*subcat-test* variable-to-bind)
      (variable-to-bind
       (if *collect-subcat-info*
-          (push (subcat-instance np 'to-comp variable-to-bind
-                                 to-comp)
+          (push (subcat-instance vp 'as-comp variable-to-bind
+                                 as-comp)
                 *subcat-info*))
       (setq vp (individual-for-ref vp))
       ;;(setq  np (bind-dli-variable variable-to-bind pp np))
