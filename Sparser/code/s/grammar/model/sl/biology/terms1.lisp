@@ -128,7 +128,7 @@
 
 (noun "carcinogen" :super bio-agent)
 (adj "phospho-specific" :super bio-predication) ;; standin for "phospho-specific antibody"
-(def-synonym not (:adj "non"))
+;;(def-synonym not (:adj "non"))
 
 (noun "CML" :super disease)
 (noun "the next day" :specializes abstract)
@@ -444,8 +444,7 @@
 (noun "fate" :super bio-process)
 
 (noun "fetal calf serum" :super experimental-condition)
-(def-synonym category::fetal\ calf\ serum
-             (:noun "FCS"))
+(def-synonym category::fetal\ calf\ serum  (:noun "FCS"))
 
 
 (define-adverb "finally")
@@ -507,8 +506,7 @@
 
 (adj "high" :super bio-predication)
 (noun "HPLC" :super bio-method)
-(def-synonym HPLC
-             (:noun "high performance liquid chromatography"))
+(def-synonym HPLC (:noun "high performance liquid chromatography"))
 (adj "housekeeping" :super bio-predication)
 
 ;; "However" is actually a subordinate conjunction.
@@ -623,7 +621,6 @@
 ;;--- "lower"  ("raise")
 ;;/// N.b. the adjective variant is commented out in the modifiers dossier
 ;; "(RasGEFs) lower the transition energy for ..."
-;; only instance of "lower" so far is as an adjective (svo/bio "lower")
 
 (define-category lysate :specializes bio-entity
   :binds ((source cell-line))
@@ -633,8 +630,7 @@
 
 (def-bio "adenine" nucleotide)
 (noun "LPA" :super phospholipid)
-(def-synonym lpa
-             (:noun "lysophosphatidic acid"))
+(def-synonym lpa (:noun "lysophosphatidic acid"))
 
 (noun "manner" :super bio-method
       :binds ((process bio-process))
@@ -643,8 +639,7 @@
              :of process))
 (noun "mass" :super measurement)
 (noun "mass-spectrometry" :super bio-method)
-(def-synonym mass-spectrometry
-             (:noun "mass spectrometry"))
+(def-synonym mass-spectrometry (:noun "mass spectrometry"))
              
 (noun "means" :super bio-method
       :binds ((process bio-process))
@@ -710,8 +705,7 @@
 ;; These three want to be synonyms
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super open\ reading\ frame)
-(def-synonym open\ reading\ frame 
-            (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
+(def-synonym open\ reading\ frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
 
 (noun "order of magnitude" :super bio-abstract)
 (noun "outcome" :super bio-process
@@ -1120,11 +1114,9 @@
   :realization
   (:noun "figure"))
 
-(def-synonym article-figure
-             (:noun "fig."))
+(def-synonym article-figure (:noun "fig."))
 
-(def-synonym article-figure
-             (:noun "fig"))
+(def-synonym article-figure (:noun "fig"))
 
  
 (def-cfr article-figure (article-figure two-part-label)
