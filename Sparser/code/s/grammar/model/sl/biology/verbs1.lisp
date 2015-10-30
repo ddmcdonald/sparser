@@ -64,9 +64,11 @@
 ;;; macros for standard cases
 ;;;---------------------------
 
+#+ignore
 (defmacro svo/bio (verb)
   `(svo/bio/expr ,verb))
 
+#+ignore
 (defun svo/bio/expr (verb)
   (when (word-p verb) 
     ;; came in from setup-verb
@@ -1732,6 +1734,7 @@
 	   :to result)) 
 
 ;; "Growth factors can turn on Ras"
+#+ignore
 (def-term turn-on
   :super-category bio-activate
   :verb "turn"
