@@ -40,6 +40,8 @@
 
 ;; (setq *trace-completion-hook* t)
 
+(defvar *debug-reduced-relative-creation* nil)
+
 (define-completion-action category::who ;; label
                           :look-for-rc-head
   'who-subject-relative-clause-operation)
@@ -210,6 +212,11 @@
       (error "Timing may be wrong with when referent is ~
               computed and edge parts are assembled. Parent S ~
               is not a projection of VP."))
+    (display *debug-reduced-relative-creation*
+             (format t "~&-------------------~&Creating reduced relative for:~&")
+             (print-edge-as-category-and-text-segment np-edge t)
+             (print-edge-as-category-and-text-segment vp-edge t)
+             (format t "~&-------------------~&"))
     (let* ((np-ref (edge-referent np-edge))
            (vp-ref (edge-referent vp-edge))
            (ref ;; do the bindings
