@@ -430,7 +430,9 @@ similar to an oncogenic RasG12V mutation (9)."))
 (loop for nb in `(category::np ,@*n-bar-categories*)
   do
   (loop for src in '(category::subject-relative-clause 
-                     category::comma-separated-subject-relative-clause)
+                     category::comma-separated-subject-relative-clause
+                     ;;vp+ing vp+ed ;; reduced relative clauses
+                     )
     do
     (eval 
    `(def-syntax-rule (,nb ,src)
