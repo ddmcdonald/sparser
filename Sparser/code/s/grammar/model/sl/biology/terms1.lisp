@@ -692,6 +692,7 @@
 (define-unit-of-measure "nM")
 (define-unit-of-measure "nm")
 (noun "NMR" :super bio-method)
+(def-synonym NMR (:noun "NMR analyses"))
 
 (delete-noun-cfr (resolve/make "number"))
 (delete-noun-cfr (resolve/make "numbers"))
