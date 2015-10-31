@@ -117,6 +117,7 @@
           "except"
           "except that"
           "however"
+          "in order to"
           "instead" 
           "inasmuch as"
           "lest"
