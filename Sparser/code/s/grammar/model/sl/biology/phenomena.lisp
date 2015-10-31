@@ -446,7 +446,7 @@ it is created from N-terminus to C-terminus.|#
 ; the amino terminus of β-catenin
 
 (define-category protein-terminus
-  :specializes molecular-location
+  :specializes protein-domain
   :instantiates :self
   :binds ((protein protein))
   :lemma ((:common-noun "terminal")
@@ -455,11 +455,43 @@ it is created from N-terminus to C-terminus.|#
     (:noun "terminal"
      :of protein))
 
-(define-category activation-loop :specializes molecular-location
+(define-category RBD :specializes protein-domain
+      :binds ((substrate bio-entity))
+      :realization 
+      (:noun "RBD"
+             :of substrate)) 
+(noun "Raf-RBD" :super RBD)
+(noun "G-domain" :super protein-domain) ;; somehow (def-bio "G-domain" protein-segment) did not work
+(noun "BRCT" :super protein-domain)
+(noun "BRCT1" :super protein-domain)
+(noun "BRCT2" :super protein-domain)
+
+(noun "SH2" :super protein-domain)
+(noun "SH3" :super protein-domain)
+
+(noun "g1" :super protein-domain)
+(noun "g2" :super protein-domain)
+(noun "g3" :super protein-domain)
+(noun "g4" :super protein-domain)
+(noun "g5" :super protein-domain)
+
+
+(define-category DBD :specializes protein-domain
+      :binds ((substrate bio-entity))
+      :realization 
+      (:noun "DBD"
+             :of substrate))
+(def-synonym DBD (:noun "DNA binding domain"))
+
+(define-category molecular-loop :specializes protein-domain
+      :realization
+      (:noun "loop"))
+
+(define-category activation-loop :specializes protein-domain
       :realization
       (:noun "activation loop"))
 
-(define-category NtA-region :specializes molecular-location
+(define-category NtA-region :specializes protein
   :realization
   (:noun "NtA region"))
 
