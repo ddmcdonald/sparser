@@ -212,7 +212,7 @@
       (error "Timing may be wrong with when referent is ~
               computed and edge parts are assembled. Parent S ~
               is not a projection of VP."))
-    (display *debug-reduced-relative-creation*
+    (when *debug-reduced-relative-creation*
              (format t "~&-------------------~&Creating reduced relative for:~&")
              (print-edge-as-category-and-text-segment np-edge t)
              (print-edge-as-category-and-text-segment vp-edge t)
