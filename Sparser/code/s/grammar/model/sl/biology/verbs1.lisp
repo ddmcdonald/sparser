@@ -67,7 +67,6 @@
 (defmacro svo/bio (verb)
   `(svo/bio/expr ,verb))
 
-
 (defun svo/bio/expr (verb)
   (when (word-p verb) 
     ;; came in from setup-verb
