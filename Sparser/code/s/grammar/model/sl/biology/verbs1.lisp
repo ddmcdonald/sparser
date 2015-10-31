@@ -64,10 +64,8 @@
 ;;; macros for standard cases
 ;;;---------------------------
 
-
 (defmacro svo/bio (verb)
   `(svo/bio/expr ,verb))
-
 
 (defun svo/bio/expr (verb)
   (when (word-p verb) 
@@ -764,6 +762,8 @@
     (:verb "engender"
 	   :etf (svo-passive)))
 
+
+
 (define-category bio-promote
   :specializes positive-bio-control
   :realization 
@@ -1140,8 +1140,6 @@
 
 (delete-noun-cfr (resolve "lead"))
 (delete-noun-cfr (resolve "leads"))
-
-
 (define-category lead :specializes positive-bio-control
     :binds ((result (:or biological bio-rhetorical)))
     :realization
@@ -1668,8 +1666,6 @@
   (:verb ("show" :past-tense "shown")
          :etf (svo-passive)
          :to-comp tocomp))
-
-
 
 
 

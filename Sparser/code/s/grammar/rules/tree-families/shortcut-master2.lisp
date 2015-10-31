@@ -72,13 +72,13 @@
 
 ;;--- toplevel macros
 
-#+ignore
+
 (defmacro def-term (name &rest parameter-plist)
   ;;/// add the simplest data checks on the minimal args
   `(def-term/expr ',name ',parameter-plist))
-#+ignore
+
 (defun def-term/expr (name parameter-plist)
-  (lsp-break "def-term/expr")
+  ;;(lsp-break "def-term/expr")
   (apply #'decode-def-term-call name parameter-plist))
 
 
@@ -129,7 +129,7 @@
 ;;; decoders that actually do the work
 ;;;------------------------------------
 
-#+ignore
+
 (defun decode-def-term-call (name 
                              &key super-category
                                   mixin restrict rule-label 
