@@ -360,6 +360,12 @@ similar to an oncogenic RasG12V mutation (9)."))
   :form prep-comp ;;//////////////////////////
   :referent (:function make-prep-comp left-referent right-referent))
 
+;; TO-DO -- reveiw -- have made "in order to" a conjunction, and treating it like a to-comp former
+(def-form-rule (|IN ORDER TO| vp)
+   :form to-comp
+  :head :right-edge)
+ 
+
 
 (def-syntax-rule (preposition vp+ing) 
                  :head :left-edge
