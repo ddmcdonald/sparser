@@ -57,6 +57,23 @@
          :in structure
          :of structure))
 
+(noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
+(noun "bond" :super bio-entity) ;; chemical bond -- not 
+;; want something for magnitude, size, etc. TO-DO
+(adj "single" :super abstract)
+(adj "double" :super abstract)
+(define-category size :specializes abstract
+  :binds ((measured-item biological))
+  :realization
+  (:noun "size" :of measured-item))
+(noun "surface" :super bio-entity)
+(define-adverb "in contrast") ;; TO-DO handle "in contrast to"
+(define-adverb "by contrast")
+(noun fold :super abstract)
+
+;; only used in phrases like nnn-fold, this is here to suppress the
+;;  attempt to ascribe a biological meanig to the verb
+
 
 (adj "acidic" :super bio-predication)
 (adj "adaptor" :super bio-predication) ;; "adaptor protein"
@@ -263,7 +280,7 @@
 (noun "approach" :super bio-method)
 
 (define-adverb "as a consequence")
-(define-adverb "as expected") ;; not very common, but avoids a break
+;;(define-adverb "as expected") ;; not very common, but avoids a break
 (noun "assay" :super bio-method)
 (define-adverb "at baseline")
 (adj "background" :super bio-predication)
@@ -382,6 +399,7 @@
       (:noun "difference"
              :between compared))
 
+(adj "diffuse" :super abstract) ;; TO-DO better superc
 
 (noun "domain" :super molecular-location
       :binds ((substrate bio-entity))
@@ -486,19 +504,6 @@
 (adj "further" :super bio-predication)
 (define-adverb "further")
 (define-adverb "furthermore")
-(noun "G-domain" :super protein-domain) ;; somehow (def-bio "G-domain" protein-segment) did not work
-(noun "BRCT" :super protein-domain)
-(noun "BRCT1" :super protein-domain)
-(noun "BRCT2" :super protein-domain)
-
-(noun "SH2" :super protein-domain)
-(noun "SH3" :super protein-domain)
-
-(noun "g1" :super protein-domain)
-(noun "g2" :super protein-domain)
-(noun "g3" :super protein-domain)
-(noun "g4" :super protein-domain)
-(noun "g5" :super protein-domain)
 (adj "general" :super bio-predication)
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
@@ -612,6 +617,7 @@
 
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "liquid chromatography" :super bio-method)
+(adj "living" :super abstract)
 (adj "long" :super bio-predication)
 (adj "long-term" :super bio-predication)
 
@@ -704,6 +710,7 @@
 (adj "novel" :super bio-predication)
 
 ;; These three want to be synonyms
+(noun "frame" :super bio-entity)
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super open\ reading\ frame)
 (def-synonym open\ reading\ frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
@@ -780,21 +787,10 @@
       (:noun "radioactivity" :adj "radioactive"
              :of material))
 (noun "range" :super bio-scalar)
-(define-category RBD :specializes protein-domain
-      :binds ((substrate bio-entity))
-      :realization 
-      (:noun "RBD"
-             :of substrate)) 
 
-(define-category DBD :specializes protein-domain
-      :binds ((substrate bio-entity))
-      :realization 
-      (:noun "DBD"
-             :of substrate))
-(def-synonym DBD (:noun "DNA binding domain"))
 
-(noun "Raf-RBD" :super RBD)
 (adj "rate-limiting" :super bio-predication)
+(define-adverb "readily")
 (adj "real-time" :super bio-predication)
 (def-synonym real-time (:adj "real time"))
 (adj "recombinant" :super bio-predication)
@@ -983,6 +979,8 @@
            :to-comp capability))
            
 (adj "unclear" :super bio-predication)
+(adj "unexpected" :super bio-rhetorical)
+(define-adverb "unexpectedly") ;; TO-DO wants to be  :super-category 'bio-rhetorical)
 (adj "unknown" :super bio-predication)
 (adj "unmodified" :super bio-predication)
 (adj "unresponsive" :super bio-relation
