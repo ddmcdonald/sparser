@@ -317,8 +317,27 @@
       :via method
       :with method))
 
+#+ignore
+(define-category movement ;; like translocation, entry and "binding to membrane"                 
+                 :specializes move
+  :binds
+  ((object)
+   (origin)
+   (destination))
+  :realization 
+  (:s object
+      :at origin
+      :into destination
+      :to destination
+      :to destination
+      :of object
+      :from origin
+      :m destination
+      :m object))
+
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"                 
                  :specializes bio-process
+  ;; :mixins (move) this creates an inconsistent taxonomy -- WH -- TO-DO
   :binds
   ((object bio-entity)
    (origin cellular-location)
@@ -568,11 +587,6 @@
          :m basis
          :of basis))
 
-
-(define-category protein-domain :specializes bio-entity ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
-  :instantiates :self)
-
-
 ;;--- "load" -- "GTP loading"
 ;; "activated upon GTP loading"
 ;; You load GTP onto something, presumably a protein
@@ -714,6 +728,9 @@
 (define-category molecular-location  :specializes non-cellular-location
   :instantiates self
   :index (:permanent :key name))
+
+(define-category protein-domain :specializes molecular-location ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
+  :instantiates :self)
 
 (define-category cell-line :specializes bio-entity
   :instantiates self
