@@ -429,10 +429,32 @@
     (:verb "constitute" ;; keyword: ENDS-IN-ED 
 	   :etf (svo)))
 
+(define-category construct :specializes bio-method
+    :realization
+    (:verb "construct"
+           :noun "construct" ;; TO-DO this is the RESULT, not the proces
+	   :etf (svo-passive)))
+
 (define-category contain :specializes bio-relation 
      :realization 
      (:verb "contain"  
             :etf (svo-passive) ))
+
+(define-category continue :specializes bio-relation
+  :binds ((agent biological)
+          (process bio-process))
+  :realization 
+  (:verb "continue"  
+         :etf (svo-passive)
+         :s agent
+         :o process
+         :to-comp theme))
+
+(define-category contrast :specializes bio-rhetorical
+  :binds ((contrasted-with biological))
+  :realization
+  (:verb "contrast" :etf (sv)
+         :noun "contrast"))
 
 (define-category contribute :specializes positive-bio-control ;; not sure about this
   :binds ((contribution biological))
@@ -442,6 +464,16 @@
                       :o contribution
                       :to object
                       :to-comp object))
+
+(define-category cooperate :specializes bio-process
+  :binds ((co-subject biological)
+          (to-achieve biological))
+  :realization
+  (:verb "cooperate" :noun "cooperation"
+         :etf (sv)
+         :with co-subject
+         :to-comp to-achieve))
+  
 
 (define-category correspond :specializes bio-relation
   :binds ((property common-noun))
@@ -578,6 +610,13 @@
   (:verb   "digest" :noun "digestion"
    :etf (svo-passive)))
 
+(define-category determine :specializes bio-rhetorical
+  :mixins (bio-whethercomp bio-ifcomp)
+  :realization
+  (:verb "determine"
+         :noun "determination"
+         :etf (svo-passive)))
+
 (define-category displace :specializes caused-bio-process
   :binds ((location (:or bio-location bio-complex)))
   :realization
@@ -684,6 +723,14 @@
 	   :noun "elevation"
 	   :etf (svo-passive)))
 
+(define-category eliminate
+  :specializes bio-method
+  :realization
+    (:verb "eliminate"
+	   :noun "elimination"
+	   :etf (svo-passive)))
+
+
 (define-category elucidate :specializes bio-rhetorical 
     :mixins (bio-whethercomp)
      ;; change object to biological, since we have December 51, "in a manner that elucidates ... targets"
@@ -771,6 +818,19 @@
     (:verb "exhibit"
 	   :etf (svo-passive)))
 
+(define-category exist :specializes bio-predication
+    :realization
+    (:verb "exist"
+           :noun "existence"
+	   :etf (sv)))
+
+(define-category expect :specializes bio-rhetorical
+    :realization
+    (:verb "expect" 
+           :noun "expectgation" 
+           :etf (svo-passive)))
+
+
 (define-category explanation :specializes bio-rhetorical
     :realization
     (:verb "explain" 
@@ -796,6 +856,14 @@
     (:verb ("favor" :past-tense "favored") ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)))  ;; :in bio-context))  <--------------- not in scope
 
+(define-category fail :specializes bio-relation
+  :binds ((agent biological)
+          (process bio-process))
+  :realization 
+  (:verb "fail"  
+         :etf (svo-passive)
+         :s agent
+         :to-comp process))
 ;; mostly passive -- "... are found ..."
 (define-category find :specializes bio-rhetorical
   :mixins (bio-thatcomp)
@@ -894,6 +962,13 @@
 	   :etf (svo-passive)
            :as to-be
            :in method))
+
+(define-category illustrate :specializes bio-rhetorical
+  :mixins (bio-thatcomp)
+  ;; it was shown that
+  :realization
+  (:verb "illustrate"
+         :etf (svo-passive)))
 
 (define-category immunoprecipitate :specializes bio-method
   :binds ((origin bio-location)
@@ -1074,6 +1149,27 @@
            :to result
            :to-comp result))
 
+
+
+(define-category leave :specializes move
+  :binds
+  ((object t)
+   (origin t)
+   (destination t))
+  :realization 
+  (:s object
+      :at origin
+      :into destination
+      :to destination
+      :to destination
+      :of object
+      :from origin
+      :m destination
+      :m object)
+  :realization
+  (:verb ("leave" :past-tense "left" :present-participle "leaving")
+         :etf (svo)))
+
 (define-category ligate :specializes caused-bio-process 
   :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
@@ -1144,7 +1240,9 @@
   :form n-bar
   :referent (:head right-edge :function passive-premodifier left-edge right-edge object))
 
-(np-head "knock-out" :super 'mutate)
+(noun "knock-out" :super mutate)
+(noun "knockout" :super mutate)
+(noun "knockdown" :super mutate)
 
 (define-category need :specializes bio-relation
     :binds ((result-or-purpose process))
@@ -1278,7 +1376,18 @@
   :realization
   (:verb "prolong"
          :etf (svo-passive)))
-  
+
+(define-category prove :specializes bio-rhetorical
+    :realization
+    (:verb "prove" :noun "proof"
+           :etf (svo-passive)
+           :of object))
+
+(define-category propagate :specializes bio-transport
+  :realization 
+  (:verb "propagate" 
+   :noun "propagation" 
+   :etf (svo-passive)))
 
 ;; (p "Dimerization of ERK has been proposed as a requirement for nuclear translocation.")
 (define-category propose :specializes bio-rhetorical
@@ -1348,6 +1457,11 @@
 	   :etf (svo-passive)
            :against bio
            :by method))
+
+(define-category read :specializes bio-rhetorical
+  :realization
+  (:verb ("read" :past-tense "read" :past-participle "read")
+         :etf (svo-passive)))
 
 (define-category reconstitute :specializes caused-bio-process
   :binds ((amount measurement)
@@ -1507,6 +1621,18 @@
   (:verb "reveal" :noun "revelation" 
          :etf (svo-passive)))
 
+(define-category sample :specializes bio-method
+  :realization
+  (:verb "sample" :noun "sample"
+         :etf (svo-passive)))
+
+(define-category see :specializes bio-rhetorical
+  :mixins (bio-thatcomp)
+  ;; the analysis revealed
+  :realization
+  (:verb ("see"  :past-tense "saw" :past-participle "seen")
+         :etf (svo-passive)))
+
 (define-category select :specializes bio-method
     :binds ((study bio-method))
     :realization
@@ -1618,6 +1744,13 @@
 	   :noun "tendency"
 	   :etf (svo-passive)))
 
+(define-category term :specializes bio-rhetorical
+   ;; :mixins (bio-tocomp) working on this.. other comps not working.
+    :realization
+    (:verb "term" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)))
+
+
 (define-category test :specializes bio-method
   :mixins (bio-whethercomp)
   :binds ((object (:or bio-rhetorical biological))
@@ -1693,6 +1826,12 @@
    :s object ;; ERK translocates -- this is not the agent, but the object!
    :o object
    :of object))
+
+
+(define-category trap :specializes bio-method
+  :realization 
+  (:verb "trap"
+         :etf (svo-passive)))
 
 (define-category relocate :specializes translocation
   :realization 
