@@ -36,7 +36,9 @@
        :mixed ) ;;(characterize-type-for-mixed-case word))
       (:lower-case
        (if  (= 1 (length (word-pname word)))
-         :single-lower
+         (if (string-equal (word-pname word) "p")
+           :little-p
+           :single-lower)
          :lower))
       (:punctuation
        (keyword-for-word word))
@@ -48,7 +50,7 @@
                         top-edge)))))
 
 (defparameter *word-nospace-keywords*
-  '(:capitalized :single-cap :full :mixed :single-lower :lower))
+  '(:capitalized :single-cap :full :mixed :single-lower :little-p :lower))
 
 (defparameter *digit-nospace-keywords*
   '(::single-digit :digits))
@@ -97,13 +99,16 @@
     (nreverse pattern-elements)))
 
 
+;;//// Question is how to fold this into the matcher
 (defun characterize-type-for-mixed-case (word)
   (let* ((pname (word-pname word))
+         (begins-with-little-p (eql #\p (aref pname 0)))
          (length (length pname))
          (ends-in-s? (eql #\s (aref pname (1- length)))))
-    (when ends-in-s?
-      ;; is the remainder a known word?
-      )))
+    (when begins-with-little-p
+      (when ends-in-s?
+        ;; is the remainder a known word?
+        ))))
 
 ;;/// move
 (defun keyword-for-word (word)
