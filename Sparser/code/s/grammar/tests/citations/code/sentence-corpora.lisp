@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "sentence-corpora"
 ;;;   Module:  "grammar/tests/citations/code/"
-;;;  version:  September 2015
+;;;  version:  November 2015
 
 ;; initiated 1/25/15
 ;; 1/28/2015 added methods to for building a regression test for sentence semantics
@@ -17,7 +17,9 @@
 ;; 6/10/15 Added more printing parameters to ignore
 ;; 6/14/2015 code how-art-sents to find all the sentences in the set of articles
 ;;   so far processed that have a given string
-;; 9/29/15 moved next to rest of the related code
+;; 9/29/15 moved next to rest of the related code. 
+;; 10/26/15 reverted *directory-for-tree-snapshots* to the local directory
+;;   assuming that other systems know how to override it. 
 
 
 (in-package :sparser)
@@ -217,7 +219,9 @@ previous records of treetop-counts.
 
 (unless (boundp '*directory-for-tree-snapshots*)
   (defparameter *directory-for-tree-snapshots*
-    (merge-pathnames #P"code/grammar-tests/" cl-user::*r3-trunk*)))
+    (make-pathname :directory (pathname-directory *load-truename*))
+    "Unless an alternative value has already been provided, assume
+     that the snapshot files is in the same directory as this file."))
 
 (defparameter *file-for-treetop-snapshots*
   (merge-pathnames "corpora-snapshots.lisp"
