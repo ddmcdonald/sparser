@@ -45,6 +45,15 @@ in RAS mutant cells.
 Nevertheless, BRAF inhibitors hyperactivate CRAF and MEK in these cells."))
 
 
+#| From Reactome. Nice conjunctions. Removed the referents
+   also good of a statement about RAF being refined to BRAF. 
+"Activated RAF phosphorylates the MEK kinases MAP2K1 and MAP2K2 
+on 2 serine residues in the MAP2K activation loop (S218 and S222 in MAP2K1 
+and S222 and S226 in MAP2K2. 
+Although all three RAF kinases can phosphorylate MAP2K1 and MAP2K2, 
+BRAF appears to be the primary activator in vivo."
+|#
+
 #| Reactome http://www.reactome.org/PathwayBrowser/#DIAGRAM=177929&ID=179467&PATH=162582
   "Gab1 binds phosphatidylinositol-3,4,5-trisphosphate"
   "The pleckstrin homology (PH) domain of GAB1 binds to PIP3 and 
