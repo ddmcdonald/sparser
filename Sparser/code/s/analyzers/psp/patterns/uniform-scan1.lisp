@@ -161,13 +161,14 @@
   ;; span one way or another.
   (let ((pattern (characterize-words-in-region start-pos end-pos edges))
         (words (words-between start-pos end-pos)))
-    (tr :segment-ns-pattern pattern)
     (when edges
+      (setq pattern (convert-pattern-edges-to-labels pattern))
       (push-debug `(,pattern ,edges ,start-pos ,end-pos))
       (tr :ns-pattern-includes-edges edges))
+    (tr :segment-ns-pattern pattern)
 
     (cond 
-     (edges
+     #+ignore(edges
       (tr :ns-sort-out-pattern-with-edges)
       (ns-sort-out-pattern-with-edges 
        pattern start-pos end-pos edges words
@@ -206,7 +207,7 @@
 
      (colon-positions
       (tr :ns-looking-at-colon-patterns)
-      (or (resolve-colon-pattern pattern words colon-positions start-pos end-pos)
+      (or (resolve-colon-pattern pattern words edges colon-positions start-pos end-pos)
           (reify-ns-name-and-make-edge words start-pos end-pos)))
      
      (hyphen-positions

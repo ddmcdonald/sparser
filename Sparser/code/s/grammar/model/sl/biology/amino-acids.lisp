@@ -299,12 +299,12 @@ therefore we have the special cases:
 ;; "p-S311"
 ;;/// Is this a vanila residue whose amino acid is phosphorylated?
 ;; or something different?
-#|
+
 (defun reify-p-residue-and-make-edge (start-pos end-pos amino-acid digits)
   ;; called from one-hyphen-ns-patterns for (:little-p :hyphen :single-cap :digits)
   (push-debug `(,amino-acid ,digits))
   (break "find pAA"))
-
+#|
   (let* ((phosporylated-aa 
 
 
