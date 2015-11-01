@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;versions:v2.7:loaders:"
-;;;  Version:   May 2015
+;;;  Version:   November 2015
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -80,7 +80,9 @@
 ;; *da* module isn't included.  8/27 Added objects/import/. 9/23/11 Removed it
 ;; since it no longer does any work. Also removed load of basic-tests workspace
 ;; because it's too confusing. 1/29/14 Removing the *c3* guards to see if everything
-;; will load compatibly. 5/19/15 bumped [fsa;polywords] to 5.
+;; will load compatibly. 5/19/15 bumped [fsa;polywords] to 5.  10/26/15 moved
+;; *external-testing-files* ahead of other two forms in the testing section
+;; so it can override parameter values if it needs to.
 
 (in-package :sparser)
 
@@ -294,6 +296,9 @@
 ;;; testing & timing
 ;;;------------------
 
+(when *external-testing-files*
+  (load *external-testing-files*))
+
 (gate-grammar *miscellaneous*
   (lload "timing;loader")
   (lload "measuring;distance between brackets")
@@ -301,9 +306,6 @@
 
 (gate-grammar *citations*
   (lload "citation-code;loader"))
-
-(when *external-testing-files*
-  (load *external-testing-files*))
 
 
 ;;;------------------
