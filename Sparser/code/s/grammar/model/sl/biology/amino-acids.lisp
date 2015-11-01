@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "amino-acids"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: April 2015
+;;; version: October 2015
 
 ;; initiated 9/8/14
 ;; RJB -- added hacks for problems with NS word finding of"S338" and "pThr202/Tyr204"
@@ -24,7 +24,7 @@
 ;; 5/13/2015 fix handling ov numbers in reify-point-mutation-and-make-edge
 ;; debug handling of word object for number in reify-point-mutation-and-make-edge
 ;; 6/1/2015 added flagged break on bad residues (ones which do not have a numeric position)
-
+;; 10/29/15 doing phosphorylated residues
 
 (in-package :sparser)
 
@@ -48,10 +48,20 @@ codes can probably be free-standing words, but the one letter
 ones are gratuitously ambiguous with capitalized initials.
 |#
 
-
 (defparameter *single-letters-to-amino-acids* (make-hash-table))
+
 (defun single-letter-is-amino-acid (one-letter-word)
+  "We have a single letter word in our hand. If it is in the table
+   then return the corresponding amino acid"
   (gethash one-letter-word *single-letters-to-amino-acids*))
+
+(defun single-letter-word-for-amino-acid? (single-letter)
+  "We have a word that's one character long in our hand, and it probably
+   has a capitalized variant, but we have to check"
+  (let* ((variants (word-capitalization-variants single-letter))
+         (capitalized-letter (when variants (car variants)))) ;; only one possibility
+    (single-letter-is-amino-acid capitalized-letter)))
+
 
 (defun def-amino-acid (long three one)
   (let* ((long-word (resolve/make long))
@@ -162,6 +172,8 @@ therefore we have the special cases:
                          :referent residue)))
               edge)))))))
 
+
+
 (defun make-residue-on-protein (amino-acid number-exp)
   ;; Open-code the find-or-make to put under microscope
   #|  (find-or-make-individual 'residue-on-protein
@@ -243,7 +255,7 @@ therefore we have the special cases:
   :specializes amino-acid
   :rule-label amino-acid
   :binds ((amino-acid amino-acid))
-  :index (:permanent :key name))
+  :index (:permanent :key amino-acid))
 
 (defmacro def-phospho-amino-acid (acid &rest names)
   `(def-phospho-amino-acid/expr ,acid ',names))
@@ -255,7 +267,7 @@ therefore we have the special cases:
       (error "Can't retrieve an amino acid named ~a" name-of-aa))
     (let* ((first-name (resolve/make first-name))
            (i (find-or-make-individual 'phosphorylated-amino-acid
-                 :name first-name))) 
+                 :name first-name :amino-acid aa)))
       ;;(push-debug `(,i ,aa)) (break "rule on i?")
       (setq i (bind-dli-variable 'amino-acid aa i))
       (dolist (string p-names)
@@ -271,7 +283,7 @@ therefore we have the special cases:
     
 ;; Wikipedia's phosphorylation entry says just these
 (def-phospho-amino-acid "histidine" "phosphohistidine"
-  "pHis" "phospho-histidine")     
+  "pHis" "phospho-histidine") ; 
 (def-phospho-amino-acid "serine" "phosphoserine" 
   "pSer" "phospho-serine")
 (def-phospho-amino-acid "threonine" "phosphothreonine"
@@ -279,6 +291,28 @@ therefore we have the special cases:
 (def-phospho-amino-acid "tyrosine" "phosphotyrosine"
   "pTyr" "phospho-threonine")
 
+
+;;;-------------------------
+;;; phosphorylated residues
+;;;-------------------------
+
+;; "p-S311"
+;;/// Is this a vanila residue whose amino acid is phosphorylated?
+;; or something different?
+#|
+(defun reify-p-residue-and-make-edge (start-pos end-pos amino-acid digits)
+  ;; called from one-hyphen-ns-patterns for (:little-p :hyphen :single-cap :digits)
+  (push-debug `(,amino-acid ,digits))
+  (break "find pAA"))
+
+  (let* ((phosporylated-aa 
+
+
+make-residue-on-protein (amino-acid number-exp)
+
+  (let* ((letter (if hyphen? (third words) (second words)))
+         (amino-acid (single-letter-word-for-amino-acid?
+|#
 
 ;;;-----------------
 ;;; point mutations
