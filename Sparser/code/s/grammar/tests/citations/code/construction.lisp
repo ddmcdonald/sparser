@@ -1,13 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013-2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "construction"
 ;;;   Module:  "grammar;tests:citations:code:"
-;;;  version:  0.2 May 2013
+;;;  version:  0.2 October 2015
 
 ;; initiated 11/2/93 v2.3
 ;; 0.1 (12/22) Added appreciation of :multiple-initial edges
 ;; 0.2 (5/24/13) Adding version that can be run from the listener
+;;   (10/26/15) fixed scan-treetops-and-form-citation-exps to
+;;     ignore (cut off) the final period.
 
 (in-package :sparser)
 
@@ -86,8 +88,9 @@
 
   (let ((treetops
          (successive-treetops/with-positions
+          ;; cut off the final period
           :from (position# 1)
-          :to (position# (1- *next-array-position-to-fill*))))
+          :to (position# (- *next-array-position-to-fill* 2))))
         exps  left-pos  right-pos  label )
 
     (dolist (tt treetops)
