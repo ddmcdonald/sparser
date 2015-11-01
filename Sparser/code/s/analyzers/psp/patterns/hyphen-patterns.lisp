@@ -67,8 +67,20 @@
     (resolve-hyphen-between-two-words pattern words start-pos end-pos))
 
    ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
-    ;;(break "stub :single-cap :hyphen :lower")
+    (when *work-on-ns-patterns*
+      (break "stub :single-cap :hyphen :lower"))
     (reify-ns-name-and-make-edge words start-pos end-pos))
+
+   ((equal pattern '(:little-p :hyphen :single-cap :digits)) ;; p-S311
+    (let ((amino-acid (single-letter-word-for-amino-acid? (third words)))
+          (digits (fourth words)))
+      (cond
+       (amino-acid
+        (reify-p-residue-and-make-edge start-pos end-pos amino-acid digits))
+       (*work-on-ns-patterns*
+        (push-debug `(,words ,pattern ,start-pos ,end-pos))
+        (break "Little p for unknown type"))
+       (t (nospace-hyphen-specialist words pattern hyphen-positions start-pos end-pos)))))
 
    ((eq :no-space-prefix (car label-pattern))
     (compose-salient-hyphenated-literals 
