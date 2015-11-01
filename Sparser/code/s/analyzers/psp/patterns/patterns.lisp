@@ -101,7 +101,7 @@
     (reify-ns-name-and-make-edge words start-pos end-pos))
 
    ((equal pattern '(:single-cap :digits))
-    (or (reify-residue-and-make-edge words start-pos end-pos)
+    (or (reify-residue-and-make-edge words start-pos end-pos) ;; Y420
         (reify-ns-name-and-make-edge words start-pos end-pos)))
 
    ((equal pattern '(:single-lower :digits))
