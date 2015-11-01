@@ -164,6 +164,8 @@ broadly speaking doing for you all the things you might do by hand.
                 :realization (:adjective ,adjective)))))
       (let ((category (eval form)))
         (when subcategorization
+          (lsp-break)
+          #+ignore
           (apply-subcat-if-any subcategorization category adjective))
         (when preposition
           (apply-preposition-if-any adjective preposition category))

@@ -45,7 +45,7 @@
 
 (defparameter *slot-keywords*
   '(:premod :about :across :against :among :as :as-comp :at :between :for :from :ifcomp 
-    :in :into :of :on :onto :to :to-comp :thatcomp :through :towards :under :upon 
+    :by :in :into :of :on :onto :to :to-comp :thatcomp :through :towards :under :upon 
     :via :whethercomp :with :within :without
     :designator))
 
@@ -137,7 +137,6 @@
                                   etf verb noun adj
                                   s o c m
                                   prep 
-                                  by
                                   slots ;; a plist with labels like :against :as :at 
                                   ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
                                   )
@@ -218,7 +217,6 @@
           :c c
           :m m
           :prep prep  
-          :by by
           :slots slots)
 
         (when obo-id
@@ -247,7 +245,6 @@
                                           &key etf verb noun adj
                                           s o c m ;; arguments
                                           prep ;; owned preposition
-                                          by ;; for passive
                                           slots ;; a plist with labels like :against :as :at 
                                           ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
                                           )
@@ -286,16 +283,9 @@
     ;; at this point the sub-cat frame has the correct "s" and "o"
     ;; (inherited overidden by local versions if present)
     
-    (let* ((sub-cat-patterns (subcat-patterns sf))
-           (subj-pat (assoc :subject sub-cat-patterns))
-           (s-var (subcat-variable subj-pat))
-           (s-v/r (subcat-restriction subj-pat))
-           (obj-pat (assoc :object sub-cat-patterns))
-           (o-var (subcat-variable obj-pat))
-           (o-v/r (subcat-restriction obj-pat))
-           (m-pat (assoc :premod sub-cat-patterns))
-           (m-var (subcat-variable m-pat))
-           (m-v/r (subcat-restriction m-pat))
+    (let* ((subj-pat (find-subcat-pattern :subject sf))
+           (obj-pat (find-subcat-pattern :object sf))
+           (m-pat (find-subcat-pattern :premod sf))
            substitution-map  word-map )
       
       (dolist (schema-name etf)
@@ -320,32 +310,36 @@
           
           ;; incrementally set up the substitution map
           (when subj-pat
-            (push `(subj-slot . ,s-var) substitution-map)
-            (push `(subj-v/r . ,s-v/r) substitution-map)
-            (register-variable category s-var :subject-variable)
-            (when (is-a-form-of-passive? schema-name)
-              (let ((by-v/r (or by;; already determined
-                                (formulate-by-category s-v/r))))
-                (push `(by-v/r . ,by-v/r) substitution-map)
-                (subcategorize-for-slot category "by" (var-name s-var)))))
+            (let ((s-var (subcat-variable subj-pat))
+                  (s-v/r (subcat-restriction subj-pat)))
+              (push `(subj-slot . ,s-var) substitution-map)
+              (push `(subj-v/r . ,s-v/r) substitution-map)
+              (register-variable category s-var :subject-variable)
+              (when (is-a-form-of-passive? schema-name)
+                (push `(by-v/r . ,s-v/r) substitution-map)
+                (assign-subcategorization category word::|by| s-v/r s-var))))
           
           (when obj-pat
-            (push `(theme-slot . ,o-var) substitution-map)
-            (push `(theme-v/r . ,o-v/r) substitution-map)
-            (register-variable category o-var :object-variable))
+            (let ((o-var (subcat-variable obj-pat))
+                  (o-v/r (subcat-restriction obj-pat)))
+              (push `(theme-slot . ,o-var) substitution-map)
+              (push `(theme-v/r . ,o-v/r) substitution-map)
+              (register-variable category o-var :object-variable)))
           
           (when c  ;; complement, e.g. "reported that ..."
             (let* ((var (variable/category c category))
                    (v/r (var-value-restriction var)))
               (push `(comp-slot . ,var) substitution-map)
               (push `(comp-v/r . ,v/r) substitution-map)
-              (register-variable category var :omplement-variable)))
+              (register-variable category var :complement-variable)))
           
           (when m-pat ;; modifier, normally to a head noun
-            (unless m-var (error "No ~a variable associated with ~a"
-                                 m category))
-            (push `(modifier-slot . ,m-var) substitution-map)
-            (push `(modifier-v/r . ,m-v/r) substitution-map)))
+            (let ((m-var (subcat-variable m-pat))
+                  (m-v/r (subcat-restriction m-pat)))
+              (unless m-var (error "No ~a variable associated with ~a"
+                                   m category))
+              (push `(modifier-slot . ,m-var) substitution-map)
+              (push `(modifier-v/r . ,m-v/r) substitution-map))))
         
         (when prep ;; preposition 'owned' by the verb, appears
           ;; immediately after the verb, making it effectively 
@@ -393,15 +387,15 @@
 
 
 (defun handle-slots (category slots)
-  (loop for pair on slots by #'cddr 
-    do 
-    (subcategorize-for-slot
-     category 
-     (case (car pair)
-       ((:premod :thatcomp :whethercomp :to-comp :ifcomp :as-comp) (car pair)) 
-       (t (string-downcase (symbol-name (car pair)))))
-     (second pair))))
-
+  (loop for (pname var-name) on slots by #'cddr
+        as label = (case pname
+                     ((:premod :thatcomp :whethercomp :to-comp :ifcomp :as-comp)
+                      pname)
+                     (otherwise
+                      (resolve (string-downcase pname))))
+        as var = (variable/category var-name category)
+        as v/r = (var-value-restriction var)
+        do (assign-subcategorization category label v/r var)))
 
 
 ;;;------------------------------------------------
@@ -411,50 +405,36 @@
 (defun register-variable (category variable grammatical-relation)
   (push-onto-plist category variable grammatical-relation))
 
+(defmethod subject-variable (label)
+  (declare (ignore label)))
 (defmethod subject-variable ((e edge))
-  (let ((ref (edge-referent e)))
-    (when ref (subject-variable ref))))
+  (subject-variable (edge-referent e)))
 (defmethod subject-variable ((c category))
   (or (get-tag-for :subject-variable c)
-   (let ((sc (get-ref-subcategorization c)))
-     (when sc
-       (third (assoc :subject sc))))))
+      (find-subcat-variable :subject (get-ref-subcategorization c))))
 (defmethod subject-variable ((i individual))
   (or (get-tag-for :subject-variable (car (indiv-type i)))
-   (let ((sc (get-ref-subcategorization i)))
-     (when sc
-       (third (assoc :subject sc))))))
-(defmethod subject-variable ((ignore t)) nil)
+      (find-subcat-variable :subject (get-ref-subcategorization i))))
 
-
+(defmethod object-variable (label)
+  (declare (ignore label)))
 (defmethod object-variable ((e edge))
-  (let ((ref (edge-referent e)))
-    (when ref (object-variable ref))))
+  (object-variable (edge-referent e)))
 (defmethod object-variable ((c category))
   (or (get-tag-for :object-variable c)
-   (let ((sc (get-ref-subcategorization c)))
-     (when sc
-       (third (assoc :object sc))))))
+      (find-subcat-variable :object (get-ref-subcategorization c))))
 (defmethod object-variable ((i individual))
   (or (get-tag-for :object-variable (car (indiv-type i)))
-   (let ((sc (get-ref-subcategorization i)))
-     (when sc
-       (third (assoc :object sc))))))
-(defmethod object-variable ((ignore t)) nil)
+      (find-subcat-variable :object (get-ref-subcategorization i))))
 
-
+(defmethod thatcomp-variable (label)
+  (declare (ignore label)))
 (defmethod thatcomp-variable ((e edge))
-  (let ((ref (edge-referent e)))
-    (when ref (thatcomp-variable ref))))
+  (thatcomp-variable (edge-referent e)))
 (defmethod thatcomp-variable ((c category))
-  (let ((sc (get-ref-subcategorization c)))
-    (when sc
-      (third (assoc :thatcomp sc)))))
+  (find-subcat-variable :thatcomp (get-ref-subcategorization c)))
 (defmethod thatcomp-variable ((i individual))
-  (let ((sc (get-ref-subcategorization i)))
-    (when sc
-      (third (assoc :thatcomp sc)))))
-                              
+  (find-subcat-variable :thatcomp (get-ref-subcategorization i)))
 
 (defmethod complement-variable ((c category))
   (get-tag-for :complement-variable c))

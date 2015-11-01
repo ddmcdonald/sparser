@@ -301,6 +301,7 @@
                       bio-rhetorical
                       bio-process ;; the B-RAFV600E mutation predicts
                       bio-method  ;; high-throughput functional screens may inform
+                      bio-predication ;; the success of raf and mek inhibitors
                       ))
           (object (:or biological pronoun/inanimate))
           (fig article-figure)

@@ -72,27 +72,6 @@
                           category 
                           `(:pattern ,subcategorization)))))
 
-;;now renamed -- general subcategorization for syntactic relations including thatcomp, whethercomp
-(defun subcategorize-for-slot (category pname var-name)
-  ;; called from decode-realization-parameter-list in the shortcuts.
-  (declare (special *slot-keywords*))
-  (push-debug `(,category ,pname ,var-name))
-  (let ((variable (variable/category var-name category))
-        (slot 
-         (if
-          (keywordp pname)
-          pname
-          (resolve pname))))
-    (unless variable
-      (error "No variable named ~a associated with ~a"
-             var-name category))
-    (unless (or (member slot *slot-keywords*)
-                (word-is-a-preposition? slot))
-      (error "~s does not appear to be a valid slot." pname))
-    (let ((v/r (var-value-restriction variable)))
-      (assign-subcategorization 
-       category slot v/r variable))))
-
 
 ;;;-----------------------------
 ;;; prepositions owned by verbs
@@ -114,7 +93,7 @@
                  :referent '(:daughter left-referent))))
     (add-rule-to-category rule category)
     (let ((verb (resolve pname)))
-      (assign-subcat/expr verb 'verb category `(:prep ,prep)))))
+      (assign-subcategorization category :prep prep nil))))
 
 ;;//// move where it can be found
 (defmethod single-rewrite-label-over ((pname string))

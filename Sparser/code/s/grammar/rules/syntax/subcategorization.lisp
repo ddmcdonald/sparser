@@ -90,13 +90,13 @@
 
 (defmethod print-object ((sc subcategorization-frame) stream)
   (print-unreadable-object (sc stream :type t)
-    (format stream "~s" 
+    (format stream "for ~s"
             (cond
              ((and (slot-boundp sc 'word)
                    (for-word sc))
               (word-pname (for-word sc)))
              ((slot-boundp sc 'category)
-              (for-category sc))
+              (cat-symbol (for-category sc)))
              ((slot-boundp sc 'form)
               `(for the form ,(applies-to sc)))
              (t
@@ -113,38 +113,24 @@
               (cat-symbol c)))))
 
 (defmethod display-subcategorization ((sf subcategorization-frame))
-  (declare (special sf))
   (let ((category (for-category sf))
         (patterns (subcat-patterns sf)))
-    (declare (special category patterns))
-
-    (format t "Subcategorization options for ~a"
-            (if (consp category)
-                category
-                (cat-symbol category)))
-    (push-debug `(,patterns)) ;;(break "patterns")
-    (do* ((subcat-list (car patterns) (car rest))
-          (trigger (car subcat-list) (car subcat-list))
-          (v/r (cadr subcat-list) (cadr subcat-list))
-          (var (caddr subcat-list) (caddr subcat-list))
-          (rest (cdr patterns) (cdr rest)))
-         ((null subcat-list))
-      (cond
-       ((keywordp trigger)
-        (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
-                trigger 
-                (if (consp v/r)
-                    v/r
-                    (cat-symbol v/r))               
-                (var-name var)))
-       ((word-p trigger)
-        (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
-                (word-pname trigger) 
-                (if (consp v/r)
-                    v/r
-                    (cat-symbol v/r))
-                (var-name var)))
-       (t (error "Unanticipated type of trigger in ~a" subcat-list))))))
+    (format t "Subcategorization options for ~a" (cat-symbol category))
+    (dolist (pattern patterns)
+      (let ((trigger (subcat-label pattern))
+            (v/r (subcat-restriction pattern))
+            (var (subcat-var pattern)))
+        (etypecase trigger
+          (keyword
+           (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
+                   trigger
+                   (if (consp v/r) v/r (cat-symbol v/r))
+                   (var-name var)))
+          (word
+           (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
+                   (word-pname trigger)
+                   (if (consp v/r) v/r (cat-symbol v/r))
+                   (var-name var))))))))
 
 
 ;;;------------------------
@@ -154,66 +140,45 @@
 (defparameter *labels-to-their-subcategorization* (make-hash-table)
   "From words or categories to subcategorization objects")
 
-(defun get-subcategorization (label &optional facet)
-  (let ((entry (gethash label *labels-to-their-subcategorization*)))
-    (if entry
-          (if facet
-              (funcall facet entry)
-              entry)
-        (when (and nil 
-                   (category-p label))
-          ;;(lsp-break "get-subcategorization")
-          (loop for sc in (super-categories-of label) 
-            when (and (not (eq sc label))
-                      (gethash sc *labels-to-their-subcategorization*))
-            do (return (gethash label *labels-to-their-subcategorization*)))))))
+(defmethod subcat-patterns ((sf null)))
+(defmethod subcat-patterns ((sf category))
+  (subcat-patterns (get-subcategorization sf)))
 
-(defun get-ref-subcategorization (ref-object)
-  (let ((frame
-         (etypecase ref-object
-           (individual (get-subcategorization (car (indiv-type ref-object))))
-           (category (get-subcategorization ref-object)))))
-    (when frame
-      (subcat-patterns frame))))
+(defun get-subcategorization (label)
+  (gethash label *labels-to-their-subcategorization*))
+
+(defun (setf get-subcategorization) (sf label)
+  (setf (gethash label *labels-to-their-subcategorization*) sf))
+
+(defgeneric get-ref-subcategorization (ref-object)
+  (:method ((ref-object category))
+    (get-subcategorization ref-object))
+  (:method ((ref-object individual))
+    (get-subcategorization (first (indiv-type ref-object)))))
 
 (defun fom-subcategorization (label &key form category)
-  (let ((sf (get-subcategorization label)))
-    (unless sf
-      (setq sf 
-            (if form
-                (make-instance 'subcategorization-frame
-                  :word label
-                  :form form)
-                (make-instance 'subcategorization-frame
-                  :cat category)))
-      (setf (gethash label *labels-to-their-subcategorization*) sf)
-      (when category
-        (setf (gethash category *labels-to-their-subcategorization*) sf)
-        (setf (subcat-patterns sf) (inherited-sc-patterns category))))
-    sf))
+  "Find or make a subcategorization frame for the given category."
+  (or (get-subcategorization label)
+      (setf (get-subcategorization label)
+            (let ((frame (if form
+                             (make-instance 'subcategorization-frame
+                                            :word label
+                                            :form form)
+                             (make-instance 'subcategorization-frame
+                                            :cat category))))
+              (when category
+                (setf (subcat-patterns frame) (inherited-sc-patterns label)))
+              frame))))
 
-;; This code needs to be reviewed to take into account
-;; the fact that the inherited categories have also incorporated their
-;; inheritance -- may be able to do this one level at a time if this can
-;; be guaranteed
 (defun inherited-sc-patterns (category)
-  (let
-      ((patterns nil))
-    (loop for sc in (super-categories-of category) 
-      do
-      (let ((frame (get-subcategorization sc)))
-        (when frame 
-          (loop for sp in (reverse (subcat-patterns frame))
-            do (pushnew sp patterns :test #'equal)))))
-    (nreverse patterns)))
-
-(defmacro assign-subcat (label form category &rest parameter-plist) ;; :verb+prep)
-  (let ((l (etypecase label
-             (word label)
-             (category label)
-             (string (word-named label)))))
-    ;;/// typecheck form
-    `(assign-subcat/expr ,l ',form ',category ',parameter-plist)))
+  (check-type category category)
+  (loop with patterns = '()
+        for sc in (super-categories-of category)
+        as frame = (get-subcategorization sc)
+        when frame
+          do (loop for sp in (subcat-patterns frame)
+                   do (pushnew sp patterns :test #'subcat-pattern-equal))
+        finally (return (nreverse patterns))))
 
 (defun assign-subcat/expr (word form category parameter-plist)
   "Form to find or make the appropriate subcategorization frame
@@ -298,41 +263,66 @@
 ;;; subcategorization of marked or unmarked arguments
 ;;;--------------------------------------------------
 
-(defun assign-subcategorization (category marker v/r variable)
-  ;; called from subcategorize-for-slot (in shortcut
-  ;; processing) to take the information and install it for
-  ;; use at runtime. Note that the value restriction has to
-  ;; be satisfied
-  (when (null v/r) (break "null-v/r in assign-subcategorization"))
-  (let ((sf (fom-subcategorization category :category category)))
-    (let ((entry (subcat-patterns sf))
-          (new-case `(,marker ,v/r ,variable)))
-      (unless (member new-case entry :test #'equal)
-        (setf (subcat-patterns sf) (cons new-case entry)))
-      new-case)))
+(defstruct (subcat-pattern
+             (:constructor make-subcat-pattern
+               (label restriction variable source))
+             (:conc-name #:subcat-)
+             (:print-function print-subcat-pattern))
+  label restriction variable source)
+
+(defun subcat-pattern-equal (x y)
+  (and (equal (subcat-label x) (subcat-label y))
+       (equal (subcat-restriction x) (subcat-restriction y))
+       (equal (subcat-variable x) (subcat-variable y))))
+
+(defun print-subcat-pattern (object stream depth)
+  (declare (ignore depth))
+  (print-unreadable-object (object stream :type nil :identity nil)
+    (etypecase (subcat-label object)
+      (keyword (princ (subcat-label object) stream))
+      (word (princ-word (subcat-label object) stream)))
+    (write-char #\Space stream)
+    (princ-variable-value-restriction (subcat-restriction object) stream)
+    (write-string " → " stream)
+    (princ-variable (subcat-variable object) stream)
+    (write-string " (from " stream)
+    (princ-category (subcat-source object) stream)
+    (write-char #\) stream)))
+
+(defun find-subcat-pattern (label subcat-frame)
+  (find label (subcat-patterns subcat-frame) :key #'subcat-label))
+
+(defun find-subcat-variable (label subcat-frame)
+  (let ((pattern (find-subcat-pattern label subcat-frame)))
+    (and pattern (subcat-variable pattern))))
+
+(defun add-subcat-pattern (pattern subcat-frame)
+  (pushnew pattern (subcat-patterns subcat-frame) :test #'subcat-pattern-equal))
+
+(defun replace-subcat-pattern (pattern subcat-frame)
+  (setf (subcat-patterns subcat-frame)
+        (cons pattern
+              (delete (subcat-label pattern)
+                      (subcat-patterns subcat-frame)
+                      :key #'subcat-label))))
+
+(defun assign-subcategorization (category label restriction variable)
+  "Install a subcategorization pattern for a value-restriction/variable"
+  (check-type category category)
+  (when (null restriction) (error "null variable restriction in assign-subcat"))
+  (add-subcat-pattern (make-subcat-pattern label restriction variable category)
+                      (get-subcategorization category)))
+
+;;; convenience routines called from decode-realization-parameter-list
 
 (defun assign-subject (category v/r variable)
-  ;; called from decode-realization-parameter-list
   (assign-subcategorization category :subject v/r variable))
 
 (defun assign-object (category v/r variable)
-  ;; called from decode-realization-parameter-list
   (assign-subcategorization category :object v/r variable))
 
 (defun assign-premod (category v/r variable)
-  ;; called from decode-realization-parameter-list
   (assign-subcategorization category :premod v/r variable))
-
-
-
-;;--- Syntactic sugar over the list 
-
-(defun subcat-label (entry)
-  (car entry))
-(defun subcat-restriction (entry)
-  (cadr entry))
-(defun subcat-variable (entry)
-  (caddr entry))
 
 
 ;;;-----------

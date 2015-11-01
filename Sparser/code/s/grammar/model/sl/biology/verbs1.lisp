@@ -55,8 +55,9 @@
 
 
 ;;; NEEDS REVIEW -- this is how we get BE to have a case frame to replace the
-;;; definition of is-bio-entity
-
+;;; definition of is-bio-entity. The call to FOM-SUBCATEGORIZATION ensures that
+;;; the subcategorization frame exists for ASSIGN-SUBJECT.
+(assert (fom-subcategorization category::be))
 (assign-subject category::be category::biological (variable/category 'subject category::be))
 (assign-object category::be category::biological (variable/category 'predication category::be))
 
