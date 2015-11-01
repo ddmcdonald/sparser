@@ -18,7 +18,7 @@
 ;; when xmls moved out of normal Sparser load. 6/4/15 added [rhetoric]
 ;; so all elements can go in one place. 8/3/15 added [methods] to
 ;; avoid load-time category dependencies. It must be loaded last.
-;; 10/8/15 added examples.
+;; 10/8/15 added examples. 10/26/15 added citations.
 
 (in-package :sparser)
 
@@ -51,5 +51,6 @@
 
 (gload "bio;methods.lisp") ;; this one goes last
 
+(gload "bio;citations")
 (gload "bio;examples.lisp") ;; no definitions in here
 
