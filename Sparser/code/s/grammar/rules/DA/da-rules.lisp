@@ -54,7 +54,7 @@
   :pattern ( s and vp )
   :action (:function conjoin-clause-and-vp first third))
 
-(define-debris-analysis-rule s-and-vp
+(define-debris-analysis-rule s-and-vp+passive
   :pattern ( s and vp+passive )
   :action (:function conjoin-clause-and-vp first third))
 
@@ -100,43 +100,60 @@
   ;; have a different relationship.
   (let ((clause-ref (edge-referent s-edge))        
         (vp-ref (edge-referent vp-edge)))
+    (cond
+     ((itypep vp-ref 'collection)
+      ;; distribute this over the conjunction. Need a general way / macro
+      ;; for doing this
+      (let* ((daughter-edges (list (edge-left-daughter vp-edge)
+                                   (edge-right-daughter vp-edge)))
+             (daughter-refs (loop for edge in daughter-edges
+                              collect (edge-referent edge)))
+             (new-items
+              (loop for edge in daughter-edges
+                as ref in daughter-refs
+                collect (unpack-subject-control
+                         clause-ref ref edge))))
+        ;; now remake the collection
+        (let ((new-conjunct 
+               (apply #'referent-of-two-conjoined-edges new-items)))
+          (setf (edge-referent vp-edge) new-conjunct))))
 
-    (flet ((unpack-subject-control (subject vp vp-edge)
-             (let* ((downstairs-subj-var (subject-variable vp))
-                    (new-vp-ref (bind-dli-variable
-                                 downstairs-subj-var subject vp)))
-               (setf (edge-referent vp-edge) new-vp-ref))))
-
-      (cond
-       ((itypep vp-ref 'collection)
-        ;; distribute this over the conjunction. Need a general way / macro
-        ;; for doing this
-        (let* ((daughter-edges (list (edge-left-daughter vp-edge)
-                                     (edge-right-daughter vp-edge)))
-               (daughter-refs (loop for edge in daughter-edges
-                                collect (edge-referent edge)))
-               (new-items
-                (loop for edge in daughter-edges
-                  as ref in daughter-refs
-                  collect (unpack-subject-control
-                           clause-ref ref edge))))
-          ;; now remake the collection
-          (let ((new-conjunct 
-                 (apply #'referent-of-two-conjoined-edges new-items)))
-            (setf (edge-referent vp-edge) new-conjunct))))
-
-       (t ;; simple vp
-        (unpack-subject-control clause-ref vp-ref vp-edge)))
+     (t ;; simple vp
+      (unpack-subject-control clause-ref vp-ref vp-edge)))
       
-      (let ((edge (make-binary-edge/explicit-rule-components
-                   s-edge vp-edge
-                   :category (edge-category s-edge)
-                   :form (edge-form s-edge)
-                   :rule-name :attach-trailing-participle-to-clause
-                   :referent clause-ref)))
-        edge))))
+    (let ((edge (make-binary-edge/explicit-rule-components
+                 s-edge vp-edge
+                 :category (edge-category s-edge)
+                 :form (edge-form s-edge)
+                 :rule-name :attach-trailing-participle-to-clause
+                 :referent clause-ref)))
+      edge)))
         
 
+(define-debris-analysis-rule proper-noun-comma-vg+ed-comma
+  :pattern (proper-noun "," vp+ed ",")
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           attach-non-restrictive-relative-clause first second third fourth))
+
+(defun attach-non-restrictive-relative-clause (np intial-comma vp+ed final-comma)
+  (declare (special category::np))
+  (let* ((np-ref (edge-referent np))
+         (vp-ref (edge-referent vp+ed))
+         (modified-vp-ref (unpack-subject-control np-ref vp-ref vp+ed))
+         (modified-np-ref (bind-dli-variable 'modifier modified-vp-ref np-ref)))
+    (setf (edge-referent np) modified-np-ref)
+    (let* ((category-to-use (edge-category np))
+           (form-to-use category::np)
+           (edge (make-edge-over-long-span
+                  (pos-edge-starts-at np)
+                  (pos-edge-ends-at final-comma)
+                  category-to-use
+                  :form form-to-use
+                  :referent modified-np-ref
+                  :rule 'attach-non-restrictive-relative-clause
+                  :constituents `(,np ,intial-comma ,vp+ed ,final-comma))))
+      edge)))
 
 
 
@@ -165,3 +182,13 @@
       ;; (push-debug `(,edge)) (break "look at edge")
       edge)))
 
+;;;--------------------
+;;; Common subroutines
+;;;--------------------
+
+(defun unpack-subject-control (subject vp vp-edge)
+  (let* ((downstairs-subj-var (subject-variable vp))
+         (new-vp-ref (bind-dli-variable
+                      downstairs-subj-var subject vp)))
+    (setf (edge-referent vp-edge) new-vp-ref)
+    new-vp-ref))
