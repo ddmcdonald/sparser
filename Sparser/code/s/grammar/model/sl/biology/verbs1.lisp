@@ -1010,7 +1010,8 @@
 (define-category increase
                  :specializes positive-bio-control
   :realization
-  (:verb ("increaseXXX"  :third-plural "increases"  :past-tense "increased")
+  (:verb ("increaseXXX"  :third-plural "increases"  :past-tense "increased"
+          :present-participle "increasing")
          :etf (svo-passive)
          :for object
          :noun "increase"
@@ -1667,14 +1668,20 @@
          :etf (svo-passive)
          :to-comp tocomp))
 
-
-
 (define-category stabilize :specializes bio-control
   :binds ((process bio-process))
  :realization
   (:verb "stabilize" :noun "stabilization"
          :etf (svo-passive) 
          :upon process))
+
+(define-category starve :specializes bio-method
+    :binds ((nutrient biological))
+    :realization
+    (:verb "starve" 
+           :noun "starvation"
+	   :etf (svo-passive)
+           :of nutrient))
 
 (define-category study-bio-method :specializes bio-method
   ;; can study bio-process or bio-entity
@@ -1703,6 +1710,11 @@
   (:verb "suggest" :noun "suggestion"
          :etf (sv)))
 
+(define-category summarize :specializes bio-rhetorical
+  :realization
+  (:verb "summarize"
+         :noun "summary"
+         :etf (svo-passive)))
 
 (define-category suppress :specializes negative-bio-control
     :realization
@@ -1798,6 +1810,11 @@
   :from source
   :to destination))
 
+(define-category transfer :specializes bio-method
+  :realization 
+  (:verb "transfer"
+         :etf (svo-passive)))
+
 (def-synonym transition (:noun "transition"))
 
 
@@ -1827,6 +1844,10 @@
    :o object
    :of object))
 
+(define-category transfect :specializes bio-method
+  :realization 
+  (:verb "transfect"
+         :etf (svo-passive)))
 
 (define-category trap :specializes bio-method
   :realization 
