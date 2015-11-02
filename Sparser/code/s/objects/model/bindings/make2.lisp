@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  1.9 June 2015
+;;;  version:  2.3 November 2015
 
 ;; initiated 11/30/91 v2.1
 ;; 1.1 (7/20/92 v2.3) revised to fit new regime
@@ -22,19 +22,23 @@
 ;;     (3/4/05) Added optional to make/binding so it only indexes the value
 ;;     (6/19/09) fan-out from psi changes. Capitalization tweaks.
 ;; 1.7 (4/5/13) Redesigned the when-binding hook.
-;; 1.8 (12/28/14) Added a trap so you can't add bindings to categories.
+;; 2.0 (12/28/14) Added a trap so you can't add bindings to categories.
 ;;      Which is debatable, but such bindings should at least be reclaimable.
-;; investigations using SBCL -- minor tweaks
-;; 3/21/2015 FIX OVERZEALOUS correction of find/binding -- some problem in lookup for
-;;  find/binding which caused bad definition in (define-unit-of-measure ...) for "nm"
-;; 4/18/2015 removed fix to bind-variable/expr, which prevented multiple bindings of a variable on a single individual
-;; 1.9 (4/20/15) dereferenced instance of anonymous variable in 
+;;    3/21/2015 fix overzealous correction of find/binding. 
+;;      some problem in lookup for.
+;;     find/binding which caused bad definition in (define-unit-of-measure ...) 
+;;       for "nm"
+;;    4/18/2015 removed fix to bind-variable/expr, which prevented multiple bindings 
+;;     of a variable on a single individual
+;; 2.1 (4/20/15) dereferenced instance of anonymous variable in 
 ;;      bind-variable
 ;;     (6/5/15) wrapped *break-on-pattern-outside-coverage?* around the 
 ;;      complaint in bind-variable when the individual doesn't have the variable
 ;;      it wants to bind.
-;; 1.10 6/27/15 Now has *description-lattice* cases. 6/30/15 pulling out
+;; 2.2 (6/27/15) Now has *description-lattice* cases. 6/30/15 pulling out
 ;;     now deadwood PSI cases.
+;; 2.3 (11/2/15) Resurecting simple bind-variable for the simple side-effects
+;;     cases. 
 
 (in-package :sparser)
 
@@ -70,24 +74,60 @@
 ;;; core
 ;;;--------
 
+#| What happens when we bind a variable depends on the value of
+the *description-lattice* parameter. If it is non-nil we use the
+lattice to record the binding and find-or-make a new variable
+that reflects that. If the parameter is nil then we just add
+the new binding to the same individual and something else needs
+to keep track of recording that fact.
+
+   There are two entry points, which virtually the same thing.
+Once some odd cases for the description lattice are worked out
+we can merge them, until then, the "old-bind-variable" function
+can be used even if *description-lattice* is up to achieve the
+effect of adding bindings to one individual rather than always
+returning a new one. 
+|#
+
+(defun bind-dli-variable (var/name value individual &optional category)
+  ;;new name for method in transition -- makes it easier to tell when other calls
+  ;; have been edited to use the new "contract" -- 
+  ;; bind-dli-variable returns the resulting individual as its first (primary) value
+  ;; it returns the binding object as its second (secondary) value
+  (declare (special *description-lattice*))
+  (if *description-lattice*
+    (find-or-make-lattice-subordinate individual var/name value category)
+    (old-bind-variable var/name value individual category)))
+
+(defun bind-variable (var/name value individual &optional category)
+  "Standard way of binding a variable on an individual. What actually
+   happens depends on the value of *description-lattice*, in both cases
+   we return the individual that has the new binding."
+  (declare (special *description-lattice*))
+  (if *description-lattice*
+    (find-or-make-lattice-subordinate individual var/name value category)
+    (old-bind-variable var/name value individual category)))
+
+
 (defun old-bind-variable (var/name value individual
                           &optional category)
+  "Create a binding object and link it to the individual. If this is
+   called with the symbol that names a variable rather than an actual
+   variable, then the optional category argument is most certain way to
+   find the real variable, otherwise we try to get it from the
+   individual."
   (declare (special *legal-to-add-bindings-to-categories*
                     *break-on-pattern-outside-coverage?*))
-  ;;try to find out who is binding a varibale named category
-  ;;  seems to be make-individual-for-DM&P
-  ;;     (when (eq var/name 'category) (break "category variable"))
     
   (when (typep individual 'category)
     ;;/// this is debatable in principle, but it would be very
     ;; permanent, so it's probably something to be crept up on
     ;; slowly (e.g. like reclaiming bindings would be a good
-    ;; initial step.
+    ;; initial step).
     (unless *legal-to-add-bindings-to-categories*
       (error "It doesn't make sense to add a binding to the ~
               category ~a" individual)))
   
-  ;; individual case
   (unless category
     (cond 
      ((referential-category-p individual) ;; 6/22/09
@@ -104,8 +144,7 @@
                 (if (individual-p individual)
                     (itype-of individual)
                     individual))))
-    #+ignore(format t "~&~&!! Can't dereference anonymous variable ~a against category ~a.~
-    ~%Can't do binding. Leaving object unchanged.~%" var/name individual)
+    ;;/// do we still need anonymous variables? What's their purpose
     (values individual nil))
    (t
     (let ((variable 
@@ -127,17 +166,6 @@
       (when variable
         (let ((binding (bind-variable/expr variable value individual)))
           (values individual binding)))))))
-
-
-(defun bind-dli-variable (var/name value individual &optional category)
-  ;;new name for method in transition -- makes it easier to tell when other calls
-  ;; have been edited to use the new "contract" -- 
-  ;; bind-dli-variable returns the resulting individual as its first (primary) value
-  ;; it returns the binding object as its second (secondary) value
-  (declare (special *description-lattice*))
-  (if *description-lattice*
-    (find-or-make-lattice-subordinate individual var/name value category)
-    (old-bind-variable var/name value individual category)))
 
 
 
