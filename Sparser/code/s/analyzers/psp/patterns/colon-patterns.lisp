@@ -29,8 +29,9 @@
   (if (null (cdr colon-positions))
     (one-colon-ns-patterns
      pattern words edges colon-positions start-pos end-pos)
-    (multi-colon-ns-patterns
-     pattern words edges colon-positions start-pos end-pos)))
+    (when *work-on-ns-patterns*
+      (multi-colon-ns-patterns
+       pattern words edges colon-positions start-pos end-pos))))
 
 (defun one-colon-ns-patterns (pattern words edges colon-positions start-pos end-pos)
   ;; called from resolve-colon-pattern
