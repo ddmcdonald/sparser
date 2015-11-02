@@ -57,6 +57,12 @@
          :in structure
          :of structure))
 
+(define-category guanyl-nucleotide-exchange :specializes bio-process
+  :binds ((substrate (:or protein bio-complex)))
+  :realization
+  (:noun "guanyl-nucleotide exchange"
+         :on substrate))
+
 (noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
 (noun "bond" :super bio-entity) ;; chemical bond -- not 
 ;; want something for magnitude, size, etc. TO-DO
