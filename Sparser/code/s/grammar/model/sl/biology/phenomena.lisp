@@ -711,7 +711,8 @@ it is created from N-terminus to C-terminus.|#
           (binding-set (:or molecule protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
           (direct-bindee molecule)(site molecular-location)
           (domain protein-domain)
-          (cell-site cellular-location))
+          (cell-site cellular-location)
+          (complex bio-complex))
   :realization 
   (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
          :noun "binding"
@@ -726,7 +727,8 @@ it is created from N-terminus to C-terminus.|#
          :to cell-site
          :with bindee
          :through domain
-         :between binding-set))
+         :between binding-set
+         :in complex))
 
 (delete-verb-cfr (resolve "assemble"))
 (delete-verb-cfr (resolve "assembles"))
