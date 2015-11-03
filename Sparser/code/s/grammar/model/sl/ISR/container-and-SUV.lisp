@@ -16,7 +16,7 @@
 
 (define-category car-manufacturer
   :specializes maker-of-artifacts
-  :restrict ((product . motor-vehicle))
+  :restrict ((product motor-vehicle))
   :index (:permanent :key name))
 #| Notes for Ford qua manufacturer of cars, 
 thence as a make of car (vehicle) http://en.wikipedia.org/wiki/Ford
@@ -38,7 +38,7 @@ It has buildings that it does its manufacturing in
            spatial-region
            container
            can-change-location)
-  :restrict ((made-by . car-manufacturer)))
+  :restrict ((made-by car-manufacturer)))
 
 (define-category car-type
   :specializes named-type

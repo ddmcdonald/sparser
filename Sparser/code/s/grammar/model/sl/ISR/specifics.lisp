@@ -24,7 +24,7 @@
 |#
 (define-category enter
   :specializes move
-  :restrict ((to-location . container))
+  :restrict ((to-location container))
   :realization ((:tree-family intransitive
                  ;; ordinary Sparser right-to-left parsing
                  :mapping ((agent . theme)
