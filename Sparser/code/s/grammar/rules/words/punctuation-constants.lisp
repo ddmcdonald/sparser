@@ -17,20 +17,20 @@
 
 ;; These are used in (at least) Could-be-the-start-of-a-sentence
 
-(defconstant *the-punctuation-period* (punctuation-named #\.))
-(defconstant *the-punctuation-comma* (punctuation-named #\,))
-(defconstant *the-punctuation-colon* (punctuation-named #\:))
-(defconstant *the-punctuation-semicolon* (punctuation-named #\;))
+(defparameter *the-punctuation-period* (punctuation-named #\.))
+(defparameter *the-punctuation-comma* (punctuation-named #\,))
+(defparameter *the-punctuation-colon* (punctuation-named #\:))
+(defparameter *the-punctuation-semicolon* (punctuation-named #\;))
 
-(defconstant *the-punctuation-hyphen* (punctuation-named #\-))
+(defparameter *the-punctuation-hyphen* (punctuation-named #\-))
 
-(defconstant *the-punctuation-open-angle-bracket* (punctuation-named #\<))
+(defparameter *the-punctuation-open-angle-bracket* (punctuation-named #\<))
 
-(defconstant *the-punctuation-open-parenthesis* (punctuation-named #\())
-(defconstant *the-punctuation-close-parenthesis* (punctuation-named #\)))
+(defparameter *the-punctuation-open-parenthesis* (punctuation-named #\())
+(defparameter *the-punctuation-close-parenthesis* (punctuation-named #\)))
 
-(defconstant *the-punctuation-rightwards-arrow* word::rightwards-arrow)
-(defconstant *the-punctuation-plus-minus* word::plus-minus)
+(defparameter *the-punctuation-rightwards-arrow* word::rightwards-arrow)
+(defparameter *the-punctuation-plus-minus* word::plus-minus)
 
 (defparameter *punctuation-words*
   `(,*the-punctuation-period* ,*the-punctuation-comma*
