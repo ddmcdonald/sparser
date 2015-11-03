@@ -1056,6 +1056,7 @@ or for loading the newer of the compiled or source files.
 ;; don't have definitions
 (sparser::lload "loaders;stubs")
 
+(push :sparser-loaded *features*)
 
 ;; Set up basic sizing parameters
 (if sparser::*sparser-is-an-application?*  ;; then we use the source version.
