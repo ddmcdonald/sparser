@@ -474,17 +474,13 @@
 (defmacro defobject (name supers slots &rest options)
   "Like DEFCLASS but automatically defines initarg and accessor
    for each slot.  Slots have the form (name value . options)."
-  `(defclass ,name
-	  ,supers
-	,(map 'list #'(lambda (s)
-			(let ((name (first s))
-			      (value (second s)))
-			  `(,name :initform ,value
-			    :initarg ,(intern (string name) :keyword)
-			    :accessor ,name ., (cddr s))))
-	      slots)
-	. ,options))
-
+  `(defclass ,name ,supers
+     ,(loop for (name value . slot-options) in slots
+            collect `(,name :initform ,value
+                            :initarg ,(intern (string name) :keyword)
+                            :accessor ,name
+                            ,@slot-options))
+     ,@options))
 
 ;; stray Sparser predicate
 
