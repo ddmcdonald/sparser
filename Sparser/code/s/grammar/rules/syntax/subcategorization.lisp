@@ -119,7 +119,7 @@
     (dolist (pattern patterns)
       (let ((trigger (subcat-label pattern))
             (v/r (subcat-restriction pattern))
-            (var (subcat-var pattern)))
+            (var (subcat-variable pattern)))
         (etypecase trigger
           (keyword
            (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
