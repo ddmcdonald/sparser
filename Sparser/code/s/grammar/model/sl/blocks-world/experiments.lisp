@@ -21,12 +21,12 @@
    not as the realization of some actually represented source."
   (let* ((staircase
           (make-dtn :resource
-            (define-lexicalized-phrase common-noun ("staircase") (n))))        
+            (define-lexicalized-phrase common-noun '("staircase") (n))))
          (a-staircase
           (kind (singular staircase)))
          (build
           (make-dtn :resource
-                    (define-lexicalized-phrase SVO ("build") (v)))))
+                    (define-lexicalized-phrase SVO '("build") (v)))))
 ; 
     ;; connect them
     (make-complement-node 'o a-staircase build)
