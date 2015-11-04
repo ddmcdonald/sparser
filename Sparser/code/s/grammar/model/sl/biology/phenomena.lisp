@@ -449,11 +449,37 @@ it is created from N-terminus to C-terminus.|#
   :specializes protein-domain
   :instantiates :self
   :binds ((protein protein))
-  :lemma ((:common-noun "terminal")
-          (:common-noun "terminus"))
+  :lemma (:common-noun ("terminus" :plural ("termini" "terminuses")))
   :realization
     (:noun "terminal"
      :of protein))
+
+;;//////////// These two are essentially identical definitions
+;; Meed a macro or something 
+(define-category N-terminal ;; amino-terminus
+  :specializes protein-terminus
+  :binds ((protein (:or protein bio-entity)))
+  :index (:permanent :key protein)
+  :realization
+    (:etf (pre-mod)
+     :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
+            "n-termini"
+            "amino terminus")
+     :m protein
+     :of protein))
+
+(define-category C-terminal ;; carboxyl-terminus
+  :specializes protein-terminus
+  :binds ((protein protein))
+  :index (:permanent :key protein)
+  :realization
+    (:etf (pre-mod)
+     :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus"
+            "c-termini")
+     :m protein
+     :of protein))
+
+
 
 (define-category RBD :specializes protein-domain
       :binds ((substrate bio-entity))
@@ -508,32 +534,6 @@ it is created from N-terminus to C-terminus.|#
 ;; not clear that we need a proper handling
 ;; of the molecule configuration, etc. that
 ;; differentiates N from C
-
-;;//////////// These are essentially identical definitions
-;; Meed a macro or something 
-
-(define-category N-terminal ;; amino-terminus
-  :specializes protein-terminus
-  :binds ((protein (:or protein bio-entity)))
-  :index (:permanent :key protein)
-  :realization
-    (:etf (pre-mod)
-     :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
-            "amino terminus")
-     ;;:o protein
-     :m protein
-     :of protein))
-
-(define-category C-terminal ;; carboxyl-terminus
-  :specializes protein-terminus
-  :binds ((protein protein))
-  :index (:permanent :key protein)
-  :realization
-    (:etf (pre-mod)
-     :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus") ; 
-     ;;:o protein
-     :m protein
-     :of protein))
 
 
 
@@ -705,11 +705,12 @@ it is created from N-terminus to C-terminus.|#
 (define-category binding  :specializes molecular-function
   ;;:obo-id 
   :bindings (uid "GO:0005488")
-  ;; "<binder> binds to <binde>" the subject moves
+  ;; "<binder> binds to <bindee>" the subject moves
   :binds ((binder (:or molecule protein-domain bio-entity))
           (bindee (:or molecule protein-domain bio-entity))
           (binding-set (:or molecule protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
-          (direct-bindee molecule)(site molecular-location)
+          (direct-bindee molecule)
+          (site molecular-location)
           (domain protein-domain)
           (cell-site cellular-location)
           (complex bio-complex))
