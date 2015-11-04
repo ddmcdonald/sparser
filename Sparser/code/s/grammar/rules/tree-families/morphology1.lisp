@@ -993,10 +993,39 @@
   (let ((plural (or (cadr (member :plural special-cases))
                     (etypecase word
                       (polyword (plural-version/pw word))
-                      (word (plural-version word))))))
-    (when (stringp plural) ;; see note
-      (setq plural (resolve/make plural)))
-    (let ((plural-rule
+                      (word (plural-version word)))))
+        plural-rules  plural-inflections  )
+
+    (if (consp plural) ;; several of them
+      (dolist (p plural)
+        (multiple-value-bind (rule plural-word)
+                             (make-cn-plural-rule 
+                              p category referent schematic-rule)
+          (push rule plural-rules)
+          (push plural-word plural-inflections)))
+      (else
+        (multiple-value-bind (rule plural-word)
+                             (make-cn-plural-rule 
+                              plural category referent schematic-rule)
+          (setq plural-rules (list rule)
+                plural-inflections (list plural-word)))))
+
+    (record-inflections `(,@plural-inflections) word :noun)
+
+    ;;/// This many not be right. Review uses of these records
+    (loop for i in plural-inflections
+      do (record-lemma i word :noun))
+
+    (list singular-rule
+          plural-rules)))
+
+(defun make-cn-plural-rule (plural category referent schematic-rule)
+  (typecase plural
+    (word)
+    (string 
+     (setq plural (resolve/make plural))))
+  (assign-brackets-as-a-common-noun plural)
+  (let ((plural-rule
 ;; This one is for categories where we expect sets: companies, people
 ;                (define-cfr category (list plural)
 ;                  :form  category::common-noun/plural
@@ -1012,6 +1041,8 @@
                 (*external-referents*
                  referent)
                 ((category-named 'collection)
+                 ;; Have we reached a point in the load where collection
+                 ;; has been defined.
                  (resolve-referent-expression
                   `(:head ,referent
                     :subtype ,(category-named 'collection))))
@@ -1020,20 +1051,10 @@
                        *deferred-collection-plurals*)
                  (resolve-referent-expression
                   `(:head ,referent)))))))
+    (setf (cfr-schema plural-rule) schematic-rule)
+    (values plural-rule
+            plural)))
 
-      (record-inflections `(,plural) word :noun)
-      (record-lemma plural word :noun)
-
-      (assign-brackets-as-a-common-noun plural)
-      (setf (cfr-schema plural-rule) schematic-rule)
-      (list singular-rule
-            plural-rule))))
-
-;; Note -- the marked irregular plural can in as a string via this call
-;;   (define-single-word-title '(:common-noun "gunman" :plural "gunmen"))
-;; This involves decoding the 'word' primitive expression of the slot this
-;; goes with. //// Look up the path used when irregulars are specified
-;; in rspecs and merge them.
 
 
 
