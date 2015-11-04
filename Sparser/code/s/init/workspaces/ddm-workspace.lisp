@@ -40,7 +40,7 @@
 )
 
 ;; (compare-to-snapshots)
-;; (find-corpus-sents "")
+;; (ddm-load-article-2)  (find-corpus-sents "")
 
 #| ---------  Pending or recent tasks
  
