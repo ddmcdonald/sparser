@@ -3,14 +3,15 @@
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  September 2015
+;;;  Version:  November 2015
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
 ;; be referred to. 5/27/15 Subject is now the referent rather than
 ;; the edge. 6/8/15 Added get-element methods and began to play with
 ;; after methods. 6/10/15 Added paragraph aggregator. 9/8/15 added
-;; long-term-ifying mentions to paragraph. 
+;; long-term-ifying mentions to paragraph. 11/3/15 Added local dynamic
+;; bindings of the current document element to facilitate debugging.
 
 
 (in-package :sparser)
@@ -31,21 +32,29 @@
 
 (defmethod after-actions ((p paragraph))
   (when *apply-document-after-actions*
-    (make-mentions-long-term)
-    (aggregate-bio-terms p)
-    (assess-sentence-analysis-quality p)))
+    (let ((*current-paragraph* p))
+      (declare (special *current-paragraph*))
+      (make-mentions-long-term)
+      (aggregate-bio-terms p)
+      (assess-sentence-analysis-quality p))))
 
 (defmethod after-actions ((s section))
   (when *apply-document-after-actions*
-    (do-section-level-after-actions s)))
+    (let ((*current-section* s))
+      (declare (special *current-section*))
+      (do-section-level-after-actions s))))
 
 (defmethod after-actions ((ss section-of-sections))
   (when *apply-document-after-actions*
-    (do-section-level-after-actions ss)))
+    (let ((*section-of-sections* ss))
+      (declare (special *section-of-sections*))
+      (do-section-level-after-actions ss))))
 
 (defmethod after-actions ((a article))
   (when *apply-document-after-actions*
-    (do-section-level-after-actions a)))
+    (let ((*current-article* a))
+      (declare (special *current-article*))
+      (do-section-level-after-actions a))))
 
 
 (defun do-section-level-after-actions (s)
@@ -135,7 +144,7 @@
     (category ;; really ignore them?
      nil)
     (otherwise
-     (error "Unexpected type of thing passed to aggregatoin-target: ~
+     (error "Unexpected type of thing passed to aggregation-target: ~
              ~a~%  ~a" (type-of i) i))))
 
 (defun get-from-bucket (term bucket)
