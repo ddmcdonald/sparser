@@ -16,8 +16,6 @@
 ;;  initial work to produce a lattice of descriptions
 ;;  the places where this call is put were determined by the methods where (complete edge) was also called
 
-;; THIS FILE SEEMS TO BE LOADED INSTEAD OF binary-explicit3.lisp!
-
 (in-package :sparser)
 
 

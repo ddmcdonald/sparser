@@ -15,8 +15,6 @@
 ;; 1.0 (9/6/94) put it back in
 ;; 1.1 (10/25/14) added edge-form-adjustment. Cleaned up chunk form 2/6/15
 
-;; THIS FILE SEEMS TO BE LOADSED INSTEAD OF binary2.lisp!
-
 ;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
 ;;  initial work to produce a lattice of descriptions
 ;;  the places where this call is put were determined by the methods where (complete edge) was also called
