@@ -950,9 +950,7 @@ or for loading the newer of the compiled or source files.
      a script to stipulate which file in the grammar-configurations;
      directory should be loaded without having to go through the
      heavy lifting of defining a full-up application setting that
-     has much wider effects. Comes second to last in the checks
-     just before the default of loading all the defined grammar
-     modules."))
+     has much wider effects."))
 
 
 ;;;---------------------------------------------------
