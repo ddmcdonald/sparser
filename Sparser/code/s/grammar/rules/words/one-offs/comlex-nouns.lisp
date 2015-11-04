@@ -10,7 +10,7 @@
  March May Monday Nov. November Oct. October PC PVC Saturday Sept.
  September Sunday TV Thursday Tuesday VCR VTR Wednesday abacus abandon
  abandonment abasement abatement abattoir abbe abbess abbey abbot
- abbreviation abbé abdication abdomen abduction abductor aberration
+ abbreviation abdication abdomen abduction abductor aberration
  abeyance abhorrence ability abjection abjuration ablative ablaut
  ablution abnegation abnormality abode abolishment abolition
  abolitionist abomination aboriginal aborigine abortion abortionist
@@ -58,7 +58,7 @@
  aggrandizement aggravation aggregate aggregation aggression
  aggressiveness aggressor aggro agility aging agitation agitator agnail
  agnostic agnosticism agony agora agoraphobia agreement agribusiness
- agriculture ague aid aide aide-de-camp aide-memoire aide-mémoire
+ agriculture ague aid aide aide-de-camp aide-memoire
  aigret aigrette aileron ailment aim air air-bladder air-conditioning
  air-pump air-raid air-shaft air-sickness airbase airbed airbrake
  airbus airconditioner aircraft aircraftman aircrew airdrome airfield
@@ -113,7 +113,7 @@
  appanage apparatus apparel apparition appeal appearance appeasement
  appellant appellation appendage appendectomy appendicitis appendix
  appetite appetizer applause apple applejack appliance applicability
- applicant application applique appliqué appointee appointment
+ applicant application applique appointee appointment
  apportionment apposition appraisal appraiser appreciation apprehension
  apprentice apprenticeship appro approach approbation appropriation
  approval approximation appurtenance apricot apron apse aptitude
@@ -131,11 +131,11 @@
  armour armour-plate armourer armoury armpit arms-race arms-runner army
  arnica aroma arpeggio arquebus arrack arraignment arrangement arras
  array arrears arrest arrester |arriere pensee| arrival
- |arrière pensée| arrogance arrow arrowhead arrowroot arse arsehole
+ arrogance arrow arrowhead arrowroot arse arsehole
  arsenal arsenic arson art |art nouveau| artefact arteriosclerosis
  artery artfulness arthritis artichoke article articulation artifact
  artifice artificer artillery artisan artist artiste artistry
- artlessness arum arête asbestos ascendancy ascendant ascendency
+ artlessness arum asbestos ascendancy ascendant ascendency
  ascendent ascension ascent ascetic asceticism ascription asdic asepsis
  asexuality ash ash-bin ash-can ash-key ash-pan ashtray aside asking
  asp asparagus aspartame aspect aspen asperity aspersion asphalt
@@ -150,7 +150,7 @@
  astronautics astronomer astronomy astrophysics astuteness asylum
  asymmetry asymptote at-home atabrine atavism atelier atheism atheist
  athlete athletics atlas atmosphere atmospherics atoll atom atomizer
- atonality atonement atrocity atrophy attache attachment attaché attack
+ atonality atonement atrocity atrophy attache attachment attack
  attacker attainder attainment attar attempt attendance attendant
  attendee attention attentiveness attenuation attic attire attitude
  attorney attraction attractiveness attribute attribution attrition
@@ -160,7 +160,7 @@
  aureole auricle aurora auspices austerity autarchy autarky
  authentication authenticity author authoress authoritarian
  authoritarianism authority authorization authorship autism auto
- auto-changer auto-da-fe auto-da-fé autobahn autobiography autobody
+ auto-changer auto-da-fe autobahn autobiography autobody
  autocracy autocrat autogiro autograph autogyro automaker automat
  automatic automation automaton automobile autonomy autopart autopsy
  autostrada autumn auxiliary avail availability avalanche avant-garde
@@ -298,7 +298,7 @@
  bradawl brae braggart bragging braid braille brain brain-fag
  brain-teaser brainchild brainstorm brainwashing brainwave brake
  brakeman bramble bran branch brand branding-iron brandy brandy-ball
- brandy-snap brass brassard brasserie brassiere brassière brat bravado
+ brandy-snap brass brassard brasserie brassiere  brat bravado
  brave bravery bravo brawl brawler brawn bray brazier breach bread
  breadcrumb breadfruit breadline breadth breadwinner break break-in
  break-up breakage breakaway breakdown breaker breakfast breakthrough
@@ -340,13 +340,13 @@
  buttock button buttonhole buttonhook buttonwood buttress buy buyback
  buyer buyout buzz buzzard buzzer by-election bye bye-bye bye-law bylaw
  bypass bypath byplay byproduct byroad bystander byway byword
- |bête noire| |ca'canny| cab cab-rank cabal cabaret cabbage cabby caber
+ |noire| |ca'canny| cab cab-rank cabal cabaret cabbage cabby caber
  cabin cabinet cabinet-maker cable |cable's-length| cable-car
  cable-length cable-railway cablegram cablevision cabman caboodle
  caboose cabstand cacao cacao-bean cacao-tree cache cachet cachou
  cackle cackler cacophony cactus cad cadaver caddie caddy cadence
  cadenza cadet cadger cadmium cadre caesura cafe cafe-au-lait cafeteria
- caff caffeine caftan café cage cagoule caiman cairn caisson caitiff
+ caff caffeine caftan cage cagoule caiman cairn caisson caitiff
  cajolery cake calabash calamity calcination calcium calculation
  calculator calculus caldron calendar calender calf calf-love caliber
  calibration calibre calico calif caliph caliphate calisthenics calk
@@ -356,7 +356,7 @@
  cambric camel camel-hair camellia cameo camera cameraman camion
  camomile camouflage camp camp-bed camp-chair camp-fire camp-follower
  camp-stool campaign campaigner campanile campanula camper camphor
- camping campion campus camshaft can canal canalization canape canapé
+ camping campion campus camshaft can canal canalization canape
  canard canary canary-bird canary-wine canasta cancan cancellation
  cancer candelabrum candidacy candidate candidature candle candle-power
  candlelight candlestick candlewick candor candour candy candy-floss
@@ -418,10 +418,10 @@
  chapelgoer chaperon chaplain chaplaincy chaplet chapman chapter
  chapterhouse char charabanc character characteristic characterization
  charade charcoal charcoal-burner chard charge |charge d'affaires|
- charge-account charge-sheet charger |chargé d'affaires| chariot
+ charge-account charge-sheet chariot
  charioteer charisma charity charivari charlady charlatan charlock
  charm charmer |charnel house| chart charter charter-party chartreuse
- charwoman charàbanc chase chaser chasm chassis chastisement chastity
+ charwoman chase chaser chasm chassis chastisement chastity
  chasuble chat chateau chatelaine chattel chatter chatterbox chauffeur
  chauffeuse chauvinism chauvinist chaw chaw-bacon cheapness cheat check
  checkbook checker checkers checklist checkmate checkoff checkout
@@ -449,7 +449,7 @@
  chronicle chronicler chronology chronometer chrysalis chrysanthemum
  chuck chucker-out chuckle chug chukker chum chump chunk church
  churchgoer churchman churchwarden churchyard churl churn chute chutney
- château cicada cicala cicatrice cicatrix cicerone cider ciderpress
+ cicada cicala cicatrice cicatrix cicerone cider ciderpress
  cigar cigarette cigarette-case cigarette-holder cigarette-paper cinch
  cinchona cincture cinder cinder-track cine-camera cine-film
  cine-projector cinema cinematography cinnamon cinquefoil cipher circle
@@ -469,13 +469,13 @@
  clean-up cleaner cleanliness cleanser cleanup clear clearance clearing
  clearing-house clearinghouse clearness clearway cleat cleavage cleaver
  clef cleft clematis clemency clerestory clergy clergyman cleric
- clerihew clerk cleverness clew cliche cliché click client clientele
+ clerihew clerk cleverness clew cliche click client clientele
  cliff cliff-hanger climacteric climate climatology climax climb
  climb-down climber clime clinch clincher clinic clink clinker clip
  clip-joint clipper clipping clique clitoris cloak cloakroom clobber
  cloche clock clock-dial clock-face clock-golf clock-tower
  clock-watching clockwork clod clodhopper clog clog-dance cloisonne
- cloisonné cloister clone close close-down close-up closeness closer
+ cloister clone close close-down close-up closeness closer
  closet closing closure clot cloth clothes-basket clothes-hanger
  clothes-moth clothes-peg clothes-pin clotheshorse clothesline clothier
  clothing cloud cloud-bank cloud-cuckoo-land cloudburst clout clove
@@ -515,7 +515,7 @@
  commissary commission commissionaire commissioner commital commitment
  committee commode commodity commodore common common-room commonalty
  commoner commonplace commonwealth commotion commune communicant
- communication communion communique communiqué communism communist
+ communication communion communique communism communist
  community commutation commutator commuter compact compactness
  companion companionship companionway company comparability comparative
  compare comparison compartment compass compassion compatibility
@@ -527,7 +527,7 @@
  component comportment composer composition compositor compost
  composure compote compound comprehensibility comprehension
  comprehensiveness compress compression compressor compromise
- comptroller compulsion compunction computation computer compère
+ comptroller compulsion compunction computation computer 
  comrade comradeship con con-man concatenation concavity concealment
  conceit concentrate concentration concept conception concern concert
  concert-hall concertina concerto concession concessionaire conch
@@ -542,10 +542,10 @@
  conference conferment confession confessional confessor confetti
  confidant confidence confidentiality configuration confinement
  confirmation confiscation conflagration conflict confluence
- conformation conformist conformity confrere confrontation confrère
+ conformation conformist conformity confrere confrontation 
  confusion confutation conge conger conger-eel congestion conglomerate
  conglomeration congratulation congregation congress congressman
- congresspeople congresswoman congé conifer conjecture conjugation
+ congresspeople congresswoman conifer conjecture conjugation
  conjunction conjunctive conjuncture conjuration conjurer conjuror conk
  conker connection connective connectivity connector connexion
  connivance connoisseur connotation conqueror conquest conquistador
@@ -554,7 +554,7 @@
  conservation conservatism conservative conservatoire conservatory
  conserve considerateness consideration consignee consigner consignment
  consignor consistence consistency consistory consolation console
- consolidation consomme consommé consonance consonant consort
+ consolidation consomme consonance consonant consort
  consortium conspectus conspicuousness conspiracy conspirator constable
  constabulary constancy constant constellation consternation
  constipation constituency constituent constitution constitutional
@@ -596,8 +596,8 @@
  correlative correspondence correspondent corridor corrie corrigendum
  corroboration corrosion corrosive corrugation corruptibility
  corruption corruptness corsage corsair corse corselet corset corslet
- cortege cortex cortisone cortège corundum coruscation corvee corvette
- corvée cos cosh cosignatory cosine cosiness cosmetic cosmetician
+ cortege cortex cortisone  corundum coruscation corvee corvette
+ cos cosh cosignatory cosine cosiness cosmetic cosmetician
  cosmogony cosmonaut cosmopolitan cosmos cosponsor cost costermonger
  costing costliness costume costumier cosy cot cote cotenant coterie
  cotillion cottage cottar cotter cotton cotton-cake cotton-plant
@@ -613,7 +613,7 @@
  countertenor countertrade countertrader countertrading countess
  counting-house country country-house country-seat countryman
  countryside countrywoman county coup |coup d'etat| |coup de grace|
- coupe couple couplet coupling coupon coupé courage courgette courier
+ coupe couple couplet coupling coupon courage courgette courier
  course courser coursing court court-card court-martial courtesan
  courtesy courthouse courtier courtliness courtroom courtship courtyard
  cousin cove coven covenant cover cover-up coverage covering coverlet
@@ -648,19 +648,19 @@
  crudeness crudity cruelty cruet cruet-stand cruise cruiser crumb
  crumpet crunch crupper crusade crusader cruse crush crust crustacean
  crutch crux cruzeiro cry crybaby crypt cryptogram crystal
- crystal-gazing crystallization crystallography crèche
- |crème de menthe| crêpe cub cubbyhole cube cubicle cubism cubist cubit
+ crystal-gazing crystallization crystallography 
+ cub cubbyhole cube cubicle cubism cubist cubit
  cuckold cuckoo cuckoo-clock cucumber cud cuddle cudgel cue cuff
  cuirass cuirassier cuisine cul-de-sac cull cullender culmination
  culpability culprit cult cultivation cultivator culture culvert
  cummerbund cumulus cunning cunt cup cup-bearer cup-final cup-tie
  cupboard cupboard-love cupful cupidity cupola cuppa cupping
  cupro-nickel cur curability curacao curacoa curacy curate curator
- curaçao curaçoa curb curbside curd cure cure-all curfew curio
+ curb curbside curd cure cure-all curfew curio
  curiosity curl curler curlew curling curmudgeon currant currency
  current curriculum |curriculum vitae| curry curry-powder curse
  curtailment curtain curtain-call curtain-lecture curtain-raiser
- curtness curtsey curtsy curvature curve curé cushion cusp cuspidor
+ curtness curtsey curtsy curvature curve cushion cusp cuspidor
  cuss cussedness custard custodian custody custom customer cut cut-out
  cut-throat cutback cuteness cuticle cutlass cutler cutlery cutlet
  cutoff cutpurse cutter cutting cutting-room cuttlefish cutworm cyanide
@@ -724,7 +724,7 @@
  dermatologist dermatology derogation derrick derring-do derv dervish
  desalination desalinization descant descendant descent description
  desecration desegregation desensitization desert deserter desertion
- deshabillé desiccant desideratum design designation designer designing
+ desiccant desideratum design designation designer designing
  desirability desire desk desolation despair despatch desperado
  desperation despite despondency despot despotism dessert dessertspoon
  dessertspoonful destination destiny destitution destroyer
@@ -842,8 +842,8 @@
  dust-wrapper dustbin dustcart duster dustman dustpan duty duvet dwarf
  dweller dwelling dwelling-house dyarchy dye dye-works dyer dyestuff
  dyke dynamic dynamism dynamite dynamo dynast dynasty dyne dysentery
- dyslexia dyspepsia dyspeptic dystrophy débris début débutante débâcle
- décor démarche dénouement déshabillé détente eagerness eagle eaglet
+ dyslexia dyspepsia dyspeptic dystrophy
+ eagerness eagle eaglet
  ear ear-trumpet earache eardrop eardrum earful earl earldom earmark
  earner earnest earnest-money earnestness earnings earphone earpiece
  earring earshot earth earth-closet earthenware earthnut earthquake
@@ -894,7 +894,7 @@
  enthusiast enticement entirety entitlement entity entomologist
  entomology entourage |entr'acte| entrance entrance-fee entrance-money
  entrant entreaty entree entrenchment entrepot entrepreneur
- entrepreneurship entry entrée enumeration enunciation envelope
+ entrepreneurship entry enumeration enunciation envelope
  envelopment environment environmentalist envoi envoy envy enzyme eon
  epaulet epaulette epic epicenter epicentre epicure epicurean epidemic
  epidemiologist epidemiology epidermis epidiascope epiglottis epigram
@@ -937,7 +937,7 @@
  expert expertise expertness expiation expiration expiry explanation
  expletive explicitness exploit exploitation exploration explorer
  explosion explosive expo exponent exponential export exportation
- exporter exposition expostulation exposure exposé express expression
+ exporter exposition expostulation exposure express expression
  expressionism expressionist expressway expropriation expulsion
  expurgation exquisiteness extension extent extenuation exterior
  extermination external extinction extinguisher extirpation extortion
@@ -964,7 +964,7 @@
  fatalist fatality fate fathead father father-in-law fatherhood
  fatherland fathom fatigue fatigue-party fatness fatuity fatuousness
  faucet fault fault-finder fault-finding faun |faux pas| favor favorite
- favoritism favour favourite favouritism fawn fax façade fealty fear
+ favoritism favour favourite favouritism fawn fax fealty fear
  fearfulness fearlessness feasibility feast feast-day feat feather
  feather-boa featherbed featherweight feature fecklessness fecundity
  federalism federalist federation fee feebleness feed feedback feeder
@@ -976,7 +976,7 @@
  ferroconcrete ferrule ferry ferryboat ferryman fertility fertilization
  fertilizer ferule fervency fervor fervour festival festivity festoon
  fete fete-day fetish fetlock fetter fettle feud feudalism feudatory
- fever few fewness fez fiance fiancee fiancé fiancée fiasco fiat fib
+ fever few fewness fez fiance fiancee fiasco fiat fib
  fibber fibbing fiber fiberboard fiberglass fibre fibreboard fibreglass
  fibrosis fibrositis fibula fickleness fiction fiddle fiddler
  fiddlestick fidelity fidget fief field field-hospital field-officer
@@ -1077,7 +1077,7 @@
  fur furbelow furlong furlough furnace furnishings furniture furor
  furore furrier furrow furtherance furtiveness fury furze fuse fusee
  fuselage fusilier fusillade fusion fuss fussiness fusspot fustian
- futility future futurism futurist futurity fuze fuzz fête führer gab
+ futility future futurism futurist futurity fuze fuzz gab
  gabardine gabble gaberdine gable gadabout gadfly gadget gadgetry gaff
  gaffe gaffer gag gage gaggle gaiety gain gainer gait gaiter gal gala
  galantine galaxy gale gall gallant gallantry galleon gallery galley
@@ -1175,9 +1175,9 @@
  gush gusher gusset gust gustation gusto gut gutta-percha gutter
  guttersnipe guttural guvnor guy guzzler gym gymkhana gymnasium gymnast
  gymnastics gymslip gynaecologist gynaecology gynecologist gynecology
- gyp gypsum gyration gyro gyroscope gâteau |ha'p'orth| |ha'penny|
+ gyp gypsum gyration gyro gyroscope |ha'p'orth| |ha'penny|
  |habeas corpus| haberdasher haberdashery habit habitat habitation
- habituation habitude habitue habitué hacienda hack hackles hackney
+ habituation habitude habitue hacienda hack hackles hackney
  hacksaw haddock haematite haemoglobin haemophilia haemophiliac
  haemorrhage haft hag haggis hagiology haha hail hailstone hailstorm
  hair |hair's-breadth| hair-breadth hair-dye hair-oil hair-shirt
@@ -1350,7 +1350,7 @@
  infliction inflorescence inflow influence influenza influx info
  informality informant information informer infraction infrastructure
  infrequency infringement infusion ingathering ingenue ingenuity
- ingenuousness ingle-nook ingot ingratitude ingredient ingress ingénue
+ ingenuousness ingle-nook ingot ingratitude ingredient ingress
  inhabitant inhalation inhaler inheritance inheritor inhibition
  inhibitor inhumanity iniquity initial initiate initiation initiative
  injection injunction injury injustice ink ink-bottle ink-pad ink-pot
@@ -1446,14 +1446,14 @@
  knout know know-all know-how knowhow knowledge knuckle koala kobo kohl
  kohlrabi kola kola-nut kookaburra kopeck kopje koppie kosher kotow
  koumiss kowtow kraal krona krone kudos kumis kummel |kung fu|
- kuomintang kvass kwacha kwela kümmel la laager lab label labor
+ kuomintang kvass kwacha kwela la laager lab label labor
  laboratory laborer labour labourer laburnum labyrinth lace laceration
  lack lackey laconicism laconism lacquer lacrosse lacuna lad ladder
  laddie lading ladle lady |lady's-maid| lady-in-waiting lady-killer
  ladybird ladyship lag lager laggard lagging lagoon lair laird
  |laissez faire| laissez-faire laity lake lakh lama lamasery lamb
  lambency lambkin lambskin lameness lament lamentation lamp lamp-black
- lamplight lamplighter lampoon lamppost lamprey lampshade lamé lance
+ lamplight lamplighter lampoon lamppost lamprey lampshade lance
  lance-corporal lancer lancet land land-agent landau landfall landfill
  landgrave landholder landing landing-craft landing-field landing-gear
  landing-net landing-party landing-place landing-stage landing-strip
@@ -1547,7 +1547,7 @@
  luminosity lump lunacy lunatic lunch luncheon lunchtime lung
  lung-power lunge lupin lurch lurcher lure luridness lurking-place
  lusciousness lush lust luster lustre lutanist lute lutenist luxuriance
- luxury lycee lyceum lychee lychgate lycée lye lymph lynch lynchpin
+ luxury lycee lyceum lychee lychgate lye lymph lynch lynchpin
  lynx lyre lyre-bird lyric lyricism lyricist lysine lysol ma |ma'am|
  mac macadam macaroni macaroon macaw mace mace-bearer machete
  machination machine machine-gun machinery machinist machismo mackerel
@@ -1597,9 +1597,9 @@
  mastiff mastodon mastoid mastoiditis masturbation mat matador match
  match-point matchbox matchet matchlock matchmaker matchwood mate
  material materialism materialist materialization maternity
- mathematician mathematics maths matinee matinée matriarch matriarchy
+ mathematician mathematics maths matinee matriarch matriarchy
  matric matricide matriculation matrimony matrix matron matter matting
- mattock mattress maturation maturity maté maulstick mausoleum mauve
+ mattock mattress maturation maturity maulstick mausoleum mauve
  maverick mavis maw mawkishness maxim maximization maximum may-beetle
  may-bug mayday mayfly mayhem mayonnaise mayor mayoralty mayoress
  maypole maze mazurka mead meadow meagreness meal mealie mealtime
@@ -1661,7 +1661,7 @@
  mischance mischief mischief-maker mischief-making mischievousness
  misconception misconduct misconstruction miscount miscreant misdeal
  misdeed misdemeanor misdemeanour misdirection misdoing |mise en scene|
- |mise en scène| miser miserliness misery misfire misfit misfortune
+ |mise en | miser miserliness misery misfire misfit misfortune
  misgiving misgovernment mishap mishmash misinformation
  misinterpretation mismanagement misnomer misogynist misprint
  mispronunciation misquotation misrepresentation misrule miss missal
@@ -1719,9 +1719,9 @@
  mutiny mutt mutter mutterer mutton mutton-head muzzle muzzle-velocity
  mycology myelitis myna mynah myopia myriad myrmidon myrrh myrtle
  mystery mystic mysticism mystification mystique myth mythologist
- mythology myxomatosis mélange ménage mésalliance métier mêlée nabob
+ mythology myxomatosis nabob
  nacelle nacre nadir nag nagger naggings naiad nail nail-polish
- nail-varnish nailbrush nailfile nainsook naira naivete naivety naiveté
+ nail-varnish nailbrush nailfile nainsook naira naivete naivety
  nakedness namby-pamby name name-day name-dropping name-part nameplate
  namesake nankeen nanny nanny-goat nap napalm nape napery naphtha
  naphthalene napkin napkin-ring nappy narcissism narcissus narcotic
@@ -1779,7 +1779,7 @@
  numismatics numismatist numskull nun nuncio nunnery nurse nurseling
  nursemaid nursery nurseryman nursing-home nursling nurture nut
  nut-butter nuthouse nutmeg nutria nutrient nutriment nutrition
- nutshell nylon nymph nymphet nympho nymphomania nymphomaniac négligé
+ nutshell nylon nymph nymphet nympho nymphomania nymphomaniac
  |o'clock| oaf oak oak-apple oakum oar oarsman oarsmanship oarswoman
  oasis oast oasthouse oat oatcake oath oatmeal obbligato obduracy
  obedience obeisance obelisk obesity obi |obiter dictum| obituary
@@ -1863,7 +1863,7 @@
  pantile panto pantograph pantomime pantry pantryman panty-hose pap
  papa papacy papaw papaya paper paper-chase paperback paperboard
  paperclip paperhanger paperknife papermill paperweight paperwork
- papier-mache papier-mâché papist papoose paprika papyrus par parable
+ papier-mache papist papoose paprika papyrus par parable
  parabola parachute parachutist parade parade-ground paradigm paradise
  paradox paraffin paragon paragraph parakeet parallel parallelism
  parallelogram paralysis paralytic parameter paramountcy paramour
@@ -1956,8 +1956,8 @@
  pick-me-up pick-up pickaxe picker pickerel picket picking pickle
  pickpocket pickup picnic picnicker pictorial picture picture-book
  picture-card picture-gallery picturesqueness piddle pidgin pie
- pie-crust piece piecework pied-a-terre pied-à-terre pier pier-glass
- pierrot pieta piety pietà piffle pig pig-headedness pig-iron
+ pie-crust piece piecework pied-a-terre pier pier-glass
+ pierrot pieta piety piffle pig pig-headedness pig-iron
  pig-sticking pigboat pigeon pigeonhole piggery piggishness piggy
  piggyback piglet pigment pigmentation pigmy pigskin pigsty pigswill
  pigtail pigwash pike pikestaff pilaf pilaff pilaster pilau pilchard
@@ -2021,8 +2021,8 @@
  porcelain porch porcupine pore pork pork-barrel pork-butcher porker
  porn pornographer pornography porosity porousness porphyry porpoise
  porridge porringer port portability portage portal portcullis
- porte-cochere porte-cochère portent porter porterage porterhouse
- portfolio porthole portico portiere portion portière portmanteau
+ porte-cochere  portent porter porterage porterhouse
+ portfolio porthole portico portiere portion  portmanteau
  portrait portraitist portraiture portrayal pose poser poseur poseuse
  position positive positiveness positivism positivist posse possession
  possessiveness possessor posset possibility possible possum post
@@ -2053,7 +2053,7 @@
  prefecture preference preferment prefix pregnancy prehistory
  prejudgement prejudice prelacy prelate prelim preliminary prelude
  premeditation premier premiere premiership premise premiss premium
- première premonition prentice preoccupation prep preparation
+  premonition prentice preoccupation prep preparation
  preparedness prepayment preponderance preposition prepossession
  prepuce prerequisite prerogative presage presbyter presbytery
  prescience prescript prescription presence present presentation
@@ -2104,11 +2104,11 @@
  protectionism protectionist protector protectorate protege protegee
  protein protest protestant protestation protester protocol proton
  protoplasm prototype protraction protractor protrusion protuberance
- protégé protégée provenance provender proverb providence provider
+ provenance provender proverb providence provider
  province provincial provincialism provision proviso provocation
  provost prow prowess prowl prowler proximity proxy prude prudence
  prudery prune pruning pruning-hook pruning-knife pruning-saw prurience
- pruriency précis psalm psalmist psalmody psalter psaltery psephologist
+ pruriency psalm psalmist psalmody psalter psaltery psephologist
  psephology pseud pseudo pseudonym psittacosis psyche psychiatrist
  psychiatry psychic psychoanalysis psychoanalyst psychologist
  psychology psychopath psychosis psychotherapy psychotic psyllium
@@ -2126,12 +2126,12 @@
  puppy purchase purchaser purdah puree pureness purgation purgative
  purgatory purge purification purifier purist puritan puritanism purity
  purl purple purport purpose purr purse purser pursuance pursuer
- pursuit purulence purveyance purveyor purview purée pus push push-bike
+ pursuit purulence purveyance purveyor purview pus push push-bike
  pushcart pushchair pusher pushover pusillanimity puss pussy pussycat
  pustule put put-down put-on putrefaction putrescence putridity putsch
  putt puttee putting-green putting-iron putty puzzle puzzlement puzzler
  pygmy pyjamas pylon pyorrhea pyorrhoea pyramid pyre pyrites python pyx
- pâté |pâté de foie gras| quack quack-quack quackery quad quadrangle
+  de foie gras| quack quack-quack quackery quad quadrangle
  quadrant quadrilateral quadrille quadrillion quadrophony quadruped
  quadruple quadruplet quadruplicate quagga quagmire quail quaintness
  quake qualification qualifier quality qualm quandary quango quantity
@@ -2161,7 +2161,7 @@
  raglan ragout ragtag ragtime raid raider rail railcar railhead railing
  raillery railroad railway railwayman raiment rain rain-gauge rainbow
  raincoat raindrop rainfall rainwater raise raiser raisin
- |raison d'etre| |raison d'être| raj rajah rake rake-off rakishness
+ |raison d'etre| |raison  raj rajah rake rake-off rakishness
  rale rally ram ramble rambler ramification ramjet ramp rampage rampart
  ramrod ranch rancher rancor rancour rand randomness ranee range
  rangefinder ranger rani rank ranker ranking rankness ransom rant
@@ -2290,7 +2290,7 @@
  rotundity rouble roue rouge rough rough-and-tumble roughage roughcast
  roughneck roughness roughrider roulette round round-hand round-shot
  roundabout roundel roundelay roundhouse roundness roundsman roundtable
- roundup rout route routemarch routine roué rover row rowan rowan-berry
+ roundup rout route routemarch routine rover row rowan rowan-berry
  rowan-tree rowboat rowdiness rowdy rowdyism rowel rower rowing-boat
  rowing-club rowlock royalist royalty rub rub-a-dub rub-down rub-up
  rubber rubberneck rubbing rubbish rubble ruble rubric ruby ruck
@@ -2302,7 +2302,7 @@
  runner runner-up running running-board runoff runt runway rupee rupiah
  rupture ruse rush rushlight rusk russet rust rustic rusticity
  rustiness rustle rustler rustling rut ruthlessness rye rye-bread
- réchauffé régime résumé rôle sabbatarian sabbatical saber sable sabot
+ sabbatarian sabbatical saber sable sabot
  sabotage saboteur sabre sabre-rattling sac saccharin sacerdotalism
  sachet sack sack-race sackbut sackcloth sacking sacrament sacredness
  sacrifice sacrilege sacristan sacristy saddle saddlebag saddler
@@ -2313,7 +2313,7 @@
  safety-pin safety-razor safety-valve saffron sag saga sagacity sage
  sage-green sago sahib sail sailcloth sailing sailing-boat
  sailing-master sailing-ship sailing-vessel sailor saint |saint's-day|
- sainthood saintliness sake saké |sal volatile| salaam salaciousness
+ sainthood saintliness sake |sal volatile| salaam salaciousness
  salacity salad salad-dressing salad-oil salamander salami salary sale
  saleroom salesman salesmanship salespeople saleswoman salience salient
  saline salinity saliva sally salmon salmonella salon saloon salsify
@@ -2513,7 +2513,7 @@
  socialization society sociologist sociology sock socket sod soda
  soda-biscuit soda-cracker soda-fountain soda-water sodium sodomite
  sodomy sofa soft-solder softball softener softie softness software
- softwood softy sogginess soh soil soil-pipe soiree soirée sojourn
+ softwood softy sogginess soh soil soil-pipe soiree sojourn
  sojourner sol-fa solace |solar plexus| solarium solder soldering-iron
  soldier soldiery sole solecism solemnity solemnization solemnness
  solicitation solicitor solicitude solid solidarity solidification
@@ -2526,9 +2526,9 @@
  sorceress sorcery sordidness sore soreness sorghum sorority sorrel
  sorrow sort sorter sortie sot sottishness sou |sou'-east|
  |sou'-sou'-east| |sou'-sou'-west| |sou'-west| |sou'-wester| soubrette
- soubriquet souffle soufflé soul sound sound-film sound-recording
+ soubriquet souffle soul sound sound-film sound-recording
  sound-wave soundbox sounding-board soundings soundness soundtrack soup
- soup-kitchen soupcon soupçon source sourness soutane south
+ soup-kitchen soupcon source sourness soutane south
  south-southeast south-southwest southeast southeaster southerner
  southpaw southwest southwester souvenir sovereign sovereignty soviet
  sow sower soy soya soybean spa space space-bar space-capsule
@@ -2698,7 +2698,7 @@
  syncopation syncope syndic syndicalism syndicalist syndicate
  syndication syndicator syndrome synergy synod synonym synopsis syntax
  synthesis synthetic syphilis syphilitic syphon syringa syringe syrup
- system systematization séance tab tabard tabby tabby-cat tabernacle
+ system systematization tab tabard tabby tabby-cat tabernacle
  table table-knife table-lifting table-linen table-rapping table-talk
  table-turning tableau |tableau vivant| tablecloth tablemat tablespoon
  tablespoonful tablet tableware tabloid taboo tabor tabulation
@@ -2873,7 +2873,7 @@
  twitter two-piece two-seater two-step twopence twos tycoon tyke
  tympanum type typeface typescript typesetter typewriter typhoid
  typhoon typhus typist typographer typography tyranny tyrant tyre tyro
- tzar tzarina tête-à-tête ubiquity udder ugliness ukase ukulele ulcer
+ tzar tzarina ubiquity udder ugliness ukase ukulele ulcer
  ulceration ulna ulster ultimatum ultramarine ultrasound ululation
  umber umbrage umbrella umlaut umpire unanimity unbelief unbeliever
  unceremoniousness uncertainty uncle unconcern unconscious

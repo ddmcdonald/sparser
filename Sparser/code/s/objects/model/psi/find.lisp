@@ -1,82 +1,142 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1998-2005 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
+;;; $Id:$
 ;;;
 ;;;     File:  "find"
 ;;;   Module:  "objects;model:psi:"
-;;;  version:  0.0 February 2005
+;;;  version:  2.0 August 2009
 
 ;; broken out as its own file 7/29/98. Started elaborating 9/12.
 ;; Continued in ernest 1/31/99. 2/14 rewrote Find-psi-at-lattice-point.
 ;; (2/3/05) Fixed the inner dolist in Find-psi-at-lattice-point so that it doesn't
 ;; prematurely kick out a set of candidates just because it sees one that doesn't
 ;; match the target variable value.
+;; 1.0 (8/6/07) Reworking things like "find psi with most bindings" to work off
+;;  of interned v+v objects to fix old broken (unfinished?) design. 
+;; 2.0 (6/19/09) Still isn't right. So largely starting from scratch with simpler
+;;  treatment. Working on it through 8/29
 
 (in-package :sparser)
+
+;;;---------------------------------------------------------------------
+;;; Version that picks up in the middle from a different starting point
+;;;---------------------------------------------------------------------
+
+(defun retrieve-psi-from-v+v (v+v parent-psi)
+  ;; called from find-psi-with-binding
+  (let ((associated-psi (vv-psi v+v)))
+    (unless associated-psi
+      (push-debug `(:retrieve-psi-from-v+v ,v+v ,parent-psi))
+      (error "Bug -- has to be as least one psi associated with ~
+            ~% the v+v ~a from parent-psi ~a" v+v parent-psi))
+    (typecase associated-psi
+      (psi
+       (if (consistent-with-parent associated-psi parent-psi v+v)
+	 (then
+	   (tr :retrieved-psi-from-v+v associated-psi v+v)
+	   associated-psi)
+	 (else
+	   (tr :v+v-retrieved-psi-not-consistent-with-parent
+	       associated-psi parent-psi)
+	   (make-new-psi-for-v+v v+v parent-psi))))
+      (cons
+       ;;(push-debug `(:retrieve-psi-from-v+v ,associated-psi ,v+v ,parent-psi))
+       (dolist (psi associated-psi)
+	 (when (consistent-with-parent psi parent-psi v+v)
+	   (tr :retrieved-psi-from-among-v+v psi v+v)
+	   (return-from retrieve-psi-from-v+v psi)))
+       (tr :v+v-retrieved-psi-are-not-consistent-with-parent
+	   associated-psi parent-psi)
+       (make-new-psi-for-v+v v+v parent-psi))
+      (otherwise
+       (push-debug `(:retrieve-psi-from-v+v ,v+v ,parent-psi))
+       (error "Unexpected value for the vv-psi of ~a" v+v)))))
+	       
+
+(defun consistent-with-parent (candidate-psi parent-psi v+v)
+  ;; Does the psi that we have on this v+v include all and only
+  ;; the v+v that are already on the parent?
+  ;(push-debug `(:consistent-with-parent ,candidate-psi ,parent-psi ,v+v))
+  ;(break) ;; (setq candidate-psi (second *) parent-psi (third *) v+v (fourth *))
+  ;; Another way to do this could be the downlinks
+  (let ((v+v-of-parent (psi-v+v parent-psi))
+	(v+v-of-candidate (remove v+v (copy-list (psi-v+v candidate-psi))
+				  :test #'eq)))
+    ;;(push-debug `(,v+v-of-parent ,v+v-of-candidate))
+    (when (= (length v+v-of-parent) (length v+v-of-candidate))
+      (dolist (candidate-v+v v+v-of-candidate :match)
+	(unless (memq candidate-v+v v+v-of-parent)
+	  (return-from consistent-with-parent nil))))))
+
+
+
 
 ;;;----------------------------------------------------------
 ;;; version that starts with a type (a referential category)
 ;;;----------------------------------------------------------
 
-(defun find-psi (type binding-instructions)
-  ;; called from find/individual
+;; Revising it 10/9/0 with first case of binding-instructions from a definition
+;;
+(defun find-psi (category binding-instructions)
+  ;; Called from find/individual when the category and instructions don't fit
+  ;; the criteria for simple individuals
+  (tr :find-psi category binding-instructions)
   (when (consp (first binding-instructions))
     (setq binding-instructions
           (revamp-binding-instructions-as-variable-value-plist binding-instructions)))
-  (let ((variables (variables-in-variable-value-plist binding-instructions)))
-    (break "call to find-psi")
-    (tr :find-psi type binding-instructions)
-    (let ((psi
-           (find-psi-of-type-with-bindings type variables binding-instructions)))
-      (if psi
-        (tr :found-psi psi)
-        (tr :no-psi-found type binding-instructions))
-      psi)))
+  (let ((base-psi (find-or-make-psi-for-base-category category))
+	found-psi )
+    (do ((variable (car binding-instructions) (car rest))
+	 (value (cadr binding-instructions) (cadr rest))
+	 (rest (cddr binding-instructions) (cddr rest))
+	 (parent-psi base-psi found-psi))
+	((or (null variable)
+	     (null parent-psi)))
+      (setq found-psi (find-psi-with-binding variable value parent-psi)))
+    (if found-psi
+      (tr :found-psi found-psi)
+      (tr :no-psi-found category binding-instructions))
+    found-psi))
 
 
-(defun find-psi-of-type-with-bindings (type variables variable-value-pairs)
-  ;; return nil if we don't
-  (let ((lp (find-lattice-point-with-variables type variables)))
-    (when lp
-      (find-psi-at-lattice-point lp variable-value-pairs))))
+; A call to find/make an individual/psi in the code is formatted as a
+; property list.  Some routines will shift it into an alist (e.g.
+; decode-category-specific-binding-instr-exps), and the code threads
+; are not consistent about what version we have at what logical point
+; in the process. Revamp takes the alist into a plist when needsbe.
+; Obviously this could be improved upon.
+
+(defun revamp-binding-instructions-as-variable-value-plist (alist)
+  (let ( var  value  variables  variable-value-plist )
+    (dolist (pair alist)
+      (setq var (first pair)
+            value (second pair))
+      (push var variables)
+      (push var variable-value-plist)
+      (push value variable-value-plist))
+
+    (nreverse variable-value-plist)))
 
 
-
-;;;--------------------------------
-;;; version that starts with a psi
-;;;--------------------------------
-
-(defun find-extending-psi (psi var-name+value-pairs)
-  ;; n.b. the search has to work regardless of what variable we
-  ;; start with.
-  (let* ((lp (psi-lattice-point psi))
-         (top-lp (climb-lattice-to-top lp))
-         (category (lp-category top-lp))
-         (binding-instructions
-          (Decode-category-specific-binding-instr-exps/plist
-           category var-name+value-pairs))
-         (variables (variables-in-variable-value-plist binding-instructions)))
-    (break "called find-extending-psi")
-    (let ((target-lp
-           (find-lattice-point-with-variables category variables)))
-      (when target-lp
-        (let ((target-psi (find-psi-at-lattice-point target-lp binding-instructions)))
-          (if target-psi
-            (then (tr :found-psi-extension psi target-psi)
-                  target-psi)
-            (else (tr :no-psi-extension psi)
-                  nil)))))))
  
+
+
+;;============= dubious below here -------------------
 
 ;;;---------------
 ;;; common go-fer
 ;;;---------------
 
 (defun find-psi-at-lattice-point (lp variable-value-pairs)
+  (declare (ignore lp variable-value-pairs))
+  (break "find-psi-at-lattice-point")
   ;; is there, among the instances aready at this lp, one that
   ;; is an instance of these v+v's ?   
   ;; Called from Find-psi-with-bindings, Find-psi-of-type-with-bindings,
   ;; find-extending-psi
   (break "called Find-psi-at-lattice-point")
+  #+ignore
   (do ((variable (pop variable-value-pairs) (pop variable-value-pairs))
        (value (pop variable-value-pairs) (pop variable-value-pairs))
        (candidates (lp-instances lp) new-candidates)
@@ -103,104 +163,29 @@
 ;;; intermediate cases ???
 ;;;------------------------
 
-(defun find-psi-with-the-most-bindings (type variables variable-value-plist)
-  ;; When called from Make-psi-for-bindings we've already determined
-  ;; that there is no psi already created that binds these variables
-  ;; to these values, and we're setting about to make one. To that
-  ;; end we want the psi (if it exists) that binds some of these
-  ;; variables to the indicated values.   
-  (multiple-value-bind (psi variable remaining-variables)
-                       (some-psi-binds-value-to-variable-in-category
-                        type variables variable-value-plist)
-    (when psi
-      (break))))
-
-
-(defun some-psi-binds-value-to-variable-in-category
-       (type variables variable-value-plist)
-  ;; Iterate through the index on that lattice point that takes us from
-  ;; variables to all the lattice-points that include them.
-  (let ((top-index (lp-index-by-variable
-                    (cat-lattice-position type)))
-        (remaining-variables variables)
-        lattice-points  1st-var-to-hit  psi)        
-    (break "called Some-psi-binds-value-to-variable-in-category")
-    (do ((var (first variable-value-plist)
-              (first remaining-pairs))
-         (value (second variable-value-plist)
-                (second remaining-pairs))
-         (remaining-pairs (cddr variable-value-plist)
-                          (cddr remaining-pairs)))
-        ((null var))
-
-      (setq lattice-points (cdr (assq var top-index)))
-
-      (setq psi (find-psi-binding-var-to-value-in-list-of-lp
-                 var value lattice-points))
-      (when psi 
-        (setq 1st-var-to-hit var
-              remaining-variables (delete var remaining-variables))))
-
-    (when 1st-var-to-hit
-      (values psi 1st-var-to-hit remaining-variables))))
-
-
-
 
 (defun find-psi-binding-var-to-value-in-list-of-lp (var value list)
+  (declare (ignore var value list))
+  (break "find-psi-binding-var-to-value-in-list-of-lp")
+  #+ignore
   (dolist (lattice-point list)
     (find-psi-binding-var-to-value-in-list-of-psi 
      var value (lp-instances lattice-point))))
 
 
-(defun find-psi-binding-var-to-value-in-list-of-psi (var value list)
-  ;; Given a list of psi, does any one of them bind that variable
-  ;; to that value?
-  (break "called Find-psi-binding-var-to-value-in-list-of-psi")
-  (let ( v+v-that-is-instance-of-variable )
-    (dolist (psi list nil)
-      (setq v+v-that-is-instance-of-variable
-            (find var (psi-v+v psi) :test #'eq :key #'vv-variable))
-      (when v+v-that-is-instance-of-variable
-        (when (eq value (vv-value v+v-that-is-instance-of-variable))
-          (return-from Find-psi-binding-var-to-value-in-list-of-psi
-            psi))))))
-      
-;; redundant w/ above -- sort it out when we know who calls this one
-(defun find-psi-with-binding (candidates variable value)
-  (break "who calls this?")
-  (dolist (psi candidates nil)
-    (dolist (vv (psi-v+v psi))
-      (when (eq (vv-variable vv) variable)
-        (when (eq (vv-value vv) value)
-          (tr :located-known-psi psi)
-          (return-from Find-psi-with-binding 
-            psi))))))
-
 
      
-;;;-----------
-;;; base case
-;;;-----------
-
-(defun find-psi-for-base-category (c)
-  (break "who calls this?")
-  (let ((lattice-point (find-self-node c)))
-    (when lattice-point
-      (let ((category-psi (lp-instance lattice-point)))
-        category-psi))))
-
-
-
-
 ;;;-------------
 ;;; subroutines
 ;;;-------------
 
 (defun variables-in-variable-value-plist (variable-value-plist)
+  (declare (ignore variable-value-plist))
+  (break "variables-in-variable-value-plist")
+  #+ignore
   (when (consp (first variable-value-plist))
     (break "called with an alist"))
-  (break "call to Variables-in-variable-value-plist")
+  #+ignore
   (let ((variable-next? t)
         variables )
     (dolist (unit variable-value-plist)
@@ -210,21 +195,3 @@
     
     (nreverse variables)))
 
-
-; A call to find/make an individual/psi in the code is formatted as a
-; property list.  Some routines will shift it into an alist (e.g.
-; decode-category-specific-binding-instr-exps), and the code threads
-; are not consistent about what version we have at what logical point
-; in the process. Revamp takes the alist into a plist when needsbe.
-; Obviously this could be improved upon.
-
-(defun revamp-binding-instructions-as-variable-value-plist (alist)
-  (let ( var  value  variables  variable-value-plist )
-    (dolist (pair alist)
-      (setq var (first pair)
-            value (second pair))
-      (push var variables)
-      (push var variable-value-plist)
-      (push value variable-value-plist))
-
-    (nreverse variable-value-plist)))

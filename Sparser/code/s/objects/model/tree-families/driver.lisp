@@ -1,9 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  0.12 December 1995
+;;;  version:  2.3 March 2015
 
 ;; initiated 8/4/92, fleshed out 8/27, elaborated 8/31
 ;; fixed a bug in how lists of rules were accumulated 11/2
@@ -28,8 +29,66 @@
 ;; 0.11 (7/28) tweeked the referent construction routines to accomodate single categories
 ;; 0.12 (12/6) fixed a policy bug in Construct-referent such that it had preferred 'head'
 ;;       to instantiate-individual stmts, which was wrong.
+;; 1.0 (2/15/98) Redit Instantiate-rule-schema in terms of structures for the
+;;      schematic cases. 2/16 added schema to each cfr made. 2/19 included
+;;      residual case for 'additional-rules'. *schema-being-instantiated* added
+;;      as a global 2/24. 3/7 fixed c&s bug in Construct-referent.
+;; 1.1 (7/20) Reorganized the threading to match the reorg of the callers in
+;;      rdata1 so that the rules are passed back up rather than being cached
+;;      on the category within here. (7/23) re-org'd the multiply-through-rhs because
+;;      it was overly complicated. Moved out the checking of old-rules to the
+;;      caller in rdata1 because it the timing made it inflict colateral damage.
+;; 1.2 (8/14/99) Tweaked Construct-referent and Massage-referent-schema to handle
+;;      the case of :function referent schemas better. N.b. there's now a provision
+;;      for zero or one argument to the function. This should be generalized.
+;; 1.3 (9/3) Modified Apply-realization-schema-to-individual to accomodate a
+;;      :no-head-word value for that field in rdata-schema.
+;;     (3/31/05) touched it while debugging. (4/11) incorporated case of secondary
+;;      function calls into Construct-referent - needed for general treatment of
+;;      'fiscal' and the adjective-creates-subtype etf.
+;; 1.4 (7/2/07) Added a define-rewriting-form-rule to go with every regular cfr
+;;      that's instantiated when that makes sense. Guarded by *new-dm&p*.
+;;     (8/7) replaced the guard with the more specific *infer-rewriting-form-rules*.
+;; 1.5 (4/20/09) Reworked Construct-referent to look for mappings of subtype
+;;     labels. Motivated by "get out of the car" and transitive/specializing-pp.
+;; 1.6 (6/17/09) Lets the form derive from the schema as well as heuristically
+;; 2.0 (7/24/09) Now that variables are lexicalized we have to pass the category
+;;      down to the interpretation of the mapping to ensure that the correct,
+;;      category-specific variables are used -- see decode-binding
+;;     (10/8/09) Fixed bug in decode-binding. (4/6/11) cleaned up indents.
+;; 2.1 (4/8/11) Put in switch to control formation of form rules when the
+;;      rhs involves a form category. 9/9 put :method in, fixed but in 
+;;      construct-referent for function case. 9/23 put method further in. 10/3 fixed
+;;      bug in it (C&S).
+;; 2.2 (4/3/13) Installed check for Chomsky adjunction in the inner loop.
+;;     (6/13/13) Fixed case of :self as a variable in decode-binding. Flagged it
+;;      as illegal. (8/12/14) added retrieve-single-rule-from-individual
+;;     (9/9/14) retrieve-single-rule-from-individual got a case where there were
+;;      two rules (independent bug?) so changed it's error to a cerror.
+;;     1/5/2015 MAJOR CHANGE. Added new field rhs-forms to cfrs, and fill it 
+;;       from the ETF schema. Used to check syntactic plausibility of rule applications
+;; 2.3 (3/16/15) Broke i/r/s/-coordinate-chomsky-adjunction into the original case
+;;      when the lhs is multiple (which doesn't handles multiple rhs elements!)
+;;      and a simpler one-lhs case that calls the existing multiple-rhs function. 
+;; 4/20/2015 create a list (*dont-check-forms-for-etf*) of etf names for which syntactic form-checking is turnes off
+;;  Control check-rule-form -- it can be turned off for particular ETFs by calling
+;;  dont-check-rule-form-for-etf-named with the name of the family
+
 
 (in-package :sparser)
+
+(defparameter *dont-check-forms-for-etf*
+  '(ITEM+IDIOMATIC-HEAD ;; head is idiomaticmatic, like % or percent, or old as in "5 years old"
+                        ;; can't predict the form category of the head, so just trust the rule writer
+    ))
+
+(defun dont-check-rule-form-for-etf-named (etf-name)
+  ;; The given ETF is to be trusted not to be applied in inappropriate syntactic
+  ;;  contexts, so don't apply compatible-form check in multiply-rules
+  (pushnew etf-name *dont-check-forms-for-etf*))
+
+    
+    
 
 ;;;---------------------------------
 ;;; managing the rule instantiation
@@ -40,20 +99,23 @@
                                         exploded-tf
                                         mapping
                                         local-cases)
-  ;; called from Setup-rdata.
+  ;; called from dereference-and-store?-rdata-schema as part of setup-rdata.
   ;; Divides according to whether it's an original definition or
-  ;; a redefinition.
-
+  ;; a redefinition.  <--- stoped this 7/23/98 because of
+  ;; colateral damage from the timing of multiple rdata sets.
+  (make-rules-for-rdata
+     category head-word exploded-tf mapping local-cases)
+  
+  #+ignore  ;; original
   (if (cat-realization category)
     (revising-rules-from-rdata
      category head-word exploded-tf mapping local-cases)
     (make-rules-for-rdata
      category head-word exploded-tf mapping local-cases))
-
-  category )
-
+  )
 
 
+;; No longer used 7/23/98
 (defun revising-rules-from-rdata
        (category head-word exploded-tf mapping local-cases)
 
@@ -69,7 +131,8 @@
       (unless (member cfr new-rules :test #'eq)
         (format t "~A ~A~%  no longer supported by rdata for ~A"
                 (symbol-name (cfr-symbol cfr)) cfr category)
-        (delete/cfr cfr)))))
+        (delete/cfr cfr)))
+    new-rules ))
 
 
 
@@ -77,42 +140,135 @@
 ;;; instantiating rdata for individuals
 ;;;-------------------------------------
 
+(defun apply-single-category-rdata (individual category)
+  ;; Called from define-individual
+  (let ((realization-data (cat-realization category))
+        rdata-schema  )
+    (when realization-data 
+      (when (eq (car realization-data) :rules)
+        (setq realization-data (cdr realization-data)))
+      (etypecase (first realization-data)
+        (cons  ;; Multiple schemas
+         (dolist (item realization-data)
+           (when (and (consp item) (eq (first item) :schema))
+             (setq rdata-schema (cadr item))
+             (apply-realization-schema-to-individual
+              individual category rdata-schema))))
+        (keyword
+         (case (first realization-data)
+           (:rules)
+           (:synonyms)
+           (:schema
+            (setq rdata-schema (second realization-data))
+            (apply-realization-schema-to-individual
+             individual category rdata-schema))
+           (otherwise
+            (push-debug `(,category ,individual ,realization-data))
+            (error "New keyword at car of realization data for ~a"
+                   category))))))))
+
+(defun apply-distributed-realization-data (individual)
+  ;; Called from define-individual when the *c3* flag is up.
+  ;; Has to consider that category of the variable that binding a
+  ;; particular value (only worrying about words for now) when
+  ;; looking up the rschema that applies to it.
+  (push-debug `(,individual))
+  (dolist (b (indiv-binds individual))
+    (let ((value (binding-value b)))
+      (when (or (word-p value)
+                (polyword-p value))
+        (let* ((v (binding-variable b))
+               (category (var-category v)))
+          (apply-single-category-rdata individual category)
+          ;; That category will be something like has-name, 
+          ;; not the category of the individual, so some surgury
+          ;; is needed.
+          (let ((rs (rule-set-for value)))
+            (unless rs 
+              (push-debug `(,value)) 
+              (error "Expected a rule-set on ~a" value))
+            (let ((rule (car (rs-single-term-rewrites rs))))
+              (unless rule
+                (push-debug `(,rs ,value ,individual))
+                (error "Expected a rule in the rule set of ~a" value))
+              ;; I -think- this doesn't affect the indexing
+              (setf (cfr-category rule) (itype-of individual))
+              (push-debug `(,rule))
+              (return-from apply-distributed-realization-data value))))))))
+
+
 (defun apply-realization-schema-to-individual (individual
                                                category
                                                rdata-schema)
-
-  ;; We're applying a realization schema that was defined for
-  ;; a category that defined its head-word as the value of
-  ;; one of the variables that will be bound as the way to
-  ;; individuate individuals.  We take the word that has been
-  ;; bound to that individuating variable, make it the head
-  ;; word, and instantiated the rules that the schema defines.
-
-  (let ((head-word-variable (cdr (first rdata-schema)))
-        (head-word-type     (car (first rdata-schema)))
+  
+  ;; The rdata-schema is the value of the :schema key in the realization
+  ;; field of the category.  We're applying a realization schema that was
+  ;; defined for a category that defined its head-word as the value of one
+  ;; of the variables that will be bound as the way to individuate
+  ;; individuals. We take the word that has been bound to that
+  ;; individuating variable, make it the head word, and instantiated the
+  ;; rules that the schema defines.
+  
+  (let ((head-field (first rdata-schema))
         (etf         (second rdata-schema))
         (mapping     (third rdata-schema))
         (local-cases (fourth rdata-schema)))
 
-    (let ((head-word (value-of head-word-variable
-                               individual)))
-      (unless head-word
-        (break "Expected the individual ~A~
-                ~%to have a value for its ~A variable.~
-                ~%but it does not." individual head-word-variable))
+    (flet ((head-schema-filled-with-words (field)
+             ;; We have cases like "person" where we want to instantiate
+             ;; new people but where the realization is used to provide
+             ;; a word that names (refers to) the category.
+             (some #'word-p field)))
+    
+      (let* ((no-head (eq head-field :no-head-word))
+             (head-word-variable (unless no-head (cdr (first rdata-schema))))
+             (head-word-type     (unless no-head (car (first rdata-schema))))
+             (head-word (when head-word-variable
+                          (value-of head-word-variable individual)))
+             (head-pair (unless no-head
+                          (cons head-word-type
+                                head-word))))
 
-      (let ((rules
-             (make-rules-for-rdata category
-                                   (cons head-word-type
-                                         head-word)
-                                   etf mapping local-cases
-                                   individual )))
+        (when (word-p head-word-variable)
+          ;; another configuration that the head filled with words
+          ;; is looking for. See waypoint  The schema arrangement
+          ;; is flimsy right now.
+          (setq head-word head-word-variable
+                head-pair (cons head-word-type head-word)))
 
-        (setf (unit-plist individual)
-              `(:rules ,rules ,@(unit-plist individual)))
-        rules ))))
+        (unless no-head
+          (unless head-word
+            (unless (head-schema-filled-with-words head-field)
+              (break "Expected the individual ~A~
+                    ~%to have a value for its ~A variable.~
+                   ~%but it does not." individual head-word-variable))))
+      
+        (let ((rules
+               (make-rules-for-rdata category
+                                     head-pair
+                                     etf mapping local-cases
+                                     individual )))
+        
+          ;(add-rules-to-individual
+          (setf (unit-plist individual)
+                `(:rules ,rules ,@(unit-plist individual)))
+          rules )))))
 
 
+(defun retrieve-single-rule-from-individual (i)
+  ;; Applies when only a head is supplied
+  (let ((rule-field (get-tag-for :rules i)))
+    (unless rule-field
+      (push-debug `(,i))
+      (error "No rules recorded for ~a" i))
+    (unless (null (cdr rule-field))
+      (push-debug `(,i ,rule-field)))
+    ;; The extra rule is invariably a plural.
+      #+ignore(cerror "take the first one"
+              "More than one rule recorded for ~a~
+            ~%Don't know which to use.~%~a"
+             i rule-field)
+    (car rule-field)))
 
 ;;;-----------------
 ;;; the real driver
@@ -125,57 +281,31 @@
   (let ((referent (or individual category))
         rules  rule/s-from-schema )
 
-    (when head-word
+    (when (and head-word
+               (not (eq head-word :no-head-word)))
       (unless (lambda-variable-p (cdr head-word))
-        (setq rules
-              (ecase (car head-word)
-                (:verb (make-verb-rules
-                        (cdr head-word) category referent))
-                (:common-noun (make-cn-rules
-                               (cdr head-word) category referent))
-                (:word (make-rules-for-word-w/o-morph
-                        (cdr head-word) category referent))
-                (:adjective (make-rules-for-word-w/o-morph
-                             (cdr head-word) category referent))
-                (:adverb (make-rules-for-adverbs
-                          (cdr head-word) category referent))
-                (:proper-noun (make-pn-rules
-                               (cdr head-word) category referent))
-                (:standalone-word (make-rules-for-standalone-word
-                                   (cdr head-word) category referent))
-                ))))
+        (setq rules (head-word-rule-construction-dispatch ;;/// add instantiates check
+                      head-word category referent))))
+
+    (when nil ;; needs more layout work
+      (dolist (keyword head-word)
+        (append (head-word-rule-construction-dispatch 
+                 keyword category referent)
+                rules)))
 
     (when exploded-tf
       (dolist (rule-schema (etf-cases exploded-tf))
         (setq rule/s-from-schema
-              (instantiate-rule-schema rule-schema mapping))
+              (instantiate-rule-schema rule-schema mapping category))
         (if (consp rule/s-from-schema)
           (setq rules (append rule/s-from-schema rules))
           (push rule/s-from-schema rules))))
 
     (when local-cases
       (dolist (rule-schema local-cases)
-        (push (instantiate-rule-schema rule-schema mapping
+        (push (instantiate-rule-schema rule-schema mapping category
                                        :local-cases? category)
               rules)))
-
-    (unless individual
-      ;; This is the procedure for storing the rules so they can be
-      ;; updated as mappings change and rdata are re-evaluated.
-      ;; This doesn't make sense for individuals.
-      (let ((rules-cons (member :rules (cat-realization category))))
-        (if rules-cons
-          ;; then we're re-evaluating the rdata for this category and
-          ;; we have to get rid of the old set (which have been kept
-          ;; in Revising-rule-from-rdata for comparison)
-          (rplacd rules-cons
-                  (cons rules
-                        (cdr rules-cons)))
-
-          (setf (cat-realization category)
-                `(:rules ,rules
-                  ,@(cat-realization category))))))
-
     rules ))
 
 
@@ -187,38 +317,72 @@
   "Accumulates cfr objects as they are created by the various iterators
    below.  Used to keep the iteration code clear.")
 
+(defvar *schema-being-instantiated* nil
+  "Bound in instantiate-rule-schema to fill the 'schema' field of the
+   cfrs that are created.")
+
+(defvar *Chomsky-adjunction-applies* nil
+  "Bound by instantiate-rule-schema when it encounters a schema where
+   the lhs category is included amoung the categories of the rhs. 
+   This case requires special handling when the rhs has a term with
+   multiple categories.")
+
 
 (defun instantiate-rule-schema (schema
                                 mapping 
+                                category
                                 &key ((:local-cases? category-of-locals)))
 
-  (let ((relation (car schema))
-        (rule (cadr schema))
-        lhs rhs form referent-schema referent )
+  "Decodes the schema and sets up cross-the-board things such as the rules'
+   form and referent. Decodes implicit multi-rules. Returns the list of
+   cfr that are created. Real work done by i/r/s-make-the-rule."
 
+  (let* ((additional-rule (consp schema))
+         (relation (if additional-rule
+                     (first schema)
+                     (schr-relation schema)))
+         (schematic-lhs (if additional-rule
+                          (first (second schema))
+                          (schr-lhs schema)))
+         (schematic-rhs (if additional-rule
+                          (second (second schema))
+                          (schr-rhs schema)))
+         (schematic-referent (if additional-rule
+                               (cddr (second schema))
+                               (schr-referent schema)))
+         (schematic-form (unless additional-rule
+                           (schr-form schema)))
+         lhs rhs form referent-schema referent
+
+         (*schema-being-instantiated* schema)
+         (*Chomsky-adjunction-applies* (memq schematic-lhs schematic-rhs)))
+
+    ;;RUSTY-RHS
+    ;;(print (list schema schematic-rhs))
+ 
     (setq lhs (replace-from-mapping
-               (car rule) mapping category-of-locals)
+               schematic-lhs mapping category category-of-locals)
           rhs (mapcar #'(lambda (label)
                           (replace-from-mapping
-                           label mapping category-of-locals))
-                      (cadr rule))
-          referent-schema (massage-referent-schema (cddr rule)))
+                           label mapping category category-of-locals))
+                      schematic-rhs)
+          referent-schema (massage-referent-schema schematic-referent
+                                                   mapping))
 
-    (setq form (eft-case-rule-form (car rule) mapping))
-
-        #|(eft-case-rule-form
-           relation
-           (category-named
-            (strip-specializing-slash (car rule) mapping)))|#
+    (setq form (or schematic-form
+		   (eft-case-rule-form schematic-lhs mapping)))
 
     ;; the runtime version of the referent field has to be made
     ;; here because the straightline through def-cfr presumes it's
     ;; getting symbols and we've improved on that by having objects
     (setq referent
           (apply #'construct-referent
-                 mapping category-of-locals referent-schema))
+                 mapping category category-of-locals referent-schema))
 
     (setq *cfrs* nil)
+    ;; The iterators below push the rules that they make onto this
+    ;; global to save us from the hassle of threading them back
+    ;; through their return paths
 
     (cond
      ;; check whether one of the terms is a list, in which case we
@@ -226,49 +390,117 @@
      ;; rest of the rule's components, making several rules rather
      ;; than just one.
      ((listp lhs)
-      (i/r/s-multiply-through/lhs lhs rhs form referent relation))
+      (if *Chomsky-adjunction-applies*
+        (i/r/s/-coordinate-chomsky-adjunction lhs rhs form referent relation)
+        (i/r/s-multiply-through/lhs lhs rhs form referent relation)))
      ((some #'listp rhs)
-      (i/r/s-multiply-through/rhs lhs rhs form referent relation nil))
+      (if *Chomsky-adjunction-applies*
+        (i/r/s/-coordinate-chomsky-adjunction lhs rhs form referent relation)
+        (i/r/s-multiply-through/rhs lhs rhs form referent relation)))
      (t (i/r/s-make-the-rule lhs rhs form referent relation)))
 
+    ;; Pass the realization schema through to each rule
+    (unless additional-rule
+      (if (consp *cfrs*)
+        (dolist (cfr *cfrs*)
+          (set-schema-and-rhs-forms cfr schema schematic-rhs))
+        (set-schema-and-rhs-forms *cfrs* schema schematic-rhs)))
     *cfrs* ))
 
 
 
+(defun i/r/s/-coordinate-chomsky-adjunction (lhs rhs form referent relation)
+  "The pattern of the schema is: foo -> bar foo, with the term for the lhs
+   also appearing on the rhs. When that term is mapped to a list of
+   categories, then we have to coordinate them so that we get coherent
+   rules. Note that the lhs will also have a list value since it was
+   the same term as the one on the right."
+  (push-debug `(,lhs ,rhs ,form ,referent ,relation)) 
+  ;; (setq lhs (car *) rhs (cadr *) form (caddr *) referent (cadddr *) relation (fifth *))
+  (typecase lhs
+    (category 
+     (i/r/s-multiply-through/rhs lhs rhs form referent relation))
+    ((or word polyword)
+     (i/r/s-multiply-through/rhs lhs rhs form referent relation))
+    (cons
+     (if (cdr lhs) ;; more than one
+       (coordinate-chomsky-adjunction-multiple-lhs
+        lhs rhs form referent relation)
+       (else
+        ;; The elaborate coordination isn't necessary, so this
+        ;; probably degrades to a case we already have
+        (i/r/s-multiply-through/rhs (car lhs) rhs form referent relation))))
+    (otherwise
+     (error "Unanticipated type for lhs in rule: ~a~%~a"
+            (type-of lhs) lhs))))
+
+
+(defun coordinate-chomsky-adjunction-multiple-lhs (lhs rhs form referent relation)
+  (flet ((find-list-term (flat-list)
+           (loop for term in flat-list
+             when (listp term) return term))
+         (value-is-first-or-second (value list)
+           (when (> (length list) 2)
+             (error "Test only applies to length 2 lists, not ~a" list))
+           (if (equal (car list) value) :first :second)))             
+    (let* ((list-term (find-list-term rhs))
+           (position (value-is-first-or-second list-term rhs))
+           (other-term (if (eq position :first)
+                         (cadr rhs)
+                         (car rhs))))
+      (dolist (term lhs)
+        (let ((corresponding-rhs
+               (if (eq position :first)
+                 `(,term ,other-term)
+                 `(,other-term ,term))))
+          (i/r/s-make-the-rule
+           term corresponding-rhs form referent relation))))))
+
 (defun i/r/s-make-the-rule (lhs rhs form referent relation)
   ;; Used when there are no multiple terms in either the left
   ;; or righthand sides, or as the base case when there are.
+  (declare (special *convert-eft-form-categories-to-form-rules*
+                    *infer-rewriting-form-rules*))
   (let ((cfr
-         (if (some #'(lambda (c)
-                       (when (referential-category-p c)
-                         (member :form-category
-                                 (unit-plist c))))
-                   rhs)
-           (def-form-rule/resolved rhs form referent lhs)
+         (if (and *convert-eft-form-categories-to-form-rules*
+                  (some #'(lambda (c)
+                            (when (referential-category-p c)
+                              (member :form-category
+                                      (unit-plist c))))
+                        rhs))
+           (def-form-rule/resolved rhs form nil referent)
            (define-cfr lhs rhs :form form :referent referent))))
 
-    (setf (cfr-plist cfr)
-          `(:relation ,relation
-                      ,@(cfr-plist cfr)))
+    (when cfr
+      (setf (cfr-plist cfr)
+	    `(:relation ,relation
+			,@(cfr-plist cfr)))
 
-    ;; Before 2/28/95 this routine ended by 'push'ing the cfr it
-    ;; constructs onto the global. That global is itself then pushed
-    ;; onto the other rules (e.g. the verb rules) of the object
-    ;; by Make-rules-for-rdata as it loops through accumulating
-    ;; the values returned by Instantiate-rule-schema.
-    ;;   That caused a bug in Subject-rule as used by Belmoral,
-    ;; which expects the plist :rules field of a category's
-    ;; realization field to contain a flat list of cfrs that it
-    ;; can loop through. 
-    ;(push cfr  *cfrs*)
-    (if *cfrs*
-      (if (consp *cfrs*)
-        (push cfr  *cfrs*)
-        (setq *cfrs* (list cfr *cfrs*)))
-      (setq *cfrs* cfr))
-    ))
+      ;; Before 2/28/95 this routine ended by 'push'ing the cfr it
+      ;; constructs onto the global. That global is itself then pushed
+      ;; onto the other rules (e.g. the verb rules) of the object
+      ;; by make-rules-for-rdata as it loops through accumulating
+      ;; the values returned by Instantiate-rule-schema.
+      ;;   That caused a bug in subject-rule as used by Belmoral,
+      ;; which expects the plist :rules field of a category's
+      ;; realization field to contain a flat list of cfrs that it
+      ;; can loop through. 
+      ;;(push cfr  *cfrs*)
+      (if *cfrs*
+	(if (consp *cfrs*)
+	  (push cfr  *cfrs*)
+	  (setq *cfrs* (list cfr *cfrs*)))
+	(setq *cfrs* cfr)))
 
-
+    (when *infer-rewriting-form-rules*
+      ;; see if we can make an additional form rule by interpolating
+      ;; from the naming conventions in the EFT
+      (let ((form-cfr (define-rewriting-form-rule rhs form referent)))
+	(when form-cfr
+	  (when (typep *cfrs* 'cfr)
+	    (setq *cfrs* (list *cfrs*)))
+	  (push form-cfr
+		*cfrs*))))))
 
 (defun i/r/s-multiply-through/lhs (lhs rhs form referent relation)
   ;; the lhs is a list of categories rather than one. Multiply it
@@ -276,49 +508,49 @@
   ;; has lists of categories
   (dolist (category lhs)
     (i/r/s-multiply-through/rhs
-     category rhs form referent relation nil)))
+     category rhs form referent relation)))
+
+(defun i/r/s-multiply-through/rhs (lhs rhs form referent relation)
+  (unless (= (length rhs) 2)
+    (error "This routine only handles binary rules"))
+
+  (let ((left (first rhs))
+        (right (second rhs)))
+    (cond
+     ((consp left)
+      (dolist (left-label left)
+        (if (consp right)
+          (dolist (right-label right)
+            (i/r/s-make-the-rule lhs (list left-label right-label)
+                                 form referent relation))
+          (i/r/s-make-the-rule
+           lhs (list left-label right) form referent relation))))
+     ((consp right)
+      (dolist (right-label right)
+        (i/r/s-make-the-rule
+         lhs (list left right-label) form referent relation)))
+     (t
+      (i/r/s-make-the-rule 
+       lhs (list left right) form referent relation)))))
 
 
+      
 
-(defun i/r/s-multiply-through/rhs (lhs rhs form referent relation
-                                   pending-prefix )
-  ;; Recurses on the terms in the rhs, building up iterations along
-  ;; the way for every case where a term in the prefix has multiple
-  ;; possibilities.   Each run through the routine handles one term
-  ;; starting from the left.
+;;--- recording (called from instantiate-rule-schema)
 
-  (let ((term (first rhs))
-        (rhs-tail (rest rhs)))
-
-    (if (not (consp term))
-      (if rhs-tail
-        (i/r/s-multiply-through/rhs lhs rhs-tail
-                                    form referent relation
-                                    (append pending-prefix
-                                            (list term)))
-        (i/r/s-make-the-rule lhs (append pending-prefix
-                                         (list term))
-                             form referent relation))
-
-      ;; multiple labels in this term of the rhs
-      (dolist (label term)
-        (if rhs-tail
-          (i/r/s-multiply-through/rhs lhs rhs-tail
-                                      form referent relation
-                                      (append pending-prefix
-                                              (list label)))
-          (i/r/s-make-the-rule lhs (append pending-prefix
-                                           (list label))
-                               form referent relation))))))
-
-
+(defun set-schema-and-rhs-forms (cfr schema rhs-forms)
+  (setf (cfr-schema cfr) schema)
+  (unless
+      (member (etf-name (schr-tree-family schema))
+              *dont-check-forms-for-etf*)
+    (setf (cfr-rhs-forms cfr) rhs-forms)))
 
 ;;;----------------------------
 ;;; determining the form label
 ;;;----------------------------
 
 (defun eft-case-rule-form (lhs-symbol mapping)
-  ;; Called from Instantiate-rule-schema. 
+  ;; Called from instantiate-rule-schema. 
   (multiple-value-bind (category-name specialization)
                        (strip-specializing-slash lhs-symbol mapping)
     (if specialization
@@ -336,6 +568,36 @@
       (category-named category-name))))
 
 
+(defun interpolate-form-category-in-rhs-of-schema (rhs head-side schema)
+  ;; We're making a rewriting form rule, so we're looking for a form category
+  ;; that's implicit in the naming conventions of the labels in an ETF,
+  ;; e.g. np/subject.
+  ;;   If we find one (invariably 'np'), we return a new rhs using it instead
+  ;; of the original 
+  (let* ((schematic-rhs (schr-rhs schema))
+	 (label-of-bound ;; the label of the consitituent that's folded into the head
+	  (case head-side
+	    (left-referent (second schematic-rhs))
+	    (right-referent (first schematic-rhs))
+	    (otherwise
+	     (error "Bad threading - unreasonable value for an edge reference ~
+                      within a referent: ~a" head-side)))))
+
+    (when (symbolp label-of-bound) 
+      ;; it's occasionally a word, e.g. (#<word "per"> unit-of-measure),
+      ;; in which case we're not creating a new rhs so we return nil
+      ;; to keep the caller (define-rewriting-form-rule) from making
+      ;; a rule
+      (let ((np? (search "NP/" (symbol-name label-of-bound) :test #'string-equal)))
+	(when np?
+	  ;; Just look for np options for now
+	  (case head-side
+	    (left-referent `(,(first rhs) ,(category-named 'np)))
+	    (right-referent `(,(category-named 'np) ,(second rhs)))))))))
+
+
+
+
 
 
 
@@ -343,8 +605,8 @@
 ;;; hacking the referents to the cases
 ;;;------------------------------------
 
-(defun massage-referent-schema (schema)
-  ;; Called from Instantiate-rule-schema.
+(defun massage-referent-schema (schema mapping)
+  ;; Called from instantiate-rule-schema.
   ;; The number and pattern of arguments can be hard to fit
   ;; through the procrustian bed of "apply" in the call to actually
   ;; construct the referent, so we look for the odd cases that
@@ -357,7 +619,7 @@
     ;; so that the call to Construct-referent will be happy.
     `(:single-return-value ,@schema)
 
-    ;; it's the usual, multiple keyword case
+    ;; it's the usual multiple keyword case
     (do ((keyword (first schema)
                   (first rest-of-schema))
          (argument (second schema)
@@ -368,9 +630,16 @@
         ((null keyword)
          (nreverse accumulating-list))
       
-      (when (eq keyword :function)
-        (setq argument (list argument (pop rest-of-schema))))
-      
+      (when (or (eq keyword :function)
+                (eq keyword :method))
+        (let ( mapped-expression  substitution )
+          (dolist (item argument)
+            (setq substitution (cdr (assoc item mapping :test #'eq)))
+            (if substitution
+              (push substitution mapped-expression)
+              (push item mapped-expression)))
+          (setq argument (nreverse mapped-expression))))
+
       (push keyword accumulating-list)
       (push argument accumulating-list))))
 
@@ -378,19 +647,21 @@
 
 
 (defun construct-referent (mapping
+                           category
                            category-of-locals
                            &key head
                                 ((:instantiate-individual indiv))
                                 subtype
                                 binds
                                 function
+                                method
                                 daughter
                                 single-return-value
                            &aux referent-form
                                 other-forms
                                 new-type )
 
-  ;; Called from Instantiate-rule-schema to create the rule's referent
+  ;; Called from instantiate-rule-schema to create the rule's referent
   ;; from the massaged schema.
 
   ;; 1st, establish what will be returned as the referent
@@ -409,9 +680,9 @@
           (let ((canonical-name
                  (canonical-ref-var head)))
             (unless canonical-name
-              (break "Unexpected edge symbol used with daughter ~
+              (break "Unexpected edge symbol used with head ~
                       argument: ~A" head))
-            `(:daughter ,canonical-name)))
+            `(:head ,canonical-name)))
          (daughter
           (let ((canonical-name
                  (canonical-ref-var daughter)))
@@ -420,17 +691,35 @@
                       argument: ~A" daughter))
             `(:daughter ,canonical-name)))
          (function
-          `(:funcall ,(first function) ,(second function)))
+          (let ((form
+                 (if (cdr function)
+                   `(:funcall ,(first function) ,(second function))
+                   `(:funcall ,(first function)))))
+            (setq function nil) ;; defang later check
+            form))
          (t (break "No known referent form in rdata"))))
 
   (when subtype
-    (push `(:subtype ,subtype)
+    (let ((mapped (cdr (assoc subtype mapping :test #'eq))))
+      (when mapped 
+	(unless (category-p mapped)
+	  (setq mapped (find-or-make-category mapped :mixin))))
+      (push `(:subtype ,(or mapped subtype))
+	    other-forms)))
+
+  (when function 
+    ;; passes through dispatch-on-rule-field-keys and ultimately
+    ;; handled by ref/function
+    (push `(:funcall  ,@function)
+          other-forms))
+  (when method
+    (push `(:method ,@method)
           other-forms))
 
   (when binds
     (multiple-value-bind (decoded-plist decoded-pairs)
                          (decode-binding
-                          binds mapping category-of-locals)
+                          binds mapping category category-of-locals)
       (declare (ignore decoded-plist))
       (if new-type
         (setq referent-form
@@ -450,16 +739,30 @@
 
 
 
-(defun decode-binding (plist mapping category-of-locals)
+(defun decode-binding (plist mapping category category-of-locals)
 
-  (let ( value  variable  decoded-plist  decoded-pairs )
+  (let ( value  variable  map-variable  decoded-plist  decoded-pairs )
 
     (do* ((var-symbol (pop plist) (pop remainder))
           (value-exp  (pop plist) (pop remainder))
           (remainder plist remainder))
          ((null var-symbol))
 
-      (setq variable (cdr (assoc var-symbol mapping :test #'eq)))
+      (setq map-variable (cdr (assoc var-symbol mapping :test #'eq)))
+      (when (eq map-variable category) ;; :self
+        (push-debug `(,map-variable ,var-symbol ,category ,mapping))
+        (error "Binding spec mapped to the category, not a variable:~
+              ~%  ~a => ~a" var-symbol var-symbol))
+       (setq variable
+             (when map-variable
+               (find-variable-for-category 
+                (var-name map-variable) category)))
+
+      ;; originally was this, where we use the var-symbol defined by
+      ;; the etf to retrieve the variable. So we go another step
+      ;; and make sure
+
+;;      (push-debug `(,category ,variable)) (break "decode-binding")
       (when (null variable)
         (if category-of-locals
           ;; the schema that has this binding is local to the category
@@ -471,10 +774,12 @@
                               :key #'var-name))
             (error "The term ~A is neither in the mapping table nor the~
                     ~%variable list of the concept ~A"
-                   variable category-of-locals))
+                   var-symbol category-of-locals))
           (else
-            (error "No equivalent for ~A in the mapping table"
-                   var-symbol))))
+	    (push-debug `(,category ,var-symbol ,mapping))
+            (error ;;"No equivalent for ~A in the mapping table"
+	     "Cannot find a variable named ~a~%on the category ~a"
+	     map-variable category))))
 
       (setq value (canonical-ref-var value-exp))
       (unless value
@@ -492,7 +797,7 @@
   (let ((var-symbol (car pair))
         (value (cadr pair))
         variable )
- (break)
+
     (setq variable (cdr (assoc var-symbol mapping :test #'eq)))
 
     (when (null variable)

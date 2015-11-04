@@ -1,17 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005 David D. McDonald  -- all rights reserved
-;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
+;;; copyright (c) 1994-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  0.2 February 2007
+;;;  version:  1.2 October 2015
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
 ;; on 7/7.  11/29/97 moved to [lattice-points;].
 ;; 0.1 (3/22/98) started revamping the routines. Moved Lookup-fn-data-of-parent in
-;;      from [individuals;index]. 
+;;      from [individuals;index].
 ;;     (1/24/99) fixed Category-inherits-type? to conform to current model.
 ;;     (9/20) fixed infinite loop in Super-categories-of.
 ;; 0.2 (9/30) Modified Lookup-fn-data-of-parent to allow it to return nil if it
@@ -19,6 +18,32 @@
 ;;     (2/9/05) Moved in some routines from 'composite referent'. 2/10 added
 ;;      all-categories-in-psi. (3/17) Added self-lattice-point to all-categories-
 ;;      in-psi. (2/22/07) added top-lattice-point to it.
+;; 1.0 (7/23/09) fan-out from psi redesign. Working on it through 8/7
+;;     (1/11/11) Fixed call to lattice field of operations when the category
+;;      didn't have any because it was made by DM&P. Also patched inherited-
+;;      operation/Reclaim to not complain if there was no parent with a
+;;      reclaim operation. Whole scheme needs to be considered.
+;;     (2/23/13) Put a trap in category-inherits-type? for the case of a
+;;      category having itself as its super-type. Announces the problem and
+;;      returns nil. (4/9/13) Extended super-categories-of, and again on 5/23/13.
+;;     (5/26/13) added hack version of psi-inherits-type? that calls the individual's
+;;      case since the all-categories code for psi doesn't look at the lattice
+;; 1.1 (8/14/13) Made category-inherits-type? look at the base case of the
+;;      category being identical to the supercategory. Same as super-categories of.
+;; 1.2 (11/9/13) Added mixins check to the supercategory sweep. 
+;;     (1/13/14) added it to category-inherits-type?
+;;     (3/3/14) Fixed bug where mixins on super-categories were being misseed and
+;;      started caching superc's on the category's plist.
+;;     (5/22/14) Wrote display-category-tree and some ancilary routines to print
+;;      the whole set of categories nicely. 
+;;     (3/21/2015) SBCL caught application of lp-super-category to non lattice point --
+;;       form categories are not in a lattice...
+;;     (8/12/15) Removed references to PSI.
+;;     (10/9/15 moved in useful functions from psi directory.
+;;     (10/15/15) added predicate to look for a category having a single variable
+;;       This is probably an expediency for something more deliberate, since the
+;;       real question is, if we're to binds a dependent individual to a variable
+;;       on the head individual, what variable should we use. 
 
 (in-package :sparser)
 
@@ -29,61 +54,195 @@
 
 (defun category-of (item)
   (typecase item
-    (psi (base-category-of-psi item))
-    (individual (first (indiv-type item)))
+    (individual (first (indiv-type item))) ;; c.f. i-type-of
+    (mixin-category item)
     (referential-category item)
     (category item)
-    (mixin-category item)
     (otherwise
-     (break "New type passed to Category-of: ~a~%~a"
-	    (type-of item) item))))
-
-(defun base-category-of-psi (psi)
-  (base-category-of-lp (psi-lattice-point psi)))
-
-(defun base-category-of-lp (lp)
-  (lp-category (climb-lattice-to-top lp)))
+     (break "New type passed to category-of: ~a~%~a"
+            (type-of item) item))))
 
 
+(defmethod base-category-of-lp ((lp lattice-point))
+  (base-category-of-lp (lp-top-lp lp)))
 
-(defun all-categories-in-psi (psi)
-  (let ((lp (psi-lattice-point psi)))
-    (typecase lp
-      (subtype-lattice-point
-       (when (lp-subtypes lp) (break "Subtypes on subtype object"))
-       (list (base-category-of-lp (lp-supertype lp))
-             (lp-specializing-category lp)))
-      (self-lattice-point
-       (list (base-category-of-lp lp)))
-      (psi-lattice-point
-       (list (base-category-of-lp lp)))
-      (top-lattice-point
-       (list (lp-category lp)))
-      (otherwise
-       (break "New type of lattice point: ~a~%~a"
-	      (type-of lp) lp)))))
+(defmethod base-category-of-lp ((lp top-lattice-point))
+  (lp-category lp))
+
+
+(defun corresponding-lattice-point (unit)
+  (typecase unit
+    (psi
+     (psi-lp unit))
+    (individual
+     (cat-lattice-position (first (indiv-type unit))))
+    ;; Do individuals and categories point to the same lattice point for
+    ;; purposes of recording realization-nodes? 
+    (referential-category 
+     (cat-lattice-position unit))
+    (otherwise
+     (error "It doesn't make sense (or does it) to look up the ~
+             lattice-point of a~%~a" unit))))
+
+
+;;;-----------------------------------------
+;;; predicates about a category's variables
+;;;-----------------------------------------
+
+;;/// probably needs reconsideration if lp isn't updated well enough
+;; given use of description lattice
+(defun saturated? (lp)
+  (let ((bound (lp-variables-bound lp))
+        (possible (lp-variables-free (lp-top-lp lp))))
+    ;; Assumes that there's just one set of variables
+    (= (length bound) (length possible))))
+
+
+(defgeneric single-on-variable-on-category (category)
+  (:documentation "If the category has any variables
+    and there is just one of them, then return that variable."))
+
+(defmethod single-on-variable-on-category ((c model-category))
+  (let ((variables (cat-slots c)))
+    (when (= (length variables) 1)
+      (car variables))))
+
+(defmethod single-on-variable-on-category ((i individual))
+  (single-on-variable-on-category (itype-of i)))
 
 
 ;;;----------------------------------------------
 ;;; what categories does a category inherit from
 ;;;----------------------------------------------
 
-(defun super-categories-of (c)
+(defun has-supercategories? (c)
+  (let ((lp (cat-lattice-position c)))
+    (when lp
+      (lp-super-category lp))))
+
+;;--- entry points
+
+(defgeneric super-categories-of (category)
+  (:documentation "If the category is in the lattice then
+     walk up the lattice to collect all category's that
+     it inherits from, including mixins and their supercategories.
+     The category itself is included in the list that is returned.
+     After the first sweep of the lattice the result is cached
+     on the category's property list. If the category isn't
+     in the lattice (e.g. it's a form category) then this
+     returns a singleton list."))
+
+(defmethod super-categories-of ((c referential-category))
   (if (cat-lattice-position c)
     (super-categories-of1 c)
     (list c)))
 
+(defmethod super-categories-of ((c mixin-category))
+  (if (cat-lattice-position c)
+    (super-categories-of1 c)
+    (list c)))
+
+(defmethod super-categories-of ((i individual))
+  (let ((type (indiv-type i)))
+    (if (null (cdr type))
+      (super-categories-of (car type))
+      (else
+       (push-debug `(,i ,type))
+       (error "Stub: write the code to handle collecting ~
+          the super-categories-of an individual with more ~
+          than one type.~%~a~%~a" i type)))))
+
+(defmethod super-categories-of ((c t))
+  (push-debug `(,c))
+  (error "super-categories-of is not defined on objects of ~
+          type ~a" (type-of c)))
+
+
+;;--- doing the work
+
 (defun super-categories-of1 (c)
-  (let* ((lp (cat-lattice-position c))
-         (super-category
-          (when lp
-            ;; they all should have lattice-points, but this protects us
-             (lp-super-category lp))))
-    (if super-category
-      (cons c (super-categories-of1 super-category))
-      (list c))))
+  ;;(format t "~&~%supers-of ~a" c)
+  (or (get-tag-for :super-categories c)
+      (let* ((lp (cat-lattice-position c))
+             (supers
+              (cond
+               ((null lp)
+                (push-debug `(,c))
+                (error "The cat-lattice-position slot of ~a is empty" c))
+               ((category-p lp)
+                ;; true of form categories
+                (list c lp))
+               ((lattice-point-p lp)
+                (collect-supercategories-off-lp c lp))
+               (t
+                (push-debug `(,c ,lp))
+                (error "Unexpected type of object in the lattice-position ~
+                        field of ~a~%  ~a  ~a" c (type-of lp) lp)))))
+        (push-onto-plist c supers :super-categories) 
+        supers)))
+    
+             
+(defun collect-supercategories-off-lp (c lp)
+  (let* ((mixins (cat-mix-ins c))
+         (mixin-supers
+          (when mixins ;; if there's one there will likely be several
+            (super-categories-of-list-type mixins)))
+         (immediate-super-category
+          (lp-super-category lp))
+         (mixins-of-immediate-super-category
+          (when immediate-super-category
+            (when (cat-mix-ins immediate-super-category)
+              (super-categories-of-list-type
+               (cat-mix-ins immediate-super-category)))))
+         (immediate-super-lp
+          (when immediate-super-category
+            (cat-lattice-position immediate-super-category)))
+         (super-supers
+          (when (and immediate-super-lp
+                     (top-lattice-point-p immediate-super-lp)
+                     (lp-super-category immediate-super-lp))
+            (super-categories-of1 immediate-super-category))))
+    (when nil
+      (format t "~%  mixin-supers  ~a~
+                 ~%  super-supers  ~a~
+                 ~%  mixins of immediate super-category ~a~
+                 ~%  immediate-super ~a~%" 
+              mixin-supers super-supers mixins-of-immediate-super-category
+              immediate-super-category))
+    (let ((supers
+           (cond
+            ((and mixin-supers super-supers immediate-super-category)
+             (cons c (append mixin-supers super-supers)))
+
+            ((and mixin-supers super-supers immediate-super-category)
+             (cons c (append mixin-supers super-supers)))
+            
+            ((and mixin-supers super-supers)
+             (cons c (append mixin-supers super-supers)))
+            
+            ((and mixin-supers immediate-super-category)
+             (cons c (cons immediate-super-category mixin-supers)))
+            
+            (super-supers ;; includes the immediate-super-category
+             (cons c super-supers))
+            
+            (immediate-super-category
+             (list c immediate-super-category))
+            
+            (mixin-supers
+             (cons c mixin-supers)))))
+      (when mixins-of-immediate-super-category
+        (setq supers (append mixins-of-immediate-super-category supers)))
+      (remove-duplicates supers))))
 
 
+(defun super-categories-of-list-type (category-list)
+  (loop for category in category-list
+    append (super-categories-of category) into supers 
+    append (list category) into supers
+    finally (return supers)))
+
+;;--- misc
 
 (defun lattice-depth (c)
   (if (lattice-point-p (cat-lattice-position c))
@@ -92,7 +251,6 @@
         (1+ (lattice-depth superc))
         1 ))
     0))
-
 
 
 (defun super-category-has-variable-named (variable-name base-category)
@@ -105,10 +263,9 @@
               (find variable-name variables :key #'var-name))
         (when target-variable
           (return-from super-category-has-variable-named target-variable))))))
-            
-      
 
-  
+
+
 
 
 ;;;----------------------------------------------
@@ -122,13 +279,40 @@
       t
       (category-inherits-type? base-category category))))
 
-(defun category-inherits-type? (lower-category higher-category)
-  (let ((specialization-of
-         (lp-super-category (cat-lattice-position lower-category))))
-    (when specialization-of
-      (if (eq specialization-of higher-category)
-        higher-category
-        (category-inherits-type? specialization-of higher-category)))))
+
+(defun category-inherits-type? (category reference-category)
+  "Is the category equal to or a subcategory of the reference-category? 
+  Walk up the lattice from the catgory until we find the reference-category or
+  top-out with a super-category of nil since the network has multiple
+  roots, c.f. model/core/kinds/upper-model.lisp. When a category has
+  mixins those are traversed independently."
+  (when (null category) (error "Illegal null category."))
+  (if (eq category reference-category)
+    t
+    (let* ((lp (cat-lattice-position category))
+           (super-category
+            ;; SBCL caught application of lp-super-category to non lattice point --
+            ;;  form categories are not in a lattice...
+            (when (lattice-point-p lp)
+              (lp-super-category lp)))
+           (mixins (cat-mix-ins category)))
+      (or
+       (when super-category
+        (when (eq category super-category)
+          (format t "~%~%The category ~a  has itself as a supercategory.~
+                     ~%Probably clobbered by an imported word with that spelling~%~%"
+                  category)
+          (return-from category-inherits-type? nil))
+         (if (eq super-category reference-category)
+           t
+           (category-inherits-type? super-category reference-category)))
+
+       (when mixins
+         (or (memq reference-category mixins)
+             (loop for m in mixins
+               when (category-inherits-type? m reference-category)
+               return m
+               finally (return nil))))))))
 
 
 
@@ -138,7 +322,7 @@
 
 (defun lookup-fn-data-of-parent (category)
   (let* ((lp (cat-lattice-position category))
-         (parent (lp-super-category lp)))
+         (parent (when lp (lp-super-category lp))))
     (unless parent
       (return-from lookup-fn-data-of-parent nil))
     (let ((fn-data (cat-ops-index (cat-operations parent))))
@@ -147,12 +331,12 @@
         (lookup-fn-data-of-parent parent)))))
 
 
-(defun inherited-operation/Find (base-category)
+(defun inherited-operation/find (base-category)
   ;; the base category doen't have a 'find' operation defined for it
   ;; but maybe there's one up higher.  If it can't be found provide
   ;; a clear break.
   (let* ((lp (cat-lattice-position base-category))
-         (superc (lp-super-category lp)))
+         (superc (when lp (lp-super-category lp))))
     (if superc
       (let ((find-fn (cat-ops-find (cat-operations superc))))
         (if find-fn
@@ -164,7 +348,7 @@
              base-category))))
 
 
-(defun inherited-operation/Reclaim (base-category)
+(defun inherited-operation/reclaim (base-category)
   ;; the base category doen't have a 'reclaim' operation defined for it
   ;; but maybe there's one up higher.  If it can't be found provide
   ;; a clear break.
@@ -178,8 +362,11 @@
           (break "Looked for a reclaim operation on the category that ~A~
                   ~%inherits from, ~A, but it doesn't have one either."
                  base-category superc)))
-      (break "There is no reclaim operation defined for ~A~
-              ~%and does not inherit from any other category" base-category))))
+; Letting it leak while we think of a better scheme as part of
+; integrating CLOS into the operations.
+;      (break "There is no reclaim operation defined for ~A~
+;              ~%and does not inherit from any other category" base-category)
+      )))
 
 
 
@@ -211,10 +398,69 @@
     toplevel-categories ))
 
 
-(defun re-Compute-daughter-relationships (list-of-categories)
+(defun re-compute-daughter-relationships (list-of-categories)
   (setq *category->daughters* (make-hash-table :test #'eq))
   (compute-daughter-relationships list-of-categories))
 
+;;;-------------------------------------------------------------
+;;------ recomputing daughter (subcategory) info down from top
+;; This old scheme is flawed in non-obvious way. 
+
+(defgeneric subcategories-of (category))
+
+(defmethod subcategories-of ((name symbol))
+  (subcategories-of (category-named name :break-if-none)))
+
+(defmethod subcategories-of ((c category))
+  (let ((lp (cat-lattice-position c)))
+    ;;(unless lp (error "No lattice point on ~a" c))
+    (when lp
+      (let ((pairs (lp-subtypes lp)))
+        ;; (<category> <its lattice point>)
+        (loop for pair in pairs collect (car pair))))))
+
+(defvar *category-was-displayed* (make-hash-table :size 600)
+  "Check list used by display-category-tree")
+
+(defun display-category-tree (&optional (stream *standard-output*))
+  ;; Start with top and walk all the way down, marking
+  ;; categories as displayed when they're reached. 
+  ;; When that's exhausted, sweep the remaining categories
+  ;; from the master list for those without supercategories
+  ;; and treat them as level 0 seeds.
+  (display-categories-below :stream stream))
+
+(defun display-categories-below (&key (top (category-named 'top)) (depth -1) (stream *standard-output*))
+  (clrhash *category-was-displayed*)
+  (initialize-indentation)
+  (display-with-subcs top stream depth)
+  (when
+      (= depth -1)
+    (let* ((remaining (loop for c in *categories-defined*
+                        unless (gethash c *category-was-displayed*)
+                        collect c))
+           (remaining-without-supercs
+            (loop for r in remaining
+              unless (has-supercategories? r)
+              collect r)))
+      (format t "~&~%~a remaining, ~a without a supercategory~%~%~%"
+              (length remaining) (length remaining-without-supercs))
+      (dolist (c remaining-without-supercs)
+        (unless (gethash c *category-was-displayed*)
+          (initialize-indentation)
+          (display-with-subcs c stream depth))))))
+
+
+(defun display-with-subcs (category stream &optional (depth -1))
+  (unless (= depth 0)
+    (emit-line stream "~a" (cat-symbol category))
+    (setf (gethash category *category-was-displayed*) t)
+    (push-indentation)
+    (unless (form-category? category)
+      (loop for subc in (subcategories-of category)
+        do (display-with-subcs subc stream (- depth 1))))
+    (pop-indentation)))
+  
 
 
 ;;;----------------------------------------------------
@@ -274,7 +520,7 @@
     toplevel-list ))
 
 (defun w/accl/daughters (c depth)
-  ;; the category itself ('c') is handled by the caller. 
+  ;; the category itself ('c') is handled by the caller.
   (let ((daughters (daughters-of-category c)))
     (if daughters
       (let ( intermediate-list  subnet )

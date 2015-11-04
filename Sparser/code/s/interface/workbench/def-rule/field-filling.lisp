@@ -1,11 +1,18 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1996  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "field filling"
 ;;;   module:  "interface;workbench:def rule:"
-;;;  Version:  June 1995
+;;;  Version:  2.1 January 1996
 
-;; broken out of [define-rule] 4/27.  Tweeked ...6/16
+;; broken out of [define-rule] 4/27.  Tweeked ...5/13
+;; 1.0 (6/15) redesigned the basis of what field you go to next to take fixed
+;;      fields into effect.
+;;     (7/28) added single-category provision to Are-rdt-semantic-fields-complete?
+;;     (8/11) fixed a bug by tweeking threading in Fill-rdt-field
+;;     (10/19) and tweeked it yet again.
+;; 2.0 (12/20) changed usage of the nailed-down table to assoc from member.
+;; 2.1 (1/17/96) tweeked the alg. for which field to select next.
 
 (in-package :sparser)
 
@@ -45,9 +52,28 @@
 (defun release-edges-table-from-rdt-input-fields ()
   (setq *additional-edge-selection-action* nil))
 
+
 (defun fill-rdt-field-with-selected-edge (edge)
   (ccl:set-window-layer *rdt/rule-populating-window* 0)
-  (let* ((label (edge-category edge))
+  (let ( label string )
+    (if (consp edge)
+      ;; then it's an encoding of a word and its position
+      (let ((word (second edge)))
+        (setq label word
+              string (concatenate 'string
+                       "\"" (word-pname word) "\"")))
+
+      ;; it's a regular edge
+      (setq label (edge-category edge)
+            string (etypecase label
+                     (word
+                      (format nil "\"~A\"" (word-pname label)))
+                     ((or referential-category category mixin-category)
+                      (string-downcase (symbol-name (cat-symbol label))))
+                     (polyword
+                      (format nil "\"~A\"" (pw-pname label))))))
+
+  #|(let* ((label (edge-category edge))
          (string
           (etypecase label
             (word
@@ -55,10 +81,12 @@
             ((or referential-category category mixin-category)
              (string-downcase (symbol-name (cat-symbol label))))
             (polyword
-             (format nil "\"~A\"" (pw-pname label))))))
+             (format nil "\"~A\"" (pw-pname label)))))) |#
+
     ;(format t "~&~%Filling the current field with:~
     ;         ~%   string = ~A~
     ;         ~%    label = ~A~%~%" string label)
+
     (fill-rdt-field string label)))
 
 
@@ -90,47 +118,119 @@
 
 (defun fill-rdt-field (string label)
 
-  ;; dispatches off the currently identified field, fills that field
+  ;; Dispatches off the currently identified field, fills that field
   ;; with the string and sets the corresponding label variable with 
   ;; the label.  Then it moves the state of the tableau onto the
-  ;; next case.
+  ;; next case. This is the pathway used for what's intended to be
+  ;; be the primary way of filling fields: selections from other tableaus
 
+  ;; Pull the information out of the field that is currently selected.
   (cond
    ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/rhs/right/input*)
     (ccl:set-dialog-item-text *rdtrpw/rhs/right/input* string)
-    (setq *rdt/rhs-right-label* label)
-    (ccl:radio-button-push *rdtrpw/rhs/left/radio-button*)
-    (rdt/rhs/left-radio-button-action *rdtrpw/rhs/left/radio-button*)) 
+    (setq *rdt/rhs-right-label* label)) 
 
    ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/rhs/left/input*)
     (ccl:set-dialog-item-text *rdtrpw/rhs/left/input* string)
-    (setq *rdt/rhs-left-label* label)
-    (ccl:radio-button-push *rdtrpw/lhs-radio-button*)
-    (rdt/lhs-radio-button-action *rdtrpw/lhs-radio-button*))
+    (setq *rdt/rhs-left-label* label))
 
    ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/lhs-input*)
     (ccl:set-dialog-item-text *rdtrpw/lhs-input* string)
-    (setq *rdt/lhs-label* label)
-    (push/activate-first-semantic-input-field *rdtrpw/lhs-radio-button*))
+    (setq *rdt/lhs-label* label))
 
    ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/headline-input*)
     (ccl:set-dialog-item-text *rdtrpw/headline-input* string)
-    (setq *rdt/head-line-category* label)
-    (push/activate-next-semantic-input-field :just-did-the-headline))
+    (setq *rdt/head-line-category* label))
 
    ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/comp-input*)
     (ccl:set-dialog-item-text *rdtrpw/comp-input* string)
-    (setq *rdt/comp-category* label)
-    (push/activate-next-semantic-input-field :just-did-the-complement))
+    (setq *rdt/comp-category* label))
 
    ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/result-input*)
     (ccl:set-dialog-item-text *rdtrpw/result-input* string)
-    (setq *rdt/result-category* label)
-    (push/activate-next-semantic-input-field :just-did-the-result-type)))
+    (setq *rdt/result-category* label)))
+
+
+  ;; Decide which field to light up next.
+  (let ((currently-active-field *rdt/input-field-for-selected-edge*))
+
+    (if (or (eq *rdt/input-field-for-selected-edge* *rdtrpw/rhs/right/input*)
+            (eq *rdt/input-field-for-selected-edge* *rdtrpw/rhs/left/input*))
+      (then
+        (cond
+         ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/rhs/right/input*)
+          (cond
+           ((and (assoc *rdtrpw/rhs/left/input* *rdt/nailed-down-fields*)
+                 (assoc *rdtrpw/lhs-input* *rdt/nailed-down-fields*))
+            ;; then move on to the semantic checks
+            (push/activate-first-semantic-input-field nil))
+
+           ((assoc *rdtrpw/rhs/left/input* *rdt/nailed-down-fields*)
+            ;; since both the lhs and the left/input aren't nailed down,
+            ;; just the left/input, the lhs must not be.
+            (ccl:radio-button-push *rdtrpw/lhs-radio-button*)
+            (rdt/lhs-radio-button-action *rdtrpw/lhs-radio-button*))
+
+           (t ;; otherwise just go onto the left/input
+            (ccl:radio-button-push *rdtrpw/rhs/left/radio-button*)
+            (rdt/rhs/left-radio-button-action *rdtrpw/rhs/left/radio-button*))))
+         
+
+         ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/rhs/left/input*)
+          (if (assoc *rdtrpw/lhs-input* *rdt/nailed-down-fields*)
+            ;; move on to the semantic field checks
+            (push/activate-first-semantic-input-field nil)
+            (else
+              (ccl:radio-button-push *rdtrpw/lhs-radio-button*)
+              (rdt/lhs-radio-button-action *rdtrpw/lhs-radio-button*)))))
+
+
+        ;; If the active field hasn't changed, then the field was nailed down
+        ;; (the 1st 'unless' occurred) and we need to move on to the others.
+        (when (eq currently-active-field *rdt/input-field-for-selected-edge*)
+          (cond
+           ((assoc *rdtrpw/rhs/left/input* *rdt/nailed-down-fields*)
+            ;; then try the lhs, or it's also nailed down, the semantic fields.
+            (if (not (member *rdtrpw/lhs-input* *rdt/nailed-down-fields*))
+              (push/activate-first-semantic-input-field nil)
+              (push/activate-first-semantic-input-field *rdtrpw/lhs-radio-button*)))
+
+           ((assoc *rdtrpw/lhs-input* *rdt/nailed-down-fields*)
+            ;; then try the semantic fields
+            (push/activate-first-semantic-input-field *rdtrpw/lhs-radio-button*))
+
+           (t (break "Stub: criteria for determining what RDT field to select next~
+                      ~%are inadequate.~%~%")))))
+
+      (else
+        (cond
+         ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/lhs-input*)
+          (push/activate-first-semantic-input-field *rdtrpw/lhs-radio-button*))
+         ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/headline-input*)
+          (push/activate-next-semantic-input-field :just-did-the-headline))
+         ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/comp-input*)
+          (push/activate-next-semantic-input-field :just-did-the-complement))
+         ((eq *rdt/input-field-for-selected-edge*  *rdtrpw/result-input*)
+          (push/activate-next-semantic-input-field :just-did-the-result-type))))))
+    
+    
   
+  ;; If we're done, the button state of the tableau will change
+  ;; and we'll be able to drop out of this loop.
   (is-rdt-tableau-completely-filled-in?))
+ 
 
 
+
+
+
+;;--- Deciding where to go next within the semantic fields
+
+;; While the possibilities for the syntactic fields are pretty standard,
+;; the semantic fields are likely to be considerably thinner.  During the
+;; case setup process the *rdt/mapping* global was used to record what
+;; fields are relevant, and we dispatch off of it -- in a canonical order --
+;; to determine what field to setup next. 
 
 (defun push/activate-First-semantic-input-field (button-of-current-field)
   (declare (ignore button-of-current-field))
@@ -179,6 +279,8 @@
   (cond ((eq char #\newline)
          (rdtrpw/interpret-typed-chars-as-category))
         ((eq char #\enter)
+         (rdtrpw/interpret-typed-chars-as-category))
+        ((eq char #\tab)
          (rdtrpw/interpret-typed-chars-as-category))
         (t
          (call-next-method input-box char))))
@@ -377,6 +479,8 @@
     (when *rdt/result-category*
       (are-rdt-bindings-complete?
        (cadr (member :binding-spec descriptors :test #'eq)))))
+   ((member :referent-is-a-category descriptors)
+    *rdt/result-category* )
    (t (are-rdt-bindings-complete?
        (cadr (member :binding-spec descriptors :test #'eq))))))
     

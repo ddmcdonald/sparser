@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "binary"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.0 September 1994
+;;;   Version:   1.1 October 2004
 
 ;; initiated in August 1990
 ;; 0.1 (3/5/91  v1.8.1)  Changed the return value of Make-default-binary-edge
@@ -13,9 +13,17 @@
 ;;      the chart wrapped and we're consuming edges still in use.
 ;; 0.3 (5/15) pulled the capacity for the reference calculation to abort the edge
 ;; 1.0 (9/6/94) put it back in
+;; 1.1 (10/25/14) added edge-form-adjustment. Cleaned up chunk form 2/6/15
+
+;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
+;;  initial work to produce a lattice of descriptions
+;;  the places where this call is put were determined by the methods where (complete edge) was also called
+
 
 (in-package :sparser)
 
+(defvar *CURRENT-CHUNK*)
+(defvar category::n-bar)
 
 (defun make-completed-binary-edge (left-edge
                                    right-edge
@@ -31,10 +39,11 @@
 
 
 (defun make-default-binary-edge (left-edge right-edge rule)
+  (declare (special right-edge))
   (let ((edge (next-edge-from-resource))
         (category (cfr-category rule)))
 
-    (when (null (edge-starts-at left-edge)) ;; it's the earlier of the two
+    (when (null (edge-starts-at left-edge)) ;; it's the earlier of the two edges
       (error "The edge-resource is completely full~
               ~%This parse cannot be completed. You must enlarge~
               ~%the size of the resource to parse this text.~%"))
@@ -46,24 +55,56 @@
     (setf (edge-rule edge) rule)
     (setf (edge-left-daughter  edge) left-edge)
     (setf (edge-right-daughter edge) right-edge)
-    (set-used-by left-edge  edge)
-    (set-used-by right-edge edge)
+   
+    (setf (edge-form edge)
+          (cond
+           ((and *current-chunk*
+                 (eq (chunk-end-pos *current-chunk*)
+                     (pos-edge-ends-at right-edge))
+                 (eq (car (chunk-forms *current-chunk*))
+                     'NG))
+            ;; adjust form based on chunk being created
+            ;; if the right edge is at the head end of the *current-chunk*, 
+            ;;then use the category of the *current-chunk*
+            category::n-bar)
 
-    (setf (edge-form edge)     (cfr-form rule))
+          ((edge-form-adjustment left-edge right-edge
+                                    (cfr-form rule)))
+          (t (cfr-form rule))))
 
-    (setf (edge-referent edge) (referent-from-rule left-edge
-                                                   right-edge
-                                                   edge
-                                                   rule))
-    (knit-edge-into-positions edge
-                              (edge-starts-at left-edge)
-                              (edge-ends-at right-edge))
+    (let ((referent (catch :abort-edge
+                      (referent-from-rule left-edge
+                                          right-edge
+                                          edge
+                                          rule))))
+      (if (eq referent :abort-edge)
+        (then
+         (break "Rule aborted")
+          ;; This function feeds its value to a check routine like
+          ;; Check-one-one, which in turn returns the edge as its
+          ;; value. If we return nil from here, then that nil will
+          ;; be passed through as the value of the call to the
+          ;; check routine, which should suffice for the parsing
+          ;; routines not to see an edge here even though the
+          ;; rule went through
+          nil )
 
-    (complete edge)
-    (assess-edge-label category edge)
+        (else
+          (setf (edge-referent edge)
+                (place-referent-in-lattice referent edge))
+          
+          (set-used-by left-edge  edge)
+          (set-used-by right-edge edge)
 
-    (tr :completed-default-binary-edge
-        edge left-edge right-edge rule)
+          (knit-edge-into-positions edge
+                                    (edge-starts-at left-edge)
+                                    (edge-ends-at right-edge))
 
-    edge))
+          (complete edge)
+          (assess-edge-label category edge)
+
+          (tr :completed-default-binary-edge
+              edge left-edge right-edge rule)
+
+          edge )))))
 

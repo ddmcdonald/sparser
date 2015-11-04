@@ -1,37 +1,75 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991  Content Technologies Inc.
-;;; copyright (c) 1992  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "cases"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  April 1991      system version 1.8.2
+;;;  version:  1.2 March 2013
+
+;; 1.0 (7/11/94) completely redone from scratch.
+;; 1.1 (6/27/96) made "i" into "I" so that it would be correctly recognized.
+;; 1.2 (3/15/13) Replaced np form with prounoun
 
 (in-package :sparser)
 
 
-;;;-------------------
-;;; kinds of pronouns
-;;;-------------------
+;;--- subject pronouns   "X did it"
 
-(def-category  pronoun/human/male                :lattice-position :non-terminal)
-(def-category  pronoun/possessive/human/male     :lattice-position :non-terminal)
-(def-category  pronoun/human/female              :lattice-position :non-terminal)
-(def-category  pronoun/possessive/human/female   :lattice-position :non-terminal)
-(def-category  pronoun/inanimate                 :lattice-position :non-terminal)
-(def-category  pronoun/possessive/inanimate      :lattice-position :non-terminal)
-(def-category  pronoun/animate/plural            :lattice-position :non-terminal)
-(def-category  pronoun/possessive/animate/plural :lattice-position :non-terminal)
+(define-pronoun "I"    'first/singular 'pronoun)
+(define-pronoun "you"  'second         'pronoun)
+(define-pronoun "he"   'male           'pronoun)
+(define-pronoun "she"  'female         'pronoun)
+(define-pronoun "it"   'inanimate      'pronoun)
 
-;;;-------
-;;; cases
-;;;-------
+(defparameter *you* (find-individual 'pronoun/second
+                                     :word "you"))
 
-(define-pronoun "he"  category::pronoun/human/male)
-(define-pronoun "his" category::pronoun/possessive/human/male)
-(define-pronoun "she"  category::pronoun/human/female)
-(define-pronoun "her" category::pronoun/possessive/human/female)
-(define-pronoun "it"  category::pronoun/inanimate)
-(define-pronoun "its" category::pronoun/possessive/inanimate)
-(define-pronoun "they"  category::pronoun/animate/plural)
-(define-pronoun "their" category::pronoun/possessive/animate/plural)
+
+(define-pronoun "we"   'first/plural 'pronoun)
+(define-pronoun "they" 'plural       'pronoun)
+
+
+;;--- object pronouns   "known to X"
+
+(define-pronoun "me"   'first/singular 'pronoun)
+(define-pronoun "us"   'first/plural   'pronoun)
+(define-pronoun "him"  'male           'pronoun)
+(define-pronoun "them" 'plural         'pronoun)
+
+
+;;--- ambiguous between object and possessive
+;;       "known to X" or "X birthday"
+
+(define-pronoun "her"   'female 'possessive/np)
+
+
+;;--- possessive pronouns  "X birthday"
+
+(define-pronoun "my"    'first/singular  'possessive)
+(define-pronoun "his"   'male            'possessive)
+(define-pronoun "its"   'inanimate       'possessive)
+
+(define-pronoun "our"   'first/plural 'possessive)
+(define-pronoun "your"  'second       'possessive)
+(define-pronoun "their" 'plural       'possessive)
+
+
+
+;;--- possessive, non-determiner pronouns   "X are bigger"
+
+(define-pronoun "mine"   'first/singular 'possessive/pronoun)
+(define-pronoun "ours"   'first/plural   'possessive/pronoun)
+(define-pronoun "yours"  'second         'possessive/pronoun)
+(define-pronoun "theirs" 'plural         'possessive/pronoun)
+
+
+;;-- reflexives
+
+(define-pronoun "myself"     'first/singular 'reflexive/pronoun)
+(define-pronoun "ourselves"  'first/plural   'reflexive/pronoun)
+(define-pronoun "yourself"   'second         'reflexive/pronoun)
+(define-pronoun "yourselves" 'second         'reflexive/pronoun)
+(define-pronoun "himself"    'male           'reflexive/pronoun)
+(define-pronoun "herself"    'female         'reflexive/pronoun)
+(define-pronoun "itself"     'inanimate      'reflexive/pronoun)
+(define-pronoun "themselves" 'plural         'reflexive/pronoun)
 

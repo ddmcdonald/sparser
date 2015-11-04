@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2015 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  November 2014
+;;;  version:  1.0 January 2015
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -27,7 +27,9 @@
 ;; that are only used in sl/checkpoint/vocabulary.lisp. 9/14/14 pulled
 ;; out the macros to their own file. 11/7/14 added a :prehead-modifier
 ;; standalone rule to svo/passive/nominal. 
-;; remove broken new rule for vo/passive/nominal/expr
+;; remove broken new rule for vo/passive/nominal/expr.
+;; 1.0 1/5/15 Radical overhaul to make things uniform by taking the
+;;  full set of parameters. Also to remove dead wood. 
 
 (in-package :sparser)
 
@@ -39,7 +41,6 @@ they require. All of that can be specified, or else a reasonable set
 of defaults will be used. There is also the possibility of mixins, 
 overriding the rule label, distinguishing the category name, and
 broadly speaking doing for you all the things you might do by hand.
-
 |#
 ;;;--------------
 ;;; single words
@@ -99,77 +100,209 @@ broadly speaking doing for you all the things you might do by hand.
 
 ;;--- NP patterns
 
-(defun compound-np-head (category left-category right-category referent)
-  ;; if this were a macro we'd get symbols (except for the referent)
-  ;; and have to dereference them. Let's assume we have real categories here
-  (define-cfr category `(,left-category ,right-category)
-    :form category::n-bar
-    :referent referent))
+(defmacro noun (name
+                &key noun 
+                     super specializes index
+                     binds realization
+                     instantiates mixin restrict rule-label 
+                     obo-id)
+  (typecase name
+    (symbol)
+    (string  ;; (np-head "S338" :super 'residue-on-protein)
+     (setq noun name) ;; preserve it
+     (setq name (name-to-use-for-category name)))
+    (cons
+     (if (stringp (car name))
+       (then
+        (setq noun name)
+        (setq name (name-to-use-for-category (car name))))
+       (error "name parameter is a list of unexpected form: ~a" name)))
+    (otherwise
+     (error "Unexected type for name parameter in noun shortcut: ~a~%~a"
+            (type-of name) name)))
 
-(defun np-head (string-for-noun &key super rule-label)
-  ;; "trunk", "car", ...
-  (with-name-and-superc string-for-noun super :noun
-    (let ((form
-           `(define-category ,name
-              :instantiates :self
-              :specializes ,superc
-              :rule-label ,rule-label
-              :realization
-                 (:common-noun ,string-for-noun))))
-      (eval form))))
+  (when (stringp name)
+    (setq noun name) ;; preserve it
+    (setq name (name-to-use-for-category name)))
+
+  `(noun/expr ',name
+         :noun ',noun
+         :super ',super :specializes ',specializes :index ',index
+         :binds ',binds :realization ',realization
+         :instantiates ',instantiates :mixin ',mixin 
+         :restrict ',restrict :rule-label ',rule-label
+         :obo-id ,obo-id))
+
+;;/// carbon copy of noun, but a function rather than a macro
+(defun np-head (name 
+                &key noun super specializes index
+                     binds realization
+                     instantiates mixin restrict rule-label 
+                     obo-id)
+  (when (stringp name) ;; (np-head "S338" :super 'residue-on-protein)
+    (setq noun name) ;; preserve it
+    (setq name (name-to-use-for-category name)))
+  (noun/expr name
+         :noun noun
+         :super super :specializes specializes :index index
+         :binds binds :realization realization
+         :instantiates instantiates :mixin mixin 
+         :restrict restrict :rule-label rule-label
+         :obo-id obo-id))
 
 
-(defun np-head/of (string-for-noun &key super of)
-  ;;  (amino acid residue) of protein
-  (with-name-and-superc string-for-noun super :noun
-    (let* ((of-restriction (or of 'individual)) ;;//// macro-ify when next used
-           (form
+(defun noun/expr (name
+                  &key noun
+                       super specializes index
+                       binds realization
+                       instantiates mixin 
+                       restrict rule-label obo-id)
+  (when (stringp name)
+    (setq noun name)
+    (setq name (name-to-use-for-category name)))
+  (unless (or super specializes)
+    (setq  specializes (super-category-for-POS :noun)))
+  (when binds
+    (unless realization
+      (error "Variables were specified (:binds) but not a realization")))
+  (when realization
+    (unless (or binds 
+                ;; should actually check for inherited categories as well
+                (and super (cat-slots (category-named super)))
+                (and specializes (cat-slots (category-named specializes))))
+      (error "A realization was specified but no variables")))
+
+  #+ignore(unless index
+    (setq index '(:temporary)))
+; > Error: No data in index field, (temporary)
+; >        from which to establish operations
+; > While executing: decode-for-find-&-index
+    
+  (let ( category )
+    (cond
+     (binds ;; this means that we're doing the equivalent of
+      ;; define-category, with the shortcut realization. 
+      ;; If we exposed the realization parameters we could 
+      ;; determine what the slot and value restrictions were
+      ;; as in decode-def-term-call and use the category making 
+      ;; function. That doesn't seem reasonable, so falling 
+      ;; back to a standard form
+      (let ((form
+            `(define-category ,name
+               :instantiates ,(or instantiates :self)
+               :specializes ,(or super specializes)
+               :rule-label ,rule-label
+               :binds ,binds
+               ;;:index ,index
+               :restrict ,restrict
+               :mixins ,mixin
+               :realization ,realization)))
+        (setq category (eval form))))
+     (t
+      ;; Essentially the same thing, but with no bindings,
+      ;; just the interited ones
+      (let ((form
              `(define-category ,name
-                :instantiates :self
-                :specializes ,superc
-                :binds ((on . ,of-restriction))
-                :realization (:tree-family group-of-type
-                              :mapping ((type . on)
-                                        (np . :self)
-                                        (group . :self)
-                                        (complement . ,of-restriction))
-                              :common-noun ,string-for-noun))))
-      (eval form))))
+                :instantiates ,(or instantiates :self)
+                :specializes ,(or super specializes)
+                :rule-label ,rule-label
+                :index ,index
+                :restrict ,restrict
+                :mixins ,mixin
+                :realization
+                  (:common-noun ,noun))))
+        (setq category (eval form)))))
+    (fom-subcategorization category :category category)  
+    ;; make sure the category inherits subcategorization information
+        
+    (when obo-id
+      (setq category (bind-dli-variable 'uid obo-id category)))
+    category))
 
 
 
-(defun adj (adjective &key super preposition subcategorization
-                           subject theme)
-  ;;/// given subject/theme its a short step to going whole hog
-  ;; with create-category-for-a-term
-  (with-name-and-superc adjective super :adjective
-    (when (or subject theme)
-      (unless (and subject theme)
-        (error "The subject or theme argument was supplied but not both")))
-    (let ((form
-           (if subject
-             (with-subject subject
-               (with-theme theme
-                 ;;/// theme-v/r and subj-v/r are not used, could
-                 ;; come up with a rclass that could soak them up
-                 `(define-category ,name
-                    :instantiates :self
-                    :specializes ,superc
-                    :binds ((,theme-slot . ,theme-var)
-                            (,subj-slot . ,subj-var))
-                    :realization (:adjective ,adjective))))
+
+(defmacro adj (name
+               &key adj
+                    super specializes
+                    binds realization
+                    instantiates mixin restrict rule-label 
+                    obo-id)
+  (typecase name
+    (string ;; name is taken from the string
+     (unless adj ;; is there a good reason for them to be different?
+       (setq adj name))
+     (setq name (name-to-use-for-category name)))
+    (symbol 
+     (unless adj
+       (error "You have to specify the word for the noun (:adj)")))
+    (otherwise
+     (error "Bad type for 'name'. It should be a string or a symbol")))
+  `(adj/expr ',name
+        :adj ',adj
+        :super ',super :specializes ',specializes
+        :binds ',binds :realization ',realization
+        :instantiates ',instantiates :mixin ',mixin 
+        :restrict ',restrict :rule-label ',rule-label
+        :obo-id ,obo-id))
+
+(defun adj/expr (name
+                 &key adj
+                      super specializes 
+                      binds realization
+                      instantiates mixin 
+                      restrict rule-label obo-id)
+
+  (unless (or super specializes)
+    (setq  specializes (super-category-for-POS :adjective)))
+  (when binds
+    (unless realization
+      (error "Variables were specified (:binds) but not a realization")))
+  (when realization
+    (unless (or binds 
+                ;; should actually check for inherited categories as well
+                (and super (cat-slots (category-named super)))
+                (and specializes (cat-slots (category-named specializes))))
+      (error "A realization was specified but no variables"))
+    (setq realization
+          (cons :adj (cons adj realization))))
+    
+  (let ( category )
+    (cond
+     (binds ;; this means that we're doing the equivalent of
+      ;; define-category, with the shortcut realization. 
+      ;; If we exposed the realization parameters we could 
+      ;; determine what the slot and value restrictions were
+      ;; as in decode-def-term-call and use the category making 
+      ;; function. That doesn't seem reasonable, so falling 
+      ;; back to a standard form
+      (let ((form
+            `(define-category ,name
+               :instantiates ,(or instantiates :self)
+               :specializes ,(or super specializes)
+               :rule-label ,rule-label
+               :binds ,binds
+               :restrict ,restrict
+               :mixins ,mixin
+               :realization ,realization)))
+        (setq category (eval form))))
+     (t
+      ;; Essentially the same thing, but with no bindings,
+      ;; just the interited ones
+      (let ((form
              `(define-category ,name
-                :instantiates :self
-                :specializes ,superc
-                :realization (:adjective ,adjective)))))
-      (let ((category (eval form)))
-        (when subcategorization
-          (lsp-break)
-          #+ignore
-          (apply-subcat-if-any subcategorization category adjective))
-        (when preposition
-          (apply-preposition-if-any adjective preposition category))
-        category))))
+                :instantiates ,(or instantiates :self)
+                :specializes ,(or super specializes)
+                :rule-label ,rule-label
+                :restrict ,restrict
+                :mixins ,mixin
+                :realization ,(or realization `(:adjective ,adj)))))
+        (setq category (eval form)))))
+
+    (when obo-id
+      (setq category (bind-dli-variable 'uid obo-id category)))
+    category))
+
 
 
 ;;--- Adjective/adverb pairs
@@ -568,6 +701,7 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defun svo/nominal/adjective (verb nominalization adjective
                               &key subject theme)
+  (declare (ignore adjective))
   (let ((subject-restriction (or subject 'individual))
         (theme-restriction (or theme 'individual)))
     (let* ((name (name-to-use-for-category nominalization))

@@ -1,11 +1,22 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index instances"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  August 1994
+;;;  version:  2.0 September 2013
 
-;; initiated 8/9/94 v2.3 from pieces of other files
+;; initiated 8/9/94 v2.3 from pieces of other files. Tweeking ...8/19
+;; (4/20/95) added subr and predicate for permanent objects.
+;; 1.1 (1/9/96) augmented Index/individual/key/hash to deal with individuals
+;;      that get some of their bindings raised before they're indexed
+;; 2.0 (10/9/09) There something weird going on with the key/hash case
+;;      apparently related to the new treatment of variables for psi
+;;     (2/4/13) Improved error message for missing key in hash case.
+;;     (6/3/13) Added more documentation. Moved permanence of categories
+;;      code to resouces1.lisp, and improved the in-line documentation.
+;;     (9/9/13) Put a block into index/individual/key/hash to postpone dealing
+;;      with same first-name, different later part names. 
 
 (in-package :sparser)
 
@@ -14,96 +25,60 @@
 ;;;---------------------------------------------------
 
 (defun decode-index-field (category op-object index-field)
+  ;; Called from prepare-category-operations
   ;; the field is a list of keywords possibly followed by arguments.
   ;; We dispatch from the most discriminating to the least, finally
   ;; getting down to the names of the functions to be used.
   (multiple-value-bind (find-fn index-fn reclaim-fn)
                        (decode-index-field-aux category index-field)
-
     (setf (cat-ops-find op-object) find-fn)
     (setf (cat-ops-index op-object) index-fn)
     (setf (cat-ops-reclaim op-object) reclaim-fn)
     op-object ))
 
 
+
 ;;----- decode temporary vs. permanent
 
 (defun decode-index-field-aux (category index-field)
-  (cond ((member :temporary index-field)
-         ;; The individuals will all be temporary and should be all flushed
-         ;; when the model is reclaimed
-         (decode-rest-of-index-field/temporary category index-field))
-
+  ;; a category's instances will be considered temporary unless
+  ;; there is an explicit tag to indicate that they are permanent
+  (cond ((member :temporary index-field))
         ((member :permanent index-field)
-         ;; All the individuals are permanent (pre-defined). None are
-         ;; ever reclaimed
-         (decode-rest-of-index-field/permanent category index-field))
-
-        ((member :special-case index-field)
-         (values (cadr (member :find index-field))
-                 (cadr (member :index index-field))
-                 (cadr (member :reclaim index-field))))
-
-        (t ;; Both -- some predefined and some to be reclaimed
-         (decode-rest-of-index-field/both category index-field))))
+         (note-permanence-of-categorys-individuals category)))
+  (decode-rest-of-index-field category index-field))
 
 
+;;------ check for special cases
 
-(defun decode-rest-of-index-field/temporary (category index-field)
-  (multiple-value-bind (find-fn index-fn delete-fn)
-                       (decode-for-find-&-index category index-field)
-    (values find-fn
-            index-fn
-            delete-fn)))
-
-
-(defun decode-rest-of-index-field/permanent (category index-field)
-  (multiple-value-bind (find-fn index-fn delete-fn)
-                       (decode-for-find-&-index category index-field)
-    (values find-fn
-            index-fn
-            delete-fn)))
-
-
-
-(defvar *both-permanent-and-temporary-individuals* nil
-  "A flag that's set when setting up the operations for categories
-   for which this is true.")
-
-(defun both-version (ops-fn-data)
-  ;; rename the function
-  (if (consp ops-fn-data)
-    (list (intern (concatenate 'string
-                               (symbol-name (car ops-fn-data))
-                               "/BOTH")
-                  (find-package :sparser))
-          (cadr ops-fn-data))
-    (intern (concatenate 'string (car ops-fn-data) "/BOTH")
-            (find-package :sparser))))
-
-(defun decode-rest-of-index-field/both (category index-field)
-  (let ((*both-permanent-and-temporary-individuals* t))
+(defun decode-rest-of-index-field (category index-field)
+  (cond
+   ((member :special-case index-field)
+    (values (cadr (member :find index-field))
+            (cadr (member :index index-field))
+            (cadr (member :reclaim index-field))))
+   (index-field
     (multiple-value-bind (find-fn index-fn delete-fn)
                          (decode-for-find-&-index category index-field)
-      (values (both-version find-fn)
+      (values find-fn
               index-fn
-              delete-fn))))
+              delete-fn)))
+   ((only-slot-is-word category)
+    (let ((word-var (first (cat-slots category))))
+      (values `(find/individual/key/hash ,word-var)
+              `(index/individual/key/hash ,word-var)
+              `(delete/individual/key/hash ,word-var))))
 
+   ;; This is the default if an index isn't specified
+   (t (values 'find/simple-list
+              'ii/simple-list
+              'delete/simple-list))))
 
-
-;;;---------------------
-;;; substantive decoder
-;;;---------------------
 
 (defun decode-for-find-&-index (category index-field)
-
   ;; initialize the instances field of the category and return the
   ;; functions that make sense for this index field
-
   (cond ((member :list index-field)
-         (when *both-permanent-and-temporary-individuals*
-           (setf (cat-instances category)
-                 `(nil :permanent)))
          (values 'find/simple-list
                  'ii/simple-list
                  'delete/simple-list))
@@ -111,15 +86,11 @@
         ((member :key index-field)
          (let ((var (find-variable-in-category/named
                      (cadr (member :key index-field)) category)))
-           (if *both-permanent-and-temporary-individuals*
-             (setf (cat-instances category)
-                   (cons (make-hash-table :test #'eql)
-                         (make-hash-table :test #'eql)))
-             (setf (cat-instances category)
-                   (make-hash-table :test #'eql)))
-
+           (setf (cat-instances category)
+                 (make-hash-table :test #'eql))
            (values `(find/individual/key/hash ,var)
-                   `(index/individual/key/hash ,var))))
+                   `(index/individual/key/hash ,var)
+                   `(delete/individual/key/hash ,var))))
 
         ((member :sequential-keys index-field)
          (let ((field-sequence
@@ -133,10 +104,9 @@
 
            ;; index field will be an alist of alists, so we don't
            ;; initialize it.
-
            (values `(find/individual/seq-keys ,var-sequence)
-                   `(index/individual/seq-keys ,var-sequence))))
-
+                   `(index/individual/seq-keys ,var-sequence)
+                   `(delete/individual/seq-keys ,var-sequence))))
 
         (t (error "No data in index field, ~A~
                    ~%from which to establish operations"
@@ -147,47 +117,63 @@
 ;;; Cases 
 ;;;-------
 
-;; "ii" for "index/individual"
+;;--- "ii" for "index/individual"
 
 (defun ii/simple-list (individual category bindings)
   (declare (ignore bindings))
-  (let ((field (cat-instances category)))
-    (if (eq (cadr field) :permanent)
-      (then
-        (if *index-under-permanent-instances*
-          (rplacd (cddr field)
-                  (kcons individual (cddr field)))
-          (rplaca (car field)
-                  (kcons individual (car field)))))
-      (else
-        (setf (cat-instances category)
-              (kcons individual (cat-instances category)))))
-    individual ))
+  (setf (cat-instances category)
+        (kcons individual (cat-instances category)))
+  individual )
+
+
+;;--- hashtable keyed on the value of one variable
+
+(defparameter *break-on-multiple-values-single-key-Mostafa* nil
+  "Mostafa Ahmadi Roshan can get this because of different sequences since
+   his name can have different spellings. If this flag is up we stop to
+   notice/debug the difference. If down we take the original value.")
+
+(defun index/individual/key/hash (variable individual category bindings)
+  (let* ((table (cat-instances category)))
+    (unless table
+      (setq table
+            (setf (cat-instances category) (make-hash-table :test #'eql))))
+    (unless (hash-table-p table)
+      (error "Initialization bug: instances field of ~A~
+            ~%is not a hash table" category))
+    (let ((value (value-of variable individual)))
+      (when (null value)
+        (push-debug `(,variable ,individual ,category ,bindings))
+        (error "Cannot index the individual ~a~
+              ~%against the value of its ~a variable~
+              ~%because the value is nil"
+	       individual variable))
+      (let ((earlier-value
+             (probably-the-result-of-type-raising variable individual)))
+        (let ((entry (gethash value table)))
+          (if entry
+            (unless (eq entry individual) ;; same individual again
+              (when *break-on-multiple-values-single-key-Mostafa*
+                (push-debug `(,value ,individual ,entry ,category))
+                (break "Attempting to index more than one individual ~
+                        to a category~%that has only one key:~
+                      ~% ~A~% key ~A~% rejected new value ~A~
+                      ~% established value ~A"
+                       category value individual entry)))
+            (else 
+             ;(break "hashing")
+             (if earlier-value
+               (setf (gethash earlier-value table) individual)
+               (setf (gethash value table) individual)))))))))
 
 
 
-(defun index/individual/key/hash (variable
-                                  individual category bindings)
-  (declare (ignore bindings))
 
-  (let* ((field (cat-instances category))
-         (table
-          (if (consp field)
-            ;; it distinguishes between permanent and temporary
-            (if *index-under-permanent-instances*
-              (car field)
-              (cdr field))
-            field ))
-         (value (value-of variable individual)))
-
-    (push individual
-          (gethash value table))))
-
-
-
+;;--- a sequence of keys, set up an an alist.
 
 (defun index/individual/seq-keys (key-sequence
                                   individual category bindings)
+ ;(break "before instance check")
   (let ((instances (cat-instances category)))
     (if instances
       (let* ((first-key (car key-sequence))
@@ -204,7 +190,7 @@
 
       (setf (cat-instances category)
             (i/i/sk key-sequence individual
-                              category bindings)))))
+                    category bindings)))))
 
 
 (defun i/i/sk (keys indiv cat bindings)
@@ -232,8 +218,11 @@
          (sub-entry (assoc value (cdr entry))))
 
     (if sub-entry
-      (break "If there is more than one remaining-key, extend the~
-              code, otherwise debug this.")
+      ;(break "Stub: If there is more than one remaining-key,~%extend the ~
+      ;        code otherwise this needs debugging")
+      (rplacd sub-entry
+              (cons individual (cdr sub-entry)))
       (rplacd entry
               `((,value . ,individual)
                 ,@(cdr entry))  ))))
+
