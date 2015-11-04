@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   September 2015
+;;;   Version:   November 2015
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -17,6 +17,8 @@
 ;;  *collect-new-words* 
 ;; 6/9/15 Added "strip" routines to reverse the "human-reaable" expressions
 ;;  created by collect-model. Add strings to stripper for "!recursion!"
+;; 11/4/15 Removed the return value form that string case. Doesn't make
+;;  sense as something to aggregate. 
 
 (in-package :sparser)
 
@@ -64,8 +66,7 @@
     (category nil)
     (cons (strip-model-description item))
     (number)
-    (string ;; "!recursion!"
-     `(,item))
+    (string)
     (word)
     (otherwise
      (push-debug `(,item))
