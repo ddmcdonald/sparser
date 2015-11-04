@@ -58,6 +58,7 @@
 ;;      that it wasn't getting a dotten pair. Need to come back to this and fix it.
 ;;     (9/22/15) added final value to setup-category-lemma now that it's being
 ;;      called by itself.
+;;     (11/3/15) Tweaked deref-rdata-word to allow for multiple irregular words
 
 (in-package :sparser)
 
@@ -383,26 +384,30 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
    to provide the rspec for the words of instances of the category."
   ;;/// look at apply-realization-schema-to-individual for part of
   ;; the old approach to this problem
+  ;; (push-debug `(,category ,word-expr)) (break "top of setup lemma")
   (cond
    ((consp (car word-expr)) ;; multiple definitions 
-    ;;//// worry about irregulars?
     (dolist (expr word-expr)
       (setup-category-lemma category expr)))
    (t
     (unless (and (listp word-expr)
                  (= 2 (length word-expr)))
       (push-debug `(,category ,word-expr))
-      (error "The lemma value for ~a is ot a list of two items:~
+      (error "The lemma value for ~a is not a list of just two items:~
             ~%  ~a" category word-expr))
     (let ((keyword (car word-expr))
-          (string (cadr word-expr)))
+          (string (cadr word-expr))) 
       (unless (keywordp keyword) ;; friendly DWIM
         (setq keyword (intern (symbol-name keyword) (find-package :keyword))))
       (unless (memq keyword *legal-word-rdata-keywords*)
         (error "Unexpected keyword in lemma for ~a:~%~a"
                category keyword))
-      (unless (stringp string)
-        (error "Word argument in lemma for ~a is not a string" string))
+      (typecase string
+        (string)
+        (cons) ;;/// add check for irregular keyword
+        (otherwise 
+         (error "Unexpected type for word argument in lemma for ~a:~%~a ~a"
+                category (type-of string) string)))
 
       (let* ((head-word (deref-rdata-word string category))
              (word-arg `(,keyword ,head-word))
@@ -514,6 +519,9 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 
 (defun deref-rdata-word (string-or-symbol category)
+  (declare (special *schematic?*)) ;; flag in the caller
+  (unless string-or-symbol
+    (error "Null string passed to deref-rdata-word"))
   (etypecase string-or-symbol
     (list
      ;; its either multiple (synomymous) words or the specification
@@ -532,33 +540,38 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
                     string-or-symbol))))
 
     (symbol
-     (if string-or-symbol
-       (let ((var (find-variable-for-category string-or-symbol category)))
-         (unless var
-           (error "Rdata word field contains a symbol indicating it ~
-                   denotes a variable~%but the symbol ~A does not ~
-                   correspond to any of the ~%variables of ~A"
-                  string-or-symbol category))
-         (setq *schematic?*  ;; flag in the caller
-               `t)
-         var )
-       (else
-         (break "null string-or-symbol passed in")
-         :foo )))
+     (let ((var (find-variable-for-category string-or-symbol category)))
+       (unless var
+         (error "Rdata word field contains a symbol indicating it ~
+                 denotes a variable~%but the symbol ~A does not ~
+                 correspond to any of the ~%variables of ~A"
+                string-or-symbol category))
+       (setq *schematic?* t)
+       var ))
 
     (string
      (resolve-string-to-word/make string-or-symbol))))
 
 
-
 (defun deref-rdata-word-with-morph (specification)
-  ;; we pass back a list where the strings have been replaced
-  ;; with words.
-  (let ( dereffed )
-    (dolist (term specification)
+  "Given a specification of a word with irregulars marked
+   return the same list with words substitued for the strings."
+  ;; Called from deref-rdata-word that already checked that
+  ;; there is one or more keywords in the specification
+  ;; e.g. ("terminus" :plural "termini"))
+  (let (  dereffed  )
+    (dolist (term specification) ;;word-data)
+      ;; (format t "~&term = ~a" term)
       (push (etypecase term
               (keyword term)
-              (string (resolve-string-to-word/make term)))
+              (string (resolve-string-to-word/make term))
+              (cons ;; should be a list of strings e.g. for
+               ;; multiple irregular plural forms
+               (unless (every #'stringp term)
+                 (error "List of irregular words passed in  ~
+                         but they're not all strings:~%~a" term))
+               (loop for string in term
+                 collect (resolve-string-to-word/make string))))
             dereffed))
     (nreverse dereffed)))
 
