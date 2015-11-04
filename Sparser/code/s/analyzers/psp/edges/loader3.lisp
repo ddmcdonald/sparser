@@ -40,7 +40,6 @@
 
 (in-package :sparser)
 
-;; unbumped
 (gload "kinds of edges;single-new1")
 (gload "kinds of edges;binary1")
 (gload "kinds of edges;binary-explicit2")  ;;//// keep only one of these
@@ -51,11 +50,7 @@
 (gload "kinds of edges;polyw1")
 (gload "kinds of edges;long scan1")
 (gload "kinds of edges;looking under")
-
-;; not sure if this is the place to put the new lattice functionality
-(gload "kinds of edges;lattice-operations1") ;;  xxx
-
-
+(gload "kinds of edges;lattice-operations1")
 
 ;; These aren't needed unless *load-the-grammar* is true.
 ;; However since that flag won't go up until late in the process
@@ -70,25 +65,3 @@
   (gload "grammar edge types;CA")
   (gload "grammar edge types;pnf")
   (gload "grammar edge types;pronouns1"))
-
- 
-
-#|
-;; bumped  -- these have the alternative ordering of set-used-by
-(gload "kinds of edges;single-new2")
-(gload "kinds of edges;binary2")
-(gload "kinds of edges;binary-explicit3")  ;;//// keep only one of these
-(gload "kinds of edges;binary-explicit all keys3")
-(gload "kinds of edges;cs3")
-(gload "kinds of edges;initial-new1")
-(gload "kinds of edges;unknown")
-(gload "kinds of edges;polyw1")
-(gload "kinds of edges;long scan2")
-
-(when *load-the-grammar*
-  (gload "kinds of edges;digits2")
-  (gload "kinds of edges;form rules1")
-  (gload "kinds of edges;CA1")
-  (gload "kinds of edges;pnf1")
-  (gload "kinds of edges;pronouns2")
-  ) |#
