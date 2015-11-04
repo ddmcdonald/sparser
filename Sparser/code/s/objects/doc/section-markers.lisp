@@ -1,18 +1,23 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
+;;; $Id: section-markers1.lisp 279 2009-09-02 15:37:56Z dmcdonal $
 ;;;
 ;;;     File:  "section markers"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  1.5 May 1994
+;;;  Version:  1.0 June 2008
 
-;; 1.1 (5/21/92 v2.2) Changed the presumptions about what data structure
+;; 0.1 (5/21/92 v2.2) Changed the presumptions about what data structure
 ;;     goes into the "full name" field
-;; 1.2 (6/26) fixed Section-marker-named to use sm-
-;; 1.3 (7/13) changed the value saved in the rule set from the initiate
+;; 0.2 (6/26) fixed Section-marker-named to use sm-
+;; 0.3 (7/13) changed the value saved in the rule set from the initiate
 ;;     fn to the object itself (initiate was motivated by sgml, but was 
 ;;     short-sighted and doesn't hack it for paragraphs)
-;; 1.4 (1/13/94) Fixed bug in installation of the completion action
-;; 1.5 (5/3) tweeked def-form to get implicit-close right
+;; 0.4 (1/13/94) Fixed bug in installation of the completion action
+;; 0.5 (5/3) tweeked def-form to get implicit-close right
+;; 1.0 (1/9/95) interning function wasn't working. 
+;;     (6/2/08) Promulgated fan-out from *force-case-shift*
+;; 3/21/2015 SBCL caught bad use of setf on (word-rule-set word) -- corrected to have typecase
 
 (in-package :sparser)
 
@@ -73,17 +78,12 @@
   (cadr (assoc word *section-markers*)))
 
 (defun section-marker-named (string)
-  (unless (stringp string)
-    (error "argument must be a string.~
-            ~% ~A is a ~A" string (type-of string)))
-  (let ((word (word-named string)))
-    (or (find/section-marker word)
-        (let ((sm-word (word-named
-                        (concatenate 'string  "SM-"
-                                     string))))
-          (or (find/section-marker sm-word)
-              (format t "no section-marker named \"~A\" or \"~A\""
-                      string sm-word))))))
+  (let ((sm-word (word-named
+                  (concatenate 'string  "sm-"
+                               string)
+		  :preserve-case)))
+    (find/section-marker sm-word)))
+
 
 (defun delete/section-marker (sm)
   (unless (no-actions/section-marker sm)
@@ -102,16 +102,14 @@
                                    no-actions?)
 
   (let* ((sm-string (concatenate 'string
-                                 "SM-"
+                                 "sm-"
                                  string))
-         (sm-symbol (intern sm-string *word-package*))
-         (sm (if (and (boundp sm-symbol)
-                      (rs-fsa (word-rule-set (symbol-value sm-symbol))))
-               (find/section-marker (symbol-value sm-symbol))
-               (make-a-new-section-marker
-                (define-section-marking-word string)
-                string  ;; "full name"
-                ))))
+         (sm-word (resolve-string-to-word/make sm-string))
+         (sm (or (cadr (assoc sm-word *section-markers*))
+                 (make-a-new-section-marker
+                  (define-section-marking-word string)
+                  string  ;; "full name"
+                  ))))
 
     (populate-section-marker
      sm initiate terminate close interior no-actions?)))
@@ -129,50 +127,55 @@
 (defun populate-section-marker (sm
                                 initiate terminate close interior
                                 no-actions?)
-
+  
   (setf (sm-initiation-action sm)  initiate)
   (setf (sm-termination-action sm) terminate)
   (when interior
     (setf (sm-interior-markup sm)
           (setup-interior-markup-data interior)))
   (let ((sm-to-close (if (and close (stringp close))
-                       (section-marker-named close)
-                       close)))
+                         (section-marker-named close)
+                         close)))
     (when close
       (unless sm-to-close
         (break "There is no section marker named ~A" close)))
     (setf (sm-terminates-previous sm) sm-to-close)
-
+    
     (if no-actions?  ;; e.g. SGML is done by a meta routine
-      (setf (sm-plist sm) `(:no-actions))
-      (else
-        ;; Put the initiation action on the action list of the word.
-        ;; The termination action and what it closes will be handled
-        ;; automatically when the action fires.
-        (let* ((word (sm-word sm))
-               (rs (word-rule-set word)))
-          (unless rs
-            (setf (word-rule-set word)
-                  (setq rs (make-rule-set :backpointer word))))
-          (if (rs-completion-actions rs)
-            (if (member :section-marker (rs-completion-actions rs))
-              (then
-                (let ((cell-to-change
-                       (cdr (member :section-marker
-                                     (rs-completion-actions rs)))))
-                  (rplaca cell-to-change
-                          sm)))
-
-              (setf (rs-completion-actions rs)
-                    (cons :section-marker
-                          ;;(cons initiate
-                          ;;      (rs-completion-actions rs))
-                          (cons sm
-                                (rs-completion-actions rs))
-                          )))
-            (setf (rs-completion-actions rs)
-                  ;;`(:section-marker ,initiate)
-                  `(:section-marker ,sm)
-                  )))))
+        (setf (sm-plist sm) `(:no-actions))
+        (else
+          ;; Put the initiation action on the action list of the word.
+          ;; The termination action and what it closes will be handled
+          ;; automatically when the action fires.
+          (let* ((word (sm-word sm))
+                 (rs (rule-set-for word)))
+            (unless rs
+              (setq rs (make-rule-set :backpointer word))
+              (typecase word
+                (word
+                 (setf (word-rule-set word) rs))
+                (polyword (setf (pw-rules word) rs))
+                ((or category referential-category mixin-category)
+                 (setf (cat-rule-set word) rs))))
+            (if (rs-completion-actions rs)
+                (if (member :section-marker (rs-completion-actions rs))
+                    (then
+                      (let ((cell-to-change
+                             (cdr (member :section-marker
+                                          (rs-completion-actions rs)))))
+                        (rplaca cell-to-change
+                                sm)))
+                    
+                    (setf (rs-completion-actions rs)
+                          (cons :section-marker
+                                ;;(cons initiate
+                                ;;      (rs-completion-actions rs))
+                                (cons sm
+                                      (rs-completion-actions rs))
+                                )))
+                (setf (rs-completion-actions rs)
+                      ;;`(:section-marker ,initiate)
+                      `(:section-marker ,sm)
+                      )))))
     sm))
 

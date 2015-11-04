@@ -1,9 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2013 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "initialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  0.1 February 2005
+;;;  version:  1.0 August 2013
 
 ;; initiated 11/29/97. Moved code in from other files 7/7/98. 9/3/99 renamed
 ;; Construct-self-lattice-point to avoid brain-dead conflict with the
@@ -17,6 +18,11 @@
 ;; Index-node-to-top-point when the entry exists but the new lp node
 ;; isn't in it and there's just one lp in the entry at this point. (2/17) fixed
 ;; problem with Find-self-node returning a list instead of the self-lp.
+;; 1.0 (7/22/09) Fan out from simplifying the indexing structure and putting more
+;;   on the psi. Working on it through 8/6.
+;; 1.1 (8/26/13) Added setting of subtypes to initialize-top-lattice-point
+;; 3/21/2015 SBCL caught -- (trying to add ,category to subtypes of form-category
+;;  which is not a top-lattice-position)))))
 
 (in-package :sparser)
 
@@ -25,7 +31,7 @@
 ;;; entry point 
 ;;;-------------
 
-;; Called from Decode-category-parameter-list. Returned value becomes
+;; Called from decode-category-parameter-list. Returned value becomes
 ;; the value of the category's lattice-position field.
 
 (defun initialize-top-lattice-point (category &key specializes)
@@ -34,12 +40,21 @@
              :super-category specializes))
         (vars (cat-slots category)))
 
-    (setf (lp-index-by-variable lp)
-          (mapcar #'(lambda (var) (list var)) 
-                  (cons category vars)))
-
     (setf (lp-variables-bound lp) nil)
-    (setf (lp-variables-free lp) (cons category vars))
+    (setf (lp-variables-free lp) vars)
+    (setf (lp-down-pointers lp) nil)
+    (setf (lp-subtypes lp) nil)
+    (setf (lp-top-psi lp) nil)
+    (setf (lp-top-lp lp) lp)
+
+    (when specializes
+      (let ((super-lp (cat-lattice-position specializes)))
+        (if
+         (top-lattice-point-p super-lp) ;; SBCL caught error here
+         (pushnew `(,category ,lp)
+                  (lp-subtypes super-lp))
+         (print `(trying to add ,category to subtypes of ,(cat-name super-lp)
+                         which is not a top-lattice-position)))))
 
     lp ))
 
@@ -49,16 +64,14 @@
 ;;;-----------------------------------------------------
 
 (defun find-self-node (category)
-  (let ((result (traverse-from-lattice-point-down-for
-                 category (cat-lattice-position category))))
-    (unless (consp result)
-      (setq result (list result)))
-    (dolist (node result nil)
-      (when (typep node 'self-lattice-point)
-        (return node)))))
+  ;;/// Since "self" nodes aren't being used (they would have soaked
+  ;; up the category per-se, which doesn't seem useful right now.
+  ;; Maybe later when we use rnodes), this should be renamed
+  (cat-lattice-position category))
 
 
 (defun construct-self-lattice-point (category top-lp)
+  (break "construct-self-lattice-point")
   (let ((node (get-lp 'self-lattice-point)))
     (setf (lp-variables-bound node) (list category))
     (setf (lp-variables-free node)
@@ -84,19 +97,18 @@
 ;; Given a lattice-point, construct the node below it that
 ;; binds this particular variable
 
-(defun new-lattice-point (starting-lattice-point variable
-                          &optional
-                          (top-lp (climb-lattice-to-top
-                                   starting-lattice-point)))
-
-  (let ((node (get-lp 'psi-lattice-point)))
+(defun new-lattice-point (starting-lattice-point variable)
+  (let ((node (get-lp 'lattice-point))
+	(top (lp-top-lp starting-lattice-point)))
     (setf (lp-variables-bound node)
           (cons variable (lp-variables-bound starting-lattice-point)))
     (setf (lp-variables-free node)
           (remove variable (lp-variables-free starting-lattice-point)))
     (setf (lp-down-pointers node) nil)
-    (setf (lp-upward-pointers node) (list starting-lattice-point))
-    (index-node-to-top-point variable node top-lp)
+;;    (setf (lp-upward-pointers node) (list starting-lattice-point))
+;;    (index-node-to-top-point variable node top-lp)
+    (index-lp-to-top-lp node top)
+    (setf (lp-top-lp node) top)
     (tr :created-lp-to-extend-lp-via-var
         node starting-lattice-point variable)
     node ))
@@ -107,10 +119,29 @@
 ;;;----------
 
 (defun cross-index-node-to-top-point (node top-lp)
+  (break "Probably shouldn't call cross-index-node-to-top-point")
   (dolist (var (lp-variables-bound node))
     (index-node-to-top-point var node top-lp)))
 
+(defun index-lp-to-top-lp (lp top-lp)
+  ;; goes with find-lattice-point-with-variables1, which will have
+  ;; returned nil before this is called. 
+  (let* ((number-of-variables-bound (length (lp-variables-bound lp)))
+	 (entry (when (lp-subnodes top-lp)
+		  (assq number-of-variables-bound 
+			(lp-subnodes top-lp)))))
+    (cond
+      (entry (rplacd entry (cons lp (cdr entry))))
+      (t
+       (push `(,number-of-variables-bound ,lp)
+	     (lp-subnodes top-lp))))))
+
+
+;; Not using this. But it's suggestive of what can be done on the
+;; psi themselves (intermediary of using LP is too intricate to get
+;; the interning and 'find' operations correct -- 8/09.
 (defun index-node-to-top-point (variable node top-lp)
+  (break "Shouldn't be calling index-node-to-top-point")
   ;; 1. put a value in the index-by-variable field
   (let ((field (lp-index-by-variable top-lp)))
     (if (null field)
@@ -152,6 +183,10 @@
   (let ((top-lp (cat-lattice-position category)))
     (reclaim-lattice (find-lp-daughter category top-lp))
     (setf (lp-index-by-variable top-lp) nil)))
+
+(defun find-lp-daughter (category top-lp)
+  (declare (ignore category top-lp))
+  (error "find-lp-daughter is no longer defined"))
 
 (defun reclaim-lattice (top-lp)
   (when top-lp

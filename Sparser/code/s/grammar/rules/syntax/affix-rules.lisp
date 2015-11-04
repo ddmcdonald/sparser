@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 January 1995
+;;;  Version:  1.0 November 2014
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -11,12 +11,113 @@
 ;; 0.2 (7/13/94) added more data to the edge
 ;;     (1/9/95) added Introduce-morph-brackets-from-unknown-word. 1/23 refining
 ;;      its treatment.
+;; 1.0 (7/25/14) Drastic makeover. Droped the DM&P way of introducing new
+;;      individuals. Added vastly bigger set of morphological options.
+;;      Assigning the brackets to the word rather than introducing them
+;;      right now, which simplifies the action by making it just as
+;;      though the word had been predefined. Making the words denote categories
+;;      using same flag and code as Comlex.
+;;     (11/6/14) Added setup-unknown-word-by-default
 
 (in-package :sparser)
+
+;;;-------------------------------------------
+;;; default assumptions about an unknown word
+;;;-------------------------------------------
+; This is used when we need to have a category & rule setup for
+; a word but have no information about it that might help us,
+; e.g. no known suffix and no entry in Comlex. If we had information
+; from some educated source for a particular sublanguage then
+; we would be able to make a better decision. And we might be
+; able to do this from the lexical context that its part of,
+; but this is a fallback. Called by make-word/all-properties/or-primed
+; when the *introduce-brackets-for-unknown-words-from-their-suffixes*
+; flag is up. 
+
+(defun setup-unknown-word-by-default (word)
+  (tr :unknown-word-defaulted-to-noun word)
+  (add-new-word-to-catalog word :default)
+  (if *edge-for-unknown-words*
+    (setup-common-noun word)
+    (assign-brackets-as-a-common-noun word)))
+
+
+
+;;;------------------------------------------
+;;; Assigning brackets and making categories
+;;;------------------------------------------
+
+(defun assign-morph-brackets-to-unknown-word (word morph-keyword)
+  ;; Called from make-word/all-properties, which is itself called
+  ;; on the way back from the tokenizer. 
+  (tr :defining-unknown-word-from-morph word morph-keyword)
+  ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
+  (add-new-word-to-catalog word morph-keyword)
+
+  (typecase morph-keyword
+    (keyword 
+     (case morph-keyword
+       ;;(:ends-in-s) ;; always ambiguous?
+       ;;/// put in both ??      
+       (:ends-in-ed
+        (let ((lemma (stem-form word)))
+          (tr :defining-lemma-as-given-morph lemma 'verb)
+          (if *edge-for-unknown-words*
+            (setup-verb lemma)
+            (assign-brackets-as-a-main-verb lemma))))
+       (:ends-in-ing
+        (let ((lemma (stem-form word)))
+          (tr :defining-lemma-as-given-morph lemma 'verb)
+          (if *edge-for-unknown-words*
+            (setup-verb lemma)
+            (assign-brackets-as-a-main-verb lemma))))
+       (:ends-in-ly
+        (tr :defining-as-given-morph 'adverb)
+        (if *edge-for-unknown-words*
+          (setup-adverb word)
+          (assign-brackets-to-adverb word)))
+       (otherwise
+        (push-debug `(,word ,morph-keyword))
+        (error "Unexpected affix keyword: ~A"
+               (word-morphology word)))))
+    (cons
+     ;; e.g. ("ible" ADJ)
+     (let ((morph-key (cadr morph-keyword)))
+       (case morph-key
+         (n
+          (tr :defining-as-given-morph 'noun)
+          (if *edge-for-unknown-words*
+            (setup-common-noun word)
+            (assign-brackets-as-a-common-noun word)))
+         (adj
+          (tr :defining-as-given-morph 'adjective)
+          (if *edge-for-unknown-words*
+            (setup-adjective word)
+            (assign-brackets-to-adjective word)))
+         (v
+          (tr :defining-as-given-morph 'verb)
+          (if *edge-for-unknown-words*
+            (setup-verb word)
+            (assign-brackets-as-a-main-verb word)))        
+         (otherwise
+          (push-debug `(,word ,morph-keyword))
+          (error "Unexpected cons affix keyword: ~A"
+                 (word-morphology word))))))
+    (otherwise
+     (push-debug `(,word ,morph-keyword))
+     (error "Unexpected type of morph keyword: ~a~%~a"
+            (type-of morph-keyword) morph-keyword))))
+
+
 
 ;;;------------------------
 ;;; morphology-based edges
 ;;;------------------------
+
+;; These two make-edge functions are moot with the change to 
+;; give unknown words real content (7/14). Keeping them around
+;; in case we want to adapt something like this for another
+;; purpose. 
 
 (defun make-edge-based-on-morphology (word
                                       position-scanned
@@ -41,12 +142,11 @@
                    word position-scanned next-position
                    category::adverb))
     (otherwise
+     (push-debug `(,word ,position-scanned ,next-position))
      (break/debug "Unexpected affix keyword: ~A"
                   (word-morphology word))
      :foo ;; keep this frame on the stack
      )))
-
-
 
 
 (defun make-morph-edge-over-unknown-word (word
@@ -71,59 +171,4 @@
 
 
 
-
-(defun introduce-morph-brackets-from-unknown-word (word
-                                                   morph-keyword)
-
-  ;; Called from make-word/all-properties, which is itself called
-  ;; on the way back from the tokenizer.  We have to get the
-  ;; position from the globals that the tokenizer, etc. maintain.
-
-  (let* ((pos-getting-token (chart-position
-                             *number-of-next-position*))
-         (pos-after (chart-position-after pos-getting-token)))
- 
-    (case morph-keyword
-      (:ends-in-s)
-      
-      (:ends-in-ed
-       (assign-brackets-as-a-main-verb word)
-       (place-boundary/ends-before  word pos-getting-token
-                                    ].verb )
-       (place-boundary/begins-after word pos-getting-token
-                                    .[verb )
-       (place-boundary/ends-after   word pos-after
-                                    mvb]. )
-       (place-boundary/begins-after word pos-after
-                                    mvb.[ )
-       (when *do-domain-modeling-and-population*
-         (define-individual-for-term/verb
-           word (stem-form-of-verb word))))         
-      
-      (:ends-in-ing
-       (assign-brackets-as-a-main-verb word)
-       (place-boundary/ends-before  word pos-getting-token
-                                    ].verb )
-       (place-boundary/begins-after word pos-getting-token
-                                    .[verb )
-       (place-boundary/ends-after   word pos-after
-                                    mvb]. )
-       (place-boundary/begins-after word pos-after
-                                    mvb.[ )
-       (when *do-domain-modeling-and-population*
-         (define-individual-for-term/verb
-           word (stem-form-of-verb word))))
-      
-      (:ends-in-ly
-       (assign-brackets/expr word (list ].adverb .[adverb))
-       (place-boundary/ends-before word pos-getting-token
-                                   ].adverb )
-       (place-boundary/begins-after word pos-getting-token
-                                    .[adverb ))
-      
-      (otherwise
-       (break/debug "Unexpected affix keyword: ~A"
-                    (word-morphology word))
-       ;; keep this frame on the stack
-       :foo ))))
 

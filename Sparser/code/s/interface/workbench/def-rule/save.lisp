@@ -1,9 +1,11 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER
-;;; copyright (c) 1995-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1996,2011  David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
+;;; $Id$
 ;;;
 ;;;     File:  "save"
 ;;;   module:  "interface;workbench:def rule:"
-;;;  Version:  0.2 June 1996
+;;;  Version:  1.0 August 2011
 
 ;; broken out of [define-rule] 4/27/95.  6/14 extended to have words in the 
 ;; mapping.  
@@ -12,15 +14,30 @@
 ;;      of what had happened. (12/5) finished the announcement stuff
 ;;     (3/14) fixed typo in that.  (6/26/96) checked a pending breakpoint and
 ;;      removed it.
+;; 1.0 (7/24/09) Fan-out in define-realization/expr because of shift to lexicalized
+;;      variables bleeding into the call to instantiate-rule-schema.
+;;     (2/8/11) #+ccl => #+mcl to deconflict with Clozure.
+;;     (8/11/11) moved define-realization to objects/model/tree-families/radata1.lisp.
+;; SBCL corrected writeout-dereferenced-mapping-for-revival -- VERIFY THAT THE FIX WORKS CORRECTLY
 
 (in-package :sparser)
+(defvar *RDT/MAPPING*)
+(defvar *RDT/SELECTED-SCHEMA*)
+(defvar *SLVD-WINDOW*)
+(defvar *SLVD/SAVE-ROUTINE*)
+(defvar *RDT/DOSSIER-TO-USE*)
+(defvar *DEFAULT-DOSSIER-FILE*)
+(defvar *RDT/LAST-DOSSIER-USED*)
+(defvar *RDT/SELECTED-SCHEMA*)
+(defvar *RDT/MAPPING*)
+(defvar *RDT/REFERENCE-CATEGORY*)
 
 
 ;;;--------------------------------
 ;;; Writing the rule out to a file
 ;;;--------------------------------
 
-(defun rdt/Save-new-rule ( &key (mapping *rdt/mapping*)
+(defun rdt/save-new-rule ( &key (mapping *rdt/mapping*)
                                 (etf *rdt/selected-schema*) )
 
   ;; Called from rdt/Readout-rule-tableau, which is that the 'evaluate'
@@ -80,8 +97,6 @@
   (terpri stream))
 
 
-
-
 (defun writeout-dereferenced-mapping-for-revival (mapping stream)
   (format stream "~&~9,3T(")
   (do* ((remaining-pairs mapping (cdr remaining-pairs))
@@ -99,14 +114,17 @@
               (string-downcase (symbol-name symbol)))
       
       (if (stringp value)
-        (format stream "\"~A\"" (word-pname value))
+        (format stream "\"~A\"" value) ;; SBCL flagged (word-pname value))
         
         (format stream "~A)"
                 (etypecase value
                   (lambda-variable
                    `(,(var-name value)
                      ,(string-downcase
-                       (cat-symbol (first (var-binding-sites value))))))
+                       ;; 7/25/13 That's nonsense, but var-binding-sites
+                       ;; has been reworked
+                       (cat-symbol (first value ;;(var-binding-sites value)
+                                          )))))
                   (word
                    (format nil "\"~A\"" (word-pname value)))
                   ((or referential-category mixin-category category)
@@ -144,38 +162,12 @@
 
 
 
-;;;--------------------------------------------
-;;; the input routine that reads these back in
-;;;--------------------------------------------
-
-(defmacro define-realization
-          (category-name tree-family-name mapping-expression)
-  `(define-realization/expr
-     ',category-name ',tree-family-name ',mapping-expression))
-
-(defun define-realization/expr (category-name
-                                tree-family-name
-                                mapping-expression )
-
-  (let ((category (category-named category-name))
-        (tree-family (exploded-tree-family-named tree-family-name))
-        (mapping (vivify-mapping-exp mapping-expression)))
-
-    (declare (ignore category))
-    ;; ?? make a permanent hookup to the category ??
-    ;; Could be useful if a word substitution is involved
-
-    ;; copy of loop in Make-rules-for-rdata
-    (dolist (cfr-template (etf-cases tree-family))
-      (instantiate-rule-schema cfr-template mapping))))
-
-
-
 ;;;-----------------------------------------
 ;;; announcing the effect of the definition
 ;;;-----------------------------------------
 
-#+ccl(defun announce-effect-of-rule-definition ()
+#+mcl
+(defun announce-effect-of-rule-definition ()
   ;; called from rdt/Save-new-rule
   (clear-widgets-off-the-rdt-visible-window-area)
   (move-the-announcement-widgets-onto-the-rdt-window)

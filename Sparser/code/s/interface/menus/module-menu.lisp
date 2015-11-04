@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "module menu"
 ;;;    Module:  "interface;menus:"
-;;;   version:  0.5 October 1994
+;;;   version:  1.3 June 1996
 
 ;; initiated 3/9/92 v2.2.  Fleshed out 5/1,2.  Converted driver
 ;; to a function 6/25.
@@ -14,17 +14,17 @@
 ;;      with the order given in the defining file.
 ;; 0.4 (4/24) added the gate *spm/inculde-grammar-modules*
 ;; 0.5 (10/12) trying a different timing of when the module is constructed
+;; 1.0 (12/30) added inclusion of object menu items
+;; 1.1 (3/22/95) Put in a check that leaf modules had contents to gate whether
+;;      they (and recursively their parents) go into the menu.  Pulled the
+;;      'describe' code because there's so little postprocessing, etc. that
+;;      it doesn't have significant contents
+;; 1.2 (4/3) put in a filter for 'public grammar' that runs when Sparser is
+;;      an application
+;; 1.3 (6/20) added rules item to the menu
+;;     (6/6/96) adjusted the public grammar filter for the case of academics
 
 (in-package :sparser)
-
-
-;;---- gate guarding the launching of the menu
-
-(unless (boundp '*spm/inculde-grammar-modules*)
-  (defparameter *spm/inculde-grammar-modules* t
-    "Referenced in Launch-sparser-menus, and usually overridden
-     in a grammar-modules 'include' file."))
-
 
 
 ;;;---------------------
@@ -41,17 +41,24 @@
   ;; called from Launch-Sparser-menus when the load is finished
   (unless *grammar-modules-menu* ;; don't do it twice
     (let ((menu (establish-gmod-menu)))
-      (ccl:menu-install menu))))
-  #| 10/12  This global loses its macptr over an image save, so probably
-       have to do the whole process as part of the launch
-  (if *grammar-modules-menu*
-    (menu-install *grammar-modules-menu*)
-    (format t "~%~%Cannot bring up the grammar modules menu because ~
-               ~%*grammar-modules-menu* is nil. Either Establish-gmod-menu~
-               ~%was never run, or it got an error"))) |#
+      (when (or *words-menu-item* *categories-menu-item* *cfrs-menu-item*)
+        ;; additions go at the bottom of the menu
+        (ccl:add-menu-items menu (make-instance 'menu-item
+                                   :menu-item-title "-"))
+        (when *words-menu-item*
+          (ccl:add-menu-items menu *words-menu-item*))
+        (when *categories-menu-item*
+          (ccl:add-menu-items menu *categories-menu-item*))
+        (when *cfrs-menu-item*
+          (ccl:add-menu-items menu *cfrs-menu-item*)))
 
-;(menu-install *grammar-modules-menu*)
+      (ccl:menu-install menu))))
+
+
+;(install-grammar-modules-menu)
 ;(menu-deinstall *grammar-modules-menu*)
+;(setq *grammar-modules-menu* nil)
+
 
 
 ;;;---------------------
@@ -59,90 +66,109 @@
 ;;;---------------------
 
 (defun establish-gmod-menu ()
-  (format t "~%~%-------------------------------~
+  (format t "~%-------------------------------~
              ~%Grammar modules:~%~%")
-  (let ( submenus )
+  (let ( contents  submenus )
+
     (dolist (topmod *toplevel-grammar-modules*)
+      (setq contents nil)
       (if (gmod-sub-modules topmod)
-        (push (do-menus/nonterminal-module topmod "")
-              submenus)
+        (then
+          (setq contents (do-menus/nonterminal-module topmod ""))
+          (when contents
+            (push contents submenus)))
+
         (when (gmod-files topmod)
-          (push (do-menus/leaf-module topmod "")
-                submenus))))
+          (setq contents (do-menus/leaf-module topmod ""))
+          (when contents
+            (push contents submenus)))))
+
     (let ((menu (make-instance 'menu :menu-title "grammar")))
       (apply #'add-menu-items menu (nreverse submenus))
       (setq *grammar-modules-menu* menu))))
 
 
+
 (defun do-menus/nonterminal-module (gmod indent)
-  (format t "~&~A~A" indent (gmod-princ-name gmod))
-  (let ((menu (make-instance 'menu
-                :menu-title (gmod-princ-name gmod)))
-        (daughter-modules (gmod-sub-modules gmod))
+  (let ((daughter-modules (gmod-sub-modules gmod))
         (new-indent (concatenate 'string indent "  "))
-        submenus )
+        contents  submenus )
     (dolist (gmod daughter-modules)
+      (setq contents nil)
       (if (gmod-sub-modules gmod)
-        (push (do-menus/nonterminal-module gmod new-indent)
-              submenus)
+        (then
+          (setq contents
+                (do-menus/nonterminal-module gmod new-indent))
+          (when contents
+            (push contents submenus)))
         (when (gmod-files gmod)
-          (push (do-menus/leaf-module gmod new-indent)
-                submenus))))
-    (apply #'add-menu-items menu submenus)
-    menu ))
+          (setq contents (do-menus/leaf-module gmod new-indent))
+          (when contents
+            (push contents submenus)))))
+
+    (when submenus
+      (format t "~&~A~A" indent (gmod-princ-name gmod))
+      (let ((menu (make-instance 'menu
+                    :menu-title (gmod-princ-name gmod))))
+        (apply #'add-menu-items menu submenus)
+        menu ))))
+
+
 
 
 (defun do-menus/leaf-module (gmod indent)
   (format t "~&~A~A" indent (gmod-princ-name gmod))
   (let ((files (gmod-files gmod))
-        #|(cf (gmod-cf-rules gmod))
-        (cs (gmod-cs-rules gmod))
-        (words (gmod-words gmod))
-        (pw (gmod-polywords gmod))
-        (simple-categories (gmod-non-terminals gmod))
-        (object-types (gmod-object-types gmod))|#
-        (name (gmod-princ-name gmod)))
+        (name (gmod-princ-name gmod))
+        items  )
 
     (unless name
       (break "grammar module ~S needs a princ-name" gmod))
 
-    (let ((menu (make-instance 'menu
-                  :menu-title name))
-          items )
+    (when files
+      (if *sparser-is-an-application?*
+        ;; The grammar is made available in two different modes as
+        ;; reflected in these flags. The whole thing is opened up
+        ;; to academics, but only designated 'public' files are
+        ;; available to commercial licensees.
+        (if *academic-grammar*
+          (push (make-menu/files files) items)
 
-      (when files
-        (push (make-menu/files files) items))
+          (let ((public-files (public-files-filter files)))
+            (when public-files
+              (push (make-menu/files public-files) items))))
 
-      #|  Ignoring these (4/6/94) because they generate so many
-          menus that they'll blow out the carrying capacity of
-          the menu system under MCL 2.0
-      (when words
-        (push (make-menu/words words) items))
-      (when pw
-        (push (make-menu/pws pw) items))
-      (when object-types
-        (push (make-menu/objects object-types) items))
-      (when cf
-        (push (make-menu/cfrs cf) items))
-      (when cs
-        (push (make-menu/csrs cs) items))
-      (when simple-categories
-        (push (make-menu/nonterminals simple-categories) items))|#
-      
+        (push (make-menu/files files) items)))
+
+      #| pulling this 3/21/95 until Describe-mod and the
+         accumulators produce more interesting information.
       (push (make-instance 'menu-item
               :menu-item-title "describe"
               :menu-item-action #'(lambda ()
                                     (eval-enqueue
                                      `(describe-gmod ,gmod))))
-            items)
+            items) |#
 
-      (apply #'add-menu-items menu items)
-      menu )))
+    (when items
+      (let ((menu (make-instance 'menu
+                    :menu-title name)))
+        (apply #'add-menu-items menu items)
+        menu ))))
 
 
 ;;;-------------
 ;;; subroutines 
 ;;;-------------
+
+(defun make-menu/files (list-of-raw-namestrings)
+  (make-instance 'menu
+    :menu-title "files"
+    :menu-items (let ( items )
+                  (dolist (s list-of-raw-namestrings)
+                    (push (make-menu-item/file s)
+                          items ))
+                  (nreverse items))))
+
 
 (defun make-menu-item/file (string)
   ;; the string is a 'raw-namestring' like "sl;pct:position object"
@@ -182,14 +208,35 @@
 
 
 
-(defun make-menu/files (list-of-raw-namestrings)
-  (make-instance 'menu
-    :menu-title "files"
-    :menu-items (let ( items )
-                  (dolist (s list-of-raw-namestrings)
-                    (push (make-menu-item/file s)
-                          items ))
-                  (nreverse items))))
+(defun public-files-filter (files)
+  ;; return those file-namestrings on the list that are 'public'
+  ;; given the current conventions (4/3/95)
+  (let ( public-files )
+    (dolist (f files)
+      (cond ((position #\; f)
+             ;; it involves a llogical directory
+             (when (search "public-" f)
+               (push f public-files)))
+            ((search ":grammar:" f)
+             (when (probe-file
+                    (concatenate 'string
+                                 cl-user::location-of-sparser-directory
+                                 "grammar"))
+               (when (file-in-public-module f)
+                 (push f public-files))))))
+
+    (when public-files
+      (nreverse public-files))))
+
+
+(defun file-in-public-module (namestring)
+  (dolist (directory-name *public-grammar-directories* nil)
+    (when (search directory-name namestring)
+      (return-from File-in-public-module t))))
+
+ 
+
+
 
 
 

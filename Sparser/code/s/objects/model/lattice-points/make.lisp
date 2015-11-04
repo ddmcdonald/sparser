@@ -1,11 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 2000-2001 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
+;;; $Id:$
 ;;;
 ;;;     File:  "make psi"
 ;;;   Module:  "objects;model:lattice-points:"
 ;;;  version:  March 2001
 
 ;; initiated 6/21/00. Added subtype-lattice-point to get-lp dispatch 3/4/01
+;; 1.0 (8/6/09) Fan-out from make-over. Few types of lp
 
 (in-package :sparser)
 
@@ -35,8 +38,8 @@
          (lp
           (ecase type
             (lattice-point (apply #'make-lattice-point pairs))
-            (psi-lattice-point (apply #'make-psi-lattice-point pairs))
-            (self-lattice-point (apply #'make-self-lattice-point pairs))
+;            (psi-lattice-point (apply #'make-psi-lattice-point pairs))
+;            (self-lattice-point (apply #'make-self-lattice-point pairs))
             (top-lattice-point (apply #'make-top-lattice-point pairs))
             (subtype-lattice-point (apply #'make-subtype-lattice-point pairs)))))
 

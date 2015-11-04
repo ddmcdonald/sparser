@@ -1,11 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1998-1999 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
+;;; $Id:$
 ;;;
 ;;;     File:  "find"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  February 1999
+;;;  version:  1.0 August 2009
 
 ;; initiated 9/12/98. Tweaked the names in the calling structure 2/14/99.
+;; 1.0 (8/6/09) Make-over with more of the lifting on the psi, less on the lp
 
 ;;;-------------------------------------
 ;;; Look for the whole set of variables
@@ -13,6 +16,7 @@
 
 (defun find-lattice-point-with-variables (type variables)
   ;; Just looks up and vets the lattice-point then calls the common continuation.
+  (break "find-lattice-point-with-variables")
   (let ((top-lp (cat-lattice-position type)))
     (unless (and top-lp
                  (typep top-lp 'top-lattice-point))
@@ -28,19 +32,15 @@
   ;; Find a pre-existing lattice-point with the indicated variables
   ;; Reads the index
   (let* ((number-of-variables-bound (length list-of-variables))
-         (top-lp (or (when (typep starting-lp 'top-lattice-point)
-                       starting-lp)
-                     (climb-lattice-to-top starting-lp)))
-         (candidate-nodes (cdr (assoc (first list-of-variables)
-                                     (lp-index-by-variable top-lp)))))
+         (top-lp (lp-top-lp starting-lp))
+         (candidate-nodes (cdr (assoc number-of-variables-bound
+				      (lp-subnodes top-lp)))))
     (when candidate-nodes
       (dolist (node candidate-nodes)
-        (when (= number-of-variables-bound
-                 (length (lp-variables-bound node)))
-          (when (null (set-difference list-of-variables
-                                      (lp-variables-bound node)
-                                      :test #'eq))
-            (return node)))))))
+	(when (null (set-difference list-of-variables
+				    (lp-variables-bound node)
+				    :test #'eq))
+	  (return node))))))
 
 
 

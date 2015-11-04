@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2011-2013 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;; 
 ;;;     File:  "adverbs"
 ;;;   Module:  "grammar;rules:words:"
-;;;  Version:  February 2010
+;;;  Version:  2.0 May 2013
 
 ;; initiated 5/16/93 v2.3. Populated 1/11/94. Added to 1/12,1/13
 ;; 0.1 (5/26) redid the bracket label as 'adverb'
@@ -20,139 +19,36 @@
 ;;      an edge. 
 ;;     (2/3/10) removed "few" since it should really be taken as a quantifier
 ;;     (2/10) Gave "too" and "very" ].adverb brackets: "a very small ..."
+;; 1.0 (9/16/11) Very thorough make over now that methods are available.
+;;     (3/2/12) Accommodate to adverbs coming in from Comlex. 
+;; 1.1 (12/4/12) added .[adverb to the default to match what was done in
+;;      morphology1 (now rules/brackets/assignments). 
+;; 1.2 (12/15/12) Reworked it extensively so the category for the adverb
+;;      is used in the cfr rather than 'adverbial' and we make an instance 
+;;      of the category to serve as the referent, along with a shadow
+;;      instance to use in the methods. (1/9/13) Moving out all
+;;      the words per se to dossiers;modified so they can go through more
+;;      specific definitions rather than the old two-step dance that had
+;;      so much inconsistency.
+;; 2.0 (5/22/13) Made-over as a call to define-function-term and made being
+;;      sentential adverbs the marked case. 6/9/14 added the other arguments
+;;      to define-function-term. 4/20/15 removing "not", which is to specific
+;;      in action to treat as an adverb.
 
 (in-package :sparser)
 
-;;;------------------------------------------------------------------------
-;;; an anonymous category to go with anonymous adverbs combined in by form
-;;;------------------------------------------------------------------------
+;; For list of adverbs of diverse sorts see dossiers/modifiers.lisp
+;; For the method used by adverbs see rules/syntax/adverbs1.lisp
 
-(define-category anonymous-adverb)
-
-(defun define-adverb (string &optional brackets)
-  ;; called when a word is auto-def'd as a semantics-free adverb
-  (unless brackets
-    (setq brackets '( ].adverb )))
-  (let ((word (define-function-word string
-                :brackets brackets
-                :form (category-named 'adverb))))
-    (define-cfr (category-named 'anonymous-adverb)  (list word)
-      :form (category-named 'adverb)
-      :referent word)))
-
-;;;---------- adverb adverbs
-
-;; Since these don't start verb groups, they can't be marked 'adverb'
-
-(define-function-word "too"   :brackets '( ].adverb .[adverb ))
-(define-function-word "very"  :brackets '( ].adverb .[adverb ))
-
-
-
-;;;---------- approximators
-
-;; (A)  "I have just seven days left"
-;; (B)  "I just came back from there"
-;;
-;;  These bind to their left,
-;;  and they terminate whatever is ongoing
-
-(define-function-word "about"   :brackets '( ].adverb ))
-(define-function-word "around"  :brackets '( ].adverb ))
-
-(define-function-word "fairly"  :brackets '( ].adverb ))
-
-(define-function-word "just"    :brackets '( ].adverb ))
-(define-function-word "only"    :brackets '( ].adverb ))
-
-
-
-;;;---------- comparatives
-;;
-;; All of these are determiners
-
-;; These combine to their right with adverbs
-;;
-(define-function-word "less"   :brackets '( ].adverb ))
-(define-function-word "more"   :brackets '( ].adverb ))
-(define-function-word "most"   :brackets '( ].adverb ))
-
-;; These don't combine with adverbs
-;;
-(define-function-word "fewer" :brackets '( ].adverb  ))
-
-
-;; ??
-(define-function-word "than" )
-
-
-;;;---------- frequency
-
-(define-function-word "always"     :brackets '( ].adverb ))
-(define-function-word "frequently" :brackets '( ].adverb ))
-(define-function-word "never"      :brackets '( ].adverb ))
-(define-function-word "often"      :brackets '( ].adverb ))
-(define-function-word "rarely"     :brackets '( ].adverb ))
-(define-function-word "seldom"     :brackets '( ].adverb ))
-(define-function-word "usually"    :brackets '( ].adverb ))
-
-
-;;;---------- position within a process
-; These can be positioned sentence initial or final as well
-; a pre-verb, so they need bracketing that can indicate
-; segment starts too.
-
-(define-function-word "initially"    :brackets '( ].adverb  adverb.[ ))
-(define-function-word "finally"    :brackets '( ].adverb  adverb.[ ))
-(define-function-word "eventually"    :brackets '( ].adverb  adverb.[ ))
-
-
-;;;---------- likelyhood
-
-(define-function-word "probably"   :brackets '( ].adverb ))
-
-
-
-;;;---------- sequencers, can start NPs
-
-(define-function-word "last"   :brackets '( ].adverb .[np ))
-(define-function-word "next"   :brackets '( ].adverb .[np  ))
-
-
-;;;------
-;;; time
-;;;------
-
-;;;---------- deictic, standalone
-
-(define-function-word "immediately" :brackets '( ].adverb  adverb.[ ))
-(define-function-word "soon"        :brackets '( ].adverb  adverb.[ ))
-
-
-;;;---------- deictic, complement-taking
-
-(define-function-word "earlier"  :brackets '( ].adverb  adverb.[ ))
-(define-function-word "later"  :brackets '( ].adverb  adverb.[ ))
-
-
-;;;------------
-;;; {attitude}
-;;;------------
-;  Take nominalized clauses/participials
-
-(define-function-word "despite" :brackets '( ].adverb .[phrase ))
-;; If we had a "starts clause" bracket that might help
-
-(define-function-word "in spite of" :brackets '( ].adverb .[np ))
-(define-function-word "regardless of" :brackets '( ].adverb .[np ))
-
-
-;;;------------
-;;; enablement
-;;;------------
-
-;; These take interesting complements. Refine the brackets?
-(define-function-word "in order to" :brackets '(].phrase .[phrase))
-(define-function-word "so that" :brackets '(].phrase .[phrase))
-
-
+(defun define-adverb (string &key super-category
+                                  rule-label discriminator)
+  "The string can be a single word or a polyword. The super-category
+   defaults to adverbia. If you supply a value is should be the symbols
+   that names the category, not the actual category, and note that this
+   is a function, not a macro so all areguments are evaluated."
+  (define-function-term string 'adverb
+    :super-category (or super-category
+                        (super-category-for-POS :adverb))
+    :rule-label rule-label
+    :discriminator discriminator
+    :tree-families   '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb sentence-adverb)))

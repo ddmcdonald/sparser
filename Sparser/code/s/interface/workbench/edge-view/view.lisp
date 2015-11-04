@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "view"
 ;;;    Module:  "interface;workbench:edge-view:"
-;;;   version:  0.10 August 1995
+;;;   version:  1.0 November 1995
 
 ;; initiated 2/10/92 v2.2
 ;; 0.1 (1/10/94) redesigned from scratch for MCL2.0 as part of the Workbench
@@ -26,7 +26,9 @@
 ;; [ broke file into pieces 2/28 ]
 ;; 0.10 (4/21) moved widgets in, added 'inspect', changed double click action
 ;;       to 'open'.
-;;      (8/9) added a debugging block to the warning in Scroll-edges-view/cons
+;;      (8/9) added a debugging block to the warning in Scroll-edges-view/cons 
+;; 1.0  (8/30) tweeked Print-edge-in-view to handle elipsis edges.  (11/13) tweeked
+;;       printing of words based on symbols like para.starts
 
 (in-package :sparser)
 
@@ -140,36 +142,44 @@
   (when e
     (etypecase e
       (edge
-       (let ((category (edge-category e))
-             (depth (gethash e *wb/edge->depth*)))
-         (unless depth
-           (break "no depth for ~A" e))
-         (if (edge-starts-at e)
-           (let ((start (pos-token-index (pos-edge-starts-at e)))
-                 (end (pos-token-index (pos-edge-ends-at e))))
-
-             (let ((label-string
-                    (etypecase category
-                      ((or referential-category category mixin-category)
-                       (string-downcase (symbol-name (cat-symbol category))))
-                      (word (concatenate 'string
-                              "\"" (word-pname category) "\""))
-                      (polyword (pw-pname category)))))
-
-               (format stream "e~A  "
-                       (edge-position-in-resource-array e))
-               (write-string (string-of-n-spaces (* 2 depth)) stream)
-               (format stream "~A  ~A  ~A" start label-string end)))
-
-           ;; otherwise it's an inactive edge
-           (format stream "inactive edge no. ~A"
-                   (edge-position-in-resource-array e)))))
+       (if (eq (edge-category e) *elipsis-dots*)
+         (print-elipsis-edge e stream)
+         (let ((category (edge-category e))
+               (depth (gethash e *wb/edge->depth*)))
+           (unless depth
+             (break "no depth for ~A" e))
+           (if (edge-starts-at e)
+             (let ((start (pos-token-index (pos-edge-starts-at e)))
+                   (end (pos-token-index (pos-edge-ends-at e))))
+               
+               (let ((label-string
+                      (etypecase category
+                        ((or referential-category category mixin-category)
+                         (string-downcase (symbol-name (cat-symbol category))))
+                        (word (concatenate 'string
+                                           "\"" (word-pname category) "\""))
+                        (polyword (pw-pname category)))))
+                 
+                 (format stream "e~A  "
+                         (edge-position-in-resource-array e))
+                 (write-string (string-of-n-spaces (* 2 depth)) stream)
+                 (format stream "~A  ~A  ~A" start label-string end)))
+             
+             ;; otherwise it's an inactive edge
+             (format stream "inactive edge no. ~A"
+                     (edge-position-in-resource-array e))))))
       (cons
        ;; it's an encoding of positions and a word
        (let ((pname (word-pname (second e)))
-             (depth (fourth e)))
-         (when (null pname)
-           (setq pname (symbol-name (word-symbol (second e)))))
+             (depth (fourth e))
+             symbol )
+
+         (cond ((null pname)
+                (setq pname
+                      (string-downcase (symbol-name (word-symbol (second e))))))
+               ((equal pname "")
+                (setq pname (string-downcase (symbol-name (word-symbol (second e))))
+                      symbol t)))
 
          ;(write-string (string-of-n-spaces (* 2 depth)) stream)
          ;; with a variable width font that carefully calculated
@@ -177,10 +187,15 @@
          (when (> depth 0)
            (write-string "                                  " stream))
 
-         (format stream "~A  \"~A\"  ~A"
-                 (pos-token-index (first e))
-                 pname
-                 (pos-token-index (third e))))))))
+         (if symbol
+           (format stream "~A  \"~A\"  ~A"
+                   (pos-token-index (first e))
+                   pname
+                   (pos-token-index (third e)))
+           (format stream "~A  \"~A\"  ~A"
+                   (pos-token-index (first e))
+                   pname
+                   (pos-token-index (third e)))))))))
 
 
 ;;;-----------
@@ -221,8 +236,8 @@
     (if index
       (ccl:scroll-to-cell *edges-table* 0 index)
       (when *break-on-unexpected-cases*
-        (format t "~&~%----- Scroll-edges-view/cons couldn't find ~
-                   edges table index to scroll to~%~A~%-----~%" wf)))))
+        (break "~&~%----- Scroll-edges-view/cons couldn't find ~
+                edges table index to scroll to~%~A~%-----~%" wf)))))
 
 
 (defun scroll-as-needed-to-make-edge-visible (edge)

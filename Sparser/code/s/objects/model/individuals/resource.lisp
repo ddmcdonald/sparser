@@ -1,12 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "resource"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  October 1994
+;;;  version:  1.0 January 2015
 
 ;; initiated 7/20/92 v2.3. 8/10/94 redid definition of re-initialization
 ;; 10/3 added return-from a failure break
+;; 1.0 (5/13/95) Added notion of a permanent individual that appears on a separate
+;;      list and isn't recycled.  2/7/05 Added permanent-individual? and a value
+;;      for the :permanent property
+;;     (6/3/13) Moved in the other general {+,-}permanent code and added doc.
+;;     (1/10/15) made indiv-uid more robust since it's about to be used more
 
 (in-package :sparser)
 
@@ -63,7 +68,7 @@
         (loop
           (when (null next-individual)
             (break "Couldn't find ~A amoung the active individuals" indiv)
-            (return-from Deallocate-individual nil))
+            (return-from deallocate-individual nil))
           (when (eq next-individual indiv)
             ;; splice it out of kcons list
             (rplacd prior-cell
@@ -103,7 +108,7 @@
 ;;;------
 
 (defun initialize-individuals-resource ()
-  ;; called from 
+  (declare (special *number-of-individuals-in-initial-allocation*))
   (setq *next-individual* nil)
   (allocate-a-rasher-of-individuals
    *number-of-individuals-in-initial-allocation*))
@@ -116,7 +121,10 @@
   (defparameter *number-of-individuals-per-increment* 50))
 
 
-(defparameter *individual-allocation-count* 0)
+(defparameter *individual-count* 0
+  "Used for both allocated (resource-based) and permanent individuals
+   so that all numbers are uniquely assigned.")
+
 
 (defun allocate-a-rasher-of-individuals
        ( &optional (max *number-of-individuals-per-increment*))
@@ -127,10 +135,58 @@
       (setq ptr
             (kcons (make-individual
                     :type :never-used
-                    :plist `(:uid ,(incf *individual-allocation-count*)))
+                    :plist `(:uid ,(incf *individual-count*)))
                   ptr)))
 
     (setq *next-individual* ptr)))
+
+
+
+;;;---------------------------------------------------------------
+;;; permanent individuals  -- outside the allocation/reuse system
+;;;---------------------------------------------------------------
+#|
+Whether an individual is permanent or reclaim-able is determined by
+the call from define-individual, where the *index-under-permanent-instances*
+flag is set and read by make-simple-individual. Permanent individuals
+are done with calls to make-a-permanent-individual just below and just
+'make' a new instance of the structure. Reclaim-able are done by calls
+to allocate-individual.
+
+The usual progression of indexing calls for permanent individuals is
+index-aux/individual => index-to-category => add-permanent-individual
+
+Regardless of what the category may say about indexing, that function
+uses the two-lists on the plist conception of how things are done. 
+
+|#
+
+(defparameter *permanent-individuals* nil)
+
+(defun make-a-permanent-individual ()
+  (let ((individual
+         (make-individual
+          :type :never-used
+          :plist `(:uid ,(incf *individual-count*)
+                   :permanent t))))
+    (push individual *permanent-individuals*)
+    individual ))
+
+
+(defun permanent-individual? (i)
+  (get-tag-for :permanent i))
+
+
+(defun note-permanence-of-categorys-individuals (category)
+  ;; called from decode-index-field-aux as it reads a category's
+  ;; index field. 
+  (push-onto-plist category t :instances-are-permanent))
+
+(defun individuals-of-this-category-are-permanent (category)
+  ;; called by define-individual to set the value of the flag
+  ;; *index-under-permanent-instances* which that function binds.
+  (get-tag-for :instances-are-permanent
+               category))
 
 
 ;;;-----------------
@@ -141,14 +197,25 @@
   (cond ((find n *active-individuals*
               :key #'(lambda (i)
                        (cadr (member :uid (unit-plist i))))))
+
         ((find n *next-individual*
               :key #'(lambda (i)
                        (cadr (member :uid (unit-plist i))))))
+
+        ((find n *permanent-individuals*
+               :key #'(lambda (i)
+                        (cadr (member :uid (unit-plist i))))))
+
         (t
          (format t "~%No active or allocated individual with ~
                     uid #~A" n))))
 
 
+
 (defun indiv-uid (i)
-  (cadr (member :uid (unit-plist i))))
+  (let ((plist (unit-plist i)))
+    (when plist
+      (let ((uid (cadr (member :uid plist))))
+        uid))))
+
 

@@ -1,9 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "form"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  0.7 July 1995   
+;;;  version:  1.5 March 2013
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10
 ;; 0.1 (10/24) Added processing of rule cases because of the words and
@@ -21,6 +22,19 @@
 ;; 0.6 (3/7) added 'schema-type' to the args.
 ;;     (4/27) fixed glitch that :includes wasn't promulgated to other calculations
 ;; 0.7 (7.26) tweeked decode-referent-exp to allow for returning categories
+;; 1.0 (12/6/97) Modified Decode-etf-rule-case and friends to made cases into objects.
+;;     (5/5) added tree-family setting to Decode-etf-rule-case.
+;; 1.1 (4/11/05) Fixed odd case in Decode-referent-exp1 by moving 'when's into
+;;  the cond. (4/20/09) Removed a useless trace-statement
+;; 1.2 (9/17/09) Added possibility of an explict :form label since too many of
+;;  the rules were coming out with no form so the automatic scheme is too weak.
+;; 1.3 (7/7/09) Added form-category as possible type for rhs of decode-etf-rule-case.
+;;  Also, I doubt v1.2 was actually created on 9/17/09 without a time machine. :)
+;; 1.4 (8/10/11) Added :method analogous to :function in decode-referent-term, and
+;;     put in a hack to identify the form of the result from the form category
+;;     on the rhs. 
+;; 1.5 (8/30/11) Modified default form calculation to look at lhs first. 
+;;     (3/19/13) Improved error message in decode-referent-term
 
 (in-package :sparser)
 
@@ -87,7 +101,8 @@
             (mapcar #'(lambda (case-expression)
                         (decode-etf-rule-case case-expression
                                               labels
-                                              binding-parameters))
+                                              binding-parameters
+                                              etf-object))
                     cases)))
 
     (when incorporates
@@ -106,7 +121,8 @@
 ;;;----------------------------------
 
 (defun decode-etf-rule-case (case-exp
-                             labels binding-parameters)
+                             labels binding-parameters
+                             tree-family)
 
   ;; decomposes the expression, does subsitutions of objects for
   ;; terms as needed, and returns a reconstructed expression with
@@ -118,11 +134,14 @@
          (lhs (first rule-exp))
          (rhs (second rule-exp))
          (referent (cddr rule-exp))
+         (form-exp (when (eq :form (car referent))
+                     (prog1 (cadr referent)
+                       (setq referent (cddr referent)))))
          (substitution-terms
           (append labels
                   binding-parameters))
 
-         decoded-rhs  )
+         decoded-rhs  form-category )
 
     (setq decoded-rhs
           (mapcar #'(lambda (term)
@@ -132,12 +151,34 @@
                        ((and (symbolp term)
                              (name-includes-slash term))
                         term )
+                       ((form-category? term) term)
                        ((category-named term)
-                        ;; 10/17 ?? is this too broad ??
+                        ;; 10/17/94 ?? is this too broad ??
                         term )
                        (t (break "The term is ~A, not a string or ~
                                   a substitution term." term))))
                   rhs))
+    (if form-exp
+      (then
+        (setq form-category (category-named form-exp))
+        (unless form-category
+          (error "There is no (form) category named ~a" form-exp))
+        (unless (form-category? form-category)
+          (error "There is no form-category named ~a" form-exp)))
+      (else 
+        (let ((name-of-form-category
+               (or (when (form-category? lhs) lhs)
+                   (loop for term in rhs
+                      ;; maybe this is a form-based rule
+                      when (form-category? term)
+                      return term))))
+          ;; Should we insist that the form be specified?
+          (when name-of-form-category
+;;             (push-debug `(,rhs ,lhs))
+;;             (error "Could not identify a form category in the rhs of ~
+;;                     this case. Try making it explicit"))
+            (setq form-category (category-named name-of-form-category))))))
+    
     (multiple-value-bind (decoded-referent head etc)
                          (decode-referent-exp
                           referent substitution-terms)
@@ -146,10 +187,22 @@
         (setq descriptors (calculate-descriptors
                            decoded-rhs head etc descriptors)))
 
-      `(,relation
-        (,lhs ,decoded-rhs
-              ,@decoded-referent)
-        ,descriptors)  )))
+      (let ((schr (find-or-make-schematic-rule
+                   tree-family relation lhs decoded-rhs)))
+        (setf (schr-tree-family schr) tree-family)
+        (setf (schr-relation schr) relation)
+        (setf (schr-lhs schr) lhs)
+        (setf (schr-rhs schr) decoded-rhs)
+        (setf (schr-form schr) form-category)
+        (setf (schr-referent schr) decoded-referent)
+        (setf (schr-descriptors schr) descriptors)
+        (setf (schr-original-expression schr)
+              `(,relation
+                (,lhs ,decoded-rhs
+                      ,@decoded-referent)
+                ,descriptors)  )
+
+        schr ))))
 
 
 
@@ -202,21 +255,22 @@
         (values (nreverse decoded-exp)
                 head
                 etc ))
+    (cond 
+     ((eq prior-item :head)
+      (setq head item))
 
-    (cond ((eq prior-item :head)
-           (setq head item))
-          ((eq prior-item :daughter)
-           (setq head item)
-           (push item etc)
-           (push :daughter etc)))
+     ((eq prior-item :daughter)
+      (setq head item)
+      (push item etc)
+      (push :daughter etc))
 
-    (when (eq prior-item :instantiate-individual)
+     ((eq prior-item :instantiate-individual)
       (push item etc)
       (push :instantiate-individual etc))
 
-    (when (eq prior-item :binds)
+     ((eq prior-item :binds)
       (push item etc)
-      (push :binding-spec etc))
+      (push :binding-spec etc)))
 
     (push (decode-referent-term
            item prior-item exp substitution-terms)
@@ -233,11 +287,15 @@
           ((eq item 'left-edge) 'left-referent)
           ((eq item 'right-edge) 'right-referent)
           ((eq prior-item :function) item)
+          ((eq prior-item :method) item)
           (t
            (let ((category (resolve item)))
              (unless category
-               (break "No \"~A\" category has been ~
-                       defined, as used in:~%    ~A"
+               (push-debug `(,item ,substitution-terms))
+               (break "Trying to make sense of the item ~a~
+                     ~%in the referent expression~%  ~a~
+                     ~%But nothing has worked. Check whether ~
+                       it spelled correctly."
                       item exp))
              category))))
         ((listp item)
@@ -248,4 +306,3 @@
         (t (break "The item ~A does not appear to make ~
                    sense in the referent expression~
                    ~%   ~A" item exp))))
-

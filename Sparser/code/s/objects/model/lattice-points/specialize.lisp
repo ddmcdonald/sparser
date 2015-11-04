@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2011-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "specialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  0.3 February 2011
+;;;  version:  1.0 October 2015
 
 ;; initiated 11/29/97. Given some content 1/2/01 though punting on the issue of
 ;; cross-indexing all the different paths down to a subtype that is a specialization
@@ -18,6 +18,13 @@
 ;;   the change that the routine now returns a word instead of a symbol.
 ;; 0.3 (2/8/11) 'name-of' is predefined in Clozure, so changing it to 
 ;;   name-of-individual.
+;; 1.0 (5/9/14) Thorough make-over to simplify the operations and tune them
+;;   to CLOS and shadows. 
+;;   (1/7/15) Wrote one-off-specialization to expedite an issue in
+;;   conjunctions. 
+;; 6/30/2015 Fix one-off-specialization so that it does-not keep adding copies of the same super-category when
+;;  the same DL conjunction individuals, 10/17/15 was convinced it does'm make sense
+
 
 
 (in-package :sparser)
@@ -25,111 +32,74 @@
 ;;;-------------
 ;;; entry point
 ;;;-------------
+; This is called from ref/subtype -- what it returns becomes
+; the referent of the edge.
 
-(defun find-or-make-subtype (lp category)
-  (or (find-subtype lp category)
-      (make-subtype lp category)))
+(defgeneric specialize-object (base specializer)
+  (:documentation "Hook to provide room for changes in design.
+    Return an item that reflects the specialization of the
+    base item by the specializer."))
 
+(defmethod specialize-object ((i individual) (c category))
+  (push-debug `(,i ,c))
+  (break "You are trying to specialize ~a with the category ~a~
+          which is not a mixin. If you want to do that you need ~
+          to write the code for it." i c))
 
-(defun find-subtype (lp category)
-  (when (typep lp 'subtype-lattice-point)
-    (push-debug `(,lp ,category))
-    (break "stub: first subtype of a subtype:~%~a" lp))
-  #+ignore
-  (let* ((top-lp (climb-lattice-to-top lp))
-         (subtypes (lp-subtypes top-lp))
-         (entry (assoc category subtypes)))
-    (cdr entry)))
-
-
-
-(defun index-subtype-lp-to-supertype-lp (super sub specializing-category)
-  (when (typep super 'subtype-lattice-point)
-    (push-debug `(,super ,sub ,specializing-category))
-    (break "stub: first subtype of a subtype:~%~a" super))
-  #+ignore
-  (let* ((top-lp (climb-lattice-to-top super))
-         (subtypes (lp-subtypes top-lp))
-         (entry (assoc specializing-category subtypes)))
-
-    (if (null entry)
-      (setf (lp-subtypes top-lp) `((,specializing-category . ,sub)))
-      (push `(,specializing-category . ,sub) entry))))
-
+(defmethod specialize-object ((i individual) (mixin mixin-category))
+  ;; 1. Find the relevant subtyped category
+  ;; 2. If we have to make one, then we push the composite through
+  ;;    the CLOS operation and store its shadow in the subtype object.
+  ;; 3. Add the mixing to i's type field. Swap the shadow that is
+  ;;    there for the one from the subtype.
+  (let ((subtyped-category (find-subtype i mixin)))
+    (unless subtyped-category
+      (setq subtyped-category (make-subtype i mixin))
+      (index-subcategory (itype-of i) mixin subtyped-category))
+    (let* ((sclass (cat-specialized-class subtyped-category))
+           ;; cribed from create-shadow
+           (new-shadow (make-instance sclass)))
+      (setf (indiv-shadow i) new-shadow) ;; does all the work
+      i )))
 
 
-         
-;;;----------
-;;; new ones
-;;;----------
+(defun find-subtype (i mixin)
+  (let* ((base (itype-of i))
+         (lp (cat-lattice-position base))
+         (sub-nodes (lp-subtypes lp)))
+    (when sub-nodes
+      (let ((sub-lp (cdr (assoc mixin sub-nodes))))
+        (when sub-lp
+          (lp-subtype sub-lp))))))
 
-(defun make-subtype (super-lp specializing-category)
-  ;; -- the subtype gets added to the supertype by the indexing routine --
-  (push-debug `(,super-lp ,specializing-category))
-  (break "make-subtype")
-  #+ignore
-  (let* ((lp (get-lp 'subtype-lattice-point))
-         (super-category 
-          (if (typep super-lp 'self-lattice-point)
-            (category-of-self-lattice-point super-lp)
-            (base-category-of-lp super-lp)))
-         (base-string
-          (etypecase super-lp
-            (subtype-lattice-point
-             (format nil "~a/" (lp-supertype-print-string super-lp)))
-            (top-lattice-point
-             (format nil "~a/" 
-                     (string-downcase (symbol-name (cat-symbol super-category)))))
-            (psi-lattice-point
-             (format nil "~a/"
-                     (string-downcase (symbol-name (cat-symbol super-category)))))
-            (self-lattice-point 
-             (format nil "~a/"
-                     (string-downcase 
-                      (symbol-name (cat-symbol
-                                    (category-of-self-lattice-point super-lp))))))))
-         (namestring (string-append 
-                      base-string
-                      (string-downcase 
-                       (symbol-name
-                        (etypecase specializing-category
-                          (referential-category
-                           (cat-symbol specializing-category))
-                          (mixin-category
-                           (cat-symbol specializing-category))
-                          (category
-                           (cat-symbol specializing-category))
-                          (individual
-                           (if (has-a-name? specializing-category)
-                             (intern (word-pname (name-of-individual specializing-category)))
-                             (break "stub - string for individual")))))))))
+(defun index-subcategory (base mixin subtyped-category)
+  (let* ((lp (cat-lattice-position base))
+         (sub-lp (cat-lattice-position subtyped-category))
+         (sub-nodes (lp-subtypes lp)))
+    (if (null sub-nodes)
+      (setf (lp-subtypes lp) `((,mixin . ,sub-lp)))
+      (push `(,mixin . ,sub-lp) (lp-subtypes lp)))))
 
-    (setf (lp-supertype-print-string lp) namestring)
-    (setf (lp-specializing-category lp) specializing-category)
-    (setf (lp-supertype lp) super-lp)
-    (setf (lp-upward-pointers lp) (list super-lp))
-
-    (setf (lp-top-lattice-point lp)
-          (etypecase super-lp
-            (subtype-lattice-point (lp-top-lattice-point super-lp))
-            (self-lattice-point (climb-lattice-to-top super-lp))
-            (psi-lattice-point (climb-lattice-to-top super-lp))
-            (top-lattice-point super-lp)))
-
-    (let ((derived-category (define-subtype-derived-category lp super-category)))
-      (setf (lp-category lp) derived-category)
-      (setf (lp-super-category lp) super-category)
-
-      ;; Taking the bound/free distribution from the lattice point, which means
-      ;; that this subtype carries  a bit more information than it might, since
-      ;; the lattice-point portion of it reflects a certain point in the 
-      ;; composition process, which is probably arbitrary, but since the two
-      ;; kinds of information (subtyping and bound/free) are conflated on a single
-      ;; object, and since we are going to use the subtype lp going forward, 
-      ;; we have to use it or we'll lose it. 
-      (setf (lp-variables-free lp) (lp-variables-free super-lp))
-      (setf (lp-variables-bound lp) (lp-variables-bound super-lp))
-
-      (index-subtype-lp-to-supertype-lp super-lp lp specializing-category)
-      lp )))
+(defun make-subtype (i mixin)
+  ;; Returns a new subtyped-category that's indexed
+  ;; from its subtype-lattice-point.
+  ;;(push-debug `(,i ,mixin))
+  (let* ((base (itype-of i))
+         (base-lp (cat-lattice-position base))
+         (name (string-append
+                (cat-symbol base) "/" (cat-symbol mixin)))
+         (sub-lp (get-lp 'subtype-lattice-point
+                         :supertype base-lp
+                         :supertype-print-string name
+                         :specializing-category mixin)))
+    ;;(push-debug `(,sub-lp ,name)) (break "look at values")
+    (let ((sub-cat (define-subtype-derived-category
+                       sub-lp base mixin)))
+      (setf (lp-subtype sub-lp) sub-cat)
+      (setup-backing-clos-class sub-cat nil :referential)
+      (let ((sclass (get-sclass sub-cat)))
+        (setf (cat-specialized-class sub-cat) sclass)
+        ;;(push-debug `(,sub-cat ,sclass)) (break "look again")
+        sub-cat))))
+  
 

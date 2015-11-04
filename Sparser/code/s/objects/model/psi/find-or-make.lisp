@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1998-2005 David D. McDonald  -- all rights reserved
-;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
+;;; copyright (c) 1998-2005,2011 David D. McDonald  -- all rights reserved
+;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "find or make"
 ;;;   Module:  "objects;model:psi:"
-;;;  version:  0.1 July 2007
+;;;  version:  2.1 September 2011
 
 ;; These get called during an analysis and make calls out to annotation.
 
@@ -18,24 +17,85 @@
 ;;  that starts with a psi.  2/7 Fixed bug in parameter order in the subtype-
 ;;  creating call: Corresponding-unit-of-subtype. Set up machinery for to create
 ;;  the psi that goes with the subtyped individual. Tweeked through 2/9.
-;;  (7/6/07) Added package expersion because Allegra doesn't appear to be reading
+;;  (7/6/07) Added package expression because Allegro doesn't appear to be reading
 ;;  the mode line for meta-.
+;; 2.0 (6/19/09) Cleared out uncalled dead wood.
+;; 2.1 (7/22) Revising the algorithms of the routines with nice names.
+;;     (8/25) Added cases for multiple binding threads reaching the same psi
+;;     (9/30/11) Cleaning up. 
 
 (in-package :sparser)
 
-;;;-------------------------------------
-;;; entry point for starting from a psi
-;;;-------------------------------------
 
-;; Called from define-individual
-;; It's somewhat analogous to make/psi except that it starts with
-;; an already existing psi. Ditto for find-or-make-psi.
-;;
-(defun find-or-make-extended-psi (psi var-name+value-pairs)
-  (break "calling find-or-make-extended-psi")
-  (or (find-extending-psi psi var-name+value-pairs)
-      (make-extending-psi psi var-name+value-pairs)))
+;;;--------------------
+;;; starting from a psi
+;;;--------------------
 
+(defun find-or-make-psi-with-binding (variable value parent-psi)
+  ;; entry point from ref/instantiate-individual-with-binding
+  (tr :find/make-psi-extending-by-binding-with variable value parent-psi)
+  (push-debug `(:find-or-make ,variable ,value ,parent-psi)) 
+  (or (find-psi-with-binding variable value parent-psi)
+      (install-v+v variable value parent-psi)))
+
+(defun find-psi-with-binding (variable value parent-psi)
+  (let ((v+v (find-v+v variable value parent-psi)))
+    ;; If we've been here before then get the psi from the v+v
+    (if v+v
+      (retrieve-psi-from-v+v v+v parent-psi)
+      (else (tr :no-existing-psi-binding variable value)
+            nil))))
+
+(defun install-v+v (variable value parent-psi)
+  ;; New variable or value. Make the v+v, associate it with a psi,
+  ;; and tie the psi back to the v+v.
+  (let* ((v+v (make-and-attach-v+v variable value parent-psi))
+         (psi (make-more-saturated-psi parent-psi variable v+v)))
+    (setf (vv-psi v+v) psi)
+    psi))
+
+(defun make-new-psi-for-v+v (v+v parent-psi)
+  ;; There is already a psi associated with the v+v, however it is not
+  ;; consistent with the line of bindings of this parent. We make the
+  ;; additional, consistent, psi and add it to the v+v as another thread
+  ;; of bindings (v+v) that arrive at this spot in the lattice.
+  (let* ((v+v-associated-psi (vv-psi v+v))
+         (variable (vv-variable v+v))
+         (psi (make-more-saturated-psi parent-psi variable v+v)))
+    (cond
+      ((consp v+v-associated-psi)
+       (push psi (vv-psi v+v)))
+      ((psi-p v+v-associated-psi)
+       (setf (vv-psi v+v) `(,psi ,v+v-associated-psi)))
+      (t (push-debug `(:make-new-psi-for-v+v 
+                       ,v+v-associated-psi ,v+v ,parent-psi))
+         (error "Ill-formed vv-psi field on ~a" v+v)))
+    (tr :added-psi-to-v+v psi v+v)
+    psi))
+  
+
+
+
+;; vetted 7/23
+(defun find-or-make-psi-for-base-category (c)
+  (declare (special *annotate-realizations*))
+  ;; called from ref/instantiate-individual-with-binding (at least)
+  (let* ((lattice-point (cat-lattice-position c))
+         (new? (null (lp-top-psi lattice-point)))
+         (psi (if new?
+                (make-psi-with-just-a-type c lattice-point)
+                (lp-top-psi lattice-point))))
+;    (unless new?
+;      (push-debug `(,psi ,lattice-point ,c))
+;      (break "Found psi for base category: ~a" psi))
+    (when *annotate-realizations*
+      (annotate-realization/base-case lattice-point psi))
+    (tr :found-or-made-psi psi)
+    psi ))
+
+
+
+;;========== unvetted =============
 
 ;;;-----------------------------------------------
 ;;; Version that starts with a top-level category 
@@ -43,6 +103,9 @@
 
 (defun find-or-make-psi (type &rest variable-value-plist-or-alist)
   ;; Called from find/individual as the default.
+  (declare (ignore type variable-value-plist-or-alist))
+  (break "unvetted: find-or-make-psi")
+  #+ignore
   (let* ((variable-value-pairs
           (if (consp (first variable-value-plist-or-alist)) ;; alist case
             (revamp-binding-instructions-as-variable-value-plist
@@ -54,38 +117,25 @@
         (make-psi-for-bindings type variables variable-value-pairs))))
 
 
-(defun find-or-make-psi-for-base-category (c)
-  (break "Find-or-make-psi-for-base-category")
-  (let* ((lattice-point (find-or-make-self-node c))
-         (new? (null (lp-instance lattice-point)))
-         (psi (if new?
-                (make-psi-with-just-a-type c lattice-point)
-                (if (consp (lp-instance lattice-point))
-                  (progn
-                    ;(break "lp-instance of lp is a list ??")
-                    (first (lp-instance lattice-point)))
-                  (lp-instance lattice-point)))))
-    (when new?
-      (setf (lp-instance lattice-point) psi))
-    (break "Find-or-make-psi-for-base-category #2")
-    ;(annotate-realization/base-case lattice-point psi)
-    (tr :found-or-made-psi psi)
-    psi ))
-
-
 ;;;----------
 ;;; subtypes
 ;;;----------
 
-(defun corresponding-unit-of-subtype (unit category-of-subtype) 
-  (break "0")
+
+(defun corresponding-unit-of-subtype (unit category-of-subtype)
+  (break "unvetted: corresponding-unit-of-subtype")
+  (tr :looking-for-subtype-unit unit category-of-subtype)
   ;; called from ref/subtype and expected to supply the object
   ;; that will be the referent it assembles.
-  (let* ((type (ctypecase unit
+  #+ignore
+  (let* ((type (typecase unit
                  (psi (psi-lattice-point unit))
-                 (individual (cat-lattice-position (first (indiv-type unit))))))
+                 (individual (cat-lattice-position (first (indiv-type unit))))
+		 (otherwise
+		  (error "Unexpected type for unit: ~a~%~a"
+			 (type-of unit) unit))))
          (subtype-lp (find-or-make-subtype type category-of-subtype)))
-    (break "1")
+
     (let ((subtype-unit
            (etypecase unit
              (psi (find-or-make-psi-for-subtype subtype-lp unit))
@@ -102,16 +152,23 @@
       (let ((rule *rule-being-interpreted*))
         (when (unary-rule? rule)
           (setf (cfr-referent rule) subtype-unit))
-
+	(tr :subtype-unit-found subtype-unit)
         subtype-unit))))
+
+(defun psi-lattice-point (unit)
+  (declare (ignore unit))
+  (error "psi-lattice-point is no longer defined"))
 
 
 (defun find-or-make-psi-for-subtype (subtype-lp source-psi)
-  (let ((instances (lp-subtype-instances subtype-lp)))
-    (break "0")
-    (or (when instances (break "0a")
+  (declare (ignore subtype-lp source-psi))
+  (break  "unvetted: find-or-make-psi-for-subtype")
+  #+ignore(let ((instances (lp-subtype-instances subtype-lp)))
+    (tr :find-psi-instances-of-type instances subtype-lp)
+    (or (when instances
           (dolist (psi instances)
             (when (eq (psi-source psi) source-psi)
+	      (tr :found-psi-instance-of-type psi source-psi subtype-lp)
               (return psi))))
         (make-psi-for-subtype subtype-lp source-psi))))
         

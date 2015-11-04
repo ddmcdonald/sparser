@@ -1,14 +1,30 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  April 1995
+;;;  version:  1.4 May 2015
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
 ;; 0.1 (4/3/95) made Zero-category-index sensitive to hashtables
 ;;     (4/20) added Add-permanent-individual and cleaned up a little
+;; 1.0 (5/13/95) Added notion of a permanent individual that appears on a separate
+;;      list and isn't recycled.
+;; 1.1 (7/7) put a patch in Additional-categories.. when the i-type-of returned nil.
+;;     (9/30/99) Somewhen in the interim I null-ified declare-all-existing-individuals-
+;;      permanent by doing a return-from before it had done anything. No record available
+;;      of why. Put it all back today and nothing untoward happened when I ran it.
+;;     (9/26/11) Fixed zero-category-index for the case of the category being
+;;      a lattice-point.
+;;     (2/7/13) Found case of a category assigned to lists having a hash-table. 
+;;      Put in a catch in the iterator so reclamation can continue.
+;; 1.2 (6/15/13) Fixed tricky bug in making objects permanent exposed by
+;;      including instances from hashtables.
+;; 1.3 (8/19/13) Added facility for making later call to make-permanent
+;;      for use at the bottom of everything. 3/27/15 Minor inline doc.
+;; 1.4 (5/1/15) Since it had worked for Rusty trusted it and turned off the
+;;      examination breaks in add-permanent-individual
 
 (in-package :sparser)
 
@@ -22,32 +38,52 @@
    to one of those individuals, that is used when reclaiming to
    indicate where to stop when cdr'ing down that list.")
 
+(defvar *rule-count-at-make-permanent* nil
+  "This is set by declare-all-existing-individuals-permanent
+   to the rule count at the time. It's checked and acted on
+   by redeclare-permanent-individuals-if-necessary")
 
 ;;--- Toplevel calls
 
 (defun declare-all-existing-individuals-permanent ()
   ;; called from toplevel at strategic moments such as at the
   ;; end of loading the dossiers.
-  (break)
+  ;(return-from declare-all-existing-individuals-permanent :no-op)
   (dolist (c *referential-categories*)
-    (declare-categories-instances-permanent c))
+    (declare-category-instances-permanent c))
   (setq *1st-permanent-individual/all-categories*
-        (first *active-individuals*)))
+        (first *active-individuals*))
+  (setq *rule-count-at-make-permanent* 
+        *next-number-for-phrase-structure-rule*))
 
 
-(defun declare-categories-instances-permanent (c)
+(defun declare-category-instances-permanent (c)
   ;; subroutine of Declare-all-existing-individuals-permanent
   (let ((instances (all-instances c)))
     (when instances
-      (format t "~&~A has ~A instances"
-              (cat-symbol c) (length instances))
-      (setf (unit-plist c)
-            `(:1st-permanent-individual ,(first instances)
-              :permanent-individuals ,instances  ;; the sublist
-              ,@(unit-plist c))))))
+      (if (memq :1st-permanent-individual (unit-plist c))
+        (declare-all-new-instances-permanent c)
+        (else
+         (format t "~&~A has ~A instances"
+                 (cat-symbol c) (length instances))
+         (setf (unit-plist c)
+               `(:1st-permanent-individual ,(first instances)
+                 :permanent-individuals ,instances  ;; the sublist
+                 ,@(unit-plist c))))))))
+
+
+(defun redeclare-permanent-individuals-if-necessary ()
+  ;; Called from everything at the very end.
+  (unless (= *rule-count-at-make-permanent* 
+             *next-number-for-phrase-structure-rule*)
+    ;; rules have been added, which likely means that more
+    ;; individuals have also been added.
+    (declare-all-existing-individuals-permanent)))
 
 
 (defun declare-all-new-instances-permanent (c)
+  "Move the permanent marker keyword up to the front of the 
+   list on the category."
   (let* ((instances (all-instances c))
          (plist (unit-plist c))
          (cell/permanent-list (member :permanent-individuals plist
@@ -75,12 +111,27 @@
 
 (defun add-permanent-individual (individual category)
 
-  ;; Called from Index/individual via a couple of subroutines
+  ;; Called from index/individual via a couple of subroutines
   ;; whenever the category involved indicates that all its
-  ;; instances are to be permanent.  The individual gets put
+  ;; instances are to be permanent. The individual gets put
   ;; on the permanent list, and, if the category has some 
   ;; temporary instances, gets moved on the category's list of
   ;; individuals so that all the temporaries are in front of it.
+
+  ;; If called directly from index-to-category then the
+  ;; individual ("instance") has just been cons'd onto the
+  ;; front of the instances list. 
+
+  (unless (permanent-individual? individual)
+    (push-debug `(,individual ,category ,(unit-plist category)))
+    (error "Threading bug: expected ~a~
+          ~%to be a permanent individual but it's not."
+           individual))
+
+  (note-permanence-of-categorys-individuals category)
+  ;; This isn't the same as "all of its individuals are permanent",
+  ;; but it suffices to keep reclaim from zero'ing its instance
+  ;; field.
 
   (let* ((plist (unit-plist category))
          (cell/permanent-list (member :permanent-individuals plist
@@ -90,60 +141,126 @@
          (cell/instances (member :instances plist :test #'eq))
          (instances (second cell/instances)))
 
-    (if (null (cdr instances))
+;    (push-debug `(,individual ,category))
+;    (format t "individual = ~a" individual) (break "break?")
+;    (setq individual (car *) category (cadr *))
+
+    (cond
+     ((null (cdr instances))
       ;; this individual is the only instance in this category so
       ;; there's not much to do.
-      (then
+      (setf (unit-plist category)
+            `(:1st-permanent-individual
+              ,individual
+              :permanent-individuals
+              ,(list individual)
+              ,@plist )))
+
+
+     ((null cell/1st-permanent)
+      ;; none of the instances on the list are permanent
+      ;; The other instances are temporary, so the permanent marker
+      ;; and this instance go below them -- see reclaimation code
+      ;;(break "look around and confirm assumptions")
+      ;;(push-debug `(,plist ,cell/instances ,instances))
+      (if (eq individual (car instances)) ;; trust but verify
+        (setq instances (cdr instances))
+        (break "violated assumption. Instance being marked not ~
+                first on the list"))
+      (let* ((instances-cell (member :instances plist :test #'eq))
+             (rest-of-the-plist (cddr instances-cell)))
+        ;; replace its list of instances with the shorter list
+        (rplacd instances-cell
+                (cons instances rest-of-the-plist))
+        ;;(break "that look right?")
+        ;; add the permanent marker on the front
         (setf (unit-plist category)
               `( :1st-permanent-individual
                  ,individual
                  :permanent-individuals
                  ,(list individual)
-                 ,@plist )))
+                ,@plist))
+        ;;(break "still look right?")
+        ))        
+   
 
+
+     ((eq (second cell/1st-permanent)
+          (second instances))
       ;; There is at least one other instance.
       ;; The individual has just been put at the front of the
       ;; instances list. If the 1st permanent individual is second 
       ;; on that list then we don't have to do any moving
-      (if (eq (second cell/1st-permanent)
-              (second instances))
-        (then
-          (rplacd cell/permanent-list
-                  ;; the permanent list should be identical to the
-                  ;; instances list
-                  `( ,(second cell/instances)
-                     ,@(cddr cell/permanent-list) ))
-          (rplacd cell/1st-permanent
-                  `( ,individual
-                     ,@(cddr cell/1st-permanent) )))
+      (rplacd cell/permanent-list
+              ;; the permanent list should be identical to the
+              ;; instances list
+              `(,(second cell/instances)
+                ,@(cddr cell/permanent-list) ))
+      (rplacd cell/1st-permanent
+              `( ,individual
+                ,@(cddr cell/1st-permanent) )))
 
-        ;; It isn't at the front of the list, so it has to be moved
-        (else
-          (break "it isn't in front")
-          ;; pop it off the top of the instances list
-          (rplacd cell/instances (cddr cell/instances))
 
-          (let ((cell/1st-perm-indiv-in-instances
-                 (member (first cell/1st-permanent)
-                         instances :test #'eq)))
 
-            ;; Shift its location in the list of allocated 
-            ;; individuals to just behind the presently first
-            ;; permanent object.  Nothing else has to change
-            (rplacd cell/1st-perm-indiv-in-instances
-                    `( ,individual ,@(cddr cell/permanent-list)))
-            ))))
+     ((eq individual (car instances))
+      ;; As expected, it's at the front of the list
+      ;; (push-debug `(,individual ,category))
+      ;; (setq individual (car *) category (cadr *))
+      ;; (add-permanent-individual individual category)
+
+      ;; make it the 1st-permanent
+      (rplaca (cdr cell/1st-permanent)
+              individual)
+
+      ;; put it on the fron t of the permanent individuals list
+      (rplaca (cdr cell/permanent-list)
+              (cons individual (cadr cell/permanent-list))))
+
+      
+
+     (t ;; It isn't at the front of the list, so it has to be moved
+      (push-debug `(,(copy-list instances) ,(copy-list cell/instances)
+                  ,(copy-list cell/1st-permanent)
+                  ,(copy-list cell/permanent-list)))
+ #|     (setq copies (peek-debug))
+      (setq instances (nth 0 copies)
+            cell/instances (nth 1 copies)
+            cell/1st-permanent (nth 2 copies)
+            cell/permanent-list (nth 3 copies))  |#
+      (push-debug `(,individual ,category))
+      (break "Make permanent: something else is going on")
+ 
+      ;;----------------- this is all suspect 6/14/13
+      ;; pop it off the top of the instances list
+      (rplacd cell/instances (cddr cell/instances))
+
+      (let ((cell/1st-perm-indiv-in-instances
+             (member (first cell/1st-permanent)
+                     instances :test #'eq)))
+        (unless cell/1st-perm-indiv-in-instances
+          (error "Can't identify the first permanent individual ~
+                  when trying to make ~a~
+                ~%permanent in the instances of ~a"
+                 individual category))
+
+        ;; Shift its location in the list of allocated 
+        ;; individuals to just behind the presently first
+        ;; permanent object.  Nothing else has to change
+        (rplacd cell/1st-perm-indiv-in-instances
+                `( ,individual ,@(cddr cell/permanent-list)))
+        (pop-debug))))
+            
     plist ))
 
 
-;;;--------
-;;; driver
-;;;--------
+;;;---------------------------------------------------
+;;; driver -- point of entry for per-run reclaimation
+;;;---------------------------------------------------
 
 (defparameter *trace-reclaimation* nil)
 (defun trace-reclaimation ()
   (setq *trace-reclaimation* t))
-(defun unTrace-reclaimation ()
+(defun untrace-reclaimation ()
   (setq *trace-reclaimation* nil))
 
 (defparameter *reclaimation-pauses* nil)
@@ -153,12 +270,14 @@
   (setq *reclaimation-pauses* nil))
 
 
-(defun reclaim-individuals ()  ;;is this one easier to recall ??
+
+(defun reclaim-temporary-individuals ()  ;;is this name easier to remember ??
   (reap-individuals))
 
 (defun reap-individuals ()
   ;; called from Per-article-initializations -- it zeros
   ;; everything that was instantiated in the last run
+  (declare (special *objects-in-the-discourse*))
   (let ( type-list )
     (maphash #'(lambda (key value)
                  (declare (ignore value))
@@ -173,21 +292,28 @@
     (setq type-list
           (additional-categories-of-active-individuals type-list))
 
+    (when *trace-reclaimation*
+      (push-debug `(,type-list))
+      (break "Reap: ~a categories" (length type-list)))
+
     (let ( individuals-touched )
       (dolist (category type-list)
-        (setq individuals-touched
-              (nconc individuals-touched
-                     ;;--- This call does the major work ---
-                     (reclaim-all-instances category))))
+        (unless (individuals-of-this-category-are-permanent category)
+          (setq individuals-touched
+                (nconc individuals-touched
+                       (reclaim-all-instances category)))))
+
+      (when *trace-reclaimation*
+        (push-debug `(,individuals-touched))
+        (break "Reap: touched ~a individuals" (length individuals-touched)))
 
       (cleanup-bindings-fields individuals-touched))
 
-    (forget-any-unreaped-individuals)
+    (did-we-forget-any-unreaped-individuals?)
 
     (when *trace-reclaimation*
       (format t "~%----- reclaimation finished ------~%~%"))
-    (when *reclaimation-pauses* (break))
-    ))
+    (when *reclaimation-pauses* (break))))
 
 
 (defparameter *interesting-categories*
@@ -206,7 +332,8 @@
     (terpri)))
 
 
-(defun forget-any-unreaped-individuals ()
+(defun did-we-forget-any-unreaped-individuals? ()
+  ;; called from Reap-individuals as a debugging aid
   (let ((count 0)
         missed-by-category-driven-reap )
     (do* ((list *active-individuals* (cdr list))
@@ -226,6 +353,9 @@
 
 
 (defun additional-categories-of-active-individuals (original-list)
+  ;; called from reap-individuals to identify additional categories
+  ;; of individuals that weren't identified from the discourse history
+  ;; e.g. when anaphora is terned off. Returns a list of
   (let ((augmented-list original-list)
         (count 0)
         type )
@@ -236,11 +366,15 @@
                      permanents~%~%" count))
         (return))
       (incf count)
+      (when *trace-reclaimation*
+        (format t "~&Tentatively reclaiming ~a~%" i))
       (setq type (i-type-of i))
-      (unless (member type augmented-list :test #'eq)
-        (when *trace-reclaimation*
-          (format t "~&Adding ~A to type list~%" type))
-        (push type augmented-list)))
+      (when type  ;; 7/7/95 a nil is turning up on the last indiv.
+        (unless (member type augmented-list :test #'eq)
+          (when *trace-reclaimation*
+            (format t "~&Adding ~A to type list~%" type))
+          (push type augmented-list))))
+
     augmented-list ))
   
 
@@ -250,8 +384,8 @@
 ;;;--------------------------
 
 (defun reclaim-all-instances (category)
-  ;; Called from Reap-individuals.
-  ;; Deallocates all of the non-permanent individuals
+  ;; Called from reap-individuals.
+  ;; deallocates all of the non-permanent individuals
   (let ((list-of-individuals (all-instances category))
         (1st-permanent-individual
          (cadr (member :1st-permanent-individual (unit-plist category))))
@@ -266,29 +400,44 @@
 
     (dolist (individual list-of-individuals)
       (when (eq individual 1st-permanent-individual)
-            (setq now-looking-at-permanent-indiv t))
+        (setq now-looking-at-permanent-indiv t))
 
-      (if now-looking-at-permanent-indiv
-        ;; permanent individuals keep their own bindings but may
-        ;; have had some of those that they're bound-in deallocated
-        ;; and so need to be cleaned up
-        (push individual all-bodies)
-        
-        (else ;; relaim the individual
-          (multiple-value-setq (values bodies)
-            ;; these locals point to the units referenced in the
-            ;; course of zeroing this individual
-            (zero-out-individual individual
-                                 category))
-          (dolist (i values)
-            (unless (member i all-values :test #'eq)
-              (push i all-values)))
-          (dolist (i bodies)
-            (unless (member i all-values :test #'eq)
-              (push i all-bodies))))))
+      (catch :reclaim-of-individual-failed 
+        ;; indexing scheme mismatch happens with numbers somehow
 
-    (zero-category-index category 1st-permanent-individual)
-    (nconc all-values all-bodies)))
+        (if now-looking-at-permanent-indiv
+          ;; permanent individuals keep their own bindings but may
+          ;; have had some of those that they're bound-in deallocated
+          ;; and so need to be cleaned up
+          (push individual all-bodies)
+          
+          (else ;; relaim the individual
+           (multiple-value-setq (values bodies)
+             ;; these locals point to the units referenced in the
+             ;; course of zeroing this individual
+             (zero-out-individual individual
+                                  category))
+           (dolist (i values)
+             (unless (member i all-values :test #'eq)
+               (push i all-values)))
+           (dolist (i bodies)
+             (unless (member i all-values :test #'eq)
+               (push i all-bodies)))))))
+
+    (cond
+     ((individuals-of-this-category-are-permanent category)
+      (when *trace-reclaimation*
+        (format t "~&Retaining instances of ~a" category)))
+     (t
+      (when *trace-reclaimation*
+        (format t "~&Zero'ing instances of ~a" category))
+      (zero-category-index category 1st-permanent-individual)))
+
+    (when (or all-values all-bodies)
+      (nconc all-values all-bodies))))
+
+
+
 
 
 ;;;----------------------------
@@ -296,8 +445,12 @@
 ;;;----------------------------
 
 (defun zero-out-individual (i c)
-  (when (member :permanent (indiv-plist i) :test #'eq)
-    (break "trying to trash a permanent individual: ~A" i))
+  ;; called from reclaim-all-instances
+  (when (permanent-individual? i)
+    (format t "~&trying to trash a permanent individual: ~A~%" i)
+    (push-debug `(,i ,c)) (break)
+    (return-from zero-out-individual nil))
+
   (unless (eq (indiv-type i) :deallocated)
     (when *trace-reclaimation*
       (format t "~&~%Zeroing ~A~%" i))
@@ -310,14 +463,15 @@
       (deallocate-individual i)
       (values values bodies))))
 
+
 (defun delete/individual (i)
   ;; generic call for doing it by hand
   (zero-out-individual i (itype-of i)))
 
 
-
 (defun zero-category-index (category 1st-permanent
                             &optional do-permanent-too? )
+  ;; called from reclaim-all-instances after instances are zero'd
   (cond (do-permanent-too?
          (reset-category-count category))
         (1st-permanent
@@ -339,15 +493,18 @@
           nil))
 
   (unless 1st-permanent
-    (if (hash-table-p (cat-instances category))
-      (clrhash (cat-instances category))
-      (setf (cat-instances category) nil)))
-
-  #| original with gratuitous flaw about hashtables
-  (cond (do-permanent-too?
-         (setf (cat-instances category) nil))
-        (1st-permanent )
-        (t (setf (cat-instances category) nil))) |#
+    (typecase category
+      (referential-category
+       (if (hash-table-p (cat-instances category))
+         (clrhash (cat-instances category))
+         (setf (cat-instances category) nil)))
+      (lattice-point
+       ;; appear to only use their plist
+       (change-plist-value category :instances nil))
+      (otherwise
+       (push-debug `(,category))
+       (error "Unexpected type of 'category': ~a~%  ~a"
+              (type-of category) category))))       
 
     category )
 
