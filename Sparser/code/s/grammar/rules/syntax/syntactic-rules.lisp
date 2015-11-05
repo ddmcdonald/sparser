@@ -474,6 +474,7 @@ similar to an oncogenic RasG12V mutation (9)."))
       :form S
       :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
 
+
 (loop for n in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
   do
   (when nil
@@ -482,13 +483,17 @@ similar to an oncogenic RasG12V mutation (9)."))
                        :head :right-edge
         :form np
         :referent (:function assimilate-subject-to-vp-ing left-edge right-edge))))
-  (loop for v in '(vp vg vp+passive vg+passive vg+ing)
+  (loop for v in '(vp vg vp+passive vg+passive 
+                      ;; vg+ing #+ignore ;; TO-DO see if this change imporves or damages things
+                      )
     do
     (eval
      `(def-syntax-rule (,n ,v)
                        :head :right-edge
         :form S
         :referent (:function assimilate-subject left-edge right-edge)))))
+
+;; TO-DO make a debris rule for NP VP+ING which happens "late"
 
 #|
 (def-syntax-rule (np vg)
