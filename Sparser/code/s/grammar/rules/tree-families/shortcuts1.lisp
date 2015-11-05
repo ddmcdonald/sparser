@@ -212,7 +212,9 @@ broadly speaking doing for you all the things you might do by hand.
                 :realization
                   (:common-noun ,noun))))
         (setq category (eval form)))))
-
+    (fom-subcategorization category :category category)  
+    ;; make sure the category inherits subcategorization information
+        
     (when obo-id
       (setq category (bind-dli-variable 'uid obo-id category)))
     category))
