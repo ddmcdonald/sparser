@@ -267,7 +267,106 @@
  #P"/Users/ddm/ws/nlp/Sparser/code/s/objects/import/loader.lisp"
  #P"/Users/ddm/ws/nlp/Sparser/code/s/tools/treebank-reader.lisp"
  #P"/Users/ddm/ws/nlp/Sparser/code/s/tools/basics/debug-stack.lisp"))
-      
-    
 
 
+;;; shortcut-master2.lisp → shortcut-master.lisp
+
+(defvar *special-names* '("pass"))
+
+(defun versioned-filename-p (filename &aux
+                             (name (pathname-name filename))
+                             (n (length name)))
+  (and (digit-char-p (elt name (- n 1)))
+       (char/= #\0 (elt name (- n 1))) ; e.g. syntax-functions0.lisp
+       (alpha-char-p (elt name (- n 2)))
+       (let ((basename (subseq name 0 (- n 1))))
+         (and (not (member basename *special-names* :test #'string-equal))
+              (merge-pathnames (make-pathname :name basename) filename)))))
+
+(defun filenames-differ-only-by-version-p (filename1 filename2 &aux
+                                           (unspecific (make-pathname
+                                                        :name :unspecific)))
+  (and (equal (merge-pathnames unspecific filename1)
+              (merge-pathnames unspecific filename2))
+       (equal (pathname-name (or (versioned-filename-p filename1) filename1))
+              (pathname-name (or (versioned-filename-p filename2) filename2)))))
+
+(defun group-versions (filenames)
+  (do* (group
+        groups
+        (prev-filename nil filename)
+        (filenames filenames (cdr filenames))
+        (filename (car filenames) (car filenames)))
+       ((endp filenames)
+        (nreconc groups (and group (list (nreverse group)))))
+    (cond ((filenames-differ-only-by-version-p filename prev-filename)
+           (if group
+               (push filename group)
+               (setq group (list filename prev-filename))))
+          ((versioned-filename-p filename)
+           (when group
+             (push (nreverse group) groups))
+           (setq group (list filename)))
+          (t (when group
+               (push (nreverse group) groups)
+               (setq group nil))))))
+
+(defun rename/delete-files-in-group (group &key
+                                     (delete #'delete-file)
+                                     (rename #'rename-file) &aux
+                                     (newest (first (last group))))
+  (map nil delete (butlast group))
+  (funcall rename newest (versioned-filename-p newest)))
+
+(defun dont-mv/rm-files-in-group (group)
+  (rename/delete-files-in-group group
+                                :delete (lambda (filename)
+                                          (format *trace-output* "rm ~S~%"
+                                                  (namestring filename)))
+                                :rename (lambda (filename new-name)
+                                          (format *trace-output* "mv ~S → ~S~%"
+                                                  (namestring filename)
+                                                  (namestring new-name)))))
+
+(defun git-mv/rm-files-in-group (group)
+  (rename/delete-files-in-group group
+                                :delete (lambda (filename)
+                                          (uiop:run-program
+                                           (format nil "git rm ~S"
+                                                   (namestring filename))))
+                                :rename (lambda (filename new-name)
+                                          (uiop:run-program
+                                           (format nil "git mv ~S ~S"
+                                                   (namestring filename)
+                                                   (namestring new-name))))))
+
+(defun sorted-directory (pathspec &key)
+  (sort (directory pathspec) #'string-lessp :key #'namestring))
+
+(defun sparser-code-directory (pathspec &optional
+                               (sparser-directory cl-user::*sparser-directory*))
+  (sorted-directory
+   (merge-pathnames pathspec
+                    (merge-pathnames
+                     (make-pathname
+                      :directory '(:relative "Sparser" "code" "s"))
+                     sparser-directory))))
+
+(defmacro with-cwd (directory &body body &aux (cwd (gensym)))
+  `(let ((,cwd (uiop:getcwd)))
+     (uiop:chdir ,directory)
+     (unwind-protect (progn ,@body)
+       (uiop:chdir ,cwd))))
+
+(defun rename-sparser-files (&optional
+                             (sparser-directory cl-user::*sparser-directory*)
+                             (group-handler 'rename/delete-files-in-group))
+  (with-cwd sparser-directory
+    (map nil
+         group-handler
+         (group-versions
+          (sparser-code-directory
+           (make-pathname :directory '(:relative :wild-inferiors)
+                          :name :wild
+                          :type "lisp")
+           sparser-directory)))))
