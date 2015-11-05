@@ -223,24 +223,6 @@
           (setq category (bind-dli-variable 'uid obo-id category)))
         category))))
 
-
-(defun clear-redundant-subcat-patterns (sf cat-name)
-  (declare (special sf cat-name))
-  ;; :sbuject and :object are special -- don't allow for multiple definitions of subcat pattern
-  (let
-      ((first-one t) lst)
-    (setf (subcat-patterns sf)
-          (progn
-            (loop for sp in (subcat-patterns sf)
-              do
-              (cond
-               ((eq (subcat-label sp) cat-name) 
-                (when first-one
-                  (setq first-one nil)
-                  (push sp lst)))
-               (t (push sp lst))))
-            (nreverse lst)))))
-
 (defun decode-realization-parameter-list (category
                                           &key etf verb noun adj
                                           s o c m ;; arguments
@@ -260,143 +242,108 @@
     (symbol (setq etf (list etf)))  
     (otherwise (error "The :etf parameter must be a symbol or a list")))
   
-  (let
-      ((sf (fom-subcategorization category :category category)))
-    (declare (special sf))
-    ;; get inherited sub-cat frames so that we can use inherited Subjects and Objects.
-    ;; Now over-ride inherited cases with local information
-    
-    (when s  ;; subject
-      (let ((var (variable/category s category)))
-        (assign-subject category (var-value-restriction var) var)))
-    (when o ;; direct object
-      (let ((var (variable/category o category)))
-        (assign-object category (var-value-restriction var) var)))
+  (let* ((sf (fom-subcategorization category
+                                    :category category
+                                    :s s :o o :m m
+                                    :slots slots))
+         (subj-pat (find-subcat-pattern :subject sf))
+         (obj-pat (find-subcat-pattern :object sf))
+         (m-pat (find-subcat-pattern :premod sf))
+         substitution-map
+         word-map)
+    (dolist (schema-name etf)
+      ;; Iterate through the etf, adding to the substituions and word list
+      (let* ((rschema (get-realization-scheme schema-name))
+             (lexical-class (when rschema (schema-head-keyword rschema))))
+        (unless rschema
+          (error "There is no realization scheme named ~a" schema-name))
 
-    (clear-redundant-subcat-patterns sf :subject)
-    (clear-redundant-subcat-patterns sf :object)
+        ;; set up the word map
+        (case lexical-class
+          (:verb
+           (unless verb
+             (error "The etf ~a requies a ':verb' parameter" etf))
+           (push `(:verb . ,verb)  word-map))
+          (:common-noun
+           (unless noun
+             (error "The etf ~a requies a ':noun' parameter" etf))
+           (push `(:common-noun . ,noun) word-map))
+          (otherwise
+           (error "Unexpected lexical class: ~a" lexical-class)))
 
-    
-    (when m ;; direct object
-      (let ((var (variable/category m category)))
-        (assign-premod category (var-value-restriction var) var)))
-    ;; at this point the sub-cat frame has the correct "s" and "o"
-    ;; (inherited overidden by local versions if present)
-    
-    (let* ((subj-pat (find-subcat-pattern :subject sf))
-           (obj-pat (find-subcat-pattern :object sf))
-           (m-pat (find-subcat-pattern :premod sf))
-           substitution-map  word-map )
-      
-      (dolist (schema-name etf)
-        ;; Iterate through the etf, adding to the substituions and word list
-        (let* ((rschema (get-realization-scheme schema-name))
-               (lexical-class (when rschema (schema-head-keyword rschema))))
-          (unless rschema
-            (error "There is no realization scheme named ~a" schema-name))
-          
-          ;; set up the word map
-          (case lexical-class
-            (:verb 
-             (unless verb
-               (error "The etf ~a requies a ':verb' parameter" etf))
-             (push `(:verb . ,verb)  word-map))
-            (:common-noun
-             (unless noun
-               (error "The etf ~a requies a ':noun' parameter" etf))
-             (push `(:common-noun . ,noun) word-map))
-            (otherwise
-             (error "Unexpected lexical class: ~a" lexical-class)))
-          
-          ;; incrementally set up the substitution map
-          (when subj-pat
-            (let ((s-var (subcat-variable subj-pat))
-                  (s-v/r (subcat-restriction subj-pat)))
-              (push `(subj-slot . ,s-var) substitution-map)
-              (push `(subj-v/r . ,s-v/r) substitution-map)
-              (register-variable category s-var :subject-variable)
-              (when (is-a-form-of-passive? schema-name)
-                (push `(by-v/r . ,s-v/r) substitution-map)
-                (assign-subcategorization category word::|by| s-v/r s-var))))
-          
-          (when obj-pat
-            (let ((o-var (subcat-variable obj-pat))
-                  (o-v/r (subcat-restriction obj-pat)))
-              (push `(theme-slot . ,o-var) substitution-map)
-              (push `(theme-v/r . ,o-v/r) substitution-map)
-              (register-variable category o-var :object-variable)))
-          
-          (when c  ;; complement, e.g. "reported that ..."
-            (let* ((var (variable/category c category))
-                   (v/r (var-value-restriction var)))
-              (push `(comp-slot . ,var) substitution-map)
-              (push `(comp-v/r . ,v/r) substitution-map)
-              (register-variable category var :complement-variable)))
-          
-          (when m-pat ;; modifier, normally to a head noun
-            (let ((m-var (subcat-variable m-pat))
-                  (m-v/r (subcat-restriction m-pat)))
-              (unless m-var (error "No ~a variable associated with ~a"
-                                   m category))
-              (push `(modifier-slot . ,m-var) substitution-map)
-              (push `(modifier-v/r . ,m-v/r) substitution-map))))
-        
-        (when prep ;; preposition 'owned' by the verb, appears
-          ;; immediately after the verb, making it effectively 
-          ;; a compound verb name 
-          (apply-preposition verb prep category))) ;; end dolist
-      
-      (when noun ;; a noun can just expect to get all the pp's w/o an etf
-        (unless (assq :common-noun word-map)
-          ;; if it's on the map then the realization machinery will expand it
-          (when (consp noun)
-            ;; Check that it's marking an irregular plural
-            (unless (= 3 (length noun))
-              (error "Illformed irregular noun spec: not three items long"))
-            (unless (and (keywordp (second noun))
-                         (memq (second noun) *valid-keywords-for-irregular-word-forms*))
-              (error "Unknown keyword in irregular noun spec~%~a" noun)))
-          
-          (let* ((word-string (if (consp noun) (car noun) noun))
-                 (word (resolve/make word-string))
-                 (special-cases (when (consp noun) (cdr noun)))
-                 (cn-rules (make-cn-rules/aux word category category
-                                              special-cases)))
-            (add-rules-to-category category cn-rules))))
-      
-      (when adj
-        ;; Adjectives are analyzed as being able to take subjects and/or objects
-        ;; as well as subcategorizations ('slots')
-        (unless (assq :adjective word-map)
-          (let* ((word (resolve/make adj))
-                 (adj-rules (make-rules-for-adjectives word category category)))
-            (add-rules-to-category category adj-rules))))
-      
-      ;;(unless etf ;; where they were already handled
-      (handle-slots category slots)
-      
-      (when (or etf substitution-map word-map)
-        ;;  (push-debug `(,category ,etf ,substitution-map ,word-map))
-        ;; if we go in here for just a noun or an adjective, 
-        ;; there may be nothing for this call to do
-        (apply-rdata-mappings category etf
-                              :args substitution-map 
-                              :word-keys word-map))
-      
-      category)))
+        ;; incrementally set up the substitution map
+        (when subj-pat
+          (let ((s-var (subcat-variable subj-pat))
+                (s-v/r (subcat-restriction subj-pat)))
+            (push `(subj-slot . ,s-var) substitution-map)
+            (push `(subj-v/r . ,s-v/r) substitution-map)
+            (register-variable category s-var :subject-variable)
+            (when (is-a-form-of-passive? schema-name)
+              (push `(by-v/r . ,s-v/r) substitution-map)
+              (assign-subcategorization category word::|by| s-v/r s-var))))
 
+        (when obj-pat
+          (let ((o-var (subcat-variable obj-pat))
+                (o-v/r (subcat-restriction obj-pat)))
+            (push `(theme-slot . ,o-var) substitution-map)
+            (push `(theme-v/r . ,o-v/r) substitution-map)
+            (register-variable category o-var :object-variable)))
 
-(defun handle-slots (category slots)
-  (loop for (pname var-name) on slots by #'cddr
-        as label = (case pname
-                     ((:premod :thatcomp :whethercomp :to-comp :ifcomp :as-comp)
-                      pname)
-                     (otherwise
-                      (resolve (string-downcase pname))))
-        as var = (variable/category var-name category)
-        as v/r = (var-value-restriction var)
-        do (assign-subcategorization category label v/r var)))
+        (when c  ;; complement, e.g. "reported that ..."
+          (let* ((var (variable/category c category))
+                 (v/r (var-value-restriction var)))
+            (push `(comp-slot . ,var) substitution-map)
+            (push `(comp-v/r . ,v/r) substitution-map)
+            (register-variable category var :complement-variable)))
 
+        (when m-pat ;; modifier, normally to a head noun
+          (let ((m-var (subcat-variable m-pat))
+                (m-v/r (subcat-restriction m-pat)))
+            (unless m-var (error "No ~a variable associated with ~a"
+                                 m category))
+            (push `(modifier-slot . ,m-var) substitution-map)
+            (push `(modifier-v/r . ,m-v/r) substitution-map))))
+
+      (when prep ;; preposition 'owned' by the verb, appears
+        ;; immediately after the verb, making it effectively
+        ;; a compound verb name
+        (apply-preposition verb prep category))) ;; end dolist
+
+    (when noun ;; a noun can just expect to get all the pp's w/o an etf
+      (unless (assq :common-noun word-map)
+        ;; if it's on the map then the realization machinery will expand it
+        (when (consp noun)
+          ;; Check that it's marking an irregular plural
+          (unless (= 3 (length noun))
+            (error "Illformed irregular noun spec: not three items long"))
+          (unless (and (keywordp (second noun))
+                       (memq (second noun) *valid-keywords-for-irregular-word-forms*))
+            (error "Unknown keyword in irregular noun spec~%~a" noun)))
+
+        (let* ((word-string (if (consp noun) (car noun) noun))
+               (word (resolve/make word-string))
+               (special-cases (when (consp noun) (cdr noun)))
+               (cn-rules (make-cn-rules/aux word category category
+                                            special-cases)))
+          (add-rules-to-category category cn-rules))))
+
+    (when adj
+      ;; Adjectives are analyzed as being able to take subjects and/or objects
+      ;; as well as subcategorizations ('slots')
+      (unless (assq :adjective word-map)
+        (let* ((word (resolve/make adj))
+               (adj-rules (make-rules-for-adjectives word category category)))
+          (add-rules-to-category category adj-rules))))
+
+    (when (or etf substitution-map word-map)
+      ;;  (push-debug `(,category ,etf ,substitution-map ,word-map))
+      ;; if we go in here for just a noun or an adjective,
+      ;; there may be nothing for this call to do
+      (apply-rdata-mappings category etf
+                            :args substitution-map
+                            :word-keys word-map))
+
+    category))
 
 ;;;------------------------------------------------
 ;;; Designated interesting variables in a category

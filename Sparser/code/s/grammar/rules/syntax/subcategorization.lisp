@@ -167,29 +167,53 @@
           (get-subcategorization conj-type)))
       (get-subcategorization (first (indiv-type ref-object))))))
 
-(defun fom-subcategorization (label &key form category)
-  "Find or make a subcategorization frame for the given category."
-  (or (get-subcategorization label)
-      (setf (get-subcategorization label)
-            (let ((frame (if form
-                             (make-instance 'subcategorization-frame
-                                            :word label
-                                            :form form)
-                             (make-instance 'subcategorization-frame
-                                            :cat category))))
-              (when category
-                (setf (subcat-patterns frame) (inherited-sc-patterns label)))
-              frame))))
+(defgeneric make-subcategorization (label &key)
+  (:method ((label word) &key form)
+    "Make and install a subcategorization frame for a word."
+    (setf (get-subcategorization label)
+          (make-instance 'subcategorization-frame :word label :form form)))
+  (:method ((label category) &key &allow-other-keys)
+    "Make and install a subcategorization frame for a category."
+    (setf (get-subcategorization label)
+          (make-instance 'subcategorization-frame :cat label)))
+  (:method :after ((label category) &key)
+    "Inherit subcategorization patterns from supercategories."
+    (setf (subcat-patterns (get-subcategorization label))
+          (loop with patterns = '()
+                for sc in (super-categories-of label)
+                as frame = (get-subcategorization sc)
+                when frame
+                do (loop for sp in (subcat-patterns frame)
+                         do (pushnew sp patterns :test #'subcat-pattern-equal))
+                finally (return (nreverse patterns))))))
 
-(defun inherited-sc-patterns (category)
-  (check-type category category)
-  (loop with patterns = '()
-        for sc in (super-categories-of category)
-        as frame = (get-subcategorization sc)
-        when frame
-          do (loop for sp in (subcat-patterns frame)
-                   do (pushnew sp patterns :test #'subcat-pattern-equal))
-        finally (return (nreverse patterns))))
+(defun fom-subcategorization (label &key form category s o m slots)
+  "Find or make a subcategorization frame for the given category."
+  (let ((frame (or (get-subcategorization label)
+                   (make-subcategorization label :form form))))
+    (when category
+      ;; Override inherited special cases with local information
+      (flet ((maybe-call-with-v/r (function var-name)
+               (when var-name
+                 (let* ((var (variable/category var-name category))
+                        (v/r (var-value-restriction var)))
+                   (funcall function category v/r var)))))
+        (maybe-call-with-v/r #'assign-subject s)
+        (maybe-call-with-v/r #'assign-object o)
+        (maybe-call-with-v/r #'assign-premod m))
+
+      ;; Handle the rest of the slots
+      (loop for (pname var-name) on slots by #'cddr
+            as label = (case pname
+                         ((:premod :thatcomp :whethercomp
+                           :to-comp :ifcomp :as-comp)
+                          pname)
+                         (otherwise
+                          (resolve (string-downcase pname))))
+            as var = (variable/category var-name category)
+            as v/r = (var-value-restriction var)
+            do (assign-subcategorization category label v/r var)))
+    frame))
 
 (defun assign-subcat/expr (word form category parameter-plist)
   "Form to find or make the appropriate subcategorization frame
@@ -317,20 +341,22 @@
                       (subcat-patterns subcat-frame)
                       :key #'subcat-label))))
 
-(defun assign-subcategorization (category label restriction variable)
+(defun assign-subcategorization (category label restriction variable &key
+                                 replace)
   "Install a subcategorization pattern for a value-restriction/variable"
   (check-type category category)
-  (when (null restriction) (error "null variable restriction in assign-subcat"))
-  (add-subcat-pattern (make-subcat-pattern label restriction variable category)
-                      (get-subcategorization category)))
-
-;;; convenience routines called from decode-realization-parameter-list
+  (check-type label (or category keyword word))
+  (check-type restriction (not null))
+  (check-type variable (or null lambda-variable))
+  (funcall (if replace #'replace-subcat-pattern #'add-subcat-pattern)
+           (make-subcat-pattern label restriction variable category)
+           (get-subcategorization category)))
 
 (defun assign-subject (category v/r variable)
-  (assign-subcategorization category :subject v/r variable))
+  (assign-subcategorization category :subject v/r variable :replace t))
 
 (defun assign-object (category v/r variable)
-  (assign-subcategorization category :object v/r variable))
+  (assign-subcategorization category :object v/r variable :replace t))
 
 (defun assign-premod (category v/r variable)
   (assign-subcategorization category :premod v/r variable))
