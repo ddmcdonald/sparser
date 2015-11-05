@@ -154,20 +154,18 @@
   (:method ((ref-object category))
     (get-subcategorization ref-object))
   (:method ((ref-object individual))
-    (if (or
-         (itypep ref-object 'collection)
-         (itypep ref-object 'sequence))
-        (let ((conj-type (value-of 'type ref-object)))
-          (when conj-type
-            ;; If there isn't a type, then this was either a badly
-            ;; modeled collection (though all the ones created by
-            ;; conjunction have been vetted), or it's an instance
-            ;; of the actual word, e.g. "a specific phorphorylation 
-            ;; sequence" in the ASPP January article. These need
-            ;; proper models, but we can't block a type-check waiting
-            ;; for them all to be done
-            (get-subcategorization conj-type)))
-        (get-subcategorization (first (indiv-type ref-object))))))
+    (if (itypep ref-object 'collection)
+      (let ((conj-type (value-of 'type ref-object)))
+        (when conj-type
+          ;; If there isn't a type, then this was either a badly
+          ;; modeled collection (though all the ones created by
+          ;; conjunction have been vetted), or it's an instance
+          ;; of the actual word, e.g. "a specific phorphorylation 
+          ;; sequence" in the ASPP January article. These need
+          ;; proper models, but we can't block a type-check waiting
+          ;; for them all to be done
+          (get-subcategorization conj-type)))
+      (get-subcategorization (first (indiv-type ref-object))))))
 
 (defun fom-subcategorization (label &key form category)
   "Find or make a subcategorization frame for the given category."
