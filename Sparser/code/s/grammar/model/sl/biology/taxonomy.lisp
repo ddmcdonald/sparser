@@ -828,6 +828,9 @@ the aggregate across the predicate it's in. |#
          :of process
          :for components))
 
+(def-synonym process-rate 
+             (:noun "kinetics"))
+
 (define-category bio-concentration :specializes bio-scalar
   :realization
   (:noun "concentration"))
