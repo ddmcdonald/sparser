@@ -71,7 +71,7 @@
       (break "stub :single-cap :hyphen :lower"))
     (reify-ns-name-and-make-edge words start-pos end-pos))
 
-   #+ignore((equal pattern '(:little-p :hyphen :single-cap :digits)) ;; p-S311
+   ((equal pattern '(:little-p :hyphen :single-cap :digits)) ;; p-S311
     (let ((amino-acid (single-letter-word-for-amino-acid? (third words)))
           (digits (fourth words)))
       (cond
