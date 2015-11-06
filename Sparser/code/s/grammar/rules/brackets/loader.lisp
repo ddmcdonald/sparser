@@ -15,5 +15,5 @@
 (gload "brackets;types")
 (gload "brackets;predicates")
 (gload "brackets;assignments")
-(gload "brackets;judgements1")
+(gload "brackets;judgements")
 (gload "brackets;comlex-unpacking")

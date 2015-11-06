@@ -28,7 +28,7 @@
 (gload "bio;new-RAS2-proteins")
 (gload "bio;proteins")
 (gload "bio;amino-acids")
-(gload "bio;terms1")
+(gload "bio;terms")
 (gload "bio;drugs") ;; needed by verbs
 
 #-:sbcl(gload "bio;rhetoric")
@@ -41,10 +41,10 @@
 ;(gload "bio;find-extension.lisp")
 
 (gload "bio;new-words")
-(gload "bio;UCD-proteins2")
+(gload "bio;UCD-proteins")
 (gload "bio;protein-families")
 (gload "bio;phenomena") ;; after proteins
-(gload "bio;verbs1") ;; after phenomena
+(gload "bio;verbs") ;; after phenomena
 
 ;(gload "bio;NFkappaB")
 ;(gload "bio;molecules")

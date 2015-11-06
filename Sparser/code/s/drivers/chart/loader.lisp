@@ -17,7 +17,7 @@
       that are read in the master load file.                       |#
 
 
-(lload "chart-drivers;select2")  ;; 9/12 -- shouldn't affect v2.2
+(lload "chart-drivers;select")  ;; 9/12 -- shouldn't affect v2.2
 
 ;; Alternative protocol for, e.g., doing word-frequency counts
 ;;  where there's no need to parse
@@ -34,7 +34,7 @@
 ;; stray operations hooked into word-level operations
 ;;
 #| directly loaded from the master-loader:
-(lload "chart-drivers;traversal1") |#
+(lload "chart-drivers;traversal") |#
 
 (lload "chart-drivers;header labels")
 (lload "chart-drivers;hidden markup")

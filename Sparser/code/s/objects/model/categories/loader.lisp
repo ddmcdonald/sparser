@@ -23,7 +23,7 @@
 ;;  already loaded by [model;] level
 
 (lload "categories;printing")
-(lload "categories;index instances2")
-(lload "categories;define1")
+(lload "categories;index instances")
+(lload "categories;define")
 (lload "categories;extensions")
 (lload "categories;clos-backing")

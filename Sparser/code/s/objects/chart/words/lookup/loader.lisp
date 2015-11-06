@@ -18,9 +18,9 @@
 (lload "lookup words;capitalization")
 (lload "lookup words;morphology")
 
-(lload "lookup words;switch new1")
-(lload "lookup words;constant1")
-(lload "lookup words;new words4")   ;; bumped for 1 
+(lload "lookup words;switch new")
+(lload "lookup words;constant")
+(lload "lookup words;new words")   ;; bumped for 1 
 
 (lload "lookup words;testing")
 

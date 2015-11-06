@@ -22,11 +22,11 @@
 
 (lload "individuals;object")
 (lload "individuals;printers")
-(lload "individuals;decode2")
-(lload "individuals;find1")
+(lload "individuals;decode")
+(lload "individuals;find")
 (lload "individuals;index")
 (lload "individuals;delete")
-(lload "individuals;resource1")
-(lload "individuals;make2")
-(lload "individuals;reclaim1")
+(lload "individuals;resource")
+(lload "individuals;make")
+(lload "individuals;reclaim")
 

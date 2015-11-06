@@ -84,7 +84,7 @@
 
   (load-grammar-specific-edge-types)
 
-  (gload "fsa;loader - model1")
+  (gload "fsa;loader - model")
 
   (gate-grammar *standard-syntactic-categories*
     (gload "the-categories;categories"))
@@ -97,27 +97,27 @@
     (gload "kinds;1st-loader")) ;; defines the upper model
 
   (gate-grammar *general-words*
-    (gload "words;loader1")
+    (gload "words;loader")
     ;; the function words make reference to bracket types and upper model categories
     (gload "words;whitespace assignments"))
 
   (gate-grammar *tree-families*
     ;; This should come after any of the modules whose categories
     ;; it references
-    (gload "tree-families;loader2"))
+    (gload "tree-families;loader"))
 
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
     ;; the loading of amounts
     (if *lattice-points*
-      (gload "collections;loader1")
+      (gload "collections;loader")
       (gload "collections;loader")))
 
   (gate-grammar *kinds*
     (gload "kinds;loader"))
 
   (gate-grammar *proper-names*
-    (gload "names;loader2")
+    (gload "names;loader")
     (setq *try-character-type-fsas* t))
 
   (gate-grammar *standard-adjuncts*
@@ -128,26 +128,26 @@
 
   (gate-grammar *syntax*
      ;; be & have (etc) reference tree-families
-    (gload "syntax;loader3"))
+    (gload "syntax;loader"))
 
   (gate-grammar *general-words*
-    (gload "words;loader-part2"))
+    (gload "words;loader-part"))
 
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
 
   (gate-grammar *location*
-    (gload "places;loader1"))
+    (gload "places;loader"))
 
   (gate-grammar *digits-fsa*
-    (gload "numbers;fsa digits6"))
+    (gload "numbers;fsa digits"))
 
   (gate-grammar *numbers*
-    (gload "numbers;loader2"))
+    (gload "numbers;loader"))
 
   (gate-grammar *amounts*
     (if *lattice-points*
-      (gload "amounts;loader1")
+      (gload "amounts;loader")
       (gload "amounts;loader")))
 
   (gate-grammar *numbers*
@@ -157,31 +157,31 @@
       (gload "numbers;loader 2d part")))
 
   (gate-grammar *people*
-    (gload "people;loader2"))
+    (gload "people;loader"))
 
   (gate-grammar *companies*
     (if *lattice-points*
-      (gload "companies;loader2")
-      (gload "companies;loader1")))
+      (gload "companies;loader")
+      (gload "companies;loader")))
 
   (gate-grammar *time*  ;; needs find/ordinal
-    (gload "core;time:loader1"))
+    (gload "core;time:loader"))
 
   (gate-grammar *titles* ;; needs calculated-time
-    (gload "titles;loader2"))
+    (gload "titles;loader"))
 
   (gate-grammar *money*
     (if *lattice-points*
-      (gload "money;loader1")
+      (gload "money;loader")
       (gload "money;loader")))
 
   (gate-grammar *finance*
     (if *lattice-points*
-      (gload "finance;loader1")
+      (gload "finance;loader")
       (gload "finance;loader")))
 
   (gate-grammar *pronoun-objects*
-    (gload "pronouns;loader2"))
+    (gload "pronouns;loader"))
 
 
   (gate-grammar *paragraph-detection*
@@ -197,11 +197,11 @@
     (gload "pct;loader"))
 
   (gate-grammar *whos-news*
-    (gload "Who's News;loader1"))
+    (gload "Who's News;loader"))
 
   (gate-grammar *ern*
     (if *lattice-points*
-      (gload "ern;loader1")
+      (gload "ern;loader")
       (gload "ern;loader")))
 
   (gate-grammar *ambush*
@@ -244,13 +244,13 @@
   (gate-grammar *load-Tipster-grammar-into-image*
     (gate-grammar *gl*
       (gload "gl form;loader"))
-    (gload "model;sl:JV:loader1")) |#
+    (gload "model;sl:JV:loader")) |#
 
   (gate-grammar *ca*
-    (gload "ca;loader2"))
+    (gload "ca;loader"))
 
   (gate-grammar *ha*
-    (gload "ha;loader1"))
+    (gload "ha;loader"))
 
   (gate-grammar *da*
     (gload "da-rules;loader"))
@@ -271,7 +271,7 @@
   #| [loader1] is 1991 hacks for avoiding wsj headers, [loader2]
       is empty from a never-completed revision
   (gate-grammar *recognize-sections-within-articles*
-    (gload "sect-rules;loader2"))  |#
+    (gload "sect-rules;loader"))  |#
 
   (gate-grammar *specific-sources*
     (gload "sources;loader"))
@@ -289,7 +289,7 @@
        (gload "mumble-interface;loader")))
 
   (gate-grammar *proper-names*
-    (gload "names;loader-2d2"))
+    (gload "names;loader-2d"))
 
   (gate-grammar *titles*
     (gate-grammar *pct*

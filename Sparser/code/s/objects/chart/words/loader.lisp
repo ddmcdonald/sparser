@@ -51,16 +51,16 @@
 
 ;;--- files
 
-(lload "word-obj;object3")
-(lload "word-obj;polywords4")       ;; bumped to 3 for loader3
+(lload "word-obj;object")
+(lload "word-obj;polywords")       ;; bumped to 3 for loader3
 (lload "word-obj;def form")
-;(lload "word-obj;lookup3")
-(lload "word-obj;catalog1")
+;(lload "word-obj;lookup")
+(lload "word-obj;catalog")
 (lload "word-obj;whitespace")
 ;(lload "word-obj;flush")
-(lload "word-obj;resolve1")         ;; bumped for loader3
+(lload "word-obj;resolve")         ;; bumped for loader3
 
-(lload "word-obj;polyword-form2")   ;; bumped to 1 for loader3
+(lload "word-obj;polyword-form")   ;; bumped to 1 for loader3
 (lload "word-obj;punctuation")
 (lload "word-obj;spaces")
 (lload "word-obj;whitespace")

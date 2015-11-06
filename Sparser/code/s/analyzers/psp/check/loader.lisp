@@ -19,9 +19,9 @@
 
 (in-package :sparser)
 
-(lload "check;multiply7")
+(lload "check;multiply")
 (lload "check;boundaries")
-(lload "check;one-one3")
-(lload "check;many-one1")
-(lload "check;one-many1")
-(lload "check;many-many1")
+(lload "check;one-one")
+(lload "check;many-one")
+(lload "check;one-many")
+(lload "check;many-many")

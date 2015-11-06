@@ -18,7 +18,7 @@
 (in-package :sparser)
 
 (lload "interface;menus:corpus")
-(lload "interface;menus:module menu1")
+(lload "interface;menus:module menu")
 (lload "interface;menus:citations")
 (lload "interface;menus:backup")
 (lload "interface;menus:Sparser")

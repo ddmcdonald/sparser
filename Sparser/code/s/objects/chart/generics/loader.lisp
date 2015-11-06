@@ -9,7 +9,7 @@
 
 (in-package :sparser)
 
-(lload "chart;generics:resolve1")
+(lload "chart;generics:resolve")
 (lload "chart;generics:delete")
 (lload "chart;generics:plist")
 (lload "chart;generics:pname")

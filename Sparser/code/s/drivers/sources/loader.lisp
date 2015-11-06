@@ -13,9 +13,9 @@
 (in-package :sparser)
 
 (lload "source-drivers;state")
-(lload "source-drivers;core1")
+(lload "source-drivers;core")
 (lload "source-drivers;string")
-(lload "source-drivers;file1")
+(lload "source-drivers;file")
 (lload "source-drivers;directory")
 (lload "source-drivers;open file")
 

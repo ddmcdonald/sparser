@@ -14,10 +14,10 @@
 
 (in-package :sparser)
 
-(gload "para;object2")
+(gload "para;object")
 
 (gate-grammar *recognize-sections-within-articles*
-  (gload "para;section rule2"))
+  (gload "para;section rule"))
 
 (gload "para;data")
 

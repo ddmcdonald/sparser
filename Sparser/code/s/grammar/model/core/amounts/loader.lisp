@@ -12,14 +12,14 @@
 
 (in-package :sparser)
 
-(gload "amounts;unit of measure1")
+(gload "amounts;unit of measure")
 (gload "amounts;quantities")
 (gload "amounts;measurements")
-(gload "amounts;object1")
+(gload "amounts;object")
 (gload "amounts;amount-change verbs")
 (gload "amounts;amount-chg relation")
 
-(gload "amounts;rules1")
+(gload "amounts;rules")
 
 #| loaded from dossiers
   (gload "amount-dossier;units of measure")

@@ -11,8 +11,8 @@
 (in-package :sparser)
 
 (gate-grammar *da*
-  (lload "do-DA;driver1")
-  (lload "do-DA;dispatch1")
+  (lload "do-DA;driver")
+  (lload "do-DA;dispatch")
   (lload "do-DA;fsa globals")
   (lload "do-DA;fsa")
   (lload "do-DA;middle out")

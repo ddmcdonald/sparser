@@ -15,5 +15,5 @@
 (lload "sect;action")
 (lload "sect;marker pairs")
 (lload "sect;invisible markup")
-(lload "sect;next-terminal-invisible1")
+(lload "sect;next-terminal-invisible")
 

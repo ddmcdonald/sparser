@@ -14,10 +14,10 @@
 
 (gate-grammar *both-ends-of-segment-heuristic*
   (gload "ha;driver")
-  (gload "ha;both ends1"))
+  (gload "ha;both ends"))
 
 (gate-grammar *pending-determiner-heuristic*
-  (gload "ha;determiner1"))
+  (gload "ha;determiner"))
 
 (gate-grammar *recognize-sections-within-articles*
   (gload "ha;colon header"))

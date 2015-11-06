@@ -13,12 +13,12 @@
 ;;  find-or-make to 2, 7/22 object=>1 7/23 printing=>1
 
 (lload "psi;resource")
-(lload "psi;object1")
-(lload "psi;printing1")
-(lload "psi;make2")
-(lload "psi;find2")
-(lload "psi;find or make2")
-(lload "psi;extend2")
+(lload "psi;object")
+(lload "psi;printing")
+(lload "psi;make")
+(lload "psi;find")
+(lload "psi;find or make")
+(lload "psi;extend")
 (lload "psi;traces")
 
 ;(lload "psi;")

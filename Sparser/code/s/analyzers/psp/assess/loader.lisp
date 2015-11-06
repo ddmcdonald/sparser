@@ -20,7 +20,7 @@
 
 (in-package :sparser)
 
-(lload "assess;terminal edges2")
-(lload "assess;nonterminals1")
-(lload "assess;switch2")
+(lload "assess;terminal edges")
+(lload "assess;nonterminals")
+(lload "assess;switch")
 

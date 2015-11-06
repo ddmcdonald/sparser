@@ -22,12 +22,12 @@
 
 ;; gating is done in the master-loader
 
-(lload "analyzers;DM&P:mine terms1")
-(lload "analyzers;DM&P:mine sequences2")
-(lload "analyzers;DM&P:scan1")
+(lload "analyzers;DM&P:mine terms")
+(lload "analyzers;DM&P:mine sequences")
+(lload "analyzers;DM&P:scan")
 (lload "analyzers;DM&P:scan no edges")
-(lload "analyzers;DM&P:scan prefixed1")
-(lload "analyzers;DM&P:single edge1")
+(lload "analyzers;DM&P:scan prefixed")
+(lload "analyzers;DM&P:single edge")
 (lload "analyzers;DM&P:forest level")
 (lload "analyzers;DM&P:hook")
   

@@ -102,30 +102,30 @@
 ;;;---------
 ;;; objects
 ;;;---------
-(lload "chart;units-labels:loader1")
-(lload "rule objs;rule-links:object2")
-(lload "chart;words:loader3")
-(lload "lookup words;loader1")
+(lload "chart;units-labels:loader")
+(lload "rule objs;rule-links:object")
+(lload "chart;words:loader")
+(lload "lookup words;loader")
   ;; includes fsas for [morphology] and [capitalization]
-(lload "chart;categories1:loader2")
-(lload "chart;positions:loader3")
-(lload "chart;edges:loader3")
-(lload "chart;edge-vectors:loader3")
-(lload "rule objs;cfr:loader4")
+(lload "chart;categories1:loader")
+(lload "chart;positions:loader")
+(lload "chart;edges:loader")
+(lload "chart;edge-vectors:loader")
+(lload "rule objs;cfr:loader")
 (lload "rule objs;csr:loader")
-(lload "rule objs;rule-links:generic1")
+(lload "rule objs;rule-links:generic")
 (lload "pattern-objects;loader")
 (lload "chart;brackets:loader")
 (unless (eq *loader-mode* :just-the-all-edges-parser)
   (lload "chart;stack:loader"))
 
-(lload "objects;forms:loader7")
+(lload "objects;forms:loader")
 (lload "objects;chart:generics:loader")
 
 (when *include-model-facilities*
   (if *lattice-points*
-    (lload "objects;model:loader2")
-    (lload "objects;model:loader1")))
+    (lload "objects;model:loader")
+    (lload "objects;model:loader")))
 
 (when (and *orthographic-structure*
            *include-model-facilities*)  ;; uses routines in the model facilities
@@ -150,39 +150,39 @@
 ;;; analyzers
 ;;;-----------
 
-(lload "init-drivers;loader7")
-(lload "action-drivers;loader1")
+(lload "init-drivers;loader")
+(lload "action-drivers;loader")
   ;; positioning this here lets analyzer routines setup init-actions and
   ;; completion-actions
 
-(gload "required-words;required1")
-(lload "chars;loader3")
+(gload "required-words;required")
+(lload "chars;loader")
 
 (gload "required-words;spaces")
-(lload "tokens;loader3")
+(lload "tokens;loader")
   ;; the tokenizer code mentions the source starts and end words
   ;; and all the predefined spaces
 
-(lload "run FSAs;loader4")
-(lload "fill chart;loader4")
-(lload "init chart;loader1")
+(lload "run FSAs;loader")
+(lload "fill chart;loader")
+(lload "init chart;loader")
 (gate-grammar *polywords*
-  (gload "fsa;polywords5"))
-(lload "scan;loader2")
-(lload "assess;loader6")
+  (gload "fsa;polywords"))
+(lload "scan;loader")
+(lload "assess;loader")
 (if *lattice-points*
-  (lload "check;loader1")
+  (lload "check;loader")
   (lload "check;loader"))
-(lload "analyzers;psp:threading:loader2")
+(lload "analyzers;psp:threading:loader")
 ;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
-(lload "kinds of edges;loader3")
-(lload "complete;loader1")
+(lload "kinds of edges;loader")
+(lload "complete;loader")
 (if *lattice-points*
   (then ;;(lload "annotation;loader") empty file flushed 9/22/11
-        (lload "referent;loader3"))
-  (lload "referent;loader2"))
+        (lload "referent;loader"))
+  (lload "referent;loader"))
 (lload "analyzers;psp:terminate")
-(lload "forest;loader1")
+(lload "forest;loader")
 (lload "traversal-routines;loader")
 (lload "scan-patterns;loader")
 
@@ -191,7 +191,7 @@
 
 ;;(when *heuristics*
 ;;  These are just enabling fns. they aren't heuristics
-(lload "do CA;loader1")
+(lload "do CA;loader")
 
 (when *DM&P*
   (lload "analyzers;DM&P:loader"))
@@ -204,12 +204,12 @@
   (lload "analyzers;context:loader"))
 
 (when *recognize-sections-within-articles*
-  (lload "sect;loader2"))
+  (lload "sect;loader"))
 
 (when *da*
   (lload "analyzers;DA:loader"))
 
-(lload "session-inits;setup3")
+(lload "session-inits;setup")
 
 (when *external-analyzer-files*
   (load *external-analyzer-files*))
@@ -220,7 +220,7 @@
 ;;;-------------------------------
 
 (gate-grammar *punctuation*
-  (gload "required-words;punctuation1"))
+  (gload "required-words;punctuation"))
   (lload "tokens;alphabet")
 
 (gate-grammar *brackets*
@@ -248,16 +248,16 @@
 ;;; drivers
 ;;;---------
 
-(lload "source-drivers;loader1")
+(lload "source-drivers;loader")
 (lload "traces;online hook")
 (lload "articles;loader")
 (unless (eq *loader-mode* :just-the-all-edges-parser)
-  (lload "sink-drivers;loader1"))
+  (lload "sink-drivers;loader"))
 (lload "drivers;tokens:loader")
 (lload "chart-drivers;loader")
-(lload "chart-drivers;psp:loader5")
-(lload "chart-drivers;traversal1")
-(lload "chart-drivers;all-edges:loader1")
+(lload "chart-drivers;psp:loader")
+(lload "chart-drivers;traversal")
+(lload "chart-drivers;all-edges:loader")
 (lload "forest-drivers;loader")
 
 ;(when *c3*
@@ -265,12 +265,12 @@
 
 (if *da*
   (lload "drivers;DA:loader")
-  (lload "drivers;DA:driver1")) ;; the dispatch with the switch check
+  (lload "drivers;DA:driver")) ;; the dispatch with the switch check
 
-(lload "init-drivers;switches2")
+(lload "init-drivers;switches")
  ;; goes after all the other drivers because it references their flags
 
-(lload "objects;traces:cases-loader1")
+(lload "objects;traces:cases-loader")
   ;; goes down here rather than with the rest of objects because it
   ;; references zillions of functions.  The "ops" loader is at the
   ;; start of the loading so the macros are defined before they're used.
@@ -282,7 +282,7 @@
 ;;; interface
 ;;;-----------
 
-(lload "file ops;loader1")
+(lload "file ops;loader")
 (lload "workbench;loader")
 (lload "grammar-interface;loader")
 (unless *nothing-Mac-specific*

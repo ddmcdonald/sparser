@@ -51,7 +51,7 @@
   (gload "words;pronouns"))
 
 (gate-grammar *quantifiers*
-  (gload "words;quantifiers1"))
+  (gload "words;quantifiers"))
 
 
 (gate-grammar *WH-words*

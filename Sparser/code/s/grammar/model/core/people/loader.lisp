@@ -19,9 +19,9 @@
 (in-package :sparser)
 
 (gload "people;object")
-(gload "people;names1")
-(gload "people;prefixes2") ;; e.g. "Mr."
-(gload "people;versions1") ;; e.g. "Jr."
+(gload "people;names")
+(gload "people;prefixes") ;; e.g. "Mr."
+(gload "people;versions") ;; e.g. "Jr."
 (gload "people;printers")
 (gload "people;names to people")
 (gload "people;kinds")

@@ -12,6 +12,6 @@
 
 (in-package :sparser)
 
-(gload "collections;object1")
-(gload "collections;operations2")
+(gload "collections;object")
+(gload "collections;operations")
 (gload "collections;obj specific printers")

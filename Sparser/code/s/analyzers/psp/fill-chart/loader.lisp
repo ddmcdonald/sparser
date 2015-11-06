@@ -14,8 +14,8 @@
 (in-package :sparser)
 
 (lload "fill chart;globals")
-(lload "fill chart;add5")
-(lload "fill chart;store5")
+(lload "fill chart;add")
+(lload "fill chart;store")
 (lload "fill chart;newline")
 (lload "fill chart;testing")
 

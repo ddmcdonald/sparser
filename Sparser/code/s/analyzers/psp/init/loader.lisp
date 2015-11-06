@@ -13,6 +13,6 @@
 
 (in-package :sparser)
 
-(lload "init chart;init chart1")
-(lload "init chart;printer1")
+(lload "init chart;init chart")
+(lload "init chart;printer")
 

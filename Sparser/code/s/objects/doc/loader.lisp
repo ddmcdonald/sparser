@@ -42,9 +42,9 @@
 (lload "doc;globals")
 (lload "doc;rhetoric")
 (lload "doc;word-freq")
-(lload "doc;article1")
+(lload "doc;article")
 (lload "doc;sections")
-(lload "doc;section markers1")
+(lload "doc;section markers")
 (lload "doc;SGML tags")
 (lload "doc;html")
 (lload "doc;marker pairs")
@@ -53,7 +53,7 @@
 (lload "doc;annotation")
 (lload "doc;header label")
 (lload "doc;style")
-(lload "doc;object1") ;; defines all the document classes
+(lload "doc;object") ;; defines all the document classes
 (lload "doc;content-methods") ;; depends on object1
 (lload "doc;doc-set")
 (lload "doc;doc stream")

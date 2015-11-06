@@ -16,6 +16,6 @@
 ;;     (5/20/15) bumped [words] to 3
 
 (lload "run FSAs;dispatches")
-(lload "run FSAs;words3")
-(lload "run FSAs;edges1")
+(lload "run FSAs;words")
+(lload "run FSAs;edges")
 

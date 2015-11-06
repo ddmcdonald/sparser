@@ -19,7 +19,7 @@
 (lload "do SDM&P;gofers")
 (lload "do SDM&P;heuristics")
 (lload "do SDM&P;reify-individuals")
-(lload "do SDM&P;scan1")
+(lload "do SDM&P;scan")
 (lload "do SDM&P;form-march")
 
 (lload "do SDM&P;text-relations")

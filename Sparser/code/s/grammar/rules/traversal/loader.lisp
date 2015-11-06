@@ -15,7 +15,7 @@
 
 (gload "traversal;parenthesis")
 (gload "traversal;quotations")
-(gload "traversal;angle brackets1")
+(gload "traversal;angle brackets")
 (gload "traversal;other brackets")
 
 (gate-grammar *proper-names*

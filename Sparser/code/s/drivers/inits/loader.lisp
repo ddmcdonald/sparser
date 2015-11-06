@@ -15,11 +15,11 @@
 
 (in-package :sparser)
 
-(lload "session-inits;globals1")
-(lload "init-drivers;articles2")
-(lload "init-drivers;runs1")
+(lload "session-inits;globals")
+(lload "init-drivers;articles")
+(lload "init-drivers;runs")
 
 #| loaded from the master-loader:
-(lload "session-inits;setup2")
-(lload "init-drivers;switches2")  |#
+(lload "session-inits;setup")
+(lload "init-drivers;switches")  |#
 

@@ -27,17 +27,17 @@
 (in-package :sparser)
 
 (lload "referent;composite referent")
-(lload "referent;driver2")
-(lload "referent;dispatch2")
-(lload "referent;decode exp1")
+(lload "referent;driver")
+(lload "referent;dispatch")
+(lload "referent;decode exp")
 (if cl-user::*psi-2009*
-  (lload "referent;unary driver3")
-  (lload "referent;unary driver2"))
-(lload "referent;cases1")
+  (lload "referent;unary driver")
+  (lload "referent;unary driver"))
+(lload "referent;cases")
 
 (when *include-model-facilities*
-  (lload "referent;new decodings1")
+  (lload "referent;new decodings")
   (lload "referent;ref-method")
   (if cl-user::*psi-2009*
-    (lload "referent;new cases3")
-    (lload "referent;new cases2")))
+    (lload "referent;new cases")
+    (lload "referent;new cases")))

@@ -11,13 +11,13 @@
 
 (in-package :sparser)
 
-(gload "pronouns;object1")
-(gload "pronouns;cases1")
+(gload "pronouns;object")
+(gload "pronouns;cases")
 
 
 (unless (boundp '*debug-subsequent-reference*)
   (defparameter *debug-subsequent-reference* t))
 
 (gate-grammar *resolve-pronouns*
-  (gload "pronouns;ref4"))
+  (gload "pronouns;ref"))
 

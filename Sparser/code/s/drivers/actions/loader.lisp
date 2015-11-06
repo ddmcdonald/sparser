@@ -13,6 +13,6 @@
 (in-package :sparser)
 
 (lload "action-drivers;object")
-(lload "action-drivers;hook1")
-(lload "action-drivers;trigger2")
+(lload "action-drivers;hook")
+(lload "action-drivers;trigger")
 

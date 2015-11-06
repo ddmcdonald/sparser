@@ -10,5 +10,5 @@
 (lload "subsid;subsidiary nouns")
 (lload "subsid;subsidiaries")
 (lload "subsid;subsidiary lambdas")
-(lload "subsid;subsidiary rules1")
+(lload "subsid;subsidiary rules")
 

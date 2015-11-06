@@ -15,7 +15,7 @@
 (gate-grammar *whos-news/core*
   (unless *pct*  ;; it's already been loaded
     (gload "pct;loader"))
-  (gload "je;loader2"))
+  (gload "je;loader"))
 
 (defun whos-news-post-dossiers-loader ()
   ;; gets called when the name suggests. Allows odd references to specific
@@ -36,7 +36,7 @@
   (gload "syntax;be cases")
   (gload "syntax;be rules")
   (gload "who's news;predications")
-  (gload "who's news;commas1")
+  (gload "who's news;commas")
   (gload "who's news;prepositions:loader")
   (gload "who's news;time")
   (gload "who's news;vacancy")

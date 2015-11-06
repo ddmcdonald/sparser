@@ -11,10 +11,10 @@
 
 (lload "fsa;morphology")
 (lload "fsa;capitalization")
-(lload "fsa;newline2")  ;; goes to 3 for paragraphs as real objects
+(lload "fsa;newline")  ;; goes to 3 for paragraphs as real objects
 
-(lload "fsa;polywords2")
-(lload "fsa;abbreviations1")
-(lload "fsa;initials1")
-(lload "fsa;single quote1")
+(lload "fsa;polywords")
+(lload "fsa;abbreviations")
+(lload "fsa;initials")
+(lload "fsa;single quote")
 
