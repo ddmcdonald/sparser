@@ -267,9 +267,10 @@ therefore we have the special cases:
       (error "Can't retrieve an amino acid named ~a" name-of-aa))
     (let* ((first-name (resolve/make first-name))
            (i (find-or-make-individual 'phosphorylated-amino-acid
-                 :name first-name :amino-acid aa)))
+                  :amino-acid aa :name first-name)))
+      ;; Order of definition in the bindings determines whether
+      ;; we can retrive the individual with a find on the acid.
       ;;(push-debug `(,i ,aa)) (break "rule on i?")
-      (setq i (bind-dli-variable 'amino-acid aa i))
       (dolist (string p-names)
         (let* ((word (resolve/make string))
                (rule (define-cfr category::amino-acid
@@ -303,17 +304,26 @@ therefore we have the special cases:
 (defun reify-p-residue-and-make-edge (start-pos end-pos amino-acid digits)
   ;; called from one-hyphen-ns-patterns for (:little-p :hyphen :single-cap :digits)
   (push-debug `(,amino-acid ,digits))
-  (break "find pAA"))
-#|
-  (let* ((phosporylated-aa 
+  (let ((phospho-aa (find-individual 'phosphorylated-amino-acid
+                                     :amino-acid amino-acid))
+        (number (find-or-make-number digits)))
+    (unless phospho-aa
+      (break "Why is there apparently no phorphorylated version of ~a"
+             amino-acid))
+    (push-debug `(,phospho-aa ,number))
+    (let* ((i (find-or-make-individual 'residue-on-protein
+                 :amino-acid phospho-aa :position number))
+           (edge (make-edge-over-long-span
+                  start-pos
+                  end-pos
+                  category::residue-on-protein
+                  :rule 'reify-p-residue-and-make-edge
+                  :form category::np
+                  :referent i
+                  :constituents (treetops-between start-pos end-pos))))
+      edge)))
 
-
-make-residue-on-protein (amino-acid number-exp)
-
-  (let* ((letter (if hyphen? (third words) (second words)))
-         (amino-acid (single-letter-word-for-amino-acid?
-|#
-
+ 
 ;;;-----------------
 ;;; point mutations
 ;;;-----------------
