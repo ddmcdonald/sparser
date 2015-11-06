@@ -29,8 +29,8 @@
                         :use nil))))
 
 
-(lload "cat;object2")
+(lload "cat;object")
 (lload "cat;printers")
-(lload "cat;lookup1")
-(lload "cat;form1")
+(lload "cat;lookup")
+(lload "cat;form")
 

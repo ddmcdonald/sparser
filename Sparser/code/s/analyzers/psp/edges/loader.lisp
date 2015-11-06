@@ -40,17 +40,17 @@
 
 (in-package :sparser)
 
-(gload "kinds of edges;single-new1")
-(gload "kinds of edges;binary1")
-(gload "kinds of edges;binary-explicit2")  ;;//// keep only one of these
-(gload "kinds of edges;binary-explicit all keys2")
-(gload "kinds of edges;cs2")
-(gload "kinds of edges;initial-new1")
+(gload "kinds of edges;single-new")
+(gload "kinds of edges;binary")
+(gload "kinds of edges;binary-explicit")  ;;//// keep only one of these
+(gload "kinds of edges;binary-explicit all keys")
+(gload "kinds of edges;cs")
+(gload "kinds of edges;initial-new")
 (gload "kinds of edges;unknown")
-(gload "kinds of edges;polyw1")
-(gload "kinds of edges;long scan1")
+(gload "kinds of edges;polyw")
+(gload "kinds of edges;long scan")
 (gload "kinds of edges;looking under")
-(gload "kinds of edges;lattice-operations1")
+(gload "kinds of edges;lattice-operations")
 
 ;; These aren't needed unless *load-the-grammar* is true.
 ;; However since that flag won't go up until late in the process
@@ -64,4 +64,4 @@
   (gload "grammar edge types;form rules")
   (gload "grammar edge types;CA")
   (gload "grammar edge types;pnf")
-  (gload "grammar edge types;pronouns1"))
+  (gload "grammar edge types;pronouns"))

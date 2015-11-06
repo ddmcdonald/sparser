@@ -24,7 +24,7 @@
 
 (in-package :sparser)
 
-(gload "DM&P;new individuals1")
+(gload "DM&P;new individuals")
 (gload "DM&P;pair terms")
 (gload "DM&P;segments")
 
@@ -39,7 +39,7 @@
 (gload "DM&P;adverbs")
 (gload "DM&P;adjacencies")
 (gload "DM&P;infinitives")
-(gload "DM&P;capitalized sequences1")
+(gload "DM&P;capitalized sequences")
 (gload "DM&P;long compounds")
 
 (gload "DM&P;you")

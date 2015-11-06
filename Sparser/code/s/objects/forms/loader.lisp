@@ -32,17 +32,17 @@
 ;;   7.12 (12/7) added [header labels]. (12/27) added [style]
 
 (lload "forms;words")
-(lload "forms;polyword4")
-(lload "forms;spaces1")
-(lload "forms;punctuation1")
+(lload "forms;polyword")
+(lload "forms;spaces")
+(lload "forms;punctuation")
 (lload "forms;context variables")
-(lload "forms;categories1")
-(lload "forms;cfrs4")
-(lload "forms;csrs1")
+(lload "forms;categories")
+(lload "forms;cfrs")
+(lload "forms;csrs")
 (lload "forms;style")
 
 (gate-grammar *recognize-sections-within-articles*
-  (lload "forms;sectionizing3")
+  (lload "forms;sectionizing")
   (lload "forms;header labels"))
 
 (unless (eq *loader-mode* :just-the-all-edges-parser)

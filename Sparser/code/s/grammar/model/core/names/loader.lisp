@@ -32,25 +32,25 @@ See rules/FSAs/abbreviations.lisp
 (in-package :sparser)
 
 (gload "names-model;object")
-(gload "names-model;single letters2")
+(gload "names-model;single letters")
 (gload "names-model;name words")
 (gload "names-model;lists")
 
 (gate-grammar *initials*
-  (gload "names-model;initials2")
-  (gload "fsa;initials2"))
+  (gload "names-model;initials")
+  (gload "fsa;initials"))
 
 (gload "names;printing")
 
 (gload "names-fsa;driver")
-(gload "names-fsa;scan3")
+(gload "names-fsa;scan")
 (gload "names-fsa;resume scan")
-(gload "names-fsa;classify1")
+(gload "names-fsa;classify")
 (gload "names-fsa;simple classify")
 (gload "names-fsa;transition rules")
-(gload "names-fsa;do transitions1")
+(gload "names-fsa;do transitions")
 (gload "names-fsa;embedded parse")
-(gload "names-fsa;record1")
+(gload "names-fsa;record")
 (gload "names-fsa;gofers-for-examine")
 (gload "names-fsa;examine")
 

@@ -14,7 +14,7 @@
 
 (in-package :sparser)
 
-(lload "countries;object1")
+(lload "countries;object")
 (lload "countries;relation")
-(lload "countries;rules1")
+(lload "countries;rules")
 

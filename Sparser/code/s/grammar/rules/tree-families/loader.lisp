@@ -32,8 +32,8 @@
 (in-package :sparser)
 
 (gload "tree-families;single words")
-(gload "tree-families;morphology1")
-(gload "tree-families;postprocessing1")
+(gload "tree-families;morphology")
+(gload "tree-families;postprocessing")
 
 (gload "tree-families;NP")
 (gload "tree-families;np adjuncts")
@@ -62,9 +62,9 @@
 (gload "tree-families;interjections")
 
 (gload "tree-families;abbreviation")
-(gload "tree-families;families1")
+(gload "tree-families;families")
 (gload "tree-families;shortcut-mechanics")
 (gload "tree-families;shortcut-expansion")
-(gload "tree-families;shortcut-master2")
-(gload "tree-families;shortcuts1")
+(gload "tree-families;shortcut-master")
+(gload "tree-families;shortcuts")
 

@@ -29,14 +29,14 @@
 
   (gload "places;object")
 (gate-grammar *locations-core*
-  (gload "places;directions1")
+  (gload "places;directions")
   (gload "places;relational")
   (gload "places;compass points")
   (gload "places;places")
   (gload "places;directional rules"))
 
 (gate-grammar *countries*
-  (gload "countries;loader1"))
+  (gload "countries;loader"))
 
 (gate-grammar *cities*
   (gload "places;city"))
@@ -55,5 +55,5 @@
 ;; rules have to load last so that referential versions of the
 ;; various categories are formed rather than simple categories
 (gate-grammar *locations-core*
-  (gload "places;rules2"))
+  (gload "places;rules"))
 

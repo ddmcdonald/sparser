@@ -18,10 +18,10 @@
 ;;      [tuck].
 
 (lload "ev;switch")
-(lload "ev;object2")
-(lload "ev;printers2")
-(lload "ev;vectors2")
-(lload "ev;init2")
+(lload "ev;object")
+(lload "ev;printers")
+(lload "ev;vectors")
+(lload "ev;init")
 (lload "ev;peek")
 (lload "ev;tuck")
 

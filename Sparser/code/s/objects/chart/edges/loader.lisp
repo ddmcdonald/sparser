@@ -15,8 +15,8 @@
 (in-package :sparser)
 
 (lload "edges;globals")
-(lload "edges;object3")
+(lload "edges;object")
 (lload "edges;printers")
-(lload "edges;multiplication1")
-(lload "edges;resource4")
+(lload "edges;multiplication")
+(lload "edges;resource")
 

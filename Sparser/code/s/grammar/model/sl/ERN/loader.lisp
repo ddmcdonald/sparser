@@ -12,11 +12,11 @@
 
 (in-package :sparser)
 
-(gload "ern;financial data2")
-(gload "ern;earnings report2")
-(gload "ern;'total' verbs2")
+(gload "ern;financial data")
+(gload "ern;earnings report")
+(gload "ern;'total' verbs")
 
-;(gload "ern;value of fin-dat2") ;; must follow [time..]
+;(gload "ern;value of fin-dat") ;; must follow [time..]
 ; /// spread its rules into [earnings report]
 
 

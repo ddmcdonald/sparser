@@ -34,7 +34,7 @@
 
 (lload "scan-patterns;scan-gophers") ;; help the scan
 (lload "scan-patterns;charaterize-words")
-(lload "scan-patterns;uniform-scan1") ;; driver / entry-point
+(lload "scan-patterns;uniform-scan") ;; driver / entry-point
 
 (lload "scan-patterns;take transitions")
 (lload "scan-patterns;start")  ;; empty as of 10/5/95

@@ -22,21 +22,21 @@
 (in-package :sparser)
 
 (gate-grammar *company-core*
-  (gload "companies;object1")
-  (gload "companies;names2")
+  (gload "companies;object")
+  (gload "companies;names")
   (gload "companies;inc terms")
-  (gload "companies;non-kind co words1"))
+  (gload "companies;non-kind co words"))
 
 (gate-grammar *kinds-of-companies*
   (gload "companies;kind of company")
   (gload "companies;descriptor"))
 
 (gate-grammar *subsidiaries*
-  (gload "companies;subsidiary1"))
+  (gload "companies;subsidiary"))
 
 (gate-grammar *company-core*
   (gload "companies;printing")
-  (gload "companies;rules1")
+  (gload "companies;rules")
   (gload "companies;names to companies"))
 
 #| loaded from dossiers:
@@ -52,8 +52,8 @@
 
 #|  old and yet to be worked through and updated or flushed
 (gload "companies;subsid:loader")
-(gload "companies;ThisCo1")
-(gload "companies;DefCo2")
+(gload "companies;ThisCo")
+(gload "companies;DefCo")
 (gload "companies;extend edge")
-(gload "companies;CA1")
+(gload "companies;CA")
 (gload "companies;complete")  |#

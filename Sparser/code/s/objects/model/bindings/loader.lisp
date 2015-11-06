@@ -18,11 +18,11 @@
 ;(lload "individuals;structure")
 ;;  already loaded by [model;] level
 
-(lload "bindings;object2")
-(lload "bindings;printers1")
+(lload "bindings;object")
+(lload "bindings;printers")
 (lload "bindings;index")
-(lload "bindings;make2")
+(lload "bindings;make")
 (lload "bindings;hooks")
 (lload "bindings;resource")
-(lload "bindings;alloc1")
+(lload "bindings;alloc")
 

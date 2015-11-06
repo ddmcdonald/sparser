@@ -15,10 +15,10 @@
 (in-package :sparser)
 
 (when *heuristics*
-  (lload "forest-drivers;CA4"))
+  (lload "forest-drivers;CA"))
 
-(lload "forest-drivers;actions1")
-(lload "forest-drivers;trap2")
+(lload "forest-drivers;actions")
+(lload "forest-drivers;trap")
 
 (lload "forest-drivers;parsing-containers")
 (lload "forest-drivers;forest-gophers")

@@ -11,13 +11,13 @@
 
 (in-package :sparser)
 
-(lload "chars;state2")
-(lload "chars;setup-string3")
-(lload "chars;setup-file3")
-(lload "chars;setup-switch1")
+(lload "chars;state")
+(lload "chars;setup-string")
+(lload "chars;setup-file")
+(lload "chars;setup-switch")
 
-(lload "chars;display1")
+(lload "chars;display")
 
-(lload "chars;testing1")
+(lload "chars;testing")
 (lload "chars;testing-file")
 

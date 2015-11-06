@@ -17,10 +17,10 @@
 (in-package :sparser)
 
 (gate-grammar *adverbs*
-  (gload "words;adverbs2"))
+  (gload "words;adverbs"))
 
 (gate-grammar *prepositions*
   (if *include-model-facilities*
-    (gload "words;prepositions2")
-    (gload "words;prepositions1")))
+    (gload "words;prepositions")
+    (gload "words;prepositions")))
 

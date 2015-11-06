@@ -9,5 +9,5 @@
 
 (lload "fsa;morphology")
 (lload "fsa;capitalization")
-(lload "fsa;newline3")
+(lload "fsa;newline")
 

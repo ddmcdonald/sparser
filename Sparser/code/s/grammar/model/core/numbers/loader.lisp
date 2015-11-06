@@ -24,13 +24,13 @@
 
 (in-package :sparser)
 
-(gload "numbers;object1") 
-(gload "numbers;categories1")
-(gload "numbers;form3")
-(gload "numbers;fsa digits6")
+(gload "numbers;object") 
+(gload "numbers;categories")
+(gload "numbers;form")
+(gload "numbers;fsa digits")
 (gload "numbers;fsa words")
-(gload "numbers;ordinals3")
-(gload "numbers;percentages1")
+(gload "numbers;ordinals")
+(gload "numbers;percentages")
 (gload "numbers;rules")
 (gload "numbers;relation")
 

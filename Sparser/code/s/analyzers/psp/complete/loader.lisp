@@ -17,6 +17,6 @@
 
 (in-package :sparser)
 
-(lload "complete;complete HA3")
+(lload "complete;complete HA")
 (lload "complete;switch complete")
 

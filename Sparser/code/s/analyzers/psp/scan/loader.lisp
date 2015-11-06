@@ -12,6 +12,6 @@
 
 (in-package :sparser)
 
-(lload "scan;scan1")
+(lload "scan;scan")
 (lload "scan;next-word")
 

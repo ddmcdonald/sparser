@@ -17,10 +17,10 @@
                     :use nil)))
 
 (lload "bracket;object")
-(lload "bracket;assignments1")
-(lload "bracket;printers1")
+(lload "bracket;assignments")
+(lload "bracket;printers")
 (lload "bracket;catalog")
-(lload "bracket;intern1")
+(lload "bracket;intern")
 (lload "bracket;rank")
-(lload "bracket;form1")
+(lload "bracket;form")
 

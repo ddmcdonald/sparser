@@ -10,5 +10,5 @@
 
 (in-package :sparser)
 
-(lload "drivers;tokens:next-terminal2")
+(lload "drivers;tokens:next-terminal")
 

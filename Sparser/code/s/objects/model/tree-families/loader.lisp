@@ -17,15 +17,15 @@
 
 (in-package :sparser)
 
-(lload "tf;object1")
-(lload "tf;form1")
+(lload "tf;object")
+(lload "tf;form")
 (lload "tf;def form")
 (if cl-user::*psi-2009*
   (then
-    (lload "tf;driver2")
-    (lload "tf;subrs3"))
+    (lload "tf;driver")
+    (lload "tf;subrs"))
   (else
-    (lload "tf;driver1")
-    (lload "tf;subrs2")))
-(lload "tf;rdata1")
+    (lload "tf;driver")
+    (lload "tf;subrs")))
+(lload "tf;rdata")
 

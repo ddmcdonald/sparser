@@ -17,8 +17,8 @@
 (in-package :sparser)
 
 ;; (lload "positions;parameters")
-(lload "positions;positions1")
-(lload "positions;array2")
+(lload "positions;positions")
+(lload "positions;array")
 (lload "positions;generic")
 (lload "positions;display")
 

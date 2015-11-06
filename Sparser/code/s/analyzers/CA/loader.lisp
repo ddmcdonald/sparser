@@ -18,7 +18,7 @@
 (in-package :sparser)
 
 (lload "do CA;actions")
-(lload "do CA;scanners1")
-(lload "do CA;search2")
-(lload "do CA;anaphora3")
+(lload "do CA;scanners")
+(lload "do CA;search")
+(lload "do CA;anaphora")
 

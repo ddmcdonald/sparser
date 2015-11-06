@@ -21,8 +21,8 @@
 (lload "file ops;file name")
 (lload "file ops;open-close")
 
-(lload "file ops;read switch1")           ;; bumped for 1.0
-(lload "file ops;read chars1")            ;; bumped for 1.0
+(lload "file ops;read switch")           ;; bumped for 1.0
+(lload "file ops;read chars")            ;; bumped for 1.0
 
 
 (unless *nothing-Mac-specific*

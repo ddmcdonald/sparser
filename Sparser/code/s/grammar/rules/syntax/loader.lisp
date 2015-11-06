@@ -37,14 +37,14 @@
   (gload "syntax;syntactic rules"))
 
 (gate-grammar *heuristics-from-morphology*
-  (gload "syntax-morph;affix-rules1"))
+  (gload "syntax-morph;affix-rules"))
 
 (gate-grammar *default-semantics-for-vg*
   (gload "syntax-vg;tense")
   (gload "syntax-vg;have")
   (gload "syntax-vg;be")
   (gload "syntax-vg;modals")   ;; references #<have>
-  (gload "syntax-vg;adverbs1"))
+  (gload "syntax-vg;adverbs"))
 
 
 (gate-grammar *default-semantics-for-NP*
@@ -53,7 +53,7 @@
   (gload "syntax-art;prepositions"))
 
 (gate-grammar *conjunction*
-  (gload "syntax-conj;conjunction8"))
+  (gload "syntax-conj;conjunction"))
 
 (gate-grammar *possessive*
   (gload "syntax-poss;possessive"))

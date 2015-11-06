@@ -12,9 +12,9 @@
 
 (in-package :sparser)
 
-(gload "money;objects1")
+(gload "money;objects")
 (gload "money;printers")
-(gload "money;rules1")
+(gload "money;rules")
 
 #| in dossiers:
   (gload "money-dossier;denominations of money")

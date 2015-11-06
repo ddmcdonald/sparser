@@ -28,8 +28,8 @@
 
 
 (gate-grammar *titles-core*
-  (gload "titles;object2")
-  (gload "titles;operations2")
+  (gload "titles;object")
+  (gload "titles;operations")
   (gload "titles;rules")
   (gate-grammar *da*
     (gload "titles;of-titles")
@@ -45,7 +45,7 @@
 |#
 
 #| Obsolete / subsumed into another file 
-;(gload "titles;head-of1")
+;(gload "titles;head-of")
 (gload "titles;area of responsibility")
 |#
 
@@ -73,7 +73,7 @@
 
 #|  the set from spring 1991 -- many will go away/merge, none
      are yet vetted
-(gload "titles;title CA1")
+(gload "titles;title CA")
 (gload "titles;title aux")
 
 (gload "titles;title modifiers")
@@ -89,7 +89,7 @@
 (gload "titles;title+miscl")
 (gload "titles;pers+title")
 
-(gload "titles;plural title1")
+(gload "titles;plural title")
 
 (gload "resp;object")
 (gload "resp;cases")

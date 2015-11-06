@@ -14,6 +14,6 @@
 
 (lload "do HA;look")
 (lload "do HA;segment")
-(lload "do HA;place brackets1")
+(lload "do HA;place brackets")
 (lload "do HA;inter-segment boundaries")
 

@@ -15,5 +15,5 @@
 (lload "traversal-routines;form")
 (lload "traversal-routines;forest scan")
 (lload "traversal-routines;dispatch")
-(lload "traversal-routines;interiors1")
+(lload "traversal-routines;interiors")
 

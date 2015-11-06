@@ -16,12 +16,12 @@
 (in-package :sparser)
 
 (gate-grammar *resolve-pronouns*
-  (gload "ca;defNP2"))
+  (gload "ca;defNP"))
 
 (gate-grammar *find-subject-for-VP*
-  (gload "ca;stranded VP1")
+  (gload "ca;stranded VP")
   (gload "ca;extract subj")
-  (gload "ca;subj search2")
+  (gload "ca;subj search")
   (gload "ca;stranded NP")
   (gload "ca;ancilaries"))
 

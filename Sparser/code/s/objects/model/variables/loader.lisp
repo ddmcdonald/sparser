@@ -19,9 +19,9 @@
 ;(lload "individuals;structure")
 ;;  already loaded by [model;] level
 
-(lload "variables;object2")
-(lload "variables;printers2")
-(lload "variables;index2")
+(lload "variables;object")
+(lload "variables;printers")
+(lload "variables;index")
 (lload "variables;form")
-(lload "variables;make2")
+(lload "variables;make")
 

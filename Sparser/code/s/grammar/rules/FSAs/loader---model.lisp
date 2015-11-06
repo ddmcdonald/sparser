@@ -17,10 +17,10 @@
 (in-package :sparser)
 
 (gate-grammar *abbreviations*
-  (gload "fsa;abbreviations2"))
+  (gload "fsa;abbreviations"))
 
 (gate-grammar *single-quote*
-  (gload "fsa;single quote1"))
+  (gload "fsa;single quote"))
 
 (gate-grammar *hyphen*
   (gload "fsa;hyphen"))

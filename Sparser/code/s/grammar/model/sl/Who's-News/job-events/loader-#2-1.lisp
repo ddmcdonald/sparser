@@ -8,7 +8,7 @@
 (in-package :CTI-source)
 
 (lload "je;CA")
-(lload "je;lambdas1")
-(lload "je;readout1")
-(lload "je;records1")
+(lload "je;lambdas")
+(lload "je;readout")
+(lload "je;records")
 
