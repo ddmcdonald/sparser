@@ -90,9 +90,6 @@
    buffer to the other.  Needed for tokens that span both buffers
    whose indicies need special handling.")
 
-
-
-
 (defvar *length-accumulated-from-prior-buffers* 0
   "As the analyzer procedes through the characters of an article,
    it will typically load and scan several buffer-length of characters.
@@ -102,12 +99,31 @@
      This accumulator is initialized when the buffers are initialized,
    and added to in Next-char after it has the buffer refilled.")
 
-
-
-
 ;;;------------
 ;;;  display
 ;;;------------
+
+(defun cur-string (&key (prev-chars 40) (next-chars 20))
+  "Return a short, localized subsequence of the current character buffer."
+  (if (or (not *character-buffer-in-use*) (minusp *index-of-next-character*))
+    ""
+    (let ((source-start (1+ (or (search (word-pname *source-start*)
+                                        *character-buffer-in-use*
+                                        :end2 *index-of-next-character*
+                                        :from-end t)
+                                -1)))
+          (source-end (or (search (word-pname *end-of-source*)
+                                  *character-buffer-in-use*
+                                  :start2 *index-of-next-character*)
+                          (length *character-buffer-in-use*)))
+          (window-start (- *index-of-next-character* prev-chars))
+          (window-end (+ *index-of-next-character* next-chars)))
+      (concatenate 'string
+                   (if (< source-start window-start) "..." "")
+                   (subseq *character-buffer-in-use*
+                           (max source-start window-start)
+                           (min source-end window-end))
+                   (if (> source-end window-end) "..." "")))))
 
 #| these are out of date
 

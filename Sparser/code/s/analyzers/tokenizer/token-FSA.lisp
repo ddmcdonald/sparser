@@ -135,12 +135,3 @@
             (cleanup-call-to-caps-fsa capitalization-state length))
       (setq *length-of-the-token* length)
       (find-word char-type))))
-
-
-(defun cur-char ()
-  (elt *character-buffer-in-use* *index-of-next-character*))
-
-(defun cur-string ()
-  (subseq *character-buffer-in-use* 
-          (- *index-of-next-character* 40) 
-          (+ *index-of-next-character* 20)))
