@@ -45,8 +45,8 @@
 
 (defun make-hyphenated-structure (left-edge right-edge)
   ;; called from nospace-hyphen-specialist or from
-  ;; resolve-hyphen-between-two-words
-  (push-debug `(,left-edge ,right-edge))
+  ;; resolve-hyphen-between-two-words when it has no better 
+  ;; idea for what to do.
   (let ((i (find-or-make-individual 'hyphenated-pair
              :left (edge-referent left-edge)
              :right (edge-referent right-edge)))
@@ -57,17 +57,16 @@
               (edge-category right-edge))
       (setq i (bind-dli-variable 'type (edge-category left-edge)
                              i category::sequence)))
-    (let ((edge (make-edge-over-long-span
-                   (pos-edge-starts-at left-edge)
-                   (pos-edge-ends-at right-edge)
-                   category
-                   :rule 'nospace-hyphen-specialist
-                   :form category::n-bar
-                   :referent i
-                   :constituents `(,left-edge ,right-edge))))
-        (revise-form-of-nospace-edge-if-necessary edge right-edge)
-        (tr :two-hyphen-default-structure i edge)
-        edge)))
+    (let ((edge (make-ns-edge
+                 (pos-edge-starts-at left-edge)
+                 (pos-edge-ends-at right-edge)
+                 category
+                 :rule 'nospace-hyphen-specialist
+                 :referent i
+                 :constituents `(,left-edge ,right-edge))))
+      (revise-form-of-nospace-edge-if-necessary edge right-edge)
+      (tr :two-hyphen-default-structure i edge)
+      edge)))
 
 
 ;;;; The category is in sl/biology/taxonomy.lisp 
@@ -102,10 +101,12 @@
         (left-ref (edge-referent left-edge))
         (right-ref (edge-referent right-edge)))
     (tr :making-ns-pair-on category)
+
     (when (or (word-p left-ref)
               (word-p right-ref))
       (push-debug `(,left-ref ,right-ref))
       (error "A word leaked through to make-ns-pair"))
+
     (let ((i (find-or-make-individual 'no-space-pair
                            :left left-ref
                            :right right-ref)))
@@ -113,10 +114,8 @@
             ;; Subcat checks are on the referent, so we make
             ;; sure that it has the expected type
             (push category (indiv-type i)))
-      (let ((edge (make-edge-over-long-span
-                   pos-before
-                   pos-after
-                   category
+      (let ((edge (make-ns-edge
+                   pos-before pos-after category
                    :form (edge-form left-edge)
                    :referent i
                    :rule 'make-ns-pair
@@ -124,19 +123,6 @@
                    :words words)))
         ;; trace
         edge))))
-
-(defun make-protein-pair/convert-bio-entity (start-pos end-pos 
-                                             edges words edge-to-convert)
-  "Make a protein pair, but first convert the designated edge/referent
-  from a bio-entity to a protein."
-  (push-debug `(,start-pos ,end-pos ,edges ,words ,edge-to-convert))
-  (break "Stub: convert bio-entity and make pair"))
-
-;    (let ((protein2 (convert-bio-entity-to-protein 
- ;                    (left-treetop-at/edge pos-after))))
-
-
-
 
 
 (defun make-hyphenated-pair (cat-name left-ref right-ref
@@ -169,10 +155,8 @@
                                       :right right-ref
                                       :items (list left-ref right-ref))))
  
-    (let ((edge (make-edge-over-long-span
-                 pos-before 
-                 pos-after
-                 category
+    (let ((edge (make-ns-edge
+                 pos-before pos-after category
                  :form category::n-bar
                  :rule 'make-hyphenated-pair
                  :referent i
@@ -213,11 +197,6 @@
    like 'Ras-mediated' for the cases where we don't know
    or can't figure out the correct relationship (variable).")
 
-(defun make-qualifying-pair (left right)
-  (find-or-make-individual 'qualifying-pair
-     :head left
-     :qualifier right))
-
 
 
 
@@ -236,7 +215,7 @@
              :right (edge-referent right-edge)))
         (category
          (ns-category-for-reifying category::hyphenated-triple)))
-     (let ((edge (make-edge-over-long-span
+     (let ((edge (make-ns-edge
                    (pos-edge-starts-at left-edge)
                    (pos-edge-ends-at right-edge)
                    category
@@ -542,64 +521,14 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
            (i (find-or-make-individual 'two-part-label
                  :part-one (first elements)
                  :part-two letter)))
-      (let ((edge (make-edge-over-long-span
-                   start-pos
-                   end-pos
-                   category::two-part-label
+      (let ((edge (make-ns-edge
+                   start-pos end-pos category::two-part-label
                    :rule 'reify-two-part-label
                    :form category::common-noun
                    :referent i
                    ;;:constituents edges
                    )))
         edge))))
-
-
-
-;;;---------------------------------
-;;; tilda + number => approximation
-;;;---------------------------------
-
-(defun package-approximation-number (words start-pos end-pos)
-  (push-debug `(,words ,start-pos ,end-pos))
-  ;; (setq words (car *) start-pos (cadr *) end-pos (caddr *))
-  ;; The matching patterns indicates that it's "~<number>"
-  ;; so just trust that. 
-  (let* ((num-word (second words))
-         (number (find-or-make-number num-word)))
-    ;;///// dropping the approximation on the floor
-    ;; see model/core/adjuncts/approx/object.lisp for where to 
-    ;; start the process of doing it right. 
-    (tr :ns-made-approximation number)
-    (let ((edge (make-edge-over-long-span
-                 start-pos
-                 end-pos
-                 category::number
-                 :rule 'package-approximation-number
-                 :form category::number
-                 :referent number
-                 :words words)))
-      ;;/// trace
-      edge)))
-
-;;  (p "2.22±0.25.")
-(defun package-number-plus-error (edges words start-pos end-pos)
-  (let* ((base-edge (car edges))
-         (base (edge-referent base-edge))
-         (range-edge (cadr edges))
-         (range (edge-referent range-edge)))
-    ;;///////// dropping the range on the floor
-    ;; and not continuing with proper representation 
-    (tr :ns-make-number-plus-error base range)
-    (let ((edge (make-edge-over-long-span
-                 start-pos
-                 end-pos
-                 category::number
-                 :rule 'package-number-plus-error
-                 :form category::number
-                 :referent base
-                 :words words)))
-      (tr :no-space-made-edge edge)
-      edge)))
 
 
 
