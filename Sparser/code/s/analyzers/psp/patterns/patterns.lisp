@@ -42,33 +42,38 @@
 ;;; patterns with punctuation other than slash, hypen, or colon
 ;;;-------------------------------------------------------------
 
-(defun resolve-other-punctuation-pattern (pattern words other-punct
+(defun resolve-other-punctuation-pattern (pattern words edges other-punct
                                           start-pos end-pos)
   (push-debug `(,pattern ,words ,other-punct ,start-pos ,end-pos))
+   
   (cond
    ((or (equal pattern `(:tilda :digits))  ;; ~60 in Dec# 52
         (equal pattern `(:tilda :single-digit)))
     ;;/// n.b. does do all it should -- ignores the approximation
     (package-approximation-number words start-pos end-pos))
 
-   ((equal pattern '(:tilda :digits :percent-sign))
+   ((equal pattern '(:tilda :digits :percent-sign)) ;; "~15%"
     ;;/// parser should have noticed the percentage
     ;;/// see above, but it aught to be an approximate-number that
     ;; we use in making the percentage
     (let* ((number (find-or-make-number (second words)))
            (i (find-or-make-individual 'percent :number number)))
-      (let ((edge (make-edge-over-long-span
+      (let ((edge (make-ns-edge
                    start-pos end-pos
                    (category-named 'percent :break-if-none)
                    :rule 'resolve-other-punctuation-pattern
-                   :form (category-named 'np) ;; ???
+                   :form (category-named 'np)
                    :referent i
                    :words words)))
         (tr :made-edge edge)
         edge)))
+
+   ;; (p "2.22±0.25.")
+   ((equal pattern '(:number :plus-minus  :number))
+    (package-number-plus-error edges words start-pos end-pos))
    
    (*work-on-ns-patterns*
-    (push-debug `(,pattern ,start-pos ,end-pos ,words))
+    (push-debug `(,pattern ,edges ,start-pos ,end-pos ,words))
     (break "New 'other punctuation' pattern to resolve: ~a" pattern))
 
    (t (tr :no-ns-pattern-matched)
@@ -83,7 +88,7 @@
 ;;; patterns with no slash or hyphen
 ;;;----------------------------------
 
-(defun resolve-ns-pattern (pattern words start-pos end-pos)
+(defun resolve-ns-pattern (pattern words edges start-pos end-pos)
   ;; called from collect-no-space-segment-into-word as its last
   ;; resort. If we return nil we fall through to a call to 
   ;; reify-ns-name-and-make-edge that will just assume that
@@ -104,6 +109,9 @@
     (or (reify-residue-and-make-edge words start-pos end-pos) ;; Y420
         (reify-ns-name-and-make-edge words start-pos end-pos)))
 
+   ((equal pattern '(:single-cap :single-digit)) ;; "in Figure S1,"
+    (reify-two-part-label words start-pos end-pos))
+
    ((equal pattern '(:single-lower :digits))
     (or (reify-p-protein-and-make-edge words start-pos end-pos) ;; p38
         (reify-residue-and-make-edge words start-pos end-pos)
@@ -123,8 +131,8 @@
         (reify-ns-name-and-make-edge words start-pos end-pos)))
 
    (*work-on-ns-patterns*
-    (push-debug `(,pattern ,start-pos ,end-pos ,words))
-    (break "New pattern to resolve: ~a" pattern))
+    (push-debug `(,pattern ,edges ,start-pos ,end-pos ,words))
+    (break "New simple pattern to resolve: ~a" pattern))
 
    ;; fall through
    (t (tr :no-ns-pattern-matched)
