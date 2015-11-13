@@ -3,11 +3,11 @@
 ;;;
 ;;;     File:  "scan-gophers"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  July 2015
+;;;  version:  November 2015
 
 ;; initiated 5/15/15 breaking out the region delimiter and pattern
 ;; reader from other files. 7/18/15 Fixed but in collection of
-;; edges. 
+;; edges. 11/6/15 Got punct into correct order for return. 
 
 (in-package :sparser)
 
@@ -90,11 +90,11 @@
           (return))))
 
     (values next-pos
-            hyphens
-            slashes
-            colons
-            other-punct
-            edges)))
+            (when hyphens (nreverse hyphens))
+            (when slashes (nreverse slashes))
+            (when colons (nreverse colons))
+            (when other-punct (nreverse other-punct))
+            (when edges (nreverse edges)))))
 
 
 ;;;-----------------------------------------
