@@ -400,10 +400,11 @@
      (t (i/r/s-make-the-rule lhs rhs form referent relation)))
 
     ;; Pass the realization schema through to each rule
-    (if (consp *cfrs*)
-      (dolist (cfr *cfrs*)
-        (set-schema-and-rhs-forms cfr schema schematic-rhs))
-      (set-schema-and-rhs-forms *cfrs* schema schematic-rhs))
+    (unless additional-rule
+      (if (consp *cfrs*)
+        (dolist (cfr *cfrs*)
+          (set-schema-and-rhs-forms cfr schema schematic-rhs))
+        (set-schema-and-rhs-forms *cfrs* schema schematic-rhs)))
     *cfrs* ))
 
 
