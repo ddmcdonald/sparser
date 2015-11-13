@@ -35,7 +35,7 @@
       (:mixed-case
        :mixed ) ;;(characterize-type-for-mixed-case word))
       (:lower-case
-       (if  (= 1 (length (word-pname word)))
+       (if (= 1 (length (word-pname word)))
          (if (string-equal (word-pname word) "p")
            :little-p
            :single-lower)
@@ -53,12 +53,13 @@
   '(:capitalized :single-cap :full :mixed :single-lower :little-p :lower))
 
 (defparameter *digit-nospace-keywords*
-  '(::single-digit :digits))
+  '(:single-digit :digits))
 
 
 
 (defun characterize-words-in-region  (start-pos end-pos edges)
-  ;; Returns a pattern. Presumes that the whole region has been scanned.
+  "Returns a pattern. Presumes that the whole region has been scanned.
+   and that the edges are correctl ordered left to right."
   (push-debug `(,start-pos ,end-pos ,edges))
   (let ((position start-pos)
         (word (pos-terminal start-pos))
@@ -67,10 +68,6 @@
          (when edges (loop for e in edges
                        collect (pos-edge-starts-at e))))
         previous-pos  )
-
-    #+ignore(when edges
-      (push-debug `(,edge-start-positions ,edges ,start-pos ,end-pos))
-      (break "Look at edge start positions"))
 
     (loop
       (cond 
@@ -83,12 +80,11 @@
         (setq element (characterize-word-type position word))
         (push element pattern-elements)))
 
-      (setq position 
-            (if edge 
-              (prog1
-                (pos-edge-ends-at edge)
-                (setq edge nil)) ;; reset
-              (chart-position-after position)))
+      (setq position
+            (cond (edge (pos-edge-ends-at edge))
+                  (t (chart-position-after position))))
+      (when edge (setq edge nil)) ;; reset
+
       (when (eq position previous-pos)
         (error "characterize-words-in-region is looping"))
       (setq previous-pos position)
@@ -97,6 +93,13 @@
         (return)))
 
     (nreverse pattern-elements)))
+
+(defun remove-non-edges (list)
+  "Used by ns-pattern-dispatch to remove the words that appear
+   in the initial list, which is created by treetops-between and
+   consequently can feed in edges, e.g. for tildas."
+  (loop for item in list
+    when (edge-p item) collect item))
 
 
 ;;//// Question is how to fold this into the matcher
@@ -115,4 +118,6 @@
   (let ((symbol-in-word-package (word-symbol word)))
     (intern (symbol-name symbol-in-word-package)
             (find-package :keyword))))
+
+
 
