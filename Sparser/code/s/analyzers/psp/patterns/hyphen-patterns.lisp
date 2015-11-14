@@ -17,30 +17,30 @@
 ;; (trace-scan-patterns)
 ;; (setq *work-on-ns-patterns* t)
 
-(defun resolve-hyphen-pattern (pattern words hyphen-positions start-pos end-pos)
+(defun resolve-hyphen-pattern (pattern words edges hyphen-positions start-pos end-pos)
   ;; Called from ns-pattern-dispatch when no edge in the span covers
   ;; more than one edge and hyphen(s) is the only punctuation
-  ;; (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
+  ;; (push-debug `(,pattern ,words ,edges ,hyphen-positions ,start-pos ,end-pos))
   ;; (break "starting hyphen pattern: ~a" pattern)
   (let ((hyphen-count 0))
     (dolist (item pattern)
       (when (eq item :hyphen ) (incf hyphen-count)))
     (case hyphen-count
       (1 (one-hyphen-ns-patterns
-          pattern words hyphen-positions start-pos end-pos))
+          pattern words edges hyphen-positions start-pos end-pos))
       (2 (two-hyphen-ns-patterns
-          pattern words hyphen-positions start-pos end-pos))
+          pattern words edges hyphen-positions start-pos end-pos))
       (otherwise
        (cond
         (*work-on-ns-patterns*
-         (push-debug `(,pattern ,words ,hyphen-positions ,start-pos ,end-pos))
+         (push-debug `(,pattern ,words ,edges ,hyphen-positions ,start-pos ,end-pos))
          (error "Write the code for ~a hyphens in a no-space sequence" 
                 hyphen-count))
         (t
          (reify-ns-name-and-make-edge words start-pos end-pos)))))))
 
 
-(defun one-hyphen-ns-patterns (pattern words hyphen-positions 
+(defun one-hyphen-ns-patterns (pattern words edges hyphen-positions 
                                start-pos end-pos)
   (tr :ns-one-hyphen-patterns)
   (tr :ns-edge-pattern pattern)
@@ -54,11 +54,18 @@
     ;; a rule. Experience may show that to be false, but it's a start
     (reify-ns-name-and-make-edge words start-pos end-pos))
 
-   ((equal pattern '(:protein :hyphen :bio-entity))
+   ((equal pattern '(:protein :hyphen :bio-entity)) ;; RAS-ASSP
     (make-protein-pair/convert-bio-entity
-     start-pos end-pos nil words :right))
+     start-pos end-pos edges :right))
 
-   ((or (equal pattern '(:full :hyphen :full))  ;; RAS-ASSP
+   ((equal pattern '(:bio-entity :hyphen :protein)) ;; ??
+    (make-protein-pair/convert-bio-entity
+     start-pos end-pos edges :left))
+
+   ((equal pattern `(:protein :hyphen :lower)) ;; EGFR-positive
+    (resolve-protein-hyphen-word edges words start-pos end-pos))
+
+   ((or (equal pattern '(:full :hyphen :full))
         (equal pattern '(:capitalized :hyphen :full)) ;; Rho-GDI
         (equal pattern '(:full :hyphen :capitalized)))
     (resolve-hyphen-between-two-terms pattern words start-pos end-pos))
@@ -103,13 +110,12 @@
     (push-debug `(,pattern ,start-pos ,end-pos))
     (break "New hyphen pattern to resolve: ~a" pattern))
 
-   (t (nospace-hyphen-specialist words pattern hyphen-positions start-pos end-pos))))
+   (t (nospace-hyphen-specialist words edges pattern hyphen-positions start-pos end-pos))))
 
 
 
-(defun two-hyphen-ns-patterns (pattern words hyphen-positions start-pos end-pos)
+(defun two-hyphen-ns-patterns (pattern words edges hyphen-positions start-pos end-pos)
   ;; Just enough to form some sort of constituent and not break
-  (declare (ignore hyphen-positions))
   (tr :ns-two-hyphen-patterns)
   (cond
    ((or (equal pattern '(:full :hyphen :lower :hyphen :capitalized)) ;; GAP–to–Ras
@@ -119,10 +125,41 @@
       ;;//// needs a specialization to appreciate what's going on
       (or (when *work-on-ns-patterns* (break "Make special pattern for 'to'"))
           (resolve-hyphen-between-three-words pattern words start-pos end-pos)))
+     (*work-on-ns-patterns*
+      (push-debug `(,pattern ,words ,edges ,hyphen-positions ,start-pos ,end-pos))
+      (break "more two-hyphen 1st pattern case: ~a" pattern))
      (t
       (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
+
+   (*work-on-ns-patterns*
+      (push-debug `(,pattern ,words ,edges ,hyphen-positions ,start-pos ,end-pos))
+      (break "another two-hyphen case: ~a" pattern))
+
    (t  
     (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
+
+
+;;;------------------------------------------------
+;;; code to deal with ("resolve") a hyphen pattern
+;;;------------------------------------------------
+
+(defun resolve-protein-hyphen-word (edges words start-pos end-pos)
+  (declare (ignore words))
+  (let* ((protein-edge (first edges))
+         (protein-ref (edge-referent protein-edge))
+         (word-edge (third edges))
+         (word-ref (edge-referent word-edge)))
+    (or (composed-by-usable-rule protein-edge word-edge)
+        (when (second-imposes-relation-on-first? word-ref word-edge)
+          (do-relation-between-first-and-second
+           protein-ref word-ref protein-edge word-edge))
+        (when *work-on-ns-patterns*
+          (push-debug `(,protein-edge ,word-edge ,start-pos ,end-pos))
+          (break "New case in resolving protein + word: ~
+                ~%  protein = ~a  word = ~a" protein-ref word-ref))
+        (else
+         (tr :defaulting-two-word-hyphen)
+         (package-qualifying-pair protein-edge word-edge)))))
 
 
 (defun resolve-hyphen-between-two-words (pattern words
@@ -155,59 +192,39 @@
       (tr :resolve-hyphen-b/w-two-words/missing-an-edge left-edge right-edge)
       (throw :punt-on-nospace-without-resolution nil))
 
-    ;; lifted from nospace-hyphen-specialist
-    ;;(push-debug `(,left-edge ,right-edge)) ;;(break "???")
-    (let* ((rule (or (multiply-edges left-edge right-edge)
-                     (multiply-edges right-edge left-edge)))
-           ;; We only want rules that create real relationships.
-           ;; There will always be a syntactic rule, so that rules
-           ;; out the possibility of looking for a salient literal
-           ;; which would be Very Bad since they are informative.
-           ;; Form rules are half generic, particularly for adjective
-           ;; so I'm ruling those out too.
-           (usable-rule (unless (syntactic-rule? rule)
-                          (unless (form-rule? rule)
-                            rule))))
-      (push-debug `(,left-edge ,left-ref ,right-edge ,right-ref))
-      ;; (setq left-edge (car *) left-ref (cadr *) right-edge (caddr *) right-ref (cadddr *))
-      ;;(lsp-break "which path?")
+    (cond
+     ((composed-by-usable-rule left-edge right-edge)) ;; runs for side-effects
+
+     ((some-word-is-a-salient-hyphenated-literal words)
+      (compose-salient-hyphenated-literals ;; "re-activate"
+       pattern words pos-before pos-after))
+
+     ((second-imposes-relation-on-first? right-ref right-edge)
+      (do-relation-between-first-and-second
+       left-ref right-ref left-edge right-edge))
+
+     ((and (edge-p left-edge)
+           (edge-p right-edge))
+      ;; if either is a word then the assumptions of 
+      ;; make-hyphenated-structure that it has edges to work with
+      ;; and we should really fall through and fail the ns search.
       (cond
-       (usable-rule ;; "GTP-bound"
-        (tr :ns-found-usable-rule rule)
-        (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
-          (revise-form-of-nospace-edge-if-necessary edge right-edge)
-          (tr :two-word-hyphen-edge edge)))
-
-       ((some-word-is-a-salient-hyphenated-literal words)
-        (compose-salient-hyphenated-literals ;; "re-activate"
-         pattern words pos-before pos-after))
-
-       ((second-imposes-relation-on-first? right-ref right-edge)
-        (do-relation-between-first-and-second
-         left-ref right-ref left-edge right-edge))
-
-       ((and (edge-p left-edge)
-             (edge-p right-edge))
-        ;; if either is a word then the assumptions of 
-        ;; make-hyphenated-structure that it has edges to work with
-        ;; and we should really fall through and fail the ns search.
-        (cond
-         ((equal pattern '(:full :hyphen :lower))
-          ;; Then the first one is probably a bio-entity so we'll
-          ;; use it as the source of the category
-          (make-ns-pair (edge-category left-edge) left-edge right-edge
-                        words pos-before pos-after))
-         (t
-          ;; make a structure if all else fails
-          ;; but first alert to anticipated cases not working
-          (tr :defaulting-two-word-hyphen)
-          (make-hyphenated-structure left-edge right-edge))))
+       ((equal pattern '(:full :hyphen :lower))
+        ;; Then the first one is probably a bio-entity so we'll
+        ;; use it as the source of the category
+        (make-ns-pair (edge-category left-edge) left-edge right-edge
+                      words pos-before pos-after))
+       (t
+        ;; make a structure if all else fails
+        ;; but first alert to anticipated cases not working
+        (tr :defaulting-two-word-hyphen)
+        (make-hyphenated-structure left-edge right-edge))))
      
-       (*work-on-ns-patterns*
-        (push-debug `(,left-edge ,right-edge ,pattern ,words))
-        (break "One of the 'edges' is actualy a (undefined?) word"))
-       (t ;; bail
-        (reify-ns-name-and-make-edge words pos-before pos-after))))))
+     (*work-on-ns-patterns*
+      (push-debug `(,left-edge ,right-edge ,pattern ,words))
+      (break "One of the 'edges' is actualy a (undefined?) word"))
+     (t ;; bail
+      (reify-ns-name-and-make-edge words pos-before pos-after)))))
 
 
 ;; RAS-ASSP

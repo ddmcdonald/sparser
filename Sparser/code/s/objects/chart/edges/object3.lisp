@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  3.5 August 2014
+;;;  Version:  3.5 Nobember 2014
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -32,6 +32,7 @@
 ;;      the operation down to one function.
 ;;     (8/30/14) added adjacent-edges?
 ;; 6/5/2015 check for empty seto of edges in highest-preterminal-at, to avoid error
+;;     (11/6/15) added word-under-edge (11/12/15) added edge-sort
 
 (in-package :sparser)
 
@@ -389,6 +390,10 @@
       (= 1 (number-of-terminals-between (pos-edge-starts-at edge)
                                         (pos-edge-ends-at edge)))))
 
+(defun word-under-edge (edge)
+  "The caller has determined that this edge is one word long.
+   Return that word."
+  (pos-terminal (pos-edge-starts-at edge)))
 
 
 (defun includes-edge-with-label (label list-of-edges)
@@ -436,7 +441,6 @@
 
 
 
-
 ;;;------------------------------
 ;;; position-relative predicates
 ;;;------------------------------
@@ -451,6 +455,12 @@
           ((position-precedes left-end right-start)
            t)
           (t nil))))
+
+
+;; (sort <list of edges> #'edge-sort)
+(defun edge-sort (e1 e2)
+  (if (edge-precedes e1 e2) e1 e2))
+
 
 (defun adjacent-edges? (left-edge right-edge)
   (eq (pos-edge-ends-at left-edge)

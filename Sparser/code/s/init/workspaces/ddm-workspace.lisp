@@ -10,7 +10,19 @@
 (in-package :sparser)
 
 (defun ddm-standard ()  ;;    (ddm-standard)
-  (setup-bio) ;; load the bio model etc.
+  ;; (setup-bio) ;; load the bio model etc.
+  ;;------
+  (bio-setting)
+  (remove-paragraph-marker) ;; #<PSR1155  sgml-label ->  "p"> interfers with "p100"
+  (setq *tts-after-each-section* nil)
+  (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
+  (gate-grammar *biology* (gload "bio;loader"))
+  (load-obo-terms)
+  (load-bio-corpora)
+  (declare-all-existing-individuals-permanent)
+  (push :biology-loaded *features*)
+  ;;-----
+
   (trace-lexicon-unpacking) ;(trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)

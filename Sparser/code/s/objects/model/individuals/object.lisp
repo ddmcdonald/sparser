@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.5 October 2015
+;;;  version:  0.5 November 2015
 
 ;; initiated 7/16/92 v2.3
 ;; (6/8/93) added Indiv-typep
@@ -21,6 +21,8 @@
 ;;      change was too stringent. Inserted a convenience for the
 ;;      case of conjunctions, where the type is buried inside the
 ;;      structure. 
+;;     (11/12/15) Added special routine for removing all the rules
+;;      from a category given as the routines that add them aren't consistent.
 
 
 (in-package :sparser)
@@ -122,3 +124,22 @@
 ;;/// is this being used?
 (defun itype-symbol (i)
   (cat-symbol (i-type-of i)))
+
+
+;;;----------------
+;;; deleting rules
+;;;----------------
+;; Goes here since class individual isn't available when the cfrs
+;; are loaded.  
+
+(defmethod remove-rules-from-category ((i individual))
+  (remove-rules-from-category  (get-tag-for :rules i)))
+
+(defmethod remove-rules-from-category ((rules list))
+  (dolist (rule rules)
+    (when (consp rule)
+      ;; This is a major inconsisency b/w routines that
+      ;; add rules to things. 
+      (setq rule (car rule)))
+     (delete/cfr rule)))
+

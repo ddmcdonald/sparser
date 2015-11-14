@@ -3,14 +3,15 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  July 2015
+;;;  version:  November 2015
 
 ;; initiated 9/21/95. Moved over [take transitions] 10/5/95.
 ;; 2/5/2013 broke out the traces and the uniform scan as their own files
 ;; 9/9/14 added [character-specialists]. 11/18/14 bumped uniform-
 ;; scan to 1. 12/4/14 added [patterns]. [pattern-gophers] 12/11/12.
 ;; [scan-gophers] and [charaterize-words] 5/15/15. Added [edge-patterns],
-;; [slash-patterns], [hyphen-patterns], [colon-patterns]
+;; [slash-patterns], [hyphen-patterns], [colon-patterns]. 
+;; 11/12/15 added [edge-gophers], [pattern-resolvers]
 
 (in-package :sparser)
 
@@ -23,6 +24,8 @@
 (lload "scan-patterns;hyphen-patterns")
 (lload "scan-patterns;colon-patterns")
 
+(lload "scan-patterns;edge-gophers")
+(lload "scan-patterns;pattern-resolvers")
 
 (lload "scan-patterns;character-specialists")
 (lload "scan-patterns;pattern-gophers")

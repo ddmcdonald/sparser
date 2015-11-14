@@ -62,6 +62,16 @@
     (respan-edge-around-one-word edge q1 q2)))
 
 
+;;--- information for no-space patterns
+
+(defun populate-ns-informative-categories ()
+  (setq *ns-informative-categories*
+        `(,category::protein
+          ,category::amino-acid
+          ,category::bio-entity
+          )))
+
+(populate-ns-informative-categories)
 
 
 ;;--- a type rule

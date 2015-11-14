@@ -109,6 +109,10 @@
         ;; them in or else we'll get the wrong pattern
         (setq edges (sort-out-edges-in-ns-region edges long-edge))
 
+        ;;// The sweep will only notice edges if the leftmost-edge
+        ;; is 'long'  But we want to see all the edges now (11/15),
+        ;; so as a backup we collect them below after the parse
+
         (when *collect-ns-examples* 
           (let ((nsitem (actual-characters-of-word start-pos end-pos nil)))
             (when (or (search "-" nsitem) (search "/" nsitem))
@@ -143,6 +147,10 @@
            ((eq layout :single-span)  ;; Do nothing. It's already known
             (revise-form-of-nospace-edge-if-necessary edge :find-it))
            (t
+            ;; This may be overkill, especially for punctuation,
+            ;; but it may also be more informative
+            (setq edges (treetops-between start-pos end-pos))
+            ;;(break "input edges = ~a" edges)
             (catch :punt-on-nospace-without-resolution
               (ns-pattern-dispatch start-pos end-pos edges
                                    hyphen-positions slash-positions
@@ -153,22 +161,27 @@
 ;;; Dispatch
 ;;;----------
 
-(defun ns-pattern-dispatch (start-pos end-pos edges
+(defun ns-pattern-dispatch (start-pos end-pos unsorted-edges
                             hyphen-positions slash-positions
                             colon-positions other-punct)
   ;; Subroutine of collect-no-space-segment-into-word that does the
   ;; dispatch. Every path is expected to form an edge over the
   ;; span one way or another.
-  (let ((pattern (characterize-words-in-region start-pos end-pos edges))
-        (words (words-between start-pos end-pos)))
+  (let* ((edges (remove-non-edges unsorted-edges))
+         ;;/// unclear why, but edge-sort seems wedged
+         ;; (sort (copy-list unsorted-edges) #'edge-sort))
+         (pattern (characterize-words-in-region start-pos end-pos edges))
+         (words (words-between start-pos end-pos)))
+    (push-debug `(,unsorted-edges)) ; 
+    ;;(break "edges = ~a" edges)
     (when edges
-      (setq pattern (convert-pattern-edges-to-labels pattern))
+      (setq pattern (convert-mixed-pattern-edges-to-labels pattern))
       (push-debug `(,pattern ,edges ,start-pos ,end-pos))
       (tr :ns-pattern-includes-edges edges))
     (tr :segment-ns-pattern pattern)
 
     (cond 
-     #+ignore(edges
+     #+ignore(edges ;;/// remove once dispersal debugged
       (tr :ns-sort-out-pattern-with-edges)
       (ns-sort-out-pattern-with-edges 
        pattern start-pos end-pos edges words
@@ -184,26 +197,26 @@
            hyphen-positions)
       (tr :ns-slash-hyphen-combination)
       (divide-and-recombine-ns-pattern-with-slash 
-       pattern words slash-positions hyphen-positions start-pos end-pos))
+       pattern words edges slash-positions hyphen-positions start-pos end-pos))
 
      (other-punct
       ;; this probably has to be spread over the other cases
       ;; in some sort of combination, but this is a start
       (tr :ns-other-punct other-punct)
       (resolve-other-punctuation-pattern
-       pattern words other-punct start-pos end-pos))
+       pattern words edges other-punct start-pos end-pos))
 
      (slash-positions
       (tr :ns-looking-at-slash-patterns)
       (or (resolve-slash-pattern 
-           pattern words slash-positions hyphen-positions start-pos end-pos)
+           pattern words edges slash-positions hyphen-positions start-pos end-pos)
           (reify-ns-name-and-make-edge words start-pos end-pos)))
 
      ((and hyphen-positions
            colon-positions)
       (tr :ns-hyphen-and-colon-patterns)
       (divide-and-recombine-ns-pattern-with-colon
-       pattern words colon-positions hyphen-positions start-pos end-pos))
+       pattern words edges colon-positions hyphen-positions start-pos end-pos))
 
      (colon-positions
       (tr :ns-looking-at-colon-patterns)
@@ -213,12 +226,12 @@
      (hyphen-positions
       (tr :ns-looking-at-hyphen-patterns)
       (or (resolve-hyphen-pattern 
-           pattern words hyphen-positions start-pos end-pos)
+           pattern words edges hyphen-positions start-pos end-pos)
           (reify-ns-name-and-make-edge words start-pos end-pos)))
 
      (t 
       (tr :ns-taking-default)
-      (or (resolve-ns-pattern pattern words start-pos end-pos)
+      (or (resolve-ns-pattern pattern words edges start-pos end-pos)
           (reify-ns-name-and-make-edge words start-pos end-pos))))))
  
 

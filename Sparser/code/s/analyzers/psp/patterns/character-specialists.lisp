@@ -18,7 +18,7 @@
 ;;; hyphens
 ;;;----------
 
-(defun nospace-hyphen-specialist (words pattern hyphen-position/s 
+(defun nospace-hyphen-specialist (words edges pattern hyphen-position/s 
                                   pos-before next-position)
   ;; Cleanup case in one-hyphen-ns-patterns when no defined pattern
   ;; has matched. 
@@ -31,10 +31,8 @@
      ((and (= hyphen-count 1)
            (= phrase-length 3))
       ;; Canonical case. "GTP-bound"
-      (let* ((hyphen-pos (car hyphen-position/s))
-             (left-edge (left-treetop-at/edge hyphen-pos))
-             (right-edge (right-treetop-at/edge
-                          (chart-position-after hyphen-pos))))
+      (let* ((left-edge (first edges))
+             (right-edge (third edges)))
         (tr :hyphen-specialist left-edge right-edge)
         (let ((rule
                (when (and (edge-p left-edge)
@@ -76,9 +74,9 @@
            pattern words pos-before next-position))
          (t
           (let ((first-half (resolve-hyphen-segment 
-                             pos-before hyphen-pos))
+                             edges pos-before hyphen-pos))
                 (second-half (resolve-hyphen-segment 
-                              (chart-position-after hyphen-pos) next-position)))
+                              edges (chart-position-after hyphen-pos) next-position)))
             (if (and first-half second-half)
               (make-hyphenated-structure first-half second-half)
               (if *work-on-ns-patterns*
@@ -100,7 +98,7 @@
 
 
 ;;/// This is surely the same a resolve-slash-segment so they should mergw
-(defun resolve-hyphen-segment (start-pos end-pos)
+(defun resolve-hyphen-segment (edges start-pos end-pos)
   (if (eq start-pos end-pos) ;; as in "...with β-, γ-, and α-catenins..."
     (when *work-on-ns-patterns*
       (break "start-pos and end-pos are identical"))
@@ -110,7 +108,7 @@
                 (pattern (characterize-words-in-region start-pos end-pos nil)))
             (let ((*work-on-ns-patterns* nil)) ;; t))
               (declare (special *work-on-ns-patterns*))
-              (let ((result (resolve-ns-pattern pattern words start-pos end-pos)))
+              (let ((result (resolve-ns-pattern pattern words edges start-pos end-pos)))
                (unless result 
                  (push-debug `(,pattern ,words ,start-pos ,end-pos))
                  ;; (setq pattern (car *) words (cadr *) start-pos (caddr *) end-pos (cadddr *))

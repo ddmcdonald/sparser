@@ -13,21 +13,21 @@
 ;;  (p "For example, SHOC2/Sur-8 bridges.")
 ;; "PI3K/AKT signaling"
 
-(defun resolve-slash-pattern (pattern words 
+(defun resolve-slash-pattern (pattern words edges
                               slash-positions hyphen-positions 
                               pos-before pos-after)
   (if (null (cdr slash-positions)) ;; only one
     (one-slash-ns-patterns
-     pattern words slash-positions hyphen-positions pos-before pos-after)
+     pattern words edges slash-positions hyphen-positions pos-before pos-after)
     (divide-and-recombine-ns-pattern-with-slash 
-     pattern words slash-positions hyphen-positions pos-before pos-after)))
+     pattern words edges slash-positions hyphen-positions pos-before pos-after)))
 
-(defun one-slash-ns-patterns (pattern words 
+(defun one-slash-ns-patterns (pattern words edges
                               slash-positions hyphen-positions 
                               pos-before pos-after)
   (if hyphen-positions
     (divide-and-recombine-ns-pattern-with-slash 
-     pattern words slash-positions hyphen-positions pos-before pos-after)
+     pattern words edges slash-positions hyphen-positions pos-before pos-after)
     (cond
      ((equal pattern '(:lower :forward-slash :lower))
       (or (reify-amino-acid-pair words pos-before pos-after)
@@ -51,7 +51,7 @@
         nil))))
 
 
-(defun divide-and-recombine-ns-pattern-with-slash (pattern words 
+(defun divide-and-recombine-ns-pattern-with-slash (pattern words edges
                                                    slash-positions hyphen-positions 
                                                    pos-before pos-after)
   ;; Assumes that slash has precedence over any other punctuation,
@@ -65,10 +65,8 @@
 
   (push-debug `(,slash-positions ,pos-before ,pos-after ,words ,pattern))
   ;; (setq slash-positions (car *) pos-before (cadr *) pos-after (caddr *) words (cadddr *) pattern (nth 4 *))
-  (tr :slash-ns-pattern pos-before pos-after)
+  (tr :slash-ns-pattern pos-before pos-after)    
   (when *trace-ns-sequences* (tts))
-
-  (setq slash-positions (nreverse slash-positions)) ;;(break "slash-position = ~a" slash-positions)
 
   (cond 
    ((eq (first slash-positions) pos-before)
@@ -77,7 +75,7 @@
              (pos-token-index pos-before) (pos-token-index pos-after))))
 
    ((eq (car (last pattern)) :forward-slash) ;; it's final
-    ;; and it's probably a mistake in the source: "c-Raf/ MAPK-mediated [6]."
+    ;; It's probably a mistake in the source: "c-Raf/ MAPK-mediated [6]."
     (cond
      ((not (= 1 (length slash-positions)))
       (when *work-on-ns-patterns*
@@ -93,7 +91,7 @@
               ;; the ordinary hyphen-handler do it's thing
               (setq pattern (nreverse (cdr (nreverse pattern)))
                     words (nreverse (cdr (nreverse words))))
-              (resolve-hyphen-pattern pattern words hyphen-positions 
+              (resolve-hyphen-pattern pattern words edges hyphen-positions 
                                       pos-before pos-after-minus-1)))))))
 
    (t ;; slash(s) somewhere in the middle   
@@ -152,12 +150,13 @@
          (when hyphen-positions 
            (loop for pos in hyphen-positions 
              when (position-is-between pos pos-before pos-after)
-             collect pos))))
+             collect pos)))
+        (edges (remove-non-edges (treetops-between pos-before pos-after))))
   
     (or (when relevant-hyphen-positions
           (resolve-hyphen-pattern 
-           pattern words relevant-hyphen-positions pos-before pos-after))
-        (resolve-ns-pattern pattern words pos-before pos-after)
+           pattern words edges relevant-hyphen-positions pos-before pos-after))
+        (resolve-ns-pattern pattern words edges pos-before pos-after)
         (reify-ns-name-and-make-edge words pos-before pos-after))))
 
 

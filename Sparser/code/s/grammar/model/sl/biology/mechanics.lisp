@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: July 2015
+;;; version: November 2015
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 ;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
@@ -13,7 +13,9 @@
 ;; 3/21/2015 -- revised make-typed-bio-entity
 ;; SBCL caught fact that some words are actually polywords here...
 ;; 4/19/15 Added stub for handling acronyms.
-;; 5/16/2015 attempt (not quite working) to define get-mitre-id which tries to get the MITRE-LINK value for a protein (for example)
+;; 5/16/2015 attempt (not quite working) to define get-mitre-id which 
+;; tries to get the MITRE-LINK value for a protein (for example).
+;; 11/12/15 Finished bio-entity => protein routine.
 
 
 (in-package :sparser)
@@ -22,26 +24,49 @@
 ;;; bio-entity -> protein
 ;;;-----------------------
 
-;; From CS rule. Needs to return the referent of the edge
-#|(def-csr bio-entity protein
-  :left-context mutant
-  :form proper-noun
-  :referent (:function convert-bio-entity-to-protein right-edge)) |#
 (defmethod convert-bio-entity-to-protein ((bio-entity individual))
-  (push-debug `(,bio-entity)) ;;(break "convert bio-entity"))
-  bio-entity)
+  "Takes the name of the bio-entity and makes it the name of
+   a protein by using define-bio. Deleted the rules associated
+   with the bio-entity. Returns the protein."
+  (let* ((name (value-of 'name bio-entity)) ;; often a polyword
+         (protein (define-bio name 'protein)))
+    (remove-rules-from-category bio-entity)
+    ;; can't easily delete the individual itself
+    protein))
 
 (defmethod convert-bio-entity-to-protein ((e edge))
-  ;; called from make-protein-pair/convert-bio-entity
-  (let* ((rule (edge-rule e))
-         (old-ref (edge-referent e))
-         (new-ref (convert-bio-entity-to-protein old-ref)))
-    (declare (ignore rule)) ;; for now
-    ;; subvert both this edge and the rule
-    (setf (edge-category e) (category-named 'protein))
-    (setf (edge-referent e) new-ref)
-    new-ref))
+  ;; called from make-protein-pair/convert-bio-entity and
+  ;; from multi-colong-ns-patterns, which will send in protein
+  ;; edges as well as ones that need to be converted
+  (let ((old-ref (edge-referent e)))
+    (unless (itypep old-ref 'protein)
+      (let ((rule (edge-rule e))
+            (new-ref (convert-bio-entity-to-protein old-ref)))
+        (declare (ignore rule)) ;; for now
+        ;; subvert both this edge and the rule
+        (setf (edge-category e) (category-named 'protein))
+        (setf (edge-referent e) new-ref)
+        new-ref))))
+
+(defmethod convert-bio-entity-to-protein ((items list))
+  ;; called from, e.g. multi-colon-ns-patterns to transparently
+  ;; convert the edges
+  (unless (every #'edge-p items)
+    (error "Some member(s) of the list is not an edge"))
+  (loop for edge in items
+    do (convert-bio-entity-to-protein edge)))
         
+
+
+(defun reify-p-protein-and-make-edge (words start-pos end-pos)
+  ;; Called from resolve-ns-pattern on (:single-cap :digits).
+  ;; Looks for a "p" and if it finds it makes a protein.
+  ;; E.g "suggesting that p38 SAPK was active" in Jan #34
+  (push-debug `(,words ,start-pos ,end-pos))
+  (when (string= "p" (word-pname (first words)))
+    ;; take template from reify-residue-and-make-edge
+    (when *work-on-ns-patterns*
+      (break "stub: possible p protein?"))))
 
 
 ;;;-------------------------------
@@ -180,17 +205,6 @@
         ((st (semtree pro)))
       `(,(symbol-name (cat-symbol (car (indiv-type (car st))))) (:name ,(pro-name pro)),@(cdr st)))))
 
-
-
-(defun reify-p-protein-and-make-edge (words start-pos end-pos)
-  ;; Called from resolve-ns-pattern on (:single-cap :digits).
-  ;; Looks for a "p" and if it finds it makes a protein.
-  ;; E.g "suggesting that p38 SAPK was active" in Jan #34
-  (push-debug `(,words ,start-pos ,end-pos))
-  (when (string= "p" (word-pname (first words)))
-    ;; take template from reify-residue-and-make-edge
-    (when *work-on-ns-patterns*
-      (break "stub: possible p protein?"))))
 
 
 
