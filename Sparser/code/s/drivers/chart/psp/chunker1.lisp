@@ -498,7 +498,9 @@
          (memq (cat-name eform) '(verb+ed verb+ing))
          ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
          ;;"RNA interference (RNAi) blocked MEK/ERK activation."
-         (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
+         (or
+          (eq (cat-name (edge-category e)) 'have)
+          (loop for edge in edges thereis (eq (edge-category edge) category::parentheses))))
         t)
        ((eq category::verb+ing eform)
         (loop for edge in edges thereis (ng-head? edge)))
