@@ -122,7 +122,8 @@
           (cellular-location cellular-location)
           (molecular-location molecular-location)
           (species species) ;; human? mouse?
-          (non-cellular-location non-cellular-location))
+          (non-cellular-location non-cellular-location)
+          (examples biological))
   :realization
   (:noun "xxx-dummy"
          :at cellular-location
@@ -138,7 +139,8 @@
          :with context
          :in cell-line
          :from cell-line
-         :within cellular-location))
+         :within cellular-location
+         :such\ as examples))
 
 ;;/// This is OBE given revision to biological. 
 (define-category bio-abstract :specializes biological)
@@ -156,17 +158,25 @@
                    :of subject
                    :as-comp as-comp))
 
-(define-category bio-scalar :specializes scalar-quality
+(define-category bio-quality :specializes quality
   :mixins (biological)
+  :binds ((subject biological)) ;; TO-DO better name?!
+  :realization
+  (:of subject))
+
+(define-category bio-scalar :specializes scalar-quality
+  :mixins (bio-quality)
   :documentation "Provides a generalization over biological and scalar")
 
 ;; Rusty -- where are we supposed to put the two numbers
 ;; or two molecules?  Need example. 
 (define-category ratio  :specializes bio-scalar
-  :binds ((name)(value ratio))
+  :binds ((value ratio)
+          (divisor biological))
   :realization
   (:noun "ratio"
-        :of value))
+        :of value
+        :to divisor))
 
 
 
@@ -350,6 +360,8 @@
       :to destination
       :to destination
       :of object
+      :onto destination
+      :in destination
       :from origin
       :m destination
       :m object))
@@ -449,6 +461,16 @@
   :realization
   (:noun "feedback loop"
 	 :between participant))
+
+(define-category positive-feedback-loop :specializes feedback-loop
+  :realization
+  (:noun "positive feedback loop"))
+
+(define-category negative-feedback-loop :specializes feedback-loop
+  :realization
+  (:noun "negative feedback loop"))
+
+
 
 
 
