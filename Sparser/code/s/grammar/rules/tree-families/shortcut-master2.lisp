@@ -39,13 +39,13 @@
     :prep :by
     :premod
     :about :across :against :among :as :as-comp :at :between :for :from :ifcomp :in :into 
-    :of :on :onto :to :to-comp :thatcomp :through :towards :under :upon :via 
+    :of :on :onto :such\ as :to :to-comp :thatcomp :through :towards :under :upon :via 
     :designator
     :whethercomp :with :within :without))
 
 (defparameter *slot-keywords*
   '(:premod :about :across :against :among :as :as-comp :at :between :for :from :ifcomp 
-    :by :in :into :of :on :onto :to :to-comp :thatcomp :through :towards :under :upon 
+    :by :in :into :of :on :onto :to :such\ as :to-comp :thatcomp :through :towards :under :upon 
     :via :whethercomp :with :within :without
     :designator))
 
