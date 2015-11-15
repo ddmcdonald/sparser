@@ -157,18 +157,6 @@
   :form np 
   :referent (:function interpret-pp-as-head-of-np left-edge right-edge))
 
-#+ignore ;; replaced with :of on the class realization
-(def-cfr of-protein (of protein)
-  :form pp
-  :referent (:daughter right-edge))
-
-#+ignore ;; replaced with :of on the class realization
-(def-cfr residue-on-protein (residue-on-protein of-protein)
-  :form n-bar
-  :referent (:head left-edge
-             :bind (on-protein right-edge)))
-
-
 
 ;;--- mutation
 ; "EGFR T669A"
@@ -209,7 +197,14 @@
   :referent (:head right-edge
                    :bind (entity left-edge)))
 
-
+(define-category have :specializes state
+  :binds ((possessor biological)
+	  (thing-possessed biological))
+  :realization
+  (:verb "have" 
+         :etf (svo)
+         :s possessor
+         :o thing-possessed))
 
 ;;--- expediency
 
