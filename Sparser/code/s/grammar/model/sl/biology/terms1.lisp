@@ -57,6 +57,9 @@
          :in structure
          :of structure))
 
+(def-synonym conformational-change 
+             (:noun "allosteric change"))
+
 (define-category guanyl-nucleotide-exchange :specializes bio-process
   :binds ((substrate (:or protein bio-complex)))
   :realization
@@ -84,6 +87,7 @@
 (adj "acidic" :super bio-predication)
 (adj "adaptor" :super bio-predication) ;; "adaptor protein"
 (adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"
+
 (noun "anchor" :super molecule) ;; "cytoplasmic anchor"
 (adj "apparent" :super bio-predication) ;; perhaps need :rhetorical predication"
 (adj "asymmetric" :super bio-predication)
@@ -176,7 +180,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-category bio-amount :specializes measurement
+(define-category bio-amount :specializes bio-scalar
   :realization
   (:noun "amount"))
 
@@ -286,12 +290,14 @@
 (noun "approach" :super bio-method)
 
 (define-adverb "as a consequence")
+(noun "consequence" :super bio-quality)
 ;;(define-adverb "as expected") ;; not very common, but avoids a break
 (noun "assay" :super bio-method)
 (define-adverb "at baseline")
 (adj "background" :super bio-predication)
 (noun "bacteria" :super species) ;; not really
 (noun "baseline" :super  bio-method)
+(noun "behavior" :super bio-quality)
 (noun "bifc" :super bio-method)
 (noun "binder" :super bio-entity)
 
@@ -339,11 +345,7 @@
          :of complex))
 
 
-(noun "concentration" :super bio-scalar
-      :binds ((measurable biological))
-      :realization 
-      (:noun "concentration"
-             :of measurable)) ;;levels of incorporated 32P (January sentence 34)
+(noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super experimental-condition)
 (noun "conformation" :super bio-entity) ;; keyword: (ion N) 
 (adj "consistent" :super bio-relation
@@ -395,6 +397,7 @@
      :in missing))
 
 (noun "derivative" :super molecule)
+(noun "detail" :super bio-scalar)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
 
 
@@ -425,6 +428,7 @@
         :from theme
         :of theme
         :in pathway))
+(noun "duration" :super bio-scalar)
 (noun "dynamics" :super bio-abstract)
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
@@ -464,6 +468,13 @@
 
 (noun "exchange" :super bio-process)
 (noun "exclusivity" :super bio-abstract) ;; keyword: (ity N)
+(noun "extent" :super bio-scalar) 
+
+(define-category fact :specializes bio-rhetorical
+      :mixins (bio-thatcomp)
+      :realization
+      (:noun "fact"))
+
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
 (noun "fate" :super bio-process)
 
@@ -500,12 +511,13 @@
 (adj "full" :super bio-predication)
 (adj "nucleotide-free" :super bio-predication)
 
-(noun "function" :super bio-process
-      :binds ((functional bio-entity)(process bio-process)) ;; this should be for genes and proteins
+(define-category bio-function :specializes bio-quality
+      :binds ((result bio-process)
+              (in-process bio-process))
       :realization
       (:noun "function"
-       :of functional
-       :to-comp process))
+             :in in-process
+             :to-comp result))
 
 (adj "further" :super bio-predication)
 (define-adverb "further")
@@ -513,6 +525,7 @@
 (adj "general" :super bio-predication)
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
+(noun "growth factor" :super molecule)
 (def-bio "guanine" nucleotide)
 
 (adj "high" :super bio-predication)
@@ -543,8 +556,15 @@
 
 
 (delete-adj-cfr (resolve/make "important"))
-(adj "important" :super bio-predication)
+(define-category importance :specializes bio-rhetorical
+      :realization
+      (:noun "importance"
+             :adj "important"))
 
+(define-category significance :specializes bio-rhetorical
+      :realization
+      (:noun "significance"
+             :adj "significant"))
 
 (adj "inactive" :super molecule-state
      :binds ((molecule molecule))
@@ -577,10 +597,9 @@
              :to theme))
    
 (noun "insensitivity" :super bio-scalar
-      :binds ((subject biological)(cause biological))
+      :binds ((cause biological))
       :realization
       (:noun "insensitivity"
-             :of subject
              :to cause))
 (noun "insight" :super abstract
       :binds ((concept biological))
@@ -606,11 +625,7 @@
 (adj "least" :super bio-predication)
 (adj "least-selective" :super bio-predication) ;; just to get through
 (noun "length" :super bio-scalar)
-(noun "level" :super bio-scalar
-      :binds ((measurable biological))
-      :realization 
-      (:noun "level"
-             :of measurable)) ;;levels of incorporated 32P (January sentence 34)
+(noun "level" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 
 ;;is likely to be mediated by
 ;;is likely that this possible feedback
@@ -756,11 +771,11 @@
       (:noun "population"
              :of element))  
 (noun "position" :super residue-on-protein)
-(noun "possibility" :super bio-abstract
-      :binds ((assertion biological))
+(define-category possibility :specializes bio-rhetorical
+      :mixins (bio-thatcomp)
       :realization
-      (:noun "possibility"
-             :thatcomp assertion)) ;; keyword: (ity N) 
+      (:noun "possibility"))
+
 (adj "potent" :super bio-relation
   :realization 
   (:adj "potent"))
@@ -780,11 +795,7 @@
 (adj "prior" :super bio-relation
   :binds ((prior-event  bio-process))
   :realization (:to prior-event))
-(noun "proportion" :super bio-scalar
-      :binds ((basis bio-entity)) ;; this should be for genes and proteins
-      :realization
-      (:noun "proportion"
-             :of basis))
+(noun "proportion" :super bio-scalar)
 (adj "putative" :super bio-predication)
 
 (noun "radioactivity" :super bio-abstract
@@ -842,7 +853,10 @@
 (adj "right" :super bio-predication)
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-method)
-
+(noun "role" :super bio-quality
+      :binds ((process bio-process))
+      :realization
+      (:in process))
 (adj "same" :super bio-predication)
 (noun "scaffold" :super protein) 
 (noun "scale" :super bio-scalar)     
@@ -864,12 +878,12 @@
       (:adj "subject"
              :to treatment))
 
-(noun "sensitivity" :super bio-scalar
-      :binds ((subject biological)(cause biological))
+(noun "sensitivity"  :super bio-scalar
+      :binds ((cause biological))
       :realization
       (:noun "sensitivity"
-             :of subject
-             :to cause)) ;; keyword: (ity N)
+             :to cause))
+
 (noun "serum" :super experimental-condition) 
 (noun "setting" :super bio-context)
 (adj "short-lived" :super bio-predication)
@@ -953,9 +967,6 @@
 (define-adverb "surprisingly")
 (adj "synthetic" :super bio-predication)
 (noun "table" :super article-table)
-(noun "target" :super bio-entity)
-(adj "targeted" :super bio-predication)
-(noun "targeting" :super bio-method)
 
 (define-adverb "therefore")
 (define-adverb "thereby")
@@ -984,7 +995,7 @@
      (:adj "unable"
            :to-comp capability))
            
-(adj "unclear" :super bio-predication)
+(adj "unclear" :super bio-rhetorical)
 (adj "unexpected" :super bio-rhetorical)
 (define-adverb "unexpectedly") ;; TO-DO wants to be  :super-category 'bio-rhetorical)
 (adj "unknown" :super bio-predication)
