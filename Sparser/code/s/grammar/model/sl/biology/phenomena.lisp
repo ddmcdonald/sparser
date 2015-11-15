@@ -761,7 +761,7 @@ it is created from N-terminus to C-terminus.|#
 ; #8 "did not detect dimerization of GFP-ERK1-WT upon activation"
 ; #10 "is a consequence of delayed phosphorylation of ERK by MEK rather than dimerization."
 (define-category dimerize :specializes binding
-  :binds ((monomer protein))
+  :binds ((monomer (:or monomer protein)))
   :realization
   (:verb "dimerize" 
    :noun "dimerization"
