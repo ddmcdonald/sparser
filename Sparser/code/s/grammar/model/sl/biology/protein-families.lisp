@@ -15,6 +15,7 @@
 ;; Protein families
 (noun  "catenin" :super protein-family)
 (noun "integrin" :super protein-family)
+(noun "RAS GAP" :super protein-family)
 
 (def-family "ASPP"
   :members ("ASPP1" "ASPP2")
