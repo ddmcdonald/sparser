@@ -647,10 +647,14 @@
    :etf (svo-passive)))
 
 (define-category dissociate :specializes caused-bio-process
-  :binds ((into biological))
+  :binds ((into biological)
+          (substrate (:or bio-complex protein molecule))
+          (site molecular-location))
   :realization
   (:verb "dissociate" :noun "dissociation"
          :etf (svo-passive)
+         :from substrate
+         :from molecular-location
          :into into))
 
 (define-category dominate :specializes bio-relation 
@@ -771,6 +775,7 @@
   (:verb "promote"
    :etf (svo-passive)))
 
+
 (define-category bio-enhance
   :specializes positive-bio-control
   :realization 
@@ -850,6 +855,14 @@
            :in location
            :of object
            :on location))
+
+(define-category facilitate
+  :specializes positive-bio-control
+  :realization 
+  (:verb "facilitate" :noun "facilitation"
+   :etf (svo-passive)))
+
+
 
 ;;events are favored in a context
 (define-category favor :specializes positive-bio-control
@@ -1089,6 +1102,12 @@
 
 (def-synonym inhibit  (:noun "inhibitory interaction" :with object))
 
+(define-category initiate
+  :specializes positive-bio-control
+  :realization 
+  (:verb "initiate" :noun "initiation"
+   :etf (svo-passive)))
+
 (define-category dampen :specializes negative-bio-control
   :realization 
   (:verb "dampen"
@@ -1180,7 +1199,15 @@
          :into substrate
          :to substrate))
 
-
+(define-category localization :specializes bio-transport
+  :restrict ((object molecule)) 
+  :realization 
+  (:verb "localize" 
+   :noun "localization" 
+   :etf (svo-passive) 
+   :s object ;; ERK translocates -- this is not the agent, but the object!
+   :o object
+   :of object))
 
 
 
@@ -1451,7 +1478,7 @@
 
 
 (define-category raise :specializes positive-bio-control
-    :binds ((object (:or bio-process bio-abstract)) 
+    :binds ((object (:or bio-process bio-abstract  bio-rhetorical)) 
             (method bio-method)
             (bio biological))
     :realization
@@ -1475,18 +1502,10 @@
          :to amount
          :with agent))
 
-(define-category recruit :specializes caused-bio-process 
-  :binds ((source biological)
-          (location bio-location)
-          (destination biological)) 
+(define-category recruit :specializes bio-transport
   :realization 
   (:verb "recruit" :noun "recruitment"
-         :etf (svo-passive) 
-         :from source
-         :in destination
-         :onto location
-         :through location
-         :to destination))
+         :etf (svo-passive) ))
 
 (define-category reduce :specializes negative-bio-control
     :binds ((bio biological))
@@ -1616,12 +1635,25 @@
 
 (def-synonym result (:noun "result"))
 
+
+(define-category return :specializes caused-bio-process
+ :binds ((state bio-state)
+         (scalar scalar-quality))
+ :realization
+ (:verb "return"
+  :etf (sv)
+  :to state
+  :to scalar))
+
+
 (define-category reveal :specializes bio-rhetorical
   :mixins (bio-thatcomp)
   ;; the analysis revealed
   :realization
   (:verb "reveal" :noun "revelation" 
          :etf (svo-passive)))
+
+
 
 (define-category sample :specializes bio-method
   :realization
@@ -1736,18 +1768,16 @@
            :at location
            :with agent))
 
-
-#+ignore
-(define-category target :specializes bio-process
-    :binds ((agent bio-entity)
-            (object bio-process))
-    :realization
-    (:verb ("target" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
-	   :noun "target"
-	   :etf (svo-passive)
-	   :s agent
-	   :o object
-           :of object))
+(define-category target :specializes caused-bio-process
+  :binds ((destination biological))
+  :realization
+  (:verb ("targetXX" :third-plural "targetsXX" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
+         :noun "target"
+         :etf (svo-passive)
+         :s agent
+         :o object
+         :of object
+         :to destination))
 
 
 (define-category tend :specializes bio-rhetorical
@@ -1844,6 +1874,8 @@
    :s object ;; ERK translocates -- this is not the agent, but the object!
    :o object
    :of object))
+
+
 
 (define-category transfect :specializes bio-method
   :realization 
