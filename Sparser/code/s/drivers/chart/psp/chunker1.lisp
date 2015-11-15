@@ -507,6 +507,8 @@
        ((eq category::ordinal (edge-category e))
         ;;WORKAROUND -- DAVID
         nil)
+       ((eq (cat-name eform) 'adverb )
+        (eq (cat-name (edge-category e)) 'also))
        (t
         (not (ng-compatible? (edge-form e) edges))))))))
 
@@ -570,6 +572,8 @@
          (not (and (car *chunks*)
                    (member 'ng (chunk-forms (car *chunks*)))
                    (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
+   ((eq (cat-name (edge-form e)) 'adverb)
+    (not (eq (cat-name (edge-category e)) 'also)))
    ((ng-start? (edge-form e))
     t)
    ((and (edge-form e)
@@ -605,3 +609,8 @@
              (not (and (edge-p prev-edge)
                        (or (eq category::preposition (edge-form prev-edge))
                            (ng-head? prev-edge))))))))))
+
+(defmethod ng-start? ((c referential-category))
+  (ng-start? (cat-symbol c)))
+(defmethod ng-start? ((name symbol))
+  (memq name *ng-start-categories*))

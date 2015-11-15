@@ -455,11 +455,6 @@
    ;; (break "THATCOMP?")
     nil)))
 
-(defmethod ng-start? ((c referential-category))
-  (ng-start? (cat-symbol c)))
-(defmethod ng-start? ((name symbol))
-  (memq name *ng-start-categories*))
-
 (defgeneric ng-head? (label)
   (:documentation "Is a category which can occur as the head of an NG"))
 (defmethod ng-head? ((w word))
