@@ -217,7 +217,19 @@
                           (resolve (string-downcase pname))))
             as var = (variable/category var-name category)
             as v/r = (var-value-restriction var)
-            do (assign-subcategorization category label v/r var)))
+            do (assign-subcategorization category label v/r var))
+
+      ;; Override value restrictions from local information as necessary
+      (setf (subcat-patterns frame)
+            (loop for pattern in (subcat-patterns frame)
+                  as label = (subcat-label pattern)
+                  as var-name = (var-name (subcat-variable pattern))
+                  as var = (variable/category var-name category)
+                  as v/r = (and var (var-value-restriction var))
+                  collect (if (or (null var)
+                                  (eq (subcat-restriction pattern) v/r))
+                            pattern
+                            (make-subcat-pattern label v/r var category)))))
     frame))
 
 (defun assign-subcat/expr (word form category parameter-plist)
