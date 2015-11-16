@@ -54,13 +54,13 @@
     (namestring
      (merge-pathnames
       (make-pathname :directory `(:relative
-				  :up ;; scripts
-				  :up ;; init
-				  :up ;; s
-				  :up ;; code
-				  :up ;; Sparser
-				  "Fire"
-				  "CTAM-grammar"))
+                                  :up ;; scripts
+                                  :up ;; init
+                                  :up ;; s
+                                  :up ;; code
+                                  :up ;; Sparser
+                                  "Fire"
+                                  "CTAM-grammar"))
       (make-pathname :directory (pathname-directory *load-truename*)))))
   ;;(break "CTAM is at ~%~a" *location-of-ctam-grammar*)
 
@@ -74,12 +74,11 @@
 ;;; call the loader
 ;;;-----------------
 
-(load (concatenate 'string 
-        location-of-sparser-directory
-	#+apple "code:s:init:everything"
-	#+unix  "code/s/init/everything.lisp"
-	#+mswindows "code\\s\\init\\everything.lisp"
-	))
+(load (concatenate 'string
+                   (namestring cl-user::*nlp-home*)
+                   #+apple "Sparser:code:s:init:everything"
+                   #+unix  "Sparser/code/s/init/everything.lisp"
+                   #+mswindows "Sparser\\code\\s\\init\\everything.lisp"))
 
 (in-package :sparser)
 
