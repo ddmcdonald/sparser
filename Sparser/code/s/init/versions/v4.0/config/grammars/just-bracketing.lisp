@@ -109,6 +109,14 @@
 (include-grammar-module  *frequency*)
 (include-grammar-module  *sequencers*)
 
+(include-grammar-module *qualities*)
+
+(include-grammar-module  *collections*)
+
+(include-grammar-module  *numbers*)
+(include-grammar-module  *amounts*)
+
+(include-grammar-module  *time*)
 
 ;;;-----------------------
 ;;; more heuristic things
