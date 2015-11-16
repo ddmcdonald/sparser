@@ -20,22 +20,18 @@
 (def-k-method compose ((i bio-entity) (marker type-marker))
   ;; So far triggered from noun-noun-compound with a phrase
   ;; like "the Ras protein"
-  ;; BUT ALSO TRIGGERED ON "the RAF/MAPK pathway" and got the wrong result.
-  ;; It should only work if the premodifier is of the same type as the more
-  ;; general head.
   (push-debug`(,i ,marker)) ;;(break "type-marker compose")
   (let ((category (itype-of marker)))
-    (cond
-     ((itypep i category)
-      i)
-     (t
-      (case (cat-name category)
-        (pathway nil) ;; treat as regular modification
-        (otherwise
-         (when *trap-needed-extensions-to-type-marker*
-           (push-debug `(,i ,marker ,category ,(parent-edge-for-referent)))
-           (error "Haven't defined a constructor for the ~
-                  type-marker ~a" category))))))))
+    (or (itypep i category)
+        (case (cat-symbol category)
+          ;(pathway
+          ; (
+          (otherwise
+           (when *trap-needed-extensions-to-type-marker*
+             (push-debug `(,i ,marker ,category ,(parent-edge-for-referent)))
+             (error "Haven't defined a constructor for the ~
+                     type-marker ~a" category)))))
+    i))
 
 
 ;;; Composition rules
