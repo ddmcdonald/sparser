@@ -525,7 +525,7 @@
 (adj "general" :super bio-predication)
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
-(noun "growth factor" :super molecule)
+;;(noun "growth factor" :super molecule)
 (def-bio "guanine" nucleotide)
 
 (adj "high" :super bio-predication)
