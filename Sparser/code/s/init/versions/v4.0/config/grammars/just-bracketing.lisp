@@ -103,6 +103,7 @@
 ;;; core semantic modules
 ;;;-----------------------
 
+(include-grammar-module  *kinds*)
 (include-grammar-module  *standard-adjuncts*)
 (include-grammar-module  *approximators*)
 (include-grammar-module  *frequency*)
