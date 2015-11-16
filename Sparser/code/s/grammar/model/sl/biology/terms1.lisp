@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-cell
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "terms"
@@ -77,7 +77,6 @@
   (:noun "size" :of measured-item))
 (noun "surface" :super bio-entity)
 (define-adverb "in contrast") ;; TO-DO handle "in contrast to"
-(define-adverb "in turn") ;; TO-DO handle "in contrast to"
 (define-adverb "by contrast")
 (noun fold :super abstract)
 
@@ -87,7 +86,6 @@
 
 (adj "acidic" :super bio-predication)
 (adj "adaptor" :super bio-predication) ;; "adaptor protein"
-(noun "activation cycle" :super bio-process)
 (adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"
 
 (noun "anchor" :super molecule) ;; "cytoplasmic anchor"
@@ -308,7 +306,6 @@
 (adj "candidate" :super bio-predication )
 
 (noun "cascade" :super bio-process)
-(noun "cell cycle" :super bio-process)
 
 (adj "chemical" :super bio-predication) ;; keyword: (al ADJ) 
 
@@ -413,6 +410,11 @@
 
 (adj "diffuse" :super abstract) ;; TO-DO better superc
 
+(noun "domain" :super molecular-location
+      :binds ((substrate bio-entity))
+      :realization 
+      (:noun "domain"
+             :of substrate))
 (noun "dna binding" :super bio-process
       :binds ((substrate bio-entity))
       :realization 
@@ -427,8 +429,6 @@
         :of theme
         :in pathway))
 (noun "duration" :super bio-scalar)
-
-
 (noun "dynamics" :super bio-abstract)
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
@@ -527,8 +527,6 @@
 (noun "group" :super bio-abstract)
 (noun "growth factor" :super molecule)
 (def-bio "guanine" nucleotide)
-(define-category half-life :specializes bio-scalar)
-(def-synonym half-life (:noun "half lives"))
 
 (adj "high" :super bio-predication)
 (noun "HPLC" :super bio-method)
@@ -760,9 +758,6 @@
 (noun "RT-PCR" :super bio-method)
 (noun "qRT/PCR" :super bio-method)
 (noun "peak" :super measurement)
-(define-category period-of-time :specializes amount-of-time
-  :realization
-  (:noun ( "period of time" :plural "periods of time")))
 (adj "pharmacological" :super bio-predication) ;; keyword: (al ADJ) 
 
 (adj "physiological" :super bio-predication)
@@ -982,8 +977,6 @@
 (define-category orientation-top
   :realization
   (:noun "top"))
-(adj "total" :super bio-predication)
-(define-adverb "totally")
 
 (adj "transient" :super bio-predication)
 (noun "transition state intermediate" :super molecule-state)
@@ -996,14 +989,12 @@
 (noun "tumor" :super non-cellular-location)
 (noun "tumor formation" :super named-bio-process)
 (noun "tumorigenesis" :super named-bio-process)
-(noun "type" :super bio-variant)
 (adj "unable" :super bio-relation
      :binds ((capability bio-process))
      :realization
      (:adj "unable"
            :to-comp capability))
-       
-(adj "unchanged" :super bio-predication)    
+           
 (adj "unclear" :super bio-rhetorical)
 (adj "unexpected" :super bio-rhetorical)
 (define-adverb "unexpectedly") ;; TO-DO wants to be  :super-category 'bio-rhetorical)
@@ -1067,7 +1058,6 @@
 
 (def-synonym cell-line (:noun "line"))
 (def-synonym cell-line (:noun "cell line"))
-(def-synonym cell-line (:noun "cell type"))
 (def-synonym cell-line (:noun "cell"))
 (def-synonym cell-line (:noun "cultured cell"))
 (def-synonym cell-line (:noun "cultured cell line"))
