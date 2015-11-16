@@ -229,6 +229,10 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+;; TO-DO figure out with David why this isnt working as expected...
+;; why do we still have the old definitions of "processes" hanging arount
+(delete-noun-cfr (resolve "process"))
+(delete-noun-cfr (resolve "processes"))
 
 (define-category bio-process
                  :specializes process
@@ -242,15 +246,16 @@
           (timeperiod (:or time-unit amount-of-time)))
   
   :realization 
-  (:s subject
-      :of subject
-      :by by-means-of
-      :through by-means-of
-      :via by-means-of
-      :in manner
-      :as-comp as-comp
-      :for timeperiod
-      :over timeperiod)
+  (:noun "process"
+         :s subject
+         :of subject
+         :by by-means-of
+         :through by-means-of
+         :via by-means-of
+         :in manner
+         :as-comp as-comp
+         :for timeperiod
+         :over timeperiod)
   :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
@@ -556,6 +561,10 @@
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
   :realization (:common-noun name))
+
+(fom-subcategorization category::protein
+                       :category category::protein
+                       :slots `(:in complex))
 
 (define-mixin-category protein-method :specializes bio-method)
 
@@ -935,6 +944,7 @@ the aggregate across the predicate it's in. |#
    (:noun "residue"
    :of on-protein
    :on on-protein
+   :in on-protein
    :at amino-acid))  ;; this is actually for serine at residue 822 -- this is an "inverse" :at
                     ;;  for use by interpret-pp-as-head-of-np and a form rule in form-rules
 
