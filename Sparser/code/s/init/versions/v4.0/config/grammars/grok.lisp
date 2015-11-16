@@ -125,6 +125,8 @@
   (include-grammar-module  *frequency*)
   (include-grammar-module  *sequencers*)
 
+(include-grammar-module *qualities*)
+
 (include-grammar-module  *collections*)
 (include-grammar-module  *proper-names*)
 (include-grammar-module  *people*)
