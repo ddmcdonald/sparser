@@ -467,7 +467,10 @@
      (or
       (and (plural-noun-and-present-verb? e)
            (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
-             thereis (ng-start? ee)))
+             thereis 
+             (and
+              (not (eq (cat-name (edge-form ee)) 'verb+ed)) ;; "these results led to..."
+              (ng-start? ee))))
       ;;in fact nothing should follow a pronoun (except a possessive pronoun)
       ;;(not (eq category::time-unit (edge-category e))) WHY WAS THIS HERE? WE NEED TO HANDLE "3 HOURS"
       #+ignore 
