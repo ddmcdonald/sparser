@@ -84,6 +84,12 @@
           :m agent    
           :to object))
 
+(def-synonym signal ;; Jan.#26
+   (:noun "signal" 
+          :etf pre-mod
+          :m agent    
+          :to object))
+
 
 
 
