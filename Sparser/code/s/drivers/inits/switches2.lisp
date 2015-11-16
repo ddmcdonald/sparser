@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.24 October 2015
+;;;  Version:  2.24 November 2015
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -75,10 +75,11 @@
 ;;       of doing thigns. Former settings preserved as old-bio-setting.
 ;;       11/7/14 debugged it. 
 ;; 3/10/2015 Make bio-setting set *edges-from-referent-categories* to NIL
-;;  result is a faster system with (slightly) more accurate results.
+;;   result is a faster system with (slightly) more accurate results.
 ;; 4/18/15 Fanout from flag used in DM&P and checked in bind-variable/expr
 ;; 6/28/2015 Tunr off *profligate-creation-of-individuals* in set-bio
-;; 10/7/15 put in a stub for blocks-world-setting
+;; 10/7/15 put in a stub for blocks-world-setting. 11/14/15 revised in in
+;;   efort to make it work
 
 (in-package :sparser)
 (defvar *PNF-ROUTINE*)
@@ -385,47 +386,13 @@
   (setq *switch-setting* :fire))
 
 
-(defun old-bio-setting ()
-  (turn-off-c3)
-  (tuned-grok)
-
-  (include-comlex)
-  ;; Get everything primed, but don't use it on the unknown words
-  ;; at least not yet. 
-  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
-
-  ;; Set the full set of switches to control what 'after action'
-  ;; segment actions we do
-  (setq *do-strong-domain-modeling* t
-        *new-segment-coverage* :trivial ;; vs. :full or :none
-        *profligate-creation-of-individuals* t
-        ;;*reify-implicit-individuals* t
-        *note-text-relations* t)
-  ;; Specify where we start (needed as switch settings change)
-  (do-strong-domain-modeling)
-
-  (setq *do-forest-level* t)
-  (setq *segment-scan/forest-level-transition-protocol*
-        :stop-on-sentence-end)
-  (what-to-do-at-the-forest-level :new-forest-protocol)
-  (setq *sweep-sentence-treetops* t)
-  (setq *island-driving* t)
-  
-  (setq *ignore-capitalization* t) ;; turns off PNF
-  (setq *uniformly-scan-all-no-space-token-sequences* t)
-  (setq *parser-interior-of-no-space-token-sequence* t)
-  (designate-sentence-container :complex)
-  (setq *switch-setting* :biology))
-
 (defun bio-setting () ;; copy & specialize of back-named old-bio-setting
   (turn-off-c3)
   (tuned-grok)
   ;; except
   (setq *edges-from-referent-categories* nil ;; should be off in the bio system!
         *note-text-relations* nil
-        *profligate-creation-of-individuals* nil
-)
-
+        *profligate-creation-of-individuals* nil)
   (include-comlex)
   ;; Get everything primed, but don't use it on the unknown words
   ;; at least not yet. 
@@ -446,9 +413,8 @@
   (use-description-lattice t)
 
   ;; Flags that control how the parsing is done
-  
-; *whack-a-rule* t
-; *check-forms* t
+  ;;' *whack-a-rule* t
+  ;; *check-forms* t
 
   ;; Set the full set of switches to control what 'after action'
   ;; segment actions we do
@@ -464,8 +430,33 @@
   (setq *switch-setting* :biology))
 
 
+
 (defun blocks-world-setting ()
-  (c3-setting)
+  (uncontroversial-settings)
+  (ignore-unknown-words)
+  ;; vs. (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
+  (establish-type-of-edge-vector-to-use :vector)  
+  (establish-version-of-assess-edge-label :treetops)
+  (setq *permit-rules-with-duplicate-rhs* nil)
+  (setq *do-general-actions-on-treetops* t)
+  (setq *make-edges-over-new-digit-sequences* t)
+  (period-hook-on)
+  
+  ;; Probably the best starting point, but needs to have C3 state
+  ;; apparatus loaded. Dies while setting up the sentence content
+  ;(establish-kind-of-chart-processing-to-do :c3-protocol)
+  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+
+  (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
+  (setq *segment-scan/forest-level-transition-protocol*
+        :move-when-segment-can-never-extend-rightwards)
+
+  (designate-sentence-container :simple)
+  (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
+  ;; consider some standard extras
+
+  (setq *c3* t) ;;/// has effects on references, but needs checking
+  (turn-off-debugging-flags)
   (setq *switch-setting* :blocks-world))
 
 
