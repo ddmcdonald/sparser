@@ -23,7 +23,7 @@
   (push :biology-loaded *features*)
   ;;-----
 
-  (trace-lexicon-unpacking) ;(trace-morphology)
+  (trace-lexicon-unpacking) (trace-morphology)
   (setq *check-forms* t) ;; allow rule filtering by schema patern
   (setq *report-form-check-blocks* nil)
   (setq *debug-pronouns* nil)
