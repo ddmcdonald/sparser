@@ -350,7 +350,7 @@
                                  replace)
   "Install a subcategorization pattern for a value-restriction/variable"
   (check-type category category)
-  (check-type label (or category keyword word))
+  (check-type label (or category keyword word polyword))
   (check-type restriction (not null))
   (check-type variable (or null lambda-variable))
   (funcall (if replace #'replace-subcat-pattern #'add-subcat-pattern)
