@@ -169,14 +169,14 @@
 ;;; debris analysis
 ;;;-----------------
 
-;(include-grammar-module  *da*)
+(include-grammar-module  *da*)
 
 
 ;;;------------------------------
 ;;; domain mining and populating
 ;;;------------------------------
 
-;(include-grammar-module  *DM&P*)
+(include-grammar-module  *DM&P*)
 ;(include-grammar-module  *SDM&P*)
 
 
