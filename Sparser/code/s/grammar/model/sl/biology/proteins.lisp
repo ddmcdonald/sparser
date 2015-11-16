@@ -33,6 +33,7 @@
 
 
 (def-bio "BCR-ABL" protein)
+(def-bio "type IV collegen" protein) ;; a very generic term -- can't find an identifier TO-DO
 
 (define-protein "RBX1_HUMAN" ("RBX1" "RBX1 RING E3 ligase" "RBX1_HUMAN" "E3 ubiquitin-protein ligase RBX1" "protein ZYP" "RING finger protein 75" "RING-box protein 1"))
 (define-protein "PARP1_HUMAN" ("poly(ADP–ribose) 1"))
@@ -900,7 +901,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "CNPY3_HUMAN" ("CNPY3" "ERDA5" "TNRC5" "CTG4A" "PRAT4A")) 
 (define-protein "CO3_HUMAN" ( "Complement C3" "C3 and PZP-like alpha-2-macroglobulin domain-containing protein 1")) 
 (define-protein "CO4A2_HUMAN" ("αvβ5" "Collagen alpha-2(IV) chain")) 
-(define-protein "CO4A4_HUMAN" ("collagens" "Collagen alpha-4(IV) chain")) 
+(define-protein "CO4A4_HUMAN" ("Collagen alpha-4(IV) chain")) 
 (define-protein "COBL1_HUMAN" ("COBLL1" "KIAA0977")) 
 (define-protein "COF1_HUMAN" ("CFL1" "p18" "CFL")) 
 (define-protein "COG4_HUMAN" ("COG4")) 

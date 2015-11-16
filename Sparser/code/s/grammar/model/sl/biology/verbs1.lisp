@@ -507,12 +507,16 @@
          (path bio-state)
          (treatment treatment))
  :realization
- (:verb "cycle"
+ (:verb ("cycleXXX" :third-plural "cycles")
+        :noun "cycle"
   :etf (svo-passive)
   :from from
   :of treatment
   :to to
   :between path))
+
+
+
 
 ;; TO-DO -- does this still hold -- commenting out the ignore
 ;; bio-deactivate conflicts with bio-activate
@@ -934,6 +938,12 @@
          :etf (svo-passive)))
 
 
+
+(define-category happen :specializes bio-predication
+  :realization
+  (:verb "happen"
+         :etf (sv)))
+
 ;; formation "GO:0009058"
 ;;--- hydrolysis
 ;; http://en.wikipedia.org/wiki/Hydrolysis
@@ -1118,7 +1128,8 @@
   :realization 
   (:verb "interact" :noun"interaction" 
          :etf (sv) 
-         :with interactor))
+         :with interactor
+         :between interactor))
 
 (define-category interfere :specializes negative-bio-control
     :realization
@@ -1198,6 +1209,14 @@
          :etf (svo-passive)
          :into substrate
          :to substrate))
+
+(define-category limit ;; was drug-inhibit but inhibit fits answer key
+  :specializes negative-bio-control
+  :realization 
+  (:verb ("limit" :past-tense "limited" 
+                    :present-participle "limiting" )
+   :noun "limitation"
+   :etf (svo-passive)))
 
 (define-category localization :specializes bio-transport
   :restrict ((object molecule)) 
@@ -1503,9 +1522,11 @@
          :with agent))
 
 (define-category recruit :specializes bio-transport
+  :binds ((protein-target protein))
   :realization 
   (:verb "recruit" :noun "recruitment"
-         :etf (svo-passive) ))
+         :etf (svo-passive)
+         :to protein-target))
 
 (define-category reduce :specializes negative-bio-control
     :binds ((bio biological))
@@ -1628,7 +1649,7 @@
 (define-category result :specializes bio-process
     :binds ((result (:or bio-process bio-method bio-predication)))
     :realization
-    (:verb ("result" :third-plural "resultsxxx") ;; block plural form of the verb, because of interaction with noun
+    (:verb ("result" :third-plural "results") ;; block plural form of the verb, because of interaction with noun
 	   :etf (sv)
            :from subject 
 	   :in result))
@@ -1653,6 +1674,15 @@
   (:verb "reveal" :noun "revelation" 
          :etf (svo-passive)))
 
+(define-category revert
+ :specializes caused-bio-process
+ :binds ((from biological)
+         (to biological))
+ :realization
+ (:verb "revert"
+  :etf (svo-passive)
+  :from from
+  :to to))
 
 
 (define-category sample :specializes bio-method
@@ -1774,9 +1804,6 @@
   (:verb ("targetXX" :third-plural "targetsXX" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
          :noun "target"
          :etf (svo-passive)
-         :s agent
-         :o object
-         :of object
          :to destination))
 
 
@@ -1891,6 +1918,14 @@
   :realization 
   (:verb "relocate"
          :etf (svo-passive)))
+
+(define-category shuttle :specializes translocation
+  :realization 
+  (:verb "shuttle"
+         :etf (svo-passive)))
+
+(def-synonym shuttle
+             (:noun "shuttling behavior"))
 
 (define-category entry :specializes translocation
   :restrict ((object molecule)) 

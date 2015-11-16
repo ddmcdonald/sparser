@@ -130,6 +130,11 @@
            (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
                    (word-pname trigger)
                    (if (consp v/r) v/r (cat-symbol v/r))
+                   (var-name var)))
+          (polyword
+           (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
+                   (word-pname trigger)
+                   (if (consp v/r) v/r (cat-symbol v/r))
                    (var-name var))))))))
 
 
