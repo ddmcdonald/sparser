@@ -93,16 +93,11 @@
   (:verb "abrogate" :noun "abrogation" 
          :etf (svo-passive)))
 
-(define-category accumulation :specializes bio-process
-  :binds ((base biological)
-          (amount scalar-quality)
-          )
+(define-category accumulation :specializes caused-bio-process
+  :binds ((amount scalar-quality))
   :realization
   (:verb "accumulate" :noun "accumulation"
          :etf (svo-passive)
-         :s subject
-         :o base
-         :of base
          :to amount))
  
 (define-category acquire :specializes caused-bio-process ;; for conjunctions, as in "de novo or acquired"
@@ -176,30 +171,18 @@
      :noun "activation"
      :etf (svo-passive)))
 
-
-
-(define-category addition :specializes process
-  :binds ((agent biological)
-          (base biological)
-          (added biological))
+(define-category addition :specializes caused-bio-process
+  :binds ((added biological))
   :realization
   (:verb "add" :noun "addition"
          :etf (svo-passive)
-         :s agent
-         :o base
          :into added
-         :to added
-         :of base))
+         :to added))
 
-(define-category affect :specializes process 
-  :binds ((agent biological)
-          (object biological)
-          (causing (:or be biological)))
+(define-category affect :specializes caused-bio-process 
+  :binds ((causing (:or be biological)))
   :realization 
   (:verb "affect" :etf (svo-passive) 
-         :s agent 
-         :o object
-         :by agent
          :to-comp causing))
 
 
@@ -698,7 +681,7 @@
 
 (define-category limit :specializes negative-bio-control
   :realization
-  (:verb "limit" 
+  (:verb ("limit" :past-tense "limited")
          :etf (svo-passive)))   
 
 ;;actually want to define 
@@ -1262,6 +1245,17 @@
    :on location
    :to object
    :within location))
+;; out of alphabetical order, because it depends on mutate
+(define-category gene-delete :specializes mutate
+  :realization
+  (:verb "delete" :noun "deletion"
+   :etf (svo-passive)
+   :in object
+   :into object
+   :on location
+   :to object
+   :within location))
+
 ;; These two were in terms and need to be integrated with
 ;; this category
 (np-head "mutant" :super 'bio-entity)
@@ -1383,6 +1377,12 @@
   (:verb "prevent" :noun "prevention" 
          :etf (svo-passive)))
 
+(define-category prime
+  :specializes bio-activate
+  :realization
+    (:verb "prime"
+     :etf (svo-passive)))
+
 (delete-verb-cfr (resolve/make "probe"))
 (define-category probe :specializes bio-rhetorical
     :realization
@@ -1503,9 +1503,11 @@
          :with agent))
 
 (define-category recruit :specializes bio-transport
+  :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "recruit" :noun "recruitment"
-         :etf (svo-passive) ))
+         :etf (svo-passive) 
+         :to substrate))
 
 (define-category reduce :specializes negative-bio-control
     :binds ((bio biological))
@@ -1644,6 +1646,17 @@
   :etf (sv)
   :to state
   :to scalar))
+
+(define-category revert :specializes caused-bio-process
+ :binds ((state bio-state)
+         (scalar scalar-quality))
+ :realization
+ (:verb "revert"
+  :etf (sv)
+  :to state
+  :to scalar))
+
+
 
 
 (define-category reveal :specializes bio-rhetorical
