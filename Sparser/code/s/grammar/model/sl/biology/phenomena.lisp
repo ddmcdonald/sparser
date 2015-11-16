@@ -464,7 +464,8 @@ it is created from N-terminus to C-terminus.|#
     (:etf (pre-mod)
      :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
             "n-termini"
-            "amino terminus")
+            "amino terminus"
+            "NtA") ;; n-terminal acidic
      :m protein
      :of protein))
 
@@ -517,7 +518,11 @@ it is created from N-terminus to C-terminus.|#
       :realization
       (:noun "activation loop"))
 
-(define-category NtA-region :specializes protein
+(define-category shuttling-domain :specializes protein-domain
+  :realization
+  (:noun "shuttling domain"))
+
+(define-category NtA-region :specializes protein-domain
   :realization
   (:noun "NtA region"))
 
