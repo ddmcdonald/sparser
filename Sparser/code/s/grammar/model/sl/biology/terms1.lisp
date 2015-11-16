@@ -584,11 +584,12 @@
 
 (define-category inhibitor 
                  :specializes bio-entity
-  :binds ((process (:or bio-process pathway bio-mechanism)))
-  :realization (:noun "inhibitor" :of process))
+  :binds ((process (:or bio-process pathway bio-mechanism))
+          (protein protein))
+  :realization (:noun "inhibitor" :of process :of protein))
 (define-category negative-regulator 
                  :specializes inhibitor
-  :realizAtion (:noun "negative regulator"))
+  :realization (:noun "negative regulator"))
 
 (adj "initial" :super bio-predication)
 (adj "insensitive" :super bio-relation
@@ -849,6 +850,7 @@
         :s subject 
         :for theme))
 (noun "responsiveness" :super bio-scalar)
+(noun "restricted substrate" :super bio-predication)
 (adj "rich" :super bio-predication) ;; proline rich region
 (adj "right" :super bio-predication)
 (noun "rna" :super molecule)
