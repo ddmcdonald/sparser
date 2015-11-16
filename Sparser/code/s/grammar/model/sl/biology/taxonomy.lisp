@@ -123,7 +123,8 @@
           (molecular-location molecular-location)
           (species species) ;; human? mouse?
           (non-cellular-location non-cellular-location)
-          (examples biological))
+          (examples biological)
+          (variant bio-variant))
   :realization
   (:noun "xxx-dummy"
          :at cellular-location
@@ -131,6 +132,7 @@
          :in species
          :in cellular-location
          :on cellular-location
+         :of variant
          :upon cellular-location
          :in context
          :in molecular-location
@@ -247,7 +249,8 @@
       :via by-means-of
       :in manner
       :as-comp as-comp
-      :for timeperiod)
+      :for timeperiod
+      :over timeperiod)
   :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
@@ -301,9 +304,11 @@
          :etf (svo-passive)))
 
 (define-category negative-bio-control :specializes bio-control
+  :restrict ((object (:or biological bio-rhetorical))) ;; "lowered the possibility"
   :realization (:verb "negatively controls"  :etf (svo-passive)))
 
 (define-category positive-bio-control :specializes bio-control
+  :restrict ((object (:or biological bio-rhetorical))) ;; "raised the possibility"
   :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
@@ -545,7 +550,8 @@
   :instantiates :self
   :bindings (uid "CHEBI:36080")
   :binds ((species species)
-          (mutation point-mutation))
+          (mutation point-mutation)
+          (complex bio-complex))
   :mixins (  reactome-category  in-ras2-model )
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
@@ -749,11 +755,17 @@
   :index (:permanent :key name))
 
 (define-category molecular-location  :specializes non-cellular-location
+  :binds ((substrate molecule))
   :instantiates self
-  :index (:permanent :key name))
+  :index (:permanent :key name)
+  :realization
+  (:noun "region"
+         :of substrate))
 
 (define-category protein-domain :specializes molecular-location ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
-  :instantiates :self)
+  :instantiates :self
+  :realization
+  (:noun "domain"))
 
 (define-category cell-line :specializes bio-entity
   :instantiates self
@@ -852,6 +864,12 @@ the aggregate across the predicate it's in. |#
 
 (def-synonym process-rate 
              (:noun "kinetics"))
+
+(define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
+  :binds ((process bio-process))
+  :realization 
+  (:noun "time course"
+         :of process))
 
 (define-category bio-concentration :specializes bio-scalar
   :realization
