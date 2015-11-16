@@ -175,9 +175,7 @@
                                                    pos-before pos-after)
   (declare (ignore hyphen-positions colon-positions))
   ;;(push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
-  (when edges 
-    (break "resolve-hyphen-pattern ~
-            has edges~%Pattern = ~a" pattern))
+
   (let ((treetops (treetops-between pos-before pos-after)))
     (cond
      ((= (length treetops) 3)
@@ -185,7 +183,7 @@
       ;; side of the colon
       (make-word-colon-word-structure (first treetops) (third treetops)))
      (*work-on-ns-patterns*
-      (push-debug `(,treetops))
+      (push-debug `(,treetops ,pattern ,edges))
       (break "colon+hyphen stub: have to construct one of the constituents"))
      (t ;; bail
       (reify-ns-name-and-make-edge words pos-before pos-after)))))
