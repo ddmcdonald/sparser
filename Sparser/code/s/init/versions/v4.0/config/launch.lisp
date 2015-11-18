@@ -118,6 +118,9 @@
 
 
 ;;////////////// n.b. requires reworking to be O/S independent !!
+;;
+;; [jrye:20151118.1555CST] This is no longer called automatically and
+;; should be considered deprecated.
 (defun load-workspaces ()
   (let ((namestring
          (if *sparser-is-an-application?*
@@ -280,8 +283,9 @@
 
   ;;--- Workspace files
 
-  (unless *compile*
-    (load-workspaces))
+  ;; [jrye:20151118.1555CST] Do not auto-load workspaces anymore.
+  ;; (unless *compile*
+  ;;   (load-workspaces))
 
   ;;--- parameters
 
