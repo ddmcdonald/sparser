@@ -3,6 +3,12 @@
 ;; image. This load process has no way to unload or to intelligently
 ;; overwrite the results from a prior load.
 
+;; As of 18 Nov 2015, due to a defect in ASDF's :defsystem-depends-on
+;; functionality, we need to manually load the sift-utils system
+;; before we make this package. Otherwise the :sift-utils package
+;; isn't found and ccl gets angry.
+(asdf:load-system :sift-utils)
+
 (defpackage :sparser-asd
   (:use :asdf
         :sift-utils
