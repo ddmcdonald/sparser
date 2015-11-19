@@ -284,8 +284,8 @@
   ;;--- Workspace files
 
   ;; [jrye:20151118.1555CST] Do not auto-load workspaces anymore.
-  ;; (unless *compile*
-  ;;   (load-workspaces))
+  (unless *compile*
+    (load-workspaces))
 
   ;;--- parameters
 
