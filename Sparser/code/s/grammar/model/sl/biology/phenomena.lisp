@@ -96,6 +96,7 @@
 (define-category post-translational-modification :specializes caused-bio-process
   :binds ((substrate (:or protein residue-on-protein molecular-location)) ;; which protein now has ubiquitin on it
           (site residue-on-protein)
+          (amino-acid amino-acid)
           (region region)) ;; which is attached here
   :realization 
   (:noun "post-translational modification"
@@ -104,6 +105,7 @@
          :of substrate
          :on site
          :at site
+         :at amino-acid
          :of region))
 
 (def-synonym post-translational-modification
@@ -344,12 +346,22 @@
      :on site
      :at site))
 
+(def-synonym ubiquitination 
+             (:verb "ubiquitylate" 
+                    :etf (svo-passive pre-mod)
+                    :noun "ubiquitylation"))
+
 (define-category auto-ubiquitinate
   :specializes ubiquitination
   :realization
   (:verb "auto-ubiquitinate" :noun "auto-ubiquitination"
    :etf (sv)
    :s agent))
+
+(def-synonym auto-ubiquitinate
+             (:verb "auto-ubiquitylate" 
+                    :etf (svo-passive pre-mod)
+                    :noun "auto-ubiquitylation"))
 
 (def-synonym auto-ubiquitinate 
              (:verb "autoubiquitinate"
@@ -374,6 +386,18 @@
 ;; strictly for the rule-label
 (define-category monoubiquitination 
  :specializes post-translational-modification )
+
+(def-synonym monoubiquitination 
+             (:verb "mono-ubiquitylate" 
+                    :etf (svo-passive pre-mod)
+                    :noun "mono-ubiquitylation"))
+
+(def-synonym monoubiquitination 
+             (:verb "monoubiquitylate" 
+                    :etf (svo-passive pre-mod)
+                    :noun "monoubiquitylation"))
+
+
 
 ;;--- wrapper
 
@@ -487,14 +511,19 @@ it is created from N-terminus to C-terminus.|#
      :of protein))
 
 
+(define-category binding-domain :specializes protein-domain
+  :binds ((bound-item bio-chemical-entity))
+  :realization
+  (:noun "binding domain"
+         :m bound-item))
 
-(define-category RBD :specializes protein-domain
+(define-category RBD :specializes binding-domain
       :binds ((substrate bio-entity))
       :realization 
       (:noun "RBD"
              :of substrate)) 
 (noun "Raf-RBD" :super RBD)
-(noun "G-domain" :super protein-domain) ;; somehow (def-bio "G-domain" protein-segment) did not work
+(noun "G-domain" :super binding-domain) ;; somehow (def-bio "G-domain" protein-segment) did not work
 (noun "BRCT" :super protein-domain)
 (noun "BRCT1" :super protein-domain)
 (noun "BRCT2" :super protein-domain)
@@ -509,7 +538,7 @@ it is created from N-terminus to C-terminus.|#
 (noun "g5" :super protein-domain)
 
 
-(define-category DBD :specializes protein-domain
+(define-category DBD :specializes binding-domain
       :binds ((substrate bio-entity))
       :realization 
       (:noun "DBD"
@@ -541,6 +570,14 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym NtA-region
              (:noun "N-terminal acidic motif"))
 
+(noun "ring finger domain" :super protein-domain)
+
+(define-category regulatory-subunit :specializes protein-domain
+  :realization
+  (:noun "regulatory subunit"))
+
+(def-synonym regulatory-subunit
+             (:noun "regulatory sub-unit"))
 
 ;; not clear that we need a proper handling
 ;; of the molecule configuration, etc. that
@@ -632,9 +669,15 @@ it is created from N-terminus to C-terminus.|#
   :specializes bio-process
   :instantiates :self
   :index (:permanent :key name)
-  :binds ((pathway pathway))
+  :binds ((pathway pathway)
+          (process bio-process))
   :lemma (:common-noun "step")
   :realization (:common-noun name))
+
+(fom-subcategorization category::step
+                       :category category::step
+                       :slots `(:in pathway
+                                    :in process))
 
 
 
@@ -719,7 +762,7 @@ it is created from N-terminus to C-terminus.|#
   ;; "<binder> binds to <bindee>" the subject moves
   :binds ((binder (:or molecule protein-domain bio-entity))
           (bindee (:or molecule protein-domain bio-entity))
-          (binding-set (:or molecule protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
+          (binding-set (:or bio-chemical-entity protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
           (direct-bindee molecule)
           (site molecular-location)
           (domain protein-domain)
@@ -737,6 +780,7 @@ it is created from N-terminus to C-terminus.|#
          :at site
          :at cell-site
          :to cell-site
+         :to domain
          :with bindee
          :through domain
          :between binding-set
