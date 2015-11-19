@@ -300,6 +300,11 @@ They might well work as straight-up cfr rules, and that's a case
   :form vg
   :referent (:function absorb-auxiliary left-edge right-edge))
 
+(def-syntax-rule (modal vg) ;; needed for "can still associate" -- intervening adverb
+                :head :right-edge
+  :form vg
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
 #|
 (def-form-rule (will verb)
   :form vg
