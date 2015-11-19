@@ -163,6 +163,33 @@
      :s theme
      :o description))
 
+(define-category serve-as :specializes bio-act-as
+  :realization
+    (:verb "serve"
+     :prep "as"  ;; <<<<<<<<<<<  J3
+     :etf svo))
+
+#+ignore
+(define-category function-as :specializes bio-act-as
+  :realization
+    (:verb "function"
+     :prep "as"  ;; <<<<<<<<<<<  J3
+     :etf svo))
+
+(define-category bio-function :specializes bio-quality
+  :binds ((result bio-process)
+          (in-process bio-process)
+          (mechanism bio-process))
+  :realization
+  (:verb "function"
+         :etf (sv)
+         :s subject
+         :in in-process
+         :by mechanism
+         :to-comp result))
+
+(def-synonym bio-function
+             (:noun "function"))
 
 (define-category bio-activate
   :specializes positive-bio-control
@@ -340,11 +367,33 @@
          :etf (svo-passive)
          :noun "cause"))
 
+
 (define-category challenge :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :realization
     (:verb "challenge"
 	   :etf (svo-passive)))
+
+(define-category change :specializes caused-bio-process
+      :binds ((scale bio-scalar)
+              (original-state biological)
+              (resulting-state biological)
+              ) 
+      :realization
+      (:verb "change"
+             :etf (svo-passive)
+             :in object
+             :of object
+             :on scale
+             :from original-state
+             :to resulting-state))
+
+(def-synonym change
+            (:noun "variation"))
+
+(def-synonym change
+            (:verb "convert" :etf (svo-passive)))
+
 
 (define-category coimmunoprecipitate :specializes bio-method
   :binds ((origin bio-location)
@@ -588,6 +637,12 @@
            :adj "detectable"
 	   :etf (svo-passive)))
 
+(define-category diffuse :specializes bio-transport
+  :realization 
+  (:verb "diffuse" 
+   :noun "diffusion" 
+   :etf (svo-passive)))
+
 (define-category digest ;; as in a chemical process for breaking down proteins
   :specializes bio-method
   :realization
@@ -654,7 +709,8 @@
 
 ;; TO-DO check the need for this #+ignore ;; need to get polyword morphology working!
 
-(def-synonym downregulate (:verb "down-regulate" :etf (svo-passive)))
+(def-synonym downregulate (:verb "down-regulate" :etf (svo-passive)
+                                 :noun "down-regulation"))
 
 
 (def-synonym downregulate (:verb "negatively regulate" :noun "negative regulation" :etf (svo-passive)))
@@ -839,6 +895,12 @@
            :of object
            :on location))
 
+(define-category grow :specializes bio-method
+  :realization
+  (:verb ("grow" :past-tense "grown")
+         :etf (svo-passive)
+         :noun "growth"))
+
 (define-category facilitate
   :specializes positive-bio-control
   :realization 
@@ -887,7 +949,7 @@
          :noun "formation"
          :etf (svo-passive) ))
 
-(define-category fraction :specializes bio-variant
+(define-category fraction :specializes variant
   :binds ((agent pronoun/first/plural) (basis bio-entity)) ;; this should be for genes and proteins
   :realization
   (:verb "fraction" ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
@@ -1152,6 +1214,13 @@
            :o object
            :to result
            :to-comp result))
+
+#+ignore
+(define-category leads-to :specializes cause
+  :realization
+  (:verb "lead"
+         :etf (sv)
+         :prep "to"))
 
 
 
@@ -1539,6 +1608,12 @@
      :etf (svo-passive)
      :for theme
      :between theme))    ;; by <entity>
+
+(define-category internalize :specializes caused-bio-process
+  :realization
+  (:verb "internalize" 
+         :etf (svo-passive)
+         :noun "internalization"))
 
 
 (define-category relapse :specializes bio-predication
