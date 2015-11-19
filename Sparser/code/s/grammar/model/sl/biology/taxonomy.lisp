@@ -124,7 +124,7 @@
           (species species) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
-          (variant bio-variant))
+          (variant variant))
   :realization
   (:noun "xxx-dummy"
          :at cellular-location
@@ -360,7 +360,7 @@
                  :specializes bio-process
   ;; :mixins (move) this creates an inconsistent taxonomy -- WH -- TO-DO
   :binds
-  ((object bio-entity)
+  ((object (:or bio-entity bio-chemical-entity))
    (origin cellular-location)
    (destination cellular-location))
   :realization 
@@ -378,10 +378,12 @@
 
 (define-category bio-transport :specializes bio-movement
   :mixins (caused-bio-process)
+  :binds ((mechanism bio-process))
   :realization 
   (;;:verb "transport" 
    :noun "transport" 
    ;;:etf (svo-passive) 
+   :by mechanism
    ))
 
 (define-category originate :specializes bio-movement
@@ -556,7 +558,8 @@
   :bindings (uid "CHEBI:36080")
   :binds ((species species)
           (mutation point-mutation)
-          (complex bio-complex))
+          (complex bio-complex)
+          (functionally-related-to protein))
   :mixins (  reactome-category  in-ras2-model )
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
@@ -564,7 +567,9 @@
 
 (fom-subcategorization category::protein
                        :category category::protein
-                       :slots `(:in complex))
+                       :slots `(:in complex
+                                    :of functionally-related-to))
+
 
 (define-mixin-category protein-method :specializes bio-method)
 
@@ -603,7 +608,20 @@
                    :premod protein
                    :premod residue))
 
+(define-category phosphatase :specializes enzyme
+                 ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
+                 ;;  should be as a "telic" qualia for those molecules which are kinases 
+  :binds ((protein protein) 
+          (residue amino-acid))
+  :instantiates :self
+  :index (:permanent :key name)
+  :realization (:common-noun name))
 
+(def-synonym phosphatase
+             (:noun "phosphatase"
+                   :for reaction
+                   :premod protein
+                   :premod residue))
 
 (define-category GTPase :specializes enzyme
   :instantiates :self
@@ -615,7 +633,7 @@
    (:noun "gtpase"))
 
 
-(define-category bio-variant :specializes molecule
+(define-category variant :specializes biological
   ;; not sure this is the correct term, but intended for things like "forms of ras" 
   :binds ((basis bio-entity)) ;; can be a gene or protein, or something else
   :instantiates :self
@@ -772,9 +790,11 @@
          :of substrate))
 
 (define-category protein-domain :specializes molecular-location ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
+  :binds ((substrate (:or bio-entity molecular-location)))
   :instantiates :self
   :realization
-  (:noun "domain"))
+  (:noun "domain"
+         :of substrate))
 
 (define-category cell-line :specializes bio-entity
   :instantiates self
@@ -883,6 +903,10 @@ the aggregate across the predicate it's in. |#
 (define-category bio-concentration :specializes bio-scalar
   :realization
   (:noun "concentration"))
+
+(define-category bio-strength :specializes bio-scalar
+  :realization
+  (:noun "strength"))
 
 
 
