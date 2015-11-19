@@ -510,6 +510,7 @@
        ((eq category::ordinal (edge-category e))
         ;;WORKAROUND -- DAVID
         nil)
+       ((eq (cat-name (edge-category e)) 'modal))
        ((eq (cat-name eform) 'adverb )
         (eq (cat-name (edge-category e)) 'also))
        (t
@@ -552,6 +553,8 @@
                     category::that category::verb+ed category::verb+ing
                     category::preposition category::and))
   (cond
+   ((eq (cat-name (edge-category e)) 'modal)
+    nil)
    ((and (plural-noun-and-present-verb? e)
          (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
            thereis (ng-start? ee)))
