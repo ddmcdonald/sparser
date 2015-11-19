@@ -264,12 +264,12 @@
      :realization
      (:noun "affinity"
             :for object))
-(noun "allele" :super bio-variant)
+(noun "allele" :super variant)
 
 (define-adverb "also")
 (adj "also known as" :super bio-predication)
 
-(noun "analog" :super bio-variant)
+(noun "analog" :super variant)
 (noun ("analysis" :plural "analyses")
   :super bio-method)
 
@@ -310,7 +310,7 @@
 (adj "chemical" :super bio-predication) ;; keyword: (al ADJ) 
 
 
-(noun "class" :super bio-variant  ;;NOT SURE THIS IS RIGHT
+(noun "class" :super variant  ;;NOT SURE THIS IS RIGHT
       )
 
 ;; This should be made more general
@@ -408,13 +408,8 @@
       (:noun "difference"
              :between compared))
 
-(adj "diffuse" :super abstract) ;; TO-DO better superc
+(adj "diffuse" :super bio-predication) ;; TO-DO better superc
 
-(noun "domain" :super molecular-location
-      :binds ((substrate bio-entity))
-      :realization 
-      (:noun "domain"
-             :of substrate))
 (noun "dna binding" :super bio-process
       :binds ((substrate bio-entity))
       :realization 
@@ -465,7 +460,7 @@
   :realization
   (:noun "evidence"
          :for fact))
-
+(noun "example" :super variant)
 (noun "exchange" :super bio-process)
 (noun "exclusivity" :super bio-abstract) ;; keyword: (ity N)
 (noun "extent" :super bio-scalar) 
@@ -493,7 +488,7 @@
 (noun "fluorescence correlation spectroscopy measurements" :super bio-method)
 (noun "fluorescence microscopy" :super bio-method)
 
-(noun "form" :super bio-variant)
+(noun "form" :super variant)
 
 (noun "forster resonance energy transfer" :super bio-method)
 
@@ -510,14 +505,6 @@
            :of free-of)) ;; keyword: (ive ADJ) 
 (adj "full" :super bio-predication)
 (adj "nucleotide-free" :super bio-predication)
-
-(define-category bio-function :specializes bio-quality
-      :binds ((result bio-process)
-              (in-process bio-process))
-      :realization
-      (:noun "function"
-             :in in-process
-             :to-comp result))
 
 (adj "further" :super bio-predication)
 (define-adverb "further")
@@ -610,7 +597,7 @@
 
 (adj "integrative" :super bio-predication) ;; keyword: (ive ADJ) 
 (adj "intriguing" :super bio-predication) ;; keyword: ENDS-IN-ING 
-(noun "isoform" :super bio-variant)
+(noun "isoform" :super variant)
 (adj "kinase-dead" :super bio-predication)
 
 
@@ -811,6 +798,7 @@
 (define-adverb "readily")
 (adj "real-time" :super bio-predication)
 (def-synonym real-time (:adj "real time"))
+(noun "receptor" :super protein)
 (adj "recombinant" :super bio-predication)
 (adj "refractory" :super bio-relation
      :binds ((treatment biological))
@@ -900,14 +888,18 @@
 ;; Jan 14 "mutation of the primary site of monoubiquitination"
 ;; 16 "mUbRas, modified at a single site, "
 (noun "site" :super molecular-location
-  :binds ((process bio-process)(protein protein)(residue residue-on-protein))
+  :binds ((process bio-process)
+          (protein protein)
+          (residue residue-on-protein))
   :realization
      (:noun "site"
       :etf pre-mod
       :m process
       :m protein
       :of process
+      :for process
       :in protein
+      :on protein
       :at residue))
 
 (find-or-make-individual 'qualitative-rate :name "slow")
@@ -1022,13 +1014,7 @@
      (:adj "useful"
            :s subject
            :for purpose))
-(noun "variety" :super bio-variant)
-(noun "variation" :super bio-variant
-      :binds ((scale bio-scalar)) ;; this should be for genes and proteins
-      :realization
-      (:noun "variation"
-             :in basis
-             :on scale))
+(noun "variety" :super variant)
 
 
 (adj "wild-type" :super bio-predication)
