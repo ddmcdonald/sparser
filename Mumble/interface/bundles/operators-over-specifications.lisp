@@ -1,5 +1,6 @@
 ;;; -*- Syntax: Common-lisp; Mode: LISP; Package: MUMBLE -*-
-;;;  MUMBLE-86: message-level;operators-over-specifications
+;;;
+;;;  MUMBLE-86: interface/bundles/operators-over-specifications
 
 ;;; Copyright (C) 2015 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
