@@ -171,6 +171,12 @@
   (when *trace-ns-sequences*
     (trace-msg "[ns]   Using salient hyphenated-literal")))
 
+(deftrace :made-hyphenated-pair (category edge)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Make a ~a hyphenated pair: e~a"
+               category
+               (edge-position-in-resource-array edge))))
+
 
 
 (deftrace :two-hyphen-default-edge (edge)
