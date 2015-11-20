@@ -31,9 +31,10 @@
     (bio-category-for-reifying)
     default-category))
 
-;;;----------
-;;; hyphens
-;;;----------
+
+;;;-----------------
+;;; pair categories
+;;;----------------
 
 (define-category hyphenated-pair
   :specializes sequence
@@ -42,6 +43,67 @@
   :index (:sequential-keys left right)
   :binds ((left) ;; of the hyphen
           (right)))
+
+
+;;;; The category is in sl/biology/taxonomy.lisp 
+;;;; because of it's inheitance pattern
+;;;;/// Has to be some refactoring sooner than later. 
+#|
+(define-category no-space-pair
+  :specializes bio-pair
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((left)
+          (right))
+  :index (:sequential-keys left right)
+  :documentation
+  "Trust the pattern matching to correctly handle the
+  value restrictions. This cuts down on the variation
+  in how to define a pair which should reduce the possibilities
+  for error.") |#
+
+(define-category qualifying-pair
+  :specializes sequence
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((head) ;; 'Ras'
+          (qualifier)) ;; 'mediated'
+  :documentation "Inadequate name. This is for phrases
+   like 'Ras-mediated' for the cases where we don't know
+   or can't figure out the correct relationship (variable).")
+
+(define-category hyphenated-triple
+  :specializes sequence
+  ;; inherits items, item, type, number
+  :instantiates :self
+  :binds ((left)
+          (middle)
+          (right)))
+
+
+;;;-------------------------
+;;; routines that make them 
+;;;-------------------------
+
+(defun package-qualifying-pair (left-edge right-edge)
+  ;; as called from resolve-protein-hyphen-pair for
+  ;; something like EGFR-positive as the default when
+  ;; nothing stronger applied
+  (let ((left-ref (edge-referent left-edge))
+        (right-ref (edge-referent right-edge)))
+    (let* ((label (edge-category left-edge))
+           (i (find-or-make-individual 'qualifying-pair
+                 :head left-ref
+                 :qualifier right-ref
+                 :type label
+                 :items `(,left-ref ,right-ref)))
+           (edge (make-ns-edge
+                  (pos-edge-starts-at left-edge)
+                  (pos-edge-ends-at right-edge)
+                  label
+                  :referent i
+                  :constituents (list left-edge right-edge))))
+      edge)))
 
 (defun make-hyphenated-structure (left-edge right-edge)
   ;; called from nospace-hyphen-specialist or from
@@ -69,28 +131,11 @@
       edge)))
 
 
-;;;; The category is in sl/biology/taxonomy.lisp 
-;;;; because of it's inheitance pattern
-;;;;/// Has to be some refactoring sooner than later. 
-#|
-(define-category no-space-pair
-  :specializes bio-pair
-  ;; inherits items, item, type, number
-  :instantiates :self
-  :binds ((left)
-          (right))
-  :index (:sequential-keys left right)
-  :documentation
-  "Trust the pattern matching to correctly handle the
-  value restrictions. This cuts down on the variation
-  in how to define a pair which should reduce the possibilities
-  for error.") |#
-
 (defun make-ns-pair (category-name left-edge right-edge
                      words pos-before pos-after)
-  "Instantiate a no-space-pair. Add the indicated category to
-   the new individual. Make the edge, using the left-edge as
-   the source of the labels."
+  "Instantiate a particular kind os no-space-pair according
+   to the indicated category. Make the edge, using the left-edge 
+   as the source of the labels."
   ;;/// This loses the fact that, e.g., these were separacted
   ;; by a slash. If the subcat machinery does all the work
   ;; then we could record that in the edge category
@@ -125,88 +170,59 @@
         edge))))
 
 
-(defun make-hyphenated-pair (cat-name left-ref right-ref
-                             left-edge right-edge
+(defun make-protein-pair (left-edge right-edge words
+                          pos-before pos-after)
+  ;; called from resolve-hyphen-between-two-terms
+  (make-hyphenated-pair 'protein left-edge right-edge
+                        words pos-before pos-after))
+
+(defun make-bio-pair (left-edge right-edge words
+                      pos-before pos-after)
+  ;; called from resolve-hyphen-between-two-terms
+  (make-hyphenated-pair 'bio-pair left-edge right-edge
+                        words pos-before pos-after))
+
+;; RBD-Ras -- second is a protein, nothing interesting
+;; known about the first yet.
+(defun make-pair-with-protein (left-edge right-edge words
+                               pos-before pos-after)
+  (make-hyphenated-pair 'paired-protein left-edge right-edge
+                        words pos-before pos-after))
+
+
+(defun make-hyphenated-pair (cat-name left-edge right-edge
                              words pos-before pos-after)
-#|  (unless (and (individual-p left-ref)
-               (individual-p right-ref))
-    (unless (individual-p left-ref)
-      (typecase left-ref
-        (rule
-    (break "One of the referents is not an individual")) |#
+  "Instantiate one of the pair categories, according to the category
+   that's specified which becomes the label on the edge."
+  (let ((label (cond
+                ((eq cat-name 'paired-protein)
+                 (category-named 'protein))
+                (t (category-named cat-name :break-if-none))))
+        (pair-category
+         (case cat-name 
+           (protein 'protein-pair)
+           (paired-protein 'pair-with-protein)
+           (bio-pair 'bio-pair)
+           (otherwise
+            (error "Unanticipated type of hyphenated-pair: ~a" cat-name))))
+        (left-ref (edge-referent left-edge))
+        (right-ref (edge-referent right-edge)))
 
-  (let ((category (category-named cat-name :break-if-none))
-        (daughter (edge-left-daughter right-edge))
-        i )
-    ;; special case simplifications
-    (when (and (word-p daughter)
-               (or
-                (eq daughter (word-named "WT"))
-                (eq daughter (word-named "wt"))))
-      ;; That's "wild type". Ought to make a specialization but
-      ;; the facility isn't finished, so just change the
-      ;; referent instead simplify the referent since "WT"
-      ;; as a name-word won't fit the value restrictions.
-      (setq i left-ref)) ;; pesumably the protein
-
-    (unless i
-      (setq i (find-or-make-individual category 
-                                      :left left-ref
-                                      :right right-ref
-                                      :items (list left-ref right-ref))))
- 
-    (let ((edge (make-ns-edge
-                 pos-before pos-after category
-                 :form category::n-bar
-                 :rule 'make-hyphenated-pair
-                 :referent i
-                 :constituents `(,left-edge ,right-edge)
-                 :words words)))
-      ;; trace
+    (let* ((i (find-or-make-individual pair-category 
+                                       :left left-ref
+                                       :right right-ref
+                                       :type label
+                                       :items (list left-ref right-ref)))
+           (edge (make-ns-edge
+                  pos-before pos-after label
+                  :form category::n-bar
+                  :rule 'make-hyphenated-pair
+                  :referent i
+                  :constituents `(,left-edge ,right-edge)
+                  :words words)))
+      (tr :made-hyphenated-pair pair-category edge)
       edge)))
 
-
-(defun make-protein-pair (left-ref right-ref words
-                         left-edge right-edge
-                          pos-before pos-after)
-  (make-hyphenated-pair 'protein-pair left-ref right-ref 
-                        left-edge right-edge
-                        words pos-before pos-after))
-
-(defun make-amino-acid-pair (left-ref right-ref words
-                             left-edge right-edge
-                             pos-before pos-after)
-  (make-hyphenated-pair 'amino-acid-pair left-ref right-ref 
-                        left-edge right-edge
-                         words pos-before pos-after))
-
-(defun make-bio-pair (left-ref right-ref words
-                      left-edge right-edge
-                      pos-before pos-after)
-  (make-hyphenated-pair 'bio-pair left-ref right-ref 
-                        left-edge right-edge
-                        words pos-before pos-after))
-
-(define-category qualifying-pair
-  :specializes sequence
-  ;; inherits items, item, type, number
-  :instantiates :self
-  :binds ((head) ;; 'Ras'
-          (qualifier)) ;; 'mediated'
-  :documentation "Inadequate name. This is for phrases
-   like 'Ras-mediated' for the cases where we don't know
-   or can't figure out the correct relationship (variable).")
-
-
-
-
-(define-category hyphenated-triple
-  :specializes sequence
-  ;; inherits items, item, type, number
-  :instantiates :self
-  :binds ((left)
-          (middle)
-          (right)))
 
 (defun make-hyphenated-triple (left-edge middle-edge right-edge)
   (let ((i (find-or-make-individual 'hyphenated-triple
