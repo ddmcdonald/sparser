@@ -39,7 +39,8 @@ See Zo code for what that could look like. |#
           (make-dtn 
            :resource (define-lexicalized-phrase common-noun '("staircase") (n))
            :referent 'build-staircase))
-         (a-staircase
+         (a-staircase ;; singular and kind set the determiner
+          ;; see interface/bundles/operators-over-specifications.lisp
           (kind (singular staircase)))
          (build
           (make-dtn :resource
@@ -63,20 +64,12 @@ See Zo code for what that could look like. |#
           (define-lexicalized-phrase SVOC '("let") (v)))
          (1st-plural ;; the word
           (mumble-value 'first-person-plural ;; see gramar/pronouns.lisp
-                        'pronoun))
-         (pn-phrase (phrase-named 'pronominal-np))
-         (pn-parameter (first (parameters-to-phrase pn-phrase)))
-         (binding (make-instance 'parameter-value-pair
-                    :phrase-parameter pn-parameter
-                    :value 1st-plural))
-         (pn-lexicalized-phrase
-          (make-instance 'saturated-lexicalized-phrase
-            :phrase pn-phrase
-            :bound (list binding))))
-
+                        'pronoun)))
     (let* ((dtn (make-instance 'derivation-tree-node
+                  :referent 'let-us
                   :resource let-phrase)))
-      (make-complement-node 'o pn-lexicalized-phrase dtn)
+      ;; (make-complement-node 'o pn-lexicalized-phrase dtn)
+      (make-complement-node 'o 1st-plural dtn)
       (make-complement-node 'c dtn-for-eventuality dtn)
       (command dtn)
       dtn)))
