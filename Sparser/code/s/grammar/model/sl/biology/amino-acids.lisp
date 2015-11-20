@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "amino-acids"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: October 2015
+;;; version: November 2015
 
 ;; initiated 9/8/14
 ;; RJB -- added hacks for problems with NS word finding of"S338" and "pThr202/Tyr204"
@@ -24,7 +24,7 @@
 ;; 5/13/2015 fix handling ov numbers in reify-point-mutation-and-make-edge
 ;; debug handling of word object for number in reify-point-mutation-and-make-edge
 ;; 6/1/2015 added flagged break on bad residues (ones which do not have a numeric position)
-;; 10/29/15 doing phosphorylated residues
+;; 10/29/15 doing phosphorylated residues. 11/19/15 another residue case.
 
 (in-package :sparser)
 
@@ -156,22 +156,33 @@ therefore we have the special cases:
     (when (and capitalized-letter number)
       (let ((amino-acid (single-letter-is-amino-acid capitalized-letter)))
         (when amino-acid
-          (let ((residue (make-residue-on-protein amino-acid number)))             
-            (let* ((left-edge (top-edge-at/starting start-pos))
-                   (right-edge (or (top-edge-at/ending end-pos) ; 
-                                   (make-edge-over-single-digit-word
-                                    (chart-position-before end-pos))))
-                   (edge (make-chart-edge
-                         :left-edge left-edge
-                         :right-edge right-edge
-                         :starting-position start-pos
-                         :ending-position end-pos
-                         :category category::residue-on-protein
-                         :form category::np
-                         :rule-name :reify-residue
-                         :referent residue)))
-              edge)))))))
+          (reify-residue
+            (top-edge-at/starting start-pos) ;; left
+            (or (top-edge-at/ending end-pos) ;; right
+                (make-edge-over-single-digit-word
+                 (chart-position-before end-pos)))
+            start-pos end-pos
+            amino-acid number))))))
 
+(defun reify-residue (amino-acid-edge number-edge start-pos end-pos
+                      &optional amino-acid number)
+  ;; Called drectly from one-hyphen-ns-edges with just the edges
+  ;; or from single letter pattern just above
+  (unless amino-acid
+    (setq amino-acid (edge-referent amino-acid-edge)))
+  (unless number
+    (setq number (edge-referent number-edge)))
+  (let* ((residue (make-residue-on-protein amino-acid number))           
+         (edge (make-chart-edge
+                :left-edge amino-acid-edge
+                :right-edge number-edge
+                :starting-position start-pos
+                :ending-position end-pos
+                :category category::residue-on-protein
+                :form category::np
+                :rule-name :reify-residue
+                :referent residue)))
+              edge))
 
 
 (defun make-residue-on-protein (amino-acid number-exp)
