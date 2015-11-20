@@ -11,6 +11,10 @@
 
 (in-package :sparser)
 
+;;;--------------------------
+;;; look for a explicit rule 
+;;;--------------------------
+
 (defun composed-by-usable-rule (left-edge right-edge)
   (let* ((rule (or (multiply-edges left-edge right-edge)
                    (multiply-edges right-edge left-edge)))
@@ -23,7 +27,6 @@
          (usable-rule (unless (syntactic-rule? rule)
                         (unless (form-rule? rule)
                           rule))))
-      
     (when usable-rule ;; "GTP-bound"
       (tr :ns-found-usable-rule rule)
       (let ((edge (make-completed-binary-edge left-edge right-edge rule)))
@@ -32,29 +35,97 @@
         edge))))
 
 
+;;;------------------------------------
+;;; Combine them by binding a variable
+;;;------------------------------------
+
+;;--- predicate 
+
+(defun second-imposes-relation-on-first? (right-ref right-edge)
+  (declare (special category::verb+ed category::adjective))
+  (let ((form (edge-form right-edge)))
+    (when (memq (cat-symbol form) '(category::verb+ed ;; assume passive
+                                    category::adjective))
+      ;; now figure out what variable on the second (right)
+      ;; should be bound to the first (left)
+      (let ((variable 
+             (if (eq (cat-symbol form) 'category::adjective)
+               ;; Get the slots on the category of the right-edge
+               ;; and look for a variable that's not for subjects
+               (let ((vars (cat-slots (if (category-p right-ref)
+                                        right-ref ;; what case??
+                                        (itype-of right-ref))))
+                     (sv (subject-variable right-ref)))
+                 (loop for v in vars 
+                   when (not (eq v sv)) do (return v)))
+               (subject-variable right-ref))))
+        ;; Which variable this is really depends on the two referents.
+        ;; For the induced example its an agent (= subject). But the
+        ;; tyrosine goes on the site variable of the phosphoryate.
+        ;; For right now, binding the subject and letting the chips
+        ;; fall as they may. Elevating the right edge as the head
+        ;; but making it an adjective overall. 
+        (unless variable
+          ;;/// clear motivation for structure on variables on perhaps
+          ;; on the mixing in of categories for this same purpose
+          ;; Default to modifier ??
+          (setq variable
+                ;; applies if there's just one variable on category
+                (single-on-variable-on-category right-ref)))
+        variable))))
+
+
+;;--- follow-up routine that does it
+
+;; "EphB1-induced", "tyrosine-phosphorylated"
+(defun do-relation-between-first-and-second (left-ref right-ref 
+                                             left-edge right-edge)
+  (declare (special category::adjective))
+  (tr :make-right-head-with-agent-left)
+  (when (category-p right-ref)
+    (setq right-ref (make-individual-for-dm&p right-ref)))
+  (let* ((variable (second-imposes-relation-on-first? right-ref right-edge))
+         (edge
+          (make-ns-edge
+           (pos-edge-starts-at left-edge)
+           (pos-edge-ends-at right-edge)
+           (edge-category right-edge)
+           :form category::adjective
+           :referent (bind-dli-variable variable left-ref right-ref)
+           :rule 'do-relation-between-first-and-second
+           :constituents `(,left-edge ,right-edge))))
+    (tr :no-space-made-edge edge)
+    edge))
+
+
+
+;;;------------------------------
+;;; precursors to other routines
+;;;------------------------------
+
 (defun make-protein-pair/convert-bio-entity (start-pos end-pos
-                                             edges which-one)
+                                             edges words which-one)
   ;; Called from one-hyphen-ns-patterns 
-  ;; /// compare to operatoin in multi-colon-ns-patterns 
-  ;;  which shares a lot
-  (declare (special word::hyphen))
-  (unless (eq word::hyphen (edge-category (second edges)))
-    (push-debug `(,edges ,start-pos ,end-pos))
-    (break "second edge doesn't appear to be a hyphen"))
+  ;; /// compare to operation in multi-colon-ns-patterns 
+  ;;  which shares a lot  
   (let* ((edge-to-convert (ecase which-one
                             (:right (third edges))
                             (:left (first edges)))))
     (convert-bio-entity-to-protein edge-to-convert) ;; converts the edge
-    (let* ((proteins (list (edge-referent (first edges))
-                           (edge-referent (third edges))))
-           (i (find-or-make-individual 'collection
-                 :type category::protein
-                 :items proteins))
-           (edge (make-ns-edge
-                   start-pos end-pos category::protein
-                   :referent i :rule 'make-protein-pair/convert-bio-entity
-                   :constituents edges)))
-      edge)))
+    (make-protein-pair (first edges) (third edges) words start-pos end-pos)))
+    
 
-
+#+ignore ;; this version makes a collection rather than
+   ;; a pair -- will be useful elsewhere for parts. 
+(defun make-protein-pair/setup (edges start-pos end-pos)
+  (let* ((proteins (list (edge-referent (first edges))
+                         (edge-referent (third edges))))
+         (i (find-or-make-individual 'collection
+                                     :type category::protein
+                                     :items proteins))
+         (edge (make-ns-edge
+                start-pos end-pos category::protein
+                :referent i :rule 'make-protein-pair/convert-bio-entity
+                :constituents edges)))
+    edge))
 
