@@ -151,13 +151,21 @@
     (format stream "#<dtn for ~a>" r)))
 
 (defmethod print-object ((slp saturated-lexicalized-phrase) stream)
-  (if (typep slp 'has-name)
-    (format stream "<lp ~a>" (mname slp))
-    (if (= 1 (length (bound slp)))
-      (let ((pvp (car (bound slp))))
-        (format stream "#<lp ~a: ~a = ~a>" (name (resource slp))
-                (name (phrase-parameter pvp)) (value pvp)))
-      (call-next-method)))) ;; how to print them??
+  (print-unreadable-object (slp stream)
+    (cond
+     ((and (typep slp 'has-name) (mname slp))
+      (format stream "<slp ~a>" (mname slp)))
+     (t
+      (format stream "slp: ~a" (name (phrase slp)))
+      (loop for pvp in (bound slp)
+        do (format stream "~&  ~a = ~a"
+                   (name (phrase-parameter pvp))
+                   (value pvp)))))))
+
+(defmethod print-object ((pvp parameter-value-pair) stream)
+  (print-unreadable-object (pvp stream ) ;; :type t)
+    (format stream "pvp: ~a = ~a" 
+            (name (phrase-parameter pvp)) (value pvp))))
 
 (defmethod print-object ((cn complement-node) stream)
   (let ((parameter (phrase-parameter cn))
