@@ -1,12 +1,12 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; $Id$
+
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2010-2013 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2010-2015 David D. McDonald  All Rights Reserved
 
 ;; /Mumble/derivation-trees/make.lisp
 
 ;; 11/12 Picked it up again and making diverse little changes. More on
-;; 11/19/13.
+;; 11/19/13. Fixed bug in make-complement-node 11/18/15. 
 
 (in-package :mumble)
 
@@ -133,9 +133,9 @@ but we don't want to count on that.
                :bkptrs dtn)))
     (setf (value cn) i) ;; could have folded these into the make-instance call
     (setf (referent cn) i) ;; ditto
-    ;;(setf (complements dtn) `(,cn)) ;; was causing duplicate complement-node
     (push cn (bound lexp))
     (setf (free lexp) (remove parameter free-variables))
+    (push cn (complements dtn))
     cn))
 
 
