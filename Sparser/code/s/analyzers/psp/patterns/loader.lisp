@@ -11,7 +11,7 @@
 ;; scan to 1. 12/4/14 added [patterns]. [pattern-gophers] 12/11/12.
 ;; [scan-gophers] and [charaterize-words] 5/15/15. Added [edge-patterns],
 ;; [slash-patterns], [hyphen-patterns], [colon-patterns]. 
-;; 11/12/15 added [edge-gophers], [pattern-resolvers]
+;; 11/12/15 added [edge-gophers], [pattern-resolvers]. 11/19/15 [hyphen-subrs}
 
 (in-package :sparser)
 
@@ -23,6 +23,8 @@
 (lload "scan-patterns;slash-patterns")
 (lload "scan-patterns;hyphen-patterns")
 (lload "scan-patterns;colon-patterns")
+
+(lload "scan-patterns;hyphen-subrs")
 
 (lload "scan-patterns;edge-gophers")
 (lload "scan-patterns;pattern-resolvers")
