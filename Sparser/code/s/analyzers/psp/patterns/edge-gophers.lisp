@@ -80,22 +80,15 @@
 ;;; misc. other cases
 ;;;-------------------
 
-(defun package-qualifying-pair (left-edge right-edge)
-  ;; as called from resolve-protein-hyphen-pair 
-  (let ((left-ref (edge-referent left-edge))
-        (right-ref (edge-referent right-edge)))
-
-    (let* ((i (find-or-make-individual 'qualifying-pair
-                 :head left-ref
-                 :qualifier right-ref))
-           (label (edge-category left-edge))
-           (edge (make-ns-edge
-                  (pos-edge-starts-at left-edge)
-                  (pos-edge-ends-at right-edge)
-                  label
-                  :referent i
-                  :constituents (list left-edge right-edge))))
-      edge)))
+;;/// Repair -- doesn't really go here
+(defun fix-doubled-colon (pattern edges)
+  ;;/// hack for the presenting case. Need more ex. to find
+  ;; any useful generalizations
+  ;; pattern = (:bio-entity :colon :colon :protein)
+  (let ((pattern1 (cons (car pattern) (cddr pattern)))
+        (edges1 (cons (car edges) (cddr edges))))
+    (values pattern1
+            edges1)))
 
 
 
