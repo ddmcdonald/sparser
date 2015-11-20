@@ -67,6 +67,7 @@
 (defun populate-ns-informative-categories ()
   (setq *ns-informative-categories*
         `(,category::protein
+          ,category::kinase
           ,category::amino-acid
           ,category::bio-entity
           )))
