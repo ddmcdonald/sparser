@@ -22,10 +22,7 @@
 (defsystem "sparser"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file "load-nlp.lisp")
-                 )
-    )
+    :components ((:just-load-file "load-nlp.lisp")))
 
 ;; ------------------------------------------------------------
 ;; These load each of the known scripts.
@@ -44,129 +41,81 @@
 (defsystem "sparser/fire"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file
+    :components ((:just-load-file
                   "load-nlp.lisp"
                   :perform
                   (load-op :before (o c)
                            (let ((symbol (intern "SCRIPT" :common-lisp-user)))
-                             (setf (symbol-value symbol) :fire)
-                             )
-                           )
-                  )
-                 )
-    )
+                             (setf (symbol-value symbol) :fire))))))
 
 (defsystem "sparser/biology"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file
+    :components ((:just-load-file
                   "load-nlp.lisp"
                   :perform
                   (load-op :before (o c)
                            (let ((symbol (intern "SCRIPT" :common-lisp-user)))
-                             (setf (symbol-value symbol) :biology)
-                             )
-                           )
-                  )
-                 )
-    )
+                             (setf (symbol-value symbol) :biology))))))
 
 (defsystem "sparser/blocks-world"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file
+    :components ((:just-load-file
                   "load-nlp.lisp"
                   :perform
                   (load-op :before (o c)
                            (let ((symbol (intern "SCRIPT" :common-lisp-user)))
-                             (setf (symbol-value symbol) :blocks-world)
-                             )
-                           )
-                  )
-                 )
-    )
+                             (setf (symbol-value symbol) :blocks-world))))))
 
 (defsystem "sparser/grok"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file
+    :components ((:just-load-file
                   "load-nlp.lisp"
                   :perform
                   (load-op :before (o c)
                            (let ((symbol (intern "SCRIPT" :common-lisp-user)))
-                             (setf (symbol-value symbol) :grok)
-                             )
-                           )
-                  )
-                 )
-    )
+                             (setf (symbol-value symbol) :grok))))))
 
 (defsystem "sparser/c3"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file
+    :components ((:just-load-file
                   "load-nlp.lisp"
                   :perform
                   (load-op :before (o c)
                            (let ((symbol (intern "SCRIPT" :common-lisp-user)))
-                             (setf (symbol-value symbol) :c3)
-                             )
-                           )
-                  )
-                 )
-    )
+                             (setf (symbol-value symbol) :c3))))))
 
 (defsystem "sparser/no-grammar"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file
+    :components ((:just-load-file
                   "load-nlp.lisp"
                   :perform
                   (load-op :before (o c)
                            (let ((symbol (intern "SCRIPT" :common-lisp-user)))
-                             (setf (symbol-value symbol) :no-grammar)
-                             )
-                           )
-                  )
-                 )
-    )
+                             (setf (symbol-value symbol) :no-grammar))))))
 
 (defsystem "sparser/just-dm&p"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file
+    :components ((:just-load-file
                   "load-nlp.lisp"
                   :perform
                   (load-op :before (o c)
                            (let ((symbol (intern "SCRIPT" :common-lisp-user)))
-                             (setf (symbol-value symbol) :just-dm&p)
-                             )
-                           )
-                  )
-                 )
-    )
+                             (setf (symbol-value symbol) :just-dm&p))))))
 
 (defsystem "sparser/default"
     :defsystem-depends-on ("sift-utils")
     :depends-on ("ddm-util")
-    :components (
-                 (:just-load-file
+    :components ((:just-load-file
                   "load-nlp.lisp"
                   :perform
                   (load-op :before (o c)
                            (let ((symbol (intern "SCRIPT" :common-lisp-user)))
-                             (setf (symbol-value symbol) :default)
-                             )
-                           )
-                  )
-                 )
-    )
+                             (setf (symbol-value symbol) :default))))))
 
 
