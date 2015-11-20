@@ -859,6 +859,12 @@ the aggregate across the predicate it's in. |#
           (right))
   :index (:sequential-keys left right))
 
+(define-category pair-with-protein
+  :specializes bio-aggregate
+  :binds ((left) ;; e.g. a protein region: "RBD-Ras"
+          (right (:or protein bio-family nucleotide)))
+  :index (:sequential-keys left right))
+
 (define-category no-space-pair :specializes bio-pair
   ;; inherits items, item, type, number
   :instantiates :self
