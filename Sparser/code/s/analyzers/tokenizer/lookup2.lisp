@@ -27,7 +27,7 @@
     (if symbol
       (if (boundp symbol)
         (let ((word (symbol-value symbol)))
-          (tr :fw-symbol-bound-to word)
+          ;;(tr :fw-symbol-bound-to word) too noisy
           (if *edge-for-unknown-words*
             ;; In this case we have to look at whether there is
             ;; a rule-set, and if there is that is has unary rule
@@ -41,7 +41,7 @@
                 (tr :fw-no-rule-set word)
                 (establish-unknown-word char-type word))
                ((memq :function-word (plist-for word)) ;; "than"
-                (tr :tw-is-a-function-word word)
+                ;; (tr :tw-is-a-function-word word) - noisy
                 word)
                ((null (rs-single-term-rewrites rs))
                 (tr :tw-no-unary-rule word)
