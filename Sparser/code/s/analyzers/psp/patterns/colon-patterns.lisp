@@ -6,24 +6,35 @@
 ;;;  version:  November 2015
 
 ;; Broken out from pattern-gophers 7/19/15. After folding in edges
-;; doing muli-colonn patterns 11/6/15. 
+;; doing muli-colonn patterns 11/6/15. More abstractoin 11/16.
 
 (in-package :sparser)
 
-;; Works
-; (p "endogenous C-RAF:B-RAF heterodimers.")
-; (p "KSR1:MARK3.")
+; (p "endogenous C-RAF:B-RAF heterodimers.") -- works
+; (p "KSR1:MARK3.") -- ditto
 
 (defun resolve-colon-pattern (pattern words edges 
                               colon-positions start-pos end-pos)
   ;; called from ns-pattern-dispatch when the only puctuation is a colon
-  ;; (push-debug `(,pattern ,words ,colon-positions ,start-pos ,end-pos))
+  ;; (push-debug `(,pattern ,words ,edges ,colon-positions ,start-pos ,end-pos))
   ;; (break "starting colon pattern: ~a" pattern)
-  (if (null (cdr colon-positions))
+  (cond
+   ((null (cdr colon-positions))
     (one-colon-ns-patterns
-     pattern words edges colon-positions start-pos end-pos)
+     pattern words edges colon-positions start-pos end-pos))
+   ((and (= 2 (length colon-positions))
+         ;; typo probably: "of GLR-1::GFP in the VNC"
+         (adjacent-positions (car colon-positions) (cadr colon-positions)))
+    (multiple-value-bind (pattern1 edges1)
+                         (fix-doubled-colon pattern edges)
+      (one-colon-ns-patterns pattern1 words edges1 colon-positions start-pos end-pos)))
+   (t
     (multi-colon-ns-patterns
-     words edges colon-positions start-pos end-pos)))
+     words edges colon-positions start-pos end-pos))))
+
+;;;-----------
+;;; one colon
+;;;-----------
 
 (defun one-colon-ns-patterns (pattern words edges colon-positions start-pos end-pos)
   ;; called from resolve-colon-pattern
@@ -31,6 +42,15 @@
    ((equal pattern '(:protein :colon :protein)) "KSR1:MARK3"
     (make-ns-pair 'protein (first edges) (third edges)
                   words start-pos end-pos))
+
+   ((equal pattern '(:protein :colon :bio-entity)) 
+    (make-protein-pair/convert-bio-entity
+     start-pos end-pos edges :right))
+
+   ((equal pattern '(:bio-entity :hyphen :protein))
+    (make-protein-pair/convert-bio-entity
+     start-pos end-pos edges :left))
+
    ((or (equal pattern '(:single-digit :colon :single-digit))
         (equal pattern '(:single-digit :colon :digits))
         (equal pattern '(:digits :colon :single-digit))
@@ -38,6 +58,7 @@
     (make-number-colon-number-structure 
      (right-treetop-at/edge start-pos) 
      (left-treetop-at/edge end-pos)))
+
    ((or (equal pattern '(:full :colon))
         (equal pattern '(:lower :colon))
         (equal pattern '(:lower :colon :full))
@@ -58,11 +79,15 @@
       (reify-ns-name-and-make-edge words start-pos end-pos))))
 
 
+;;;---------------------
+;;; more than one colon
+;;;---------------------
+
 (defun multi-colon-ns-patterns (words edges colon-positions start-pos end-pos)
   ;; called from ns-patterns/edge-colon-edge when the only punctuation
   ;; in the sequence is colon. Do a divide and recombine
   (declare (special category::protein))
-  (push-debug `(,words ,edges ,colon-positions ,start-pos ,end-pos))
+  ;; (push-debug `(,words ,edges ,colon-positions ,start-pos ,end-pos))
   ;; (setq pattern (nth 0 *) words (nth 1 *) edges (nth 2 *) colon-positions (nth 3 *) pos-before (nth 4 *) pos-after (nth 5 *))
   (let ((segments (divide-colon-sequence
                     words colon-positions start-pos end-pos)))
@@ -89,13 +114,15 @@
         (break "another multi-colon pattern: ~a" pattern))))))
 
 
+;;--- dividing the ns sequence by colon position
+
 (defun divide-colon-sequence (words colon-positions start-pos end-pos)
   "Walks through the regions between colons, resolves the pattern for
    each one, returns the corresponding ilst of edges."
   (let ((seg-start start-pos)
         (colons (copy-list colon-positions)) ;; just for debugging
         (seg-end (pop colon-positions))
-        edge  segments ) ; 
+        edge  segments )
     (push-debug `(,words ,colons ,start-pos ,end-pos))
     (loop
       (setq edge (span-covered-by-one-edge? seg-start seg-end))
@@ -112,15 +139,15 @@
         (setq seg-end end-pos)))
     (nreverse segments)))
 
-
 (defun configure-and-analyze-sub-ns-sequence (words start-pos end-pos)
   "Returns the edge made by the pattern resolver."
-  (let ((pattern (sweep-ns-region start-pos end-pos)))
+  (let ((pattern (sweep-ns-region start-pos end-pos))
+        (edges (treetops-between start-pos end-pos)))
     (tr :segment-ns-pattern pattern)
     ;; Question is whether this is a simple pattern or one that
     ;; might motivate going all the way back to the master dispatch
     ;;//// punting on that for the moment. Need the right list
-    (resolve-ns-pattern pattern words start-pos end-pos)))
+    (resolve-ns-pattern pattern words edges start-pos end-pos)))
 
 ;;/// move to characterize-words
 (defun sweep-ns-region (start-pos end-pos)
