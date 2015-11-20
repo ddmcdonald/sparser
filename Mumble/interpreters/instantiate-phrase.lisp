@@ -197,13 +197,14 @@
       (let* ((contents (pop remaining-definition)))
         (typecase contents
           (word (set-contents slot contents))
+          ;; (pronoun (set-contents slot contents))
           (parameter
            (let ((value (parameter-value contents)))
              (unless value
                (push-debug `(,contents ,*phrase-parameter-argument-list*))
                (break "parameter-value of ~a returned nil." contents))
              (typecase value
-               ((or word specification ttrace)
+               ((or word specification ttrace pronoun)
                 (set-contents slot value))
                (node (knit-phrase-into-tree slot value))
                (derivation-tree-node
