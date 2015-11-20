@@ -17,6 +17,8 @@
 ;; (trace-scan-patterns)
 ;; (setq *work-on-ns-patterns* t)
 
+;;--- Entry point
+
 (defun resolve-hyphen-pattern (pattern words edges hyphen-positions start-pos end-pos)
   ;; Called from ns-pattern-dispatch when no edge in the span covers
   ;; more than one edge and hyphen(s) is the only punctuation
@@ -40,11 +42,44 @@
          (reify-ns-name-and-make-edge words start-pos end-pos)))))))
 
 
+;;--- One hyphen
+
 (defun one-hyphen-ns-patterns (pattern words edges hyphen-positions 
                                start-pos end-pos)
   (tr :ns-one-hyphen-patterns)
   (tr :ns-edge-pattern pattern)
   (cond
+   ((equal pattern '(:protein :hyphen :protein))
+    (make-protein-pair (first edges) (third edges) words start-pos end-pos))
+
+   ((equal pattern '(:protein :hyphen :bio-entity)) ;; RAS-ASSP
+    (make-protein-pair/convert-bio-entity
+     start-pos end-pos edges words :right))
+
+   ((equal pattern '(:bio-entity :hyphen :protein)) ;; ??
+    (make-protein-pair/convert-bio-entity
+     start-pos end-pos edges words :left))
+
+   ((equal pattern '(:protein :hyphen :lower)) ;; EGFR-positive
+    (resolve-protein-hyphen-word edges words start-pos end-pos))
+
+   ((equal pattern '(:full :hyphen :protein)) ;; "the PI3KC2β RBD-Ras complex"
+    (make-pair-with-protein (first edges) (third edges) 
+                            words start-pos end-pos))
+
+   ((equal pattern '(:protein :hyphen :digits)) ;; GAP–334 Jan# 2
+    ;;/// should be something better for a case lke this if we know
+    ;; something about the the siginificane of the number
+    (make-bio-pair (first edges) (third edges) words start-pos end-pos))
+
+   ((equal pattern `(:amino-acid :hyphen :digits))
+    (reify-residue (first edges) (third edges) start-pos end-pos))
+
+   (*work-on-ns-patterns*
+    (when (memq :protein pattern) ;; :protein :hyphen :kinase PI3–Kinase
+      (push-debug `(,edges ,start-pos ,end-pos ,hyphen-positions ,words))
+      (lsp-break "new hypen pattern with protein: ~a" pattern)))
+
    ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
         (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
         (equal pattern '(:full :hyphen :digits)) ;; "CI-1040" actually a drug
@@ -54,21 +89,10 @@
     ;; a rule. Experience may show that to be false, but it's a start
     (reify-ns-name-and-make-edge words start-pos end-pos))
 
-   ((equal pattern '(:protein :hyphen :bio-entity)) ;; RAS-ASSP
-    (make-protein-pair/convert-bio-entity
-     start-pos end-pos edges :right))
-
-   ((equal pattern '(:bio-entity :hyphen :protein)) ;; ??
-    (make-protein-pair/convert-bio-entity
-     start-pos end-pos edges :left))
-
-   ((equal pattern `(:protein :hyphen :lower)) ;; EGFR-positive
-    (resolve-protein-hyphen-word edges words start-pos end-pos))
-
    ((or (equal pattern '(:full :hyphen :full))
         (equal pattern '(:capitalized :hyphen :full)) ;; Rho-GDI
         (equal pattern '(:full :hyphen :capitalized)))
-    (resolve-hyphen-between-two-terms pattern words start-pos end-pos))
+    (resolve-hyphen-between-two-terms pattern words edges start-pos end-pos))
 
    ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
     (resolve-hyphen-between-two-words pattern words start-pos end-pos))
@@ -87,7 +111,8 @@
        (*work-on-ns-patterns*
         (push-debug `(,words ,pattern ,start-pos ,end-pos))
         (break "Little p for unknown type"))
-       (t (nospace-hyphen-specialist words pattern hyphen-positions start-pos end-pos)))))
+       (t (nospace-hyphen-specialist
+           words edges pattern hyphen-positions start-pos end-pos)))))
 
    ((eq :no-space-prefix (car pattern))
     (compose-salient-hyphenated-literals 
@@ -113,6 +138,7 @@
    (t (nospace-hyphen-specialist words edges pattern hyphen-positions start-pos end-pos))))
 
 
+;;--- two hyphens
 
 (defun two-hyphen-ns-patterns (pattern words edges hyphen-positions start-pos end-pos)
   ;; Just enough to form some sort of constituent and not break
@@ -144,6 +170,7 @@
 ;;;------------------------------------------------
 
 (defun resolve-protein-hyphen-word (edges words start-pos end-pos)
+  ;; pattern is (:protein :hyphen :lower)) e.g. EGFR-positive
   (declare (ignore words))
   (let* ((protein-edge (first edges))
          (protein-ref (edge-referent protein-edge))
@@ -228,7 +255,7 @@
 
 
 ;; RAS-ASSP
-(defun resolve-hyphen-between-two-terms (pattern words
+(defun resolve-hyphen-between-two-terms (pattern words edges
                                          pos-before pos-after)
   ;; Called from one-hyphen-ns-patterns
   ;; It's likely that the two connected words are names,
@@ -237,33 +264,26 @@
   ;; (N.b. also used with the separator is a slash)
   (declare (ignore pattern))
   (tr :resolve-hyphen-between-two-terms words)
-  (let* ((left-edge (right-treetop-at/edge pos-before))
-         (right-edge (left-treetop-at/edge pos-after))
+  (let* ((left-edge (first edges))
+         (right-edge (third edges))
          (left-ref (edge-referent left-edge))
-         (right-ref (edge-referent right-edge)))
-    (unless (edge-p right-edge)
-      (break "the right-edge in resolve-hyphen-between-two-terms ~
-              is ~s, not an edge"
-             right-edge))
+         (right-ref (edge-referent right-edge)))    
     (cond
-     ((not ;; might be a word 
+     ((not ;; might be a word  -- still??
        (or (individual-p left-ref) 
            (category-p left-ref)))
-      (make-bio-pair left-ref right-ref words
-                     left-edge right-edge
+      (make-bio-pair left-edge right-edge words
                      pos-before pos-after))
      ((or (itypep left-ref 'protein)
           ;;(itypep left-ref 'bio-family) covered by itypep protein ; RAS-GTP
           (itypep left-ref 'small-molecule) ;; GTP-GDP ???
           (itypep left-ref 'nucleotide))
-      (make-protein-pair left-ref right-ref words
-                         left-edge right-edge
+      (make-protein-pair left-edge right-edge words
                          pos-before pos-after))
      ((itypep left-ref 'amino-acid)
       (reify-amino-acid-pair words pos-before pos-after))
      (t ;(break "two-terms default")
-      (make-bio-pair left-ref right-ref words
-                     left-edge right-edge
+      (make-bio-pair left-edge right-edge words
                      pos-before pos-after)))))
 
 (defun resolve-hyphen-between-three-words (pattern words
