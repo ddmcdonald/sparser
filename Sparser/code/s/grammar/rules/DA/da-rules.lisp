@@ -3,10 +3,11 @@
 ;;; 
 ;;;     File:  "da-rules"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  September 2015
+;;;  Version:  November 2015
 
 ;; initiated 9/18/15 for da patterns and interpreters that had been
-;; stashed in biology. 
+;; stashed in biology. Small tweaks and additions of the same kind
+;; through 11/22/15
 
 (in-package :sparser)
 
@@ -100,6 +101,9 @@
   ;; have a different relationship.
   (let ((clause-ref (edge-referent s-edge))        
         (vp-ref (edge-referent vp-edge)))
+
+    ;; Look up the subject variable(s) of the vp / participle and 
+    ;; bind it to the whole matrix (clause) referent.
     (cond
      ((itypep vp-ref 'collection)
       ;; distribute this over the conjunction. Need a general way / macro
@@ -120,6 +124,10 @@
 
      (t ;; simple vp
       (unpack-subject-control clause-ref vp-ref vp-edge)))
+
+    ;; Say that the clause is causally-related-to the vp.
+    ;; Which is pretty weak, but it's already in place
+    (add-adjunctive-clause-to-s clause-ref vp-ref)
       
     (let ((edge (make-binary-edge/explicit-rule-components
                  s-edge vp-edge
