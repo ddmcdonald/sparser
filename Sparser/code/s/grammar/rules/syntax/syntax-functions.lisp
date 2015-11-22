@@ -1193,8 +1193,7 @@ to enhance p53 mediated apoptosis [2].") |#
 
 (defun make-there-exists ()
   (let ((exists 
-         (if
-          *description-lattice*
+         (if *description-lattice*
           (fom-lattice-description category::there-exists)
           (make-unindexed-individual category::there-exists))))
     exists))
@@ -1204,11 +1203,16 @@ to enhance p53 mediated apoptosis [2].") |#
     (setq  exists (bind-dli-variable 'object (edge-referent right-edge) exists))
     exists))
 
-;;; Adjuncts for clauses ;;
+;;; Adjuncts for clauses 
 (defun add-adjunctive-clause-to-s (s adjunctive-clause)
-  (declare (special s adjunctive-clause))
+  "If the clause (s) denotes a perdurant it will have a variable
+   we can use to declare that it is causally related to the adjunct
+   usually, it appears, because it causes it or creates the conditions
+   that make it possible."
+  ;;//// needs a lot more work on this relation
   (let* ((variable-to-bind 
-          (find-variable-for-category 'causally-related-to (car (indiv-type s)))))
+          (find-variable-for-category 
+           'causally-related-to (itype-of s))))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
