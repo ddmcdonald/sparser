@@ -44,7 +44,7 @@
     (model-category i)
     (otherwise
      (push-debug `(,i))
-     (error "i-type-of applied to a ~a rather than ~
+     (error "itype-of applied to a ~a rather than ~
              an individual" (type-of i)))))
 
 
