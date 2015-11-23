@@ -127,7 +127,7 @@
 
     ;; Say that the clause is causally-related-to the vp.
     ;; Which is pretty weak, but it's already in place
-    (add-adjunctive-clause-to-s clause-ref vp-ref)
+    (setq clause-ref (add-adjunctive-clause-to-s clause-ref vp-ref))
       
     (let ((edge (make-binary-edge/explicit-rule-components
                  s-edge vp-edge
