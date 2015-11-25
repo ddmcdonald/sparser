@@ -37,14 +37,14 @@ See Zo code for what that could look like. |#
    not as the realization of some actually represented source."
   (let* ((staircase
           (make-dtn 
-           :resource (define-lexicalized-phrase common-noun '("staircase") (n))
+           :resource (define-lexicalized-phrase common-noun ("staircase") (n))
            :referent 'build-staircase))
          (a-staircase ;; singular and kind set the determiner
           ;; see interface/bundles/operators-over-specifications.lisp
           (kind (singular staircase)))
          (build
           (make-dtn :resource
-                    (define-lexicalized-phrase SVO '("build") (v)))))
+                    (define-lexicalized-phrase SVO ("build") (v)))))
 
     ;; connect them
     (make-complement-node 'o a-staircase build) ;; bind argument
@@ -61,7 +61,7 @@ See Zo code for what that could look like. |#
   ;; how to push the pronoun through that function as it's
   ;; presently written. 
   (let* ((let-phrase  ;; s v o c
-          (define-lexicalized-phrase SVOC '("let") (v)))
+          (define-lexicalized-phrase SVOC ("let") (v)))
          (1st-plural ;; the word
           (mumble-value 'first-person-plural ;; see gramar/pronouns.lisp
                         'pronoun)))
