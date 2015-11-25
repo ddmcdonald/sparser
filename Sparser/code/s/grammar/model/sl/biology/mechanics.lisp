@@ -13,12 +13,30 @@
 ;; 3/21/2015 -- revised make-typed-bio-entity
 ;; SBCL caught fact that some words are actually polywords here...
 ;; 4/19/15 Added stub for handling acronyms.
-;; 5/16/2015 attempt (not quite working) to define get-mitre-id which 
+;; 5/16/2015 attempt (not quite working) to define get-mitre-id which
 ;; tries to get the MITRE-LINK value for a protein (for example).
 ;; 11/12/15 Finished bio-entity => protein routine.
 
 
 (in-package :sparser)
+
+;;;---------------------------
+;;; bio-synonyms
+;;;---------------------------
+
+;; This maps IDs (e.g., "BRAP_HUMAN") to a list of synonyms.
+;; We use #'equalp for case-insensitivity.
+(defvar *bio-synonym-hash* (make-hash-table :test #'equalp))
+
+(defun add-bio-synonyms (id synonyms)
+  "Adds the given synonyms under the given ID."
+  (let ((existing (gethash id *bio-synonym-hash*)))
+    (setf (gethash id *bio-synonym-hash*)
+      (remove-duplicates (append synonyms existing) :test #'equalp))))
+
+(defun get-bio-synonyms (id)
+  "Given an ID, retrieve synonyms (not including the ID)."
+  (gethash id *bio-synonym-hash*))
 
 ;;;-----------------------
 ;;; bio-entity -> protein
@@ -55,7 +73,7 @@
     (error "Some member(s) of the list is not an edge"))
   (loop for edge in items
     do (convert-bio-entity-to-protein edge)))
-        
+
 
 
 (defun reify-p-protein-and-make-edge (words start-pos end-pos)
@@ -379,7 +397,9 @@
     ;; as a common noun that has this individual as its referent.
     ;; Ignoring brackets since this runs with the new chunker
 
-
+    ;; Add synonyms.
+    (when synonyms
+      (add-bio-synonyms (word-string word) synonyms))
 
     (let* ((retrieved-rules (get-rules i))
            (r (when retrieved-rules (car retrieved-rules))))
