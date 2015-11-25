@@ -1003,4 +1003,43 @@ it is created from N-terminus to C-terminus.|#
   :lemma (:common-noun "homorodimerization"))
 
 
+;;;-----------------------------------
+;;; knockout types -- applies to mice
+;;;-----------------------------------
+#| see https://en.wikipedia.org/wiki/Knockout_mouse
+Given a particular mutated gene, a +/+ will be not have
+the mutation (both parents). A - indicates the presence
+of the mutation. That makes them homozygous (both)
+or heterozygous (one of each). When the mutation is
+present on both sides it's a "knockout mouse". 
+One or both of the while type alleles have been replaced
+with something else
+|#
+
+(define-category knockout-pattern
+  :specializes bio-quality
+  :mixins (has-name)
+  :index (:permanent :key name)
+;; What grammar? -- do the identity by hand rather
+;; than in realization here. 
+)
+
+;; N.b. "knockout" etc. are defined in verbs. That's part of
+;; the reason it's called 'knockout-pattern' here
+
+(defun define-knockout (plus-minus-string)
+  (let* ((word (define-polyword-any-words plus-minus-string))
+         (i (find-or-make-individual 'knockout-pattern
+              :name plus-minus-string))
+         (rule (define-cfr category::knockout-pattern
+                           `(,word)
+                 :form category::adjective ;; "Gab -/- mice"
+                 :referent i)))
+    (add-rule-to-individual rule i)
+    i))
+
+(define-knockout "-/-")
+(define-knockout "+/-")
+(define-knockout "-/+")
+(define-knockout "+/+")
 
