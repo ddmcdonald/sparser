@@ -691,20 +691,20 @@ possessive."
 
 (defun top-level-parse-phrase  (definition)
   (let (processed-phrase
-	(rest definition))
-    (declare (special processed-phrase rest))
+	(rest-of-phrase definition))
+    (declare (special processed-phrase rest-of-phrase))
     
     ;;check for comp position
     (when (symbolp (car definition))
-      (push (slot-label-named (pop rest)) processed-phrase)
-      (push (parameter-named (pop rest)) processed-phrase)
+      (push (slot-label-named (pop rest-of-phrase)) processed-phrase)
+      (push (parameter-named (pop rest-of-phrase)) processed-phrase)
       (postprocess-position-keywords 'slot-label))
     
     ;;check that definition is now a single list
-    (when (not (= (length rest) 1))
+    (when (not (= (length rest-of-phrase) 1))
       (mbug "error in phrase definition - ~" definition))
 
-    (push (parse-phrase (car rest)) processed-phrase)
+    (push (parse-phrase (car rest-of-phrase)) processed-phrase)
     (nreverse processed-phrase)
     ))
 
@@ -712,16 +712,16 @@ possessive."
     
 (defun parse-phrase (definition)
   (let (processed-phrase
-	(rest definition))
-    (declare (special processed-phrase rest))
+	(rest-of-phrase definition))
+    (declare (special processed-phrase rest-of-phrase))
 
-  (let ((node (pop rest)))
+  (let ((node (pop rest-of-phrase)))
     (push (node-label-named node) processed-phrase)
     (postprocess-position-keywords 'node-label)
-    (do ((slot (pop rest) (pop rest)))
-	((null rest))
+    (do ((slot (pop rest-of-phrase) (pop rest-of-phrase)))
+	((null rest-of-phrase))
       (push (slot-label-named slot) processed-phrase)
-      (let* ((contents (pop rest))
+      (let* ((contents (pop rest-of-phrase))
 	     (postprocessed-contents
 	       (typecase contents
 		 (string (word-for-string contents))
@@ -737,11 +737,11 @@ possessive."
 
  
 (defun postprocess-position-keywords  (label-type)
-  (declare (special rest processed-phrase))
-  (when (keywordp (car rest))
-    (let ((keyword (pop rest)))
+  (declare (special rest-of-phrase processed-phrase))
+  (when (keywordp (car rest-of-phrase))
+    (let ((keyword (pop rest-of-phrase)))
       (push keyword processed-phrase)
-      (push (postprocess-keyword-value keyword (pop rest) label-type)
+      (push (postprocess-keyword-value keyword (pop rest-of-phrase) label-type)
 	    processed-phrase)
       (postprocess-position-keywords label-type))))
 
