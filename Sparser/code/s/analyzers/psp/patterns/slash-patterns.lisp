@@ -25,30 +25,31 @@
 (defun one-slash-ns-patterns (pattern words edges
                               slash-positions hyphen-positions 
                               pos-before pos-after)
-  (if hyphen-positions
+  (cond   
+   (hyphen-positions
     (divide-and-recombine-ns-pattern-with-slash 
-     pattern words edges slash-positions hyphen-positions pos-before pos-after)
-    (cond
-     ((equal pattern '(:lower :forward-slash :lower))
-      (or (reify-amino-acid-pair words pos-before pos-after)
-          (reify-ns-name-and-make-edge words pos-before pos-after)))
+     pattern words edges slash-positions hyphen-positions pos-before pos-after))
 
-     ((equal pattern '(:mixed :digits :forward-slash :capitalized :digits))
-      ;; recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 
-      ;; in December #46
-      ;; split on the single slash, look up the parts.
-      ;; simpler than the multi-slash case.
-      (when *work-on-ns-patterns*
-        (break "finish pThr202/Tyr204")))
+   ((equal pattern '(:lower :forward-slash :lower))
+    (or (reify-amino-acid-pair words pos-before pos-after)
+        (reify-ns-name-and-make-edge words pos-before pos-after)))
 
-     ((equal pattern '(:full :forward-slash :full))
-      (resolve-hyphen-between-two-terms pattern words pos-before pos-after))
+   ((equal pattern '(:mixed :digits :forward-slash :capitalized :digits))
+    ;; recombinant COT induced pThr202/Tyr204 phosphorylation of ERK1 
+    ;; in December #46
+    ;; split on the single slash, look up the parts.
+    ;; simpler than the multi-slash case.
+    (when *work-on-ns-patterns*
+      (break "finish pThr202/Tyr204")))
 
-     (*work-on-ns-patterns* 
-      (push-debug `(,pattern ,pos-before ,pos-after))
-      (break "New slash pattern to resolve: ~a" pattern))
-     (t (tr :no-ns-pattern-matched) 
-        nil))))
+   ((equal pattern '(:full :forward-slash :full))
+    (resolve-hyphen-between-two-terms pattern words edges pos-before pos-after))
+
+   (*work-on-ns-patterns* 
+    (push-debug `(,pattern ,pos-before ,pos-after))
+    (break "New slash pattern to resolve: ~a" pattern))
+   (t (tr :no-ns-pattern-matched) 
+      nil)))
 
 
 (defun divide-and-recombine-ns-pattern-with-slash (pattern words edges
