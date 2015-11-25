@@ -62,9 +62,9 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
 
 (defun define-polyword/expr (multi-word-string)
   (declare (special *break-on-pattern-outside-coverage?*))
-
   (unless (not-all-same-character-type multi-word-string)
     (unless (all-punctuation-chars? multi-word-string)
+      ;;/// why not working on "+/-" ?
       (error "The characters in the string \"~A\"~
             ~%are all of the same. Try making it a word rather than ~
               a polyword" multi-word-string)))
@@ -72,7 +72,12 @@ grammar/model/sl/NIH/gene-protein.lisp:    (let ((long-word (when long-form (def
   (when *force-case-shift*
     (setq multi-word-string
           (force-case-of-word-string multi-word-string)))
+  (define-polyword-any-words multi-word-string))
 
+(defun define-polyword-any-words (multi-word-string)
+  "This is the guts of define-polyword. It's available to call 
+   directly on strings that fail the not-all-same char test,
+   though that should be fixable."
   (let* ((symbol (or (find-symbol multi-word-string *polyword-package*)
                      (intern multi-word-string *polyword-package*)))
          (redefinition? (boundp symbol))
