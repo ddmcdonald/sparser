@@ -57,14 +57,42 @@
 
 (defun load-relevant-mumble ()
   (ddm-ed "grammar/model/sl/blocks-world/experiments.lisp")
+  (m-ed "loader.lisp")
   (m-ed "grammar/transformations.lisp")
   (m-ed "derivation-trees/make.lisp")
   (m-ed "grammar/phrases.lisp")
   (m-ed "grammar/attachment-points.lisp")
-
+  (m-ed "grammar/labels.lisp")
+  (m-ed "grammar/characteristics.lisp")
+  (m-ed "interface/bundles/bundle-drivers.lisp")
   (m-ed "interface/bundles/operators-over-specifications.lisp")
   (m-ed "interface/bundles/accessory-processing.lisp")
+  (m-ed "interface/derivations/discourse-reference.lisp")
   (ddm-ed "interface/mumble/rspec-gophers.lisp"))
+
+(defun ddm-no-spaces ()
+  (ddm-ed "analyzers/psp/patterns/loader.lisp")
+  (ddm-ed "analyzers/psp/patterns/traces.lisp")
+  (ddm-ed "analyzers/psp/patterns/patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/edge-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/slash-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/hyphen-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/colon-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/protein-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/hyphen-subrs.lisp")
+  (ddm-ed "analyzers/psp/patterns/edge-gophers.lisp")
+  (ddm-ed "analyzers/psp/patterns/pattern-resolvers.lisp")
+  (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp")
+  (ddm-ed "analyzers/psp/patterns/charaterize-words.lisp")
+  (ddm-ed "analyzers/psp/patterns/uniform-scan.lisp") ;; driver
+  (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
+  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
+  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
+  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
+
+  (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
+
 
 #| ---------  Pending or recent tasks
  
@@ -167,9 +195,6 @@ but markedly preferred AKT2.")
   messed up -- no-space and chunking are absent. Why I don't know.
       period-marks-sentence-end?
 |#
-
-
-
 
 
 
@@ -503,26 +528,6 @@ In article 2  "c-termini"
   (ddm-ed "objects/doc/object1.lisp")  ;; document structure
   (ddm-ed "tools/basics/resource.lisp")  ;; auto recycling
   (ddm-ed "objects/doc/classes.lisp"))
-
-(defun ddm-no-spaces ()
-  (ddm-ed "analyzers/psp/patterns/loader.lisp")
-  (ddm-ed "analyzers/psp/patterns/traces.lisp")
-  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
-  (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp")
-  (ddm-ed "analyzers/psp/patterns/charaterize-words.lisp")
-  (ddm-ed "analyzers/psp/patterns/colon-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/hyphen-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/edge-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/slash-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
-  (ddm-ed "analyzers/psp/patterns/patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
-  ;; (ddm-ed "grammar/rules/syntax/categories.lisp")
-  ;; (ddm-ed "grammar/rules/SDM&P/create-categories.lisp")
-  (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp")
-  (ddm-ed "analyzers/psp/patterns/uniform-scan1.lisp") ;; driver
-)
 
 
 (defun ddm-tense-neg ()
