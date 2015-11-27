@@ -1026,6 +1026,7 @@ to enhance p53 mediated apoptosis [2].") |#
                    restriction))))
        ((category-p restriction)
         (subcat-itypep item restriction))
+       ((symbolp restriction) nil) ;; this is the case for :prep subcat-patterns
        (t (error "Unexpected type of subcat restriction: ~a"
                  restriction))))))
 
