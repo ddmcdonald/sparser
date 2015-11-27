@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  September 2015
+;;;  version:  November 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
@@ -53,6 +53,18 @@
 
 ;; (compare-to-snapshots)
 ;; (ddm-load-article-2)  (find-corpus-sents "")
+
+
+(defun load-relevant-mumble ()
+  (ddm-ed "grammar/model/sl/blocks-world/experiments.lisp")
+  (m-ed "grammar/transformations.lisp")
+  (m-ed "derivation-trees/make.lisp")
+  (m-ed "grammar/phrases.lisp")
+  (m-ed "grammar/attachment-points.lisp")
+
+  (m-ed "interface/bundles/operators-over-specifications.lisp")
+  (m-ed "interface/bundles/accessory-processing.lisp")
+  (ddm-ed "interface/mumble/rspec-gophers.lisp"))
 
 #| ---------  Pending or recent tasks
  
@@ -858,6 +870,11 @@ Worse: (28 13 6 2 1)
   ;; Note the pathname is given in ancient Mac syntax. 
   (setq cl-user::location-of-text-corpora
         "Users:ddm:sift:nlp:corpus:"))
+
+(defun m-ed (string)
+  #-:sbcl (ed (concatenate 'string
+                "~/sparser/Mumble/" string))
+  #+:sbcl  (print `(**** can't call ed from SBCL yet)))
 
 (defun ddm-ed (string)
   #-:sbcl
