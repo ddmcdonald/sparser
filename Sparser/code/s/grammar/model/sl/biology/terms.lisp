@@ -344,6 +344,9 @@
   (:noun "component"
          :of complex))
 
+(def-synonym component 
+             (:noun "part"
+                    :of complex))
 
 (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super experimental-condition)
@@ -799,6 +802,8 @@
 (adj "real-time" :super bio-predication)
 (def-synonym real-time (:adj "real time"))
 (noun "receptor" :super protein)
+(noun "receptor protein" :super protein)
+(noun "receptor protein-tyrosine kinase" :super kinase)
 (adj "recombinant" :super bio-predication)
 (adj "refractory" :super bio-relation
      :binds ((treatment biological))
