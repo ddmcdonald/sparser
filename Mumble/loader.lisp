@@ -1,6 +1,6 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC.
-;;; Copyright (c) 2010-2013 David D. McDonald
+;;; Copyright (c) 2010-2015 David D. McDonald
 
 ;; tweaked 3/30/07 to use shared utility area. 4/2 Gave up on pulling the
 ;; two utility files from a separate directory once that directory got other
@@ -12,6 +12,9 @@
 ;;  12/22/10 Folded in derivation-tree files eliminating their loader.
 ;; 3/23/11 Fixing CCL nits.  3/28 Added lost numbers file. 11/20/13 builders.
 ;; 12/2/13 Moved builders out to ugly spot in toplevel loader
+;; 11/25/15 Commented out every file that referenced Sparser especially since
+;;  it's not clear that we'd want to continue doing things the way that
+;;  they would have had they been finished.
 
 (in-package :cl-user)
 
@@ -68,6 +71,7 @@
 (load (concatenate 'string *mumble-location* "interpreters/position-path-operations.lisp"))
 (load (concatenate 'string *mumble-location* "interpreters/state.lisp"))
 
+;; sets *loading-whole-system* to t to avoid incremental postprocessing
 (load (concatenate 'string *mumble-location* "loader/load-midpoint.lisp"))
 
 (load (concatenate 'string *mumble-location* "grammar/attachment-points.lisp"))
@@ -81,7 +85,13 @@
 (load (concatenate 'string *mumble-location* "grammar/punctuation-marks.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/morphology.lisp")) ;; ok up to here
 (load (concatenate 'string *mumble-location* "grammar/word-stream-actions.lisp"))
-;; numbers loaded later
+;;  References Sparser
+;;(load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
+
+(load (concatenate 'string *mumble-location* "derivation-trees/make.lisp"))
+(load (concatenate 'string *mumble-location* "derivation-trees/builders.lisp"))
+;; Sparser-dependent and needs rethinking anyway
+;(load (concatenate 'string *mumble-location* "derivation-trees/conversions.lisp"))
 
 (load (concatenate 'string *mumble-location* "interface/bundles/accessory-types.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/accessory-processing.lisp"))
@@ -89,15 +99,16 @@
 (load (concatenate 'string *mumble-location* "interface/bundles/bundle-drivers.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/constructing-bundles.lisp"))
 
-;;  References Sparser
+;;  These reference Sparser, and need massive re-org. / consolidation
 ;;(load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
-;;(load (concatenate 'string *mumble-location* "grammar/numbers.lisp"))
+;;(load (concatenate 'string *mumble-location* "interface/tsro/map-translations.lisp"))
 
 ;; These were thrown together for SELF and now feel like a short-cut that should
-;; be removed in favor of derivation trees 
+;; be removed in favor of derivation trees. Types file has pieces to re-use. And/or are
+;; called by code that remains underconsideration but might go away
 (load (concatenate 'string *mumble-location* "interface/derivations/types.lisp"))
 ;(load (concatenate 'string *mumble-location* "interface/derivations/rspec-interpretation.lisp"))
-(load (concatenate 'string *mumble-location* "interface/derivations/discourse-reference.lisp"))
+;(load (concatenate 'string *mumble-location* "interface/derivations/discourse-reference.lisp"))
 
 
 (load (concatenate 'string *mumble-location* "interface/bundles/specification-operators.lisp"))
@@ -108,6 +119,5 @@
 (load (concatenate 'string *mumble-location* "interface/bundles/single-choices.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/curried-tree-families.lisp"))
 
-(load (concatenate 'string *mumble-location* "derivation-trees/make.lisp"))
-
+;; Postprocesses everything and sets the flag to nil.
 (load (concatenate 'string *mumble-location* "loader/load-final.lisp"))
