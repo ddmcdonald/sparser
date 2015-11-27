@@ -760,10 +760,10 @@ it is created from N-terminus to C-terminus.|#
   ;;:obo-id 
   :bindings (uid "GO:0005488")
   ;; "<binder> binds to <bindee>" the subject moves
-  :binds ((binder (:or molecule protein-domain bio-entity))
-          (bindee (:or molecule protein-domain bio-entity))
+  :binds ((binder (:or molecule protein-domain bio-chemical-entity))
+          (bindee (:or molecule protein-domain bio-chemical-entity))
           (binding-set (:or bio-chemical-entity protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
-          (direct-bindee molecule)
+          (direct-bindee (:or bio-chemical-entity protein-domain))
           (site molecular-location)
           (domain protein-domain)
           (cell-site cellular-location)
