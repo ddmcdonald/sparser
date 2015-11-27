@@ -1221,7 +1221,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "FOXF2_HUMAN" ("Forkhead box protein F2" "Forkhead-related activator 2" "FREAC-2" "Forkhead-related protein FKHL6" "Forkhead-related transcription factor 2")) 
 (define-protein "FOXM1_HUMAN" ("Forkhead box protein M1" "Forkhead-related protein FKHL16" "Hepatocyte nuclear factor 3 forkhead homolog 11" "HFH-11" "HNF-3/fork-head homolog 11" "M-phase phosphoprotein 2" "MPM-2 reactive phosphoprotein 2" "Transcription factor Trident" "Winged-helix factor from INS-1 cells")) 
 (define-protein "FOXO1_HUMAN" ("fkhr" "Forkhead box protein O1" "Forkhead box protein O1A" "Forkhead in rhabdomyosarcoma")) 
-(define-protein "FOXO3_HUMAN" ("FOXO3a" "Forkhead box protein O3" "AF6q21 protein" "Forkhead in rhabdomyosarcoma-like 1")) 
+(define-protein "FOXO3_HUMAN" ("FOXO3a" "FoxO3a" "Forkhead box protein O3" "AF6q21 protein" "Forkhead in rhabdomyosarcoma-like 1")) 
 (define-protein "FOXO4_HUMAN" ("afx" "Forkhead box protein O4" "Fork head domain transcription factor AFX1")) 
 (define-protein "FPPS_HUMAN" ("fdps" "Farnesyl pyrophosphate synthase" "FPP synthase" "FPS" "(2E,6E)-farnesyl diphosphate synthase" "Dimethylallyltranstransferase" "Farnesyl diphosphate synthase" "Geranyltranstransferase")) 
 (define-protein "FPR2_HUMAN" ("lxa" "N-formyl peptide receptor 2" "FMLP-related receptor I" "FMLP-R-I" "Formyl peptide receptor-like 1" "HM63" "Lipoxin A4 receptor" "LXA4 receptor" "RFP")) 
