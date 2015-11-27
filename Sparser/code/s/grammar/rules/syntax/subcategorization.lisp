@@ -124,18 +124,28 @@
           (keyword
            (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
                    trigger
-                   (if (consp v/r) v/r (cat-symbol v/r))
-                   (var-name var)))
+                   (v/r-symbol v/r)
+                   (var-symbol var)))
           (word
            (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
                    (word-pname trigger)
-                   (if (consp v/r) v/r (cat-symbol v/r))
-                   (var-name var)))
+                   (v/r-symbol v/r)
+                   (var-symbol var)))
           (polyword
            (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
                    (word-pname trigger)
-                   (if (consp v/r) v/r (cat-symbol v/r))
-                   (var-name var))))))))
+                   (v/r-symbol v/r)
+                   (var-symbol var))))))))
+
+(defun var-symbol (var)
+  (cond ((null var) nil)
+        ((consp var) v/r)
+        (t (cat-symbol var))))
+
+(defun v/r-symbol (v/r)
+  (cond ((null v/r) nil)
+        ((consp v/r) v/r)
+        (t (cat-symbol v/r))))
 
 
 ;;;------------------------
@@ -222,14 +232,21 @@
       ;; Override value restrictions from local information as necessary
       (setf (subcat-patterns frame)
             (loop for pattern in (subcat-patterns frame)
-                  as label = (subcat-label pattern)
-                  as var-name = (and (subcat-variable pattern)(var-name (subcat-variable pattern)))
-                  as var = (and var-name (variable/category var-name category))
-                  as v/r = (and var (var-value-restriction var))
-                  collect (if (or (null var)
-                                  (eq (subcat-restriction pattern) v/r))
-                            pattern
-                            (make-subcat-pattern label v/r var category)))))
+              as label = (subcat-label pattern)
+              as var-name = (and (subcat-variable pattern)(var-name (subcat-variable pattern)))
+              as var = (and var-name (find-variable-in-category var-name category))
+              ;; want the local variable, not an inherited one
+              as v/r = (and var (var-value-restriction var))
+              collect (if (or (null var)
+                              (null v/r)
+                              (eq (subcat-restriction pattern) v/r))
+                          pattern
+                          (progn
+                            (if (or (category-p v/r)
+                                    (and (consp v/r)
+                                         (eq (car v/r) :or)))
+                                (make-subcat-pattern label v/r var category)
+                                (lsp-break "bad v/r")))))))
     frame))
 
 (defun assign-subcat/expr (word form category parameter-plist)
