@@ -49,6 +49,13 @@
   (tr :ns-one-hyphen-patterns)
   (tr :ns-edge-pattern pattern)
   (cond
+     ;; the cases of -adjective and -verb+ed should be handled here, not by 
+     ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
+   ((when (edge-p (third edges))
+      (second-imposes-relation-on-first? (edge-referent (third edges)) (third edges) ))
+    (do-relation-between-first-and-second
+     (when (edge-p (first edges))(edge-referent (first edges)))
+     (edge-referent (third edges)) (first edges) (third edges)))
    ((equal pattern '(:protein :hyphen :protein))
     (make-protein-pair (first edges) (third edges) words start-pos end-pos))
 
@@ -177,9 +184,7 @@
          (word-edge (third edges))
          (word-ref (edge-referent word-edge)))
     (or (composed-by-usable-rule protein-edge word-edge)
-        (when (second-imposes-relation-on-first? word-ref word-edge)
-          (do-relation-between-first-and-second
-           protein-ref word-ref protein-edge word-edge))
+        ;; remove call to (do-relation-between-first-and second -- handled above
         (when *work-on-ns-patterns*
           (push-debug `(,protein-edge ,word-edge ,start-pos ,end-pos))
           (break "New case in resolving protein + word: ~
