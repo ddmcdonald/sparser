@@ -314,24 +314,22 @@
   (let* ((words-string (actual-characters-of-word pos-before pos-after words))
          (obo (corresponding-obo words-string))
          (uc-word (resolve (string-upcase words-string))))
-    (declare (special words-string))
     
     ;; usually a polyword
     ;; OBO check/handling matches what is done when it comes in as
     ;; an unknown word via make-word/all-properties/or-primed
     (cond
      (uc-word 
-      (let*
-          ((uc-rule (car (rs-single-term-rewrites (pw-rules uc-word))))
-           (cfr (define-cfr/resolved 
-                    (cfr-category uc-rule)
-                    (list (resolve/make words-string)) ;; rhs-list-of-categories
-                  (cfr-form uc-rule)
-                  (cfr-referent uc-rule)
-                  (cfr-schema uc-rule))))
-        (declare (special uc-rule cfr))
-        (if (not (equal (string-upcase words-string) words-string))
-            (format t "~%-------Defining no-space- segment ~s as equivalent to ~s~%" words-string uc-word))
+      (let* ((uc-rule (car (rs-single-term-rewrites (pw-rules uc-word))))
+             (cfr (define-cfr/resolved 
+                      (cfr-category uc-rule)
+                      (list (resolve/make words-string)) ;; rhs-list-of-categories
+                    (cfr-form uc-rule)
+                    (cfr-referent uc-rule)
+                    (cfr-schema uc-rule))))
+        (unless (equal (string-upcase words-string) words-string)
+          (format t "~%-------Defining no-space-segment ~s as equivalent ~
+                     to ~s~%" words-string uc-word))
         (values (cfr-category uc-rule)
                 cfr
                 (cfr-referent uc-rule))))
