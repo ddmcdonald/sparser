@@ -78,6 +78,7 @@
 (load (concatenate 'string *mumble-location* "grammar/phrases.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/labels.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/characteristics.lisp"))
+(load (concatenate 'string *mumble-location* "grammar/transformations.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/words.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/pronouns.lisp"))
 (load (concatenate 'string *mumble-location* "grammar/tense-markers.lisp"))
@@ -108,7 +109,7 @@
 ;; called by code that remains underconsideration but might go away
 (load (concatenate 'string *mumble-location* "interface/derivations/types.lisp"))
 ;(load (concatenate 'string *mumble-location* "interface/derivations/rspec-interpretation.lisp"))
-;(load (concatenate 'string *mumble-location* "interface/derivations/discourse-reference.lisp"))
+(load (concatenate 'string *mumble-location* "interface/derivations/discourse-reference.lisp"))
 
 
 (load (concatenate 'string *mumble-location* "interface/bundles/specification-operators.lisp"))
