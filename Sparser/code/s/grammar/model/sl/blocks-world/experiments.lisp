@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2015 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "experiments"
-;;;    Module:  grammar/model/sl/blocks
+;;;    Module:  grammar/model/sl/blocks-world/
 ;;;   version:  November 2015
 
 ;; Initiated 10/7/15. 
@@ -25,6 +25,8 @@ See Zo code for what that could look like. |#
 
 (define-word "build" (verb) :ed-form "built")
 (define-word "let" (verb))
+
+(define-word "KRAS" (proper-noun))
 
 ;;;--------------------------
 ;;; Prebuilt phrases (trees)
@@ -75,6 +77,9 @@ See Zo code for what that could look like. |#
       dtn)))
 
 ; (say (let-us (build-a-staircase)))
+
+
+;; "a drug targets KRAS"
 
         
 
