@@ -871,7 +871,7 @@ it is created from N-terminus to C-terminus.|#
   ;; molecules, often preteins, but not always
   :specializes bio-chemical-entity
   :mixins (reactome-category)
-  :binds ((component (:or bio-complex small-molecule protein))
+  :binds ((component (:or bio-complex small-molecule protein protein-domain))
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "complex"
