@@ -133,6 +133,7 @@
   :binds ((actor bio-entity)
           (object bio-entity)
           (process bio-process)
+          (functionality bio-process)
           (bio biological)
           (tocomp biological))
   :documentation "compare with act as"
@@ -141,55 +142,43 @@
   :etf sv
   :s actor
   :at bio
+  :as functionality
   :by process
   :on object
   :through bio
   :via bio
   :to-comp tocomp))
 
-;; better choice for 'theme' is complement 
-;; and the etf thing-is-description
-(define-category bio-act-as
-  :specializes be
-  ;;/// this was supposed to be a restrict on 'the
-  ;; variables of 'be' rather than new ones, but that
-  ;; operation looks like it wasn't finished.
-  :binds ((theme . bio-entity)
-          (description . bio-process))
-  :realization
-    (:verb "act"
-     :prep "as"  ;; <<<<<<<<<<<  J3
-     :etf svo
-     :s theme
-     :o description))
 
-(define-category serve-as :specializes bio-act-as
+(define-category serve :specializes bio-act
   :realization
-    (:verb "serve"
-     :prep "as"  ;; <<<<<<<<<<<  J3
-     :etf svo))
+  (:verb "serve"
+         :etf sv
+         :s actor
+         :at bio
+         :as functionality
+         :by process
+         :on object
+         :through bio
+         :via bio
+         :to-comp tocomp))
 
-#+ignore
-(define-category function-as :specializes bio-act-as
-  :realization
-    (:verb "function"
-     :prep "as"  ;; <<<<<<<<<<<  J3
-     :etf svo))
-
-(define-category bio-function :specializes bio-quality
-  :binds ((result bio-process)
-          (in-process bio-process)
-          (mechanism bio-process))
+(define-category bio-function :specializes bio-act
   :realization
   (:verb "function"
-         :etf (sv)
-         :s subject
-         :in in-process
-         :by mechanism
-         :to-comp result))
+         :etf sv
+         :s actor
+         :at bio
+         :as functionality
+         :by process
+         :on object
+         :through bio
+         :via bio
+         :to-comp tocomp))
 
-(def-synonym bio-function
-             (:noun "function"))
+(define-category bio-functionality :specializes bio-quality
+  :realization
+  (:noun "function"))
 
 (define-category bio-activate
   :specializes positive-bio-control
