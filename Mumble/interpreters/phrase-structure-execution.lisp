@@ -51,11 +51,12 @@
 
 
 (defun process-slot (position)
-  (ecase  (visited-status position)
+  (ecase (visited-status position)
     (new
      (landmark '(:before process-slot) position nil (contents position))
      (let ((contents (realization-cycle (contents position) position))
            (labels   (labels position)))
+       (do-any-label-driven-transformations labels contents)
        (do-all-word-stream-actions labels 'new)
        (etypecase contents
          (word-stream-item
