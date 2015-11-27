@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "reclaim"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.4 May 2015
+;;;  version:  1.4 November 2015
 
 ;; initiated 7/21/92 v2.3. Fleshed out 8/8/94. 
 ;; 10/3 Added some useful collectors.  11/16 added Delete/individual
@@ -24,7 +24,10 @@
 ;; 1.3 (8/19/13) Added facility for making later call to make-permanent
 ;;      for use at the bottom of everything. 3/27/15 Minor inline doc.
 ;; 1.4 (5/1/15) Since it had worked for Rusty trusted it and turned off the
-;;      examination breaks in add-permanent-individual
+;;      examination breaks in add-permanent-individual. 
+;;     (11/27/15 Removed the announcement of how many individuals were in
+;;      a particular category by declare-category-instances-permanent to
+;;      reduce the load-time chatter.
 
 (in-package :sparser)
 
@@ -64,8 +67,8 @@
       (if (memq :1st-permanent-individual (unit-plist c))
         (declare-all-new-instances-permanent c)
         (else
-         (format t "~&~A has ~A instances"
-                 (cat-symbol c) (length instances))
+         ;;(format t "~&~A has ~A instances"
+         ;;        (cat-symbol c) (length instances))
          (setf (unit-plist c)
                `(:1st-permanent-individual ,(first instances)
                  :permanent-individuals ,instances  ;; the sublist
