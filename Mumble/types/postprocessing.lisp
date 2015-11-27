@@ -8,6 +8,9 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (C) 2015 David D. McDonald  All Rights Reserved
+
+;; 11/25/15 Gated announcing what's being postprocessed.
 
 
 (in-package :mumble)
@@ -39,7 +42,7 @@
 (defun postprocess-entire-system ()
   (declare (special *lattice-of-all-the-types*))
   (when *loading-whole-system*
-    (format t "~&Postprocessing the entire system.~%")
+    (format t "~&Postprocessing the entire Mumble system.~%")
     (postprocess-whole-type-lattice  *lattice-of-all-the-types*)
     (alphabetize-catalogs)))
 
@@ -81,7 +84,8 @@
 (defun postprocess-all-objects-of-type (the-type-object postp-function)
   "Calls the postprocessing function on all members in the catalog of the type
 object."
-  (format t "~&Postprocessing objects of type ~s~%" (name the-type-object))
+  (when *load-verbose*
+    (format t "~&Postprocessing objects of type ~s~%" (name the-type-object)))
   (dolist (obj (members (mcatalog the-type-object)))
     (unless (postprocessed? obj)
       (postprocess-object obj postp-function))))
