@@ -43,22 +43,28 @@
 
 (defun second-imposes-relation-on-first? (right-ref right-edge)
   (declare (special category::verb+ed category::adjective))
-  (let ((form (edge-form right-edge)))
-    (when (memq (cat-symbol form) '(category::verb+ed ;; assume passive
-                                    category::adjective))
+  (let* ((form (edge-form right-edge))
+         (form-symbol (cat-name form)))
+    (when (memq form-symbol '(verb+ed ;; assume passive
+                              verb+ing
+                              adjective))
       ;; now figure out what variable on the second (right)
       ;; should be bound to the first (left)
-      (let ((variable 
-             (if (eq (cat-symbol form) 'category::adjective)
-               ;; Get the slots on the category of the right-edge
-               ;; and look for a variable that's not for subjects
-               (let ((vars (cat-slots (if (category-p right-ref)
-                                        right-ref ;; what case??
-                                        (itype-of right-ref))))
-                     (sv (subject-variable right-ref)))
-                 (loop for v in vars 
-                   when (not (eq v sv)) do (return v)))
-               (subject-variable right-ref))))
+      (let* ((vars (loop for sc in (super-categories-of right-ref)
+                     append
+                     (if (category-p sc)
+                         (cat-slots sc) ;; what case??
+                         (cat-slots (itype-of sc)))))
+             (variable 
+              (cond
+               ((eq form-symbol 'verb+ed)
+                (subject-variable right-ref))
+               ((memq form-symbol '(adjective verb+ing))
+                ;; Get the slots on the category of the right-edge
+                ;; and look for a variable that's not for subjects
+                (let ((sv (subject-variable right-ref)))
+                  (loop for v in vars 
+                    when (not (eq v sv)) do (return v)))))))
         ;; Which variable this is really depends on the two referents.
         ;; For the induced example its an agent (= subject). But the
         ;; tyrosine goes on the site variable of the phosphoryate.
