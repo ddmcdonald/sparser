@@ -114,10 +114,8 @@
         ;; so as a backup we collect them below after the parse
 
         (when *collect-ns-examples* 
-          (let ((nsitem (actual-characters-of-word start-pos end-pos nil)))
-            (when (or (search "-" nsitem) (search "/" nsitem))
-              (push nsitem *collect-ns-examples*))))
-
+          (save-ns-example start-pos end-pos))
+        
         ;;(push-debug `(,start-pos ,end-pos))
         ;; on this sentence: (p "Pre-clinical studies have demonstrated that 
         ;;   B-RAFV600E mutation predicts a dependency on the mitogen activated 
@@ -152,10 +150,50 @@
             (setq edges (treetops-between start-pos end-pos))
             ;;(break "input edges = ~a" edges)
             (catch :punt-on-nospace-without-resolution
-              (ns-pattern-dispatch start-pos end-pos edges
-                                   hyphen-positions slash-positions
-                                   colon-positions other-punct)))))
+              (if
+               (let ((end-edge (left-treetop-at end-pos)))
+                 (when (edge-p end-edge)
+                   (eq 'protein (cat-sym (edge-category end-edge)))))
+               (ns-protein-pattern-resolve  start-pos end-pos edges
+                                            hyphen-positions slash-positions
+                                            colon-positions other-punct)
+               (ns-pattern-dispatch start-pos end-pos edges
+                                    hyphen-positions slash-positions
+                                    colon-positions other-punct))
+              
+              (when *collect-ns-examples*
+                (update-ns-examples start-pos))))))
         end-pos))))
+
+(defun save-ns-example (start-pos end-pos)
+  (let ((nsitem (actual-characters-of-word start-pos end-pos nil)))
+    ;;(when (or (search "-" nsitem) (search "/" nsitem))
+    ;;(lsp-break "collect-no-space-sequence-into-word")
+    (push (list 
+           (let
+               ((end-edge (left-treetop-at end-pos)))
+             (cond
+              ((edge-p end-edge)
+               (list  (cat-sym (edge-form end-edge))
+                      (cat-sym (edge-category end-edge))))
+              ((eq end-edge :MULTIPLE-INITIAL-EDGES)
+               (loop for e in (ev-edges  (pos-ends-here end-pos))
+                 collect
+                 (list  (cat-sym (edge-form e))
+                        (cat-sym (edge-category e)))))
+              ((word-p end-edge)
+               (list end-edge))
+              (t
+               (lsp-break "strange situation in NS"))))
+           nsitem)
+          *collect-ns-examples*)))
+
+(defun update-ns-examples (start-pos)
+  (setf (car *collect-ns-examples*)
+        (cons (car *collect-ns-examples*)
+              (let ((edge (right-treetop-at start-pos)))
+                (when edge
+                  (list (edge-form edge)(edge-category edge)))))))
 
 ;;;----------
 ;;; Dispatch

@@ -13,16 +13,57 @@
                                              colon-positions other-punct)
   (or
    (cond
-    (colon-positions 
-     (make-bio-complex start-pos end-pos unsorted-edges
-                       hyphen-positions slash-positions
-                       colon-positions other-punct))
-    (slash-positions (make-protein-collection start-pos end-pos unsorted-edges
-                                              hyphen-positions slash-positions
-                                              colon-positions other-punct))
-    (hyphen-positions (make-bio-complex-with-hyphen start-pos end-pos unsorted-edges
-                                                    hyphen-positions slash-positions
-                                                    colon-positions other-punct)))
+    (colon-positions (make-bio-complex start-pos end-pos))
+    (slash-positions (make-protein-collection start-pos end-pos))
+    (hyphen-positions (make-bio-complex-with-hyphen start-pos end-pos)))
    (ns-pattern-dispatch start-pos end-pos unsorted-edges
                         hyphen-positions slash-positions
                         colon-positions other-punct)))
+
+
+(defun make-bio-complex (start-pos end-pos)
+   (let* ((ttops (treetops-between start-pos end-pos))
+         (edges (loop for tt in ttops when (edge-p tt) collect tt))
+         (referent (find-or-make-individual 'bio-complex)))
+    (when
+        (loop for edge in edges
+          always
+          (let ((ref (edge-referent edge)))
+            (cond
+             ((and (individual-p ref) (itypep ref category::protein))
+              (setq referent 
+                    (bind-dli-variable 'component ref referent)))
+             ((word-p ref) t)
+             (t nil))))
+      (make-ns-edge start-pos end-pos category::bio-complex
+                    :form category::n-bar
+                    :rule 'make-bio-complex
+                    :referent referent
+                    :constituents edges))))
+
+(defun make-bio-complex-with-hyphen (start-pos end-pos)
+  (make-bio-complex start-pos end-pos))
+
+(defun make-protein-collection (start-pos end-pos)
+  (let* ((ttops (treetops-between start-pos end-pos))
+         (edges (loop for tt in ttops when (edge-p tt) collect tt))
+         proteins)
+    (when
+        (loop for edge in edges
+          always
+          (let ((ref (edge-referent edge)))
+            (cond
+             ((and (individual-p ref) (itypep ref category::protein))
+              (push ref proteins))
+             ((word-p ref) t)
+             (t nil))))
+      
+      (make-ns-edge start-pos end-pos category::collection
+                    :form category::n-bar
+                    :rule 'make-bio-collection
+                    :referent 
+                    (find-or-make-individual 'collection 
+                                             :items (reverse proteins)
+                                             :type category::protein)
+                    :constituents edges))))
+
