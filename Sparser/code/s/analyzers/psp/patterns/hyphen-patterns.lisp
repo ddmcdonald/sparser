@@ -271,8 +271,8 @@
   (tr :resolve-hyphen-between-two-terms words)
   (let* ((left-edge (first edges))
          (right-edge (third edges))
-         (left-ref (edge-referent left-edge))
-         (right-ref (edge-referent right-edge)))    
+         (left-ref (edge-referent left-edge))) 
+    
     (cond
      ((not ;; might be a word  -- still??
        (or (individual-p left-ref) 

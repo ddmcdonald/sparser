@@ -86,14 +86,15 @@
     (apply-preposition pname preposition category)))
 
 (defun apply-preposition (pname preposition category)
+  (declare (ignore pname))
   (let* ((prep (resolve/make preposition))
          (prep-label (single-rewrite-label-over prep)) ;; fails if none
          (rule (define-cfr category `(,category ,prep-label)
                  :form category::vg
                  :referent '(:daughter left-referent))))
     (add-rule-to-category rule category)
-    (let ((verb (resolve pname)))
-      (assign-subcategorization category :prep prep nil))))
+    ;;(let ((verb (resolve pname)))
+    (assign-subcategorization category :prep prep nil)))
 
 ;;//// move where it can be found
 (defmethod single-rewrite-label-over ((pname string))

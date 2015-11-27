@@ -619,4 +619,5 @@
 (defmethod ng-start? ((c referential-category))
   (ng-start? (cat-symbol c)))
 (defmethod ng-start? ((name symbol))
+  (declare (special *ng-start-categories*))
   (memq name *ng-start-categories*))

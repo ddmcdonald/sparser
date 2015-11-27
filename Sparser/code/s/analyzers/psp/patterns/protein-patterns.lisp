@@ -22,6 +22,7 @@
 
 
 (defun make-bio-complex (start-pos end-pos)
+  (declare (special category::protein category::bio-complex))
    (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
          (referent (find-or-make-individual 'bio-complex)))
@@ -45,6 +46,7 @@
   (make-bio-complex start-pos end-pos))
 
 (defun make-protein-collection (start-pos end-pos)
+  (declare (special category::protein))
   (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
          proteins)
