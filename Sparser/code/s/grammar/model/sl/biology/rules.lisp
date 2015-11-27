@@ -65,6 +65,7 @@
 ;;--- information for no-space patterns
 
 (defun populate-ns-informative-categories ()
+  (declare (special *ns-informative-categories*))
   (setq *ns-informative-categories*
         `(,category::protein
           ,category::kinase
