@@ -45,11 +45,11 @@
 
    ((equal pattern '(:protein :colon :bio-entity)) 
     (make-protein-pair/convert-bio-entity
-     start-pos end-pos edges :right))
+     start-pos end-pos edges words :right))
 
    ((equal pattern '(:bio-entity :hyphen :protein))
     (make-protein-pair/convert-bio-entity
-     start-pos end-pos edges :left))
+     start-pos end-pos edges words :left))
 
    ((or (equal pattern '(:single-digit :colon :single-digit))
         (equal pattern '(:single-digit :colon :digits))
@@ -86,7 +86,7 @@
 (defun multi-colon-ns-patterns (words edges colon-positions start-pos end-pos)
   ;; called from ns-patterns/edge-colon-edge when the only punctuation
   ;; in the sequence is colon. Do a divide and recombine
-  (declare (special category::protein))
+  (declare (special category::protein)(ignore edges))
   ;; (push-debug `(,words ,edges ,colon-positions ,start-pos ,end-pos))
   ;; (setq pattern (nth 0 *) words (nth 1 *) edges (nth 2 *) colon-positions (nth 3 *) pos-before (nth 4 *) pos-after (nth 5 *))
   (let ((segments (divide-colon-sequence
