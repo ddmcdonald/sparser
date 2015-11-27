@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2010-2015 David D. McDonald
 ;;;
 ;;;   File:   load-nlp
-;;; Version:  October 2015
+;;; Version:  November 2015
 
 #|
  This file loads the language understanding system Sparser, the
@@ -28,8 +28,7 @@
 ;; 3. Loads the utilities using asdf 
 ;; 4. Creates the sparser package
 ;; 5. Loads Mumble
-;; 6. Chooses a specializing script and load Sparser
-;; 7. Loads the files in Mumble that depend on Sparser.
+;; 6. Chooses a specializing script and loads Sparser
 
 
 (in-package :cl-user)
@@ -90,19 +89,13 @@
 
 ;; #5 Load Mumble
 
-(unless (boundp '*no-mumble*)
-  (defparameter *no-mumble*
-    #+sbcl t
-    #-sbcl nil
-    "Controls whether or not the Mumble language generation system
-     is loaded. There are presently issues in geting Mumble to load
-     under SBCL, which is the principal motivation for this switch,
-     but you could decide to leave it out deliberately, and this
-     switch coordinate the inclusion/omission of the requisite files."))
+#| The problem that was keeping Mumble for compiling in SBCL
+is probably fixed at this point (11/15/15) but keeping the
+flag until that's confirmed. |#
 
-(unless *no-mumble*
-  (load (concatenate 'string (namestring *nlp-home*) 
-                     "Mumble/loader.lisp")))
+#-sbcl(load (concatenate 'string (namestring *nlp-home*) "Mumble/loader.lisp"))
+
+
 
 ;; #6  Use the selected script to pick the desired version of Sparser
 ;;  and load it.
@@ -139,33 +132,3 @@
                      init-location
                      sparser-load-script
                      ".lisp")  :verbose t))
-
-
-;; #7 load the files from Mumble that reference types in Sparser
-
-
-(unless *no-mumble*
-  (asdf:operate 'asdf:load-op :mumble-after-sparser)
-  (load (concatenate 'string *mumble-location* "interface/tsro/gofers.lisp"))
-  (load (concatenate 'string *mumble-location* "grammar/numbers.lisp")))
-
-
-
-
-#|  Notes
-;; 3/17/2015 Putting in flags to avoid loading Mumble. Trying to be able to use SBCL, 
-;; and it is a stickler for ANSI standards
-; file: /Users/rusty/sparser/Mumble/types/defining-types.lisp
-; in: DEFUN DO-THE-TYPE-OF-TYPE-BY-HAND
-;     (SPECIAL TYPE)
-; 
-; caught WARNING:
-;   Compile-time package lock violation:
-;     Lock on package COMMON-LISP violated when declaring TYPE special while in
-;     package MUMBLE.
-;   See also:
-;     The SBCL Manual, Node "Package Locks"
-;     The ANSI Standard, Section 11.1.2.1.2
-|#
-
-
