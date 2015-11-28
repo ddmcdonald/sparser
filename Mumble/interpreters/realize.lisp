@@ -83,7 +83,7 @@
 (defun realize-dtn (dtn) 
   (push-debug `(,dtn)) 
   (let ((resource (resource dtn))
-        (features (features dtn))
+        ;;(features (features dtn))
         phrase-type  root-node )
     (push-debug `(,resource))
 

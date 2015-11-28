@@ -7,6 +7,7 @@
 (in-package :mumble)
 
 (defun do-any-label-driven-transformations (labels phrase-node)
+  (declare (ignore labels phrase-node))
   ""
 )
 

@@ -139,7 +139,7 @@
 
 (defun var-symbol (var)
   (cond ((null var) nil)
-        ((consp var) v/r)
+        ((consp var) var)
         (t (cat-symbol var))))
 
 (defun v/r-symbol (v/r)
