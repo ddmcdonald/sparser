@@ -73,46 +73,46 @@
   ;; on it, indicating that it and the previous word (or multi-word edge)
   ;; are not separated.  
   (when nil (tts))
-
+  
   (let* ((leftmost-edge (left-treetop-at/only-edges position-after))
          ;; There's always an edge. The question is how long it is.
          (long-edge (when leftmost-edge
                       (unless (one-word-long? leftmost-edge)
                         leftmost-edge))))
-
-;    ;; but that 'edge' could be a word, e.g. "... (Figure ..."
-;    (when (word-p leftmost-edge)
-;      (when (first-word-is-bracket-punct leftmost-edge)
-;        (return-from collect-no-space-segment-into-word nil)))
-
+    
+    ;    ;; but that 'edge' could be a word, e.g. "... (Figure ..."
+    ;    (when (word-p leftmost-edge)
+    ;      (when (first-word-is-bracket-punct leftmost-edge)
+    ;        (return-from collect-no-space-segment-into-word nil)))
+    
     (let ((start-pos (if leftmost-edge
-                       (pos-edge-starts-at leftmost-edge)
-                       (chart-position-before position-after))))
-
+                         (pos-edge-starts-at leftmost-edge)
+                         (chart-position-before position-after))))
+      
       (tr :no-space-sequence-started-at start-pos)
       (when long-edge
         (tr :no-space-initial-long-edge long-edge))
-
+      
       ;;//// tune to the possibility we don't care about the first
       ;; word because it's covered by an edge. 
       (when (or (word-is-bracket-punct (pos-terminal position-after))
                 (word-never-in-ns-sequence (pos-terminal position-after)))
         (return-from collect-no-space-segment-into-word nil))
-
+      
       (multiple-value-bind (end-pos hyphen-positions slash-positions
-                            colon-positions other-punct edges)
+                                    colon-positions other-punct edges)
                            (sweep-to-end-of-ns-regions start-pos long-edge)
         ;; Sweep from the very beginning just to be sure we catch any
         ;; marked punctuation there. 
-
+        
         ;; If the sweep encountered any more edges we have to fold 
         ;; them in or else we'll get the wrong pattern
         (setq edges (sort-out-edges-in-ns-region edges long-edge))
-
+        
         ;;// The sweep will only notice edges if the leftmost-edge
         ;; is 'long'  But we want to see all the edges now (11/15),
         ;; so as a backup we collect them below after the parse
-
+        
         (when *collect-ns-examples* 
           (save-ns-example start-pos end-pos))
         
@@ -135,31 +135,39 @@
         (unless (position-precedes start-pos end-pos) ;; bug may actually be this
           (tr :bailing-from-ns/end-pos-less-than-start-pos start-pos end-pos)
           (return-from collect-no-space-segment-into-word nil))
-
+        
         (tr :looking-at-ns-segment start-pos end-pos)
-
+        
         (multiple-value-bind (layout edge)
                              (parse-between-scan-boundaries start-pos end-pos)
           (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
           (cond
            ((eq layout :single-span)  ;; Do nothing. It's already known
-            (revise-form-of-nospace-edge-if-necessary edge :find-it))
+            (revise-form-of-nospace-edge-if-necessary edge :find-it)
+            (when *collect-ns-examples*
+              (update-ns-examples start-pos)))
            (t
             ;; This may be overkill, especially for punctuation,
             ;; but it may also be more informative
             (setq edges (treetops-between start-pos end-pos))
             ;;(break "input edges = ~a" edges)
             (catch :punt-on-nospace-without-resolution
-              (if
-               (let ((end-edge (left-treetop-at end-pos)))
-                 (when (edge-p end-edge)
-                   (eq 'protein (cat-sym (edge-category end-edge)))))
-               (ns-protein-pattern-resolve  start-pos end-pos edges
-                                            hyphen-positions slash-positions
-                                            colon-positions other-punct)
-               (ns-pattern-dispatch start-pos end-pos edges
-                                    hyphen-positions slash-positions
-                                    colon-positions other-punct))
+              (let ((end-edge (left-treetop-at end-pos)))
+                (when (edge-p end-edge)
+                  (case
+                      (cat-sym (edge-category end-edge))
+                    (protein 
+                     (ns-protein-pattern-resolve  start-pos end-pos edges
+                                                  hyphen-positions slash-positions
+                                                  colon-positions other-punct))
+                    (amino-acid
+                     (ns-amino-pattern-resolve  start-pos end-pos edges
+                                                  hyphen-positions slash-positions
+                                                  colon-positions other-punct))
+                    (t
+                     (ns-pattern-dispatch start-pos end-pos edges
+                                          hyphen-positions slash-positions
+                                          colon-positions other-punct)))))
               
               (when *collect-ns-examples*
                 (update-ns-examples start-pos))))))
