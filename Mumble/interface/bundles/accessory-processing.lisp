@@ -1,7 +1,7 @@
 ;;; -*- Mode: LISP;  Package: MUMBLE; Syntax: Common-lisp; Base: 10 -*-
 ;;; $Id: accessory-processing.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 
-;;; MUMBLE-86:  message-level > accessory-processing
+;;; MUMBLE-86:  interface > bundles > accessory-processing
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights

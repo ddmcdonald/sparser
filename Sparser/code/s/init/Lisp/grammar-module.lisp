@@ -186,7 +186,8 @@
     (unless gm
       (error "There is no grammar module with the name ~A" symbol))
     (push gm *grammar-modules-in-image*)
-    (format t "~&Including grammar module: ~a~%" symbol)
+    (when *load-verbose*
+      (format t "~&Including grammar module: ~a~%" symbol))
     (set symbol gm)))
 
 

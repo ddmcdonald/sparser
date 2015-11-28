@@ -3,10 +3,11 @@
 ;;;
 ;;;     File:  "edge-patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  August 2015
+;;;  version:  November 2015
 
 ;; Broken out from pattern-gophers 7/19/15. 8/22/15 fixed bug in
 ;; identify-edge-ns-pattern when we finally got a word "termini"
+;; 11/27/15 No longer loaded. Gradually going through it for parts.
 
 (in-package :sparser)
 
@@ -120,7 +121,6 @@
 
 
 
- 
 
 (defun edge-that-punts-edge-inside-pattern (words start-pos end-pos edges)
   (let ((edge (make-edge-over-long-span
@@ -134,64 +134,6 @@
                :words words)))
     ;;/// trace goes here
     edge))
-
-
-;;;---------
-;;; go'fers
-;;;---------
-
-(defun convert-pattern-edges-to-labels (pattern)
-  "Given an edge, return it's category label as a keyword."
-  (loop for item in pattern
-    unless (or (keywordp item) (edge-p item))
-    do (error "New type in pattern: ~a" item))
-  (flet ((edge-category-to-keyword (edge)
-           (let* ((symbol (cat-symbol (edge-category edge)))
-                  (pname (symbol-name symbol)))
-             (intern pname (find-package :keyword)))))
-    (loop for item in pattern
-      when (keywordp item) collect item
-      when (edge-p item) collect (edge-category-to-keyword item))))
-
-(defun convert-mixed-pattern-edges-to-labels (pattern)
-  "Given an edge, if it is more than one word long, 
-   return it's category label as a keyword, otherwise convert it
-   back to a pattern over a word."
-  (loop for item in pattern
-    unless (or (keywordp item) (edge-p item))
-    do (error "New type in pattern: ~a" item))
-  (loop for item in pattern
-    when (keywordp item) collect item
-    when (edge-p item) 
-    collect (if (one-word-long? item)
-              (convert-edge-to-one-word-characterization item)
-              (edge-category-to-keyword item))))
-
-(defun edge-category-to-keyword (edge)
-  (let* ((symbol (cat-symbol (edge-category edge)))
-         (pname (symbol-name symbol)))
-    (intern pname (find-package :keyword))))
-
-(defun convert-edge-to-one-word-characterization (edge)
-  ;; Some single-word edges are uniformative, others carry
-  ;; information that will simplify the patterns by providing
-  ;; more information and shortening the path to get there.
-  (declare (special *ns-informative-categories*))
-  (let ((label (edge-category edge)))
-    (cond
-     ((memq label *ns-informative-categories*)
-      (edge-category-to-keyword edge))
-     (t
-      (let* ((position (pos-edge-starts-at edge))
-             (word (pos-terminal position)))
-        (characterize-word-type position word))))))
-
-;; populated in model/sl/biology/rules.lisp
-(defparameter *ns-informative-categories* nil
-  "A list of category objects used by no-space code to determine
-   whether to characterize an edge by its label or by the form
-   of the word it covers.")
-
 
 
 (defun identify-edge-ns-pattern (pattern start-pos end-pos)

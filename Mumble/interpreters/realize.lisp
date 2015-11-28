@@ -91,7 +91,6 @@
     (typecase resource
       (lexicalized-phrase
        (let ((phrase (phrase resource)))
-         (feature-driven-prepocessing features dtn) ;;///hack
          (setq phrase-type (caar (definition phrase)))
          (setq root-node (instantiate-lexicalized-phrase resource))))
       (phrase 

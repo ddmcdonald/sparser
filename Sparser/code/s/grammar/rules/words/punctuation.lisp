@@ -212,7 +212,8 @@
       (when namestring
            (setf symbol (intern namestring *word-package*)))
       (when (and symbol character)
-        (format t "~&~a ~a" (cadr form) character)
+        (when *load-verbose*
+          (format t "~&~a ~a" (cadr form) character))
         (define-punctuation/expr symbol character)))))
 
 (add-punctuation-chars)
