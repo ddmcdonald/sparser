@@ -20,6 +20,19 @@
                         hyphen-positions slash-positions
                         colon-positions other-punct)))
 
+(defun ns-amino-pattern-resolve (start-pos end-pos unsorted-edges
+                                             hyphen-positions slash-positions
+                                             colon-positions other-punct)
+  (or
+   (cond
+    (slash-positions (make-amino-collection start-pos end-pos))
+    (hyphen-positions (make-amino-collection start-pos end-pos)))
+   (ns-pattern-dispatch start-pos end-pos unsorted-edges
+                        hyphen-positions slash-positions
+                        colon-positions other-punct)))
+
+
+
 
 (defun make-bio-complex (start-pos end-pos)
   (declare (special category::protein category::bio-complex))
@@ -62,10 +75,34 @@
       
       (make-ns-edge start-pos end-pos category::collection
                     :form category::n-bar
-                    :rule 'make-bio-collection
+                    :rule 'make-protein-collection
                     :referent 
                     (find-or-make-individual 'collection 
                                              :items (reverse proteins)
                                              :type category::protein)
+                    :constituents edges))))
+
+(defun make-amino-collection (start-pos end-pos)
+  (declare (special category::amino-acid))
+  (let* ((ttops (treetops-between start-pos end-pos))
+         (edges (loop for tt in ttops when (edge-p tt) collect tt))
+         aminos)
+    (when
+        (loop for edge in edges
+          always
+          (let ((ref (edge-referent edge)))
+            (cond
+             ((and (individual-p ref) (itypep ref category::amino-acid))
+              (push ref aminos))
+             ((word-p ref) t)
+             (t nil))))
+      
+      (make-ns-edge start-pos end-pos category::collection
+                    :form category::n-bar
+                    :rule 'make-amino-collection
+                    :referent 
+                    (find-or-make-individual 'collection 
+                                             :items (reverse aminos)
+                                             :type category::amino-acid)
                     :constituents edges))))
 
