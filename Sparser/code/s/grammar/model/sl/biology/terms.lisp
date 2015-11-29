@@ -37,6 +37,13 @@
 
 (in-package :sparser)
 
+;;lipids
+;; in EGFR signaling comments
+(noun ("PIP2" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
+(noun ("PLC" "phospholipase C") :super phospholipid)
+(noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
+(noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate") :super phospholipid)
+
 ;; new nouns and verbs used in Ras model comments
 
 (noun ("stimulus" :plural "stimuli") :super bio-mechanism) 
@@ -464,7 +471,17 @@
   (:noun "evidence"
          :for fact))
 (noun "example" :super variant)
-(noun "exchange" :super bio-process)
+(define-category bio-exchange :specializes bio-process
+  :binds ((state-before (:or bio-state variant))
+          (state-after (:or bio-state variant))
+          (subject nucleotide))
+  :realization
+  (:noun "exchange"
+         :etf pre-mod
+         :m subject
+         :from state-before
+         :to state-after))
+
 (noun "exclusivity" :super bio-abstract) ;; keyword: (ity N)
 (noun "extent" :super bio-scalar) 
 
@@ -671,6 +688,12 @@
 
 (noun "membrane" :super cellular-location)
 (noun "method" :super bio-method)
+(noun "miR-26A2" :super micro-rna)
+(def-synonym miR-26A2
+             (:noun "MIR26A2"))
+(noun "miR-26A1" :super micro-rna)
+(def-synonym miR-26A1
+             (:noun "MIR26A1"))
 (noun "mitogen" :super molecule)
 (define-unit-of-measure "mL")
 (define-unit-of-measure "ml")
