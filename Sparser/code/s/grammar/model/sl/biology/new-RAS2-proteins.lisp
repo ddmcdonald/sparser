@@ -728,7 +728,7 @@
 (DEF-RAS2-PROTEIN "PGH2_HUMAN" ("PGH2_HUMAN" "PGH synthase 2" "PHS II" "1.14.99.1" "COX-2" "Prostaglandin H2 synthase 2" "PGHS-2" "COX2" "Cox2" "Prostaglandin-endoperoxide synthase 2" "PTGS2" "Cyclooxygenase-2")) 
 (DEF-RAS2-PROTEIN "PGK1_HUMAN" ("PGK1_HUMAN" "PGK1" "2.7.2.3" "PGKA" "Mig-10" "Phosphoglycerate kinase 1" "Cell migration-inducing gene 10 protein" "Primer recognition protein 2" "PRP 2")) 
 (DEF-RAS2-PROTEIN "PI3K Class IA" ("PI3K Class IA")) 
-(DEF-RAS2-PROTEIN "PI3K" ("PI3K")) 
+(DEF-RAS2-PROTEIN "PI3K" ("PI3K" "PIK3"))
 (DEF-RAS2-PROTEIN "PI3R5_HUMAN" ("PI3R5_HUMAN" "Protein FOAP-2" "PtdIns-3-kinase regulatory subunit" "Phosphatidylinositol 4,5-bisphosphate 3-kinase regulatory subunit" "PIK3R5" "p101-PI3K" "PI3-kinase p101 subunit" "PtdIns-3-kinase p101" "PI3-kinase regulatory subunit 5")) 
 (DEF-RAS2-PROTEIN "PI3R6_HUMAN" ("PI3R6_HUMAN" "p84 PIKAP" "PIK3R6" "p87PIKAP" "p84 PI3K adapter protein" "Phosphoinositide 3-kinase gamma adapter protein of 87 kDa" "Phosphoinositide 3-kinase γ adapter protein of 87 kDa" "C17orf38" "p87 PI3K adapter protein")) 
 (DEF-RAS2-PROTEIN "PI51A_HUMAN" ("PI51A_HUMAN" "PIP5KIalpha" "PIP5KIα" "PIP5K1A" "PIP5K1-alpha" "PIP5K1-α" "68 kDa type I phosphatidylinositol 4-phosphate 5-kinase alpha" "68 kDa type I phosphatidylinositol 4-phosphate 5-kinase α" "PtdIns(4)P-5-kinase 1 alpha" "PtdIns(4)P-5-kinase 1 α" "Phosphatidylinositol 4-phosphate 5-kinase type I alpha" "Phosphatidylinositol 4-phosphate 5-kinase type I α" "2.7.1.68")) 
