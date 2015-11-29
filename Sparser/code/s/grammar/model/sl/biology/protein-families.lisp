@@ -21,6 +21,9 @@
   :members ("ASPP1" "ASPP2")
   :synonyms ("apoptosis-stimulating protein of p53"))
 
+(def-family "PKC"
+            :members ("PKC-alpha" "PKC-delta" "PKC-epsilon"))
+
 (def-family "cadherin" :members ("CADH1_HUMAN"))
 (def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 
