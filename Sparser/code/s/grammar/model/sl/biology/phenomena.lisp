@@ -536,6 +536,8 @@ it is created from N-terminus to C-terminus.|#
 (noun "g3" :super protein-domain)
 (noun "g4" :super protein-domain)
 (noun "g5" :super protein-domain)
+(noun ("pleckstrin-homology domain" "pleckstrin homology domain" "PH domain") :super protein-domain)
+
 
 
 (define-category DBD :specializes binding-domain
