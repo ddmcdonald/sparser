@@ -524,6 +524,14 @@
   :lemma (:common-noun "molecule")
   :realization (:common-noun name))
 
+(define-category rna :specializes molecule
+  :realization
+  (:noun "RNA"))
+
+(define-category micro-rna  :specializes rna
+  :realization
+  (:noun "micro-rna"))
+
 (define-category phospholipid :specializes molecule
   :instantiates :self
   :index (:permanent :key name)
