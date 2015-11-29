@@ -198,10 +198,12 @@
 
 (defun update-ns-examples (start-pos)
   (setf (car *collect-ns-examples*)
-        (cons (car *collect-ns-examples*)
-              (let ((edge (right-treetop-at start-pos)))
-                (when edge
-                  (list (edge-form edge)(edge-category edge)))))))
+        (append (car *collect-ns-examples*)
+              (cons "==>"
+                    (let ((edge (right-treetop-at start-pos)))
+                      (when edge
+                        (list (cat-sym (edge-form edge))
+                              (cat-sym (edge-category edge)))))))))
 
 ;;;----------
 ;;; Dispatch
