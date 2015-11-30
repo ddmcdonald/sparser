@@ -884,6 +884,18 @@
            :of object
            :on location))
 
+(define-category gene-transcript-co-express :specializes gene-transcript-express
+    :binds ((location bio-location)
+            (from biological))
+    :realization
+    (:verb "co-express"
+	   :noun "co-expression"
+	   :etf (svo-passive)
+           :from from
+           :in location
+           :of object
+           :on location))
+
 (define-category grow :specializes bio-method
   :realization
   (:verb ("grow" :past-tense "grown")
