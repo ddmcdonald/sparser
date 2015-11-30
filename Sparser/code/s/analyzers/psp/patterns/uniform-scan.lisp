@@ -151,9 +151,13 @@
             ;; but it may also be more informative
             (setq edges (treetops-between start-pos end-pos))
             ;;(break "input edges = ~a" edges)
+            ;; TO-DO -- review this code -- issues occurred when there are multiple edges at the end of 
+            ;;  the pattern (ambiguity) and only one of the edges satisfies a pattern
+            ;; this is not done cleanly, and needs some pair-programming
             (catch :punt-on-nospace-without-resolution
               (let ((end-edge (left-treetop-at end-pos)))
-                (when (edge-p end-edge)
+                (cond
+                 ((edge-p end-edge)
                   (case
                       (cat-sym (edge-category end-edge))
                     (protein 
@@ -162,15 +166,19 @@
                                                   colon-positions other-punct))
                     (amino-acid
                      (ns-amino-pattern-resolve  start-pos end-pos edges
-                                                  hyphen-positions slash-positions
-                                                  colon-positions other-punct))
+                                                hyphen-positions slash-positions
+                                                colon-positions other-punct))
                     (t
                      (ns-pattern-dispatch start-pos end-pos edges
-                                          hyphen-positions slash-positions
-                                          colon-positions other-punct)))))
-              
-              (when *collect-ns-examples*
-                (update-ns-examples start-pos))))))
+                                       hyphen-positions slash-positions
+                                       colon-positions other-punct))))
+                 (t
+                  (ns-pattern-dispatch start-pos end-pos edges
+                                       hyphen-positions slash-positions
+                                       colon-positions other-punct)))))
+            
+            (when *collect-ns-examples*
+              (update-ns-examples start-pos)))))
         end-pos))))
 
 (defun save-ns-example (start-pos end-pos)
@@ -202,8 +210,9 @@
               (cons "==>"
                     (let ((edge (right-treetop-at start-pos)))
                       (when edge
-                        (list (cat-sym (edge-form edge))
-                              (cat-sym (edge-category edge)))))))))
+                        (list 
+                              (cat-sym (edge-category edge))
+                              (cat-sym (edge-form edge)))))))))
 
 ;;;----------
 ;;; Dispatch
