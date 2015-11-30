@@ -496,32 +496,34 @@
 ;;; rule edge checks, but looking at form labels too
 ;;;------------------------------------------------------
 
+(defparameter *allow-form-rules* t)
 ;; We've checked category label against category label.
 ;; Now we're trying category label against form label but
 ;; using category ids rather than form ids
 ;;
 (defun mult/ids-on-form-label (left-edge right-edge)
   (tr :mult/ids-on-form-label)
-  (let* ((left-form-ids (form-ids/rightward left-edge)) ;; form field
-	 (right-form-ids (form-ids/leftward right-edge)))
-
-    ;; We're looking for a rule based on the category (vs. form) numbers,
-    ;; but we're looking at a combination of the label in the category
-    ;; field of one of the edges, and the label from the form field of
-    ;; the other. 
-    (if (or left-form-ids right-form-ids)
-      (then
-	(tr :checking-form-label-category-rules)
-	(or (and right-form-ids ;; e.g. on np-head, which is a form label
-		 (try-mult/left-category-right-form_category-id
-		  right-form-ids left-edge right-edge))
-	    (and left-form-ids
-		 (mult/right-category-left-form_category-id
-		  left-form-ids left-edge right-edge))
-	    (mult/check-form-options left-edge right-edge)))
-      (else
-	(tr :neither-has-category-on-form-ids)
-	(mult/check-form-options left-edge right-edge)))))
+  (when *allow-form-rules*
+    (let* ((left-form-ids (form-ids/rightward left-edge)) ;; form field
+           (right-form-ids (form-ids/leftward right-edge)))
+      
+      ;; We're looking for a rule based on the category (vs. form) numbers,
+      ;; but we're looking at a combination of the label in the category
+      ;; field of one of the edges, and the label from the form field of
+      ;; the other. 
+      (if (or left-form-ids right-form-ids)
+          (then
+            (tr :checking-form-label-category-rules)
+            (or (and right-form-ids ;; e.g. on np-head, which is a form label
+                     (try-mult/left-category-right-form_category-id
+                      right-form-ids left-edge right-edge))
+                (and left-form-ids
+                     (mult/right-category-left-form_category-id
+                      left-form-ids left-edge right-edge))
+                (mult/check-form-options left-edge right-edge)))
+          (else
+            (tr :neither-has-category-on-form-ids)
+            (mult/check-form-options left-edge right-edge))))))
 
 
 (defun try-mult/left-category-right-form_category-id (right-form-ids
