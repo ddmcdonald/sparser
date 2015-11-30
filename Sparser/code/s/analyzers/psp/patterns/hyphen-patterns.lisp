@@ -48,101 +48,108 @@
                                start-pos end-pos)
   (tr :ns-one-hyphen-patterns)
   (tr :ns-edge-pattern pattern)
-  (cond
+  (let ((rel-edge
+         (loop for i in (ev-edges (pos-ends-here end-pos))
+           when (second-imposes-relation-on-first? (edge-referent i) i )
+           do (return i))))
+    ;; The code above is intended to catch cases like "isoform-specific" where the lexeme "specific" has two definitions
+    ;; one of which is an obsolete one from the core, and another of which has a sbcat frame and
+    ;;  satisfies second-imposes-relation-on-first
+    ;; TO-DO -- do pair programming review
+    (cond
      ;; the cases of -adjective and -verb+ed should be handled here, not by 
      ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
-   ((when (edge-p (third edges))
-      (second-imposes-relation-on-first? (edge-referent (third edges)) (third edges) ))
-    (do-relation-between-first-and-second
-     (when (edge-p (first edges))(edge-referent (first edges)))
-     (edge-referent (third edges)) (first edges) (third edges)))
-   ((equal pattern '(:protein :hyphen :protein))
-    (make-protein-pair (first edges) (third edges) words start-pos end-pos))
-
-   ((equal pattern '(:protein :hyphen :bio-entity)) ;; RAS-ASSP
-    (make-protein-pair/convert-bio-entity
-     start-pos end-pos edges words :right))
-
-   ((equal pattern '(:bio-entity :hyphen :protein)) ;; ??
-    (make-protein-pair/convert-bio-entity
-     start-pos end-pos edges words :left))
-
-   ((equal pattern '(:protein :hyphen :lower)) ;; EGFR-positive
-    (resolve-protein-hyphen-word edges words start-pos end-pos))
-
-   ((equal pattern '(:full :hyphen :protein)) ;; "the PI3KC2β RBD-Ras complex"
-    (make-pair-with-protein (first edges) (third edges) 
-                            words start-pos end-pos))
-
-   ((equal pattern '(:protein :hyphen :digits)) ;; GAP–334 Jan# 2
-    ;;/// should be something better for a case lke this if we know
-    ;; something about the the siginificane of the number
-    (make-bio-pair (first edges) (third edges) words start-pos end-pos))
-
-   ((equal pattern `(:amino-acid :hyphen :digits))
-    (reify-residue (first edges) (third edges) start-pos end-pos))
-
-   (*work-on-ns-patterns*
-    (when (memq :protein pattern) ;; :protein :hyphen :kinase PI3–Kinase
-      (push-debug `(,edges ,start-pos ,end-pos ,hyphen-positions ,words))
-      (lsp-break "new hypen pattern with protein: ~a" pattern)))
-
-   ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
-        (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
-        (equal pattern '(:full :hyphen :digits)) ;; "CI-1040" actually a drug
-        (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
-        (equal pattern '(:full :hyphen :single-digit :single-digit))) ;;/// IL-1a -bug somewhere
-    ;; We accept these as terms that won't deccompose or involve
-    ;; a rule. Experience may show that to be false, but it's a start
-    (reify-ns-name-and-make-edge words start-pos end-pos))
-
-   ((or (equal pattern '(:full :hyphen :full))
-        (equal pattern '(:capitalized :hyphen :full)) ;; Rho-GDI
-        (equal pattern '(:full :hyphen :capitalized)))
-    (resolve-hyphen-between-two-terms pattern words edges start-pos end-pos))
-
-   ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
-    (resolve-hyphen-between-two-words pattern words start-pos end-pos))
-
-   ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
-    (when *work-on-ns-patterns*
-      (break "stub :single-cap :hyphen :lower"))
-    (reify-ns-name-and-make-edge words start-pos end-pos))
-
-   ((equal pattern '(:little-p :hyphen :single-cap :digits)) ;; p-S311
-    (let ((amino-acid (single-letter-word-for-amino-acid? (third words)))
-          (digits (fourth words)))
-      (cond
-       (amino-acid
-        (reify-p-residue-and-make-edge start-pos end-pos amino-acid digits))
-       (*work-on-ns-patterns*
-        (push-debug `(,words ,pattern ,start-pos ,end-pos))
-        (break "Little p for unknown type"))
-       (t (nospace-hyphen-specialist
-           words edges pattern hyphen-positions start-pos end-pos)))))
-
-   ((eq :no-space-prefix (car pattern))
-    (compose-salient-hyphenated-literals 
-     pattern words start-pos end-pos))
-
-   ((equal pattern '(:lower :hyphen :lower)) ;; "high-activity"
-    (let ((*inhibit-big-mech-interpretation* t))
-      (declare (special *inhibit-big-mech-interpretation*))
-      (resolve-hyphen-between-two-words pattern words start-pos end-pos)))
-
-   ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
-    (when *work-on-ns-patterns*
-      (break "digit hyphen digit on ~a" words)))
-
-   ((equal pattern '(:lower :hyphen)) ;; "mono- "
-    (resolve-stranded-hyphen pattern words start-pos end-pos))
-
-   ((and *work-on-ns-patterns*
-         (memq :hyphen pattern))
-    (push-debug `(,pattern ,start-pos ,end-pos))
-    (break "New hyphen pattern to resolve: ~a" pattern))
-
-   (t (nospace-hyphen-specialist words edges pattern hyphen-positions start-pos end-pos))))
+     (rel-edge
+      (do-relation-between-first-and-second
+       (when (edge-p (first edges))(edge-referent (first edges)))
+       (edge-referent rel-edge) (first edges) rel-edge))
+     ((equal pattern '(:protein :hyphen :protein))
+      (make-protein-pair (first edges) (third edges) words start-pos end-pos))
+     
+     ((equal pattern '(:protein :hyphen :bio-entity)) ;; RAS-ASSP
+      (make-protein-pair/convert-bio-entity
+       start-pos end-pos edges words :right))
+     
+     ((equal pattern '(:bio-entity :hyphen :protein)) ;; ??
+      (make-protein-pair/convert-bio-entity
+       start-pos end-pos edges words :left))
+     
+     ((equal pattern '(:protein :hyphen :lower)) ;; EGFR-positive
+      (resolve-protein-hyphen-word edges words start-pos end-pos))
+     
+     ((equal pattern '(:full :hyphen :protein)) ;; "the PI3KC2β RBD-Ras complex"
+      (make-pair-with-protein (first edges) (third edges) 
+                              words start-pos end-pos))
+     
+     ((equal pattern '(:protein :hyphen :digits)) ;; GAP–334 Jan# 2
+      ;;/// should be something better for a case lke this if we know
+      ;; something about the the siginificane of the number
+      (make-bio-pair (first edges) (third edges) words start-pos end-pos))
+     
+     ((equal pattern `(:amino-acid :hyphen :digits))
+      (reify-residue (first edges) (third edges) start-pos end-pos))
+     
+     (*work-on-ns-patterns*
+      (when (memq :protein pattern) ;; :protein :hyphen :kinase PI3–Kinase
+        (push-debug `(,edges ,start-pos ,end-pos ,hyphen-positions ,words))
+        (lsp-break "new hypen pattern with protein: ~a" pattern)))
+     
+     ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
+          (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
+          (equal pattern '(:full :hyphen :digits)) ;; "CI-1040" actually a drug
+          (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
+          (equal pattern '(:full :hyphen :single-digit :single-digit))) ;;/// IL-1a -bug somewhere
+      ;; We accept these as terms that won't deccompose or involve
+      ;; a rule. Experience may show that to be false, but it's a start
+      (reify-ns-name-and-make-edge words start-pos end-pos))
+     
+     ((or (equal pattern '(:full :hyphen :full))
+          (equal pattern '(:capitalized :hyphen :full)) ;; Rho-GDI
+          (equal pattern '(:full :hyphen :capitalized)))
+      (resolve-hyphen-between-two-terms pattern words edges start-pos end-pos))
+     
+     ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
+      (resolve-hyphen-between-two-words pattern words start-pos end-pos))
+     
+     ((equal pattern '(:single-cap :hyphen :lower)) ;; Y-box
+      (when *work-on-ns-patterns*
+        (break "stub :single-cap :hyphen :lower"))
+      (reify-ns-name-and-make-edge words start-pos end-pos))
+     
+     ((equal pattern '(:little-p :hyphen :single-cap :digits)) ;; p-S311
+      (let ((amino-acid (single-letter-word-for-amino-acid? (third words)))
+            (digits (fourth words)))
+        (cond
+         (amino-acid
+          (reify-p-residue-and-make-edge start-pos end-pos amino-acid digits))
+         (*work-on-ns-patterns*
+          (push-debug `(,words ,pattern ,start-pos ,end-pos))
+          (break "Little p for unknown type"))
+         (t (nospace-hyphen-specialist
+             words edges pattern hyphen-positions start-pos end-pos)))))
+     
+     ((eq :no-space-prefix (car pattern))
+      (compose-salient-hyphenated-literals 
+       pattern words start-pos end-pos))
+     
+     ((equal pattern '(:lower :hyphen :lower)) ;; "high-activity"
+      (let ((*inhibit-big-mech-interpretation* t))
+        (declare (special *inhibit-big-mech-interpretation*))
+        (resolve-hyphen-between-two-words pattern words start-pos end-pos)))
+     
+     ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
+      (when *work-on-ns-patterns*
+        (break "digit hyphen digit on ~a" words)))
+     
+     ((equal pattern '(:lower :hyphen)) ;; "mono- "
+      (resolve-stranded-hyphen pattern words start-pos end-pos))
+     
+     ((and *work-on-ns-patterns*
+           (memq :hyphen pattern))
+      (push-debug `(,pattern ,start-pos ,end-pos))
+      (break "New hyphen pattern to resolve: ~a" pattern))
+     
+     (t (nospace-hyphen-specialist words edges pattern hyphen-positions start-pos end-pos)))))
 
 
 ;;--- two hyphens
