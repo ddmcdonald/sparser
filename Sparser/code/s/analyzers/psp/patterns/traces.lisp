@@ -452,3 +452,8 @@
 (deftrace :making-ns-pair-on (category)
   (when *trace-ns-sequences* 
     (trace-msg "[ns] Making a no-space pair as a ~a" category)))
+
+(deftrace :making-two-part-label (start-pos end-pos)
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns] Making a two-part-label: ~s"
+               (string-of-words-between start-pos end-pos))))

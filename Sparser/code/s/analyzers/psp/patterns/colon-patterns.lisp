@@ -55,9 +55,7 @@
         (equal pattern '(:single-digit :colon :digits))
         (equal pattern '(:digits :colon :single-digit))
         (equal pattern '(:digits :colon :digits)))
-    (make-number-colon-number-structure 
-     (right-treetop-at/edge start-pos) 
-     (left-treetop-at/edge end-pos)))
+    (make-number-colon-number-structure (first edges) (third edges)))
 
    ((or (equal pattern '(:full :colon))
         (equal pattern '(:lower :colon))
@@ -65,9 +63,7 @@
         (equal pattern '(:lower :colon :lower))
         (equal pattern '(:full :colon :full))
         (equal pattern '(:full :colon :lower)))
-    (make-word-colon-word-structure 
-     (right-treetop-at/edge start-pos) 
-     (left-treetop-at/edge end-pos)))
+    (make-word-colon-word-structure (first edges) (third edges)))
 
    (*work-on-ns-patterns*
     (push-debug `(,pattern ,edges ,words ,colon-positions ,start-pos ,end-pos))
